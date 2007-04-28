@@ -1,7 +1,7 @@
 /*
 	menu.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/menu.c,v 1.61 2007-04-18 13:33:37 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/menu.c,v 1.62 2007-04-28 06:52:36 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -2545,11 +2545,15 @@ static void M_Menu_Setup_f (void)
 	setup_bottom = setup_oldbottom = (int)bottomcolor.value;
 
 	if (!(gameflags & GAME_PORTALS))
+	{
 		if (playerclass.value == CLASS_DEMON)
 			playerclass.value = 0;
+	}
 	if (playerclass.value == CLASS_DWARF)
+	{
 		if (Q_strcasecmp(fs_gamedir_nopath, "siege") != 0)
 			playerclass.value = 0;
+	}
 
 	setup_class = playerclass.value;
 
@@ -2607,11 +2611,15 @@ static void M_Setup_Draw (void)
 	M_Print (64, 88, "Current Class: ");
 
 	if (!(gameflags & GAME_PORTALS))
+	{
 		if (setup_class == CLASS_DEMON)
 			setup_class = 0;
+	}
 	if (setup_class == CLASS_DWARF)
+	{
 		if (Q_strcasecmp(fs_gamedir_nopath, "siege") != 0)
 			setup_class = 0;
+	}
 	switch (setup_class)
 	{
 		case 0:
@@ -2753,7 +2761,7 @@ forward:
 			}
 			cl.spectator = spectator.value;
 		}
-		if (setup_cursor == 3)
+		else if (setup_cursor == 3)
 		{
 			setup_class++;
 			if (setup_class > class_limit)
@@ -2762,9 +2770,9 @@ forward:
 //			if ((!registered.value && !oem.value) && setup_class >= 2 && setup_class <= 3)
 //				setup_class = 4;
 		}
-		if (setup_cursor == 4)
+		else if (setup_cursor == 4)
 			setup_top = setup_top + 1;
-		if (setup_cursor == 5)
+		else if (setup_cursor == 5)
 			setup_bottom = setup_bottom + 1;
 		break;
 
@@ -2795,9 +2803,6 @@ forward:
 	default:
 		if (k < 32 || k > 127)
 			break;
-		if (setup_cursor == 0)
-		{
-		}
 		if (setup_cursor == 1)
 		{
 			l = strlen(setup_myname);

@@ -1,7 +1,7 @@
 /*
 	menu.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/menu.c,v 1.85 2007-04-18 13:31:32 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/menu.c,v 1.86 2007-04-28 06:52:35 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -875,11 +875,11 @@ static void M_Difficulty_Key (int key)
 //=============================================================================
 /* CLASS CHOICE MENU */
 
-static int class_flag;
+static int	class_flag;
 
 static void M_Menu_Class_f (void)
 {
-	class_flag=0;
+	class_flag = 0;
 	key_dest = key_menu;
 	m_state = m_class;
 }
@@ -896,16 +896,14 @@ static int	m_class_cursor;
 
 static void M_Class_Draw (void)
 {
-	int	f, i;
+	int	i, f = MAX_PLAYER_CLASS;
 
 	if (! (gameflags & GAME_PORTALS))
 		f = MAX_PLAYER_CLASS - PORTALS_EXTRA_CLASSES;
 #if DISALLOW_DEMONESS_IN_OLD_GAME
-	else if (!m_enter_portals && (gameflags & GAME_PORTALS))
+	else if (!m_enter_portals)
 		f = MAX_PLAYER_CLASS - PORTALS_EXTRA_CLASSES;
 #endif
-	else
-		f = MAX_PLAYER_CLASS;
 
 	if (m_class_cursor >= f)
 		m_class_cursor = 0;
@@ -923,16 +921,14 @@ static void M_Class_Draw (void)
 
 static void M_Class_Key (int key)
 {
-	int		f;
+	int		f = MAX_PLAYER_CLASS;
 
 	if (! (gameflags & GAME_PORTALS))
 		f = MAX_PLAYER_CLASS - PORTALS_EXTRA_CLASSES;
 #if DISALLOW_DEMONESS_IN_OLD_GAME
-	else if (!m_enter_portals && (gameflags & GAME_PORTALS))
+	else if (!m_enter_portals)
 		f = MAX_PLAYER_CLASS - PORTALS_EXTRA_CLASSES;
 #endif
-	else
-		f = MAX_PLAYER_CLASS;
 
 	switch (key)
 	{
@@ -1527,8 +1523,11 @@ static void M_Menu_Setup_f (void)
 	setup_class = cl_playerclass.value;
 	if (setup_class < 1 || setup_class > MAX_PLAYER_CLASS)
 		setup_class = MAX_PLAYER_CLASS;
-	if (setup_class > MAX_PLAYER_CLASS - PORTALS_EXTRA_CLASSES && !(gameflags & GAME_PORTALS))
-		setup_class = MAX_PLAYER_CLASS - PORTALS_EXTRA_CLASSES;
+	if (!(gameflags & GAME_PORTALS))
+	{
+		if (setup_class > MAX_PLAYER_CLASS - PORTALS_EXTRA_CLASSES)
+			setup_class = MAX_PLAYER_CLASS - PORTALS_EXTRA_CLASSES;
+	}
 }
 
 
@@ -1622,9 +1621,9 @@ static void M_Setup_Key (int k)
 //			if ((!registered.value && !oem.value) && setup_class >= 2 && setup_class < MAX_PLAYER_CLASS)
 //				setup_class = 5;
 		}
-		if (setup_cursor == 3)
+		else if (setup_cursor == 3)
 			setup_top = setup_top - 1;
-		if (setup_cursor == 4)
+		else if (setup_cursor == 4)
 			setup_bottom = setup_bottom - 1;
 		break;
 	case K_RIGHTARROW:
@@ -1642,9 +1641,9 @@ forward:
 //			if ((!registered.value && !oem.value) && setup_class >= 2 && setup_class < MAX_PLAYER_CLASS)
 //				setup_class = MAX_PLAYER_CLASS;
 		}
-		if (setup_cursor == 3)
+		else if (setup_cursor == 3)
 			setup_top = setup_top + 1;
-		if (setup_cursor == 4)
+		else if (setup_cursor == 4)
 			setup_bottom = setup_bottom + 1;
 		break;
 
@@ -3334,8 +3333,11 @@ static void M_Menu_LanConfig_f (void)
 	setup_class = cl_playerclass.value;
 	if (setup_class < 1 || setup_class > MAX_PLAYER_CLASS)
 		setup_class = MAX_PLAYER_CLASS;
-	if (setup_class > MAX_PLAYER_CLASS - PORTALS_EXTRA_CLASSES && !(gameflags & GAME_PORTALS))
-		setup_class = MAX_PLAYER_CLASS - PORTALS_EXTRA_CLASSES;
+	if (!(gameflags & GAME_PORTALS))
+	{
+		if (setup_class > MAX_PLAYER_CLASS - PORTALS_EXTRA_CLASSES)
+			setup_class = MAX_PLAYER_CLASS - PORTALS_EXTRA_CLASSES;
+	}
 	setup_class--;
 }
 
@@ -3696,23 +3698,40 @@ static void M_Menu_GameOptions_f (void)
 	setup_class = cl_playerclass.value;
 	if (setup_class < 1 || setup_class > MAX_PLAYER_CLASS)
 		setup_class = MAX_PLAYER_CLASS;
-	if (setup_class > MAX_PLAYER_CLASS - PORTALS_EXTRA_CLASSES && !(gameflags & GAME_PORTALS))
-		setup_class = MAX_PLAYER_CLASS - PORTALS_EXTRA_CLASSES;
+	if (!(gameflags & GAME_PORTALS))
+	{
+		if (setup_class > MAX_PLAYER_CLASS - PORTALS_EXTRA_CLASSES)
+			setup_class = MAX_PLAYER_CLASS - PORTALS_EXTRA_CLASSES;
+	}
 	setup_class--;
 
-	if (oem.value && startepisode < OEM_START)
-		startepisode = OEM_START;
-
-	if (registered.value && (startepisode < REG_START || startepisode >= OEM_START))
-		startepisode = REG_START;
+	if (oem.value)
+	{
+		if (startepisode < OEM_START || startepisode > OEM_START+1)
+			startepisode = OEM_START;
+		if (coop.value)
+			startepisode = OEM_START;
+	}
+	else if (registered.value)
+	{
+		if (startepisode < REG_START || startepisode >= OEM_START)
+			startepisode = REG_START;
+		else if (startepisode == MP_START && !(gameflags & GAME_PORTALS))
+			startepisode = REG_START;
+		if (coop.value && startepisode == DM_START)
+			startepisode = REG_START;
+	}
+	else	// demo
+	{
+		if (startepisode < 0 || startepisode > 1)
+			startepisode = 0;
+		if (coop.value)
+			startepisode = 0;
+	}
 
 	if (coop.value)
 	{
 		startlevel = 0;
-		if (startepisode == 1)
-			startepisode = 0;
-		else if (startepisode == DM_START)
-			startepisode = REG_START;
 		if (gameoptions_cursor >= NUM_GAMEOPTIONS-1)
 			gameoptions_cursor = 0;
 	}
@@ -3813,8 +3832,6 @@ static void M_GameOptions_Draw (void)
 
 static void M_NetStart_Change (int dir)
 {
-	int count;
-
 	switch (gameoptions_cursor)
 	{
 	case 1:
@@ -3838,17 +3855,17 @@ static void M_NetStart_Change (int dir)
 				startepisode = 0;
 			else if (startepisode == DM_START)
 				startepisode = REG_START;
+			else if (startepisode == OEM_START+1)
+				startepisode = OEM_START;
 		}
 		break;
 
 	case 3:
-		count = 2;
-
 		Cvar_SetValue ("teamplay", teamplay.value + dir);
-		if (teamplay.value > count)
+		if (teamplay.value > 2)
 			Cvar_SetValue ("teamplay", 0);
 		else if (teamplay.value < 0)
-			Cvar_SetValue ("teamplay", count);
+			Cvar_SetValue ("teamplay", 2);
 		break;
 
 	case 4:
@@ -3859,8 +3876,11 @@ static void M_NetStart_Change (int dir)
 //			setup_class = 0;
 		if (setup_class < 0) 
 			setup_class = MAX_PLAYER_CLASS - 1;
-		if (setup_class > MAX_PLAYER_CLASS - PORTALS_EXTRA_CLASSES - 1 && !(gameflags & GAME_PORTALS))
-			setup_class = MAX_PLAYER_CLASS - PORTALS_EXTRA_CLASSES - 1;
+		if (!(gameflags & GAME_PORTALS))
+		{
+			if (setup_class > MAX_PLAYER_CLASS - PORTALS_EXTRA_CLASSES - 1)
+				setup_class = MAX_PLAYER_CLASS - PORTALS_EXTRA_CLASSES - 1;
+		}
 		if (setup_class > MAX_PLAYER_CLASS - 1)
 			setup_class = 0;
 		break;
@@ -3869,7 +3889,7 @@ static void M_NetStart_Change (int dir)
 		Cvar_SetValue ("skill", skill.value + dir);
 		if (skill.value > 3)
 			Cvar_SetValue ("skill", 0);
-		if (skill.value < 0)
+		else if (skill.value < 0)
 			Cvar_SetValue ("skill", 3);
 		break;
 
@@ -3877,7 +3897,7 @@ static void M_NetStart_Change (int dir)
 		Cvar_SetValue ("fraglimit", fraglimit.value + dir*10);
 		if (fraglimit.value > 100)
 			Cvar_SetValue ("fraglimit", 0);
-		if (fraglimit.value < 0)
+		else if (fraglimit.value < 0)
 			Cvar_SetValue ("fraglimit", 100);
 		break;
 
@@ -3885,7 +3905,7 @@ static void M_NetStart_Change (int dir)
 		Cvar_SetValue ("timelimit", timelimit.value + dir*5);
 		if (timelimit.value > 60)
 			Cvar_SetValue ("timelimit", 0);
-		if (timelimit.value < 0)
+		else if (timelimit.value < 0)
 			Cvar_SetValue ("timelimit", 60);
 		break;
 
@@ -3897,48 +3917,37 @@ static void M_NetStart_Change (int dir)
 		break;
 
 	case 9:
-		startepisode += dir;
-
 		if (registered.value)
 		{
-			count = DM_START;
-			if (!coop.value)
-				count++;
-
-			if (startepisode < REG_START)
-				startepisode = count - 1;
-
-			if (startepisode >= count)
-				startepisode = REG_START;
-
-			if (startepisode == MP_START && !(gameflags & GAME_PORTALS))
-				startepisode += dir;
-
+			startepisode += dir;
 			startlevel = 0;
+			if (startepisode > DM_START)
+				startepisode = REG_START;
+			else
+			{
+				if (startepisode == MP_START && !(gameflags & GAME_PORTALS))
+					startepisode += dir;
+				if (coop.value && startepisode == DM_START)
+					startepisode = (dir > 0) ? REG_START : ((gameflags & GAME_PORTALS) ? MP_START : MP_START-1);
+				if (startepisode < REG_START)
+					startepisode = (coop.value) ? ((gameflags & GAME_PORTALS) ? MP_START : MP_START-1) : DM_START;
+			}
 		}
 		else if (oem.value)
 		{
-			count = 10;
-
-			if (startepisode < 8)
-				startepisode = count - 1;
-
-			if (startepisode >= count)
-				startepisode = 8;
-
-			startlevel = 0;
+			if (!coop.value)
+			{
+				startepisode = (startepisode != OEM_START) ? OEM_START : OEM_START+1;
+				startlevel = 0;
+			}
 		}
 		else	// demo version
 		{
-			count = 2;
-
-			if (startepisode < 0)
-				startepisode = count - 1;
-
-			if (startepisode >= count)
-				startepisode = 0;
-
-			startlevel = 0;
+			if (!coop.value)
+			{
+				startepisode = (startepisode != 0) ? 0 : 1;
+				startlevel = 0;
+			}
 		}
 		break;
 
@@ -3949,12 +3958,11 @@ static void M_NetStart_Change (int dir)
 			break;
 		}
 		startlevel += dir;
-		count = episodes[startepisode].levels;
 
 		if (startlevel < 0)
-			startlevel = count - 1;
+			startlevel = episodes[startepisode].levels - 1;
 
-		if (startlevel >= count)
+		if (startlevel >= episodes[startepisode].levels)
 			startlevel = 0;
 		break;
 	}
