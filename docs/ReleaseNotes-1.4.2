@@ -28,8 +28,11 @@ General:
   new means for opening the in-game console.
 - Fixed many printf format string errors.
 - Revised pak data checking.
+- Added experimental support for using unpatched, off-the-cdrom 1.03 version
+  pak files as a compile time option. Disabled by default.
 - Several cvar tweaks.
 - Made the load and connect commands to get rid of the menu or the console.
+- Fixed multiplayer episode selection in the menu system.
 - Updates to zone memory usage: a 256 KB secondary zone for static textures
   (sec_zone) is now initialized, which is especially useful for the software
   renderer and have its merits for the opengl version, too.
@@ -132,6 +135,7 @@ Utilities:
 - Fixed the broken project path decision in qbsp. it doesn't scan for a maps
   directory anymore.
 - Added a findfirst/findnext implementation to the common library.
+- Several fixes in dcc.
 
 Other:
 ----------------------
