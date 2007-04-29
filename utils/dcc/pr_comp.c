@@ -1,7 +1,7 @@
 /*
 	comp.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/utils/dcc/pr_comp.c,v 1.13 2007-03-14 21:22:14 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/utils/dcc/pr_comp.c,v 1.14 2007-04-29 09:24:02 sezero Exp $
 */
 
 
@@ -356,10 +356,10 @@ PR_ParseFunctionCall
 */
 def_t *PR_ParseFunctionCall (def_t *func)
 {
-	def_t		*e, *a1 = 0, *a2 = 0;
+	def_t		*e, *a1 = NULL, *a2 = NULL;
 	int			arg;
 	type_t		*t;
-	dstatement_t	*statement = 0;
+	dstatement_t	*statement = NULL;
 
 	t = func->type;
 
@@ -438,7 +438,7 @@ PR_ParseRandom
 */
 def_t *PR_ParseRandom (void)
 {
-	def_t		*e = 0, *e2 = 0;
+	def_t		*e = NULL, *e2 = NULL;
 
 	PR_Expect("(");
 
@@ -672,7 +672,7 @@ PR_ParseStatement
 */
 void PR_ParseStatement (void)
 {
-	def_t			*e = 0, *e2 = 0;
+	def_t			*e = NULL, *e2 = NULL;
 	dstatement_t	*patch1, *patch2;
 
 	if (PR_Check ("{"))

@@ -2,7 +2,7 @@
 	dcc.c
 	An hcode compiler/decompiler for Hexen II by Eric Hobbs
 
-	$Id: dcc.c,v 1.32 2007-04-19 14:08:26 sezero Exp $
+	$Id: dcc.c,v 1.33 2007-04-29 09:24:02 sezero Exp $
 */
 
 
@@ -80,8 +80,8 @@ extern int			numfielddefs;
 
 FILE		*PR_FILE;
 int		FILE_NUM_FOR_NAME = 0;
-char		*temp_val[MAX_REGS] = {0,0,0};
-char		*func_headers[MAX_FUNCTIONS] = {0,0,0};
+char		*temp_val[MAX_REGS];
+char		*func_headers[MAX_FUNCTIONS];
 
 // PRIVATE DATA DEFINITIONS ------------------------------------------------
 
@@ -102,7 +102,7 @@ int	lindent;
 char	*DEC_FilesSeen[MAX_DEC_FILES];
 int	DEC_FileCtr = 0;
 qboolean	printassign = 0;
-dfunction_t	*cfunc = 0;
+dfunction_t	*cfunc = NULL;
 
 
 // CODE --------------------------------------------------------------------
@@ -110,8 +110,8 @@ dfunction_t	*cfunc = 0;
 char *PR_PrintStringAtOfs (gofs_t ofs, def_t* typ)
 {
 	int		i;
-	ddef_t	*def=0;
-	ddef_t	*d=0;
+	ddef_t	*def = NULL;
+	ddef_t	*d = NULL;
 
 	for (i = 0 ; i < numglobaldefs ; i++)
 	{
@@ -147,8 +147,8 @@ char *PR_PrintGlobal (gofs_t ofs, def_t* typ)
 {
 	unsigned short	t1 = 0;
 	int		i;
-	ddef_t	*def = 0;
-	ddef_t	*d = 0;
+	ddef_t	*def = NULL;
+	ddef_t	*d = NULL;
 
 	if (typ)
 		t1 = typ->type->type;
@@ -192,7 +192,7 @@ void DccStatement (dfunction_t *df, dstatement_t *s, int *indent)
 	int		nargs, i, j;
 	dstatement_t	*t, *k;
 	unsigned short	dom, doc, ifc, tom;
-	def_t		*typ1 = 0, *typ2 = 0, *typ3 = 0;
+	def_t		*typ1 = NULL, *typ2 = NULL, *typ3 = NULL;
 	ddef_t		*par;
 	int		dum;
 
@@ -519,8 +519,6 @@ void DccStatement (dfunction_t *df, dstatement_t *s, int *indent)
 					else
 					{
 						dum = 1;
-					// was a cast from pointer to integer of different size
-					//	for ( k = t+(t->a) ; (signed short)k < (signed short)s ; k++)
 						for ( k = t+(t->a) ; k < s ; k++)
 						{
 							tom = k->op % 100;
@@ -700,7 +698,6 @@ void DccStatement (dfunction_t *df, dstatement_t *s, int *indent)
 		arg3 = PR_PrintStringAtOfs(s->c,NULL);
 		PR_Print(" c: %s(%d)\n",arg3,s->c);
 	}
-
 }
 
 char *Make_Immediate (gofs_t ofs, char *linestr, int mode)
@@ -1043,7 +1040,7 @@ void PR_Print (const char *s,...)
 unsigned short GetReturnType (int func)
 {
 	int		start, i, j, k, temp_start;
-	ddef_t		*par = 0;
+	ddef_t		*par = NULL;
 	dstatement_t	*ds, *di;
 	dfunction_t	*df;
 	char		*arg1;
@@ -1302,7 +1299,7 @@ void Dcc_Functions (void)
 	int		i;
 	dfunction_t	*df;
 	char		fname[1024];
-	FILE		*prgs = 0;
+	FILE		*prgs;
 
 	prgs = fopen("progs.src","w");
 	if (!prgs)
@@ -1616,8 +1613,8 @@ void FindBuiltinParameters (int func)
 {
 	int		i, j;
 	unsigned short	type[9];
-	dstatement_t	*ds, *dsf = 0;
-	dfunction_t	*df, *dft = 0;
+	dstatement_t	*ds, *dsf = NULL;
+	dfunction_t	*df, *dft = NULL;
 	char		*arg1, sname[400], plist[500], parm[100];
 
 	if (func_headers[func])
@@ -2336,7 +2333,6 @@ unsigned short GetLastFunctionReturn (dfunction_t *df,dstatement_t *ds)
 				i = GetReturnType(i);
 				printf("%s %d is found\n",arg1,i);
 				return i;
-				break;
 			}
 			else
 			{
@@ -2346,12 +2342,10 @@ unsigned short GetLastFunctionReturn (dfunction_t *df,dstatement_t *ds)
 		else if (92  <= di->op && di->op <= 94 )
 		{
 			return  ev_float;
-			break;
 		}
 		else if (95  <= di->op && di->op <= 97 )
 		{
 			return ev_vector;
-			break;
 		}
 
 		di--;

@@ -2,7 +2,7 @@
 	hcc.c
 	HCode compiler based on qcc, modifed by Eric Hobbs to work with DCC
 
-	$Header: /home/ozzie/Download/0000/uhexen2/utils/dcc/hcc.c,v 1.17 2007-02-17 07:56:17 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/utils/dcc/hcc.c,v 1.18 2007-04-29 09:24:02 sezero Exp $
 */
 
 #include "util_inc.h"
@@ -324,7 +324,6 @@ void WriteData (int crc)
 	progs.ofs_globals = ftell (h);
 	progs.numglobals = numpr_globals;
 	for (i = 0 ; i < numpr_globals ; i++)
-	//	((int *)pr_globals)[i] = LittleLong (((int *)pr_globals)[i]);
 		*(int *)&pr_globals[i] = LittleLong (*(int *)&pr_globals[i]);
 	SafeWrite (h, pr_globals, numpr_globals*4);
 
@@ -790,7 +789,7 @@ int main (int argc, char **argv)
 	}
 	else
 	{
-		strcpy(sourcedir, "");
+		sourcedir[0] = '\0';
 	}
 
 	InitData ();
