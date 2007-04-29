@@ -3,6 +3,21 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2007-04-28/29 (CVS):
+    * fixed multiplayer episode selection in menu.c. performed small clean-ups.
+    * more menu clean-ups.
+    * added a new GAME_REGISTERED_OLD flag. added new compile time options
+      ENABLE_OLD_RETAIL and ENABLE_OLD_DEMO, disabled by default. actually
+      the old retail (cdrom 1.03) version seems to run fine but it isn't
+      tested and may lead to unexpected behavior, therefore not enabled by
+      default. the old demo, on the other hand, does not run as it is, the
+      option is added only for reference. I still lack detailed information
+      on the oem (the Matrox m3D bundle) version. along with these changes,
+      tweaked the launcher information screen.
+    * launcher/games.c: fixed typo. ouch..
+    * utilities: several fixes for dcc.
+    * whitespace clean-up in dcc.
+
 2007-04-26 (CVS):
     * updated the release notes for the upcoming 1.4.2 release.
 2007-04-25 (CVS):
