@@ -1,7 +1,7 @@
 /*
 	comp.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/utils/dcc/pr_comp.c,v 1.14 2007-04-29 09:24:02 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/utils/dcc/pr_comp.c,v 1.15 2007-04-29 09:25:08 sezero Exp $
 */
 
 
@@ -425,7 +425,7 @@ def_t *PR_ParseFunctionCall (def_t *func)
 	statement->b = a1 ? a1->ofs : 0;
 	statement->c = a2 ? a2->ofs : 0;
 
-	//PR_Statement (&pr_opcodes[OP_CALL0+arg], func, 0);
+//	PR_Statement (&pr_opcodes[OP_CALL0+arg], func, 0);
 
 	def_ret.type = t->aux_type;
 	return &def_ret;
@@ -469,9 +469,9 @@ def_t *PR_ParseRandom (void)
 		{
 			PR_Expect(")");
 			if (e->type == def_float.type)
-				PR_Statement (&pr_opcodes[93],e,0);
+				PR_Statement (&pr_opcodes[93], e, 0);
 			else if (e->type == def_vector.type)
-				PR_Statement (&pr_opcodes[96],e,0);
+				PR_Statement (&pr_opcodes[96], e, 0);
 			def_ret.type = e->type;
 			return &def_ret;
 		}
@@ -583,8 +583,8 @@ def_t *PR_Expression (int priority)
 			// if last statement is an indirect, change it to an address of
 				if ( (unsigned)(statements[numstatements-1].op - OP_LOAD_F) < 6 )
 				{
-					//printf("op was %s %s %d \n",pr_opcodes[statements[numstatements-1].op].opname,pr_opcodes[statements[numstatements-1].op].name,statements[numstatements-1].op);
-					//getche();
+				//	printf("op was %s %s %d \n", pr_opcodes[statements[numstatements-1].op].opname, pr_opcodes[statements[numstatements-1].op].name, statements[numstatements-1].op);
+				//	getche();
 					statements[numstatements-1].op = OP_ADDRESS;
 					def_pointer.type->aux_type = e->type;
 					e->type = def_pointer.type;
@@ -596,18 +596,18 @@ def_t *PR_Expression (int priority)
 				if ( ((op-pr_opcodes) >= 92) && ((op-pr_opcodes) <= 94))
 				{
 					e2 = PR_Expression (priority);
-					//printf("finding e2 %s %dright assoc %d\n",e2?e2->name:"???",e2?e2->type->type:-1,priority);
-					PR_Statement (op,e,e2);
-					//printf("tryying to write %d rand to ofs 1 e:%s e2: %s\n",priority,e?e->name:"??",e2?e2->name:"??");
+				//	printf("finding e2 %s %dright assoc %d\n", e2 ? e2->name : "???", e2 ? e2->type->type : -1, priority);
+					PR_Statement (op, e, e2);
+				//	printf("tryying to write %d rand to ofs 1 e:%s e2: %s\n", priority, e ? e->name : "??", e2 ? e2->name : "??");
 					def_ret.type = e->type;
 					return &def_ret;
 				}
 				else if ( ((op-pr_opcodes) >= 95) && ((op-pr_opcodes) <= 97))
 				{
 					e2 = PR_Expression (priority);
-					//printf("finding e2 %s %dright assoc %d\n",e2?e2->name:"???",e2?e2->type->type:-1,priority);
-					PR_Statement (op,e,e2);
-					//printf("tryying to write %d rand to ofs 1 e:%s e2: %s\n",priority,e?e->name:"??",e2?e2->name:"??");
+				//	printf("finding e2 %s %dright assoc %d\n", e2 ? e2->name: "???", e2 ? e2->type->type : -1, priority);
+					PR_Statement (op, e, e2);
+				//	printf("tryying to write %d rand to ofs 1 e:%s e2: %s\n", priority, e ? e->name : "??", e2 ? e2->name: "??");
 					def_ret.type = e->type;
 					return &def_ret;
 				}
@@ -637,9 +637,9 @@ def_t *PR_Expression (int priority)
 				if (!op->name || strcmp (op->name , oldop->name))
 				{
 					op--;
-					printf("op : %s(%ld) a: %s b: %s\n",op->name,(long)(op-pr_opcodes),e->name,e2->name);
-					printf("a: %d %d b: %d %d c: %d %d\n",type_a,op->type_a->type->type,
-							type_b,op->type_b->type->type,type_c,op->type_c->type->type);
+					printf("op : %s(%ld) a: %s b: %s\n", op->name, (long)(op-pr_opcodes), e->name, e2->name);
+					printf("a: %d %d b: %d %d c: %d %d\n", type_a, op->type_a->type->type,
+							type_b, op->type_b->type->type, type_c, op->type_c->type->type);
 					PR_ParseError ("type mismatch for %s here", oldop->name);
 				}
 			}
@@ -693,10 +693,10 @@ void PR_ParseStatement (void)
 			return;
 		}
 		e = PR_Expression (TOP_PRIORITY);
-		//printf("%s return type %d wants %d\n",pr_scope->name,e->type->type,pr_scope->type->aux_type->type);
+	//	printf("%s return type %d wants %d\n", pr_scope->name, e->type->type, pr_scope->type->aux_type->type);
 		if (e->type->type != pr_scope->type->aux_type->type)
 			PR_ParseError ("type mismatch on return for %s, expected %d found %d",
-						pr_scope->name,pr_scope->type->aux_type->type,e->type->type);
+						pr_scope->name, pr_scope->type->aux_type->type, e->type->type);
 		PR_Expect (";");
 		PR_Statement (&pr_opcodes[OP_RETURN], e, 0);
 		return;
@@ -744,7 +744,7 @@ void PR_ParseStatement (void)
 		if (PR_Check(")"))
 		{
 			PR_Expect(";");
-			PR_Statement (&pr_opcodes[92],0,0);
+			PR_Statement (&pr_opcodes[92], 0, 0);
 			return;
 		}
 		else
@@ -753,7 +753,7 @@ void PR_ParseStatement (void)
 			if (PR_Check(")"))
 			{
 				PR_Expect(";");
-				PR_Statement (&pr_opcodes[93],e,0);
+				PR_Statement (&pr_opcodes[93], e, 0);
 				return;
 			}
 			else
@@ -762,7 +762,7 @@ void PR_ParseStatement (void)
 				e2 = PR_Expression (TOP_PRIORITY);
 				PR_Expect(")");
 				PR_Expect(";");
-				PR_Statement (&pr_opcodes[94],e,e2);
+				PR_Statement (&pr_opcodes[94], e, e2);
 				return;
 			}
 		}
@@ -776,11 +776,11 @@ void PR_ParseStatement (void)
 		PR_Expect ("(");
 		e = PR_Expression (TOP_PRIORITY);
 		if (e->type->type != ev_entity)
-			PR_ParseError ("type mismatch for %s",e->name);
+			PR_ParseError ("type mismatch for %s", e->name);
 		PR_Expect (",");
 		e2 = PR_Expression (TOP_PRIORITY);
 		if (e2->type->type != ev_float)
-			PR_ParseError ("type mismatch for %s",e2->name);
+			PR_ParseError ("type mismatch for %s", e2->name);
 		PR_Expect (")");
 		PR_Expect (";");
 		PR_Statement (&pr_opcodes[87], e, e2);
@@ -792,11 +792,11 @@ void PR_ParseStatement (void)
 		PR_Expect ("(");
 		e = PR_Expression (TOP_PRIORITY);
 		if (e->type->type != ev_float)
-			PR_ParseError ("type mismatch for %s",e->name);
+			PR_ParseError ("type mismatch for %s", e->name);
 		PR_Expect (",");
 		e2 = PR_Expression (TOP_PRIORITY);
 		if (e2->type->type != ev_float)
-			PR_ParseError ("type mismatch for %s",e2->name);
+			PR_ParseError ("type mismatch for %s", e2->name);
 		PR_Expect (")");
 		PR_Expect (";");
 		PR_Statement (&pr_opcodes[85], e, e2);
@@ -863,7 +863,7 @@ void PR_ParseState (void)
 	PR_Expect (",");
 
 	name = PR_ParseName ();
-	def = PR_GetDef (&type_function, name,0, true);
+	def = PR_GetDef (&type_function, name, 0, true);
 
 	PR_Expect ("]");
 
@@ -928,7 +928,7 @@ function_t *PR_ParseImmediateStatements (type_t *type)
 		PR_ParseStatement ();
 
 // emit an end of statements opcode
-	PR_Statement (pr_opcodes, 0,0);
+	PR_Statement (pr_opcodes, 0, 0);
 
 	return f;
 }
@@ -956,7 +956,7 @@ def_t *PR_GetDef (type_t *type, char *name, def_t *scope, qboolean allocate)
 				continue;	// in a different function
 
 			if (type && def->type != type)
-				PR_ParseError ("Type mismatch on redeclaration of %s",name);
+				PR_ParseError ("Type mismatch on redeclaration of %s", name);
 
 			// move to head of list to find fast next time
 			*old = def->search_next;
@@ -994,13 +994,13 @@ def_t *PR_GetDef (type_t *type, char *name, def_t *scope, qboolean allocate)
 //
 	if (type->type == ev_vector)
 	{
-		sprintf (element, "%s_x",name);
+		sprintf (element, "%s_x", name);
 		PR_GetDef (&type_float, element, scope, true);
 
-		sprintf (element, "%s_y",name);
+		sprintf (element, "%s_y", name);
 		PR_GetDef (&type_float, element, scope, true);
 
-		sprintf (element, "%s_z",name);
+		sprintf (element, "%s_z", name);
 		PR_GetDef (&type_float, element, scope, true);
 	}
 	else
@@ -1012,13 +1012,13 @@ def_t *PR_GetDef (type_t *type, char *name, def_t *scope, qboolean allocate)
 
 		if (type->aux_type->type == ev_vector)
 		{
-			sprintf (element, "%s_x",name);
+			sprintf (element, "%s_x", name);
 			PR_GetDef (&type_floatfield, element, scope, true);
 
-			sprintf (element, "%s_y",name);
+			sprintf (element, "%s_y", name);
 			PR_GetDef (&type_floatfield, element, scope, true);
 
-			sprintf (element, "%s_z",name);
+			sprintf (element, "%s_z", name);
 			PR_GetDef (&type_floatfield, element, scope, true);
 		}
 		else
@@ -1040,17 +1040,17 @@ void PR_InitArray (def_t *scope,int size)
 	{
 		PR_Lex();
 		if (pr_immediate_type->type != scope->type->type)
-			PR_ParseError ("Type mismatch on redeclaration of %s",scope->name);
+			PR_ParseError ("Type mismatch on redeclaration of %s", scope->name);
 		memcpy (pr_globals + scope->ofs + (i*type_size[pr_immediate_type->type]), &pr_immediate, 4*type_size[pr_immediate_type->type]);
 /*		if (pr_immediate_type->type == ev_float)
 		{
-			printf("%s[%d] = %f\n",scope->name,i,pr_immediate._float);
-			//getche();
+			printf("%s[%d] = %f\n", scope->name, i, pr_immediate._float);
+		//	getche();
 		}
 		if (pr_immediate_type->type == ev_vector)
 		{
-			printf("%s[%d] = '%f %f %f'\n",scope->name,i,pr_immediate.vector[0],pr_immediate.vector[1],pr_immediate.vector[2]);
-			//getche();
+			printf("%s[%d] = '%f %f %f'\n", scope->name, i, pr_immediate.vector[0], pr_immediate.vector[1], pr_immediate.vector[2]);
+		//	getche();
 		}
 */
 		if (!PR_Check(","))
@@ -1059,10 +1059,10 @@ void PR_InitArray (def_t *scope,int size)
 			return;
 	}
 	PR_Expect("}");
-	printf("successfully read in %d array values\n",i+1);
+	printf("successfully read in %d array values\n", i+1);
 }
 
-def_t *PR_AllocateArray (type_t *type, char *name, def_t *scope, qboolean allocate,int size)
+def_t *PR_AllocateArray (type_t *type, char *name, def_t *scope, qboolean allocate, int size)
 {
 	def_t		*def, **old;
 	char	element[MAX_NAME];
@@ -1071,13 +1071,13 @@ def_t *PR_AllocateArray (type_t *type, char *name, def_t *scope, qboolean alloca
 	old = &pr.search;
 	for (def = *old ; def ; old = &def->search_next, def = *old)
 	{
-		if (!strcmp(def->name,name) )
+		if (!strcmp(def->name, name))
 		{
 			if (def->scope && def->scope != scope)
 				continue;	// in a different function
 
 			if (type && def->type != type)
-				PR_ParseError ("Type mismatch on redeclaration of %s",name);
+				PR_ParseError ("Type mismatch on redeclaration of %s", name);
 
 			// move to head of list to find fast next time
 			*old = def->search_next;
@@ -1118,13 +1118,13 @@ def_t *PR_AllocateArray (type_t *type, char *name, def_t *scope, qboolean alloca
 //
 	if (type->type == ev_vector && size < 2)
 	{
-		sprintf (element, "%s_x",name);
+		sprintf (element, "%s_x", name);
 		PR_GetDef (&type_float, element, scope, true);
 
-		sprintf (element, "%s_y",name);
+		sprintf (element, "%s_y", name);
 		PR_GetDef (&type_float, element, scope, true);
 
-		sprintf (element, "%s_z",name);
+		sprintf (element, "%s_z", name);
 		PR_GetDef (&type_float, element, scope, true);
 	}
 	else
@@ -1136,13 +1136,13 @@ def_t *PR_AllocateArray (type_t *type, char *name, def_t *scope, qboolean alloca
 
 		if (type->aux_type->type == ev_vector && size < 2)
 		{
-			sprintf (element, "%s_x",name);
+			sprintf (element, "%s_x", name);
 			PR_GetDef (&type_floatfield, element, scope, true);
 
-			sprintf (element, "%s_y",name);
+			sprintf (element, "%s_y", name);
 			PR_GetDef (&type_floatfield, element, scope, true);
 
-			sprintf (element, "%s_z",name);
+			sprintf (element, "%s_z", name);
 			PR_GetDef (&type_floatfield, element, scope, true);
 		}
 		else
@@ -1190,28 +1190,28 @@ void PR_ParseDefs (void)
 			name2 = PR_ParseName ();
 			def2 = PR_GetDef (type, name2, pr_scope, false);
 			if (!def2)
-				PR_ParseError ("can not alias %s to %s\n%s is undeclared\n",name,name2,name2);
-			//printf("%s %d %s %d\n",a1,def->ofs,name2,def2->ofs);
-			//getche();
+				PR_ParseError ("can not alias %s to %s\n%s is undeclared\n", name, name2, name2);
+		//	printf("%s %d %s %d\n", a1, def->ofs, name2, def2->ofs);
+		//	getche();
 			def->ofs = def2->ofs;
-			//printf("%s %s %d %s\n",a1,def2?def2->name:"nope",type->type,def?def->name:"nope");
-			//getche();
+		//	printf("%s %s %d %s\n", a1, def2 ? def2->name : "nope", type->type, def ? def->name : "nope");
+		//	getche();
 			break;
 		}
 
 		if (PR_Check("["))
 		{
 				PR_Lex();
-				def = PR_AllocateArray (type, name, pr_scope, true,(int)pr_immediate._float);
+				def = PR_AllocateArray (type, name, pr_scope, true, (int)pr_immediate._float);
 				def->initialized = 1;
-				//printf("\nfound brace for array init of %s as type %d making %d spaces\n",
-				//	def->name,pr_immediate_type->type,(int)pr_immediate._float);
-				//getche();
+			//	printf("\nfound brace for array init of %s as type %d making %d spaces\n",
+			//		def->name, pr_immediate_type->type, (int)pr_immediate._float);
+			//	getche();
 				PR_Expect("]");
 				if (PR_Check("="))
 				{
 					printf("initializing array\n");
-					PR_InitArray (def,(int)pr_immediate._float);
+					PR_InitArray (def, (int)pr_immediate._float);
 				}
 				break;
 		}
@@ -1236,7 +1236,7 @@ void PR_ParseDefs (void)
 //				if (pr_dumpasm)
 //					PR_PrintFunction (def);
 
-		// fill in the dfunction
+			// fill in the dfunction
 				df = &functions[numfunctions];
 				numfunctions++;
 				if (f->builtin)
@@ -1257,14 +1257,14 @@ void PR_ParseDefs (void)
 				PR_ParseError ("wrong immediate type for %s", name);
 
 			def->initialized = 1;
-			//if (pr_immediate_type->type == ev_float)
-			//	printf("init %s to %f
+		//	if (pr_immediate_type->type == ev_float)
+		//		printf("init %s to %f
 
 			PR_Lex ();
 			memcpy (pr_globals + def->ofs, &pr_immediate, 4*type_size[pr_immediate_type->type]);
-			//printf("writing %s to %d type %d %d\n",def->name,def->ofs,pr_immediate_type->type,def->type->type);
+		//	printf("writing %s to %d type %d %d\n", def->name, def->ofs, pr_immediate_type->type, def->type->type);
 		//	if (pr_immediate_type->type == ev_float)
-		//		printf("%s = %f\n",def->name,pr_immediate._float);
+		//		printf("%s = %f\n", def->name, pr_immediate._float);
 		}
 
 	} while (PR_Check (","));

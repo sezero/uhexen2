@@ -2,7 +2,7 @@
 	hcc.c
 	HCode compiler based on qcc, modifed by Eric Hobbs to work with DCC
 
-	$Header: /home/ozzie/Download/0000/uhexen2/utils/dcc/hcc.c,v 1.18 2007-04-29 09:24:02 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/utils/dcc/hcc.c,v 1.19 2007-04-29 09:25:08 sezero Exp $
 */
 
 #include "util_inc.h"
@@ -104,7 +104,7 @@ int	CopyString (const char *str)
 	for (i = 0 ; i < strofs ; i += l)
 	{
 		l = strlen(strings+i) + 1;
-		if (!strcmp(strings+i,str))
+		if (!strcmp(strings+i, str))
 			return i;
 	}
 
@@ -112,9 +112,9 @@ int	CopyString (const char *str)
 	strcpy (strings+strofs, str);
 	strofs += strlen(str)+1;
 
-	//printf("\tsaving %s to string heap\n",str);
-	//if (!strcmp("modelindex",str))
-	//	getche();
+//	printf("\tsaving %s to string heap\n", str);
+//	if (!strcmp("modelindex", str))
+//		getche();
 	return old;
 }
 
@@ -126,7 +126,7 @@ void PrintStrings (void)
 	for (i = 0 ; i < strofs ; i += l)
 	{
 		l = strlen(strings+i) + 1;
-		printf ("%5i : ",i);
+		printf ("%5i : ", i);
 		for (j = 0 ; j < l ; j++)
 		{
 			if (strings[i+j] == '\n')
@@ -151,7 +151,7 @@ void PrintFunctions (void)
 		d = &functions[i];
 		printf ("%s : %s : %i %i (", strings + d->s_file, strings + d->s_name, d->first_statement, d->parm_start);
 		for (j = 0 ; j < d->numparms ; j++)
-			printf ("%i ",d->parm_size[j]);
+			printf ("%i ", d->parm_size[j]);
 		printf (")\n");
 	}
 }
@@ -176,7 +176,7 @@ void PrintGlobals (void)
 	for (i = 0 ; i < numglobaldefs ; i++)
 	{
 		d = &globals[i];
-		printf ("%5i : %5i : (%i) %s\n",i, d->ofs, d->type, strings + d->s_name);
+		printf ("%5i : %5i : (%i) %s\n", i, d->ofs, d->type, strings + d->s_name);
 	}
 }
 
@@ -186,7 +186,7 @@ void PrintPRGlobals (void)
 
 	for (i = 0 ; i < numpr_globals ; i++)
 	{
-		printf ("%5i %5.5f %5d\n",i,pr_globals[i],*(int *)&pr_globals[i]);
+		printf ("%5i %5.5f %5d\n", i, pr_globals[i], *(int *)&pr_globals[i]);
 	}
 }
 
@@ -198,7 +198,7 @@ void Printstatements (void)
 	for (i = 0 ; i < numstatements ; i++)
 	{
 		ds = statements + i;
-		printf ("%5d op: %2d a: %5d b: %5d c: %5d\n",i,ds->op,ds->a,ds->b,ds->c);
+		printf ("%5d op: %2d a: %5d b: %5d c: %5d\n", i, ds->op, ds->a, ds->b, ds->c);
 	}
 }
 
@@ -500,10 +500,10 @@ char *PR_GlobalString (gofs_t ofs)
 	if (def->initialized && def->type->type != ev_function)
 	{
 		s = PR_ValueString (def->type->type, &pr_globals[ofs]);
-		sprintf (line,"%i(%s)", ofs, s);
+		sprintf (line, "%i(%s)", ofs, s);
 	}
 	else
-		sprintf (line,"%i(%s)", ofs, def->name);
+		sprintf (line, "%i(%s)", ofs, def->name);
 
 	i = strlen(line);
 	for ( ; i < 16 ; i++)
@@ -521,7 +521,7 @@ PR_PrintOfs
 #if 0	// all uses are commented out
 void PR_PrintOfs (gofs_t ofs)
 {
-	printf ("%s\n",PR_GlobalString(ofs));
+	printf ("%s\n", PR_GlobalString(ofs));
 }
 #endif
 
@@ -540,7 +540,7 @@ void PR_PrintStatement (dstatement_t *s)
 		printf (" ");
 
 	if (s->op == OP_IF || s->op == OP_IFNOT)
-		printf ("%sbranch %i", PR_GlobalString(s->a),s->b);
+		printf ("%sbranch %i", PR_GlobalString(s->a), s->b);
 	else if (s->op == OP_GOTO)
 	{
 		printf ("branch %i", s->a);
@@ -652,30 +652,30 @@ int PR_WriteProgdefs (const char *filename)
 		switch (d->type->type)
 		{
 		case ev_float:
-			fprintf (f, "\tfloat\t%s;\n",d->name);
+			fprintf (f, "\tfloat\t%s;\n", d->name);
 			break;
 		case ev_vector:
-			fprintf (f, "\tvec3_t\t%s;\n",d->name);
+			fprintf (f, "\tvec3_t\t%s;\n", d->name);
 			d = d->next->next->next;	// skip the elements
 			break;
 		case ev_string:
-			fprintf (f,"\tstring_t\t%s;\n",d->name);
+			fprintf (f, "\tstring_t\t%s;\n", d->name);
 			break;
 		case ev_function:
-			fprintf (f,"\tfunc_t\t%s;\n",d->name);
+			fprintf (f, "\tfunc_t\t%s;\n", d->name);
 			break;
 		case ev_entity:
-			fprintf (f,"\tint\t%s;\n",d->name);
+			fprintf (f, "\tint\t%s;\n", d->name);
 			break;
 		default:
-			fprintf (f,"\tint\t%s;\n",d->name);
+			fprintf (f, "\tint\t%s;\n", d->name);
 			break;
 		}
 	}
-	fprintf (f,"} globalvars_t;\n\n");
+	fprintf (f, "} globalvars_t;\n\n");
 
 	// print all fields
-	fprintf (f,"typedef struct\n{\n");
+	fprintf (f, "typedef struct\n{\n");
 	for (d = pr.def_head.next ; d ; d = d->next)
 	{
 		if (!strcmp (d->name, "end_sys_fields"))
@@ -687,27 +687,27 @@ int PR_WriteProgdefs (const char *filename)
 		switch (d->type->aux_type->type)
 		{
 		case ev_float:
-			fprintf (f,"\tfloat\t%s;\n",d->name);
+			fprintf (f, "\tfloat\t%s;\n", d->name);
 			break;
 		case ev_vector:
-			fprintf (f,"\tvec3_t\t%s;\n",d->name);
+			fprintf (f, "\tvec3_t\t%s;\n", d->name);
 			d = d->next->next->next;	// skip the elements
 			break;
 		case ev_string:
-			fprintf (f,"\tstring_t\t%s;\n",d->name);
+			fprintf (f, "\tstring_t\t%s;\n", d->name);
 			break;
 		case ev_function:
-			fprintf (f,"\tfunc_t\t%s;\n",d->name);
+			fprintf (f, "\tfunc_t\t%s;\n", d->name);
 			break;
 		case ev_entity:
-			fprintf (f,"\tint\t%s;\n",d->name);
+			fprintf (f, "\tint\t%s;\n", d->name);
 			break;
 		default:
-			fprintf (f,"\tint\t%s;\n",d->name);
+			fprintf (f, "\tint\t%s;\n", d->name);
 			break;
 		}
 	}
-	fprintf (f,"} entvars_t;\n\n");
+	fprintf (f, "} entvars_t;\n\n");
 
 	fclose (f);
 
@@ -717,7 +717,7 @@ int PR_WriteProgdefs (const char *filename)
 	while ((c = fgetc(f)) != EOF)
 		CRC_ProcessByte (&crc, (byte)c);
 
-	fprintf (f,"#define PROGHEADER_CRC %i\n", crc);
+	fprintf (f, "#define PROGHEADER_CRC %i\n", crc);
 	fclose (f);
 
 	return crc;
@@ -809,7 +809,7 @@ int main (int argc, char **argv)
 		while ((c = fgetc(f)) != EOF)
 			CRC_ProcessByte (&crc, (byte)c);
 
-		printf ("#define PROGHEADER_CRC %i %d\n", crc,(int)crc);
+		printf ("#define PROGHEADER_CRC %i %d\n", crc, (int)crc);
 		fclose (f);
 		exit (0);
 	}
@@ -823,8 +823,8 @@ int main (int argc, char **argv)
 		if (p)
 			FILE_NUM_FOR_NAME = 1;
 
-		memset(func_headers,0,MAX_FUNCTIONS*sizeof(char *));
-		memset(temp_val,0,MAX_REGS*sizeof(char *));
+		memset(func_headers, 0, MAX_FUNCTIONS * sizeof(char *));
+		memset(temp_val, 0, MAX_REGS * sizeof(char *));
 
 		p = CheckParm("-bbb");
 		if (p)

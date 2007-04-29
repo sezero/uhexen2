@@ -1,7 +1,7 @@
 /*
 	lexi.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/utils/dcc/pr_lex.c,v 1.8 2007-03-14 21:22:15 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/utils/dcc/pr_lex.c,v 1.9 2007-04-29 09:25:08 sezero Exp $
 */
 
 
@@ -90,9 +90,9 @@ void PR_PrintNextLine (void)
 {
 	char	*t;
 
-	printf ("%3i:",pr_source_line);
+	printf ("%3i:", pr_source_line);
 	for (t = pr_line_start ; *t && *t != '\n' ; t++)
-		printf ("%c",*t);
+		printf ("%c", *t);
 	printf ("\n");
 }
 #endif
@@ -347,7 +347,7 @@ void PR_FindMacro (void)
 	{
 		if (!strcmp (pr_token, pr_framemacros[i]))
 		{
-			sprintf (pr_token,"%d", i);
+			sprintf (pr_token, "%d", i);
 			pr_token_type = tt_immediate;
 			pr_immediate_type = &type_float;
 			pr_immediate._float = i;
@@ -419,7 +419,7 @@ void PR_LexGrab (void)
 			|| !strcmp (pr_token, "skin") )
 	{	// skip to end of line
 		while (PR_SimpleGetToken ())
-		;
+			;
 		PR_Lex ();
 	}
 // look for a frame name macro
@@ -511,7 +511,7 @@ Gets the next token
 void PR_Expect (char *string)
 {
 	if (strcmp (string, pr_token))
-		PR_ParseError ("expected %s, found %s",string, pr_token);
+		PR_ParseError ("expected %s, found %s", string, pr_token);
 	PR_Lex ();
 }
 
@@ -544,7 +544,7 @@ char *PR_ParseName (void)
 	static char	ident[MAX_NAME];
 
 	if (pr_token_type != tt_name)
-		PR_ParseError ("not a name %s",pr_token);
+		PR_ParseError ("not a name %s", pr_token);
 	if (strlen(pr_token) >= MAX_NAME-1)
 		PR_ParseError ("name too long");
 	strcpy (ident, pr_token);
@@ -668,6 +668,7 @@ type_t *PR_ParseType (void)
 		if (PR_Check ("..."))
 			new.num_parms = -1;	// variable args
 		else
+		{
 			do
 			{
 				type = PR_ParseType ();
@@ -676,6 +677,7 @@ type_t *PR_ParseType (void)
 				new.parm_types[new.num_parms] = type;
 				new.num_parms++;
 			} while (PR_Check (","));
+		}
 
 		PR_Expect (")");
 	}
