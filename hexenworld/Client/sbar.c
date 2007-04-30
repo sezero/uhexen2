@@ -2,7 +2,7 @@
 	sbar.c
 	Hexen II status bar
 
-	$Id: sbar.c,v 1.29 2007-03-14 21:03:37 sezero Exp $
+	$Id: sbar.c,v 1.30 2007-04-30 17:25:47 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -377,7 +377,7 @@ void Sbar_Draw(void)
 	{
 		mana = 0;
 	}
-	if (mana > maxMana)
+	else if (mana > maxMana)
 	{
 		mana = maxMana;
 	}
@@ -396,7 +396,7 @@ void Sbar_Draw(void)
 	{
 		mana = 0;
 	}
-	if (mana > maxMana)
+	else if (mana > maxMana)
 	{
 		mana = maxMana;
 	}
@@ -534,7 +534,7 @@ static void DrawFullScreenInfo(void)
 	{
 		mana = 0;
 	}
-	if (mana > maxMana)
+	else if (mana > maxMana)
 	{
 		mana = maxMana;
 	}
@@ -547,7 +547,7 @@ static void DrawFullScreenInfo(void)
 	{
 		mana = 0;
 	}
-	if (mana > maxMana)
+	else if (mana > maxMana)
 	{
 		mana = maxMana;
 	}
@@ -802,9 +802,9 @@ static int Sbar_itoa(int num, char *buf)
 	do
 	{
 		pow10 /= 10;
-		dig = num/pow10;
-		*str++ = '0'+dig;
-		num -= dig*pow10;
+		dig = num / pow10;
+		*str++ = '0' + dig;
+		num -= dig * pow10;
 	} while (pow10 != 1);
 
 	*str = 0;

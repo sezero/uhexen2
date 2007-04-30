@@ -1,7 +1,7 @@
 /*
 	menu.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/menu.c,v 1.64 2007-04-28 15:31:07 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/menu.c,v 1.65 2007-04-30 17:25:47 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -826,7 +826,7 @@ static void M_DrawSlider (int x, int y, float range)
 
 	if (range < 0)
 		range = 0;
-	if (range > 1)
+	else if (range > 1)
 		range = 1;
 	M_DrawCharacter (x-8, y, 256);
 	for (i = 0; i < SLIDER_RANGE; i++)
@@ -2841,11 +2841,11 @@ forward:
 
 	if (setup_top > 10)
 		setup_top = 0;
-	if (setup_top < 0)
+	else if (setup_top < 0)
 		setup_top = 10;
 	if (setup_bottom > 10)
 		setup_bottom = 0;
-	if (setup_bottom < 0)
+	else if (setup_bottom < 0)
 		setup_bottom = 10;
 }
 

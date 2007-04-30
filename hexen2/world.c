@@ -2,7 +2,7 @@
 	world.c
 	world query functions
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/world.c,v 1.17 2007-04-01 12:18:23 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/world.c,v 1.18 2007-04-30 17:25:46 sezero Exp $
 
 	entities never clip against themselves, or their owner
 	line of sight checks trace->crosscontent, but bullets don't
@@ -684,7 +684,7 @@ qboolean SV_RecursiveHullCheck (hull_t *hull, int num, float p1f, float p2f, vec
 		frac = (t1 - DIST_EPSILON)/(t1-t2);
 	if (frac < 0)
 		frac = 0;
-	if (frac > 1)
+	else if (frac > 1)
 		frac = 1;
 
 	midf = p1f + (p2f - p1f)*frac;
