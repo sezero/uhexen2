@@ -2,7 +2,7 @@
 	cvar.c
 	dynamic variable tracking
 
-	$Id: cvar.c,v 1.24 2007-04-15 09:20:57 sezero Exp $
+	$Id: cvar.c,v 1.25 2007-04-30 20:03:52 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -228,9 +228,20 @@ Cvar_SetValue
 */
 void Cvar_SetValue (const char *var_name, const float value)
 {
-	char	val[32];
+	char	val[32], *ptr = val;
 
-	snprintf (val, sizeof(val), "%g", value);
+	if (value == (float)((int)value))
+		snprintf (val, sizeof(val), "%i", (int)value);
+	else
+	{
+		snprintf (val, sizeof(val), "%f", value);
+		// no trailing zeroes
+		while (*ptr)
+			ptr++;
+		while (--ptr > val && *ptr == '0' && ptr[-1] != '.')
+			*ptr = '\0';
+	}
+
 	Cvar_Set (var_name, val);
 }
 
