@@ -2,7 +2,7 @@
 	sv_move.c
 	monster movement
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Server/sv_move.c,v 1.7 2007-03-14 21:04:19 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Server/sv_move.c,v 1.8 2007-04-30 17:04:33 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -120,7 +120,7 @@ qboolean SV_movestep (edict_t *ent, vec3_t move, qboolean relink, qboolean noene
 	vec3_t		oldorg, neworg, end;
 	trace_t		trace;
 	int			i;
-	edict_t		*enemy = 0;	// avoid compiler warning.
+	edict_t		*enemy = NULL;	// avoid compiler warning.
 
 	// try the move
 	VectorCopy (ent->v.origin, oldorg);

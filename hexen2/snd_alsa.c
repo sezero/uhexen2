@@ -1,6 +1,6 @@
 /*
 	snd_alsa.c
-	$Id: snd_alsa.c,v 1.26 2007-02-07 17:01:38 sezero Exp $
+	$Id: snd_alsa.c,v 1.27 2007-04-30 17:04:32 sezero Exp $
 
 	ALSA 1.0 sound driver for Linux Hexen II
 
@@ -59,12 +59,12 @@ static qboolean load_libasound (void)
 		return false;
 	}
 
-#define HX2_ALSA(ret, func, params) \
-	if (!(hx2##func = dlsym (alsa_handle, #func))) { \
-		Con_Printf ("Couldn't load ALSA function %s\n", #func); \
-		dlclose (alsa_handle); \
-		alsa_handle = 0; \
-		return false; \
+#define HX2_ALSA(ret, func, params)					\
+	if (!(hx2##func = dlsym (alsa_handle, #func))) {		\
+		Con_Printf ("Couldn't load ALSA function %s\n", #func);	\
+		dlclose (alsa_handle);					\
+		alsa_handle = NULL;					\
+		return false;						\
 }
 
 #include "alsa_funcs.h"
