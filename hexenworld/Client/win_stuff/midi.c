@@ -1,6 +1,6 @@
 /*
 	midi_win.c
-	$Id: midi.c,v 1.20 2007-05-01 08:26:46 sezero Exp $
+	$Id: midi.c,v 1.21 2007-05-01 11:00:02 sezero Exp $
 
 	MIDI module for Win32
 */
@@ -151,6 +151,8 @@ qboolean MIDI_Init(void)
 	bBuffersPrepared = FALSE;
 	uCallbackStatus = 0;
 	bMidiInited = 1;
+
+	Con_Printf("MIDI music initialized.\n");
 
 	// try to see if the MIDI device supports midiOutSetVolume
 	if (midiOutGetDevCaps(uMIDIDeviceID, &midi_caps, sizeof(midi_caps)) == MMSYSERR_NOERROR)
