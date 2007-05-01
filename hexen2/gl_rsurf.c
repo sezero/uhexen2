@@ -2,7 +2,7 @@
 	r_surf.c
 	surface-related refresh code
 
-	$Id: gl_rsurf.c,v 1.25 2007-03-14 21:03:07 sezero Exp $
+	$Id: gl_rsurf.c,v 1.26 2007-05-01 06:38:03 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -303,7 +303,7 @@ store:
 				if (s > 255)
 					s = 255;
 
-				if (gl_coloredlight.value > 0)
+				if (gl_coloredlight.value)
 				{
 					dest[0] = q; //255 - q;
 					dest[1] = r; //255 - r;
@@ -709,7 +709,7 @@ void R_RenderBrushPoly (msurface_t *fa, qboolean override)
 	}
 #endif
 
-	if (gl_multitexture.value == 1 && gl_mtexable == true)
+	if (gl_multitexture.value && gl_mtexable)
 		glActiveTextureARB_fp(GL_TEXTURE0_ARB);
 
 	if (currententity->drawflags & DRF_TRANSLUCENT)
@@ -749,7 +749,7 @@ void R_RenderBrushPoly (msurface_t *fa, qboolean override)
 		return;
 	}
 
-	if (gl_multitexture.value == 1 && gl_mtexable == true)
+	if (gl_multitexture.value && gl_mtexable)
 	{
 		if ((currententity->drawflags & DRF_TRANSLUCENT) ||
 		    (currententity->drawflags & MLS_ABSLIGHT) == MLS_ABSLIGHT)
@@ -1067,7 +1067,7 @@ static void DrawTextureChains (void)
 				for ( ; s ; s = s->texturechain);
 					R_RenderBrushPoly (s, false);
 			}
-			else if (gl_multitexture.value == 1 && gl_mtexable == true)
+			else if (gl_multitexture.value && gl_mtexable)
 			{
 				glActiveTextureARB_fp(GL_TEXTURE0_ARB);
 				glEnable_fp(GL_TEXTURE_2D);
@@ -1198,7 +1198,7 @@ void R_DrawBrushModel (entity_t *e, qboolean Translucent)
 
 	if (!Translucent && 
 		(currententity->drawflags & MLS_ABSLIGHT) != MLS_ABSLIGHT &&
-		!(gl_multitexture.value == 1 && gl_mtexable == true))
+		!(gl_multitexture.value && gl_mtexable))
 	{
 		R_BlendLightmaps (Translucent);
 	}
@@ -1351,7 +1351,7 @@ void R_DrawWorld (void)
 	DrawTextureChains ();
 
 	// disable multitexturing - just in case ...
-	if (gl_multitexture.value == 1 && gl_mtexable == true)
+	if (gl_multitexture.value && gl_mtexable)
 	{
 		glActiveTextureARB_fp (GL_TEXTURE1_ARB);
 		glDisable_fp(GL_TEXTURE_2D);
@@ -1359,7 +1359,7 @@ void R_DrawWorld (void)
 		glEnable_fp(GL_TEXTURE_2D);
 	}
 
-	if ( !(int)gl_multitexture.value || !gl_mtexable)
+	if (!gl_multitexture.value || !gl_mtexable)
 		R_BlendLightmaps (false);
 	else
 		R_UpdateLightmaps (false);
@@ -1607,7 +1607,7 @@ void GL_BuildLightmaps (void)
 		}
 	}
 
-	if (gl_multitexture.value == 1 && gl_mtexable == true)
+	if (gl_multitexture.value && gl_mtexable)
 		glActiveTextureARB_fp (GL_TEXTURE1_ARB);
 
 	//
@@ -1626,7 +1626,7 @@ void GL_BuildLightmaps (void)
 				lightmaps + i*BLOCK_WIDTH*BLOCK_HEIGHT*lightmap_bytes);
 	}
 
-	if (gl_multitexture.value == 1 && gl_mtexable == true)
+	if (gl_multitexture.value && gl_mtexable)
 		glActiveTextureARB_fp (GL_TEXTURE0_ARB);
 }
 

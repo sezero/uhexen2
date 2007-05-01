@@ -1,7 +1,7 @@
 /*
 	gl_main.c
 
-	$Id: gl_rmain.c,v 1.45 2007-04-25 20:08:27 sezero Exp $
+	$Id: gl_rmain.c,v 1.46 2007-05-01 06:38:04 sezero Exp $
 */
 
 
@@ -549,7 +549,7 @@ static void GL_DrawAliasShadow (aliashdr_t *paliashdr, int posenum)
 
 	height = -lheight + 1.0;
 
-	if (have_stencil == true && gl_stencilshadow.value != 0)
+	if (have_stencil && gl_stencilshadow.value)
 	{
 		glEnable_fp(GL_STENCIL_TEST);
 		glStencilFunc_fp(GL_EQUAL,1,2);
@@ -593,7 +593,7 @@ static void GL_DrawAliasShadow (aliashdr_t *paliashdr, int posenum)
 		glEnd_fp ();
 	}
 
-	if (have_stencil == true && gl_stencilshadow.value != 0)
+	if (have_stencil && gl_stencilshadow.value)
 		glDisable_fp(GL_STENCIL_TEST);
 }
 
@@ -1850,7 +1850,7 @@ static void R_Clear (void)
 
 	glDepthRange_fp (gldepthmin, gldepthmax);
 
-	if (have_stencil == true && gl_stencilshadow.value > 0 && r_shadows.value > 0)
+	if (have_stencil && gl_stencilshadow.value && r_shadows.value)
 	{
 		glClearStencil_fp(1);
 		glClear_fp(GL_STENCIL_BUFFER_BIT);

@@ -2,7 +2,7 @@
 	gl_warp.c
 	sky and water polygons
 
-	$Id: gl_warp.c,v 1.24 2007-04-18 13:33:36 sezero Exp $
+	$Id: gl_warp.c,v 1.25 2007-05-01 06:38:04 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -187,7 +187,7 @@ void EmitWaterPolys (msurface_t *fa)
 
 	if (gl_waterripple.value < 0)
 		gl_waterripple.value = 0;
-	if (gl_waterripple.value > 10)
+	else if (gl_waterripple.value > 10)
 		gl_waterripple.value = 10;
 
 	for (p = fa->polys ; p ; p = p->next)
@@ -317,7 +317,7 @@ will have them chained together.
 void EmitBothSkyLayers (msurface_t *fa)
 {
 	// note: 3dfx doesn't like GL_DECAL
-	if (!is_3dfx && gl_multitexture.value == 1 && gl_mtexable == true)
+	if (!is_3dfx && gl_multitexture.value && gl_mtexable)
 	{
 		EmitSkyPolysMulti (fa);
 		return;
@@ -353,7 +353,7 @@ void R_DrawSkyChain (msurface_t *s)
 	msurface_t	*fa;
 
 	// note: 3dfx doesn't like GL_DECAL
-	if (!is_3dfx && gl_multitexture.value == 1 && gl_mtexable == true)
+	if (!is_3dfx && gl_multitexture.value && gl_mtexable)
 	{
 		for (fa = s ; fa ; fa = fa->texturechain)
 			EmitSkyPolysMulti (fa);
