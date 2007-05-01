@@ -1,6 +1,6 @@
 /*
 	cd_linux.c
-	$Id: cd_linux.c,v 1.22 2007-03-14 08:12:43 sezero Exp $
+	$Id: cd_linux.c,v 1.23 2007-05-01 05:44:28 sezero Exp $
 
 	Copyright (C) 1996-1997  Id Software, Inc.
 
@@ -51,10 +51,12 @@ static byte 	remap[100];
 static byte	playTrack;
 static byte	maxTrack;
 
-static int cdfile = -1;
-static char cd_dev[64] = _PATH_DEV "cdrom"; // user can always do -cddev
-static struct cdrom_volctrl orig_vol;	// orig. setting to be restored upon exit
-static struct cdrom_volctrl drv_vol;	// the volume setting we'll be using
+static int	cdfile = -1;
+static char	cd_dev[64] = _PATH_DEV "cdrom"; // user can always do -cddev
+static float	old_cdvolume;
+static qboolean	hw_vol_works = true;
+static struct cdrom_volctrl	orig_vol;	// orig. setting to be restored upon exit
+static struct cdrom_volctrl	drv_vol;	// the volume setting we'll be using
 
 
 #define IOCTL_FAILURE(IoctlName)	{					\
@@ -167,6 +169,9 @@ void CDAudio_Play(byte track, qboolean looping)
 	playLooping = looping;
 	playTrack = track;
 	playing = true;
+
+	if (!hw_vol_works && bgmvolume.value == 0.0)
+		CDAudio_Pause ();
 }
 
 void CDAudio_Stop(void)
@@ -339,6 +344,52 @@ static void CD_f (void)
 	}
 }
 
+static qboolean CD_GetVolume (struct cdrom_volctrl *vol)
+{
+	if (ioctl(cdfile, CDROMVOLREAD, vol) == -1)
+	{
+		IOCTL_FAILURE(CDROMVOLREAD);
+		return false;
+	}
+	return true;
+}
+
+static qboolean CD_SetVolume (struct cdrom_volctrl *vol)
+{
+	if (ioctl(cdfile, CDROMVOLCTRL, vol) == -1 )
+	{
+		IOCTL_FAILURE(CDROMVOLCTRL);
+		return false;
+	}
+	return true;
+}
+
+static qboolean CDAudio_SetVolume (cvar_t *var)
+{
+	if (cdfile == -1 || !enabled)
+		return false;
+
+	if (var->value < 0.0)
+		Cvar_SetValue (var->name, 0.0);
+	else if (var->value > 1.0)
+		Cvar_SetValue (var->name, 1.0);
+	old_cdvolume = var->value;
+	if (hw_vol_works)
+	{
+		drv_vol.channel0 = drv_vol.channel2 =
+		drv_vol.channel1 = drv_vol.channel3 = var->value * 255.0;
+		return CD_SetVolume (&drv_vol);
+	}
+	else
+	{
+		if (old_cdvolume == 0.0)
+			CDAudio_Pause ();
+		else
+			CDAudio_Resume();
+		return false;
+	}
+}
+
 void CDAudio_Update(void)
 {
 	struct cdrom_subchnl subchnl;
@@ -347,18 +398,8 @@ void CDAudio_Update(void)
 	if (cdfile == -1 || !enabled)
 		return;
 
-	if ( (int)(255.0 * bgmvolume.value) != (int)drv_vol.channel0)
-	{
-		if (bgmvolume.value > 1.0f)
-			Cvar_SetValue ("bgmvolume", 1.0f);
-		if (bgmvolume.value < 0.0f)
-			Cvar_SetValue ("bgmvolume", 0.0f);
-
-		drv_vol.channel0 = drv_vol.channel2 =
-		drv_vol.channel1 = drv_vol.channel3 = bgmvolume.value * 255.0;
-		if (ioctl(cdfile, CDROMVOLCTRL, &drv_vol) == -1 )
-			IOCTL_FAILURE(CDROMVOLCTRL);
-	}
+	if (old_cdvolume != bgmvolume.value)
+		CDAudio_SetVolume (&bgmvolume);
 
 	if (playing && lastchk < time(NULL))
 	{
@@ -408,6 +449,7 @@ int CDAudio_Init(void)
 		remap[i] = i;
 	initialized = true;
 	enabled = true;
+	old_cdvolume = bgmvolume.value;
 
 	Con_Printf("CDAudio initialized (using Linux ioctls)\n");
 
@@ -419,18 +461,9 @@ int CDAudio_Init(void)
 
 	Cmd_AddCommand ("cd", CD_f);
 
-	// get drives volume
-	if (ioctl(cdfile, CDROMVOLREAD, &orig_vol) == -1)
-	{
-		IOCTL_FAILURE(CDROMVOLREAD);
-		orig_vol.channel0 = orig_vol.channel2 =
-		orig_vol.channel1 = orig_vol.channel3 = 255.0;
-	}
-	// set our own volume
-	drv_vol.channel0 = drv_vol.channel2 =
-	drv_vol.channel1 = drv_vol.channel3 = bgmvolume.value * 255.0;
-	if (ioctl(cdfile, CDROMVOLCTRL, &drv_vol) == -1)
-		IOCTL_FAILURE(CDROMVOLCTRL);
+	hw_vol_works = CD_GetVolume (&orig_vol);
+	if (hw_vol_works)
+		hw_vol_works = CDAudio_SetVolume (&bgmvolume);
 
 	return 0;
 }
@@ -440,9 +473,8 @@ void CDAudio_Shutdown(void)
 	if (!initialized)
 		return;
 	CDAudio_Stop();
-	// put the drives old volume back
-	if (ioctl(cdfile, CDROMVOLCTRL, &orig_vol) == -1)
-		IOCTL_FAILURE(CDROMVOLCTRL);
+	if (hw_vol_works)
+		CD_SetVolume (&orig_vol);
 	close(cdfile);
 	cdfile = -1;
 }

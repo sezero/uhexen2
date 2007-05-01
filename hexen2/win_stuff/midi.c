@@ -1,6 +1,6 @@
 /*
 	midi_win.c
-	$Id: midi.c,v 1.18 2007-04-10 17:53:07 sezero Exp $
+	$Id: midi.c,v 1.19 2007-05-01 05:44:27 sezero Exp $
 
 	MIDI module for Win32
 */
@@ -23,7 +23,7 @@ static UINT uMIDIDeviceID = MIDI_MAPPER, uCallbackStatus;
 static int nCurrentBuffer, nEmptyBuffers;
 DWORD dwBufferTickLength, dwTempoMultiplier, dwCurrentTempo, dwProgressBytes;
 extern cvar_t bgmvolume;
-static float bgm_volume_old = -1.0f;
+static float old_volume = -1.0f;
 static DWORD dwVolCache[NUM_CHANNELS];
 static qboolean hw_vol_capable = false;
 
@@ -87,34 +87,34 @@ static void MIDI_Loop_f (void)
 		Con_Printf("MIDI music will not be looped\n");
 }
 
-static void MIDI_SetVolume(float volume_frac)
+static void MIDI_SetVolume (cvar_t *var)
 {
 	int volume_int;
 
 	if (!bMidiInited)
 		return;
 
-	volume_frac = (volume_frac >= 0.0f) ? volume_frac : 0.0f;
-	volume_frac = (volume_frac <= 1.0f) ? volume_frac : 1.0f;
+	if (var->value < 0.0)
+		Cvar_SetValue (var->name, 0.0);
+	else if (var->value > 1.0)
+		Cvar_SetValue (var->name, 1.0);
+	old_volume = var->value;
 	if (hw_vol_capable)
 	{
-		volume_int = (int)(volume_frac * 65535.0f);
+		volume_int = (int)(var->value * 65535.0f);
 		midiOutSetVolume((HMIDIOUT)hStream, (volume_int << 16) + volume_int);
 	}
 	else
 	{
-		volume_int = (int)(volume_frac * 1000.0f);
+		volume_int = (int)(var->value * 1000.0f);
 		SetAllChannelVolumes(volume_int);
 	}
 }
 
 void MIDI_Update(void)
 {
-	if (bgmvolume.value != bgm_volume_old)
-	{
-		bgm_volume_old = bgmvolume.value;
-		MIDI_SetVolume(bgm_volume_old);
-	}
+	if (old_volume != bgmvolume.value)
+		MIDI_SetVolume (&bgmvolume);
 }
 
 qboolean MIDI_Init(void)
@@ -203,7 +203,7 @@ void MIDI_Play(const char *Name)
 			return;
 		}
 
-                MIDI_SetVolume(bgmvolume.value);
+		MIDI_SetVolume (&bgmvolume);
 		bPlaying = TRUE;
 	}
 }

@@ -1,6 +1,6 @@
 /*
 	midi_mac.c
-	$Id: midi_mac.c,v 1.11 2007-04-18 13:33:39 sezero Exp $
+	$Id: midi_mac.c,v 1.12 2007-05-01 05:44:28 sezero Exp $
 
 	MIDI module for Mac OS X using QuickTime:
 	Taken from the macglquake project with adjustments to make
@@ -36,10 +36,23 @@
 //#include <QuickTime/QuickTime.h>
 
 
-static Movie midiTrack = NULL;
-static qboolean bMidiInited, bPaused, bLooped;
-extern cvar_t bgmvolume;
-static float bgm_volume_old = -1.0f;
+static Movie	midiTrack = NULL;
+static qboolean	bMidiInited, bPaused, bLooped;
+extern cvar_t	bgmvolume;
+static float	old_volume = -1.0f;
+
+static void MIDI_SetVolume (cvar_t *var)
+{
+	if (!bMidiInited || !midiTrack)
+		return;
+
+	if (var->value < 0.0)
+		Cvar_SetValue (var->name, 0.0);
+	else if (var->value > 1.0)
+		Cvar_SetValue (var->name, 1.0);
+	old_volume = var->value;
+	SetMovieVolume(midiTrack, (short)(var->value * 256.0));
+}
 
 //
 // MusicEvents
@@ -50,11 +63,8 @@ void MIDI_Update (void)
 	if (midiTrack)
 	{
 		// pOx - adjust volume if changed
-		if (bgm_volume_old != bgmvolume.value)
-		{
-			SetMovieVolume(midiTrack, (short)(bgmvolume.value*256));
-			bgm_volume_old = bgmvolume.value;
-		}
+		if (old_volume != bgmvolume.value)
+			MIDI_SetVolume (&bgmvolume);
 
 		// Let QuickTime get some time
 		MoviesTask (midiTrack, 0);
@@ -276,8 +286,7 @@ void MIDI_Play (const char *Name)
 	PrerollMovie (midiTrack, 0, 0);
 
 	// pOx - set initial volume
-	SetMovieVolume(midiTrack, (short)(bgmvolume.value*256));
-	bgm_volume_old = bgmvolume.value;
+	MIDI_SetVolume (&bgmvolume);
 
 	StartMovie (midiTrack);
 	Con_Printf ("Started midi music %s\n", tempName);

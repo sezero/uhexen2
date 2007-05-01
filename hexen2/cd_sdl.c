@@ -1,6 +1,6 @@
 /*
 	cd_sdl.c
-	$Id: cd_sdl.c,v 1.13 2007-03-19 19:39:58 sezero Exp $
+	$Id: cd_sdl.c,v 1.14 2007-05-01 05:44:26 sezero Exp $
 
 	Copyright (C) 1996-1997  Id Software, Inc.
 	Taken from the Twilight project with modifications
@@ -43,7 +43,8 @@ static byte	playTrack;
 static double	endOfTrack = -1.0, pausetime = -1.0;
 static SDL_CD	*cd_handle;
 static int	cd_dev = -1;
-static float	cdvolume = 1.0;
+static float	old_cdvolume;
+static qboolean	hw_vol_works = true;
 
 
 static void CDAudio_Eject(void)
@@ -118,6 +119,7 @@ void CDAudio_Play(byte track, qboolean looping)
 	playLooping = looping;
 	playTrack = track;
 	playing = true;
+
 	FRAMES_TO_MSF(cd_handle->track[track-1].length, &len_m, &len_s, &len_f);
 	endOfTrack = realtime + ((double)len_m * 60.0) + (double)len_s + (double)len_f / (double)CD_FPS;
 
@@ -129,6 +131,9 @@ void CDAudio_Play(byte track, qboolean looping)
 	 */
 	endOfTrack += 2.0;
 	pausetime = -1.0;
+
+	if (!hw_vol_works && bgmvolume.value == 0.0)
+		CDAudio_Pause ();
 }
 
 void CDAudio_Stop(void)
@@ -309,9 +314,49 @@ static void CD_f (void)
 						current_min, current_sec, current_frame * 60 / CD_FPS,
 						length_min, length_sec, length_frame * 60 / CD_FPS);
 		}
-		Con_Printf ("Volume is %f\n", cdvolume);
+		Con_Printf ("Volume is %f\n", bgmvolume.value);
 
 		return;
+	}
+}
+
+static qboolean CD_GetVolume (void *unused)
+{
+/* FIXME: write proper code in here when SDL
+   supports cdrom volume control some day. */
+	return false;
+}
+
+static qboolean CD_SetVolume (void *unused)
+{
+/* FIXME: write proper code in here when SDL
+   supports cdrom volume control some day. */
+	return false;
+}
+
+static qboolean CDAudio_SetVolume (cvar_t *var)
+{
+	if (!cd_handle || !enabled)
+		return false;
+
+	if (var->value < 0.0)
+		Cvar_SetValue (var->name, 0.0);
+	else if (var->value > 1.0)
+		Cvar_SetValue (var->name, 1.0);
+	old_cdvolume = var->value;
+	if (hw_vol_works)
+	{
+/* FIXME: write proper code in here when SDL
+   supports cdrom volume control some day. */
+		return CD_SetVolume (NULL);
+	}
+	else
+	{
+		if (old_cdvolume == 0.0)
+			CDAudio_Pause ();
+		else
+			CDAudio_Resume();
+		return false;
 	}
 }
 
@@ -322,18 +367,8 @@ void CDAudio_Update(void)
 	if (!cd_handle || !enabled)
 		return;
 
-	// if SDL supports cdrom volume control some day
-	// I'll write proper code in here
-	if (bgmvolume.value != cdvolume)
-	{
-		cdvolume = bgmvolume.value;
-		if (cdvolume == 0)
-			CDAudio_Pause();
-		else
-			CDAudio_Resume();
-
-		return;
-	}
+	if (old_cdvolume != bgmvolume.value)
+		CDAudio_SetVolume (&bgmvolume);
 
 	if (playing && realtime > endOfTrack)
 	{
@@ -400,7 +435,7 @@ int CDAudio_Init(void)
 	for (i = 0; i < 100; i++)
 		remap[i] = i;
 	enabled = true;
-	cdvolume = bgmvolume.value;
+	old_cdvolume = bgmvolume.value;
 
 	Con_Printf("CDAudio initialized (SDL, using %s)\n", SDL_CDName(cd_dev));
 
@@ -412,6 +447,11 @@ int CDAudio_Init(void)
 
 	Cmd_AddCommand ("cd", CD_f);
 
+// cd hardware volume: no SDL support at present.
+	hw_vol_works = CD_GetVolume (NULL);
+	if (hw_vol_works)
+		hw_vol_works = CDAudio_SetVolume (&bgmvolume);
+
 	return 0;
 }
 
@@ -420,6 +460,9 @@ void CDAudio_Shutdown(void)
 	if (!cd_handle)
 		return;
 	CDAudio_Stop();
+// cd hardware volume: no SDL support at present.
+//	if (hw_vol_works)
+//		CD_SetVolume (NULL);
 	SDL_CDClose(cd_handle);
 	cd_handle = NULL;
 	cd_dev = -1;

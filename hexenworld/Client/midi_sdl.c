@@ -2,7 +2,7 @@
 	midi_sdl.c
 	midiplay via SDL_mixer
 
-	$Id: midi_sdl.c,v 1.37 2007-04-18 13:33:41 sezero Exp $
+	$Id: midi_sdl.c,v 1.38 2007-05-01 05:44:28 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -15,9 +15,9 @@
 static Mix_Music *music = NULL;
 static int audio_wasinit = 0;
 
-static qboolean bMidiInited, bFileOpen, bPlaying, bPaused, bLooped;
-extern cvar_t bgmvolume;
-static float bgm_volume_old = -1.0f;
+static qboolean	bMidiInited, bFileOpen, bPlaying, bPaused, bLooped;
+extern cvar_t	bgmvolume;
+static float	old_volume = -1.0f;
 
 static void (*midi_endmusicfnc)(void);
 
@@ -57,23 +57,23 @@ static void MIDI_Loop_f (void)
 		Con_Printf("MIDI music will not be looped\n");
 }
 
-static void MIDI_SetVolume(float volume_frac)
+static void MIDI_SetVolume (cvar_t *var)
 {
 	if (!bMidiInited)
 		return;
 
-	volume_frac = (volume_frac >= 0.0f) ? volume_frac : 0.0f;
-	volume_frac = (volume_frac <= 1.0f) ? volume_frac : 1.0f;
-	Mix_VolumeMusic(volume_frac*128); /* needs to be between 0 and 128 */
+	if (var->value < 0.0)
+		Cvar_SetValue (var->name, 0.0);
+	else if (var->value > 1.0)
+		Cvar_SetValue (var->name, 1.0);
+	old_volume = var->value;
+	Mix_VolumeMusic (var->value * 128);	/* needs to be between 0 and 128 */
 }
 
 void MIDI_Update(void)
 {
-	if (bgmvolume.value != bgm_volume_old)
-	{
-		bgm_volume_old = bgmvolume.value;
-		MIDI_SetVolume(bgm_volume_old);
-	}
+	if (old_volume != bgmvolume.value)
+		MIDI_SetVolume (&bgmvolume);
 }
 
 static void MIDI_EndMusicFinished(void)
@@ -111,7 +111,6 @@ qboolean MIDI_Init(void)
 		Con_Printf("disabled by commandline\n");
 		return 0;
 	}
-
 	if (snd_system == S_SYS_SDL)
 	{
 		Con_Printf("SDL_mixer conflicts SDL audio.\n");
@@ -182,6 +181,7 @@ bad_version:
 	bLooped = 1;
 	bPaused = 0;
 	bMidiInited = 1;
+	MIDI_SetVolume (&bgmvolume);
 
 	return true;
 }
