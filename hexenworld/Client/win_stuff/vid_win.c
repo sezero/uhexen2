@@ -2,7 +2,7 @@
 	vid_win.c
 	Win32 video driver using MGL-4.05
 
-	$Id: vid_win.c,v 1.41 2007-05-01 08:34:00 sezero Exp $
+	$Id: vid_win.c,v 1.42 2007-05-01 09:02:05 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -3011,7 +3011,6 @@ MAIN WINDOW
 static int	MWheelAccumulator;
 static UINT	uMSG_MOUSEWHEEL;
 extern cvar_t	mwheelthreshold;
-extern LONG	CDAudio_MessageHandler(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 
 /* main window procedure */
 LONG WINAPI MainWndProc (HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM  lParam)
@@ -3268,7 +3267,9 @@ LONG WINAPI MainWndProc (HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM  lParam)
 			break;
 
 		case MM_MCINOTIFY:
+#if !defined(_NO_CDAUDIO)
 			lRet = CDAudio_MessageHandler (hWnd, uMsg, wParam, lParam);
+#endif	/* ! _NO_CDAUDIO */
 			break;
 
 		default:

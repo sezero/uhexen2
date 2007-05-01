@@ -1,6 +1,6 @@
 /*
 	gl_vidnt.c -- NT GL vid component
-	$Id: gl_vidnt.c,v 1.96 2007-05-01 08:26:44 sezero Exp $
+	$Id: gl_vidnt.c,v 1.97 2007-05-01 09:02:04 sezero Exp $
 */
 
 #define	__GL_FUNC_EXTERN
@@ -1432,7 +1432,6 @@ static void AppActivate(BOOL fActive, BOOL minimize)
 static int	MWheelAccumulator;
 static UINT	uMSG_MOUSEWHEEL;
 extern cvar_t	mwheelthreshold;
-extern LONG	CDAudio_MessageHandler(HWND,UINT,WPARAM,LPARAM);
 
 /* main window procedure */
 LONG WINAPI MainWndProc (HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
@@ -1566,7 +1565,9 @@ LONG WINAPI MainWndProc (HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 #endif
 
 		case MM_MCINOTIFY:
+#if !defined(_NO_CDAUDIO)
 			lRet = CDAudio_MessageHandler (hWnd, uMsg, wParam, lParam);
+#endif	/* ! _NO_CDAUDIO */
 			break;
 
 		default:

@@ -2,7 +2,7 @@
 	winquake.h
 	Win32-specific Quake header file
 
-	$Id: winquake.h,v 1.21 2006-10-04 15:36:35 sezero Exp $
+	$Id: winquake.h,v 1.22 2007-05-01 09:02:04 sezero Exp $
 */
 
 #if !defined(_WIN32)
@@ -13,19 +13,19 @@
 #define __WINQUAKE_H
 
 #ifdef _MSC_VER
-#pragma warning( disable : 4229 )  // mgraph gets this
+#pragma warning( disable : 4229 )  /* mgraph gets this */
 #endif
 #include <windows.h>
-#include <winsock.h>	// for LCC
+#include <winsock.h>	/* for LCC */
 #include <ctype.h>
 
 #ifndef SERVERONLY
 #  ifndef CINTERFACE
-#  define CINTERFACE	// for directx macros.
+#  define CINTERFACE	/* for directx macros. */
 #  endif
 #include <ddraw.h>
 #include <dsound.h>
-#include <mmsystem.h>	// for LCC
+#include <mmsystem.h>	/* for LCC */
 #endif
 
 extern	HINSTANCE	global_hInstance;
@@ -48,7 +48,7 @@ extern DWORD gSndBufSize;
 extern HWND			mainwindow;
 extern qboolean		ActiveApp, Minimized;
 
-extern qboolean	Win95, Win95old, WinNT;
+extern qboolean		Win95, Win95old, WinNT;
 
 void IN_RestoreOriginalMouseState (void);
 void IN_SetQuakeMouseState (void);
@@ -68,6 +68,8 @@ void IN_UpdateClipCursor (void);
 
 void S_BlockSound (void);
 void S_UnblockSound (void);
+
+LONG CDAudio_MessageHandler (HWND, UINT, WPARAM, LPARAM);
 
 #endif	/* __WINQUAKE_H */
 

@@ -1,6 +1,6 @@
 /*
 	cd_null.c
-	$Id: cd_null.c,v 1.4 2006-06-29 23:02:02 sezero Exp $
+	$Id: cd_null.c,v 1.5 2007-05-01 09:02:04 sezero Exp $
 
 	This program is free software; you can redistribute it and/or
 	modify it under the terms of the GNU General Public License
@@ -55,11 +55,5 @@ void CDAudio_Shutdown(void)
 {
 }
 
-#if defined(_WIN32)
-#include <windows.h>
-LONG CDAudio_MessageHandler(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
-{
-	return 0;
-}
 #endif
 
