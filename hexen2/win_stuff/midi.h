@@ -1,6 +1,6 @@
 /*
 	midi_win.h
-	$Id: midi.h,v 1.7 2007-03-14 21:03:26 sezero Exp $
+	$Id: midi.h,v 1.8 2007-05-01 08:26:44 sezero Exp $
 
 	Header file for Win32 MIDI module
 */
@@ -47,7 +47,7 @@
 
 
 #ifdef DEBUG_BUILD
-#define DebugPrint( sz )        DPF( 3, sz )
+#define DebugPrint( sz )	DPF( 3, sz )
 #else
 #define DebugPrint( sz )
 #endif

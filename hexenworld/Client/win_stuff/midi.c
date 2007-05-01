@@ -1,6 +1,6 @@
 /*
 	midi_win.c
-	$Id: midi.c,v 1.19 2007-05-01 05:44:28 sezero Exp $
+	$Id: midi.c,v 1.20 2007-05-01 08:26:46 sezero Exp $
 
 	MIDI module for Win32
 */
@@ -17,24 +17,24 @@
 #include "quakedef.h"
 
 
-static BOOL bMidiInited, bFileOpen, bPlaying, bBuffersPrepared, bPaused;
-BOOL bLooped;
-static UINT uMIDIDeviceID = MIDI_MAPPER, uCallbackStatus;
-static int nCurrentBuffer, nEmptyBuffers;
-DWORD dwBufferTickLength, dwTempoMultiplier, dwCurrentTempo, dwProgressBytes;
-extern cvar_t bgmvolume;
-static float old_volume = -1.0f;
-static DWORD dwVolCache[NUM_CHANNELS];
-static qboolean hw_vol_capable = false;
+static BOOL	bMidiInited, bFileOpen, bPlaying, bBuffersPrepared, bPaused;
+BOOL		bLooped;
+static UINT	uMIDIDeviceID = MIDI_MAPPER, uCallbackStatus;
+static int	nCurrentBuffer, nEmptyBuffers;
+DWORD		dwBufferTickLength, dwTempoMultiplier, dwCurrentTempo, dwProgressBytes;
+extern cvar_t	bgmvolume;
+static float	old_volume = -1.0f;
+static DWORD	dwVolCache[NUM_CHANNELS];
+static qboolean	hw_vol_capable = false;
 
 static HMIDISTRM	hStream;
 static CONVERTINFO	ciStreamBuffers[NUM_STREAM_BUFFERS];
 
 // From mstrconv.c
-extern INFILESTATE  ifs;
+extern INFILESTATE	ifs;
 
 // Private to this module...
-static HANDLE   hBufferReturnEvent;
+static HANDLE		hBufferReturnEvent;
 
 
 static void FreeBuffers (void);
@@ -138,10 +138,10 @@ qboolean MIDI_Init(void)
 		return false;
 	}
 
-  	Cmd_AddCommand ("midi_play", MIDI_Play_f);
-  	Cmd_AddCommand ("midi_stop", MIDI_Stop_f);
-  	Cmd_AddCommand ("midi_pause", MIDI_Pause_f);
-  	Cmd_AddCommand ("midi_loop", MIDI_Loop_f);
+	Cmd_AddCommand ("midi_play", MIDI_Play_f);
+	Cmd_AddCommand ("midi_stop", MIDI_Stop_f);
+	Cmd_AddCommand ("midi_pause", MIDI_Pause_f);
+	Cmd_AddCommand ("midi_loop", MIDI_Loop_f);
 
 	dwTempoMultiplier = 100;
 	bFileOpen = FALSE;
@@ -152,7 +152,7 @@ qboolean MIDI_Init(void)
 	uCallbackStatus = 0;
 	bMidiInited = 1;
 
-        // try to see if the MIDI device supports midiOutSetVolume
+	// try to see if the MIDI device supports midiOutSetVolume
 	if (midiOutGetDevCaps(uMIDIDeviceID, &midi_caps, sizeof(midi_caps)) == MMSYSERR_NOERROR)
 	{
 		if ((midi_caps.dwSupport & MIDICAPS_VOLUME) && !COM_CheckParm("-nohwmidivol"))
@@ -194,7 +194,7 @@ void MIDI_Play(const char *Name)
 		Con_Printf("Playing midi file %s\n",Temp);
 
 		uCallbackStatus = 0;
-                        
+
 		mmrRetVal = midiStreamRestart(hStream);
 
 		if (mmrRetVal != MMSYSERR_NOERROR)
@@ -316,13 +316,13 @@ void MIDI_Cleanup(void)
 }
 
 
-/*****************************************************************************/
-/* FreeBuffers()                                                             */
-/*                                                                           */
-/*   This function unprepares and frees all our buffers -- something we must */
-/* do to work around a bug in MMYSYSTEM that prevents a device from playing  */
-/* back properly unless it is closed and reopened after each stop.           */
-/*****************************************************************************/
+/********************************************************************************/
+/* FreeBuffers()								*/
+/*										*/
+/* This function unprepares and frees all our buffers -- something we must	*/
+/* do to work around a bug in MMYSYSTEM that prevents a device from playing	*/
+/* back properly unless it is closed and reopened after each stop.		*/
+/********************************************************************************/
 
 static void FreeBuffers(void)
 {
@@ -354,13 +354,13 @@ static void FreeBuffers(void)
 }
 
 
-/*****************************************************************************/
-/* StreamBufferSetup()                                                       */
-/*                                                                           */
-/*    This function uses the filename stored in the global character array to*/
-/* open a MIDI file. Then it goes tabout converting at least the first part of*/
-/* that file into a midiStream buffer for playback.                          */
-/*****************************************************************************/
+/********************************************************************************/
+/* StreamBufferSetup()								*/
+/*										*/
+/* This function uses the filename stored in the global character array to	*/
+/* open a MIDI file. Then it goes tabout converting at least the first part of	*/
+/* that file into a midiStream buffer for playback.				*/
+/********************************************************************************/
 static BOOL StreamBufferSetup(const char *Name)
 {
 	int nChkErr;
@@ -468,12 +468,12 @@ static BOOL StreamBufferSetup(const char *Name)
 }
 
 
-/*****************************************************************************/
-/* MidiProc()                                                                */
-/*                                                                           */
-/*   This is the callback handler which continually refills MIDI data buffers*/
-/* as they're returned to us from the audio subsystem.                       */
-/*****************************************************************************/
+/********************************************************************************/
+/* MidiProc()									*/
+/*										*/
+/* This is the callback handler which continually refills MIDI data buffers	*/
+/* as they're returned to us from the audio subsystem.				*/
+/********************************************************************************/
 static void CALLBACK MidiProc(HMIDIIN hMidi, UINT uMsg, DWORD dwInstance, DWORD dwParam1, DWORD dwParam2)
 {
 	static int nWaitingBuffers = 0;
@@ -602,12 +602,12 @@ static void CALLBACK MidiProc(HMIDIIN hMidi, UINT uMsg, DWORD dwInstance, DWORD 
 }
 
 
-/****************************************************************************/
-/* SetAllChannelVolumes()                                                   */
-/*                                                                          */
-/*   Given a percent in tenths of a percent, sets volume on all channels to */
-/* reflect the new value.                                                   */
-/****************************************************************************/
+/********************************************************************************/
+/* SetAllChannelVolumes()							*/
+/*										*/
+/* Given a percent in tenths of a percent, sets volume on all channels to	*/
+/* reflect the new value.							*/
+/********************************************************************************/
 static void SetAllChannelVolumes(DWORD dwVolumePercent)
 {
 	DWORD dwEvent, dwStatus, dwVol, idx;
@@ -630,12 +630,12 @@ static void SetAllChannelVolumes(DWORD dwVolumePercent)
 }
 
 
-/****************************************************************************/
-/* SetChannelVolume()                                                       */
-/*                                                                          */
-/*   Given a percent in tenths of a percent, sets volume on a specified     */
-/* channel to reflect the new value.                                        */
-/****************************************************************************/
+/********************************************************************************/
+/* SetChannelVolume()								*/
+/*										*/
+/* Given a percent in tenths of a percent, sets volume on a specified		*/
+/* channel to reflect the new value.						*/
+/********************************************************************************/
 #if 0	// not used
 static void SetChannelVolume(DWORD dwChannel, DWORD dwVolumePercent)
 {

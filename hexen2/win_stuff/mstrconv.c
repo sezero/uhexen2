@@ -1,6 +1,6 @@
 /*
 	mstrconv.c
-	$Id: mstrconv.c,v 1.17 2007-04-18 13:32:49 sezero Exp $
+	$Id: mstrconv.c,v 1.18 2007-05-01 08:26:44 sezero Exp $
 
 	Converting a MID file to a MIDI stream for
 	playback using the Win32 midiStream API.
@@ -19,7 +19,7 @@
 
 // Global stuff which is defined in the main module
 //
-BOOL    bInsertTempo = FALSE;
+BOOL		bInsertTempo = FALSE;
 
 // A few global variables used by this module only
 //
@@ -33,7 +33,7 @@ static int	MidiOffset, MidiSize;
 // down, we must scan for them and free them.  Malloc blocks are only created as
 // temporary storgae blocks for extra parameter data associated with MIDI_SYSEX,
 // MIDI_SYSEXEND, and MIDI_META events.
-static DWORD	dwMallocBlocks  = 0;
+static DWORD	dwMallocBlocks = 0;
 
 extern DWORD	dwBufferTickLength, dwTempoMultiplier, dwCurrentTempo;
 extern DWORD	dwProgressBytes, dwVolumePercent;
@@ -169,7 +169,7 @@ BOOL ConverterInit (const char *szInFile)
 // - MThd header
 // - size of file header chunk
 // - file header itself
-//  
+//
 	if ( GetInFileData(&dwTag, sizeof(DWORD)) || ( dwTag != MThd )
 	    || GetInFileData(&cbHeader, sizeof(DWORD))
 	    || (( cbHeader = DWORDSWAP( cbHeader )) < sizeof(MIDIFILEHDR))
@@ -342,13 +342,13 @@ void ConverterCleanup (void)
 }
 
 
-/*****************************************************************************/
-/* RewindConverter()                                                         */
-/*                                                                           */
-/*   This little function is an adaptation of the ConverterInit() code which */
-/* resets the tracks without closing and opening the file, thus reducing the */
-/* time it takes to loop back to the beginning when looping.                 */
-/*****************************************************************************/
+/********************************************************************************/
+/* RewindConverter()								*/
+/*										*/
+/* This little function is an adaptation of the ConverterInit() code which	*/
+/* resets the tracks without closing and opening the file, thus reducing the	*/
+/* time it takes to loop back to the beginning when looping.			*/
+/********************************************************************************/
 static BOOL RewindConverter (void)
 {
 	DWORD	dwToRead, cbRead, idx;
@@ -438,18 +438,18 @@ Rewind_Cleanup:
 }
 
 
-/*****************************************************************************/
-/* ConvertToBuffer()                                                         */
-/*                                                                           */
-/*    This function converts MIDI data from the track buffers setup by a     */
-/* previous call to ConverterInit().  It will convert data until an error is */
-/* encountered or the output buffer has been filled with as much event data  */
-/* as possible, not to exceed dwMaxLength. This function can take a couple   */
-/* bit flags, passed through dwFlags. Information about the success/failure  */
-/* of this operation and the number of output bytes actually converted will  */
-/* be returned in the CONVERTINFO structure pointed at by lpciInfo.          */
-/*                                                                           */
-/*****************************************************************************/
+/********************************************************************************/
+/* ConvertToBuffer()								*/
+/*										*/
+/* This function converts MIDI data from the track buffers setup by a		*/
+/* previous call to ConverterInit().  It will convert data until an error is	*/
+/* encountered or the output buffer has been filled with as much event data	*/
+/* as possible, not to exceed dwMaxLength. This function can take a couple	*/
+/* bit flags, passed through dwFlags. Information about the success/failure	*/
+/* of this operation and the number of output bytes actually converted will	*/
+/* be returned in the CONVERTINFO structure pointed at by lpciInfo.		*/
+/*										*/
+/********************************************************************************/
 int ConvertToBuffer (DWORD dwFlags, LPCONVERTINFO lpciInfo)
 {
 	static INTRACKSTATE	*ptsTrack, *ptsFound;
@@ -554,7 +554,7 @@ int ConvertToBuffer (DWORD dwFlags, LPCONVERTINFO lpciInfo)
 			}
 		}
 
-		// None found?  We must be done, so return to the caller with a smile.
+		// None found? We must be done, so return to the caller with a smile.
 		//
 		if (!ptsFound)
 		{
@@ -615,18 +615,18 @@ int ConvertToBuffer (DWORD dwFlags, LPCONVERTINFO lpciInfo)
 }
 
 
-//
-// GetTrackVDWord
-//
-// Attempts to parse a variable length DWORD from the given track. A VDWord
-// in a MIDI file
-//  (a) is in lo-hi format 
-//  (b) has the high bit set on every byte except the last
-//
-// Returns the DWORD in *lpdw and TRUE on success; else
-// FALSE if we hit end of track first. Sets ITS_F_ENDOFTRK
-// if we hit end of track.
-//
+/********************************************************************************/
+/* GetTrackVDWord								*/
+/*										*/
+/* Attempts to parse a variable length DWORD from the given track. A VDWord	*/
+/* in a MIDI file								*/
+/*  (a) is in lo-hi format							*/
+/*  (b) has the high bit set on every byte except the last			*/
+/*										*/
+/* Returns the DWORD in *lpdw and TRUE on success; else				*/
+/* FALSE if we hit end of track first. Sets ITS_F_ENDOFTRK			*/
+/* if we hit end of track.							*/
+/********************************************************************************/
 static BOOL GetTrackVDWord (PINTRACKSTATE ptsTrack, LPDWORD lpdw)
 {
 	BYTE	byByte;
@@ -655,35 +655,35 @@ static BOOL GetTrackVDWord (PINTRACKSTATE ptsTrack, LPDWORD lpdw)
 }
 
 
-//
-// GetTrackEvent
-//
-// Fills in the event struct with the next event from the track
-//
-// pteTemp->tkEvent will contain the absolute tick time of the event
-// pteTemp->byShortData[0] will contain
-//  MIDI_META if the event is a meta event;
-//   in this case pteTemp->byShortData[1] will contain the meta class
-//  MIDI_SYSEX or MIDI_SYSEXEND if the event is a SysEx event
-//  Otherwise, the event is a channel message and pteTemp->byShortData[1]
-//   and pteTemp->byShortData[2] will contain the rest of the event.
-//
-// pteTemp->dwEventLength will contain
-//  The total length of the channel message in pteTemp->byShortData if
-//   the event is a channel message
-//  The total length of the paramter data pointed to by
-//   pteTemp->pLongData otherwise
-//
-// pteTemp->pLongData will point at any additional paramters if the 
-//  event is a SysEx or meta event with non-zero length; else
-//  it will contain NULL
-//
-// Returns FALSE on success or TRUE on any kind of parse error
-// Prints its own error message ONLY in the debug version
-//
-// Maintains the state of the input track (i.e. ptsTrack->dwLeftInBuffer,
-// ptsTrack->pTrackPointers, and ptsTrack->byRunningStatus).
-//
+/********************************************************************************/
+/* GetTrackEvent								*/
+/*										*/
+/* Fills in the event struct with the next event from the track			*/
+/*										*/
+/* pteTemp->tkEvent will contain the absolute tick time of the event		*/
+/* pteTemp->byShortData[0] will contain						*/
+/*  MIDI_META if the event is a meta event;					*/
+/*   in this case pteTemp->byShortData[1] will contain the meta class		*/
+/*  MIDI_SYSEX or MIDI_SYSEXEND if the event is a SysEx event			*/
+/*  Otherwise, the event is a channel message and pteTemp->byShortData[1]	*/
+/*   and pteTemp->byShortData[2] will contain the rest of the event.		*/
+/*										*/
+/* pteTemp->dwEventLength will contain						*/
+/*  The total length of the channel message in pteTemp->byShortData if		*/
+/*   the event is a channel message						*/
+/*  The total length of the paramter data pointed to by				*/
+/*   pteTemp->pLongData otherwise						*/
+/*										*/
+/* pteTemp->pLongData will point at any additional paramters if the		*/
+/*  event is a SysEx or meta event with non-zero length; else			*/
+/*  it will contain NULL							*/
+/*										*/
+/* Returns FALSE on success or TRUE on any kind of parse error			*/
+/* Prints its own error message ONLY in the debug version			*/
+/*										*/
+/* Maintains the state of the input track (i.e. ptsTrack->dwLeftInBuffer,	*/
+/* ptsTrack->pTrackPointers, and ptsTrack->byRunningStatus).			*/
+/********************************************************************************/
 static BOOL GetTrackEvent (INTRACKSTATE *ptsTrack, PTEMPEVENT pteTemp)
 {
 	DWORD	idx;

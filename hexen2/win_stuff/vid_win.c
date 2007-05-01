@@ -2,7 +2,7 @@
 	vid_win.c
 	Win32 video driver using MGL-4.05
 
-	$Id: vid_win.c,v 1.41 2007-03-14 21:03:28 sezero Exp $
+	$Id: vid_win.c,v 1.42 2007-05-01 08:26:44 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -20,7 +20,7 @@
 #endif
 
 #define MAX_MODE_LIST	30
-#define MAX_DESC	13
+#define MAX_DESC	16
 #define VID_ROW_SIZE	3
 
 qboolean	msg_suppress_1 = false;
@@ -463,8 +463,7 @@ static void VID_InitMGLFull (HINSTANCE hInstance)
 		useWinDirect = false;
 	}
 */
-	if ( (COM_CheckParm("-usewindirect") || COM_CheckParm("-usevesa"))
-	     && !WinNT)
+	if ( (COM_CheckParm("-usewindirect") || COM_CheckParm("-usevesa")) && !WinNT )
 		useWinDirect = true;
 
 	if (COM_CheckParm("-nodirectdraw") || COM_CheckParm("-noddraw") || COM_CheckParm("-nodd"))
@@ -607,14 +606,14 @@ static void VID_InitMGLFull (HINSTANCE hInstance)
 
 /****************************************************************************
 *
-* Function:     createDisplayDC
-* Returns:      Pointer to the MGL device context to use for the application
+* Function:	createDisplayDC
+* Returns:	Pointer to the MGL device context to use for the application
 *
-* Description:  Initialises the MGL and creates an appropriate display
-*               device context to be used by the GUI. This creates and
-*               apropriate device context depending on the system being
-*               compile for, and should be the only place where system
-*               specific code is required.
+* Description:	Initialises the MGL and creates an appropriate display
+*		device context to be used by the GUI. This creates and
+*		apropriate device context depending on the system being
+*		compile for, and should be the only place where system
+*		specific code is required.
 *
 ****************************************************************************/
 static MGLDC *createDisplayDC (int forcemem)
@@ -705,27 +704,33 @@ static MGLDC *createDisplayDC (int forcemem)
 }
 
 
+static void VID_RegisterWndClass(HINSTANCE hInstance)
+{
+	WNDCLASS	wc;
+
+	wc.style		= 0;
+	wc.lpfnWndProc		= (WNDPROC)MainWndProc;
+	wc.cbClsExtra		= 0;
+	wc.cbWndExtra		= 0;
+	wc.hInstance		= hInstance;
+	wc.hIcon		= 0;
+	wc.hCursor		= LoadCursor (NULL, IDC_ARROW);
+	wc.hbrBackground	= NULL;
+	wc.lpszMenuName		= 0;
+	wc.lpszClassName	= WM_CLASSNAME;
+
+	if (!RegisterClass(&wc))
+		Sys_Error ("Couldn't register main window class");
+}
+
 static void VID_InitMGLDIB (HINSTANCE hInstance)
 {
-	WNDCLASS		wc;
 	HDC				hdc;
 
 	hIcon = LoadIcon (hInstance, MAKEINTRESOURCE (IDI_ICON2));
 
 	/* Register the frame class */
-	wc.style	 = 0;
-	wc.lpfnWndProc	 = (WNDPROC)MainWndProc;
-	wc.cbClsExtra	 = 0;
-	wc.cbWndExtra	 = 0;
-	wc.hInstance	 = hInstance;
-	wc.hIcon	 = 0;
-	wc.hCursor	 = LoadCursor (NULL,IDC_ARROW);
-	wc.hbrBackground = NULL;
-	wc.lpszMenuName	 = 0;
-	wc.lpszClassName = WM_CLASSNAME;
-
-	if ( !RegisterClass(&wc) )
-		Sys_Error ("Couldn't register window class");
+	VID_RegisterWndClass(hInstance);
 
 	/* Find the size for the DIB window */
 	/* Initialise the MGL for windowed operation */
@@ -818,12 +823,10 @@ static void VID_InitFullDIB (HINSTANCE hInstance)
 			(devmode.dmPelsHeight <= MAXHEIGHT) &&
 			(nummodes < MAX_MODE_LIST))
 		{
-			devmode.dmFields = DM_BITSPERPEL |
-							   DM_PELSWIDTH |
-							   DM_PELSHEIGHT;
+			devmode.dmFields = DM_BITSPERPEL | DM_PELSWIDTH | DM_PELSHEIGHT;
 
 			if (ChangeDisplaySettings (&devmode, CDS_TEST | CDS_FULLSCREEN) ==
-					DISP_CHANGE_SUCCESSFUL)
+								DISP_CHANGE_SUCCESSFUL)
 			{
 				modelist[nummodes].type = MS_FULLDIB;
 				modelist[nummodes].width = devmode.dmPelsWidth;
@@ -897,9 +900,7 @@ static void VID_InitFullDIB (HINSTANCE hInstance)
 				(nummodes < MAX_MODE_LIST) &&
 				(devmode.dmBitsPerPel > 8))
 			{
-				devmode.dmFields = DM_BITSPERPEL |
-								   DM_PELSWIDTH |
-								   DM_PELSHEIGHT;
+				devmode.dmFields = DM_BITSPERPEL | DM_PELSWIDTH | DM_PELSHEIGHT;
 
 				if (ChangeDisplaySettings (&devmode, CDS_TEST | CDS_FULLSCREEN) ==
 						DISP_CHANGE_SUCCESSFUL)
@@ -986,7 +987,7 @@ static void VID_InitFullDIB (HINSTANCE hInstance)
 			devmode.dmFields = DM_BITSPERPEL | DM_PELSWIDTH | DM_PELSHEIGHT;
 
 			if (ChangeDisplaySettings (&devmode, CDS_TEST | CDS_FULLSCREEN) ==
-					DISP_CHANGE_SUCCESSFUL)
+								DISP_CHANGE_SUCCESSFUL)
 			{
 					modelist[nummodes].type = MS_FULLDIB;
 					modelist[nummodes].width = devmode.dmPelsWidth;
@@ -1538,8 +1539,7 @@ static qboolean VID_SetFullDIBMode (int modenum)
 
 	gdevmode.dmFields = DM_BITSPERPEL | DM_PELSWIDTH | DM_PELSHEIGHT;
 	gdevmode.dmBitsPerPel = modelist[modenum].bpp;
-	gdevmode.dmPelsWidth = modelist[modenum].width << modelist[modenum].stretched <<
-						   modelist[modenum].halfscreen;
+	gdevmode.dmPelsWidth = modelist[modenum].width << modelist[modenum].stretched << modelist[modenum].halfscreen;
 	gdevmode.dmPelsHeight = modelist[modenum].height << modelist[modenum].stretched;
 	gdevmode.dmSize = sizeof (gdevmode);
 
@@ -2423,7 +2423,7 @@ void	VID_Update (vrect_t *rects)
 			GetWindowRect (mainwindow, &trect);
 
 			if ((trect.left != (int)vid_window_x.value) ||
-				(trect.top  != (int)vid_window_y.value))
+				(trect.top != (int)vid_window_y.value))
 			{
 				if (COM_CheckParm ("-resetwinpos"))
 				{
@@ -2433,8 +2433,8 @@ void	VID_Update (vrect_t *rects)
 
 				VID_CheckWindowXY ();
 				SetWindowPos (mainwindow, NULL, (int)vid_window_x.value,
-				  (int)vid_window_y.value, 0, 0,
-				  SWP_NOSIZE | SWP_NOZORDER | SWP_SHOWWINDOW | SWP_DRAWFRAME);
+								(int)vid_window_y.value, 0, 0,
+								SWP_NOSIZE | SWP_NOZORDER | SWP_SHOWWINDOW | SWP_DRAWFRAME);
 			}
 		}
 
@@ -2760,7 +2760,8 @@ void D_EndDirectRect (int x, int y, int width, int height)
 
 //==========================================================================
 
-byte	scantokey[128] = { 
+static byte scantokey[128] =
+{
 //	0        1       2       3       4       5       6       7
 //	8        9       A       B       C       D       E       F
 	0  ,    27,     '1',    '2',    '3',    '4',    '5',    '6',
@@ -2781,7 +2782,9 @@ byte	scantokey[128] = {
 	0  ,     0 ,     0 ,     0 ,      0 ,    0 ,     0 ,     0	// 7
 };
 
-byte	shiftscantokey[128] = { 
+#if 0	/* not used */
+static byte shiftscantokey[128] =
+{
 //	0       1       2       3       4       5       6       7
 //	8       9       A       B       C       D       E       F
 	0  ,    27,     '!',    '@',    '#',    '$',    '%',    '^',
@@ -2801,7 +2804,7 @@ byte	shiftscantokey[128] = {
 	0  ,     0 ,     0 ,     0 ,      0 ,    0 ,     0 ,     0 ,
 	0  ,     0 ,     0 ,     0 ,      0 ,    0 ,     0 ,     0	// 7
 };
-
+#endif
 
 /*
 =======
@@ -2823,12 +2826,12 @@ static int MapKey (int key)
 static void AppActivate(BOOL fActive, BOOL minimize)
 /****************************************************************************
 *
-* Function:     AppActivate
-* Parameters:   fActive - True if app is activating
+* Function:	AppActivate
+* Parameters:	fActive - True if app is activating
 *
-* Description:  If the application is activating, then swap the system
-*               into SYSPAL_NOSTATIC mode so that our palettes will display
-*               correctly.
+* Description:	If the application is activating, then swap the system
+*		into SYSPAL_NOSTATIC mode so that our palettes will display
+*		correctly.
 *
 ****************************************************************************/
 {
@@ -3005,20 +3008,15 @@ MAIN WINDOW
 ===================================================================
 */
 
-static int MWheelAccumulator;
-static UINT  uMSG_MOUSEWHEEL;
-extern cvar_t mwheelthreshold;
-LONG CDAudio_MessageHandler(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
+static int	MWheelAccumulator;
+static UINT	uMSG_MOUSEWHEEL;
+extern cvar_t	mwheelthreshold;
+extern LONG	CDAudio_MessageHandler(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 
 /* main window procedure */
-LONG WINAPI MainWndProc (
-    HWND    hWnd,
-    UINT    uMsg,
-    WPARAM  wParam,
-    LPARAM  lParam)
+LONG WINAPI MainWndProc (HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM  lParam)
 {
-	// Ignore all irrelevant messages when in DDRAW/VESA/VGA modes
-	//LONG			lRet = 0;
+//	LONG			lRet = 0;	// Ignore all irrelevant messages when in DDRAW/VESA/VGA modes
 	LONG			lRet = DDActive;
 	int				fActive, fMinimized, temp;
 	HDC				hdc;
@@ -3509,18 +3507,14 @@ void VID_MenuKey (int key)
 
 	case K_LEFTARROW:
 		S_LocalSound ("raven/menu1.wav");
-		vid_line = ((vid_line / VID_ROW_SIZE) * VID_ROW_SIZE) +
-				   ((vid_line + 2) % VID_ROW_SIZE);
-
+		vid_line = ((vid_line / VID_ROW_SIZE) * VID_ROW_SIZE) + ((vid_line + 2) % VID_ROW_SIZE);
 		if (vid_line >= vid_wmodes)
 			vid_line = vid_wmodes - 1;
 		break;
 
 	case K_RIGHTARROW:
 		S_LocalSound ("raven/menu1.wav");
-		vid_line = ((vid_line / VID_ROW_SIZE) * VID_ROW_SIZE) +
-				   ((vid_line + 4) % VID_ROW_SIZE);
-
+		vid_line = ((vid_line / VID_ROW_SIZE) * VID_ROW_SIZE) + ((vid_line + 4) % VID_ROW_SIZE);
 		if (vid_line >= vid_wmodes)
 			vid_line = (vid_line / VID_ROW_SIZE) * VID_ROW_SIZE;
 		break;
@@ -3528,12 +3522,9 @@ void VID_MenuKey (int key)
 	case K_UPARROW:
 		S_LocalSound ("raven/menu1.wav");
 		vid_line -= VID_ROW_SIZE;
-
 		if (vid_line < 0)
 		{
-			vid_line += ((vid_wmodes + (VID_ROW_SIZE - 1)) /
-					VID_ROW_SIZE) * VID_ROW_SIZE;
-
+			vid_line += ((vid_wmodes + (VID_ROW_SIZE - 1)) / VID_ROW_SIZE) * VID_ROW_SIZE;
 			while (vid_line >= vid_wmodes)
 				vid_line -= VID_ROW_SIZE;
 		}
@@ -3542,12 +3533,9 @@ void VID_MenuKey (int key)
 	case K_DOWNARROW:
 		S_LocalSound ("raven/menu1.wav");
 		vid_line += VID_ROW_SIZE;
-
 		if (vid_line >= vid_wmodes)
 		{
-			vid_line -= ((vid_wmodes + (VID_ROW_SIZE - 1)) /
-					VID_ROW_SIZE) * VID_ROW_SIZE;
-
+			vid_line -= ((vid_wmodes + (VID_ROW_SIZE - 1)) / VID_ROW_SIZE) * VID_ROW_SIZE;
 			while (vid_line < 0)
 				vid_line += VID_ROW_SIZE;
 		}
@@ -3566,11 +3554,8 @@ void VID_MenuKey (int key)
 	// checks vid_testingmode
 		vid_testingmode = 1;
 		vid_testendtime = realtime + 5.0;
-
 		if (!VID_SetMode (modedescs[vid_line].modenum, vid_curpal))
-		{
 			vid_testingmode = 0;
-		}
 		break;
 
 	case 'D':

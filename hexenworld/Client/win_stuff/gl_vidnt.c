@@ -1,6 +1,6 @@
 /*
 	gl_vidnt.c -- NT GL vid component
-	$Id: gl_vidnt.c,v 1.97 2007-04-18 13:34:39 sezero Exp $
+	$Id: gl_vidnt.c,v 1.98 2007-05-01 08:26:46 sezero Exp $
 */
 
 #define	__GL_FUNC_EXTERN
@@ -91,19 +91,20 @@ RECT		window_rect;
 static DWORD	WindowStyle, ExWindowStyle;
 qboolean	DDActive;
 
-static PIXELFORMATDESCRIPTOR pfd = {
+static PIXELFORMATDESCRIPTOR pfd =
+{
 	sizeof(PIXELFORMATDESCRIPTOR),	// size of this pfd
 	1,				// version number
-	PFD_DRAW_TO_WINDOW 		// support window
-	|  PFD_SUPPORT_OPENGL 	// support OpenGL
-	|  PFD_DOUBLEBUFFER ,	// double buffered
+	PFD_DRAW_TO_WINDOW		// support window
+		| PFD_SUPPORT_OPENGL	// support OpenGL
+		| PFD_DOUBLEBUFFER ,	// double buffered
 	PFD_TYPE_RGBA,			// RGBA type
 	24,				// 24-bit color depth
 	0, 0, 0, 0, 0, 0,		// color bits ignored
 	0,				// no alpha buffer
 	0,				// shift bit ignored
 	0,				// no accumulation buffer
-	0, 0, 0, 0, 			// accum bits ignored
+	0, 0, 0, 0,			// accum bits ignored
 	24,				// 24-bit z-buffer
 	8,				// 8-bit stencil buffer
 	0,				// no auxiliary buffer
@@ -1241,7 +1242,8 @@ static BOOL bSetupPixelFormat(HDC hDC)
 
 
 
-byte	scantokey[128] = { 
+static byte scantokey[128] =
+{
 //	0        1       2       3       4       5       6       7
 //	8        9       A       B       C       D       E       F
 	0  ,    27,     '1',    '2',    '3',    '4',    '5',    '6',
@@ -1262,7 +1264,9 @@ byte	scantokey[128] = {
 	0  ,     0 ,     0 ,     0 ,      0 ,    0 ,     0 ,     0	// 7
 };
 
-byte	shiftscantokey[128] = { 
+#if 0	/* not used */
+static byte shiftscantokey[128] =
+{
 //	0       1       2       3       4       5       6       7
 //	8       9       A       B       C       D       E       F
 	0  ,    27,     '!',    '@',    '#',    '$',    '%',    '^',
@@ -1282,7 +1286,7 @@ byte	shiftscantokey[128] = {
 	0  ,     0 ,     0 ,     0 ,      0 ,    0 ,     0 ,     0 ,
 	0  ,     0 ,     0 ,     0 ,      0 ,    0 ,     0 ,     0	// 7
 };
-
+#endif
 
 /*
 =======
@@ -1350,12 +1354,12 @@ static void VID_UpdateWindowStatus (void)
 static void AppActivate(BOOL fActive, BOOL minimize)
 /****************************************************************************
 *
-* Function:     AppActivate
-* Parameters:   fActive - True if app is activating
+* Function:	AppActivate
+* Parameters:	fActive - True if app is activating
 *
-* Description:  If the application is activating, then swap the system
-*               into SYSPAL_NOSTATIC mode so that our palettes will display
-*               correctly.
+* Description:	If the application is activating, then swap the system
+*		into SYSPAL_NOSTATIC mode so that our palettes will display
+*		correctly.
 *
 ****************************************************************************/
 {
@@ -1425,10 +1429,10 @@ static void AppActivate(BOOL fActive, BOOL minimize)
 }
 
 
-static int MWheelAccumulator;
-static UINT  uMSG_MOUSEWHEEL;
-extern cvar_t mwheelthreshold;
-extern LONG CDAudio_MessageHandler(HWND,UINT,WPARAM,LPARAM);
+static int	MWheelAccumulator;
+static UINT	uMSG_MOUSEWHEEL;
+extern cvar_t	mwheelthreshold;
+extern LONG	CDAudio_MessageHandler(HWND,UINT,WPARAM,LPARAM);
 
 /* main window procedure */
 LONG WINAPI MainWndProc (HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
@@ -1713,16 +1717,16 @@ static void VID_RegisterWndClass(HINSTANCE hInstance)
 {
 	WNDCLASS	wc;
 
-	wc.style         = 0;
-	wc.lpfnWndProc   = (WNDPROC)MainWndProc;
-	wc.cbClsExtra    = 0;
-	wc.cbWndExtra    = 0;
-	wc.hInstance     = hInstance;
-	wc.hIcon         = 0;
-	wc.hCursor       = LoadCursor (NULL,IDC_ARROW);
-	wc.hbrBackground = NULL;
-	wc.lpszMenuName  = 0;
-	wc.lpszClassName = WM_CLASSNAME;
+	wc.style		= 0;
+	wc.lpfnWndProc		= (WNDPROC)MainWndProc;
+	wc.cbClsExtra		= 0;
+	wc.cbWndExtra		= 0;
+	wc.hInstance		= hInstance;
+	wc.hIcon		= 0;
+	wc.hCursor		= LoadCursor (NULL, IDC_ARROW);
+	wc.hbrBackground	= NULL;
+	wc.lpszMenuName		= 0;
+	wc.lpszClassName	= WM_CLASSNAME;
 
 	if (!RegisterClass(&wc))
 		Sys_Error ("Couldn't register main window class");
@@ -1800,12 +1804,10 @@ static void VID_InitFullDIB (HINSTANCE hInstance)
 			(devmode.dmPelsHeight <= MAXHEIGHT) &&
 			(num_fmodes < MAX_MODE_LIST))
 		{
-			devmode.dmFields = DM_BITSPERPEL |
-					   DM_PELSWIDTH |
-					   DM_PELSHEIGHT;
+			devmode.dmFields = DM_BITSPERPEL | DM_PELSWIDTH | DM_PELSHEIGHT;
 
 			if (ChangeDisplaySettings (&devmode, CDS_TEST | CDS_FULLSCREEN) ==
-					DISP_CHANGE_SUCCESSFUL)
+								DISP_CHANGE_SUCCESSFUL)
 			{
 				fmodelist[num_fmodes].type = MS_FULLDIB;
 				fmodelist[num_fmodes].width = devmode.dmPelsWidth;
