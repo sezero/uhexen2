@@ -2,7 +2,7 @@
 	vid_win.c
 	Win32 video driver using MGL-4.05
 
-	$Id: vid_win.c,v 1.40 2007-05-01 08:26:46 sezero Exp $
+	$Id: vid_win.c,v 1.41 2007-05-01 08:34:00 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -20,7 +20,7 @@
 #endif
 
 #define MAX_MODE_LIST	30
-#define MAX_DESC	16
+#define MAX_DESC	13
 #define VID_ROW_SIZE	3
 
 qboolean	msg_suppress_1 = false;
@@ -3302,7 +3302,7 @@ typedef struct
 
 #define MAX_COLUMN_SIZE		5
 #define MODE_AREA_HEIGHT	(MAX_COLUMN_SIZE + 6)
-#define MAX_MODEDESCS		(MAX_COLUMN_SIZE*3)
+#define MAX_MODEDESCS		(MAX_COLUMN_SIZE * 3)
 
 static modedesc_t	modedescs[MAX_MODEDESCS];
 
