@@ -1,6 +1,6 @@
 /*
 	midi_win.c
-	$Id: midi.c,v 1.21 2007-05-01 10:59:59 sezero Exp $
+	$Id: midi.c,v 1.22 2007-05-01 11:59:57 sezero Exp $
 
 	MIDI module for Win32
 */
@@ -615,8 +615,8 @@ static void SetAllChannelVolumes(DWORD dwVolumePercent)
 	DWORD dwEvent, dwStatus, dwVol, idx;
 	MMRESULT mmrRetVal;
 
-//	if (!bPlaying)
-//		return;
+	if ( !(bPlaying || bPaused))
+		return;	/* otherwise we get MMSYSTEM errors after a MIDI_Stop() */
 
 	for (idx = 0, dwStatus = MIDI_CTRLCHANGE; idx < NUM_CHANNELS; idx++, dwStatus++)
 	{
@@ -644,7 +644,7 @@ static void SetChannelVolume(DWORD dwChannel, DWORD dwVolumePercent)
 	DWORD dwEvent, dwVol;
 	MMRESULT mmrRetVal;
 
-	if (!bPlaying)
+	if ( !(bPlaying || bPaused))
 		return;
 
 	dwVol = (dwVolCache[dwChannel] * dwVolumePercent) / 1000;
