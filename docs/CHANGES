@@ -3,6 +3,25 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2007-04-30/05-01 (CVS):
+    * snd_alsa.c, sv_move.c: minor fixes.
+    * menu.c, sbar.c, world.c: minor cleanups.
+    * cvar.c: reverted the %g specifer change in Cvar_SetValue. manually
+      removing the trailing zeroes again.
+    * midi.c, midi_sdl.c, midi_mac.c, cd_bsd.c, cd_linux.c, cd_sdl.c: updated
+      cdaudio and midi volume setting procedures.
+    * updated release notes for the upcoming 1.4.2 release.
+    * gl_model.c, gl_rmain.c, gl_rsurf.c, gl_warp.c: more clean-ups.
+    * gl_vidnt.c, vid_win.c, midi.c, midi.h, mstrconv.c: more clean-ups.
+      mostly whitespace.
+    * vid_win.c: reverted the MAX_DESC change from the previous commit in
+      vid_win.c. the number 13 is relied on in the menu draw.
+    * cd_null.c, gl_vidnt.c, vid_win.c, winquake.h: cleanup for
+      CDAudio_MessageHandler of win32 version.
+    * midi.c: added a success message to win32 midi init.
+    * midi.c: win32 midi: prevented MMSYSTEM errors from SetAllChannelVolumes()
+      when midi is not alive.
+
 2007-04-28/29 (CVS):
     * fixed multiplayer episode selection in menu.c. performed small clean-ups.
     * more menu clean-ups.
