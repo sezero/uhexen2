@@ -23,13 +23,11 @@ ifeq ($(TARGET_OS),WIN32)
 QBSP=qbsp.exe
 LIGHT=light.exe
 VIS=vis.exe
-BSP2WAL=bsp2wal.exe
 BSPINFO=bspinfo.exe
 else
 QBSP=qbsp
 LIGHT=light
 VIS=vis
-BSP2WAL=bsp2wal
 BSPINFO=bspinfo
 endif
 
@@ -58,13 +56,15 @@ LDLIBS  := -lm
 endif
 
 # Targets
-all : $(LIGHT) $(VIS) $(QBSP) $(BSPINFO) $(BSP2WAL)
+all : $(LIGHT) $(VIS) $(QBSP) $(BSPINFO)
 
 # Rules for turning source files into .o files
 %.o: %.c
 	$(CC) -c $(CFLAGS) $(ARCHFLAGS) $(INCLUDES) -o $@ $<
 # special rule for mathlib because of DOUBLEVEC_T
 mathlib.o: $(COMMONDIR)/mathlib.c
+	$(CC) -c $(CFLAGS) $(ARCHFLAGS) $(INCLUDES) -o $@ $<
+bspfile.o: $(COMMONDIR)/bspfile.c
 	$(CC) -c $(CFLAGS) $(ARCHFLAGS) $(INCLUDES) -o $@ $<
 
 # Objects
@@ -108,13 +108,6 @@ BSPINFOBJS= $(COMMONDIR)/cmdlib.o \
 	bspfile.o \
 	bspinfo.o
 
-BSP2WALOBJS= $(COMMONDIR)/cmdlib.o \
-	$(COMMONDIR)/q_endian.o \
-	$(COMMONDIR)/util_io.o \
-	$(COMMONDIR)/pathutil.o \
-	bspfile.o \
-	bsp2wal.o
-
 # include file for sanity check target
 include $(UHEXEN2_TOP)/scripts/sanity2.inc
 
@@ -129,9 +122,6 @@ $(QBSP) : $(COMMONOBJS) $(QBSPOBJS)
 
 $(BSPINFO) : $(BSPINFOBJS)
 	$(LINKER) -o $(DESTDIR)/$(BSPINFO) $(BSPINFOBJS) $(LDFLAGS)
-
-$(BSP2WAL) : $(BSP2WALOBJS)
-	$(LINKER) -o $(DESTDIR)/$(BSP2WAL) $(BSP2WALOBJS) $(LDFLAGS)
 
 clean : 
 	rm -f *.o $(COMMONDIR)/*.o .tmp *.tmp core

@@ -1,6 +1,6 @@
 /*
 	scriplib.h
-	$Id: scriplib.h,v 1.6 2007-04-20 13:59:38 sezero Exp $
+	$Id: scriplib.h,v 1.1 2007-05-05 11:18:47 sezero Exp $
 */
 
 #ifndef __SCRIPLIB_H

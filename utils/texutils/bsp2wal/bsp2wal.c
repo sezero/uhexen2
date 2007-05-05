@@ -1,6 +1,6 @@
 /*
 	bsp2wal.c
-	$Id: bsp2wal.c,v 1.5 2007-04-23 09:41:43 sezero Exp $
+	$Id: bsp2wal.c,v 1.1 2007-05-05 11:18:49 sezero Exp $
 */
 
 #include "util_inc.h"

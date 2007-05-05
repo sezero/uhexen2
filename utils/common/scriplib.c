@@ -1,6 +1,6 @@
 /*
 	scriplib.c
-	$Id: scriplib.c,v 1.5 2007-04-20 13:59:37 sezero Exp $
+	$Id: scriplib.c,v 1.1 2007-05-05 11:18:47 sezero Exp $
 */
 
 #include "util_inc.h"

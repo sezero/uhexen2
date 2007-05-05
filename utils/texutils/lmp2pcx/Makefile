@@ -6,11 +6,11 @@
 
 # Path settings:
 # main uhexen2 relative path
-UHEXEN2_TOP=../..
+UHEXEN2_TOP=../../..
 # where the common sources/objects are
-COMMONDIR=../common
+COMMONDIR=../../common
 # where to put the binaries
-DESTDIR =../bin
+DESTDIR =../../bin
 
 # include the common dirty stuff
 include $(UHEXEN2_TOP)/scripts/makefile.inc
@@ -20,9 +20,9 @@ include $(UHEXEN2_TOP)/scripts/sanity1.inc
 
 # Names of the binaries
 ifeq ($(TARGET_OS),WIN32)
-BINARY=genmodel.exe
+BINARY=lmp2pcx.exe
 else
-BINARY=genmodel
+BINARY=lmp2pcx
 endif
 
 # Compiler flags
@@ -33,7 +33,7 @@ endif
 #ARCHFLAGS:=
 
 ifndef DEBUG
-CFLAGS := $(CPUFLAGS) -O2 -Wall -ffast-math -fexpensive-optimizations
+CFLAGS = $(CPUFLAGS) -O2 -Wall
 endif
 
 # Other build flags
@@ -45,7 +45,7 @@ LDLIBS  :=
 else
 INCLUDES:= -I$(COMMONDIR)
 LDFLAGS :=
-LDLIBS  := -lm
+LDLIBS  :=
 endif
 
 # Targets
@@ -54,29 +54,21 @@ all : $(BINARY)
 # Rules for turning source files into .o files
 %.o: %.c
 	$(CC) -c $(CFLAGS) $(ARCHFLAGS) $(INCLUDES) -o $@ $<
-# special rule for mathlib because of DOUBLEVEC_T
-mathlib.o: $(COMMONDIR)/mathlib.c
-	$(CC) -c $(CFLAGS) $(ARCHFLAGS) $(INCLUDES) -o $@ $<
 
 # Objects
-GENMODELOBJS= $(COMMONDIR)/cmdlib.o \
-	$(COMMONDIR)/q_endian.o \
+LMP2PCXOBJS= $(COMMONDIR)/cmdlib.o \
 	$(COMMONDIR)/util_io.o \
 	$(COMMONDIR)/pathutil.o \
-	$(COMMONDIR)/scriplib.o \
-	$(COMMONDIR)/qdir.o \
-	mathlib.o \
-	loadtri.o \
-	token.o \
-	genmodel.o
+	$(COMMONDIR)/q_endian.o \
+	lmp2pcx.o
 #	$(COMMONDIR)/strlcat.o \
 #	$(COMMONDIR)/strlcpy.o \
 
 # include file for sanity check target
 include $(UHEXEN2_TOP)/scripts/sanity2.inc
 
-$(BINARY) : $(GENMODELOBJS)
-	$(LINKER) -o $(DESTDIR)/$(BINARY) $(GENMODELOBJS) $(LDFLAGS) $(LDLIBS)
+$(BINARY) : $(LMP2PCXOBJS)
+	$(LINKER) -o $(DESTDIR)/$(BINARY) $(LMP2PCXOBJS) $(LDFLAGS) $(LDLIBS)
 
 clean : 
 	rm -f *.o $(COMMONDIR)/*.o .tmp *.tmp core
