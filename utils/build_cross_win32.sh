@@ -4,8 +4,9 @@ UHEXEN2_TOP=..
 . $UHEXEN2_TOP/scripts/cross_defs
 
 BIN_FILES="bin/hcc.exe bin/vis.exe bin/qbsp.exe bin/light.exe
-bin/qfiles.exe bin/genmodel.exe bin/bspinfo.exe bin/bsp2wal.exe
+bin/qfiles.exe bin/genmodel.exe bin/bspinfo.exe
 bin/jsh2colour.exe
+bin/bsp2wal.exe bin/lmp2pcx.exe
 bin/dhcc.exe hcc_old/hcc.exe"
 
 if [ "$1" = "strip" ]
@@ -41,6 +42,8 @@ $MAKE_CMD -s -C qfiles clean
 $MAKE_CMD -s -C dcc clean
 $MAKE_CMD -s -C jsh2color clean
 $MAKE_CMD -s -C hcc_old clean
+$MAKE_CMD -s -C texutils/bsp2wal clean
+$MAKE_CMD -s -C texutils/lmp2pcx clean
 exit 0
 fi
 
@@ -64,4 +67,8 @@ $MAKE_CMD -C dcc $SENDARGS || exit 1
 
 echo "" && echo "Now building jsh2colour, a lit file generator.."
 $MAKE_CMD -C jsh2color $SENDARGS || exit 1
+
+echo "" && echo "Now building texutils.."
+$MAKE_CMD -C texutils/bsp2wal $SENDARGS || exit 1
+$MAKE_CMD -C texutils/lmp2pcx $SENDARGS || exit 1
 
