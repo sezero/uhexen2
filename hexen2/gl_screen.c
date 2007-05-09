@@ -2,7 +2,7 @@
 	screen.c
 	master for refresh, status bar, console, chat, notify, etc
 
-	$Id: gl_screen.c,v 1.46 2007-05-09 18:10:13 sezero Exp $
+	$Id: gl_screen.c,v 1.47 2007-05-09 20:17:12 sezero Exp $
 */
 
 /*=============================================================================
@@ -290,7 +290,8 @@ Internal use only
 */
 static void SCR_CalcRefdef (void)
 {
-	int		h, size;
+	float		size;
+	int		h;
 
 	scr_fullupdate = 0;		// force a background redraw
 	vid.recalc_refdef = 0;
@@ -314,28 +315,15 @@ static void SCR_CalcRefdef (void)
 	SB_ViewSizeChanged ();
 	Sbar_Changed();
 
-// intermission is always full screen
-	if (cl.intermission)
-		size = 110;
-	else
-		size = scr_viewsize.integer;
-
-/*	if (size >= 120)
-		sb_lines = 0;		// no status bar at all
-	else if (size >= 110)
-		sb_lines = 24;		// no inventory
-	else
-		sb_lines = 24+16+8;
-*/
-	if (size >= 110)
+	if (scr_viewsize.integer >= 110)
 		sb_lines = 0;		// no status bar
 	else
 		sb_lines = 36;
 
-	size = scr_viewsize.integer > 100 ? 100 : scr_viewsize.integer;
+	size = scr_viewsize.integer > 100 ? 100.0 : scr_viewsize.integer;
 	if (cl.intermission)
 	{
-		size = 100;
+		size = 100.0;		// intermission is always full screen
 		sb_lines = 0;
 	}
 	size /= 100.0;

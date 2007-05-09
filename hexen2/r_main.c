@@ -1,7 +1,7 @@
 /*
 	r_main.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/r_main.c,v 1.22 2007-05-09 18:10:13 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/r_main.c,v 1.23 2007-05-09 20:17:12 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -380,12 +380,13 @@ R_SetVrect
 */
 void R_SetVrect (vrect_t *pvrectin, vrect_t *pvrect, int lineadj)
 {
-	int		h, size;
+	float		size;
+	int		h;
 
-	size = scr_viewsize.integer > 100.0 ? 100.0 : scr_viewsize.integer;
+	size = scr_viewsize.integer > 100 ? 100.0 : scr_viewsize.integer;
 	if (cl.intermission)
 	{
-		size = 100.0;
+		size = 100.0;	// intermission is always full screen
 		lineadj = 0;
 	}
 	size /= 100.0;

@@ -2,7 +2,7 @@
 	screen.c
 	master for refresh, status bar, console, chat, notify, etc
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/screen.c,v 1.43 2007-05-09 18:10:13 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/screen.c,v 1.44 2007-05-09 20:17:12 sezero Exp $
 */
 
 /*=============================================================================
@@ -318,7 +318,6 @@ Internal use only
 static void SCR_CalcRefdef (void)
 {
 	vrect_t		vrect;
-	int		size;
 
 	scr_fullupdate = 0;		// force a background redraw
 	vid.recalc_refdef = 0;
@@ -343,19 +342,7 @@ static void SCR_CalcRefdef (void)
 	Sbar_Changed();
 
 // intermission is always full screen
-	if (cl.intermission)
-		size = 110;
-	else
-		size = scr_viewsize.integer;
-
-/*	if (size >= 120)
-		sb_lines = 0;		// no status bar at all
-	else if (size >= 110)
-		sb_lines = 24;		// no inventory
-	else
-		sb_lines = 24+16+8;
-*/
-	if (size >= 110)
+	if (scr_viewsize.integer >= 110 || cl.intermission)
 		sb_lines = 0;		// no status bar
 	else
 		sb_lines = 46;
