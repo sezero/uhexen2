@@ -1,7 +1,7 @@
 /*
 	d_edge.c
 
-	$Id: d_edge.c,v 1.8 2007-03-14 21:03:31 sezero Exp $
+	$Id: d_edge.c,v 1.9 2007-05-09 18:10:16 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -202,7 +202,7 @@ void D_DrawSurfaces2 (qboolean Translucent)
 	VectorCopy (transformed_modelorg, world_transformed_modelorg);
 
 // TODO: could preset a lot of this at mode set time
-	if (r_drawflat.value)
+	if (r_drawflat.integer)
 	{
 		for (s = &surfaces[1] ; s < surface_p ; s++)
 		{
@@ -248,7 +248,7 @@ void D_DrawSurfaces2 (qboolean Translucent)
 				d_zistepv = 0;
 				d_ziorigin = -0.9;
 
-				D_DrawSolidSurface (s, (int)r_clearcolor.value & 0xFF);
+				D_DrawSolidSurface (s, r_clearcolor.integer & 0xFF);
 				D_DrawZSpans (s->spans);
 			}
 			else if (s->flags & SURF_DRAWTURB)
@@ -374,7 +374,7 @@ void D_DrawSurfaces (qboolean Translucent)
 	VectorCopy (transformed_modelorg, world_transformed_modelorg);
 
 // TODO: could preset a lot of this at mode set time
-	if (r_drawflat.value)
+	if (r_drawflat.integer)
 	{
 		if (Translucent)
 			return;
@@ -443,7 +443,7 @@ void D_DrawSurfaces (qboolean Translucent)
 					d_zistepv = 0;
 					d_ziorigin = -0.9;
 
-					D_DrawSolidSurface (s, (int)r_clearcolor.value & 0xFF);
+					D_DrawSolidSurface (s, r_clearcolor.integer & 0xFF);
 					D_DrawZSpans (s->spans);
 				}
 				else if (s->flags & SURF_DRAWTURB)

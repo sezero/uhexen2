@@ -2,7 +2,7 @@
 	sbar.c
 	Hexen II status bar
 
-	$Id: sbar.c,v 1.30 2007-04-30 17:25:47 sezero Exp $
+	$Id: sbar.c,v 1.31 2007-05-09 18:10:18 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -304,7 +304,7 @@ void Sbar_Draw(void)
 //rjr			else
 //rjr				Sbar_NormalOverlay();
 		}
-		else if (DMMode.value)
+		else if (DMMode.integer)
 		{
 			Sbar_SmallDeathmatchOverlay();
 		}
@@ -312,7 +312,7 @@ void Sbar_Draw(void)
 		return;
 	}
 
-	trans_level = (int)sbtrans.value;
+	trans_level = sbtrans.integer;
 	if (trans_level < 0 || trans_level > 2)
 	{
 		trans_level = 0;
@@ -452,7 +452,7 @@ void Sbar_Draw(void)
 //rjr		else
 //rjr			Sbar_NormalOverlay();
 	}
-	else if (DMMode.value)
+	else if (DMMode.integer)
 	{
 		Sbar_SmallDeathmatchOverlay();
 	}
@@ -1315,17 +1315,15 @@ static void Sbar_SmallDeathmatchOverlay(void)
 	char		num[40];
 	player_info_t	*s;
 
-	if (DMMode.value != (int)DMMode.value)
-		Cvar_SetValue ("dm_mode", (int)DMMode.value);
-	if (!DMMode.value)
+	if (!DMMode.integer)
 		return;
-	if (DMMode.value > 2)
-		DMMode.value = 2;
+	if (DMMode.integer > 2)
+		DMMode.integer = 2;
 
-	if ((int)DMMode.value == 2 && BarHeight != BAR_TOP_HEIGHT)
+	if (DMMode.integer == 2 && BarHeight != BAR_TOP_HEIGHT)
 		return;
 
-	trans_level = (int)dmtrans.value;
+	trans_level = dmtrans.integer;
 	if (trans_level < 0 || trans_level > 2)
 	{
 		trans_level = 0;
@@ -1341,7 +1339,7 @@ static void Sbar_SmallDeathmatchOverlay(void)
 	l = scoreboardlines;
 
 	x = 10;
-	if ((int)DMMode.value == 1)
+	if (DMMode.integer == 1)
 	{
 		i = (vid.height - 120) / 10;
 
@@ -1350,7 +1348,7 @@ static void Sbar_SmallDeathmatchOverlay(void)
 
 		y = 46;
 	}
-	//else if ((int)DMMode.value == 2)
+	//else if (DMMode.integer == 2)
 	else
 	{
 		if (l > 4)
@@ -1782,8 +1780,8 @@ static void ShowInfoDown_f(void)
 
 static void ShowInfoUp_f(void)
 {
-//	if (cl.intermission || (scr_viewsize.value > 110.0 && !sbtrans.value))
-	if (cl.intermission || scr_viewsize.value > 110.0)
+//	if (cl.intermission || (scr_viewsize.integer > 110.0 && !sbtrans.integer))
+	if (cl.intermission || scr_viewsize.integer > 110.0)
 	{
 		BarTargetHeight = 0.0-BAR_BUMP_HEIGHT;
 	}
@@ -1923,9 +1921,9 @@ static void InvOff_f(void)
 
 static void ToggleDM_f(void)
 {
-	DMMode.value += 1;
-	if (DMMode.value > 2)
-		DMMode.value = 0;
+	DMMode.integer += 1;
+	if (DMMode.integer > 2)
+		DMMode.integer = 0;
 }
 
 //==========================================================================
@@ -2018,8 +2016,8 @@ void SB_InvReset(void)
 
 void SB_ViewSizeChanged(void)
 {
-//	if (cl.intermission || (scr_viewsize.value > 110.0 && !sbtrans.value))
-	if (cl.intermission || scr_viewsize.value > 110.0)
+//	if (cl.intermission || (scr_viewsize.integer > 110.0 && !sbtrans.integer))
+	if (cl.intermission || scr_viewsize.integer > 110.0)
 	{
 		BarHeight = BarTargetHeight = 0.0-BAR_BUMP_HEIGHT;
 	}

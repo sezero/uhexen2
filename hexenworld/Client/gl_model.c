@@ -5,7 +5,7 @@
 	models are the only shared resource between a client and server
 	running on the same machine.
 
-	$Id: gl_model.c,v 1.34 2007-05-01 06:38:04 sezero Exp $
+	$Id: gl_model.c,v 1.35 2007-05-09 18:10:16 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -173,7 +173,7 @@ void Mod_ClearAll (void)
 	{	// clear alias models only if textures were flushed (Pa3PyX)
 		if (mod->type == mod_alias)
 		{
-			if (flush_textures && gl_purge_maptex.value)
+			if (flush_textures && gl_purge_maptex.integer)
 			{
 				if (Cache_Check(&(mod->cache)))
 					Cache_Free(&(mod->cache));
@@ -393,7 +393,7 @@ static void Mod_LoadTextures (lump_t *l)
 		for (j = 0; j < MIPLEVELS; j++)
 			mt->offsets[j] = LittleLong (mt->offsets[j]);
 
-		if (!r_texture_external.value)
+		if (!r_texture_external.integer)
 			goto bsp_tex_internal;
 		// try an external wal texture file first
 		sprintf (texname, "textures/%s.wal", mt->name);
@@ -651,17 +651,15 @@ static void Mod_LoadLighting (lump_t *l)
 					// changes via the cvar gl_lightmapfmt
 
 	// bound the gl_coloredlight value
-	if (gl_coloredlight.value < 0)
+	if (gl_coloredlight.integer < 0)
 		Cvar_SetValue ("gl_coloredlight", 0);
-	gl_coloredstatic = (int)gl_coloredlight.value;
-	if (gl_coloredstatic != gl_coloredlight.value)
-		Cvar_SetValue ("gl_coloredlight", gl_coloredstatic);
+	gl_coloredstatic = gl_coloredlight.integer;
 
 	if (gl_lightmap_format == GL_RGBA)
 	{
 		loadmodel->lightdata = NULL;
 
-		if (gl_coloredlight.value)
+		if (gl_coloredlight.integer)
 		{	// LordHavoc: check for a .lit file
 			strcpy(litfilename, loadmodel->name);
 			COM_StripExtension(litfilename, litfilename);
@@ -677,7 +675,7 @@ static void Mod_LoadLighting (lump_t *l)
 					{
 						Con_DPrintf("%s loaded\n", litfilename);
 						Con_Printf("Loaded colored light (32-bit)\n");
-						if ( gl_coloredlight.value == 1 )
+						if ( gl_coloredlight.integer == 1 )
 						{
 							loadmodel->lightdata = data + 8;
 							return;

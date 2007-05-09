@@ -5,7 +5,7 @@
 	models are the only shared resource between a client and server
 	running on the same machine.
 
-	$Id: model.c,v 1.22 2007-04-18 13:33:43 sezero Exp $
+	$Id: model.c,v 1.23 2007-05-09 18:10:17 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -384,7 +384,7 @@ static void Mod_LoadTextures (lump_t *l)
 		for (j = 0; j < MIPLEVELS; j++)
 			mt->offsets[j] = LittleLong (mt->offsets[j]);
 
-		if (!r_texture_external.value)
+		if (!r_texture_external.integer)
 			goto bsp_tex_internal;
 		// try an external wal texture file first
 		sprintf (texname, "textures/%s.wal", mt->name);
@@ -884,7 +884,7 @@ static void Mod_LoadFaces (lump_t *l)
 				out->texturemins[i] = -8192;
 			}
 
-		    if (r_transwater.value)
+		    if (r_transwater.integer)
 			if ( (!Q_strncasecmp(out->texinfo->texture->name,"*rtex078",8)) ||
 					(!Q_strncasecmp(out->texinfo->texture->name,"*lowlight",9)) )
 				out->flags |= SURF_TRANSLUCENT;

@@ -3,7 +3,7 @@
 	SDL video driver
 	Select window size and mode and init SDL in SOFTWARE mode.
 
-	$Id: vid_sdl.c,v 1.68 2007-03-16 22:44:46 sezero Exp $
+	$Id: vid_sdl.c,v 1.69 2007-05-09 18:10:18 sezero Exp $
 
 	Changed by S.A. 7/11/04, 27/12/04
 	Options are now: -fullscreen | -window, -height , -width
@@ -489,7 +489,7 @@ static int VID_SetMode (int modenum, unsigned char *palette)
 		SDL_FreeSurface(screen);
 
 	flags = (SDL_SWSURFACE|SDL_HWPALETTE);
-	if ((int)vid_config_fscr.value)
+	if (vid_config_fscr.integer)
 		flags |= SDL_FULLSCREEN;
 
 	// Set the mode
@@ -574,15 +574,15 @@ static void VID_ChangeVideoMode(int newmode)
 
 static void VID_Restart_f (void)
 {
-	if ((int)vid_mode.value < 0 || (int)vid_mode.value >= *nummodes)
+	if (vid_mode.integer < 0 || vid_mode.integer >= *nummodes)
 	{
-		Con_Printf ("Bad video mode %d\n", (int)vid_mode.value);
+		Con_Printf ("Bad video mode %d\n", vid_mode.integer);
 		Cvar_SetValue ("vid_mode", vid_modenum);
 		return;
 	}
 
 	Con_Printf ("Re-initializing video:\n");
-	VID_ChangeVideoMode ((int)vid_mode.value);
+	VID_ChangeVideoMode (vid_mode.integer);
 }
 
 void VID_LockBuffer (void)
@@ -718,11 +718,11 @@ void VID_Init (unsigned char *palette)
 		Cvar_SetValue("vid_config_fscr", 0);
 	}
 
-	if ((int)vid_config_fscr.value && !num_fmodes) // FIXME: see below, as well
+	if (vid_config_fscr.integer && !num_fmodes) // FIXME: see below, as well
 		Sys_Error ("No fullscreen modes available at this color depth");
 
-	width = (int)vid_config_swx.value;
-	height = (int)vid_config_swy.value;
+	width = vid_config_swx.integer;
+	height = vid_config_swy.integer;
 
 	// user is always right ...
 	i = COM_CheckParm("-width");
@@ -777,15 +777,15 @@ void VID_Init (unsigned char *palette)
 	vid.colormap = host_colormap;
 	vid.fullbright = 256 - LittleLong (*((int *)vid.colormap + 2048));
 
-	i = VID_SetMode((int)vid_mode.value, palette);
+	i = VID_SetMode(vid_mode.integer, palette);
 	if ( !i )
 	{
-		if ((int)vid_mode.value == vid_default)
+		if (vid_mode.integer == vid_default)
 			Sys_Error ("Couldn't set video mode: %s", SDL_GetError());
 
 		// just one more try before dying
 		Con_Printf ("Couldn't set video mode %d\n"
-			    "Trying the default mode\n", (int)vid_mode.value);
+			    "Trying the default mode\n", vid_mode.integer);
 		//Cvar_SetValue("vid_config_fscr", 0);
 		Cvar_SetValue ("vid_mode", vid_default);
 		i = VID_SetMode(vid_default, palette);
@@ -854,14 +854,14 @@ void VID_Update (vrect_t *rects)
 #if 0	// change to 1 if dont want to disable mouse in fullscreen
 	if (modestate == MS_WINDOWED)
 #endif
-		if ((int)_enable_mouse.value != enable_mouse)
+		if (_enable_mouse.integer != enable_mouse)
 		{
-			if (_enable_mouse.value)
+			if (_enable_mouse.integer)
 				IN_ActivateMouse ();
 			else
 				IN_DeactivateMouse ();
 
-			enable_mouse = (int)_enable_mouse.value;
+			enable_mouse = _enable_mouse.integer;
 		}
 }
 
@@ -912,7 +912,7 @@ void D_ShowLoadingSize (void)
 	vrect_t		rect;
 	viddef_t	save_vid;	// global video state
 
-	if (!vid_showload.value)
+	if (!vid_showload.integer)
 		return; 
 
 	if (!vid_initialized)
@@ -985,9 +985,9 @@ VID_HandlePause
 void VID_HandlePause (qboolean paused)
 {
 #if 0	// change to 1 if dont want to disable mouse in fullscreen
-	if ((modestate == MS_WINDOWED) && _enable_mouse.value)
+	if ((modestate == MS_WINDOWED) && _enable_mouse.integer)
 #else
-	if (_enable_mouse.value)
+	if (_enable_mouse.integer)
 #endif
 	{
 		// for consistency , don't show pointer S.A

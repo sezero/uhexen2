@@ -2,7 +2,7 @@
 	gl_vidsdl.c -- SDL GL vid component
 	Select window size and mode and init SDL in GL mode.
 
-	$Id: gl_vidsdl.c,v 1.155 2007-04-18 13:31:21 sezero Exp $
+	$Id: gl_vidsdl.c,v 1.156 2007-05-09 18:10:13 sezero Exp $
 
 	Changed 7/11/04 by S.A.
 	- Fixed fullscreen opengl mode, window sizes
@@ -218,9 +218,9 @@ cvar_t		_enable_mouse = {"_enable_mouse", "1", CVAR_ARCHIVE};
 void VID_HandlePause (qboolean paused)
 {
 #if 0	// change to 1 if dont want to disable mouse in fullscreen
-	if ((modestate == MS_WINDOWED) && _enable_mouse.value)
+	if ((modestate == MS_WINDOWED) && _enable_mouse.integer)
 #else
-	if (_enable_mouse.value)
+	if (_enable_mouse.integer)
 #endif
 	{
 		// for consistency , don't show pointer S.A
@@ -286,7 +286,7 @@ static void VID_ConWidth (int modenum)
 		goto finish;
 	}
 
-	w = (int)vid_config_consize.value;
+	w = vid_config_consize.integer;
 // disabling this: we may have non-multiple-of-eight resolutions
 //	w &= 0xfff8; // make it a multiple of eight
 
@@ -378,7 +378,7 @@ static int VID_SetMode (int modenum)
 
 	//flags = (SDL_OPENGL|SDL_NOFRAME);
 	flags = (SDL_OPENGL);
-	if ((int)vid_config_fscr.value)
+	if (vid_config_fscr.integer)
 		flags |= SDL_FULLSCREEN;
 
 	// setup the attributes
@@ -498,7 +498,7 @@ static void VID_Init8bitPalette (void)
 		}
 		have8bit = true;
 
-		if (!(int)vid_config_gl8bit.value)
+		if (!vid_config_gl8bit.integer)
 			return;
 
 		oldPalette = (char *) d_8to24table;
@@ -887,14 +887,14 @@ void GL_EndRendering (void)
 #if 0	// change to 1 if dont want to disable mouse in fullscreen
 	if (modestate == MS_WINDOWED)
 #endif
-		if ((int)_enable_mouse.value != enable_mouse)
+		if (_enable_mouse.integer != enable_mouse)
 		{
-			if (_enable_mouse.value)
+			if (_enable_mouse.integer)
 				IN_ActivateMouse ();
 			else
 				IN_DeactivateMouse ();
 
-			enable_mouse = (int)_enable_mouse.value;
+			enable_mouse = _enable_mouse.integer;
 		}
 
 	if (fullsbardraw)
@@ -1247,15 +1247,15 @@ static void VID_ChangeVideoMode(int newmode)
 
 static void VID_Restart_f (void)
 {
-	if ((int)vid_mode.value < 0 || (int)vid_mode.value >= *nummodes)
+	if (vid_mode.integer < 0 || vid_mode.integer >= *nummodes)
 	{
-		Con_Printf ("Bad video mode %d\n", (int)vid_mode.value);
+		Con_Printf ("Bad video mode %d\n", vid_mode.integer);
 		Cvar_SetValue ("vid_mode", vid_modenum);
 		return;
 	}
 
 	Con_Printf ("Re-initializing video:\n");
-	VID_ChangeVideoMode ((int)vid_mode.value);
+	VID_ChangeVideoMode (vid_mode.integer);
 }
 
 static int sort_modes (const void *arg1, const void *arg2)
@@ -1586,13 +1586,13 @@ void	VID_Init (unsigned char *palette)
 		Cvar_SetValue("vid_config_fscr", 0);
 	}
 
-	if ((int)vid_config_fscr.value && !num_fmodes) // FIXME: see below, as well
+	if (vid_config_fscr.integer && !num_fmodes) // FIXME: see below, as well
 		Sys_Error ("No fullscreen modes available at this color depth");
 
-	width = (int)vid_config_glx.value;
-	height = (int)vid_config_gly.value;
+	width = vid_config_glx.integer;
+	height = vid_config_gly.integer;
 
-	if ((int)vid_config_consize.value != width)
+	if (vid_config_consize.integer != width)
 		vid_conscale = true;
 
 	// user is always right ...
@@ -1652,11 +1652,11 @@ void	VID_Init (unsigned char *palette)
 	if (i != 0 && i < com_argc-1)
 	{
 		Cvar_SetValue("vid_config_consize", atoi(com_argv[i+1]));
-		if ((int)vid_config_consize.value != width)
+		if (vid_config_consize.integer != width)
 			vid_conscale = true;
 	}
 
-	multisample = (int)vid_config_fsaa.value;
+	multisample = vid_config_fsaa.integer;
 	i = COM_CheckParm ("-fsaa");
 	if (i && i < com_argc-1)
 		multisample = atoi(com_argv[i+1]);
@@ -1673,7 +1673,7 @@ void	VID_Init (unsigned char *palette)
 	i = scr_disabled_for_loading;
 	scr_disabled_for_loading = true;
 	//set the mode
-	VID_SetMode ((int)vid_mode.value);
+	VID_SetMode (vid_mode.integer);
 	ClearAllStates ();
 
 	GL_SetupLightmapFmt(true);
@@ -1744,7 +1744,7 @@ void VID_ToggleFullscreen (void)
 		if (is_fullscreen)
 		{
 #if 0	// change to 1 if dont want to disable mouse in fullscreen
-			if (!_enable_mouse.value)
+			if (!_enable_mouse.integer)
 				Cvar_SetValue ("_enable_mouse", 1);
 #endif
 			// activate mouse in fullscreen mode
@@ -1845,8 +1845,8 @@ void VID_MenuDraw (void)
 	want_fstoggle = ( ((modestate == MS_WINDOWED) && vid_menu_fs) || ((modestate != MS_WINDOWED) && !vid_menu_fs) );
 
 	need_apply = (vid_menunum != vid_modenum) || want_fstoggle ||
-			(have8bit && (is8bit != !!vid_config_gl8bit.value)) ||
-			(multisample != (int)vid_config_fsaa.value);
+			(have8bit && (is8bit != !!vid_config_gl8bit.integer)) ||
+			(multisample != vid_config_fsaa.integer);
 
 	M_Print (76, 92 + 8*VID_FULLSCREEN, "Fullscreen: ");
 	M_DrawYesNo (76+12*8, 92 + 8*VID_FULLSCREEN, vid_menu_fs, !want_fstoggle);
@@ -1860,7 +1860,7 @@ void VID_MenuDraw (void)
 	M_Print (76, 92 + 8*VID_MULTISAMPLE, "Antialiasing  :");
 	if (sdl_has_multisample)
 	{
-		if (multisample == (int)vid_config_fsaa.value)
+		if (multisample == vid_config_fsaa.integer)
 			M_PrintWhite (76+16*8, 92 + 8*VID_MULTISAMPLE, va("%d",multisample));
 		else
 			M_Print (76+16*8, 92 + 8*VID_MULTISAMPLE, va("%d",multisample));
@@ -1870,7 +1870,7 @@ void VID_MenuDraw (void)
 
 	M_Print (76, 92 + 8*VID_PALTEX, "8 bit textures:");
 	if (have8bit)
-		M_DrawYesNo (76+16*8, 92 + 8*VID_PALTEX, (int)vid_config_gl8bit.value, (is8bit == !!vid_config_gl8bit.value));
+		M_DrawYesNo (76+16*8, 92 + 8*VID_PALTEX, vid_config_gl8bit.integer, (is8bit == !!vid_config_gl8bit.integer));
 	else
 		M_PrintWhite (76+16*8, 92 + 8*VID_PALTEX, "Not found");
 
@@ -1938,7 +1938,7 @@ void VID_MenuKey (int key)
 		case VID_RESET:
 			vid_menu_fs = (modestate != MS_WINDOWED);
 			vid_menunum = vid_modenum;
-			multisample = (int)vid_config_fsaa.value;
+			multisample = vid_config_fsaa.integer;
 			Cvar_SetValue ("vid_config_gl8bit", is8bit);
 			vid_cursor = (num_fmodes) ? 0 : VID_RESOLUTION;
 			break;
@@ -1980,7 +1980,7 @@ void VID_MenuKey (int key)
 			break;
 		case VID_PALTEX:
 			if (have8bit)
-				Cvar_SetValue ("vid_config_gl8bit", !(int)vid_config_gl8bit.value);
+				Cvar_SetValue ("vid_config_gl8bit", !vid_config_gl8bit.integer);
 			break;
 		}
 		return;
@@ -2011,7 +2011,7 @@ void VID_MenuKey (int key)
 			break;
 		case VID_PALTEX:
 			if (have8bit)
-				Cvar_SetValue ("vid_config_gl8bit", !(int)vid_config_gl8bit.value);
+				Cvar_SetValue ("vid_config_gl8bit", !vid_config_gl8bit.integer);
 			break;
 		}
 		return;

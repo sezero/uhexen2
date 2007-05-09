@@ -2,7 +2,7 @@
 	d_scan.c
 	Portable C scan-level rasterization code, all pixel depths.
 
-	$Id: d_scan.c,v 1.8 2007-03-14 21:03:05 sezero Exp $
+	$Id: d_scan.c,v 1.9 2007-05-09 18:10:13 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -265,7 +265,7 @@ void Turbulent8 (surf_t *s)
 
 		count = pspan->count;
 
-		if (r_transwater.value && s->flags & SURF_TRANSLUCENT)
+		if (r_transwater.integer && s->flags & SURF_TRANSLUCENT)
 		{
 			D_DrawSingleZSpans(pspan);
 			if (ZScanCount == count)  // fully blocked
@@ -369,7 +369,7 @@ void Turbulent8 (surf_t *s)
 			r_turb_s = r_turb_s & ((CYCLE<<16)-1);
 			r_turb_t = r_turb_t & ((CYCLE<<16)-1);
 
-			if (r_transwater.value && s->flags & SURF_TRANSLUCENT)
+			if (r_transwater.integer && s->flags & SURF_TRANSLUCENT)
 			{
 				if (ZScanCount)
 				{

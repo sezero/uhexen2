@@ -2,7 +2,7 @@
 	pr_cmds.c
 	prog commands
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/pr_cmds.c,v 1.41 2007-04-03 06:08:04 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/pr_cmds.c,v 1.42 2007-05-09 18:10:13 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -1768,7 +1768,7 @@ static void PF_precache_sound (void)
 
 static void PF_precache_sound2 (void)
 {
-	if (!registered.value)
+	if (!registered.integer)
 		return;
 
 	PF_precache_sound();
@@ -1776,7 +1776,7 @@ static void PF_precache_sound2 (void)
 
 static void PF_precache_sound3 (void)
 {
-	if (!registered.value && !oem.value)
+	if (!registered.integer && !oem.integer)
 		return;
 
 	PF_precache_sound();
@@ -1784,7 +1784,7 @@ static void PF_precache_sound3 (void)
 
 static void PF_precache_sound4 (void)
 {//mission pack only
-	if (!registered.value)
+	if (!registered.integer)
 		return;
 
 	PF_precache_sound();
@@ -1821,7 +1821,7 @@ static void PF_precache_model (void)
 
 static void PF_precache_model2 (void)
 {
-	if (!registered.value)
+	if (!registered.integer)
 		return;
 
 	PF_precache_model();
@@ -1829,7 +1829,7 @@ static void PF_precache_model2 (void)
 
 static void PF_precache_model3 (void)
 {
-	if (!registered.value && !oem.value)
+	if (!registered.integer && !oem.integer)
 		return;
 
 	PF_precache_model();
@@ -1837,7 +1837,7 @@ static void PF_precache_model3 (void)
 
 static void PF_precache_model4 (void)
 {
-	if (!registered.value)
+	if (!registered.integer)
 		return;
 	PF_precache_model();
 }
@@ -2201,7 +2201,7 @@ static void PF_aim (void)
 	ent->v.hull = save_hull;
 
 	if (tr.ent && tr.ent->v.takedamage == DAMAGE_YES
-		&& (!teamplay.value || ent->v.team <= 0 || ent->v.team != tr.ent->v.team) )
+		&& (!teamplay.integer || ent->v.team <= 0 || ent->v.team != tr.ent->v.team) )
 	{
 		VectorCopy (PR_GLOBAL_STRUCT(v_forward), G_VECTOR(OFS_RETURN));
 		return;
@@ -2219,7 +2219,7 @@ static void PF_aim (void)
 			continue;
 		if (check == ent)
 			continue;
-		if (teamplay.value && ent->v.team > 0 && ent->v.team == check->v.team)
+		if (teamplay.integer && ent->v.team > 0 && ent->v.team == check->v.team)
 			continue;	// don't aim at teammate
 		for (j = 0; j < 3; j++)
 			end[j] = check->v.origin[j] + 0.5 * (check->v.mins[j] + check->v.maxs[j]);

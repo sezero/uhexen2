@@ -2,7 +2,7 @@
 	sys_win.c
 	Win32 system interface code
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Server/win_stuff/sys_win.c,v 1.29 2007-04-10 17:36:35 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Server/win_stuff/sys_win.c,v 1.30 2007-05-09 18:11:39 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -23,7 +23,7 @@
 #define MAX_MEM_ALLOC	0x2000000
 
 cvar_t		sys_nostdout = {"sys_nostdout", "0", CVAR_NONE};
-int		devlog;	/* log the Con_DPrintf and Sys_DPrintf content when !developer.value */
+int		devlog;	/* log the Con_DPrintf and Sys_DPrintf content when !developer.integer */
 
 
 /*
@@ -139,7 +139,7 @@ void Sys_PrintTerm (const char *msgtxt)
 {
 	unsigned char		*p;
 
-	if (sys_nostdout.value)
+	if (sys_nostdout.integer)
 		return;
 
 	for (p = (unsigned char *) msgtxt; *p; p++)

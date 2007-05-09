@@ -2,7 +2,7 @@
 	sv_send.c
 	server communication module
 
-	$Id: sv_send.c,v 1.18 2007-04-01 12:18:41 sezero Exp $
+	$Id: sv_send.c,v 1.19 2007-05-09 18:11:38 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -98,7 +98,7 @@ void CON_Printf (unsigned int flags, const char *fmt, ...)
 	va_list		argptr;
 	char		msg[MAX_PRINTMSG];
 
-	if (flags & _PRINT_DEVEL && !developer.value)
+	if (flags & _PRINT_DEVEL && !developer.integer)
 	{
 		if (devlog && sv_logfile)	/* full logging */
 		{
@@ -457,7 +457,7 @@ void SV_StartSound (edict_t *entity, int channel, const char *sample, int volume
 
 	ent = NUM_FOR_EDICT(entity);
 
-	if ((channel & PHS_OVERRIDE_R) || !sv_phs.value)	// no PHS flag
+	if ((channel & PHS_OVERRIDE_R) || !sv_phs.integer)	// no PHS flag
 	{
 		if (channel & PHS_OVERRIDE_R)	//PHS_OVERRIDE_R = 8
 			reliable = true;	// sounds that break the phs are reliable
@@ -951,7 +951,7 @@ static void SV_UpdateToReliableMessages (void)
 				MSG_WriteShort (&client->netchan.message, host_client->edict->v.frags);
 				MSG_WriteByte (&client->netchan.message, (host_client->playerclass<<5)|((int)host_client->edict->v.level&31));
 
-				if (dmMode.value == DM_SIEGE)
+				if (dmMode.integer == DM_SIEGE)
 				{
 					MSG_WriteByte (&client->netchan.message, svc_updatesiegelosses);
 					MSG_WriteByte (&client->netchan.message, PR_GLOBAL_STRUCT(defLosses));

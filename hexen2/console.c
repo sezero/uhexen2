@@ -2,7 +2,7 @@
 	console.c
 	in-game console and chat message buffer handling
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/console.c,v 1.32 2007-04-10 17:53:05 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/console.c,v 1.33 2007-05-09 18:10:12 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -328,7 +328,7 @@ void CON_Printf (unsigned int flags, const char *fmt, ...)
 	int			temp = 0;
 	static qboolean	inupdate;
 
-	if (flags & _PRINT_DEVEL && !developer.value)
+	if (flags & _PRINT_DEVEL && !developer.integer)
 	{
 		if (con_debuglog & LOG_DEVEL)	/* full logging */
 		{

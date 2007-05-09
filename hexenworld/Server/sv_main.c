@@ -2,7 +2,7 @@
 	sv_main.c
 	server main program
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Server/sv_main.c,v 1.42 2007-04-08 18:50:39 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Server/sv_main.c,v 1.43 2007-05-09 18:11:37 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -220,7 +220,7 @@ void SV_DropClient (client_t *drop)
 			PR_ExecuteProgram (SpectatorDisconnect);
 		}
 	}
-	else if (dmMode.value == DM_SIEGE)
+	else if (dmMode.integer == DM_SIEGE)
 	{
 		if (PR_GetString(drop->edict->v.puzzle_inv1)[0] != '\0')
 		{
@@ -314,7 +314,7 @@ void SV_FullClientUpdate (client_t *client, sizebuf_t *buf)
 	MSG_WriteShort (buf, client->old_frags);
 	MSG_WriteByte (buf, (client->playerclass<<5)|((int)client->edict->v.level&31));
 
-	if (dmMode.value == DM_SIEGE)
+	if (dmMode.integer == DM_SIEGE)
 	{
 		MSG_WriteByte (buf, svc_updatesiegeinfo);
 		MSG_WriteByte (buf, (int)ceil(timelimit.value));
@@ -540,7 +540,7 @@ static void SVC_DirectConnect (void)
 	newcl->portals = atoi(Cmd_Argv(1));
 
 	// works properly
-	if (!sv_highchars.value)
+	if (!sv_highchars.integer)
 	{
 		byte	*p, *q;
 
@@ -583,14 +583,14 @@ static void SVC_DirectConnect (void)
 	}
 
 	// if at server limits, refuse connection
-	if ( maxclients.value > MAX_CLIENTS )
+	if (maxclients.integer > MAX_CLIENTS)
 		Cvar_SetValue ("maxclients", MAX_CLIENTS);
-	if (maxspectators.value > MAX_CLIENTS)
+	if (maxspectators.integer > MAX_CLIENTS)
 		Cvar_SetValue ("maxspectators", MAX_CLIENTS);
-	if (maxspectators.value + maxclients.value > MAX_CLIENTS)
-		Cvar_SetValue ("maxspectators", MAX_CLIENTS - maxspectators.value + maxclients.value);
-	if ( (spectator && spectators >= (int)maxspectators.value)
-		|| (!spectator && clients >= (int)maxclients.value) )
+	if (maxspectators.integer + maxclients.integer > MAX_CLIENTS)
+		Cvar_SetValue ("maxspectators", MAX_CLIENTS - maxspectators.integer + maxclients.integer);
+	if ( (spectator && spectators >= maxspectators.integer)
+		|| (!spectator && clients >= maxclients.integer) )
 	{
 		Con_Printf ("%s:full connect\n", NET_AdrToString (adr));
 		Netchan_OutOfBandPrint (adr, "%c\nserver is full\n\n", A2C_PRINT);
@@ -1014,10 +1014,10 @@ static qboolean SV_FilterPacket (void)
 	for (i = 0; i < numipfilters; i++)
 	{
 		if ( (in & ipfilters[i].mask) == ipfilters[i].compare)
-			return filterban.value;
+			return filterban.integer;
 	}
 
-	return !filterban.value;
+	return !filterban.integer;
 }
 
 
@@ -1510,7 +1510,7 @@ void SV_ExtractFromUserinfo (client_t *cl)
 	if (strlen(val))
 	{
 		i = atoi(val);
-		if (i > CLASS_DEMON && dmMode.value != DM_SIEGE)
+		if (i > CLASS_DEMON && dmMode.integer != DM_SIEGE)
 			i = CLASS_PALADIN;
 		if (i < 0 || i > MAX_PLAYER_CLASS || (!cl->portals && i == CLASS_DEMON))
 		{

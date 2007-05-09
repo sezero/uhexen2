@@ -2,7 +2,7 @@
 	sv_edict.c
 	entity dictionary
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/pr_edict.c,v 1.42 2007-04-18 13:31:46 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/pr_edict.c,v 1.43 2007-05-09 18:10:13 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -108,7 +108,7 @@ edict_t *ED_Alloc (void)
 	int			i;
 	edict_t		*e;
 
-	for (i = svs.maxclients + 1 + max_temp_edicts.value; i < sv.num_edicts; i++)
+	for (i = svs.maxclients + 1 + max_temp_edicts.integer; i < sv.num_edicts; i++)
 	{
 		e = EDICT_NUM(i);
 		// the first couple seconds of server time can involve a lot of
@@ -143,7 +143,7 @@ edict_t *ED_Alloc_Temp (void)
 	LeastTime = -1;
 	LeastSet = false;
 	Least = NULL;	// shut up compiler
-	for (i = svs.maxclients + 1, j = 0; j < max_temp_edicts.value; i++, j++)
+	for (i = svs.maxclients + 1, j = 0; j < max_temp_edicts.integer; i++, j++)
 	{
 		e = EDICT_NUM(i);
 		// the first couple seconds of server time can involve a lot of
@@ -1056,7 +1056,7 @@ void ED_LoadFromFile (char *data)
 #endif
 
 		// remove things from different skill levels or deathmatch
-		if (deathmatch.value)
+		if (deathmatch.integer)
 		{
 			if (((int)ent->v.spawnflags & SPAWNFLAG_NOT_DEATHMATCH))
 			{
@@ -1065,7 +1065,7 @@ void ED_LoadFromFile (char *data)
 				continue;
 			}
 		}
-		else if (coop.value)
+		else if (coop.integer)
 		{
 			if (((int)ent->v.spawnflags & SPAWNFLAG_NOT_COOP))
 			{
@@ -1090,7 +1090,7 @@ void ED_LoadFromFile (char *data)
 
 			skip = 0;
 
-			switch ((int)cl_playerclass.value)
+			switch (cl_playerclass.integer)
 			{
 			case CLASS_PALADIN:
 				if ((int)ent->v.spawnflags & SPAWNFLAG_NOT_PALADIN)

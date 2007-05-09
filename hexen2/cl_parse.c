@@ -2,7 +2,7 @@
 	cl_parse.c
 	parse a message received from the server
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cl_parse.c,v 1.50 2007-04-28 15:31:04 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cl_parse.c,v 1.51 2007-05-09 18:10:12 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -321,7 +321,7 @@ static void CL_ParseServerInfo (void)
 // now we try to load everything else until a cache allocation fails
 //
 
-	if (precache.value)
+	if (precache.integer)
 	{
 		total_loading_size = nummodels + numsounds;
 		current_loading_size = 1;
@@ -335,7 +335,7 @@ static void CL_ParseServerInfo (void)
 	cl.model_precache[1] = Mod_ForName (model_precache[1], false);
 	for (i = 2; i < nummodels; i++)
 	{
-		if (precache.value)
+		if (precache.integer)
 		{
 			cl.model_precache[i] = Mod_ForName (model_precache[i], false);
 			current_loading_size++;
@@ -365,7 +365,7 @@ static void CL_ParseServerInfo (void)
 	for (i = 1; i < numsounds; i++)
 	{
 		cl.sound_precache[i] = S_PrecacheSound (sound_precache[i]);
-		if (precache.value)
+		if (precache.integer)
 		{
 			current_loading_size++;
 			D_ShowLoadingSize();
@@ -1167,7 +1167,7 @@ static void CL_DumpPacket (void)
 #endif	/* CL_DumpPacket */
 
 #define SHOWNET(x) \
-	if (cl_shownet.value == 2) \
+	if (cl_shownet.integer == 2) \
 		Con_Printf ("%3i:%s\n", msg_readcount-1, (x));
 
 /*
@@ -1198,12 +1198,12 @@ void CL_ParseServerMessage (void)
 	{
 		LastServerMessageSize = net_message.cursize;
 	}
-	if (cl_shownet.value == 1)
+	if (cl_shownet.integer == 1)
 	{
 		Con_Printf ("Time: %2.2f Pck: %i ", realtime - lasttime, net_message.cursize);
 		lasttime = realtime;
 	}
-	else if (cl_shownet.value == 2)
+	else if (cl_shownet.integer == 2)
 		Con_Printf ("------------------\n");
 
 	cl.onground = false;	// unless the server says otherwise
@@ -1221,7 +1221,7 @@ void CL_ParseServerMessage (void)
 
 		if (cmd == -1)
 		{
-			if (cl_shownet.value == 1)
+			if (cl_shownet.integer == 1)
 				Con_Printf ("Ent: %i (%i bytes)",EntityCount,EntitySize);
 
 			SHOWNET("END OF MESSAGE");
@@ -1542,7 +1542,7 @@ void CL_ParseServerMessage (void)
 
 		case svc_intermission:
 			cl.intermission = MSG_ReadByte();
-			if (oem.value && cl.intermission == 1)
+			if (oem.integer && cl.intermission == 1)
 				cl.intermission = 9;
 			// skip intermissions while recording demos in single
 			// player games, but stop recording at ending scenes.

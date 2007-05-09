@@ -2,7 +2,7 @@
 	sv_ents.c
 	server entities handling
 
-	$Id: sv_ents.c,v 1.8 2007-04-01 12:18:39 sezero Exp $
+	$Id: sv_ents.c,v 1.9 2007-05-09 18:11:37 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -868,7 +868,7 @@ static void SV_WritePlayersToClient (client_t *client, edict_t *clent, byte *pvs
 		{
 			if ((int)ent->v.effects & EF_NODRAW)
 			{
-				if (dmMode.value == DM_SIEGE && clent->v.playerclass == CLASS_DWARF)
+				if (dmMode.integer == DM_SIEGE && clent->v.playerclass == CLASS_DWARF)
 					invis_level = false;
 				else
 					invis_level = true; //still can hear
@@ -1038,7 +1038,7 @@ static void SV_WritePlayersToClient (client_t *client, edict_t *clent, byte *pvs
 			pflags |= PF_EFFECTS2;
 		if (ent->v.skin)
 		{
-			if (dmMode.value == DM_SIEGE && playermodel && ent->v.skin == 1);
+			if (dmMode.integer == DM_SIEGE && playermodel && ent->v.skin == 1);
 			// in siege, don't send skin if 2nd skin and using
 			// playermodel, it will know on other side- saves
 			// us 1 byte per client per frame!
@@ -1186,7 +1186,7 @@ static void SV_WritePlayersToClient (client_t *client, edict_t *clent, byte *pvs
 		{
 			if ((int)ent->v.effects & EF_NODRAW)
 			{
-				if (dmMode.value == DM_SIEGE && clent->v.playerclass == CLASS_DWARF)
+				if (dmMode.integer == DM_SIEGE && clent->v.playerclass == CLASS_DWARF)
 					invis_level = false;
 				else
 					invis_level = true; //still can hear
@@ -1246,7 +1246,7 @@ static void SV_WritePlayersToClient (client_t *client, edict_t *clent, byte *pvs
 			pflags |= PF_EFFECTS2;
 		if (ent->v.skin)
 		{
-			if (dmMode.value == DM_SIEGE && playermodel && ent->v.skin == 1);
+			if (dmMode.integer == DM_SIEGE && playermodel && ent->v.skin == 1);
 			// in siege, don't send skin if 2nd skin and using
 			// playermodel, it will know on other side- saves
 			// us 1 byte per client per frame!

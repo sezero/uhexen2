@@ -2,7 +2,7 @@
 	quakefs.c
 	Hexen II filesystem
 
-	$Id: quakefs.c,v 1.21 2007-04-28 15:31:07 sezero Exp $
+	$Id: quakefs.c,v 1.22 2007-05-09 18:10:17 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -1419,12 +1419,12 @@ void FS_Init (void)
 	if (gameflags & (GAME_REGISTERED|GAME_REGISTERED_OLD))
 	{
 		snprintf (temp, sizeof(temp), "registered");
-		Cvar_Set ("registered", "1");
+		Cvar_SetValue ("registered", 1);
 	}
 	else if (gameflags & GAME_OEM)
 	{
 		snprintf (temp, sizeof(temp), "oem");
-		Cvar_Set ("oem", "1");
+		Cvar_SetValue ("oem", 1);
 	}
 	else if (gameflags & (GAME_DEMO|GAME_OLD_DEMO))
 	{

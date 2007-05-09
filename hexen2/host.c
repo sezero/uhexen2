@@ -2,7 +2,7 @@
 	host.c
 	coordinates spawning and killing of local servers
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host.c,v 1.75 2007-04-18 13:31:27 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host.c,v 1.76 2007-05-09 18:10:13 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -636,7 +636,7 @@ static qboolean Host_FilterTime (float time)
 		host_frametime = host_framerate.value;
 	else
 	{	// don't allow really long or short frames
-		if (host_frametime > 0.05 && !sys_adaptive.value)
+		if (host_frametime > 0.05 && !sys_adaptive.integer)
 			host_frametime = 0.05;
 		if (host_frametime < 0.001)
 			host_frametime = 0.001;
@@ -841,7 +841,7 @@ static void _Host_Frame (float time)
 #else
 
 	save_host_frametime = total_host_frametime = host_frametime;
-	if (sys_adaptive.value)
+	if (sys_adaptive.integer)
 	{
 		if (host_frametime > 0.05)
 		{
@@ -877,7 +877,7 @@ static void _Host_Frame (float time)
 		R_UpdateParticles ();
 		CL_UpdateEffects ();
 
-		if (!sys_adaptive.value)
+		if (!sys_adaptive.integer)
 			break;
 
 		total_host_frametime -= 0.05;
@@ -895,12 +895,12 @@ static void _Host_Frame (float time)
 #endif
 
 // update video
-	if (host_speeds.value)
+	if (host_speeds.integer)
 		time1 = Sys_DoubleTime ();
 
 	SCR_UpdateScreen ();
 
-	if (host_speeds.value)
+	if (host_speeds.integer)
 		time2 = Sys_DoubleTime ();
 
 // update audio
@@ -915,7 +915,7 @@ static void _Host_Frame (float time)
 	CDAudio_Update();
 	MIDI_Update();
 
-	if (host_speeds.value)
+	if (host_speeds.integer)
 	{
 		pass1 = (time1 - time3)*1000;
 		time3 = Sys_DoubleTime ();
@@ -935,7 +935,7 @@ void Host_Frame (float time)
 	static int		timecount;
 	int		i, c, m;
 
-	if (!serverprofile.value)
+	if (!serverprofile.integer)
 	{
 		_Host_Frame (time);
 		return;

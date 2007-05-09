@@ -2,7 +2,7 @@
 	net_main.c
 	main networking module
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/net_main.c,v 1.21 2007-04-11 08:04:23 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/net_main.c,v 1.22 2007-05-09 18:10:13 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -200,15 +200,15 @@ static void MaxPlayers_f (void)
 	svs.maxclients = n;
 	if (n == 1)
 	{
-		Cvar_Set ("deathmatch", "0");
-		Cvar_Set ("coop", "0");
+		Cvar_SetValue ("deathmatch", 0);
+		Cvar_SetValue ("coop", 0);
 	}
 	else
 	{
-		if (coop.value)
-			Cvar_Set ("deathmatch", "0");
+		if (coop.integer)
+			Cvar_SetValue ("deathmatch", 0);
 		else
-			Cvar_Set ("deathmatch", "1");
+			Cvar_SetValue ("deathmatch", 1);
 	}
 }
 

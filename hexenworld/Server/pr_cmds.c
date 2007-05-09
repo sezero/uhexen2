@@ -2,7 +2,7 @@
 	pr_cmds.c
 	prog commands
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Server/pr_cmds.c,v 1.29 2007-04-01 12:18:35 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Server/pr_cmds.c,v 1.30 2007-05-09 18:11:37 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -355,7 +355,7 @@ static void PF_bprint (void)
 
 	s = PF_VarString(1);
 
-	if (spartanPrint.value == 1 && level < 2)
+	if (spartanPrint.integer && level < 2)
 		return;
 
 	SV_BroadcastPrintf (level, "%s", s);
@@ -390,7 +390,7 @@ static void PF_sprint (void)
 
 	client = &svs.clients[entnum-1];
 
-	if (spartanPrint.value == 1 && level < 2)
+	if (spartanPrint.integer && level < 2)
 		return;
 
 	SV_ClientPrintf (client, level, "%s", s);
@@ -414,7 +414,7 @@ static void PF_name_print (void)
 	Index = ((int)G_EDICTNUM(OFS_PARM2));
 	Style = ((int)G_FLOAT(OFS_PARM1));
 
-	if (spartanPrint.value == 1 && Style < 2)
+	if (spartanPrint.integer && Style < 2)
 		return;
 
 	if (Index <= 0)
@@ -476,7 +476,7 @@ static void PF_print_indexed (void)
 	Index = ((int)G_FLOAT(OFS_PARM2));
 	Style = ((int)G_FLOAT(OFS_PARM1));
 
-	if (spartanPrint.value == 1 && Style < 2)
+	if (spartanPrint.integer && Style < 2)
 		return;
 
 	if (Index <= 0)
@@ -1606,7 +1606,7 @@ static void PF_precache_sound (void)
 
 static void PF_precache_sound2 (void)
 {
-	if (!registered.value)
+	if (!registered.integer)
 		return;
 
 	PF_precache_sound();
@@ -1614,7 +1614,7 @@ static void PF_precache_sound2 (void)
 
 static void PF_precache_sound3 (void)
 {
-	if (!registered.value && !oem.value)
+	if (!registered.integer && !oem.integer)
 		return;
 
 	PF_precache_sound();
@@ -1648,7 +1648,7 @@ static void PF_precache_model (void)
 
 static void PF_precache_model2 (void)
 {
-	if (!registered.value)
+	if (!registered.integer)
 		return;
 
 	PF_precache_model();
@@ -1656,7 +1656,7 @@ static void PF_precache_model2 (void)
 
 static void PF_precache_model3 (void)
 {
-	if (!registered.value && !oem.value)
+	if (!registered.integer && !oem.integer)
 		return;
 
 	PF_precache_model();
@@ -2017,7 +2017,7 @@ static void PF_aim (void)
 	ent->v.hull = save_hull;
 
 	if (tr.ent && tr.ent->v.takedamage == DAMAGE_YES
-		&& (!teamplay.value || ent->v.team <= 0 || ent->v.team != tr.ent->v.team) )
+		&& (!teamplay.integer || ent->v.team <= 0 || ent->v.team != tr.ent->v.team) )
 	{
 		VectorCopy (PR_GLOBAL_STRUCT(v_forward), G_VECTOR(OFS_RETURN));
 		return;
@@ -2035,7 +2035,7 @@ static void PF_aim (void)
 			continue;
 		if (check == ent)
 			continue;
-		if (teamplay.value && ent->v.team > 0 && ent->v.team == check->v.team)
+		if (teamplay.integer && ent->v.team > 0 && ent->v.team == check->v.team)
 			continue;	// don't aim at teammate
 		for (j = 0; j < 3; j++)
 			end[j] = check->v.origin[j] + 0.5 * (check->v.mins[j] + check->v.maxs[j]);
@@ -2863,7 +2863,7 @@ static void PF_setclass (void)
 	old = host_client;
 	host_client = client;
 
-	if (NewClass > CLASS_DEMON && dmMode.value != DM_SIEGE)
+	if (NewClass > CLASS_DEMON && dmMode.integer != DM_SIEGE)
 		NewClass = CLASS_PALADIN;
 
 	e->v.playerclass = NewClass;

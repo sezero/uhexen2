@@ -2,7 +2,7 @@
 	view.c
 	player eye positioning
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/view.c,v 1.23 2007-04-08 18:50:38 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/view.c,v 1.24 2007-05-09 18:10:14 sezero Exp $
 
 	The view is allowed to move slightly from it's true position
 	for bobbing, but if it exceeds 8 pixels linear distance
@@ -174,7 +174,7 @@ static void V_DriftPitch (void)
 
 		if ( cl.driftmove > v_centermove.value)
 		{
-			if (lookspring.value)
+			if (lookspring.integer)
 				V_StartPitchDrift ();
 		}
 		return;
@@ -982,13 +982,13 @@ static void V_CalcRefdef (void)
 #if 0
 	if (cl.model_precache[cl.stats[STAT_WEAPON]] && strcmp (cl.model_precache[cl.stats[STAT_WEAPON]]->name,  "progs/v_shot2.mdl"))
 #endif
-	if (scr_viewsize.value >= 110)
+	if (scr_viewsize.integer >= 110)
 		view->origin[2] += 1;
-	else if (scr_viewsize.value == 100)
+	else if (scr_viewsize.integer == 100)
 		view->origin[2] += 2;
-	else if (scr_viewsize.value == 90)
+	else if (scr_viewsize.integer == 90)
 		view->origin[2] += 1;
-	else if (scr_viewsize.value == 80)
+	else if (scr_viewsize.integer == 80)
 		view->origin[2] += 0.5;
 
 	view->model = cl.model_precache[cl.stats[STAT_WEAPON]];
@@ -1035,7 +1035,7 @@ static void V_CalcRefdef (void)
 	else
 		oldz = ent->origin[2];
 
-	if (chase_active.value)
+	if (chase_active.integer)
 		Chase_Update ();
 }
 
@@ -1077,7 +1077,7 @@ void V_RenderView (void)
 	R_RenderView ();
 
 #ifndef GLQUAKE
-	if (crosshair.value)
+	if (crosshair.integer)
 		Draw_Crosshair();
 #endif
 }

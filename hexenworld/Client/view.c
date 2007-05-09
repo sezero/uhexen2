@@ -2,7 +2,7 @@
 	view.c
 	player eye positioning
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/view.c,v 1.19 2007-04-08 18:50:39 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/view.c,v 1.20 2007-05-09 18:10:18 sezero Exp $
 
 	The view is allowed to move slightly from it's true position
 	for bobbing, but if it exceeds 8 pixels linear distance
@@ -171,7 +171,7 @@ static void V_DriftPitch (void)
 	// don't count small mouse motion
 	if (cl.nodrift)
 	{
-		if ( fabs(cl.frames[(cls.netchan.outgoing_sequence-1)&UPDATE_MASK].cmd.forwardmove) < (cl.v.hasted*cl_forwardspeed.value)-10 || lookspring.value == 0.0)
+		if (lookspring.integer == 0 || fabs(cl.frames[(cls.netchan.outgoing_sequence-1)&UPDATE_MASK].cmd.forwardmove) < (cl.v.hasted*cl_forwardspeed.value)-10)
 			cl.driftmove = 0;
 		else
 			cl.driftmove += host_frametime;
@@ -183,7 +183,7 @@ static void V_DriftPitch (void)
 
 		if ( cl.driftmove > v_centermove.value)
 		{
-			if (lookspring.value)
+			if (lookspring.integer)
 				V_StartPitchDrift ();
 		}
 		return;
@@ -998,13 +998,13 @@ static void V_CalcRefdef (void)
 
 	// fudge position around to keep amount of weapon visible
 	// roughly equal with different FOV
-	if (scr_viewsize.value >= 110)
+	if (scr_viewsize.integer >= 110)
 		view->origin[2] += 1;
-	else if (scr_viewsize.value == 100)
+	else if (scr_viewsize.integer == 100)
 		view->origin[2] += 2;
-	else if (scr_viewsize.value == 90)
+	else if (scr_viewsize.integer == 90)
 		view->origin[2] += 1;
-	else if (scr_viewsize.value == 80)
+	else if (scr_viewsize.integer == 80)
 		view->origin[2] += 0.5;
 
 	if (view_message->flags & (PF_DEAD) )
@@ -1104,7 +1104,7 @@ void V_RenderView (void)
 	R_RenderView ();
 
 #ifndef GLQUAKE
-	if (crosshair.value)
+	if (crosshair.integer)
 		Draw_Crosshair();
 #endif
 }

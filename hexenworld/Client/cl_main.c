@@ -2,7 +2,7 @@
 	cl_main.c
 	client main loop
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/cl_main.c,v 1.78 2007-04-18 13:33:07 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/cl_main.c,v 1.79 2007-05-09 18:10:16 sezero Exp $
 */
 
 #include <sys/types.h>
@@ -1309,12 +1309,12 @@ void Host_Frame (float time)
 	CL_EmitEntities ();
 
 	// update video
-	if (host_speeds.value)
+	if (host_speeds.integer)
 		time1 = Sys_DoubleTime ();
 
 	SCR_UpdateScreen ();
 
-	if (host_speeds.value)
+	if (host_speeds.integer)
 		time2 = Sys_DoubleTime ();
 
 	// update audio
@@ -1331,7 +1331,7 @@ void Host_Frame (float time)
 	CDAudio_Update();
 	MIDI_Update();
 
-	if (host_speeds.value)
+	if (host_speeds.integer)
 	{
 		pass1 = (time1 - time3)*1000;
 		time3 = Sys_DoubleTime ();

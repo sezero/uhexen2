@@ -1,7 +1,7 @@
 /*
 	r_light.c
 
-	$Id: gl_rlight.c,v 1.14 2007-04-25 20:08:25 sezero Exp $
+	$Id: gl_rlight.c,v 1.15 2007-05-09 18:10:13 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -146,7 +146,7 @@ void R_RenderDlights (void)
 	int		i;
 	dlight_t	*l;
 
-	if (!gl_flashblend.value)
+	if (!gl_flashblend.integer)
 		return;
 
 	r_dlightframecount = r_framecount + 1;	// because the count hasn't
@@ -313,7 +313,7 @@ void R_PushDlights (void)
 	int		i;
 	dlight_t	*l;
 
-	if (gl_flashblend.value)
+	if (gl_flashblend.integer)
 		return;
 
 	r_dlightframecount = r_framecount + 1;	// because the count hasn't

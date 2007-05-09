@@ -2,7 +2,7 @@
 	sv_init.c
 	server spawning
 
-	$Id: sv_init.c,v 1.12 2007-04-01 12:18:40 sezero Exp $
+	$Id: sv_init.c,v 1.13 2007-05-09 18:11:37 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -306,7 +306,7 @@ void SV_SpawnServer (const char *server, const char *startspot)
 	sv.edicts = Hunk_AllocName (MAX_EDICTS*pr_edict_size, "edicts");
 
 	// leave slots at start for clients only
-	sv.num_edicts = MAX_CLIENTS+1+max_temp_edicts.value;
+	sv.num_edicts = MAX_CLIENTS + 1 + max_temp_edicts.integer;
 	for (i = 0; i < MAX_CLIENTS; i++)
 	{
 		ent = EDICT_NUM(i+1);
@@ -352,7 +352,7 @@ void SV_SpawnServer (const char *server, const char *startspot)
 	ent->v.solid = SOLID_BSP;
 	ent->v.movetype = MOVETYPE_PUSH;
 
-	if (coop.value)
+	if (coop.integer)
 		Cvar_SetValue ("deathmatch", 0);
 
 	pr_global_struct->coop = coop.value;
@@ -376,13 +376,13 @@ void SV_SpawnServer (const char *server, const char *startspot)
 
 	pr_global_struct->startspot = PR_SetEngineString(sv.startspot);
 
-	sv.current_skill = (int)(skill.value + 0.5);
+	sv.current_skill = skill.integer;
 	if (sv.current_skill < 0)
 		sv.current_skill = 0;
 	if (sv.current_skill > 3)
 		sv.current_skill = 3;
 
-	Cvar_SetValue ("skill", (float)sv.current_skill);
+	Cvar_SetValue ("skill", sv.current_skill);
 
 	pr_global_struct->mapname = PR_SetEngineString(sv.name);
 	// serverflags are for cross level information (sigils)

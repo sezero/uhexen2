@@ -2,7 +2,7 @@
 	net_wipx.c
 	winsock ipx driver
 
-	$Id: net_wipx.c,v 1.16 2007-04-05 07:00:02 sezero Exp $
+	$Id: net_wipx.c,v 1.17 2007-05-09 18:10:15 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -425,7 +425,7 @@ int WIPX_AddrCompare (struct qsockaddr *addr1, struct qsockaddr *addr2)
 
 	if (((struct sockaddr_ipx *)addr1)->sa_socket != ((struct sockaddr_ipx *)addr2)->sa_socket)
 	{
-		if (net_allowmultiple.value)
+		if (net_allowmultiple.integer)
 			return -1;
 		else
 			return 1;

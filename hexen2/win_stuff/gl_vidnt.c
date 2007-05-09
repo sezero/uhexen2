@@ -1,6 +1,6 @@
 /*
 	gl_vidnt.c -- NT GL vid component
-	$Id: gl_vidnt.c,v 1.97 2007-05-01 09:02:04 sezero Exp $
+	$Id: gl_vidnt.c,v 1.98 2007-05-09 18:10:15 sezero Exp $
 */
 
 #define	__GL_FUNC_EXTERN
@@ -228,7 +228,7 @@ cvar_t		_enable_mouse = {"_enable_mouse", "0", CVAR_ARCHIVE};
 void VID_HandlePause (qboolean paused)
 {
 
-	if ((modestate == MS_WINDOWED) && _enable_mouse.value)
+	if ((modestate == MS_WINDOWED) && _enable_mouse.integer)
 	{
 		if (paused)
 		{
@@ -270,7 +270,7 @@ static void VID_ConWidth (int modenum)
 		goto finish;
 	}
 
-	w = (int)vid_config_consize.value;
+	w = vid_config_consize.integer;
 // disabling this: we may have non-multiple-of-eight resolutions
 //	w &= 0xfff8; // make it a multiple of eight
 
@@ -547,7 +547,7 @@ static int VID_SetMode (int modenum, unsigned char *palette)
 	// Set either the fullscreen or windowed mode
 	if (modelist[modenum].type == MS_WINDOWED)
 	{
-		if (_enable_mouse.value)
+		if (_enable_mouse.integer)
 		{
 			stat = VID_SetWindowedMode(modenum);
 			IN_ActivateMouse ();
@@ -642,7 +642,7 @@ static void VID_Init8bitPalette (void)
 		}
 		have8bit = true;
 
-		if (!(int)vid_config_gl8bit.value)
+		if (!vid_config_gl8bit.integer)
 			return;
 
 		oldPalette = (char *) d_8to24table;
@@ -957,9 +957,9 @@ void GL_EndRendering (void)
 // handle the mouse state when windowed if that's changed
 	if (modestate == MS_WINDOWED)
 	{
-		if ((int)_enable_mouse.value != enable_mouse)
+		if (_enable_mouse.integer != enable_mouse)
 		{
-			if (_enable_mouse.value)
+			if (_enable_mouse.integer)
 			{
 				IN_ActivateMouse ();
 				IN_HideMouse ();
@@ -970,7 +970,7 @@ void GL_EndRendering (void)
 				IN_ShowMouse ();
 			}
 
-			enable_mouse = (int)_enable_mouse.value;
+			enable_mouse = _enable_mouse.integer;
 		}
 	}
 	if (fullsbardraw)
@@ -1396,7 +1396,7 @@ static void AppActivate(BOOL fActive, BOOL minimize)
 						gdevmode.dmPelsHeight, false);
 			}
 		}
-		else if ((modestate == MS_WINDOWED) && _enable_mouse.value)
+		else if (modestate == MS_WINDOWED && _enable_mouse.integer)
 		{
 			IN_ActivateMouse ();
 			IN_HideMouse ();
@@ -1420,7 +1420,7 @@ static void AppActivate(BOOL fActive, BOOL minimize)
 				vid_wassuspended = true;
 			}
 		}
-		else if ((modestate == MS_WINDOWED) && _enable_mouse.value)
+		else if (modestate == MS_WINDOWED && _enable_mouse.integer)
 		{
 			IN_DeactivateMouse ();
 			IN_ShowMouse ();
@@ -2033,15 +2033,15 @@ static void VID_ChangeVideoMode(int newmode)
 
 static void VID_Restart_f (void)
 {
-	if ((int)vid_mode.value < 0 || (int)vid_mode.value >= *nummodes)
+	if (vid_mode.integer < 0 || vid_mode.integer >= *nummodes)
 	{
-		Con_Printf ("Bad video mode %d\n", (int)vid_mode.value);
+		Con_Printf ("Bad video mode %d\n", vid_mode.integer);
 		Cvar_SetValue ("vid_mode", vid_modenum);
 		return;
 	}
 
 	Con_Printf ("Re-initializing video:\n");
-	VID_ChangeVideoMode ((int)vid_mode.value);
+	VID_ChangeVideoMode (vid_mode.integer);
 }
 
 static int sort_modes (const void *arg1, const void *arg2)
@@ -2205,8 +2205,8 @@ void	VID_Init (unsigned char *palette)
 	// perform an early read of config.cfg
 	CFG_ReadCvars (read_vars, num_readvars);
 
-	width = (int)vid_config_glx.value;
-	height = (int)vid_config_gly.value;
+	width = vid_config_glx.integer;
+	height = vid_config_gly.integer;
 
 	if (COM_CheckParm("-window") || COM_CheckParm("-w"))
 	{
@@ -2217,10 +2217,10 @@ void	VID_Init (unsigned char *palette)
 		Cvar_SetValue("vid_config_fscr", 1);
 	}
 
-	if ((int)vid_config_consize.value != width)
+	if (vid_config_consize.integer != width)
 		vid_conscale = true;
 
-	if (!(int)vid_config_fscr.value)
+	if (!vid_config_fscr.integer)
 	{
 		hdc = GetDC (NULL);
 		if (GetDeviceCaps(hdc, RASTERCAPS) & RC_PALETTE)
@@ -2299,7 +2299,7 @@ void	VID_Init (unsigned char *palette)
 
 		findbpp = 1;
 		//bpp = bpplist[0][0];
-		bpp = (int)vid_config_bpp.value;
+		bpp = vid_config_bpp.integer;
 		if (Win95old)
 		{	// don't bother with multiple bpp values on
 			// windows versions older than win95-osr2.
@@ -2450,7 +2450,7 @@ void	VID_Init (unsigned char *palette)
 	if (i != 0 && i < com_argc-1)
 	{
 		Cvar_SetValue("vid_config_consize", atoi(com_argv[i+1]));
-		if ((int)vid_config_consize.value != width)
+		if (vid_config_consize.integer != width)
 			vid_conscale = true;
 	}
 
@@ -2632,7 +2632,7 @@ void VID_MenuDraw (void)
 
 	want_fstoggle = ( ((modestate == MS_WINDOWED) && vid_menu_fs) || ((modestate != MS_WINDOWED) && !vid_menu_fs) );
 
-	need_apply = (vid_menunum != vid_modenum) || want_fstoggle || (have8bit && (is8bit != !!vid_config_gl8bit.value));
+	need_apply = (vid_menunum != vid_modenum) || want_fstoggle || (have8bit && (is8bit != !!vid_config_gl8bit.integer));
 
 	M_Print (76, 92 + 8*VID_FULLSCREEN, "Fullscreen: ");
 	M_DrawYesNo (76+12*8, 92 + 8*VID_FULLSCREEN, vid_menu_fs, !want_fstoggle);
@@ -2654,7 +2654,7 @@ void VID_MenuDraw (void)
 
 	M_Print (76, 92 + 8*VID_PALTEX, "8 bit textures:");
 	if (have8bit)
-		M_DrawYesNo (76+16*8, 92 + 8*VID_PALTEX, (int)vid_config_gl8bit.value, (is8bit == !!vid_config_gl8bit.value));
+		M_DrawYesNo (76+16*8, 92 + 8*VID_PALTEX, vid_config_gl8bit.integer, (is8bit == !!vid_config_gl8bit.integer));
 	else
 		M_PrintWhite (76+16*8, 92 + 8*VID_PALTEX, "Not found");
 
@@ -2852,7 +2852,7 @@ void VID_MenuKey (int key)
 			break;
 		case VID_PALTEX:
 			if (have8bit)
-				Cvar_SetValue ("vid_config_gl8bit", !(int)vid_config_gl8bit.value);
+				Cvar_SetValue ("vid_config_gl8bit", !vid_config_gl8bit.integer);
 			break;
 		}
 		return;
@@ -2885,7 +2885,7 @@ void VID_MenuKey (int key)
 			break;
 		case VID_PALTEX:
 			if (have8bit)
-				Cvar_SetValue ("vid_config_gl8bit", !(int)vid_config_gl8bit.value);
+				Cvar_SetValue ("vid_config_gl8bit", !vid_config_gl8bit.integer);
 			break;
 		}
 		return;

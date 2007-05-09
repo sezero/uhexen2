@@ -1,7 +1,7 @@
 /*
 	r_main.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/r_main.c,v 1.21 2007-04-18 13:32:25 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/r_main.c,v 1.22 2007-05-09 18:10:13 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -320,7 +320,7 @@ void R_NewMap (void)
 	r_viewleaf = NULL;
 	R_ClearParticles ();
 
-	r_cnumsurfs = r_maxsurfs.value;
+	r_cnumsurfs = r_maxsurfs.integer;
 
 	if (r_cnumsurfs <= MINSURFACES)
 		r_cnumsurfs = MINSURFACES;
@@ -347,7 +347,7 @@ void R_NewMap (void)
 	r_maxedgesseen = 0;
 	r_maxsurfsseen = 0;
 
-	r_numallocatededges = r_maxedges.value;
+	r_numallocatededges = r_maxedges.integer;
 
 	if (r_numallocatededges < MINEDGES)
 		r_numallocatededges = MINEDGES;
@@ -380,10 +380,9 @@ R_SetVrect
 */
 void R_SetVrect (vrect_t *pvrectin, vrect_t *pvrect, int lineadj)
 {
-	int		h;
-	float	size;
+	int		h, size;
 
-	size = scr_viewsize.value > 100.0 ? 100.0 : scr_viewsize.value;
+	size = scr_viewsize.integer > 100.0 ? 100.0 : scr_viewsize.integer;
 	if (cl.intermission)
 	{
 		size = 100.0;
@@ -514,7 +513,7 @@ void R_ViewChanged (vrect_t *pvrect, int lineadj, float aspect)
 	r_aliastransition = r_aliastransbase.value * res_scale;
 	r_resfudge = r_aliastransadj.value * res_scale;
 
-	if (scr_fov.value <= 90.0)
+	if (scr_fov.integer <= 90.0)
 		r_fov_greater_than_90 = false;
 	else
 		r_fov_greater_than_90 = true;
@@ -647,7 +646,7 @@ static void R_DrawEntitiesOnList (void)
 {
 	int			i;
 
-	if (!r_drawentities.value)
+	if (!r_drawentities.integer)
 		return;
 
 	for (i = 0; i < cl_numvisedicts; i++)
@@ -656,7 +655,7 @@ static void R_DrawEntitiesOnList (void)
 
 		if (currententity == &cl_entities[cl.viewentity])
 		{
-			if (chase_active.value == 0)
+			if (chase_active.integer == 0)
 				continue;	// don't draw the player
 			else
 			// chase-cam pitch adj. by FrikaC
@@ -695,7 +694,7 @@ static void R_DrawEntitiesOnList (void)
 	{
 		currententity = cl_visedicts[i];
 
-		if (currententity == &cl_entities[cl.viewentity] && chase_active.value == 0)
+		if (currententity == &cl_entities[cl.viewentity] && chase_active.integer == 0)
 			continue;	// don't draw the player
 
 		switch (currententity->model->type)
@@ -799,9 +798,9 @@ static void R_DrawViewModel (void)
 	cl.light_level = r_viewlighting.ambientlight;
 
 	if ((cl.v.health <= 0)		 ||
-	    (chase_active.value)	 ||
+	    (chase_active.integer)	 ||
 	    (cl.items & IT_INVISIBILITY) ||
-	    (!r_drawviewmodel.value)	 ||
+	    (!r_drawviewmodel.integer)	 ||
 	    (r_fov_greater_than_90))
 	{
 		return;
@@ -949,7 +948,7 @@ static void R_DrawBEntitiesOnList (void)
 	float		minmaxs[6];
 	vec3_t		mins, maxs;
 
-	if (!r_drawentities.value)
+	if (!r_drawentities.integer)
 		return;
 
 	VectorCopy (modelorg, oldorigin);
@@ -1094,7 +1093,7 @@ static void R_EdgeDrawing (qboolean Translucent)
 
 		R_BeginEdgeFrame ();
 
-		if (r_dspeeds.value)
+		if (r_dspeeds.integer)
 		{
 			rw_time1 = Sys_DoubleTime ();
 		}
@@ -1116,7 +1115,7 @@ static void R_EdgeDrawing (qboolean Translucent)
 	{
 		D_TurnZOn ();
 
-		if (r_dspeeds.value)
+		if (r_dspeeds.integer)
 		{
 			rw_time2 = Sys_DoubleTime ();
 			db_time1 = rw_time2;
@@ -1141,13 +1140,13 @@ static void R_EdgeDrawing (qboolean Translucent)
 			memcpy(SaveSurfaces,surfaces,SurfacesSize);
 		}
 
-		if (r_dspeeds.value)
+		if (r_dspeeds.integer)
 		{
 			db_time2 = Sys_DoubleTime ();
 			se_time1 = db_time2;
 		}
 
-		if (!r_dspeeds.value)
+		if (!r_dspeeds.integer)
 		{
 			VID_UnlockBuffer ();
 			S_ExtraUpdate ();	// don't let sound get messed up if going slow
@@ -1173,9 +1172,9 @@ static void R_RenderView_ (void)
 
 	r_warpbuffer = warpbuffer;
 
-	if (r_timegraph.value || r_speeds.value || r_dspeeds.value)
+	if (r_timegraph.integer || r_speeds.integer || r_dspeeds.integer)
 	{
-		if (r_wholeframe.value)
+		if (r_wholeframe.integer)
 			r_time1 = r_lasttime1;
 		else
 			r_time1 = Sys_DoubleTime ();
@@ -1198,7 +1197,7 @@ static void R_RenderView_ (void)
 	if (!r_worldentity.model || !cl.worldmodel)
 		Sys_Error ("%s: NULL worldmodel", __FUNCTION__);
 
-	if (!r_dspeeds.value)
+	if (!r_dspeeds.integer)
 	{
 		VID_UnlockBuffer ();
 		S_ExtraUpdate ();	// don't let sound get messed up if going slow
@@ -1207,14 +1206,14 @@ static void R_RenderView_ (void)
 
 	R_EdgeDrawing (false);
 
-	if (!r_dspeeds.value)
+	if (!r_dspeeds.integer)
 	{
 		VID_UnlockBuffer ();
 		S_ExtraUpdate ();	// don't let sound get messed up if going slow
 		VID_LockBuffer ();
 	}
 
-	if (r_dspeeds.value)
+	if (r_dspeeds.integer)
 	{
 		se_time2 = Sys_DoubleTime ();
 		de_time1 = se_time2;
@@ -1224,7 +1223,7 @@ static void R_RenderView_ (void)
 	if (TransCount && AllowTranslucency)
 		R_EdgeDrawing (true);
 
-	if (r_dspeeds.value)
+	if (r_dspeeds.integer)
 	{
 		de_time2 = Sys_DoubleTime ();
 		dv_time1 = de_time2;
@@ -1232,7 +1231,7 @@ static void R_RenderView_ (void)
 
 	R_DrawViewModel ();
 
-	if (r_dspeeds.value)
+	if (r_dspeeds.integer)
 	{
 		dv_time2 = Sys_DoubleTime ();
 		dp_time1 = Sys_DoubleTime ();
@@ -1240,7 +1239,7 @@ static void R_RenderView_ (void)
 
 	R_DrawParticles ();
 
-	if (r_dspeeds.value)
+	if (r_dspeeds.integer)
 		dp_time2 = Sys_DoubleTime ();
 
 	if (r_dowarp)
@@ -1248,22 +1247,22 @@ static void R_RenderView_ (void)
 
 	V_SetContentsColor (r_viewleaf->contents);
 
-	if (r_timegraph.value)
+	if (r_timegraph.integer)
 		R_TimeGraph ();
 
-	if (r_aliasstats.value)
+	if (r_aliasstats.integer)
 		R_PrintAliasStats ();
 
-	if (r_speeds.value)
+	if (r_speeds.integer)
 		R_PrintTimes ();
 
-	if (r_dspeeds.value)
+	if (r_dspeeds.integer)
 		R_PrintDSpeeds ();
 
-	if (r_reportsurfout.value && r_outofsurfaces)
+	if (r_reportsurfout.integer && r_outofsurfaces)
 		Con_Printf ("Short %d surfaces\n", r_outofsurfaces);
 
-	if (r_reportedgeout.value && r_outofedges)
+	if (r_reportedgeout.integer && r_outofedges)
 		Con_Printf ("Short roughly %d edges\n", r_outofedges * 2 / 3);
 
 // back to high floating-point precision

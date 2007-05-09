@@ -1,7 +1,7 @@
 /*
 	menu.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/menu.c,v 1.89 2007-04-30 17:25:46 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/menu.c,v 1.90 2007-05-09 18:10:13 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -810,7 +810,7 @@ static void M_Difficulty_Draw (void)
 
 	ScrollTitle("gfx/menu/title5.lmp");
 
-	setup_class = cl_playerclass.value;
+	setup_class = cl_playerclass.integer;
 
 	if (setup_class < 1 || setup_class > MAX_PLAYER_CLASS)
 		setup_class = MAX_PLAYER_CLASS;
@@ -1522,9 +1522,9 @@ static void M_Menu_Setup_f (void)
 	m_entersound = true;
 	Q_strlcpy(setup_myname, cl_name.string, sizeof(setup_myname));
 	Q_strlcpy(setup_hostname, hostname.string, sizeof(setup_hostname));
-	setup_top = setup_oldtop = (((int)cl_color.value) >> 4) & 15;
-	setup_bottom = setup_oldbottom = ((int)cl_color.value) & 15;
-	setup_class = cl_playerclass.value;
+	setup_top = setup_oldtop = (cl_color.integer >> 4) & 15;
+	setup_bottom = setup_oldbottom = cl_color.integer & 15;
+	setup_class = cl_playerclass.integer;
 	if (setup_class < 1 || setup_class > MAX_PLAYER_CLASS)
 		setup_class = MAX_PLAYER_CLASS;
 #if ENABLE_OLD_DEMO
@@ -1893,8 +1893,8 @@ static void M_AdjustSliders (int dir)
 	switch (options_cursor)
 	{
 	case OPT_SCRSIZE:	// screen size
-		scr_viewsize.value += dir * 10;
-		Cvar_SetValue ("viewsize", scr_viewsize.value);
+		scr_viewsize.integer += dir * 10;
+		Cvar_SetValue ("viewsize", scr_viewsize.integer);
 		break;
 	case OPT_GAMMA:		// gamma
 		v_gamma.value -= dir * 0.05;
@@ -1978,15 +1978,15 @@ static void M_AdjustSliders (int dir)
 		break;
 
 	case OPT_CROSSHAIR:
-		Cvar_SetValue ("crosshair", !crosshair.value);
+		Cvar_SetValue ("crosshair", !crosshair.integer);
 		break;
 
 	case OPT_CHASE_ACTIVE:	// chase_active
-		Cvar_SetValue ("chase_active", !chase_active.value);
+		Cvar_SetValue ("chase_active", !chase_active.integer);
 		break;
 
 	case OPT_USEMOUSE:	// _enable_mouse
-		Cvar_SetValue ("_enable_mouse", !_enable_mouse.value);
+		Cvar_SetValue ("_enable_mouse", !_enable_mouse.integer);
 		break;
 
 	default:
@@ -2034,7 +2034,7 @@ static void M_Options_Draw (void)
 	M_Print (16 + (5 * 8), 60 + (2 * 8),	"Reset to defaults");
 
 	M_Print (16 + (11 * 8), 60 + (3 * 8),	"Screen size");
-	r = (scr_viewsize.value - 30) / (120 - 30);
+	r = (scr_viewsize.value - 30.0) / (120 - 30);
 	M_DrawSlider (220, 60 + (3 * 8), r);
 
 	M_Print (16 + (12 * 8), 60 + (4 * 8),	"Brightness");
@@ -2071,17 +2071,17 @@ static void M_Options_Draw (void)
 	M_DrawCheckbox (220, 60 + 8*OPT_ALWAYSMLOOK, in_mlook.state & 1);
 
 	M_Print (16 + (13 * 8), 60 + 8*OPT_USEMOUSE,	"Use Mouse");
-	M_DrawCheckbox (220, 60 + 8*OPT_USEMOUSE, _enable_mouse.value);
+	M_DrawCheckbox (220, 60 + 8*OPT_USEMOUSE, _enable_mouse.integer);
 
 	M_Print (16 + (8 * 8), 60 + 8*OPT_CROSSHAIR,	"Show Crosshair");
-	M_DrawCheckbox (220, 60 + 8*OPT_CROSSHAIR, crosshair.value);
+	M_DrawCheckbox (220, 60 + 8*OPT_CROSSHAIR, crosshair.integer);
 
 #ifdef GLQUAKE
 	M_Print (16 + (7 * 8), 60 + 8*OPT_OPENGL,	"OpenGL Features");
 #endif
 
 	M_Print (16 + (12 * 8), 60 + 8*OPT_CHASE_ACTIVE,	"Chase Mode");
-	M_DrawCheckbox (220, 60 + 8*OPT_CHASE_ACTIVE, chase_active.value);
+	M_DrawCheckbox (220, 60 + 8*OPT_CHASE_ACTIVE, chase_active.integer);
 
 	if (vid_menudrawfn)
 		M_Print (16 + (11 * 8), 60 + 8*OPT_VIDEO,	"Video Modes");
@@ -2251,21 +2251,21 @@ static void M_OpenGL_Draw (void)
 
 	M_Print (32 + (8 * 8), 90 + 8*OGL_MULTITEX,	"Multitexturing");
 	if (gl_mtexable)
-		M_DrawCheckbox (232, 90 + 8*OGL_MULTITEX, gl_multitexture.value);
+		M_DrawCheckbox (232, 90 + 8*OGL_MULTITEX, gl_multitexture.integer);
 	else
 		M_Print (232, 90 + 8*OGL_MULTITEX, "Not found");
 
 	M_Print (32 + (4 * 8), 90 + 8*OGL_PURGETEX,	"Purge map textures");
-	M_DrawCheckbox (232, 90 + 8*OGL_PURGETEX, gl_purge_maptex.value);
+	M_DrawCheckbox (232, 90 + 8*OGL_PURGETEX, gl_purge_maptex.integer);
 
 	M_Print (32 + (10 * 8), 90 + 8*OGL_GLOW1,	"Glow effects");
-	M_DrawCheckbox (232, 90 + 8*OGL_GLOW1, gl_glows.value);
+	M_DrawCheckbox (232, 90 + 8*OGL_GLOW1, gl_glows.integer);
 
 	M_Print (32 + (9 * 8), 90 + 8*OGL_GLOW2,	"missile glows");
-	M_DrawCheckbox (232, 90 + 8*OGL_GLOW2, gl_missile_glows.value);
+	M_DrawCheckbox (232, 90 + 8*OGL_GLOW2, gl_missile_glows.integer);
 
 	M_Print (32 + (11 * 8), 90 + 8*OGL_GLOW3,	"other glows");
-	M_DrawCheckbox (232, 90 + 8*OGL_GLOW3, gl_other_glows.value);
+	M_DrawCheckbox (232, 90 + 8*OGL_GLOW3, gl_other_glows.integer);
 
 	M_Print (32 + (6 * 8), 90 + 8*OGL_LIGHTMAPFMT,	"Lightmap Format:");
 	for (i = 0; i < MAX_LMFORMATS; i++)
@@ -2281,11 +2281,9 @@ static void M_OpenGL_Draw (void)
 	M_Print (32 + (8 * 8), 90 + 8*OGL_COLOREDDYNAMIC, "dynamic lights");
 	M_Print (32 + (10 * 8), 90 + 8*OGL_COLOREDEXTRA, "extra lights");
 	// bound the gl_coloredlight value
-	if (gl_coloredlight.value < 0)
+	if (gl_coloredlight.integer < 0)
 		Cvar_SetValue ("gl_coloredlight", 0);
-	if (gl_coloredlight.value != (int)gl_coloredlight.value)
-		Cvar_SetValue ("gl_coloredlight", (int)gl_coloredlight.value);
-	switch ((int)gl_coloredlight.value)
+	switch (gl_coloredlight.integer)
 	{
 	case 0:
 		M_Print (232, 90 + 8*OGL_COLOREDSTATIC, "none (white)");
@@ -2297,8 +2295,8 @@ static void M_OpenGL_Draw (void)
 		M_Print (232, 90 + 8*OGL_COLOREDSTATIC, "blend");
 		break;
 	}
-	M_DrawCheckbox (232, 90 + 8*OGL_COLOREDDYNAMIC, (int)gl_colored_dynamic_lights.value);
-	M_DrawCheckbox (232, 90 + 8*OGL_COLOREDEXTRA, (int)gl_extra_dynamic_lights.value);
+	M_DrawCheckbox (232, 90 + 8*OGL_COLOREDDYNAMIC, gl_colored_dynamic_lights.integer);
+	M_DrawCheckbox (232, 90 + 8*OGL_COLOREDEXTRA, gl_extra_dynamic_lights.integer);
 
 	M_Print (32 + (5 * 8), 90 + 8*OGL_TEXFILTER,	"Texture filtering");
 	for (i = 0; i < MAX_GL_FILTERS; i++)
@@ -2312,10 +2310,10 @@ static void M_OpenGL_Draw (void)
 	}
 
 	M_Print (32 + (15 * 8), 90 + 8*OGL_SHADOWS,	"Shadows");
-	M_DrawCheckbox (232, 90 + 8*OGL_SHADOWS, r_shadows.value);
+	M_DrawCheckbox (232, 90 + 8*OGL_SHADOWS, r_shadows.integer);
 	M_Print (32 + (8 * 8), 90 + 8*OGL_STENCIL,	"Stencil buffer");
 	if (have_stencil)
-		M_DrawCheckbox (232, 90 + 8*OGL_STENCIL, gl_stencilshadow.value);
+		M_DrawCheckbox (232, 90 + 8*OGL_STENCIL, gl_stencilshadow.integer);
 	else
 		M_Print (232, 90 + 8*OGL_STENCIL, "Not available");
 
@@ -2342,14 +2340,14 @@ static void M_OpenGL_Draw (void)
 
 		if (gl_lightmap_format != GL_RGBA)
 		{
-			if (gl_coloredlight.value)
+			if (gl_coloredlight.integer)
 			{
 				M_DrawTextBox (x, 94 + 8*(OGL_COLOREDSTATIC), 25, 3);
 				M_Print (x+16, 98 + 8*(OGL_COLOREDSTATIC+1), "  rgba lightmap format  ");
 				M_Print (x+16, 98 + 8*(OGL_COLOREDSTATIC+2), "      is required");
 			}
 		}
-		else if (gl_coloredlight.value != gl_coloredstatic)
+		else if (gl_coloredlight.integer != gl_coloredstatic)
 		{
 			M_DrawTextBox (x, 94 + 8*(OGL_COLOREDSTATIC), 25, 3);
 			M_Print (x+16, 98 + 8*(OGL_COLOREDSTATIC+1), "your selection will take");
@@ -2396,23 +2394,23 @@ static void M_OpenGL_Key (int k)
 			break;
 
 		case OGL_MULTITEX:	// multitexturing
-			Cvar_SetValue ("gl_multitexture", !gl_multitexture.value);
+			Cvar_SetValue ("gl_multitexture", !gl_multitexture.integer);
 			break;
 
 		case OGL_PURGETEX:	// purge gl textures on map change
-			Cvar_SetValue ("gl_purge_maptex", !gl_purge_maptex.value);
+			Cvar_SetValue ("gl_purge_maptex", !gl_purge_maptex.integer);
 			break;
 
 		case OGL_GLOW1:	// glow effects, main: torches
-			Cvar_SetValue ("gl_glows", !gl_glows.value);
+			Cvar_SetValue ("gl_glows", !gl_glows.integer);
 			break;
 
 		case OGL_GLOW2:	// glow effects, missiles
-			Cvar_SetValue ("gl_missile_glows", !gl_missile_glows.value);
+			Cvar_SetValue ("gl_missile_glows", !gl_missile_glows.integer);
 			break;
 
 		case OGL_GLOW3:	// glow effects, other: mana, etc.
-			Cvar_SetValue ("gl_other_glows", !gl_other_glows.value);
+			Cvar_SetValue ("gl_other_glows", !gl_other_glows.integer);
 			break;
 
 		case OGL_LIGHTMAPFMT:	// lightmap format
@@ -2439,13 +2437,13 @@ static void M_OpenGL_Key (int k)
 			switch (k)
 			{
 			case K_RIGHTARROW:
-				if ((int)gl_coloredlight.value >= 1)
+				if (gl_coloredlight.integer >= 1)
 					Cvar_SetValue ("gl_coloredlight", 2);
 				else
 					Cvar_SetValue ("gl_coloredlight", 1);
 				break;
 			case K_LEFTARROW:
-				if ((int)gl_coloredlight.value <= 1)
+				if (gl_coloredlight.integer <= 1)
 					Cvar_SetValue ("gl_coloredlight", 0);
 				else
 					Cvar_SetValue ("gl_coloredlight", 1);
@@ -2456,11 +2454,11 @@ static void M_OpenGL_Key (int k)
 			break;
 
 		case OGL_COLOREDDYNAMIC:	// dynamic colored lights
-			Cvar_SetValue ("gl_colored_dynamic_lights", !gl_colored_dynamic_lights.value);
+			Cvar_SetValue ("gl_colored_dynamic_lights", !gl_colored_dynamic_lights.integer);
 			break;
 
 		case OGL_COLOREDEXTRA:	// extra dynamic colored lights
-			Cvar_SetValue ("gl_extra_dynamic_lights", !gl_extra_dynamic_lights.value);
+			Cvar_SetValue ("gl_extra_dynamic_lights", !gl_extra_dynamic_lights.integer);
 			break;
 
 		case OGL_TEXFILTER:	// texture filter
@@ -2487,12 +2485,12 @@ static void M_OpenGL_Key (int k)
 			break;
 
 		case OGL_SHADOWS:	// shadows
-			Cvar_SetValue ("r_shadows", !r_shadows.value);
+			Cvar_SetValue ("r_shadows", !r_shadows.integer);
 			break;
 
 		case OGL_STENCIL:	// stencil buffered shadows
 			if (have_stencil)
-				Cvar_SetValue ("gl_stencilshadow", !gl_stencilshadow.value);
+				Cvar_SetValue ("gl_stencilshadow", !gl_stencilshadow.integer);
 			break;
 
 		default:
@@ -3352,7 +3350,7 @@ static void M_Menu_LanConfig_f (void)
 	m_return_onerror = false;
 	m_return_reason[0] = 0;
 
-	setup_class = cl_playerclass.value;
+	setup_class = cl_playerclass.integer;
 	if (setup_class < 1 || setup_class > MAX_PLAYER_CLASS)
 		setup_class = MAX_PLAYER_CLASS;
 #if ENABLE_OLD_DEMO
@@ -3739,7 +3737,7 @@ static void M_Menu_GameOptions_f (void)
 	if (maxplayers < 2)
 		maxplayers = svs.maxclientslimit;
 
-	setup_class = cl_playerclass.value;
+	setup_class = cl_playerclass.integer;
 	if (setup_class < 1 || setup_class > MAX_PLAYER_CLASS)
 		setup_class = MAX_PLAYER_CLASS;
 #if ENABLE_OLD_DEMO
@@ -3757,31 +3755,31 @@ static void M_Menu_GameOptions_f (void)
 	}
 	setup_class--;
 
-	if (oem.value)
+	if (oem.integer)
 	{
 		if (startepisode < OEM_START || startepisode > OEM_START+1)
 			startepisode = OEM_START;
-		if (coop.value)
+		if (coop.integer)
 			startepisode = OEM_START;
 	}
-	else if (registered.value)
+	else if (registered.integer)
 	{
 		if (startepisode < REG_START || startepisode >= OEM_START)
 			startepisode = REG_START;
 		else if (startepisode == MP_START && !(gameflags & GAME_PORTALS))
 			startepisode = REG_START;
-		if (coop.value && startepisode == DM_START)
+		if (coop.integer && startepisode == DM_START)
 			startepisode = REG_START;
 	}
 	else	// demo
 	{
 		if (startepisode < 0 || startepisode > 1)
 			startepisode = 0;
-		if (coop.value)
+		if (coop.integer)
 			startepisode = 0;
 	}
 
-	if (coop.value)
+	if (coop.integer)
 	{
 		startlevel = 0;
 		if (gameoptions_cursor >= NUM_GAMEOPTIONS-1)
@@ -3802,7 +3800,7 @@ static void M_GameOptions_Draw (void)
 	M_Print (160+8, 84, va("%i", maxplayers) );
 
 	M_Print (0+8 + 8*8, 92, "Game Type");
-	if (coop.value)
+	if (coop.integer)
 		M_Print (160+8, 92, "Cooperative");
 	else
 		M_Print (160+8, 92, "Deathmatch");
@@ -3811,7 +3809,7 @@ static void M_GameOptions_Draw (void)
 	{
 		char *msg;
 
-		switch ((int)teamplay.value)
+		switch (teamplay.integer)
 		{
 			case 1:
 				msg = "No Friendly Fire";
@@ -3831,22 +3829,22 @@ static void M_GameOptions_Draw (void)
 
 	M_Print (0+8 + 7*8, 116, "Difficulty");
 
-	M_Print (160+8, 116, DiffNames[setup_class][(int)skill.value]);
+	M_Print (160+8, 116, DiffNames[setup_class][skill.integer]);
 
 	M_Print (0+8 + 7*8, 124, "Frag Limit");
-	if (fraglimit.value == 0)
+	if (fraglimit.integer == 0)
 		M_Print (160+8, 124, "none");
 	else
-		M_Print (160+8, 124, va("%i frags", (int)fraglimit.value));
+		M_Print (160+8, 124, va("%i frags", fraglimit.integer));
 
 	M_Print (0+8 + 7*8, 132, "Time Limit");
-	if (timelimit.value == 0)
+	if (timelimit.integer == 0)
 		M_Print (160+8, 132, "none");
 	else
-		M_Print (160+8, 132, va("%i minutes", (int)timelimit.value));
+		M_Print (160+8, 132, va("%i minutes", timelimit.integer));
 
 	M_Print (0+8 + 5*8, 140, "Random Class");
-	if (randomclass.value)
+	if (randomclass.integer)
 		M_Print (160+8, 140, "on");
 	else
 		M_Print (160+8, 140, "off");
@@ -3899,8 +3897,8 @@ static void M_NetStart_Change (int dir)
 		break;
 
 	case 2:
-		Cvar_SetValue ("coop", coop.value ? 0 : 1);
-		if (coop.value)
+		Cvar_SetValue ("coop", coop.integer ? 0 : 1);
+		if (coop.integer)
 		{
 			startlevel = 0;
 			if (startepisode == 1)
@@ -3913,10 +3911,10 @@ static void M_NetStart_Change (int dir)
 		break;
 
 	case 3:
-		Cvar_SetValue ("teamplay", teamplay.value + dir);
-		if (teamplay.value > 2)
+		Cvar_SetValue ("teamplay", teamplay.integer + dir);
+		if (teamplay.integer > 2)
 			Cvar_SetValue ("teamplay", 0);
-		else if (teamplay.value < 0)
+		else if (teamplay.integer < 0)
 			Cvar_SetValue ("teamplay", 2);
 		break;
 
@@ -3941,38 +3939,38 @@ static void M_NetStart_Change (int dir)
 		break;
 
 	case 5:
-		Cvar_SetValue ("skill", skill.value + dir);
-		if (skill.value > 3)
+		Cvar_SetValue ("skill", skill.integer + dir);
+		if (skill.integer > 3)
 			Cvar_SetValue ("skill", 0);
-		else if (skill.value < 0)
+		else if (skill.integer < 0)
 			Cvar_SetValue ("skill", 3);
 		break;
 
 	case 6:
-		Cvar_SetValue ("fraglimit", fraglimit.value + dir*10);
-		if (fraglimit.value > 100)
+		Cvar_SetValue ("fraglimit", fraglimit.integer + dir*10);
+		if (fraglimit.integer > 100)
 			Cvar_SetValue ("fraglimit", 0);
-		else if (fraglimit.value < 0)
+		else if (fraglimit.integer < 0)
 			Cvar_SetValue ("fraglimit", 100);
 		break;
 
 	case 7:
-		Cvar_SetValue ("timelimit", timelimit.value + dir*5);
-		if (timelimit.value > 60)
+		Cvar_SetValue ("timelimit", timelimit.integer + dir*5);
+		if (timelimit.integer > 60)
 			Cvar_SetValue ("timelimit", 0);
-		else if (timelimit.value < 0)
+		else if (timelimit.integer < 0)
 			Cvar_SetValue ("timelimit", 60);
 		break;
 
 	case 8:
-		if (randomclass.value)
+		if (randomclass.integer)
 			Cvar_SetValue ("randomclass", 0);
 		else
 			Cvar_SetValue ("randomclass", 1);
 		break;
 
 	case 9:
-		if (registered.value)
+		if (registered.integer)
 		{
 			startepisode += dir;
 			startlevel = 0;
@@ -3982,15 +3980,15 @@ static void M_NetStart_Change (int dir)
 			{
 				if (startepisode == MP_START && !(gameflags & GAME_PORTALS))
 					startepisode += dir;
-				if (coop.value && startepisode == DM_START)
+				if (coop.integer && startepisode == DM_START)
 					startepisode = (dir > 0) ? REG_START : ((gameflags & GAME_PORTALS) ? MP_START : MP_START-1);
 				if (startepisode < REG_START)
-					startepisode = (coop.value) ? ((gameflags & GAME_PORTALS) ? MP_START : MP_START-1) : DM_START;
+					startepisode = (coop.integer) ? ((gameflags & GAME_PORTALS) ? MP_START : MP_START-1) : DM_START;
 			}
 		}
-		else if (oem.value)
+		else if (oem.integer)
 		{
-			if (!coop.value)
+			if (!coop.integer)
 			{
 				startepisode = (startepisode != OEM_START) ? OEM_START : OEM_START+1;
 				startlevel = 0;
@@ -3998,7 +3996,7 @@ static void M_NetStart_Change (int dir)
 		}
 		else	// demo version
 		{
-			if (!coop.value)
+			if (!coop.integer)
 			{
 				startepisode = (startepisode != 0) ? 0 : 1;
 				startlevel = 0;
@@ -4007,7 +4005,7 @@ static void M_NetStart_Change (int dir)
 		break;
 
 	case 10:
-		if (coop.value)
+		if (coop.integer)
 		{
 			startlevel = 0;
 			break;
@@ -4036,7 +4034,7 @@ static void M_GameOptions_Key (int key)
 		if (gameoptions_cursor < 0)
 		{
 			gameoptions_cursor = NUM_GAMEOPTIONS-1;
-			if (coop.value)
+			if (coop.integer)
 				gameoptions_cursor--;
 		}
 		break;
@@ -4044,7 +4042,7 @@ static void M_GameOptions_Key (int key)
 	case K_DOWNARROW:
 		S_LocalSound ("raven/menu1.wav");
 		gameoptions_cursor++;
-		if (coop.value)
+		if (coop.integer)
 		{
 			if (gameoptions_cursor >= NUM_GAMEOPTIONS-1)
 				gameoptions_cursor = 0;

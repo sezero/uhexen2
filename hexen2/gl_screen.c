@@ -2,7 +2,7 @@
 	screen.c
 	master for refresh, status bar, console, chat, notify, etc
 
-	$Id: gl_screen.c,v 1.45 2007-04-18 13:31:17 sezero Exp $
+	$Id: gl_screen.c,v 1.46 2007-05-09 18:10:13 sezero Exp $
 */
 
 /*=============================================================================
@@ -77,7 +77,7 @@ int			clearnotify;
 float		scr_con_current;
 float		scr_conlines;		// lines of console to display
 
-float		oldscreensize, oldfov;
+int		oldscreensize, oldfov;
 
 cvar_t		scr_viewsize = {"viewsize", "110", CVAR_ARCHIVE};
 cvar_t		scr_fov = {"fov", "90", CVAR_NONE};	// 10 - 170
@@ -290,26 +290,25 @@ Internal use only
 */
 static void SCR_CalcRefdef (void)
 {
-	float		size;
-	int		h;
+	int		h, size;
 
 	scr_fullupdate = 0;		// force a background redraw
 	vid.recalc_refdef = 0;
 
 // bound viewsize
-	if (scr_viewsize.value < 30)
-		Cvar_Set ("viewsize","30");
-	else if (scr_viewsize.value > 120)
-		Cvar_Set ("viewsize","120");
+	if (scr_viewsize.integer < 30)
+		Cvar_SetValue ("viewsize", 30);
+	else if (scr_viewsize.integer > 120)
+		Cvar_SetValue ("viewsize", 120);
 
 // bound field of view
-	if (scr_fov.value < 10)
-		Cvar_Set ("fov","10");
-	else if (scr_fov.value > 170)
-		Cvar_Set ("fov","170");
+	if (scr_fov.integer < 10)
+		Cvar_SetValue ("fov", 10);
+	else if (scr_fov.integer > 170)
+		Cvar_SetValue ("fov", 170);
 
-	oldfov = scr_fov.value;
-	oldscreensize = scr_viewsize.value;
+	oldfov = scr_fov.integer;
+	oldscreensize = scr_viewsize.integer;
 
 // force the status bar to redraw
 	SB_ViewSizeChanged ();
@@ -319,7 +318,7 @@ static void SCR_CalcRefdef (void)
 	if (cl.intermission)
 		size = 110;
 	else
-		size = scr_viewsize.value;
+		size = scr_viewsize.integer;
 
 /*	if (size >= 120)
 		sb_lines = 0;		// no status bar at all
@@ -333,7 +332,7 @@ static void SCR_CalcRefdef (void)
 	else
 		sb_lines = 36;
 
-	size = scr_viewsize.value > 100 ? 100 : scr_viewsize.value;
+	size = scr_viewsize.integer > 100 ? 100 : scr_viewsize.integer;
 	if (cl.intermission)
 	{
 		size = 100;
@@ -371,7 +370,7 @@ Keybinding command
 */
 static void SCR_SizeUp_f (void)
 {
-	Cvar_SetValue ("viewsize",scr_viewsize.value+10);
+	Cvar_SetValue ("viewsize", scr_viewsize.integer + 10);
 	vid.recalc_refdef = 1;
 }
 
@@ -384,7 +383,7 @@ Keybinding command
 */
 static void SCR_SizeDown_f (void)
 {
-	Cvar_SetValue ("viewsize",scr_viewsize.value-10);
+	Cvar_SetValue ("viewsize", scr_viewsize.integer - 10);
 	vid.recalc_refdef = 1;
 }
 
@@ -432,7 +431,7 @@ SCR_DrawRam
 */
 static void SCR_DrawRam (void)
 {
-	if (!scr_showram.value)
+	if (!scr_showram.integer)
 		return;
 
 	if (!r_cache_thrash)
@@ -450,7 +449,7 @@ static void SCR_DrawTurtle (void)
 {
 	static int	count;
 	
-	if (!scr_showturtle.value)
+	if (!scr_showturtle.integer)
 		return;
 
 	if (host_frametime < 0.1)
@@ -494,7 +493,7 @@ static void SCR_DrawPause (void)
 	int finaly;
 	static float LogoPercent, LogoTargetPercent;
 
-	if (!scr_showpause.value)		// turn off for screenshots
+	if (!scr_showpause.integer)	// turn off for screenshots
 		return;
 
 	if (!cl.paused)
@@ -1217,8 +1216,8 @@ void SCR_UpdateScreen (void)
 //
 // check for vid changes
 //
-	if (oldfov != scr_fov.value ||
-	    oldscreensize != scr_viewsize.value)
+	if (oldfov != scr_fov.integer ||
+	    oldscreensize != scr_viewsize.integer)
 		vid.recalc_refdef = true;
 
 	if (vid.recalc_refdef)
@@ -1272,7 +1271,7 @@ void SCR_UpdateScreen (void)
 */
 	else
 	{
-		if (crosshair.value)
+		if (crosshair.integer)
 			Draw_Crosshair();
 
 		SCR_DrawRam();

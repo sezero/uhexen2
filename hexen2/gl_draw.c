@@ -2,7 +2,7 @@
 	gl_draw.c
 	this is the only file outside the refresh that touches the vid buffer
 
-	$Id: gl_draw.c,v 1.109 2007-04-28 15:31:04 sezero Exp $
+	$Id: gl_draw.c,v 1.110 2007-05-09 18:10:13 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -487,8 +487,7 @@ just after changing the game directory.
 */
 void Draw_ReInit (void)
 {
-	int	j, temp;
-	float	temp2;
+	int	j, temp, temp2;
 
 	temp = scr_disabled_for_loading;
 	scr_disabled_for_loading = true;
@@ -504,7 +503,7 @@ void Draw_ReInit (void)
 #if !defined(H2W)
 	flush_textures = 1;
 #endif
-	temp2 = gl_purge_maptex.value;
+	temp2 = gl_purge_maptex.integer;
 	Cvar_SetValue ("gl_purge_maptex", 1);
 	Mod_ClearAll ();
 
@@ -603,9 +602,9 @@ void Draw_Crosshair (void)
 	x = scr_vrect.x + scr_vrect.width/2 + cl_crossx.value;
 	y = scr_vrect.y + scr_vrect.height/2 + cl_crossy.value;
 
-	if ((int)crosshair.value == 2)
+	if (crosshair.integer == 2)
 	{
-		pColor = (unsigned char *) &d_8to24table[(byte) crosshaircolor.value];
+		pColor = (unsigned char *) &d_8to24table[(byte) crosshaircolor.integer];
 
 		glTexEnvf_fp (GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 		glColor4ubv_fp (pColor);
@@ -628,7 +627,7 @@ void Draw_Crosshair (void)
 		glEnd_fp ();
 		glTexEnvf_fp (GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
 	}
-	else if (crosshair.value)
+	else if (crosshair.integer)
 	{
 		Draw_Character (x - 4, y - 4, '+');
 	}
@@ -1101,7 +1100,7 @@ void Draw_ConsoleBackground (int lines)
 
 	y = (vid.height * 3) >> 2;
 
-	if (gl_constretch.value)
+	if (gl_constretch.integer)
 		ofs = 0.0f;
 	else
 		ofs = (vid.conheight - lines) / (float) vid.conheight;
@@ -1524,13 +1523,13 @@ static void GL_Upload8_EXT (byte *data, int width, int height,  qboolean mipmap,
 
 	if (sprite)
 	{
-		scaled_width >>= (int)gl_spritemip.value;
-		scaled_height >>= (int)gl_spritemip.value;
+		scaled_width >>= gl_spritemip.integer;
+		scaled_height >>= gl_spritemip.integer;
 	}
 	else
 	{
-		scaled_width >>= (int)gl_picmip.value;
-		scaled_height >>= (int)gl_picmip.value;
+		scaled_width >>= gl_picmip.integer;
+		scaled_height >>= gl_picmip.integer;
 	}
 
 	if (scaled_width < 1)
@@ -1640,13 +1639,13 @@ static void GL_Upload32 (unsigned *data, int width, int height,  qboolean mipmap
 
 	if (sprite)
 	{
-		scaled_width >>= (int)gl_spritemip.value;
-		scaled_height >>= (int)gl_spritemip.value;
+		scaled_width >>= gl_spritemip.integer;
+		scaled_height >>= gl_spritemip.integer;
 	}
 	else
 	{
-		scaled_width >>= (int)gl_picmip.value;
-		scaled_height >>= (int)gl_picmip.value;
+		scaled_width >>= gl_picmip.integer;
+		scaled_height >>= gl_picmip.integer;
 	}
 
 	if (scaled_width < 1)

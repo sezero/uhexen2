@@ -2,7 +2,7 @@
 	info_str.c
 	Hexen2World info strings handling
 
-	$Id: info_str.c,v 1.2 2007-02-12 16:53:09 sezero Exp $
+	$Id: info_str.c,v 1.3 2007-05-09 18:10:17 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -206,7 +206,7 @@ void Info_SetValueForStarKey (char *s, const char *key, const char *value, int m
 				c = tolower(c);
 		}
 #else
-		if (!sv_highchars.value)
+		if (!sv_highchars.integer)
 		{
 			c &= 127;
 			if (c < 32 || c > 127)

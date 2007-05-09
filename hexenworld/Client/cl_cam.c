@@ -5,7 +5,7 @@
 	This takes over player controls for spectator automatic camera.
 	Player moves as a spectator, but the camera tracks an enemy player
 
-	$Id: cl_cam.c,v 1.8 2007-03-14 21:03:29 sezero Exp $
+	$Id: cl_cam.c,v 1.9 2007-05-09 18:10:16 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -327,7 +327,7 @@ void Cam_Track(usercmd_t *cmd)
 	if (!cl.spectator)
 		return;
 
-	if (cl_hightrack.value && !locked)
+	if (cl_hightrack.integer && !locked)
 		Cam_CheckHighTarget();
 
 	if (!autocam || cls.state != ca_active)
@@ -336,7 +336,7 @@ void Cam_Track(usercmd_t *cmd)
 	if (locked && (!cl.players[spec_track].name[0] || cl.players[spec_track].spectator))
 	{
 		locked = false;
-		if (cl_hightrack.value)
+		if (cl_hightrack.integer)
 			Cam_CheckHighTarget();
 		else
 			Cam_Unlock();
@@ -523,7 +523,7 @@ void Cam_FinishMove(usercmd_t *cmd)
 			return;
 	}
 
-	if (autocam && cl_hightrack.value)
+	if (autocam && cl_hightrack.integer)
 	{
 		Cam_CheckHighTarget();
 		return;

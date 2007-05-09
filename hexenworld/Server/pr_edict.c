@@ -2,7 +2,7 @@
 	sv_edict.c
 	entity dictionary
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Server/pr_edict.c,v 1.24 2007-04-18 13:34:47 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Server/pr_edict.c,v 1.25 2007-05-09 18:11:37 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -94,7 +94,7 @@ edict_t *ED_Alloc (void)
 	int			i;
 	edict_t		*e;
 
-	for (i = MAX_CLIENTS + max_temp_edicts.value + 1; i < sv.num_edicts; i++)
+	for (i = MAX_CLIENTS + max_temp_edicts.integer + 1; i < sv.num_edicts; i++)
 	{
 		e = EDICT_NUM(i);
 		// the first couple seconds of server time can involve a lot of
@@ -132,7 +132,7 @@ edict_t *ED_Alloc_Temp (void)
 	LeastTime = -1;
 	LeastSet = false;
 	Least = NULL;	// shut up compiler
-	for (i = MAX_CLIENTS + 1, j = 0; j < max_temp_edicts.value; i++, j++)
+	for (i = MAX_CLIENTS + 1, j = 0; j < max_temp_edicts.integer; i++, j++)
 	{
 		e = EDICT_NUM(i);
 		// the first couple seconds of server time can involve a lot of
@@ -1007,7 +1007,7 @@ void ED_LoadFromFile (char *data)
 		data = ED_ParseEdict (data, ent);
 
 		// remove things from different skill levels or deathmatch
-		if (deathmatch.value)
+		if (deathmatch.integer)
 		{
 			if (((int)ent->v.spawnflags & SPAWNFLAG_NOT_DEATHMATCH))
 			{
@@ -1016,7 +1016,7 @@ void ED_LoadFromFile (char *data)
 				continue;
 			}
 		}
-		else if (coop.value)
+		else if (coop.integer)
 		{
 			if (((int)ent->v.spawnflags & SPAWNFLAG_NOT_COOP))
 			{
@@ -1040,22 +1040,22 @@ void ED_LoadFromFile (char *data)
 
 #if 0	// rjr not supported in hexenworld
 			if (((int)ent->v.spawnflags & SPAWNFLAG_NOT_PALADIN) &&
-				cl_playerclass.value == CLASS_PALADIN)
+				cl_playerclass.integer == CLASS_PALADIN)
 			{
 				skip = 1;
 			}
 			if (((int)ent->v.spawnflags & SPAWNFLAG_NOT_CLERIC) &&
-				cl_playerclass.value == CLASS_CLERIC)
+				cl_playerclass.integer == CLASS_CLERIC)
 			{
 				skip = 1;
 			}
 			if (((int)ent->v.spawnflags & SPAWNFLAG_NOT_NECROMANCER) &&
-				cl_playerclass.value == CLASS_NECROMANCER)
+				cl_playerclass.integer == CLASS_NECROMANCER)
 			{
 				skip = 1;
 			}
 			if (((int)ent->v.spawnflags & SPAWNFLAG_NOT_THEIF) &&
-				cl_playerclass.value == CLASS_THEIF)
+				cl_playerclass.integer == CLASS_THEIF)
 			{
 				skip = 1;
 			}

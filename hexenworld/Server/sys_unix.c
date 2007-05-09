@@ -1,6 +1,6 @@
 /*
 	sys_unix.c
-	$Id: sys_unix.c,v 1.38 2007-04-10 17:53:10 sezero Exp $
+	$Id: sys_unix.c,v 1.39 2007-05-09 18:11:38 sezero Exp $
 
 	Unix system interface code
 */
@@ -30,7 +30,7 @@
 #define MAX_MEM_ALLOC	0x2000000
 
 cvar_t		sys_nostdout = {"sys_nostdout", "0", CVAR_NONE};
-int		devlog;	/* log the Con_DPrintf and Sys_DPrintf content when !developer.value */
+int		devlog;	/* log the Con_DPrintf and Sys_DPrintf content when !developer.integer */
 
 
 /*
@@ -261,7 +261,7 @@ void Sys_PrintTerm (const char *msgtxt)
 {
 	unsigned char		*p;
 
-	if (sys_nostdout.value)
+	if (sys_nostdout.integer)
 		return;
 
 	for (p = (unsigned char *) msgtxt; *p; p++)

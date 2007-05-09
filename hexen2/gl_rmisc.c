@@ -1,7 +1,7 @@
 /*
 	r_misc.c
 
-	$Id: gl_rmisc.c,v 1.41 2007-04-22 14:19:06 sezero Exp $
+	$Id: gl_rmisc.c,v 1.42 2007-05-09 18:10:13 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -389,8 +389,8 @@ void R_TranslatePlayerSkin (int playernum)
 	scaled_height = gl_max_size < 256 ? gl_max_size : 256;
 
 	// allow users to crunch sizes down even more if they want
-	scaled_width >>= (int)gl_playermip.value;
-	scaled_height >>= (int)gl_playermip.value;
+	scaled_width >>= gl_playermip.integer;
+	scaled_height >>= gl_playermip.integer;
 
 	inwidth = paliashdr->skinwidth;
 	inheight = paliashdr->skinheight;
@@ -495,7 +495,7 @@ void D_ClearOpenGLTextures (int last_tex)
 
 void D_FlushCaches (void)
 {
-	if (numgltextures - gl_texlevel > 0 && flush_textures && gl_purge_maptex.value)
+	if (numgltextures - gl_texlevel > 0 && flush_textures && gl_purge_maptex.integer)
 		D_ClearOpenGLTextures (gl_texlevel);
 }
 

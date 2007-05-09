@@ -5,7 +5,7 @@
 	Quake is a trademark of Id Software, Inc., (c) 1996 Id Software, Inc.
 	All rights reserved.
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cl_input.c,v 1.16 2007-03-14 21:03:01 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cl_input.c,v 1.17 2007-05-09 18:10:12 sezero Exp $
 */
 
 
@@ -124,7 +124,7 @@ static void IN_MLookDown (void)
 static void IN_MLookUp (void)
 {
 	KeyUp(&in_mlook);
-	if ( !(in_mlook.state&1) && lookspring.value)
+	if ( !(in_mlook.state&1) && lookspring.integer)
 		V_StartPitchDrift();
 }
 

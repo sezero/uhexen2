@@ -2,7 +2,7 @@
 	cl_ents.c
 	entity parsing and management
 
-	$Id: cl_ents.c,v 1.13 2007-03-14 21:03:29 sezero Exp $
+	$Id: cl_ents.c,v 1.14 2007-05-09 18:10:16 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -192,7 +192,7 @@ static void ShowNetParseDelta(int x)
 	int i;
 	char orstring[2];
 
-	if (cl_shownet.value != 2)
+	if (cl_shownet.integer != 2)
 		return;
 
 	orstring[0]=0;
@@ -529,7 +529,7 @@ static void HandleEffects(int effects, int number, entity_t *ent, vec3_t oldOrg)
 /* since the server never sends svc_muzzleflash, CL_MuzzleFlash()
    of cl_parse.c does not handle this for us			*/
 #	ifdef GLQUAKE
-		if (gl_colored_dynamic_lights.value)
+		if (gl_colored_dynamic_lights.integer)
 		{	// Make the dynamic light yellow
 			dl->color[0] = 1.0;
 			dl->color[1] = 1.0;
@@ -547,7 +547,7 @@ static void HandleEffects(int effects, int number, entity_t *ent, vec3_t oldOrg)
 		dl->radius = 400 + (rand() & 31);
 		dl->die = cl.time + 0.001;
 #	ifdef GLQUAKE
-		if (gl_colored_dynamic_lights.value)
+		if (gl_colored_dynamic_lights.integer)
 		{
 			dl->color[0] = 0.8;
 			dl->color[1] = 0.8;
@@ -563,7 +563,7 @@ static void HandleEffects(int effects, int number, entity_t *ent, vec3_t oldOrg)
 		dl->radius = 200 + (rand() & 31);
 		dl->die = cl.time + 0.001;
 #	ifdef GLQUAKE
-		if (gl_colored_dynamic_lights.value)
+		if (gl_colored_dynamic_lights.integer)
 		{
 			dl->color[0] = 0.8;
 			dl->color[1] = 0.6;
@@ -588,7 +588,7 @@ static void HandleEffects(int effects, int number, entity_t *ent, vec3_t oldOrg)
 		dl->radius = 200;
 		dl->die = cl.time + 0.001;
 #	ifdef GLQUAKE
-		if (gl_colored_dynamic_lights.value)
+		if (gl_colored_dynamic_lights.integer)
 		{
 			dl->color[0] = 0.8;
 			dl->color[1] = 0.4;
@@ -853,7 +853,7 @@ static void CL_LinkPacketEntities (void)
 			dl->radius = 120 - (rand() % 20);
 			dl->die = cl.time + 0.01;
 #		ifdef GLQUAKE
-			if (gl_colored_dynamic_lights.value)
+			if (gl_colored_dynamic_lights.integer)
 			{
 				dl->color[0] = 0.8;
 				dl->color[1] = 0.2;
@@ -874,7 +874,7 @@ static void CL_LinkPacketEntities (void)
 			dl->radius = -120 - (rand() % 20);
 			dl->die = cl.time + 0.05;
 #		ifdef GLQUAKE
-			if (gl_colored_dynamic_lights.value)
+			if (gl_colored_dynamic_lights.integer)
 			{	// Make the dynamic light green
 				dl->color[0] = 0.2;
 				dl->color[1] = 0.6;
@@ -901,13 +901,13 @@ static void CL_LinkPacketEntities (void)
 			R_RocketTrail (old_origin, ent->origin, rt_vorpal);
 #		ifdef GLQUAKE
 			// extra dynamic lights
-			if (gl_extra_dynamic_lights.value)
+			if (gl_extra_dynamic_lights.integer)
 			{
 				dl = CL_AllocDlight (i);
 				VectorCopy (ent->origin, dl->origin);
 				dl->radius = 240 - (rand() % 20);
 				dl->die = cl.time + 0.01;
-				if (gl_colored_dynamic_lights.value)
+				if (gl_colored_dynamic_lights.integer)
 				{	// Make the dynamic light blue
 					dl->color[0] = 0.3;
 					dl->color[1] = 0.3;
@@ -927,13 +927,13 @@ static void CL_LinkPacketEntities (void)
 				R_RocketTrail (old_origin, ent->origin, rt_magicmissile);
 #		ifdef GLQUAKE
 			// extra dynamic lights
-			if (gl_extra_dynamic_lights.value)
+			if (gl_extra_dynamic_lights.integer)
 			{
 				dl = CL_AllocDlight (i);
 				VectorCopy (ent->origin, dl->origin);
 				dl->radius = 240 - (rand() % 20);
 				dl->die = cl.time + 0.01;
-				if (gl_colored_dynamic_lights.value)
+				if (gl_colored_dynamic_lights.integer)
 				{	// Make the dynamic light blue
 					dl->color[0] = 0.1;
 					dl->color[1] = 0.1;
@@ -950,13 +950,13 @@ static void CL_LinkPacketEntities (void)
 			R_RocketTrail (old_origin, ent->origin, rt_scarab);
 #		ifdef GLQUAKE
 			// extra dynamic lights
-			if (gl_extra_dynamic_lights.value)
+			if (gl_extra_dynamic_lights.integer)
 			{
 				dl = CL_AllocDlight (i);
 				VectorCopy (ent->origin, dl->origin);
 				dl->radius = 240 - (rand() % 20);
 				dl->die = cl.time + 0.01;
-				if (gl_colored_dynamic_lights.value)
+				if (gl_colored_dynamic_lights.integer)
 				{	// Make the dynamic light orange
 					dl->color[0] = 0.9;
 					dl->color[1] = 0.6;
@@ -971,13 +971,13 @@ static void CL_LinkPacketEntities (void)
 			R_RocketTrail (old_origin, ent->origin, rt_acidball);
 #		ifdef GLQUAKE
 			// extra dynamic lights
-			if (gl_extra_dynamic_lights.value)
+			if (gl_extra_dynamic_lights.integer)
 			{
 				dl = CL_AllocDlight (i);
 				VectorCopy (ent->origin, dl->origin);
 				dl->radius = 120 - (rand() % 20);
 				dl->die = cl.time + 0.01;
-				if (gl_colored_dynamic_lights.value)
+				if (gl_colored_dynamic_lights.integer)
 				{	// Make the dynamic light green
 					dl->color[0] = 0.2;
 					dl->color[1] = 0.8;
@@ -1486,7 +1486,7 @@ static void CL_LinkPlayers (void)
 
 		// spawn light flashes, even ones coming from invisible objects
 #ifdef GLQUAKE
-		if (!gl_flashblend.value || j != cl.playernum)
+		if (!gl_flashblend.integer || j != cl.playernum)
 		{
 #endif
 /*			if (state->effects & (EF_BLUE | EF_RED) == (EF_BLUE | EF_RED))
@@ -1550,7 +1550,7 @@ static void CL_LinkPlayers (void)
 
 		// only predict half the move to minimize overruns
 		msec = 500*(playertime - state->state_time);
-		if (msec <= 0 || (!cl_predict_players.value && !cl_predict_players2.value) || j == cl.playernum)
+		if (msec <= 0 || (!cl_predict_players.integer && !cl_predict_players2.integer) || j == cl.playernum)
 		{
 			VectorCopy (state->origin, ent->origin);
 			//Con_DPrintf ("nopredict\n");
@@ -1694,7 +1694,7 @@ void CL_SetUpPlayerPrediction(qboolean dopred)
 			// only predict half the move to minimize overruns
 			msec = 500*(playertime - state->state_time);
 			if (msec <= 0 ||
-				(!cl_predict_players.value && !cl_predict_players2.value) ||
+				(!cl_predict_players.integer && !cl_predict_players2.integer) ||
 				!dopred)
 			{
 				VectorCopy (state->origin, pplayer->origin);
@@ -1732,7 +1732,7 @@ void CL_SetSolidPlayers (int playernum)
 	struct predicted_player *pplayer;
 	physent_t *pent;
 
-	if (!cl_solid_players.value)
+	if (!cl_solid_players.integer)
 		return;
 
 	pent = pmove.physents + pmove.numphysent;

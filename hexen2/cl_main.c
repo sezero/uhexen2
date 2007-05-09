@@ -2,7 +2,7 @@
 	cl_main.c
 	client main loop
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cl_main.c,v 1.37 2007-04-08 18:50:38 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cl_main.c,v 1.38 2007-05-09 18:10:12 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -200,10 +200,10 @@ void CL_SignonReply (void)
 		MSG_WriteString (&cls.message, va("name \"%s\"\n", cl_name.string));
 
 		MSG_WriteByte (&cls.message, clc_stringcmd);
-		MSG_WriteString (&cls.message, va("playerclass %i\n", (int)cl_playerclass.value));
+		MSG_WriteString (&cls.message, va("playerclass %i\n", cl_playerclass.integer));
 
 		MSG_WriteByte (&cls.message, clc_stringcmd);
-		MSG_WriteString (&cls.message, va("color %i %i\n", ((int)cl_color.value)>>4, ((int)cl_color.value)&15));
+		MSG_WriteString (&cls.message, va("color %i %i\n", cl_color.integer >> 4, cl_color.integer & 15));
 
 		MSG_WriteByte (&cls.message, clc_stringcmd);
 		snprintf (str, sizeof(str), "spawn %s", cls.spawnparms);
@@ -421,7 +421,7 @@ static float CL_LerpPoint (void)
 
 	f = cl.mtime[0] - cl.mtime[1];
 
-	if (!f || cl_nolerp.value || cls.timedemo || sv.active)
+	if (!f || cl_nolerp.integer || cls.timedemo || sv.active)
 	{
 		cl.time = cl.mtime[0];
 		return 1;
@@ -572,7 +572,7 @@ static void CL_RelinkEntities (void)
 			dl->minlight = 32;
 			dl->die = cl.time + 0.1;
 #		ifdef GLQUAKE
-			if (gl_colored_dynamic_lights.value)
+			if (gl_colored_dynamic_lights.integer)
 			{	// Make the dynamic light yellow
 				dl->color[0] = 1.0;
 				dl->color[1] = 1.0;
@@ -589,7 +589,7 @@ static void CL_RelinkEntities (void)
 			dl->radius = 400 + (rand() & 31);
 			dl->die = cl.time + 0.001;
 #		ifdef GLQUAKE
-			if (gl_colored_dynamic_lights.value)
+			if (gl_colored_dynamic_lights.integer)
 			{
 				dl->color[0] = 0.8;
 				dl->color[1] = 0.8;
@@ -605,7 +605,7 @@ static void CL_RelinkEntities (void)
 			dl->radius = 200 + (rand() & 31);
 			dl->die = cl.time + 0.001;
 #		ifdef GLQUAKE
-			if (gl_colored_dynamic_lights.value)
+			if (gl_colored_dynamic_lights.integer)
 			{
 				dl->color[0] = 0.8;
 				dl->color[1] = 0.6;
@@ -630,7 +630,7 @@ static void CL_RelinkEntities (void)
 			dl->radius = 200;
 			dl->die = cl.time + 0.001;
 #		ifdef GLQUAKE
-			if (gl_colored_dynamic_lights.value)
+			if (gl_colored_dynamic_lights.integer)
 			{
 				dl->color[0] = 0.8;
 				dl->color[1] = 0.4;
@@ -667,7 +667,7 @@ static void CL_RelinkEntities (void)
 			dl->radius = 120 - (rand() % 20);
 			dl->die = cl.time + 0.01;
 #		ifdef GLQUAKE
-			if (gl_colored_dynamic_lights.value)
+			if (gl_colored_dynamic_lights.integer)
 			{
 				dl->color[0] = 0.8;
 				dl->color[1] = 0.2;
@@ -685,7 +685,7 @@ static void CL_RelinkEntities (void)
 			dl->radius = 120 - (rand() % 20);
 			dl->die = cl.time + 0.01;
 #		ifdef GLQUAKE
-			if (gl_colored_dynamic_lights.value)
+			if (gl_colored_dynamic_lights.integer)
 			{	// Make the dynamic light green
 				dl->color[0] = 0.2;
 				dl->color[1] = 0.8;
@@ -707,7 +707,7 @@ static void CL_RelinkEntities (void)
 			dl->radius = -120 - (rand() % 20);
 			dl->die = cl.time + 0.05;
 #		ifdef GLQUAKE
-			if (gl_colored_dynamic_lights.value)
+			if (gl_colored_dynamic_lights.integer)
 			{	// Make the dynamic light green
 				dl->color[0] = 0.2;
 				dl->color[1] = 0.6;
@@ -730,13 +730,13 @@ static void CL_RelinkEntities (void)
 
 #		ifdef GLQUAKE
 			// extra dynamic lights
-			if (gl_extra_dynamic_lights.value)
+			if (gl_extra_dynamic_lights.integer)
 			{
 				dl = CL_AllocDlight (i);
 				VectorCopy (ent->origin, dl->origin);
 				dl->radius = 240 - (rand() % 20);
 				dl->die = cl.time + 0.01;
-				if (gl_colored_dynamic_lights.value)
+				if (gl_colored_dynamic_lights.integer)
 				{	// Make the dynamic light blue
 					dl->color[0] = 0.3;
 					dl->color[1] = 0.3;
@@ -757,13 +757,13 @@ static void CL_RelinkEntities (void)
 
 #		ifdef GLQUAKE
 			// extra dynamic lights
-			if (gl_extra_dynamic_lights.value)
+			if (gl_extra_dynamic_lights.integer)
 			{
 				dl = CL_AllocDlight (i);
 				VectorCopy (ent->origin, dl->origin);
 				dl->radius = 240 - (rand() % 20);
 				dl->die = cl.time + 0.01;
-				if (gl_colored_dynamic_lights.value)
+				if (gl_colored_dynamic_lights.integer)
 				{	// Make the dynamic light blue
 					dl->color[0] = 0.1;
 					dl->color[1] = 0.1;
@@ -783,13 +783,13 @@ static void CL_RelinkEntities (void)
 
 #		ifdef GLQUAKE
 			// extra dynamic lights
-			if (gl_extra_dynamic_lights.value)
+			if (gl_extra_dynamic_lights.integer)
 			{
 				dl = CL_AllocDlight (i);
 				VectorCopy (ent->origin, dl->origin);
 				dl->radius = 240 - (rand() % 20);
 				dl->die = cl.time + 0.01;
-				if (gl_colored_dynamic_lights.value)
+				if (gl_colored_dynamic_lights.integer)
 				{	// Make the dynamic light orange
 					dl->color[0] = 0.9;
 					dl->color[1] = 0.6;
@@ -802,7 +802,7 @@ static void CL_RelinkEntities (void)
 
 		ent->forcelink = false;
 
-		if (i == cl.viewentity && !chase_active.value)
+		if (i == cl.viewentity && !chase_active.integer)
 			continue;
 
 		if ( ent->effects & EF_NODRAW )
@@ -850,7 +850,7 @@ int CL_ReadFromServer (void)
 		CL_ParseServerMessage ();
 	} while (ret && cls.state == ca_connected);
 
-	if (cl_shownet.value)
+	if (cl_shownet.integer)
 		Con_Printf ("\n");
 
 	CL_RelinkEntities ();

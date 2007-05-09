@@ -2,7 +2,7 @@
 	r_alias.c
 	routines for setting up to draw alias models
 
-	$Id: r_alias.c,v 1.10 2007-03-14 21:03:18 sezero Exp $
+	$Id: r_alias.c,v 1.11 2007-05-09 18:10:13 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -165,7 +165,7 @@ qboolean R_AliasCheckBBox (void)
 		}
 	}
 
-	if (minz < r_aliasmip.value || zclipped)
+	if (minz < r_aliasmip.integer || zclipped)
 		pmodel->flags &= ~EF_MIP_MAP_FAR;
 	else
 		pmodel->flags |=  EF_MIP_MAP_FAR;

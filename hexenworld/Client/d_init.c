@@ -2,7 +2,7 @@
 	d_init.c
 	rasterization driver initialization
 
-	$Id: d_init.c,v 1.6 2007-03-14 21:03:31 sezero Exp $
+	$Id: d_init.c,v 1.7 2007-05-09 18:10:16 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -119,7 +119,7 @@ void D_SetupFrame (void)
 	d_roverwrapped = false;
 	d_initial_rover = sc_rover;
 
-	d_minmip = d_mipcap.value;
+	d_minmip = d_mipcap.integer;
 	if (d_minmip > 3)
 		d_minmip = 3;
 	else if (d_minmip < 0)
@@ -129,7 +129,7 @@ void D_SetupFrame (void)
 		d_scalemip[i] = basemip[i] * d_mipscale.value;
 
 #if	id386
-	if (d_subdiv16.value)
+	if (d_subdiv16.integer)
 		d_drawspans = D_DrawSpans16;
 	else
 		d_drawspans = D_DrawSpans8;

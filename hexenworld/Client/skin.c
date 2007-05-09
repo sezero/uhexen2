@@ -2,7 +2,7 @@
 	skin.c
 	skin loading
 
-	$Id: skin.c,v 1.9 2007-04-18 13:34:35 sezero Exp $
+	$Id: skin.c,v 1.10 2007-05-09 18:10:18 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -91,8 +91,8 @@ byte	*Skin_Cache (skin_t *skin)
 	if (cls.downloadtype == dl_skin)
 		return NULL;		// use base until downloaded
 
-	if (noskins.value==1)	// JACK: So NOSKINS > 1 will show skins, but
-		return NULL;	//	 not download new ones.
+	if (noskins.integer == 1)	// JACK: So NOSKINS > 1 will show skins, but
+		return NULL;		//	 not download new ones.
 
 	if (skin->failedload)
 		return NULL;
@@ -218,7 +218,7 @@ void Skin_NextDownload (void)
 		if (!sc->name[0])
 			continue;
 		Skin_Find (sc);
-		if (noskins.value)
+		if (noskins.integer)
 			continue;
 		if (!CL_CheckOrDownloadFile(va("skins/%s.pcx", sc->skin->name)))
 			return;		// started a download

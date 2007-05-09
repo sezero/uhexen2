@@ -2,7 +2,7 @@
 	sv_ccmds.c
 	console commands
 
-	$Id: sv_ccmds.c,v 1.20 2007-04-18 13:34:51 sezero Exp $
+	$Id: sv_ccmds.c,v 1.21 2007-05-09 18:11:37 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -449,7 +449,7 @@ static void SV_Status_f (void)
 	Con_Printf ("packets/frame    : %5.2f\n", pak);
 	t_limit = Cvar_VariableValue("timelimit");
 	f_limit = Cvar_VariableValue("fraglimit");
-	if (dmMode.value == DM_SIEGE)
+	if (dmMode.integer == DM_SIEGE)
 	{
 		num_min = floor((t_limit*60)-sv.time);
 		num_sec = (int)(t_limit - num_min)%60;
@@ -613,7 +613,7 @@ static void SV_ConSay_f(void)
 	if (Cmd_Argc () < 2)
 		return;
 
-	if (dmMode.value == DM_SIEGE)
+	if (dmMode.integer == DM_SIEGE)
 		Q_strlcpy (text, "GOD SAYS: ", sizeof(text));
 	else
 		Q_strlcpy (text, "ServerAdmin: ", sizeof(text));

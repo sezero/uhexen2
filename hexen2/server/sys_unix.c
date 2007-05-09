@@ -2,7 +2,7 @@
 	sys_unix.c
 	Unix system interface code
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/server/sys_unix.c,v 1.24 2007-04-11 08:04:27 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/server/sys_unix.c,v 1.25 2007-05-09 18:10:15 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -169,7 +169,7 @@ void Sys_PrintTerm (const char *msgtxt)
 {
 	unsigned char		*p;
 
-	if (sys_nostdout.value)
+	if (sys_nostdout.integer)
 		return;
 
 	for (p = (unsigned char *) msgtxt; *p; p++)

@@ -1,7 +1,7 @@
 /*
 	menu.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/menu.c,v 1.65 2007-04-30 17:25:47 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/menu.c,v 1.66 2007-05-09 18:10:17 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -722,8 +722,8 @@ static void M_AdjustSliders (int dir)
 	switch (options_cursor)
 	{
 	case OPT_SCRSIZE:	// screen size
-		scr_viewsize.value += dir * 10;
-		Cvar_SetValue ("viewsize", scr_viewsize.value);
+		scr_viewsize.integer += dir * 10;
+		Cvar_SetValue ("viewsize", scr_viewsize.integer);
 		break;
 	case OPT_GAMMA:		// gamma
 		v_gamma.value -= dir * 0.05;
@@ -807,11 +807,11 @@ static void M_AdjustSliders (int dir)
 		break;
 
 	case OPT_CROSSHAIR:
-		Cvar_SetValue ("crosshair", !crosshair.value);
+		Cvar_SetValue ("crosshair", !crosshair.integer);
 		break;
 
 	case OPT_USEMOUSE:	// _enable_mouse
-		Cvar_SetValue ("_enable_mouse", !_enable_mouse.value);
+		Cvar_SetValue ("_enable_mouse", !_enable_mouse.integer);
 		break;
 
 	default:
@@ -859,7 +859,7 @@ static void M_Options_Draw (void)
 	M_Print (16 + (5 * 8), 60 + (2 * 8),	"Reset to defaults");
 
 	M_Print (16 + (11 * 8), 60 + (3 * 8),	"Screen size");
-	r = (scr_viewsize.value - 30) / (120 - 30);
+	r = (scr_viewsize.value - 30.0) / (120 - 30);
 	M_DrawSlider (220, 60 + (3 * 8), r);
 
 	M_Print (16 + (12 * 8), 60 + (4 * 8),	"Brightness");
@@ -896,10 +896,10 @@ static void M_Options_Draw (void)
 	M_DrawCheckbox (220, 60 + 8*OPT_ALWAYSMLOOK, in_mlook.state & 1);
 
 	M_Print (16 + (13 * 8), 60 + 8*OPT_USEMOUSE,	"Use Mouse");
-	M_DrawCheckbox (220, 60 + 8*OPT_USEMOUSE, _enable_mouse.value);
+	M_DrawCheckbox (220, 60 + 8*OPT_USEMOUSE, _enable_mouse.integer);
 
 	M_Print (16 + (8 * 8), 60 + 8*OPT_CROSSHAIR,	"Show Crosshair");
-	M_DrawCheckbox (220, 60 + 8*OPT_CROSSHAIR, crosshair.value);
+	M_DrawCheckbox (220, 60 + 8*OPT_CROSSHAIR, crosshair.integer);
 
 #ifdef GLQUAKE
 	M_Print (16 + (7 * 8), 60 + 8*OPT_OPENGL,	"OpenGL Features");
@@ -1074,21 +1074,21 @@ static void M_OpenGL_Draw (void)
 
 	M_Print (32 + (8 * 8), 90 + 8*OGL_MULTITEX,	"Multitexturing");
 	if (gl_mtexable)
-		M_DrawCheckbox (232, 90 + 8*OGL_MULTITEX, gl_multitexture.value);
+		M_DrawCheckbox (232, 90 + 8*OGL_MULTITEX, gl_multitexture.integer);
 	else
 		M_Print (232, 90 + 8*OGL_MULTITEX, "Not found");
 
 	M_Print (32 + (4 * 8), 90 + 8*OGL_PURGETEX,	"Purge map textures");
-	M_DrawCheckbox (232, 90 + 8*OGL_PURGETEX, gl_purge_maptex.value);
+	M_DrawCheckbox (232, 90 + 8*OGL_PURGETEX, gl_purge_maptex.integer);
 
 	M_Print (32 + (10 * 8), 90 + 8*OGL_GLOW1,	"Glow effects");
-	M_DrawCheckbox (232, 90 + 8*OGL_GLOW1, gl_glows.value);
+	M_DrawCheckbox (232, 90 + 8*OGL_GLOW1, gl_glows.integer);
 
 	M_Print (32 + (9 * 8), 90 + 8*OGL_GLOW2,	"missile glows");
-	M_DrawCheckbox (232, 90 + 8*OGL_GLOW2, gl_missile_glows.value);
+	M_DrawCheckbox (232, 90 + 8*OGL_GLOW2, gl_missile_glows.integer);
 
 	M_Print (32 + (11 * 8), 90 + 8*OGL_GLOW3,	"other glows");
-	M_DrawCheckbox (232, 90 + 8*OGL_GLOW3, gl_other_glows.value);
+	M_DrawCheckbox (232, 90 + 8*OGL_GLOW3, gl_other_glows.integer);
 
 	M_Print (32 + (6 * 8), 90 + 8*OGL_LIGHTMAPFMT,	"Lightmap Format:");
 	for (i = 0; i < MAX_LMFORMATS; i++)
@@ -1104,11 +1104,9 @@ static void M_OpenGL_Draw (void)
 	M_Print (32 + (8 * 8), 90 + 8*OGL_COLOREDDYNAMIC, "dynamic lights");
 	M_Print (32 + (10 * 8), 90 + 8*OGL_COLOREDEXTRA, "extra lights");
 	// bound the gl_coloredlight value
-	if (gl_coloredlight.value < 0)
+	if (gl_coloredlight.integer < 0)
 		Cvar_SetValue ("gl_coloredlight", 0);
-	if (gl_coloredlight.value != (int)gl_coloredlight.value)
-		Cvar_SetValue ("gl_coloredlight", (int)gl_coloredlight.value);
-	switch ((int)gl_coloredlight.value)
+	switch (gl_coloredlight.integer)
 	{
 	case 0:
 		M_Print (232, 90 + 8*OGL_COLOREDSTATIC, "none (white)");
@@ -1120,8 +1118,8 @@ static void M_OpenGL_Draw (void)
 		M_Print (232, 90 + 8*OGL_COLOREDSTATIC, "blend");
 		break;
 	}
-	M_DrawCheckbox (232, 90 + 8*OGL_COLOREDDYNAMIC, (int)gl_colored_dynamic_lights.value);
-	M_DrawCheckbox (232, 90 + 8*OGL_COLOREDEXTRA, (int)gl_extra_dynamic_lights.value);
+	M_DrawCheckbox (232, 90 + 8*OGL_COLOREDDYNAMIC, gl_colored_dynamic_lights.integer);
+	M_DrawCheckbox (232, 90 + 8*OGL_COLOREDEXTRA, gl_extra_dynamic_lights.integer);
 
 	M_Print (32 + (5 * 8), 90 + 8*OGL_TEXFILTER,	"Texture filtering");
 	for (i = 0; i < MAX_GL_FILTERS; i++)
@@ -1135,10 +1133,10 @@ static void M_OpenGL_Draw (void)
 	}
 
 	M_Print (32 + (15 * 8), 90 + 8*OGL_SHADOWS,	"Shadows");
-	M_DrawCheckbox (232, 90 + 8*OGL_SHADOWS, r_shadows.value);
+	M_DrawCheckbox (232, 90 + 8*OGL_SHADOWS, r_shadows.integer);
 	M_Print (32 + (8 * 8), 90 + 8*OGL_STENCIL,	"Stencil buffer");
 	if (have_stencil)
-		M_DrawCheckbox (232, 90 + 8*OGL_STENCIL, gl_stencilshadow.value);
+		M_DrawCheckbox (232, 90 + 8*OGL_STENCIL, gl_stencilshadow.integer);
 	else
 		M_Print (232, 90 + 8*OGL_STENCIL, "Not available");
 
@@ -1165,14 +1163,14 @@ static void M_OpenGL_Draw (void)
 
 		if (gl_lightmap_format != GL_RGBA)
 		{
-			if (gl_coloredlight.value)
+			if (gl_coloredlight.integer)
 			{
 				M_DrawTextBox (x, 94 + 8*(OGL_COLOREDSTATIC), 25, 3);
 				M_Print (x+16, 98 + 8*(OGL_COLOREDSTATIC+1), "  rgba lightmap format  ");
 				M_Print (x+16, 98 + 8*(OGL_COLOREDSTATIC+2), "      is required");
 			}
 		}
-		else if (gl_coloredlight.value != gl_coloredstatic)
+		else if (gl_coloredlight.integer != gl_coloredstatic)
 		{
 			M_DrawTextBox (x, 94 + 8*(OGL_COLOREDSTATIC), 25, 3);
 			M_Print (x+16, 98 + 8*(OGL_COLOREDSTATIC+1), "your selection will take");
@@ -1219,23 +1217,23 @@ static void M_OpenGL_Key (int k)
 			break;
 
 		case OGL_MULTITEX:	// multitexturing
-			Cvar_SetValue ("gl_multitexture", !gl_multitexture.value);
+			Cvar_SetValue ("gl_multitexture", !gl_multitexture.integer);
 			break;
 
 		case OGL_PURGETEX:	// purge gl textures on map change
-			Cvar_SetValue ("gl_purge_maptex", !gl_purge_maptex.value);
+			Cvar_SetValue ("gl_purge_maptex", !gl_purge_maptex.integer);
 			break;
 
 		case OGL_GLOW1:	// glow effects, main: torches
-			Cvar_SetValue ("gl_glows", !gl_glows.value);
+			Cvar_SetValue ("gl_glows", !gl_glows.integer);
 			break;
 
 		case OGL_GLOW2:	// glow effects, missiles
-			Cvar_SetValue ("gl_missile_glows", !gl_missile_glows.value);
+			Cvar_SetValue ("gl_missile_glows", !gl_missile_glows.integer);
 			break;
 
 		case OGL_GLOW3:	// glow effects, other: mana, etc.
-			Cvar_SetValue ("gl_other_glows", !gl_other_glows.value);
+			Cvar_SetValue ("gl_other_glows", !gl_other_glows.integer);
 			break;
 
 		case OGL_LIGHTMAPFMT:	// lightmap format
@@ -1262,13 +1260,13 @@ static void M_OpenGL_Key (int k)
 			switch (k)
 			{
 			case K_RIGHTARROW:
-				if ((int)gl_coloredlight.value >= 1)
+				if (gl_coloredlight.integer >= 1)
 					Cvar_SetValue ("gl_coloredlight", 2);
 				else
 					Cvar_SetValue ("gl_coloredlight", 1);
 				break;
 			case K_LEFTARROW:
-				if ((int)gl_coloredlight.value <= 1)
+				if (gl_coloredlight.integer <= 1)
 					Cvar_SetValue ("gl_coloredlight", 0);
 				else
 					Cvar_SetValue ("gl_coloredlight", 1);
@@ -1279,11 +1277,11 @@ static void M_OpenGL_Key (int k)
 			break;
 
 		case OGL_COLOREDDYNAMIC:	// dynamic colored lights
-			Cvar_SetValue ("gl_colored_dynamic_lights", !gl_colored_dynamic_lights.value);
+			Cvar_SetValue ("gl_colored_dynamic_lights", !gl_colored_dynamic_lights.integer);
 			break;
 
 		case OGL_COLOREDEXTRA:	// extra dynamic colored lights
-			Cvar_SetValue ("gl_extra_dynamic_lights", !gl_extra_dynamic_lights.value);
+			Cvar_SetValue ("gl_extra_dynamic_lights", !gl_extra_dynamic_lights.integer);
 			break;
 
 		case OGL_TEXFILTER:	// texture filter
@@ -1310,12 +1308,12 @@ static void M_OpenGL_Key (int k)
 			break;
 
 		case OGL_SHADOWS:	// shadows
-			Cvar_SetValue ("r_shadows", !r_shadows.value);
+			Cvar_SetValue ("r_shadows", !r_shadows.integer);
 			break;
 
 		case OGL_STENCIL:	// stencil buffered shadows
 			if (have_stencil)
-				Cvar_SetValue ("gl_stencilshadow", !gl_stencilshadow.value);
+				Cvar_SetValue ("gl_stencilshadow", !gl_stencilshadow.integer);
 			break;
 
 		default:
@@ -2541,29 +2539,29 @@ static void M_Menu_Setup_f (void)
 	m_state = m_setup;
 	m_entersound = true;
 	Q_strlcpy(setup_myname, name.string, sizeof(setup_myname));
-	setup_top = setup_oldtop = (int)topcolor.value;
-	setup_bottom = setup_oldbottom = (int)bottomcolor.value;
+	setup_top = setup_oldtop = topcolor.integer;
+	setup_bottom = setup_oldbottom = bottomcolor.integer;
 
 #if ENABLE_OLD_DEMO
 	if (gameflags & GAME_OLD_DEMO)
 	{
-		if (playerclass.value != CLASS_PALADIN && playerclass.value != CLASS_THEIF)
-			playerclass.value = CLASS_PALADIN;
+		if (playerclass.integer != CLASS_PALADIN && playerclass.integer != CLASS_THEIF)
+			Cvar_SetValue ("playerclass", CLASS_PALADIN);
 	}
 	else
 #endif	/* OLD_DEMO */
 	if (!(gameflags & GAME_PORTALS))
 	{
-		if (playerclass.value == CLASS_DEMON)
-			playerclass.value = CLASS_PALADIN;
+		if (playerclass.integer == CLASS_DEMON)
+			Cvar_SetValue ("playerclass", CLASS_PALADIN);
 	}
-	if (playerclass.value == CLASS_DWARF)
+	if (playerclass.integer == CLASS_DWARF)
 	{
 		if (Q_strcasecmp(fs_gamedir_nopath, "siege") != 0)
-			playerclass.value = CLASS_PALADIN;
+			Cvar_SetValue ("playerclass", CLASS_PALADIN);
 	}
 
-	setup_class = playerclass.value;
+	setup_class = playerclass.integer;
 
 //	if ((gameflags & GAME_PORTALS) || cl_siege)//FIXME!!!
 //	{
@@ -2607,7 +2605,7 @@ static void M_Setup_Draw (void)
 	M_PrintWhite (168, 56, setup_myname);
 
 	M_Print (64, 72, "Spectator: ");
-	if (spectator.value)
+	if (spectator.integer)
 	{
 		M_PrintWhite (64 + 12*8, 72, "YES");
 	}
@@ -2735,7 +2733,7 @@ static void M_Setup_Key (int k)
 		S_LocalSound ("raven/menu3.wav");
 		if (setup_cursor == 2)
 		{
-			if (spectator.value)
+			if (spectator.integer)
 			{
 				Cvar_Set("spectator","0");
 			}
@@ -2743,7 +2741,7 @@ static void M_Setup_Key (int k)
 			{
 				Cvar_Set("spectator","1");
 			}
-			cl.spectator = spectator.value;
+			cl.spectator = spectator.integer;
 		}
 		else if (setup_cursor == 3)
 		{
@@ -2771,7 +2769,7 @@ forward:
 		S_LocalSound ("raven/menu3.wav");
 		if (setup_cursor == 2)
 		{
-			if (spectator.value)
+			if (spectator.integer)
 			{
 				Cvar_Set("spectator","0");
 			}
@@ -2779,7 +2777,7 @@ forward:
 			{
 				Cvar_Set("spectator","1");
 			}
-			cl.spectator = spectator.value;
+			cl.spectator = spectator.integer;
 		}
 		else if (setup_cursor == 3)
 		{

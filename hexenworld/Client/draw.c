@@ -2,7 +2,7 @@
 	draw.c
 	This is the only file outside the refresh that touches the vid buffer.
 
-	$Id: draw.c,v 1.30 2007-04-18 13:33:17 sezero Exp $
+	$Id: draw.c,v 1.31 2007-05-09 18:10:16 sezero Exp $
 */
 
 
@@ -410,12 +410,12 @@ extern vrect_t	scr_vrect;
 void Draw_Crosshair (void)
 {
 	int x, y;
-	byte c = (byte)crosshaircolor.value;
+	byte c = (byte)crosshaircolor.integer;
 
 	x = scr_vrect.x + scr_vrect.width/2 + cl_crossx.value;
 	y = scr_vrect.y + scr_vrect.height/2 + cl_crossy.value;
 
-	if ((int)crosshair.value == 2)
+	if (crosshair.integer == 2)
 	{
 		Draw_Pixel(x - 1, y, c);
 		Draw_Pixel(x - 3, y, c);
@@ -426,7 +426,7 @@ void Draw_Crosshair (void)
 		Draw_Pixel(x, y + 1, c);
 		Draw_Pixel(x, y + 3, c);
 	}
-	else if (crosshair.value)
+	else if (crosshair.integer)
 	{
 		Draw_Character (x - 4, y - 4, '+');
 	}

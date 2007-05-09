@@ -2,7 +2,7 @@
 	snd_mem.c
 	sound caching
 
-	$Id: snd_mem.c,v 1.15 2007-04-18 13:32:30 sezero Exp $
+	$Id: snd_mem.c,v 1.16 2007-05-09 18:10:13 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -33,7 +33,7 @@ static void ResampleSfx (sfx_t *sfx, int inrate, int inwidth, byte *data)
 		sc->loopstart = sc->loopstart / stepscale;
 
 	sc->speed = shm->speed;
-	if (loadas8bit.value)
+	if (loadas8bit.integer)
 		sc->width = 1;
 	else
 		sc->width = inwidth;

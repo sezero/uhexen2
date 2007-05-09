@@ -2,7 +2,7 @@
 	sv_phys.c
 	sv physics
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sv_phys.c,v 1.21 2007-04-01 12:18:22 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sv_phys.c,v 1.22 2007-05-09 18:10:13 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -1638,7 +1638,7 @@ static void SV_WalkMove (edict_t *ent)
 	if (ent->v.movetype != MOVETYPE_WALK)
 		return;		// gibbed by a trigger
 
-	if (sv_nostep.value)
+	if (sv_nostep.integer)
 		return;
 
 	if ( (int)sv_player->v.flags & FL_WATERJUMP )

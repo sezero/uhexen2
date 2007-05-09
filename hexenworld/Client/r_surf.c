@@ -2,7 +2,7 @@
 	r_surf.c
 	surface-related refresh code
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/r_surf.c,v 1.7 2007-02-17 07:55:39 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/r_surf.c,v 1.8 2007-05-09 18:10:18 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -169,7 +169,7 @@ static void R_BuildLightMap (void)
 	size = smax*tmax;
 	lightmap = surf->samples;
 
-	if (r_fullbright.value || !cl.worldmodel->lightdata)
+	if (r_fullbright.integer || !cl.worldmodel->lightdata)
 	{
 		for (i = 0; i < size; i++)
 			blocklights[i] = 0;

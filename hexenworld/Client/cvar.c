@@ -2,7 +2,7 @@
 	cvar.c
 	dynamic variable tracking
 
-	$Id: cvar.c,v 1.26 2007-05-09 18:01:07 sezero Exp $
+	$Id: cvar.c,v 1.27 2007-05-09 18:10:16 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -211,12 +211,12 @@ void Cvar_Set (const char *var_name, const char *value)
 #if !defined(H2W) || defined(SERVERONLY)
 	if ( !strcmp(var->name, deathmatch.name) )
 	{
-		if (var->value != 0)
+		if (var->integer != 0)
 			Cvar_Set("coop", "0");
 	}
 	else if ( !strcmp(var->name, coop.name) )
 	{
-		if (var->value != 0)
+		if (var->integer != 0)
 			Cvar_Set("deathmatch", "0");
 	}
 #endif	/* coop && deathmatch */

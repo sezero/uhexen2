@@ -2,7 +2,7 @@
 	vid_win.c
 	Win32 video driver using MGL-4.05
 
-	$Id: vid_win.c,v 1.44 2007-05-01 09:02:04 sezero Exp $
+	$Id: vid_win.c,v 1.45 2007-05-09 18:10:15 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -219,10 +219,10 @@ VID_CheckWindowXY
 static void VID_CheckWindowXY (void)
 {
 
-	if (((int)vid_window_x.value > (GetSystemMetrics (SM_CXSCREEN) - 160)) ||
-		((int)vid_window_y.value > (GetSystemMetrics (SM_CYSCREEN) - 120)) ||
-		((int)vid_window_x.value < 0)					   ||
-		((int)vid_window_y.value < 0))
+	if ( (vid_window_x.integer > (GetSystemMetrics (SM_CXSCREEN) - 160)) ||
+		(vid_window_y.integer > (GetSystemMetrics (SM_CYSCREEN) - 120)) ||
+		(vid_window_x.integer < 0)					||
+		(vid_window_y.integer < 0))
 	{
 		Cvar_SetValue ("vid_window_x", 0.0);
 		Cvar_SetValue ("vid_window_y", 0.0 );
@@ -361,7 +361,7 @@ VID_Windowed_f
 static void VID_Windowed_f (void)
 {
 
-	VID_SetMode ((int)vid_windowed_mode.value, vid_curpal);
+	VID_SetMode (vid_windowed_mode.integer, vid_curpal);
 }
 
 
@@ -373,7 +373,7 @@ VID_Fullscreen_f
 static void VID_Fullscreen_f (void)
 {
 
-	VID_SetMode ((int)vid_fullscreen_mode.value, vid_curpal);
+	VID_SetMode (vid_fullscreen_mode.integer, vid_curpal);
 }
 
 static int VID_Suspend (MGLDC *dc, int flags)
@@ -645,7 +645,7 @@ static MGLDC *createDisplayDC (int forcemem)
 		return NULL;
 
 	// Pa3PyX: check if the user wants to do page flips (default: no)
-	if (!vid_nopageflip.value && (vid_maxpages.value > 1) &&
+	if (!vid_nopageflip.integer && (vid_maxpages.integer > 1) &&
 	    !forcemem && (MGL_surfaceAccessType(dc) == MGL_LINEAR_ACCESS) &&
 	    (dc->mi.maxPage > 0))
 	{
@@ -653,8 +653,8 @@ static MGLDC *createDisplayDC (int forcemem)
 		MGL_makeCurrentDC(dc);
 		memdc = NULL;
 		vid.numpages = dc->mi.maxPage + 1;
-		if (vid.numpages > vid_maxpages.value)
-			vid.numpages = vid_maxpages.value;
+		if (vid.numpages > vid_maxpages.integer)
+			vid.numpages = vid_maxpages.integer;
 		MGL_setActivePage(dc, aPage = 1);
 		MGL_setVisualPage(dc, vPage = 0, false);
 	}
@@ -1120,17 +1120,17 @@ static void VID_CheckModedescFixup (int modenum)
 
 	if (modenum == MODE_SETTABLE_WINDOW)
 	{
-		modelist[modenum].stretched = (int)vid_stretch_by_2.value;
+		modelist[modenum].stretched = vid_stretch_by_2.integer;
 		stretch = modelist[modenum].stretched;
 
-		if (vid_config_x.value < (320 << stretch))
-			vid_config_x.value = 320 << stretch;
+		if (vid_config_x.integer < (320 << stretch))
+			vid_config_x.integer = 320 << stretch;
 
-		if (vid_config_y.value < (200 << stretch))
-			vid_config_y.value = 200 << stretch;
+		if (vid_config_y.integer < (200 << stretch))
+			vid_config_y.integer = 200 << stretch;
 
-		x = (int)vid_config_x.value;
-		y = (int)vid_config_y.value;
+		x = vid_config_x.integer;
+		y = vid_config_y.integer;
 		snprintf (modelist[modenum].modedesc, MAX_DESC, "%dx%d", x, y);
 		modelist[modenum].width = x;
 		modelist[modenum].height = y;
@@ -1404,8 +1404,8 @@ static qboolean VID_SetWindowedMode (int modenum)
 
 // position and show the DIB window
 	VID_CheckWindowXY ();
-	SetWindowPos (mainwindow, NULL, (int)vid_window_x.value,
-				  (int)vid_window_y.value, 0, 0,
+	SetWindowPos (mainwindow, NULL, vid_window_x.integer,
+				  vid_window_y.integer, 0, 0,
 				  SWP_NOSIZE | SWP_NOZORDER | SWP_SHOWWINDOW | SWP_DRAWFRAME);
 
 	if (force_minimized)
@@ -1469,8 +1469,7 @@ static qboolean VID_SetFullscreenMode (int modenum)
 		MGL_destroyDC (memdc);
 	mgldc = memdc = NULL;
 
-	//if ((mgldc = createDisplayDC (modelist[modenum].stretched ||
-	//	 (int)vid_nopageflip.value)) == NULL)
+//	if ((mgldc = createDisplayDC (modelist[modenum].stretched || vid_nopageflip.integer)) == NULL)
 	if ((mgldc = createDisplayDC (modelist[modenum].stretched)) == NULL)
 	{
 		return false;
@@ -1697,7 +1696,7 @@ static int VID_SetMode (int modenum, unsigned char *palette)
 	// Set either the fullscreen or windowed mode
 	if (modelist[modenum].type == MS_WINDOWED)
 	{
-		if (_enable_mouse.value)
+		if (_enable_mouse.integer)
 		{
 			stat = VID_SetWindowedMode(modenum);
 			IN_ActivateMouse ();
@@ -1792,7 +1791,7 @@ static int VID_SetMode (int modenum, unsigned char *palette)
 	ClearAllStates ();
 
 	// Pa3PyX: set desired page flipping mode
-	switch ((int)vid_wait.value)
+	switch (vid_wait.integer)
 	{
 		case 0:	waitVRT = MGL_dontWait;
 			break;
@@ -2422,8 +2421,7 @@ void	VID_Update (vrect_t *rects)
 		{
 			GetWindowRect (mainwindow, &trect);
 
-			if ((trect.left != (int)vid_window_x.value) ||
-				(trect.top != (int)vid_window_y.value))
+			if (trect.left != vid_window_x.integer || trect.top != vid_window_y.integer)
 			{
 				if (COM_CheckParm ("-resetwinpos"))
 				{
@@ -2432,8 +2430,8 @@ void	VID_Update (vrect_t *rects)
 				}
 
 				VID_CheckWindowXY ();
-				SetWindowPos (mainwindow, NULL, (int)vid_window_x.value,
-								(int)vid_window_y.value, 0, 0,
+				SetWindowPos (mainwindow, NULL, vid_window_x.integer,
+								vid_window_y.integer, 0, 0,
 								SWP_NOSIZE | SWP_NOZORDER | SWP_SHOWWINDOW | SWP_DRAWFRAME);
 			}
 		}
@@ -2441,7 +2439,7 @@ void	VID_Update (vrect_t *rects)
 		/* Pa3PyX: Since VID_Init() will not switch modes back and
 		   forth now, video mode from configs has to be set even if
 		   it is the same as hardcoded default */
-		if (!startwindowed || _vid_default_mode_win.value < MODE_FULLSCREEN_DEFAULT)
+		if (!startwindowed || _vid_default_mode_win.integer < MODE_FULLSCREEN_DEFAULT)
 		{
 			firstupdate = 0;
 
@@ -2451,13 +2449,12 @@ void	VID_Update (vrect_t *rects)
 				Cvar_SetValue ("vid_window_y", 0.0);
 			}
 
-			if ((_vid_default_mode_win.value < 0) ||
-				(_vid_default_mode_win.value >= nummodes))
+			if (_vid_default_mode_win.integer < 0 || _vid_default_mode_win.integer >= nummodes)
 			{
 				Cvar_SetValue ("_vid_default_mode_win", windowed_default);
 			}
 
-			Cvar_SetValue ("vid_mode", _vid_default_mode_win.value);
+			Cvar_SetValue ("vid_mode", _vid_default_mode_win.integer);
 		}
 	}
 
@@ -2474,10 +2471,10 @@ void	VID_Update (vrect_t *rects)
 	}
 	else
 	{
-		if ((int)vid_mode.value != vid_realmode)
+		if (vid_mode.integer != vid_realmode)
 		{
-			VID_SetMode ((int)vid_mode.value, vid_curpal);
-			Cvar_SetValue ("vid_mode", (float)vid_modenum);
+			VID_SetMode (vid_mode.integer, vid_curpal);
+			Cvar_SetValue ("vid_mode", vid_modenum);
 								// so if mode set fails, we don't keep on
 								//  trying to set that mode
 			vid_realmode = vid_modenum;
@@ -2487,9 +2484,9 @@ void	VID_Update (vrect_t *rects)
 // handle the mouse state when windowed if that's changed
 	if (modestate == MS_WINDOWED)
 	{
-		if ((int)_enable_mouse.value != enable_mouse)
+		if (_enable_mouse.integer != enable_mouse)
 		{
-			if (_enable_mouse.value)
+			if (_enable_mouse.integer)
 			{
 				IN_ActivateMouse ();
 				IN_HideMouse ();
@@ -2500,7 +2497,7 @@ void	VID_Update (vrect_t *rects)
 				IN_ShowMouse ();
 			}
 
-			enable_mouse = (int)_enable_mouse.value;
+			enable_mouse = _enable_mouse.integer;
 		}
 	}
 }
@@ -2929,7 +2926,7 @@ static void AppActivate(BOOL fActive, BOOL minimize)
 				IN_ActivateMouse ();
 				IN_HideMouse ();
 			}
-			else if ((modestate == MS_WINDOWED) && _enable_mouse.value)
+			else if (modestate == MS_WINDOWED && _enable_mouse.integer)
 			{
 				IN_ActivateMouse ();
 				IN_HideMouse ();
@@ -2961,7 +2958,7 @@ static void AppActivate(BOOL fActive, BOOL minimize)
 				IN_DeactivateMouse ();
 				IN_ShowMouse ();
 			}
-			else if ((modestate == MS_WINDOWED) && _enable_mouse.value)
+			else if (modestate == MS_WINDOWED && _enable_mouse.integer)
 			{
 				IN_DeactivateMouse ();
 				IN_ShowMouse ();
@@ -2979,7 +2976,7 @@ VID_HandlePause
 void VID_HandlePause (qboolean paused)
 {
 
-	if ((modestate == MS_WINDOWED) && _enable_mouse.value)
+	if (modestate == MS_WINDOWED && _enable_mouse.integer)
 	{
 		if (paused)
 		{
@@ -3069,7 +3066,7 @@ LONG WINAPI MainWndProc (HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM  lParam)
 						force_mode_set = false;
 					}
 
-					VID_SetMode ((int)vid_fullscreen_mode.value, vid_curpal);
+					VID_SetMode (vid_fullscreen_mode.integer, vid_curpal);
 					break;
 
 				case SC_SCREENSAVE:
@@ -3467,7 +3464,7 @@ void VID_MenuDraw (void)
 			M_Print (2*8, 60 + MODE_AREA_HEIGHT * 8 + 8*2, temp);
 		}
 
-		ptr = VID_GetModeDescription2 ((int)_vid_default_mode_win.value);
+		ptr = VID_GetModeDescription2 (_vid_default_mode_win.integer);
 
 		if (ptr)
 		{

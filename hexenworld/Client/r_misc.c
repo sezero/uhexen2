@@ -1,7 +1,7 @@
 /*
 	r_misc.c
 
-	$Id: r_misc.c,v 1.7 2007-03-14 21:03:37 sezero Exp $
+	$Id: r_misc.c,v 1.8 2007-05-09 18:10:17 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -17,9 +17,9 @@ static void R_CheckVariables (void)
 {
 	static float	oldbright;
 
-	if (r_fullbright.value != oldbright)
+	if (r_fullbright.integer != oldbright)
 	{
-		oldbright = r_fullbright.value;
+		oldbright = r_fullbright.integer;
 		D_FlushCaches ();	// so all lighting changes
 	}
 }
@@ -114,7 +114,7 @@ static void R_LineGraph (int x, int y, int h)
 
 	dest = vid.buffer + vid.rowbytes*y + x;
 
-	s = r_graphheight.value;
+	s = r_graphheight.integer;
 
 	if (h == 10000)
 		color = 175;	// yellow
@@ -168,7 +168,7 @@ void R_LineGraph2 (int x, int y, int h, int h2, int drawType, int marker)
 	x += r_refdef.vrect.x;
 	y += r_refdef.vrect.y;
 	dest = vid.buffer + vid.rowbytes*y + x;
-	s = r_graphheight.value;
+	s = r_graphheight.integer;
 	if (s > r_refdef.vrect.height)
 	{
 		s = r_refdef.vrect.height;
@@ -252,7 +252,7 @@ void R_TimeGraph (void)
 		10
 	};
 
-	graphType = (int)r_timegraph.value;
+	graphType = r_timegraph.integer;
 	if (graphType < 1 || graphType > GRAPH_TYPE_COUNT)
 	{
 		return;
@@ -340,9 +340,9 @@ void R_NetGraph (void)
 	}
 
 	x = -((vid.width - 320)>>1);
-	y = vid.height - sb_lines - 24 - (int)r_graphheight.value*2 - 2;
+	y = vid.height - sb_lines - 24 - r_graphheight.integer*2 - 2;
 
-	M_DrawTextBox (x, y, (w+7)/8, ((int)r_graphheight.value*2+7)/8 + 1);
+	M_DrawTextBox (x, y, (w+7)/8, (r_graphheight.integer*2+7)/8 + 1);
 	y2 = y + 8;
 	y = vid.height - sb_lines - 8 - 2;
 
@@ -547,12 +547,12 @@ void R_SetupFrame (void)
 	float		w, h;
 
 // don't allow cheats in multiplayer
-	r_draworder.value = 0;
-	r_fullbright.value = 0;
-	r_ambient.value = 0;
-	r_drawflat.value = 0;
+	r_draworder.integer = 0;
+	r_fullbright.integer = 0;
+	r_ambient.integer = 0;
+	r_drawflat.integer = 0;
 
-	if (r_numsurfs.value)
+	if (r_numsurfs.integer)
 	{
 		if ((surface_p - surfaces) > r_maxsurfsseen)
 			r_maxsurfsseen = surface_p - surfaces;
@@ -561,7 +561,7 @@ void R_SetupFrame (void)
 				surf_max - surfaces, r_maxsurfsseen);
 	}
 
-	if (r_numedges.value)
+	if (r_numedges.integer)
 	{
 		edgecount = edge_p - r_edges;
 
@@ -572,13 +572,13 @@ void R_SetupFrame (void)
 				r_numallocatededges, r_maxedgesseen);
 	}
 
-	r_refdef.ambientlight = r_ambient.value;
+	r_refdef.ambientlight = r_ambient.integer;
 
 	if (r_refdef.ambientlight < 0)
 		r_refdef.ambientlight = 0;
 
 //	if (!sv.active)
-		r_draworder.value = 0;	// don't let cheaters look behind walls
+		r_draworder.integer = 0;	// don't let cheaters look behind walls
 
 	R_CheckVariables ();
 
@@ -609,7 +609,7 @@ void R_SetupFrame (void)
 	r_viewleaf = Mod_PointInLeaf (r_origin, cl.worldmodel);
 
 	r_dowarpold = r_dowarp;
-	r_dowarp = r_waterwarp.value && (r_viewleaf->contents <= CONTENTS_WATER);
+	r_dowarp = r_waterwarp.integer && (r_viewleaf->contents <= CONTENTS_WATER);
 
 	if ((r_dowarp != r_dowarpold) || r_viewchanged)
 	{

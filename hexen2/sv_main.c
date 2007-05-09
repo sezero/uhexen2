@@ -2,7 +2,7 @@
 	sv_main.c
 	server main program
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sv_main.c,v 1.53 2007-04-11 08:12:47 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sv_main.c,v 1.54 2007-05-09 18:10:13 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -14,6 +14,7 @@ qboolean	isworldmodel;
 static char	localmodels[MAX_MODELS][5];	// inline model names for precache
 
 static	cvar_t	sv_sound_distance	= {"sv_sound_distance", "800", CVAR_ARCHIVE};
+						// doesn't seem functional, but the hcode calls it
 
 static	cvar_t	sv_update_player	= {"sv_update_player", "1", CVAR_ARCHIVE};
 static	cvar_t	sv_update_monsters	= {"sv_update_monsters", "1", CVAR_ARCHIVE};
@@ -414,7 +415,7 @@ static void SV_SendServerinfo (client_t *client)
 	MSG_WriteLong (&client->message, sv_protocol);
 	MSG_WriteByte (&client->message, svs.maxclients);
 
-	if (!coop.value && deathmatch.value)
+	if (!coop.integer && deathmatch.integer)
 	{
 		MSG_WriteByte (&client->message, GAME_DEATHMATCH);
 		if (sv_protocol > PROTOCOL_RAVEN_111)
@@ -734,14 +735,14 @@ static void SV_PrepareClientEntities (client_t *client, edict_t	*clent, sizebuf_
 
 	DoPlayer = DoMonsters = DoMissiles = DoMisc = false;
 
-	if ((int)sv_update_player.value)
-		DoPlayer = (client->current_sequence % ((int)sv_update_player.value)) == 0;
-	if ((int)sv_update_monsters.value)
-		DoMonsters = (client->current_sequence % ((int)sv_update_monsters.value)) == 0;
-	if ((int)sv_update_missiles.value)
-		DoMissiles = (client->current_sequence % ((int)sv_update_missiles.value)) == 0;
-	if ((int)sv_update_misc.value)
-		DoMisc = (client->current_sequence % ((int)sv_update_misc.value)) == 0;
+	if (sv_update_player.integer)
+		DoPlayer = (client->current_sequence % sv_update_player.integer) == 0;
+	if (sv_update_monsters.integer)
+		DoMonsters = (client->current_sequence % sv_update_monsters.integer) == 0;
+	if (sv_update_missiles.integer)
+		DoMissiles = (client->current_sequence % sv_update_missiles.integer) == 0;
+	if (sv_update_misc.integer)
+		DoMisc = (client->current_sequence % sv_update_misc.integer) == 0;
 
 	build = &state->frames[client->current_frame];
 	memset(build, 0, sizeof(*build));
@@ -1935,16 +1936,16 @@ void SV_SpawnServer (const char *server, const char *startspot)
 //
 // make cvars consistant
 //
-	if (coop.value)
+	if (coop.integer)
 		Cvar_SetValue ("deathmatch", 0);
 
-	current_skill = (int)(skill.value + 0.1);
+	current_skill = skill.integer;
 	if (current_skill < 0)
 		current_skill = 0;
 	if (current_skill > 4)
 		current_skill = 4;
 
-	Cvar_SetValue ("skill", (float)current_skill);
+	Cvar_SetValue ("skill", current_skill);
 
 //
 // set up the new server
@@ -1990,7 +1991,7 @@ void SV_SpawnServer (const char *server, const char *startspot)
 	SZ_Init (&sv.signon, sv.signon_buf, sizeof(sv.signon_buf));
 
 // leave slots at start for clients only
-	sv.num_edicts = svs.maxclients + 1 + max_temp_edicts.value;
+	sv.num_edicts = svs.maxclients + 1 + max_temp_edicts.integer;
 	for (i = 0; i < svs.maxclients; i++)
 	{
 		ent = EDICT_NUM(i+1);
@@ -1998,7 +1999,7 @@ void SV_SpawnServer (const char *server, const char *startspot)
 		svs.clients[i].send_all_v = true;
 	}
 
-	for (i = 0; i < max_temp_edicts.value; i++)
+	for (i = 0; i < max_temp_edicts.integer; i++)
 	{
 		ent = EDICT_NUM(i + svs.maxclients + 1);
 		ED_ClearEdict(ent);
@@ -2059,7 +2060,7 @@ void SV_SpawnServer (const char *server, const char *startspot)
 
 	if (old_progdefs)
 	{
-		if (coop.value)
+		if (coop.integer)
 			pr_global_struct_v111->coop = coop.value;
 		else
 			pr_global_struct_v111->deathmatch = deathmatch.value;
@@ -2072,7 +2073,7 @@ void SV_SpawnServer (const char *server, const char *startspot)
 	}
 	else
 	{
-		if (coop.value)
+		if (coop.integer)
 			pr_global_struct->coop = coop.value;
 		else
 			pr_global_struct->deathmatch = deathmatch.value;

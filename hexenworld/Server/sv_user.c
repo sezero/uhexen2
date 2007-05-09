@@ -2,7 +2,7 @@
 	sv_user.c
 	server code for moving users
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Server/sv_user.c,v 1.22 2007-04-18 13:34:54 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Server/sv_user.c,v 1.23 2007-05-09 18:11:38 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -245,7 +245,7 @@ static void SV_Spawn_f (void)
 
 	memset (&ent->v, 0, progs->entityfields * 4);
 	ent->v.colormap = NUM_FOR_EDICT(ent);
-	if (dmMode.value == DM_SIEGE)
+	if (dmMode.integer == DM_SIEGE)
 		ent->v.team = ent->v.siege_team;	// FIXME
 	else
 		ent->v.team = 0;	// FIXME
@@ -459,19 +459,19 @@ static void SV_BeginDownload_f(void)
 
 	// hacked by zoid to allow more conrol over download
 	// first off, no .. or global allow check
-	if (strstr (name, "..") || !allow_download.value
+	if (strstr (name, "..") || !allow_download.integer
 		// leading dot is no good
 		|| *name == '.'
 		// leading slash bad as well, must be in subdir
 		|| *name == '/'
 		// next up, skin check
-		|| (strncmp(name, "skins/", 6) == 0 && !allow_download_skins.value)
+		|| (strncmp(name, "skins/", 6) == 0 && !allow_download_skins.integer)
 		// now models
-		|| (strncmp(name, "models/", 6) == 0 && !allow_download_models.value)
+		|| (strncmp(name, "models/", 6) == 0 && !allow_download_models.integer)
 		// now sounds
-		|| (strncmp(name, "sound/", 6) == 0 && !allow_download_sounds.value)
+		|| (strncmp(name, "sound/", 6) == 0 && !allow_download_sounds.integer)
 		// now maps (note special case for maps, must not be in pak)
-		|| (strncmp(name, "maps/", 6) == 0 && !allow_download_maps.value)
+		|| (strncmp(name, "maps/", 6) == 0 && !allow_download_maps.integer)
 		// MUST be in a subdirectory
 		|| !strstr (name, "/") )
 	{	// don't allow anything with .. path
@@ -542,7 +542,7 @@ static void SV_Say (qboolean team)
 		t1[31] = 0;
 	}
 
-	if (host_client->spectator && (!sv_spectalk.value || team))
+	if (host_client->spectator && (!sv_spectalk.integer || team))
 		sprintf (text, "[SPEC] %s: ", host_client->name);
 	else if (team)
 		sprintf (text, "(%s): ", host_client->name);
@@ -584,7 +584,7 @@ static void SV_Say (qboolean team)
 		p[strlen(p)-1] = 0;
 	}
 
-	if (p[0] == '`' && (!host_client->spectator && sv_allowtaunts.value) )
+	if (p[0] == '`' && (!host_client->spectator && sv_allowtaunts.integer) )
 	{
 		speaknum = atoi(&p[1]);
 		if (speaknum <= 0 || speaknum > 255-PRINT_SOUND)
@@ -610,7 +610,7 @@ static void SV_Say (qboolean team)
 	{
 		if (client->state != cs_spawned)
 			continue;
-		if (host_client->spectator && !sv_spectalk.value)
+		if (host_client->spectator && !sv_spectalk.integer)
 			if (!client->spectator)
 				continue;
 
@@ -625,7 +625,7 @@ static void SV_Say (qboolean team)
 			else
 			{
 				t2 = Info_ValueForKey (client->userinfo, "team");
-				if (dmMode.value == DM_SIEGE)
+				if (dmMode.integer == DM_SIEGE)
 				{
 					if ( (host_client->edict->v.skin == 102 && client->edict->v.skin != 102) ||
 							(client->edict->v.skin == 102 && host_client->edict->v.skin != 102))
@@ -643,7 +643,7 @@ static void SV_Say (qboolean team)
 		}
 		if (speaknum == -1)
 		{
-			if (dmMode.value == DM_SIEGE && host_client->siege_team != client->siege_team)
+			if (dmMode.integer == DM_SIEGE && host_client->siege_team != client->siege_team)
 				//other team speaking
 				SV_ClientPrintf(client, PRINT_CHAT, "%s", text);//fixme: print biege
 			else

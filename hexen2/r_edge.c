@@ -1,7 +1,7 @@
 /*
 	r_edge.c
 
-	$Id: r_edge.c,v 1.5 2007-03-14 21:03:18 sezero Exp $
+	$Id: r_edge.c,v 1.6 2007-05-09 18:10:13 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -134,7 +134,7 @@ void R_BeginEdgeFrame (void)
 	surfaces[1].flags = SURF_DRAWBACKGROUND;
 
 // put the background behind everything in the world
-	if (r_draworder.value)
+	if (r_draworder.integer)
 	{
 		pdrawfunc = R_GenerateSpansBackward;
 		pdrawTfunc = R_GenerateTSpans;
@@ -925,7 +925,7 @@ void R_ScanEdges (qboolean Translucent)
 	espan_t	*basespan_p;
 	surf_t	*s;
 
-	if (Translucent && r_draworder.value)
+	if (Translucent && r_draworder.integer)
 		return;
 
 	basespan_p = (espan_t *)

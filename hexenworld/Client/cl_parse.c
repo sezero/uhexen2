@@ -2,7 +2,7 @@
 	cl_parse.c
 	parse a message received from the server
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/cl_parse.c,v 1.40 2007-04-28 15:31:07 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/cl_parse.c,v 1.41 2007-05-09 18:10:16 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -911,7 +911,7 @@ static void CL_UpdateUserinfo (void)
 		Skin_Find (player);
 
 	player->playerclass = atoi(Info_ValueForKey (player->userinfo, "playerclass"));
-/*	if (cl.playernum == slot && player->playerclass != playerclass.value)
+/*	if (cl.playernum == slot && player->playerclass != playerclass.integer)
 	{
 		Cvar_SetValue ("playerclass",player->playerclass);
 	}
@@ -966,7 +966,7 @@ static void CL_MuzzleFlash (void)
 
 #ifdef GLQUAKE
 	// don't draw our own muzzle flash in gl if flashblending
-	if (i-1 == cl.playernum && gl_flashblend.value)
+	if (i-1 == cl.playernum && gl_flashblend.integer)
 		return;
 #endif
 
@@ -1099,7 +1099,7 @@ static void CL_DumpPacket (void)
 #endif	/* CL_DumpPacket */
 
 #define SHOWNET(x) \
-	if (cl_shownet.value == 2) \
+	if (cl_shownet.integer == 2) \
 		Con_Printf ("%3i:%s\n", msg_readcount-1, (x));
 
 /*
@@ -1132,9 +1132,9 @@ void CL_ParseServerMessage (void)
 //
 // if recording demos, copy the message out
 //
-	if (cl_shownet.value == 1)
+	if (cl_shownet.integer == 1)
 		Con_Printf ("%i ",net_message.cursize);
-	else if (cl_shownet.value == 2)
+	else if (cl_shownet.integer == 2)
 		Con_Printf ("------------------\n");
 
 	CL_ParseClientdata ();
@@ -1189,7 +1189,7 @@ void CL_ParseServerMessage (void)
 			}
 			else if (i >= PRINT_SOUND)
 			{
-				if (talksounds.value)
+				if (talksounds.integer)
 				{
 					sprintf(temp,"taunt/taunt%.3d.wav",i-PRINT_SOUND+1);
 					S_LocalSound (temp);

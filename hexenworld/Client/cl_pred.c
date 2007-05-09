@@ -2,7 +2,7 @@
 	cl_pred.c
 	client side player movement prediction
 
-	$Id: cl_pred.c,v 1.10 2007-03-14 21:03:30 sezero Exp $
+	$Id: cl_pred.c,v 1.11 2007-05-09 18:10:16 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -148,7 +148,7 @@ void CL_PredictMove (void)
 #endif
 	}
 
-	if (cl_nopred.value)
+	if (cl_nopred.integer)
 	{
 		VectorCopy (from->playerstate[cl.playernum].velocity, cl.simvel);
 		VectorCopy (from->playerstate[cl.playernum].origin, cl.simorg);

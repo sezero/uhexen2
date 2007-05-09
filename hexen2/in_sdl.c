@@ -2,7 +2,7 @@
 	in_sdl.c
 	SDL game input code
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/in_sdl.c,v 1.42 2007-03-14 08:12:32 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/in_sdl.c,v 1.43 2007-05-09 18:10:13 sezero Exp $
 */
 
 #include "sdl_inc.h"
@@ -130,9 +130,9 @@ void IN_ActivateMouse (void)
 
 	if (!mouseactivatetoggle)
 #if 0	// change to 1 if dont want to disable mouse in fullscreen
-		if ((modestate != MS_WINDOWED) || _enable_mouse.value)
+		if ((modestate != MS_WINDOWED) || _enable_mouse.integer)
 #else
-		if (_enable_mouse.value)
+		if (_enable_mouse.integer)
 #endif
 		{
 			mouseactivatetoggle = true;
@@ -176,9 +176,9 @@ static void IN_StartupMouse (void)
 
 	//if (mouseactivatetoggle)
 #if 0	// change to 1 if dont want to disable mouse in fullscreen
-	if ((modestate != MS_WINDOWED) || _enable_mouse.value)
+	if ((modestate != MS_WINDOWED) || _enable_mouse.integer)
 #else
-	if (_enable_mouse.value)
+	if (_enable_mouse.integer)
 #endif
 		IN_ActivateMouse ();
 }
@@ -278,7 +278,7 @@ static void IN_MouseMove (usercmd_t *cmd)
 	mx_accum = 0;
 	my_accum = 0;
 
-	if (m_filter.value)
+	if (m_filter.integer)
 	{
 		mouse_x = (mx + old_mouse_x) * 0.5;
 		mouse_y = (my + old_mouse_y) * 0.5;
@@ -296,7 +296,7 @@ static void IN_MouseMove (usercmd_t *cmd)
 	mouse_y *= sensitivity.value;
 
 // add mouse X/Y movement to cmd
-	if ( (in_strafe.state & 1) || (lookstrafe.value && (in_mlook.state & 1) ))
+	if ( (in_strafe.state & 1) || (lookstrafe.integer && (in_mlook.state & 1) ))
 		cmd->sidemove += m_side.value * mouse_x;
 	else
 		cl.viewangles[YAW] -= m_yaw.value * mouse_x;
@@ -404,7 +404,7 @@ IN_JoyMove
 static void IN_JoyMove (usercmd_t *cmd)
 {
 	// verify joystick is available and that the user wants to use it
-	if (!joy_avail || !in_joystick.value)
+	if (!joy_avail || !in_joystick.integer)
 	{
 		return;
 	}

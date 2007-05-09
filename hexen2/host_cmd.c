@@ -2,7 +2,7 @@
 	host_cmd.c
 	console commands
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host_cmd.c,v 1.77 2007-04-28 15:31:04 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host_cmd.c,v 1.78 2007-05-09 18:10:13 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -17,8 +17,6 @@
 #include <time.h>
 
 extern	cvar_t	pausable;
-extern	cvar_t	sv_flypitch;
-extern	cvar_t	sv_walkpitch;
 
 static	double	old_time;
 
@@ -118,7 +116,7 @@ static void Host_God_f (void)
 		return;
 	}
 
-	if (PR_GLOBAL_STRUCT(deathmatch) || PR_GLOBAL_STRUCT(coop) || skill.value > 2)
+	if (PR_GLOBAL_STRUCT(deathmatch) || PR_GLOBAL_STRUCT(coop) || skill.integer > 2)
 		return;
 
 	sv_player->v.flags = (int)sv_player->v.flags ^ FL_GODMODE;
@@ -136,7 +134,7 @@ static void Host_Notarget_f (void)
 		return;
 	}
 
-	if (PR_GLOBAL_STRUCT(deathmatch) || skill.value > 2)
+	if (PR_GLOBAL_STRUCT(deathmatch) || skill.integer > 2)
 		return;
 
 	sv_player->v.flags = (int)sv_player->v.flags ^ FL_NOTARGET;
@@ -154,7 +152,7 @@ static void Host_Noclip_f (void)
 		return;
 	}
 
-	if (PR_GLOBAL_STRUCT(deathmatch) || PR_GLOBAL_STRUCT(coop) || skill.value > 2)
+	if (PR_GLOBAL_STRUCT(deathmatch) || PR_GLOBAL_STRUCT(coop) || skill.integer > 2)
 		return;
 
 	if (sv_player->v.movetype != MOVETYPE_NOCLIP)
@@ -253,7 +251,7 @@ static void Host_Map_f (void)
 	SCR_BeginLoadingPlaque ();
 
 	info_mask = 0;
-	if (!coop.value && deathmatch.value)
+	if (!coop.integer && deathmatch.integer)
 		info_mask2 = 0x80000000;
 	else
 		info_mask2 = 0;
@@ -424,7 +422,7 @@ static void Host_Reconnect_f (void)
 		demohack = false;
 		Cbuf_AddText("-attack\n");
 	}
-	if (oem.value && cl.intermission == 9)
+	if (oem.integer && cl.intermission == 9)
 	{
 		CL_Disconnect();
 		return;
@@ -719,7 +717,7 @@ static void Host_Loadgame_f (void)
 // this silliness is so we can load 1.06 save files, which have float skill values
 	fscanf (f, "%f\n", &tempf);
 	current_skill = (int)(tempf + 0.1);
-	Cvar_SetValue ("skill", (float)current_skill);
+	Cvar_SetValue ("skill", current_skill);
 
 	Cvar_SetValue ("deathmatch", 0);
 	Cvar_SetValue ("coop", 0);
@@ -1242,9 +1240,9 @@ static void Host_Class_f (void)
 
 	if (Cmd_Argc () == 1)
 	{
-		if (!(int)cl_playerclass.value);
+		if (!cl_playerclass.integer);
 		else
-			Con_Printf ("\"playerclass\" is %d (\"%s\")\n", (int)cl_playerclass.value,ClassNames[(int)cl_playerclass.value-1]);
+			Con_Printf ("\"playerclass\" is %d (\"%s\")\n", cl_playerclass.integer, ClassNames[cl_playerclass.integer-1]);
 		return;
 	}
 	if (Cmd_Argc () == 2)
@@ -1414,7 +1412,7 @@ static void Host_Say (qboolean teamonly)
 	{
 		if (!client || !client->active || !client->spawned)
 			continue;
-		if (teamplay.value && teamonly && client->edict->v.team != save->edict->v.team)
+		if (teamplay.integer && teamonly && client->edict->v.team != save->edict->v.team)
 			continue;
 		host_client = client;
 		SV_ClientPrintf (0, "%s", text);
@@ -1499,7 +1497,7 @@ static void Host_Color_f (void)
 
 	if (Cmd_Argc() == 1)
 	{
-		Con_Printf ("\"color\" is \"%i %i\"\n", ((int)cl_color.value) >> 4, ((int)cl_color.value) & 0x0f);
+		Con_Printf ("\"color\" is \"%i %i\"\n", cl_color.integer >> 4, cl_color.integer & 0x0f);
 		Con_Printf ("color <0-10> [0-10]\n");
 		return;
 	}
@@ -1585,7 +1583,7 @@ static void Host_Pause_f (void)
 		return;
 	}
 
-	if (!pausable.value)
+	if (!pausable.integer)
 		SV_ClientPrintf (0, "Pause not allowed.\n");
 	else
 	{
@@ -1672,7 +1670,7 @@ static void Host_Spawn_f (void)
 		ent = host_client->edict;
 		sv.paused = false;
 
-		if (!ent->v.stats_restored || deathmatch.value)
+		if (!ent->v.stats_restored || deathmatch.integer)
 		{
 			memset (&ent->v, 0, progs->entityfields * 4);
 
@@ -1834,7 +1832,7 @@ static void Host_Create_f (void)
 		return;
 	}
 
-	if ((svs.maxclients != 1) || (skill.value >2))
+	if (svs.maxclients != 1 || skill.integer > 2)
 	{
 		Con_Printf("can't cheat anymore!\n");
 		return;
@@ -2036,7 +2034,7 @@ static void Host_Give_f (void)
 		return;
 	}
 
-	if (PR_GLOBAL_STRUCT(deathmatch) || skill.value > 2)
+	if (PR_GLOBAL_STRUCT(deathmatch) || skill.integer > 2)
 		return;
 
 	t = Cmd_Argv(1);

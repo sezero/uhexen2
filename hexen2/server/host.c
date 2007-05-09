@@ -2,7 +2,7 @@
 	host.c
 	coordinates spawning and killing of local servers
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/server/host.c,v 1.33 2007-04-19 21:05:19 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/server/host.c,v 1.34 2007-05-09 18:10:14 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -233,7 +233,7 @@ void CON_Printf (unsigned int flags, const char *fmt, ...)
 	va_list		argptr;
 	char		msg[MAX_PRINTMSG];
 
-	if (flags & _PRINT_DEVEL && !developer.value)
+	if (flags & _PRINT_DEVEL && !developer.integer)
 	{
 		if (con_debuglog & LOG_DEVEL)	/* full logging */
 		{
@@ -578,7 +578,7 @@ void Host_Frame (float time)
 	static int		timecount;
 	int		i, c, m;
 
-	if (!serverprofile.value)
+	if (!serverprofile.integer)
 	{
 		_Host_Frame (time);
 		return;

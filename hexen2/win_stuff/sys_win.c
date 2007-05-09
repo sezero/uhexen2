@@ -2,7 +2,7 @@
 	sys_win.c
 	Win32 system interface code
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/win_stuff/sys_win.c,v 1.52 2007-03-16 20:40:15 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/win_stuff/sys_win.c,v 1.53 2007-05-09 18:10:15 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -304,7 +304,7 @@ void Sys_PrintTerm (const char *msgtxt)
 
 	if (isDedicated)
 	{
-		if (sys_nostdout.value)
+		if (sys_nostdout.integer)
 			return;
 
 		WriteFile(houtput, msgtxt, strlen(msgtxt), &dummy, NULL);

@@ -2,7 +2,7 @@
 	cl_tent.c
 	Client side temporary entity effects.
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cl_tent.c,v 1.15 2007-04-11 12:11:01 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cl_tent.c,v 1.16 2007-05-09 18:10:12 sezero Exp $
 */
 
 
@@ -214,7 +214,7 @@ void CL_ParseTEnt(void)
 		dl->die = cl.time + 0.5;
 		dl->decay = 300;
 #	ifdef GLQUAKE
-		if (gl_colored_dynamic_lights.value)
+		if (gl_colored_dynamic_lights.integer)
 		{	// Make the dynamic light red
 			dl->color[0] = 0.8;
 			dl->color[1] = 0.2;

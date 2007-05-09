@@ -2,7 +2,7 @@
 	snd_dma.c
 	main control for any streaming sound output device
 
-	$Id: snd_dma.c,v 1.51 2007-04-11 11:28:54 sezero Exp $
+	$Id: snd_dma.c,v 1.52 2007-05-09 18:10:18 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -230,7 +230,7 @@ void S_Init (void)
 
 	if (host_parms->memsize < 0x800000)
 	{
-		Cvar_Set ("loadas8bit", "1");
+		Cvar_SetValue ("loadas8bit", 1);
 		Con_Printf ("loading all sounds as 8bit\n");
 	}
 
@@ -357,13 +357,13 @@ sfx_t *S_PrecacheSound (const char *name)
 {
 	sfx_t	*sfx;
 
-	if (!sound_started || nosound.value)
+	if (!sound_started || nosound.integer)
 		return NULL;
 
 	sfx = S_FindName (name);
 
 // cache it in
-	if (precache.value)
+	if (precache.integer)
 		S_LoadSound (sfx);
 
 	return sfx;
@@ -492,7 +492,7 @@ void S_StartSound(int entnum, int entchannel, sfx_t *sfx, vec3_t origin, float f
 	if (!sfx)
 		return;
 
-	if (nosound.value)
+	if (nosound.integer)
 		return;
 
 // pick a channel to play on
@@ -844,7 +844,7 @@ void S_Update(vec3_t origin, vec3_t forward, vec3_t right, vec3_t up)
 //
 // debugging output
 //
-	if (snd_show.value)
+	if (snd_show.integer)
 	{
 		total = 0;
 		ch = snd_channels;
@@ -900,7 +900,7 @@ void S_ExtraUpdate (void)
 	IN_Accumulate ();
 #endif
 
-	if (snd_noextraupdate.value)
+	if (snd_noextraupdate.integer)
 		return;		// don't pollute timings
 	S_Update_();
 }
@@ -1080,7 +1080,7 @@ void S_LocalSound (const char *sound)
 {
 	sfx_t	*sfx;
 
-	if (nosound.value)
+	if (nosound.integer)
 		return;
 	if (!sound_started)
 		return;

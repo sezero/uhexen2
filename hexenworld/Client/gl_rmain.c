@@ -1,7 +1,7 @@
 /*
 	gl_main.c
 
-	$Id: gl_rmain.c,v 1.46 2007-05-01 06:38:04 sezero Exp $
+	$Id: gl_rmain.c,v 1.47 2007-05-09 18:10:16 sezero Exp $
 */
 
 
@@ -549,7 +549,7 @@ static void GL_DrawAliasShadow (aliashdr_t *paliashdr, int posenum)
 
 	height = -lheight + 1.0;
 
-	if (have_stencil && gl_stencilshadow.value)
+	if (have_stencil && gl_stencilshadow.integer)
 	{
 		glEnable_fp(GL_STENCIL_TEST);
 		glStencilFunc_fp(GL_EQUAL,1,2);
@@ -593,7 +593,7 @@ static void GL_DrawAliasShadow (aliashdr_t *paliashdr, int posenum)
 		glEnd_fp ();
 	}
 
-	if (have_stencil && gl_stencilshadow.value)
+	if (have_stencil && gl_stencilshadow.integer)
 		glDisable_fp(GL_STENCIL_TEST);
 }
 
@@ -888,7 +888,7 @@ static void R_DrawAliasModel (entity_t *e)
 		// we can't dynamically colormap textures, so they are cached
 		// seperately for the players.  Heads are just uncolored.
 
-		if (currententity->colormap != vid.colormap && !gl_nocolors.value)
+		if (currententity->colormap != vid.colormap && !gl_nocolors.integer)
 		{
 		// FIXME? What about Demoness and Dwarf?
 			if (currententity->model == player_models[0] ||
@@ -908,11 +908,11 @@ static void R_DrawAliasModel (entity_t *e)
 		}
 	}
 
-	if (gl_smoothmodels.value)
+	if (gl_smoothmodels.integer)
 		glShadeModel_fp (GL_SMOOTH);
 	glTexEnvf_fp(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 
-	if (gl_affinemodels.value)
+	if (gl_affinemodels.integer)
 		glHint_fp (GL_PERSPECTIVE_CORRECTION_HINT, GL_FASTEST);
 
 	R_SetupAliasFrame (currententity->frame, paliashdr);
@@ -928,12 +928,12 @@ static void R_DrawAliasModel (entity_t *e)
 	glTexEnvf_fp (GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
 
 	glShadeModel_fp (GL_FLAT);
-	if (gl_affinemodels.value)
+	if (gl_affinemodels.integer)
 		glHint_fp (GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
 
 	glPopMatrix_fp ();
 
-	if (r_shadows.value)
+	if (r_shadows.integer)
 	{
 		glPushMatrix_fp ();
 		R_RotateForEntity2 (e);
@@ -979,7 +979,7 @@ static void R_DrawEntitiesOnList (void)
 	cl_numtransvisedicts = 0;
 	cl_numtranswateredicts = 0;
 
-	if (!r_drawentities.value)
+	if (!r_drawentities.integer)
 		return;
 
 	if (r_entdistance.value <= 0)
@@ -1136,9 +1136,9 @@ static void R_DrawGlow (entity_t *e)
 	clmodel = currententity->model;
 
 	// Torches & Flames
-	if ((gl_glows.value && (clmodel->ex_flags & XF_TORCH_GLOW)) ||
-	    (gl_missile_glows.value && (clmodel->ex_flags & XF_MISSILE_GLOW)) ||
-	    (gl_other_glows.value && (clmodel->ex_flags & XF_GLOW)) )
+	if ((gl_glows.integer && (clmodel->ex_flags & XF_TORCH_GLOW)) ||
+	    (gl_missile_glows.integer && (clmodel->ex_flags & XF_MISSILE_GLOW)) ||
+	    (gl_other_glows.integer && (clmodel->ex_flags & XF_GLOW)) )
 	{
 		// NOTE: It would be better if we batched these up.
 		//	 All those state changes are not nice. KH
@@ -1287,7 +1287,7 @@ static void R_DrawAllGlows (void)
 {
 	int		i;
 
-	if (!r_drawentities.value)
+	if (!r_drawentities.integer)
 		return;
 
 	glDepthMask_fp (0);
@@ -1392,8 +1392,8 @@ static void R_DrawViewModel (void)
 
 	if ((cl.v.health <= 0) ||
 //rjr	    (cl.items & IT_INVISIBILITY) ||
-	    (!r_drawviewmodel.value) ||
-	    (!r_drawentities.value) ||
+	    (!r_drawviewmodel.integer) ||
+	    (!r_drawentities.integer) ||
 	    (envmap))
 	{
 		return;
@@ -1422,7 +1422,7 @@ static void R_MarkLeaves (void)
 	int		i;
 	byte	solid[4096];
 
-	if (r_oldviewleaf == r_viewleaf && !r_novis.value)
+	if (r_oldviewleaf == r_viewleaf && !r_novis.integer)
 		return;
 
 	if (mirror)
@@ -1431,7 +1431,7 @@ static void R_MarkLeaves (void)
 	r_visframecount++;
 	r_oldviewleaf = r_viewleaf;
 
-	if (r_novis.value)
+	if (r_novis.integer)
 	{
 		vis = solid;
 		memset (solid, 0xff, (cl.worldmodel->numleafs+7)>>3);
@@ -1518,7 +1518,7 @@ R_PolyBlend
 */
 static void R_PolyBlend (void)
 {
-	if (!gl_polyblend.value)
+	if (!gl_polyblend.integer)
 		return;
 
 	glBlendFunc_fp (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -1751,7 +1751,7 @@ static void R_SetupGL (void)
 	//
 	// set drawing parms
 	//
-	if (gl_cull.value)
+	if (gl_cull.integer)
 		glEnable_fp(GL_CULL_FACE);
 	else
 		glDisable_fp(GL_CULL_FACE);
@@ -1808,7 +1808,7 @@ static void R_Clear (void)
 {
 	if (r_mirroralpha.value != 1.0)
 	{
-		if (gl_clear.value)
+		if (gl_clear.integer)
 			glClear_fp (GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		else
 			glClear_fp (GL_DEPTH_BUFFER_BIT);
@@ -1816,11 +1816,11 @@ static void R_Clear (void)
 		gldepthmax = 0.5;
 		glDepthFunc_fp (GL_LEQUAL);
 	}
-	else if (gl_ztrick.value)
+	else if (gl_ztrick.integer)
 	{
 		static int trickframe;
 
-		if (gl_clear.value)
+		if (gl_clear.integer)
 			glClear_fp (GL_COLOR_BUFFER_BIT);
 
 		trickframe++;
@@ -1839,7 +1839,7 @@ static void R_Clear (void)
 	}
 	else
 	{
-		if (gl_clear.value)
+		if (gl_clear.integer)
 			glClear_fp (GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		else
 			glClear_fp (GL_DEPTH_BUFFER_BIT);
@@ -1850,7 +1850,7 @@ static void R_Clear (void)
 
 	glDepthRange_fp (gldepthmin, gldepthmax);
 
-	if (have_stencil && gl_stencilshadow.value && r_shadows.value)
+	if (have_stencil && gl_stencilshadow.integer && r_shadows.integer)
 	{
 		glClearStencil_fp(1);
 		glClear_fp(GL_STENCIL_BUFFER_BIT);
@@ -2024,16 +2024,16 @@ r_refdef must be set before the first call
 */
 void R_RenderView (void)
 {
-	if (r_norefresh.value)
+	if (r_norefresh.integer)
 		return;
 
 	if (!r_worldentity.model || !cl.worldmodel)
 		Sys_Error ("%s: NULL worldmodel", __FUNCTION__);
 
-	if (r_speeds.value)
+	if (r_speeds.integer)
 	{
 		glFinish_fp ();
-		if (r_wholeframe.value)
+		if (r_wholeframe.integer)
 			r_time1 = r_lasttime1;
 		else
 			r_time1 = Sys_DoubleTime ();
@@ -2067,7 +2067,7 @@ void R_RenderView (void)
 
 	R_PolyBlend ();
 
-	if (r_speeds.value)
+	if (r_speeds.integer)
 		R_PrintTimes ();
 }
 

@@ -2,7 +2,7 @@
 	debuglog.c
 	logging console output to a file
 
-	$Id: debuglog.c,v 1.2 2007-03-16 20:40:10 sezero Exp $
+	$Id: debuglog.c,v 1.3 2007-05-09 18:10:13 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -78,7 +78,7 @@ void LOG_Init (quakeparms_t *parms)
 	}
 	if ( COM_CheckParm("-devlog") )
 	{
-	/* log the Con_DPrintf and Sys_DPrintf content when !developer.value */
+	/* log the Con_DPrintf and Sys_DPrintf content when !developer.integer */
 		con_debuglog |= LOG_DEVEL;
 	}
 
