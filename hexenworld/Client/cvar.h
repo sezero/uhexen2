@@ -2,7 +2,7 @@
 	cvar.h
 	dynamic variable tracking
 
-	$Id: cvar.h,v 1.13 2007-04-15 09:20:57 sezero Exp $
+	$Id: cvar.h,v 1.14 2007-05-09 18:01:07 sezero Exp $
 */
 
 #ifndef __CVAR_H__
@@ -65,7 +65,7 @@ typedef struct cvar_s
 	char	*string;
 	unsigned	flags;
 	float		value;
-//	int		integer;
+	int		integer;
 	struct cvar_s	*next;
 } cvar_t;
 

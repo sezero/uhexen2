@@ -2,7 +2,7 @@
 	cvar.c
 	dynamic variable tracking
 
-	$Id: cvar.c,v 1.29 2007-04-30 20:03:51 sezero Exp $
+	$Id: cvar.c,v 1.30 2007-05-09 18:01:04 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -178,6 +178,7 @@ void Cvar_Set (const char *var_name, const char *value)
 
 	memcpy (var->string, value, varlen + 1);
 	var->value = atof (var->string);
+	var->integer = (int) var->value;
 
 // handle notifications
 #if defined (H2W)
