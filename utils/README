@@ -22,9 +22,10 @@ hcc_old	: Same as above, but the old version used for original
 maputils: Map compiling tools (qbsp, light, vis). From Raven's
 	  h2mputil package. Also includes bspinfo, which dumps
 	  the count and size statistics on a .bsp file.
-	  As of HoT-1.4.2, added the new bsp2wal tool: It extracts
-	  all textures from a bsp file.  WAL format is documented
-	  in the hwal.h header.
+
+texutils: bsp2wal: extracts all textures from a bsp file. WAL
+	  format is documented in the hwal.h header.
+	  lmp2pcx: converts hexen2 texture data into pcx and tga.
 
 genmodel: The 3-D model grabber. From Raven's h2mputil package.
 	  Combines skin graphics with 3d frames to produce a .mdl

@@ -3,6 +3,21 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2007-05-09 (CVS):
+    * enabled the integer value member of the cvar structure.
+    * replaced the float value usage of cvars with integer values wherever
+      possible.
+    * fixed my viewsize borkage after the cvar integer change. a few additional
+      tiny clean-ups.
+    * utils: added copyright notes for the hexen2 palette data.
+
+2007-05-05 (CVS):
+    * some reorganization in the utils: moved bspfile.{c|h}, scriplib.{c.h}
+      and hwal.h to the common directory. created texutils as a new group of
+      utilities. moved bsp2wal to texutils/bsp2wal. added the lmp2pcx tool
+      to texutils. added several palette files to texutils.
+    * updated the utilities build scripts after the texutils change.
+
 2007-04-30/05-01 (CVS):
     * snd_alsa.c, sv_move.c: minor fixes.
     * menu.c, sbar.c, world.c: minor cleanups.

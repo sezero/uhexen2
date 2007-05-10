@@ -21,15 +21,6 @@ with big-endian machines. Please send patches and/or report any
 problems.
 
 
-64-bit cleanness:
------------------
-
-The server side code is known to crash when compiled as a 64 bit
-binary. Here is the bug tracker entry:
-http://sourceforge.net/tracker/index.php?func=detail&aid=1595885&group_id=124987&atid=701006
-This is currently being worked on. Any help will be appreciated.
-
-
 Platform defines:
 ------------------
 
