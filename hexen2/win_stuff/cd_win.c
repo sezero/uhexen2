@@ -2,7 +2,7 @@
 	cd_win.c
 	Win32 cdaudio code
 
-	$Id: cd_win.c,v 1.11 2007-03-14 21:03:25 sezero Exp $
+	$Id: cd_win.c,v 1.12 2007-05-11 09:00:43 sezero Exp $
 
 	Quake is a trademark of Id Software, Inc., (c) 1996 Id Software, Inc. All
 	rights reserved.
@@ -11,6 +11,13 @@
 #include <windows.h>
 #include <mmsystem.h>	// for LCC
 #include "quakedef.h"
+
+/*
+ * You just can't set the volume of CD playback via MCI :
+ * http://blogs.msdn.com/larryosterman/archive/2005/10/06/477874.aspx
+ * OTOH, using the aux APIs to control the CD audio volume is broken.
+ */
+#undef	USE_AUX_API
 
 extern	HWND	mainwindow;
 extern	cvar_t	bgmvolume;
@@ -21,15 +28,17 @@ static qboolean	wasPlaying = false;
 static qboolean	initialized = false;
 static qboolean	enabled = false;
 static qboolean playLooping = false;
-static float	cdvolume;
 static byte 	remap[100];
-static byte		playTrack;
-static byte		maxTrack;
+static byte	playTrack;
+static byte	maxTrack;
 
-static UINT CD_ID;
-static unsigned long CD_OrigVolume;
-static UINT wDeviceID;
+static float	old_cdvolume;
+static UINT		wDeviceID;
+#if defined(USE_AUX_API)
+static UINT		CD_ID;
+static unsigned long	CD_OrigVolume;
 static void CD_SetVolume(unsigned long Volume);
+#endif	/* USE_AUX_API */
 
 
 static void CDAudio_Eject(void)
@@ -56,7 +65,6 @@ static int CDAudio_GetAudioDiskInfo(void)
 {
 	DWORD				dwReturn;
 	MCI_STATUS_PARMS	mciStatusParms;
-
 
 	cdValid = false;
 
@@ -163,7 +171,7 @@ void CDAudio_Play(byte track, qboolean looping)
 	playTrack = track;
 	playing = true;
 
-	if (cdvolume == 0.0)
+	if (bgmvolume.value == 0.0)
 		CDAudio_Pause ();
 }
 
@@ -354,7 +362,7 @@ static void CD_f (void)
 			Con_Printf("Currently %s track %u\n", playLooping ? "looping" : "playing", playTrack);
 		else if (wasPlaying)
 			Con_Printf("Paused %s track %u\n", playLooping ? "looping" : "playing", playTrack);
-		Con_Printf("Volume is %f\n", cdvolume);
+		Con_Printf("Volume is %f\n", bgmvolume.value);
 		return;
 	}
 }
@@ -395,37 +403,39 @@ LONG CDAudio_MessageHandler(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 }
 
 
+static void CDAudio_SetVolume (cvar_t *var)
+{
+	if (var->value < 0.0)
+		Cvar_SetValue (var->name, 0.0);
+	else if (var->value > 1.0)
+		Cvar_SetValue (var->name, 1.0);
+	old_cdvolume = var->value;
+
+#if defined(USE_AUX_API)
+	CD_SetVolume (var->value * 0xffff);
+#endif	/* USE_AUX_API */
+	if (old_cdvolume == 0.0)
+		CDAudio_Pause ();
+	else
+		CDAudio_Resume();
+}
+
 void CDAudio_Update(void)
 {
 	if (!enabled)
 		return;
 
-	if (bgmvolume.value != cdvolume)
-		CD_SetVolume(bgmvolume.value * 0xffff);
-
-	if ((!bgmvolume.value && cdvolume) ||
-		(bgmvolume.value && !cdvolume))
-	{
-		if (cdvolume)
-		{
-//			Cvar_SetValue ("bgmvolume", 0.0);
-			CDAudio_Pause ();
-		}
-		else
-		{
-//			Cvar_SetValue ("bgmvolume", 1.0);
-			CDAudio_Resume ();
-		}
-	}
-	cdvolume = bgmvolume.value;
+	if (old_cdvolume != bgmvolume.value)
+		CDAudio_SetVolume (&bgmvolume);
 }
 
 
+#if defined(USE_AUX_API)
 static void CD_FindCDAux(void)
 {
-	UINT NumDevs,counter;
-	MMRESULT Result;
-	AUXCAPS Caps;
+	UINT		NumDevs, counter;
+	MMRESULT		Result;
+	AUXCAPS			Caps;
 
 	CD_ID = -1;
 	if (!COM_CheckParm("-usecdvolume"))
@@ -451,6 +461,7 @@ static void CD_SetVolume(unsigned long Volume)
 	if (CD_ID != -1) 
 		auxSetVolume(CD_ID,(Volume<<16)+Volume);
 }
+#endif	/* USE_AUX_API */
 
 int CDAudio_Init(void)
 {
@@ -485,6 +496,7 @@ int CDAudio_Init(void)
 		remap[n] = n;
 	initialized = true;
 	enabled = true;
+	old_cdvolume = bgmvolume.value;
 
 	if (CDAudio_GetAudioDiskInfo())
 	{
@@ -495,7 +507,9 @@ int CDAudio_Init(void)
 
 	Cmd_AddCommand ("cd", CD_f);
 
+#if defined(USE_AUX_API)
 	CD_FindCDAux();
+#endif	/* USE_AUX_API */
 
 	Con_Printf("CD Audio Initialized\n");
 
