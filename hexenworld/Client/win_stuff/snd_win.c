@@ -1,6 +1,6 @@
 /*
 	snd_win.c
-	$Id: snd_win.c,v 1.20 2007-03-14 21:04:12 sezero Exp $
+	$Id: snd_win.c,v 1.21 2007-05-11 07:51:21 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -8,13 +8,11 @@
 
 
 static HRESULT (WINAPI *pDirectSoundCreate)(GUID FAR *lpGUID, LPDIRECTSOUND FAR *lplpDS, IUnknown FAR *pUnkOuter);
-#define iDirectSoundCreate(a,b,c)	pDirectSoundCreate(a,b,c)
 
 // 64K is > 1 second at 16-bit, 22050 Hz
 //#define	WAV_BUFFERS		64 
-//#define	WAV_MASK		0x3F
 #define	WAV_BUFFERS		128
-#define	WAV_MASK		0x7F
+#define	WAV_MASK		(WAV_BUFFERS - 1)
 #ifndef DSBSIZE_MIN
 #define DSBSIZE_MIN		4
 #endif
@@ -131,7 +129,7 @@ static void FreeSound (void)
 
 		if (lpWaveHdr)
 		{
-			for (i=0 ; i< WAV_BUFFERS ; i++)
+			for (i = 0; i < WAV_BUFFERS; i++)
 				waveOutUnprepareHeader (hWaveOut, lpWaveHdr+i, sizeof(WAVEHDR));
 		}
 
@@ -230,7 +228,7 @@ static sndinitstat SNDDMA_InitDirect (void)
 		}
 	}
 
-	while ((hresult = iDirectSoundCreate(NULL, &pDS, NULL)) != DS_OK)
+	while ((hresult = pDirectSoundCreate(NULL, &pDS, NULL)) != DS_OK)
 	{
 		if (hresult != DSERR_ALLOCATED)
 		{
@@ -706,7 +704,7 @@ void S_WIN32_Submit(void)
 			break;
 		}
 
-		if ( ! (lpWaveHdr[ snd_completed & WAV_MASK].dwFlags & WHDR_DONE) )
+		if ( ! (lpWaveHdr[snd_completed & WAV_MASK].dwFlags & WHDR_DONE) )
 		{
 			break;
 		}
@@ -719,7 +717,7 @@ void S_WIN32_Submit(void)
 	//
 	while (((snd_sent - snd_completed) >> sample16) < 4)
 	{
-		h = lpWaveHdr + ( snd_sent&WAV_MASK );
+		h = lpWaveHdr + (snd_sent & WAV_MASK);
 
 		snd_sent++;
 		/*
