@@ -20,9 +20,9 @@ as an extra patch) does that. Therefore, if you try this patch:
   and make sure that the USE_HUNK_ALLOC definition is 0
 
 
-diff -urNp uhexen2-20061006/hexen2/snd_dma.c snd_dma.c
---- uhexen2-20061006/hexen2/snd_dma.c	2006-10-04 18:36:35.000000000 +0300
-+++ snd_dma.c	2006-10-07 15:15:20.000000000 +0300
+diff -urNp uhexen2-20070511/hexen2/snd_dma.c uhexen2-20070512/hexen2/snd_dma.c
+--- uhexen2-20070511/hexen2/snd_dma.c	2007-05-09 21:10:13.000000000 +0300
++++ uhexen2-20070512/hexen2/snd_dma.c	2007-05-12 16:31:32.000000000 +0300
 @@ -125,6 +125,67 @@ static void S_SoundInfo_f(void)
  }
  
@@ -46,7 +46,7 @@ diff -urNp uhexen2-20061006/hexen2/snd_dma.c snd_dma.c
 +
 +	c = Cmd_Argc();
 +
-+	if ( (c > 2) || (c > 1 && !strcmp(Cmd_Argv(1),"help")) )
++	if (c > 2 || (c > 1 && !strcmp(Cmd_Argv(1),"help")))
 +	{
 +		Con_Printf ("snd_restart : restart sound system\n"
 +			    "snd_restart <enum> : restart sound system with new driver\n");
@@ -72,7 +72,7 @@ diff -urNp uhexen2-20061006/hexen2/snd_dma.c snd_dma.c
 +	S_StopAllSounds (true);
 +
 +	S_Shutdown();
-+	Con_Printf("sound: Shutdown OK\n");
++	Con_Printf("Sound Shutdown: OK.\n");
 +
 +	S_Startup();
 +	if (sound_started == 0)
@@ -83,7 +83,7 @@ diff -urNp uhexen2-20061006/hexen2/snd_dma.c snd_dma.c
 +
 +	S_StopAllSounds (true);
 +
-+	if (developer.value)
++	if (developer.integer)
 +		S_SoundInfo_f();
 +}
 +
@@ -100,3 +100,4 @@ diff -urNp uhexen2-20061006/hexen2/snd_dma.c snd_dma.c
  
  	Cvar_RegisterVariable(&nosound);
  	Cvar_RegisterVariable(&sfxvolume);
+

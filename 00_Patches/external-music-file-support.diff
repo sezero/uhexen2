@@ -22,8 +22,8 @@ In the game, choose midi as the background music format and you'll be
 ready to go.
 
 
---- midi_sdl.c~	2007-04-05 11:07:00.000000000 +0300
-+++ midi_sdl.c	2007-04-05 12:01:32.000000000 +0300
+--- midi_sdl.c~	2007-05-01 08:44:26.000000000 +0300
++++ midi_sdl.c	2007-05-12 16:36:56.000000000 +0300
 @@ -99,6 +99,7 @@ qboolean MIDI_Init(void)
  	int audio_channels = 2;
  	int audio_buffers = 4096;
@@ -32,7 +32,7 @@ ready to go.
  	void	*selfsyms;
  	const SDL_version *smixer_version;
  	SDL_version *(*Mix_Linked_Version_fp)(void) = NULL;
-@@ -170,6 +171,9 @@ bad_version:
+@@ -169,6 +170,9 @@ bad_version:
  	if (midi_endmusicfnc)
  		Mix_HookMusicFinished(midi_endmusicfnc);
  

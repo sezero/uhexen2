@@ -1,12 +1,12 @@
 trying to put back gl_texsort and R_DrawSequentialPoly stuff: extracted
-these from jshexen2. broken for now:  water surfaces are non-transparent
+these from jshexen2. broken for now: water surfaces are non-transparent
 when gl_texsort is 0..
 totally unsupported...
 
-diff -urNp hexen2source-1.4.1/hexen2/glquake.h hexen2source-1.4.1x/hexen2/glquake.h
---- hexen2source-1.4.1/hexen2/glquake.h	2006-08-14 09:09:41.000000000 +0300
-+++ hexen2source-1.4.1x/hexen2/glquake.h	2006-08-28 10:30:17.000000000 +0300
-@@ -86,7 +86,7 @@ void R_LoadSkys (void);
+diff -urNp uhexen2-20070511/hexen2/glquake.h uhexen2-20070512/hexen2/glquake.h
+--- uhexen2-20070511/hexen2/glquake.h	2007-04-25 23:08:25.000000000 +0300
++++ uhexen2-20070512/hexen2/glquake.h	2007-05-12 16:26:03.000000000 +0300
+@@ -84,7 +84,7 @@ void R_LoadSkys (void);
  void R_DrawSkyBox (void);
  void R_ClearSkyBox (void);
  #endif
@@ -15,29 +15,29 @@ diff -urNp hexen2source-1.4.1/hexen2/glquake.h hexen2source-1.4.1x/hexen2/glquak
  void EmitWaterPolys (msurface_t *fa);
  void EmitBothSkyLayers (msurface_t *fa);
  qboolean R_CullBox (vec3_t mins, vec3_t maxs);
-@@ -292,6 +292,7 @@ extern	cvar_t	r_dynamic;
- extern	cvar_t	r_novis;
+@@ -291,6 +291,7 @@ extern	cvar_t	r_novis;
  extern	cvar_t	r_wholeframe;
+ extern	cvar_t	r_texture_external;
  
 +extern	cvar_t	gl_texsort;
  extern	cvar_t	gl_clear;
  extern	cvar_t	gl_cull;
  extern	cvar_t	gl_poly;
-diff -urNp hexen2source-1.4.1/hexen2/gl_rmisc.c hexen2source-1.4.1x/hexen2/gl_rmisc.c
---- hexen2source-1.4.1/hexen2/gl_rmisc.c	2006-10-20 23:32:30.000000000 +0300
-+++ hexen2source-1.4.1x/hexen2/gl_rmisc.c	2006-10-22 02:18:52.000000000 +0300
-@@ -239,6 +239,7 @@ void R_Init (void)
- 	Cvar_RegisterVariable (&r_speeds);
+diff -urNp uhexen2-20070511/hexen2/gl_rmisc.c uhexen2-20070512/hexen2/gl_rmisc.c
+--- uhexen2-20070511/hexen2/gl_rmisc.c	2007-05-09 21:10:13.000000000 +0300
++++ uhexen2-20070512/hexen2/gl_rmisc.c	2007-05-12 16:26:03.000000000 +0300
+@@ -244,6 +244,7 @@ void R_Init (void)
  	Cvar_RegisterVariable (&r_wholeframe);
+ 	Cvar_RegisterVariable (&r_texture_external);
  
 +	Cvar_RegisterVariable (&gl_texsort);
  	Cvar_RegisterVariable (&gl_clear);
  	Cvar_RegisterVariable (&gl_cull);
  	Cvar_RegisterVariable (&gl_smoothmodels);
-diff -urNp hexen2source-1.4.1/hexen2/gl_rsurf.c hexen2source-1.4.1x/hexen2/gl_rsurf.c
---- hexen2source-1.4.1/hexen2/gl_rsurf.c	2006-10-20 23:32:30.000000000 +0300
-+++ hexen2source-1.4.1x/hexen2/gl_rsurf.c	2006-10-22 02:19:40.000000000 +0300
-@@ -2,6 +2,7 @@
+diff -urNp uhexen2-20070511/hexen2/gl_rsurf.c uhexen2-20070512/hexen2/gl_rsurf.c
+--- uhexen2-20070511/hexen2/gl_rsurf.c	2007-05-09 21:10:13.000000000 +0300
++++ uhexen2-20070512/hexen2/gl_rsurf.c	2007-05-12 16:26:03.000000000 +0300
+@@ -7,6 +7,7 @@
  
  #include "quakedef.h"
  
@@ -45,25 +45,25 @@ diff -urNp hexen2source-1.4.1/hexen2/gl_rsurf.c hexen2source-1.4.1x/hexen2/gl_rs
  int		gl_lightmap_format = GL_RGBA;
  cvar_t		gl_lightmapfmt = {"gl_lightmapfmt", "GL_RGBA", CVAR_ARCHIVE};
  int		lightmap_bytes = 4;		// 1, 2, or 4. default is 4 for GL_RGBA
-@@ -533,6 +534,8 @@ static void R_BlendLightmaps (qboolean T
+@@ -538,6 +539,8 @@ static void R_BlendLightmaps (qboolean T
  
- 	if (r_fullbright.value)
+ 	if (r_fullbright.integer)
  		return;
-+	if (!gl_texsort.value)
++	if (!gl_texsort.integer)
 +		return;
  
  	if (!Translucent)
  		glDepthMask_fp (0);	// don't bother writing Z
-@@ -638,6 +641,8 @@ static void R_UpdateLightmaps (qboolean 
+@@ -643,6 +646,8 @@ static void R_UpdateLightmaps (qboolean 
  
- 	if (r_fullbright.value)
+ 	if (r_fullbright.integer)
  		return;
-+	if (!gl_texsort.value)
++	if (!gl_texsort.integer)
 +		return;
  
  	glActiveTextureARB_fp (GL_TEXTURE1_ARB);
  
-@@ -677,6 +682,334 @@ static void R_UpdateLightmaps (qboolean 
+@@ -682,6 +687,334 @@ static void R_UpdateLightmaps (qboolean 
  }
  
  
@@ -398,16 +398,16 @@ diff -urNp hexen2source-1.4.1/hexen2/gl_rsurf.c hexen2source-1.4.1x/hexen2/gl_rs
  /*
  ================
  R_RenderBrushPoly
-@@ -1187,7 +1520,15 @@ void R_DrawBrushModel (entity_t *e, qboo
+@@ -1192,7 +1525,15 @@ void R_DrawBrushModel (entity_t *e, qboo
  		if (((psurf->flags & SURF_PLANEBACK) && (dot < -BACKFACE_EPSILON)) ||
  			(!(psurf->flags & SURF_PLANEBACK) && (dot > BACKFACE_EPSILON)))
  		{
 -			R_RenderBrushPoly (psurf, false);
-+			if (gl_texsort.value)
++			if (gl_texsort.integer)
 +				R_RenderBrushPoly (psurf, false);
 +			else
 +			{
-+				if (gl_multitexture.value == 1 && gl_mtexable == true)
++				if (gl_multitexture.integer && gl_mtexable)
 +					R_DrawSequentialPolyMTex (psurf);
 +				else
 +					R_DrawSequentialPoly (psurf);
@@ -415,13 +415,13 @@ diff -urNp hexen2source-1.4.1/hexen2/gl_rsurf.c hexen2source-1.4.1x/hexen2/gl_rs
  		}
  	}
  
-@@ -1305,11 +1646,21 @@ static void R_RecursiveWorldNode (mnode_
+@@ -1310,11 +1651,21 @@ static void R_RecursiveWorldNode (mnode_
  				continue;	// wrong side
  
  			// sorting by texture, just store it out
 -			if (!mirror
 -				|| surf->texinfo->texture != cl.worldmodel->textures[mirrortexturenum])
-+			if (gl_texsort.value)
++			if (gl_texsort.integer)
  			{
 -				surf->texturechain = surf->texinfo->texture->texturechain;
 -				surf->texinfo->texture->texturechain = surf;
@@ -434,27 +434,27 @@ diff -urNp hexen2source-1.4.1/hexen2/gl_rsurf.c hexen2source-1.4.1x/hexen2/gl_rs
 +			}
 +			else
 +			{
-+				if (gl_multitexture.value == 1 && gl_mtexable == true)
++				if (gl_multitexture.integer && gl_mtexable)
 +					R_DrawSequentialPolyMTex (surf);
 +				else
 +					R_DrawSequentialPoly (surf);
  			}
  		}
  	}
-@@ -1343,7 +1694,8 @@ void R_DrawWorld (void)
+@@ -1348,7 +1699,8 @@ void R_DrawWorld (void)
  
  	R_RecursiveWorldNode (cl.worldmodel->nodes);
  
 -	DrawTextureChains ();
-+	if (gl_texsort.value)
++	if (gl_texsort.integer)
 +		DrawTextureChains ();
  
  	// disable multitexturing - just in case ...
- 	if (gl_multitexture.value == 1 && gl_mtexable == true)
-diff -urNp hexen2source-1.4.1/hexen2/gl_warp.c hexen2source-1.4.1x/hexen2/gl_warp.c
---- hexen2source-1.4.1/hexen2/gl_warp.c	2006-07-03 17:05:36.000000000 +0300
-+++ hexen2source-1.4.1x/hexen2/gl_warp.c	2006-08-28 10:30:17.000000000 +0300
-@@ -7,8 +7,8 @@ extern	model_t	*loadmodel;
+ 	if (gl_multitexture.integer && gl_mtexable)
+diff -urNp uhexen2-20070511/hexen2/gl_warp.c uhexen2-20070512/hexen2/gl_warp.c
+--- uhexen2-20070511/hexen2/gl_warp.c	2007-05-09 21:10:13.000000000 +0300
++++ uhexen2-20070512/hexen2/gl_warp.c	2007-05-12 16:26:03.000000000 +0300
+@@ -12,8 +12,8 @@ extern	model_t	*loadmodel;
  
  int		skytexturenum;
  
@@ -465,7 +465,7 @@ diff -urNp hexen2source-1.4.1/hexen2/gl_warp.c hexen2source-1.4.1x/hexen2/gl_war
  
  static msurface_t	*warpface;
  
-@@ -266,7 +266,7 @@ static void EmitSkyPolysMulti (msurface_
+@@ -271,7 +271,7 @@ static void EmitSkyPolysMulti (msurface_
  	glActiveTextureARB_fp (GL_TEXTURE0_ARB);
  }
  
@@ -474,3 +474,4 @@ diff -urNp hexen2source-1.4.1/hexen2/gl_warp.c hexen2source-1.4.1x/hexen2/gl_war
  {
  	glpoly_t	*p;
  	float		*v;
+
