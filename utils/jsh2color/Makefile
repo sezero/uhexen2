@@ -58,6 +58,8 @@ all : $(BINARY)
 # special rule for mathlib because of DOUBLEVEC_T
 mathlib.o: $(COMMONDIR)/mathlib.c
 	$(CC) -c $(CFLAGS) $(ARCHFLAGS) $(INCLUDES) -o $@ $<
+bspfile.o: $(COMMONDIR)/bspfile.c
+	$(CC) -c $(CFLAGS) $(ARCHFLAGS) $(INCLUDES) -o $@ $<
 
 # Objects
 JS_OBJS= $(COMMONDIR)/cmdlib.o \
@@ -66,11 +68,13 @@ JS_OBJS= $(COMMONDIR)/cmdlib.o \
 	$(COMMONDIR)/pathutil.o \
 	mathlib.o \
 	bspfile.o \
+	litfile.o \
 	entities.o \
 	ltface.o \
-	tex.o \
 	threads.o \
 	trace.o \
+	jscolor.o \
+	tex.o \
 	tyrlite.o
 #	$(COMMONDIR)/strlcat.o \
 #	$(COMMONDIR)/strlcpy.o \

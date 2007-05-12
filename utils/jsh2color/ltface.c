@@ -19,7 +19,7 @@
 
 /*
 	ltface.c
-	$Id: ltface.c,v 1.9 2007-03-14 21:04:36 sezero Exp $
+	$Id: ltface.c,v 1.10 2007-05-12 09:56:35 sezero Exp $
 
 	Modifications by Kevin Shanahan, 1999-2000
 */
@@ -31,6 +31,7 @@
 #include "entities.h"
 #include "threads.h"
 #include "tyrlite.h"
+#include "jscolor.h"
 
 /*
 ============
@@ -912,10 +913,6 @@ void LightFace (int surfnum, qboolean nolight, vec3_t faceoffset)
 		}
 	}
 }
-
-extern int faces_ltoffset[MAX_MAP_FACES];
-extern byte newdlightdata[MAX_MAP_LIGHTING];
-extern int newlightdatasize;
 
 void LightFaceLIT (int surfnum, qboolean nolight, vec3_t faceoffset)
 {

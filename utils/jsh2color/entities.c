@@ -19,7 +19,7 @@
 
 /*
 	entities.c
-	$Id: entities.c,v 1.11 2007-03-14 21:04:35 sezero Exp $
+	$Id: entities.c,v 1.12 2007-05-12 09:56:34 sezero Exp $
 */
 
 #include "util_inc.h"
@@ -35,51 +35,6 @@ int			num_entities;
 int			num_lights;
 int			num_clights;
 
-
-#if 0	// no users.
-static int		numtexlights;
-static entity_t	texlights[MAX_MAP_FACES];
-
-// find textures that could emit lights
-void FindTexLights (void)
-{
-	int		i;
-	int		hit;
-	char	texname[16];
-
-	numtexlights = 0;
-
-#   if 0
-	for (i = 0; i < numfaces; i++)
-	{
-		// make it more legible... and easier (less typing)
-		sprintf (texname, "%s", miptex[texinfo[dfaces[i].texinfo].miptex].name);
-		hit = 1; // assume success until we find out otherwise
-
-		if (!strncmp (texname, "*lava", 5))
-		{
-			// specific to each texture
-			texlights[numtexlights].lightcolour[0] = 255;
-			texlights[numtexlights].lightcolour[1] = 64;
-			texlights[numtexlights].lightcolour[2] = 64;
-		}
-		else
-			hit = 0;
-
-		if (hit)
-		{
-			// common to all
-			texlights[numtexlights].light = 300;
-			strcpy (texlights[numtexlights].classname, "light");
-			texlights[numtexlights].origin[0] = dplanes[dfaces[i].planenum].normal[0];
-			texlights[numtexlights].origin[1] = dplanes[dfaces[i].planenum].normal[1];
-			texlights[numtexlights].origin[2] = dplanes[dfaces[i].planenum].normal[2];
-			numtexlights++;
-		}
-	}
-#   endif
-}
-#endif
 
 /*
 ==============================================================================
@@ -159,7 +114,6 @@ static void MatchTargets (void)
 LoadEntities
 ==================
 */
-extern int	bsp_ver;
 void LoadEntities (void)
 {
 	char		*data;
@@ -479,8 +433,6 @@ void LoadEntities (void)
 				printf ("Map name : at line %d in strings.txt\n\n", atoi(entity->message));
 			else
 				printf ("Map name : -- unknown --\n\n");
-
-			//printf("BSP is version %i\n", bsp_ver);
 
 			if (entity->light > 0 && !worldminlight)
 			{

@@ -19,7 +19,7 @@
 
 /*
 	tyrlite.c
-	$Id: tyrlite.c,v 1.14 2007-03-14 21:04:37 sezero Exp $
+	$Id: tyrlite.c,v 1.15 2007-05-12 09:56:35 sezero Exp $
 
 	Modifications by Kevin Shanahan, 1999-2000
 */
@@ -30,9 +30,11 @@
 #include "pathutil.h"
 #include "mathlib.h"
 #include "bspfile.h"
+#include "litfile.h"
 #include "entities.h"
 #include "threads.h"
 #include "tyrlite.h"
+#include "jscolor.h"
 #if defined(_WIN32)
 #include <conio.h>
 #endif	/* _WIN32 */
@@ -183,7 +185,6 @@ static void FindFaceOffsets (void)
 
 
 extern int	num_clights;
-extern int	numlighttex;
 
 /*
 =============
@@ -471,6 +472,7 @@ int main (int argc, char **argv)
 	DefaultExtension (source, ".bsp");
 
 	LoadBSPFile (source);
+	Init_JSColor();
 	printf ("Map file : %s\n", source);
 
 	LoadEntities ();
@@ -482,10 +484,14 @@ int main (int argc, char **argv)
 
 	WriteEntitiesToString ();
 
-	if (colored)
-		WriteBSPFile (source, BSP_COLORED_VERSION);
+//	if (colored)
+//		WriteBSPFile (source, BSP_COLORED_VERSION);
+//	else
+//		WriteBSPFile (source, BSP_OLD_VERSION);
+	if (makelit)
+		MakeLITFile (source);
 	else
-		WriteBSPFile (source, BSP_OLD_VERSION);
+		WriteBSPFile (source);
 
 	CloseDefFile ();
 
