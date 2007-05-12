@@ -19,7 +19,7 @@
 
 /*
 	tyrlite.c
-	$Id: tyrlite.c,v 1.16 2007-05-12 09:58:57 sezero Exp $
+	$Id: tyrlite.c,v 1.17 2007-05-12 11:00:35 sezero Exp $
 
 	Modifications by Kevin Shanahan, 1999-2000
 */
@@ -35,9 +35,6 @@
 #include "threads.h"
 #include "tyrlite.h"
 #include "jscolor.h"
-#if defined(_WIN32)
-#include <conio.h>
-#endif	/* _WIN32 */
 
 float		scaledist	= 1.0F;
 float		scalecos	= 0.5F;
@@ -300,54 +297,6 @@ static void LightWorld (void)
 	lightdatasize = file_p - filebase;
 
 	//printf ("lightdatasize: %i\n", lightdatasize);
-}
-
-
-/*
-==================
-DecisionTime
-Takes user's decision to continue or abort
-==================
-*/
-void DecisionTime (const char *msg)
-{
-	char	c;
-
-	// if we're forcing coloring irrespective of potential
-	// effectiveness (eg in a batch file), just get out
-	if (force)
-		return;
-
-	printf ("\nJsH2Colour reports that it may not light this BSP effectively\n(%s)\n", msg);
-
-#ifdef _WIN32
-	printf ("Continue? [Y/N] ");
-	while (1)
-	{
-		c = getch ();
-
-		if (c == 'y' || c == 'Y' || c == 'n' || c == 'N')
-			break;
-	}
-
-	printf ("%c\n", c);
-
-#else	// unix solution
-	while (1)
-	{
-		c = 0;
-		printf ("Continue? [Y/N] ");
-		fflush(stdout);
-		c = getchar();
-		if (c == 'y' || c == 'Y' || c == 'n' || c == 'N')
-			break;
-	}
-	printf ("\n");
-	fflush(stdout);
-#endif
-
-	if (c == 'n' || c == 'N')
-		Error ("Program Terminated by user\n");
 }
 
 

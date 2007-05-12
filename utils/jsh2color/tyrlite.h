@@ -19,7 +19,7 @@
 
 /*
 	tyrlite.h
-	$Id: tyrlite.h,v 1.13 2007-05-12 09:58:57 sezero Exp $
+	$Id: tyrlite.h,v 1.14 2007-05-12 11:00:35 sezero Exp $
 
 	Modifications by Kevin Shanahan, 1999-2000
 */
@@ -91,7 +91,6 @@ void	MakeTnodes (dmodel_t *bm);
 // js features
 void	InitDefFile (const char *fname);
 void	CloseDefFile (void);
-void	DecisionTime (const char *msg);
 
 #endif	/* __TYRLITE_H__ */
 

@@ -1,6 +1,6 @@
 /*
 	jscolor.h
-	$Id: jscolor.h,v 1.1 2007-05-12 09:56:35 sezero Exp $
+	$Id: jscolor.h,v 1.2 2007-05-12 11:00:35 sezero Exp $
 
 	This program is free software; you can redistribute it and/or
 	modify it under the terms of the GNU General Public License
@@ -27,10 +27,11 @@
 extern	miptex_t	miptex[512];
 extern	int		numlighttex;
 extern	int		faces_ltoffset[MAX_MAP_FACES];
-extern	byte		newdlightdata[MAX_MAP_LIGHTING];
+extern	byte		newdlightdata[MAX_MAP_LIGHTING*3];
 extern	int		newlightdatasize;
 
 void Init_JSColor (void);
+void DecisionTime (const char *msg);
 
 #endif	/* __JSCOLOR_H */
 

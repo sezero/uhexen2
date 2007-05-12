@@ -1,6 +1,6 @@
 /*
 	jscolor.c
-	$Id: jscolor.c,v 1.2 2007-05-12 09:58:57 sezero Exp $
+	$Id: jscolor.c,v 1.3 2007-05-12 11:00:35 sezero Exp $
 
 	This program is free software; you can redistribute it and/or
 	modify it under the terms of the GNU General Public License
@@ -28,6 +28,10 @@
 #include "pathutil.h"
 #include "bspfile.h"
 #include "tyrlite.h"
+#include "jscolor.h"
+#if defined(_WIN32)
+#include <conio.h>
+#endif	/* _WIN32 */
 
 miptex_t		miptex[512];
 int				numlighttex;
@@ -227,6 +231,50 @@ static void MakeNewLightData (void)
 
 	newlightdatasize = lightdatasize * 3;
 }
+
+
+void DecisionTime (const char *msg)
+{
+// Take user's decision to continue or abort
+	char	c;
+
+	// if we're forcing coloring irrespective of potential
+	// effectiveness (eg in a batch file), just get out
+	if (force)
+		return;
+
+	printf ("\nJsH2Colour reports that it may not light this BSP effectively\n(%s)\n", msg);
+
+#ifdef _WIN32
+	printf ("Continue? [Y/N] ");
+	while (1)
+	{
+		c = getch ();
+
+		if (c == 'y' || c == 'Y' || c == 'n' || c == 'N')
+			break;
+	}
+
+	printf ("%c\n", c);
+
+#else	// unix solution
+	while (1)
+	{
+		c = 0;
+		printf ("Continue? [Y/N] ");
+		fflush(stdout);
+		c = getchar();
+		if (c == 'y' || c == 'Y' || c == 'n' || c == 'N')
+			break;
+	}
+	printf ("\n");
+	fflush(stdout);
+#endif
+
+	if (c == 'n' || c == 'N')
+		Error ("Program Terminated by user\n");
+}
+
 
 void Init_JSColor (void)
 {
