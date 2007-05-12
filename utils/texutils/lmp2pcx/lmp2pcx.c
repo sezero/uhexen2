@@ -1,6 +1,6 @@
 /*
 	lmp2pcx.c
-	$Id: lmp2pcx.c,v 1.1 2007-05-05 11:18:49 sezero Exp $
+	$Id: lmp2pcx.c,v 1.2 2007-05-12 09:35:53 sezero Exp $
 	Copyright (C) 2002-2007 Forest Hale
 
 	This program is free software; you can redistribute it and/or
@@ -28,6 +28,11 @@
 #include "util_io.h"
 #include "q_endian.h"
 
+
+/* Whether to load the hexen2 palette data at runtime:
+   if the file becomes public domain some day, define
+   this as 0 and just embed the data in the binary. */
+#define	LOAD_PALETTEFILE	1
 
 #define	OUTPUT_DIR		"outfiles"
 #define	ASTERIX_REPLACE			'_'
@@ -343,11 +348,15 @@ void WriteTGA (const char *filename, unsigned char *data, int width, int height,
 }
 
 
+#if LOAD_PALETTEFILE
+static unsigned char *gamepalette;
+#else
 static unsigned char gamepalette[768] =
 {
 //#include		"quakepal.h"
 #include		"hexen2pal.h"
 };
+#endif
 
 /*
 =============
@@ -395,6 +404,11 @@ static void ConvertLMP (const char *filename, int idx)
 		data = (unsigned char *)lmpdata;
 		image_width = 256;
 		image_height = 128;
+	}
+	// skip the palette file itself
+	else if (!strcmp(tempname + sizeof(OUTPUT_DIR), "palette"))
+	{
+		return;
 	}
 	else
 	{
@@ -557,7 +571,7 @@ static void ConvertWAD (const char *filename, int idx)
 	wad->numlumps = LittleLong(wad->numlumps);
 	wad->infotableofs = LittleLong(wad->infotableofs);
 	printf ("%s: converting \"%s\" (%i lumps)\n", __FUNCTION__, filename, wad->numlumps);
-	lump = (void *)(waddata + wad->infotableofs);
+	lump = (void *)((unsigned char *)waddata + wad->infotableofs);
 	for (i = 0; i < wad->numlumps; i++, lump++)
 	{
 		height = 0;
@@ -568,7 +582,7 @@ static void ConvertWAD (const char *filename, int idx)
 		}
 		lump->filepos = LittleLong(lump->filepos);
 		lump->disksize = LittleLong(lump->disksize);
-		data = lump->filepos + (unsigned char *) waddata;
+		data = (unsigned char *) waddata + lump->filepos;
 		wad_cleanname (lump->name, ptr);
 		if (!strcmp(ptr, "conchars"))	// (quake) conchars = weird
 			height = 128;
@@ -670,7 +684,7 @@ static void print_usage (void)
 
 int main (int argc, char **argv)
 {
-	int		i;
+	int		i, j;
 	unsigned	flags;
 	char		*name;
 
@@ -701,6 +715,21 @@ int main (int argc, char **argv)
 
 	if (flags == 0)
 		flags = (CONV_LMP|CONV_MIP|CONV_WAL|CONV_WAD);
+
+	j = FileTime ("palette.lmp");
+#if LOAD_PALETTEFILE
+	if (j == -1)
+	{
+		printf ("Unable to load palette.lmp, the hexen2 palette file.\n");
+		Error ("Put the correct file in this directory and try again.");
+	}
+	j = LoadFile ("palette.lmp", (void **) (unsigned char *) &gamepalette);
+	if (j != 768)
+	{
+		printf ("Invalid size with the hexen2 palette file palette.lmp\n");
+		Error ("Put the correct file in this directory and try again.");
+	}
+#endif	/* LOAD_PALETTEFILE */
 
 	Q_mkdir (OUTPUT_DIR);
 
