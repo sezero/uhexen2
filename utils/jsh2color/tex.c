@@ -17,11 +17,11 @@
 
 /*
 	tex.c
-	returns a colour for a given texture name.  currently
+	returns a color for a given texture name.  currently
 	only works with standard quake textures.
 	expand as you see fit - you'll get the idea :-)
 
-	$Id: tex.c,v 1.10 2007-03-14 21:04:36 sezero Exp $
+	$Id: tex.c,v 1.11 2007-05-12 09:58:57 sezero Exp $
 */
 
 // V0.4 modifications
@@ -139,7 +139,7 @@ void CloseDefFile (void)
 	tc_list.entries = NULL;
 }
 
-static void FindTexlightColourExt (int *surf_r, int *surf_g, int *surf_b, const char *texname, tex_col_list list)
+static void FindTexlightColorExt (int *surf_r, int *surf_g, int *surf_b, const char *texname, tex_col_list list)
 {
 	int		i, len, num;
 	tex_col	*entry;
@@ -178,7 +178,7 @@ static void FindTexlightColourExt (int *surf_r, int *surf_g, int *surf_b, const 
 #endif
 }
 
-void FindTexlightColour (int *surf_r, int *surf_g, int *surf_b, const char *texname)
+void FindTexlightColor (int *surf_r, int *surf_g, int *surf_b, const char *texname)
 {
 	if (nodefault == false)	// js feature
 	{
@@ -652,7 +652,7 @@ void FindTexlightColour (int *surf_r, int *surf_g, int *surf_b, const char *texn
 		}
 		else if (external == true)
 		{	// js feature
-			FindTexlightColourExt (surf_r, surf_g, surf_b, texname, tc_list);
+			FindTexlightColorExt (surf_r, surf_g, surf_b, texname, tc_list);
 		}
 		else
 		{
@@ -666,7 +666,7 @@ void FindTexlightColour (int *surf_r, int *surf_g, int *surf_b, const char *texn
 	{
 		if (external == true)
 		{	// js feature
-			FindTexlightColourExt (surf_r, surf_g, surf_b, texname, tc_list);
+			FindTexlightColorExt (surf_r, surf_g, surf_b, texname, tc_list);
 		}
 		else
 		{

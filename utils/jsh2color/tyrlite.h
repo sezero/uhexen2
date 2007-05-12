@@ -19,7 +19,7 @@
 
 /*
 	tyrlite.h
-	$Id: tyrlite.h,v 1.12 2007-03-14 21:04:37 sezero Exp $
+	$Id: tyrlite.h,v 1.13 2007-05-12 09:58:57 sezero Exp $
 
 	Modifications by Kevin Shanahan, 1999-2000
 */
@@ -83,7 +83,7 @@ void	TestLightFace (int surfnum, qboolean nolight, vec3_t faceoffset);
 void	LightFace (int surfnum, qboolean nolight, vec3_t faceoffset);
 void	LightFaceLIT (int surfnum, qboolean nolight, vec3_t faceoffset);
 void	CheckTex (void);
-void	FindTexlightColour (int *surf_r, int *surf_g, int *surf_b, const char *texname);
+void	FindTexlightColor (int *surf_r, int *surf_g, int *surf_b, const char *texname);
 
 void	LightLeaf (dleaf_t *leaf);
 void	MakeTnodes (dmodel_t *bm);

@@ -19,7 +19,7 @@
 
 /*
 	entities.c
-	$Id: entities.c,v 1.12 2007-05-12 09:56:34 sezero Exp $
+	$Id: entities.c,v 1.13 2007-05-12 09:58:57 sezero Exp $
 */
 
 #include "util_inc.h"
@@ -240,9 +240,9 @@ void LoadEntities (void)
 #else
 				if (sscanf(com_token, "%f %f %f", &vec[0], &vec[1], &vec[2]) != 3)
 #endif
-					Error ("%s: not 3 values for colour", __FUNCTION__);
+					Error ("%s: not 3 values for color", __FUNCTION__);
 				for (i=0 ; i<3 ; i++)
-					entity->lightcolour[i] = vec[i];
+					entity->lightcolor[i] = vec[i];
 			}
 			else if (!strcmp(key, "_sunlight"))
 				sunlight = atof(com_token);
@@ -326,7 +326,7 @@ void LoadEntities (void)
 				entity->formula = 0;
 
 			// Convert to Hexen2 Entities
-			// since the map has no colour info anyway, we don't need to test this
+			// since the map has no color info anyway, we don't need to test this
 			if (!Q_strncasecmp(entity->classname, "light_torch", 11))
 			{
 			/*
@@ -339,9 +339,9 @@ void LoadEntities (void)
 			*/
 
 				// make it orange
-				entity->lightcolour[0] = 255;
-				entity->lightcolour[1] = 128;
-				entity->lightcolour[2] = 64;
+				entity->lightcolor[0] = 255;
+				entity->lightcolor[1] = 128;
+				entity->lightcolor[2] = 64;
 			}
 			else if (!Q_strncasecmp(entity->classname, "light_flame", 11))
 			{
@@ -352,59 +352,59 @@ void LoadEntities (void)
 				light_flame_small_yellow
 			*/
 
-				entity->lightcolour[0] = 255;
-				entity->lightcolour[1] = 128;
-				entity->lightcolour[2] = 64;
+				entity->lightcolor[0] = 255;
+				entity->lightcolor[1] = 128;
+				entity->lightcolor[2] = 64;
 			}
 			else if (!strcmp (entity->classname, "light_gem"))
 			{
 				// make it orange
-				entity->lightcolour[0] = 255;
-				entity->lightcolour[1] = 128;
-				entity->lightcolour[2] = 64;
+				entity->lightcolor[0] = 255;
+				entity->lightcolor[1] = 128;
+				entity->lightcolor[2] = 64;
 			}
 
 			/*
 			// No Such Light Type in Hexen 2
 			else if (!strncmp (entity->classname, "light_fluor", 11))
 			{
-				// make all colours 0 - fluoro lights are tested the same way as normal ones,
-				// so we don't want any colour info to begin with
+				// make all colors 0 - fluoro lights are tested the same way as normal ones,
+				// so we don't want any color info to begin with
 				num_clights--;
-				entity->lightcolour[0] = 0;
-				entity->lightcolour[1] = 0;
-				entity->lightcolour[2] = 0;
+				entity->lightcolor[0] = 0;
+				entity->lightcolor[1] = 0;
+				entity->lightcolor[2] = 0;
 			}
 			else if (!strcmp (entity->classname, "light_globe"))
 			{
 				// make it orange
-				entity->lightcolour[0] = 255;
-				entity->lightcolour[1] = 128;
-				entity->lightcolour[2] = 64;
+				entity->lightcolor[0] = 255;
+				entity->lightcolor[1] = 128;
+				entity->lightcolor[2] = 64;
 			}
 			else if (!strcmp (entity->classname, "light_candle"))
 			{
 				// make it orange
-				entity->lightcolour[0] = 255;
-				entity->lightcolour[1] = 128;
-				entity->lightcolour[2] = 64;
+				entity->lightcolor[0] = 255;
+				entity->lightcolor[1] = 128;
+				entity->lightcolor[2] = 64;
 			}
 			else if (!strcmp (entity->classname, "light_lantern"))
 			{
 				// make it orange
-				entity->lightcolour[0] = 255;
-				entity->lightcolour[1] = 128;
-				entity->lightcolour[2] = 64;
+				entity->lightcolor[0] = 255;
+				entity->lightcolor[1] = 128;
+				entity->lightcolor[2] = 64;
 			}
 			*/
 			// End Convert to Hexen2 Entities
 			else
 			{
-				// we don't need any colour info to begin with
+				// we don't need any color info to begin with
 				num_clights--;
-				entity->lightcolour[0] = 0;
-				entity->lightcolour[1] = 0;
-				entity->lightcolour[2] = 0;
+				entity->lightcolor[0] = 0;
+				entity->lightcolor[1] = 0;
+				entity->lightcolor[2] = 0;
 			}
 
 			num_lights++;
@@ -590,8 +590,8 @@ void WriteEntitiesToString (void)
 					end += strlen(line);
 				}
 
-				// output a colour...
-				//sprintf (line, "\"_color\" \"%i %i %i\"\n", entities[i].lightcolour[0], entities[i].lightcolour[1], entities[i].lightcolour[2]);
+				// output a color...
+				//sprintf (line, "\"_color\" \"%i %i %i\"\n", entities[i].lightcolor[0], entities[i].lightcolor[1], entities[i].lightcolor[2]);
 				//strcat (end, line);
 				//end += strlen(line);
 			}

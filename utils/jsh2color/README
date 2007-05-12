@@ -6,13 +6,12 @@ derived from Tyrlite v0.8), for use with Hexen II. It also uses code
 from the Hexen II light utility. This particular version is a cleaned
 up and updated for both linux/unix and windows operating systems.
 
-This is a light colouring utility that generates .LIT files. Colour
-is based on texture type of textures that are close to light source.
-Remember that JsH2Colour is NOT a replacement light utility:  It is
-intended to be used on an existing BSP as a method of getting colored
-light in.
+This is a light coloring utility that generates .LIT files. Color is
+based on the type of textures that are close to light source. Remember
+that JsH2Colour is NOT a replacement light utility:  It is intended to
+be used on an existing BSP as a method of getting colored light.
 
-You can define colours for texture based coloring in an external file
+You can define colors for texture based coloring in an external file
 instead of having to define it in source code and recompiling it. To
 specify external definition file use -external switch with name of file
 as the parameter.
@@ -20,7 +19,7 @@ as the parameter.
 JsH2Colour contains default values for a subset of Hexen II texture sets
 built into the source code. In case you don't want to use them, you can
 prevent it by using -nodefault switch on command line. I recomend this
-approach, because it enables you to set light colour values individualy
+approach, because it enables you to set light color values individualy
 for each map. Example files are included in distribution. Definition in
 an external file doesn't replace the built-in definition for the same
 texture unless you use the -nodefault switch AND define all the textures
@@ -31,17 +30,13 @@ New command line switches :
 ---------------------------
 
 -force
-If JsH2Colour decides that the colouring process will be ineffective,
+If JsH2Colour decides that the coloring process will be ineffective,
 you will get an option to abandon ship. Use -force to override this and
 always continue, but don't say I didn't warn you if you don't like what
 you see.
 
--lit
-Generate a LIT file. Without this switch, it will generate a fake BSP 30
-map for you in its default mode.
-
 -external FILENAME
-Turns on the usage of external light colour definition file. External
+Turns on the usage of external light color definition file. External
 definition file name (FILENAME) must be specified.
 
 -nodefault
@@ -50,10 +45,10 @@ sets. Useful if you want to use light coloring for only limited subset of
 textures. Those to be used then must be defined in an external definition
 file.
 
-Format of external light colour definition file:
+Format of external light color definition file:
 ------------------------------------------------
 It is pretty simple. Each entry is on a new line. Each entry starts with
-the texture name (just a string without qoutes) and is followed by colour
+the texture name (just a string without qoutes) and is followed by color
 triplet eg. red, green and blue components (integer numbers in range the
 of 0-255. They are separated by space. All entries end with a newline char
 (cr,lf).

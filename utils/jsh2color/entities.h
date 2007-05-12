@@ -19,7 +19,7 @@
 
 /*
 	entities.h
-	$Id: entities.h,v 1.7 2007-03-14 21:04:35 sezero Exp $
+	$Id: entities.h,v 1.8 2007-05-12 09:58:57 sezero Exp $
 */
 
 #ifndef __ENTITIES_H__
@@ -47,7 +47,7 @@ typedef struct entity_s
 	float	atten;
 	vec3_t	mangle;
 	qboolean	use_mangle;
-	int		lightcolour[3];
+	int		lightcolor[3];
 
 	int		light;
 	int		style;
@@ -76,8 +76,8 @@ typedef struct entity_s
  *    If the entity is a light, then point the spotlight in this direction.
  *    If it is the worldspawn, then this is the sunlight mangle
  *
- * lightcolour:
- *    Stores the RGB values to determine the light colour
+ * lightcolor:
+ *    Stores the RGB values to determine the light color
  */
 
 extern	entity_t	entities[MAX_MAP_ENTITIES];

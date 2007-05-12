@@ -19,7 +19,7 @@
 
 /*
 	ltface.c
-	$Id: ltface.c,v 1.10 2007-05-12 09:56:35 sezero Exp $
+	$Id: ltface.c,v 1.11 2007-05-12 09:58:57 sezero Exp $
 
 	Modifications by Kevin Shanahan, 1999-2000
 */
@@ -115,9 +115,9 @@ typedef struct
 	dface_t	*face;
 
 	// colored lighting
-	vec3_t	lightmapcolours[MAXLIGHTMAPS][SINGLEMAP];
+	vec3_t	lightmapcolors[MAXLIGHTMAPS][SINGLEMAP];
 
-	// texture light colour modification
+	// texture light color modification
 	char texname[16];
 } lightinfo_t;
 
@@ -458,7 +458,7 @@ static void SingleLightFace (entity_t *light, lightinfo_t *l, vec3_t faceoffset,
 	vec_t	falloff;
 	vec_t	*lightsamp;
 	/* Colored lighting */
-	vec3_t		*lightcoloursamp;
+	vec3_t		*lightcolorsamp;
 
 	VectorSubtract (light->origin, bsp_origin, rel);
 	//dist = scaledist * (DotProduct (rel, l->facenormal) - l->facedist);
@@ -503,7 +503,7 @@ static void SingleLightFace (entity_t *light, lightinfo_t *l, vec3_t faceoffset,
 			break;
 	}
 	lightsamp = l->lightmaps[mapnum];
-	lightcoloursamp = l->lightmapcolours[mapnum];
+	lightcolorsamp = l->lightmapcolors[mapnum];
 
 	if (mapnum == l->numlightstyles)
 	{	// init a new light map
@@ -517,9 +517,9 @@ static void SingleLightFace (entity_t *light, lightinfo_t *l, vec3_t faceoffset,
 		{
 			if (colored)
 			{
-				lightcoloursamp[i][0] = 0;
-				lightcoloursamp[i][1] = 0;
-				lightcoloursamp[i][2] = 0;
+				lightcolorsamp[i][0] = 0;
+				lightcolorsamp[i][1] = 0;
+				lightcolorsamp[i][2] = 0;
 			}
 
 			lightsamp[i] = 0;
@@ -573,9 +573,9 @@ static void SingleLightFace (entity_t *light, lightinfo_t *l, vec3_t faceoffset,
 			// for faster processing. x2.24 faster in profiler
 			add /= 255.0f;
 
-			lightcoloursamp[c][0] += add * light->lightcolour[0];
-			lightcoloursamp[c][1] += add * light->lightcolour[1];
-			lightcoloursamp[c][2] += add * light->lightcolour[2];
+			lightcolorsamp[c][0] += add * light->lightcolor[0];
+			lightcolorsamp[c][1] += add * light->lightcolor[1];
+			lightcolorsamp[c][2] += add * light->lightcolor[2];
 		}
 
 		if (abs(lightsamp[c]) > 1)	// ignore really tiny lights
@@ -637,9 +637,9 @@ void SkyLightFace (lightinfo_t *l, vec3_t faceoffset)
 			l->lightmaps[i][j] += (angle*sunlight);
 			if (colored)
 			{
-				l->lightmapcolours[i][j][0] += (angle * sunlight * sunlight_color[0]) /255;
-				l->lightmapcolours[i][j][1] += (angle * sunlight * sunlight_color[1]) /255;
-				l->lightmapcolours[i][j][2] += (angle * sunlight * sunlight_color[2]) /255;
+				l->lightmapcolors[i][j][0] += (angle * sunlight * sunlight_color[0]) /255;
+				l->lightmapcolors[i][j][1] += (angle * sunlight * sunlight_color[1]) /255;
+				l->lightmapcolors[i][j][2] += (angle * sunlight * sunlight_color[2]) /255;
 			}
 		}
 	}
@@ -680,9 +680,9 @@ static void FixMinlight (lightinfo_t *l)
 		if (colored)
 			for (j = 0 ; j < l->numsurfpt ; j++)
 			{
-				l->lightmapcolours[i][j][0] = (worldminlight * minlight_color[0]) /255;
-				l->lightmapcolours[i][j][1] = (worldminlight * minlight_color[1]) /255;
-				l->lightmapcolours[i][j][2] = (worldminlight * minlight_color[2]) /255;
+				l->lightmapcolors[i][j][0] = (worldminlight * minlight_color[0]) /255;
+				l->lightmapcolors[i][j][1] = (worldminlight * minlight_color[1]) /255;
+				l->lightmapcolors[i][j][2] = (worldminlight * minlight_color[2]) /255;
 			}
 
 		l->lightstyles[i] = 0;
@@ -708,8 +708,8 @@ static void FixMinlight (lightinfo_t *l)
 			for (k = 0 ; k < 3 ; k++)
 			{
 				tmp = (vec_t)(worldminlight * minlight_color[k]) / 255.0f;
-				if (l->lightmapcolours[i][j][k] < tmp )
-					l->lightmapcolours[i][j][k] = tmp;
+				if (l->lightmapcolors[i][j][k] < tmp )
+					l->lightmapcolors[i][j][k] = tmp;
 			}
 		}
 	}
@@ -738,8 +738,8 @@ void LightFace (int surfnum, qboolean nolight, vec3_t faceoffset)
 	vec_t		max;
 	int		x1, x2, x3, x4;
 	/* TYR - colored lights */
-	vec3_t		*lightcolour;
-	vec3_t		totalcolours;
+	vec3_t		*lightcolor;
+	vec3_t		totalcolors;
 
 	int		w, h;
 	vec3_t		point;
@@ -835,7 +835,7 @@ void LightFace (int surfnum, qboolean nolight, vec3_t faceoffset)
 		if (l.lightstyles[i] == 0xff)
 			Error ("Wrote empty lightmap");
 		light = l.lightmaps[i];
-		lightcolour = l.lightmapcolours[i];
+		lightcolor = l.lightmapcolors[i];
 		c = 0;
 
 		for (t = 0 ; t <= l.texsize[1] ; t++)
@@ -852,46 +852,46 @@ void LightFace (int surfnum, qboolean nolight, vec3_t faceoffset)
 					total = light[x1] + light[x2] + light[x3] + light[x4];
 					total *= 0.25;
 
-					// calculate the colour
+					// calculate the color
 					if (colored)
 					{
-						totalcolours[0] = lightcolour[x1][0] + lightcolour[x2][0] + lightcolour[x3][0] + lightcolour[x4][0];
-						totalcolours[0] *= 0.25;
-						totalcolours[1] = lightcolour[x1][1] + lightcolour[x2][1] + lightcolour[x3][1] + lightcolour[x4][1];
-						totalcolours[1] *= 0.25;
-						totalcolours[2] = lightcolour[x1][2] + lightcolour[x2][2] + lightcolour[x3][2] + lightcolour[x4][2];
-						totalcolours[2] *= 0.25;
+						totalcolors[0] = lightcolor[x1][0] + lightcolor[x2][0] + lightcolor[x3][0] + lightcolor[x4][0];
+						totalcolors[0] *= 0.25;
+						totalcolors[1] = lightcolor[x1][1] + lightcolor[x2][1] + lightcolor[x3][1] + lightcolor[x4][1];
+						totalcolors[1] *= 0.25;
+						totalcolors[2] = lightcolor[x1][2] + lightcolor[x2][2] + lightcolor[x3][2] + lightcolor[x4][2];
+						totalcolors[2] *= 0.25;
 					}
 				}
 				else
 				{
 					total = light[c];
 					if (colored)
-						VectorCopy (lightcolour[c], totalcolours);
+						VectorCopy (lightcolor[c], totalcolors);
 				}
 
 				total *= rangescale;	// scale before clamping
 
 				// CSL - Scale back intensity, instead
-				//	 of capping individual colours
+				//	 of capping individual colors
 				if (colored)
 				{
-					VectorScale (totalcolours, rangescale, totalcolours);
+					VectorScale (totalcolors, rangescale, totalcolors);
 					max = 0.0;
 
 					for (j = 0; j < 3; j++)
 					{
-						if (totalcolours[j] > max)
+						if (totalcolors[j] > max)
 						{
-							max = totalcolours[j];
+							max = totalcolors[j];
 						}
-						else if (totalcolours[j] < 0.0f)
+						else if (totalcolors[j] < 0.0f)
 						{
-							totalcolours[j] = 0.0f;	// this used to be an error!!!!
+							totalcolors[j] = 0.0f;	// this used to be an error!!!!
 						}
 					}
 					if (max > 255.0f)
-						VectorScale (totalcolours, 255.0f / max, totalcolours);
+						VectorScale (totalcolors, 255.0f / max, totalcolors);
 				}
 
 				if (total > 255.0f)
@@ -903,9 +903,9 @@ void LightFace (int surfnum, qboolean nolight, vec3_t faceoffset)
 				// write out the lightmap in RGBA format
 				if (colored)
 				{
-					*out++ = totalcolours[0];
-					*out++ = totalcolours[1];
-					*out++ = totalcolours[2];
+					*out++ = totalcolors[0];
+					*out++ = totalcolors[1];
+					*out++ = totalcolors[2];
 				}
 				// not used in darkplaces - only in bsp 30
 				*out++ =  total;
@@ -928,8 +928,8 @@ void LightFaceLIT (int surfnum, qboolean nolight, vec3_t faceoffset)
 	vec_t		max;
 	int		x1, x2, x3, x4;
 	/* TYR - colored lights */
-	vec3_t		*lightcolour;
-	vec3_t		totalcolours;
+	vec3_t		*lightcolor;
+	vec3_t		totalcolors;
 
 	int		w, h;
 	vec3_t		point;
@@ -1024,7 +1024,7 @@ void LightFaceLIT (int surfnum, qboolean nolight, vec3_t faceoffset)
 			Error ("Wrote empty lightmap");
 
 		light = l.lightmaps[i];
-		lightcolour = l.lightmapcolours[i];
+		lightcolor = l.lightmapcolors[i];
 		c = 0;
 
 		for (t = 0 ; t <= l.texsize[1] ; t++)
@@ -1038,42 +1038,42 @@ void LightFaceLIT (int surfnum, qboolean nolight, vec3_t faceoffset)
 					x3 = (t*2 + 1)*w + s*2;
 					x4 = x3 + 1;
 
-					// calculate the colour
-					totalcolours[0] = lightcolour[x1][0] + lightcolour[x2][0] + lightcolour[x3][0] + lightcolour[x4][0];
-					totalcolours[0] *= 0.25;
-					totalcolours[1] = lightcolour[x1][1] + lightcolour[x2][1] + lightcolour[x3][1] + lightcolour[x4][1];
-					totalcolours[1] *= 0.25;
-					totalcolours[2] = lightcolour[x1][2] + lightcolour[x2][2] + lightcolour[x3][2] + lightcolour[x4][2];
-					totalcolours[2] *= 0.25;
+					// calculate the color
+					totalcolors[0] = lightcolor[x1][0] + lightcolor[x2][0] + lightcolor[x3][0] + lightcolor[x4][0];
+					totalcolors[0] *= 0.25;
+					totalcolors[1] = lightcolor[x1][1] + lightcolor[x2][1] + lightcolor[x3][1] + lightcolor[x4][1];
+					totalcolors[1] *= 0.25;
+					totalcolors[2] = lightcolor[x1][2] + lightcolor[x2][2] + lightcolor[x3][2] + lightcolor[x4][2];
+					totalcolors[2] *= 0.25;
 				}
 				else
 				{
-					VectorCopy (lightcolour[c], totalcolours);
+					VectorCopy (lightcolor[c], totalcolors);
 				}
 
 				// CSL - Scale back intensity, instead
-				//	 of capping individual colours
-				VectorScale (totalcolours, rangescale, totalcolours);
+				//	 of capping individual colors
+				VectorScale (totalcolors, rangescale, totalcolors);
 				max = 0.0;
 
 				for (j = 0; j < 3; j++)
 				{
-					if (totalcolours[j] > max)
+					if (totalcolors[j] > max)
 					{
-						max = totalcolours[j];
+						max = totalcolors[j];
 					}
-					else if (totalcolours[j] < 0.0f)
+					else if (totalcolors[j] < 0.0f)
 					{
-						totalcolours[j] = 0.0f;	// this used to be an error!!!!
+						totalcolors[j] = 0.0f;	// this used to be an error!!!!
 					}
 				}
 				if (max > 255.0f)
-					VectorScale (totalcolours, 255.0f / max, totalcolours);
+					VectorScale (totalcolors, 255.0f / max, totalcolors);
 
 				// write out the lightmap in RGBA format
-				*out++ = totalcolours[0];
-				*out++ = totalcolours[1];
-				*out++ = totalcolours[2];
+				*out++ = totalcolors[0];
+				*out++ = totalcolors[1];
+				*out++ = totalcolors[2];
 			}
 		}
 	}
@@ -1105,8 +1105,8 @@ static void TestSingleLightFace (entity_t *light, lightinfo_t *l, vec3_t faceoff
 		return;
 	}
 
-	// mfah - find the light colour based on the surface name
-	FindTexlightColour (&surf_r, &surf_g, &surf_b, l->texname);
+	// mfah - find the light color based on the surface name
+	FindTexlightColor (&surf_r, &surf_g, &surf_b, l->texname);
 
 	surf = l->surfpt[0];
 
@@ -1125,13 +1125,13 @@ static void TestSingleLightFace (entity_t *light, lightinfo_t *l, vec3_t faceoff
 		if (add < (light->light / 3))
 			continue;
 
-		// normal light - other lights already have a colour assigned
+		// normal light - other lights already have a color assigned
 		// to them from when they were initially loaded
-		// this will give madly high colour values here so we will
+		// this will give madly high color values here so we will
 		// scale them down later on
-		light->lightcolour[0] = light->lightcolour[0] + surf_r;
-		light->lightcolour[1] = light->lightcolour[1] + surf_g;
-		light->lightcolour[2] = light->lightcolour[2] + surf_b;
+		light->lightcolor[0] = light->lightcolor[0] + surf_r;
+		light->lightcolor[1] = light->lightcolor[1] + surf_g;
+		light->lightcolor[2] = light->lightcolor[2] + surf_b;
 
 		// speed up the checking process some more - if we have one hit
 		// on a face, all other hits on the same face are just going to
@@ -1159,7 +1159,7 @@ void TestLightFace (int surfnum, qboolean nolight, vec3_t faceoffset)
 	// we can speed up the checking process by ignoring any textures
 	// that give white light. this hasn't been done since version 0.2,
 	// we can get rid of it
-	//FindTexlightColour (&i, &j, &c, l.texname);
+	//FindTexlightColor (&i, &j, &c, l.texname);
 
 	//if (i == 255 && j == 255 && c == 255)
 	//	return;

@@ -1,6 +1,6 @@
 /*
 	jscolor.c
-	$Id: jscolor.c,v 1.1 2007-05-12 09:56:35 sezero Exp $
+	$Id: jscolor.c,v 1.2 2007-05-12 09:58:57 sezero Exp $
 
 	This program is free software; you can redistribute it and/or
 	modify it under the terms of the GNU General Public License
@@ -53,9 +53,9 @@ static void ParseTexinfo (void)
 }
 
 
-static void FindColourName (char *name, int r, int g, int b)
+static void FindColorName (char *name, int r, int g, int b)
 {
-	// return a colour name for a given rgb combo
+	// return a color name for a given rgb combo
 	if (r == 255 && g == 10 && b == 10)
 		strcpy (name, "Red");
 	else if (r == 10 && g == 255 && b == 10)
@@ -85,24 +85,24 @@ void CheckTex (void)
 	int		count;
 	int		r2[100], g2[100], b2[100];
 	dface_t	*f;
-	int		facecolours[100];
+	int		facecolors[100];
 	int		bad;
-	char	colour_name[10];
+	char	color_name[10];
 	int		foundlava;
 	int		foundslime;
-	int		uniquecolours;
+	int		uniquecolors;
 
-	// there's never gonna be more than 100 unique colours in any map
+	// there's never gonna be more than 100 unique colors in any map
 	// 3 to 4 is the normal.
 	for (i = 0; i < 100; i++)
 	{
-		facecolours[i] = 0;
+		facecolors[i] = 0;
 		r2[i] = 0;
 		g2[i] = 0;
 		b2[i] = 0;
 	}
 
-	// check textures to see if mhcolour will light well
+	// check textures to see if mhcolor will light well
 	numlighttex = 0;
 	bad = 0;
 	count = 0;
@@ -116,7 +116,7 @@ void CheckTex (void)
 	{
 		f = dfaces + i;
 
-		FindTexlightColour (&r, &g, &b, miptex[texinfo[f->texinfo].miptex].name);
+		FindTexlightColor (&r, &g, &b, miptex[texinfo[f->texinfo].miptex].name);
 
 		if (r == g && g == b)
 			continue;
@@ -125,7 +125,7 @@ void CheckTex (void)
 		// don't make this a warning condition
 		if (miptex[texinfo[f->texinfo].miptex].name[0] != '*')
 		{
-			// see if this colour is already used...
+			// see if this color is already used...
 			for (j = 0; j < count; j++)
 				if (r2[j] == r && g2[j] == g && b2[j] == b)
 					break;
@@ -133,13 +133,13 @@ void CheckTex (void)
 			r2[j] = r;
 			g2[j] = g;
 			b2[j] = b;
-			facecolours[j]++;
+			facecolors[j]++;
 			if (j >= count)
 				count++;	// not already used
 		}
 		else
 		{
-			// slime and lava do count as unique colours, so if we find them, we'll
+			// slime and lava do count as unique colors, so if we find them, we'll
 			// make a note of the fact for later.
 			if (miptex[texinfo[f->texinfo].miptex].name[1] == 'l' && !foundlava)
 				foundlava = 1;
@@ -150,36 +150,36 @@ void CheckTex (void)
 		numlighttex++;
 	}
 
-	printf ("- %i light sources out of %i have already been coloured (torches/flames/etc)\n", 
+	printf ("- %i light sources out of %i have already been colored (torches/flames/etc)\n", 
 									num_clights, num_lights);
 
-	uniquecolours = count + foundlava + foundslime;
-	if (uniquecolours)
+	uniquecolors = count + foundlava + foundslime;
+	if (uniquecolors)
 	{
-		// we want 3 or more modifying colours, otherwise one may dominate, or we may
+		// we want 3 or more modifying colors, otherwise one may dominate, or we may
 		// end up with a two-tone map - which is horrible
-		if (uniquecolours < 3)
+		if (uniquecolors < 3)
 			bad = 1;
 
-		printf ("- %i unique colour(s) used by texture lighting\n", uniquecolours);
+		printf ("- %i unique color(s) used by texture lighting\n", uniquecolors);
 	}
 	else
 	{
 		bad = 1;
 	}
 
-	printf ("- %i faces out of %i will modify light colour\n", numlighttex, numfaces);
+	printf ("- %i faces out of %i will modify light color\n", numlighttex, numfaces);
 
 	for (i = 0; i < count; i++)
 	{
-		FindColourName (colour_name, r2[i], g2[i], b2[i]);
+		FindColorName (color_name, r2[i], g2[i], b2[i]);
 
-		if (facecolours[i] > ((numlighttex * 2) / 3))
+		if (facecolors[i] > ((numlighttex * 2) / 3))
 		{
 			printf ("- %s light may tend to dominate this BSP (%i faces out of %i)\n", 
-							colour_name, facecolours[i], numlighttex);
+							color_name, facecolors[i], numlighttex);
 
-			if (!strcmp (colour_name, "Orange"))
+			if (!strcmp (color_name, "Orange"))
 				printf ("  This is normally not a problem - Orange is quite benign.");
 			else
 				bad = 1;

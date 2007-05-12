@@ -19,7 +19,7 @@
 
 /*
 	tyrlite.c
-	$Id: tyrlite.c,v 1.15 2007-05-12 09:56:35 sezero Exp $
+	$Id: tyrlite.c,v 1.16 2007-05-12 09:58:57 sezero Exp $
 
 	Modifications by Kevin Shanahan, 1999-2000
 */
@@ -101,7 +101,7 @@ static void LightThread (void *junk)
 
 		if (i >= numfaces)
 		{
-			printf("\n\nJSH2colour Completed.\n\n");
+			printf("\n\nJSH2colour completed.\n\n");
 			return;
 		}
 
@@ -196,7 +196,7 @@ static void LightWorld (void)
 	int	i;
 	int	j;
 	int	max;
-	int	num_colours;
+	int	num_colors;
 
 	CheckTex ();
 	printf ("\n");
@@ -208,9 +208,9 @@ static void LightWorld (void)
 	{
 		if (!strcmp (entities[i].classname, "light"))
 		{
-			entities[i].lightcolour[0] = 0;
-			entities[i].lightcolour[1] = 0;
-			entities[i].lightcolour[2] = 0;
+			entities[i].lightcolor[0] = 0;
+			entities[i].lightcolor[1] = 0;
+			entities[i].lightcolor[2] = 0;
 		}
 	}
 
@@ -218,11 +218,11 @@ static void LightWorld (void)
 	if (numlighttex)
 		LightThread2 (NULL);
 	else
-		printf ("Skipping Texture lighting - no faces modify light colour in this BSP!\n");
+		printf ("Skipping texture lighting - no faces modify light color in this BSP!\n");
 
-	// normalise the lightcolours to a base max of 255 and set any one with r/g/b of
+	// normalise the lightcolors to a base max of 255 and set any one with r/g/b of
 	// 0 each to an r/g/b value of 255 each
-	num_colours = 0;
+	num_colors = 0;
 
 	printf ("\nChecking all light sources for potential effectiveness...\n");
 	for (i = 0; i < num_entities; i++)
@@ -234,66 +234,66 @@ static void LightWorld (void)
 		{
 			// hopefully this should never happen,
 			// but just in case...
-			if (entities[i].lightcolour[0] == 0 &&
-				entities[i].lightcolour[1] == 0 && 
-				entities[i].lightcolour[2] == 0)
+			if (entities[i].lightcolor[0] == 0 &&
+				entities[i].lightcolor[1] == 0 && 
+				entities[i].lightcolor[2] == 0)
 			{
 				// a faint orange tinge keeps white
 				// lights from looking dull.
-				entities[i].lightcolour[0] = 255;
-				entities[i].lightcolour[1] = 225;
-				entities[i].lightcolour[2] = 200;
+				entities[i].lightcolor[0] = 255;
+				entities[i].lightcolor[1] = 225;
+				entities[i].lightcolor[2] = 200;
 
 				// the light is white, so we don't need to
 				// do anything more
 				continue;
 			}
 
-			if (entities[i].lightcolour[0] == entities[i].lightcolour[1] &&
-				entities[i].lightcolour[1] == entities[i].lightcolour[2])
+			if (entities[i].lightcolor[0] == entities[i].lightcolor[1] &&
+				entities[i].lightcolor[1] == entities[i].lightcolor[2])
 			{
 				// a faint orange tinge keeps white
 				// lights from looking dull.
-				entities[i].lightcolour[0] = 255;
-				entities[i].lightcolour[1] = 225;
-				entities[i].lightcolour[2] = 200;
+				entities[i].lightcolor[0] = 255;
+				entities[i].lightcolor[1] = 225;
+				entities[i].lightcolor[2] = 200;
 
 				// the light is white, so we don't need
 				// to do anything more
 				continue;
 			}
 
-			num_colours++;
+			num_colors++;
 			max = 0;
 
 			for (j = 0; j < 3; j++)
-				if (entities[i].lightcolour[j] > max)
-					max = entities[i].lightcolour[j];
+				if (entities[i].lightcolor[j] > max)
+					max = entities[i].lightcolor[j];
 
 			// this condition will happen for any flame,
 			// torch or globe light.
 			if (max == 255)
 				continue;
 
-			// use 275 here instead of 255 because coloured lights
+			// use 275 here instead of 255 because colored lights
 			// can seem darker than white ones
 			for (j = 0; j < 3; j++)
-				entities[i].lightcolour[j] = (275 * entities[i].lightcolour[j]) / max;
+				entities[i].lightcolor[j] = (275 * entities[i].lightcolor[j]) / max;
 		}
 	}
 
-	printf ("- %i extra Light sources were coloured by Texture lighting\n", 
-						num_colours - num_clights);
-	printf ("- A total of %i Light sources out of %i have now been coloured\n", 
-						num_colours, num_lights);
+	printf ("- %i extra light sources were colored by texture lighting\n", 
+						num_colors - num_clights);
+	printf ("- A total of %i light sources out of %i have now been colored\n", 
+						num_colors, num_lights);
 
-	if (num_colours < (num_lights / 4))
+	if (num_colors < (num_lights / 4))
 		DecisionTime ("I suggest you don't continue, especially if you got the first warning too");
 
 	printf ("\n");
 
-	if (!num_colours)
-		Error ("This BSP contains no light colour modifying data!");
+	if (!num_colors)
+		Error ("This BSP contains no light color modifying data!");
 
 	LightThread (NULL);
 
@@ -313,7 +313,7 @@ void DecisionTime (const char *msg)
 {
 	char	c;
 
-	// if we're forcing colouring irrespective of potential
+	// if we're forcing coloring irrespective of potential
 	// effectiveness (eg in a batch file), just get out
 	if (force)
 		return;
@@ -405,7 +405,7 @@ int main (int argc, char **argv)
 		else if (!strcmp(argv[i],"-force"))
 		{
 			force = true;
-			printf ("Forcing colouring regardless of potential effectiveness\n");
+			printf ("Forcing coloring regardless of potential effectiveness\n");
 		}
 		else if (!strcmp (argv[i], "-lit"))
 		{
