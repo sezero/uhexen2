@@ -2,7 +2,7 @@
 	printsys.h
 	console printing
 
-	$Id: printsys.h,v 1.3 2007-04-19 13:59:46 sezero Exp $
+	$Id: printsys.h,v 1.4 2007-05-13 12:04:47 sezero Exp $
 */
 
 #ifndef __PRINTSYS_H
@@ -26,18 +26,31 @@ void CON_Printf (unsigned int flags, const char *fmt, ...) __attribute__((format
 #define	_PRINT_SAFE			4	/* okay to call even when the screen can't be updated */
 
 /* macros for compatibility with quake api */
+#if defined(__GNUC__)
 #define Con_Printf(fmt, args...)	CON_Printf(_PRINT_NORMAL, fmt, ##args)
 #define Con_DPrintf(fmt, args...)	CON_Printf(_PRINT_DEVEL, fmt, ##args)
 #define Con_SafePrintf(fmt, args...)	CON_Printf(_PRINT_SAFE, fmt, ##args)
+#else
+#define Con_Printf(...)			CON_Printf(_PRINT_NORMAL, __VA_ARGS__)
+#define Con_DPrintf(...)		CON_Printf(_PRINT_DEVEL, __VA_ARGS__)
+#define Con_SafePrintf(...)		CON_Printf(_PRINT_SAFE, __VA_ARGS__)
+#endif
 
 /* these macros print to the terminal only */
+#if defined(__GNUC__)
 #define Sys_Printf(fmt, args...)	CON_Printf(_PRINT_TERMONLY, fmt, ##args)
 #define Sys_DPrintf(fmt, args...)	CON_Printf(_PRINT_TERMONLY|_PRINT_DEVEL, fmt, ##args)
-
-#ifdef DEBUG_BUILD
-#define DEBUG_Printf Sys_DPrintf
 #else
-#define DEBUG_Printf(fmt, args...)
+#define Sys_Printf(...)			CON_Printf(_PRINT_TERMONLY, __VA_ARGS__)
+#define Sys_DPrintf(...)		CON_Printf(_PRINT_TERMONLY|_PRINT_DEVEL, __VA_ARGS__)
+#endif
+
+#if defined(DEBUG_BUILD)
+#define DEBUG_Printf			Sys_DPrintf
+#elif defined (__GNUC__)
+#define DEBUG_Printf(fmt, args...)	do {} while (0)
+#else
+#define DEBUG_Printf(fmt, ...)		do {} while (0)
 #endif
 
 #endif	/* __PRINTSYS_H */

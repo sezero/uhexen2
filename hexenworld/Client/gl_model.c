@@ -5,7 +5,7 @@
 	models are the only shared resource between a client and server
 	running on the same machine.
 
-	$Id: gl_model.c,v 1.36 2007-05-13 11:59:00 sezero Exp $
+	$Id: gl_model.c,v 1.37 2007-05-13 12:04:47 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -2700,11 +2700,17 @@ static void Mod_LoadSpriteModel (model_t *mod, void *buffer)
 Mod_Print
 ================
 */
-#define MOD_Printf(FH, fmt, args...) {\
-	Con_Printf(fmt, ##args);\
-	if ((FH))\
-		fprintf((FH), fmt, ##args);\
+#if defined(__GNUC__)
+#define MOD_Printf(FH, fmt, args...) {		\
+	Con_Printf(fmt, ##args);		\
+	if ((FH)) fprintf((FH), fmt, ##args);	\
 }
+#else
+#define MOD_Printf(FH, ...) {			\
+	Con_Printf(__VA_ARGS__);		\
+	if ((FH)) fprintf((FH), __VA_ARGS__);	\
+}
+#endif
 static void Mod_Print (void)
 {
 	int		i, counter;
