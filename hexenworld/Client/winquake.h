@@ -2,7 +2,7 @@
 	winquake.h
 	Win32-specific Quake header file
 
-	$Id: winquake.h,v 1.23 2007-05-13 12:05:45 sezero Exp $
+	$Id: winquake.h,v 1.24 2007-05-13 16:14:11 sezero Exp $
 */
 
 #if !defined(_WIN32)
@@ -61,8 +61,6 @@ extern RECT		window_rect;
 #if !defined(NO_SPLASHES)
 extern HWND		hwnd_dialog;
 #endif
-
-extern HANDLE	hinput, houtput;
 
 void IN_UpdateClipCursor (void);
 

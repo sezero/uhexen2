@@ -2,7 +2,7 @@
 	sys_main.c
 	main loop and system interface
 
-	$Id: sys_main.c,v 1.31 2007-04-08 08:50:42 sezero Exp $
+	$Id: sys_main.c,v 1.32 2007-05-13 16:14:11 sezero Exp $
 */
 
 // whether to use the password file to determine
@@ -31,6 +31,8 @@
 #include <time.h>
 #include <io.h>
 #include <conio.h>
+#include <winsock.h>
+#include <mmsystem.h>
 #endif
 
 #ifndef max

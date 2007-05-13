@@ -2,7 +2,7 @@
 	sbar.c
 	Hexen II status bar
 
-	$Id: sbar.c,v 1.32 2007-05-13 11:59:02 sezero Exp $
+	$Id: sbar.c,v 1.33 2007-05-13 16:14:11 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -47,7 +47,9 @@ static void Sbar_DrawTransPic(int x, int y, qpic_t *pic);
 static int Sbar_itoa(int num, char *buf);
 static void Sbar_DrawNum(int x, int y, int number, int digits);
 static void Sbar_SortFrags (qboolean includespec);
-//static void Sbar_DrawString(int x, int y, const char *str);
+#if 0	/* all uses are commented out */
+static void Sbar_DrawString(int x, int y, const char *str);
+#endif
 static void Sbar_DrawRedString (int cx, int cy, const char *str);
 static void Sbar_DrawSmallString(int x, int y, const char *str);
 static void DrawBarArtifactNumber(int x, int y, int number);
@@ -2073,14 +2075,14 @@ static void Sbar_DrawTransPic(int x, int y, qpic_t *pic)
 // Sbar_DrawString
 //
 //==========================================================================
-#if 0	// seems to have no users...
+#if 0	/* all uses are commented out */
 static void Sbar_DrawString(int x, int y, const char *str)
 {
 	Draw_String (x+((vid.width-320)>>1), y+vid.height-(int)BarHeight, str);
 }
 #endif
 
-void Sbar_DrawRedString (int cx, int cy, const char *str)
+static void Sbar_DrawRedString (int cx, int cy, const char *str)
 {
 	while (*str)
 	{
