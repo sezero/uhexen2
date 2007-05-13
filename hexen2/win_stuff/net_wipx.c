@@ -2,7 +2,7 @@
 	net_wipx.c
 	winsock ipx driver
 
-	$Id: net_wipx.c,v 1.17 2007-05-09 18:10:15 sezero Exp $
+	$Id: net_wipx.c,v 1.18 2007-05-13 11:58:32 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -104,7 +104,7 @@ int WIPX_Init (void)
 
 	if ((net_controlsocket = WIPX_OpenSocket (0)) == -1)
 	{
-		Con_Printf("%s: Unable to open control socket\n", __FUNCTION__);
+		Con_Printf("%s: Unable to open control socket\n", __thisfunc__);
 		if (--winsock_initialized == 0)
 			WSACleanup ();
 		return -1;
@@ -147,7 +147,7 @@ void WIPX_Listen (qboolean state)
 		if (net_acceptsocket != -1)
 			return;
 		if ((net_acceptsocket = WIPX_OpenSocket (net_hostport)) == -1)
-			Sys_Error ("%s: Unable to open accept socket", __FUNCTION__);
+			Sys_Error ("%s: Unable to open accept socket", __thisfunc__);
 		return;
 	}
 

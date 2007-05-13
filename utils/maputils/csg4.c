@@ -1,6 +1,6 @@
 /*
 	csg4.c
-	$Id: csg4.c,v 1.5 2007-03-14 21:04:38 sezero Exp $
+	$Id: csg4.c,v 1.6 2007-05-13 12:00:12 sezero Exp $
 */
 
 #include "util_inc.h"
@@ -78,7 +78,7 @@ void SplitFace (face_t *in, plane_t *split, face_t **front, face_t **back)
 	vec3_t	mid;
 
 	if (in->numpoints < 0)
-		Error ("%s: freed face", __FUNCTION__);
+		Error ("%s: freed face", __thisfunc__);
 	counts[0] = counts[1] = counts[2] = 0;
 
 // determine sides for each point
@@ -119,7 +119,7 @@ void SplitFace (face_t *in, plane_t *split, face_t **front, face_t **back)
 	for (i = 0 ; i < in->numpoints ; i++)
 	{
 		if (newf->numpoints > MAXEDGES || new2->numpoints > MAXEDGES)
-			Error ("%s: numpoints > MAXEDGES", __FUNCTION__);
+			Error ("%s: numpoints > MAXEDGES", __thisfunc__);
 
 		p1 = in->pts[i];
 
@@ -167,7 +167,7 @@ void SplitFace (face_t *in, plane_t *split, face_t **front, face_t **back)
 	}
 
 	if (newf->numpoints > MAXEDGES || new2->numpoints > MAXEDGES)
-		Error ("%s: numpoints > MAXEDGES", __FUNCTION__);
+		Error ("%s: numpoints > MAXEDGES", __thisfunc__);
 
 #if 0
 	CheckFace (newf);

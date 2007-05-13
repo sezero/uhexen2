@@ -1,7 +1,7 @@
 /*
 	r_sprite.c
 
-	$Id: r_sprite.c,v 1.5 2007-03-14 21:03:37 sezero Exp $
+	$Id: r_sprite.c,v 1.6 2007-05-13 11:59:01 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -173,7 +173,7 @@ static void R_SetupAndDrawSprite (void)
 		if (nump < 3)
 			return;
 		if (nump >= MAXWORKINGVERTS)
-			Sys_Error("%s: too many points", __FUNCTION__);
+			Sys_Error("%s: too many points", __thisfunc__);
 	}
 
 // transform vertices into viewspace and project
@@ -228,7 +228,7 @@ static mspriteframe_t *R_GetSpriteframe (msprite_t *psprite)
 
 	if ((frame >= psprite->numframes) || (frame < 0))
 	{
-		Con_Printf ("%s: no such frame %d %s\n", __FUNCTION__, frame, currententity->model->name);
+		Con_Printf ("%s: no such frame %d %s\n", __thisfunc__, frame, currententity->model->name);
 		frame = 0;
 	}
 
@@ -375,7 +375,7 @@ void R_DrawSprite (void)
 	}
 	else
 	{
-		Sys_Error ("%s: Bad sprite type %d", __FUNCTION__, psprite->type);
+		Sys_Error ("%s: Bad sprite type %d", __thisfunc__, psprite->type);
 	}
 
 	R_RotateSprite (psprite->beamlength);

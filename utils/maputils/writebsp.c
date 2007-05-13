@@ -1,6 +1,6 @@
 /*
 	writebsp.c
-	$Id: writebsp.c,v 1.6 2007-03-14 21:04:43 sezero Exp $
+	$Id: writebsp.c,v 1.7 2007-05-13 12:00:25 sezero Exp $
 */
 
 #include "util_inc.h"
@@ -259,7 +259,7 @@ void WriteDrawNodes (node_t *headnode)
 
 #if 0
 	if (headnode->contents < 0)
-		Error ("%s: empty model", __FUNCTION__);
+		Error ("%s: empty model", __thisfunc__);
 #endif
 
 // emit a model
@@ -363,7 +363,7 @@ static void TEX_InitFromWad (char *path)
 	texfile = SafeOpenRead (path);
 	SafeRead (texfile, &wadinfo, sizeof(wadinfo));
 	if (strncmp (wadinfo.identification, "WAD2", 4))
-		Error ("%s: %s isn't a wadfile", __FUNCTION__, path);
+		Error ("%s: %s isn't a wadfile", __thisfunc__, path);
 	wadinfo.numlumps = LittleLong(wadinfo.numlumps);
 	wadinfo.infotableofs = LittleLong(wadinfo.infotableofs);
 	fseek (texfile, wadinfo.infotableofs, SEEK_SET);

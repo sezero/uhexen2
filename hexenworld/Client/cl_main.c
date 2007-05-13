@@ -2,7 +2,7 @@
 	cl_main.c
 	client main loop
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/cl_main.c,v 1.79 2007-05-09 18:10:16 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/cl_main.c,v 1.80 2007-05-13 11:59:00 sezero Exp $
 */
 
 #include <sys/types.h>
@@ -937,7 +937,7 @@ static void CL_Download_f (void)
 
 	if (snprintf (tmp, sizeof(tmp), "%s/%s", fs_userdir, Cmd_Argv(1)) >= MAX_OSPATH)
 	{
-		Con_Printf ("%s: string buffer overflow!\n", __FUNCTION__);
+		Con_Printf ("%s: string buffer overflow!\n", __thisfunc__);
 		return;
 	}
 
@@ -1152,7 +1152,7 @@ void Host_EndGame (const char *message, ...)
 	vsnprintf (string,sizeof(string),message,argptr);
 	va_end (argptr);
 	Con_Printf ("\n===========================\n");
-	Con_Printf ("%s: %s\n", __FUNCTION__, string);
+	Con_Printf ("%s: %s\n", __thisfunc__, string);
 	Con_Printf ("===========================\n\n");
 
 	CL_Disconnect ();
@@ -1174,13 +1174,13 @@ void Host_Error (const char *error, ...)
 	static	qboolean inerror = false;
 
 	if (inerror)
-		Sys_Error ("%s: recursive error!", __FUNCTION__);
+		Sys_Error ("%s: recursive error!", __thisfunc__);
 	inerror = true;
 
 	va_start (argptr,error);
 	vsnprintf (string,sizeof(string),error,argptr);
 	va_end (argptr);
-	Con_Printf ("%s: %s\n", __FUNCTION__, string);
+	Con_Printf ("%s: %s\n", __thisfunc__, string);
 
 	CL_Disconnect ();
 	cls.demonum = -1;
@@ -1188,7 +1188,7 @@ void Host_Error (const char *error, ...)
 	inerror = false;
 
 // FIXME
-	Sys_Error ("%s: %s\n", __FUNCTION__, string);
+	Sys_Error ("%s: %s\n", __thisfunc__, string);
 }
 
 

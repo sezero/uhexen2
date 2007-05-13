@@ -1,7 +1,7 @@
 /*
 	r_main.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/r_main.c,v 1.18 2007-05-09 20:17:17 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/r_main.c,v 1.19 2007-05-13 11:59:01 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -1302,7 +1302,7 @@ static void R_RenderView_ (void)
 	Sys_LowFPPrecision ();
 
 	if (!r_worldentity.model || !cl.worldmodel)
-		Sys_Error ("%s: NULL worldmodel", __FUNCTION__);
+		Sys_Error ("%s: NULL worldmodel", __thisfunc__);
 
 	if (!r_dspeeds.integer)
 	{
@@ -1389,7 +1389,7 @@ void R_RenderView (void)
 
 	delta = (byte *)&dummy - r_stack_start;
 	if (delta < -10000 || delta > 10000)
-		Sys_Error ("%s: called without enough stack", __FUNCTION__);
+		Sys_Error ("%s: called without enough stack", __thisfunc__);
 */
 	if ( Hunk_LowMark() & 3 )
 		Sys_Error ("Hunk is missaligned");

@@ -1,6 +1,6 @@
 /*
 	bspfile.c
-	$Id: bspfile.c,v 1.1 2007-05-05 11:18:47 sezero Exp $
+	$Id: bspfile.c,v 1.2 2007-05-13 11:59:44 sezero Exp $
 */
 
 #include "util_inc.h"
@@ -228,7 +228,7 @@ static int CopyLump (int lump, void *dest, int size)
 	ofs = header->lumps[lump].fileofs;
 
 	if (length % size)
-		Error ("%s: odd lump size", __FUNCTION__);
+		Error ("%s: odd lump size", __thisfunc__);
 
 	memcpy (dest, (byte *)header + ofs, length);
 

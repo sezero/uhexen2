@@ -2,7 +2,7 @@
 	sbar.c
 	Hexen II status bar
 
-	$Id: sbar.c,v 1.31 2007-05-09 18:10:18 sezero Exp $
+	$Id: sbar.c,v 1.32 2007-05-13 11:59:02 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -985,7 +985,7 @@ static void FindColor (int slot, int *color1, int *color2)
 	byte	*sourceA, *sourceB, *colorA, *colorB;
 
 	if (slot > MAX_CLIENTS)
-		Sys_Error ("%s: slot > cl.maxclients", __FUNCTION__);
+		Sys_Error ("%s: slot > cl.maxclients", __thisfunc__);
 
 	if (cl.players[slot].playerclass <= 0 || cl.players[slot].playerclass > MAX_PLAYER_CLASS)
 	{

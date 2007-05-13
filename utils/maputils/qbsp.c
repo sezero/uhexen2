@@ -1,6 +1,6 @@
 /*
 	bsp5.c
-	$Id: qbsp.c,v 1.9 2007-04-17 15:48:08 sezero Exp $
+	$Id: qbsp.c,v 1.10 2007-05-13 12:00:16 sezero Exp $
 */
 
 #include "util_inc.h"
@@ -86,7 +86,7 @@ winding_t *BaseWindingForPlane (plane_t *p)
 		}
 	}
 	if (x == -1)
-		Error ("%s: no axis found", __FUNCTION__);
+		Error ("%s: no axis found", __thisfunc__);
 
 	VectorClear (vup);
 	switch (x)
@@ -260,7 +260,7 @@ winding_t *ClipWinding (winding_t *in, plane_t *split, qboolean keepon)
 	}
 
 	if (neww->numpoints > maxpts)
-		Error ("%s: points exceeded estimate", __FUNCTION__);
+		Error ("%s: points exceeded estimate", __thisfunc__);
 
 // free the original winding
 	FreeWinding (in);
@@ -379,7 +379,7 @@ void DivideWinding (winding_t *in, plane_t *split, winding_t **front, winding_t 
 	}
 
 	if (f->numpoints > maxpts || b->numpoints > maxpts)
-		Error ("%s: points exceeded estimate", __FUNCTION__);
+		Error ("%s: points exceeded estimate", __thisfunc__);
 }
 
 
@@ -412,7 +412,7 @@ winding_t *NewWinding (int points)
 	size_t			size;
 
 	if (points > MAX_POINTS_ON_WINDING)
-		Error ("%s: %i points", __FUNCTION__, points);
+		Error ("%s: %i points", __thisfunc__, points);
 
 //	c_activewindings++;
 //	if (c_activewindings > c_peakwindings)
@@ -756,7 +756,7 @@ static void ReadClipHull (int hullnumber)
 		Error ("Error parsing %s", hullfilename);
 
 	if (n != nummodels)
-		Error ("%s: hull had %i models, base had %i", __FUNCTION__, n, nummodels);
+		Error ("%s: hull had %i models, base had %i", __thisfunc__, n, nummodels);
 
 	for (i = 0 ; i < n ; i++)
 	{
@@ -770,7 +770,7 @@ static void ReadClipHull (int hullnumber)
 	for (i = 0 ; i < n ; i++)
 	{
 		if (numclipnodes == MAX_MAP_CLIPNODES)
-			Error ("%s: MAX_MAP_CLIPNODES", __FUNCTION__);
+			Error ("%s: MAX_MAP_CLIPNODES", __thisfunc__);
 		d = &dclipnodes[numclipnodes];
 		numclipnodes++;
 		if (fscanf (f,"%i : %f %f %f %f : %i %i\n", &junk, &f1, &f2, &f3, &f4, &c1, &c2) != 7)

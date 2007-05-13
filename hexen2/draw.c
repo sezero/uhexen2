@@ -2,7 +2,7 @@
 	draw.c
 	This is the only file outside the refresh that touches the vid buffer.
 
-	$Id: draw.c,v 1.33 2007-05-09 18:10:13 sezero Exp $
+	$Id: draw.c,v 1.34 2007-05-13 11:58:28 sezero Exp $
 */
 
 
@@ -85,7 +85,7 @@ qpic_t	*Draw_CachePic (const char *path)
 	dat = (qpic_t *)pic->cache.data;
 	if (!dat)
 	{
-		Sys_Error ("%s: failed to load %s", __FUNCTION__, path);
+		Sys_Error ("%s: failed to load %s", __thisfunc__, path);
 	}
 
 	SwapPic (dat);
@@ -136,7 +136,7 @@ qpic_t  *Draw_CachePicResize (const char *path, int targetWidth, int targetHeigh
 	intermissionScreen = &pic->cache;
 	dat = (qpic_t *)pic->cache.data;
 	if (!dat)
-		Sys_Error("%s: failed to load %s (cache flushed prematurely)", __FUNCTION__, path);
+		Sys_Error("%s: failed to load %s (cache flushed prematurely)", __thisfunc__, path);
 	dat->width = targetWidth;
 	dat->height = targetHeight;
 	sourceWidth = temp->width;
@@ -649,7 +649,7 @@ void Draw_Pic (int x, int y, qpic_t *pic)
 		(y < 0) ||
 		(y + pic->height > vid.height))
 	{
-		Sys_Error ("%s: bad coordinates", __FUNCTION__);
+		Sys_Error ("%s: bad coordinates", __thisfunc__);
 	}
 
 	source = pic->data;
@@ -700,7 +700,7 @@ void Draw_PicCropped (int x, int y, qpic_t *pic)
 
 	if ((x < 0) || (x+pic->width > vid.width))
 	{
-		Sys_Error("%s: bad coordinates", __FUNCTION__);
+		Sys_Error("%s: bad coordinates", __thisfunc__);
 	}
 
 	if (y >= (int)vid.height || y+pic->height < 0)
@@ -793,7 +793,7 @@ void Draw_TransPic (int x, int y, qpic_t *pic)
 	if (x < 0 || (unsigned)(x + pic->width) > vid.width || y < 0 ||
 		 (unsigned)(y + pic->height) > vid.height)
 	{
-		Sys_Error("%s: bad coordinates", __FUNCTION__);
+		Sys_Error("%s: bad coordinates", __thisfunc__);
 	}
 
 	source = pic->data;
@@ -884,7 +884,7 @@ void Draw_SubPicCropped (int x, int y, int h, qpic_t *pic)
 
 	if ((x < 0) || (x+pic->width > vid.width))
 	{
-		Sys_Error("%s: bad coordinates", __FUNCTION__);
+		Sys_Error("%s: bad coordinates", __thisfunc__);
 	}
 
 	if (y >= (int)vid.height || y+h < 0)
@@ -984,7 +984,7 @@ void Draw_TransPicCropped (int x, int y, qpic_t *pic)
 
 	if ((x < 0) || (x+pic->width > vid.width))
 	{
-		Sys_Error("%s: bad coordinates", __FUNCTION__);
+		Sys_Error("%s: bad coordinates", __thisfunc__);
 	}
 
 	if (y >= (int)vid.height || y+pic->height < 0)
@@ -1168,7 +1168,7 @@ void Draw_SubPic (int x, int y, qpic_t *pic, int srcx, int srcy, int width, int 
 		(y < 0) ||
 		(y + height > vid.height))
 	{
-		Sys_Error ("%s: bad coordinates", __FUNCTION__);
+		Sys_Error ("%s: bad coordinates", __thisfunc__);
 	}
 
 	source = pic->data + srcy * pic->width + srcx;
@@ -1216,7 +1216,7 @@ void Draw_TransPicTranslate (int x, int y, qpic_t *pic, byte *translation)
 	if (x < 0 || (unsigned)(x + pic->width) > vid.width || y < 0 ||
 		 (unsigned)(y + pic->height) > vid.height)
 	{
-		Sys_Error ("%s: bad coordinates", __FUNCTION__);
+		Sys_Error ("%s: bad coordinates", __thisfunc__);
 	}
 
 	source = pic->data;

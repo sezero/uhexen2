@@ -2,7 +2,7 @@
 	pmovetst.c
 	player movement testing
 
-	$Id: pmovetst.c,v 1.9 2007-03-14 21:03:35 sezero Exp $
+	$Id: pmovetst.c,v 1.10 2007-05-13 11:59:01 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -90,7 +90,7 @@ int PM_HullPointContents (hull_t *hull, int num, vec3_t p)
 	while (num >= 0)
 	{
 		if (num < hull->firstclipnode || num > hull->lastclipnode)
-			Sys_Error ("%s: bad node number", __FUNCTION__);
+			Sys_Error ("%s: bad node number", __thisfunc__);
 
 		node = hull->clipnodes + num;
 		plane = hull->planes + node->planenum;
@@ -129,7 +129,7 @@ int PM_PointContents (vec3_t p)
 	while (num >= 0)
 	{
 		if (num < hull->firstclipnode || num > hull->lastclipnode)
-			Sys_Error ("%s: bad node number", __FUNCTION__);
+			Sys_Error ("%s: bad node number", __thisfunc__);
 
 		node = hull->clipnodes + num;
 		plane = hull->planes + node->planenum;
@@ -192,7 +192,7 @@ static qboolean PM_RecursiveHullCheck (hull_t *hull, int num, float p1f, float p
 	}
 
 	if (num < hull->firstclipnode || num > hull->lastclipnode)
-		Sys_Error ("%s: bad node number", __FUNCTION__);
+		Sys_Error ("%s: bad node number", __thisfunc__);
 
 //
 // find the point distances

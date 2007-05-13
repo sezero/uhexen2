@@ -2,7 +2,7 @@
 	snd_mem.c
 	sound caching
 
-	$Id: snd_mem.c,v 1.16 2007-05-09 18:10:18 sezero Exp $
+	$Id: snd_mem.c,v 1.17 2007-05-13 11:59:02 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -90,7 +90,7 @@ sfxcache_t *S_LoadSound (sfx_t *s)
 	if (sc)
 		return sc;
 
-//	Con_Printf ("%s: %x\n", __FUNCTION__, (int)stackbuf);
+//	Con_Printf ("%s: %x\n", __thisfunc__, (int)stackbuf);
 
 // load it in
 	Q_strlcpy(namebuffer, "sound/", sizeof(namebuffer));
@@ -189,7 +189,7 @@ static void FindNextChunk(const char *name)
 			return;
 		}
 //		if (iff_chunk_len > 1024*1024)
-//			Sys_Error ("%s: %i length is past the 1 meg sanity limit", __FUNCTION__, iff_chunk_len);
+//			Sys_Error ("%s: %i length is past the 1 meg sanity limit", __thisfunc__, iff_chunk_len);
 		data_p -= 8;
 		last_chunk = data_p + 8 + ( (iff_chunk_len + 1) & ~1 );
 		if (!strncmp((char *)data_p, name, 4))

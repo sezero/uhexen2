@@ -1,6 +1,6 @@
 /*
 	solidbsp.c
-	$Id: solidbsp.c,v 1.6 2007-03-14 21:04:41 sezero Exp $
+	$Id: solidbsp.c,v 1.7 2007-05-13 12:00:17 sezero Exp $
 */
 
 #include "util_inc.h"
@@ -149,7 +149,7 @@ static surface_t *ChooseMidPlaneFromList (surface_t *surfaces, vec3_t mins, vec3
 			if (!p->onnode)
 				return p;		// first valid surface
 		}
-		Error ("%s: no valid planes", __FUNCTION__);
+		Error ("%s: no valid planes", __thisfunc__);
 	}
 
 	return bestsurface;
@@ -333,7 +333,7 @@ void CalcSurfaceInfo (surface_t *surf)
 	face_t	*f;
 
 	if (!surf->faces)
-		Error ("%s: surface without a face", __FUNCTION__);
+		Error ("%s: surface without a face", __thisfunc__);
 
 //
 // calculate a bounding box
@@ -563,7 +563,7 @@ static void LinkConvexFaces (surface_t *planelist, node_t *leafnode)
 		break;
 
 	default:
-		Error ("%s: bad contents number", __FUNCTION__);
+		Error ("%s: bad contents number", __thisfunc__);
 	}
 
 //

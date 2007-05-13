@@ -2,7 +2,7 @@
 	entmap.c
 	a program for remapping entity key/value pairs
 
-	$Id: entmap.c,v 1.5 2007-03-14 21:04:39 sezero Exp $
+	$Id: entmap.c,v 1.6 2007-05-13 12:00:12 sezero Exp $
 */
 
 #include "util_inc.h"
@@ -200,7 +200,7 @@ static qboolean CopyBrush (void)
 		{
 			GetToken (false);
 			if (token[0] != '(')
-				return false; //Error ("%s: couldn't parse", __FUNCTION__);
+				return false; //Error ("%s: couldn't parse", __thisfunc__);
 			for (j = 0 ; j < 3 ; j++)
 			{
 				GetToken (false);
@@ -208,7 +208,7 @@ static qboolean CopyBrush (void)
 			}
 			GetToken (false);
 			if (token[0] != ')')
-				return false; //Error ("%s: couldn't parse", __FUNCTION__);
+				return false; //Error ("%s: couldn't parse", __thisfunc__);
 		}
 
 		GetToken (false);
@@ -278,7 +278,7 @@ static int ParseEntity (void)
 		return false;
 
 	if (strcmp (token, "{") )
-		Error ("%s: { not found", __FUNCTION__);
+		Error ("%s: { not found", __thisfunc__);
 
 	fprintf (f,"{\n");
 
@@ -287,7 +287,7 @@ static int ParseEntity (void)
 	do
 	{
 		if (!GetToken (true))
-			Error ("%s: EOF without closing brace", __FUNCTION__);
+			Error ("%s: EOF without closing brace", __thisfunc__);
 		if (!strcmp (token, "}") )
 			break;
 		if (!strcmp (token, "{") )

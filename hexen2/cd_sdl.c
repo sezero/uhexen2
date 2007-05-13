@@ -1,6 +1,6 @@
 /*
 	cd_sdl.c
-	$Id: cd_sdl.c,v 1.14 2007-05-01 05:44:26 sezero Exp $
+	$Id: cd_sdl.c,v 1.15 2007-05-13 11:58:28 sezero Exp $
 
 	Copyright (C) 1996-1997  Id Software, Inc.
 	Taken from the Twilight project with modifications
@@ -89,13 +89,13 @@ void CDAudio_Play(byte track, qboolean looping)
 
 	if (track < 1 || track > cd_handle->numtracks)
 	{
-		Con_Printf ("%s: Bad track number %d.\n", __FUNCTION__, track);
+		Con_Printf ("%s: Bad track number %d.\n", __thisfunc__, track);
 		return;
 	}
 
 	if (cd_handle->track[track-1].type == SDL_DATA_TRACK)
 	{
-		Con_Printf ("%s: track %d is not audio\n", __FUNCTION__, track);
+		Con_Printf ("%s: track %d is not audio\n", __thisfunc__, track);
 		return;
 	}
 
@@ -112,7 +112,7 @@ void CDAudio_Play(byte track, qboolean looping)
 		int cd_status = SDL_CDStatus(cd_handle);
 
 		if (cd_status > 0)
-			Con_Printf ("%s: Unable to play %d: %s\n", __FUNCTION__, track, SDL_GetError ());
+			Con_Printf ("%s: Unable to play %d: %s\n", __thisfunc__, track, SDL_GetError ());
 		return;
 	}
 
@@ -145,7 +145,7 @@ void CDAudio_Stop(void)
 		return;
 
 	if (SDL_CDStop(cd_handle) < 0)
-		Con_Printf ("%s: Unable to stop CD-ROM (%s)\n", __FUNCTION__, SDL_GetError());
+		Con_Printf ("%s: Unable to stop CD-ROM (%s)\n", __thisfunc__, SDL_GetError());
 
 	wasPlaying = false;
 	playing = false;
@@ -428,7 +428,7 @@ int CDAudio_Init(void)
 	if (!cd_handle)
 	{
 		Con_Printf ("%s: Unable to open CD-ROM drive %s (%s)\n",
-				__FUNCTION__, SDL_CDName(cd_dev), SDL_GetError());
+				__thisfunc__, SDL_CDName(cd_dev), SDL_GetError());
 		return -1;
 	}
 
@@ -441,7 +441,7 @@ int CDAudio_Init(void)
 
 	if (CDAudio_GetAudioDiskInfo())
 	{
-		Con_Printf("%s: No CD in drive\n", __FUNCTION__);
+		Con_Printf("%s: No CD in drive\n", __thisfunc__);
 		cdValid = false;
 	}
 

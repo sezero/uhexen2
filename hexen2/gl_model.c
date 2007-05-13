@@ -5,7 +5,7 @@
 	models are the only shared resource between a client and server
 	running on the same machine.
 
-	$Id: gl_model.c,v 1.40 2007-05-09 18:10:13 sezero Exp $
+	$Id: gl_model.c,v 1.41 2007-05-13 11:58:28 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -72,7 +72,7 @@ void *Mod_Extradata (model_t *mod)
 	Mod_LoadModel (mod, true);
 
 	if (!mod->cache.data)
-		Sys_Error ("%s: caching failed", __FUNCTION__);
+		Sys_Error ("%s: caching failed", __thisfunc__);
 	return mod->cache.data;
 }
 
@@ -88,9 +88,9 @@ mleaf_t *Mod_PointInLeaf (vec3_t p, model_t *model)
 	mplane_t	*plane;
 
 	if (!model)
-		Sys_Error ("%s: NULL model", __FUNCTION__);
+		Sys_Error ("%s: NULL model", __thisfunc__);
 	if (!model->nodes)
-		Sys_Error ("%s: model w/o nodes : %s", __FUNCTION__, model->name);
+		Sys_Error ("%s: model w/o nodes : %s", __thisfunc__, model->name);
 
 	node = model->nodes;
 	while (1)
@@ -202,7 +202,7 @@ model_t *Mod_FindName (const char *name)
 	model_t	*mod = NULL;
 
 	if (!name[0])
-		Sys_Error ("%s: NULL name", __FUNCTION__);
+		Sys_Error ("%s: NULL name", __thisfunc__);
 
 //
 // search the currently loaded models
@@ -289,7 +289,7 @@ static model_t *Mod_LoadModel (model_t *mod, qboolean crash)
 	if (!buf)
 	{
 		if (crash)
-			Sys_Error ("%s: %s not found", __FUNCTION__, mod->name);
+			Sys_Error ("%s: %s not found", __thisfunc__, mod->name);
 		return NULL;
 	}
 
@@ -436,9 +436,9 @@ static void Mod_LoadTextures (lump_t *l)
 			else
 			{
 				if (mt_wal->ident != IDWALHEADER)
-					Sys_Printf ("%s: %s is not a valid WAL file\n", __FUNCTION__, texname);
+					Sys_Printf ("%s: %s is not a valid WAL file\n", __thisfunc__, texname);
 				if (mt_wal->version != WALVERSION)
-					Sys_Printf ("%s: WAL file %s has unsupported version (%d)\n", __FUNCTION__, texname, mt_wal->version);
+					Sys_Printf ("%s: WAL file %s has unsupported version (%d)\n", __thisfunc__, texname, mt_wal->version);
 				Hunk_FreeToLowMark (mark);
 				goto bsp_tex_internal;
 			}
@@ -819,7 +819,7 @@ static void Mod_LoadVertexes (lump_t *l)
 
 	in = (void *)(mod_base + l->fileofs);
 	if (l->filelen % sizeof(*in))
-		Sys_Error ("%s: funny lump size in %s", __FUNCTION__, loadmodel->name);
+		Sys_Error ("%s: funny lump size in %s", __thisfunc__, loadmodel->name);
 	count = l->filelen / sizeof(*in);
 	out = Hunk_AllocName ( count*sizeof(*out), "vertexes");
 
@@ -847,7 +847,7 @@ static void Mod_LoadSubmodels (lump_t *l)
 
 	in = (void *)(mod_base + l->fileofs);
 	if (l->filelen % sizeof(*in))
-		Sys_Error ("%s: funny lump size in %s", __FUNCTION__, loadmodel->name);
+		Sys_Error ("%s: funny lump size in %s", __thisfunc__, loadmodel->name);
 	count = l->filelen / sizeof(*in);
 	out = Hunk_AllocName ( count*sizeof(*out), "submodels");
 
@@ -883,7 +883,7 @@ static void Mod_LoadEdges (lump_t *l)
 
 	in = (void *)(mod_base + l->fileofs);
 	if (l->filelen % sizeof(*in))
-		Sys_Error ("%s: funny lump size in %s", __FUNCTION__, loadmodel->name);
+		Sys_Error ("%s: funny lump size in %s", __thisfunc__, loadmodel->name);
 	count = l->filelen / sizeof(*in);
 	out = Hunk_AllocName ( (count + 1) * sizeof(*out), "edges");
 
@@ -912,7 +912,7 @@ static void Mod_LoadTexinfo (lump_t *l)
 
 	in = (void *)(mod_base + l->fileofs);
 	if (l->filelen % sizeof(*in))
-		Sys_Error ("%s: funny lump size in %s", __FUNCTION__, loadmodel->name);
+		Sys_Error ("%s: funny lump size in %s", __thisfunc__, loadmodel->name);
 	count = l->filelen / sizeof(*in);
 	out = Hunk_AllocName ( count*sizeof(*out), "texture");
 
@@ -1031,7 +1031,7 @@ static void Mod_LoadFaces (lump_t *l)
 
 	in = (void *)(mod_base + l->fileofs);
 	if (l->filelen % sizeof(*in))
-		Sys_Error ("%s: funny lump size in %s", __FUNCTION__, loadmodel->name);
+		Sys_Error ("%s: funny lump size in %s", __thisfunc__, loadmodel->name);
 	count = l->filelen / sizeof(*in);
 	out = Hunk_AllocName ( count*sizeof(*out), "faces");
 
@@ -1132,7 +1132,7 @@ static void Mod_LoadNodes (lump_t *l)
 
 	in = (void *)(mod_base + l->fileofs);
 	if (l->filelen % sizeof(*in))
-		Sys_Error ("%s: funny lump size in %s", __FUNCTION__, loadmodel->name);
+		Sys_Error ("%s: funny lump size in %s", __thisfunc__, loadmodel->name);
 	count = l->filelen / sizeof(*in);
 	out = Hunk_AllocName ( count*sizeof(*out), "nodes");
 
@@ -1179,7 +1179,7 @@ static void Mod_LoadLeafs (lump_t *l)
 
 	in = (void *)(mod_base + l->fileofs);
 	if (l->filelen % sizeof(*in))
-		Sys_Error ("%s: funny lump size in %s", __FUNCTION__, loadmodel->name);
+		Sys_Error ("%s: funny lump size in %s", __thisfunc__, loadmodel->name);
 	count = l->filelen / sizeof(*in);
 	out = Hunk_AllocName ( count*sizeof(*out), "leafs");
 
@@ -1232,7 +1232,7 @@ static void Mod_LoadClipnodes (lump_t *l)
 
 	in = (void *)(mod_base + l->fileofs);
 	if (l->filelen % sizeof(*in))
-		Sys_Error ("%s: funny lump size in %s", __FUNCTION__, loadmodel->name);
+		Sys_Error ("%s: funny lump size in %s", __thisfunc__, loadmodel->name);
 	count = l->filelen / sizeof(*in);
 	out = Hunk_AllocName ( count*sizeof(*out), "clipnodes");
 
@@ -1382,7 +1382,7 @@ static void Mod_LoadMarksurfaces (lump_t *l)
 
 	in = (void *)(mod_base + l->fileofs);
 	if (l->filelen % sizeof(*in))
-		Sys_Error ("%s: funny lump size in %s", __FUNCTION__, loadmodel->name);
+		Sys_Error ("%s: funny lump size in %s", __thisfunc__, loadmodel->name);
 	count = l->filelen / sizeof(*in);
 	out = Hunk_AllocName ( count*sizeof(*out), "marksurfaces");
 
@@ -1393,7 +1393,7 @@ static void Mod_LoadMarksurfaces (lump_t *l)
 	{
 		j = LittleShort(in[i]);
 		if (j >= loadmodel->numsurfaces)
-			Sys_Error ("%s: bad surface number", __FUNCTION__);
+			Sys_Error ("%s: bad surface number", __thisfunc__);
 		out[i] = loadmodel->surfaces + j;
 	}
 }
@@ -1410,7 +1410,7 @@ static void Mod_LoadSurfedges (lump_t *l)
 
 	in = (void *)(mod_base + l->fileofs);
 	if (l->filelen % sizeof(*in))
-		Sys_Error ("%s: funny lump size in %s", __FUNCTION__, loadmodel->name);
+		Sys_Error ("%s: funny lump size in %s", __thisfunc__, loadmodel->name);
 	count = l->filelen / sizeof(*in);
 	out = Hunk_AllocName ( count*sizeof(*out), "surfedges");
 
@@ -1437,7 +1437,7 @@ static void Mod_LoadPlanes (lump_t *l)
 
 	in = (void *)(mod_base + l->fileofs);
 	if (l->filelen % sizeof(*in))
-		Sys_Error ("%s: funny lump size in %s", __FUNCTION__, loadmodel->name);
+		Sys_Error ("%s: funny lump size in %s", __thisfunc__, loadmodel->name);
 	count = l->filelen / sizeof(*in);
 	out = Hunk_AllocName ( count*2*sizeof(*out), "planes");
 
@@ -1495,7 +1495,7 @@ static void Mod_LoadBrushModel (model_t *mod, void *buffer)
 
 	i = LittleLong (header->version);
 	if (i != BSPVERSION)
-		Sys_Error ("%s: %s has wrong version number (%i should be %i)", __FUNCTION__, mod->name, i, BSPVERSION);
+		Sys_Error ("%s: %s has wrong version number (%i should be %i)", __thisfunc__, mod->name, i, BSPVERSION);
 
 // swap all the lumps
 	mod_base = (byte *)header;
@@ -1819,7 +1819,7 @@ static void *Mod_LoadAllSkins (int numskins, daliasskintype_t *pskintype, int md
 	skin = (byte *)(pskintype + 1);
 
 	if (numskins < 1 || numskins > MAX_SKINS)
-		Sys_Error ("%s: Invalid # of skins: %d", __FUNCTION__, numskins);
+		Sys_Error ("%s: Invalid # of skins: %d", __thisfunc__, numskins);
 
 	for (i = 0; i < numskins; i++)
 	{
@@ -2153,7 +2153,7 @@ static void Mod_LoadAliasModelNew (model_t *mod, void *buffer)
 	pheader->numframes = LittleLong (pinmodel->numframes);
 	numframes = pheader->numframes;
 	if (numframes < 1)
-		Sys_Error ("%s: Invalid # of frames: %d", __FUNCTION__, numframes);
+		Sys_Error ("%s: Invalid # of frames: %d", __thisfunc__, numframes);
 
 	pheader->size = LittleFloat (pinmodel->size) * ALIAS_BASE_SIZE_RATIO;
 	mod->synctype = LittleLong (pinmodel->synctype);
@@ -2331,7 +2331,7 @@ static void Mod_LoadAliasModel (model_t *mod, void *buffer)
 	pheader->numframes = LittleLong (pinmodel->numframes);
 	numframes = pheader->numframes;
 	if (numframes < 1)
-		Sys_Error ("%s: Invalid # of frames: %d", __FUNCTION__, numframes);
+		Sys_Error ("%s: Invalid # of frames: %d", __thisfunc__, numframes);
 
 	pheader->size = LittleFloat (pinmodel->size) * ALIAS_BASE_SIZE_RATIO;
 	mod->synctype = LittleLong (pinmodel->synctype);
@@ -2539,7 +2539,7 @@ static void *Mod_LoadSpriteGroup (model_t *mod, void *pin, mspriteframe_t **ppfr
 	{
 		*poutintervals = LittleFloat (pin_intervals->interval);
 		if (*poutintervals <= 0.0)
-			Sys_Error ("%s: interval <= 0", __FUNCTION__);
+			Sys_Error ("%s: interval <= 0", __thisfunc__);
 
 		poutintervals++;
 		pin_intervals++;
@@ -2610,7 +2610,7 @@ static void Mod_LoadSpriteModel (model_t *mod, void *buffer)
 // load the frames
 //
 	if (numframes < 1)
-		Sys_Error ("%s: Invalid # of frames: %d", __FUNCTION__, numframes);
+		Sys_Error ("%s: Invalid # of frames: %d", __thisfunc__, numframes);
 
 	mod->numframes = numframes;
 

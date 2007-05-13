@@ -1,6 +1,6 @@
 /*
 	flow.c
-	$Id: flow.c,v 1.7 2007-03-14 21:04:39 sezero Exp $
+	$Id: flow.c,v 1.8 2007-05-13 12:00:12 sezero Exp $
 */
 
 #include "util_inc.h"
@@ -21,7 +21,7 @@ static void CheckStack (leaf_t *leaf, threaddata_t *thread)
 	for (p = thread->pstack_head.next ; p ; p  =p->next)
 	{
 		if (p->leaf == leaf)
-			Error ("%s: leaf recursion", __FUNCTION__);
+			Error ("%s: leaf recursion", __thisfunc__);
 	}
 }
 
@@ -467,7 +467,7 @@ void PortalFlow (portal_t *p)
 	threaddata_t	data;
 
 	if (p->status != stat_working)
-		Error ("%s: reflowed", __FUNCTION__);
+		Error ("%s: reflowed", __thisfunc__);
 	p->status = stat_working;
 
 	p->visbits = malloc (bitbytes);

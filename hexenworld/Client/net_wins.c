@@ -2,7 +2,7 @@
 	net_udp.c
 	network UDP driver
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/net_wins.c,v 1.30 2007-04-05 07:00:04 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/net_wins.c,v 1.31 2007-05-13 11:59:01 sezero Exp $
 */
 
 #include "net_sys.h"
@@ -149,7 +149,7 @@ qboolean NET_GetPacket (void)
 			return false;
 		if (err == ECONNREFUSED)
 		{
-			Con_Printf ("%s: Connection refused\n", __FUNCTION__);
+			Con_Printf ("%s: Connection refused\n", __thisfunc__);
 			return false;
 		}
 #	ifdef _WIN32
@@ -159,7 +159,7 @@ qboolean NET_GetPacket (void)
 			return false;
 		}
 #	endif
-		Sys_Error ("%s: %s", __FUNCTION__, strerror(err));
+		Sys_Error ("%s: %s", __thisfunc__, strerror(err));
 	}
 
 	SockadrToNetadr (&from, &net_from);
@@ -211,10 +211,10 @@ void NET_SendPacket (int length, void *data, netadr_t to)
 			return;
 		if (err == ECONNREFUSED)
 		{
-			Con_Printf ("%s: Connection refused\n", __FUNCTION__);
+			Con_Printf ("%s: Connection refused\n", __thisfunc__);
 			return;
 		}
-		Con_Printf ("%s ERROR: %i\n", __FUNCTION__, errno);
+		Con_Printf ("%s ERROR: %i\n", __thisfunc__, errno);
 	}
 }
 
@@ -228,10 +228,10 @@ static int UDP_OpenSocket (int port)
 	unsigned long _true = true;
 
 	if ((newsocket = socket (PF_INET, SOCK_DGRAM, IPPROTO_UDP)) == -1)
-		Sys_Error ("%s: socket: %s", __FUNCTION__, strerror(errno));
+		Sys_Error ("%s: socket: %s", __thisfunc__, strerror(errno));
 
 	if (ioctlsocket (newsocket, FIONBIO, &_true) == -1)
-		Sys_Error ("%s: ioctl FIONBIO: %s", __FUNCTION__, strerror(errno));
+		Sys_Error ("%s: ioctl FIONBIO: %s", __thisfunc__, strerror(errno));
 
 	address.sin_family = AF_INET;
 	//ZOID -- check for interface binding option
@@ -254,7 +254,7 @@ static int UDP_OpenSocket (int port)
 		address.sin_port = htons((short)port);
 
 	if ( bind(newsocket, (void *)&address, sizeof(address)) == -1 )
-		Sys_Error ("%s: bind: %s", __FUNCTION__, strerror(errno));
+		Sys_Error ("%s: bind: %s", __thisfunc__, strerror(errno));
 
 	return newsocket;
 }
@@ -266,14 +266,14 @@ static void NET_GetLocalAddress (void)
 	socklen_t		namelen;
 
 	if (gethostname(buff, 512) == -1)
-		Sys_Error ("%s: gethostname: %s", __FUNCTION__, strerror(errno));
+		Sys_Error ("%s: gethostname: %s", __thisfunc__, strerror(errno));
 	buff[512-1] = 0;
 
 	NET_StringToAdr (buff, &net_local_adr);
 
 	namelen = sizeof(address);
 	if (getsockname (net_socket, (struct sockaddr *)&address, &namelen) == -1)
-		Sys_Error ("%s: getsockname: %s", __FUNCTION__, strerror(errno));
+		Sys_Error ("%s: getsockname: %s", __thisfunc__, strerror(errno));
 	net_local_adr.port = address.sin_port;
 
 	Con_Printf("IP address %s\n", NET_AdrToString (net_local_adr) );

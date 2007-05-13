@@ -2,7 +2,7 @@
 	sv_send.c
 	server communication module
 
-	$Id: sv_send.c,v 1.19 2007-05-09 18:11:38 sezero Exp $
+	$Id: sv_send.c,v 1.20 2007-05-13 11:59:43 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -277,7 +277,7 @@ void SV_Multicast (vec3_t origin, int to)
 
 	default:
 		mask = NULL;
-		SV_Error ("%s: bad to: %i", __FUNCTION__, to);
+		SV_Error ("%s: bad to: %i", __thisfunc__, to);
 	}
 
 	// send the data to all relevent clients
@@ -434,13 +434,13 @@ void SV_StartSound (edict_t *entity, int channel, const char *sample, int volume
 	qboolean	reliable = false;
 
 	if (volume < 0 || volume > 255)
-		SV_Error ("%s: volume = %i", __FUNCTION__, volume);
+		SV_Error ("%s: volume = %i", __thisfunc__, volume);
 
 	if (attenuation < 0 || attenuation > 4)
-		SV_Error ("%s: attenuation = %f", __FUNCTION__, attenuation);
+		SV_Error ("%s: attenuation = %f", __thisfunc__, attenuation);
 
 	if (channel < 0 || channel > 15)
-		SV_Error ("%s: channel = %i", __FUNCTION__, channel);
+		SV_Error ("%s: channel = %i", __thisfunc__, channel);
 
 // find precache number for sound
 	for (sound_num = 1; sound_num < MAX_SOUNDS && sv.sound_precache[sound_num][0]; sound_num++)
@@ -451,7 +451,7 @@ void SV_StartSound (edict_t *entity, int channel, const char *sample, int volume
 
 	if (sound_num == MAX_SOUNDS || !sv.sound_precache[sound_num][0])
 	{
-		Con_Printf ("%s: %s not precached\n", __FUNCTION__, sample);
+		Con_Printf ("%s: %s not precached\n", __thisfunc__, sample);
 		return;
 	}
 
@@ -921,7 +921,7 @@ static void SV_UpdateToReliableMessages (void)
 	edict_t		*ent;
 	qboolean	CheckPIV = false;
 
-//	Con_Printf("%s\n", __FUNCTION__);
+//	Con_Printf("%s\n", __thisfunc__);
 	if (sv.time - sv.next_PIV_time >= 1)
 	{
 		sv.next_PIV_time = sv.time + 1;
@@ -945,7 +945,7 @@ static void SV_UpdateToReliableMessages (void)
 			{
 				if (client->state < cs_connected)
 					continue;
-			//	Sys_Printf("%s: Updated frags for client %d to %d\n", __FUNCTION__, i, j);
+			//	Sys_Printf("%s: Updated frags for client %d to %d\n", __thisfunc__, i, j);
 				MSG_WriteByte (&client->netchan.message, svc_updatedminfo);
 				MSG_WriteByte (&client->netchan.message, i);
 				MSG_WriteShort (&client->netchan.message, host_client->edict->v.frags);

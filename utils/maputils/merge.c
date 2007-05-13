@@ -1,6 +1,6 @@
 /*
 	merge.c
-	$Id: merge.c,v 1.6 2007-03-14 21:04:40 sezero Exp $
+	$Id: merge.c,v 1.7 2007-05-13 12:00:12 sezero Exp $
 */
 
 #include "util_inc.h"
@@ -143,7 +143,7 @@ static face_t *TryMerge (face_t *f1, face_t *f2)
 //
 	if (f1->numpoints + f2->numpoints > MAXEDGES)
 	{
-	//	Error ("%s: too many edges!", __FUNCTION__);
+	//	Error ("%s: too many edges!", __thisfunc__);
 		return NULL;
 	}
 

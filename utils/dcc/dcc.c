@@ -2,7 +2,7 @@
 	dcc.c
 	An hcode compiler/decompiler for Hexen II by Eric Hobbs
 
-	$Id: dcc.c,v 1.34 2007-04-29 09:25:08 sezero Exp $
+	$Id: dcc.c,v 1.35 2007-05-13 11:59:44 sezero Exp $
 */
 
 
@@ -733,7 +733,7 @@ char *Make_Immediate (gofs_t ofs, char *linestr, int mode)
 			temp_val[i] = NULL;
 			temp_val[i] = malloc(len + 1);
 			if (temp_val[i] == NULL)
-				Error("%s: failed to create new string for %s\n", __FUNCTION__, linestr);
+				Error("%s: failed to create new string for %s\n", __thisfunc__, linestr);
 			memcpy(temp_val[i], linestr, len);
 			temp_val[i][len] = '\0';
 
@@ -1023,7 +1023,7 @@ void PR_FunctionHeader (dfunction_t *df)
 	strcat(linetxt, ")");
 	func_headers[df-functions] = malloc(strlen(linetxt) + 1);
 	if (func_headers[df-functions] == NULL)
-		Error ("%s: malloc failed.", __FUNCTION__);
+		Error ("%s: malloc failed.", __thisfunc__);
 	strcpy(func_headers[df-functions], linetxt);
 }
 
@@ -1674,7 +1674,7 @@ void FindBuiltinParameters (int func)
 		printf("NOT found!!\nsetting parameters to void\n");
 		func_headers[func] = malloc(strlen("void ()") + 1);
 		if (func_headers[func] == NULL)
-			Error ("%s: malloc failed.", __FUNCTION__);
+			Error ("%s: malloc failed.", __thisfunc__);
 		sprintf(func_headers[func], "%s", "void ()");
 		return;
 	}
@@ -1906,7 +1906,7 @@ void FindBuiltinParameters (int func)
 	strcat(plist, ")");
 	func_headers[func] = malloc(strlen(plist) + 1);
 	if (func_headers[func] == NULL)
-		Error ("%s: malloc failed.", __FUNCTION__);
+		Error ("%s: malloc failed.", __thisfunc__);
 	sprintf(func_headers[func], "%s", plist);
 	printf("%s%s\nin %s in file %s\n", plist, sname, strings + dft->s_name, strings + dft->s_file);
 }
@@ -2090,7 +2090,7 @@ void DEC_ReadData (char *srcfile)
 	{
 		fields[i].type = LittleShort (fields[i].type);
 	//	if (fields[i].type & DEF_SAVEGLOBAL)
-	//		Error ("%s: pr_fielddefs[i].type & DEF_SAVEGLOBAL", __FUNCTION__);
+	//		Error ("%s: pr_fielddefs[i].type & DEF_SAVEGLOBAL", __thisfunc__);
 		fields[i].ofs = LittleShort (fields[i].ofs);
 		fields[i].s_name = LittleLong (fields[i].s_name);
 	}
@@ -2165,11 +2165,11 @@ int DEC_AlreadySeen (char *fname)
 	}
 
 	if (DEC_FileCtr >= MAX_DEC_FILES-1)
-		Error("%s: too many source files.", __FUNCTION__);
+		Error("%s: too many source files.", __thisfunc__);
 
 	new1 = (char *) malloc(strlen(fname)+1);
 	if (new1 == NULL)
-		Error ("%s: malloc failed.", __FUNCTION__);
+		Error ("%s: malloc failed.", __thisfunc__);
 	strcpy (new1, fname);
 	DEC_FilesSeen[DEC_FileCtr] = new1;
 	DEC_FileCtr++;

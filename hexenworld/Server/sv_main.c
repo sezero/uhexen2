@@ -2,7 +2,7 @@
 	sv_main.c
 	server main program
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Server/sv_main.c,v 1.43 2007-05-09 18:11:37 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Server/sv_main.c,v 1.44 2007-05-13 11:59:43 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -142,7 +142,7 @@ void SV_Error (const char *error, ...)
 	static	qboolean inerror = false;
 
 	if (inerror)
-		Sys_Error ("%s: recursive error! (%s)", __FUNCTION__, string);
+		Sys_Error ("%s: recursive error! (%s)", __thisfunc__, string);
 
 	inerror = true;
 
@@ -150,13 +150,13 @@ void SV_Error (const char *error, ...)
 	vsnprintf (string, sizeof(string), error, argptr);
 	va_end (argptr);
 
-	Con_Printf ("%s: %s\n", __FUNCTION__, string);
+	Con_Printf ("%s: %s\n", __thisfunc__, string);
 
 	SV_FinalMessage (va("server crashed: %s\n", string));
 
 	SV_Shutdown ();
 
-	Sys_Error ("%s: %s\n", __FUNCTION__, string);
+	Sys_Error ("%s: %s\n", __thisfunc__, string);
 }
 
 
@@ -304,10 +304,10 @@ void SV_FullClientUpdate (client_t *client, sizebuf_t *buf)
 	int		i;
 	char	info[MAX_INFO_STRING];
 
-//	Con_Printf("%s\n", __FUNCTION__);
+//	Con_Printf("%s\n", __thisfunc__);
 	i = client - svs.clients;
 
-//	Sys_Printf("%s:  Updated frags for client %d\n", __FUNCTION__, i);
+//	Sys_Printf("%s:  Updated frags for client %d\n", __thisfunc__, i);
 
 	MSG_WriteByte (buf, svc_updatedminfo);
 	MSG_WriteByte (buf, i);

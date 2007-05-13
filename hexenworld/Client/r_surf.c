@@ -2,7 +2,7 @@
 	r_surf.c
 	surface-related refresh code
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/r_surf.c,v 1.8 2007-05-09 18:10:18 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/r_surf.c,v 1.9 2007-05-13 11:59:01 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -245,9 +245,9 @@ texture_t *R_TextureAnimation (texture_t *base)
 	{
 		base = base->anim_next;
 		if (!base)
-			Sys_Error ("%s: broken cycle", __FUNCTION__);
+			Sys_Error ("%s: broken cycle", __thisfunc__);
 		if (++count > 100)
-			Sys_Error ("%s: infinite cycle", __FUNCTION__);
+			Sys_Error ("%s: infinite cycle", __thisfunc__);
 	}
 
 	return base;

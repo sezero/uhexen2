@@ -2,7 +2,7 @@
 	host.c
 	coordinates spawning and killing of local servers
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/server/host.c,v 1.34 2007-05-09 18:10:14 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/server/host.c,v 1.35 2007-05-13 11:58:31 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -104,7 +104,7 @@ int Host_CopyFiles (const char *source, const char *pat, const char *dest)
 		if ( snprintf(tempdir, sizeof(tempdir),"%s/%s", source, name) >= sizeof(tempdir) ||
 		     snprintf(tempdir2, sizeof(tempdir2),"%s/%s", dest, name) >= sizeof(tempdir2) )
 		{
-			Con_Printf ("%s: string buffer overflow!\n", __FUNCTION__);
+			Con_Printf ("%s: string buffer overflow!\n", __thisfunc__);
 			error = -1;
 			goto error_out;
 		}
@@ -142,17 +142,17 @@ void Host_Error (const char *error, ...)
 	static	qboolean inerror = false;
 
 	if (inerror)
-		Sys_Error ("%s: recursive error!", __FUNCTION__);
+		Sys_Error ("%s: recursive error!", __thisfunc__);
 	inerror = true;
 
 	va_start (argptr,error);
 	vsnprintf (string,sizeof(string),error,argptr);
 	va_end (argptr);
-	Con_Printf ("%s: %s\n", __FUNCTION__, string);
+	Con_Printf ("%s: %s\n", __thisfunc__, string);
 
 	Host_ShutdownServer (false);
 
-	Sys_Error ("%s: %s", __FUNCTION__, string);	// dedicated servers exit
+	Sys_Error ("%s: %s", __thisfunc__, string);	// dedicated servers exit
 }
 
 /*
@@ -449,7 +449,7 @@ void Host_ShutdownServer(qboolean crash)
 	MSG_WriteByte(&buf, svc_disconnect);
 	count = NET_SendToAll(&buf, 5);
 	if (count)
-		Con_Printf("%s: NET_SendToAll failed for %u clients\n", __FUNCTION__, count);
+		Con_Printf("%s: NET_SendToAll failed for %u clients\n", __thisfunc__, count);
 
 	for (i = 0, host_client = svs.clients; i < svs.maxclients; i++, host_client++)
 	{

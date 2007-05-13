@@ -2,7 +2,7 @@
 	quakefs.c
 	Hexen II filesystem
 
-	$Id: quakefs.c,v 1.22 2007-05-09 18:10:17 sezero Exp $
+	$Id: quakefs.c,v 1.23 2007-05-13 11:59:01 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -744,13 +744,13 @@ int FS_CopyFile (const char *frompath, const char *topath)
 
 	if ( !frompath || !topath )
 	{
-		Con_Printf ("%s: null input\n", __FUNCTION__);
+		Con_Printf ("%s: null input\n", __thisfunc__);
 		return 1;
 	}
 
 	if ( stat (frompath, &st) != 0 )
 	{
-		Con_Printf ("%s: unable to stat %s\n", frompath, __FUNCTION__);
+		Con_Printf ("%s: unable to stat %s\n", frompath, __thisfunc__);
 		return 1;
 	}
 //	remaining = st.st_size;
@@ -758,7 +758,7 @@ int FS_CopyFile (const char *frompath, const char *topath)
 	in = fopen (frompath, "rb");
 	if (!in)
 	{
-		Con_Printf ("%s: unable to open %s\n", frompath, __FUNCTION__);
+		Con_Printf ("%s: unable to open %s\n", frompath, __thisfunc__);
 		return 1;
 	}
 	remaining = FS_filelength(in);
@@ -767,7 +767,7 @@ int FS_CopyFile (const char *frompath, const char *topath)
 	Q_strlcpy (buf, topath, sizeof(buf));
 	if (FS_CreatePath (buf))
 	{
-		Con_Printf ("%s: unable to create directory\n", __FUNCTION__);
+		Con_Printf ("%s: unable to create directory\n", __thisfunc__);
 		fclose (in);
 		return 1;
 	}
@@ -775,7 +775,7 @@ int FS_CopyFile (const char *frompath, const char *topath)
 	out = fopen(topath, "wb");
 	if (!out)
 	{
-		Con_Printf ("%s: unable to create %s\n", topath, __FUNCTION__);
+		Con_Printf ("%s: unable to create %s\n", topath, __thisfunc__);
 		fclose (in);
 		return 1;
 	}
@@ -832,7 +832,7 @@ int FS_WriteFile (const char *filename, const void *data, size_t len)
 
 	if (snprintf(name, sizeof(name), "%s/%s", fs_userdir, filename) >= sizeof(name))
 	{
-		Con_Printf ("%s: string buffer overflow!\n", __FUNCTION__);
+		Con_Printf ("%s: string buffer overflow!\n", __thisfunc__);
 		return 1;
 	}
 
@@ -843,7 +843,7 @@ int FS_WriteFile (const char *filename, const void *data, size_t len)
 		return 1;
 	}
 
-	Sys_Printf ("%s: %s\n", __FUNCTION__, name);
+	Sys_Printf ("%s: %s\n", __thisfunc__, name);
 	size = fwrite (data, 1, len, f);
 	fclose (f);
 	if (size != len)
@@ -874,7 +874,7 @@ int FS_CreatePath (char *path)
 
 	if (!path || !path[0])
 	{
-		Con_Printf ("%s: no path!\n", __FUNCTION__);
+		Con_Printf ("%s: no path!\n", __thisfunc__);
 		return 1;
 	}
 
@@ -972,7 +972,7 @@ size_t FS_OpenFile (const char *filename, FILE **file, qboolean override_pack)
 		}
 	}
 
-	Sys_DPrintf ("%s: can't find %s\n", __FUNCTION__, filename);
+	Sys_DPrintf ("%s: can't find %s\n", __thisfunc__, filename);
 
 	*file = NULL;
 	fs_filepath = NULL;
@@ -1077,11 +1077,11 @@ static byte *FS_LoadFile (const char *path, int usehunk)
 		buf = Q_malloc (len+1);
 		break;
 	default:
-		Sys_Error ("%s: bad usehunk", __FUNCTION__);
+		Sys_Error ("%s: bad usehunk", __thisfunc__);
 	}
 
 	if (!buf)
-		Sys_Error ("%s: not enough space for %s", __FUNCTION__, path);
+		Sys_Error ("%s: not enough space for %s", __thisfunc__, path);
 
 	((byte *)buf)[len] = 0;
 
@@ -1141,7 +1141,7 @@ byte *FS_LoadBufFile (const char *path, void *buffer, size_t *bufsize)
 	buf = FS_LoadFile (path, LOADFILE_BUF);
 	*bufsize = (buf == NULL) ? 0 : fs_filesize;
 	if (loadbuf && buf && buf != loadbuf)
-		Sys_Printf("%s: insufficient buffer for %s not used.\n", __FUNCTION__, path);
+		Sys_Printf("%s: insufficient buffer for %s not used.\n", __thisfunc__, path);
 
 	return buf;
 }
@@ -1373,7 +1373,7 @@ void FS_Init (void)
 	if (i && i < com_argc-1)
 	{
 		fs_basedir = com_argv[i+1];
-		Sys_Printf ("%s: basedir changed to: %s\n", __FUNCTION__, fs_basedir);
+		Sys_Printf ("%s: basedir changed to: %s\n", __thisfunc__, fs_basedir);
 	}
 	else
 	{

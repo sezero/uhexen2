@@ -2,7 +2,7 @@
 	gl_draw.c
 	this is the only file outside the refresh that touches the vid buffer
 
-	$Id: gl_draw.c,v 1.93 2007-05-09 18:10:16 sezero Exp $
+	$Id: gl_draw.c,v 1.94 2007-05-13 11:59:00 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -877,7 +877,7 @@ void Draw_PicCropped (int x, int y, qpic_t *pic)
 
 	if ((x < 0) || (x+pic->width > vid.width))
 	{
-		Sys_Error("%s: bad coordinates", __FUNCTION__);
+		Sys_Error("%s: bad coordinates", __thisfunc__);
 	}
 
 	if (y >= (int)vid.height || y+pic->height < 0)
@@ -930,7 +930,7 @@ void Draw_SubPicCropped (int x, int y, int h, qpic_t *pic)
 
 	if ((x < 0) || (x+pic->width > vid.width))
 	{
-		Sys_Error("%s: bad coordinates", __FUNCTION__);
+		Sys_Error("%s: bad coordinates", __thisfunc__);
 	}
 
 	if (y >= (int)vid.height || y+h < 0)
@@ -990,7 +990,7 @@ void Draw_TransPic (int x, int y, qpic_t *pic)
 	if (x < 0 || (unsigned)(x + pic->width) > vid.width || y < 0 ||
 		 (unsigned)(y + pic->height) > vid.height)
 	{
-		Sys_Error ("%s: bad coordinates", __FUNCTION__);
+		Sys_Error ("%s: bad coordinates", __thisfunc__);
 	}
 
 	Draw_Pic (x, y, pic);
@@ -1415,7 +1415,7 @@ static void fxPalTexImage2D (GLenum target, GLint level, GLint internalformat, G
 
 	// we don't want textures with alpha
 	if (internalformat != 3)
-		Sys_Error ("%s: internalformat != 3", __FUNCTION__);
+		Sys_Error ("%s: internalformat != 3", __thisfunc__);
 
 	for (i = 0; i < mip_width * mip_height; i++)
 	{
@@ -1872,7 +1872,7 @@ static void GL_Upload8 (byte *data, int width, int height,  qboolean mipmap, qbo
 	else
 	{
 		if (s&3)
-			Sys_Error ("%s: s&3", __FUNCTION__);
+			Sys_Error ("%s: s&3", __thisfunc__);
 		for (i = 0; i < s; i += 4)
 		{
 			trans[i] = d_8to24table[data[i]];
@@ -1950,7 +1950,7 @@ GLuint GL_LoadTexture (const char *identifier, int width, int height, byte *data
 	}
 
 	if (numgltextures >= MAX_GLTEXTURES)
-		Sys_Error ("%s: cache full, max is %i textures.", __FUNCTION__, MAX_GLTEXTURES);
+		Sys_Error ("%s: cache full, max is %i textures.", __thisfunc__, MAX_GLTEXTURES);
 
 	glt = &gltextures[numgltextures];
 	numgltextures++;

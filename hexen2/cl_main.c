@@ -2,7 +2,7 @@
 	cl_main.c
 	client main loop
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cl_main.c,v 1.38 2007-05-09 18:10:12 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cl_main.c,v 1.39 2007-05-13 11:58:28 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -167,8 +167,8 @@ void CL_EstablishConnection (char *host)
 
 	cls.netcon = NET_Connect (host);
 	if (!cls.netcon)
-		Host_Error ("%s: connect failed", __FUNCTION__);
-	Con_DPrintf ("%s: connected to %s\n", __FUNCTION__, host);
+		Host_Error ("%s: connect failed", __thisfunc__);
+	Con_DPrintf ("%s: connected to %s\n", __thisfunc__, host);
 
 	cls.demonum = -1;			// not in the demo loop now
 	cls.state = ca_connected;
@@ -186,7 +186,7 @@ void CL_SignonReply (void)
 {
 	char	str[8192];
 
-	Con_DPrintf ("%s: %i\n", __FUNCTION__, cls.signon);
+	Con_DPrintf ("%s: %i\n", __thisfunc__, cls.signon);
 
 	switch (cls.signon)
 	{
@@ -842,7 +842,7 @@ int CL_ReadFromServer (void)
 	{
 		ret = CL_GetMessage ();
 		if (ret == -1)
-			Host_Error ("%s: lost server connection", __FUNCTION__);
+			Host_Error ("%s: lost server connection", __thisfunc__);
 		if (!ret)
 			break;
 
@@ -898,12 +898,12 @@ void CL_SendCmd (void)
 
 	if (!NET_CanSendMessage (cls.netcon))
 	{
-		Con_DPrintf ("%s: can't send\n", __FUNCTION__);
+		Con_DPrintf ("%s: can't send\n", __thisfunc__);
 		return;
 	}
 
 	if (NET_SendMessage (cls.netcon, &cls.message) == -1)
-		Host_Error ("%s: lost server connection", __FUNCTION__);
+		Host_Error ("%s: lost server connection", __thisfunc__);
 
 	SZ_Clear (&cls.message);
 }

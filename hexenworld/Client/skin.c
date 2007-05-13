@@ -2,7 +2,7 @@
 	skin.c
 	skin loading
 
-	$Id: skin.c,v 1.10 2007-05-09 18:10:18 sezero Exp $
+	$Id: skin.c,v 1.11 2007-05-13 11:59:02 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -138,7 +138,7 @@ byte	*Skin_Cache (skin_t *skin)
 
 	out = Cache_Alloc (&skin->cache, 320*200, skin->name);
 	if (!out)
-		Sys_Error ("%s: couldn't allocate", __FUNCTION__);
+		Sys_Error ("%s: couldn't allocate", __thisfunc__);
 
 	pix = out;
 	memset (out, 0, 320*200);
@@ -267,7 +267,7 @@ void	Skin_Skins_f (void)
 
 	if (cls.state == ca_disconnected)
 	{
-		Con_Printf("%s: no connection to a server.\n", __FUNCTION__);
+		Con_Printf("%s: no connection to a server.\n", __thisfunc__);
 		return;
 	}
 

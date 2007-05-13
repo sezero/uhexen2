@@ -1,6 +1,6 @@
 /*
 	tjunc.c
-	$Id: tjunc.c,v 1.7 2007-03-14 21:04:43 sezero Exp $
+	$Id: tjunc.c,v 1.8 2007-05-13 12:00:20 sezero Exp $
 */
 
 #include "util_inc.h"
@@ -119,7 +119,7 @@ static void CanonicalVector (vec3_t vec)
 	}
 	else
 		vec[2] = 0;
-	Error ("%s: degenerate", __FUNCTION__);
+	Error ("%s: degenerate", __thisfunc__);
 }
 
 static wedge_t *FindEdge (vec3_t p1, vec3_t p2, double *t1, double *t2)
@@ -173,7 +173,7 @@ static wedge_t *FindEdge (vec3_t p1, vec3_t p2, double *t1, double *t2)
 	}
 
 	if (numwedges == MAXWEDGES)
-		Error ("%s: numwedges == MAXWEDGES", __FUNCTION__);
+		Error ("%s: numwedges == MAXWEDGES", __thisfunc__);
 	w = &wedges[numwedges];
 	numwedges++;
 
@@ -212,7 +212,7 @@ static void AddVert (wedge_t *w, double t)
 
 // insert a new wvert before v
 	if (numwverts == MAXWVERTS)
-		Error ("%s: numwverts == MAXWVERTS", __FUNCTION__);
+		Error ("%s: numwverts == MAXWVERTS", __thisfunc__);
 
 	newv = &wverts[numwverts];
 	numwverts++;
@@ -337,7 +337,7 @@ restart:
 
 		new = NewFaceFromFace (f);
 		if (f->original)
-			Error ("%s: f->original", __FUNCTION__);
+			Error ("%s: f->original", __thisfunc__);
 
 		new->original = chain;
 		chain = new;

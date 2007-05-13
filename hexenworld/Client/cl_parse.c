@@ -2,7 +2,7 @@
 	cl_parse.c
 	parse a message received from the server
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/cl_parse.c,v 1.41 2007-05-09 18:10:16 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/cl_parse.c,v 1.42 2007-05-13 11:59:00 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -763,7 +763,7 @@ static void CL_ParseStartSoundPacket(void)
 	channel &= 7;
 
 	if (ent > MAX_EDICTS)
-		Host_EndGame ("%s: ent = %i", __FUNCTION__, ent);
+		Host_EndGame ("%s: ent = %i", __thisfunc__, ent);
 
 	S_StartSound (ent, channel, cl.sound_precache[sound_num], pos, volume/255.0, attenuation);
 }
@@ -832,7 +832,7 @@ static void CL_NewTranslation (int slot)
 {
 #ifdef GLQUAKE
 	if (slot >= MAX_CLIENTS)
-		Sys_Error ("%s: slot > MAX_CLIENTS", __FUNCTION__);
+		Sys_Error ("%s: slot > MAX_CLIENTS", __thisfunc__);
 
 	R_TranslatePlayerSkin(slot);
 #else
@@ -843,7 +843,7 @@ static void CL_NewTranslation (int slot)
 	player_info_t	*player;
 
 	if (slot >= MAX_CLIENTS)
-		Sys_Error ("%s: slot > MAX_CLIENTS", __FUNCTION__);
+		Sys_Error ("%s: slot > MAX_CLIENTS", __thisfunc__);
 
 	player = &cl.players[slot];
 	if (!player->playerclass)
@@ -893,7 +893,7 @@ static void CL_UpdateUserinfo (void)
 
 	slot = MSG_ReadByte ();
 	if (slot >= MAX_CLIENTS)
-		Host_EndGame ("%s: svc_updateuserinfo > MAX_CLIENTS", __FUNCTION__);
+		Host_EndGame ("%s: svc_updateuserinfo > MAX_CLIENTS", __thisfunc__);
 
 	player = &cl.players[slot];
 	player->userid = MSG_ReadLong ();
@@ -932,7 +932,7 @@ static void CL_SetStat (int stat, int value)
 	int	j;
 
 	if (stat < 0 || stat >= MAX_CL_STATS)
-		Sys_Error ("%s: %i is invalid", __FUNCTION__, stat);
+		Sys_Error ("%s: %i is invalid", __thisfunc__, stat);
 
 	Sbar_Changed ();
 
@@ -1067,7 +1067,7 @@ static void CL_DumpPacket (void)
 	int			i, pos;
 	char	*packet = net_message.data;
 
-	Con_Printf("%s, BEGIN:\n", __FUNCTION__);
+	Con_Printf("%s, BEGIN:\n", __thisfunc__);
 	pos = 0;
 	while (pos < net_message.cursize)
 	{
@@ -1094,7 +1094,7 @@ static void CL_DumpPacket (void)
 		Con_Printf("\n");
 	}
 
-	Con_Printf("%s, --- END ---\n", __FUNCTION__);
+	Con_Printf("%s, --- END ---\n", __thisfunc__);
 }
 #endif	/* CL_DumpPacket */
 
@@ -1146,7 +1146,7 @@ void CL_ParseServerMessage (void)
 	{
 		if (msg_badread)
 		{
-			Host_EndGame ("%s: Bad server message", __FUNCTION__);
+			Host_EndGame ("%s: Bad server message", __thisfunc__);
 			break;
 		}
 
@@ -1169,7 +1169,7 @@ void CL_ParseServerMessage (void)
 		{
 		default:
 		//	CL_DumpPacket ();
-			Host_EndGame ("%s: Illegible server message %d", __FUNCTION__, cmd);
+			Host_EndGame ("%s: Illegible server message %d", __thisfunc__, cmd);
 			break;
 
 		case svc_nop:
@@ -1275,14 +1275,14 @@ void CL_ParseServerMessage (void)
 			Sbar_Changed ();
 			i = MSG_ReadByte ();
 			if (i >= MAX_CLIENTS)
-				Host_EndGame ("%s: svc_updatefrags > MAX_CLIENTS", __FUNCTION__);
+				Host_EndGame ("%s: svc_updatefrags > MAX_CLIENTS", __thisfunc__);
 			cl.players[i].frags = MSG_ReadShort ();
 			break;
 
 		case svc_updateping:
 			i = MSG_ReadByte ();
 			if (i >= MAX_CLIENTS)
-				Host_EndGame ("%s: svc_updateping > MAX_CLIENTS", __FUNCTION__);
+				Host_EndGame ("%s: svc_updateping > MAX_CLIENTS", __thisfunc__);
 			cl.players[i].ping = MSG_ReadShort ();
 			break;
 
@@ -1290,7 +1290,7 @@ void CL_ParseServerMessage (void)
 		// time is sent over as seconds ago
 			i = MSG_ReadByte ();
 			if (i >= MAX_CLIENTS)
-				Host_EndGame ("%s: svc_updateentertime > MAX_CLIENTS", __FUNCTION__);
+				Host_EndGame ("%s: svc_updateentertime > MAX_CLIENTS", __thisfunc__);
 			cl.players[i].entertime = realtime - MSG_ReadFloat ();
 			break;
 
@@ -1298,7 +1298,7 @@ void CL_ParseServerMessage (void)
 		// playerclass has changed for this dude
 			i = MSG_ReadByte ();
 			if (i >= MAX_CLIENTS)
-				Host_EndGame ("%s: svc_updatepclass > MAX_CLIENTS", __FUNCTION__);
+				Host_EndGame ("%s: svc_updatepclass > MAX_CLIENTS", __thisfunc__);
 			cl.players[i].playerclass = MSG_ReadByte ();
 			cl.players[i].level = cl.players[i].playerclass&31;
 			cl.players[i].playerclass = cl.players[i].playerclass>>5;
@@ -1308,7 +1308,7 @@ void CL_ParseServerMessage (void)
 		// This dude killed someone, update his frags and level
 			i = MSG_ReadByte ();
 			if (i >= MAX_CLIENTS)
-				Host_EndGame ("%s: svc_updatedminfo > MAX_CLIENTS", __FUNCTION__);
+				Host_EndGame ("%s: svc_updatedminfo > MAX_CLIENTS", __thisfunc__);
 			cl.players[i].frags = MSG_ReadShort ();
 			cl.players[i].playerclass = MSG_ReadByte ();
 			cl.players[i].level = cl.players[i].playerclass&31;
@@ -1325,7 +1325,7 @@ void CL_ParseServerMessage (void)
 		// This dude killed someone, update his frags and level
 			i = MSG_ReadByte ();
 			if (i >= MAX_CLIENTS)
-				Host_EndGame ("%s: svc_updatesiegeteam > MAX_CLIENTS", __FUNCTION__);
+				Host_EndGame ("%s: svc_updatesiegeteam > MAX_CLIENTS", __thisfunc__);
 			cl.players[i].siege_team = MSG_ReadByte ();
 			break;
 

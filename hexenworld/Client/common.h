@@ -2,7 +2,7 @@
 	common.h
 	misc utilities used in client and server
 
-	$Id: common.h,v 1.43 2007-04-19 14:04:31 sezero Exp $
+	$Id: common.h,v 1.44 2007-05-13 11:59:00 sezero Exp $
 */
 
 #ifndef __HX2_COMMON_H
@@ -50,15 +50,15 @@ extern size_t Q_strlcat (char *dst, const char *src, size_t size);
 
 #define Q_strlcat_err(DST,SRC,SIZE) {							\
 	if (Q_strlcat((DST),(SRC),(SIZE)) >= (SIZE))					\
-		Sys_Error("%s: %d: string buffer overflow!",__FUNCTION__,__LINE__);	\
+		Sys_Error("%s: %d: string buffer overflow!",__thisfunc__,__LINE__);	\
 }
 #define Q_strlcpy_err(DST,SRC,SIZE) {							\
 	if (Q_strlcpy((DST),(SRC),(SIZE)) >= (SIZE))					\
-		Sys_Error("%s: %d: string buffer overflow!",__FUNCTION__,__LINE__);	\
+		Sys_Error("%s: %d: string buffer overflow!",__thisfunc__,__LINE__);	\
 }
 #define Q_snprintf_err(DST,SIZE,fmt,args...) {						\
 	if (snprintf((DST),(SIZE),fmt,##args) >= (SIZE))				\
-		Sys_Error("%s: %d: string buffer overflow!",__FUNCTION__,__LINE__);	\
+		Sys_Error("%s: %d: string buffer overflow!",__thisfunc__,__LINE__);	\
 }
 
 extern char *Q_strlwr (char *str);

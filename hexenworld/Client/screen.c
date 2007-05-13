@@ -2,7 +2,7 @@
 	screen.c
 	master for refresh, status bar, console, chat, notify, etc
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/screen.c,v 1.32 2007-05-09 20:17:17 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/screen.c,v 1.33 2007-05-13 11:59:02 sezero Exp $
 */
 
 
@@ -614,7 +614,7 @@ static void WritePCXfile (const char *filename, byte *data, int width, int heigh
 	pcx = Hunk_TempAlloc (width*height*2+1000);
 	if (pcx == NULL)
 	{
-		Con_Printf("%s: not enough memory\n", __FUNCTION__);
+		Con_Printf("%s: not enough memory\n", __thisfunc__);
 		return;
 	}
 
@@ -691,7 +691,7 @@ static void SCR_ScreenShot_f (void)
 	}
 	if (i == 100)
 	{
-		Con_Printf ("%s: Couldn't create a PCX file\n", __FUNCTION__);
+		Con_Printf ("%s: Couldn't create a PCX file\n", __thisfunc__);
 		return;
 	}
 
@@ -965,7 +965,7 @@ static void SB_IntermissionOverlay (void)
 	}
 	if (pic == NULL)
 	{
-		Host_Error ("%s: Bad episode ending number %d", __FUNCTION__, cl.intermission);
+		Host_Error ("%s: Bad episode ending number %d", __thisfunc__, cl.intermission);
 		return;
 	}
 

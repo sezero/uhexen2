@@ -2,7 +2,7 @@
 	net_loop.c
 	network loop driver
 
-	$Id: net_loop.c,v 1.5 2007-03-14 21:03:11 sezero Exp $
+	$Id: net_loop.c,v 1.6 2007-05-13 11:58:29 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -59,7 +59,7 @@ qsocket_t *Loop_Connect (char *host)
 	{
 		if ((loop_client = NET_NewQSocket ()) == NULL)
 		{
-			Con_Printf("%s: no qsocket available\n", __FUNCTION__);
+			Con_Printf("%s: no qsocket available\n", __thisfunc__);
 			return NULL;
 		}
 		strcpy (loop_client->address, "localhost");
@@ -72,7 +72,7 @@ qsocket_t *Loop_Connect (char *host)
 	{
 		if ((loop_server = NET_NewQSocket ()) == NULL)
 		{
-			Con_Printf("%s: no qsocket available\n", __FUNCTION__);
+			Con_Printf("%s: no qsocket available\n", __thisfunc__);
 			return NULL;
 		}
 		strcpy (loop_server->address, "LOCAL");
@@ -148,7 +148,7 @@ int Loop_SendMessage (qsocket_t *sock, sizebuf_t *data)
 	bufferLength = &((qsocket_t *)sock->driverdata)->receiveMessageLength;
 
 	if ((*bufferLength + data->cursize + 4) > NET_MAXMESSAGE)
-		Sys_Error("%s: overflow", __FUNCTION__);
+		Sys_Error("%s: overflow", __thisfunc__);
 
 	buffer = ((qsocket_t *)sock->driverdata)->receiveMessage + *bufferLength;
 

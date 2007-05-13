@@ -19,7 +19,7 @@
 
 /*
 	tyrlite.c
-	$Id: tyrlite.c,v 1.17 2007-05-12 11:00:35 sezero Exp $
+	$Id: tyrlite.c,v 1.18 2007-05-13 12:00:10 sezero Exp $
 
 	Modifications by Kevin Shanahan, 1999-2000
 */
@@ -78,7 +78,7 @@ byte *GetFileSpace (int size)
 	file_p += size;
 	UNLOCK;
 	if (file_p > file_end)
-		Error ("%s: overrun", __FUNCTION__);
+		Error ("%s: overrun", __thisfunc__);
 	return buf;
 }
 
@@ -157,7 +157,7 @@ static void FindFaceOffsets (void)
 		sprintf (name, "*%d", i);
 		ent = FindEntityWithKeyPair("model", name);
 		if ( !ent )
-			Error("%s: Couldn't find entity for model %s.\n", __FUNCTION__, name);
+			Error("%s: Couldn't find entity for model %s.\n", __thisfunc__, name);
 
 		classname = ValueForKey (ent, "classname");
 		if ( !strncmp(classname, "rotate_", 7) )

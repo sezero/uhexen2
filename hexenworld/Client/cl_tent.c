@@ -2,7 +2,7 @@
 	cl_tent.c
 	client side temporary entities
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/cl_tent.c,v 1.26 2007-03-14 21:03:30 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/cl_tent.c,v 1.27 2007-05-13 11:59:00 sezero Exp $
 */
 
 
@@ -470,7 +470,7 @@ void CreateStream(int type, int ent, int flags, int tag, float duration, int ski
 		break;
 	}
 	if (models[0] == NULL)
-		Sys_Error("%s: bad type", __FUNCTION__);
+		Sys_Error("%s: bad type", __thisfunc__);
 
 	if ((stream = NewStream(ent, tag)) == NULL)
 	{
@@ -713,7 +713,7 @@ static void ParseStream(int type)
 		break;
 	}
 	if (models[0] == NULL)
-		Sys_Error("%s: bad type", __FUNCTION__);
+		Sys_Error("%s: bad type", __thisfunc__);
 
 	if ((stream = NewStream(ent, tag)) == NULL)
 	{
@@ -3480,7 +3480,7 @@ void CL_ParseTEnt (void)
 			break;
 
 		default:
-			Sys_Error ("%s: bad type", __FUNCTION__);
+			Sys_Error ("%s: bad type", __thisfunc__);
 	}
 }
 

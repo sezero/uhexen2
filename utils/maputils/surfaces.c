@@ -1,6 +1,6 @@
 /*
 	surfaces.c (divide.h)
-	$Id: surfaces.c,v 1.6 2007-03-14 21:04:42 sezero Exp $
+	$Id: surfaces.c,v 1.7 2007-05-13 12:00:17 sezero Exp $
 */
 
 #include "util_inc.h"
@@ -86,7 +86,7 @@ void SubdivideFace (face_t *f, face_t **prevptr)
 			next = f->next;
 			SplitFace (f, &plane, &front, &back);
 			if (!front || !back)
-				Error ("%s: didn't split the polygon", __FUNCTION__);
+				Error ("%s: didn't split the polygon", __thisfunc__);
 			*prevptr = front;
 			front->next = back;
 			back->next = next;
@@ -152,7 +152,7 @@ void SubdivideFace (face_t *f, face_t **prevptr)
 			next = f->next;
 			SplitFace (f, &plane, &front, &back);
 			if (!front || !back)
-				Error ("%s: didn't split the polygon", __FUNCTION__);
+				Error ("%s: didn't split the polygon", __thisfunc__);
 			*prevptr = back;
 			back->next = front;
 			front->next = next;
@@ -380,7 +380,7 @@ static int GetVertex (vec3_t in, int planenum)
 	VectorCopy (vert, hv->point);
 	hv->num = numvertexes;
 	if (hv->num == MAX_MAP_VERTS)
-		Error ("%s: MAX_MAP_VERTS", __FUNCTION__);
+		Error ("%s: MAX_MAP_VERTS", __thisfunc__);
 	hvert_p++;
 
 // emit a vertex
@@ -414,7 +414,7 @@ static int GetEdge (vec3_t p1, vec3_t p2, face_t *f)
 	int		i;
 
 	if (!f->contents[0])
-		Error ("%s: 0 contents", __FUNCTION__);
+		Error ("%s: 0 contents", __thisfunc__);
 
 	c_tryedges++;
 	v1 = GetVertex (p1, f->planenum);
@@ -455,7 +455,7 @@ static void FindFaceEdges (face_t *face)
 
 	face->outputnumber = -1;
 	if (face->numpoints > MAXEDGES)
-		Error ("%s: %i points", __FUNCTION__, face->numpoints);
+		Error ("%s: %i points", __thisfunc__, face->numpoints);
 
 	for (i = 0; i < face->numpoints ; i++)
 		face->edges[i] = GetEdge (face->pts[i], face->pts[(i+1)%face->numpoints], face);

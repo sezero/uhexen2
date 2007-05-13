@@ -2,7 +2,7 @@
 	net_main.c
 	main networking module
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/net_main.c,v 1.22 2007-05-09 18:10:13 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/net_main.c,v 1.23 2007-05-13 11:58:29 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -137,7 +137,7 @@ void NET_FreeQSocket(qsocket_t *sock)
 		}
 
 		if (!s)
-			Sys_Error ("%s: not active", __FUNCTION__);
+			Sys_Error ("%s: not active", __thisfunc__);
 	}
 
 	// add it to free list
@@ -496,7 +496,7 @@ int	NET_GetMessage (qsocket_t *sock)
 
 	if (sock->disconnected)
 	{
-		Con_Printf("%s: disconnected socket\n", __FUNCTION__);
+		Con_Printf("%s: disconnected socket\n", __thisfunc__);
 		return -1;
 	}
 
@@ -550,7 +550,7 @@ int NET_SendMessage (qsocket_t *sock, sizebuf_t *data)
 
 	if (sock->disconnected)
 	{
-		Con_Printf("%s: disconnected socket\n", __FUNCTION__);
+		Con_Printf("%s: disconnected socket\n", __thisfunc__);
 		return -1;
 	}
 
@@ -572,7 +572,7 @@ int NET_SendUnreliableMessage (qsocket_t *sock, sizebuf_t *data)
 
 	if (sock->disconnected)
 	{
-		Con_Printf("%s: disconnected socket\n", __FUNCTION__);
+		Con_Printf("%s: disconnected socket\n", __thisfunc__);
 		return -1;
 	}
 
@@ -706,7 +706,7 @@ void NET_Init (void)
 		if (i < com_argc-1)
 			DEFAULTnet_hostport = atoi (com_argv[i+1]);
 		else
-			Con_Printf ("%s: ignoring -port argument\n", __FUNCTION__);
+			Con_Printf ("%s: ignoring -port argument\n", __thisfunc__);
 	}
 	net_hostport = DEFAULTnet_hostport;
 

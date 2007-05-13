@@ -2,7 +2,7 @@
 	r_alias.c
 	routines for setting up to draw alias models
 
-	$Id: r_alias.c,v 1.8 2007-03-14 21:03:36 sezero Exp $
+	$Id: r_alias.c,v 1.9 2007-05-13 11:59:01 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -773,7 +773,7 @@ static void R_AliasSetupSkin (void)
 
 	if ((skinnum >= pmdl->numskins) || (skinnum < 0))
 	{
-		Con_DPrintf ("%s: no such skin # %d\n", __FUNCTION__, skinnum);
+		Con_DPrintf ("%s: no such skin # %d\n", __thisfunc__, skinnum);
 		skinnum = 0;
 	}
 
@@ -895,7 +895,7 @@ static void R_AliasSetupFrame (void)
 	frame = currententity->frame;
 	if ((frame >= pmdl->numframes) || (frame < 0))
 	{
-		Con_DPrintf ("%s: no such frame %d %s\n", __FUNCTION__, frame, currententity->model->name);
+		Con_DPrintf ("%s: no such frame %d %s\n", __thisfunc__, frame, currententity->model->name);
 		frame = 0;
 	}
 
@@ -993,7 +993,7 @@ void R_AliasDrawModel (alight_t *plighting)
 	R_AliasSetupFrame ();
 
 	if (!currententity->colormap)
-		Sys_Error ("%s: !currententity->colormap", __FUNCTION__);
+		Sys_Error ("%s: !currententity->colormap", __thisfunc__);
 
 	r_affinetridesc.drawtype =
 		(currententity->trivial_accept == 3) && r_recursiveaffinetriangles;

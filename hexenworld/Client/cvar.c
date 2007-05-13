@@ -2,7 +2,7 @@
 	cvar.c
 	dynamic variable tracking
 
-	$Id: cvar.c,v 1.27 2007-05-09 18:10:16 sezero Exp $
+	$Id: cvar.c,v 1.28 2007-05-13 11:59:00 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -148,7 +148,7 @@ void Cvar_Set (const char *var_name, const char *value)
 	var = Cvar_FindVar (var_name);
 	if (!var)
 	{	// there is an error in C code if this happens
-		Con_Printf ("%s: variable %s not found\n", __FUNCTION__, var_name);
+		Con_Printf ("%s: variable %s not found\n", __thisfunc__, var_name);
 		return;
 	}
 
@@ -269,7 +269,7 @@ void Cvar_RegisterVariable (cvar_t *variable)
 // check for overlap with a command
 	if (Cmd_Exists (variable->name))
 	{
-		Con_Printf ("%s: %s is a command\n", __FUNCTION__, variable->name);
+		Con_Printf ("%s: %s is a command\n", __thisfunc__, variable->name);
 		return;
 	}
 

@@ -2,7 +2,7 @@
 	zone.c
 	Memory management
 
-	$Id: zone.c,v 1.29 2007-04-13 11:33:47 sezero Exp $
+	$Id: zone.c,v 1.30 2007-05-13 11:59:02 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -83,7 +83,7 @@ void Z_Free (void *ptr)
 	memblock_t	*block, *other;
 
 	if (!ptr)
-		Sys_Error ("%s: NULL pointer", __FUNCTION__);
+		Sys_Error ("%s: NULL pointer", __thisfunc__);
 
 	block = (memblock_t *) ( (byte *)ptr - sizeof(memblock_t));
 	if (block->id == ZONEID)
@@ -91,9 +91,9 @@ void Z_Free (void *ptr)
 	else if (block->id == ZONEID2)
 		zone = sec_zone;
 	else
-		Sys_Error ("%s: freed a pointer without ZONEID", __FUNCTION__);
+		Sys_Error ("%s: freed a pointer without ZONEID", __thisfunc__);
 	if (block->tag == 0)
-		Sys_Error ("%s: freed a freed pointer", __FUNCTION__);
+		Sys_Error ("%s: freed a freed pointer", __thisfunc__);
 
 	block->tag = 0;		// mark as free
 
@@ -127,11 +127,11 @@ static void *Z_TagMalloc (int zone_id, int size, int tag)
 	memzone_t	*zone;
 
 	if (!tag)
-		Sys_Error ("%s: tried to use a 0 tag", __FUNCTION__);
+		Sys_Error ("%s: tried to use a 0 tag", __thisfunc__);
 
 	zone = (zone_id == Z_MAINZONE) ? mainzone : sec_zone;
 	if (zone == NULL)
-		Sys_Error ("%s: tried to use an uninitialized zone", __FUNCTION__);
+		Sys_Error ("%s: tried to use an uninitialized zone", __thisfunc__);
 
 //
 // scan through the block list looking for the first free block
@@ -196,17 +196,17 @@ static void Z_CheckHeap (int zone_id)
 
 	zone = (zone_id == Z_MAINZONE) ? mainzone : sec_zone;
 	if (zone == NULL)
-		Sys_Error ("%s: uninitialized zone", __FUNCTION__);
+		Sys_Error ("%s: uninitialized zone", __thisfunc__);
 	for (block = zone->blocklist.next ; ; block = block->next)
 	{
 		if (block->next == &zone->blocklist)
 			break;			// all blocks have been hit
 		if ( (byte *)block + block->size != (byte *)block->next)
-			Sys_Error ("%s: block size does not touch the next block", __FUNCTION__);
+			Sys_Error ("%s: block size does not touch the next block", __thisfunc__);
 		if ( block->next->prev != block)
-			Sys_Error ("%s: next block doesn't have proper back link", __FUNCTION__);
+			Sys_Error ("%s: next block doesn't have proper back link", __thisfunc__);
 		if (!block->tag && !block->next->tag)
-			Sys_Error ("%s: two consecutive free blocks", __FUNCTION__);
+			Sys_Error ("%s: two consecutive free blocks", __thisfunc__);
 	}
 }
 #endif	/* Z_CHECKHEAP */
@@ -221,14 +221,14 @@ void *Z_Malloc (int size, int zone_id)
 	void	*buf;
 
 	if (zone_id != Z_MAINZONE && zone_id != Z_SECZONE)
-		Sys_Error ("%s: Bad Zone ID %i", __FUNCTION__, zone_id);
+		Sys_Error ("%s: Bad Zone ID %i", __thisfunc__, zone_id);
 
 #if Z_CHECKHEAP
 	Z_CheckHeap (zone_id);	// DEBUG
 #endif
 	buf = Z_TagMalloc (zone_id, size, 1);
 	if (!buf)
-		Sys_Error ("%s: failed on allocation of %i bytes", __FUNCTION__, size);
+		Sys_Error ("%s: failed on allocation of %i bytes", __thisfunc__, size);
 	memset (buf, 0, size);
 
 	return buf;
@@ -245,9 +245,9 @@ void *Z_Realloc (void *ptr, int size, int zone_id)
 
 	block = (memblock_t *) ((byte *) ptr - sizeof (memblock_t));
 	if (block->id != ZONEID && block->id != ZONEID2)
-		Sys_Error ("%s: realloced a pointer without ZONEID", __FUNCTION__);
+		Sys_Error ("%s: realloced a pointer without ZONEID", __thisfunc__);
 	if (block->tag == 0)
-		Sys_Error ("%s: realloced a freed pointer", __FUNCTION__);
+		Sys_Error ("%s: realloced a freed pointer", __thisfunc__);
 
 	old_size = block->size;
 	old_ptr = ptr;
@@ -255,7 +255,7 @@ void *Z_Realloc (void *ptr, int size, int zone_id)
 	Z_Free (ptr);
 	ptr = Z_TagMalloc (zone_id, size, 1);
 	if (!ptr)
-		Sys_Error ("%s: failed on allocation of %i bytes", __FUNCTION__, size);
+		Sys_Error ("%s: failed on allocation of %i bytes", __thisfunc__, size);
 
 	if (ptr != old_ptr)
 		memmove (ptr, old_ptr, min (old_size, size));
@@ -297,9 +297,9 @@ void Hunk_Check (void)
 	for (h = (hunk_t *)hunk_base ; (byte *)h != hunk_base + hunk_low_used ; )
 	{
 		if (h->sentinal != HUNK_SENTINAL)
-			Sys_Error ("%s: trashed sentinal", __FUNCTION__);
+			Sys_Error ("%s: trashed sentinal", __thisfunc__);
 		if (h->size < sizeof(hunk_t) || h->size + (byte *)h - hunk_base > hunk_size)
-			Sys_Error ("%s: bad size", __FUNCTION__);
+			Sys_Error ("%s: bad size", __thisfunc__);
 		h = (hunk_t *)((byte *)h+h->size);
 	}
 }
@@ -318,12 +318,12 @@ void *Hunk_AllocName (int size, const char *name)
 #endif
 
 	if (size < 0)
-		Sys_Error ("%s: bad size: %i for %s", __FUNCTION__, size, name);
+		Sys_Error ("%s: bad size: %i for %s", __thisfunc__, size, name);
 
 	size = sizeof(hunk_t) + ((size + 15) & ~15);
 
 	if (hunk_size - hunk_low_used - hunk_high_used < size)
-		Sys_Error ("%s: failed on %i bytes for %s", __FUNCTION__, size, name);
+		Sys_Error ("%s: failed on %i bytes for %s", __thisfunc__, size, name);
 
 	h = (hunk_t *)(hunk_base + hunk_low_used);
 	hunk_low_used += size;
@@ -358,7 +358,7 @@ int	Hunk_LowMark (void)
 void Hunk_FreeToLowMark (int mark)
 {
 	if (mark < 0 || mark > hunk_low_used)
-		Sys_Error ("%s: bad mark %i", __FUNCTION__, mark);
+		Sys_Error ("%s: bad mark %i", __thisfunc__, mark);
 	memset (hunk_base + mark, 0, hunk_low_used - mark);
 	hunk_low_used = mark;
 }
@@ -382,7 +382,7 @@ void Hunk_FreeToHighMark (int mark)
 		Hunk_FreeToHighMark (hunk_tempmark);
 	}
 	if (mark < 0 || mark > hunk_high_used)
-		Sys_Error ("%s: bad mark %i", __FUNCTION__, mark);
+		Sys_Error ("%s: bad mark %i", __thisfunc__, mark);
 	memset (hunk_base + hunk_size - hunk_high_used, 0, hunk_high_used - mark);
 	hunk_high_used = mark;
 }
@@ -398,7 +398,7 @@ void *Hunk_HighAllocName (int size, const char *name)
 	hunk_t	*h;
 
 	if (size < 0)
-		Sys_Error ("%s: bad size: %i", __FUNCTION__, size);
+		Sys_Error ("%s: bad size: %i", __thisfunc__, size);
 
 	if (hunk_tempactive)
 	{
@@ -414,7 +414,7 @@ void *Hunk_HighAllocName (int size, const char *name)
 
 	if (hunk_size - hunk_low_used - hunk_high_used < size)
 	{
-		Con_Printf ("%s: failed on %i bytes\n", __FUNCTION__, size);
+		Con_Printf ("%s: failed on %i bytes\n", __thisfunc__, size);
 		return NULL;
 	}
 
@@ -565,7 +565,7 @@ static void Cache_FreeHigh (int new_high_hunk)
 static void Cache_UnlinkLRU (cache_system_t *cs)
 {
 	if (!cs->lru_next || !cs->lru_prev)
-		Sys_Error ("%s: NULL link", __FUNCTION__);
+		Sys_Error ("%s: NULL link", __thisfunc__);
 
 	cs->lru_next->lru_prev = cs->lru_prev;
 	cs->lru_prev->lru_next = cs->lru_next;
@@ -576,7 +576,7 @@ static void Cache_UnlinkLRU (cache_system_t *cs)
 static void Cache_MakeLRU (cache_system_t *cs)
 {
 	if (cs->lru_next || cs->lru_prev)
-		Sys_Error ("%s: active link", __FUNCTION__);
+		Sys_Error ("%s: active link", __thisfunc__);
 
 	cache_head.lru_next->lru_prev = cs;
 	cs->lru_next = cache_head.lru_next;
@@ -601,7 +601,7 @@ static cache_system_t *Cache_TryAlloc (int size, qboolean nobottom)
 	if (!nobottom && cache_head.prev == &cache_head)
 	{
 		if (hunk_size - hunk_high_used - hunk_low_used < size)
-			Sys_Error ("%s: out of hunk memory (failed to allocate %i bytes)", __FUNCTION__, size);
+			Sys_Error ("%s: out of hunk memory (failed to allocate %i bytes)", __thisfunc__, size);
 
 		new = (cache_system_t *) (hunk_base + hunk_low_used);
 		memset (new, 0, sizeof(*new));
@@ -713,7 +713,7 @@ void Cache_Free (cache_user_t *c)
 	cache_system_t	*cs;
 
 	if (!c->data)
-		Sys_Error ("%s: not allocated", __FUNCTION__);
+		Sys_Error ("%s: not allocated", __thisfunc__);
 
 	cs = ((cache_system_t *)c->data) - 1;
 
@@ -759,10 +759,10 @@ void *Cache_Alloc (cache_user_t *c, int size, const char *name)
 	cache_system_t	*cs;
 
 	if (c->data)
-		Sys_Error ("%s: %s is already allocated", __FUNCTION__, name);
+		Sys_Error ("%s: %s is already allocated", __thisfunc__, name);
 
 	if (size <= 0)
-		Sys_Error ("%s: bad size %i for %s", __FUNCTION__, size, name);
+		Sys_Error ("%s: bad size %i for %s", __thisfunc__, size, name);
 
 	size = (size + sizeof(cache_system_t) + 15) & ~15;
 
@@ -781,7 +781,7 @@ void *Cache_Alloc (cache_user_t *c, int size, const char *name)
 
 	// free the least recently used cahedat
 		if (cache_head.lru_prev == &cache_head)	// not enough memory at all
-			Sys_Error ("%s: out of memory", __FUNCTION__);
+			Sys_Error ("%s: out of memory", __thisfunc__);
 		Cache_Free ( cache_head.lru_prev->user );
 	}
 
@@ -860,9 +860,9 @@ static void Hunk_Print (qboolean all, qboolean write_file)
 	// run consistancy checks
 	//
 		if (h->sentinal != HUNK_SENTINAL)
-			Sys_Error ("%s: trashed sentinal", __FUNCTION__);
+			Sys_Error ("%s: trashed sentinal", __thisfunc__);
 		if (h->size < sizeof(hunk_t) || h->size + (byte *)h - hunk_base > hunk_size)
-			Sys_Error ("%s: bad size", __FUNCTION__);
+			Sys_Error ("%s: bad size", __thisfunc__);
 
 		next = (hunk_t *)((byte *)h+h->size);
 		count++;

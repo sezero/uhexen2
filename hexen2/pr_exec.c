@@ -2,7 +2,7 @@
 	pr_exec.c
 	PROGS execution
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/pr_exec.c,v 1.19 2007-04-01 12:18:20 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/pr_exec.c,v 1.20 2007-05-13 11:58:30 sezero Exp $
 */
 
 // HEADER FILES ------------------------------------------------------------
@@ -152,7 +152,7 @@ void PR_ExecuteProgram (func_t fnum)
 		{
 			ED_Print(PROG_TO_EDICT(PR_GLOBAL_STRUCT(self)));
 		}
-		Host_Error("%s: NULL function", __FUNCTION__);
+		Host_Error("%s: NULL function", __thisfunc__);
 	}
 
 	f = &pr_functions[fnum];
@@ -797,7 +797,7 @@ static int EnterFunction (dfunction_t *f)
 	c = f->locals;
 	if (localstack_used + c > LOCALSTACK_SIZE)
 	{
-		PR_RunError ("%s: locals stack overflow", __FUNCTION__);
+		PR_RunError ("%s: locals stack overflow", __thisfunc__);
 	}
 
 	for (i = 0; i < c ; i++)
@@ -842,7 +842,7 @@ static int LeaveFunction (void)
 	localstack_used -= c;
 	if (localstack_used < 0)
 	{
-		PR_RunError("%s: locals stack underflow", __FUNCTION__);
+		PR_RunError("%s: locals stack underflow", __thisfunc__);
 	}
 
 	for (i = 0; i < c; i++)

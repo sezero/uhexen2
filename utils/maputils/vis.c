@@ -1,6 +1,6 @@
 /*
 	vis.c
-	$Id: vis.c,v 1.9 2007-03-14 21:04:43 sezero Exp $
+	$Id: vis.c,v 1.10 2007-05-13 12:00:25 sezero Exp $
 */
 
 #include "util_inc.h"
@@ -139,7 +139,7 @@ static winding_t *OldNewWinding (int points)
 	int			size;
 
 	if (points > MAX_POINTS_ON_WINDING)
-		Error ("%s: %i points", __FUNCTION__, points);
+		Error ("%s: %i points", __thisfunc__, points);
 
 	size = (int)((winding_t *)0)->points[points];
 	w = malloc (size);
@@ -200,7 +200,7 @@ winding_t *NewWinding (int points)
 	size_t			size;
 
 	if (points > MAX_POINTS_ON_WINDING)
-		Error ("%s: %i points", __FUNCTION__, points);
+		Error ("%s: %i points", __thisfunc__, points);
 
 	size = (size_t)((winding_t *)0)->points[points];
 	w = malloc (size);
@@ -359,7 +359,7 @@ winding_t *ClipWinding (winding_t *in, plane_t *split, qboolean keepon)
 	}
 
 	if (neww->numpoints > maxpts)
-		Error ("%s: points exceeded estimate", __FUNCTION__);
+		Error ("%s: points exceeded estimate", __thisfunc__);
 
 // free the original winding
 	FreeWinding (in);
@@ -473,7 +473,7 @@ static	void	*LeafThread (int thread)
 {
 	portal_t	*p;
 
-	printf ("Begining %s: %i\n", __FUNCTION__, (int)thread);
+	printf ("Begining %s: %i\n", __thisfunc__, (int)thread);
 	do
 	{
 		p = GetNextPortal ();
@@ -486,7 +486,7 @@ static	void	*LeafThread (int thread)
 			printf ("portal:%4i  mightsee:%4i  cansee:%4i\n", (int)(p - portals), p->nummightsee, p->numcansee);
 	} while (1);
 
-	printf ("Completed %s: %i\n", __FUNCTION__, (int)thread);
+	printf ("Completed %s: %i\n", __thisfunc__, (int)thread);
 
 	return NULL;
 }
@@ -904,16 +904,16 @@ static void LoadPortals (char *name)
 		f = fopen(name, "r");
 		if (!f)
 		{
-			printf ("%s: couldn't read %s\n", __FUNCTION__, name);
+			printf ("%s: couldn't read %s\n", __thisfunc__, name);
 			printf ("No vising performed.\n");
 			exit (1);
 		}
 	}
 
 	if (fscanf (f,"%79s\n%i\n%i\n",magic, &portalleafs, &numportals) != 3)
-		Error ("%s: failed to read header", __FUNCTION__);
+		Error ("%s: failed to read header", __thisfunc__);
 	if (strcmp(magic,PORTALFILE))
-		Error ("%s: not a portal file", __FUNCTION__);
+		Error ("%s: not a portal file", __thisfunc__);
 
 	printf ("%4i portalleafs\n", portalleafs);
 	printf ("%4i numportals\n", numportals);
@@ -936,11 +936,11 @@ static void LoadPortals (char *name)
 	for (i = 0, p = portals ; i < numportals ; i++)
 	{
 		if (fscanf (f, "%i %i %i ", &numpoints, &leafnums[0], &leafnums[1]) != 3)
-			Error ("%s: Error reading portal %i", __FUNCTION__, i);
+			Error ("%s: Error reading portal %i", __thisfunc__, i);
 		if (numpoints > MAX_POINTS_ON_WINDING)
-			Error ("%s: portal %i has too many points", __FUNCTION__, i);
+			Error ("%s: portal %i has too many points", __thisfunc__, i);
 		if ( leafnums[0] > portalleafs || leafnums[1] > portalleafs)
-			Error ("%s: portal %i, leafnums > portalleafs", __FUNCTION__, i);
+			Error ("%s: portal %i, leafnums > portalleafs", __thisfunc__, i);
 
 		w = p->winding = NewWinding (numpoints);
 		w->original = true;
@@ -950,7 +950,7 @@ static void LoadPortals (char *name)
 		{
 			if (fscanf (f, "(%lf %lf %lf ) ",
 					&w->points[j][0], &w->points[j][1], &w->points[j][2]) != 3)
-				Error ("%s: reading portal %i", __FUNCTION__, i);
+				Error ("%s: reading portal %i", __thisfunc__, i);
 		}
 		fscanf (f, "\n");
 

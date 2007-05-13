@@ -1,6 +1,6 @@
 /*
 	lmp2pcx.c
-	$Id: lmp2pcx.c,v 1.2 2007-05-12 09:35:53 sezero Exp $
+	$Id: lmp2pcx.c,v 1.3 2007-05-13 12:00:26 sezero Exp $
 	Copyright (C) 2002-2007 Forest Hale
 
 	This program is free software; you can redistribute it and/or
@@ -90,7 +90,7 @@ void WritePCX (const char *filename, unsigned char *data, int width, int height,
 	pcx = malloc (width*height*2 + 1000);
 	if (!pcx)
 	{
-		printf ("%s: unable to allocate buffer\n", __FUNCTION__);
+		printf ("%s: unable to allocate buffer\n", __thisfunc__);
 		return;
 	}
 	memset (pcx, 0, sizeof(pcx_t));
@@ -374,14 +374,14 @@ static unsigned char *LoadLMP (const char *filename, int idx)
 	if (image_width < 0 || image_height < 0 || image_width > 512 || image_height > 512)
 	{
 		free (lmpdata);
-		printf ("%s: \"%s\" is not a %s file\n", __FUNCTION__, filename, convertdata[idx].datatype);
+		printf ("%s: \"%s\" is not a %s file\n", __thisfunc__, filename, convertdata[idx].datatype);
 		return NULL;
 	}
 	data = malloc (image_width*image_height);
 	if (!data)
 	{
 		free (lmpdata);
-		printf ("%s: unable to allocate memory for \"%s\"\n", __FUNCTION__, filename);
+		printf ("%s: unable to allocate memory for \"%s\"\n", __thisfunc__, filename);
 		return NULL;
 	}
 	memcpy (data, (unsigned char *)lmpdata + 8, image_width*image_height);
@@ -456,7 +456,7 @@ static unsigned char *LoadMIP (const char *filename, int idx)
 		if (shift == 0)
 		{
 			free (mipdata);
-			printf ("%s: \"%s\" is not a %s file\n", __FUNCTION__, filename, convertdata[idx].datatype);
+			printf ("%s: \"%s\" is not a %s file\n", __thisfunc__, filename, convertdata[idx].datatype);
 			return NULL;
 		}
 	}
@@ -466,14 +466,14 @@ static unsigned char *LoadMIP (const char *filename, int idx)
 						(image_width & 15) || (image_height & 15) )
 	{
 		free (mipdata);
-		printf ("%s: \"%s\" is not a %s file\n", __FUNCTION__, filename, convertdata[idx].datatype);
+		printf ("%s: \"%s\" is not a %s file\n", __thisfunc__, filename, convertdata[idx].datatype);
 		return NULL;
 	}
 	data = malloc (image_width*image_height);
 	if (!data)
 	{
 		free (mipdata);
-		printf ("%s: unable to allocate memory for \"%s\"\n", __FUNCTION__, filename);
+		printf ("%s: unable to allocate memory for \"%s\"\n", __thisfunc__, filename);
 		return NULL;
 	}
 	memcpy (data, (unsigned char *)mipdata + 40 + 4*shift, image_width*image_height);
@@ -563,14 +563,14 @@ static void ConvertWAD (const char *filename, int idx)
 	wad = (void *)waddata;
 	if (memcmp(wad->identification, "WAD2", 4))
 	{
-		printf("%s: \"%s\" is not a %s file\n", __FUNCTION__, filename, convertdata[idx].datatype);
+		printf("%s: \"%s\" is not a %s file\n", __thisfunc__, filename, convertdata[idx].datatype);
 		return;
 	}
 	snprintf (tempname, sizeof(tempname), "%s/", OUTPUT_DIR);
 	ptr = tempname + sizeof(OUTPUT_DIR);
 	wad->numlumps = LittleLong(wad->numlumps);
 	wad->infotableofs = LittleLong(wad->infotableofs);
-	printf ("%s: converting \"%s\" (%i lumps)\n", __FUNCTION__, filename, wad->numlumps);
+	printf ("%s: converting \"%s\" (%i lumps)\n", __thisfunc__, filename, wad->numlumps);
 	lump = (void *)((unsigned char *)waddata + wad->infotableofs);
 	for (i = 0; i < wad->numlumps; i++, lump++)
 	{

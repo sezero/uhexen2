@@ -5,7 +5,7 @@
 	Quake is a trademark of Id Software, Inc., (c) 1996 Id Software, Inc.
 	All rights reserved.
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cl_input.c,v 1.17 2007-05-09 18:10:12 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cl_input.c,v 1.18 2007-05-13 11:58:28 sezero Exp $
 */
 
 
@@ -607,7 +607,7 @@ void CL_SendMove (usercmd_t *cmd)
 
 	if (NET_SendUnreliableMessage (cls.netcon, &buf) == -1)
 	{
-		Con_Printf ("%s: lost server connection\n", __FUNCTION__);
+		Con_Printf ("%s: lost server connection\n", __thisfunc__);
 		CL_Disconnect ();
 	}
 }

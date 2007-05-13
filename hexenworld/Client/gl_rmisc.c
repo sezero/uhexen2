@@ -1,7 +1,7 @@
 /*
 	r_misc.c
 
-	$Id: gl_rmisc.c,v 1.39 2007-05-09 18:10:17 sezero Exp $
+	$Id: gl_rmisc.c,v 1.40 2007-05-13 11:59:01 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -361,7 +361,7 @@ void R_TranslatePlayerSkin (int playernum)
 		original = player_8bit_texels[0];
 
 //	if (s & 3)
-//		Sys_Error ("%s: s&3", __FUNCTION__);
+//		Sys_Error ("%s: s&3", __thisfunc__);
 
 #if 0
 	byte	translated[320*200];

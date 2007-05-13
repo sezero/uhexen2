@@ -2,7 +2,7 @@
 	cl_effect.c
 	Client side effects.
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cl_effect.c,v 1.15 2007-03-14 08:15:15 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cl_effect.c,v 1.16 2007-05-13 11:58:28 sezero Exp $
 */
 
 // HEADER FILES ------------------------------------------------------------
@@ -918,7 +918,7 @@ void CL_ParseEffect (void)
 			break;
 
 		default:
-			Sys_Error ("%s: bad type", __FUNCTION__);
+			Sys_Error ("%s: bad type", __thisfunc__);
 	}
 
 	if (ImmediateFree)

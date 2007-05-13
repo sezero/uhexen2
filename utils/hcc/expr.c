@@ -1,7 +1,7 @@
 /*
 	expr.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/utils/hcc/expr.c,v 1.4 2007-02-17 07:56:17 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/utils/hcc/expr.c,v 1.5 2007-05-13 11:59:44 sezero Exp $
 
 */
 
@@ -469,7 +469,7 @@ static void PrecacheSound (def_t *e, int ch)
 	}
 	if (numsounds == MAX_SOUNDS)
 	{
-		Error("%s: numsounds == MAX_SOUNDS", __FUNCTION__);
+		Error("%s: numsounds == MAX_SOUNDS", __thisfunc__);
 	}
 	strcpy(precache_sounds[i], n);
 	if (ch >= '1' && ch <= '9')
@@ -508,7 +508,7 @@ static void PrecacheModel (def_t *e, int ch)
 	}
 	if (nummodels == MAX_MODELS)
 	{
-		Error("%s: nummodels == MAX_MODELS", __FUNCTION__);
+		Error("%s: nummodels == MAX_MODELS", __thisfunc__);
 	}
 	strcpy(precache_models[i], n);
 	if (ch >= '1' && ch <= '9')
@@ -540,7 +540,7 @@ static void PrecacheFileName(char *n, int ch)
 	}
 	if (numfiles == MAX_FILES)
 	{
-		Error("%s: numfiles == MAX_FILES", __FUNCTION__);
+		Error("%s: numfiles == MAX_FILES", __thisfunc__);
 	}
 	strcpy(precache_files[i], n);
 	if (ch >= '1' && ch <= '9')
@@ -573,7 +573,7 @@ static void PrecacheFile (def_t *e, int ch)
 	}
 	if (numfiles == MAX_FILES)
 	{
-		Error("%s: numfiles == MAX_FILES", __FUNCTION__);
+		Error("%s: numfiles == MAX_FILES", __thisfunc__);
 	}
 	strcpy(precache_files[i], n);
 	if (ch >= '1' && ch <= '9')

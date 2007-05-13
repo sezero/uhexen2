@@ -2,7 +2,7 @@
 	sv_effect.c
 	Client side effects.
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Server/sv_effect.c,v 1.14 2007-03-14 08:11:36 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Server/sv_effect.c,v 1.15 2007-05-13 11:59:43 sezero Exp $
 */
 
 // HEADER FILES ------------------------------------------------------------
@@ -200,8 +200,8 @@ void SV_SendEffect (sizebuf_t *sb, int idx)
 			break;
 
 		default:
-		//	Sys_Error ("%s: bad type", __FUNCTION__);
-			PR_RunError ("%s: bad type", __FUNCTION__);
+		//	Sys_Error ("%s: bad type", __thisfunc__);
+			PR_RunError ("%s: bad type", __thisfunc__);
 			break;
 	}
 
@@ -456,8 +456,8 @@ void SV_SendEffect (sizebuf_t *sb, int idx)
 			break;
 
 		default:
-		//	Sys_Error ("%s: bad type", __FUNCTION__);
-			PR_RunError ("%s: bad type", __FUNCTION__);
+		//	Sys_Error ("%s: bad type", __thisfunc__);
+			PR_RunError ("%s: bad type", __thisfunc__);
 			break;
 	}
 
@@ -721,8 +721,8 @@ void SV_ParseEffect (sizebuf_t *sb)
 			break;
 
 		default:
-		//	Sys_Error ("%s: bad type", __FUNCTION__);
-			PR_RunError ("%s: bad type", __FUNCTION__);
+		//	Sys_Error ("%s: bad type", __thisfunc__);
+			PR_RunError ("%s: bad type", __thisfunc__);
 	}
 
 	SV_SendEffect(sb,idx);
@@ -796,7 +796,7 @@ void SV_ParseMultiEffect (sizebuf_t *sb)
 		break;
 
 	default:
-		PR_RunError ("%s: bad type", __FUNCTION__);
+		PR_RunError ("%s: bad type", __thisfunc__);
 	}
 }
 
@@ -1040,7 +1040,7 @@ void SV_SaveEffects (FILE *FH)
 				break;
 
 			default:
-				PR_RunError ("%s: bad type", __FUNCTION__);
+				PR_RunError ("%s: bad type", __thisfunc__);
 				break;
 		}
 	}
@@ -1274,7 +1274,7 @@ void SV_LoadEffects (FILE *FH)
 				break;
 
 			default:
-				PR_RunError ("%s: bad type", __FUNCTION__);
+				PR_RunError ("%s: bad type", __thisfunc__);
 				break;
 		}
 	}

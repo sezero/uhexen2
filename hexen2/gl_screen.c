@@ -2,7 +2,7 @@
 	screen.c
 	master for refresh, status bar, console, chat, notify, etc
 
-	$Id: gl_screen.c,v 1.47 2007-05-09 20:17:12 sezero Exp $
+	$Id: gl_screen.c,v 1.48 2007-05-13 11:58:29 sezero Exp $
 */
 
 /*=============================================================================
@@ -733,7 +733,7 @@ static void SCR_ScreenShot_f (void)
 	}
 	if (i == 100)
 	{
-		Con_Printf ("%s: Couldn't create a TGA file\n", __FUNCTION__);
+		Con_Printf ("%s: Couldn't create a TGA file\n", __thisfunc__);
 		return;
 	}
 
@@ -884,7 +884,7 @@ static void Info_Plaque_Draw (const char *message)
 
 	if (lines == MAXLINES) 
 	{
-		Con_DPrintf("%s: line overflow error\n", __FUNCTION__);
+		Con_DPrintf("%s: line overflow error\n", __thisfunc__);
 		lines = MAXLINES-1;
 	}
 
@@ -1020,7 +1020,7 @@ static void SB_IntermissionOverlay (void)
 	}
 	if (pic == NULL)
 	{
-		Host_Error ("%s: Bad episode ending number %d", __FUNCTION__, cl.intermission);
+		Host_Error ("%s: Bad episode ending number %d", __thisfunc__, cl.intermission);
 		return;
 	}
 

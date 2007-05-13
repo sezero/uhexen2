@@ -2,7 +2,7 @@
 	wad.c
 	wad file loading
 
-	$Id: wad.c,v 1.12 2007-04-18 13:34:38 sezero Exp $
+	$Id: wad.c,v 1.13 2007-05-13 11:59:02 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -61,7 +61,7 @@ void W_LoadWadFile (const char *filename)
 		Z_Free (wad_base);
 	wad_base = FS_LoadZoneFile (filename, Z_SECZONE);
 //	if (!wad_base)
-//		Sys_Error ("%s: couldn't load %s", __FUNCTION__, filename);
+//		Sys_Error ("%s: couldn't load %s", __thisfunc__, filename);
 
 	header = (wadinfo_t *)wad_base;
 
@@ -105,7 +105,7 @@ static lumpinfo_t *W_GetLumpinfo (char *name)
 			return lump_p;
 	}
 
-	Sys_Error ("%s: %s not found", __FUNCTION__, name);
+	Sys_Error ("%s: %s not found", __thisfunc__, name);
 	return NULL;
 }
 
@@ -124,7 +124,7 @@ void *W_GetLumpNum (int num)
 	lumpinfo_t	*lump;
 
 	if (num < 0 || num > wad_numlumps)
-		Sys_Error ("%s: bad number: %i", __FUNCTION__, num);
+		Sys_Error ("%s: bad number: %i", __thisfunc__, num);
 
 	lump = wad_lumps + num;
 

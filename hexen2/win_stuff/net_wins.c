@@ -2,7 +2,7 @@
 	net_wins.c
 	winsock udp driver
 
-	$Id: net_wins.c,v 1.16 2007-04-05 07:01:15 sezero Exp $
+	$Id: net_wins.c,v 1.17 2007-05-13 11:58:32 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -126,7 +126,7 @@ int WINS_Init (void)
 
 	if ((net_controlsocket = WINS_OpenSocket (0)) == -1)
 	{
-		Con_Printf("%s: Unable to open control socket\n", __FUNCTION__);
+		Con_Printf("%s: Unable to open control socket\n", __thisfunc__);
 		if (--winsock_initialized == 0)
 			WSACleanup ();
 		return -1;
@@ -168,7 +168,7 @@ void WINS_Listen (qboolean state)
 		if (net_acceptsocket != -1)
 			return;
 		if ((net_acceptsocket = WINS_OpenSocket (net_hostport)) == -1)
-			Sys_Error ("%s: Unable to open accept socket", __FUNCTION__);
+			Sys_Error ("%s: Unable to open accept socket", __thisfunc__);
 		return;
 	}
 

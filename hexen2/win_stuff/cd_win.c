@@ -2,7 +2,7 @@
 	cd_win.c
 	Win32 cdaudio code
 
-	$Id: cd_win.c,v 1.12 2007-05-11 09:00:43 sezero Exp $
+	$Id: cd_win.c,v 1.13 2007-05-13 11:58:32 sezero Exp $
 
 	Quake is a trademark of Id Software, Inc., (c) 1996 Id Software, Inc. All
 	rights reserved.
@@ -477,7 +477,7 @@ int CDAudio_Init(void)
 	dwReturn = mciSendCommand(0, MCI_OPEN, MCI_OPEN_TYPE | MCI_OPEN_SHAREABLE, (DWORD) (LPVOID) &mciOpenParms);
 	if (dwReturn)
 	{
-		Con_Printf("%s: MCI_OPEN failed (%lu)\n", __FUNCTION__, (unsigned long)dwReturn);
+		Con_Printf("%s: MCI_OPEN failed (%lu)\n", __thisfunc__, (unsigned long)dwReturn);
 		return -1;
 	}
 	wDeviceID = mciOpenParms.wDeviceID;
@@ -500,7 +500,7 @@ int CDAudio_Init(void)
 
 	if (CDAudio_GetAudioDiskInfo())
 	{
-		Con_Printf("%s: No CD in player.\n", __FUNCTION__);
+		Con_Printf("%s: No CD in player.\n", __thisfunc__);
 		cdValid = false;
 		//enabled = false;
 	}
@@ -523,6 +523,6 @@ void CDAudio_Shutdown(void)
 		return;
 	CDAudio_Stop();
 	if (mciSendCommand(wDeviceID, MCI_CLOSE, MCI_WAIT, (DWORD)NULL))
-		Con_DPrintf("%s: MCI_CLOSE failed\n", __FUNCTION__);
+		Con_DPrintf("%s: MCI_CLOSE failed\n", __thisfunc__);
 }
 

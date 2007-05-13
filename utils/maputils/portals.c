@@ -1,6 +1,6 @@
 /*
 	portals.c
-	$Id: portals.c,v 1.7 2007-03-14 21:04:41 sezero Exp $
+	$Id: portals.c,v 1.8 2007-05-13 12:00:13 sezero Exp $
 */
 
 #include "util_inc.h"
@@ -22,7 +22,7 @@ AddPortalToNodes
 static void AddPortalToNodes (portal_t *p, node_t *front, node_t *back)
 {
 	if (p->nodes[0] || p->nodes[1])
-		Error ("%s: already included", __FUNCTION__);
+		Error ("%s: already included", __thisfunc__);
 
 	p->nodes[0] = front;
 	p->next[0] = front->portals;
@@ -49,7 +49,7 @@ static void RemovePortalFromNode (portal_t *portal, node_t *l)
 	{
 		t = *pp;
 		if (!t)
-			Error ("%s: portal not in leaf", __FUNCTION__);
+			Error ("%s: portal not in leaf", __thisfunc__);
 
 		if (t == portal)
 			break;
@@ -59,7 +59,7 @@ static void RemovePortalFromNode (portal_t *portal, node_t *l)
 		else if (t->nodes[1] == l)
 			pp = &t->next[1];
 		else
-			Error ("%s: portal not bounding leaf", __FUNCTION__);
+			Error ("%s: portal not bounding leaf", __thisfunc__);
 	}
 
 	if (portal->nodes[0] == l)
@@ -185,7 +185,7 @@ static void CheckWindingInNode (winding_t *w, node_t *node)
 			if (w->points[i][j] < node->mins[j] - 1
 				|| w->points[i][j] > node->maxs[j] + 1)
 			{
-				printf ("WARNING: %s: outside\n", __FUNCTION__);
+				printf ("WARNING: %s: outside\n", __thisfunc__);
 				return;
 			}
 		}
@@ -229,7 +229,7 @@ static void CheckLeafPortalConsistancy (node_t *node)
 		else if (p->nodes[1] == node)
 			side = 1;
 		else
-			Error ("%s: mislinked portal", __FUNCTION__);
+			Error ("%s: mislinked portal", __thisfunc__);
 		CheckWindingInNode (p->winding, node);
 		CheckWindingArea (p->winding);
 
@@ -244,7 +244,7 @@ static void CheckLeafPortalConsistancy (node_t *node)
 			else if (p2->nodes[1] == node)
 				side2 = 1;
 			else
-				Error ("%s: mislinked portal", __FUNCTION__);
+				Error ("%s: mislinked portal", __thisfunc__);
 			w = p2->winding;
 			for (i = 0 ; i < w->numpoints ; i++)
 			{
@@ -312,12 +312,12 @@ static void CutNodePortals_r (node_t *node)
 			side = 1;
 		}
 		else
-			Error ("%s: mislinked portal", __FUNCTION__);
+			Error ("%s: mislinked portal", __thisfunc__);
 
 		w = ClipWinding (w, &clipplane, true);
 		if (!w)
 		{
-			printf ("WARNING: %s: new portal was clipped away\n", __FUNCTION__);
+			printf ("WARNING: %s: new portal was clipped away\n", __thisfunc__);
 			break;
 		}
 	}
@@ -339,7 +339,7 @@ static void CutNodePortals_r (node_t *node)
 		else if (p->nodes[1] == node)
 			side = 1;
 		else
-			Error ("%s: mislinked portal", __FUNCTION__);
+			Error ("%s: mislinked portal", __thisfunc__);
 		next_portal = p->next[side];
 
 		other_node = p->nodes[!side];

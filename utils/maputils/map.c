@@ -1,6 +1,6 @@
 /*
 	map.c
-	$Id: map.c,v 1.8 2007-03-14 21:04:40 sezero Exp $
+	$Id: map.c,v 1.9 2007-05-13 12:00:12 sezero Exp $
 */
 
 #include "util_inc.h"
@@ -213,11 +213,11 @@ static void ParseEpair (void)
 	mapent->epairs = e;
 
 	if (strlen(token) >= MAX_KEY-1)
-		Error ("%s: token too long", __FUNCTION__);
+		Error ("%s: token too long", __thisfunc__);
 	e->key = copystring(token);
 	GetToken (false);
 	if (strlen(token) >= MAX_VALUE-1)
-		Error ("%s: token too long", __FUNCTION__);
+		Error ("%s: token too long", __thisfunc__);
 	e->value = copystring(token);
 }
 
@@ -553,7 +553,7 @@ static qboolean ParseEntity (void)
 		return false;
 
 	if (strcmp (token, "{") )
-		Error ("%s: { not found", __FUNCTION__);
+		Error ("%s: { not found", __thisfunc__);
 
 	if (num_entities == MAX_MAP_ENTITIES)
 		Error ("num_entities == MAX_MAP_ENTITIES");
@@ -564,7 +564,7 @@ static qboolean ParseEntity (void)
 	do
 	{
 		if (!GetToken (true))
-			Error ("%s: EOF without closing brace", __FUNCTION__);
+			Error ("%s: EOF without closing brace", __thisfunc__);
 		if (!strcmp (token, "}") )
 			break;
 		if (!strcmp (token, "{") )

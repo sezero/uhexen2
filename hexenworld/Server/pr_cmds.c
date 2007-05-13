@@ -2,7 +2,7 @@
 	pr_cmds.c
 	prog commands
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Server/pr_cmds.c,v 1.30 2007-05-09 18:11:37 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Server/pr_cmds.c,v 1.31 2007-05-13 11:59:41 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -60,7 +60,7 @@ static char *PF_VarString (int	first)
 	{
 		if ( Q_strlcat(out, G_STRING((OFS_PARM0+i*3)), sizeof(out)) >= sizeof(out) )
 		{
-			Con_Printf("%s: overflow (string truncated)\n", __FUNCTION__);
+			Con_Printf("%s: overflow (string truncated)\n", __thisfunc__);
 			break;
 		}
 	}
@@ -312,7 +312,7 @@ static void PF_setpuzzlemodel (void)
 
 	if (i == MAX_MODELS)
 	{
-		PR_RunError ("%s: overflow", __FUNCTION__);
+		PR_RunError ("%s: overflow", __thisfunc__);
 	}
 	if (!sv.model_precache[i][0])
 	{
@@ -418,10 +418,10 @@ static void PF_name_print (void)
 		return;
 
 	if (Index <= 0)
-		PR_RunError ("%s: index(%d) <= 0", __FUNCTION__, Index);
+		PR_RunError ("%s: index(%d) <= 0", __thisfunc__, Index);
 
 	if (Index > MAX_CLIENTS)
-		PR_RunError ("%s: index(%d) > MAX_CLIENTS", __FUNCTION__, Index);
+		PR_RunError ("%s: index(%d) > MAX_CLIENTS", __thisfunc__, Index);
 
 	if ((int)G_FLOAT(OFS_PARM0) == MSG_BROADCAST)
 	{//broadcast message--send like bprint, print it out on server too.
@@ -480,10 +480,10 @@ static void PF_print_indexed (void)
 		return;
 
 	if (Index <= 0)
-		PR_RunError ("%s: index(%d) < 1", __FUNCTION__, Index);
+		PR_RunError ("%s: index(%d) < 1", __thisfunc__, Index);
 
 	if (Index > pr_string_count)
-		PR_RunError ("%s: index(%d) >= pr_string_count(%d)", __FUNCTION__, Index, pr_string_count);
+		PR_RunError ("%s: index(%d) >= pr_string_count(%d)", __thisfunc__, Index, pr_string_count);
 
 	if ((int)G_FLOAT(OFS_PARM0) == MSG_BROADCAST)
 	{//broadcast message--send like bprint, print it out on server too.
@@ -904,7 +904,7 @@ static void PF_StopSound(void)
 	channel = G_FLOAT(OFS_PARM1);
 
 	if (channel < 0 || channel > 7)
-		Sys_Error ("%s: channel = %i", __FUNCTION__, channel);
+		Sys_Error ("%s: channel = %i", __thisfunc__, channel);
 
 	SV_StopSound (entity, channel);
 }
@@ -924,7 +924,7 @@ static void PF_UpdateSoundPos(void)
 	channel = G_FLOAT(OFS_PARM1);
 
 	if (channel < 0 || channel > 7)
-		Sys_Error ("%s: channel = %i", __FUNCTION__, channel);
+		Sys_Error ("%s: channel = %i", __thisfunc__, channel);
 
 	SV_UpdateSoundPos (entity, channel);
 }
@@ -1472,7 +1472,7 @@ static void PF_Find (void)
 	f = G_INT(OFS_PARM1);
 	s = G_STRING(OFS_PARM2);
 	if (!s)
-		PR_RunError ("%s: bad search string", __FUNCTION__);
+		PR_RunError ("%s: bad search string", __thisfunc__);
 
 	for (e++ ; e < sv.num_edicts ; e++)
 	{
@@ -1516,7 +1516,7 @@ static void PF_Find (void)
 	f = G_INT(OFS_PARM1);
 	s = G_STRING(OFS_PARM2);
 	if (!s)
-		PR_RunError ("%s: bad search string", __FUNCTION__);
+		PR_RunError ("%s: bad search string", __thisfunc__);
 
 	for (e++ ; e < sv.num_edicts ; e++)
 	{
@@ -1549,7 +1549,7 @@ static void PF_FindFloat (void)
 	f = G_INT(OFS_PARM1);
 	s = G_FLOAT(OFS_PARM2);
 	if (!s)
-		PR_RunError ("%s: bad search string", __FUNCTION__);
+		PR_RunError ("%s: bad search string", __thisfunc__);
 
 	for (e++ ; e < sv.num_edicts ; e++)
 	{
@@ -1585,7 +1585,7 @@ static void PF_precache_sound (void)
 	int		i;
 
 	if (sv.state != ss_loading && !ignore_precache)
-		PR_RunError ("%s: Precache can only be done in spawn functions", __FUNCTION__);
+		PR_RunError ("%s: Precache can only be done in spawn functions", __thisfunc__);
 
 	s = G_STRING(OFS_PARM0);
 	G_INT(OFS_RETURN) = G_INT(OFS_PARM0);
@@ -1601,7 +1601,7 @@ static void PF_precache_sound (void)
 		if (!strcmp(sv.sound_precache[i], s))
 			return;
 	}
-	PR_RunError ("%s: overflow", __FUNCTION__);
+	PR_RunError ("%s: overflow", __thisfunc__);
 }
 
 static void PF_precache_sound2 (void)
@@ -1626,7 +1626,7 @@ static void PF_precache_model (void)
 	int		i;
 
 	if (sv.state != ss_loading && !ignore_precache)
-		PR_RunError ("%s: Precache can only be done in spawn functions", __FUNCTION__);
+		PR_RunError ("%s: Precache can only be done in spawn functions", __thisfunc__);
 
 	s = G_STRING(OFS_PARM0);
 	G_INT(OFS_RETURN) = G_INT(OFS_PARM0);
@@ -1643,7 +1643,7 @@ static void PF_precache_model (void)
 		if (!strcmp(sv.model_precache[i], s))
 			return;
 	}
-	PR_RunError ("%s: overflow", __FUNCTION__);
+	PR_RunError ("%s: overflow", __thisfunc__);
 }
 
 static void PF_precache_model2 (void)
@@ -1668,7 +1668,7 @@ static void PF_precache_puzzle_model (void)
 	char	*s, *temp;
 
 	if (sv.state != ss_loading && !ignore_precache)
-		PR_RunError ("%s: Precache can only be done in spawn functions", __FUNCTION__);
+		PR_RunError ("%s: Precache can only be done in spawn functions", __thisfunc__);
 
 	s = G_STRING(OFS_PARM0);
 	G_INT(OFS_RETURN) = G_INT(OFS_PARM0);
@@ -1687,7 +1687,7 @@ static void PF_precache_puzzle_model (void)
 		if (!strcmp(sv.model_precache[i], temp))
 			return;
 	}
-	PR_RunError ("%s: overflow", __FUNCTION__);
+	PR_RunError ("%s: overflow", __thisfunc__);
 }
 
 
@@ -2193,7 +2193,7 @@ static sizebuf_t *WriteDest (void)
 		ent = PROG_TO_EDICT(PR_GLOBAL_STRUCT(msg_entity));
 		entnum = NUM_FOR_EDICT(ent);
 		if (entnum < 1 || entnum > MAX_CLIENTS)
-			PR_RunError ("%s: not a client", __FUNCTION__);
+			PR_RunError ("%s: not a client", __thisfunc__);
 		return &svs.clients[entnum-1].netchan.message;
 
 	case MSG_ALL:
@@ -2201,14 +2201,14 @@ static sizebuf_t *WriteDest (void)
 
 	case MSG_INIT:
 		if (sv.state != ss_loading)
-			PR_RunError ("%s: MSG_INIT can only be written in spawn functions", __FUNCTION__);
+			PR_RunError ("%s: MSG_INIT can only be written in spawn functions", __thisfunc__);
 		return &sv.signon;
 
 	case MSG_MULTICAST:
 		return &sv.multicast;
 
 	default:
-		PR_RunError ("%s: bad destination", __FUNCTION__);
+		PR_RunError ("%s: bad destination", __thisfunc__);
 		break;
 	}
 
@@ -2454,10 +2454,10 @@ static void PF_plaque_draw (void)
 	Index = ((int)G_FLOAT(OFS_PARM1));
 
 	if (Index < 0)
-		PR_RunError ("%s: index(%d) < 1", __FUNCTION__, Index);
+		PR_RunError ("%s: index(%d) < 1", __thisfunc__, Index);
 
 	if (Index > pr_string_count)
-		PR_RunError ("%s: index(%d) >= pr_string_count(%d)", __FUNCTION__, Index, pr_string_count);
+		PR_RunError ("%s: index(%d) >= pr_string_count(%d)", __thisfunc__, Index, pr_string_count);
 
 	MSG_WriteByte (WriteDest(), svc_plaque);
 	MSG_WriteShort (WriteDest(), Index);
@@ -3172,10 +3172,10 @@ static void PF_GetString(void)
 	Index = (int)G_FLOAT(OFS_PARM0) - 1;
 
 	if (Index < 0)
-		PR_RunError ("%s: index(%d) < 1", __FUNCTION__, Index+1);
+		PR_RunError ("%s: index(%d) < 1", __thisfunc__, Index+1);
 
 	if (Index >= pr_string_count)
-		PR_RunError ("%s: index(%d) >= pr_string_count(%d)", __FUNCTION__, Index, pr_string_count);
+		PR_RunError ("%s: index(%d) >= pr_string_count(%d)", __thisfunc__, Index, pr_string_count);
 
 	G_INT(OFS_RETURN) = PR_SetEngineString(&pr_global_strings[pr_string_index[Index]]);
 }
@@ -3278,7 +3278,7 @@ static void PF_weapon_sound(void)
 
 	if (sound_num == MAX_SOUNDS || !sv.sound_precache[sound_num])
 	{
-		Con_Printf ("%s: %s not precached\n", __FUNCTION__, sample);
+		Con_Printf ("%s: %s not precached\n", __thisfunc__, sample);
 		return;
 	}
 	entity->v.wpn_sound = sound_num;

@@ -1,6 +1,6 @@
 /*
 	lighting.c
-	$Id: light.c,v 1.7 2007-03-14 21:04:39 sezero Exp $
+	$Id: light.c,v 1.8 2007-05-13 12:00:12 sezero Exp $
 */
 
 #include "util_inc.h"
@@ -38,7 +38,7 @@ byte *GetFileSpace (int size)
 	file_p += size;
 	UNLOCK;
 	if (file_p > file_end)
-		Error ("%s: overrun", __FUNCTION__);
+		Error ("%s: overrun", __thisfunc__);
 	return buf;
 }
 

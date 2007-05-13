@@ -1,6 +1,6 @@
 /*
 	brush.c
-	$Id: brush.c,v 1.7 2007-03-14 21:04:37 sezero Exp $
+	$Id: brush.c,v 1.8 2007-05-13 12:00:11 sezero Exp $
 */
 
 #include "util_inc.h"
@@ -31,7 +31,7 @@ static void CheckFace (face_t *f)
 	vec3_t	dir, edgenormal, facenormal;
 
 	if (f->numpoints < 3)
-		Error ("%s: %i points", __FUNCTION__, f->numpoints);
+		Error ("%s: %i points", __thisfunc__, f->numpoints);
 
 	VectorCopy (planes[f->planenum].normal, facenormal);
 	if (f->planeside)
@@ -45,15 +45,15 @@ static void CheckFace (face_t *f)
 
 		for (j = 0 ; j < 3 ; j++)
 			if (p1[j] > BOGUS_RANGE || p1[j] < -BOGUS_RANGE)
-				Error ("%s: BUGUS_RANGE: %f", __FUNCTION__, p1[j]);
+				Error ("%s: BUGUS_RANGE: %f", __thisfunc__, p1[j]);
 
 		j = (i+1 == f->numpoints) ? 0 : i+1;
 
 	// check the point is on the face plane
 /*		d = DotProduct (p1, planes[f->planenum].normal) - planes[f->planenum].dist;
 		if (d < -ON_EPSILON || d > ON_EPSILON)
-		//	printf ("%s: point #%i off plane\n", __FUNCTION__, i);
-			Error ("%s: point #%i off plane", __FUNCTION__, i);
+		//	printf ("%s: point #%i off plane\n", __thisfunc__, i);
+			Error ("%s: point #%i off plane", __thisfunc__, i);
 */
 
 	// check the edge isn't degenerate
@@ -61,7 +61,7 @@ static void CheckFace (face_t *f)
 		VectorSubtract (p2, p1, dir);
 
 		if (VectorLength (dir) < ON_EPSILON)
-			Error ("%s: degenerate edge", __FUNCTION__);
+			Error ("%s: degenerate edge", __thisfunc__);
 
 		CrossProduct (facenormal, dir, edgenormal);
 		VectorNormalize (edgenormal);
@@ -75,7 +75,7 @@ static void CheckFace (face_t *f)
 				continue;
 			d = DotProduct (f->pts[j], edgenormal);
 			if (d > edgedist)
-				Error ("%s: non-convex", __FUNCTION__);
+				Error ("%s: non-convex", __thisfunc__);
 		}
 	}
 }
@@ -134,7 +134,7 @@ int PlaneTypeForNormal (vec3_t normal)
 	if (normal[2] == 1.0)
 		return PLANE_Z;
 	if (normal[0] == -1.0 || normal[1] == -1.0 || normal[2] == -1.0)
-		Error ("%s: not a canonical vector", __FUNCTION__);
+		Error ("%s: not a canonical vector", __thisfunc__);
 
 	ax = fabs(normal[0]);
 	ay = fabs(normal[1]);
@@ -218,7 +218,7 @@ int FindPlane (plane_t *dplane, int *side)
 
 	dot = VectorLength(dplane->normal);
 	if (dot < 1.0 - ANGLEEPSILON || dot > 1.0 + ANGLEEPSILON)
-		Error ("%s: normalization error", __FUNCTION__);
+		Error ("%s: normalization error", __thisfunc__);
 
 	pl = *dplane;
 	NormalizePlane (&pl);
@@ -264,7 +264,7 @@ int FindPlane_old (plane_t *dplane, int *side)
 
 	dot = VectorLength(dplane->normal);
 	if (dot < 1.0 - ANGLEEPSILON || dot > 1.0 + ANGLEEPSILON)
-		Error ("%s: normalization error", __FUNCTION__);
+		Error ("%s: normalization error", __thisfunc__);
 
 	dp = planes;
 
@@ -471,12 +471,12 @@ static void AddBrushPlane (plane_t *plane)
 	float	l;
 
 	if (numbrushfaces == MAX_FACES)
-		printf ("%s: numbrushfaces == MAX_FACES\n", __FUNCTION__);
-//		Error ("%s: numbrushfaces == MAX_FACES", __FUNCTION__);
+		printf ("%s: numbrushfaces == MAX_FACES\n", __thisfunc__);
+//		Error ("%s: numbrushfaces == MAX_FACES", __thisfunc__);
 
 	l = VectorLength (plane->normal);
 	if (l < 0.999 || l > 1.001)
-		Error ("%s: bad normal", __FUNCTION__);
+		Error ("%s: bad normal", __thisfunc__);
 
 	for (i = 0 ; i < numbrushfaces ; i++)
 	{

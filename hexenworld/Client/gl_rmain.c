@@ -1,7 +1,7 @@
 /*
 	gl_main.c
 
-	$Id: gl_rmain.c,v 1.47 2007-05-09 18:10:16 sezero Exp $
+	$Id: gl_rmain.c,v 1.48 2007-05-13 11:59:00 sezero Exp $
 */
 
 
@@ -242,7 +242,7 @@ static mspriteframe_t *R_GetSpriteFrame (entity_t *curr_ent)
 
 	if ((frame >= psprite->numframes) || (frame < 0))
 	{
-		Con_Printf ("%s: no such frame %d\n", __FUNCTION__, frame);
+		Con_Printf ("%s: no such frame %d\n", __thisfunc__, frame);
 		frame = 0;
 	}
 
@@ -611,7 +611,7 @@ static void R_SetupAliasFrame (int frame, aliashdr_t *paliashdr)
 
 	if ((frame >= paliashdr->numframes) || (frame < 0))
 	{
-		Con_DPrintf ("%s: no such frame %d\n", __FUNCTION__, frame);
+		Con_DPrintf ("%s: no such frame %d\n", __thisfunc__, frame);
 		frame = 0;
 	}
 
@@ -2028,7 +2028,7 @@ void R_RenderView (void)
 		return;
 
 	if (!r_worldentity.model || !cl.worldmodel)
-		Sys_Error ("%s: NULL worldmodel", __FUNCTION__);
+		Sys_Error ("%s: NULL worldmodel", __thisfunc__);
 
 	if (r_speeds.integer)
 	{

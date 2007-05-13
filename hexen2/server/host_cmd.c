@@ -2,7 +2,7 @@
 	host_cmd.c
 	console commands
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/server/host_cmd.c,v 1.27 2007-05-09 18:10:15 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/server/host_cmd.c,v 1.28 2007-05-13 11:58:32 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -474,7 +474,7 @@ static void Host_Savegame_f (void)
 
 	if (snprintf(savename, sizeof(savename), "%s/%s", fs_userdir, Cmd_Argv(1)) >= sizeof(savename))
 	{
-		Con_Printf ("%s: save directory name too long\n", __FUNCTION__);
+		Con_Printf ("%s: save directory name too long\n", __thisfunc__);
 		return;
 	}
 	if (Sys_mkdir(savename))
@@ -497,7 +497,7 @@ static void Host_Savegame_f (void)
 
 	if (snprintf(savedest, sizeof(savedest), "%s/%s/info.dat", fs_userdir, Cmd_Argv(1)) >= sizeof(savedest))
 	{
-		Con_Printf ("%s: string buffer overflow!\n", __FUNCTION__);
+		Con_Printf ("%s: string buffer overflow!\n", __thisfunc__);
 		return;
 	}
 	f = fopen (savedest, "w");
@@ -567,21 +567,21 @@ static void Host_Loadgame_f (void)
 
 	if (snprintf(savename, sizeof(savename), "%s/%s", fs_userdir, Cmd_Argv(1)) >= sizeof(savename))
 	{
-		Con_Printf ("%s: save directory name too long\n", __FUNCTION__);
+		Con_Printf ("%s: save directory name too long\n", __thisfunc__);
 		return;
 	}
 	Con_Printf ("Loading game from %s...\n", savename);
 
 	if (snprintf(savedest, sizeof(savedest), "%s/info.dat", savename) >= sizeof(savedest))
 	{
-		Con_Printf ("%s: string buffer overflow!\n", __FUNCTION__);
+		Con_Printf ("%s: string buffer overflow!\n", __thisfunc__);
 		return;
 	}
 
 	f = fopen (savedest, "r");
 	if (!f)
 	{
-		Con_Printf ("%s: ERROR: couldn't open savefile\n", __FUNCTION__);
+		Con_Printf ("%s: ERROR: couldn't open savefile\n", __thisfunc__);
 		return;
 	}
 
@@ -690,7 +690,7 @@ int SaveGamestate (qboolean ClientsOnly)
 
 		if (snprintf(savename, sizeof(savename), "%s/clients.gip", fs_userdir) >= sizeof(savename))
 		{
-			Con_Printf ("%s: string buffer overflow!\n", __FUNCTION__);
+			Con_Printf ("%s: string buffer overflow!\n", __thisfunc__);
 			return true;
 		}
 	}
@@ -701,7 +701,7 @@ int SaveGamestate (qboolean ClientsOnly)
 
 		if (snprintf(savename, sizeof(savename), "%s/%s.gip", fs_userdir, sv.name) >= sizeof(savename))
 		{
-			Con_Printf ("%s: string buffer overflow!\n", __FUNCTION__);
+			Con_Printf ("%s: string buffer overflow!\n", __thisfunc__);
 			return true;
 		}
 	}
@@ -854,7 +854,7 @@ static int LoadGamestate (char *level, char *startspot, int ClientsMode)
 	{
 		if (snprintf(savename, sizeof(savename), "%s/clients.gip", fs_userdir) >= sizeof(savename))
 		{
-			Con_Printf ("%s: string buffer overflow!\n", __FUNCTION__);
+			Con_Printf ("%s: string buffer overflow!\n", __thisfunc__);
 			return -1;
 		}
 	}
@@ -862,7 +862,7 @@ static int LoadGamestate (char *level, char *startspot, int ClientsMode)
 	{
 		if (snprintf(savename, sizeof(savename), "%s/%s.gip", fs_userdir, level) >= sizeof(savename))
 		{
-			Con_Printf ("%s: string buffer overflow!\n", __FUNCTION__);
+			Con_Printf ("%s: string buffer overflow!\n", __thisfunc__);
 			return -1;
 		}
 
@@ -874,7 +874,7 @@ static int LoadGamestate (char *level, char *startspot, int ClientsMode)
 	if (!f)
 	{
 		if (ClientsMode == 2)
-			Con_Printf ("%s: ERROR: couldn't open savefile\n", __FUNCTION__);
+			Con_Printf ("%s: ERROR: couldn't open savefile\n", __thisfunc__);
 
 		return -1;
 	}

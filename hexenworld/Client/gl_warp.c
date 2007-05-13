@@ -2,7 +2,7 @@
 	gl_warp.c
 	sky and water polygons
 
-	$Id: gl_warp.c,v 1.26 2007-05-09 18:10:17 sezero Exp $
+	$Id: gl_warp.c,v 1.27 2007-05-13 11:59:01 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -559,11 +559,11 @@ void LoadTGA (FILE *fin)
 	targa_header.attributes = fgetc(fin);
 
 	if (targa_header.image_type != 2 && targa_header.image_type != 10)
-		Sys_Error ("%s: Only type 2 and 10 targa RGB images supported", __FUNCTION__);
+		Sys_Error ("%s: Only type 2 and 10 targa RGB images supported", __thisfunc__);
 
 	if ((targa_header.pixel_size != 32 && targa_header.pixel_size != 24) ||
 			targa_header.colormap_type !=0)
-		Sys_Error ("%s: Only 32 or 24 bit images supported (no colormaps)", __FUNCTION__);
+		Sys_Error ("%s: Only 32 or 24 bit images supported (no colormaps)", __thisfunc__);
 
 	columns = targa_header.width;
 	rows = targa_header.height;
@@ -883,7 +883,7 @@ static void ClipSkyPolygon (int nump, vec3_t vecs, int stage)
 	int		i, j;
 
 	if (nump > MAX_CLIP_VERTS-2)
-		Sys_Error ("%s: MAX_CLIP_VERTS", __FUNCTION__);
+		Sys_Error ("%s: MAX_CLIP_VERTS", __thisfunc__);
 	if (stage == 6)
 	{	// fully clipped, so draw it
 		DrawSkyPolygon (nump, vecs);

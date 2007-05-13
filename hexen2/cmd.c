@@ -2,7 +2,7 @@
 	cmd.c
 	Quake script command processing module
 
-	$Id: cmd.c,v 1.33 2007-04-18 13:30:57 sezero Exp $
+	$Id: cmd.c,v 1.34 2007-05-13 11:58:28 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -91,7 +91,7 @@ void Cbuf_AddText (const char *text)
 
 	if (cmd_text.cursize + l >= cmd_text.maxsize)
 	{
-		Con_Printf ("%s: overflow\n", __FUNCTION__);
+		Con_Printf ("%s: overflow\n", __thisfunc__);
 		return;
 	}
 	SZ_Write (&cmd_text, text, l);
@@ -565,7 +565,7 @@ void Cmd_AddCommand (char *cmd_name, xcommand_t function)
 // fail if the command is a variable name
 	if (Cvar_VariableString(cmd_name)[0])
 	{
-		Con_Printf ("%s: %s already defined as a var\n", __FUNCTION__, cmd_name);
+		Con_Printf ("%s: %s already defined as a var\n", __thisfunc__, cmd_name);
 		return;
 	}
 
@@ -574,7 +574,7 @@ void Cmd_AddCommand (char *cmd_name, xcommand_t function)
 	{
 		if ( !strcmp(cmd_name, cmd->name) )
 		{
-			Con_Printf ("%s: %s already defined\n", __FUNCTION__, cmd_name);
+			Con_Printf ("%s: %s already defined\n", __thisfunc__, cmd_name);
 			return;
 		}
 	}
@@ -707,7 +707,7 @@ int Cmd_CheckParm (const char *parm)
 	int	i;
 
 	if (!parm)
-		Sys_Error ("%s: null input\n", __FUNCTION__);
+		Sys_Error ("%s: null input\n", __thisfunc__);
 
 	for (i = 1; i < Cmd_Argc (); i++)
 		if ( !Q_strcasecmp(parm, Cmd_Argv (i)) )

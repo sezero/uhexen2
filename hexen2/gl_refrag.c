@@ -2,7 +2,7 @@
 	r_efrag.c
 	entity fragments
 
-	$Id: gl_refrag.c,v 1.7 2007-03-14 21:03:07 sezero Exp $
+	$Id: gl_refrag.c,v 1.8 2007-05-13 11:58:29 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -212,7 +212,7 @@ void R_StoreEfrags (efrag_t **ppefrag)
 			break;
 
 		default:
-			Sys_Error ("%s: Bad entity type %d\n", __FUNCTION__, clmodel->type);
+			Sys_Error ("%s: Bad entity type %d\n", __thisfunc__, clmodel->type);
 		}
 	}
 }

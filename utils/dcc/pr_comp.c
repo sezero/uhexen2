@@ -1,7 +1,7 @@
 /*
 	comp.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/utils/dcc/pr_comp.c,v 1.15 2007-04-29 09:25:08 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/utils/dcc/pr_comp.c,v 1.16 2007-05-13 11:59:44 sezero Exp $
 */
 
 
@@ -296,7 +296,7 @@ void PrecacheSound (def_t *e, int ch)
 			return;
 	}
 	if (numsounds == MAX_SOUNDS)
-		Error ("%s: numsounds == MAX_SOUNDS", __FUNCTION__);
+		Error ("%s: numsounds == MAX_SOUNDS", __thisfunc__);
 	strcpy (precache_sounds[i], n);
 	if (ch >= '1'  && ch <= '9')
 		precache_sounds_block[i] = ch - '0';
@@ -317,7 +317,7 @@ void PrecacheModel (def_t *e, int ch)
 		if (!strcmp(n, precache_models[i]))
 			return;
 	if (nummodels == MAX_MODELS)
-		Error ("%s: nummodels == MAX_MODELS", __FUNCTION__);
+		Error ("%s: nummodels == MAX_MODELS", __thisfunc__);
 	strcpy (precache_models[i], n);
 	if (ch >= '1' && ch <= '9')
 		precache_models_block[i] = ch - '0';
@@ -340,7 +340,7 @@ void PrecacheFile (def_t *e, int ch)
 			return;
 	}
 	if (numfiles == MAX_FILES)
-		Error ("%s: numfiles == MAX_FILES", __FUNCTION__);
+		Error ("%s: numfiles == MAX_FILES", __thisfunc__);
 	strcpy (precache_files[i], n);
 	if (ch >= '1' && ch <= '9')
 		precache_files_block[i] = ch - '0';

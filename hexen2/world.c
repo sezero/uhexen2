@@ -2,7 +2,7 @@
 	world.c
 	world query functions
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/world.c,v 1.18 2007-04-30 17:25:46 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/world.c,v 1.19 2007-05-13 11:58:30 sezero Exp $
 
 	entities never clip against themselves, or their owner
 	line of sight checks trace->crosscontent, but bullets don't
@@ -521,7 +521,7 @@ static int SV_HullPointContents (hull_t *hull, int num, vec3_t p)
 	while (num >= 0)
 	{
 		if (num < hull->firstclipnode || num > hull->lastclipnode)
-			Sys_Error ("%s: bad node number", __FUNCTION__);
+			Sys_Error ("%s: bad node number", __thisfunc__);
 
 		node = hull->clipnodes + num;
 		plane = hull->planes + node->planenum;
@@ -646,7 +646,7 @@ qboolean SV_RecursiveHullCheck (hull_t *hull, int num, float p1f, float p2f, vec
 	}
 
 	if (num < hull->firstclipnode || num > hull->lastclipnode)
-		Sys_Error ("%s: bad node number", __FUNCTION__);
+		Sys_Error ("%s: bad node number", __thisfunc__);
 
 //
 // find the point distances

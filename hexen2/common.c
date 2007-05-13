@@ -2,7 +2,7 @@
 	common.c
 	misc utility functions used in client and server
 
-	$Id: common.c,v 1.97 2007-04-06 08:40:36 sezero Exp $
+	$Id: common.c,v 1.98 2007-05-13 11:58:28 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -122,7 +122,7 @@ char *va (const char *format, ...)
 	va_buf = get_va_buffer ();
 	va_start (argptr, format);
 	if ( vsnprintf(va_buf, VA_BUFFERLEN, format, argptr) >= VA_BUFFERLEN )
-		Con_DPrintf("%s: overflow (string truncated)\n", __FUNCTION__);
+		Con_DPrintf("%s: overflow (string truncated)\n", __thisfunc__);
 	va_end (argptr);
 
 	return va_buf;

@@ -2,7 +2,7 @@
 	cl_ents.c
 	entity parsing and management
 
-	$Id: cl_ents.c,v 1.14 2007-05-09 18:10:16 sezero Exp $
+	$Id: cl_ents.c,v 1.15 2007-05-13 11:59:00 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -416,7 +416,7 @@ void CL_ParsePacketEntities (qboolean delta)
 			{	// copy all the rest of the entities from the old packet
 				//Con_Printf ("copy %i\n", oldp->entities[oldindex].number);
 				if (newindex >= MAX_PACKET_ENTITIES)
-					Host_EndGame ("%s: newindex == MAX_PACKET_ENTITIES", __FUNCTION__);
+					Host_EndGame ("%s: newindex == MAX_PACKET_ENTITIES", __thisfunc__);
 				newp->entities[newindex] = oldp->entities[oldindex];
 				newindex++;
 				oldindex++;
@@ -438,7 +438,7 @@ void CL_ParsePacketEntities (qboolean delta)
 			//Con_Printf ("copy %i\n", oldnum);
 			// copy one of the old entities over to the new packet unchanged
 			if (newindex >= MAX_PACKET_ENTITIES)
-				Host_EndGame ("%s: newindex == MAX_PACKET_ENTITIES", __FUNCTION__);
+				Host_EndGame ("%s: newindex == MAX_PACKET_ENTITIES", __thisfunc__);
 			newp->entities[newindex] = oldp->entities[oldindex];
 			newindex++;
 			oldindex++;
@@ -460,7 +460,7 @@ void CL_ParsePacketEntities (qboolean delta)
 				continue;
 			}
 			if (newindex >= MAX_PACKET_ENTITIES)
-				Host_EndGame ("%s: newindex == MAX_PACKET_ENTITIES", __FUNCTION__);
+				Host_EndGame ("%s: newindex == MAX_PACKET_ENTITIES", __thisfunc__);
 			CL_ParseDelta (&cl_baselines[newnum], &newp->entities[newindex], word);
 			newindex++;
 			continue;
@@ -1246,7 +1246,7 @@ void CL_SavePlayer (void)
 	num = MSG_ReadByte ();
 
 	if (num > MAX_CLIENTS)
-		Sys_Error ("%s: bad num", __FUNCTION__);
+		Sys_Error ("%s: bad num", __thisfunc__);
 
 	info = &cl.players[num];
 	state = &cl.frames[parsecountmod].playerstate[num];
@@ -1267,7 +1267,7 @@ void CL_ParsePlayerinfo (void)
 
 	num = MSG_ReadByte ();
 	if (num > MAX_CLIENTS)
-		Sys_Error ("%s: bad num", __FUNCTION__);
+		Sys_Error ("%s: bad num", __thisfunc__);
 
 	info = &cl.players[num];
 

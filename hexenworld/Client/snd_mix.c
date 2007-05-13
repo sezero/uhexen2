@@ -2,7 +2,7 @@
 	snd_mix.c
 	portable code to mix sounds for snd_dma.c
 
-	$Id: snd_mix.c,v 1.15 2007-03-27 11:16:31 sezero Exp $
+	$Id: snd_mix.c,v 1.16 2007-05-13 11:59:02 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -75,7 +75,7 @@ static void S_TransferStereo16 (int endtime)
 		{
 			if (hresult != DSERR_BUFFERLOST)
 			{
-				Con_Printf ("%s: DS::Lock Sound Buffer Failed\n", __FUNCTION__);
+				Con_Printf ("%s: DS::Lock Sound Buffer Failed\n", __thisfunc__);
 				S_Shutdown ();
 				S_Startup ();
 				return;
@@ -83,7 +83,7 @@ static void S_TransferStereo16 (int endtime)
 
 			if (++reps > 10000)
 			{
-				Con_Printf ("%s: DS: couldn't restore buffer\n", __FUNCTION__);
+				Con_Printf ("%s: DS: couldn't restore buffer\n", __thisfunc__);
 				S_Shutdown ();
 				S_Startup ();
 				return;
@@ -161,7 +161,7 @@ static void S_TransferPaintBuffer (int endtime)
 		{
 			if (hresult != DSERR_BUFFERLOST)
 			{
-				Con_Printf ("%s: DS::Lock Sound Buffer Failed\n", __FUNCTION__);
+				Con_Printf ("%s: DS::Lock Sound Buffer Failed\n", __thisfunc__);
 				S_Shutdown ();
 				S_Startup ();
 				return;
@@ -169,7 +169,7 @@ static void S_TransferPaintBuffer (int endtime)
 
 			if (++reps > 10000)
 			{
-				Con_Printf ("%s: DS: couldn't restore buffer\n", __FUNCTION__);
+				Con_Printf ("%s: DS: couldn't restore buffer\n", __thisfunc__);
 				S_Shutdown ();
 				S_Startup ();
 				return;

@@ -1,6 +1,6 @@
 /*
 	in_win.c
-	$Id: in_win.c,v 1.23 2007-05-09 18:10:15 sezero Exp $
+	$Id: in_win.c,v 1.24 2007-05-13 11:58:32 sezero Exp $
 
 	windows 95 mouse and joystick code
 
@@ -692,7 +692,7 @@ static qboolean IN_ReadJoystick (void)
 		// read error occurred
 		// turning off the joystick seems too harsh for 1 read error,
 		// but what should be done?
-		// Con_Printf ("%s: no response\n", __FUNCTION__);
+		// Con_Printf ("%s: no response\n", __thisfunc__);
 		// joy_avail = false;
 		return false;
 	}

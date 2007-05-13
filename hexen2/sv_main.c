@@ -2,7 +2,7 @@
 	sv_main.c
 	server main program
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sv_main.c,v 1.54 2007-05-09 18:10:13 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sv_main.c,v 1.55 2007-05-13 11:58:30 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -334,13 +334,13 @@ void SV_StartSound (edict_t *entity, int channel, const char *sample, int volume
 	}
 
 	if (volume < 0 || volume > 255)
-		Sys_Error ("%s: volume = %i", __FUNCTION__, volume);
+		Sys_Error ("%s: volume = %i", __thisfunc__, volume);
 
 	if (attenuation < 0 || attenuation > 4)
-		Sys_Error ("%s: attenuation = %f", __FUNCTION__, attenuation);
+		Sys_Error ("%s: attenuation = %f", __thisfunc__, attenuation);
 
 	if (channel < 0 || channel > 7)
-		Sys_Error ("%s: channel = %i", __FUNCTION__, channel);
+		Sys_Error ("%s: channel = %i", __thisfunc__, channel);
 
 	if (sv.datagram.cursize > MAX_DATAGRAM-16)
 		return;
@@ -354,7 +354,7 @@ void SV_StartSound (edict_t *entity, int channel, const char *sample, int volume
 
 	if (sound_num == MAX_SOUNDS || !sv.sound_precache[sound_num][0])
 	{
-		Con_Printf ("%s: %s not precached\n", __FUNCTION__, sample);
+		Con_Printf ("%s: %s not precached\n", __thisfunc__, sample);
 		return;
 	}
 
@@ -563,7 +563,7 @@ void SV_CheckForNewClients (void)
 		}
 
 		if (i == svs.maxclients)
-			Sys_Error ("%s: no free clients", __FUNCTION__);
+			Sys_Error ("%s: no free clients", __thisfunc__);
 
 		svs.clients[i].netconnection = ret;
 		SV_ConnectClient (i);
@@ -1753,7 +1753,7 @@ int SV_ModelIndex (const char *name)
 
 	if (i == MAX_MODELS || !sv.model_precache[i][0])
 	{
-		Con_Printf("%s: model %s not precached\n", __FUNCTION__, name);
+		Con_Printf("%s: model %s not precached\n", __thisfunc__, name);
 		return 0;
 	}
 
@@ -1913,7 +1913,7 @@ void SV_SpawnServer (const char *server, const char *startspot)
 	scr_centertime_off = 0;
 #endif
 
-	Con_DPrintf ("%s: %s\n", __FUNCTION__, server);
+	Con_DPrintf ("%s: %s\n", __thisfunc__, server);
 	if (svs.changelevel_issued)
 	{
 		SaveGamestate(true);

@@ -2,7 +2,7 @@
 	net_dgrm.c
 	This is enables a simple IP banning mechanism
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/net_dgrm.c,v 1.27 2007-04-15 09:20:50 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/net_dgrm.c,v 1.28 2007-05-13 11:58:29 sezero Exp $
 */
 
 #define BAN_TEST
@@ -126,13 +126,13 @@ int Datagram_SendMessage (qsocket_t *sock, sizebuf_t *data)
 
 #ifdef DEBUG_BUILD
 	if (data->cursize == 0)
-		Sys_Error("%s: zero length message", __FUNCTION__);
+		Sys_Error("%s: zero length message", __thisfunc__);
 
 	if (data->cursize > NET_MAXMESSAGE)
-		Sys_Error("%s: message too big: %u", __FUNCTION__, data->cursize);
+		Sys_Error("%s: message too big: %u", __thisfunc__, data->cursize);
 
 	if (sock->canSend == false)
-		Sys_Error("%s: called with canSend == false", __FUNCTION__);
+		Sys_Error("%s: called with canSend == false", __thisfunc__);
 #endif
 
 	memcpy(sock->sendMessage, data->data, data->cursize);
@@ -252,10 +252,10 @@ int Datagram_SendUnreliableMessage (qsocket_t *sock, sizebuf_t *data)
 
 #ifdef DEBUG_BUILD
 	if (data->cursize == 0)
-		Sys_Error("%s: zero length message", __FUNCTION__);
+		Sys_Error("%s: zero length message", __thisfunc__);
 
 	if (data->cursize > MAX_DATAGRAM)
-		Sys_Error("%s: message too big: %u", __FUNCTION__, data->cursize);
+		Sys_Error("%s: message too big: %u", __thisfunc__, data->cursize);
 #endif
 
 	packetLen = NET_HEADERSIZE + data->cursize;

@@ -2,7 +2,7 @@
 	pr_strng.c
 	For international stuff
 
-	$Id: pr_strng.c,v 1.9 2007-04-18 13:31:48 sezero Exp $
+	$Id: pr_strng.c,v 1.10 2007-05-13 11:58:30 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -33,7 +33,7 @@ void PR_LoadStrings (void)
 
 	pr_global_strings = (char *)FS_LoadHunkFile ("strings.txt");
 	if (!pr_global_strings)
-		Sys_Error ("%s: couldn't load strings.txt", __FUNCTION__);
+		Sys_Error ("%s: couldn't load strings.txt", __thisfunc__);
 
 	NewLineChar = -1;
 
@@ -51,7 +51,7 @@ void PR_LoadStrings (void)
 
 	if (!count)
 	{
-		Sys_Error ("%s: no string lines found", __FUNCTION__);
+		Sys_Error ("%s: no string lines found", __thisfunc__);
 	}
 
 	pr_string_index = (int *)Hunk_AllocName ((count+1)*4, "string_index");
@@ -234,7 +234,7 @@ void PR_LoadInfoStrings (void)
 
 	pr_global_info_strings = (char *)FS_LoadHunkFile ("infolist.txt");
 	if (!pr_global_info_strings)
-		Sys_Error ("%s: couldn't load infolist.txt", __FUNCTION__);
+		Sys_Error ("%s: couldn't load infolist.txt", __thisfunc__);
 
 	NewLineChar = -1;
 
@@ -252,7 +252,7 @@ void PR_LoadInfoStrings (void)
 
 	if (!count)
 	{
-		Sys_Error ("%s: no string lines found", __FUNCTION__);
+		Sys_Error ("%s: no string lines found", __thisfunc__);
 	}
 
 	pr_info_string_index = (int *)Hunk_AllocName ((count+1)*4, "info_string_index");

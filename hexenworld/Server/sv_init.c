@@ -2,7 +2,7 @@
 	sv_init.c
 	server spawning
 
-	$Id: sv_init.c,v 1.13 2007-05-09 18:11:37 sezero Exp $
+	$Id: sv_init.c,v 1.14 2007-05-13 11:59:43 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -35,7 +35,7 @@ int SV_ModelIndex (const char *name)
 	}
 
 	if (i == MAX_MODELS || !sv.model_precache[i][0])
-		SV_Error ("%s: model %s not precached", __FUNCTION__, name);
+		SV_Error ("%s: model %s not precached", __thisfunc__, name);
 
 	return i;
 }
@@ -267,7 +267,7 @@ void SV_SpawnServer (const char *server, const char *startspot)
 	edict_t		*ent;
 	int			i;
 
-	Con_DPrintf ("%s: %s\n", __FUNCTION__, server);
+	Con_DPrintf ("%s: %s\n", __thisfunc__, server);
 
 	SV_SaveSpawnparms ();
 

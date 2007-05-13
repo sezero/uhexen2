@@ -1,6 +1,6 @@
 /*
 	net_udp.c
-	$Id: net_udp.c,v 1.25 2007-04-05 07:01:09 sezero Exp $
+	$Id: net_udp.c,v 1.26 2007-05-13 11:58:29 sezero Exp $
 
 	Copyright (C) 1996-1997  Id Software, Inc.
 
@@ -77,8 +77,8 @@ int UDP_Init (void)
 
 	if ((net_controlsocket = UDP_OpenSocket (0)) == -1)
 	{
-	//	Sys_Error("%s: Unable to open control socket", __FUNCTION__);
-		Con_Printf ("%s: Unable to open control socket, disabling udp\n", __FUNCTION__);
+	//	Sys_Error("%s: Unable to open control socket", __thisfunc__);
+		Con_Printf ("%s: Unable to open control socket, disabling udp\n", __thisfunc__);
 		return -1;
 	}
 
@@ -116,7 +116,7 @@ void UDP_Listen (qboolean state)
 		if (net_acceptsocket != -1)
 			return;
 		if ((net_acceptsocket = UDP_OpenSocket (net_hostport)) == -1)
-			Sys_Error ("%s: Unable to open accept socket", __FUNCTION__);
+			Sys_Error ("%s: Unable to open accept socket", __thisfunc__);
 		return;
 	}
 

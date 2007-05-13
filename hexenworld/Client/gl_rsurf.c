@@ -2,7 +2,7 @@
 	r_surf.c
 	surface-related refresh code
 
-	$Id: gl_rsurf.c,v 1.31 2007-05-09 18:10:17 sezero Exp $
+	$Id: gl_rsurf.c,v 1.32 2007-05-13 11:59:01 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -385,9 +385,9 @@ static texture_t *R_TextureAnimation (texture_t *base)
 	{
 		base = base->anim_next;
 		if (!base)
-			Sys_Error ("%s: broken cycle", __FUNCTION__);
+			Sys_Error ("%s: broken cycle", __thisfunc__);
 		if (++count > 100)
-			Sys_Error ("%s: infinite cycle", __FUNCTION__);
+			Sys_Error ("%s: infinite cycle", __thisfunc__);
 	}
 
 	return base;
@@ -1479,7 +1479,7 @@ static unsigned int AllocBlock (int w, int h, int *x, int *y)
 		return texnum;
 	}
 
-	Sys_Error ("%s: full", __FUNCTION__);
+	Sys_Error ("%s: full", __thisfunc__);
 	return -1;	// shut up the compiler
 }
 

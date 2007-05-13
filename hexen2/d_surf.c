@@ -2,7 +2,7 @@
 	d_surf.c
 	rasterization driver surface heap manager
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/d_surf.c,v 1.9 2007-02-17 07:55:32 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/d_surf.c,v 1.10 2007-05-13 11:58:28 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -47,7 +47,7 @@ static void D_CheckCacheGuard (void)
 	for (i = 0; i < GUARDSIZE; i++)
 	{
 		if (s[i] != (byte)i)
-			Sys_Error ("%s: failed", __FUNCTION__);
+			Sys_Error ("%s: failed", __thisfunc__);
 	}
 }
 
@@ -120,15 +120,15 @@ static surfcache_t *D_SCAlloc (int width, int size)
 	qboolean		wrapped_this_time;
 
 	if ((width < 0) || (width > 256))
-		Sys_Error ("%s: bad cache width %d", __FUNCTION__, width);
+		Sys_Error ("%s: bad cache width %d", __thisfunc__, width);
 
 	if ((size <= 0) || (size > 0x10000))
-		Sys_Error ("%s: bad cache size %d", __FUNCTION__, size);
+		Sys_Error ("%s: bad cache size %d", __thisfunc__, size);
 
 	size = (int)&((surfcache_t *)0)->data[size];
 	size = (size + 3) & ~3;
 	if (size > sc_size)
-		Sys_Error ("%s: %i > cache size", __FUNCTION__, size);
+		Sys_Error ("%s: %i > cache size", __thisfunc__, size);
 
 // if there is not size bytes after the rover, reset to the start
 	wrapped_this_time = false;
@@ -152,7 +152,7 @@ static surfcache_t *D_SCAlloc (int width, int size)
 	// free another
 		sc_rover = sc_rover->next;
 		if (!sc_rover)
-			Sys_Error ("%s: hit the end of memory", __FUNCTION__);
+			Sys_Error ("%s: hit the end of memory", __thisfunc__);
 		if (sc_rover->owner)
 			*sc_rover->owner = NULL;
 

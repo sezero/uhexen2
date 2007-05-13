@@ -1,6 +1,6 @@
 /*
 	entities.c
-	$Id: entities.c,v 1.5 2007-03-14 21:04:38 sezero Exp $
+	$Id: entities.c,v 1.6 2007-05-13 12:00:12 sezero Exp $
 */
 
 #include "util_inc.h"
@@ -109,10 +109,10 @@ void LoadEntities (void)
 		if (!data)
 			break;
 		if (com_token[0] != '{')
-			Error ("%s: found %s when expecting {", __FUNCTION__, com_token);
+			Error ("%s: found %s when expecting {", __thisfunc__, com_token);
 
 		if (num_entities == MAX_MAP_ENTITIES)
-			Error ("%s: MAX_MAP_ENTITIES", __FUNCTION__);
+			Error ("%s: MAX_MAP_ENTITIES", __thisfunc__);
 		entity = &entities[num_entities];
 		num_entities++;
 
@@ -124,7 +124,7 @@ void LoadEntities (void)
 		// parse key
 			data = COM_Parse (data);
 			if (!data)
-				Error ("%s: EOF without closing brace", __FUNCTION__);
+				Error ("%s: EOF without closing brace", __thisfunc__);
 			if (!strcmp(com_token,"}"))
 				break;
 			strcpy (key, com_token);
@@ -132,10 +132,10 @@ void LoadEntities (void)
 		// parse value
 			data = COM_Parse (data);
 			if (!data)
-				Error ("%s: EOF without closing brace", __FUNCTION__);
+				Error ("%s: EOF without closing brace", __thisfunc__);
 			c = com_token[0];
 			if (c == '}')
-				Error ("%s: closing brace without data", __FUNCTION__);
+				Error ("%s: closing brace without data", __thisfunc__);
 
 			epair = malloc (sizeof(epair_t));
 			memset (epair, 0, sizeof(epair));
@@ -156,7 +156,7 @@ void LoadEntities (void)
 						&entity->origin[0],
 						&entity->origin[1],
 						&entity->origin[2]) != 3)
-					Error ("%s: not 3 values for origin", __FUNCTION__);
+					Error ("%s: not 3 values for origin", __thisfunc__);
 			}
 			else if (!strncmp(key, "light", 5))
 			{

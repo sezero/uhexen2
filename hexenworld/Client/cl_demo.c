@@ -2,7 +2,7 @@
 	cl_demo.c
 	demo recording and playback
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/cl_demo.c,v 1.19 2007-04-18 13:33:07 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/cl_demo.c,v 1.20 2007-05-13 11:59:00 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -183,7 +183,7 @@ static qboolean CL_GetDemoMessage (void)
 	}
 
 	if (cls.state < ca_demostart)
-		Host_Error ("%s: cls.state != ca_active", __FUNCTION__);
+		Host_Error ("%s: cls.state != ca_active", __thisfunc__);
 
 	// get the msg type
 	fread (&c, sizeof(c), 1, cls.demofile);

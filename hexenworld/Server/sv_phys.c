@@ -2,7 +2,7 @@
 	sv_phys.c
 	sv physics
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Server/sv_phys.c,v 1.14 2007-05-09 18:11:38 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Server/sv_phys.c,v 1.15 2007-05-13 11:59:43 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -290,7 +290,7 @@ static int SV_FlyMove (edict_t *ent, float time, trace_t *steptrace)
 			break;		// moved the entire distance
 
 		if (!trace.ent)
-			SV_Error ("%s: !trace.ent", __FUNCTION__);
+			SV_Error ("%s: !trace.ent", __thisfunc__);
 
 		if (trace.plane.normal[2] > 0.7)
 		{
@@ -692,7 +692,7 @@ static void SV_PushRotate (edict_t *pusher, float movetime)
 	qboolean	moveit;
 
 #   if 0
-	Con_DPrintf("%s entity %i (time=%f)\n", __FUNCTION__, NUM_FOR_EDICT(pusher), movetime);
+	Con_DPrintf("%s entity %i (time=%f)\n", __thisfunc__, NUM_FOR_EDICT(pusher), movetime);
 	Con_DPrintf("%f %f %f (avelocity)\n", pusher->v.avelocity[0], pusher->v.avelocity[1], pusher->v.avelocity[2]);
 	Con_DPrintf("%f %f %f\n", pusher->v.angles[0], pusher->v.angles[1], pusher->v.angles[2]);
 #   endif
@@ -926,7 +926,7 @@ static void SV_PushRotate (edict_t *pusher, float movetime)
 //	float		turn_away, amove_mag;
 
 #   if 0
-	Con_DPrintf("%s entity %i (time=%f)\n", __FUNCTION__, NUM_FOR_EDICT(pusher), movetime);
+	Con_DPrintf("%s entity %i (time=%f)\n", __thisfunc__, NUM_FOR_EDICT(pusher), movetime);
 	Con_DPrintf("%f %f %f (avelocity)\n", pusher->v.avelocity[0], pusher->v.avelocity[1], pusher->v.avelocity[2]);
 	Con_DPrintf("%f %f %f\n", pusher->v.angles[0], pusher->v.angles[1], pusher->v.angles[2]);
 #   endif
@@ -1754,7 +1754,7 @@ void SV_Physics_Client (edict_t *ent, int num)
 		break;
 
 	default:
-		Sys_Error ("%s: bad movetype %i", __FUNCTION__, (int)ent->v.movetype);
+		Sys_Error ("%s: bad movetype %i", __thisfunc__, (int)ent->v.movetype);
 	}
 
 //
@@ -2075,7 +2075,7 @@ static void SV_RunEntity (edict_t *ent)
 		SV_RunThink (ent);
 		break;
 	default:
-		SV_Error ("%s: bad movetype %i", __FUNCTION__, (int)ent->v.movetype);
+		SV_Error ("%s: bad movetype %i", __thisfunc__, (int)ent->v.movetype);
 	}
 
 	if (ent2 != sv.edicts)

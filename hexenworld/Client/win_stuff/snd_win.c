@@ -1,6 +1,6 @@
 /*
 	snd_win.c
-	$Id: snd_win.c,v 1.21 2007-05-11 07:51:21 sezero Exp $
+	$Id: snd_win.c,v 1.22 2007-05-13 11:59:41 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -378,14 +378,14 @@ static sndinitstat SNDDMA_InitDirect (void)
 	{
 		if (hresult != DSERR_BUFFERLOST)
 		{
-			Con_SafePrintf ("%s: DS::Lock Sound Buffer Failed\n", __FUNCTION__);
+			Con_SafePrintf ("%s: DS::Lock Sound Buffer Failed\n", __thisfunc__);
 			FreeSound ();
 			return SIS_FAILURE;
 		}
 
 		if (++reps > 10000)
 		{
-			Con_SafePrintf ("%s: DS: couldn't restore buffer\n", __FUNCTION__);
+			Con_SafePrintf ("%s: DS: couldn't restore buffer\n", __thisfunc__);
 			FreeSound ();
 			return SIS_FAILURE;
 		}

@@ -1,6 +1,6 @@
 /*
 	gl_vidnt.c -- NT GL vid component
-	$Id: gl_vidnt.c,v 1.98 2007-05-09 18:10:15 sezero Exp $
+	$Id: gl_vidnt.c,v 1.99 2007-05-13 11:58:32 sezero Exp $
 */
 
 #define	__GL_FUNC_EXTERN
@@ -568,7 +568,7 @@ static int VID_SetMode (int modenum, unsigned char *palette)
 	}
 	else
 	{
-		Sys_Error ("%s: Bad mode type in modelist", __FUNCTION__);
+		Sys_Error ("%s: Bad mode type in modelist", __thisfunc__);
 	}
 
 	if (!stat)

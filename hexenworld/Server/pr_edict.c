@@ -2,7 +2,7 @@
 	sv_edict.c
 	entity dictionary
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Server/pr_edict.c,v 1.25 2007-05-09 18:11:37 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Server/pr_edict.c,v 1.26 2007-05-13 11:59:42 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -108,7 +108,7 @@ edict_t *ED_Alloc (void)
 
 	if (i == MAX_EDICTS)
 	{
-		Con_Printf ("WARNING: %s: no free edicts\n", __FUNCTION__);
+		Con_Printf ("WARNING: %s: no free edicts\n", __thisfunc__);
 		i--;	// step on whatever is the last edict
 		e = EDICT_NUM(i);
 		SV_UnlinkEdict(e);
@@ -726,17 +726,17 @@ void ED_ParseGlobals (char *data)
 		if (com_token[0] == '}')
 			break;
 		if (!data)
-			SV_Error ("%s: EOF without closing brace", __FUNCTION__);
+			SV_Error ("%s: EOF without closing brace", __thisfunc__);
 
 		strcpy (keyname, com_token);
 
 	// parse value
 		data = COM_Parse (data);
 		if (!data)
-			SV_Error ("%s: EOF without closing brace", __FUNCTION__);
+			SV_Error ("%s: EOF without closing brace", __thisfunc__);
 
 		if (com_token[0] == '}')
-			SV_Error ("%s: closing brace without data", __FUNCTION__);
+			SV_Error ("%s: closing brace without data", __thisfunc__);
 
 		key = ED_FindGlobal (keyname);
 		if (!key)
@@ -746,7 +746,7 @@ void ED_ParseGlobals (char *data)
 		}
 
 		if (!ED_ParseEpair ((void *)pr_globals, key, com_token))
-			SV_Error ("%s: parse error", __FUNCTION__);
+			SV_Error ("%s: parse error", __thisfunc__);
 	}
 }
 
@@ -890,7 +890,7 @@ char *ED_ParseEdict (char *data, edict_t *ent)
 		if (com_token[0] == '}')
 			break;
 		if (!data)
-			SV_Error ("%s: EOF without closing brace", __FUNCTION__);
+			SV_Error ("%s: EOF without closing brace", __thisfunc__);
 
 		// anglehack is to allow QuakeEd to write single scalar angles
 		// and allow them to be turned into vectors. (FIXME...)
@@ -919,10 +919,10 @@ char *ED_ParseEdict (char *data, edict_t *ent)
 		// parse value
 		data = COM_Parse (data);
 		if (!data)
-			SV_Error ("%s: EOF without closing brace", __FUNCTION__);
+			SV_Error ("%s: EOF without closing brace", __thisfunc__);
 
 		if (com_token[0] == '}')
-			SV_Error ("%s: closing brace without data", __FUNCTION__);
+			SV_Error ("%s: closing brace without data", __thisfunc__);
 
 		init = true;
 
@@ -957,7 +957,7 @@ char *ED_ParseEdict (char *data, edict_t *ent)
 		}
 
 		if (!ED_ParseEpair ((void *)&ent->v, key, com_token))
-			SV_Error ("%s: parse error", __FUNCTION__);
+			SV_Error ("%s: parse error", __thisfunc__);
 	}
 
 	if (!init)
@@ -998,7 +998,7 @@ void ED_LoadFromFile (char *data)
 		if (!data)
 			break;
 		if (com_token[0] != '{')
-			SV_Error ("%s: found %s when expecting {", __FUNCTION__, com_token);
+			SV_Error ("%s: found %s when expecting {", __thisfunc__, com_token);
 
 		if (!ent)
 			ent = EDICT_NUM(0);
@@ -1201,7 +1201,7 @@ void PR_LoadProgs (void)
 	if (!progs)
 		progs = (dprograms_t *)FS_LoadHunkFile ("progs.dat");
 	if (!progs)
-		SV_Error ("%s: couldn't load progs.dat", __FUNCTION__);
+		SV_Error ("%s: couldn't load progs.dat", __thisfunc__);
 	Con_DPrintf ("Programs occupy %luK.\n", (unsigned long)(fs_filesize/1024));
 
 	// add prog crc to the serverinfo
@@ -1272,7 +1272,7 @@ void PR_LoadProgs (void)
 	{
 		pr_fielddefs[i].type = LittleShort (pr_fielddefs[i].type);
 		if (pr_fielddefs[i].type & DEF_SAVEGLOBAL)
-			SV_Error ("%s: pr_fielddefs[i].type & DEF_SAVEGLOBAL", __FUNCTION__);
+			SV_Error ("%s: pr_fielddefs[i].type & DEF_SAVEGLOBAL", __thisfunc__);
 		pr_fielddefs[i].ofs = LittleShort (pr_fielddefs[i].ofs);
 		pr_fielddefs[i].s_name = LittleLong (pr_fielddefs[i].s_name);
 	}
@@ -1316,7 +1316,7 @@ void PR_Init (void)
 edict_t *EDICT_NUM(int n)
 {
 	if (n < 0 || n >= MAX_EDICTS)
-		SV_Error ("%s: bad number %i", __FUNCTION__, n);
+		SV_Error ("%s: bad number %i", __thisfunc__, n);
 	return (edict_t *)((byte *)sv.edicts+ (n)*pr_edict_size);
 }
 
@@ -1331,14 +1331,14 @@ int NUM_FOR_EDICT(edict_t *e)
 	{
 		if (!RemoveBadReferences)
 			Con_DPrintf ("%s: bad pointer, Class: %s Field: %s, Index %d, Total %d",
-					__FUNCTION__, class_name, field_name, b, sv.num_edicts);
+					__thisfunc__, class_name, field_name, b, sv.num_edicts);
 		else
 			b = 0;
 	}
 	if (e->free && RemoveBadReferences)
 	{
 //		Con_Printf ("%s: freed edict, Class: %s Field: %s, Index %d, Total %d",
-//				__FUNCTION__, class_name, field_name, b, sv.num_edicts);
+//				__thisfunc__, class_name, field_name, b, sv.num_edicts);
 		b = 0;
 	}
 
@@ -1353,7 +1353,7 @@ int NUM_FOR_EDICT(edict_t *e)
 static void PR_AllocStringSlots (void)
 {
 	pr_maxknownstrings += PR_STRING_ALLOCSLOTS;
-	Sys_DPrintf("%s: realloc'ing for %d slots\n", __FUNCTION__, pr_maxknownstrings);
+	Sys_DPrintf("%s: realloc'ing for %d slots\n", __thisfunc__, pr_maxknownstrings);
 	pr_knownstrings = Z_Realloc (pr_knownstrings, pr_maxknownstrings * sizeof(char *), Z_MAINZONE);
 }
 
@@ -1364,12 +1364,12 @@ char *PR_GetString (int num)
 	else if (num < 0 && num >= -pr_numknownstrings)
 	{
 		if (!pr_knownstrings[-1 - num])
-			SV_Error ("%s: attempt to get a non-existant string\n", __FUNCTION__);
+			SV_Error ("%s: attempt to get a non-existant string\n", __thisfunc__);
 		return pr_knownstrings[-1 - num];
 	}
 	else
 	{
-		SV_Error("%s: invalid string offset %d\n", __FUNCTION__, num);
+		SV_Error("%s: invalid string offset %d\n", __thisfunc__, num);
 		return "";
 	}
 }
@@ -1381,14 +1381,14 @@ int PR_SetEngineString (char *s)
 	if (!s)
 		return 0;
 	if (s >= pr_strings && s <= pr_strings + pr_stringssize)
-		SV_Error("%s: s \"%s\" in pr_strings area\n", __FUNCTION__, s);
+		SV_Error("%s: s \"%s\" in pr_strings area\n", __thisfunc__, s);
 	for (i = 0; i < pr_numknownstrings; i++)
 	{
 		if (pr_knownstrings[i] == s)
 			return -1 - i;
 	}
 	// new unknown engine string
-	DEBUG_Printf ("%s: new engine string %p\n", __FUNCTION__, s);
+	DEBUG_Printf ("%s: new engine string %p\n", __thisfunc__, s);
 #if 0
 	for (i = 0; i < pr_numknownstrings; i++)
 	{
