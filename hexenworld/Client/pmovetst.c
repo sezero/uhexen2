@@ -2,7 +2,7 @@
 	pmovetst.c
 	player movement testing
 
-	$Id: pmovetst.c,v 1.10 2007-05-13 11:59:01 sezero Exp $
+	$Id: pmovetst.c,v 1.11 2007-05-13 16:14:53 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -303,10 +303,12 @@ Returns false if the given player position is not valid (in solid)
 */
 qboolean PM_TestPlayerPosition (vec3_t pos)
 {
+#if 0	/* FIXME: Unreachable code. See also: NudgePosition(). Compare QW and HW codes someday. */
 	int			i;
 	physent_t	*pe;
 	vec3_t		mins, maxs, test;
 	hull_t		*hull;
+#endif	/* Unreachable code */
 	pmtrace_t	trace;
 
 	trace = PM_PlayerMove (pos, pos);
@@ -317,6 +319,7 @@ qboolean PM_TestPlayerPosition (vec3_t pos)
 
 	return true;
 
+#if 0	/* Unreachable code: see above. */
 	for (i = 0; i < pmove.numphysent; i++)
 	{
 		pe = &pmove.physents[i];
@@ -363,6 +366,7 @@ qboolean PM_TestPlayerPosition (vec3_t pos)
 	}
 
 	return true;
+#endif	/* Unreachable code */
 }
 
 
