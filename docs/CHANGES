@@ -3,6 +3,38 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2007-05-13 (CVS):
+    * snd_win.c: clean-up.
+    * cd_win.c: clean-up.
+    * made lmp2pcx to load the hexen2 palette data at runtime from the
+      palette.lmp file, rather than embedding the palette data itself:
+      potential license issues for now. did some additional cleanup here
+      and there.
+    * removed the hexen2pal header from the lmp2pcx directory for now
+      (potential license issues...)
+    * made jsh2color to use the bspfile object from utils/common and
+      moved the specific stuff to to litfile.{c|h} and jscolor.{c|h}
+      files. this beast actually requires ~much~ more cleanup.
+    * jsh2color cleanups #2: colour -> color.
+    * jsh2color cleanups #3: moved the DecisionTime thing to jscolor.c.
+      fixed the declaration of newdlightdata in jscolor.h.
+    * re-diff'ed some of the extra patches after the recent changes.
+    * added __thisfunc__ as a new macro and added preprocessor stuff
+      for its definition in order to workaround different __FUNCTION__
+      and __func__ availability and behavior. __func__ of C99 is the
+      default.
+    * replaced all __FUNCTION__ usage with __thisfunc__ .
+    * updated the variadic macros for compilers other than gcc.
+    * workaround for an lcc compilation error. lcc currently doesn't
+      compile, though: it doesn't like nested variadic macros such as
+      those in model.c: to be looked into.
+    * several compile fixes. although I tried compiling with lcc, it seemed
+      broken when it comes to handling variadic macros.
+    * hexenworld//pmovetst.c: commented out unreachable code in
+      PM_TestPlayerPosition(). it seems like a mess, though. I need to
+      compare QW and HW codes for this function and also for others such
+      as NudgePosition(), someday.
+
 2007-05-09 (CVS):
     * enabled the integer value member of the cvar structure.
     * replaced the float value usage of cvars with integer values wherever
