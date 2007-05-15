@@ -2,7 +2,7 @@
 	sv_edict.c
 	entity dictionary
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Server/pr_edict.c,v 1.26 2007-05-13 11:59:42 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Server/pr_edict.c,v 1.27 2007-05-15 11:19:05 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -1280,8 +1280,12 @@ void PR_LoadProgs (void)
 	for (i = 0; i < progs->numglobals; i++)
 		((int *)pr_globals)[i] = LittleLong (((int *)pr_globals)[i]);
 
-	pr_edict_size = progs->entityfields * 4 + sizeof (edict_t) - sizeof(entvars_t);
-	pr_edict_size = (pr_edict_size + 7) & ~7;	// alignment fix for 64 bit
+	pr_edict_size = progs->entityfields * 4 + sizeof(edict_t) - sizeof(entvars_t);
+	// round off to next highest whole word address (esp for Alpha)
+	// this ensures that pointers in the engine data area are always
+	// properly aligned
+	pr_edict_size += sizeof(void *) - 1;
+	pr_edict_size &= ~(sizeof(void *) - 1);
 
 	// Zoid, find the spectator functions
 	SpectatorConnect = SpectatorThink = SpectatorDisconnect = 0;

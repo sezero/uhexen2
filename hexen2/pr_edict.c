@@ -2,7 +2,7 @@
 	sv_edict.c
 	entity dictionary
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/pr_edict.c,v 1.44 2007-05-13 11:58:30 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/pr_edict.c,v 1.45 2007-05-15 11:19:03 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -1355,8 +1355,12 @@ void PR_LoadProgs (void)
 		((int *)pr_globals)[i] = LittleLong (((int *)pr_globals)[i]);
 #endif	// BIG_ENDIAN
 
-	pr_edict_size = progs->entityfields * 4 + sizeof (edict_t) - sizeof(entvars_t);
-	pr_edict_size = (pr_edict_size + 7) & ~7;	// alignment fix for 64 bit
+	pr_edict_size = progs->entityfields * 4 + sizeof(edict_t) - sizeof(entvars_t);
+	// round off to next highest whole word address (esp for Alpha)
+	// this ensures that pointers in the engine data area are always
+	// properly aligned
+	pr_edict_size += sizeof(void *) - 1;
+	pr_edict_size &= ~(sizeof(void *) - 1);
 
 #if !defined(SERVERONLY)
 	// set the cl_playerclass value after pr_global_struct has been created
