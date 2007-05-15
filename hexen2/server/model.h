@@ -5,7 +5,7 @@
 	This version of model.c and model.h are based on a quake dedicated
 	server application, lhnqserver, by LordHavoc.
 
-	$Id: model.h,v 1.4 2007-02-07 17:03:27 sezero Exp $
+	$Id: model.h,v 1.5 2007-05-15 11:38:37 sezero Exp $
 */
 
 #ifndef __HX2_MODEL_H
@@ -162,13 +162,9 @@ typedef struct model_s
 
 //
 // volume occupied by the model graphics
-//		
+//
 	vec3_t		mins, maxs;
 	float		radius;
-
-// solid volume for clipping
-	qboolean	clipbox;
-	vec3_t		clipmins, clipmaxs;
 
 //
 // brush model

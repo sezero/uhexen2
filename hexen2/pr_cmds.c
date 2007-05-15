@@ -2,7 +2,7 @@
 	pr_cmds.c
 	prog commands
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/pr_cmds.c,v 1.43 2007-05-13 11:58:29 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/pr_cmds.c,v 1.44 2007-05-15 11:38:37 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -317,7 +317,9 @@ static void PF_setpuzzlemodel (void)
 		Q_strlcpy (sv.model_precache[i], temp, sizeof(sv.model_precache[0]));
 
 		e->v.model = PR_SetEngineString(sv.model_precache[i]);
+#if !defined(SERVERONLY)
 		sv.models[i] = Mod_ForName (temp, true);
+#endif	/* SERVERONLY */
 	}
 	else
 	{
@@ -1807,7 +1809,9 @@ static void PF_precache_model (void)
 		if (!sv.model_precache[i][0])
 		{
 			Q_strlcpy (sv.model_precache[i], s, sizeof(sv.model_precache[0]));
+#if !defined(SERVERONLY)
 			sv.models[i] = Mod_ForName (sv.model_precache[i], true);
+#endif	/* SERVERONLY */
 			return;
 		}
 		if (!strcmp(sv.model_precache[i], s))
@@ -1861,7 +1865,9 @@ static void PF_precache_puzzle_model (void)
 		if (!sv.model_precache[i][0])
 		{
 			Q_strlcpy (sv.model_precache[i], temp, sizeof(sv.model_precache[i]));
+#if !defined(SERVERONLY)
 			sv.models[i] = Mod_ForName (sv.model_precache[i], true);
+#endif	/* SERVERONLY */
 			return;
 		}
 		if (!strcmp(sv.model_precache[i], temp))

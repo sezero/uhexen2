@@ -8,7 +8,7 @@
 	This version of model.c and model.h are based on a quake dedicated
 	server application, lhnqserver, by LordHavoc.
 
-	$Id: model.c,v 1.11 2007-05-13 11:58:32 sezero Exp $
+	$Id: model.c,v 1.12 2007-05-15 11:38:37 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -16,27 +16,16 @@
 model_t	*loadmodel;
 static char	loadname[32];	// for hunk tags
 
-static void Mod_LoadSpriteModel (model_t *mod, void *buffer);
 static void Mod_LoadBrushModel (model_t *mod, void *buffer);
-static void Mod_LoadAliasModel (model_t *mod, void *buffer);
-static void Mod_LoadAliasModelNew (model_t *mod, void *buffer);
-
 static model_t *Mod_LoadModel (model_t *mod, qboolean crash);
 
 static byte	mod_novis[MAX_MAP_LEAFS/8];
 static int	*surfedges;
 static medge_t	*edges;
 
-// values for model_t's needload
-#define	NL_PRESENT	0
-#define	NL_NEEDS_LOADED	1
-#define	NL_UNREFERENCED	2
-
 #define	MAX_MOD_KNOWN	2048
 static model_t	mod_known[MAX_MOD_KNOWN];
 static int	mod_numknown;
-
-extern qboolean	isworldmodel;
 
 
 /*
@@ -135,10 +124,7 @@ void Mod_ClearAll (void)
 	model_t	*mod;
 
 	for (i = 0, mod = mod_known; i < mod_numknown; i++, mod++)
-	{
-		if (mod->type != mod_alias)
 			mod->needload = true;
-	}
 }
 
 /*
@@ -213,23 +199,8 @@ static model_t *Mod_LoadModel (model_t *mod, qboolean crash)
 //
 
 // call the apropriate loader
-	mod->needload = NL_PRESENT;
-
-	switch (LittleLong(*(unsigned *)buf))
-	{
-	case RAPOLYHEADER:
-		Mod_LoadAliasModelNew (mod, buf);
-		break;
-	case IDPOLYHEADER:
-		Mod_LoadAliasModel (mod, buf);
-		break;
-	case IDSPRITEHEADER:
-		Mod_LoadSpriteModel (mod, buf);
-		break;
-	default:
-		Mod_LoadBrushModel (mod, buf);
-		break;
-	}
+	mod->needload = false;
+	Mod_LoadBrushModel (mod, buf);
 
 	return mod;
 }
@@ -853,24 +824,6 @@ static void Mod_LoadPlanes (lump_t *l)
 
 /*
 =================
-RadiusFromBounds
-=================
-*/
-static float RadiusFromBounds (vec3_t arg_mins, vec3_t arg_maxs)
-{
-	int		i;
-	vec3_t	corner;
-
-	for (i = 0; i < 3; i++)
-	{
-		corner[i] = fabs(arg_mins[i]) > fabs(arg_maxs[i]) ? fabs(arg_mins[i]) : fabs(arg_maxs[i]);
-	}
-
-	return VectorLength (corner);
-}
-
-/*
-=================
 Mod_LoadBrushModel
 =================
 */
@@ -895,8 +848,6 @@ static void Mod_LoadBrushModel (model_t *mod, void *buffer)
 		((int *)header)[i] = LittleLong ( ((int *)header)[i]);
 
 // load into heap
-	// LordHavoc: had to move entity loading above everything to allow parsing various settings from worldspawn
-	Mod_LoadEntities (&header->lumps[LUMP_ENTITIES]);
 
 	Mod_LoadVertexes (&header->lumps[LUMP_VERTEXES]);
 	Mod_LoadEdges (&header->lumps[LUMP_EDGES]);
@@ -913,7 +864,7 @@ static void Mod_LoadBrushModel (model_t *mod, void *buffer)
 	Mod_LoadLeafs (&header->lumps[LUMP_LEAFS]);
 	Mod_LoadNodes (&header->lumps[LUMP_NODES]);
 	Mod_LoadClipnodes (&header->lumps[LUMP_CLIPNODES]);
-//	Mod_LoadEntities (&header->lumps[LUMP_ENTITIES]);
+	Mod_LoadEntities (&header->lumps[LUMP_ENTITIES]);
 	Mod_LoadSubmodels (&header->lumps[LUMP_MODELS]);
 
 	Mod_MakeHull0 ();
@@ -940,13 +891,9 @@ static void Mod_LoadBrushModel (model_t *mod, void *buffer)
 		VectorCopy (bm->maxs, mod->maxs);
 		VectorCopy (bm->mins, mod->mins);
 
-		mod->radius = RadiusFromBounds (mod->mins, mod->maxs);
-
 		mod->numleafs = bm->visleafs;
 
-		// LordHavoc: only register submodels if it is the world
-		// (prevents bsp models from replacing world submodels)
-		if (isworldmodel && i < (mod->numsubmodels-1))
+		if (i < mod->numsubmodels-1)
 		{	// duplicate the basic information
 			char	name[10];
 
@@ -957,83 +904,5 @@ static void Mod_LoadBrushModel (model_t *mod, void *buffer)
 			mod = loadmodel;
 		}
 	}
-}
-
-/*
-==============================================================================
-
-ALIAS MODELS
-
-==============================================================================
-*/
-
-/*
-=================
-Mod_LoadAliasModelNew
-loads new expanded header format needed to do vert opts
-=================
-*/
-static void Mod_LoadAliasModelNew (model_t *mod, void *buffer)
-{
-	int			version;
-
-	version = LittleLong (((newmdl_t *)buffer)->version);
-	if (version != ALIAS_NEWVERSION)
-		Host_Error ("%s has wrong version number (%i should be %i)", mod->name, version, ALIAS_NEWVERSION);
-
-	mod->type = mod_alias;
-	mod->flags = LittleLong (((newmdl_t *)buffer)->flags);
-//	mod->mins[0] = mod->mins[1] = mod->mins[2] = 32768;
-//	mod->maxs[0] = mod->maxs[1] = mod->maxs[2] = -32768;
-	mod->mins[0] = mod->mins[1] = mod->mins[2] = -16;
-	mod->maxs[0] = mod->maxs[1] = mod->maxs[2] = 16;
-}
-
-/*
-=================
-Mod_LoadAliasModel
-loads old model fmt, converts to new
-=================
-*/
-static void Mod_LoadAliasModel (model_t *mod, void *buffer)
-{
-	int			version;
-
-	version = LittleLong (((mdl_t *)buffer)->version);
-	if (version != ALIAS_VERSION)
-		Host_Error ("%s has wrong version number (%i should be %i)", mod->name, version, ALIAS_VERSION);
-
-	mod->type = mod_alias;
-	mod->flags = LittleLong (((mdl_t *)buffer)->flags);
-//	mod->mins[0] = mod->mins[1] = mod->mins[2] = 32768;
-//	mod->maxs[0] = mod->maxs[1] = mod->maxs[2] = -32768;
-	mod->mins[0] = mod->mins[1] = mod->mins[2] = -16;
-	mod->maxs[0] = mod->maxs[1] = mod->maxs[2] = 16;
-}
-
-//=============================================================================
-
-/*
-=================
-Mod_LoadSpriteModel
-=================
-*/
-static void Mod_LoadSpriteModel (model_t *mod, void *buffer)
-{
-	int version, maxwidth, maxheight;
-
-	version = LittleLong (((dsprite_t *)buffer)->version);
-	if (version != SPRITE_VERSION)
-		Host_Error ("%s has wrong version number (%i should be %i)", mod->name, version, SPRITE_VERSION);
-
-	maxwidth = LittleLong (((dsprite_t *)buffer)->width);
-	maxheight = LittleLong (((dsprite_t *)buffer)->height);
-
-	mod->mins[0] = mod->mins[1] = -maxwidth/2;
-	mod->maxs[0] = mod->maxs[1] = maxwidth/2;
-	mod->mins[2] = -maxheight/2;
-	mod->maxs[2] = maxheight/2;
-	
-	mod->type = mod_sprite;
 }
 

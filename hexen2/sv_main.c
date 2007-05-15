@@ -2,7 +2,7 @@
 	sv_main.c
 	server main program
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sv_main.c,v 1.55 2007-05-13 11:58:30 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sv_main.c,v 1.56 2007-05-15 11:38:37 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -10,7 +10,6 @@
 server_t	sv;
 server_static_t	svs;
 
-qboolean	isworldmodel;
 static char	localmodels[MAX_MODELS][5];	// inline model names for precache
 
 static	cvar_t	sv_sound_distance	= {"sv_sound_distance", "800", CVAR_ARCHIVE};
@@ -2016,9 +2015,7 @@ void SV_SpawnServer (const char *server, const char *startspot)
 	strcpy (sv.name, server);
 	sprintf (sv.modelname,"maps/%s.bsp", server);
 
-	isworldmodel = true;	// LordHavoc: only load submodels on the world model
 	sv.worldmodel = Mod_ForName (sv.modelname, false);
-	isworldmodel = false;
 	if (!sv.worldmodel)
 	{
 		Con_Printf ("Couldn't spawn server %s\n", sv.modelname);
