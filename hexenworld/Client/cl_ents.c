@@ -2,7 +2,7 @@
 	cl_ents.c
 	entity parsing and management
 
-	$Id: cl_ents.c,v 1.15 2007-05-13 11:59:00 sezero Exp $
+	$Id: cl_ents.c,v 1.16 2007-05-15 13:42:24 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -1630,8 +1630,7 @@ void CL_SetSolidEntities (void)
 			continue;
 		if (!cl.model_precache[state->modelindex])
 			continue;
-		if ( cl.model_precache[state->modelindex]->hulls[1].firstclipnode 
-			|| cl.model_precache[state->modelindex]->clipbox )
+		if (cl.model_precache[state->modelindex]->hulls[1].firstclipnode)
 		{
 			pmove.physents[pmove.numphysent].model = cl.model_precache[state->modelindex];
 			VectorCopy (state->origin, pmove.physents[pmove.numphysent].origin);

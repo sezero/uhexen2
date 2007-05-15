@@ -2,7 +2,7 @@
 	model.h
 	header for model loading and caching
 
-	$Id: gl_model.h,v 1.10 2007-03-16 20:26:54 sezero Exp $
+	$Id: gl_model.h,v 1.11 2007-05-15 13:42:24 sezero Exp $
 */
 
 #ifndef __HX2_MODEL_H
@@ -392,15 +392,9 @@ typedef struct model_s
 
 //
 // volume occupied by the model graphics
-//		
+//
 	vec3_t		mins, maxs;
 	float		radius;
-
-//
-// solid volume for clipping 
-//
-	qboolean	clipbox;
-	vec3_t		clipmins, clipmaxs;
 
 //
 // brush model

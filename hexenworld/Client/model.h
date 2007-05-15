@@ -2,7 +2,7 @@
 	model.h
 	header for model loading and caching
 
-	$Id: model.h,v 1.7 2007-03-16 20:26:54 sezero Exp $
+	$Id: model.h,v 1.8 2007-05-15 13:42:24 sezero Exp $
 */
 
 #ifndef __HX2_MODEL_H
@@ -362,12 +362,6 @@ typedef struct model_s
 //		
 	vec3_t		mins, maxs;
 	float		radius;
-
-//
-// solid volume for clipping (sent from server)
-//
-	qboolean	clipbox;
-	vec3_t		clipmins, clipmaxs;
 
 //
 // brush model

@@ -2,7 +2,7 @@
 	model.h
 	header for model loading and caching
 
-	$Id: model.h,v 1.10 2007-03-16 20:26:50 sezero Exp $
+	$Id: model.h,v 1.11 2007-05-15 13:42:18 sezero Exp $
 */
 
 #ifndef __HX2_MODEL_H
@@ -335,7 +335,7 @@ typedef struct model_s
 
 //
 // volume occupied by the model graphics
-//		
+//
 	vec3_t		mins, maxs;
 	float		radius;
 
