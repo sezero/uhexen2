@@ -1,5 +1,8 @@
+# GNU Makefile for hexenworld master server using GCC.
+# $Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Master/Makefile,v 1.14 2007-05-15 14:25:15 sezero Exp $
+#
 # if building a debug version :		make DEBUG=1 [other stuff]
-
+#
 # To cross-compile for Win32 on Unix, you must pass the WINBUILD=1
 # argument to make. It would be best if you examine the script named
 # build_cross_win32.sh for cross compilation.

@@ -1,3 +1,6 @@
+# GNU Makefile for lib3dfxgamma using GCC.
+# $Header: /home/ozzie/Download/0000/uhexen2/lib3dfxgamma/Makefile,v 1.6 2007-05-15 14:25:16 sezero Exp $
+#
 
 CC_DEFAULT:=gcc
 ifeq ($(origin CC),environment)

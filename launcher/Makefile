@@ -1,11 +1,12 @@
-# Quick'n'Dirty Makefile for Hexen2 Launcher
-
+# GNU Makefile for hexen2 gtk-launcher app using GCC.
+# $Header: /home/ozzie/Download/0000/uhexen2/launcher/Makefile,v 1.41 2007-05-15 14:25:16 sezero Exp $
+#
 #  gtk2 will be used default.
 #  to compile for gtk-1.2 type:  make GTK1=yes
-
+#
 #  if building for the demo version, run with
 #  make DEMO=yes [other stuff]
-
+#
 #  if you want debug symbols compiled in ( -g ), run with
 #  make DEBUG=1
 

@@ -1,5 +1,8 @@
+# GNU Makefile for hexen2 bsp2wal tool using GCC.
+# $Header: /home/ozzie/Download/0000/uhexen2/utils/texutils/bsp2wal/Makefile,v 1.2 2007-05-15 14:25:26 sezero Exp $
+#
 # if building a debug version :		make DEBUG=1 [other stuff]
-
+#
 # To cross-compile for Win32 on Unix, you must pass the WINBUILD=1
 # argument to make. It would be best if you examine the script named
 # build_cross_win32.sh for cross compilation.
