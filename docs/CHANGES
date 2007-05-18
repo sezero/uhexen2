@@ -3,6 +3,22 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2007-05-15 (CVS):
+    * better code for the progs data alignment. adapted from quakeforge.
+    * eliminated some unnecessary things from h2ded version of model.c.
+      put proper ifdefs around the Mod_ForName calls in pr_cmd.c (they
+      are only for alias and sprite models which aren't necessary for
+      the dedicated server.)
+    * tiny model clean-up. removed the clipbox, clipmins and clipmaxs members
+      of the model structure, too: the header says it to be 'solid volume for
+      clipping (sent from server)', but the server doesn't do that and cl_ents
+      does a bogus check for clipbox in CL_SetSolidEntities which is removed
+      now.
+    * added more informative hunk tags to model.c of hwsv.
+    * added proper ifdefs around the Mod_ForName calls in pr_cmds.c of
+      hwsv: it is now more similar to the hexen2 version.
+    * added cvs version headers to the makefiles.
+
 2007-05-13 (CVS):
     * snd_win.c: clean-up.
     * cd_win.c: clean-up.
