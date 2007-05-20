@@ -3,6 +3,9 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2007-05-20 (1.4.2-rc1 / CVS):
+    * marked the snapshot of 20 May 2007 as 1.4.2-rc1.
+
 2007-05-15 (CVS):
     * better code for the progs data alignment. adapted from quakeforge.
     * eliminated some unnecessary things from h2ded version of model.c.

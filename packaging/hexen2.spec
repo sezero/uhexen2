@@ -22,12 +22,12 @@
 
 # pre-release version: MAKE SURE to change this
 # to an %undefine for the final realease!!
-%define prerelease	pre3
+%define prerelease	rc1
 
 # package release number for final-release:
 %define pkg_final	1
 # package release number for pre-release:
-%define pkg_prerel	3
+%define pkg_prerel	4
 
 Name:		hexen2
 License:	GPL
@@ -299,6 +299,9 @@ desktop-file-install \
 %{_prefix}/games/%{name}/docs/README.hwmaster
 
 %changelog
+* Sun May 20 2007 O.Sezer <sezero@users.sourceforge.net> 1.4.2-0.4.rc1
+- 1.4.2-rc1.
+
 * Tue Apr 10 2007 O.Sezer <sezero@users.sourceforge.net>
 - xdelta now builds without autotools.
 
