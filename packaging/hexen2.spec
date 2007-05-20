@@ -245,7 +245,7 @@ desktop-file-install \
 %{_prefix}/games/%{name}/hexen2
 %endif
 %{_prefix}/games/%{name}/glhexen2
-%{_prefix}/games/%{name}/xdelta113
+%{_prefix}/games/%{name}/xdelta114
 %{_prefix}/games/%{name}/update_xdelta.sh
 %{_prefix}/games/%{name}/patchdata/data1/data1pak0.xd
 %{_prefix}/games/%{name}/patchdata/data1/data1pak1.xd
