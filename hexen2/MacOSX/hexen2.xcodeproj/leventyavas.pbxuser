@@ -60,6 +60,150 @@
 		sourceDirectories = (
 		);
 	};
+	70310B240BFDE84D00CA35D3 /* msg_io.c */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {500, 4812}}";
+			sepNavSelRange = "{0, 0}";
+			sepNavVisRect = "{{0, 0}, {500, 646}}";
+			sepNavWindowFrame = "{{78, 1}, {515, 719}}";
+		};
+	};
+	70310B510BFDEAC500CA35D3 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 707D57A20AA9F6EE00313A9F /* gl_vidsdl.c */;
+		name = "Con_Printf(\"Found %i TMUs support\\n\", num_tmus);";
+		rLen = 51;
+		rLoc = 17408;
+		rType = 0;
+		vrLen = 451;
+		vrLoc = 17165;
+	};
+	70310B520BFDEAC500CA35D3 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		comments = "warning: format '%d' expects type 'int', but argument 3 has type 'GLuint'";
+		fRef = 707D57950AA9F6EE00313A9F /* gl_draw.c */;
+		rLen = 1;
+		rLoc = 1939;
+		rType = 1;
+	};
+	70310B530BFDEAC500CA35D3 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 707D57950AA9F6EE00313A9F /* gl_draw.c */;
+		name = "Con_DPrintf (\"Texture cache mismatch: %d, %s, reloading\\n\", glt->texnum, identifier);";
+		rLen = 91;
+		rLoc = 45423;
+		rType = 0;
+		vrLen = 499;
+		vrLoc = 45169;
+	};
+	70310B540BFDEAC500CA35D3 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 707D57A20AA9F6EE00313A9F /* gl_vidsdl.c */;
+		name = "Con_Printf(\"Found %i TMUs support\\n\", num_tmus);";
+		rLen = 51;
+		rLoc = 17408;
+		rType = 0;
+		vrLen = 451;
+		vrLoc = 17165;
+	};
+	70310B550BFDEAC500CA35D3 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 707D57950AA9F6EE00313A9F /* gl_draw.c */;
+		name = "Con_DPrintf (\"Texture cache mismatch: %d, %s, reloading\\n\", glt->texnum, identifier);";
+		rLen = 91;
+		rLoc = 45423;
+		rType = 0;
+		vrLen = 499;
+		vrLoc = 45169;
+	};
+	70310B580BFDEAE200CA35D3 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 707D57950AA9F6EE00313A9F /* gl_draw.c */;
+		name = "Con_DPrintf (\"Texture cache mismatch: %d, %s, reloading\\n\", glt->texnum, identifier);";
+		rLen = 91;
+		rLoc = 45423;
+		rType = 0;
+		vrLen = 499;
+		vrLoc = 45169;
+	};
+	70310B590BFDEAF700CA35D3 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 707D57950AA9F6EE00313A9F /* gl_draw.c */;
+		name = "Con_DPrintf (\"Texture cache mismatch: %d, %s, reloading\\n\", glt->texnum, identifier);";
+		rLen = 91;
+		rLoc = 45423;
+		rType = 0;
+		vrLen = 499;
+		vrLoc = 45169;
+	};
+	70310B5A0BFDEB2900CA35D3 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 707D57A20AA9F6EE00313A9F /* gl_vidsdl.c */;
+		name = "Con_Printf(\"Found %i TMUs support\\n\", num_tmus);";
+		rLen = 51;
+		rLoc = 17408;
+		rType = 0;
+		vrLen = 451;
+		vrLoc = 17165;
+	};
+	70310B5B0BFDEB2900CA35D3 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		comments = "warning: format '%d' expects type 'int', but argument 3 has type 'GLuint'";
+		fRef = 707D57950AA9F6EE00313A9F /* gl_draw.c */;
+		rLen = 1;
+		rLoc = 1939;
+		rType = 1;
+	};
+	70310B5C0BFDEB2900CA35D3 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 707D57950AA9F6EE00313A9F /* gl_draw.c */;
+		name = "Con_DPrintf (\"Texture cache mismatch: %d, %s, reloading\\n\", glt->texnum, identifier);";
+		rLen = 91;
+		rLoc = 45423;
+		rType = 0;
+		vrLen = 499;
+		vrLoc = 45169;
+	};
+	70310B5D0BFDEB2900CA35D3 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 707D57A20AA9F6EE00313A9F /* gl_vidsdl.c */;
+		name = "Con_Printf(\"OpenGL max.texture size: %i\\n\", gl_max_size);";
+		rLen = 59;
+		rLoc = 20546;
+		rType = 0;
+		vrLen = 744;
+		vrLoc = 20130;
+	};
+	70310B5E0BFDEB2900CA35D3 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 707D57950AA9F6EE00313A9F /* gl_draw.c */;
+		name = "Con_DPrintf (\"Texture cache mismatch: %d, %s, reloading\\n\", glt->texnum, identifier);";
+		rLen = 91;
+		rLoc = 45423;
+		rType = 0;
+		vrLen = 499;
+		vrLoc = 45169;
+	};
+	70310B5F0BFDEB2900CA35D3 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 707D57A20AA9F6EE00313A9F /* gl_vidsdl.c */;
+		name = "Con_Printf(\"Found %i TMUs support\\n\", num_tmus);";
+		rLen = 51;
+		rLoc = 17408;
+		rType = 0;
+		vrLen = 451;
+		vrLoc = 17165;
+	};
+	70310B600BFDEB2900CA35D3 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 707D57950AA9F6EE00313A9F /* gl_draw.c */;
+		name = "Con_DPrintf (\"Texture cache mismatch: %d, %s, reloading\\n\", glt->texnum, identifier);";
+		rLen = 91;
+		rLoc = 45423;
+		rType = 0;
+		vrLen = 499;
+		vrLoc = 45169;
+	};
 	707D575A0AA9F4B100313A9F /* Project object */ = {
 		activeBuildConfigurationName = Debug;
 		activeExecutable = 707D58EB0AA9FBB700313A9F /* glhexen2 */;
@@ -133,8 +277,24 @@
 					PBXFileDataSource_Warnings_ColumnID,
 				);
 			};
-			PBXPerProjectTemplateStateSaveDate = 187100256;
-			PBXWorkspaceStateSaveDate = 187100256;
+			PBXPerProjectTemplateStateSaveDate = 201188340;
+			PBXWorkspaceStateSaveDate = 201188340;
+		};
+		perUserProjectItems = {
+			70310B510BFDEAC500CA35D3 /* PBXTextBookmark */ = 70310B510BFDEAC500CA35D3 /* PBXTextBookmark */;
+			70310B520BFDEAC500CA35D3 /* PBXTextBookmark */ = 70310B520BFDEAC500CA35D3 /* PBXTextBookmark */;
+			70310B530BFDEAC500CA35D3 /* PBXTextBookmark */ = 70310B530BFDEAC500CA35D3 /* PBXTextBookmark */;
+			70310B540BFDEAC500CA35D3 /* PBXTextBookmark */ = 70310B540BFDEAC500CA35D3 /* PBXTextBookmark */;
+			70310B550BFDEAC500CA35D3 /* PBXTextBookmark */ = 70310B550BFDEAC500CA35D3 /* PBXTextBookmark */;
+			70310B580BFDEAE200CA35D3 /* PBXTextBookmark */ = 70310B580BFDEAE200CA35D3 /* PBXTextBookmark */;
+			70310B590BFDEAF700CA35D3 /* PBXTextBookmark */ = 70310B590BFDEAF700CA35D3 /* PBXTextBookmark */;
+			70310B5A0BFDEB2900CA35D3 /* PBXTextBookmark */ = 70310B5A0BFDEB2900CA35D3 /* PBXTextBookmark */;
+			70310B5B0BFDEB2900CA35D3 /* PBXTextBookmark */ = 70310B5B0BFDEB2900CA35D3 /* PBXTextBookmark */;
+			70310B5C0BFDEB2900CA35D3 /* PBXTextBookmark */ = 70310B5C0BFDEB2900CA35D3 /* PBXTextBookmark */;
+			70310B5D0BFDEB2900CA35D3 /* PBXTextBookmark */ = 70310B5D0BFDEB2900CA35D3 /* PBXTextBookmark */;
+			70310B5E0BFDEB2900CA35D3 /* PBXTextBookmark */ = 70310B5E0BFDEB2900CA35D3 /* PBXTextBookmark */;
+			70310B5F0BFDEB2900CA35D3 /* PBXTextBookmark */ = 70310B5F0BFDEB2900CA35D3 /* PBXTextBookmark */;
+			70310B600BFDEB2900CA35D3 /* PBXTextBookmark */ = 70310B600BFDEB2900CA35D3 /* PBXTextBookmark */;
 		};
 		sourceControlManager = 707D575E0AA9F4B100313A9F /* Source Control */;
 		userBuildSettings = {
@@ -154,9 +314,9 @@
 	};
 	707D57950AA9F6EE00313A9F /* gl_draw.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {884, 15816}}";
-			sepNavSelRange = "{0, 0}";
-			sepNavVisRect = "{{0, 0}, {743, 203}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1220, 24276}}";
+			sepNavSelRange = "{45423, 91}";
+			sepNavVisRect = "{{0, 23173}, {743, 203}}";
 		};
 	};
 	707D579A0AA9F6EE00313A9F /* h2_opt.h */ = {
@@ -173,6 +333,14 @@
 			sepNavSelRange = "{0, 0}";
 			sepNavVisRect = "{{0, 1382}, {496, 646}}";
 			sepNavWindowFrame = "{{15, 22}, {511, 719}}";
+		};
+	};
+	707D57A20AA9F6EE00313A9F /* gl_vidsdl.c */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {743, 24288}}";
+			sepNavSelRange = "{17408, 51}";
+			sepNavVisRect = "{{0, 8041}, {743, 203}}";
+			sepNavWindowFrame = "{{55, 22}, {515, 719}}";
 		};
 	};
 	707D57A50AA9F6EE00313A9F /* glquake.h */ = {
