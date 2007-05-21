@@ -1,6 +1,6 @@
 /*
 	loadtri.c
-	$Id: loadtri.c,v 1.5 2007-03-14 21:04:32 sezero Exp $
+	$Id: loadtri.c,v 1.6 2007-05-21 16:59:46 sezero Exp $
 */
 
 // HEADER FILES ------------------------------------------------------------
@@ -18,7 +18,7 @@
 #define SafeMalloc(PTR,SIZE,DESC) {							\
 	PTR = malloc((SIZE));								\
 	if (PTR == NULL)								\
-		Error("Failed to allocate %u bytes for '%s'.\n", (SIZE), DESC);		\
+		Error("Failed to allocate %lu bytes for '%s'.\n", (unsigned long)(SIZE), DESC);	\
 }
 
 //#undef M_PI
