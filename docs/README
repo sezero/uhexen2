@@ -282,7 +282,7 @@ it. Send a bug report on the project page.
 
 On linux / unix, the midi background music requires 1.2.4 or a newer
 version of SDL_mixer, preferably version 1.2.5 or later.  Currently,
-it will not work in combination with the SDL sound option.
+it will not work in combination with the SDL sound option (-sndsdl).
 
 If compiling SDL_mixer yourself, the default location for the timidity
 data files (complete set of GUS patches) is "/usr/local/lib/timidity".
@@ -394,10 +394,10 @@ disabled by default.
 2.3 Fluxbox
 -----------
 
-Though it's a great window manager, fluxbox has issues with some
-games in fullscreen mode. If this is the case, hit "ALT + Enter"
-twice to switch into windowed mode and then back into fullscreen
-mode.
+Though it's a great window manager, older versions of fluxbox has
+issues with some games in fullscreen mode. If this is the case,
+hit "ALT + Enter" twice to switch into windowed mode and then back
+into fullscreen mode.
 
 ----------------------------------------------------------------
 
