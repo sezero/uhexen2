@@ -2,7 +2,7 @@
 	sbar.c
 	Hexen II status bar
 
-	$Id: sbar.c,v 1.33 2007-05-13 16:14:11 sezero Exp $
+	$Id: sbar.c,v 1.34 2007-05-23 08:03:07 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -1674,17 +1674,19 @@ static void DrawArtifactInventory(void)
 		y = -37;
 	}
 
+	// Here, InvLeft_f and InvRight_f have new code to scroll the inventory as needed,
+	// as I hated getting to the ~wrong~ end of the inventory bar - S.A.
+
 	for (i = 0, x = 64; i < INV_MAX_ICON; i++, x += 33)
 	{
-		if (cl.inv_startpos + i >= cl.inv_count)
-		{
+		if (cl.inv_count == 0 || i >= cl.inv_count)
 			break;
-		}
-		if (cl.inv_startpos + i == cl.inv_selected)
+
+		if ((cl.inv_startpos + i ) % cl.inv_count == cl.inv_selected)
 		{ // Highlight icon
 			Sbar_DrawTransPic(x+9, y-12, Draw_CachePic("gfx/artisel.lmp"));
 		}
-		DrawBarArtifactIcon(x, y, cl.inv_order[cl.inv_startpos+i]);
+		DrawBarArtifactIcon(x, y, cl.inv_order[(cl.inv_startpos + i) % cl.inv_count]);
 	}
 
 	//Inv_DrawArrows (x, y);
@@ -1811,15 +1813,18 @@ static void InvLeft_f(void)
 
 	if (inv_flg)
 	{
-		if (cl.inv_selected > 0)
+		// scroll inventory icons if we're at the left-most already
+		if (cl.inv_selected == cl.inv_startpos)
 		{
-			cl.inv_selected--;
-			if (cl.inv_selected < cl.inv_startpos)
-			{
-				cl.inv_startpos = cl.inv_selected;
-			}
-			scr_fullupdate = 0;
+			cl.inv_startpos = (cl.inv_startpos - 1 + cl.inv_count) % cl.inv_count;
+			cl.inv_selected = cl.inv_startpos;
 		}
+		else
+		{
+			cl.inv_selected = (cl.inv_selected - 1 + cl.inv_count )% cl.inv_count;
+		}
+
+		scr_fullupdate = 0;
 	}
 	else
 	{
@@ -1837,6 +1842,8 @@ static void InvLeft_f(void)
 
 static void InvRight_f(void)
 {
+	int		right_icon;
+
 	if (!cl.inv_count || cl.intermission)
 	{
 		return;
@@ -1844,16 +1851,19 @@ static void InvRight_f(void)
 
 	if (inv_flg)
 	{
-		if (cl.inv_selected < cl.inv_count-1)
-		{
-			cl.inv_selected++;
-			if (cl.inv_selected - cl.inv_startpos >= INV_MAX_ICON)
-			{
-				// could probably be just a cl.inv_startpos++, but just in case
-				cl.inv_startpos = cl.inv_selected - INV_MAX_ICON + 1;
-			}
-			scr_fullupdate = 0;
-		}
+
+		if (cl.inv_count >= INV_MAX_ICON) 
+			right_icon = (cl.inv_startpos + INV_MAX_ICON - 1) % cl.inv_count;
+		else
+			right_icon = (cl.inv_startpos + cl.inv_count - 1) % cl.inv_count;
+
+		// scroll inventory icons if we're at the right most already
+		if (cl.inv_selected == right_icon)
+			cl.inv_startpos = (cl.inv_startpos + 1) % cl.inv_count ;
+
+		cl.inv_selected = (cl.inv_selected + 1) % cl.inv_count;
+
+		scr_fullupdate = 0;
 	}
 	else
 	{
