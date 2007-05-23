@@ -3,6 +3,16 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2007-05-23 (CVS):
+    * made the inventory bar to wrap around. from Steven.
+    * updated the list of known bugs.
+    * minor update to the xdelta makefile.
+
+2007-05-21 (CVS):
+    * minor documentation updates. from Steven.
+    * updated the Xcode project files for Mac OS X. from Levent.
+    * genmodel/loadtri.c: fixed a format warning on x86_64.
+
 2007-05-20 (1.4.2-rc1 / CVS):
     * marked the snapshot of 20 May 2007 as 1.4.2-rc1.
 
