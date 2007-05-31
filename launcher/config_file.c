@@ -2,7 +2,7 @@
 	config_file.c
 	hexen2 launcher config file handling
 
-	$Id: config_file.c,v 1.45 2007-05-31 21:24:10 sezero Exp $
+	$Id: config_file.c,v 1.46 2007-05-31 21:27:26 sezero Exp $
 
 	This program is free software; you can redistribute it and/or
 	modify it under the terms of the GNU General Public License
@@ -29,6 +29,8 @@
 #include "config_file.h"
 
 // Default values for the options
+char game_basedir[MAX_OSPATH]	= GAME_DATADIR;
+int basedir_nonstd	= 0;
 int destiny		= DEST_H2;
 int opengl_support	= 1;
 int fullscreen		= 1;
@@ -87,13 +89,14 @@ int write_config_file (void)
 	{
 		fprintf(stderr, " Error: couldn't open config file for writing\n");
 		return 1;
-
 	}
 	else
 	{
 		fprintf(cfg_file, "# Hexen II Launcher Options file\n\n");
 		fprintf(cfg_file, "# This file has been automatically generated\n\n");
 
+		fprintf(cfg_file, "game_basedir=\"%s\"\n",game_basedir);
+		fprintf(cfg_file, "basedir_nonstd=%d\n",basedir_nonstd);
 		fprintf(cfg_file, "destiny=%d\n",destiny);
 #ifndef DEMOBUILD
 		fprintf(cfg_file, "h2game=%d\n",h2game);
@@ -129,6 +132,70 @@ int write_config_file (void)
 	}
 	fclose (cfg_file); 
 	printf("Options saved successfully.\n");
+	return 0;
+}
+
+int cfg_read_basedir (void)
+{
+	FILE	*cfg_file;
+	char	buff[1024], *tmp;
+
+	game_basedir[0] = '\0';
+	cfg_file = open_config_file("r");
+	if (cfg_file == NULL)
+	{
+		printf("Creating default configuration file...\n");
+		return write_config_file();
+	}
+	else
+	{
+		int	cnt = 0;
+
+		do {
+			memset(buff, 0, sizeof(buff));
+			fgets(buff, sizeof(buff), cfg_file);
+			if (!feof(cfg_file))
+			{
+				if (buff[0] == '#')
+					continue;
+				// remove end-of-line characters
+				tmp = buff;
+				while (*tmp)
+				{
+					if (*tmp == '\r' || *tmp == '\n')
+						*tmp = '\0';
+					tmp++;
+				}
+				// parse: whitespace isn't tolerated.
+				if (strstr(buff, "game_basedir=") == buff)
+				{
+					size_t		len;
+					tmp = buff+13;
+					len = strlen(tmp);
+					// first and last chars must be quotes
+					if (tmp[0] != '\"' || tmp[len-1] != '\"' || len-2 >= sizeof(game_basedir))
+						continue;
+					memset (game_basedir, 0, sizeof(game_basedir));
+					memcpy (game_basedir, tmp+1, len-2);
+					++cnt;
+				}
+				else if (strstr(buff, "basedir_nonstd=") == buff)
+				{
+					basedir_nonstd = atoi(buff + 15);
+					if (basedir_nonstd != 0 && basedir_nonstd != 1)
+						basedir_nonstd = 0;
+					++cnt;
+				}
+
+				if (cnt >= 2)
+					break;
+			}
+
+		} while (!feof(cfg_file));
+
+		fclose (cfg_file);
+	}
+
 	return 0;
 }
 

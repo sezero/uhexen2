@@ -2,7 +2,7 @@
 	interface.c
 	hexen2 launcher gtk+ interface
 
-	$Id: interface.c,v 1.55 2007-05-31 21:23:26 sezero Exp $
+	$Id: interface.c,v 1.56 2007-05-31 21:27:26 sezero Exp $
 
 	This program is free software; you can redistribute it and/or
 	modify it under the terms of the GNU General Public License
@@ -58,6 +58,10 @@ int			thread_alive;
 // Private data:
 
 static GtkTooltips	*tooltips;
+static GtkWidget	*H2G_Entry;	// Hexen2 games listing
+#ifndef DEMOBUILD
+static GtkWidget	*HWG_Entry;	// Hexenworld games listing
+#endif	/* DEMOBUILD */
 
 static options_widget_t	Options;
 static MainWindow_t	main_win;
@@ -218,6 +222,7 @@ static void report_status (GtkObject *Unused, PatchWindow_t *PatchWindow)
 
 	Log_printf ("Installation Summary:\n\n");
 	Log_printf ("Base directory: %s\n", basedir);
+	Log_printf ("Data directory: %s\n", (basedir_nonstd && game_basedir[0]) ? game_basedir : basedir);
 	Log_printf ("PAK file health: %s", (gameflags & GAME_INSTBAD) ? "BAD. Reason(s):\n" : "OK ");
 	if (gameflags & GAME_INSTBAD)
 	{
@@ -575,6 +580,81 @@ static void on_MORE (GtkButton *button, gpointer user_data)
 		gtk_widget_hide (BOOK1);
 }
 
+static void basedir_Change (GtkButton *unused, gpointer user_data)
+{
+#if !defined(DEMOBUILD)
+	int		i;
+	GList *TmpList = NULL;
+#endif	/* ! DEMOBUILD */
+
+	if (lock)
+		return;
+
+	lock = 1;
+	basedir_nonstd ^= 1;
+	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON(patch_win.bBASEDIR), basedir_nonstd);
+	scan_game_installation();
+	UpdateStats ();
+	report_status (NULL, &patch_win);
+
+// activate the extra game options, if necessary
+	gtk_widget_set_sensitive (WGT_H2WORLD, (gameflags & GAME_HEXENWORLD) ? TRUE : FALSE);
+// rebuild the game mod lists
+#if !defined(DEMOBUILD)
+	if (mp_support)
+		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON(WGT_PORTALS), FALSE);
+	h2game = hwgame = mp_support = 0;
+	for (i = 0; i < MAX_H2GAMES; i++)
+	{
+		if (h2game_names[i].available)
+			TmpList = g_list_append (TmpList, h2game_names[i].name);
+	}
+	gtk_combo_set_popdown_strings (GTK_COMBO(WGT_H2GAME), TmpList);
+	g_list_free (TmpList);
+	TmpList = NULL;
+	for (i = 0; i < MAX_HWGAMES; i++)
+	{
+		if (hwgame_names[i].available)
+			TmpList = g_list_append (TmpList, hwgame_names[i].name);
+	}
+	gtk_combo_set_popdown_strings (GTK_COMBO(WGT_HWGAME), TmpList);
+	g_list_free (TmpList);
+	gtk_entry_set_text (GTK_ENTRY(H2G_Entry), h2game_names[0].name);
+	gtk_entry_set_text (GTK_ENTRY(HWG_Entry), hwgame_names[0].name);
+	if (gameflags & (GAME_REGISTERED|GAME_REGISTERED_OLD))
+	{
+		gtk_widget_set_sensitive (WGT_H2GAME, TRUE);
+		gtk_widget_set_sensitive (WGT_HWGAME, TRUE);
+		if (gameflags & GAME_PORTALS && destiny == DEST_H2)
+			gtk_widget_set_sensitive (WGT_PORTALS, TRUE);
+	}
+	else
+	{
+		gtk_widget_set_sensitive (WGT_H2GAME, FALSE);
+		gtk_widget_set_sensitive (WGT_HWGAME, FALSE);
+		gtk_widget_set_sensitive (WGT_PORTALS, FALSE);
+	}
+#endif	/* ! DEMOBUILD */
+
+	lock = 0;
+}
+
+static void basedir_ChangePath (GtkEditable *editable, gpointer user_data)
+{
+	size_t len;
+	gchar *tmp = gtk_editable_get_chars (editable, 0, -1);
+	len = strlen(tmp);
+	if (len > sizeof(game_basedir)-1)
+		len = sizeof(game_basedir)-1;
+	if (len)
+		memcpy (game_basedir, tmp, len);
+	game_basedir[len] = 0;
+	g_free (tmp);
+
+	if (basedir_nonstd)	/* FIXME: any better way? */
+		basedir_Change (NULL, NULL);
+}
+
 /*********************************************************************
  WINDOW CREATING
  *********************************************************************/
@@ -599,7 +679,7 @@ static void create_window2 (GtkWidget *unused1, gpointer user_data)
 	gtk_window_set_title (GTK_WINDOW(PATCH_WINDOW), "Hexen II PAK patch");
 	gtk_window_set_resizable (GTK_WINDOW(PATCH_WINDOW), FALSE);
 	gtk_window_set_modal (GTK_WINDOW(PATCH_WINDOW), TRUE);
-	gtk_widget_set_size_request(PATCH_WINDOW, 360, 240);
+	gtk_widget_set_size_request(PATCH_WINDOW, 360, 272);
 
 	PATCH_TAB = gtk_fixed_new ();
 	gtk_widget_ref (PATCH_TAB);
@@ -613,11 +693,30 @@ static void create_window2 (GtkWidget *unused1, gpointer user_data)
 	gtk_fixed_put (GTK_FIXED(PATCH_TAB), Txt1, 14, 12);
 	gtk_label_set_justify (GTK_LABEL(Txt1), GTK_JUSTIFY_LEFT);
 
+// custom basedir entry:
+	patch_win.bBASEDIR = gtk_check_button_new_with_label (_("Data install path:"));
+	gtk_widget_ref (patch_win.bBASEDIR);
+	gtk_widget_show (patch_win.bBASEDIR);
+	gtk_fixed_put (GTK_FIXED(PATCH_TAB), patch_win.bBASEDIR, 14, 186);
+	gtk_widget_set_size_request (patch_win.bBASEDIR, 128, 24);
+	gtk_widget_set_sensitive (patch_win.bBASEDIR, TRUE);
+	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON(patch_win.bBASEDIR), basedir_nonstd);
+	GTK_WIDGET_UNSET_FLAGS (patch_win.bBASEDIR, GTK_CAN_FOCUS);
+	gtk_tooltips_set_tip (tooltips, patch_win.bBASEDIR, _("Mark this in order to use a different game installation directory"), NULL);
+
+	patch_win.dir_Entry = gtk_entry_new();
+	gtk_widget_show (patch_win.dir_Entry);
+	gtk_fixed_put (GTK_FIXED(PATCH_TAB), patch_win.dir_Entry, 148, 186);
+	gtk_widget_set_size_request (patch_win.dir_Entry, 190, 24);
+	gtk_entry_set_max_length (GTK_ENTRY(patch_win.dir_Entry), sizeof(game_basedir)-1);
+	gtk_entry_set_text (GTK_ENTRY(patch_win.dir_Entry), game_basedir);
+	gtk_widget_ref (patch_win.dir_Entry);
+
 // Apply Patch button
 	patch_win.bAPPLY = gtk_button_new_with_label (_("Apply Pak Patch"));
 	gtk_widget_ref (patch_win.bAPPLY);
 	gtk_widget_show (patch_win.bAPPLY);
-	gtk_fixed_put (GTK_FIXED(PATCH_TAB), patch_win.bAPPLY, 14, 186);
+	gtk_fixed_put (GTK_FIXED(PATCH_TAB), patch_win.bAPPLY, 14, 218);
 	gtk_widget_set_size_request (patch_win.bAPPLY, 112, 24);
 #if !defined(DEMOBUILD)
 	gtk_tooltips_set_tip (tooltips, patch_win.bAPPLY, _("Apply the v1.11 pakfiles patch by Raven Software."), NULL);
@@ -627,7 +726,7 @@ static void create_window2 (GtkWidget *unused1, gpointer user_data)
 	patch_win.bREPORT = gtk_button_new_with_label (_("Make Report"));
 	gtk_widget_ref (patch_win.bREPORT);
 	gtk_widget_show (patch_win.bREPORT);
-	gtk_fixed_put (GTK_FIXED(PATCH_TAB), patch_win.bREPORT, 132, 186);
+	gtk_fixed_put (GTK_FIXED(PATCH_TAB), patch_win.bREPORT, 132, 218);
 	gtk_widget_set_size_request (patch_win.bREPORT, 112, 24);
 
 // Holder window for the textview
@@ -669,14 +768,14 @@ static void create_window2 (GtkWidget *unused1, gpointer user_data)
 	patch_win.bCLOSE = gtk_button_new_with_label (_("Close"));
 	gtk_widget_ref (patch_win.bCLOSE);
 	gtk_widget_show (patch_win.bCLOSE);
-	gtk_fixed_put (GTK_FIXED(PATCH_TAB), patch_win.bCLOSE, 250, 186);
+	gtk_fixed_put (GTK_FIXED(PATCH_TAB), patch_win.bCLOSE, 250, 218);
 	gtk_widget_set_size_request (patch_win.bCLOSE, 88, 24);
 
 // Statusbar
 	PATCH_STATBAR = gtk_statusbar_new ();
 	gtk_widget_ref (PATCH_STATBAR);
 	gtk_widget_show (PATCH_STATBAR);
-	gtk_fixed_put (GTK_FIXED(PATCH_TAB), PATCH_STATBAR, 0, 214);
+	gtk_fixed_put (GTK_FIXED(PATCH_TAB), PATCH_STATBAR, 0, 246);
 	gtk_widget_set_size_request (PATCH_STATBAR, 354, 24);
 	gtk_statusbar_set_has_resize_grip (GTK_STATUSBAR(PATCH_STATBAR), FALSE);
 	gtk_container_set_border_width (GTK_CONTAINER(PATCH_STATBAR), 2);
@@ -687,6 +786,8 @@ static void create_window2 (GtkWidget *unused1, gpointer user_data)
 	gtk_object_set_data_full (GTK_OBJECT(PATCH_WINDOW), "Txt1", Txt1, GTK_DESTROYNOTIFY(gtk_widget_unref));
 	gtk_object_set_data_full (GTK_OBJECT(PATCH_WINDOW), "bAPPLY", patch_win.bAPPLY, GTK_DESTROYNOTIFY(gtk_widget_unref));
 	gtk_object_set_data_full (GTK_OBJECT(PATCH_WINDOW), "bREPORT", patch_win.bREPORT, GTK_DESTROYNOTIFY(gtk_widget_unref));
+	gtk_object_set_data_full (GTK_OBJECT(PATCH_WINDOW), "bBASEDIR", patch_win.bBASEDIR, GTK_DESTROYNOTIFY(gtk_widget_unref));
+	gtk_object_set_data_full (GTK_OBJECT(PATCH_WINDOW), "dir_Entry", patch_win.dir_Entry, GTK_DESTROYNOTIFY(gtk_widget_unref));
 	gtk_object_set_data_full (GTK_OBJECT(PATCH_WINDOW), "TxtWindow", TxtWindow, GTK_DESTROYNOTIFY(gtk_widget_unref));
 	gtk_object_set_data_full (GTK_OBJECT(PATCH_WINDOW), "LOGVIEW", patch_win.LOGVIEW, GTK_DESTROYNOTIFY(gtk_widget_unref));
 	gtk_object_set_data_full (GTK_OBJECT(PATCH_WINDOW), "bCLOSE", patch_win.bCLOSE, GTK_DESTROYNOTIFY(gtk_widget_unref));
@@ -694,6 +795,8 @@ static void create_window2 (GtkWidget *unused1, gpointer user_data)
 
 	gtk_signal_connect (GTK_OBJECT(PATCH_WINDOW), "destroy", GTK_SIGNAL_FUNC(destroy_window2), NULL);
 	gtk_signal_connect (GTK_OBJECT(patch_win.bCLOSE), "clicked", GTK_SIGNAL_FUNC(destroy_window2), NULL);
+	gtk_signal_connect (GTK_OBJECT(patch_win.bBASEDIR), "toggled", GTK_SIGNAL_FUNC(basedir_Change), NULL);
+	gtk_signal_connect (GTK_OBJECT(patch_win.dir_Entry), "changed", GTK_SIGNAL_FUNC(basedir_ChangePath), NULL);
 #if !defined(DEMOBUILD)
 	gtk_signal_connect (GTK_OBJECT(patch_win.bAPPLY), "clicked", GTK_SIGNAL_FUNC(start_xpatch), &patch_win);
 	gtk_signal_connect (GTK_OBJECT(patch_win.bREPORT), "clicked", GTK_SIGNAL_FUNC(report_status), &patch_win);
@@ -741,10 +844,6 @@ static void create_window1 (void)
 	GtkWidget *TxtPatch;	// Data patch label
 	GtkWidget *bPATCH;	// PATCH button
 	GtkWidget *SRATE_Entry;	// Sampling rate listing
-	GtkWidget *H2G_Entry;	// Hexen2 games listing
-#ifndef DEMOBUILD
-	GtkWidget *HWG_Entry;	// Hexenworld games listing
-#endif	/* DEMOBUILD */
 
 // Separators
 	GtkWidget *hseparator0;

@@ -2,7 +2,7 @@
 	config_file.h
 	hexen2 launcher config file handling
 
-	$Id: config_file.h,v 1.13 2007-04-15 20:40:38 sezero Exp $
+	$Id: config_file.h,v 1.14 2007-05-31 21:27:26 sezero Exp $
 
 	This program is free software; you can redistribute it and/or
 	modify it under the terms of the GNU General Public License
@@ -28,6 +28,8 @@
 
 #define LAUNCHER_CONFIG_FILE "launcher_options"
 
+extern char game_basedir[MAX_OSPATH];
+extern int basedir_nonstd;
 extern int destiny;
 extern int opengl_support;
 extern int fullscreen;
@@ -63,6 +65,7 @@ extern int hwgame;
 
 int write_config_file (void);
 int read_config_file (void);
+int cfg_read_basedir (void);
 
 #endif	// CONFIG_FILE_H
 

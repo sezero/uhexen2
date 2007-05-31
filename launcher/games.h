@@ -2,7 +2,7 @@
 	games.h
 	hexen2 launcher, game installation scanning
 
-	$Id: games.h,v 1.3 2007-04-28 15:31:08 sezero Exp $
+	$Id: games.h,v 1.4 2007-05-31 21:27:26 sezero Exp $
 
 	This program is free software; you can redistribute it and/or
 	modify it under the terms of the GNU General Public License
@@ -28,6 +28,8 @@
 
 #define	H2_BINARY_NAME	"hexen2"
 #define	HW_BINARY_NAME	"hwcl"
+
+#define	GAME_DATADIR	"/usr/share/games/hexen2"	/* Gentoo guys install this way. */
 
 #define	GAME_DEMO		(1 << 0)
 #define	GAME_OEM		(1 << 1)

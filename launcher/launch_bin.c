@@ -2,7 +2,7 @@
 	launch_bin.c
 	hexen2 launcher: binary launching
 
-	$Id: launch_bin.c,v 1.43 2007-04-15 20:40:38 sezero Exp $
+	$Id: launch_bin.c,v 1.44 2007-05-31 21:27:26 sezero Exp $
 
 	This program is free software; you can redistribute it and/or
 	modify it under the terms of the GNU General Public License
@@ -85,6 +85,12 @@ void launch_hexen2_bin (void)
 
 	i = 0;
 	args[i] = binary_name;
+
+	if (basedir_nonstd && game_basedir[0])
+	{
+		args[++i] = "-basedir";
+		args[++i] = game_basedir;
+	}
 
 #if !defined(DEMOBUILD)
 	if (destiny == DEST_H2 && mp_support)

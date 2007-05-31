@@ -2,7 +2,7 @@
 	widget_defs.h
 	hexen2 launcher: gtk+ widget defs
 
-	$Id: widget_defs.h,v 1.17 2007-04-14 21:30:17 sezero Exp $
+	$Id: widget_defs.h,v 1.18 2007-05-31 21:27:26 sezero Exp $
 
 	This program is free software; you can redistribute it and/or
 	modify it under the terms of the GNU General Public License
@@ -49,10 +49,12 @@ typedef struct
 {
 	GtkWidget *mywindow;	// Main window
 	GtkWidget *fixed1;	// Widgets container
+	GtkWidget *bBASEDIR;	// Use a different game basedir
 	GtkWidget *bCLOSE;	// Close button
 	GtkWidget *bAPPLY;	// Apply patch button
 	GtkWidget *bREPORT;	// Report installation status
 	GtkWidget *LOGVIEW;	// LogEntry line for patch process
+	GtkWidget *dir_Entry;	// path for game basedir
 	GtkWidget *StatusBar;	// Status bar, (patch status)
 	gint	statbar_id;	// statbar context id
 	guint	delete_handler;

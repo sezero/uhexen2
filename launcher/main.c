@@ -2,7 +2,7 @@
 	main.c
 	hexen2 launcher: main loop
 
-	$Id: main.c,v 1.26 2007-04-14 21:30:16 sezero Exp $
+	$Id: main.c,v 1.27 2007-05-31 21:27:26 sezero Exp $
 
 	This program is free software; you can redistribute it and/or
 	modify it under the terms of the GNU General Public License
@@ -206,6 +206,7 @@ int main (int argc, char *argv[])
 //	go into the binary's directory
 	chdir (basedir);
 
+	cfg_read_basedir();
 	scan_game_installation();
 	read_config_file();
 

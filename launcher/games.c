@@ -2,7 +2,7 @@
 	games.c
 	hexen2 launcher, game installation scanning
 
-	$Id: games.c,v 1.5 2007-05-31 21:23:26 sezero Exp $
+	$Id: games.c,v 1.6 2007-05-31 21:27:26 sezero Exp $
 
 	This program is free software; you can redistribute it and/or
 	modify it under the terms of the GNU General Public License
@@ -27,6 +27,7 @@
 #include "games.h"
 #include "crc.h"
 #include "pakfile.h"
+#include "config_file.h"
 
 #if !defined(LITTLE_ENDIAN) || !defined(BIG_ENDIAN)
 #undef	LITTLE_ENDIAN
@@ -65,6 +66,7 @@ static int LongSwap (int l)
 }
 
 unsigned int	gameflags;
+static char	*scan_dir;
 
 typedef struct
 {
@@ -212,11 +214,13 @@ hwgame_t hwgame_names[] =	/* first entry is always available */
 
 const int	MAX_HWGAMES = sizeof(hwgame_names) / sizeof(hwgame_names[0]);
 
-static size_t	string_size = 0;
+static size_t	string_size;
 
 static void FindMaxStringSize (void)
 {
 	size_t	i, len;
+
+	string_size = 0;
 
 	for (i = 1; i < MAX_H2GAMES; i++)
 	{
@@ -235,7 +239,7 @@ static void FindMaxStringSize (void)
 			string_size = len;
 	}
 
-	string_size += 2;			// 1 for "/" + 1 for null termination
+	string_size = string_size + strlen(scan_dir) + 3;	// 2 for two "/" + 1 for null termination
 }
 
 static void scan_h2_mods (void)
@@ -243,14 +247,11 @@ static void scan_h2_mods (void)
 	int	i;
 	char	*path;
 
-	if (!string_size)
-		FindMaxStringSize ();
-
 	printf ("Scanning for known hexen2 mods\n");
 	path = (char *)malloc(string_size);
 	for (i = 1; i < MAX_H2GAMES; i++)
 	{
-		sprintf (path, "%s/%s", h2game_names[i].dirname, h2game_names[i].checkfile);
+		sprintf (path, "%s/%s/%s", scan_dir, h2game_names[i].dirname, h2game_names[i].checkfile);
 		if (access(path, R_OK) == 0)
 			h2game_names[i].available = 1;
 	}
@@ -262,18 +263,15 @@ static void scan_hw_mods (void)
 	int	i, j;
 	char	*path;
 
-	if (!string_size)
-		FindMaxStringSize ();
-
 	printf ("Scanning for known hexenworld mods\n");
 	path = (char *)malloc(string_size);
 	for (i = 1; i < MAX_HWGAMES; i++)
 	{
-		sprintf (path, "%s/hwprogs.dat", hwgame_names[i].dirname);
+		sprintf (path, "%s/%s/hwprogs.dat", scan_dir, hwgame_names[i].dirname);
 		j = access(path, R_OK);
 		if (j == 0)
 		{
-			sprintf (path, "%s/%s", hwgame_names[i].dirname, hwgame_names[i].checkfile);
+			sprintf (path, "%s/%s/%s", scan_dir, hwgame_names[i].dirname, hwgame_names[i].checkfile);
 			j = access(path, R_OK);
 		}
 		if (j == 0)
@@ -315,10 +313,15 @@ void scan_game_installation (void)
 	if (endien == 0)
 		printf ("Warning: Unknown byte order!\n");
 
+	if (basedir_nonstd && game_basedir[0])
+		scan_dir = game_basedir;
+	else
+		scan_dir = basedir;
+
 	printf ("Scanning base hexen2 installation\n");
 	for (i = 0; i < MAX_PAKDATA-1; i++)
 	{
-		snprintf (pakfile, sizeof(pakfile), "%s/pak%d.pak", pakdata[i].dirname, i);
+		snprintf (pakfile, sizeof(pakfile), "%s/%s/pak%d.pak", scan_dir, pakdata[i].dirname, i);
 		scan_pak_files (pakfile, i);
 	}
 
@@ -357,6 +360,7 @@ void scan_game_installation (void)
 	}
 
 #if !defined(DEMOBUILD)
+	FindMaxStringSize ();
 	scan_h2_mods ();
 	scan_hw_mods ();
 #endif	/* DEMOBUILD */
