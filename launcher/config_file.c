@@ -2,7 +2,7 @@
 	config_file.c
 	hexen2 launcher config file handling
 
-	$Id: config_file.c,v 1.44 2007-04-28 15:31:08 sezero Exp $
+	$Id: config_file.c,v 1.45 2007-05-31 21:24:10 sezero Exp $
 
 	This program is free software; you can redistribute it and/or
 	modify it under the terms of the GNU General Public License
@@ -141,8 +141,7 @@ int read_config_file (void)
 	if (cfg_file == NULL)
 	{
 		printf("Creating default configuration file...\n");
-		write_config_file();
-		return 0;
+		return write_config_file();
 	}
 	else
 	{
