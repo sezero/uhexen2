@@ -2,7 +2,7 @@
 	interface.c
 	hexen2 launcher gtk+ interface
 
-	$Id: interface.c,v 1.54 2007-04-28 15:31:08 sezero Exp $
+	$Id: interface.c,v 1.55 2007-05-31 21:23:26 sezero Exp $
 
 	This program is free software; you can redistribute it and/or
 	modify it under the terms of the GNU General Public License
@@ -1039,9 +1039,8 @@ static void create_window1 (void)
 	gtk_widget_set_size_request (WGT_H2GAME, 172, 32);
 #ifndef DEMOBUILD
 	TmpList = NULL;
-	TmpList = g_list_append (TmpList, (gpointer) "(  None  )");
 	gtk_combo_set_use_arrows (GTK_COMBO(WGT_H2GAME), FALSE);
-	for (i = 1; i < MAX_H2GAMES; i++)
+	for (i = 0; i < MAX_H2GAMES; i++)
 	{
 		if (h2game_names[i].available)
 			TmpList = g_list_append (TmpList, h2game_names[i].name);
@@ -1075,9 +1074,8 @@ static void create_window1 (void)
 	gtk_widget_ref (WGT_HWGAME);
 	gtk_widget_set_size_request (WGT_HWGAME, 172, 32);
 	TmpList = NULL;
-	TmpList = g_list_append (TmpList, (gpointer) "Plain DeathMatch");
 	gtk_combo_set_use_arrows (GTK_COMBO(WGT_HWGAME), FALSE);
-	for (i = 1; i < MAX_HWGAMES; i++)
+	for (i = 0; i < MAX_HWGAMES; i++)
 	{
 		if (hwgame_names[i].available)
 			TmpList = g_list_append (TmpList, hwgame_names[i].name);

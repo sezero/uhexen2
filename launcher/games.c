@@ -2,7 +2,7 @@
 	games.c
 	hexen2 launcher, game installation scanning
 
-	$Id: games.c,v 1.4 2007-04-28 15:49:16 sezero Exp $
+	$Id: games.c,v 1.5 2007-05-31 21:23:26 sezero Exp $
 
 	This program is free software; you can redistribute it and/or
 	modify it under the terms of the GNU General Public License
@@ -189,7 +189,7 @@ finish:
 }
 
 #if !defined(DEMOBUILD)
-h2game_t h2game_names[] =
+h2game_t h2game_names[] =	/* first entry is always available */
 {
 	{  NULL    , "(  None  )"	,   NULL,		0, 1 },
 	{ "hcbots" , "BotMatch: HC bots",   "progs.dat",	1, 0 },
@@ -200,7 +200,7 @@ h2game_t h2game_names[] =
 
 const int MAX_H2GAMES = sizeof(h2game_names) / sizeof(h2game_names[0]);
 
-hwgame_t hwgame_names[] =
+hwgame_t hwgame_names[] =	/* first entry is always available */
 {
 	{  NULL     , "Plain DeathMatch", NULL,			 1  },
 	{ "hexarena", "HexArena"	, "sound/ha/fight.wav",  0  },
