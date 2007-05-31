@@ -3,6 +3,16 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2007-05-31 (CVS):
+    * launcher: cleaned-up game mod list building (the first entry in the
+      lookup table is always available).
+    * launcher: made read_config_file to return proper value (the return
+      value isn't used, yet, though.)
+    * launcher: added ability to specify a different data installation
+      directory.
+    * launcher: incremented the version to 1.0.1 .
+    * updated the documents after the launcher changes.
+
 2007-05-23 (CVS):
     * made the inventory bar to wrap around. from Steven.
     * updated the list of known bugs.
