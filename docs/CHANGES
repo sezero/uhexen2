@@ -3,6 +3,9 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2007-06-01 (CVS):
+    * cd_null.c: fixed compilation.
+
 2007-05-31 (CVS):
     * launcher: cleaned-up game mod list building (the first entry in the
       lookup table is always available).
