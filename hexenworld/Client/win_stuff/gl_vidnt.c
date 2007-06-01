@@ -1,6 +1,6 @@
 /*
 	gl_vidnt.c -- NT GL vid component
-	$Id: gl_vidnt.c,v 1.101 2007-05-13 11:59:41 sezero Exp $
+	$Id: gl_vidnt.c,v 1.102 2007-06-01 20:01:52 sezero Exp $
 */
 
 #define	__GL_FUNC_EXTERN
@@ -2468,8 +2468,7 @@ void	VID_Init (unsigned char *palette)
 	if (COM_CheckParm("-paltex"))
 		Cvar_SetValue ("vid_config_gl8bit", 1);
 
-	// so Con_Printfs don't mess us up by forcing vid and snd updates
-	i = scr_disabled_for_loading;
+	j = scr_disabled_for_loading;
 	scr_disabled_for_loading = true;
 
 	Cvar_SetValue ("vid_mode", vid_default);
@@ -2494,9 +2493,10 @@ void	VID_Init (unsigned char *palette)
 	VID_Init8bitPalette();
 
 	// lock the early-read cvars until Host_Init is finished
-	Cvar_LockVars (read_vars, num_readvars);
+	for (i = 0; i < (int)num_readvars; i++)
+		Cvar_LockVar (read_vars[i]);
 
-	scr_disabled_for_loading = i;
+	scr_disabled_for_loading = j;
 	vid.recalc_refdef = 1;
 
 	vid_menudrawfn = VID_MenuDraw;

@@ -2,7 +2,7 @@
 	cvar.h
 	dynamic variable tracking
 
-	$Id: cvar.h,v 1.14 2007-05-09 18:01:07 sezero Exp $
+	$Id: cvar.h,v 1.15 2007-06-01 20:01:52 sezero Exp $
 */
 
 #ifndef __CVAR_H__
@@ -98,7 +98,6 @@ cvar_t	*Cvar_FindVar (const char *var_name);
 cvar_t	*Cvar_FindVarAfter (const char *prev_name, unsigned int with_flags);
 
 void	Cvar_LockVar (const char *var_name);
-void	Cvar_LockVars (const char **varnames, int num_vars);
 void	Cvar_UnlockVar (const char *var_name);
 void	Cvar_UnlockAll (void);
 

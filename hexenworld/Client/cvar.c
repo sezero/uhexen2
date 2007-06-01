@@ -2,7 +2,7 @@
 	cvar.c
 	dynamic variable tracking
 
-	$Id: cvar.c,v 1.28 2007-05-13 11:59:00 sezero Exp $
+	$Id: cvar.c,v 1.29 2007-06-01 20:01:52 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -54,7 +54,7 @@ cvar_t *Cvar_FindVarAfter (const char *prev_name, unsigned int with_flags)
 
 /*
 ============
-Cvar_LockVars
+Cvar_LockVar
 
 used for preventing the early-read cvar values to get over-
 written by the actual final read of config.cfg (which will
@@ -62,23 +62,8 @@ be the case when commandline overrides were used):  mark
 them as locked until Host_Init() completely finishes its job.
 this is a temporary solution until we adopt a better init
 sequence employing the +set arguments like those in quake2/3.
-the num_vars argument must be the exact number of strings in the
-array, otherwise I have nothing against going out of bounds.
 ============
 */
-void Cvar_LockVars (const char **varnames, int num_vars)
-{
-	cvar_t	*var;
-	int		i;
-
-	for (i = 0; i < num_vars && varnames[i]; i++)
-	{
-		var = Cvar_FindVar (varnames[i]);
-		if (var)
-			var->flags |= CVAR_LOCKED;
-	}
-}
-
 void Cvar_LockVar (const char *var_name)
 {
 	cvar_t	*var = Cvar_FindVar (var_name);

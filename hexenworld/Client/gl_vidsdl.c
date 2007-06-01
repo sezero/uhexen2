@@ -2,7 +2,7 @@
 	gl_vidsdl.c -- SDL GL vid component
 	Select window size and mode and init SDL in GL mode.
 
-	$Id: gl_vidsdl.c,v 1.148 2007-05-09 18:10:17 sezero Exp $
+	$Id: gl_vidsdl.c,v 1.149 2007-06-01 20:01:52 sezero Exp $
 
 	Changed 7/11/04 by S.A.
 	- Fixed fullscreen opengl mode, window sizes
@@ -1468,7 +1468,7 @@ VID_Init
 */
 void	VID_Init (unsigned char *palette)
 {
-	int	i, width, height;
+	int	i, temp, width, height;
 #if DO_MESH_CACHE
 	char	gldir[MAX_OSPATH];
 #endif
@@ -1669,8 +1669,7 @@ void	VID_Init (unsigned char *palette)
 	vid.colormap = host_colormap;
 	vid.fullbright = 256 - LittleLong (*((int *)vid.colormap + 2048));
 
-	// so Con_Printfs don't mess us up by forcing vid and snd updates
-	i = scr_disabled_for_loading;
+	temp = scr_disabled_for_loading;
 	scr_disabled_for_loading = true;
 	//set the mode
 	VID_SetMode (vid_mode.integer);
@@ -1690,10 +1689,11 @@ void	VID_Init (unsigned char *palette)
 	VID_Init8bitPalette();
 
 	// lock the early-read cvars until Host_Init is finished
-	Cvar_LockVars (read_vars, num_readvars);
+	for (i = 0; i < (int)num_readvars; i++)
+		Cvar_LockVar (read_vars[i]);
 
 	vid_initialized = true;
-	scr_disabled_for_loading = i;
+	scr_disabled_for_loading = temp;
 	vid.recalc_refdef = 1;
 
 	Con_SafePrintf ("Video initialized.\n");

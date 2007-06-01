@@ -3,7 +3,7 @@
 	SDL video driver
 	Select window size and mode and init SDL in SOFTWARE mode.
 
-	$Id: vid_sdl.c,v 1.69 2007-05-09 18:10:18 sezero Exp $
+	$Id: vid_sdl.c,v 1.70 2007-06-01 20:01:52 sezero Exp $
 
 	Changed by S.A. 7/11/04, 27/12/04
 	Options are now: -fullscreen | -window, -height , -width
@@ -794,7 +794,8 @@ void VID_Init (unsigned char *palette)
 	}
 
 	// lock the early-read cvars until Host_Init is finished
-	Cvar_LockVars (read_vars, num_readvars);
+	for (i = 0; i < (int)num_readvars; i++)
+		Cvar_LockVar (read_vars[i]);
 
 	scr_disabled_for_loading = temp;
 	vid_initialized = true;
