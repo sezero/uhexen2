@@ -1,6 +1,6 @@
 /*
 	cd_null.c
-	$Id: cd_null.c,v 1.5 2007-05-01 09:02:04 sezero Exp $
+	$Id: cd_null.c,v 1.6 2007-06-01 15:55:13 sezero Exp $
 
 	This program is free software; you can redistribute it and/or
 	modify it under the terms of the GNU General Public License
@@ -54,6 +54,4 @@ int CDAudio_Init(void)
 void CDAudio_Shutdown(void)
 {
 }
-
-#endif
 
