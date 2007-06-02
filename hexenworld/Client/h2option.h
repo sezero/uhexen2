@@ -2,7 +2,7 @@
 	h2option.h
 	Compile time options for Hexen II: Hammer of Thyrion
 
-	$Id: h2option.h,v 1.5 2007-04-28 15:31:07 sezero Exp $
+	$Id: h2option.h,v 1.6 2007-06-02 05:50:12 sezero Exp $
 */
 
 
@@ -19,8 +19,11 @@
 /* =====================================================================
    PARANOID
    Value  :	not a value, but a define or undef
-   Affects:	allows paranoid checks at many places (speed sapping
-		error checking).
+   Affects:	allows paranoid checks at many places: speed sapping
+		error checking.  do NOT enable this unless you REALLY
+		know what you are doing: many of those checks may not
+		be actually necessary and the game would error out at
+		any time!  besides, it really decreases the speed.
    =================================================================== */
 #undef	PARANOID
 
