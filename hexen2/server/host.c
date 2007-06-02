@@ -2,7 +2,7 @@
 	host.c
 	coordinates spawning and killing of local servers
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/server/host.c,v 1.35 2007-05-13 11:58:31 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/server/host.c,v 1.36 2007-06-02 10:34:45 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -53,9 +53,9 @@ cvar_t	noexit = {"noexit", "0", CVAR_NOTIFY|CVAR_SERVERINFO};
 cvar_t	developer = {"developer", "0", CVAR_ARCHIVE};
 
 cvar_t	skill = {"skill", "1", CVAR_NONE};		// 0 - 3
+cvar_t	coop = {"coop", "0", CVAR_NONE};		// 0 or 1
 cvar_t	deathmatch = {"deathmatch", "0", CVAR_NONE};	// 0, 1, or 2
 cvar_t	randomclass = {"randomclass", "0", CVAR_NONE};	// 0, 1, or 2
-cvar_t	coop = {"coop", "0", CVAR_NONE};		// 0 or 1
 
 cvar_t	pausable = {"pausable", "1", CVAR_NONE};
 
@@ -212,9 +212,9 @@ static void Host_InitLocal (void)
 	Cvar_RegisterVariable (&samelevel);
 	Cvar_RegisterVariable (&noexit);
 	Cvar_RegisterVariable (&skill);
+	Cvar_RegisterVariable (&coop);
 	Cvar_RegisterVariable (&deathmatch);
 	Cvar_RegisterVariable (&randomclass);
-	Cvar_RegisterVariable (&coop);
 
 	Cvar_RegisterVariable (&pausable);
 

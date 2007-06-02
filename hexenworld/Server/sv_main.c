@@ -2,7 +2,7 @@
 	sv_main.c
 	server main program
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Server/sv_main.c,v 1.44 2007-05-13 11:59:43 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Server/sv_main.c,v 1.45 2007-06-02 10:34:46 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -54,8 +54,8 @@ cvar_t	samelevel = {"samelevel", "0", CVAR_NOTIFY|CVAR_SERVERINFO};
 cvar_t	maxclients = {"maxclients","8", CVAR_SERVERINFO};
 cvar_t	maxspectators = {"maxspectators","8", CVAR_SERVERINFO};
 cvar_t	skill = {"skill","1", CVAR_NONE};		// 0 - 3
+cvar_t	coop = {"coop", "0", CVAR_SERVERINFO};			// 0 or 1
 cvar_t	deathmatch = {"deathmatch", "1", CVAR_SERVERINFO};	// 0, 1, or 2
-cvar_t	coop = {"coop", "0", CVAR_SERVERINFO};		// 0, 1, or 2
 cvar_t	randomclass = {"randomclass", "0", CVAR_SERVERINFO};	
 cvar_t	damageScale = {"damagescale", "1.0", CVAR_SERVERINFO};
 cvar_t	shyRespawn = {"shyRespawn", "0", CVAR_SERVERINFO};
@@ -1263,8 +1263,8 @@ static void SV_InitLocal (void)
 	Cvar_RegisterVariable (&maxspectators);
 	Cvar_RegisterVariable (&hostname);
 	Cvar_RegisterVariable (&skill);
-	Cvar_RegisterVariable (&deathmatch);
 	Cvar_RegisterVariable (&coop);
+	Cvar_RegisterVariable (&deathmatch);
 	Cvar_RegisterVariable (&randomclass);
 	Cvar_RegisterVariable (&damageScale);
 	Cvar_RegisterVariable (&meleeDamScale);
