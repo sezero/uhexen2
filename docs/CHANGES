@@ -3,6 +3,24 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2007-06-02 (CVS):
+    * removed unnecessary Cvar_LockVars. used Cvar_LockVar instead.
+    * fixed a compilation error when PARANOID option is set:
+	world.c: In function 'SV_RecursiveHullCheck':
+	world.c:701: error: 'sv_hullmodel' undeclared (first use in this function)
+	world.c:701: error: (Each undeclared identifier is reported only once
+	world.c:701: error: for each function it appears in.)
+	world.c:701: warning: passing argument 2 of 'SV_HullPointContents' makes integer from pointer without a cast
+	world.c:701: warning: passing argument 3 of 'SV_HullPointContents' makes pointer from integer without a cast
+	make: *** [world.o] Error 1
+      I really don't know how many of those paranoid checks actually make sense,
+      this is just a compilation fix.
+    * updated the comments about the PARANOID compile time option.
+    * now that the net_vcr is removed, net_numdrivers and net_numlandrivers
+      can be made const again.
+    * changed the registration order of deathmatch and coop cvars, so
+      that hwsv doesn't spit out a silly run time warning.
+
 2007-06-01 (CVS):
     * cd_null.c: fixed compilation.
 
