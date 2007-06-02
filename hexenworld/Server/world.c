@@ -2,7 +2,7 @@
 	world.c
 	world query functions
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Server/world.c,v 1.14 2007-05-13 11:59:43 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Server/world.c,v 1.15 2007-06-02 05:31:49 sezero Exp $
 
 	entities never clip against themselves, or their owner
 	line of sight checks trace->crosscontent, but bullets don't
@@ -647,7 +647,7 @@ qboolean SV_RecursiveHullCheck (hull_t *hull, int num, float p1f, float p2f, vec
 		return false;
 
 #ifdef PARANOID
-	if (SV_HullPointContents (sv_hullmodel, mid, node->children[side]) == CONTENTS_SOLID)
+	if (SV_HullPointContents (hull, node->children[side], mid) == CONTENTS_SOLID)
 	{
 		Con_Printf ("mid PointInHullSolid\n");
 		return false;

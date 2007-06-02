@@ -2,7 +2,7 @@
 	pmovetst.c
 	player movement testing
 
-	$Id: pmovetst.c,v 1.11 2007-05-13 16:14:53 sezero Exp $
+	$Id: pmovetst.c,v 1.12 2007-06-02 05:36:25 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -244,7 +244,7 @@ static qboolean PM_RecursiveHullCheck (hull_t *hull, int num, float p1f, float p
 		return false;
 
 #ifdef PARANOID
-	if (PM_HullPointContents (pm_hullmodel, mid, node->children[side]) == CONTENTS_SOLID)
+	if (PM_HullPointContents (hull, node->children[side], mid) == CONTENTS_SOLID)
 	{
 		Con_Printf ("mid PointInHullSolid\n");
 		return false;
