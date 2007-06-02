@@ -1,6 +1,6 @@
 /*
 	net_win.c
-	$Id: net_win.c,v 1.7 2007-03-14 21:03:26 sezero Exp $
+	$Id: net_win.c,v 1.8 2007-06-02 06:25:39 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -50,7 +50,7 @@ net_driver_t net_drivers[] =
 	}
 };
 
-int net_numdrivers = (sizeof(net_drivers) / sizeof(net_drivers[0]));
+const int net_numdrivers = (sizeof(net_drivers) / sizeof(net_drivers[0]));
 
 
 #include "net_wins.h"
@@ -107,5 +107,5 @@ net_landriver_t	net_landrivers[] =
 	}
 };
 
-int net_numlandrivers = (sizeof(net_landrivers) / sizeof(net_landrivers[0]));
+const int net_numlandrivers = (sizeof(net_landrivers) / sizeof(net_landrivers[0]));
 

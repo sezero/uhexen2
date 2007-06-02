@@ -2,7 +2,7 @@
 	net.h
 	quake's interface to the networking layer
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/net.h,v 1.14 2007-04-05 07:00:00 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/net.h,v 1.15 2007-06-02 06:25:37 sezero Exp $
 */
 
 #ifndef __HX2_NET_H
@@ -167,7 +167,7 @@ typedef struct
 
 #define	MAX_NET_DRIVERS		8
 extern net_landriver_t	net_landrivers[];
-extern int		net_numlandrivers;
+extern const int	net_numlandrivers;
 
 typedef struct
 {
@@ -189,7 +189,7 @@ typedef struct
 } net_driver_t;
 
 extern net_driver_t	net_drivers[];
-extern int		net_numdrivers;
+extern const int	net_numdrivers;
 
 extern int			DEFAULTnet_hostport;
 extern int			net_hostport;
