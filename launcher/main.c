@@ -2,7 +2,7 @@
 	main.c
 	hexen2 launcher: main loop
 
-	$Id: main.c,v 1.27 2007-05-31 21:27:26 sezero Exp $
+	$Id: main.c,v 1.28 2007-06-04 17:19:25 sezero Exp $
 
 	This program is free software; you can redistribute it and/or
 	modify it under the terms of the GNU General Public License
@@ -127,6 +127,8 @@ static void Sys_FindBinDir (char *filename, char *out)
 	}
 
 	printf("Launcher : %s\n", last);
+	if (last > cmd && last-1 != cmd && *(last-1) == '/')
+		last--;		/* exclude the trailing slash */
 	while (cmd < last)
 		*out++ = *cmd++;
 }
