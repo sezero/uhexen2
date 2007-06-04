@@ -92,7 +92,7 @@ diff -urNp tyrquake-0.55/common/gl_vidlinuxglx.c tyrquake-0.55x/common/gl_vidlin
  void (*VID_SetGammaRamp)(unsigned short ramp[3][256]);
  static unsigned short saved_gamma_ramp[3][256];
 +#ifdef USE_3DFXGAMMA
-+// 3dfx gamma hacks
++/* 3dfx gamma hacks */
 +extern cvar_t	v_gamma;
 +extern int  Init_3dfxGammaCtrl(void);
 +extern void Shutdown_3dfxGamma(void);
@@ -123,9 +123,9 @@ diff -urNp tyrquake-0.55/common/gl_vidlinuxglx.c tyrquake-0.55x/common/gl_vidlin
 +    float g;
 +#   define GAMMA_MAX	3
 +
-+    // not using gamma ramps on purpose (crashes with voodoo-1.)
-+    if ((v_gamma.value != 0) && (v_gamma.value > (1/GAMMA_MAX)))
-+	g = 1/v_gamma.value;
++    /* not using gamma ramps on purpose: crashes with voodoo-1 */
++    if (v_gamma.value > (1.0 / GAMMA_MAX))
++	g = 1.0 / v_gamma.value;
 +    else
 +	g = GAMMA_MAX;
 +
@@ -145,14 +145,14 @@ diff -urNp tyrquake-0.55/common/gl_vidlinuxglx.c tyrquake-0.55x/common/gl_vidlin
 +	!strncasecmp (gl_renderer, "Mesa Glide", 10))
 +    {
 +	int	tmp;
-+	// X gamma is of no use for Mesa Glide which should be Voodoo1/2
++	/* X gamma is of no use for Mesa Glide which should be Voodoo1/2 */
 +	if (VID_SetGammaRamp)
 +	    VID_SetGammaRamp(saved_gamma_ramp);
 +	VID_SetGammaRamp = NULL;
 +	is_old3dfx = true;
 +
 +#ifdef USE_3DFXGAMMA
-+	// Here is an evil hack to abuse the Glide symbols exposed on us
++	/* Here is an evil hack to abuse the Glide symbols exposed on us */
 +	tmp = Init_3dfxGammaCtrl();
 +	if (Init_3dfxGammaCtrl() > 0)
 +	{
@@ -393,6 +393,6 @@ diff -urN /dev/null tyrquake-0.55x/common/fx_gamma.c
 +}
 +#endif
 +
-+#endif	// USE_3DFXGAMMA
++#endif	/* USE_3DFXGAMMA */
 +
 

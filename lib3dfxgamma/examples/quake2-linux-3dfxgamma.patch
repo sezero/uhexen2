@@ -273,7 +273,7 @@ diff -urNp quake2-20060507/src/linux/fx_gamma.c quake2/src/linux/fx_gamma.c
 +}
 +#endif
 +
-+#endif	// USE_3DFXGAMMA
++#endif	/* USE_3DFXGAMMA */
 +
 diff -urNp quake2-20060507/src/linux/gl_glx.c quake2/src/linux/gl_glx.c
 --- quake2-20060507/src/linux/gl_glx.c	2005-01-28 00:35:20.000000000 +0200
@@ -283,7 +283,7 @@ diff -urNp quake2-20060507/src/linux/gl_glx.c quake2/src/linux/gl_glx.c
  static qboolean vidmode_active = false;
  static XF86VidModeGamma oldgamma;
 +#ifdef USE_3DFXGAMMA
-+// evil glide gamma hack
++/* evil glide gamma hack */
 +extern int  Init_3dfxGammaCtrl(void);
 +extern void Shutdown_3dfxGamma(void);
 +extern int  do3dfxGammaCtrl(float g);
@@ -321,7 +321,7 @@ diff -urNp quake2-20060507/src/linux/gl_glx.c quake2/src/linux/gl_glx.c
  
 +#ifdef USE_3DFXGAMMA
 +	if (!Q_strncasecmp ((char *)qglGetString(GL_RENDERER), "Mesa Glide", 10))
-+	{ // attempt to use glide symbols for gamma
++	{ /* attempt to use glide symbols for gamma */
 +		gl_state.hwgamma = false;
 +		gl_state.fxgamma = Init_3dfxGammaCtrl();
 +		if (gl_state.fxgamma)
@@ -417,7 +417,7 @@ diff -urNp quake2-20060507/src/ref_gl/gl_local.h quake2/src/ref_gl/gl_local.h
  	qboolean stereo_enabled;
  
  	qboolean hwgamma;
-+	qboolean fxgamma;	// hack to use glide symbols exposed upon us
++	qboolean fxgamma;	/* hack to use glide symbols exposed upon us */
  
  	unsigned char originalRedGammaTable[256];
  	unsigned char originalGreenGammaTable[256];
