@@ -1,6 +1,6 @@
 /*
  * fx_gamma.c
- * $Id: fx_gamma.c,v 1.3 2007-03-14 21:03:32 sezero Exp $
+ * $Id: fx_gamma.c,v 1.4 2007-06-04 06:42:37 sezero Exp $
  *
  * Small library providing gamma control functions for 3Dfx Voodoo1/2
  * cards by abusing the exposed glide symbols when using fxMesa.
@@ -40,6 +40,9 @@
 
 #include <stdlib.h>
 #include <string.h>
+
+#if defined (USE_3DFXGAMMA)
+
 #include <dlfcn.h>
 
 /**********************************************************************/
@@ -202,4 +205,6 @@ int glGetDeviceGammaRamp3DFX (void *arrays)
 	return 1;
 }
 #endif
+
+#endif	/* USE_3DFXGAMMA */
 

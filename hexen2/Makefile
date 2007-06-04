@@ -1,5 +1,5 @@
 # GNU Makefile for (gl)hexen2 client/server binaries using GCC.
-# $Header: /home/ozzie/Download/0000/uhexen2/hexen2/Makefile,v 1.65 2007-05-15 14:25:02 sezero Exp $
+# $Header: /home/ozzie/Download/0000/uhexen2/hexen2/Makefile,v 1.66 2007-06-04 06:42:28 sezero Exp $
 #
 # Type "make help" to see the valid targets.
 #
@@ -61,6 +61,10 @@
 #			libraries and functions at runtime.
 #		yes =	link to the opengl libraries at compile time
 #
+# USE_3DFXGAMMA	yes =	(default) enable 3dfx glide hacks for native hardware
+# (Linux / BSD)		gamma for the old Voodoo Graphics and Voodoo2 cards.
+#		no  =	disable 3dfx glide gamma hacks.
+#
 # OPT_EXTRA	yes  =  Some extra optimization flags will be added (default)
 #		no   =	No extra optimizations will be made
 #
@@ -106,6 +110,7 @@ USE_SDLCD=no
 WITH_SPLASHES=yes
 OPT_EXTRA=yes
 LINK_GL_LIBS=no
+USE_3DFXGAMMA=yes
 USE_X86_ASM=yes
 COMPILE_32BITS=no
 
@@ -205,6 +210,12 @@ endif
 
 GL_DEFS := -DGLQUAKE
 GLFLAGS :=
+
+ifneq ($(TARGET_OS),WIN32)
+ifeq ($(USE_3DFXGAMMA),yes)
+GL_DEFS+= -DUSE_3DFXGAMMA
+endif
+endif
 
 ifeq ($(LINK_GL_LIBS),no)
 GL_DEFS+= -DGL_DLSYM

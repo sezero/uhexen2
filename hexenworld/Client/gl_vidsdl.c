@@ -2,7 +2,7 @@
 	gl_vidsdl.c -- SDL GL vid component
 	Select window size and mode and init SDL in GL mode.
 
-	$Id: gl_vidsdl.c,v 1.149 2007-06-01 20:01:52 sezero Exp $
+	$Id: gl_vidsdl.c,v 1.150 2007-06-04 06:42:37 sezero Exp $
 
 	Changed 7/11/04 by S.A.
 	- Fixed fullscreen opengl mode, window sizes
@@ -164,14 +164,15 @@ qboolean	is8bit = false;
 static cvar_t	vid_config_gl8bit = {"vid_config_gl8bit", "0", CVAR_ARCHIVE};
 
 // Gamma stuff
-#define USE_GAMMA_RAMPS	0	// change to 1 if want to use ramps for gamma
+#define	USE_GAMMA_RAMPS			0
 #if USE_GAMMA_RAMPS
-extern unsigned short	ramps[3][256];	// for hw- or 3dfx-gamma
-static unsigned short	orig_ramps[3][256];	// for hw- or 3dfx-gamma
+extern unsigned short	ramps[3][256];
+static unsigned short	orig_ramps[3][256];
 #endif
 
 // 3dfx gamma hacks: stuff are in fx_gamma.c
 // Note: gamma ramps crashes voodoo graphics
+#if defined(USE_3DFXGAMMA)
 #if USE_GAMMA_RAMPS
 extern int	glGetDeviceGammaRamp3DFX(void *);
 extern int	glSetDeviceGammaRamp3DFX(void *);
@@ -180,6 +181,7 @@ extern int	Init_3dfxGammaCtrl(void);
 extern int	do3dfxGammaCtrl(float g);
 #endif
 extern void	Shutdown_3dfxGamma(void);
+#endif	/* USE_3DFXGAMMA */
 
 static qboolean	fx_gamma   = false;	// 3dfx-specific gamma control
 static qboolean	gammaworks = false;	// whether hw-gamma works
@@ -520,36 +522,38 @@ static void VID_Init8bitPalette (void)
 }
 
 
+#if defined (USE_3DFXGAMMA)
 static qboolean VID_Check3dfxGamma (void)
 {
-#if !USE_GAMMA_RAMPS
-	int	gtmp;
-#endif
+	int		ret;
 
 	if ( ! COM_CheckParm("-3dfxgamma") )
 		return false;
 
 #if USE_GAMMA_RAMPS
 // not recommended for Voodoo1, currently crashes
-	if (glGetDeviceGammaRamp3DFX(orig_ramps) != 0)
+	ret = glGetDeviceGammaRamp3DFX(orig_ramps)
+	if (ret != 0)
 	{
 		Con_Printf ("Using 3dfx glide3 specific gamma ramps\n");
 		return true;
 	}
-#else	// not using gamma ramps
-	gtmp = Init_3dfxGammaCtrl();
-	if (gtmp > 0)
+#else	/* not using gamma ramps */
+	ret = Init_3dfxGammaCtrl();
+	if (ret > 0)
 	{
-		Con_Printf ("Using 3dfx glide%d gamma controls\n", gtmp);
+		Con_Printf ("Using 3dfx glide%d gamma controls\n", ret);
 		return true;
 	}
 #endif
 
 	return false;
 }
+#endif	/* USE_3DFXGAMMA */
 
 static void VID_InitGamma (void)
 {
+#if defined (USE_3DFXGAMMA)
 	if (is_3dfx)
 	{
 	// we don't have WGL_3DFX_gamma_control or an equivalent
@@ -563,14 +567,11 @@ static void VID_InitGamma (void)
 		if (!fx_gamma)
 			gl_dogamma = true;
 	}
+#endif	/* USE_3DFXGAMMA */
 
 	if (!fx_gamma && !gl_dogamma)
 	{
-	// we may also use SDL_GetGammaRamp/SDL_SetGammaRamp
-	// but let's just stick to what AoT guys did for now.
 #if USE_GAMMA_RAMPS
-		// if the thing below works, it'll get the
-		// original gamma to be restored upon exit
 		if (SDL_GetGammaRamp(orig_ramps[0], orig_ramps[1], orig_ramps[2]) == 0)
 #else
 		if (SDL_SetGamma(v_gamma.value,v_gamma.value,v_gamma.value) == 0)
@@ -586,57 +587,51 @@ static void VID_InitGamma (void)
 
 static void VID_ShutdownGamma (void)
 {
-#if USE_GAMMA_RAMPS
-	// restore hardware gamma
+#if USE_GAMMA_RAMPS	/* restore hardware gamma */
+#if defined (USE_3DFXGAMMA)
 	if (fx_gamma)
 		glSetDeviceGammaRamp3DFX(orig_ramps);
-	else if (!fx_gamma && !gl_dogamma && gammaworks)
+	else
+#endif	/* USE_3DFXGAMMA */
+	if (!fx_gamma && !gl_dogamma && gammaworks)
 		SDL_SetGammaRamp(orig_ramps[0], orig_ramps[1], orig_ramps[2]);
-#endif
+#endif	/* USE_GAMMA_RAMPS */
+#if defined (USE_3DFXGAMMA)
 	if (fx_gamma)
 		Shutdown_3dfxGamma();
+#endif	/* USE_3DFXGAMMA */
 }
 
 #if USE_GAMMA_RAMPS
-/*
-============================
-VID_SetGammaRamp
-
-used when USE_GAMMA_RAMPS is
-defined to 1.
-============================
-*/
 static void VID_SetGammaRamp (void)
 {
+#if defined (USE_3DFXGAMMA)
 	if (fx_gamma)
 		glSetDeviceGammaRamp3DFX(ramps);
-	else if (!gl_dogamma && gammaworks)
+	else
+#endif	/* USE_3DFXGAMMA */
+	if (!gl_dogamma && gammaworks)
 		SDL_SetGammaRamp(ramps[0], ramps[1], ramps[2]);
 }
-#else
-/*
-============================
-VID_SetGamma
-
-used when USE_GAMMA_RAMPS is
-defined to 0.
-============================
-*/
+#else /* ! USE_GAMMA_RAMPS */
 static void VID_SetGamma (void)
 {
 	float value;
 
-	if (v_gamma.value != 0 && v_gamma.value > (1/GAMMA_MAX))
+	if (v_gamma.value > (1.0 / GAMMA_MAX))
 		value = 1.0 / v_gamma.value;
 	else
 		value = GAMMA_MAX;
 
+#if defined (USE_3DFXGAMMA)
 	if (fx_gamma)
 		do3dfxGammaCtrl(value);
-	else if (!gl_dogamma && gammaworks)
+	else
+#endif	/* USE_3DFXGAMMA */
+	if (!gl_dogamma && gammaworks)
 		SDL_SetGamma(value,value,value);
 }
-#endif
+#endif	/* USE_GAMMA_RAMPS */
 
 void VID_ShiftPalette (unsigned char *palette)
 {
