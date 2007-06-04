@@ -3,6 +3,15 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2007-06-04 (CVS):
+    * bound the linux 3dfx glide gamma hacks for the old Voodoo Graphics and
+      Voodoo2 cards to a new makefile option USE_3DFXGAMMA, enabled by default.
+      the compiler generates code only if it sees the USE_3DFXGAMMA definition.
+      at runtime, the hack is activated by the -3dfxgamma commandline argument
+      only on the old 3dfx cards, but this is for completeness.  also did some
+      minor cleanups and fixed a float division bug with GAMMA_MAX.
+    * minor cleanup.
+
 2007-06-02 (CVS):
     * removed unnecessary Cvar_LockVars. used Cvar_LockVar instead.
     * fixed a compilation error when PARANOID option is set:
