@@ -2,7 +2,7 @@
 	interface.c
 	hexen2 launcher gtk+ interface
 
-	$Id: interface.c,v 1.56 2007-05-31 21:27:26 sezero Exp $
+	$Id: interface.c,v 1.57 2007-06-04 16:23:24 sezero Exp $
 
 	This program is free software; you can redistribute it and/or
 	modify it under the terms of the GNU General Public License
@@ -281,6 +281,8 @@ static void start_xpatch (GtkObject *Unused, PatchWindow_t *PatchWindow)
 	int		ret = 2;
 
 	gtk_widget_set_sensitive (PatchWindow->bAPPLY, FALSE);
+	gtk_widget_set_sensitive (PatchWindow->bBASEDIR, FALSE);
+	gtk_widget_set_sensitive (PatchWindow->dir_Entry, FALSE);
 	gtk_widget_set_sensitive (PatchWindow->bCLOSE, FALSE);
 	gtk_widget_set_sensitive (PatchWindow->bREPORT, FALSE);
 	PatchWindow->delete_handler =
@@ -327,6 +329,8 @@ finish:
 	gtk_signal_disconnect (GTK_OBJECT(PatchWindow->mywindow), PatchWindow->delete_handler);
 	gtk_widget_set_sensitive (PatchWindow->bCLOSE, TRUE);
 	gtk_widget_set_sensitive (PatchWindow->bAPPLY, TRUE);
+	gtk_widget_set_sensitive (PatchWindow->bBASEDIR, TRUE);
+	gtk_widget_set_sensitive (PatchWindow->dir_Entry, TRUE);
 	gtk_widget_set_sensitive (PatchWindow->bREPORT, TRUE);
 	gtk_statusbar_push (GTK_STATUSBAR(PatchWindow->StatusBar), PatchWindow->statbar_id, patch_status[ret]);
 	ui_LogEnd();
