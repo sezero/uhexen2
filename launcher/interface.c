@@ -2,7 +2,7 @@
 	interface.c
 	hexen2 launcher gtk+ interface
 
-	$Id: interface.c,v 1.57 2007-06-04 16:23:24 sezero Exp $
+	$Id: interface.c,v 1.58 2007-06-04 17:20:11 sezero Exp $
 
 	This program is free software; you can redistribute it and/or
 	modify it under the terms of the GNU General Public License
@@ -277,8 +277,14 @@ static gboolean block_window_close (GtkWidget* widget, GdkEvent* event, gpointer
 static void start_xpatch (GtkObject *Unused, PatchWindow_t *PatchWindow)
 {
 	pthread_t		thr;
+	char		*wd;
 	long		*ptr;
 	int		ret = 2;
+
+	if (basedir_nonstd && game_basedir[0])
+		wd = game_basedir;
+	else
+		wd = basedir;
 
 	gtk_widget_set_sensitive (PatchWindow->bAPPLY, FALSE);
 	gtk_widget_set_sensitive (PatchWindow->bBASEDIR, FALSE);
@@ -290,7 +296,7 @@ static void start_xpatch (GtkObject *Unused, PatchWindow_t *PatchWindow)
 	ui_LogInit (PatchWindow->LOGVIEW);
 
 	thread_alive = 1;
-	if (pthread_create(&thr, NULL, apply_patches, NULL) != 0)
+	if (pthread_create(&thr, NULL, apply_patches, wd) != 0)
 	{
 		Log_printf ("pthread_create failed");
 		goto finish;

@@ -2,7 +2,7 @@
 	apply_patch.c
 	hexen2 launcher: binary patch starter
 
-	$Id: apply_patch.c,v 1.4 2007-04-14 21:30:18 sezero Exp $
+	$Id: apply_patch.c,v 1.5 2007-06-04 17:20:11 sezero Exp $
 
 	This program is free software; you can redistribute it and/or
 	modify it under the terms of the GNU General Public License
@@ -68,7 +68,7 @@ static const struct
 
 static	unsigned long		rc;
 
-void *apply_patches (void *unused)
+void *apply_patches (void *workdir)
 {
 	int			i;
 	char	dst[MAX_OSPATH],
@@ -80,7 +80,7 @@ void *apply_patches (void *unused)
 
 	for (i = 0; i < NUM_PATCHES; i++)
 	{
-		snprintf (dst, sizeof(dst), "%s/%s", patch_data[i].dir_name, patch_data[i].filename);
+		snprintf (dst, sizeof(dst), "%s/%s/%s", (char *)workdir, patch_data[i].dir_name, patch_data[i].filename);
 		if ( access(dst, R_OK|W_OK) != 0 )
 		{
 			rc |= XPATCH_FAIL;
@@ -104,7 +104,7 @@ void *apply_patches (void *unused)
 			return &rc;
 		}
 
-		snprintf (pat, sizeof(pat), "%s/%s/%s", DELTA_DIR, patch_data[i].dir_name, patch_data[i].deltaname);
+		snprintf (pat, sizeof(pat), "%s/%s/%s/%s", (char *)workdir, DELTA_DIR, patch_data[i].dir_name, patch_data[i].deltaname);
 		if ( access(pat, R_OK) != 0 )
 		{
 			rc |= XPATCH_FAIL;
