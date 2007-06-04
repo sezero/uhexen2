@@ -11,6 +11,13 @@ Development Progress	:
       only on the old 3dfx cards, but this is for completeness.  also did some
       minor cleanups and fixed a float division bug with GAMMA_MAX.
     * minor cleanup.
+    * launcher: made the installation directory widget to grey-out during
+      the pak patching process.
+    * launcher: exclude the trailing slash when determining the work directory.
+    * launcher: patch process should search its data under the specified
+      installation directory.
+    * launcher: removed unnecessary character check from basedir trailing
+      slash removal.
 
 2007-06-02 (CVS):
     * removed unnecessary Cvar_LockVars. used Cvar_LockVar instead.
