@@ -3,6 +3,10 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2007-06-05 (CVS):
+    * gl_vidsdl.c: added a missing semicolon to fix compilation of the gamma
+      ramps code.
+
 2007-06-04 (CVS):
     * bound the linux 3dfx glide gamma hacks for the old Voodoo Graphics and
       Voodoo2 cards to a new makefile option USE_3DFXGAMMA, enabled by default.
