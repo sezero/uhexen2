@@ -2,7 +2,7 @@
 	gl_vidsdl.c -- SDL GL vid component
 	Select window size and mode and init SDL in GL mode.
 
-	$Id: gl_vidsdl.c,v 1.150 2007-06-04 06:42:37 sezero Exp $
+	$Id: gl_vidsdl.c,v 1.151 2007-06-05 11:09:18 sezero Exp $
 
 	Changed 7/11/04 by S.A.
 	- Fixed fullscreen opengl mode, window sizes
@@ -532,7 +532,7 @@ static qboolean VID_Check3dfxGamma (void)
 
 #if USE_GAMMA_RAMPS
 // not recommended for Voodoo1, currently crashes
-	ret = glGetDeviceGammaRamp3DFX(orig_ramps)
+	ret = glGetDeviceGammaRamp3DFX(orig_ramps);
 	if (ret != 0)
 	{
 		Con_Printf ("Using 3dfx glide3 specific gamma ramps\n");
