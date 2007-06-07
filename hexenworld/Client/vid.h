@@ -2,7 +2,7 @@
 	vid.h
 	video driver defs
 
-	$Id: vid.h,v 1.26 2007-03-14 21:03:42 sezero Exp $
+	$Id: vid.h,v 1.27 2007-06-07 11:45:30 sezero Exp $
 */
 
 #ifndef __VID_DEFS_H
@@ -11,7 +11,7 @@
 #define VID_CBITS	6
 #define VID_GRADES	(1 << VID_CBITS)
 
-#define GAMMA_MAX 3
+#define GAMMA_MAX	3.0
 
 // a pixel can be one, two, or four bytes
 typedef byte pixel_t;
