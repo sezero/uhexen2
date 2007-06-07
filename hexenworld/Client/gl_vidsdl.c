@@ -2,7 +2,7 @@
 	gl_vidsdl.c -- SDL GL vid component
 	Select window size and mode and init SDL in GL mode.
 
-	$Id: gl_vidsdl.c,v 1.151 2007-06-05 11:09:18 sezero Exp $
+	$Id: gl_vidsdl.c,v 1.152 2007-06-07 11:00:17 sezero Exp $
 
 	Changed 7/11/04 by S.A.
 	- Fixed fullscreen opengl mode, window sizes
@@ -553,7 +553,6 @@ static qboolean VID_Check3dfxGamma (void)
 
 static void VID_InitGamma (void)
 {
-#if defined (USE_3DFXGAMMA)
 	if (is_3dfx)
 	{
 	// we don't have WGL_3DFX_gamma_control or an equivalent
@@ -561,13 +560,13 @@ static void VID_InitGamma (void)
 	// for and linking to it here.
 	// Otherwise, assuming is_3dfx means Voodoo1 or Voodoo2,
 	// this means we dont have hw-gamma, just use gl_dogamma
-
+#if defined (USE_3DFXGAMMA)
 	// Here is an evil hack to abuse the Glide symbols exposed on us
 		fx_gamma = VID_Check3dfxGamma();
+#endif	/* USE_3DFXGAMMA */
 		if (!fx_gamma)
 			gl_dogamma = true;
 	}
-#endif	/* USE_3DFXGAMMA */
 
 	if (!fx_gamma && !gl_dogamma)
 	{
