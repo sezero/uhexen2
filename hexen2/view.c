@@ -2,7 +2,7 @@
 	view.c
 	player eye positioning
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/view.c,v 1.25 2007-06-07 11:10:16 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/view.c,v 1.26 2007-06-07 21:38:29 sezero Exp $
 
 	The view is allowed to move slightly from it's true position
 	for bobbing, but if it exceeds 8 pixels linear distance
@@ -418,7 +418,7 @@ V_BonusFlash_f
 When you run over an item, the server sends this command
 ==================
 */
-void V_BonusFlash_f (void)
+static void V_BonusFlash_f (void)
 {
 	cl.cshifts[CSHIFT_BONUS].destcolor[0] = 215;
 	cl.cshifts[CSHIFT_BONUS].destcolor[1] = 186;
@@ -426,7 +426,7 @@ void V_BonusFlash_f (void)
 	cl.cshifts[CSHIFT_BONUS].percent = 50;
 }
 
-void V_DarkFlash_f (void)
+static void V_DarkFlash_f (void)
 {
 	cl.cshifts[CSHIFT_BONUS].destcolor[0] = 0;
 	cl.cshifts[CSHIFT_BONUS].destcolor[1] = 0;
@@ -434,7 +434,7 @@ void V_DarkFlash_f (void)
 	cl.cshifts[CSHIFT_BONUS].percent = 255;
 }
 
-void V_WhiteFlash_f(void)
+static void V_WhiteFlash_f (void)
 {
 	cl.cshifts[CSHIFT_BONUS].destcolor[0] = 255;
 	cl.cshifts[CSHIFT_BONUS].destcolor[1] = 255;
