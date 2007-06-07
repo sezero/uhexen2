@@ -3,6 +3,14 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2007-06-07 (CVS):
+    * X/SDL gamma is of no use for old voodoo1/2, thus, adjusted the
+      USE_3DFXGAMMA ifdefs.
+    * bound the gamma cvar value in V_CheckGamma() in case someone messes
+      with crazy values without using the menu system.
+    * changed the GAMMA_MAX to a float value definition.
+    * fixed a minor compiler warning.
+
 2007-06-05 (CVS):
     * gl_vidsdl.c: added a missing semicolon to fix compilation of the gamma
       ramps code.
