@@ -2,7 +2,7 @@
 	vid_win.c
 	Win32 video driver using MGL-4.05
 
-	$Id: vid_win.c,v 1.43 2007-05-09 18:11:36 sezero Exp $
+	$Id: vid_win.c,v 1.44 2007-06-08 20:07:29 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -481,6 +481,7 @@ static void VID_InitMGLFull (HINSTANCE hInstance)
 		lowres = lowstretchedres = 99999;
 		lowstretched = 0;
 		curmode = 0;
+		stretchedmode = 0;	// avoid compiler warning
 
 	// find the lowest-res mode, or a mode we can stretch up to and get
 	// lowest-res that way
@@ -1045,6 +1046,7 @@ static void VID_InitFullDIB (HINSTANCE hInstance)
 // don't bother if we have a real VGA mode 0x13 mode
 	if (!is_mode0x13)
 	{
+		mstretch = 0;	// avoid compiler warning
 		for (i = originalnummodes, cstretch = 0; i < nummodes; i++)
 		{
 			if (((modelist[i].width >> 1) < lowestres) &&
