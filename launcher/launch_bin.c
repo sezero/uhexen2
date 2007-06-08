@@ -2,7 +2,7 @@
 	launch_bin.c
 	hexen2 launcher: binary launching
 
-	$Id: launch_bin.c,v 1.44 2007-05-31 21:27:26 sezero Exp $
+	$Id: launch_bin.c,v 1.45 2007-06-08 09:31:36 sezero Exp $
 
 	This program is free software; you can redistribute it and/or
 	modify it under the terms of the GNU General Public License
@@ -180,7 +180,7 @@ void launch_hexen2_bin (void)
 	if (opengl_support && use_lm1 == 1)	// -lm_4 is default already
 		args[++i] = "-lm_1";
 
-	if (gl_nonstd && opengl_support && strlen(gllibrary))
+	if (gl_nonstd && opengl_support && gllibrary[0])
 	{
 		args[++i] = "-g";
 		args[++i] = gllibrary;
