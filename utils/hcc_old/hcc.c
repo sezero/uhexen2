@@ -1,7 +1,7 @@
 /*
 	hcc.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/utils/hcc_old/hcc.c,v 1.9 2007-05-13 11:59:44 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/utils/hcc_old/hcc.c,v 1.10 2007-06-08 10:56:45 sezero Exp $
 
 	Hash table modifications based on fastqcc by Jonathan Roy
 	(roy@atlantic.net).
@@ -792,7 +792,7 @@ int main (int argc, char **argv)
 	}
 	else
 	{
-		strcpy(sourcedir, "");
+		sourcedir[0] = '\0';
 	}
 
 	p = CheckParm("-name");
