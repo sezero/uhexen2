@@ -2,7 +2,7 @@
 	gl_vidsdl.c -- SDL GL vid component
 	Select window size and mode and init SDL in GL mode.
 
-	$Id: gl_vidsdl.c,v 1.152 2007-06-07 11:00:17 sezero Exp $
+	$Id: gl_vidsdl.c,v 1.153 2007-06-08 20:06:21 sezero Exp $
 
 	Changed 7/11/04 by S.A.
 	- Fixed fullscreen opengl mode, window sizes
@@ -1193,7 +1193,7 @@ static void VID_ChangeVideoMode(int newmode)
 		Sys_Error ("Couldn't init video: %s", SDL_GetError());
 #ifdef GL_DLSYM
 	if (!GL_OpenLibrary(gl_library))
-		Sys_Error ("Unable to load GL library %s", gl_library);
+		Sys_Error ("Unable to load GL library %s", (gl_library != NULL) ? gl_library : SDL_GetError());
 #endif
 	VID_SetMode (newmode);
 	// re-get the video info since we re-inited sdl_video
@@ -1544,7 +1544,7 @@ void	VID_Init (unsigned char *palette)
 
 	// load the opengl library
 	if (!GL_OpenLibrary(gl_library))
-		Sys_Error ("Unable to load GL library %s", gl_library);
+		Sys_Error ("Unable to load GL library %s", (gl_library != NULL) ? gl_library : SDL_GetError());
 #endif
 
 	// this will contain the "best bpp" for the current display
