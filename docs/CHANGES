@@ -3,6 +3,17 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2007-06-08 (CVS):
+    * made the V_BonusFlash_f, V_DarkFlash_f and V_WhiteFlash_f (bf, df
+      and wf) command functions static to view.c. while there, added the
+      white flash (wf) command to hexenworld client.
+    * the cvar sv_sound_distance will no longer be written to the configs:
+      it is a dead cvar, the C code doesn't make use of it, yet the HexenC
+      still references it through worldspawn(). removed it from the default
+      config files, too.
+    * launcher: minor clean-up.
+    * utils/hcc: minor clean-up.
+
 2007-06-07 (CVS):
     * X/SDL gamma is of no use for old voodoo1/2, thus, adjusted the
       USE_3DFXGAMMA ifdefs.
