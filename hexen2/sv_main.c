@@ -2,7 +2,7 @@
 	sv_main.c
 	server main program
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sv_main.c,v 1.56 2007-05-15 11:38:37 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sv_main.c,v 1.57 2007-06-08 09:03:25 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -12,7 +12,7 @@ server_static_t	svs;
 
 static char	localmodels[MAX_MODELS][5];	// inline model names for precache
 
-static	cvar_t	sv_sound_distance	= {"sv_sound_distance", "800", CVAR_ARCHIVE};
+static	cvar_t	sv_sound_distance	= {"sv_sound_distance", "800", CVAR_NONE};
 						// doesn't seem functional, but the hcode calls it
 
 static	cvar_t	sv_update_player	= {"sv_update_player", "1", CVAR_ARCHIVE};
