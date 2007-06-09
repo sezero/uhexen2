@@ -3,6 +3,14 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2007-06-09 (CVS):
+    * gl_vidsdl.c: avoid null names in the error message when we can't load
+      the gl library.
+    * vid_win.c: avoid compiler warnings about mstretch and stretchedmode might
+      being used uninitialized.
+    * made a few more vars/functions static (vid* files). these should
+      be leftovers for quite some time, I think.
+
 2007-06-08 (CVS):
     * made the V_BonusFlash_f, V_DarkFlash_f and V_WhiteFlash_f (bf, df
       and wf) command functions static to view.c. while there, added the
