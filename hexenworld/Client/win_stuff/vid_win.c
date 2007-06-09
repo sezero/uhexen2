@@ -2,7 +2,7 @@
 	vid_win.c
 	Win32 video driver using MGL-4.05
 
-	$Id: vid_win.c,v 1.45 2007-06-09 07:32:11 sezero Exp $
+	$Id: vid_win.c,v 1.46 2007-06-09 23:14:45 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -2098,10 +2098,6 @@ static void VID_ForceMode_f (void)
 }
 
 
-void VID_PostInitFix (void)
-{
-}
-
 void	VID_Init (unsigned char *palette)
 {
 	int		i, bestmatch, bestmatchmetric, t, dr, dg, db;
@@ -2624,13 +2620,15 @@ void D_ShowLoadingSize (void)
 
 		VID_UnlockBuffer ();
 
-		// Pa3PyX: tweaking sizes - faster redraw
-		//rect.x = 0;
-		//rect.y = 0;
-		//rect.width = vid.width;
+#if 1	/* original code */
+		rect.x = 0;
+		rect.y = 0;
+		rect.width = vid.width;
+#else	/* Pa3PyX: tweaking sizes - faster redraw */
 		rect.x = (vid.width >> 1) - 100;
 		rect.y = 0;
 		rect.width = 200;
+#endif
 		rect.height = 112;
 		rect.pnext = NULL;
 
