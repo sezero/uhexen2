@@ -2,7 +2,7 @@
 	gl_vidsdl.c -- SDL GL vid component
 	Select window size and mode and init SDL in GL mode.
 
-	$Id: gl_vidsdl.c,v 1.161 2007-06-08 20:06:19 sezero Exp $
+	$Id: gl_vidsdl.c,v 1.162 2007-06-09 07:32:09 sezero Exp $
 
 	Changed 7/11/04 by S.A.
 	- Fixed fullscreen opengl mode, window sizes
@@ -206,8 +206,8 @@ static qboolean	fullsbardraw = false;
 extern void	Mod_ReloadTextures (void);
 
 // menu drawing
-void VID_MenuDraw (void);
-void VID_MenuKey (int key);
+static void VID_MenuDraw (void);
+static void VID_MenuKey (int key);
 
 // input stuff
 static void ClearAllStates (void);
@@ -1824,7 +1824,7 @@ static void M_DrawYesNo (int x, int y, int on, int white)
 VID_MenuDraw
 ================
 */
-void VID_MenuDraw (void)
+static void VID_MenuDraw (void)
 {
 	ScrollTitle("gfx/menu/title7.lmp");
 
@@ -1882,7 +1882,7 @@ void VID_MenuDraw (void)
 VID_MenuKey
 ================
 */
-void VID_MenuKey (int key)
+static void VID_MenuKey (int key)
 {
 	switch (key)
 	{

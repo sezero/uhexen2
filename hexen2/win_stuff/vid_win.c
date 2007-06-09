@@ -2,7 +2,7 @@
 	vid_win.c
 	Win32 video driver using MGL-4.05
 
-	$Id: vid_win.c,v 1.46 2007-06-08 20:07:28 sezero Exp $
+	$Id: vid_win.c,v 1.47 2007-06-09 07:32:11 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -26,11 +26,11 @@
 qboolean	msg_suppress_1 = false;
 
 // new variables. Pa3PyX
+static LONG_PTR		mgl_wnd_proc;
 static MGL_surfaceAccessFlagsType	mgldcAccessMode = MGL_NO_ACCESS,
 				memdcAccessMode = MGL_NO_ACCESS,
 				mgldcWidth = 0,
 				memdcWidth = 0;
-LONG_PTR mgl_wnd_proc;
 
 byte globalcolormap[VID_GRADES*256], lastglobalcolor = 0;
 byte *lastsourcecolormap = NULL;
@@ -180,12 +180,12 @@ static vmode_t	badmode;
 //static byte	backingbuf[48*24];
 static byte	backingbuf[48*48];
 
-void VID_MenuDraw (void);
-void VID_MenuKey (int key);
+static void VID_MenuDraw (void);
+static void VID_MenuKey (int key);
 
 static int VID_SetMode (int modenum, unsigned char *palette);
 static void AppActivate(BOOL fActive, BOOL minimize);
-LONG WINAPI MainWndProc (HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
+static LONG WINAPI MainWndProc (HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 
 
 /*
@@ -3012,7 +3012,7 @@ static UINT	uMSG_MOUSEWHEEL;
 extern cvar_t	mwheelthreshold;
 
 /* main window procedure */
-LONG WINAPI MainWndProc (HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM  lParam)
+static LONG WINAPI MainWndProc (HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
 //	LONG			lRet = 0;	// Ignore all irrelevant messages when in DDRAW/VESA/VGA modes
 	LONG			lRet = DDActive;
@@ -3311,7 +3311,7 @@ static modedesc_t	modedescs[MAX_MODEDESCS];
 VID_MenuDraw
 ================
 */
-void VID_MenuDraw (void)
+static void VID_MenuDraw (void)
 {
 	char		*ptr;
 	int			lnummodes, i, j, k, column, row, dup, dupmode;
@@ -3493,7 +3493,7 @@ void VID_MenuDraw (void)
 VID_MenuKey
 ================
 */
-void VID_MenuKey (int key)
+static void VID_MenuKey (int key)
 {
 	if (vid_testingmode)
 		return;

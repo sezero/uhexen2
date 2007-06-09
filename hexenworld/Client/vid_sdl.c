@@ -3,7 +3,7 @@
 	SDL video driver
 	Select window size and mode and init SDL in SOFTWARE mode.
 
-	$Id: vid_sdl.c,v 1.70 2007-06-01 20:01:52 sezero Exp $
+	$Id: vid_sdl.c,v 1.71 2007-06-09 07:32:11 sezero Exp $
 
 	Changed by S.A. 7/11/04, 27/12/04
 	Options are now: -fullscreen | -window, -height , -width
@@ -112,8 +112,8 @@ static vmode_t	*modelist;	// modelist in use, points to one of the above lists
 
 static int VID_SetMode (int modenum, unsigned char *palette);
 
-void VID_MenuDraw (void);
-void VID_MenuKey (int key);
+static void VID_MenuDraw (void);
+static void VID_MenuKey (int key);
 
 // window manager stuff
 #if defined(H2W)
@@ -1097,7 +1097,7 @@ static void M_DrawYesNo (int x, int y, int on, int white)
 VID_MenuDraw
 ================
 */
-void VID_MenuDraw (void)
+static void VID_MenuDraw (void)
 {
 	ScrollTitle("gfx/menu/title7.lmp");
 
@@ -1136,7 +1136,7 @@ void VID_MenuDraw (void)
 VID_MenuKey
 ================
 */
-void VID_MenuKey (int key)
+static void VID_MenuKey (int key)
 {
 	switch (key)
 	{

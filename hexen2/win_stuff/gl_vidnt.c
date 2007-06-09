@@ -1,6 +1,6 @@
 /*
 	gl_vidnt.c -- NT GL vid component
-	$Id: gl_vidnt.c,v 1.100 2007-06-01 20:01:50 sezero Exp $
+	$Id: gl_vidnt.c,v 1.101 2007-06-09 07:32:11 sezero Exp $
 */
 
 #define	__GL_FUNC_EXTERN
@@ -114,7 +114,7 @@ static PIXELFORMATDESCRIPTOR pfd =
 };
 
 // main vid functions
-LONG WINAPI MainWndProc (HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
+static LONG WINAPI MainWndProc (HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 static void AppActivate(BOOL fActive, BOOL minimize);
 static void VID_UpdateWindowStatus (void);
 static char *VID_GetModeDescription (int mode);
@@ -214,8 +214,8 @@ static qboolean	fullsbardraw = false;
 extern void	Mod_ReloadTextures (void);
 
 // menu drawing
-void VID_MenuDraw (void);
-void VID_MenuKey (int key);
+static void VID_MenuDraw (void);
+static void VID_MenuKey (int key);
 
 // input stuff
 static void ClearAllStates (void);
@@ -1434,7 +1434,7 @@ static UINT	uMSG_MOUSEWHEEL;
 extern cvar_t	mwheelthreshold;
 
 /* main window procedure */
-LONG WINAPI MainWndProc (HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
+static LONG WINAPI MainWndProc (HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
 	LONG	lRet = 0;
 	int	fActive, fMinimized, temp;
@@ -2616,7 +2616,7 @@ static void M_DrawYesNo (int x, int y, int on, int white)
 VID_MenuDraw
 ================
 */
-void VID_MenuDraw (void)
+static void VID_MenuDraw (void)
 {
 	ScrollTitle("gfx/menu/title7.lmp");
 
@@ -2744,7 +2744,7 @@ static int match_windowed_fullscr_modes (void)
 VID_MenuKey
 ================
 */
-void VID_MenuKey (int key)
+static void VID_MenuKey (int key)
 {
 	int	i;
 	int	*tmpnum;
