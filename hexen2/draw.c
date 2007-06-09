@@ -2,7 +2,7 @@
 	draw.c
 	This is the only file outside the refresh that touches the vid buffer.
 
-	$Id: draw.c,v 1.34 2007-05-13 11:58:28 sezero Exp $
+	$Id: draw.c,v 1.35 2007-06-09 23:15:40 sezero Exp $
 */
 
 
@@ -1764,10 +1764,14 @@ Call after completing any disc IO
 */
 void Draw_EndDisc (void)
 {
+/* this is causing problems, at least with mgl-win32.
+   the sdl driver seems to work fine either way. */
+#if 0
 	if (!draw_disc[0])
 		return;
 
 	D_EndDirectRect (vid.width - 28, 0, 28, 24);
 	scr_topupdate = 0;
+#endif
 }
 
