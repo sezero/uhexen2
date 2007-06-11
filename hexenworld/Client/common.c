@@ -2,7 +2,7 @@
 	common.c
 	misc utility functions used in client and server
 
-	$Id: common.c,v 1.94 2007-05-13 11:59:00 sezero Exp $
+	$Id: common.c,v 1.95 2007-06-11 18:35:59 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -42,48 +42,6 @@ char *Q_strupr (char *str)
 		c++;
 	}
 	return str;
-}
-
-
-/*
-==============================================================================
-
-Q_MALLOC / Q_FREE
-
-malloc and free system memory. LordHavoc.
-==============================================================================
-*/
-
-static unsigned int	qmalloctotal_alloc,
-			qmalloctotal_alloccount,
-			qmalloctotal_free,
-			qmalloctotal_freecount;
-
-void *Q_malloc(unsigned int size)
-{
-	unsigned int	*mem;
-
-	qmalloctotal_alloc += size;
-	qmalloctotal_alloccount++;
-	mem = malloc(size+sizeof(unsigned int));
-	if (!mem)
-		return mem;
-	*mem = size;
-
-	return (void *)(mem + 1);
-}
-
-void Q_free(void *mem)
-{
-	unsigned int	*m;
-
-	if (!mem)
-		return;
-	m = mem;
-	m--;	// back up to size
-	qmalloctotal_free += *m;	// size
-	qmalloctotal_freecount++;
-	free(m);
 }
 
 

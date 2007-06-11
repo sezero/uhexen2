@@ -2,7 +2,7 @@
 	common.h
 	misc utilities used in client and server
 
-	$Id: common.h,v 1.47 2007-05-13 12:04:47 sezero Exp $
+	$Id: common.h,v 1.48 2007-06-11 18:35:56 sezero Exp $
 */
 
 #ifndef __HX2_COMMON_H
@@ -70,9 +70,6 @@ extern size_t Q_strlcat (char *dst, const char *src, size_t size);
 
 extern char *Q_strlwr (char *str);
 extern char *Q_strupr (char *str);
-
-extern void *Q_malloc(unsigned int size);
-extern void Q_free(void *mem);
 
 //============================================================================
 

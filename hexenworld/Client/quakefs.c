@@ -2,7 +2,7 @@
 	quakefs.c
 	Hexen II filesystem
 
-	$Id: quakefs.c,v 1.23 2007-05-13 11:59:01 sezero Exp $
+	$Id: quakefs.c,v 1.24 2007-06-11 18:35:59 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -1016,6 +1016,7 @@ Allways appends a 0 byte to the loaded data.
 #define	LOADFILE_STACK		4
 #define	LOADFILE_BUF		5
 #define	LOADFILE_MALLOC		6
+
 static byte	*loadbuf;
 #if !defined(SERVERONLY)
 static cache_user_t *loadcache;
@@ -1074,7 +1075,7 @@ static byte *FS_LoadFile (const char *path, int usehunk)
 			buf = Hunk_AllocName(len + 1, path);
 		break;
 	case LOADFILE_MALLOC:
-		buf = Q_malloc (len+1);
+		buf = malloc (len+1);
 		break;
 	default:
 		Sys_Error ("%s: bad usehunk", __thisfunc__);
@@ -1146,7 +1147,7 @@ byte *FS_LoadBufFile (const char *path, void *buffer, size_t *bufsize)
 	return buf;
 }
 
-// LordHavoc: returns malloc'd memory
+// returns malloc'd memory
 byte *FS_LoadMallocFile (const char *path)
 {
 	return FS_LoadFile (path, LOADFILE_MALLOC);

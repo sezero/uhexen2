@@ -8,7 +8,7 @@
 	This version of model.c and model.h are based on a quake dedicated
 	server application, lhnqserver, by LordHavoc.
 
-	$Id: model.c,v 1.12 2007-05-15 11:38:37 sezero Exp $
+	$Id: model.c,v 1.13 2007-06-11 18:35:59 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -363,7 +363,6 @@ static void Mod_LoadEdges (lump_t *l)
 	if (l->filelen % sizeof(*in))
 		Host_Error ("%s: funny lump size in %s", __thisfunc__, loadmodel->name);
 	count = l->filelen / sizeof(*in);
-//	out = Q_malloc((count + 1) * sizeof(*out));
 	out = Hunk_AllocName ( (count + 1) * sizeof(*out), "edges");
 
 //	loadmodel->edges = out;
@@ -772,7 +771,6 @@ static void Mod_LoadSurfedges (lump_t *l)
 	if (l->filelen % sizeof(*in))
 		Host_Error ("%s: funny lump size in %s", __thisfunc__, loadmodel->name);
 	count = l->filelen / sizeof(*in);
-//	out Q_malloc(count*sizeof(*out));
 	out = Hunk_AllocName ( count*sizeof(*out), "surfedges");
 
 //	loadmodel->surfedges = out;
@@ -856,9 +854,7 @@ static void Mod_LoadBrushModel (model_t *mod, void *buffer)
 	Mod_LoadPlanes (&header->lumps[LUMP_PLANES]);
 	Mod_LoadTexinfo (&header->lumps[LUMP_TEXINFO]);
 	Mod_LoadFaces (&header->lumps[LUMP_FACES]);
-//	Q_free(surfedges);
 	surfedges = NULL;
-//	Q_free(edges);
 	edges = NULL;
 	Mod_LoadVisibility (&header->lumps[LUMP_VISIBILITY]);
 	Mod_LoadLeafs (&header->lumps[LUMP_LEAFS]);
