@@ -1,8 +1,8 @@
 /*
 	interface.h
-	hexen2 launcher ftk+ interface
+	hexen2 launcher gtk+ interface
 
-	$Id: interface.h,v 1.10 2007-04-15 20:40:38 sezero Exp $
+	$Id: interface.h,v 1.11 2007-06-11 16:00:26 sezero Exp $
 
 	This program is free software; you can redistribute it and/or
 	modify it under the terms of the GNU General Public License
@@ -29,5 +29,5 @@
 gint ui_init (gpointer user_data);
 void ui_pump (void);
 
-#endif	// LAUNCHER_INTERFACE_H
+#endif	/* LAUNCHER_INTERFACE_H */
 
