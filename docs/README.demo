@@ -327,7 +327,7 @@ disabled by default.
 2.3 Fluxbox
 -----------
 
-Though it's a great window manager, older versions of fluxbox has
+Though it's a great window manager, older versions of fluxbox have
 issues with some games in fullscreen mode. If this is the case,
 hit "ALT + Enter" twice to switch into windowed mode and then back
 into fullscreen mode.
