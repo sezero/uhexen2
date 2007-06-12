@@ -2,7 +2,7 @@
 	net_dgrm.c
 	This is enables a simple IP banning mechanism
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/net_dgrm.c,v 1.28 2007-05-13 11:58:29 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/net_dgrm.c,v 1.29 2007-06-12 07:26:06 sezero Exp $
 */
 
 #define BAN_TEST
@@ -806,7 +806,7 @@ void Datagram_Listen (qboolean state)
 }
 
 
-static void Datagram_Reject (const char *message, int acceptsocket, struct qsockaddr *addr)
+static qsocket_t *Datagram_Reject (const char *message, int acceptsocket, struct qsockaddr *addr)
 {
 	SZ_Clear(&net_message);
 	// save space for the header, filled in later
@@ -816,6 +816,7 @@ static void Datagram_Reject (const char *message, int acceptsocket, struct qsock
 	*((int *)net_message.data) = BigLong(NETFLAG_CTL | (net_message.cursize & NETFLAG_LENGTH_MASK));
 	dfunc.Write (acceptsocket, net_message.data, net_message.cursize, addr);
 	SZ_Clear(&net_message);
+	return NULL;
 }
 
 static qsocket_t *_Datagram_CheckNewConnections (void)
@@ -948,10 +949,7 @@ static qsocket_t *_Datagram_CheckNewConnections (void)
 		return NULL;
 
 	if (MSG_ReadByte() != NET_PROTOCOL_VERSION)
-	{
-		Datagram_Reject("Incompatible version.\n", acceptsock, &clientaddr);
-		return NULL;
-	}
+		return Datagram_Reject("Incompatible version.\n", acceptsock, &clientaddr);
 
 #ifdef BAN_TEST
 	// check for a ban
@@ -960,10 +958,7 @@ static qsocket_t *_Datagram_CheckNewConnections (void)
 		in_addr_t	testAddr;
 		testAddr = ((struct sockaddr_in *)&clientaddr)->sin_addr.s_addr;
 		if ((testAddr & banMask) == banAddr)
-		{
-			Datagram_Reject("You have been banned.\n", acceptsock, &clientaddr);
-			return NULL;
-		}
+			return Datagram_Reject("You have been banned.\n", acceptsock, &clientaddr);
 	}
 #endif
 
@@ -999,12 +994,8 @@ static qsocket_t *_Datagram_CheckNewConnections (void)
 
 	// allocate a QSocket
 	sock = NET_NewQSocket ();
-	if (sock == NULL)
-	{
-		// no room; try to let him know
-		Datagram_Reject("Server is full.\n", acceptsock, &clientaddr);
-		return NULL;
-	}
+	if (sock == NULL)	// no room; try to let him know
+		return Datagram_Reject("Server is full.\n", acceptsock, &clientaddr);
 
 	// allocate a network socket
 	newsock = dfunc.Open_Socket(0);
