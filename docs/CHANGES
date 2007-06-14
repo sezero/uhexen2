@@ -3,6 +3,22 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2007-06-12 (CVS):
+    * vid_win.c: removed VID_PostInitFix which is dead for quite some time.
+      switched back to Raven's original code in D_ShowLoadingSize for now.
+    * draw.c: Draw_EndDisc code is causing problems, at least with mgl-win32.
+      the sdl driver seems to work fine either way. Raven's original source
+      also had it disabled somehow. disabling it for now.
+    * draw.c: updated comments in Draw_EndDisc.
+    * launcher: minor typo fix.
+    * minor typo fix in documentation. added 'project peanut' to the mods
+      section in the README.
+    * removed Q_malloc and Q_free: not used. still keeping FS_LoadMallocFile,
+      in case it would be needed someday.
+    * updated the TODO list.
+    * net_dgrm.c: clean-up for Datagram_Reject.
+    * docs/README: minor typo fixes.
+
 2007-06-09 (CVS):
     * gl_vidsdl.c: avoid null names in the error message when we can't load
       the gl library.
