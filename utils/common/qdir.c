@@ -1,7 +1,7 @@
 /*
 	qdir.c
 
-	$Id: qdir.c,v 1.7 2007-05-13 11:59:44 sezero Exp $
+	$Id: qdir.c,v 1.8 2007-06-14 09:02:04 sezero Exp $
 */
 
 
@@ -99,7 +99,7 @@ char *ExpandPath (const char *path)
 {
 	static char full[1024];
 
-	if (!qdir)
+	if (!qdir[0])
 		Error ("%s called without qdir set", __thisfunc__);
 
 	if (path[0] == '/' || path[0] == '\\' || path[1] == ':')
