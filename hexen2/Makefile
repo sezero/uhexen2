@@ -1,5 +1,5 @@
 # GNU Makefile for (gl)hexen2 client/server binaries using GCC.
-# $Header: /home/ozzie/Download/0000/uhexen2/hexen2/Makefile,v 1.66 2007-06-04 06:42:28 sezero Exp $
+# $Header: /home/ozzie/Download/0000/uhexen2/hexen2/Makefile,v 1.67 2007-06-15 11:00:31 sezero Exp $
 #
 # Type "make help" to see the valid targets.
 #
@@ -450,12 +450,13 @@ endif
 COMMON_ASM = math.o \
 	worlda.o \
 	$(SOUND_ASM) \
-	sys_wina.o
+	sys_ia32.o
 
 SOFT_ASM = d_draw.o \
 	d_draw16.o \
 	d_draw16t.o \
 	d_parta.o \
+	d_partb.o \
 	d_polysa.o \
 	d_polysa2.o \
 	d_polysa3.o \
