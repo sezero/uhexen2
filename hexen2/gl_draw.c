@@ -2,7 +2,7 @@
 	gl_draw.c
 	this is the only file outside the refresh that touches the vid buffer
 
-	$Id: gl_draw.c,v 1.112 2007-06-07 12:04:38 sezero Exp $
+	$Id: gl_draw.c,v 1.113 2007-06-15 11:05:40 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -150,6 +150,7 @@ static qpic_t *Draw_PicFromFile (const char *name)
 		return NULL;
 	}
 
+	SwapPic (p);
 	gl = (glpic_t *)p->data;
 
 	gl->texnum = GL_LoadPicTexture (p);
@@ -172,6 +173,7 @@ static qpic_t *Draw_PicFileBuf (const char *name, void *p, size_t *size)
 	if (!p)
 		return NULL;
 
+	SwapPic ((qpic_t *)p);
 	gl = (glpic_t *)(((qpic_t *)p)->data);
 
 	gl->texnum = GL_LoadPicTexture(p);
@@ -469,6 +471,7 @@ void Draw_Init (void)
 	// load the backtile
 	p = (qpic_t *)FS_LoadTempFile ("gfx/menu/backtile.lmp");
 	Draw_PicCheckError (p, "gfx/menu/backtile.lmp");
+	SwapPic (p);
 	draw_backtile = GL_LoadPicTexture (p);
 
 	// load the crosshair texture

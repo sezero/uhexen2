@@ -2,7 +2,7 @@
 	draw.c
 	This is the only file outside the refresh that touches the vid buffer.
 
-	$Id: draw.c,v 1.36 2007-06-10 11:45:31 sezero Exp $
+	$Id: draw.c,v 1.37 2007-06-15 11:05:40 sezero Exp $
 */
 
 
@@ -181,9 +181,11 @@ void Draw_Init (void)
 			Z_Free (draw_disc[i]);
 		snprintf(temp, sizeof(temp), "gfx/menu/skull%d.lmp", i);
 		draw_disc[i] = (qpic_t *)FS_LoadZoneFile (temp, Z_SECZONE);
+		SwapPic (draw_disc[i]);
 	}
 
 	draw_backtile = (qpic_t	*)FS_LoadZoneFile ("gfx/menu/backtile.lmp", Z_SECZONE);
+	SwapPic (draw_backtile);
 
 	r_rectdesc.width = draw_backtile->width;
 	r_rectdesc.height = draw_backtile->height;
