@@ -3,6 +3,11 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2007-06-15 (CVS):
+    * utils: fixed a stupid bug in qdir.
+    * draw.c, gl_draw.c: fixed endianness problems.
+    * a little more re-arrangement of asm files.
+
 2007-06-12 (CVS):
     * vid_win.c: removed VID_PostInitFix which is dead for quite some time.
       switched back to Raven's original code in D_ShowLoadingSize for now.
