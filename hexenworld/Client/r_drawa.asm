@@ -303,7 +303,7 @@ Lemit:
  mov  dword [Lceilv0],eax
  jmp LCalcSecond
 LCalcFirst:
- call LTransformAndProject
+ call LTransformAndProject		; call near LTransformAndProject
  fst  dword [Lv0]
  fxch st2
  fstp  dword [Lu0]
@@ -311,7 +311,7 @@ LCalcFirst:
  fistp  dword [Lceilv0]
 LCalcSecond:
  mov esi,edx
- call LTransformAndProject
+ call LTransformAndProject		; call near LTransformAndProject
  fld  dword [Lu0]
  fxch st3
  fld  dword [Lzi0]

@@ -328,7 +328,7 @@ Lgs_edgeloop:
  add esi,eax
  test edi,edi
  jz Lgs_trailing
- call TrailingEdge
+ call TrailingEdge			; call near TrailingEdge
  mov eax, dword [surfaces]
 Lgs_leading:
  shr edi,16-6

@@ -505,12 +505,12 @@ LNoDraw:
  push esp
  push ebx
  push edi
- call D_PolysetRecursiveTriangleT3
+ call D_PolysetRecursiveTriangleT3	; call near D_PolysetRecursiveTriangleT3
  mov ebx,esp
  push esi
  push ebx
  push edi
- call D_PolysetRecursiveTriangleT3
+ call D_PolysetRecursiveTriangleT3	; call near D_PolysetRecursiveTriangleT3
  add esp,24
 LDone:
  pop ebx
@@ -858,7 +858,7 @@ Llooptop:
  push edx
  push esi
  push ecx
- call D_PolysetRecursiveTriangleT3
+ call D_PolysetRecursiveTriangleT3	; call near D_PolysetRecursiveTriangleT3
 ; sub ebp,16
 ; jnz Llooptop
  jmp Ldone2
@@ -887,7 +887,7 @@ Lp13:
  push edx
  push esi
  push ecx
- call D_PolysetRecursiveTriangleT3
+ call D_PolysetRecursiveTriangleT3	; call near D_PolysetRecursiveTriangleT3
  pop edx
  pop ecx
  pop eax
@@ -1150,8 +1150,8 @@ LOnseamDone1:
 LOnseamDone2:
 LFacesFront:
  fstp  dword [d_xdenom]
- call D_PolysetSetEdgeTable
- call D_RasterizeAliasPolySmooth
+ call D_PolysetSetEdgeTable		; call near D_PolysetSetEdgeTable
+ call D_RasterizeAliasPolySmooth	; call near D_RasterizeAliasPolySmooth
 LNextTri:
  mov esi, dword [r_affinetridesc+16]
 ; sub ebp,16
