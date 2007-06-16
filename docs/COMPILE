@@ -128,11 +128,12 @@ do a make clean between each different build.
 
 Compiling the software renderer for non-x86:
 --------------------------------------------
-For the time being, software renderer clients cannot be compiled for non-
-x86 cpus because of some x86 assembly code about translucency which do not
-have their C counterparts yet. For details, see NonIntel.log in docs. On
-the other hand, if you want to compile it on x86_64, adding -m32 to the
-cpu and linker flags should help.
+As of version 1.4.2-rc2, the software renderer clients can be compiled
+for non-x86 cpus: not as perfect as the intel code, yet, but it works in
+general. On the other hand, it is still possible to compile them as 32
+bit binaries for intel compatible cpus, such as amd64: for that you must
+add -m32 to the cpu and linker flags and link against 32 bit versions
+of any necessary libraries.
 
 
 Links:

@@ -7,7 +7,6 @@ TODO:
 - Add pthread support to the utilities
 - Do a clean-up of the opengl system
 - Add sequencer support for midi
-- Make the software renderer "intel-free" someday
 - Re-write midi code for wildmidi and /or remove the SDL_mixer
   dependancy: I don't like opening the sound device twice.
 - Add multisampling support to win32
