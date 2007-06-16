@@ -1,3 +1,8 @@
+;
+; r_varsa.asm
+; $Id: r_varsa.asm,v 1.2 2007-06-16 09:21:51 sezero Exp $
+; global refresh variables
+;
 
 %idefine offset
  extern d_zistepu

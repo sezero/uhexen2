@@ -1,3 +1,8 @@
+;
+; r_aliasa.asm
+; $Id: r_aliasa.asm,v 1.2 2007-06-16 09:21:51 sezero Exp $
+; x86 assembly-language Alias model transform and project code.
+;
 
 %idefine offset
  extern d_zistepu

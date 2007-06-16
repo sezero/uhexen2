@@ -1,3 +1,8 @@
+;
+; worlda.asm
+; $Id: worlda.asm,v 1.2 2007-06-16 09:21:51 sezero Exp $
+; x86 assembly-language server testing stuff
+;
 
 %idefine offset
  extern snd_scaletable

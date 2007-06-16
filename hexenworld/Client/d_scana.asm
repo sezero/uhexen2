@@ -1,3 +1,8 @@
+;
+; d_scana.asm
+; $Id: d_scana.asm,v 1.2 2007-06-16 09:21:56 sezero Exp $
+; x86 assembly-language turbulent texture mapping code
+;
 
 %idefine offset
  extern d_zistepu

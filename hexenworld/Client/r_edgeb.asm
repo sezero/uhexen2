@@ -1,3 +1,8 @@
+;
+; r_edgeb.asm
+; $Id: r_edgeb.asm,v 1.4 2007-06-16 09:21:56 sezero Exp $
+; x86 assembly-language edge-processing code.
+;
 
 %idefine offset
  extern d_zistepu

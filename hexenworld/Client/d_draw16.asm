@@ -1,3 +1,9 @@
+;
+; d_draw16.asm
+; $Id: d_draw16.asm,v 1.2 2007-06-16 09:21:55 sezero Exp $
+; x86 assembly-language horizontal 8-bpp span-drawing code, with 16-pixel
+; subdivision.
+;
 
 %idefine offset
  extern d_zistepu

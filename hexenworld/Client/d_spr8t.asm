@@ -1,3 +1,9 @@
+;
+; d_spr8t.asm
+; $Id: d_spr8t.asm,v 1.2 2007-06-16 09:21:56 sezero Exp $
+; x86 assembly-language horizontal 8-bpp sprite span-drawing code.
+; with translucency handling, #1.
+;
 
 %idefine offset
  extern d_zistepu

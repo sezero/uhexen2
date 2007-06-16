@@ -1,3 +1,8 @@
+;
+; d_partb.asm
+; $Id: d_partb.asm,v 1.4 2007-06-16 09:21:51 sezero Exp $
+; x86 assembly-language 8-bpp particle-drawing code.
+;
 
 %idefine offset
  extern d_zistepu

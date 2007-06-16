@@ -1,3 +1,8 @@
+;
+; sys_ia32.asm
+; $Id: sys_ia32.asm,v 1.2 2007-06-16 09:21:56 sezero Exp $
+; x86 assembly-language misc system routines.
+;
 
 %idefine offset
  extern snd_scaletable

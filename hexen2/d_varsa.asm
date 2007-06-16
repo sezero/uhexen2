@@ -1,3 +1,8 @@
+;
+; d_varsa.asm
+; $Id: d_varsa.asm,v 1.2 2007-06-16 09:21:51 sezero Exp $
+; rasterization driver global variables
+;
 
 %idefine offset
 ; extern d_zistepu

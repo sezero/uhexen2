@@ -1,3 +1,8 @@
+;
+; snd_mixa.asm
+; $Id: snd_mixa.asm,v 1.2 2007-06-16 09:21:51 sezero Exp $
+; x86 assembly-language sound code
+;
 
 %idefine offset
  extern d_zistepu

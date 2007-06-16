@@ -1,3 +1,9 @@
+;
+; d_polysa5.asm
+; $Id: d_polysa5.asm,v 1.4 2007-06-16 09:21:51 sezero Exp $
+; x86 assembly-language polygon model drawing code
+; with translucency handling, #5.
+;
 
 %idefine offset
  extern d_zistepu

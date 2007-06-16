@@ -1,3 +1,8 @@
+;
+; d_polysa.asm
+; $Id: d_polysa.asm,v 1.4 2007-06-16 09:21:55 sezero Exp $
+; x86 assembly-language polygon model drawing code
+;
 
 %idefine offset
  extern d_zistepu

@@ -1,3 +1,8 @@
+;
+; surf16.asm
+; $Id: surf16.asm,v 1.2 2007-06-16 09:21:56 sezero Exp $
+; x86 assembly-language 16 bpp surface block drawing code.
+;
 
 %idefine offset
  extern d_zistepu

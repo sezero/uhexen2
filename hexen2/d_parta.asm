@@ -1,3 +1,8 @@
+;
+; d_parta.asm
+; $Id: d_parta.asm,v 1.2 2007-06-16 09:21:51 sezero Exp $
+; x86 assembly-language 8-bpp particle-drawing code.
+;
 
 %idefine offset
  extern d_zistepu
