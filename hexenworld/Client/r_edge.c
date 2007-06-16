@@ -1,7 +1,7 @@
 /*
 	r_edge.c
 
-	$Id: r_edge.c,v 1.6 2007-06-16 07:33:22 sezero Exp $
+	$Id: r_edge.c,v 1.7 2007-06-16 14:41:41 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -962,7 +962,7 @@ void R_ScanEdges (qboolean Translucent)
 		return;
 
 	basespan_p = (espan_t *)
-			((long)(basespans + CACHE_SIZE - 1) & ~(CACHE_SIZE - 1));
+			((intptr_t)(basespans + CACHE_SIZE - 1) & ~(CACHE_SIZE - 1));
 	max_span_p = &basespan_p[MAXSPANS - r_refdef.vrect.width];
 
 	span_p = basespan_p;

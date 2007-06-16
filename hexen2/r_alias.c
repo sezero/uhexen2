@@ -2,7 +2,7 @@
 	r_alias.c
 	routines for setting up to draw alias models
 
-	$Id: r_alias.c,v 1.13 2007-06-16 07:33:22 sezero Exp $
+	$Id: r_alias.c,v 1.14 2007-06-16 14:41:35 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -955,7 +955,7 @@ void R_AliasDrawModel (alight_t *plighting)
 
 // cache align
 	pfinalverts = (finalvert_t *)
-			(((long)&finalverts[0] + CACHE_SIZE - 1) & ~(CACHE_SIZE - 1));
+			(((intptr_t)&finalverts[0] + CACHE_SIZE - 1) & ~(CACHE_SIZE - 1));
 	pauxverts = &auxverts[0];
 
 	paliashdr = (aliashdr_t *)Mod_Extradata (currententity->model);

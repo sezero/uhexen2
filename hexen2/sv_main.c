@@ -2,7 +2,7 @@
 	sv_main.c
 	server main program
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sv_main.c,v 1.57 2007-06-08 09:03:25 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sv_main.c,v 1.58 2007-06-16 14:41:35 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -672,7 +672,6 @@ static void SV_PrepareClientEntities (client_t *client, edict_t	*clent, sizebuf_
 	long	flagtest;
 	int			position = 0;
 	int			client_num;
-	unsigned long	client_bit;
 	client_frames_t	*reference, *build;
 	client_state2_t	*state;
 	entity_state2_t	*ref_ent, *set_ent, build_ent;
@@ -680,7 +679,6 @@ static void SV_PrepareClientEntities (client_t *client, edict_t	*clent, sizebuf_
 	short			RemoveList[MAX_CLIENT_STATES],NumToRemove;
 
 	client_num = client-svs.clients;
-	client_bit = 1<<client_num;
 	state = &sv.states[client_num];
 	reference = &state->frames[0];
 

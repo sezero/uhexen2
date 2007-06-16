@@ -2,7 +2,7 @@
 	sys_win.c
 	Win32 system interface code
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/win_stuff/sys_win.c,v 1.54 2007-05-13 16:14:11 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/win_stuff/sys_win.c,v 1.55 2007-06-16 14:41:38 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -173,7 +173,7 @@ SYSTEM IO
 Sys_MakeCodeWriteable
 ================
 */
-#ifndef GLQUAKE
+#if id386 && !defined(GLQUAKE)
 void Sys_MakeCodeWriteable (unsigned long startaddr, unsigned long length)
 {
 	DWORD	flOldProtect;
@@ -182,7 +182,7 @@ void Sys_MakeCodeWriteable (unsigned long startaddr, unsigned long length)
 	if (!VirtualProtect((LPVOID)startaddr, length, PAGE_READWRITE, &flOldProtect))
 		Sys_Error("Protection change failed\n");
 }
-#endif	// !GLQUAKE
+#endif	/* id386, !GLQUAKE */
 
 
 /*

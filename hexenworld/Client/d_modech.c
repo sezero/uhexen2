@@ -2,7 +2,7 @@
 	d_modech.c
 	called when mode has just changed
 
-	$Id: d_modech.c,v 1.5 2007-03-14 21:03:31 sezero Exp $
+	$Id: d_modech.c,v 1.6 2007-06-16 14:41:41 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -23,21 +23,15 @@ D_Patch
 void D_Patch (void)
 {
 #if id386
-
 	static qboolean protectset8 = false;
 
 	if (!protectset8)
 	{
-		Sys_MakeCodeWriteable ((int)D_PolysetAff8Start,
-						     (int)D_PolysetAff8End - (int)D_PolysetAff8Start);
-		Sys_MakeCodeWriteable ((int)D_PolysetAff8StartT,
-						     (int)D_PolysetAff8EndT - (int)D_PolysetAff8StartT);
-		Sys_MakeCodeWriteable ((int)D_PolysetAff8StartT2,
-						     (int)D_PolysetAff8EndT2 - (int)D_PolysetAff8StartT2);
-		Sys_MakeCodeWriteable ((int)D_PolysetAff8StartT3,
-						     (int)D_PolysetAff8EndT3 - (int)D_PolysetAff8StartT3);
-		Sys_MakeCodeWriteable ((int)D_PolysetAff8StartT5,
-						     (int)D_PolysetAff8EndT5 - (int)D_PolysetAff8StartT5);
+		Sys_MakeCodeWriteable ((int)D_PolysetAff8Start, (int)D_PolysetAff8End - (int)D_PolysetAff8Start);
+		Sys_MakeCodeWriteable ((int)D_PolysetAff8StartT, (int)D_PolysetAff8EndT - (int)D_PolysetAff8StartT);
+		Sys_MakeCodeWriteable ((int)D_PolysetAff8StartT2, (int)D_PolysetAff8EndT2 - (int)D_PolysetAff8StartT2);
+		Sys_MakeCodeWriteable ((int)D_PolysetAff8StartT3, (int)D_PolysetAff8EndT3 - (int)D_PolysetAff8StartT3);
+		Sys_MakeCodeWriteable ((int)D_PolysetAff8StartT5, (int)D_PolysetAff8EndT5 - (int)D_PolysetAff8StartT5);
 		protectset8 = true;
 	}
 

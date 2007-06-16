@@ -1,6 +1,6 @@
 /*
 	midi_win.c
-	$Id: midi.c,v 1.22 2007-05-01 11:59:59 sezero Exp $
+	$Id: midi.c,v 1.23 2007-06-16 14:41:41 sezero Exp $
 
 	MIDI module for Win32
 */
@@ -130,7 +130,7 @@ qboolean MIDI_Init(void)
 
 	hBufferReturnEvent = CreateEvent(NULL,FALSE,FALSE,"Wait For Buffer Return");
 
-	mmrRetVal = midiStreamOpen(&hStream,&uMIDIDeviceID,(DWORD)1,(DWORD)MidiProc,(DWORD)0,CALLBACK_FUNCTION);
+	mmrRetVal = midiStreamOpen(&hStream, &uMIDIDeviceID, (DWORD)1, (DWORD_PTR)MidiProc, (DWORD_PTR)0, CALLBACK_FUNCTION);
 	if (mmrRetVal != MMSYSERR_NOERROR )
 	{
 		bMidiInited = 0;
@@ -373,7 +373,7 @@ static BOOL StreamBufferSetup(const char *Name)
 
 	if (!hStream)
 	{
-		mmrRetVal = midiStreamOpen(&hStream, &uMIDIDeviceID, (DWORD)1, (DWORD)MidiProc, (DWORD)0, CALLBACK_FUNCTION);
+		mmrRetVal = midiStreamOpen(&hStream, &uMIDIDeviceID, (DWORD)1, (DWORD_PTR)MidiProc, (DWORD_PTR)0, CALLBACK_FUNCTION);
 		if (mmrRetVal != MMSYSERR_NOERROR)
 		{
 			MidiErrorMessageBox(mmrRetVal);

@@ -1,7 +1,7 @@
 /*
 	d_edge.c
 
-	$Id: d_edge.c,v 1.11 2007-06-16 07:33:22 sezero Exp $
+	$Id: d_edge.c,v 1.12 2007-06-16 14:41:38 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -358,7 +358,7 @@ void D_DrawSurfaces (qboolean Translucent)
 	vec3_t			local_modelorg;
 // O.S: FIXME: Raven commented this out. See r_edge.c for FoundTrans non-Intel usage
 //	static long		FoundTrans = 0;
-	int count;
+	int			count;
 
 	// Restore the settings
 	currententity = &r_worldentity;

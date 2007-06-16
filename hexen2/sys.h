@@ -2,7 +2,7 @@
 	sys.h
 	non-portable functions
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sys.h,v 1.31 2007-04-19 17:44:52 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sys.h,v 1.32 2007-06-16 14:41:35 sezero Exp $
 */
 
 #ifndef __HX2_SYS_H
@@ -26,9 +26,7 @@ void Sys_FindClose (void);
 //
 // memory protection
 //
-#if !defined(GLQUAKE) && !defined(SERVERONLY)
 void Sys_MakeCodeWriteable (unsigned long startaddr, unsigned long length);
-#endif
 
 //
 // system IO
@@ -49,12 +47,8 @@ void Sys_Sleep (void);
 // called to yield for a little bit so as
 // not to hog cpu when paused or debugging
 
-#if !defined(SERVERONLY)
-
 void Sys_SendKeyEvents (void);
 // Perform Key_Event () callbacks until the input que is empty
-
-#endif
 
 
 /* From Dan Olson:

@@ -1,7 +1,7 @@
 /*
 	r_main.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/r_main.c,v 1.24 2007-05-13 11:58:30 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/r_main.c,v 1.25 2007-06-16 14:41:35 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -1078,13 +1078,13 @@ static void R_EdgeDrawing (qboolean Translucent)
 		else
 		{
 			r_edges =  (edge_t *)
-					(((long)&ledges[0] + CACHE_SIZE - 1) & ~(CACHE_SIZE - 1));
+					(((intptr_t)&ledges[0] + CACHE_SIZE - 1) & ~(CACHE_SIZE - 1));
 		}
 
 		if (r_surfsonstack)
 		{
 			surfaces =  (surf_t *)
-					(((long)&lsurfs[0] + CACHE_SIZE - 1) & ~(CACHE_SIZE - 1));
+					(((intptr_t)&lsurfs[0] + CACHE_SIZE - 1) & ~(CACHE_SIZE - 1));
 			surf_max = &surfaces[r_cnumsurfs];
 		// surface 0 doesn't really exist; it's just a dummy because
 		// index 0 is used to indicate no edge attached to surface
@@ -1282,10 +1282,10 @@ void R_RenderView (void)
 	if ( Hunk_LowMark() & 3 )
 		Sys_Error ("Hunk is missaligned");
 
-/*	if ( (long)(&dummy) & 3 )
+/*	if ( (intptr_t)(&dummy) & 3 )
 		Sys_Error ("Stack is missaligned");
 */
-	if ( (long)(&r_warpbuffer) & 3 )
+	if ( (intptr_t)(&r_warpbuffer) & 3 )
 		Sys_Error ("Globals are missaligned");
 
 	R_RenderView_ ();

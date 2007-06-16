@@ -2,7 +2,7 @@
 	d_clear.c
 	clears a specified rectangle to the specified color
 
-	$Id: d_fill.c,v 1.4 2007-03-14 21:03:31 sezero Exp $
+	$Id: d_fill.c,v 1.5 2007-06-16 14:41:39 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -43,7 +43,7 @@ void D_FillRect (vrect_t *rect, int color)
 
 	dest = ((byte *)vid.buffer + ry*vid.rowbytes + rx);
 
-	if (((rwidth & 0x03) == 0) && (((long)dest & 0x03) == 0))
+	if (((rwidth & 0x03) == 0) && (((intptr_t)dest & 0x03) == 0))
 	{
 	// faster aligned dword clear
 		ldest = (unsigned *)dest;

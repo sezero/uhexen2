@@ -2,7 +2,7 @@
 	r_surf.c
 	surface-related refresh code
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/r_surf.c,v 1.11 2007-05-13 11:58:30 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/r_surf.c,v 1.12 2007-06-16 14:41:35 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -584,7 +584,7 @@ static void R_DrawSurfaceBlock16 (void)
 		pbasesource += sourcetstep;
 		lightright += lightrightstep;
 		lightleft += lightleftstep;
-		prowdest = (unsigned short *)((long)prowdest + surfrowbytes);
+		prowdest = (unsigned short *)((intptr_t)prowdest + surfrowbytes);
 	}
 
 	prowdestbase = prowdest;

@@ -2,7 +2,7 @@
 	sys_unix.c
 	Unix system interface code
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sys_unix.c,v 1.88 2007-05-09 18:10:13 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sys_unix.c,v 1.89 2007-06-16 14:41:35 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -150,7 +150,7 @@ SYSTEM IO
 Sys_MakeCodeWriteable
 ================
 */
-#ifndef GLQUAKE
+#if id386 && !defined(GLQUAKE)
 void Sys_MakeCodeWriteable (unsigned long startaddr, unsigned long length)
 {
 	int		r;
@@ -171,7 +171,7 @@ void Sys_MakeCodeWriteable (unsigned long startaddr, unsigned long length)
 	if (r < 0)
 		Sys_Error("Protection change failed\n");
 }
-#endif	// !GLQUAKE
+#endif	/* id386, !GLQUAKE */
 
 
 /*

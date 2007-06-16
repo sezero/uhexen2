@@ -2,7 +2,7 @@
 	d_scan.c
 	Portable C scan-level rasterization code, all pixel depths.
 
-	$Id: d_scan.c,v 1.9 2007-06-16 07:33:22 sezero Exp $
+	$Id: d_scan.c,v 1.10 2007-06-16 14:41:41 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -160,7 +160,6 @@ void D_DrawSpans8T (espan_t *pspan)
 
 	{
 		pdest = (unsigned char *)((byte *)d_viewbuffer + (screenwidth * pspan->v) + pspan->u);
-
 		count = pspan->count;
 
 	// calculate the initial s/z, t/z, 1/z, s, and t and clamp
@@ -300,7 +299,6 @@ void D_DrawSpans8T (espan_t *pspan)
 	{
 		pdest = (unsigned char *)((byte *)d_viewbuffer + (screenwidth * pspan->v) + pspan->u);
 		pz = d_pzbuffer + (d_zwidth * pspan->v) + pspan->u;
-
 		count = pspan->count;
 
 	// calculate the initial s/z, t/z, 1/z, s, and t and clamp
@@ -449,9 +447,7 @@ void Turbulent8 (surf_t *s)
 
 	do
 	{
-		r_turb_pdest = (unsigned char *)((byte *)d_viewbuffer +
-				(screenwidth * pspan->v) + pspan->u);
-
+		r_turb_pdest = (unsigned char *)((byte *)d_viewbuffer + (screenwidth * pspan->v) + pspan->u);
 		count = pspan->count;
 
 		if (r_transwater.integer && s->flags & SURF_TRANSLUCENT)
@@ -606,9 +602,7 @@ void D_DrawSpans8 (espan_t *pspan)
 
 	do
 	{
-		pdest = (unsigned char *)((byte *)d_viewbuffer +
-				(screenwidth * pspan->v) + pspan->u);
-
+		pdest = (unsigned char *)((byte *)d_viewbuffer + (screenwidth * pspan->v) + pspan->u);
 		count = pspan->count;
 
 	// calculate the initial s/z, t/z, 1/z, s, and t and clamp
@@ -752,7 +746,7 @@ void D_DrawZSpans (espan_t *pspan)
 	// we count on FP exceptions being turned off to avoid range problems
 		izi = (int)(zi * 0x8000 * 0x10000);
 
-		if ((long)pdest & 0x02)
+		if ((intptr_t)pdest & 0x02)
 		{
 			*pdest++ = (short)(izi >> 16);
 			izi += izistep;
@@ -802,7 +796,7 @@ void D_DrawSingleZSpans (espan_t *pspan)
 // we count on FP exceptions being turned off to avoid range problems
 	izi = (int)(zi * 0x8000 * 0x10000);
 
-/*	if ((long)pdest & 0x02)
+/*	if ((intptr_t)pdest & 0x02)
 	{
 		if (*pdest > (short)(izi >> 16))
 		{

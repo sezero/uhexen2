@@ -1,6 +1,6 @@
 /*
 	mstrconv.c
-	$Id: mstrconv.c,v 1.18 2007-05-01 08:26:44 sezero Exp $
+	$Id: mstrconv.c,v 1.19 2007-06-16 14:41:38 sezero Exp $
 
 	Converting a MID file to a MIDI stream for
 	playback using the Win32 midiStream API.
@@ -27,7 +27,7 @@ BOOL		bInsertTempo = FALSE;
 INFILESTATE	ifs;
 static DWORD	tkCurrentTime;
 static byte	*MidiData;
-static int	MidiOffset, MidiSize;
+static LONG	MidiOffset, MidiSize;
 
 // Tracks how many malloc blocks exist. If there are any and we decide to shut
 // down, we must scan for them and free them.  Malloc blocks are only created as
@@ -69,7 +69,7 @@ static void ShowTrackError (PINTRACKSTATE ptsTrack, char* szErr);
 
 static int SetFilePointer2 (LONG lDistanceToMove, PLONG lpDistanceToMoveHigh, DWORD dwMoveMethod)
 {
-	int	SaveMidi;
+	LONG	SaveMidi;
 
 	SaveMidi = MidiOffset;
 	if (dwMoveMethod == FILE_BEGIN)
@@ -941,7 +941,7 @@ static BOOL RefillTrackBuffer (PINTRACKSTATE ptsTrack)
 		// ptsTrack->foNextReadStart and read in the remaining data,
 		// up to a maximum of the buffer size.
 
-/*		if ( (dwResult = SetFilePointer(hInFile, (long)ptsTrack->foNextReadStart,
+/*		if ( (dwResult = SetFilePointer(hInFile, (LONG)(ptsTrack->foNextReadStart),
 			0L, FILE_BEGIN )) == 0xFFFFFFFF )
 		{
 			MessageBox (GetActiveWindow(),
@@ -950,7 +950,7 @@ static BOOL RefillTrackBuffer (PINTRACKSTATE ptsTrack)
 			return (TRUE);
 		}
 */
-		if ( (dwResult = SetFilePointer2 ((long)ptsTrack->foNextReadStart, 0L, FILE_BEGIN)) == 0xFFFFFFFF )
+		if ( (dwResult = SetFilePointer2 ((LONG)(ptsTrack->foNextReadStart), 0L, FILE_BEGIN)) == 0xFFFFFFFF )
 		{
 			Con_Printf("MIDI: Unable to seek to track buffer location in RefillTrackBuffer()!!\n");
 			return (TRUE);
