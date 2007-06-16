@@ -1,7 +1,7 @@
 /*
 	d_edge.c
 
-	$Id: d_edge.c,v 1.9 2007-05-09 18:10:12 sezero Exp $
+	$Id: d_edge.c,v 1.10 2007-06-16 07:30:29 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -68,7 +68,7 @@ static void D_DrawSolidSurface (surf_t *surf, int color)
 	espan_t	*span;
 	byte	*pdest;
 	int		u, u2, pix;
-	
+
 	pix = (color<<24) | (color<<16) | (color<<8) | color;
 	for (span = surf->spans ; span ; span = span->pnext)
 	{
@@ -388,7 +388,7 @@ void D_DrawSurfaces (qboolean Translucent)
 			d_zistepv = s->d_zistepv;
 			d_ziorigin = s->d_ziorigin;
 
-			D_DrawSolidSurface (s, (int)s->data & 0xFF);
+			D_DrawSolidSurface (s, (intptr_t)s->data & 0xFF);
 			D_DrawZSpans (s->spans);
 		}
 	}

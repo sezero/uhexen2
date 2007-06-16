@@ -1,7 +1,7 @@
 /*
 	r_misc.c
 
-	$Id: r_misc.c,v 1.8 2007-05-09 18:10:17 sezero Exp $
+	$Id: r_misc.c,v 1.9 2007-06-16 07:30:31 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -557,8 +557,8 @@ void R_SetupFrame (void)
 		if ((surface_p - surfaces) > r_maxsurfsseen)
 			r_maxsurfsseen = surface_p - surfaces;
 
-		Con_Printf ("Used %d of %d surfs; %d max\n", surface_p - surfaces,
-				surf_max - surfaces, r_maxsurfsseen);
+		Con_Printf ("Used %ld of %ld surfs; %d max\n", (long)(surface_p - surfaces),
+				(long)(surf_max - surfaces), r_maxsurfsseen);
 	}
 
 	if (r_numedges.integer)

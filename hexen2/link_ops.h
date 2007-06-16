@@ -2,7 +2,7 @@
 	link_ops.h
 	link operations
 
-	$Id: link_ops.h,v 1.1 2007-02-12 16:52:48 sezero Exp $
+	$Id: link_ops.h,v 1.2 2007-06-16 07:30:29 sezero Exp $
 */
 
 #ifndef __LINKOPS_H
@@ -17,7 +17,7 @@ typedef struct link_s
 // (type *)STRUCT_FROM_LINK(link_t *link, type, member)
 // ent = STRUCT_FROM_LINK(link,entity_t,order)
 // FIXME: remove this mess!
-#define	STRUCT_FROM_LINK(l,t,m) ((t *)((byte *)l - (int)&(((t *)0)->m)))
+#define	STRUCT_FROM_LINK(l,t,m) ((t *)((byte *)l - (intptr_t)&(((t *)0)->m)))
 
 
 void ClearLink (link_t *l);
