@@ -3,6 +3,33 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2007-06-16 (CVS):
+    * added initial support for software renderer without intel assembly:
+      lifted from the hexen2 PSP port (http://jurajstyk.host.sk/) of Juraj
+      Styk with a few fixes and adjustments. works fairly most of the time,
+      even gives a 55.1 fps timedemo for demo1 with viewsize maximized at
+      320x240 resolution on a pentium3-800 (256 kb cache size) whereas the
+      binary compiled with intel assembly gives 71.7 fps. tested on amd64,
+      x86 and ppc.
+      known problems: the span drawer gets crazy sometimes and draws a span
+      from a point toward the rightmost end of the screen. the places and
+      the frequency it happens seem to vary by the gcc version used. to be
+      looked into.
+    * d_edge.c, d_surf.c, r_misc.c, link_ops.h: fixed a few probable 64
+      bit compatibility problems. we now require stdint.h, included from
+      q_types.h.
+    * fixed more of probable 64 bit compatibility problems. a few minor
+      clean-ups here and there.
+    * added back the near versions of calls in the assembly files in
+      commented out form for reference. before, I removed the nears for
+      yasm support, otherwise it used to fail with an error message:
+      'no NEAR form of that jump instruction exists'.
+    * added cvs version headers to the assembly files.
+    * now that the software renderer clients can now be compiled on non-intel,
+      removed the x86 exclusive arch dependency from the rpm spec file.
+    * updated the documents after the non-intel software renderer changes.
+      removed the NonIntel.log and NOTES.porting files.
+
 2007-06-15 (CVS):
     * utils: fixed a stupid bug in qdir.
     * draw.c, gl_draw.c: fixed endianness problems.
