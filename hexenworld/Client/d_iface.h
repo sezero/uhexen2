@@ -2,7 +2,7 @@
 	d_iface.h
 	interface header file for rasterization driver modules
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/d_iface.h,v 1.7 2006-09-24 17:28:43 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/d_iface.h,v 1.8 2007-06-16 07:33:22 sezero Exp $
 */
 
 #ifndef __D_IFACE_H
@@ -195,7 +195,6 @@ extern void D_PolysetDrawT2 (void);
 extern void D_PolysetDrawT3 (void);
 extern void D_PolysetDrawT5 (void);
 extern void D_PolysetDrawFinalVerts (finalvert_t *p1, finalvert_t *p2, finalvert_t *p3);
-// FIXME: non-intel version is void D_PolysetDrawFinalVerts (finalvert_t *fvert, int num_verts);
 extern void D_PolysetDrawFinalVertsT (finalvert_t *p1, finalvert_t *p2, finalvert_t *p3);
 extern void D_PolysetDrawFinalVertsT2 (finalvert_t *p1, finalvert_t *p2, finalvert_t *p3);
 extern void D_PolysetDrawFinalVertsT3 (finalvert_t *p1, finalvert_t *p2, finalvert_t *p3);
@@ -212,6 +211,15 @@ extern void D_PolysetScanLeftEdgeT (int height);
 extern void D_PolysetScanLeftEdgeT2 (int height);
 extern void D_PolysetScanLeftEdgeT3 (int height);
 extern void D_PolysetScanLeftEdgeT5 (int height);
+#endif
+
+#if !id386
+extern void D_PolysetDraw (void);
+extern void D_PolysetDrawT (void);
+#define D_PolysetDrawT2	D_PolysetDrawT
+extern void D_PolysetDrawT3 (void);
+extern void D_PolysetDrawT5 (void);
+extern void D_PolysetDrawFinalVerts (finalvert_t *fvert, int num_verts);	// FIXME: see x86 version above!
 #endif
 
 void D_BeginDirectRect (int x, int y, byte *pbitmap, int width, int height);

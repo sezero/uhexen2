@@ -2,7 +2,7 @@
 	r_alias.c
 	routines for setting up to draw alias models
 
-	$Id: r_alias.c,v 1.9 2007-05-13 11:59:01 sezero Exp $
+	$Id: r_alias.c,v 1.10 2007-06-16 07:33:22 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -712,27 +712,47 @@ void R_AliasPrepareUnclippedPoints (void)
 		{
 			if ((currententity->model->flags & EF_SPECIAL_TRANS))
 			{
+#if	id386
 				D_PolysetDrawFinalVertsT5 (pfv[0],pfv[1],pfv[2]);
+#else	/* FIXME !!! */
+			//	D_PolysetDrawFinalVerts (fv, r_anumverts);
+#endif
 				D_PolysetDrawT5 ();
 			}
 			else if (currententity->drawflags & DRF_TRANSLUCENT)
 			{
+#if	id386
 				D_PolysetDrawFinalVertsT (pfv[0],pfv[1],pfv[2]);
+#else	/* FIXME !!! */
+			//	D_PolysetDrawFinalVerts (fv, r_anumverts);
+#endif
 				D_PolysetDrawT ();
 			}
 			else if ((currententity->model->flags & EF_TRANSPARENT))
 			{
+#if	id386
 				D_PolysetDrawFinalVertsT2 (pfv[0],pfv[1],pfv[2]);
+#else	/* FIXME !!! */
+			//	D_PolysetDrawFinalVerts (fv, r_anumverts);
+#endif
 				D_PolysetDrawT2 ();
 			}
 			else if ((currententity->model->flags & EF_HOLEY))
 			{
+#if	id386
 				D_PolysetDrawFinalVertsT3 (pfv[0],pfv[1],pfv[2]);
+#else	/* FIXME !!! */
+			//	D_PolysetDrawFinalVerts (fv, r_anumverts);
+#endif
 				D_PolysetDrawT3 ();
 			}
 			else
 			{
+#if	id386
 				D_PolysetDrawFinalVerts (pfv[0],pfv[1],pfv[2]);
+#else	/* FIXME !!! */
+			//	D_PolysetDrawFinalVerts (fv, r_anumverts);
+#endif
 				D_PolysetDraw ();
 			}
 		}

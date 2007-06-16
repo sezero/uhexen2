@@ -1,7 +1,7 @@
 /*
 	d_edge.c
 
-	$Id: d_edge.c,v 1.10 2007-06-16 07:30:29 sezero Exp $
+	$Id: d_edge.c,v 1.11 2007-06-16 07:33:22 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -357,7 +357,7 @@ void D_DrawSurfaces (qboolean Translucent)
 	vec3_t			world_transformed_modelorg;
 	vec3_t			local_modelorg;
 // O.S: FIXME: Raven commented this out. See r_edge.c for FoundTrans non-Intel usage
-//	static int		FoundTrans = 0;
+//	static long		FoundTrans = 0;
 	int count;
 
 	// Restore the settings
@@ -640,7 +640,11 @@ void D_DrawSurfaces (qboolean Translucent)
 					D_CalcGradients (pface);
 
 				//	(*d_drawspans) (s->spans);
+#if id386
 					D_DrawSpans16T(s->spans);
+#else
+					D_DrawSpans8T(s->spans);
+#endif
 
 				//	D_DrawZSpans (s->spans);
 

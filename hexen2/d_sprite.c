@@ -2,7 +2,7 @@
 	d_sprite.c:
 	software top-level rasterization driver module for drawing sprites
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/d_sprite.c,v 1.5 2007-02-07 17:01:32 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/d_sprite.c,v 1.6 2007-06-16 07:33:22 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -177,7 +177,10 @@ NextSpan:
 
 #if	!id386
 
-void D_SpriteDrawTransSpans (sspan_t *pspan)
+#define D_SpriteDrawSpansT	D_SpriteDrawTransSpans
+#define D_SpriteDrawSpansT2	D_SpriteDrawTransSpans
+
+static void D_SpriteDrawTransSpans (sspan_t *pspan)
 {
 	int			count, spancount, izistep;
 	int			izi;

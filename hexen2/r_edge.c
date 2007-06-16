@@ -1,7 +1,7 @@
 /*
 	r_edge.c
 
-	$Id: r_edge.c,v 1.6 2007-05-09 18:10:13 sezero Exp $
+	$Id: r_edge.c,v 1.7 2007-06-16 07:33:22 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -49,16 +49,16 @@ float	fv;
 
 //static int	show = 0;
 int		TransCount;
-extern long	FoundTrans;		// O.S: FIXME: see d_edge.c
 
 static void (*pdrawfunc)(void);
 static void (*pdrawTfunc)(void);
 
 #if	!id386
+long		FoundTrans;		// O.S: FIXME: see d_edge.c
 static void R_GenerateSpans (void);
-// O.S: FIXME: no R_GenerateTSpans for non-Intel !!!
-//	R_GenerateSpans() makes use of FoundTrans !!
+static void R_GenerateTSpans (void);
 #else
+extern long	FoundTrans;		// O.S: FIXME: see d_edge.c
 extern void R_GenerateSpans (void);
 extern void R_GenerateTSpans (void);
 extern void R_InsertNewEdges (edge_t *edgestoadd, edge_t *edgelist);
@@ -840,6 +840,7 @@ static void R_GenerateSpans (void)
 
 	R_CleanupSpan ();
 
+#if 0
 	if (!FoundTrans)
 		return;
 
@@ -866,13 +867,45 @@ static void R_GenerateSpans (void)
 	}
 
 	R_CleanupSpanT ();
-
+#endif
 /*	if (show == 1)
 	{
 		show = 2;
 		Con_Printf("DONE\n");
 	}
 */
+}
+
+static void R_GenerateTSpans (void)
+{
+	edge_t		*edge;
+	surf_t		*surf;
+
+	r_bmodelactive = 0;
+
+// clear active surfaces to just the background surface
+	surfaces[1].next = surfaces[1].prev = &surfaces[1];
+	surfaces[1].last_u = edge_head_u_shift20;
+
+// generate spans
+	for (edge = edge_head.next ; edge != &edge_tail; edge = edge->next)
+	{
+		if (edge->surfs[0])
+		{
+		// it has a left surface, so a surface is going
+		// away for this span
+			surf = &surfaces[edge->surfs[0]];
+
+			R_TrailingEdgeT (surf, edge);
+
+			if (!edge->surfs[1])
+				continue;
+		}
+
+		R_LeadingEdgeT (edge);
+	}
+
+	R_CleanupSpanT ();
 }
 
 #endif	// !id386

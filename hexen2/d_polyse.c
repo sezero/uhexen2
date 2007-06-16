@@ -3,7 +3,7 @@
 	routines for drawing sets of polygons sharing the same
 	texture (used for Alias models)
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/d_polyse.c,v 1.12 2007-02-07 17:01:32 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/d_polyse.c,v 1.13 2007-06-16 07:33:22 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -96,9 +96,21 @@ void D_PolysetSetEdgeTable (void);
 void D_RasterizeAliasPolySmooth (void);
 
 #if !id386
+static spanpackage_t	spans[DPS_MAXSPANS + 1 + ((CACHE_SIZE - 1) / sizeof(spanpackage_t)) + 1];
+						/* one extra because of cache line pretouching */
 static void D_DrawSubdiv (void);
 static void D_DrawNonSubdiv (void);
+static void D_DrawSubdivT (void);
+static void D_DrawSubdivT3 (void);
+static void D_DrawSubdivT5 (void);
 static void D_PolysetRecursiveTriangle (int *p1, int *p2, int *p3);
+static void D_PolysetRecursiveTriangleT (int *lp1, int *lp2, int *lp3);
+static void D_PolysetRecursiveTriangleT3 (int *p1, int *p2, int *p3);
+static void D_PolysetRecursiveTriangleT5 (int *p1, int *p2, int *p3);
+static void D_PolysetDrawSpans8T (spanpackage_t *pspanpackage);
+#define D_PolysetDrawSpans8T2		D_PolysetDrawSpans8T
+static void D_PolysetDrawSpans8T3 (spanpackage_t *pspanpackage);
+static void D_PolysetDrawSpans8T5 (spanpackage_t *pspanpackage);
 #endif
 
 #if id386
@@ -118,16 +130,57 @@ D_PolysetDraw
 */
 void D_PolysetDraw (void)
 {
-	spanpackage_t	spans[DPS_MAXSPANS + 1 +
-				((CACHE_SIZE - 1) / sizeof(spanpackage_t)) + 1];
-				// one extra because of cache line pretouching
-
 	a_spans = (spanpackage_t *)
-			(((long)&spans[0] + CACHE_SIZE - 1) & ~(CACHE_SIZE - 1));
+			(((intptr_t)&spans[0] + CACHE_SIZE - 1) & ~(CACHE_SIZE - 1));
 
 	if (r_affinetridesc.drawtype)
 	{
 		D_DrawSubdiv ();
+	}
+	else
+	{
+		D_DrawNonSubdiv ();
+	}
+}
+
+void D_PolysetDrawT (void)
+{
+	a_spans = (spanpackage_t *)
+			(((intptr_t)&spans[0] + CACHE_SIZE - 1) & ~(CACHE_SIZE - 1));
+
+	if (r_affinetridesc.drawtype)
+	{
+		D_DrawSubdivT ();
+	}
+	else
+	{
+		D_DrawNonSubdiv ();
+	}
+}
+
+void D_PolysetDrawT3 (void)
+{
+	a_spans = (spanpackage_t *)
+			(((intptr_t)&spans[0] + CACHE_SIZE - 1) & ~(CACHE_SIZE - 1));
+
+	if (r_affinetridesc.drawtype)
+	{
+		D_DrawSubdivT3 ();
+	}
+	else
+	{
+		D_DrawNonSubdiv ();
+	}
+}
+
+void D_PolysetDrawT5 (void)
+{
+	a_spans = (spanpackage_t *)
+			(((intptr_t)&spans[0] + CACHE_SIZE - 1) & ~(CACHE_SIZE - 1));
+
+	if (r_affinetridesc.drawtype)
+	{
+		D_DrawSubdivT5 ();
 	}
 	else
 	{
@@ -221,6 +274,171 @@ static void D_DrawSubdiv (void)
 				index2->v[2] += r_affinetridesc.seamfixupX16;
 
 			D_PolysetRecursiveTriangle(index0->v, index1->v, index2->v);
+
+			index0->v[2] = s0;
+			index1->v[2] = s1;
+			index2->v[2] = s2;
+		}
+	}
+}
+
+static void D_DrawSubdivT (void)
+{
+	mtriangle_t		*ptri;
+	finalvert_t		*pfv, *index0, *index1, *index2;
+	int				i;
+	int				lnumtriangles;
+
+	pfv = r_affinetridesc.pfinalverts;
+	ptri = r_affinetridesc.ptriangles;
+	lnumtriangles = r_affinetridesc.numtriangles;
+
+	for (i = 0; i < lnumtriangles; i++)
+	{
+		index0 = pfv + ptri[i].vertindex[0];
+		index1 = pfv + ptri[i].vertindex[1];
+		index2 = pfv + ptri[i].vertindex[2];
+
+		if (((index0->v[1]-index1->v[1]) *
+			 (index0->v[0]-index2->v[0]) -
+			 (index0->v[0]-index1->v[0]) * 
+			 (index0->v[1]-index2->v[1])) >= 0)
+		{
+			continue;
+		}
+
+		d_pcolormap = &((byte *)acolormap)[index0->v[4] & 0xFF00];
+
+		if (ptri[i].facesfront)
+		{
+			D_PolysetRecursiveTriangleT(index0->v, index1->v, index2->v);
+		}
+		else
+		{
+			int		s0, s1, s2;
+
+			s0 = index0->v[2];
+			s1 = index1->v[2];
+			s2 = index2->v[2];
+
+			if (index0->flags & ALIAS_ONSEAM)
+				index0->v[2] += r_affinetridesc.seamfixupX16;
+			if (index1->flags & ALIAS_ONSEAM)
+				index1->v[2] += r_affinetridesc.seamfixupX16;
+			if (index2->flags & ALIAS_ONSEAM)
+				index2->v[2] += r_affinetridesc.seamfixupX16;
+
+			D_PolysetRecursiveTriangleT(index0->v, index1->v, index2->v);
+
+			index0->v[2] = s0;
+			index1->v[2] = s1;
+			index2->v[2] = s2;
+		}
+	}
+}
+
+static void D_DrawSubdivT3 (void)
+{
+	mtriangle_t		*ptri;
+	finalvert_t		*pfv, *index0, *index1, *index2;
+	int				i;
+	int				lnumtriangles;
+
+	pfv = r_affinetridesc.pfinalverts;
+	ptri = r_affinetridesc.ptriangles;
+	lnumtriangles = r_affinetridesc.numtriangles;
+
+	for (i = 0; i < lnumtriangles; i++)
+	{
+		index0 = pfv + ptri[i].vertindex[0];
+		index1 = pfv + ptri[i].vertindex[1];
+		index2 = pfv + ptri[i].vertindex[2];
+
+		if (((index0->v[1]-index1->v[1]) *
+			 (index0->v[0]-index2->v[0]) -
+			 (index0->v[0]-index1->v[0]) * 
+			 (index0->v[1]-index2->v[1])) >= 0)
+		{
+			continue;
+		}
+
+		d_pcolormap = &((byte *)acolormap)[index0->v[4] & 0xFF00];
+
+		if (ptri[i].facesfront)
+		{
+			D_PolysetRecursiveTriangleT3(index0->v, index1->v, index2->v);
+		}
+		else
+		{
+			int		s0, s1, s2;
+
+			s0 = index0->v[2];
+			s1 = index1->v[2];
+			s2 = index2->v[2];
+
+			if (index0->flags & ALIAS_ONSEAM)
+				index0->v[2] += r_affinetridesc.seamfixupX16;
+			if (index1->flags & ALIAS_ONSEAM)
+				index1->v[2] += r_affinetridesc.seamfixupX16;
+			if (index2->flags & ALIAS_ONSEAM)
+				index2->v[2] += r_affinetridesc.seamfixupX16;
+
+			D_PolysetRecursiveTriangleT3(index0->v, index1->v, index2->v);
+
+			index0->v[2] = s0;
+			index1->v[2] = s1;
+			index2->v[2] = s2;
+		}
+	}
+}
+
+static void D_DrawSubdivT5 (void)
+{
+	mtriangle_t		*ptri;
+	finalvert_t		*pfv, *index0, *index1, *index2;
+	int				i;
+	int				lnumtriangles;
+
+	pfv = r_affinetridesc.pfinalverts;
+	ptri = r_affinetridesc.ptriangles;
+	lnumtriangles = r_affinetridesc.numtriangles;
+
+	for (i = 0; i < lnumtriangles; i++)
+	{
+		index0 = pfv + ptri[i].vertindex[0];
+		index1 = pfv + ptri[i].vertindex[1];
+		index2 = pfv + ptri[i].vertindex[2];
+
+		if (((index0->v[1]-index1->v[1]) *
+			 (index0->v[0]-index2->v[0]) -
+			 (index0->v[0]-index1->v[0]) * 
+			 (index0->v[1]-index2->v[1])) >= 0)
+		{
+			continue;
+		}
+
+		d_pcolormap = &((byte *)acolormap)[index0->v[4] & 0xFF00];
+
+		if (ptri[i].facesfront)
+		{
+			D_PolysetRecursiveTriangleT5(index0->v, index1->v, index2->v);
+		}
+		else
+		{
+			int		s0, s1, s2;
+
+			s0 = index0->v[2];
+			s1 = index1->v[2];
+			s2 = index2->v[2];
+
+			if (index0->flags & ALIAS_ONSEAM)
+				index0->v[2] += r_affinetridesc.seamfixupX16;
+			if (index1->flags & ALIAS_ONSEAM)
+				index1->v[2] += r_affinetridesc.seamfixupX16;
+			if (index2->flags & ALIAS_ONSEAM)
+				index2->v[2] += r_affinetridesc.seamfixupX16;
+
+			D_PolysetRecursiveTriangleT5(index0->v, index1->v, index2->v);
 
 			index0->v[2] = s0;
 			index1->v[2] = s1;
@@ -379,6 +597,256 @@ nodraw:
 	D_PolysetRecursiveTriangle (lp3, new, lp2);
 }
 
+static void D_PolysetRecursiveTriangleT (int *lp1, int *lp2, int *lp3)
+{
+	int		*temp;
+	int		d;
+	int		new[6];
+	int		z;
+	short	*zbuf;
+	byte	color_map_idx;
+
+	d = lp2[0] - lp1[0];
+	if (d < -1 || d > 1)
+		goto split;
+	d = lp2[1] - lp1[1];
+	if (d < -1 || d > 1)
+		goto split;
+
+	d = lp3[0] - lp2[0];
+	if (d < -1 || d > 1)
+		goto split2;
+	d = lp3[1] - lp2[1];
+	if (d < -1 || d > 1)
+		goto split2;
+
+	d = lp1[0] - lp3[0];
+	if (d < -1 || d > 1)
+		goto split3;
+	d = lp1[1] - lp3[1];
+	if (d < -1 || d > 1)
+	{
+split3:
+		temp = lp1;
+		lp1 = lp3;
+		lp3 = lp2;
+		lp2 = temp;
+
+		goto split;
+	}
+
+	return;			// entire tri is filled
+
+split2:
+	temp = lp1;
+	lp1 = lp2;
+	lp2 = lp3;
+	lp3 = temp;
+
+split:
+// split this edge
+	new[0] = (lp1[0] + lp2[0]) >> 1;
+	new[1] = (lp1[1] + lp2[1]) >> 1;
+	new[2] = (lp1[2] + lp2[2]) >> 1;
+	new[3] = (lp1[3] + lp2[3]) >> 1;
+	new[5] = (lp1[5] + lp2[5]) >> 1;
+
+// draw the point if splitting a leading edge
+	if (lp2[1] > lp1[1])
+		goto nodraw;
+	if ((lp2[1] == lp1[1]) && (lp2[0] < lp1[0]))
+		goto nodraw;
+
+	z = new[5]>>16;
+	zbuf = zspantable[new[1]] + new[0];
+	if (z >= *zbuf)
+	{
+		color_map_idx = skintable[new[3]>>16][new[2]>>16];
+
+		if (color_map_idx != 0)
+		{
+			int		pix, pix2;
+
+			*zbuf = z;
+			pix = d_pcolormap[color_map_idx];
+			pix2 = d_viewbuffer[d_scantable[new[1]] + new[0]];
+			pix = mainTransTable[(pix<<8) + pix2];
+			d_viewbuffer[d_scantable[new[1]] + new[0]] = pix;
+		}
+	}
+
+nodraw:
+// recursively continue
+	D_PolysetRecursiveTriangleT (lp3, lp1, new);
+	D_PolysetRecursiveTriangleT (lp3, new, lp2);
+}
+
+static void D_PolysetRecursiveTriangleT3 (int *lp1, int *lp2, int *lp3)
+{
+	int		*temp;
+	int		d;
+	int		new[6];
+	int		z;
+	short	*zbuf;
+	byte	color_map_idx;
+
+	d = lp2[0] - lp1[0];
+	if (d < -1 || d > 1)
+		goto split;
+	d = lp2[1] - lp1[1];
+	if (d < -1 || d > 1)
+		goto split;
+
+	d = lp3[0] - lp2[0];
+	if (d < -1 || d > 1)
+		goto split2;
+	d = lp3[1] - lp2[1];
+	if (d < -1 || d > 1)
+		goto split2;
+
+	d = lp1[0] - lp3[0];
+	if (d < -1 || d > 1)
+		goto split3;
+	d = lp1[1] - lp3[1];
+	if (d < -1 || d > 1)
+	{
+split3:
+		temp = lp1;
+		lp1 = lp3;
+		lp3 = lp2;
+		lp2 = temp;
+
+		goto split;
+	}
+
+	return;			// entire tri is filled
+
+split2:
+	temp = lp1;
+	lp1 = lp2;
+	lp2 = lp3;
+	lp3 = temp;
+
+split:
+// split this edge
+	new[0] = (lp1[0] + lp2[0]) >> 1;
+	new[1] = (lp1[1] + lp2[1]) >> 1;
+	new[2] = (lp1[2] + lp2[2]) >> 1;
+	new[3] = (lp1[3] + lp2[3]) >> 1;
+	new[5] = (lp1[5] + lp2[5]) >> 1;
+
+// draw the point if splitting a leading edge
+	if (lp2[1] > lp1[1])
+		goto nodraw;
+	if ((lp2[1] == lp1[1]) && (lp2[0] < lp1[0]))
+		goto nodraw;
+
+	z = new[5]>>16;
+	zbuf = zspantable[new[1]] + new[0];
+	if (z >= *zbuf)
+	{
+		color_map_idx = skintable[new[3]>>16][new[2]>>16];
+
+		if (color_map_idx != 0)
+		{
+			int		pix;
+
+			*zbuf = z;
+			pix = d_pcolormap[color_map_idx];
+			d_viewbuffer[d_scantable[new[1]] + new[0]] = pix;
+		}
+	}
+
+nodraw:
+// recursively continue
+	D_PolysetRecursiveTriangleT3 (lp3, lp1, new);
+	D_PolysetRecursiveTriangleT3 (lp3, new, lp2);
+}
+
+static void D_PolysetRecursiveTriangleT5 (int *lp1, int *lp2, int *lp3)
+{
+	int		*temp;
+	int		d;
+	int		new[6];
+	int		z;
+	short	*zbuf;
+	byte	color_map_idx;
+
+	d = lp2[0] - lp1[0];
+	if (d < -1 || d > 1)
+		goto split;
+	d = lp2[1] - lp1[1];
+	if (d < -1 || d > 1)
+		goto split;
+
+	d = lp3[0] - lp2[0];
+	if (d < -1 || d > 1)
+		goto split2;
+	d = lp3[1] - lp2[1];
+	if (d < -1 || d > 1)
+		goto split2;
+
+	d = lp1[0] - lp3[0];
+	if (d < -1 || d > 1)
+		goto split3;
+	d = lp1[1] - lp3[1];
+	if (d < -1 || d > 1)
+	{
+split3:
+		temp = lp1;
+		lp1 = lp3;
+		lp3 = lp2;
+		lp2 = temp;
+
+		goto split;
+	}
+
+	return;			// entire tri is filled
+
+split2:
+	temp = lp1;
+	lp1 = lp2;
+	lp2 = lp3;
+	lp3 = temp;
+
+split:
+// split this edge
+	new[0] = (lp1[0] + lp2[0]) >> 1;
+	new[1] = (lp1[1] + lp2[1]) >> 1;
+	new[2] = (lp1[2] + lp2[2]) >> 1;
+	new[3] = (lp1[3] + lp2[3]) >> 1;
+	new[5] = (lp1[5] + lp2[5]) >> 1;
+
+// draw the point if splitting a leading edge
+	if (lp2[1] > lp1[1])
+		goto nodraw;
+	if ((lp2[1] == lp1[1]) && (lp2[0] < lp1[0]))
+		goto nodraw;
+
+	z = new[5]>>16;
+	zbuf = zspantable[new[1]] + new[0];
+	if (z >= *zbuf)
+	{
+		color_map_idx = skintable[new[3]>>16][new[2]>>16];
+
+		if (color_map_idx != 0)
+		{
+			int		pix, pix2;
+
+			*zbuf = z;
+			pix = color_map_idx;
+			pix2 = d_viewbuffer[d_scantable[new[1]] + new[0]];
+			pix = mainTransTable[(pix<<8) + pix2];
+			d_viewbuffer[d_scantable[new[1]] + new[0]] = pix;
+		}
+	}
+
+nodraw:
+// recursively continue
+	D_PolysetRecursiveTriangleT5 (lp3, lp1, new);
+	D_PolysetRecursiveTriangleT5 (lp3, new, lp2);
+}
+
 #endif	// !id386
 
 
@@ -406,6 +874,10 @@ void D_PolysetUpdateTables (void)
 
 #if	!id386
 
+#define D_PolysetScanLeftEdgeT		D_PolysetScanLeftEdge
+#define D_PolysetScanLeftEdgeT2		D_PolysetScanLeftEdge
+#define D_PolysetScanLeftEdgeT3		D_PolysetScanLeftEdge
+#define D_PolysetScanLeftEdgeT5		D_PolysetScanLeftEdge
 /*
 ===================
 D_PolysetScanLeftEdge
@@ -516,6 +988,10 @@ static void D_PolysetSetUpForLineScan(fixed8_t startvertu, fixed8_t startvertv,
 
 #if	!id386
 
+#define D_PolysetCalcGradientsT		D_PolysetCalcGradients
+#define D_PolysetCalcGradientsT2	D_PolysetCalcGradients
+#define D_PolysetCalcGradientsT3	D_PolysetCalcGradients
+#define D_PolysetCalcGradientsT5	D_PolysetCalcGradients
 /*
 ================
 D_PolysetCalcGradients
@@ -657,6 +1133,213 @@ static void D_PolysetDrawSpans8 (spanpackage_t *pspanpackage)
 		pspanpackage++;
 	} while (pspanpackage->count != -999999);
 }
+
+static void D_PolysetDrawSpans8T (spanpackage_t *pspanpackage)
+{
+	int		lcount;
+	byte	*lpdest;
+	byte	*lptex;
+	int		lsfrac, ltfrac;
+	int		llight;
+	int		lzi;
+	short	*lpz;
+	byte	btemp, color_map_idx;
+
+	do
+	{
+		lcount = d_aspancount - pspanpackage->count;
+
+		errorterm += erroradjustup;
+		if (errorterm >= 0)
+		{
+			d_aspancount += d_countextrastep;
+			errorterm -= erroradjustdown;
+		}
+		else
+		{
+			d_aspancount += ubasestep;
+		}
+
+		if (lcount)
+		{
+			lpdest = pspanpackage->pdest;
+			lptex = pspanpackage->ptex;
+			lpz = pspanpackage->pz;
+			lsfrac = pspanpackage->sfrac;
+			ltfrac = pspanpackage->tfrac;
+			llight = pspanpackage->light;
+			lzi = pspanpackage->zi;
+
+			do
+			{
+				color_map_idx = lptex[0];
+				if (color_map_idx != 0)
+				{
+					if ((lzi >> 16) >= *lpz)
+					{
+						btemp = ((byte *) acolormap)[*lptex + (llight & 0xFF00)];
+						*lpdest = mainTransTable[(btemp<<8) + (*lpdest)];
+						*lpz = lzi >> 16;
+					}
+				}
+				lpdest++;
+				lzi += r_zistepx;
+				lpz++;
+				llight += r_lstepx;
+				lptex += a_ststepxwhole;
+				lsfrac += a_sstepxfrac;
+				lptex += lsfrac >> 16;
+				lsfrac &= 0xFFFF;
+				ltfrac += a_tstepxfrac;
+				if (ltfrac & 0x10000)
+				{
+					lptex += r_affinetridesc.skinwidth;
+					ltfrac &= 0xFFFF;
+				}
+			} while (--lcount);
+		}
+
+		pspanpackage++;
+	} while (pspanpackage->count != -999999);
+}
+
+static void D_PolysetDrawSpans8T3 (spanpackage_t *pspanpackage)
+{
+	int		lcount;
+	byte	*lpdest;
+	byte	*lptex;
+	int		lsfrac, ltfrac;
+	int		llight;
+	int		lzi;
+	short	*lpz;
+	byte	color_map_idx;
+
+	do
+	{
+		lcount = d_aspancount - pspanpackage->count;
+
+		errorterm += erroradjustup;
+		if (errorterm >= 0)
+		{
+			d_aspancount += d_countextrastep;
+			errorterm -= erroradjustdown;
+		}
+		else
+		{
+			d_aspancount += ubasestep;
+		}
+
+		if (lcount)
+		{
+			lpdest = pspanpackage->pdest;
+			lptex = pspanpackage->ptex;
+			lpz = pspanpackage->pz;
+			lsfrac = pspanpackage->sfrac;
+			ltfrac = pspanpackage->tfrac;
+			llight = pspanpackage->light;
+			lzi = pspanpackage->zi;
+
+			do
+			{
+				color_map_idx = lptex[0];
+				if (color_map_idx != 0)
+				{
+					if ((lzi >> 16) >= *lpz)
+					{
+						*lpdest = ((byte *) acolormap)[*lptex + (llight & 0xFF00)];
+						*lpz = lzi >> 16;
+					}
+				}
+				lpdest++;
+				lzi += r_zistepx;
+				lpz++;
+				llight += r_lstepx;
+				lptex += a_ststepxwhole;
+				lsfrac += a_sstepxfrac;
+				lptex += lsfrac >> 16;
+				lsfrac &= 0xFFFF;
+				ltfrac += a_tstepxfrac;
+				if (ltfrac & 0x10000)
+				{
+					lptex += r_affinetridesc.skinwidth;
+					ltfrac &= 0xFFFF;
+				}
+			} while (--lcount);
+		}
+
+		pspanpackage++;
+	} while (pspanpackage->count != -999999);
+}
+
+static void D_PolysetDrawSpans8T5 (spanpackage_t *pspanpackage)
+{
+	int		lcount;
+	byte	*lpdest;
+	byte	*lptex;
+	int		lsfrac, ltfrac;
+	int		llight;
+	int		lzi;
+	short	*lpz;
+	byte	btemp, color_map_idx;
+
+	do
+	{
+		lcount = d_aspancount - pspanpackage->count;
+
+		errorterm += erroradjustup;
+		if (errorterm >= 0)
+		{
+			d_aspancount += d_countextrastep;
+			errorterm -= erroradjustdown;
+		}
+		else
+		{
+			d_aspancount += ubasestep;
+		}
+
+		if (lcount)
+		{
+			lpdest = pspanpackage->pdest;
+			lptex = pspanpackage->ptex;
+			lpz = pspanpackage->pz;
+			lsfrac = pspanpackage->sfrac;
+			ltfrac = pspanpackage->tfrac;
+			llight = pspanpackage->light;
+			lzi = pspanpackage->zi;
+
+			do
+			{
+				color_map_idx = lptex[0];
+				if (color_map_idx != 0)
+				{
+					if ((lzi >> 16) >= *lpz)
+					{
+						btemp = ((byte *) acolormap)[*lptex];
+						*lpdest = mainTransTable[(btemp<<8) + (*lpdest)];
+						*lpz = lzi >> 16;
+					}
+				}
+				lpdest++;
+				lzi += r_zistepx;
+				lpz++;
+				llight += r_lstepx;
+				lptex += a_ststepxwhole;
+				lsfrac += a_sstepxfrac;
+				lptex += lsfrac >> 16;
+				lsfrac &= 0xFFFF;
+				ltfrac += a_tstepxfrac;
+				if (ltfrac & 0x10000)
+				{
+					lptex += r_affinetridesc.skinwidth;
+					ltfrac &= 0xFFFF;
+				}
+			} while (--lcount);
+		}
+
+		pspanpackage++;
+	} while (pspanpackage->count != -999999);
+}
+
 #endif	// !id386
 
 
