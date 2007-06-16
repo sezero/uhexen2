@@ -87,10 +87,8 @@ run a HexenWorld server or client, and a master server application.
 
 %build
 # Build the main game binaries
-%if %{!?_without_asm:1}0
 %{__make} -C hexen2 h2
 %{__make} -s -C hexen2 clean
-%endif
 %{__make} -C hexen2 glh2
 %{__make} -s -C hexen2 clean
 # Build the dedicated server
@@ -98,10 +96,8 @@ run a HexenWorld server or client, and a master server application.
 # HexenWorld binaries
 %{__make} -C hexenworld/Server
 %{__make} -C hexenworld/Master
-%if %{!?_without_asm:1}0
 %{__make} -C hexenworld/Client hw
 %{__make} -s -C hexenworld/Client clean
-%endif
 %{__make} -C hexenworld/Client glhw
 
 # Build xdelta binary and its libraries: do this before
@@ -139,10 +135,8 @@ utils/bin/hcc -src gamecode-%{gamecode_ver}/hc/hw -oi -on
 %{__mkdir_p} %{buildroot}/%{_prefix}/games/%{name}/docs
 %{__install} -D -m755 hexen2/h2ded %{buildroot}/%{_prefix}/games/%{name}/h2ded
 %{__install} -D -m755 hexen2/glhexen2 %{buildroot}/%{_prefix}/games/%{name}/glhexen2
-%if %{!?_without_asm:1}0
 %{__install} -D -m755 hexen2/hexen2 %{buildroot}/%{_prefix}/games/%{name}/hexen2
 %{__install} -D -m755 hexenworld/Client/hwcl %{buildroot}/%{_prefix}/games/%{name}/hwcl
-%endif
 %{__install} -D -m755 hexenworld/Client/glhwcl %{buildroot}/%{_prefix}/games/%{name}/glhwcl
 %{__install} -D -m755 hexenworld/Server/hwsv %{buildroot}/%{_prefix}/games/%{name}/hwsv
 %{__install} -D -m755 hexenworld/Master/hwmaster %{buildroot}/%{_prefix}/games/%{name}/hwmaster
@@ -241,9 +235,7 @@ desktop-file-install \
 %files
 %defattr(-,root,root)
 %{_prefix}/games/%{name}/h2ded
-%if %{!?_without_asm:1}0
 %{_prefix}/games/%{name}/hexen2
-%endif
 %{_prefix}/games/%{name}/glhexen2
 %{_prefix}/games/%{name}/xdelta114
 %{_prefix}/games/%{name}/update_xdelta.sh
@@ -286,9 +278,7 @@ desktop-file-install \
 %defattr(-,root,root)
 %{_prefix}/games/%{name}/hwsv
 %{_prefix}/games/%{name}/hwmaster
-%if %{!?_without_asm:1}0
 %{_prefix}/games/%{name}/hwcl
-%endif
 %{_prefix}/games/%{name}/glhwcl
 %{_prefix}/games/%{name}/hw/hwprogs.dat
 %{_prefix}/games/%{name}/hw/pak4.pak
@@ -299,6 +289,9 @@ desktop-file-install \
 %{_prefix}/games/%{name}/docs/README.hwmaster
 
 %changelog
+* Fri Jun 15 2007 O.Sezer <sezero@users.sourceforge.net>
+- The software renderer clients can now be compiled on non-intel.
+
 * Sun May 20 2007 O.Sezer <sezero@users.sourceforge.net> 1.4.2-0.4.rc1
 - 1.4.2-rc1.
 
