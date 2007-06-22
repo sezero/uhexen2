@@ -1,6 +1,6 @@
 /*
 	midi_win.c
-	$Id: midi.c,v 1.23 2007-06-16 14:41:41 sezero Exp $
+	$Id: midi.c,v 1.24 2007-06-22 12:01:58 sezero Exp $
 
 	MIDI module for Win32
 */
@@ -433,7 +433,7 @@ static BOOL StreamBufferSetup(const char *Name)
 			}
 			else
 			{
-				DebugPrint("Initial conversion pass failed");
+				DEBUG_Printf("%s: Initial conversion pass failed\n", __thisfunc__);
 				ConverterCleanup();
 				return(TRUE);
 			}
@@ -580,7 +580,7 @@ static void CALLBACK MidiProc(HMIDIIN hMidi, UINT uMsg, DWORD dwInstance, DWORD 
 		{
 			if (MIDIEVENT_DATA1( pme->dwEvent ) == MIDICTRL_VOLUME_LSB)
 			{
-				DebugPrint( "Got an LSB volume event" );
+				DEBUG_Printf("%s: Got an LSB volume event\n", __thisfunc__);
 				break;
 			}
 			if (MIDIEVENT_DATA1( pme->dwEvent ) != MIDICTRL_VOLUME)

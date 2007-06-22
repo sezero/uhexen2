@@ -1,6 +1,6 @@
 /*
 	midi_win.h
-	$Id: midi.h,v 1.8 2007-05-01 08:26:46 sezero Exp $
+	$Id: midi.h,v 1.9 2007-06-22 12:01:58 sezero Exp $
 
 	Header file for Win32 MIDI module
 */
@@ -44,13 +44,6 @@
 
 #define VOLUME_BUFFER		3567	// Random value which acts as a buffer id
 #define VOL_CACHE_INIT		100
-
-
-#ifdef DEBUG_BUILD
-#define DebugPrint( sz )	DPF( 3, sz )
-#else
-#define DebugPrint( sz )
-#endif
 
 
 /*
