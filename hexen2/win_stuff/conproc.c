@@ -2,7 +2,7 @@
 	conproc.c
 	Quake terminal for Win32
 
-	$Id: conproc.c,v 1.5 2007-03-14 21:03:26 sezero Exp $
+	$Id: conproc.c,v 1.6 2007-06-22 11:59:49 sezero Exp $
 */
 
 #include <windows.h>
@@ -47,7 +47,7 @@ void InitConProc (HANDLE hFile, HANDLE heventParent, HANDLE heventChild)
 		return;
 	}
 
-	if (!CreateThread (NULL, 0, (LPTHREAD_START_ROUTINE) RequestProc, 0, 0, &dwID))
+	if (!CreateThread (NULL, 0, (LPTHREAD_START_ROUTINE) RequestProc, (LPVOID) 0, 0, &dwID))
 	{
 		CloseHandle (heventDone);
 		Con_SafePrintf ("Couldn't create QHOST thread\n");
