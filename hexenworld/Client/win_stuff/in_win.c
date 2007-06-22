@@ -1,6 +1,6 @@
 /*
 	in_win.c
-	$Id: in_win.c,v 1.23 2007-05-13 11:59:41 sezero Exp $
+	$Id: in_win.c,v 1.24 2007-06-22 12:00:39 sezero Exp $
 
 	windows 95 mouse and joystick code
 
@@ -989,7 +989,7 @@ void IN_Commands (void)
 	int		i, key_index;
 	DWORD	buttonstate, povstate;
 
-	if (!joy_avail)
+	if (!joy_avail || !in_joystick.integer)
 	{
 		return;
 	}
