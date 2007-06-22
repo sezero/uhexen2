@@ -3,6 +3,18 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2007-06-22 (CVS):
+    * conproc.c: minor fix to the CreateThread call.
+    * made IN_Commands() to return without operation if in_joystick is set
+      to 0. this might prevent windows xp weirdos that a few people have
+      been reporting: player continuously spinning around on a system with
+      no joystick at all..
+    * win32 midi: fixed debug builds. removed some commented out code. renamed
+      two private procedures for better clarity.
+
+2007-06-18 (CVS):
+    * updated Xcode project files for hexen2. from Levent.
+
 2007-06-16 (CVS):
     * added initial support for software renderer without intel assembly:
       lifted from the hexen2 PSP port (http://jurajstyk.host.sk/) of Juraj
