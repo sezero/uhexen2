@@ -2,7 +2,7 @@
 	d_iface.h
 	interface header file for rasterization driver modules
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/d_iface.h,v 1.10 2007-06-16 07:33:22 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/d_iface.h,v 1.11 2007-06-24 06:30:14 sezero Exp $
 */
 
 #ifndef __D_IFACE_H
@@ -217,7 +217,7 @@ extern void D_PolysetScanLeftEdgeT5 (int height);
 #if !id386
 extern void D_PolysetDraw (void);
 extern void D_PolysetDrawT (void);
-#define D_PolysetDrawT2	D_PolysetDrawT
+extern void D_PolysetDrawT2 (void);
 extern void D_PolysetDrawT3 (void);
 extern void D_PolysetDrawT5 (void);
 extern void D_PolysetDrawFinalVerts (finalvert_t *fvert, int num_verts);	// FIXME: see x86 version above!
