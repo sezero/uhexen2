@@ -3,6 +3,19 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2007-06-24 (CVS):
+    * Added T2 versions of D_PolysetDrawSpans8T2 and co. Directly from Juraj Styk:
+      "D_PolysetDrawSpans8T2 is very similar to D_PolysetDrawSpans8T. The difference
+      is that D_PolysetDrawSpans8T2 perform one more test in which it test if color
+      of rendered skin texture is odd or even (assembler code checks if lowest bit
+      in register containing color index is 0 actually). If it is even it skips the
+      phase when skin color is mixed with color from display buffer and uses skin
+      color instead. So part of skin with even numbered colors would be rendered
+      opaque while parts with odd numbered colors would be semitransparent and parts
+      with color 0 would be fully transparent." Therefore, in D_PolysetDrawSpans8T2,
+      if (color_map_idx % 2 == 0) *lpdest = btempl; is just done, instead of doing
+      *lpdest = mainTransTable[(btemp<<8) + (*lpdest)];
+
 2007-06-22 (CVS):
     * conproc.c: minor fix to the CreateThread call.
     * made IN_Commands() to return without operation if in_joystick is set
