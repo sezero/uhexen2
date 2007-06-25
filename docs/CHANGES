@@ -3,6 +3,9 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2007-06-25 (CVS):
+    * updated the list of known bugs.
+
 2007-06-24 (CVS):
     * Added T2 versions of D_PolysetDrawSpans8T2 and co. Directly from Juraj Styk:
       "D_PolysetDrawSpans8T2 is very similar to D_PolysetDrawSpans8T. The difference
