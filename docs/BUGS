@@ -14,6 +14,13 @@ Known Bugs
   it gets a little crazy sometimes and draws a span from a point toward
   the rightmost end of the screen at certain places. to be looked into.
 
+- Software Renderer: village2 level, the hidden puzzle portal where you
+  need the gem of seeing in order to see it: depending on the angle you
+  are looking at it, the foreground to the portal may not be rendered.
+  This may be due to incorrect/inaccurate z-buffering for this type of
+  brush, one of the brushes isn't displayed because z-value is the same
+  as z-value already in z-buffer? To be looked into.
+
 - OpenGL Client: The so-called fix we adopted during 1.2.2 development
   for the extra lines drawn in rendering fires of Demoness and Praevus
   is actually an incomplete workaround (and is adding extra mess). The
