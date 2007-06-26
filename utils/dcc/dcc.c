@@ -2,7 +2,7 @@
 	dcc.c
 	An hcode compiler/decompiler for Hexen II by Eric Hobbs
 
-	$Id: dcc.c,v 1.35 2007-05-13 11:59:44 sezero Exp $
+	$Id: dcc.c,v 1.36 2007-06-26 20:19:37 sezero Exp $
 */
 
 
@@ -47,7 +47,7 @@ void		PR_LocalGlobals (void);
 int		DEC_AlreadySeen (char *fname);
 ddef_t		*DEC_GetParameter (gofs_t ofs);
 char		*GetFieldFunctionHeader (char *s_name);
-void		DccStatement (dfunction_t *df,dstatement_t *s, int *indent);
+void		DccStatement (dstatement_t *s);
 void		AddProgramFlowInfo (dfunction_t *df);
 void		PR_Locals (dfunction_t *df);
 char		*DCC_ValueString (etype_t type, void *val);
@@ -184,7 +184,7 @@ char *PR_PrintGlobal (gofs_t ofs, def_t* typ)
 }
 
 
-void DccStatement (dfunction_t *df, dstatement_t *s, int *indent)
+void DccStatement (dstatement_t *s)
 {
 	static char	dsline[512];
 	static char	fnam[512];
@@ -1039,7 +1039,7 @@ void PR_Print (const char *s,...)
 
 unsigned short GetReturnType (int func)
 {
-	int		start, i, j, k, temp_start;
+	int		i, j, k;
 	ddef_t		*par = NULL;
 	dstatement_t	*ds, *di;
 	dfunction_t	*df;
@@ -1051,7 +1051,6 @@ unsigned short GetReturnType (int func)
 		return ev_void;
 
 	df = functions + func;
-	start = df->parm_start;
 	i = df->numparms;
 
 	for (j = k = 0; j < df->numparms; j++)
@@ -1059,11 +1058,11 @@ unsigned short GetReturnType (int func)
 		k += df->parm_size[j];
 	}
 
-	temp_start = k + df->parm_start;
 	ds = statements + df->first_statement;
 
 	if (df->first_statement < 0)
 	{
+	/* ??? */
 	}
 
 	k = 0;
@@ -1544,13 +1543,10 @@ void PR_LocalGlobals (void)
 
 char * GetFieldFunctionHeader (char *s_name)
 {
-	ddef_t		*dd;
 	int		i, j = 0;
 	dstatement_t	*d;
 	def_t		*typ1, *typ2;
 	char		*arg1, *arg2, *arg3;
-
-	dd = PR_GetField(s_name,0);
 
 	for (i = 1; i < numstatements; i++)
 	{
@@ -2295,7 +2291,7 @@ void PR_PrintFunction (char *name)
 
 	while (1)
 	{
-		DccStatement(df, ds, &i);
+		DccStatement(ds);
 		if (!ds->op)
 			break;
 		ds++;

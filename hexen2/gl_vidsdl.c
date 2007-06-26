@@ -2,7 +2,7 @@
 	gl_vidsdl.c -- SDL GL vid component
 	Select window size and mode and init SDL in GL mode.
 
-	$Id: gl_vidsdl.c,v 1.162 2007-06-09 07:32:09 sezero Exp $
+	$Id: gl_vidsdl.c,v 1.163 2007-06-26 20:19:32 sezero Exp $
 
 	Changed 7/11/04 by S.A.
 	- Fixed fullscreen opengl mode, window sizes
@@ -312,7 +312,7 @@ static void VID_ConWidth (int modenum)
 	else
 		vid_conscale = false;
 finish:
-	snprintf (vid_consize, sizeof(vid_consize), "x%.2f (at %dx%d)",
+	snprintf (vid_consize, sizeof(vid_consize), "x%.2f (at %ux%u)",
 			(float)modelist[vid_modenum].width/vid.conwidth, vid.conwidth, vid.conheight);
 }
 
@@ -361,7 +361,7 @@ set_size:
 	else
 		vid_conscale = false;
 
-	snprintf (vid_consize, sizeof(vid_consize), "x%.2f (at %dx%d)",
+	snprintf (vid_consize, sizeof(vid_consize), "x%.2f (at %ux%u)",
 			(float)modelist[vid_modenum].width/vid.conwidth, vid.conwidth, vid.conheight);
 }
 
@@ -447,7 +447,7 @@ static int VID_SetMode (int modenum)
 	VID_ConWidth(modenum);
 
 	SDL_GL_GetAttribute(SDL_GL_BUFFER_SIZE, &i);
-	Con_Printf ("Video Mode Set : %dx%dx%d\n", vid.width, vid.height, i);
+	Con_Printf ("Video Mode Set : %ux%ux%d\n", vid.width, vid.height, i);
 	if (multisample)
 	{
 		SDL_GL_GetAttribute(SDL_GL_MULTISAMPLESAMPLES, &multisample);
@@ -1421,13 +1421,13 @@ static void VID_ListModes_f (void)
 	Con_Printf ("Maximum allowed mode: %d x %d\n", vid_maxwidth, vid_maxheight);
 	Con_Printf ("Windowed modes enabled:\n");
 	for (i = 0; i < num_wmodes; i++)
-		Con_Printf ("%2d:  %u x %u\n", i, wmodelist[i].width, wmodelist[i].height);
+		Con_Printf ("%2d:  %d x %d\n", i, wmodelist[i].width, wmodelist[i].height);
 	Con_Printf ("Fullscreen modes enumerated:");
 	if (num_fmodes)
 	{
 		Con_Printf ("\n");
 		for (i = 0; i < num_fmodes; i++)
-			Con_Printf ("%2d:  %u x %u\n", i, fmodelist[i].width, fmodelist[i].height);
+			Con_Printf ("%2d:  %d x %d\n", i, fmodelist[i].width, fmodelist[i].height);
 	}
 	else
 	{

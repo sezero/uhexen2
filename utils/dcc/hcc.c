@@ -2,7 +2,7 @@
 	hcc.c
 	HCode compiler based on qcc, modifed by Eric Hobbs to work with DCC
 
-	$Header: /home/ozzie/Download/0000/uhexen2/utils/dcc/hcc.c,v 1.20 2007-05-13 11:59:44 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/utils/dcc/hcc.c,v 1.21 2007-06-26 20:19:37 sezero Exp $
 */
 
 #include "util_inc.h"
@@ -466,10 +466,8 @@ char *PR_GlobalStringNoContents (gofs_t ofs)
 {
 	int		i;
 	def_t	*def;
-	void	*val;
 	static char	line[128];
 
-	val = (void *)&pr_globals[ofs];
 	def = pr_global_defs[ofs];
 	if (!def)
 	//	Error ("%s: no def for %i", __thisfunc__, ofs);
@@ -490,10 +488,8 @@ char *PR_GlobalString (gofs_t ofs)
 	char	*s;
 	int		i;
 	def_t	*def;
-	void	*val;
 	static char	line[128];
 
-	val = (void *)&pr_globals[ofs];
 	def = pr_global_defs[ofs];
 	if (!def)
 		return PR_GlobalStringNoContents(ofs);

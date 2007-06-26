@@ -3,7 +3,7 @@
 	SDL video driver
 	Select window size and mode and init SDL in SOFTWARE mode.
 
-	$Id: vid_sdl.c,v 1.71 2007-06-09 07:32:11 sezero Exp $
+	$Id: vid_sdl.c,v 1.72 2007-06-26 20:19:37 sezero Exp $
 
 	Changed by S.A. 7/11/04, 27/12/04
 	Options are now: -fullscreen | -window, -height , -width
@@ -440,13 +440,13 @@ static void VID_ListModes_f (void)
 	Con_Printf ("Maximum allowed mode: %d x %d\n", vid_maxwidth, vid_maxheight);
 	Con_Printf ("Windowed modes enabled:\n");
 	for (i = 0; i < num_wmodes; i++)
-		Con_Printf ("%2d:  %u x %u\n", i, wmodelist[i].width, wmodelist[i].height);
+		Con_Printf ("%2d:  %d x %d\n", i, wmodelist[i].width, wmodelist[i].height);
 	Con_Printf ("Fullscreen modes enumerated:");
 	if (num_fmodes)
 	{
 		Con_Printf ("\n");
 		for (i = 0; i < num_fmodes; i++)
-			Con_Printf ("%2d:  %u x %u\n", i, fmodelist[i].width, fmodelist[i].height);
+			Con_Printf ("%2d:  %d x %d\n", i, fmodelist[i].width, fmodelist[i].height);
 	}
 	else
 	{
@@ -528,7 +528,7 @@ static int VID_SetMode (int modenum, unsigned char *palette)
 	VID_SetIcon();
 	SDL_WM_SetCaption(WM_TITLEBAR_TEXT, WM_ICON_TEXT);
 
-	Con_SafePrintf ("Video Mode: %dx%dx%d\n", vid.width, vid.height, modelist[modenum].bpp);
+	Con_SafePrintf ("Video Mode: %ux%ux%d\n", vid.width, vid.height, modelist[modenum].bpp);
 
 	in_mode_set = false;
 	vid.recalc_refdef = 1;

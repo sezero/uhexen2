@@ -2,7 +2,7 @@
 	sv_user.c
 	server code for moving users
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Server/sv_user.c,v 1.24 2007-05-13 11:59:43 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Server/sv_user.c,v 1.25 2007-06-26 20:19:37 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -177,7 +177,7 @@ SV_PreSpawn_f
 */
 static void SV_PreSpawn_f (void)
 {
-	unsigned	buf;
+	int		buf;
 
 	if (host_client->state != cs_connected)
 	{

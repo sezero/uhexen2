@@ -2,7 +2,7 @@
 	net_dgrm.c
 	This is enables a simple IP banning mechanism
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/net_dgrm.c,v 1.29 2007-06-12 07:26:06 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/net_dgrm.c,v 1.30 2007-06-26 20:19:32 sezero Exp $
 */
 
 #define BAN_TEST
@@ -530,7 +530,7 @@ static void Test_Poll(void)
 		connectTime = MSG_ReadLong();
 		strcpy(address, MSG_ReadString());
 
-		Con_Printf("%s\n  frags:%3i  colors:%u %u  time:%u\n  %s\n", name, frags, colors >> 4, colors & 0x0f, connectTime / 60, address);
+		Con_Printf("%s\n  frags:%3i  colors:%d %d  time:%d\n  %s\n", name, frags, colors >> 4, colors & 0x0f, connectTime / 60, address);
 	}
 
 	testPollCount--;

@@ -2,7 +2,7 @@
 	keys.c
 	key up events are sent even if in console mode
 
-	$Id: keys.c,v 1.31 2007-04-10 17:53:08 sezero Exp $
+	$Id: keys.c,v 1.32 2007-06-26 20:19:37 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -226,12 +226,12 @@ static void CompleteCommand (void)
 			Con_Printf("\n");
 #if 0
 			// plain listing
-			for (i = 0; i< count && i < MAX_MATCHES; i++)
+			for (i = 0; i < count && i < MAX_MATCHES; i++)
 				Con_Printf ("%s\n", matches[i]);
 			Con_Printf("\n%d matches found\n\n", count);
 #else
 			// S.A.: columnize the listing.
-			Con_Printf("%u possible completions:\n\n", count);
+			Con_Printf("%d possible completions:\n\n", count);
 			Con_ShowList (count, (const char**) matches);
 			Con_Printf("\n");
 #endif

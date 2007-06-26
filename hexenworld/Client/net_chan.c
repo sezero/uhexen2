@@ -2,7 +2,7 @@
 	net_chan.c
 	net channel
 
-	$Id: net_chan.c,v 1.11 2007-05-09 18:10:17 sezero Exp $
+	$Id: net_chan.c,v 1.12 2007-06-26 20:19:37 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -291,7 +291,7 @@ qboolean Netchan_Process (netchan_t *chan)
 
 	if (showpackets.integer)
 	{
-		Con_Printf ("<-- s=%i(%i) a=%i(%i) %i\n",
+		Con_Printf ("<-- s=%u(%u) a=%u(%u) %i\n",
 				sequence,
 				reliable_message,
 				sequence_ack,
@@ -336,7 +336,7 @@ qboolean Netchan_Process (netchan_t *chan)
 	{
 		if (showdrop.integer)
 		{
-			Con_Printf ("%s:Out of order packet %i at %i\n",
+			Con_Printf ("%s:Out of order packet %u at %i\n",
 					NET_AdrToString (chan->remote_address),
 					sequence,
 					chan->incoming_sequence);
@@ -354,9 +354,9 @@ qboolean Netchan_Process (netchan_t *chan)
 
 		if (showdrop.integer)
 		{
-			Con_Printf ("%s:Dropped %i packets at %i\n",
+			Con_Printf ("%s:Dropped %u packets at %u\n",
 					NET_AdrToString (chan->remote_address),
-					sequence-(chan->incoming_sequence+1),
+					sequence-(unsigned)(chan->incoming_sequence+1),
 					sequence);
 		}
 	}

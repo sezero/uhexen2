@@ -1,7 +1,7 @@
 /*
 	hcc.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/utils/hcc_old/hcc.c,v 1.10 2007-06-08 10:56:45 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/utils/hcc_old/hcc.c,v 1.11 2007-06-26 20:19:38 sezero Exp $
 
 	Hash table modifications based on fastqcc by Jonathan Roy
 	(roy@atlantic.net).
@@ -471,10 +471,8 @@ static char *PR_GlobalStringNoContents (gofs_t ofs)
 {
 	int		i;
 	def_t	*def;
-	void	*val;
 	static char	line[128];
 
-	val = (void *)&pr_globals[ofs];
 	def = pr_global_defs[ofs];
 	if (!def)
 	//	Error ("%s: no def for %i", __thisfunc__, ofs);
@@ -495,10 +493,8 @@ static char *PR_GlobalString (gofs_t ofs)
 	char	*s;
 	int		i;
 	def_t	*def;
-	void	*val;
 	static char	line[128];
 
-	val = (void *)&pr_globals[ofs];
 	def = pr_global_defs[ofs];
 	if (!def)
 		return PR_GlobalStringNoContents(ofs);

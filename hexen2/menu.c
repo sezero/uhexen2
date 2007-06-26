@@ -1,7 +1,7 @@
 /*
 	menu.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/menu.c,v 1.90 2007-05-09 18:10:13 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/menu.c,v 1.91 2007-06-26 20:19:32 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -3345,7 +3345,7 @@ static void M_Menu_LanConfig_f (void)
 	if (StartingGame && lanConfig_cursor >= 2)
 		lanConfig_cursor = 1;
 	lanConfig_port = DEFAULTnet_hostport;
-	snprintf(lanConfig_portname, sizeof(lanConfig_portname), "%u", lanConfig_port);
+	snprintf(lanConfig_portname, sizeof(lanConfig_portname), "%d", lanConfig_port);
 
 	m_return_onerror = false;
 	m_return_reason[0] = 0;
@@ -3588,7 +3588,7 @@ static void M_LanConfig_Key (int key)
 		l = lanConfig_port;
 	else
 		lanConfig_port = l;
-	snprintf(lanConfig_portname, sizeof(lanConfig_portname), "%u", lanConfig_port);
+	snprintf(lanConfig_portname, sizeof(lanConfig_portname), "%d", lanConfig_port);
 }
 
 //=============================================================================
@@ -4076,7 +4076,7 @@ static void M_GameOptions_Key (int key)
 				Cbuf_AddText ("disconnect\n");
 			Cbuf_AddText ( va ("playerclass %d\n", setup_class+1) );
 			Cbuf_AddText ("listen 0\n");	// so host_netport will be re-examined
-			Cbuf_AddText ( va ("maxplayers %u\n", maxplayers) );
+			Cbuf_AddText ( va ("maxplayers %d\n", maxplayers) );
 			SCR_BeginLoadingPlaque ();
 
 			Cbuf_AddText ( va ("map %s\n", levels[episodes[startepisode].firstLevel + startlevel].name) );
@@ -4201,7 +4201,7 @@ static void M_ServerList_Draw (void)
 			name = net_landrivers[hostcache[n].ldriver].name;
 
 		if (hostcache[n].maxusers)
-			snprintf(string, sizeof(string), "%-11.11s %-8.8s %-10.10s %2u/%2u\n", hostcache[n].name, name, hostcache[n].map, hostcache[n].users, hostcache[n].maxusers);
+			snprintf(string, sizeof(string), "%-11.11s %-8.8s %-10.10s %2d/%2d\n", hostcache[n].name, name, hostcache[n].map, hostcache[n].users, hostcache[n].maxusers);
 		else
 			snprintf(string, sizeof(string), "%-11.11s %-8.8s %-10.10s\n", hostcache[n].name, name, hostcache[n].map);
 		M_Print (16, 60 + 8*n, string);

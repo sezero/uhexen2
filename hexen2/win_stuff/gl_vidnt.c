@@ -1,6 +1,6 @@
 /*
 	gl_vidnt.c -- NT GL vid component
-	$Id: gl_vidnt.c,v 1.101 2007-06-09 07:32:11 sezero Exp $
+	$Id: gl_vidnt.c,v 1.102 2007-06-26 20:19:37 sezero Exp $
 */
 
 #define	__GL_FUNC_EXTERN
@@ -294,7 +294,7 @@ static void VID_ConWidth (int modenum)
 	else
 		vid_conscale = false;
 finish:
-	snprintf (vid_consize, sizeof(vid_consize), "x%.2f (at %dx%d)",
+	snprintf (vid_consize, sizeof(vid_consize), "x%.2f (at %ux%u)",
 			(float)modelist[vid_modenum].width/vid.conwidth, vid.conwidth, vid.conheight);
 }
 
@@ -343,7 +343,7 @@ set_size:
 	else
 		vid_conscale = false;
 
-	snprintf (vid_consize, sizeof(vid_consize), "x%.2f (at %dx%d)",
+	snprintf (vid_consize, sizeof(vid_consize), "x%.2f (at %ux%u)",
 			(float)modelist[vid_modenum].width/vid.conwidth, vid.conwidth, vid.conheight);
 }
 

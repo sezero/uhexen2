@@ -1,6 +1,6 @@
 /*
 	snd_alsa.c
-	$Id: snd_alsa.c,v 1.28 2007-05-13 12:04:47 sezero Exp $
+	$Id: snd_alsa.c,v 1.29 2007-06-26 20:19:37 sezero Exp $
 
 	ALSA 1.0 sound driver for Linux Hexen II
 
@@ -177,7 +177,7 @@ qboolean S_ALSA_Init (void)
 			{
 				if (rate != tryrates[i])
 				{
-					Con_Printf ("Warning: Rate set (%d) didn't match requested rate (%d)!\n", rate, tryrates[i]);
+					Con_Printf ("Warning: Rate set (%u) didn't match requested rate (%d)!\n", rate, tryrates[i]);
 				//	goto error;
 				}
 				break;
@@ -193,7 +193,7 @@ qboolean S_ALSA_Init (void)
 	{
 		if (rate != desired_speed)
 		{
-			Con_Printf ("Warning: Rate set (%d) didn't match requested rate (%d)!\n", rate, desired_speed);
+			Con_Printf ("Warning: Rate set (%u) didn't match requested rate (%d)!\n", rate, desired_speed);
 		//	goto error;
 		}
 	}

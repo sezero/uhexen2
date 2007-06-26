@@ -2,7 +2,7 @@
 	net_main.c
 	main networking module
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/net_main.c,v 1.24 2007-06-26 13:37:19 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/net_main.c,v 1.25 2007-06-26 20:19:32 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -263,7 +263,7 @@ static void PrintSlist(void)
 			name = net_landrivers[hostcache[n].ldriver].name;
 
 		if (hostcache[n].maxusers)
-			Con_Printf("%-11.11s %-8.8s %-10.10s %2u/%2u\n", hostcache[n].name, name, hostcache[n].map, hostcache[n].users, hostcache[n].maxusers);
+			Con_Printf("%-11.11s %-8.8s %-10.10s %2d/%2d\n", hostcache[n].name, name, hostcache[n].map, hostcache[n].users, hostcache[n].maxusers);
 		else
 			Con_Printf("%-11.11s %-8.8s %-10.10s\n", hostcache[n].name, name, hostcache[n].map);
 	}

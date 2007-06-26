@@ -2,7 +2,7 @@
 	sv_main.c
 	server main program
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Server/sv_main.c,v 1.45 2007-06-02 10:34:46 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Server/sv_main.c,v 1.46 2007-06-26 20:19:37 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -1032,9 +1032,7 @@ static void SV_ReadPackets (void)
 {
 	int			i;
 	client_t	*cl;
-	qboolean	good;
 
-	good = false;
 	while (NET_GetPacket ())
 	{
 		if (SV_FilterPacket ())
@@ -1060,7 +1058,6 @@ static void SV_ReadPackets (void)
 			if (Netchan_Process(&cl->netchan))
 			{	// this is a valid, sequenced packet, so process it
 				svs.stats.packets++;
-				good = true;
 				cl->send_message = true;	// reply at end of frame
 				if (cl->state != cs_zombie)
 					SV_ExecuteClientMessage (cl);

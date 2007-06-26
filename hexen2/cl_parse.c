@@ -2,7 +2,7 @@
 	cl_parse.c
 	parse a message received from the server
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cl_parse.c,v 1.52 2007-05-13 11:58:28 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cl_parse.c,v 1.53 2007-06-26 20:19:32 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -260,7 +260,7 @@ static void CL_ParseServerInfo (void)
 	cl.maxclients = MSG_ReadByte ();
 	if (cl.maxclients < 1 || cl.maxclients > MAX_CLIENTS)
 	{
-		Con_Printf("Bad maxclients (%u) from server\n", cl.maxclients);
+		Con_Printf("Bad maxclients (%d) from server\n", cl.maxclients);
 		return;
 	}
 	cl.scores = Hunk_AllocName (cl.maxclients*sizeof(*cl.scores), "scores");

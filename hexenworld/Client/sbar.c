@@ -2,7 +2,7 @@
 	sbar.c
 	Hexen II status bar
 
-	$Id: sbar.c,v 1.34 2007-05-23 08:03:07 sezero Exp $
+	$Id: sbar.c,v 1.35 2007-06-26 20:19:37 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -1452,7 +1452,7 @@ static void Sbar_SmallDeathmatchOverlay(void)
 
 		//Print defender losses
 		Draw_Character ( x , y+10, 143);//shield
-		sprintf (num, "%3i", defLosses);
+		sprintf (num, "%3u", defLosses);
 //		sprintf (num, "%3i", att_frags);
 		Sbar_DrawRedString ( x+8 , y+10, num);
 		Draw_Character ( x+32 , y+10, 47);// "/"
@@ -1461,7 +1461,7 @@ static void Sbar_SmallDeathmatchOverlay(void)
 
 		//Print attacker losses
 		Draw_Character ( x , y+20, 144);//sword
-		sprintf (num, "%3i", attLosses);
+		sprintf (num, "%3u", attLosses);
 //		sprintf (num, "%3i", def_frags);
 		Sbar_DrawRedString ( x+8 , y+20, num);
 		Draw_Character ( x+32 , y+20, 47);// "/"

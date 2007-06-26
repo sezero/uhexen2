@@ -1,7 +1,7 @@
 /*
 	lexi.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/utils/hcc/pr_lex.c,v 1.3 2007-02-13 13:34:44 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/utils/hcc/pr_lex.c,v 1.4 2007-06-26 20:19:38 sezero Exp $
 */
 
 
@@ -64,7 +64,6 @@ static int FrameMacroIndex;
 static int ASCIIToChrCode[256];
 
 static char *pr_file_p;
-static char *pr_line_start; // start of current source line
 
 static int pr_bracelevel;
 
@@ -177,7 +176,6 @@ static void NewLine (void)
 		m = true;
 	}
 	lx_SourceLine++;
-	pr_line_start = pr_file_p;
 	if (m)
 	{
 		pr_file_p--;
