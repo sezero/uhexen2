@@ -2,7 +2,7 @@
 	host_cmd.c
 	console commands
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/server/host_cmd.c,v 1.28 2007-05-13 11:58:32 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/server/host_cmd.c,v 1.29 2007-06-26 13:37:21 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -16,13 +16,10 @@
 #include <ctype.h>
 #include <time.h>
 
-extern	cvar_t	pausable;
-
 static	double	old_time;
 
-static int LoadGamestate(char *level, char *startspot, int ClientsMode);
-int SaveGamestate(qboolean ClientsOnly);
-static void RestoreClients(void);
+static int LoadGamestate (const char *level, const char *startspot, int ClientsMode);
+static void RestoreClients (void);
 
 #define TESTSAVE
 
@@ -523,8 +520,8 @@ static void Host_Savegame_f (void)
 	//fprintf (f, "%f\n", cl_playerclass.value);
 	fprintf (f, "%f\n", 1.0);	// dummy playerclass value
 	// mission pack, objectives strings
-	fprintf (f, "%d\n", info_mask);
-	fprintf (f, "%d\n", info_mask2);
+	fprintf (f, "%u\n", info_mask);
+	fprintf (f, "%u\n", info_mask2);
 
 	error_state = ferror(f);
 	fclose(f);
@@ -640,8 +637,8 @@ static void Host_Loadgame_f (void)
 	//	Cvar_SetValue ("_cl_playerclass", tempf);
 
 	// mission pack, objectives strings
-	fscanf (f, "%d\n", &info_mask);
-	fscanf (f, "%d\n", &info_mask2);
+	fscanf (f, "%u\n", &info_mask);
+	fscanf (f, "%u\n", &info_mask2);
 
 	fclose (f);
 
@@ -726,8 +723,8 @@ int SaveGamestate (qboolean ClientsOnly)
 		fprintf (f, "%f\n", sv.time);
 
 // mission pack, objectives strings
-//		fprintf (f, "%d\n", info_mask);
-//		fprintf (f, "%d\n", info_mask2);
+//		fprintf (f, "%u\n", info_mask);
+//		fprintf (f, "%u\n", info_mask2);
 
 	// write the light styles
 
@@ -745,8 +742,8 @@ int SaveGamestate (qboolean ClientsOnly)
 	else
 	{
 // mission pack, objectives strings
-//		fprintf(f, "%d\n", info_mask);
-//		fprintf(f, "%d\n", info_mask2);
+//		fprintf(f, "%u\n", info_mask);
+//		fprintf(f, "%u\n", info_mask2);
 	}
 
 	host_client = svs.clients;
@@ -837,7 +834,7 @@ static void RestoreClients (void)
 	SaveGamestate(true);
 }
 
-static int LoadGamestate (char *level, char *startspot, int ClientsMode)
+static int LoadGamestate (const char *level, const char *startspot, int ClientsMode)
 {
 	FILE	*f;
 	char		mapname[MAX_QPATH];
@@ -908,8 +905,8 @@ static int LoadGamestate (char *level, char *startspot, int ClientsMode)
 		}
 
 // mission pack, objectives strings
-//		fscanf (f, "%d\n", &info_mask);
-//		fscanf (f, "%d\n", &info_mask2);
+//		fscanf (f, "%u\n", &info_mask);
+//		fscanf (f, "%u\n", &info_mask2);
 
 	// load the light styles
 		for (i = 0; i < MAX_LIGHTSTYLES; i++)

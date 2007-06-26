@@ -2,7 +2,7 @@
 	host.h
 	public host structures and functions
 
-	$Id: host.h,v 1.9 2007-04-19 21:05:06 sezero Exp $
+	$Id: host.h,v 1.10 2007-06-26 13:37:19 sezero Exp $
 */
 
 #ifndef __HX2_HOST_H
@@ -30,6 +30,8 @@ extern	qboolean	isDedicated;
 extern	cvar_t		sys_ticrate;
 extern	cvar_t		sys_nostdout;
 extern	cvar_t		developer;
+
+extern	cvar_t		pausable;
 
 extern	qboolean	host_initialized;	// true if into command execution
 extern	double		host_frametime;

@@ -2,7 +2,7 @@
 	net_main.c
 	main networking module
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/net_main.c,v 1.23 2007-05-13 11:58:29 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/net_main.c,v 1.24 2007-06-26 13:37:19 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -151,7 +151,7 @@ static void NET_Listen_f (void)
 {
 	if (Cmd_Argc () != 2)
 	{
-		Con_Printf ("\"listen\" is \"%u\"\n", listening ? 1 : 0);
+		Con_Printf ("\"listen\" is \"%d\"\n", listening ? 1 : 0);
 		return;
 	}
 
@@ -172,7 +172,7 @@ static void MaxPlayers_f (void)
 
 	if (Cmd_Argc () != 2)
 	{
-		Con_Printf ("\"maxplayers\" is \"%u\"\n", svs.maxclients);
+		Con_Printf ("\"maxplayers\" is \"%d\"\n", svs.maxclients);
 		return;
 	}
 
@@ -188,7 +188,7 @@ static void MaxPlayers_f (void)
 	if (n > svs.maxclientslimit)
 	{
 		n = svs.maxclientslimit;
-		Con_Printf ("\"maxplayers\" set to \"%u\"\n", n);
+		Con_Printf ("\"maxplayers\" set to \"%d\"\n", n);
 	}
 
 	if ((n == 1) && listening)
@@ -219,7 +219,7 @@ static void NET_Port_f (void)
 
 	if (Cmd_Argc () != 2)
 	{
-		Con_Printf ("\"port\" is \"%u\"\n", net_hostport);
+		Con_Printf ("\"port\" is \"%d\"\n", net_hostport);
 		return;
 	}
 

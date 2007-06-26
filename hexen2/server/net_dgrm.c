@@ -2,7 +2,7 @@
 	net_dgrm.c
 	This is enables a simple IP banning mechanism
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/server/net_dgrm.c,v 1.17 2007-06-12 07:26:08 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/server/net_dgrm.c,v 1.18 2007-06-26 13:37:21 sezero Exp $
 */
 
 #define BAN_TEST
@@ -27,8 +27,6 @@ static int packetsReceived = 0;
 static int receivedDuplicateCount = 0;
 static int shortPacketCount = 0;
 static int droppedDatagrams;
-
-static int myDriverLevel;
 
 struct
 {
@@ -476,7 +474,6 @@ int Datagram_Init (void)
 	int i;
 	int csock;
 
-	myDriverLevel = net_driverlevel;
 	Cmd_AddCommand ("net_stats", NET_Stats_f);
 
 	if (safemode || COM_CheckParm("-nolan"))
