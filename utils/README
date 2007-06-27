@@ -4,9 +4,9 @@ released by Raven, namely H2_UTILS.EXE (for original Hexen II)
 and h2mputil.zip (for the mission pack), with addition of a few
 other tools written by the community.
 
-The tools, as they were released lacked proper documentation.
-I extracted most of the information below from ID's GPL'ed quake
-utilities package.
+The tools, as they were released, lacked proper documentation.
+I extracted most of the information below from quake utilities
+packages.
 
 hcc	: HCode (HexenC) compiler. From Raven's h2mputil package.
 	  Reads "progs.src", then compiles all of the files listed

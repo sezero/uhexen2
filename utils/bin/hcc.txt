@@ -1,6 +1,0 @@
-
-use -oi and -on to reduce the size of the progs.dat
-
-if you use this new version of hcc for compiling the progs for
-original hexen2, do not use those switches for compatibility
-with old save games, etc.
