@@ -4,8 +4,6 @@ Release Notes for version 1.4.2
 
 Changes since HoT-1.4.1 :
 
-Current state: 1.4.2-rc1 (pre-release, 2007-05-31.)
-
 General:
 --------
 - The engine version is now at 1.19 for Hexen II and 0.19 for HexenWorld.
@@ -14,7 +12,7 @@ General:
   compatible with Raven's 1.11 windows version, as it has been with other
   Hexen II ports.
 - The net compatibility works both ways: When H.o.T is run as a client,
-  it can connect to Raven-1.11 servers and can play just fine. On the
+  it can connect to Raven-1.11 servers and can play just fine.  On the
   other hand, if a 1.11 client wants to connect to a H.o.T. server, the
   server must be started with "-protocol 18" command line argument.
 - You can also load and play games saved with the 1.11 windows version and
@@ -49,8 +47,8 @@ Gameplay:
 - Origin fixes for tomed fires of vorpal sword and purifier: paladin used
   to fire them always from the non-crouched eye position, and it was even
   the worst when he was looking up (and down). You won't be shooting your
-  back again when standing just in front of a wall and fire your tomed
-  purifier to the sky, from now on ;)
+  back when standing just in front of a wall and fire your tomed purifier
+  to the sky, from now on ;)
 - Fixed an obscure bug where the assasin with her 4th weapon uses the tome
   of power and can't fire it (gamecode version 1.16a, the fix was added in
   1.4.1-rev1).
@@ -58,7 +56,7 @@ Gameplay:
 Console:
 --------
 - Added prefix matching support to the maplist command.
-- A duplicate name detection bug in the maplist command was fixed.
+- A bug in duplicate name detection in the maplist command was fixed.
 - Updated and sanitized the command lister procedures.
 - Added a -developer command line argument which sets the developer cvar to
   1 during the init phase (ie. before the config is read).
@@ -89,8 +87,8 @@ Video:
 
 Software Renderer:
 ------------------
-- Added initial support for non-intel cpus. Not as perfect as the intel code,
-  yet, but it's a good start.
+- Added support for non-intel cpus. Not as perfect as the intel code, yet,
+  but it is a very good start.
 - Fixed a few endianness issues.
 - Added ability to load external wal texture files instead of internal pixel
   data of the brush model (depends on the new r_texture_external cvar).
@@ -114,11 +112,11 @@ CDAudio:
 
 HexenWorld:
 -----------
-- OpenGL: Fixed bug that netgraphtexture was not reset during reinitializa-
+- OpenGL: Fixed bug that netgraphtexture was not reset during re-initializa-
   tion of the draw subsystem (used to affect the packet loss status graph by
   r_netgraph).
-- OpenGL: Fixed bug that dynamic lights had a problem with RGBA lightmaps
-  (such as torches didn't illuminate) but luminance mode was fine. Lightmaps
+- OpenGL: Fixed bug that dynamic lights had a problem with RGBA lightmaps,
+  such as torches didn't illuminate, but luminance mode was fine. Lightmaps
   in RGBA mode are working now.
 - OpenGL: Added colored dynamic lights and extra dynamic lights (stuff copied
   over from hexen2). The gl_colored_dynamic_lights and gl_extra_dynamic_lights

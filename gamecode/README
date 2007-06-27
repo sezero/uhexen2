@@ -9,8 +9,8 @@ Changes
 - Origin fixes for tomed fires of vorpal sword and purifier: paladin used
   to fire them always from the non-crouched eye position, and it was even
   the worst when he was looking up (and down). You won't be shooting your
-  back again when standing just in front of a wall and fire your tomed
-  purifier to the sky, from now on ;)
+  back when standing just in front of a wall and fire your tomed purifier
+  to the sky, from now on ;)
 2006-12-01 (1.16a):
 ===================
 - Fixed an obscure bug where the assasin with her 4th weapon uses the tome
@@ -28,7 +28,7 @@ Changes
 	<NO FUNCTION>
 	assignment to world entity
 	Host_Error: Program error
-- Merged a probably better fix for the bug above. (from Steven).
+- Merged a probably better fix for the above bug. (from Steven).
 - Disabled impulse 11 (ServerflagsCommand): it is a dev command, can
   be issued from any client and may screw up the server pretty bad..
 - Made the hexen2 progs to work with demo version 1.11: the original

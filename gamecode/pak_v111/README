@@ -1,8 +1,8 @@
-This directory contains binary patches to update 1.03 cdrom
-versions hexen2 pak files to the latest 1.11 version. This
+This directory contains binary patches to update the 1.03 cdrom
+versions of hexen2 pak files to the latest 1.11 version. This
 update is the same as Raven's 1.11 update, but it is for unix.
-You need either loki_patch or xdelta-1.1.3/1.1.4 in order to
-use them.
+You need either 1.0.1 or a later version of our launcher program,
+or xdelta-1.1.3/1.1.4, or loki_patch, in order to use them.
 
 The update_xdelta.sh script uses an updated version of xdelta
 which is included in the latest Hammer of Thyrion sources with
@@ -13,6 +13,6 @@ or at http://xdelta.org .)
 
 The update_loki.sh script and the associated .dat file are to be
 used with a loki_patch version posted on Hammer of Thyrion page:
-loki_patch-src3.tgz. (The original version of loki_patch is in
+loki_patch-src4.tgz. (The original version of loki_patch is in
 icculus.org CVS : http://cvs.icculus.org/cvs/ )
 

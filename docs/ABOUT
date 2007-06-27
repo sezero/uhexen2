@@ -5,17 +5,16 @@ Version 1.4.2
 http://uhexen2.sourceforge.net/
 http://sourceforge.net/projects/uhexen2/
 
-Hammer of Thyrion is a port of Raven's Hexen II source code to
-support Linux, FreeBSD, other unices & Windows. It is based on
-the initial linux port Anvil of Thyrion 1.2.0 by Dan Olson and
-Clément Bourdarias (http://aot.linuxgames.com), and is patched
-by Steven A. and O. Sezer with some additional code taken from
-the pa3pyx and jshexen2 source ports.
+Hammer of Thyrion is a cross-platform port of Raven Software's
+Hexen II source to support Linux, FreeBSD, OpenBSD, QNX, other
+unices, Mac OS X and Windows. It is based on the initial linux
+port Anvil of Thyrion by Dan Olson and Clément Bourdarias, and
+is hacked by Steven Atkinson, O. Sezer and Levent Yavas.
 
 Hexen II was created by Raven Software Corp.,  published by Id
 Software Inc and distributed by Activision, Inc.  Hexen II and
 Portal of Praevus are trademarks of Raven Software Corporation.
-Hammer of Thyrion is *not* made and is *not* supported by any
+Hammer of Thyrion is *not* made, and is *not* supported by any
 of these software companies in any way.
 
 Copyright
