@@ -1,7 +1,7 @@
 /*
 	lexi.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/utils/dcc/pr_lex.c,v 1.9 2007-04-29 09:25:08 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/utils/dcc/pr_lex.c,v 1.10 2007-06-27 23:42:30 sezero Exp $
 */
 
 
@@ -11,9 +11,9 @@
 
 char		*pr_file_p;
 int		pr_source_line;
-char		*pr_line_start;		// start of current source line
+static char	*pr_line_start;		// start of current source line
 
-int		pr_bracelevel;
+static int	pr_bracelevel;
 
 char		pr_token[2048];
 token_type_t	pr_token_type;
@@ -24,7 +24,8 @@ char		pr_immediate_string[2048];
 
 int		pr_error_count;
 
-char	*pr_punctuation[] = {
+static char	*pr_punctuation[] =
+{
 		// longer symbols must be before
 		// a shorter partial match
 		"&&",		"||",
@@ -77,7 +78,7 @@ def_t *def_for_type[8] =
 	&def_entity, &def_field, &def_function, &def_pointer
 };
 
-void PR_LexWhitespace (void);
+static void PR_LexWhitespace (void);
 
 
 /*
@@ -86,7 +87,7 @@ PR_PrintNextLine
 ==============
 */
 #if 0	// not used
-void PR_PrintNextLine (void)
+static void PR_PrintNextLine (void)
 {
 	char	*t;
 
@@ -132,7 +133,7 @@ PR_LexString
 Parses a quoted string
 ==============
 */
-void PR_LexString (void)
+static void PR_LexString (void)
 {
 	int		c;
 	int		len;
@@ -176,7 +177,7 @@ void PR_LexString (void)
 PR_LexNumber
 ==============
 */
-float PR_LexNumber (void)
+static float PR_LexNumber (void)
 {
 	int		c;
 	int		len;
@@ -202,7 +203,7 @@ PR_LexVector
 Parses a single quoted vector
 ==============
 */
-void PR_LexVector (void)
+static void PR_LexVector (void)
 {
 	int		i;
 
@@ -226,7 +227,7 @@ PR_LexName
 Parses an identifier
 ==============
 */
-void PR_LexName (void)
+static void PR_LexName (void)
 {
 	int		c;
 	int		len;
@@ -250,7 +251,7 @@ void PR_LexName (void)
 PR_LexPunctuation
 ==============
 */
-void PR_LexPunctuation (void)
+static void PR_LexPunctuation (void)
 {
 	int		i;
 	int		len;
@@ -281,7 +282,7 @@ void PR_LexPunctuation (void)
 PR_LexWhitespace
 ==============
 */
-void PR_LexWhitespace (void)
+static void PR_LexWhitespace (void)
 {
 	int		c;
 
@@ -331,15 +332,15 @@ void PR_LexWhitespace (void)
 
 #define	MAX_FRAMES	256
 
-char	pr_framemacros[MAX_FRAMES][16];
-int		pr_nummacros;
+static char	pr_framemacros[MAX_FRAMES][16];
+static int		pr_nummacros;
 
 void PR_ClearGrabMacros (void)
 {
 	pr_nummacros = 0;
 }
 
-void PR_FindMacro (void)
+static void PR_FindMacro (void)
 {
 	int		i;
 
@@ -358,7 +359,7 @@ void PR_FindMacro (void)
 }
 
 // just parses text, returning false if an eol is reached
-qboolean PR_SimpleGetToken (void)
+static qboolean PR_SimpleGetToken (void)
 {
 	int		c;
 	int		i;
@@ -382,7 +383,7 @@ qboolean PR_SimpleGetToken (void)
 	return true;
 }
 
-void PR_ParseFrame (void)
+static void PR_ParseFrame (void)
 {
 	while (PR_SimpleGetToken ())
 	{
@@ -398,7 +399,7 @@ PR_LexGrab
 Deals with counting sequence numbers and replacing frame macros
 ==============
 */
-void PR_LexGrab (void)
+static void PR_LexGrab (void)
 {
 	pr_file_p++;	// skip the $
 	if (!PR_SimpleGetToken ())
@@ -561,7 +562,7 @@ Returns a preexisting complex type that matches the parm, or allocates
 a new one and copies it out.
 ============
 */
-type_t *PR_FindType (type_t *type)
+static type_t *PR_FindType (type_t *type)
 {
 	def_t	*def;
 	type_t	*check;

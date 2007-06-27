@@ -1,7 +1,7 @@
 /*
 	comp.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/utils/dcc/pr_comp.c,v 1.16 2007-05-13 11:59:44 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/utils/dcc/pr_comp.c,v 1.17 2007-06-27 23:42:30 sezero Exp $
 */
 
 
@@ -23,7 +23,7 @@ int		locals_end;		// for tracking local variables vs temps
 
 jmp_buf		pr_parse_abort;		// longjump with this on parse error
 
-void	PR_ParseDefs (void);
+static void	PR_ParseDefs (void);
 
 //========================================
 
@@ -157,9 +157,9 @@ opcode_t pr_opcodes[] =
 #define	TOP_PRIORITY	6
 #define	NOT_PRIORITY	4
 
-def_t	*PR_Expression (int priority);
+static def_t	*PR_Expression (int priority);
 
-def_t	junkdef;
+static def_t	junkdef;
 
 //===========================================================================
 
@@ -171,7 +171,7 @@ PR_Statement
 Emits a primitive statement, returning the var it places it's value in
 ============
 */
-def_t *PR_Statement ( opcode_t *op, def_t *var_a, def_t *var_b)
+static def_t *PR_Statement ( opcode_t *op, def_t *var_a, def_t *var_b)
 {
 	dstatement_t	*statement;
 	def_t			*var_c;
@@ -212,7 +212,7 @@ PR_ParseImmediate
 Looks for a preexisting constant
 ============
 */
-def_t *PR_ParseImmediate (void)
+static def_t *PR_ParseImmediate (void)
 {
 	def_t	*cn;
 
@@ -282,7 +282,7 @@ def_t *PR_ParseImmediate (void)
 	return cn;
 }
 
-void PrecacheSound (def_t *e, int ch)
+static void PrecacheSound (def_t *e, int ch)
 {
 	char	*n;
 	int		i;
@@ -305,7 +305,7 @@ void PrecacheSound (def_t *e, int ch)
 	numsounds++;
 }
 
-void PrecacheModel (def_t *e, int ch)
+static void PrecacheModel (def_t *e, int ch)
 {
 	char	*n;
 	int		i;
@@ -326,7 +326,7 @@ void PrecacheModel (def_t *e, int ch)
 	nummodels++;
 }
 
-void PrecacheFile (def_t *e, int ch)
+static void PrecacheFile (def_t *e, int ch)
 {
 	char	*n;
 	int		i;
@@ -354,7 +354,7 @@ void PrecacheFile (def_t *e, int ch)
 PR_ParseFunctionCall
 ============
 */
-def_t *PR_ParseFunctionCall (def_t *func)
+static def_t *PR_ParseFunctionCall (def_t *func)
 {
 	def_t		*e, *a1 = NULL, *a2 = NULL;
 	int			arg;
@@ -436,7 +436,7 @@ def_t *PR_ParseFunctionCall (def_t *func)
 PR_ParseRandom
 =============
 */
-def_t *PR_ParseRandom (void)
+static def_t *PR_ParseRandom (void)
 {
 	def_t		*e = NULL, *e2 = NULL;
 
@@ -489,7 +489,7 @@ PR_ParseValue
 Returns the global ofs for the current token
 ============
 */
-def_t *PR_ParseValue (void)
+static def_t *PR_ParseValue (void)
 {
 	def_t		*d;
 	char		*name;
@@ -512,7 +512,7 @@ def_t *PR_ParseValue (void)
 PR_Term
 ============
 */
-def_t *PR_Term (void)
+static def_t *PR_Term (void)
 {
 	def_t	*e, *e2;
 	etype_t	t;
@@ -554,7 +554,7 @@ def_t *PR_Term (void)
 PR_Expression
 ==============
 */
-def_t *PR_Expression (int priority)
+static def_t *PR_Expression (int priority)
 {
 	opcode_t	*op, *oldop;
 	def_t		*e, *e2;
@@ -670,7 +670,7 @@ PR_ParseStatement
 
 ============
 */
-void PR_ParseStatement (void)
+static void PR_ParseStatement (void)
 {
 	def_t			*e = NULL, *e2 = NULL;
 	dstatement_t	*patch1, *patch2;
@@ -851,7 +851,7 @@ set frame, nextthink (implicitly), and think (allowing forward definitions).
 // };
 ==============
 */
-void PR_ParseState (void)
+static void PR_ParseState (void)
 {
 	char	*name;
 	def_t	*s1, *def;
@@ -877,7 +877,7 @@ PR_ParseImmediateStatements
 Parse a function body
 ============
 */
-function_t *PR_ParseImmediateStatements (type_t *type)
+static function_t *PR_ParseImmediateStatements (type_t *type)
 {
 	int			i;
 	function_t	*f;
@@ -1031,7 +1031,7 @@ def_t *PR_GetDef (type_t *type, char *name, def_t *scope, qboolean allocate)
 	return def;
 }
 
-void PR_InitArray (def_t *scope,int size)
+static void PR_InitArray (def_t *scope,int size)
 {
 	int		i;
 
@@ -1062,7 +1062,7 @@ void PR_InitArray (def_t *scope,int size)
 	printf("successfully read in %d array values\n", i+1);
 }
 
-def_t *PR_AllocateArray (type_t *type, char *name, def_t *scope, qboolean allocate, int size)
+static def_t *PR_AllocateArray (type_t *type, char *name, def_t *scope, qboolean allocate, int size)
 {
 	def_t		*def, **old;
 	char	element[MAX_NAME];
@@ -1162,7 +1162,7 @@ PR_ParseDefs
 Called at the outer layer and when a local statement is hit
 ================
 */
-void PR_ParseDefs (void)
+static void PR_ParseDefs (void)
 {
 	char		*name,*name2,a1[500];
 	type_t		*type;
