@@ -1,7 +1,7 @@
 /*
 	lexi.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/utils/dcc/pr_lex.c,v 1.10 2007-06-27 23:42:30 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/utils/dcc/pr_lex.c,v 1.11 2007-06-28 11:10:34 sezero Exp $
 */
 
 
@@ -9,9 +9,9 @@
 #include "cmdlib.h"
 #include "qcc.h"
 
-char		*pr_file_p;
+const char	*pr_file_p;
 int		pr_source_line;
-static char	*pr_line_start;		// start of current source line
+static const char	*pr_line_start;	// start of current source line
 
 static int	pr_bracelevel;
 
@@ -24,7 +24,7 @@ char		pr_immediate_string[2048];
 
 int		pr_error_count;
 
-static char	*pr_punctuation[] =
+static const char	*pr_punctuation[] =
 {
 		// longer symbols must be before
 		// a shorter partial match
@@ -89,7 +89,7 @@ PR_PrintNextLine
 #if 0	// not used
 static void PR_PrintNextLine (void)
 {
-	char	*t;
+	const char	*t;
 
 	printf ("%3i:", pr_source_line);
 	for (t = pr_line_start ; *t && *t != '\n' ; t++)
@@ -255,7 +255,7 @@ static void PR_LexPunctuation (void)
 {
 	int		i;
 	int		len;
-	char	*p;
+	const char	*p;
 
 	pr_token_type = tt_punct;
 
@@ -509,7 +509,7 @@ Issues an error if the current token isn't equal to string
 Gets the next token
 =============
 */
-void PR_Expect (char *string)
+void PR_Expect (const char *string)
 {
 	if (strcmp (string, pr_token))
 		PR_ParseError ("expected %s, found %s", string, pr_token);
@@ -524,7 +524,7 @@ Returns true and gets the next token if the current token equals string
 Returns false and does nothing otherwise
 =============
 */
-qboolean PR_Check (char *string)
+qboolean PR_Check (const char *string)
 {
 	if (strcmp (string, pr_token))
 		return false;

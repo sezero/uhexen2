@@ -1,7 +1,7 @@
 /*
 	expr.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/utils/hcc/expr.c,v 1.5 2007-05-13 11:59:44 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/utils/hcc/expr.c,v 1.6 2007-06-28 11:10:43 sezero Exp $
 
 */
 
@@ -24,7 +24,7 @@
 
 static def_t *Term(void);
 static def_t *ParseFunctionCall(def_t *func);
-static def_t *ParseIntrinsicFunc(char *name);
+static def_t *ParseIntrinsicFunc(const char *name);
 static void PrecacheSound(def_t *e, int ch);
 static void PrecacheModel(def_t *e, int ch);
 static void PrecacheFile(def_t *e, int ch);
@@ -527,7 +527,7 @@ static void PrecacheModel (def_t *e, int ch)
 // PrecacheFile
 //
 //==========================================================================
-static void PrecacheFileName(char *n, int ch)
+static void PrecacheFileName (const char *n, int ch)
 {
 	int		i;
 
@@ -593,7 +593,7 @@ static void PrecacheFile (def_t *e, int ch)
 //
 //==========================================================================
 
-static def_t *ParseIntrinsicFunc (char *name)
+static def_t *ParseIntrinsicFunc (const char *name)
 {
 	def_t	*expr1, *expr2;
 

@@ -1,7 +1,7 @@
 /*
 	comp.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/utils/dcc/pr_comp.c,v 1.17 2007-06-27 23:42:30 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/utils/dcc/pr_comp.c,v 1.18 2007-06-28 11:10:34 sezero Exp $
 */
 
 
@@ -941,7 +941,7 @@ If type is NULL, it will match any type
 If allocate is true, a new def will be allocated if it can't be found
 ============
 */
-def_t *PR_GetDef (type_t *type, char *name, def_t *scope, qboolean allocate)
+def_t *PR_GetDef (type_t *type, const char *name, def_t *scope, qboolean allocate)
 {
 	def_t		*def, **old;
 	char	element[MAX_NAME];
@@ -1279,7 +1279,7 @@ PR_CompileFile
 compiles the 0 terminated text, adding defintions to the pr structure
 ============
 */
-qboolean PR_CompileFile (char *string, char *filename)
+qboolean PR_CompileFile (const char *string, const char *filename)
 {
 	PR_ClearGrabMacros ();	// clear the frame macros
 

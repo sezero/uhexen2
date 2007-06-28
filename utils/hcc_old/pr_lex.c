@@ -1,7 +1,7 @@
 /*
 	lexi.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/utils/hcc_old/pr_lex.c,v 1.4 2007-06-26 20:19:38 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/utils/hcc_old/pr_lex.c,v 1.5 2007-06-28 11:10:44 sezero Exp $
 */
 
 
@@ -63,7 +63,7 @@ static int FrameMacroIndex;
 
 static int ASCIIToChrCode[256];
 
-static char *pr_file_p;
+static const char *pr_file_p;
 
 static int pr_bracelevel;
 
@@ -150,7 +150,7 @@ void LX_Init (void)
 //
 //==========================================================================
 
-void LX_NewSourceFile (char *fileText)
+void LX_NewSourceFile (const char *fileText)
 {
 	pr_file_p = fileText;
 	ClearFrameMacros();
@@ -919,7 +919,7 @@ void LX_Fetch (void)
 //
 //==========================================================================
 
-void LX_Require (char *string)
+void LX_Require (const char *string)
 {
 	if (strcmp(string, pr_token))
 	{
@@ -937,7 +937,7 @@ void LX_Require (char *string)
 //
 //==========================================================================
 
-qboolean LX_CheckFetch (char *string)
+qboolean LX_CheckFetch (const char *string)
 {
 	if ((*string != *pr_token) || strcmp(string, pr_token))
 	{
@@ -953,7 +953,7 @@ qboolean LX_CheckFetch (char *string)
 //
 //==========================================================================
 
-qboolean LX_Check (char *string)
+qboolean LX_Check (const char *string)
 {
 	if (strcmp(string, pr_token))
 	{

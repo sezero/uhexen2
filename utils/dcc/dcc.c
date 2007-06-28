@@ -2,7 +2,7 @@
 	dcc.c
 	An hcode compiler/decompiler for Hexen II by Eric Hobbs
 
-	$Id: dcc.c,v 1.37 2007-06-27 23:42:30 sezero Exp $
+	$Id: dcc.c,v 1.38 2007-06-28 11:10:33 sezero Exp $
 */
 
 
@@ -22,30 +22,30 @@
 
 // EXTERNAL FUNCTION PROTOTYPES --------------------------------------------
 
-extern char	*PR_String (char *string);
+extern char	*PR_String (const char *string);
 extern def_t	*PR_DefForFieldOfs (gofs_t ofs);
 
 // PUBLIC FUNCTION PROTOTYPES ----------------------------------------------
 
-void		DEC_ReadData (char *srcfile);
+void		DEC_ReadData (const char *srcfile);
 void		Dcc_Functions (void);
 void		FindBuiltinParameters (int func);
 void		DccFunctionOP (unsigned short op);
-void		PR_PrintFunction (char *name);
+void		PR_PrintFunction (const char *name);
 
 // PRIVATE FUNCTION PROTOTYPES ---------------------------------------------
 
-static char	*Make_Immediate (gofs_t ofs, char *linestr, int mode);
+static char	*Make_Immediate (gofs_t ofs, const char *linestr, int mode);
 static void	PR_Indent (void);
 static void	PR_FunctionHeader (dfunction_t *df);
 static void	PR_Print (const char *s,...) __attribute__((format(printf,1,2)));
 static char	*PR_PrintGlobal (gofs_t ofs, def_t* typ);
-static ddef_t	*PR_GetField (char *name, ddef_t*);
-static int	DEC_GetFunctionIdxByName (char *name);
+static ddef_t	*PR_GetField (const char *name, ddef_t*);
+static int	DEC_GetFunctionIdxByName (const char *name);
 static void	PR_LocalGlobals (void);
-static int	DEC_AlreadySeen (char *fname);
+static int	DEC_AlreadySeen (const char *fname);
 static ddef_t	*DEC_GetParameter (gofs_t ofs);
-static char	*GetFieldFunctionHeader (char *s_name);
+static char	*GetFieldFunctionHeader (const char *s_name);
 static void	DccStatement (dstatement_t *s);
 static void	AddProgramFlowInfo (dfunction_t *df);
 static void	PR_Locals (dfunction_t *df);
@@ -84,7 +84,7 @@ char		*func_headers[MAX_FUNCTIONS];
 
 // PRIVATE DATA DEFINITIONS ------------------------------------------------
 
-static char *type_names[8] =
+static const char *type_names[8] =
 {
 	"void",
 	"string",
@@ -694,7 +694,7 @@ static void DccStatement (dstatement_t *s)
 	}
 }
 
-static char *Make_Immediate (gofs_t ofs, char *linestr, int mode)
+static char *Make_Immediate (gofs_t ofs, const char *linestr, int mode)
 {
 	unsigned short	i;
 
@@ -1240,7 +1240,7 @@ static unsigned short OP_StoreValue (dstatement_t *ds)
 }
 #endif	// end of unused function
 
-static ddef_t *PR_GetField (char *name,ddef_t *dd)
+static ddef_t *PR_GetField (const char *name, ddef_t *dd)
 {
 	int	i;
 	ddef_t	*d;
@@ -1529,7 +1529,7 @@ static void PR_LocalGlobals (void)
 }
 
 
-static char *GetFieldFunctionHeader (char *s_name)
+static char *GetFieldFunctionHeader (const char *s_name)
 {
 	int		i, j = 0;
 	dstatement_t	*d;
@@ -2000,7 +2000,7 @@ void DccFunctionOP (unsigned short op)
 }
 
 
-void DEC_ReadData (char *srcfile)
+void DEC_ReadData (const char *srcfile)
 {
 	dprograms_t	progs;
 	FILE*		h;
@@ -2093,7 +2093,7 @@ void DEC_ReadData (char *srcfile)
 }
 
 
-static int DEC_GetFunctionIdxByName (char *name)
+static int DEC_GetFunctionIdxByName (const char *name)
 {
 	int	i;
 
@@ -2128,7 +2128,7 @@ static ddef_t *DEC_GetParameter (gofs_t ofs)
 }
 
 
-static int DEC_AlreadySeen (char *fname)
+static int DEC_AlreadySeen (const char *fname)
 {
 	int		i;
 	char		*new1;
@@ -2223,7 +2223,7 @@ static char *DCC_ValueString (etype_t type, void *val)
 }
 
 
-void PR_PrintFunction (char *name)
+void PR_PrintFunction (const char *name)
 {
 	int		i;
 	dstatement_t	*ds;

@@ -1,6 +1,6 @@
 /*
 	qcc.h
-	$Id: qcc.h,v 1.10 2007-04-19 14:08:42 sezero Exp $
+	$Id: qcc.h,v 1.11 2007-06-28 11:10:34 sezero Exp $
 */
 
 #ifndef __QCC_H__
@@ -371,14 +371,14 @@ type_t	*PR_ParseType (void);
 char	*PR_ParseName (void);
 
 void	PR_Lex (void);	// reads the next token into pr_token and classifies its type
-qboolean PR_Check (char *string);
-void	PR_Expect (char *string);
+qboolean PR_Check (const char *string);
+void	PR_Expect (const char *string);
 void	PR_ParseError (const char *error, ...) __attribute__((format(printf,1,2)));
 void	PR_NewLine (void);
-def_t	*PR_GetDef (type_t *type, char *name, def_t *scope, qboolean allocate);
+def_t	*PR_GetDef (type_t *type, const char *name, def_t *scope, qboolean allocate);
 void	PR_SkipToSemicolon (void);
 void	PR_ClearGrabMacros (void);
-qboolean PR_CompileFile (char *string, char *filename);
+qboolean PR_CompileFile (const char *string, const char *filename);
 char	*PR_ValueString (etype_t type, void *val);
 
 // PUBLIC DATA DECLARATIONS ------------------------------------------------
@@ -406,7 +406,7 @@ extern	qboolean	pr_dumpasm;
 
 extern	jmp_buf	pr_parse_abort;	// longjump with this on parse error
 extern	int		pr_source_line;
-extern	char		*pr_file_p;
+extern	const char	*pr_file_p;
 
 extern	def_t	*pr_scope;
 extern	int	pr_error_count;

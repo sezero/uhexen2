@@ -1,7 +1,7 @@
 /*
 	comp.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/utils/hcc_old/pr_comp.c,v 1.3 2007-02-13 13:34:45 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/utils/hcc_old/pr_comp.c,v 1.4 2007-06-28 11:10:44 sezero Exp $
 */
 
 
@@ -37,11 +37,11 @@ static void InitHashTable(void);
 static void ParseUnion(void);
 static type_t *ParseUnionType(void);
 static void ParseFunctionDef(def_t *def, type_t *type);
-static void ParseCStyleFunctionDef(char *funcName, type_t *type);
-static def_t *GetArrayDef(char *name, type_t *type, int *elementCount);
-static def_t *GetFieldArrayDef(char *name, type_t *type, int *elementCount);
-static int ParseArray(char *name, type_t *type);
-static def_t *NewVarDef(char *name, type_t *type);
+static void ParseCStyleFunctionDef(const char *funcName, type_t *type);
+static def_t *GetArrayDef(const char *name, type_t *type, int *elementCount);
+static def_t *GetFieldArrayDef(const char *name, type_t *type, int *elementCount);
+static int ParseArray(const char *name, type_t *type);
+static def_t *NewVarDef(const char *name, type_t *type);
 static function_t *ParseImmediateStatements(type_t *type);
 static void ParseState(void);
 
@@ -249,7 +249,7 @@ static void InitHashTable (void)
 //
 //==========================================================================
 
-qboolean CO_CompileFile (char *fileText, char *fileName)
+qboolean CO_CompileFile (const char *fileText, const char *fileName)
 {
 	qboolean	inProgress;
 
@@ -745,7 +745,7 @@ static function_t *ParseImmediateStatements (type_t *type)
 //
 //==========================================================================
 
-def_t *PR_GetDef(type_t *type, char *name, def_t *scope, qboolean allocate)
+def_t *PR_GetDef (type_t *type, const char *name, def_t *scope, qboolean allocate)
 {
 	def_t	*def;
 	def_t	*elementDef;
@@ -989,7 +989,7 @@ void CO_ParseDefs (void)
 //
 //==========================================================================
 
-static def_t *GetArrayDef (char *name, type_t *type, int *elementCount)
+static def_t *GetArrayDef (const char *name, type_t *type, int *elementCount)
 {
 	def_t	*def;
 	int		count;
@@ -1028,7 +1028,7 @@ static def_t *GetArrayDef (char *name, type_t *type, int *elementCount)
 //
 //==========================================================================
 
-static def_t *GetFieldArrayDef(char *name, type_t *type, int *elementCount)
+static def_t *GetFieldArrayDef (const char *name, type_t *type, int *elementCount)
 {
 	def_t	*def;
 	int		count;
@@ -1053,7 +1053,7 @@ static def_t *GetFieldArrayDef(char *name, type_t *type, int *elementCount)
 //
 //==========================================================================
 
-static def_t *NewVarDef (char *name, type_t *type)
+static def_t *NewVarDef (const char *name, type_t *type)
 {
 	def_t	*def;
 	int		idx;
@@ -1097,7 +1097,7 @@ static def_t *NewVarDef (char *name, type_t *type)
 //
 //==========================================================================
 
-static int ParseArray (char *name, type_t *type)
+static int ParseArray (const char *name, type_t *type)
 {
 	int		count;
 	etype_t	t;
@@ -1138,7 +1138,7 @@ static int ParseArray (char *name, type_t *type)
 //
 //==========================================================================
 
-static void ParseUnion(void)
+static void ParseUnion (void)
 {
 	char	*name;
 	type_t	*type;
@@ -1267,7 +1267,7 @@ static void ParseFunctionDef (def_t *def, type_t *type)
 //
 //==========================================================================
 
-static void ParseCStyleFunctionDef (char *funcName, type_t *type)
+static void ParseCStyleFunctionDef (const char *funcName, type_t *type)
 {
 	int		i;
 	char	*name = NULL;	// FIXME: init to NULL, avoid compiler warning

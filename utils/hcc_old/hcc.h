@@ -1,7 +1,7 @@
 /*
 	hcc.h
 
-	$Header: /home/ozzie/Download/0000/uhexen2/utils/hcc_old/hcc.h,v 1.5 2007-04-19 14:08:57 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/utils/hcc_old/hcc.h,v 1.6 2007-06-28 11:10:44 sezero Exp $
 */
 
 #ifndef __HCC_H__
@@ -163,11 +163,11 @@ int	CopyString (const char *str);
 // lexi.c
 
 void	LX_Init (void);
-void	LX_NewSourceFile (char *fileText);
+void	LX_NewSourceFile (const char *fileText);
 void	LX_Fetch (void);
-qboolean LX_Check (char *string);
-qboolean LX_CheckFetch (char *string);
-void	LX_Require (char *string);
+qboolean LX_Check (const char *string);
+qboolean LX_CheckFetch (const char *string);
+void	LX_Require (const char *string);
 void	LX_NewLine (void);
 void	LX_ErrorRecovery (void);
 
@@ -178,12 +178,12 @@ char	*PR_ParseName (void);
 // comp.c
 
 void	CO_Init (void);
-qboolean CO_CompileFile (char *fileText, char *fileName);
+qboolean CO_CompileFile (const char *fileText, const char *fileName);
 def_t	*CO_GenCode (opcode_t *op, def_t *var_a, def_t *var_b);
 void	CO_GenCodeDirect (opcode_t *op, def_t *var_a, def_t *var_b, def_t *var_c);
 def_t	*CO_ParseImmediate (void);
 void	CO_ParseDefs (void);
-def_t	*PR_GetDef (type_t *type, char *name, def_t *scope, qboolean allocate);
+def_t	*PR_GetDef (type_t *type, const char *name, def_t *scope, qboolean allocate);
 
 // parseerr.c
 

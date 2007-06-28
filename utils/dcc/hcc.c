@@ -2,7 +2,7 @@
 	hcc.c
 	HCode compiler based on qcc, modifed by Eric Hobbs to work with DCC
 
-	$Header: /home/ozzie/Download/0000/uhexen2/utils/dcc/hcc.c,v 1.22 2007-06-27 23:42:30 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/utils/dcc/hcc.c,v 1.23 2007-06-28 11:10:34 sezero Exp $
 */
 
 #include "util_inc.h"
@@ -53,8 +53,8 @@ extern char	*func_headers[MAX_FUNCTIONS];
 extern void Dcc_Functions (void);
 extern void FindBuiltinParameters(int func);
 extern void DccFunctionOP(unsigned short op);
-extern void DEC_ReadData (char *srcfile);
-extern void PR_PrintFunction (char *name);
+extern void DEC_ReadData (const char *srcfile);
+extern void PR_PrintFunction (const char *name);
 
 extern int	FILE_NUM_FOR_NAME;
 
