@@ -22,6 +22,7 @@ find . -name CVS | xargs rm -rf
 rm -rf utils/h2_utils utils/h2mp_utils utils/dcc/bin
 rm -rf hexen2/obsolete hexenworld/Master/win_stuff launcher/obsolete
 rm -rf gamecode/hc/h2_single_prog gamecode/hc/hw_bossmaps
+rm -rf docs/activision
 rm -rf asm/obsolete xdelta11/doc/dcc99
 
 # move the spec file to the root
