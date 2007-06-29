@@ -2,7 +2,7 @@
 	sys.h
 	non-portable functions
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sys.h,v 1.32 2007-06-16 14:41:35 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sys.h,v 1.33 2007-06-29 17:48:27 sezero Exp $
 */
 
 #ifndef __HX2_SYS_H
@@ -13,9 +13,9 @@
 //
 int Sys_mkdir (const char *path);
 
-#define Sys_mkdir_err(Dir_Path) {					\
-        if (Sys_mkdir((Dir_Path)))					\
-		Sys_Error("Unable to create directory %s",(Dir_Path));	\
+#define	Sys_mkdir_err(p)	{				\
+	if (Sys_mkdir((p)))					\
+		Sys_Error("Unable to create directory %s",(p));	\
 }
 
 // simplified findfirst/findnext implementation
@@ -51,19 +51,11 @@ void Sys_SendKeyEvents (void);
 // Perform Key_Event () callbacks until the input que is empty
 
 
-/* From Dan Olson:
-   The code isn't compilable on non-intel until all of the asm is
-   taken out.  Don't worry about the id386 define *yet*, and even
-   after all of the assembly is replaced  you may still need it
-   defined for non-x86 compiles. The eventual goal should probably
-   be to get rid of all x86 specific stuff.
-*/
-
 #if defined(USE_INTEL_ASM) && !defined(SERVERONLY) && (defined(_M_IX86) || defined(__i386__))
 
 #	define	id386		1
-#	define	UNALIGNED_OK	1	// set to 0 if unaligned accesses are not supported
-// fpu stuff
+#	define	UNALIGNED_OK	1	/* set to 0 if unaligned accesses are not supported */
+/* fpu stuff */
 void	MaskExceptions (void);
 void	Sys_SetFPCW (void);
 void	Sys_LowFPPrecision (void);
@@ -71,7 +63,7 @@ void	Sys_HighFPPrecision (void);
 void	Sys_PopFPCW (void);
 void	Sys_PushFPCW_SetHigh (void);
 
-#else	// not i386 or no intel asm
+#else	/* not i386 or no intel asm */
 
 #	define	id386		0
 #	define	UNALIGNED_OK	0
