@@ -3,6 +3,12 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2007-06-28 (CVS):
+    * utils/dcc: fixed segfaults which were due to an array going out
+      of bounds in GetReturnType(). now that the culprit is identified,
+      re-applied the static patch. made several clean-ups.
+    * utils: dcc, hcc, hcc_old: constifications.
+
 2007-06-27 (CVS):
     * small updates to the documentation.
 
