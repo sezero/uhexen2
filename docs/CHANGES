@@ -4,6 +4,12 @@ Development Progress	:
 ---------------------------
 
 2007-06-28 (CVS):
+    * sys.h: minor clean-ups, removed stale comments.
+    * updated the mkrelease script.
+    * removed or commented out a lot of non-functional variables. surely
+      there are some more, but these are the ones I'm sure about.
+
+2007-06-28 (CVS):
     * utils/dcc: fixed segfaults which were due to an array going out
       of bounds in GetReturnType(). now that the culprit is identified,
       re-applied the static patch. made several clean-ups.
