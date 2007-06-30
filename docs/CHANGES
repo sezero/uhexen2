@@ -3,7 +3,7 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
-2007-06-28 (CVS):
+2007-06-30 (CVS):
     * sys.h: minor clean-ups, removed stale comments.
     * updated the mkrelease script.
     * removed or commented out a lot of non-functional variables. surely
