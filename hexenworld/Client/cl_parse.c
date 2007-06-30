@@ -2,7 +2,7 @@
 	cl_parse.c
 	parse a message received from the server
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/cl_parse.c,v 1.42 2007-05-13 11:59:00 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/cl_parse.c,v 1.43 2007-06-30 11:19:47 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -111,7 +111,7 @@ static const char *svc_strings[] =
 };
 #define	NUM_SVC_STRINGS	( sizeof(svc_strings)/sizeof(svc_strings[0]) )
 
-static int	oldparsecountmod;
+//static int	oldparsecountmod;
 int		parsecountmod;
 double		parsecounttime;
 
@@ -783,7 +783,7 @@ static void CL_ParseClientdata (void)
 	frame_t		*frame;
 
 // calculate simulated time of message
-	oldparsecountmod = parsecountmod;
+//	oldparsecountmod = parsecountmod;
 
 	i = cls.netchan.incoming_acknowledged;
 	cl.parsecount = i;
@@ -1107,7 +1107,7 @@ static void CL_DumpPacket (void)
 CL_ParseServerMessage
 =====================
 */
-static int	received_framecount;
+//static int	received_framecount;
 int LastServerMessageSize = 0;
 
 void CL_ParseServerMessage (void)
@@ -1122,7 +1122,7 @@ void CL_ParseServerMessage (void)
 
 	LastServerMessageSize += net_message.cursize;
 
-	received_framecount = host_framecount;
+//	received_framecount = host_framecount;
 	cl.last_servermessage = realtime;
 	CL_ClearProjectiles ();
 	CL_ClearMissiles ();

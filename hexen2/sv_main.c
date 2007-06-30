@@ -2,7 +2,7 @@
 	sv_main.c
 	server main program
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sv_main.c,v 1.58 2007-06-16 14:41:35 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sv_main.c,v 1.59 2007-06-30 11:19:43 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -478,8 +478,6 @@ static void SV_ConnectClient (int clientnum)
 	struct qsocket_s *netconnection;
 //	int			i;
 	float			spawn_parms[NUM_SPAWN_PARMS];
-	int			entnum;
-	edict_t			*svent;
 
 	client = svs.clients + clientnum;
 
@@ -507,11 +505,7 @@ static void SV_ConnectClient (int clientnum)
 	client->message.allowoverflow = true;	// we can catch it
 	SZ_Init (&client->datagram, client->datagram_buf, sizeof(client->datagram_buf));
 
-	for (entnum = 0; entnum < sv.num_edicts; entnum++)
-	{
-		svent = EDICT_NUM(entnum);
-	}
-	memset(&sv.states[clientnum],0,sizeof(client_state2_t ));
+	memset(&sv.states[clientnum], 0, sizeof(client_state2_t ));
 
 	if (sv.loadgame)
 		memcpy (client->spawn_parms, spawn_parms, sizeof(spawn_parms));

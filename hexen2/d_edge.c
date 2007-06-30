@@ -1,7 +1,7 @@
 /*
 	d_edge.c
 
-	$Id: d_edge.c,v 1.12 2007-06-16 14:41:35 sezero Exp $
+	$Id: d_edge.c,v 1.13 2007-06-30 11:19:42 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -105,13 +105,10 @@ D_CalcGradients
 */
 static void D_CalcGradients (msurface_t *pface)
 {
-	mplane_t	*pplane;
 	float		mipscale;
 	vec3_t		p_temp1;
 	vec3_t		p_saxis, p_taxis;
 	float		t;
-
-	pplane = pface->plane;
 
 	mipscale = 1.0 / (float)(1 << miplevel);
 

@@ -2,7 +2,7 @@
 	cl_tent.c
 	client side temporary entities
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/cl_tent.c,v 1.27 2007-05-13 11:59:00 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/cl_tent.c,v 1.28 2007-06-30 11:19:47 sezero Exp $
 */
 
 
@@ -3230,7 +3230,7 @@ void CL_ParseTEnt (void)
 		case TE_CUBEBEAM:
 			{
 				int	ent, ent2, tag, flags, skin;
-				vec3_t	source, dest, smokeDir;
+				vec3_t	source, dest;
 				float	duration;
 				entity_state_t	*state;
 				entity_state_t	*state2;
@@ -3279,7 +3279,6 @@ void CL_ParseTEnt (void)
 						dest[2] += 10;
 					}
 
-					VectorSet(smokeDir,0,0,100);
 					S_StartSound (TempSoundChannel(), 0, cl_sfx_sunstaff, source, 1, 1);
 					S_StartSound (TempSoundChannel(), 0, cl_sfx_sunhit, dest, 1, 1);
 					R_SunStaffTrail(dest, source);

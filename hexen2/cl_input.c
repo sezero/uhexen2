@@ -5,7 +5,7 @@
 	Quake is a trademark of Id Software, Inc., (c) 1996 Id Software, Inc.
 	All rights reserved.
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cl_input.c,v 1.18 2007-05-13 11:58:28 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cl_input.c,v 1.19 2007-06-30 11:19:42 sezero Exp $
 */
 
 
@@ -285,11 +285,11 @@ static void IN_Impulse (void)
 
 static void IN_CrouchDown (void)
 {
-	int state;
+//	int state;
 
 	if (key_dest == key_game)
 	{
-		state = in_crouch.state;
+//		state = in_crouch.state;
 		KeyDown(&in_crouch);
 
 //		if (!(state & 1) && (in_crouch.state & 1))
@@ -299,13 +299,13 @@ static void IN_CrouchDown (void)
 
 static void IN_CrouchUp (void)
 {
-	int state;
+//	int state;
 
 	if (key_dest == key_game)
 	{
-		state = in_crouch.state;
-
+//		state = in_crouch.state;
 		KeyUp(&in_crouch);
+
 //		if ((state & 1) && !(in_crouch.state & 1))
 //			in_impulse = 22;
 	}

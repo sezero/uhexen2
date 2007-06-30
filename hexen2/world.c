@@ -2,7 +2,7 @@
 	world.c
 	world query functions
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/world.c,v 1.20 2007-06-02 05:31:48 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/world.c,v 1.21 2007-06-30 11:19:43 sezero Exp $
 
 	entities never clip against themselves, or their owner
 	line of sight checks trace->crosscontent, but bullets don't
@@ -602,7 +602,7 @@ LINE TESTING IN HULLS
 // 1/32 epsilon to keep floating point happy
 #define	DIST_EPSILON	(0.03125)
 
-static void WackyBugFixer(float *p1f, float *p2f, float *p1, float *p2, float *frac, float *midf, float *mid)
+static void WackyBugFixer(float *p1, float *p2, float *frac, float *mid)
 {
 	int i;
 
@@ -750,7 +750,7 @@ qboolean SV_RecursiveHullCheck (hull_t *hull, int num, float p1f, float p2f, vec
 	//	for (i = 0; i < 3; i++)
 	//		mid[i] = p1[i] + frac * (p2[i] - p1[i]);
 
-		WackyBugFixer(&p1f, &p2f, p1, p2, &frac, &midf, mid);
+		WackyBugFixer(p1, p2, &frac, mid);
 	}
 
 	trace->fraction = midf;

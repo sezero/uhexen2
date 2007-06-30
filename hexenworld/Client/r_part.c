@@ -2,7 +2,7 @@
 	r_part.c
 	particles rendering
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/r_part.c,v 1.15 2007-04-18 13:34:21 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/r_part.c,v 1.16 2007-06-30 11:19:47 sezero Exp $
 */
 
 
@@ -237,14 +237,13 @@ float	timescale = 0.01;
 
 void R_EntityParticles (entity_t *ent)
 {
-	int		i, count;
+	int		i;
 	particle_t	*p;
 	float		angle, dist;
-	float		sr, sp, sy, cr, cp, cy;
+	float		sp, sy, cp, cy;
 	vec3_t		forward;
 
 	dist = 64;
-	count = 50;
 
 	if (!avelocities[0][0])
 	{
@@ -263,8 +262,6 @@ void R_EntityParticles (entity_t *ent)
 		sp = sin(angle);
 		cp = cos(angle);
 		angle = cl.time * avelocities[i][2];
-		sr = sin(angle);
-		cr = cos(angle);
 
 		forward[0] = cp*cy;
 		forward[1] = cp*sy;

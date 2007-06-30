@@ -2,7 +2,7 @@
 	sv_phys.c
 	sv physics
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Server/sv_phys.c,v 1.15 2007-05-13 11:59:43 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Server/sv_phys.c,v 1.16 2007-06-30 11:19:48 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -686,7 +686,7 @@ static void SV_PushRotate (edict_t *pusher, float movetime)
 	vec3_t		org, org2;
 	vec3_t		forward, right, up;
 	edict_t		*ground;
-	edict_t		*master;
+//	edict_t		*master;
 	edict_t		*slave;
 	int			slaves_moved;
 	qboolean	moveit;
@@ -711,9 +711,9 @@ static void SV_PushRotate (edict_t *pusher, float movetime)
 	pusher->v.ltime += movetime;
 	SV_LinkEdict (pusher, false);
 
-	master = pusher;
 	slaves_moved = 0;
-/*	while (master->v.aiment)
+/*	master = pusher;
+	while (master->v.aiment)
 	{
 		slave = PROG_TO_EDICT(master->v.aiment);
 
@@ -919,7 +919,7 @@ static void SV_PushRotate (edict_t *pusher, float movetime)
 	vec3_t		org, org2, check_center;
 	vec3_t		forward, right, up;
 	edict_t		*ground;
-	edict_t		*master;
+//	edict_t		*master;
 	edict_t		*slave;
 	int			slaves_moved;
 	qboolean	moveit;
@@ -952,9 +952,9 @@ static void SV_PushRotate (edict_t *pusher, float movetime)
 	pusher->v.ltime += movetime;
 	SV_LinkEdict (pusher, false);
 
-	master = pusher;
 	slaves_moved = 0;
-/*	while (master->v.aiment)
+/*	master = pusher;
+	while (master->v.aiment)
 	{
 		slave = PROG_TO_EDICT(master->v.aiment);
 

@@ -1,7 +1,7 @@
 /*
 	r_light.c
 
-	$Id: gl_rlight.c,v 1.15 2007-05-09 18:10:16 sezero Exp $
+	$Id: gl_rlight.c,v 1.16 2007-06-30 11:19:47 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -335,7 +335,6 @@ LIGHT SAMPLING
 =============================================================================
 */
 
-static mplane_t		*lightplane;
 vec3_t			lightspot;
 
 static int RecursiveLightPoint (mnode_t *node, vec3_t start, vec3_t end)
@@ -382,7 +381,6 @@ static int RecursiveLightPoint (mnode_t *node, vec3_t start, vec3_t end)
 
 // check for impact on this node
 	VectorCopy (mid, lightspot);
-	lightplane = plane;
 
 	surf = cl.worldmodel->surfaces + node->firstsurface;
 	for (i = 0; i < node->numsurfaces; i++, surf++)
@@ -495,7 +493,6 @@ loc0:
 		msurface_t	*surf;
 // check for impact on this node
 		VectorCopy (mid, lightspot);
-		lightplane = node->plane;
 		surf = cl.worldmodel->surfaces + node->firstsurface;
 		for (i = 0; i < node->numsurfaces; i++, surf++)
 		{

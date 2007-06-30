@@ -2,7 +2,7 @@
 	gl_mesh.c
 	triangle model functions
 
-	$Id: gl_mesh.c,v 1.12 2007-04-05 07:44:56 sezero Exp $
+	$Id: gl_mesh.c,v 1.13 2007-06-30 11:19:47 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -15,7 +15,6 @@ ALIAS MODEL DISPLAY LIST GENERATION
 =================================================================
 */
 
-static model_t		*aliasmodel;
 static aliashdr_t	*paliashdr;
 
 static qboolean		used[8192];
@@ -321,7 +320,6 @@ void GL_MakeAliasModelDisplayLists (model_t *m, aliashdr_t *hdr)
 	FILE	*f;
 #endif
 
-	aliasmodel = m;
 	paliashdr = hdr;	// (aliashdr_t *)Mod_Extradata (m);
 
 	//

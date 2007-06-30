@@ -2,7 +2,7 @@
 	r_surf.c
 	surface-related refresh code
 
-	$Id: gl_rsurf.c,v 1.32 2007-05-13 11:59:01 sezero Exp $
+	$Id: gl_rsurf.c,v 1.33 2007-06-30 11:19:47 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -1497,7 +1497,6 @@ static void BuildSurfaceDisplayList (msurface_t *fa)
 {
 	int		i, lindex, lnumverts;
 	medge_t		*pedges, *r_pedge;
-	int		vertpage;
 	float		*vec;
 	float		s, t;
 	glpoly_t	*poly;
@@ -1505,7 +1504,6 @@ static void BuildSurfaceDisplayList (msurface_t *fa)
 // reconstruct the polygon
 	pedges = currentmodel->edges;
 	lnumverts = fa->numedges;
-	vertpage = 0;
 
 	//
 	// draw texture

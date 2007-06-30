@@ -1,7 +1,7 @@
 /*
 	r_edge.c
 
-	$Id: r_edge.c,v 1.8 2007-06-16 14:41:35 sezero Exp $
+	$Id: r_edge.c,v 1.9 2007-06-30 11:19:43 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -201,7 +201,7 @@ addedge:
 	} while ((edgestoadd = next_edge) != NULL);
 }
 
-static qboolean	errorstate;
+//static qboolean	errorstate;
 /*
 ==============
 R_RemoveEdges
@@ -214,7 +214,7 @@ static void R_RemoveEdges (edge_t *pedge)
 		if (!pedge->next || !pedge->prev)
 		{
 			Con_Printf("Bad!!!!");
-			errorstate = true;
+		//	errorstate = true;
 			break;
 		}
 		pedge->next->prev = pedge->prev;

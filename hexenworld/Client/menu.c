@@ -1,7 +1,7 @@
 /*
 	menu.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/menu.c,v 1.66 2007-05-09 18:10:17 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/menu.c,v 1.67 2007-06-30 11:19:47 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -1444,10 +1444,9 @@ static void M_UnbindCommand (const char *command)
 
 static void M_Keys_Draw (void)
 {
-	int		i, l;
+	int		i, x, y;
 	int		keys[2];
 	char		*name;
-	int		x, y;
 //	qpic_t	*p;
 
 	ScrollTitle("gfx/menu/title6.lmp");
@@ -1473,8 +1472,6 @@ static void M_Keys_Draw (void)
 		y = 80 + 8*i;
 
 		M_Print (16, y, bindnames[i+keys_top][1]);
-
-		l = strlen (bindnames[i+keys_top][0]);
 
 		M_FindKeysForCommand (bindnames[i+keys_top][0], keys);
 

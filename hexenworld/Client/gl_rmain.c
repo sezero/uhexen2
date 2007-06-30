@@ -1,7 +1,7 @@
 /*
 	gl_main.c
 
-	$Id: gl_rmain.c,v 1.48 2007-05-13 11:59:00 sezero Exp $
+	$Id: gl_rmain.c,v 1.49 2007-06-30 11:19:47 sezero Exp $
 */
 
 
@@ -414,7 +414,7 @@ static void GL_DrawAliasFrame (aliashdr_t *paliashdr, int posenum)
 	float		r, g, b;
 	byte		ColorShade;
 	char		client_team[16], this_team[16];
-	qboolean	OnTeam = false;
+//	qboolean	OnTeam = false;
 	int			i, my_team, ve_team;
 
 	lastposenum = posenum;
@@ -453,7 +453,7 @@ static void GL_DrawAliasFrame (aliashdr_t *paliashdr, int posenum)
 			else if (ve_team == ST_DEFENDER)
 			{
 				// tint gold since we can't have seperate skins
-				OnTeam = true;
+			//	OnTeam = true;
 				ColorShade = 165;
 			}
 		}
@@ -467,7 +467,7 @@ static void GL_DrawAliasFrame (aliashdr_t *paliashdr, int posenum)
 				this_team[15] = 0;
 				if (Q_strcasecmp(client_team, this_team) == 0)
 				{
-					OnTeam = true;
+				//	OnTeam = true;
 					ColorShade = r_teamcolor.value;
 				}
 			}

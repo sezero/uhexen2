@@ -2,7 +2,7 @@
 	gl_draw.c
 	this is the only file outside the refresh that touches the vid buffer
 
-	$Id: gl_draw.c,v 1.96 2007-06-15 11:05:42 sezero Exp $
+	$Id: gl_draw.c,v 1.97 2007-06-30 11:19:47 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -542,10 +542,10 @@ void Draw_Character (int x, int y, const unsigned int num)
 	unsigned int	c = num;
 	float	frow, fcol, xsize,ysize;
 
+	c &= 511;
+
 	if (c == 32)
 		return;		// space
-
-	c &= 511;
 
 	if (y <= -8)
 		return;		// totally off screen

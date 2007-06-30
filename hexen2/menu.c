@@ -1,7 +1,7 @@
 /*
 	menu.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/menu.c,v 1.91 2007-06-26 20:19:32 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/menu.c,v 1.92 2007-06-30 11:19:43 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -2622,10 +2622,9 @@ static void M_UnbindCommand (const char *command)
 
 static void M_Keys_Draw (void)
 {
-	int		i, l;
+	int		i, x, y;
 	int		keys[2];
 	char		*name;
-	int		x, y;
 //	qpic_t	*p;
 
 	ScrollTitle("gfx/menu/title6.lmp");
@@ -2651,8 +2650,6 @@ static void M_Keys_Draw (void)
 		y = 80 + 8*i;
 
 		M_Print (16, y, bindnames[i+keys_top][1]);
-
-		l = strlen (bindnames[i+keys_top][0]);
 
 		M_FindKeysForCommand (bindnames[i+keys_top][0], keys);
 
@@ -3720,8 +3717,8 @@ static const struct
 static int	startepisode;
 static int	startlevel;
 static int	maxplayers;
-static qboolean m_serverInfoMessage = false;
-static double	m_serverInfoMessageTime;
+//static qboolean m_serverInfoMessage = false;
+//static double	m_serverInfoMessageTime;
 
 static int gameoptions_cursor_table[] = {40, 56, 64, 72, 80, 88, 96, 104, 112, 128, 136};
 #define	NUM_GAMEOPTIONS	11
@@ -3889,8 +3886,8 @@ static void M_NetStart_Change (int dir)
 		if (maxplayers > svs.maxclientslimit)
 		{
 			maxplayers = svs.maxclientslimit;
-			m_serverInfoMessage = true;
-			m_serverInfoMessageTime = realtime;
+		//	m_serverInfoMessage = true;
+		//	m_serverInfoMessageTime = realtime;
 		}
 		if (maxplayers < 2)
 			maxplayers = 2;

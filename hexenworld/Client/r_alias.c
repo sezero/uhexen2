@@ -2,7 +2,7 @@
 	r_alias.c
 	routines for setting up to draw alias models
 
-	$Id: r_alias.c,v 1.11 2007-06-16 14:41:41 sezero Exp $
+	$Id: r_alias.c,v 1.12 2007-06-30 11:19:47 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -966,7 +966,7 @@ void R_AliasDrawModel (alight_t *plighting)
 	auxvert_t	auxverts[MAXALIASVERTS];
 	finalvert_t	finalverts[MAXALIASVERTS + ((CACHE_SIZE - 1) / sizeof(finalvert_t)) + 1];
 	char		client_team[16], this_team[16];
-	qboolean	OnTeam = false;
+//	qboolean	OnTeam = false;
 	byte		ColorShade, *ColorMap, *OldColorMap;
 
 	r_amodels_drawn++;
@@ -1035,7 +1035,7 @@ void R_AliasDrawModel (alight_t *plighting)
 				cl.players[cl.playernum].playerclass == CLASS_DWARF &&
 				currententity->skinnum == 101)
 		{	//invisible player to dwarf
-			OnTeam = true;
+		//	OnTeam = true;
 			ColorShade = 141;
 			cl.players[i].shownames_off = false;
 		}
@@ -1043,7 +1043,7 @@ void R_AliasDrawModel (alight_t *plighting)
 				cl.players[cl.playernum].playerclass == CLASS_DWARF &&
 				plighting->ambientlight + plighting->shadelight < 151)
 		{
-			OnTeam = true;
+		//	OnTeam = true;
 			ColorShade = 138 + (int)((plighting->ambientlight + plighting->shadelight) / 30);
 			if (currententity->sourcecolormap)
 				ColorMap = currententity->sourcecolormap;
@@ -1063,7 +1063,7 @@ void R_AliasDrawModel (alight_t *plighting)
 				this_team[15] = 0;
 				if (Q_strcasecmp(client_team, this_team) == 0)
 				{
-					OnTeam = true;
+				//	OnTeam = true;
 					ColorShade = r_teamcolor.value;
 					if (currententity->sourcecolormap)
 						ColorMap = currententity->sourcecolormap;

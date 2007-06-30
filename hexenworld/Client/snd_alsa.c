@@ -1,6 +1,6 @@
 /*
 	snd_alsa.c
-	$Id: snd_alsa.c,v 1.29 2007-06-26 20:19:37 sezero Exp $
+	$Id: snd_alsa.c,v 1.30 2007-06-30 11:19:47 sezero Exp $
 
 	ALSA 1.0 sound driver for Linux Hexen II
 
@@ -71,9 +71,6 @@ static qboolean load_libasound (void)
 #undef HX2_ALSA
 	return true;
 }
-
-#define snd_pcm_hw_params_sizeof hx2snd_pcm_hw_params_sizeof
-#define snd_pcm_sw_params_sizeof hx2snd_pcm_sw_params_sizeof
 
 #if defined(__GNUC__)
 #define ALSA_CHECK_ERR(check, fmt, args...) {		\

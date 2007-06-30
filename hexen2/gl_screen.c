@@ -2,7 +2,7 @@
 	screen.c
 	master for refresh, status bar, console, chat, notify, etc
 
-	$Id: gl_screen.c,v 1.48 2007-05-13 11:58:29 sezero Exp $
+	$Id: gl_screen.c,v 1.49 2007-06-30 11:19:43 sezero Exp $
 */
 
 /*=============================================================================
@@ -69,7 +69,6 @@ int			scr_copytop;		// only the refresh window will be updated
 int			scr_copyeverything;	// unless these variables are flagged
 int			scr_topupdate;
 int			scr_fullupdate;
-static qboolean		scr_needfull = false;
 
 static int		clearconsole;
 int			clearnotify;
@@ -86,7 +85,6 @@ static	cvar_t	scr_centertime = {"scr_centertime", "4", CVAR_NONE};
 static	cvar_t	scr_showram = {"showram", "1", CVAR_NONE};
 static	cvar_t	scr_showturtle = {"showturtle", "0", CVAR_NONE};
 static	cvar_t	scr_showpause = {"showpause", "1", CVAR_NONE};
-static	cvar_t	scr_printspeed = {"scr_printspeed", "8", CVAR_NONE};
 
 static qboolean	scr_drawloading;
 static int	ls_offset;
@@ -119,11 +117,9 @@ CENTER PRINTING
 */
 
 static char	scr_centerstring[1024];
-static float	scr_centertime_start;	// for slow victory printing
 float		scr_centertime_off;
 static int	scr_center_lines;
 static int	scr_erase_lines;
-static int	scr_erase_center;
 
 #define	MAXLINES	27
 static int	lines;
@@ -172,9 +168,8 @@ static void UpdateInfoMessage (void)
 
 static void FindTextBreaks (const char *message, int Width)
 {
-	int	length, pos, start, lastspace, oldlast;
+	int	pos, start, lastspace, oldlast;
 
-	length = strlen(message);
 	lines = pos = start = 0;
 	lastspace = -1;
 
@@ -222,7 +217,6 @@ void SCR_CenterPrint (const char *str)
 {
 	strncpy (scr_centerstring, str, sizeof(scr_centerstring)-1);
 	scr_centertime_off = scr_centertime.value;
-	scr_centertime_start = cl.time;
 
 	FindTextBreaks(scr_centerstring, 38);
 	scr_center_lines = lines;
@@ -232,16 +226,7 @@ static void SCR_DrawCenterString (void)
 {
 	int		i;
 	int		bx, by;
-	int		remaining;
 	char	temp[80];
-
-// the finale prints the characters one at a time
-	if (cl.intermission)
-		remaining = scr_printspeed.value * (cl.time - scr_centertime_start);
-	else
-		remaining = 9999;
-
-	scr_erase_center = 0;
 
 	FindTextBreaks(scr_centerstring, 38);
 
@@ -394,7 +379,6 @@ void SCR_Init (void)
 		Cvar_RegisterVariable (&scr_showturtle);
 		Cvar_RegisterVariable (&scr_showpause);
 		Cvar_RegisterVariable (&scr_centertime);
-		Cvar_RegisterVariable (&scr_printspeed);
 
 		// register our commands
 		Cmd_AddCommand ("screenshot",SCR_ScreenShot_f);
@@ -850,8 +834,6 @@ static void Plaque_Draw (const char *message, qboolean AlwaysDraw)
 	if (!*message)
 		return;
 
-	scr_needfull = true;
-
 	FindTextBreaks(message, PLAQUE_WIDTH);
 
 	by = ((25-lines) * 8) / 2;
@@ -877,8 +859,6 @@ static void Info_Plaque_Draw (const char *message)
 
 	if (!pr_info_string_count || !*message)
 		return;
-
-	scr_needfull = true;
 
 	FindTextBreaks(message, PLAQUE_WIDTH+4);
 
@@ -908,8 +888,6 @@ static void Bottom_Plaque_Draw (const char *message)
 
 	if (!*message)
 		return;
-
-	scr_needfull = true;
 
 	FindTextBreaks(message, PLAQUE_WIDTH);
 

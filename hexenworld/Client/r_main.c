@@ -1,7 +1,7 @@
 /*
 	r_main.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/r_main.c,v 1.20 2007-06-16 14:41:41 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/r_main.c,v 1.21 2007-06-30 11:19:47 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -1194,8 +1194,8 @@ void R_DrawName (vec3_t origin, char *Name, int Red)
 {
 	vec3_t	local, transformed;
 	float	zi;
-	byte	*pdest;
-	short	*pz;
+//	byte	*pdest;
+//	short	*pz;
 	int	izi, u, v;
 
 	if (!Name)
@@ -1227,8 +1227,8 @@ void R_DrawName (vec3_t origin, char *Name, int Red)
 		return;
 	}
 
-	pz = d_pzbuffer + (d_zwidth * v) + u;
-	pdest = d_viewbuffer + d_scantable[v] + u;
+//	pz = d_pzbuffer + (d_zwidth * v) + u;
+//	pdest = d_viewbuffer + d_scantable[v] + u;
 	izi = (int)(zi * 0x8000);
 	izi += 14;
 

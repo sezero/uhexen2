@@ -2,7 +2,7 @@
 	draw.c
 	This is the only file outside the refresh that touches the vid buffer.
 
-	$Id: draw.c,v 1.35 2007-06-15 11:05:42 sezero Exp $
+	$Id: draw.c,v 1.36 2007-06-30 11:19:47 sezero Exp $
 */
 
 
@@ -245,8 +245,6 @@ void Draw_Character (int x, int y, const unsigned int num)
 		return;			// totally off screen
 
 	if (y > vid.height - 8 || x < 0 || x > vid.width - 8)
-		return;
-	if (c < 0 || c > 511)
 		return;
 
 	row = c>>5;
@@ -1685,7 +1683,7 @@ Draw_FadeScreen
 */
 void Draw_FadeScreen (void)
 {
-	int			x,y,i;
+	int			x, y;
 	byte		*pbuf;
 	int temp[2048], *pos;
 
@@ -1695,8 +1693,6 @@ void Draw_FadeScreen (void)
 
 	for (x = 0; x < 2048; x++)
 		temp[x] = (164 + rand() % 6) * 256;
-
-	i = 0;
 
 	for (y = 0; y < vid.height; y++)
 	{

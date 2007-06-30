@@ -2,7 +2,7 @@
 	cl_ents.c
 	entity parsing and management
 
-	$Id: cl_ents.c,v 1.16 2007-05-15 13:42:24 sezero Exp $
+	$Id: cl_ents.c,v 1.17 2007-06-30 11:19:47 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -677,14 +677,14 @@ static void CL_LinkPacketEntities (void)
 	float				f;
 	model_t				*model;
 	vec3_t				old_origin;
-	float				autorotate;
+//	float				autorotate;
 	int					i;
 	int					pnum;
 	dlight_t			*dl;
 
 	pack = &cl.frames[cls.netchan.incoming_sequence&UPDATE_MASK].packet_entities;
 
-	autorotate = anglemod(100*cl.time);
+//	autorotate = anglemod(100*cl.time);
 
 	f = 0;		// FIXME: no interpolation right now
 

@@ -2,7 +2,7 @@
 	pr_cmds.c
 	prog commands
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/pr_cmds.c,v 1.44 2007-05-15 11:38:37 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/pr_cmds.c,v 1.45 2007-06-30 11:19:43 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -2707,7 +2707,7 @@ static void PF_rain_go (void)
 {
 	float	*min_org, *max_org, *e_size;
 	float	*dir;
-	vec3_t	org, org2;
+	vec3_t	org;
 	int	color, count, x_dir, y_dir;
 
 	min_org = G_VECTOR (OFS_PARM0);
@@ -2720,10 +2720,6 @@ static void PF_rain_go (void)
 	org[0] = min_org[0];
 	org[1] = min_org[1];
 	org[2] = max_org[2];
-
-	org2[0] = e_size[0];
-	org2[1] = e_size[1];
-	org2[2] = e_size[2];
 
 	x_dir = dir[0];
 	y_dir = dir[1];
