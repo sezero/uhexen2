@@ -6,6 +6,11 @@ TODO:
 - Add joystick support through sdl
 - Add pthread support to the utilities
 - Do a clean-up of the opengl system
+- Software Renderer, d_edge.c and r_edge.c, non-intel code:
+  Fix the FoundTrans / TransCount mess.
+- Software Renderer, d_polyse.c, non-intel code: Correctly
+  implement D_PolysetDrawFinalVerts and friends, and enable
+  them in r_alias.c?
 - Add sequencer support for midi
 - Re-write midi code for wildmidi and /or remove the SDL_mixer
   dependancy: I don't like opening the sound device twice.

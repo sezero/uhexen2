@@ -10,10 +10,6 @@ Known Bugs
   partially or completely. If you suffer from that problem, use Alsa
   or SDL sound.
 
-- Software Renderer: The non-intel code have some issues drawing spans:
-  it gets a little crazy sometimes and draws a span from a point toward
-  the rightmost end of the screen at certain places. to be looked into.
-
 - Software Renderer, non-intel code; village2 level, the hidden puzzle
   portal where you need the gem of seeing in order to see it: depending
   on the angle you are looking at it, the foreground to the portal may
