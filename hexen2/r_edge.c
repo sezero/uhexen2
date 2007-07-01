@@ -1,7 +1,7 @@
 /*
 	r_edge.c
 
-	$Id: r_edge.c,v 1.9 2007-06-30 11:19:43 sezero Exp $
+	$Id: r_edge.c,v 1.10 2007-07-01 06:38:09 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -456,6 +456,15 @@ static void R_TrailingEdge (surf_t *surf, edge_t *edge)
 // don't generate a span if this is an inverted span, with the end
 // edge preceding the start edge (that is, we haven't seen the
 // start edge yet)
+
+#if !id386
+	if ((surf->flags & SURF_TRANSLUCENT))
+	{
+		FoundTrans = true;
+		// inverted span
+		return;
+	}
+#endif
 	if (--surf->spanstate == 0)
 	{
 		if (surf->insubmodel)
@@ -465,7 +474,11 @@ static void R_TrailingEdge (surf_t *surf, edge_t *edge)
 		{
 		// emit a span (current top going away)
 			iu = edge->u >> 20;
+#if !id386
+			if (iu > surf->last_u)
+#else
 			if (iu > surf->last_u && !(surf->flags & SURF_TRANSLUCENT))
+#endif
 			{
 				span = span_p++;
 				span->u = surf->last_u;
@@ -486,7 +499,12 @@ static void R_TrailingEdge (surf_t *surf, edge_t *edge)
 		surf->prev->next = surf->next;
 		surf->next->prev = surf->prev;
 	}
-	else surf->spanstate = 0;
+#if id386
+	else
+	{
+		surf->spanstate = 0;
+	}
+#endif
 }
 
 #if	!id386
@@ -814,7 +832,7 @@ static void R_GenerateSpans (void)
 	surf_t		*surf;
 
 	r_bmodelactive = 0;
-	FoundTrans = false;
+	FoundTrans = false;	/* FIXME ! */
 
 // clear active surfaces to just the background surface
 	surfaces[1].next = surfaces[1].prev = &surfaces[1];
@@ -1049,7 +1067,7 @@ void R_ScanEdges (qboolean Translucent)
 			}
 
 		// clear the surface span pointers
-			for (s = &surfaces[1] ; s<surface_p ; s++)
+			for (s = &surfaces[1] ; s < surface_p ; s++)
 				s->spans = NULL;
 
 			span_p = basespan_p;
