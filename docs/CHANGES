@@ -3,6 +3,12 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2007-07-01 (CVS):
+    * Fix (work around) for the spans problem of the non-intel software
+      renderer code. From Juraj Styk. Actually, the whole FoundTrans and
+      TransCount usage will need a serious audit/clean-up.
+    * updated the list of known bugs. updated the todo list.
+
 2007-06-30 (CVS):
     * sys.h: minor clean-ups, removed stale comments.
     * updated the mkrelease script.
