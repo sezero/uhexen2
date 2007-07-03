@@ -1,15 +1,13 @@
-The asm files we use are *.asm in nasm syntax, and are actually
-in the game trees.  The *.s files in the id_asm directory are
+The asm files we use are *.asm in nasm syntax, and actually are
+in the game trees.  The *.s files in the asm_id directory are
 from iD's quake source and they have comments in them. The masm
 files in the asm_raven directory are from Raven's hexen2 source.
 Unfortunately, not all hexen2 asm code are identical to their
 quake1 counterparts. In addition, there are additional hexen2
-specific ones..  The original q1 asm have their C equivalents in
-some way, but the hexen2 specific ones don't, so the code is more
-difficult to port.
+specific ones (translucency).  The original q1 asm have their C
+equivalents, but the hexen2 specific ones didn't, so the code was
+more difficult to port.  As of Hammer of Thyrion 1.4.2, support
+for non-intel cpus was added to the software renderer. There are
+still a few rough edges, but it is a working solution.  The asm
+files here are for reference.
 
-From Dan Olson:  " The code isn't compilable on non-intel until
-all of the asm is taken out. Don't worry about the id386 define
-*yet*, and even after all of the assembly is replaced, you may
-still need it defined for non-x86  compiles.  The eventual goal
-should probably be to get rid of all x86 specific stuff. "

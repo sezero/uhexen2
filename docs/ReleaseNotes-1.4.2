@@ -87,8 +87,7 @@ Video:
 
 Software Renderer:
 ------------------
-- Added support for non-intel cpus. Not as perfect as the intel code, yet,
-  but it is a very good start.
+- Added support for non-intel cpus: x86 assembly is not needed anymore.
 - Fixed a few endianness issues.
 - Added ability to load external wal texture files instead of internal pixel
   data of the brush model (depends on the new r_texture_external cvar).
@@ -142,9 +141,14 @@ Utilities:
 - Several fixes in dcc.
 
 Other:
-----------------------
+------
 - Imported the latest xdelta-1.1 sources into the tree.
 - Started a large scale attempt at improving const-correctness.
 - Updated inline commentaries.
 - A lot of code clean-up all over the tree.
+
+Acknowledgement:
+----------------
+Many thanks to Juraj Styk for his help and for the code he provided for the
+non-intel software renderer support.
 
