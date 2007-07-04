@@ -5,7 +5,7 @@
 	models are the only shared resource between a client and server
 	running on the same machine.
 
-	$Id: model.c,v 1.25 2007-05-13 12:04:47 sezero Exp $
+	$Id: model.c,v 1.26 2007-07-04 13:36:09 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -891,7 +891,6 @@ static void Mod_LoadFaces (lump_t *l)
 				out->texturemins[i] = -8192;
 			}
 
-		    if (r_transwater.integer)
 			if ( (!Q_strncasecmp(out->texinfo->texture->name,"*rtex078",8)) ||
 					(!Q_strncasecmp(out->texinfo->texture->name,"*lowlight",9)) )
 				out->flags |= SURF_TRANSLUCENT;
