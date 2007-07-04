@@ -2,7 +2,7 @@
 	gl_mesh.c
 	triangle model functions
 
-	$Id: gl_mesh.c,v 1.14 2007-06-30 11:19:43 sezero Exp $
+	$Id: gl_mesh.c,v 1.15 2007-07-04 18:16:41 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -14,8 +14,6 @@ ALIAS MODEL DISPLAY LIST GENERATION
 
 =================================================================
 */
-
-static aliashdr_t	*paliashdr;
 
 static qboolean		used[8192];
 
@@ -320,8 +318,6 @@ void GL_MakeAliasModelDisplayLists (model_t *m, aliashdr_t *hdr)
 	FILE	*f;
 #endif
 
-	paliashdr = hdr;	// (aliashdr_t *)Mod_Extradata (m);
-
 	//
 	// look for a cached version
 	//
@@ -379,15 +375,15 @@ void GL_MakeAliasModelDisplayLists (model_t *m, aliashdr_t *hdr)
 
 	// save the data out
 
-	paliashdr->poseverts = numorder;
+	hdr->poseverts = numorder;
 
 	cmds = Hunk_AllocName (numcommands * 4, "cmds");
-	paliashdr->commands = (byte *)cmds - (byte *)paliashdr;
+	hdr->commands = (byte *)cmds - (byte *)hdr;
 	memcpy (cmds, commands, numcommands * 4);
 
-	verts = Hunk_AllocName (paliashdr->numposes * paliashdr->poseverts * sizeof(trivertx_t), "verts");
-	paliashdr->posedata = (byte *)verts - (byte *)paliashdr;
-	for (i = 0; i < paliashdr->numposes; i++)
+	verts = Hunk_AllocName (hdr->numposes * hdr->poseverts * sizeof(trivertx_t), "verts");
+	hdr->posedata = (byte *)verts - (byte *)hdr;
+	for (i = 0; i < hdr->numposes; i++)
 	{
 		for (j = 0; j < numorder; j++)
 			*verts++ = poseverts[i][vertexorder[j]];
