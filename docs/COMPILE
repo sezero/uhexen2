@@ -52,19 +52,20 @@ GCC	:	GNU C Compiler. No other compilers (such as LCC, MS VC,
 
 		Gcc-4.0 quirks:
 		Gcc 4.0.x series has a problem when unit-at-a-time mode
-		is active, such as with optimizations -O2 and -O3, with
-		the resulting hexen2 binary segfaulting when a crusader
-		class player uses his tome'd ice mace.
-		When the build system detects gcc-4.0.x series compilers,
-		it automatically disables unit-at-a-time, therefore there
-		will be no problems with the default build options.
-		With GCC 4.1.0, this problem doesn't exist.
-		The blocking against unit-at-a-time mode can be forcefully
-		enabled/disabled by adding a DISABLE_UNIT_AT_A_TIME=yes
-		(or no) statement on the make commandline or by exporting
-		it as an environment variable.
-		This problem showed up after the cmd layer synchronization
-		between hexen2 and hexenworld trees (october 2005).
+		is active, such as with optimizations -O2 and -O3: With
+		H.o.T versions up to 1.4.2-rc1, where the command/script
+		buffer was assigned the address of a static stack buffer
+		in cmd.c, the resulting hexen2 binary segfaulted when a
+		crusader class player fired his tome'd ice mace.  The
+		problem used to go away if the binary was compiled with
+		the -fno-unit-at-a-time switch. With gcc 2.x, 3.x, 4.1.x
+		and 4.2.x, however, the problem didn't exist.
+		We now allocate dynamically, either by Hunk_Alloc or by
+		malloc, and there are no problems. If you still run into
+		unexpected segfaults, try re-compiling your binaries with
+		the -fno-unit-at-a-time switch: For that, you can edit
+		the Makefile, or you can specify it on the command line:
+		make NO_UNIT_AT_A_TIME=1 [other options]
 
 Libraries needed:
 
