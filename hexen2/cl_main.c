@@ -2,7 +2,7 @@
 	cl_main.c
 	client main loop
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cl_main.c,v 1.39 2007-05-13 11:58:28 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cl_main.c,v 1.40 2007-07-04 08:49:58 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -32,7 +32,6 @@ cvar_t	m_side = {"m_side", "0.8", CVAR_ARCHIVE};
 
 client_static_t	cls;
 client_state_t	cl;
-static byte	cls_message_buffer[1024];
 // FIXME: put these on hunk?
 efrag_t			cl_efrags[MAX_EFRAGS];
 entity_t		cl_entities[MAX_EDICTS];
@@ -929,7 +928,7 @@ CL_Init
 */
 void CL_Init (void)
 {
-	SZ_Init (&cls.message, cls_message_buffer, sizeof(cls_message_buffer));
+	SZ_Init (&cls.message, NULL, 1024);
 
 	CL_InitInput ();
 	CL_InitTEnts ();

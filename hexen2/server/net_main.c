@@ -2,7 +2,7 @@
 	net_main.c
 	main networking module
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/server/net_main.c,v 1.14 2007-06-26 13:37:21 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/server/net_main.c,v 1.15 2007-07-04 08:49:59 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -23,7 +23,7 @@ char		my_tcpip_address[NET_NAMELEN];
 static qboolean	listening = false;
 
 sizebuf_t		net_message;
-static byte		net_message_buffer[NET_MAXMESSAGE];
+//static byte		net_message_buffer[NET_MAXMESSAGE];
 int			net_activeconnections = 0;
 
 int messagesSent = 0;
@@ -511,7 +511,8 @@ void NET_Init (void)
 	}
 
 	// allocate space for network message buffer
-	SZ_Init (&net_message, net_message_buffer, sizeof(net_message_buffer));
+//	SZ_Init (&net_message, net_message_buffer, sizeof(net_message_buffer));
+	SZ_Init (&net_message, NULL, NET_MAXMESSAGE);
 
 	Cvar_RegisterVariable (&net_messagetimeout);
 	Cvar_RegisterVariable (&hostname);

@@ -2,7 +2,7 @@
 	sizebuf.c
 	sized buffers
 
-	$Id: sizebuf.c,v 1.4 2007-05-13 11:59:02 sezero Exp $
+	$Id: sizebuf.c,v 1.5 2007-07-04 08:49:59 sezero Exp $
 */
 
 #include "q_types.h"
@@ -12,13 +12,24 @@
 #include "sys.h"
 #include "printsys.h"
 #include "sizebuf.h"
+#include "zone.h"
 
 
 void SZ_Init (sizebuf_t *buf, byte *data, int length)
 {
 	memset (buf, 0, sizeof(*buf));
-	buf->data = data;
-	buf->maxsize = length;
+	if (data != NULL)
+	{
+		buf->data = data;
+		buf->maxsize = length;
+	}
+	else
+	{
+		if (length < 256)
+			length = 256;
+		buf->data = (byte *) Hunk_AllocName (length, "sizebuf");
+		buf->maxsize = length;
+	}
 }
 
 void SZ_Clear (sizebuf_t *buf)

@@ -2,13 +2,16 @@
 	cmd.c
 	Quake script command processing module
 
-	$Id: cmd.c,v 1.34 2007-05-13 11:58:28 sezero Exp $
+	$Id: cmd.c,v 1.35 2007-07-04 08:49:58 sezero Exp $
 */
 
 #include "quakedef.h"
 
 #define	MAX_ALIAS_NAME	32
 #define	MAX_ARGS	80
+
+static sizebuf_t	cmd_text;
+//static byte	cmd_text_buf[8192];
 
 cmd_source_t	cmd_source;
 
@@ -61,9 +64,6 @@ static void Cmd_Wait_f (void)
 =============================================================================
 */
 
-static sizebuf_t	cmd_text;
-static byte	cmd_text_buf[8192];
-
 /*
 ============
 Cbuf_Init
@@ -71,8 +71,8 @@ Cbuf_Init
 */
 void Cbuf_Init (void)
 {
-	// space for commands and script files
-	SZ_Init (&cmd_text, cmd_text_buf, sizeof(cmd_text_buf));
+//	SZ_Init (&cmd_text, cmd_text_buf, sizeof(cmd_text_buf));
+	SZ_Init (&cmd_text, NULL, 8192);
 }
 
 
