@@ -38,6 +38,8 @@ General:
 - Removed the useless net_vcr facility.
 - Tweaked the init sequence.
 - Changed the remnants of malloc usage into hunk or zone allocations.
+- Stabilized the gcc-4.0.x unit-at-a-time mode compilations by allocating
+  several sizebufs dynamically instead of pointing to a static buffer.
 - Mac OS X: Ensured that the basedir always stays the same (fix was added
   in 1.4.1-rev1).
 
