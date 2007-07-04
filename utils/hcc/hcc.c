@@ -1,7 +1,7 @@
 /*
 	hcc.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/utils/hcc/hcc.c,v 1.11 2007-06-26 20:19:38 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/utils/hcc/hcc.c,v 1.12 2007-07-04 18:54:58 sezero Exp $
 
 	Hash table modifications based on fastqcc by Jonathan Roy
 	(roy@atlantic.net).
@@ -119,11 +119,6 @@ static void WriteFiles (void)
 int	CopyString (const char *str)
 {
 	int		old;
-
-	if (!Q_strcasecmp(str,"gfx/palette.lmp"))
-	{
-		old = 0;
-	}
 
 	old = strofs;
 	strcpy (strings+strofs, str);
