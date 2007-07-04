@@ -1,5 +1,5 @@
 # GNU Makefile for (gl)hexen2 client/server binaries using GCC.
-# $Header: /home/ozzie/Download/0000/uhexen2/hexen2/Makefile,v 1.67 2007-06-15 11:00:31 sezero Exp $
+# $Header: /home/ozzie/Download/0000/uhexen2/hexen2/Makefile,v 1.68 2007-07-04 08:53:07 sezero Exp $
 #
 # Type "make help" to see the valid targets.
 #
@@ -161,16 +161,8 @@ endif
 ifndef DEBUG
 CFLAGS := $(CPUFLAGS) -O2 -Wall -ffast-math -fexpensive-optimizations
 
-HAVE_GCC_4_0:=$(shell sh $(UHEXEN2_TOP)/scripts/gcc40check.sh $(CC))
-DISABLE_UNIT_AT_A_TIME ?=$(HAVE_GCC_4_0)
-# this prevents some bad compilations with unit-at-a-time mode active.
-# the bug seems to appear only with gcc-4.0.x, gcc-3.x/4.1 seems fine.
-ifeq ($(DISABLE_UNIT_AT_A_TIME),yes)
+ifdef NO_UNIT_AT_A_TIME
 CFLAGS := $(CFLAGS) $(call check_gcc,-fno-unit-at-a-time,)
-else
-ifeq ($(DISABLE_UNIT_AT_A_TIME),1)
-CFLAGS := $(CFLAGS) $(call check_gcc,-fno-unit-at-a-time,)
-endif
 endif
 
 ifeq ($(OPT_EXTRA),yes)

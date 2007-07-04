@@ -1,5 +1,5 @@
 # GNU Makefile for Hexen II Dedicated Server (h2ded) using GCC.
-# $Header: /home/ozzie/Download/0000/uhexen2/hexen2/Makefile.sv,v 1.11 2007-05-15 14:25:02 sezero Exp $
+# $Header: /home/ozzie/Download/0000/uhexen2/hexen2/Makefile.sv,v 1.12 2007-07-04 08:53:07 sezero Exp $
 #
 # It is ESSENTIAL that you run make clean between different
 # types of builds or different types of targets.
@@ -60,16 +60,8 @@ endif
 ifndef DEBUG
 CFLAGS := $(CPUFLAGS) -O2 -Wall -ffast-math -fexpensive-optimizations
 
-HAVE_GCC_4_0:=$(shell sh $(UHEXEN2_TOP)/scripts/gcc40check.sh $(CC))
-DISABLE_UNIT_AT_A_TIME ?=$(HAVE_GCC_4_0)
-# this prevents some bad compilations with unit-at-a-time mode active.
-# the bug seems to appear only with gcc-4.0.x, gcc-3.x/4.1 seems fine.
-ifeq ($(DISABLE_UNIT_AT_A_TIME),yes)
+ifdef NO_UNIT_AT_A_TIME
 CFLAGS := $(CFLAGS) $(call check_gcc,-fno-unit-at-a-time,)
-else
-ifeq ($(DISABLE_UNIT_AT_A_TIME),1)
-CFLAGS := $(CFLAGS) $(call check_gcc,-fno-unit-at-a-time,)
-endif
 endif
 
 ifeq ($(OPT_EXTRA),yes)
