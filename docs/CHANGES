@@ -3,6 +3,34 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2007-07-04 (CVS):
+    * minor documentation updates.
+    * instead of pointing to a stack buffer, the command buffer is allocated
+      dynamically (Hunk_Alloc or malloc) again. with this, the hexen2 binaries
+      compiled with gcc-4.0.x in unit-at-a-time mode doesn't segfault anymore.
+      did the same thing to the client message buffer and net message buffers
+      of hexen2, as well. added the old SZ_Alloc functionality to SZ_Init in
+      order to handle allocations.
+    * adjusted the makefiles after the sizebuf allocation changes. if one
+      specifically wants to disable the unit-at-a-time mode, he can either
+      edit the the makefiles for cflags, or he can specify it on the command
+      line, like: make NO_UNIT_AT_A_TIME=1 [other options]
+    * updated the COMPILE document after the gcc-4.0.x unit-at-a-time
+      changes.
+    * documented the new SZ_Init behavior in sizebuf.h.
+    * made the cvar r_transwater to really act as an on/off switch
+      for translucency: setting of the SURF_TRANSLUCENT flag for
+      water used to depend on r_transwater in Mod_LoadFaces(), and
+      since it is only run at the level load if the cvar were set
+      to 0 at that time the flag wasn't set and water translucency
+      switching wouldn't happen. the previous behavior was probably
+      intended to avoid the translucency procedures when r_transwater
+      was set to 0. switching works now.
+    * gl_mesh.c, minor clean-up: no need for the static paliashdr pointer.
+    * utils: removed the bogus gfx/palette.lmp string check from the new
+      version of hcc.
+    * updated the release notes for the upcoming 1.4.2 version.
+
 2007-07-01 (CVS):
     * Fix (work around) for the spans problem of the non-intel software
       renderer code. From Juraj Styk. Actually, the whole FoundTrans and
