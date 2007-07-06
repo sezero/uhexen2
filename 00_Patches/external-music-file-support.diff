@@ -23,7 +23,7 @@ ready to go.
 
 
 --- midi_sdl.c~	2007-05-01 08:44:26.000000000 +0300
-+++ midi_sdl.c	2007-05-12 16:36:56.000000000 +0300
++++ midi_sdl.c	2007-07-06 15:46:16.000000000 +0300
 @@ -99,6 +99,7 @@ qboolean MIDI_Init(void)
  	int audio_channels = 2;
  	int audio_buffers = 4096;
@@ -31,7 +31,7 @@ ready to go.
 +	char	musicdir[MAX_OSPATH];
  	void	*selfsyms;
  	const SDL_version *smixer_version;
- 	SDL_version *(*Mix_Linked_Version_fp)(void) = NULL;
+ 	const SDL_version *(*Mix_Linked_Version_fp)(void) = NULL;
 @@ -169,6 +170,9 @@ bad_version:
  	if (midi_endmusicfnc)
  		Mix_HookMusicFinished(midi_endmusicfnc);
