@@ -1,5 +1,5 @@
 # GNU Makefile for lib3dfxgamma using GCC.
-# $Header: /home/ozzie/Download/0000/uhexen2/lib3dfxgamma/Makefile,v 1.6 2007-05-15 14:25:16 sezero Exp $
+# $Header: /home/ozzie/Download/0000/uhexen2/lib3dfxgamma/Makefile,v 1.7 2007-07-06 11:01:58 sezero Exp $
 #
 
 CC_DEFAULT:=gcc
@@ -18,7 +18,7 @@ endif
 
 LINKER:= $(CC)
 CFLAGS:= -O2 -fPIC -Wall
-LDFLAGS:= -shared
+LDFLAGS:= -ldl -shared
 LDLIBS:=
 
 all : lib3dfxgamma.so
@@ -26,8 +26,8 @@ all : lib3dfxgamma.so
 clean : 
 	rm -f *.o *.so core
 
-%.o: %.c
-	$(CC) -c $(CFLAGS) -o $@ $<
+lib3dfxgamma.o:
+	$(CC) -c $(CFLAGS) -o lib3dfxgamma.o fx_gamma.c
 
 lib3dfxgamma.so : lib3dfxgamma.o
 	$(LINKER) lib3dfxgamma.o $(LDFLAGS) $(LDLIBS) -o lib3dfxgamma.so

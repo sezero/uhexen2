@@ -1,6 +1,6 @@
-adds native gamma support for 3dfx Voodoo1/2 to tyrquake-0.55 on linux
-through some glide hacks which are self-contained in the newly created
-fx_gamma.c. it is a compile time makefile option.
+adds native gamma support for 3dfx Voodoo1/2 to tyrquake-0.55 and 0.56
+on linux through some glide hacks which are self-contained in the newly
+created fx_gamma.c. it is a compile time makefile option.
 
 also allows voodoo1/2 to be detected and in that case set VID_SetGammaRamp
 to NULL and made VID_IsFullscreen to return false.
@@ -8,10 +8,10 @@ to NULL and made VID_IsFullscreen to return false.
 tyrquake homepage is at: http://disenchant.net/
 
 
-diff -urN tyrquake-0.55/Makefile tyrquake-0.55x/Makefile
---- tyrquake-0.55/Makefile	2006-09-24 09:44:30.000000000 +0300
-+++ tyrquake-0.55x/Makefile	2006-09-25 16:12:04.000000000 +0300
-@@ -30,6 +30,7 @@
+diff -urN tyrquake-0.56/Makefile tyrquake-0.56x/Makefile
+--- tyrquake-0.56/Makefile	2007-02-14 11:26:01.000000000 +0200
++++ tyrquake-0.56x/Makefile	2007-07-06 12:00:44.000000000 +0300
+@@ -21,6 +21,7 @@
  DEBUG            ?= N# Compile with debug info
  OPTIMIZED_CFLAGS ?= Y# Enable compiler optimisations (if DEBUG != Y)
  USE_X86_ASM      ?= Y# Compile with x86 asm
@@ -19,7 +19,7 @@ diff -urN tyrquake-0.55/Makefile tyrquake-0.55x/Makefile
  X11BASE          ?= $(X11BASE_GUESS)
  QBASEDIR         ?= .# Default basedir for quake data files (Linux/BSD only)
  
-@@ -106,6 +107,9 @@
+@@ -96,6 +97,9 @@
  
  NQ_UNIX_COMMON_LIBS = m X11 Xext Xxf86dga Xxf86vm
  NQ_UNIX_GL_LIBS = GL
@@ -29,7 +29,7 @@ diff -urN tyrquake-0.55/Makefile tyrquake-0.55x/Makefile
  
  NQ_W32_SW_LFLAGS  := $(patsubst %,-l%,$(NQ_W32_SW_LIBS) $(NQ_W32_COMMON_LIBS))
  NQ_W32_GL_LFLAGS  := $(patsubst %,-l%,$(NQ_W32_GL_LIBS) $(NQ_W32_COMMON_LIBS))
-@@ -180,10 +184,17 @@
+@@ -170,10 +174,17 @@
  endif
  COMMON_CPPFLAGS += -I$(TOPDIR)/include
  
@@ -49,7 +49,7 @@ diff -urN tyrquake-0.55/Makefile tyrquake-0.55x/Makefile
  QWSV_CPPFLAGS := $(COMMON_CPPFLAGS) -DQW_HACK -DSERVERONLY
  
  NQSW_CPPFLAGS += -I$(TOPDIR)/NQ
-@@ -506,6 +517,7 @@
+@@ -496,6 +507,7 @@
  
  # Objects only used in OpenGL rendering versions of NQ on the Unix Platform
  NQ_UNIX_GL_C_OBJS = \
@@ -57,7 +57,7 @@ diff -urN tyrquake-0.55/Makefile tyrquake-0.55x/Makefile
  	gl_vidlinuxglx.o
  
  NQ_UNIX_GL_ASM_OBJS =
-@@ -742,6 +754,7 @@
+@@ -732,6 +744,7 @@
  QW_W32_GL_ASM_OBJS =
  
  QW_UNIX_GL_C_OBJS = \
@@ -65,7 +65,7 @@ diff -urN tyrquake-0.55/Makefile tyrquake-0.55x/Makefile
  	gl_vidlinuxglx.o
  
  QW_UNIX_GL_ASM_OBJS =
-@@ -810,6 +823,9 @@
+@@ -800,6 +813,9 @@
  
  QW_UNIX_COMMON_LIBS = m X11 Xext Xxf86dga Xxf86vm
  QW_UNIX_GL_LIBS = GL
@@ -75,10 +75,9 @@ diff -urN tyrquake-0.55/Makefile tyrquake-0.55x/Makefile
  
  QW_W32_SW_LFLAGS  := $(patsubst %,-l%,$(QW_W32_SW_LIBS) $(QW_W32_COMMON_LIBS))
  QW_W32_GL_LFLAGS  := $(patsubst %,-l%,$(QW_W32_GL_LIBS) $(QW_W32_COMMON_LIBS))
-
-diff -urNp tyrquake-0.55/common/gl_vidlinuxglx.c tyrquake-0.55x/common/gl_vidlinuxglx.c
---- tyrquake-0.55/common/gl_vidlinuxglx.c	2006-09-25 15:52:26.000000000 +0300
-+++ tyrquake-0.55x/common/gl_vidlinuxglx.c	2006-09-25 16:15:48.000000000 +0300
+diff -urNp tyrquake-0.56/common/gl_vidlinuxglx.c tyrquake-0.56x/common/gl_vidlinuxglx.c
+--- tyrquake-0.56/common/gl_vidlinuxglx.c	2007-02-14 11:26:01.000000000 +0200
++++ tyrquake-0.56x/common/gl_vidlinuxglx.c	2007-07-06 12:06:14.000000000 +0300
 @@ -101,6 +101,7 @@ const char *gl_renderer;
  const char *gl_version;
  const char *gl_extensions;
@@ -87,32 +86,30 @@ diff -urNp tyrquake-0.55/common/gl_vidlinuxglx.c tyrquake-0.55x/common/gl_vidlin
  static qboolean is8bit = false;
  qboolean gl_mtexable = false;
  static int gl_num_texture_units;
-@@ -438,6 +439,13 @@ HandleEvents(void)
+@@ -438,6 +439,11 @@ HandleEvents(void)
  
  void (*VID_SetGammaRamp)(unsigned short ramp[3][256]);
  static unsigned short saved_gamma_ramp[3][256];
 +#ifdef USE_3DFXGAMMA
 +/* 3dfx gamma hacks */
++#include "fx_gamma.h"
 +extern cvar_t	v_gamma;
-+extern int  Init_3dfxGammaCtrl(void);
-+extern void Shutdown_3dfxGamma(void);
-+extern int  do3dfxGammaCtrl(float g);
-+#endif
++#endif /* USE_3DFXGAMMA */
  
  void
  signal_handler(int sig)
-@@ -446,6 +454,10 @@ signal_handler(int sig)
+@@ -446,6 +452,10 @@ signal_handler(int sig)
      XAutoRepeatOn(x_disp);
      if (VID_SetGammaRamp)
  	VID_SetGammaRamp(saved_gamma_ramp);
 +#ifdef USE_3DFXGAMMA
 +    if (is_old3dfx)
 +	Shutdown_3dfxGamma();
-+#endif
++#endif /* USE_3DFXGAMMA */
      XCloseDisplay(x_disp);
      Sys_Quit();
      exit(0);
-@@ -559,6 +571,23 @@ CheckMultiTextureExtensions(void)
+@@ -559,6 +569,23 @@ CheckMultiTextureExtensions(void)
      }
  }
  
@@ -121,7 +118,7 @@ diff -urNp tyrquake-0.55/common/gl_vidlinuxglx.c tyrquake-0.55x/common/gl_vidlin
 +VID_Set3dfxGamma(unsigned short ramp[3][256])
 +{
 +    float g;
-+#   define GAMMA_MAX	3
++#   define GAMMA_MAX	3.0
 +
 +    /* not using gamma ramps on purpose: crashes with voodoo-1 */
 +    if (v_gamma.value > (1.0 / GAMMA_MAX))
@@ -131,12 +128,12 @@ diff -urNp tyrquake-0.55/common/gl_vidlinuxglx.c tyrquake-0.55x/common/gl_vidlin
 +
 +    do3dfxGammaCtrl (g);
 +}
-+#endif
++#endif /* USE_3DFXGAMMA */
 +
  static void
  VID_SetXF86GammaRamp(unsigned short ramp[3][256])
  {
-@@ -606,6 +635,28 @@ GL_Init(void)
+@@ -606,6 +633,28 @@ GL_Init(void)
  
      CheckMultiTextureExtensions();
  
@@ -159,24 +156,24 @@ diff -urNp tyrquake-0.55/common/gl_vidlinuxglx.c tyrquake-0.55x/common/gl_vidlin
 +	    VID_SetGammaRamp = VID_Set3dfxGamma;
 +	    Con_Printf ("Using 3dfx glide%d gamma controls\n", tmp);
 +	}
-+#endif
++#endif /* USE_3DFXGAMMA */
 +    }
 +
      glClearColor(0.5, 0.5, 0.5, 0);
      glCullFace(GL_FRONT);
      glEnable(GL_TEXTURE_2D);
-@@ -968,6 +1019,10 @@ VID_Shutdown(void)
+@@ -968,6 +1017,10 @@ VID_Shutdown(void)
  {
      if (VID_SetGammaRamp)
  	VID_SetGammaRamp(saved_gamma_ramp);
 +#ifdef USE_3DFXGAMMA
 +    if (is_old3dfx)
 +	Shutdown_3dfxGamma();
-+#endif
++#endif /* USE_3DFXGAMMA */
  
      if (x_disp != NULL) {
  	if (ctx != NULL)
-@@ -1070,5 +1125,7 @@ VID_LockBuffer()
+@@ -1070,5 +1123,7 @@ VID_LockBuffer()
  qboolean
  VID_IsFullScreen()
  {
@@ -184,17 +181,24 @@ diff -urNp tyrquake-0.55/common/gl_vidlinuxglx.c tyrquake-0.55x/common/gl_vidlin
 +    	return true;
      return vidmode_active;
  }
-
-diff -urN /dev/null tyrquake-0.55x/common/fx_gamma.c
---- /dev/null	2003-01-30 12:24:37.000000000 +0200
-+++ tyrquake-0.55x/common/fx_gamma.c	2006-10-30 16:00:05.000000000 +0200
-@@ -0,0 +1,206 @@
+diff -urNp tyrquake-0.56/common/fx_gamma.c tyrquake-0.56x/common/fx_gamma.c
+--- tyrquake-0.56/common/fx_gamma.c	1970-01-01 02:00:00.000000000 +0200
++++ tyrquake-0.56x/common/fx_gamma.c	2007-07-06 12:10:38.000000000 +0300
+@@ -0,0 +1,216 @@
 +/*
++ * fx_gamma.c
++ *
 + * Small library providing gamma control functions for 3Dfx Voodoo1/2
 + * cards by abusing the exposed glide symbols when using fxMesa.
-+ * Author: O. Sezer <sezero@users.sourceforge.net>	License: GPL
 + *
-+ * This version is for compiling into an application
++ * Author: O. Sezer <sezero@users.sourceforge.net>   License: GPL
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
++ * See the accompanying COPYING file for more details.
++ *
++ * Compiling as a shared library:
++ * gcc lib3dfxgamma.c -O2 -fPIC -Wall  -o lib3dfxgamma.so -shared
 + *
 + * How to use:
 + * If you are linking to the opengl library at compile time (-lGL),
@@ -229,24 +233,28 @@ diff -urN /dev/null tyrquake-0.55x/common/fx_gamma.c
 +#include <stdlib.h>
 +#include <string.h>
 +
-+#ifdef USE_3DFXGAMMA
++#if defined(USE_3DFXGAMMA)
 +
 +#include <dlfcn.h>
 +
-+/**********************************************************************/
-+
-+// 3dfx glide2 func for gamma correction
-+static void (*FX_GammaControl2)(float) = NULL;
-+// 3dfx glide3 func for gamma correction
-+static void (*FX_GammaControl3)(float,float,float) = NULL;
-+
 +#define USE_GAMMA_RAMPS		0
 +
++#include "fx_gamma.h"
++
++/**********************************************************************/
++
++/**	PRIVATE STUFF			**/
++
++/* 3dfx glide2 func for gamma correction */
++static void (*FX_GammaControl2)(float) = NULL;
++/* 3dfx glide3 func for gamma correction */
++static void (*FX_GammaControl3)(float, float, float) = NULL;
++
 +#if USE_GAMMA_RAMPS
-+// 3dfx glide3 funcs to make a replacement wglSetDeviceGammaRamp3DFX
++/* 3dfx glide3 funcs to make a replacement wglSetDeviceGammaRamp3DFX */
 +#define GR_GAMMA_TABLE_ENTRIES	0x05
 +static unsigned int (*FX_GetInteger)(unsigned int, unsigned int, signed int *) = NULL;
-+static void (*FX_LoadGammaTable)(unsigned int, unsigned int*, unsigned int*, unsigned int*) = NULL;
++static void (*FX_LoadGammaTable)(unsigned int, unsigned int *, unsigned int *, unsigned int *) = NULL;
 +#endif
 +
 +/**********************************************************************/
@@ -276,7 +284,7 @@ diff -urN /dev/null tyrquake-0.55x/common/fx_gamma.c
 +		dlclose(symslist);
 +	}
 +	else
-+	{	// shouldn't happen.
++	{	/* shouldn't happen. */
 +		ret = -1;
 +	}
 +
@@ -296,21 +304,19 @@ diff -urN /dev/null tyrquake-0.55x/common/fx_gamma.c
 +/*
 + * do3dfxGammaCtrl
 + */
-+int do3dfxGammaCtrl(float value)
++void do3dfxGammaCtrl (float value)
 +{
 +	if (FX_GammaControl2)
 +		FX_GammaControl2 (value);
 +	else if (FX_GammaControl3)
 +		FX_GammaControl3 (value, value, value);
-+
-+	return 0;
 +}
 +
 +/**********************************************************************/
 +#if USE_GAMMA_RAMPS
 +static int Check_3DfxGammaRamp (void)
 +{
-+	void *symslist;
++	void	*symslist;
 +
 +	if (FX_LoadGammaTable != NULL)
 +		return 1;
@@ -335,10 +341,10 @@ diff -urN /dev/null tyrquake-0.55x/common/fx_gamma.c
 + */
 +int glSetDeviceGammaRamp3DFX (void *arrays)
 +{
-+	int tableSize = 0;
-+	int i, inc, idx;
-+	unsigned short *red, *green, *blue;
-+	unsigned int gammaTableR[256], gammaTableG[256], gammaTableB[256];
++	int		tableSize = 0;
++	int		i, inc, idx;
++	unsigned short	*red, *green, *blue;
++	unsigned int	gammaTableR[256], gammaTableG[256], gammaTableB[256];
 +
 +	if ((FX_LoadGammaTable == NULL) || (FX_GetInteger == NULL))
 +		return 0;
@@ -371,7 +377,7 @@ diff -urN /dev/null tyrquake-0.55x/common/fx_gamma.c
 + */
 +int glGetDeviceGammaRamp3DFX (void *arrays)
 +{
-+	int	i;
++	int		i;
 +	unsigned short	gammaTable[3][256];
 +
 +	if ((FX_LoadGammaTable == NULL) || (FX_GetInteger == NULL))
@@ -391,8 +397,55 @@ diff -urN /dev/null tyrquake-0.55x/common/fx_gamma.c
 +
 +	return 1;
 +}
-+#endif
++#endif	/* USE_GAMMA_RAMPS */
 +
 +#endif	/* USE_3DFXGAMMA */
++
+diff -urNp tyrquake-0.56/common/fx_gamma.h tyrquake-0.56x/common/fx_gamma.h
+--- tyrquake-0.56/common/fx_gamma.h	1970-01-01 02:00:00.000000000 +0200
++++ tyrquake-0.56x/common/fx_gamma.h	2007-07-06 12:04:04.000000000 +0300
+@@ -0,0 +1,43 @@
++/*
++ * Small library providing gamma control functions for 3Dfx Voodoo1/2
++ * cards by abusing the exposed glide symbols when using fxMesa.
++ * Author: O. Sezer <sezero@users.sourceforge.net>   License: GPL
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
++ * See the accompanying COPYING file for more details.
++ */
++
++#ifndef __FXGAMMA_H
++#define __FXGAMMA_H
++
++#ifdef __cplusplus
++extern "C" {
++#endif
++
++extern void Shutdown_3dfxGamma (void);
++
++extern int Init_3dfxGammaCtrl (void);
++	/* returns 0 for failure, 2 for glide2 or 3 for glide3 api. */
++
++extern void do3dfxGammaCtrl (float value);
++	/* gamma correction procedure. takes the gamma value as its
++	   arg (must be between 1 and 0.333) */
++
++#if USE_GAMMA_RAMPS
++
++extern int glSetDeviceGammaRamp3DFX (void *arrays);
++	/* returns 1 for success, 0 for failure. */
++
++extern int glGetDeviceGammaRamp3DFX (void *arrays);
++	/* sends a 1.0 gamma table. use for querying the lib.
++	   returns 1 for success, 0 for failure. */
++
++#endif	/* USE_GAMMA_RAMPS */
++
++#ifdef __cplusplus
++}
++#endif
++
++#endif	/* __FXGAMMA_H */
 +
 

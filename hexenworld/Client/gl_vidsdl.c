@@ -2,7 +2,7 @@
 	gl_vidsdl.c -- SDL GL vid component
 	Select window size and mode and init SDL in GL mode.
 
-	$Id: gl_vidsdl.c,v 1.155 2007-06-26 20:19:37 sezero Exp $
+	$Id: gl_vidsdl.c,v 1.156 2007-07-06 11:01:58 sezero Exp $
 
 	Changed 7/11/04 by S.A.
 	- Fixed fullscreen opengl mode, window sizes
@@ -173,14 +173,7 @@ static unsigned short	orig_ramps[3][256];
 // 3dfx gamma hacks: stuff are in fx_gamma.c
 // Note: gamma ramps crashes voodoo graphics
 #if defined(USE_3DFXGAMMA)
-#if USE_GAMMA_RAMPS
-extern int	glGetDeviceGammaRamp3DFX(void *);
-extern int	glSetDeviceGammaRamp3DFX(void *);
-#else
-extern int	Init_3dfxGammaCtrl(void);
-extern int	do3dfxGammaCtrl(float g);
-#endif
-extern void	Shutdown_3dfxGamma(void);
+#include "fx_gamma.h"
 #endif	/* USE_3DFXGAMMA */
 
 static qboolean	fx_gamma   = false;	// 3dfx-specific gamma control

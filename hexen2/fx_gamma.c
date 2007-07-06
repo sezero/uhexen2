@@ -1,12 +1,18 @@
 /*
  * fx_gamma.c
- * $Id: fx_gamma.c,v 1.4 2007-06-04 06:42:30 sezero Exp $
+ * $Id: fx_gamma.c,v 1.5 2007-07-06 11:01:53 sezero Exp $
  *
  * Small library providing gamma control functions for 3Dfx Voodoo1/2
  * cards by abusing the exposed glide symbols when using fxMesa.
- * Author: O. Sezer <sezero@users.sourceforge.net>	License: GPL
  *
- * This version is for compiling into an application
+ * Author: O. Sezer <sezero@users.sourceforge.net>   License: GPL
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the accompanying COPYING file for more details.
+ *
+ * Compiling as a shared library:
+ * gcc lib3dfxgamma.c -O2 -fPIC -Wall  -o lib3dfxgamma.so -shared
  *
  * How to use:
  * If you are linking to the opengl library at compile time (-lGL),
@@ -41,25 +47,28 @@
 #include <stdlib.h>
 #include <string.h>
 
-#if defined (USE_3DFXGAMMA)
+#if defined(USE_3DFXGAMMA)
 
 #include <dlfcn.h>
 
+#define USE_GAMMA_RAMPS		1	/* actual define is in gl_vidsdl.c */
+
+#include "fx_gamma.h"
+
 /**********************************************************************/
 
-// 3dfx glide2 func for gamma correction
-static void (*FX_GammaControl2)(float) = NULL;
-// 3dfx glide3 func for gamma correction
-static void (*FX_GammaControl3)(float,float,float) = NULL;
+/**	PRIVATE STUFF			**/
 
-#define USE_GAMMA_RAMPS		1	// gamma ramps usage is
-					// decided in gl_vidsdl.c
+/* 3dfx glide2 func for gamma correction */
+static void (*FX_GammaControl2)(float) = NULL;
+/* 3dfx glide3 func for gamma correction */
+static void (*FX_GammaControl3)(float, float, float) = NULL;
 
 #if USE_GAMMA_RAMPS
-// 3dfx glide3 funcs to make a replacement wglSetDeviceGammaRamp3DFX
+/* 3dfx glide3 funcs to make a replacement wglSetDeviceGammaRamp3DFX */
 #define GR_GAMMA_TABLE_ENTRIES	0x05
 static unsigned int (*FX_GetInteger)(unsigned int, unsigned int, signed int *) = NULL;
-static void (*FX_LoadGammaTable)(unsigned int, unsigned int*, unsigned int*, unsigned int*) = NULL;
+static void (*FX_LoadGammaTable)(unsigned int, unsigned int *, unsigned int *, unsigned int *) = NULL;
 #endif
 
 /**********************************************************************/
@@ -89,7 +98,7 @@ int Init_3dfxGammaCtrl (void)
 		dlclose(symslist);
 	}
 	else
-	{	// shouldn't happen.
+	{	/* shouldn't happen. */
 		ret = -1;
 	}
 
@@ -109,21 +118,19 @@ void Shutdown_3dfxGamma (void)
 /*
  * do3dfxGammaCtrl
  */
-int do3dfxGammaCtrl(float value)
+void do3dfxGammaCtrl (float value)
 {
 	if (FX_GammaControl2)
 		FX_GammaControl2 (value);
 	else if (FX_GammaControl3)
 		FX_GammaControl3 (value, value, value);
-
-	return 0;
 }
 
 /**********************************************************************/
 #if USE_GAMMA_RAMPS
 static int Check_3DfxGammaRamp (void)
 {
-	void *symslist;
+	void	*symslist;
 
 	if (FX_LoadGammaTable != NULL)
 		return 1;
@@ -148,10 +155,10 @@ static int Check_3DfxGammaRamp (void)
  */
 int glSetDeviceGammaRamp3DFX (void *arrays)
 {
-	int tableSize = 0;
-	int i, inc, idx;
-	unsigned short *red, *green, *blue;
-	unsigned int gammaTableR[256], gammaTableG[256], gammaTableB[256];
+	int		tableSize = 0;
+	int		i, inc, idx;
+	unsigned short	*red, *green, *blue;
+	unsigned int	gammaTableR[256], gammaTableG[256], gammaTableB[256];
 
 	if ((FX_LoadGammaTable == NULL) || (FX_GetInteger == NULL))
 		return 0;
@@ -184,7 +191,7 @@ int glSetDeviceGammaRamp3DFX (void *arrays)
  */
 int glGetDeviceGammaRamp3DFX (void *arrays)
 {
-	int	i;
+	int		i;
 	unsigned short	gammaTable[3][256];
 
 	if ((FX_LoadGammaTable == NULL) || (FX_GetInteger == NULL))
@@ -204,7 +211,7 @@ int glGetDeviceGammaRamp3DFX (void *arrays)
 
 	return 1;
 }
-#endif
+#endif	/* USE_GAMMA_RAMPS */
 
 #endif	/* USE_3DFXGAMMA */
 
