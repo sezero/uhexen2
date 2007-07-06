@@ -30,6 +30,7 @@ General:
   pak files as a compile time option. Disabled by default.
 - Several cvar tweaks.
 - Made the load and connect commands to get rid of the menu or the console.
+- Made the item inventory bar to wrap around.
 - Fixed multiplayer episode selection in the menu system.
 - Updates to zone memory usage: a 256 KB secondary zone for static textures
   (sec_zone) is now initialized, which is especially useful for the software
@@ -91,6 +92,8 @@ Software Renderer:
 ------------------
 - Added support for non-intel cpus: x86 assembly is not needed anymore.
 - Fixed a few endianness issues.
+- r_transwater now always acts as an on-the-fly water translucency switch:
+  it used to fail if a map was loaded with r_transwater disabled. works now.
 - Added ability to load external wal texture files instead of internal pixel
   data of the brush model (depends on the new r_texture_external cvar).
 
