@@ -1,6 +1,6 @@
 /*
 	alsa_funcs.h
-	$Id: alsa_funcs.h,v 1.9 2007-06-30 11:19:42 sezero Exp $
+	$Id: alsa_funcs.h,v 1.10 2007-07-06 12:43:32 sezero Exp $
 
 	ALSA function list
 	make sure NOT to protect this file against multiple inclusions!
@@ -34,43 +34,43 @@
 #error Alsa libraries v0.9.8 or newer are required
 #endif
 
-#ifndef HX2_ALSA
-#define HX2_ALSA(ret, func, params)
-#define UNDEF_HX2_ALSA
+#ifndef ALSA_FUNC
+#define ALSA_FUNC(ret, func, params)
+#define UNDEF_ALSAFUNC
 #endif
 
-HX2_ALSA (int, snd_pcm_close, (snd_pcm_t *pcmdev))
-HX2_ALSA (int, snd_pcm_hw_params, (snd_pcm_t *pcmdev, snd_pcm_hw_params_t *params))
-HX2_ALSA (int, snd_pcm_hw_params_any, (snd_pcm_t *pcmdev, snd_pcm_hw_params_t *params))
-HX2_ALSA (int, snd_pcm_hw_params_get_buffer_size, (const snd_pcm_hw_params_t *params, snd_pcm_uframes_t *val))
-HX2_ALSA (int, snd_pcm_hw_params_get_period_size, (const snd_pcm_hw_params_t *params, snd_pcm_uframes_t *frames, int *dir))
-HX2_ALSA (int, snd_pcm_hw_params_set_access, (snd_pcm_t *pcmdev, snd_pcm_hw_params_t *params, snd_pcm_access_t acc))
-HX2_ALSA (int, snd_pcm_hw_params_set_period_size_near, (snd_pcm_t *pcmdev, snd_pcm_hw_params_t *params, snd_pcm_uframes_t *val, int *dir))
-HX2_ALSA (int, snd_pcm_hw_params_set_rate_near, (snd_pcm_t *pcmdev, snd_pcm_hw_params_t *params, unsigned int *val, int *dir))
-HX2_ALSA (int, snd_pcm_hw_params_set_channels, (snd_pcm_t *pcmdev, snd_pcm_hw_params_t *params, unsigned int val))
-HX2_ALSA (int, snd_pcm_hw_params_set_format, (snd_pcm_t *pcmdev, snd_pcm_hw_params_t *params, snd_pcm_format_t val))
-HX2_ALSA (int, snd_pcm_mmap_begin, (snd_pcm_t *pcmdev, const snd_pcm_channel_area_t **areas, snd_pcm_uframes_t *offset, snd_pcm_uframes_t *frames))
-HX2_ALSA (int, snd_pcm_avail_update, (snd_pcm_t *pcmdev))
-HX2_ALSA (snd_pcm_sframes_t, snd_pcm_mmap_commit, (snd_pcm_t *pcmdev, snd_pcm_uframes_t offset, snd_pcm_uframes_t frames))
-HX2_ALSA (int, snd_pcm_open, (snd_pcm_t **pcmdev, const char *name, snd_pcm_stream_t stream, int mode))
-HX2_ALSA (int, snd_pcm_start, (snd_pcm_t *pcmdev))
-HX2_ALSA (snd_pcm_state_t, snd_pcm_state, (snd_pcm_t *pcmdev))
-HX2_ALSA (int, snd_pcm_sw_params, (snd_pcm_t *pcmdev, snd_pcm_sw_params_t *params))
-HX2_ALSA (int, snd_pcm_sw_params_current, (snd_pcm_t *pcmdev, snd_pcm_sw_params_t *params))
-HX2_ALSA (int, snd_pcm_sw_params_set_start_threshold, (snd_pcm_t *pcmdev, snd_pcm_sw_params_t *params, snd_pcm_uframes_t val))
-HX2_ALSA (int, snd_pcm_sw_params_set_stop_threshold, (snd_pcm_t *pcmdev, snd_pcm_sw_params_t *params, snd_pcm_uframes_t val))
-HX2_ALSA (const char *, snd_strerror, (int errnum))
-HX2_ALSA (int, snd_pcm_drop, (snd_pcm_t *pcmdev))
-HX2_ALSA (int, snd_pcm_hw_params_malloc, (snd_pcm_hw_params_t **ptr))
-HX2_ALSA (int, snd_pcm_sw_params_malloc, (snd_pcm_sw_params_t **ptr))
-HX2_ALSA (void, snd_pcm_hw_params_free, (snd_pcm_hw_params_t *obj))
-HX2_ALSA (void, snd_pcm_sw_params_free, (snd_pcm_sw_params_t *obj))
+ALSA_FUNC (int, snd_pcm_close, (snd_pcm_t *pcmdev))
+ALSA_FUNC (int, snd_pcm_hw_params, (snd_pcm_t *pcmdev, snd_pcm_hw_params_t *params))
+ALSA_FUNC (int, snd_pcm_hw_params_any, (snd_pcm_t *pcmdev, snd_pcm_hw_params_t *params))
+ALSA_FUNC (int, snd_pcm_hw_params_get_buffer_size, (const snd_pcm_hw_params_t *params, snd_pcm_uframes_t *val))
+ALSA_FUNC (int, snd_pcm_hw_params_get_period_size, (const snd_pcm_hw_params_t *params, snd_pcm_uframes_t *frames, int *dir))
+ALSA_FUNC (int, snd_pcm_hw_params_set_access, (snd_pcm_t *pcmdev, snd_pcm_hw_params_t *params, snd_pcm_access_t acc))
+ALSA_FUNC (int, snd_pcm_hw_params_set_period_size_near, (snd_pcm_t *pcmdev, snd_pcm_hw_params_t *params, snd_pcm_uframes_t *val, int *dir))
+ALSA_FUNC (int, snd_pcm_hw_params_set_rate_near, (snd_pcm_t *pcmdev, snd_pcm_hw_params_t *params, unsigned int *val, int *dir))
+ALSA_FUNC (int, snd_pcm_hw_params_set_channels, (snd_pcm_t *pcmdev, snd_pcm_hw_params_t *params, unsigned int val))
+ALSA_FUNC (int, snd_pcm_hw_params_set_format, (snd_pcm_t *pcmdev, snd_pcm_hw_params_t *params, snd_pcm_format_t val))
+ALSA_FUNC (int, snd_pcm_mmap_begin, (snd_pcm_t *pcmdev, const snd_pcm_channel_area_t **areas, snd_pcm_uframes_t *offset, snd_pcm_uframes_t *frames))
+ALSA_FUNC (int, snd_pcm_avail_update, (snd_pcm_t *pcmdev))
+ALSA_FUNC (snd_pcm_sframes_t, snd_pcm_mmap_commit, (snd_pcm_t *pcmdev, snd_pcm_uframes_t offset, snd_pcm_uframes_t frames))
+ALSA_FUNC (int, snd_pcm_open, (snd_pcm_t **pcmdev, const char *name, snd_pcm_stream_t stream, int mode))
+ALSA_FUNC (int, snd_pcm_start, (snd_pcm_t *pcmdev))
+ALSA_FUNC (snd_pcm_state_t, snd_pcm_state, (snd_pcm_t *pcmdev))
+ALSA_FUNC (int, snd_pcm_sw_params, (snd_pcm_t *pcmdev, snd_pcm_sw_params_t *params))
+ALSA_FUNC (int, snd_pcm_sw_params_current, (snd_pcm_t *pcmdev, snd_pcm_sw_params_t *params))
+ALSA_FUNC (int, snd_pcm_sw_params_set_start_threshold, (snd_pcm_t *pcmdev, snd_pcm_sw_params_t *params, snd_pcm_uframes_t val))
+ALSA_FUNC (int, snd_pcm_sw_params_set_stop_threshold, (snd_pcm_t *pcmdev, snd_pcm_sw_params_t *params, snd_pcm_uframes_t val))
+ALSA_FUNC (const char *, snd_strerror, (int errnum))
+ALSA_FUNC (int, snd_pcm_drop, (snd_pcm_t *pcmdev))
+ALSA_FUNC (int, snd_pcm_hw_params_malloc, (snd_pcm_hw_params_t **ptr))
+ALSA_FUNC (int, snd_pcm_sw_params_malloc, (snd_pcm_sw_params_t **ptr))
+ALSA_FUNC (void, snd_pcm_hw_params_free, (snd_pcm_hw_params_t *obj))
+ALSA_FUNC (void, snd_pcm_sw_params_free, (snd_pcm_sw_params_t *obj))
 /*
-HX2_ALSA (int, snd_pcm_pause, (snd_pcm_t *pcmdev, int enable))
+ALSA_FUNC (int, snd_pcm_pause, (snd_pcm_t *pcmdev, int enable))
 */
 
-#ifdef UNDEF_HX2_ALSA
-#undef HX2_ALSA
-#undef UNDEF_HX2_ALSA
+#ifdef UNDEF_ALSAFUNC
+#undef ALSA_FUNC
+#undef UNDEF_ALSAFUNC
 #endif
 

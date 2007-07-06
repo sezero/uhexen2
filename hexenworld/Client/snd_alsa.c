@@ -1,6 +1,6 @@
 /*
 	snd_alsa.c
-	$Id: snd_alsa.c,v 1.30 2007-06-30 11:19:47 sezero Exp $
+	$Id: snd_alsa.c,v 1.31 2007-07-06 12:43:34 sezero Exp $
 
 	ALSA 1.0 sound driver for Linux Hexen II
 
@@ -45,10 +45,10 @@ extern int soundtime;
 
 int S_ALSA_GetDMAPos (void);
 
-#define HX2_ALSA(ret, func, params) \
+#define ALSA_FUNC(ret, func, params) \
 static ret (*hx2##func) params;
 #include "alsa_funcs.h"
-#undef HX2_ALSA
+#undef ALSA_FUNC
 
 static qboolean load_libasound (void)
 {
@@ -59,7 +59,7 @@ static qboolean load_libasound (void)
 		return false;
 	}
 
-#define HX2_ALSA(ret, func, params)					\
+#define ALSA_FUNC(ret, func, params)					\
 	if (!(hx2##func = dlsym (alsa_handle, #func))) {		\
 		Con_Printf ("Couldn't load ALSA function %s\n", #func);	\
 		dlclose (alsa_handle);					\
@@ -68,7 +68,8 @@ static qboolean load_libasound (void)
 }
 
 #include "alsa_funcs.h"
-#undef HX2_ALSA
+#undef ALSA_FUNC
+
 	return true;
 }
 
