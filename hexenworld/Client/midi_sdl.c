@@ -2,7 +2,7 @@
 	midi_sdl.c
 	midiplay via SDL_mixer
 
-	$Id: midi_sdl.c,v 1.39 2007-05-13 11:59:01 sezero Exp $
+	$Id: midi_sdl.c,v 1.40 2007-07-06 12:45:42 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -101,7 +101,7 @@ qboolean MIDI_Init(void)
 
 	void	*selfsyms;
 	const SDL_version *smixer_version;
-	SDL_version *(*Mix_Linked_Version_fp)(void) = NULL;
+	const SDL_version *(*Mix_Linked_Version_fp)(void) = NULL;
 
 	bMidiInited = 0;
 	Con_Printf("%s: ", __thisfunc__);
@@ -119,10 +119,10 @@ qboolean MIDI_Init(void)
 
 	Con_Printf("SDL_Mixer ");
 	// this is to avoid relocation errors with very old SDL_Mixer versions
-	selfsyms = dlopen(NULL, RTLD_LAZY);
+	selfsyms = (void *) dlopen(NULL, RTLD_LAZY);
 	if (selfsyms != NULL)
 	{
-		Mix_Linked_Version_fp = dlsym(selfsyms, "Mix_Linked_Version");
+		Mix_Linked_Version_fp = (const SDL_version * (*) (void)) dlsym(selfsyms, "Mix_Linked_Version");
 		dlclose(selfsyms);
 	}
 	if (Mix_Linked_Version_fp == NULL)
@@ -131,7 +131,7 @@ qboolean MIDI_Init(void)
 		goto bad_version;
 	}
 
-	smixer_version = Mix_Linked_Version();
+	smixer_version = Mix_Linked_Version_fp();
 	Con_Printf("v%d.%d.%d is ",smixer_version->major,smixer_version->minor,smixer_version->patch);
 	// reject running with SDL_Mixer versions older than what is stated in sdl_inc.h
 	if (SDL_VERSIONNUM(smixer_version->major,smixer_version->minor,smixer_version->patch) < MIX_REQUIREDVERSION)

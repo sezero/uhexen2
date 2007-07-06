@@ -1,6 +1,6 @@
 /*
  * fx_gamma.c
- * $Id: fx_gamma.c,v 1.7 2007-07-06 11:01:58 sezero Exp $
+ * $Id: fx_gamma.c,v 1.8 2007-07-06 12:45:42 sezero Exp $
  *
  * Small library providing gamma control functions for 3Dfx Voodoo1/2
  * cards by abusing the exposed glide symbols when using fxMesa.
@@ -76,20 +76,20 @@ static void (*FX_LoadGammaTable)(unsigned int, unsigned int *, unsigned int *, u
  */
 int Init_3dfxGammaCtrl (void)
 {
-	void *symslist;
-	int ret = 0;
+	void	*symslist;
+	int	ret = 0;
 
 	if (FX_GammaControl2 != NULL)
 		return 2;
 	if (FX_GammaControl3 != NULL)
 		return 3;
 
-	symslist = dlopen(NULL, RTLD_LAZY);
+	symslist = (void *) dlopen(NULL, RTLD_LAZY);
 	if (symslist != NULL)
 	{
-		if ((FX_GammaControl2 = dlsym(symslist, "grGammaCorrectionValue")) != NULL)
+		if ((FX_GammaControl2 = (void (*) (float)) dlsym(symslist, "grGammaCorrectionValue")) != NULL)
 			ret = 2;
-		else if ((FX_GammaControl3 = dlsym(symslist, "guGammaCorrectionRGB")) != NULL)
+		else if ((FX_GammaControl3 = (void (*) (float, float, float)) dlsym(symslist, "guGammaCorrectionRGB")) != NULL)
 			ret = 3;
 
 		dlclose(symslist);
@@ -132,11 +132,11 @@ static int Check_3DfxGammaRamp (void)
 	if (FX_LoadGammaTable != NULL)
 		return 1;
 
-	symslist = dlopen(NULL, RTLD_LAZY);
+	symslist = (void *) dlopen(NULL, RTLD_LAZY);
 	if (symslist != NULL)
 	{
-		FX_GetInteger = dlsym(symslist, "grGet");
-		FX_LoadGammaTable = dlsym(symslist, "grLoadGammaTable");
+		FX_GetInteger = (unsigned int (*) (unsigned int, unsigned int, signed int *)) dlsym(symslist, "grGet");
+		FX_LoadGammaTable = (void (*) (unsigned int, unsigned int *, unsigned int *, unsigned int *)) dlsym(symslist, "grLoadGammaTable");
 		if ((FX_LoadGammaTable != NULL) && (FX_GetInteger != NULL))
 			return 1;
 	}
