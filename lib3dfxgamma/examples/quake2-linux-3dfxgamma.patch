@@ -162,20 +162,20 @@ diff -urNp quake2-20060507/src/linux/fx_gamma.c quake2/src/linux/fx_gamma.c
 + */
 +int Init_3dfxGammaCtrl (void)
 +{
-+	void *symslist;
-+	int ret = 0;
++	void	*symslist;
++	int	ret = 0;
 +
 +	if (FX_GammaControl2 != NULL)
 +		return 2;
 +	if (FX_GammaControl3 != NULL)
 +		return 3;
 +
-+	symslist = dlopen(NULL, RTLD_LAZY);
++	symslist = (void *) dlopen(NULL, RTLD_LAZY);
 +	if (symslist != NULL)
 +	{
-+		if ((FX_GammaControl2 = dlsym(symslist, "grGammaCorrectionValue")) != NULL)
++		if ((FX_GammaControl2 = (void (*) (float)) dlsym(symslist, "grGammaCorrectionValue")) != NULL)
 +			ret = 2;
-+		else if ((FX_GammaControl3 = dlsym(symslist, "guGammaCorrectionRGB")) != NULL)
++		else if ((FX_GammaControl3 = (void (*) (float, float, float)) dlsym(symslist, "guGammaCorrectionRGB")) != NULL)
 +			ret = 3;
 +
 +		dlclose(symslist);
@@ -218,11 +218,11 @@ diff -urNp quake2-20060507/src/linux/fx_gamma.c quake2/src/linux/fx_gamma.c
 +	if (FX_LoadGammaTable != NULL)
 +		return 1;
 +
-+	symslist = dlopen(NULL, RTLD_LAZY);
++	symslist = (void *) dlopen(NULL, RTLD_LAZY);
 +	if (symslist != NULL)
 +	{
-+		FX_GetInteger = dlsym(symslist, "grGet");
-+		FX_LoadGammaTable = dlsym(symslist, "grLoadGammaTable");
++		FX_GetInteger = (unsigned int (*) (unsigned int, unsigned int, signed int *)) dlsym(symslist, "grGet");
++		FX_LoadGammaTable = (void (*) (unsigned int, unsigned int *, unsigned int *, unsigned int *)) dlsym(symslist, "grLoadGammaTable");
 +		if ((FX_LoadGammaTable != NULL) && (FX_GetInteger != NULL))
 +			return 1;
 +	}

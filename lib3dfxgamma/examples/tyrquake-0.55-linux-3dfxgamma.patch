@@ -184,10 +184,8 @@ diff -urNp tyrquake-0.56/common/gl_vidlinuxglx.c tyrquake-0.56x/common/gl_vidlin
 diff -urNp tyrquake-0.56/common/fx_gamma.c tyrquake-0.56x/common/fx_gamma.c
 --- tyrquake-0.56/common/fx_gamma.c	1970-01-01 02:00:00.000000000 +0200
 +++ tyrquake-0.56x/common/fx_gamma.c	2007-07-06 12:10:38.000000000 +0300
-@@ -0,0 +1,216 @@
+@@ -0,0 +1,214 @@
 +/*
-+ * fx_gamma.c
-+ *
 + * Small library providing gamma control functions for 3Dfx Voodoo1/2
 + * cards by abusing the exposed glide symbols when using fxMesa.
 + *
@@ -265,20 +263,20 @@ diff -urNp tyrquake-0.56/common/fx_gamma.c tyrquake-0.56x/common/fx_gamma.c
 + */
 +int Init_3dfxGammaCtrl (void)
 +{
-+	void *symslist;
-+	int ret = 0;
++	void	*symslist;
++	int	ret = 0;
 +
 +	if (FX_GammaControl2 != NULL)
 +		return 2;
 +	if (FX_GammaControl3 != NULL)
 +		return 3;
 +
-+	symslist = dlopen(NULL, RTLD_LAZY);
++	symslist = (void *) dlopen(NULL, RTLD_LAZY);
 +	if (symslist != NULL)
 +	{
-+		if ((FX_GammaControl2 = dlsym(symslist, "grGammaCorrectionValue")) != NULL)
++		if ((FX_GammaControl2 = (void (*) (float)) dlsym(symslist, "grGammaCorrectionValue")) != NULL)
 +			ret = 2;
-+		else if ((FX_GammaControl3 = dlsym(symslist, "guGammaCorrectionRGB")) != NULL)
++		else if ((FX_GammaControl3 = (void (*) (float, float, float)) dlsym(symslist, "guGammaCorrectionRGB")) != NULL)
 +			ret = 3;
 +
 +		dlclose(symslist);
@@ -321,11 +319,11 @@ diff -urNp tyrquake-0.56/common/fx_gamma.c tyrquake-0.56x/common/fx_gamma.c
 +	if (FX_LoadGammaTable != NULL)
 +		return 1;
 +
-+	symslist = dlopen(NULL, RTLD_LAZY);
++	symslist = (void *) dlopen(NULL, RTLD_LAZY);
 +	if (symslist != NULL)
 +	{
-+		FX_GetInteger = dlsym(symslist, "grGet");
-+		FX_LoadGammaTable = dlsym(symslist, "grLoadGammaTable");
++		FX_GetInteger = (unsigned int (*) (unsigned int, unsigned int, signed int *)) dlsym(symslist, "grGet");
++		FX_LoadGammaTable = (void (*) (unsigned int, unsigned int *, unsigned int *, unsigned int *)) dlsym(symslist, "grLoadGammaTable");
 +		if ((FX_LoadGammaTable != NULL) && (FX_GetInteger != NULL))
 +			return 1;
 +	}
