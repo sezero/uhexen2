@@ -2,7 +2,7 @@
 	q_types.h
 	common type definitions
 
-	$Id: q_types.h,v 1.1 2007-02-13 13:34:36 sezero Exp $
+	$Id: q_types.h,v 1.2 2007-07-08 17:01:11 sezero Exp $
 */
 
 #ifndef __QTYPES_H
@@ -37,7 +37,11 @@ typedef unsigned char byte;
 
 #undef true
 #undef false
+#ifdef __cplusplus
+typedef bool	qboolean;
+#else
 typedef	enum	{false, true} qboolean;
+#endif
 #define _DEF_BOOL_
 
 
@@ -45,9 +49,9 @@ typedef	enum	{false, true} qboolean;
 
 // math
 #if defined(DOUBLEVEC_T)
-typedef double vec_t;
+typedef double	vec_t;
 #else
-typedef float vec_t;
+typedef float	vec_t;
 #endif	/* DOUBLEVEC_T */
 
 typedef vec_t vec3_t[3];

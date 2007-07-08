@@ -1,6 +1,6 @@
 /*
 	trace.c
-	$Id: trace.c,v 1.4 2007-03-14 21:04:43 sezero Exp $
+	$Id: trace.c,v 1.5 2007-07-08 17:01:16 sezero Exp $
 */
 
 #include "util_inc.h"
@@ -67,7 +67,7 @@ Loads the node structure out of a .bsp file to be used for light occlusion
 */
 void MakeTnodes (dmodel_t *bm)
 {
-	tnode_p = tnodes = malloc(numnodes * sizeof(tnode_t));
+	tnode_p = tnodes = (tnode_t *) malloc(numnodes * sizeof(tnode_t));
 
 	MakeTnode (0);
 }

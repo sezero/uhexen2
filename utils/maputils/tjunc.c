@@ -1,6 +1,6 @@
 /*
 	tjunc.c
-	$Id: tjunc.c,v 1.8 2007-05-13 12:00:20 sezero Exp $
+	$Id: tjunc.c,v 1.9 2007-07-08 17:01:16 sezero Exp $
 */
 
 #include "util_inc.h"
@@ -271,7 +271,7 @@ static void FixFaceEdges (face_t *f);
 static void SplitFaceForTjunc (face_t *f, face_t *original)
 {
 	int			i;
-	face_t		*new, *chain;
+	face_t		*newf, *chain;
 	vec3_t		dir, test;
 	double		v;
 	int			firstcorner, lastcorner;
@@ -335,31 +335,31 @@ restart:
 	// cut off as big a piece as possible, less than MAXPOINTS, and not
 	// past lastcorner
 
-		new = NewFaceFromFace (f);
+		newf = NewFaceFromFace (f);
 		if (f->original)
 			Error ("%s: f->original", __thisfunc__);
 
-		new->original = chain;
-		chain = new;
-		new->next = newlist;
-		newlist = new;
+		newf->original = chain;
+		chain = newf;
+		newf->next = newlist;
+		newlist = newf;
 		if (f->numpoints - firstcorner <= MAXPOINTS)
-			new->numpoints = firstcorner+2;
+			newf->numpoints = firstcorner+2;
 		else if (lastcorner+2 < MAXPOINTS && f->numpoints - lastcorner <= MAXPOINTS)
-			new->numpoints = lastcorner+2;
+			newf->numpoints = lastcorner+2;
 		else
-			new->numpoints = MAXPOINTS;
+			newf->numpoints = MAXPOINTS;
 
-		for (i = 0 ; i < new->numpoints ; i++)
+		for (i = 0 ; i < newf->numpoints ; i++)
 		{
-			VectorCopy (f->pts[i], new->pts[i]);
+			VectorCopy (f->pts[i], newf->pts[i]);
 		}
 
-		for (i = new->numpoints-1 ; i < f->numpoints ; i++)
+		for (i = newf->numpoints-1 ; i < f->numpoints ; i++)
 		{
-			VectorCopy (f->pts[i], f->pts[i-(new->numpoints-2)]);
+			VectorCopy (f->pts[i], f->pts[i-(newf->numpoints-2)]);
 		}
-		f->numpoints -= (new->numpoints-2);
+		f->numpoints -= (newf->numpoints-2);
 	} while (1);
 }
 

@@ -2,7 +2,7 @@
 	hcc.c
 	HCode compiler based on qcc, modifed by Eric Hobbs to work with DCC
 
-	$Header: /home/ozzie/Download/0000/uhexen2/utils/dcc/hcc.c,v 1.23 2007-06-28 11:10:34 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/utils/dcc/hcc.c,v 1.24 2007-07-08 17:01:14 sezero Exp $
 */
 
 #include "util_inc.h"
@@ -912,7 +912,7 @@ int main (int argc, char **argv)
 	}
 
 	sprintf(filename, "%sprogs.src", sourcedir);
-	LoadFile(filename, (void *)&src);
+	LoadFile(filename, (void **) (char *) &src);
 
 	src = COM_Parse(src);
 	if (!src)
@@ -936,7 +936,7 @@ int main (int argc, char **argv)
 
 		sprintf (filename, "%s%s", sourcedir, com_token);
 		printf ("compiling %s\n", filename);
-		LoadFile (filename, (void *)&src2);
+		LoadFile (filename, (void **) (char *) &src2);
 
 		if (!PR_CompileFile (src2, filename) )
 			exit (1);

@@ -1,6 +1,6 @@
 /*
 	bsp2wal.c
-	$Id: bsp2wal.c,v 1.2 2007-06-26 20:19:38 sezero Exp $
+	$Id: bsp2wal.c,v 1.3 2007-07-08 17:01:17 sezero Exp $
 */
 
 #include "util_inc.h"
@@ -84,7 +84,7 @@ static void WriteWALFile (const char *bspfilename)
 			continue;
 		}
 
-		wt = malloc (sizeof(miptex_wal_t) + pixels);
+		wt = (miptex_wal_t *) malloc (sizeof(miptex_wal_t) + pixels);
 		memset (wt, 0, sizeof(miptex_wal_t));
 
 		wt->ident = LittleLong (IDWALHEADER);

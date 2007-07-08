@@ -1,7 +1,7 @@
 /*
 	lexi.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/utils/dcc/pr_lex.c,v 1.11 2007-06-28 11:10:34 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/utils/dcc/pr_lex.c,v 1.12 2007-07-08 17:01:14 sezero Exp $
 */
 
 
@@ -584,13 +584,13 @@ static type_t *PR_FindType (type_t *type)
 	}
 
 // allocate a new one
-	check = malloc (sizeof (*check));
+	check = (type_t *) malloc (sizeof (*check));
 	*check = *type;
 	check->next = pr.types;
 	pr.types = check;
 
 // allocate a generic def for the type, so fields can reference it
-	def = malloc (sizeof(def_t));
+	def = (def_t *) malloc (sizeof(def_t));
 	def->name = "COMPLEX TYPE";
 	def->type = check;
 	check->def = def;
@@ -625,16 +625,16 @@ char	pr_parm_names[MAX_PARMS][MAX_NAME];
 
 type_t *PR_ParseType (void)
 {
-	type_t	new;
+	type_t	newtype;
 	type_t	*type;
 	char	*name;
 
 	if (PR_Check ("."))
 	{
-		memset (&new, 0, sizeof(new));
-		new.type = ev_field;
-		new.aux_type = PR_ParseType ();
-		return PR_FindType (&new);
+		memset (&newtype, 0, sizeof(newtype));
+		newtype.type = ev_field;
+		newtype.aux_type = PR_ParseType ();
+		return PR_FindType (&newtype);
 	}
 
 	if (!strcmp (pr_token, "float") )
@@ -660,29 +660,29 @@ type_t *PR_ParseType (void)
 		return type;
 
 // function type
-	memset (&new, 0, sizeof(new));
-	new.type = ev_function;
-	new.aux_type = type;	// return type
-	new.num_parms = 0;
+	memset (&newtype, 0, sizeof(newtype));
+	newtype.type = ev_function;
+	newtype.aux_type = type;	// return type
+	newtype.num_parms = 0;
 	if (!PR_Check (")"))
 	{
 		if (PR_Check ("..."))
-			new.num_parms = -1;	// variable args
+			newtype.num_parms = -1;	// variable args
 		else
 		{
 			do
 			{
 				type = PR_ParseType ();
 				name = PR_ParseName ();
-				strcpy (pr_parm_names[new.num_parms], name);
-				new.parm_types[new.num_parms] = type;
-				new.num_parms++;
+				strcpy (pr_parm_names[newtype.num_parms], name);
+				newtype.parm_types[newtype.num_parms] = type;
+				newtype.num_parms++;
 			} while (PR_Check (","));
 		}
 
 		PR_Expect (")");
 	}
 
-	return PR_FindType (&new);
+	return PR_FindType (&newtype);
 }
 

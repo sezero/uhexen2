@@ -1,7 +1,7 @@
 /*
 	comp.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/utils/hcc_old/pr_comp.c,v 1.4 2007-06-28 11:10:44 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/utils/hcc_old/pr_comp.c,v 1.5 2007-07-08 17:01:15 sezero Exp $
 */
 
 
@@ -344,7 +344,7 @@ def_t *CO_GenCode (opcode_t *op, def_t *var_a, def_t *var_b)
 	}
 
 	// Allocate the result register.
-	var_c = malloc(sizeof(def_t));
+	var_c = (def_t *) malloc(sizeof(def_t));
 	memset(var_c, 0, sizeof(def_t));
 	var_c->ofs = numpr_globals;
 	var_c->type = op->type_c->type;
@@ -460,7 +460,7 @@ def_t *CO_ParseImmediate (void)
 			{
 				if (!STRCMP(G_STRING(cn->ofs), pr_immediate_string))
 				{
-					cell = malloc(sizeof(struct hash_element));
+					cell = (struct hash_element *) malloc(sizeof(struct hash_element));
 					cell->next = HashTable[idx];
 					cell->def = cn;
 					HashTable[idx] = cell;
@@ -471,7 +471,7 @@ def_t *CO_ParseImmediate (void)
 			{
 				if (G_FLOAT(cn->ofs) == pr_immediate._float)
 				{
-					cell = malloc(sizeof(struct hash_element));
+					cell = (struct hash_element *) malloc(sizeof(struct hash_element));
 					cell->next = HashTable[idx];
 					cell->def = cn;
 					HashTable[idx] = cell;
@@ -484,7 +484,7 @@ def_t *CO_ParseImmediate (void)
 					&& ( G_FLOAT(cn->ofs+1) == pr_immediate.vector[1])
 					&& ( G_FLOAT(cn->ofs+2) == pr_immediate.vector[2]))
 				{
-					cell = malloc(sizeof(struct hash_element));
+					cell = (struct hash_element *) malloc(sizeof(struct hash_element));
 					cell->next = HashTable[idx];
 					cell->def = cn;
 					HashTable[idx] = cell;
@@ -499,13 +499,13 @@ def_t *CO_ParseImmediate (void)
 	}
 
 	// Allocate a new one
-	cn = malloc(sizeof(def_t));
+	cn = (def_t *) malloc(sizeof(def_t));
 	memset(cn, 0, sizeof(*cn));
 	cn->next = NULL;
 	pr.def_tail->next = cn;
 	pr.def_tail = cn;
 
-	cell = malloc(sizeof(struct hash_element));
+	cell = (struct hash_element *) malloc(sizeof(struct hash_element));
 	cell->next = HashTable[idx];
 	cell->def = cn;
 	HashTable[idx] = cell;
@@ -659,7 +659,7 @@ static function_t *ParseImmediateStatements (type_t *type)
 	def_t	*scopeDef;
 	def_t	*searchDef;
 
-	f = malloc(sizeof(function_t));
+	f = (function_t *) malloc(sizeof(function_t));
 
 	// Check for builtin function definition
 	if (TK_CHECK(TK_COLON))
@@ -808,19 +808,19 @@ def_t *PR_GetDef (type_t *type, const char *name, def_t *scope, qboolean allocat
 	}
 
 	// Allocate a new def
-	def = malloc(sizeof(def_t));
+	def = (def_t *) malloc(sizeof(def_t));
 	memset(def, 0, sizeof(*def));
 	def->next = NULL;
 	pr.def_tail->next = def;
 	pr.def_tail = def;
 
 	// Add to hash table
-	cell = malloc(sizeof(struct hash_element));
+	cell = (struct hash_element *) malloc(sizeof(struct hash_element));
 	cell->next = HashTable[idx];
 	cell->def = def;
 	HashTable[idx] = cell;
 
-	def->name = malloc(strlen(name)+1);
+	def->name = (char *) malloc(strlen(name)+1);
 	strcpy(def->name, name);
 	def->type = type;
 
@@ -1061,7 +1061,7 @@ static def_t *NewVarDef (const char *name, type_t *type)
 	char	key[100];
 
 	// Allocate the array def
-	def = malloc(sizeof(def_t));
+	def = (def_t *) malloc(sizeof(def_t));
 	memset(def, 0, sizeof(*def));
 	def->next = NULL;
 	pr.def_tail->next = def;
@@ -1077,12 +1077,12 @@ static def_t *NewVarDef (const char *name, type_t *type)
 	{
 		idx = COM_Hash(name);
 	}
-	cell = malloc(sizeof(struct hash_element));
+	cell = (struct hash_element *) malloc(sizeof(struct hash_element));
 	cell->next = HashTable[idx];
 	cell->def = def;
 	HashTable[idx] = cell;
 
-	def->name = malloc(strlen(name)+1);
+	def->name = (char *) malloc(strlen(name)+1);
 	strcpy(def->name, name);
 
 	def->type = type;

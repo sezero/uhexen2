@@ -2,7 +2,7 @@
 	pr_comp.h
 	PROGS structures: This file is shared by Hexen II and HCC
 
-	$Id: pr_comp.h,v 1.3 2007-03-14 21:04:34 sezero Exp $
+	$Id: pr_comp.h,v 1.4 2007-07-08 17:01:15 sezero Exp $
 */
 
 #ifndef __PR_COMP_H
@@ -13,7 +13,8 @@ typedef int	string_t;
 
 typedef enum
 {
-	ev_void,
+	ev_bad = -1,
+	ev_void = 0,
 	ev_string,
 	ev_float,
 	ev_vector,

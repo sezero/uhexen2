@@ -1,6 +1,6 @@
 /*
 	lmp2pcx.c
-	$Id: lmp2pcx.c,v 1.3 2007-05-13 12:00:26 sezero Exp $
+	$Id: lmp2pcx.c,v 1.4 2007-07-08 17:01:17 sezero Exp $
 	Copyright (C) 2002-2007 Forest Hale
 
 	This program is free software; you can redistribute it and/or
@@ -87,7 +87,7 @@ void WritePCX (const char *filename, unsigned char *data, int width, int height,
 	pcx_t	*pcx;
 	unsigned char	*pack, *dataend;
 
-	pcx = malloc (width*height*2 + 1000);
+	pcx = (pcx_t *) malloc (width*height*2 + 1000);
 	if (!pcx)
 	{
 		printf ("%s: unable to allocate buffer\n", __thisfunc__);
@@ -153,7 +153,7 @@ void WriteTGA (const char *filename, unsigned char *data, int width, int height,
 		// contains transparent pixels
 		// BGRA truecolor since some programs can't deal with BGRA colormaps
 		// a buffer big enough to store the worst compression ratio possible (1 extra byte per pixel)
-		buffer = malloc (18 + width*height*5);
+		buffer = (unsigned char *) malloc (18 + width*height*5);
 
 		memset (buffer, 0, 18);
 		buffer[2] = 10;		// RLE truecolor
@@ -228,7 +228,7 @@ void WriteTGA (const char *filename, unsigned char *data, int width, int height,
 	else
 	{
 #if 1
-		buffer = malloc (18 + width*height*4);
+		buffer = (unsigned char *) malloc (18 + width*height*4);
 
 		memset (buffer, 0, 18);
 		buffer[2] = 10;		// RLE truecolor
@@ -280,7 +280,7 @@ void WriteTGA (const char *filename, unsigned char *data, int width, int height,
 #else
 		// contains only opaque pixels
 		// a buffer big enough to store the worst compression ratio possible (2 bytes per pixel)
-		buffer = malloc (18 + 768 + width*height*2);
+		buffer = (unsigned char *) malloc (18 + 768 + width*height*2);
 
 		memset (buffer, 0, 18);
 		buffer[1] = 1;		// colormap type 1
@@ -377,7 +377,7 @@ static unsigned char *LoadLMP (const char *filename, int idx)
 		printf ("%s: \"%s\" is not a %s file\n", __thisfunc__, filename, convertdata[idx].datatype);
 		return NULL;
 	}
-	data = malloc (image_width*image_height);
+	data = (unsigned char *) malloc (image_width*image_height);
 	if (!data)
 	{
 		free (lmpdata);
@@ -469,7 +469,7 @@ static unsigned char *LoadMIP (const char *filename, int idx)
 		printf ("%s: \"%s\" is not a %s file\n", __thisfunc__, filename, convertdata[idx].datatype);
 		return NULL;
 	}
-	data = malloc (image_width*image_height);
+	data = (unsigned char *) malloc (image_width*image_height);
 	if (!data)
 	{
 		free (mipdata);
@@ -560,7 +560,7 @@ static void ConvertWAD (const char *filename, int idx)
 	char		tempname[4096], *ptr;
 
 	LoadFile (filename, &waddata);
-	wad = (void *)waddata;
+	wad = (wadinfo_t *) waddata;
 	if (memcmp(wad->identification, "WAD2", 4))
 	{
 		printf("%s: \"%s\" is not a %s file\n", __thisfunc__, filename, convertdata[idx].datatype);
@@ -571,7 +571,7 @@ static void ConvertWAD (const char *filename, int idx)
 	wad->numlumps = LittleLong(wad->numlumps);
 	wad->infotableofs = LittleLong(wad->infotableofs);
 	printf ("%s: converting \"%s\" (%i lumps)\n", __thisfunc__, filename, wad->numlumps);
-	lump = (void *)((unsigned char *)waddata + wad->infotableofs);
+	lump = (lumpinfo_t *)((unsigned char *)waddata + wad->infotableofs);
 	for (i = 0; i < wad->numlumps; i++, lump++)
 	{
 		height = 0;

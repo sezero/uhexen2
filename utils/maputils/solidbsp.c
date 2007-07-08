@@ -1,6 +1,6 @@
 /*
 	solidbsp.c
-	$Id: solidbsp.c,v 1.7 2007-05-13 12:00:17 sezero Exp $
+	$Id: solidbsp.c,v 1.8 2007-07-08 17:01:16 sezero Exp $
 */
 
 #include "util_inc.h"
@@ -570,7 +570,7 @@ static void LinkConvexFaces (surface_t *planelist, node_t *leafnode)
 // write the list of faces, and free the originals
 //
 	leaffaces += count;
-	leafnode->markfaces = malloc(sizeof(face_t *)*(count+1));
+	leafnode->markfaces = (face_t **) malloc(sizeof(face_t *)*(count+1));
 	i = 0;
 	for (surf = planelist ; surf ; surf = pnext)
 	{
@@ -597,7 +597,7 @@ Returns a duplicated list of all faces on surface
 */
 static face_t *LinkNodeFaces (surface_t *surface)
 {
-	face_t	*f, *new, **prevptr;
+	face_t	*f, *newf, **prevptr;
 	face_t	*list;
 
 	list = NULL;
@@ -618,11 +618,11 @@ static face_t *LinkNodeFaces (surface_t *surface)
 	for (f = surface->faces ; f ; f = f->next)
 	{
 		nodefaces++;
-		new = AllocFace ();
-		*new = *f;
-		f->original = new;
-		new->next = list;
-		list = new;
+		newf = AllocFace ();
+		*newf = *f;
+		f->original = newf;
+		newf->next = list;
+		list = newf;
 	}
 
 	return list;

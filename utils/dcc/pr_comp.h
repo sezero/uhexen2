@@ -2,7 +2,7 @@
 	pr_comp.h
 	PROGS structures: This file is shared by Quake and QCC
 
-	$Id: pr_comp.h,v 1.6 2007-03-14 21:22:15 sezero Exp $
+	$Id: pr_comp.h,v 1.7 2007-07-08 17:01:14 sezero Exp $
 */
 
 #ifndef __PR_COMP_H
@@ -13,7 +13,8 @@ typedef int	string_t;
 
 typedef enum
 {
-	ev_void,
+	ev_bad = -1,
+	ev_void = 0,
 	ev_string,
 	ev_float,
 	ev_vector,

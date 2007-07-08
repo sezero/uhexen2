@@ -1,7 +1,7 @@
 /*
 	expr.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/utils/hcc_old/expr.c,v 1.6 2007-06-28 11:10:44 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/utils/hcc_old/expr.c,v 1.7 2007-07-08 17:01:15 sezero Exp $
 
 */
 
@@ -175,7 +175,7 @@ def_t *EX_Expression (int priority)
 				}
 				else
 				{ // Not a field
-					type_c = -1;
+					type_c = ev_bad;
 				}
 			}
 			else

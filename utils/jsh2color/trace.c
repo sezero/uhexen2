@@ -19,7 +19,7 @@
 
 /*
 	trace.c
-	$Id: trace.c,v 1.7 2007-03-14 21:04:37 sezero Exp $
+	$Id: trace.c,v 1.8 2007-07-08 17:01:16 sezero Exp $
 
 	Modifications by Kevin Shanahan, 1999-2000
 */
@@ -88,7 +88,7 @@ Loads the node structure out of a .bsp file to be used for light occlusion
 */
 void MakeTnodes (dmodel_t *bm)
 {
-	tnode_p = tnodes = malloc(numnodes * sizeof(tnode_t));
+	tnode_p = tnodes = (tnode_t *) malloc(numnodes * sizeof(tnode_t));
 
 	MakeTnode (0);
 }

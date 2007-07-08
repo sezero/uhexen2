@@ -1,6 +1,6 @@
 /*
 	genmodel.c
-	$Id: genmodel.c,v 1.6 2007-03-14 21:04:32 sezero Exp $
+	$Id: genmodel.c,v 1.7 2007-07-08 17:01:15 sezero Exp $
 
 	Generates a .mdl file from a base frame, a texture bitmap,
 	and a series of frames.
@@ -651,7 +651,7 @@ static void OptimizeVertices(void)
 	// search for common points among all the frames
 	for (i = 0 ; i < model.numframes ; i++)
 	{
-		in = frames[i].pdata;
+		in = (trivert_t *) frames[i].pdata;
 
 		for (j = 0; j < model.numverts; j++)
 		{
@@ -684,7 +684,7 @@ static void OptimizeVertices(void)
 	// recompute the light normals
 	for (i = 0 ; i < model.numframes ; i++)
 	{
-		in = frames[i].pdata;
+		in = (trivert_t *) frames[i].pdata;
 
 		for (j = 0; j < model.numverts; j++)
 		{
@@ -748,7 +748,7 @@ static void OptimizeVertices(void)
 	// substitute
 	for (i = 0 ; i < model.numframes ; i++)
 	{
-		in = frames[i].pdata;
+		in = (trivert_t *) frames[i].pdata;
 
 		for (j = 0; j < model.numverts; j++)
 		{
@@ -1252,7 +1252,7 @@ static void Cmd_Skin (void)
 
 	// Copy skinwidth*skinheight, since PCXs are always
 	// loaded as 640x480 bitmaps
-	ptemp1 = skins[skincount].pdata;
+	ptemp1 = (byte *) skins[skincount].pdata;
 	ptemp2 = pskinbitmap;
 	for (i = 0; i < model.skinheight; i++)
 	{
@@ -1832,7 +1832,7 @@ static void LoadPCXSkin(char *filename, byte **buffer)
 	}
 
 	// Allocate page
-	if ((dst = malloc(SKINPAGE_SIZE)) == NULL)
+	if ((dst = (byte *) malloc(SKINPAGE_SIZE)) == NULL)
 	{
 		Error("Failed to allocate memory for skin page.\n");
 	}

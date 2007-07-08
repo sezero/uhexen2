@@ -2,7 +2,7 @@
 	dcc.c
 	An hcode compiler/decompiler for Hexen II by Eric Hobbs
 
-	$Id: dcc.c,v 1.38 2007-06-28 11:10:33 sezero Exp $
+	$Id: dcc.c,v 1.39 2007-07-08 17:01:14 sezero Exp $
 */
 
 
@@ -724,7 +724,7 @@ static char *Make_Immediate (gofs_t ofs, const char *linestr, int mode)
 				free(temp_val[i]);
 				temp_val[i] = NULL;
 			}
-			temp_val[i] = malloc(len + 1);
+			temp_val[i] = (char *) malloc(len + 1);
 			if (temp_val[i] == NULL)
 				Error("%s: failed to create new string for %s\n", __thisfunc__, linestr);
 			memcpy(temp_val[i], linestr, len);
@@ -1010,7 +1010,7 @@ static void PR_FunctionHeader (dfunction_t *df)
 	}
 
 	strcat(linetxt, ")");
-	func_headers[df-functions] = malloc(strlen(linetxt) + 1);
+	func_headers[df-functions] = (char *) malloc(strlen(linetxt) + 1);
 	if (func_headers[df-functions] == NULL)
 		Error ("%s: malloc failed.", __thisfunc__);
 	strcpy(func_headers[df-functions], linetxt);
@@ -1656,7 +1656,7 @@ void FindBuiltinParameters (int func)
 	if (!dsf)
 	{
 		printf("NOT found!!\nsetting parameters to void\n");
-		func_headers[func] = malloc(strlen("void ()") + 1);
+		func_headers[func] = (char *) malloc(strlen("void ()") + 1);
 		if (func_headers[func] == NULL)
 			Error ("%s: malloc failed.", __thisfunc__);
 		sprintf(func_headers[func], "%s", "void ()");
@@ -1890,7 +1890,7 @@ void FindBuiltinParameters (int func)
 	}
 
 	strcat(plist, ")");
-	func_headers[func] = malloc(strlen(plist) + 1);
+	func_headers[func] = (char *) malloc(strlen(plist) + 1);
 	if (func_headers[func] == NULL)
 		Error ("%s: malloc failed.", __thisfunc__);
 	sprintf(func_headers[func], "%s", plist);

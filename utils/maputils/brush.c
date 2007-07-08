@@ -1,6 +1,6 @@
 /*
 	brush.c
-	$Id: brush.c,v 1.8 2007-05-13 12:00:11 sezero Exp $
+	$Id: brush.c,v 1.9 2007-07-08 17:01:16 sezero Exp $
 */
 
 #include "util_inc.h"
@@ -846,7 +846,7 @@ brushset_t *Brush_LoadEntity (entity_t *ent, int hullnumber)
 	int			numbrushes;
 	brushset_t	*bset;
 
-	bset = malloc (sizeof(brushset_t));
+	bset = (brushset_t *) malloc (sizeof(brushset_t));
 	memset (bset, 0, sizeof(brushset_t));
 	ClearBounds (bset);
 

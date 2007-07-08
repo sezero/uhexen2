@@ -1,6 +1,6 @@
 /*
 	map.c
-	$Id: map.c,v 1.9 2007-05-13 12:00:12 sezero Exp $
+	$Id: map.c,v 1.10 2007-07-08 17:01:16 sezero Exp $
 */
 
 #include "util_inc.h"
@@ -20,10 +20,10 @@ int			nummiptex;
 char		miptex[MAX_MAP_TEXINFO][16];
 
 
-static char *copystring(char *s)
+static char *copystring (char *s)
 {
 	char	*b;
-	b = malloc(strlen(s)+1);
+	b = (char *) malloc(strlen(s)+1);
 	strcpy (b, s);
 	return b;
 }
@@ -207,7 +207,7 @@ static void ParseEpair (void)
 {
 	epair_t	*e;
 
-	e = malloc (sizeof(epair_t));
+	e = (epair_t *) malloc (sizeof(epair_t));
 	memset (e, 0, sizeof(epair_t));
 	e->next = mapent->epairs;
 	mapent->epairs = e;
@@ -411,7 +411,7 @@ static void ParseBrush (void)
 			continue;
 		}
 
-		f = malloc(sizeof(mface_t));
+		f = (mface_t *) malloc(sizeof(mface_t));
 		f->next = b->faces;
 		b->faces = f;
 
@@ -655,7 +655,7 @@ void SetKeyValue (entity_t *ent, char *key, char *value)
 		}
 	}
 
-	ep = malloc (sizeof(*ep));
+	ep = (epair_t *) malloc (sizeof(*ep));
 	ep->next = ent->epairs;
 	ent->epairs = ep;
 	ep->key = copystring(key);

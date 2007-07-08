@@ -1,6 +1,6 @@
 /*
 	token.h
-	$Id: token.h,v 1.5 2007-03-14 21:04:33 sezero Exp $
+	$Id: token.h,v 1.6 2007-07-08 17:01:15 sezero Exp $
 */
 
 #ifndef __TOKEN_H__
@@ -28,7 +28,8 @@
 
 typedef enum
 {
-	TK_NONE,
+	TK_BAD = -1,
+	TK_NONE = 0,
 	TK_UNKNOWNCHAR,
 	TK_EOF,
 	TK_IDENTIFIER,		// VALUE: (char *) tk_String

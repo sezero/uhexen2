@@ -1,6 +1,6 @@
 /*
 	flow.c
-	$Id: flow.c,v 1.8 2007-05-13 12:00:12 sezero Exp $
+	$Id: flow.c,v 1.9 2007-07-08 17:01:16 sezero Exp $
 */
 
 #include "util_inc.h"
@@ -319,7 +319,7 @@ static void RecursiveLeafFlow (int leafnum, threaddata_t *thread, pstack_t *prev
 	stack.next = NULL;
 	stack.leaf = leaf;
 	stack.portal = NULL;
-	stack.mightsee = malloc(bitbytes);
+	stack.mightsee = (byte *) malloc(bitbytes);
 	might = (long *)stack.mightsee;
 	vis = (long *)thread->leafvis;
 
@@ -470,7 +470,7 @@ void PortalFlow (portal_t *p)
 		Error ("%s: reflowed", __thisfunc__);
 	p->status = stat_working;
 
-	p->visbits = malloc (bitbytes);
+	p->visbits = (byte *) malloc (bitbytes);
 	memset (p->visbits, 0, bitbytes);
 
 	memset (&data, 0, sizeof(data));
@@ -538,7 +538,7 @@ void BasePortalVis (void)
 
 	for (i = 0, p = portals ; i < num2 ; i++, p++)
 	{
-		p->mightsee = malloc (bitbytes);
+		p->mightsee = (byte *) malloc (bitbytes);
 		memset (p->mightsee, 0, bitbytes);
 
 		c_portalsee = 0;

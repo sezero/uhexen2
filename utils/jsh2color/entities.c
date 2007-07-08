@@ -19,7 +19,7 @@
 
 /*
 	entities.c
-	$Id: entities.c,v 1.14 2007-05-13 12:00:10 sezero Exp $
+	$Id: entities.c,v 1.15 2007-07-08 17:01:16 sezero Exp $
 */
 
 #include "util_inc.h"
@@ -168,7 +168,7 @@ void LoadEntities (void)
 			if (c == '}')
 				Error ("%s: closing brace without data", __thisfunc__);
 
-			epair = malloc (sizeof(epair_t));
+			epair = (epair_t *) malloc (sizeof(epair_t));
 			memset (epair, 0, sizeof(epair));
 			strcpy (epair->key, key);
 			strcpy (epair->value, com_token);
@@ -477,7 +477,7 @@ void SetKeyValue (entity_t *ent, char *key, char *value)
 			return;
 		}
 
-	ep = malloc (sizeof(*ep));
+	ep = (epair_t *) malloc (sizeof(*ep));
 	ep->next = ent->epairs;
 	ent->epairs = ep;
 	strcpy (ep->key, key);

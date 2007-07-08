@@ -1,7 +1,7 @@
 /*
 	hcc.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/utils/hcc/hcc.c,v 1.12 2007-07-04 18:54:58 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/utils/hcc/hcc.c,v 1.13 2007-07-08 17:01:15 sezero Exp $
 
 	Hash table modifications based on fastqcc by Jonathan Roy
 	(roy@atlantic.net).
@@ -825,7 +825,7 @@ int main (int argc, char **argv)
 	EX_Init ();
 
 	sprintf(filename, "%s%s", sourcedir, infile);
-	LoadFile(filename, (void *)&src);
+	LoadFile(filename, (void **) (char *) &src);
 
 	src = COM_Parse(src);
 	if (!src)
@@ -859,7 +859,7 @@ int main (int argc, char **argv)
 		{
 			printf("compiling %s\n", filename);
 		}
-		LoadFile(filename, (void *)&src2);
+		LoadFile(filename, (void **) (char *) &src2);
 		if (!CO_CompileFile(src2, filename))
 		{
 			exit (1);

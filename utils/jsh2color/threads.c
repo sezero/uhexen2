@@ -19,7 +19,7 @@
 
 /*
 	threads.c
-	$Id: threads.c,v 1.5 2007-03-14 21:04:36 sezero Exp $
+	$Id: threads.c,v 1.6 2007-07-08 17:01:16 sezero Exp $
 */
 
 #include "util_inc.h"
@@ -52,7 +52,7 @@ void InitThreads (void)
 #  else
 	pthread_mutexattr_t	mattrib;
 
-	my_mutex = malloc (sizeof(*my_mutex));
+	my_mutex = (pthread_mutex_t *) malloc (sizeof(*my_mutex));
 	if (pthread_mutexattr_create (&mattrib) == -1)
 		Error ("pthread_mutex_attr_create failed");
 	if (pthread_mutexattr_setkind_np (&mattrib, MUTEX_FAST_NP) == -1)

@@ -1,6 +1,6 @@
 /*
 	token.c
-	$Id: token.c,v 1.4 2007-03-14 21:04:33 sezero Exp $
+	$Id: token.c,v 1.5 2007-07-08 17:01:15 sezero Exp $
 */
 
 // HEADER FILES ------------------------------------------------------------
@@ -94,7 +94,7 @@ static struct
 	{ "face",	TK_FACE		},
 	{ "origin",	TK_ORIGIN	},
 
-	{ NULL,		-1		}
+	{ NULL,		TK_BAD		}
 };
 
 static char *TokenNames[] =

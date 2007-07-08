@@ -1,7 +1,7 @@
 /*
 	comp.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/utils/dcc/pr_comp.c,v 1.18 2007-06-28 11:10:34 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/utils/dcc/pr_comp.c,v 1.19 2007-07-08 17:01:14 sezero Exp $
 */
 
 
@@ -191,7 +191,7 @@ static def_t *PR_Statement ( opcode_t *op, def_t *var_a, def_t *var_b)
 	}
 	else
 	{	// allocate result space
-		var_c = malloc (sizeof(def_t));
+		var_c = (def_t *) malloc (sizeof(def_t));
 		memset (var_c, 0, sizeof(def_t));
 		var_c->ofs = numpr_globals;
 		var_c->type = op->type_c->type;
@@ -254,7 +254,7 @@ static def_t *PR_ParseImmediate (void)
 	}
 
 	// allocate a new one
-	cn = malloc (sizeof(def_t));
+	cn = (def_t *) malloc (sizeof(def_t));
 	cn->next = NULL;
 
 	pr.def_tail->next = cn;
@@ -623,7 +623,7 @@ static def_t *PR_Expression (int priority)
 				if (e2->type->aux_type)
 					type_c = e2->type->aux_type->type;
 				else
-					type_c = -1;	// not a field
+					type_c = ev_bad;	// not a field
 			}
 			else
 				type_c = ev_void;
@@ -883,7 +883,7 @@ static function_t *PR_ParseImmediateStatements (type_t *type)
 	function_t	*f;
 	def_t		*defs[MAX_PARMS];
 
-	f = malloc (sizeof(function_t));
+	f = (function_t *) malloc (sizeof(function_t));
 
 //
 // check for builtin function definition #1, #2, etc
@@ -970,7 +970,7 @@ def_t *PR_GetDef (type_t *type, const char *name, def_t *scope, qboolean allocat
 		return NULL;
 
 	// allocate a new def
-	def = malloc (sizeof(def_t));
+	def = (def_t *) malloc (sizeof(def_t));
 	memset (def, 0, sizeof(*def));
 	def->next = NULL;
 	pr.def_tail->next = def;
@@ -979,7 +979,7 @@ def_t *PR_GetDef (type_t *type, const char *name, def_t *scope, qboolean allocat
 	def->search_next = pr.search;
 	pr.search = def;
 
-	def->name = malloc (strlen(name)+1);
+	def->name = (char *) malloc (strlen(name)+1);
 	strcpy (def->name, name);
 	def->type = type;
 
@@ -1091,7 +1091,7 @@ static def_t *PR_AllocateArray (type_t *type, char *name, def_t *scope, qboolean
 		return NULL;
 
 	// allocate a new def
-	def = malloc (sizeof(def_t));
+	def = (def_t *) malloc (sizeof(def_t));
 	memset (def, 0, sizeof(*def));
 	def->next = NULL;
 	pr.def_tail->next = def;
@@ -1100,7 +1100,7 @@ static def_t *PR_AllocateArray (type_t *type, char *name, def_t *scope, qboolean
 	def->search_next = pr.search;
 	pr.search = def;
 
-	def->name = malloc (strlen(name)+1);
+	def->name = (char *) malloc (strlen(name)+1);
 	strcpy (def->name, name);
 	def->type = type;
 

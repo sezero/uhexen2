@@ -1,6 +1,6 @@
 /*
 	writebsp.c
-	$Id: writebsp.c,v 1.7 2007-05-13 12:00:25 sezero Exp $
+	$Id: writebsp.c,v 1.8 2007-07-08 17:01:16 sezero Exp $
 */
 
 #include "util_inc.h"
@@ -367,7 +367,7 @@ static void TEX_InitFromWad (char *path)
 	wadinfo.numlumps = LittleLong(wadinfo.numlumps);
 	wadinfo.infotableofs = LittleLong(wadinfo.infotableofs);
 	fseek (texfile, wadinfo.infotableofs, SEEK_SET);
-	lumpinfo = malloc(wadinfo.numlumps*sizeof(lumpinfo_t));
+	lumpinfo = (lumpinfo_t *) malloc(wadinfo.numlumps*sizeof(lumpinfo_t));
 	SafeRead (texfile, lumpinfo, wadinfo.numlumps*sizeof(lumpinfo_t));
 
 	for (i = 0 ; i < wadinfo.numlumps ; i++)

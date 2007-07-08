@@ -1,6 +1,6 @@
 /*
 	loadtri.c
-	$Id: loadtri.c,v 1.6 2007-05-21 16:59:46 sezero Exp $
+	$Id: loadtri.c,v 1.7 2007-07-08 17:01:15 sezero Exp $
 */
 
 // HEADER FILES ------------------------------------------------------------
@@ -15,8 +15,8 @@
 
 // MACROS ------------------------------------------------------------------
 
-#define SafeMalloc(PTR,SIZE,DESC) {							\
-	PTR = malloc((SIZE));								\
+#define SafeMalloc(PTR,TYPE,SIZE,DESC) {							\
+	PTR = TYPE malloc((SIZE));								\
 	if (PTR == NULL)								\
 		Error("Failed to allocate %lu bytes for '%s'.\n", (unsigned long)(SIZE), DESC);	\
 }
@@ -188,7 +188,7 @@ static void LoadHRC(char *fileName, triangle_t **triList, int *triangleCount)
 {
 	int		i, j;
 	int		vertexCount;
-	struct
+	struct vList_s
 	{
 		float v[3];
 	} *vList;
@@ -236,7 +236,7 @@ static void LoadHRC(char *fileName, triangle_t **triList, int *triangleCount)
 	TK_Beyond(TK_MESH);
 	TK_BeyondRequire(TK_VERTICES, TK_INTNUMBER);
 	vertexCount = tk_IntNumber;
-	SafeMalloc(vList, vertexCount*sizeof(vList[0]), "Vertex list");
+	SafeMalloc(vList, (struct vList_s *), vertexCount * sizeof(vList[0]), "Vertex list");
 	for (i = 0; i < vertexCount; i++)
 	{
 		TK_BeyondRequire(TK_LBRACKET, TK_INTNUMBER);
@@ -281,7 +281,7 @@ static void LoadHRC(char *fileName, triangle_t **triList, int *triangleCount)
 		Error("Too many triangles in file %s\n", InputFileName);
 	}
 	*triangleCount = triCount;
-	SafeMalloc(tList, MAXTRIANGLES*sizeof(triangle_t), "Triangle list");
+	SafeMalloc(tList, (triangle_t *), MAXTRIANGLES * sizeof(triangle_t), "Triangle list");
 	*triList = tList;
 	for (i = 0; i < triCount; i++)
 	{
@@ -337,7 +337,7 @@ static void LoadASC(char *fileName, triangle_t **triList, int *triangleCount)
 {
 	int		i, j;
 	int		vertexCount;
-	struct
+	struct vList_s
 	{
 		float v[3];
 	} *vList;
@@ -374,7 +374,7 @@ static void LoadASC(char *fileName, triangle_t **triList, int *triangleCount)
 		Error("Too many triangles in file %s\n", InputFileName);
 	}
 	*triangleCount = triCount;
-	SafeMalloc(tList, MAXTRIANGLES*sizeof(triangle_t), "Triangle list");
+	SafeMalloc(tList, (triangle_t *), MAXTRIANGLES * sizeof(triangle_t), "Triangle list");
 	*triList = tList;
 	TK_BeyondRequire(TK_C_VERTEX, TK_LIST);
 
@@ -383,7 +383,7 @@ static void LoadASC(char *fileName, triangle_t **triList, int *triangleCount)
 	ry = (rotation[1]/360.0)*2.0*MY_PI;
 	rz = (rotation[2]/360.0)*2.0*MY_PI;
 */
-	SafeMalloc(vList, vertexCount*sizeof(vList[0]), "Vertex list");
+	SafeMalloc(vList, (struct vList_s *), vertexCount * sizeof(vList[0]), "Vertex list");
 	for (i = 0; i < vertexCount; i++)
 	{
 		TK_BeyondRequire(TK_C_VERTEX, TK_INTNUMBER);
@@ -468,7 +468,7 @@ static void LoadHTR(char *fileName, triangle_t **triList, int *triangleCount)
 	int		i, j;
 	int		vertexCount;
 	int		vertexNum;
-	struct
+	struct vList_s
 	{
 		float v[3];
 	} *vList;
@@ -494,7 +494,7 @@ static void LoadHTR(char *fileName, triangle_t **triList, int *triangleCount)
 	// Get vertex count
 	TK_BeyondRequire(TK_VERTICES, TK_INTNUMBER);
 	vertexCount = tk_IntNumber;
-	SafeMalloc(vList, vertexCount*sizeof(vList[0]), "Vertex list");
+	SafeMalloc(vList, (struct vList_s *), vertexCount * sizeof(vList[0]), "Vertex list");
 
 	// Get triangle count
 	TK_BeyondRequire(TK_FACES, TK_INTNUMBER);
@@ -504,7 +504,7 @@ static void LoadHTR(char *fileName, triangle_t **triList, int *triangleCount)
 		Error("Too many triangles in file %s\n", InputFileName);
 	}
 	*triangleCount = triCount;
-	SafeMalloc(tList, MAXTRIANGLES*sizeof(triangle_t), "Triangle list");
+	SafeMalloc(tList, (triangle_t *), MAXTRIANGLES * sizeof(triangle_t), "Triangle list");
 	*triList = tList;
 
 	// Get origin
@@ -607,7 +607,7 @@ static void Load3DS(FILE *input, triangle_t **triList, int *triangleCount)
 	unsigned int meshChunkSize, meshChunkPos;
 	unsigned int vertex;
 	unsigned int vertexCount;
-	struct
+	struct vList_s
 	{
 		float v[3];
 	} *vList;
@@ -708,7 +708,7 @@ static void Load3DS(FILE *input, triangle_t **triList, int *triangleCount)
 			case _3DS_TRI_VERTEXL:
 				chunkSize = ReadLong();
 				vertexCount = ReadShort();
-				SafeMalloc(vList, vertexCount*sizeof(vList[0]), "Vertex list");
+				SafeMalloc(vList, (struct vList_s *), vertexCount * sizeof(vList[0]), "Vertex list");
 				for (i = 0; i < vertexCount; i++)
 				{
 					vList[i].v[0] = ReadFloat();
@@ -727,7 +727,7 @@ static void Load3DS(FILE *input, triangle_t **triList, int *triangleCount)
 								InputFileName);
 				}
 				*triangleCount = triCount;
-				SafeMalloc(tList, MAXTRIANGLES*sizeof(triangle_t), "Triangle list");
+				SafeMalloc(tList, (triangle_t *), MAXTRIANGLES * sizeof(triangle_t), "Triangle list");
 				*triList = tList;
 				for (i = 0; i < triCount; i++)
 				{
@@ -848,7 +848,7 @@ static void LoadTRI(FILE *input, triangle_t **triList, int *triangleCount)
 		Error("Bad .TRI file: %s\n", InputFileName);
 	}
 
-	SafeMalloc(ptri, MAXTRIANGLES*sizeof(triangle_t), "Triangle list");
+	SafeMalloc(ptri, (triangle_t *), MAXTRIANGLES*sizeof(triangle_t), "Triangle list");
 
 	*triList = ptri;
 

@@ -1,7 +1,7 @@
 /*
 	lexi.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/utils/hcc/pr_lex.c,v 1.5 2007-06-28 11:10:43 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/utils/hcc/pr_lex.c,v 1.6 2007-07-08 17:01:15 sezero Exp $
 */
 
 
@@ -1023,13 +1023,13 @@ type_t *PR_FindType (type_t *type)
 	}
 
 	// Allocate a new one
-	check = malloc(sizeof(*check));
+	check = (type_t *) malloc(sizeof(*check));
 	*check = *type;
 	check->next = pr.types;
 	pr.types = check;
 
 	// Allocate a generic def for the type, so fields can reference it
-	def = malloc(sizeof(def_t));
+	def = (def_t *) malloc(sizeof(def_t));
 	memset(def, 0, sizeof(*def));
 	def->name = "COMPLEX TYPE";
 	def->type = check;
@@ -1049,7 +1049,7 @@ char pr_parm_names[MAX_PARMS][MAX_NAME];
 
 type_t *PR_ParseType (void)
 {
-	type_t	new;
+	type_t	newtype;
 	type_t	*type;
 	char	*name;
 
@@ -1059,10 +1059,10 @@ type_t *PR_ParseType (void)
 		{
 			return &type_union;
 		}
-		memset(&new, 0, sizeof(new));
-		new.type = ev_field;
-		new.aux_type = PR_ParseType();
-		return PR_FindType(&new);
+		memset(&newtype, 0, sizeof(newtype));
+		newtype.type = ev_field;
+		newtype.aux_type = PR_ParseType();
+		return PR_FindType(&newtype);
 	}
 
 	if (!strcmp (pr_token, "float") )
@@ -1090,15 +1090,15 @@ type_t *PR_ParseType (void)
 	}
 
 	// Function type
-	memset(&new, 0, sizeof(new));
-	new.type = ev_function;
-	new.aux_type = type; // Return type
-	new.num_parms = 0;
+	memset(&newtype, 0, sizeof(newtype));
+	newtype.type = ev_function;
+	newtype.aux_type = type; // Return type
+	newtype.num_parms = 0;
 	if (!TK_CHECK(TK_RPAREN))
 	{
 		if (TK_CHECK(TK_ELLIPSIS))
 		{
-			new.num_parms = -1;	// variable args
+			newtype.num_parms = -1;	// variable args
 		}
 		else
 		{
@@ -1106,14 +1106,14 @@ type_t *PR_ParseType (void)
 			{
 				type = PR_ParseType();
 				name = PR_ParseName();
-				strcpy (pr_parm_names[new.num_parms], name);
-				new.parm_types[new.num_parms] = type;
-				new.num_parms++;
+				strcpy (pr_parm_names[newtype.num_parms], name);
+				newtype.parm_types[newtype.num_parms] = type;
+				newtype.num_parms++;
 			} while (TK_CHECK(TK_COMMA));
 		}
 		LX_Require(")");
 	}
-	return PR_FindType(&new);
+	return PR_FindType(&newtype);
 }
 
 //==========================================================================

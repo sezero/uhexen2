@@ -1,6 +1,6 @@
 /*
 	bsp5.c
-	$Id: qbsp.c,v 1.10 2007-05-13 12:00:16 sezero Exp $
+	$Id: qbsp.c,v 1.11 2007-07-08 17:01:16 sezero Exp $
 */
 
 #include "util_inc.h"
@@ -143,7 +143,7 @@ winding_t *CopyWinding (winding_t *w)
 	winding_t	*c;
 
 	size = (size_t)((winding_t *)0)->points[w->numpoints];
-	c = malloc (size);
+	c = (winding_t *) malloc (size);
 	memcpy (c, w, size);
 	return c;
 }
@@ -419,7 +419,7 @@ winding_t *NewWinding (int points)
 //		c_peakwindings = c_activewindings;
 
 	size = (size_t)((winding_t *)0)->points[points];
-	w = malloc (size);
+	w = (winding_t *) malloc (size);
 	memset (w, 0, size);
 
 	return w;
@@ -446,7 +446,7 @@ face_t *AllocFace (void)
 //	if (c_activefaces > c_peakfaces)
 //		c_peakfaces = c_activefaces;
 
-	f = malloc (sizeof(face_t));
+	f = (face_t *) malloc (sizeof(face_t));
 	memset (f, 0, sizeof(face_t));
 	f->planenum = -1;
 
@@ -471,7 +471,7 @@ surface_t *AllocSurface (void)
 {
 	surface_t	*s;
 
-	s = malloc (sizeof(surface_t));
+	s = (surface_t *) malloc (sizeof(surface_t));
 	memset (s, 0, sizeof(surface_t));
 
 //	c_activesurfaces++;
@@ -500,7 +500,7 @@ portal_t *AllocPortal (void)
 //	if (c_activeportals > c_peakportals)
 //		c_peakportals = c_activeportals;
 
-	p = malloc (sizeof(portal_t));
+	p = (portal_t *) malloc (sizeof(portal_t));
 	memset (p, 0, sizeof(portal_t));
 
 	return p;
@@ -522,7 +522,7 @@ node_t *AllocNode (void)
 {
 	node_t  *n;
 
-	n = malloc (sizeof(node_t));
+	n = (node_t *) malloc (sizeof(node_t));
 	memset (n, 0, sizeof(node_t));
 
 	return n;
@@ -537,7 +537,7 @@ brush_t *AllocBrush (void)
 {
 	brush_t	*b;
 
-	b = malloc (sizeof(brush_t));
+	b = (brush_t *) malloc (sizeof(brush_t));
 	memset (b, 0, sizeof(brush_t));
 
 	return b;
