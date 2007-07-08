@@ -2,7 +2,7 @@
 	gl_mesh.c
 	triangle model functions
 
-	$Id: gl_mesh.c,v 1.14 2007-07-04 18:16:43 sezero Exp $
+	$Id: gl_mesh.c,v 1.15 2007-07-08 11:36:57 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -241,7 +241,6 @@ static void BuildTris (void)
 		bestlen = 0;
 		besttype = 0;
 		for (type = 0 ; type < 2 ; type++)
-//	type = 1;
 		{
 			for (startv = 0; startv < 3; startv++)
 			{
@@ -275,6 +274,8 @@ static void BuildTris (void)
 
 		for (j = 0; j < bestlen+2; j++)
 		{
+			int		tmp;
+
 			// emit a vertex into the reorder buffer
 			k = bestverts[j];
 			vertexorder[numorder++] = k;
@@ -290,8 +291,12 @@ static void BuildTris (void)
 			s = (s + 0.5) / pheader->skinwidth;
 			t = (t + 0.5) / pheader->skinheight;
 
-			*(float *)&commands[numcommands++] = s;
-			*(float *)&commands[numcommands++] = t;
+		//	*(float *)&commands[numcommands++] = s;
+		//	*(float *)&commands[numcommands++] = t;
+			memcpy (&tmp, &s, 4);
+			commands[numcommands++] = tmp;
+			memcpy (&tmp, &t, 4);
+			commands[numcommands++] = tmp;
 		}
 	}
 
