@@ -2,7 +2,7 @@
 	cl_parse.c
 	parse a message received from the server
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/cl_parse.c,v 1.43 2007-06-30 11:19:47 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/cl_parse.c,v 1.44 2007-07-08 11:55:34 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -810,18 +810,6 @@ static void CL_ParseClientdata (void)
 			cls.latency += 0.001;	// drift up, so correction are needed
 	}
 }
-
-#ifndef GLQUAKE	// otherwise in gl_rmisc.c
-const int color_offsets[MAX_PLAYER_CLASS] =
-{
-	2*14*256,
-	0,
-	1*14*256,
-	2*14*256,
-	2*14*256,
-	2*14*256
-};
-#endif	// GLQUAKE
 
 /*
 =====================

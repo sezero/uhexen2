@@ -2,7 +2,7 @@
 	r_part.c
 	particles rendering
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/r_part.c,v 1.16 2007-06-30 11:19:47 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/r_part.c,v 1.17 2007-07-08 11:55:38 sezero Exp $
 */
 
 
@@ -47,9 +47,9 @@ static	cvar_t	leak_color = {"leak_color", "251", CVAR_ARCHIVE};
 
 static particle_t *AllocParticle (void);
 
-void R_RunParticleEffect2 (vec3_t org, vec3_t dmin, vec3_t dmax, int color, int effect, int count);
-void R_RunParticleEffect3 (vec3_t org, vec3_t box, int color, int effect, int count);
-void R_RunParticleEffect4 (vec3_t org, float radius, int color, int effect, int count);
+void R_RunParticleEffect2 (vec3_t org, vec3_t dmin, vec3_t dmax, int color, ptype_t effect, int count);
+void R_RunParticleEffect3 (vec3_t org, vec3_t box, int color, ptype_t effect, int count);
+void R_RunParticleEffect4 (vec3_t org, float radius, int color, ptype_t effect, int count);
 
 //=============================================================================
 
@@ -81,7 +81,7 @@ void R_InitParticles (void)
 
 	Cvar_RegisterVariable (&leak_color);
 
-	transTable = Hunk_AllocName(65536, "transtable");
+	transTable = (byte *) Hunk_AllocName(65536, "transtable");
 
 	FS_OpenFile ("gfx/tinttab.lmp", &f, false);
 	if (!f)
@@ -376,7 +376,8 @@ Parse an effect out of the server message
 void R_ParseParticleEffect2 (void)
 {
 	vec3_t		org, dmin, dmax;
-	int		i, msgcount, color, effect;
+	int		i, msgcount, color;
+	ptype_t		effect;
 
 	for (i = 0; i < 3; i++)
 		org[i] = MSG_ReadCoord ();
@@ -386,7 +387,7 @@ void R_ParseParticleEffect2 (void)
 		dmax[i] = MSG_ReadFloat ();
 	color = MSG_ReadShort ();
 	msgcount = MSG_ReadByte ();
-	effect = MSG_ReadByte ();
+	effect = (ptype_t) MSG_ReadByte ();
 
 	R_RunParticleEffect2 (org, dmin, dmax, color, effect, msgcount);
 }
@@ -401,7 +402,8 @@ Parse an effect out of the server message
 void R_ParseParticleEffect3 (void)
 {
 	vec3_t		org, box;
-	int		i, msgcount, color, effect;
+	int		i, msgcount, color;
+	ptype_t		effect;
 
 	for (i = 0; i < 3; i++)
 		org[i] = MSG_ReadCoord ();
@@ -409,7 +411,7 @@ void R_ParseParticleEffect3 (void)
 		box[i] = MSG_ReadByte ();
 	color = MSG_ReadShort ();
 	msgcount = MSG_ReadByte ();
-	effect = MSG_ReadByte ();
+	effect = (ptype_t) MSG_ReadByte ();
 
 	R_RunParticleEffect3 (org, box, color, effect, msgcount);
 }
@@ -424,7 +426,8 @@ Parse an effect out of the server message
 void R_ParseParticleEffect4 (void)
 {
 	vec3_t		org;
-	int		i, msgcount, color, effect;
+	int		i, msgcount, color;
+	ptype_t		effect;
 	float		radius;
 
 	for (i = 0; i < 3; i++)
@@ -432,7 +435,7 @@ void R_ParseParticleEffect4 (void)
 	radius = MSG_ReadByte();
 	color = MSG_ReadShort ();
 	msgcount = MSG_ReadByte ();
-	effect = MSG_ReadByte ();
+	effect = (ptype_t) MSG_ReadByte ();
 
 	R_RunParticleEffect4 (org, radius, color, effect, msgcount);
 }
@@ -635,7 +638,7 @@ R_RunParticleEffect2
 
 ===============
 */
-void R_RunParticleEffect2 (vec3_t org, vec3_t dmin, vec3_t dmax, int color, int effect, int count)
+void R_RunParticleEffect2 (vec3_t org, vec3_t dmin, vec3_t dmax, int color, ptype_t effect, int count)
 {
 	int		i, j;
 	particle_t	*p;
@@ -677,7 +680,7 @@ R_RunParticleEffect3
 
 ===============
 */
-void R_RunParticleEffect3 (vec3_t org, vec3_t box, int color, int effect, int count)
+void R_RunParticleEffect3 (vec3_t org, vec3_t box, int color, ptype_t effect, int count)
 {
 	int		i, j;
 	particle_t	*p;
@@ -709,7 +712,7 @@ R_RunParticleEffect4
 
 ===============
 */
-void R_RunParticleEffect4 (vec3_t org, float radius, int color, int effect, int count)
+void R_RunParticleEffect4 (vec3_t org, float radius, int color, ptype_t effect, int count)
 {
 	int		i, j;
 	particle_t	*p;
@@ -735,7 +738,7 @@ void R_RunParticleEffect4 (vec3_t org, float radius, int color, int effect, int 
 	}
 }
 
-void R_SplashParticleEffect (vec3_t org, float radius, int color, int effect, int count)
+void R_SplashParticleEffect (vec3_t org, float radius, int color, ptype_t effect, int count)
 {
 	int		i, j;
 	particle_t	*p;

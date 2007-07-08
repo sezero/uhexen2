@@ -1,7 +1,7 @@
 /*
 	r_sprite.c
 
-	$Id: r_sprite.c,v 1.7 2007-05-13 11:58:30 sezero Exp $
+	$Id: r_sprite.c,v 1.8 2007-07-08 11:55:22 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -274,7 +274,7 @@ void R_DrawSprite (void)
 	vec3_t		tvec;
 	float		dot, angle, sr, cr;
 
-	psprite = currententity->model->cache.data;
+	psprite = (msprite_t *) currententity->model->cache.data;
 
 	r_spritedesc.pspriteframe = R_GetSpriteframe (psprite);
 

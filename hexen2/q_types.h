@@ -2,7 +2,7 @@
 	q_types.h
 	common type definitions
 
-	$Id: q_types.h,v 1.2 2007-06-16 07:30:29 sezero Exp $
+	$Id: q_types.h,v 1.3 2007-07-08 11:55:22 sezero Exp $
 */
 
 #ifndef __QTYPES_H
@@ -38,7 +38,11 @@ typedef unsigned char byte;
 
 #undef true
 #undef false
+#ifdef __cplusplus
+typedef bool	qboolean;
+#else
 typedef	enum	{false, true} qboolean;
+#endif
 #define _DEF_BOOL_
 
 
@@ -73,6 +77,8 @@ typedef	int	fixed16_t;
 #define DWORD unsigned long
 #define LONG long
 #define LONGLONG long long
+
+typedef void *PVOID,*LPVOID;
 
 typedef struct RECT_s {
 	int left;

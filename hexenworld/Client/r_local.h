@@ -2,7 +2,7 @@
 	r_local.h
 	private refresh defs
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/r_local.h,v 1.11 2007-04-18 08:47:52 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/r_local.h,v 1.12 2007-07-08 11:55:38 sezero Exp $
 */
 
 #ifndef __R_LOCAL_H
@@ -223,11 +223,6 @@ qboolean R_AliasCheckBBox (void);
 #define	SPEED		20
 
 //=========================================================
-// particle stuff
-
-void R_DrawParticles (void);
-void R_InitParticles (void);
-void R_ClearParticles (void);
 
 void R_ReadPointFile_f (void);
 void R_SurfacePatch (void);

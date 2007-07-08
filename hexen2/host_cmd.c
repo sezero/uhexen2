@@ -2,7 +2,7 @@
 	host_cmd.c
 	console commands
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host_cmd.c,v 1.80 2007-06-26 13:37:19 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host_cmd.c,v 1.81 2007-07-08 11:55:19 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -408,7 +408,6 @@ This command causes the client to wait for the signon messages again.
 This is sent just before a server changes levels
 ==================
 */
-extern void R_ClearParticles (void);
 extern qboolean		demohack;	// see in cl_parse.c
 
 static void Host_Reconnect_f (void)

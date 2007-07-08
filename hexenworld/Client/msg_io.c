@@ -3,7 +3,7 @@
 	Message IO functions
 	Handles byte ordering and avoids alignment errors
 
-	$Id: msg_io.c,v 1.4 2007-05-13 11:59:01 sezero Exp $
+	$Id: msg_io.c,v 1.5 2007-07-08 11:55:37 sezero Exp $
 */
 
 #include "q_types.h"
@@ -36,7 +36,7 @@ void MSG_WriteChar (sizebuf_t *sb, int c)
 		Sys_Error ("%s: range error", __thisfunc__);
 #endif
 
-	buf = SZ_GetSpace (sb, 1);
+	buf = (byte *) SZ_GetSpace (sb, 1);
 	buf[0] = c;
 }
 
@@ -49,7 +49,7 @@ void MSG_WriteByte (sizebuf_t *sb, int c)
 		Sys_Error ("%s: range error", __thisfunc__);
 #endif
 
-	buf = SZ_GetSpace (sb, 1);
+	buf = (byte *) SZ_GetSpace (sb, 1);
 	buf[0] = c;
 }
 
@@ -62,7 +62,7 @@ void MSG_WriteShort (sizebuf_t *sb, int c)
 		Sys_Error ("%s: range error", __thisfunc__);
 #endif
 
-	buf = SZ_GetSpace (sb, 2);
+	buf = (byte *) SZ_GetSpace (sb, 2);
 	buf[0] = c&0xff;
 	buf[1] = c>>8;
 }
@@ -71,7 +71,7 @@ void MSG_WriteLong (sizebuf_t *sb, int c)
 {
 	byte	*buf;
 
-	buf = SZ_GetSpace (sb, 4);
+	buf = (byte *) SZ_GetSpace (sb, 4);
 	buf[0] = c&0xff;
 	buf[1] = (c>>8)&0xff;
 	buf[2] = (c>>16)&0xff;
@@ -289,7 +289,8 @@ float MSG_ReadFloat (void)
 char *MSG_ReadString (void)
 {
 	static char	string[2048];
-	int		l, c;
+	int		c;
+	size_t		l;
 
 	l = 0;
 	do

@@ -2,7 +2,7 @@
 	screen.c
 	master for refresh, status bar, console, chat, notify, etc
 
-	$Id: gl_screen.c,v 1.49 2007-06-30 11:19:43 sezero Exp $
+	$Id: gl_screen.c,v 1.50 2007-07-08 11:55:19 sezero Exp $
 */
 
 /*=============================================================================
@@ -722,7 +722,7 @@ static void SCR_ScreenShot_f (void)
 	}
 
 	mark = Hunk_LowMark();
-	buffer = Hunk_AllocName(glwidth * glheight * 3 + 18, "buffer_sshot");
+	buffer = (byte *) Hunk_AllocName(glwidth * glheight * 3 + 18, "buffer_sshot");
 	memset (buffer, 0, 18);
 	buffer[2] = 2;		// uncompressed type
 	buffer[12] = glwidth & 255;

@@ -5,7 +5,7 @@
 	FIXME:	kill this in the future and make each C
 		file include only the necessary headers.
 
-	$Id: quakeinc.h,v 1.17 2007-04-18 13:31:53 sezero Exp $
+	$Id: quakeinc.h,v 1.18 2007-07-08 11:55:22 sezero Exp $
 */
 
 #ifndef __QUAKEINC_H
@@ -83,10 +83,13 @@
 #include "glquake.h"
 #elif defined(SERVERONLY)
 #include "server/model.h"
-#else
+#else	/* sw client */
 #include "model.h"
 #include "d_iface.h"
 #endif
+#if !defined(SERVERONLY)
+#include "r_part.h"
+#endif	/* SERVERONLY */
 
 #include "world.h"
 

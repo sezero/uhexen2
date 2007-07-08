@@ -2,7 +2,7 @@
 	zone.c
 	Memory management
 
-	$Id: zone.c,v 1.42 2007-05-13 12:04:47 sezero Exp $
+	$Id: zone.c,v 1.43 2007-07-08 11:55:24 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -123,7 +123,7 @@ void Z_Free (void *ptr)
 static void *Z_TagMalloc (int zone_id, int size, int tag)
 {
 	int		extra;
-	memblock_t	*start, *rover, *new, *base;
+	memblock_t	*start, *rover, *newblock, *base;
 	memzone_t	*zone;
 
 	if (!tag)
@@ -160,14 +160,14 @@ static void *Z_TagMalloc (int zone_id, int size, int tag)
 	extra = base->size - size;
 	if (extra >  MINFRAGMENT)
 	{	// there will be a free fragment after the allocated block
-		new = (memblock_t *) ((byte *)base + size );
-		new->size = extra;
-		new->tag = 0;			// free block
-		new->prev = base;
-		new->id = ZONEID;
-		new->next = base->next;
-		new->next->prev = new;
-		base->next = new;
+		newblock = (memblock_t *) ((byte *)base + size);
+		newblock->size = extra;
+		newblock->tag = 0;			// free block
+		newblock->prev = base;
+		newblock->id = ZONEID;
+		newblock->next = base->next;
+		newblock->next->prev = newblock;
+		base->next = newblock;
 		base->size = size;
 	}
 
@@ -491,18 +491,18 @@ Cache_Move
 */
 static void Cache_Move ( cache_system_t *c)
 {
-	cache_system_t		*new;
+	cache_system_t		*new_cs;
 
 // we are clearing up space at the bottom, so only allocate it late
-	new = Cache_TryAlloc (c->size, true);
-	if (new)
+	new_cs = Cache_TryAlloc (c->size, true);
+	if (new_cs)
 	{
 	//	Con_Printf ("cache_move ok\n");
-		memcpy ( new+1, c+1, c->size - sizeof(cache_system_t) );
-		new->user = c->user;
-		memcpy (new->name, c->name, sizeof(new->name));
+		memcpy (new_cs+1, c+1, c->size - sizeof(cache_system_t));
+		new_cs->user = c->user;
+		memcpy (new_cs->name, c->name, sizeof(new_cs->name));
 		Cache_Free (c->user);
-		new->user->data = (void *)(new + 1);
+		new_cs->user->data = (void *)(new_cs + 1);
 	}
 	else
 	{
@@ -594,7 +594,7 @@ Size should already include the header and padding
 */
 static cache_system_t *Cache_TryAlloc (int size, qboolean nobottom)
 {
-	cache_system_t	*cs, *new;
+	cache_system_t	*cs, *new_cs;
 
 // is the cache completely empty?
 
@@ -603,62 +603,62 @@ static cache_system_t *Cache_TryAlloc (int size, qboolean nobottom)
 		if (hunk_size - hunk_high_used - hunk_low_used < size)
 			Sys_Error ("%s: out of hunk memory (failed to allocate %i bytes)", __thisfunc__, size);
 
-		new = (cache_system_t *) (hunk_base + hunk_low_used);
-		memset (new, 0, sizeof(*new));
-		new->size = size;
+		new_cs = (cache_system_t *) (hunk_base + hunk_low_used);
+		memset (new_cs, 0, sizeof(*new_cs));
+		new_cs->size = size;
 
-		cache_head.prev = cache_head.next = new;
-		new->prev = new->next = &cache_head;
+		cache_head.prev = cache_head.next = new_cs;
+		new_cs->prev = new_cs->next = &cache_head;
 
-		Cache_MakeLRU (new);
-		return new;
+		Cache_MakeLRU (new_cs);
+		return new_cs;
 	}
 
 // search from the bottom up for space
 
-	new = (cache_system_t *) (hunk_base + hunk_low_used);
+	new_cs = (cache_system_t *) (hunk_base + hunk_low_used);
 	cs = cache_head.next;
 
 	do
 	{
 		if (!nobottom || cs != cache_head.next)
 		{
-			if ( (byte *)cs - (byte *)new >= size)
+			if ((byte *)cs - (byte *)new_cs >= size)
 			{	// found space
-				memset (new, 0, sizeof(*new));
-				new->size = size;
+				memset (new_cs, 0, sizeof(*new_cs));
+				new_cs->size = size;
 
-				new->next = cs;
-				new->prev = cs->prev;
-				cs->prev->next = new;
-				cs->prev = new;
+				new_cs->next = cs;
+				new_cs->prev = cs->prev;
+				cs->prev->next = new_cs;
+				cs->prev = new_cs;
 
-				Cache_MakeLRU (new);
+				Cache_MakeLRU (new_cs);
 
-				return new;
+				return new_cs;
 			}
 		}
 
 	// continue looking
-		new = (cache_system_t *)((byte *)cs + cs->size);
+		new_cs = (cache_system_t *)((byte *)cs + cs->size);
 		cs = cs->next;
 
 	} while (cs != &cache_head);
 
 // try to allocate one at the very end
-	if ( hunk_base + hunk_size - hunk_high_used - (byte *)new >= size)
+	if (hunk_base + hunk_size - hunk_high_used - (byte *)new_cs >= size)
 	{
-		memset (new, 0, sizeof(*new));
-		new->size = size;
+		memset (new_cs, 0, sizeof(*new_cs));
+		new_cs->size = size;
 
-		new->next = &cache_head;
-		new->prev = cache_head.prev;
-		cache_head.prev->next = new;
-		cache_head.prev = new;
+		new_cs->next = &cache_head;
+		new_cs->prev = cache_head.prev;
+		cache_head.prev->next = new_cs;
+		cache_head.prev = new_cs;
 
-		Cache_MakeLRU (new);
+		Cache_MakeLRU (new_cs);
 
-		return new;
+		return new_cs;
 	}
 
 	return NULL;		// couldn't allocate
@@ -1189,7 +1189,7 @@ void Memory_Init (void *buf, int size)
 	int p;
 	int zonesize = ZONE_MINSIZE;
 
-	hunk_base = buf;
+	hunk_base = (byte *) buf;
 	hunk_size = size;
 	hunk_low_used = 0;
 	hunk_high_used = 0;
@@ -1215,14 +1215,14 @@ void Memory_Init (void *buf, int size)
 			zonesize = ZONE_MAXSIZE;
 		}
 	}
-	mainzone = Hunk_AllocName ( zonesize, "zone" );
+	mainzone = (memzone_t *) Hunk_AllocName (zonesize, "zone");
 	Memory_InitZone (mainzone, Z_MAINZONE, zonesize);
 
 #if !defined(SERVERONLY)
 // initialize a 256 KB secondary zone for static textures
 	if (!isDedicated)
 	{
-		sec_zone = Hunk_AllocName ( ZONE_MINSIZE, "sec_zone" );
+		sec_zone = (memzone_t *) Hunk_AllocName (ZONE_MINSIZE, "sec_zone");
 		Memory_InitZone (sec_zone, Z_SECZONE, ZONE_MINSIZE);
 	}
 

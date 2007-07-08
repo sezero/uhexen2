@@ -2,7 +2,7 @@
 	sv_main.c
 	server main program
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sv_main.c,v 1.59 2007-06-30 11:19:43 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sv_main.c,v 1.60 2007-07-08 11:55:23 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -1972,10 +1972,10 @@ void SV_SpawnServer (const char *server, const char *startspot)
 // allocate server memory
 	memset(sv.Effects,0,sizeof(sv.Effects));
 
-	sv.states = Hunk_AllocName (svs.maxclients * sizeof(client_state2_t), "states");
+	sv.states = (client_state2_t *) Hunk_AllocName (svs.maxclients * sizeof(client_state2_t), "states");
 	memset(sv.states,0,svs.maxclients * sizeof(client_state2_t));
 
-	sv.edicts = Hunk_AllocName (MAX_EDICTS*pr_edict_size, "edicts");
+	sv.edicts = (edict_t *) Hunk_AllocName (MAX_EDICTS*pr_edict_size, "edicts");
 
 	SZ_Init (&sv.datagram, sv.datagram_buf, sizeof(sv.datagram_buf));
 	SZ_Init (&sv.reliable_datagram, sv.reliable_datagram_buf, sizeof(sv.reliable_datagram_buf));

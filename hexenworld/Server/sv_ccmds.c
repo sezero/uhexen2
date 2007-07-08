@@ -2,7 +2,7 @@
 	sv_ccmds.c
 	console commands
 
-	$Id: sv_ccmds.c,v 1.21 2007-05-09 18:11:37 sezero Exp $
+	$Id: sv_ccmds.c,v 1.22 2007-07-08 11:56:52 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -687,7 +687,7 @@ static void SV_Serverinfo_f (void)
 
 		Z_Free (var->string);	// free the old value string
 		c = Cmd_Argv(2);
-		var->string = Z_Malloc (strlen(c) + 1, Z_MAINZONE);
+		var->string = (char *) Z_Malloc (strlen(c) + 1, Z_MAINZONE);
 		strcpy (var->string, c);
 		var->value = atof (var->string);
 	}

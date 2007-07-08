@@ -2,7 +2,7 @@
 	d_surf.c
 	rasterization driver surface heap manager
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/d_surf.c,v 1.10 2007-06-16 07:30:31 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/d_surf.c,v 1.11 2007-07-08 11:55:35 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -116,7 +116,7 @@ D_SCAlloc
 */
 static surfcache_t *D_SCAlloc (int width, int size)
 {
-	surfcache_t		*new;
+	surfcache_t		*new_sc;
 	qboolean		wrapped_this_time;
 
 	if ((width < 0) || (width > 256))
@@ -146,11 +146,11 @@ static surfcache_t *D_SCAlloc (int width, int size)
 	}
 
 // colect and free surfcache_t blocks until the rover block is large enough
-	new = sc_rover;
+	new_sc = sc_rover;
 	if (sc_rover->owner)
 		*sc_rover->owner = NULL;
 
-	while (new->size < size)
+	while (new_sc->size < size)
 	{
 	// free another
 		sc_rover = sc_rover->next;
@@ -159,30 +159,30 @@ static surfcache_t *D_SCAlloc (int width, int size)
 		if (sc_rover->owner)
 			*sc_rover->owner = NULL;
 
-		new->size += sc_rover->size;
-		new->next = sc_rover->next;
+		new_sc->size += sc_rover->size;
+		new_sc->next = sc_rover->next;
 	}
 
 // create a fragment out of any leftovers
-	if (new->size - size > 256)
+	if (new_sc->size - size > 256)
 	{
-		sc_rover = (surfcache_t *)( (byte *)new + size);
-		sc_rover->size = new->size - size;
-		sc_rover->next = new->next;
+		sc_rover = (surfcache_t *)( (byte *)new_sc + size);
+		sc_rover->size = new_sc->size - size;
+		sc_rover->next = new_sc->next;
 		sc_rover->width = 0;
 		sc_rover->owner = NULL;
-		new->next = sc_rover;
-		new->size = size;
+		new_sc->next = sc_rover;
+		new_sc->size = size;
 	}
 	else
-		sc_rover = new->next;
+		sc_rover = new_sc->next;
 
-	new->width = width;
+	new_sc->width = width;
 // DEBUG
 	if (width > 0)
-		new->height = (size - sizeof(*new) + sizeof(new->data)) / width;
+		new_sc->height = (size - sizeof(*new_sc) + sizeof(new_sc->data)) / width;
 
-	new->owner = NULL;		// should be set properly after return
+	new_sc->owner = NULL;		// should be set properly after return
 
 	if (d_roverwrapped)
 	{
@@ -195,7 +195,7 @@ static surfcache_t *D_SCAlloc (int width, int size)
 	}
 
 	D_CheckCacheGuard ();	// DEBUG
-	return new;
+	return new_sc;
 }
 
 

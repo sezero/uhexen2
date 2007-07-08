@@ -2,7 +2,7 @@
 	cmd.c
 	Quake script command processing module
 
-	$Id: cmds.c,v 1.15 2007-07-04 08:49:59 sezero Exp $
+	$Id: cmds.c,v 1.16 2007-07-08 11:56:51 sezero Exp $
 */
 
 #include "defs.h"
@@ -88,7 +88,7 @@ void Cbuf_InsertText (const char *text)
 	templen = cmd_text.cursize;
 	if (templen)
 	{
-		temp = (char *)malloc (templen);
+		temp = (char *) malloc (templen);
 		memcpy (temp, cmd_text.data, templen);
 		SZ_Clear (&cmd_text);
 	}
@@ -229,7 +229,7 @@ void Cmd_TokenizeString (char *text)
 
 		if (cmd_argc < MAX_ARGS)
 		{
-			cmd_argv[cmd_argc] = (char *)malloc (strlen(com_token)+1);
+			cmd_argv[cmd_argc] = (char *) malloc (strlen(com_token)+1);
 			strcpy (cmd_argv[cmd_argc], com_token);
 			cmd_argc++;
 		}
@@ -256,7 +256,7 @@ void Cmd_AddCommand (char *cmd_name, xcommand_t function)
 		}
 	}
 
-	cmd = (cmd_function_t *)malloc(sizeof(cmd_function_t));
+	cmd = (cmd_function_t *) malloc (sizeof(cmd_function_t));
 	cmd->name = cmd_name;
 	cmd->function = function;
 	cmd->next = cmd_functions;
@@ -293,7 +293,7 @@ void Cmd_ExecuteString (char *text)
 		}
 	}
 
-	printf("Unknown command: %s\n",cmd_argv[0]);
+	printf ("Unknown command: %s\n",cmd_argv[0]);
 }
 
 

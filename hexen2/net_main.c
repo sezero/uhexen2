@@ -2,7 +2,7 @@
 	net_main.c
 	main networking module
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/net_main.c,v 1.26 2007-07-04 08:49:58 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/net_main.c,v 1.27 2007-07-08 11:55:21 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -28,8 +28,8 @@ qboolean	slistLocal = true;
 static double	slistStartTime;
 static int		slistLastShown;
 
-static void Slist_Send(void);
-static void Slist_Poll(void);
+static void Slist_Send (void *);
+static void Slist_Poll (void *);
 static PollProcedure	slistSendProcedure = {NULL, 0.0, Slist_Send};
 static PollProcedure	slistPollProcedure = {NULL, 0.0, Slist_Poll};
 
@@ -301,7 +301,7 @@ void NET_Slist_f (void)
 }
 
 
-static void Slist_Send(void)
+static void Slist_Send (void *unused)
 {
 	for (net_driverlevel = 0; net_driverlevel < net_numdrivers; net_driverlevel++)
 	{
@@ -317,7 +317,7 @@ static void Slist_Send(void)
 }
 
 
-static void Slist_Poll(void)
+static void Slist_Poll (void *unused)
 {
 	for (net_driverlevel = 0; net_driverlevel < net_numdrivers; net_driverlevel++)
 	{

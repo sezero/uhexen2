@@ -2,7 +2,7 @@
 	net_dgrm.c
 	This is enables a simple IP banning mechanism
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/net_dgrm.c,v 1.30 2007-06-26 20:19:32 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/net_dgrm.c,v 1.31 2007-07-08 11:55:21 sezero Exp $
 */
 
 #define BAN_TEST
@@ -30,7 +30,7 @@ static int droppedDatagrams;
 
 static int myDriverLevel;
 
-struct
+static struct
 {
 	unsigned int	length;
 	unsigned int	sequence;
@@ -485,10 +485,10 @@ static int		testPollCount;
 static int		testDriver;
 static int		testSocket;
 
-static void Test_Poll(void);
+static void Test_Poll (void *);
 static PollProcedure	testPollProcedure = {NULL, 0.0, Test_Poll};
 
-static void Test_Poll(void)
+static void Test_Poll (void *unused)
 {
 	struct qsockaddr clientaddr;
 	int		control;
@@ -617,10 +617,10 @@ static qboolean test2InProgress = false;
 static int		test2Driver;
 static int		test2Socket;
 
-static void Test2_Poll(void);
+static void Test2_Poll (void *);
 static PollProcedure	test2PollProcedure = {NULL, 0.0, Test2_Poll};
 
-static void Test2_Poll(void)
+static void Test2_Poll (void *unused)
 {
 	struct qsockaddr clientaddr;
 	int		control;

@@ -2,7 +2,7 @@
 	cl_tent.c
 	client side temporary entities
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/cl_tent.c,v 1.28 2007-06-30 11:19:47 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/cl_tent.c,v 1.29 2007-07-08 11:55:34 sezero Exp $
 */
 
 
@@ -79,7 +79,8 @@ struct explosion_t
 	vec3_t		avel;	// angular velocity
 	int		flags;
 	int		abslight;
-	exflags_t	exflags;
+//	exflags_t	exflags;
+	int		exflags;
 	int		skin;
 	int		scale;
 	model_t		*model;
@@ -1689,7 +1690,7 @@ void CL_ParseTEnt (void)
 				vec3_t dmin = {-10, -10, -10};
 				vec3_t dmax = {10, 10, 10};
 				R_ColoredParticleExplosion(pos,14,10,10);
-				R_RunParticleEffect2 (pos, dmin, dmax, 145, 5, 14);
+				R_RunParticleEffect2 (pos, dmin, dmax, 145, pt_explode, 14);
 			}
 			// make the actual explosion
 			ex = CL_AllocExplosion();

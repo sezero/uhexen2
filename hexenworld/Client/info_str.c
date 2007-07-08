@@ -2,7 +2,7 @@
 	info_str.c
 	Hexen2World info strings handling
 
-	$Id: info_str.c,v 1.3 2007-05-09 18:10:17 sezero Exp $
+	$Id: info_str.c,v 1.4 2007-07-08 11:55:37 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -153,7 +153,7 @@ void Info_RemovePrefixedKeys (char *start, char prefix)
 
 void Info_SetValueForStarKey (char *s, const char *key, const char *value, int maxsize)
 {
-	char	new[1024], *v;
+	char	newvalue[1024], *v;
 	int		c;
 #ifdef SERVERONLY
 	extern cvar_t sv_highchars;
@@ -180,9 +180,9 @@ void Info_SetValueForStarKey (char *s, const char *key, const char *value, int m
 	if (!value || !strlen(value))
 		return;
 
-	sprintf (new, "\\%s\\%s", key, value);
+	sprintf (newvalue, "\\%s\\%s", key, value);
 
-	if (strlen(new) + strlen(s) > maxsize)
+	if (strlen(newvalue) + strlen(s) > maxsize)
 	{
 		Con_Printf ("Info string length exceeded\n");
 		return;
@@ -190,7 +190,7 @@ void Info_SetValueForStarKey (char *s, const char *key, const char *value, int m
 
 	// only copy ascii values
 	s += strlen(s);
-	v = new;
+	v = newvalue;
 	while (*v)
 	{
 		c = (unsigned char)*v++;

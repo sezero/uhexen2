@@ -2,7 +2,7 @@
 	r_surf.c
 	surface-related refresh code
 
-	$Id: gl_rsurf.c,v 1.33 2007-06-30 11:19:47 sezero Exp $
+	$Id: gl_rsurf.c,v 1.34 2007-07-08 11:55:36 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -1508,7 +1508,7 @@ static void BuildSurfaceDisplayList (msurface_t *fa)
 	//
 	// draw texture
 	//
-	poly = Hunk_AllocName (sizeof(glpoly_t) + (lnumverts-4) * VERTEXSIZE*sizeof(float), "poly");
+	poly = (glpoly_t *) Hunk_AllocName (sizeof(glpoly_t) + (lnumverts-4) * VERTEXSIZE*sizeof(float), "poly");
 	poly->next = fa->polys;
 	poly->flags = fa->flags;
 	fa->polys = poly;
@@ -1565,13 +1565,13 @@ static void BuildSurfaceDisplayList (msurface_t *fa)
 		for (i = 0; i < lnumverts; ++i)
 		{
 			vec3_t	v1, v2;
-			float	*prev, *this, *next;
+			float	*prev, *curr, *next;
 
 			prev = poly->verts[(i + lnumverts - 1) % lnumverts];
-			this = poly->verts[i];
+			curr = poly->verts[i];
 			next = poly->verts[(i + 1) % lnumverts];
 
-			VectorSubtract(this, prev, v1);
+			VectorSubtract(curr, prev, v1);
 			VectorNormalize(v1);
 			VectorSubtract(next, prev, v2);
 			VectorNormalize(v2);

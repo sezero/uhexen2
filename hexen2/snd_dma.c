@@ -2,7 +2,7 @@
 	snd_dma.c
 	main control for any streaming sound output device
 
-	$Id: snd_dma.c,v 1.57 2007-06-30 11:19:43 sezero Exp $
+	$Id: snd_dma.c,v 1.58 2007-07-08 11:55:23 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -627,13 +627,13 @@ void S_ClearBuffer (void)
 	if (pDSBuf)
 	{
 		DWORD	dwSize;
-		DWORD	*pData;
+		LPVOID	pData;
 		int		reps;
 		HRESULT	hresult;
 
 		reps = 0;
 
-		while ((hresult = IDirectSoundBuffer_Lock(pDSBuf, 0, gSndBufSize, &pData, &dwSize, NULL, NULL, 0)) != DS_OK)
+		while ((hresult = IDirectSoundBuffer_Lock(pDSBuf, 0, gSndBufSize, (LPVOID *) &pData, &dwSize, NULL, NULL, 0)) != DS_OK)
 		{
 			if (hresult != DSERR_BUFFERLOST)
 			{

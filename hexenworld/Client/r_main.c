@@ -1,7 +1,7 @@
 /*
 	r_main.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/r_main.c,v 1.21 2007-06-30 11:19:47 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/r_main.c,v 1.22 2007-07-08 11:55:38 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -34,6 +34,18 @@ int		r_outofedges;
 
 byte		*mainTransTable;
 byte		*playerTranslation;
+const int	color_offsets[MAX_PLAYER_CLASS] =
+{
+		2 * 14 * 256,
+		0,
+		1 * 14 * 256,
+		2 * 14 * 256,
+		2 * 14 * 256
+#if defined(H2W)
+		,
+		2 * 14 * 256
+#endif
+};
 
 qboolean	r_dowarp, r_dowarpold, r_viewchanged;
 
@@ -165,7 +177,7 @@ void	R_InitTextures (void)
 	byte	*dest;
 
 // create a simple checkerboard texture for the default
-	r_notexture_mip = Hunk_AllocName (sizeof(texture_t) + 16*16+8*8+4*4+2*2, "notexture");
+	r_notexture_mip = (texture_t *) Hunk_AllocName (sizeof(texture_t) + 16*16+8*8+4*4+2*2, "notexture");
 
 	r_notexture_mip->width = r_notexture_mip->height = 16;
 	r_notexture_mip->offsets[0] = sizeof(texture_t);
@@ -275,7 +287,7 @@ void R_Init (void)
 
 	D_Init ();
 
-	mainTransTable = Hunk_AllocName(65536, "transtable2");
+	mainTransTable = (byte *) Hunk_AllocName(65536, "transtable2");
 
 	FS_OpenFile ("gfx/tinttab2.lmp", &f, false);
 	if (!f)
@@ -336,7 +348,7 @@ void R_NewMap (void)
 
 	if (r_cnumsurfs > NUMSTACKSURFACES)
 	{
-		surfaces = Hunk_AllocName (r_cnumsurfs * sizeof(surf_t), "surfaces");
+		surfaces = (surf_t *) Hunk_AllocName (r_cnumsurfs * sizeof(surf_t), "surfaces");
 		surface_p = surfaces;
 		surf_max = &surfaces[r_cnumsurfs];
 		r_surfsonstack = false;
@@ -351,7 +363,7 @@ void R_NewMap (void)
 	}
 
 	SaveSurfacesSize = r_cnumsurfs * sizeof(surf_t);
-	SaveSurfaces = Hunk_AllocName (SaveSurfacesSize, "surfback");
+	SaveSurfaces = (surf_t *) Hunk_AllocName (SaveSurfacesSize, "surfback");
 
 	r_maxedgesseen = 0;
 	r_maxsurfsseen = 0;
@@ -367,11 +379,11 @@ void R_NewMap (void)
 	}
 	else
 	{
-		auxedges = Hunk_AllocName (r_numallocatededges * sizeof(edge_t), "edges");
+		auxedges = (edge_t *) Hunk_AllocName (r_numallocatededges * sizeof(edge_t), "edges");
 	}
 
 	SaveEdgesSize = r_numallocatededges * sizeof(edge_t);
-	SaveEdges = Hunk_AllocName (SaveEdgesSize, "edgeback");
+	SaveEdges = (edge_t *) Hunk_AllocName (SaveEdgesSize, "edgeback");
 
 	r_dowarpold = false;
 	r_viewchanged = false;

@@ -1,6 +1,6 @@
 /*
 	net_udp.c
-	$Id: net_udp.c,v 1.26 2007-05-13 11:58:29 sezero Exp $
+	$Id: net_udp.c,v 1.27 2007-07-08 11:55:21 sezero Exp $
 
 	Copyright (C) 1996-1997  Id Software, Inc.
 
@@ -144,7 +144,7 @@ int UDP_OpenSocket (int port)
 	address.sin_family = AF_INET;
 	address.sin_addr.s_addr = INADDR_ANY;
 	address.sin_port = htons(port);
-	if ( bind (newsocket, (void *)&address, sizeof(address)) == -1)
+	if ( bind (newsocket, (struct sockaddr *)&address, sizeof(address)) == -1)
 		goto ErrorReturn;
 
 	return newsocket;

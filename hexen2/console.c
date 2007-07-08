@@ -2,7 +2,7 @@
 	console.c
 	in-game console and chat message buffer handling
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/console.c,v 1.33 2007-05-09 18:10:12 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/console.c,v 1.34 2007-07-08 11:55:18 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -18,7 +18,7 @@ int		con_totallines;		// total lines in console scrollback
 int		con_backscroll;		// lines up from bottom to display
 static int	con_current;		// where next message will be printed
 static int	con_x;			// offset in current line for next print
-static short	*con_text=0;
+static short	*con_text = NULL;
 static float	con_cursorspeed = 4;
 qboolean 	con_forcedup;		// because no entities to refresh
 
@@ -33,10 +33,9 @@ extern	int		edit_line;
 extern	int		key_linepos;
 extern	int		key_insert;
 extern qboolean		mousestate_sa;
-extern void	IN_ActivateMouse (void);
-extern void	IN_DeactivateMouse (void);
 
 extern void M_Menu_Main_f (void);
+
 
 /*
 ================
@@ -193,7 +192,7 @@ Con_Init
 */
 void Con_Init (void)
 {
-	con_text = Hunk_AllocName (CON_TEXTSIZE<<1, "context");
+	con_text = (short *) Hunk_AllocName (CON_TEXTSIZE<<1, "context");
 	Con_Clear_f();
 	con_linewidth = -1;
 	Con_CheckResize ();
@@ -393,9 +392,9 @@ Prints a given list to the console with columnized formatting
 */
 void Con_ShowList (int cnt, const char **list)
 {
-	const char *s;
-	unsigned i, j, max_len, len, cols, rows;
-	char *line;
+	const char	*s;
+	char		*line;
+	unsigned	i, j, max_len, len, cols, rows;
 
 	// Lay them out in columns
 	max_len = 0;
@@ -406,7 +405,7 @@ void Con_ShowList (int cnt, const char **list)
 			max_len = len;
 	}
 
-	line = Z_Malloc(con_linewidth + 1, Z_MAINZONE);
+	line = (char *) Z_Malloc(con_linewidth + 1, Z_MAINZONE);
 	cols = con_linewidth / (max_len + 2);
 	rows = cnt / cols + 1;
 

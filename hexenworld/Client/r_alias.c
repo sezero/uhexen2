@@ -2,7 +2,7 @@
 	r_alias.c
 	routines for setting up to draw alias models
 
-	$Id: r_alias.c,v 1.12 2007-06-30 11:19:47 sezero Exp $
+	$Id: r_alias.c,v 1.13 2007-07-08 11:55:38 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -90,7 +90,7 @@ qboolean R_AliasCheckBBox (void)
 
 	currententity->trivial_accept = 0;
 	pmodel = currententity->model;
-	pahdr = Mod_Extradata (pmodel);
+	pahdr = (aliashdr_t *) Mod_Extradata (pmodel);
 	pmdl = (newmdl_t*)((byte *)pahdr + pahdr->model);
 
 	R_AliasSetUpTransform (0);

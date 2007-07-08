@@ -2,7 +2,7 @@
 	d_init.c
 	rasterization driver initialization
 
-	$Id: d_init.c,v 1.7 2007-05-09 18:10:16 sezero Exp $
+	$Id: d_init.c,v 1.8 2007-07-08 11:55:35 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -109,7 +109,7 @@ void D_SetupFrame (void)
 	if (r_dowarp)
 		d_viewbuffer = r_warpbuffer;
 	else
-		d_viewbuffer = (void *)(byte *)vid.buffer;
+		d_viewbuffer = vid.buffer;
 
 	if (r_dowarp)
 		screenwidth = WARP_WIDTH;

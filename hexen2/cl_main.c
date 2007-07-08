@@ -2,7 +2,7 @@
 	cl_main.c
 	client main loop
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cl_main.c,v 1.40 2007-07-04 08:49:58 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cl_main.c,v 1.41 2007-07-08 11:55:17 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -96,8 +96,6 @@ Sends a disconnect message to the server
 This is also called on Host_Error, so it shouldn't cause any errors
 =====================
 */
-extern void R_ClearParticles (void);
-
 void CL_Disconnect (void)
 {
 	R_ClearParticles ();	//jfm: need to clear parts because some now check world

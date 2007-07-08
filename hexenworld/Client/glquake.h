@@ -2,7 +2,7 @@
 	glquake.h
 	common glquake header
 
-	$Id: glquake.h,v 1.57 2007-04-25 20:08:27 sezero Exp $
+	$Id: glquake.h,v 1.58 2007-07-08 11:55:36 sezero Exp $
 */
 
 
@@ -100,10 +100,7 @@ void R_AnimateLight(void);
 int R_LightPoint (vec3_t p);
 float R_LightPointColor (vec3_t p);
 void R_StoreEfrags (efrag_t **ppefrag);
-void R_InitParticles (void);
 void R_InitParticleTexture (void);
-void R_ClearParticles (void);
-void R_DrawParticles (void);
 void R_NetGraph (void);
 void R_InitNetgraphTexture (void);
 
@@ -265,6 +262,7 @@ extern	GLuint	particletexture;
 extern	int	skytexturenum;		// index in cl.loadmodel, not gl texture object
 extern	GLuint	playertextures[MAX_CLIENTS];
 extern	byte	*playerTranslation;
+extern	const int	color_offsets[MAX_PLAYER_CLASS];
 extern	int	gl_texlevel;
 extern	int	numgltextures;
 #ifdef H2W

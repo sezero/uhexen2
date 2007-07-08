@@ -2,7 +2,7 @@
 	r_surf.c
 	surface-related refresh code
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/r_surf.c,v 1.10 2007-06-16 14:41:41 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/r_surf.c,v 1.11 2007-07-08 11:55:38 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -358,7 +358,7 @@ static void R_DrawSurfaceBlock8_mip0 (void)
 	unsigned char	pix, *psource, *prowdest;
 
 	psource = pbasesource;
-	prowdest = prowdestbase;
+	prowdest = (unsigned char *) prowdestbase;
 
 	for (v = 0; v < r_numvblocks; v++)
 	{
@@ -407,7 +407,7 @@ static void R_DrawSurfaceBlock8_mip1 (void)
 	unsigned char	pix, *psource, *prowdest;
 
 	psource = pbasesource;
-	prowdest = prowdestbase;
+	prowdest = (unsigned char *) prowdestbase;
 
 	for (v = 0; v < r_numvblocks; v++)
 	{
@@ -456,7 +456,7 @@ static void R_DrawSurfaceBlock8_mip2 (void)
 	unsigned char	pix, *psource, *prowdest;
 
 	psource = pbasesource;
-	prowdest = prowdestbase;
+	prowdest = (unsigned char *) prowdestbase;
 
 	for (v = 0; v < r_numvblocks; v++)
 	{
@@ -505,7 +505,7 @@ static void R_DrawSurfaceBlock8_mip3 (void)
 	unsigned char	pix, *psource, *prowdest;
 
 	psource = pbasesource;
-	prowdest = prowdestbase;
+	prowdest = (unsigned char *) prowdestbase;
 
 	for (v = 0; v < r_numvblocks; v++)
 	{

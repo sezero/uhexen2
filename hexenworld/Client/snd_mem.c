@@ -2,7 +2,7 @@
 	snd_mem.c
 	sound caching
 
-	$Id: snd_mem.c,v 1.17 2007-05-13 11:59:02 sezero Exp $
+	$Id: snd_mem.c,v 1.18 2007-07-08 11:55:38 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -118,7 +118,7 @@ sfxcache_t *S_LoadSound (sfx_t *s)
 
 	len = len * info.width * info.channels;
 
-	sc = Cache_Alloc ( &s->cache, len + sizeof(sfxcache_t), s->name);
+	sc = (sfxcache_t *) Cache_Alloc ( &s->cache, len + sizeof(sfxcache_t), s->name);
 	if (!sc)
 		return NULL;
 

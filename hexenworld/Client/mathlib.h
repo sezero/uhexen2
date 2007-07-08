@@ -2,7 +2,7 @@
 	mathlib.h
 	math primitives
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/mathlib.h,v 1.16 2007-03-14 21:03:34 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/mathlib.h,v 1.17 2007-07-08 11:55:37 sezero Exp $
 */
 
 #ifndef __MATHLIB_H
@@ -21,7 +21,7 @@
 #define	bound(min, num, max)	((num) >= (min) ? ((num) < (max) ? (num) : (max)) : (min))
 
 #define	nanmask			(255<<23)
-#define	IS_NAN(x)		(((*(int *)&x)&nanmask) == nanmask)
+#define	IS_NAN(x)		(((*(int *) (char *) &x) & nanmask) == nanmask)
 
 int Q_isnan (float x);
 

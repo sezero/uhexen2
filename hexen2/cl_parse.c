@@ -2,7 +2,7 @@
 	cl_parse.c
 	parse a message received from the server
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cl_parse.c,v 1.53 2007-06-26 20:19:32 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cl_parse.c,v 1.54 2007-07-08 11:55:18 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -263,7 +263,7 @@ static void CL_ParseServerInfo (void)
 		Con_Printf("Bad maxclients (%d) from server\n", cl.maxclients);
 		return;
 	}
-	cl.scores = Hunk_AllocName (cl.maxclients*sizeof(*cl.scores), "scores");
+	cl.scores = (scoreboard_t *) Hunk_AllocName (cl.maxclients*sizeof(*cl.scores), "scores");
 
 // parse gametype
 	cl.gametype = MSG_ReadByte ();
@@ -953,17 +953,6 @@ static void CL_ParseClientdata (int bits)
 */
 
 }
-
-#ifndef GLQUAKE	// otherwise in gl_rmisc.c
-const int color_offsets[MAX_PLAYER_CLASS] =
-{
-	2*14*256,
-	0,
-	1*14*256,
-	2*14*256,
-	2*14*256
-};
-#endif	// GLQUAKE
 
 /*
 =====================

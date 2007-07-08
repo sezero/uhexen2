@@ -2,7 +2,7 @@
 	gl_warp.c
 	sky and water polygons
 
-	$Id: gl_warp.c,v 1.26 2007-05-13 11:58:29 sezero Exp $
+	$Id: gl_warp.c,v 1.27 2007-07-08 11:55:19 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -108,7 +108,7 @@ static void SubdividePolygon (int numverts, float *verts)
 		return;
 	}
 
-	poly = Hunk_AllocName (sizeof(glpoly_t) + (numverts-4) * VERTEXSIZE*sizeof(float), "subdv_poly");
+	poly = (glpoly_t *) Hunk_AllocName (sizeof(glpoly_t) + (numverts-4) * VERTEXSIZE*sizeof(float), "subdv_poly");
 	poly->next = warpface->polys;
 	warpface->polys = poly;
 	poly->numverts = numverts;

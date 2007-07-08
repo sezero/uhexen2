@@ -3,7 +3,7 @@
 	Message IO functions
 	Handles byte ordering and avoids alignment errors
 
-	$Id: msg_io.c,v 1.3 2007-05-13 11:59:41 sezero Exp $
+	$Id: msg_io.c,v 1.4 2007-07-08 11:56:51 sezero Exp $
 */
 
 #include "q_types.h"
@@ -25,7 +25,7 @@ void MSG_WriteByte (sizebuf_t *sb, int c)
 		Sys_Error ("%s: range error", __thisfunc__);
 #endif
 
-	buf = (byte *)SZ_GetSpace (sb, 1);
+	buf = (byte *) SZ_GetSpace (sb, 1);
 	buf[0] = c;
 }
 
@@ -38,7 +38,7 @@ void MSG_WriteShort (sizebuf_t *sb, int c)
 		Sys_Error ("%s: range error", __thisfunc__);
 #endif
 
-	buf = (byte *)SZ_GetSpace (sb, 2);
+	buf = (byte *) SZ_GetSpace (sb, 2);
 	buf[0] = c&0xff;
 	buf[1] = c>>8;
 }

@@ -2,7 +2,7 @@
 	net_dgrm.c
 	This is enables a simple IP banning mechanism
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/server/net_dgrm.c,v 1.18 2007-06-26 13:37:21 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/server/net_dgrm.c,v 1.19 2007-07-08 11:55:33 sezero Exp $
 */
 
 #define BAN_TEST
@@ -28,7 +28,7 @@ static int receivedDuplicateCount = 0;
 static int shortPacketCount = 0;
 static int droppedDatagrams;
 
-struct
+static struct
 {
 	unsigned int	length;
 	unsigned int	sequence;

@@ -2,7 +2,7 @@
 	cvar.c
 	dynamic variable tracking
 
-	$Id: cvar.c,v 1.29 2007-06-01 20:01:52 sezero Exp $
+	$Id: cvar.c,v 1.30 2007-07-08 11:55:34 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -153,12 +153,12 @@ void Cvar_Set (const char *var_name, const char *value)
 	varlen = strlen(value);
 	if (var->string == NULL)
 	{
-		var->string = Z_Malloc (varlen + 1, Z_MAINZONE);
+		var->string = (char *) Z_Malloc (varlen + 1, Z_MAINZONE);
 	}
 	else if (strlen(var->string) != varlen)
 	{
 		Z_Free (var->string);	// free the old value string
-		var->string = Z_Malloc (varlen + 1, Z_MAINZONE);
+		var->string = (char *) Z_Malloc (varlen + 1, Z_MAINZONE);
 	}
 
 	memcpy (var->string, value, varlen + 1);

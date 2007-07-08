@@ -1,6 +1,6 @@
 /*
 	mstrconv.c
-	$Id: mstrconv.c,v 1.19 2007-06-22 12:01:58 sezero Exp $
+	$Id: mstrconv.c,v 1.20 2007-07-08 11:56:51 sezero Exp $
 
 	Converting a MID file to a MIDI stream for
 	playback using the Win32 midiStream API.
@@ -179,7 +179,7 @@ BOOL ConverterInit (const char *szInFile)
 
 	for (idx = 0, ptsTrack = ifs.pitsTracks; idx < ifs.dwTrackCount; ++idx, ++ptsTrack)
 	{
-		ptsTrack->pTrackStart = Z_Malloc(TRACK_BUFFER_SIZE, Z_MAINZONE);
+		ptsTrack->pTrackStart = (LPBYTE) Z_Malloc(TRACK_BUFFER_SIZE, Z_MAINZONE);
 
 		if ( GetInFileData(&dwTag, sizeof(dwTag)) || ( dwTag != MTrk )
 		    || GetInFileData(&cbHeader, sizeof(cbHeader)) )
@@ -745,7 +745,7 @@ static BOOL GetTrackEvent (INTRACKSTATE *ptsTrack, PTEMPEVENT pteTemp)
 		}
 
 		// Malloc a temporary memory block to hold the parameter data
-		pteTemp->pLongData = Z_Malloc(pteTemp->dwEventLength, Z_MAINZONE);
+		pteTemp->pLongData = (LPBYTE) Z_Malloc(pteTemp->dwEventLength, Z_MAINZONE);
 		// Copy from the input buffer to the parameter data buffer
 		for (idx = 0; idx < pteTemp->dwEventLength; idx++)
 		{
@@ -799,7 +799,7 @@ static BOOL GetTrackEvent (INTRACKSTATE *ptsTrack, PTEMPEVENT pteTemp)
 			}
 
 			// Malloc a temporary memory block to hold the parameter data
-			pteTemp->pLongData = Z_Malloc(pteTemp->dwEventLength, Z_MAINZONE);
+			pteTemp->pLongData = (LPBYTE) Z_Malloc(pteTemp->dwEventLength, Z_MAINZONE);
 			// Copy from the input buffer to the parameter data buffer
 			for (idx = 0; idx < pteTemp->dwEventLength; idx++)
 			{

@@ -2,7 +2,7 @@
 	quakefs.c
 	Hexen II filesystem
 
-	$Id: quakefs.c,v 1.24 2007-06-11 18:35:59 sezero Exp $
+	$Id: quakefs.c,v 1.25 2007-07-08 11:55:38 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -191,7 +191,7 @@ static pack_t *FS_LoadPackFile (const char *packfile, int paknum, qboolean base_
 	if (numpackfiles > MAX_FILES_IN_PACK)
 		Sys_Error ("%s has %i files", packfile, numpackfiles);
 
-	newfiles = Z_Malloc (numpackfiles * sizeof(pakfiles_t), Z_MAINZONE);
+	newfiles = (pakfiles_t *) Z_Malloc (numpackfiles * sizeof(pakfiles_t), Z_MAINZONE);
 
 	fseek (packhandle, header.dirofs, SEEK_SET);
 	fread (&info, 1, header.dirlen, packhandle);
@@ -298,7 +298,7 @@ static pack_t *FS_LoadPackFile (const char *packfile, int paknum, qboolean base_
 		newfiles[i].filelen = LittleLong(info[i].filelen);
 	}
 
-	pack = Z_Malloc (sizeof(pack_t), Z_MAINZONE);
+	pack = (pack_t *) Z_Malloc (sizeof(pack_t), Z_MAINZONE);
 	Q_strlcpy_err(pack->filename, packfile, MAX_OSPATH);
 	pack->handle = packhandle;
 	pack->numfiles = numpackfiles;
@@ -351,7 +351,7 @@ add_pakfile:
 		pak = FS_LoadPackFile (pakfile, i, base_fs);
 		if (!pak)
 			continue;
-		search = Hunk_AllocName (sizeof(searchpath_t), "searchpath");
+		search = (searchpath_t *) Hunk_AllocName (sizeof(searchpath_t), "searchpath");
 		search->pack = pak;
 		search->next = fs_searchpaths;
 		fs_searchpaths = search;
@@ -364,7 +364,7 @@ add_pakfile:
 // override files:
 // this way, data1/default.cfg will be opened instead of
 // data1/pak0.pak:/default.cfg
-	search = Hunk_AllocName (sizeof(searchpath_t), "searchpath");
+	search = (searchpath_t *) Hunk_AllocName (sizeof(searchpath_t), "searchpath");
 	if (been_here)
 	{
 		Q_strlcpy_err(search->filename, fs_userdir, MAX_OSPATH);
@@ -515,7 +515,7 @@ add_pakfiles:
 		pak = FS_LoadPackFile (pakfile, i, false);
 		if (!pak)
 			continue;
-		search = Z_Malloc (sizeof(searchpath_t), Z_MAINZONE);
+		search = (searchpath_t *) Z_Malloc (sizeof(searchpath_t), Z_MAINZONE);
 		search->pack = pak;
 		search->next = fs_searchpaths;
 		fs_searchpaths = search;
@@ -525,7 +525,7 @@ add_pakfiles:
 // O.S: this needs to be done ~after~ adding the pakfiles in
 // this dir, so that the dir itself will be placed above the
 // pakfiles in the search order
-	search = Z_Malloc (sizeof(searchpath_t), Z_MAINZONE);
+	search = (searchpath_t *) Z_Malloc (sizeof(searchpath_t), Z_MAINZONE);
 	if (been_here)
 	{
 		Q_strlcpy_err(search->filename, fs_userdir, MAX_OSPATH);
@@ -1049,33 +1049,33 @@ static byte *FS_LoadFile (const char *path, int usehunk)
 	switch (usehunk)
 	{
 	case LOADFILE_HUNK:
-		buf = Hunk_AllocName (len+1, base);
+		buf = (byte *) Hunk_AllocName (len+1, base);
 		break;
 	case LOADFILE_TEMPHUNK:
-		buf = Hunk_TempAlloc (len+1);
+		buf = (byte *) Hunk_TempAlloc (len+1);
 		break;
 	case LOADFILE_ZONE:
-		buf = Z_Malloc (len+1, zone_num);
+		buf = (byte *) Z_Malloc (len+1, zone_num);
 		break;
 #if !defined(SERVERONLY)
 	case LOADFILE_CACHE:
-		buf = Cache_Alloc (loadcache, len+1, base);
+		buf = (byte *) Cache_Alloc (loadcache, len+1, base);
 		break;
 #endif	/* SERVERONLY */
 	case LOADFILE_STACK:
 		if (len < loadsize)
 			buf = loadbuf;
 		else
-			buf = Hunk_TempAlloc (len+1);
+			buf = (byte *) Hunk_TempAlloc (len+1);
 		break;
 	case LOADFILE_BUF:
 		if (len < loadsize && loadbuf != NULL)
 			buf = loadbuf;
 		else
-			buf = Hunk_AllocName(len + 1, path);
+			buf = (byte *) Hunk_AllocName(len + 1, path);
 		break;
 	case LOADFILE_MALLOC:
-		buf = malloc (len+1);
+		buf = (byte *) malloc (len+1);
 		break;
 	default:
 		Sys_Error ("%s: bad usehunk", __thisfunc__);
@@ -1237,7 +1237,7 @@ static int processMapname (const char *mapname, const char *partial, size_t len_
 	}
 
 	// add to the maplist
-	maplist[map_count] = Z_Malloc (len+1, Z_MAINZONE);
+	maplist[map_count] = (char *) Z_Malloc (len+1, Z_MAINZONE);
 	if (maplist[map_count] == NULL)
 	{
 		Con_Printf ("WARNING: Failed allocating memory for maplist\n");

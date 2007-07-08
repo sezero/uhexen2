@@ -2,7 +2,7 @@
 	keys.c
 	key up events are sent even if in console mode
 
-	$Id: keys.c,v 1.32 2007-06-26 20:19:37 sezero Exp $
+	$Id: keys.c,v 1.33 2007-07-08 11:55:37 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -450,10 +450,10 @@ static void Key_Console (int key)
 			th = GetClipboardData(CF_TEXT);
 			if (th)
 			{
-				clipText = GlobalLock(th);
+				clipText = (char *) GlobalLock(th);
 				if (clipText)
 				{
-					textCopied = Z_Malloc(GlobalSize(th)+1, Z_MAINZONE);
+					textCopied = (char *) Z_Malloc(GlobalSize(th)+1, Z_MAINZONE);
 					strcpy(textCopied, clipText);
 					/* Substitute a NULL for every token */
 					strtok(textCopied, "\n\r\b");
@@ -629,7 +629,7 @@ void Key_SetBinding (int keynum, const char *binding)
 // allocate memory for new binding
 	if (binding)
 	{
-		keybindings[keynum] = Z_Malloc(strlen(binding) + 1, Z_MAINZONE);
+		keybindings[keynum] = (char *) Z_Malloc(strlen(binding) + 1, Z_MAINZONE);
 		strcpy(keybindings[keynum], binding);
 	}
 }

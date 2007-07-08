@@ -2,7 +2,7 @@
 	net.h
 	quake's interface to the networking layer
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/net.h,v 1.15 2007-06-02 06:25:37 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/net.h,v 1.16 2007-07-08 11:55:21 sezero Exp $
 */
 
 #ifndef __HX2_NET_H
@@ -283,7 +283,7 @@ typedef struct _PollProcedure
 {
 	struct _PollProcedure	*next;
 	double					nextTime;
-	void					(*procedure)();
+	void					(*procedure)(void *);
 	void					*arg;
 } PollProcedure;
 

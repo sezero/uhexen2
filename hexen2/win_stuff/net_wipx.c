@@ -2,7 +2,7 @@
 	net_wipx.c
 	winsock ipx driver
 
-	$Id: net_wipx.c,v 1.18 2007-05-13 11:58:32 sezero Exp $
+	$Id: net_wipx.c,v 1.19 2007-07-08 11:55:34 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -188,7 +188,7 @@ int WIPX_OpenSocket (int port)
 	memset(address.sa_netnum, 0, 4);
 	memset(address.sa_nodenum, 0, 6);
 	address.sa_socket = htons((unsigned short)port);
-	if ( bind (newsocket, (void *)&address, sizeof(address)) == 0)
+	if ( bind (newsocket, (struct sockaddr *)&address, sizeof(address)) == 0)
 	{
 		ipxsocket[handle] = newsocket;
 		sequence[handle] = 0;
@@ -251,7 +251,7 @@ int WIPX_Read (int handle, byte *buf, int len, struct qsockaddr *addr)
 	int mysocket = ipxsocket[handle];
 	int ret;
 
-	ret = recvfrom (mysocket, netpacketBuffer, len+4, 0, (struct sockaddr *)addr, &addrlen);
+	ret = recvfrom (mysocket, (char *)netpacketBuffer, len+4, 0, (struct sockaddr *)addr, &addrlen);
 	if (ret == -1)
 	{
 		int err = WSAGetLastError();
@@ -290,7 +290,7 @@ int WIPX_Write (int handle, byte *buf, int len, struct qsockaddr *addr)
 	memcpy(&netpacketBuffer[4], buf, len);
 	len += 4;
 
-	ret = sendto (mysocket, netpacketBuffer, len, 0, (struct sockaddr *)addr, sizeof(struct qsockaddr));
+	ret = sendto (mysocket, (char *)netpacketBuffer, len, 0, (struct sockaddr *)addr, sizeof(struct qsockaddr));
 	if (ret == -1)
 	{
 		if (WSAGetLastError() == WSAEWOULDBLOCK)

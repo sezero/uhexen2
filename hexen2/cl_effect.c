@@ -2,7 +2,7 @@
 	cl_effect.c
 	Client side effects.
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cl_effect.c,v 1.16 2007-05-13 11:58:28 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cl_effect.c,v 1.17 2007-07-08 11:55:17 sezero Exp $
 */
 
 // HEADER FILES ------------------------------------------------------------
@@ -16,10 +16,6 @@
 #define MAX_EFFECT_ENTITIES		256
 
 // EXTERNAL FUNCTION PROTOTYPES --------------------------------------------
-
-extern void R_RunQuakeEffect (vec3_t org, float distance);
-extern void RiderParticle (int count, vec3_t origin);
-extern void GravityWellParticle (int count, vec3_t origin, int color);
 
 // PUBLIC FUNCTION PROTOTYPES ----------------------------------------------
 
@@ -1049,7 +1045,7 @@ void CL_UpdateEffects (void)
 				mymax[2] *= 15;
 
 				R_RunParticleEffect2 (cl.Effects[idx].ef.Fountain.pos, mymin, mymax,
-							cl.Effects[idx].ef.Fountain.color, 2, cl.Effects[idx].ef.Fountain.cnt);
+							cl.Effects[idx].ef.Fountain.color, pt_fastgrav, cl.Effects[idx].ef.Fountain.cnt);
 
 			/*	memset(&test,0,sizeof(test));
 				trace = SV_Move (cl.Effects[idx].ef.Fountain.pos, mymin, mymax, mymin, false, &test);

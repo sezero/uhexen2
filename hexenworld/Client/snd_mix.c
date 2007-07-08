@@ -2,7 +2,7 @@
 	snd_mix.c
 	portable code to mix sounds for snd_dma.c
 
-	$Id: snd_mix.c,v 1.16 2007-05-13 11:59:02 sezero Exp $
+	$Id: snd_mix.c,v 1.17 2007-07-08 11:55:38 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -50,12 +50,12 @@ static void S_TransferStereo16 (int endtime)
 {
 	int		lpos;
 	int		lpaintedtime;
-	DWORD	*pbuf;
+	LPVOID	pbuf;
 #ifdef _WIN32
 // FIXME: move this to its platform driver!
 	int		reps;
-	DWORD	dwSize,dwSize2;
-	DWORD	*pbuf2;
+	DWORD	dwSize, dwSize2;
+	LPVOID	pbuf2;
 	HRESULT	hresult;
 #endif
 
@@ -70,8 +70,8 @@ static void S_TransferStereo16 (int endtime)
 	{
 		reps = 0;
 
-		while ((hresult = IDirectSoundBuffer_Lock(pDSBuf, 0, gSndBufSize, &pbuf, &dwSize, 
-									   &pbuf2, &dwSize2, 0)) != DS_OK)
+		while ((hresult = IDirectSoundBuffer_Lock(pDSBuf, 0, gSndBufSize, (LPVOID *) &pbuf, &dwSize, 
+								  (LPVOID *) &pbuf2, &dwSize2, 0)) != DS_OK)
 		{
 			if (hresult != DSERR_BUFFERLOST)
 			{
@@ -93,7 +93,7 @@ static void S_TransferStereo16 (int endtime)
 	else
 #endif
 	{
-		pbuf = (DWORD *)shm->buffer;
+		pbuf = shm->buffer;
 	}
 
 	while (lpaintedtime < endtime)
@@ -128,12 +128,12 @@ static void S_TransferPaintBuffer (int endtime)
 	int	out_idx, out_mask;
 	int	count, step, val;
 	int	*p;
-	DWORD	*pbuf;
+	LPVOID	pbuf;
 #ifdef _WIN32
 // FIXME: move this to its platform driver!
 	int		reps;
-	DWORD	dwSize,dwSize2;
-	DWORD	*pbuf2;
+	DWORD	dwSize, dwSize2;
+	LPVOID	pbuf2;
 	HRESULT	hresult;
 #endif
 
@@ -156,8 +156,8 @@ static void S_TransferPaintBuffer (int endtime)
 	{
 		reps = 0;
 
-		while ((hresult = IDirectSoundBuffer_Lock(pDSBuf, 0, gSndBufSize, &pbuf, &dwSize, 
-									   &pbuf2,&dwSize2, 0)) != DS_OK)
+		while ((hresult = IDirectSoundBuffer_Lock(pDSBuf, 0, gSndBufSize, (LPVOID *) &pbuf, &dwSize, 
+								  (LPVOID *) &pbuf2, &dwSize2, 0)) != DS_OK)
 		{
 			if (hresult != DSERR_BUFFERLOST)
 			{
@@ -179,7 +179,7 @@ static void S_TransferPaintBuffer (int endtime)
 	else
 #endif
 	{
-		pbuf = (DWORD *)shm->buffer;
+		pbuf = shm->buffer;
 	}
 
 	if (shm->samplebits == 16)

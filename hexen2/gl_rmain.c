@@ -1,7 +1,7 @@
 /*
 	gl_main.c
 
-	$Id: gl_rmain.c,v 1.61 2007-05-13 11:58:29 sezero Exp $
+	$Id: gl_rmain.c,v 1.62 2007-07-08 11:55:19 sezero Exp $
 */
 
 
@@ -284,7 +284,7 @@ static void R_DrawSpriteModel (entity_t *e)
 	spritedesc_t	r_spritedesc;
 	int			i;
 
-	psprite = currententity->model->cache.data;
+	psprite = (msprite_t *) currententity->model->cache.data;
 	frame = R_GetSpriteFrame (psprite);
 
 	if (currententity->drawflags & DRF_TRANSLUCENT)

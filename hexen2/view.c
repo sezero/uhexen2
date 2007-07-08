@@ -2,7 +2,7 @@
 	view.c
 	player eye positioning
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/view.c,v 1.26 2007-06-07 21:38:29 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/view.c,v 1.27 2007-07-08 11:55:24 sezero Exp $
 
 	The view is allowed to move slightly from it's true position
 	for bobbing, but if it exceeds 8 pixels linear distance
@@ -643,27 +643,27 @@ void V_UpdatePalette (void)
 {
 	int		i, j;
 	qboolean	force;
-	qboolean	new;
+	qboolean	is_new;
 	byte	*basepal, *newpal;
 	byte	pal[768];
 	int		r, g, b;
 
 	V_CalcPowerupCshift ();
 
-	new = false;
+	is_new = false;
 
 	for (i = 0; i < NUM_CSHIFTS; i++)
 	{
 		if (cl.cshifts[i].percent != cl.prev_cshifts[i].percent)
 		{
-			new = true;
+			is_new = true;
 			cl.prev_cshifts[i].percent = cl.cshifts[i].percent;
 		}
 		for (j = 0; j < 3; j++)
 		{
 			if (cl.cshifts[i].destcolor[j] != cl.prev_cshifts[i].destcolor[j])
 			{
-				new = true;
+				is_new = true;
 				cl.prev_cshifts[i].destcolor[j] = cl.cshifts[i].destcolor[j];
 			}
 		}
@@ -680,7 +680,7 @@ void V_UpdatePalette (void)
 		cl.cshifts[CSHIFT_BONUS].percent = 0;
 
 	force = V_CheckGamma ();
-	if (!new && !force)
+	if (!is_new && !force)
 		return;
 
 	basepal = host_basepal;

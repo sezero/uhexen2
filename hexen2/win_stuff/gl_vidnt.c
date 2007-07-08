@@ -1,6 +1,6 @@
 /*
 	gl_vidnt.c -- NT GL vid component
-	$Id: gl_vidnt.c,v 1.102 2007-06-26 20:19:37 sezero Exp $
+	$Id: gl_vidnt.c,v 1.103 2007-07-08 11:55:33 sezero Exp $
 */
 
 #define	__GL_FUNC_EXTERN
@@ -672,8 +672,8 @@ static void VID_Check3dfxGamma (void)
 	}
 	else
 	{
-		GetDeviceGammaRamp_f = wglGetProcAddress_fp("wglGetDeviceGammaRamp3DFX");
-		SetDeviceGammaRamp_f = wglGetProcAddress_fp("wglSetDeviceGammaRamp3DFX");
+		GetDeviceGammaRamp_f = (GAMMA_RAMP_FN) wglGetProcAddress_fp("wglGetDeviceGammaRamp3DFX");
+		SetDeviceGammaRamp_f = (GAMMA_RAMP_FN) wglGetProcAddress_fp("wglSetDeviceGammaRamp3DFX");
 		if (GetDeviceGammaRamp_f && SetDeviceGammaRamp_f)
 			Con_Printf("Using 3Dfx specific gamma control\n");
 		else
@@ -730,8 +730,8 @@ static void CheckMultiTextureExtensions(void)
 			return;
 		}
 
-		glMultiTexCoord2fARB_fp = (void *) wglGetProcAddress_fp("glMultiTexCoord2fARB");
-		glActiveTextureARB_fp = (void *) wglGetProcAddress_fp("glActiveTextureARB");
+		glMultiTexCoord2fARB_fp = (glMultiTexCoord2fARB_f) wglGetProcAddress_fp("glMultiTexCoord2fARB");
+		glActiveTextureARB_fp = (glActiveTextureARB_f) wglGetProcAddress_fp("glActiveTextureARB");
 		if ((glMultiTexCoord2fARB_fp == NULL) ||
 		    (glActiveTextureARB_fp == NULL))
 		{

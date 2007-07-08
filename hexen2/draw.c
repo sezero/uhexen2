@@ -2,7 +2,7 @@
 	draw.c
 	This is the only file outside the refresh that touches the vid buffer.
 
-	$Id: draw.c,v 1.38 2007-06-30 11:19:43 sezero Exp $
+	$Id: draw.c,v 1.39 2007-07-08 11:55:18 sezero Exp $
 */
 
 
@@ -46,7 +46,7 @@ static int		menu_numcachepics;
 
 qpic_t	*Draw_PicFromWad (char *name)
 {
-	return W_GetLumpName (name);
+	return (qpic_t *) W_GetLumpName(name);
 }
 
 /*
@@ -72,7 +72,7 @@ qpic_t	*Draw_CachePic (const char *path)
 		Q_strlcpy (pic->name, path, MAX_QPATH);
 	}
 
-	dat = Cache_Check (&pic->cache);
+	dat = (qpic_t *) Cache_Check (&pic->cache);
 
 	if (dat)
 		return dat;
@@ -109,8 +109,10 @@ qpic_t  *Draw_CachePicResize (const char *path, int targetWidth, int targetHeigh
 	qpic_t *dat, *temp;
 
 	for (pic = menu_cachepics, i = 0; i < menu_numcachepics; pic++, i++)
+	{
 		if (!strcmp(path, pic->name))
 			break;
+	}
 	if (i == menu_numcachepics)
 	{
 		if (menu_numcachepics == MAX_CACHED_PICS)
@@ -118,7 +120,7 @@ qpic_t  *Draw_CachePicResize (const char *path, int targetWidth, int targetHeigh
 		menu_numcachepics++;
 		Q_strlcpy(pic->name, path, MAX_QPATH);
 	}
-	dat = Cache_Check(&pic->cache);
+	dat = (qpic_t *) Cache_Check(&pic->cache);
 	if (dat)
 		return dat;
 	// Allocate original data temporarily
@@ -171,7 +173,7 @@ void Draw_Init (void)
 		Z_Free (draw_chars);
 	draw_chars = FS_LoadZoneFile ("gfx/menu/conchars.lmp", Z_SECZONE);
 
-	draw_smallchars = W_GetLumpName("tinyfont");
+	draw_smallchars = (byte *) W_GetLumpName("tinyfont");
 
 	// Do this backwards so we don't try and draw the 
 	// skull as we are loading

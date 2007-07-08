@@ -1,7 +1,7 @@
 /*
 	gl_main.c
 
-	$Id: gl_rmain.c,v 1.49 2007-06-30 11:19:47 sezero Exp $
+	$Id: gl_rmain.c,v 1.50 2007-07-08 11:55:36 sezero Exp $
 */
 
 
@@ -237,7 +237,7 @@ static mspriteframe_t *R_GetSpriteFrame (entity_t *curr_ent)
 	int			i, numframes, frame;
 	float		*pintervals, fullinterval, targettime, time;
 
-	psprite = curr_ent->model->cache.data;
+	psprite = (msprite_t *) curr_ent->model->cache.data;
 	frame = curr_ent->frame;
 
 	if ((frame >= psprite->numframes) || (frame < 0))
@@ -313,7 +313,7 @@ static void R_DrawSpriteModel (entity_t *e)
 	}
 
 	frame = R_GetSpriteFrame (e);
-	psprite = currententity->model->cache.data;
+	psprite = (msprite_t *) currententity->model->cache.data;
 
 	if (psprite->type == SPR_ORIENTED)
 	{	// bullet marks on walls

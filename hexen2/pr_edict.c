@@ -2,7 +2,7 @@
 	sv_edict.c
 	entity dictionary
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/pr_edict.c,v 1.45 2007-05-15 11:19:03 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/pr_edict.c,v 1.46 2007-07-08 11:55:21 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -347,11 +347,12 @@ Done:
 /*
 ============
 PR_ValueString
+(etype_t type, eval_t *val)
 
 Returns a string describing *data in a type specific manner
 =============
 */
-static char *PR_ValueString (etype_t type, eval_t *val)
+static char *PR_ValueString (int type, eval_t *val)
 {
 	static char	line[256];
 	ddef_t		*def;
@@ -398,12 +399,13 @@ static char *PR_ValueString (etype_t type, eval_t *val)
 /*
 ============
 PR_UglyValueString
+(etype_t type, eval_t *val)
 
 Returns a string describing *data in a type specific manner
 Easier to parse than PR_ValueString
 =============
 */
-static char *PR_UglyValueString (etype_t type, eval_t *val)
+static char *PR_UglyValueString (int type, eval_t *val)
 {
 	static char	line[256];
 	ddef_t		*def;
@@ -466,7 +468,7 @@ char *PR_GlobalString (int ofs)
 		sprintf (line,"%i(?)", ofs);
 	else
 	{
-		s = PR_ValueString (def->type, val);
+		s = PR_ValueString (def->type, (eval_t *)val);
 		sprintf (line,"%i(%s)%s", ofs, PR_GetString(def->s_name), s);
 	}
 
@@ -782,13 +784,12 @@ ED_NewString
 */
 static string_t ED_NewString (const char *string)
 {
-	char	*new, *new_p;
+	char	*new_p;
 	int		i, l;
 	string_t	num;
 
 	l = strlen(string) + 1;
-	num = PR_AllocString (l, &new);
-	new_p = new;
+	num = PR_AllocString (l, &new_p);
 
 	for (i = 0; i < l; i++)
 	{
@@ -1441,7 +1442,7 @@ static void PR_AllocStringSlots (void)
 {
 	pr_maxknownstrings += PR_STRING_ALLOCSLOTS;
 	Sys_DPrintf("%s: realloc'ing for %d slots\n", __thisfunc__, pr_maxknownstrings);
-	pr_knownstrings = Z_Realloc (pr_knownstrings, pr_maxknownstrings * sizeof(char *), Z_MAINZONE);
+	pr_knownstrings = (char **) Z_Realloc (pr_knownstrings, pr_maxknownstrings * sizeof(char *), Z_MAINZONE);
 }
 
 char *PR_GetString (int num)

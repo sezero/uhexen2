@@ -2,7 +2,7 @@
 	sv_init.c
 	server spawning
 
-	$Id: sv_init.c,v 1.14 2007-05-13 11:59:43 sezero Exp $
+	$Id: sv_init.c,v 1.15 2007-07-08 11:56:52 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -194,7 +194,7 @@ static void SV_CalcPHS (void)
 	rowwords = (num+31)>>5;
 	rowbytes = rowwords*4;
 
-	sv.pvs = Hunk_AllocName (rowbytes*num, "pvs");
+	sv.pvs = (byte *) Hunk_AllocName (rowbytes*num, "pvs");
 	scan = sv.pvs;
 	vcount = 0;
 	for (i = 0; i < num; i++, scan += rowbytes)
@@ -212,7 +212,7 @@ static void SV_CalcPHS (void)
 		}
 	}
 
-	sv.phs = Hunk_AllocName (rowbytes*num, "phs");
+	sv.phs = (byte *) Hunk_AllocName (rowbytes*num, "phs");
 	count = 0;
 	scan = sv.pvs;
 	dest = (unsigned *)sv.phs;
@@ -303,7 +303,7 @@ void SV_SpawnServer (const char *server, const char *startspot)
 	PR_LoadStrings();
 
 	// allocate edicts
-	sv.edicts = Hunk_AllocName (MAX_EDICTS*pr_edict_size, "edicts");
+	sv.edicts = (edict_t *) Hunk_AllocName (MAX_EDICTS*pr_edict_size, "edicts");
 
 	// leave slots at start for clients only
 	sv.num_edicts = MAX_CLIENTS + 1 + max_temp_edicts.integer;

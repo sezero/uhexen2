@@ -2,7 +2,7 @@
 	gl_mesh.c
 	triangle model functions
 
-	$Id: gl_mesh.c,v 1.15 2007-07-08 11:36:57 sezero Exp $
+	$Id: gl_mesh.c,v 1.16 2007-07-08 11:55:35 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -382,11 +382,11 @@ void GL_MakeAliasModelDisplayLists (model_t *m, aliashdr_t *hdr)
 
 	hdr->poseverts = numorder;
 
-	cmds = Hunk_AllocName (numcommands * 4, "cmds");
+	cmds = (int *) Hunk_AllocName (numcommands * 4, "cmds");
 	hdr->commands = (byte *)cmds - (byte *)hdr;
 	memcpy (cmds, commands, numcommands * 4);
 
-	verts = Hunk_AllocName (hdr->numposes * hdr->poseverts * sizeof(trivertx_t), "verts");
+	verts = (trivertx_t *) Hunk_AllocName (hdr->numposes * hdr->poseverts * sizeof(trivertx_t), "verts");
 	hdr->posedata = (byte *)verts - (byte *)hdr;
 	for (i = 0; i < hdr->numposes; i++)
 	{

@@ -1,6 +1,6 @@
 /*
 	snd_win.c
-	$Id: snd_win.c,v 1.22 2007-05-13 11:59:41 sezero Exp $
+	$Id: snd_win.c,v 1.23 2007-07-08 11:56:51 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -219,7 +219,8 @@ static sndinitstat SNDDMA_InitDirect (void)
 			return SIS_FAILURE;
 		}
 
-		pDirectSoundCreate = (void *)GetProcAddress(hInstDS,"DirectSoundCreate");
+		pDirectSoundCreate = (HRESULT (WINAPI *)(GUID FAR *, LPDIRECTSOUND FAR *, IUnknown FAR *))
+								GetProcAddress(hInstDS,"DirectSoundCreate");
 
 		if (!pDirectSoundCreate)
 		{
@@ -374,7 +375,7 @@ static sndinitstat SNDDMA_InitDirect (void)
 // initialize the buffer
 	reps = 0;
 
-	while ((hresult = IDirectSoundBuffer_Lock(pDSBuf, 0, gSndBufSize, &lpData, &dwSize, NULL, NULL, 0)) != DS_OK)
+	while ((hresult = IDirectSoundBuffer_Lock(pDSBuf, 0, gSndBufSize, (LPVOID *) (HPSTR) &lpData, &dwSize, NULL, NULL, 0)) != DS_OK)
 	{
 		if (hresult != DSERR_BUFFERLOST)
 		{
@@ -478,7 +479,7 @@ static qboolean SNDDMA_InitWav (void)
 	gSndBufSize = WAV_BUFFERS * wv_buf_size;
 #if USE_HUNK_ALLOC
 	allocMark = Hunk_LowMark();
-	lpData = Hunk_AllocName(gSndBufSize, "sndbuff");
+	lpData = (HPSTR) Hunk_AllocName(gSndBufSize, "sndbuff");
 #else
 	hData = GlobalAlloc(GMEM_MOVEABLE | GMEM_SHARE, gSndBufSize);
 	if (!hData)
@@ -487,7 +488,7 @@ static qboolean SNDDMA_InitWav (void)
 		FreeSound ();
 		return false;
 	}
-	lpData = GlobalLock(hData);
+	lpData = (HPSTR) GlobalLock(hData);
 	if (!lpData)
 	{
 		Con_SafePrintf ("Sound: Failed to lock.\n");
@@ -503,7 +504,7 @@ static qboolean SNDDMA_InitWav (void)
 	 * GMEM_SHARE flags.
 	 */
 #if USE_HUNK_ALLOC
-	lpWaveHdr = Hunk_AllocName((DWORD)sizeof(WAVEHDR) * WAV_BUFFERS, "wavehdr");
+	lpWaveHdr = (LPWAVEHDR) Hunk_AllocName((DWORD)sizeof(WAVEHDR) * WAV_BUFFERS, "wavehdr");
 #else
 	hWaveHdr = GlobalAlloc(GMEM_MOVEABLE | GMEM_SHARE, (DWORD) sizeof(WAVEHDR) * WAV_BUFFERS);
 	if (hWaveHdr == NULL)

@@ -3,7 +3,7 @@
 	SDL video driver
 	Select window size and mode and init SDL in SOFTWARE mode.
 
-	$Id: vid_sdl.c,v 1.75 2007-06-26 20:19:32 sezero Exp $
+	$Id: vid_sdl.c,v 1.76 2007-07-08 11:55:23 sezero Exp $
 
 	Changed by S.A. 7/11/04, 27/12/04
 	Options are now: -fullscreen | -window, -height , -width
@@ -188,7 +188,7 @@ static qboolean VID_AllocBuffers (int width, int height)
 
 	VID_highhunkmark = Hunk_HighMark ();
 
-	d_pzbuffer = Hunk_HighAllocName (tbuffersize, "video");
+	d_pzbuffer = (short *) Hunk_HighAllocName (tbuffersize, "video");
 
 	vid_surfcache = (byte *)d_pzbuffer +
 			width * height * sizeof (*d_pzbuffer);
@@ -500,7 +500,7 @@ static int VID_SetMode (int modenum, unsigned char *palette)
 	// initial success. adjust vid vars.
 	vid.height = vid.conheight = modelist[modenum].height;
 	vid.width = vid.conwidth = modelist[modenum].width;
-	vid.buffer = vid.conbuffer = vid.direct = screen->pixels;
+	vid.buffer = vid.conbuffer = vid.direct = (pixel_t *) screen->pixels;
 	vid.rowbytes = vid.conrowbytes = screen->pitch;
 	vid.numpages = 1;
 	vid.aspect = ((float)vid.height / (float)vid.width) * (320.0 / 240.0);
@@ -595,13 +595,13 @@ void VID_LockBuffer (void)
 	SDL_LockSurface(screen);
 
 	// Update surface pointer for linear access modes
-	vid.buffer = vid.conbuffer = vid.direct = screen->pixels;
+	vid.buffer = vid.conbuffer = vid.direct = (pixel_t *) screen->pixels;
 	vid.rowbytes = vid.conrowbytes = screen->pitch;
 
 	if (r_dowarp)
 		d_viewbuffer = r_warpbuffer;
 	else
-		d_viewbuffer = (void *)(byte *)vid.buffer;
+		d_viewbuffer = vid.buffer;
 
 	if (r_dowarp)
 		screenwidth = WARP_WIDTH;

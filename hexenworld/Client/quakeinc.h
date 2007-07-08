@@ -5,7 +5,7 @@
 	FIXME:	kill this in the future and make each C
 		file include only the necessary headers.
 
-	$Id: quakeinc.h,v 1.15 2007-04-18 13:33:54 sezero Exp $
+	$Id: quakeinc.h,v 1.16 2007-07-08 11:55:38 sezero Exp $
 */
 
 #ifndef __QUAKEINC_H
@@ -77,10 +77,11 @@
 #include "glheader.h"
 #include "gl_model.h"
 #include "glquake.h"
-#else
+#else	/* sw client */
 #include "model.h"
 #include "d_iface.h"
 #endif
+#include "r_part.h"
 
 #include "pmove.h"
 

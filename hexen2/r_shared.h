@@ -3,7 +3,7 @@
 	general refresh-related stuff shared between the refresh
 	and the driver
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/r_shared.h,v 1.6 2007-02-07 17:01:37 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/r_shared.h,v 1.7 2007-07-08 11:55:22 sezero Exp $
 */
 
 #ifndef __R_SHARED_H
@@ -153,6 +153,7 @@ typedef struct edge_s
 
 extern	byte	*mainTransTable;
 extern	byte	*playerTranslation;
+extern	const int	color_offsets[MAX_PLAYER_CLASS];
 
 #endif	/*  !GLQUAKE	*/
 

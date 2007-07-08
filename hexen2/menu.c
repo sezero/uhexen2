@@ -1,10 +1,11 @@
 /*
 	menu.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/menu.c,v 1.92 2007-06-30 11:19:43 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/menu.c,v 1.93 2007-07-08 11:55:20 sezero Exp $
 */
 
 #include "quakedef.h"
+#include "r_shared.h"
 
 extern	modestate_t	modestate;
 extern	cvar_t	crosshair;
@@ -12,7 +13,7 @@ extern	cvar_t	crosshair;
 void (*vid_menudrawfn)(void);
 void (*vid_menukeyfn)(int key);
 
-enum
+enum m_state_e
 {
 	m_none = 0,
 	m_main,
@@ -38,7 +39,8 @@ enum
 	m_difficulty,
 	m_mload,
 	m_msave
-} m_state;
+};
+enum m_state_e	m_state;
 
 void M_Menu_Main_f (void);
 static void M_Menu_SinglePlayer_f (void);
@@ -255,8 +257,6 @@ static void M_DrawTransPicCropped (int x, int y, qpic_t *pic)
 
 static byte identityTable[256];
 static byte translationTable[256];
-extern byte *playerTranslation;
-extern const int color_offsets[MAX_PLAYER_CLASS];
 
 static void M_BuildTranslationTable(int top, int bottom)
 {
@@ -2832,7 +2832,7 @@ static void M_Help_Key (int key)
 /* QUIT MENU */
 
 //static int		msgNumber;
-static int		m_quit_prevstate;
+static enum m_state_e	m_quit_prevstate;
 static qboolean		wasInMenus;
 
 #if 0

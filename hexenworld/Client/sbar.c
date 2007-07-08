@@ -2,10 +2,11 @@
 	sbar.c
 	Hexen II status bar
 
-	$Id: sbar.c,v 1.35 2007-06-26 20:19:37 sezero Exp $
+	$Id: sbar.c,v 1.36 2007-07-08 11:55:38 sezero Exp $
 */
 
 #include "quakedef.h"
+#include "r_shared.h"
 
 // MACROS ------------------------------------------------------------------
 
@@ -976,9 +977,6 @@ void Sbar_IntermissionNumber (int x, int y, int num, int digits, int color)
 	}
 }
 #endif	// end of unused stuff
-
-extern byte *playerTranslation;
-extern const int color_offsets[MAX_PLAYER_CLASS];
 
 static void FindColor (int slot, int *color1, int *color2)
 {

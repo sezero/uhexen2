@@ -2,7 +2,7 @@
 	huffman.c
 	huffman encoding/decoding for use in hexenworld networking
 
-	$Id: huffman.c,v 1.16 2007-04-19 17:45:03 sezero Exp $
+	$Id: huffman.c,v 1.17 2007-07-08 11:55:37 sezero Exp $
 */
 
 #include <stdlib.h>
@@ -291,7 +291,7 @@ void HuffEncode (unsigned char *in, unsigned char *out, int inlen, int *outlen)
 	HuffIn += inlen;
 	HuffOut += *outlen;
 
-	buf = Z_Malloc(inlen, Z_MAINZONE);
+	buf = (unsigned char *) Z_Malloc(inlen, Z_MAINZONE);
 	HuffDecode (out, buf, *outlen, &tlen, inlen);
 	if (tlen != inlen)
 		Sys_Error("bogus compression");

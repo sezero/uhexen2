@@ -1,6 +1,6 @@
 /*
 	in_win.c
-	$Id: in_win.c,v 1.24 2007-06-22 12:00:39 sezero Exp $
+	$Id: in_win.c,v 1.25 2007-07-08 11:56:50 sezero Exp $
 
 	windows 95 mouse and joystick code
 
@@ -15,8 +15,7 @@
 #define DINPUT_BUFFERSIZE           16
 #define iDirectInputCreate(a,b,c,d)	pDirectInputCreate(a,b,c,d)
 
-HRESULT (WINAPI *pDirectInputCreate)(HINSTANCE hinst, DWORD dwVersion,
-	LPDIRECTINPUT * lplpDirectInput, LPUNKNOWN punkOuter);
+static HRESULT (WINAPI *pDirectInputCreate)(HINSTANCE hinst, DWORD dwVersion, LPDIRECTINPUT *lplpDirectInput, LPUNKNOWN punkOuter);
 
 // mouse variables
 static cvar_t	m_filter = {"m_filter", "0", CVAR_NONE};
@@ -340,7 +339,8 @@ qboolean IN_InitDInput (void)
 
 	if (!pDirectInputCreate)
 	{
-		pDirectInputCreate = (void *)GetProcAddress(hInstDI,"DirectInputCreateA");
+		pDirectInputCreate = (HRESULT (WINAPI *)(HINSTANCE, DWORD, LPDIRECTINPUT *, LPUNKNOWN))
+								GetProcAddress(hInstDI, "DirectInputCreateA");
 
 		if (!pDirectInputCreate)
 		{
@@ -350,7 +350,7 @@ qboolean IN_InitDInput (void)
 	}
 
 // register with DirectInput and get an IDirectInput to play with.
-	hr = iDirectInputCreate(global_hInstance, DIRECTINPUT_VERSION, &g_pdi, NULL);
+	hr = pDirectInputCreate(global_hInstance, DIRECTINPUT_VERSION, &g_pdi, NULL);
 
 	if (FAILED(hr))
 	{
@@ -562,15 +562,16 @@ static void IN_MouseMove (usercmd_t *cmd)
 {
 	int		mx, my;
 	int		i;
-	DIDEVICEOBJECTDATA	od;
-	DWORD			dwElements;
-	HRESULT			hr;
 
 	if (!mouseactive)
 		return;
 
 	if (dinput)
 	{
+		DIDEVICEOBJECTDATA	od;
+		DWORD			dwElements;
+		HRESULT			hr;
+
 		mx = 0;
 		my = 0;
 
@@ -595,7 +596,6 @@ static void IN_MouseMove (usercmd_t *cmd)
 			}
 
 			/* Look at the element to see what happened */
-
 			switch (od.dwOfs)
 			{
 			case DIMOFS_X:

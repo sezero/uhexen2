@@ -2,7 +2,7 @@
 	net_udp.c
 	network UDP driver
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/net_wins.c,v 1.31 2007-05-13 11:59:01 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/net_wins.c,v 1.32 2007-07-08 11:55:38 sezero Exp $
 */
 
 #include "net_sys.h"
@@ -253,7 +253,7 @@ static int UDP_OpenSocket (int port)
 	else
 		address.sin_port = htons((short)port);
 
-	if ( bind(newsocket, (void *)&address, sizeof(address)) == -1 )
+	if ( bind(newsocket, (struct sockaddr *)&address, sizeof(address)) == -1 )
 		Sys_Error ("%s: bind: %s", __thisfunc__, strerror(errno));
 
 	return newsocket;

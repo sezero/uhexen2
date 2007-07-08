@@ -2,7 +2,7 @@
 	gl_vidsdl.c -- SDL GL vid component
 	Select window size and mode and init SDL in GL mode.
 
-	$Id: gl_vidsdl.c,v 1.156 2007-07-06 11:01:58 sezero Exp $
+	$Id: gl_vidsdl.c,v 1.157 2007-07-08 11:55:36 sezero Exp $
 
 	Changed 7/11/04 by S.A.
 	- Fixed fullscreen opengl mode, window sizes
@@ -654,8 +654,8 @@ static void CheckMultiTextureExtensions(void)
 			return;
 		}
 
-		glMultiTexCoord2fARB_fp = (void *) SDL_GL_GetProcAddress("glMultiTexCoord2fARB");
-		glActiveTextureARB_fp = (void *) SDL_GL_GetProcAddress("glActiveTextureARB");
+		glMultiTexCoord2fARB_fp = (glMultiTexCoord2fARB_f) SDL_GL_GetProcAddress("glMultiTexCoord2fARB");
+		glActiveTextureARB_fp = (glActiveTextureARB_f) SDL_GL_GetProcAddress("glActiveTextureARB");
 		if ((glMultiTexCoord2fARB_fp == NULL) ||
 		    (glActiveTextureARB_fp == NULL))
 		{

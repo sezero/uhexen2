@@ -2,7 +2,7 @@
 	cmd.c
 	Quake script command processing module
 
-	$Id: cmd.c,v 1.35 2007-07-04 08:49:58 sezero Exp $
+	$Id: cmd.c,v 1.36 2007-07-08 11:55:18 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -116,7 +116,7 @@ void Cbuf_InsertText (const char *text)
 	templen = cmd_text.cursize;
 	if (templen)
 	{
-		temp = Z_Malloc (templen, Z_MAINZONE);
+		temp = (char *) Z_Malloc (templen, Z_MAINZONE);
 		memcpy (temp, cmd_text.data, templen);
 		SZ_Clear (&cmd_text);
 	}
@@ -225,7 +225,7 @@ void Cmd_StuffCmds_f (void)
 	if (!s)
 		return;
 
-	text = Z_Malloc (s+1, Z_MAINZONE);
+	text = (char *) Z_Malloc (s+1, Z_MAINZONE);
 	text[0] = 0;
 	for (i = 1; i < com_argc; i++)
 	{
@@ -237,7 +237,7 @@ void Cmd_StuffCmds_f (void)
 	}
 
 // pull out the commands
-	build = Z_Malloc (s+1, Z_MAINZONE);
+	build = (char *) Z_Malloc (s+1, Z_MAINZONE);
 	build[0] = 0;
 
 	for (i = 0; i < s-1; i++)
@@ -370,7 +370,7 @@ static void Cmd_Alias_f (void)
 
 	if (!a)
 	{
-		a = Z_Malloc (sizeof(cmdalias_t), Z_MAINZONE);
+		a = (cmdalias_t *) Z_Malloc (sizeof(cmdalias_t), Z_MAINZONE);
 		a->next = cmd_alias;
 		cmd_alias = a;
 	}
@@ -392,7 +392,7 @@ static void Cmd_Alias_f (void)
 		cmd[1] = 0;
 	}
 
-	a->value = Z_Malloc (strlen(cmd) + 1, Z_MAINZONE);
+	a->value = (char *) Z_Malloc (strlen(cmd) + 1, Z_MAINZONE);
 	strcpy (a->value, cmd);
 }
 
@@ -542,7 +542,7 @@ void Cmd_TokenizeString (char *text)
 
 		if (cmd_argc < MAX_ARGS)
 		{
-			cmd_argv[cmd_argc] = Z_Malloc (strlen(com_token)+1, Z_MAINZONE);
+			cmd_argv[cmd_argc] = (char *) Z_Malloc (strlen(com_token)+1, Z_MAINZONE);
 			strcpy (cmd_argv[cmd_argc], com_token);
 			cmd_argc++;
 		}
@@ -579,7 +579,7 @@ void Cmd_AddCommand (char *cmd_name, xcommand_t function)
 		}
 	}
 
-	cmd = Hunk_AllocName (sizeof(cmd_function_t), "commands");
+	cmd = (cmd_function_t *) Hunk_AllocName (sizeof(cmd_function_t), "commands");
 	cmd->name = cmd_name;
 	cmd->function = function;
 	cmd->next = cmd_functions;

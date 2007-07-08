@@ -2,7 +2,7 @@
 	winquake.h
 	Win32-specific Quake header file
 
-	$Id: winquake.h,v 1.25 2007-05-13 16:14:09 sezero Exp $
+	$Id: winquake.h,v 1.26 2007-07-08 11:55:24 sezero Exp $
 */
 
 #if !defined(_WIN32)
@@ -19,13 +19,19 @@
 #include <winsock.h>	/* for LCC */
 #include <ctype.h>
 
+#include <mmsystem.h>	/* timeGetTime. LCC doesn't include this. */
+
+/* required compatibility versions for directx components */
+#define	DIRECTDRAW_VERSION	0x0300
+#define	DIRECTSOUND_VERSION	0x0300
+#define	DIRECTINPUT_VERSION	0x0300
+
+#if !defined(__cplusplus) && !defined(CINTERFACE)
+#define	CINTERFACE	/* for directx macros. */
+#endif
+
 #ifndef SERVERONLY
-#  ifndef CINTERFACE
-#  define CINTERFACE	/* for directx macros. */
-#  endif
-#include <mmsystem.h>	/* for LCC */
-#include <ddraw.h>
-#include <dsound.h>
+#include <dsound.h>	/* FIXME: should go away from global headers */
 #endif
 
 extern	HINSTANCE	global_hInstance;
@@ -36,8 +42,9 @@ extern	int			global_nCmdShow;
 #endif
 
 #ifndef SERVERONLY
-extern LPDIRECTDRAW		lpDD;
 extern qboolean			DDActive;
+/* FIXME: these should go away
+   and stay in snd_win.c only. */
 extern LPDIRECTSOUND pDS;
 extern LPDIRECTSOUNDBUFFER pDSBuf;
 

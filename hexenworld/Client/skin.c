@@ -2,7 +2,7 @@
 	skin.c
 	skin loading
 
-	$Id: skin.c,v 1.11 2007-05-13 11:59:02 sezero Exp $
+	$Id: skin.c,v 1.12 2007-07-08 11:55:38 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -97,7 +97,7 @@ byte	*Skin_Cache (skin_t *skin)
 	if (skin->failedload)
 		return NULL;
 
-	out = Cache_Check (&skin->cache);
+	out = (byte *) Cache_Check (&skin->cache);
 	if (out)
 		return out;
 
@@ -136,7 +136,7 @@ byte	*Skin_Cache (skin_t *skin)
 		return NULL;
 	}
 
-	out = Cache_Alloc (&skin->cache, 320*200, skin->name);
+	out = (byte *) Cache_Alloc (&skin->cache, 320*200, skin->name);
 	if (!out)
 		Sys_Error ("%s: couldn't allocate", __thisfunc__);
 

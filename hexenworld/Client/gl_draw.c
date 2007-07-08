@@ -2,7 +2,7 @@
 	gl_draw.c
 	this is the only file outside the refresh that touches the vid buffer
 
-	$Id: gl_draw.c,v 1.97 2007-06-30 11:19:47 sezero Exp $
+	$Id: gl_draw.c,v 1.98 2007-07-08 11:55:35 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -191,7 +191,7 @@ qpic_t *Draw_PicFromWad (char *name)
 	qpic_t	*p;
 	glpic_t	*gl;
 
-	p = W_GetLumpName (name);
+	p = (qpic_t *) W_GetLumpName (name);
 	gl = (glpic_t *)p->data;
 
 	gl->texnum = GL_LoadPicTexture (p);
@@ -435,7 +435,7 @@ void Draw_Init (void)
 	glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, gl_filter_max);
 
 	// load the small characters for status bar
-	chars = W_GetLumpName("tinyfont");
+	chars = (byte *) W_GetLumpName("tinyfont");
 	for (i = 0; i < 128*32; i++)
 	{
 		if (chars[i] == 0)
@@ -1562,7 +1562,7 @@ static void GL_Upload8_EXT (byte *data, int width, int height,  qboolean mipmap,
 	}
 
 	mark = Hunk_LowMark();
-	scaled = Hunk_AllocName(scaled_width * scaled_height, "texbuf_upload8pal");
+	scaled = (unsigned char *) Hunk_AllocName(scaled_width * scaled_height, "texbuf_upload8pal");
 
 	if (scaled_width == width && scaled_height == height)
 	{
@@ -1687,7 +1687,7 @@ static void GL_Upload32 (unsigned *data, int width, int height,  qboolean mipmap
 			if (is8bit && !alpha)
 			{
 				mark = Hunk_LowMark();
-				fxpal_buf = Hunk_AllocName(scaled_width * scaled_height, "texbuf_upload8pal");
+				fxpal_buf = (unsigned char *) Hunk_AllocName(scaled_width * scaled_height, "texbuf_upload8pal");
 				fxPalTexImage2D (GL_TEXTURE_2D, 0, samples, scaled_width, scaled_height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data, fxpal_buf);
 				Hunk_FreeToLowMark(mark);
 				mark = 0;
@@ -1702,7 +1702,7 @@ static void GL_Upload32 (unsigned *data, int width, int height,  qboolean mipmap
 	else
 	{
 		mark = Hunk_LowMark();
-		scaled = Hunk_AllocName(scaled_width * scaled_height * sizeof(unsigned int), "texbuf_upload32");
+		scaled = (unsigned *) Hunk_AllocName(scaled_width * scaled_height * sizeof(unsigned int), "texbuf_upload32");
 		GL_ResampleTexture (data, width, height, scaled, scaled_width, scaled_height);
 	}
 
@@ -1711,7 +1711,7 @@ static void GL_Upload32 (unsigned *data, int width, int height,  qboolean mipmap
 	{
 		if (!mark)
 			mark = Hunk_LowMark();
-		fxpal_buf = Hunk_AllocName(scaled_width * scaled_height, "texbuf_upload8pal");
+		fxpal_buf = (unsigned char *) Hunk_AllocName(scaled_width * scaled_height, "texbuf_upload8pal");
 		fxPalTexImage2D (GL_TEXTURE_2D, 0, samples, scaled_width, scaled_height, 0, GL_RGBA, GL_UNSIGNED_BYTE, scaled, fxpal_buf);
 	}
 	else
@@ -1786,7 +1786,7 @@ static void GL_Upload8 (byte *data, int width, int height,  qboolean mipmap, qbo
 
 	s = width*height;
 	mark = Hunk_LowMark();
-	trans = Hunk_AllocName(s * sizeof(unsigned), "texbuf_upload8");
+	trans = (unsigned *) Hunk_AllocName(s * sizeof(unsigned), "texbuf_upload8");
 
 	// if there are no transparent pixels, make it a 3 component
 	// texture even if it was specified as otherwise

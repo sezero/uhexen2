@@ -2,7 +2,7 @@
 	screen.c
 	master for refresh, status bar, console, chat, notify, etc
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/screen.c,v 1.46 2007-06-30 11:19:43 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/screen.c,v 1.47 2007-07-08 11:55:23 sezero Exp $
 */
 
 /*=============================================================================
@@ -735,7 +735,7 @@ static void WritePCXfile (const char *filename, byte *data, int width, int heigh
 	pcx_t	*pcx;
 	byte		*pack;
 
-	pcx = Hunk_TempAlloc (width*height*2+1000);
+	pcx = (pcx_t *) Hunk_TempAlloc (width*height*2+1000);
 	if (pcx == NULL)
 	{
 		Con_Printf("%s: not enough memory\n", __thisfunc__);

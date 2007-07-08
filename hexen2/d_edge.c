@@ -1,7 +1,7 @@
 /*
 	d_edge.c
 
-	$Id: d_edge.c,v 1.13 2007-06-30 11:19:42 sezero Exp $
+	$Id: d_edge.c,v 1.14 2007-07-08 11:55:18 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -250,7 +250,7 @@ void D_DrawSurfaces2 (qboolean Translucent)
 			}
 			else if (s->flags & SURF_DRAWTURB)
 			{
-				pface = s->data;
+				pface = (msurface_t *) s->data;
 				miplevel = 0;
 				cacheblock = (pixel_t *)
 						((byte *)pface->texinfo->texture +
@@ -308,7 +308,7 @@ void D_DrawSurfaces2 (qboolean Translucent)
 										// make entity passed in
 				}
 
-				pface = s->data;
+				pface = (msurface_t *) s->data;
 				miplevel = D_MipLevelForScale (s->nearzi * scale_for_mip
 								* pface->texinfo->mipadjust);
 
@@ -445,7 +445,7 @@ void D_DrawSurfaces (qboolean Translucent)
 				}
 				else if (s->flags & SURF_DRAWTURB)
 				{
-					pface = s->data;
+					pface = (msurface_t *) s->data;
 					miplevel = 0;
 					cacheblock = (pixel_t *)
 							((byte *)pface->texinfo->texture +
@@ -502,7 +502,7 @@ void D_DrawSurfaces (qboolean Translucent)
 											// make entity passed in
 					}
 
-					pface = s->data;
+					pface = (msurface_t *) s->data;
 					miplevel = D_MipLevelForScale (s->nearzi * scale_for_mip
 									* pface->texinfo->mipadjust);
 
@@ -567,7 +567,7 @@ void D_DrawSurfaces (qboolean Translucent)
 				}
 				if (s->flags & SURF_DRAWTURB)
 				{
-					pface = s->data;
+					pface = (msurface_t *) s->data;
 					miplevel = 0;
 					cacheblock = (pixel_t *)
 							((byte *)pface->texinfo->texture +
@@ -624,7 +624,7 @@ void D_DrawSurfaces (qboolean Translucent)
 											// make entity passed in
 					}
 
-					pface = s->data;
+					pface = (msurface_t *) s->data;
 					miplevel = D_MipLevelForScale (s->nearzi * scale_for_mip
 									* pface->texinfo->mipadjust);
 

@@ -2,13 +2,14 @@
 	vid_win.c
 	Win32 video driver using MGL-4.05
 
-	$Id: vid_win.c,v 1.48 2007-06-09 23:14:43 sezero Exp $
+	$Id: vid_win.c,v 1.49 2007-07-08 11:55:34 sezero Exp $
 */
 
 #include "quakedef.h"
 #include "winquake.h"
 #include "d_local.h"
 #include "resource.h"
+#include <ddraw.h>
 #include <mgraph.h>
 
 #if defined(H2W)
@@ -28,9 +29,8 @@ qboolean	msg_suppress_1 = false;
 // new variables. Pa3PyX
 static LONG_PTR		mgl_wnd_proc;
 static MGL_surfaceAccessFlagsType	mgldcAccessMode = MGL_NO_ACCESS,
-				memdcAccessMode = MGL_NO_ACCESS,
-				mgldcWidth = 0,
-				memdcWidth = 0;
+					memdcAccessMode = MGL_NO_ACCESS;
+static int				mgldcWidth = 0, memdcWidth = 0;
 
 byte globalcolormap[VID_GRADES*256], lastglobalcolor = 0;
 byte *lastsourcecolormap = NULL;
@@ -338,7 +338,7 @@ static qboolean VID_AllocBuffers (int width, int height)
 
 	VID_highhunkmark = Hunk_HighMark ();
 
-	d_pzbuffer = Hunk_HighAllocName (tbuffersize, "video");
+	d_pzbuffer = (short *) Hunk_HighAllocName (tbuffersize, "video");
 
 	vid_surfcache = (byte *)d_pzbuffer +
 			width * height * sizeof (*d_pzbuffer);
@@ -680,12 +680,12 @@ static MGLDC *createDisplayDC (int forcemem)
 	   mode (not MGL_NO_ACCESS == 0) */
 	if (dc)
 	{
-		mgldcAccessMode = MGL_surfaceAccessType(dc);
+		mgldcAccessMode = (MGL_surfaceAccessFlagsType) MGL_surfaceAccessType(dc);
 		mgldcWidth = dc->mi.bytesPerLine * (dc->mi.bitsPerPixel / 8);
 	}
 	if (memdc)
 	{
-		memdcAccessMode = MGL_surfaceAccessType(memdc);
+		memdcAccessMode = (MGL_surfaceAccessFlagsType) MGL_surfaceAccessType(memdc);
 		memdcWidth = memdc->mi.bytesPerLine * (memdc->mi.bitsPerPixel / 8);
 	}
 
@@ -1437,7 +1437,7 @@ static qboolean VID_SetWindowedMode (int modenum)
 
 	MGL_makeCurrentDC(dibdc);
 
-	vid.buffer = vid.conbuffer = vid.direct = dibdc->surface;
+	vid.buffer = vid.conbuffer = vid.direct = (pixel_t *) dibdc->surface;
 	vid.rowbytes = vid.conrowbytes = dibdc->mi.bytesPerLine;
 	vid.numpages = 1;
 	vid.maxwarpwidth = WARP_WIDTH;
@@ -1603,7 +1603,7 @@ static qboolean VID_SetFullDIBMode (int modenum)
 
 	MGL_makeCurrentDC(dibdc);
 
-	vid.buffer = vid.conbuffer = vid.direct = dibdc->surface;
+	vid.buffer = vid.conbuffer = vid.direct = (pixel_t *) dibdc->surface;
 	vid.rowbytes = vid.conrowbytes = dibdc->mi.bytesPerLine;
 	vid.numpages = 1;
 	vid.maxwarpwidth = WARP_WIDTH;
@@ -1837,20 +1837,20 @@ void VID_LockBuffer (void)
 	if (memdc)
 	{
 		// Update surface pointer for linear access modes
-		vid.buffer = vid.conbuffer = vid.direct = memdc->surface;
+		vid.buffer = vid.conbuffer = vid.direct = (pixel_t *) memdc->surface;
 		vid.rowbytes = vid.conrowbytes = memdc->mi.bytesPerLine;
 	}
 	else if (mgldc)
 	{
 		// Update surface pointer for linear access modes
-		vid.buffer = vid.conbuffer = vid.direct = mgldc->surface;
+		vid.buffer = vid.conbuffer = vid.direct = (pixel_t *) mgldc->surface;
 		vid.rowbytes = vid.conrowbytes = mgldc->mi.bytesPerLine;
 	}
 
 	if (r_dowarp)
 		d_viewbuffer = r_warpbuffer;
 	else
-		d_viewbuffer = (void *)(byte *)vid.buffer;
+		d_viewbuffer = vid.buffer;
 
 	if (r_dowarp)
 		screenwidth = WARP_WIDTH;
@@ -3303,6 +3303,7 @@ typedef struct
 #define MAX_MODEDESCS		(MAX_COLUMN_SIZE * 3)
 
 static modedesc_t	modedescs[MAX_MODEDESCS];
+static char no_desc[4] = { 'N', '/', 'A', '\0' };
 
 /*
 ================
@@ -3324,7 +3325,7 @@ static void VID_MenuDraw (void)
 		ptr = VID_GetModeDescriptionMemCheck (i);
 		modedescs[i].modenum = modelist[i].modenum;
 		// avoid null pointer if not enough memory for mode. Pa3PyX
-		modedescs[i].desc = ptr ? ptr : "N/A";
+		modedescs[i].desc = ptr ? ptr : no_desc;
 		modedescs[i].ismode13 = 0;
 		modedescs[i].iscur = 0;
 

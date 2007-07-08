@@ -1,6 +1,6 @@
 /*
 	snd_alsa.c
-	$Id: snd_alsa.c,v 1.32 2007-07-06 12:45:42 sezero Exp $
+	$Id: snd_alsa.c,v 1.33 2007-07-08 11:55:38 sezero Exp $
 
 	ALSA 1.0 sound driver for Linux Hexen II
 
@@ -136,12 +136,12 @@ qboolean S_ALSA_Init (void)
 	ALSA_CHECK_ERR(err, "unable to set interleaved access. %s\n", hx2snd_strerror (err));
 
 	tmp_bits = (desired_bits == 8) ? SND_PCM_FORMAT_U8 : SND_PCM_FORMAT_S16;
-	err = hx2snd_pcm_hw_params_set_format (pcm, hw, tmp_bits);
+	err = hx2snd_pcm_hw_params_set_format (pcm, hw, (snd_pcm_format_t) tmp_bits);
 	if (err < 0)
 	{
 		Con_Printf ("Problems setting %d bit format, trying alternatives..\n", desired_bits);
 		tmp_bits = (desired_bits == 8) ? SND_PCM_FORMAT_S16 : SND_PCM_FORMAT_U8;
-		err = hx2snd_pcm_hw_params_set_format (pcm, hw, tmp_bits);
+		err = hx2snd_pcm_hw_params_set_format (pcm, hw, (snd_pcm_format_t) tmp_bits);
 		ALSA_CHECK_ERR(err, "Neither 8 nor 16 bit format supported. %s\n", hx2snd_strerror (err));
 	}
 	tmp_bits = (tmp_bits == SND_PCM_FORMAT_U8) ? 8 : 16;
@@ -288,7 +288,7 @@ int S_ALSA_GetDMAPos (void)
 	offset *= shm->channels;
 	nframes *= shm->channels;
 	shm->samplepos = offset;
-	shm->buffer = areas->addr; //XXX FIXME there's an area per channel
+	shm->buffer = (unsigned char *) areas->addr;	// FIXME! there's an area per channel
 	return shm->samplepos;
 }
 

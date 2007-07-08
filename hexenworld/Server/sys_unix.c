@@ -1,6 +1,6 @@
 /*
 	sys_unix.c
-	$Id: sys_unix.c,v 1.39 2007-05-09 18:11:38 sezero Exp $
+	$Id: sys_unix.c,v 1.40 2007-07-08 11:56:52 sezero Exp $
 
 	Unix system interface code
 */
@@ -105,13 +105,13 @@ char *Sys_FindFirstFile (const char *path, const char *pattern)
 		return NULL;
 
 	tmp_len = strlen (pattern);
-	findpattern = Z_Malloc (tmp_len + 1, Z_MAINZONE);
+	findpattern = (char *) Z_Malloc (tmp_len + 1, Z_MAINZONE);
 //	if (!findpattern)
 //		return NULL;
 	strcpy (findpattern, pattern);
 	findpattern[tmp_len] = '\0';
 	tmp_len = strlen (path);
-	findpath = Z_Malloc (tmp_len + 1, Z_MAINZONE);
+	findpath = (char *) Z_Malloc (tmp_len + 1, Z_MAINZONE);
 //	if (!findpath)
 //		return NULL;
 	strcpy (findpath, path);

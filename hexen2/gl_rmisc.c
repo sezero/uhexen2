@@ -1,12 +1,24 @@
 /*
 	r_misc.c
 
-	$Id: gl_rmisc.c,v 1.43 2007-05-13 11:58:29 sezero Exp $
+	$Id: gl_rmisc.c,v 1.44 2007-07-08 11:55:19 sezero Exp $
 */
 
 #include "quakedef.h"
 
 byte			*playerTranslation;
+const int	color_offsets[MAX_PLAYER_CLASS] =
+{
+		2 * 14 * 256,
+		0,
+		1 * 14 * 256,
+		2 * 14 * 256,
+		2 * 14 * 256
+#if defined(H2W)
+		,
+		2 * 14 * 256
+#endif
+};
 
 cvar_t			gl_purge_maptex = {"gl_purge_maptex", "1", CVAR_ARCHIVE};
 				// whether or not map-specific OGL textures
@@ -34,7 +46,7 @@ void	R_InitTextures (void)
 	byte	*dest;
 
 // create a simple checkerboard texture for the default
-	r_notexture_mip = Hunk_AllocName (sizeof(texture_t) + 16*16+8*8+4*4+2*2, "notexture");
+	r_notexture_mip = (texture_t *) Hunk_AllocName (sizeof(texture_t) + 16*16+8*8+4*4+2*2, "notexture");
 
 	r_notexture_mip->width = r_notexture_mip->height = 16;
 	r_notexture_mip->offsets[0] = sizeof(texture_t);
@@ -283,18 +295,6 @@ void R_Init (void)
 	if (!playerTranslation)
 		Sys_Error ("Couldn't load gfx/player.lmp");
 }
-
-const int color_offsets[MAX_PLAYER_CLASS] =
-{
-	2*14*256,
-	0,
-	1*14*256,
-	2*14*256,
-	2*14*256,
-#if defined(H2W)
-	2*14*256
-#endif
-};
 
 /*
 ===============
