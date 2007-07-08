@@ -5,7 +5,7 @@
 	models are the only shared resource between a client and server
 	running on the same machine.
 
-	$Id: gl_model.c,v 1.38 2007-07-08 11:55:35 sezero Exp $
+	$Id: gl_model.c,v 1.39 2007-07-08 21:00:36 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -1731,7 +1731,7 @@ static void *Mod_LoadAliasGroup (void *pin,  maliasframedesc_t *frame)
 
 		posenum++;
 
-		ptemp = (void *)((daliasframe_t *)ptemp + 1 + pheader->numverts);
+		ptemp = (trivertx_t *)((daliasframe_t *)ptemp + 1) + pheader->numverts;
 	}
 
 	return ptemp;
