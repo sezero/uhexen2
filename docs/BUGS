@@ -10,15 +10,6 @@ Known Bugs
   partially or completely. If you suffer from that problem, use Alsa
   or SDL sound.
 
-- Software Renderer, non-intel code; village2 level, the hidden puzzle
-  portal where you need the gem of seeing in order to see it: depending
-  on the angle you are looking at it, the foreground to the portal may
-  not be rendered. Same goes for the shop labels below the ballista in
-  the demo2 level. This may be due to incorrect/inaccurate z-buffering
-  for this type of brush, one of the brushes isn't displayed because
-  the z-value is the same z-value already in the z-buffer? To be looked
-  into.
-
 - OpenGL Client: The so-called fix we adopted during 1.2.2 development
   for the extra lines drawn in rendering fires of Demoness and Praevus
   is actually an incomplete workaround (and is adding extra mess). The
