@@ -2,7 +2,7 @@
 	huffman.c
 	huffman encoding/decoding for use in hexenworld networking
 
-	$Id: huffman.c,v 1.17 2007-07-08 11:55:37 sezero Exp $
+	$Id: huffman.c,v 1.18 2007-07-09 16:41:43 sezero Exp $
 */
 
 #include <stdlib.h>
@@ -209,7 +209,7 @@ static void BuildTree (float *freq)
 	HuffTree = tmp;
 	FindTab (HuffTree, 0, 0);
 
-#if DEBUG_BUILD
+#ifdef DEBUG_BUILD
 	for (i = 0; i < 256; i++)
 	{
 		if (!HuffLookup[i].len && HuffLookup[i].len <= 32)
@@ -218,7 +218,7 @@ static void BuildTree (float *freq)
 			Sys_Error("bad frequency table");
 		}
 	}
-#endif
+#endif	// DEBUG_BUILD
 }
 
 void HuffDecode (unsigned char *in, unsigned char *out, int inlen, int *outlen, const int maxlen)
