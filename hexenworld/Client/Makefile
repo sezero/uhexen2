@@ -1,5 +1,5 @@
 # GNU Makefile for hexenworld clients using GCC.
-# $Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/Makefile,v 1.63 2007-07-04 08:53:07 sezero Exp $
+# $Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/Makefile,v 1.64 2007-07-09 21:50:57 sezero Exp $
 #
 # Type "make help" to see the valid targets.
 #
@@ -111,7 +111,7 @@ WITH_SPLASHES=yes
 OPT_EXTRA=yes
 LINK_GL_LIBS=no
 USE_3DFXGAMMA=yes
-USE_X86_ASM=yes
+USE_X86_ASM=no
 COMPILE_32BITS=no
 
 # build environment sanity checks

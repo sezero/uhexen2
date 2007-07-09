@@ -1,7 +1,7 @@
 /*
 	r_edge.c
 
-	$Id: r_edge.c,v 1.9 2007-07-01 06:38:11 sezero Exp $
+	$Id: r_edge.c,v 1.10 2007-07-09 21:50:57 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -594,7 +594,7 @@ static void R_LeadingEdge (edge_t *edge)
 				newzi = surf->d_ziorigin +
 						fv*surf->d_zistepv +
 						fu*surf->d_zistepu;
-				newzibottom = newzi * 0.99;
+				newzibottom = newzi * 0.999;
 
 				testzi = surf2->d_ziorigin +
 						fv*surf2->d_zistepv +
@@ -605,7 +605,7 @@ static void R_LeadingEdge (edge_t *edge)
 					goto newtop;
 				}
 
-				newzitop = newzi * 1.01;
+				newzitop = newzi * 1.001;
 				if (newzitop >= testzi)
 				{
 					if (surf->d_zistepu >= surf2->d_zistepu)
@@ -634,7 +634,7 @@ continue_search:
 				newzi = surf->d_ziorigin +
 						fv*surf->d_zistepv +
 						fu*surf->d_zistepu;
-				newzibottom = newzi * 0.99;
+				newzibottom = newzi * 0.999;
 
 				testzi = surf2->d_ziorigin +
 						fv*surf2->d_zistepv +
@@ -645,7 +645,7 @@ continue_search:
 					goto gotposition;
 				}
 
-				newzitop = newzi * 1.01;
+				newzitop = newzi * 1.001;
 				if (newzitop >= testzi)
 				{
 					if (surf->d_zistepu >= surf2->d_zistepu)
@@ -690,7 +690,11 @@ gotposition:
 	}
 }
 
-
+/*
+==============
+R_LeadingEdgeT
+==============
+*/
 static void R_LeadingEdgeT (edge_t *edge)
 {
 	espan_t		*span;
@@ -726,7 +730,7 @@ static void R_LeadingEdgeT (edge_t *edge)
 				newzi = surf->d_ziorigin +
 						fv*surf->d_zistepv +
 						fu*surf->d_zistepu;
-				newzibottom = newzi * 0.99;
+				newzibottom = newzi * 0.999;
 
 				testzi = surf2->d_ziorigin +
 						fv*surf2->d_zistepv +
@@ -737,7 +741,7 @@ static void R_LeadingEdgeT (edge_t *edge)
 					goto newtop;
 				}
 
-				newzitop = newzi * 1.01;
+				newzitop = newzi * 1.001;
 				if (newzitop >= testzi)
 				{
 					if (surf->d_zistepu >= surf2->d_zistepu)
@@ -766,7 +770,7 @@ continue_search:
 				newzi = surf->d_ziorigin +
 						fv*surf->d_zistepv +
 						fu*surf->d_zistepu;
-				newzibottom = newzi * 0.99;
+				newzibottom = newzi * 0.999;
 
 				testzi = surf2->d_ziorigin +
 						fv*surf2->d_zistepv +
@@ -777,7 +781,7 @@ continue_search:
 					goto gotposition;
 				}
 
-				newzitop = newzi * 1.01;
+				newzitop = newzi * 1.001;
 				if (newzitop >= testzi)
 				{
 					if (surf->d_zistepu >= surf2->d_zistepu)
@@ -839,6 +843,9 @@ static void R_GenerateSpans (void)
 	surfaces[1].last_u = edge_head_u_shift20;
 
 // generate spans
+// note: edge->surfs[0] is trailing
+//	 edge->surfs[1] is leading
+
 	for (edge = edge_head.next ; edge != &edge_tail; edge = edge->next)
 	{
 		if (edge->surfs[0])
@@ -894,6 +901,11 @@ static void R_GenerateSpans (void)
 */
 }
 
+/*
+==============
+R_GenerateTSpans
+==============
+*/
 static void R_GenerateTSpans (void)
 {
 	edge_t		*edge;
