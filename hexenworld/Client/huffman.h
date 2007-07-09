@@ -2,7 +2,7 @@
 	huffman.h
 	huffman encoding/decoding for use in hexenworld networking
 
-	$Id: huffman.h,v 1.5 2007-07-09 18:43:09 sezero Exp $
+	$Id: huffman.h,v 1.6 2007-07-09 19:30:20 sezero Exp $
 */
 
 #ifndef __H2W_HUFFMAN_H
@@ -15,11 +15,7 @@ extern void HuffDecode (unsigned char *in, unsigned char *out, int inlen, int *o
 #define	_DEBUG_HUFFMAN	0
 
 #if _DEBUG_HUFFMAN
-extern void CalcFreq (unsigned char *packet, int packetlen);
 extern void PrintFreqs (void);
-
-extern	int	HuffIn;
-extern	int	HuffOut;
 #endif	/* _DEBUG_HUFFMAN */
 
 #endif	/* __H2W_HUFFMAN_H */

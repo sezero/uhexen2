@@ -2,7 +2,7 @@
 	huffman.c
 	huffman encoding/decoding for use in hexenworld networking
 
-	$Id: huffman.c,v 1.19 2007-07-09 18:43:09 sezero Exp $
+	$Id: huffman.c,v 1.20 2007-07-09 19:30:19 sezero Exp $
 */
 
 #include <stdlib.h>
@@ -13,10 +13,6 @@
 #include "compiler.h"
 #include "huffman.h"
 #include "zone.h"
-
-#if _DEBUG_HUFFMAN && !defined(_WIN32)
-#define OutputDebugString(X) fprintf(stderr,"%s",(X))
-#endif	/* _DEBUG_HUFFMAN */
 
 
 extern void Sys_Error (const char *error, ...) __attribute__((format(printf,1,2), noreturn));
@@ -54,8 +50,15 @@ static float HuffFreq[256] =
 // huffman debugging
 //
 #if _DEBUG_HUFFMAN
-int HuffIn = 0;
-int HuffOut= 0;
+
+#if defined(__GNUC__)
+#define HuffPrintf(fmt, args...)	fprintf(stderr, fmt, ##args)
+#else	/* require c99 variadic macros. */
+#define HuffPrintf(...)			fprintf(stderr, __VA_ARGS__)
+#endif	/* HuffPrintf */
+
+static int HuffIn = 0;
+static int HuffOut= 0;
 static int freqs[256];
 
 static void ZeroFreq (void)
@@ -63,7 +66,7 @@ static void ZeroFreq (void)
 	memset(freqs, 0, 256*sizeof(int));
 }
 
-void CalcFreq (unsigned char *packet, int packetlen)
+static void CalcFreq (unsigned char *packet, int packetlen)
 {
 	int		ix;
 
@@ -77,7 +80,6 @@ void PrintFreqs (void)
 {
 	int		ix;
 	float	total = 0;
-	char	string[100];
 
 	for (ix = 0; ix < 256; ix++)
 	{
@@ -88,8 +90,7 @@ void PrintFreqs (void)
 	{
 		for (ix = 0; ix < 256; ix++)
 		{
-			sprintf(string, "\t%.8f,\n", ((float)freqs[ix])/total);
-			OutputDebugString(string);
+			HuffPrintf("\t%.8f,\n", ((float)freqs[ix])/total);
 		}
 	}
 
@@ -291,6 +292,8 @@ void HuffEncode (unsigned char *in, unsigned char *out, int inlen, int *outlen)
 #if _DEBUG_HUFFMAN
 	HuffIn += inlen;
 	HuffOut += *outlen;
+	HuffPrintf("in: %d  out: %d  ratio: %f\n", HuffIn, HuffOut, 1-(float)HuffOut/(float)HuffIn);
+	CalcFreq(in, inlen);
 
 	buf = (unsigned char *) Z_Malloc(inlen, Z_MAINZONE);
 	HuffDecode (out, buf, *outlen, &tlen, inlen);
