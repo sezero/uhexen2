@@ -2,7 +2,7 @@
 	net_udp.c
 	network UDP driver
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/net_wins.c,v 1.32 2007-07-08 11:55:38 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/net_wins.c,v 1.33 2007-07-09 18:43:09 sezero Exp $
 */
 
 #include "net_sys.h"
@@ -190,18 +190,18 @@ void NET_SendPacket (int length, void *data, netadr_t to)
 {
 	int	ret, outlen;
 	struct sockaddr_in	addr;
-#ifdef DEBUG_BUILD
+#if _DEBUG_HUFFMAN
 	char	string[120];
-#endif
+#endif	/* _DEBUG_HUFFMAN */
 
 	NetadrToSockadr (&to, &addr);
 	HuffEncode((unsigned char *)data, huffbuff, length, &outlen);
 
-#ifdef DEBUG_BUILD
+#if _DEBUG_HUFFMAN
 	sprintf(string,"in: %d  out: %d  ratio: %f\n", HuffIn, HuffOut, 1-(float)HuffOut/(float)HuffIn);
 	OutputDebugString(string);
 	CalcFreq((unsigned char *)data, length);
-#endif	// DEBUG_BUILD
+#endif	/* _DEBUG_HUFFMAN */
 
 	ret = sendto (net_socket, (char *) huffbuff, outlen, 0, (struct sockaddr *)&addr, sizeof(addr) );
 	if (ret == -1)
@@ -291,10 +291,6 @@ void NET_Init (int port)
 	int		r;
 #endif
 
-#ifdef DEBUG_BUILD
-	ZeroFreq();
-#endif
-
 	HuffInit();
 
 #ifdef _WIN32
@@ -333,7 +329,7 @@ void	NET_Shutdown (void)
 #ifdef _WIN32
 	WSACleanup ();
 #endif
-#ifdef DEBUG_BUILD
+#if _DEBUG_HUFFMAN
 	PrintFreqs();
 #endif
 }

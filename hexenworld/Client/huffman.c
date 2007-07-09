@@ -2,7 +2,7 @@
 	huffman.c
 	huffman encoding/decoding for use in hexenworld networking
 
-	$Id: huffman.c,v 1.18 2007-07-09 16:41:43 sezero Exp $
+	$Id: huffman.c,v 1.19 2007-07-09 18:43:09 sezero Exp $
 */
 
 #include <stdlib.h>
@@ -11,11 +11,12 @@
 #include <string.h>
 #include <stdarg.h>
 #include "compiler.h"
+#include "huffman.h"
 #include "zone.h"
 
-#if defined(DEBUG_BUILD) && !defined(_WIN32)
+#if _DEBUG_HUFFMAN && !defined(_WIN32)
 #define OutputDebugString(X) fprintf(stderr,"%s",(X))
-#endif
+#endif	/* _DEBUG_HUFFMAN */
 
 
 extern void Sys_Error (const char *error, ...) __attribute__((format(printf,1,2), noreturn));
@@ -38,7 +39,7 @@ typedef struct
 	int		len;
 } hufftab_t;
 
-static huffnode_t *HuffTree = 0;
+static huffnode_t *HuffTree = NULL;
 static hufftab_t HuffLookup[256];
 
 static float HuffFreq[256] =
@@ -52,12 +53,12 @@ static float HuffFreq[256] =
 //
 // huffman debugging
 //
-#ifdef DEBUG_BUILD
+#if _DEBUG_HUFFMAN
 int HuffIn = 0;
 int HuffOut= 0;
 static int freqs[256];
 
-void ZeroFreq (void)
+static void ZeroFreq (void)
 {
 	memset(freqs, 0, 256*sizeof(int));
 }
@@ -94,7 +95,7 @@ void PrintFreqs (void)
 
 	ZeroFreq();
 }
-#endif	// DEBUG_BUILD
+#endif	/* _DEBUG_HUFFMAN */
 
 
 //=============================================================================
@@ -209,7 +210,7 @@ static void BuildTree (float *freq)
 	HuffTree = tmp;
 	FindTab (HuffTree, 0, 0);
 
-#ifdef DEBUG_BUILD
+#if _DEBUG_HUFFMAN
 	for (i = 0; i < 256; i++)
 	{
 		if (!HuffLookup[i].len && HuffLookup[i].len <= 32)
@@ -218,12 +219,12 @@ static void BuildTree (float *freq)
 			Sys_Error("bad frequency table");
 		}
 	}
-#endif	// DEBUG_BUILD
+#endif	/* _DEBUG_HUFFMAN */
 }
 
 void HuffDecode (unsigned char *in, unsigned char *out, int inlen, int *outlen, const int maxlen)
 {
-	int	bits,tbits;
+	int	bits, tbits;
 	huffnode_t	*tmp;
 
 	if (*in == 0xff)
@@ -259,10 +260,10 @@ void HuffEncode (unsigned char *in, unsigned char *out, int inlen, int *outlen)
 {
 	int	i, j, bitat;
 	unsigned int	t;
-#ifdef DEBUG_BUILD
+#if _DEBUG_HUFFMAN
 	unsigned char	*buf;
 	int	tlen;
-#endif	// DEBUG_BUILD
+#endif	/* _DEBUG_HUFFMAN */
 
 	bitat = 0;
 
@@ -287,7 +288,7 @@ void HuffEncode (unsigned char *in, unsigned char *out, int inlen, int *outlen)
 		*outlen = inlen+1;
 	}
 
-#ifdef DEBUG_BUILD
+#if _DEBUG_HUFFMAN
 	HuffIn += inlen;
 	HuffOut += *outlen;
 
@@ -301,11 +302,14 @@ void HuffEncode (unsigned char *in, unsigned char *out, int inlen, int *outlen)
 			Sys_Error("bogus compression");
 	}
 	Z_Free (buf);
-#endif	// DEBUG_BUILD
+#endif	/* _DEBUG_HUFFMAN */
 }
 
 void HuffInit (void)
 {
+#if _DEBUG_HUFFMAN
+	ZeroFreq ();
+#endif	/* _DEBUG_HUFFMAN */
 	BuildTree(HuffFreq);
 }
 

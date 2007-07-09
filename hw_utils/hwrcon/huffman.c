@@ -2,7 +2,7 @@
 	huffman.c
 	huffman encoding/decoding for use in hexenworld networking
 
-	$Id: huffman.c,v 1.11 2007-04-19 17:45:56 sezero Exp $
+	$Id: huffman.c,v 1.12 2007-07-09 18:43:10 sezero Exp $
 */
 
 #include <stdlib.h>
@@ -11,6 +11,11 @@
 #include <string.h>
 #include <stdarg.h>
 #include "compiler.h"
+#include "huffman.h"
+
+#if _DEBUG_HUFFMAN && !defined(_WIN32)
+#define OutputDebugString(X) fprintf(stderr,"%s",(X))
+#endif	/* _DEBUG_HUFFMAN */
 
 
 extern void Sys_Error (const char *error, ...) __attribute__((format(printf,1,2), noreturn));
@@ -33,13 +38,63 @@ typedef struct
 	int		len;
 } hufftab_t;
 
-static huffnode_t *HuffTree = 0;
+static huffnode_t *HuffTree = NULL;
 static hufftab_t HuffLookup[256];
 
 static float HuffFreq[256] =
 {
 #	include "hufffreq.h"
 };
+
+
+//=============================================================================
+
+//
+// huffman debugging
+//
+#if _DEBUG_HUFFMAN
+int HuffIn = 0;
+int HuffOut= 0;
+static int freqs[256];
+
+static void ZeroFreq (void)
+{
+	memset(freqs, 0, 256*sizeof(int));
+}
+
+void CalcFreq (unsigned char *packet, int packetlen)
+{
+	int		ix;
+
+	for (ix = 0; ix < packetlen; ix++)
+	{
+		freqs[packet[ix]]++;
+	}
+}
+
+void PrintFreqs (void)
+{
+	int		ix;
+	float	total = 0;
+	char	string[100];
+
+	for (ix = 0; ix < 256; ix++)
+	{
+		total += freqs[ix];
+	}
+
+	if (total > .01)
+	{
+		for (ix = 0; ix < 256; ix++)
+		{
+			sprintf(string, "\t%.8f,\n", ((float)freqs[ix])/total);
+			OutputDebugString(string);
+		}
+	}
+
+	ZeroFreq();
+}
+#endif	/* _DEBUG_HUFFMAN */
 
 
 //=============================================================================
@@ -153,11 +208,22 @@ static void BuildTree (float *freq)
 
 	HuffTree = tmp;
 	FindTab (HuffTree, 0, 0);
+
+#if _DEBUG_HUFFMAN
+	for (i = 0; i < 256; i++)
+	{
+		if (!HuffLookup[i].len && HuffLookup[i].len <= 32)
+		{
+		//	printf("%d %d %2X\n", HuffLookup[i].len, HuffLookup[i].bits, i);
+			Sys_Error("bad frequency table");
+		}
+	}
+#endif	/* _DEBUG_HUFFMAN */
 }
 
 void HuffDecode (unsigned char *in, unsigned char *out, int inlen, int *outlen, const int maxlen)
 {
-	int	bits,tbits;
+	int	bits, tbits;
 	huffnode_t	*tmp;
 
 	if (*in == 0xff)
@@ -193,6 +259,10 @@ void HuffEncode (unsigned char *in, unsigned char *out, int inlen, int *outlen)
 {
 	int	i, j, bitat;
 	unsigned int	t;
+#if _DEBUG_HUFFMAN
+	unsigned char	*buf;
+	int	tlen;
+#endif	/* _DEBUG_HUFFMAN */
 
 	bitat = 0;
 
@@ -216,10 +286,29 @@ void HuffEncode (unsigned char *in, unsigned char *out, int inlen, int *outlen)
 		memcpy (out+1, in, inlen);
 		*outlen = inlen+1;
 	}
+
+#if _DEBUG_HUFFMAN
+	HuffIn += inlen;
+	HuffOut += *outlen;
+
+	buf = (unsigned char *) malloc (inlen);
+	HuffDecode (out, buf, *outlen, &tlen, inlen);
+	if (tlen != inlen)
+		Sys_Error("bogus compression");
+	for (i = 0; i < inlen; i++)
+	{
+		if (in[i] != buf[i])
+			Sys_Error("bogus compression");
+	}
+	free (buf);
+#endif	/* _DEBUG_HUFFMAN */
 }
 
 void HuffInit (void)
 {
+#if _DEBUG_HUFFMAN
+	ZeroFreq ();
+#endif	/* _DEBUG_HUFFMAN */
 	BuildTree(HuffFreq);
 }
 
