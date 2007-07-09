@@ -3,6 +3,47 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2007-07-09 (CVS):
+    * msg_io.c: trivial clean-up.
+    * huffman.c: fixed a wrong ifdef.
+    * minor huffman cleanups.
+    * more huffman cleanup: moved all of the debug output stuff to
+      huffman.c and made almost all of the debug vars static to it.
+      only PrintFreqs() is exported and we don't call it anyways.
+    * huffman: other minor things.
+    * fix for the z/overlay problem in the non-intel sofware renderer code
+      from Juraj Styk:  "The problem was located in R_LeadingEdge() and
+      R_LeadingEdgeT() in part that tries to determine which surface should
+      be drawn on top another. One part of the test compares z value from
+      one surface with z value of another multiplied by constant value of
+      (1.01 and 0.99 in this case ). It turns out that this constant is too
+      big (asm code used 1.001 and 0.999) and it can cause problem when two
+      surfaces overlay one another and are separated only by a little space."
+      Juraj, you are the man!
+    * updated the list of known bugs.
+
+2007-07-06/08 (CVS):
+    * updated the release notes for 1.4.2 (2007-07-06.)
+    * small updates to the 3dfx gamma library.
+    * renamed the HX2_ALSA macro to ALSA_FUNC.
+    * dlsym fixes: added proper casts.
+    * updated the external music extra patch after the dlsym changes.
+    * updated the lib3dfxgamma exmaples after the dlsym fixes.
+    * updated the win32 headers: switched to using the dx6 headers from the
+      libsdl site. added back the schitech's mglpoint.hpp and mglrect.hpp
+      headers for C++ compatibility.
+    * gl_mesh.c: worked around a type-punned pointer. adapted from quakeforge.
+    * added proper casts to several alloc calls and assignments. avoided
+      new and this usage as our var names. this makes HoT compilable by
+      c++ compilers (g++). there are many warnings, but no errors. utils
+      and others will be checked, too.
+    * g++ casts and stuff, part 2: the utilities. added proper casts to
+      several alloc calls and assignments. avoided new and this usage as
+      our var names. this makes the utils compilable by g++. there are
+      many warnings, but no errors.
+    * fixed the gl model borkage after the previous large commit. how
+      did this sneak in anyway.. there may be even more.
+
 2007-07-04 (CVS):
     * minor documentation updates.
     * instead of pointing to a stack buffer, the command buffer is allocated
