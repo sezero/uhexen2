@@ -2,7 +2,7 @@
 	huffman.c
 	huffman encoding/decoding for use in hexenworld networking
 
-	$Id: huffman.c,v 1.20 2007-07-09 19:30:19 sezero Exp $
+	$Id: huffman.c,v 1.21 2007-07-09 20:52:34 sezero Exp $
 */
 
 #include <stdlib.h>
@@ -12,10 +12,14 @@
 #include <stdarg.h>
 #include "compiler.h"
 #include "huffman.h"
+/* h2w engine includes */
+#undef	USE_INTEL_ASM
+#include "sys.h"
+#include "printsys.h"
 #include "zone.h"
 
+#define HuffPrintf	Sys_Printf
 
-extern void Sys_Error (const char *error, ...) __attribute__((format(printf,1,2), noreturn));
 
 //
 // huffman types and vars
@@ -50,12 +54,6 @@ static float HuffFreq[256] =
 // huffman debugging
 //
 #if _DEBUG_HUFFMAN
-
-#if defined(__GNUC__)
-#define HuffPrintf(fmt, args...)	fprintf(stderr, fmt, ##args)
-#else	/* require c99 variadic macros. */
-#define HuffPrintf(...)			fprintf(stderr, __VA_ARGS__)
-#endif	/* HuffPrintf */
 
 static int HuffIn = 0;
 static int HuffOut= 0;
@@ -230,7 +228,8 @@ void HuffDecode (unsigned char *in, unsigned char *out, int inlen, int *outlen, 
 
 	if (*in == 0xff)
 	{
-		memcpy (out, in+1, inlen-1);
+		if (inlen > 1)
+			memcpy (out, in+1, inlen-1);
 		*outlen = inlen-1;
 		return;
 	}
