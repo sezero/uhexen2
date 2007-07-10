@@ -2,13 +2,13 @@
 	common.h
 	misc utilities used in client and server
 
-	$Id: common.h,v 1.46 2007-06-11 18:35:59 sezero Exp $
+	$Id: common.h,v 1.47 2007-07-10 18:48:18 sezero Exp $
 */
 
 #ifndef __HX2_COMMON_H
 #define __HX2_COMMON_H
 
-#if defined(SUNOS)
+#if defined(__SUNOS__)
 /* Workaround conflict with /usr/include/sys/model.h */
 #define model_t hx2_model_t
 #endif

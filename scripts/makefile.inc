@@ -101,7 +101,7 @@ endif
 ARCHFLAGS:=
 ifneq ($(TARGET_OS),WIN32)
 ifeq ($(HOST_OS),SunOS)
-ARCHFLAGS:=-DSUNOS
+ARCHFLAGS:=-D__SUNOS__
 endif
 endif
 

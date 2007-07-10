@@ -1,6 +1,6 @@
 /*
 	snd_sun.c
-	$Id: snd_sun.c,v 1.6 2006-10-21 18:21:28 sezero Exp $
+	$Id: snd_sun.c,v 1.7 2007-07-10 18:48:17 sezero Exp $
 
 	SUN Audio driver for BSD and SunOS
 
@@ -36,18 +36,18 @@
 
 #include <sys/param.h>
 #include <sys/audioio.h>
-#ifndef SUNOS
+#ifndef __SUNOS__
 #include <sys/endian.h>
 #endif
 #include <sys/ioctl.h>
 
 #include <fcntl.h>
-#ifndef SUNOS
+#ifndef __SUNOS__
 #include <paths.h>
 #endif
 #include <unistd.h>
 
-#if defined(SUNOS)
+#if defined(__SUNOS__)
 
 #define	FORMAT_U8	AUDIO_ENCODING_LINEAR8
 #define	FORMAT_S16	AUDIO_ENCODING_LINEAR
@@ -84,7 +84,7 @@ qboolean S_SUN_Init (void)
 #ifdef _PATH_SOUND
 	snddev = _PATH_SOUND;
 #else
-#ifndef SUNOS
+#ifndef __SUNOS__
 	snddev = "/dev/sound";
 #else
 	snddev = "/dev/audio";

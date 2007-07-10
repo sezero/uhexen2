@@ -2,7 +2,7 @@
 	q_endian.h
 	endianness handling
 
-	$Id: q_endian.h,v 1.1 2007-02-13 13:34:36 sezero Exp $
+	$Id: q_endian.h,v 1.2 2007-07-10 18:48:19 sezero Exp $
 */
 
 #ifndef __QENDIAN_H
@@ -17,10 +17,17 @@ extern float	FloatSwap (float);
 /*
  * endianness stuff: <sys/types.h> is supposed
  * to succeed in locating the correct endian.h
- * this BSD style may not work everywhere, eg. on WIN32
+ * this BSD style may not work everywhere.
  */
 
-#if !defined(BYTE_ORDER) || !defined(LITTLE_ENDIAN) || !defined(BIG_ENDIAN) || (BYTE_ORDER != LITTLE_ENDIAN && BYTE_ORDER != BIG_ENDIAN)
+#if defined(BYTE_ORDER) && defined(LITTLE_ENDIAN) && defined(BIG_ENDIAN)
+
+# if (BYTE_ORDER != LITTLE_ENDIAN) && (BYTE_ORDER != BIG_ENDIAN)
+/* pdp-endian, aka NUXI endian? not supported, at least not yet. */
+# error "Unsupported endianness."
+# endif
+
+#else	/* one of the definitions is mising. */
 
 # undef BYTE_ORDER
 # undef LITTLE_ENDIAN
@@ -28,24 +35,27 @@ extern float	FloatSwap (float);
 # define LITTLE_ENDIAN	1234
 # define BIG_ENDIAN	4321
 
-#endif
+#endif	/* byte order defs */
 
-// assumptions in case we don't have endianness info
-#ifndef BYTE_ORDER
-# if defined(_WIN32)
-#    define BYTE_ORDER LITTLE_ENDIAN
-# elif defined(SUNOS) /* these bits from darkplaces project */
-#    define GUESSED_SUNOS_ENDIANNESS
-#    if defined(__i386) || defined(__amd64)
-#	define BYTE_ORDER LITTLE_ENDIAN
-#    else
-#	define BYTE_ORDER BIG_ENDIAN
-#    endif	/* end of SUNOS */
+#if !defined(BYTE_ORDER)
+/* assumptions in case we have no endianness
+   info. partially from older SDL headers. */
+# if defined(__hppa__) || defined(__sparc__) ||	defined (__ppc__) || defined(__POWERPC__) || defined(_M_PPC)
+#	define	BYTE_ORDER	BIG_ENDIAN
+# elif (defined(__i386) || defined(__i386__)) || defined(__amd64) || defined(__ia64__) || defined(__x86_64__)
+#	define	BYTE_ORDER	LITTLE_ENDIAN
+# elif (defined(__alpha__) || defined(__alpha))
+#	define	BYTE_ORDER	LITTLE_ENDIAN
+# elif defined(__SUNOS__)
+#	define	BYTE_ORDER	BIG_ENDIAN
+# elif defined(_WIN32) || defined(WIN32)
+#	define	BYTE_ORDER	LITTLE_ENDIAN
 # else
-#    define ASSUMED_LITTLE_ENDIAN
-#    define BYTE_ORDER LITTLE_ENDIAN
+#	/* fallback: caution recommended!! */
+#	define	ASSUMED_LITTLE_ENDIAN
+#	define	BYTE_ORDER	LITTLE_ENDIAN
 # endif
-#endif
+#endif	/* BYTE_ORDER */
 
 #if BYTE_ORDER == BIG_ENDIAN
 

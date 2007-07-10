@@ -2,7 +2,7 @@
 	net_sys.h
 	common network system header
 
-	$Id: net_sys.h,v 1.4 2007-04-01 13:39:10 sezero Exp $
+	$Id: net_sys.h,v 1.5 2007-07-10 18:48:17 sezero Exp $
 */
 
 #ifndef __NET_SYS_H__
@@ -18,7 +18,7 @@
 #include <sys/ioctl.h>
 #include <sys/param.h>
 
-#if defined(SUNOS)
+#if defined(__SUNOS__)
 #include <sys/filio.h>
 #endif
 

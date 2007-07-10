@@ -2,7 +2,7 @@
 	arch_def.h
 	platform specific definitions
 
-	$Id: arch_def.h,v 1.5 2007-03-14 21:03:00 sezero Exp $
+	$Id: arch_def.h,v 1.6 2007-07-10 18:48:17 sezero Exp $
 */
 
 #ifndef __HX2_ARCHDEFS__
@@ -14,10 +14,13 @@
 #elif defined (macintosh)
 #	undef __MACOS__
 #	define __MACOS__	1
+#elif defined (__QNX__) || defined (__QNXNTO__)
+#	undef __QNX__
+#	define __QNX__		1
 #endif
 
-#if defined (__sun) && !defined(SUNOS)
-#	define SUNOS		1
+#if defined (__sun) && !defined(__SUNOS__)
+#	define __SUNOS__	1
 #endif
 
 #if defined (PLATFORM_UNIX)
