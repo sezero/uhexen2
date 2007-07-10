@@ -2,7 +2,7 @@
 	zone.c
 	Memory management
 
-	$Id: zone.c,v 1.43 2007-07-08 11:55:24 sezero Exp $
+	$Id: zone.c,v 1.44 2007-07-10 20:01:32 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -802,13 +802,13 @@ CONSOLE COMMANDS
 
 #if defined(__GNUC__)
 #define MEM_Printf(FH, fmt, args...) {		\
-	Con_Printf(fmt, ##args);		\
 	if ((FH)) fprintf((FH), fmt, ##args);	\
+	else Con_Printf(fmt, ##args);		\
 }
 #else
 #define MEM_Printf(FH, ...) {			\
-	Con_Printf(__VA_ARGS__);		\
 	if ((FH)) fprintf((FH), __VA_ARGS__);	\
+	else Con_Printf(__VA_ARGS__);		\
 }
 #endif
 
@@ -901,7 +901,7 @@ static void Hunk_Print (qboolean all, qboolean write_file)
 	if (FH)
 	{
 		fclose(FH);
-		FH = NULL;
+		Con_Printf ("Wrote to memory.txt\n");
 	}
 }
 
@@ -971,7 +971,7 @@ static void Cache_Print (qboolean write_file)
 	if (FH)
 	{
 		fclose(FH);
-		FH = NULL;
+		Con_Printf ("Wrote to cache.txt\n");
 	}
 }
 
@@ -1047,7 +1047,10 @@ static void Zone_Display_f(void)
 	if (sec_zone != NULL)
 		Z_Print (sec_zone, FH);
 	if (FH)
+	{
 		fclose (FH);
+		Con_Printf ("Wrote to zone.txt\n");
+	}
 }
 
 #define NUM_GROUPS 18
@@ -1152,7 +1155,7 @@ static void Memory_Stats_f(void)
 	if (FH)
 	{
 		fclose(FH);
-		FH = NULL;
+		Con_Printf ("Wrote to stats.txt\n");
 	}
 }
 #endif	/* Z_DEBUG_COMMANDS */

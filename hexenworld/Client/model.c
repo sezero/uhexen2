@@ -5,7 +5,7 @@
 	models are the only shared resource between a client and server
 	running on the same machine.
 
-	$Id: model.c,v 1.27 2007-07-08 11:55:37 sezero Exp $
+	$Id: model.c,v 1.28 2007-07-10 20:01:37 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -2244,13 +2244,13 @@ Mod_Print
 */
 #if defined(__GNUC__)
 #define MOD_Printf(FH, fmt, args...) {		\
-	Con_Printf(fmt, ##args);		\
 	if ((FH)) fprintf((FH), fmt, ##args);	\
+	else Con_Printf(fmt, ##args);		\
 }
 #else
 #define MOD_Printf(FH, ...) {			\
-	Con_Printf(__VA_ARGS__);		\
 	if ((FH)) fprintf((FH), __VA_ARGS__);	\
+	else Con_Printf(__VA_ARGS__);		\
 }
 #endif
 static void Mod_Print (void)
