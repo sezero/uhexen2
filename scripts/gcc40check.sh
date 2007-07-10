@@ -1,11 +1,13 @@
 #!/bin/sh
 #
-# gcc-4.0.x causes bad hexen2 binaries when unit-at-a-time mode is active:
-# crusader's tomed ice mace causes segmentation fault. the bug showed up
-# after the cmd layer synchronization between hexen2 and hexenworld trees.
+# gcc-4.0.x used to cause bad hexen2 binaries when unit-at-a-time mode is active:
+# crusader's tomed ice mace causes segmentation fault. the bug showed up after the
+# cmd layer synchronization between hexen2 and hexenworld trees, and it now seems
+# to be fixed (actually worked-around by not pointing to static buffers and using
+# dynamic allocation).
 #
-# this script is here to detect gcc-4.0 versions. on the other hand, 3.3.x,
-# 3.4.x and 4.1 versions seem to produce good binaries.
+# this script is here to detect gcc-4.0 versions. on the other hand, 3.3.x, 3.4.x,
+# 4.1.x and 4.2 versions seem to produce good binaries.
 #
 
 if [ $# -lt 1 ]; then
