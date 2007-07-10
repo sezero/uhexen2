@@ -1,6 +1,6 @@
 /*
 	sys_unix.c
-	$Id: sys_unix.c,v 1.40 2007-07-08 11:56:52 sezero Exp $
+	$Id: sys_unix.c,v 1.41 2007-07-10 13:54:02 sezero Exp $
 
 	Unix system interface code
 */
@@ -31,6 +31,9 @@
 
 cvar_t		sys_nostdout = {"sys_nostdout", "0", CVAR_NONE};
 int		devlog;	/* log the Con_DPrintf and Sys_DPrintf content when !developer.integer */
+
+static double		starttime;
+static qboolean		first = true;
 
 
 /*
@@ -191,17 +194,20 @@ double Sys_DoubleTime (void)
 {
 	struct timeval	tp;
 	struct timezone	tzp;
-	static int	secbase;
+	double		now;
 
-	gettimeofday(&tp, &tzp);
+	gettimeofday (&tp, &tzp);
 
-	if (!secbase)
+	now = tp.tv_sec + tp.tv_usec / 1e6;
+
+	if (first)
 	{
-		secbase = tp.tv_sec;
-		return tp.tv_usec/1000000.0;
+		first = false;
+		starttime = now;
+		return 0.0;
 	}
 
-	return (tp.tv_sec - secbase) + tp.tv_usec/1000000.0;
+	return now - starttime;
 }
 
 

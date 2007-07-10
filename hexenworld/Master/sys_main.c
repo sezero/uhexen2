@@ -2,7 +2,7 @@
 	sys_main.c
 	main loop and system interface
 
-	$Id: sys_main.c,v 1.32 2007-05-13 16:14:11 sezero Exp $
+	$Id: sys_main.c,v 1.33 2007-07-10 13:54:01 sezero Exp $
 */
 
 // whether to use the password file to determine
@@ -39,15 +39,24 @@
 #define max(a,b) ((a) > (b) ? (a) : (b))
 #endif
 
+#if defined(_WIN32)
+/*
+#define	TIME_WRAP_VALUE	(~(DWORD)0)
+*/
+#define	TIME_WRAP_VALUE	LONG_MAX
+static DWORD		starttime;
+#endif	/* _WIN32 */
+
 #if defined(PLATFORM_UNIX)
+static double		starttime;
+static qboolean		first = true;
+
 static int	do_stdin = 1;
 static qboolean	stdin_ready;
 static char	userdir[MAX_OSPATH];
-#endif
 
-#if !defined(_WIN32)
 extern char	filters_file[MAX_OSPATH];
-#endif
+#endif	/* PLATFORM_UNIX */
 
 
 //=============================================================================
@@ -177,32 +186,25 @@ char *Sys_ConsoleInput (void)
 
 double Sys_DoubleTime (void)
 {
-	static qboolean first = true;
 #ifdef _WIN32
-	static DWORD starttime;
-	DWORD now;
+	DWORD	now, passed;
 
 	now = timeGetTime();
-
-	if (first)
+	if (now < starttime)	/* wrapped? */
 	{
-		first = false;
-		starttime = now;
-		return 0.0;
+		passed = TIME_WRAP_VALUE - starttime;
+		passed += now;
+	}
+	else
+	{
+		passed = now - starttime;
 	}
 
-	if (now < starttime) // wrapped?
-		return (now / 1000.0) + (LONG_MAX - starttime / 1000.0);
-
-	if (now - starttime == 0)
-		return 0.0;
-
-	return (now - starttime) / 1000.0;
+	return (passed == 0) ? 0.0 : (passed / 1000.0);
 #else
-	struct timeval tp;
-	struct timezone tzp;
-	double now;
-	static double start_time;
+	struct timeval	tp;
+	struct timezone	tzp;
+	double		now;
 
 	gettimeofday (&tp, &tzp);
 
@@ -211,10 +213,11 @@ double Sys_DoubleTime (void)
 	if (first)
 	{
 		first = false;
-		start_time = now;
+		starttime = now;
+		return 0.0;
 	}
 
-	return now - start_time;
+	return now - starttime;
 #endif
 }
 
@@ -297,7 +300,8 @@ int main (int argc, char **argv)
 #endif
 
 #ifdef _WIN32
-	timeBeginPeriod (1);
+	timeBeginPeriod (1);	/* 1 ms timer precision */
+	starttime = timeGetTime ();
 #endif
 
 	Cbuf_Init();

@@ -2,7 +2,7 @@
 	sys_unix.c
 	Unix system interface code
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/server/sys_unix.c,v 1.26 2007-07-08 11:55:33 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/server/sys_unix.c,v 1.27 2007-07-10 13:54:00 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -37,6 +37,8 @@
 cvar_t		sys_nostdout = {"sys_nostdout", "0", CVAR_NONE};
 
 qboolean		isDedicated = true;	/* compatibility */
+static double		starttime;
+static qboolean		first = true;
 
 
 /*
@@ -191,21 +193,22 @@ Sys_DoubleTime
 */
 double Sys_DoubleTime (void)
 {
-	// This is Sys_DoubleTime from Quake, since Hexen 2's Sys_DoubleTime
-	// is inherently un-portable - DDOI
 	struct timeval	tp;
 	struct timezone	tzp;
-	static int		secbase;
+	double		now;
 
-	gettimeofday(&tp, &tzp);
+	gettimeofday (&tp, &tzp);
 
-	if (!secbase)
+	now = tp.tv_sec + tp.tv_usec / 1e6;
+
+	if (first)
 	{
-		secbase = tp.tv_sec;
-		return tp.tv_usec/1000000.0;
+		first = false;
+		starttime = now;
+		return 0.0;
 	}
 
-	return (tp.tv_sec - secbase) + tp.tv_usec/1000000.0;
+	return now - starttime;
 }
 
 

@@ -2,7 +2,7 @@
 	sys_win.c
 	Win32 system interface code
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/server/sys_win.c,v 1.21 2007-05-13 16:14:10 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/server/sys_win.c,v 1.22 2007-07-10 13:54:00 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -28,6 +28,12 @@
 cvar_t		sys_nostdout = {"sys_nostdout", "0", CVAR_NONE};
 
 qboolean		isDedicated = true;	/* compatibility */
+
+/*
+#define	TIME_WRAP_VALUE	(~(DWORD)0)
+*/
+#define	TIME_WRAP_VALUE	LONG_MAX
+static DWORD		starttime;
 
 
 /*
@@ -170,40 +176,20 @@ Sys_DoubleTime
 */
 double Sys_DoubleTime (void)
 {
-#if 0
-	double t;
-	struct _timeb	tstruct;
-	static int	starttime;
-
-	_ftime( &tstruct );
-
-	if (!starttime)
-		starttime = tstruct.time;
-	t = (tstruct.time-starttime) + tstruct.millitm*0.001;
-
-	return t;
-#else
-	static qboolean first = true;
-	static DWORD starttime;
-	DWORD now;
+	DWORD	now, passed;
 
 	now = timeGetTime();
-
-	if (first)
+	if (now < starttime)	/* wrapped? */
 	{
-		first = false;
-		starttime = now;
-		return 0.0;
+		passed = TIME_WRAP_VALUE - starttime;
+		passed += now;
+	}
+	else
+	{
+		passed = now - starttime;
 	}
 
-	if (now < starttime) // wrapped?
-		return (now / 1000.0) + (LONG_MAX - starttime / 1000.0);
-
-	if (now - starttime == 0)
-		return 0.0;
-
-	return (now - starttime) / 1000.0;
-#endif
+	return (passed == 0) ? 0.0 : (passed / 1000.0);
 }
 
 
@@ -379,7 +365,8 @@ int main (int argc, char **argv)
 	if (!parms.membase)
 		Sys_Error ("Insufficient memory.\n");
 
-	timeBeginPeriod (1);
+	timeBeginPeriod (1);	/* 1 ms timer precision */
+	starttime = timeGetTime ();
 
 	Host_Init();
 

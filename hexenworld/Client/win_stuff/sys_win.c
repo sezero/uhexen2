@@ -2,12 +2,13 @@
 	sys_win.c
 	Win32 system interface code
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/win_stuff/sys_win.c,v 1.44 2007-06-16 14:41:41 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/win_stuff/sys_win.c,v 1.45 2007-07-10 13:54:01 sezero Exp $
 */
 
 #include "quakedef.h"
 #include "debuglog.h"
 #include "winquake.h"
+#include <limits.h>
 #include <errno.h>
 #include "resource.h"
 #include <io.h>
@@ -22,22 +23,21 @@
 #define STD_MEM_ALLOC	0x2000000
 #define MAX_MEM_ALLOC	0x6000000
 
-#define PAUSE_SLEEP		50	// sleep time on pause or minimization
-#define NOT_FOCUS_SLEEP		20	// sleep time when not focus
+#define PAUSE_SLEEP		50	/* sleep time on pause or minimization	*/
+#define NOT_FOCUS_SLEEP		20	/* sleep time when not focus		*/
 
 cvar_t		sys_nostdout = {"sys_nostdout", "0", CVAR_NONE};
 
 qboolean	ActiveApp, Minimized;
 qboolean	Win95, Win95old, WinNT;
 
-static double		pfreq;
-static double		curtime = 0.0;
-static double		lastcurtime = 0.0;
-static int			lowshift;
+/*
+#define	TIME_WRAP_VALUE	(~(DWORD)0)
+*/
+#define	TIME_WRAP_VALUE	LONG_MAX
+static DWORD		starttime;
 
 static HANDLE	qwclsemaphore;
-
-static void Sys_InitFloatTime (void);
 
 
 /*
@@ -150,53 +150,7 @@ Sys_Init
 */
 static void Sys_Init (void)
 {
-	LARGE_INTEGER	PerformanceFreq;
-	unsigned int	lowpart, highpart;
 	OSVERSIONINFO	vinfo;
-
-#ifndef SERVERONLY
-	// allocate a named semaphore on the client so the
-	// front end can tell if it is alive
-
-	// mutex will fail if semephore already exists
-	qwclsemaphore = CreateMutex(
-					NULL,	/* Security attributes	*/
-					0,	/* owner		*/
-					"hwcl");/* Semaphore name	*/
-	if (!qwclsemaphore)
-		Sys_Error ("HWCL is already running on this system");
-	CloseHandle (qwclsemaphore);
-
-	qwclsemaphore = CreateSemaphore(
-					NULL,	/* Security attributes	*/
-					0,	/* Initial count	*/
-					1,	/* Maximum count	*/
-					"hwcl");/* Semaphore name	*/
-#endif
-
-	MaskExceptions ();
-	Sys_SetFPCW ();
-
-	if (!QueryPerformanceFrequency (&PerformanceFreq))
-		Sys_Error ("No hardware timer available");
-
-// get 32 out of the 64 time bits such that we have around
-// 1 microsecond resolution
-	lowpart = (unsigned int)PerformanceFreq.LowPart;
-	highpart = (unsigned int)PerformanceFreq.HighPart;
-	lowshift = 0;
-
-	while (highpart || (lowpart > 2000000.0))
-	{
-		lowshift++;
-		lowpart >>= 1;
-		lowpart |= (highpart & 1) << 31;
-		highpart >>= 1;
-	}
-
-	pfreq = 1.0 / (double)lowpart;
-
-	Sys_InitFloatTime ();
 
 	vinfo.dwOSVersionInfoSize = sizeof(vinfo);
 
@@ -217,10 +171,36 @@ static void Sys_Init (void)
 	if ((vinfo.dwMajorVersion == 4) && (vinfo.dwMinorVersion == 0))
 	{
 		Win95 = true;
-		// Win95-gold or Win95A can't switch bpp automatically
+		/* Win95-gold or Win95A can't switch bpp automatically */
 		if (vinfo.szCSDVersion[1] != 'C' && vinfo.szCSDVersion[1] != 'B')
 			Win95old = true;
 	}
+
+	timeBeginPeriod (1);	/* 1 ms timer precision */
+	starttime = timeGetTime ();
+
+#if !defined(SERVERONLY)
+/* allocate a named semaphore on the client so
+   the front end can tell if it is alive
+   mutex will fail if semephore already exists */
+	qwclsemaphore = CreateMutex(
+					NULL,	/* Security attributes	*/
+					0,	/* owner		*/
+					"hwcl");/* Semaphore name	*/
+	if (!qwclsemaphore)
+		Sys_Error ("HWCL is already running on this system");
+
+	CloseHandle (qwclsemaphore);
+	qwclsemaphore = CreateSemaphore(
+					NULL,	/* Security attributes	*/
+					0,	/* Initial count	*/
+					1,	/* Maximum count	*/
+					"hwcl");/* Semaphore name	*/
+#endif	/* ! SERVERONLY */
+
+/* do we really need these with opengl ?? */
+	MaskExceptions ();
+	Sys_SetFPCW ();
 }
 
 
@@ -245,7 +225,10 @@ void Sys_Error (const char *error, ...)
 
 	MessageBox(NULL, text, ENGINE_NAME " Error", MB_OK | MB_SETFOREGROUND | MB_ICONSTOP);
 
-	CloseHandle (qwclsemaphore);
+#if !defined(SERVERONLY)
+	if (qwclsemaphore)
+		CloseHandle (qwclsemaphore);
+#endif	/* ! SERVERONLY */
 
 	exit (1);
 }
@@ -258,10 +241,10 @@ void Sys_PrintTerm (const char *msgtxt)
 void Sys_Quit (void)
 {
 	Host_Shutdown();
-#ifndef SERVERONLY
+#if !defined(SERVERONLY)
 	if (qwclsemaphore)
 		CloseHandle (qwclsemaphore);
-#endif
+#endif	/* ! SERVERONLY */
 
 	exit (0);
 }
@@ -274,89 +257,20 @@ Sys_DoubleTime
 */
 double Sys_DoubleTime (void)
 {
-	static int			sametimecount;
-	static unsigned int	oldtime;
-	static int			first = 1;
-	LARGE_INTEGER		PerformanceCount;
-	unsigned int		temp, t2;
-	double				time;
+	DWORD	now, passed;
 
-	Sys_PushFPCW_SetHigh ();
-
-	QueryPerformanceCounter (&PerformanceCount);
-
-	temp = ((unsigned int)PerformanceCount.LowPart >> lowshift) |
-		   ((unsigned int)PerformanceCount.HighPart << (32 - lowshift));
-
-	if (first)
+	now = timeGetTime();
+	if (now < starttime)	/* wrapped? */
 	{
-		oldtime = temp;
-		first = 0;
+		passed = TIME_WRAP_VALUE - starttime;
+		passed += now;
 	}
 	else
 	{
-	// check for turnover or backward time
-		if ((temp <= oldtime) && ((oldtime - temp) < 0x10000000))
-		{
-			oldtime = temp;	// so we can't get stuck
-		}
-		else
-		{
-			t2 = temp - oldtime;
-
-			time = (double)t2 * pfreq;
-			oldtime = temp;
-
-			curtime += time;
-
-			if (curtime == lastcurtime)
-			{
-				sametimecount++;
-
-				if (sametimecount > 100000)
-				{
-					curtime += 1.0;
-					sametimecount = 0;
-				}
-			}
-			else
-			{
-				sametimecount = 0;
-			}
-
-			lastcurtime = curtime;
-		}
+		passed = now - starttime;
 	}
 
-	Sys_PopFPCW ();
-
-	return curtime;
-}
-
-
-/*
-================
-Sys_InitFloatTime
-================
-*/
-static void Sys_InitFloatTime (void)
-{
-	int		j;
-
-	Sys_DoubleTime ();
-
-	j = COM_CheckParm("-starttime");
-
-	if (j && j < com_argc-1)
-	{
-		curtime = (double) (atof(com_argv[j+1]));
-	}
-	else
-	{
-		curtime = 0.0;
-	}
-
-	lastcurtime = curtime;
+	return (passed == 0) ? 0.0 : (passed / 1000.0);
 }
 
 

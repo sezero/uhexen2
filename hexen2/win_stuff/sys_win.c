@@ -2,11 +2,12 @@
 	sys_win.c
 	Win32 system interface code
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/win_stuff/sys_win.c,v 1.55 2007-06-16 14:41:38 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/win_stuff/sys_win.c,v 1.56 2007-07-10 13:54:00 sezero Exp $
 */
 
 #include "quakedef.h"
 #include "winquake.h"
+#include <limits.h>
 #include <errno.h>
 #include "resource.h"
 #include <io.h>
@@ -16,9 +17,6 @@
 #include "debuglog.h"
 
 
-//#define CRC_A 59461 // "Who's Ridin' With Chaos?"
-//#define CRC_B 54866 // "Santa needs a new sled!"
-
 // heapsize: minimum 16mb, standart 32 mb, max is 96 mb.
 // -heapsize argument will abide by these min/max settings
 // unless the -forcemem argument is used
@@ -26,34 +24,37 @@
 #define STD_MEM_ALLOC	0x2000000
 #define MAX_MEM_ALLOC	0x6000000
 
-#define CONSOLE_ERROR_TIMEOUT	60.0	// # of seconds to wait on Sys_Error running
-						//  dedicated before exiting
-#define PAUSE_SLEEP		50	// sleep time on pause or minimization
-#define NOT_FOCUS_SLEEP		20	// sleep time when not focus
+#define CONSOLE_ERROR_TIMEOUT	60.0	/* # of seconds to wait on Sys_Error running dedicated before exiting */
+#define PAUSE_SLEEP		50	/* sleep time on pause or minimization		*/
+#define NOT_FOCUS_SLEEP		20	/* sleep time when not focus			*/
 
 cvar_t		sys_nostdout = {"sys_nostdout", "0", CVAR_NONE};
 
 qboolean	ActiveApp, Minimized;
 qboolean	Win95, Win95old, WinNT;
 
-static double		pfreq;
-static double		curtime = 0.0;
-static double		lastcurtime = 0.0;
-static int			lowshift;
-qboolean			isDedicated;
+qboolean		isDedicated;
+
+/*
+#define	TIME_WRAP_VALUE	(~(DWORD)0)
+*/
+#define	TIME_WRAP_VALUE	LONG_MAX
+static DWORD		starttime;
 static qboolean		sc_return_on_enter = false;
 static HANDLE		hinput, houtput;
 
-//static char		*tracking_tag = "Sticky Buns";
+/*
+#define	CRC_A 59461	// "Who's Ridin' With Chaos?"
+#define	CRC_B 54866	// "Santa needs a new sled!"
+static	char		*tracking_tag = "Sticky Buns";
+*/
 
 static HANDLE	tevent;
 static HANDLE	hFile;
 static HANDLE	heventParent;
 static HANDLE	heventChild;
 
-static void Sys_InitFloatTime (void);
-
-volatile int		sys_checksum;
+static volatile int	sys_checksum;
 
 
 /*
@@ -192,33 +193,7 @@ Sys_Init
 */
 static void Sys_Init (void)
 {
-	LARGE_INTEGER	PerformanceFreq;
-	unsigned int	lowpart, highpart;
 	OSVERSIONINFO	vinfo;
-
-	MaskExceptions ();
-	Sys_SetFPCW ();
-
-	if (!QueryPerformanceFrequency (&PerformanceFreq))
-		Sys_Error ("No hardware timer available");
-
-// get 32 out of the 64 time bits such that we have around
-// 1 microsecond resolution
-	lowpart = (unsigned int)PerformanceFreq.LowPart;
-	highpart = (unsigned int)PerformanceFreq.HighPart;
-	lowshift = 0;
-
-	while (highpart || (lowpart > 2000000.0))
-	{
-		lowshift++;
-		lowpart >>= 1;
-		lowpart |= (highpart & 1) << 31;
-		highpart >>= 1;
-	}
-
-	pfreq = 1.0 / (double)lowpart;
-
-	Sys_InitFloatTime ();
 
 	vinfo.dwOSVersionInfoSize = sizeof(vinfo);
 
@@ -239,10 +214,17 @@ static void Sys_Init (void)
 	if ((vinfo.dwMajorVersion == 4) && (vinfo.dwMinorVersion == 0))
 	{
 		Win95 = true;
-		// Win95-gold or Win95A can't switch bpp automatically
+		/* Win95-gold or Win95A can't switch bpp automatically */
 		if (vinfo.szCSDVersion[1] != 'C' && vinfo.szCSDVersion[1] != 'B')
 			Win95old = true;
 	}
+
+	timeBeginPeriod (1);	/* 1 ms timer precision */
+	starttime = timeGetTime ();
+
+/* do we really need these with opengl ?? */
+	MaskExceptions ();
+	Sys_SetFPCW ();
 }
 
 
@@ -255,7 +237,7 @@ void Sys_Error (const char *error, ...)
 	char		*text4 = "***********************************\n";
 	char		*text5 = "\n";
 	DWORD		dummy;
-	double		starttime;
+	double		err_begin;
 
 	va_start (argptr, error);
 	vsnprintf (text, sizeof (text), error, argptr);
@@ -281,10 +263,10 @@ void Sys_Error (const char *error, ...)
 		WriteFile (houtput, text3, strlen (text3), &dummy, NULL);
 		WriteFile (houtput, text4, strlen (text4), &dummy, NULL);
 
-		starttime = Sys_DoubleTime ();
+		err_begin = Sys_DoubleTime ();
 		sc_return_on_enter = true;	// so Enter will get us out of here
 		while (!Sys_ConsoleInput () &&
-			((Sys_DoubleTime () - starttime) < CONSOLE_ERROR_TIMEOUT))
+			((Sys_DoubleTime () - err_begin) < CONSOLE_ERROR_TIMEOUT))
 		{
 		}
 	}
@@ -336,89 +318,20 @@ Sys_DoubleTime
 */
 double Sys_DoubleTime (void)
 {
-	static int			sametimecount;
-	static unsigned int	oldtime;
-	static int			first = 1;
-	LARGE_INTEGER		PerformanceCount;
-	unsigned int		temp, t2;
-	double				time;
+	DWORD	now, passed;
 
-	Sys_PushFPCW_SetHigh ();
-
-	QueryPerformanceCounter (&PerformanceCount);
-
-	temp = ((unsigned int)PerformanceCount.LowPart >> lowshift) |
-		   ((unsigned int)PerformanceCount.HighPart << (32 - lowshift));
-
-	if (first)
+	now = timeGetTime();
+	if (now < starttime)	/* wrapped? */
 	{
-		oldtime = temp;
-		first = 0;
+		passed = TIME_WRAP_VALUE - starttime;
+		passed += now;
 	}
 	else
 	{
-	// check for turnover or backward time
-		if ((temp <= oldtime) && ((oldtime - temp) < 0x10000000))
-		{
-			oldtime = temp;	// so we can't get stuck
-		}
-		else
-		{
-			t2 = temp - oldtime;
-
-			time = (double)t2 * pfreq;
-			oldtime = temp;
-
-			curtime += time;
-
-			if (curtime == lastcurtime)
-			{
-				sametimecount++;
-
-				if (sametimecount > 100000)
-				{
-					curtime += 1.0;
-					sametimecount = 0;
-				}
-			}
-			else
-			{
-				sametimecount = 0;
-			}
-
-			lastcurtime = curtime;
-		}
+		passed = now - starttime;
 	}
 
-	Sys_PopFPCW ();
-
-	return curtime;
-}
-
-
-/*
-================
-Sys_InitFloatTime
-================
-*/
-static void Sys_InitFloatTime (void)
-{
-	int		j;
-
-	Sys_DoubleTime ();
-
-	j = COM_CheckParm("-starttime");
-
-	if (j && j < com_argc-1)
-	{
-		curtime = (double) (atof(com_argv[j+1]));
-	}
-	else
-	{
-		curtime = 0.0;
-	}
-
-	lastcurtime = curtime;
+	return (passed == 0) ? 0.0 : (passed / 1000.0);
 }
 
 
