@@ -2,14 +2,14 @@
 	glheader.h
 	opengl system includes
 
-	$Id: glheader.h,v 1.1 2007-02-13 16:30:28 sezero Exp $
+	$Id: glheader.h,v 1.2 2007-07-11 16:47:14 sezero Exp $
 */
 
 
 #ifndef __GLHEADER_H
 #define __GLHEADER_H
 
-#if defined(_WIN32)
+#if defined(PLATFORM_WINDOWS)
 #include <windows.h>
 #endif
 #if defined(__MACOSX__)
@@ -19,7 +19,7 @@
 #elif defined(__MORPHOS__)
 #include <proto/tinygl.h>
 #include <tgl/gl.h>
-#else
+#else	/* other unix */
 #include <GL/gl.h>
 #endif
 

@@ -2,7 +2,7 @@
 	sys_unix.c
 	Unix system interface code
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/sys_unix.c,v 1.84 2007-07-10 13:54:00 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/sys_unix.c,v 1.85 2007-07-11 16:47:16 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -300,7 +300,7 @@ static void PrintVersion (void)
 #else
 	printf ("Hammer of Thyrion, release %s (%s)\n", HOT_VERSION_STR, HOT_VERSION_REL_DATE);
 #endif
-	printf ("running on %s engine %4.2f (%s)\n", ENGINE_NAME, ENGINE_VERSION, VERSION_PLATFORM);
+	printf ("running on %s engine %4.2f (%s)\n", ENGINE_NAME, ENGINE_VERSION, PLATFORM_STRING);
 	printf ("More info / sending bug reports:  http://uhexen2.sourceforge.net\n");
 }
 

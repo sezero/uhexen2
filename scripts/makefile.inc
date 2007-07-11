@@ -1,3 +1,6 @@
+# GNU Makefile using GCC in a unix shell.
+# $Header: /home/ozzie/Download/0000/uhexen2/scripts/makefile.inc,v 1.11 2007-07-11 16:47:17 sezero Exp $
+
 # This file is responsible for determining the Host OS and Target OS,
 # setting common paths, selecting the compiler, assigning the compiler
 # command as the linker, defining helper functions for compiler flags
@@ -39,6 +42,7 @@ endif
 ifdef WIN_NATIVE
 # we are running on windows. set TARGET_OS to WIN32
 # and set proper nasm binary name
+# NOTE: re-visit here when we have MINGW64
 ifeq (,$(findstring MINGW32,$(HOST_OS)))
 $(error MSys is required for this build system on Windows)
 endif

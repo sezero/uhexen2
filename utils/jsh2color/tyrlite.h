@@ -19,7 +19,7 @@
 
 /*
 	tyrlite.h
-	$Id: tyrlite.h,v 1.14 2007-05-12 11:00:35 sezero Exp $
+	$Id: tyrlite.h,v 1.15 2007-07-11 16:47:20 sezero Exp $
 
 	Modifications by Kevin Shanahan, 1999-2000
 */
@@ -27,12 +27,7 @@
 #ifndef __TYRLITE_H__
 #define __TYRLITE_H__
 
-#define JSH2COLOR_VER	"1.2.3"	// version string
-#ifdef _WIN32
-#define PLATFORM_VER	"win32"
-#else
-#define PLATFORM_VER	"unix"
-#endif
+#define JSH2COLOR_VER	"1.2.3"		/* version string */
 
 #define	ON_EPSILON	0.1
 

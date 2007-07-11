@@ -2,7 +2,7 @@
 	sys_win.c
 	Win32 system interface code
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/server/sys_win.c,v 1.22 2007-07-10 13:54:00 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/server/sys_win.c,v 1.23 2007-07-11 16:47:15 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -245,7 +245,7 @@ static void PrintVersion (void)
 #else
 	printf ("Hammer of Thyrion, release %s (%s)\n", HOT_VERSION_STR, HOT_VERSION_REL_DATE);
 #endif
-	printf ("Hexen II dedicated server %4.2f (%s)\n", ENGINE_VERSION, VERSION_PLATFORM);
+	printf ("Hexen II dedicated server %4.2f (%s)\n", ENGINE_VERSION, PLATFORM_STRING);
 	printf ("More info / sending bug reports:  http://uhexen2.sourceforge.net\n");
 }
 

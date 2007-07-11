@@ -1,6 +1,6 @@
 /*
 	sys_unix.c
-	$Id: sys_unix.c,v 1.41 2007-07-10 13:54:02 sezero Exp $
+	$Id: sys_unix.c,v 1.42 2007-07-11 16:47:16 sezero Exp $
 
 	Unix system interface code
 */
@@ -287,7 +287,7 @@ void Sys_Quit (void)
 
 static void PrintVersion (void)
 {
-	printf ("HexenWorld server %4.2f (%s)\n", ENGINE_VERSION, VERSION_PLATFORM);
+	printf ("HexenWorld server %4.2f (%s)\n", ENGINE_VERSION, PLATFORM_STRING);
 #if HOT_VERSION_BETA
 	printf ("Hammer of Thyrion, %s-%s (%s) pre-release\n", HOT_VERSION_STR, HOT_VERSION_BETA_STR, HOT_VERSION_REL_DATE);
 #else

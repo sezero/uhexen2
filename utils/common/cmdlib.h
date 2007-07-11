@@ -1,7 +1,7 @@
 /*
 	cmdlib.h
 
-	$Id: cmdlib.h,v 1.18 2007-05-13 12:04:47 sezero Exp $
+	$Id: cmdlib.h,v 1.19 2007-07-11 16:47:20 sezero Exp $
 */
 
 #ifndef __CMDLIB_H__
@@ -13,7 +13,7 @@
 
 // MACROS ------------------------------------------------------------------
 
-#ifdef _WIN32
+#ifdef PLATFORM_WINDOWS
 #define Q_strncasecmp	strnicmp
 #define Q_strcasecmp	stricmp
 #else
@@ -79,7 +79,7 @@ char	*Q_strlwr (char *str);
 char	*Q_strupr (char *str);
 
 /*
-#ifndef _WIN32
+#ifdef PLATFORM_UNIX
 int	Sys_kbhit(void);
 #endif
 */

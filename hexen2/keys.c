@@ -2,11 +2,11 @@
 	keys.c
 	key up events are sent even if in console mode
 
-	$Id: keys.c,v 1.32 2007-07-08 11:55:20 sezero Exp $
+	$Id: keys.c,v 1.33 2007-07-11 16:47:14 sezero Exp $
 */
 
 #include "quakedef.h"
-#ifdef _WIN32
+#ifdef PLATFORM_WINDOWS
 #include <windows.h>
 #endif
 
@@ -260,7 +260,7 @@ Interactive line editing and console scrollback
 static void Key_Console (int key)
 {
 	int		i, history_line_last;
-#ifdef _WIN32
+#ifdef PLATFORM_WINDOWS
 	HANDLE	th;
 	char	*clipText, *textCopied;
 #endif
@@ -412,7 +412,7 @@ static void Key_Console (int key)
 		return;
 	}
 
-#ifdef _WIN32
+#ifdef PLATFORM_WINDOWS
 	if ((key == 'V' || key == 'v') && GetKeyState(VK_CONTROL) < 0)
 	{
 		if (OpenClipboard(NULL))

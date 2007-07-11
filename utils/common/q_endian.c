@@ -2,14 +2,16 @@
 	q_endian.c
 	byte order functions
 
-	$Id: q_endian.c,v 1.3 2007-02-13 14:24:14 sezero Exp $
+	$Id: q_endian.c,v 1.4 2007-07-11 16:47:20 sezero Exp $
 */
 
 #include "q_endian.h"
 #include <stdlib.h>
 
-#ifdef ASSUMED_LITTLE_ENDIAN
-#warning "Unable to determine CPU endianess. Defaulting to little endian"
+#if defined(ASSUMED_LITTLE_ENDIAN)
+#warning "Unable to determine CPU endianess. Using LITTLE endian as a default"
+#elif defined (ASSUMED_BIG_ENDIAN)
+#warning "Unable to determine CPU endianess. Using BIG endian as the default."
 #endif
 
 short ShortSwap (short l)

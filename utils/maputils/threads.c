@@ -1,6 +1,6 @@
 /*
 	threads.c
-	$Id: threads.c,v 1.4 2007-03-14 21:04:42 sezero Exp $
+	$Id: threads.c,v 1.5 2007-07-11 16:47:21 sezero Exp $
 */
 
 #include "util_inc.h"
@@ -12,36 +12,36 @@
 
 int		numthreads = 4;
 
-#  ifdef _WIN32
+#  ifdef PLATFORM_WINDOWS
 HANDLE	my_mutex;
 #  else
 pthread_mutex_t *my_mutex;
-#  endif //_win32
+#  endif /* windows */
 
 #else
 
 int		numthreads = 1;
 
-#endif	// __alpha
+#endif	/* __alpha  */
 
 
 void InitThreads (void)
 {
 #ifdef __alpha
-#  ifdef _WIN32
+#  ifdef PLATFORM_WINDOWS
 	my_mutex = CreateMutex(NULL, FALSE, NULL);	//cleared
 #  else
 	pthread_mutexattr_t	mattrib;
 
-	my_mutex = malloc (sizeof(*my_mutex));
+	my_mutex = (pthread_mutex_t *) malloc (sizeof(*my_mutex));
 	if (pthread_mutexattr_create (&mattrib) == -1)
 		Error ("pthread_mutex_attr_create failed");
 	if (pthread_mutexattr_setkind_np (&mattrib, MUTEX_FAST_NP) == -1)
 		Error ("pthread_mutexattr_setkind_np failed");
 	if (pthread_mutex_init (my_mutex, mattrib) == -1)
 		Error ("pthread_mutex_init failed");
-#  endif //_win32
-#endif		// __alpha
+#  endif /* windows */
+#endif	/* __alpha  */
 }
 
 /*
@@ -52,7 +52,7 @@ RunThreadsOn
 void RunThreadsOn ( threadfunc_t func )
 {
 #ifdef __alpha
-#  ifdef _WIN32
+#  ifdef PLATFORM_WINDOWS
 	DWORD	IDThread;
 	HANDLE	work_threads[256];
 	int		i;
@@ -111,10 +111,10 @@ void RunThreadsOn ( threadfunc_t func )
 		if (pthread_join (work_threads[i], &status) == -1)
 			Error ("pthread_join failed");
 	}
-#  endif //_win32
+#  endif /* windows */
 
 #else
 	func (NULL);
-#endif		// __alpha
+#endif	/* __alpha  */
 }
 

@@ -1,6 +1,6 @@
 /*
 	bsp5.c
-	$Id: qbsp.c,v 1.11 2007-07-08 17:01:16 sezero Exp $
+	$Id: qbsp.c,v 1.12 2007-07-11 16:47:21 sezero Exp $
 */
 
 #include "util_inc.h"
@@ -12,7 +12,7 @@
 
 //#define __alpha	//for multithreads
 
-#ifdef _WIN32
+#ifdef PLATFORM_WINDOWS
 #include <windows.h>
 #endif
 
@@ -31,7 +31,7 @@ qboolean	usehulls;
 qboolean	watervis = false;
 
 char	*argv0;			// changed after fork();
-#ifdef _WIN32
+#ifdef PLATFORM_WINDOWS
 char	gargs[512];
 #endif
 char	projectpath[1024];	// with a trailing slash
@@ -820,7 +820,7 @@ CreateHulls
 */
 static void CreateHulls (void)
 {
-#if defined(__alpha) && defined(_WIN32)
+#if defined(__alpha) && defined(PLATFORM_WINDOWS)
 	STARTUPINFO	StartupInfo;
 	char	myargs[512];
 	PROCESS_INFORMATION	ProcH1Info;
@@ -857,7 +857,7 @@ static void CreateHulls (void)
 
 #ifdef __alpha
 
-#  ifdef _WIN32
+#  ifdef PLATFORM_WINDOWS
 	// fork a process for each clipping hull
 	printf ("Creating hull processes...\n");
 	fflush (stdout);
@@ -956,7 +956,7 @@ static void CreateHulls (void)
 	CloseHandle(ProcH4Info.hProcess);
 	CloseHandle(ProcH5Info.hProcess);
 
-#  else	// __alpha, but not WIN32
+#  else	/* __alpha, but not windows */
 	// fork a process for each clipping hull
 	printf ("forking hull processes...\n");
 	fflush (stdout);
@@ -982,9 +982,9 @@ static void CreateHulls (void)
 	wait (NULL);		// wait for clip hull process to finish
 	wait (NULL);		// wait for clip hull process to finish
 
-#  endif  // end of __alpha
+#  endif  /* end of __alpha */
 
-#else	// not _alpha
+#else	/* not _alpha */
 
 	// create the hulls sequentially
 	printf ("building hulls sequentially...\n");
@@ -1167,7 +1167,7 @@ int main (int argc, char **argv)
 
 	printf ("---- qbsp ----\n");
 
-#ifdef _WIN32
+#ifdef PLATFORM_WINDOWS
 	gargs[0] = 0;
 	for (i = 1 ; i < argc ; i++)
 	{

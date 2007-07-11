@@ -2,11 +2,11 @@
 	cl_pred.c
 	client side player movement prediction
 
-	$Id: cl_pred.c,v 1.11 2007-05-09 18:10:16 sezero Exp $
+	$Id: cl_pred.c,v 1.12 2007-07-11 16:47:16 sezero Exp $
 */
 
 #include "quakedef.h"
-#if defined(_WIN32)
+#ifdef PLATFORM_WINDOWS
 #include "winquake.h"
 #endif
 
@@ -16,7 +16,7 @@ static	cvar_t	cl_pushlatency = {"pushlatency", "-50", CVAR_ARCHIVE};
 extern	frame_t		*view_frame;
 static	qboolean player_crouching;
 
-#if 0	// not used
+#if 0	/* not used */
 /*
 =================
 CL_NudgePosition
@@ -47,7 +47,7 @@ void CL_NudgePosition (void)
 	}
 	Con_DPrintf ("CL_NudgePosition: stuck\n");
 }
-#endif
+#endif	/* CL_NudgePosition */
 
 /*
 ==============
@@ -143,7 +143,7 @@ void CL_PredictMove (void)
 		cls.state = ca_active;
 
 		sprintf (text, "HexenWorld: %s", cls.servername);
-#ifdef _WIN32
+#ifdef PLATFORM_WINDOWS
 		SetWindowText (mainwindow, text);
 #endif
 	}

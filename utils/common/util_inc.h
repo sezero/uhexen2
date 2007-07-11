@@ -2,7 +2,7 @@
 	util_inc.h
 	primary header for the utilities
 
-	$Id: util_inc.h,v 1.2 2007-02-13 16:56:02 sezero Exp $
+	$Id: util_inc.h,v 1.3 2007-07-11 16:47:20 sezero Exp $
 */
 
 #ifndef __UTILSINC_H
@@ -11,12 +11,13 @@
 #include "q_types.h"
 
 #include "compiler.h"
+#include "arch_def.h"
 
 #include <stdio.h>
 #include <string.h>
-#if !defined(_WIN32)
+#if !defined(PLATFORM_WINDOWS)
 #include <strings.h>	/* strcasecmp and strncasecmp	*/
-#endif	/* !_WIN32 */
+#endif	/* ! PLATFORM_WINDOWS */
 
 #include <stdlib.h>
 #include <stdarg.h>

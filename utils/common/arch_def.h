@@ -2,7 +2,7 @@
 	arch_def.h
 	platform specific definitions
 
-	$Id: arch_def.h,v 1.7 2007-07-11 16:47:14 sezero Exp $
+	$Id: arch_def.h,v 1.1 2007-07-11 16:47:20 sezero Exp $
 */
 
 #ifndef __HX2_ARCHDEFS__

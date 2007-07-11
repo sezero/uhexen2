@@ -1,5 +1,5 @@
 # GNU Makefile for Hexen II Dedicated Server (h2ded) using GCC.
-# $Header: /home/ozzie/Download/0000/uhexen2/hexen2/Makefile.sv,v 1.12 2007-07-04 08:53:07 sezero Exp $
+# $Header: /home/ozzie/Download/0000/uhexen2/hexen2/Makefile.sv,v 1.13 2007-07-11 16:47:14 sezero Exp $
 #
 # It is ESSENTIAL that you run make clean between different
 # types of builds or different types of targets.
@@ -85,7 +85,6 @@ INCLUDES:= -I$(MINGWDIR)/include $(INCLUDES)
 LDFLAGS := -L$(MINGWDIR)/lib -lwinmm -lwsock32 -mconsole
 else
 LDFLAGS := $(LIBSOCKET) -lm
-EXT_FLAGS+= -DPLATFORM_UNIX
 endif
 
 ifeq ($(COMPILE_32BITS),yes)

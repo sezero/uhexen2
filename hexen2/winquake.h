@@ -2,10 +2,10 @@
 	winquake.h
 	Win32-specific Quake header file
 
-	$Id: winquake.h,v 1.26 2007-07-08 11:55:24 sezero Exp $
+	$Id: winquake.h,v 1.27 2007-07-11 16:47:15 sezero Exp $
 */
 
-#if !defined(_WIN32)
+#if !defined(PLATFORM_WINDOWS)
 #error winquake.h is only meant to be used on Windows
 #endif
 

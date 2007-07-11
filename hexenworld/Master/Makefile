@@ -1,5 +1,5 @@
 # GNU Makefile for hexenworld master server using GCC.
-# $Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Master/Makefile,v 1.15 2007-07-04 08:53:07 sezero Exp $
+# $Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Master/Makefile,v 1.16 2007-07-11 16:47:16 sezero Exp $
 #
 # if building a debug version :		make DEBUG=1 [other stuff]
 #
@@ -50,7 +50,6 @@ LDFLAGS  := -L$(MINGWDIR)/lib -lwsock32 -lwinmm -mconsole
 else
 INCLUDES := -I.
 LDFLAGS  := $(LIBSOCKET)
-EXT_FLAGS+= -DPLATFORM_UNIX
 endif
 
 

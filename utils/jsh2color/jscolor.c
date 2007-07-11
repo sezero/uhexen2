@@ -1,6 +1,6 @@
 /*
 	jscolor.c
-	$Id: jscolor.c,v 1.3 2007-05-12 11:00:35 sezero Exp $
+	$Id: jscolor.c,v 1.4 2007-07-11 16:47:20 sezero Exp $
 
 	This program is free software; you can redistribute it and/or
 	modify it under the terms of the GNU General Public License
@@ -29,9 +29,9 @@
 #include "bspfile.h"
 #include "tyrlite.h"
 #include "jscolor.h"
-#if defined(_WIN32)
+#if defined(PLATFORM_WINDOWS)
 #include <conio.h>
-#endif	/* _WIN32 */
+#endif	/* PLATFORM_WINDOWS */
 
 miptex_t		miptex[512];
 int				numlighttex;
@@ -245,7 +245,7 @@ void DecisionTime (const char *msg)
 
 	printf ("\nJsH2Colour reports that it may not light this BSP effectively\n(%s)\n", msg);
 
-#ifdef _WIN32
+#ifdef PLATFORM_WINDOWS
 	printf ("Continue? [Y/N] ");
 	while (1)
 	{
@@ -257,7 +257,7 @@ void DecisionTime (const char *msg)
 
 	printf ("%c\n", c);
 
-#else	// unix solution
+#else	/* unix solution */
 	while (1)
 	{
 		c = 0;

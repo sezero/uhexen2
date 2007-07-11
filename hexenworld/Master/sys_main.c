@@ -2,7 +2,7 @@
 	sys_main.c
 	main loop and system interface
 
-	$Id: sys_main.c,v 1.33 2007-07-10 13:54:01 sezero Exp $
+	$Id: sys_main.c,v 1.34 2007-07-11 16:47:16 sezero Exp $
 */
 
 // whether to use the password file to determine
@@ -10,7 +10,7 @@
 #define USE_PASSWORD_FILE	0
 
 #include "defs.h"
-#if defined(_WIN32)
+#if defined(PLATFORM_WINDOWS)
 #include <windows.h>
 #endif
 #include <limits.h>
@@ -26,7 +26,7 @@
 #endif
 #endif
 
-#if defined(_WIN32)
+#if defined(PLATFORM_WINDOWS)
 #include <sys/timeb.h>
 #include <time.h>
 #include <io.h>
@@ -39,13 +39,13 @@
 #define max(a,b) ((a) > (b) ? (a) : (b))
 #endif
 
-#if defined(_WIN32)
+#if defined(PLATFORM_WINDOWS)
 /*
 #define	TIME_WRAP_VALUE	(~(DWORD)0)
 */
 #define	TIME_WRAP_VALUE	LONG_MAX
 static DWORD		starttime;
-#endif	/* _WIN32 */
+#endif	/* PLATFORM_WINDOWS */
 
 #if defined(PLATFORM_UNIX)
 static double		starttime;
@@ -95,7 +95,7 @@ int Sys_CheckInput (int ns)
 	struct timeval	*timeout = 0;
 
 	_timeout.tv_sec = 0;
-#ifdef _WIN32
+#ifdef PLATFORM_WINDOWS
 	_timeout.tv_usec = ns < 0 ? 0 : 100;
 #else
 	_timeout.tv_usec = ns < 0 ? 0 : 10000;
@@ -106,7 +106,7 @@ int Sys_CheckInput (int ns)
 	// be printed until the next event.
 	FD_ZERO (&fdset);
 
-#ifndef _WIN32
+#ifndef PLATFORM_WINDOWS
 	if (do_stdin)
 		FD_SET (0, &fdset);
 #endif
@@ -120,7 +120,7 @@ int Sys_CheckInput (int ns)
 	if (res == 0 || res == -1)
 		return 0;
 
-#ifndef _WIN32
+#ifndef PLATFORM_WINDOWS
 	stdin_ready = FD_ISSET (0, &fdset);
 #endif
 	return 1;
@@ -131,7 +131,7 @@ char *Sys_ConsoleInput (void)
 	static char	con_text[256];
 	static int		textlen;
 
-#ifdef _WIN32
+#ifdef PLATFORM_WINDOWS
 	int		c;
 
 	// read a line out
@@ -186,7 +186,7 @@ char *Sys_ConsoleInput (void)
 
 double Sys_DoubleTime (void)
 {
-#ifdef _WIN32
+#ifdef PLATFORM_WINDOWS
 	DWORD	now, passed;
 
 	now = timeGetTime();
@@ -273,7 +273,7 @@ int main (int argc, char **argv)
 			if ( !(strcmp(argv[t], "-h")) || !(strcmp(argv[t], "-help")) ||
 			     !(strcmp(argv[t], "--help")) || !(strcmp(argv[t], "-?")) )
 			{
-				printf("\nHexenWorld master server %s\n\n", VER_HWMASTER_STR);
+				printf("HexenWorld master server %s\n\n", VER_HWMASTER_STR);
 				printf("Usage:     hwmaster [-port xxxxx]\n");
 				printf("See the documentation for details\n\n");
 				exit(0);
@@ -299,7 +299,7 @@ int main (int argc, char **argv)
 		Sys_Error ("Insufficient string buffer size");
 #endif
 
-#ifdef _WIN32
+#ifdef PLATFORM_WINDOWS
 	timeBeginPeriod (1);	/* 1 ms timer precision */
 	starttime = timeGetTime ();
 #endif

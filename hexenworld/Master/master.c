@@ -2,12 +2,12 @@
 	hwmaster.c
 	main master server program
 
-	$Id: master.c,v 1.1 2007-02-12 16:54:48 sezero Exp $
+	$Id: master.c,v 1.2 2007-07-11 16:47:16 sezero Exp $
 */
 
 #include "defs.h"
 
-#if defined(_WIN32)
+#if defined(PLATFORM_WINDOWS)
 #define	filters_file	"filters.ini"
 #else
 char	filters_file[MAX_OSPATH];

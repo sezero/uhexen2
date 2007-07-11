@@ -1,5 +1,5 @@
 # GNU Makefile for (gl)hexen2 client/server binaries using GCC.
-# $Header: /home/ozzie/Download/0000/uhexen2/hexen2/Makefile,v 1.68 2007-07-04 08:53:07 sezero Exp $
+# $Header: /home/ozzie/Download/0000/uhexen2/hexen2/Makefile,v 1.69 2007-07-11 16:47:14 sezero Exp $
 #
 # Type "make help" to see the valid targets.
 #
@@ -193,7 +193,6 @@ else
 # Main unix specific includes and flags
 INCLUDES:= -I$(X11BASE)/include -I.
 LDFLAGS := $(LIBSOCKET)
-EXT_FLAGS+= -DPLATFORM_UNIX
 endif
 
 ifeq ($(COMPILE_32BITS),yes)

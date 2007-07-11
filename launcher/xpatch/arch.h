@@ -2,7 +2,7 @@
 	loki_patch/arch.h
 	common arch definitions
 
-	$Id: arch.h,v 1.3 2007-03-15 18:18:16 sezero Exp $
+	$Id: arch.h,v 1.4 2007-07-11 16:47:17 sezero Exp $
 
 	This program is free software; you can redistribute it and/or
 	modify it under the terms of the GNU General Public License
@@ -28,7 +28,7 @@
 
 /* Make sure the BYTE_ORDER macro is defined */
 
-#ifdef WIN32
+#if defined(_WIN32) || defined(_WIN64)
 # define BIG_ENDIAN  0
 # define LIL_ENDIAN  1
 # define BYTE_ORDER  LIL_ENDIAN
@@ -60,6 +60,6 @@
 # else
 #  include <endian.h>
 # endif
-#endif /* WIN32 */
+#endif	/* ! WINDOWS */
 
-#endif /* __ARCH_H__ */
+#endif	/* __ARCH_H__ */

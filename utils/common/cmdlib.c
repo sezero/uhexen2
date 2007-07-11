@@ -2,7 +2,7 @@
 	cmdlib.c
 	functions common to all of the utilities
 
-	$Id: cmdlib.c,v 1.10 2007-04-22 16:00:10 sezero Exp $
+	$Id: cmdlib.c,v 1.11 2007-07-11 16:47:20 sezero Exp $
 */
 
 
@@ -13,7 +13,7 @@
 //#include <sys/time.h>
 #include <time.h>
 /*
-#ifndef _WIN32
+#ifdef PLATFORM_UNIX
 #include <sys/ioctl.h>
 #endif
 */
@@ -52,7 +52,7 @@ a simple _kbhit() equivalent for unix
 ==============
 */
 /*
-#ifndef _WIN32
+#ifdef PLATFORM_UNIX
 int Sys_kbhit (void)
 {
 	int	n;

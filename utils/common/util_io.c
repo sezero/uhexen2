@@ -2,7 +2,7 @@
 	util_io.c
 	file and directory utilities
 
-	$Id: util_io.c,v 1.4 2007-04-22 08:10:16 sezero Exp $
+	$Id: util_io.c,v 1.5 2007-07-11 16:47:20 sezero Exp $
 */
 
 
@@ -12,7 +12,7 @@
 #include "util_io.h"
 #include <sys/stat.h>
 #include <errno.h>
-#ifdef _WIN32
+#ifdef PLATFORM_WINDOWS
 #include <conio.h>
 #include <io.h>
 #include <direct.h>
@@ -41,7 +41,7 @@
 
 // CODE --------------------------------------------------------------------
 
-#ifdef _WIN32
+#ifdef PLATFORM_WINDOWS
 
 static long			findhandle;
 static struct _finddata_t	finddata;
@@ -178,7 +178,7 @@ char *Q_FindFirstFile (const char *path, const char *pattern)
 
 void Q_getwd (char *out)
 {
-#ifdef _WIN32
+#ifdef PLATFORM_WINDOWS
 	_getcwd (out, 256);
 	strcat (out, "\\");
 #else
@@ -189,7 +189,7 @@ void Q_getwd (char *out)
 
 void Q_mkdir (const char *path)
 {
-#ifdef _WIN32
+#ifdef PLATFORM_WINDOWS
 	if (_mkdir (path) != -1)
 		return;
 #else

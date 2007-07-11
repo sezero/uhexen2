@@ -1,6 +1,6 @@
 /*
 	hwterm.c
-	$Id: hwterm.c,v 1.16 2007-04-19 17:46:04 sezero Exp $
+	$Id: hwterm.c,v 1.17 2007-07-11 16:47:17 sezero Exp $
 
 	HWTERM 1.2 HexenWorld Remote Console Terminal
 	Idea based on QTerm 1.1 by Michael Dwyer/N0ZAP (18-May-1998).
@@ -38,7 +38,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdarg.h>
-#if defined(_WIN32)
+#if defined(PLATFORM_WINDOWS)
 #include <sys/timeb.h>
 #include <time.h>
 #endif
@@ -63,7 +63,7 @@ typedef struct
 
 //=============================================================================
 
-#ifdef _WIN32
+#if defined(PLATFORM_WINDOWS)
 static WSADATA		winsockdata;
 #endif
 
@@ -169,7 +169,7 @@ static int NET_WaitReadTimeout (int fd, long sec, long usec)
 
 static void NET_Init (void)
 {
-#ifdef _WIN32
+#if defined(PLATFORM_WINDOWS)
 	WORD	wVersionRequested;
 	int		err;
 
@@ -178,14 +178,14 @@ static void NET_Init (void)
 	err = WSAStartup (MAKEWORD(1, 1), &winsockdata);
 	if (err)
 		Sys_Error ("Winsock initialization failed.");
-#endif
+#endif	/* PLATFORM_WINDOWS */
 }
 
 static void NET_Shutdown (void)
 {
 	if (socketfd != -1)
 		closesocket (socketfd);
-#ifdef _WIN32
+#if defined(PLATFORM_WINDOWS)
 	WSACleanup ();
 #endif
 }
@@ -319,20 +319,20 @@ int main (int argc, char *argv[])
 				(struct sockaddr *)&hostaddress, &fromlen);
 			if (size < 0)
 			{
-#	ifdef _WIN32
+#if defined(PLATFORM_WINDOWS)
 				int err = WSAGetLastError();
 				if (err != WSAEWOULDBLOCK)
 				{
 					printf ("Recv failed: %s\n", strerror(err));
 					Sys_Quit (1);
 				}
-#	else
+#else
 				if (errno != EWOULDBLOCK)
 				{
 					perror("Recv failed");
 					Sys_Quit (1);
 				}
-#	endif
+#endif
 			}
 			else if (size == sizeof(response))
 			{

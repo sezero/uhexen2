@@ -2,7 +2,7 @@
 	snd_sys.h
 	Platform specific macros and prototypes for sound
 
-	$Id: snd_sys.h,v 1.11 2007-07-10 18:48:19 sezero Exp $
+	$Id: snd_sys.h,v 1.12 2007-07-11 16:47:16 sezero Exp $
 */
 
 #ifndef __HX2_SND_SYS__
@@ -12,7 +12,7 @@
 #undef HAVE_OSS_SOUND
 #undef HAVE_SUN_SOUND
 #undef HAVE_ALSA_SOUND
-#undef HAVE_WIN32_SOUND
+#undef HAVE_WIN_SOUND
 
 #undef SOUND_NUMDRIVERS
 
@@ -51,13 +51,13 @@
 #define HAVE_SDL_SOUND	0
 #endif
 
-#if defined(_WIN32)
-#define HAVE_WIN32_SOUND	1
+#if defined(PLATFORM_WINDOWS)
+#define HAVE_WIN_SOUND		1
 #else
-#define HAVE_WIN32_SOUND	0
+#define HAVE_WIN_SOUND		0
 #endif
 
-#define SOUND_NUMDRIVERS	(HAVE_SDL_SOUND + HAVE_OSS_SOUND + HAVE_SUN_SOUND + HAVE_ALSA_SOUND + HAVE_WIN32_SOUND)
+#define SOUND_NUMDRIVERS	(HAVE_SDL_SOUND + HAVE_OSS_SOUND + HAVE_SUN_SOUND + HAVE_ALSA_SOUND + HAVE_WIN_SOUND)
 
 // Sound system definitions
 #define	S_SYS_NULL	0
@@ -65,17 +65,17 @@
 #define	S_SYS_SDL	2
 #define	S_SYS_ALSA	3
 #define	S_SYS_SUN	4
-#define	S_SYS_WIN32	5
+#define	S_SYS_WIN	5
 #define	S_SYS_MAX	6
 
 // this prevents running S_Update_() with the sdl sound driver
 // if the snd_sdl implementation already calls S_PaintChannels.
 #define SDLSOUND_PAINTS_CHANNELS	1
 
-#if defined(_WIN32)
+#if defined(PLATFORM_WINDOWS)
 // for the windows crap used in snd_dma.c
 #include "winquake.h"
-#endif	//  _WIN32
+#endif	/* PLATFORM_WINDOWS */
 
 
 extern unsigned int	snd_system;
@@ -100,12 +100,12 @@ extern void (*SNDDMA_Submit)(void);
 
 #ifdef _SND_LIST_DRIVERS
 
-#if HAVE_WIN32_SOUND
-// WIN32 versions of the above
-extern qboolean S_WIN32_Init(void);
-extern int S_WIN32_GetDMAPos(void);
-extern void S_WIN32_Shutdown(void);
-extern void S_WIN32_Submit(void);
+#if HAVE_WIN_SOUND
+// Windows versions of the above
+extern qboolean S_WIN_Init(void);
+extern int S_WIN_GetDMAPos(void);
+extern void S_WIN_Shutdown(void);
+extern void S_WIN_Submit(void);
 #endif
 
 #if HAVE_OSS_SOUND

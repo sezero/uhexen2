@@ -1,5 +1,5 @@
 # GNU Makefile for hexenworld clients using GCC.
-# $Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/Makefile,v 1.65 2007-07-09 21:52:06 sezero Exp $
+# $Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/Makefile,v 1.66 2007-07-11 16:47:16 sezero Exp $
 #
 # Type "make help" to see the valid targets.
 #
@@ -194,7 +194,6 @@ else
 # Main unix specific includes and flags
 INCLUDES:= -I$(X11BASE)/include -I.
 LDFLAGS := $(LIBSOCKET)
-EXT_FLAGS+= -DPLATFORM_UNIX
 endif
 
 ifeq ($(COMPILE_32BITS),yes)

@@ -2,12 +2,12 @@
 	snd_mix.c
 	portable code to mix sounds for snd_dma.c
 
-	$Id: snd_mix.c,v 1.17 2007-07-08 11:55:38 sezero Exp $
+	$Id: snd_mix.c,v 1.18 2007-07-11 16:47:16 sezero Exp $
 */
 
 #include "quakedef.h"
 
-#ifdef _WIN32
+#ifdef PLATFORM_WINDOWS
 #include "winquake.h"
 #endif
 
@@ -51,7 +51,7 @@ static void S_TransferStereo16 (int endtime)
 	int		lpos;
 	int		lpaintedtime;
 	LPVOID	pbuf;
-#ifdef _WIN32
+#ifdef PLATFORM_WINDOWS
 // FIXME: move this to its platform driver!
 	int		reps;
 	DWORD	dwSize, dwSize2;
@@ -64,7 +64,7 @@ static void S_TransferStereo16 (int endtime)
 	snd_p = (int *) paintbuffer;
 	lpaintedtime = paintedtime;
 
-#ifdef _WIN32
+#ifdef PLATFORM_WINDOWS
 // FIXME: move this to its platform driver!
 	if (pDSBuf)
 	{
@@ -116,7 +116,7 @@ static void S_TransferStereo16 (int endtime)
 		lpaintedtime += (snd_linear_count >> 1);
 	}
 
-#ifdef _WIN32
+#ifdef PLATFORM_WINDOWS
 // FIXME: move this to its platform driver!
 	if (pDSBuf)
 		IDirectSoundBuffer_Unlock(pDSBuf, pbuf, dwSize, NULL, 0);
@@ -129,7 +129,7 @@ static void S_TransferPaintBuffer (int endtime)
 	int	count, step, val;
 	int	*p;
 	LPVOID	pbuf;
-#ifdef _WIN32
+#ifdef PLATFORM_WINDOWS
 // FIXME: move this to its platform driver!
 	int		reps;
 	DWORD	dwSize, dwSize2;
@@ -150,7 +150,7 @@ static void S_TransferPaintBuffer (int endtime)
 	step = 3 - shm->channels;
 	snd_vol = sfxvolume.value * 256;
 
-#ifdef _WIN32
+#ifdef PLATFORM_WINDOWS
 // FIXME: move this to its platform driver!
 	if (pDSBuf)
 	{
@@ -213,7 +213,7 @@ static void S_TransferPaintBuffer (int endtime)
 		}
 	}
 
-#ifdef _WIN32
+#ifdef PLATFORM_WINDOWS
 // FIXME: move this to its platform driver!
 	if (pDSBuf)
 	{

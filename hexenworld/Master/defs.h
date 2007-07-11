@@ -2,7 +2,7 @@
 	mst_defs.h
 	common definitions for hexenworld master server
 
-	$Id: defs.h,v 1.29 2007-03-14 21:04:15 sezero Exp $
+	$Id: defs.h,v 1.30 2007-07-11 16:47:16 sezero Exp $
 */
 
 #ifndef __HWMASTER_DEFS
@@ -33,12 +33,13 @@
 // Includes
 
 #include "compiler.h"
+#include "arch_def.h"
 #include "q_types.h"
 #include <stdio.h>
 #include <string.h>
-#if !defined(_WIN32)
+#if !defined(PLATFORM_WINDOWS)
 #include <strings.h>	/* strcasecmp and strncasecmp	*/
-#endif	/* !_WIN32 */
+#endif	/* ! PLATFORM_WINDOWS */
 #include <stdarg.h>
 #include <stdlib.h>
 #include "q_endian.h"

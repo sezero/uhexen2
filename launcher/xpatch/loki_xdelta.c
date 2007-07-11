@@ -20,7 +20,7 @@
  *
  * Author: Josh MacDonald <jmacd@CS.Berkeley.EDU>
  *
- * $Id: loki_xdelta.c,v 1.3 2007-03-01 19:06:52 sezero Exp $
+ * $Id: loki_xdelta.c,v 1.4 2007-07-11 16:47:17 sezero Exp $
  */
 
 #include <stdio.h>
@@ -32,7 +32,7 @@
 #include <fcntl.h>
 #include <sys/stat.h>
 
-#if defined(_WIN32) || defined(__DJGPP__)
+#if defined(_WIN32) || defined(_WIN64) || defined(__DJGPP__)
 #define WINHACK
 #endif
 

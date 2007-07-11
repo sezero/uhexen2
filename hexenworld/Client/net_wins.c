@@ -2,7 +2,7 @@
 	net_udp.c
 	network UDP driver
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/net_wins.c,v 1.34 2007-07-09 19:30:20 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/net_wins.c,v 1.35 2007-07-11 16:47:16 sezero Exp $
 */
 
 #include "net_sys.h"
@@ -22,7 +22,7 @@ netadr_t	net_from;
 sizebuf_t	net_message;
 int			net_socket;
 
-#ifdef _WIN32
+#ifdef PLATFORM_WINDOWS
 static WSADATA	winsockdata;
 #endif
 
@@ -149,7 +149,7 @@ qboolean NET_GetPacket (void)
 			Con_Printf ("%s: Connection refused\n", __thisfunc__);
 			return false;
 		}
-#	ifdef _WIN32
+#	ifdef PLATFORM_WINDOWS
 		if (err == WSAEMSGSIZE)
 		{
 			Con_Printf ("Oversize packet from %s\n", NET_AdrToString (net_from));
@@ -274,14 +274,14 @@ NET_Init
 */
 void NET_Init (int port)
 {
-#ifdef _WIN32
+#ifdef PLATFORM_WINDOWS
 	WORD	wVersionRequested;
 	int		r;
 #endif
 
 	HuffInit();
 
-#ifdef _WIN32
+#ifdef PLATFORM_WINDOWS
 	wVersionRequested = MAKEWORD(1, 1);
 	r = WSAStartup (MAKEWORD(1, 1), &winsockdata);
 	if (r)
@@ -314,7 +314,7 @@ NET_Shutdown
 void	NET_Shutdown (void)
 {
 	closesocket (net_socket);
-#ifdef _WIN32
+#ifdef PLATFORM_WINDOWS
 	WSACleanup ();
 #endif
 }

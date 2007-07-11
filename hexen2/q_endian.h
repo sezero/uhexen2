@@ -2,7 +2,7 @@
 	q_endian.h
 	endianness handling
 
-	$Id: q_endian.h,v 1.2 2007-07-10 18:48:17 sezero Exp $
+	$Id: q_endian.h,v 1.3 2007-07-11 16:47:14 sezero Exp $
 */
 
 #ifndef __QENDIAN_H
@@ -40,7 +40,9 @@ extern float	FloatSwap (float);
 #if !defined(BYTE_ORDER)
 /* assumptions in case we have no endianness
    info. partially from older SDL headers. */
-# if defined(__hppa__) || defined(__sparc__) ||	defined (__ppc__) || defined(__POWERPC__) || defined(_M_PPC)
+# define FALLBACK_ORDER	LITTLE_ENDIAN
+
+# if defined(__hppa__) || defined(__sparc__) || defined (__ppc__) || defined(__POWERPC__) || defined(_M_PPC)
 #	define	BYTE_ORDER	BIG_ENDIAN
 # elif (defined(__i386) || defined(__i386__)) || defined(__amd64) || defined(__ia64__) || defined(__x86_64__)
 #	define	BYTE_ORDER	LITTLE_ENDIAN
@@ -48,12 +50,16 @@ extern float	FloatSwap (float);
 #	define	BYTE_ORDER	LITTLE_ENDIAN
 # elif defined(__SUNOS__)
 #	define	BYTE_ORDER	BIG_ENDIAN
-# elif defined(_WIN32) || defined(WIN32)
+# elif defined(_WIN32) || defined(_WIN64) || defined(__DJGPP__) || defined(__DOS__)
 #	define	BYTE_ORDER	LITTLE_ENDIAN
 # else
 #	/* fallback: caution recommended!! */
-#	define	ASSUMED_LITTLE_ENDIAN
-#	define	BYTE_ORDER	LITTLE_ENDIAN
+#	define	BYTE_ORDER	FALLBACK_ORDER
+#	if  (FALLBACK_ORDER == BIG_ENDIAN)
+#		define	ASSUMED_BIG_ENDIAN
+#	else
+#		define	ASSUMED_LITTLE_ENDIAN
+#	endif
 # endif
 #endif	/* BYTE_ORDER */
 

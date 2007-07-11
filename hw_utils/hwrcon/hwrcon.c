@@ -1,6 +1,6 @@
 /*
 	hwrcon.c
-	$Id: hwrcon.c,v 1.11 2007-04-19 17:45:59 sezero Exp $
+	$Id: hwrcon.c,v 1.12 2007-07-11 16:47:17 sezero Exp $
 
 	HWRCON 1.2 HexenWorld Remote CONsole
 	Idea based on RCon 1.1 by Michael Dwyer/N0ZAP (18-May-1998).
@@ -51,7 +51,7 @@ typedef struct
 
 //=============================================================================
 
-#ifdef _WIN32
+#if defined(PLATFORM_WINDOWS)
 static WSADATA		winsockdata;
 #endif
 
@@ -143,7 +143,7 @@ static int NET_StringToAdr (char *s, netadr_t *a)
 
 static void NET_Init (void)
 {
-#ifdef _WIN32
+#if defined(PLATFORM_WINDOWS)
 	WORD	wVersionRequested;
 	int		err;
 
@@ -152,14 +152,14 @@ static void NET_Init (void)
 	err = WSAStartup (MAKEWORD(1, 1), &winsockdata);
 	if (err)
 		Sys_Error ("Winsock initialization failed.");
-#endif
+#endif	/* PLATFORM_WINDOWS */
 }
 
 static void NET_Shutdown (void)
 {
 	if (socketfd != -1)
 		closesocket (socketfd);
-#ifdef _WIN32
+#if defined(PLATFORM_WINDOWS)
 	WSACleanup ();
 #endif
 }

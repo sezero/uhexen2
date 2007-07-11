@@ -1,6 +1,6 @@
 /*
 	hwmquery.c
-	$Id: hwmquery.c,v 1.12 2007-04-19 17:45:55 sezero Exp $
+	$Id: hwmquery.c,v 1.13 2007-07-11 16:47:17 sezero Exp $
 
 	HWMQUERY 0.1 HexenWorld Master Server Query
 	Copyright (C) 2006 O. Sezer <sezero@users.sourceforge.net>
@@ -30,7 +30,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdarg.h>
-#if defined(_WIN32)
+#if defined(PLATFORM_WINDOWS)
 #include <sys/timeb.h>
 #include <time.h>
 #endif
@@ -52,7 +52,7 @@ typedef struct
 
 //=============================================================================
 
-#ifdef _WIN32
+#if defined(PLATFORM_WINDOWS)
 static WSADATA		winsockdata;
 #endif
 
@@ -158,7 +158,7 @@ static int NET_WaitReadTimeout (int fd, long sec, long usec)
 
 static void NET_Init (void)
 {
-#ifdef _WIN32
+#if defined(PLATFORM_WINDOWS)
 	WORD	wVersionRequested;
 	int		err;
 
@@ -167,14 +167,14 @@ static void NET_Init (void)
 	err = WSAStartup (MAKEWORD(1, 1), &winsockdata);
 	if (err)
 		Sys_Error ("Winsock initialization failed.");
-#endif
+#endif	/* PLATFORM_WINDOWS */
 }
 
 static void NET_Shutdown (void)
 {
 	if (socketfd != -1)
 		closesocket (socketfd);
-#ifdef _WIN32
+#if defined(PLATFORM_WINDOWS)
 	WSACleanup ();
 #endif
 }
@@ -277,7 +277,7 @@ int main (int argc, char *argv[])
 				(struct sockaddr *)&hostaddress, &fromlen);
 		if (size < 0)
 		{
-#ifdef _WIN32
+#if defined(PLATFORM_WINDOWS)
 			int err = WSAGetLastError();
 			if (err != WSAEWOULDBLOCK)
 			{

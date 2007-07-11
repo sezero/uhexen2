@@ -2,19 +2,19 @@
 	util_io.h
 	file and directory utilities
 
-	$Id: util_io.h,v 1.3 2007-04-22 08:10:16 sezero Exp $
+	$Id: util_io.h,v 1.4 2007-07-11 16:47:20 sezero Exp $
 */
 
 #ifndef __UTILIO_H
 #define __UTILIO_H
 
-#if defined(_WIN32)
+#if defined(PLATFORM_WINDOWS)
 #include <io.h>
 #else
 #include <unistd.h>
 #endif
 
-#if defined(_WIN32) && !defined(F_OK)
+#if defined(PLATFORM_WINDOWS) && !defined(F_OK)
 // values for the second argument to access(). MS does not define them
 #define	R_OK	4		/* Test for read permission.  */
 #define	W_OK	2		/* Test for write permission.  */

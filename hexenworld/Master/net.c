@@ -2,7 +2,7 @@
 	net_udp.c
 	network UDP driver
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Master/net.c,v 1.30 2007-05-13 11:59:41 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Master/net.c,v 1.31 2007-07-11 16:47:16 sezero Exp $
 */
 
 #include "net_sys.h"
@@ -19,7 +19,7 @@ netadr_t	net_from;
 sizebuf_t	net_message;
 int			net_socket;
 
-#ifdef _WIN32
+#ifdef PLATFORM_WINDOWS
 static WSADATA	winsockdata;
 #endif
 
@@ -146,7 +146,7 @@ qboolean NET_GetPacket (void)
 		int err = SOCKETERRNO;
 		if (err == EWOULDBLOCK)
 			return false;
-#ifdef _WIN32
+#ifdef PLATFORM_WINDOWS
 		if (err == WSAEMSGSIZE)
 		{
 			printf ("Warning:  Oversize packet from %s\n",
@@ -257,7 +257,7 @@ NET_Init
 */
 void NET_Init (int port)
 {
-#ifdef _WIN32
+#ifdef PLATFORM_WINDOWS
 	WORD	wVersionRequested;
 	int		r;
 
@@ -293,7 +293,7 @@ NET_Shutdown
 void	NET_Shutdown (void)
 {
 	closesocket (net_socket);
-#ifdef _WIN32
+#ifdef PLATFORM_WINDOWS
 	WSACleanup ();
 #endif
 }

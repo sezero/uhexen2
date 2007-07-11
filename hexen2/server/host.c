@@ -2,13 +2,13 @@
 	host.c
 	coordinates spawning and killing of local servers
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/server/host.c,v 1.38 2007-07-08 11:55:29 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/server/host.c,v 1.39 2007-07-11 16:47:15 sezero Exp $
 */
 
 #include "quakedef.h"
 #include "debuglog.h"
 
-#ifdef _WIN32
+#ifdef PLATFORM_WINDOWS
 #include <windows.h>
 #include <io.h>
 #endif

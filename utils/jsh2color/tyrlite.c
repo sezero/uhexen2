@@ -19,7 +19,7 @@
 
 /*
 	tyrlite.c
-	$Id: tyrlite.c,v 1.18 2007-05-13 12:00:10 sezero Exp $
+	$Id: tyrlite.c,v 1.19 2007-07-11 16:47:20 sezero Exp $
 
 	Modifications by Kevin Shanahan, 1999-2000
 */
@@ -314,7 +314,7 @@ int main (int argc, char **argv)
 	qboolean	extfile_notfound = false;
 
 	printf ("---------------------------------------------------\n");
-	printf ("JSH2Colour %s - %s\n", JSH2COLOR_VER, PLATFORM_VER);
+	printf ("JSH2Colour %s - %s\n", JSH2COLOR_VER, PLATFORM_STRING);
 	printf ("based on Tyrlite 0.8, MHColour 0.5 and JSColour 1.0\n");
 	printf ("---------------------------------------------------\n");
 

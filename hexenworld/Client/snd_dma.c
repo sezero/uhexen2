@@ -2,7 +2,7 @@
 	snd_dma.c
 	main control for any streaming sound output device
 
-	$Id: snd_dma.c,v 1.56 2007-07-08 11:55:38 sezero Exp $
+	$Id: snd_dma.c,v 1.57 2007-07-11 16:47:16 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -45,7 +45,7 @@ static const struct
 	{  "SDL"  ,	HAVE_SDL_SOUND	},
 	{  "ALSA" ,	HAVE_ALSA_SOUND	},
 	{  "SUN"  ,	HAVE_SUN_SOUND	},
-	{  "WIN32",	HAVE_WIN32_SOUND}
+	{  "WIN"  ,	HAVE_WIN_SOUND	}
 };
 
 volatile dma_t	sn;
@@ -259,7 +259,7 @@ void S_Init (void)
 // =======================================================================
 // Shutdown sound engine
 // =======================================================================
-#ifdef _WIN32
+#ifdef PLATFORM_WINDOWS
 extern HINSTANCE hInstDS;
 #endif
 
@@ -277,7 +277,7 @@ void S_Shutdown(void)
 	SNDDMA_Shutdown();
 	shm = NULL;
 
-#ifdef _WIN32
+#ifdef PLATFORM_WINDOWS
 // FIXME: move this to its platform driver!
 	if (hInstDS)
 	{
@@ -609,7 +609,7 @@ void S_ClearBuffer (void)
 {
 	int		clear;
 
-#ifdef _WIN32
+#ifdef PLATFORM_WINDOWS
 // FIXME: move this to its platform driver!
 	if (!sound_started || !shm || (!shm->buffer && !pDSBuf))
 #else
@@ -622,7 +622,7 @@ void S_ClearBuffer (void)
 	else
 		clear = 0;
 
-#ifdef _WIN32
+#ifdef PLATFORM_WINDOWS
 // FIXME: move this to its platform driver!
 	if (pDSBuf)
 	{
@@ -891,7 +891,7 @@ static void GetSoundtime(void)
 void S_ExtraUpdate (void)
 {
 
-#ifdef _WIN32
+#ifdef PLATFORM_WINDOWS
 	IN_Accumulate ();
 #endif
 
@@ -928,7 +928,7 @@ static void S_Update_ (void)
 	samps = shm->samples >> (shm->channels-1);
 	endtime = min(endtime, (unsigned int)(soundtime + samps));
 
-#ifdef _WIN32
+#ifdef PLATFORM_WINDOWS
 // if the buffer was lost or stopped, restore it and/or restart it
 // FIXME: move this to its platform driver!
 	if (pDSBuf)

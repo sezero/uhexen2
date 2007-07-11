@@ -1,6 +1,6 @@
 /*
 	vis.h
-	$Id: vis.h,v 1.5 2007-03-14 21:04:43 sezero Exp $
+	$Id: vis.h,v 1.6 2007-07-11 16:47:21 sezero Exp $
 */
 
 #ifndef __H2UTILS_VIS_H
@@ -15,7 +15,7 @@ typedef struct
 } winding_t;
 
 
-#ifdef _WIN32
+#ifdef PLATFORM_WINDOWS
 #include <windows.h>
 #endif
 
@@ -100,7 +100,7 @@ typedef struct
 
 #ifdef __alpha
 
-#  ifdef _WIN32
+#  ifdef PLATFORM_WINDOWS
 
 extern HANDLE my_mutex;
 #define	LOCK	WaitForSingleObject (my_mutex, INFINITE)
@@ -113,9 +113,9 @@ extern	pthread_mutex_t	*my_mutex;
 #define	LOCK	pthread_mutex_lock (my_mutex)
 #define	UNLOCK	pthread_mutex_unlock (my_mutex)
 
-#  endif  // _win32
+#  endif /* windows */
 
-#else	//alpha
+#else	/* __alpha  */
 
 #define	LOCK
 #define	UNLOCK

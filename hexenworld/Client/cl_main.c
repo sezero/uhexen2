@@ -2,11 +2,12 @@
 	cl_main.c
 	client main loop
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/cl_main.c,v 1.80 2007-05-13 11:59:00 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/cl_main.c,v 1.81 2007-07-11 16:47:16 sezero Exp $
 */
 
 #include <sys/types.h>
 
+#include "arch_def.h"
 #if defined(PLATFORM_UNIX)
 #include <netinet/in.h>
 #ifndef INADDR_LOOPBACK
@@ -18,7 +19,7 @@
 #include "cfgfile.h"
 #include "debuglog.h"
 #include <setjmp.h>
-#if defined(_WIN32)
+#if defined(PLATFORM_WINDOWS)
 #include "winquake.h"
 #endif
 
@@ -358,7 +359,7 @@ void CL_Disconnect (void)
 
 	connect_time = -1;
 
-#ifdef _WIN32
+#ifdef PLATFORM_WINDOWS
 	SetWindowText (mainwindow, "HexenWorld: disconnected");
 #endif
 
@@ -809,7 +810,7 @@ static void CL_ConnectionlessPacket (void)
 			Con_Printf ("Command packet from remote host. Ignored.\n");
 			return;
 		}
-#ifdef _WIN32
+#ifdef PLATFORM_WINDOWS
 		ShowWindow (mainwindow, SW_RESTORE);
 		SetForegroundWindow (mainwindow);
 #endif

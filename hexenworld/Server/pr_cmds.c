@@ -2,11 +2,11 @@
 	pr_cmds.c
 	prog commands
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Server/pr_cmds.c,v 1.33 2007-07-08 11:56:51 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Server/pr_cmds.c,v 1.34 2007-07-11 16:47:16 sezero Exp $
 */
 
 #include "quakedef.h"
-#ifdef _WIN32
+#ifdef PLATFORM_WINDOWS
 #include <windows.h>
 #else
 #include <signal.h>
@@ -979,7 +979,7 @@ static void PF_break (void)
 		DidIt = true;
 
 		Con_Printf ("break statement\n");
-#ifdef _WIN32
+#ifdef PLATFORM_WINDOWS
 		DebugBreak();
 #else
 		kill(getpid(), SIGKILL);

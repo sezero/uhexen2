@@ -1,6 +1,6 @@
 /*
 	vis.c
-	$Id: vis.c,v 1.11 2007-07-08 17:01:16 sezero Exp $
+	$Id: vis.c,v 1.12 2007-07-11 16:47:21 sezero Exp $
 */
 
 #include "util_inc.h"
@@ -25,13 +25,13 @@ int			leafon;		// the next leaf to be given
 
 #ifdef __alpha
 
-#  ifdef _WIN32
+#  ifdef PLATFORM_WINDOWS
 HANDLE		my_mutex;
 #  else
 pthread_mutex_t *my_mutex;
-#  endif  // _win32
+#  endif /* windows */
 
-#endif	// __alpha
+#endif	/* __alpha  */
 
 static byte	*vismap, *vismap_p, *vismap_end;        // past visfile
 static int		originalvismapsize;
@@ -131,7 +131,7 @@ NewWinding
 #define MAX_FREE_WINDINGS	(10000)
 #define MAX_FAST_ALLOC_WINDINGS	(16)
 
-#ifdef _WIN32
+#ifdef PLATFORM_WINDOWS
 
 static winding_t *OldNewWinding (int points)
 {
@@ -192,7 +192,7 @@ void FreeWinding (winding_t *w)
 	}
 }
 
-#else	// old way
+#else	/* old way */
 
 winding_t *NewWinding (int points)
 {
@@ -462,7 +462,7 @@ LeafThread
 ==============
 */
 #ifdef __alpha
-#  ifdef _WIN32
+#  ifdef PLATFORM_WINDOWS
 static	LPVOID	LeafThread (LPVOID thread)
 #  else
 static	pthread_addr_t	LeafThread (pthread_addr_t thread)
@@ -624,7 +624,7 @@ static void CalcPortalVis (void)
 	leafon = 0;
 
 #ifdef __alpha
-#   ifdef _WIN32
+#   ifdef PLATFORM_WINDOWS
     {
 	DWORD	IDThread;
 	HANDLE	work_threads[MAX_THREADS];
@@ -692,13 +692,13 @@ static void CalcPortalVis (void)
 	if (pthread_mutex_destroy (my_mutex) == -1)
 		Error ("pthread_mutex_destroy failed");
 }
-#   endif  // _win32
+#   endif /* windows */
 
-#else	// not __alpha
+#else	/* ! __alpha */
 
 	LeafThread (0);
 
-#endif  // __alpha
+#endif  /*  __alpha  */
 
 	if (verbose)
 	{

@@ -5,7 +5,7 @@
 	FIXME:	kill this in the future and make each C
 		file include only the necessary headers.
 
-	$Id: qwsvinc.h,v 1.9 2007-04-18 13:34:47 sezero Exp $
+	$Id: qwsvinc.h,v 1.10 2007-07-11 16:47:16 sezero Exp $
 */
 
 #ifndef __HWSVINC_H
@@ -25,9 +25,9 @@
 #include <math.h>
 #include <stdio.h>
 #include <string.h>
-#if !defined(_WIN32)
+#if !defined(PLATFORM_WINDOWS)
 #include <strings.h>	/* strcasecmp and strncasecmp	*/
-#endif	/* !_WIN32 */
+#endif	/* ! PLATFORM_WINDOWS */
 #include <stdarg.h>
 #include <stdlib.h>
 

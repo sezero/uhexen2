@@ -2,7 +2,7 @@
 	debuglog.c
 	logging console output to a file
 
-	$Id: debuglog.c,v 1.3 2007-05-09 18:10:13 sezero Exp $
+	$Id: debuglog.c,v 1.4 2007-07-11 16:47:14 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -10,7 +10,7 @@
 #include <time.h>
 #include <sys/stat.h>
 #include <fcntl.h>
-#ifdef _WIN32
+#ifdef PLATFORM_WINDOWS
 #include <io.h>		/* unlink() */
 #endif
 #ifdef PLATFORM_UNIX
@@ -56,9 +56,9 @@ static void LOG_PrintVersion (void)
 	LOG_Printf("Hammer of Thyrion, release %s (%s)\n", HOT_VERSION_STR, HOT_VERSION_REL_DATE);
 #endif
 #if defined(SERVERONLY) && !defined(H2W)
-	LOG_Printf("Hexen II dedicated server %4.2f (%s)\n", ENGINE_VERSION, VERSION_PLATFORM);
+	LOG_Printf("Hexen II dedicated server %4.2f (%s)\n", ENGINE_VERSION, PLATFORM_STRING);
 #else
-	LOG_Printf("running on %s engine %4.2f (%s)\n", ENGINE_NAME, ENGINE_VERSION, VERSION_PLATFORM);
+	LOG_Printf("running on %s engine %4.2f (%s)\n", ENGINE_NAME, ENGINE_VERSION, PLATFORM_STRING);
 #endif
 }
 

@@ -3,7 +3,7 @@
 	these are the only functions outside the refresh
 	allowed to touch the vid buffer
 
-	$Id: draw.h,v 1.22 2007-04-11 10:04:22 sezero Exp $
+	$Id: draw.h,v 1.23 2007-07-11 16:47:16 sezero Exp $
 */
 
 #ifndef __HX2_DRAW_H
@@ -56,7 +56,7 @@ void Draw_BigCharacter (int x, int y, int num);
 
 // game/engine name to draw on the console
 #define GAME_MOD_NAME		ENGINE_NAME
-#define ENGINE_WATERMARK	GAME_MOD_NAME " " STRINGIFY(ENGINE_VERSION) " (" VERSION_PLATFORM ")"
+#define ENGINE_WATERMARK	GAME_MOD_NAME " " STRINGIFY(ENGINE_VERSION) " (" PLATFORM_STRING ")"
 
 #endif	/* __HX2_DRAW_H */
 

@@ -2,7 +2,7 @@
 	screen.c
 	master for refresh, status bar, console, chat, notify, etc
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/screen.c,v 1.47 2007-07-08 11:55:23 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/screen.c,v 1.48 2007-07-11 16:47:14 sezero Exp $
 */
 
 /*=============================================================================
@@ -50,7 +50,7 @@
 
 #include "quakedef.h"
 //#include "r_local.h"
-#ifdef _WIN32
+#ifdef PLATFORM_WINDOWS
 #include "winquake.h"
 #include <io.h>
 #else
@@ -1279,7 +1279,7 @@ void SCR_UpdateScreen (void)
 	if (scr_skipupdate || block_drawing)
 		return;
 
-#ifdef _WIN32
+#ifdef PLATFORM_WINDOWS
 	// don't suck up any cpu if minimized
 	if (Minimized)
 		return;
