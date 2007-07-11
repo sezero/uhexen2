@@ -15,7 +15,7 @@ diff -urNp uhexen2-20070511/hexen2/glquake.h uhexen2-20070512/hexen2/glquake.h
  void EmitWaterPolys (msurface_t *fa);
  void EmitBothSkyLayers (msurface_t *fa);
  qboolean R_CullBox (vec3_t mins, vec3_t maxs);
-@@ -291,6 +291,7 @@ extern	cvar_t	r_novis;
+@@ -289,6 +289,7 @@ extern	cvar_t	r_novis;
  extern	cvar_t	r_wholeframe;
  extern	cvar_t	r_texture_external;
  
@@ -26,7 +26,7 @@ diff -urNp uhexen2-20070511/hexen2/glquake.h uhexen2-20070512/hexen2/glquake.h
 diff -urNp uhexen2-20070511/hexen2/gl_rmisc.c uhexen2-20070512/hexen2/gl_rmisc.c
 --- uhexen2-20070511/hexen2/gl_rmisc.c	2007-05-09 21:10:13.000000000 +0300
 +++ uhexen2-20070512/hexen2/gl_rmisc.c	2007-05-12 16:26:03.000000000 +0300
-@@ -244,6 +244,7 @@ void R_Init (void)
+@@ -256,6 +256,7 @@ void R_Init (void)
  	Cvar_RegisterVariable (&r_wholeframe);
  	Cvar_RegisterVariable (&r_texture_external);
  

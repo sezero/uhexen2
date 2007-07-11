@@ -28,7 +28,7 @@ diff -urNp uhexen2-20070511/hexen2/gl_func.h uhexen2-20070512/hexen2/gl_func.h
 diff -urNp uhexen2-20070511/hexen2/glquake.h uhexen2-20070512/hexen2/glquake.h
 --- uhexen2-20070511/hexen2/glquake.h	2007-04-25 23:08:25.000000000 +0300
 +++ uhexen2-20070512/hexen2/glquake.h	2007-05-12 16:22:21.000000000 +0300
-@@ -311,6 +311,16 @@ extern	cvar_t	gl_glows;
+@@ -309,6 +309,16 @@ extern	cvar_t	gl_glows;
  extern	cvar_t	gl_other_glows;
  extern	cvar_t	gl_missile_glows;
  
@@ -210,7 +210,7 @@ diff -urNp uhexen2-20070511/hexen2/gl_rmain.c uhexen2-20070512/hexen2/gl_rmain.c
 diff -urNp uhexen2-20070511/hexen2/gl_rmisc.c uhexen2-20070512/hexen2/gl_rmisc.c
 --- uhexen2-20070511/hexen2/gl_rmisc.c	2007-05-09 21:10:13.000000000 +0300
 +++ uhexen2-20070512/hexen2/gl_rmisc.c	2007-05-12 16:22:21.000000000 +0300
-@@ -267,6 +267,15 @@ void R_Init (void)
+@@ -279,6 +279,15 @@ void R_Init (void)
  	Cvar_RegisterVariable (&gl_other_glows);
  	Cvar_RegisterVariable (&gl_stencilshadow);
  
