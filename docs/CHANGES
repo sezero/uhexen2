@@ -3,6 +3,15 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2007-07-10/11 (CVS):
+    * made all of the sys* files to use the exact same platform version of
+      Sys_DoubleTime. less mess.
+    * updated some scripts.
+    * updated platform definitions. updated the endianness header.
+    * minor updates to some debugging commands.
+    * big update of platform definitions.
+    * even more of platform definition updates.
+
 2007-07-09 (CVS):
     * msg_io.c: trivial clean-up.
     * huffman.c: fixed a wrong ifdef.
