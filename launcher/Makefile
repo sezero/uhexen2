@@ -1,5 +1,5 @@
 # GNU Makefile for hexen2 gtk-launcher app using GCC.
-# $Header: /home/ozzie/Download/0000/uhexen2/launcher/Makefile,v 1.42 2007-07-10 18:48:19 sezero Exp $
+# $Header: /home/ozzie/Download/0000/uhexen2/launcher/Makefile,v 1.43 2007-07-11 21:00:19 sezero Exp $
 #
 #  gtk2 will be used default.
 #  to compile for gtk-1.2 type:  make GTK1=yes
@@ -71,9 +71,6 @@ CFLAGS := $(CFLAGS) $(XDELTA_FLAGS) -I$(XDELTA_DIR) -I$(XDELTA_DIR)/libedsio -I.
 endif
 ifdef GTK1
 CFLAGS := $(CFLAGS) -D_H2L_USE_GTK1
-endif
-ifeq ($(HOST_OS),SunOS)
-CFLAGS := $(CFLAGS) -D__SUNOS__
 endif
 
 LDFLAGS:=$(GTK_LIBS)

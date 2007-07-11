@@ -2,7 +2,7 @@
 	q_endian.h
 	endianness handling
 
-	$Id: q_endian.h,v 1.3 2007-07-11 16:47:16 sezero Exp $
+	$Id: q_endian.h,v 1.4 2007-07-11 21:00:18 sezero Exp $
 */
 
 #ifndef __QENDIAN_H
@@ -48,8 +48,6 @@ extern float	FloatSwap (float);
 #	define	BYTE_ORDER	LITTLE_ENDIAN
 # elif (defined(__alpha__) || defined(__alpha))
 #	define	BYTE_ORDER	LITTLE_ENDIAN
-# elif defined(__SUNOS__)
-#	define	BYTE_ORDER	BIG_ENDIAN
 # elif defined(_WIN32) || defined(_WIN64) || defined(__DJGPP__) || defined(__DOS__)
 #	define	BYTE_ORDER	LITTLE_ENDIAN
 # else

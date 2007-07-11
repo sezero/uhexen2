@@ -2,7 +2,7 @@
 	launcher_defs.h
 	hexen2 launcher: common definitions
 
-	$Id: launcher_defs.h,v 1.28 2007-07-10 18:48:19 sezero Exp $
+	$Id: launcher_defs.h,v 1.29 2007-07-11 21:00:19 sezero Exp $
 
 	This program is free software; you can redistribute it and/or
 	modify it under the terms of the GNU General Public License
@@ -73,7 +73,7 @@
 #else
 #define	HAVE_OSS_SOUND	0
 #endif
-#if defined(__OpenBSD__) || defined(__NetBSD__) || defined(__SUNOS__)
+#if defined(__OpenBSD__) || defined(__NetBSD__) || defined(__sun) || defined(__sun__)
 #define	HAVE_SUN_SOUND	1
 #else
 #define	HAVE_SUN_SOUND	0

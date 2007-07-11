@@ -1,5 +1,5 @@
 # GNU Makefile using GCC in a unix shell.
-# $Header: /home/ozzie/Download/0000/uhexen2/scripts/makefile.inc,v 1.11 2007-07-11 16:47:17 sezero Exp $
+# $Header: /home/ozzie/Download/0000/uhexen2/scripts/makefile.inc,v 1.12 2007-07-11 21:00:19 sezero Exp $
 
 # This file is responsible for determining the Host OS and Target OS,
 # setting common paths, selecting the compiler, assigning the compiler
@@ -103,11 +103,6 @@ endif
 
 # Possible ARCH flags
 ARCHFLAGS:=
-ifneq ($(TARGET_OS),WIN32)
-ifeq ($(HOST_OS),SunOS)
-ARCHFLAGS:=-D__SUNOS__
-endif
-endif
 
 # default CPU flags
 CPUFLAGS:=

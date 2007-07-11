@@ -2,7 +2,7 @@
 	snd_sys.h
 	Platform specific macros and prototypes for sound
 
-	$Id: snd_sys.h,v 1.12 2007-07-11 16:47:15 sezero Exp $
+	$Id: snd_sys.h,v 1.13 2007-07-11 21:00:12 sezero Exp $
 */
 
 #ifndef __HX2_SND_SYS__
@@ -28,7 +28,7 @@
 #if defined(NO_SUN_AUDIO)
 #define HAVE_SUN_SOUND	0
 // add more systems with SUN audio here
-#elif defined(__OpenBSD__) || defined(__NetBSD__) || defined(__SUNOS__)
+#elif defined(__OpenBSD__) || defined(__NetBSD__) || defined(__SOLARIS__)
 #define HAVE_SUN_SOUND	1
 #else
 #define HAVE_SUN_SOUND	0

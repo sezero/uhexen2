@@ -2,7 +2,7 @@
 	arch_def.h
 	platform specific definitions
 
-	$Id: arch_def.h,v 1.7 2007-07-11 16:47:16 sezero Exp $
+	$Id: arch_def.h,v 1.8 2007-07-11 21:00:17 sezero Exp $
 */
 
 #ifndef __HX2_ARCHDEFS__
@@ -15,8 +15,9 @@
 #elif defined(macintosh)
 #	undef __MACOS__
 #	define __MACOS__		1
-#elif defined(__sun) && !defined(__SUNOS__)
-#	define __SUNOS__		1
+#elif defined(__sun) && (defined(__svr4__) || defined(__SVR4))
+#	undef __SOLARIS__
+#	define __SOLARIS__		1
 #elif defined(__QNXNTO__) && !defined(__QNX__)
 #	define __QNX__			1
 #endif	/* end of custom definitions	*/
@@ -49,8 +50,7 @@
     defined(__OpenBSD__) || defined(__NetBSD__)			|| \
     defined(__MORPHOS__) || defined(__QNX__)			|| \
     defined(__hpux) || defined(__hpux__)			|| \
-    defined(__svr4) || defined(__SVR4) || defined(__SUNOS__)	|| \
-    defined(__MACOSX__)
+    defined(__SOLARIS__) || defined(__MACOSX__)
 #   if !defined(PLATFORM_UNIX)
 #	define	PLATFORM_UNIX		1
 #   endif
@@ -83,6 +83,8 @@
 #	define	PLATFORM_STRING	"MacOS"
 #elif defined(__hpux) || defined(__hpux__)
 #	define	PLATFORM_STRING	"HP-UX"
+#elif defined(__SOLARIS__)
+#	define	PLATFORM_STRING	"Solaris"
 #elif defined(PLATFORM_UNIX)
 #	define	PLATFORM_STRING	"Unix"
 #else
