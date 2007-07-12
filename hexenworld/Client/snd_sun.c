@@ -1,6 +1,6 @@
 /*
 	snd_sun.c
-	$Id: snd_sun.c,v 1.8 2007-07-11 21:00:17 sezero Exp $
+	$Id: snd_sun.c,v 1.9 2007-07-12 13:10:53 sezero Exp $
 
 	SUN Audio driver for BSD and SunOS
 
@@ -153,9 +153,12 @@ int S_SUN_GetDMAPos (void)
 
 void S_SUN_Shutdown (void)
 {
-	close (audio_fd);
-	audio_fd = -1;
-	shm = NULL;
+	if (shm)
+	{
+		shm = NULL;
+		close (audio_fd);
+		audio_fd = -1;
+	}
 }
 
 /*

@@ -1,6 +1,6 @@
 /*
 	snd_alsa.c
-	$Id: snd_alsa.c,v 1.33 2007-07-08 11:55:38 sezero Exp $
+	$Id: snd_alsa.c,v 1.34 2007-07-12 13:10:53 sezero Exp $
 
 	ALSA 1.0 sound driver for Linux Hexen II
 
@@ -224,7 +224,6 @@ qboolean S_ALSA_Init (void)
 	memset ((dma_t *) &sn, 0, sizeof(sn));
 	shm = &sn;
 
-	shm->splitbuffer = 0;
 	shm->channels = tmp_chan;
 
 	// don't mix less than this in mono samples:
@@ -274,12 +273,13 @@ error:
 int S_ALSA_GetDMAPos (void)
 {
 	snd_pcm_uframes_t offset;
-	snd_pcm_uframes_t nframes = shm->samples/shm->channels;
+	snd_pcm_uframes_t nframes;
 	const snd_pcm_channel_area_t *areas;
 
 	if (!shm)
 		return 0;
 
+	nframes = shm->samples/shm->channels;
 	hx2snd_pcm_avail_update (pcm);
 	hx2snd_pcm_mmap_begin (pcm, &areas, &offset, &nframes);
 	// The following commit was absent in QF, causing the

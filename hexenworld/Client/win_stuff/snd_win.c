@@ -1,6 +1,6 @@
 /*
 	snd_win.c
-	$Id: snd_win.c,v 1.24 2007-07-11 16:47:16 sezero Exp $
+	$Id: snd_win.c,v 1.25 2007-07-12 13:10:53 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -404,8 +404,6 @@ static sndinitstat SNDDMA_InitDirect (void)
 	IDirectSoundBuffer_GetCurrentPosition(pDSBuf, &mmstarttime.u.sample, &dwWrite);
 	IDirectSoundBuffer_Play(pDSBuf, 0, 0, DSBPLAY_LOOPING);
 
-	shm->soundalive = true;
-	shm->splitbuffer = false;
 	shm->samples = gSndBufSize/(shm->samplebits/8);
 	shm->samplepos = 0;
 	shm->submission_chunk = 1;
@@ -537,8 +535,6 @@ static qboolean SNDDMA_InitWav (void)
 		}
 	}
 
-	shm->soundalive = true;
-	shm->splitbuffer = false;
 	shm->samples = gSndBufSize/(shm->samplebits/8);
 	shm->samplepos = 0;
 	shm->submission_chunk = 1;

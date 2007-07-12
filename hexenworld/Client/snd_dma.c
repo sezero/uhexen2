@@ -2,7 +2,7 @@
 	snd_dma.c
 	main control for any streaming sound output device
 
-	$Id: snd_dma.c,v 1.57 2007-07-11 16:47:16 sezero Exp $
+	$Id: snd_dma.c,v 1.58 2007-07-12 13:10:53 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -268,10 +268,6 @@ void S_Shutdown(void)
 	if (!sound_started)
 		return;
 
-/* This doesnt serve anything. Why do we still keep it in dma_t struct?..
-	if (shm)
-		shm->gamealive = 0;
-*/
 	sound_started = 0;
 
 	SNDDMA_Shutdown();

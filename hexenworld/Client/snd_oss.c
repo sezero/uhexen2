@@ -1,6 +1,6 @@
 /*
 	snd_oss.c
-	$Id: snd_oss.c,v 1.29 2007-01-15 12:01:13 sezero Exp $
+	$Id: snd_oss.c,v 1.30 2007-07-12 13:10:53 sezero Exp $
 
 	Copyright (C) 1996-1997  Id Software, Inc.
 
@@ -102,8 +102,6 @@ qboolean S_OSS_Init(void)
 		Con_Printf("Audio driver doesn't support mmap or trigger\n");
 		goto error;
 	}
-
-	shm->splitbuffer = 0;
 
 // set sample bits & speed
 	i = desired_bits;

@@ -2,7 +2,7 @@
 	sound.h
 	client sound i/o functions
 
-	$Id: sound.h,v 1.20 2007-03-27 11:16:31 sezero Exp $
+	$Id: sound.h,v 1.21 2007-07-12 13:10:53 sezero Exp $
 */
 
 #ifndef __HX2_SOUND_H
@@ -34,9 +34,6 @@ typedef struct
 
 typedef struct
 {
-	qboolean	gamealive;
-	qboolean	soundalive;
-	qboolean	splitbuffer;
 	int	channels;
 	int	samples;		// mono samples in buffer
 	int	submission_chunk;	// don't mix less than this #

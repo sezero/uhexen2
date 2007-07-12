@@ -4,7 +4,7 @@
 	code by Sam Lantinga (http://www.libsdl.org/projects/quake/)
 	Additional bits taken from QuakeForge and Quake3 projects.
 
-	$Id: snd_sdl.c,v 1.21 2007-02-07 17:03:30 sezero Exp $
+	$Id: snd_sdl.c,v 1.22 2007-07-12 13:10:53 sezero Exp $
 */
 
 #define _SND_SYS_MACROS_ONLY
@@ -72,7 +72,6 @@ qboolean S_SDL_Init(void)
 	shm = &sn;
 
 	/* Fill the audio DMA information block */
-	shm->splitbuffer = 0;
 	shm->samplebits = (obtained.format & 0xFF); // first byte of format is bits
 	if (obtained.freq != desired_speed)
 		Con_Printf ("Warning: Rate set (%d) didn't match requested rate (%d)!\n", obtained.freq, desired_speed);
