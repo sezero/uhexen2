@@ -1,5 +1,5 @@
 # GNU Makefile for hexen2 genmodel tool using GCC.
-# $Header: /home/ozzie/Download/0000/uhexen2/utils/genmodel/Makefile,v 1.11 2007-05-15 14:25:19 sezero Exp $
+# $Header: /home/ozzie/Download/0000/uhexen2/utils/genmodel/Makefile,v 1.12 2007-07-12 19:41:20 sezero Exp $
 #
 # if building a debug version :		make DEBUG=1 [other stuff]
 #
@@ -30,12 +30,18 @@ endif
 
 # Compiler flags
 
+CPUFLAGS:=
 # Overrides for the default CPUFLAGS
-#CPUFLAGS:=
+ifeq ($(MACH_TYPE),x86)
+CPUFLAGS:=-march=i586
+endif
+
 # Overrides for the default ARCHFLAGS
 #ARCHFLAGS:=
 
-ifndef DEBUG
+ifdef DEBUG
+CFLAGS := -g -Wall
+else
 CFLAGS := $(CPUFLAGS) -O2 -Wall -ffast-math -fexpensive-optimizations
 endif
 

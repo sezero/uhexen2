@@ -1,5 +1,5 @@
 # GNU Makefile for hexen2 hcc tool (old version) using GCC.
-# $Header: /home/ozzie/Download/0000/uhexen2/utils/hcc_old/Makefile,v 1.8 2007-05-15 14:25:21 sezero Exp $
+# $Header: /home/ozzie/Download/0000/uhexen2/utils/hcc_old/Makefile,v 1.9 2007-07-12 19:41:20 sezero Exp $
 #
 # if building a debug version :		make DEBUG=1 [other stuff]
 #
@@ -28,16 +28,22 @@ endif
 
 # Compiler flags
 
+CPUFLAGS:=
 # Overrides for the default CPUFLAGS
-#CPUFLAGS:=
+ifeq ($(MACH_TYPE),x86)
+CPUFLAGS:=-march=i586
+endif
+
 # Overrides for the default ARCHFLAGS
 #ARCHFLAGS:=
 
-ifndef DEBUG
+ifdef DEBUG
+CFLAGS := -g -Wall
+else
 CFLAGS = $(CPUFLAGS) -O2 -Wall
+endif
 # avoid the compiler warnings in pr_lex.c for now
 CFLAGS+= -Wno-char-subscripts
-endif
 
 # Other build flags
 

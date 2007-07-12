@@ -1,5 +1,5 @@
 # GNU Makefile for hexenworld server using GCC.
-# $Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Server/Makefile,v 1.37 2007-07-11 16:47:16 sezero Exp $
+# $Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Server/Makefile,v 1.38 2007-07-12 19:41:20 sezero Exp $
 #
 # To cross-compile for Win32 on Unix, you must pass the WINBUILD=1
 # argument to make. It would be best if you examine the script named
@@ -49,12 +49,21 @@ endif
 
 # Compiler flags
 
+CPUFLAGS:=
 # Overrides for the default CPUFLAGS
-#CPUFLAGS:=
+ifeq ($(MACH_TYPE),x86)
+CPUFLAGS:=-march=i586
+endif
+
 # Overrides for the default ARCHFLAGS
 #ARCHFLAGS:=
 
-ifndef DEBUG
+ifdef DEBUG
+
+CFLAGS := -g -Wall
+
+else
+
 CFLAGS := $(CPUFLAGS) -O2 -Wall -ffast-math -fexpensive-optimizations
 
 ifdef NO_UNIT_AT_A_TIME

@@ -1,5 +1,5 @@
 # GNU Makefile for hexen2 qfiles tool using GCC.
-# $Header: /home/ozzie/Download/0000/uhexen2/utils/qfiles/Makefile,v 1.9 2007-05-15 14:25:25 sezero Exp $
+# $Header: /home/ozzie/Download/0000/uhexen2/utils/qfiles/Makefile,v 1.10 2007-07-12 19:41:21 sezero Exp $
 #
 # if building a debug version :		make DEBUG=1 [other stuff]
 #
@@ -30,12 +30,18 @@ endif
 
 # Compiler flags
 
+CPUFLAGS:=
 # Overrides for the default CPUFLAGS
-#CPUFLAGS:=
+ifeq ($(MACH_TYPE),x86)
+CPUFLAGS:=-march=i586
+endif
+
 # Overrides for the default ARCHFLAGS
 #ARCHFLAGS:=
 
-ifndef DEBUG
+ifdef DEBUG
+CFLAGS := -g -Wall
+else
 CFLAGS = $(CPUFLAGS) -O2 -Wall
 endif
 

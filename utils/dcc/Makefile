@@ -1,5 +1,5 @@
 # GNU Makefile for hexen2 dhcc tool using GCC.
-# $Header: /home/ozzie/Download/0000/uhexen2/utils/dcc/Makefile,v 1.24 2007-05-15 14:25:19 sezero Exp $
+# $Header: /home/ozzie/Download/0000/uhexen2/utils/dcc/Makefile,v 1.25 2007-07-12 19:41:20 sezero Exp $
 #
 # if building a debug version :		make DEBUG=1 [other stuff]
 #
@@ -30,16 +30,18 @@ endif
 
 # Compiler flags
 
+CPUFLAGS:=
 # Overrides for the default CPUFLAGS
+# NOTE: the i586 cpuflag is causing a ~two-fold~ slowdown!
 #CPUFLAGS:=
+
 # Overrides for the default ARCHFLAGS
 #ARCHFLAGS:=
 
-ifndef DEBUG
-OPTFLAGS:= -O2
-#CFLAGS := $(CPUFLAGS) $(OPTFLAGS) -Wall
-# the i586 cpuflag is causing a ~two-fold~ slowdown!
-CFLAGS := $(OPTFLAGS) -Wall
+ifdef DEBUG
+CFLAGS := -g -Wall
+else
+CFLAGS := $(CPUFLAGS) -O2 -Wall
 endif
 
 # Other build flags

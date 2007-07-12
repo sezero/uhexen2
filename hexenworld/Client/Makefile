@@ -1,5 +1,5 @@
 # GNU Makefile for hexenworld clients using GCC.
-# $Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/Makefile,v 1.66 2007-07-11 16:47:16 sezero Exp $
+# $Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/Makefile,v 1.67 2007-07-12 19:41:19 sezero Exp $
 #
 # Type "make help" to see the valid targets.
 #
@@ -153,12 +153,21 @@ endif
 
 # Compiler flags
 
+CPUFLAGS:=
 # Overrides for the default CPUFLAGS
-#CPUFLAGS:=
+ifeq ($(MACH_TYPE),x86)
+CPUFLAGS:=-march=i586
+endif
+
 # Overrides for the default ARCHFLAGS
 #ARCHFLAGS:=
 
-ifndef DEBUG
+ifdef DEBUG
+
+CFLAGS := -g -Wall
+
+else
+
 CFLAGS := $(CPUFLAGS) -O2 -Wall -ffast-math -fexpensive-optimizations
 
 ifdef NO_UNIT_AT_A_TIME

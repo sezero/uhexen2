@@ -1,5 +1,5 @@
 # GNU Makefile for Hexen II Dedicated Server (h2ded) using GCC.
-# $Header: /home/ozzie/Download/0000/uhexen2/hexen2/Makefile.sv,v 1.13 2007-07-11 16:47:14 sezero Exp $
+# $Header: /home/ozzie/Download/0000/uhexen2/hexen2/Makefile.sv,v 1.14 2007-07-12 19:41:18 sezero Exp $
 #
 # It is ESSENTIAL that you run make clean between different
 # types of builds or different types of targets.
@@ -52,12 +52,21 @@ endif
 
 # Compiler flags
 
+CPUFLAGS:=
 # Overrides for the default CPUFLAGS
-#CPUFLAGS:=
+ifeq ($(MACH_TYPE),x86)
+CPUFLAGS:=-march=i586
+endif
+
 # Overrides for the default ARCHFLAGS
 #ARCHFLAGS:=
 
-ifndef DEBUG
+ifdef DEBUG
+
+CFLAGS := -g -Wall
+
+else
+
 CFLAGS := $(CPUFLAGS) -O2 -Wall -ffast-math -fexpensive-optimizations
 
 ifdef NO_UNIT_AT_A_TIME

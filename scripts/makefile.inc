@@ -1,5 +1,5 @@
 # GNU Makefile using GCC in a unix shell.
-# $Header: /home/ozzie/Download/0000/uhexen2/scripts/makefile.inc,v 1.12 2007-07-11 21:00:19 sezero Exp $
+# $Header: /home/ozzie/Download/0000/uhexen2/scripts/makefile.inc,v 1.13 2007-07-12 19:41:20 sezero Exp $
 
 # This file is responsible for determining the Host OS and Target OS,
 # setting common paths, selecting the compiler, assigning the compiler
@@ -7,9 +7,8 @@
 # detection, setting the "sdl-config" command.
 
 # We also define some common flags in here:
-# A common debug CFLAGS, possible ARCH flags, a default CPUFLAGS, flags
-# for NASM, SDL and MGL, flags for opengl linkage. See them near the bottom
-# of this file.
+# Possible ARCH flags, flags for NASM, SDL and MGL, flags for opengl linkage.
+# See them near the bottom of this file.
 
 # Unless overriden, these settings will be used in any includer makefile
 # in the uhexen2 tree. The intention is to make the actual Makefiles some
@@ -26,6 +25,12 @@ MINGWDIR ?=/mingw
 # OS and TARGET_OS detection:
 
 HOST_OS :=$(shell uname -s)
+
+# NOTE:	We only support one type of cross compilation:
+#	Compiling for windows on unix (linux).  This
+#	means, unless cross compiling (detected by the
+#	WINBUILD definition on a UNIX host, see below),
+#	the actual TARGET_OS remains as the HOST_OS.
 
 # See if we are running on a Windows installation.
 #WIN_NATIVE :=$(shell if env | grep -i windir > __tmp.tmp; then echo "yes"; fi)
@@ -104,10 +109,10 @@ endif
 # Possible ARCH flags
 ARCHFLAGS:=
 
-# default CPU flags
-CPUFLAGS:=
-ifeq ($(MACH_TYPE),x86)
-CPUFLAGS:=-march=i586
+ifndef WINBUILD
+ifeq ($(HOST_OS),MorphOS)
+ARCHFLAGS:=-noixemul
+endif
 endif
 
 # NASM flags:
@@ -116,14 +121,6 @@ ifeq ($(TARGET_OS),WIN32)
 NASMFLAGS:= -fwin32 -D__WIN32__ --prefix _
 else
 NASMFLAGS:= -f elf
-endif
-
-# CFLAGS for debug-builds:
-# For building debug binaries, a DEBUG=1 argument should
-# be added to the make command
-DFLAGS := -g -Wall
-ifdef DEBUG
-CFLAGS := $(DFLAGS)
 endif
 
 # the "sdl-config" command
@@ -143,7 +140,7 @@ endif
 
 # -lsocket is needed on some arches
 LIBSOCKET:=
-ifneq ($(TARGET_OS),WIN32)
+ifndef WINBUILD
 ifeq ($(HOST_OS),QNX)
 LIBSOCKET:=-lsocket
 endif

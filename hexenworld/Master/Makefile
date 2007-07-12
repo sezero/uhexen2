@@ -1,5 +1,5 @@
 # GNU Makefile for hexenworld master server using GCC.
-# $Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Master/Makefile,v 1.16 2007-07-11 16:47:16 sezero Exp $
+# $Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Master/Makefile,v 1.17 2007-07-12 19:41:20 sezero Exp $
 #
 # if building a debug version :		make DEBUG=1 [other stuff]
 #
@@ -26,14 +26,21 @@ endif
 
 # Compiler flags
 
+CPUFLAGS:=
 # Overrides for the default CPUFLAGS
 ifeq ($(MACH_TYPE),x86)
 CPUFLAGS:=-march=i386
 endif
+
 # Overrides for the default ARCHFLAGS
 #ARCHFLAGS:=
 
-ifndef DEBUG
+ifdef DEBUG
+
+CFLAGS := -g -Wall
+
+else
+
 CFLAGS := $(CPUFLAGS) -O2 -Wall
 
 ifdef NO_UNIT_AT_A_TIME

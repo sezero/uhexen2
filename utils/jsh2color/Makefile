@@ -1,5 +1,5 @@
 # GNU Makefile for hexen2 jsh2color tool using GCC.
-# $Header: /home/ozzie/Download/0000/uhexen2/utils/jsh2color/Makefile,v 1.15 2007-05-15 14:25:24 sezero Exp $
+# $Header: /home/ozzie/Download/0000/uhexen2/utils/jsh2color/Makefile,v 1.16 2007-07-12 19:41:21 sezero Exp $
 #
 # if building a debug version :		make DEBUG=1 [other stuff]
 #
@@ -30,12 +30,18 @@ endif
 
 # Compiler flags
 
+CPUFLAGS:=
 # Overrides for the default CPUFLAGS
-#CPUFLAGS:=
+ifeq ($(MACH_TYPE),x86)
+CPUFLAGS:=-march=i586
+endif
+
 # Overrides for the default ARCHFLAGS
 #ARCHFLAGS:=
 
-ifndef DEBUG
+ifdef DEBUG
+CFLAGS := -g -Wall
+else
 CFLAGS := $(CPUFLAGS) -O2 -Wall -ffast-math -fexpensive-optimizations
 endif
 CFLAGS := $(CFLAGS) -DDOUBLEVEC_T
