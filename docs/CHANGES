@@ -8,6 +8,7 @@ Development Progress	:
     * removed the splitbuffer, gamealive and soundalive members of the
       dma_t structure, they aren't used in any way. a few minor things
       here and there.
+    * build system updates.
 
 2007-07-10/11 (CVS):
     * made all of the sys* files to use the exact same platform version of
