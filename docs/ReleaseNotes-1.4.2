@@ -17,6 +17,8 @@ General:
   server must be started with "-protocol 18" command line argument.
 - You can also load and play games saved with the 1.11 windows version and
   can playback the demos recorded with the 1.11 version.
+- Fixed a bug in NET_SendToAll (mainly used for reconnecting clients upon
+  changing levels) where it didn't skip non-connected clients.
 - Fixed and improved parsing of puzzles.txt: This fixes the bug where the
   names used to be listed as Unknown in the puzzle pieces inventory display
   (you can access the puzzle pieces inventory display using a key bound to
