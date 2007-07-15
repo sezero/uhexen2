@@ -2,7 +2,7 @@
 	net_main.c
 	main networking module
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/server/net_main.c,v 1.15 2007-07-04 08:49:59 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/server/net_main.c,v 1.16 2007-07-15 15:22:36 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -33,8 +33,6 @@ int unreliableMessagesReceived = 0;
 
 static	cvar_t	net_messagetimeout = {"net_messagetimeout", "300", CVAR_NONE};
 cvar_t	hostname = {"hostname", "UNNAMED", CVAR_NONE};
-
-static qboolean	configRestored = false;
 
 cvar_t	net_allowmultiple = {"net_allowmultiple", "0", CVAR_ARCHIVE};
 
@@ -401,19 +399,17 @@ qboolean NET_CanSendMessage (qsocket_t *sock)
 }
 
 
-int NET_SendToAll(sizebuf_t *data, int blocktime)
+int NET_SendToAll (sizebuf_t *data, double blocktime)
 {
 	double		start;
 	int			i;
 	int			count = 0;
-	qboolean	state1 [MAX_CLIENTS];
-	qboolean	state2 [MAX_CLIENTS];
+	qboolean	state1[MAX_CLIENTS];	/* can we send */
+	qboolean	state2[MAX_CLIENTS];	/* did we send */
 
 	for (i = 0, host_client = svs.clients; i < svs.maxclients; i++, host_client++)
 	{
-		if (!host_client->netconnection)
-			continue;
-		if (host_client->active)
+		if (host_client->netconnection && host_client->active)
 		{
 			count++;
 			state1[i] = false;
@@ -578,11 +574,6 @@ static PollProcedure *pollProcedureList = NULL;
 void NET_Poll(void)
 {
 	PollProcedure *pp;
-
-	if (!configRestored)
-	{
-		configRestored = true;
-	}
 
 	SetNetTime();
 

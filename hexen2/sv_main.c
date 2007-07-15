@@ -2,7 +2,7 @@
 	sv_main.c
 	server main program
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sv_main.c,v 1.60 2007-07-08 11:55:23 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sv_main.c,v 1.61 2007-07-15 15:22:28 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -1833,7 +1833,7 @@ static void SV_SendReconnect (void)
 
 	MSG_WriteChar (&msg, svc_stufftext);
 	MSG_WriteString (&msg, "reconnect\n");
-	NET_SendToAll (&msg, 5);
+	NET_SendToAll (&msg, 5.0);
 
 #if !defined(SERVERONLY)
 	if (cls.state != ca_dedicated)
@@ -1842,7 +1842,7 @@ static void SV_SendReconnect (void)
 #else
 		Cmd_ExecuteString ("reconnect\n", src_command);
 #endif
-#endif	// ! SERVERONLY
+#endif	/* ! SERVERONLY */
 }
 
 

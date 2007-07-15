@@ -2,7 +2,7 @@
 	host.c
 	coordinates spawning and killing of local servers
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host.c,v 1.81 2007-07-11 16:47:14 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host.c,v 1.82 2007-07-15 15:22:28 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -251,6 +251,7 @@ static void Host_FindMaxClients (void)
 	if (svs.maxclientslimit < 4)
 		svs.maxclientslimit = 4;
 	svs.clients = (client_t *) Hunk_AllocName (svs.maxclientslimit*sizeof(client_t), "clients");
+	memset (svs.clients, 0, svs.maxclientslimit*sizeof(client_t));
 
 	if (svs.maxclients > 1)
 		Cvar_SetValue ("deathmatch", 1.0);
@@ -572,7 +573,7 @@ void Host_ShutdownServer(qboolean crash)
 // make sure all the clients know we're disconnecting
 	SZ_Init (&buf, message, sizeof(message));
 	MSG_WriteByte(&buf, svc_disconnect);
-	count = NET_SendToAll(&buf, 5);
+	count = NET_SendToAll (&buf, 5.0);
 	if (count)
 		Con_Printf("%s: NET_SendToAll failed for %d clients\n", __thisfunc__, count);
 

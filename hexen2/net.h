@@ -2,7 +2,7 @@
 	net.h
 	quake's interface to the networking layer
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/net.h,v 1.16 2007-07-08 11:55:21 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/net.h,v 1.17 2007-07-15 15:22:28 sezero Exp $
 */
 
 #ifndef __HX2_NET_H
@@ -263,7 +263,7 @@ int			NET_SendUnreliableMessage (struct qsocket_s *sock, sizebuf_t *data);
 // returns 1 if the message was sent properly
 // returns -1 if the connection died
 
-int			NET_SendToAll(sizebuf_t *data, int blocktime);
+int			NET_SendToAll(sizebuf_t *data, double blocktime);
 // This is a reliable *blocking* send to all attached clients.
 
 
