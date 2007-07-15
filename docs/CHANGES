@@ -3,6 +3,15 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2007-07-15 (CVS):
+    * network fixes and clean-ups:  removed remnants of dead functions
+      (Datagram_Connect) from the hexen2 dedicated server. removed the
+      dead variable configRestored from net_main.c (it used to serve
+      something when the serial driver was compiled in quake). changed
+      the blocktime argument of NET_SendToAll() to double (the comparison
+      is against a double). fixed a bug in NET_SendToAll where it didn't
+      skip non-connected clients. cleared svs.clients after allocating it.
+
 2007-07-12 (CVS):
     * strlcat and strlcpy should include arch_def.h .
     * removed the splitbuffer, gamealive and soundalive members of the
