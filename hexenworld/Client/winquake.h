@@ -2,7 +2,7 @@
 	winquake.h
 	Win32-specific Quake header file
 
-	$Id: winquake.h,v 1.27 2007-07-17 14:04:03 sezero Exp $
+	$Id: winquake.h,v 1.28 2007-07-17 16:30:46 sezero Exp $
 */
 
 #if !defined(PLATFORM_WINDOWS)
@@ -51,8 +51,6 @@ extern	int			global_nCmdShow;
 #define	MK_XBUTTON1		0x0020
 #define	MK_XBUTTON2		0x0040
 #endif
-
-#define	NUM_MOUSEBUTTONS	5	/* wheel not included	*/
 
 
 #ifndef SERVERONLY

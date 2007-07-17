@@ -1,6 +1,6 @@
 /*
 	in_win.c
-	$Id: in_win.c,v 1.28 2007-07-17 16:08:55 sezero Exp $
+	$Id: in_win.c,v 1.29 2007-07-17 16:30:46 sezero Exp $
 
 	windows 95 mouse and joystick code
 
@@ -25,6 +25,17 @@ static qboolean	mouseactive;
 static qboolean	mouseinitialized;
 static qboolean	mouseparmsvalid, mouseactivatetoggle;
 static qboolean	mouseshowtoggle = 1;
+
+/* do NOT include the wheel enums below */
+static int buttonremap[] =
+{
+	K_MOUSE1,
+	K_MOUSE2,
+	K_MOUSE3,
+	K_MOUSE4,
+	K_MOUSE5
+};
+#define	NUM_MOUSEBUTTONS	(sizeof(buttonremap) / sizeof(buttonremap[0]))
 
 /* DirectInput mouse control: */
 static qboolean			dinput;
@@ -554,7 +565,7 @@ void IN_MouseEvent (int mstate)
 		for (i = 0; i < NUM_MOUSEBUTTONS; i++)
 		{
 			if ((mstate ^ mouse_oldbuttonstate) & (1<<i))
-				Key_Event (K_MOUSE1 + i, (mstate & (1<<i)) != 0);
+				Key_Event (buttonremap[i], (mstate & (1<<i)) != 0);
 		}
 
 		mouse_oldbuttonstate = mstate;
@@ -662,7 +673,7 @@ static void IN_MouseMove (usercmd_t *cmd)
 		for (i = 0; i < NUM_MOUSEBUTTONS; i++)
 		{
 			if ((mstate_di ^ mouse_oldbuttonstate) & (1<<i))
-				Key_Event (K_MOUSE1 + i, (mstate_di & (1<<i)) != 0);
+				Key_Event (buttonremap[i], (mstate_di & (1<<i)) != 0);
 		}
 
 		mouse_oldbuttonstate = mstate_di;
