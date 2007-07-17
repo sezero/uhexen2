@@ -3,7 +3,7 @@
 	include this instead of all the other snd_* files
 	to have no sound code whatsoever
 
-	$Id: snd_null.c,v 1.3 2007-03-14 21:03:42 sezero Exp $
+	$Id: snd_null.c,v 1.4 2007-07-17 16:10:10 sezero Exp $
 
 	Copyright (C) 1996-1997 Id Software, Inc.
 
@@ -38,14 +38,6 @@ void S_Init (void)
 {
 	Cvar_RegisterVariable(&precache);
 	Con_Printf("SOUND: disabled at compile time\n");
-}
-
-void S_AmbientOff (void)
-{
-}
-
-void S_AmbientOn (void)
-{
 }
 
 void S_Shutdown (void)

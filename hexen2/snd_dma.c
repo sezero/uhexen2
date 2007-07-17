@@ -2,7 +2,7 @@
 	snd_dma.c
 	main control for any streaming sound output device
 
-	$Id: snd_dma.c,v 1.62 2007-07-17 14:17:08 sezero Exp $
+	$Id: snd_dma.c,v 1.63 2007-07-17 16:10:09 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -31,7 +31,6 @@ channel_t   snd_channels[MAX_CHANNELS];
 int		total_channels;
 
 int		snd_blocked = 0;
-static qboolean	snd_ambient = 1;
 static qboolean	snd_initialized = false;
 
 static const struct
@@ -92,18 +91,6 @@ static	cvar_t	ambient_fade = {"ambient_fade", "100", CVAR_NONE};
 static	cvar_t	snd_noextraupdate = {"snd_noextraupdate", "0", CVAR_NONE};
 static	cvar_t	snd_show = {"snd_show", "0", CVAR_NONE};
 static	cvar_t	_snd_mixahead = {"_snd_mixahead", "0.1", CVAR_ARCHIVE};
-
-
-void S_AmbientOff (void)
-{
-	snd_ambient = false;
-}
-
-
-void S_AmbientOn (void)
-{
-	snd_ambient = true;
-}
 
 
 static void S_SoundInfo_f(void)
@@ -700,9 +687,6 @@ static void S_UpdateAmbientSounds (void)
 	mleaf_t		*l;
 	int			vol, ambient_channel;
 	channel_t	*chan;
-
-	if (!snd_ambient)
-		return;
 
 // calc ambient sound levels
 	if (!cl.worldmodel)

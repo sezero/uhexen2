@@ -2,7 +2,7 @@
 	sound.h
 	client sound i/o functions
 
-	$Id: sound.h,v 1.21 2007-07-12 13:10:53 sezero Exp $
+	$Id: sound.h,v 1.22 2007-07-17 16:10:09 sezero Exp $
 */
 
 #ifndef __HX2_SOUND_H
@@ -135,9 +135,6 @@ sfxcache_t *S_LoadSound (sfx_t *s);
 wavinfo_t GetWavinfo (const char *name, byte *wav, size_t wavlength);
 
 void SND_InitScaletable (void);
-
-void S_AmbientOff (void);
-void S_AmbientOn (void);
 
 #endif	/* __HX2_SOUND_H */
 
