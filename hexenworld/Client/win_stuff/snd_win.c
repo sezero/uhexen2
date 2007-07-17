@@ -1,6 +1,6 @@
 /*
 	snd_win.c
-	$Id: snd_win.c,v 1.26 2007-07-17 14:17:09 sezero Exp $
+	$Id: snd_win.c,v 1.27 2007-07-17 16:08:59 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -24,7 +24,6 @@ LPDIRECTSOUNDBUFFER	pDSBuf, pDSPBuf;
 
 #if defined(DX_DLSYM)	/* dynamic loading of dsound symbols */
 static HINSTANCE	hInstDS;
-#define	iDirectSoundCreate(a,b,c)	pDirectSoundCreate(a,b,c)
 static HRESULT (WINAPI *pDirectSoundCreate)(GUID FAR *lpGUID, LPDIRECTSOUND FAR *lplpDS, IUnknown FAR *pUnkOuter);
 #else	/* ! DX_DLSYM : we're linked to dsound */
 #define	pDirectSoundCreate		DirectSoundCreate

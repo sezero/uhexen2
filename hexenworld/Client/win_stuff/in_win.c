@@ -1,6 +1,6 @@
 /*
 	in_win.c
-	$Id: in_win.c,v 1.27 2007-07-17 14:17:09 sezero Exp $
+	$Id: in_win.c,v 1.28 2007-07-17 16:08:59 sezero Exp $
 
 	windows 95 mouse and joystick code
 
@@ -82,7 +82,6 @@ static DIDATAFORMAT	diformat =
 };
 
 static HINSTANCE	hInstDI;
-#define	iDirectInputCreate(a,b,c,d)	pDirectInputCreate(a,b,c,d)
 static HRESULT (WINAPI *pDirectInputCreate)(HINSTANCE hinst, DWORD dwVersion, LPDIRECTINPUT *lplpDirectInput, LPUNKNOWN punkOuter);
 
 #else	/* ! DX_DLSYM : we're linked to dinput */
