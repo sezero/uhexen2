@@ -1,5 +1,5 @@
 # GNU Makefile for hexenworld clients using GCC.
-# $Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/Makefile,v 1.67 2007-07-12 19:41:19 sezero Exp $
+# $Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/Makefile,v 1.68 2007-07-17 14:17:08 sezero Exp $
 #
 # Type "make help" to see the valid targets.
 #
@@ -56,6 +56,13 @@
 # WITH_SPLASHES	yes  =	(default) enable startup splash screens
 # (for Win32)	no   =	disable startup splash screens
 #
+# LINK_DIRECTX	no  =	(default) Don't link to the dsound and dinput at compile
+# (for Win32)		time. The binaries will dynamically load the necessary
+#			dll files and functions at runtime. This ensures our exe
+#			to run on ancient windows versions without any directx
+#			installation.
+#		yes =	link to the directx libraries at compile time
+#
 # LINK_GL_LIBS	no  =	(default) Don't link to the opengl libraries at compile
 #			time. The binaries will dynamically load the necessary
 #			libraries and functions at runtime.
@@ -108,6 +115,7 @@ USE_MIDI=yes
 USE_CDAUDIO=yes
 USE_SDLCD=no
 WITH_SPLASHES=yes
+LINK_DIRECTX=no
 OPT_EXTRA=yes
 LINK_GL_LIBS=no
 USE_3DFXGAMMA=yes
@@ -198,7 +206,6 @@ ifeq ($(TARGET_OS),WIN32)
 # Main win32 specific includes and flags
 INCLUDES:= -I$(UHEXEN2_TOP)/w32stuff/dxsdk/inc -I$(MINGWDIR)/include -I.
 LDFLAGS := -L$(MINGWDIR)/lib -lwinmm -lwsock32 -mwindows
-LDFLAGS += -ldinput -ldxguid
 else
 # Main unix specific includes and flags
 INCLUDES:= -I$(X11BASE)/include -I.
@@ -263,6 +270,12 @@ endif
 
 ifeq ($(TARGET_OS),WIN32)
 # Start Win32-specific extra flags/settings
+
+ifeq ($(LINK_DIRECTX),no)
+EXT_FLAGS+= -DDX_DLSYM
+else
+LDFLAGS += -ldsound -ldinput -ldxguid
+endif
 
 ifeq ($(WITH_SPLASHES),no)
 EXT_FLAGS+= -DNO_SPLASHES

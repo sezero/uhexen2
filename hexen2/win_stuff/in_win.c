@@ -1,6 +1,6 @@
 /*
 	in_win.c
-	$Id: in_win.c,v 1.26 2007-07-17 14:04:02 sezero Exp $
+	$Id: in_win.c,v 1.27 2007-07-17 14:17:08 sezero Exp $
 
 	windows 95 mouse and joystick code
 
@@ -11,11 +11,6 @@
 #include "quakedef.h"
 #include "winquake.h"
 #include <dinput.h>
-
-#define DINPUT_BUFFERSIZE           16
-#define iDirectInputCreate(a,b,c,d)	pDirectInputCreate(a,b,c,d)
-
-static HRESULT (WINAPI *pDirectInputCreate)(HINSTANCE hinst, DWORD dwVersion, LPDIRECTINPUT *lplpDirectInput, LPUNKNOWN punkOuter);
 
 // mouse variables
 static cvar_t	m_filter = {"m_filter", "0", CVAR_NONE};
@@ -30,9 +25,72 @@ static qboolean	mouseactive;
 static qboolean	mouseinitialized;
 static qboolean	mouseparmsvalid, mouseactivatetoggle;
 static qboolean	mouseshowtoggle = 1;
-static qboolean	dinput_acquired;
 
+/* DirectInput mouse control: */
+static qboolean			dinput;
+static qboolean			dinput_acquired;
 static unsigned int		mstate_di;
+
+static LPDIRECTINPUT		g_pdi;
+static LPDIRECTINPUTDEVICE	g_pMouse;
+
+#define	DINPUT_BUFFERSIZE		16
+
+#if defined(DX_DLSYM)	/* dynamic loading of dinput symbols */
+
+#undef	DEFINE_GUID
+#define	DEFINE_GUID(name, l, w1, w2,   b1, b2, b3, b4, b5, b6, b7, b8)	\
+	const GUID name =						\
+			{ l, w1, w2, { b1, b2, b3, b4, b5, b6, b7, b8 } }
+
+DEFINE_GUID(GUID_SysMouse,   0x6F1D2B60,0xD5A0,0x11CF,0xBF,0xC7,0x44,0x45,0x53,0x54,0x00,0x00);
+DEFINE_GUID(GUID_XAxis,   0xA36D02E0,0xC9F3,0x11CF,0xBF,0xC7,0x44,0x45,0x53,0x54,0x00,0x00);
+DEFINE_GUID(GUID_YAxis,   0xA36D02E1,0xC9F3,0x11CF,0xBF,0xC7,0x44,0x45,0x53,0x54,0x00,0x00);
+DEFINE_GUID(GUID_ZAxis,   0xA36D02E2,0xC9F3,0x11CF,0xBF,0xC7,0x44,0x45,0x53,0x54,0x00,0x00);
+
+typedef struct MYDATA {
+	LONG	lX;		// X axis goes here
+	LONG	lY;		// Y axis goes here
+	LONG	lZ;		// Z axis goes here
+	BYTE	bButtonA;	// One button goes here
+	BYTE	bButtonB;	// Another button goes here
+	BYTE	bButtonC;	// Another button goes here
+	BYTE	bButtonD;	// Another button goes here
+} MYDATA;
+
+static DIOBJECTDATAFORMAT rgodf[] =
+{
+	{ &GUID_XAxis,	FIELD_OFFSET(MYDATA, lX),	DIDFT_AXIS | DIDFT_ANYINSTANCE,			0,},
+	{ &GUID_YAxis,	FIELD_OFFSET(MYDATA, lY),	DIDFT_AXIS | DIDFT_ANYINSTANCE,			0,},
+	{ &GUID_ZAxis,	FIELD_OFFSET(MYDATA, lZ),	0x80000000 | DIDFT_AXIS | DIDFT_ANYINSTANCE,	0,},
+	{ 0,		FIELD_OFFSET(MYDATA, bButtonA),	DIDFT_BUTTON | DIDFT_ANYINSTANCE,		0,},
+	{ 0,		FIELD_OFFSET(MYDATA, bButtonB),	DIDFT_BUTTON | DIDFT_ANYINSTANCE,		0,},
+	{ 0,		FIELD_OFFSET(MYDATA, bButtonC),	0x80000000 | DIDFT_BUTTON | DIDFT_ANYINSTANCE,	0,},
+	{ 0,		FIELD_OFFSET(MYDATA, bButtonD),	0x80000000 | DIDFT_BUTTON | DIDFT_ANYINSTANCE,	0,},
+};
+
+#define NUM_OBJECTS (sizeof(rgodf) / sizeof(rgodf[0]))
+
+static DIDATAFORMAT	diformat =
+{
+	sizeof(DIDATAFORMAT),		// this structure
+	sizeof(DIOBJECTDATAFORMAT),	// size of object data format
+	DIDF_RELAXIS,			// absolute axis coordinates
+	sizeof(MYDATA),			// device data size
+	NUM_OBJECTS,			// number of objects
+	rgodf,				// and here they are
+};
+
+static HINSTANCE	hInstDI;
+#define	iDirectInputCreate(a,b,c,d)	pDirectInputCreate(a,b,c,d)
+static HRESULT (WINAPI *pDirectInputCreate)(HINSTANCE hinst, DWORD dwVersion, LPDIRECTINPUT *lplpDirectInput, LPUNKNOWN punkOuter);
+
+#else	/* ! DX_DLSYM : we're linked to dinput */
+
+#define	diformat			c_dfDIMouse
+#define	pDirectInputCreate		DirectInputCreateA
+
+#endif	/* DX_DLSYM */
 
 // joystick defines and variables
 // where should defines be moved?
@@ -92,45 +150,7 @@ static int		joy_id;
 static DWORD	joy_flags;
 static DWORD	joy_numbuttons;
 
-static LPDIRECTINPUT		g_pdi;
-static LPDIRECTINPUTDEVICE	g_pMouse;
-
 static JOYINFOEX	ji;
-
-static HINSTANCE hInstDI;
-
-static qboolean	dinput;
-
-typedef struct MYDATA {
-	LONG	lX;		// X axis goes here
-	LONG	lY;		// Y axis goes here
-	LONG	lZ;		// Z axis goes here
-	BYTE	bButtonA;	// One button goes here
-	BYTE	bButtonB;	// Another button goes here
-	BYTE	bButtonC;	// Another button goes here
-	BYTE	bButtonD;	// Another button goes here
-} MYDATA;
-
-static DIOBJECTDATAFORMAT rgodf[] = {
-	{ &GUID_XAxis,	FIELD_OFFSET(MYDATA, lX),	DIDFT_AXIS | DIDFT_ANYINSTANCE,			0,},
-	{ &GUID_YAxis,	FIELD_OFFSET(MYDATA, lY),	DIDFT_AXIS | DIDFT_ANYINSTANCE,			0,},
-	{ &GUID_ZAxis,	FIELD_OFFSET(MYDATA, lZ),	0x80000000 | DIDFT_AXIS | DIDFT_ANYINSTANCE,	0,},
-	{ 0,		FIELD_OFFSET(MYDATA, bButtonA),	DIDFT_BUTTON | DIDFT_ANYINSTANCE,		0,},
-	{ 0,		FIELD_OFFSET(MYDATA, bButtonB),	DIDFT_BUTTON | DIDFT_ANYINSTANCE,		0,},
-	{ 0,		FIELD_OFFSET(MYDATA, bButtonC),	0x80000000 | DIDFT_BUTTON | DIDFT_ANYINSTANCE,	0,},
-	{ 0,		FIELD_OFFSET(MYDATA, bButtonD),	0x80000000 | DIDFT_BUTTON | DIDFT_ANYINSTANCE,	0,},
-};
-
-#define NUM_OBJECTS (sizeof(rgodf) / sizeof(rgodf[0]))
-
-static DIDATAFORMAT	df = {
-	sizeof(DIDATAFORMAT),		// this structure
-	sizeof(DIOBJECTDATAFORMAT),	// size of object data format
-	DIDF_RELAXIS,			// absolute axis coordinates
-	sizeof(MYDATA),			// device data size
-	NUM_OBJECTS,			// number of objects
-	rgodf,				// and here they are
-};
 
 // forward-referenced functions
 static void IN_StartupJoystick (void);
@@ -325,6 +345,7 @@ qboolean IN_InitDInput (void)
 		DINPUT_BUFFERSIZE,		// dwData
 	};
 
+#if defined(DX_DLSYM)	/* dynamic loading of dinput symbols */
 	if (!hInstDI)
 	{
 		hInstDI = LoadLibrary("dinput.dll");
@@ -347,6 +368,7 @@ qboolean IN_InitDInput (void)
 			return false;
 		}
 	}
+#endif	/* DX_DLSYM */
 
 // register with DirectInput and get an IDirectInput to play with.
 	hr = pDirectInputCreate(global_hInstance, DIRECTINPUT_VERSION, &g_pdi, NULL);
@@ -366,7 +388,7 @@ qboolean IN_InitDInput (void)
 	}
 
 // set the data format to "mouse format".
-	hr = IDirectInputDevice_SetDataFormat(g_pMouse, &df);
+	hr = IDirectInputDevice_SetDataFormat(g_pMouse, &diformat);
 
 	if (FAILED(hr))
 	{

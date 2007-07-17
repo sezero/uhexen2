@@ -2,7 +2,7 @@
 	snd_dma.c
 	main control for any streaming sound output device
 
-	$Id: snd_dma.c,v 1.59 2007-07-17 14:04:03 sezero Exp $
+	$Id: snd_dma.c,v 1.60 2007-07-17 14:17:08 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -259,10 +259,6 @@ void S_Init (void)
 // =======================================================================
 // Shutdown sound engine
 // =======================================================================
-#ifdef PLATFORM_WINDOWS
-extern HINSTANCE hInstDS;
-#endif
-
 void S_Shutdown(void)
 {
 	if (!sound_started)
@@ -272,15 +268,6 @@ void S_Shutdown(void)
 
 	SNDDMA_Shutdown();
 	shm = NULL;
-
-#ifdef PLATFORM_WINDOWS
-// FIXME: move this to its platform driver!
-	if (hInstDS)
-	{
-		FreeLibrary(hInstDS);
-		hInstDS=NULL;
-	}
-#endif
 }
 
 

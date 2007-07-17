@@ -1,24 +1,34 @@
 /*
 	snd_win.c
-	$Id: snd_win.c,v 1.25 2007-07-12 13:10:53 sezero Exp $
+	$Id: snd_win.c,v 1.26 2007-07-17 14:17:08 sezero Exp $
 */
 
 #include "quakedef.h"
 #include "winquake.h"
 
-
-static HRESULT (WINAPI *pDirectSoundCreate)(GUID FAR *lpGUID, LPDIRECTSOUND FAR *lplpDS, IUnknown FAR *pUnkOuter);
-
 // 64K is > 1 second at 16-bit, 22050 Hz
 //#define	WAV_BUFFERS		64 
 #define	WAV_BUFFERS		128
 #define	WAV_MASK		(WAV_BUFFERS - 1)
+
+/* DirectSound : */
 #ifndef DSBSIZE_MIN
 #define DSBSIZE_MIN		4
 #endif
 #ifndef DSBSIZE_MAX
 #define DSBSIZE_MAX		0x0FFFFFFF
 #endif
+
+LPDIRECTSOUND		pDS;
+LPDIRECTSOUNDBUFFER	pDSBuf, pDSPBuf;
+
+#if defined(DX_DLSYM)	/* dynamic loading of dsound symbols */
+static HINSTANCE	hInstDS;
+#define	iDirectSoundCreate(a,b,c)	pDirectSoundCreate(a,b,c)
+static HRESULT (WINAPI *pDirectSoundCreate)(GUID FAR *lpGUID, LPDIRECTSOUND FAR *lplpDS, IUnknown FAR *pUnkOuter);
+#else	/* ! DX_DLSYM : we're linked to dsound */
+#define	pDirectSoundCreate		DirectSoundCreate
+#endif	/* DX_DLSYM */
 
 typedef enum {SIS_SUCCESS, SIS_FAILURE, SIS_NOTAVAIL} sndinitstat;
 
@@ -57,10 +67,6 @@ static HWAVEOUT	hWaveOut;
 
 DWORD		gSndBufSize;
 MMTIME		mmstarttime;
-
-LPDIRECTSOUND	pDS;
-LPDIRECTSOUNDBUFFER	pDSBuf, pDSPBuf;
-HINSTANCE	hInstDS;
 
 
 /*
@@ -209,6 +215,7 @@ static sndinitstat SNDDMA_InitDirect (void)
 	format.cbSize = 0;
 	format.nAvgBytesPerSec = format.nSamplesPerSec * format.nBlockAlign;
 
+#if defined(DX_DLSYM)
 	if (!hInstDS)
 	{
 		hInstDS = LoadLibrary("dsound.dll");
@@ -228,6 +235,7 @@ static sndinitstat SNDDMA_InitDirect (void)
 			return SIS_FAILURE;
 		}
 	}
+#endif	/* DX_DLSYM */
 
 	while ((hresult = pDirectSoundCreate(NULL, &pDS, NULL)) != DS_OK)
 	{
@@ -743,5 +751,12 @@ Reset the sound device for exiting
 void S_WIN_Shutdown (void)
 {
 	FreeSound ();
+#if defined(DX_DLSYM)
+	if (hInstDS)
+	{
+		FreeLibrary(hInstDS);
+		hInstDS=NULL;
+	}
+#endif	/* DX_DLSYM */
 }
 
