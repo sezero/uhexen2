@@ -1,5 +1,5 @@
 # GNU Makefile for (gl)hexen2 client/server binaries using GCC.
-# $Header: /home/ozzie/Download/0000/uhexen2/hexen2/Makefile,v 1.70 2007-07-12 19:41:18 sezero Exp $
+# $Header: /home/ozzie/Download/0000/uhexen2/hexen2/Makefile,v 1.71 2007-07-17 14:04:00 sezero Exp $
 #
 # Type "make help" to see the valid targets.
 #
@@ -198,6 +198,7 @@ ifeq ($(TARGET_OS),WIN32)
 # Main win32 specific includes and flags
 INCLUDES:= -I$(UHEXEN2_TOP)/w32stuff/dxsdk/inc -I$(MINGWDIR)/include -I.
 LDFLAGS := -L$(MINGWDIR)/lib -lwinmm -lwsock32 -mwindows
+LDFLAGS += -ldinput -ldxguid
 else
 # Main unix specific includes and flags
 INCLUDES:= -I$(X11BASE)/include -I.

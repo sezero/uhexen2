@@ -1,6 +1,6 @@
 /*
 	in_win.c
-	$Id: in_win.c,v 1.25 2007-07-08 11:56:50 sezero Exp $
+	$Id: in_win.c,v 1.26 2007-07-17 14:04:03 sezero Exp $
 
 	windows 95 mouse and joystick code
 
@@ -20,7 +20,6 @@ static HRESULT (WINAPI *pDirectInputCreate)(HINSTANCE hinst, DWORD dwVersion, LP
 // mouse variables
 static cvar_t	m_filter = {"m_filter", "0", CVAR_NONE};
 
-static int		mouse_buttons;
 static int		mouse_oldbuttonstate;
 static POINT		current_pos;
 static int		mouse_x, mouse_y, old_mouse_x, old_mouse_y, mx_accum, my_accum;
@@ -449,8 +448,6 @@ static void IN_StartupMouse (void)
 		}
 	}
 
-	mouse_buttons = 3;
-
 // if a fullscreen video mode was set before the mouse was initialized,
 // set the mouse state appropriately
 	if (mouseactivatetoggle)
@@ -533,19 +530,10 @@ void IN_MouseEvent (int mstate)
 	if (mouseactive && !dinput)
 	{
 	// perform button actions
-		for (i = 0; i < mouse_buttons; i++)
+		for (i = 0; i < NUM_MOUSEBUTTONS; i++)
 		{
-			if ( (mstate & (1<<i)) &&
-				!(mouse_oldbuttonstate & (1<<i)) )
-			{
-				Key_Event (K_MOUSE1 + i, true);
-			}
-
-			if ( !(mstate & (1<<i)) &&
-				(mouse_oldbuttonstate & (1<<i)) )
-			{
-					Key_Event (K_MOUSE1 + i, false);
-			}
+			if ((mstate ^ mouse_oldbuttonstate) & (1<<i))
+				Key_Event (K_MOUSE1 + i, (mstate & (1<<i)) != 0);
 		}
 
 		mouse_oldbuttonstate = mstate;
@@ -599,11 +587,24 @@ static void IN_MouseMove (usercmd_t *cmd)
 			switch (od.dwOfs)
 			{
 			case DIMOFS_X:
-				mx += od.dwData;
+				mx += (LONG) od.dwData;
 				break;
 
 			case DIMOFS_Y:
-				my += od.dwData;
+				my += (LONG) od.dwData;
+				break;
+
+			case DIMOFS_Z:
+				if ((LONG) od.dwData < 0)
+				{
+					Key_Event (K_MWHEELDOWN, true);
+					Key_Event (K_MWHEELDOWN, false);
+				}
+				else if ((LONG) od.dwData > 0)
+				{
+					Key_Event (K_MWHEELUP, true);
+					Key_Event (K_MWHEELUP, false);
+				}
 				break;
 
 			case DIMOFS_BUTTON0:
@@ -626,23 +627,21 @@ static void IN_MouseMove (usercmd_t *cmd)
 				else
 					mstate_di &= ~(1<<2);
 				break;
+
+			case DIMOFS_BUTTON3:
+				if (od.dwData & 0x80)
+					mstate_di |= (1<<3);
+				else
+					mstate_di &= ~(1<<3);
+				break;
 			}
 		}
 
 	// perform button actions
-		for (i = 0; i < mouse_buttons; i++)
+		for (i = 0; i < NUM_MOUSEBUTTONS; i++)
 		{
-			if ( (mstate_di & (1<<i)) &&
-				!(mouse_oldbuttonstate & (1<<i)) )
-			{
-				Key_Event (K_MOUSE1 + i, true);
-			}
-
-			if ( !(mstate_di & (1<<i)) &&
-				(mouse_oldbuttonstate & (1<<i)) )
-			{
-				Key_Event (K_MOUSE1 + i, false);
-			}
+			if ((mstate_di ^ mouse_oldbuttonstate) & (1<<i))
+				Key_Event (K_MOUSE1 + i, (mstate_di & (1<<i)) != 0);
 		}
 
 		mouse_oldbuttonstate = mstate_di;

@@ -1,6 +1,6 @@
 /*
 	gl_vidnt.c -- NT GL vid component
-	$Id: gl_vidnt.c,v 1.105 2007-07-08 11:56:50 sezero Exp $
+	$Id: gl_vidnt.c,v 1.106 2007-07-17 14:04:03 sezero Exp $
 */
 
 #define	__GL_FUNC_EXTERN
@@ -1439,23 +1439,26 @@ static LONG WINAPI MainWndProc (HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPar
 	LONG	lRet = 0;
 	int	fActive, fMinimized, temp;
 
-	if (uMSG_MOUSEWHEEL && uMsg == uMSG_MOUSEWHEEL && mwheelthreshold.value >= 1)
-	{	// win95 and nt-3.51 code. raven's original,
-		// keeping it here for reference
-		MWheelAccumulator += *(int *)&wParam;
-		while (MWheelAccumulator >= mwheelthreshold.value)
-		{
-			Key_Event(K_MWHEELUP, true);
-			Key_Event(K_MWHEELUP, false);
-			MWheelAccumulator -= mwheelthreshold.value;
+	if (Win95 && mwheelthreshold.integer >= 1)
+	{
+		if (uMSG_MOUSEWHEEL && uMsg == uMSG_MOUSEWHEEL)
+		{	/* http://msdn2.microsoft.com/en-us/library/ms645617.aspx
+			   Win95 and WinNT-3.51 code using MSH_MOUSEWHEEL.	*/
+			MWheelAccumulator += (int) wParam;
+			while (MWheelAccumulator >= mwheelthreshold.integer)
+			{
+				Key_Event(K_MWHEELUP, true);
+				Key_Event(K_MWHEELUP, false);
+				MWheelAccumulator -= mwheelthreshold.integer;
+			}
+			while (MWheelAccumulator <= -mwheelthreshold.integer)
+			{
+				Key_Event(K_MWHEELDOWN, true);
+				Key_Event(K_MWHEELDOWN, false);
+				MWheelAccumulator += mwheelthreshold.integer;
+			}
+			return DefWindowProc (hWnd, uMsg, wParam, lParam);
 		}
-		while (MWheelAccumulator <= -mwheelthreshold.value)
-		{
-			Key_Event(K_MWHEELDOWN, true);
-			Key_Event(K_MWHEELDOWN, false);
-			MWheelAccumulator += mwheelthreshold.value;
-		}
-		return DefWindowProc (hWnd, uMsg, wParam, lParam);
 	}
 
 	switch (uMsg)
@@ -1504,6 +1507,8 @@ static LONG WINAPI MainWndProc (HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPar
 		case WM_RBUTTONUP:
 		case WM_MBUTTONDOWN:
 		case WM_MBUTTONUP:
+		case WM_XBUTTONDOWN:
+		case WM_XBUTTONUP:
 		case WM_MOUSEMOVE:
 			temp = 0;
 
@@ -1515,6 +1520,13 @@ static LONG WINAPI MainWndProc (HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPar
 
 			if (wParam & MK_MBUTTON)
 				temp |= 4;
+
+			// intellimouse explorer
+			if (wParam & MK_XBUTTON1)
+				temp |= 8;
+
+			if (wParam & MK_XBUTTON2)
+				temp |= 16;
 
 			IN_MouseEvent (temp);
 

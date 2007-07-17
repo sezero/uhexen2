@@ -2,7 +2,7 @@
 	snd_dma.c
 	main control for any streaming sound output device
 
-	$Id: snd_dma.c,v 1.58 2007-07-12 13:10:53 sezero Exp $
+	$Id: snd_dma.c,v 1.59 2007-07-17 14:04:03 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -886,10 +886,7 @@ static void GetSoundtime(void)
 
 void S_ExtraUpdate (void)
 {
-
-#ifdef PLATFORM_WINDOWS
 	IN_Accumulate ();
-#endif
 
 	if (snd_noextraupdate.integer)
 		return;		// don't pollute timings

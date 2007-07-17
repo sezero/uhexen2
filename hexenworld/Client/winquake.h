@@ -2,7 +2,7 @@
 	winquake.h
 	Win32-specific Quake header file
 
-	$Id: winquake.h,v 1.26 2007-07-11 16:47:16 sezero Exp $
+	$Id: winquake.h,v 1.27 2007-07-17 14:04:03 sezero Exp $
 */
 
 #if !defined(PLATFORM_WINDOWS)
@@ -40,6 +40,20 @@ extern	int			global_nCmdShow;
 #ifndef WM_MOUSEWHEEL
 #define	WM_MOUSEWHEEL		0x020A
 #endif
+/* IntelliMouse explorer buttons: These are ifdef'ed out for < Win2000
+   in the Feb. 2001 version of MS's platform SDK, but we need them for
+   compilation. */
+#ifndef WM_XBUTTONDOWN
+#define	WM_XBUTTONDOWN		0x020B
+#define	WM_XBUTTONUP		0x020C
+#endif
+#ifndef MK_XBUTTON1
+#define	MK_XBUTTON1		0x0020
+#define	MK_XBUTTON2		0x0040
+#endif
+
+#define	NUM_MOUSEBUTTONS	5	/* wheel not included	*/
+
 
 #ifndef SERVERONLY
 extern qboolean			DDActive;
@@ -57,19 +71,12 @@ extern qboolean		ActiveApp, Minimized;
 
 extern qboolean		Win95, Win95old, WinNT;
 
-void IN_RestoreOriginalMouseState (void);
-void IN_SetQuakeMouseState (void);
-void IN_MouseEvent (int mstate);
-void IN_Accumulate (void);
-
 extern int		window_center_x, window_center_y;
 extern RECT		window_rect;
 
 #if !defined(NO_SPLASHES)
 extern HWND		hwnd_dialog;
 #endif
-
-void IN_UpdateClipCursor (void);
 
 void S_BlockSound (void);
 void S_UnblockSound (void);

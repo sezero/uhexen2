@@ -2,7 +2,7 @@
 	vid_win.c
 	Win32 video driver using MGL-4.05
 
-	$Id: vid_win.c,v 1.47 2007-07-08 11:56:51 sezero Exp $
+	$Id: vid_win.c,v 1.48 2007-07-17 14:04:03 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -3018,23 +3018,26 @@ static LONG WINAPI MainWndProc (HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPar
 	HDC				hdc;
 	PAINTSTRUCT		ps;
 
-	if (uMSG_MOUSEWHEEL && uMsg == uMSG_MOUSEWHEEL && mwheelthreshold.value >= 1)
-	{	// win95 and nt-3.51 code. raven's original,
-		// keeping it here for reference
-		MWheelAccumulator += *(int *)&wParam;
-		while (MWheelAccumulator >= mwheelthreshold.value)
-		{
-			Key_Event(K_MWHEELUP, true);
-			Key_Event(K_MWHEELUP, false);
-			MWheelAccumulator -= mwheelthreshold.value;
+	if (Win95 && mwheelthreshold.integer >= 1)
+	{
+		if (uMSG_MOUSEWHEEL && uMsg == uMSG_MOUSEWHEEL)
+		{	/* http://msdn2.microsoft.com/en-us/library/ms645617.aspx
+			   Win95 and WinNT-3.51 code using MSH_MOUSEWHEEL.	*/
+			MWheelAccumulator += (int) wParam;
+			while (MWheelAccumulator >= mwheelthreshold.integer)
+			{
+				Key_Event(K_MWHEELUP, true);
+				Key_Event(K_MWHEELUP, false);
+				MWheelAccumulator -= mwheelthreshold.integer;
+			}
+			while (MWheelAccumulator <= -mwheelthreshold.integer)
+			{
+				Key_Event(K_MWHEELDOWN, true);
+				Key_Event(K_MWHEELDOWN, false);
+				MWheelAccumulator += mwheelthreshold.integer;
+			}
+			return DefWindowProc (hWnd, uMsg, wParam, lParam);
 		}
-		while (MWheelAccumulator <= -mwheelthreshold.value)
-		{
-			Key_Event(K_MWHEELDOWN, true);
-			Key_Event(K_MWHEELDOWN, false);
-			MWheelAccumulator += mwheelthreshold.value;
-		}
-		return DefWindowProc (hWnd, uMsg, wParam, lParam);
 	}
 
 	switch (uMsg)
@@ -3175,25 +3178,38 @@ static LONG WINAPI MainWndProc (HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPar
 		case WM_RBUTTONUP:
 		case WM_MBUTTONDOWN:
 		case WM_MBUTTONUP:
+		case WM_XBUTTONDOWN:
+		case WM_XBUTTONUP:
 		case WM_MOUSEMOVE:
-			if (!in_mode_set)
-			{
-				temp = 0;
+			if (in_mode_set)
+				break;
 
-				if (wParam & MK_LBUTTON)
-					temp |= 1;
+			temp = 0;
 
-				if (wParam & MK_RBUTTON)
-					temp |= 2;
+			if (wParam & MK_LBUTTON)
+				temp |= 1;
 
-				if (wParam & MK_MBUTTON)
-					temp |= 4;
+			if (wParam & MK_RBUTTON)
+				temp |= 2;
 
-				IN_MouseEvent (temp);
-			}
+			if (wParam & MK_MBUTTON)
+				temp |= 4;
+
+			// intellimouse explorer
+			if (wParam & MK_XBUTTON1)
+				temp |= 8;
+
+			if (wParam & MK_XBUTTON2)
+				temp |= 16;
+
+			IN_MouseEvent (temp);
+
 			break;
 
 		case WM_MOUSEWHEEL:
+			if (in_mode_set)
+				return 0;
+
 			if ((short) HIWORD(wParam) > 0)
 			{
 				Key_Event(K_MWHEELUP, true);

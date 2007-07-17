@@ -2,7 +2,7 @@
 	in_sdl.c
 	SDL game input code
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/in_sdl.c,v 1.43 2007-05-09 18:10:13 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/in_sdl.c,v 1.44 2007-07-17 14:04:00 sezero Exp $
 */
 
 #include "sdl_inc.h"
@@ -14,8 +14,7 @@ extern qboolean	draw_reinit;
 // mouse variables
 static cvar_t	m_filter = {"m_filter", "0", CVAR_NONE};
 
-static int	mouse_oldbuttonstate;
-static int	mouse_x, mouse_y, old_mouse_x, old_mouse_y, mx_accum, my_accum;
+static int	mouse_x, mouse_y, old_mouse_x, old_mouse_y;
 extern cvar_t	_enable_mouse;
 
 extern modestate_t	modestate;
@@ -234,38 +233,6 @@ void IN_Shutdown (void)
 
 /*
 ===========
-IN_MouseEvent
-===========
-*/
-static void IN_MouseEvent (int mstate)
-{
-	int		i;
-
-	if (mouseactive)
-	{
-	// perform button actions
-		for (i = 0; i < sizeof(buttonremap) / sizeof(buttonremap[0]); i++)
-		{
-			if ( (mstate & SDL_BUTTON(i+1)) &&
-				!(mouse_oldbuttonstate & SDL_BUTTON(i+1)) )
-			{
-				Key_Event (buttonremap[i], true);
-			}
-
-			if ( !(mstate & SDL_BUTTON(i+1)) &&
-				(mouse_oldbuttonstate & SDL_BUTTON(i+1)) )
-			{
-				Key_Event (buttonremap[i], false);
-			}
-		}
-
-		mouse_oldbuttonstate = mstate;
-	}
-}
-
-
-/*
-===========
 IN_MouseMove
 ===========
 */
@@ -274,9 +241,6 @@ static void IN_MouseMove (usercmd_t *cmd)
 	int		mx, my;
 
 	SDL_GetRelativeMouseState(&mx,&my);
-
-	mx_accum = 0;
-	my_accum = 0;
 
 	if (m_filter.integer)
 	{
@@ -356,23 +320,6 @@ void IN_Move (usercmd_t *cmd)
 
 	//if (ActiveApp)
 	//	IN_JoyMove (cmd);
-}
-
-
-/*
-===================
-IN_ClearStates
-===================
-*/
-void IN_ClearStates (void)
-{
-
-	if (mouseactive)
-	{
-		mx_accum = 0;
-		my_accum = 0;
-		mouse_oldbuttonstate = 0;
-	}
 }
 
 
@@ -711,9 +658,7 @@ void IN_SendKeyEvents (void)
 			break;
 
 		case SDL_MOUSEMOTION:
-			if (!mouseactive || in_mode_set)
-				break;
-			IN_MouseEvent (SDL_GetMouseState(NULL,NULL));
+		//	SDL_GetMouseState (NULL, NULL);
 			break;
 
 		case SDL_QUIT:

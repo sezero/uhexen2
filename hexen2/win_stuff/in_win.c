@@ -1,6 +1,6 @@
 /*
 	in_win.c
-	$Id: in_win.c,v 1.25 2007-06-22 12:00:39 sezero Exp $
+	$Id: in_win.c,v 1.26 2007-07-17 14:04:02 sezero Exp $
 
 	windows 95 mouse and joystick code
 
@@ -10,11 +10,16 @@
 
 #include "quakedef.h"
 #include "winquake.h"
+#include <dinput.h>
+
+#define DINPUT_BUFFERSIZE           16
+#define iDirectInputCreate(a,b,c,d)	pDirectInputCreate(a,b,c,d)
+
+static HRESULT (WINAPI *pDirectInputCreate)(HINSTANCE hinst, DWORD dwVersion, LPDIRECTINPUT *lplpDirectInput, LPUNKNOWN punkOuter);
 
 // mouse variables
 static cvar_t	m_filter = {"m_filter", "0", CVAR_NONE};
 
-static int		mouse_buttons;
 static int		mouse_oldbuttonstate;
 static POINT		current_pos;
 static int		mouse_x, mouse_y, old_mouse_x, old_mouse_y, mx_accum, my_accum;
@@ -25,6 +30,9 @@ static qboolean	mouseactive;
 static qboolean	mouseinitialized;
 static qboolean	mouseparmsvalid, mouseactivatetoggle;
 static qboolean	mouseshowtoggle = 1;
+static qboolean	dinput_acquired;
+
+static unsigned int		mstate_di;
 
 // joystick defines and variables
 // where should defines be moved?
@@ -84,7 +92,45 @@ static int		joy_id;
 static DWORD	joy_flags;
 static DWORD	joy_numbuttons;
 
+static LPDIRECTINPUT		g_pdi;
+static LPDIRECTINPUTDEVICE	g_pMouse;
+
 static JOYINFOEX	ji;
+
+static HINSTANCE hInstDI;
+
+static qboolean	dinput;
+
+typedef struct MYDATA {
+	LONG	lX;		// X axis goes here
+	LONG	lY;		// Y axis goes here
+	LONG	lZ;		// Z axis goes here
+	BYTE	bButtonA;	// One button goes here
+	BYTE	bButtonB;	// Another button goes here
+	BYTE	bButtonC;	// Another button goes here
+	BYTE	bButtonD;	// Another button goes here
+} MYDATA;
+
+static DIOBJECTDATAFORMAT rgodf[] = {
+	{ &GUID_XAxis,	FIELD_OFFSET(MYDATA, lX),	DIDFT_AXIS | DIDFT_ANYINSTANCE,			0,},
+	{ &GUID_YAxis,	FIELD_OFFSET(MYDATA, lY),	DIDFT_AXIS | DIDFT_ANYINSTANCE,			0,},
+	{ &GUID_ZAxis,	FIELD_OFFSET(MYDATA, lZ),	0x80000000 | DIDFT_AXIS | DIDFT_ANYINSTANCE,	0,},
+	{ 0,		FIELD_OFFSET(MYDATA, bButtonA),	DIDFT_BUTTON | DIDFT_ANYINSTANCE,		0,},
+	{ 0,		FIELD_OFFSET(MYDATA, bButtonB),	DIDFT_BUTTON | DIDFT_ANYINSTANCE,		0,},
+	{ 0,		FIELD_OFFSET(MYDATA, bButtonC),	0x80000000 | DIDFT_BUTTON | DIDFT_ANYINSTANCE,	0,},
+	{ 0,		FIELD_OFFSET(MYDATA, bButtonD),	0x80000000 | DIDFT_BUTTON | DIDFT_ANYINSTANCE,	0,},
+};
+
+#define NUM_OBJECTS (sizeof(rgodf) / sizeof(rgodf[0]))
+
+static DIDATAFORMAT	df = {
+	sizeof(DIDATAFORMAT),		// this structure
+	sizeof(DIOBJECTDATAFORMAT),	// size of object data format
+	DIDF_RELAXIS,			// absolute axis coordinates
+	sizeof(MYDATA),			// device data size
+	NUM_OBJECTS,			// number of objects
+	rgodf,				// and here they are
+};
 
 // forward-referenced functions
 static void IN_StartupJoystick (void);
@@ -111,7 +157,7 @@ IN_UpdateClipCursor
 void IN_UpdateClipCursor (void)
 {
 
-	if (mouseinitialized && mouseactive)
+	if (mouseinitialized && mouseactive && !dinput)
 	{
 		ClipCursor (&window_rect);
 	}
@@ -162,12 +208,30 @@ void IN_ActivateMouse (void)
 
 	if (mouseinitialized)
 	{
-		if (mouseparmsvalid)
-			restore_spi = SystemParametersInfo (SPI_SETMOUSE, 0, newmouseparms, 0);
+		if (dinput)
+		{
+			if (g_pMouse)
+			{
+				if (!dinput_acquired)
+				{
+					IDirectInputDevice_Acquire(g_pMouse);
+					dinput_acquired = true;
+				}
+			}
+			else
+			{
+				return;
+			}
+		}
+		else
+		{
+			if (mouseparmsvalid)
+				restore_spi = SystemParametersInfo (SPI_SETMOUSE, 0, newmouseparms, 0);
 
-		SetCursorPos (window_center_x, window_center_y);
-		SetCapture (mainwindow);
-		ClipCursor (&window_rect);
+			SetCursorPos (window_center_x, window_center_y);
+			SetCapture (mainwindow);
+			ClipCursor (&window_rect);
+		}
 
 		mouseactive = true;
 	}
@@ -198,11 +262,25 @@ void IN_DeactivateMouse (void)
 
 	if (mouseinitialized)
 	{
-		if (restore_spi)
-			SystemParametersInfo (SPI_SETMOUSE, 0, originalmouseparms, 0);
+		if (dinput)
+		{
+			if (g_pMouse)
+			{
+				if (dinput_acquired)
+				{
+					IDirectInputDevice_Unacquire(g_pMouse);
+					dinput_acquired = false;
+				}
+			}
+		}
+		else
+		{
+			if (restore_spi)
+				SystemParametersInfo (SPI_SETMOUSE, 0, originalmouseparms, 0);
 
-		ClipCursor (NULL);
-		ReleaseCapture ();
+			ClipCursor (NULL);
+			ReleaseCapture ();
+		}
 
 		mouseactive = false;
 	}
@@ -231,6 +309,97 @@ void IN_RestoreOriginalMouseState (void)
 
 /*
 ===========
+IN_InitDInput
+===========
+*/
+qboolean IN_InitDInput (void)
+{
+	HRESULT		hr;
+	DIPROPDWORD	dipdw = {
+		{
+			sizeof(DIPROPDWORD),	// diph.dwSize
+			sizeof(DIPROPHEADER),	// diph.dwHeaderSize
+			0,			// diph.dwObj
+			DIPH_DEVICE,		// diph.dwHow
+		},
+		DINPUT_BUFFERSIZE,		// dwData
+	};
+
+	if (!hInstDI)
+	{
+		hInstDI = LoadLibrary("dinput.dll");
+
+		if (hInstDI == NULL)
+		{
+			Con_SafePrintf ("Couldn't load dinput.dll\n");
+			return false;
+		}
+	}
+
+	if (!pDirectInputCreate)
+	{
+		pDirectInputCreate = (HRESULT (WINAPI *)(HINSTANCE, DWORD, LPDIRECTINPUT *, LPUNKNOWN))
+								GetProcAddress(hInstDI, "DirectInputCreateA");
+
+		if (!pDirectInputCreate)
+		{
+			Con_SafePrintf ("Couldn't get DI proc addr\n");
+			return false;
+		}
+	}
+
+// register with DirectInput and get an IDirectInput to play with.
+	hr = pDirectInputCreate(global_hInstance, DIRECTINPUT_VERSION, &g_pdi, NULL);
+
+	if (FAILED(hr))
+	{
+		return false;
+	}
+
+// obtain an interface to the system mouse device.
+	hr = IDirectInput_CreateDevice(g_pdi, &GUID_SysMouse, &g_pMouse, NULL);
+
+	if (FAILED(hr))
+	{
+		Con_SafePrintf ("Couldn't open DI mouse device\n");
+		return false;
+	}
+
+// set the data format to "mouse format".
+	hr = IDirectInputDevice_SetDataFormat(g_pMouse, &df);
+
+	if (FAILED(hr))
+	{
+		Con_SafePrintf ("Couldn't set DI mouse format\n");
+		return false;
+	}
+
+// set the cooperativity level.
+	hr = IDirectInputDevice_SetCooperativeLevel(g_pMouse, mainwindow,
+			DISCL_EXCLUSIVE | DISCL_FOREGROUND);
+
+	if (FAILED(hr))
+	{
+		Con_SafePrintf ("Couldn't set DI coop level\n");
+		return false;
+	}
+
+// set the buffer size to DINPUT_BUFFERSIZE elements.
+// the buffer size is a DWORD property associated with the device
+	hr = IDirectInputDevice_SetProperty(g_pMouse, DIPROP_BUFFERSIZE, &dipdw.diph);
+
+	if (FAILED(hr))
+	{
+		Con_SafePrintf ("Couldn't set DI buffersize\n");
+		return false;
+	}
+
+	return true;
+}
+
+
+/*
+===========
 IN_StartupMouse
 ===========
 */
@@ -241,28 +410,43 @@ static void IN_StartupMouse (void)
 
 	mouseinitialized = true;
 
-	mouseparmsvalid = SystemParametersInfo (SPI_GETMOUSE, 0, originalmouseparms, 0);
-
-	if (mouseparmsvalid)
+	if (COM_CheckParm ("-dinput"))
 	{
-		if ( COM_CheckParm ("-noforcemspd") )
-			newmouseparms[2] = originalmouseparms[2];
+		dinput = IN_InitDInput ();
 
-		if ( COM_CheckParm ("-noforcemaccel") )
+		if (dinput)
 		{
-			newmouseparms[0] = originalmouseparms[0];
-			newmouseparms[1] = originalmouseparms[1];
+			Con_SafePrintf ("DirectInput initialized\n");
 		}
-
-		if ( COM_CheckParm ("-noforcemparms") )
+		else
 		{
-			newmouseparms[0] = originalmouseparms[0];
-			newmouseparms[1] = originalmouseparms[1];
-			newmouseparms[2] = originalmouseparms[2];
+			Con_SafePrintf ("DirectInput not initialized\n");
 		}
 	}
 
-	mouse_buttons = 3;
+	if (!dinput)
+	{
+		mouseparmsvalid = SystemParametersInfo (SPI_GETMOUSE, 0, originalmouseparms, 0);
+
+		if (mouseparmsvalid)
+		{
+			if ( COM_CheckParm ("-noforcemspd") )
+				newmouseparms[2] = originalmouseparms[2];
+
+			if ( COM_CheckParm ("-noforcemaccel") )
+			{
+				newmouseparms[0] = originalmouseparms[0];
+				newmouseparms[1] = originalmouseparms[1];
+			}
+
+			if ( COM_CheckParm ("-noforcemparms") )
+			{
+				newmouseparms[0] = originalmouseparms[0];
+				newmouseparms[1] = originalmouseparms[1];
+				newmouseparms[2] = originalmouseparms[2];
+			}
+		}
+	}
 
 // if a fullscreen video mode was set before the mouse was initialized,
 // set the mouse state appropriately
@@ -319,6 +503,18 @@ void IN_Shutdown (void)
 
 	IN_DeactivateMouse ();
 	IN_ShowMouse ();
+
+	if (g_pMouse)
+	{
+		IDirectInputDevice_Release(g_pMouse);
+		g_pMouse = NULL;
+	}
+
+	if (g_pdi)
+	{
+		IDirectInput_Release(g_pdi);
+		g_pdi = NULL;
+	}
 }
 
 
@@ -331,22 +527,13 @@ void IN_MouseEvent (int mstate)
 {
 	int		i;
 
-	if (mouseactive)
+	if (mouseactive && !dinput)
 	{
 	// perform button actions
-		for (i = 0; i < mouse_buttons; i++)
+		for (i = 0; i < NUM_MOUSEBUTTONS; i++)
 		{
-			if ( (mstate & (1<<i)) &&
-				!(mouse_oldbuttonstate & (1<<i)) )
-			{
-				Key_Event (K_MOUSE1 + i, true);
-			}
-
-			if ( !(mstate & (1<<i)) &&
-				(mouse_oldbuttonstate & (1<<i)) )
-			{
-					Key_Event (K_MOUSE1 + i, false);
-			}
+			if ((mstate ^ mouse_oldbuttonstate) & (1<<i))
+				Key_Event (K_MOUSE1 + i, (mstate & (1<<i)) != 0);
 		}
 
 		mouse_oldbuttonstate = mstate;
@@ -362,17 +549,111 @@ IN_MouseMove
 static void IN_MouseMove (usercmd_t *cmd)
 {
 	int		mx, my;
+	int		i;
 
-//	if (sv_player->v.cameramode)	// Stuck in a different camera, don't move
-//		return;
+	if (!mouseactive)
+		return;
 
-	GetCursorPos (&current_pos);
+	if (dinput)
+	{
+		DIDEVICEOBJECTDATA	od;
+		DWORD			dwElements;
+		HRESULT			hr;
 
-	mx = current_pos.x - window_center_x + mx_accum;
-	my = current_pos.y - window_center_y + my_accum;
+		mx = 0;
+		my = 0;
 
-	mx_accum = 0;
-	my_accum = 0;
+		for (;;)
+		{
+			dwElements = 1;
+
+			hr = IDirectInputDevice_GetDeviceData(g_pMouse,
+					sizeof(DIDEVICEOBJECTDATA), &od, &dwElements, 0);
+
+			if ((hr == DIERR_INPUTLOST) || (hr == DIERR_NOTACQUIRED))
+			{
+				dinput_acquired = true;
+				IDirectInputDevice_Acquire(g_pMouse);
+				break;
+			}
+
+			/* Unable to read data or no data available */
+			if (FAILED(hr) || dwElements == 0)
+			{
+				break;
+			}
+
+			/* Look at the element to see what happened */
+			switch (od.dwOfs)
+			{
+			case DIMOFS_X:
+				mx += (LONG) od.dwData;
+				break;
+
+			case DIMOFS_Y:
+				my += (LONG) od.dwData;
+				break;
+
+			case DIMOFS_Z:
+				if ((LONG) od.dwData < 0)
+				{
+					Key_Event (K_MWHEELDOWN, true);
+					Key_Event (K_MWHEELDOWN, false);
+				}
+				else if ((LONG) od.dwData > 0)
+				{
+					Key_Event (K_MWHEELUP, true);
+					Key_Event (K_MWHEELUP, false);
+				}
+				break;
+
+			case DIMOFS_BUTTON0:
+				if (od.dwData & 0x80)
+					mstate_di |= 1;
+				else
+					mstate_di &= ~1;
+				break;
+
+			case DIMOFS_BUTTON1:
+				if (od.dwData & 0x80)
+					mstate_di |= (1<<1);
+				else
+					mstate_di &= ~(1<<1);
+				break;
+
+			case DIMOFS_BUTTON2:
+				if (od.dwData & 0x80)
+					mstate_di |= (1<<2);
+				else
+					mstate_di &= ~(1<<2);
+				break;
+
+			case DIMOFS_BUTTON3:
+				if (od.dwData & 0x80)
+					mstate_di |= (1<<3);
+				else
+					mstate_di &= ~(1<<3);
+				break;
+			}
+		}
+
+	// perform button actions
+		for (i = 0; i < NUM_MOUSEBUTTONS; i++)
+		{
+			if ((mstate_di ^ mouse_oldbuttonstate) & (1<<i))
+				Key_Event (K_MOUSE1 + i, (mstate_di & (1<<i)) != 0);
+		}
+
+		mouse_oldbuttonstate = mstate_di;
+	}
+	else
+	{
+		GetCursorPos (&current_pos);
+		mx = current_pos.x - window_center_x + mx_accum;
+		my = current_pos.y - window_center_y + my_accum;
+		mx_accum = 0;
+		my_accum = 0;
+	}
 
 	if (m_filter.integer)
 	{
@@ -451,13 +732,11 @@ void IN_Move (usercmd_t *cmd)
 		return;
 	}
 
-	if (mouseactive)
+	if (ActiveApp && !Minimized)
 	{
 		IN_MouseMove (cmd);
-	}
-
-	if (ActiveApp)
 		IN_JoyMove (cmd);
+	}
 }
 
 
