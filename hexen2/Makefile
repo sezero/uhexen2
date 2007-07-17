@@ -1,5 +1,5 @@
 # GNU Makefile for (gl)hexen2 client/server binaries using GCC.
-# $Header: /home/ozzie/Download/0000/uhexen2/hexen2/Makefile,v 1.72 2007-07-17 14:17:08 sezero Exp $
+# $Header: /home/ozzie/Download/0000/uhexen2/hexen2/Makefile,v 1.73 2007-07-17 16:50:27 sezero Exp $
 #
 # Type "make help" to see the valid targets.
 #
@@ -386,7 +386,6 @@ SOFTOBJS = d_edge.o \
 	r_surf.o \
 	r_vars.o \
 	screen.o \
-	nonintel.o \
 	$(SYSOBJ_SOFT_VID)
 
 GLOBJS = gl_draw.o \

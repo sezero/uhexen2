@@ -2,7 +2,7 @@
 	mathlib.c
 	math primitives
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/mathlib.c,v 1.20 2007-05-13 11:58:29 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/mathlib.c,v 1.21 2007-07-17 16:50:27 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -325,8 +325,6 @@ int GreatestCommonDivisor (int i1, int i2)
 
 
 #if !id386
-
-// TODO: move to nonintel.c
 
 /*
 ===================

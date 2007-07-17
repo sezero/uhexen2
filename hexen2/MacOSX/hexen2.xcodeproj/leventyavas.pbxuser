@@ -335,14 +335,6 @@
 			sepNavVisRect = "{{0, 0}, {764, 180}}";
 		};
 	};
-	707D57BD0AA9F6EE00313A9F /* nonintel.c */ = {
-		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {505, 1476}}";
-			sepNavSelRange = "{1814, 0}";
-			sepNavVisRect = "{{0, 1176}, {505, 300}}";
-			sepNavWindowFrame = "{{403, 14}, {520, 373}}";
-		};
-	};
 	707D57C00AA9F6EE00313A9F /* pr_edict.c */ = {
 		uiCtxt = {
 			sepNavIntBoundsRect = "{{0, 0}, {1454, 19488}}";

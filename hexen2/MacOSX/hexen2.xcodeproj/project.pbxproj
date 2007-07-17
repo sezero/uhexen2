@@ -70,7 +70,6 @@
 		70158C320AAF3C8800F6437C /* net_loop.c in Sources */ = {isa = PBXBuildFile; fileRef = 707D57B60AA9F6EE00313A9F /* net_loop.c */; };
 		70158C330AAF3C8800F6437C /* net_main.c in Sources */ = {isa = PBXBuildFile; fileRef = 707D57B80AA9F6EE00313A9F /* net_main.c */; };
 		70158C340AAF3C8800F6437C /* net_udp.c in Sources */ = {isa = PBXBuildFile; fileRef = 707D57B90AA9F6EE00313A9F /* net_udp.c */; };
-		70158C360AAF3C8800F6437C /* nonintel.c in Sources */ = {isa = PBXBuildFile; fileRef = 707D57BD0AA9F6EE00313A9F /* nonintel.c */; };
 		70158C370AAF3C8800F6437C /* pr_cmds.c in Sources */ = {isa = PBXBuildFile; fileRef = 707D57BE0AA9F6EE00313A9F /* pr_cmds.c */; };
 		70158C380AAF3C8800F6437C /* pr_edict.c in Sources */ = {isa = PBXBuildFile; fileRef = 707D57C00AA9F6EE00313A9F /* pr_edict.c */; };
 		70158C390AAF3C8800F6437C /* pr_exec.c in Sources */ = {isa = PBXBuildFile; fileRef = 707D57C10AA9F6EE00313A9F /* pr_exec.c */; };
@@ -211,7 +210,6 @@
 		707D58CA0AA9FBB700313A9F /* net_loop.c in Sources */ = {isa = PBXBuildFile; fileRef = 707D57B60AA9F6EE00313A9F /* net_loop.c */; };
 		707D58CB0AA9FBB700313A9F /* net_main.c in Sources */ = {isa = PBXBuildFile; fileRef = 707D57B80AA9F6EE00313A9F /* net_main.c */; };
 		707D58CC0AA9FBB700313A9F /* net_udp.c in Sources */ = {isa = PBXBuildFile; fileRef = 707D57B90AA9F6EE00313A9F /* net_udp.c */; };
-		707D58CE0AA9FBB700313A9F /* nonintel.c in Sources */ = {isa = PBXBuildFile; fileRef = 707D57BD0AA9F6EE00313A9F /* nonintel.c */; };
 		707D58CF0AA9FBB700313A9F /* pr_cmds.c in Sources */ = {isa = PBXBuildFile; fileRef = 707D57BE0AA9F6EE00313A9F /* pr_cmds.c */; };
 		707D58D00AA9FBB700313A9F /* pr_edict.c in Sources */ = {isa = PBXBuildFile; fileRef = 707D57C00AA9F6EE00313A9F /* pr_edict.c */; };
 		707D58D10AA9FBB700313A9F /* pr_exec.c in Sources */ = {isa = PBXBuildFile; fileRef = 707D57C10AA9F6EE00313A9F /* pr_exec.c */; };
@@ -374,7 +372,6 @@
 		707D57BA0AA9F6EE00313A9F /* net_udp.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = net_udp.h; path = ../net_udp.h; sourceTree = SOURCE_ROOT; };
 		707D57BB0AA9F6EE00313A9F /* net_vcr.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = net_vcr.c; path = ../net_vcr.c; sourceTree = SOURCE_ROOT; };
 		707D57BC0AA9F6EE00313A9F /* net_vcr.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = net_vcr.h; path = ../net_vcr.h; sourceTree = SOURCE_ROOT; };
-		707D57BD0AA9F6EE00313A9F /* nonintel.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = nonintel.c; path = ../nonintel.c; sourceTree = SOURCE_ROOT; };
 		707D57BE0AA9F6EE00313A9F /* pr_cmds.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = pr_cmds.c; path = ../pr_cmds.c; sourceTree = SOURCE_ROOT; };
 		707D57BF0AA9F6EE00313A9F /* pr_comp.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = pr_comp.h; path = ../pr_comp.h; sourceTree = SOURCE_ROOT; };
 		707D57C00AA9F6EE00313A9F /* pr_edict.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = pr_edict.c; path = ../pr_edict.c; sourceTree = SOURCE_ROOT; };
@@ -603,7 +600,6 @@
 				707D57BA0AA9F6EE00313A9F /* net_udp.h */,
 				707D57BB0AA9F6EE00313A9F /* net_vcr.c */,
 				707D57BC0AA9F6EE00313A9F /* net_vcr.h */,
-				707D57BD0AA9F6EE00313A9F /* nonintel.c */,
 				707D57BE0AA9F6EE00313A9F /* pr_cmds.c */,
 				707D57BF0AA9F6EE00313A9F /* pr_comp.h */,
 				707D57C00AA9F6EE00313A9F /* pr_edict.c */,
@@ -900,7 +896,6 @@
 				70158C320AAF3C8800F6437C /* net_loop.c in Sources */,
 				70158C330AAF3C8800F6437C /* net_main.c in Sources */,
 				70158C340AAF3C8800F6437C /* net_udp.c in Sources */,
-				70158C360AAF3C8800F6437C /* nonintel.c in Sources */,
 				70158C370AAF3C8800F6437C /* pr_cmds.c in Sources */,
 				70158C380AAF3C8800F6437C /* pr_edict.c in Sources */,
 				70158C390AAF3C8800F6437C /* pr_exec.c in Sources */,
@@ -976,7 +971,6 @@
 				707D58CA0AA9FBB700313A9F /* net_loop.c in Sources */,
 				707D58CB0AA9FBB700313A9F /* net_main.c in Sources */,
 				707D58CC0AA9FBB700313A9F /* net_udp.c in Sources */,
-				707D58CE0AA9FBB700313A9F /* nonintel.c in Sources */,
 				707D58CF0AA9FBB700313A9F /* pr_cmds.c in Sources */,
 				707D58D00AA9FBB700313A9F /* pr_edict.c in Sources */,
 				707D58D10AA9FBB700313A9F /* pr_exec.c in Sources */,

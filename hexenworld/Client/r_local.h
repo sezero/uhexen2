@@ -2,7 +2,7 @@
 	r_local.h
 	private refresh defs
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/r_local.h,v 1.12 2007-07-08 11:55:38 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/r_local.h,v 1.13 2007-07-17 16:50:30 sezero Exp $
 */
 
 #ifndef __R_LOCAL_H
@@ -135,8 +135,18 @@ texture_t *R_TextureAnimation (texture_t *base);
 
 void R_GenSkyTile (void *pdest);
 void R_GenSkyTile16 (void *pdest);
+
+#if id386
 void R_Surf8Patch (void);
 void R_Surf16Patch (void);
+void R_SurfacePatch (void);
+#else
+/* we only patch code on Intel */
+#define R_Surf8Patch()
+#define R_Surf16Patch()
+#define R_SurfacePatch()
+#endif
+
 void R_DrawSubmodelPolygons (model_t *pmodel, int clipflags);
 void R_DrawSolidClippedSubmodelPolygons (model_t *pmodel);
 
@@ -225,7 +235,6 @@ qboolean R_AliasCheckBBox (void);
 //=========================================================
 
 void R_ReadPointFile_f (void);
-void R_SurfacePatch (void);
 
 extern	int	r_amodels_drawn;
 extern	edge_t	*auxedges;

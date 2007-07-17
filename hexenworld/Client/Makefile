@@ -1,5 +1,5 @@
 # GNU Makefile for hexenworld clients using GCC.
-# $Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/Makefile,v 1.68 2007-07-17 14:17:08 sezero Exp $
+# $Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/Makefile,v 1.69 2007-07-17 16:50:28 sezero Exp $
 #
 # Type "make help" to see the valid targets.
 #
@@ -384,7 +384,6 @@ SOFTOBJS = d_edge.o \
 	r_surf.o \
 	r_vars.o \
 	screen.o \
-	nonintel.o \
 	$(SYSOBJ_SOFT_VID)
 
 GLOBJS = gl_draw.o \
