@@ -2,7 +2,7 @@
 	vid_win.c
 	Win32 video driver using MGL-4.05
 
-	$Id: vid_win.c,v 1.50 2007-07-17 14:04:02 sezero Exp $
+	$Id: vid_win.c,v 1.51 2007-07-19 11:40:18 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -44,7 +44,7 @@ extern	cache_user_t	*intermissionScreen;
 static int	DIBWidth, DIBHeight;
 qboolean	DDActive;
 static RECT	WindowRect;
-static DWORD	WindowStyle, ExWindowStyle;
+static LONG	WindowStyle, ExWindowStyle;
 
 int		window_center_x, window_center_y, window_x, window_y, window_width, window_height;
 RECT		window_rect;
@@ -1387,8 +1387,8 @@ static qboolean VID_SetWindowedMode (int modenum)
 	}
 	else
 	{
-		SetWindowLong(mainwindow, GWL_STYLE, WindowStyle | WS_VISIBLE);
-		SetWindowLong(mainwindow, GWL_EXSTYLE, ExWindowStyle);
+		SetWindowLongPtr (mainwindow, GWL_STYLE, WindowStyle | WS_VISIBLE);
+		SetWindowLongPtr (mainwindow, GWL_EXSTYLE, ExWindowStyle);
 	}
 
 	if (!SetWindowPos (mainwindow,
@@ -1567,8 +1567,8 @@ static qboolean VID_SetFullDIBMode (int modenum)
 	ExWindowStyle = 0;
 	AdjustWindowRectEx(&WindowRect, WindowStyle, FALSE, 0);
 
-	SetWindowLong(mainwindow, GWL_STYLE, WindowStyle | WS_VISIBLE);
-	SetWindowLong(mainwindow, GWL_EXSTYLE, ExWindowStyle);
+	SetWindowLongPtr (mainwindow, GWL_STYLE, WindowStyle | WS_VISIBLE);
+	SetWindowLongPtr (mainwindow, GWL_EXSTYLE, ExWindowStyle);
 
 	if (!SetWindowPos (mainwindow,
 				NULL,
