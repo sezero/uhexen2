@@ -1,6 +1,6 @@
 /*
 	gl_vidnt.c -- NT GL vid component
-	$Id: gl_vidnt.c,v 1.104 2007-07-17 14:04:02 sezero Exp $
+	$Id: gl_vidnt.c,v 1.105 2007-07-19 11:41:34 sezero Exp $
 */
 
 #define	__GL_FUNC_EXTERN
@@ -82,13 +82,14 @@ static vmode_t	badmode;
 static HGLRC	baseRC;
 static HDC	maindc;
 static DEVMODE	gdevmode;
-HWND		mainwindow, dibwindow;
+static qboolean	classregistered;
+HWND		mainwindow;
 static HICON	hIcon;
 static int	DIBWidth, DIBHeight;
 static RECT	WindowRect;
 int		window_center_x, window_center_y, window_x, window_y, window_width, window_height;
 RECT		window_rect;
-static DWORD	WindowStyle, ExWindowStyle;
+static LONG	WindowStyle, ExWindowStyle;
 qboolean	DDActive;
 
 static PIXELFORMATDESCRIPTOR pfd =
@@ -125,7 +126,6 @@ modestate_t	modestate = MS_UNINIT;
 static int	vid_default = MODE_WINDOWED;
 static int	vid_modenum = NO_MODE;	// current video mode, set after mode setting succeeds
 static int	vid_deskwidth, vid_deskheight, vid_deskbpp, vid_deskmode;
-static int	windowed_default;
 static qboolean	vid_conscale = false;
 static char	vid_consize[MAX_DESC];
 
@@ -355,15 +355,12 @@ char *VID_ReportConsize(void)
 
 static qboolean VID_SetWindowedMode (int modenum)
 {
-	HDC	hdc;
-	int	lastmodestate, width, height;
+	int	width, height;
 	RECT	rect;
-
-	lastmodestate = modestate;
 
 	// Pa3PyX: set the original fullscreen mode if
 	// we are switching to window from fullscreen.
-	if (lastmodestate == MS_FULLDIB)
+	if (modestate == MS_FULLDIB)
 		ChangeDisplaySettings(NULL, 0);
 
 	WindowRect.top = WindowRect.left = 0;
@@ -374,8 +371,7 @@ static qboolean VID_SetWindowedMode (int modenum)
 	DIBWidth = modelist[modenum].width;
 	DIBHeight = modelist[modenum].height;
 
-	WindowStyle = WS_OVERLAPPED | WS_BORDER | WS_CAPTION | WS_SYSMENU |
-				  WS_MINIMIZEBOX;
+	WindowStyle = WS_OVERLAPPED | WS_BORDER | WS_CAPTION | WS_SYSMENU | WS_MINIMIZEBOX | WS_VISIBLE;
 	ExWindowStyle = 0;
 
 	rect = WindowRect;
@@ -384,53 +380,23 @@ static qboolean VID_SetWindowedMode (int modenum)
 	width = rect.right - rect.left;
 	height = rect.bottom - rect.top;
 
-	// Create the DIB window
-	dibwindow = CreateWindowEx (
-		 ExWindowStyle,
-		 WM_CLASSNAME,
-		 WM_WINDOWNAME,
-		 WindowStyle,
-		 rect.left, rect.top,
-		 width,
-		 height,
-		 NULL,
-		 NULL,
-		 global_hInstance,
-		 NULL);
+	// update the size and style of our mainwindow
+	if (modestate == MS_FULLDIB)
+	{
+		SetWindowLongPtr (mainwindow, GWL_STYLE, WindowStyle);
+		SetWindowLongPtr (mainwindow, GWL_EXSTYLE, ExWindowStyle);
+	}
+	if (! SetWindowPos(mainwindow, NULL, 0, 0, width, height, 0) )
+	{
+		return false;
+	}
 
-	if (!dibwindow)
-		Sys_Error ("Couldn't create DIB window");
-
-	// Center and show the DIB window
-	CenterWindow(dibwindow, WindowRect.right - WindowRect.left,
+	// center the DIB window
+	CenterWindow(mainwindow, WindowRect.right - WindowRect.left,
 				 WindowRect.bottom - WindowRect.top, false);
-
-	ShowWindow (dibwindow, SW_SHOWDEFAULT);
-	UpdateWindow (dibwindow);
 
 	modestate = MS_WINDOWED;
 	Cvar_SetValue ("vid_config_fscr", 0);
-
-	// Because we have set the background brush for the window to NULL
-	// (to avoid flickering when re-sizing the window on the desktop),
-	// we clear the window to black when created, otherwise it will be
-	// empty while Quake starts up.
-	hdc = GetDC(dibwindow);
-	PatBlt(hdc,0,0,WindowRect.right,WindowRect.bottom,BLACKNESS);
-	ReleaseDC(dibwindow, hdc);
-
-	vid.width  = vid.conwidth  = modelist[modenum].width;
-	vid.height = vid.conheight = modelist[modenum].height;
-
-	// setup the effective console width
-	VID_ConWidth(modenum);
-
-	vid.numpages = 2;
-
-	mainwindow = dibwindow;
-
-	SendMessage (mainwindow, WM_SETICON, (WPARAM)TRUE, (LPARAM)hIcon);
-	SendMessage (mainwindow, WM_SETICON, (WPARAM)FALSE, (LPARAM)hIcon);
 
 	return true;
 }
@@ -438,11 +404,8 @@ static qboolean VID_SetWindowedMode (int modenum)
 
 static qboolean VID_SetFullDIBMode (int modenum)
 {
-	HDC	hdc;
-	int	lastmodestate, width, height;
+	int	width, height;
 	RECT	rect;
-
-	lastmodestate = modestate;
 
 	pfd.cColorBits = modelist[modenum].bpp;
 
@@ -467,8 +430,8 @@ static qboolean VID_SetFullDIBMode (int modenum)
 	DIBWidth = modelist[modenum].width;
 	DIBHeight = modelist[modenum].height;
 
-	WindowStyle = WS_POPUP;
-	ExWindowStyle = 0;
+	WindowStyle = WS_POPUP | WS_SYSMENU | WS_VISIBLE;
+	ExWindowStyle = WS_EX_TOPMOST;
 
 	rect = WindowRect;
 	AdjustWindowRectEx(&rect, WindowStyle, FALSE, 0);
@@ -476,53 +439,23 @@ static qboolean VID_SetFullDIBMode (int modenum)
 	width = rect.right - rect.left;
 	height = rect.bottom - rect.top;
 
-	// Create the DIB window
-	dibwindow = CreateWindowEx (
-		 ExWindowStyle,
-		 WM_CLASSNAME,
-		 WM_WINDOWNAME,
-		 WindowStyle,
-		 rect.left, rect.top,
-		 width,
-		 height,
-		 NULL,
-		 NULL,
-		 global_hInstance,
-		 NULL);
-
-	if (!dibwindow)
-		Sys_Error ("Couldn't create DIB window");
-
-	ShowWindow (dibwindow, SW_SHOWDEFAULT);
-	UpdateWindow (dibwindow);
+	// update the size and style of our main window
+	if (modestate != MS_FULLDIB)
+	{
+		SetWindowLongPtr (mainwindow, GWL_STYLE, WindowStyle);
+		SetWindowLongPtr (mainwindow, GWL_EXSTYLE, ExWindowStyle);
+	}
+	if (! SetWindowPos(mainwindow, NULL, 0, 0, width, height, 0) )
+	{
+		return false;
+	}
 
 	modestate = MS_FULLDIB;
 	Cvar_SetValue ("vid_config_fscr", 1);
 
-	// Because we have set the background brush for the window to NULL
-	// (to avoid flickering when re-sizing the window on the desktop),
-	// we clear the window to black when created, otherwise it will be
-	// empty while Quake starts up.
-	hdc = GetDC(dibwindow);
-	PatBlt(hdc,0,0,WindowRect.right,WindowRect.bottom,BLACKNESS);
-	ReleaseDC(dibwindow, hdc);
-
-	vid.width  = vid.conwidth  = modelist[modenum].width;
-	vid.height = vid.conheight = modelist[modenum].height;
-
-	// setup the effective console width
-	VID_ConWidth(modenum);
-
-	vid.numpages = 2;
-
 // needed because we're not getting WM_MOVE messages fullscreen on NT
 	window_x = 0;
 	window_y = 0;
-
-	mainwindow = dibwindow;
-
-	SendMessage (mainwindow, WM_SETICON, (WPARAM)TRUE, (LPARAM)hIcon);
-	SendMessage (mainwindow, WM_SETICON, (WPARAM)FALSE, (LPARAM)hIcon);
 
 	return true;
 }
@@ -530,19 +463,14 @@ static qboolean VID_SetFullDIBMode (int modenum)
 
 static int VID_SetMode (int modenum, unsigned char *palette)
 {
-	int		original_mode;
 	qboolean	stat = false;
 	MSG		msg;
+	HDC		hdc;
 
 	if (modenum < 0 || modenum >= *nummodes)
 		Sys_Error ("Bad video mode\n");
 
 	CDAudio_Pause ();
-
-	if (vid_modenum == NO_MODE)
-		original_mode = windowed_default;
-	else
-		original_mode = vid_modenum;
 
 	// Set either the fullscreen or windowed mode
 	if (modelist[modenum].type == MS_WINDOWED)
@@ -576,11 +504,27 @@ static int VID_SetMode (int modenum, unsigned char *palette)
 		Sys_Error ("Couldn't set video mode");
 	}
 
+	ShowWindow (mainwindow, SW_SHOWDEFAULT);
+	UpdateWindow (mainwindow);
+
+	// Because we have set the background brush for the window to NULL
+	// (to avoid flickering when re-sizing the window on the desktop),
+	// we clear the window to black when created, otherwise it will be
+	// empty while Quake starts up.
+	hdc = GetDC(mainwindow);
+	PatBlt(hdc, 0, 0, WindowRect.right, WindowRect.bottom, BLACKNESS);
+	ReleaseDC(mainwindow, hdc);
+
+	vid.numpages = 2;
+	vid.width  = vid.conwidth  = modelist[modenum].width;
+	vid.height = vid.conheight = modelist[modenum].height;
+
+	// setup the effective console width
+	VID_ConWidth(modenum);
+
 	window_width = DIBWidth;
 	window_height = DIBHeight;
 	VID_UpdateWindowStatus ();
-
-	CDAudio_Resume ();
 
 // now we try to make sure we get the focus on the mode switch, because
 // sometimes in some systems we don't.  We grab the foreground, then
@@ -615,6 +559,8 @@ static int VID_SetMode (int modenum, unsigned char *palette)
 
 	//VID_SetPalette (palette);
 	//vid.recalc_refdef = 1;
+
+	CDAudio_Resume ();
 
 	return true;
 }
@@ -1567,14 +1513,9 @@ static LONG WINAPI MainWndProc (HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPar
 
 			break;
 
-#if 0	// default handling for destroy, because we manually DestroyWindow() on mode changes
 		case WM_DESTROY:
-			if (dibwindow)
-				DestroyWindow (dibwindow);
-
-			PostQuitMessage (0);
+		//	PostQuitMessage (0);
 			break;
-#endif
 
 		case MM_MCINOTIFY:
 #if !defined(_NO_CDAUDIO)
@@ -1743,6 +1684,38 @@ static void VID_RegisterWndClass(HINSTANCE hInstance)
 
 	if (!RegisterClass(&wc))
 		Sys_Error ("Couldn't register main window class");
+
+	classregistered = true;
+}
+
+static void VID_InitMainWindow (HINSTANCE hInstance)
+{
+	RECT	r;
+	int	w, h;
+
+	r.top = r.left = 0;
+	/* this should be safe in all scenarios */
+	r.right = std_modes[RES_640X480].width;
+	r.bottom = std_modes[RES_640X480].height;
+
+	WindowStyle = WS_OVERLAPPED | WS_BORDER | WS_CAPTION | WS_SYSMENU | WS_MINIMIZEBOX | WS_VISIBLE;
+	ExWindowStyle = 0;
+
+	AdjustWindowRectEx(&r, WindowStyle, FALSE, 0);
+
+	w = r.right - r.left;
+	h = r.bottom - r.top;
+
+	mainwindow = CreateWindowEx (ExWindowStyle, WM_CLASSNAME, WM_WINDOWNAME, WindowStyle,
+					r.left, r.top, w, h, NULL, NULL, hInstance, NULL);
+	if (!mainwindow)
+		Sys_Error ("Couldn't create DIB window");
+
+	ShowWindow (mainwindow, SW_SHOWDEFAULT);
+	UpdateWindow (mainwindow);
+
+	SendMessage (mainwindow, WM_SETICON, (WPARAM)TRUE, (LPARAM)hIcon);
+	SendMessage (mainwindow, WM_SETICON, (WPARAM)FALSE, (LPARAM)hIcon);
 }
 
 static void VID_InitDIB (HINSTANCE hInstance)
@@ -1970,33 +1943,27 @@ static void VID_ChangeVideoMode(int newmode)
 	// reset all function pointers
 	GL_ResetFunctions();
 
+	IN_DeactivateMouse();
+
 	// Kill device and rendering contexts
 	wglMakeCurrent_fp(NULL, NULL);
 	if (baseRC)
 		wglDeleteContext_fp(baseRC);
-	baseRC = 0;
+	baseRC = NULL;
 	if (maindc && mainwindow)
 		ReleaseDC(mainwindow, maindc);
-	maindc = 0;
-	// Destroy main window and unregister its class
-	if (mainwindow)
-	{
-		ShowWindow(mainwindow, SW_HIDE);
-		DestroyWindow(mainwindow);
-	}
-	mainwindow = dibwindow = 0;
-	UnregisterClass(WM_CLASSNAME, global_hInstance);
+	maindc = NULL;
 
 #ifdef GL_DLSYM
-	// reload the opengl library
 	GL_CloseLibrary();
+#endif
+
+	VID_SetMode(newmode, host_basepal);
+#ifdef GL_DLSYM
+	// reload the opengl library
 	if (!GL_OpenLibrary(gl_library))
 		Sys_Error ("Unable to load GL library %s", gl_library);
 #endif
-
-	// Register main window class and create main window
-	VID_RegisterWndClass(global_hInstance);
-	VID_SetMode(newmode, host_basepal);
 	// Obtain device context and set up pixel format
 	maindc = GetDC(mainwindow);
 	bSetupPixelFormat(maindc);
@@ -2468,6 +2435,9 @@ void	VID_Init (unsigned char *palette)
 
 	vid_initialized = true;
 
+	// Create our main window
+	VID_InitMainWindow (global_hInstance);
+
 	vid.maxwarpwidth = WARP_WIDTH;
 	vid.maxwarpheight = WARP_HEIGHT;
 	vid.colormap = host_colormap;
@@ -2541,19 +2511,28 @@ void	VID_Shutdown (void)
 		if (hRC)
 			wglDeleteContext_fp(hRC);
 
-		if (hDC && dibwindow)
-			ReleaseDC(dibwindow, hDC);
+		if (hDC && mainwindow)
+			ReleaseDC(mainwindow, hDC);
 
 		if (modestate == MS_FULLDIB)
 			ChangeDisplaySettings (NULL, 0);
 
-		if (maindc && dibwindow)
-			ReleaseDC (dibwindow, maindc);
+		if (maindc && mainwindow)
+			ReleaseDC (mainwindow, maindc);
+		maindc = NULL;
 
 		AppActivate(false, false);
 #ifdef GL_DLSYM
 		GL_CloseLibrary();
 #endif
+		if (mainwindow)
+		{
+			ShowWindow(mainwindow, SW_HIDE);
+			DestroyWindow(mainwindow);
+		}
+		if (classregistered)
+			UnregisterClass(WM_CLASSNAME, global_hInstance);
+		mainwindow = NULL;
 	}
 }
 
