@@ -17,8 +17,6 @@ General:
   server must be started with "-protocol 18" command line argument.
 - You can also load and play games saved with the 1.11 windows version and
   can playback the demos recorded with the 1.11 version.
-- Fixed a bug in NET_SendToAll (mainly used for reconnecting clients upon
-  changing levels) where it didn't skip non-connected clients.
 - Fixed and improved parsing of puzzles.txt: This fixes the bug where the
   names used to be listed as Unknown in the puzzle pieces inventory display
   (you can access the puzzle pieces inventory display using a key bound to
@@ -26,7 +24,9 @@ General:
 - Updated the loading of strings.txt, infolist.txt and puzzles.txt.
 - Updates to SDL input code.  Added the Shift-Escape key combination as a
   new means for opening the in-game console.
-- Fixed many printf format string errors.
+- Fixed wheelmouse for direct input mode in the windows version. Added the
+  direct input support of HexenWorld to Hexen II. DirectInput is activated
+  by the "-dinput" command line argument.
 - Revised pak data checking.
 - Added experimental support for using unpatched, off-the-cdrom 1.03 version
   pak files as a compile time option. Disabled by default.
@@ -75,6 +75,8 @@ Console:
 
 Server:
 -------
+- Fixed a bug in NET_SendToAll (mainly used for reconnecting clients upon
+  changing levels) where it didn't skip non-connected clients.
 - Fixed the mission pack's doWhiteFlash server message: it used to affect the
   local client only. Naturally, the recorded demos didn't carry the message
   and the flash didn't appear, either. It works properly now.
@@ -149,6 +151,7 @@ Utilities:
 
 Other:
 ------
+- Fixed many printf format string errors.
 - Imported the latest xdelta-1.1 sources into the tree.
 - Started a large scale attempt at improving const-correctness.
 - Updated inline commentaries.
