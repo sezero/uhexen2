@@ -1,6 +1,6 @@
 /*
 	in_win.c
-	$Id: in_win.c,v 1.29 2007-07-17 16:30:47 sezero Exp $
+	$Id: in_win.c,v 1.30 2007-07-19 11:38:16 sezero Exp $
 
 	windows 95 mouse and joystick code
 
@@ -38,8 +38,7 @@ static int buttonremap[] =
 #define	NUM_MOUSEBUTTONS	(sizeof(buttonremap) / sizeof(buttonremap[0]))
 
 /* DirectInput mouse control: */
-static qboolean			dinput;
-static qboolean			dinput_acquired;
+static qboolean			dinput_init, dinput_acquired;
 static unsigned int		mstate_di;
 
 static LPDIRECTINPUT		g_pdi;
@@ -186,8 +185,9 @@ IN_UpdateClipCursor
 */
 void IN_UpdateClipCursor (void)
 {
-
-	if (mouseinitialized && mouseactive && !dinput)
+	if (dinput_init)
+		return;
+	if (mouseinitialized && mouseactive)
 	{
 		ClipCursor (&window_rect);
 	}
@@ -238,7 +238,7 @@ void IN_ActivateMouse (void)
 
 	if (mouseinitialized)
 	{
-		if (dinput)
+		if (dinput_init)
 		{
 			if (g_pMouse)
 			{
@@ -292,7 +292,7 @@ void IN_DeactivateMouse (void)
 
 	if (mouseinitialized)
 	{
-		if (dinput)
+		if (dinput_init)
 		{
 			if (g_pMouse)
 			{
@@ -426,6 +426,7 @@ qboolean IN_InitDInput (void)
 		return false;
 	}
 
+	Con_SafePrintf ("DirectInput initialized\n");
 	return true;
 }
 
@@ -444,19 +445,12 @@ static void IN_StartupMouse (void)
 
 	if (COM_CheckParm ("-dinput"))
 	{
-		dinput = IN_InitDInput ();
-
-		if (dinput)
-		{
-			Con_SafePrintf ("DirectInput initialized\n");
-		}
-		else
-		{
-			Con_SafePrintf ("DirectInput not initialized\n");
-		}
+		dinput_init = IN_InitDInput ();
+		if (!dinput_init)
+			Con_SafePrintf ("DirectInput initialization failed\n");
 	}
 
-	if (!dinput)
+	if (!dinput_init)
 	{
 		mouseparmsvalid = SystemParametersInfo (SPI_GETMOUSE, 0, originalmouseparms, 0);
 
@@ -536,12 +530,12 @@ void IN_Shutdown (void)
 	IN_DeactivateMouse ();
 	IN_ShowMouse ();
 
+	dinput_init = mouseinitialized = false;
 	if (g_pMouse)
 	{
 		IDirectInputDevice_Release(g_pMouse);
 		g_pMouse = NULL;
 	}
-
 	if (g_pdi)
 	{
 		IDirectInput_Release(g_pdi);
@@ -559,7 +553,7 @@ void IN_MouseEvent (int mstate)
 {
 	int		i;
 
-	if (mouseactive && !dinput)
+	if (mouseactive && !dinput_init)
 	{
 	// perform button actions
 		for (i = 0; i < NUM_MOUSEBUTTONS; i++)
@@ -586,7 +580,7 @@ static void IN_MouseMove (usercmd_t *cmd)
 	if (!mouseactive)
 		return;
 
-	if (dinput)
+	if (dinput_init)
 	{
 		DIDEVICEOBJECTDATA	od;
 		DWORD			dwElements;
@@ -743,6 +737,9 @@ static void IN_MouseMove (usercmd_t *cmd)
 		}
 	}
 
+	if (dinput_init)
+		return;
+
 // if the mouse has moved, force it to the center, so there's room to move
 	if (mx || my)
 	{
@@ -779,6 +776,8 @@ IN_Accumulate
 */
 void IN_Accumulate (void)
 {
+	if (dinput_init)
+		return;
 	if (mouseactive)
 	{
 		GetCursorPos (&current_pos);
