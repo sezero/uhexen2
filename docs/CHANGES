@@ -3,6 +3,41 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2007-07-20 (CVS):
+    * renamed mousestate_sa to menu_disabled_mouse for better clarity.
+    * updated documentation (BUGS, TODO, 2007-07-20.)
+
+2007-07-19 (CVS):
+    * in_win.c: minor directinput clean-ups. no need for SetCursorPos
+      and ClipCursor calls in direct input mode. set mouseinitialized
+      and dinput_init to false in IN_Shutdown.
+    * vid_win.c: for compatibility with newer Windows versions, changed
+      several SetWindowLong calls into SetWindowLongPtr.
+    * gl_vidnt.c: made the windows opengl version to re-use its window
+      and not destroy it during mode changes. with this, direct input is
+      no longer lost after a vid_restart.
+    * updated release notess for the 1.4.2 version (2007-07-19.)
+
+2007-07-17 (CVS):
+    * input drivers update: removed some redundant code from in_sdl.c,
+      a left-over from from AoT from win32-to-sdl porting times. added
+      button4 and mousewheel support to win32 dinput code (adapted from
+      darkplaces). ported the dinput code from hexenworld to hexen2:
+      works properly as it is but I lose input upon vid mode switching,
+      to be looked into. some clean-ups elsewhere in the input code.
+    * added LINK_DIRECTX as a new makefile option, defaulting to no. if set
+      to yes, we shall link to dinput, dsound and dxguid. if set to no, the
+      makefile will emit a DX_DLSYM definition to the compiler, we'll load
+      the necessary symbols at runtime and we'll be compatible with ancient
+      windows versions without a directx installation. the direct input GUID
+      definitions taken from the quake3 source.
+    * NET_SendToAll: renamed the cryptic state1 and state2 variables to
+      something more indicative of their purpose. suggested by Tyrann.
+    * in_win.c, snd_win.c: removed the outdated iDirect[xxx]Create definitions.
+    * snd_dma.c: removed unused S_AmbientOn, S_AmbientOff and snd_ambient.
+    * in_win.c: fixed the mouse button mapping after the recent changes.
+    * removed all references to nonintel.c (not needed).
+
 2007-07-15 (CVS):
     * network fixes and clean-ups:  removed remnants of dead functions
       (Datagram_Connect) from the hexen2 dedicated server. removed the
