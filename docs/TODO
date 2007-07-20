@@ -6,6 +6,7 @@ TODO:
 - Add joystick support through sdl
 - Add pthread support to the utilities
 - Do a clean-up of the opengl system
+- Re-visit the mouse grab code and clean it up.
 - Software Renderer, d_edge.c and r_edge.c, non-intel code:
   Fix the FoundTrans / TransCount mess.
 - Software Renderer, d_polyse.c, non-intel code: Correctly
