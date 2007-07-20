@@ -238,7 +238,7 @@ before compiling SDL_mixer, to point to your timidity data files.
 1.5 Networking / Multiplayer
 ----------------------------
 
-Since version 1.4.2 (engine version 1.17), Hammer of Thyrion binaries
+Since version 1.4.2 (engine version 1.19), Hammer of Thyrion binaries
 are fully compatible Raven's Windows Hexen II-1.11 binaries.  When run
 as a client, it can connect to Raven-1.11 servers and can play just
 fine.  It can playback the demos created with 1.11 version, as well.

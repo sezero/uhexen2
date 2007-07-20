@@ -78,7 +78,7 @@ a. Using the installer:
 	hwmaster-  HexenWorld Master Server
 
 b. Manual install/update of data files:
-   Download the base binary tarball (e.g., hexen2-1.4.1.i586.tgz)
+   Download the base binary tarball (e.g., hexen2-1.4.2.i586.tgz)
    and extract it. Copy the two files pak0.pak and pak1.pak from
    your cdrom into the "data1" directory in your own installation.
    Run the command " chmod 644 data1/pak* "  to fix their permis-
@@ -104,7 +104,7 @@ b. Manual install/update of data files:
    77ae298dd0dcd16ab12f4a68067ff2c3  portals/pak3.pak
 
    If you want to install HexenWorld, download the HexenWorld
-   binary package (e.g., hexenworld-1.4.1.i586.tgz) and extract
+   binary package (e.g., hexenworld-1.4.2.i586.tgz) and extract
    it in the same directory you extracted the base HoT tarball.
    No additional patching is necessary for hexenworld.
 
@@ -298,7 +298,7 @@ before compiling SDL_mixer, to point to your timidity data files.
 1.5 Networking / Multiplayer
 ----------------------------
 
-Since version 1.4.2 (engine version 1.17), Hammer of Thyrion binaries
+Since version 1.4.2 (engine version 1.19), Hammer of Thyrion binaries
 are fully compatible Raven's Windows Hexen II-1.11 binaries.  When run
 as a client, it can connect to Raven-1.11 servers and can play just
 fine.  It can playback the demos created with 1.11 version, as well.

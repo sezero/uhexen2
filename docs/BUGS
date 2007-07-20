@@ -17,16 +17,17 @@ Known Bugs
   should be fixed in a better way (R_DrawSpriteModel, probably?).  See
   the workaround in gl_vidnt.c, gl_vidsdl.c, gl_rmain.c.
 
-- Software renderer, 64 bit: amd64 DEBUG builds may not draw some objects
-  depending on the viewpoint of the player (reported by Davide Cendron).
-  The C-only code does not have such a problem when built as 32 bit.
+- Software renderer, 64 bit: amd64 DEBUG builds (with all optimizations
+  turned off) may not draw some objects depending on the viewpoint of
+  the player (reported by Davide Cendron). The C-only code doesn't have
+  such a problem when built as 32 bit.
 
 - 64 bit, multiplayer: 32 bit Hexen II clients cannot connect to 64 bit
   Hexen II servers (reported by Davide Cendron). HexenWorld doesn't have
   such a problem.  To be looked into.
 
-- Hexen II dedicated server: The decorative swords in the village1 and
-  demo2 levels are located out of place. To be looked into.
+- Hexen II dedicated server: The swords on the weapon racks in village1
+  and demo2 levels are placed incorrectly. To be looked into.
 
 - Hexen II dedicated server: Some teleportation sounds get lost by being
   marked as 'not audible at all' in S_StartSound(). To be looked into.
