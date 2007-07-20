@@ -3,7 +3,7 @@
 	SDL video driver
 	Select window size and mode and init SDL in SOFTWARE mode.
 
-	$Id: vid_sdl.c,v 1.73 2007-07-08 11:55:38 sezero Exp $
+	$Id: vid_sdl.c,v 1.74 2007-07-20 07:45:44 sezero Exp $
 
 	Changed by S.A. 7/11/04, 27/12/04
 	Options are now: -fullscreen | -window, -height , -width
@@ -1013,7 +1013,7 @@ Handles switching between fullscreen/windowed modes
 and brings the mouse to a proper state afterwards
 ================
 */
-extern qboolean mousestate_sa;
+extern qboolean menu_disabled_mouse;
 void VID_ToggleFullscreen (void)
 {
 	int	is_fullscreen;
@@ -1036,13 +1036,13 @@ void VID_ToggleFullscreen (void)
 		{
 			// activate mouse in fullscreen mode
 			// in_sdl.c handles other non-moused cases
-			if (mousestate_sa)
+			if (menu_disabled_mouse)
 				IN_ActivateMouse();
 		}
 		else
 		{	// windowed mode:
 			// deactivate mouse if we are in menus
-			if (mousestate_sa)
+			if (menu_disabled_mouse)
 				IN_DeactivateMouse();
 		}
 		// update the video menu option

@@ -2,7 +2,7 @@
 	cl_parse.c
 	parse a message received from the server
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cl_parse.c,v 1.54 2007-07-08 11:55:18 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cl_parse.c,v 1.55 2007-07-20 07:45:42 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -88,7 +88,7 @@ qboolean	demohack = false;
 
 extern	cvar_t	precache;
 extern	int	stufftext_frame;
-extern	qboolean mousestate_sa;
+extern	qboolean menu_disabled_mouse;
 
 
 //=============================================================================
@@ -397,7 +397,7 @@ static void CL_ParseServerInfo (void)
 	Hunk_Check ();		// make sure nothing is hurt
 
 // we connected to the server, make sure the mouse is going - S.A.
-	mousestate_sa = false;
+	menu_disabled_mouse = false;
 	IN_ActivateMouse();
 }
 

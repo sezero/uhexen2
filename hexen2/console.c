@@ -2,7 +2,7 @@
 	console.c
 	in-game console and chat message buffer handling
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/console.c,v 1.34 2007-07-08 11:55:18 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/console.c,v 1.35 2007-07-20 07:45:42 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -32,7 +32,7 @@ extern	char	key_lines[32][MAXCMDLINE];
 extern	int		edit_line;
 extern	int		key_linepos;
 extern	int		key_insert;
-extern qboolean		mousestate_sa;
+extern qboolean		menu_disabled_mouse;
 
 extern void M_Menu_Main_f (void);
 
@@ -46,7 +46,7 @@ void Con_ToggleConsole_f (void)
 {
 	// activate mouse when in console in
 	// case it is disabled somewhere else
-	mousestate_sa = false;
+	menu_disabled_mouse = false;
 	IN_ActivateMouse ();
 
 	if (key_dest == key_console)

@@ -2,7 +2,7 @@
 	in_sdl.c
 	SDL game input code
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/in_sdl.c,v 1.44 2007-07-17 14:04:00 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/in_sdl.c,v 1.45 2007-07-20 07:45:42 sezero Exp $
 */
 
 #include "sdl_inc.h"
@@ -105,16 +105,17 @@ void IN_HideMouse (void)
    NOTES on enabling-disabling the mouse:
    - In windowed mode, mouse is temporarily disabled in main
      menu, so the un-grabbed pointer can be used for desktop
-     This state is stored in mousestate_sa as true
+     This state is stored in menu_disabled_mouse as true
    - In fullscreen mode, we don't disable the mouse in menus,
      if we toggle windowed/fullscreen, the above state variable
      is used to correct this in VID_ToggleFullscreen()
    - In the console mode and in the options menu-group, mouse
-     is not disabled, and mousestate_sa is set to false
+     is not disabled, and menu_disabled_mouse is set to false
    - Starting a or connecting to a server activates the mouse
-     and sets mousestate_sa to false
+     and sets menu_disabled_mouse to false
    - Pausing the game disables (so un-grabs) the mouse, unpausing
-     activates it. We don't play with mousestate_sa in such cases
+     activates it. We don't play with menu_disabled_mouse in
+     such cases
 */
 
 /*

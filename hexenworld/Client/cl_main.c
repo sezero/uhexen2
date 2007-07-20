@@ -2,7 +2,7 @@
 	cl_main.c
 	client main loop
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/cl_main.c,v 1.81 2007-07-11 16:47:16 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/cl_main.c,v 1.82 2007-07-20 07:45:43 sezero Exp $
 */
 
 #include <sys/types.h>
@@ -155,7 +155,7 @@ CL_SendConnectPacket
 called by CL_Connect_f and CL_CheckResend
 ======================
 */
-extern qboolean mousestate_sa;
+extern qboolean menu_disabled_mouse;
 void CL_SendConnectPacket (void)
 {
 	netadr_t	adr;
@@ -189,7 +189,7 @@ void CL_SendConnectPacket (void)
 	NET_SendPacket (strlen(data), data, adr);
 
 	// When we connect to a server, check the mouse is going - S.A.
-	mousestate_sa = false;
+	menu_disabled_mouse = false;
 	IN_ActivateMouse();
 }
 

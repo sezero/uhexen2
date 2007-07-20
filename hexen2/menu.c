@@ -1,7 +1,7 @@
 /*
 	menu.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/menu.c,v 1.93 2007-07-08 11:55:20 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/menu.c,v 1.94 2007-07-20 07:45:42 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -101,7 +101,7 @@ int			m_return_state;
 qboolean	m_return_onerror;
 char		m_return_reason [32];
 
-qboolean	mousestate_sa = false;	// true if we're in menus and mouse is to be disabled
+qboolean	menu_disabled_mouse = false;
 
 static float TitlePercent = 0;
 static float TitleTargetPercent = 1;
@@ -692,7 +692,7 @@ static char	old_bgmtype[20];	// S.A
 void M_Menu_Main_f (void)
 {
 	// Deactivate the mouse when the menus are drawn - S.A.
-	mousestate_sa = true;
+	menu_disabled_mouse = true;
 	if (modestate == MS_WINDOWED)
 		IN_DeactivateMouse ();
 
@@ -730,7 +730,7 @@ static void M_Main_Key (int key)
 	{
 	case K_ESCAPE:
 		// leaving the main menu, reactivate mouse - S.A.
-		mousestate_sa = false;
+		menu_disabled_mouse = false;
 		IN_ActivateMouse ();
 		// and check we haven't changed the music type
 		if (old_bgmtype[0] != 0 && strcmp(old_bgmtype,bgmtype.string) != 0)
@@ -2022,7 +2022,7 @@ static void M_Options_Draw (void)
 {
 	float		r;
 
-	mousestate_sa = false;
+	menu_disabled_mouse = false;
 	IN_ActivateMouse ();	// we entered the customization menu
 
 	ScrollTitle("gfx/menu/title3.lmp");
