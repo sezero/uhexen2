@@ -2,15 +2,29 @@
 	q_types.h
 	common type definitions
 
-	$Id: q_types.h,v 1.4 2007-07-11 16:47:16 sezero Exp $
+	$Id: q_types.h,v 1.5 2007-07-21 08:11:23 sezero Exp $
 */
 
 #ifndef __QTYPES_H
 #define __QTYPES_H
 
 #include <sys/types.h>
+
+/* NOTES on TYPE SIZES:
+   Quake/Hexen II engine relied on 32 bit int type size
+   with ILP32 (not LP32) model in mind.  We now support
+   LP64 and LLP64, too. We expect:
+   sizeof (char)	== 1
+   sizeof (short)	== 2
+   sizeof (int)		== 4
+   sizeof (long)	== 4/8
+   sizeof (*ptr)	== 4/8
+   For this, we need the stdint.h or inttypes.h header.
+   FIXME: On some platforms, only inttypes.h is available.
+   FIXME: Properly replace certain short and int usage
+	  with int16_t and int32_t.
+ */
 #include <stdint.h>
-/* FIXME: on some OSs, only inttypes.h is available. */
 
 
 /*==========================================================================*/
