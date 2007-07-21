@@ -109,7 +109,7 @@ diff -urNp hexen2source-1.4.1/hexen2/snd_sdl.c hexen2source-1.4.1x/hexen2/snd_sd
  	memset ((dma_t *) &sn, 0, sizeof(sn));
  	shm = &sn;
  
-@@ -78,18 +128,41 @@ qboolean S_SDL_Init(void)
+@@ -77,18 +127,41 @@ qboolean S_SDL_Init(void)
  		Con_Printf ("Warning: Rate set (%d) didn't match requested rate (%d)!\n", obtained.freq, desired_speed);
  	shm->speed = obtained.freq;
  	shm->channels = obtained.channels;
@@ -154,7 +154,7 @@ diff -urNp hexen2source-1.4.1/hexen2/snd_sdl.c hexen2source-1.4.1x/hexen2/snd_sd
  
  	return 1;
  }
-@@ -104,8 +177,13 @@ void S_SDL_Shutdown(void)
+@@ -103,8 +176,13 @@ void S_SDL_Shutdown(void)
  	if (shm)
  	{
  		Con_Printf ("Shutting down SDL sound\n");
@@ -275,7 +275,7 @@ diff -urNp hexen2source-1.4.1/hexenworld/Client/snd_sdl.c hexen2source-1.4.1x/he
  	memset ((dma_t *) &sn, 0, sizeof(sn));
  	shm = &sn;
  
-@@ -78,18 +128,41 @@ qboolean S_SDL_Init(void)
+@@ -77,18 +127,41 @@ qboolean S_SDL_Init(void)
  		Con_Printf ("Warning: Rate set (%d) didn't match requested rate (%d)!\n", obtained.freq, desired_speed);
  	shm->speed = obtained.freq;
  	shm->channels = obtained.channels;
@@ -320,7 +320,7 @@ diff -urNp hexen2source-1.4.1/hexenworld/Client/snd_sdl.c hexen2source-1.4.1x/he
  
  	return 1;
  }
-@@ -104,8 +177,13 @@ void S_SDL_Shutdown(void)
+@@ -103,8 +176,13 @@ void S_SDL_Shutdown(void)
  	if (shm)
  	{
  		Con_Printf ("Shutting down SDL sound\n");
