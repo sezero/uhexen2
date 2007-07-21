@@ -3,6 +3,13 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2007-07-21 (CVS):
+    * added comments on type sizes to q_types.h.
+    * minor documentation updates.
+    * rediff'ed some of the extra patches.
+    * removed the unnecessary pak.h header and moved its contents to
+      quakefs.c, its only user.
+
 2007-07-20 (CVS):
     * renamed mousestate_sa to menu_disabled_mouse for better clarity.
     * updated documentation (BUGS, TODO, 2007-07-20.)
