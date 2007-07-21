@@ -2,12 +2,11 @@
 	quakefs.c
 	Hexen II filesystem
 
-	$Id: quakefs.c,v 1.26 2007-07-11 16:47:16 sezero Exp $
+	$Id: quakefs.c,v 1.27 2007-07-21 06:41:09 sezero Exp $
 */
 
 #include "quakedef.h"
 #include "pakfile.h"
-#include "pak.h"
 #ifdef PLATFORM_WINDOWS
 #include <io.h>
 #endif
@@ -18,6 +17,20 @@
 #include <sys/stat.h>
 #include <time.h>
 #include <utime.h>
+
+typedef struct
+{
+	char	name[MAX_QPATH];
+	int		filepos, filelen;
+} pakfiles_t;
+
+typedef struct pack_s
+{
+	char	filename[MAX_OSPATH];
+	FILE	*handle;
+	int		numfiles;
+	pakfiles_t	*files;
+} pack_t;
 
 typedef struct searchpath_s
 {
