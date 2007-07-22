@@ -2,7 +2,7 @@
 Hexen II: Hammer of Thyrion
 
 Instructions for Compiling:
----------------------------
+===========================
 
 To compile the your own binaries, you need a unix build environment. The
 makefiles also present several build options, please read them. Makefiles
@@ -19,6 +19,7 @@ Here is the recommended software for building:
 
 
 Tools needed:
+----------------------------------------
 
 Make	:	The GNU make utility.
 		Minimum version required is 3.78.  Versions 3.79.1 and
@@ -30,16 +31,15 @@ binutils:	A GNU collection of binary utilities.
 
 NASM	:	Netwide Assembler. An x86 assembler.
 		Minimum version required is 0.98.  Versions 0.98.38 and
-		0.98.39 recommended.
-		YASM, a re-write of NASM, is also supported: Versions
-		0.5.0rc2 and 0.5.0 are tested.
-		Nasm is required for compiling hexen2 and hexenworld on
-		ia32 machines. The makefile presents an option to not use
-		x86 assembly even on ia32 machines, but this only works
-		for the opengl renderer for now. 
+		0.98.39 recommended.  YASM, a re-write of NASM, is also
+		supported: Versions 0.5.0, 0.6.0 and 0.6.1 are tested.
+		The assemblers nasm or yasm are required for compiling
+		hexen2 and hexenworld clients for ia32 machines.  The
+		makefiles present an option to not use x86 assembly, in
+		that case this tool will not be necessary.
 
-GCC	:	GNU C Compiler. No other compilers (such as LCC, MS VC,
-		etc) are tested.
+GCC	:	GNU C Compiler. No other compilers (such as LCC, Watcom
+		or MS VC) are tested.
 
 		Minimum version required is GCC 2.95.  GCC versions in
 		the 2.95/2.96 and 3.x series work fine.  Gcc 3.2.2 and
@@ -67,34 +67,74 @@ GCC	:	GNU C Compiler. No other compilers (such as LCC, MS VC,
 		the Makefile, or you can specify it on the command line:
 		make NO_UNIT_AT_A_TIME=1 [other options]
 
-Libraries needed:
 
-GLIBC	:	Linux C libraries.
-		Any glibc >= 2.1 should be fine. Not tested with anything
-		older. As for FreeBSD, only version >= 5.3 is tested.
+Libraries needed for various platforms:
+----------------------------------------
+
+GLIBC	:	C libraries on Linux.  Any glibc >= 2.1 should be fine.
+		Not tested with anything older.
 
 SDL	:	Simple DirectMedia Layer libraries.
-		Minimum version required is 1.2.4.
-		Required for compiling hexen2 and hexenworld client on
-		unix systems.
+		Required for compiling hexen2 and hexenworld clients
+		on unix platforms. Minimum version required is 1.2.4.
+		As of this writing, the latest version is 1.2.12, which
+		is recommended.  MacOS X users: You need SDL.framework
+		in your /Library/Frameworks folder. Get SDL-1.2.12.dmg
+		from  http://www.libsdl.org/release/SDL-1.2.12.dmg
+		and copy SDL.framework from that package into your
+		/Library/Frameworks folder.
 
 SDL_mixer:	SDL mixer library.
-		Minimum version required is 1.2.4. 1.2.5 and newer highly
-		recommended at runtime.
-		Required for midi playback support on unix. Should be
-		compiled with timidity+ support. The makefiles present
-		an option for disabling midi support, in that case this
-		library will not be necessary.
+		Required for midi playback support on unix platforms.
+		Should be compiled with timidity+ support. The minimum
+		version required is 1.2.4. As of this writing, the
+		latest version is 1.2.8, which is recommended.
+		The makefiles present an option for disabling midi
+		support, in that case this library will not be
+		necessary.
 
 ALSA	:	Advanced Linux Sound Architecture libraries.
+		Necessary, if you want to support ALSA sound on Linux.
 		Minimum version required is 1.0.1. Version 0.9.8 should
 		theoretically work, but not tested. 1.0.7 or newer are
-		recommended at runtime.
-		Necessary, if you want to support ALSA sound on Linux.
-		The makefiles present an option for disabling ALSA sound
-		support, in that case this library will not be necessary.
+		recommended at runtime.  The makefiles present an option
+		for disabling ALSA sound support, in that case this
+		library will not be necessary.
+
+MSVCRT.DLL:	The windows exe files depend on msvcrt.dll, the microsoft
+		C runtime library. Any sane windows installation already
+		has it unless it is an ancient windows version.  In case
+		you need it, here is a download link from the MS site:
+		http://support.microsoft.com/kb/259403
+		or:
+		http://support.microsoft.com/default.aspx?scid=kb;en-us;259403
+
+MacOS X SDK:	Version 10.4 (or later) is required if you want to compile
+		for x86, or if you want to build universal binaries. It
+		is normally installed under /Developer/SDKs/MacOSX10.4u.sdk
+		If building for ppc only, or for versions older than 10.4,
+		using gcc-3.3 is recommended and older SDK versions (such
+		as 10.2.8) should just work.
+
+QuickTime:	QuickTime.framework is required for midi playback support
+		on MacOS X platform. Normally it should be under the
+		System/Library/Frameworks folder in your OSX SDK folder.
+
+
+Compiling the software renderer for non-x86:
+============================================
+
+As of version 1.4.2, the software renderer clients can be compiled for
+non-x86 cpus: not as perfect as the intel code, yet, but it works very
+well in general.
+On the other hand, it's still possible to compile them as 32 bit binaries
+for intel compatible cpus, such as amd64: for that, you must add -m32 to
+the cpu and linker flags (see the COMPILE_32BITS option in the Makefiles)
+and link against 32 bit versions of any necessary libraries.
+
 
 Compiling for Windows:
+========================================
 
 a. On Linux, using MinGW cross compiler:
 ----------------------------------------
@@ -127,14 +167,20 @@ to try "mingw32-make" if "make" command itself fails to run. Remember to
 do a make clean between each different build.
 
 
-Compiling the software renderer for non-x86:
---------------------------------------------
-As of version 1.4.2, the software renderer clients can be compiled for
-non-x86 cpus: not as perfect as the intel code, yet, but it works well
-in general. On the other hand, it's still possible to compile them as 32
-bit binaries for intel compatible cpus, such as amd64: for that, you must
-add -m32 to the cpu and linker flags and link against 32 bit versions
-of any necessary libraries.
+Compiling for Mac OS X:
+========================================
+
+The Xcode project file is in source tarball: look at the hexen2/MacOSX
+folder. It is adjusted to generate 10.4 universal applications.
+Double click on hexen2.xcodeproj. Click on glhexen2 target at the
+left sidebar in xcode main window. Press Apple+I for inspect window.
+At the inspect window click on "build" tab. Select "All Configurations"
+from Configuration drop-down menu. Select "All Settings" for Collection
+drop-down menu.  Make sure that "MacOSX Deployment Target" is "Compiler
+Default".  For building for older MacOSX versions than 10.4, double
+click on the little icon at the left of "Architectures" and select
+only "ppc"; then double click on the "SDK Path" value and delete
+"/Developer/SDKs/MacOSX10.4u.sdk" from there, build as usual.
 
 
 Links:
@@ -145,6 +191,7 @@ ALSA homepage		:	http://www.alsa-project.org/
 GCC homepage		:	http://gcc.gnu.org/
 NASM homepage		:	http://nasm.sourceforge.net/
 YASM homepage		:	http://www.tortall.net/projects/yasm/
-MinGW/MSYS homepage	:	http://mingw.sourceforge.net/
+MinGW/MSYS homepage	:	http://www.mingw.org/
+				http://mingw.sourceforge.net/
 MinGW cross compiling tips:	http://www.libsdl.org/extras/win32/cross/
 
