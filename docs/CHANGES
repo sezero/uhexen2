@@ -3,6 +3,11 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2007-07-22 (1.4.2-rc2 / CVS):
+    * updated the compilation instructions.
+    * minor documentation updates.
+    * marked the snapshot of 22 July 2007 as 1.4.2-rc2.
+
 2007-07-21 (CVS):
     * added comments on type sizes to q_types.h.
     * minor documentation updates.
