@@ -289,6 +289,9 @@ desktop-file-install \
 %{_prefix}/games/%{name}/docs/README.hwmaster
 
 %changelog
+* Sun Jul 22 2007 O.Sezer <sezero@users.sourceforge.net> 1.4.2-0.5.rc2
+- 1.4.2-rc2.
+
 * Fri Jun 15 2007 O.Sezer <sezero@users.sourceforge.net>
 - The software renderer clients can now be compiled on non-intel.
 
