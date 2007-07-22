@@ -22,12 +22,12 @@
 
 # pre-release version: MAKE SURE to change this
 # to an %undefine for the final realease!!
-%define prerelease	rc1
+%define prerelease	rc2
 
 # package release number for final-release:
 %define pkg_final	1
 # package release number for pre-release:
-%define pkg_prerel	4
+%define pkg_prerel	5
 
 Name:		hexen2
 License:	GPL
