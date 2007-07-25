@@ -1,7 +1,7 @@
 /*
 	gl_main.c
 
-	$Id: gl_rmain.c,v 1.50 2007-07-08 11:55:36 sezero Exp $
+	$Id: gl_rmain.c,v 1.51 2007-07-25 15:02:45 sezero Exp $
 */
 
 
@@ -293,6 +293,22 @@ static void R_DrawSpriteModel (entity_t *e)
 	// don't even bother culling, because it's just a single
 	// polygon without a surface cache
 
+	frame = R_GetSpriteFrame (e);
+	psprite = (msprite_t *) currententity->model->cache.data;
+
+	if (psprite->type == SPR_ORIENTED)
+	{	// bullet marks on walls
+		AngleVectors (currententity->angles, v_forward, v_right, v_up);
+		up = v_up;
+		right = v_right;
+	}
+	else
+	{	// normal sprite
+		up = vup;
+		right = vright;
+	}
+
+/* Pa3PyX: new translucency code below
 	if (currententity->drawflags & DRF_TRANSLUCENT)
 	{
 		glBlendFunc_fp (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -311,28 +327,36 @@ static void R_DrawSpriteModel (entity_t *e)
 		glEnable_fp (GL_BLEND);
 		glColor3f_fp (1,1,1);
 	}
-
-	frame = R_GetSpriteFrame (e);
-	psprite = (msprite_t *) currententity->model->cache.data;
-
-	if (psprite->type == SPR_ORIENTED)
-	{	// bullet marks on walls
-		AngleVectors (currententity->angles, v_forward, v_right, v_up);
-		up = v_up;
-		right = v_right;
+*/
+	/* Pa3PyX: new translucency mechanism (doesn't look
+	   as good, should work with non 3Dfx MiniGL drivers */
+	if ((currententity->drawflags & DRF_TRANSLUCENT) || (currententity->model->flags & EF_TRANSPARENT))
+	{
+		glDisable_fp (GL_ALPHA_TEST);
+		glEnable_fp (GL_BLEND);
+		glTexEnvf_fp (GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+		glColor4f_fp (1.0f, 1.0f, 1.0f, r_wateralpha.value);
 	}
 	else
-	{	// normal sprite
-		up = vup;
-		right = vright;
+	{
+	/* pa3pyx's alpha code looks rather ugly, use the original one.
+		glDisable_fp (GL_BLEND);
+		glEnable_fp (GL_ALPHA_TEST);
+		glAlphaFunc_fp (GL_GREATER, 0.632);
+		glColor4f_fp (1.0f, 1.0f, 1.0f, 1.0f);
+	*/
+	/* here, we use the original alpha code	*/
+		glBlendFunc_fp (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+		glEnable_fp (GL_BLEND);
+		glColor3f_fp (1,1,1);
 	}
 
 	GL_Bind(frame->gl_texturenum);
 
-	glBegin_fp (GL_QUADS);
-
 	glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
 	glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
+
+	glBegin_fp (GL_QUADS);
 
 	glTexCoord2f_fp (0, 1);
 	VectorMA (e->origin, frame->down, up, point);
@@ -357,15 +381,24 @@ static void R_DrawSpriteModel (entity_t *e)
 	glEnd_fp ();
 
 // restore tex parms
-//	glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-//	glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-	/* replaced GL_REPEAT with GL_CLAMP below (courtesy of Pa3PyX)
-	   fixing the demoness and praevus flame's "lines" bug.  also
-	   see gl_vidsdl.c and gl_vidnt.c in func: GL_Init()	- S.A */
-	glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
-	glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
+	glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 
+/* for pa3pyx's translucency code changes above
 	glDisable_fp (GL_BLEND);
+*/
+	if ((currententity->drawflags & DRF_TRANSLUCENT) || (currententity->model->flags & EF_TRANSPARENT))
+	{
+		glDisable_fp (GL_BLEND);
+		glTexEnvf_fp (GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
+	}
+	else
+	{
+	/* not using pa3pyx's alpha code (see above)
+		glDisable_fp (GL_ALPHA_TEST);
+	*/
+		glDisable_fp (GL_BLEND);
+	}
 }
 
 
