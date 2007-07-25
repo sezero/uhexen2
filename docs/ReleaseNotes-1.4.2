@@ -105,6 +105,10 @@ OpenGL Renderer:
 ----------------
 - Some speed-ups in the alias model drawing.
 - Fixed RGBA lighting.
+- Fixed sprite translucencies, such as punch hits, demoness' fireball and
+  powered-up acidball attacks.
+- Fixed an invalid glTexParameterf call which used to result in extra lines
+  being drawn on the screen.
 - Fixed bug that the array size for playertextures must be MAX_CLIENTS, but
   was hardcoded as 16.
 - Added ability to load external wal texture files instead of internal pixel
