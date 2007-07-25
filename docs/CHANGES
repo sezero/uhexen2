@@ -3,6 +3,19 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2007-07-25 (CVS):
+    * merged a new translucency mechanism for the sprite models. this fixes
+      the demoness (succubus) fireball and powered-up acidball translucency.
+      still using the original alpha code for the path where no translucency
+      flags are set: pa3pyx's alpha code looks rather ugly.. besides, truly
+      fixed the problem of extra lines being drawn: we've been calling the
+      glTexParameterf after the glBegin call, not before, which was invalid.
+      so, disabled the old, messy and incorrect work-around for the fireball
+      lines bug.
+    * Hunk_AllocName already clears the buffer: no need for manually clearing
+      svs.clients, reverted that change from july 15.
+    * updated documents for the known bugs and 1.4.2 release notes.
+
 2007-07-22 (1.4.2-rc2 / CVS):
     * updated the compilation instructions.
     * minor documentation updates.
