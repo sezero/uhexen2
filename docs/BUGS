@@ -10,14 +10,12 @@ Known Bugs
   partially or completely. If you suffer from that problem, use Alsa
   or SDL sound.
 
-- Software renderer, 64 bit: amd64 DEBUG builds (with all optimizations
-  turned off) may not draw some objects depending on the viewpoint of
-  the player (reported by Davide Cendron). The C-only code doesn't have
-  such a problem when built as 32 bit.
-
-- 64 bit, multiplayer: 32 bit Hexen II clients cannot connect to 64 bit
-  Hexen II servers (reported by Davide Cendron). HexenWorld doesn't have
-  such a problem.  To be looked into.
+- Software renderer, C-only code, 64 bit: amd64 DEBUG builds (with all
+  optimizations turned off) may not draw some objects depending on the
+  viewpoint of the player, e.g. the trees are virtually always missing
+  at the start of the demo3 map.  32 bit binaries doesn't have such a
+  problem. The problem shows up when gcc-4.1.x is used as the compiler
+  without any -O flags, gcc-3.4.x is reported to be fine.
 
 - Hexen II dedicated server: The swords on the weapon racks in village1
   and demo2 levels are placed incorrectly. To be looked into.
