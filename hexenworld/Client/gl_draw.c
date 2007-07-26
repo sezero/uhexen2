@@ -2,7 +2,7 @@
 	gl_draw.c
 	this is the only file outside the refresh that touches the vid buffer
 
-	$Id: gl_draw.c,v 1.98 2007-07-08 11:55:35 sezero Exp $
+	$Id: gl_draw.c,v 1.99 2007-07-26 05:55:13 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -1834,7 +1834,7 @@ static void GL_Upload8 (byte *data, int width, int height,  qboolean mipmap, qbo
 
 		switch (mode)
 		{
-		case 1:
+		case 1:	/* EF_TRANSPARENT */
 			alpha = true;
 			for (i = 0; i < s; i++)
 			{
@@ -1852,7 +1852,7 @@ static void GL_Upload8 (byte *data, int width, int height,  qboolean mipmap, qbo
 				}
 			}
 			break;
-		case 2:
+		case 2:	/* EF_HOLEY */
 			alpha = true;
 			for (i = 0; i < s; i++)
 			{
@@ -1861,7 +1861,7 @@ static void GL_Upload8 (byte *data, int width, int height,  qboolean mipmap, qbo
 					trans[i] &= MASK_rgb;
 			}
 			break;
-		case 3:
+		case 3:	/* EF_SPECIAL_TRANS */
 			alpha = true;
 			for (i = 0; i < s; i++)
 			{
