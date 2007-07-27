@@ -2,7 +2,7 @@
 	printsys.h
 	console printing
 
-	$Id: printsys.h,v 1.4 2007-05-13 12:04:47 sezero Exp $
+	$Id: printsys.h,v 1.5 2007-07-27 21:17:18 sezero Exp $
 */
 
 #ifndef __PRINTSYS_H
@@ -26,7 +26,7 @@ void CON_Printf (unsigned int flags, const char *fmt, ...) __attribute__((format
 #define	_PRINT_SAFE			4	/* okay to call even when the screen can't be updated */
 
 /* macros for compatibility with quake api */
-#if defined(__GNUC__)
+#if defined(__GNUC__) && !(defined(__STDC_VERSION__) && __STDC_VERSION__ >= 199901L)
 #define Con_Printf(fmt, args...)	CON_Printf(_PRINT_NORMAL, fmt, ##args)
 #define Con_DPrintf(fmt, args...)	CON_Printf(_PRINT_DEVEL, fmt, ##args)
 #define Con_SafePrintf(fmt, args...)	CON_Printf(_PRINT_SAFE, fmt, ##args)
@@ -37,7 +37,7 @@ void CON_Printf (unsigned int flags, const char *fmt, ...) __attribute__((format
 #endif
 
 /* these macros print to the terminal only */
-#if defined(__GNUC__)
+#if defined(__GNUC__) && !(defined(__STDC_VERSION__) && __STDC_VERSION__ >= 199901L)
 #define Sys_Printf(fmt, args...)	CON_Printf(_PRINT_TERMONLY, fmt, ##args)
 #define Sys_DPrintf(fmt, args...)	CON_Printf(_PRINT_TERMONLY|_PRINT_DEVEL, fmt, ##args)
 #else
@@ -47,10 +47,12 @@ void CON_Printf (unsigned int flags, const char *fmt, ...) __attribute__((format
 
 #if defined(DEBUG_BUILD)
 #define DEBUG_Printf			Sys_DPrintf
-#elif defined (__GNUC__)
+#else	/* not debug : */
+#if defined (__GNUC__) && !(defined(__STDC_VERSION__) && __STDC_VERSION__ >= 199901L)
 #define DEBUG_Printf(fmt, args...)	do {} while (0)
 #else
 #define DEBUG_Printf(fmt, ...)		do {} while (0)
+#endif
 #endif
 
 #endif	/* __PRINTSYS_H */

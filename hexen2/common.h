@@ -2,7 +2,7 @@
 	common.h
 	misc utilities used in client and server
 
-	$Id: common.h,v 1.51 2007-07-11 21:00:11 sezero Exp $
+	$Id: common.h,v 1.52 2007-07-27 21:17:18 sezero Exp $
 */
 
 #ifndef __HX2_COMMON_H
@@ -56,7 +56,7 @@ extern size_t Q_strlcat (char *dst, const char *src, size_t size);
 	if (Q_strlcpy((DST),(SRC),(SIZE)) >= (SIZE))					\
 		Sys_Error("%s: %d: string buffer overflow!",__thisfunc__,__LINE__);	\
 }
-#if defined(__GNUC__)
+#if defined(__GNUC__) && !(defined(__STDC_VERSION__) && __STDC_VERSION__ >= 199901L)
 #define Q_snprintf_err(DST,SIZE,fmt,args...) {						\
 	if (snprintf((DST),(SIZE),fmt,##args) >= (SIZE))				\
 		Sys_Error("%s: %d: string buffer overflow!",__thisfunc__,__LINE__);	\
