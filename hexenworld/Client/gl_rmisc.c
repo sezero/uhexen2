@@ -1,7 +1,7 @@
 /*
 	r_misc.c
 
-	$Id: gl_rmisc.c,v 1.41 2007-07-08 11:55:36 sezero Exp $
+	$Id: gl_rmisc.c,v 1.42 2007-07-27 21:50:08 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -363,20 +363,6 @@ void R_TranslatePlayerSkin (int playernum)
 //	if (s & 3)
 //		Sys_Error ("%s: s&3", __thisfunc__);
 
-#if 0
-	byte	translated[320*200];
-
-	for (i = 0; i < s; i += 4)
-	{
-		translated[i] = translate[original[i]];
-		translated[i+1] = translate[original[i+1]];
-		translated[i+2] = translate[original[i+2]];
-		translated[i+3] = translate[original[i+3]];
-	}
-
-	// don't mipmap these, because it takes too long
-	GL_Upload8 (translated, paliashdr->skinwidth, paliashdr->skinheight, false, false, true);
-#else
 	for (i = 0; i < 256; i++)
 		translate32[i] = d_8to24table[translate[i]];
 	scaled_width  = gl_max_size < 512 ? gl_max_size : 512;
@@ -408,7 +394,6 @@ void R_TranslatePlayerSkin (int playernum)
 	}
 	snprintf(texname, 19, "player%i", playernum);
 	playertextures[playernum] = GL_LoadTexture(texname, scaled_width, scaled_height, (byte *)pixels, false, false, 0, true);
-#endif
 }
 
 /*
