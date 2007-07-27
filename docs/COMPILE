@@ -19,7 +19,7 @@ Here is the recommended software for building:
 
 
 Tools needed:
-----------------------------------------
+========================================
 
 Make	:	The GNU make utility.
 		Minimum version required is 3.78.  Versions 3.79.1 and
@@ -69,20 +69,16 @@ GCC	:	GNU C Compiler. No other compilers (such as LCC, Watcom
 
 
 Libraries needed for various platforms:
-----------------------------------------
+========================================
 
-GLIBC	:	C libraries on Linux.  Any glibc >= 2.1 should be fine.
-		Not tested with anything older.
+General Unix requirements:
+--------------------------
 
 SDL	:	Simple DirectMedia Layer libraries.
 		Required for compiling hexen2 and hexenworld clients
 		on unix platforms. Minimum version required is 1.2.4.
 		As of this writing, the latest version is 1.2.12, which
-		is recommended.  MacOS X users: You need SDL.framework
-		in your /Library/Frameworks folder. Get SDL-1.2.12.dmg
-		from  http://www.libsdl.org/release/SDL-1.2.12.dmg
-		and copy SDL.framework from that package into your
-		/Library/Frameworks folder.
+		is recommended.
 
 SDL_mixer:	SDL mixer library.
 		Required for midi playback support on unix platforms.
@@ -93,6 +89,12 @@ SDL_mixer:	SDL mixer library.
 		support, in that case this library will not be
 		necessary.
 
+Linux requirements	:
+-------------------------
+
+GLIBC	:	C libraries.  Any glibc >= 2.1 should be fine. Not tested
+		with anything older.
+
 ALSA	:	Advanced Linux Sound Architecture libraries.
 		Necessary, if you want to support ALSA sound on Linux.
 		Minimum version required is 1.0.1. Version 0.9.8 should
@@ -100,6 +102,9 @@ ALSA	:	Advanced Linux Sound Architecture libraries.
 		recommended at runtime.  The makefiles present an option
 		for disabling ALSA sound support, in that case this
 		library will not be necessary.
+
+Windows requirements	:
+-------------------------
 
 MSVCRT.DLL:	The windows exe files depend on msvcrt.dll, the microsoft
 		C runtime library. Any sane windows installation already
@@ -109,24 +114,23 @@ MSVCRT.DLL:	The windows exe files depend on msvcrt.dll, the microsoft
 		or:
 		http://support.microsoft.com/default.aspx?scid=kb;en-us;259403
 
-MacOS X SDK:	Version 10.4 (or later) is required if you want to compile
-		for x86, or if you want to build universal binaries. It
-		is normally installed under /Developer/SDKs/MacOSX10.4u.sdk
-		If building for ppc only, or for versions older than 10.4,
-		using gcc-3.3 is recommended and older SDK versions (such
-		as 10.2.8) should just work.
+Mac OS X requirements	:
+-------------------------
 
-QuickTime:	QuickTime.framework is required for midi playback support
-		on MacOS X platform. Normally it should be under the
-		System/Library/Frameworks folder in your OSX SDK folder.
-
+Xcode, SDKs:	You need to install free xcode suite from developer.apple.com
+		It comes with all required things except SDL. Our own project
+		files are for the latest xcode.  SDL framework for Mac OS X:
+		http://www.libsdl.org/release/SDL-1.2.12.dmg
+		Copy the SDL.framework from that package into your
+		/Library/Frameworks  folder.
 
 Compiling the software renderer for non-x86:
 ============================================
 
 As of version 1.4.2, the software renderer clients can be compiled for
-non-x86 cpus: not as perfect as the intel code, yet, but it works very
-well in general.
+non-x86 cpus: not as fast as the intel code, yet, but it works very well
+in general.
+
 On the other hand, it's still possible to compile them as 32 bit binaries
 for intel compatible cpus, such as amd64: for that, you must add -m32 to
 the cpu and linker flags (see the COMPILE_32BITS option in the Makefiles)
@@ -143,6 +147,7 @@ compiling tips (link down below). The icculus.org page gives prebuilt
 cross compiler tools. Download and install them, or prepare your own cross
 compiler. You can then run the "build_cross_win32.sh" scripts residing in
 all directories. Read the scripts and edit them as necessary.
+
 I compiled all of the Hammer of Thyrion 1.4.2 windows binaries on linux
 using a snapshot of MinGW from May 19, 2007. Both x86/glibc-2.3 binaries
 and the sources for this snapshot can be found on our downloads page under
@@ -157,11 +162,13 @@ and put the nasmw.exe into the C:\MinGW\bin directory. Adding the mingw
 directory to your PATH may be a good idea, too. MinGW-3.1.0 comes with
 gcc-3.2.3.  MinGW 4.1.1 or 5.1.3, on the other hand, come with gcc-3.4.x.
 I currently use MinGW-5.1.3 when I compile on Windows.
+
 Open a console window, cd into \msys and type "msys sh.exe". You'll be
 in a unixish sh environment. The rest is just like doing things in linux:
 cd into your fake "home directory", extract the HoT tarball, then change
 into into each subdirectory you want to build and normally use the make
 commands to compile.
+
 Note that "make" may be named "mingw32-make". In that case, you may want
 to try "mingw32-make" if "make" command itself fails to run. Remember to
 do a make clean between each different build.
@@ -171,16 +178,21 @@ Compiling for Mac OS X:
 ========================================
 
 The Xcode project file is in source tarball: look at the hexen2/MacOSX
-folder. It is adjusted to generate 10.4 universal applications.
-Double click on hexen2.xcodeproj. Click on glhexen2 target at the
-left sidebar in xcode main window. Press Apple+I for inspect window.
-At the inspect window click on "build" tab. Select "All Configurations"
-from Configuration drop-down menu. Select "All Settings" for Collection
-drop-down menu.  Make sure that "MacOSX Deployment Target" is "Compiler
-Default".  For building for older MacOSX versions than 10.4, double
-click on the little icon at the left of "Architectures" and select
-only "ppc"; then double click on the "SDK Path" value and delete
-"/Developer/SDKs/MacOSX10.4u.sdk" from there, build as usual.
+folder. Currently, project files are adjusted to generate hexen2 and
+glhexen2 (universal) binaries for all Mac OS X versions, ppc part tuned
+for older g3's for better performance for these slower cpu's.
+
+Double click on hexen2.xcodeproj. At the Xcode main window, on the left
+side look at "Targets" in the Groups & Files. Expand "Targets". You'll
+see both glhexen2 and hexen2 targets and one of them selected. You can
+press the hammer icon at the toolbar and start building, or you can
+select "Project/Set Active Target/<glhexen2 or hexen2> to change the
+build target to glhexen2 or hexen2.
+
+For building for older Mac OS X sdk's (probably you don't need to),
+double click on the little icon at the left of "Architectures" and
+select only "ppc"; then double click on the "SDK Path" value and
+delete "/Developer/SDKs/MacOSX10.4u.sdk" from there, build as usual.
 
 
 Links:
