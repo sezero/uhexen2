@@ -2,7 +2,7 @@
 	huffman.c
 	huffman encoding/decoding for use in hexenworld networking
 
-	$Id: huffman.c,v 1.14 2007-07-09 20:52:37 sezero Exp $
+	$Id: huffman.c,v 1.15 2007-07-27 21:30:08 sezero Exp $
 */
 
 #include <stdlib.h>
@@ -13,7 +13,7 @@
 #include "compiler.h"
 #include "huffman.h"
 
-#if defined(__GNUC__)
+#if defined(__GNUC__) && !(defined(__STDC_VERSION__) && __STDC_VERSION__ >= 199901L)
 #define HuffPrintf(fmt, args...)	fprintf(stderr, fmt, ##args)
 #else	/* require c99 variadic macros. */
 #define HuffPrintf(...)			fprintf(stderr, __VA_ARGS__)
