@@ -2,7 +2,7 @@
 	quakefs.c
 	Hexen II filesystem
 
-	$Id: quakefs.c,v 1.27 2007-07-21 06:41:09 sezero Exp $
+	$Id: quakefs.c,v 1.28 2007-07-27 21:11:08 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -635,8 +635,9 @@ static void MoveUserData (void)
 	Q_snprintf_err(tmp1, sizeof(tmp1), "%s/userdata.moved", fs_userdir);
 	if (stat(tmp1, &test) == 0)
 	{
-		// the data should have already been moved in earlier runs.
-		if ((test.st_mode & S_IFREG) == S_IFREG)
+	/* the data should have already been moved in earlier
+	   runs:  Don't even bother doing an S_ISREG check. */
+	//	if ( S_ISREG(test.st_mode) )
 			return;
 	}
 	fh = fopen(tmp1, "wb");
@@ -662,7 +663,7 @@ static void MoveUserData (void)
 		Q_snprintf_err(tmp1, sizeof(tmp1), "%s/s%d", host_parms->userdir, i);
 		if (stat(tmp1, &test) == 0)
 		{
-			if ((test.st_mode & S_IFDIR) == S_IFDIR)
+			if ( S_ISDIR(test.st_mode) )
 			{
 				Q_snprintf_err(tmp2, sizeof(tmp2), "%s/s%d", fs_userdir, i);
 				do_movedata (tmp1, tmp2, fh);
@@ -676,7 +677,7 @@ static void MoveUserData (void)
 		Q_snprintf_err(tmp1, sizeof(tmp1), "%s/ms%d", host_parms->userdir, i);
 		if (stat(tmp1, &test) == 0)
 		{
-			if ((test.st_mode & S_IFDIR) == S_IFDIR)
+			if ( S_ISDIR(test.st_mode) )
 			{
 				Q_snprintf_err(tmp2, sizeof(tmp2), "%s/ms%d", fs_userdir, i);
 				do_movedata (tmp1, tmp2, fh);
@@ -690,7 +691,7 @@ static void MoveUserData (void)
 		Q_snprintf_err(tmp1, sizeof(tmp1), "%s/%s", host_parms->userdir, movedirs[i]);
 		if (stat(tmp1, &test) == 0)
 		{
-			if ((test.st_mode & S_IFDIR) == S_IFDIR)
+			if ( S_ISDIR(test.st_mode) )
 			{
 				Q_snprintf_err(tmp2, sizeof(tmp2), "%s/%s", fs_userdir, movedirs[i]);
 				do_movedata (tmp1, tmp2, fh);
