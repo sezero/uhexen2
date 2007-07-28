@@ -2,7 +2,7 @@
 	gl_draw.c
 	this is the only file outside the refresh that touches the vid buffer
 
-	$Id: gl_draw.c,v 1.99 2007-07-26 05:55:13 sezero Exp $
+	$Id: gl_draw.c,v 1.100 2007-07-28 09:31:40 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -29,17 +29,17 @@
 #define	SHIFT_a		24
 #endif
 
-qboolean draw_reinit = false;
+qboolean	draw_reinit = false;
 
-extern int ColorIndex[16];
-extern unsigned ColorPercent[16];
+extern int	ColorIndex[16];
+extern unsigned	ColorPercent[16];
 
 extern qboolean	is_3dfx;
 extern qboolean	is8bit;
 #if USE_HEXEN2_PALTEX_CODE
-extern unsigned char inverse_pal[(1<<INVERSE_PAL_TOTAL_BITS)+1];
+extern unsigned char	inverse_pal[(1<<INVERSE_PAL_TOTAL_BITS)+1];
 #else
-extern unsigned char d_15to8table[65536];
+extern unsigned char	d_15to8table[65536];
 #endif
 
 extern vrect_t	scr_vrect;
@@ -47,7 +47,6 @@ extern cvar_t	crosshair, cl_crossx, cl_crossy, crosshaircolor;
 
 extern GLint	gl_max_size;
 static cvar_t	gl_picmip = {"gl_picmip", "0", CVAR_NONE};
-static cvar_t	gl_spritemip = {"gl_spritemip", "0", CVAR_NONE};
 
 static cvar_t	gl_constretch = {"gl_constretch", "0", CVAR_ARCHIVE};
 
@@ -110,7 +109,7 @@ gltexture_t	gltextures[MAX_GLTEXTURES];
 int			numgltextures;
 
 static GLuint GL_LoadPixmap (const char *name, const char *data);
-static void GL_Upload32 (unsigned *data, int width, int height,  qboolean mipmap, qboolean alpha, qboolean sprite);
+static void GL_Upload32 (unsigned *data, int width, int height,  qboolean mipmap, qboolean alpha);
 static void GL_Upload8 (byte *data, int width, int height,  qboolean mipmap, qboolean alpha, int mode);
 
 
@@ -414,7 +413,6 @@ void Draw_Init (void)
 	if (!draw_reinit)
 	{
 		Cvar_RegisterVariable (&gl_picmip);
-		Cvar_RegisterVariable (&gl_spritemip);
 		Cvar_RegisterVariable (&gl_constretch);
 
 		Cmd_AddCommand ("gl_texturemode", Draw_TextureMode_f);
@@ -597,6 +595,11 @@ void Draw_RedString (int x, int y, const char *str)
 	}
 }
 
+/*
+================
+Draw_Crosshair
+================
+*/
 void Draw_Crosshair (void)
 {
 	int		x, y;
@@ -1276,7 +1279,7 @@ void GL_Set2D (void)
 GL_FindTexture
 ================
 */
-#if 0	// seems to have no users
+#if 0	/* seems to have no users */
 int GL_FindTexture (const char *identifier)
 {
 	int		i;
@@ -1340,7 +1343,7 @@ static void GL_ResampleTexture (unsigned *in, int inwidth, int inheight, unsigne
 		}
 	}
 }
-#else	// here is the hexenworld (quake) resampler
+#else	/* here is the hexenworld (quake) resampler */
 static void GL_ResampleTexture (unsigned *in, int inwidth, int inheight, unsigned *out,  int outwidth, int outheight)
 {
 	int		i, j;
@@ -1404,42 +1407,42 @@ into the current palette and uses paletteized textures.
 If you are on a 3Dfx card and your texture has no alpha,
 then download it as a palettized texture to save memory.
 
+fxpal_buf is a pointer to allocated temporary buffer.
+callers of fxPalTexImage2D must allocate and free it
+properly.
+
 This is original hexen2 code for palettized textures
 Hexenworld replaced it with quake's newer code below
 ================
 */
-static void fxPalTexImage2D (GLenum target, GLint level, GLint internalformat, GLsizei width, GLsizei height, GLint border, GLenum format, GLenum type, const GLvoid *pixels, unsigned char *dest_image)
-{
-	long	i;
-	long	mip_width, mip_height;
+static unsigned char	*fxpal_buf;
 
-	mip_width = width;
-	mip_height = height;
+static void fxPalTexImage2D (GLenum target, GLint level, GLint internalformat, GLsizei width, GLsizei height, GLint border, GLenum format, GLenum type, const GLvoid *pixels)
+{
+	GLsizei		i;
 
 	// we don't want textures with alpha
 	if (internalformat != 3)
 		Sys_Error ("%s: internalformat != 3", __thisfunc__);
 
-	for (i = 0; i < mip_width * mip_height; i++)
+	for (i = 0; i < width * height; i++)
 	{
-		int r, g, b, idx;
-		r = ( ( unsigned char * )pixels )[i * 4];
-		g = ( ( unsigned char * )pixels )[i * 4+1];
-		b = ( ( unsigned char * )pixels )[i * 4+2];
+		int	r, g, b, idx;
+		r = ((unsigned char *)pixels)[i * 4];
+		g = ((unsigned char *)pixels)[i * 4 +1];
+		b = ((unsigned char *)pixels)[i * 4 +2];
 		r >>= 8 - INVERSE_PAL_R_BITS;
 		g >>= 8 - INVERSE_PAL_G_BITS;
 		b >>= 8 - INVERSE_PAL_B_BITS;
-		idx =	( r << ( INVERSE_PAL_G_BITS + INVERSE_PAL_B_BITS ) ) |
-			( g << INVERSE_PAL_B_BITS ) |
-			  b;
-		dest_image[i] = inverse_pal[idx];
-//		dest_image[i] = ( ( unsigned char * )pixels )[i*4];
+		idx = (r << (INVERSE_PAL_G_BITS + INVERSE_PAL_B_BITS)) | (g << INVERSE_PAL_B_BITS) | b;
+		fxpal_buf[i] = inverse_pal[idx];
+//		fxpal_buf[i] = ((unsigned char *)pixels)[i * 4];
 	}
 
-	glTexImage2D_fp(target, level, GL_COLOR_INDEX8_EXT, mip_width, mip_height, border, GL_COLOR_INDEX, GL_UNSIGNED_BYTE, dest_image);
+	glTexImage2D_fp(target, level, GL_COLOR_INDEX8_EXT, width, height, border, GL_COLOR_INDEX, GL_UNSIGNED_BYTE, fxpal_buf);
 }
 
-#else	// end of HEXEN2_PALTEX_CODE
+#else	/* end of HEXEN2_PALTEX_CODE */
 /*
 ================
 GL_Resample8BitTexture -- JACK
@@ -1511,7 +1514,7 @@ static void GL_MipMap8Bit (byte *in, int width, int height)
 	}
 }
 
-static void GL_Upload8_EXT (byte *data, int width, int height,  qboolean mipmap, qboolean alpha, qboolean sprite)
+static void GL_Upload8_EXT (byte *data, int width, int height,  qboolean mipmap, qboolean alpha)
 {
 	unsigned char		*scaled;
 	int			mark = 0;
@@ -1524,16 +1527,8 @@ static void GL_Upload8_EXT (byte *data, int width, int height,  qboolean mipmap,
 	for (scaled_height = 1 ; scaled_height < height ; scaled_height<<=1)
 		;
 
-	if (sprite)
-	{
-		scaled_width >>= gl_spritemip.integer;
-		scaled_height >>= gl_spritemip.integer;
-	}
-	else
-	{
-		scaled_width >>= gl_picmip.integer;
-		scaled_height >>= gl_picmip.integer;
-	}
+	scaled_width >>= gl_picmip.integer;
+	scaled_height >>= gl_picmip.integer;
 
 	if (scaled_width < 1)
 		scaled_width = 1;
@@ -1571,13 +1566,10 @@ static void GL_Upload8_EXT (byte *data, int width, int height,  qboolean mipmap,
 			glTexImage2D_fp (GL_TEXTURE_2D, 0, GL_COLOR_INDEX8_EXT, scaled_width, scaled_height, 0, GL_COLOR_INDEX , GL_UNSIGNED_BYTE, data);
 			goto done;
 		}
-		//scaled = data;
 		memcpy (scaled, data, width*height);
 	}
 	else
 	{
-		//mark = Hunk_LowMark();
-		//scaled = Hunk_AllocName(scaled_width * scaled_height, "texbuf_upload8pal");
 		GL_Resample8BitTexture (data, width, height, scaled, scaled_width, scaled_height);
 	}
 
@@ -1600,8 +1592,8 @@ static void GL_Upload8_EXT (byte *data, int width, int height,  qboolean mipmap,
 			glTexImage2D_fp (GL_TEXTURE_2D, miplevel, GL_COLOR_INDEX8_EXT, scaled_width, scaled_height, 0, GL_COLOR_INDEX, GL_UNSIGNED_BYTE, scaled);
 		}
 	}
-done: ;
 
+done:
 	if (mipmap)
 	{
 		glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, gl_filter_min);
@@ -1616,22 +1608,19 @@ done: ;
 	if (mark)
 		Hunk_FreeToLowMark(mark);
 }
-#endif	// end of hexenworld 8_BIT_PALETTE_CODE
+#endif	/* end of hexenworld 8_BIT_PALETTE_CODE */
 
 /*
 ===============
 GL_Upload32
 ===============
 */
-static void GL_Upload32 (unsigned *data, int width, int height,  qboolean mipmap, qboolean alpha, qboolean sprite)
+static void GL_Upload32 (unsigned *data, int width, int height,  qboolean mipmap, qboolean alpha)
 {
 	int		samples;
 	unsigned	*scaled;
 	int		mark = 0;
 	int		scaled_width, scaled_height;
-#if USE_HEXEN2_PALTEX_CODE
-	unsigned char	*fxpal_buf = NULL;
-#endif
 
 	// Snap the height and width to a power of 2.
 	for (scaled_width = 1 ; scaled_width < width ; scaled_width<<=1)
@@ -1640,16 +1629,8 @@ static void GL_Upload32 (unsigned *data, int width, int height,  qboolean mipmap
 	for (scaled_height = 1 ; scaled_height < height ; scaled_height<<=1)
 		;
 
-	if (sprite)
-	{
-		scaled_width >>= gl_spritemip.integer;
-		scaled_height >>= gl_spritemip.integer;
-	}
-	else
-	{
-		scaled_width >>= gl_picmip.integer;
-		scaled_height >>= gl_picmip.integer;
-	}
+	scaled_width >>= gl_picmip.integer;
+	scaled_height >>= gl_picmip.integer;
 
 	if (scaled_width < 1)
 		scaled_width = 1;
@@ -1688,7 +1669,7 @@ static void GL_Upload32 (unsigned *data, int width, int height,  qboolean mipmap
 			{
 				mark = Hunk_LowMark();
 				fxpal_buf = (unsigned char *) Hunk_AllocName(scaled_width * scaled_height, "texbuf_upload8pal");
-				fxPalTexImage2D (GL_TEXTURE_2D, 0, samples, scaled_width, scaled_height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data, fxpal_buf);
+				fxPalTexImage2D (GL_TEXTURE_2D, 0, samples, scaled_width, scaled_height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
 				Hunk_FreeToLowMark(mark);
 				mark = 0;
 			}
@@ -1712,7 +1693,7 @@ static void GL_Upload32 (unsigned *data, int width, int height,  qboolean mipmap
 		if (!mark)
 			mark = Hunk_LowMark();
 		fxpal_buf = (unsigned char *) Hunk_AllocName(scaled_width * scaled_height, "texbuf_upload8pal");
-		fxPalTexImage2D (GL_TEXTURE_2D, 0, samples, scaled_width, scaled_height, 0, GL_RGBA, GL_UNSIGNED_BYTE, scaled, fxpal_buf);
+		fxPalTexImage2D (GL_TEXTURE_2D, 0, samples, scaled_width, scaled_height, 0, GL_RGBA, GL_UNSIGNED_BYTE, scaled);
 	}
 	else
 #endif
@@ -1735,14 +1716,14 @@ static void GL_Upload32 (unsigned *data, int width, int height,  qboolean mipmap
 			miplevel++;
 #if USE_HEXEN2_PALTEX_CODE
 			if (is8bit && !alpha)
-				fxPalTexImage2D (GL_TEXTURE_2D, miplevel, samples, scaled_width, scaled_height, 0, GL_RGBA, GL_UNSIGNED_BYTE, scaled, fxpal_buf);
+				fxPalTexImage2D (GL_TEXTURE_2D, miplevel, samples, scaled_width, scaled_height, 0, GL_RGBA, GL_UNSIGNED_BYTE, scaled);
 			else
 #endif
 				glTexImage2D_fp (GL_TEXTURE_2D, miplevel, samples, scaled_width, scaled_height, 0, GL_RGBA, GL_UNSIGNED_BYTE, scaled);
 		}
 	}
-done: ;
 
+done:
 	if (mipmap)
 	{
 		glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, gl_filter_min);
@@ -1761,50 +1742,37 @@ done: ;
 /*
 ===============
 GL_Upload8
+
+modes:
+0 - standard
+1 - color 0 transparent, odd - translucent, even - full value
+2 - color 0 transparent
+3 - special (particle translucency table)
 ===============
-*/
-/*
-* mode:
-* 0 - standard
-* 1 - color 0 transparent, odd - translucent, even - full value
-* 2 - color 0 transparent
-* 3 - special (particle translucency table)
 */
 static void GL_Upload8 (byte *data, int width, int height,  qboolean mipmap, qboolean alpha, int mode)
 {
 	unsigned		*trans;
 	int			mark;
 	int			i, p, s;
-	qboolean		noalpha;
-	qboolean		sprite = false;
-
-	if (mode >= 10)
-	{
-		sprite = true;
-		mode -= 10;
-	}
 
 	s = width*height;
 	mark = Hunk_LowMark();
 	trans = (unsigned *) Hunk_AllocName(s * sizeof(unsigned), "texbuf_upload8");
 
-	// if there are no transparent pixels, make it a 3 component
-	// texture even if it was specified as otherwise
 	if ((alpha || mode != 0))
 	{
+		// if there are no transparent pixels, make it a 3 component
+		// texture even if it was specified as otherwise
+		// FIXME: should we not do this for mode == 0 only??  - O.S.
 		i = 0;
-		noalpha = true;
 		while (i < s)
 		{
 			if (data[i] == 255)
-			{
-				noalpha = false;
 				break;
-			}
 			i++;
 		}
-
-		if (alpha && noalpha)
+		if (i == s)
 			alpha = false;
 
 		for (i = 0; i < s; i++)
@@ -1888,13 +1856,13 @@ static void GL_Upload8 (byte *data, int width, int height,  qboolean mipmap, qbo
 #if !USE_HEXEN2_PALTEX_CODE
 	if (is8bit && !alpha)
 	{
-		GL_Upload8_EXT (data, width, height, mipmap, alpha, sprite);
+		GL_Upload8_EXT (data, width, height, mipmap, alpha);
 		Hunk_FreeToLowMark(mark);
 		return;
 	}
 #endif
 
-	GL_Upload32 (trans, width, height, mipmap, alpha, sprite);
+	GL_Upload32 (trans, width, height, mipmap, alpha);
 	Hunk_FreeToLowMark(mark);
 }
 
@@ -1970,7 +1938,7 @@ gl_rebind:
 
 	GL_Bind (glt->texnum);
 	if (rgba)
-		GL_Upload32 ((unsigned *)data, width, height, mipmap, alpha, false);
+		GL_Upload32 ((unsigned *)data, width, height, mipmap, alpha);
 	else
 		GL_Upload8 (data, width, height, mipmap, alpha, mode);
 
