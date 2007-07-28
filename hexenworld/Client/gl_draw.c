@@ -2,7 +2,7 @@
 	gl_draw.c
 	this is the only file outside the refresh that touches the vid buffer
 
-	$Id: gl_draw.c,v 1.100 2007-07-28 09:31:40 sezero Exp $
+	$Id: gl_draw.c,v 1.101 2007-07-28 09:33:59 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -31,23 +31,7 @@
 
 qboolean	draw_reinit = false;
 
-extern int	ColorIndex[16];
-extern unsigned	ColorPercent[16];
-
-extern qboolean	is_3dfx;
-extern qboolean	is8bit;
-#if USE_HEXEN2_PALTEX_CODE
-extern unsigned char	inverse_pal[(1<<INVERSE_PAL_TOTAL_BITS)+1];
-#else
-extern unsigned char	d_15to8table[65536];
-#endif
-
-extern vrect_t	scr_vrect;
-extern cvar_t	crosshair, cl_crossx, cl_crossy, crosshaircolor;
-
-extern GLint	gl_max_size;
 static cvar_t	gl_picmip = {"gl_picmip", "0", CVAR_NONE};
-
 static cvar_t	gl_constretch = {"gl_constretch", "0", CVAR_ARCHIVE};
 
 GLuint		plyrtex[MAX_PLAYER_CLASS][16][16];	// whether or not the corresponding player textures

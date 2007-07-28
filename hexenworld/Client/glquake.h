@@ -2,7 +2,7 @@
 	glquake.h
 	common glquake header
 
-	$Id: glquake.h,v 1.58 2007-07-08 11:55:36 sezero Exp $
+	$Id: glquake.h,v 1.59 2007-07-28 09:33:59 sezero Exp $
 */
 
 
@@ -241,6 +241,17 @@ extern	int		c_brush_polys, c_alias_polys;
 
 
 //
+// palette stuff
+//
+#if USE_HEXEN2_PALTEX_CODE
+extern unsigned char	inverse_pal[(1<<INVERSE_PAL_TOTAL_BITS)+1];
+#else
+extern unsigned char	d_15to8table[65536];
+#endif
+extern int	ColorIndex[16];
+extern unsigned	ColorPercent[16];
+
+//
 // view origin
 //
 extern	vec3_t	vup;
@@ -252,6 +263,7 @@ extern	vec3_t	r_origin;
 // screen size info
 //
 extern	refdef_t	r_refdef;
+extern	vrect_t		scr_vrect;
 extern	mleaf_t		*r_viewleaf, *r_oldviewleaf;
 extern	texture_t	*r_notexture_mip;
 extern	int		d_lightstylevalue[256];	// 8.8 fraction of base light value
@@ -326,6 +338,8 @@ extern	int	gl_lightmap_format;
 extern	qboolean lightmap_modified[MAX_LIGHTMAPS];
 extern	GLuint	lightmap_textures;
 
+extern	qboolean is_3dfx;
+extern	qboolean is8bit;
 extern	qboolean gl_mtexable;
 extern	qboolean have_stencil;
 

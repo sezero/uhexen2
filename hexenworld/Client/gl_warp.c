@@ -2,12 +2,11 @@
 	gl_warp.c
 	sky and water polygons
 
-	$Id: gl_warp.c,v 1.28 2007-07-08 11:55:36 sezero Exp $
+	$Id: gl_warp.c,v 1.29 2007-07-28 09:33:59 sezero Exp $
 */
 
 #include "quakedef.h"
 
-extern qboolean	is_3dfx;
 extern	model_t	*loadmodel;
 
 int		skytexturenum;

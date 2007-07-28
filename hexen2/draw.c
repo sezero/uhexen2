@@ -2,7 +2,7 @@
 	draw.c
 	This is the only file outside the refresh that touches the vid buffer.
 
-	$Id: draw.c,v 1.39 2007-07-08 11:55:18 sezero Exp $
+	$Id: draw.c,v 1.40 2007-07-28 09:33:59 sezero Exp $
 */
 
 
@@ -405,10 +405,11 @@ static void Draw_Pixel (int x, int y, const byte color)
 	}
 }
 
-
-extern cvar_t	crosshair, cl_crossx, cl_crossy, crosshaircolor;
-extern vrect_t	scr_vrect;
-
+/*
+================
+Draw_Crosshair
+================
+*/
 void Draw_Crosshair (void)
 {
 	int x, y;
