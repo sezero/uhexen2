@@ -5,7 +5,7 @@
 	models are the only shared resource between a client and server
 	running on the same machine.
 
-	$Id: gl_model.c,v 1.46 2007-07-27 21:25:23 sezero Exp $
+	$Id: gl_model.c,v 1.47 2007-07-28 20:00:35 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -1733,25 +1733,23 @@ typedef struct
 	short		x, y;
 } floodfill_t;
 
-extern unsigned d_8to24table[];
-
 // must be a power of 2
-#define FLOODFILL_FIFO_SIZE 0x1000
-#define FLOODFILL_FIFO_MASK (FLOODFILL_FIFO_SIZE - 1)
+#define	FLOODFILL_FIFO_SIZE		0x1000
+#define	FLOODFILL_FIFO_MASK		(FLOODFILL_FIFO_SIZE - 1)
 
-#define FLOODFILL_STEP( off, dx, dy ) \
-{ \
-	if (pos[off] == fillcolor) \
-	{ \
-		pos[off] = 255; \
+#define FLOODFILL_STEP( off, dx, dy )				\
+{								\
+	if (pos[(off)] == fillcolor)				\
+	{							\
+		pos[(off)] = 255;				\
 		fifo[inpt].x = x + (dx), fifo[inpt].y = y + (dy); \
-		inpt = (inpt + 1) & FLOODFILL_FIFO_MASK; \
-	} \
-	else if (pos[off] != 255) \
-		fdc = pos[off]; \
+		inpt = (inpt + 1) & FLOODFILL_FIFO_MASK;	\
+	}							\
+	else if (pos[(off)] != 255)				\
+		fdc = pos[(off)];				\
 }
 
-static void Mod_FloodFillSkin( byte *skin, int skinwidth, int skinheight )
+static void Mod_FloodFillSkin (byte *skin, int skinwidth, int skinheight)
 {
 	byte		fillcolor = *skin; // assume this is the pixel to fill
 	floodfill_t	fifo[FLOODFILL_FIFO_SIZE];
@@ -1792,13 +1790,21 @@ static void Mod_FloodFillSkin( byte *skin, int skinwidth, int skinheight )
 		outpt = (outpt + 1) & FLOODFILL_FIFO_MASK;
 
 		if (x > 0)
+		{
 			FLOODFILL_STEP( -1, -1, 0 );
+		}
 		if (x < skinwidth - 1)
+		{
 			FLOODFILL_STEP( 1, 1, 0 );
+		}
 		if (y > 0)
+		{
 			FLOODFILL_STEP( -skinwidth, 0, -1 );
+		}
 		if (y < skinheight - 1)
+		{
 			FLOODFILL_STEP( skinwidth, 0, 1 );
+		}
 		skin[x + skinwidth * y] = fdc;
 	}
 }
