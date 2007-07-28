@@ -2,7 +2,7 @@
 	gl_draw.c
 	this is the only file outside the refresh that touches the vid buffer
 
-	$Id: gl_draw.c,v 1.118 2007-07-28 09:33:59 sezero Exp $
+	$Id: gl_draw.c,v 1.119 2007-07-28 12:28:14 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -485,9 +485,7 @@ void Draw_ReInit (void)
 	for (j = 0; j < MAX_LIGHTMAPS; j++)
 		lightmap_modified[j] = true;
 	// make sure all of alias models are cleared
-#if !defined(H2W)
-	flush_textures = 1;
-#endif
+	flush_textures = true;
 	temp2 = gl_purge_maptex.integer;
 	Cvar_SetValue ("gl_purge_maptex", 1);
 	Mod_ClearAll ();

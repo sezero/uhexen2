@@ -1,7 +1,7 @@
 /*
 	r_misc.c
 
-	$Id: gl_rmisc.c,v 1.42 2007-07-27 21:50:08 sezero Exp $
+	$Id: gl_rmisc.c,v 1.43 2007-07-28 12:28:15 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -24,9 +24,7 @@ cvar_t			gl_purge_maptex = {"gl_purge_maptex", "1", CVAR_ARCHIVE};
 				// whether or not map-specific OGL textures
 				// are purged on map change. default == yes
 
-#if !defined(H2W)
 qboolean		flush_textures;
-#endif
 int			gl_texlevel;
 extern GLuint		plyrtex[MAX_PLAYER_CLASS][16][16];
 extern gltexture_t	gltextures[MAX_GLTEXTURES];
@@ -270,7 +268,9 @@ void R_Init (void)
 
 	R_InitParticles ();
 	R_InitParticleTexture ();
+
 	R_InitNetgraphTexture ();
+	flush_textures = true;
 
 	for (counter = 0 ; counter < MAX_EXTRA_TEXTURES ; counter++)
 		gl_extra_textures[counter] = GL_UNUSED_TEXTURE;
