@@ -2,7 +2,7 @@
 	glquake.h
 	common glquake header
 
-	$Id: glquake.h,v 1.60 2007-07-28 12:28:15 sezero Exp $
+	$Id: glquake.h,v 1.61 2007-07-29 07:58:19 sezero Exp $
 */
 
 
@@ -86,7 +86,8 @@ extern	GLuint		currenttexture;
 extern	GLuint		particletexture;
 extern	GLuint		lightmap_textures;
 extern	GLuint		playertextures[MAX_CLIENTS];
-extern	GLuint		gl_extra_textures[MAX_EXTRA_TEXTURES];   // generic textures for models
+extern	GLuint		plyrtex[MAX_PLAYER_CLASS][16][16];	// player textures in multiplayer config screens
+extern	GLuint		gl_extra_textures[MAX_EXTRA_TEXTURES];	// generic textures for models
 
 /* the GL_Bind macro */
 #define GL_Bind(texnum)	{					\
@@ -100,6 +101,7 @@ extern	int		gl_texlevel;
 extern	int		numgltextures;
 extern	qboolean	flush_textures;		// we can't detect mapname change early enough
 						// in hw, so flush_textures is only for hexen2
+extern	gltexture_t	gltextures[MAX_GLTEXTURES];
 
 extern	int		gl_filter_min;
 extern	int		gl_filter_max;
@@ -137,6 +139,7 @@ extern	int		c_brush_polys, c_alias_polys;
 /* palette stuff */
 extern	int		ColorIndex[16];
 extern	unsigned	ColorPercent[16];
+extern	float		RTint[256], GTint[256], BTint[256];
 #if USE_HEXEN2_PALTEX_CODE
 extern	unsigned char	inverse_pal[(1<<INVERSE_PAL_TOTAL_BITS)+1];
 #else
@@ -200,6 +203,7 @@ extern	int		gl_lightmap_format;	/* value of gl_lightmapfmt stored at level start
 extern	qboolean	lightmap_modified[MAX_LIGHTMAPS];
 
 extern	vec3_t		lightcolor;
+extern	vec3_t		lightspot;
 
 extern	texture_t	*r_notexture_mip;
 extern	int		d_lightstylevalue[256];	// 8.8 fraction of base light value
@@ -213,6 +217,7 @@ extern	int		mirrortexturenum;	/* quake texturenum, not gltexturenum */
 extern	int		skytexturenum;		/* index in cl.loadmodel, not gl texture object */
 
 extern	qboolean	envmap;
+extern	qboolean	gl_dogamma;		/* should we use gl tricks for brightening. */
 
 
 /* ====================================================================

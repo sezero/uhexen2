@@ -2,14 +2,12 @@
 	in_sdl.c
 	SDL game input code
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/in_sdl.c,v 1.45 2007-07-20 07:45:42 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/in_sdl.c,v 1.46 2007-07-29 07:58:08 sezero Exp $
 */
 
 #include "sdl_inc.h"
 #include "quakedef.h"
 
-
-extern qboolean	draw_reinit;
 
 // mouse variables
 static cvar_t	m_filter = {"m_filter", "0", CVAR_NONE};
@@ -17,8 +15,6 @@ static cvar_t	m_filter = {"m_filter", "0", CVAR_NONE};
 static int	mouse_x, mouse_y, old_mouse_x, old_mouse_y;
 extern cvar_t	_enable_mouse;
 
-extern modestate_t	modestate;
-extern qboolean	in_mode_set;
 static qboolean	mouseactive = false;
 static qboolean	mouseinitialized = false;
 static qboolean	mouseactivatetoggle = false;

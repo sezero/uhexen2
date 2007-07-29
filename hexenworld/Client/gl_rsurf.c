@@ -2,7 +2,7 @@
 	r_surf.c
 	surface-related refresh code
 
-	$Id: gl_rsurf.c,v 1.34 2007-07-08 11:55:36 sezero Exp $
+	$Id: gl_rsurf.c,v 1.35 2007-07-29 07:58:15 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -31,7 +31,6 @@ static int	allocated[MAX_LIGHTMAPS][BLOCK_WIDTH];
 // the lightmap texture data needs to be kept in
 // main memory so texsubimage can update properly
 static byte	lightmaps[4*MAX_LIGHTMAPS*BLOCK_WIDTH*BLOCK_HEIGHT];
-extern qboolean draw_reinit;
 
 
 /*

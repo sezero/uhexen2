@@ -2,7 +2,7 @@
 	view.h
 	player eye positioning
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/view.h,v 1.7 2007-07-28 09:33:59 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/view.h,v 1.8 2007-07-29 07:58:22 sezero Exp $
 */
 
 #ifndef __HX2_VIEW_H
@@ -17,10 +17,8 @@ extern	cvar_t		crosshaircolor;
 extern	float		v_blend[4];
 #endif
 
-#if 0
 extern	byte		gammatable[256];	// palette is sent through this
 extern	unsigned short	ramps[3][256];
-#endif
 
 void V_Init (void);
 void V_RenderView (void);

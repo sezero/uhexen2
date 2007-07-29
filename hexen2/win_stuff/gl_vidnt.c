@@ -1,6 +1,6 @@
 /*
 	gl_vidnt.c -- NT GL vid component
-	$Id: gl_vidnt.c,v 1.106 2007-07-25 15:02:45 sezero Exp $
+	$Id: gl_vidnt.c,v 1.107 2007-07-29 07:58:15 sezero Exp $
 */
 
 #define	__GL_FUNC_EXTERN
@@ -129,8 +129,6 @@ static int	vid_deskwidth, vid_deskheight, vid_deskbpp, vid_deskmode;
 static qboolean	vid_conscale = false;
 static char	vid_consize[MAX_DESC];
 
-extern qboolean	scr_skipupdate;
-extern qboolean	draw_reinit;
 static qboolean	vid_initialized = false;
 static qboolean	vid_canalttab = false;
 static qboolean	vid_wassuspended = false;

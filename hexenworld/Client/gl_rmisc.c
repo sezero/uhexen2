@@ -1,7 +1,7 @@
 /*
 	r_misc.c
 
-	$Id: gl_rmisc.c,v 1.43 2007-07-28 12:28:15 sezero Exp $
+	$Id: gl_rmisc.c,v 1.44 2007-07-29 07:58:15 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -26,8 +26,6 @@ cvar_t			gl_purge_maptex = {"gl_purge_maptex", "1", CVAR_ARCHIVE};
 
 qboolean		flush_textures;
 int			gl_texlevel;
-extern GLuint		plyrtex[MAX_PLAYER_CLASS][16][16];
-extern gltexture_t	gltextures[MAX_GLTEXTURES];
 extern int		menu_numcachepics;
 extern cachepic_t	menu_cachepics[MAX_CACHED_PICS];
 

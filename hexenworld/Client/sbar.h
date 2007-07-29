@@ -2,7 +2,7 @@
 	sbar.h
 	HUD / status bar
 
-	$Id: sbar.h,v 1.8 2007-03-14 21:03:41 sezero Exp $
+	$Id: sbar.h,v 1.9 2007-07-29 07:58:22 sezero Exp $
 */
 
 #ifndef __HX2_SBAR_H
@@ -27,6 +27,8 @@ void Sbar_DeathmatchOverlay(void);
 // PUBLIC DATA DECLARATIONS ------------------------------------------------
 
 extern int sb_lines; // scan lines to draw
+extern int trans_level;
+
 
 #endif	/* __HX2_SBAR_H */
 

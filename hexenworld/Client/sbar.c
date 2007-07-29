@@ -2,7 +2,7 @@
 	sbar.c
 	Hexen II status bar
 
-	$Id: sbar.c,v 1.36 2007-07-08 11:55:38 sezero Exp $
+	$Id: sbar.c,v 1.37 2007-07-29 07:58:21 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -81,13 +81,12 @@ static void DrawArtifactInventory(void);
 
 // EXTERNAL DATA DECLARATIONS ----------------------------------------------
 
-extern qboolean	draw_reinit;
 extern int in_impulse;
-extern int trans_level;
 
 // PUBLIC DATA DEFINITIONS -------------------------------------------------
 
-int sb_lines; // scan lines to draw
+int	sb_lines;	// scan lines to draw
+int	trans_level = 0;
 
 // PRIVATE DATA DEFINITIONS ------------------------------------------------
 

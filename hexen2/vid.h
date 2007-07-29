@@ -2,7 +2,7 @@
 	vid.h
 	video driver defs
 
-	$Id: vid.h,v 1.28 2007-06-07 11:45:28 sezero Exp $
+	$Id: vid.h,v 1.29 2007-07-29 07:58:08 sezero Exp $
 */
 
 #ifndef __VID_DEFS_H
@@ -62,6 +62,9 @@ extern	byte		globalcolormap[VID_GRADES*256];
 extern	byte		lastglobalcolor, *lastsourcecolormap;
 
 extern	viddef_t	vid;			// global video state
+extern	modestate_t	modestate;
+extern	qboolean	in_mode_set;
+
 extern	unsigned short	d_8to16table[256];
 extern	unsigned	d_8to24table[256];
 extern	unsigned	d_8to24TranslucentTable[256];

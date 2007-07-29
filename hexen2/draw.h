@@ -3,13 +3,15 @@
 	these are the only functions outside the refresh
 	allowed to touch the vid buffer
 
-	$Id: draw.h,v 1.25 2007-07-11 16:47:14 sezero Exp $
+	$Id: draw.h,v 1.26 2007-07-29 07:58:04 sezero Exp $
 */
 
 #ifndef __HX2_DRAW_H
 #define __HX2_DRAW_H
 
 #define MAX_DISC 18
+
+extern	qboolean	draw_reinit;
 
 void Draw_Init (void);
 void Draw_ReInit (void);

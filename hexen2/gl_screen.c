@@ -2,7 +2,7 @@
 	screen.c
 	master for refresh, status bar, console, chat, notify, etc
 
-	$Id: gl_screen.c,v 1.51 2007-07-11 16:47:14 sezero Exp $
+	$Id: gl_screen.c,v 1.52 2007-07-29 07:58:07 sezero Exp $
 */
 
 /*=============================================================================
@@ -58,7 +58,6 @@
 
 
 static qboolean		scr_initialized;	// ready to draw
-extern qboolean		draw_reinit;
 
 vrect_t			scr_vrect;
 int			glx, gly, glwidth, glheight;
@@ -98,8 +97,6 @@ qboolean	block_drawing;
 static qpic_t	*scr_ram;
 static qpic_t	*scr_net;
 static qpic_t	*scr_turtle;
-
-extern	cvar_t	crosshair;
 
 static void SCR_ScreenShot_f (void);
 static void Plaque_Draw (const char *message, qboolean AlwaysDraw);

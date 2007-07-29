@@ -2,7 +2,7 @@
 	gl_draw.c
 	this is the only file outside the refresh that touches the vid buffer
 
-	$Id: gl_draw.c,v 1.102 2007-07-28 12:28:15 sezero Exp $
+	$Id: gl_draw.c,v 1.103 2007-07-29 07:58:15 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -34,16 +34,13 @@ qboolean	draw_reinit = false;
 static cvar_t	gl_picmip = {"gl_picmip", "0", CVAR_NONE};
 static cvar_t	gl_constretch = {"gl_constretch", "0", CVAR_ARCHIVE};
 
-GLuint		plyrtex[MAX_PLAYER_CLASS][16][16];	// whether or not the corresponding player textures
-							// (in multiplayer config screens) have been loaded
+GLuint			plyrtex[MAX_PLAYER_CLASS][16][16];	// player textures in multiplayer config screens
 static GLuint		draw_backtile;
 static GLuint		conback;
 static GLuint		char_texture;
 static GLuint		cs_texture;	// crosshair texture
 static GLuint		char_smalltexture;
 static GLuint		char_menufonttexture;
-
-int			trans_level = 0;
 
 // Crosshair texture is a 32x32 alpha map with 8 levels of alpha.
 // The format is similar to an X11 pixmap, but not the same.

@@ -2,7 +2,7 @@
 	gl_vidsdl.c -- SDL GL vid component
 	Select window size and mode and init SDL in GL mode.
 
-	$Id: gl_vidsdl.c,v 1.167 2007-07-25 15:02:41 sezero Exp $
+	$Id: gl_vidsdl.c,v 1.168 2007-07-29 07:58:07 sezero Exp $
 
 	Changed 7/11/04 by S.A.
 	- Fixed fullscreen opengl mode, window sizes
@@ -112,8 +112,6 @@ static qboolean	vid_conscale = false;
 static char	vid_consize[MAX_DESC];
 static int	WRHeight, WRWidth;
 
-extern qboolean	scr_skipupdate;
-extern qboolean	draw_reinit;
 static qboolean	vid_initialized = false;
 qboolean	in_mode_set = false;
 
@@ -166,7 +164,6 @@ static cvar_t	vid_config_gl8bit = {"vid_config_gl8bit", "0", CVAR_ARCHIVE};
 // Gamma stuff
 #define	USE_GAMMA_RAMPS			0
 #if USE_GAMMA_RAMPS
-extern unsigned short	ramps[3][256];
 static unsigned short	orig_ramps[3][256];
 #endif
 

@@ -1,14 +1,11 @@
 /*
 	menu.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/menu.c,v 1.69 2007-07-20 07:45:44 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/menu.c,v 1.70 2007-07-29 07:58:20 sezero Exp $
 */
 
 #include "quakedef.h"
 #include "r_shared.h"
-
-extern	modestate_t	modestate;
-extern	cvar_t	crosshair;
 
 void (*vid_menudrawfn)(void);
 void (*vid_menukeyfn)(int key);

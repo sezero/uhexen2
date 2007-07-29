@@ -2,7 +2,7 @@
 	screen.c
 	master for refresh, status bar, console, chat, notify, etc
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/screen.c,v 1.36 2007-07-11 16:47:16 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/screen.c,v 1.37 2007-07-29 07:58:22 sezero Exp $
 */
 
 
@@ -60,7 +60,6 @@
 
 
 static qboolean		scr_initialized;	// ready to draw
-extern qboolean		draw_reinit;
 
 vrect_t			scr_vrect;
 //vrect_t		*pconupdate;
@@ -97,7 +96,6 @@ static qpic_t	*scr_ram;
 static qpic_t	*scr_net;
 static qpic_t	*scr_turtle;
 
-extern	cvar_t	crosshair;
 extern	cvar_t	show_fps;
 extern	int	fps_count;
 

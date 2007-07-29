@@ -1,7 +1,7 @@
 /*
 	gl_main.c
 
-	$Id: gl_rmain.c,v 1.63 2007-07-25 15:02:41 sezero Exp $
+	$Id: gl_rmain.c,v 1.64 2007-07-29 07:58:04 sezero Exp $
 */
 
 
@@ -52,8 +52,6 @@ static float	r_base_world_matrix[16];	// for R_Mirror()
 refdef_t	r_refdef;
 mleaf_t		*r_viewleaf, *r_oldviewleaf;
 
-extern	int	glwidth, glheight;
-
 texture_t	*r_notexture_mip;
 
 int		d_lightstylevalue[256];	// 8.8 fraction of base light value
@@ -62,9 +60,6 @@ int		gl_coloredstatic;	// used to store what type of static light
 					// we loaded in Mod_LoadLighting()
 
 static	qboolean AlwaysDrawModel;
-
-extern	qboolean gl_dogamma;
-extern	cvar_t	v_gamma;
 
 cvar_t	r_norefresh = {"r_norefresh", "0", CVAR_NONE};
 cvar_t	r_drawentities = {"r_drawentities", "1", CVAR_NONE};
@@ -494,7 +489,7 @@ ALIAS MODELS
 float	r_avertexnormals[NUMVERTEXNORMALS][3] = {
 #include "anorms.h"
 };
-#endif	// H2W
+#endif	/* H2W */
 
 static vec3_t	shadevector;
 static float	shadelight, ambientlight;
@@ -514,8 +509,6 @@ static int	lastposenum;
 GL_DrawAliasFrame
 =============
 */
-extern float	RTint[256], GTint[256], BTint[256];
-
 static void GL_DrawAliasFrame (aliashdr_t *paliashdr, int posenum)
 {
 	float		l;
@@ -589,8 +582,6 @@ static void GL_DrawAliasFrame (aliashdr_t *paliashdr, int posenum)
 GL_DrawAliasShadow
 =============
 */
-extern	vec3_t			lightspot;
-
 static void GL_DrawAliasShadow (aliashdr_t *paliashdr, int posenum)
 {
 	trivertx_t	*verts;
@@ -866,7 +857,7 @@ static void R_DrawAliasModel (entity_t *e)
 		tmatrix[2][3] = paliashdr->scale_origin[2];
 	}
 
-	if (clmodel->flags&EF_ROTATE)
+	if (clmodel->flags & EF_ROTATE)
 	{
 		// Floating motion
 		tmatrix[2][3] += sin(currententity->origin[0]
