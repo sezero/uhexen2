@@ -3,6 +3,37 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2007-07-29 (CVS):
+    * added comment labels for texture modes in GL_Upload8.
+    * updated the list of known bugs: added more info to the amd64 debug
+      builds entry. removed the network non-interoperability entry, can't
+      reproduce the report. 2007-07-26.
+    * rearranged the compile instructions according to Levent's suggestions.
+    * changed S_IFREG and S_IFDIR usage into S_ISREG and S_ISDIR macros.
+      commented out one unnecessary S_ISREG check.
+    * changed some of our variadic macros so that gcc extensions aren't used
+      if running in c99 mode.
+    * gl_rmisc.c: removed some dead code.
+    * updates to gl_draw.c: texture mode >= 10, hence the sprite boolean in
+      the GL_Upload functions were never set or used , removed them along
+      wit the associated gl_spritemip cvar. instead of passing another arg
+      to fxPalTexImage2D, made fxpal_buf a static variable. cleaned up some
+      code in fxPalTexImage2D and GL_Upload8.
+    * moved some extern declerations in draw.c and gl_draw.c to appropriate
+      headers.
+    * removed the gl_texsort patch from the extra patches for now. it doesn't
+      work correctly after all.
+    * tidy up in glquake.h. separated particle types and enums into the
+      new particle.h header which is shared between opengl and software
+      renderers and is included from d_iface.h or glquake.h.  also made
+      flush_textures a variable for hexenworld again which is less mess
+      for us.
+    * re-diff'ed the gl_fog extra patch.
+    * gl_model.c, trivial clean-up.
+    * removed some more of redundant extern declrarations from source files
+      and moved smoe of them to proper headers. this is actually a big mess
+      and I don't know there is an end to it.
+
 2007-07-25 (CVS):
     * merged a new translucency mechanism for the sprite models. this fixes
       the demoness (succubus) fireball and powered-up acidball translucency.
