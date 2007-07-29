@@ -2,7 +2,7 @@
 	in_sdl.c
 	SDL game input code
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/in_sdl.c,v 1.46 2007-07-29 07:58:08 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/in_sdl.c,v 1.47 2007-07-29 11:50:20 sezero Exp $
 */
 
 #include "sdl_inc.h"
@@ -13,7 +13,6 @@
 static cvar_t	m_filter = {"m_filter", "0", CVAR_NONE};
 
 static int	mouse_x, mouse_y, old_mouse_x, old_mouse_y;
-extern cvar_t	_enable_mouse;
 
 static qboolean	mouseactive = false;
 static qboolean	mouseinitialized = false;

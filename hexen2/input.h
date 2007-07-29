@@ -2,7 +2,7 @@
 	input.h
 	external (non-keyboard) input devices
 
-	$Id: input.h,v 1.6 2007-07-17 14:04:00 sezero Exp $
+	$Id: input.h,v 1.7 2007-07-29 11:50:20 sezero Exp $
 */
 
 #ifndef __HX2_INPUT_H
@@ -24,8 +24,6 @@ void IN_ShowMouse (void);
 void IN_DeactivateMouse (void);
 void IN_HideMouse (void);
 void IN_ActivateMouse (void);
-
-extern	cvar_t		_enable_mouse;
 
 void IN_SendKeyEvents (void);
 

@@ -2,7 +2,7 @@
 	vid.h
 	video driver defs
 
-	$Id: vid.h,v 1.29 2007-07-29 07:58:08 sezero Exp $
+	$Id: vid.h,v 1.30 2007-07-29 11:50:20 sezero Exp $
 */
 
 #ifndef __VID_DEFS_H
@@ -68,6 +68,8 @@ extern	qboolean	in_mode_set;
 extern	unsigned short	d_8to16table[256];
 extern	unsigned	d_8to24table[256];
 extern	unsigned	d_8to24TranslucentTable[256];
+
+extern	cvar_t		_enable_mouse;
 
 void VID_SetPalette (unsigned char *palette);
 // called at startup and after any gamma correction
