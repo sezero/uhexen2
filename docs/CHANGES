@@ -30,6 +30,7 @@ Development Progress	:
       for us.
     * re-diff'ed the gl_fog extra patch.
     * gl_model.c, trivial clean-up.
+    * in_sdl.c, minor things.
     * removed some more of redundant extern declrarations from source files
       and moved smoe of them to proper headers. this is actually a big mess
       and I don't know there is an end to it.
