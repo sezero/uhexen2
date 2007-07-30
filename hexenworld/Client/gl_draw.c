@@ -2,7 +2,7 @@
 	gl_draw.c
 	this is the only file outside the refresh that touches the vid buffer
 
-	$Id: gl_draw.c,v 1.103 2007-07-29 07:58:15 sezero Exp $
+	$Id: gl_draw.c,v 1.104 2007-07-30 19:55:42 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -771,7 +771,6 @@ void Draw_AlphaPic (int x, int y, qpic_t *pic, float alpha)
 	gl = (glpic_t *)pic->data;
 	glDisable_fp(GL_ALPHA_TEST);
 	glEnable_fp (GL_BLEND);
-//	glBlendFunc_fp(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	glCullFace_fp(GL_FRONT);
 	glColor4f_fp (1,1,1,alpha);
 	GL_Bind (gl->texnum);
@@ -1056,7 +1055,6 @@ static void Draw_ConsolePic (int lines, float ofs, GLuint num, float alpha)
 {
 	glDisable_fp(GL_ALPHA_TEST);
 	glEnable_fp (GL_BLEND);
-//	glBlendFunc_fp(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	glCullFace_fp(GL_FRONT);
 	glColor4f_fp (1,1,1,alpha);
 	GL_Bind (num);

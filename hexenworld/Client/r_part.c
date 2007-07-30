@@ -2,7 +2,7 @@
 	r_part.c
 	particles rendering
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/r_part.c,v 1.17 2007-07-08 11:55:38 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/r_part.c,v 1.18 2007-07-30 19:55:42 sezero Exp $
 */
 
 
@@ -1620,7 +1620,6 @@ void R_DrawParticles (void)
 	if (alphaTestEnabled)
 		glDisable_fp(GL_ALPHA_TEST);
 	glEnable_fp (GL_BLEND);
-	glBlendFunc_fp (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	glTexEnvf_fp(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 	glBegin_fp (GL_TRIANGLES);
 

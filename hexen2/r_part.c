@@ -2,7 +2,7 @@
 	r_part.c
 	particles rendering
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/r_part.c,v 1.19 2007-07-08 11:55:22 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/r_part.c,v 1.20 2007-07-30 19:55:39 sezero Exp $
 */
 
 
@@ -1248,7 +1248,6 @@ void R_DrawParticles (void)
 
 	GL_Bind(particletexture);
 	glEnable_fp (GL_BLEND);
-	glBlendFunc_fp (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	glTexEnvf_fp(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 	glBegin_fp (GL_TRIANGLES);
 

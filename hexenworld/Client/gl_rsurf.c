@@ -2,7 +2,7 @@
 	r_surf.c
 	surface-related refresh code
 
-	$Id: gl_rsurf.c,v 1.35 2007-07-29 07:58:15 sezero Exp $
+	$Id: gl_rsurf.c,v 1.36 2007-07-30 19:55:42 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -555,7 +555,6 @@ static void R_BlendLightmaps (qboolean Translucent)
 	{
 		glTexEnvf_fp(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 		glColor4f_fp (0.0f,0.0f,0.0f,1.0f);
-		glBlendFunc_fp (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	}
 	else if (gl_lightmap_format == GL_RGBA)
 	{
@@ -642,6 +641,7 @@ static void R_BlendLightmaps (qboolean Translucent)
 	}
 	else if (gl_lightmap_format == GL_RGBA)
 	{
+		glBlendFunc_fp (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 		glTexEnvf_fp(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
 	}
 

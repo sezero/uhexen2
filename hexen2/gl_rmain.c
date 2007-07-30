@@ -1,7 +1,7 @@
 /*
 	gl_main.c
 
-	$Id: gl_rmain.c,v 1.64 2007-07-29 07:58:04 sezero Exp $
+	$Id: gl_rmain.c,v 1.65 2007-07-30 19:55:39 sezero Exp $
 */
 
 
@@ -384,19 +384,16 @@ static void R_DrawSpriteModel (entity_t *e)
 /* Pa3PyX: new translucency code below
 	if (currententity->drawflags & DRF_TRANSLUCENT)
 	{
-		glBlendFunc_fp (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 		glEnable_fp (GL_BLEND);
 		glColor4f_fp (1,1,1,r_wateralpha.value);
 	}
 	else if (currententity->model->flags & EF_TRANSPARENT)
 	{
-		glBlendFunc_fp (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 		glEnable_fp (GL_BLEND);
 		glColor3f_fp (1,1,1);
 	}
 	else
 	{
-		glBlendFunc_fp (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 		glEnable_fp (GL_BLEND);
 		glColor3f_fp (1,1,1);
 	}
@@ -419,7 +416,6 @@ static void R_DrawSpriteModel (entity_t *e)
 		glColor4f_fp (1.0f, 1.0f, 1.0f, 1.0f);
 	*/
 	/* here, we use the original alpha code	*/
-		glBlendFunc_fp (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 		glEnable_fp (GL_BLEND);
 		glColor3f_fp (1,1,1);
 	}
@@ -883,21 +879,18 @@ static void R_DrawAliasModel (entity_t *e)
 	else if (currententity->drawflags & DRF_TRANSLUCENT)
 	{
 		glEnable_fp (GL_BLEND);
-		glBlendFunc_fp (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	//	glColor4f_fp (1,1,1,r_wateralpha.value);
 		model_constant_alpha = r_wateralpha.value;
 	}
 	else if ((currententity->model->flags & EF_TRANSPARENT))
 	{
 		glEnable_fp (GL_BLEND);
-		glBlendFunc_fp (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	//	glColor3f_fp (1,1,1);
 		model_constant_alpha = 1.0f;
 	}
 	else if ((currententity->model->flags & EF_HOLEY))
 	{
 		glEnable_fp (GL_BLEND);
-		glBlendFunc_fp (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	//	glColor3f_fp (1,1,1);
 		model_constant_alpha = 1.0f;
 	}
@@ -956,14 +949,21 @@ static void R_DrawAliasModel (entity_t *e)
 		glHint_fp (GL_PERSPECTIVE_CORRECTION_HINT, GL_FASTEST);
 
 	R_SetupAliasFrame (currententity->frame, paliashdr);
+
+// restore params
 	if ((currententity->drawflags & DRF_TRANSLUCENT) ||
 			(currententity->model->flags & EF_SPECIAL_TRANS) ||
 			(currententity->model->flags & EF_TRANSPARENT) ||
 			(currententity->model->flags & EF_HOLEY)	)
+	{
 		glDisable_fp (GL_BLEND);
+	}
 
 	if ((currententity->model->flags & EF_SPECIAL_TRANS))
+	{
+		glBlendFunc_fp (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 		glEnable_fp (GL_CULL_FACE);
+	}
 
 	glTexEnvf_fp (GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
 
@@ -1526,6 +1526,8 @@ static void GL_DoGamma (void)
 	// if we do this twice, we double the brightening
 	// effect for a wider range of gamma's
 	//GL_DrawBlendPoly ();
+
+	glBlendFunc_fp (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 }
 
 /*
@@ -1537,8 +1539,6 @@ static void R_PolyBlend (void)
 {
 	if (!gl_polyblend.integer)
 		return;
-
-	glBlendFunc_fp (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 	glEnable_fp (GL_BLEND);
 	glDisable_fp (GL_DEPTH_TEST);
@@ -1558,7 +1558,6 @@ static void R_PolyBlend (void)
 	if (gl_dogamma)
 		GL_DoGamma ();
 
-	glBlendFunc_fp (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	glDisable_fp (GL_BLEND);
 	glEnable_fp (GL_TEXTURE_2D);
 	glEnable_fp (GL_ALPHA_TEST);
