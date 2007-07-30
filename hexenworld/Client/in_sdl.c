@@ -2,7 +2,7 @@
 	in_sdl.c
 	SDL game input code
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/in_sdl.c,v 1.45 2007-07-29 11:50:27 sezero Exp $
+	$Id: in_sdl.c,v 1.46 2007-07-30 06:16:49 sezero Exp $
 */
 
 #include "sdl_inc.h"
@@ -30,12 +30,14 @@ static int buttonremap[] =
 	K_MOUSE5
 };
 
+#define	USE_SDL_JOYSTICK	0	/* disabled until we add joystick support */
+
 // none of these cvars are saved over a session
 // this means that advanced controller configuration needs to be executed
 // each time.  this avoids any problems with getting back to a default usage
 // or when changing from one controller to another.  this way at least something
 // works.
-#if 0	/* disable these cvars until we add joystick support */
+#if USE_SDL_JOYSTICK
 static	cvar_t	in_joystick = {"joystick", "1", CVAR_NONE};
 static	cvar_t	joy_forwardthreshold = {"joyforwardthreshold", "0.15", CVAR_NONE};
 static	cvar_t	joy_sidethreshold = {"joysidethreshold", "0.15", CVAR_NONE};
@@ -47,11 +49,11 @@ static	cvar_t	joy_pitchsensitivity = {"joypitchsensitivity", "1.0", CVAR_NONE};
 static	cvar_t	joy_yawsensitivity = {"joyyawsensitivity", "-1.0", CVAR_NONE};
 
 static	qboolean	joy_avail, joy_haspov;
-#endif
 
 // forward-referenced functions
 static void IN_StartupJoystick (void);
-//static void IN_JoyMove (usercmd_t *cmd);
+static void IN_JoyMove (usercmd_t *cmd);
+#endif	/* USE_SDL_JOYSTICK */
 
 /*
 ===========
@@ -190,8 +192,7 @@ void IN_Init (void)
 	{
 		// mouse variables
 		Cvar_RegisterVariable (&m_filter);
-
-#	if 0
+#if USE_SDL_JOYSTICK
 		// joystick variables
 		Cvar_RegisterVariable (&in_joystick);
 		Cvar_RegisterVariable (&joy_forwardthreshold);
@@ -202,13 +203,15 @@ void IN_Init (void)
 		Cvar_RegisterVariable (&joy_sidesensitivity);
 		Cvar_RegisterVariable (&joy_pitchsensitivity);
 		Cvar_RegisterVariable (&joy_yawsensitivity);
-#	endif
+#endif	/* USE_SDL_JOYSTICK */
 
 		Cmd_AddCommand ("force_centerview", Force_CenterView_f);
 	}
 
 	IN_StartupMouse ();
+#if USE_SDL_JOYSTICK
 	IN_StartupJoystick ();
+#endif	/* USE_SDL_JOYSTICK */
 
 	SDL_EnableUNICODE (1);	/* needed for input in console */
 	SDL_EnableKeyRepeat (SDL_DEFAULT_REPEAT_DELAY, SDL_DEFAULT_REPEAT_INTERVAL*2);
@@ -224,6 +227,7 @@ void IN_Shutdown (void)
 
 	IN_DeactivateMouse ();
 	IN_ShowMouse ();
+	mouseinitialized = false;
 }
 
 
@@ -303,6 +307,11 @@ IN_Move
 */
 void IN_Move (usercmd_t *cmd)
 {
+#if USE_SDL_JOYSTICK
+	Uint8	appState = SDL_GetAppState();	// make the one in sys_unix
+							// global and use??
+#endif	/* USE_SDL_JOYSTICK */
+
 	if (cl.v.cameramode)	// Stuck in a different camera so don't move
 	{
 		memset (cmd, 0, sizeof(*cmd));
@@ -314,11 +323,14 @@ void IN_Move (usercmd_t *cmd)
 		IN_MouseMove (cmd);
 	}
 
-	//if (ActiveApp)
-	//	IN_JoyMove (cmd);
+#if USE_SDL_JOYSTICK
+	if (appState & SDL_APPACTIVE)
+		IN_JoyMove (cmd);
+#endif	/* USE_SDL_JOYSTICK */
 }
 
 
+#if USE_SDL_JOYSTICK
 /*
 ===============
 IN_StartupJoystick
@@ -329,7 +341,6 @@ static void IN_StartupJoystick (void)
 }
 
 
-#if 0
 /*
 ===============
 IN_ReadJoystick
@@ -368,7 +379,7 @@ static void IN_JoyMove (usercmd_t *cmd)
 
 	// bounds check pitch
 }
-#endif
+#endif	/* USE_SDL_JOYSTICK */
 
 /*
 ===========
@@ -377,7 +388,7 @@ IN_Commands
 */
 void IN_Commands (void)
 {
-#if 0
+#if USE_SDL_JOYSTICK
 	if (!joy_avail)
 	{
 		return;
@@ -390,7 +401,7 @@ void IN_Commands (void)
 
 	// loop through the joystick buttons
 	// key a joystick event or auxillary event for higher number buttons for each state change
-#endif
+#endif	/* USE_SDL_JOYSTICK */
 }
 
 
