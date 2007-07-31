@@ -2,7 +2,7 @@
 	d_part.c
 	software driver module for drawing particles
 
-	$Id: d_part.c,v 1.6 2007-07-31 11:07:52 sezero Exp $
+	$Id: d_part.c,v 1.7 2007-07-31 11:09:43 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -39,7 +39,6 @@ void D_StartParticles (void)
 D_DrawParticle
 ==============
 */
-extern byte	*transTable;
 void D_DrawParticle (particle_t *pparticle)
 {
 	vec3_t	local, transformed;

@@ -2,7 +2,7 @@
 	r_alias.c
 	routines for setting up to draw alias models
 
-	$Id: r_alias.c,v 1.13 2007-07-08 11:55:38 sezero Exp $
+	$Id: r_alias.c,v 1.14 2007-07-31 11:09:44 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -44,8 +44,8 @@ typedef struct {
 	int	index1;
 } aedge_t;
 
-static aedge_t	aedges[12] = {
-
+static aedge_t	aedges[12] =
+{
 	{0, 1}, {1, 2}, {2, 3}, {3, 0},
 	{4, 5}, {5, 6}, {6, 7}, {7, 4},
 	{0, 5}, {1, 4}, {2, 7}, {3, 6}
@@ -53,7 +53,8 @@ static aedge_t	aedges[12] = {
 
 #define NUMVERTEXNORMALS	162
 
-float	r_avertexnormals[NUMVERTEXNORMALS][3] = {
+float	r_avertexnormals[NUMVERTEXNORMALS][3] =
+{
 #include "anorms.h"
 };
 
@@ -950,8 +951,6 @@ static void R_AliasSetupFrame (void)
 			((byte *)paliashdr + paliasgroup->frames[i].frame);
 }
 
-
-extern byte	*transTable;
 
 /*
 ================

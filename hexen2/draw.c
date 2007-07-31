@@ -2,7 +2,7 @@
 	draw.c
 	This is the only file outside the refresh that touches the vid buffer.
 
-	$Id: draw.c,v 1.41 2007-07-29 07:58:04 sezero Exp $
+	$Id: draw.c,v 1.42 2007-07-31 11:09:44 sezero Exp $
 */
 
 
@@ -1673,9 +1673,8 @@ void Draw_Fill (int x, int y, int w, int h, int c)
 		}
 	}
 }
-//=============================================================================
 
-extern byte *mainTransTable; // in r_main.c
+//=============================================================================
 
 /*
 ================
