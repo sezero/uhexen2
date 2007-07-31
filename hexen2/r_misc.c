@@ -1,7 +1,7 @@
 /*
 	r_misc.c
 
-	$Id: r_misc.c,v 1.13 2007-06-16 07:30:29 sezero Exp $
+	$Id: r_misc.c,v 1.14 2007-07-31 21:03:27 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -15,7 +15,7 @@ R_CheckVariables
 */
 static void R_CheckVariables (void)
 {
-	static float	oldbright;
+	static int	oldbright;
 
 	if (r_fullbright.integer != oldbright)
 	{
@@ -23,27 +23,6 @@ static void R_CheckVariables (void)
 		D_FlushCaches ();	// so all lighting changes
 	}
 }
-
-
-/*
-============
-Show
-
-Debugging use
-============
-*/
-#if 0
-void Show (void)
-{
-	vrect_t	vr;
-
-	vr.x = vr.y = 0;
-	vr.width = vid.width;
-	vr.height = vid.height;
-	vr.pnext = NULL;
-	VID_Update (&vr);
-}
-#endif
 
 
 /*

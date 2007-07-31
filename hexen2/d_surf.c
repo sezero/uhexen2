@@ -2,7 +2,7 @@
 	d_surf.c
 	rasterization driver surface heap manager
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/d_surf.c,v 1.12 2007-07-08 11:55:18 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/d_surf.c,v 1.13 2007-07-31 21:03:27 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -215,35 +215,6 @@ static void D_SCDump (void)
 			Sys_Printf ("ROVER:\n");
 		printf ("%p : %i bytes     %i width\n",test, test->size, test->width);
 	}
-}
-#endif
-
-//=============================================================================
-
-// if the num is not a power of 2, assume it will not repeat
-#if 0	// unused
-static int MaskForNum (int num)
-{
-	if (num == 128)
-		return 127;
-	if (num == 64)
-		return 63;
-	if (num == 32)
-		return 31;
-	if (num == 16)
-		return 15;
-	return 255;
-}
-
-static int D_log2 (int num)
-{
-	int	c;
-
-	c = 0;
-
-	while (num >>= 1)
-		c++;
-	return c;
 }
 #endif
 
