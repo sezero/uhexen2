@@ -3,7 +3,7 @@
 	routines for drawing sets of polygons sharing the same
 	texture (used for Alias models)
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/d_polyse.c,v 1.15 2007-07-08 11:55:18 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/d_polyse.c,v 1.16 2007-07-31 11:06:49 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -12,16 +12,16 @@
 
 // TODO: put in span spilling to shrink list size
 // !!! if this is changed, it must be changed in d_polysa.s too !!!
-#define DPS_MAXSPANS			MAXHEIGHT+1	
+#define	DPS_MAXSPANS	(MAXHEIGHT + 1)
 // 1 extra for spanpackage that marks end
 
 // !!! if this is changed, it must be changed in asm_draw.h too !!!
 typedef struct {
-	void			*pdest;
-	short			*pz;
-	int				count;
-	byte			*ptex;
-	int				sfrac, tfrac, light, zi;
+	void		*pdest;
+	short		*pz;
+	int		count;
+	byte		*ptex;
+	int		sfrac, tfrac, light, zi;
 } spanpackage_t;
 
 typedef struct {
@@ -43,21 +43,22 @@ byte		*d_pcolormap;
 int		d_aflatcolor;
 int		d_xdenom;
 
-edgetable	*pedgetable;
+static edgetable	*pedgetable;
 
-edgetable	edgetables[12] = {
-	{0, 1, r_p0, r_p2, NULL, 2, r_p0, r_p1, r_p2 },
-	{0, 2, r_p1, r_p0, r_p2, 1, r_p1, r_p2, NULL},
-	{1, 1, r_p0, r_p2, NULL, 1, r_p1, r_p2, NULL},
-	{0, 1, r_p1, r_p0, NULL, 2, r_p1, r_p2, r_p0 },
-	{0, 2, r_p0, r_p2, r_p1, 1, r_p0, r_p1, NULL},
-	{0, 1, r_p2, r_p1, NULL, 1, r_p2, r_p0, NULL},
-	{0, 1, r_p2, r_p1, NULL, 2, r_p2, r_p0, r_p1 },
-	{0, 2, r_p2, r_p1, r_p0, 1, r_p2, r_p0, NULL},
-	{0, 1, r_p1, r_p0, NULL, 1, r_p1, r_p2, NULL},
-	{1, 1, r_p2, r_p1, NULL, 1, r_p0, r_p1, NULL},
-	{1, 1, r_p1, r_p0, NULL, 1, r_p2, r_p0, NULL},
-	{0, 1, r_p0, r_p2, NULL, 1, r_p0, r_p1, NULL},
+static edgetable	edgetables[12] =
+{
+	{ 0, 1, r_p0, r_p2, NULL, 2, r_p0, r_p1, r_p2 },
+	{ 0, 2, r_p1, r_p0, r_p2, 1, r_p1, r_p2, NULL },
+	{ 1, 1, r_p0, r_p2, NULL, 1, r_p1, r_p2, NULL },
+	{ 0, 1, r_p1, r_p0, NULL, 2, r_p1, r_p2, r_p0 },
+	{ 0, 2, r_p0, r_p2, r_p1, 1, r_p0, r_p1, NULL },
+	{ 0, 1, r_p2, r_p1, NULL, 1, r_p2, r_p0, NULL },
+	{ 0, 1, r_p2, r_p1, NULL, 2, r_p2, r_p0, r_p1 },
+	{ 0, 2, r_p2, r_p1, r_p0, 1, r_p2, r_p0, NULL },
+	{ 0, 1, r_p1, r_p0, NULL, 1, r_p1, r_p2, NULL },
+	{ 1, 1, r_p2, r_p1, NULL, 1, r_p0, r_p1, NULL },
+	{ 1, 1, r_p1, r_p0, NULL, 1, r_p2, r_p0, NULL },
+	{ 0, 1, r_p0, r_p2, NULL, 1, r_p0, r_p1, NULL }
 };
 
 // FIXME: some of these can become statics
@@ -84,7 +85,8 @@ typedef struct {
 	int		remainder;
 } adivtab_t;
 
-static adivtab_t	adivtab[32*32] = {
+static adivtab_t	adivtab[32*32] =
+{
 #include "adivtab.h"
 };
 
@@ -109,6 +111,7 @@ static void D_PolysetRecursiveTriangleT (int *lp1, int *lp2, int *lp3);
 static void D_PolysetRecursiveTriangleT2 (int *lp1, int *lp2, int *lp3);
 static void D_PolysetRecursiveTriangleT3 (int *lp1, int *lp2, int *lp3);
 static void D_PolysetRecursiveTriangleT5 (int *lp1, int *lp2, int *lp3);
+static void D_PolysetDrawSpans8 (spanpackage_t *pspanpackage);
 static void D_PolysetDrawSpans8T (spanpackage_t *pspanpackage);
 static void D_PolysetDrawSpans8T2 (spanpackage_t *pspanpackage);
 static void D_PolysetDrawSpans8T3 (spanpackage_t *pspanpackage);
@@ -122,6 +125,7 @@ extern void D_PolysetDrawSpans8T2 (spanpackage_t *pspanpackage);
 extern void D_PolysetDrawSpans8T3 (spanpackage_t *pspanpackage);
 extern void D_PolysetDrawSpans8T5 (spanpackage_t *pspanpackage);
 #endif
+
 
 #if	!id386
 
