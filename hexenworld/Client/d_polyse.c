@@ -3,7 +3,7 @@
 	routines for drawing sets of polygons sharing the same
 	texture (used for Alias models)
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/d_polyse.c,v 1.13 2007-07-31 11:07:00 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/d_polyse.c,v 1.14 2007-07-31 19:40:26 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -100,17 +100,6 @@ void D_RasterizeAliasPolySmooth (void);
 #if !id386
 static spanpackage_t	spans[DPS_MAXSPANS + 1 + ((CACHE_SIZE - 1) / sizeof(spanpackage_t)) + 1];
 						/* one extra because of cache line pretouching */
-static void D_DrawSubdiv (void);
-static void D_DrawNonSubdiv (void);
-static void D_DrawSubdivT (void);
-static void D_DrawSubdivT2 (void);
-static void D_DrawSubdivT3 (void);
-static void D_DrawSubdivT5 (void);
-static void D_PolysetRecursiveTriangle (int *p1, int *p2, int *p3);
-static void D_PolysetRecursiveTriangleT (int *lp1, int *lp2, int *lp3);
-static void D_PolysetRecursiveTriangleT2 (int *lp1, int *lp2, int *lp3);
-static void D_PolysetRecursiveTriangleT3 (int *lp1, int *lp2, int *lp3);
-static void D_PolysetRecursiveTriangleT5 (int *lp1, int *lp2, int *lp3);
 static void D_PolysetDrawSpans8 (spanpackage_t *pspanpackage);
 static void D_PolysetDrawSpans8T (spanpackage_t *pspanpackage);
 static void D_PolysetDrawSpans8T2 (spanpackage_t *pspanpackage);
@@ -128,87 +117,6 @@ extern void D_PolysetDrawSpans8T5 (spanpackage_t *pspanpackage);
 
 
 #if	!id386
-
-/*
-================
-D_PolysetDraw
-================
-*/
-void D_PolysetDraw (void)
-{
-	a_spans = (spanpackage_t *)
-			(((intptr_t)&spans[0] + CACHE_SIZE - 1) & ~(CACHE_SIZE - 1));
-
-	if (r_affinetridesc.drawtype)
-	{
-		D_DrawSubdiv ();
-	}
-	else
-	{
-		D_DrawNonSubdiv ();
-	}
-}
-
-void D_PolysetDrawT (void)
-{
-	a_spans = (spanpackage_t *)
-			(((intptr_t)&spans[0] + CACHE_SIZE - 1) & ~(CACHE_SIZE - 1));
-
-	if (r_affinetridesc.drawtype)
-	{
-		D_DrawSubdivT ();
-	}
-	else
-	{
-		D_DrawNonSubdiv ();
-	}
-}
-
-void D_PolysetDrawT2 (void)
-{
-	a_spans = (spanpackage_t *)
-			(((long)&spans[0] + CACHE_SIZE - 1) & ~(CACHE_SIZE - 1));
-
-	if (r_affinetridesc.drawtype)
-	{
-		D_DrawSubdivT2 ();
-	}
-	else
-	{
-		D_DrawNonSubdiv ();
-	}
-}
-
-void D_PolysetDrawT3 (void)
-{
-	a_spans = (spanpackage_t *)
-			(((intptr_t)&spans[0] + CACHE_SIZE - 1) & ~(CACHE_SIZE - 1));
-
-	if (r_affinetridesc.drawtype)
-	{
-		D_DrawSubdivT3 ();
-	}
-	else
-	{
-		D_DrawNonSubdiv ();
-	}
-}
-
-void D_PolysetDrawT5 (void)
-{
-	a_spans = (spanpackage_t *)
-			(((intptr_t)&spans[0] + CACHE_SIZE - 1) & ~(CACHE_SIZE - 1));
-
-	if (r_affinetridesc.drawtype)
-	{
-		D_DrawSubdivT5 ();
-	}
-	else
-	{
-		D_DrawNonSubdiv ();
-	}
-}
-
 
 /*
 ================
@@ -239,355 +147,6 @@ void D_PolysetDrawFinalVerts (finalvert_t *fvert, int num_verts)
 				d_viewbuffer[d_scantable[fvert->v[1]] + fvert->v[0]] = pix;
 			}
 		}
-	}
-}
-
-
-/*
-================
-D_DrawSubdiv
-================
-*/
-static void D_DrawSubdiv (void)
-{
-	mtriangle_t		*ptri;
-	finalvert_t		*pfv, *index0, *index1, *index2;
-	int				i;
-	int				lnumtriangles;
-
-	pfv = r_affinetridesc.pfinalverts;
-	ptri = r_affinetridesc.ptriangles;
-	lnumtriangles = r_affinetridesc.numtriangles;
-
-	for (i = 0; i < lnumtriangles; i++)
-	{
-		index0 = pfv + ptri[i].vertindex[0];
-		index1 = pfv + ptri[i].vertindex[1];
-		index2 = pfv + ptri[i].vertindex[2];
-
-		if (((index0->v[1]-index1->v[1]) *
-			 (index0->v[0]-index2->v[0]) -
-			 (index0->v[0]-index1->v[0]) * 
-			 (index0->v[1]-index2->v[1])) >= 0)
-		{
-			continue;
-		}
-
-		d_pcolormap = &((byte *)acolormap)[index0->v[4] & 0xFF00];
-
-		if (ptri[i].facesfront)
-		{
-			D_PolysetRecursiveTriangle(index0->v, index1->v, index2->v);
-		}
-		else
-		{
-			int		s0, s1, s2;
-
-			s0 = index0->v[2];
-			s1 = index1->v[2];
-			s2 = index2->v[2];
-
-			if (index0->flags & ALIAS_ONSEAM)
-				index0->v[2] += r_affinetridesc.seamfixupX16;
-			if (index1->flags & ALIAS_ONSEAM)
-				index1->v[2] += r_affinetridesc.seamfixupX16;
-			if (index2->flags & ALIAS_ONSEAM)
-				index2->v[2] += r_affinetridesc.seamfixupX16;
-
-			D_PolysetRecursiveTriangle(index0->v, index1->v, index2->v);
-
-			index0->v[2] = s0;
-			index1->v[2] = s1;
-			index2->v[2] = s2;
-		}
-	}
-}
-
-static void D_DrawSubdivT (void)
-{
-	mtriangle_t		*ptri;
-	finalvert_t		*pfv, *index0, *index1, *index2;
-	int				i;
-	int				lnumtriangles;
-
-	pfv = r_affinetridesc.pfinalverts;
-	ptri = r_affinetridesc.ptriangles;
-	lnumtriangles = r_affinetridesc.numtriangles;
-
-	for (i = 0; i < lnumtriangles; i++)
-	{
-		index0 = pfv + ptri[i].vertindex[0];
-		index1 = pfv + ptri[i].vertindex[1];
-		index2 = pfv + ptri[i].vertindex[2];
-
-		if (((index0->v[1]-index1->v[1]) *
-			 (index0->v[0]-index2->v[0]) -
-			 (index0->v[0]-index1->v[0]) * 
-			 (index0->v[1]-index2->v[1])) >= 0)
-		{
-			continue;
-		}
-
-		d_pcolormap = &((byte *)acolormap)[index0->v[4] & 0xFF00];
-
-		if (ptri[i].facesfront)
-		{
-			D_PolysetRecursiveTriangleT(index0->v, index1->v, index2->v);
-		}
-		else
-		{
-			int		s0, s1, s2;
-
-			s0 = index0->v[2];
-			s1 = index1->v[2];
-			s2 = index2->v[2];
-
-			if (index0->flags & ALIAS_ONSEAM)
-				index0->v[2] += r_affinetridesc.seamfixupX16;
-			if (index1->flags & ALIAS_ONSEAM)
-				index1->v[2] += r_affinetridesc.seamfixupX16;
-			if (index2->flags & ALIAS_ONSEAM)
-				index2->v[2] += r_affinetridesc.seamfixupX16;
-
-			D_PolysetRecursiveTriangleT(index0->v, index1->v, index2->v);
-
-			index0->v[2] = s0;
-			index1->v[2] = s1;
-			index2->v[2] = s2;
-		}
-	}
-}
-
-static void D_DrawSubdivT2 (void)
-{
-	mtriangle_t		*ptri;
-	finalvert_t		*pfv, *index0, *index1, *index2;
-	int				i;
-	int				lnumtriangles;
-
-	pfv = r_affinetridesc.pfinalverts;
-	ptri = r_affinetridesc.ptriangles;
-	lnumtriangles = r_affinetridesc.numtriangles;
-
-	for (i = 0; i < lnumtriangles; i++)
-	{
-		index0 = pfv + ptri[i].vertindex[0];
-		index1 = pfv + ptri[i].vertindex[1];
-		index2 = pfv + ptri[i].vertindex[2];
-
-		if (((index0->v[1]-index1->v[1]) *
-			 (index0->v[0]-index2->v[0]) -
-			 (index0->v[0]-index1->v[0]) * 
-			 (index0->v[1]-index2->v[1])) >= 0)
-		{
-			continue;
-		}
-
-		d_pcolormap = &((byte *)acolormap)[index0->v[4] & 0xFF00];
-
-		if (ptri[i].facesfront)
-		{
-			D_PolysetRecursiveTriangleT2(index0->v, index1->v, index2->v);
-		}
-		else
-		{
-			int		s0, s1, s2;
-
-			s0 = index0->v[2];
-			s1 = index1->v[2];
-			s2 = index2->v[2];
-
-			if (index0->flags & ALIAS_ONSEAM)
-				index0->v[2] += r_affinetridesc.seamfixupX16;
-			if (index1->flags & ALIAS_ONSEAM)
-				index1->v[2] += r_affinetridesc.seamfixupX16;
-			if (index2->flags & ALIAS_ONSEAM)
-				index2->v[2] += r_affinetridesc.seamfixupX16;
-
-			D_PolysetRecursiveTriangleT2(index0->v, index1->v, index2->v);
-
-			index0->v[2] = s0;
-			index1->v[2] = s1;
-			index2->v[2] = s2;
-		}
-	}
-}
-
-static void D_DrawSubdivT3 (void)
-{
-	mtriangle_t		*ptri;
-	finalvert_t		*pfv, *index0, *index1, *index2;
-	int				i;
-	int				lnumtriangles;
-
-	pfv = r_affinetridesc.pfinalverts;
-	ptri = r_affinetridesc.ptriangles;
-	lnumtriangles = r_affinetridesc.numtriangles;
-
-	for (i = 0; i < lnumtriangles; i++)
-	{
-		index0 = pfv + ptri[i].vertindex[0];
-		index1 = pfv + ptri[i].vertindex[1];
-		index2 = pfv + ptri[i].vertindex[2];
-
-		if (((index0->v[1]-index1->v[1]) *
-			 (index0->v[0]-index2->v[0]) -
-			 (index0->v[0]-index1->v[0]) * 
-			 (index0->v[1]-index2->v[1])) >= 0)
-		{
-			continue;
-		}
-
-		d_pcolormap = &((byte *)acolormap)[index0->v[4] & 0xFF00];
-
-		if (ptri[i].facesfront)
-		{
-			D_PolysetRecursiveTriangleT3(index0->v, index1->v, index2->v);
-		}
-		else
-		{
-			int		s0, s1, s2;
-
-			s0 = index0->v[2];
-			s1 = index1->v[2];
-			s2 = index2->v[2];
-
-			if (index0->flags & ALIAS_ONSEAM)
-				index0->v[2] += r_affinetridesc.seamfixupX16;
-			if (index1->flags & ALIAS_ONSEAM)
-				index1->v[2] += r_affinetridesc.seamfixupX16;
-			if (index2->flags & ALIAS_ONSEAM)
-				index2->v[2] += r_affinetridesc.seamfixupX16;
-
-			D_PolysetRecursiveTriangleT3(index0->v, index1->v, index2->v);
-
-			index0->v[2] = s0;
-			index1->v[2] = s1;
-			index2->v[2] = s2;
-		}
-	}
-}
-
-static void D_DrawSubdivT5 (void)
-{
-	mtriangle_t		*ptri;
-	finalvert_t		*pfv, *index0, *index1, *index2;
-	int				i;
-	int				lnumtriangles;
-
-	pfv = r_affinetridesc.pfinalverts;
-	ptri = r_affinetridesc.ptriangles;
-	lnumtriangles = r_affinetridesc.numtriangles;
-
-	for (i = 0; i < lnumtriangles; i++)
-	{
-		index0 = pfv + ptri[i].vertindex[0];
-		index1 = pfv + ptri[i].vertindex[1];
-		index2 = pfv + ptri[i].vertindex[2];
-
-		if (((index0->v[1]-index1->v[1]) *
-			 (index0->v[0]-index2->v[0]) -
-			 (index0->v[0]-index1->v[0]) * 
-			 (index0->v[1]-index2->v[1])) >= 0)
-		{
-			continue;
-		}
-
-		d_pcolormap = &((byte *)acolormap)[index0->v[4] & 0xFF00];
-
-		if (ptri[i].facesfront)
-		{
-			D_PolysetRecursiveTriangleT5(index0->v, index1->v, index2->v);
-		}
-		else
-		{
-			int		s0, s1, s2;
-
-			s0 = index0->v[2];
-			s1 = index1->v[2];
-			s2 = index2->v[2];
-
-			if (index0->flags & ALIAS_ONSEAM)
-				index0->v[2] += r_affinetridesc.seamfixupX16;
-			if (index1->flags & ALIAS_ONSEAM)
-				index1->v[2] += r_affinetridesc.seamfixupX16;
-			if (index2->flags & ALIAS_ONSEAM)
-				index2->v[2] += r_affinetridesc.seamfixupX16;
-
-			D_PolysetRecursiveTriangleT5(index0->v, index1->v, index2->v);
-
-			index0->v[2] = s0;
-			index1->v[2] = s1;
-			index2->v[2] = s2;
-		}
-	}
-}
-
-
-/*
-================
-D_DrawNonSubdiv
-================
-*/
-static void D_DrawNonSubdiv (void)
-{
-	mtriangle_t		*ptri;
-	finalvert_t		*pfv, *index0, *index1, *index2;
-	int				i;
-	int				lnumtriangles;
-
-	pfv = r_affinetridesc.pfinalverts;
-	ptri = r_affinetridesc.ptriangles;
-	lnumtriangles = r_affinetridesc.numtriangles;
-
-	for (i = 0; i < lnumtriangles; i++, ptri++)
-	{
-		index0 = pfv + ptri->vertindex[0];
-		index1 = pfv + ptri->vertindex[1];
-		index2 = pfv + ptri->vertindex[2];
-
-		d_xdenom = (index0->v[1]-index1->v[1]) *
-				(index0->v[0]-index2->v[0]) -
-				(index0->v[0]-index1->v[0])*(index0->v[1]-index2->v[1]);
-
-		if (d_xdenom >= 0)
-		{
-			continue;
-		}
-
-		r_p0[0] = index0->v[0];		// u
-		r_p0[1] = index0->v[1];		// v
-		r_p0[2] = index0->v[2];		// s
-		r_p0[3] = index0->v[3];		// t
-		r_p0[4] = index0->v[4];		// light
-		r_p0[5] = index0->v[5];		// iz
-
-		r_p1[0] = index1->v[0];
-		r_p1[1] = index1->v[1];
-		r_p1[2] = index1->v[2];
-		r_p1[3] = index1->v[3];
-		r_p1[4] = index1->v[4];
-		r_p1[5] = index1->v[5];
-
-		r_p2[0] = index2->v[0];
-		r_p2[1] = index2->v[1];
-		r_p2[2] = index2->v[2];
-		r_p2[3] = index2->v[3];
-		r_p2[4] = index2->v[4];
-		r_p2[5] = index2->v[5];
-
-		if (!ptri->facesfront)
-		{
-			if (index0->flags & ALIAS_ONSEAM)
-				r_p0[2] += r_affinetridesc.seamfixupX16;
-			if (index1->flags & ALIAS_ONSEAM)
-				r_p1[2] += r_affinetridesc.seamfixupX16;
-			if (index2->flags & ALIAS_ONSEAM)
-				r_p2[2] += r_affinetridesc.seamfixupX16;
-		}
-
-		D_PolysetSetEdgeTable ();
-		D_RasterizeAliasPolySmooth ();
 	}
 }
 
@@ -1014,6 +573,425 @@ nodraw:
 	D_PolysetRecursiveTriangleT5 (lp3, lp1, new_p);
 	D_PolysetRecursiveTriangleT5 (lp3, new_p, lp2);
 }
+
+/*
+================
+D_DrawSubdiv
+================
+*/
+static void D_DrawSubdiv (void)
+{
+	mtriangle_t		*ptri;
+	finalvert_t		*pfv, *index0, *index1, *index2;
+	int				i;
+	int				lnumtriangles;
+
+	pfv = r_affinetridesc.pfinalverts;
+	ptri = r_affinetridesc.ptriangles;
+	lnumtriangles = r_affinetridesc.numtriangles;
+
+	for (i = 0; i < lnumtriangles; i++)
+	{
+		index0 = pfv + ptri[i].vertindex[0];
+		index1 = pfv + ptri[i].vertindex[1];
+		index2 = pfv + ptri[i].vertindex[2];
+
+		if (((index0->v[1]-index1->v[1]) * (index0->v[0]-index2->v[0]) -
+			 (index0->v[0]-index1->v[0]) * (index0->v[1]-index2->v[1])) >= 0)
+		{
+			continue;
+		}
+
+		d_pcolormap = &((byte *)acolormap)[index0->v[4] & 0xFF00];
+
+		if (ptri[i].facesfront)
+		{
+			D_PolysetRecursiveTriangle(index0->v, index1->v, index2->v);
+		}
+		else
+		{
+			int		s0, s1, s2;
+
+			s0 = index0->v[2];
+			s1 = index1->v[2];
+			s2 = index2->v[2];
+
+			if (index0->flags & ALIAS_ONSEAM)
+				index0->v[2] += r_affinetridesc.seamfixupX16;
+			if (index1->flags & ALIAS_ONSEAM)
+				index1->v[2] += r_affinetridesc.seamfixupX16;
+			if (index2->flags & ALIAS_ONSEAM)
+				index2->v[2] += r_affinetridesc.seamfixupX16;
+
+			D_PolysetRecursiveTriangle(index0->v, index1->v, index2->v);
+
+			index0->v[2] = s0;
+			index1->v[2] = s1;
+			index2->v[2] = s2;
+		}
+	}
+}
+
+static void D_DrawSubdivT (void)
+{
+	mtriangle_t		*ptri;
+	finalvert_t		*pfv, *index0, *index1, *index2;
+	int				i;
+	int				lnumtriangles;
+
+	pfv = r_affinetridesc.pfinalverts;
+	ptri = r_affinetridesc.ptriangles;
+	lnumtriangles = r_affinetridesc.numtriangles;
+
+	for (i = 0; i < lnumtriangles; i++)
+	{
+		index0 = pfv + ptri[i].vertindex[0];
+		index1 = pfv + ptri[i].vertindex[1];
+		index2 = pfv + ptri[i].vertindex[2];
+
+		if (((index0->v[1]-index1->v[1]) * (index0->v[0]-index2->v[0]) -
+			 (index0->v[0]-index1->v[0]) * (index0->v[1]-index2->v[1])) >= 0)
+		{
+			continue;
+		}
+
+		d_pcolormap = &((byte *)acolormap)[index0->v[4] & 0xFF00];
+
+		if (ptri[i].facesfront)
+		{
+			D_PolysetRecursiveTriangleT(index0->v, index1->v, index2->v);
+		}
+		else
+		{
+			int		s0, s1, s2;
+
+			s0 = index0->v[2];
+			s1 = index1->v[2];
+			s2 = index2->v[2];
+
+			if (index0->flags & ALIAS_ONSEAM)
+				index0->v[2] += r_affinetridesc.seamfixupX16;
+			if (index1->flags & ALIAS_ONSEAM)
+				index1->v[2] += r_affinetridesc.seamfixupX16;
+			if (index2->flags & ALIAS_ONSEAM)
+				index2->v[2] += r_affinetridesc.seamfixupX16;
+
+			D_PolysetRecursiveTriangleT(index0->v, index1->v, index2->v);
+
+			index0->v[2] = s0;
+			index1->v[2] = s1;
+			index2->v[2] = s2;
+		}
+	}
+}
+
+static void D_DrawSubdivT2 (void)
+{
+	mtriangle_t		*ptri;
+	finalvert_t		*pfv, *index0, *index1, *index2;
+	int				i;
+	int				lnumtriangles;
+
+	pfv = r_affinetridesc.pfinalverts;
+	ptri = r_affinetridesc.ptriangles;
+	lnumtriangles = r_affinetridesc.numtriangles;
+
+	for (i = 0; i < lnumtriangles; i++)
+	{
+		index0 = pfv + ptri[i].vertindex[0];
+		index1 = pfv + ptri[i].vertindex[1];
+		index2 = pfv + ptri[i].vertindex[2];
+
+		if (((index0->v[1]-index1->v[1]) * (index0->v[0]-index2->v[0]) -
+			 (index0->v[0]-index1->v[0]) * (index0->v[1]-index2->v[1])) >= 0)
+		{
+			continue;
+		}
+
+		d_pcolormap = &((byte *)acolormap)[index0->v[4] & 0xFF00];
+
+		if (ptri[i].facesfront)
+		{
+			D_PolysetRecursiveTriangleT2(index0->v, index1->v, index2->v);
+		}
+		else
+		{
+			int		s0, s1, s2;
+
+			s0 = index0->v[2];
+			s1 = index1->v[2];
+			s2 = index2->v[2];
+
+			if (index0->flags & ALIAS_ONSEAM)
+				index0->v[2] += r_affinetridesc.seamfixupX16;
+			if (index1->flags & ALIAS_ONSEAM)
+				index1->v[2] += r_affinetridesc.seamfixupX16;
+			if (index2->flags & ALIAS_ONSEAM)
+				index2->v[2] += r_affinetridesc.seamfixupX16;
+
+			D_PolysetRecursiveTriangleT2(index0->v, index1->v, index2->v);
+
+			index0->v[2] = s0;
+			index1->v[2] = s1;
+			index2->v[2] = s2;
+		}
+	}
+}
+
+static void D_DrawSubdivT3 (void)
+{
+	mtriangle_t		*ptri;
+	finalvert_t		*pfv, *index0, *index1, *index2;
+	int				i;
+	int				lnumtriangles;
+
+	pfv = r_affinetridesc.pfinalverts;
+	ptri = r_affinetridesc.ptriangles;
+	lnumtriangles = r_affinetridesc.numtriangles;
+
+	for (i = 0; i < lnumtriangles; i++)
+	{
+		index0 = pfv + ptri[i].vertindex[0];
+		index1 = pfv + ptri[i].vertindex[1];
+		index2 = pfv + ptri[i].vertindex[2];
+
+		if (((index0->v[1]-index1->v[1]) * (index0->v[0]-index2->v[0]) -
+			 (index0->v[0]-index1->v[0]) * (index0->v[1]-index2->v[1])) >= 0)
+		{
+			continue;
+		}
+
+		d_pcolormap = &((byte *)acolormap)[index0->v[4] & 0xFF00];
+
+		if (ptri[i].facesfront)
+		{
+			D_PolysetRecursiveTriangleT3(index0->v, index1->v, index2->v);
+		}
+		else
+		{
+			int		s0, s1, s2;
+
+			s0 = index0->v[2];
+			s1 = index1->v[2];
+			s2 = index2->v[2];
+
+			if (index0->flags & ALIAS_ONSEAM)
+				index0->v[2] += r_affinetridesc.seamfixupX16;
+			if (index1->flags & ALIAS_ONSEAM)
+				index1->v[2] += r_affinetridesc.seamfixupX16;
+			if (index2->flags & ALIAS_ONSEAM)
+				index2->v[2] += r_affinetridesc.seamfixupX16;
+
+			D_PolysetRecursiveTriangleT3(index0->v, index1->v, index2->v);
+
+			index0->v[2] = s0;
+			index1->v[2] = s1;
+			index2->v[2] = s2;
+		}
+	}
+}
+
+static void D_DrawSubdivT5 (void)
+{
+	mtriangle_t		*ptri;
+	finalvert_t		*pfv, *index0, *index1, *index2;
+	int				i;
+	int				lnumtriangles;
+
+	pfv = r_affinetridesc.pfinalverts;
+	ptri = r_affinetridesc.ptriangles;
+	lnumtriangles = r_affinetridesc.numtriangles;
+
+	for (i = 0; i < lnumtriangles; i++)
+	{
+		index0 = pfv + ptri[i].vertindex[0];
+		index1 = pfv + ptri[i].vertindex[1];
+		index2 = pfv + ptri[i].vertindex[2];
+
+		if (((index0->v[1]-index1->v[1]) * (index0->v[0]-index2->v[0]) -
+			 (index0->v[0]-index1->v[0]) * (index0->v[1]-index2->v[1])) >= 0)
+		{
+			continue;
+		}
+
+		d_pcolormap = &((byte *)acolormap)[index0->v[4] & 0xFF00];
+
+		if (ptri[i].facesfront)
+		{
+			D_PolysetRecursiveTriangleT5(index0->v, index1->v, index2->v);
+		}
+		else
+		{
+			int		s0, s1, s2;
+
+			s0 = index0->v[2];
+			s1 = index1->v[2];
+			s2 = index2->v[2];
+
+			if (index0->flags & ALIAS_ONSEAM)
+				index0->v[2] += r_affinetridesc.seamfixupX16;
+			if (index1->flags & ALIAS_ONSEAM)
+				index1->v[2] += r_affinetridesc.seamfixupX16;
+			if (index2->flags & ALIAS_ONSEAM)
+				index2->v[2] += r_affinetridesc.seamfixupX16;
+
+			D_PolysetRecursiveTriangleT5(index0->v, index1->v, index2->v);
+
+			index0->v[2] = s0;
+			index1->v[2] = s1;
+			index2->v[2] = s2;
+		}
+	}
+}
+
+
+/*
+================
+D_DrawNonSubdiv
+================
+*/
+static void D_DrawNonSubdiv (void)
+{
+	mtriangle_t		*ptri;
+	finalvert_t		*pfv, *index0, *index1, *index2;
+	int				i;
+	int				lnumtriangles;
+
+	pfv = r_affinetridesc.pfinalverts;
+	ptri = r_affinetridesc.ptriangles;
+	lnumtriangles = r_affinetridesc.numtriangles;
+
+	for (i = 0; i < lnumtriangles; i++, ptri++)
+	{
+		index0 = pfv + ptri->vertindex[0];
+		index1 = pfv + ptri->vertindex[1];
+		index2 = pfv + ptri->vertindex[2];
+
+		d_xdenom = (index0->v[1]-index1->v[1]) * (index0->v[0]-index2->v[0]) -
+				(index0->v[0]-index1->v[0])*(index0->v[1]-index2->v[1]);
+
+		if (d_xdenom >= 0)
+		{
+			continue;
+		}
+
+		r_p0[0] = index0->v[0];		// u
+		r_p0[1] = index0->v[1];		// v
+		r_p0[2] = index0->v[2];		// s
+		r_p0[3] = index0->v[3];		// t
+		r_p0[4] = index0->v[4];		// light
+		r_p0[5] = index0->v[5];		// iz
+
+		r_p1[0] = index1->v[0];
+		r_p1[1] = index1->v[1];
+		r_p1[2] = index1->v[2];
+		r_p1[3] = index1->v[3];
+		r_p1[4] = index1->v[4];
+		r_p1[5] = index1->v[5];
+
+		r_p2[0] = index2->v[0];
+		r_p2[1] = index2->v[1];
+		r_p2[2] = index2->v[2];
+		r_p2[3] = index2->v[3];
+		r_p2[4] = index2->v[4];
+		r_p2[5] = index2->v[5];
+
+		if (!ptri->facesfront)
+		{
+			if (index0->flags & ALIAS_ONSEAM)
+				r_p0[2] += r_affinetridesc.seamfixupX16;
+			if (index1->flags & ALIAS_ONSEAM)
+				r_p1[2] += r_affinetridesc.seamfixupX16;
+			if (index2->flags & ALIAS_ONSEAM)
+				r_p2[2] += r_affinetridesc.seamfixupX16;
+		}
+
+		D_PolysetSetEdgeTable ();
+		D_RasterizeAliasPolySmooth ();
+	}
+}
+
+
+/*
+================
+D_PolysetDraw
+================
+*/
+void D_PolysetDraw (void)
+{
+	a_spans = (spanpackage_t *)
+			(((intptr_t)&spans[0] + CACHE_SIZE - 1) & ~(CACHE_SIZE - 1));
+
+	if (r_affinetridesc.drawtype)
+	{
+		D_DrawSubdiv ();
+	}
+	else
+	{
+		D_DrawNonSubdiv ();
+	}
+}
+
+void D_PolysetDrawT (void)
+{
+	a_spans = (spanpackage_t *)
+			(((intptr_t)&spans[0] + CACHE_SIZE - 1) & ~(CACHE_SIZE - 1));
+
+	if (r_affinetridesc.drawtype)
+	{
+		D_DrawSubdivT ();
+	}
+	else
+	{
+		D_DrawNonSubdiv ();
+	}
+}
+
+void D_PolysetDrawT2 (void)
+{
+	a_spans = (spanpackage_t *)
+			(((long)&spans[0] + CACHE_SIZE - 1) & ~(CACHE_SIZE - 1));
+
+	if (r_affinetridesc.drawtype)
+	{
+		D_DrawSubdivT2 ();
+	}
+	else
+	{
+		D_DrawNonSubdiv ();
+	}
+}
+
+void D_PolysetDrawT3 (void)
+{
+	a_spans = (spanpackage_t *)
+			(((intptr_t)&spans[0] + CACHE_SIZE - 1) & ~(CACHE_SIZE - 1));
+
+	if (r_affinetridesc.drawtype)
+	{
+		D_DrawSubdivT3 ();
+	}
+	else
+	{
+		D_DrawNonSubdiv ();
+	}
+}
+
+void D_PolysetDrawT5 (void)
+{
+	a_spans = (spanpackage_t *)
+			(((intptr_t)&spans[0] + CACHE_SIZE - 1) & ~(CACHE_SIZE - 1));
+
+	if (r_affinetridesc.drawtype)
+	{
+		D_DrawSubdivT5 ();
+	}
+	else
+	{
+		D_DrawNonSubdiv ();
+	}
+}
+
 
 #endif	// !id386
 

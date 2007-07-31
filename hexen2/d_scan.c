@@ -2,7 +2,7 @@
 	d_scan.c
 	Portable C scan-level rasterization code, all pixel depths.
 
-	$Id: d_scan.c,v 1.11 2007-06-16 14:41:35 sezero Exp $
+	$Id: d_scan.c,v 1.12 2007-07-31 19:40:24 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -136,286 +136,7 @@ void D_DrawTurbulent8TQuickSpan (void)
 	} while (--r_turb_spancount > 0);
 }
 
-#endif	// !id386
-
-
-#if	id386
-
-void D_DrawSpans8T (espan_t *pspan)
-{
-	int				count, spancount;
-	unsigned char	*pbase, *pdest;
-	fixed16_t		s, t, snext, tnext, sstep, tstep;
-	float			sdivz, tdivz, zi, z, du, dv, spancountminus1;
-	float			sdivz8stepu, tdivz8stepu, zi8stepu;
-
-	sstep = 0;	// keep compiler happy
-	tstep = 0;	// ditto
-
-	pbase = (unsigned char *)cacheblock;
-
-	sdivz8stepu = d_sdivzstepu * 8;
-	tdivz8stepu = d_tdivzstepu * 8;
-	zi8stepu = d_zistepu * 8;
-
-	{
-		pdest = (unsigned char *)((byte *)d_viewbuffer + (screenwidth * pspan->v) + pspan->u);
-		count = pspan->count;
-
-	// calculate the initial s/z, t/z, 1/z, s, and t and clamp
-		du = (float)pspan->u;
-		dv = (float)pspan->v;
-
-		sdivz = d_sdivzorigin + dv*d_sdivzstepv + du*d_sdivzstepu;
-		tdivz = d_tdivzorigin + dv*d_tdivzstepv + du*d_tdivzstepu;
-		zi = d_ziorigin + dv*d_zistepv + du*d_zistepu;
-		z = (float)0x10000 / zi;	// prescale to 16.16 fixed-point
-
-		s = (int)(sdivz * z) + sadjust;
-		if (s > bbextents)
-			s = bbextents;
-		else if (s < 0)
-			s = 0;
-
-		t = (int)(tdivz * z) + tadjust;
-		if (t > bbextentt)
-			t = bbextentt;
-		else if (t < 0)
-			t = 0;
-
-		do
-		{
-		// calculate s and t at the far end of the span
-			if (count >= 8)
-				spancount = 8;
-			else
-				spancount = count;
-
-			count -= spancount;
-
-			if (count)
-			{
-			// calculate s/z, t/z, zi->fixed s and t at far end of span,
-			// calculate s and t steps across span by shifting
-				sdivz += sdivz8stepu;
-				tdivz += tdivz8stepu;
-				zi += zi8stepu;
-				z = (float)0x10000 / zi;	// prescale to 16.16 fixed-point
-
-				snext = (int)(sdivz * z) + sadjust;
-				if (snext > bbextents)
-					snext = bbextents;
-				else if (snext < 8)
-					snext = 8;	// prevent round-off error on <0 steps from
-								//  from causing overstepping & running off the
-								//  edge of the texture
-
-				tnext = (int)(tdivz * z) + tadjust;
-				if (tnext > bbextentt)
-					tnext = bbextentt;
-				else if (tnext < 8)
-					tnext = 8;	// guard against round-off error on <0 steps
-
-				sstep = (snext - s) >> 3;
-				tstep = (tnext - t) >> 3;
-			}
-			else
-			{
-			// calculate s/z, t/z, zi->fixed s and t at last pixel in span (so
-			// can't step off polygon), clamp, calculate s and t steps across
-			// span by division, biasing steps low so we don't run off the
-			// texture
-				spancountminus1 = (float)(spancount - 1);
-				sdivz += d_sdivzstepu * spancountminus1;
-				tdivz += d_tdivzstepu * spancountminus1;
-				zi += d_zistepu * spancountminus1;
-				z = (float)0x10000 / zi;	// prescale to 16.16 fixed-point
-				snext = (int)(sdivz * z) + sadjust;
-				if (snext > bbextents)
-					snext = bbextents;
-				else if (snext < 8)
-					snext = 8;	// prevent round-off error on <0 steps from
-								//  from causing overstepping & running off the
-								//  edge of the texture
-
-				tnext = (int)(tdivz * z) + tadjust;
-				if (tnext > bbextentt)
-					tnext = bbextentt;
-				else if (tnext < 8)
-					tnext = 8;	// guard against round-off error on <0 steps
-
-				if (spancount > 1)
-				{
-					sstep = (snext - s) / (spancount - 1);
-					tstep = (tnext - t) / (spancount - 1);
-				}
-			}
-
-			do
-			{
-				if (*pdest > *(pbase + (s >> 16) + (t >> 16) * cachewidth))
-					scanList[spancount+count-1] = 1;
-				else
-					scanList[spancount+count-1] = 0;
-
-				pdest++;
-				s += sstep;
-				t += tstep;
-			} while (--spancount > 0);
-
-			s = snext;
-			t = tnext;
-
-		} while (count > 0);
-
-	}
-}
-
-#else
-
-void D_DrawSpans8T (espan_t *pspan)
-{
-	int				count, spancount;
-	unsigned char	*pbase, *pdest;
-	fixed16_t		s, t, snext, tnext, sstep, tstep;
-	float			sdivz, tdivz, zi, z, du, dv, spancountminus1;
-	float			sdivz8stepu, tdivz8stepu, zi8stepu;
-	short		*pz;
-	byte		btemp;
-	int			izi, izistep;
-
-	sstep = 0;	// keep compiler happy
-	tstep = 0;	// ditto
-
-	pbase = (unsigned char *)cacheblock;
-
-	sdivz8stepu = d_sdivzstepu * 8;
-	tdivz8stepu = d_tdivzstepu * 8;
-	zi8stepu = d_zistepu * 8;
-
-	izistep = (int)(d_zistepu * 0x8000 * 0x10000);
-
-	do
-	{
-		pdest = (unsigned char *)((byte *)d_viewbuffer + (screenwidth * pspan->v) + pspan->u);
-		pz = d_pzbuffer + (d_zwidth * pspan->v) + pspan->u;
-		count = pspan->count;
-
-	// calculate the initial s/z, t/z, 1/z, s, and t and clamp
-		du = (float)pspan->u;
-		dv = (float)pspan->v;
-
-		sdivz = d_sdivzorigin + dv*d_sdivzstepv + du*d_sdivzstepu;
-		tdivz = d_tdivzorigin + dv*d_tdivzstepv + du*d_tdivzstepu;
-		zi = d_ziorigin + dv*d_zistepv + du*d_zistepu;
-		z = (float)0x10000 / zi;	// prescale to 16.16 fixed-point
-		izi = (int)(zi * 0x8000 * 0x10000);
-
-		s = (int)(sdivz * z) + sadjust;
-		if (s > bbextents)
-			s = bbextents;
-		else if (s < 0)
-			s = 0;
-
-		t = (int)(tdivz * z) + tadjust;
-		if (t > bbextentt)
-			t = bbextentt;
-		else if (t < 0)
-			t = 0;
-
-		do
-		{
-		// calculate s and t at the far end of the span
-			if (count >= 8)
-				spancount = 8;
-			else
-				spancount = count;
-
-			count -= spancount;
-
-			if (count)
-			{
-			// calculate s/z, t/z, zi->fixed s and t at far end of span,
-			// calculate s and t steps across span by shifting
-				sdivz += sdivz8stepu;
-				tdivz += tdivz8stepu;
-				zi += zi8stepu;
-				z = (float)0x10000 / zi;	// prescale to 16.16 fixed-point
-
-				snext = (int)(sdivz * z) + sadjust;
-				if (snext > bbextents)
-					snext = bbextents;
-				else if (snext < 8)
-					snext = 8;	// prevent round-off error on <0 steps from
-								//  from causing overstepping & running off the
-								//  edge of the texture
-
-				tnext = (int)(tdivz * z) + tadjust;
-				if (tnext > bbextentt)
-					tnext = bbextentt;
-				else if (tnext < 8)
-					tnext = 8;	// guard against round-off error on <0 steps
-
-				sstep = (snext - s) >> 3;
-				tstep = (tnext - t) >> 3;
-			}
-			else
-			{
-			// calculate s/z, t/z, zi->fixed s and t at last pixel in span (so
-			// can't step off polygon), clamp, calculate s and t steps across
-			// span by division, biasing steps low so we don't run off the
-			// texture
-				spancountminus1 = (float)(spancount - 1);
-				sdivz += d_sdivzstepu * spancountminus1;
-				tdivz += d_tdivzstepu * spancountminus1;
-				zi += d_zistepu * spancountminus1;
-				z = (float)0x10000 / zi;	// prescale to 16.16 fixed-point
-				snext = (int)(sdivz * z) + sadjust;
-				if (snext > bbextents)
-					snext = bbextents;
-				else if (snext < 8)
-					snext = 8;	// prevent round-off error on <0 steps from
-								//  from causing overstepping & running off the
-								//  edge of the texture
-
-				tnext = (int)(tdivz * z) + tadjust;
-				if (tnext > bbextentt)
-					tnext = bbextentt;
-				else if (tnext < 8)
-					tnext = 8;	// guard against round-off error on <0 steps
-
-				if (spancount > 1)
-				{
-					sstep = (snext - s) / (spancount - 1);
-					tstep = (tnext - t) / (spancount - 1);
-				}
-			}
-
-			do
-			{
-				btemp = *(pbase + (s >> 16) + (t >> 16) * cachewidth);
-				if (*pz <= (izi >> 16))
-				{
-					*pdest = mainTransTable[(btemp<<8) + (*pdest)];
-				}
-				izi += izistep;
-				pdest++;
-				pz++;
-
-			//	*pdest++ = *(pbase + (s >> 16) + (t >> 16) * cachewidth);
-				s += sstep;
-				t += tstep;
-			} while (--spancount > 0);
-
-			s = snext;
-			t = tnext;
-
-		} while (count > 0);
-
-	} while ((pspan = pspan->pnext) != NULL);
-}
-
-#endif	// !id386
+#endif	/* !id386 */
 
 
 /*
@@ -709,10 +430,147 @@ void D_DrawSpans8 (espan_t *pspan)
 	} while ((pspan = pspan->pnext) != NULL);
 }
 
-#endif
+void D_DrawSpans8T (espan_t *pspan)
+{
+	int				count, spancount;
+	unsigned char	*pbase, *pdest;
+	fixed16_t		s, t, snext, tnext, sstep, tstep;
+	float			sdivz, tdivz, zi, z, du, dv, spancountminus1;
+	float			sdivz8stepu, tdivz8stepu, zi8stepu;
+	short		*pz;
+	byte		btemp;
+	int			izi, izistep;
 
+	sstep = 0;	// keep compiler happy
+	tstep = 0;	// ditto
 
-#if	!id386
+	pbase = (unsigned char *)cacheblock;
+
+	sdivz8stepu = d_sdivzstepu * 8;
+	tdivz8stepu = d_tdivzstepu * 8;
+	zi8stepu = d_zistepu * 8;
+
+	izistep = (int)(d_zistepu * 0x8000 * 0x10000);
+
+	do
+	{
+		pdest = (unsigned char *)((byte *)d_viewbuffer + (screenwidth * pspan->v) + pspan->u);
+		pz = d_pzbuffer + (d_zwidth * pspan->v) + pspan->u;
+		count = pspan->count;
+
+	// calculate the initial s/z, t/z, 1/z, s, and t and clamp
+		du = (float)pspan->u;
+		dv = (float)pspan->v;
+
+		sdivz = d_sdivzorigin + dv*d_sdivzstepv + du*d_sdivzstepu;
+		tdivz = d_tdivzorigin + dv*d_tdivzstepv + du*d_tdivzstepu;
+		zi = d_ziorigin + dv*d_zistepv + du*d_zistepu;
+		z = (float)0x10000 / zi;	// prescale to 16.16 fixed-point
+		izi = (int)(zi * 0x8000 * 0x10000);
+
+		s = (int)(sdivz * z) + sadjust;
+		if (s > bbextents)
+			s = bbextents;
+		else if (s < 0)
+			s = 0;
+
+		t = (int)(tdivz * z) + tadjust;
+		if (t > bbextentt)
+			t = bbextentt;
+		else if (t < 0)
+			t = 0;
+
+		do
+		{
+		// calculate s and t at the far end of the span
+			if (count >= 8)
+				spancount = 8;
+			else
+				spancount = count;
+
+			count -= spancount;
+
+			if (count)
+			{
+			// calculate s/z, t/z, zi->fixed s and t at far end of span,
+			// calculate s and t steps across span by shifting
+				sdivz += sdivz8stepu;
+				tdivz += tdivz8stepu;
+				zi += zi8stepu;
+				z = (float)0x10000 / zi;	// prescale to 16.16 fixed-point
+
+				snext = (int)(sdivz * z) + sadjust;
+				if (snext > bbextents)
+					snext = bbextents;
+				else if (snext < 8)
+					snext = 8;	// prevent round-off error on <0 steps from
+								//  from causing overstepping & running off the
+								//  edge of the texture
+
+				tnext = (int)(tdivz * z) + tadjust;
+				if (tnext > bbextentt)
+					tnext = bbextentt;
+				else if (tnext < 8)
+					tnext = 8;	// guard against round-off error on <0 steps
+
+				sstep = (snext - s) >> 3;
+				tstep = (tnext - t) >> 3;
+			}
+			else
+			{
+			// calculate s/z, t/z, zi->fixed s and t at last pixel in span (so
+			// can't step off polygon), clamp, calculate s and t steps across
+			// span by division, biasing steps low so we don't run off the
+			// texture
+				spancountminus1 = (float)(spancount - 1);
+				sdivz += d_sdivzstepu * spancountminus1;
+				tdivz += d_tdivzstepu * spancountminus1;
+				zi += d_zistepu * spancountminus1;
+				z = (float)0x10000 / zi;	// prescale to 16.16 fixed-point
+				snext = (int)(sdivz * z) + sadjust;
+				if (snext > bbextents)
+					snext = bbextents;
+				else if (snext < 8)
+					snext = 8;	// prevent round-off error on <0 steps from
+								//  from causing overstepping & running off the
+								//  edge of the texture
+
+				tnext = (int)(tdivz * z) + tadjust;
+				if (tnext > bbextentt)
+					tnext = bbextentt;
+				else if (tnext < 8)
+					tnext = 8;	// guard against round-off error on <0 steps
+
+				if (spancount > 1)
+				{
+					sstep = (snext - s) / (spancount - 1);
+					tstep = (tnext - t) / (spancount - 1);
+				}
+			}
+
+			do
+			{
+				btemp = *(pbase + (s >> 16) + (t >> 16) * cachewidth);
+				if (*pz <= (izi >> 16))
+				{
+					*pdest = mainTransTable[(btemp<<8) + (*pdest)];
+				}
+				izi += izistep;
+				pdest++;
+				pz++;
+
+			//	*pdest++ = *(pbase + (s >> 16) + (t >> 16) * cachewidth);
+				s += sstep;
+				t += tstep;
+			} while (--spancount > 0);
+
+			s = snext;
+			t = tnext;
+
+		} while (count > 0);
+
+	} while ((pspan = pspan->pnext) != NULL);
+}
 
 /*
 =============
@@ -772,6 +630,7 @@ void D_DrawZSpans (espan_t *pspan)
 	} while ((pspan = pspan->pnext) != NULL);
 }
 
+#if 0	/* old version */
 void D_DrawSingleZSpans (espan_t *pspan)
 {
 	int				count, izistep;
@@ -796,7 +655,7 @@ void D_DrawSingleZSpans (espan_t *pspan)
 // we count on FP exceptions being turned off to avoid range problems
 	izi = (int)(zi * 0x8000 * 0x10000);
 
-/*	if ((intptr_t)pdest & 0x02)
+	if ((intptr_t)pdest & 0x02)
 	{
 		if (*pdest > (short)(izi >> 16))
 		{
@@ -816,21 +675,18 @@ void D_DrawSingleZSpans (espan_t *pspan)
 	}
 
 	if (count > 1)
-*/
-//	ZScanCount = 0;
-	if (count > 0)
 	{
 		do
 		{
 			if (*pdest > (short)(izi >> 16))
 			{
 				ZScanCount++;
-			//	if (count > 0)
+				if (count > 0)
 					scanList[count-1] = 0;
 			}
 			else
 			{
-			//	if (count > 0)
+				if (count > 0)
 					scanList[count-1] = 1;
 				*pdest = (short)(izi >> 16);
 			}
@@ -840,7 +696,7 @@ void D_DrawSingleZSpans (espan_t *pspan)
 		} while (count > 0);
 	}
 
-/*	if (count & 1)
+	if (count & 1)
 	{
 		if (*pdest > (short)(izi >> 16))
 		{
@@ -858,8 +714,54 @@ void D_DrawSingleZSpans (espan_t *pspan)
 		izi += izistep;
 		count--;
 	}
-*/
+}
+#endif	/* old D_DrawSingleZSpans */
+
+void D_DrawSingleZSpans (espan_t *pspan)
+{
+	int				count, izistep;
+	int				izi;
+	short			*pdest;
+	float			zi;
+	float			du, dv;
+
+// FIXME: check for clamping/range problems
+// we count on FP exceptions being turned off to avoid range problems
+	izistep = (int)(d_zistepu * 0x8000 * 0x10000);
+
+	pdest = d_pzbuffer + (d_zwidth * pspan->v) + pspan->u;
+
+	count = pspan->count;
+
+// calculate the initial 1/z
+	du = (float)pspan->u;
+	dv = (float)pspan->v;
+
+	zi = d_ziorigin + dv*d_zistepv + du*d_zistepu;
+// we count on FP exceptions being turned off to avoid range problems
+	izi = (int)(zi * 0x8000 * 0x10000);
+
+//	ZScanCount = 0;
+	if (count > 0)
+	{
+		do
+		{
+			if (*pdest > (short)(izi >> 16))
+			{
+				ZScanCount++;
+				scanList[count-1] = 0;
+			}
+			else
+			{
+				scanList[count-1] = 1;
+				*pdest = (short)(izi >> 16);
+			}
+			izi += izistep;
+			pdest++;
+			count--;
+		} while (count > 0);
+	}
 }
 
-#endif
+#endif	/* !id386 */
 

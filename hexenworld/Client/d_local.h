@@ -2,7 +2,7 @@
 	d_local.h
 	private rasterization driver defs
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/d_local.h,v 1.10 2007-06-16 07:33:22 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/d_local.h,v 1.11 2007-07-31 19:40:26 sezero Exp $
 */
 
 #ifndef __D_LOCAL_H
@@ -61,6 +61,7 @@ extern fixed16_t	bbextents, bbextentt;
 
 
 void D_DrawSpans8 (espan_t *pspans);
+void D_DrawSpans8T(espan_t *pspans);
 void D_DrawZSpans (espan_t *pspans);
 void D_DrawSingleZSpans (espan_t *pspans);
 void Turbulent8 (surf_t *s);
@@ -72,10 +73,6 @@ void D_Patch (void);
 
 void R_ShowSubDiv (void);
 surfcache_t	*D_CacheSurface (msurface_t *surface, int miplevel);
-
-#if !id386
-void D_DrawSpans8T (espan_t *pspan);
-#endif
 
 #if id386
 extern void D_PolysetAff8Start (void);
