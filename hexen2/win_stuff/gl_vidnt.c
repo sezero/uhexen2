@@ -1,6 +1,6 @@
 /*
 	gl_vidnt.c -- NT GL vid component
-	$Id: gl_vidnt.c,v 1.108 2007-08-01 09:44:00 sezero Exp $
+	$Id: gl_vidnt.c,v 1.109 2007-08-01 21:45:11 sezero Exp $
 */
 
 #define	__GL_FUNC_EXTERN
@@ -793,8 +793,10 @@ static void GL_Init (void)
 	{
 		Con_Printf("Pixel format: c: %d, z: %d, s: %d\n",
 			new_pfd.cColorBits, new_pfd.cDepthBits, new_pfd.cStencilBits);
-		if (new_pfd.dwFlags & PFD_GENERIC_FORMAT)
+		if ((new_pfd.dwFlags & PFD_GENERIC_FORMAT) && !(new_pfd.dwFlags & PFD_GENERIC_ACCELERATED))
 			Con_Printf ("WARNING: Hardware acceleration not present\n");
+		else if (new_pfd.dwFlags & PFD_GENERIC_ACCELERATED)
+			Con_Printf ("OpenGL: MCD acceleration found\n");
 	}
 
 #ifdef GL_DLSYM
@@ -1917,17 +1919,17 @@ static void VID_ChangeVideoMode(int newmode)
 	classregistered = false;
 
 #ifdef GL_DLSYM
+	// reload the opengl library
 	GL_CloseLibrary();
+	Sleep (100);
+	if (!GL_OpenLibrary(gl_library))
+		Sys_Error ("Unable to load GL library %s", gl_library);
 #endif
 
 	// Register main window class and create main window
 	VID_RegisterWndClass(global_hInstance);
 	VID_SetMode(newmode, host_basepal);
-#ifdef GL_DLSYM
-	// reload the opengl library
-	if (!GL_OpenLibrary(gl_library))
-		Sys_Error ("Unable to load GL library %s", gl_library);
-#endif
+
 	// Obtain device context and set up pixel format
 	maindc = GetDC(mainwindow);
 	bSetupPixelFormat(maindc);
