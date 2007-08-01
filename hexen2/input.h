@@ -2,13 +2,14 @@
 	input.h
 	external (non-keyboard) input devices
 
-	$Id: input.h,v 1.7 2007-07-29 11:50:20 sezero Exp $
+	$Id: input.h,v 1.8 2007-08-01 09:43:58 sezero Exp $
 */
 
 #ifndef __HX2_INPUT_H
 #define __HX2_INPUT_H
 
 void IN_Init (void);
+void IN_ReInit (void);
 
 void IN_Shutdown (void);
 

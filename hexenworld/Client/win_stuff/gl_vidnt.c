@@ -1,6 +1,6 @@
 /*
 	gl_vidnt.c -- NT GL vid component
-	$Id: gl_vidnt.c,v 1.109 2007-07-29 07:58:22 sezero Exp $
+	$Id: gl_vidnt.c,v 1.110 2007-08-01 09:44:00 sezero Exp $
 */
 
 #define	__GL_FUNC_EXTERN
@@ -378,16 +378,10 @@ static qboolean VID_SetWindowedMode (int modenum)
 	width = rect.right - rect.left;
 	height = rect.bottom - rect.top;
 
-	// update the size and style of our mainwindow
-	if (modestate == MS_FULLDIB)
-	{
-		SetWindowLongPtr (mainwindow, GWL_STYLE, WindowStyle);
-		SetWindowLongPtr (mainwindow, GWL_EXSTYLE, ExWindowStyle);
-	}
-	if (! SetWindowPos(mainwindow, NULL, 0, 0, width, height, 0) )
-	{
-		return false;
-	}
+	mainwindow = CreateWindowEx (ExWindowStyle, WM_CLASSNAME, WM_WINDOWNAME, WindowStyle,
+					rect.left, rect.top, width, height, NULL, NULL, global_hInstance, NULL);
+	if (!mainwindow)
+		Sys_Error ("Couldn't create DIB window");
 
 	// center the DIB window
 	CenterWindow(mainwindow, WindowRect.right - WindowRect.left,
@@ -437,16 +431,10 @@ static qboolean VID_SetFullDIBMode (int modenum)
 	width = rect.right - rect.left;
 	height = rect.bottom - rect.top;
 
-	// update the size and style of our main window
-	if (modestate != MS_FULLDIB)
-	{
-		SetWindowLongPtr (mainwindow, GWL_STYLE, WindowStyle);
-		SetWindowLongPtr (mainwindow, GWL_EXSTYLE, ExWindowStyle);
-	}
-	if (! SetWindowPos(mainwindow, NULL, 0, 0, width, height, 0) )
-	{
-		return false;
-	}
+	mainwindow = CreateWindowEx (ExWindowStyle, WM_CLASSNAME, WM_WINDOWNAME, WindowStyle,
+					rect.left, rect.top, width, height, NULL, NULL, global_hInstance, NULL);
+	if (!mainwindow)
+		Sys_Error ("Couldn't create DIB window");
 
 	modestate = MS_FULLDIB;
 	Cvar_SetValue ("vid_config_fscr", 1);
@@ -504,6 +492,8 @@ static int VID_SetMode (int modenum, unsigned char *palette)
 
 	ShowWindow (mainwindow, SW_SHOWDEFAULT);
 	UpdateWindow (mainwindow);
+	SendMessage (mainwindow, WM_SETICON, (WPARAM)TRUE, (LPARAM)hIcon);
+	SendMessage (mainwindow, WM_SETICON, (WPARAM)FALSE, (LPARAM)hIcon);
 
 	// Because we have set the background brush for the window to NULL
 	// (to avoid flickering when re-sizing the window on the desktop),
@@ -1680,36 +1670,6 @@ static void VID_RegisterWndClass(HINSTANCE hInstance)
 	classregistered = true;
 }
 
-static void VID_InitMainWindow (HINSTANCE hInstance)
-{
-	RECT	r;
-	int	w, h;
-
-	r.top = r.left = 0;
-	/* this should be safe in all scenarios */
-	r.right = std_modes[RES_640X480].width;
-	r.bottom = std_modes[RES_640X480].height;
-
-	WindowStyle = WS_OVERLAPPED | WS_BORDER | WS_CAPTION | WS_SYSMENU | WS_MINIMIZEBOX | WS_VISIBLE;
-	ExWindowStyle = 0;
-
-	AdjustWindowRectEx(&r, WindowStyle, FALSE, 0);
-
-	w = r.right - r.left;
-	h = r.bottom - r.top;
-
-	mainwindow = CreateWindowEx (ExWindowStyle, WM_CLASSNAME, WM_WINDOWNAME, WindowStyle,
-					r.left, r.top, w, h, NULL, NULL, hInstance, NULL);
-	if (!mainwindow)
-		Sys_Error ("Couldn't create DIB window");
-
-	ShowWindow (mainwindow, SW_SHOWDEFAULT);
-	UpdateWindow (mainwindow);
-
-	SendMessage (mainwindow, WM_SETICON, (WPARAM)TRUE, (LPARAM)hIcon);
-	SendMessage (mainwindow, WM_SETICON, (WPARAM)FALSE, (LPARAM)hIcon);
-}
-
 static void VID_InitDIB (HINSTANCE hInstance)
 {
 	int		i;
@@ -1945,11 +1905,23 @@ static void VID_ChangeVideoMode(int newmode)
 	if (maindc && mainwindow)
 		ReleaseDC(mainwindow, maindc);
 	maindc = NULL;
+	// Destroy main window and unregister its class
+	if (mainwindow)
+	{
+		ShowWindow(mainwindow, SW_HIDE);
+		DestroyWindow(mainwindow);
+	}
+	if (classregistered)
+		UnregisterClass(WM_CLASSNAME, global_hInstance);
+	mainwindow = NULL;
+	classregistered = false;
 
 #ifdef GL_DLSYM
 	GL_CloseLibrary();
 #endif
 
+	// Register main window class and create main window
+	VID_RegisterWndClass(global_hInstance);
 	VID_SetMode(newmode, host_basepal);
 #ifdef GL_DLSYM
 	// reload the opengl library
@@ -1967,6 +1939,7 @@ static void VID_ChangeVideoMode(int newmode)
 	if (!wglMakeCurrent_fp(maindc, baseRC ))
 		Sys_Error("wglMakeCurrent failed");
 
+	IN_ReInit ();
 	CDAudio_Resume ();
 	MIDI_Pause (MIDI_ALWAYS_RESUME);
 
@@ -2427,9 +2400,6 @@ void	VID_Init (unsigned char *palette)
 
 	vid_initialized = true;
 
-	// Create our main window
-	VID_InitMainWindow (global_hInstance);
-
 	vid.maxwarpwidth = WARP_WIDTH;
 	vid.maxwarpheight = WARP_HEIGHT;
 	vid.colormap = host_colormap;
@@ -2525,6 +2495,7 @@ void	VID_Shutdown (void)
 		if (classregistered)
 			UnregisterClass(WM_CLASSNAME, global_hInstance);
 		mainwindow = NULL;
+		classregistered = false;
 	}
 }
 

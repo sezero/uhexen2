@@ -1,6 +1,6 @@
 /*
 	in_win.c
-	$Id: in_win.c,v 1.30 2007-07-19 11:38:08 sezero Exp $
+	$Id: in_win.c,v 1.31 2007-08-01 09:44:00 sezero Exp $
 
 	windows 95 mouse and joystick code
 
@@ -342,7 +342,7 @@ void IN_RestoreOriginalMouseState (void)
 IN_InitDInput
 ===========
 */
-qboolean IN_InitDInput (void)
+static qboolean IN_InitDInput (void)
 {
 	HRESULT		hr;
 	DIPROPDWORD	dipdw = {
@@ -430,6 +430,29 @@ qboolean IN_InitDInput (void)
 	return true;
 }
 
+static void IN_InitWinMouse (void)
+{
+	mouseparmsvalid = SystemParametersInfo (SPI_GETMOUSE, 0, originalmouseparms, 0);
+
+	if (mouseparmsvalid)
+	{
+		if ( COM_CheckParm ("-noforcemspd") )
+			newmouseparms[2] = originalmouseparms[2];
+
+		if ( COM_CheckParm ("-noforcemaccel") )
+		{
+			newmouseparms[0] = originalmouseparms[0];
+			newmouseparms[1] = originalmouseparms[1];
+		}
+
+		if ( COM_CheckParm ("-noforcemparms") )
+		{
+			newmouseparms[0] = originalmouseparms[0];
+			newmouseparms[1] = originalmouseparms[1];
+			newmouseparms[2] = originalmouseparms[2];
+		}
+	}
+}
 
 /*
 ===========
@@ -452,26 +475,7 @@ static void IN_StartupMouse (void)
 
 	if (!dinput_init)
 	{
-		mouseparmsvalid = SystemParametersInfo (SPI_GETMOUSE, 0, originalmouseparms, 0);
-
-		if (mouseparmsvalid)
-		{
-			if ( COM_CheckParm ("-noforcemspd") )
-				newmouseparms[2] = originalmouseparms[2];
-
-			if ( COM_CheckParm ("-noforcemaccel") )
-			{
-				newmouseparms[0] = originalmouseparms[0];
-				newmouseparms[1] = originalmouseparms[1];
-			}
-
-			if ( COM_CheckParm ("-noforcemparms") )
-			{
-				newmouseparms[0] = originalmouseparms[0];
-				newmouseparms[1] = originalmouseparms[1];
-				newmouseparms[2] = originalmouseparms[2];
-			}
-		}
+		IN_InitWinMouse ();
 	}
 
 // if a fullscreen video mode was set before the mouse was initialized,
@@ -540,6 +544,38 @@ void IN_Shutdown (void)
 	{
 		IDirectInput_Release(g_pdi);
 		g_pdi = NULL;
+	}
+}
+
+/*
+===========
+IN_ReInit
+===========
+*/
+void IN_ReInit (void)
+{
+	if (safemode || COM_CheckParm ("-nomouse"))
+		return;
+
+	if (g_pMouse)
+	{
+		IDirectInputDevice_Release(g_pMouse);
+		g_pMouse = NULL;
+	}
+	if (g_pdi)
+	{
+		IDirectInput_Release(g_pdi);
+		g_pdi = NULL;
+	}
+	// we only need to re-initialize direct input.
+	// if winmouse is active, nothing is necessary.
+	if (!dinput_init)
+		return;
+	dinput_init = IN_InitDInput ();
+	if (!dinput_init)
+	{
+		Con_SafePrintf ("DirectInput initialization failed\n");
+		IN_InitWinMouse ();
 	}
 }
 
