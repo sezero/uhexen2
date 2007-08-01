@@ -2,7 +2,7 @@
 	in_sdl.c
 	SDL game input code
 
-	$Id: in_sdl.c,v 1.48 2007-07-30 06:16:47 sezero Exp $
+	$Id: in_sdl.c,v 1.49 2007-08-01 10:08:03 sezero Exp $
 */
 
 #include "sdl_inc.h"
@@ -188,25 +188,22 @@ IN_Init
 */
 void IN_Init (void)
 {
-	if (!draw_reinit)
-	{
-		// mouse variables
-		Cvar_RegisterVariable (&m_filter);
+	// mouse variables
+	Cvar_RegisterVariable (&m_filter);
 #if USE_SDL_JOYSTICK
-		// joystick variables
-		Cvar_RegisterVariable (&in_joystick);
-		Cvar_RegisterVariable (&joy_forwardthreshold);
-		Cvar_RegisterVariable (&joy_sidethreshold);
-		Cvar_RegisterVariable (&joy_pitchthreshold);
-		Cvar_RegisterVariable (&joy_yawthreshold);
-		Cvar_RegisterVariable (&joy_forwardsensitivity);
-		Cvar_RegisterVariable (&joy_sidesensitivity);
-		Cvar_RegisterVariable (&joy_pitchsensitivity);
-		Cvar_RegisterVariable (&joy_yawsensitivity);
+	// joystick variables
+	Cvar_RegisterVariable (&in_joystick);
+	Cvar_RegisterVariable (&joy_forwardthreshold);
+	Cvar_RegisterVariable (&joy_sidethreshold);
+	Cvar_RegisterVariable (&joy_pitchthreshold);
+	Cvar_RegisterVariable (&joy_yawthreshold);
+	Cvar_RegisterVariable (&joy_forwardsensitivity);
+	Cvar_RegisterVariable (&joy_sidesensitivity);
+	Cvar_RegisterVariable (&joy_pitchsensitivity);
+	Cvar_RegisterVariable (&joy_yawsensitivity);
 #endif	/* USE_SDL_JOYSTICK */
 
-		Cmd_AddCommand ("force_centerview", Force_CenterView_f);
-	}
+	Cmd_AddCommand ("force_centerview", Force_CenterView_f);
 
 	IN_StartupMouse ();
 #if USE_SDL_JOYSTICK
@@ -228,6 +225,20 @@ void IN_Shutdown (void)
 	IN_DeactivateMouse ();
 	IN_ShowMouse ();
 	mouseinitialized = false;
+}
+
+/*
+===========
+IN_ReInit
+===========
+*/
+void IN_ReInit (void)
+{
+
+	IN_StartupMouse ();
+
+	SDL_EnableUNICODE (1);	/* needed for input in console */
+	SDL_EnableKeyRepeat (SDL_DEFAULT_REPEAT_DELAY, SDL_DEFAULT_REPEAT_INTERVAL*2);
 }
 
 
