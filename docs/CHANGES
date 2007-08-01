@@ -3,6 +3,31 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2007-08-01 (CVS):
+    * opengl, clean-up of glBlendFunc calls: our default blendfunc is
+      GL_SRC_ALPHA/GL_ONE_MINUS_SRC_ALPHA, no need to specify unless
+      we use something else. added missing glBlendFunc restore calls
+      in R_DrawAliasModel (gl_rmain.c) for the EF_SPECIAL_TRANS case,
+      and in R_BlendLightmaps (gl_rsurf.c) for the GL_RGBA case.
+    * fixed particle translucency in C-only software renderer.
+    * trivial clean-ups (d_polyse.c).
+    * more extern stuff. (btw, why is r_alias.c referencing transTable,
+      and not mainTransTable ??)
+    * d_scan.c, d_polyse.c, tidy-ups (trivial).
+    * d_edge.c, d_surf.c, r_misc.c, more tidy-ups (trivial).
+    * switched back to destroying and re-creation of the main window during
+      resolution change for the windows opengl version: otherwise we may run
+      into failures (at least it happens on my windows xp with an ati card).
+      in order to overcome directinput loss, added IN_ReInit procedure which
+      re-initializes directinput only.
+    * added IN_ReInit to the SDL version for consistancy.
+    * when touching entities, it is possible for the next linked entity to be
+      freed, and thus unlinked. when this happens, make sure the pointer to the
+      next entity to be touched gets updated appropriatly. from the quakeforge
+      tree. this was a known quake bug on e2m2 with easy skill. see threads at:
+      http://www.quakesrc.org/forums/viewtopic.php?t=3664
+      http://www.quakesrc.org/forums/viewtopic.php?t=6633
+
 2007-07-29 (CVS):
     * added comment labels for texture modes in GL_Upload8.
     * updated the list of known bugs: added more info to the amd64 debug
