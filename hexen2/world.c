@@ -2,7 +2,7 @@
 	world.c
 	world query functions
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/world.c,v 1.21 2007-06-30 11:19:43 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/world.c,v 1.22 2007-08-01 13:51:20 sezero Exp $
 
 	entities never clip against themselves, or their owner
 	line of sight checks trace->crosscontent, but bullets don't
@@ -268,11 +268,18 @@ SV_UnlinkEdict
 
 ===============
 */
+static link_t	**sv_link_next;
+static link_t	**sv_link_prev;
+
 void SV_UnlinkEdict (edict_t *ent)
 {
 	if (!ent->area.prev)
 		return;		// not linked in anywhere
 	RemoveLink (&ent->area);
+	if (sv_link_next && *sv_link_next == &ent->area)
+		*sv_link_next = ent->area.next;
+	if (sv_link_prev && *sv_link_prev == &ent->area)
+		*sv_link_prev = ent->area.prev;
 	ent->area.prev = ent->area.next = NULL;
 }
 
@@ -289,12 +296,16 @@ static void SV_TouchLinks (edict_t *ent, areanode_t *node)
 	int			old_self, old_other;
 
 	// touch linked edicts
+	sv_link_next = &lnext;
 	for (l = node->trigger_edicts.next ; l != &node->trigger_edicts ; l = lnext)
 	{
 		if (!l)
-		{	//my area got removed out from under me!
+		{
+		// my area got removed out from under me!
+			Con_Printf ("%s: encountered NULL link!\n", __thisfunc__);
 			break;
 		}
+
 		lnext = l->next;
 		touch = EDICT_FROM_AREA(l);
 		if (touch == ent)
@@ -335,6 +346,8 @@ static void SV_TouchLinks (edict_t *ent, areanode_t *node)
 		pr_global_struct->self = old_self;
 		pr_global_struct->other = old_other;
 	}
+
+	sv_link_next = NULL;
 
 	// recurse down both sides
 	if (node->axis == -1)
