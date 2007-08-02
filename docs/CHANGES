@@ -27,6 +27,7 @@ Development Progress	:
       tree. this was a known quake bug on e2m2 with easy skill. see threads at:
       http://www.quakesrc.org/forums/viewtopic.php?t=3664
       http://www.quakesrc.org/forums/viewtopic.php?t=6633
+    * dealt with some minor details in windows opengl version.
 
 2007-07-29 (CVS):
     * added comment labels for texture modes in GL_Upload8.
