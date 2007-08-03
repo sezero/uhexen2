@@ -2,7 +2,7 @@
 	sbar.c
 	Hexen II status bar
 
-	$Id: sbar.c,v 1.37 2007-07-29 07:58:21 sezero Exp $
+	$Id: sbar.c,v 1.38 2007-08-03 17:06:30 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -10,7 +10,7 @@
 
 // MACROS ------------------------------------------------------------------
 
-#define STAT_MINUS 10			// num frame for '-' stats digit
+#define	STAT_MINUS			10	/* num frame for '-' stats digit */
 
 #define BAR_TOP_HEIGHT			46.0
 #define BAR_BOTTOM_HEIGHT		98.0
@@ -23,9 +23,15 @@
 #define RING_REGENERATION		4
 #define RING_TURNING			8
 
+/* Max number of inventory icons to display at once */
+#define	INV_MAX_ICON			6
+
+/* the number of cnt_<artifact_name> members in the entvars_t struct:
+   from cnt_torch to cnt_invincibility: 15 total (see in progdefs.h). */
 #define	INV_MAX_CNT			15
 
-#define INV_MAX_ICON			6	// Max number of inventory icons to display at once
+/* artifact counts are relative to the cnt_torch in entvars_t struct: */
+#define Inv_GetCount(artifact_num)	(int)(&cl.v.cnt_torch)[(artifact_num)]
 
 // TYPES -------------------------------------------------------------------
 
@@ -39,7 +45,9 @@ void Sbar_DeathmatchOverlay(void);
 
 // PRIVATE FUNCTION PROTOTYPES ---------------------------------------------
 
-//static void Sbar_NormalOverlay(void);
+#if 0	/* not used in hexenworld */
+static void Sbar_PuzzlePieceOverlay(void);
+#endif
 static void Sbar_SmallDeathmatchOverlay(void);
 
 static void Sbar_DrawPic(int x, int y, qpic_t *pic);
@@ -304,7 +312,7 @@ void Sbar_Draw(void)
 //rjr			if (cl.gametype == GAME_DEATHMATCH)
 				Sbar_DeathmatchOverlay();
 //rjr			else
-//rjr				Sbar_NormalOverlay();
+//rjr				Sbar_PuzzlePieceOverlay();
 		}
 		else if (DMMode.integer)
 		{
@@ -452,7 +460,7 @@ void Sbar_Draw(void)
 //rjr		if (cl.gametype == GAME_DEATHMATCH)
 			Sbar_DeathmatchOverlay();
 //rjr		else
-//rjr			Sbar_NormalOverlay();
+//rjr			Sbar_PuzzlePieceOverlay();
 	}
 	else if (DMMode.integer)
 	{
@@ -590,16 +598,18 @@ static void DrawLowerBar(void)
 	Sbar_DrawPic(0, 46, Draw_CachePic("gfx/btmbar1.lmp"));
 	Sbar_DrawPic(160, 46, Draw_CachePic("gfx/btmbar2.lmp"));
 
+	/*
 	// Game time
-	//minutes = cl.time / 60;
-	//seconds = cl.time - 60*minutes;
-	//tens = seconds / 10;
-	//units = seconds - 10*tens;
-	//sprintf(tempStr, "Time :%3i:%i%i", minutes, tens, units);
-	//Sbar_DrawSmallString(116, 114, tempStr);
+	minutes = cl.time / 60;
+	seconds = cl.time - 60*minutes;
+	tens = seconds / 10;
+	units = seconds - 10*tens;
+	sprintf(tempStr, "Time :%3i:%i%i", minutes, tens, units);
+	Sbar_DrawSmallString(116, 114, tempStr);
 
 	// Map name
-	//Sbar_DrawSmallString(10, 114, cl.levelname);
+	Sbar_DrawSmallString(10, 114, cl.levelname);
+	*/
 
 	// Stats
 	Sbar_DrawSmallString(11, 48, PlayerClassNames[playerClass-1]);
@@ -892,7 +902,7 @@ static void Sbar_SortFrags (qboolean includespec)
 	}
 }
 
-#if 0	// unused stuff
+#if 0	/* unused stuff */
 static int Sbar_ColorForMap (int m)
 {
 	return m < 128 ? m + 8 : m + 8;
@@ -975,7 +985,7 @@ void Sbar_IntermissionNumber (int x, int y, int num, int digits, int color)
 		ptr++;
 	}
 }
-#endif	// end of unused stuff
+#endif	/* end of unused stuff */
 
 static void FindColor (int slot, int *color1, int *color2)
 {
@@ -1211,8 +1221,14 @@ void Sbar_DeathmatchOverlay(void)
 	}
 }
 
-#if 0
-static void FindName(const char *which, char *name)
+//==========================================================================
+//
+// Sbar_PuzzlePieceOverlay
+//
+//==========================================================================
+
+#if 0	/* not used in hexenworld */
+static void FindPuzzlePieceName(const char *which, char *name)
 {
 	int		j;
 
@@ -1232,12 +1248,7 @@ static void FindName(const char *which, char *name)
 	}
 }
 
-//==========================================================================
-//
-// Sbar_NormalOverlay
-//
-//==========================================================================
-static void Sbar_NormalOverlay(void)
+static void Sbar_PuzzlePieceOverlay(void)
 {
 	int		i, y, piece;
 	char		Name[40];
@@ -1257,7 +1268,7 @@ static void Sbar_NormalOverlay(void)
 		if (piece == 4)
 			y = 40;
 
-		FindName(cl.puzzle_pieces[i],Name);
+		FindPuzzlePieceName(cl.puzzle_pieces[i], Name);
 
 		if (piece < 4)
 		{
@@ -1626,9 +1637,10 @@ static void DrawBarArtifactIcon(int x, int y, int artifact)
 {
 	int	count;
 
+	if (artifact < 0 || artifact >= INV_MAX_CNT)
+		return;
 	Sbar_DrawTransPic(x, y, Draw_CachePic(va("gfx/arti%02d.lmp", artifact)));
-//	if ((count = (int)(&cl.v.cnt_torch)[artifact]) > 1)
-	if ((count = (int)(&cl.v.cnt_torch)[artifact]) > 0)
+	if ((count = Inv_GetCount(artifact)) > 0)
 	{
 		DrawBarArtifactNumber(x+20, y+21, count);
 	}
@@ -1660,8 +1672,6 @@ static void DrawArtifactInventory(void)
 		return;
 	}
 
-	//SB_InvChanged();
-
 	if (BarHeight < 0)
 	{
 		y = BarHeight-34;
@@ -1671,27 +1681,23 @@ static void DrawArtifactInventory(void)
 		y = -37;
 	}
 
-	// Here, InvLeft_f and InvRight_f have new code to scroll the inventory as needed,
-	// as I hated getting to the ~wrong~ end of the inventory bar - S.A.
-
+	// InvLeft_f and InvRight_f scrolls the inventory as needed - S.A.
 	for (i = 0, x = 64; i < INV_MAX_ICON; i++, x += 33)
 	{
-		if (cl.inv_count == 0 || i >= cl.inv_count)
+		if (i >= cl.inv_count)
 			break;
 
-		if ((cl.inv_startpos + i ) % cl.inv_count == cl.inv_selected)
+		if ((cl.inv_startpos + i) % cl.inv_count == cl.inv_selected)
 		{ // Highlight icon
 			Sbar_DrawTransPic(x+9, y-12, Draw_CachePic("gfx/artisel.lmp"));
 		}
 		DrawBarArtifactIcon(x, y, cl.inv_order[(cl.inv_startpos + i) % cl.inv_count]);
 	}
 
-	//Inv_DrawArrows (x, y);
-
-/*	// Left arrow showing there are icons to the left
+/*	Inv_DrawArrows (x, y);
+	// Left arrow showing there are icons to the left
 	if (cl.inv_startpos)
 		Draw_Fill ( x , y - 5, 3, 1, 30);
-
 	// Right arrow showing there are icons to the right
 	if (cl.inv_startpos + INV_MAX_ICON < cl.inv_count)
 		Draw_Fill ( x + 200, y - 5 , 3, 1, 30);
@@ -1818,7 +1824,7 @@ static void InvLeft_f(void)
 		}
 		else
 		{
-			cl.inv_selected = (cl.inv_selected - 1 + cl.inv_count )% cl.inv_count;
+			cl.inv_selected = (cl.inv_selected - 1 + cl.inv_count) % cl.inv_count;
 		}
 
 		scr_fullupdate = 0;
@@ -1856,7 +1862,7 @@ static void InvRight_f(void)
 
 		// scroll inventory icons if we're at the right most already
 		if (cl.inv_selected == right_icon)
-			cl.inv_startpos = (cl.inv_startpos + 1) % cl.inv_count ;
+			cl.inv_startpos = (cl.inv_startpos + 1) % cl.inv_count;
 
 		cl.inv_selected = (cl.inv_selected + 1) % cl.inv_count;
 
@@ -1947,16 +1953,15 @@ void SB_InvChanged(void)
 	qboolean	examined[INV_MAX_CNT];
 	qboolean	ForceUpdate = false;
 
-	memset(examined,0,sizeof(examined));	// examined[x] = false
+	memset (examined, 0, sizeof(examined));
 
-	if (cl.inv_selected >= 0 && (&cl.v.cnt_torch)[cl.inv_order[cl.inv_selected]] == 0)
+	if (cl.inv_selected >= 0 && Inv_GetCount(cl.inv_order[cl.inv_selected]) == 0)
 		ForceUpdate = true;
 
 	// removed items we no longer have from the order
 	for (counter = position = 0; counter < cl.inv_count; counter++)
 	{
-		//if (Inv_GetCount(cl.inv_order[counter]) >= 0)
-		if ((&cl.v.cnt_torch)[cl.inv_order[counter]] > 0)
+		if (Inv_GetCount(cl.inv_order[counter]) > 0)
 		{
 			cl.inv_order[position] = cl.inv_order[counter];
 			examined[cl.inv_order[position]] = true;
@@ -1970,8 +1975,7 @@ void SB_InvChanged(void)
 	{
 		if (!examined[counter])
 		{
-			//if (Inv_GetCount(counter) > 0)
-			if ((&cl.v.cnt_torch)[counter] > 0)
+			if (Inv_GetCount(counter) > 0)
 			{
 				cl.inv_order[position] = counter;
 				position++;
