@@ -359,74 +359,78 @@ http://www.planetquake.com/console/
 variable	valid values
 --------	------------
 
-_snd_mixahead	0.1 - 0.9 : 0.1 = less latency,
-			    0.9 = better performance
+_snd_mixahead	0.1-0.9	: 0.1 = less latency,
+			  0.9 = better performance
 
-gl_multitexture	0|1	  : Disable/enable multitexturing on the fly.
-			    0 is default. Faster performance if the
-			    hardware supports it. Also adjustable from
-			    the menu.
+gl_multitexture	0 or 1	: Disable/enable multitexturing on the fly.
+			  0 is default. Faster performance if the
+			  hardware supports it. Also adjustable from
+			  the menu.
 
-gl_texturemode	gl_nearest		(least quality, best speed)
-		gl_nearest_mipmap_nearest :	    ^
-		gl_linear_mipmap_nearest  :
-		gl_linear_mipmap_linear   :	    v
-					(best quality, least speed)
-			    Also adjustable from the menu.
+gl_texturemode		: GL_NEAREST	(Point sample, least quality)
+			  GL_LINEAR	(Bilinear, no mipmaps)
+			  GL_NEAREST_MIPMAP_NEAREST
+			  GL_NEAREST_MIPMAP_LINEAR
+			  GL_LINEAR_MIPMAP_NEAREST (Bilinear: default)
+			  GL_LINEAR_MIPMAP_LINEAR (Trilinear: best, slower)
+			  Also adjustable from the menu. Bilinear is
+			  recommended. If you don't have an ancient
+			  graphics card, you should have no trouble
+			  running with the trilinear filtering.
 
-gl_constretch	0|1	  : Disable/enable console background eye candy.
+gl_constretch	0 or 1	: Disable/enable console background eye candy.
 
-gl_ztrick	0|1	  : 3% performance tweak (some cards unsupported)
+gl_ztrick	0 or 1	: 3% performance tweak (some cards unsupported)
 
-gl_picmip	0|1|2	  : 0 is default. 1 and 2 scale down the textures
-			    (low quality), but the help screens and some
-			    small fonts become unreadable and ugly.
+gl_picmip	0, 1, 2	: 0 is default. 1 and 2 scale down the textures
+			  (low quality), but the help screens and some
+			  small fonts become unreadable and ugly. Keep
+			  it as 0.
 
-gl_spritemip		  : similar to gl_picmip, but for sprites.
-
-gl_playermip		  : similar to gl_picmip, but for player skins.
+gl_playermip		: similar to gl_picmip, but for player skins.
 
 
 3.2.1 Software renderer options
 -------------------------------
 
-sbtrans		0|1|2	  : HUD (status bar) transparency. 0: None (solid),
-			    1: slightly transparent, 2: very transparent.
-			    Default: 0.
+sbtrans		0, 1, 2	: HUD (status bar) transparency. 0: none (solid),
+			  1: slightly transparent, 2: very transparent.
+			  0 is default.
 
-dmtrans		0|1|2	  : Same as the sbtrans above, but used for the
-			    small deathmatch overlay in multiplayer.
+dmtrans		0, 1, 2	: Same as the sbtrans above, but used for the
+			  small deathmatch overlay in multiplayer.
 
 
 3.2.2 Other OpenGL options
 -------------------------------
 
-gl_coloredlight  0|1|2	  : Static colored lights. 0 is the white light that
-			    hexen2 traditionally uses. Mode 1 is colored
-			    lighting. Mode 2 is experimental which combines
-			    white and colored lighting (if available), and
-			    sometimes can give better results then just
-			    colored lighting, and is also slightly brighter.
-			    0 is the default. Can also be adjusted from the
-			    menu system. Changing this option requires the
-			    level to be reloaded. Colored lighting requires
-			    RGBA lightmaps which is also adjustable from the
-			    menu system.
+gl_coloredlight	 0, 1, 2: Static colored lights. 0 is the white light that
+			  hexen2 traditionally uses. Mode 1 is colored
+			  lighting. Mode 2 is experimental which combines
+			  white and colored lighting (if available), and
+			  sometimes can give better results then just
+			  colored lighting, and is also slightly brighter.
+			  0 is the default. Can also be adjusted from the
+			  menu system. Changing this option requires the
+			  level to be reloaded. Colored lighting requires
+			  RGBA lightmaps which is also adjustable from the
+			  menu system.
 
-gl_colored_dynamic_lights  0|1 :
-			    Disable/enable colored dynamic lights. 0 is the
-			    default. Also adjustable from the menu.
+gl_colored_dynamic_lights 0 or 1:
+			  Disable/enable colored dynamic lights. 0 is the
+			  default. Also adjustable from the menu.
 
-gl_extra_dynamic_lights    0|1 :
-			    Disable/enable extra dynamic lights. 0 is the
-			    default. Also adjustable from the menu.
+gl_extra_dynamic_lights   0 or 1:
+			  Disable/enable extra dynamic lights. 0 is the
+			  default. Also adjustable from the menu.
 
-gl_stencilshadow  0|1	  : Disable/enable stencil buffered shadows on the
-			    fly. Default is 0.  Adjustable from the menu.
+gl_stencilshadow  0 or 1: Disable/enable stencil buffered shadows on the
+			  fly. Default is 0.  Adjustable from the menu.
 
-gl_purge_maptex	0|1	  : Purge opengl textures upon map change. Textures
-			    won't keep accumulating from map to map. Default
-			    is 1.  Adjustable from the menu.
+gl_purge_maptex	  0 or 1: Purge opengl textures upon map change. Textures
+			  won't keep accumulating from map to map but the
+			  levels will load slower. Default is 1. Adjustable
+			  from the menu.
 
 
 3.2.3 Nvidia tweaks
