@@ -2,7 +2,7 @@
 	gl_draw.c
 	this is the only file outside the refresh that touches the vid buffer
 
-	$Id: gl_draw.c,v 1.104 2007-07-30 19:55:42 sezero Exp $
+	$Id: gl_draw.c,v 1.105 2007-08-03 09:22:29 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -304,22 +304,16 @@ qpic_t *Draw_CachePicNoTrans (const char *path)
 	return &pic->pic;
 }
 
-typedef struct
+
+glmode_t gl_texmodes[NUM_GL_FILTERS] =
 {
-	char	*name;
-	int	minimize, maximize;
-} glmode_t;
-
-glmode_t modes[] = {
-	{"GL_NEAREST", GL_NEAREST, GL_NEAREST},
-	{"GL_LINEAR", GL_LINEAR, GL_LINEAR},
-	{"GL_NEAREST_MIPMAP_NEAREST", GL_NEAREST_MIPMAP_NEAREST, GL_NEAREST},
-	{"GL_LINEAR_MIPMAP_NEAREST", GL_LINEAR_MIPMAP_NEAREST, GL_LINEAR},
-	{"GL_NEAREST_MIPMAP_LINEAR", GL_NEAREST_MIPMAP_LINEAR, GL_NEAREST},
-	{"GL_LINEAR_MIPMAP_LINEAR", GL_LINEAR_MIPMAP_LINEAR, GL_LINEAR}
+	{ "GL_NEAREST",			GL_NEAREST,			GL_NEAREST },	/* point sampled	*/
+	{ "GL_LINEAR",			GL_LINEAR,			GL_LINEAR  },	/* Bilinear, no mipmaps	*/
+	{ "GL_NEAREST_MIPMAP_NEAREST",	GL_NEAREST_MIPMAP_NEAREST,	GL_NEAREST },	/* nearest, 1 mipmap	*/
+	{ "GL_NEAREST_MIPMAP_LINEAR",	GL_NEAREST_MIPMAP_LINEAR,	GL_NEAREST },	/* nearest, 2 mipmaps	*/
+	{ "GL_LINEAR_MIPMAP_NEAREST",	GL_LINEAR_MIPMAP_NEAREST,	GL_LINEAR  },	/* Bilinear, 1 mipmap	*/
+	{ "GL_LINEAR_MIPMAP_LINEAR",	GL_LINEAR_MIPMAP_LINEAR,	GL_LINEAR  }	/* Trilinear: 2 mipmaps	*/
 };
-
-#define MAX_GL_FILTERS	(sizeof(modes)/sizeof(modes[0]))
 
 /*
 ===============
@@ -333,11 +327,11 @@ static void Draw_TextureMode_f (void)
 
 	if (Cmd_Argc() == 1)
 	{
-		for (i = 0; i < MAX_GL_FILTERS; i++)
+		for (i = 0; i < NUM_GL_FILTERS; i++)
 		{
-			if (gl_filter_min == modes[i].minimize)
+			if (gl_filter_min == gl_texmodes[i].minimize)
 			{
-				Con_Printf ("%s\n", modes[i].name);
+				Con_Printf ("%s\n", gl_texmodes[i].name);
 				return;
 			}
 		}
@@ -345,19 +339,19 @@ static void Draw_TextureMode_f (void)
 		return;
 	}
 
-	for (i = 0; i < MAX_GL_FILTERS; i++)
+	for (i = 0; i < NUM_GL_FILTERS; i++)
 	{
-		if (!Q_strcasecmp (modes[i].name, Cmd_Argv(1) ) )
+		if (!Q_strcasecmp (gl_texmodes[i].name, Cmd_Argv(1) ) )
 			break;
 	}
-	if (i == MAX_GL_FILTERS)
+	if (i == NUM_GL_FILTERS)
 	{
 		Con_Printf ("bad filter name\n");
 		return;
 	}
 
-	gl_filter_min = modes[i].minimize;
-	gl_filter_max = modes[i].maximize;
+	gl_filter_min = gl_texmodes[i].minimize;
+	gl_filter_max = gl_texmodes[i].maximize;
 
 	// change all the existing mipmap texture objects
 	for (i = 0, glt = gltextures; i < numgltextures; i++, glt++)

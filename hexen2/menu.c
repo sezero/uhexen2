@@ -1,7 +1,7 @@
 /*
 	menu.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/menu.c,v 1.95 2007-07-29 07:58:08 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/menu.c,v 1.96 2007-08-03 09:22:28 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -2213,15 +2213,6 @@ static const struct
 
 #define	MAX_LMFORMATS	(sizeof(lm_formats) / sizeof(lm_formats[0]))
 
-typedef struct
-{
-	char *name;
-	int	minimize, maximize;
-} glmode_t;
-
-// this must match modes[] in gl_draw.c
-#define MAX_GL_FILTERS	6
-extern glmode_t modes[];
 static int	tex_mode;
 static int	lm_format;
 static int	opengl_cursor;
@@ -2296,12 +2287,12 @@ static void M_OpenGL_Draw (void)
 	M_DrawCheckbox (232, 90 + 8*OGL_COLOREDEXTRA, gl_extra_dynamic_lights.integer);
 
 	M_Print (32 + (5 * 8), 90 + 8*OGL_TEXFILTER,	"Texture filtering");
-	for (i = 0; i < MAX_GL_FILTERS; i++)
+	for (i = 0; i < NUM_GL_FILTERS; i++)
 	{
-		if (modes[i].minimize == gl_filter_min)
+		if (gl_texmodes[i].minimize == gl_filter_min)
 		{
 			tex_mode = i;
-			M_Print (232, 90 + 8*OGL_TEXFILTER, modes[i].name);
+			M_Print (232, 90 + 8*OGL_TEXFILTER, gl_texmodes[i].name);
 			break;
 		}
 	}
@@ -2468,15 +2459,15 @@ static void M_OpenGL_Key (int k)
 				break;
 			case K_RIGHTARROW:
 				tex_mode++;
-				if (tex_mode >= MAX_GL_FILTERS)
-					tex_mode = MAX_GL_FILTERS-1;
+				if (tex_mode >= NUM_GL_FILTERS)
+					tex_mode = NUM_GL_FILTERS-1;
 				break;
 			default:
 				return;
 			}
-			if (modes[tex_mode].minimize != gl_filter_min)
+			if (gl_texmodes[tex_mode].minimize != gl_filter_min)
 			{
-				Cbuf_AddText(va("gl_texturemode %s\n",modes[tex_mode].name));
+				Cbuf_AddText(va("gl_texturemode %s\n", gl_texmodes[tex_mode].name));
 				Cbuf_Execute();
 			}
 			break;

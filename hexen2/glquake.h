@@ -2,7 +2,7 @@
 	glquake.h
 	common glquake header
 
-	$Id: glquake.h,v 1.71 2007-07-29 07:58:08 sezero Exp $
+	$Id: glquake.h,v 1.72 2007-08-03 09:22:28 sezero Exp $
 */
 
 
@@ -23,6 +23,9 @@
 
 #define	gl_solid_format		3
 #define	gl_alpha_format		4
+
+/* # of supported texture filter modes[] (gl_draw.c) */
+#define	NUM_GL_FILTERS		6
 
 /* defs for palettized textures	*/
 #define	INVERSE_PAL_R_BITS	6
@@ -71,6 +74,13 @@ typedef struct
 	unsigned long	hash;
 } gltexture_t;
 
+/* texture filters */
+typedef struct
+{
+	char *name;
+	int	minimize, maximize;
+} glmode_t;
+
 /* particle enums and types: note that hexen2 and
    hexenworld versions of these are different!! */
 #include "particle.h"
@@ -107,6 +117,8 @@ extern	int		gl_filter_min;
 extern	int		gl_filter_max;
 extern	float		gldepthmin, gldepthmax;
 extern	int		glx, gly, glwidth, glheight;
+
+extern	glmode_t	gl_texmodes[NUM_GL_FILTERS];
 
 /* hardware-caps related globals */
 extern	GLint		gl_max_size;
