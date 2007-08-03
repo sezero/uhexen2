@@ -2,7 +2,7 @@
 	quakedef.h
 	common definitions for client and server
 
-	$Id: quakedef.h,v 1.44 2007-07-22 08:21:46 sezero Exp $
+	$Id: quakedef.h,v 1.45 2007-08-03 17:36:03 sezero Exp $
 */
 
 #ifndef __QUAKEDEFS_H
@@ -96,6 +96,8 @@
 
 
 #define	MAX_INVENTORY		15	// Max inventory array size
+/* the number of cnt_<artifact_name> members in the entvars_t struct:
+   from cnt_torch to cnt_invincibility: 15 total (see in progdefs.h). */
 
 
 #define	SAVEGAME_VERSION	5

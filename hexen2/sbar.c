@@ -2,7 +2,7 @@
 	sbar.c
 	Hexen II status bar
 
-	$Id: sbar.c,v 1.41 2007-08-03 17:06:28 sezero Exp $
+	$Id: sbar.c,v 1.42 2007-08-03 17:36:02 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -25,10 +25,6 @@
 
 /* Max number of inventory icons to display at once */
 #define	INV_MAX_ICON			6
-
-/* the number of cnt_<artifact_name> members in the entvars_t struct:
-   from cnt_torch to cnt_invincibility: 15 total (see in progdefs.h). */
-#define	INV_MAX_CNT			15
 
 /* artifact counts are relative to the cnt_torch in entvars_t struct: */
 #define Inv_GetCount(artifact_num)	(int)(&cl.v.cnt_torch)[(artifact_num)]
@@ -1311,7 +1307,7 @@ static void DrawBarArtifactIcon(int x, int y, int artifact)
 {
 	int	count;
 
-	if (artifact < 0 || artifact >= INV_MAX_CNT)
+	if (artifact < 0 || artifact >= MAX_INVENTORY)
 		return;
 	Sbar_DrawTransPic(x, y, Draw_CachePic(va("gfx/arti%02d.lmp", artifact)));
 	if ((count = Inv_GetCount(artifact)) > 0)
@@ -1577,7 +1573,7 @@ static void ToggleDM_f(void)
 void SB_InvChanged(void)
 {
 	int		counter, position;
-	qboolean	examined[INV_MAX_CNT];
+	qboolean	examined[MAX_INVENTORY];
 	qboolean	ForceUpdate = false;
 
 	memset (examined, 0, sizeof(examined));
@@ -1598,7 +1594,7 @@ void SB_InvChanged(void)
 	}
 
 	// add in the new items
-	for (counter = 0; counter < INV_MAX_CNT; counter++)
+	for (counter = 0; counter < MAX_INVENTORY; counter++)
 	{
 		if (!examined[counter])
 		{
