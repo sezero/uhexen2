@@ -2,7 +2,7 @@
 	d_iface.h
 	interface header file for rasterization driver modules
 
-	$Id: d_iface.h,v 1.10 2007-07-28 12:28:15 sezero Exp $
+	$Id: d_iface.h,v 1.11 2007-08-06 09:16:43 sezero Exp $
 */
 
 #ifndef __D_IFACE_H
@@ -123,11 +123,6 @@ extern void D_PolysetDrawT (void);
 extern void D_PolysetDrawT2 (void);
 extern void D_PolysetDrawT3 (void);
 extern void D_PolysetDrawT5 (void);
-extern void D_PolysetDrawFinalVerts (finalvert_t *p1, finalvert_t *p2, finalvert_t *p3);
-extern void D_PolysetDrawFinalVertsT (finalvert_t *p1, finalvert_t *p2, finalvert_t *p3);
-extern void D_PolysetDrawFinalVertsT2 (finalvert_t *p1, finalvert_t *p2, finalvert_t *p3);
-extern void D_PolysetDrawFinalVertsT3 (finalvert_t *p1, finalvert_t *p2, finalvert_t *p3);
-extern void D_PolysetDrawFinalVertsT5 (finalvert_t *p1, finalvert_t *p2, finalvert_t *p3);
 extern void D_DrawNonSubdiv (void);
 extern void D_PolysetCalcGradients (int skinwidth);
 extern void D_PolysetCalcGradientsT (int skinwidth);
@@ -148,8 +143,13 @@ extern void D_PolysetDrawT (void);
 extern void D_PolysetDrawT2 (void);
 extern void D_PolysetDrawT3 (void);
 extern void D_PolysetDrawT5 (void);
-extern void D_PolysetDrawFinalVerts (finalvert_t *fvert, int num_verts);	// FIXME: see x86 version above!
 #endif
+
+extern void D_PolysetDrawFinalVerts (finalvert_t *p1, finalvert_t *p2, finalvert_t *p3);
+extern void D_PolysetDrawFinalVertsT (finalvert_t *p1, finalvert_t *p2, finalvert_t *p3);
+extern void D_PolysetDrawFinalVertsT2 (finalvert_t *p1, finalvert_t *p2, finalvert_t *p3);
+extern void D_PolysetDrawFinalVertsT3 (finalvert_t *p1, finalvert_t *p2, finalvert_t *p3);
+extern void D_PolysetDrawFinalVertsT5 (finalvert_t *p1, finalvert_t *p2, finalvert_t *p3);
 
 void D_BeginDirectRect (int x, int y, byte *pbitmap, int width, int height);
 void D_DisableBackBufferAccess (void);

@@ -2,7 +2,7 @@
 	r_alias.c
 	routines for setting up to draw alias models
 
-	$Id: r_alias.c,v 1.16 2007-07-31 11:09:44 sezero Exp $
+	$Id: r_alias.c,v 1.17 2007-08-06 09:16:35 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -666,22 +666,6 @@ void R_AliasPrepareUnclippedPoints (void)
 
 	R_AliasTransformAndProjectFinalVerts (fv, pstverts);
 
-#if 0
-	if (r_affinetridesc.drawtype)
-	{
-		if ((currententity->model->flags & EF_SPECIAL_TRANS))
-			D_PolysetDrawFinalVertsT5 (fv, r_anumverts);
-		else if (currententity->drawflags & DRF_TRANSLUCENT)
-			D_PolysetDrawFinalVertsT (fv, r_anumverts);
-		else if ((currententity->model->flags & EF_TRANSPARENT))
-			D_PolysetDrawFinalVertsT2 (fv, r_anumverts);
-		else if ((currententity->model->flags & EF_HOLEY))
-			D_PolysetDrawFinalVertsT3 (fv, r_anumverts);
-		else
-			D_PolysetDrawFinalVerts (fv, r_anumverts);
-	}
-#endif
-
 	r_affinetridesc.pfinalverts = pfinalverts;
 	r_affinetridesc.ptriangles = (mtriangle_t *)
 					((byte *)paliashdr + paliashdr->triangles);
@@ -715,47 +699,27 @@ void R_AliasPrepareUnclippedPoints (void)
 		{
 			if ((currententity->model->flags & EF_SPECIAL_TRANS))
 			{
-#if	id386
 				D_PolysetDrawFinalVertsT5 (pfv[0],pfv[1],pfv[2]);
-#else	/* FIXME !!! */
-			//	D_PolysetDrawFinalVerts (fv, r_anumverts);
-#endif
 				D_PolysetDrawT5 ();
 			}
 			else if (currententity->drawflags & DRF_TRANSLUCENT)
 			{
-#if	id386
 				D_PolysetDrawFinalVertsT (pfv[0],pfv[1],pfv[2]);
-#else	/* FIXME !!! */
-			//	D_PolysetDrawFinalVerts (fv, r_anumverts);
-#endif
 				D_PolysetDrawT ();
 			}
 			else if ((currententity->model->flags & EF_TRANSPARENT))
 			{
-#if	id386
 				D_PolysetDrawFinalVertsT2 (pfv[0],pfv[1],pfv[2]);
-#else	/* FIXME !!! */
-			//	D_PolysetDrawFinalVerts (fv, r_anumverts);
-#endif
 				D_PolysetDrawT2 ();
 			}
 			else if ((currententity->model->flags & EF_HOLEY))
 			{
-#if	id386
 				D_PolysetDrawFinalVertsT3 (pfv[0],pfv[1],pfv[2]);
-#else	/* FIXME !!! */
-			//	D_PolysetDrawFinalVerts (fv, r_anumverts);
-#endif
 				D_PolysetDrawT3 ();
 			}
 			else
 			{
-#if	id386
 				D_PolysetDrawFinalVerts (pfv[0],pfv[1],pfv[2]);
-#else	/* FIXME !!! */
-			//	D_PolysetDrawFinalVerts (fv, r_anumverts);
-#endif
 				D_PolysetDraw ();
 			}
 		}

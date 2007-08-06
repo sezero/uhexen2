@@ -3,7 +3,7 @@
 	routines for drawing sets of polygons sharing the same
 	texture (used for Alias models)
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/d_polyse.c,v 1.14 2007-07-31 19:40:26 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/d_polyse.c,v 1.15 2007-08-06 09:16:43 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -123,31 +123,187 @@ extern void D_PolysetDrawSpans8T5 (spanpackage_t *pspanpackage);
 D_PolysetDrawFinalVerts
 ================
 */
-void D_PolysetDrawFinalVerts (finalvert_t *fvert, int num_verts)
+static void do_PolysetDrawFinalVerts (finalvert_t *pv)
 {
-	int		i, z;
+	int		z;
 	short	*zbuf;
 
-	for (i = 0; i < num_verts; i++, fvert++)
-	{
 	// valid triangle coordinates for filling can include the bottom and
 	// right clip edges, due to the fill rule; these shouldn't be drawn
-		if ((fvert->v[0] < r_refdef.vrectright) &&
-			(fvert->v[1] < r_refdef.vrectbottom))
+	if (pv->v[0] < r_refdef.vrectright && pv->v[1] < r_refdef.vrectbottom)
+	{
+		z = pv->v[5]>>16;
+		zbuf = zspantable[pv->v[1]] + pv->v[0];
+		if (z >= *zbuf)
 		{
-			z = fvert->v[5]>>16;
-			zbuf = zspantable[fvert->v[1]] + fvert->v[0];
-			if (z >= *zbuf)
+			int		pix;
+
+			*zbuf = z;
+			pix = skintable[pv->v[3]>>16][pv->v[2]>>16];
+			pix = ((byte *)acolormap)[pix + (pv->v[4] & 0xFF00)];
+			d_viewbuffer[d_scantable[pv->v[1]] + pv->v[0]] = pix;
+		}
+	}
+}
+
+static void do_PolysetDrawFinalVertsT (finalvert_t *pv)
+{
+	int		z;
+	short	*zbuf;
+	byte	color_map_idx;
+
+	// valid triangle coordinates for filling can include the bottom and
+	// right clip edges, due to the fill rule; these shouldn't be drawn
+	if (pv->v[0] < r_refdef.vrectright && pv->v[1] < r_refdef.vrectbottom)
+	{
+		z = pv->v[5]>>16;
+		zbuf = zspantable[pv->v[1]] + pv->v[0];
+		if (z >= *zbuf)
+		{
+			color_map_idx = skintable[pv->v[3]>>16][pv->v[2]>>16];
+
+			if (color_map_idx != 0)
+			{
+				int		pix, pix2;
+
+				*zbuf = z;
+				pix = ((byte *)acolormap)[color_map_idx + (pv->v[4] & 0xFF00)];
+				pix2 = d_viewbuffer[d_scantable[pv->v[1]] + pv->v[0]];
+				pix = mainTransTable[(pix<<8) + pix2];
+				d_viewbuffer[d_scantable[pv->v[1]] + pv->v[0]] = pix;
+			}
+		}
+	}
+}
+
+static void do_PolysetDrawFinalVertsT2 (finalvert_t *pv)
+{
+	int		z;
+	short	*zbuf;
+	byte	color_map_idx;
+
+	// valid triangle coordinates for filling can include the bottom and
+	// right clip edges, due to the fill rule; these shouldn't be drawn
+	if (pv->v[0] < r_refdef.vrectright && pv->v[1] < r_refdef.vrectbottom)
+	{
+		z = pv->v[5]>>16;
+		zbuf = zspantable[pv->v[1]] + pv->v[0];
+		if (z >= *zbuf)
+		{
+			color_map_idx = skintable[pv->v[3]>>16][pv->v[2]>>16];
+
+			if (color_map_idx != 0)
+			{
+				int		pix, pix2;
+
+				*zbuf = z;
+				pix = ((byte *)acolormap)[color_map_idx + (pv->v[4] & 0xFF00)];
+				if (color_map_idx % 2 == 0)
+				{
+					d_viewbuffer[d_scantable[pv->v[1]] + pv->v[0]] = pix;
+				}
+				else
+				{
+					pix2 = d_viewbuffer[d_scantable[pv->v[1]] + pv->v[0]];
+					pix = mainTransTable[(pix<<8) + pix2];
+					d_viewbuffer[d_scantable[pv->v[1]] + pv->v[0]] = pix;
+				}
+			}
+		}
+	}
+}
+
+static void do_PolysetDrawFinalVertsT3 (finalvert_t *pv)
+{
+	int		z;
+	short	*zbuf;
+	byte	color_map_idx;
+
+	// valid triangle coordinates for filling can include the bottom and
+	// right clip edges, due to the fill rule; these shouldn't be drawn
+	if (pv->v[0] < r_refdef.vrectright && pv->v[1] < r_refdef.vrectbottom)
+	{
+		z = pv->v[5]>>16;
+		zbuf = zspantable[pv->v[1]] + pv->v[0];
+		if (z >= *zbuf)
+		{
+			color_map_idx = skintable[pv->v[3]>>16][pv->v[2]>>16];
+
+			if (color_map_idx != 0)
 			{
 				int		pix;
 
 				*zbuf = z;
-				pix = skintable[fvert->v[3]>>16][fvert->v[2]>>16];
-				pix = ((byte *)acolormap)[pix + (fvert->v[4] & 0xFF00) ];
-				d_viewbuffer[d_scantable[fvert->v[1]] + fvert->v[0]] = pix;
+				pix = ((byte *)acolormap)[color_map_idx + (pv->v[4] & 0xFF00)];
+				d_viewbuffer[d_scantable[pv->v[1]] + pv->v[0]] = pix;
 			}
 		}
 	}
+}
+
+static void do_PolysetDrawFinalVertsT5 (finalvert_t *pv)
+{
+	int		z;
+	short	*zbuf;
+	byte	color_map_idx;
+
+	// valid triangle coordinates for filling can include the bottom and
+	// right clip edges, due to the fill rule; these shouldn't be drawn
+	if (pv->v[0] < r_refdef.vrectright && pv->v[1] < r_refdef.vrectbottom)
+	{
+		z = pv->v[5]>>16;
+		zbuf = zspantable[pv->v[1]] + pv->v[0];
+		if (z >= *zbuf)
+		{
+			color_map_idx = skintable[pv->v[3]>>16][pv->v[2]>>16];
+
+			if (color_map_idx != 0)
+			{
+				int		pix, pix2;
+
+				*zbuf = z;
+				pix = color_map_idx;
+				pix2 = d_viewbuffer[d_scantable[pv->v[1]] + pv->v[0]];
+				pix = mainTransTable[(pix<<8) + pix2];
+				d_viewbuffer[d_scantable[pv->v[1]] + pv->v[0]] = pix;
+			}
+		}
+	}
+}
+
+void D_PolysetDrawFinalVerts (finalvert_t *pv1, finalvert_t *pv2, finalvert_t *pv3)
+{
+	do_PolysetDrawFinalVerts (pv1);
+	do_PolysetDrawFinalVerts (pv2);
+	do_PolysetDrawFinalVerts (pv3);
+}
+
+void D_PolysetDrawFinalVertsT (finalvert_t *pv1, finalvert_t *pv2, finalvert_t *pv3)
+{
+	do_PolysetDrawFinalVertsT (pv1);
+	do_PolysetDrawFinalVertsT (pv2);
+	do_PolysetDrawFinalVertsT (pv3);
+}
+
+void D_PolysetDrawFinalVertsT2 (finalvert_t *pv1, finalvert_t *pv2, finalvert_t *pv3)
+{
+	do_PolysetDrawFinalVertsT2 (pv1);
+	do_PolysetDrawFinalVertsT2 (pv2);
+	do_PolysetDrawFinalVertsT2 (pv3);
+}
+
+void D_PolysetDrawFinalVertsT3 (finalvert_t *pv1, finalvert_t *pv2, finalvert_t *pv3)
+{
+	do_PolysetDrawFinalVertsT3 (pv1);
+	do_PolysetDrawFinalVertsT3 (pv2);
+	do_PolysetDrawFinalVertsT3 (pv3);
+}
+
+void D_PolysetDrawFinalVertsT5 (finalvert_t *pv1, finalvert_t *pv2, finalvert_t *pv3)
+{
+	do_PolysetDrawFinalVertsT5 (pv1);
+	do_PolysetDrawFinalVertsT5 (pv2);
+	do_PolysetDrawFinalVertsT5 (pv3);
 }
 
 
