@@ -3,6 +3,17 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2007-08-06 (CVS):
+    * small documentation tidy-up.
+    * minor clean-up for gl_texturemode and its menu entry.
+    * sbar.c, small tidy-ups.
+    * sbar.c: use the global MAX_INVENTORY definition instead of INV_MAX_CNT.
+      they have the same meaning.
+    * implemented Raven's D_PolysetDrawFinalVerts series of functions in C.
+      the function affects drawing of alias models past a certain distance
+      and the result is most noticable at lower resolutions.
+    * updated the TODO list (2007-08-06.)
+
 2007-08-01 (CVS):
     * opengl, clean-up of glBlendFunc calls: our default blendfunc is
       GL_SRC_ALPHA/GL_ONE_MINUS_SRC_ALPHA, no need to specify unless
