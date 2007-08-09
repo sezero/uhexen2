@@ -2,7 +2,7 @@
 	launch_bin.c
 	hexen2 launcher: binary launching
 
-	$Id: launch_bin.c,v 1.45 2007-06-08 09:31:36 sezero Exp $
+	$Id: launch_bin.c,v 1.46 2007-08-09 06:08:23 sezero Exp $
 
 	This program is free software; you can redistribute it and/or
 	modify it under the terms of the GNU General Public License
@@ -27,8 +27,14 @@
 #include "launcher_defs.h"
 #include "games.h"
 #include "config_file.h"
+#include "interface.h"
+#include <ctype.h>
 
-static char binary_name[16];
+#define AASAMPLES_CHARS	4U	/* max digits for the aasamples value + 1 (nul) */
+#define HEAPSIZE_CHARS	8U	/* max digits for the heapsize value  + 1 (nul) */
+#define ZONESIZE_CHARS	8U	/* max digits for the zonesize value  + 1 (nul) */
+#define STRING_BUFSIZE	(BINNAME_CHARS + AASAMPLES_CHARS + HEAPSIZE_CHARS + ZONESIZE_CHARS + MAX_EXTARGS)
+static char string_buf[STRING_BUFSIZE];	/* holds the binary name to exec, first */
 
 char *snddrv_names[MAX_SOUND][2] =
 {
@@ -69,22 +75,26 @@ static char *resolution_args[RES_MAX][2] =
 	{ "1600", "1200"}
 };
 
+
 void launch_hexen2_bin (void)
 {
-	int		i;
-	char	*args[40];
-	char	aasamples_str[8], heapsize_str[8], zonesize_str[8];
+	char	*args[MAX_ARGS], *ptr;
+	size_t			i = 0;
 
-	binary_name[0] = '\0';
+	memset (string_buf, 0, STRING_BUFSIZE);
+	ptr = &string_buf[0];
+
+/* add the binary name first: */
 	if (opengl_support)
-		strcpy (binary_name, "gl");
+		strcpy (string_buf, "gl");
 	if (destiny == DEST_HW)
-		strcat (binary_name, HW_BINARY_NAME);
+		strcat (string_buf, HW_BINARY_NAME);
 	else
-		strcat (binary_name, H2_BINARY_NAME);
-
-	i = 0;
-	args[i] = binary_name;
+		strcat (string_buf, H2_BINARY_NAME);
+	string_buf[BINNAME_CHARS-1] = '\0';
+	args[i] = ptr;
+	while (*ptr)
+		ptr++;
 
 	if (basedir_nonstd && game_basedir[0])
 	{
@@ -119,7 +129,7 @@ void launch_hexen2_bin (void)
 			args[++i] = "-sndspeed";
 			args[++i] = snd_rates[sndrate];
 		}
-		if (sndbits == 0)	// 16-bit is default already
+		if (sndbits == 0)	/* 16-bit is default already */
 		{
 			args[++i] = "-sndbits";
 			args[++i] = "8";
@@ -131,8 +141,8 @@ void launch_hexen2_bin (void)
 	}
 	else
 	{
-		// engine doesn't -nocdaudio upon -nosound,
-		// but it simply is what the name implies.
+	/* engine doesn't -nocdaudio upon -nosound,
+	   but it simply is what the name implies */
 		args[++i] = "-nocdaudio";
 	}
 
@@ -146,11 +156,11 @@ void launch_hexen2_bin (void)
 	{
 		args[++i] = "-game";
 		args[++i] = h2game_names[h2game].dirname;
-		// bot matches require -listen
+		/* bot matches require -listen */
 		if (h2game_names[h2game].is_botmatch)
 		{
 			args[++i] = "-listen";
-			lan = 1;	// -listen cannot work with -nolan
+			lan = 1;	/* -listen can't work with -nolan */
 		}
 	}
 #endif	/* DEMOBUILD */
@@ -169,15 +179,18 @@ void launch_hexen2_bin (void)
 
 	if (opengl_support && use_fsaa && aasamples)
 	{
+		ptr++;
 		args[++i] = "-fsaa";
-		snprintf (aasamples_str, 8, "%i", aasamples);
-		args[++i] = aasamples_str;
+		snprintf (ptr, AASAMPLES_CHARS, "%i", aasamples);
+		args[++i] = ptr;
+		while (*ptr)
+			ptr++;
 	}
 
 	if (opengl_support && vsync)
 		args[++i] = "-vsync";
 
-	if (opengl_support && use_lm1 == 1)	// -lm_4 is default already
+	if (opengl_support && use_lm1 == 1)	/* -lm_4 is default already */
 		args[++i] = "-lm_1";
 
 	if (gl_nonstd && opengl_support && gllibrary[0])
@@ -188,16 +201,22 @@ void launch_hexen2_bin (void)
 
 	if (use_heap && heapsize >= HEAP_MINSIZE)
 	{
+		ptr++;
 		args[++i] = "-heapsize";
-		snprintf (heapsize_str, 8, "%i", heapsize);
-		args[++i] = heapsize_str;
+		snprintf (ptr, HEAPSIZE_CHARS, "%i", heapsize);
+		args[++i] = ptr;
+		while (*ptr)
+			ptr++;
 	}
 
 	if (use_zone && zonesize >= ZONE_MINSIZE)
 	{
+		ptr++;
 		args[++i] = "-zone";
-		snprintf (zonesize_str, 8, "%i", zonesize);
-		args[++i] = zonesize_str;
+		snprintf (ptr, ZONESIZE_CHARS, "%i", zonesize);
+		args[++i] = ptr;
+		while (*ptr)
+			ptr++;
 	}
 
 	if (debug2)
@@ -205,12 +224,34 @@ void launch_hexen2_bin (void)
 	else if (debug)
 		args[++i] = "-condebug";
 
-	// finish the list of args
+/* parse the extra user arguments */
+	if (use_extra && ext_args[0])
+	{
+		ptr++;
+		memcpy (ptr, ext_args, MAX_EXTARGS-1);
+		string_buf[STRING_BUFSIZE-1] = '\0';
+
+		while (1)
+		{
+			if (!*ptr || (i+2 >= MAX_ARGS))
+				break;
+			while (*ptr && isspace(*ptr))
+				*ptr++ = '\0';
+			if (*ptr)
+			{
+				args[++i] = ptr;
+				while (*ptr && !isspace(*ptr))
+					ptr++;
+			}
+		}
+	}
+
+/* finish the list of args */
 	args[++i] = NULL;
 
-	gtk_main_quit();
+	ui_quit ();
 
-	printf ("\nLaunching %s\n", binary_name);
+	printf ("\nLaunching %s\n", &string_buf[0]);
 	printf ("Command line is :\n  ");
 	i = 0;
 	while (args[i])
@@ -220,6 +261,6 @@ void launch_hexen2_bin (void)
 	}
 	printf ("\n\n");
 
-	execv (binary_name, args);
+	execv (&string_buf[0], args);
 }
 

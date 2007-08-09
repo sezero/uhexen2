@@ -2,7 +2,7 @@
 	widget_defs.h
 	hexen2 launcher: gtk+ widget defs
 
-	$Id: widget_defs.h,v 1.18 2007-05-31 21:27:26 sezero Exp $
+	$Id: widget_defs.h,v 1.19 2007-08-09 06:08:27 sezero Exp $
 
 	This program is free software; you can redistribute it and/or
 	modify it under the terms of the GNU General Public License
@@ -108,6 +108,8 @@ struct Misc_s
 	GtkWidget *bMEMZONE;	// Zonesize check button
 	GtkObject *adjZONE;	// Zonesize adjustment
 	GtkWidget *spnZONE;	// Zonesize entry
+	GtkWidget *bEXTBTN;	// Custom arguments toggle
+	GtkWidget *EXT_Entry;	// Custom arguments string
 };
 
 typedef struct
@@ -189,6 +191,8 @@ typedef struct
 #define	WGT_MEMZONE	_OTHERS.bMEMZONE
 #define	WGT_ZONEADJ	_OTHERS.adjZONE
 #define	WGT_ZONESIZE	_OTHERS.spnZONE
+#define	WGT_EXTARGS	_OTHERS.EXT_Entry
+#define	WGT_EXTBTN	_OTHERS.bEXTBTN
 
 #define	WGT_LAUNCH	_LAUNCH.bLAUNCH
 #define	WGT_STATBAR_ID	_LAUNCH.statbar_id

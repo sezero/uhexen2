@@ -2,7 +2,7 @@
 	games.c
 	hexen2 launcher, game installation scanning
 
-	$Id: games.c,v 1.6 2007-05-31 21:27:26 sezero Exp $
+	$Id: games.c,v 1.7 2007-08-09 06:08:22 sezero Exp $
 
 	This program is free software; you can redistribute it and/or
 	modify it under the terms of the GNU General Public License
@@ -27,6 +27,7 @@
 #include "games.h"
 #include "crc.h"
 #include "pakfile.h"
+#include "launcher_defs.h"
 #include "config_file.h"
 
 #if !defined(LITTLE_ENDIAN) || !defined(BIG_ENDIAN)

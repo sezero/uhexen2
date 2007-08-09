@@ -2,7 +2,7 @@
 	config_file.c
 	hexen2 launcher config file handling
 
-	$Id: config_file.c,v 1.46 2007-05-31 21:27:26 sezero Exp $
+	$Id: config_file.c,v 1.47 2007-08-09 06:08:22 sezero Exp $
 
 	This program is free software; you can redistribute it and/or
 	modify it under the terms of the GNU General Public License
@@ -58,6 +58,8 @@ int use_heap		= 0;
 int use_zone		= 0;
 int heapsize		= HEAP_DEFAULT;
 int zonesize		= ZONE_DEFAULT;
+int use_extra		= 0;
+char ext_args[MAX_EXTARGS]	= "";
 #ifndef DEMOBUILD
 int mp_support		= 0;
 int h2game		= 0;
@@ -129,6 +131,8 @@ int write_config_file (void)
 		fprintf(cfg_file, "use_zone=%d\n",use_zone);
 		fprintf(cfg_file, "heapsize=%d\n",heapsize);
 		fprintf(cfg_file, "zonesize=%d\n",zonesize);
+		fprintf(cfg_file, "use_extra=%d\n",use_extra);
+		fprintf(cfg_file, "ext_args=\"%s\"\n",ext_args);
 	}
 	fclose (cfg_file); 
 	printf("Options saved successfully.\n");
@@ -429,6 +433,23 @@ int read_config_file (void)
 					zonesize = atoi(buff + 9);
 					if (zonesize < ZONE_MINSIZE || zonesize > ZONE_MAXSIZE)
 						zonesize = ZONE_DEFAULT;
+				}
+				else if (strstr(buff, "use_extra=") == buff)
+				{
+					use_extra = atoi(buff + 10);
+					if (use_extra != 0 && use_extra != 1)
+						use_extra = 0;
+				}
+				else if (strstr(buff, "ext_args=") == buff)
+				{
+					size_t		len;
+					tmp = buff+9;
+					len = strlen(tmp);
+					// first and last chars must be quotes
+					if (tmp[0] != '\"' || tmp[len-1] != '\"' || len-2 >= sizeof(ext_args))
+						continue;
+					memset (ext_args, 0, sizeof(ext_args));
+					memcpy (ext_args, tmp+1, len-2);
 				}
 			}
 

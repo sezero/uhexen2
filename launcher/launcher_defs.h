@@ -2,7 +2,7 @@
 	launcher_defs.h
 	hexen2 launcher: common definitions
 
-	$Id: launcher_defs.h,v 1.29 2007-07-11 21:00:19 sezero Exp $
+	$Id: launcher_defs.h,v 1.30 2007-08-09 06:08:23 sezero Exp $
 
 	This program is free software; you can redistribute it and/or
 	modify it under the terms of the GNU General Public License
@@ -40,7 +40,7 @@
 // Launcher version num.
 #define LAUNCHER_VERSION_MAJ	1
 #define LAUNCHER_VERSION_MID	0
-#define LAUNCHER_VERSION_MIN	1
+#define LAUNCHER_VERSION_MIN	2
 #define LAUNCHER_VERSION_STR	STRINGIFY(LAUNCHER_VERSION_MAJ) "." STRINGIFY(LAUNCHER_VERSION_MID) "." STRINGIFY(LAUNCHER_VERSION_MIN)
 
 #ifndef DEMOBUILD
@@ -49,10 +49,11 @@
 #define	AOT_USERDIR	".hexen2demo"
 #endif
 
-// don't change these two
+/* don't change these two */
 #define	DEST_H2		0
 #define	DEST_HW		1
 
+/* index for supported resolutions */
 #define	RES_320		0
 #define	RES_400		1
 #define	RES_512		2
@@ -63,6 +64,7 @@
 #define	RES_1600	7
 #define	RES_MAX		8
 
+/* which sound drivers are available: */
 #if defined(__linux__)
 #define	HAVE_ALSA_SOUND	1
 #else
@@ -80,16 +82,20 @@
 #endif
 
 #define	MAX_SOUND	(2 + HAVE_ALSA_SOUND + HAVE_OSS_SOUND + HAVE_SUN_SOUND)
-			// max entries in the snddrv_names table
+				/* max entries in the snddrv_names table */
 
-#define	MAX_RATES	8	// max entries in the snd_rates table
+#define	MAX_RATES	8	/* max entries in the snd_rates table */
 
-#define HEAP_MINSIZE	16384	// minimum heap memory size in KB
-#define HEAP_DEFAULT	32768	// default heap memory size in KB
-#define HEAP_MAXSIZE	98304	// maximum heap memory size in KB
-#define ZONE_MINSIZE	256	// minimum zone memory size in KB
-#define ZONE_DEFAULT	256	// default zone memory size in KB
-#define ZONE_MAXSIZE	1024	// maximum zone memory size in KB
+#define HEAP_MINSIZE	16384	/* minimum heap memory size in KB */
+#define HEAP_DEFAULT	32768	/* default heap memory size in KB */
+#define HEAP_MAXSIZE	98304	/* maximum heap memory size in KB */
+#define ZONE_MINSIZE	256	/* minimum zone memory size in KB */
+#define ZONE_DEFAULT	256	/* default zone memory size in KB */
+#define ZONE_MAXSIZE	1024	/* maximum zone memory size in KB */
+
+#define MAX_EXTARGS	80U	/* max array size for extra user args */
+
+#define MAX_ARGS	40U	/* max number of arguments for exec() */
 
 #endif	/* LAUNCHER_COMMONDEFS_H */
 

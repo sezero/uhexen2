@@ -2,7 +2,7 @@
 	interface.h
 	hexen2 launcher gtk+ interface
 
-	$Id: interface.h,v 1.11 2007-06-11 16:00:26 sezero Exp $
+	$Id: interface.h,v 1.12 2007-08-09 06:08:23 sezero Exp $
 
 	This program is free software; you can redistribute it and/or
 	modify it under the terms of the GNU General Public License
@@ -26,8 +26,9 @@
 #ifndef	LAUNCHER_INTERFACE_H
 #define	LAUNCHER_INTERFACE_H
 
-gint ui_init (gpointer user_data);
+int  ui_main (int *argc, char ***argv);
 void ui_pump (void);
+void ui_quit (void);
 
 #endif	/* LAUNCHER_INTERFACE_H */
 

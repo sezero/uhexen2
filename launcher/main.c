@@ -2,7 +2,7 @@
 	main.c
 	hexen2 launcher: main loop
 
-	$Id: main.c,v 1.29 2007-06-04 17:31:38 sezero Exp $
+	$Id: main.c,v 1.30 2007-08-09 06:08:23 sezero Exp $
 
 	This program is free software; you can redistribute it and/or
 	modify it under the terms of the GNU General Public License
@@ -37,7 +37,6 @@
 #include "games.h"
 #include "config_file.h"
 #include "interface.h"
-//#include "support.h"
 
 char		basedir[MAX_OSPATH];
 char		userdir[MAX_OSPATH];
@@ -172,25 +171,8 @@ static int Sys_GetUserdir (char *buff, size_t path_len)
 }
 
 
-#undef	GTK_INIT_FUNC
-#define	GTK_INIT_FUNC(f)	(GtkFunction)f
-
-int main (int argc, char *argv[])
+int main (int argc, char **argv)
 {
-/*
-#ifdef ENABLE_NLS
-	bindtextdomain (PACKAGE, PACKAGE_LOCALE_DIR);
-	textdomain (PACKAGE);
-#endif
-	gtk_set_locale ();
-*/
-
-	gtk_init (&argc, &argv);
-
-/*	add_pixmap_directory (PACKAGE_DATA_DIR "/pixmaps");
-	add_pixmap_directory (PACKAGE_SOURCE_DIR "/pixmaps");
-*/
-
 	printf("Hexen II: Hammer of Thyrion Launcher, version %i.%i.%i\n",
 		LAUNCHER_VERSION_MAJ, LAUNCHER_VERSION_MID, LAUNCHER_VERSION_MIN);
 
@@ -212,8 +194,8 @@ int main (int argc, char *argv[])
 	scan_game_installation();
 	read_config_file();
 
-	gtk_init_add (GTK_INIT_FUNC(ui_init), NULL);
-	gtk_main ();
+//	run the user interface
+	ui_main (&argc, &argv);
 
 	return 0;
 }

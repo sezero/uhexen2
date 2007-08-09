@@ -2,7 +2,7 @@
 	common.h
 	common header for hexen2 launcher
 
-	$Id: common.h,v 1.7 2007-04-14 21:30:14 sezero Exp $
+	$Id: common.h,v 1.8 2007-08-09 06:08:22 sezero Exp $
 
 	This program is free software; you can redistribute it and/or
 	modify it under the terms of the GNU General Public License
@@ -33,7 +33,6 @@
 #include <unistd.h>
 #include <string.h>
 #include <errno.h>
-#include <gtk/gtk.h>
 
 #define MAX_OSPATH	256
 
