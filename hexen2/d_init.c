@@ -2,7 +2,7 @@
 	d_init.c
 	rasterization driver initialization
 
-	$Id: d_init.c,v 1.8 2007-07-08 11:55:18 sezero Exp $
+	$Id: d_init.c,v 1.9 2007-08-09 06:12:45 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -31,8 +31,6 @@ D_Init
 */
 void D_Init (void)
 {
-	r_skydirect = 1;
-
 	Cvar_RegisterVariable (&d_subdiv16);
 	Cvar_RegisterVariable (&d_mipcap);
 	Cvar_RegisterVariable (&d_mipscale);

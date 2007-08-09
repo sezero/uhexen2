@@ -2,7 +2,7 @@
 	r_part.c
 	particles rendering
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/r_part.c,v 1.18 2007-07-30 19:55:42 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/r_part.c,v 1.19 2007-08-09 06:12:45 sezero Exp $
 */
 
 
@@ -62,7 +62,6 @@ R_InitParticles
 void R_InitParticles (void)
 {
 	int		i;
-	FILE	*f;
 
 	i = COM_CheckParm ("-particles");
 
@@ -81,14 +80,11 @@ void R_InitParticles (void)
 
 	Cvar_RegisterVariable (&leak_color);
 
-	transTable = (byte *) Hunk_AllocName(65536, "transtable");
-
-	FS_OpenFile ("gfx/tinttab.lmp", &f, false);
-	if (!f)
+	transTable = (byte *)FS_LoadHunkFile ("gfx/tinttab.lmp");
+	if (!transTable)
 		Sys_Error ("Couldn't load gfx/tinttab.lmp");
-
-	fread (transTable, 1, 65536, f);
-	fclose (f);
+	if (fs_filesize != 65536)
+		Sys_Error ("Unexpected file size (%lu) for %s\n", (unsigned long)fs_filesize, "gfx/tinttab.lmp");
 }
 
 

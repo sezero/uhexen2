@@ -2,7 +2,7 @@
 	r_local.h
 	private refresh defs
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/r_local.h,v 1.13 2007-07-17 16:50:30 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/r_local.h,v 1.14 2007-08-09 06:12:45 sezero Exp $
 */
 
 #ifndef __R_LOCAL_H
@@ -112,12 +112,6 @@ extern	int	r_visframecount;
 
 //=============================================================================
 
-extern	int	vstartscan;
-
-
-void R_ClearPolyList (void);
-void R_DrawPolyList (void);
-
 //
 // current entity info
 //
@@ -127,7 +121,10 @@ extern	qboolean	insubmodel;
 void R_DrawSprite (void);
 void R_RenderFace (msurface_t *fa, int clipflags);
 void R_RenderPoly (msurface_t *fa, int clipflags);
+void R_DrawPolyList (void);
+void R_ClearPolyList (void);
 void R_RenderBmodelFace (bedge_t *pedges, msurface_t *psurf);
+void R_RotateBmodel (void);
 void R_TransformPlane (mplane_t *p, float *normal, float *dist);
 void R_TransformFrustum (void);
 void R_SetSkyFrame (void);
@@ -135,17 +132,6 @@ texture_t *R_TextureAnimation (texture_t *base);
 
 void R_GenSkyTile (void *pdest);
 void R_GenSkyTile16 (void *pdest);
-
-#if id386
-void R_Surf8Patch (void);
-void R_Surf16Patch (void);
-void R_SurfacePatch (void);
-#else
-/* we only patch code on Intel */
-#define R_Surf8Patch()
-#define R_Surf16Patch()
-#define R_SurfacePatch()
-#endif
 
 void R_DrawSubmodelPolygons (model_t *pmodel, int clipflags);
 void R_DrawSolidClippedSubmodelPolygons (model_t *pmodel);
@@ -155,7 +141,11 @@ surf_t *R_GetSurf (void);
 void R_AliasDrawModel (alight_t *plighting);
 void R_BeginEdgeFrame (void);
 void R_ScanEdges (qboolean Translucent);
-void D_DrawSurfaces (qboolean Translucent);
+
+#if id386
+extern void R_Surf8Patch (void);
+extern void R_Surf16Patch (void);
+extern void R_SurfacePatch (void);
 
 extern void R_Surf8Start (void);
 extern void R_Surf8End (void);
@@ -165,8 +155,8 @@ extern void R_EdgeCodeStart (void);
 extern void R_EdgeCodeEnd (void);
 extern void R_EdgeCodeStartT (void);
 extern void R_EdgeCodeEndT (void);
+#endif
 
-extern void R_RotateBmodel (void);
 
 extern	int	c_faceclip;
 extern	int	r_polycount;

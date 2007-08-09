@@ -3,7 +3,7 @@
 	general refresh-related stuff shared between the refresh
 	and the driver
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/r_shared.h,v 1.7 2007-07-08 11:55:22 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/r_shared.h,v 1.8 2007-08-09 06:12:45 sezero Exp $
 */
 
 #ifndef __R_SHARED_H
@@ -118,8 +118,6 @@ extern	float	xscaleshrink, yscaleshrink;
 extern	int	d_lightstylevalue[256];	// 8.8 frac of base light value
 
 extern void TransformVector (vec3_t in, vec3_t out);
-extern void SetUpForLineScan(fixed8_t startvertu, fixed8_t startvertv,
-				fixed8_t endvertu, fixed8_t endvertv);
 
 extern	int	ubasestep, errorterm, erroradjustup, erroradjustdown;
 

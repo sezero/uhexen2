@@ -1,7 +1,7 @@
 /*
 	d_edge.c
 
-	$Id: d_edge.c,v 1.15 2007-07-31 21:03:27 sezero Exp $
+	$Id: d_edge.c,v 1.16 2007-08-09 06:12:45 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -10,14 +10,15 @@
 static int	miplevel;
 
 float		scale_for_mip;
-int			ubasestep, errorterm, erroradjustup, erroradjustdown;
-int			vstartscan;
+int		ubasestep, errorterm, erroradjustup, erroradjustdown;
+int		vstartscan;
 
 // FIXME: should go away
-extern void			R_RotateBmodel (void);
-extern void			R_TransformFrustum (void);
+extern void	R_RotateBmodel (void);
+extern void	R_TransformFrustum (void);
 
 vec3_t		transformed_modelorg;
+
 
 /*
 ==============

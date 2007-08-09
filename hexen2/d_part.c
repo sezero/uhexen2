@@ -2,35 +2,11 @@
 	d_part.c
 	software driver module for drawing particles
 
-	$Id: d_part.c,v 1.7 2007-07-31 11:09:43 sezero Exp $
+	$Id: d_part.c,v 1.8 2007-08-09 06:12:45 sezero Exp $
 */
 
 #include "quakedef.h"
 #include "d_local.h"
-
-#if 0
-/*
-==============
-D_EndParticles
-==============
-*/
-void D_EndParticles (void)
-{
-// not used by software driver
-}
-
-
-/*
-==============
-D_StartParticles
-==============
-*/
-void D_StartParticles (void)
-{
-// not used by software driver
-}
-#endif	// 0
-
 
 #if	!id386
 
@@ -197,5 +173,5 @@ void D_DrawParticle (particle_t *pparticle)
 	}
 }
 
-#endif	// !id386
+#endif	/* !id386 */
 

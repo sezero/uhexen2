@@ -2,7 +2,7 @@
 	r_alias.c
 	routines for setting up to draw alias models
 
-	$Id: r_alias.c,v 1.17 2007-08-06 09:16:35 sezero Exp $
+	$Id: r_alias.c,v 1.18 2007-08-09 06:12:45 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -970,13 +970,13 @@ void R_AliasDrawModel (alight_t *plighting)
 	else
 	{
 #if	id386
-		if ((currententity->model->flags & EF_SPECIAL_TRANS))
+		if (currententity->model->flags & EF_SPECIAL_TRANS)
 			D_Aff8PatchT5 (currententity->colormap);
 		else if (currententity->drawflags & DRF_TRANSLUCENT)
 			D_Aff8PatchT (currententity->colormap);
-		else if ((currententity->model->flags & EF_TRANSPARENT))
+		else if (currententity->model->flags & EF_TRANSPARENT)
 			D_Aff8PatchT2 (currententity->colormap);
-		else if ((currententity->model->flags & EF_HOLEY))
+		else if (currententity->model->flags & EF_HOLEY)
 			D_Aff8PatchT3 (currententity->colormap);
 		else
 			D_Aff8Patch (currententity->colormap);

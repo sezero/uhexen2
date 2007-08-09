@@ -1,7 +1,7 @@
 /*
 	r_main.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/r_main.c,v 1.26 2007-07-08 11:55:22 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/r_main.c,v 1.27 2007-08-09 06:12:45 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -102,10 +102,6 @@ int		d_spanpixcount;
 int		r_polycount;
 int		r_drawnpolycount;
 int		r_wholepolycount;
-
-//#define		VIEWMODNAME_LENGTH	256
-//char		viewmodname[VIEWMODNAME_LENGTH+1];
-//int		modcount;
 
 int		*pfrustum_indexes[4];
 int		r_frustum_indexes[4*6];
@@ -221,7 +217,6 @@ R_Init
 void R_Init (void)
 {
 	int		dummy;
-	FILE	*f;
 
 // get stack position so we can guess if we are going to overflow
 	r_stack_start = (byte *)&dummy;
@@ -270,24 +265,18 @@ void R_Init (void)
 
 	R_InitParticles ();
 
-// TODO: collect 386-specific code in one place
-#if	id386
-	Sys_MakeCodeWriteable ((long)R_EdgeCodeStart, (long)R_EdgeCodeEnd - (long)R_EdgeCodeStart);
-	Sys_MakeCodeWriteable ((long)R_EdgeCodeStartT, (long)R_EdgeCodeEndT - (long)R_EdgeCodeStartT);
-#endif	// id386
-
 	D_Init ();
 
-	mainTransTable = (byte *) Hunk_AllocName(65536, "transtable2");
-
-	FS_OpenFile ("gfx/tinttab2.lmp", &f, false);
-	if (!f)
+	mainTransTable = (byte *)FS_LoadHunkFile ("gfx/tinttab2.lmp");
+	if (!mainTransTable)
 		Sys_Error ("Couldn't load gfx/tinttab2.lmp");
-
-	fread(mainTransTable,1,65536,f);
-	fclose(f);
+	if (fs_filesize != 65536)
+		Sys_Error ("Unexpected file size (%lu) for %s\n", (unsigned long)fs_filesize, "gfx/tinttab2.lmp");
 
 #if id386
+	Sys_MakeCodeWriteable ((long)R_EdgeCodeStart, (long)R_EdgeCodeEnd - (long)R_EdgeCodeStart);
+	Sys_MakeCodeWriteable ((long)R_EdgeCodeStartT, (long)R_EdgeCodeEndT - (long)R_EdgeCodeStartT);
+
 	D_Patch();
 	R_TranPatch1();
 	R_TranPatch2();
@@ -346,7 +335,9 @@ void R_NewMap (void)
 	// surface 0 doesn't really exist; it's just a dummy because index 0
 	// is used to indicate no edge attached to surface
 		surfaces--;
+#if id386
 		R_SurfacePatch ();
+#endif
 	}
 	else
 	{
@@ -1089,19 +1080,19 @@ static void R_EdgeDrawing (qboolean Translucent)
 		}
 		else
 		{
-			r_edges =  (edge_t *)
-					(((intptr_t)&ledges[0] + CACHE_SIZE - 1) & ~(CACHE_SIZE - 1));
+			r_edges =  (edge_t *) (((intptr_t)&ledges[0] + CACHE_SIZE - 1) & ~(CACHE_SIZE - 1));
 		}
 
 		if (r_surfsonstack)
 		{
-			surfaces =  (surf_t *)
-					(((intptr_t)&lsurfs[0] + CACHE_SIZE - 1) & ~(CACHE_SIZE - 1));
+			surfaces = (surf_t *) (((intptr_t)&lsurfs[0] + CACHE_SIZE - 1) & ~(CACHE_SIZE - 1));
 			surf_max = &surfaces[r_cnumsurfs];
 		// surface 0 doesn't really exist; it's just a dummy because
 		// index 0 is used to indicate no edge attached to surface
 			surfaces--;
+#if id386
 			R_SurfacePatch ();
+#endif
 		}
 
 		R_BeginEdgeFrame ();

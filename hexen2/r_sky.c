@@ -1,7 +1,7 @@
 /*
 	r_sky.c
 
-	$Id: r_sky.c,v 1.5 2007-03-14 21:03:20 sezero Exp $
+	$Id: r_sky.c,v 1.6 2007-08-09 06:12:45 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -17,7 +17,6 @@ float		skytime;
 byte		*r_skysource;
 
 int		r_skymade;
-int		r_skydirect;	// actually not used
 
 
 // TODO: clean up these routines

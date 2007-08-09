@@ -1,12 +1,11 @@
 /*
 	r_draw.c
 
-	$Id: r_draw.c,v 1.5 2007-06-16 14:41:35 sezero Exp $
+	$Id: r_draw.c,v 1.6 2007-08-09 06:12:45 sezero Exp $
 */
 
 #include "quakedef.h"
 #include "r_local.h"
-#include "d_local.h"	// FIXME: shouldn't need to include this
 
 #define MAXLEFTCLIPEDGES		100
 
@@ -52,7 +51,9 @@ int		r_ceilv1;
 qboolean	r_lastvertvalid;
 
 #if id386
-extern void	R_ClipEdge (mvertex_t *pv0, mvertex_t *pv1, clipplane_t *clip);
+extern void R_ClipEdge (mvertex_t *pv0, mvertex_t *pv1, clipplane_t *clip);
+#else
+static void R_ClipEdge (mvertex_t *pv0, mvertex_t *pv1, clipplane_t *clip);
 #endif
 
 

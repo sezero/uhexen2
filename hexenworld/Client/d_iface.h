@@ -2,7 +2,7 @@
 	d_iface.h
 	interface header file for rasterization driver modules
 
-	$Id: d_iface.h,v 1.11 2007-08-06 09:16:43 sezero Exp $
+	$Id: d_iface.h,v 1.12 2007-08-09 06:12:45 sezero Exp $
 */
 
 #ifndef __D_IFACE_H
@@ -107,22 +107,26 @@ extern spritedesc_t	r_spritedesc;
 extern zpointdesc_t	r_zpointdesc;
 extern polydesc_t	r_polydesc;
 
-extern int		d_con_indirect;	// if 0, Quake will draw console directly
-					//  to vid.buffer; if 1, Quake will
-					//  draw console via D_DrawRect. Must be
-					//  defined by driver
-
 extern vec3_t	r_pright, r_pup, r_ppn;
 
 
-extern void D_DrawParticle (particle_t *pparticle);
-#if id386
-extern void D_DrawParticle1x1b (particle_t *pparticle);
+extern void D_DrawPoly (void);
+extern void D_DrawSprite (void);
+extern void D_DrawSurfaces (qboolean Translucent);
+
 extern void D_PolysetDraw (void);
 extern void D_PolysetDrawT (void);
 extern void D_PolysetDrawT2 (void);
 extern void D_PolysetDrawT3 (void);
 extern void D_PolysetDrawT5 (void);
+
+extern void D_PolysetDrawFinalVerts (finalvert_t *p1, finalvert_t *p2, finalvert_t *p3);
+extern void D_PolysetDrawFinalVertsT (finalvert_t *p1, finalvert_t *p2, finalvert_t *p3);
+extern void D_PolysetDrawFinalVertsT2 (finalvert_t *p1, finalvert_t *p2, finalvert_t *p3);
+extern void D_PolysetDrawFinalVertsT3 (finalvert_t *p1, finalvert_t *p2, finalvert_t *p3);
+extern void D_PolysetDrawFinalVertsT5 (finalvert_t *p1, finalvert_t *p2, finalvert_t *p3);
+
+#if id386
 extern void D_DrawNonSubdiv (void);
 extern void D_PolysetCalcGradients (int skinwidth);
 extern void D_PolysetCalcGradientsT (int skinwidth);
@@ -135,40 +139,24 @@ extern void D_PolysetScanLeftEdgeT (int height);
 extern void D_PolysetScanLeftEdgeT2 (int height);
 extern void D_PolysetScanLeftEdgeT3 (int height);
 extern void D_PolysetScanLeftEdgeT5 (int height);
+extern void D_DrawParticle1x1b (particle_t *pparticle);
 #endif
 
-#if !id386
-extern void D_PolysetDraw (void);
-extern void D_PolysetDrawT (void);
-extern void D_PolysetDrawT2 (void);
-extern void D_PolysetDrawT3 (void);
-extern void D_PolysetDrawT5 (void);
-#endif
-
-extern void D_PolysetDrawFinalVerts (finalvert_t *p1, finalvert_t *p2, finalvert_t *p3);
-extern void D_PolysetDrawFinalVertsT (finalvert_t *p1, finalvert_t *p2, finalvert_t *p3);
-extern void D_PolysetDrawFinalVertsT2 (finalvert_t *p1, finalvert_t *p2, finalvert_t *p3);
-extern void D_PolysetDrawFinalVertsT3 (finalvert_t *p1, finalvert_t *p2, finalvert_t *p3);
-extern void D_PolysetDrawFinalVertsT5 (finalvert_t *p1, finalvert_t *p2, finalvert_t *p3);
+extern void D_DrawParticle (particle_t *pparticle);
 
 void D_BeginDirectRect (int x, int y, byte *pbitmap, int width, int height);
-void D_DisableBackBufferAccess (void);
 void D_EndDirectRect (int x, int y, int width, int height);
-void D_DrawPoly (void);
-void D_DrawSprite (void);
-void D_DrawSurfaces (qboolean Translucent);
-void D_DrawZPoint (void);
 void D_EnableBackBufferAccess (void);
-void D_EndParticles (void);
+void D_DisableBackBufferAccess (void);
+
+void D_DrawZPoint (void);
 void D_Init (void);
 void D_ViewChanged (void);
 void D_SetupFrame (void);
-void D_StartParticles (void);
 void D_TurnZOn (void);
 void D_WarpScreen (void);
 
 void D_FillRect (vrect_t *vrect, int color);
-void D_DrawRect (void);
 void D_UpdateRects (vrect_t *prect);
 
 // currently for internal use only, and should be a do-nothing function in
@@ -177,12 +165,7 @@ void D_UpdateRects (vrect_t *prect);
 void D_PolysetUpdateTables (void);
 
 // these are currently for internal use only, and should not be used by drivers
-extern int				r_skydirect;
 extern byte				*r_skysource;
-
-// transparency types for D_DrawRect ()
-#define DR_SOLID	0
-#define DR_TRANSPARENT	1
 
 // !!! must be kept the same as in quakeasm.h !!!
 #define TRANSPARENT_COLOR	0xFF
