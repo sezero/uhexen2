@@ -3,6 +3,23 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2007-08-09 (CVS):
+    * launcher improvements: removed the "save options" button. options
+      are saved auto-saved either upon program abort or upon launching
+      the binary. moved the 'info and patch' string onto its button and
+      removed the 'go' thing. moved the sample rate menu to the front
+      tab. added a new 'extra arguments' widget which allows user's own
+      additional arguments to be passed to the command line. this was a
+      feature request in our tracker. moved all of gtk specific things
+      into interface.c and made main.c and all others free of gtk. the
+      public ui functions are exported from interface.h, so if someone
+      wants to use another api (qt, kde, whatever) they only have to
+      re-write interface.c. incremented the version number to 1.0.2. I
+      might be able to do some user interface clean-up before the final
+      release, but we'll see.
+    * a few clean-ups in software renderer.
+    * updated the TODO list (2007-08-09.)
+
 2007-08-06 (CVS):
     * small documentation tidy-up.
     * minor clean-up for gl_texturemode and its menu entry.
