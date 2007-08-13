@@ -2,7 +2,7 @@
 	gtk_ui.c
 	hexen2 launcher gtk+ interface
 
-	$Id: gtk_ui.c,v 1.3 2007-08-13 14:04:20 sezero Exp $
+	$Id: gtk_ui.c,v 1.4 2007-08-13 14:50:35 sezero Exp $
 
 	This program is free software; you can redistribute it and/or
 	modify it under the terms of the GNU General Public License
@@ -56,8 +56,6 @@ extern char	*snd_rates[MAX_RATES];
 
 /*********************************************************************/
 // Public data:
-
-int			thread_alive;
 
 /*********************************************************************/
 // Private data:
@@ -127,8 +125,6 @@ static void UpdateStats (void)
 	gtk_widget_set_sensitive (WGT_LAUNCH, !status);
 }
 
-void Log_printf (const char *fmt, ...) __attribute__((format(printf,1,2)));
-
 #if !defined(DEMOBUILD)
 static char *patch_status[] =
 {
@@ -192,7 +188,7 @@ static void ui_LogEnd (void)
 	LogEntry = NULL;
 }
 
-void Log_printf (const char *fmt, ...)
+void ui_log (const char *fmt, ...)
 {
 	va_list         argptr;
 	char            text[256];
@@ -217,47 +213,47 @@ static void report_status (GtkObject *Unused, PatchWindow_t *PatchWindow)
 		ui_LogInit (PatchWindow->LOGVIEW);
 	}
 
-	Log_printf ("Installation Summary:\n\n");
-	Log_printf ("Base directory: %s\n", basedir);
-	Log_printf ("Data directory: %s\n", (basedir_nonstd && game_basedir[0]) ? game_basedir : basedir);
-	Log_printf ("PAK file health: %s", (gameflags & GAME_INSTBAD) ? "BAD. Reason(s):\n" : "OK ");
+	ui_log ("Installation Summary:\n\n");
+	ui_log ("Base directory: %s\n", basedir);
+	ui_log ("Data directory: %s\n", (basedir_nonstd && game_basedir[0]) ? game_basedir : basedir);
+	ui_log ("PAK file health: %s", (gameflags & GAME_INSTBAD) ? "BAD. Reason(s):\n" : "OK ");
 	if (gameflags & GAME_INSTBAD)
 	{
 		if (gameflags & GAME_INSTBAD3)
-			Log_printf ("- " "Found an old, unsupported version of the demo.\n");
+			ui_log ("- Found an old, unsupported version of the demo.\n");
 		if (gameflags & GAME_INSTBAD2)
-			Log_printf ("- " "Found mixed data from incompatible versions.\n");
+			ui_log ("- Found mixed data from incompatible versions.\n");
 		if (gameflags & GAME_INSTBAD1)
-			Log_printf ("- " "Neither of retail, demo or oem versions found.\n");
+			ui_log ("- Neither of retail, demo or oem versions found.\n");
 		if (gameflags & GAME_INSTBAD0)
-			Log_printf ("- " "Found pak files not patched to 1.11 version.\n");
+			ui_log ("- Found pak files not patched to 1.11 version.\n");
 		if (gameflags & GAME_CANPATCH)
-			Log_printf ("- " "Applying the 1.11 pak patch should solve this.\n");
+			ui_log ("- Applying the 1.11 pak patch should solve this.\n");
 	}
 	else
 	{
-		Log_printf ("(%s version.)\n", (gameflags & (GAME_DEMO|GAME_OLD_DEMO)) ? "demo" : ((gameflags & GAME_OEM) ? "oem" : "retail"));
+		ui_log ("(%s version.)\n", (gameflags & (GAME_DEMO|GAME_OLD_DEMO)) ? "demo" : ((gameflags & GAME_OEM) ? "oem" : "retail"));
 		if (gameflags & (GAME_REGISTERED_OLD|GAME_OLD_DEMO))
-			Log_printf ("Using old/unsupported 1.03 version pak files.\n");
+			ui_log ("Using old/unsupported 1.03 version pak files.\n");
 		if (gameflags & GAME_CANPATCH)
-			Log_printf ("Applying Raven's 1.11 pak patch is suggested.\n");
+			ui_log ("Applying Raven's 1.11 pak patch is suggested.\n");
 	}
 
-	Log_printf ("Mission Pack: %s", (gameflags & GAME_PORTALS) ? "present " : "not found");
+	ui_log ("Mission Pack: %s", (gameflags & GAME_PORTALS) ? "present " : "not found");
 	if (gameflags & GAME_PORTALS)
-		Log_printf ("%s", (gameflags & (GAME_REGISTERED|GAME_REGISTERED_OLD)) ? "\n" : "(ignored: no valid retail data)\n");
+		ui_log ("%s", (gameflags & (GAME_REGISTERED|GAME_REGISTERED_OLD)) ? "\n" : "(ignored: no valid retail data)\n");
 	else
-		Log_printf ("\n");
+		ui_log ("\n");
 
-	Log_printf ("HexenWorld: %s\n", (gameflags & GAME_HEXENWORLD) ? "present " : "not found");
+	ui_log ("HexenWorld: %s\n", (gameflags & GAME_HEXENWORLD) ? "present " : "not found");
 
 #if defined(DEMOBUILD)
 	if (gameflags & (GAME_REGISTERED|GAME_REGISTERED_OLD|GAME_CANPATCH))
 	{
-		Log_printf ("---------------------\n");
-		Log_printf ("This is a restricted build of Hexen II Launcher\n");
-		Log_printf ("for the demo version. Use the normal builds for\n");
-		Log_printf ("retail-only functionality and pakfile patching.\n");
+		ui_log ("---------------------\n");
+		ui_log ("This is a restricted build of Hexen II Launcher\n");
+		ui_log ("for the demo version. Use the normal builds for\n");
+		ui_log ("retail-only functionality and pakfile patching.\n");
 	}
 #endif	/* DEMOBUILD */
 
@@ -296,7 +292,7 @@ static void start_xpatch (GtkObject *Unused, PatchWindow_t *PatchWindow)
 	thread_alive = 1;
 	if (pthread_create(&thr, NULL, apply_patches, wd) != 0)
 	{
-		Log_printf ("pthread_create failed");
+		ui_log ("pthread_create failed");
 		goto finish;
 	}
 
@@ -310,7 +306,7 @@ static void start_xpatch (GtkObject *Unused, PatchWindow_t *PatchWindow)
 
 	if (pthread_join(thr, (void **) (char *) &ptr) != 0)
 	{
-		Log_printf ("pthread_join failed");
+		ui_log ("pthread_join failed");
 		goto finish;
 	}
 
@@ -319,7 +315,7 @@ static void start_xpatch (GtkObject *Unused, PatchWindow_t *PatchWindow)
 	{
 		scan_game_installation();
 		UpdateStats ();
-		Log_printf ("---------------------\n");
+		ui_log ("---------------------\n");
 		report_status (NULL, PatchWindow);
 		if (gameflags & (GAME_REGISTERED|GAME_REGISTERED_OLD))
 		{	// activate the extra game options, if necessary
