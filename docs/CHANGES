@@ -3,6 +3,16 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2007-08-13 (CVS):
+    * launcher: fixed toggle events for a few buttons. from Steven.
+    * gl_rmain.c: setting the v_gamma value isn't necessary, view.c
+      already does that for us.
+    * gl_model.c, gl_model.h, gl_rmain.c: glow code tidy-up: made the
+      glow_color member of the model structure an array of 4 instead
+      of 3. removed an unnecessary glTexEnvf call (setting TEXTURE_ENV_MODE
+      to GL_REPLACE) from R_DrawAllGlows(). moved torch color setting
+      from R_DrawGlow() to Mod_SetAliasModelExtraFlags(). minor clean-ups.
+
 2007-08-09 (CVS):
     * launcher improvements: removed the "save options" button. options
       are saved auto-saved either upon program abort or upon launching
