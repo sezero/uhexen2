@@ -5,7 +5,7 @@
 	models are the only shared resource between a client and server
 	running on the same machine.
 
-	$Id: gl_model.c,v 1.47 2007-07-28 20:00:35 sezero Exp $
+	$Id: gl_model.c,v 1.48 2007-08-13 06:44:34 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -1903,6 +1903,11 @@ static void Mod_SetAliasModelExtraFlags (model_t *mod)
 	    !Q_strncasecmp (mod->name, "models/flame",12))
 	{
 		mod->ex_flags |= XF_TORCH_GLOW;
+		// set yellow color
+		mod->glow_color[0] = 0.8f;
+		mod->glow_color[1] = 0.4f;
+		mod->glow_color[2] = 0.1f;
+		mod->glow_color[3] = 1.0f;
 	}
 	// Mana glows
 	else if (!Q_strncasecmp (mod->name, "models/i_bmana",14))
@@ -1911,6 +1916,7 @@ static void Mod_SetAliasModelExtraFlags (model_t *mod)
 		mod->glow_color[0] = 0.25f;
 		mod->glow_color[1] = 0.25f;
 		mod->glow_color[2] = 1.0f;
+		mod->glow_color[3] = 0.5f;
 	}
 	else if (!Q_strncasecmp (mod->name, "models/i_gmana",14))
 	{
@@ -1918,6 +1924,7 @@ static void Mod_SetAliasModelExtraFlags (model_t *mod)
 		mod->glow_color[0] = 0.25f;
 		mod->glow_color[1] = 1.0f;
 		mod->glow_color[2] = 0.25f;
+		mod->glow_color[3] = 0.5f;
 	}
 	else if (!Q_strncasecmp (mod->name, "models/i_btmana",15))
 	{
@@ -1925,6 +1932,7 @@ static void Mod_SetAliasModelExtraFlags (model_t *mod)
 		mod->glow_color[0] = 1.0f;
 		mod->glow_color[1] = 0.25f;
 		mod->glow_color[2] = 0.25f;
+		mod->glow_color[3] = 0.5f;
 	}
 	// Missile glows
 	else if (!Q_strncasecmp (mod->name, "models/drgnball",15))
@@ -1933,6 +1941,7 @@ static void Mod_SetAliasModelExtraFlags (model_t *mod)
 		mod->glow_color[0] = 1.0f;
 		mod->glow_color[1] = 0.75f;
 		mod->glow_color[2] = 0.25f;
+		mod->glow_color[3] = 0.5f;
 	}
 	else if (!Q_strncasecmp (mod->name, "models/eidoball",15))
 	{
@@ -1940,6 +1949,7 @@ static void Mod_SetAliasModelExtraFlags (model_t *mod)
 		mod->glow_color[0] = 1.0f;
 		mod->glow_color[1] = 0.55f;
 		mod->glow_color[2] = 0.25f;
+		mod->glow_color[3] = 0.5f;
 	}
 	else if (!Q_strncasecmp (mod->name, "models/lavaball",15))
 	{
@@ -1947,6 +1957,7 @@ static void Mod_SetAliasModelExtraFlags (model_t *mod)
 		mod->glow_color[0] = 1.0f;
 		mod->glow_color[1] = 0.75f;
 		mod->glow_color[2] = 0.25f;
+		mod->glow_color[3] = 0.5f;
 	}
 	else if (!Q_strncasecmp (mod->name, "models/glowball",15))
 	{
@@ -1954,6 +1965,7 @@ static void Mod_SetAliasModelExtraFlags (model_t *mod)
 		mod->glow_color[0] = 1.0f;
 		mod->glow_color[1] = 0.75f;
 		mod->glow_color[2] = 0.25f;
+		mod->glow_color[3] = 0.5f;
 	}
 	else if (!Q_strncasecmp (mod->name, "models/fireball",15))
 	{
@@ -1961,6 +1973,7 @@ static void Mod_SetAliasModelExtraFlags (model_t *mod)
 		mod->glow_color[0] = 1.0f;
 		mod->glow_color[1] = 0.25f;
 		mod->glow_color[2] = 0.25f;
+		mod->glow_color[3] = 0.5f;
 	}
 	else if (!Q_strncasecmp (mod->name, "models/famshot",14))
 	{
@@ -1968,6 +1981,7 @@ static void Mod_SetAliasModelExtraFlags (model_t *mod)
 		mod->glow_color[0] = 0.2f;
 		mod->glow_color[1] = 0.8f;
 		mod->glow_color[2] = 0.2f;
+		mod->glow_color[3] = 0.5f;
 	}
 	else if (!Q_strncasecmp (mod->name, "models/pestshot",15))
 	{
@@ -1975,6 +1989,7 @@ static void Mod_SetAliasModelExtraFlags (model_t *mod)
 		mod->glow_color[0] = 0.2f;
 		mod->glow_color[1] = 0.2f;
 		mod->glow_color[2] = 0.2f;
+		mod->glow_color[3] = 0.5f;
 	}
 	else if (!Q_strncasecmp (mod->name, "models/mumshot",14))
 	{
@@ -1982,6 +1997,7 @@ static void Mod_SetAliasModelExtraFlags (model_t *mod)
 		mod->glow_color[0] = 1.0f;
 		mod->glow_color[1] = 0.75f;
 		mod->glow_color[2] = 0.25f;
+		mod->glow_color[3] = 0.5f;
 	}
 	else if (!Q_strncasecmp (mod->name, "models/scrbstp1",15))
 	{
@@ -1989,6 +2005,7 @@ static void Mod_SetAliasModelExtraFlags (model_t *mod)
 		mod->glow_color[0] = 1.0f;
 		mod->glow_color[1] = 0.75f;
 		mod->glow_color[2] = 0.05f;
+		mod->glow_color[3] = 0.5f;
 	}
 	else if (!Q_strncasecmp (mod->name, "models/scrbpbody",16))
 	{
@@ -1996,6 +2013,7 @@ static void Mod_SetAliasModelExtraFlags (model_t *mod)
 		mod->glow_color[0] = 1.0f;
 		mod->glow_color[1] = 0.75f;
 		mod->glow_color[2] = 0.05f;
+		mod->glow_color[3] = 0.5f;
 	}
 	else if (!Q_strncasecmp (mod->name, "models/iceshot2",15))
 	{
@@ -2003,6 +2021,7 @@ static void Mod_SetAliasModelExtraFlags (model_t *mod)
 		mod->glow_color[0] = 0.25f;
 		mod->glow_color[1] = 0.25f;
 		mod->glow_color[2] = 1.0f;
+		mod->glow_color[3] = 0.5f;
 	}
 	else if (!Q_strncasecmp (mod->name, "models/iceshot",14))
 	{
@@ -2010,6 +2029,7 @@ static void Mod_SetAliasModelExtraFlags (model_t *mod)
 		mod->glow_color[0] = 0.25f;
 		mod->glow_color[1] = 0.25f;
 		mod->glow_color[2] = 1.0f;
+		mod->glow_color[3] = 0.5f;
 	}
 	else if (!Q_strncasecmp (mod->name, "models/flaming",14))
 	{
@@ -2017,6 +2037,7 @@ static void Mod_SetAliasModelExtraFlags (model_t *mod)
 		mod->glow_color[0] = 1.0f;
 		mod->glow_color[1] = 0.75f;
 		mod->glow_color[2] = 0.55f;
+		mod->glow_color[3] = 0.5f;
 	}
 	else if (!Q_strncasecmp (mod->name, "models/sucwp1p",14))
 	{
@@ -2024,6 +2045,7 @@ static void Mod_SetAliasModelExtraFlags (model_t *mod)
 		mod->glow_color[0] = 8.0f;
 		mod->glow_color[1] = 0.2f;
 		mod->glow_color[2] = 0.2f;
+		mod->glow_color[3] = 0.5f;
 	}
 	else if (!Q_strncasecmp (mod->name, "models/sucwp2p",14))
 	{
@@ -2031,6 +2053,7 @@ static void Mod_SetAliasModelExtraFlags (model_t *mod)
 		mod->glow_color[0] = 0.2f;
 		mod->glow_color[1] = 0.8f;
 		mod->glow_color[2] = 0.2f;
+		mod->glow_color[3] = 0.5f;
 	}
 	else if (!Q_strncasecmp (mod->name, "models/goop",11))
 	{
@@ -2038,6 +2061,7 @@ static void Mod_SetAliasModelExtraFlags (model_t *mod)
 		mod->glow_color[0] = 1.0f;
 		mod->glow_color[1] = 0.8f;
 		mod->glow_color[2] = 0.2f;
+		mod->glow_color[3] = 0.5f;
 	}
 	else if (!Q_strncasecmp (mod->name, "models/purfir1",14))
 	{
@@ -2045,6 +2069,7 @@ static void Mod_SetAliasModelExtraFlags (model_t *mod)
 		mod->glow_color[0] = 1.0f;
 		mod->glow_color[1] = 0.75f;
 		mod->glow_color[2] = 0.25f;
+		mod->glow_color[3] = 0.5f;
 	}
 	else if (!Q_strncasecmp (mod->name, "models/golemmis",15))
 	{
@@ -2052,6 +2077,7 @@ static void Mod_SetAliasModelExtraFlags (model_t *mod)
 		mod->glow_color[0] = 1.0f;
 		mod->glow_color[1] = 0.25f;
 		mod->glow_color[2] = 0.25f;
+		mod->glow_color[3] = 0.5f;
 	}
 	else if (!Q_strncasecmp (mod->name, "models/shard",12) && strlen(mod->name) == 12)
 	{
@@ -2059,6 +2085,7 @@ static void Mod_SetAliasModelExtraFlags (model_t *mod)
 		mod->glow_color[0] = 1.0f;
 		mod->glow_color[1] = 0.25f;
 		mod->glow_color[2] = 0.25f;
+		mod->glow_color[3] = 0.5f;
 	}
 	else if (!Q_strncasecmp (mod->name, "models/shardice",15))
 	{
@@ -2066,6 +2093,7 @@ static void Mod_SetAliasModelExtraFlags (model_t *mod)
 		mod->glow_color[0] = 0.25f;
 		mod->glow_color[1] = 0.25f;
 		mod->glow_color[2] = 1.0f;
+		mod->glow_color[3] = 0.5f;
 	}
 	else if (!Q_strncasecmp (mod->name, "models/snakearr",15))
 	{
@@ -2073,6 +2101,7 @@ static void Mod_SetAliasModelExtraFlags (model_t *mod)
 		mod->glow_color[0] = 1.0f;
 		mod->glow_color[1] = 0.25f;
 		mod->glow_color[2] = 0.25f;
+		mod->glow_color[3] = 0.5f;
 	}
 	else if (!Q_strncasecmp (mod->name, "models/spit",11))
 	{
@@ -2080,6 +2109,7 @@ static void Mod_SetAliasModelExtraFlags (model_t *mod)
 		mod->glow_color[0] = 0.25f;
 		mod->glow_color[1] = 1.0f;
 		mod->glow_color[2] = 0.25f;
+		mod->glow_color[3] = 0.5f;
 	}
 	else if (!Q_strncasecmp (mod->name, "models/spike",12))
 	{
@@ -2087,6 +2117,7 @@ static void Mod_SetAliasModelExtraFlags (model_t *mod)
 		mod->glow_color[0] = 1.0f;
 		mod->glow_color[1] = 1.0f;
 		mod->glow_color[2] = 1.0f;
+		mod->glow_color[3] = 0.5f;
 	}
 }
 

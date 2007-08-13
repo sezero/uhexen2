@@ -2,7 +2,7 @@
 	model.h
 	header for model loading and caching
 
-	$Id: gl_model.h,v 1.11 2007-05-15 13:42:24 sezero Exp $
+	$Id: gl_model.h,v 1.12 2007-08-13 06:44:34 sezero Exp $
 */
 
 #ifndef __HX2_MODEL_H
@@ -448,7 +448,7 @@ typedef struct model_s
 //
 	cache_user_t	cache;		// only access through Mod_Extradata
 
-	float		glow_color[3];
+	float		glow_color[4];
 
 } model_t;
 

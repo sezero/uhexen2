@@ -1,7 +1,7 @@
 /*
 	gl_main.c
 
-	$Id: gl_rmain.c,v 1.54 2007-08-13 06:43:55 sezero Exp $
+	$Id: gl_rmain.c,v 1.55 2007-08-13 06:44:34 sezero Exp $
 */
 
 
@@ -1186,8 +1186,6 @@ static void R_DrawGlow (entity_t *e)
 		VectorSubtract(lightorigin, r_origin, vp2);
 
 		// See if view is outside the light.
-		distance = VectorLength(glow_vect);
-		// See if view is outside the light.
 		distance = VectorLength(vp2);
 
 		if (distance > radius)
@@ -1200,9 +1198,7 @@ static void R_DrawGlow (entity_t *e)
 			{
 				if (!Q_strncasecmp (clmodel->name, "models/eflmtrch",15))
 					// egypt torch fix
-					glTranslatef_fp ( cos(e->angles[1]/180*M_PI)*8.0f,
-								sin(e->angles[1]/180*M_PI)*8.0f,
-								16.0f);
+					glTranslatef_fp (cos(e->angles[1]/180*M_PI)*8.0f, sin(e->angles[1]/180*M_PI)*8.0f, 16.0f);
 				else
 					glTranslatef_fp (0.0f, 0.0f, 8.0f);
 			}
@@ -1221,7 +1217,7 @@ static void R_DrawGlow (entity_t *e)
 			// Clamp, but don't let the flare disappear.
 			if (intensity > 1.0f)
 				intensity = 1.0f;
-			if (intensity < 0.0f)
+			else if (intensity < 0.0f)
 				intensity = 0.0f;
 
 			// Now modulate with flicker.
@@ -1270,15 +1266,10 @@ static void R_DrawGlow (entity_t *e)
 			}
 
 			intensity *= ((float)j / 255.0f);
-
-			if (clmodel->ex_flags & XF_TORCH_GLOW)
-				// Set yellow intensity
-				glColor4f_fp (0.8f*intensity, 0.4f*intensity, 0.1f*intensity, 1.0f);
-			else
-				glColor4f_fp (clmodel->glow_color[0]*intensity,
-						clmodel->glow_color[1]*intensity,
-						clmodel->glow_color[2]*intensity,
-						0.5f);
+			glColor4f_fp (clmodel->glow_color[0]*intensity,
+					clmodel->glow_color[1]*intensity,
+					clmodel->glow_color[2]*intensity,
+					clmodel->glow_color[3]);
 
 			for (i = 0; i < 3; i++)
 				glow_vect[i] = lightorigin[i] - vp2[i]*radius;
@@ -1292,15 +1283,13 @@ static void R_DrawGlow (entity_t *e)
 				float a = i / 16.0f * M_PI * 2;
 
 				for (j = 0; j < 3; j++)
-					glow_vect[j] = lightorigin[j] + 
-							vright[j]*cos(a)*radius +
-							vup[j]*sin(a)*radius;
+					glow_vect[j] = lightorigin[j] + vright[j]*cos(a)*radius + vup[j]*sin(a)*radius;
 
 				glVertex3fv_fp(glow_vect);
 			}
 
 			glEnd_fp();
-			glColor4f_fp (0.0f,0.0f,0.0f,1.0f);
+			glColor4f_fp (0.0f, 0.0f, 0.0f, 1.0f);
 			// Restore previous matrix
 			glPopMatrix_fp();
 		}
@@ -1339,7 +1328,6 @@ static void R_DrawAllGlows (void)
 	glBlendFunc_fp (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	glDepthMask_fp (1);
 	glShadeModel_fp (GL_FLAT);
-	glTexEnvf_fp(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
 }
 
 //=============================================================================
