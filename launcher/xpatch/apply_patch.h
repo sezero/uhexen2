@@ -2,7 +2,7 @@
 	apply_patch.h
 	hexen2 launcher: binary patch starter
 
-	$Id: apply_patch.h,v 1.5 2007-06-04 17:20:11 sezero Exp $
+	$Id: apply_patch.h,v 1.6 2007-08-13 14:50:35 sezero Exp $
 
 	This program is free software; you can redistribute it and/or
 	modify it under the terms of the GNU General Public License
@@ -31,6 +31,8 @@
 #define	XPATCH_FAIL		2UL
 
 extern void *apply_patches (void *workdir);
+
+extern int		thread_alive;
 
 #endif	/* _APPLY_PATCH_H */
 
