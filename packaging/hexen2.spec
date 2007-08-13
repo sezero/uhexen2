@@ -140,11 +140,7 @@ utils/bin/hcc -src gamecode-%{gamecode_ver}/hc/hw -oi -on
 %{__install} -D -m755 hexenworld/Client/glhwcl %{buildroot}/%{_prefix}/games/%{name}/glhwcl
 %{__install} -D -m755 hexenworld/Server/hwsv %{buildroot}/%{_prefix}/games/%{name}/hwsv
 %{__install} -D -m755 hexenworld/Master/hwmaster %{buildroot}/%{_prefix}/games/%{name}/hwmaster
-%if %{!?_without_gtk2:1}0
 %{__install} -D -m755 launcher/h2launcher %{buildroot}/%{_prefix}/games/%{name}/h2launcher
-%else
-%{__install} -D -m755 launcher/h2launcher.gtk1 %{buildroot}/%{_prefix}/games/%{name}/h2launcher
-%endif
 # Make a symlink of the game-launcher
 %{__mkdir_p} %{buildroot}/%{_bindir}
 %{__ln_s} %{_prefix}/games/hexen2/h2launcher %{buildroot}/%{_bindir}/hexen2
@@ -289,6 +285,9 @@ desktop-file-install \
 %{_prefix}/games/%{name}/docs/README.hwmaster
 
 %changelog
+* Mon Aug 22 2007 O.Sezer <sezero@users.sourceforge.net>
+- removed the .gtk1 suffix from launcher gtk-1.2 builds
+
 * Sun Jul 22 2007 O.Sezer <sezero@users.sourceforge.net> 1.4.2-0.5.rc2
 - 1.4.2-rc2.
 
