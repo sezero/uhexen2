@@ -1,7 +1,7 @@
 /*
 	gl_main.c
 
-	$Id: gl_rmain.c,v 1.53 2007-07-30 19:55:42 sezero Exp $
+	$Id: gl_rmain.c,v 1.54 2007-08-13 06:43:55 sezero Exp $
 */
 
 
@@ -1517,22 +1517,13 @@ and extended by muff - 5 Feb 2001.
 */
 static void GL_DoGamma (void)
 {
-	if (v_gamma.value < 0.2)
-		v_gamma.value = 0.2;
 	if (v_gamma.value >= 1)
-	{
-		v_gamma.value = 1;
 		return;
-	}
 
-	// this actually does brighten the picture..
 	glBlendFunc_fp (GL_DST_COLOR, GL_ONE_MINUS_SRC_ALPHA);
 	glColor4f_fp (1, 1, 1, v_gamma.value);
 
 	GL_DrawBlendPoly ();
-	// if we do this twice, we double the brightening
-	// effect for a wider range of gamma's
-	//GL_DrawBlendPoly ();
 
 	glBlendFunc_fp (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 }
