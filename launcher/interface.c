@@ -2,7 +2,7 @@
 	interface.c
 	hexen2 launcher gtk+ interface
 
-	$Id: interface.c,v 1.59 2007-08-09 06:08:22 sezero Exp $
+	$Id: interface.c,v 1.60 2007-08-13 06:43:15 sezero Exp $
 
 	This program is free software; you can redistribute it and/or
 	modify it under the terms of the GNU General Public License
@@ -1622,12 +1622,12 @@ static void create_window1 (void)
 #ifndef DEMOBUILD
 	gtk_signal_connect (GTK_OBJECT(H2G_Entry), "changed", GTK_SIGNAL_FUNC(H2GameChange), NULL);
 	gtk_signal_connect (GTK_OBJECT(HWG_Entry), "changed", GTK_SIGNAL_FUNC(HWGameChange), NULL);
-	gtk_signal_connect (GTK_OBJECT(WGT_PORTALS), "released", GTK_SIGNAL_FUNC(BoolRevert), &mp_support);
+	gtk_signal_connect (GTK_OBJECT(WGT_PORTALS), "clicked", GTK_SIGNAL_FUNC(BoolRevert), &mp_support);
 #endif	/* DEMOBUILD */
 	gtk_signal_connect (GTK_OBJECT(bPATCH), "clicked", GTK_SIGNAL_FUNC(create_window2), NULL);
-	gtk_signal_connect (GTK_OBJECT(WGT_HEXEN2), "released", GTK_SIGNAL_FUNC(on_HEXEN2), NULL);
-	gtk_signal_connect (GTK_OBJECT(WGT_H2WORLD), "released", GTK_SIGNAL_FUNC(on_H2W), NULL);
-	gtk_signal_connect (GTK_OBJECT(WGT_OPENGL), "released", GTK_SIGNAL_FUNC(on_OGL), NULL);
+	gtk_signal_connect (GTK_OBJECT(WGT_HEXEN2), "clicked", GTK_SIGNAL_FUNC(on_HEXEN2), NULL);
+	gtk_signal_connect (GTK_OBJECT(WGT_H2WORLD), "clicked", GTK_SIGNAL_FUNC(on_H2W), NULL);
+	gtk_signal_connect (GTK_OBJECT(WGT_OPENGL), "clicked", GTK_SIGNAL_FUNC(on_OGL), NULL);
 	gtk_signal_connect (GTK_OBJECT(SND_Entry), "changed", GTK_SIGNAL_FUNC(on_SND), NULL);
 	gtk_signal_connect (GTK_OBJECT(SRATE_Entry), "changed", GTK_SIGNAL_FUNC(on_SRATE), NULL);
 	gtk_signal_connect (GTK_OBJECT(WGT_SBITS), "toggled", GTK_SIGNAL_FUNC(on_SBITS), &sndbits);
