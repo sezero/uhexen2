@@ -2,7 +2,7 @@
 	gtk_ui.c
 	hexen2 launcher gtk+ interface
 
-	$Id: gtk_ui.c,v 1.1 2007-08-13 13:01:46 sezero Exp $
+	$Id: gtk_ui.c,v 1.2 2007-08-13 13:33:36 sezero Exp $
 
 	This program is free software; you can redistribute it and/or
 	modify it under the terms of the GNU General Public License
@@ -25,14 +25,16 @@
 
 #include "launcher_defs.h"
 #include "common.h"
+
+#include "launcher_ui.h"
 #include "gtk_ui.h"
 #include "support.h"
+
 #if !defined(DEMOBUILD)
 #include <pthread.h>
 #include "apply_patch.h"
 #endif	/* !DEMOBUILD */
-#include "widget_defs.h"
-#include "launcher_ui.h"
+
 #include "config_file.h"
 #include "games.h"
 
