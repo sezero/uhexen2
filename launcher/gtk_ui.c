@@ -2,7 +2,7 @@
 	gtk_ui.c
 	hexen2 launcher gtk+ interface
 
-	$Id: gtk_ui.c,v 1.4 2007-08-13 14:50:35 sezero Exp $
+	$Id: gtk_ui.c,v 1.5 2007-08-13 15:14:13 sezero Exp $
 
 	This program is free software; you can redistribute it and/or
 	modify it under the terms of the GNU General Public License
@@ -271,7 +271,7 @@ static void start_xpatch (GtkObject *Unused, PatchWindow_t *PatchWindow)
 {
 	pthread_t		thr;
 	char		*wd;
-	long		*ptr;
+	unsigned long	*ptr;
 	guint	delete_handler;
 	int		ret = 2;
 
