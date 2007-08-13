@@ -2,7 +2,7 @@
 	gtk_ui.c
 	hexen2 launcher gtk+ interface
 
-	$Id: gtk_ui.c,v 1.2 2007-08-13 13:33:36 sezero Exp $
+	$Id: gtk_ui.c,v 1.3 2007-08-13 14:04:20 sezero Exp $
 
 	This program is free software; you can redistribute it and/or
 	modify it under the terms of the GNU General Public License
@@ -276,6 +276,7 @@ static void start_xpatch (GtkObject *Unused, PatchWindow_t *PatchWindow)
 	pthread_t		thr;
 	char		*wd;
 	long		*ptr;
+	guint	delete_handler;
 	int		ret = 2;
 
 	if (basedir_nonstd && game_basedir[0])
@@ -288,7 +289,7 @@ static void start_xpatch (GtkObject *Unused, PatchWindow_t *PatchWindow)
 	gtk_widget_set_sensitive (PatchWindow->dir_Entry, FALSE);
 	gtk_widget_set_sensitive (PatchWindow->bCLOSE, FALSE);
 	gtk_widget_set_sensitive (PatchWindow->bREPORT, FALSE);
-	PatchWindow->delete_handler =
+	delete_handler =
 		gtk_signal_connect(GTK_OBJECT(PatchWindow->mywindow), "delete-event", GTK_SIGNAL_FUNC(block_window_close), NULL);
 	ui_LogInit (PatchWindow->LOGVIEW);
 
@@ -329,7 +330,7 @@ static void start_xpatch (GtkObject *Unused, PatchWindow_t *PatchWindow)
 		}
 	}
 finish:
-	gtk_signal_disconnect (GTK_OBJECT(PatchWindow->mywindow), PatchWindow->delete_handler);
+	gtk_signal_disconnect (GTK_OBJECT(PatchWindow->mywindow), delete_handler);
 	gtk_widget_set_sensitive (PatchWindow->bCLOSE, TRUE);
 	gtk_widget_set_sensitive (PatchWindow->bAPPLY, TRUE);
 	gtk_widget_set_sensitive (PatchWindow->bBASEDIR, TRUE);

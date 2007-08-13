@@ -2,7 +2,7 @@
 	gtk_ui.h
 	gtk ui, main header
 
-	$Id: gtk_ui.h,v 1.2 2007-08-13 13:33:36 sezero Exp $
+	$Id: gtk_ui.h,v 1.3 2007-08-13 14:04:20 sezero Exp $
 
 	This program is free software; you can redistribute it and/or
 	modify it under the terms of the GNU General Public License
@@ -90,7 +90,6 @@ typedef struct
 	GtkWidget *dir_Entry;	// path for game basedir
 	GtkWidget *StatusBar;	// Status bar, (patch status)
 	gint	statbar_id;	// statbar context id
-	guint	delete_handler;
 } PatchWindow_t;
 
 struct Launch_s
