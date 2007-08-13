@@ -2,7 +2,7 @@
 	launch_bin.c
 	hexen2 launcher: binary launching
 
-	$Id: launch_bin.c,v 1.46 2007-08-09 06:08:23 sezero Exp $
+	$Id: launch_bin.c,v 1.47 2007-08-13 13:01:46 sezero Exp $
 
 	This program is free software; you can redistribute it and/or
 	modify it under the terms of the GNU General Public License
@@ -27,7 +27,7 @@
 #include "launcher_defs.h"
 #include "games.h"
 #include "config_file.h"
-#include "interface.h"
+#include "launcher_ui.h"
 #include <ctype.h>
 
 #define AASAMPLES_CHARS	4U	/* max digits for the aasamples value + 1 (nul) */

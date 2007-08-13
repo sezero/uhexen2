@@ -2,7 +2,7 @@
 	main.c
 	hexen2 launcher: main loop
 
-	$Id: main.c,v 1.30 2007-08-09 06:08:23 sezero Exp $
+	$Id: main.c,v 1.31 2007-08-13 13:01:46 sezero Exp $
 
 	This program is free software; you can redistribute it and/or
 	modify it under the terms of the GNU General Public License
@@ -36,7 +36,7 @@
 #include "launcher_defs.h"
 #include "games.h"
 #include "config_file.h"
-#include "interface.h"
+#include "launcher_ui.h"
 
 char		basedir[MAX_OSPATH];
 char		userdir[MAX_OSPATH];

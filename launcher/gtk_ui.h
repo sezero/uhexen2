@@ -1,8 +1,8 @@
 /*
-	compat_gtk1.h
-	"gtk-1.2 doesnt have it" wrappers...
+	gtk_ui.h
+	gtk ui, main header
 
-	$Id: compat_gtk1.h,v 1.7 2007-04-15 20:40:38 sezero Exp $
+	$Id: gtk_ui.h,v 1.1 2007-08-13 13:01:46 sezero Exp $
 
 	This program is free software; you can redistribute it and/or
 	modify it under the terms of the GNU General Public License
@@ -23,10 +23,22 @@
 		Boston, MA  02110-1301, USA
 */
 
-#ifndef	LAUNCHER_GTK1COMPAT_H
-#define	LAUNCHER_GTK1COMPAT_H
+#ifndef	LAUNCHER_GTK_H
+#define	LAUNCHER_GTK_H
 
-#if defined(_H2L_USE_GTK1)
+#include <gtk/gtk.h>
+
+#undef	_H2L_USE_GTK1
+
+#if (GTK_MAJOR_VERSION < 2)
+#if GTK_CHECK_VERSION(1,2,0)
+#define	_H2L_USE_GTK1	(1)
+#else
+#error You need at least 1.2.0 version of GTK+
+#endif
+#endif
+
+#if defined(_H2L_USE_GTK1)		/* "gtk-1.2 doesnt have it" wrappers */
 
 #define	GTK_WIN_POS_CENTER_ON_PARENT	GTK_WIN_POS_NONE
 #define	gtk_statusbar_set_has_resize_grip(x, y)
@@ -37,5 +49,5 @@
 
 #endif	/* _H2L_USE_GTK1 */
 
-#endif	/* LAUNCHER_GTK1COMPAT_H */
+#endif	/* LAUNCHER_GTK_H */
 

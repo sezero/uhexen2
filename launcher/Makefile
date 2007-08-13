@@ -1,5 +1,5 @@
 # GNU Makefile for hexen2 gtk-launcher app using GCC.
-# $Header: /home/ozzie/Download/0000/uhexen2/launcher/Makefile,v 1.44 2007-08-09 06:08:22 sezero Exp $
+# $Header: /home/ozzie/Download/0000/uhexen2/launcher/Makefile,v 1.45 2007-08-13 13:01:46 sezero Exp $
 #
 #  gtk2 will be used default.
 #  to compile for gtk-1.2 type:  make GTK1=yes
@@ -40,18 +40,16 @@ XDELTA_FLAGS:=
 XDELTA_LINK:= -L$(XDELTA_DIR)/.libs -lxdelta -L$(XDELTA_DIR)/libedsio/.libs -ledsio
 
 ifdef DEMO
-TMPNAME:= h2demo
+H2LAUNCH:= h2demo
 else
-TMPNAME:= h2launcher
+H2LAUNCH:= h2launcher
 endif
 
 ifdef GTK1
-H2LAUNCH:= $(TMPNAME).gtk1
 GTK_CFLAGS:= $(shell gtk-config --cflags)
 GTK_LIBS:= $(shell gtk-config --libs)
 XDELTA_FLAGS:=-D_XD_USE_GLIB1
 else
-H2LAUNCH:= $(TMPNAME)
 GTK_CFLAGS:= $(shell pkg-config --cflags gtk+-2.0)
 GTK_LIBS:= $(shell pkg-config --libs gtk+-2.0)
 endif
@@ -69,9 +67,6 @@ CFLAGS := $(CFLAGS) -DDEMOBUILD
 else
 CFLAGS := $(CFLAGS) $(XDELTA_FLAGS) -I$(XDELTA_DIR) -I$(XDELTA_DIR)/libedsio -I. -I./xpatch
 endif
-ifdef GTK1
-CFLAGS := $(CFLAGS) -D_H2L_USE_GTK1
-endif
 
 LDFLAGS:=$(GTK_LIBS)
 ifndef DEMO
@@ -82,11 +77,13 @@ endif
 endif
 
 ifdef DEMO
-XPATCH_OBJ :=
+XPATCH_OBJS   :=
 LIBXDELTA_OBJS:=
 LIBEDSIO_OBJS :=
+
 else
-LIBEDSIO_OBJS:= $(XDELTA_DIR)/libedsio/library.o \
+ifeq ($(AUTOTOOLS),0)
+LIBEDSIO_OBJS :=$(XDELTA_DIR)/libedsio/library.o \
 		$(XDELTA_DIR)/libedsio/simple.o \
 		$(XDELTA_DIR)/libedsio/edsio.o \
 		$(XDELTA_DIR)/libedsio/edsio_edsio.o \
@@ -98,13 +95,17 @@ LIBEDSIO_OBJS:= $(XDELTA_DIR)/libedsio/library.o \
 		$(XDELTA_DIR)/libedsio/maketime.o \
 		$(XDELTA_DIR)/libedsio/partime.o
 # SHA is unused in present code, removed it.
-#		libedsio/sha.o \
+#		$(XDELTA_DIR)/libedsio/sha.o \
 
 LIBXDELTA_OBJS:=$(XDELTA_DIR)/xdelta.o \
 		$(XDELTA_DIR)/xdapply.o \
 		$(XDELTA_DIR)/xd_edsio.o
+else
+LIBXDELTA_OBJS:=
+LIBEDSIO_OBJS :=
+endif
 
-XPATCH_OBJ := xpatch/md5.o xpatch/loki_xdelta.o xpatch/apply_patch.o
+XPATCH_OBJS   :=xpatch/md5.o xpatch/loki_xdelta.o xpatch/apply_patch.o
 endif
 
 # Targets
@@ -115,18 +116,15 @@ all: $(H2LAUNCH)
 	$(CC) -c $(CFLAGS) -o $@ $<
 
 # Objects
-# activate the SUPPORT_OBJ line below if you add pixmap support, etc
-#SUPPORT_OBJ= support.o
-LAUNCHER_OBJS = crc.o games.o config_file.o launch_bin.o interface.o \
-		$(XPATCH_OBJ) $(SUPPORT_OBJ) main.o
+# activate the line below if you add pixmap support, etc
+#SUPPORT_OBJS := support.o
+GUI_OBJS     := gtk_ui.o $(SUPPORT_OBJS)
+LAUNCHER_OBJS:= crc.o games.o config_file.o launch_bin.o
+LAUNCHER_MAIN:= main.o
+ALL_OBJECTS  := $(LAUNCHER_OBJS) $(GUI_OBJS) $(XPATCH_OBJS) \
+	$(LIBXDELTA_OBJS) $(LIBEDSIO_OBJS) $(LAUNCHER_MAIN)
 
-ifeq ($(AUTOTOOLS),0)
-ALL_OBJECTS:= $(LAUNCHER_OBJS) $(LIBXDELTA_OBJS) $(LIBEDSIO_OBJS)
-else
-ALL_OBJECTS:= $(LAUNCHER_OBJS)
-endif
-
-$(H2LAUNCH): $(LAUNCHER_OBJS)
+$(H2LAUNCH): $(LAUNCHER_OBJS) $(LAUNCHER_MAIN) $(GUI_OBJS) $(XPATCH_OBJS)
 	@rm -f $(H2LAUNCH)
 	$(LINKER) -o $(H2LAUNCH) $(ALL_OBJECTS) $(LDFLAGS)
 

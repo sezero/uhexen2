@@ -1,8 +1,8 @@
 /*
-	interface.h
-	hexen2 launcher gtk+ interface
+	launcher_ui.h
+	hexen2 launcher, global ui functions
 
-	$Id: interface.h,v 1.12 2007-08-09 06:08:23 sezero Exp $
+	$Id: launcher_ui.h,v 1.1 2007-08-13 13:01:46 sezero Exp $
 
 	This program is free software; you can redistribute it and/or
 	modify it under the terms of the GNU General Public License
@@ -23,12 +23,20 @@
 		Boston, MA  02110-1301, USA
 */
 
-#ifndef	LAUNCHER_INTERFACE_H
-#define	LAUNCHER_INTERFACE_H
+#ifndef	LAUNCHER_UI_H
+#define	LAUNCHER_UI_H
 
 int  ui_main (int *argc, char ***argv);
-void ui_pump (void);
-void ui_quit (void);
+	/* initializes and runs the gui loop.
+	   call this from your main() . */
 
-#endif	/* LAUNCHER_INTERFACE_H */
+void ui_quit (void);
+	/* aborts the gui loop and saves the
+	   user's options to the config */
+
+void ui_pump (void);
+	/* updates the gui. use it when doing
+	   time consuming stuff (eg. patch) */
+
+#endif	/* LAUNCHER_UI_H */
 
