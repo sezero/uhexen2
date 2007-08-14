@@ -1,6 +1,6 @@
 /*
 	in_win.c
-	$Id: in_win.c,v 1.31 2007-08-01 09:44:00 sezero Exp $
+	$Id: in_win.c,v 1.32 2007-08-14 10:16:52 sezero Exp $
 
 	windows 95 mouse and joystick code
 
@@ -866,7 +866,7 @@ static void IN_StartupJoystick (void)
 	// verify joystick driver is present
 	if ((numdevs = joyGetNumDevs ()) == 0)
 	{
-		Con_Printf ("\njoystick not found -- driver not present\n\n");
+		Con_SafePrintf ("\njoystick not found -- driver not present\n\n");
 		return;
 	}
 
@@ -884,7 +884,7 @@ static void IN_StartupJoystick (void)
 	// abort startup if we didn't find a valid joystick
 	if (mmr != JOYERR_NOERROR)
 	{
-		Con_Printf ("\njoystick not found -- no valid joysticks (%x)\n\n", mmr);
+		Con_SafePrintf ("\njoystick not found -- no valid joysticks (%x)\n\n", mmr);
 		return;
 	}
 
@@ -893,7 +893,7 @@ static void IN_StartupJoystick (void)
 	memset (&jc, 0, sizeof(jc));
 	if ((mmr = joyGetDevCaps (joy_id, &jc, sizeof(jc))) != JOYERR_NOERROR)
 	{
-		Con_Printf ("\njoystick not found -- invalid joystick capabilities (%x)\n\n", mmr);
+		Con_SafePrintf ("\njoystick not found -- invalid joystick capabilities (%x)\n\n", mmr);
 		return;
 	}
 
@@ -910,7 +910,7 @@ static void IN_StartupJoystick (void)
 	joy_avail = true;
 	joy_advancedinit = false;
 
-	Con_Printf ("\njoystick detected\n\n");
+	Con_SafePrintf ("\njoystick detected\n\n");
 }
 
 
