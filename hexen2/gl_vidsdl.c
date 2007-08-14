@@ -2,7 +2,7 @@
 	gl_vidsdl.c -- SDL GL vid component
 	Select window size and mode and init SDL in GL mode.
 
-	$Id: gl_vidsdl.c,v 1.170 2007-08-14 09:04:19 sezero Exp $
+	$Id: gl_vidsdl.c,v 1.171 2007-08-14 11:00:10 sezero Exp $
 
 	Changed 7/11/04 by S.A.
 	- Fixed fullscreen opengl mode, window sizes
@@ -1145,7 +1145,7 @@ static void VID_ChangeVideoMode(int newmode)
 	temp = scr_disabled_for_loading;
 	scr_disabled_for_loading = true;
 
-	// restore gamma (just in case), reset gamma function pointers
+	// restore gamma, reset gamma function pointers
 	VID_ShutdownGamma();
 	CDAudio_Pause ();
 	MIDI_Pause (MIDI_ALWAYS_PAUSE);
@@ -1158,14 +1158,14 @@ static void VID_ChangeVideoMode(int newmode)
 	for (j = 0; j < MAX_LIGHTMAPS; j++)
 		lightmap_modified[j] = true;
 
-	// reset all opengl function pointers (just in case)
+	// reset all opengl function pointers
 	GL_ResetFunctions();
 
 	// Avoid re-registering commands and re-allocating memory
 	draw_reinit = true;
 
 	// temporarily disable input devices
-	IN_DeactivateMouse ();
+	IN_DeactivateMouse();
 	IN_ShowMouse ();
 
 	// Kill device and rendering contexts
@@ -1182,15 +1182,6 @@ static void VID_ChangeVideoMode(int newmode)
 	VID_SetMode (newmode);
 	// re-get the video info since we re-inited sdl_video
 	vid_info = SDL_GetVideoInfo();
-	GL_Init();
-	VID_InitGamma();
-	VID_Init8bitPalette();
-
-	// re-init input devices
-	IN_ReInit ();
-	ClearAllStates ();
-	CDAudio_Resume ();
-	MIDI_Pause (MIDI_ALWAYS_RESUME);
 
 	// Reload graphics wad file (Draw_PicFromWad writes glpic_t data (sizes,
 	// texnums) right on top of the original pic data, so the pic data will
@@ -1198,27 +1189,34 @@ static void VID_ChangeVideoMode(int newmode)
 	// a clean version)
 	W_LoadWadFile ("gfx.wad");
 
+	// Initialize extensions and default OpenGL parameters
+	GL_Init();
+	VID_InitGamma();
+	VID_Init8bitPalette();
+
 	// Reload pre-map pics, fonts, console, etc
 	Draw_Init();
 	SCR_Init();
-	Sbar_Init();
-	// Reload the particle texture
+	// R_Init() stuff:
 	R_InitParticleTexture();
 #if defined(H2W)
 	R_InitNetgraphTexture();
 #endif	/* H2W */
-
+	Sbar_Init();
 	vid.recalc_refdef = 1;
+
+	IN_ReInit ();
+	ClearAllStates ();
+	CDAudio_Resume ();
+	MIDI_Pause (MIDI_ALWAYS_RESUME);
 
 	// Reload model textures and player skins
 	Mod_ReloadTextures();
 	// rebuild the lightmaps
 	GL_BuildLightmaps();
-
 	// finished reloading all images
 	draw_reinit = false;
 	scr_disabled_for_loading = temp;
-
 	// apply our gamma
 	VID_ShiftPalette(NULL);
 }
