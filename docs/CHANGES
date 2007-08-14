@@ -3,6 +3,31 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2007-08-14 (CVS):
+    * launcher: a more consistant fix for two toggle buttons.
+    * launcher: renamed interface.h to launcher_ui.h, interface.c and
+      compat_gtk1.h to gtk_ui.c and gtk_ui.h. adjusted the makefile
+      accordingly. removed the .gtk1 binary name suffix from gtk-1.2
+      builds.
+    * updated the rpm spec file (removed the .gtk1 suffix from launcher
+      gtk-1.2 builds)
+    * updated the documents after the launcher changes.
+    * launcher: removed widget_defs.h and merged its contents to gtk_ui.h.
+    * launcher: removed the unnecessary delete_handler member from the
+      PatchWindow structure.
+    * launcher: several tidy-ups.
+    * launcher: pointer for the patch thread return value should be unsigned.
+    * printsys.h: added a Con_SafeDPrintf macro.
+    * console.c: clean-up for Con_SafePrintf calls.
+    * changed Con_Printf calls into Con_SafePrintf in the video initialization
+      routines.
+    * removed the windows message box asking the user for a retry when the
+      sound hardware is in use, moved S_Init from vid_win.c to Host_Init.
+      while we were there, moved Sbar_Init to a place before S_Init, so all
+      init procedures loading some textures are all together.
+    * in_win.c: changed Con_Printf calls into Con_SafePrintf in the initialization
+      routines.
+    * minor re-organization in VID_ChangeVideoMode procedure.
 2007-08-13 (CVS):
     * launcher: fixed toggle events for a few buttons. from Steven.
     * gl_rmain.c: setting the v_gamma value isn't necessary, view.c
