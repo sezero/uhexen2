@@ -2,7 +2,7 @@
 	vid_win.c
 	Win32 video driver using MGL-4.05
 
-	$Id: vid_win.c,v 1.52 2007-08-14 09:04:20 sezero Exp $
+	$Id: vid_win.c,v 1.53 2007-08-14 09:50:34 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -2220,8 +2220,6 @@ void	VID_Init (unsigned char *palette)
 		VID_SetMode(vid_default, palette);
 		force_mode_set = false;
 	}
-
-	S_Init ();
 
 	vid_initialized = true;
 

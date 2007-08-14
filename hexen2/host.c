@@ -2,7 +2,7 @@
 	host.c
 	coordinates spawning and killing of local servers
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host.c,v 1.83 2007-07-25 15:11:07 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host.c,v 1.84 2007-08-14 09:50:30 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -1016,16 +1016,12 @@ void Host_Init (void)
 		Draw_Init ();
 		SCR_Init ();
 		R_Init ();
+		Sbar_Init();
 
-#if defined(GLQUAKE) || defined(PLATFORM_UNIX)
-	// VID_Init of vid_win.c already is responsible for S_Init
-	// FIXME: gl_vidnt.c doesn't use the new one-window approach yet
 		S_Init ();
-#endif
-
 		CDAudio_Init();
 		MIDI_Init();
-		Sbar_Init();
+
 		CL_Init();
 		IN_Init();
 	}

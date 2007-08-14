@@ -2,7 +2,7 @@
 	cl_main.c
 	client main loop
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/cl_main.c,v 1.82 2007-07-20 07:45:43 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/cl_main.c,v 1.83 2007-08-14 09:50:34 sezero Exp $
 */
 
 #include <sys/types.h>
@@ -1396,16 +1396,14 @@ void Host_Init (void)
 	Draw_Init ();
 	SCR_Init ();
 	R_Init ();
-
-#if defined(GLQUAKE) || defined(PLATFORM_UNIX)
-	// VID_Init of vid_win.c already is responsible for S_Init
-	S_Init ();
-#endif
+	Sbar_Init ();
 
 	cls.state = ca_disconnected;
+
+	S_Init ();
 	CDAudio_Init ();
 	MIDI_Init ();
-	Sbar_Init ();
+
 	CL_Init ();
 	IN_Init ();
 
