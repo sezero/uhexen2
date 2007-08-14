@@ -1,6 +1,6 @@
 /*
 	gl_vidnt.c -- NT GL vid component
-	$Id: gl_vidnt.c,v 1.109 2007-08-01 21:45:11 sezero Exp $
+	$Id: gl_vidnt.c,v 1.110 2007-08-14 09:04:20 sezero Exp $
 */
 
 #define	__GL_FUNC_EXTERN
@@ -593,7 +593,7 @@ static void VID_Init8bitPalette (void)
 		glColorTableEXT_fp (GL_SHARED_TEXTURE_PALETTE_EXT, GL_RGB, 256,
 					GL_RGB, GL_UNSIGNED_BYTE, (void *) thePalette);
 		is8bit = true;
-		Con_Printf("8-bit palettized textures enabled\n");
+		Con_SafePrintf("8-bit palettized textures enabled\n");
 	}
 }
 
@@ -609,7 +609,7 @@ static void VID_Check3dfxGamma (void)
 		GetDeviceGammaRamp_f = (GAMMA_RAMP_FN) wglGetProcAddress_fp("wglGetDeviceGammaRamp3DFX");
 		SetDeviceGammaRamp_f = (GAMMA_RAMP_FN) wglGetProcAddress_fp("wglSetDeviceGammaRamp3DFX");
 		if (GetDeviceGammaRamp_f && SetDeviceGammaRamp_f)
-			Con_Printf("Using 3Dfx specific gamma control\n");
+			Con_SafePrintf("Using 3Dfx specific gamma control\n");
 		else
 		{
 			GetDeviceGammaRamp_f = GetDeviceGammaRamp;
@@ -633,7 +633,7 @@ static void VID_InitGamma (void)
 	if (!gammaworks)
 	{
 		// we can still adjust the brightness...
-		Con_Printf("gamma not available, using gl tricks\n");
+		Con_SafePrintf("gamma not available, using gl tricks\n");
 		gl_dogamma = true;
 	}
 }
@@ -651,16 +651,16 @@ static void CheckMultiTextureExtensions(void)
 
 	if (COM_CheckParm("-nomtex"))
 	{
-		Con_Printf("Multitexture extensions disabled\n");
+		Con_SafePrintf("Multitexture extensions disabled\n");
 	}
 	else if (strstr(gl_extensions, "GL_ARB_multitexture"))
 	{
-		Con_Printf("ARB Multitexture extensions found\n");
+		Con_SafePrintf("ARB Multitexture extensions found\n");
 
 		glGetIntegerv_fp(GL_MAX_TEXTURE_UNITS_ARB, &num_tmus);
 		if (num_tmus < 2)
 		{
-			Con_Printf("not enough TMUs, ignoring multitexture\n");
+			Con_SafePrintf("not enough TMUs, ignoring multitexture\n");
 			return;
 		}
 
@@ -669,11 +669,11 @@ static void CheckMultiTextureExtensions(void)
 		if ((glMultiTexCoord2fARB_fp == NULL) ||
 		    (glActiveTextureARB_fp == NULL))
 		{
-			Con_Printf ("Couldn't link to multitexture functions\n");
+			Con_SafePrintf ("Couldn't link to multitexture functions\n");
 			return;
 		}
 
-		Con_Printf("Found %i TMUs support\n", num_tmus);
+		Con_SafePrintf("Found %i TMUs support\n", num_tmus);
 		gl_mtexable = true;
 
 		// start up with the correct texture selected!
@@ -682,7 +682,7 @@ static void CheckMultiTextureExtensions(void)
 	}
 	else
 	{
-		Con_Printf("GL_ARB_multitexture not found\n");
+		Con_SafePrintf("GL_ARB_multitexture not found\n");
 	}
 }
 
@@ -692,7 +692,7 @@ static void CheckStencilBuffer(void)
 
 	if (pfd.cStencilBits)
 	{
-		Con_Printf("Stencil buffer created with %d bits\n", pfd.cStencilBits);
+		Con_SafePrintf("Stencil buffer created with %d bits\n", pfd.cStencilBits);
 		have_stencil = true;
 	}
 }
@@ -701,12 +701,12 @@ static void CheckStencilBuffer(void)
 #ifdef GL_DLSYM
 static qboolean GL_OpenLibrary(const char *name)
 {
-	Con_Printf("Loading OpenGL library %s\n", name);
+	Con_SafePrintf("Loading OpenGL library %s\n", name);
 
 	// open the library
 	if (!(hInstGL = LoadLibrary(name)))
 	{
-		Con_Printf("Unable to LoadLibrary %s\n", name);
+		Con_SafePrintf("Unable to LoadLibrary %s\n", name);
 		return false;
 	}
 
@@ -787,16 +787,16 @@ static void GL_Init (void)
 {
 	PIXELFORMATDESCRIPTOR	new_pfd;
 
-	Con_Printf ("Video mode %s initialized\n", VID_GetModeDescription (vid_modenum));
+	Con_SafePrintf ("Video mode %s initialized\n", VID_GetModeDescription (vid_modenum));
 	// DescribePixelFormat fails with old 3dfx minigl drivers: don't Sys_Error
 	if (DescribePixelFormat(maindc, GetPixelFormat(maindc), sizeof(PIXELFORMATDESCRIPTOR), &new_pfd))
 	{
-		Con_Printf("Pixel format: c: %d, z: %d, s: %d\n",
+		Con_SafePrintf("Pixel format: c: %d, z: %d, s: %d\n",
 			new_pfd.cColorBits, new_pfd.cDepthBits, new_pfd.cStencilBits);
 		if ((new_pfd.dwFlags & PFD_GENERIC_FORMAT) && !(new_pfd.dwFlags & PFD_GENERIC_ACCELERATED))
-			Con_Printf ("WARNING: Hardware acceleration not present\n");
+			Con_SafePrintf ("WARNING: Hardware acceleration not present\n");
 		else if (new_pfd.dwFlags & PFD_GENERIC_ACCELERATED)
-			Con_Printf ("OpenGL: MCD acceleration found\n");
+			Con_SafePrintf ("OpenGL: MCD acceleration found\n");
 	}
 
 #ifdef GL_DLSYM
@@ -804,28 +804,28 @@ static void GL_Init (void)
 	GL_Init_Functions();
 #endif
 	gl_vendor = (const char *)glGetString_fp (GL_VENDOR);
-	Con_Printf ("GL_VENDOR: %s\n", gl_vendor);
+	Con_SafePrintf ("GL_VENDOR: %s\n", gl_vendor);
 	gl_renderer = (const char *)glGetString_fp (GL_RENDERER);
-	Con_Printf ("GL_RENDERER: %s\n", gl_renderer);
+	Con_SafePrintf ("GL_RENDERER: %s\n", gl_renderer);
 
 	gl_version = (const char *)glGetString_fp (GL_VERSION);
-	Con_Printf ("GL_VERSION: %s\n", gl_version);
+	Con_SafePrintf ("GL_VERSION: %s\n", gl_version);
 	gl_extensions = (const char *)glGetString_fp (GL_EXTENSIONS);
-	Con_DPrintf ("GL_EXTENSIONS: %s\n", gl_extensions);
+	Con_SafeDPrintf ("GL_EXTENSIONS: %s\n", gl_extensions);
 
 	glGetIntegerv_fp(GL_MAX_TEXTURE_SIZE, &gl_max_size);
 	if (gl_max_size < 256)	// Refuse to work when less than 256
 		Sys_Error ("hardware capable of min. 256k opengl texture size needed");
 	if (gl_max_size > 1024)	// We're cool with 1024, write a cmdline override if necessary
 		gl_max_size = 1024;
-	Con_Printf("OpenGL max.texture size: %i\n", gl_max_size);
+	Con_SafePrintf("OpenGL max.texture size: %i\n", gl_max_size);
 
 	is_3dfx = false;
 	if (!Q_strncasecmp(gl_renderer, "3dfx", 4)	  ||
 	    !Q_strncasecmp(gl_renderer, "SAGE Glide", 10) ||
 	    !Q_strncasecmp(gl_renderer, "Mesa Glide", 10))
 	{
-		Con_Printf("3dfx Voodoo found\n");
+		Con_SafePrintf("3dfx Voodoo found\n");
 		is_3dfx = true;
 	}
 
@@ -963,7 +963,7 @@ static void VID_CreateInversePalette (unsigned char *palette)
 	long	idx = 0;
 	unsigned char	true_color[3];
 
-	Con_Printf ("Creating inverse palette\n");
+	Con_SafePrintf ("Creating inverse palette\n");
 
 	for (r = 0; r < ( 1 << INVERSE_PAL_R_BITS ); r++)
 	{
@@ -1403,7 +1403,7 @@ static LONG WINAPI MainWndProc (HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPar
 			{
 				uMSG_MOUSEWHEEL = RegisterWindowMessage("MSWHEEL_ROLLMSG");
 				if (!uMSG_MOUSEWHEEL)
-					Con_Printf ("couldn't register mousewheel\n");
+					Con_SafePrintf ("couldn't register mousewheel\n");
 			}
 			break;
 
@@ -2056,7 +2056,7 @@ static void VID_SortModes (void)
 		}
 	}
 	if (vid_deskmode < 0)
-		Con_Printf ("WARNING: desktop resolution not found in modelist");
+		Con_SafePrintf ("WARNING: desktop resolution not found in modelist");
 }
 
 
@@ -2143,7 +2143,7 @@ void	VID_Init (unsigned char *palette)
 
 	VID_InitFullDIB (global_hInstance);
 
-	Con_Printf ("Desktop settings: %d x %d x %d\n", vid_deskwidth, vid_deskheight, vid_deskbpp);
+	Con_SafePrintf ("Desktop settings: %d x %d x %d\n", vid_deskwidth, vid_deskheight, vid_deskbpp);
 
 	// sort the modes
 	VID_SortModes();
@@ -2264,7 +2264,7 @@ void	VID_Init (unsigned char *palette)
 			}
 			else
 			{
-				Con_Printf ("WARNING: desktop mode not available for the -current switch");
+				Con_SafePrintf ("WARNING: desktop mode not available for the -current switch");
 			}
 		}
 		else

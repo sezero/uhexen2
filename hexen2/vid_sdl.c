@@ -3,7 +3,7 @@
 	SDL video driver
 	Select window size and mode and init SDL in SOFTWARE mode.
 
-	$Id: vid_sdl.c,v 1.77 2007-07-20 07:45:42 sezero Exp $
+	$Id: vid_sdl.c,v 1.78 2007-08-14 09:04:19 sezero Exp $
 
 	Changed by S.A. 7/11/04, 27/12/04
 	Options are now: -fullscreen | -window, -height , -width
@@ -306,7 +306,7 @@ static void VID_PrepareModes (SDL_Rect **sdl_modes)
 	if (sdl_modes == (SDL_Rect **)0)
 	{
 no_fmodes:
-		Con_Printf ("No fullscreen video modes available\n");
+		Con_SafePrintf ("No fullscreen video modes available\n");
 		if (num_wmodes > RES_640X480)
 			num_wmodes = RES_640X480 + 1;
 		modelist = wmodelist;
@@ -322,7 +322,7 @@ no_fmodes:
 	{	// Really should NOT HAVE happened! this return value is
 		// for windowed modes!  Since this means all resolutions
 		// are supported, use our standart modes as modes list.
-		Con_Printf ("Unexpectedly received -1 from SDL_ListModes\n");
+		Con_SafePrintf ("Unexpectedly received -1 from SDL_ListModes\n");
 		vid_maxwidth = MAXWIDTH;
 		vid_maxheight = MAXHEIGHT;
 	//	num_fmodes = -1;
@@ -339,9 +339,9 @@ no_fmodes:
 	// print the un-processed modelist as reported by SDL
 	for (j = 0; sdl_modes[j]; ++j)
 	{
-		Con_Printf ("%d x %d\n", sdl_modes[j]->w, sdl_modes[j]->h);
+		Con_SafePrintf ("%d x %d\n", sdl_modes[j]->w, sdl_modes[j]->h);
 	}
-	Con_Printf ("Total %d entries\n", j);
+	Con_SafePrintf ("Total %d entries\n", j);
 #endif
 
 	// count the entries
@@ -769,7 +769,7 @@ void VID_Init (unsigned char *palette)
 	}
 	else
 	{
-		Con_Printf ("ignoring invalid -width and/or -height arguments\n");
+		Con_SafePrintf ("ignoring invalid -width and/or -height arguments\n");
 	}
 
 	vid.maxwarpwidth = WARP_WIDTH;
@@ -784,8 +784,8 @@ void VID_Init (unsigned char *palette)
 			Sys_Error ("Couldn't set video mode: %s", SDL_GetError());
 
 		// just one more try before dying
-		Con_Printf ("Couldn't set video mode %d\n"
-			    "Trying the default mode\n", vid_mode.integer);
+		Con_SafePrintf ("Couldn't set video mode %d\n"
+				"Trying the default mode\n", vid_mode.integer);
 		//Cvar_SetValue("vid_config_fscr", 0);
 		Cvar_SetValue ("vid_mode", vid_default);
 		i = VID_SetMode(vid_default, palette);

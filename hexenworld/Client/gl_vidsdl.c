@@ -2,7 +2,7 @@
 	gl_vidsdl.c -- SDL GL vid component
 	Select window size and mode and init SDL in GL mode.
 
-	$Id: gl_vidsdl.c,v 1.161 2007-08-01 10:08:04 sezero Exp $
+	$Id: gl_vidsdl.c,v 1.162 2007-08-14 09:04:20 sezero Exp $
 
 	Changed 7/11/04 by S.A.
 	- Fixed fullscreen opengl mode, window sizes
@@ -395,7 +395,7 @@ static int VID_SetMode (int modenum)
 	if (multisample && !sdl_has_multisample)
 	{
 		multisample = 0;
-		Con_Printf ("SDL ver < %d, multisampling disabled\n", SDL_VER_WITH_MULTISAMPLING);
+		Con_SafePrintf ("SDL ver < %d, multisampling disabled\n", SDL_VER_WITH_MULTISAMPLING);
 	}
 	if (multisample)
 	{
@@ -403,7 +403,7 @@ static int VID_SetMode (int modenum)
 		SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, multisample);
 	}
 
-	Con_Printf ("Requested mode %d: %dx%dx%d\n", modenum, modelist[modenum].width, modelist[modenum].height, bpp);
+	Con_SafePrintf ("Requested mode %d: %dx%dx%d\n", modenum, modelist[modenum].width, modelist[modenum].height, bpp);
 	screen = SDL_SetVideoMode (modelist[modenum].width, modelist[modenum].height, bpp, flags);
 	if (!screen)
 	{
@@ -413,7 +413,7 @@ static int VID_SetMode (int modenum)
 		}
 		else
 		{
-			Con_Printf ("multisample window failed\n");
+			Con_SafePrintf ("multisample window failed\n");
 			multisample = 0;
 			SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS, 0);
 			SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, multisample);
@@ -437,11 +437,11 @@ static int VID_SetMode (int modenum)
 	VID_ConWidth(modenum);
 
 	SDL_GL_GetAttribute(SDL_GL_BUFFER_SIZE, &i);
-	Con_Printf ("Video Mode Set : %ux%ux%d\n", vid.width, vid.height, i);
+	Con_SafePrintf ("Video Mode Set : %ux%ux%d\n", vid.width, vid.height, i);
 	if (multisample)
 	{
 		SDL_GL_GetAttribute(SDL_GL_MULTISAMPLESAMPLES, &multisample);
-		Con_Printf ("multisample buffer with %i samples\n", multisample);
+		Con_SafePrintf ("multisample buffer with %i samples\n", multisample);
 	}
 	Cvar_SetValue ("vid_config_fsaa", multisample);
 
@@ -453,7 +453,7 @@ static int VID_SetMode (int modenum)
 	SDL_GL_GetAttribute(SDL_GL_ALPHA_SIZE, &vid_attribs.alpha);
 	SDL_GL_GetAttribute(SDL_GL_DEPTH_SIZE, &vid_attribs.depth);
 	SDL_GL_GetAttribute(SDL_GL_STENCIL_SIZE, &vid_attribs.stencil);
-	Con_Printf ("vid_info: red: %d, green: %d, blue: %d, alpha: %d, depth: %d\n",
+	Con_SafePrintf ("vid_info: red: %d, green: %d, blue: %d, alpha: %d, depth: %d\n",
 			vid_attribs.red, vid_attribs.green, vid_attribs.blue, vid_attribs.alpha, vid_attribs.depth);
 
 	// setup the window manager stuff
@@ -507,7 +507,7 @@ static void VID_Init8bitPalette (void)
 		glColorTableEXT_fp (GL_SHARED_TEXTURE_PALETTE_EXT, GL_RGB, 256,
 					GL_RGB, GL_UNSIGNED_BYTE, (void *) thePalette);
 		is8bit = true;
-		Con_Printf("8-bit palettized textures enabled\n");
+		Con_SafePrintf("8-bit palettized textures enabled\n");
 	}
 }
 
@@ -525,14 +525,14 @@ static qboolean VID_Check3dfxGamma (void)
 	ret = glGetDeviceGammaRamp3DFX(orig_ramps);
 	if (ret != 0)
 	{
-		Con_Printf ("Using 3dfx glide3 specific gamma ramps\n");
+		Con_SafePrintf ("Using 3dfx glide3 specific gamma ramps\n");
 		return true;
 	}
 #else	/* not using gamma ramps */
 	ret = Init_3dfxGammaCtrl();
 	if (ret > 0)
 	{
-		Con_Printf ("Using 3dfx glide%d gamma controls\n", ret);
+		Con_SafePrintf ("Using 3dfx glide%d gamma controls\n", ret);
 		return true;
 	}
 #endif
@@ -571,7 +571,7 @@ static void VID_InitGamma (void)
 	}
 
 	if (gl_dogamma)
-		Con_Printf("gamma not available, using gl tricks\n");
+		Con_SafePrintf("gamma not available, using gl tricks\n");
 }
 
 static void VID_ShutdownGamma (void)
@@ -638,16 +638,16 @@ static void CheckMultiTextureExtensions(void)
 
 	if (COM_CheckParm("-nomtex"))
 	{
-		Con_Printf("Multitexture extensions disabled\n");
+		Con_SafePrintf("Multitexture extensions disabled\n");
 	}
 	else if (strstr(gl_extensions, "GL_ARB_multitexture"))
 	{
-		Con_Printf("ARB Multitexture extensions found\n");
+		Con_SafePrintf("ARB Multitexture extensions found\n");
 
 		glGetIntegerv_fp(GL_MAX_TEXTURE_UNITS_ARB, &num_tmus);
 		if (num_tmus < 2)
 		{
-			Con_Printf("not enough TMUs, ignoring multitexture\n");
+			Con_SafePrintf("not enough TMUs, ignoring multitexture\n");
 			return;
 		}
 
@@ -656,11 +656,11 @@ static void CheckMultiTextureExtensions(void)
 		if ((glMultiTexCoord2fARB_fp == NULL) ||
 		    (glActiveTextureARB_fp == NULL))
 		{
-			Con_Printf ("Couldn't link to multitexture functions\n");
+			Con_SafePrintf ("Couldn't link to multitexture functions\n");
 			return;
 		}
 
-		Con_Printf("Found %i TMUs support\n", num_tmus);
+		Con_SafePrintf("Found %i TMUs support\n", num_tmus);
 		gl_mtexable = true;
 
 		// start up with the correct texture selected!
@@ -669,7 +669,7 @@ static void CheckMultiTextureExtensions(void)
 	}
 	else
 	{
-		Con_Printf("GL_ARB_multitexture not found\n");
+		Con_SafePrintf("GL_ARB_multitexture not found\n");
 	}
 }
 
@@ -679,7 +679,7 @@ static void CheckStencilBuffer(void)
 
 	if (vid_attribs.stencil)
 	{
-		Con_Printf("Stencil buffer created with %d bits\n", vid_attribs.stencil);
+		Con_SafePrintf("Stencil buffer created with %d bits\n", vid_attribs.stencil);
 		have_stencil = true;
 	}
 }
@@ -706,14 +706,14 @@ static qboolean GL_OpenLibrary(const char *name)
 			if (access(gl_liblocal, R_OK) == -1)
 				return false;
 
-			Con_Printf ("Failed loading gl library %s\n"
-				    "Trying to load %s\n", name, gl_liblocal);
+			Con_SafePrintf ("Failed loading gl library %s\n"
+					"Trying to load %s\n", name, gl_liblocal);
 
 			ret = SDL_GL_LoadLibrary(gl_liblocal);
 			if (ret < 0)
 				return false;
 
-			Con_Printf("Using GL library: %s\n", gl_liblocal);
+			Con_SafePrintf("Using GL library: %s\n", gl_liblocal);
 			return true;
 		}
 
@@ -721,9 +721,9 @@ static qboolean GL_OpenLibrary(const char *name)
 	}
 
 	if (name)
-		Con_Printf("Using GL library: %s\n", name);
+		Con_SafePrintf("Using GL library: %s\n", name);
 	else
-		Con_Printf("Using system GL library\n");
+		Con_SafePrintf("Using system GL library\n");
 
 	return true;
 }
@@ -778,21 +778,21 @@ static void GL_Init (void)
 	GL_Init_Functions();
 #endif
 	gl_vendor = (const char *)glGetString_fp (GL_VENDOR);
-	Con_Printf ("GL_VENDOR: %s\n", gl_vendor);
+	Con_SafePrintf ("GL_VENDOR: %s\n", gl_vendor);
 	gl_renderer = (const char *)glGetString_fp (GL_RENDERER);
-	Con_Printf ("GL_RENDERER: %s\n", gl_renderer);
+	Con_SafePrintf ("GL_RENDERER: %s\n", gl_renderer);
 
 	gl_version = (const char *)glGetString_fp (GL_VERSION);
-	Con_Printf ("GL_VERSION: %s\n", gl_version);
+	Con_SafePrintf ("GL_VERSION: %s\n", gl_version);
 	gl_extensions = (const char *)glGetString_fp (GL_EXTENSIONS);
-	Con_DPrintf ("GL_EXTENSIONS: %s\n", gl_extensions);
+	Con_SafeDPrintf ("GL_EXTENSIONS: %s\n", gl_extensions);
 
 	glGetIntegerv_fp(GL_MAX_TEXTURE_SIZE, &gl_max_size);
 	if (gl_max_size < 256)	// Refuse to work when less than 256
 		Sys_Error ("hardware capable of min. 256k opengl texture size needed");
 	if (gl_max_size > 1024)	// We're cool with 1024, write a cmdline override if necessary
 		gl_max_size = 1024;
-	Con_Printf("OpenGL max.texture size: %i\n", gl_max_size);
+	Con_SafePrintf("OpenGL max.texture size: %i\n", gl_max_size);
 
 	is_3dfx = false;
 	if (!Q_strncasecmp(gl_renderer, "3dfx", 4)	  ||
@@ -803,7 +803,7 @@ static void GL_Init (void)
 	// hardware and possibly Voodoo Rush.
 	// Voodoo Banshee, Voodoo3 and later are hw-accelerated
 	// by DRI in XFree86-4.x and should be: is_3dfx = false.
-		Con_Printf("3dfx Voodoo found\n");
+		Con_SafePrintf("3dfx Voodoo found\n");
 		is_3dfx = true;
 	}
 
@@ -837,7 +837,7 @@ static void GL_Init (void)
 	if (multisample)
 	{
 		glEnable_fp (GL_MULTISAMPLE_ARB);
-		Con_Printf ("enabled %i sample fsaa\n", multisample);
+		Con_SafePrintf ("enabled %i sample fsaa\n", multisample);
 	}
 }
 
@@ -935,7 +935,7 @@ static void VID_CreateInversePalette (unsigned char *palette)
 	long	idx = 0;
 	unsigned char	true_color[3];
 
-	Con_Printf ("Creating inverse palette\n");
+	Con_SafePrintf ("Creating inverse palette\n");
 
 	for (r = 0; r < ( 1 << INVERSE_PAL_R_BITS ); r++)
 	{
@@ -1046,7 +1046,7 @@ void VID_SetPalette (unsigned char *palette)
 	else
 	{	// JACK: 3D distance calcs:
 		// k is last closest, l is the distance
-		Con_Printf ("Creating 15to8.pal ..");
+		Con_SafePrintf ("Creating 15to8.pal ..");
 
 		// FIXME: Endianness ???
 		for (i = 0, m = 0; i < (1<<15); i++, m++)
@@ -1094,7 +1094,7 @@ void VID_SetPalette (unsigned char *palette)
 			fwrite(d_15to8table, 1<<15, 1, f);
 			fclose(f);
 		}
-		Con_Printf(". done\n");
+		Con_SafePrintf(". done\n");
 	}
 #endif	// end of hexenworld 8_BIT_PALETTE_CODE
 	been_here = true;
@@ -1278,7 +1278,7 @@ static void VID_PrepareModes (SDL_Rect **sdl_modes)
 	if (sdl_modes == (SDL_Rect **)0)
 	{
 no_fmodes:
-		Con_Printf ("No fullscreen video modes available\n");
+		Con_SafePrintf ("No fullscreen video modes available\n");
 		num_wmodes = RES_640X480 + 1;
 		modelist = wmodelist;
 		nummodes = &num_wmodes;
@@ -1293,7 +1293,7 @@ no_fmodes:
 	{	// Really should NOT HAVE happened! this return value is
 		// for windowed modes!  Since this means all resolutions
 		// are supported, use our standart modes as modes list.
-		Con_Printf ("Unexpectedly received -1 from SDL_ListModes\n");
+		Con_SafePrintf ("Unexpectedly received -1 from SDL_ListModes\n");
 		vid_maxwidth = MAXWIDTH;
 		vid_maxheight = MAXHEIGHT;
 	//	num_fmodes = -1;
@@ -1310,9 +1310,9 @@ no_fmodes:
 	// print the un-processed modelist as reported by SDL
 	for (j = 0; sdl_modes[j]; ++j)
 	{
-		Con_Printf ("%d x %d\n", sdl_modes[j]->w, sdl_modes[j]->h);
+		Con_SafePrintf ("%d x %d\n", sdl_modes[j]->w, sdl_modes[j]->h);
 	}
-	Con_Printf ("Total %d entries\n", j);
+	Con_SafePrintf ("Total %d entries\n", j);
 #endif
 
 	for (i = 0; sdl_modes[i] && num_fmodes < MAX_MODE_LIST; ++i)
@@ -1380,8 +1380,8 @@ no_fmodes:
 		// No 640x480? Unexpected, at least today..
 		// Easiest thing is to set the default mode
 		// as the highest reported one.
-		Con_Printf("WARNING: 640x480 not found in fullscreen modes\n"
-			   "Using the largest reported dimension as default\n");
+		Con_SafePrintf ("WARNING: 640x480 not found in fullscreen modes\n"
+				"Using the largest reported dimension as default\n");
 		vid_default = num_fmodes;
 	}
 
@@ -1500,7 +1500,7 @@ void	VID_Init (unsigned char *palette)
 	if (COM_CheckParm("-sync") || COM_CheckParm("-vsync"))
 	{
 		setenv("__GL_SYNC_TO_VBLANK", "1", 1);
-		Con_Printf ("Nvidia GL vsync enabled\n");
+		Con_SafePrintf ("Nvidia GL vsync enabled\n");
 	}
 
 	// set fxMesa mode to fullscreen, don't let it it cheat multitexturing
@@ -1618,7 +1618,7 @@ void	VID_Init (unsigned char *palette)
 	}
 	else
 	{
-		Con_Printf ("ignoring invalid -width and/or -height arguments\n");
+		Con_SafePrintf ("ignoring invalid -width and/or -height arguments\n");
 	}
 
 	if (!vid_conscale)

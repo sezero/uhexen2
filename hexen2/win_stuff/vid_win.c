@@ -2,7 +2,7 @@
 	vid_win.c
 	Win32 video driver using MGL-4.05
 
-	$Id: vid_win.c,v 1.51 2007-07-19 11:40:18 sezero Exp $
+	$Id: vid_win.c,v 1.52 2007-08-14 09:04:20 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -3047,7 +3047,7 @@ static LONG WINAPI MainWndProc (HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPar
 			{
 				uMSG_MOUSEWHEEL = RegisterWindowMessage("MSWHEEL_ROLLMSG");
 				if (!uMSG_MOUSEWHEEL)
-					Con_Printf ("couldn't register mousewheel\n");
+					Con_SafePrintf ("couldn't register mousewheel\n");
 			}
 			break;
 
