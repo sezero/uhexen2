@@ -2,7 +2,7 @@
 	console.c
 	in-game console and chat message buffer handling
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/console.c,v 1.35 2007-07-20 07:45:42 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/console.c,v 1.36 2007-08-14 09:01:54 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -324,7 +324,6 @@ void CON_Printf (unsigned int flags, const char *fmt, ...)
 {
 	va_list		argptr;
 	char		msg[MAX_PRINTMSG];
-	int			temp = 0;
 	static qboolean	inupdate;
 
 	if (flags & _PRINT_DEVEL && !developer.integer)
@@ -353,31 +352,23 @@ void CON_Printf (unsigned int flags, const char *fmt, ...)
 	if (cls.state == ca_dedicated)
 		return;		// no graphics mode
 
-	if (flags & _PRINT_SAFE)
-	{
-		temp = scr_disabled_for_loading;
-		scr_disabled_for_loading = true;
-	}
-
 // write it to the scrollable buffer
 	Con_Print (msg);
 
-// update the screen if the console is displayed
+	if (flags & _PRINT_SAFE)
+		return;	// safe: doesn't update the screen
+
+// update the screen immediately if the console is displayed
 	if (cls.signon != SIGNONS && !scr_disabled_for_loading )
 	{
-	// protect against infinite loop if something in SCR_UpdateScreen calls
-	// Con_Printd
+	// protect against infinite loop if SCR_UpdateScreen
+	// itself calls Con_Printf
 		if (!inupdate)
 		{
 			inupdate = true;
 			SCR_UpdateScreen ();
 			inupdate = false;
 		}
-	}
-
-	if (flags & _PRINT_SAFE)
-	{
-		scr_disabled_for_loading = temp;
 	}
 }
 
