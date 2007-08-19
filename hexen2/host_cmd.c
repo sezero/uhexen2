@@ -2,7 +2,7 @@
 	host_cmd.c
 	console commands
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host_cmd.c,v 1.82 2007-07-11 16:47:14 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host_cmd.c,v 1.83 2007-08-19 08:12:12 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -311,8 +311,6 @@ static void Host_Changelevel_f (void)
 
 	SV_SaveSpawnparms ();
 	SV_SpawnServer (level, startspot);
-
-//	updatePlaqueMessage();
 }
 
 /*
@@ -396,8 +394,6 @@ static void Host_Restart_f (void)
 		// in sv_spawnserver
 		SV_SpawnServer (mapname, startspot);
 	}
-
-//	updatePlaqueMessage();
 }
 
 /*
@@ -423,8 +419,6 @@ static void Host_Reconnect_f (void)
 		CL_Disconnect();
 		return;
 	}
-
-//	updatePlaqueMessage();
 
 	SCR_BeginLoadingPlaque ();
 	cls.signon = 0;		// need new connection messages
@@ -998,8 +992,13 @@ static int LoadGamestate (const char *level, const char *startspot, int ClientsM
 //	float		spawn_parms[NUM_SPAWN_PARMS];
 	qboolean	auto_correct = false;
 
-	if (ClientsMode == 1)
+	if (ClientsMode == 1)	/* RestoreClients only: map must be active */
 	{
+		if (!sv.active)
+		{
+			Con_Printf ("%s: server not active\n", __thisfunc__);
+			return -1;
+		}
 		if (snprintf(savename, sizeof(savename), "%s/clients.gip", fs_userdir) >= sizeof(savename))
 		{
 			Con_Printf ("%s: string buffer overflow!\n", __thisfunc__);
@@ -1051,6 +1050,7 @@ static int LoadGamestate (const char *level, const char *startspot, int ClientsM
 
 		if (!sv.active)
 		{
+			fclose (f);
 			Con_Printf ("Couldn't load map\n");
 			return -1;
 		}
