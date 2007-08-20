@@ -2,7 +2,7 @@
 	sv_main.c
 	server main program
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sv_main.c,v 1.61 2007-07-15 15:22:28 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sv_main.c,v 1.62 2007-08-20 08:16:03 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -1954,10 +1954,8 @@ void SV_SpawnServer (const char *server, const char *startspot)
 	total_loading_size = 100;
 	current_loading_size = 0;
 	loading_stage = 1;
-	// display loading bar before we start loading progs
 	D_ShowLoadingSize();
 #endif
-
 	PR_LoadProgs ();
 #if !defined(SERVERONLY)
 	current_loading_size += 10;
@@ -2015,8 +2013,6 @@ void SV_SpawnServer (const char *server, const char *startspot)
 #if !defined(SERVERONLY)
 		total_loading_size = 0;
 		loading_stage = 0;
-		// loading plaque redraw needed
-		ls_invalid = true;
 #endif
 		return;
 	}

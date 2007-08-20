@@ -2,7 +2,7 @@
 	screen.c
 	master for refresh, status bar, console, chat, notify, etc
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/screen.c,v 1.37 2007-07-29 07:58:22 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/screen.c,v 1.38 2007-08-20 08:16:06 sezero Exp $
 */
 
 
@@ -1164,11 +1164,11 @@ void SCR_UpdateScreen (void)
 		SCR_CheckDrawCenterString();
 		Sbar_Draw();
 
-			Plaque_Draw(plaquemessage,0);
-			SCR_DrawConsole();
-			M_Draw();
-			if (errormessage)
-				Plaque_Draw(errormessage,1);
+		Plaque_Draw(plaquemessage,0);
+		SCR_DrawConsole();
+		M_Draw();
+		if (errormessage)
+			Plaque_Draw(errormessage,1);
 	}
 
 	D_DisableBackBufferAccess ();	// for adapters that can't stay mapped

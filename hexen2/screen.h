@@ -1,7 +1,7 @@
 /*
 	screen.h
 
-	$Id: screen.h,v 1.10 2007-03-14 21:03:21 sezero Exp $
+	$Id: screen.h,v 1.11 2007-08-20 08:16:03 sezero Exp $
 */
 
 #ifndef __HX2_SCREEN_H
@@ -26,7 +26,6 @@ void SCR_DrawLoading (void);	// for the Loading plaque
 
 extern	int			total_loading_size;	// global vars for
 extern	int			current_loading_size;	// the Loading screen
-extern	qboolean		ls_invalid;
 extern	int			entity_file_size, loading_stage;
 
 extern	float		scr_con_current;

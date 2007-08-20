@@ -2,7 +2,7 @@
 	screen.c
 	master for refresh, status bar, console, chat, notify, etc
 
-	$Id: gl_screen.c,v 1.44 2007-07-29 07:58:16 sezero Exp $
+	$Id: gl_screen.c,v 1.45 2007-08-20 08:16:06 sezero Exp $
 */
 
 /*=============================================================================
@@ -1065,12 +1065,12 @@ void SCR_UpdateScreen (void)
 		SCR_CheckDrawCenterString();
 		Sbar_Draw();
 
-			Plaque_Draw(plaquemessage,0);
-			SCR_DrawNet ();
-			SCR_DrawConsole();
-			M_Draw();
-			if (errormessage)
-				Plaque_Draw(errormessage,1);
+		Plaque_Draw(plaquemessage,0);
+		SCR_DrawNet ();
+		SCR_DrawConsole();
+		M_Draw();
+		if (errormessage)
+			Plaque_Draw(errormessage,1);
 	}
 
 	V_UpdatePalette ();

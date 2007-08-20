@@ -2,7 +2,7 @@
 	cl_parse.c
 	parse a message received from the server
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cl_parse.c,v 1.55 2007-07-20 07:45:42 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cl_parse.c,v 1.56 2007-08-20 08:16:03 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -377,8 +377,6 @@ static void CL_ParseServerInfo (void)
 
 	total_loading_size = 0;
 	loading_stage = 0;
-	// loading plaque redraw needed
-	ls_invalid = true;
 
 // local state
 	cl_entities[0].model = cl.worldmodel = cl.model_precache[1];

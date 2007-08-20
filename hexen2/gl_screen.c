@@ -2,7 +2,7 @@
 	screen.c
 	master for refresh, status bar, console, chat, notify, etc
 
-	$Id: gl_screen.c,v 1.52 2007-07-29 07:58:07 sezero Exp $
+	$Id: gl_screen.c,v 1.53 2007-08-20 08:16:03 sezero Exp $
 */
 
 /*=============================================================================
@@ -89,7 +89,6 @@ static qboolean	scr_drawloading;
 static int	ls_offset;
 static float	scr_disabled_time;
 int		total_loading_size, current_loading_size, loading_stage;
-qboolean	ls_invalid = true;	// whether we need to redraw the loading screen plaque
 qboolean	scr_disabled_for_loading;
 qboolean	scr_skipupdate;
 qboolean	block_drawing;
@@ -513,14 +512,9 @@ void SCR_DrawLoading (void)
 	if (!scr_drawloading && loading_stage == 0)
 		return;
 
-	// draw first time only, so that the image does not flicker
-	// because of redrawing (since drawing this into GL_FRONT)
-	if (ls_invalid)
-	{
-		pic = Draw_CachePic ("gfx/menu/loading.lmp");
-		ls_offset = (vid.width - pic->width)/2;
-		Draw_TransPic (ls_offset , 0, pic);
-	}
+	pic = Draw_CachePic ("gfx/menu/loading.lmp");
+	ls_offset = (vid.width - pic->width) / 2;
+	Draw_TransPic (ls_offset, 0, pic);
 
 	if (loading_stage == 0)
 		return;
@@ -1160,8 +1154,6 @@ void SCR_UpdateScreen (void)
 			scr_disabled_for_loading = false;
 			total_loading_size = 0;
 			loading_stage = 0;
-			// loading plaque redraw needed
-			ls_invalid = true;
 			Con_Printf ("load failed.\n");
 		}
 		else
@@ -1232,6 +1224,12 @@ void SCR_UpdateScreen (void)
 		SCR_CheckDrawCenterString();
 	}
 */
+	else if (scr_drawloading)
+	{
+	//	Sbar_Draw();
+		Draw_FadeScreen ();
+		SCR_DrawLoading ();
+	}
 	else
 	{
 		if (crosshair.integer)
@@ -1244,26 +1242,16 @@ void SCR_UpdateScreen (void)
 		SCR_CheckDrawCenterString();
 		Sbar_Draw();
 
-		// dim screen and draw plaque if loading,
-		// the rest otherwise
-		if (scr_drawloading)
-		{
-			Draw_FadeScreen();
-			SCR_DrawLoading();
-		}
-		else
-		{
-			Plaque_Draw(plaquemessage,0);
-			SCR_DrawConsole();
-			M_Draw();
-			if (errormessage)
-				Plaque_Draw(errormessage,1);
+		Plaque_Draw(plaquemessage,0);
+		SCR_DrawConsole();
+		M_Draw();
+		if (errormessage)
+			Plaque_Draw(errormessage,1);
 
-			if (info_up)
-			{
-				UpdateInfoMessage();
-				Info_Plaque_Draw(infomessage);
-			}
+		if (info_up)
+		{
+			UpdateInfoMessage();
+			Info_Plaque_Draw(infomessage);
 		}
 	}
 
