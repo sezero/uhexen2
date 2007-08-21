@@ -1,6 +1,6 @@
 /*
 	snd_win.c
-	$Id: snd_win.c,v 1.28 2007-08-14 09:50:34 sezero Exp $
+	$Id: snd_win.c,v 1.29 2007-08-21 09:03:47 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -236,7 +236,8 @@ static sndinitstat SNDDMA_InitDirect (void)
 	}
 #endif	/* DX_DLSYM */
 
-	while ((hresult = pDirectSoundCreate(NULL, &pDS, NULL)) != DS_OK)
+	hresult = pDirectSoundCreate(NULL, &pDS, NULL);
+	if (hresult != DS_OK)
 	{
 		if (hresult != DSERR_ALLOCATED)
 		{
@@ -448,8 +449,8 @@ static qboolean SNDDMA_InitWav (void)
 	format.nAvgBytesPerSec = format.nSamplesPerSec * format.nBlockAlign;
 
 	/* Open a waveform device for output using window callback. */
-	while ( (hr = waveOutOpen((LPHWAVEOUT)&hWaveOut, WAVE_MAPPER, &format, 0, 0L, CALLBACK_NULL))
-										!= MMSYSERR_NOERROR )
+	hr = waveOutOpen((LPHWAVEOUT)&hWaveOut, WAVE_MAPPER, &format, 0, 0L, CALLBACK_NULL);
+	if (hr != MMSYSERR_NOERROR)
 	{
 		if (hr != MMSYSERR_ALLOCATED)
 		{
