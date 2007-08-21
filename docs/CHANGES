@@ -3,6 +3,17 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2007-08-20 (CVS):
+    * fixed a crash when changelevel2 is requested for a non-existant map.
+    * snd_win.c: minor cleanup for DirectSoundCreate call.
+    * removed the ls_invalid thing which was supposed to prevent unnecessary
+      multiple drawing of the loading plaque: first, I seem to have forgotten
+      setting it to false after the first draw which made it non-functional
+      (sigh). more importantly, multiple Con_Printf calls during the loading
+      procedure clobber it: the only way of stopping that is cancelling the
+      immediate screen update call in CON_Printf, but no console text during
+      the loading stage doesn't look good, so let's remove it already.
+
 2007-08-14 (CVS):
     * launcher: a more consistant fix for two toggle buttons.
     * launcher: renamed interface.h to launcher_ui.h, interface.c and
