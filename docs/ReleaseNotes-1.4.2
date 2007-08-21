@@ -77,6 +77,7 @@ Server:
 -------
 - Fixed a bug in NET_SendToAll (mainly used for reconnecting clients upon
   changing levels) where it didn't skip non-connected clients.
+- Fixed a crash when changelevel2 is requested for a non-existant map.
 - Fixed the mission pack's doWhiteFlash server message: it used to affect the
   local client only. Naturally, the recorded demos didn't carry the message
   and the flash didn't appear, either. It works properly now.
