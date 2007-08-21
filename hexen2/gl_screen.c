@@ -2,7 +2,7 @@
 	screen.c
 	master for refresh, status bar, console, chat, notify, etc
 
-	$Id: gl_screen.c,v 1.53 2007-08-20 08:16:03 sezero Exp $
+	$Id: gl_screen.c,v 1.54 2007-08-21 09:21:57 sezero Exp $
 */
 
 /*=============================================================================
@@ -1029,15 +1029,7 @@ static void SB_IntermissionOverlay (void)
 	else if (cl.intermission == 11)
 		message = &pr_global_strings[pr_string_index[545]];
 	else if (cl.intermission == 12)
-	{
-	// all of the above happen while we are connected to the server, therefore
-	// we will have strigns.txt loaded and pr_global_string will be valid. but
-	// for this one we may not have: the user may just have started the game,
-	// so load it if necessary.
-		if (!pr_string_count || !pr_global_strings || !pr_string_index)
-			PR_LoadStrings ();
 		message = &pr_global_strings[pr_string_index[561]];
-	}
 	else
 		message = "";
 

@@ -1,7 +1,7 @@
 /*
 	menu.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/menu.c,v 1.96 2007-08-03 09:22:28 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/menu.c,v 1.97 2007-08-21 09:21:57 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -822,6 +822,33 @@ static void M_Difficulty_Draw (void)
 	M_DrawTransPic (43, 54 + m_diff_cursor * 20, Draw_CachePic(va("gfx/menu/menudot%i.lmp", f+1)) );
 }
 
+static void M_NewMissionPackGame (void)
+{
+/* NOTES:
+ - running a new single player mission pack game through
+   the menu system starts an "intermission screen" (#12)
+   first: some scrolling text giving a story background.
+ - this intermission screen #12 is only started by this
+   menu system: unlike the other intermissions, it isn't
+   progs (server) controlled.
+ - there will not be a svc_intermission message for this
+   so, we must set cl.completed_time and cl.intermission
+   by hand here.
+ - since the user may just have started the game, we must
+   load strings.txt for the scrolling text before setting
+   cl.intermission, if necessary.
+ - running the keep1 map is also a client-side thing:  it
+   is triggered by Key_Event() when the user hits a key.
+ */
+	key_dest = key_game;
+	m_state = m_none;
+	if (!pr_string_count || !pr_global_strings || !pr_string_index)
+		PR_LoadStrings ();
+	cl.intermission = 12;
+	cl.completed_time = realtime;
+	cls.demonum = m_save_demonum;
+}
+
 static void M_Difficulty_Key (int key)
 {
 	switch (key)
@@ -847,20 +874,11 @@ static void M_Difficulty_Key (int key)
 		m_entersound = true;
 		if (m_enter_portals)
 		{
-		// mission pack intermission screen (#12) is only started
-		// by this menu system: we must set cl.completed_time and
-		// cl.intermission by hand here, because there will never
-		// be a svc_intermission for this.
-			cl.intermission = 12;
-			cl.completed_time = realtime;
-			key_dest = key_game;
-			m_state = m_none;
-			cls.demonum = m_save_demonum;
-			//Cbuf_AddText ("map keep1\n");
+			M_NewMissionPackGame ();
 			return;
 		}
-		//Cbuf_AddText ("map demo1\n");
 		m_state = m_none;
+		//Cbuf_AddText ("map demo1\n");
 		Cbuf_AddText ("wait; map demo1\n");
 		break;
 	default:
