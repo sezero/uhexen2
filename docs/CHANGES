@@ -13,6 +13,8 @@ Development Progress	:
       procedure clobber it: the only way of stopping that is cancelling the
       immediate screen update call in CON_Printf, but no console text during
       the loading stage doesn't look good, so let's remove it already.
+    * updated the mission pack new game starting menu procedure and added
+      comments to it.
 
 2007-08-14 (CVS):
     * launcher: a more consistant fix for two toggle buttons.
