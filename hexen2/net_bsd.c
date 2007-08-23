@@ -1,6 +1,6 @@
 /*
 	net_bsd.c
-	$Id: net_bsd.c,v 1.8 2007-06-02 06:25:37 sezero Exp $
+	$Id: net_bsd.c,v 1.9 2007-08-23 14:04:55 sezero Exp $
 
 	Copyright (C) 1996-1997  Id Software, Inc.
 
@@ -28,14 +28,13 @@
 #include "quakedef.h"
 
 #include "net_dgrm.h"
-#ifndef SERVERONLY
+#if !defined(SERVERONLY)
 #include "net_loop.h"
-#endif
+#endif	/* SERVERONLY */
 
 net_driver_t net_drivers[] =
 {
-
-#ifndef SERVERONLY
+#if !defined(SERVERONLY)
 	{
 		"Loopback",
 		false,
@@ -52,15 +51,17 @@ net_driver_t net_drivers[] =
 		Loop_Close,
 		Loop_Shutdown
 	},
-#endif
+#endif	/* SERVERONLY */
 
 	{
 		"Datagram",
 		false,
 		Datagram_Init,
 		Datagram_Listen,
+#if !defined(SERVERONLY)
 		Datagram_SearchForHosts,
 		Datagram_Connect,
+#endif	/* SERVERONLY */
 		Datagram_CheckNewConnections,
 		Datagram_GetMessage,
 		Datagram_SendMessage,

@@ -2,7 +2,7 @@
 	net.h
 	quake's interface to the networking layer
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/net.h,v 1.17 2007-07-15 15:22:28 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/net.h,v 1.18 2007-08-23 14:04:55 sezero Exp $
 */
 
 #ifndef __HX2_NET_H
@@ -175,8 +175,10 @@ typedef struct
 	qboolean	initialized;
 	int			(*Init) (void);
 	void		(*Listen) (qboolean state);
+#if !defined(SERVERONLY)
 	void		(*SearchForHosts) (qboolean xmit);
 	qsocket_t	*(*Connect) (char *host);
+#endif	/* SERVERONLY */
 	qsocket_t	*(*CheckNewConnections) (void);
 	int			(*QGetMessage) (qsocket_t *sock);
 	int			(*QSendMessage) (qsocket_t *sock, sizebuf_t *data);

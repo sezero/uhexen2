@@ -2,7 +2,7 @@
 	net_dgrm.c
 	This is enables a simple IP banning mechanism
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/server/net_dgrm.c,v 1.20 2007-07-15 15:22:36 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/server/net_dgrm.c,v 1.21 2007-08-23 14:04:57 sezero Exp $
 */
 
 #define BAN_TEST
@@ -773,16 +773,5 @@ qsocket_t *Datagram_CheckNewConnections (void)
 		}
 	}
 	return ret;
-}
-
-
-void Datagram_SearchForHosts (qboolean xmit)
-{
-}
-
-
-qsocket_t *Datagram_Connect (char *host)
-{
-	return NULL;
 }
 

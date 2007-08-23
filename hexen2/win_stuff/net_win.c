@@ -1,19 +1,18 @@
 /*
 	net_win.c
-	$Id: net_win.c,v 1.8 2007-06-02 06:25:39 sezero Exp $
+	$Id: net_win.c,v 1.9 2007-08-23 14:04:57 sezero Exp $
 */
 
 #include "quakedef.h"
 
 #include "net_dgrm.h"
-#ifndef SERVERONLY
+#if !defined(SERVERONLY)
 #include "net_loop.h"
-#endif
+#endif	/* SERVERONLY */
 
 net_driver_t net_drivers[] =
 {
-
-#ifndef SERVERONLY
+#if !defined(SERVERONLY)
 	{
 		"Loopback",
 		false,
@@ -30,15 +29,17 @@ net_driver_t net_drivers[] =
 		Loop_Close,
 		Loop_Shutdown
 	},
-#endif
+#endif	/* SERVERONLY */
 
 	{
 		"Datagram",
 		false,
 		Datagram_Init,
 		Datagram_Listen,
+#if !defined(SERVERONLY)
 		Datagram_SearchForHosts,
 		Datagram_Connect,
+#endif	/* SERVERONLY */
 		Datagram_CheckNewConnections,
 		Datagram_GetMessage,
 		Datagram_SendMessage,
