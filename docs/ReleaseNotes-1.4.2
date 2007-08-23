@@ -75,6 +75,11 @@ Console:
 
 Server:
 -------
+- Added a hexenworld/quakeworld style ip binding option for hexen2, which
+  enables server admins to bind to a specific IP address on a multi-homed host.
+  Command line arguments: -ip <ip_address>. Note that using this option will
+  prevent the client from receiving broadcast packets, so server discovery on
+  the LAN will not work if the server uses this option.
 - Fixed a bug in NET_SendToAll (mainly used for reconnecting clients upon
   changing levels) where it didn't skip non-connected clients.
 - Fixed a crash when changelevel2 is requested for a non-existant map.
