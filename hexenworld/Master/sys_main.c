@@ -2,7 +2,7 @@
 	sys_main.c
 	main loop and system interface
 
-	$Id: sys_main.c,v 1.34 2007-07-11 16:47:16 sezero Exp $
+	$Id: sys_main.c,v 1.35 2007-08-23 19:45:30 sezero Exp $
 */
 
 // whether to use the password file to determine
@@ -19,7 +19,6 @@
 #include <errno.h>
 #include <sys/stat.h>
 #include <unistd.h>
-#include <time.h>
 #include <sys/time.h>
 #if USE_PASSWORD_FILE
 #include <pwd.h>
@@ -27,8 +26,6 @@
 #endif
 
 #if defined(PLATFORM_WINDOWS)
-#include <sys/timeb.h>
-#include <time.h>
 #include <io.h>
 #include <conio.h>
 #include <winsock.h>

@@ -1,6 +1,6 @@
 /*
 	hwterm.c
-	$Id: hwterm.c,v 1.17 2007-07-11 16:47:17 sezero Exp $
+	$Id: hwterm.c,v 1.18 2007-08-23 19:45:31 sezero Exp $
 
 	HWTERM 1.2 HexenWorld Remote Console Terminal
 	Idea based on QTerm 1.1 by Michael Dwyer/N0ZAP (18-May-1998).
@@ -38,12 +38,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdarg.h>
-#if defined(PLATFORM_WINDOWS)
-#include <sys/timeb.h>
-#include <time.h>
-#endif
 #if defined(PLATFORM_UNIX)
-#include <time.h>
 #include <sys/time.h>
 #endif
 #include "compiler.h"

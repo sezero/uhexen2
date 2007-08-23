@@ -2,7 +2,7 @@
 	winquake.h
 	Win32-specific Quake header file
 
-	$Id: winquake.h,v 1.28 2007-07-17 16:30:46 sezero Exp $
+	$Id: winquake.h,v 1.29 2007-08-23 19:45:30 sezero Exp $
 */
 
 #if !defined(PLATFORM_WINDOWS)
@@ -16,10 +16,10 @@
 #pragma warning( disable : 4229 )  /* mgraph gets this */
 #endif
 #include <windows.h>
-#include <winsock.h>	/* for LCC */
+#include <winsock.h>
 #include <ctype.h>
 
-#include <mmsystem.h>	/* timeGetTime. LCC doesn't include this. */
+#include <mmsystem.h>
 
 /* required compatibility versions for directx components */
 #define	DIRECTDRAW_VERSION	0x0300

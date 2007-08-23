@@ -2,13 +2,12 @@
 	sys_win.c
 	Win32 system interface code
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Server/win_stuff/sys_win.c,v 1.33 2007-07-11 16:47:17 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Server/win_stuff/sys_win.c,v 1.34 2007-08-23 19:45:30 sezero Exp $
 */
 
 #include "quakedef.h"
 #include <sys/types.h>
 #include <limits.h>
-#include <sys/timeb.h>
 #include <winsock.h>
 #include <mmsystem.h>
 #include <errno.h>
