@@ -2,7 +2,7 @@
 	net_main.c
 	main networking module
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/server/net_main.c,v 1.18 2007-08-23 11:25:12 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/server/net_main.c,v 1.19 2007-08-23 12:53:01 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -19,8 +19,6 @@ int			DEFAULTnet_hostport = 26900;
 
 char		my_ipx_address[NET_NAMELEN];
 char		my_tcpip_address[NET_NAMELEN];
-
-static qboolean	listening = false;
 
 sizebuf_t		net_message;
 //static byte		net_message_buffer[NET_MAXMESSAGE];
@@ -141,8 +139,6 @@ qsocket_t *NET_CheckNewConnections (void)
 	for (net_driverlevel = 0; net_driverlevel < net_numdrivers; net_driverlevel++)
 	{
 		if (net_drivers[net_driverlevel].initialized == false)
-			continue;
-		if (net_driverlevel && listening == false)
 			continue;
 		ret = dfunc.CheckNewConnections ();
 		if (ret)
@@ -398,7 +394,6 @@ void NET_Init (void)
 	}
 	net_hostport = DEFAULTnet_hostport;
 
-	listening = true;
 	net_numsockets = svs.maxclientslimit;
 
 	SetNetTime();
@@ -428,8 +423,7 @@ void NET_Init (void)
 		i++;
 		net_drivers[net_driverlevel].initialized = true;
 		net_drivers[net_driverlevel].controlSock = controlSocket;
-		if (listening)
-			net_drivers[net_driverlevel].Listen (true);
+		net_drivers[net_driverlevel].Listen (true);
 	}
 
 	if (i == 0)
