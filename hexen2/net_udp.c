@@ -1,6 +1,6 @@
 /*
 	net_udp.c
-	$Id: net_udp.c,v 1.29 2007-08-23 16:16:09 sezero Exp $
+	$Id: net_udp.c,v 1.30 2007-08-23 19:55:09 sezero Exp $
 
 	Copyright (C) 1996-1997  Id Software, Inc.
 
@@ -258,6 +258,8 @@ int UDP_CheckNewConnections (void)
 	}
 #else
 	unsigned long	available;
+	struct sockaddr_in	from;
+	socklen_t	fromlen;
 	char		buff[1];
 
 	if (net_acceptsocket == -1)
@@ -268,7 +270,7 @@ int UDP_CheckNewConnections (void)
 	if (available)
 		return net_acceptsocket;
 	// quietly absorb empty packets
-	recvfrom (net_acceptsocket, buff, 0, 0, NULL, NULL);
+	recvfrom (net_acceptsocket, buff, 0, 0, (struct sockaddr *) &from, &fromlen);
 #endif
 	return -1;
 }
