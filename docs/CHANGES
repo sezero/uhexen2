@@ -3,6 +3,38 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2007-08-23 (CVS):
+    * host.c, Host_FindMaxClients: svs.maxclients can't be < 2 for listen and
+      dedicated servers.
+    * h2ded, net_main.c: removed the port, listen and maxplayers console
+      commands. they are for use with the client-server binary through
+      the menu system and shouldn't be around for the dedicated server.
+    * minor fix in hexenworld map command.
+    * net_main.c, h2ded: removed the bool listening which is a leftover from
+      the client-server application.
+    * ifdef'ed out the SearchForHosts and Connect members of the net_driver_t
+      structure for the dedicated server and removed the relevant stubs from
+      server/net_dgrm.c.
+    * use the standard "struct in_addr" instead of ints or longs for myAddr.
+      from the tyrquake tree.
+    * Added the "-bindip" option to hexen2: Enables the user to bind to a
+      specific IP address on a multi-homed host rather than INADDR_ANY, ie.
+      all interfaces. Ported from the tyr-quake tree. Note that using this
+      option will prevent us from receiving broadcast packets, so server
+      discovery on the LAN will not work if the server uses this option.
+      This is really just a work around for the problems inherent when
+      embedding the client/server IP addresses inside the network protocol.
+      The specific example which drove this implementation is that of a
+      multi-homed server who needs to listen on INADDR_ANY in order to
+      receive broadcast server discovery requests but needs to know which
+      of its IP addresses it should return to the client in the serverinfo
+      reply. Really, the client should just look at the source address of
+      the serverinfo reply, but we need to stay somewhat backwards compatible
+      with old hosts.
+    * includes cleanup.
+    * net_udp.c: minor things.
+    * updated release notes for the 1.4.2 version (2007-08-23.)
+
 2007-08-20 (CVS):
     * fixed a crash when changelevel2 is requested for a non-existant map.
     * snd_win.c: minor cleanup for DirectSoundCreate call.
