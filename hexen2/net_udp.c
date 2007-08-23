@@ -1,6 +1,6 @@
 /*
 	net_udp.c
-	$Id: net_udp.c,v 1.27 2007-07-08 11:55:21 sezero Exp $
+	$Id: net_udp.c,v 1.28 2007-08-23 14:27:27 sezero Exp $
 
 	Copyright (C) 1996-1997  Id Software, Inc.
 
@@ -33,7 +33,7 @@ static int net_controlsocket;
 static int net_broadcastsocket = 0;
 static struct qsockaddr broadcastaddr;
 
-static unsigned int myAddr;
+static struct in_addr		myAddr;
 
 #include "net_udp.h"
 
@@ -73,7 +73,7 @@ int UDP_Init (void)
 		Cvar_Set("hostname", buff);
 	}
 
-	myAddr = *(int *)local->h_addr_list[0];
+	myAddr = *(struct in_addr *)local->h_addr_list[0];
 
 	if ((net_controlsocket = UDP_OpenSocket (0)) == -1)
 	{
@@ -213,7 +213,7 @@ static int PartialIPAddress (const char *in, struct qsockaddr *hostaddr)
 
 	hostaddr->sa_family = AF_INET;
 	((struct sockaddr_in *)hostaddr)->sin_port = htons((short)port);
-	((struct sockaddr_in *)hostaddr)->sin_addr.s_addr = (myAddr & htonl(mask)) | htonl(addr);
+	((struct sockaddr_in *)hostaddr)->sin_addr.s_addr = (myAddr.s_addr & htonl(mask)) | htonl(addr);
 
 	return 0;
 }
@@ -354,7 +354,7 @@ int UDP_GetSocketAddr (int mysocket, struct qsockaddr *addr)
 	getsockname(mysocket, (struct sockaddr *)addr, &addrlen);
 	a = ((struct sockaddr_in *)addr)->sin_addr.s_addr;
 	if (a == 0 || a == inet_addr("127.0.0.1"))
-		((struct sockaddr_in *)addr)->sin_addr.s_addr = myAddr;
+		((struct sockaddr_in *)addr)->sin_addr.s_addr = myAddr.s_addr;
 
 	return 0;
 }
