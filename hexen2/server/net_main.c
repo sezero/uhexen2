@@ -2,7 +2,7 @@
 	net_main.c
 	main networking module
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/server/net_main.c,v 1.17 2007-07-17 14:43:44 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/server/net_main.c,v 1.18 2007-08-23 11:25:12 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -124,101 +124,6 @@ void NET_FreeQSocket(qsocket_t *sock)
 	sock->next = net_freeSockets;
 	net_freeSockets = sock;
 	sock->disconnected = true;
-}
-
-
-static void NET_Listen_f (void)
-{
-	if (Cmd_Argc () != 2)
-	{
-		Con_Printf ("\"listen\" is \"%d\"\n", listening ? 1 : 0);
-		return;
-	}
-
-	listening = atoi(Cmd_Argv(1)) ? true : false;
-
-	for (net_driverlevel = 0; net_driverlevel < net_numdrivers; net_driverlevel++)
-	{
-		if (net_drivers[net_driverlevel].initialized == false)
-			continue;
-		dfunc.Listen (listening);
-	}
-}
-
-
-static void MaxPlayers_f (void)
-{
-	int	n;
-
-	if (Cmd_Argc () != 2)
-	{
-		Con_Printf ("\"maxplayers\" is \"%d\"\n", svs.maxclients);
-		return;
-	}
-
-	if (sv.active)
-	{
-		Con_Printf ("maxplayers can not be changed while a server is running.\n");
-		return;
-	}
-
-	n = atoi(Cmd_Argv(1));
-	if (n < 1)
-		n = 1;
-	if (n > svs.maxclientslimit)
-	{
-		n = svs.maxclientslimit;
-		Con_Printf ("\"maxplayers\" set to \"%d\"\n", n);
-	}
-
-	if ((n == 1) && listening)
-		Cbuf_AddText ("listen 0\n");
-
-	if ((n > 1) && (!listening))
-		Cbuf_AddText ("listen 1\n");
-
-	svs.maxclients = n;
-	if (n == 1)
-	{
-		Cvar_SetValue ("deathmatch", 0);
-		Cvar_SetValue ("coop", 0);
-	}
-	else
-	{
-		if (coop.integer)
-			Cvar_SetValue ("deathmatch", 0);
-		else
-			Cvar_SetValue ("deathmatch", 1);
-	}
-}
-
-
-static void NET_Port_f (void)
-{
-	int	n;
-
-	if (Cmd_Argc () != 2)
-	{
-		Con_Printf ("\"port\" is \"%d\"\n", net_hostport);
-		return;
-	}
-
-	n = atoi(Cmd_Argv(1));
-	if (n < 1 || n > 65534)
-	{
-		Con_Printf ("Bad value, must be between 1 and 65534\n");
-		return;
-	}
-
-	DEFAULTnet_hostport = n;
-	net_hostport = n;
-
-	if (listening)
-	{
-		// force a change to the new port
-		Cbuf_AddText ("listen 0\n");
-		Cbuf_AddText ("listen 1\n");
-	}
 }
 
 
@@ -513,10 +418,6 @@ void NET_Init (void)
 	Cvar_RegisterVariable (&net_messagetimeout);
 	Cvar_RegisterVariable (&hostname);
 	Cvar_RegisterVariable (&net_allowmultiple);
-
-	Cmd_AddCommand ("listen", NET_Listen_f);
-	Cmd_AddCommand ("maxplayers", MaxPlayers_f);
-	Cmd_AddCommand ("port", NET_Port_f);
 
 	// initialize all the drivers
 	for (i = net_driverlevel = 0; net_driverlevel < net_numdrivers; net_driverlevel++)
