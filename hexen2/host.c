@@ -2,7 +2,7 @@
 	host.c
 	coordinates spawning and killing of local servers
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host.c,v 1.84 2007-08-14 09:50:30 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host.c,v 1.85 2007-08-23 11:24:08 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -225,9 +225,13 @@ static void Host_FindMaxClients (void)
 		if (i != (com_argc - 1))
 		{
 			svs.maxclients = atoi (com_argv[i+1]);
+			if (svs.maxclients < 2)
+				svs.maxclients = 8;
 		}
 		else
+		{
 			svs.maxclients = 8;
+		}
 	}
 	else
 		cls.state = ca_disconnected;
@@ -238,9 +242,15 @@ static void Host_FindMaxClients (void)
 		if (cls.state == ca_dedicated)
 			Sys_Error ("Only one of -dedicated or -listen can be specified");
 		if (i != (com_argc - 1))
+		{
 			svs.maxclients = atoi (com_argv[i+1]);
+			if (svs.maxclients < 2)
+				svs.maxclients = 8;
+		}
 		else
+		{
 			svs.maxclients = 8;
+		}
 	}
 	if (svs.maxclients < 1)
 		svs.maxclients = 8;
