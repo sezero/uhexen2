@@ -2,7 +2,7 @@
 	net_wins.c
 	winsock udp driver
 
-	$Id: net_wins.c,v 1.19 2007-08-23 14:27:32 sezero Exp $
+	$Id: net_wins.c,v 1.20 2007-08-23 16:16:11 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -10,12 +10,12 @@
 
 #define MAXHOSTNAMELEN		256
 
-static int net_acceptsocket = -1;		// socket for fielding new connections
+static int net_acceptsocket = -1;	// socket for fielding new connections
 static int net_controlsocket;
 static int net_broadcastsocket = 0;
 static struct qsockaddr broadcastaddr;
 
-static struct in_addr		myAddr;
+static struct in_addr		myAddr, bindAddr;
 
 #include "net_wins.h"
 
@@ -55,20 +55,20 @@ static BOOL PASCAL FAR BlockingHook(void)
 int WINS_Init (void)
 {
 	int		i;
-	struct hostent *local = NULL;
-	char	buff[MAXHOSTNAMELEN];
-	struct qsockaddr addr;
 	char	*p;
-	int		r;
-	WORD	wVersionRequested;
+	char	buff[MAXHOSTNAMELEN];
+	struct hostent	*local = NULL;
+	struct qsockaddr	addr;
 
 	if (COM_CheckParm ("-noudp"))
 		return -1;
 
 	if (winsock_initialized == 0)
 	{
-		wVersionRequested = MAKEWORD(1, 1);
+		int		r;
+		WORD	wVersionRequested;
 
+		wVersionRequested = MAKEWORD(1, 1);
 		r = WSAStartup (MAKEWORD(1, 1), &winsockdata);
 
 		if (r)
@@ -79,6 +79,19 @@ int WINS_Init (void)
 	}
 	winsock_initialized++;
 
+	// check for interface binding option
+	i = COM_CheckParm("-ip");
+	if (i && i < com_argc-1)
+	{
+		bindAddr.s_addr = inet_addr(com_argv[i+1]);
+		if (bindAddr.s_addr == INADDR_NONE)
+			Sys_Error("%s: %s is not a valid IP address", __thisfunc__, com_argv[i+1]);
+		Con_Printf("Binding to IP Interface Address of %s\n", com_argv[i+1]);
+	}
+	else
+	{
+		bindAddr.s_addr = INADDR_NONE;
+	}
 	// determine my name & address
 	if (gethostname(buff, MAXHOSTNAMELEN) == 0)
 	{
@@ -193,8 +206,12 @@ int WINS_OpenSocket (int port)
 	if (ioctlsocket (newsocket, FIONBIO, &_true) == -1)
 		goto ErrorReturn;
 
+	memset(&address, 0, sizeof(struct sockaddr_in));
 	address.sin_family = AF_INET;
-	address.sin_addr.s_addr = INADDR_ANY;
+	if (bindAddr.s_addr != INADDR_NONE)
+		address.sin_addr.s_addr = bindAddr.s_addr;
+	else
+		address.sin_addr.s_addr = INADDR_ANY;
 	address.sin_port = htons((unsigned short)port);
 	if ( bind (newsocket, (struct sockaddr *)&address, sizeof(address)) == 0)
 		return newsocket;
@@ -217,8 +234,8 @@ int WINS_CloseSocket (int mysocket)
 	return closesocket (mysocket);
 }
 
-
 //=============================================================================
+
 /*
 ============
 PartialIPAddress
@@ -266,7 +283,7 @@ static int PartialIPAddress (const char *in, struct qsockaddr *hostaddr)
 		port = net_hostport;
 
 	hostaddr->sa_family = AF_INET;
-	((struct sockaddr_in *)hostaddr)->sin_port = htons((short)port);
+	((struct sockaddr_in *)hostaddr)->sin_port = htons((unsigned short)port);
 	((struct sockaddr_in *)hostaddr)->sin_addr.s_addr = (myAddr.s_addr & htonl(mask)) | htonl(addr);
 
 	return 0;
@@ -398,14 +415,26 @@ int WINS_StringToAddr (const char *string, struct qsockaddr *addr)
 int WINS_GetSocketAddr (int mysocket, struct qsockaddr *addr)
 {
 	int addrlen = sizeof(struct qsockaddr);
-	unsigned int	a;
+	struct sockaddr_in *address = (struct sockaddr_in *)addr;
+	struct in_addr	a;
 
 	memset(addr, 0, sizeof(struct qsockaddr));
-
 	getsockname(mysocket, (struct sockaddr *)addr, &addrlen);
-	a = ((struct sockaddr_in *)addr)->sin_addr.s_addr;
-	if (a == 0 || a == inet_addr("127.0.0.1"))
-		((struct sockaddr_in *)addr)->sin_addr.s_addr = myAddr.s_addr;
+
+	/*
+	 * The returned IP is embedded in our repsonse to a broadcast
+	 * request for server info from clients.  If the server admin
+	 * wishes to advertise a specific IP, then allow the "default"
+	 * address returned by the OS to be overridden.
+	 */
+	if (bindAddr.s_addr != INADDR_NONE)
+		address->sin_addr.s_addr = bindAddr.s_addr;
+	else
+	{
+		a = address->sin_addr;
+		if (a.s_addr == 0 || a.s_addr == inet_addr("127.0.0.1"))
+			address->sin_addr.s_addr = myAddr.s_addr;
+	}
 
 	return 0;
 }
@@ -417,7 +446,6 @@ int WINS_GetNameFromAddr (struct qsockaddr *addr, char *name)
 	struct hostent *hostentry;
 
 	hostentry = gethostbyaddr ((char *)&((struct sockaddr_in *)addr)->sin_addr, sizeof(struct in_addr), AF_INET);
-
 	if (hostentry)
 	{
 		strncpy (name, (char *)hostentry->h_name, NET_NAMELEN - 1);
