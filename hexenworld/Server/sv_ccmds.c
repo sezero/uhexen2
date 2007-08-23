@@ -2,7 +2,7 @@
 	sv_ccmds.c
 	console commands
 
-	$Id: sv_ccmds.c,v 1.22 2007-07-08 11:56:52 sezero Exp $
+	$Id: sv_ccmds.c,v 1.23 2007-08-23 12:01:09 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -299,7 +299,7 @@ static void SV_Map_f (void)
 	if (Cmd_Argc() < 2)
 	{
 		Con_Printf ("map <levelname> : continue game on a new level\n");
-		if (sv.name)
+		if (sv.name[0])
 			Con_Printf ("Currently on: %s\n",sv.name);
 		return;
 	}
