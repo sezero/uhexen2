@@ -2,7 +2,7 @@
 	net_udp.c
 	network UDP driver
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Master/net.c,v 1.31 2007-07-11 16:47:16 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Master/net.c,v 1.32 2007-08-25 11:18:14 sezero Exp $
 */
 
 #include "net_sys.h"
@@ -207,6 +207,8 @@ static int UDP_OpenSocket (int port)
 	address.sin_family = AF_INET;
 	//ZOID -- check for interface binding option
 	i = COM_CheckParm("-ip");
+	if (!i)
+		i = COM_CheckParm("-bindip");
 	if (i && i < com_argc-1)
 	{
 		address.sin_addr.s_addr = inet_addr(com_argv[i+1]);
