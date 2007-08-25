@@ -2,7 +2,7 @@
 	net_wins.c
 	winsock udp driver
 
-	$Id: net_wins.c,v 1.21 2007-08-25 11:16:56 sezero Exp $
+	$Id: net_wins.c,v 1.22 2007-08-25 13:17:37 sezero Exp $
 */
 
 
@@ -246,7 +246,8 @@ int WINS_OpenSocket (int port)
 	if (tcpipAvailable)
 		Sys_Error ("Unable to bind to %s", WINS_AddrToString ((struct qsockaddr *) &address));
 	else // we are still in init phase, no need to error
-		Con_Printf ("Unable to bind to %s\n", WINS_AddrToString ((struct qsockaddr *) &address));
+		Con_SafePrintf("Unable to bind to %s\n", WINS_AddrToString ((struct qsockaddr *) &address));
+
 ErrorReturn:
 	closesocket (newsocket);
 	return -1;
