@@ -3,6 +3,24 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2007-08-25 (CVS):
+    * net_dgrm.c: Datagram_Init must return -1 if it couldn't initialize
+      any drivers.
+    * net_udp.c, net_wins.c, net_wipx.c: fixed the bad merge of the -ip
+      command line options (-localip was missed and GetSocketAddr had a
+      bad usage of the options.) added -bindip as an alternative for the
+      -ip option (both are the same, -ip is checked first). changed
+      several print calls to safeprints in the init procedures. several
+      cleanups in the windows version. documentation update will follow
+      shortly.
+    * hexenworld: added -bindip as an alternative for the -ip option
+      after the similar hexen2 change (both options are the same, -ip is
+      checked first).
+    * updated documentation after the ip option additions.
+    * net_wins.c: another safeprint change (this one got missed
+      previously).
+    * small update in documentation.
+
 2007-08-23 (CVS):
     * host.c, Host_FindMaxClients: svs.maxclients can't be < 2 for listen and
       dedicated servers.
