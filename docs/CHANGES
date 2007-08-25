@@ -828,7 +828,11 @@ Development Progress	:
 
 2007-04-05 (CVS):
     * net*: more const correctness stuff.
-    * net_udp.c, net_wins.c: fixed the long-standing recvfrom() bug.
+    * net_udp.c, net_wins.c: fixed a long-standing 0 byte udp packet DoS bug
+      (from the quakeforge tree): hexen2 checks to see if there were any bytes
+      to be read and if there were 0 bytes, just carying on without reading
+      anything. It seems that the 0 byte packet was blocking the queue and so
+      a 0 byte recvfrom is needed to make sure it gets removed.
     * keys.c: minor clean-up.
     * net_dgrm.c: clean-up of duplicated code for server sending rejects.
     * introduced DEBUG_Printf, which is equivalent to Sys_DPrintf in debug
