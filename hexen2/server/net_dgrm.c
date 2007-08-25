@@ -2,7 +2,7 @@
 	net_dgrm.c
 	This is enables a simple IP banning mechanism
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/server/net_dgrm.c,v 1.21 2007-08-23 14:04:57 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/server/net_dgrm.c,v 1.22 2007-08-25 11:15:15 sezero Exp $
 */
 
 #define BAN_TEST
@@ -471,14 +471,14 @@ static void NET_Stats_f (void)
 
 int Datagram_Init (void)
 {
-	int i;
-	int csock;
+	int	i, csock, num_inited;
 
 	Cmd_AddCommand ("net_stats", NET_Stats_f);
 
 	if (safemode || COM_CheckParm("-nolan"))
 		return -1;
 
+	num_inited = 0;
 	for (i = 0; i < net_numlandrivers; i++)
 	{
 		csock = net_landrivers[i].Init ();
@@ -486,7 +486,11 @@ int Datagram_Init (void)
 			continue;
 		net_landrivers[i].initialized = true;
 		net_landrivers[i].controlSock = csock;
+		num_inited++;
 	}
+
+	if (num_inited == 0)
+		return -1;
 
 #ifdef BAN_TEST
 	Cmd_AddCommand ("ban", NET_Ban_f);
