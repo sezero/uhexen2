@@ -2,7 +2,7 @@
 	net_wipx.c
 	winsock ipx driver
 
-	$Id: net_wipx.c,v 1.19 2007-07-08 11:55:34 sezero Exp $
+	$Id: net_wipx.c,v 1.20 2007-08-25 11:16:56 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -47,24 +47,22 @@ static int sequence[IPXSOCKETS];
 int WIPX_Init (void)
 {
 	int		i;
-	char	buff[MAXHOSTNAMELEN];
-	struct qsockaddr addr;
 	char	*p;
-	int		r;
-	WORD	wVersionRequested;
+	char	buff[MAXHOSTNAMELEN];
+	struct qsockaddr	addr;
 
-	if (COM_CheckParm ("-noipx"))
+	if (COM_CheckParm ("-noipx") || (winsock_initialized == -1))
 		return -1;
 
 	if (winsock_initialized == 0)
 	{
-		wVersionRequested = MAKEWORD(1, 1);
+		int		r;
 
 		r = WSAStartup (MAKEWORD(1, 1), &winsockdata);
-
-		if (r)
+		if (r != 0)
 		{
-			Con_Printf ("Winsock initialization failed.\n");
+			winsock_initialized = -1;
+			Con_SafePrintf("Winsock initialization failed.\n");
 			return -1;
 		}
 	}
@@ -74,37 +72,43 @@ int WIPX_Init (void)
 		ipxsocket[i] = 0;
 
 	// determine my name & address
-	if (gethostname(buff, MAXHOSTNAMELEN) == 0)
+	if (winsock_initialized > 1)
+		goto loc0;	// already done in net_wins.c::WINS_Init
+	if (gethostname(buff, MAXHOSTNAMELEN) != 0)
 	{
-		buff[MAXHOSTNAMELEN-1] = 0;
+		Con_SafePrintf("%s: gethostname failed\n", __thisfunc__);
+		// something is borked, for sure, but let's try anyway...
+		goto loc0;
+	}
+	buff[MAXHOSTNAMELEN-1] = 0;
 
-		// if the quake hostname isn't set, set it to the machine name
-		if (strcmp(hostname.string, "UNNAMED") == 0)
+	// if the quake hostname isn't set, set it to the machine name
+	if (strcmp(hostname.string, "UNNAMED") == 0)
+	{
+		// see if it's a text IP address (well, close enough)
+		for (p = buff; *p; p++)
 		{
-			// see if it's a text IP address (well, close enough)
-			for (p = buff; *p; p++)
+			if ((*p < '0' || *p > '9') && *p != '.')
+				break;
+		}
+
+		// if it is a real name, strip off the domain; we only want the host
+		if (*p)
+		{
+			for (i = 0; i < 15; i++)
 			{
-				if ((*p < '0' || *p > '9') && *p != '.')
+				if (buff[i] == '.')
 					break;
 			}
-
-			// if it is a real name, strip off the domain; we only want the host
-			if (*p)
-			{
-				for (i = 0; i < 15; i++)
-				{
-					if (buff[i] == '.')
-						break;
-				}
-				buff[i] = 0;
-			}
-			Cvar_Set ("hostname", buff);
+			buff[i] = 0;
 		}
+		Cvar_Set("hostname", buff);
 	}
 
+loc0:
 	if ((net_controlsocket = WIPX_OpenSocket (0)) == -1)
 	{
-		Con_Printf("%s: Unable to open control socket\n", __thisfunc__);
+		Con_SafePrintf("%s: Unable to open control socket, IPX disabled\n", __thisfunc__);
 		if (--winsock_initialized == 0)
 			WSACleanup ();
 		return -1;
@@ -121,7 +125,7 @@ int WIPX_Init (void)
 	if (p)
 		*p = 0;
 
-	Con_Printf("Winsock IPX Initialized\n");
+	Con_SafePrintf("IPX Initialized\n");
 	ipxAvailable = true;
 
 	return net_controlsocket;

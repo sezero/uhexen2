@@ -1,6 +1,6 @@
 /*
 	net_udp.c
-	$Id: net_udp.c,v 1.30 2007-08-23 19:55:09 sezero Exp $
+	$Id: net_udp.c,v 1.31 2007-08-25 11:16:56 sezero Exp $
 
 	Copyright (C) 1996-1997  Id Software, Inc.
 
@@ -33,7 +33,16 @@ static int net_controlsocket;
 static int net_broadcastsocket = 0;
 static struct qsockaddr broadcastaddr;
 
-static struct in_addr		myAddr, bindAddr;
+static struct in_addr	myAddr,		// the local address returned by the OS.
+			localAddr,	// address to advertise by embedding in
+					// CCREP_SERVER_INFO and CCREP_ACCEPT
+					// response packets instead of the default
+					// returned by the OS. from command line
+					// argument -localip <ip_address>, used
+					// by GetSocketAddr()
+			bindAddr;	// the address that we bind to instead of
+					// INADDR_ANY. from the command line args
+					// -ip <ip_address>
 
 #include "net_udp.h"
 
@@ -50,23 +59,10 @@ int UDP_Init (void)
 	if (COM_CheckParm ("-noudp"))
 		return -1;
 
-	// check for interface binding option
-	i = COM_CheckParm("-ip");
-	if (i && i < com_argc-1)
-	{
-		bindAddr.s_addr = inet_addr(com_argv[i+1]);
-		if (bindAddr.s_addr == INADDR_NONE)
-			Sys_Error("%s: %s is not a valid IP address", __thisfunc__, com_argv[i+1]);
-		Con_Printf("Binding to IP Interface Address of %s\n", com_argv[i+1]);
-	}
-	else
-	{
-		bindAddr.s_addr = INADDR_NONE;
-	}
 	// determine my name & address
 	if (gethostname(buff, MAXHOSTNAMELEN) != 0)
 	{
-		Sys_Printf ("gethostname failed, errno = %i, disabling udp\n", errno);
+		Con_SafePrintf("%s: gethostname failed, UDP disabled (errno: %i)\n", __thisfunc__, errno);
 		return -1;
 	}
 	buff[MAXHOSTNAMELEN-1] = 0;
@@ -75,11 +71,9 @@ int UDP_Init (void)
 
 	if (local == NULL)
 	{
-		Sys_Printf ("gethostbyname failed, errno = %i, disabling udp\n", h_errno);
+		Con_SafePrintf("%s: gethostbyname failed, UDP disabled (errno: %i)\n", __thisfunc__, h_errno);
 		return -1;
 	}
-
-	myAddr = *(struct in_addr *)local->h_addr_list[0];
 
 	// if the quake hostname isn't set, set it to the machine name
 	if (strcmp(hostname.string, "UNNAMED") == 0)
@@ -88,10 +82,41 @@ int UDP_Init (void)
 		Cvar_Set("hostname", buff);
 	}
 
+	myAddr = *(struct in_addr *)local->h_addr_list[0];
+
+	// check for interface binding option
+	i = COM_CheckParm("-ip");
+	if (!i)
+		i = COM_CheckParm("-bindip");
+	if (i && i < com_argc-1)
+	{
+		bindAddr.s_addr = inet_addr(com_argv[i+1]);
+		if (bindAddr.s_addr == INADDR_NONE)
+			Sys_Error("%s: %s is not a valid IP address", __thisfunc__, com_argv[i+1]);
+		Con_SafePrintf("Binding to IP Interface Address of %s\n", com_argv[i+1]);
+	}
+	else
+	{
+		bindAddr.s_addr = INADDR_NONE;
+	}
+
+	// check for ip advertise option
+	i = COM_CheckParm("-localip");
+	if (i && i < com_argc-1)
+	{
+		localAddr.s_addr = inet_addr(com_argv[i+1]);
+		if (localAddr.s_addr == INADDR_NONE)
+			Sys_Error("%s: %s is not a valid IP address", __thisfunc__, com_argv[i+1]);
+		Con_SafePrintf("Advertising %s as the local IP in response packets\n", com_argv[i+1]);
+	}
+	else
+	{
+		localAddr.s_addr = INADDR_NONE;
+	}
+
 	if ((net_controlsocket = UDP_OpenSocket (0)) == -1)
 	{
-	//	Sys_Error("%s: Unable to open control socket", __thisfunc__);
-		Con_Printf ("%s: Unable to open control socket, disabling udp\n", __thisfunc__);
+		Con_SafePrintf("%s: Unable to open control socket, UDP disabled\n", __thisfunc__);
 		return -1;
 	}
 
@@ -105,7 +130,7 @@ int UDP_Init (void)
 	if (colon)
 		*colon = 0;
 
-	Con_Printf("UDP Initialized\n");
+	Con_SafePrintf("UDP Initialized\n");
 	tcpipAvailable = true;
 
 	return net_controlsocket;
@@ -379,12 +404,12 @@ int UDP_GetSocketAddr (int mysocket, struct qsockaddr *addr)
 	 * wishes to advertise a specific IP, then allow the "default"
 	 * address returned by the OS to be overridden.
 	 */
-	if (bindAddr.s_addr != INADDR_NONE)
-		address->sin_addr.s_addr = bindAddr.s_addr;
+	if (localAddr.s_addr != INADDR_NONE)
+		address->sin_addr.s_addr = localAddr.s_addr;
 	else
 	{
 		a = address->sin_addr;
-		if (a.s_addr == 0 || a.s_addr == inet_addr("127.0.0.1"))
+		if (a.s_addr == 0 || a.s_addr == htonl(INADDR_LOOPBACK))
 			address->sin_addr.s_addr = myAddr.s_addr;
 	}
 
