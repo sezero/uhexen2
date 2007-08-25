@@ -73,13 +73,26 @@ Console:
   switch to enable logging of developer message even when the developer cvar
   isn't set.
 
+Network:
+--------
+- Added -localip command line option to hexen2, usage: -localip <ip_address>.
+  This changes the ip address embedded in the response packets for serverinfo
+  and connect requests to use the command line provided ip address. The server
+  still binds to INADDR_ANY and it can see the broadcast requests.
+- Added a hexenworld (quakeworld) style ip binding option for hexen2, usage:
+  -ip <ip_address> or -bindip <ip_address>. This enables the server admins to
+  bind to a specific IP address on a multi-homed host. Note that using this
+  option will prevent the us from receiving broadcast packets, so the server
+  discovery on the LAN will not work if the server is started this way.
+- Hexenworld: added -bindip as an alternative for the -ip option to follow the
+  similar hexen2 change (both options are the same, -ip is checked first).
+- Fixed net driver checks in Hexen II dedicated server: It was broken in the
+  1.4.1 release and works properly now.
+- Fixed Datagram_Init returning success even if it couldn't initialize any of
+  the lan drivers.
+
 Server:
 -------
-- Added a hexenworld/quakeworld style ip binding option for hexen2, which
-  enables server admins to bind to a specific IP address on a multi-homed host.
-  Command line arguments: -ip <ip_address>. Note that using this option will
-  prevent the client from receiving broadcast packets, so server discovery on
-  the LAN will not work if the server uses this option.
 - Fixed a bug in NET_SendToAll (mainly used for reconnecting clients upon
   changing levels) where it didn't skip non-connected clients.
 - Fixed a crash when changelevel2 is requested for a non-existant map.
@@ -91,8 +104,6 @@ Server:
   when starting the server, such as: "h2ded +exec myconfig.cfg"
 - Hexen II dedicated server now starts the demo1 map, if the server is still
   not active when initialization is complete.
-- Fixed net driver checks in Hexen II dedicated server: It was broken in the
-  1.4.1 release and works properly now.
 
 Video:
 ------

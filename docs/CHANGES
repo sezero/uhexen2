@@ -22,6 +22,9 @@ Development Progress	:
       all interfaces. Ported from the tyr-quake tree. Note that using this
       option will prevent us from receiving broadcast packets, so server
       discovery on the LAN will not work if the server uses this option.
+      Added -localip command line option: Enables the user to specify an IP
+      to use in response packets for serverinfo and connect requests, but
+      still binds to INADDR_ANY, therefore it can see the broadcast requests.
       This is really just a work around for the problems inherent when
       embedding the client/server IP addresses inside the network protocol.
       The specific example which drove this implementation is that of a
