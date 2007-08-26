@@ -1,6 +1,6 @@
 /*
 	hwmquery.c
-	$Id: hwmquery.c,v 1.14 2007-08-23 19:45:30 sezero Exp $
+	$Id: hwmquery.c,v 1.15 2007-08-26 09:42:51 sezero Exp $
 
 	HWMQUERY 0.1 HexenWorld Master Server Query
 	Copyright (C) 2006 O. Sezer <sezero@users.sourceforge.net>
@@ -154,13 +154,7 @@ static int NET_WaitReadTimeout (int fd, long sec, long usec)
 static void NET_Init (void)
 {
 #if defined(PLATFORM_WINDOWS)
-	WORD	wVersionRequested;
-	int		err;
-
-// Init winsock
-	wVersionRequested = MAKEWORD(1, 1);
-	err = WSAStartup (MAKEWORD(1, 1), &winsockdata);
-	if (err)
+	if (WSAStartup(MAKEWORD(1,1), &winsockdata) != 0)
 		Sys_Error ("Winsock initialization failed.");
 #endif	/* PLATFORM_WINDOWS */
 }

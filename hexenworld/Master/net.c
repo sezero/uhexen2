@@ -2,7 +2,7 @@
 	net_udp.c
 	network UDP driver
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Master/net.c,v 1.32 2007-08-25 11:18:14 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Master/net.c,v 1.33 2007-08-26 09:42:51 sezero Exp $
 */
 
 #include "net_sys.h"
@@ -260,12 +260,7 @@ NET_Init
 void NET_Init (int port)
 {
 #ifdef PLATFORM_WINDOWS
-	WORD	wVersionRequested;
-	int		r;
-
-	wVersionRequested = MAKEWORD(1, 1);
-	r = WSAStartup (MAKEWORD(1, 1), &winsockdata);
-	if (r)
+	if (WSAStartup(MAKEWORD(1,1), &winsockdata) != 0)
 		Sys_Error ("Winsock initialization failed.");
 #endif
 

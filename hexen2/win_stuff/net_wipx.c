@@ -2,7 +2,7 @@
 	net_wipx.c
 	winsock ipx driver
 
-	$Id: net_wipx.c,v 1.22 2007-08-26 09:16:22 sezero Exp $
+	$Id: net_wipx.c,v 1.23 2007-08-26 09:42:50 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -56,10 +56,7 @@ int WIPX_Init (void)
 
 	if (winsock_initialized == 0)
 	{
-		int		r;
-
-		r = WSAStartup (MAKEWORD(1, 1), &winsockdata);
-		if (r != 0)
+		if (WSAStartup(MAKEWORD(1,1), &winsockdata) != 0)
 		{
 			winsock_initialized = -1;
 			Con_SafePrintf("Winsock initialization failed.\n");

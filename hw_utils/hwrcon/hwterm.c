@@ -1,6 +1,6 @@
 /*
 	hwterm.c
-	$Id: hwterm.c,v 1.18 2007-08-23 19:45:31 sezero Exp $
+	$Id: hwterm.c,v 1.19 2007-08-26 09:42:51 sezero Exp $
 
 	HWTERM 1.2 HexenWorld Remote Console Terminal
 	Idea based on QTerm 1.1 by Michael Dwyer/N0ZAP (18-May-1998).
@@ -165,13 +165,7 @@ static int NET_WaitReadTimeout (int fd, long sec, long usec)
 static void NET_Init (void)
 {
 #if defined(PLATFORM_WINDOWS)
-	WORD	wVersionRequested;
-	int		err;
-
-// Init winsock
-	wVersionRequested = MAKEWORD(1, 1);
-	err = WSAStartup (MAKEWORD(1, 1), &winsockdata);
-	if (err)
+	if (WSAStartup(MAKEWORD(1,1), &winsockdata) != 0)
 		Sys_Error ("Winsock initialization failed.");
 #endif	/* PLATFORM_WINDOWS */
 }

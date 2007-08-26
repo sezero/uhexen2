@@ -2,7 +2,7 @@
 	net_wins.c
 	winsock udp driver
 
-	$Id: net_wins.c,v 1.23 2007-08-26 09:15:26 sezero Exp $
+	$Id: net_wins.c,v 1.24 2007-08-26 09:42:50 sezero Exp $
 */
 
 
@@ -75,10 +75,7 @@ int WINS_Init (void)
 
 	if (winsock_initialized == 0)
 	{
-		int		r;
-
-		r = WSAStartup (MAKEWORD(1, 1), &winsockdata);
-		if (r != 0)
+		if (WSAStartup(MAKEWORD(1,1), &winsockdata) != 0)
 		{
 			winsock_initialized = -1;
 			Con_SafePrintf("Winsock initialization failed.\n");
