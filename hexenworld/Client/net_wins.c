@@ -2,7 +2,7 @@
 	net_udp.c
 	network UDP driver
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/net_wins.c,v 1.36 2007-08-25 11:18:14 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/net_wins.c,v 1.37 2007-08-26 09:30:35 sezero Exp $
 */
 
 #include "net_sys.h"
@@ -266,7 +266,7 @@ static void NET_GetLocalAddress (void)
 		Sys_Error ("%s: getsockname: %s", __thisfunc__, strerror(errno));
 	net_local_adr.port = address.sin_port;
 
-	Con_Printf("IP address %s\n", NET_AdrToString (net_local_adr) );
+	Con_SafePrintf("IP address %s\n", NET_AdrToString (net_local_adr) );
 }
 
 /*
@@ -305,7 +305,7 @@ void NET_Init (int port)
 	//
 	NET_GetLocalAddress ();
 
-	Con_Printf("UDP Initialized\n");
+	Con_SafePrintf("UDP Initialized\n");
 }
 
 /*
