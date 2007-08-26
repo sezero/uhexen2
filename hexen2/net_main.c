@@ -2,7 +2,7 @@
 	net_main.c
 	main networking module
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/net_main.c,v 1.29 2007-07-17 14:43:41 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/net_main.c,v 1.30 2007-08-26 09:15:18 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -702,7 +702,7 @@ void NET_Init (void)
 		if (i < com_argc-1)
 			DEFAULTnet_hostport = atoi (com_argv[i+1]);
 		else
-			Con_Printf ("%s: ignoring -port argument\n", __thisfunc__);
+			Con_SafePrintf("%s: ignoring -port argument\n", __thisfunc__);
 	}
 	net_hostport = DEFAULTnet_hostport;
 

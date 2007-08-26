@@ -2,7 +2,7 @@
 	net_wipx.c
 	winsock ipx driver
 
-	$Id: net_wipx.c,v 1.20 2007-08-25 11:16:56 sezero Exp $
+	$Id: net_wipx.c,v 1.21 2007-08-26 09:15:26 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -200,9 +200,10 @@ int WIPX_OpenSocket (int port)
 	}
 
 	if (ipxAvailable)
-		Sys_Error ("Winsock IPX bind failed");
+		Sys_Error ("IPX bind failed\n");
 	else // we are still in init phase, no need to error
-		Con_Printf ("Winsock IPX bind failed\n");
+		Con_SafePrintf("IPX bind failed\n");
+
 ErrorReturn:
 	closesocket (newsocket);
 	return -1;
