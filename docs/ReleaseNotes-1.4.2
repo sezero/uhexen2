@@ -75,6 +75,10 @@ Console:
 
 Network:
 --------
+- Hexen II, UDP: added network interface scanning to overcome cases where the
+  host address resolves to 127.0.0.1 (loopback) using the old hostent method.
+  If, for some reason, you want to disable this feature, use the command line
+  argument -noifscan.
 - Added -localip command line option to hexen2, usage: -localip <ip_address>.
   This changes the ip address embedded in the response packets for serverinfo
   and connect requests to use the command line provided ip address. The server
