@@ -1,6 +1,6 @@
 /*
 	net_udp.c
-	$Id: net_udp.c,v 1.32 2007-08-27 09:21:24 sezero Exp $
+	$Id: net_udp.c,v 1.33 2007-08-27 09:24:21 sezero Exp $
 
 	Copyright (C) 1996-1997  Id Software, Inc.
 
@@ -58,6 +58,9 @@ static int UDP_GetLocalAddress (int sock)
 	int		i, n;
 	struct sockaddr_in	*iaddr;
 	struct in_addr		addr;
+
+	if (COM_CheckParm("-noifscan"))
+		return -1;
 
 	ifc.ifc_len = sizeof (buf);
 	ifc.ifc_buf = buf;
