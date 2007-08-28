@@ -2,7 +2,7 @@
 	host_cmd.c
 	console commands
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host_cmd.c,v 1.83 2007-08-19 08:12:12 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host_cmd.c,v 1.84 2007-08-28 20:37:33 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -2207,11 +2207,7 @@ static void Host_Startdemos_f (void)
 	int		i, c;
 
 	if (cls.state == ca_dedicated)
-	{
-	//	if (!sv.active)
-	//		Cbuf_AddText ("map start\n");
 		return;
-	}
 
 	c = Cmd_Argc() - 1;
 	if (c > MAX_DEMOS)

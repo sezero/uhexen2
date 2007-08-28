@@ -2,7 +2,7 @@
 	host.c
 	coordinates spawning and killing of local servers
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host.c,v 1.85 2007-08-23 11:24:08 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host.c,v 1.86 2007-08-28 20:37:33 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -1067,6 +1067,8 @@ void Host_Init (void)
 	// process command line arguments
 		Cmd_StuffCmds_f ();
 		Cbuf_Execute ();
+		if (!sv.active)
+			Cbuf_AddText ("map demo1\n");
 	}
 }
 
