@@ -2,7 +2,7 @@
 	vid_win.c
 	Win32 video driver using MGL-4.05
 
-	$Id: vid_win.c,v 1.53 2007-08-14 09:50:34 sezero Exp $
+	$Id: vid_win.c,v 1.54 2007-08-28 20:30:41 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -195,7 +195,7 @@ VID_RememberWindowPos
 */
 static void VID_RememberWindowPos (void)
 {
-	RECT	rect;
+	RECT		rect;
 
 	if (GetWindowRect (mainwindow, &rect))
 	{
@@ -378,7 +378,8 @@ static void VID_Fullscreen_f (void)
 
 static int VID_Suspend (MGLDC *dc, int flags)
 {
-	int i;
+	int		i;
+
 	if (flags & MGL_DEACTIVATE)
 	{
 		IN_RestoreOriginalMouseState ();
@@ -449,20 +450,12 @@ static void registerAllMemDrivers (void)
 
 static void VID_InitMGLFull (HINSTANCE hInstance)
 {
-	int			i, xRes, yRes, bits, lowres, curmode, temp;
-	int			lowstretchedres, stretchedmode, lowstretched;
+	int		i, xRes, yRes, bits, lowres, curmode, temp;
+	int		lowstretchedres, stretchedmode, lowstretched;
 	uchar		*m;
 
 // FIXME: NT is checked for because MGL currently has a bug that causes it
 // to try to use WinDirect modes even on NT
-/*	if (COM_CheckParm("-nowindirect") ||
-		COM_CheckParm("-nowd") ||
-		COM_CheckParm("-novesa") ||
-		WinNT)
-	{
-		useWinDirect = false;
-	}
-*/
 	if ( (COM_CheckParm("-usewindirect") || COM_CheckParm("-usevesa")) && !WinNT )
 		useWinDirect = true;
 
@@ -619,9 +612,9 @@ static void VID_InitMGLFull (HINSTANCE hInstance)
 ****************************************************************************/
 static MGLDC *createDisplayDC (int forcemem)
 {
-	MGLDC			*dc;
+	MGLDC		*dc;
 	pixel_format_t	pf;
-	int				npages;
+	int		npages;
 
 	// Start the specified video mode
 	if (!MGL_changeDisplayMode(mode))
@@ -726,7 +719,7 @@ static void VID_RegisterWndClass(HINSTANCE hInstance)
 
 static void VID_InitMGLDIB (HINSTANCE hInstance)
 {
-	HDC				hdc;
+	HDC		hdc;
 
 	hIcon = LoadIcon (hInstance, MAKEINTRESOURCE (IDI_ICON2));
 
@@ -1306,10 +1299,10 @@ static void DestroyFullDIBWindow (void)
 
 static qboolean VID_SetWindowedMode (int modenum)
 {
-	HDC				hdc;
+	HDC		hdc;
 	pixel_format_t	pf;
-	qboolean		stretched;
-	int				lastmodestate;
+	qboolean	stretched;
+	int		lastmodestate;
 
 	if (!windowed_mode_set)
 	{
@@ -1519,9 +1512,9 @@ static qboolean VID_SetFullscreenMode (int modenum)
 
 static qboolean VID_SetFullDIBMode (int modenum)
 {
-	HDC				hdc;
+	HDC		hdc;
 	pixel_format_t	pf;
-	int				lastmodestate;
+	int		lastmodestate;
 
 	DDActive = 0;
 
@@ -1648,10 +1641,10 @@ static void VID_RestoreOldMode (int original_mode)
 
 static int VID_SetMode (int modenum, unsigned char *palette)
 {
-	int				original_mode, temp;
-	qboolean		stat;
-	MSG				msg;
-	HDC				hdc;
+	int		original_mode, temp;
+	qboolean	stat;
+	MSG		msg;
+	HDC		hdc;
 
 	while ((modenum >= nummodes) || (modenum < 0))
 	{
@@ -1882,9 +1875,9 @@ void VID_UnlockBuffer (void)
 
 void	VID_SetPalette (unsigned char *palette)
 {
-	INT			i;
+	int		i;
 	palette_t	pal[256];
-	HDC			hdc;
+	HDC		hdc;
 
 	if (!Minimized)
 	{
@@ -2004,7 +1997,7 @@ VID_DescribeModes_f
 */
 static void VID_DescribeModes_f (void)
 {
-	int			i, lnummodes;
+	int		i, lnummodes;
 	char		*pinfo;
 	qboolean	na;
 	vmode_t		*pv;
@@ -2102,7 +2095,7 @@ void	VID_Init (unsigned char *palette)
 {
 	int		i, bestmatch, bestmatchmetric, t, dr, dg, db;
 	int		basenummodes;
-	byte	*ptmp;
+	byte		*ptmp;
 
 	Cvar_RegisterVariable (&vid_mode);
 	Cvar_RegisterVariable (&vid_wait);
@@ -2200,19 +2193,15 @@ void	VID_Init (unsigned char *palette)
 		DestroyWindow (hwnd_dialog);
 		hwnd_dialog = NULL;
 	}
-#endif
+#endif	/* ! NO_SPLASHES */
 
-// sound initialization has to go here, preceded by a windowed mode set,
-// so there's a window for DirectSound to work with but we're not yet
-// fullscreen so the "hardware already in use" dialog is visible if it
-// gets displayed
-
-// keep the window minimized until we're ready for the first real mode set
-	//hide_window = true;
-	//VID_SetMode (MODE_WINDOWED, palette);
-	//hide_window = false;
-
-	// Pa3PyX: see below
+/*	Pa3PyX: will now avoid setting default fullscreen mode
+	unless absolutely necessary (windowed default failed).
+	Reason: no need to rape the monitor by switching video
+	modes 3 times on initialization, in addition there may
+	be problems switching from fullscreen VGA to VESA, for
+	instance. The game will switch to the right mode, when
+	it has parsed its configs. */
 	hide_window = false;
 	if (!VID_SetMode(MODE_WINDOWED, palette))
 	{
@@ -2222,24 +2211,10 @@ void	VID_Init (unsigned char *palette)
 	}
 
 	vid_initialized = true;
-
-/*	Pa3PyX: will now avoid setting default fullscreen mode unless
-	absolutely necessary (windowed default failed). Reason: no need to
-	rape the monitor by switching video modes 3 times on initialization,
-	plus there may be problems switching from fullscreen VGA to VESA,
-	for instance. The game will switch to the right mode anyway, when
-	it has parsed its configs. */
-//	force_mode_set = true;
-//	VID_SetMode (vid_default, palette);
-//	force_mode_set = false;
-
 	vid_realmode = vid_modenum;
-
 	VID_SetPalette (palette);
-
 	vid_menudrawfn = VID_MenuDraw;
 	vid_menukeyfn = VID_MenuKey;
-
 	Q_strlcpy (badmode.modedesc, "Bad mode", MAX_DESC);
 }
 
@@ -2277,7 +2252,7 @@ void	VID_Shutdown (void)
 			DestroyWindow (hwnd_dialog);
 			hwnd_dialog = NULL;
 		}
-#endif
+#endif	/* ! NO_SPLASHES */
 
 		if (mainwindow)
 			DestroyWindow(mainwindow);
@@ -2397,8 +2372,8 @@ static void FlipScreen (vrect_t *rects)
 
 void	VID_Update (vrect_t *rects)
 {
-	vrect_t	rect;
-	RECT	trect;
+	vrect_t		rect;
+	RECT		trect;
 
 	if (!vid_palettized && palette_changed)
 	{
@@ -2507,7 +2482,7 @@ D_BeginDirectRect
 void D_BeginDirectRect (int x, int y, byte *pbitmap, int width, int height)
 {
 	int		i, j, reps, repshift;
-	vrect_t	rect;
+	vrect_t		rect;
 
 	if (!vid_initialized)
 		return;
