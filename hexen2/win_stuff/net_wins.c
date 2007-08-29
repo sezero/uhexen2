@@ -2,7 +2,7 @@
 	net_wins.c
 	winsock udp driver
 
-	$Id: net_wins.c,v 1.24 2007-08-26 09:42:50 sezero Exp $
+	$Id: net_wins.c,v 1.25 2007-08-29 01:15:20 sezero Exp $
 */
 
 
@@ -65,7 +65,7 @@ static BOOL PASCAL FAR BlockingHook(void)
 int WINS_Init (void)
 {
 	int		i;
-	char	*p;
+	char	*colon;
 	char	buff[MAXHOSTNAMELEN];
 	struct hostent		*local;
 	struct qsockaddr	addr;
@@ -106,16 +106,17 @@ int WINS_Init (void)
 		return -1;
 	}
 
-	myAddr = *(struct in_addr *)local->h_addr_list[0];
-
 	// if the quake hostname isn't set, set it to the machine name
 	if (strcmp(hostname.string, "UNNAMED") == 0)
 	{
+		char	*p = buff;
+
 		// see if it's a text IP address (well, close enough)
-		for (p = buff; *p; p++)
+		while (*p)
 		{
 			if ((*p < '0' || *p > '9') && *p != '.')
 				break;
+			p++;
 		}
 
 		// if it is a real name, strip off the domain; we only want the host
@@ -130,6 +131,8 @@ int WINS_Init (void)
 		}
 		Cvar_Set("hostname", buff);
 	}
+
+	myAddr = *(struct in_addr *)local->h_addr_list[0];
 
 	// check for interface binding option
 	i = COM_CheckParm("-ip");
@@ -175,9 +178,9 @@ int WINS_Init (void)
 
 	WINS_GetSocketAddr (net_controlsocket, &addr);
 	strcpy(my_tcpip_address,  WINS_AddrToString (&addr));
-	p = strrchr (my_tcpip_address, ':');
-	if (p)
-		*p = 0;
+	colon = strrchr (my_tcpip_address, ':');
+	if (colon)
+		*colon = 0;
 
 	Con_SafePrintf("UDP Initialized\n");
 	tcpipAvailable = true;
