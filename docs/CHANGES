@@ -3,6 +3,22 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2007-08-28 (CVS):
+    * UDP: using the hostent method, myAddr may resolve to 127.0.0.1. added
+      interface scanning to overcome the problem. from the quakeforge tree.
+    * UDP, unix: added command line option -noifscan, in case someone wants
+      to disable network interface scanning for some reason.
+    * updated release notes for v1.4.2 (2007-08-27.)
+    * made hexen2 dedicated servers to start the demo1 map if map map was
+      specified on the command line.
+    * a few more safeprint changes in the net files.
+    * fixed an incorrect size argument (WIPX_AddrCompare, sa_nodenum, 6, not
+      4) in the windows ipx driver.
+    * minor cleanup.
+    * vid_win.c: whitespace clean-up, dead code removal.
+    * net_wins.c: minor clean-up.
+    * net_wipx.c: minor clean-up.
+
 2007-08-25 (CVS):
     * net_dgrm.c: Datagram_Init must return -1 if it couldn't initialize
       any drivers.
