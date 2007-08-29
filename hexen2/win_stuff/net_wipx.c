@@ -2,7 +2,7 @@
 	net_wipx.c
 	winsock ipx driver
 
-	$Id: net_wipx.c,v 1.23 2007-08-26 09:42:50 sezero Exp $
+	$Id: net_wipx.c,v 1.24 2007-08-29 01:20:30 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -47,7 +47,7 @@ static int sequence[IPXSOCKETS];
 int WIPX_Init (void)
 {
 	int		i;
-	char	*p;
+	char	*colon;
 	char	buff[MAXHOSTNAMELEN];
 	struct qsockaddr	addr;
 
@@ -82,11 +82,14 @@ int WIPX_Init (void)
 	// if the quake hostname isn't set, set it to the machine name
 	if (strcmp(hostname.string, "UNNAMED") == 0)
 	{
+		char	*p = buff;
+
 		// see if it's a text IP address (well, close enough)
-		for (p = buff; *p; p++)
+		while (*p)
 		{
 			if ((*p < '0' || *p > '9') && *p != '.')
 				break;
+			p++;
 		}
 
 		// if it is a real name, strip off the domain; we only want the host
@@ -118,9 +121,9 @@ loc0:
 
 	WIPX_GetSocketAddr (net_controlsocket, &addr);
 	strcpy(my_ipx_address,  WIPX_AddrToString (&addr));
-	p = strrchr (my_ipx_address, ':');
-	if (p)
-		*p = 0;
+	colon = strrchr (my_ipx_address, ':');
+	if (colon)
+		*colon = 0;
 
 	Con_SafePrintf("IPX Initialized\n");
 	ipxAvailable = true;
