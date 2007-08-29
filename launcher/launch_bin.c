@@ -2,7 +2,7 @@
 	launch_bin.c
 	hexen2 launcher: binary launching
 
-	$Id: launch_bin.c,v 1.47 2007-08-13 13:01:46 sezero Exp $
+	$Id: launch_bin.c,v 1.48 2007-08-29 13:05:34 sezero Exp $
 
 	This program is free software; you can redistribute it and/or
 	modify it under the terms of the GNU General Public License
@@ -179,9 +179,8 @@ void launch_hexen2_bin (void)
 
 	if (opengl_support && use_fsaa && aasamples)
 	{
-		ptr++;
 		args[++i] = "-fsaa";
-		snprintf (ptr, AASAMPLES_CHARS, "%i", aasamples);
+		snprintf (++ptr, AASAMPLES_CHARS, "%i", aasamples);
 		args[++i] = ptr;
 		while (*ptr)
 			ptr++;
@@ -201,9 +200,8 @@ void launch_hexen2_bin (void)
 
 	if (use_heap && heapsize >= HEAP_MINSIZE)
 	{
-		ptr++;
 		args[++i] = "-heapsize";
-		snprintf (ptr, HEAPSIZE_CHARS, "%i", heapsize);
+		snprintf (++ptr, HEAPSIZE_CHARS, "%i", heapsize);
 		args[++i] = ptr;
 		while (*ptr)
 			ptr++;
@@ -211,9 +209,8 @@ void launch_hexen2_bin (void)
 
 	if (use_zone && zonesize >= ZONE_MINSIZE)
 	{
-		ptr++;
 		args[++i] = "-zone";
-		snprintf (ptr, ZONESIZE_CHARS, "%i", zonesize);
+		snprintf (++ptr, ZONESIZE_CHARS, "%i", zonesize);
 		args[++i] = ptr;
 		while (*ptr)
 			ptr++;
@@ -227,8 +224,7 @@ void launch_hexen2_bin (void)
 /* parse the extra user arguments */
 	if (use_extra && ext_args[0])
 	{
-		ptr++;
-		memcpy (ptr, ext_args, MAX_EXTARGS-1);
+		memcpy (++ptr, ext_args, MAX_EXTARGS-1);
 		string_buf[STRING_BUFSIZE-1] = '\0';
 
 		while (1)
