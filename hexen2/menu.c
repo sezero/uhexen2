@@ -1,7 +1,7 @@
 /*
 	menu.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/menu.c,v 1.97 2007-08-21 09:21:57 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/menu.c,v 1.98 2007-08-29 13:04:57 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -841,7 +841,6 @@ static void M_NewMissionPackGame (void)
    is triggered by Key_Event() when the user hits a key.
  */
 	key_dest = key_game;
-	m_state = m_none;
 	if (!pr_string_count || !pr_global_strings || !pr_string_index)
 		PR_LoadStrings ();
 	cl.intermission = 12;
@@ -872,14 +871,14 @@ static void M_Difficulty_Key (int key)
 	case K_ENTER:
 		Cvar_SetValue ("skill", m_diff_cursor);
 		m_entersound = true;
+		m_state = m_none;
 		if (m_enter_portals)
 		{
 			M_NewMissionPackGame ();
 			return;
 		}
-		m_state = m_none;
-		//Cbuf_AddText ("map demo1\n");
-		Cbuf_AddText ("wait; map demo1\n");
+		Cbuf_AddText ("wait\n"); /* make m_none to really work */
+		Cbuf_AddText ("map demo1\n");
 		break;
 	default:
 		key_dest = key_game;
