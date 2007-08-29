@@ -2,7 +2,7 @@
 	host_cmd.c
 	console commands
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/server/host_cmd.c,v 1.31 2007-08-19 08:12:16 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/server/host_cmd.c,v 1.32 2007-08-29 16:32:47 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -300,13 +300,15 @@ static void Host_Changelevel2_f (void)
 
 	// save the current level's state
 	old_time = sv.time;
-	SaveGamestate (false);
+	if (SaveGamestate(false) != 0)
+		return;
 
 	// try to restore the new level
-	if (LoadGamestate (level, startspot, 0))
+	if (LoadGamestate(level, startspot, 0) != 0)
 	{
 		SV_SpawnServer (level, startspot);
-		RestoreClients();
+		if (sv.active)
+			RestoreClients();
 	}
 }
 
@@ -339,7 +341,8 @@ static void Host_Restart_f (void)
 		if (LoadGamestate (mapname, startspot, 3))
 		{
 			SV_SpawnServer (mapname, startspot);
-			RestoreClients();
+			if (sv.active)
+				RestoreClients();
 		}
 	}
 	else
@@ -488,18 +491,19 @@ static void Host_Savegame_f (void)
 
 	error_state = Host_CopyFiles(fs_userdir, "*.gip", savedest);
 	if (error_state)
-		goto retrymsg;
+		goto finish;
 
 	if (snprintf(savedest, sizeof(savedest), "%s/%s/info.dat", fs_userdir, Cmd_Argv(1)) >= sizeof(savedest))
 	{
-		Con_Printf ("%s: string buffer overflow!\n", __thisfunc__);
+		Host_Error("%s: %d: string buffer overflow!", __thisfunc__, __LINE__);
 		return;
 	}
 	f = fopen (savedest, "w");
 	if (!f)
 	{
-		error_state = true;
-		goto retrymsg;
+		error_state = 1;
+		Con_Printf ("%s: Unable to open %s for writing!\n", __thisfunc__, savedest);
+		goto finish;
 	}
 
 	fprintf (f, "%i\n", SAVEGAME_VERSION);
@@ -524,9 +528,9 @@ static void Host_Savegame_f (void)
 	error_state = ferror(f);
 	fclose(f);
 
-retrymsg:
+finish:
 	if (error_state)
-		Host_Error ("The game could not be saved!");
+		Host_Error ("%s: The game could not be saved properly!", __thisfunc__);
 }
 
 
@@ -569,7 +573,7 @@ static void Host_Loadgame_f (void)
 
 	if (snprintf(savedest, sizeof(savedest), "%s/info.dat", savename) >= sizeof(savedest))
 	{
-		Con_Printf ("%s: string buffer overflow!\n", __thisfunc__);
+		Host_Error("%s: %d: string buffer overflow!", __thisfunc__, __LINE__);
 		return;
 	}
 
@@ -644,14 +648,14 @@ static void Host_Loadgame_f (void)
 
 	snprintf (savedest, sizeof(savedest), "%s/%s", fs_userdir, Cmd_Argv(1));
 	error_state = Host_CopyFiles(savedest, "*.gip", fs_userdir);
-
 	if (error_state)
 	{
-		Host_Error ("The game could not be loaded!");
+		Host_Error ("%s: The game could not be loaded properly!", __thisfunc__);
 		return;
 	}
 
-	LoadGamestate (mapname, NULL, 2);
+	if (LoadGamestate(mapname, NULL, 2) != 0)
+		return;
 
 	SV_SaveSpawnparms ();
 
@@ -685,8 +689,8 @@ int SaveGamestate (qboolean ClientsOnly)
 
 		if (snprintf(savename, sizeof(savename), "%s/clients.gip", fs_userdir) >= sizeof(savename))
 		{
-			Con_Printf ("%s: string buffer overflow!\n", __thisfunc__);
-			return true;
+			Host_Error("%s: %d: string buffer overflow!", __thisfunc__, __LINE__);
+			return -1;
 		}
 	}
 	else
@@ -696,8 +700,8 @@ int SaveGamestate (qboolean ClientsOnly)
 
 		if (snprintf(savename, sizeof(savename), "%s/%s.gip", fs_userdir, sv.name) >= sizeof(savename))
 		{
-			Con_Printf ("%s: string buffer overflow!\n", __thisfunc__);
-			return true;
+			Host_Error("%s: %d: string buffer overflow!", __thisfunc__, __LINE__);
+			return -1;
 		}
 	}
 
@@ -705,7 +709,8 @@ int SaveGamestate (qboolean ClientsOnly)
 	if (!f)
 	{
 		error_state = -1;
-		goto retrymsg;
+		Con_Printf ("%s: Unable to open %s for writing!\n", __thisfunc__, savename);
+		goto finish;
 	}
 
 	fprintf (f, "%i\n", SAVEGAME_VERSION);
@@ -733,7 +738,7 @@ int SaveGamestate (qboolean ClientsOnly)
 			else
 				fprintf (f, "m\n");
 		}
-		SV_SaveEffects(f);
+		SV_SaveEffects (f);
 		fprintf (f, "-1\n");
 		ED_WriteGlobals (f);
 	}
@@ -774,9 +779,9 @@ int SaveGamestate (qboolean ClientsOnly)
 	error_state = ferror(f);
 	fclose (f);
 
-retrymsg:
+finish:
 	if (error_state)
-		Host_Error ("The level could not be saved properly!");
+		Host_Error ("%s: The level could not be saved properly!", __thisfunc__);
 
 	return error_state;
 }
@@ -787,7 +792,7 @@ static void RestoreClients (void)
 	edict_t		*ent;
 	double		time_diff;
 
-	if (LoadGamestate(NULL,NULL,1))
+	if (LoadGamestate(NULL, NULL, 1) != 0)
 		return;
 
 	time_diff = sv.time - old_time;
@@ -802,7 +807,6 @@ static void RestoreClients (void)
 			ent->v.team = (host_client->colors & 15) + 1;
 			ent->v.netname = PR_SetEngineString(host_client->name);
 			ent->v.playerclass = host_client->playerclass;
-
 
 			if (old_progdefs)
 			{
@@ -854,7 +858,7 @@ static int LoadGamestate (const char *level, const char *startspot, int ClientsM
 		}
 		if (snprintf(savename, sizeof(savename), "%s/clients.gip", fs_userdir) >= sizeof(savename))
 		{
-			Con_Printf ("%s: string buffer overflow!\n", __thisfunc__);
+			Host_Error("%s: %d: string buffer overflow!", __thisfunc__, __LINE__);
 			return -1;
 		}
 	}
@@ -862,7 +866,7 @@ static int LoadGamestate (const char *level, const char *startspot, int ClientsM
 	{
 		if (snprintf(savename, sizeof(savename), "%s/%s.gip", fs_userdir, level) >= sizeof(savename))
 		{
-			Con_Printf ("%s: string buffer overflow!\n", __thisfunc__);
+			Host_Error("%s: %d: string buffer overflow!", __thisfunc__, __LINE__);
 			return -1;
 		}
 
@@ -900,7 +904,6 @@ static int LoadGamestate (const char *level, const char *startspot, int ClientsM
 		fscanf (f, "%f\n", &playtime);
 
 		SV_SpawnServer (mapname, startspot);
-
 		if (!sv.active)
 		{
 			fclose (f);
@@ -918,7 +921,7 @@ static int LoadGamestate (const char *level, const char *startspot, int ClientsM
 			fscanf (f, "%s\n", str);
 			Q_strlcpy (sv.lightstyles[i], str, sizeof(sv.lightstyles[0]));
 		}
-		SV_LoadEffects(f);
+		SV_LoadEffects (f);
 	}
 
 // load the edicts out of the savegame file
@@ -938,14 +941,14 @@ static int LoadGamestate (const char *level, const char *startspot, int ClientsM
 			}
 		}
 		if (i == sizeof(str)-1)
-			Sys_Error ("Loadgame buffer overflow");
+			Host_Error ("%s: Loadgame buffer overflow", __thisfunc__);
 		str[i] = 0;
 		start = str;
 		start = COM_Parse(str);
 		if (!com_token[0])
 			break;		// end of file
 		if (strcmp(com_token,"{"))
-			Sys_Error ("First token isn't a brace");
+			Host_Error ("%s: First token isn't a brace", __thisfunc__);
 
 		// parse an edict
 

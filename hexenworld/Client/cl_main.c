@@ -2,7 +2,7 @@
 	cl_main.c
 	client main loop
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/cl_main.c,v 1.83 2007-08-14 09:50:34 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/cl_main.c,v 1.84 2007-08-29 16:32:48 sezero Exp $
 */
 
 #include <sys/types.h>
@@ -938,7 +938,7 @@ static void CL_Download_f (void)
 
 	if (snprintf (tmp, sizeof(tmp), "%s/%s", fs_userdir, Cmd_Argv(1)) >= MAX_OSPATH)
 	{
-		Con_Printf ("%s: string buffer overflow!\n", __thisfunc__);
+		Host_Error("%s: %d: string buffer overflow!", __thisfunc__, __LINE__);
 		return;
 	}
 

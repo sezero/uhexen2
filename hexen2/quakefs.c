@@ -2,7 +2,7 @@
 	quakefs.c
 	Hexen II filesystem
 
-	$Id: quakefs.c,v 1.28 2007-07-27 21:11:05 sezero Exp $
+	$Id: quakefs.c,v 1.29 2007-08-29 16:32:38 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -846,7 +846,7 @@ int FS_WriteFile (const char *filename, const void *data, size_t len)
 
 	if (snprintf(name, sizeof(name), "%s/%s", fs_userdir, filename) >= sizeof(name))
 	{
-		Con_Printf ("%s: string buffer overflow!\n", __thisfunc__);
+		Host_Error("%s: %d: string buffer overflow!", __thisfunc__, __LINE__);
 		return 1;
 	}
 

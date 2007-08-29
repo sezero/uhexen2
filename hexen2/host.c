@@ -2,7 +2,7 @@
 	host.c
 	coordinates spawning and killing of local servers
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host.c,v 1.86 2007-08-28 20:37:33 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host.c,v 1.87 2007-08-29 16:32:38 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -116,9 +116,9 @@ int Host_CopyFiles (const char *source, const char *pat, const char *dest)
 		if ( snprintf(tempdir, sizeof(tempdir),"%s/%s", source, name) >= sizeof(tempdir) ||
 		     snprintf(tempdir2, sizeof(tempdir2),"%s/%s", dest, name) >= sizeof(tempdir2) )
 		{
-			Con_Printf ("%s: string buffer overflow!\n", __thisfunc__);
-			error = -1;
-			goto error_out;
+			Sys_FindClose();
+			Host_Error("%s: %d: string buffer overflow!", __thisfunc__, __LINE__);
+			return -1;
 		}
 
 		error = FS_CopyFile (tempdir, tempdir2);

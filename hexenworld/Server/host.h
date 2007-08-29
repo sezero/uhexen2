@@ -2,7 +2,7 @@
 	host.h
 	public host structures and functions
 
-	$Id: host.h,v 1.7 2007-04-19 17:45:43 sezero Exp $
+	$Id: host.h,v 1.8 2007-08-29 16:32:48 sezero Exp $
 */
 
 #ifndef __HX2_HOST_H
@@ -35,8 +35,9 @@ extern	double		host_frametime;
 extern	double		realtime;		// not bounded in any way, changed at
 						// start of every frame, never reset
 
-void SV_Error (const char *error, ...) __attribute__((format(printf,1,2), noreturn));
 void SV_Init (void);
+void SV_Error (const char *error, ...) __attribute__((format(printf,1,2), noreturn));
+#define Host_Error	SV_Error
 
 #endif	/* __HX2_HOST_H */
 
