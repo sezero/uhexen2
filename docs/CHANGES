@@ -3,6 +3,18 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2007-08-30 (CVS):
+    * changed all of the string buffer overflows which were previously
+      non-critical to Host_Errors (the majority of them were in host_cmd.c
+      and host_cmd.c). while we were there, removed the game load/save
+      retry messages and changed them into Host_Errors and corrected a few
+      return codes of the relevant procedures. added a few missing return
+      code checks around SaveGamestate and LoadGamestate calls. these
+      changes make hexen2 seem a little less tolerant but more stable and
+      secure.
+    * menu.c: minor tidy-up.
+    * launcher: 'ptr++' tidy-up.
+
 2007-08-28 (CVS):
     * UDP: using the hostent method, myAddr may resolve to 127.0.0.1. added
       interface scanning to overcome the problem. from the quakeforge tree.
