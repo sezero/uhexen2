@@ -5,7 +5,7 @@
 	models are the only shared resource between a client and server
 	running on the same machine.
 
-	$Id: model.c,v 1.30 2007-09-01 16:35:58 sezero Exp $
+	$Id: model.c,v 1.31 2007-09-01 16:46:29 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -1335,7 +1335,7 @@ static void Mod_LoadBrushModel (model_t *mod, void *buffer)
 		{	// duplicate the basic information
 			char	name[10];
 
-			snprintf (name, sizeof(texname), "*%i", i+1);
+			snprintf (name, sizeof(name), "*%i", i+1);
 			loadmodel = Mod_FindName (name);
 			*loadmodel = *mod;
 			strcpy (loadmodel->name, name);
