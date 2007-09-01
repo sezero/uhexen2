@@ -5,7 +5,7 @@
 	models are the only shared resource between a client and server
 	running on the same machine.
 
-	$Id: model.c,v 1.29 2007-07-27 21:25:23 sezero Exp $
+	$Id: model.c,v 1.30 2007-09-01 16:35:57 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -13,7 +13,7 @@
 #include "r_local.h"
 
 model_t	*loadmodel;
-static char	loadname[32];	// for hunk tags
+static char	loadname[MAX_QPATH];	// for hunk tags
 
 static void Mod_LoadSpriteModel (model_t *mod, void *buffer);
 static void Mod_LoadBrushModel (model_t *mod, void *buffer);
@@ -226,7 +226,7 @@ model_t *Mod_FindName (const char *name)
 		}
 		else
 			mod_numknown++;
-		strcpy (mod->name, name);
+		Q_strlcpy (mod->name, name, MAX_QPATH);
 		mod->needload = NL_NEEDS_LOADED;
 	}
 
@@ -393,7 +393,7 @@ static void Mod_LoadTextures (lump_t *l)
 		if (!r_texture_external.integer)
 			goto bsp_tex_internal;
 		// try an external wal texture file first
-		sprintf (texname, "textures/%s.wal", mt->name);
+		snprintf (texname, sizeof(texname), "textures/%s.wal", mt->name);
 		if (texname[sizeof(WAL_EXT_DIRNAME)] == '*')
 			texname[sizeof(WAL_EXT_DIRNAME)] = WAL_REPLACE_ASTERIX;
 		mark = Hunk_LowMark ();
@@ -1343,7 +1343,7 @@ static void Mod_LoadBrushModel (model_t *mod, void *buffer)
 		{	// duplicate the basic information
 			char	name[10];
 
-			sprintf (name, "*%i", i+1);
+			snprintf (name, sizeof(name), "*%i", i+1);
 			loadmodel = Mod_FindName (name);
 			*loadmodel = *mod;
 			strcpy (loadmodel->name, name);

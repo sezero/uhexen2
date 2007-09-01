@@ -5,7 +5,7 @@
 	models are the only shared resource between a client and server
 	running on the same machine.
 
-	$Id: model.c,v 1.29 2007-07-27 21:25:23 sezero Exp $
+	$Id: model.c,v 1.30 2007-09-01 16:35:58 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -13,7 +13,7 @@
 #include "r_local.h"
 
 model_t	*loadmodel;
-static char	loadname[32];	// for hunk tags
+static char	loadname[MAX_QPATH];	// for hunk tags
 
 static void Mod_LoadSpriteModel (model_t *mod, void *buffer);
 static void Mod_LoadBrushModel (model_t *mod, void *buffer);
@@ -220,7 +220,7 @@ model_t *Mod_FindName (const char *name)
 		}
 		else
 			mod_numknown++;
-		strcpy (mod->name, name);
+		Q_strlcpy (mod->name, name, MAX_QPATH);
 		mod->needload = NL_NEEDS_LOADED;
 	}
 
@@ -387,7 +387,7 @@ static void Mod_LoadTextures (lump_t *l)
 		if (!r_texture_external.integer)
 			goto bsp_tex_internal;
 		// try an external wal texture file first
-		sprintf (texname, "textures/%s.wal", mt->name);
+		snprintf (texname, sizeof(texname), "textures/%s.wal", mt->name);
 		if (texname[sizeof(WAL_EXT_DIRNAME)] == '*')
 			texname[sizeof(WAL_EXT_DIRNAME)] = WAL_REPLACE_ASTERIX;
 		mark = Hunk_LowMark ();
@@ -1335,7 +1335,7 @@ static void Mod_LoadBrushModel (model_t *mod, void *buffer)
 		{	// duplicate the basic information
 			char	name[10];
 
-			sprintf (name, "*%i", i+1);
+			snprintf (name, sizeof(texname), "*%i", i+1);
 			loadmodel = Mod_FindName (name);
 			*loadmodel = *mod;
 			strcpy (loadmodel->name, name);
@@ -1833,7 +1833,7 @@ static void Mod_LoadAliasModel (model_t *mod, void *buffer)
 		for (len = fs_filesize, p = (byte *)buffer; len; len--, p++)
 			CRC_ProcessByte(&crc, *p);
 
-		sprintf(st, "%d", (int) crc);
+		snprintf (st, sizeof(st), "%d", (int) crc);
 	// rjr FIXME
 		Info_SetValueForKey (cls.userinfo,
 			!strcmp(loadmodel->name, "models/paladin.mdl") ? "pmodel" : "emodel",
@@ -1843,9 +1843,9 @@ static void Mod_LoadAliasModel (model_t *mod, void *buffer)
 		if (cls.state >= ca_connected)
 		{
 			MSG_WriteByte (&cls.netchan.message, clc_stringcmd);
-			sprintf(st, "setinfo %s %d",
-				!strcmp(loadmodel->name, "models/paladin.mdl") ? "pmodel" : "emodel",
-				(int)crc);
+			snprintf (st, sizeof(st), "setinfo %s %d",
+					!strcmp(loadmodel->name, "models/paladin.mdl") ? "pmodel" : "emodel",
+					(int)crc);
 			SZ_Print (&cls.netchan.message, st);
 		}
 	}

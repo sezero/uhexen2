@@ -5,13 +5,13 @@
 	models are the only shared resource between a client and server
 	running on the same machine.
 
-	$Id: model.c,v 1.17 2007-07-08 11:56:51 sezero Exp $
+	$Id: model.c,v 1.18 2007-09-01 16:35:58 sezero Exp $
 */
 
 #include "quakedef.h"
 
 model_t	*loadmodel;
-static char	loadname[32];	// for hunk tags
+static char	loadname[MAX_QPATH];	// for hunk tags
 
 static void Mod_LoadBrushModel (model_t *mod, void *buffer);
 static model_t *Mod_LoadModel (model_t *mod, qboolean crash);
@@ -163,7 +163,7 @@ model_t *Mod_FindName (const char *name)
 	{
 		if (mod_numknown == MAX_MOD_KNOWN)
 			SV_Error ("mod_numknown == MAX_MOD_KNOWN");
-		strcpy (mod->name, name);
+		Q_strlcpy (mod->name, name, MAX_QPATH);
 		mod->needload = true;
 		mod_numknown++;
 	}
@@ -1113,7 +1113,7 @@ static void Mod_LoadBrushModel (model_t *mod, void *buffer)
 		{	// duplicate the basic information
 			char	name[10];
 
-			sprintf (name, "*%i", i+1);
+			snprintf (name, sizeof(name), "*%i", i+1);
 			loadmodel = Mod_FindName (name);
 			*loadmodel = *mod;
 			strcpy (loadmodel->name, name);

@@ -5,14 +5,14 @@
 	models are the only shared resource between a client and server
 	running on the same machine.
 
-	$Id: gl_model.c,v 1.43 2007-08-13 06:44:34 sezero Exp $
+	$Id: gl_model.c,v 1.44 2007-09-01 16:35:58 sezero Exp $
 */
 
 #include "quakedef.h"
 #include "hwal.h"
 
 model_t	*loadmodel;
-static char	loadname[32];	// for hunk tags
+static char	loadname[MAX_QPATH];	// for hunk tags
 
 static void Mod_LoadSpriteModel (model_t *mod, void *buffer);
 static void Mod_LoadBrushModel (model_t *mod, void *buffer);
@@ -230,7 +230,7 @@ model_t *Mod_FindName (const char *name)
 			mod = &(mod_known[mod_numknown++]);
 		}
 	}
-	strcpy(mod->name, name);
+	Q_strlcpy (mod->name, name, MAX_QPATH);
 	mod->needload = NL_NEEDS_LOADED;
 	return mod;
 }
@@ -396,7 +396,7 @@ static void Mod_LoadTextures (lump_t *l)
 		if (!r_texture_external.integer)
 			goto bsp_tex_internal;
 		// try an external wal texture file first
-		sprintf (texname, "textures/%s.wal", mt->name);
+		snprintf (texname, sizeof(texname), "textures/%s.wal", mt->name);
 		if (texname[sizeof(WAL_EXT_DIRNAME)] == '*')
 			texname[sizeof(WAL_EXT_DIRNAME)] = WAL_REPLACE_ASTERIX;
 		mark = Hunk_LowMark ();
@@ -645,7 +645,7 @@ static void Mod_LoadLighting (lump_t *l)
 	int	i;
 	byte	*in, *out, *data;
 	byte	d;
-	char	litfilename[1024];
+	char	litfilename[MAX_QPATH];
 
 	GL_SetupLightmapFmt(false);	// setup the lightmap format to reflect any
 					// changes via the cvar gl_lightmapfmt
@@ -1190,7 +1190,7 @@ static void Mod_LoadLeafs (lump_t *l)
 	loadmodel->leafs = out;
 	loadmodel->numleafs = count;
 
-	sprintf(s, "maps/%s.bsp", Info_ValueForKey(cl.serverinfo,"map"));
+	snprintf (s, sizeof(s), "maps/%s.bsp", Info_ValueForKey(cl.serverinfo,"map"));
 	if (!strcmp(s, loadmodel->name))
 		isnotmap = false;
 
@@ -1566,7 +1566,7 @@ static void Mod_LoadBrushModel (model_t *mod, void *buffer)
 		{	// duplicate the basic information
 			char	name[10];
 
-			sprintf (name, "*%i", i+1);
+			snprintf (name, sizeof(name), "*%i", i+1);
 			loadmodel = Mod_FindName (name);
 			*loadmodel = *mod;
 			strcpy (loadmodel->name, name);
@@ -1904,7 +1904,7 @@ static void *Mod_LoadAllSkins (int numskins, daliasskintype_t *pskintype, int md
 				memcpy (player_8bit_texels[5], (byte *)(pskintype + 1), s);
 			}
 
-			sprintf (name, "%s_%i", loadmodel->name, i);
+			snprintf (name, sizeof(name), "%s_%i", loadmodel->name, i);
 
 			pheader->gl_texturenum[i][0] =
 			pheader->gl_texturenum[i][1] =
@@ -1927,7 +1927,7 @@ static void *Mod_LoadAllSkins (int numskins, daliasskintype_t *pskintype, int md
 			for (j = 0; j < groupskins; j++)
 			{
 				Mod_FloodFillSkin (skin, pheader->skinwidth, pheader->skinheight);
-				sprintf (name, "%s_%i_%i", loadmodel->name, i,j);
+				snprintf (name, sizeof(name), "%s_%i_%i", loadmodel->name, i, j);
 				pheader->gl_texturenum[i][j&3] = 
 					GL_LoadTexture (name, pheader->skinwidth, 
 						pheader->skinheight, (byte *)(pskintype), true, false, tex_mode, false);
@@ -2578,7 +2578,7 @@ static void *Mod_LoadSpriteFrame (void *pin, mspriteframe_t **ppframe, int frame
 	pspriteframe->left = origin[0];
 	pspriteframe->right = width + origin[0];
 
-	sprintf (name, "%s_%i", loadmodel->name, framenum);
+	snprintf (name, sizeof(name), "%s_%i", loadmodel->name, framenum);
 	pspriteframe->gl_texturenum = GL_LoadTexture (name, width, height, (byte *)(pinframe + 1), true, true, 10, false);
 
 	return (void *)((byte *)pinframe + sizeof (dspriteframe_t) + size);
