@@ -3,6 +3,13 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2007-09-02 (CVS):
+    * added two missing null terminations after strncpy calls.
+    * precautions against possible buffer overruns in (gl_)model files. the
+      loadname array size change was also necessary in order to avoid overruns
+      in COM_FileBase.
+    * hexenworld, model.c: fixed typo (oops...)
+
 2007-08-30 (CVS):
     * changed all of the string buffer overflows which were previously
       non-critical to Host_Errors (the majority of them were in host_cmd.c
