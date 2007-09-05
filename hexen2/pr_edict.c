@@ -2,7 +2,7 @@
 	sv_edict.c
 	entity dictionary
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/pr_edict.c,v 1.46 2007-07-08 11:55:21 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/pr_edict.c,v 1.47 2007-09-05 19:55:05 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -1281,15 +1281,11 @@ void PR_LoadProgs (void)
 
 	pr_functions = (dfunction_t *)((byte *)progs + progs->ofs_functions);
 	pr_strings = (char *)progs + progs->ofs_strings;
-	pr_stringssize = 0;
-	for (i = 0; i < progs->numstrings; i++)
-	{
-		if (progs->ofs_strings + pr_stringssize >= fs_filesize)
-			Host_Error ("progs.dat strings go past end of file\n");
-		pr_stringssize += 1 + strlen(pr_strings + pr_stringssize);
-	}
+	if (progs->ofs_strings + progs->numstrings >= (int)fs_filesize)
+		Host_Error ("progs.dat strings go past end of file\n");
 	pr_numknownstrings = 0;
 	pr_maxknownstrings = 0;
+	pr_stringssize = progs->numstrings;
 	if (pr_knownstrings)
 		Z_Free (pr_knownstrings);
 	pr_knownstrings = NULL;
