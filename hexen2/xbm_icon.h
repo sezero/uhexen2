@@ -4,15 +4,15 @@
 	the correct xbm icon file for
 	different Hexen II flavors
 
-	$Id: xbm_icon.h,v 1.3 2007-03-14 21:03:24 sezero Exp $
+	$Id: xbm_icon.h,v 1.4 2007-09-07 20:06:03 sezero Exp $
 */
 
 #if defined(H2W)
 // hexenworld
 #	include "../icons/h2w_ico.xbm"
-//#elif defined(H2MP)
+#elif defined(H2MP)
 // hexen2 with mission pack
-//#	include "icons/h2mp_ico.xbm"
+#	include "icons/h2mp_ico.xbm"
 #else
 // plain hexen2
 #	include "icons/h2_ico.xbm"
