@@ -3,7 +3,7 @@
 	SDL video driver
 	Select window size and mode and init SDL in SOFTWARE mode.
 
-	$Id: vid_sdl.c,v 1.78 2007-08-14 09:04:19 sezero Exp $
+	$Id: vid_sdl.c,v 1.79 2007-09-07 19:58:57 sezero Exp $
 
 	Changed by S.A. 7/11/04, 27/12/04
 	Options are now: -fullscreen | -window, -height , -width
@@ -227,15 +227,15 @@ static qboolean VID_CheckAdequateMem (int width, int height)
 
 static void VID_SetIcon (void)
 {
-	SDL_Surface *icon;
-	SDL_Color color;
-	Uint8 *ptr;
-	int i, mask;
+	SDL_Surface	*icon;
+	SDL_Color	color;
+	Uint8		*ptr;
+	int		i, mask;
 #	include "xbm_icon.h"
 
 	icon = SDL_CreateRGBSurface(SDL_SWSURFACE, HOT_ICON_WIDTH, HOT_ICON_HEIGHT, 8, 0, 0, 0, 0);
 	if (icon == NULL)
-		return;	/* oh well... */
+		return;
 	SDL_SetColorKey(icon, SDL_SRCCOLORKEY, 0);
 
 	color.r = 255;
@@ -254,7 +254,7 @@ static void VID_SetIcon (void)
 		{
 			*ptr = (HOT_ICON_bits[i] & mask) ? 1 : 0;
 			ptr++;
-		}		
+		}
 	}
 
 	SDL_WM_SetIcon(icon, NULL);

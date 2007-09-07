@@ -2,7 +2,7 @@
 	gl_vidsdl.c -- SDL GL vid component
 	Select window size and mode and init SDL in GL mode.
 
-	$Id: gl_vidsdl.c,v 1.171 2007-08-14 11:00:10 sezero Exp $
+	$Id: gl_vidsdl.c,v 1.172 2007-09-07 19:58:57 sezero Exp $
 
 	Changed 7/11/04 by S.A.
 	- Fixed fullscreen opengl mode, window sizes
@@ -234,15 +234,15 @@ void VID_HandlePause (qboolean paused)
 
 static void VID_SetIcon (void)
 {
-	SDL_Surface *icon;
-	SDL_Color color;
-	Uint8 *ptr;
-	int i, mask;
+	SDL_Surface	*icon;
+	SDL_Color	color;
+	Uint8		*ptr;
+	int		i, mask;
 #	include "xbm_icon.h"
 
 	icon = SDL_CreateRGBSurface(SDL_SWSURFACE, HOT_ICON_WIDTH, HOT_ICON_HEIGHT, 8, 0, 0, 0, 0);
 	if (icon == NULL)
-		return;	/* oh well... */
+		return;
 	SDL_SetColorKey(icon, SDL_SRCCOLORKEY, 0);
 
 	color.r = 255;
@@ -261,7 +261,7 @@ static void VID_SetIcon (void)
 		{
 			*ptr = (HOT_ICON_bits[i] & mask) ? 1 : 0;
 			ptr++;
-		}		
+		}
 	}
 
 	SDL_WM_SetIcon(icon, NULL);
