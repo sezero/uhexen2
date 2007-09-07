@@ -2,7 +2,7 @@
 	cmd.c
 	Quake script command processing module
 
-	$Id: cmd.c,v 1.31 2007-07-08 11:55:34 sezero Exp $
+	$Id: cmd.c,v 1.32 2007-09-07 15:38:09 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -344,7 +344,7 @@ static void Cmd_Alias_f (void)
 		{
 			if ( !strcmp(s, a->name) )
 			{
-				Con_Printf ("\"%s\" is \"%s\"\n", s, a->value);
+				Con_Printf ("%s : %s\n", s, a->value);
 				return;
 			}
 		}
@@ -382,7 +382,7 @@ static void Cmd_Alias_f (void)
 	for (i = 2; i < c; i++)
 	{
 		Q_strlcat (cmd, Cmd_Argv(i), sizeof(cmd));
-		if (i != c-1)
+		if (i != c - 1)
 			strcat (cmd, " ");
 	}
 	if (Q_strlcat(cmd, "\n", sizeof(cmd)) >= sizeof(cmd))
