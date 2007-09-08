@@ -4,10 +4,10 @@ Development Progress	:
 ---------------------------
 
 2007-09-05 (CVS):
-    * fixed pr_stringssize calculation: progs->numstrings already is the correct
-      size we should use and the loop for calculating pr_stringssize was incorrect
-      as hell. the bug was carried over from the twilight project which we based
-      our 64 bit support on. Sigh...
+    * fixed pr_stringssize calculation: progs->numstrings already is the
+      correct size we should use and the loop for calculating pr_stringssize
+      was wrong as hell. the bug was carried over from the twilight project
+      which we initially based our 64 bit support on. sigh...
     * updated the beta release version/date.
 
 2007-09-02 (CVS):
