@@ -2,7 +2,7 @@
 	quakefs.c
 	Hexen II filesystem
 
-	$Id: quakefs.c,v 1.29 2007-08-29 16:32:38 sezero Exp $
+	$Id: quakefs.c,v 1.30 2007-09-08 11:15:58 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -179,9 +179,8 @@ of the list so they override previous pack files.
 static pack_t *FS_LoadPackFile (const char *packfile, int paknum, qboolean base_fs)
 {
 	dpackheader_t	header;
-	int				i;
+	int			i, numpackfiles;
 	pakfiles_t		*newfiles;
-	int				numpackfiles;
 	pack_t			*pack;
 	FILE			*packhandle;
 	dpackfile_t		info[MAX_FILES_IN_PACK];
@@ -194,15 +193,32 @@ static pack_t *FS_LoadPackFile (const char *packfile, int paknum, qboolean base_
 	fread (&header, 1, sizeof(header), packhandle);
 	if (header.id[0] != 'P' || header.id[1] != 'A' ||
 	    header.id[2] != 'C' || header.id[3] != 'K')
-		Sys_Error ("%s is not a packfile", packfile);
+	{
+		Sys_Printf ("WARNING: %s is not a packfile, ignored\n", packfile);
+		goto pak_error;
+	}
 
 	header.dirofs = LittleLong (header.dirofs);
 	header.dirlen = LittleLong (header.dirlen);
 
 	numpackfiles = header.dirlen / sizeof(dpackfile_t);
 
+	if (header.dirlen < 0 || header.dirofs < 0)
+	{
+		Sys_Error ("Invalid packfile %s (dirlen: %i, dirofs: %i)",
+					packfile, header.dirlen, header.dirofs);
+	}
+	if (!numpackfiles)
+	{
+		Sys_Printf ("WARNING: %s has no files, ignored\n", packfile);
+		goto pak_error;
+	}
 	if (numpackfiles > MAX_FILES_IN_PACK)
-		Sys_Error ("%s has %i files", packfile, numpackfiles);
+	{
+		Sys_Printf ("WARNING: %s has %i files (max. allowed is %i), ignored\n",
+					packfile, numpackfiles, MAX_FILES_IN_PACK);
+		goto pak_error;
+	}
 
 	newfiles = (pakfiles_t *) Z_Malloc (numpackfiles * sizeof(pakfiles_t), Z_MAINZONE);
 
@@ -319,6 +335,9 @@ static pack_t *FS_LoadPackFile (const char *packfile, int paknum, qboolean base_
 
 	Sys_Printf ("Added packfile %s (%i files)\n", packfile, numpackfiles);
 	return pack;
+pak_error:
+	fclose (packhandle);
+	return NULL;
 }
 
 
