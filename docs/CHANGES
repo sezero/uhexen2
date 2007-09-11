@@ -3,6 +3,17 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2007-09-09 (CVS):
+    * minor clean-up in alias console command.
+    * minor whitespace clean-up.
+    * made the xbm icon bits non-static: they are used only in the relevant
+      VID_SetIcon procedure and the 'static' was a left-over from gimp icon
+      file generation.
+    * re-enabled the mission pack icon in xbm_icon.h in case we build with
+      H2MP pre-defined.
+    * changed most of the critical invalid pakfile errors to warning messages
+      on the terminal.
+
 2007-09-05 (CVS):
     * fixed pr_stringssize calculation: progs->numstrings already is the
       correct size we should use and the loop for calculating pr_stringssize
