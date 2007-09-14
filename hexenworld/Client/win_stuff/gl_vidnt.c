@@ -1,6 +1,6 @@
 /*
 	gl_vidnt.c -- NT GL vid component
-	$Id: gl_vidnt.c,v 1.113 2007-08-14 11:00:12 sezero Exp $
+	$Id: gl_vidnt.c,v 1.114 2007-09-14 14:03:04 sezero Exp $
 */
 
 #define	__GL_FUNC_EXTERN
@@ -244,7 +244,7 @@ void VID_HandlePause (qboolean paused)
 
 //====================================
 
-static void CenterWindow(HWND hWndCenter, int width, int height, BOOL lefttopjustify)
+static void CenterWindow (HWND hWndCenter, int width, int height, BOOL lefttopjustify)
 {
 	int	CenterX, CenterY;
 
@@ -296,7 +296,7 @@ finish:
 			(float)modelist[vid_modenum].width/vid.conwidth, vid.conwidth, vid.conheight);
 }
 
-void VID_ChangeConsize(int key)
+void VID_ChangeConsize (int key)
 {
 	int	i, w, h;
 
@@ -345,7 +345,7 @@ set_size:
 			(float)modelist[vid_modenum].width/vid.conwidth, vid.conwidth, vid.conheight);
 }
 
-char *VID_ReportConsize(void)
+char *VID_ReportConsize (void)
 {
 	return vid_consize;
 }
@@ -645,7 +645,7 @@ void VID_ShiftPalette (unsigned char *palette)
 }
 
 
-static void CheckMultiTextureExtensions(void)
+static void CheckMultiTextureExtensions (void)
 {
 	gl_mtexable = false;
 
@@ -686,7 +686,7 @@ static void CheckMultiTextureExtensions(void)
 	}
 }
 
-static void CheckStencilBuffer(void)
+static void CheckStencilBuffer (void)
 {
 	have_stencil = false;
 
@@ -699,7 +699,7 @@ static void CheckStencilBuffer(void)
 
 
 #ifdef GL_DLSYM
-static qboolean GL_OpenLibrary(const char *name)
+static qboolean GL_OpenLibrary (const char *name)
 {
 	Con_SafePrintf("Loading OpenGL library %s\n", name);
 
@@ -723,7 +723,7 @@ static qboolean GL_OpenLibrary(const char *name)
 	return true;
 }
 
-static void GL_CloseLibrary(void)
+static void GL_CloseLibrary (void)
 {
 	// clear the wgl function pointers
 #define GL_FUNCTION(ret, func, params) \
@@ -739,7 +739,7 @@ static void GL_CloseLibrary(void)
 	hInstGL = NULL;
 }
 
-static void GL_Init_Functions(void)
+static void GL_Init_Functions (void)
 {
 #define GL_FUNCTION(ret, func, params) \
 	func##_fp = (func##_f) GetProcAddress(hInstGL, #func); \
@@ -752,7 +752,7 @@ static void GL_Init_Functions(void)
 }
 #endif	// GL_DLSYM
 
-static void GL_ResetFunctions(void)
+static void GL_ResetFunctions (void)
 {
 #ifdef	GL_DLSYM
 #define GL_FUNCTION(ret, func, params) \
@@ -932,9 +932,9 @@ static int ConvertTrueColorToPal (unsigned char *true_color, unsigned char *pale
 
 	min_dist = 256 * 256 + 256 * 256 + 256 * 256;
 	min_index = -1;
-	r = ( long )true_color[0];
-	g = ( long )true_color[1];
-	b = ( long )true_color[2];
+	r = (long) true_color[0];
+	g = (long) true_color[1];
+	b = (long) true_color[2];
 
 	for (i = 0; i < 256; i++)
 	{
@@ -965,16 +965,16 @@ static void VID_CreateInversePalette (unsigned char *palette)
 
 	Con_SafePrintf ("Creating inverse palette\n");
 
-	for (r = 0; r < ( 1 << INVERSE_PAL_R_BITS ); r++)
+	for (r = 0; r < (1 << INVERSE_PAL_R_BITS); r++)
 	{
-		for (g = 0; g < ( 1 << INVERSE_PAL_G_BITS ); g++)
+		for (g = 0; g < (1 << INVERSE_PAL_G_BITS); g++)
 		{
-			for (b = 0; b < ( 1 << INVERSE_PAL_B_BITS ); b++)
+			for (b = 0; b < (1 << INVERSE_PAL_B_BITS); b++)
 			{
-				true_color[0] = ( unsigned char )( r << ( 8 - INVERSE_PAL_R_BITS ) );
-				true_color[1] = ( unsigned char )( g << ( 8 - INVERSE_PAL_G_BITS ) );
-				true_color[2] = ( unsigned char )( b << ( 8 - INVERSE_PAL_B_BITS ) );
-				inverse_pal[idx] = ConvertTrueColorToPal( true_color, palette );
+				true_color[0] = (unsigned char)(r << (8 - INVERSE_PAL_R_BITS));
+				true_color[1] = (unsigned char)(g << (8 - INVERSE_PAL_G_BITS));
+				true_color[2] = (unsigned char)(b << (8 - INVERSE_PAL_B_BITS));
+				inverse_pal[idx] = ConvertTrueColorToPal(true_color, palette);
 				idx++;
 			}
 		}
@@ -999,7 +999,7 @@ void VID_SetPalette (unsigned char *palette)
 	FILE	*f;
 	char	s[MAX_OSPATH];
 #if !defined(NO_SPLASHES)
-	HWND		hDlg, hProgress;
+	HWND	hDlg, hProgress;
 #endif
 #endif
 	static qboolean	been_here = false;
@@ -1017,9 +1017,9 @@ void VID_SetPalette (unsigned char *palette)
 		pal += 3;
 
 #if BYTE_ORDER == BIG_ENDIAN
-		v = (255<<0) + (r<<24) + (g<<16) + (b<<8);
+		v = (255 << 0) + (r << 24) + (g << 16) + (b << 8);
 #else
-		v = (255<<24) + (r<<0) + (g<<8) + (b<<16);
+		v = (255 << 24) + (r << 0) + (g << 8) + (b << 16);
 #endif
 		*table++ = v;
 	}
@@ -1038,15 +1038,21 @@ void VID_SetPalette (unsigned char *palette)
 		c = ColorIndex[i] * 3;
 
 		r = pal[c];
-		g = pal[c+1];
-		b = pal[c+2];
+		g = pal[c + 1];
+		b = pal[c + 2];
 
 		for (p = 0; p < 16; p++)
 		{
 #if BYTE_ORDER == BIG_ENDIAN
-			v = (ColorPercent[15-p]) + (r<<24) + (g<<16) + (b<<8);
+			v = (ColorPercent[15 - p]) +
+						(r << 24) +
+						(g << 16) +
+						(b << 8);
 #else
-			v = (ColorPercent[15-p]<<24) + (r<<0) + (g<<8) + (b<<16);
+			v = (ColorPercent[15 - p] << 24) +
+						(r << 0) +
+						(g << 8) +
+						(b << 16);
 #endif
 			*table++ = v;
 
@@ -1062,7 +1068,7 @@ void VID_SetPalette (unsigned char *palette)
 
 #if USE_HEXEN2_PALTEX_CODE
 	// This is original hexen2 code for palettized textures
-	// Hexenworld replaced it with quake's newer code below
+	// Hexenworld replaced it with quake(world)'s code below
 	pal = (byte *) FS_LoadStackFile (INVERSE_PALNAME, inverse_pal, sizeof(inverse_pal));
 	if (pal == NULL || pal != inverse_pal)
 		VID_CreateInversePalette (palette);
@@ -1151,9 +1157,9 @@ void VID_SetPalette (unsigned char *palette)
 //==========================================================================
 
 
-static BOOL bSetupPixelFormat(HDC hDC)
+static BOOL bSetupPixelFormat (HDC hDC)
 {
-	int pixelformat;
+	int	pixelformat;
 
 	if ( (pixelformat = ChoosePixelFormat(hDC, &pfd)) == 0 )
 	{
@@ -1281,7 +1287,7 @@ static void VID_UpdateWindowStatus (void)
 }
 
 
-static void AppActivate(BOOL fActive, BOOL minimize)
+static void AppActivate (BOOL fActive, BOOL minimize)
 /****************************************************************************
 *
 * Function:	AppActivate
@@ -1393,124 +1399,125 @@ static LONG WINAPI MainWndProc (HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPar
 
 	switch (uMsg)
 	{
-		case WM_KILLFOCUS:
-			if (modestate == MS_FULLDIB)
-				ShowWindow(mainwindow, SW_SHOWMINNOACTIVE);
-			break;
+	case WM_KILLFOCUS:
+		if (modestate == MS_FULLDIB)
+			ShowWindow(mainwindow, SW_SHOWMINNOACTIVE);
+		break;
 
-		case WM_CREATE:
-			if (Win95)
-			{
-				uMSG_MOUSEWHEEL = RegisterWindowMessage("MSWHEEL_ROLLMSG");
-				if (!uMSG_MOUSEWHEEL)
-					Con_SafePrintf ("couldn't register mousewheel\n");
-			}
-			break;
+	case WM_CREATE:
+		if (Win95)
+		{
+			uMSG_MOUSEWHEEL = RegisterWindowMessage("MSWHEEL_ROLLMSG");
+			if (!uMSG_MOUSEWHEEL)
+				Con_SafePrintf ("couldn't register mousewheel\n");
+		}
+		break;
 
-		case WM_MOVE:
-			if (modestate == MS_FULLDIB)
-				break;	// ignore when fullscreen
-			window_x = (int) LOWORD(lParam);
-			window_y = (int) HIWORD(lParam);
-			VID_UpdateWindowStatus ();
+	case WM_MOVE:
+		// ignore when fullscreen
+		if (modestate == MS_FULLDIB)
 			break;
+		window_x = (int) LOWORD(lParam);
+		window_y = (int) HIWORD(lParam);
+		VID_UpdateWindowStatus ();
+		break;
 
-		case WM_KEYDOWN:
-		case WM_SYSKEYDOWN:
-			Key_Event (MapKey(lParam), true);
-			break;
-			
-		case WM_KEYUP:
-		case WM_SYSKEYUP:
-			Key_Event (MapKey(lParam), false);
-			break;
+	case WM_SIZE:
+		break;
 
-		case WM_SYSCHAR:
+	case WM_SYSCHAR:
 		// keep Alt-Space from happening
-			break;
+		break;
 
-	// this is complicated because Win32 seems to pack multiple mouse events into
-	// one update sometimes, so we always check all states and look for events
-		case WM_LBUTTONDOWN:
-		case WM_LBUTTONUP:
-		case WM_RBUTTONDOWN:
-		case WM_RBUTTONUP:
-		case WM_MBUTTONDOWN:
-		case WM_MBUTTONUP:
-		case WM_XBUTTONDOWN:
-		case WM_XBUTTONUP:
-		case WM_MOUSEMOVE:
-			temp = 0;
-
-			if (wParam & MK_LBUTTON)
-				temp |= 1;
-
-			if (wParam & MK_RBUTTON)
-				temp |= 2;
-
-			if (wParam & MK_MBUTTON)
-				temp |= 4;
-
-			// intellimouse explorer
-			if (wParam & MK_XBUTTON1)
-				temp |= 8;
-
-			if (wParam & MK_XBUTTON2)
-				temp |= 16;
-
-			IN_MouseEvent (temp);
-
-			break;
-
-		case WM_MOUSEWHEEL:
-			if ((short) HIWORD(wParam) > 0)
-			{
-				Key_Event(K_MWHEELUP, true);
-				Key_Event(K_MWHEELUP, false);
-			}
-			else
-			{
-				Key_Event(K_MWHEELDOWN, true);
-				Key_Event(K_MWHEELDOWN, false);
-			}
-			return 0;
-
-		case WM_SIZE:
-			break;
-
-		case WM_CLOSE:
-			if (MessageBox (mainwindow, "Are you sure you want to quit?", "Confirm Exit",
-						MB_YESNO | MB_SETFOREGROUND | MB_ICONQUESTION) == IDYES)
-			{
-				Sys_Quit ();
-			}
-
-			break;
-
-		case WM_ACTIVATE:
-			fActive = LOWORD(wParam);
-			fMinimized = (BOOL) HIWORD(wParam);
-			AppActivate(!(fActive == WA_INACTIVE), fMinimized);
+	case WM_ACTIVATE:
+		fActive = LOWORD(wParam);
+		fMinimized = (BOOL) HIWORD(wParam);
+		AppActivate(!(fActive == WA_INACTIVE), fMinimized);
 
 		// fix the leftover Alt from any Alt-Tab or the like that switched us away
-			ClearAllStates ();
+		ClearAllStates ();
 
-			break;
+		break;
 
-		case WM_DESTROY:
-		//	PostQuitMessage (0);
-			break;
+	case WM_KEYDOWN:
+	case WM_SYSKEYDOWN:
+		Key_Event (MapKey(lParam), true);
+		break;
 
-		case MM_MCINOTIFY:
+	case WM_KEYUP:
+	case WM_SYSKEYUP:
+		Key_Event (MapKey(lParam), false);
+		break;
+
+	// this is complicated because Win32 seems to pack multiple mouse
+	// events into one update sometimes, so we always check all states
+	// and look for events
+	case WM_LBUTTONDOWN:
+	case WM_LBUTTONUP:
+	case WM_RBUTTONDOWN:
+	case WM_RBUTTONUP:
+	case WM_MBUTTONDOWN:
+	case WM_MBUTTONUP:
+	case WM_XBUTTONDOWN:
+	case WM_XBUTTONUP:
+	case WM_MOUSEMOVE:
+		temp = 0;
+
+		if (wParam & MK_LBUTTON)
+			temp |= 1;
+
+		if (wParam & MK_RBUTTON)
+			temp |= 2;
+
+		if (wParam & MK_MBUTTON)
+			temp |= 4;
+
+		// intellimouse explorer
+		if (wParam & MK_XBUTTON1)
+			temp |= 8;
+
+		if (wParam & MK_XBUTTON2)
+			temp |= 16;
+
+		IN_MouseEvent (temp);
+
+		break;
+
+	case WM_MOUSEWHEEL:
+		if ((short) HIWORD(wParam) > 0)
+		{
+			Key_Event(K_MWHEELUP, true);
+			Key_Event(K_MWHEELUP, false);
+		}
+		else
+		{
+			Key_Event(K_MWHEELDOWN, true);
+			Key_Event(K_MWHEELDOWN, false);
+		}
+		return 0;
+
+	case WM_CLOSE:
+		if (MessageBox (mainwindow, "Are you sure you want to quit?", "Confirm Exit",
+					MB_YESNO | MB_SETFOREGROUND | MB_ICONQUESTION) == IDYES)
+		{
+			Sys_Quit ();
+		}
+		break;
+
+	case WM_DESTROY:
+	//	PostQuitMessage (0);
+		break;
+
+	case MM_MCINOTIFY:
 #if !defined(_NO_CDAUDIO)
-			lRet = CDAudio_MessageHandler (hWnd, uMsg, wParam, lParam);
+		lRet = CDAudio_MessageHandler (hWnd, uMsg, wParam, lParam);
 #endif	/* ! _NO_CDAUDIO */
-			break;
+		break;
 
-		default:
-			/* pass all unhandled messages to DefWindowProc */
-			lRet = DefWindowProc (hWnd, uMsg, wParam, lParam);
-			break;
+	default:
+		/* pass all unhandled messages to DefWindowProc */
+		lRet = DefWindowProc (hWnd, uMsg, wParam, lParam);
+		break;
 	}
 
 	/* return 1 if handled message, 0 if not */
@@ -1651,7 +1658,7 @@ static void VID_DescribeModes_f (void)
 }
 
 
-static void VID_RegisterWndClass(HINSTANCE hInstance)
+static void VID_RegisterWndClass (HINSTANCE hInstance)
 {
 	WNDCLASS	wc;
 
@@ -1870,7 +1877,7 @@ VID_ChangeVideoMode
 intended only as a callback for VID_Restart_f
 =================
 */
-static void VID_ChangeVideoMode(int newmode)
+static void VID_ChangeVideoMode (int newmode)
 {
 	unsigned int	j;
 	int	temp, temp2;
@@ -2514,7 +2521,7 @@ void VID_ToggleFullscreen (void)
 
 #ifndef H2W
 //unused in hexenworld
-void D_ShowLoadingSize(void)
+void D_ShowLoadingSize (void)
 {
 	if (!vid_initialized)
 		return;
@@ -2630,7 +2637,7 @@ static void VID_MenuDraw (void)
 
 static int find_bppnum (int incr)
 {
-	int j, pos = -1;
+	int	j, pos = -1;
 
 	if (!vid_menu_fs)	// then it doesn't matter
 		return 0;
@@ -2664,7 +2671,7 @@ static int find_bppnum (int incr)
 
 static int match_mode_to_bpp (int bppnum)
 {
-	int k, l;
+	int	k, l;
 
 	k = bpplist[bppnum][1];
 	l = bpplist[bppnum][1] + 1;

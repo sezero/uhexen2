@@ -3,7 +3,7 @@
 	SDL video driver
 	Select window size and mode and init SDL in SOFTWARE mode.
 
-	$Id: vid_sdl.c,v 1.76 2007-09-07 19:59:02 sezero Exp $
+	$Id: vid_sdl.c,v 1.77 2007-09-14 14:03:03 sezero Exp $
 
 	Changed by S.A. 7/11/04, 27/12/04
 	Options are now: -fullscreen | -window, -height , -width
@@ -540,7 +540,7 @@ static int VID_SetMode (int modenum, unsigned char *palette)
 // VID_ChangeVideoMode
 // intended only as a callback for VID_Restart_f
 //
-static void VID_ChangeVideoMode(int newmode)
+static void VID_ChangeVideoMode (int newmode)
 {
 	int		stat, temp;
 
@@ -823,7 +823,7 @@ void VID_Shutdown (void)
 FlipScreen
 ================
 */
-static void FlipScreen(vrect_t *rects)
+static void FlipScreen (vrect_t *rects)
 {
 	while (rects)
 	{
@@ -835,7 +835,7 @@ static void FlipScreen(vrect_t *rects)
 
 void VID_Update (vrect_t *rects)
 {
-	vrect_t	rect;
+	vrect_t		rect;
 
 	if (palette_changed)
 	{
@@ -962,9 +962,9 @@ Gamma functions for UNIX/SDL
 ============================
 */
 #if 0
-static void VID_SetGamma(void)
+static void VID_SetGamma (void)
 {
-	float value;
+	float	value;
 
 	if ((v_gamma.value != 0)&&(v_gamma.value > (1/GAMMA_MAX)))
 		value = 1.0/v_gamma.value;

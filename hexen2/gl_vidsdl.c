@@ -2,7 +2,7 @@
 	gl_vidsdl.c -- SDL GL vid component
 	Select window size and mode and init SDL in GL mode.
 
-	$Id: gl_vidsdl.c,v 1.172 2007-09-07 19:58:57 sezero Exp $
+	$Id: gl_vidsdl.c,v 1.173 2007-09-14 14:03:00 sezero Exp $
 
 	Changed 7/11/04 by S.A.
 	- Fixed fullscreen opengl mode, window sizes
@@ -605,7 +605,7 @@ static void VID_SetGammaRamp (void)
 #else /* ! USE_GAMMA_RAMPS */
 static void VID_SetGamma (void)
 {
-	float value;
+	float	value;
 
 	if (v_gamma.value > (1.0 / GAMMA_MAX))
 		value = 1.0 / v_gamma.value;
@@ -904,9 +904,9 @@ static int ConvertTrueColorToPal (unsigned char *true_color, unsigned char *pale
 
 	min_dist = 256 * 256 + 256 * 256 + 256 * 256;
 	min_index = -1;
-	r = ( long )true_color[0];
-	g = ( long )true_color[1];
-	b = ( long )true_color[2];
+	r = (long) true_color[0];
+	g = (long) true_color[1];
+	b = (long) true_color[2];
 
 	for (i = 0; i < 256; i++)
 	{
@@ -937,16 +937,16 @@ static void VID_CreateInversePalette (unsigned char *palette)
 
 	Con_SafePrintf ("Creating inverse palette\n");
 
-	for (r = 0; r < ( 1 << INVERSE_PAL_R_BITS ); r++)
+	for (r = 0; r < (1 << INVERSE_PAL_R_BITS); r++)
 	{
-		for (g = 0; g < ( 1 << INVERSE_PAL_G_BITS ); g++)
+		for (g = 0; g < (1 << INVERSE_PAL_G_BITS); g++)
 		{
-			for (b = 0; b < ( 1 << INVERSE_PAL_B_BITS ); b++)
+			for (b = 0; b < (1 << INVERSE_PAL_B_BITS); b++)
 			{
-				true_color[0] = ( unsigned char )( r << ( 8 - INVERSE_PAL_R_BITS ) );
-				true_color[1] = ( unsigned char )( g << ( 8 - INVERSE_PAL_G_BITS ) );
-				true_color[2] = ( unsigned char )( b << ( 8 - INVERSE_PAL_B_BITS ) );
-				inverse_pal[idx] = ConvertTrueColorToPal( true_color, palette );
+				true_color[0] = (unsigned char)(r << (8 - INVERSE_PAL_R_BITS));
+				true_color[1] = (unsigned char)(g << (8 - INVERSE_PAL_G_BITS));
+				true_color[2] = (unsigned char)(b << (8 - INVERSE_PAL_B_BITS));
+				inverse_pal[idx] = ConvertTrueColorToPal(true_color, palette);
 				idx++;
 			}
 		}
@@ -986,9 +986,9 @@ void VID_SetPalette (unsigned char *palette)
 		pal += 3;
 
 #if BYTE_ORDER == BIG_ENDIAN
-		v = (255<<0) + (r<<24) + (g<<16) + (b<<8);
+		v = (255 << 0) + (r << 24) + (g << 16) + (b << 8);
 #else
-		v = (255<<24) + (r<<0) + (g<<8) + (b<<16);
+		v = (255 << 24) + (r << 0) + (g << 8) + (b << 16);
 #endif
 		*table++ = v;
 	}
@@ -1007,21 +1007,27 @@ void VID_SetPalette (unsigned char *palette)
 		c = ColorIndex[i] * 3;
 
 		r = pal[c];
-		g = pal[c+1];
-		b = pal[c+2];
+		g = pal[c + 1];
+		b = pal[c + 2];
 
 		for (p = 0; p < 16; p++)
 		{
 #if BYTE_ORDER == BIG_ENDIAN
-			v = (ColorPercent[15-p]) + (r<<24) + (g<<16) + (b<<8);
+			v = (ColorPercent[15 - p]) +
+						(r << 24) +
+						(g << 16) +
+						(b << 8);
 #else
-			v = (ColorPercent[15-p]<<24) + (r<<0) + (g<<8) + (b<<16);
+			v = (ColorPercent[15 - p] << 24) +
+						(r << 0) +
+						(g << 8) +
+						(b << 16);
 #endif
 			*table++ = v;
 
-			RTint[i*16+p] = ((float)r) / ((float)ColorPercent[15-p]);
-			GTint[i*16+p] = ((float)g) / ((float)ColorPercent[15-p]);
-			BTint[i*16+p] = ((float)b) / ((float)ColorPercent[15-p]);
+			RTint[i*16 + p] = ((float)r) / ((float)ColorPercent[15-p]);
+			GTint[i*16 + p] = ((float)g) / ((float)ColorPercent[15-p]);
+			BTint[i*16 + p] = ((float)b) / ((float)ColorPercent[15-p]);
 		}
 	}
 
@@ -1031,7 +1037,7 @@ void VID_SetPalette (unsigned char *palette)
 
 #if USE_HEXEN2_PALTEX_CODE
 	// This is original hexen2 code for palettized textures
-	// Hexenworld replaced it with quake's newer code below
+	// Hexenworld replaced it with quake(world)'s code below
 	pal = (byte *) FS_LoadStackFile (INVERSE_PALNAME, inverse_pal, sizeof(inverse_pal));
 	if (pal == NULL || pal != inverse_pal)
 		VID_CreateInversePalette (palette);
@@ -1134,7 +1140,7 @@ VID_ChangeVideoMode
 intended only as a callback for VID_Restart_f
 =================
 */
-static void VID_ChangeVideoMode(int newmode)
+static void VID_ChangeVideoMode (int newmode)
 {
 	unsigned int	j;
 	int	temp;
@@ -1747,7 +1753,7 @@ void VID_ToggleFullscreen (void)
 
 #ifndef H2W
 //unused in hexenworld
-void D_ShowLoadingSize(void)
+void D_ShowLoadingSize (void)
 {
 	if (!vid_initialized)
 		return;

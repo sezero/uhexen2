@@ -2,7 +2,7 @@
 	vid_win.c
 	Win32 video driver using MGL-4.05
 
-	$Id: vid_win.c,v 1.52 2007-08-28 20:30:50 sezero Exp $
+	$Id: vid_win.c,v 1.53 2007-09-14 14:03:04 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -136,7 +136,7 @@ static int	driver = grDETECT, mode;
 static qboolean	useWinDirect = false;
 static qboolean	useDirectDraw = true;
 
-static MGLDC	*mgldc = NULL,*memdc = NULL,*dibdc = NULL,*windc = NULL;
+static MGLDC	*mgldc = NULL, *memdc = NULL, *dibdc = NULL, *windc = NULL;
 
 typedef struct {
 	modestate_t	type;
@@ -237,7 +237,6 @@ VID_UpdateWindowStatus
 */
 static void VID_UpdateWindowStatus (void)
 {
-
 	window_rect.left = window_x;
 	window_rect.top = window_y;
 	window_rect.right = window_x + window_width;
@@ -698,7 +697,7 @@ static MGLDC *createDisplayDC (int forcemem)
 }
 
 
-static void VID_RegisterWndClass(HINSTANCE hInstance)
+static void VID_RegisterWndClass (HINSTANCE hInstance)
 {
 	WNDCLASS	wc;
 
@@ -2334,7 +2333,7 @@ static void FlipScreen (vrect_t *rects)
 	}
 	else
 	{
-		HDC hdcScreen;
+		HDC	hdcScreen;
 
 		hdcScreen = GetDC(mainwindow);
 
@@ -2370,7 +2369,7 @@ static void FlipScreen (vrect_t *rects)
 }
 
 
-void	VID_Update (vrect_t *rects)
+void VID_Update (vrect_t *rects)
 {
 	vrect_t		rect;
 	RECT		trect;
@@ -2573,7 +2572,7 @@ void D_BeginDirectRect (int x, int y, byte *pbitmap, int width, int height)
 // unused in hexenworld
 void D_ShowLoadingSize (void)
 {
-	vrect_t	rect;
+	vrect_t		rect;
 	viddef_t	save_vid;	// global video state
 
 	if (!vid_initialized)
@@ -2648,7 +2647,7 @@ D_EndDirectRect
 void D_EndDirectRect (int x, int y, int width, int height)
 {
 	int		i, j, reps, repshift;
-	vrect_t	rect;
+	vrect_t		rect;
 
 	if (!vid_initialized)
 		return;
@@ -2793,7 +2792,7 @@ static int MapKey (int key)
 }
 
 
-static void AppActivate(BOOL fActive, BOOL minimize)
+static void AppActivate (BOOL fActive, BOOL minimize)
 /****************************************************************************
 *
 * Function:	AppActivate
@@ -2948,7 +2947,6 @@ VID_HandlePause
 */
 void VID_HandlePause (qboolean paused)
 {
-
 	if (modestate == MS_WINDOWED && _enable_mouse.integer)
 	{
 		if (paused)
@@ -2985,11 +2983,11 @@ extern cvar_t	mwheelthreshold;
 /* main window procedure */
 static LONG WINAPI MainWndProc (HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
-//	LONG			lRet = 0;	// Ignore all irrelevant messages when in DDRAW/VESA/VGA modes
-	LONG			lRet = DDActive;
-	int				fActive, fMinimized, temp;
-	HDC				hdc;
-	PAINTSTRUCT		ps;
+//	LONG	lRet = 0;	// ignore irrelevant messages in DDRAW/VESA/VGA modes
+	LONG	lRet = DDActive;
+	int	fActive, fMinimized, temp;
+	HDC		hdc;
+	PAINTSTRUCT	ps;
 
 	if (Win95 && mwheelthreshold.integer >= 1)
 	{
@@ -3015,259 +3013,254 @@ static LONG WINAPI MainWndProc (HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPar
 
 	switch (uMsg)
 	{
-		case WM_CREATE:
-			if (Win95)
-			{
-				uMSG_MOUSEWHEEL = RegisterWindowMessage("MSWHEEL_ROLLMSG");
-				if (!uMSG_MOUSEWHEEL)
-					Con_SafePrintf ("couldn't register mousewheel\n");
-			}
+	case WM_CREATE:
+		if (Win95)
+		{
+			uMSG_MOUSEWHEEL = RegisterWindowMessage("MSWHEEL_ROLLMSG");
+			if (!uMSG_MOUSEWHEEL)
+				Con_SafePrintf ("couldn't register mousewheel\n");
+		}
+		break;
+
+	case WM_SYSCOMMAND:
+		// Pa3PyX: Won't handle these in DDRAW/VESA/VGA modes
+		if (DDActive)
 			break;
 
-		case WM_SYSCOMMAND:
-			// Pa3PyX: Won't handle these in DDRAW/VESA/VGA modes
-			if (DDActive)
-				break;
-
-			// Check for maximize being hit
-			switch (wParam & ~0x0F)
-			{
-				case SC_MAXIMIZE:
-				// if minimized, bring up as a window before going fullscreen,
-				// so MGL will have the right state to restore
-					if (Minimized)
-					{
-						force_mode_set = true;
-						VID_SetMode (vid_modenum, vid_curpal);
-						force_mode_set = false;
-					}
-
-					VID_SetMode (vid_fullscreen_mode.integer, vid_curpal);
-					break;
-
-				case SC_SCREENSAVE:
-				case SC_MONITORPOWER:
-					if (modestate != MS_WINDOWED)
-					{
-					// don't call DefWindowProc() because we don't want to start
-					// the screen saver fullscreen
-						break;
-					}
-
-				// fall through windowed and allow the screen saver to start
-
-				default:
-					if (!in_mode_set)
-					{
-						S_BlockSound ();
-						S_ClearBuffer ();
-					}
-
-					lRet = DefWindowProc (hWnd, uMsg, wParam, lParam);
-
-					if (!in_mode_set)
-					{
-						S_UnblockSound ();
-					}
-			}
-			break;
-
-		case WM_MOVE:
-			// Pa3PyX: Won't handle these in DDRAW/VESA/VGA modes
-			if (DDActive)
-				break;
-
-			window_x = (int) LOWORD(lParam);
-			window_y = (int) HIWORD(lParam);
-			VID_UpdateWindowStatus ();
-
-			if ((modestate == MS_WINDOWED) && !in_mode_set && !Minimized)
-				VID_RememberWindowPos ();
-
-			break;
-
-		case WM_SIZE:
-			// Pa3PyX: Won't handle these in DDRAW/VESA/VGA modes
-			if (DDActive)
-				break;
-
-			Minimized = false;
-			
-			if (!(wParam & SIZE_RESTORED))
-			{
-				if (wParam & SIZE_MINIMIZED)
-					Minimized = true;
-			}
-			break;
-
-		case WM_SYSCHAR:
-		// keep Alt-Space from happening
-			break;
-
-		case WM_ACTIVATE:
-			fActive = LOWORD(wParam);
-			fMinimized = (BOOL) HIWORD(wParam);
-			AppActivate(!(fActive == WA_INACTIVE), fMinimized);
-
-		// fix the leftover Alt from any Alt-Tab or the like that switched us away
-			ClearAllStates ();
-
-			if (!in_mode_set)
-			{
-				if (windc)
-					MGL_activatePalette(windc,true);
-
-				VID_SetPalette(vid_curpal);
-			}
-
-			break;
-
-		case WM_PAINT:
-			hdc = BeginPaint(hWnd, &ps);
-
-			if (!in_mode_set && host_initialized)
-				SCR_UpdateWholeScreen ();
-
-			EndPaint(hWnd, &ps);
-			break;
-
-		case WM_KEYDOWN:
-		case WM_SYSKEYDOWN:
-			if (!in_mode_set)
-				Key_Event (MapKey(lParam), true);
-			break;
-
-		case WM_KEYUP:
-		case WM_SYSKEYUP:
-			if (!in_mode_set)
-				Key_Event (MapKey(lParam), false);
-			break;
-
-	// this is complicated because Win32 seems to pack multiple mouse events into
-	// one update sometimes, so we always check all states and look for events
-		case WM_LBUTTONDOWN:
-		case WM_LBUTTONUP:
-		case WM_RBUTTONDOWN:
-		case WM_RBUTTONUP:
-		case WM_MBUTTONDOWN:
-		case WM_MBUTTONUP:
-		case WM_XBUTTONDOWN:
-		case WM_XBUTTONUP:
-		case WM_MOUSEMOVE:
-			if (in_mode_set)
-				break;
-
-			temp = 0;
-
-			if (wParam & MK_LBUTTON)
-				temp |= 1;
-
-			if (wParam & MK_RBUTTON)
-				temp |= 2;
-
-			if (wParam & MK_MBUTTON)
-				temp |= 4;
-
-			// intellimouse explorer
-			if (wParam & MK_XBUTTON1)
-				temp |= 8;
-
-			if (wParam & MK_XBUTTON2)
-				temp |= 16;
-
-			IN_MouseEvent (temp);
-
-			break;
-
-		case WM_MOUSEWHEEL:
-			if (in_mode_set)
-				return 0;
-
-			if ((short) HIWORD(wParam) > 0)
-			{
-				Key_Event(K_MWHEELUP, true);
-				Key_Event(K_MWHEELUP, false);
-			}
-			else
-			{
-				Key_Event(K_MWHEELDOWN, true);
-				Key_Event(K_MWHEELDOWN, false);
-			}
-			return 0;
-
-		// KJB: Added these new palette functions
-		case WM_PALETTECHANGED:
-			if ((HWND)wParam == hWnd)
-				break;
-			/* Fall through to WM_QUERYNEWPALETTE */
-		case WM_QUERYNEWPALETTE:
-			hdc = GetDC(NULL);
-
-			if (GetDeviceCaps(hdc, RASTERCAPS) & RC_PALETTE)
-				vid_palettized = true;
-			else
-				vid_palettized = false;
-
-			ReleaseDC(NULL,hdc);
-
-			scr_fullupdate = 0;
-
-			if (vid_initialized && !in_mode_set && windc && MGL_activatePalette(windc,false) && !Minimized)
-			{
-				VID_SetPalette (vid_curpal);
-				InvalidateRect (mainwindow, NULL, false);
-
-			// specifically required if WM_QUERYNEWPALETTE realizes a new palette
-				lRet = TRUE;
-			}
-			break;
-
-		case WM_DISPLAYCHANGE:
-			// Pa3PyX: Won't handle these in DDRAW/VESA/VGA modes
-			if (DDActive)
-				break;
-
-			if (!in_mode_set && (modestate == MS_WINDOWED) && !vid_fulldib_on_focus_mode)
+		// Check for maximize being hit
+		switch (wParam & ~0x0F)
+		{
+		case SC_MAXIMIZE:
+		// if minimized, bring up as a window before going fullscreen,
+		// so MGL will have the right state to restore
+			if (Minimized)
 			{
 				force_mode_set = true;
 				VID_SetMode (vid_modenum, vid_curpal);
 				force_mode_set = false;
 			}
+
+			VID_SetMode (vid_fullscreen_mode.integer, vid_curpal);
 			break;
 
-		case WM_CLOSE:
-		// Pa3PyX: Won't handle these in DDRAW/VESA/VGA modes
-			if (DDActive)
+		case SC_SCREENSAVE:
+		case SC_MONITORPOWER:
+			if (modestate != MS_WINDOWED)
+			{
+			// don't call DefWindowProc() because we don't want to start
+			// the screen saver fullscreen
 				break;
-		// this causes Close in the right-click task bar menu not to work, but right
-		// now bad things happen if Close is handled in that case (garbage and a
-		// crash on Win95)
+			}
+		// fall through windowed and allow the screen saver to start
+		default:
 			if (!in_mode_set)
 			{
-				if (MessageBox (mainwindow, "Are you sure you want to quit?", "Confirm Exit",
-							MB_YESNO | MB_SETFOREGROUND | MB_ICONQUESTION) == IDYES)
-				{
-					Sys_Quit ();
-				}
+				S_BlockSound ();
+				S_ClearBuffer ();
 			}
-			break;
 
-		case MM_MCINOTIFY:
-#if !defined(_NO_CDAUDIO)
-			lRet = CDAudio_MessageHandler (hWnd, uMsg, wParam, lParam);
-#endif	/* ! _NO_CDAUDIO */
-			break;
-
-		default:
-			// Pa3PyX: Won't handle these in DDRAW/VESA/VGA modes
-			if (DDActive)
-				break;
-			/* pass all unhandled messages to DefWindowProc */
 			lRet = DefWindowProc (hWnd, uMsg, wParam, lParam);
+
+			if (!in_mode_set)
+			{
+				S_UnblockSound ();
+			}
+		}
+		break;
+
+	case WM_MOVE:
+		// Pa3PyX: Won't handle these in DDRAW/VESA/VGA modes
+		if (DDActive)
 			break;
+		window_x = (int) LOWORD(lParam);
+		window_y = (int) HIWORD(lParam);
+		VID_UpdateWindowStatus ();
+		if ((modestate == MS_WINDOWED) && !in_mode_set && !Minimized)
+			VID_RememberWindowPos ();
+		break;
+
+	case WM_SIZE:
+		// Pa3PyX: Won't handle these in DDRAW/VESA/VGA modes
+		if (DDActive)
+			break;
+
+		Minimized = false;
+			
+		if (!(wParam & SIZE_RESTORED))
+		{
+			if (wParam & SIZE_MINIMIZED)
+				Minimized = true;
+		}
+		break;
+
+	case WM_SYSCHAR:
+		// keep Alt-Space from happening
+		break;
+
+	case WM_ACTIVATE:
+		fActive = LOWORD(wParam);
+		fMinimized = (BOOL) HIWORD(wParam);
+		AppActivate(!(fActive == WA_INACTIVE), fMinimized);
+
+		// fix the leftover Alt from any Alt-Tab or the like that switched us away
+		ClearAllStates ();
+
+		if (!in_mode_set)
+		{
+			if (windc)
+				MGL_activatePalette(windc,true);
+
+			VID_SetPalette(vid_curpal);
+		}
+
+		break;
+
+	case WM_PAINT:
+		hdc = BeginPaint(hWnd, &ps);
+
+		if (!in_mode_set && host_initialized)
+			SCR_UpdateWholeScreen ();
+
+		EndPaint(hWnd, &ps);
+		break;
+
+	case WM_KEYDOWN:
+	case WM_SYSKEYDOWN:
+		if (in_mode_set)
+			break;
+		Key_Event (MapKey(lParam), true);
+		break;
+
+	case WM_KEYUP:
+	case WM_SYSKEYUP:
+		if (in_mode_set)
+			break;
+		Key_Event (MapKey(lParam), false);
+		break;
+
+	// this is complicated because Win32 seems to pack multiple mouse
+	// events into one update sometimes, so we always check all states
+	// and look for events
+	case WM_LBUTTONDOWN:
+	case WM_LBUTTONUP:
+	case WM_RBUTTONDOWN:
+	case WM_RBUTTONUP:
+	case WM_MBUTTONDOWN:
+	case WM_MBUTTONUP:
+	case WM_XBUTTONDOWN:
+	case WM_XBUTTONUP:
+	case WM_MOUSEMOVE:
+		if (in_mode_set)
+			break;
+
+		temp = 0;
+
+		if (wParam & MK_LBUTTON)
+			temp |= 1;
+
+		if (wParam & MK_RBUTTON)
+			temp |= 2;
+
+		if (wParam & MK_MBUTTON)
+			temp |= 4;
+
+		// intellimouse explorer
+		if (wParam & MK_XBUTTON1)
+			temp |= 8;
+
+		if (wParam & MK_XBUTTON2)
+			temp |= 16;
+
+		IN_MouseEvent (temp);
+
+		break;
+
+	case WM_MOUSEWHEEL:
+		if (in_mode_set)
+			return 0;
+		if ((short) HIWORD(wParam) > 0)
+		{
+			Key_Event(K_MWHEELUP, true);
+			Key_Event(K_MWHEELUP, false);
+		}
+		else
+		{
+			Key_Event(K_MWHEELDOWN, true);
+			Key_Event(K_MWHEELDOWN, false);
+		}
+		return 0;
+
+	// KJB: Added these new palette functions
+	case WM_PALETTECHANGED:
+		if ((HWND)wParam == hWnd)
+			break;
+	/* Fall through to WM_QUERYNEWPALETTE */
+	case WM_QUERYNEWPALETTE:
+		hdc = GetDC(NULL);
+
+		if (GetDeviceCaps(hdc, RASTERCAPS) & RC_PALETTE)
+			vid_palettized = true;
+		else
+			vid_palettized = false;
+
+		ReleaseDC(NULL,hdc);
+
+		scr_fullupdate = 0;
+
+		if (vid_initialized && !in_mode_set && windc && MGL_activatePalette(windc,false) && !Minimized)
+		{
+			VID_SetPalette (vid_curpal);
+			InvalidateRect (mainwindow, NULL, false);
+
+		// specifically required if WM_QUERYNEWPALETTE realizes a new palette
+			lRet = TRUE;
+		}
+		break;
+
+	case WM_DISPLAYCHANGE:
+		// Pa3PyX: Won't handle these in DDRAW/VESA/VGA modes
+		if (DDActive)
+			break;
+		if (!in_mode_set && (modestate == MS_WINDOWED) && !vid_fulldib_on_focus_mode)
+		{
+			force_mode_set = true;
+			VID_SetMode (vid_modenum, vid_curpal);
+			force_mode_set = false;
+		}
+		break;
+
+	case WM_CLOSE:
+		// Pa3PyX: Won't handle these in DDRAW/VESA/VGA modes
+		if (DDActive)
+			break;
+		if (in_mode_set)
+			break;
+		// this causes Close in the right-click task bar menu not to
+		// work, but right now bad things happen if Close is handled
+		// in that case (garbage and a crash on Win95)
+		if (MessageBox (mainwindow, "Are you sure you want to quit?", "Confirm Exit",
+					MB_YESNO | MB_SETFOREGROUND | MB_ICONQUESTION) == IDYES)
+		{
+			Sys_Quit ();
+		}
+		break;
+
+	case MM_MCINOTIFY:
+#if !defined(_NO_CDAUDIO)
+		lRet = CDAudio_MessageHandler (hWnd, uMsg, wParam, lParam);
+#endif	/* ! _NO_CDAUDIO */
+		break;
+
+	default:
+		// Pa3PyX: Won't handle these in DDRAW/VESA/VGA modes
+		if (DDActive)
+			break;
+		/* pass all unhandled messages to DefWindowProc */
+		lRet = DefWindowProc (hWnd, uMsg, wParam, lParam);
+		break;
 	}
 
-	/* return 0 if handled message, 1 if not */
+	/* return 1 if handled message, 0 if not */
 	return lRet;
 }
 
