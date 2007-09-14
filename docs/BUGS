@@ -10,6 +10,13 @@ Known Bugs
   partially or completely. If you suffer from that problem, use Alsa
   or SDL sound.
 
+- Sound: When using SDL audio, the game may randomly quit with an error
+  message 'Cache_MakeLRU: active link'. This isn't a common error and
+  it isn't easy to reproduce. See the help forum threads for more info:
+  http://sourceforge.net/forum/forum.php?thread_id=1308186&forum_id=425207
+  http://sourceforge.net/forum/forum.php?thread_id=1821052&forum_id=425207
+  To be looked into.
+
 - Software renderer, C-only code, 64 bit: amd64 DEBUG builds (with all
   optimizations turned off) may not draw some objects depending on the
   viewpoint of the player, e.g. the trees are virtually always missing
