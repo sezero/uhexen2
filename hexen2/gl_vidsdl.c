@@ -2,7 +2,7 @@
 	gl_vidsdl.c -- SDL GL vid component
 	Select window size and mode and init SDL in GL mode.
 
-	$Id: gl_vidsdl.c,v 1.174 2007-09-14 14:10:01 sezero Exp $
+	$Id: gl_vidsdl.c,v 1.175 2007-09-14 15:55:45 sezero Exp $
 
 	Changed 7/11/04 by S.A.
 	- Fixed fullscreen opengl mode, window sizes
@@ -437,7 +437,7 @@ static int VID_SetMode (int modenum)
 	VID_ConWidth(modenum);
 
 	SDL_GL_GetAttribute(SDL_GL_BUFFER_SIZE, &i);
-	Con_SafePrintf ("Video Mode Set : %ux%ux%d\n", vid.width, vid.height, i);
+	Con_SafePrintf ("Video Mode Set : %dx%dx%d\n", modelist[modenum].width, modelist[modenum].height, i);
 	if (multisample)
 	{
 		SDL_GL_GetAttribute(SDL_GL_MULTISAMPLESAMPLES, &multisample);
