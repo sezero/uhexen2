@@ -1,6 +1,6 @@
 /*
 	snd_win.c
-	$Id: snd_win.c,v 1.29 2007-08-21 09:03:49 sezero Exp $
+	$Id: snd_win.c,v 1.30 2007-09-14 14:16:23 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -197,8 +197,7 @@ static sndinitstat SNDDMA_InitDirect (void)
 	HRESULT			hresult;
 	int				reps;
 
-	memset ((void *)&sn, 0, sizeof (sn));
-
+	memset((void *)&sn, 0, sizeof(sn));
 	shm = &sn;
 
 	shm->channels = desired_channels;
@@ -409,7 +408,7 @@ static sndinitstat SNDDMA_InitDirect (void)
 	shm->samplepos = 0;
 	shm->submission_chunk = 1;
 	shm->buffer = (unsigned char *) lpData;
-	sample16 = (shm->samplebits/8) - 1;
+	sample16 = (shm->samplebits / 8) - 1;
 
 	dsound_init = true;
 
@@ -427,12 +426,13 @@ Crappy windows multimedia base
 static qboolean SNDDMA_InitWav (void)
 {
 	WAVEFORMATEX	format;
-	int				i;
+	int			i;
 	HRESULT			hr;
 
 	snd_sent = 0;
 	snd_completed = 0;
 
+	memset((void *)&sn, 0, sizeof(sn));
 	shm = &sn;
 
 	shm->channels = desired_channels;
@@ -532,7 +532,7 @@ static qboolean SNDDMA_InitWav (void)
 	shm->samplepos = 0;
 	shm->submission_chunk = 1;
 	shm->buffer = (unsigned char *) lpData;
-	sample16 = (shm->samplebits/8) - 1;
+	sample16 = (shm->samplebits / 8) - 1;
 
 	wav_init = true;
 

@@ -1,6 +1,6 @@
 /*
 	snd_alsa.c
-	$Id: snd_alsa.c,v 1.34 2007-07-12 13:10:53 sezero Exp $
+	$Id: snd_alsa.c,v 1.35 2007-09-14 14:16:23 sezero Exp $
 
 	ALSA 1.0 sound driver for Linux Hexen II
 
@@ -55,7 +55,7 @@ static qboolean load_libasound (void)
 	alsa_handle = (void *) dlopen ("libasound.so.2", RTLD_GLOBAL | RTLD_NOW);
 	if (!alsa_handle)
 	{
-		Con_Printf ("Couldn't load libasound.so.2: %s\n", dlerror ());
+		Con_Printf ("Couldn't load libasound.so.2: %s\n", dlerror());
 		return false;
 	}
 
@@ -111,7 +111,7 @@ qboolean S_ALSA_Init (void)
 	snd_pcm_sw_params_t	*sw = NULL;
 	snd_pcm_uframes_t	frag_size;
 
-	if (!load_libasound ())
+	if (!load_libasound())
 		return false;
 
 	err = COM_CheckParm("-alsadev");
@@ -121,19 +121,19 @@ qboolean S_ALSA_Init (void)
 	err = hx2snd_pcm_open (&pcm, pcmname, SND_PCM_STREAM_PLAYBACK, SND_PCM_NONBLOCK);
 	if (err < 0)
 	{
-		Con_Printf ("ALSA: audio open error: %s\n", hx2snd_strerror (err));
-		return 0;
+		Con_Printf ("ALSA: audio open error: %s\n", hx2snd_strerror(err));
+		return false;
 	}
 	Con_Printf ("ALSA: Using device: %s\n", pcmname);
 
 	err = hx2snd_pcm_hw_params_malloc (&hw);
-	ALSA_CHECK_ERR(err, "unable to allocate hardware params. %s\n", hx2snd_strerror (err));
+	ALSA_CHECK_ERR(err, "unable to allocate hardware params. %s\n", hx2snd_strerror(err));
 
 	err = hx2snd_pcm_hw_params_any (pcm, hw);
-	ALSA_CHECK_ERR(err, "unable to init hardware params. %s\n", hx2snd_strerror (err));
+	ALSA_CHECK_ERR(err, "unable to init hardware params. %s\n", hx2snd_strerror(err));
 
 	err = hx2snd_pcm_hw_params_set_access (pcm, hw, SND_PCM_ACCESS_MMAP_INTERLEAVED);
-	ALSA_CHECK_ERR(err, "unable to set interleaved access. %s\n", hx2snd_strerror (err));
+	ALSA_CHECK_ERR(err, "unable to set interleaved access. %s\n", hx2snd_strerror(err));
 
 	tmp_bits = (desired_bits == 8) ? SND_PCM_FORMAT_U8 : SND_PCM_FORMAT_S16;
 	err = hx2snd_pcm_hw_params_set_format (pcm, hw, (snd_pcm_format_t) tmp_bits);
@@ -142,7 +142,7 @@ qboolean S_ALSA_Init (void)
 		Con_Printf ("Problems setting %d bit format, trying alternatives..\n", desired_bits);
 		tmp_bits = (desired_bits == 8) ? SND_PCM_FORMAT_S16 : SND_PCM_FORMAT_U8;
 		err = hx2snd_pcm_hw_params_set_format (pcm, hw, (snd_pcm_format_t) tmp_bits);
-		ALSA_CHECK_ERR(err, "Neither 8 nor 16 bit format supported. %s\n", hx2snd_strerror (err));
+		ALSA_CHECK_ERR(err, "Neither 8 nor 16 bit format supported. %s\n", hx2snd_strerror(err));
 	}
 	tmp_bits = (tmp_bits == SND_PCM_FORMAT_U8) ? 8 : 16;
 
@@ -155,7 +155,7 @@ qboolean S_ALSA_Init (void)
 				(desired_channels == 2) ? "mono" : "stereo");
 		tmp_chan = (desired_channels == 2) ? 1 : 2;
 		err = hx2snd_pcm_hw_params_set_channels (pcm, hw, tmp_chan);
-		ALSA_CHECK_ERR(err, "unable to set desired channels. %s\n", hx2snd_strerror (err));
+		ALSA_CHECK_ERR(err, "unable to set desired channels. %s\n", hx2snd_strerror(err));
 	}
 
 	rate = desired_speed;
@@ -201,27 +201,27 @@ qboolean S_ALSA_Init (void)
 
 	err = hx2snd_pcm_hw_params_set_period_size_near (pcm, hw, &frag_size, 0);
 	ALSA_CHECK_ERR(err, "unable to set period size near %i. %s\n",
-			    (int) frag_size, hx2snd_strerror (err));
+				(int)frag_size, hx2snd_strerror(err));
 
 	err = hx2snd_pcm_hw_params (pcm, hw);
-	ALSA_CHECK_ERR(err, "unable to install hardware params. %s\n", hx2snd_strerror (err));
+	ALSA_CHECK_ERR(err, "unable to install hardware params. %s\n", hx2snd_strerror(err));
 
 	err = hx2snd_pcm_sw_params_malloc (&sw);
-	ALSA_CHECK_ERR(err, "unable to allocate software params. %s\n", hx2snd_strerror (err));
+	ALSA_CHECK_ERR(err, "unable to allocate software params. %s\n", hx2snd_strerror(err));
 
 	err = hx2snd_pcm_sw_params_current (pcm, sw);
-	ALSA_CHECK_ERR(err, "unable to determine current software params. %s\n", hx2snd_strerror (err));
+	ALSA_CHECK_ERR(err, "unable to determine current software params. %s\n", hx2snd_strerror(err));
 
 	err = hx2snd_pcm_sw_params_set_start_threshold (pcm, sw, ~0U);
-	ALSA_CHECK_ERR(err, "unable to set playback threshold. %s\n", hx2snd_strerror (err));
+	ALSA_CHECK_ERR(err, "unable to set playback threshold. %s\n", hx2snd_strerror(err));
 
 	err = hx2snd_pcm_sw_params_set_stop_threshold (pcm, sw, ~0U);
-	ALSA_CHECK_ERR(err, "unable to set playback stop threshold. %s\n", hx2snd_strerror (err));
+	ALSA_CHECK_ERR(err, "unable to set playback stop threshold. %s\n", hx2snd_strerror(err));
 
 	err = hx2snd_pcm_sw_params (pcm, sw);
-	ALSA_CHECK_ERR(err, "unable to install software params. %s\n", hx2snd_strerror (err));
+	ALSA_CHECK_ERR(err, "unable to install software params. %s\n", hx2snd_strerror(err));
 
-	memset ((dma_t *) &sn, 0, sizeof(sn));
+	memset ((void *) &sn, 0, sizeof(sn));
 	shm = &sn;
 
 	shm->channels = tmp_chan;
@@ -229,7 +229,7 @@ qboolean S_ALSA_Init (void)
 	// don't mix less than this in mono samples:
 /*	err = hx2snd_pcm_hw_params_get_period_size (hw, 
 			(snd_pcm_uframes_t *) (char *) (&shm->submission_chunk), 0);
-	ALSA_CHECK_ERR(err, "unable to get period size. %s\n", hx2snd_strerror (err));
+	ALSA_CHECK_ERR(err, "unable to get period size. %s\n", hx2snd_strerror(err));
 */
 	shm->submission_chunk = 1;
 	shm->samplepos = 0;
@@ -241,9 +241,9 @@ qboolean S_ALSA_Init (void)
 
 	if (buffer_size != round_buffer_size (buffer_size))
 	{
-		Sys_Printf ("ALSA: WARNING: non-power of 2 buffer size. sound may be\n");
-		Sys_Printf ("unsatisfactory. Recommend using either the plughw or hw\n");
-		Sys_Printf ("devices or adjusting dmix to have a power of 2 buf size\n");
+		Con_Printf ("ALSA: WARNING: non-power of 2 buffer size. sound may be\n");
+		Con_Printf ("unsatisfactory. Recommend using either the plughw or hw\n");
+		Con_Printf ("devices or adjusting dmix to have a power of 2 buf size\n");
 	}
 
 	shm->samples = buffer_size * shm->channels; // mono samples in buffer
@@ -254,7 +254,7 @@ qboolean S_ALSA_Init (void)
 	hx2snd_pcm_hw_params_free(hw);
 	hx2snd_pcm_sw_params_free(sw);
 
-	return 1;
+	return true;
 
 error:
 // full clean-up
@@ -267,7 +267,7 @@ error:
 	pcm = NULL;
 	dlclose (alsa_handle);
 	alsa_handle = NULL;
-	return 0;
+	return false;
 }
 
 int S_ALSA_GetDMAPos (void)
@@ -339,5 +339,5 @@ void S_ALSA_Submit (void)
 	}
 }
 
-#endif	// HAVE_ALSA_SOUND
+#endif	/* HAVE_ALSA_SOUND */
 

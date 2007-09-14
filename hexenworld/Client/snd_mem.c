@@ -2,7 +2,7 @@
 	snd_mem.c
 	sound caching
 
-	$Id: snd_mem.c,v 1.18 2007-07-08 11:55:38 sezero Exp $
+	$Id: snd_mem.c,v 1.19 2007-09-14 14:16:23 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -149,7 +149,7 @@ static byte	*last_chunk;
 static byte	*iff_data;
 static int	iff_chunk_len;
 
-static short GetLittleShort(void)
+static short GetLittleShort (void)
 {
 	short val = 0;
 	val = *data_p;
@@ -158,7 +158,7 @@ static short GetLittleShort(void)
 	return val;
 }
 
-static int GetLittleLong(void)
+static int GetLittleLong (void)
 {
 	int val = 0;
 	val = *data_p;
@@ -169,11 +169,11 @@ static int GetLittleLong(void)
 	return val;
 }
 
-static void FindNextChunk(const char *name)
+static void FindNextChunk (const char *name)
 {
 	while (1)
 	{
-		data_p=last_chunk;
+		data_p = last_chunk;
 
 		if (data_p >= iff_end)
 		{	// didn't find the chunk
@@ -191,25 +191,25 @@ static void FindNextChunk(const char *name)
 //		if (iff_chunk_len > 1024*1024)
 //			Sys_Error ("%s: %i length is past the 1 meg sanity limit", __thisfunc__, iff_chunk_len);
 		data_p -= 8;
-		last_chunk = data_p + 8 + ( (iff_chunk_len + 1) & ~1 );
+		last_chunk = data_p + 8 + ((iff_chunk_len + 1) & ~1);
 		if (!strncmp((char *)data_p, name, 4))
 			return;
 	}
 }
 
-static void FindChunk(const char *name)
+static void FindChunk (const char *name)
 {
 	last_chunk = iff_data;
 	FindNextChunk (name);
 }
 
 #if 0
-static void DumpChunks(void)
+static void DumpChunks (void)
 {
 	char	str[5];
 
 	str[4] = 0;
-	data_p=iff_data;
+	data_p = iff_data;
 	do
 	{
 		memcpy (str, data_p, 4);
@@ -243,7 +243,7 @@ wavinfo_t GetWavinfo (const char *name, byte *wav, size_t wavlength)
 
 // find "RIFF" chunk
 	FindChunk("RIFF");
-	if (!(data_p && !strncmp((char *)data_p+8, "WAVE", 4)))
+	if (!(data_p && !strncmp((char *)data_p + 8, "WAVE", 4)))
 	{
 		Con_Printf("Missing RIFF/WAVE chunks\n");
 		return info;
@@ -271,7 +271,7 @@ wavinfo_t GetWavinfo (const char *name, byte *wav, size_t wavlength)
 
 	info.channels = GetLittleShort();
 	info.rate = GetLittleLong();
-	data_p += 4+2;
+	data_p += 4 + 2;
 	info.width = GetLittleShort() / 8;
 
 // get cue chunk
@@ -280,18 +280,18 @@ wavinfo_t GetWavinfo (const char *name, byte *wav, size_t wavlength)
 	{
 		data_p += 32;
 		info.loopstart = GetLittleLong();
-//		Con_Printf("loopstart=%d\n", sfx->loopstart);
+	//	Con_Printf("loopstart=%d\n", sfx->loopstart);
 
 	// if the next chunk is a LIST chunk, look for a cue length marker
 		FindNextChunk ("LIST");
 		if (data_p)
 		{
-			if (!strncmp ((char *)data_p + 28, "mark", 4))
+			if (!strncmp((char *)data_p + 28, "mark", 4))
 			{	// this is not a proper parse, but it works with cooledit...
 				data_p += 24;
-				i = GetLittleLong ();	// samples in loop
+				i = GetLittleLong();	// samples in loop
 				info.samples = info.loopstart + i;
-//				Con_Printf("looped length: %i\n", i);
+		//		Con_Printf("looped length: %i\n", i);
 			}
 		}
 	}
@@ -307,7 +307,7 @@ wavinfo_t GetWavinfo (const char *name, byte *wav, size_t wavlength)
 	}
 
 	data_p += 4;
-	samples = GetLittleLong () / info.width;
+	samples = GetLittleLong() / info.width;
 
 	if (info.samples)
 	{

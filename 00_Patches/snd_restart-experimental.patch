@@ -23,11 +23,11 @@ as an extra patch) does that. Therefore, if you try this patch:
 diff -urNp uhexen2-20070511/hexen2/snd_dma.c uhexen2-20070512/hexen2/snd_dma.c
 --- uhexen2-20070511/hexen2/snd_dma.c	2007-05-09 21:10:13.000000000 +0300
 +++ uhexen2-20070512/hexen2/snd_dma.c	2007-05-12 16:31:32.000000000 +0300
-@@ -112,6 +112,67 @@ static void S_SoundInfo_f(void)
+@@ -112,6 +112,67 @@ static void S_SoundInfo_f (void)
  }
  
  
-+static void S_ListDrivers_f(void)
++static void S_ListDrivers_f (void)
 +{
 +	unsigned int	i = 0;
 +

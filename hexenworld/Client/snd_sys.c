@@ -2,7 +2,7 @@
 	snd_sys.c
 	pre-Init platform specific sound stuff
 
-	$Id: snd_sys.c,v 1.10 2007-07-11 16:47:16 sezero Exp $
+	$Id: snd_sys.c,v 1.11 2007-09-14 14:16:23 sezero Exp $
 */
 
 
@@ -14,33 +14,33 @@
 unsigned int	snd_system = S_SYS_NULL;
 static qboolean	snd_sys_inited = false;
 
-// pointers for SNDDMA_ functions
+/* pointers for SNDDMA_ functions */
 qboolean (*SNDDMA_Init)(void);
 int (*SNDDMA_GetDMAPos)(void);
 void (*SNDDMA_Shutdown)(void);
 void (*SNDDMA_Submit)(void);
 
-// dummy SNDDMA functions, just in case
-static qboolean S_NULL_Init(void)
+/* dummy SNDDMA functions, just in case */
+static qboolean S_NULL_Init (void)
 {
 #if SOUND_NUMDRIVERS
 	Con_Printf ("No sound\n");
 #else
 	Con_Printf ("SOUND: no drivers available\n");
 #endif
-	return 0;
+	return false;
 }
 
-static int S_NULL_GetDMAPos(void)
+static int S_NULL_GetDMAPos (void)
 {
 	return 0;
 }
 
-static void S_NULL_Shutdown(void)
+static void S_NULL_Shutdown (void)
 {
 }
 
-static void S_NULL_Submit(void)
+static void S_NULL_Submit (void)
 {
 }
 

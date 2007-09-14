@@ -1,6 +1,6 @@
 /*
 	snd_sun.c
-	$Id: snd_sun.c,v 1.9 2007-07-12 13:10:53 sezero Exp $
+	$Id: snd_sun.c,v 1.10 2007-09-14 14:16:23 sezero Exp $
 
 	SUN Audio driver for BSD and SunOS
 
@@ -97,7 +97,7 @@ qboolean S_SUN_Init (void)
 		return false;
 	}
 
-	memset ((dma_t *) &sn, 0, sizeof(sn));
+	memset ((void *) &sn, 0, sizeof(sn));
 	shm = &sn;
 
 	AUDIO_INITINFO (&info);
@@ -108,7 +108,7 @@ qboolean S_SUN_Init (void)
 	info.play.channels = desired_channels;
 	info.play.precision = desired_bits;
 	info.play.encoding = (desired_bits == 8) ? FORMAT_U8 : FORMAT_S16;
-	if (ioctl (audio_fd, AUDIO_SETINFO, &info) != 0)
+	if (ioctl(audio_fd, AUDIO_SETINFO, &info) != 0)
 	{
 	// TODO: also try other options of sampling
 	//	 rate and format upon failure???
@@ -141,7 +141,7 @@ int S_SUN_GetDMAPos (void)
 	if (!shm)
 		return 0;
 
-	if (ioctl (audio_fd, AUDIO_GETINFO, &info) < 0)
+	if (ioctl(audio_fd, AUDIO_GETINFO, &info) < 0)
 	{
 		Con_Printf("Error: can't get audio info\n");
 		S_SUN_Shutdown ();
@@ -194,7 +194,7 @@ void S_SUN_Submit (void)
 		stop = wbufp + bytes / bsize;
 	}
 
-	// Transfert the sound data from the circular dma_buffer to writebuf
+	// transfer the sound data from the circular dma_buffer to writebuf
 	// TODO: using 2 memcpys instead of this loop should be faster
 	p = writebuf;
 	idx = (wbufp * bsize) & (sizeof(dma_buffer) - 1);
@@ -204,11 +204,11 @@ void S_SUN_Submit (void)
 		idx = (idx + 1) & (sizeof(dma_buffer) - 1);
 	}
 
-	if (write (audio_fd, writebuf, bytes) < bytes)
+	if (write(audio_fd, writebuf, bytes) < bytes)
 		Con_Printf("audio can't keep up!\n");
 
 	wbufp = stop;
 }
 
-#endif	// HAVE_SUN_SOUND
+#endif	/* HAVE_SUN_SOUND */
 

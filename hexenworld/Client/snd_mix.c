@@ -2,7 +2,7 @@
 	snd_mix.c
 	portable code to mix sounds for snd_dma.c
 
-	$Id: snd_mix.c,v 1.18 2007-07-11 16:47:16 sezero Exp $
+	$Id: snd_mix.c,v 1.19 2007-09-14 14:16:23 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -330,7 +330,7 @@ void SND_InitScaletable (void)
 		   higher, the tricky signed char type conversion is not
 		   guaranteed. Therefore we explicity calculate the signed
 		   value from the index as required. From Kevin Shanahan.
-		   Also see: http://gcc.gnu.org/bugzilla/show_bug.cgi?id=26719
+		   See: http://gcc.gnu.org/bugzilla/show_bug.cgi?id=26719
 		*/
 		//	snd_scaletable[i][j] = ((signed char)j) * i * 8;
 			snd_scaletable[i][j] = ((j < 128) ? j : j - 0xff) * i * 8;
@@ -344,7 +344,7 @@ static void SND_PaintChannelFrom8 (channel_t *ch, sfxcache_t *sc, int count)
 {
 	int	data;
 	int		*lscale, *rscale;
-	unsigned char *sfx;
+	unsigned char	*sfx;
 	int		i;
 
 	if (ch->leftvol > 255)
@@ -366,7 +366,7 @@ static void SND_PaintChannelFrom8 (channel_t *ch, sfxcache_t *sc, int count)
 	ch->pos += count;
 }
 
-#endif	// !id386
+#endif	/* !id386 */
 
 
 static void SND_PaintChannelFrom16 (channel_t *ch, sfxcache_t *sc, int count)
@@ -374,7 +374,7 @@ static void SND_PaintChannelFrom16 (channel_t *ch, sfxcache_t *sc, int count)
 	int	data;
 	int	left, right;
 	int	leftvol, rightvol;
-	signed short *sfx;
+	signed short	*sfx;
 	int	i;
 
 	leftvol = ch->leftvol;

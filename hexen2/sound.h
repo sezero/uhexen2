@@ -2,7 +2,7 @@
 	sound.h
 	client sound i/o functions
 
-	$Id: sound.h,v 1.22 2007-07-17 16:10:09 sezero Exp $
+	$Id: sound.h,v 1.23 2007-09-14 14:16:23 sezero Exp $
 */
 
 #ifndef __HX2_SOUND_H
@@ -72,7 +72,7 @@ typedef struct
 void S_Init (void);
 void S_Startup (void);
 void S_Shutdown (void);
-void S_StartSound (int entnum, int entchannel, sfx_t *sfx, vec3_t origin, float fvol,  float attenuation);
+void S_StartSound (int entnum, int entchannel, sfx_t *sfx, vec3_t origin, float fvol, float attenuation);
 void S_StaticSound (sfx_t *sfx, vec3_t origin, float vol, float attenuation);
 void S_StopSound (int entnum, int entchannel);
 void S_UpdateSoundPos (int entnum, int entchannel, vec3_t origin);
@@ -86,14 +86,14 @@ void S_TouchSound (const char *sample);
 void S_ClearPrecache (void);
 void S_BeginPrecaching (void);
 void S_EndPrecaching (void);
-void S_PaintChannels(int endtime);
+void S_PaintChannels (int endtime);
 void S_InitPaintChannels (void);
 
 // picks a channel based on priorities, empty slots, number of channels
-channel_t *SND_PickChannel(int entnum, int entchannel);
+channel_t *SND_PickChannel (int entnum, int entchannel);
 
 // spatializes a channel
-void SND_Spatialize(channel_t *ch);
+void SND_Spatialize (channel_t *ch);
 
 // ====================================================================
 // User-setable variables

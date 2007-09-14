@@ -2,7 +2,7 @@
 	snd_dma.c
 	main control for any streaming sound output device
 
-	$Id: snd_dma.c,v 1.63 2007-07-17 16:10:09 sezero Exp $
+	$Id: snd_dma.c,v 1.64 2007-09-14 14:16:23 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -69,9 +69,9 @@ static sfx_t	*ambient_sfx[NUM_AMBIENTS];
 
 static qboolean	sound_started = false;
 
-int 		desired_speed = 11025;
-int 		desired_bits = 16;
-int 		desired_channels = 2;
+int		desired_speed = 11025;
+int		desired_bits = 16;
+int		desired_channels = 2;
 const int	tryrates[] = { 44100, 48000, 22050, 22051, 24000, 11025, 16000, 8000 };
 const int	MAX_TRYRATES = sizeof(tryrates)/sizeof(tryrates[0]);
 
@@ -93,7 +93,7 @@ static	cvar_t	snd_show = {"snd_show", "0", CVAR_NONE};
 static	cvar_t	_snd_mixahead = {"_snd_mixahead", "0.1", CVAR_ARCHIVE};
 
 
-static void S_SoundInfo_f(void)
+static void S_SoundInfo_f (void)
 {
 	if (!sound_started || !shm)
 	{
@@ -246,7 +246,7 @@ void S_Init (void)
 // =======================================================================
 // Shutdown sound engine
 // =======================================================================
-void S_Shutdown(void)
+void S_Shutdown (void)
 {
 	if (!sound_started)
 		return;
@@ -349,7 +349,7 @@ SND_PickChannel
 picks a channel based on priorities, empty slots, number of channels
 =================
 */
-channel_t *SND_PickChannel(int entnum, int entchannel)
+channel_t *SND_PickChannel (int entnum, int entchannel)
 {
 	int	ch_idx;
 	int	first_to_die;
@@ -395,7 +395,7 @@ SND_Spatialize
 spatializes a channel
 =================
 */
-void SND_Spatialize(channel_t *ch)
+void SND_Spatialize (channel_t *ch)
 {
 	vec_t	dot;
 	vec_t	dist;
@@ -443,13 +443,13 @@ void SND_Spatialize(channel_t *ch)
 // Start a sound effect
 // =======================================================================
 
-void S_StartSound(int entnum, int entchannel, sfx_t *sfx, vec3_t origin, float fvol, float attenuation)
+void S_StartSound (int entnum, int entchannel, sfx_t *sfx, vec3_t origin, float fvol, float attenuation)
 {
-	channel_t *target_chan, *check;
+	channel_t	*target_chan, *check;
 	sfxcache_t	*sc;
 	int		ch_idx;
 	int		skip;
-	qboolean skip_dist_check = false;
+	qboolean	skip_dist_check = false;
 
 	if (!sound_started)
 		return;
@@ -465,10 +465,10 @@ void S_StartSound(int entnum, int entchannel, sfx_t *sfx, vec3_t origin, float f
 	if (!target_chan)
 		return;
 
-	if (attenuation == 4)	//Looping sound- always play
+	if (attenuation == 4)	// Looping sound- always play
 	{
 		skip_dist_check = true;
-		attenuation=1;	//was 3 - static
+		attenuation = 1;	// was 3 - static
 	}
 
 // spatialize
@@ -481,8 +481,10 @@ void S_StartSound(int entnum, int entchannel, sfx_t *sfx, vec3_t origin, float f
 	SND_Spatialize(target_chan);
 
 	if (!skip_dist_check)
+	{
 		if (!target_chan->leftvol && !target_chan->rightvol)
 			return;		// not audible at all
+	}
 
 // new channel
 	sc = S_LoadSound (sfx);
@@ -517,7 +519,7 @@ void S_StartSound(int entnum, int entchannel, sfx_t *sfx, vec3_t origin, float f
 	}
 }
 
-void S_StopSound(int entnum, int entchannel)
+void S_StopSound (int entnum, int entchannel)
 {
 	int	i;
 
@@ -549,7 +551,7 @@ void S_UpdateSoundPos (int entnum, int entchannel, vec3_t origin)
 	}
 }
 
-void S_StopAllSounds(qboolean clear)
+void S_StopAllSounds (qboolean clear)
 {
 	int		i;
 
@@ -685,7 +687,7 @@ S_UpdateAmbientSounds
 static void S_UpdateAmbientSounds (void)
 {
 	mleaf_t		*l;
-	int			vol, ambient_channel;
+	int		vol, ambient_channel;
 	channel_t	*chan;
 
 // calc ambient sound levels
@@ -735,7 +737,7 @@ S_Update
 Called once each time through the main loop
 ============
 */
-void S_Update(vec3_t origin, vec3_t forward, vec3_t right, vec3_t up)
+void S_Update (vec3_t origin, vec3_t forward, vec3_t right, vec3_t up)
 {
 	int			i, j;
 	int			total;
@@ -826,7 +828,7 @@ void S_Update(vec3_t origin, vec3_t forward, vec3_t right, vec3_t up)
 	S_Update_();
 }
 
-static void GetSoundtime(void)
+static void GetSoundtime (void)
 {
 	int		samplepos;
 	static	int		buffers;
@@ -889,7 +891,7 @@ static void S_Update_ (void)
 
 // mix ahead of current position
 	endtime = soundtime + (unsigned int)(_snd_mixahead.value * shm->speed);
-	samps = shm->samples >> (shm->channels-1);
+	samps = shm->samples >> (shm->channels - 1);
 	endtime = min(endtime, (unsigned int)(soundtime + samps));
 
 #ifdef PLATFORM_WINDOWS
@@ -924,7 +926,7 @@ console functions
 */
 
 // S.A. volume procs
-static void S_ToggleMute(void)
+static void S_ToggleMute (void)
 {
 	if (sfx_mutedvol.value || bgm_mutedvol.value)
 	{
@@ -946,7 +948,7 @@ static void S_ToggleMute(void)
 	}
 }
 
-static void S_VolumeDown(void)
+static void S_VolumeDown (void)
 {
 	if (sfxvolume.value >= 0.1)
 		Cvar_SetValue("volume",sfxvolume.value - 0.1);
@@ -955,7 +957,7 @@ static void S_VolumeDown(void)
 	Con_Printf ("Volume is %3.1f\n", sfxvolume.value);
 }
 
-static void S_VolumeUp(void)
+static void S_VolumeUp (void)
 {
 	if (sfxvolume.value <= 0.9)
 		Cvar_SetValue("volume",sfxvolume.value + 0.1);
@@ -964,7 +966,7 @@ static void S_VolumeUp(void)
 	Con_Printf ("Volume is %3.1f\n", sfxvolume.value);
 }
 
-static void S_Play(void)
+static void S_Play (void)
 {
 	static int hash = 345;
 	int		i;
@@ -986,7 +988,7 @@ static void S_Play(void)
 	}
 }
 
-static void S_PlayVol(void)
+static void S_PlayVol (void)
 {
 	static int hash = 543;
 	int		i;
@@ -1004,13 +1006,13 @@ static void S_PlayVol(void)
 		}
 
 		sfx = S_PrecacheSound(name);
-		vol = atof(Cmd_Argv(i+1));
+		vol = atof(Cmd_Argv(i + 1));
 		S_StartSound(hash++, 0, sfx, listener_origin, vol, 1.0);
 		i += 2;
 	}
 }
 
-static void S_SoundList(void)
+static void S_SoundList (void)
 {
 	int		i;
 	sfx_t	*sfx;
@@ -1023,13 +1025,13 @@ static void S_SoundList(void)
 		sc = (sfxcache_t *) Cache_Check (&sfx->cache);
 		if (!sc)
 			continue;
-		size = sc->length*sc->width*(sc->stereo+1);
+		size = sc->length*sc->width*(sc->stereo + 1);
 		total += size;
 		if (sc->loopstart >= 0)
 			Con_Printf ("L");
 		else
 			Con_Printf (" ");
-		Con_Printf("(%2db) %6i : %s\n",sc->width*8,  size, sfx->name);
+		Con_Printf("(%2db) %6i : %s\n", sc->width*8, size, sfx->name);
 	}
 	Con_Printf ("Total resident: %i\n", total);
 }

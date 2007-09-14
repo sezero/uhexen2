@@ -1,6 +1,6 @@
 /*
 	snd_oss.c
-	$Id: snd_oss.c,v 1.30 2007-07-12 13:10:53 sezero Exp $
+	$Id: snd_oss.c,v 1.31 2007-09-14 14:16:23 sezero Exp $
 
 	Copyright (C) 1996-1997  Id Software, Inc.
 
@@ -42,10 +42,11 @@
 #include <sys/soundcard.h>
 #include <errno.h>
 
-//#define FORMAT_S16	AFMT_S16_NE
-#if BYTE_ORDER == BIG_ENDIAN
+#if defined(AFMT_S16_NE)
+#define	FORMAT_S16	AFMT_S16_NE
+#elif (BYTE_ORDER == BIG_ENDIAN)
 #define	FORMAT_S16	AFMT_S16_BE
-#else
+#else	/* LITTLE_ENDIAN */
 #define	FORMAT_S16	AFMT_S16_LE
 #endif
 
@@ -53,11 +54,11 @@ static int audio_fd = -1;
 static char *ossdev = "/dev/dsp";
 static unsigned long mmaplen;
 
-qboolean S_OSS_Init(void)
+qboolean S_OSS_Init (void)
 {
-	int i, caps, tmp;
-	unsigned long sz;
-	struct audio_buf_info info;
+	int		i, caps, tmp;
+	unsigned long		sz;
+	struct audio_buf_info	info;
 
 	tmp = COM_CheckParm("-ossdev");
 	if (tmp != 0 && tmp < com_argc-1)
@@ -78,20 +79,20 @@ qboolean S_OSS_Init(void)
 		if (audio_fd < 0)
 		{
 			Con_Printf("Could not open %s. %s\n", ossdev, strerror(errno));
-			return 0;
+			return false;
 		}
 	}
 
-	memset ((dma_t *) &sn, 0, sizeof(sn));
+	memset ((void *) &sn, 0, sizeof(sn));
 	shm = &sn;
 
-	if ( ioctl(audio_fd, SNDCTL_DSP_RESET, 0) == -1 )
+	if (ioctl(audio_fd, SNDCTL_DSP_RESET, 0) == -1)
 	{
 		Con_Printf("Could not reset %s. %s\n", ossdev, strerror(errno));
 		goto error;
 	}
 
-	if ( ioctl(audio_fd, SNDCTL_DSP_GETCAPS, &caps) == -1 )
+	if (ioctl(audio_fd, SNDCTL_DSP_GETCAPS, &caps) == -1)
 	{
 		Con_Printf("Couldn't retrieve soundcard capabilities. %s\n", strerror(errno));
 		goto error;
@@ -106,11 +107,11 @@ qboolean S_OSS_Init(void)
 // set sample bits & speed
 	i = desired_bits;
 	tmp = (desired_bits == 16) ? FORMAT_S16 : AFMT_U8;
-	if ( ioctl(audio_fd, SNDCTL_DSP_SETFMT, &tmp) == -1 )
+	if (ioctl(audio_fd, SNDCTL_DSP_SETFMT, &tmp) == -1)
 	{
 		Con_Printf("Problems setting %d bit format, trying alternatives..\n", i);
 		// try what the device gives us
-		if ( ioctl(audio_fd, SNDCTL_DSP_GETFMTS, &tmp) == -1)
+		if (ioctl(audio_fd, SNDCTL_DSP_GETFMTS, &tmp) == -1)
 		{
 			Con_Printf("Unable to retrieve supported formats. %s\n", strerror(errno));
 			goto error;
@@ -130,7 +131,7 @@ qboolean S_OSS_Init(void)
 			Con_Printf("Neither 8 nor 16 bit format supported.\n");
 			goto error;
 		}
-		if ( ioctl(audio_fd, SNDCTL_DSP_SETFMT, &tmp) == -1 )
+		if (ioctl(audio_fd, SNDCTL_DSP_SETFMT, &tmp) == -1)
 		{
 			Con_Printf("Unable to set sound format. %s\n", strerror(errno));
 			goto error;
@@ -139,14 +140,14 @@ qboolean S_OSS_Init(void)
 	shm->samplebits = i;
 
 	tmp = desired_speed;
-	if ( ioctl(audio_fd, SNDCTL_DSP_SPEED, &tmp) == -1 )
+	if (ioctl(audio_fd, SNDCTL_DSP_SPEED, &tmp) == -1)
 	{
 		Con_Printf("Problems setting sample rate, trying alternatives..\n");
 		shm->speed = 0;
 		for (i = 0; i < MAX_TRYRATES; i++)
 		{
 			tmp = tryrates[i];
-			if ( ioctl(audio_fd, SNDCTL_DSP_SPEED, &tmp) == -1 )
+			if (ioctl(audio_fd, SNDCTL_DSP_SPEED, &tmp) == -1)
 			{
 				Con_DPrintf ("Unable to set sample rate %d\n", tryrates[i]);
 			}
@@ -178,13 +179,13 @@ qboolean S_OSS_Init(void)
 	}
 
 	tmp = (desired_channels == 2) ? 1 : 0;
-	if ( ioctl(audio_fd, SNDCTL_DSP_STEREO, &tmp) == -1 )
+	if (ioctl(audio_fd, SNDCTL_DSP_STEREO, &tmp) == -1)
 	{
 		Con_Printf ("Problems setting channels to %s, retrying for %s\n",
 				(desired_channels == 2) ? "stereo" : "mono",
 				(desired_channels == 2) ? "mono" : "stereo");
 		tmp = (desired_channels == 2) ? 0 : 1;
-		if ( ioctl(audio_fd, SNDCTL_DSP_STEREO, &tmp) == -1 )
+		if (ioctl(audio_fd, SNDCTL_DSP_STEREO, &tmp) == -1)
 		{
 			Con_Printf("unable to set desired channels. %s\n", strerror(errno));
 			goto error;
@@ -192,7 +193,7 @@ qboolean S_OSS_Init(void)
 	}
 	shm->channels = tmp +1;
 
-	if ( ioctl(audio_fd, SNDCTL_DSP_GETOSPACE, &info) == -1 )
+	if (ioctl(audio_fd, SNDCTL_DSP_GETOSPACE, &info) == -1)
 	{
 		Con_Printf("Couldn't retrieve buffer status. %s\n", strerror(errno));
 		goto error;
@@ -216,14 +217,14 @@ qboolean S_OSS_Init(void)
 
 // toggle the trigger & start her up
 	tmp = 0;
-	if ( ioctl(audio_fd, SNDCTL_DSP_SETTRIGGER, &tmp) == -1 )
+	if (ioctl(audio_fd, SNDCTL_DSP_SETTRIGGER, &tmp) == -1)
 	{
 		Con_Printf("Could not toggle %s. %s\n", ossdev, strerror(errno));
 		munmap (shm->buffer, mmaplen);
 		goto error;
 	}
 	tmp = PCM_ENABLE_OUTPUT;
-	if ( ioctl(audio_fd, SNDCTL_DSP_SETTRIGGER, &tmp) == -1 )
+	if (ioctl(audio_fd, SNDCTL_DSP_SETTRIGGER, &tmp) == -1)
 	{
 		Con_Printf("Could not toggle %s. %s\n", ossdev, strerror(errno));
 		munmap (shm->buffer, mmaplen);
@@ -232,24 +233,24 @@ qboolean S_OSS_Init(void)
 
 	shm->samplepos = 0;
 
-	return 1;
+	return true;
 
 error:
 	close(audio_fd);
 	audio_fd = -1;
 	shm->buffer = NULL;
 	shm = NULL;
-	return 0;
+	return false;
 }
 
-int S_OSS_GetDMAPos(void)
+int S_OSS_GetDMAPos (void)
 {
-	struct count_info count;
+	struct count_info	count;
 
 	if (!shm)
 		return 0;
 
-	if ( ioctl(audio_fd, SNDCTL_DSP_GETOPTR, &count) == -1 )
+	if (ioctl(audio_fd, SNDCTL_DSP_GETOPTR, &count) == -1)
 	{
 		Con_Printf("Uh, sound dead. %s\n", strerror(errno));
 		munmap (shm->buffer, mmaplen);
@@ -266,9 +267,9 @@ int S_OSS_GetDMAPos(void)
 	return shm->samplepos;
 }
 
-void S_OSS_Shutdown(void)
+void S_OSS_Shutdown (void)
 {
-	int tmp = 0;
+	int	tmp = 0;
 	if (shm)
 	{
 		Con_Printf ("Shutting down OSS sound\n");
@@ -293,5 +294,5 @@ void S_OSS_Submit(void)
 {
 }
 
-#endif	// HAVE_OSS_SOUND
+#endif	/* HAVE_OSS_SOUND */
 
