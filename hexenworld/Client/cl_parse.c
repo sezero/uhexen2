@@ -2,7 +2,7 @@
 	cl_parse.c
 	parse a message received from the server
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/cl_parse.c,v 1.44 2007-07-08 11:55:34 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/cl_parse.c,v 1.45 2007-09-14 14:10:07 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -949,12 +949,12 @@ static void CL_MuzzleFlash (void)
 
 	i = MSG_ReadShort ();
 
-	if ((unsigned)(i-1) >= MAX_CLIENTS)
+	if ((unsigned int)(i - 1) >= MAX_CLIENTS)
 		return;
 
 #ifdef GLQUAKE
 	// don't draw our own muzzle flash in gl if flashblending
-	if (i-1 == cl.playernum && gl_flashblend.integer)
+	if (i - 1 == cl.playernum && gl_flashblend.integer)
 		return;
 #endif
 
@@ -1103,7 +1103,7 @@ void CL_ParseServerMessage (void)
 	int		cmd;
 	char		*s;
 	int		i, j;
-	unsigned	sc1, sc2;
+	unsigned int	sc1, sc2;
 	byte		test;
 	char		temp[100];
 	vec3_t		pos;

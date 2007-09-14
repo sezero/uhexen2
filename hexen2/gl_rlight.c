@@ -1,7 +1,7 @@
 /*
 	r_light.c
 
-	$Id: gl_rlight.c,v 1.16 2007-06-30 11:19:43 sezero Exp $
+	$Id: gl_rlight.c,v 1.17 2007-09-14 14:10:01 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -351,7 +351,7 @@ static int RecursiveLightPoint (mnode_t *node, vec3_t start, vec3_t end)
 	int			i;
 	mtexinfo_t	*tex;
 	byte		*lightmap;
-	unsigned	scale;
+	unsigned int	scale;
 	int			maps;
 
 	if (node->contents < 0)

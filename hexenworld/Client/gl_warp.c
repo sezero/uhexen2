@@ -2,7 +2,7 @@
 	gl_warp.c
 	sky and water polygons
 
-	$Id: gl_warp.c,v 1.29 2007-07-28 09:33:59 sezero Exp $
+	$Id: gl_warp.c,v 1.30 2007-09-14 14:10:07 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -415,7 +415,7 @@ typedef struct
 	unsigned short	bytes_per_line;
 	unsigned short	palette_type;
 	char	filler[58];
-	unsigned 	data;	// unbounded
+	unsigned int	data;	// unbounded
 } pcx_t;
 
 static byte	*pcx_rgb;
@@ -1105,10 +1105,10 @@ void R_InitSky (texture_t *mt)
 {
 	int		i, j, p;
 	byte		*src;
-	unsigned	trans[128*128];
-	unsigned	transpix;
+	unsigned int	trans[128*128];
+	unsigned int	transpix;
 	int		r, g, b;
-	unsigned	*rgba;
+	unsigned int	*rgba;
 
 	src = (byte *)mt + mt->offsets[0];
 

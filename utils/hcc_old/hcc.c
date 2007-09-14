@@ -1,7 +1,7 @@
 /*
 	hcc.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/utils/hcc_old/hcc.c,v 1.12 2007-07-08 17:01:15 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/utils/hcc_old/hcc.c,v 1.13 2007-09-14 14:11:24 sezero Exp $
 
 	Hash table modifications based on fastqcc by Jonathan Roy
 	(roy@atlantic.net).
@@ -546,7 +546,7 @@ static void PR_PrintStatement (dstatement_t *s)
 	{
 		printf ("branch %i", s->a);
 	}
-	else if ( (unsigned)(s->op - OP_STORE_F) < 6)
+	else if ( (unsigned int)(s->op - OP_STORE_F) < 6)
 	{
 		printf ("%s", PR_GlobalString(s->a));
 		printf ("%s", PR_GlobalStringNoContents(s->b));

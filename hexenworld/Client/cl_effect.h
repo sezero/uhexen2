@@ -2,7 +2,7 @@
 	cl_effect.h
 	common effects header
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/cl_effect.h,v 1.10 2007-03-14 21:03:29 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/cl_effect.h,v 1.11 2007-09-14 14:10:07 sezero Exp $
 */
 
 #ifndef __CL_EFFECT_H
@@ -128,7 +128,7 @@ struct EffectT
 {
 	int			type;
 	float		expire_time;
-	unsigned	client_list;
+	unsigned int	client_list;
 
 	union
 	{

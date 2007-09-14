@@ -2,7 +2,7 @@
 	glquake.h
 	common glquake header
 
-	$Id: glquake.h,v 1.72 2007-08-03 09:22:28 sezero Exp $
+	$Id: glquake.h,v 1.73 2007-09-14 14:10:01 sezero Exp $
 */
 
 
@@ -150,7 +150,7 @@ extern	int		c_brush_polys, c_alias_polys;
 
 /* palette stuff */
 extern	int		ColorIndex[16];
-extern	unsigned	ColorPercent[16];
+extern	unsigned int	ColorPercent[16];
 extern	float		RTint[256], GTint[256], BTint[256];
 #if USE_HEXEN2_PALTEX_CODE
 extern	unsigned char	inverse_pal[(1<<INVERSE_PAL_TOTAL_BITS)+1];

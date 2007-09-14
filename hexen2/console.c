@@ -2,7 +2,7 @@
 	console.c
 	in-game console and chat message buffer handling
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/console.c,v 1.36 2007-08-14 09:01:54 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/console.c,v 1.37 2007-09-14 14:10:00 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -385,7 +385,7 @@ void Con_ShowList (int cnt, const char **list)
 {
 	const char	*s;
 	char		*line;
-	unsigned	i, j, max_len, len, cols, rows;
+	unsigned int	i, j, max_len, len, cols, rows;
 
 	// Lay them out in columns
 	max_len = 0;

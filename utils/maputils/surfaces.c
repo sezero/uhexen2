@@ -1,6 +1,6 @@
 /*
 	surfaces.c (divide.h)
-	$Id: surfaces.c,v 1.7 2007-05-13 12:00:17 sezero Exp $
+	$Id: surfaces.c,v 1.8 2007-09-14 14:11:24 sezero Exp $
 */
 
 #include "util_inc.h"
@@ -314,9 +314,9 @@ static void InitHash (void)
 	hvert_p = hvertex;
 }
 
-static unsigned HashVec (vec3_t vec)
+static unsigned int HashVec (vec3_t vec)
 {
-	unsigned	h;
+	unsigned int	h;
 
 	h = hash_scale[0] * (vec[0] - hash_min[0]) * hash_scale[2]
 			+ hash_scale[1] * (vec[1] - hash_min[1]);

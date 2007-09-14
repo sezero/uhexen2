@@ -2,7 +2,7 @@
 	vid.h
 	video driver defs
 
-	$Id: vid.h,v 1.29 2007-07-29 11:50:27 sezero Exp $
+	$Id: vid.h,v 1.30 2007-09-14 14:10:08 sezero Exp $
 */
 
 #ifndef __VID_DEFS_H
@@ -42,16 +42,16 @@ typedef struct
 	pixel_t		*colormap;	// 256 * VID_GRADES size
 	unsigned short	*colormap16;	// 256 * VID_GRADES size
 	int		fullbright;	// index of first fullbright color
-	unsigned	rowbytes;	// may be > width if displayed in a window
-	unsigned	width;
-	unsigned	height;
+	unsigned int	rowbytes;	// may be > width if displayed in a window
+	unsigned int	width;
+	unsigned int	height;
 	float		aspect;		// width / height -- < 0 is taller than wide
 	int		numpages;
 	int		recalc_refdef;	// if true, recalc vid-based stuff
 	pixel_t		*conbuffer;
 	int		conrowbytes;
-	unsigned	conwidth;
-	unsigned	conheight;
+	unsigned int	conwidth;
+	unsigned int	conheight;
 	int		maxwarpwidth;
 	int		maxwarpheight;
 	pixel_t		*direct;	// direct drawing to framebuffer,
@@ -66,8 +66,8 @@ extern	modestate_t	modestate;
 extern	qboolean	in_mode_set;
 
 extern	unsigned short	d_8to16table[256];
-extern	unsigned	d_8to24table[256];
-extern	unsigned	d_8to24TranslucentTable[256];
+extern	unsigned int	d_8to24table[256];
+extern	unsigned int	d_8to24TranslucentTable[256];
 
 extern	cvar_t		_enable_mouse;
 

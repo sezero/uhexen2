@@ -1,6 +1,6 @@
 /*
 	tjunc.c
-	$Id: tjunc.c,v 1.9 2007-07-08 17:01:16 sezero Exp $
+	$Id: tjunc.c,v 1.10 2007-09-14 14:11:24 sezero Exp $
 */
 
 #include "util_inc.h"
@@ -74,9 +74,9 @@ static void InitHash (vec3_t mins, vec3_t maxs)
 	hash_scale[2] = newsize[1];
 }
 
-static unsigned HashVec (vec3_t vec)
+static unsigned int HashVec (vec3_t vec)
 {
-	unsigned	h;
+	unsigned int	h;
 
 	h = hash_scale[0] * (vec[0] - hash_min[0]) * hash_scale[2]
 				+ hash_scale[1] * (vec[1] - hash_min[1]);

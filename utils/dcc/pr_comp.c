@@ -1,7 +1,7 @@
 /*
 	comp.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/utils/dcc/pr_comp.c,v 1.19 2007-07-08 17:01:14 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/utils/dcc/pr_comp.c,v 1.20 2007-09-14 14:11:24 sezero Exp $
 */
 
 
@@ -581,7 +581,7 @@ static def_t *PR_Expression (int priority)
 			if ( op->right_associative )
 			{
 			// if last statement is an indirect, change it to an address of
-				if ( (unsigned)(statements[numstatements-1].op - OP_LOAD_F) < 6 )
+				if ( (unsigned int)(statements[numstatements-1].op - OP_LOAD_F) < 6 )
 				{
 				//	printf("op was %s %s %d \n", pr_opcodes[statements[numstatements-1].op].opname, pr_opcodes[statements[numstatements-1].op].name, statements[numstatements-1].op);
 				//	getche();

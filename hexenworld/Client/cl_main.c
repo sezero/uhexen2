@@ -2,7 +2,7 @@
 	cl_main.c
 	client main loop
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/cl_main.c,v 1.84 2007-08-29 16:32:48 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/cl_main.c,v 1.85 2007-09-14 14:10:07 sezero Exp $
 */
 
 #include <sys/types.h>
@@ -804,8 +804,8 @@ static void CL_ConnectionlessPacket (void)
 	// remote command from gui front end
 	if (c == A2C_CLIENT_COMMAND)
 	{
-		if ( *(unsigned *)net_from.ip != *(unsigned *)net_local_adr.ip
-			&& *(unsigned *)net_from.ip != htonl(INADDR_LOOPBACK) )
+		if ( *(unsigned int *)net_from.ip != *(unsigned int *)net_local_adr.ip
+			&& *(unsigned int *)net_from.ip != htonl(INADDR_LOOPBACK) )
 		{
 			Con_Printf ("Command packet from remote host. Ignored.\n");
 			return;

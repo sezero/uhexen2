@@ -1,6 +1,6 @@
 /*
 	lmp2pcx.c
-	$Id: lmp2pcx.c,v 1.4 2007-07-08 17:01:17 sezero Exp $
+	$Id: lmp2pcx.c,v 1.5 2007-09-14 14:11:25 sezero Exp $
 	Copyright (C) 2002-2007 Forest Hale
 
 	This program is free software; you can redistribute it and/or
@@ -50,7 +50,7 @@ static void	ConvertMIP (const char *filename, int idx);
 
 static struct
 {
-	unsigned	flag;
+	unsigned int	flag;
 	convfunc_t	func;
 	char	*matchpattern;
 	char	*datatype;
@@ -685,7 +685,7 @@ static void print_usage (void)
 int main (int argc, char **argv)
 {
 	int		i, j;
-	unsigned	flags;
+	unsigned int	flags;
 	char		*name;
 
 	flags = 0;

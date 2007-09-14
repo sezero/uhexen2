@@ -2,7 +2,7 @@
 	bspfile.h
 	common bspfile header
 
-	$Header: /home/ozzie/Download/0000/uhexen2/utils/common/bspfile.h,v 1.1 2007-05-05 11:18:47 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/utils/common/bspfile.h,v 1.2 2007-09-14 14:11:24 sezero Exp $
 */
 
 #ifndef __BSPFILE_H
@@ -89,8 +89,8 @@ typedef struct
 typedef struct miptex_s
 {
 	char		name[16];
-	unsigned	width, height;
-	unsigned	offsets[MIPLEVELS];		// four mip maps stored
+	unsigned int	width, height;
+	unsigned int	offsets[MIPLEVELS];		// four mip maps stored
 } miptex_t;
 
 

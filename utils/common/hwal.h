@@ -2,7 +2,7 @@
 	hwal.h
 	Hexen II, .WAL texture file format
 
-	$Id: hwal.h,v 1.1 2007-05-05 11:18:47 sezero Exp $
+	$Id: hwal.h,v 1.2 2007-09-14 14:11:24 sezero Exp $
 */
 
 #ifndef __HWAL_H
@@ -27,8 +27,8 @@ typedef struct miptex_wal_s
 	int			ident;
 	int			version;
 	char		name[32];
-	unsigned	width, height;
-	unsigned	offsets[MIPLEVELS];	// four mip maps stored
+	unsigned int	width, height;
+	unsigned int	offsets[MIPLEVELS];	// four mip maps stored
 } miptex_wal_t;
 
 

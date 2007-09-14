@@ -1,7 +1,7 @@
 /*
 	server.h
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Server/server.h,v 1.15 2007-04-19 14:07:38 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Server/server.h,v 1.16 2007-09-14 14:11:24 sezero Exp $
 */
 
 #ifndef __H2W_SERVER_H
@@ -168,7 +168,7 @@ typedef struct client_s
 	entvars_t	old_v;
 	qboolean	send_all_v;
 
-	unsigned	PIV, LastPIV;	// people in view
+	unsigned int	PIV, LastPIV;	// people in view
 	qboolean	skipsend;	// Skip sending this frame, guaranteed to send next frame
 } client_t;
 
@@ -427,12 +427,12 @@ void SV_SetMoveVars (void);
 //
 // sv_send.c
 //
-extern unsigned clients_multicast;
+extern unsigned int	clients_multicast;
 
 void SV_SendClientMessages (void);
 
 void SV_Multicast (vec3_t origin, int to);
-void SV_MulticastSpecific (unsigned clients, qboolean reliable);
+void SV_MulticastSpecific (unsigned int clients, qboolean reliable);
 void SV_StartSound (edict_t *entity, int channel, const char *sample, int volume, float attenuation);
 void SV_StopSound (edict_t *entity, int channel);
 void SV_UpdateSoundPos (edict_t *entity, int channel);

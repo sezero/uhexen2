@@ -76,9 +76,9 @@ void R_NetGraph (void)
 	frame_t		*frame;
 	int		lost;
 	char		st[80];
-	unsigned	ngraph_pixels[NET_GRAPHHEIGHT][NET_TIMINGS];
+	unsigned int	ngraph_pixels[NET_GRAPHHEIGHT][NET_TIMINGS];
 
-	for (i = cls.netchan.outgoing_sequence-UPDATE_BACKUP+1 ;
+	for (i = cls.netchan.outgoing_sequence - UPDATE_BACKUP + 1 ;
 				i <= cls.netchan.outgoing_sequence ;
 				i++)
 	{

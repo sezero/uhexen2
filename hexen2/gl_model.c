@@ -5,7 +5,7 @@
 	models are the only shared resource between a client and server
 	running on the same machine.
 
-	$Id: gl_model.c,v 1.49 2007-09-01 16:35:57 sezero Exp $
+	$Id: gl_model.c,v 1.50 2007-09-14 14:10:00 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -265,7 +265,7 @@ Loads a model into the cache
 */
 static model_t *Mod_LoadModel (model_t *mod, qboolean crash)
 {
-	unsigned *buf;
+	unsigned int	*buf;
 	byte	stackbuf[1024];		// avoid dirtying the cache heap
 
 	// allow recycling of models (Pa3PyX)
@@ -285,7 +285,7 @@ static model_t *Mod_LoadModel (model_t *mod, qboolean crash)
 //
 // load the file
 //
-	buf = (unsigned *)FS_LoadStackFile (mod->name, stackbuf, sizeof(stackbuf));
+	buf = (unsigned int *)FS_LoadStackFile (mod->name, stackbuf, sizeof(stackbuf));
 	if (!buf)
 	{
 		if (crash)
@@ -307,7 +307,7 @@ static model_t *Mod_LoadModel (model_t *mod, qboolean crash)
 // call the apropriate loader
 	mod->needload = NL_PRESENT;
 
-	switch (LittleLong(*(unsigned *)buf))
+	switch (LittleLong(*(unsigned int *)buf))
 	{
 	case RAPOLYHEADER:
 		Mod_LoadAliasModelNew (mod, buf);

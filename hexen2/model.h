@@ -2,7 +2,7 @@
 	model.h
 	header for model loading and caching
 
-	$Id: model.h,v 1.11 2007-05-15 13:42:18 sezero Exp $
+	$Id: model.h,v 1.12 2007-09-14 14:10:02 sezero Exp $
 */
 
 #ifndef __HX2_MODEL_H
@@ -55,12 +55,12 @@ typedef struct mplane_s
 typedef struct texture_s
 {
 	char		name[16];
-	unsigned	width, height;
+	unsigned int	width, height;
 	int		anim_total;		// total tenths in sequence ( 0 = no)
 	int		anim_min, anim_max;	// time for this frame min <=time< max
 	struct texture_s *anim_next;		// in the animation sequence
 	struct texture_s *alternate_anims;	// bmodels in frmae 1 use these
-	unsigned	offsets[MIPLEVELS];	// four mip maps stored
+	unsigned int	offsets[MIPLEVELS];	// four mip maps stored
 } texture_t;
 
 

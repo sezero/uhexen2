@@ -2,7 +2,7 @@
 	d_part.c
 	software driver module for drawing particles
 
-	$Id: d_part.c,v 1.7 2007-08-09 06:12:45 sezero Exp $
+	$Id: d_part.c,v 1.8 2007-09-14 14:10:07 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -21,7 +21,7 @@ void D_DrawParticle (particle_t *pparticle)
 	float	zi;
 	byte	*pdest;
 	short	*pz;
-	unsigned	Color;
+	unsigned int	Color;
 	int		i, izi, pix, count, u, v;
 	qboolean	NoTrans;
 
@@ -60,7 +60,7 @@ void D_DrawParticle (particle_t *pparticle)
 	else if (pix > d_pix_max)
 		pix = d_pix_max;
 
-	Color = (unsigned)pparticle->color;
+	Color = (unsigned int)pparticle->color;
 	NoTrans = (Color <= 255) ? true : false;
 	if (NoTrans == false)
 		Color = (Color - 256) << 8;	// will use as transTable index

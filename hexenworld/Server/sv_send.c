@@ -2,12 +2,12 @@
 	sv_send.c
 	server communication module
 
-	$Id: sv_send.c,v 1.20 2007-05-13 11:59:43 sezero Exp $
+	$Id: sv_send.c,v 1.21 2007-09-14 14:11:24 sezero Exp $
 */
 
 #include "quakedef.h"
 
-unsigned	clients_multicast;
+unsigned int	clients_multicast;
 
 #define	CHAN_AUTO	0
 #define	CHAN_WEAPON	1
@@ -321,7 +321,7 @@ Sends the contents of sv.multicast to a subset of the clients,
 then clears sv.multicast.
 =================
 */
-void SV_MulticastSpecific (unsigned clients, qboolean reliable)
+void SV_MulticastSpecific (unsigned int clients, qboolean reliable)
 {
 	client_t	*client;
 	int			j;

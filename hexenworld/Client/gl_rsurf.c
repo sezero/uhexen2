@@ -2,7 +2,7 @@
 	r_surf.c
 	surface-related refresh code
 
-	$Id: gl_rsurf.c,v 1.36 2007-07-30 19:55:42 sezero Exp $
+	$Id: gl_rsurf.c,v 1.37 2007-09-14 14:10:07 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -12,8 +12,8 @@ cvar_t		gl_lightmapfmt = {"gl_lightmapfmt", "GL_RGBA", CVAR_ARCHIVE};
 int		lightmap_bytes = 4;		// 1, 2, or 4. default is 4 for GL_RGBA
 GLuint		lightmap_textures;
 
-static unsigned	blocklights[18*18];
-static unsigned	blocklightscolor[18*18*3];	// colored light support. *3 for RGB to the definitions at the top
+static unsigned int	blocklights[18*18];
+static unsigned int	blocklightscolor[18*18*3];	// colored light support. *3 for RGB to the definitions at the top
 
 #define	BLOCK_WIDTH	128
 #define	BLOCK_HEIGHT	128
@@ -50,7 +50,7 @@ static void R_AddDynamicLights (msurface_t *surf)
 	mtexinfo_t	*tex;
 	// vars for lit support
 	float		cred, cgreen, cblue, brightness;
-	unsigned	*bl;
+	unsigned int	*bl;
 
 	smax = (surf->extents[0] >> 4) + 1;
 	tmax = (surf->extents[1] >> 4) + 1;
@@ -207,10 +207,9 @@ static void R_BuildLightMap (msurface_t *surf, byte *dest, int stride)
 	int		t, r, s, q;
 	int		i, j, size;
 	byte		*lightmap;
-	unsigned	scale;
+	unsigned int	scale;
 	int		maps;
-	unsigned	*bl, *blcr, *blcg, *blcb;
-
+	unsigned int	*bl, *blcr, *blcg, *blcb;
 
 	surf->cached_dlight = (surf->dlightframe == r_framecount);
 

@@ -2,7 +2,7 @@
 	sv_init.c
 	server spawning
 
-	$Id: sv_init.c,v 1.15 2007-07-08 11:56:52 sezero Exp $
+	$Id: sv_init.c,v 1.16 2007-09-14 14:11:24 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -184,7 +184,7 @@ static void SV_CalcPHS (void)
 	int		rowbytes, rowwords;
 	int		i, j, k, l, idx, num;
 	int		bitbyte;
-	unsigned	*dest, *src;
+	unsigned int	*dest, *src;
 	byte	*scan;
 	int		count, vcount;
 
@@ -215,7 +215,7 @@ static void SV_CalcPHS (void)
 	sv.phs = (byte *) Hunk_AllocName (rowbytes*num, "phs");
 	count = 0;
 	scan = sv.pvs;
-	dest = (unsigned *)sv.phs;
+	dest = (unsigned int *)sv.phs;
 	for (i = 0; i < num; i++, dest += rowwords, scan += rowbytes)
 	{
 		memcpy (dest, scan, rowbytes);
@@ -233,7 +233,7 @@ static void SV_CalcPHS (void)
 				idx = ((j<<3) + k + 1);
 				if (idx >= num)
 					continue;
-				src = (unsigned *)sv.pvs + idx*rowwords;
+				src = (unsigned int *)sv.pvs + idx*rowwords;
 				for (l = 0; l < rowwords; l++)
 					dest[l] |= src[l];
 			}

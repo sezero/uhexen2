@@ -2,7 +2,7 @@
 	pr_exec.c
 	PROGS execution
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/pr_exec.c,v 1.20 2007-05-13 11:58:30 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/pr_exec.c,v 1.21 2007-09-14 14:10:02 sezero Exp $
 */
 
 // HEADER FILES ------------------------------------------------------------
@@ -927,7 +927,7 @@ static void PrintStatement (dstatement_t *s)
 {
 	int	i;
 
-	if ((unsigned)s->op < sizeof(pr_opnames)/sizeof(pr_opnames[0]))
+	if ((unsigned int)s->op < sizeof(pr_opnames)/sizeof(pr_opnames[0]))
 	{
 		Con_Printf("%s ", pr_opnames[s->op]);
 		i = strlen(pr_opnames[s->op]);
@@ -945,7 +945,7 @@ static void PrintStatement (dstatement_t *s)
 	{
 		Con_Printf("branch %i", s->a);
 	}
-	else if ((unsigned)(s->op-OP_STORE_F) < 6)
+	else if ((unsigned int)(s->op-OP_STORE_F) < 6)
 	{
 		Con_Printf("%s", PR_GlobalString(s->a));
 		Con_Printf("%s", PR_GlobalStringNoContents(s->b));

@@ -2,7 +2,7 @@
 	draw.c
 	This is the only file outside the refresh that touches the vid buffer.
 
-	$Id: draw.c,v 1.42 2007-07-31 11:09:44 sezero Exp $
+	$Id: draw.c,v 1.43 2007-09-14 14:10:00 sezero Exp $
 */
 
 
@@ -289,39 +289,39 @@ void Draw_Character (int x, int y, const unsigned int num)
 				break;
 			case 1:
 				if (source[0])
-					dest[0] = mainTransTable[(((unsigned)dest[0])<<8) + source[0]];
+					dest[0] = mainTransTable[(((unsigned int)dest[0])<<8) + source[0]];
 				if (source[1])
-					dest[1] = mainTransTable[(((unsigned)dest[1])<<8) + source[1]];
+					dest[1] = mainTransTable[(((unsigned int)dest[1])<<8) + source[1]];
 				if (source[2])
-					dest[2] = mainTransTable[(((unsigned)dest[2])<<8) + source[2]];
+					dest[2] = mainTransTable[(((unsigned int)dest[2])<<8) + source[2]];
 				if (source[3])
-					dest[3] = mainTransTable[(((unsigned)dest[3])<<8) + source[3]];
+					dest[3] = mainTransTable[(((unsigned int)dest[3])<<8) + source[3]];
 				if (source[4])
-					dest[4] = mainTransTable[(((unsigned)dest[4])<<8) + source[4]];
+					dest[4] = mainTransTable[(((unsigned int)dest[4])<<8) + source[4]];
 				if (source[5])
-					dest[5] = mainTransTable[(((unsigned)dest[5])<<8) + source[5]];
+					dest[5] = mainTransTable[(((unsigned int)dest[5])<<8) + source[5]];
 				if (source[6])
-					dest[6] = mainTransTable[(((unsigned)dest[6])<<8) + source[6]];
+					dest[6] = mainTransTable[(((unsigned int)dest[6])<<8) + source[6]];
 				if (source[7])
-					dest[7] = mainTransTable[(((unsigned)dest[7])<<8) + source[7]];
+					dest[7] = mainTransTable[(((unsigned int)dest[7])<<8) + source[7]];
 				break;
 			case 2:
 				if (source[0])
-					dest[0] = mainTransTable[(((unsigned)source[0])<<8) + dest[0]];
+					dest[0] = mainTransTable[(((unsigned int)source[0])<<8) + dest[0]];
 				if (source[1])
-					dest[1] = mainTransTable[(((unsigned)source[1])<<8) + dest[1]];
+					dest[1] = mainTransTable[(((unsigned int)source[1])<<8) + dest[1]];
 				if (source[2])
-					dest[2] = mainTransTable[(((unsigned)source[2])<<8) + dest[2]];
+					dest[2] = mainTransTable[(((unsigned int)source[2])<<8) + dest[2]];
 				if (source[3])
-					dest[3] = mainTransTable[(((unsigned)source[3])<<8) + dest[3]];
+					dest[3] = mainTransTable[(((unsigned int)source[3])<<8) + dest[3]];
 				if (source[4])
-					dest[4] = mainTransTable[(((unsigned)source[4])<<8) + dest[4]];
+					dest[4] = mainTransTable[(((unsigned int)source[4])<<8) + dest[4]];
 				if (source[5])
-					dest[5] = mainTransTable[(((unsigned)source[5])<<8) + dest[5]];
+					dest[5] = mainTransTable[(((unsigned int)source[5])<<8) + dest[5]];
 				if (source[6])
-					dest[6] = mainTransTable[(((unsigned)source[6])<<8) + dest[6]];
+					dest[6] = mainTransTable[(((unsigned int)source[6])<<8) + dest[6]];
 				if (source[7])
-					dest[7] = mainTransTable[(((unsigned)source[7])<<8) + dest[7]];
+					dest[7] = mainTransTable[(((unsigned int)source[7])<<8) + dest[7]];
 				break;
 			}
 
@@ -519,39 +519,39 @@ void Draw_SmallCharacter(int x, int y, const int num)
 				break;
 			case 1:
 				if (source[0])
-					dest[0] = mainTransTable[(((unsigned)dest[0])<<8) + source[0]];
+					dest[0] = mainTransTable[(((unsigned int)dest[0])<<8) + source[0]];
 				if (source[1])
-					dest[1] = mainTransTable[(((unsigned)dest[1])<<8) + source[1]];
+					dest[1] = mainTransTable[(((unsigned int)dest[1])<<8) + source[1]];
 				if (source[2])
-					dest[2] = mainTransTable[(((unsigned)dest[2])<<8) + source[2]];
+					dest[2] = mainTransTable[(((unsigned int)dest[2])<<8) + source[2]];
 				if (source[3])
-					dest[3] = mainTransTable[(((unsigned)dest[3])<<8) + source[3]];
+					dest[3] = mainTransTable[(((unsigned int)dest[3])<<8) + source[3]];
 				if (source[4])
-					dest[4] = mainTransTable[(((unsigned)dest[4])<<8) + source[4]];
+					dest[4] = mainTransTable[(((unsigned int)dest[4])<<8) + source[4]];
 				if (source[5])
-					dest[5] = mainTransTable[(((unsigned)dest[5])<<8) + source[5]];
+					dest[5] = mainTransTable[(((unsigned int)dest[5])<<8) + source[5]];
 				if (source[6])
-					dest[6] = mainTransTable[(((unsigned)dest[6])<<8) + source[6]];
+					dest[6] = mainTransTable[(((unsigned int)dest[6])<<8) + source[6]];
 				if (source[7])
-					dest[7] = mainTransTable[(((unsigned)dest[7])<<8) + source[7]];
+					dest[7] = mainTransTable[(((unsigned int)dest[7])<<8) + source[7]];
 				break;
 			case 2:
 				if (source[0])
-					dest[0] = mainTransTable[(((unsigned)source[0])<<8) + dest[0]];
+					dest[0] = mainTransTable[(((unsigned int)source[0])<<8) + dest[0]];
 				if (source[1])
-					dest[1] = mainTransTable[(((unsigned)source[1])<<8) + dest[1]];
+					dest[1] = mainTransTable[(((unsigned int)source[1])<<8) + dest[1]];
 				if (source[2])
-					dest[2] = mainTransTable[(((unsigned)source[2])<<8) + dest[2]];
+					dest[2] = mainTransTable[(((unsigned int)source[2])<<8) + dest[2]];
 				if (source[3])
-					dest[3] = mainTransTable[(((unsigned)source[3])<<8) + dest[3]];
+					dest[3] = mainTransTable[(((unsigned int)source[3])<<8) + dest[3]];
 				if (source[4])
-					dest[4] = mainTransTable[(((unsigned)source[4])<<8) + dest[4]];
+					dest[4] = mainTransTable[(((unsigned int)source[4])<<8) + dest[4]];
 				if (source[5])
-					dest[5] = mainTransTable[(((unsigned)source[5])<<8) + dest[5]];
+					dest[5] = mainTransTable[(((unsigned int)source[5])<<8) + dest[5]];
 				if (source[6])
-					dest[6] = mainTransTable[(((unsigned)source[6])<<8) + dest[6]];
+					dest[6] = mainTransTable[(((unsigned int)source[6])<<8) + dest[6]];
 				if (source[7])
-					dest[7] = mainTransTable[(((unsigned)source[7])<<8) + dest[7]];
+					dest[7] = mainTransTable[(((unsigned int)source[7])<<8) + dest[7]];
 				break;
 			}
 
@@ -749,7 +749,7 @@ void Draw_PicCropped (int x, int y, qpic_t *pic)
 			{
 				for (u = 0; u < pic->width; u++, source++)
 				{
-					dest[u] = mainTransTable[(((unsigned)dest[u])<<8) + (*source)];
+					dest[u] = mainTransTable[(((unsigned int)dest[u])<<8) + (*source)];
 				}
 				dest += vid.rowbytes;
 			}
@@ -759,7 +759,7 @@ void Draw_PicCropped (int x, int y, qpic_t *pic)
 			{
 				for (u = 0; u < pic->width; u++, source++)
 				{
-					dest[u] = mainTransTable[(((unsigned)(*source))<<8) + dest[u]];
+					dest[u] = mainTransTable[(((unsigned int)(*source))<<8) + dest[u]];
 				}
 				dest += vid.rowbytes;
 			}
@@ -792,8 +792,8 @@ void Draw_TransPic (int x, int y, qpic_t *pic)
 	unsigned short	*pusdest;
 	int		v, u;
 
-	if (x < 0 || (unsigned)(x + pic->width) > vid.width || y < 0 ||
-		 (unsigned)(y + pic->height) > vid.height)
+	if (x < 0 || (unsigned int)(x + pic->width) > vid.width || y < 0 ||
+			(unsigned int)(y + pic->height) > vid.height)
 	{
 		Sys_Error("%s: bad coordinates", __thisfunc__);
 	}
@@ -938,7 +938,7 @@ void Draw_SubPicCropped (int x, int y, int h, qpic_t *pic)
 			{
 				for (u = 0; u < pic->width; u++, source++)
 				{
-					dest[u] = mainTransTable[(((unsigned)dest[u])<<8) + (*source)];
+					dest[u] = mainTransTable[(((unsigned int)dest[u])<<8) + (*source)];
 				}
 				dest += vid.rowbytes;
 			}
@@ -948,7 +948,7 @@ void Draw_SubPicCropped (int x, int y, int h, qpic_t *pic)
 			{
 				for (u = 0; u < pic->width; u++, source++)
 				{
-					dest[u] = mainTransTable[(((unsigned)(*source))<<8) + dest[u]];
+					dest[u] = mainTransTable[(((unsigned int)(*source))<<8) + dest[u]];
 				}
 				dest += vid.rowbytes;
 			}
@@ -1042,7 +1042,7 @@ void Draw_TransPicCropped (int x, int y, qpic_t *pic)
 					{
 						if ((tbyte = source[u]) != TRANSPARENT_COLOR)
 						{
-							dest[u] = mainTransTable[(((unsigned)dest[u])<<8) + tbyte];
+							dest[u] = mainTransTable[(((unsigned int)dest[u])<<8) + tbyte];
 						}
 					}
 					dest += vid.rowbytes;
@@ -1056,7 +1056,7 @@ void Draw_TransPicCropped (int x, int y, qpic_t *pic)
 					{
 						if ((tbyte = source[u]) != TRANSPARENT_COLOR)
 						{
-							dest[u] = mainTransTable[(((unsigned)tbyte)<<8) + dest[u]];
+							dest[u] = mainTransTable[(((unsigned int)tbyte)<<8) + dest[u]];
 						}
 					}
 					dest += vid.rowbytes;
@@ -1093,39 +1093,39 @@ void Draw_TransPicCropped (int x, int y, qpic_t *pic)
 						break;
 					case 1:
 						if ((tbyte = source[u]) != TRANSPARENT_COLOR)
-							dest[u] = mainTransTable[(((unsigned)dest[u])<<8) + tbyte];
+							dest[u] = mainTransTable[(((unsigned int)dest[u])<<8) + tbyte];
 						if ((tbyte = source[u+1]) != TRANSPARENT_COLOR)
-							dest[u+1] = mainTransTable[(((unsigned)dest[u+1])<<8) + tbyte];
+							dest[u+1] = mainTransTable[(((unsigned int)dest[u+1])<<8) + tbyte];
 						if ((tbyte = source[u+2]) != TRANSPARENT_COLOR)
-							dest[u+2] = mainTransTable[(((unsigned)dest[u+2])<<8) + tbyte];
+							dest[u+2] = mainTransTable[(((unsigned int)dest[u+2])<<8) + tbyte];
 						if ((tbyte = source[u+3]) != TRANSPARENT_COLOR)
-							dest[u+3] = mainTransTable[(((unsigned)dest[u+3])<<8) + tbyte];
+							dest[u+3] = mainTransTable[(((unsigned int)dest[u+3])<<8) + tbyte];
 						if ((tbyte = source[u+4]) != TRANSPARENT_COLOR)
-							dest[u+4] = mainTransTable[(((unsigned)dest[u+4])<<8) + tbyte];
+							dest[u+4] = mainTransTable[(((unsigned int)dest[u+4])<<8) + tbyte];
 						if ((tbyte = source[u+5]) != TRANSPARENT_COLOR)
-							dest[u+5] = mainTransTable[(((unsigned)dest[u+5])<<8) + tbyte];
+							dest[u+5] = mainTransTable[(((unsigned int)dest[u+5])<<8) + tbyte];
 						if ((tbyte = source[u+6]) != TRANSPARENT_COLOR)
-							dest[u+6] = mainTransTable[(((unsigned)dest[u+6])<<8) + tbyte];
+							dest[u+6] = mainTransTable[(((unsigned int)dest[u+6])<<8) + tbyte];
 						if ((tbyte = source[u+7]) != TRANSPARENT_COLOR)
-							dest[u+7] = mainTransTable[(((unsigned)dest[u+7])<<8) + tbyte];
+							dest[u+7] = mainTransTable[(((unsigned int)dest[u+7])<<8) + tbyte];
 						break;
 					case 2:
 						if ((tbyte = source[u]) != TRANSPARENT_COLOR)
-							dest[u] = mainTransTable[(((unsigned)tbyte)<<8) + dest[u]];
+							dest[u] = mainTransTable[(((unsigned int)tbyte)<<8) + dest[u]];
 						if ((tbyte = source[u+1]) != TRANSPARENT_COLOR)
-							dest[u+1] = mainTransTable[(((unsigned)tbyte)<<8) + dest[u+1]];
+							dest[u+1] = mainTransTable[(((unsigned int)tbyte)<<8) + dest[u+1]];
 						if ((tbyte = source[u+2]) != TRANSPARENT_COLOR)
-							dest[u+2] = mainTransTable[(((unsigned)tbyte)<<8) + dest[u+2]];
+							dest[u+2] = mainTransTable[(((unsigned int)tbyte)<<8) + dest[u+2]];
 						if ((tbyte = source[u+3]) != TRANSPARENT_COLOR)
-							dest[u+3] = mainTransTable[(((unsigned)tbyte)<<8) + dest[u+3]];
+							dest[u+3] = mainTransTable[(((unsigned int)tbyte)<<8) + dest[u+3]];
 						if ((tbyte = source[u+4]) != TRANSPARENT_COLOR)
-							dest[u+4] = mainTransTable[(((unsigned)tbyte)<<8) + dest[u+4]];
+							dest[u+4] = mainTransTable[(((unsigned int)tbyte)<<8) + dest[u+4]];
 						if ((tbyte = source[u+5]) != TRANSPARENT_COLOR)
-							dest[u+5] = mainTransTable[(((unsigned)tbyte)<<8) + dest[u+5]];
+							dest[u+5] = mainTransTable[(((unsigned int)tbyte)<<8) + dest[u+5]];
 						if ((tbyte = source[u+6]) != TRANSPARENT_COLOR)
-							dest[u+6] = mainTransTable[(((unsigned)tbyte)<<8) + dest[u+6]];
+							dest[u+6] = mainTransTable[(((unsigned int)tbyte)<<8) + dest[u+6]];
 						if ((tbyte = source[u+7]) != TRANSPARENT_COLOR)
-							dest[u+7] = mainTransTable[(((unsigned)tbyte)<<8) + dest[u+7]];
+							dest[u+7] = mainTransTable[(((unsigned int)tbyte)<<8) + dest[u+7]];
 						break;
 					}
 				}
@@ -1215,8 +1215,8 @@ void Draw_TransPicTranslate (int x, int y, qpic_t *pic, byte *translation)
 	unsigned short	*pusdest;
 	int		v, u;
 
-	if (x < 0 || (unsigned)(x + pic->width) > vid.width || y < 0 ||
-		 (unsigned)(y + pic->height) > vid.height)
+	if (x < 0 || (unsigned int)(x + pic->width) > vid.width || y < 0 ||
+			(unsigned int)(y + pic->height) > vid.height)
 	{
 		Sys_Error ("%s: bad coordinates", __thisfunc__);
 	}
@@ -1616,8 +1616,8 @@ void Draw_Fill (int x, int y, int w, int h, int c)
 {
 	byte			*dest;
 	unsigned short	*pusdest;
-	unsigned		uc;
-	int				u, v;
+	unsigned int		uc;
+	int			u, v;
 
 	if (x < 0 || x + w > vid.width ||
 		y < 0 || y + h > vid.height)
@@ -1646,7 +1646,7 @@ void Draw_Fill (int x, int y, int w, int h, int c)
 			{
 				for (u = 0; u < w; u++)
 				{
-					dest[u] = mainTransTable[(((unsigned)dest[u])<<8) + c];
+					dest[u] = mainTransTable[(((unsigned int)dest[u])<<8) + c];
 				}
 			}
 			break;

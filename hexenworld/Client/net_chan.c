@@ -2,7 +2,7 @@
 	net_chan.c
 	net channel
 
-	$Id: net_chan.c,v 1.12 2007-06-26 20:19:37 sezero Exp $
+	$Id: net_chan.c,v 1.13 2007-09-14 14:10:07 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -178,7 +178,7 @@ void Netchan_Transmit (netchan_t *chan, int length, byte *data)
 	sizebuf_t	senddata;
 	byte		send_buf[MAX_MSGLEN + PACKET_HEADER];
 	qboolean	send_reliable;
-	unsigned	w1, w2;
+	unsigned int	w1, w2;
 	int			i;
 
 // check for message overflow
@@ -266,14 +266,14 @@ modifies net_message so that it points to the packet payload
 */
 qboolean Netchan_Process (netchan_t *chan)
 {
-	unsigned		sequence, sequence_ack;
-	unsigned		reliable_ack, reliable_message;
+	unsigned int	sequence, sequence_ack;
+	unsigned int	reliable_ack, reliable_message;
 
 	if (
 #ifndef SERVERONLY
-			!cls.demoplayback && 
+		!cls.demoplayback && 
 #endif
-			!NET_CompareAdr (net_from, chan->remote_address))
+		!NET_CompareAdr (net_from, chan->remote_address))
 	{
 		return false;
 	}
@@ -356,7 +356,7 @@ qboolean Netchan_Process (netchan_t *chan)
 		{
 			Con_Printf ("%s:Dropped %u packets at %u\n",
 					NET_AdrToString (chan->remote_address),
-					sequence-(unsigned)(chan->incoming_sequence+1),
+					sequence-(unsigned int)(chan->incoming_sequence + 1),
 					sequence);
 		}
 	}

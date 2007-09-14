@@ -2,7 +2,7 @@
 	client.h
 	client main header
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/client.h,v 1.18 2007-04-08 18:50:39 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/client.h,v 1.19 2007-09-14 14:10:07 sezero Exp $
 */
 
 #ifndef __H2W_CLIENT_H
@@ -294,7 +294,7 @@ typedef struct
 
 	struct EffectT	Effects[MAX_EFFECTS];
 
-	unsigned	PIV;			// players in view
+	unsigned int	PIV;			// players in view
 
 // all player information
 	player_info_t	players[MAX_CLIENTS];

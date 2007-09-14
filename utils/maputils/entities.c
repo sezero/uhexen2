@@ -1,6 +1,6 @@
 /*
 	entities.c
-	$Id: entities.c,v 1.7 2007-07-08 17:01:16 sezero Exp $
+	$Id: entities.c,v 1.8 2007-09-14 14:11:24 sezero Exp $
 */
 
 #include "util_inc.h"
@@ -165,7 +165,7 @@ void LoadEntities (void)
 			else if (!strcmp(key, "style"))
 			{
 				entity->style = atoi(com_token);
-				if ((unsigned)entity->style > 254)
+				if ((unsigned int)entity->style > 254)
 					Error ("Bad light style %i (must be 0-254)", entity->style);
 			}
 			else if (!strcmp(key, "angle"))

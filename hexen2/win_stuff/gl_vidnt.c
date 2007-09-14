@@ -1,6 +1,6 @@
 /*
 	gl_vidnt.c -- NT GL vid component
-	$Id: gl_vidnt.c,v 1.112 2007-09-14 14:03:02 sezero Exp $
+	$Id: gl_vidnt.c,v 1.113 2007-09-14 14:10:05 sezero Exp $
 */
 
 #define	__GL_FUNC_EXTERN
@@ -156,8 +156,8 @@ static cvar_t	vid_config_y = {"vid_config_y", "600", CVAR_ARCHIVE};
 byte		globalcolormap[VID_GRADES*256];
 float		RTint[256], GTint[256], BTint[256];
 unsigned short	d_8to16table[256];
-unsigned	d_8to24table[256];
-unsigned	d_8to24TranslucentTable[256];
+unsigned int	d_8to24table[256];
+unsigned int	d_8to24TranslucentTable[256];
 #if USE_HEXEN2_PALTEX_CODE
 unsigned char	inverse_pal[(1<<INVERSE_PAL_TOTAL_BITS)+1]; // +1: FS_LoadStackFile puts a 0 at the end of the data
 #else
@@ -913,7 +913,7 @@ int ColorIndex[16] =
 	0, 31, 47, 63, 79, 95, 111, 127, 143, 159, 175, 191, 199, 207, 223, 231
 };
 
-unsigned ColorPercent[16] =
+unsigned int ColorPercent[16] =
 {
 	25, 51, 76, 102, 114, 127, 140, 153, 165, 178, 191, 204, 216, 229, 237, 247
 };
@@ -992,7 +992,7 @@ void VID_SetPalette (unsigned char *palette)
 	unsigned short	r, g, b;
 	int		v;
 	unsigned short	i, p, c;
-	unsigned	*table;
+	unsigned int	*table;
 #if !USE_HEXEN2_PALTEX_CODE
 	int		r1, g1, b1;
 	int		j, k, l, m;

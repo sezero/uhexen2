@@ -2,7 +2,7 @@
 	vid_win.c
 	Win32 video driver using MGL-4.05
 
-	$Id: vid_win.c,v 1.53 2007-09-14 14:03:04 sezero Exp $
+	$Id: vid_win.c,v 1.54 2007-09-14 14:10:08 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -129,7 +129,7 @@ static int	VID_highhunkmark;
 unsigned char	vid_curpal[256*3];
 
 unsigned short	d_8to16table[256];
-unsigned	d_8to24table[256];
+unsigned int	d_8to24table[256];
 
 static int	driver = grDETECT, mode;
 

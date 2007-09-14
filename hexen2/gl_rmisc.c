@@ -1,7 +1,7 @@
 /*
 	r_misc.c
 
-	$Id: gl_rmisc.c,v 1.47 2007-07-29 07:58:05 sezero Exp $
+	$Id: gl_rmisc.c,v 1.48 2007-09-14 14:10:01 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -305,16 +305,16 @@ void R_TranslatePlayerSkin (int playernum)
 {
 	int		top, bottom;
 	byte		translate[256];
-	unsigned	translate32[256];
+	unsigned int	translate32[256];
 	int		i, j, s;
 	model_t		*model;
 	aliashdr_t	*paliashdr;
 	byte		*original;
-	unsigned	pixels[512*256], *out;
-	unsigned	scaled_width, scaled_height;
+	unsigned int	pixels[512*256], *out;
+	unsigned int	scaled_width, scaled_height;
 	int		inwidth, inheight;
 	byte		*inrow;
-	unsigned	frac, fracstep;
+	unsigned int	frac, fracstep;
 	byte		*sourceA, *sourceB, *colorA, *colorB;
 	int		playerclass = (int)cl.scores[playernum].playerclass;
 	char		texname[20];

@@ -2,7 +2,7 @@
 	r_aclip.c
 	clip routines for drawing Alias models directly to the screen
 
-	$Id: r_aclip.c,v 1.9 2007-03-14 21:03:17 sezero Exp $
+	$Id: r_aclip.c,v 1.10 2007-09-14 14:10:02 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -207,9 +207,9 @@ R_AliasClipTriangle
 */
 void R_AliasClipTriangle (mtriangle_t *ptri)
 {
-	int				i, k, pingpong;
+	int			i, k, pingpong;
 	mtriangle_t		mtri;
-	unsigned		clipflags;
+	unsigned int		clipflags;
 
 // copy vertexes and fix seam texture coordinates
 	if (ptri->facesfront)

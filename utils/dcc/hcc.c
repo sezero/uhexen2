@@ -2,7 +2,7 @@
 	hcc.c
 	HCode compiler based on qcc, modifed by Eric Hobbs to work with DCC
 
-	$Header: /home/ozzie/Download/0000/uhexen2/utils/dcc/hcc.c,v 1.24 2007-07-08 17:01:14 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/utils/dcc/hcc.c,v 1.25 2007-09-14 14:11:24 sezero Exp $
 */
 
 #include "util_inc.h"
@@ -541,7 +541,7 @@ static void PR_PrintStatement (dstatement_t *s)
 	{
 		printf ("branch %i", s->a);
 	}
-	else if ( (unsigned)(s->op - OP_STORE_F) < 6)
+	else if ( (unsigned int)(s->op - OP_STORE_F) < 6)
 	{
 		printf ("%s", PR_GlobalString(s->a));
 		printf ("%s", PR_GlobalStringNoContents(s->b));

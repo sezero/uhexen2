@@ -2,7 +2,7 @@
 	gl_draw.c
 	this is the only file outside the refresh that touches the vid buffer
 
-	$Id: gl_draw.c,v 1.105 2007-08-03 09:22:29 sezero Exp $
+	$Id: gl_draw.c,v 1.106 2007-09-14 14:10:07 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -90,8 +90,8 @@ gltexture_t	gltextures[MAX_GLTEXTURES];
 int			numgltextures;
 
 static GLuint GL_LoadPixmap (const char *name, const char *data);
-static void GL_Upload32 (unsigned *data, int width, int height,  qboolean mipmap, qboolean alpha);
-static void GL_Upload8 (byte *data, int width, int height,  qboolean mipmap, qboolean alpha, int mode);
+static void GL_Upload32 (unsigned int *data, int width, int height, qboolean mipmap, qboolean alpha);
+static void GL_Upload8 (byte *data, int width, int height, qboolean mipmap, qboolean alpha, int mode);
 
 
 //=============================================================================
@@ -965,8 +965,8 @@ Draw_TransPic
 */
 void Draw_TransPic (int x, int y, qpic_t *pic)
 {
-	if (x < 0 || (unsigned)(x + pic->width) > vid.width || y < 0 ||
-		 (unsigned)(y + pic->height) > vid.height)
+	if (x < 0 || (unsigned int)(x + pic->width) > vid.width || y < 0 ||
+			(unsigned int)(y + pic->height) > vid.height)
 	{
 		Sys_Error ("%s: bad coordinates", __thisfunc__);
 	}
@@ -989,11 +989,10 @@ Only used for the player color selection menu
 void Draw_TransPicTranslate (int x, int y, qpic_t *pic, byte *translation, int p_class, int top, int bottom)
 {
 	int		i, j, v, u;
-	unsigned	trans[PLAYER_DEST_WIDTH * PLAYER_DEST_HEIGHT], *dest;
+	unsigned int	trans[PLAYER_DEST_WIDTH * PLAYER_DEST_HEIGHT], *dest;
 	byte		*src;
 	int		p;
-	// texture handle, name and trackers (Pa3PyX)
-	char texname[20];
+	char	texname[20];	// texture handle, name and trackers (Pa3PyX)
 
 	dest = trans;
 	for (v = 0; v < 64; v++, dest += 64)
@@ -1272,12 +1271,12 @@ GL_ResampleTexture
 ================
 */
 #if USE_HEXEN2_RESAMPLER_CODE
-static void GL_ResampleTexture (unsigned *in, int inwidth, int inheight, unsigned *out,  int outwidth, int outheight)
+static void GL_ResampleTexture (unsigned int *in, int inwidth, int inheight, unsigned int *out, int outwidth, int outheight)
 {
 	int		i, j;
-	unsigned	*inrow, *inrow2;
-	unsigned	frac, fracstep;
-	unsigned	p1[1024], p2[1024];
+	unsigned int	*inrow, *inrow2;
+	unsigned int	frac, fracstep;
+	unsigned int	p1[1024], p2[1024];
 	byte		*pix1, *pix2, *pix3, *pix4;
 
 	fracstep = inwidth * 0x10000 / outwidth;
@@ -1315,11 +1314,11 @@ static void GL_ResampleTexture (unsigned *in, int inwidth, int inheight, unsigne
 	}
 }
 #else	/* here is the hexenworld (quake) resampler */
-static void GL_ResampleTexture (unsigned *in, int inwidth, int inheight, unsigned *out,  int outwidth, int outheight)
+static void GL_ResampleTexture (unsigned int *in, int inwidth, int inheight, unsigned int *out, int outwidth, int outheight)
 {
 	int		i, j;
-	unsigned	*inrow;
-	unsigned	frac, fracstep;
+	unsigned int	*inrow;
+	unsigned int	frac, fracstep;
 
 	fracstep = inwidth * 0x10000 / outwidth;
 	for (i = 0; i < outheight; i++, out += outwidth)
@@ -1423,7 +1422,7 @@ static void GL_Resample8BitTexture (unsigned char *in, int inwidth, int inheight
 {
 	int		i, j;
 	unsigned char	*inrow;
-	unsigned	frac, fracstep;
+	unsigned int	frac, fracstep;
 
 	fracstep = inwidth * 0x10000 / outwidth;
 	for (i = 0; i < outheight; i++, out += outwidth)
@@ -1586,10 +1585,10 @@ done:
 GL_Upload32
 ===============
 */
-static void GL_Upload32 (unsigned *data, int width, int height,  qboolean mipmap, qboolean alpha)
+static void GL_Upload32 (unsigned int *data, int width, int height, qboolean mipmap, qboolean alpha)
 {
 	int		samples;
-	unsigned	*scaled;
+	unsigned int	*scaled;
 	int		mark = 0;
 	int		scaled_width, scaled_height;
 
@@ -1654,7 +1653,7 @@ static void GL_Upload32 (unsigned *data, int width, int height,  qboolean mipmap
 	else
 	{
 		mark = Hunk_LowMark();
-		scaled = (unsigned *) Hunk_AllocName(scaled_width * scaled_height * sizeof(unsigned int), "texbuf_upload32");
+		scaled = (unsigned int *) Hunk_AllocName(scaled_width * scaled_height * sizeof(unsigned int), "texbuf_upload32");
 		GL_ResampleTexture (data, width, height, scaled, scaled_width, scaled_height);
 	}
 
@@ -1721,15 +1720,15 @@ modes:
 3 - special (particle translucency table)
 ===============
 */
-static void GL_Upload8 (byte *data, int width, int height,  qboolean mipmap, qboolean alpha, int mode)
+static void GL_Upload8 (byte *data, int width, int height, qboolean mipmap, qboolean alpha, int mode)
 {
-	unsigned		*trans;
+	unsigned int		*trans;
 	int			mark;
 	int			i, p, s;
 
 	s = width*height;
 	mark = Hunk_LowMark();
-	trans = (unsigned *) Hunk_AllocName(s * sizeof(unsigned), "texbuf_upload8");
+	trans = (unsigned int *) Hunk_AllocName(s * sizeof(unsigned int), "texbuf_upload8");
 
 	if ((alpha || mode != 0))
 	{
@@ -1909,7 +1908,7 @@ gl_rebind:
 
 	GL_Bind (glt->texnum);
 	if (rgba)
-		GL_Upload32 ((unsigned *)data, width, height, mipmap, alpha);
+		GL_Upload32 ((unsigned int *)data, width, height, mipmap, alpha);
 	else
 		GL_Upload8 (data, width, height, mipmap, alpha, mode);
 

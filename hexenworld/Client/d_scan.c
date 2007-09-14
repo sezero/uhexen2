@@ -2,7 +2,7 @@
 	d_scan.c
 	Portable C scan-level rasterization code, all pixel depths.
 
-	$Id: d_scan.c,v 1.11 2007-07-31 19:40:26 sezero Exp $
+	$Id: d_scan.c,v 1.12 2007-09-14 14:10:07 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -579,10 +579,10 @@ D_DrawZSpans
 */
 void D_DrawZSpans (espan_t *pspan)
 {
-	int				count, doublecount, izistep;
-	int				izi;
+	int			count, doublecount, izistep;
+	int			izi;
 	short			*pdest;
-	unsigned		ltemp;
+	unsigned int		ltemp;
 	double			zi;
 	float			du, dv;
 

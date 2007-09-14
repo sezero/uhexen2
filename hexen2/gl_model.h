@@ -2,7 +2,7 @@
 	model.h
 	header for model loading and caching
 
-	$Id: gl_model.h,v 1.14 2007-08-13 06:44:34 sezero Exp $
+	$Id: gl_model.h,v 1.15 2007-09-14 14:10:01 sezero Exp $
 */
 
 #ifndef __HX2_MODEL_H
@@ -55,14 +55,14 @@ typedef struct mplane_s
 typedef struct texture_s
 {
 	char		name[16];
-	unsigned	width, height;
+	unsigned int	width, height;
 	GLuint			gl_texturenum;
 	struct msurface_s	*texturechain;	// for gl_texsort drawing
 	int		anim_total;		// total tenths in sequence ( 0 = no)
 	int		anim_min, anim_max;	// time for this frame min <=time< max
 	struct texture_s *anim_next;		// in the animation sequence
 	struct texture_s *alternate_anims;	// bmodels in frmae 1 use these
-	unsigned	offsets[MIPLEVELS];	// four mip maps stored
+	unsigned int	offsets[MIPLEVELS];	// four mip maps stored
 } texture_t;
 
 
@@ -126,7 +126,7 @@ typedef struct msurface_s
 	int		dlightframe;
 	int		dlightbits;
 
-	unsigned	lightmaptexturenum;
+	unsigned int	lightmaptexturenum;
 	byte		styles[MAXLIGHTMAPS];
 	int		cached_light[MAXLIGHTMAPS];	// values currently used in lightmap
 	qboolean	cached_dlight;			// true if dynamic light in cache

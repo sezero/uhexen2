@@ -2,7 +2,7 @@
 	d_local.h
 	private rasterization driver defs
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/d_local.h,v 1.14 2007-08-09 06:12:45 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/d_local.h,v 1.15 2007-09-14 14:10:00 sezero Exp $
 */
 
 #ifndef __D_LOCAL_H
@@ -31,8 +31,8 @@ typedef struct surfcache_s
 	int			lightadj[MAXLIGHTMAPS]; // checked for strobe flush
 	int			dlight;
 	int			size;		// including header
-	unsigned		width;
-	unsigned		height;		// DEBUG only needed for debug
+	unsigned int		width;
+	unsigned int		height;		// DEBUG only needed for debug
 	float			mipscale;
 	struct texture_s	*texture;	// checked for animating textures
 	int			drawflags;

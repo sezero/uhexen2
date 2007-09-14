@@ -2,7 +2,7 @@
 	r_surf.c
 	surface-related refresh code
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/r_surf.c,v 1.13 2007-07-08 11:55:22 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/r_surf.c,v 1.14 2007-09-14 14:10:02 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -13,17 +13,17 @@ drawsurf_t	r_drawsurf;
 int		lightleft, sourcesstep, blocksize, sourcetstep;
 int		lightdelta, lightdeltastep;
 int		lightright, lightleftstep, lightrightstep, blockdivshift;
-unsigned	blockdivmask;
+unsigned int	blockdivmask;
 void		*prowdestbase;
 unsigned char	*pbasesource;
 int		surfrowbytes;	// used by ASM files
-unsigned	*r_lightptr;
+unsigned int	*r_lightptr;
 int		r_stepback;
 int		r_lightwidth;
 int		r_numhblocks, r_numvblocks;
 unsigned char	*r_source, *r_sourcemax;
 
-static unsigned	blocklights[18*18];
+static unsigned int	blocklights[18*18];
 
 #if id386
 extern void R_DrawSurfaceBlock16 (void);
@@ -65,7 +65,7 @@ static void R_AddDynamicLights (void)
 	int			s, t;
 	int			i;
 	int			smax, tmax;
-	unsigned	*pos;
+	unsigned int	*pos;
 	mtexinfo_t	*tex;
 	msurface_t	*surf;
 
@@ -115,7 +115,7 @@ static void R_AddDynamicLights (void)
 					dist = td + (sd>>1);
 				if (dist < minlight)
 				{
-					unsigned	temp;
+					unsigned int	temp;
 					temp = (rad - dist)*256;
 					i = t*smax + s;
 					if (!cl_dlights[lnum].dark)
@@ -157,7 +157,7 @@ static void R_BuildLightMap (void)
 	int		t;
 	int		i, size;
 	byte		*lightmap;
-	unsigned	scale;
+	unsigned int	scale;
 	int		maps;
 	msurface_t	*surf;
 	int		light;

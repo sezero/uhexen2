@@ -1,7 +1,7 @@
 /*
 	expr.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/utils/hcc/expr.c,v 1.7 2007-07-08 17:01:15 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/utils/hcc/expr.c,v 1.8 2007-09-14 14:11:24 sezero Exp $
 
 */
 
@@ -141,7 +141,7 @@ def_t *EX_Expression (int priority)
 			}
 			if (op->right_associative)
 			{
-				if ( (unsigned)(statements[numstatements-1].op-OP_LOAD_F) < 6)
+				if ( (unsigned int)(statements[numstatements-1].op-OP_LOAD_F) < 6)
 				{
 					// The preceding statement was an indirect.  Change it to
 					// an address of.
@@ -150,7 +150,7 @@ def_t *EX_Expression (int priority)
 					e->type = def_pointer.type;
 				}
 /*
-				else if ( (unsigned)(statements[numstatements-1].op-OP_FETCH_GBL_F) < 5)
+				else if ( (unsigned int)(statements[numstatements-1].op-OP_FETCH_GBL_F) < 5)
 				{
 					// The preceding statement was an array lookup.  Assignment
 					// is currently not allowed to arrays.

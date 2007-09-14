@@ -3,7 +3,7 @@
 	SDL video driver
 	Select window size and mode and init SDL in SOFTWARE mode.
 
-	$Id: vid_sdl.c,v 1.77 2007-09-14 14:03:03 sezero Exp $
+	$Id: vid_sdl.c,v 1.78 2007-09-14 14:10:08 sezero Exp $
 
 	Changed by S.A. 7/11/04, 27/12/04
 	Options are now: -fullscreen | -window, -height , -width
@@ -28,7 +28,7 @@ qboolean	msg_suppress_1 = false;
 
 unsigned char	vid_curpal[256*3];
 unsigned short	d_8to16table[256];
-unsigned	d_8to24table[256];
+unsigned int	d_8to24table[256];
 
 byte globalcolormap[VID_GRADES*256], lastglobalcolor = 0;
 byte *lastsourcecolormap = NULL;

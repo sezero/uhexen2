@@ -2,7 +2,7 @@
 	r_alias.c
 	routines for setting up to draw alias models
 
-	$Id: r_alias.c,v 1.18 2007-08-09 06:12:45 sezero Exp $
+	$Id: r_alias.c,v 1.19 2007-09-14 14:10:02 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -84,7 +84,7 @@ qboolean R_AliasCheckBBox (void)
 	auxvert_t		*pa0, *pa1, viewaux[16];
 	maliasframedesc_t	*pframedesc;
 	qboolean		zclipped, zfullyclipped;
-	unsigned		anyclip, allclip;
+	unsigned int		anyclip, allclip;
 	int			minz;
 
 // expand, rotate, and translate points into worldspace
