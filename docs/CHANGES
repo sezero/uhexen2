@@ -3,6 +3,36 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2007-09-15 (CVS):
+    * clean-up in vid* files: mostly whitespace and readability stuff.
+    * changed all technically incorrect unsigned int declarations (unsigned)
+      to explicit unsigned int declarations.
+    * clean-ups in snd* files: mostly whitespace and readability stuff. while we
+      were there, fixed a few technically incorrect return codes (int instead of
+      bool), fixed a wrong cast in some memset calls (dma_t* instead of void*),
+      made the alsa buffersize warning messages to show up on the game console,
+      made OSS driver to use the system definition AFMT_S16_NE when available.
+    * updated the list of known bugs for the 'Cache_MakeLRU: active link' error.
+    * fixed the reporting of the video mode set when the effective console size
+      isn't of same dimensions as the video mode itself.
+    * updated windows compilation instructions.
+    * exported soundtime through sound.h.
+    * added snd_skippaint as a new global: it is set by our current sdl audio
+      driver indicating that it already 'paints audio'.  while we were there,
+      changed the 'available' member of the snd_driver structure of snd_dma.c
+      from qboolean to int.
+    * re-diff'ed the alternative snd_sdl and experimental snd_restart extra
+      patches.
+    * added the new sdl audio driver mainstream. the old driver seems to be
+      more problematic, so let's give this one a chance.
+    * removed the alternative sdl audio patch from the extra patches directory
+      (already added maintream.)
+    * activated the new sdl audio driver in the makefiles.
+    * updated the notes in the experimental snd_restart patch after the
+      latest changes.
+    * updated the beta release version/date.
+    * updated the release notes for the upcoming 1.4.2 version.
+
 2007-09-09 (CVS):
     * minor clean-up in alias console command.
     * minor whitespace clean-up.
