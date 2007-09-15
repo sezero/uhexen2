@@ -1,6 +1,6 @@
 /*
 	snd_alsa.c
-	$Id: snd_alsa.c,v 1.35 2007-09-14 14:16:23 sezero Exp $
+	$Id: snd_alsa.c,v 1.36 2007-09-15 09:18:46 sezero Exp $
 
 	ALSA 1.0 sound driver for Linux Hexen II
 
@@ -41,7 +41,6 @@ static void *alsa_handle = NULL;
 static char *pcmname = "default";
 static snd_pcm_t *pcm = NULL;
 static snd_pcm_uframes_t buffer_size;
-extern int soundtime;
 
 int S_ALSA_GetDMAPos (void);
 
