@@ -14,10 +14,10 @@ If a sound driver is allocating dma memory for itself, make sure that
 it does not allocate on the hunk. At present, only the windows wave-
 sound driver and the alternative sdl audio driver (which is available
 as an extra patch) does that. Therefore, if you try this patch:
+* Edit your snd_sdl2.c and make sure that the USE_HUNK_ALLOC definition
+  is 0
 * If you compile for windows, edit your snd_win.c and make sure that
   the USE_HUNK_ALLOC definition is 0
-* If you applied the snd_sdl-alternative patch, edit your snd_sdl.c
-  and make sure that the USE_HUNK_ALLOC definition is 0
 
 
 diff -urNp uhexen2-20070915/hexen2/snd_dma.c uhexen2-20070915x/hexen2/snd_dma.c
