@@ -1,10 +1,10 @@
 /*
 	snd_sdl.c
-	SDL sound driver for Linux Hexen II,  based on the SDLquake
-	code by Sam Lantinga (http://www.libsdl.org/projects/quake/)
-	Additional bits taken from QuakeForge and Quake3 projects.
+	SDL audio driver for Hexen II: Hammer of Thyrion, based on the
+	sdlquake-1.0.9 code (http://www.libsdl.org/projects/quake/) by
+	Sam Lantinga from 2000.
 
-	$Id: snd_sdl.c,v 1.27 2007-09-14 14:16:23 sezero Exp $
+	$Id: snd_sdl.c,v 1.28 2007-09-15 13:55:01 sezero Exp $
 */
 
 #define _SND_SYS_MACROS_ONLY
@@ -68,6 +68,7 @@ qboolean S_SDL_Init (void)
 		return false;
 	}
 
+	snd_skippaint = true;	/* our callback already 'paints' audio */
 	memset ((void *) &sn, 0, sizeof(sn));
 	shm = &sn;
 
@@ -108,6 +109,7 @@ void S_SDL_Shutdown (void)
 		SDL_QuitSubSystem(SDL_INIT_AUDIO);
 		shm->buffer = NULL;
 		shm = NULL;
+		snd_skippaint = false;
 	}
 }
 

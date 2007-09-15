@@ -2,7 +2,7 @@
 	sound.h
 	client sound i/o functions
 
-	$Id: sound.h,v 1.24 2007-09-15 09:18:46 sezero Exp $
+	$Id: sound.h,v 1.25 2007-09-15 13:55:01 sezero Exp $
 */
 
 #ifndef __HX2_SOUND_H
@@ -117,6 +117,7 @@ extern	int		desired_bits, desired_speed, desired_channels;
 extern	int		total_channels;
 extern	int		soundtime;
 extern	int		paintedtime;
+extern	qboolean	snd_skippaint;
 
 extern	vec3_t	listener_origin;
 extern	vec3_t	listener_forward;

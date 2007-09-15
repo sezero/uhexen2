@@ -2,7 +2,7 @@
 	snd_dma.c
 	main control for any streaming sound output device
 
-	$Id: snd_dma.c,v 1.62 2007-09-14 14:16:23 sezero Exp $
+	$Id: snd_dma.c,v 1.63 2007-09-15 13:55:04 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -27,16 +27,17 @@ static void S_StopAllSoundsC (void);
 // Internal sound data & structures
 // =======================================================================
 
-channel_t   snd_channels[MAX_CHANNELS];
+channel_t	snd_channels[MAX_CHANNELS];
 int		total_channels;
 
 int		snd_blocked = 0;
+qboolean	snd_skippaint = false;
 static qboolean	snd_initialized = false;
 
 static const struct
 {
 	char	*name;
-	qboolean	available;
+	int	available;
 } snd_drivers[S_SYS_MAX] =
 {
 	{  "NULL" ,	1		},
@@ -871,11 +872,8 @@ static void S_Update_ (void)
 	unsigned int	endtime;
 	int		samps;
 
-#if SDLSOUND_PAINTS_CHANNELS
-	if (snd_system == S_SYS_SDL)
+	if (snd_skippaint)
 		return;
-#endif
-
 	if (!sound_started || (snd_blocked > 0))
 		return;
 

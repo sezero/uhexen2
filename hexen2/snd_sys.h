@@ -2,7 +2,7 @@
 	snd_sys.h
 	Platform specific macros and prototypes for sound
 
-	$Id: snd_sys.h,v 1.14 2007-09-14 14:16:23 sezero Exp $
+	$Id: snd_sys.h,v 1.15 2007-09-15 13:55:01 sezero Exp $
 */
 
 #ifndef __HX2_SND_SYS__
@@ -67,10 +67,6 @@
 #define	S_SYS_SUN	4
 #define	S_SYS_WIN	5
 #define	S_SYS_MAX	6
-
-/* this prevents running S_Update_() with the sdl sound driver
-   if the snd_sdl implementation already calls S_PaintChannels */
-#define SDLSOUND_PAINTS_CHANNELS	1
 
 #if defined(PLATFORM_WINDOWS)
 /* for the windows crap used in snd_dma.c */
