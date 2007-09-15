@@ -13,11 +13,13 @@ New 2006-10-14: Made buffer allocation method a
 		on the hunk, or use system memory.
 		System memory is default. Changed the
 		samples multiplier from 10 to 8 .
+New 2007-09-15: Adjusted according to the latest
+		engine changes.
 
 
-diff -urNp uhexen2-20070914/hexen2/snd_sdl.c uhexen2-20070915/hexen2/snd_sdl.c
---- uhexen2-20070914/hexen2/snd_sdl.c	2007-09-14 17:16:23.000000000 +0300
-+++ uhexen2-20070915/hexen2/snd_sdl.c	2007-09-15 12:10:47.000000000 +0300
+diff -urNp uhexen2-20070915/hexen2/snd_sdl.c uhexen2-20070915x/hexen2/snd_sdl.c
+--- uhexen2-20070915/hexen2/snd_sdl.c	2007-09-15 14:10:03.000000000 +0300
++++ uhexen2-20070915x/hexen2/snd_sdl.c	2007-09-15 16:33:19.000000000 +0300
 @@ -16,20 +16,58 @@
  
  #include "sdl_inc.h"
@@ -97,16 +99,17 @@ diff -urNp uhexen2-20070914/hexen2/snd_sdl.c uhexen2-20070915/hexen2/snd_sdl.c
  	desired.callback = paint_audio;
  	desired.userdata = NULL;
  
-@@ -68,6 +113,8 @@ qboolean S_SDL_Init (void)
+@@ -68,7 +113,8 @@ qboolean S_SDL_Init (void)
  		return false;
  	}
  
+-	snd_skippaint = true;	/* our callback already 'paints' audio */
 +	SDL_LockAudio();
 +
  	memset ((void *) &sn, 0, sizeof(sn));
  	shm = &sn;
  
-@@ -77,18 +124,41 @@ qboolean S_SDL_Init (void)
+@@ -78,18 +124,41 @@ qboolean S_SDL_Init (void)
  		Con_Printf ("Warning: Rate set (%d) didn't match requested rate (%d)!\n", obtained.freq, desired_speed);
  	shm->speed = obtained.freq;
  	shm->channels = obtained.channels;
@@ -151,7 +154,7 @@ diff -urNp uhexen2-20070914/hexen2/snd_sdl.c uhexen2-20070915/hexen2/snd_sdl.c
  
  	return true;
  }
-@@ -103,8 +173,13 @@ void S_SDL_Shutdown (void)
+@@ -104,12 +173,16 @@ void S_SDL_Shutdown (void)
  	if (shm)
  	{
  		Con_Printf ("Shutting down SDL sound\n");
@@ -166,21 +169,13 @@ diff -urNp uhexen2-20070914/hexen2/snd_sdl.c uhexen2-20070915/hexen2/snd_sdl.c
  		SDL_QuitSubSystem(SDL_INIT_AUDIO);
  		shm->buffer = NULL;
  		shm = NULL;
-diff -urNp uhexen2-20070914/hexen2/snd_sys.h uhexen2-20070915/hexen2/snd_sys.h
---- uhexen2-20070914/hexen2/snd_sys.h	2007-09-14 17:16:23.000000000 +0300
-+++ uhexen2-20070915/hexen2/snd_sys.h	2007-09-15 12:10:18.000000000 +0300
-@@ -70,7 +70,7 @@
+-		snd_skippaint = false;
+ 	}
+ }
  
- /* this prevents running S_Update_() with the sdl sound driver
-    if the snd_sdl implementation already calls S_PaintChannels */
--#define SDLSOUND_PAINTS_CHANNELS	1
-+#define SDLSOUND_PAINTS_CHANNELS	0
- 
- #if defined(PLATFORM_WINDOWS)
- /* for the windows crap used in snd_dma.c */
-diff -urNp uhexen2-20070914/hexenworld/Client/snd_sdl.c uhexen2-20070915/hexenworld/Client/snd_sdl.c
---- uhexen2-20070914/hexenworld/Client/snd_sdl.c	2007-09-14 17:16:23.000000000 +0300
-+++ uhexen2-20070915/hexenworld/Client/snd_sdl.c	2007-09-15 12:11:07.000000000 +0300
+diff -urNp uhexen2-20070915/hexenworld/Client/snd_sdl.c uhexen2-20070915x/hexenworld/Client/snd_sdl.c
+--- uhexen2-20070915/hexenworld/Client/snd_sdl.c	2007-09-15 14:10:03.000000000 +0300
++++ uhexen2-20070915x/hexenworld/Client/snd_sdl.c	2007-09-15 16:33:31.000000000 +0300
 @@ -16,20 +16,58 @@
  
  #include "sdl_inc.h"
@@ -260,16 +255,17 @@ diff -urNp uhexen2-20070914/hexenworld/Client/snd_sdl.c uhexen2-20070915/hexenwo
  	desired.callback = paint_audio;
  	desired.userdata = NULL;
  
-@@ -68,6 +113,8 @@ qboolean S_SDL_Init (void)
+@@ -68,7 +113,8 @@ qboolean S_SDL_Init (void)
  		return false;
  	}
  
+-	snd_skippaint = true;	/* our callback already 'paints' audio */
 +	SDL_LockAudio();
 +
  	memset ((void *) &sn, 0, sizeof(sn));
  	shm = &sn;
  
-@@ -77,18 +124,41 @@ qboolean S_SDL_Init (void)
+@@ -78,18 +124,41 @@ qboolean S_SDL_Init (void)
  		Con_Printf ("Warning: Rate set (%d) didn't match requested rate (%d)!\n", obtained.freq, desired_speed);
  	shm->speed = obtained.freq;
  	shm->channels = obtained.channels;
@@ -314,7 +310,7 @@ diff -urNp uhexen2-20070914/hexenworld/Client/snd_sdl.c uhexen2-20070915/hexenwo
  
  	return true;
  }
-@@ -103,8 +173,13 @@ void S_SDL_Shutdown (void)
+@@ -104,12 +173,16 @@ void S_SDL_Shutdown (void)
  	if (shm)
  	{
  		Con_Printf ("Shutting down SDL sound\n");
@@ -329,16 +325,8 @@ diff -urNp uhexen2-20070914/hexenworld/Client/snd_sdl.c uhexen2-20070915/hexenwo
  		SDL_QuitSubSystem(SDL_INIT_AUDIO);
  		shm->buffer = NULL;
  		shm = NULL;
-diff -urNp uhexen2-20070914/hexenworld/Client/snd_sys.h uhexen2-20070915/hexenworld/Client/snd_sys.h
---- uhexen2-20070914/hexenworld/Client/snd_sys.h	2007-09-14 17:16:23.000000000 +0300
-+++ uhexen2-20070915/hexenworld/Client/snd_sys.h	2007-09-15 12:10:18.000000000 +0300
-@@ -70,7 +70,7 @@
+-		snd_skippaint = false;
+ 	}
+ }
  
- /* this prevents running S_Update_() with the sdl sound driver
-    if the snd_sdl implementation already calls S_PaintChannels */
--#define SDLSOUND_PAINTS_CHANNELS	1
-+#define SDLSOUND_PAINTS_CHANNELS	0
- 
- #if defined(PLATFORM_WINDOWS)
- /* for the windows crap used in snd_dma.c */
 

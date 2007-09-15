@@ -20,10 +20,10 @@ as an extra patch) does that. Therefore, if you try this patch:
   and make sure that the USE_HUNK_ALLOC definition is 0
 
 
-diff -urNp uhexen2-20070511/hexen2/snd_dma.c uhexen2-20070512/hexen2/snd_dma.c
---- uhexen2-20070511/hexen2/snd_dma.c	2007-05-09 21:10:13.000000000 +0300
-+++ uhexen2-20070512/hexen2/snd_dma.c	2007-05-12 16:31:32.000000000 +0300
-@@ -112,6 +112,67 @@ static void S_SoundInfo_f (void)
+diff -urNp uhexen2-20070915/hexen2/snd_dma.c uhexen2-20070915x/hexen2/snd_dma.c
+--- uhexen2-20070915/hexen2/snd_dma.c	2007-09-15 14:10:03.000000000 +0300
++++ uhexen2-20070915x/hexen2/snd_dma.c	2007-09-15 16:36:46.000000000 +0300
+@@ -113,6 +113,67 @@ static void S_SoundInfo_f (void)
  }
  
  
@@ -91,7 +91,7 @@ diff -urNp uhexen2-20070511/hexen2/snd_dma.c uhexen2-20070512/hexen2/snd_dma.c
  /*
  ================
  S_Startup
-@@ -202,6 +263,8 @@ void S_Init (void)
+@@ -203,6 +264,8 @@ void S_Init (void)
  	Cmd_AddCommand("mute", S_ToggleMute);
  	Cmd_AddCommand("volumeup", S_VolumeUp);
  	Cmd_AddCommand("volumedown", S_VolumeDown);
