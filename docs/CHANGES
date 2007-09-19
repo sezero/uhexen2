@@ -3,6 +3,11 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2007-09-19 (CVS):
+    * The new SDL audio driver seems to have fixed the rare bug where the game
+      would randomly quit with an error message 'Cache_MakeLRU: active link'.
+      Updated the documents accordingly.
+
 2007-09-15 (CVS):
     * clean-up in vid* files: mostly whitespace and readability stuff.
     * changed all technically incorrect unsigned int declarations (unsigned)

@@ -4,7 +4,14 @@
 	sdlquake-1.0.9 code (http://www.libsdl.org/projects/quake/) by
 	Sam Lantinga from 2000.
 
-	$Id: snd_sdl.c,v 1.28 2007-09-15 13:55:01 sezero Exp $
+	NOTES:  With this driver active, the game would randomly quit
+	with an error message 'Cache_MakeLRU: active link'.  This was
+	not a common error and it wassn't easy to reproduce.  See the
+	following help forum threads for more info:
+	http://sourceforge.net/forum/forum.php?thread_id=1308186&forum_id=425207
+	http://sourceforge.net/forum/forum.php?thread_id=1821052&forum_id=425207
+
+	$Id: snd_sdl.c,v 1.29 2007-09-19 06:19:33 sezero Exp $
 */
 
 #define _SND_SYS_MACROS_ONLY
