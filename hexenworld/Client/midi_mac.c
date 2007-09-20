@@ -1,6 +1,6 @@
 /*
 	midi_mac.c
-	$Id: midi_mac.c,v 1.13 2007-05-13 11:59:01 sezero Exp $
+	$Id: midi_mac.c,v 1.14 2007-09-20 06:40:04 sezero Exp $
 
 	MIDI module for Mac OS X using QuickTime:
 	Taken from the macglquake project with adjustments to make
@@ -168,37 +168,6 @@ void MIDI_Cleanup (void)
 	}
 }
 
-static int MIDI_ExtractFile (FILE *inFile, const char *Name, size_t size)
-{
-	FILE		*outFile;
-	size_t		remaining, count;
-	int		err = 0;
-	char		buf[16384];
-
-	outFile = fopen (Name, "wb");
-	if (!outFile)
-		return -1;
-	remaining = size;
-	while (remaining)
-	{
-		if (remaining < sizeof(buf))
-			count = remaining;
-		else
-			count = sizeof(buf);
-		fread (buf, 1, count, inFile);
-		err = ferror(inFile);
-		if (err)
-			break;
-		fwrite (buf, 1, count, outFile);
-		err = ferror(outFile);
-		if (err)
-			break;
-		remaining -= count;
-	}
-
-	fclose (outFile);
-	return err;
-}
 
 #define	TEMP_MUSICNAME	"tmpmusic"
 
@@ -237,7 +206,7 @@ void MIDI_Play (const char *Name)
 
 			Con_Printf("Extracting %s from pakfile\n", tempName);
 			snprintf (midiName, sizeof(midiName), "%s/%s.%s", host_parms->userdir, TEMP_MUSICNAME, "mid");
-			ret = MIDI_ExtractFile (midiFile, midiName, fs_filesize);
+			ret = FS_CopyFromFile (midiFile, midiName, fs_filesize);
 			fclose (midiFile);
 			if (ret != 0)
 			{

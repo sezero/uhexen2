@@ -2,7 +2,7 @@
 	quakefs.h
 	Hexen II filesystem
 
-	$Id: quakefs.h,v 1.9 2007-04-28 15:31:07 sezero Exp $
+	$Id: quakefs.h,v 1.10 2007-09-20 06:40:05 sezero Exp $
 */
 
 #ifndef __QUAKEFS_H
@@ -62,6 +62,10 @@ extern	int	file_from_pak;	// global indicating that file came from a pak
 int FS_CopyFile (const char *frompath, const char *topath);
 // Copies the FROMPATH file as TOPATH file, creating any dirs needed.
 // Used for saving the game. Returns 0 on success, non-zero on error.
+
+int FS_CopyFromFile (FILE *fromfile, const char *topath, size_t size);
+// Similar to FS_CopyFile, but takes an open file as its source, and
+// the size of the source file as its 3rd argument.
 
 int FS_WriteFile (const char *filename, const void *data, size_t len);
 // Prefixes the filename by the current game directory and does an fwrite()

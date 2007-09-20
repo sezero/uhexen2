@@ -2,7 +2,7 @@
 	quakefs.c
 	Hexen II filesystem
 
-	$Id: quakefs.c,v 1.30 2007-09-08 11:15:58 sezero Exp $
+	$Id: quakefs.c,v 1.31 2007-09-20 06:40:02 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -775,13 +775,13 @@ int FS_CopyFile (const char *frompath, const char *topath)
 //	off_t		remaining, count;
 	size_t		remaining, count;
 
-	if ( !frompath || !topath )
+	if (!frompath || !topath)
 	{
 		Con_Printf ("%s: null input\n", __thisfunc__);
 		return 1;
 	}
 
-	if ( stat (frompath, &st) != 0 )
+	if (stat(frompath, &st) != 0)
 	{
 		Con_Printf ("%s: unable to stat %s\n", frompath, __thisfunc__);
 		return 1;
@@ -794,18 +794,17 @@ int FS_CopyFile (const char *frompath, const char *topath)
 		Con_Printf ("%s: unable to open %s\n", frompath, __thisfunc__);
 		return 1;
 	}
-	remaining = FS_filelength(in);
 
-	// create directories up to the cache file
+	// create directories up to the dest file
 	Q_strlcpy (buf, topath, sizeof(buf));
-	if (FS_CreatePath (buf))
+	if (FS_CreatePath(buf) != 0)
 	{
 		Con_Printf ("%s: unable to create directory\n", __thisfunc__);
 		fclose (in);
 		return 1;
 	}
 
-	out = fopen(topath, "wb");
+	out = fopen (topath, "wb");
 	if (!out)
 	{
 		Con_Printf ("%s: unable to create %s\n", topath, __thisfunc__);
@@ -814,6 +813,7 @@ int FS_CopyFile (const char *frompath, const char *topath)
 	}
 
 	memset (buf, 0, sizeof(buf));
+	remaining = FS_filelength (in);
 	while (remaining)
 	{
 		if (remaining < sizeof(buf))
@@ -822,12 +822,12 @@ int FS_CopyFile (const char *frompath, const char *topath)
 			count = sizeof(buf);
 
 		fread (buf, 1, count, in);
-		err = ferror(in);
+		err = ferror (in);
 		if (err)
 			break;
 
 		fwrite (buf, 1, count, out);
-		err = ferror(out);
+		err = ferror (out);
 		if (err)
 			break;
 
@@ -845,6 +845,62 @@ int FS_CopyFile (const char *frompath, const char *topath)
 		tm.modtime = st.st_mtime;
 		utime (topath, &tm);
 	}
+
+	return err;
+}
+
+int FS_CopyFromFile (FILE *fromfile, const char *topath, size_t size)
+{
+	char	buf[COPY_READ_BUFSIZE];
+	FILE	*out;
+//	off_t		remaining, count;
+	size_t		remaining, count;
+	int		err = 0;
+
+	if (!fromfile || !topath)
+	{
+		Con_Printf ("%s: null input\n", __thisfunc__);
+		return 1;
+	}
+
+	// create directories up to the dest file
+	Q_strlcpy (buf, topath, sizeof(buf));
+	if (FS_CreatePath(buf) != 0)
+	{
+		Con_Printf ("%s: unable to create directory\n", __thisfunc__);
+		return 1;
+	}
+
+	out = fopen (topath, "wb");
+	if (!out)
+	{
+		Con_Printf ("%s: unable to create %s\n", topath, __thisfunc__);
+		return 1;
+	}
+
+	memset (buf, 0, sizeof(buf));
+	remaining = size;
+	while (remaining)
+	{
+		if (remaining < sizeof(buf))
+			count = remaining;
+		else
+			count = sizeof(buf);
+
+		fread (buf, 1, count, fromfile);
+		err = ferror (fromfile);
+		if (err)
+			break;
+
+		fwrite (buf, 1, count, out);
+		err = ferror (out);
+		if (err)
+			break;
+
+		remaining -= count;
+	}
+
+	fclose (out);
 
 	return err;
 }

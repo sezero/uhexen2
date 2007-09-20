@@ -2,7 +2,7 @@
 	midi_sdl.c
 	midiplay via SDL_mixer
 
-	$Id: midi_sdl.c,v 1.40 2007-07-06 12:45:42 sezero Exp $
+	$Id: midi_sdl.c,v 1.41 2007-09-20 06:40:04 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -186,37 +186,6 @@ bad_version:
 	return true;
 }
 
-static int MIDI_ExtractFile (FILE *inFile, const char *Name, size_t size)
-{
-	FILE		*outFile;
-	size_t		remaining, count;
-	int		err = 0;
-	char		buf[16384];
-
-	outFile = fopen (Name, "wb");
-	if (!outFile)
-		return -1;
-	remaining = size;
-	while (remaining)
-	{
-		if (remaining < sizeof(buf))
-			count = remaining;
-		else
-			count = sizeof(buf);
-		fread (buf, 1, count, inFile);
-		err = ferror(inFile);
-		if (err)
-			break;
-		fwrite (buf, 1, count, outFile);
-		err = ferror(outFile);
-		if (err)
-			break;
-		remaining -= count;
-	}
-
-	fclose (outFile);
-	return err;
-}
 
 #define	TEMP_MUSICNAME	"tmpmusic"
 
@@ -251,7 +220,7 @@ void MIDI_Play (const char *Name)
 
 			Con_Printf("Extracting %s from pakfile\n", tempName);
 			snprintf (midiName, sizeof(midiName), "%s/%s.%s", host_parms->userdir, TEMP_MUSICNAME, "mid");
-			ret = MIDI_ExtractFile (midiFile, midiName, fs_filesize);
+			ret = FS_CopyFromFile (midiFile, midiName, fs_filesize);
 			fclose (midiFile);
 			if (ret != 0)
 			{
