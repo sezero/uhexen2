@@ -4,7 +4,7 @@
 	implementations found in the quakeforge and quake3-icculus.org
 	projects.
 
-	$Id: snd_sdl2.c,v 1.1 2007-09-15 14:05:07 sezero Exp $
+	$Id: snd_sdl2.c,v 1.2 2007-09-20 16:15:21 sezero Exp $
 */
 
 #define _SND_SYS_MACROS_ONLY
@@ -139,9 +139,9 @@ qboolean S_SDL_Init (void)
 
 	buffersize = shm->samples * (shm->samplebits / 8);
 #if USE_HUNK_ALLOC
-	shm->buffer = Hunk_AllocName(buffersize, "sdl_audio");
+	shm->buffer = (unsigned char *) Hunk_AllocName(buffersize, "sdl_audio");
 #else
-	shm->buffer = calloc (1, buffersize);
+	shm->buffer = (unsigned char *) calloc (1, buffersize);
 	if (!shm->buffer)
 	{
 		SDL_CloseAudio();
