@@ -1,6 +1,6 @@
 /*
 	mstrconv.c
-	$Id: mstrconv.c,v 1.20 2007-07-08 11:56:51 sezero Exp $
+	$Id: mstrconv.c,v 1.21 2007-09-20 07:48:15 sezero Exp $
 
 	Converting a MID file to a MIDI stream for
 	playback using the Win32 midiStream API.
@@ -20,11 +20,10 @@
 // Global stuff which is defined in the main module
 //
 BOOL		bInsertTempo = FALSE;
-
-// A few global variables used by this module only
-//
-//static HANDLE	hInFile = INVALID_HANDLE_VALUE;
 INFILESTATE	ifs;
+
+// Variables used by this module only
+//
 static DWORD	tkCurrentTime;
 static byte	*MidiData;
 static LONG	MidiOffset, MidiSize;
@@ -56,23 +55,24 @@ static char gteMetaTrunc[]	= "Meta event truncated";
 
 // Prototypes
 //
-static int  AddEventToStreamBuffer( PTEMPEVENT pteTemp, LPCONVERTINFO );
-static BOOL GetInFileData( LPVOID lpDest, DWORD cbToGet );
-static BOOL GetTrackByte( PINTRACKSTATE ptsTrack, LPBYTE lpbyByte );
-static BOOL GetTrackEvent( PINTRACKSTATE ptsTrack, PTEMPEVENT pteTemp );
-static BOOL GetTrackVDWord( PINTRACKSTATE ptsTrack, LPDWORD lpdw );
-static BOOL RefillTrackBuffer( PINTRACKSTATE ptsTrack );
-static BOOL RewindConverter( void );
+static int  AddEventToStreamBuffer (PTEMPEVENT pteTemp, LPCONVERTINFO);
+static BOOL GetInFileData (LPVOID lpDest, DWORD cbToGet);
+static BOOL GetTrackByte (PINTRACKSTATE ptsTrack, LPBYTE lpbyByte);
+static BOOL GetTrackEvent (PINTRACKSTATE ptsTrack, PTEMPEVENT pteTemp);
+static BOOL GetTrackVDWord (PINTRACKSTATE ptsTrack, LPDWORD lpdw);
+static BOOL RefillTrackBuffer (PINTRACKSTATE ptsTrack);
+static BOOL RewindConverter (void);
 
 #ifdef DEBUG_BUILD
 static void ShowTrackError (PINTRACKSTATE ptsTrack, const char *szErr)
 {
 	Con_Printf ("MIDI: %s\n", szErr);
-	Con_Printf ("Track buffer offset: %lu, total: %lu, left: %lu\n", (unsigned long)(ptsTrack->pTrackCurrent - ptsTrack->pTrackStart), ptsTrack->dwTrackLength, ptsTrack->dwLeftInBuffer);
+	Con_Printf ("Track buffer offset: %lu, total: %lu, left: %lu\n",
+			(unsigned long)(ptsTrack->pTrackCurrent - ptsTrack->pTrackStart), ptsTrack->dwTrackLength, ptsTrack->dwLeftInBuffer);
 }
 #endif
 
-static int SetFileOffset (LONG lDistanceToMove, PLONG lpDistanceToMoveHigh, DWORD dwMoveMethod)
+static LONG SetFileOffset (LONG lDistanceToMove, DWORD dwMoveMethod)
 {
 	LONG	SaveMidi;
 
@@ -96,11 +96,11 @@ static int SetFileOffset (LONG lDistanceToMove, PLONG lpDistanceToMoveHigh, DWOR
 }
 
 
-static BOOL ReadFromFile (LPVOID lpBuffer, DWORD nNumberOfBytesToRead, LPDWORD lpNumberOfBytesRead, LPOVERLAPPED lpOverlapped)
+static BOOL ReadFromFile (LPVOID lpBuffer, DWORD nNumberOfBytesToRead, LPDWORD lpNumberOfBytesRead)
 {
 	if (MidiOffset+nNumberOfBytesToRead > MidiSize)
 	{
-//		Con_Printf("Bad Read (%d+%d>=%d)\n",MidiOffset,nNumberOfBytesToRead,MidiSize);
+	//	Con_Printf("Bad Read (%d+%d>=%d)\n",MidiOffset,nNumberOfBytesToRead,MidiSize);
 		return FALSE;
 	}
 
@@ -155,10 +155,11 @@ BOOL ConverterInit (const char *szInFile)
 // - size of file header chunk
 // - file header itself
 //
-	if ( GetInFileData(&dwTag, sizeof(DWORD)) || ( dwTag != MThd )
-	    || GetInFileData(&cbHeader, sizeof(DWORD))
-	    || (( cbHeader = DWORDSWAP( cbHeader )) < sizeof(MIDIFILEHDR))
-	    || GetInFileData(&Header, cbHeader) )
+	if ( GetInFileData(&dwTag, sizeof(DWORD)) ||
+			(dwTag != MThd) ||
+			GetInFileData(&cbHeader, sizeof(DWORD)) ||
+			((cbHeader = DWORDSWAP(cbHeader)) < sizeof(MIDIFILEHDR)) ||
+			GetInFileData(&Header, cbHeader) )
 	{
 		Con_Printf("MIDI: %s\n", szInitErrInFile);
 		goto Init_Cleanup;
@@ -181,8 +182,8 @@ BOOL ConverterInit (const char *szInFile)
 	{
 		ptsTrack->pTrackStart = (LPBYTE) Z_Malloc(TRACK_BUFFER_SIZE, Z_MAINZONE);
 
-		if ( GetInFileData(&dwTag, sizeof(dwTag)) || ( dwTag != MTrk )
-		    || GetInFileData(&cbHeader, sizeof(cbHeader)) )
+		if ( GetInFileData(&dwTag, sizeof(dwTag)) || (dwTag != MTrk)
+				|| GetInFileData(&cbHeader, sizeof(cbHeader)) )
 		{
 			Con_Printf("MIDI: %s\n", szInitErrInFile);
 			goto Init_Cleanup;
@@ -191,21 +192,20 @@ BOOL ConverterInit (const char *szInFile)
 		cbHeader = DWORDSWAP(cbHeader);
 		ptsTrack->dwTrackLength = cbHeader; // Total track length
 
-///////////////////////////////////////////////////////////////////////////////
 // Here we need to determine if all track data will fit into a single one of
 // our track buffers.  If not, we need to read in a buffer full and come back
 // for more later, saving the file offset to continue from and the amount left
 // to read in the track structure.
 
-// Save the file offset of the beginning of this track
-		ptsTrack->foTrackStart = SetFileOffset(0, NULL, FILE_CURRENT);
+		// Save the file offset of the beginning of this track
+		ptsTrack->foTrackStart = SetFileOffset(0, FILE_CURRENT);
 
 		if (ptsTrack->dwTrackLength > TRACK_BUFFER_SIZE)
 			dwToRead = TRACK_BUFFER_SIZE;
 		else
 			dwToRead = ptsTrack->dwTrackLength;
 
-		if (!ReadFromFile(ptsTrack->pTrackStart, dwToRead, &cbRead, NULL) || (cbRead != dwToRead))
+		if (!ReadFromFile(ptsTrack->pTrackStart, dwToRead, &cbRead) || (cbRead != dwToRead))
 		{
 			Con_Printf("MIDI: %s\n", szInitErrInFile);
 			goto Init_Cleanup;
@@ -215,7 +215,7 @@ BOOL ConverterInit (const char *szInFile)
 		ptsTrack->dwLeftOnDisk = ptsTrack->dwTrackLength - cbRead;
 		ptsTrack->dwLeftInBuffer = cbRead;
 		// Save the current file offset so we can seek to it later
-		ptsTrack->foNextReadStart = SetFileOffset( 0, NULL, FILE_CURRENT );
+		ptsTrack->foNextReadStart = SetFileOffset(0, FILE_CURRENT);
 
 		// Setup pointer to the current position in the track
 		ptsTrack->pTrackCurrent = ptsTrack->pTrackStart;
@@ -225,7 +225,7 @@ BOOL ConverterInit (const char *szInFile)
 
 		// Handle bozo MIDI files which contain empty track chunks
 		//
-		if ( !ptsTrack->dwLeftInBuffer && !ptsTrack->dwLeftOnDisk )
+		if (!ptsTrack->dwLeftInBuffer && !ptsTrack->dwLeftOnDisk)
 		{
 			ptsTrack->fdwTrack |= ITS_F_ENDOFTRK;
 			continue;
@@ -242,7 +242,7 @@ BOOL ConverterInit (const char *szInFile)
 
 		// Step over any unread data, advancing to the beginning of the next
 		// track's data
-		SetFileOffset(ptsTrack->foTrackStart + ptsTrack->dwTrackLength, NULL, FILE_BEGIN);
+		SetFileOffset(ptsTrack->foTrackStart + ptsTrack->dwTrackLength, FILE_BEGIN);
 
 	}	// End of track initialization code
 
@@ -269,7 +269,7 @@ static BOOL GetInFileData (LPVOID lpDest, DWORD cbToGet)
 {
 	DWORD	cbRead;
 
-	if (!ReadFromFile(lpDest, cbToGet, &cbRead, NULL) || (cbRead != cbToGet))
+	if (!ReadFromFile(lpDest, cbToGet, &cbRead) || (cbRead != cbToGet))
 	{
 		return (TRUE);
 	}
@@ -319,20 +319,19 @@ static BOOL RewindConverter (void)
 
 	for (idx = 0, ptsTrack = ifs.pitsTracks; idx < ifs.dwTrackCount; ++idx, ++ptsTrack)
 	{
-///////////////////////////////////////////////////////////////////////////////
 // Here we need to determine if all track data will fit into a single one of
 // our track buffers.  If not, we need to read in a buffer full and come back
 // for more later, saving the file offset to continue from and the amount left
 // to read in the track structure.
 
-		SetFileOffset(ptsTrack->foTrackStart, NULL, FILE_BEGIN);
+		SetFileOffset(ptsTrack->foTrackStart, FILE_BEGIN);
 
 		if (ptsTrack->dwTrackLength > TRACK_BUFFER_SIZE)
 			dwToRead = TRACK_BUFFER_SIZE;
 		else
 			dwToRead = ptsTrack->dwTrackLength;
 
-		if (!ReadFromFile(ptsTrack->pTrackStart, dwToRead, &cbRead, NULL) || (cbRead != dwToRead))
+		if (!ReadFromFile(ptsTrack->pTrackStart, dwToRead, &cbRead) || (cbRead != dwToRead))
 		{
 			Con_Printf("MIDI: %s\n", szInitErrInFile);
 			goto Rewind_Cleanup;
@@ -343,7 +342,7 @@ static BOOL RewindConverter (void)
 		ptsTrack->dwLeftInBuffer = cbRead;
 
 		// Save the current file offset so we can seek to it later
-		ptsTrack->foNextReadStart = SetFileOffset( 0, NULL, FILE_CURRENT );
+		ptsTrack->foNextReadStart = SetFileOffset(0, FILE_CURRENT);
 
 		// Setup pointer to the current position in the track
 		ptsTrack->pTrackCurrent = ptsTrack->pTrackStart;
@@ -370,7 +369,7 @@ static BOOL RewindConverter (void)
 
 		// Step over any unread data, advancing to the beginning of the next
 		// track's data
-		SetFileOffset(ptsTrack->foTrackStart + ptsTrack->dwTrackLength, NULL, FILE_BEGIN);
+		SetFileOffset(ptsTrack->foTrackStart + ptsTrack->dwTrackLength, FILE_BEGIN);
 
 	} // End of track initialization code
 
@@ -450,8 +449,7 @@ int ConvertToBuffer (DWORD dwFlags, LPCONVERTINFO lpciInfo)
 
 	// Don't add end of track event 'til we're done
 	//
-		if ( teTemp.byShortData[0] == MIDI_META
-		    && teTemp.byShortData[1] == MIDI_META_EOT )
+		if (teTemp.byShortData[0] == MIDI_META && teTemp.byShortData[1] == MIDI_META_EOT)
 		{
 			if (dwMallocBlocks)
 			{
@@ -488,7 +486,8 @@ int ConvertToBuffer (DWORD dwFlags, LPCONVERTINFO lpciInfo)
 	for ( ; ; )
 	{
 		ptsFound = NULL;
-		tkNext = 0xFFFFFFFFL;
+		tkNext = ~(DWORD)0;	/* 0xFFFFFFFFL */
+
 		// Find nearest event due
 		//
 		for (idx = 0, ptsTrack = ifs.pitsTracks; idx < ifs.dwTrackCount; ++idx, ++ptsTrack)
@@ -522,7 +521,7 @@ int ConvertToBuffer (DWORD dwFlags, LPCONVERTINFO lpciInfo)
 
 		// Don't add end of track event 'til we're done
 		//
-		if ( teTemp.byShortData[0] == MIDI_META && teTemp.byShortData[1] == MIDI_META_EOT )
+		if (teTemp.byShortData[0] == MIDI_META && teTemp.byShortData[1] == MIDI_META_EOT)
 		{
 			if (dwMallocBlocks)
 			{
@@ -715,8 +714,10 @@ static BOOL GetTrackEvent (INTRACKSTATE *ptsTrack, PTEMPEVENT pteTemp)
 			return (TRUE);
 
 		if (dwEventLength == 2)
+		{
 			if (GetTrackByte( ptsTrack, &pteTemp->byShortData[2]))
 				return (TRUE);
+		}
 	}
 	else if ((byByte == MIDI_SYSEX) || (byByte == MIDI_SYSEXEND))
 	{
@@ -749,7 +750,7 @@ static BOOL GetTrackEvent (INTRACKSTATE *ptsTrack, PTEMPEVENT pteTemp)
 		// Copy from the input buffer to the parameter data buffer
 		for (idx = 0; idx < pteTemp->dwEventLength; idx++)
 		{
-			if (GetTrackByte( ptsTrack, pteTemp->pLongData + idx))
+			if (GetTrackByte(ptsTrack, pteTemp->pLongData + idx))
 			{
 				TRACKERR(ptsTrack, gteSysExTrunc);
 				return (TRUE);
@@ -782,7 +783,7 @@ static BOOL GetTrackEvent (INTRACKSTATE *ptsTrack, PTEMPEVENT pteTemp)
 
 		if (GetTrackVDWord(ptsTrack, &pteTemp->dwEventLength))
 		{
-			TRACKERR( ptsTrack, gteMetaLenTrunc );
+			TRACKERR(ptsTrack, gteMetaLenTrunc);
 			return (TRUE);
 		}
 
@@ -791,7 +792,7 @@ static BOOL GetTrackEvent (INTRACKSTATE *ptsTrack, PTEMPEVENT pteTemp)
 		//
 		if (pteTemp->dwEventLength)
 		{
-			if ( (ptsTrack->dwLeftInBuffer + ptsTrack->dwLeftOnDisk) < pteTemp->dwEventLength )
+			if ((ptsTrack->dwLeftInBuffer + ptsTrack->dwLeftOnDisk) < pteTemp->dwEventLength)
 			{
 				TRACKERR(ptsTrack, gteMetaTrunc);
 				ptsTrack->fdwTrack |= ITS_F_ENDOFTRK;
@@ -887,7 +888,8 @@ static BOOL RefillTrackBuffer (PINTRACKSTATE ptsTrack)
 		// Seek to the proper place in the file, indicated by
 		// ptsTrack->foNextReadStart and read in the remaining data,
 		// up to a maximum of the buffer size.
-		if ( (dwResult = SetFileOffset ((LONG)(ptsTrack->foNextReadStart), 0L, FILE_BEGIN)) == 0xFFFFFFFF )
+		dwResult = (DWORD) SetFileOffset((LONG)(ptsTrack->foNextReadStart), FILE_BEGIN);
+		if (dwResult == (DWORD)(-1))
 		{
 			Con_Printf("MIDI: Unable to seek to track buffer location in RefillTrackBuffer()!!\n");
 			return (TRUE);
@@ -898,7 +900,7 @@ static BOOL RefillTrackBuffer (PINTRACKSTATE ptsTrack)
 		else
 			ptsTrack->dwLeftInBuffer = ptsTrack->dwLeftOnDisk;
 
-		bResult = ReadFromFile(ptsTrack->pTrackStart, ptsTrack->dwLeftInBuffer, &dwBytesRead, NULL);
+		bResult = ReadFromFile(ptsTrack->pTrackStart, ptsTrack->dwLeftInBuffer, &dwBytesRead);
 
 		ptsTrack->dwLeftOnDisk -= dwBytesRead;
 		ptsTrack->foNextReadStart = dwResult + dwBytesRead;
