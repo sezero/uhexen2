@@ -3,6 +3,21 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2007-09-20 (CVS, 1.4.2-rc3):
+    * added FS_CopyFromFile to QFS which uses an open file as its source.
+      removed MIDI_ExtractFile helper from midi driver files and replaced
+      its calls with FS_CopyFromFile.
+    * re-diff'ed the external music file support extra patch after the
+      FS_CopyFromFile change.
+    * windows midi clean-up.
+    * sys_win.c: don't use LONG_MAX as the TIME_WRAP_VALUE.
+    * changed Xcode project files for Mac OS X to use the new snd audio driver.
+    * QFS: FS_CreatePath fixes.
+    * sound: made 22050 Hz the default sample rate. removed 22051 from the
+      tryrates list.
+    * updated the release notes for 1.4.2 (2007-09-20)
+    * updated the beta release version/date (1.4.2-rc3, 2007-09-20.)
+
 2007-09-19 (CVS):
     * The new SDL audio driver seems to have fixed the rare bug where the game
       would randomly quit with an error message 'Cache_MakeLRU: active link'.
