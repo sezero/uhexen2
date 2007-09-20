@@ -2,7 +2,7 @@
 	model.h
 	header for model loading and caching
 
-	$Id: model.h,v 1.12 2007-09-14 14:10:02 sezero Exp $
+	$Id: model.h,v 1.13 2007-09-20 16:17:45 sezero Exp $
 */
 
 #ifndef __HX2_MODEL_H
@@ -325,7 +325,7 @@ typedef enum {mod_brush, mod_sprite, mod_alias} modtype_t;
 typedef struct model_s
 {
 	char		name[MAX_QPATH];
-	qboolean	needload;		// bmodels and sprites don't cache normally
+	int		needload;		// bmodels and sprites don't cache normally
 
 	modtype_t	type;
 	int		numframes;
@@ -392,6 +392,11 @@ typedef struct model_s
 	cache_user_t	cache;		// only access through Mod_Extradata
 
 } model_t;
+
+// values for model_t->needload
+#define	NL_PRESENT		0
+#define	NL_NEEDS_LOADED		1
+#define	NL_UNREFERENCED		2
 
 //============================================================================
 

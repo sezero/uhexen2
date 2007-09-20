@@ -5,7 +5,7 @@
 	This version of model.c and model.h are based on a quake dedicated
 	server application, lhnqserver, by LordHavoc.
 
-	$Id: model.h,v 1.5 2007-05-15 11:38:37 sezero Exp $
+	$Id: model.h,v 1.6 2007-09-20 16:17:45 sezero Exp $
 */
 
 #ifndef __HX2_MODEL_H
@@ -154,7 +154,7 @@ typedef enum {mod_brush, mod_sprite, mod_alias} modtype_t;
 typedef struct model_s
 {
 	char		name[MAX_QPATH];
-	qboolean	needload;		// bmodels and sprites don't cache normally
+	int		needload;		// bmodels and sprites don't cache normally
 
 	modtype_t	type;
 	int		flags;
@@ -201,6 +201,11 @@ typedef struct model_s
 	byte		*lightdata;
 	char		*entities;
 } model_t;
+
+// values for model_t->needload
+#define	NL_PRESENT		0
+#define	NL_NEEDS_LOADED		1
+#define	NL_UNREFERENCED		2
 
 //============================================================================
 

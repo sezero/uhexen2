@@ -5,7 +5,7 @@
 	models are the only shared resource between a client and server
 	running on the same machine.
 
-	$Id: model.c,v 1.32 2007-09-14 14:10:07 sezero Exp $
+	$Id: model.c,v 1.33 2007-09-20 16:17:46 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -25,11 +25,6 @@ static void Mod_Print (void);
 static model_t *Mod_LoadModel (model_t *mod, qboolean crash);
 
 static byte	mod_novis[MAX_MAP_LEAFS/8];
-
-// values for model_t's needload
-#define	NL_PRESENT	0
-#define	NL_NEEDS_LOADED	1
-#define	NL_UNREFERENCED	2
 
 #define	MAX_MOD_KNOWN	2048
 static model_t	mod_known[MAX_MOD_KNOWN];

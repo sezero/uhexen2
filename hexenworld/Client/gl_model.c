@@ -5,7 +5,7 @@
 	models are the only shared resource between a client and server
 	running on the same machine.
 
-	$Id: gl_model.c,v 1.45 2007-09-14 14:10:07 sezero Exp $
+	$Id: gl_model.c,v 1.46 2007-09-20 16:17:46 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -24,11 +24,6 @@ static void Mod_Print (void);
 static model_t *Mod_LoadModel (model_t *mod, qboolean crash);
 
 static byte	mod_novis[MAX_MAP_LEAFS/8];
-
-// values for model_t's needload
-#define	NL_PRESENT	0
-#define	NL_NEEDS_LOADED	1
-#define	NL_UNREFERENCED	2
 
 // 650 should be enough with model handle recycling, but.. (Pa3PyX)
 #define	MAX_MOD_KNOWN	2048

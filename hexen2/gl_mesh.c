@@ -2,7 +2,7 @@
 	gl_mesh.c
 	triangle model functions
 
-	$Id: gl_mesh.c,v 1.17 2007-07-08 11:55:19 sezero Exp $
+	$Id: gl_mesh.c,v 1.18 2007-09-20 16:17:45 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -15,7 +15,7 @@ ALIAS MODEL DISPLAY LIST GENERATION
 =================================================================
 */
 
-static qboolean		used[8192];
+static int		used[8192];
 
 // the command list holds counts and s/t values that are valid for
 // every frame
@@ -26,8 +26,6 @@ static int		numcommands;
 // so they are in the order expected by the command list
 static int		vertexorder[8192];
 static int		numorder;
-
-//static int		allverts, alltris;
 
 static int		stripverts[128];
 static int		striptris[128];
@@ -293,6 +291,8 @@ static void BuildTris (void)
 
 		//	*(float *)&commands[numcommands++] = s;
 		//	*(float *)&commands[numcommands++] = t;
+			// NOTE: 4 == sizeof(int)
+			//	   == sizeof(float)
 			memcpy (&tmp, &s, 4);
 			commands[numcommands++] = tmp;
 			memcpy (&tmp, &t, 4);
@@ -302,9 +302,6 @@ static void BuildTris (void)
 
 	commands[numcommands++] = 0;		// end of list marker
 	DEBUG_Printf ("%3i tri %3i vert %3i cmd\n", pheader->numtris, numorder, numcommands);
-
-//	allverts += numorder;
-//	alltris += pheader->numtris;
 }
 
 
@@ -321,12 +318,10 @@ void GL_MakeAliasModelDisplayLists (model_t *m, aliashdr_t *hdr)
 #if DO_MESH_CACHE
 	char	cache[MAX_OSPATH];
 	FILE	*f;
-#endif
 
 	//
 	// look for a cached version
 	//
-#if DO_MESH_CACHE
 	snprintf (cache, sizeof(cache), "%s/glhexen/", fs_userdir);
 	COM_StripExtension (m->name+strlen("models/"), cache+strlen(cache));
 	Q_strlcat (cache, ".ms2", sizeof(cache));

@@ -5,7 +5,7 @@
 	models are the only shared resource between a client and server
 	running on the same machine.
 
-	$Id: model.c,v 1.19 2007-09-14 14:11:24 sezero Exp $
+	$Id: model.c,v 1.20 2007-09-20 16:17:46 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -133,7 +133,7 @@ void Mod_ClearAll (void)
 	model_t	*mod;
 
 	for (i = 0, mod = mod_known; i < mod_numknown; i++, mod++)
-			mod->needload = true;
+			mod->needload = NL_NEEDS_LOADED;
 }
 
 /*
@@ -164,7 +164,7 @@ model_t *Mod_FindName (const char *name)
 		if (mod_numknown == MAX_MOD_KNOWN)
 			SV_Error ("mod_numknown == MAX_MOD_KNOWN");
 		Q_strlcpy (mod->name, name, MAX_QPATH);
-		mod->needload = true;
+		mod->needload = NL_NEEDS_LOADED;
 		mod_numknown++;
 	}
 
@@ -183,7 +183,7 @@ static model_t *Mod_LoadModel (model_t *mod, qboolean crash)
 {
 	unsigned int	*buf;
 
-	if (!mod->needload)
+	if (mod->needload == NL_PRESENT)
 		return mod;
 
 //
@@ -209,7 +209,7 @@ static model_t *Mod_LoadModel (model_t *mod, qboolean crash)
 //
 
 // call the apropriate loader
-	mod->needload = false;
+	mod->needload = NL_PRESENT;
 
 	Mod_LoadBrushModel (mod, buf);
 
