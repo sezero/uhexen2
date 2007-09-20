@@ -2,7 +2,7 @@
 	quakefs.c
 	Hexen II filesystem
 
-	$Id: quakefs.c,v 1.31 2007-09-20 06:40:02 sezero Exp $
+	$Id: quakefs.c,v 1.32 2007-09-20 09:41:45 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -976,12 +976,24 @@ int FS_CreatePath (char *path)
 	ofs = host_parms->userdir;
 	if (strstr(path, ofs) != path)
 	{
+error_out:
 		Sys_Error ("Attempted to create a directory out of user's path");
 		return 1;
 	}
 
 	offset = strlen(ofs);
-	for (ofs = path+offset ; *ofs ; ofs++)
+	ofs = path + offset;
+	// check for the path separator after the userdir.
+	if (!*ofs)
+	{
+		Con_Printf ("%s: bad path\n", __thisfunc__);
+		return 1;
+	}
+	if (*ofs != '/')
+		goto error_out;
+	ofs++;
+
+	for ( ; *ofs ; ofs++)
 	{
 		if (*ofs == '/')
 		{	// create the directory
