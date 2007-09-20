@@ -2,7 +2,7 @@
 	sys_win.c
 	Win32 system interface code
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/server/sys_win.c,v 1.24 2007-08-23 19:45:30 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/server/sys_win.c,v 1.25 2007-09-20 07:59:57 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -29,9 +29,9 @@ cvar_t		sys_nostdout = {"sys_nostdout", "0", CVAR_NONE};
 qboolean		isDedicated = true;	/* compatibility */
 
 /*
-#define	TIME_WRAP_VALUE	(~(DWORD)0)
-*/
 #define	TIME_WRAP_VALUE	LONG_MAX
+*/
+#define	TIME_WRAP_VALUE	(~(DWORD)0)
 static DWORD		starttime;
 
 

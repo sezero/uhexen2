@@ -2,7 +2,7 @@
 	sys_win.c
 	Win32 system interface code
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/win_stuff/sys_win.c,v 1.45 2007-07-10 13:54:01 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/win_stuff/sys_win.c,v 1.46 2007-09-20 07:59:57 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -32,9 +32,9 @@ qboolean	ActiveApp, Minimized;
 qboolean	Win95, Win95old, WinNT;
 
 /*
-#define	TIME_WRAP_VALUE	(~(DWORD)0)
-*/
 #define	TIME_WRAP_VALUE	LONG_MAX
+*/
+#define	TIME_WRAP_VALUE	(~(DWORD)0)
 static DWORD		starttime;
 
 static HANDLE	qwclsemaphore;

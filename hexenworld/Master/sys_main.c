@@ -2,7 +2,7 @@
 	sys_main.c
 	main loop and system interface
 
-	$Id: sys_main.c,v 1.35 2007-08-23 19:45:30 sezero Exp $
+	$Id: sys_main.c,v 1.36 2007-09-20 07:59:57 sezero Exp $
 */
 
 // whether to use the password file to determine
@@ -38,9 +38,9 @@
 
 #if defined(PLATFORM_WINDOWS)
 /*
-#define	TIME_WRAP_VALUE	(~(DWORD)0)
-*/
 #define	TIME_WRAP_VALUE	LONG_MAX
+*/
+#define	TIME_WRAP_VALUE	(~(DWORD)0)
 static DWORD		starttime;
 #endif	/* PLATFORM_WINDOWS */
 

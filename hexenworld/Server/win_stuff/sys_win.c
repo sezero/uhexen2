@@ -2,7 +2,7 @@
 	sys_win.c
 	Win32 system interface code
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Server/win_stuff/sys_win.c,v 1.34 2007-08-23 19:45:30 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Server/win_stuff/sys_win.c,v 1.35 2007-09-20 07:59:58 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -27,9 +27,9 @@ cvar_t		sys_nostdout = {"sys_nostdout", "0", CVAR_NONE};
 int		devlog;	/* log the Con_DPrintf and Sys_DPrintf content when !developer.integer */
 
 /*
-#define	TIME_WRAP_VALUE	(~(DWORD)0)
-*/
 #define	TIME_WRAP_VALUE	LONG_MAX
+*/
+#define	TIME_WRAP_VALUE	(~(DWORD)0)
 static DWORD		starttime;
 
 
