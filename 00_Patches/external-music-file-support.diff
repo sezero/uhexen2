@@ -22,8 +22,8 @@ In the game, choose midi as the background music format and you'll be
 ready to go.
 
 
---- midi_sdl.c~	2007-05-01 08:44:26.000000000 +0300
-+++ midi_sdl.c	2007-07-06 15:46:16.000000000 +0300
+--- midi_sdl.c~	2007-09-20 00:01:06.000000000 +0300
++++ midi_sdl.c	2007-09-20 00:10:11.000000000 +0300
 @@ -99,6 +99,7 @@ qboolean MIDI_Init(void)
  	int audio_channels = 2;
  	int audio_buffers = 4096;
@@ -42,8 +42,8 @@ ready to go.
  	Con_Printf("MIDI music initialized.\n");
  
  	Cmd_AddCommand ("midi_play", MIDI_Play_f);
-@@ -219,11 +223,30 @@ static int MIDI_ExtractFile (FILE *inFil
- }
+@@ -188,11 +192,30 @@ bad_version:
+ 
  
  #define	TEMP_MUSICNAME	"tmpmusic"
 +#define	MIDI_DIRNAME	"midi"
@@ -73,7 +73,7 @@ ready to go.
  
  	if (!bMidiInited)	//don't try to play if there is no midi
  		return;
-@@ -236,11 +259,50 @@ void MIDI_Play (const char *Name)
+@@ -205,11 +228,50 @@ void MIDI_Play (const char *Name)
  		return;
  	}
  
@@ -127,16 +127,16 @@ ready to go.
  		return;
  	}
  	else
-@@ -250,7 +312,7 @@ void MIDI_Play (const char *Name)
+@@ -219,7 +281,7 @@ void MIDI_Play (const char *Name)
  			int		ret;
  
  			Con_Printf("Extracting %s from pakfile\n", tempName);
 -			snprintf (midiName, sizeof(midiName), "%s/%s.%s", host_parms->userdir, TEMP_MUSICNAME, "mid");
 +			snprintf (midiName, sizeof(midiName), "%s/%s.%s", host_parms->userdir, TEMP_MUSICNAME, MusicFile[i].ext);
- 			ret = MIDI_ExtractFile (midiFile, midiName, fs_filesize);
+ 			ret = FS_CopyFromFile (midiFile, midiName, fs_filesize);
  			fclose (midiFile);
  			if (ret != 0)
-@@ -262,7 +324,8 @@ void MIDI_Play (const char *Name)
+@@ -231,7 +293,8 @@ void MIDI_Play (const char *Name)
  		else	/* use the file directly */
  		{
  			fclose (midiFile);
