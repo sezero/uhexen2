@@ -2,7 +2,7 @@
 	snd_dma.c
 	main control for any streaming sound output device
 
-	$Id: snd_dma.c,v 1.63 2007-09-15 13:55:04 sezero Exp $
+	$Id: snd_dma.c,v 1.64 2007-09-20 11:01:30 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -70,10 +70,10 @@ static sfx_t	*ambient_sfx[NUM_AMBIENTS];
 
 static qboolean	sound_started = false;
 
-int		desired_speed = 11025;
+int		desired_speed = 22050;
 int		desired_bits = 16;
 int		desired_channels = 2;
-const int	tryrates[] = { 44100, 48000, 22050, 22051, 24000, 11025, 16000, 8000 };
+const int	tryrates[] = { 11025, 22050, 44100, 48000, 16000, 24000, 8000 };
 const int	MAX_TRYRATES = sizeof(tryrates)/sizeof(tryrates[0]);
 
 cvar_t		bgmvolume = {"bgmvolume", "1", CVAR_ARCHIVE};
