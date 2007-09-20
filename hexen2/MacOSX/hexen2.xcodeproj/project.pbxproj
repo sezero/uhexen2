@@ -80,7 +80,7 @@
 		70158C3E0AAF3C8800F6437C /* snd_dma.c in Sources */ = {isa = PBXBuildFile; fileRef = 707D57CD0AA9F6EE00313A9F /* snd_dma.c */; };
 		70158C3F0AAF3C8800F6437C /* snd_mem.c in Sources */ = {isa = PBXBuildFile; fileRef = 707D57CE0AA9F6EE00313A9F /* snd_mem.c */; };
 		70158C400AAF3C8800F6437C /* snd_mix.c in Sources */ = {isa = PBXBuildFile; fileRef = 707D57CF0AA9F6EE00313A9F /* snd_mix.c */; };
-		70158C410AAF3C8800F6437C /* snd_sdl.c in Sources */ = {isa = PBXBuildFile; fileRef = 707D57D00AA9F6EE00313A9F /* snd_sdl.c */; };
+		70158C410AAF3C8800F6437C /* snd_sdl2.c in Sources */ = {isa = PBXBuildFile; fileRef = 707D57D00AA9F6EE00313A9F /* snd_sdl2.c */; };
 		70158C420AAF3C8800F6437C /* snd_sys.c in Sources */ = {isa = PBXBuildFile; fileRef = 707D57D10AA9F6EE00313A9F /* snd_sys.c */; };
 		70158C430AAF3C8800F6437C /* sv_effect.c in Sources */ = {isa = PBXBuildFile; fileRef = 707D57D50AA9F6EE00313A9F /* sv_effect.c */; };
 		70158C440AAF3C8800F6437C /* sv_main.c in Sources */ = {isa = PBXBuildFile; fileRef = 707D57D60AA9F6EE00313A9F /* sv_main.c */; };
@@ -219,7 +219,7 @@
 		707D58D50AA9FBB700313A9F /* snd_dma.c in Sources */ = {isa = PBXBuildFile; fileRef = 707D57CD0AA9F6EE00313A9F /* snd_dma.c */; };
 		707D58D60AA9FBB700313A9F /* snd_mem.c in Sources */ = {isa = PBXBuildFile; fileRef = 707D57CE0AA9F6EE00313A9F /* snd_mem.c */; };
 		707D58D70AA9FBB700313A9F /* snd_mix.c in Sources */ = {isa = PBXBuildFile; fileRef = 707D57CF0AA9F6EE00313A9F /* snd_mix.c */; };
-		707D58D80AA9FBB700313A9F /* snd_sdl.c in Sources */ = {isa = PBXBuildFile; fileRef = 707D57D00AA9F6EE00313A9F /* snd_sdl.c */; };
+		707D58D80AA9FBB700313A9F /* snd_sdl2.c in Sources */ = {isa = PBXBuildFile; fileRef = 707D57D00AA9F6EE00313A9F /* snd_sdl2.c */; };
 		707D58D90AA9FBB700313A9F /* snd_sys.c in Sources */ = {isa = PBXBuildFile; fileRef = 707D57D10AA9F6EE00313A9F /* snd_sys.c */; };
 		707D58DA0AA9FBB700313A9F /* sv_effect.c in Sources */ = {isa = PBXBuildFile; fileRef = 707D57D50AA9F6EE00313A9F /* sv_effect.c */; };
 		707D58DB0AA9FBB700313A9F /* sv_main.c in Sources */ = {isa = PBXBuildFile; fileRef = 707D57D60AA9F6EE00313A9F /* sv_main.c */; };
@@ -390,7 +390,7 @@
 		707D57CD0AA9F6EE00313A9F /* snd_dma.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = snd_dma.c; path = ../snd_dma.c; sourceTree = SOURCE_ROOT; };
 		707D57CE0AA9F6EE00313A9F /* snd_mem.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = snd_mem.c; path = ../snd_mem.c; sourceTree = SOURCE_ROOT; };
 		707D57CF0AA9F6EE00313A9F /* snd_mix.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = snd_mix.c; path = ../snd_mix.c; sourceTree = SOURCE_ROOT; };
-		707D57D00AA9F6EE00313A9F /* snd_sdl.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = snd_sdl.c; path = ../snd_sdl.c; sourceTree = SOURCE_ROOT; };
+		707D57D00AA9F6EE00313A9F /* snd_sdl2.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = snd_sdl2.c; path = ../snd_sdl2.c; sourceTree = SOURCE_ROOT; };
 		707D57D10AA9F6EE00313A9F /* snd_sys.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = snd_sys.c; path = ../snd_sys.c; sourceTree = SOURCE_ROOT; };
 		707D57D20AA9F6EE00313A9F /* snd_sys.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = snd_sys.h; path = ../snd_sys.h; sourceTree = SOURCE_ROOT; };
 		707D57D30AA9F6EE00313A9F /* sound.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = sound.h; path = ../sound.h; sourceTree = SOURCE_ROOT; };
@@ -618,7 +618,7 @@
 				707D57CD0AA9F6EE00313A9F /* snd_dma.c */,
 				707D57CE0AA9F6EE00313A9F /* snd_mem.c */,
 				707D57CF0AA9F6EE00313A9F /* snd_mix.c */,
-				707D57D00AA9F6EE00313A9F /* snd_sdl.c */,
+				707D57D00AA9F6EE00313A9F /* snd_sdl2.c */,
 				707D57D10AA9F6EE00313A9F /* snd_sys.c */,
 				707D57D20AA9F6EE00313A9F /* snd_sys.h */,
 				707D57D30AA9F6EE00313A9F /* sound.h */,
@@ -906,7 +906,7 @@
 				70158C3E0AAF3C8800F6437C /* snd_dma.c in Sources */,
 				70158C3F0AAF3C8800F6437C /* snd_mem.c in Sources */,
 				70158C400AAF3C8800F6437C /* snd_mix.c in Sources */,
-				70158C410AAF3C8800F6437C /* snd_sdl.c in Sources */,
+				70158C410AAF3C8800F6437C /* snd_sdl2.c in Sources */,
 				70158C420AAF3C8800F6437C /* snd_sys.c in Sources */,
 				70158C430AAF3C8800F6437C /* sv_effect.c in Sources */,
 				70158C440AAF3C8800F6437C /* sv_main.c in Sources */,
@@ -980,7 +980,7 @@
 				707D58D50AA9FBB700313A9F /* snd_dma.c in Sources */,
 				707D58D60AA9FBB700313A9F /* snd_mem.c in Sources */,
 				707D58D70AA9FBB700313A9F /* snd_mix.c in Sources */,
-				707D58D80AA9FBB700313A9F /* snd_sdl.c in Sources */,
+				707D58D80AA9FBB700313A9F /* snd_sdl2.c in Sources */,
 				707D58D90AA9FBB700313A9F /* snd_sys.c in Sources */,
 				707D58DA0AA9FBB700313A9F /* sv_effect.c in Sources */,
 				707D58DB0AA9FBB700313A9F /* sv_main.c in Sources */,
