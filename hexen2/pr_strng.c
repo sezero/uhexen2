@@ -2,7 +2,7 @@
 	pr_strng.c
 	For international stuff
 
-	$Id: pr_strng.c,v 1.10 2007-05-13 11:58:30 sezero Exp $
+	$Id: pr_strng.c,v 1.11 2007-09-21 14:26:37 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -33,7 +33,7 @@ void PR_LoadStrings (void)
 
 	pr_global_strings = (char *)FS_LoadHunkFile ("strings.txt");
 	if (!pr_global_strings)
-		Sys_Error ("%s: couldn't load strings.txt", __thisfunc__);
+		Host_Error ("%s: couldn't load strings.txt", __thisfunc__);
 
 	NewLineChar = -1;
 
@@ -51,10 +51,10 @@ void PR_LoadStrings (void)
 
 	if (!count)
 	{
-		Sys_Error ("%s: no string lines found", __thisfunc__);
+		Host_Error ("%s: no string lines found", __thisfunc__);
 	}
 
-	pr_string_index = (int *)Hunk_AllocName ((count+1)*4, "string_index");
+	pr_string_index = (int *)Hunk_AllocName ((count + 1)*sizeof(int), "string_index");
 
 	for (i = count = start = 0; pr_global_strings[i] != 0; i++)
 	{
@@ -63,7 +63,7 @@ void PR_LoadStrings (void)
 			if (NewLineChar == pr_global_strings[i])
 			{
 				pr_string_index[count] = start;
-				start = i+1;
+				start = i + 1;
 				count++;
 			}
 			else
@@ -79,13 +79,13 @@ void PR_LoadStrings (void)
 			// for Hexenworld only:
 			// for indexed prints, translate '^' to a newline
 			if (pr_global_strings[i] == '^')
-				sprintf(pr_global_strings+i,"\n%s",pr_global_strings+i+1);
+				sprintf(pr_global_strings + i, "\n%s", pr_global_strings + i + 1);
 		}
 #endif	/* H2W */
 	}
 
 	pr_string_count = count;
-	Con_Printf("Read in %d string lines\n",count);
+	Con_Printf("Read in %d string lines\n", count);
 }
 
 
@@ -118,18 +118,15 @@ void PR_LoadPuzzleStrings (void)
 	Start = puzzle_strings;
 	while (*Start && *Start != '\r' && *Start != '\n')
 	{	/* find first newline, clear the start	*/
-		*Start = 0;
-		Start++;
+		*Start++ = 0;
 	}
 	if (!*Start)
 		return;
 
 	while ( *Start &&	/* skip and clear all leading space, '\n' and '\r' */
-		(*Start == '\n' || *Start == '\r' ||
-		 *Start == ' ' || *Start == '\t')  )
+		(*Start == '\n' || *Start == '\r' || *Start == ' ' || *Start == '\t') )
 	{
-		*Start = 0;
-		Start++;
+		*Start++ = 0;
 	}
 	if (!*Start)	/* EOF	*/
 		return;
@@ -202,7 +199,7 @@ forward:
 		return;
 
 	puzzle_string_count = count * 2;
-	puzzle_string_index = (int *)Hunk_AllocName (puzzle_string_count*4, "puzzle_string_index");
+	puzzle_string_index = (int *)Hunk_AllocName (puzzle_string_count*sizeof(int), "puzzle_string_index");
 
 	i = 0;
 	Start = puzzle_strings;
@@ -219,7 +216,7 @@ forward:
 		++i;
 	}
 
-	Con_Printf("Read in %d puzzle piece names\n",count);
+	Con_Printf("Read in %d puzzle piece names\n", count);
 }
 #endif	/* !SERVERONLY */
 
@@ -234,7 +231,7 @@ void PR_LoadInfoStrings (void)
 
 	pr_global_info_strings = (char *)FS_LoadHunkFile ("infolist.txt");
 	if (!pr_global_info_strings)
-		Sys_Error ("%s: couldn't load infolist.txt", __thisfunc__);
+		Host_Error ("%s: couldn't load infolist.txt", __thisfunc__);
 
 	NewLineChar = -1;
 
@@ -252,19 +249,19 @@ void PR_LoadInfoStrings (void)
 
 	if (!count)
 	{
-		Sys_Error ("%s: no string lines found", __thisfunc__);
+		Host_Error ("%s: no string lines found", __thisfunc__);
 	}
 
-	pr_info_string_index = (int *)Hunk_AllocName ((count+1)*4, "info_string_index");
+	pr_info_string_index = (int *)Hunk_AllocName ((count + 1)*sizeof(int), "info_string_index");
 
-	for ( i = count = start = 0; pr_global_info_strings[i] != 0; i++)
+	for (i = count = start = 0; pr_global_info_strings[i] != 0; i++)
 	{
 		if (pr_global_info_strings[i] == 13 || pr_global_info_strings[i] == 10)
 		{
 			if (NewLineChar == pr_global_info_strings[i])
 			{
 				pr_info_string_index[count] = start;
-				start = i+1;
+				start = i + 1;
 				count++;
 			}
 			else
@@ -277,7 +274,7 @@ void PR_LoadInfoStrings (void)
 	}
 
 	pr_info_string_count = count;
-	Con_Printf("Read in %d objectives\n",count);
+	Con_Printf("Read in %d objectives\n", count);
 }
 #endif	/* !SERVERONLY && !H2W */
 
