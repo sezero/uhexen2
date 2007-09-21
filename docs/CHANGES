@@ -3,6 +3,20 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2007-09-21 (CVS, 1.4.2-rc3):
+    * snd_sdl2.c: added missing casts to buffer allocation calls.
+    * changed some qboolean types to int in model files where the variables
+      are actually assigned values other than true and false. this change,
+      especially the one in gl_mesh.c, fixes the broken models in binaries
+      compiled using g++ (cplusplus).
+    * several more clean-ups in value assignments to qboolean variables.
+      a few minor clean-ups here and there.
+    * updates to some error routine calls.
+    * updates to some error routine calls, #2. a few clean-ups while we are
+      here.
+    * updated the list of known bugs (2007-09-21.)
+    * updated the beta release version/date (1.4.2-rc3, 2007-09-21.)
+
 2007-09-20 (CVS, 1.4.2-rc3):
     * added FS_CopyFromFile to QFS which uses an open file as its source.
       removed MIDI_ExtractFile helper from midi driver files and replaced
