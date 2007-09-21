@@ -2,7 +2,7 @@
 	cvar.c
 	dynamic variable tracking
 
-	$Id: cvar.c,v 1.34 2007-07-08 11:55:18 sezero Exp $
+	$Id: cvar.c,v 1.35 2007-09-21 11:05:07 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -242,7 +242,7 @@ Adds a freestanding variable to the variable list.
 void Cvar_RegisterVariable (cvar_t *variable)
 {
 	char	value[512];
-	qboolean	set_rom = false;
+	qboolean	set_rom;
 
 // first check to see if it has already been defined
 	if (Cvar_FindVar (variable->name))

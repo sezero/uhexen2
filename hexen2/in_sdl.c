@@ -2,7 +2,7 @@
 	in_sdl.c
 	SDL game input code
 
-	$Id: in_sdl.c,v 1.49 2007-08-01 10:08:03 sezero Exp $
+	$Id: in_sdl.c,v 1.50 2007-09-21 11:05:08 sezero Exp $
 */
 
 #include "sdl_inc.h"
@@ -17,7 +17,7 @@ static int	mouse_x, mouse_y, old_mouse_x, old_mouse_y;
 static qboolean	mouseactive = false;
 static qboolean	mouseinitialized = false;
 static qboolean	mouseactivatetoggle = false;
-static qboolean	mouseshowtoggle = 1;
+static qboolean	mouseshowtoggle = true;
 
 static int buttonremap[] =
 {
@@ -77,7 +77,7 @@ void IN_ShowMouse (void)
 	if (!mouseshowtoggle)
 	{
 		SDL_ShowCursor(1);
-		mouseshowtoggle = 1;
+		mouseshowtoggle = true;
 	}
 }
 
@@ -93,7 +93,7 @@ void IN_HideMouse (void)
 	if (mouseshowtoggle)
 	{
 		SDL_ShowCursor (0);
-		mouseshowtoggle = 0;
+		mouseshowtoggle = false;
 	}
 }
 

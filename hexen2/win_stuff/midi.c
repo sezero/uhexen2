@@ -1,6 +1,6 @@
 /*
 	midi_win.c
-	$Id: midi.c,v 1.25 2007-07-08 11:55:33 sezero Exp $
+	$Id: midi.c,v 1.26 2007-09-21 11:05:10 sezero Exp $
 
 	MIDI module for Win32
 */
@@ -17,8 +17,8 @@
 #include "quakedef.h"
 
 
-static BOOL	bMidiInited, bFileOpen, bPlaying, bBuffersPrepared, bPaused;
-BOOL		bLooped;
+static qboolean	bMidiInited, bFileOpen, bPlaying, bBuffersPrepared, bPaused;
+qboolean	bLooped;
 static UINT	uMIDIDeviceID = MIDI_MAPPER, uCallbackStatus;
 static int	nCurrentBuffer, nEmptyBuffers;
 DWORD		dwBufferTickLength, dwTempoMultiplier, dwCurrentTempo, dwProgressBytes;
@@ -74,11 +74,11 @@ static void MIDI_Loop_f (void)
 	if (Cmd_Argc () == 2)
 	{
 		if (Q_strcasecmp(Cmd_Argv(1),"on") == 0 || Q_strcasecmp(Cmd_Argv(1),"1") == 0) 
-			MIDI_Loop(1);
+			MIDI_Loop(MIDI_ENABLE_LOOP);
 		else if (Q_strcasecmp(Cmd_Argv(1),"off") == 0 || Q_strcasecmp(Cmd_Argv(1),"0") == 0) 
-			MIDI_Loop(0);
+			MIDI_Loop(MIDI_DISABLE_LOOP);
 		else if (Q_strcasecmp(Cmd_Argv(1),"toggle") == 0) 
-			MIDI_Loop(2);
+			MIDI_Loop(MIDI_TOGGLE_LOOP);
 	}
 
 	if (bLooped)
@@ -124,7 +124,7 @@ qboolean MIDI_Init(void)
 
 	if (safemode || COM_CheckParm("-nomidi"))
 	{
-		bMidiInited = 0;
+		bMidiInited = false;
 		return false;
 	}
 
@@ -133,7 +133,7 @@ qboolean MIDI_Init(void)
 	mmrRetVal = midiStreamOpen(&hStream, &uMIDIDeviceID, (DWORD)1, (DWORD_PTR)MidiProc, (DWORD_PTR)0, CALLBACK_FUNCTION);
 	if (mmrRetVal != MMSYSERR_NOERROR )
 	{
-		bMidiInited = 0;
+		bMidiInited = false;
 		MidiErrorMessageBox( mmrRetVal );
 		return false;
 	}
@@ -144,13 +144,13 @@ qboolean MIDI_Init(void)
 	Cmd_AddCommand ("midi_loop", MIDI_Loop_f);
 
 	dwTempoMultiplier = 100;
-	bFileOpen = FALSE;
-	bPlaying = FALSE;
-	bLooped = TRUE;
-	bPaused = FALSE;
-	bBuffersPrepared = FALSE;
+	bFileOpen = false;
+	bPlaying = false;
+	bLooped = true;
+	bPaused = false;
+	bBuffersPrepared = false;
 	uCallbackStatus = 0;
-	bMidiInited = 1;
+	bMidiInited = true;
 
 	Con_Printf("MIDI music initialized.\n");
 
@@ -191,7 +191,7 @@ void MIDI_Play(const char *Name)
 	}
 	else
 	{
-		bFileOpen = TRUE;
+		bFileOpen = true;
 
 		Con_Printf("Playing midi file %s\n",Temp);
 
@@ -206,7 +206,7 @@ void MIDI_Play(const char *Name)
 		}
 
 		MIDI_SetVolume (&bgmvolume);
-		bPlaying = TRUE;
+		bPlaying = true;
 	}
 }
 
@@ -227,15 +227,20 @@ void MIDI_Pause(int mode)
 	}
 }
 
-void MIDI_Loop(int NewValue)
+void MIDI_Loop(int mode)
 {
-	if (NewValue == 2)
+	switch (mode)
 	{
+	case MIDI_TOGGLE_LOOP:
 		bLooped = !bLooped;
-	}
-	else 
-	{
-		bLooped = NewValue;
+		break;
+	case MIDI_DISABLE_LOOP:
+		bLooped = false;
+		break;
+	case MIDI_ENABLE_LOOP:
+	default:
+		bLooped = true;
+		break;
 	}
 }
 
@@ -248,7 +253,7 @@ void MIDI_Stop(void)
 
 	if (bFileOpen || bPlaying)// || uCallbackStatus != STATUS_CALLBACKDEAD)
 	{
-		bPlaying = bPaused = FALSE;
+		bPlaying = bPaused = false;
 		if (uCallbackStatus != STATUS_CALLBACKDEAD && uCallbackStatus != STATUS_WAITINGFOREND)
 			uCallbackStatus = STATUS_KILLCALLBACK;
 
@@ -290,7 +295,7 @@ void MIDI_Stop(void)
 				hStream = NULL;
 			}
 
-			bFileOpen = FALSE;
+			bFileOpen = false;
 		}
 	}
 }
@@ -341,7 +346,7 @@ static void FreeBuffers(void)
 				MidiErrorMessageBox(mmrRetVal);
 			}
 		}
-		bBuffersPrepared = FALSE;
+		bBuffersPrepared = false;
 	}
 
 	// Free our stream buffers...
@@ -463,7 +468,7 @@ static BOOL StreamBufferSetup(const char *Name)
 			break;
 	}
 
-	bBuffersPrepared = TRUE;
+	bBuffersPrepared = true;
 	nCurrentBuffer = 0;
 
 	return(FALSE);

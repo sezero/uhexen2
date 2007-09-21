@@ -22,9 +22,9 @@ In the game, choose midi as the background music format and you'll be
 ready to go.
 
 
---- midi_sdl.c~	2007-09-20 00:01:06.000000000 +0300
-+++ midi_sdl.c	2007-09-20 00:10:11.000000000 +0300
-@@ -99,6 +99,7 @@ qboolean MIDI_Init(void)
+--- midi_sdl.c~	2007-09-21 10:26:37.000000000 +0300
++++ midi_sdl.c	2007-09-21 10:32:54.000000000 +0300
+@@ -120,6 +120,7 @@ qboolean MIDI_Init(void)
  	int audio_channels = 2;
  	int audio_buffers = 4096;
  
@@ -32,7 +32,7 @@ ready to go.
  	void	*selfsyms;
  	const SDL_version *smixer_version;
  	const SDL_version *(*Mix_Linked_Version_fp)(void) = NULL;
-@@ -169,6 +170,9 @@ bad_version:
+@@ -187,6 +188,9 @@ bad_version:
  	if (midi_endmusicfnc)
  		Mix_HookMusicFinished(midi_endmusicfnc);
  
@@ -42,7 +42,7 @@ ready to go.
  	Con_Printf("MIDI music initialized.\n");
  
  	Cmd_AddCommand ("midi_play", MIDI_Play_f);
-@@ -188,11 +192,30 @@ bad_version:
+@@ -206,11 +210,30 @@ bad_version:
  
  
  #define	TEMP_MUSICNAME	"tmpmusic"
@@ -73,7 +73,7 @@ ready to go.
  
  	if (!bMidiInited)	//don't try to play if there is no midi
  		return;
-@@ -205,11 +228,50 @@ void MIDI_Play (const char *Name)
+@@ -223,11 +246,50 @@ void MIDI_Play (const char *Name)
  		return;
  	}
  
@@ -127,7 +127,7 @@ ready to go.
  		return;
  	}
  	else
-@@ -219,7 +281,7 @@ void MIDI_Play (const char *Name)
+@@ -237,7 +299,7 @@ void MIDI_Play (const char *Name)
  			int		ret;
  
  			Con_Printf("Extracting %s from pakfile\n", tempName);
@@ -136,7 +136,7 @@ ready to go.
  			ret = FS_CopyFromFile (midiFile, midiName, fs_filesize);
  			fclose (midiFile);
  			if (ret != 0)
-@@ -231,7 +293,8 @@ void MIDI_Play (const char *Name)
+@@ -249,7 +311,8 @@ void MIDI_Play (const char *Name)
  		else	/* use the file directly */
  		{
  			fclose (midiFile);

@@ -2,7 +2,28 @@
 	midi_sdl.c
 	midiplay via SDL_mixer
 
-	$Id: midi_sdl.c,v 1.43 2007-09-20 06:40:02 sezero Exp $
+	$Id: midi_sdl.c,v 1.44 2007-09-21 11:05:10 sezero Exp $
+
+	Copyright (C) 2001  contributors of the Anvil of Thyrion project
+	Copyright (C) 2005-2007  O.Sezer
+
+	This program is free software; you can redistribute it and/or
+	modify it under the terms of the GNU General Public License
+	as published by the Free Software Foundation; either version 2
+	of the License, or (at your option) any later version.
+
+	This program is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+
+	See the GNU General Public License for more details.
+
+	You should have received a copy of the GNU General Public License
+	along with this program; if not, write to:
+
+		Free Software Foundation, Inc.
+		51 Franklin St, Fifth Floor,
+		Boston, MA  02110-1301  USA
 */
 
 #include "quakedef.h"
@@ -44,11 +65,11 @@ static void MIDI_Loop_f (void)
 	if (Cmd_Argc () == 2)
 	{
 		if (Q_strcasecmp(Cmd_Argv(1),"on") == 0 || Q_strcasecmp(Cmd_Argv(1),"1") == 0)
-			MIDI_Loop(1);
+			MIDI_Loop(MIDI_ENABLE_LOOP);
 		else if (Q_strcasecmp(Cmd_Argv(1),"off") == 0 || Q_strcasecmp(Cmd_Argv(1),"0") == 0)
-			MIDI_Loop(0);
+			MIDI_Loop(MIDI_DISABLE_LOOP);
 		else if (Q_strcasecmp(Cmd_Argv(1),"toggle") == 0)
-			MIDI_Loop(2);
+			MIDI_Loop(MIDI_TOGGLE_LOOP);
 	}
 
 	if (bLooped)
@@ -88,7 +109,7 @@ static void MIDI_EndMusicFinished(void)
 		Sys_DPrintf("Playing again\n");
 		Mix_RewindMusic();
 		Mix_FadeInMusic(music,0,2000);
-		bPlaying = 1;
+		bPlaying = true;
 	}
 }
 
@@ -103,18 +124,18 @@ qboolean MIDI_Init(void)
 	const SDL_version *smixer_version;
 	const SDL_version *(*Mix_Linked_Version_fp)(void) = NULL;
 
-	bMidiInited = 0;
+	bMidiInited = false;
 	Con_Printf("%s: ", __thisfunc__);
 
 	if (safemode || COM_CheckParm("-nomidi") || COM_CheckParm("-nosound") || COM_CheckParm("-s"))
 	{
 		Con_Printf("disabled by commandline\n");
-		return 0;
+		return false;
 	}
 	if (snd_system == S_SYS_SDL)
 	{
 		Con_Printf("SDL_mixer conflicts SDL audio.\n");
-		return 0;
+		return false;
 	}
 
 	Con_Printf("SDL_Mixer ");
@@ -139,8 +160,7 @@ qboolean MIDI_Init(void)
 		Con_Printf("too old, disabled.\n");
 bad_version:
 		Con_Printf("You need at least v%d.%d.%d of SDL_Mixer\n",SDL_MIXER_MIN_X,SDL_MIXER_MIN_Y,SDL_MIXER_MIN_Z);
-		bMidiInited = 0;
-		return 0;
+		return false;
 	}
 	Con_Printf("found.\n");
 
@@ -151,18 +171,16 @@ bad_version:
 		if (SDL_InitSubSystem(SDL_INIT_AUDIO) != 0)
 		{
 			Con_Printf("%s: Cannot initialize SDL_AUDIO: %s\n", __thisfunc__, SDL_GetError());
-			bMidiInited = 0;
-			return 0;
+			return false;
 		}
 	}
 
 	if (Mix_OpenAudio(audio_rate, audio_format, audio_channels, audio_buffers) < 0)
 	{
-		bMidiInited = 0;
 		Con_Printf("SDL_mixer: open audio failed: %s\n", SDL_GetError());
 		if (audio_wasinit == 0)
 			SDL_QuitSubSystem(SDL_INIT_AUDIO);
-		return 0;
+		return false;
 	}
 
 	midi_endmusicfnc = &MIDI_EndMusicFinished;
@@ -176,11 +194,11 @@ bad_version:
 	Cmd_AddCommand ("midi_pause", MIDI_Pause_f);
 	Cmd_AddCommand ("midi_loop", MIDI_Loop_f);
 
-	bFileOpen = 0;
-	bPlaying = 0;
-	bLooped = 1;
-	bPaused = 0;
-	bMidiInited = 1;
+	bFileOpen = false;
+	bPlaying = false;
+	bLooped = true;
+	bPaused = false;
+	bMidiInited = true;
 	MIDI_SetVolume (&bgmvolume);
 
 	return true;
@@ -242,10 +260,10 @@ void MIDI_Play (const char *Name)
 	}
 	else
 	{
-		bFileOpen = 1;
+		bFileOpen = true;
 		Con_Printf ("Started music %s\n", tempName);
 		Mix_FadeInMusic(music,0,2000);
-		bPlaying = 1;
+		bPlaying = true;
 	}
 }
 
@@ -266,12 +284,21 @@ void MIDI_Pause(int mode)
 	}
 }
 
-void MIDI_Loop(int NewValue)
+void MIDI_Loop(int mode)
 {
-	if (NewValue == 2)
+	switch (mode)
+	{
+	case MIDI_TOGGLE_LOOP:
 		bLooped = !bLooped;
-	else
-		bLooped = NewValue;
+		break;
+	case MIDI_DISABLE_LOOP:
+		bLooped = false;
+		break;
+	case MIDI_ENABLE_LOOP:
+	default:
+		bLooped = true;
+		break;
+	}
 
 	MIDI_EndMusicFinished();
 }
@@ -287,8 +314,8 @@ void MIDI_Stop(void)
 		Mix_FreeMusic(music);
 	}
 
-	bPlaying = bPaused = 0;
-	bFileOpen=0;
+	bPlaying = bPaused = false;
+	bFileOpen = false;
 }
 
 void MIDI_Cleanup(void)
@@ -296,7 +323,7 @@ void MIDI_Cleanup(void)
 	if (bMidiInited)
 	{
 		MIDI_Stop();
-		bMidiInited = 0;
+		bMidiInited = false;
 		Con_Printf("%s: closing SDL_mixer\n", __thisfunc__);
 		Mix_CloseAudio();
 	//	if (audio_wasinit == 0)

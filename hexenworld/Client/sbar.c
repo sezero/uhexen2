@@ -2,7 +2,7 @@
 	sbar.c
 	Hexen II status bar
 
-	$Id: sbar.c,v 1.39 2007-08-03 17:36:03 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/sbar.c,v 1.40 2007-09-21 11:05:11 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -66,7 +66,7 @@ static void DrawActiveArtifacts(void);
 static int CalcAC(void);
 static void DrawBarArtifactIcon(int x, int y, int artifact);
 
-static qboolean SetChainPosition(float health, float maxHealth);
+static void SetChainPosition(float health, float maxHealth);
 
 static void ShowInfoDown_f(void);
 static void ShowInfoUp_f(void);
@@ -470,7 +470,7 @@ void Sbar_Draw(void)
 //
 //==========================================================================
 
-static qboolean SetChainPosition(float health, float maxHealth)
+static void SetChainPosition(float health, float maxHealth)
 {
 	float delta;
 	float chainTargetPosition;
@@ -486,7 +486,7 @@ static qboolean SetChainPosition(float health, float maxHealth)
 	chainTargetPosition = (health*195)/maxHealth;
 	if (fabs(ChainPosition-chainTargetPosition) < 0.1)
 	{
-		return false;
+		return;
 	}
 	if (ChainPosition < chainTargetPosition)
 	{
@@ -514,7 +514,6 @@ static qboolean SetChainPosition(float health, float maxHealth)
 			ChainPosition = chainTargetPosition;
 		}
 	}
-	return true;
 }
 
 //==========================================================================

@@ -1,6 +1,6 @@
 /*
 	mstrconv.c
-	$Id: mstrconv.c,v 1.21 2007-09-20 07:48:15 sezero Exp $
+	$Id: mstrconv.c,v 1.22 2007-09-21 11:05:11 sezero Exp $
 
 	Converting a MID file to a MIDI stream for
 	playback using the Win32 midiStream API.
@@ -36,7 +36,7 @@ static DWORD	dwMallocBlocks = 0;
 
 extern DWORD	dwBufferTickLength, dwTempoMultiplier, dwCurrentTempo;
 extern DWORD	dwProgressBytes, dwVolumePercent;
-extern BOOL	bLooped;
+extern qboolean	bLooped;
 
 // Messages
 //

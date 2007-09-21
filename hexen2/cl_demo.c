@@ -2,7 +2,7 @@
 	cl_demo.c
 	demo recording and playback
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cl_demo.c,v 1.21 2007-04-18 13:30:53 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cl_demo.c,v 1.22 2007-09-21 11:05:07 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -362,14 +362,14 @@ void CL_PlayDemo_f (void)
 
 	if (!Q_strcasecmp(name,"t9"))
 	{
-		// the mission pack specific intro actually
-		// is a pre-recorded demo named t9.dem
+	// the mission pack specific intro actually
+	// is a pre-recorded demo named t9.dem
 		intro_playing = true;
 	//	skip_start = true;
 	}
 	else
 	{
-		intro_playing=false;
+		intro_playing = false;
 	}
 
 	COM_DefaultExtension (name, ".dem", sizeof(name));
@@ -379,7 +379,7 @@ void CL_PlayDemo_f (void)
 /*	if (intro_playing)
 	{
 		cls.demorecording = true;
-		cls.introdemofile=fopen("t9.dem","wb");
+		cls.introdemofile = fopen("t9.dem", "wb");
 	}
 */
 

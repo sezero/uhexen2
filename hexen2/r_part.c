@@ -2,7 +2,7 @@
 	r_part.c
 	particles rendering
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/r_part.c,v 1.21 2007-08-09 06:12:45 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/r_part.c,v 1.22 2007-09-21 11:05:10 sezero Exp $
 */
 
 
@@ -1511,7 +1511,7 @@ void R_UpdateParticles (void)
 
 /*				VectorScale(p->vel, frametime, diff);
 				speed = VectorNormalize(diff);
-				in_solid=false;
+				in_solid = false;
 				if (!(p->flags & SFL_IN_BOUNDS))
 				{
 				//Not cut off by bounds
@@ -1527,7 +1527,7 @@ void R_UpdateParticles (void)
 								l = Mod_PointInLeaf (save_org, cl.worldmodel);
 							if (l->contents != CONTENTS_EMPTY)
 							{
-								in_solid=true;
+								in_solid = true;
 								VectorCopy(save_org, p->org);
 								break;
 							}
@@ -1559,7 +1559,7 @@ void R_UpdateParticles (void)
 					// if hit solid, go to last position,
 					// no velocity, fade out.
 					l = Mod_PointInLeaf (p->org, cl.worldmodel);
-					if (l->contents != CONTENTS_EMPTY) //||in_solid==true
+					if (l->contents != CONTENTS_EMPTY) // || in_solid == true
 					{
 						if (p->flags & SFL_NO_MELT)
 						{

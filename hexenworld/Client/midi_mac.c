@@ -1,6 +1,6 @@
 /*
 	midi_mac.c
-	$Id: midi_mac.c,v 1.14 2007-09-20 06:40:04 sezero Exp $
+	$Id: midi_mac.c,v 1.15 2007-09-21 11:05:11 sezero Exp $
 
 	MIDI module for Mac OS X using QuickTime:
 	Taken from the macglquake project with adjustments to make
@@ -28,7 +28,7 @@
 		Boston, MA  02110-1301  USA
 */
 
-#include "quakedef.h" 
+#include "quakedef.h"
 #include <unistd.h>
 
 #include <Sound.h>
@@ -110,11 +110,11 @@ static void MIDI_Loop_f (void)
 	if (Cmd_Argc () == 2)
 	{
 		if (Q_strcasecmp(Cmd_Argv(1),"on") == 0 || Q_strcasecmp(Cmd_Argv(1),"1") == 0)
-			MIDI_Loop(1);
+			MIDI_Loop(MIDI_ENABLE_LOOP);
 		else if (Q_strcasecmp(Cmd_Argv(1),"off") == 0 || Q_strcasecmp(Cmd_Argv(1),"0") == 0)
-			MIDI_Loop(0);
+			MIDI_Loop(MIDI_DISABLE_LOOP);
 		else if (Q_strcasecmp(Cmd_Argv(1),"toggle") == 0)
-			MIDI_Loop(2);
+			MIDI_Loop(MIDI_TOGGLE_LOOP);
 	}
 
 	if (bLooped)
@@ -123,24 +123,24 @@ static void MIDI_Loop_f (void)
 		Con_Printf("MIDI music will not be looped\n");
 }
 
-qboolean MIDI_Init (void)
+qboolean MIDI_Init(void)
 {
 	OSErr		theErr;
 
+	bMidiInited = false;
 	Con_Printf("%s: ", __thisfunc__);
 
 	if (safemode || COM_CheckParm("-nomidi") || COM_CheckParm("-nosound") || COM_CheckParm("-s"))
 	{
 		Con_Printf("disabled by commandline\n");
-		bMidiInited = 0;
-		return 0;
+		return false;
 	}
 
 	theErr = EnterMovies ();
 	if (theErr != noErr)
 	{
 		Con_Printf ("Unable to initialize QuickTime.\n");
-		return 0;
+		return false;
 	}
 
 	Con_Printf("Started QuickTime midi.\n");
@@ -164,7 +164,7 @@ void MIDI_Cleanup (void)
 		MIDI_Stop();
 		Con_Printf("%s: closing QuickTime.\n", __thisfunc__);
 		ExitMovies ();
-		bMidiInited = 0;
+		bMidiInited = false;
 	}
 }
 
@@ -261,7 +261,7 @@ void MIDI_Play (const char *Name)
 	Con_Printf ("Started midi music %s\n", tempName);
 }
 
-void MIDI_Pause (int mode)
+void MIDI_Pause(int mode)
 {
 	if (!midiTrack)
 		return;
@@ -278,19 +278,24 @@ void MIDI_Pause (int mode)
 	}
 }
 
-void MIDI_Loop (int NewValue)
+void MIDI_Loop(int mode)
 {
-	if (NewValue == 2)
+	switch (mode)
 	{
+	case MIDI_TOGGLE_LOOP:
 		bLooped = !bLooped;
-	}
-	else 
-	{
-		bLooped = NewValue;
+		break;
+	case MIDI_DISABLE_LOOP:
+		bLooped = false;
+		break;
+	case MIDI_ENABLE_LOOP:
+	default:
+		bLooped = true;
+		break;
 	}
 }
 
-void MIDI_Stop (void)
+void MIDI_Stop(void)
 {
 	if (!bMidiInited)	//Just to be safe
 		return;
@@ -300,7 +305,7 @@ void MIDI_Stop (void)
 		StopMovie (midiTrack);
 		DisposeMovie (midiTrack);
 		midiTrack = NULL;
-		bPaused = 0;
+		bPaused = false;
 	}
 }
 

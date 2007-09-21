@@ -5,7 +5,7 @@
 	Quake is a trademark of Id Software, Inc., (c) 1996 Id Software, Inc.
 	All rights reserved.
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cl_input.c,v 1.19 2007-06-30 11:19:42 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cl_input.c,v 1.20 2007-09-21 11:05:07 sezero Exp $
 */
 
 
@@ -316,7 +316,7 @@ static void IN_infoPlaqueUp(void)
 	if (key_dest == key_game)
 	{
 		//They want to lower the plaque
-		info_up = 0;
+		info_up = false;
 		KeyUp(&in_infoplaque);
 	}
 }
@@ -326,7 +326,7 @@ static void IN_infoPlaqueDown(void)
 	if (key_dest == key_game)
 	{
 		//They want to see the plaque
-		info_up = 1;
+		info_up = true;
 		KeyDown(&in_infoplaque);
 	}
 }

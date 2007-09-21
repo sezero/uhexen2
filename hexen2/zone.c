@@ -2,7 +2,7 @@
 	zone.c
 	Memory management
 
-	$Id: zone.c,v 1.45 2007-09-01 16:35:01 sezero Exp $
+	$Id: zone.c,v 1.46 2007-09-21 11:05:10 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -300,7 +300,7 @@ void Hunk_Check (void)
 			Sys_Error ("%s: trashed sentinal", __thisfunc__);
 		if (h->size < sizeof(hunk_t) || h->size + (byte *)h - hunk_base > hunk_size)
 			Sys_Error ("%s: bad size", __thisfunc__);
-		h = (hunk_t *)((byte *)h+h->size);
+		h = (hunk_t *)((byte *)h + h->size);
 	}
 }
 
@@ -870,7 +870,7 @@ static void Hunk_Print (qboolean all, qboolean write_file)
 		if (h->size < sizeof(hunk_t) || h->size + (byte *)h - hunk_base > hunk_size)
 			Sys_Error ("%s: bad size", __thisfunc__);
 
-		next = (hunk_t *)((byte *)h+h->size);
+		next = (hunk_t *)((byte *)h + h->size);
 		count++;
 		totalblocks++;
 		sum += h->size;
@@ -907,14 +907,14 @@ static void Hunk_Print (qboolean all, qboolean write_file)
 
 static void Memory_Display_f(void)
 {
-	short NumItems,counter;
-	qboolean all, write_file;
+	int		num_args, counter;
+	qboolean	all, write_file;
 
 	all = true;
 	write_file = false;
 
-	NumItems = Cmd_Argc();
-	for (counter=1; counter<NumItems; counter++)
+	num_args = Cmd_Argc();
+	for (counter = 1; counter < num_args; counter++)
 	{
 		if (Q_strcasecmp(Cmd_Argv(counter),"short") == 0)
 			all = false;
@@ -922,7 +922,7 @@ static void Memory_Display_f(void)
 			write_file = true;
 	}
 
-	Hunk_Print(all,write_file);
+	Hunk_Print(all, write_file);
 }
 
 # if !defined(SERVERONLY)
@@ -978,13 +978,13 @@ static void Cache_Print (qboolean write_file)
 
 static void Cache_Display_f(void)
 {
-	short NumItems,counter;
-	qboolean write_file;
+	int		num_args, counter;
+	qboolean	write_file;
 
 	write_file = false;
 
-	NumItems = Cmd_Argc();
-	for (counter=1; counter<NumItems; counter++)
+	num_args = Cmd_Argc();
+	for (counter = 1; counter < num_args; counter++)
 	{
 		if (Q_strcasecmp(Cmd_Argv(counter),"save") == 0)
 			write_file = true;
@@ -1023,14 +1023,14 @@ static void Z_Print (memzone_t *zone, FILE *f)
 
 static void Zone_Display_f(void)
 {
-	short NumItems,counter;
+	int		num_args, counter;
 	FILE		*FH;
-	qboolean write_file;
+	qboolean	write_file;
 
 	write_file = false;
 	FH = NULL;
-	NumItems = Cmd_Argc();
-	for (counter=1; counter<NumItems; counter++)
+	num_args = Cmd_Argc();
+	for (counter = 1; counter < num_args; counter++)
 	{
 		if (Q_strcasecmp(Cmd_Argv(counter),"save") == 0)
 			write_file = true;
@@ -1081,16 +1081,15 @@ static const char *MemoryGroups[NUM_GROUPS+1] =
 static void Memory_Stats_f(void)
 {
 	hunk_t	*h, *next, *endlow, *starthigh, *endhigh;
-	int	count, sum, counter;
+	int	num_args, count, sum, counter;
 	int	GroupCount[NUM_GROUPS+1], GroupSum[NUM_GROUPS+1];
-	short	NumItems;
 	FILE	*FH;
 	qboolean write_file;
 
 	write_file = false;
 
-	NumItems = Cmd_Argc();
-	for (counter = 1; counter < NumItems; counter++)
+	num_args = Cmd_Argc();
+	for (counter = 1; counter < num_args; counter++)
 	{
 		if (Q_strcasecmp(Cmd_Argv(counter),"save") == 0)
 			write_file = true;
@@ -1116,7 +1115,7 @@ static void Memory_Stats_f(void)
 		if (h == endhigh)
 			break;
 
-		next = (hunk_t *)((byte *)h+h->size);
+		next = (hunk_t *)((byte *)h + h->size);
 
 		for (counter = 0; counter < NUM_GROUPS; counter++)
 		{

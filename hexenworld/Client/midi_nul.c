@@ -2,7 +2,7 @@
 	midi_nul.c
 	NULL midi driver
 
-	$Id: midi_nul.c,v 1.3 2007-02-06 12:24:22 sezero Exp $
+	$Id: midi_nul.c,v 1.4 2007-09-21 11:05:11 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -21,7 +21,7 @@ void MIDI_Pause(int mode)
 {
 }
 
-void MIDI_Loop(int NewValue)
+void MIDI_Loop(int mode)
 {
 }
 
