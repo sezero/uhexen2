@@ -17,6 +17,10 @@ Known Bugs
   problem. The problem shows up when gcc-4.1.x is used as the compiler
   without any -O flags, gcc-3.4.x is reported to be fine.
 
+- Software renderer, C-only code, Rider Bosses: The death beams doesn't
+  fade out as they do in the intel assembly code. The origin of Famine's
+  tractor beam isn't translucent as it should be.
+
 - Hexen II dedicated server: The swords on the weapon racks in village1
   and demo2 levels are placed incorrectly. To be looked into.
 
