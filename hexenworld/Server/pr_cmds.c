@@ -2,7 +2,7 @@
 	pr_cmds.c
 	prog commands
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Server/pr_cmds.c,v 1.34 2007-07-11 16:47:16 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Server/pr_cmds.c,v 1.35 2007-09-21 13:20:47 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -906,7 +906,7 @@ static void PF_StopSound(void)
 	channel = G_FLOAT(OFS_PARM1);
 
 	if (channel < 0 || channel > 7)
-		Sys_Error ("%s: channel = %i", __thisfunc__, channel);
+		SV_Error ("%s: channel = %i", __thisfunc__, channel);
 
 	SV_StopSound (entity, channel);
 }
@@ -926,7 +926,7 @@ static void PF_UpdateSoundPos(void)
 	channel = G_FLOAT(OFS_PARM1);
 
 	if (channel < 0 || channel > 7)
-		Sys_Error ("%s: channel = %i", __thisfunc__, channel);
+		SV_Error ("%s: channel = %i", __thisfunc__, channel);
 
 	SV_UpdateSoundPos (entity, channel);
 }

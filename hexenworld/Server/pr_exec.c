@@ -2,7 +2,7 @@
 	pr_exec.c
 	PROGS execution
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Server/pr_exec.c,v 1.19 2007-09-14 14:11:24 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Server/pr_exec.c,v 1.20 2007-09-21 13:20:47 sezero Exp $
 */
 
 // HEADER FILES ------------------------------------------------------------
@@ -815,7 +815,7 @@ static int LeaveFunction (void)
 
 	if (pr_depth <= 0)
 	{
-		Sys_Error("prog stack underflow");
+		SV_Error("prog stack underflow");
 	}
 
 	// Restore locals from the stack

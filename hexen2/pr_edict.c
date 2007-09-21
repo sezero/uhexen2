@@ -2,7 +2,7 @@
 	sv_edict.c
 	entity dictionary
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/pr_edict.c,v 1.47 2007-09-05 19:55:05 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/pr_edict.c,v 1.48 2007-09-21 13:20:46 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -1275,14 +1275,14 @@ void PR_LoadProgs (void)
 		((int *)progs)[i] = LittleLong ( ((int *)progs)[i] );
 
 	if (progs->version != PROG_VERSION)
-		Sys_Error ("progs.dat has wrong version number (%i should be %i)", progs->version, PROG_VERSION);
+		Sys_Error ("%s has wrong version number %d (should be %d)", finalprogname, progs->version, PROG_VERSION);
 	if (progs->crc != PROGS_V111_CRC && progs->crc != PROGS_V112_CRC)
-		Sys_Error ("Unexpected crc ( %d ) for progs.dat", progs->crc);
+		Sys_Error ("Unexpected crc ( %d ) for %s", progs->crc, finalprogname);
 
 	pr_functions = (dfunction_t *)((byte *)progs + progs->ofs_functions);
 	pr_strings = (char *)progs + progs->ofs_strings;
 	if (progs->ofs_strings + progs->numstrings >= (int)fs_filesize)
-		Host_Error ("progs.dat strings go past end of file\n");
+		Host_Error ("%s: strings go past end of file\n", finalprogname);
 	pr_numknownstrings = 0;
 	pr_maxknownstrings = 0;
 	pr_stringssize = progs->numstrings;
@@ -1401,7 +1401,7 @@ edict_t *EDICT_NUM(int n)
 {
 	if (n < 0 || n >= MAX_EDICTS)
 		Sys_Error ("%s: bad number %i", __thisfunc__, n);
-	return (edict_t *)((byte *)sv.edicts+ (n)*pr_edict_size);
+	return (edict_t *)((byte *)sv.edicts + (n)*pr_edict_size);
 }
 
 int NUM_FOR_EDICT(edict_t *e)
@@ -1414,17 +1414,17 @@ int NUM_FOR_EDICT(edict_t *e)
 	if (b < 0 || b >= sv.num_edicts)
 	{
 		if (!RemoveBadReferences)
-			Con_DPrintf ("%s: bad pointer, Class: %s Field: %s, Index %d, Total %d",
+		{
+			Con_DPrintf ("%s: bad pointer, Class: %s Field: %s, Index %d, Total %d\n",
 					__thisfunc__, class_name, field_name, b, sv.num_edicts);
-
-		return (0);
+		}
+		return 0;
 	}
 	if (e->free && RemoveBadReferences)
 	{
-//		Con_Printf ("%s: freed edict, Class: %s Field: %s, Index %d, Total %d",
-//				__thisfunc__, class_name, field_name, b, sv.num_edicts);
-
-		return (0);
+	//	Con_DPrintf ("%s: freed edict, Class: %s Field: %s, Index %d, Total %d\n",
+	//			__thisfunc__, class_name, field_name, b, sv.num_edicts);
+		return 0;
 	}
 	return b;
 }
@@ -1448,12 +1448,16 @@ char *PR_GetString (int num)
 	else if (num < 0 && num >= -pr_numknownstrings)
 	{
 		if (!pr_knownstrings[-1 - num])
-			Host_Error ("%s: attempt to get a non-existant string\n", __thisfunc__);
+		{
+			Host_Error ("%s: attempt to get a non-existant string %d\n",
+								__thisfunc__, num);
+			return "";
+		}
 		return pr_knownstrings[-1 - num];
 	}
 	else
 	{
-		Host_Error("%s: invalid string offset %d\n", __thisfunc__, num);
+		Host_Error ("%s: invalid string offset %d\n", __thisfunc__, num);
 		return "";
 	}
 }
@@ -1465,7 +1469,7 @@ int PR_SetEngineString (char *s)
 	if (!s)
 		return 0;
 	if (s >= pr_strings && s <= pr_strings + pr_stringssize)
-		Host_Error("%s: s \"%s\" in pr_strings area\n", __thisfunc__, s);
+		Host_Error ("%s: \"%s\" is in pr_strings area\n", __thisfunc__, s);
 	for (i = 0; i < pr_numknownstrings; i++)
 	{
 		if (pr_knownstrings[i] == s)

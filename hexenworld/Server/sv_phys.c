@@ -2,7 +2,7 @@
 	sv_phys.c
 	sv physics
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Server/sv_phys.c,v 1.16 2007-06-30 11:19:48 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Server/sv_phys.c,v 1.17 2007-09-21 13:20:47 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -1754,7 +1754,7 @@ void SV_Physics_Client (edict_t *ent, int num)
 		break;
 
 	default:
-		Sys_Error ("%s: bad movetype %i", __thisfunc__, (int)ent->v.movetype);
+		Host_Error ("%s: bad movetype %i", __thisfunc__, (int)ent->v.movetype);
 	}
 
 //
