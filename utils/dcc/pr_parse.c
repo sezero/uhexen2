@@ -2,13 +2,14 @@
 	parseerr.c
 	parse error and parse warning routines for the progs compilation
 
-	$Id: pr_parse.c,v 1.3 2007-09-22 15:27:37 sezero Exp $
+	$Id: pr_parse.c,v 1.4 2007-09-22 17:40:13 sezero Exp $
 */
 
 
 // HEADER FILES ------------------------------------------------------------
 
 #include "util_inc.h"
+#include "cmdlib.h"
 #include "qcc.h"
 
 // CODE --------------------------------------------------------------------
