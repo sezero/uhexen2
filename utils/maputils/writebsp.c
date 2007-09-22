@@ -1,6 +1,6 @@
 /*
 	writebsp.c
-	$Id: writebsp.c,v 1.8 2007-07-08 17:01:16 sezero Exp $
+	$Id: writebsp.c,v 1.9 2007-09-22 15:27:42 sezero Exp $
 */
 
 #include "util_inc.h"
@@ -395,7 +395,7 @@ static int LoadLump (char *name, byte *dest)
 	//	if (!strcmp(cname, lumpinfo[i].name))
 	//	do a case insensitive search. some wadfiles
 	//	doesn't have the texture name in expected case
-		if (!Q_strcasecmp(cname, lumpinfo[i].name))
+		if (!q_strcasecmp(cname, lumpinfo[i].name))
 		{
 			fseek (texfile, lumpinfo[i].filepos, SEEK_SET);
 			SafeRead (texfile, dest, lumpinfo[i].disksize);
@@ -440,7 +440,7 @@ static void AddAnimatingTextures (void)
 			//	if (!strcmp(name, lumpinfo[k].name))
 			//	do a case insensitive search. some wadfiles
 			//	doesn't have the texture name in expected case
-				if (!Q_strcasecmp(name, lumpinfo[k].name))
+				if (!q_strcasecmp(name, lumpinfo[k].name))
 				{
 					FindMiptex (name);	// add to the miptex list
 					break;

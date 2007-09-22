@@ -1,6 +1,6 @@
 /*
 	hwmquery.c
-	$Id: hwmquery.c,v 1.15 2007-08-26 09:42:51 sezero Exp $
+	$Id: hwmquery.c,v 1.16 2007-09-22 15:27:35 sezero Exp $
 
 	HWMQUERY 0.1 HexenWorld Master Server Query
 	Copyright (C) 2006 O. Sezer <sezero@users.sourceforge.net>
@@ -34,6 +34,7 @@
 #include <sys/time.h>
 #endif
 #include "compiler.h"
+#include "qsnprint.h"
 
 
 //=============================================================================
@@ -63,7 +64,7 @@ void Sys_Error (const char *error, ...)
 	char		text[1024];
 
 	va_start (argptr,error);
-	vsnprintf (text, sizeof (text), error,argptr);
+	q_vsnprintf (text, sizeof (text), error,argptr);
 	va_end (argptr);
 
 	printf ("\nERROR: %s\n\n", text);

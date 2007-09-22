@@ -2,7 +2,7 @@
 	midi_sdl.c
 	midiplay via SDL_mixer
 
-	$Id: midi_sdl.c,v 1.44 2007-09-21 11:05:10 sezero Exp $
+	$Id: midi_sdl.c,v 1.45 2007-09-22 15:27:12 sezero Exp $
 
 	Copyright (C) 2001  contributors of the Anvil of Thyrion project
 	Copyright (C) 2005-2007  O.Sezer
@@ -64,11 +64,11 @@ static void MIDI_Loop_f (void)
 {
 	if (Cmd_Argc () == 2)
 	{
-		if (Q_strcasecmp(Cmd_Argv(1),"on") == 0 || Q_strcasecmp(Cmd_Argv(1),"1") == 0)
+		if (q_strcasecmp(Cmd_Argv(1),"on") == 0 || q_strcasecmp(Cmd_Argv(1),"1") == 0)
 			MIDI_Loop(MIDI_ENABLE_LOOP);
-		else if (Q_strcasecmp(Cmd_Argv(1),"off") == 0 || Q_strcasecmp(Cmd_Argv(1),"0") == 0)
+		else if (q_strcasecmp(Cmd_Argv(1),"off") == 0 || q_strcasecmp(Cmd_Argv(1),"0") == 0)
 			MIDI_Loop(MIDI_DISABLE_LOOP);
-		else if (Q_strcasecmp(Cmd_Argv(1),"toggle") == 0)
+		else if (q_strcasecmp(Cmd_Argv(1),"toggle") == 0)
 			MIDI_Loop(MIDI_TOGGLE_LOOP);
 	}
 
@@ -223,7 +223,7 @@ void MIDI_Play (const char *Name)
 		return;
 	}
 
-	snprintf (tempName, sizeof(tempName), "%s.%s", Name, "mid");
+	q_snprintf (tempName, sizeof(tempName), "%s.%s", Name, "mid");
 	FS_OpenFile (va("%s/%s", "midi", tempName), &midiFile, false);
 	if (!midiFile)
 	{
@@ -237,7 +237,7 @@ void MIDI_Play (const char *Name)
 			int		ret;
 
 			Con_Printf("Extracting %s from pakfile\n", tempName);
-			snprintf (midiName, sizeof(midiName), "%s/%s.%s", host_parms->userdir, TEMP_MUSICNAME, "mid");
+			q_snprintf (midiName, sizeof(midiName), "%s/%s.%s", host_parms->userdir, TEMP_MUSICNAME, "mid");
 			ret = FS_CopyFromFile (midiFile, midiName, fs_filesize);
 			fclose (midiFile);
 			if (ret != 0)
@@ -249,7 +249,7 @@ void MIDI_Play (const char *Name)
 		else	/* use the file directly */
 		{
 			fclose (midiFile);
-			snprintf (midiName, sizeof(midiName), "%s/%s/%s", fs_filepath, "midi", tempName);
+			q_snprintf (midiName, sizeof(midiName), "%s/%s/%s", fs_filepath, "midi", tempName);
 		}
 	}
 

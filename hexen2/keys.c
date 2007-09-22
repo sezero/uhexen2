@@ -2,7 +2,7 @@
 	keys.c
 	key up events are sent even if in console mode
 
-	$Id: keys.c,v 1.33 2007-07-11 16:47:14 sezero Exp $
+	$Id: keys.c,v 1.34 2007-09-22 15:27:12 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -151,7 +151,7 @@ static void CompleteCommand (void)
 		editing = true;
 		// make a copy of the text starting from the
 		// cursor position (see below)
-		Q_strlcpy(stmp, key_lines[edit_line]+key_linepos, sizeof(stmp));
+		q_strlcpy(stmp, key_lines[edit_line]+key_linepos, sizeof(stmp));
 	}
 
 	s = key_lines[edit_line]+1;
@@ -190,9 +190,9 @@ static void CompleteCommand (void)
 		if (count == 1)
 		{
 		//	key_lines[edit_line][1] = '/';
-		//	Q_strlcpy (key_lines[edit_line]+2, matches[0], MAXCMDLINE-2);
+		//	q_strlcpy (key_lines[edit_line]+2, matches[0], MAXCMDLINE-2);
 		//	key_linepos = strlen(matches[0])+2;
-			Q_strlcpy (key_lines[edit_line]+1, matches[0], MAXCMDLINE-1);
+			q_strlcpy (key_lines[edit_line]+1, matches[0], MAXCMDLINE-1);
 			key_linepos = strlen(matches[0])+1;
 			key_lines[edit_line][key_linepos] = ' ';
 			key_linepos++;
@@ -246,7 +246,7 @@ finish:
 	{
 		// put back the remainder of the original text
 		// which was lost after the trimming
-		Q_strlcpy (key_lines[edit_line]+key_linepos, stmp, MAXCMDLINE-key_linepos);
+		q_strlcpy (key_lines[edit_line]+key_linepos, stmp, MAXCMDLINE-key_linepos);
 	}
 }
 
@@ -541,7 +541,7 @@ static int Key_StringToKeynum (const char *str)
 
 	for (kn = keynames; kn->name; kn++)
 	{
-		if (!Q_strcasecmp(str,kn->name))
+		if (!q_strcasecmp(str,kn->name))
 			return kn->keynum;
 	}
 	return -1;
@@ -676,9 +676,9 @@ static void Key_Bind_f (void)
 	cmd[0] = 0;		// start out with a null string
 	for (i = 2; i < c; i++)
 	{
-		Q_strlcat (cmd, Cmd_Argv(i), sizeof(cmd));
+		q_strlcat (cmd, Cmd_Argv(i), sizeof(cmd));
 		if (i != (c-1))
-			Q_strlcat (cmd, " ", sizeof(cmd));
+			q_strlcat (cmd, " ", sizeof(cmd));
 	}
 
 	Key_SetBinding (b, cmd);

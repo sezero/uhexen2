@@ -2,7 +2,7 @@
 	net_wins.c
 	winsock udp driver
 
-	$Id: net_wins.c,v 1.25 2007-08-29 01:15:20 sezero Exp $
+	$Id: net_wins.c,v 1.26 2007-09-22 15:27:16 sezero Exp $
 */
 
 
@@ -417,7 +417,7 @@ char *WINS_AddrToString (struct qsockaddr *addr)
 	int		haddr;
 
 	haddr = ntohl(((struct sockaddr_in *)addr)->sin_addr.s_addr);
-	snprintf (buffer, sizeof (buffer), "%d.%d.%d.%d:%d", (haddr >> 24) & 0xff,
+	q_snprintf (buffer, sizeof (buffer), "%d.%d.%d.%d:%d", (haddr >> 24) & 0xff,
 			  (haddr >> 16) & 0xff, (haddr >> 8) & 0xff, haddr & 0xff,
 			  ntohs(((struct sockaddr_in *)addr)->sin_port));
 	return buffer;

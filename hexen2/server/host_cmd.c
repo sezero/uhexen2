@@ -2,7 +2,7 @@
 	host_cmd.c
 	console commands
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/server/host_cmd.c,v 1.32 2007-08-29 16:32:47 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/server/host_cmd.c,v 1.33 2007-09-22 15:27:15 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -221,7 +221,7 @@ static void Host_Map_f (void)
 		info_mask2 = 0;
 
 	svs.serverflags = 0;		// haven't completed an episode yet
-	Q_strlcpy (name, Cmd_Argv(1), sizeof(name));
+	q_strlcpy (name, Cmd_Argv(1), sizeof(name));
 
 	SV_SpawnServer (name, NULL);
 }
@@ -250,12 +250,12 @@ static void Host_Changelevel_f (void)
 		return;
 	}
 
-	Q_strlcpy (level, Cmd_Argv(1), sizeof(level));
+	q_strlcpy (level, Cmd_Argv(1), sizeof(level));
 	if (Cmd_Argc() == 2)
 		startspot = NULL;
 	else
 	{
-		Q_strlcpy (_startspot, Cmd_Argv(2), sizeof(_startspot));
+		q_strlcpy (_startspot, Cmd_Argv(2), sizeof(_startspot));
 		startspot = _startspot;
 	}
 
@@ -287,12 +287,12 @@ static void Host_Changelevel2_f (void)
 		return;
 	}
 
-	Q_strlcpy (level, Cmd_Argv(1), sizeof(level));
+	q_strlcpy (level, Cmd_Argv(1), sizeof(level));
 	if (Cmd_Argc() == 2)
 		startspot = NULL;
 	else
 	{
-		Q_strlcpy (_startspot, Cmd_Argv(2), sizeof(_startspot));
+		q_strlcpy (_startspot, Cmd_Argv(2), sizeof(_startspot));
 		startspot = _startspot;
 	}
 
@@ -333,10 +333,10 @@ static void Host_Restart_f (void)
 		return;
 	}
 
-	Q_strlcpy (mapname, sv.name, sizeof(mapname));	// must copy out, because it gets cleared
-	Q_strlcpy (startspot, sv.startspot, sizeof(startspot));
+	q_strlcpy (mapname, sv.name, sizeof(mapname));	// must copy out, because it gets cleared
+	q_strlcpy (startspot, sv.startspot, sizeof(startspot));
 
-	if (Cmd_Argc() == 2 && Q_strcasecmp(Cmd_Argv(1),"restore") == 0)
+	if (Cmd_Argc() == 2 && q_strcasecmp(Cmd_Argv(1),"restore") == 0)
 	{
 		if (LoadGamestate (mapname, startspot, 3))
 		{
@@ -470,7 +470,7 @@ static void Host_Savegame_f (void)
 	if (error_state)
 		return;
 
-	if (snprintf(savename, sizeof(savename), "%s/%s", fs_userdir, Cmd_Argv(1)) >= sizeof(savename))
+	if (q_snprintf(savename, sizeof(savename), "%s/%s", fs_userdir, Cmd_Argv(1)) >= sizeof(savename))
 	{
 		Con_Printf ("%s: save directory name too long\n", __thisfunc__);
 		return;
@@ -483,17 +483,17 @@ static void Host_Savegame_f (void)
 
 	Host_RemoveGIPFiles(savename);
 
-	snprintf (savename, sizeof(savename), "%s/clients.gip", fs_userdir);
+	q_snprintf (savename, sizeof(savename), "%s/clients.gip", fs_userdir);
 	unlink(savename);
 
-	snprintf (savedest, sizeof(savedest), "%s/%s", fs_userdir, Cmd_Argv(1));
+	q_snprintf (savedest, sizeof(savedest), "%s/%s", fs_userdir, Cmd_Argv(1));
 	Con_Printf ("Saving game to %s...\n", savedest);
 
 	error_state = Host_CopyFiles(fs_userdir, "*.gip", savedest);
 	if (error_state)
 		goto finish;
 
-	if (snprintf(savedest, sizeof(savedest), "%s/%s/info.dat", fs_userdir, Cmd_Argv(1)) >= sizeof(savedest))
+	if (q_snprintf(savedest, sizeof(savedest), "%s/%s/info.dat", fs_userdir, Cmd_Argv(1)) >= sizeof(savedest))
 	{
 		Host_Error("%s: %d: string buffer overflow!", __thisfunc__, __LINE__);
 		return;
@@ -564,14 +564,14 @@ static void Host_Loadgame_f (void)
 
 	Host_RemoveGIPFiles(NULL);
 
-	if (snprintf(savename, sizeof(savename), "%s/%s", fs_userdir, Cmd_Argv(1)) >= sizeof(savename))
+	if (q_snprintf(savename, sizeof(savename), "%s/%s", fs_userdir, Cmd_Argv(1)) >= sizeof(savename))
 	{
 		Con_Printf ("%s: save directory name too long\n", __thisfunc__);
 		return;
 	}
 	Con_Printf ("Loading game from %s...\n", savename);
 
-	if (snprintf(savedest, sizeof(savedest), "%s/info.dat", savename) >= sizeof(savedest))
+	if (q_snprintf(savedest, sizeof(savedest), "%s/info.dat", savename) >= sizeof(savedest))
 	{
 		Host_Error("%s: %d: string buffer overflow!", __thisfunc__, __LINE__);
 		return;
@@ -646,7 +646,7 @@ static void Host_Loadgame_f (void)
 
 	Host_RemoveGIPFiles(fs_userdir);
 
-	snprintf (savedest, sizeof(savedest), "%s/%s", fs_userdir, Cmd_Argv(1));
+	q_snprintf (savedest, sizeof(savedest), "%s/%s", fs_userdir, Cmd_Argv(1));
 	error_state = Host_CopyFiles(savedest, "*.gip", fs_userdir);
 	if (error_state)
 	{
@@ -687,7 +687,7 @@ int SaveGamestate (qboolean ClientsOnly)
 		start = 1;
 		end = svs.maxclients+1;
 
-		if (snprintf(savename, sizeof(savename), "%s/clients.gip", fs_userdir) >= sizeof(savename))
+		if (q_snprintf(savename, sizeof(savename), "%s/clients.gip", fs_userdir) >= sizeof(savename))
 		{
 			Host_Error("%s: %d: string buffer overflow!", __thisfunc__, __LINE__);
 			return -1;
@@ -698,7 +698,7 @@ int SaveGamestate (qboolean ClientsOnly)
 		start = 1;
 		end = sv.num_edicts;
 
-		if (snprintf(savename, sizeof(savename), "%s/%s.gip", fs_userdir, sv.name) >= sizeof(savename))
+		if (q_snprintf(savename, sizeof(savename), "%s/%s.gip", fs_userdir, sv.name) >= sizeof(savename))
 		{
 			Host_Error("%s: %d: string buffer overflow!", __thisfunc__, __LINE__);
 			return -1;
@@ -856,7 +856,7 @@ static int LoadGamestate (const char *level, const char *startspot, int ClientsM
 			Con_Printf ("%s: server not active\n", __thisfunc__);
 			return -1;
 		}
-		if (snprintf(savename, sizeof(savename), "%s/clients.gip", fs_userdir) >= sizeof(savename))
+		if (q_snprintf(savename, sizeof(savename), "%s/clients.gip", fs_userdir) >= sizeof(savename))
 		{
 			Host_Error("%s: %d: string buffer overflow!", __thisfunc__, __LINE__);
 			return -1;
@@ -864,7 +864,7 @@ static int LoadGamestate (const char *level, const char *startspot, int ClientsM
 	}
 	else
 	{
-		if (snprintf(savename, sizeof(savename), "%s/%s.gip", fs_userdir, level) >= sizeof(savename))
+		if (q_snprintf(savename, sizeof(savename), "%s/%s.gip", fs_userdir, level) >= sizeof(savename))
 		{
 			Host_Error("%s: %d: string buffer overflow!", __thisfunc__, __LINE__);
 			return -1;
@@ -919,7 +919,7 @@ static int LoadGamestate (const char *level, const char *startspot, int ClientsM
 		for (i = 0; i < MAX_LIGHTSTYLES; i++)
 		{
 			fscanf (f, "%s\n", str);
-			Q_strlcpy (sv.lightstyles[i], str, sizeof(sv.lightstyles[0]));
+			q_strlcpy (sv.lightstyles[i], str, sizeof(sv.lightstyles[0]));
 		}
 		SV_LoadEffects (f);
 	}
@@ -1213,12 +1213,12 @@ static void Host_Say (qboolean teamonly)
 
 // turn on color set 1
 	if (!fromServer)
-		snprintf (text, sizeof(text), "%c%s: ", 1, save->name);
+		q_snprintf (text, sizeof(text), "%c%s: ", 1, save->name);
 	else
-		snprintf (text, sizeof(text), "%c<%s> ", 1, hostname.string);
+		q_snprintf (text, sizeof(text), "%c<%s> ", 1, hostname.string);
 
-	Q_strlcat (text, p, sizeof(text));
-	if (Q_strlcat (text, "\n", sizeof(text)) >= sizeof(text))
+	q_strlcat (text, p, sizeof(text));
+	if (q_strlcat (text, "\n", sizeof(text)) >= sizeof(text))
 		text[sizeof(text)-2] = '\n';
 
 	for (j = 0, client = svs.clients; j < svs.maxclients; j++, client++)
@@ -1262,8 +1262,8 @@ static void Host_Tell_f (void)
 	if (Cmd_Argc () < 3)
 		return;
 
-	Q_strlcpy(text, host_client->name, sizeof(text));
-	Q_strlcat(text, ": ", sizeof(text));
+	q_strlcpy(text, host_client->name, sizeof(text));
+	q_strlcat(text, ": ", sizeof(text));
 
 	p = Cmd_Args();
 
@@ -1275,8 +1275,8 @@ static void Host_Tell_f (void)
 	}
 
 // check length & truncate if necessary
-	Q_strlcat (text, p, sizeof(text));
-	if (Q_strlcat (text, "\n", sizeof(text)) >= sizeof(text))
+	q_strlcat (text, p, sizeof(text));
+	if (q_strlcat (text, "\n", sizeof(text)) >= sizeof(text))
 		text[sizeof(text)-2] = '\n';
 
 	save = host_client;
@@ -1285,7 +1285,7 @@ static void Host_Tell_f (void)
 		if (!client->active || !client->spawned)
 			continue;
 
-		if (Q_strcasecmp(client->name, Cmd_Argv(1)))
+		if (q_strcasecmp(client->name, Cmd_Argv(1)))
 			continue;
 		host_client = client;
 		SV_ClientPrintf (0, "%s", text);
@@ -1633,7 +1633,7 @@ static void Host_Kick_f (void)
 		{
 			if (!host_client->active)
 				continue;
-			if (Q_strcasecmp(host_client->name, Cmd_Argv(1)) == 0)
+			if (q_strcasecmp(host_client->name, Cmd_Argv(1)) == 0)
 				break;
 		}
 	}

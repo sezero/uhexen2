@@ -2,7 +2,7 @@
 	cmdlib.c
 	functions common to all of the utilities
 
-	$Id: cmdlib.c,v 1.11 2007-07-11 16:47:20 sezero Exp $
+	$Id: cmdlib.c,v 1.12 2007-09-22 15:27:36 sezero Exp $
 */
 
 
@@ -65,11 +65,11 @@ int Sys_kbhit (void)
 
 /*
 ==============
-Q_strlwr and Q_strupr
+q_strlwr and q_strupr
 
 ==============
 */
-char *Q_strlwr (char *str)
+char *q_strlwr (char *str)
 {
 	char	*c;
 	c = str;
@@ -81,7 +81,7 @@ char *Q_strlwr (char *str)
 	return str;
 }
 
-char *Q_strupr (char *str)
+char *q_strupr (char *str)
 {
 	char	*c;
 	c = str;
@@ -92,6 +92,41 @@ char *Q_strupr (char *str)
 	}
 	return str;
 }
+
+/*
+==============
+q_snprintf and q_vsnprintf
+
+==============
+*/
+#if defined(SNPRINTF_RETURNS_NEGATIVE) || defined(SNPRINTF_DOESNT_TERMINATE)
+int q_vsnprintf(char *str, size_t size, const char *format, va_list args)
+{
+	int		ret;
+
+	ret = vsnprintf_func (str, size, format, args);
+# if defined(SNPRINTF_RETURNS_NEGATIVE)
+	if (ret < 0)
+		ret = (int)size;
+# endif
+# if defined(SNPRINTF_DOESNT_TERMINATE)
+	if (ret >= (int)size)
+		str[size - 1] = '\0';
+# endif
+	return ret;
+}
+
+int q_snprintf (char *str, size_t size, const char *format, ...)
+{
+	int		ret;
+	va_list		argptr;
+
+	va_start (argptr, format);
+	ret = q_vsnprintf (str, size, format, argptr);
+	va_end (argptr);
+	return ret;
+}
+#endif	/* SNPRINTF_RETURNS_NEGATIVE || SNPRINTF_DOESNT_TERMINATE */
 
 // CODE --------------------------------------------------------------------
 
@@ -291,7 +326,7 @@ int CheckParm (const char *check)
 
 	for (i = 1; i < myargc; i++)
 	{
-		if ( !Q_strcasecmp(check, myargv[i]) )
+		if ( !q_strcasecmp(check, myargv[i]) )
 		{
 			return i;
 		}

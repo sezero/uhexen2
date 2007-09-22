@@ -36,7 +36,7 @@ ready to go.
  	if (midi_endmusicfnc)
  		Mix_HookMusicFinished(midi_endmusicfnc);
  
-+	Q_snprintf_err(musicdir, sizeof(musicdir), "%s/music", fs_userdir);
++	qerr_snprintf(musicdir, sizeof(musicdir), "%s/music", fs_userdir);
 +	Sys_mkdir (musicdir);
 +
  	Con_Printf("MIDI music initialized.\n");
@@ -77,7 +77,7 @@ ready to go.
  		return;
  	}
  
--	snprintf (tempName, sizeof(tempName), "%s.%s", Name, "mid");
+-	q_snprintf (tempName, sizeof(tempName), "%s.%s", Name, "mid");
 -	FS_OpenFile (va("%s/%s", "midi", tempName), &midiFile, false);
 +	search_cdrip = 0;
 +retry:
@@ -108,11 +108,11 @@ ready to go.
 +				++i;
 +				continue;
 +			}
-+			snprintf (tempName, sizeof(tempName), "track%02d.%s", cl.cdtrack, MusicFile[i].ext);
++			q_snprintf (tempName, sizeof(tempName), "track%02d.%s", cl.cdtrack, MusicFile[i].ext);
 +		}
 +		else
 +		{
-+			snprintf (tempName, sizeof(tempName), "%s.%s", Name, MusicFile[i].ext);
++			q_snprintf (tempName, sizeof(tempName), "%s.%s", Name, MusicFile[i].ext);
 +		}
 +		FS_OpenFile (va("%s/%s", MusicFile[i].type == MUS_MID ? MIDI_DIRNAME : MUSIC_DIRNAME, tempName), &midiFile, false);
 +		if (midiFile)
@@ -131,8 +131,8 @@ ready to go.
  			int		ret;
  
  			Con_Printf("Extracting %s from pakfile\n", tempName);
--			snprintf (midiName, sizeof(midiName), "%s/%s.%s", host_parms->userdir, TEMP_MUSICNAME, "mid");
-+			snprintf (midiName, sizeof(midiName), "%s/%s.%s", host_parms->userdir, TEMP_MUSICNAME, MusicFile[i].ext);
+-			q_snprintf (midiName, sizeof(midiName), "%s/%s.%s", host_parms->userdir, TEMP_MUSICNAME, "mid");
++			q_snprintf (midiName, sizeof(midiName), "%s/%s.%s", host_parms->userdir, TEMP_MUSICNAME, MusicFile[i].ext);
  			ret = FS_CopyFromFile (midiFile, midiName, fs_filesize);
  			fclose (midiFile);
  			if (ret != 0)
@@ -140,8 +140,8 @@ ready to go.
  		else	/* use the file directly */
  		{
  			fclose (midiFile);
--			snprintf (midiName, sizeof(midiName), "%s/%s/%s", fs_filepath, "midi", tempName);
-+			snprintf (midiName, sizeof(midiName), "%s/%s/%s",
+-			q_snprintf (midiName, sizeof(midiName), "%s/%s/%s", fs_filepath, "midi", tempName);
++			q_snprintf (midiName, sizeof(midiName), "%s/%s/%s",
 +				  fs_filepath, MusicFile[i].type == MUS_MID ? MIDI_DIRNAME : MUSIC_DIRNAME, tempName);
  		}
  	}

@@ -1,6 +1,6 @@
 /*
 	midi_win.c
-	$Id: midi.c,v 1.26 2007-09-21 11:05:10 sezero Exp $
+	$Id: midi.c,v 1.27 2007-09-22 15:27:16 sezero Exp $
 
 	MIDI module for Win32
 */
@@ -73,11 +73,11 @@ static void MIDI_Loop_f (void)
 {
 	if (Cmd_Argc () == 2)
 	{
-		if (Q_strcasecmp(Cmd_Argv(1),"on") == 0 || Q_strcasecmp(Cmd_Argv(1),"1") == 0) 
+		if (q_strcasecmp(Cmd_Argv(1),"on") == 0 || q_strcasecmp(Cmd_Argv(1),"1") == 0) 
 			MIDI_Loop(MIDI_ENABLE_LOOP);
-		else if (Q_strcasecmp(Cmd_Argv(1),"off") == 0 || Q_strcasecmp(Cmd_Argv(1),"0") == 0) 
+		else if (q_strcasecmp(Cmd_Argv(1),"off") == 0 || q_strcasecmp(Cmd_Argv(1),"0") == 0) 
 			MIDI_Loop(MIDI_DISABLE_LOOP);
-		else if (Q_strcasecmp(Cmd_Argv(1),"toggle") == 0) 
+		else if (q_strcasecmp(Cmd_Argv(1),"toggle") == 0) 
 			MIDI_Loop(MIDI_TOGGLE_LOOP);
 	}
 
@@ -183,7 +183,7 @@ void MIDI_Play(const char *Name)
 		return;
 	}
 
-	snprintf (Temp, sizeof(Temp), "midi/%s.mid", Name);
+	q_snprintf (Temp, sizeof(Temp), "midi/%s.mid", Name);
 
 	if (StreamBufferSetup(Temp))
 	{

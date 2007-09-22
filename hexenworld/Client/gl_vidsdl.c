@@ -2,7 +2,7 @@
 	gl_vidsdl.c -- SDL GL vid component
 	Select window size and mode and init SDL in GL mode.
 
-	$Id: gl_vidsdl.c,v 1.167 2007-09-14 15:55:47 sezero Exp $
+	$Id: gl_vidsdl.c,v 1.168 2007-09-22 15:27:18 sezero Exp $
 
 	Changed 7/11/04 by S.A.
 	- Fixed fullscreen opengl mode, window sizes
@@ -302,7 +302,7 @@ static void VID_ConWidth (int modenum)
 	else
 		vid_conscale = false;
 finish:
-	snprintf (vid_consize, sizeof(vid_consize), "x%.2f (at %ux%u)",
+	q_snprintf (vid_consize, sizeof(vid_consize), "x%.2f (at %ux%u)",
 			(float)modelist[vid_modenum].width/vid.conwidth, vid.conwidth, vid.conheight);
 }
 
@@ -351,7 +351,7 @@ set_size:
 	else
 		vid_conscale = false;
 
-	snprintf (vid_consize, sizeof(vid_consize), "x%.2f (at %ux%u)",
+	q_snprintf (vid_consize, sizeof(vid_consize), "x%.2f (at %ux%u)",
 			(float)modelist[vid_modenum].width/vid.conwidth, vid.conwidth, vid.conheight);
 }
 
@@ -702,7 +702,7 @@ static qboolean GL_OpenLibrary(const char *name)
 		// then try loading it
 		if ( name && !strchr(name, '/') )
 		{
-			snprintf (gl_liblocal, MAX_OSPATH, "%s/%s", fs_basedir, name);
+			q_snprintf (gl_liblocal, MAX_OSPATH, "%s/%s", fs_basedir, name);
 			if (access(gl_liblocal, R_OK) == -1)
 				return false;
 
@@ -795,9 +795,9 @@ static void GL_Init (void)
 	Con_SafePrintf("OpenGL max.texture size: %i\n", gl_max_size);
 
 	is_3dfx = false;
-	if (!Q_strncasecmp(gl_renderer, "3dfx", 4)	  ||
-	    !Q_strncasecmp(gl_renderer, "SAGE Glide", 10) ||
-	    !Q_strncasecmp(gl_renderer, "Mesa Glide", 10))
+	if (!q_strncasecmp(gl_renderer, "3dfx", 4)	  ||
+	    !q_strncasecmp(gl_renderer, "SAGE Glide", 10) ||
+	    !q_strncasecmp(gl_renderer, "Mesa Glide", 10))
 	{
 	// This should hopefully detect Voodoo1 and Voodoo2
 	// hardware and possibly Voodoo Rush.
@@ -807,7 +807,7 @@ static void GL_Init (void)
 		is_3dfx = true;
 	}
 
-	if (!Q_strncasecmp(gl_renderer, "PowerVR", 7))
+	if (!q_strncasecmp(gl_renderer, "PowerVR", 7))
 		fullsbardraw = true;	// this actually seems useless, things aren't like those in quake
 
 	CheckMultiTextureExtensions();
@@ -1091,9 +1091,9 @@ void VID_SetPalette (unsigned char *palette)
 			if (m >= 1000)
 				m = 0;
 		}
-		snprintf(s, sizeof(s), "%s/glhexen", fs_userdir);
+		q_snprintf(s, sizeof(s), "%s/glhexen", fs_userdir);
 		Sys_mkdir (s);
-		snprintf(s, sizeof(s), "%s/glhexen/15to8.pal", fs_userdir);
+		q_snprintf(s, sizeof(s), "%s/glhexen/15to8.pal", fs_userdir);
 		f = fopen(s, "wb");
 		if (f)
 		{
@@ -1272,7 +1272,7 @@ static void VID_PrepareModes (SDL_Rect **sdl_modes)
 		wmodelist[num_wmodes].halfscreen = 0;
 		wmodelist[num_wmodes].fullscreen = 0;
 		wmodelist[num_wmodes].bpp = 16;
-		snprintf (wmodelist[num_wmodes].modedesc, MAX_DESC, "%d x %d", std_modes[i].width, std_modes[i].height);
+		q_snprintf (wmodelist[num_wmodes].modedesc, MAX_DESC, "%d x %d", std_modes[i].width, std_modes[i].height);
 		num_wmodes++;
 	}
 
@@ -1342,7 +1342,7 @@ no_fmodes:
 			fmodelist[num_fmodes].halfscreen = 0;
 			fmodelist[num_fmodes].fullscreen = 1;
 			fmodelist[num_fmodes].bpp = 16;
-			snprintf (fmodelist[num_fmodes].modedesc, MAX_DESC, "%d x %d", sdl_modes[i]->w, sdl_modes[i]->h);
+			q_snprintf (fmodelist[num_fmodes].modedesc, MAX_DESC, "%d x %d", sdl_modes[i]->w, sdl_modes[i]->h);
 			num_fmodes++;
 		}
 	}
@@ -1487,11 +1487,11 @@ void	VID_Init (unsigned char *palette)
 
 #if DO_MESH_CACHE
 	// prepare directories for caching mesh files
-	snprintf (gldir, sizeof(gldir), "%s/glhexen", fs_userdir);
+	q_snprintf (gldir, sizeof(gldir), "%s/glhexen", fs_userdir);
 	Sys_mkdir (gldir);
-	snprintf (gldir, sizeof(gldir), "%s/glhexen/boss", fs_userdir);
+	q_snprintf (gldir, sizeof(gldir), "%s/glhexen/boss", fs_userdir);
 	Sys_mkdir (gldir);
-	snprintf (gldir, sizeof(gldir), "%s/glhexen/puzzle", fs_userdir);
+	q_snprintf (gldir, sizeof(gldir), "%s/glhexen/puzzle", fs_userdir);
 	Sys_mkdir (gldir);
 #endif
 
@@ -1616,7 +1616,7 @@ void	VID_Init (unsigned char *palette)
 		modelist[*nummodes].halfscreen = 0;
 		modelist[*nummodes].fullscreen = 1;
 		modelist[*nummodes].bpp = 16;
-		snprintf (modelist[*nummodes].modedesc, MAX_DESC, "%d x %d (user mode)", width, height);
+		q_snprintf (modelist[*nummodes].modedesc, MAX_DESC, "%d x %d (user mode)", width, height);
 		Cvar_SetValue ("vid_mode", *nummodes);
 		(*nummodes)++;
 	}

@@ -2,7 +2,7 @@
 	sv_send.c
 	server communication module
 
-	$Id: sv_send.c,v 1.21 2007-09-14 14:11:24 sezero Exp $
+	$Id: sv_send.c,v 1.22 2007-09-22 15:27:34 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -103,7 +103,7 @@ void CON_Printf (unsigned int flags, const char *fmt, ...)
 		if (devlog && sv_logfile)	/* full logging */
 		{
 			va_start (argptr, fmt);
-			vsnprintf (msg, sizeof(msg), fmt, argptr);
+			q_vsnprintf (msg, sizeof(msg), fmt, argptr);
 			va_end (argptr);
 			fprintf (sv_logfile, "%s", msg);
 			fflush (sv_logfile);
@@ -112,7 +112,7 @@ void CON_Printf (unsigned int flags, const char *fmt, ...)
 	}
 
 	va_start (argptr, fmt);
-	vsnprintf (msg, sizeof(msg), fmt, argptr);
+	q_vsnprintf (msg, sizeof(msg), fmt, argptr);
 	va_end (argptr);
 
 	if (flags & _PRINT_TERMONLY)
@@ -161,7 +161,7 @@ void SV_ClientPrintf (client_t *cl, int level, const char *fmt, ...)
 		return;
 
 	va_start (argptr, fmt);
-	vsnprintf (string, sizeof (string), fmt, argptr);
+	q_vsnprintf (string, sizeof (string), fmt, argptr);
 	va_end (argptr);
 
 	MSG_WriteByte (&cl->netchan.message, svc_print);
@@ -184,7 +184,7 @@ void SV_BroadcastPrintf (int level, const char *fmt, ...)
 	int			i;
 
 	va_start (argptr, fmt);
-	vsnprintf (string, sizeof(string), fmt, argptr);
+	q_vsnprintf (string, sizeof(string), fmt, argptr);
 	va_end (argptr);
 
 	Sys_Printf ("%s", string);	// print to the console
@@ -216,7 +216,7 @@ void SV_BroadcastCommand (const char *fmt, ...)
 	if (!sv.state)
 		return;
 	va_start (argptr, fmt);
-	vsnprintf (string, sizeof (string), fmt, argptr);
+	q_vsnprintf (string, sizeof (string), fmt, argptr);
 	va_end (argptr);
 
 	MSG_WriteByte (&sv.reliable_datagram, svc_stufftext);

@@ -2,7 +2,7 @@
 	snd_mem.c
 	sound caching
 
-	$Id: snd_mem.c,v 1.19 2007-09-14 14:16:23 sezero Exp $
+	$Id: snd_mem.c,v 1.20 2007-09-22 15:27:19 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -93,8 +93,8 @@ sfxcache_t *S_LoadSound (sfx_t *s)
 //	Con_Printf ("%s: %x\n", __thisfunc__, (int)stackbuf);
 
 // load it in
-	Q_strlcpy(namebuffer, "sound/", sizeof(namebuffer));
-	Q_strlcat(namebuffer, s->name, sizeof(namebuffer));
+	q_strlcpy(namebuffer, "sound/", sizeof(namebuffer));
+	q_strlcat(namebuffer, s->name, sizeof(namebuffer));
 
 //	Con_Printf ("loading %s\n",namebuffer);
 

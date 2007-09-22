@@ -2,7 +2,7 @@
 	gl_draw.c
 	this is the only file outside the refresh that touches the vid buffer
 
-	$Id: gl_draw.c,v 1.106 2007-09-14 14:10:07 sezero Exp $
+	$Id: gl_draw.c,v 1.107 2007-09-22 15:27:17 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -204,7 +204,7 @@ qpic_t	*Draw_CachePic (const char *path)
 	if (menu_numcachepics == MAX_CACHED_PICS)
 		Sys_Error ("menu_numcachepics == MAX_CACHED_PICS");
 	menu_numcachepics++;
-	Q_strlcpy (pic->name, path, MAX_QPATH);
+	q_strlcpy (pic->name, path, MAX_QPATH);
 
 //
 // load the pic from disk
@@ -272,7 +272,7 @@ qpic_t *Draw_CachePicNoTrans (const char *path)
 	if (menu_numcachepics == MAX_CACHED_PICS)
 		Sys_Error ("menu_numcachepics == MAX_CACHED_PICS");
 	menu_numcachepics++;
-	Q_strlcpy (pic->name, path, MAX_QPATH);
+	q_strlcpy (pic->name, path, MAX_QPATH);
 
 //
 // load the pic from disk
@@ -341,7 +341,7 @@ static void Draw_TextureMode_f (void)
 
 	for (i = 0; i < NUM_GL_FILTERS; i++)
 	{
-		if (!Q_strcasecmp (gl_texmodes[i].name, Cmd_Argv(1) ) )
+		if (!q_strcasecmp (gl_texmodes[i].name, Cmd_Argv(1) ) )
 			break;
 	}
 	if (i == NUM_GL_FILTERS)
@@ -1019,7 +1019,7 @@ void Draw_TransPicTranslate (int x, int y, qpic_t *pic, byte *translation, int p
 	// See if the texture has already been loaded; if not, do it (Pa3PyX)
 	if (!plyrtex[p_class - 1][top][bottom])
 	{
-		snprintf(texname, 19, "plyrmtex%i%i%i", p_class, top, bottom);
+		q_snprintf(texname, 19, "plyrmtex%i%i%i", p_class, top, bottom);
 		plyrtex[p_class - 1][top][bottom] = GL_LoadTexture(texname, PLAYER_DEST_WIDTH, PLAYER_DEST_HEIGHT, (byte *)trans, false, true, 0, true);
 	}
 	GL_Bind(plyrtex[p_class - 1][top][bottom]);
@@ -1091,7 +1091,7 @@ void Draw_ConsoleBackground (int lines)
 	// print the version number and platform
 //	y = lines-186;
 	y = lines-14;
-	Q_strlcpy (ver, ENGINE_WATERMARK, sizeof(ver));
+	q_strlcpy (ver, ENGINE_WATERMARK, sizeof(ver));
 	x = vid.conwidth - (strlen(ver)*8 + 11);
 #if defined(H2W)
 	if (!cls.download)
@@ -1895,7 +1895,7 @@ GLuint GL_LoadTexture (const char *identifier, int width, int height, byte *data
 
 	glt = &gltextures[numgltextures];
 	numgltextures++;
-	Q_strlcpy (glt->identifier, identifier, MAX_QPATH);
+	q_strlcpy (glt->identifier, identifier, MAX_QPATH);
 	glt->texnum = texture_extension_number;
 	texture_extension_number++;
 

@@ -19,7 +19,7 @@
 
 /*
 	entities.c
-	$Id: entities.c,v 1.16 2007-09-14 14:11:24 sezero Exp $
+	$Id: entities.c,v 1.17 2007-09-22 15:27:42 sezero Exp $
 */
 
 #include "util_inc.h"
@@ -327,7 +327,7 @@ void LoadEntities (void)
 
 			// Convert to Hexen2 Entities
 			// since the map has no color info anyway, we don't need to test this
-			if (!Q_strncasecmp(entity->classname, "light_torch", 11))
+			if (!q_strncasecmp(entity->classname, "light_torch", 11))
 			{
 			/*
 				In Hexen 2 :
@@ -343,7 +343,7 @@ void LoadEntities (void)
 				entity->lightcolor[1] = 128;
 				entity->lightcolor[2] = 64;
 			}
-			else if (!Q_strncasecmp(entity->classname, "light_flame", 11))
+			else if (!q_strncasecmp(entity->classname, "light_flame", 11))
 			{
 				// make it orange
 			/*

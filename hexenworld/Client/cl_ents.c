@@ -2,7 +2,7 @@
 	cl_ents.c
 	entity parsing and management
 
-	$Id: cl_ents.c,v 1.17 2007-06-30 11:19:47 sezero Exp $
+	$Id: cl_ents.c,v 1.18 2007-09-22 15:27:17 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -1751,7 +1751,7 @@ void CL_SetSolidPlayers (int playernum)
 		pent->model = 0;
 		VectorCopy(pplayer->origin, pent->origin);
 /*shitbox
-		if (!Q_strcasecmp(cl.model_precache[cl.players[playernum].modelindex]->name,"models/yakman.mdl"))
+		if (!q_strcasecmp(cl.model_precache[cl.players[playernum].modelindex]->name,"models/yakman.mdl"))
 		{//use golem hull
 			Sys_Error("Using beast model");
 			VectorCopy(beast_mins, pent->mins);

@@ -2,7 +2,7 @@
 	sv_main.c
 	server main program
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sv_main.c,v 1.62 2007-08-20 08:16:03 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sv_main.c,v 1.63 2007-09-22 15:27:14 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -326,7 +326,7 @@ void SV_StartSound (edict_t *entity, int channel, const char *sample, int volume
 	int			sound_num, ent;
 	int			i, field_mask;
 
-	if (Q_strcasecmp(sample,"misc/null.wav") == 0)
+	if (q_strcasecmp(sample,"misc/null.wav") == 0)
 	{
 		SV_StopSound(entity,channel);
 		return;
@@ -1921,7 +1921,7 @@ void SV_SpawnServer (const char *server, const char *startspot)
 /* if this is GL version, we need to tell D_FlushCaches() whether to flush
    OGL textures depending on mapname change. */
 #ifdef GLQUAKE
-	flush_textures = Q_strncasecmp(server, sv.name, 64) ? true : false;
+	flush_textures = q_strncasecmp(server, sv.name, 64) ? true : false;
 #endif
 
 //
@@ -2025,10 +2025,10 @@ void SV_SpawnServer (const char *server, const char *startspot)
 
 	sv.sound_precache[0][0] = '\0';
 	sv.model_precache[0][0] = '\0';
-	Q_strlcpy (sv.model_precache[1], sv.modelname, sizeof(sv.model_precache[0]));
+	q_strlcpy (sv.model_precache[1], sv.modelname, sizeof(sv.model_precache[0]));
 	for (i = 1; i < sv.worldmodel->numsubmodels; i++)
 	{
-		Q_strlcpy (sv.model_precache[1+i], localmodels[i], sizeof(sv.model_precache[0]));
+		q_strlcpy (sv.model_precache[1+i], localmodels[i], sizeof(sv.model_precache[0]));
 		sv.models[i+1] = Mod_ForName (localmodels[i], false);
 	}
 

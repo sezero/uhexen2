@@ -2,7 +2,7 @@
 	common.h
 	misc utilities used in client and server
 
-	$Id: common.h,v 1.50 2007-07-27 21:17:18 sezero Exp $
+	$Id: common.h,v 1.51 2007-09-22 15:27:17 sezero Exp $
 */
 
 #ifndef __HX2_COMMON_H
@@ -24,52 +24,83 @@
 #endif
 
 #if defined(PLATFORM_WINDOWS)
-#define Q_strncasecmp	strnicmp
-#define Q_strcasecmp	stricmp
+#define q_strncasecmp	_strnicmp
+#define q_strcasecmp	_stricmp
 #else
-#define Q_strncasecmp	strncasecmp
-#define Q_strcasecmp	strcasecmp
+#define q_strncasecmp	strncasecmp
+#define q_strcasecmp	strcasecmp
 #endif
 
-// strlcpy and strlcat :
+/* strlcpy and strlcat : */
 #include "strl_fn.h"
 
 #if HAVE_STRLCAT && HAVE_STRLCPY
-
-// use native library functions
-#define Q_strlcpy strlcpy
-#define Q_strlcat strlcat
-
+/* use native library functions */
+#define q_strlcpy	strlcpy
+#define q_strlcat	strlcat
 #else
-
-// use our own copies of strlcpy and strlcat taken from OpenBSD :
-extern size_t Q_strlcpy (char *dst, const char *src, size_t size);
-extern size_t Q_strlcat (char *dst, const char *src, size_t size);
-
+/* use our own copies of strlcpy and strlcat taken from OpenBSD */
+extern size_t q_strlcpy (char *dst, const char *src, size_t size);
+extern size_t q_strlcat (char *dst, const char *src, size_t size);
 #endif
 
-#define Q_strlcat_err(DST,SRC,SIZE) {							\
-	if (Q_strlcat((DST),(SRC),(SIZE)) >= (SIZE))					\
+/* snprintf and vsnprintf : */
+#undef	SNPRINTF_RETURNS_NEGATIVE
+#undef	SNPRINTF_DOESNT_TERMINATE
+
+/* platforms where (v)snprintf implementations return
+   a negative value upon error: DOS (DJGPP v2.0.4) and
+   Windows does that. Add more here. */
+#if defined(PLATFORM_WINDOWS) || defined(PLATFORM_DOS)
+#define	SNPRINTF_RETURNS_NEGATIVE	1
+#endif
+
+/* platform where (v)snprintf implementations may not
+   null-terminate the given buffer upon truncation :
+   Windows does that. Add more here. */
+#if defined(PLATFORM_WINDOWS)
+#define	SNPRINTF_DOESNT_TERMINATE	1
+#endif
+
+/* platform dependant (v)snprintf function names: */
+#if defined(PLATFORM_WINDOWS)
+#define	snprintf_func		_snprintf
+#define	vsnprintf_func		_vsnprintf
+#else
+#define	snprintf_func		snprintf
+#define	vsnprintf_func		vsnprintf
+#endif
+
+#if defined(SNPRINTF_RETURNS_NEGATIVE) || defined(SNPRINTF_DOESNT_TERMINATE)
+extern int q_snprintf (char *str, size_t size, const char *format, ...) __attribute__((format(printf,3,4)));
+extern int q_vsnprintf(char *str, size_t size, const char *format, va_list args);
+#else
+#define	q_snprintf		snprintf_func
+#define	q_vsnprintf		vsnprintf_func
+#endif
+
+#define qerr_strlcat(DST,SRC,SIZE) {							\
+	if (q_strlcat((DST),(SRC),(SIZE)) >= (SIZE))					\
 		Sys_Error("%s: %d: string buffer overflow!",__thisfunc__,__LINE__);	\
 }
-#define Q_strlcpy_err(DST,SRC,SIZE) {							\
-	if (Q_strlcpy((DST),(SRC),(SIZE)) >= (SIZE))					\
+#define qerr_strlcpy(DST,SRC,SIZE) {							\
+	if (q_strlcpy((DST),(SRC),(SIZE)) >= (SIZE))					\
 		Sys_Error("%s: %d: string buffer overflow!",__thisfunc__,__LINE__);	\
 }
 #if defined(__GNUC__) && !(defined(__STDC_VERSION__) && __STDC_VERSION__ >= 199901L)
-#define Q_snprintf_err(DST,SIZE,fmt,args...) {						\
-	if (snprintf((DST),(SIZE),fmt,##args) >= (SIZE))				\
+#define qerr_snprintf(DST,SIZE,fmt,args...) {						\
+	if (q_snprintf((DST),(SIZE),fmt,##args) >= (SIZE))				\
 		Sys_Error("%s: %d: string buffer overflow!",__thisfunc__,__LINE__);	\
 }
 #else
-#define Q_snprintf_err(DST,SIZE,...) {							\
-	if (snprintf((DST),(SIZE),__VA_ARGS__) >= (SIZE))				\
+#define qerr_snprintf(DST,SIZE,...) {							\
+	if (q_snprintf((DST),(SIZE),__VA_ARGS__) >= (SIZE))				\
 		Sys_Error("%s: %d: string buffer overflow!",__thisfunc__,__LINE__);	\
 }
 #endif
 
-extern char *Q_strlwr (char *str);
-extern char *Q_strupr (char *str);
+extern char *q_strlwr (char *str);
+extern char *q_strupr (char *str);
 
 //============================================================================
 

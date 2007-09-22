@@ -2,7 +2,7 @@
 	net_chan.c
 	net channel
 
-	$Id: net_chan.c,v 1.13 2007-09-14 14:10:07 sezero Exp $
+	$Id: net_chan.c,v 1.14 2007-09-22 15:27:19 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -104,7 +104,7 @@ void Netchan_OutOfBandPrint (netadr_t adr, const char *format, ...)
 	static char		string[8192];
 
 	va_start (argptr, format);
-	vsnprintf (string, sizeof (string), format, argptr);
+	q_vsnprintf (string, sizeof (string), format, argptr);
 	va_end (argptr);
 
 	Netchan_OutOfBand (adr, strlen(string), (byte *)string);

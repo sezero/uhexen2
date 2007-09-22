@@ -2,7 +2,7 @@
 	r_surf.c
 	surface-related refresh code
 
-	$Id: gl_rsurf.c,v 1.33 2007-09-14 14:10:01 sezero Exp $
+	$Id: gl_rsurf.c,v 1.34 2007-09-22 15:27:12 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -125,14 +125,14 @@ void GL_SetupLightmapFmt (qboolean check_cmdline)
 {
 	// only GL_LUMINANCE and GL_RGBA are actually supported
 	// commenting out other options
-	if (!Q_strcasecmp(gl_lightmapfmt.string, "GL_LUMINANCE"))
+	if (!q_strcasecmp(gl_lightmapfmt.string, "GL_LUMINANCE"))
 		gl_lightmap_format = GL_LUMINANCE;
-	else if (!Q_strcasecmp(gl_lightmapfmt.string, "GL_RGBA"))
+	else if (!q_strcasecmp(gl_lightmapfmt.string, "GL_RGBA"))
 		gl_lightmap_format = GL_RGBA;
 #if 0
-	else if (!Q_strcasecmp(gl_lightmapfmt.string, "GL_ALPHA"))
+	else if (!q_strcasecmp(gl_lightmapfmt.string, "GL_ALPHA"))
 		gl_lightmap_format = GL_ALPHA;
-	else if (!Q_strcasecmp(gl_lightmapfmt.string, "GL_INTENSITY"))
+	else if (!q_strcasecmp(gl_lightmapfmt.string, "GL_INTENSITY"))
 		gl_lightmap_format = GL_INTENSITY;
 #endif
 	else

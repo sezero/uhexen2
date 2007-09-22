@@ -2,7 +2,7 @@
 	debuglog.c
 	logging console output to a file
 
-	$Id: debuglog.c,v 1.4 2007-07-11 16:47:14 sezero Exp $
+	$Id: debuglog.c,v 1.5 2007-09-22 15:27:10 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -42,7 +42,7 @@ void LOG_Printf (const char *fmt, ...)
 	va_list		argptr;
 
 	va_start (argptr, fmt);
-	vsnprintf (logbuff, sizeof(logbuff), fmt, argptr);
+	q_vsnprintf (logbuff, sizeof(logbuff), fmt, argptr);
 	va_end (argptr);
 	LOG_Print (logbuff);
 }
@@ -70,7 +70,7 @@ void LOG_Init (quakeparms_t *parms)
 
 	inittime = time (NULL);
 	strftime (session, sizeof(session), "%m/%d/%Y %H:%M:%S", localtime(&inittime));
-	snprintf (logfilename, sizeof(logfilename), "%s/%s", parms->userdir, DEBUGLOG_FILENAME);
+	q_snprintf (logfilename, sizeof(logfilename), "%s/%s", parms->userdir, DEBUGLOG_FILENAME);
 
 	if ( COM_CheckParm("-condebug") || COM_CheckParm("-debuglog") )
 	{
@@ -98,25 +98,25 @@ void LOG_Init (quakeparms_t *parms)
 	LOG_Printf("LOG started on: %s - LOG LEVEL: %s\n", session, (con_debuglog & LOG_DEVEL) ? "full" : "normal");
 
 	// build the commandline args as a string
-	Q_strlcpy (logbuff, "Command line: ", sizeof(logbuff));
+	q_strlcpy (logbuff, "Command line: ", sizeof(logbuff));
 	for (i = 0, j = 0; i < parms->argc; i++)
 	{
 		if (parms->argv[i][0] && parms->argv[i][0] != ' ')
 		{
-			Q_strlcat (logbuff, parms->argv[i], sizeof(logbuff));
-			Q_strlcat (logbuff, " ", sizeof(logbuff));
+			q_strlcat (logbuff, parms->argv[i], sizeof(logbuff));
+			q_strlcat (logbuff, " ", sizeof(logbuff));
 			j++;
 		}
 	}
 	if (j)
 	{
 		logbuff[sizeof(logbuff)-2] = 0;
-		Q_strlcat (logbuff, "\n", sizeof(logbuff));
+		q_strlcat (logbuff, "\n", sizeof(logbuff));
 		LOG_Print (logbuff);
 	}
 	else
 	{
-		Q_strlcat (logbuff, "(none)\n", sizeof(logbuff));
+		q_strlcat (logbuff, "(none)\n", sizeof(logbuff));
 		LOG_Print (logbuff);
 	}
 

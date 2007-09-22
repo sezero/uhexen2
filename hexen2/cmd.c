@@ -2,7 +2,7 @@
 	cmd.c
 	Quake script command processing module
 
-	$Id: cmd.c,v 1.37 2007-09-07 15:38:05 sezero Exp $
+	$Id: cmd.c,v 1.38 2007-09-22 15:27:10 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -381,11 +381,11 @@ static void Cmd_Alias_f (void)
 	c = Cmd_Argc();
 	for (i = 2; i < c; i++)
 	{
-		Q_strlcat (cmd, Cmd_Argv(i), sizeof(cmd));
+		q_strlcat (cmd, Cmd_Argv(i), sizeof(cmd));
 		if (i != c - 1)
 			strcat (cmd, " ");
 	}
-	if (Q_strlcat(cmd, "\n", sizeof(cmd)) >= sizeof(cmd))
+	if (q_strlcat(cmd, "\n", sizeof(cmd)) >= sizeof(cmd))
 	{
 		Con_Printf("alias value too long!\n");
 		cmd[0] = '\n';	// nullify the string
@@ -661,7 +661,7 @@ void Cmd_ExecuteString (char *text, cmd_source_t src)
 // check functions
 	for (cmd = cmd_functions ; cmd ; cmd = cmd->next)
 	{
-		if ( !Q_strcasecmp(cmd_argv[0], cmd->name) )
+		if ( !q_strcasecmp(cmd_argv[0], cmd->name) )
 		{
 #if defined(H2W)
 			if (!cmd->function)
@@ -681,7 +681,7 @@ void Cmd_ExecuteString (char *text, cmd_source_t src)
 // check alias
 	for (a = cmd_alias ; a ; a = a->next)
 	{
-		if ( !Q_strcasecmp(cmd_argv[0], a->name) )
+		if ( !q_strcasecmp(cmd_argv[0], a->name) )
 		{
 			Cbuf_InsertText (a->value);
 			return;
@@ -710,7 +710,7 @@ int Cmd_CheckParm (const char *parm)
 		Sys_Error ("%s: null input\n", __thisfunc__);
 
 	for (i = 1; i < Cmd_Argc (); i++)
-		if ( !Q_strcasecmp(parm, Cmd_Argv (i)) )
+		if ( !q_strcasecmp(parm, Cmd_Argv (i)) )
 			return i;
 
 	return 0;
@@ -739,7 +739,7 @@ int ListCommands (const char *prefix, char **buf, int pos)
 			continue;
 		}
 
-		if ( !Q_strncasecmp(prefix, cmd->name, preLen) )
+		if ( !q_strncasecmp(prefix, cmd->name, preLen) )
 		{
 			if (!buf)	// completion procedures always send a buf
 			{
@@ -789,7 +789,7 @@ int ListCvars (const char *prefix, char **buf, int pos)
 			continue;
 		}
 
-		if ( !Q_strncasecmp(prefix, var->name, preLen) )
+		if ( !q_strncasecmp(prefix, var->name, preLen) )
 		{
 			if (!buf)	// completion procedures always send a buf
 			{
@@ -838,7 +838,7 @@ int ListAlias (const char *prefix, char **buf, int pos)
 			continue;
 		}
 
-		if ( !Q_strncasecmp(prefix, a->name, preLen) )
+		if ( !q_strncasecmp(prefix, a->name, preLen) )
 		{
 			if (!buf)	// completion procedures always send a buf
 			{

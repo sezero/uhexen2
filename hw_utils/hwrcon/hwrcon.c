@@ -1,6 +1,6 @@
 /*
 	hwrcon.c
-	$Id: hwrcon.c,v 1.13 2007-08-26 09:42:51 sezero Exp $
+	$Id: hwrcon.c,v 1.14 2007-09-22 15:27:36 sezero Exp $
 
 	HWRCON 1.2 HexenWorld Remote CONsole
 	Idea based on RCon 1.1 by Michael Dwyer/N0ZAP (18-May-1998).
@@ -35,6 +35,7 @@
 #include <string.h>
 #include <stdarg.h>
 #include "compiler.h"
+#include "qsnprint.h"
 #if defined(USE_HUFFMAN)
 #include "huffman.h"
 #endif
@@ -67,7 +68,7 @@ void Sys_Error (const char *error, ...)
 	char		text[1024];
 
 	va_start (argptr,error);
-	vsnprintf (text, sizeof (text), error,argptr);
+	q_vsnprintf (text, sizeof (text), error,argptr);
 	va_end (argptr);
 
 	printf ("\nERROR: %s\n\n", text);

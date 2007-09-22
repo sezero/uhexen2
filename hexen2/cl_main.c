@@ -2,7 +2,7 @@
 	cl_main.c
 	client main loop
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cl_main.c,v 1.41 2007-07-08 11:55:17 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cl_main.c,v 1.42 2007-09-22 15:27:10 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -203,7 +203,7 @@ void CL_SignonReply (void)
 		MSG_WriteString (&cls.message, va("color %i %i\n", cl_color.integer >> 4, cl_color.integer & 15));
 
 		MSG_WriteByte (&cls.message, clc_stringcmd);
-		snprintf (str, sizeof(str), "spawn %s", cls.spawnparms);
+		q_snprintf (str, sizeof(str), "spawn %s", cls.spawnparms);
 		MSG_WriteString (&cls.message, str);
 		break;
 
@@ -247,7 +247,7 @@ void CL_NextDemo (void)
 
 	SCR_BeginLoadingPlaque ();
 
-	snprintf (str, sizeof(str),"playdemo %s\n", cls.demos[cls.demonum]);
+	q_snprintf (str, sizeof(str),"playdemo %s\n", cls.demos[cls.demonum]);
 	Cbuf_InsertText (str);
 	cls.demonum++;
 }
@@ -913,9 +913,9 @@ static void CL_Sensitivity_save_f (void)
 		return;
 	}
 
-	if (Q_strcasecmp(Cmd_Argv(1),"save") == 0)
+	if (q_strcasecmp(Cmd_Argv(1),"save") == 0)
 		save_sensitivity = sensitivity.value;
-	else if (Q_strcasecmp(Cmd_Argv(1),"restore") == 0)
+	else if (q_strcasecmp(Cmd_Argv(1),"restore") == 0)
 		Cvar_SetValue ("sensitivity", save_sensitivity);
 }
 

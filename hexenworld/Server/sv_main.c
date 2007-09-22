@@ -2,7 +2,7 @@
 	sv_main.c
 	server main program
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Server/sv_main.c,v 1.47 2007-09-14 14:11:24 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Server/sv_main.c,v 1.48 2007-09-22 15:27:34 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -147,7 +147,7 @@ void SV_Error (const char *error, ...)
 	inerror = true;
 
 	va_start (argptr, error);
-	vsnprintf (string, sizeof(string), error, argptr);
+	q_vsnprintf (string, sizeof(string), error, argptr);
 	va_end (argptr);
 
 	Con_Printf ("%s: %s\n", __thisfunc__, string);
@@ -504,7 +504,7 @@ static void SVC_DirectConnect (void)
 	if (s[0] && strcmp(s, "0"))
 	{
 		if (spectator_password.string[0] && 
-			Q_strcasecmp(spectator_password.string, "none") &&
+			q_strcasecmp(spectator_password.string, "none") &&
 			strcmp(spectator_password.string, s) )
 		{	// failed
 			Con_Printf ("%s:spectator password failed\n", NET_AdrToString (net_from));
@@ -519,7 +519,7 @@ static void SVC_DirectConnect (void)
 	{
 		s = Info_ValueForKey (userinfo, "password");
 		if (password.string[0] && 
-			Q_strcasecmp(password.string, "none") &&
+			q_strcasecmp(password.string, "none") &&
 			strcmp(password.string, s) )
 		{
 			Con_Printf ("%s:password failed\n", NET_AdrToString (net_from));
@@ -1451,7 +1451,7 @@ void SV_ExtractFromUserinfo (client_t *cl)
 		val = Info_ValueForKey (cl->userinfo, "name");
 	}
 
-	if (!val[0] || !Q_strcasecmp(val, "console"))
+	if (!val[0] || !q_strcasecmp(val, "console"))
 	{
 		Info_SetValueForKey (cl->userinfo, "name", "unnamed", MAX_INFO_STRING);
 		val = Info_ValueForKey (cl->userinfo, "name");
@@ -1464,7 +1464,7 @@ void SV_ExtractFromUserinfo (client_t *cl)
 		{
 			if (client->state != cs_spawned || client == cl)
 				continue;
-			if (!Q_strcasecmp(client->name, val))
+			if (!q_strcasecmp(client->name, val))
 				break;
 		}
 		if (i != MAX_CLIENTS)

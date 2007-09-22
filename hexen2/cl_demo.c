@@ -2,7 +2,7 @@
 	cl_demo.c
 	demo recording and playback
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cl_demo.c,v 1.22 2007-09-21 11:05:07 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cl_demo.c,v 1.23 2007-09-22 15:27:10 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -299,7 +299,7 @@ void CL_Record_f (void)
 		track = -1;
 	}
 
-	snprintf (name, sizeof(name), "%s/%s", fs_userdir, Cmd_Argv(1));
+	q_snprintf (name, sizeof(name), "%s/%s", fs_userdir, Cmd_Argv(1));
 
 //
 // start the map up
@@ -358,9 +358,9 @@ void CL_PlayDemo_f (void)
 //
 // open the demo file
 //
-	Q_strlcpy (name, Cmd_Argv(1), sizeof(name));
+	q_strlcpy (name, Cmd_Argv(1), sizeof(name));
 
-	if (!Q_strcasecmp(name,"t9"))
+	if (!q_strcasecmp(name,"t9"))
 	{
 	// the mission pack specific intro actually
 	// is a pre-recorded demo named t9.dem

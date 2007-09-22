@@ -2,7 +2,7 @@
 	sv_ccmds.c
 	console commands
 
-	$Id: sv_ccmds.c,v 1.23 2007-08-23 12:01:09 sezero Exp $
+	$Id: sv_ccmds.c,v 1.24 2007-09-22 15:27:34 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -88,7 +88,7 @@ static void SV_Logfile_f (void)
 		return;
 	}
 
-	Q_snprintf_err(name, sizeof(name), "%s/hwsv.log", fs_userdir);
+	qerr_snprintf(name, sizeof(name), "%s/hwsv.log", fs_userdir);
 
 	Con_Printf ("Logging text to %s.\n", name);
 	sv_logfile = fopen (name, "w");
@@ -120,7 +120,7 @@ static void SV_Fraglogfile_f (void)
 	// find an unused name
 	for (i = 0; i < 1000; i++)
 	{
-		Q_snprintf_err(name, sizeof(name), "%s/frag_%i.log", fs_userdir, i);
+		qerr_snprintf(name, sizeof(name), "%s/frag_%i.log", fs_userdir, i);
 
 		sv_fraglogfile = fopen (name, "r");
 		if (!sv_fraglogfile)
@@ -303,14 +303,14 @@ static void SV_Map_f (void)
 			Con_Printf ("Currently on: %s\n",sv.name);
 		return;
 	}
-	Q_strlcpy (level, Cmd_Argv(1), sizeof(level));
+	q_strlcpy (level, Cmd_Argv(1), sizeof(level));
 	if (Cmd_Argc() == 2)
 	{
 		startspot = NULL;
 	}
 	else
 	{
-		Q_strlcpy (_startspot, Cmd_Argv(2), sizeof(_startspot));
+		q_strlcpy (_startspot, Cmd_Argv(2), sizeof(_startspot));
 		startspot = _startspot;
 	}
 
@@ -323,7 +323,7 @@ static void SV_Map_f (void)
 #endif
 
 	// check to make sure the level exists
-	snprintf (expanded, sizeof(expanded), "maps/%s.bsp", level);
+	q_snprintf (expanded, sizeof(expanded), "maps/%s.bsp", level);
 	FS_OpenFile (expanded, &f, false);
 	if (!f)
 	{
@@ -614,9 +614,9 @@ static void SV_ConSay_f(void)
 		return;
 
 	if (dmMode.integer == DM_SIEGE)
-		Q_strlcpy (text, "GOD SAYS: ", sizeof(text));
+		q_strlcpy (text, "GOD SAYS: ", sizeof(text));
 	else
-		Q_strlcpy (text, "ServerAdmin: ", sizeof(text));
+		q_strlcpy (text, "ServerAdmin: ", sizeof(text));
 
 	p = Cmd_Args();
 
@@ -626,7 +626,7 @@ static void SV_ConSay_f(void)
 		p[strlen(p)-1] = 0;
 	}
 
-	Q_strlcat (text, p, sizeof(text));
+	q_strlcat (text, p, sizeof(text));
 
 	for (j = 0, client = svs.clients; j < MAX_CLIENTS; j++, client++)
 	{
@@ -847,7 +847,7 @@ static void SV_Floodprotmsg_f (void)
 		Con_Printf("Usage: floodprotmsg \"<message>\"\n");
 		return;
 	}
-	snprintf(fp_msg, sizeof(fp_msg), "%s", Cmd_Argv(1));
+	q_snprintf(fp_msg, sizeof(fp_msg), "%s", Cmd_Argv(1));
 }
 
 

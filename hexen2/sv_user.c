@@ -2,7 +2,7 @@
 	sv_user.c
 	server code for moving users
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sv_user.c,v 1.21 2007-05-13 11:58:30 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sv_user.c,v 1.22 2007-09-22 15:27:15 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -699,45 +699,45 @@ nextmsg:
 			case clc_stringcmd:
 				s = MSG_ReadString ();
 				ret = 0;
-				if (Q_strncasecmp(s, "status", 6) == 0)
+				if (q_strncasecmp(s, "status", 6) == 0)
 					ret = 1;
-				else if (Q_strncasecmp(s, "god", 3) == 0)
+				else if (q_strncasecmp(s, "god", 3) == 0)
 					ret = 1;
-				else if (Q_strncasecmp(s, "notarget", 8) == 0)
+				else if (q_strncasecmp(s, "notarget", 8) == 0)
 					ret = 1;
-				else if (Q_strncasecmp(s, "fly", 3) == 0)
+				else if (q_strncasecmp(s, "fly", 3) == 0)
 					ret = 1;
-				else if (Q_strncasecmp(s, "name", 4) == 0)
+				else if (q_strncasecmp(s, "name", 4) == 0)
 					ret = 1;
-				else if (Q_strncasecmp(s, "playerclass", 11) == 0)
+				else if (q_strncasecmp(s, "playerclass", 11) == 0)
 					ret = 1;
-				else if (Q_strncasecmp(s, "noclip", 6) == 0)
+				else if (q_strncasecmp(s, "noclip", 6) == 0)
 					ret = 1;
-				else if (Q_strncasecmp(s, "say", 3) == 0)
+				else if (q_strncasecmp(s, "say", 3) == 0)
 					ret = 1;
-				else if (Q_strncasecmp(s, "say_team", 8) == 0)
+				else if (q_strncasecmp(s, "say_team", 8) == 0)
 					ret = 1;
-				else if (Q_strncasecmp(s, "tell", 4) == 0)
+				else if (q_strncasecmp(s, "tell", 4) == 0)
 					ret = 1;
-				else if (Q_strncasecmp(s, "color", 5) == 0)
+				else if (q_strncasecmp(s, "color", 5) == 0)
 					ret = 1;
-				else if (Q_strncasecmp(s, "kill", 4) == 0)
+				else if (q_strncasecmp(s, "kill", 4) == 0)
 					ret = 1;
-				else if (Q_strncasecmp(s, "pause", 5) == 0)
+				else if (q_strncasecmp(s, "pause", 5) == 0)
 					ret = 1;
-				else if (Q_strncasecmp(s, "spawn", 5) == 0)
+				else if (q_strncasecmp(s, "spawn", 5) == 0)
 					ret = 1;
-				else if (Q_strncasecmp(s, "begin", 5) == 0)
+				else if (q_strncasecmp(s, "begin", 5) == 0)
 					ret = 1;
-				else if (Q_strncasecmp(s, "prespawn", 8) == 0)
+				else if (q_strncasecmp(s, "prespawn", 8) == 0)
 					ret = 1;
-				else if (Q_strncasecmp(s, "kick", 4) == 0)
+				else if (q_strncasecmp(s, "kick", 4) == 0)
 					ret = 1;
-				else if (Q_strncasecmp(s, "ping", 4) == 0)
+				else if (q_strncasecmp(s, "ping", 4) == 0)
 					ret = 1;
-				else if (Q_strncasecmp(s, "give", 4) == 0)
+				else if (q_strncasecmp(s, "give", 4) == 0)
 					ret = 1;
-				else if (Q_strncasecmp(s, "ban", 3) == 0)
+				else if (q_strncasecmp(s, "ban", 3) == 0)
 					ret = 1;
 
 				if (ret == 1)

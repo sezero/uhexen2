@@ -8,7 +8,7 @@
 	This version of model.c and model.h are based on a quake dedicated
 	server application, lhnqserver, by LordHavoc.
 
-	$Id: model.c,v 1.17 2007-09-20 16:17:45 sezero Exp $
+	$Id: model.c,v 1.18 2007-09-22 15:27:15 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -154,7 +154,7 @@ model_t *Mod_FindName (const char *name)
 	{
 		if (mod_numknown == MAX_MOD_KNOWN)
 			Host_Error ("mod_numknown == MAX_MOD_KNOWN");
-		Q_strlcpy (mod->name, name, MAX_QPATH);
+		q_strlcpy (mod->name, name, MAX_QPATH);
 		mod->needload = NL_NEEDS_LOADED;
 		mod_numknown++;
 	}
@@ -894,7 +894,7 @@ static void Mod_LoadBrushModel (model_t *mod, void *buffer)
 		{	// duplicate the basic information
 			char	name[10];
 
-			snprintf (name, sizeof(name), "*%i", i+1);
+			q_snprintf (name, sizeof(name), "*%i", i+1);
 			loadmodel = Mod_FindName (name);
 			*loadmodel = *mod;
 			strcpy (loadmodel->name, name);

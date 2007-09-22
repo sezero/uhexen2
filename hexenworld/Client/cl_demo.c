@@ -2,7 +2,7 @@
 	cl_demo.c
 	demo recording and playback
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/cl_demo.c,v 1.20 2007-05-13 11:59:00 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/cl_demo.c,v 1.21 2007-09-22 15:27:17 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -318,7 +318,7 @@ void CL_Record_f (void)
 		return;
 	}
 
-	snprintf (name, sizeof(name), "%s/%s", fs_userdir, Cmd_Argv(1));
+	q_snprintf (name, sizeof(name), "%s/%s", fs_userdir, Cmd_Argv(1));
 
 //
 // open the demo file
@@ -378,7 +378,7 @@ void CL_ReRecord_f (void)
 		return;
 	}
 
-	snprintf (name, sizeof(name), "%s/%s", fs_userdir, Cmd_Argv(1));
+	q_snprintf (name, sizeof(name), "%s/%s", fs_userdir, Cmd_Argv(1));
 
 //
 // open the demo file
@@ -428,7 +428,7 @@ void CL_PlayDemo_f (void)
 //
 // open the demo file
 //
-	Q_strlcpy (name, Cmd_Argv(1), sizeof(name));
+	q_strlcpy (name, Cmd_Argv(1), sizeof(name));
 	COM_DefaultExtension (name, ".qwd", sizeof(name));
 
 	Con_Printf ("Playing demo from %s.\n", name);

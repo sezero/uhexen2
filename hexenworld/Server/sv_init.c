@@ -2,7 +2,7 @@
 	sv_init.c
 	server spawning
 
-	$Id: sv_init.c,v 1.16 2007-09-14 14:11:24 sezero Exp $
+	$Id: sv_init.c,v 1.17 2007-09-22 15:27:34 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -329,11 +329,11 @@ void SV_SpawnServer (const char *server, const char *startspot)
 
 	sv.sound_precache[0][0] = '\0';
 	sv.model_precache[0][0] = '\0';
-	Q_strlcpy (sv.model_precache[1], sv.modelname, sizeof(sv.model_precache[0]));
+	q_strlcpy (sv.model_precache[1], sv.modelname, sizeof(sv.model_precache[0]));
 	sv.models[1] = sv.worldmodel;
 	for (i = 1; i < sv.worldmodel->numsubmodels; i++)
 	{
-		Q_strlcpy (sv.model_precache[1+i], localmodels[i], sizeof(sv.model_precache[0]));
+		q_strlcpy (sv.model_precache[1+i], localmodels[i], sizeof(sv.model_precache[0]));
 		sv.models[i+1] = Mod_ForName (localmodels[i], false);
 	}
 

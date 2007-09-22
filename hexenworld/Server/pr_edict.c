@@ -2,7 +2,7 @@
 	sv_edict.c
 	entity dictionary
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Server/pr_edict.c,v 1.30 2007-09-21 13:20:47 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Server/pr_edict.c,v 1.31 2007-09-22 15:27:34 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -932,12 +932,12 @@ char *ED_ParseEdict (char *data, edict_t *ent)
 		if (keyname[0] == '_')
 			continue;
 
-		if (Q_strcasecmp(keyname,"MIDI") == 0)
+		if (q_strcasecmp(keyname,"MIDI") == 0)
 		{
 			strcpy(sv.midi_name, com_token);
 			continue;
 		}
-		else if (Q_strcasecmp(keyname,"CD") == 0)
+		else if (q_strcasecmp(keyname,"CD") == 0)
 		{
 			sv.cd_track = (byte)atoi(com_token);
 			continue;
@@ -1186,7 +1186,7 @@ void PR_LoadProgs (void)
 					while (*test == ' ')
 						test++;
 					strcpy(progname, test);
-					if (Q_strcasecmp(mapname, sv.name) == 0)
+					if (q_strcasecmp(mapname, sv.name) == 0)
 					{
 						strcpy(finalprogname, progname);
 						break;

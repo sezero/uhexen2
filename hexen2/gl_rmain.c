@@ -1,7 +1,7 @@
 /*
 	gl_main.c
 
-	$Id: gl_rmain.c,v 1.67 2007-08-13 06:44:34 sezero Exp $
+	$Id: gl_rmain.c,v 1.68 2007-09-22 15:27:11 sezero Exp $
 */
 
 
@@ -909,7 +909,7 @@ static void R_DrawAliasModel (entity_t *e)
 
 		if (gl_extra_textures[currententity->skinnum-100] == GL_UNUSED_TEXTURE) // Need to load it in
 		{
-			snprintf (temp, sizeof(temp), "gfx/skin%d.lmp", currententity->skinnum);
+			q_snprintf (temp, sizeof(temp), "gfx/skin%d.lmp", currententity->skinnum);
 			stonepic = Draw_CachePic(temp);
 			gl = (glpic_t *)stonepic->data;
 			gl_extra_textures[currententity->skinnum-100] = gl->texnum;
@@ -1175,7 +1175,7 @@ static void R_DrawGlow (entity_t *e)
 		radius = 20.0f;
 
 		// for mana, make it bit bigger
-		if ( !Q_strncasecmp(clmodel->name, "models/i_btmana", 15))
+		if ( !q_strncasecmp(clmodel->name, "models/i_btmana", 15))
 			radius += 5.0f;
 
 		VectorSubtract(lightorigin, r_origin, vp2);
@@ -1191,7 +1191,7 @@ static void R_DrawGlow (entity_t *e)
 			// Translate the glow to coincide with the flame. KH
 			if (clmodel->ex_flags & XF_TORCH_GLOW)
 			{
-				if (!Q_strncasecmp (clmodel->name, "models/eflmtrch",15))
+				if (!q_strncasecmp (clmodel->name, "models/eflmtrch",15))
 					// egypt torch fix
 					glTranslatef_fp (cos(e->angles[1]/180*M_PI)*8.0f, sin(e->angles[1]/180*M_PI)*8.0f, 16.0f);
 				else

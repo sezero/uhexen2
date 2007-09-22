@@ -2,7 +2,7 @@
 	zone.c
 	Memory management
 
-	$Id: zone.c,v 1.46 2007-09-21 11:05:10 sezero Exp $
+	$Id: zone.c,v 1.47 2007-09-22 15:27:15 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -916,9 +916,9 @@ static void Memory_Display_f(void)
 	num_args = Cmd_Argc();
 	for (counter = 1; counter < num_args; counter++)
 	{
-		if (Q_strcasecmp(Cmd_Argv(counter),"short") == 0)
+		if (q_strcasecmp(Cmd_Argv(counter),"short") == 0)
 			all = false;
-		else if (Q_strcasecmp(Cmd_Argv(counter),"save") == 0)
+		else if (q_strcasecmp(Cmd_Argv(counter),"save") == 0)
 			write_file = true;
 	}
 
@@ -952,7 +952,7 @@ static void Cache_Print (qboolean write_file)
 
 		strncpy (temp, cd->name, sizeof(temp)-1);
 		temp[sizeof(temp)-1] = 0;
-		Q_strlwr(temp);
+		q_strlwr(temp);
 		if (strstr(temp,".mdl"))
 		{
 			num_mod++;
@@ -986,7 +986,7 @@ static void Cache_Display_f(void)
 	num_args = Cmd_Argc();
 	for (counter = 1; counter < num_args; counter++)
 	{
-		if (Q_strcasecmp(Cmd_Argv(counter),"save") == 0)
+		if (q_strcasecmp(Cmd_Argv(counter),"save") == 0)
 			write_file = true;
 	}
 
@@ -1032,7 +1032,7 @@ static void Zone_Display_f(void)
 	num_args = Cmd_Argc();
 	for (counter = 1; counter < num_args; counter++)
 	{
-		if (Q_strcasecmp(Cmd_Argv(counter),"save") == 0)
+		if (q_strcasecmp(Cmd_Argv(counter),"save") == 0)
 			write_file = true;
 	}
 	if (write_file)
@@ -1091,7 +1091,7 @@ static void Memory_Stats_f(void)
 	num_args = Cmd_Argc();
 	for (counter = 1; counter < num_args; counter++)
 	{
-		if (Q_strcasecmp(Cmd_Argv(counter),"save") == 0)
+		if (q_strcasecmp(Cmd_Argv(counter),"save") == 0)
 			write_file = true;
 	}
 
@@ -1119,7 +1119,7 @@ static void Memory_Stats_f(void)
 
 		for (counter = 0; counter < NUM_GROUPS; counter++)
 		{
-			if (Q_strcasecmp(h->name,MemoryGroups[counter]) == 0)
+			if (q_strcasecmp(h->name,MemoryGroups[counter]) == 0)
 			{
 				GroupCount[counter]++;
 				GroupSum[counter] += h->size;

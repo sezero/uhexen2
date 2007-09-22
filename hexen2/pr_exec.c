@@ -2,7 +2,7 @@
 	pr_exec.c
 	PROGS execution
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/pr_exec.c,v 1.21 2007-09-14 14:10:02 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/pr_exec.c,v 1.22 2007-09-22 15:27:14 sezero Exp $
 */
 
 // HEADER FILES ------------------------------------------------------------
@@ -870,7 +870,7 @@ void PR_RunError (const char *error, ...)
 	char string[1024];
 
 	va_start (argptr, error);
-	vsnprintf (string, sizeof(string), error, argptr);
+	q_vsnprintf (string, sizeof(string), error, argptr);
 	va_end (argptr);
 
 	PrintStatement(pr_statements + pr_xstatement);

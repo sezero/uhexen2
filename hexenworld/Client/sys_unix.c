@@ -2,7 +2,7 @@
 	sys_unix.c
 	Unix system interface code
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/sys_unix.c,v 1.85 2007-07-11 16:47:16 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/sys_unix.c,v 1.86 2007-09-22 15:27:19 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -194,7 +194,7 @@ void Sys_Error (const char *error, ...)
 	char		text[MAX_PRINTMSG];
 
 	va_start (argptr, error);
-	vsnprintf (text, sizeof(text), error, argptr);
+	q_vsnprintf (text, sizeof(text), error, argptr);
 	va_end (argptr);
 
 	if (con_debuglog)
@@ -289,7 +289,7 @@ static int Sys_GetUserdir (char *buff, size_t path_len)
 	if (strlen(home_dir) + strlen(AOT_USERDIR) + 50 > path_len)
 		return 1;
 
-	snprintf (buff, path_len, "%s/%s", home_dir, AOT_USERDIR);
+	q_snprintf (buff, path_len, "%s/%s", home_dir, AOT_USERDIR);
 	return Sys_mkdir(buff);
 }
 
@@ -390,16 +390,16 @@ static char *Sys_StripAppBundle (char *dir)
 {
 	static char	osx_path[MAX_OSPATH];
 
-	Q_strlcpy (osx_path, dir, sizeof(osx_path));
+	q_strlcpy (osx_path, dir, sizeof(osx_path));
 	if (strcmp(basename(osx_path), "MacOS"))
 		return dir;
-	Q_strlcpy (osx_path, dirname(osx_path), sizeof(osx_path));
+	q_strlcpy (osx_path, dirname(osx_path), sizeof(osx_path));
 	if (strcmp(basename(osx_path), "Contents"))
 		return dir;
-	Q_strlcpy (osx_path, dirname(osx_path), sizeof(osx_path));
+	q_strlcpy (osx_path, dirname(osx_path), sizeof(osx_path));
 	if (!strstr(basename(osx_path), ".app"))
 		return dir;
-	Q_strlcpy (osx_path, dirname(osx_path), sizeof(osx_path));
+	q_strlcpy (osx_path, dirname(osx_path), sizeof(osx_path));
 	return osx_path;
 }
 #endif	/* __MACOSX__ */
@@ -452,11 +452,11 @@ int main(int argc, char *argv[])
 	else
 	{
 		// strip off the binary name
-		Q_strlcpy (cwd, dirname(cwd), sizeof(cwd));
+		q_strlcpy (cwd, dirname(cwd), sizeof(cwd));
 	}
 
 	tmp = Sys_StripAppBundle(cwd);
-	Q_strlcpy (cwd, tmp, sizeof(cwd));
+	q_strlcpy (cwd, tmp, sizeof(cwd));
 #else
 	if ( getcwd (cwd, sizeof(cwd)-1) == NULL )
 		Sys_Error ("Couldn't determine current directory");

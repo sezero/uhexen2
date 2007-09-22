@@ -2,7 +2,7 @@
 	vid_win.c
 	Win32 video driver using MGL-4.05
 
-	$Id: vid_win.c,v 1.54 2007-09-14 14:10:08 sezero Exp $
+	$Id: vid_win.c,v 1.55 2007-09-22 15:27:32 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -556,7 +556,7 @@ static void VID_InitMGLFull (HINSTANCE hInstance)
 				modelist[curmode].type = MS_FULLSCREEN;
 				modelist[curmode].width = xRes;
 				modelist[curmode].height = yRes;
-				snprintf (modelist[curmode].modedesc, MAX_DESC, "%dx%d", xRes, yRes);
+				q_snprintf (modelist[curmode].modedesc, MAX_DESC, "%dx%d", xRes, yRes);
 
 				if (m[i] == grVGA_320x200x256)
 					modelist[curmode].mode13 = 1;
@@ -578,7 +578,7 @@ static void VID_InitMGLFull (HINSTANCE hInstance)
 			modelist[MODE_FULLSCREEN_DEFAULT].stretched = 1;
 			modelist[MODE_FULLSCREEN_DEFAULT].width >>= 1;
 			modelist[MODE_FULLSCREEN_DEFAULT].height >>= 1;
-			snprintf (modelist[MODE_FULLSCREEN_DEFAULT].modedesc, MAX_DESC, "%dx%d",
+			q_snprintf (modelist[MODE_FULLSCREEN_DEFAULT].modedesc, MAX_DESC, "%dx%d",
 					 modelist[MODE_FULLSCREEN_DEFAULT].width,
 					 modelist[MODE_FULLSCREEN_DEFAULT].height);
 		}
@@ -734,7 +734,7 @@ static void VID_InitMGLDIB (HINSTANCE hInstance)
 	modelist[0].type = MS_WINDOWED;
 	modelist[0].width = 320;
 	modelist[0].height = 240;
-	Q_strlcpy (modelist[0].modedesc, "320x240", MAX_DESC);
+	q_strlcpy (modelist[0].modedesc, "320x240", MAX_DESC);
 	modelist[0].mode13 = 0;
 	modelist[0].modenum = MODE_WINDOWED;
 	modelist[0].stretched = 0;
@@ -746,7 +746,7 @@ static void VID_InitMGLDIB (HINSTANCE hInstance)
 	modelist[1].type = MS_WINDOWED;
 	modelist[1].width = 640;
 	modelist[1].height = 480;
-	Q_strlcpy (modelist[1].modedesc, "640x480", MAX_DESC);
+	q_strlcpy (modelist[1].modedesc, "640x480", MAX_DESC);
 	modelist[1].mode13 = 0;
 	modelist[1].modenum = MODE_WINDOWED + 1;
 	modelist[1].stretched = 1;
@@ -758,7 +758,7 @@ static void VID_InitMGLDIB (HINSTANCE hInstance)
 	modelist[2].type = MS_WINDOWED;
 	modelist[2].width = 800;
 	modelist[2].height = 600;
-	Q_strlcpy (modelist[2].modedesc, "800x600", MAX_DESC);
+	q_strlcpy (modelist[2].modedesc, "800x600", MAX_DESC);
 	modelist[2].mode13 = 0;
 	modelist[2].modenum = MODE_WINDOWED + 2;
 	modelist[2].stretched = 1;
@@ -831,7 +831,7 @@ static void VID_InitFullDIB (HINSTANCE hInstance)
 				modelist[nummodes].dib = 1;
 				modelist[nummodes].fullscreen = 1;
 				modelist[nummodes].bpp = devmode.dmBitsPerPel;
-				snprintf (modelist[nummodes].modedesc, MAX_DESC, "%dx%d",
+				q_snprintf (modelist[nummodes].modedesc, MAX_DESC, "%dx%d",
 						(int)devmode.dmPelsWidth, (int)devmode.dmPelsHeight);
 
 			// if the width is more than twice the height, reduce it by half because this
@@ -842,7 +842,7 @@ static void VID_InitFullDIB (HINSTANCE hInstance)
 					{
 						modelist[nummodes].width >>= 1;
 						modelist[nummodes].halfscreen = 1;
-						snprintf (modelist[nummodes].modedesc, MAX_DESC, "%dx%d",
+						q_snprintf (modelist[nummodes].modedesc, MAX_DESC, "%dx%d",
 								 modelist[nummodes].width,
 								 modelist[nummodes].height);
 					}
@@ -908,7 +908,7 @@ static void VID_InitFullDIB (HINSTANCE hInstance)
 					modelist[nummodes].dib = 1;
 					modelist[nummodes].fullscreen = 1;
 					modelist[nummodes].bpp = devmode.dmBitsPerPel;
-					snprintf (modelist[nummodes].modedesc, MAX_DESC, "%dx%d",
+					q_snprintf (modelist[nummodes].modedesc, MAX_DESC, "%dx%d",
 							(int)devmode.dmPelsWidth, (int)devmode.dmPelsHeight);
 
 				// if the width is more than twice the height, reduce it by half because this
@@ -919,7 +919,7 @@ static void VID_InitFullDIB (HINSTANCE hInstance)
 						{
 							modelist[nummodes].width >>= 1;
 							modelist[nummodes].halfscreen = 1;
-							snprintf (modelist[nummodes].modedesc, MAX_DESC, "%dx%d",
+							q_snprintf (modelist[nummodes].modedesc, MAX_DESC, "%dx%d",
 									 modelist[nummodes].width,
 									 modelist[nummodes].height);
 						}
@@ -992,7 +992,7 @@ static void VID_InitFullDIB (HINSTANCE hInstance)
 					modelist[nummodes].dib = 1;
 					modelist[nummodes].fullscreen = 1;
 					modelist[nummodes].bpp = devmode.dmBitsPerPel;
-					snprintf (modelist[nummodes].modedesc, MAX_DESC, "%dx%d",
+					q_snprintf (modelist[nummodes].modedesc, MAX_DESC, "%dx%d",
 							(int)devmode.dmPelsWidth, (int)devmode.dmPelsHeight);
 
 			// we only want the lowest-bpp version of each mode
@@ -1065,7 +1065,7 @@ static void VID_InitFullDIB (HINSTANCE hInstance)
 			modelist[istretch].width >>= 1;
 			modelist[istretch].height >>= 1;
 			modelist[istretch].stretched = 1;
-			snprintf (modelist[istretch].modedesc, MAX_DESC, "%dx%d",
+			q_snprintf (modelist[istretch].modedesc, MAX_DESC, "%dx%d",
 					 modelist[istretch].width, modelist[istretch].height);
 		}
 	}
@@ -1125,7 +1125,7 @@ static void VID_CheckModedescFixup (int modenum)
 
 		x = vid_config_x.integer;
 		y = vid_config_y.integer;
-		snprintf (modelist[modenum].modedesc, MAX_DESC, "%dx%d", x, y);
+		q_snprintf (modelist[modenum].modedesc, MAX_DESC, "%dx%d", x, y);
 		modelist[modenum].width = x;
 		modelist[modenum].height = y;
 	}
@@ -1204,15 +1204,15 @@ static char *VID_GetModeDescription2 (int modenum)
 
 	if (modelist[modenum].type == MS_FULLSCREEN)
 	{
-		snprintf(pinfo, sizeof(pinfo), "%s fullscreen", pv->modedesc);
+		q_snprintf(pinfo, sizeof(pinfo), "%s fullscreen", pv->modedesc);
 	}
 	else if (modelist[modenum].type == MS_FULLDIB)
 	{
-		snprintf(pinfo, sizeof(pinfo), "%s fullscreen", pv->modedesc);
+		q_snprintf(pinfo, sizeof(pinfo), "%s fullscreen", pv->modedesc);
 	}
 	else
 	{
-		snprintf(pinfo, sizeof(pinfo), "%s windowed", pv->modedesc);
+		q_snprintf(pinfo, sizeof(pinfo), "%s windowed", pv->modedesc);
 	}
 
 	return pinfo;
@@ -1234,16 +1234,16 @@ static char *VID_GetExtModeDescription (int modenum)
 	pv = VID_GetModePtr (modenum);
 	if (modelist[modenum].type == MS_FULLSCREEN)
 	{
-		snprintf(pinfo, sizeof(pinfo), "%s fullscreen %s", pv->modedesc,
+		q_snprintf(pinfo, sizeof(pinfo), "%s fullscreen %s", pv->modedesc,
 				MGL_modeDriverName(pv->modenum));
 	}
 	else if (modelist[modenum].type == MS_FULLDIB)
 	{
-		snprintf(pinfo, sizeof(pinfo), "%s fullscreen DIB", pv->modedesc);
+		q_snprintf(pinfo, sizeof(pinfo), "%s fullscreen DIB", pv->modedesc);
 	}
 	else
 	{
-		snprintf(pinfo, sizeof(pinfo), "%s windowed", pv->modedesc);
+		q_snprintf(pinfo, sizeof(pinfo), "%s windowed", pv->modedesc);
 	}
 
 	return pinfo;
@@ -2214,7 +2214,7 @@ void	VID_Init (unsigned char *palette)
 	VID_SetPalette (palette);
 	vid_menudrawfn = VID_MenuDraw;
 	vid_menukeyfn = VID_MenuKey;
-	Q_strlcpy (badmode.modedesc, "Bad mode", MAX_DESC);
+	q_strlcpy (badmode.modedesc, "Bad mode", MAX_DESC);
 }
 
 
@@ -3427,7 +3427,7 @@ static void VID_MenuDraw (void)
 // line cursor
 	if (vid_testingmode)
 	{
-		snprintf (temp, sizeof(temp), "TESTING %s",
+		q_snprintf (temp, sizeof(temp), "TESTING %s",
 				modedescs[vid_line].desc);
 		M_Print (13*8, 60 + MODE_AREA_HEIGHT * 8 + 8*4, temp);
 		M_Print (9*8, 60 + MODE_AREA_HEIGHT * 8 + 8*6,
@@ -3443,7 +3443,7 @@ static void VID_MenuDraw (void)
 
 		if (ptr)
 		{
-			snprintf (temp, sizeof(temp), "D to set default: %s", ptr);
+			q_snprintf (temp, sizeof(temp), "D to set default: %s", ptr);
 			M_Print (2*8, 60 + MODE_AREA_HEIGHT * 8 + 8*2, temp);
 		}
 
@@ -3451,7 +3451,7 @@ static void VID_MenuDraw (void)
 
 		if (ptr)
 		{
-			snprintf (temp, sizeof(temp), "Current default: %s", ptr);
+			q_snprintf (temp, sizeof(temp), "Current default: %s", ptr);
 			M_Print (3*8, 60 + MODE_AREA_HEIGHT * 8 + 8*5, temp);
 		}
 

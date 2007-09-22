@@ -1,6 +1,6 @@
 /*
 	map.c
-	$Id: map.c,v 1.10 2007-07-08 17:01:16 sezero Exp $
+	$Id: map.c,v 1.11 2007-09-22 15:27:42 sezero Exp $
 */
 
 #include "util_inc.h"
@@ -66,7 +66,7 @@ static int FindTexinfo (texinfo_t *t)
 
 // set the special flag
 	if (miptex[t->miptex][0] == '*' 
-			|| !Q_strncasecmp (miptex[t->miptex], "sky",3) )
+			|| !q_strncasecmp (miptex[t->miptex], "sky",3) )
 		t->flags |= TEX_SPECIAL;
 
 	tex = texinfo;
@@ -517,7 +517,7 @@ static void ParseBrush (void)
 	// the rotation origin for the rest of the brushes
 	// in the entity
 	//
-	if (Q_strncasecmp (name, "origin",6))
+	if (q_strncasecmp (name, "origin",6))
 	{	// keep it
 		nummapbrushes++;
 		b->next = mapent->brushes;
@@ -722,32 +722,32 @@ TextureContents
 #if 0	// not used
 int TextureContents (char *name)
 {
-	if (!Q_strncasecmp (name, "sky",3))
+	if (!q_strncasecmp (name, "sky",3))
 		return CONTENTS_SKY;
-	if (!Q_strncasecmp(name,"*lava",5))
+	if (!q_strncasecmp(name,"*lava",5))
 		return CONTENTS_LAVA;
-	if (!Q_strncasecmp(name,"*slime",6))
+	if (!q_strncasecmp(name,"*slime",6))
 		return CONTENTS_SLIME;
-	if (!Q_strncasecmp (name, "*cur_90",7))
+	if (!q_strncasecmp (name, "*cur_90",7))
 		return CONTENTS_CURRENT_90;
-	if (!Q_strncasecmp (name, "*cur_0",6))
+	if (!q_strncasecmp (name, "*cur_0",6))
 		return CONTENTS_CURRENT_0;
-	if (!Q_strncasecmp (name, "*cur_270",8))
+	if (!q_strncasecmp (name, "*cur_270",8))
 		return CONTENTS_CURRENT_270;
-	if (!Q_strncasecmp (name, "*cur_180",8))
+	if (!q_strncasecmp (name, "*cur_180",8))
 		return CONTENTS_CURRENT_180;
-	if (!Q_strncasecmp (name, "*cur_up",7))
+	if (!q_strncasecmp (name, "*cur_up",7))
 		return CONTENTS_CURRENT_UP;
-	if (!Q_strncasecmp (name, "*cur_dwn",8))
+	if (!q_strncasecmp (name, "*cur_dwn",8))
 		return CONTENTS_CURRENT_DOWN;
 
 	if (name[0] == '*')
 		return CONTENTS_WATER;
 
-	if (!Q_strncasecmp (name, "origin",6))
+	if (!q_strncasecmp (name, "origin",6))
 		return CONTENTS_ORIGIN;
 
-	if (!Q_strncasecmp (name, "clip",4))
+	if (!q_strncasecmp (name, "clip",4))
 		return CONTENTS_CLIP;
 
 	return CONTENTS_SOLID;

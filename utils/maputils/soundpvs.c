@@ -1,6 +1,6 @@
 /*
 	soundpvs.c
-	$Id: soundpvs.c,v 1.4 2007-03-14 21:04:41 sezero Exp $
+	$Id: soundpvs.c,v 1.5 2007-09-22 15:27:42 sezero Exp $
 */
 
 #include "util_inc.h"
@@ -105,15 +105,15 @@ void CalcAmbientSounds (void)
 				ofs = ((dmiptexlump_t *)dtexdata)->dataofs[info->miptex];
 				miptex = (miptex_t *)(&dtexdata[ofs]);
 
-				if ( !Q_strncasecmp (miptex->name, "*water", 6) )
+				if ( !q_strncasecmp (miptex->name, "*water", 6) )
 					ambient_type = AMBIENT_WATER;
-				else if ( !Q_strncasecmp (miptex->name, "sky", 3) )
+				else if ( !q_strncasecmp (miptex->name, "sky", 3) )
 					ambient_type = AMBIENT_SKY;
-				else if ( !Q_strncasecmp (miptex->name, "*slime", 6) )
+				else if ( !q_strncasecmp (miptex->name, "*slime", 6) )
 					ambient_type = AMBIENT_WATER; // AMBIENT_SLIME;
-				else if ( !Q_strncasecmp (miptex->name, "*lava", 6) )
+				else if ( !q_strncasecmp (miptex->name, "*lava", 6) )
 					ambient_type = AMBIENT_LAVA;
-				else if ( !Q_strncasecmp (miptex->name, "*04water", 8) )
+				else if ( !q_strncasecmp (miptex->name, "*04water", 8) )
 					ambient_type = AMBIENT_WATER;
 				else
 					continue;

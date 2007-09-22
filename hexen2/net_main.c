@@ -2,7 +2,7 @@
 	net_main.c
 	main networking module
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/net_main.c,v 1.30 2007-08-26 09:15:18 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/net_main.c,v 1.31 2007-09-22 15:27:13 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -366,7 +366,7 @@ qsocket_t *NET_Connect (char *host)
 	{
 		for (n = 0; n < hostCacheCount; n++)
 		{
-			if (Q_strcasecmp (host, hostcache[n].name) == 0)
+			if (q_strcasecmp (host, hostcache[n].name) == 0)
 			{
 				host = hostcache[n].cname;
 				break;
@@ -395,7 +395,7 @@ qsocket_t *NET_Connect (char *host)
 	{
 		for (n = 0; n < hostCacheCount; n++)
 		{
-			if (Q_strcasecmp (host, hostcache[n].name) == 0)
+			if (q_strcasecmp (host, hostcache[n].name) == 0)
 			{
 				host = hostcache[n].cname;
 				break;

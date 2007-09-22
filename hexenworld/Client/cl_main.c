@@ -2,7 +2,7 @@
 	cl_main.c
 	client main loop
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/cl_main.c,v 1.85 2007-09-14 14:10:07 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/cl_main.c,v 1.86 2007-09-22 15:27:17 sezero Exp $
 */
 
 #include <sys/types.h>
@@ -265,15 +265,15 @@ static void CL_Rcon_f (void)
 	message[3] = 255;
 	message[4] = 0;
 
-	Q_strlcat (message, "rcon ", sizeof(message));
+	q_strlcat (message, "rcon ", sizeof(message));
 
-	Q_strlcat (message, rcon_password.string, sizeof(message));
-	Q_strlcat (message, " ", sizeof(message));
+	q_strlcat (message, rcon_password.string, sizeof(message));
+	q_strlcat (message, " ", sizeof(message));
 
 	for (i = 1; i < Cmd_Argc(); i++)
 	{
-		Q_strlcat (message, Cmd_Argv(i), sizeof(message));
-		Q_strlcat (message, " ", sizeof(message));
+		q_strlcat (message, Cmd_Argv(i), sizeof(message));
+		q_strlcat (message, " ", sizeof(message));
 	}
 
 	if (cls.state >= ca_connected)
@@ -510,9 +510,9 @@ static void CL_Color_f (void)
 	if (bottom > 13)
 		bottom = 13;
 
-	snprintf (num, sizeof(num), "%i", top);
+	q_snprintf (num, sizeof(num), "%i", top);
 	Cvar_Set ("topcolor", num);
-	snprintf (num, sizeof(num), "%i", bottom);
+	q_snprintf (num, sizeof(num), "%i", bottom);
 	Cvar_Set ("bottomcolor", num);
 }
 
@@ -534,7 +534,7 @@ static void CL_FullServerinfo_f (void)
 		return;
 	}
 
-	Q_strlcpy (cl.serverinfo, Cmd_Argv(1), MAX_SERVERINFO_STRING);
+	q_strlcpy (cl.serverinfo, Cmd_Argv(1), MAX_SERVERINFO_STRING);
 
 	if ((p = Info_ValueForKey(cl.serverinfo, "*version")) && *p)
 	{
@@ -631,7 +631,7 @@ static void CL_SetInfo_f (void)
 		Con_Printf ("usage: setinfo [ <key> <value> ]\n");
 		return;
 	}
-	if (!Q_strcasecmp(Cmd_Argv(1), "pmodel") || !strcmp(Cmd_Argv(1), "emodel"))
+	if (!q_strcasecmp(Cmd_Argv(1), "pmodel") || !strcmp(Cmd_Argv(1), "emodel"))
 		return;
 
 	Info_SetValueForKey (cls.userinfo, Cmd_Argv(1), Cmd_Argv(2), MAX_INFO_STRING);
@@ -715,7 +715,7 @@ void CL_NextDemo (void)
 		}
 	}
 
-	snprintf (str, sizeof(str),"playdemo %s\n", cls.demos[cls.demonum]);
+	q_snprintf (str, sizeof(str),"playdemo %s\n", cls.demos[cls.demonum]);
 	Cbuf_InsertText (str);
 	cls.demonum++;
 }
@@ -936,7 +936,7 @@ static void CL_Download_f (void)
 		return;
 	}
 
-	if (snprintf (tmp, sizeof(tmp), "%s/%s", fs_userdir, Cmd_Argv(1)) >= MAX_OSPATH)
+	if (q_snprintf (tmp, sizeof(tmp), "%s/%s", fs_userdir, Cmd_Argv(1)) >= MAX_OSPATH)
 	{
 		Host_Error("%s: %d: string buffer overflow!", __thisfunc__, __LINE__);
 		return;
@@ -956,8 +956,8 @@ static void CL_Download_f (void)
 	}
 
 	// don't use the full user path in order to avoid rename failed messages
-	Q_strlcpy (cls.downloadname, Cmd_Argv(1), MAX_OSPATH);
-	Q_strlcpy (cls.downloadtempname, Cmd_Argv(1), MAX_OSPATH);
+	q_strlcpy (cls.downloadname, Cmd_Argv(1), MAX_OSPATH);
+	q_strlcpy (cls.downloadtempname, Cmd_Argv(1), MAX_OSPATH);
 	cls.downloadtype = dl_single;
 
 	MSG_WriteByte (&cls.netchan.message, clc_stringcmd);
@@ -989,11 +989,11 @@ static void CL_Sensitivity_save_f (void)
 		return;
 	}
 
-	if (Q_strcasecmp(Cmd_Argv(1),"save") == 0)
+	if (q_strcasecmp(Cmd_Argv(1),"save") == 0)
 	{
 		save_sensitivity = sensitivity.value;
 	}
-	else if (Q_strcasecmp(Cmd_Argv(1),"restore") == 0)
+	else if (q_strcasecmp(Cmd_Argv(1),"restore") == 0)
 	{
 		Cvar_SetValue ("sensitivity", save_sensitivity);
 	}
@@ -1150,7 +1150,7 @@ void Host_EndGame (const char *message, ...)
 	char		string[1024];
 
 	va_start (argptr,message);
-	vsnprintf (string,sizeof(string),message,argptr);
+	q_vsnprintf (string,sizeof(string),message,argptr);
 	va_end (argptr);
 	Con_Printf ("\n===========================\n");
 	Con_Printf ("%s: %s\n", __thisfunc__, string);
@@ -1179,7 +1179,7 @@ void Host_Error (const char *error, ...)
 	inerror = true;
 
 	va_start (argptr,error);
-	vsnprintf (string,sizeof(string),error,argptr);
+	q_vsnprintf (string,sizeof(string),error,argptr);
 	va_end (argptr);
 	Con_Printf ("%s: %s\n", __thisfunc__, string);
 

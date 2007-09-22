@@ -2,7 +2,7 @@
 	info_str.c
 	Hexen2World info strings handling
 
-	$Id: info_str.c,v 1.4 2007-07-08 11:55:37 sezero Exp $
+	$Id: info_str.c,v 1.5 2007-09-22 15:27:18 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -196,13 +196,13 @@ void Info_SetValueForStarKey (char *s, const char *key, const char *value, int m
 		c = (unsigned char)*v++;
 #ifndef SERVERONLY
 		// client only allows highbits on name
-		if (Q_strcasecmp(key, "name") != 0)
+		if (q_strcasecmp(key, "name") != 0)
 		{
 			c &= 127;
 			if (c < 32 || c > 127)
 				continue;
 			// auto lowercase team
-			if (Q_strcasecmp(key, "team") == 0)
+			if (q_strcasecmp(key, "team") == 0)
 				c = tolower(c);
 		}
 #else

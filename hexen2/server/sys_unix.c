@@ -2,7 +2,7 @@
 	sys_unix.c
 	Unix system interface code
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/server/sys_unix.c,v 1.28 2007-07-11 16:47:15 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/server/sys_unix.c,v 1.29 2007-09-22 15:27:15 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -150,7 +150,7 @@ void Sys_Error (const char *error, ...)
 	char		text[MAX_PRINTMSG];
 
 	va_start (argptr, error);
-	vsnprintf (text, sizeof(text), error, argptr);
+	q_vsnprintf (text, sizeof(text), error, argptr);
 	va_end (argptr);
 
 	if (con_debuglog)
@@ -286,7 +286,7 @@ static int Sys_GetUserdir (char *buff, size_t path_len)
 	if (strlen(home_dir) + strlen(AOT_USERDIR) + 50 > path_len)
 		return 1;
 
-	snprintf (buff, path_len, "%s/%s", home_dir, AOT_USERDIR);
+	q_snprintf (buff, path_len, "%s/%s", home_dir, AOT_USERDIR);
 	return Sys_mkdir(buff);
 }
 

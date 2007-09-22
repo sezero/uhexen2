@@ -2,7 +2,7 @@
 	host.c
 	coordinates spawning and killing of local servers
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host.c,v 1.87 2007-08-29 16:32:38 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host.c,v 1.88 2007-09-22 15:27:12 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -87,9 +87,9 @@ void Host_RemoveGIPFiles (const char *path)
 	char	*name, tempdir[MAX_OSPATH];
 
 	if (path)
-		snprintf(tempdir, MAX_OSPATH, "%s", path);
+		q_snprintf(tempdir, MAX_OSPATH, "%s", path);
 	else
-		snprintf(tempdir, MAX_OSPATH, "%s", fs_userdir);
+		q_snprintf(tempdir, MAX_OSPATH, "%s", fs_userdir);
 
 	name = Sys_FindFirstFile (tempdir, "*.gip");
 
@@ -113,8 +113,8 @@ int Host_CopyFiles (const char *source, const char *pat, const char *dest)
 
 	while (name)
 	{
-		if ( snprintf(tempdir, sizeof(tempdir),"%s/%s", source, name) >= sizeof(tempdir) ||
-		     snprintf(tempdir2, sizeof(tempdir2),"%s/%s", dest, name) >= sizeof(tempdir2) )
+		if ( q_snprintf(tempdir, sizeof(tempdir),"%s/%s", source, name) >= sizeof(tempdir) ||
+		     q_snprintf(tempdir2, sizeof(tempdir2),"%s/%s", dest, name) >= sizeof(tempdir2) )
 		{
 			Sys_FindClose();
 			Host_Error("%s: %d: string buffer overflow!", __thisfunc__, __LINE__);
@@ -151,7 +151,7 @@ void Host_EndGame (const char *message, ...)
 	char		string[1024];
 
 	va_start (argptr,message);
-	vsnprintf (string,sizeof(string),message,argptr);
+	q_vsnprintf (string,sizeof(string),message,argptr);
 	va_end (argptr);
 	Con_DPrintf ("%s: %s\n", __thisfunc__, string);
 
@@ -189,7 +189,7 @@ void Host_Error (const char *error, ...)
 	SCR_EndLoadingPlaque ();		// reenable screen updates
 
 	va_start (argptr,error);
-	vsnprintf (string,sizeof(string),error,argptr);
+	q_vsnprintf (string,sizeof(string),error,argptr);
 	va_end (argptr);
 	Con_Printf ("%s: %s\n", __thisfunc__, string);
 
@@ -399,7 +399,7 @@ void SV_ClientPrintf (unsigned int unused, const char *fmt, ...)
 	char		string[1024];
 
 	va_start (argptr,fmt);
-	vsnprintf (string, sizeof (string), fmt, argptr);
+	q_vsnprintf (string, sizeof (string), fmt, argptr);
 	va_end (argptr);
 
 	MSG_WriteByte (&host_client->message, svc_print);
@@ -420,7 +420,7 @@ void SV_BroadcastPrintf (const char *fmt, ...)
 	int			i;
 
 	va_start (argptr,fmt);
-	vsnprintf (string, sizeof (string), fmt, argptr);
+	q_vsnprintf (string, sizeof (string), fmt, argptr);
 	va_end (argptr);
 
 	for (i = 0; i < svs.maxclients; i++)
@@ -446,7 +446,7 @@ void Host_ClientCommands (const char *fmt, ...)
 	char		string[1024];
 
 	va_start (argptr,fmt);
-	vsnprintf (string, sizeof (string), fmt, argptr);
+	q_vsnprintf (string, sizeof (string), fmt, argptr);
 	va_end (argptr);
 
 	MSG_WriteByte (&host_client->message, svc_stufftext);

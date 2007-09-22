@@ -2,7 +2,7 @@
 	pr_cmds.c
 	prog commands
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/pr_cmds.c,v 1.47 2007-07-11 16:47:14 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/pr_cmds.c,v 1.48 2007-09-22 15:27:13 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -55,7 +55,7 @@ static char *PF_VarString (int	first)
 	out[0] = 0;
 	for (i = first; i < pr_argc; i++)
 	{
-		if ( Q_strlcat(out, G_STRING((OFS_PARM0+i*3)), sizeof(out)) >= sizeof(out) )
+		if ( q_strlcat(out, G_STRING((OFS_PARM0+i*3)), sizeof(out)) >= sizeof(out) )
 		{
 			Con_Printf("%s: overflow (string truncated)\n", __thisfunc__);
 			break;
@@ -314,7 +314,7 @@ static void PF_setpuzzlemodel (void)
 	if (!sv.model_precache[i][0])
 	{
 		Con_Printf("NO PRECACHE FOR PUZZLE PIECE: %s\n", temp);
-		Q_strlcpy (sv.model_precache[i], temp, sizeof(sv.model_precache[0]));
+		q_strlcpy (sv.model_precache[i], temp, sizeof(sv.model_precache[0]));
 
 		e->v.model = PR_SetEngineString(sv.model_precache[i]);
 #if !defined(SERVERONLY)
@@ -1759,7 +1759,7 @@ static void PF_precache_sound (void)
 	{
 		if (!sv.sound_precache[i][0])
 		{
-			Q_strlcpy (sv.sound_precache[i], s, sizeof(sv.sound_precache[0]));
+			q_strlcpy (sv.sound_precache[i], s, sizeof(sv.sound_precache[0]));
 			return;
 		}
 		if (!strcmp(sv.sound_precache[i], s))
@@ -1808,7 +1808,7 @@ static void PF_precache_model (void)
 	{
 		if (!sv.model_precache[i][0])
 		{
-			Q_strlcpy (sv.model_precache[i], s, sizeof(sv.model_precache[0]));
+			q_strlcpy (sv.model_precache[i], s, sizeof(sv.model_precache[0]));
 #if !defined(SERVERONLY)
 			sv.models[i] = Mod_ForName (sv.model_precache[i], true);
 #endif	/* SERVERONLY */
@@ -1864,7 +1864,7 @@ static void PF_precache_puzzle_model (void)
 	{
 		if (!sv.model_precache[i][0])
 		{
-			Q_strlcpy (sv.model_precache[i], temp, sizeof(sv.model_precache[i]));
+			q_strlcpy (sv.model_precache[i], temp, sizeof(sv.model_precache[i]));
 #if !defined(SERVERONLY)
 			sv.models[i] = Mod_ForName (sv.model_precache[i], true);
 #endif	/* SERVERONLY */
@@ -1994,7 +1994,7 @@ static void PF_lightstyle (void)
 	val = G_STRING(OFS_PARM1);
 
 // change the string in sv
-	Q_strlcpy (sv.lightstyles[style], val, sizeof(sv.lightstyles[0]));
+	q_strlcpy (sv.lightstyles[style], val, sizeof(sv.lightstyles[0]));
 
 // send message to all clients on this server
 	if (sv.state != ss_active)
@@ -2067,7 +2067,7 @@ static void PF_lightstylestatic(void)
 	styleString = styleDefs[value];
 
 	// Change the string in sv
-	Q_strlcpy (sv.lightstyles[styleNumber], styleString, sizeof(sv.lightstyles[0]));
+	q_strlcpy (sv.lightstyles[styleNumber], styleString, sizeof(sv.lightstyles[0]));
 #if defined(SERVERONLY)
 	d_lightstylevalue[styleNumber] = value;
 #endif	/* SERVERONLY */

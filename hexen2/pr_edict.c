@@ -2,7 +2,7 @@
 	sv_edict.c
 	entity dictionary
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/pr_edict.c,v 1.48 2007-09-21 13:20:46 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/pr_edict.c,v 1.49 2007-09-22 15:27:14 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -305,7 +305,7 @@ dfunction_t *ED_FindFunctioni (const char *fn_name)
 	for (i = 0; i < progs->numfunctions; i++)
 	{
 		func = &pr_functions[i];
-		if ( !Q_strcasecmp(PR_GetString(func->s_name), fn_name) )
+		if ( !q_strcasecmp(PR_GetString(func->s_name), fn_name) )
 			return func;
 	}
 	return NULL;
@@ -954,12 +954,12 @@ char *ED_ParseEdict (char *data, edict_t *ent)
 		if (keyname[0] == '_')
 			continue;
 
-		if (Q_strcasecmp(keyname,"MIDI") == 0)
+		if (q_strcasecmp(keyname,"MIDI") == 0)
 		{
 			strcpy(sv.midi_name, com_token);
 			continue;
 		}
-		else if (Q_strcasecmp(keyname,"CD") == 0)
+		else if (q_strcasecmp(keyname,"CD") == 0)
 		{
 			sv.cd_track = (byte)atoi(com_token);
 			continue;
@@ -1250,7 +1250,7 @@ void PR_LoadProgs (void)
 					while (*test == ' ')
 						test++;
 					strcpy(progname, test);
-					if (Q_strcasecmp(mapname, sv.name) == 0)
+					if (q_strcasecmp(mapname, sv.name) == 0)
 					{
 						strcpy(finalprogname, progname);
 						break;

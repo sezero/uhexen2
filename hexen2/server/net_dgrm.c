@@ -2,7 +2,7 @@
 	net_dgrm.c
 	This is enables a simple IP banning mechanism
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/server/net_dgrm.c,v 1.22 2007-08-25 11:15:15 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/server/net_dgrm.c,v 1.23 2007-09-22 15:27:15 sezero Exp $
 */
 
 #define BAN_TEST
@@ -89,7 +89,7 @@ static void NET_Ban_f (void)
 		break;
 
 	case 2:
-		if (Q_strcasecmp(Cmd_Argv(1), "off") == 0)
+		if (q_strcasecmp(Cmd_Argv(1), "off") == 0)
 			banAddr = 0x00000000;
 		else
 			banAddr = inet_addr(Cmd_Argv(1));
@@ -448,7 +448,7 @@ static void NET_Stats_f (void)
 	{
 		for (s = net_activeSockets; s; s = s->next)
 		{
-			if (Q_strcasecmp(Cmd_Argv(1), s->address) == 0)
+			if (q_strcasecmp(Cmd_Argv(1), s->address) == 0)
 				break;
 		}
 
@@ -456,7 +456,7 @@ static void NET_Stats_f (void)
 		{
 			for (s = net_freeSockets; s; s = s->next)
 			{
-				if (Q_strcasecmp(Cmd_Argv(1), s->address) == 0)
+				if (q_strcasecmp(Cmd_Argv(1), s->address) == 0)
 					break;
 			}
 		}

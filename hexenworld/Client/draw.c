@@ -2,7 +2,7 @@
 	draw.c
 	This is the only file outside the refresh that touches the vid buffer.
 
-	$Id: draw.c,v 1.41 2007-09-14 14:10:07 sezero Exp $
+	$Id: draw.c,v 1.42 2007-09-22 15:27:17 sezero Exp $
 */
 
 
@@ -68,7 +68,7 @@ qpic_t	*Draw_CachePic (const char *path)
 		if (menu_numcachepics == MAX_CACHED_PICS)
 			Sys_Error ("menu_numcachepics == MAX_CACHED_PICS");
 		menu_numcachepics++;
-		Q_strlcpy (pic->name, path, MAX_QPATH);
+		q_strlcpy (pic->name, path, MAX_QPATH);
 	}
 
 	dat = (qpic_t *) Cache_Check (&pic->cache);
@@ -117,7 +117,7 @@ qpic_t  *Draw_CachePicResize (const char *path, int targetWidth, int targetHeigh
 		if (menu_numcachepics == MAX_CACHED_PICS)
 			Sys_Error("menu_numcachepics == MAX_CACHED_PICS");
 		menu_numcachepics++;
-		Q_strlcpy(pic->name, path, MAX_QPATH);
+		q_strlcpy(pic->name, path, MAX_QPATH);
 	}
 	dat = (qpic_t *) Cache_Check(&pic->cache);
 	if (dat)
@@ -180,7 +180,7 @@ void Draw_Init (void)
 	{
 		if (draw_disc[i])
 			Z_Free (draw_disc[i]);
-		snprintf(temp, sizeof(temp), "gfx/menu/skull%d.lmp", i);
+		q_snprintf(temp, sizeof(temp), "gfx/menu/skull%d.lmp", i);
 		draw_disc[i] = (qpic_t *)FS_LoadZoneFile (temp, Z_SECZONE);
 		SwapPic (draw_disc[i]);
 	}
@@ -1339,10 +1339,10 @@ void Draw_ConsoleBackground (int lines)
 	//static		char saveback[320*8];
 
 	if (cls.download)
-		Q_strlcpy (ver, STRINGIFY(ENGINE_VERSION), sizeof(ver));
+		q_strlcpy (ver, STRINGIFY(ENGINE_VERSION), sizeof(ver));
 	else
 #endif
-		Q_strlcpy (ver, ENGINE_WATERMARK, sizeof(ver));
+		q_strlcpy (ver, ENGINE_WATERMARK, sizeof(ver));
 
 	conback = Draw_CachePic ("gfx/menu/conback.lmp");
 

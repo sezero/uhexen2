@@ -2,7 +2,7 @@
 	cl_parse.c
 	parse a message received from the server
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cl_parse.c,v 1.56 2007-08-20 08:16:03 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cl_parse.c,v 1.57 2007-09-22 15:27:10 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -1505,7 +1505,7 @@ void CL_ParseServerMessage (void)
 		case svc_cdtrack:
 			cl.cdtrack = MSG_ReadByte ();
 			cl.looptrack = MSG_ReadByte ();
-			if (Q_strcasecmp(bgmtype.string,"cd") == 0)
+			if (q_strcasecmp(bgmtype.string,"cd") == 0)
 			{
 				if ( (cls.demoplayback || cls.demorecording) && (cls.forcetrack != -1) )
 					CDAudio_Play ((byte)cls.forcetrack, true);
@@ -1518,7 +1518,7 @@ void CL_ParseServerMessage (void)
 
 		case svc_midi_name:
 			strcpy(cl.midi_name,MSG_ReadString ());
-			if (Q_strcasecmp(bgmtype.string,"midi") == 0)
+			if (q_strcasecmp(bgmtype.string,"midi") == 0)
 				MIDI_Play(cl.midi_name);
 			else
 				MIDI_Stop();

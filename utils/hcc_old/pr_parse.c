@@ -2,7 +2,7 @@
 	parseerr.c
 	parse error and parse warning routines for the progs compilation
 
-	$Id: pr_parse.c,v 1.3 2007-02-13 13:34:45 sezero Exp $
+	$Id: pr_parse.c,v 1.4 2007-09-22 15:27:42 sezero Exp $
 */
 
 
@@ -25,7 +25,7 @@ void PR_ParseError (const char *error, ...)
 	char		string[1024];
 
 	va_start (argptr, error);
-	vsnprintf (string, sizeof(string), error, argptr);
+	q_vsnprintf (string, sizeof(string), error, argptr);
 	va_end (argptr);
 
 	printf ("%s(%d) : %s\n", strings+s_file, lx_SourceLine, string);
@@ -49,7 +49,7 @@ void PR_ParseWarning (const char *error, ...)
 		return;
 	}
 	va_start (argptr, error);
-	vsnprintf (string, sizeof(string), error, argptr);
+	q_vsnprintf (string, sizeof(string), error, argptr);
 	va_end (argptr);
 
 	printf ("%s(%d) : warning : %s\n", strings+s_file, lx_SourceLine, string);

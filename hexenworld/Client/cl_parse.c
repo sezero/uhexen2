@@ -2,7 +2,7 @@
 	cl_parse.c
 	parse a message received from the server
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/cl_parse.c,v 1.45 2007-09-14 14:10:07 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/cl_parse.c,v 1.46 2007-09-22 15:27:17 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -159,7 +159,7 @@ qboolean CL_CheckOrDownloadFile (char *filename)
 	if (cls.demoplayback)
 		return true;
 
-	Q_strlcpy (cls.downloadname, filename, MAX_OSPATH);
+	q_strlcpy (cls.downloadname, filename, MAX_OSPATH);
 	Con_Printf ("Downloading %s...\n", cls.downloadname);
 
 	// download to a temp name, and only rename
@@ -344,7 +344,7 @@ static void CL_ParseDownload (void)
 			sprintf (name, "hw/%s", cls.downloadtempname);
 #endif
 	// Do I really need to care more about skins like above?..
-		snprintf (name, sizeof(name), "%s/%s", fs_userdir, cls.downloadtempname);
+		q_snprintf (name, sizeof(name), "%s/%s", fs_userdir, cls.downloadtempname);
 		if ( FS_CreatePath(name) )
 		{
 			msg_readcount += size;
@@ -406,8 +406,8 @@ static void CL_ParseDownload (void)
 		}
 #endif
 	// Do I really need to care more about skins like above?..
-		snprintf (oldn, sizeof(oldn), "%s/%s", fs_userdir, cls.downloadtempname);
-		snprintf (newn, sizeof(newn), "%s/%s", fs_userdir, cls.downloadname);
+		q_snprintf (oldn, sizeof(oldn), "%s/%s", fs_userdir, cls.downloadtempname);
+		q_snprintf (newn, sizeof(newn), "%s/%s", fs_userdir, cls.downloadname);
 		r = rename (oldn, newn);
 		if (r)
 			Con_Printf ("failed to rename.\n");
@@ -453,7 +453,7 @@ static void CL_ParseServerData (void)
 	// game directory
 	str = MSG_ReadString ();
 
-	if (Q_strcasecmp(fs_gamedir_nopath, str))
+	if (q_strcasecmp(fs_gamedir_nopath, str))
 	{
 		Con_Printf("Server set the gamedir to %s\n", str);
 
@@ -1686,7 +1686,7 @@ void CL_ParseServerMessage (void)
 
 		case svc_midi_name:
 			strcpy(cl.midi_name,MSG_ReadString ());
-			if (Q_strcasecmp(bgmtype.string,"midi") == 0)
+			if (q_strcasecmp(bgmtype.string,"midi") == 0)
 				MIDI_Play(cl.midi_name);
 			else
 				MIDI_Stop();

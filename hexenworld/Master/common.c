@@ -2,14 +2,48 @@
 	common.c
 	misc utility functions
 
-	$Id: common.c,v 1.2 2007-04-08 08:50:42 sezero Exp $
+	$Id: common.c,v 1.3 2007-09-22 15:27:32 sezero Exp $
 */
 
 #include "defs.h"
 
-char		com_token[1024];
-int		com_argc;
-char	**com_argv;
+/*
+============================================================================
+
+REPLACEMENT FUNCTIONS
+
+============================================================================
+*/
+
+#if defined(SNPRINTF_RETURNS_NEGATIVE) || defined(SNPRINTF_DOESNT_TERMINATE)
+int q_vsnprintf(char *str, size_t size, const char *format, va_list args)
+{
+	int		ret;
+
+	ret = vsnprintf_func (str, size, format, args);
+# if defined(SNPRINTF_RETURNS_NEGATIVE)
+	if (ret < 0)
+		ret = (int)size;
+# endif
+# if defined(SNPRINTF_DOESNT_TERMINATE)
+	if (ret >= (int)size)
+		str[size - 1] = '\0';
+# endif
+	return ret;
+}
+
+int q_snprintf (char *str, size_t size, const char *format, ...)
+{
+	int		ret;
+	va_list		argptr;
+
+	va_start (argptr, format);
+	ret = q_vsnprintf (str, size, format, argptr);
+	va_end (argptr);
+	return ret;
+}
+#endif	/* SNPRINTF_RETURNS_NEGATIVE || SNPRINTF_DOESNT_TERMINATE */
+
 
 /*
 ============================================================================
@@ -18,6 +52,9 @@ COMMAND LINE PROCESSING FUNCTIONS
 
 ============================================================================
 */
+
+int		com_argc;
+char		**com_argv;
 
 int COM_CheckParm (const char *parm)
 {
@@ -42,6 +79,8 @@ STRING PARSING FUNCTIONS
 
 ============================================================================
 */
+
+char		com_token[1024];
 
 char *COM_Parse (char *data)
 {

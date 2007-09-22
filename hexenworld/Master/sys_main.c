@@ -2,7 +2,7 @@
 	sys_main.c
 	main loop and system interface
 
-	$Id: sys_main.c,v 1.36 2007-09-20 07:59:57 sezero Exp $
+	$Id: sys_main.c,v 1.37 2007-09-22 15:27:32 sezero Exp $
 */
 
 // whether to use the password file to determine
@@ -64,7 +64,7 @@ void Sys_Error (const char *error, ...)
 	char		text[1024];
 
 	va_start (argptr,error);
-	vsnprintf (text, sizeof (text), error,argptr);
+	q_vsnprintf (text, sizeof (text), error,argptr);
 	va_end (argptr);
 
 	printf ("\nFATAL ERROR: %s\n\n", text);
@@ -251,7 +251,7 @@ static int Sys_GetUserdir (char *buff, size_t path_len)
 	if (strlen(home_dir) + strlen(HWM_USERDIR) + 12 > path_len)
 		return 1;
 
-	snprintf (buff, path_len, "%s/%s", home_dir, HWM_USERDIR);
+	q_snprintf (buff, path_len, "%s/%s", home_dir, HWM_USERDIR);
 	return Sys_mkdir(buff);
 }
 #endif
@@ -292,7 +292,7 @@ int main (int argc, char **argv)
 	if (Sys_GetUserdir(userdir,sizeof(userdir)) != 0)
 		Sys_Error ("Couldn't determine userspace directory");
 	printf ("Userdir: %s\n", userdir);
-	if (snprintf(filters_file, sizeof(filters_file), "%s/filters.ini", userdir) >= sizeof(filters_file))
+	if (q_snprintf(filters_file, sizeof(filters_file), "%s/filters.ini", userdir) >= sizeof(filters_file))
 		Sys_Error ("Insufficient string buffer size");
 #endif
 

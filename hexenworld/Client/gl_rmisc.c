@@ -1,7 +1,7 @@
 /*
 	r_misc.c
 
-	$Id: gl_rmisc.c,v 1.45 2007-09-14 14:10:07 sezero Exp $
+	$Id: gl_rmisc.c,v 1.46 2007-09-22 15:27:18 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -390,7 +390,7 @@ void R_TranslatePlayerSkin (int playernum)
 			frac += fracstep;
 		}
 	}
-	snprintf(texname, 19, "player%i", playernum);
+	q_snprintf(texname, 19, "player%i", playernum);
 	playertextures[playernum] = GL_LoadTexture(texname, scaled_width, scaled_height, (byte *)pixels, false, false, 0, true);
 }
 

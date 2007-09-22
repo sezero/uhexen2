@@ -1,6 +1,6 @@
 /*
 	gl_vidnt.c -- NT GL vid component
-	$Id: gl_vidnt.c,v 1.113 2007-09-14 14:10:05 sezero Exp $
+	$Id: gl_vidnt.c,v 1.114 2007-09-22 15:27:16 sezero Exp $
 */
 
 #define	__GL_FUNC_EXTERN
@@ -292,7 +292,7 @@ static void VID_ConWidth (int modenum)
 	else
 		vid_conscale = false;
 finish:
-	snprintf (vid_consize, sizeof(vid_consize), "x%.2f (at %ux%u)",
+	q_snprintf (vid_consize, sizeof(vid_consize), "x%.2f (at %ux%u)",
 			(float)modelist[vid_modenum].width/vid.conwidth, vid.conwidth, vid.conheight);
 }
 
@@ -341,7 +341,7 @@ set_size:
 	else
 		vid_conscale = false;
 
-	snprintf (vid_consize, sizeof(vid_consize), "x%.2f (at %ux%u)",
+	q_snprintf (vid_consize, sizeof(vid_consize), "x%.2f (at %ux%u)",
 			(float)modelist[vid_modenum].width/vid.conwidth, vid.conwidth, vid.conheight);
 }
 
@@ -821,15 +821,15 @@ static void GL_Init (void)
 	Con_SafePrintf("OpenGL max.texture size: %i\n", gl_max_size);
 
 	is_3dfx = false;
-	if (!Q_strncasecmp(gl_renderer, "3dfx", 4)	  ||
-	    !Q_strncasecmp(gl_renderer, "SAGE Glide", 10) ||
-	    !Q_strncasecmp(gl_renderer, "Mesa Glide", 10))
+	if (!q_strncasecmp(gl_renderer, "3dfx", 4)	  ||
+	    !q_strncasecmp(gl_renderer, "SAGE Glide", 10) ||
+	    !q_strncasecmp(gl_renderer, "Mesa Glide", 10))
 	{
 		Con_SafePrintf("3dfx Voodoo found\n");
 		is_3dfx = true;
 	}
 
-	if (!Q_strncasecmp(gl_renderer, "PowerVR", 7))
+	if (!q_strncasecmp(gl_renderer, "PowerVR", 7))
 		fullsbardraw = true;	// this actually seems useless, things aren't like those in quake
 
 	VID_InitGamma ();
@@ -1129,7 +1129,7 @@ void VID_SetPalette (unsigned char *palette)
 			{
 #if !defined(NO_SPLASHES)
 #ifdef DEBUG_BUILD
-				snprintf(s, sizeof(s), "Done - %d\n", i);
+				q_snprintf(s, sizeof(s), "Done - %d\n", i);
 				OutputDebugString(s);
 #endif
 				SendMessage(hProgress, PBM_STEPIT, 0, 0);
@@ -1137,9 +1137,9 @@ void VID_SetPalette (unsigned char *palette)
 				m = 0;
 			}
 		}
-		snprintf(s, sizeof(s), "%s/glhexen", fs_userdir);
+		q_snprintf(s, sizeof(s), "%s/glhexen", fs_userdir);
 		Sys_mkdir (s);
-		snprintf(s, sizeof(s), "%s/glhexen/15to8.pal", fs_userdir);
+		q_snprintf(s, sizeof(s), "%s/glhexen/15to8.pal", fs_userdir);
 		f = fopen(s, "wb");
 		if (f)
 		{
@@ -1583,14 +1583,14 @@ static char *VID_GetExtModeDescription (int mode)
 	pv = VID_GetModePtr (mode);
 	if (modelist[mode].type == MS_FULLDIB)
 	{
-		snprintf(pinfo, sizeof(pinfo), "%s fullscreen", pv->modedesc);
+		q_snprintf(pinfo, sizeof(pinfo), "%s fullscreen", pv->modedesc);
 	}
 	else
 	{
 		if (modestate == MS_WINDOWED)
-			snprintf(pinfo, sizeof(pinfo), "%s windowed", pv->modedesc);
+			q_snprintf(pinfo, sizeof(pinfo), "%s windowed", pv->modedesc);
 		else
-			snprintf(pinfo, sizeof(pinfo), "windowed");
+			q_snprintf(pinfo, sizeof(pinfo), "windowed");
 	}
 
 	return pinfo;
@@ -1712,7 +1712,7 @@ static void VID_InitDIB (HINSTANCE hInstance)
 			wmodelist[num_wmodes].type = MS_WINDOWED;
 			wmodelist[num_wmodes].width = std_modes[i].width;
 			wmodelist[num_wmodes].height = std_modes[i].height;
-			snprintf (wmodelist[num_wmodes].modedesc, MAX_DESC, "%dx%d",
+			q_snprintf (wmodelist[num_wmodes].modedesc, MAX_DESC, "%dx%d",
 				 wmodelist[num_wmodes].width, wmodelist[num_wmodes].height);
 			wmodelist[num_wmodes].modenum = MODE_WINDOWED;
 			wmodelist[num_wmodes].dib = 1;
@@ -1764,7 +1764,7 @@ static void VID_InitFullDIB (HINSTANCE hInstance)
 				fmodelist[num_fmodes].dib = 1;
 				fmodelist[num_fmodes].fullscreen = 1;
 				fmodelist[num_fmodes].bpp = devmode.dmBitsPerPel;
-				snprintf (fmodelist[num_fmodes].modedesc, MAX_DESC, "%dx%dx%d",
+				q_snprintf (fmodelist[num_fmodes].modedesc, MAX_DESC, "%dx%dx%d",
 						(int)devmode.dmPelsWidth, (int)devmode.dmPelsHeight,
 						(int)devmode.dmBitsPerPel);
 
@@ -1776,7 +1776,7 @@ static void VID_InitFullDIB (HINSTANCE hInstance)
 					{
 						fmodelist[num_fmodes].width >>= 1;
 						fmodelist[num_fmodes].halfscreen = 1;
-						snprintf (fmodelist[num_fmodes].modedesc, MAX_DESC, "%dx%dx%d",
+						q_snprintf (fmodelist[num_fmodes].modedesc, MAX_DESC, "%dx%dx%d",
 								 fmodelist[num_fmodes].width,
 								 fmodelist[num_fmodes].height,
 								 fmodelist[num_fmodes].bpp);
@@ -1828,7 +1828,7 @@ static void VID_InitFullDIB (HINSTANCE hInstance)
 				fmodelist[num_fmodes].dib = 1;
 				fmodelist[num_fmodes].fullscreen = 1;
 				fmodelist[num_fmodes].bpp = devmode.dmBitsPerPel;
-				snprintf (fmodelist[num_fmodes].modedesc, MAX_DESC, "%dx%dx%d",
+				q_snprintf (fmodelist[num_fmodes].modedesc, MAX_DESC, "%dx%dx%d",
 						(int)devmode.dmPelsWidth, (int)devmode.dmPelsHeight,
 						(int)devmode.dmBitsPerPel);
 
@@ -2122,11 +2122,11 @@ void	VID_Init (unsigned char *palette)
 
 #if DO_MESH_CACHE
 	// prepare directories for caching mesh files
-	snprintf (gldir, sizeof(gldir), "%s/glhexen", fs_userdir);
+	q_snprintf (gldir, sizeof(gldir), "%s/glhexen", fs_userdir);
 	Sys_mkdir (gldir);
-	snprintf (gldir, sizeof(gldir), "%s/glhexen/boss", fs_userdir);
+	q_snprintf (gldir, sizeof(gldir), "%s/glhexen/boss", fs_userdir);
 	Sys_mkdir (gldir);
-	snprintf (gldir, sizeof(gldir), "%s/glhexen/puzzle", fs_userdir);
+	q_snprintf (gldir, sizeof(gldir), "%s/glhexen/puzzle", fs_userdir);
 	Sys_mkdir (gldir);
 #endif
 
@@ -2217,7 +2217,7 @@ void	VID_Init (unsigned char *palette)
 		wmodelist[num_wmodes].width = width;
 		wmodelist[num_wmodes].height = height;
 		wmodelist[num_wmodes].type = MS_WINDOWED;
-		snprintf (wmodelist[num_wmodes].modedesc, MAX_DESC, "%dx%d",
+		q_snprintf (wmodelist[num_wmodes].modedesc, MAX_DESC, "%dx%d",
 			 wmodelist[num_wmodes].width, wmodelist[num_wmodes].height);
 		wmodelist[num_wmodes].modenum = MODE_WINDOWED;
 		wmodelist[num_wmodes].dib = 1;
@@ -2238,7 +2238,7 @@ void	VID_Init (unsigned char *palette)
 
 		if (!existingmode)
 		{
-			Q_strlcat (wmodelist[num_wmodes].modedesc, " (user mode)", MAX_DESC);
+			q_strlcat (wmodelist[num_wmodes].modedesc, " (user mode)", MAX_DESC);
 			vid_default = num_wmodes;
 			num_wmodes++;
 		}
@@ -2271,7 +2271,7 @@ void	VID_Init (unsigned char *palette)
 			// with desktop dimensions
 			if (vid_deskmode >= 0)
 			{
-				Q_strlcat (modelist[vid_deskmode].modedesc, " (desktop)", MAX_DESC);
+				q_strlcat (modelist[vid_deskmode].modedesc, " (desktop)", MAX_DESC);
 				vid_default = vid_deskmode;
 			}
 			else
@@ -2316,7 +2316,7 @@ void	VID_Init (unsigned char *palette)
 				fmodelist[num_fmodes].dib = 1;
 				fmodelist[num_fmodes].fullscreen = 1;
 				fmodelist[num_fmodes].bpp = bpp;
-				snprintf (fmodelist[num_fmodes].modedesc, MAX_DESC, "%dx%dx%d",
+				q_snprintf (fmodelist[num_fmodes].modedesc, MAX_DESC, "%dx%dx%d",
 						fmodelist[num_fmodes].width, fmodelist[num_fmodes].height,
 						fmodelist[num_fmodes].bpp);
 
@@ -2333,7 +2333,7 @@ void	VID_Init (unsigned char *palette)
 
 				if (!existingmode)
 				{
-					Q_strlcat (fmodelist[num_fmodes].modedesc, " (user mode)", MAX_DESC);
+					q_strlcat (fmodelist[num_fmodes].modedesc, " (user mode)", MAX_DESC);
 					num_fmodes++;
 					// re-sort the modes
 					VID_SortModes();
@@ -2343,7 +2343,7 @@ void	VID_Init (unsigned char *palette)
 			}
 
 			if (vid_deskmode >= 0)
-				Q_strlcat (fmodelist[vid_deskmode].modedesc, " (desktop)", MAX_DESC);
+				q_strlcat (fmodelist[vid_deskmode].modedesc, " (desktop)", MAX_DESC);
 
 			j = done = 0;
 
@@ -2460,7 +2460,7 @@ void	VID_Init (unsigned char *palette)
 	vid_menudrawfn = VID_MenuDraw;
 	vid_menukeyfn = VID_MenuKey;
 
-	Q_strlcpy (badmode.modedesc,"Bad mode", MAX_DESC);
+	q_strlcpy (badmode.modedesc,"Bad mode", MAX_DESC);
 	vid_canalttab = true;
 
 	if (COM_CheckParm("-fullsbar"))

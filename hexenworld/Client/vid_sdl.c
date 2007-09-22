@@ -3,7 +3,7 @@
 	SDL video driver
 	Select window size and mode and init SDL in SOFTWARE mode.
 
-	$Id: vid_sdl.c,v 1.78 2007-09-14 14:10:08 sezero Exp $
+	$Id: vid_sdl.c,v 1.79 2007-09-22 15:27:20 sezero Exp $
 
 	Changed by S.A. 7/11/04, 27/12/04
 	Options are now: -fullscreen | -window, -height , -width
@@ -296,7 +296,7 @@ static void VID_PrepareModes (SDL_Rect **sdl_modes)
 		wmodelist[num_wmodes].halfscreen = 0;
 		wmodelist[num_wmodes].fullscreen = 0;
 		wmodelist[num_wmodes].bpp = 8;
-		snprintf (wmodelist[num_wmodes].modedesc, MAX_DESC, "%d x %d", std_modes[i].width, std_modes[i].height);
+		q_snprintf (wmodelist[num_wmodes].modedesc, MAX_DESC, "%d x %d", std_modes[i].width, std_modes[i].height);
 		num_wmodes++;
 	}
 
@@ -380,7 +380,7 @@ no_fmodes:
 			fmodelist[num_fmodes].halfscreen = 0;
 			fmodelist[num_fmodes].fullscreen = 1;
 			fmodelist[num_fmodes].bpp = 8;
-			snprintf (fmodelist[num_fmodes].modedesc, MAX_DESC, "%d x %d", sdl_modes[i]->w, sdl_modes[i]->h);
+			q_snprintf (fmodelist[num_fmodes].modedesc, MAX_DESC, "%d x %d", sdl_modes[i]->w, sdl_modes[i]->h);
 			num_fmodes++;
 		}
 	}
@@ -763,7 +763,7 @@ void VID_Init (unsigned char *palette)
 		modelist[*nummodes].halfscreen = 0;
 		modelist[*nummodes].fullscreen = 1;
 		modelist[*nummodes].bpp = 8;
-		snprintf (modelist[*nummodes].modedesc, MAX_DESC, "%d x %d (user mode)", width, height);
+		q_snprintf (modelist[*nummodes].modedesc, MAX_DESC, "%d x %d (user mode)", width, height);
 		Cvar_SetValue ("vid_mode", *nummodes);
 		(*nummodes)++;
 	}

@@ -2,7 +2,7 @@
 	console.c
 	in-game console and chat message buffer handling
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/console.c,v 1.31 2007-09-14 14:10:07 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/console.c,v 1.32 2007-09-22 15:27:17 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -351,7 +351,7 @@ void CON_Printf (unsigned int flags, const char *fmt, ...)
 		if (con_debuglog & LOG_DEVEL)	/* full logging */
 		{
 			va_start (argptr, fmt);
-			vsnprintf (msg, sizeof(msg), fmt, argptr);
+			q_vsnprintf (msg, sizeof(msg), fmt, argptr);
 			va_end (argptr);
 			LOG_Print (msg);
 		}
@@ -359,7 +359,7 @@ void CON_Printf (unsigned int flags, const char *fmt, ...)
 	}
 
 	va_start (argptr, fmt);
-	vsnprintf (msg, sizeof(msg), fmt, argptr);
+	q_vsnprintf (msg, sizeof(msg), fmt, argptr);
 	va_end (argptr);
 
 	Sys_PrintTerm (msg);	// echo to the terminal
@@ -434,15 +434,15 @@ void Con_ShowList (int cnt, const char **list)
 			s = list[j * rows + i];
 			len = strlen(s);
 
-			Q_strlcat(line, s, con_linewidth+1);
+			q_strlcat(line, s, con_linewidth+1);
 			if (j < cols - 1)
 			{
 				while (len < max_len)
 				{
-					Q_strlcat(line, " ", con_linewidth+1);
+					q_strlcat(line, " ", con_linewidth+1);
 					len++;
 				}
-				Q_strlcat(line, "  ", con_linewidth+1);
+				q_strlcat(line, "  ", con_linewidth+1);
 			}
 		}
 
@@ -479,7 +479,7 @@ static void Con_DrawInput (void)
 	if (key_dest != key_console && cls.state == ca_active)
 		return;		// don't draw anything (always draw if not active)
 
-	Q_strlcpy(editlinecopy, key_lines[edit_line], sizeof(editlinecopy));
+	q_strlcpy(editlinecopy, key_lines[edit_line], sizeof(editlinecopy));
 	text = editlinecopy;
 
 	y = strlen(text);

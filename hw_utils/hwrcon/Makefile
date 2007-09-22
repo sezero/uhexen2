@@ -1,5 +1,5 @@
 # GNU Makefile for hwrcon and hwterm using GCC.
-# $Header: /home/ozzie/Download/0000/uhexen2/hw_utils/hwrcon/Makefile,v 1.9 2007-07-12 19:41:20 sezero Exp $
+# $Header: /home/ozzie/Download/0000/uhexen2/hw_utils/hwrcon/Makefile,v 1.10 2007-09-22 15:27:36 sezero Exp $
 #
 # if building a debug version :		make DEBUG=1 [other stuff]
 #
@@ -65,16 +65,17 @@ endif
 	$(CC) -c $(CFLAGS) $(EXT_FLAGS) $(INCLUDES) -o $@ $<
 
 # Objects
-COMMONOBJ = huffman.o
+COMMONOBJ = qsnprint.o
+HUFF_OBJS = huffman.o
 RCON_OBJS = hwrcon.o
 TERM_OBJS = hwterm.o
 
 ifeq ($(USE_HUFFMAN),yes)
-RCON_OBJS:= huffman.o $(RCON_OBJS)
+RCON_OBJS:= $(HUFF_OBJS) $(RCON_OBJS)
 EXT_FLAGS:= $(EXT_FLAGS) -DUSE_HUFFMAN
 else
 ifeq ($(USE_HUFFMAN),1)
-RCON_OBJS:= huffman.o $(RCON_OBJS)
+RCON_OBJS:= $(HUFF_OBJS) $(RCON_OBJS)
 EXT_FLAGS:= $(EXT_FLAGS) -DUSE_HUFFMAN
 endif
 endif
@@ -86,11 +87,11 @@ default: all
 # include file for sanity check target
 include $(UHEXEN2_TOP)/scripts/sanity2.inc
 
-$(HWRCON) : $(RCON_OBJS)
-	$(LINKER) -o $(HWRCON) $(RCON_OBJS) $(LDFLAGS)
+$(HWRCON) : $(COMMONOBJ) $(RCON_OBJS)
+	$(LINKER) -o $(HWRCON) $(COMMONOBJ) $(RCON_OBJS) $(LDFLAGS)
 
-$(HWTERM) : $(COMMONOBJ) $(TERM_OBJS)
-	$(LINKER) -o $(HWTERM) $(COMMONOBJ) $(TERM_OBJS) $(LDFLAGS)
+$(HWTERM) : $(COMMONOBJ) $(HUFF_OBJS) $(TERM_OBJS)
+	$(LINKER) -o $(HWTERM) $(COMMONOBJ) $(HUFF_OBJS) $(TERM_OBJS) $(LDFLAGS)
 
 clean:
 	rm -f *.o core .tmp *.tmp

@@ -1,6 +1,6 @@
 /*
 	genmodel.c
-	$Id: genmodel.c,v 1.7 2007-07-08 17:01:15 sezero Exp $
+	$Id: genmodel.c,v 1.8 2007-09-22 15:27:38 sezero Exp $
 
 	Generates a .mdl file from a base frame, a texture bitmap,
 	and a series of frames.
@@ -201,7 +201,7 @@ int main(int argc, char **argv)
 
 	for (i = 1; i < argc; i++)
 	{
-		if (!Q_strcasecmp(argv[i], "-archive"))
+		if (!q_strcasecmp(argv[i], "-archive"))
 		{
 			archive = true;
 			strcpy(archivedir, argv[i+1]);
@@ -209,7 +209,7 @@ int main(int argc, char **argv)
 
 			i++;
 		}
-		else if (!Q_strncasecmp(argv[i], "-opt", 4))
+		else if (!q_strncasecmp(argv[i], "-opt", 4))
 		{
 			DoOpts = true;
 		}
@@ -231,7 +231,7 @@ int main(int argc, char **argv)
 	strcpy(outname, path);
 
 	i = strlen(path);
-	if (i > 4 && Q_strcasecmp(&path[i-4],".mdl") == 0)
+	if (i > 4 && q_strcasecmp(&path[i-4],".mdl") == 0)
 	{
 		strcpy(outname,path);
 		ReadModel(path);

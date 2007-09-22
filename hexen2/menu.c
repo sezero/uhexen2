@@ -1,7 +1,7 @@
 /*
 	menu.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/menu.c,v 1.98 2007-08-29 13:04:57 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/menu.c,v 1.99 2007-09-22 15:27:12 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -653,7 +653,7 @@ void ScrollTitle (const char *name)
 		}
 	}
 
-	if (Q_strcasecmp(LastName,name) != 0 && TitleTargetPercent != 0)
+	if (q_strcasecmp(LastName,name) != 0 && TitleTargetPercent != 0)
 		TitleTargetPercent = 0;
 
 	if (CanSwitch)
@@ -1127,7 +1127,7 @@ static void M_ScanSaves (void)
 	{
 		strncpy (m_filenames[i], "--- UNUSED SLOT ---", sizeof(m_filenames[0])-1);
 		loadable[i] = false;
-		snprintf (name, sizeof(name), "%s/s%i/info.dat", fs_userdir, i);
+		q_snprintf (name, sizeof(name), "%s/s%i/info.dat", fs_userdir, i);
 		f = fopen (name, "r");
 		if (!f)
 			continue;
@@ -1292,7 +1292,7 @@ static void M_ScanMSaves (void)
 	{
 		strncpy (m_filenames[i], "--- UNUSED SLOT ---", sizeof(m_filenames[0])-1);
 		loadable[i] = false;
-		snprintf (name, sizeof(name), "%s/ms%i/info.dat", fs_userdir, i);
+		q_snprintf (name, sizeof(name), "%s/ms%i/info.dat", fs_userdir, i);
 		f = fopen (name, "r");
 		if (!f)
 			continue;
@@ -1534,8 +1534,8 @@ static void M_Menu_Setup_f (void)
 	key_dest = key_menu;
 	m_state = m_setup;
 	m_entersound = true;
-	Q_strlcpy(setup_myname, cl_name.string, sizeof(setup_myname));
-	Q_strlcpy(setup_hostname, hostname.string, sizeof(setup_hostname));
+	q_strlcpy(setup_myname, cl_name.string, sizeof(setup_myname));
+	q_strlcpy(setup_hostname, hostname.string, sizeof(setup_hostname));
 	setup_top = setup_oldtop = (cl_color.integer >> 4) & 15;
 	setup_bottom = setup_oldbottom = cl_color.integer & 15;
 	setup_class = cl_playerclass.integer;
@@ -1892,7 +1892,7 @@ void M_Menu_Options_f (void)
 
 	// get the current music type
 	if (old_bgmtype[0] == 0)
-		Q_strlcpy(old_bgmtype, bgmtype.string, sizeof(old_bgmtype));
+		q_strlcpy(old_bgmtype, bgmtype.string, sizeof(old_bgmtype));
 #if 0	// change to 1 if dont want to disable mouse in fullscreen
 	if ((options_cursor == OPT_USEMOUSE) && (modestate != MS_WINDOWED))
 		options_cursor = 0;
@@ -1927,14 +1927,14 @@ static void M_AdjustSliders (int dir)
 		Cvar_SetValue ("sensitivity", sensitivity.value);
 		break;
 	case OPT_MUSICTYPE:	// bgm type
-		if (Q_strcasecmp(bgmtype.string,"midi") == 0)
+		if (q_strcasecmp(bgmtype.string,"midi") == 0)
 		{
 			if (dir < 0)
 				Cvar_Set("bgmtype","none");
 			else
 				Cvar_Set("bgmtype","cd");
 		}
-		else if (Q_strcasecmp(bgmtype.string,"cd") == 0)
+		else if (q_strcasecmp(bgmtype.string,"cd") == 0)
 		{
 			if (dir < 0)
 				Cvar_Set("bgmtype","midi");
@@ -2060,9 +2060,9 @@ static void M_Options_Draw (void)
 	M_DrawSlider (220, 60 + (5 * 8), r);
 
 	M_Print (16 + (12 * 8), 60 + (6 * 8),	"Music Type");
-	if (Q_strcasecmp(bgmtype.string, "midi") == 0)
+	if (q_strcasecmp(bgmtype.string, "midi") == 0)
 		M_Print (220, 60 + (6 * 8), "MIDI");
-	else if (Q_strcasecmp(bgmtype.string, "cd") == 0)
+	else if (q_strcasecmp(bgmtype.string, "cd") == 0)
 		M_Print (220, 60 + (6 * 8), "CD");
 	else
 		M_Print (220, 60 + (6 * 8), "None");
@@ -2275,7 +2275,7 @@ static void M_OpenGL_Draw (void)
 	M_Print (32 + (6 * 8), 90 + 8*OGL_LIGHTMAPFMT,	"Lightmap Format:");
 	for (i = 0; i < MAX_LMFORMATS; i++)
 	{
-		if (!Q_strcasecmp(gl_lightmapfmt.string, lm_formats[i].name))
+		if (!q_strcasecmp(gl_lightmapfmt.string, lm_formats[i].name))
 			break;
 	}
 	lm_format = i;
@@ -2696,7 +2696,7 @@ static void M_Keys_Key (int k)
 		}
 		else if (k != '`')
 		{
-			snprintf (cmd, sizeof(cmd), "bind \"%s\" \"%s\"\n", Key_KeynumToString (k), bindnames[keys_cursor][0]);
+			q_snprintf (cmd, sizeof(cmd), "bind \"%s\" \"%s\"\n", Key_KeynumToString (k), bindnames[keys_cursor][0]);
 			Cbuf_InsertText (cmd);
 		}
 
@@ -3347,7 +3347,7 @@ static void M_Menu_LanConfig_f (void)
 	if (StartingGame && lanConfig_cursor >= 2)
 		lanConfig_cursor = 1;
 	lanConfig_port = DEFAULTnet_hostport;
-	snprintf(lanConfig_portname, sizeof(lanConfig_portname), "%d", lanConfig_port);
+	q_snprintf(lanConfig_portname, sizeof(lanConfig_portname), "%d", lanConfig_port);
 
 	m_return_onerror = false;
 	m_return_reason[0] = 0;
@@ -3590,7 +3590,7 @@ static void M_LanConfig_Key (int key)
 		l = lanConfig_port;
 	else
 		lanConfig_port = l;
-	snprintf(lanConfig_portname, sizeof(lanConfig_portname), "%d", lanConfig_port);
+	q_snprintf(lanConfig_portname, sizeof(lanConfig_portname), "%d", lanConfig_port);
 }
 
 //=============================================================================
@@ -4203,9 +4203,9 @@ static void M_ServerList_Draw (void)
 			name = net_landrivers[hostcache[n].ldriver].name;
 
 		if (hostcache[n].maxusers)
-			snprintf(string, sizeof(string), "%-11.11s %-8.8s %-10.10s %2d/%2d\n", hostcache[n].name, name, hostcache[n].map, hostcache[n].users, hostcache[n].maxusers);
+			q_snprintf(string, sizeof(string), "%-11.11s %-8.8s %-10.10s %2d/%2d\n", hostcache[n].name, name, hostcache[n].map, hostcache[n].users, hostcache[n].maxusers);
 		else
-			snprintf(string, sizeof(string), "%-11.11s %-8.8s %-10.10s\n", hostcache[n].name, name, hostcache[n].map);
+			q_snprintf(string, sizeof(string), "%-11.11s %-8.8s %-10.10s\n", hostcache[n].name, name, hostcache[n].map);
 		M_Print (16, 60 + 8*n, string);
 	}
 	M_DrawCharacter (0, 60 + slist_cursor*8, 12+((int)(realtime*4)&1));
@@ -4536,12 +4536,12 @@ static void BGM_RestartMusic (void)
 	// called after exitting the menus and changing the music type
 	// this is pretty crude, but doen't seem to break anything S.A
 
-	if (Q_strcasecmp(bgmtype.string,"midi") == 0)
+	if (q_strcasecmp(bgmtype.string,"midi") == 0)
 	{
 		CDAudio_Stop();
 		MIDI_Play(cl.midi_name);
 	}
-	else if (Q_strcasecmp(bgmtype.string,"cd") == 0)
+	else if (q_strcasecmp(bgmtype.string,"cd") == 0)
 	{
 		MIDI_Stop();
 		CDAudio_Play ((byte)cl.cdtrack, true);

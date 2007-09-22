@@ -5,7 +5,7 @@
 	models are the only shared resource between a client and server
 	running on the same machine.
 
-	$Id: model.c,v 1.32 2007-09-20 16:17:45 sezero Exp $
+	$Id: model.c,v 1.33 2007-09-22 15:27:12 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -221,7 +221,7 @@ model_t *Mod_FindName (const char *name)
 		}
 		else
 			mod_numknown++;
-		Q_strlcpy (mod->name, name, MAX_QPATH);
+		q_strlcpy (mod->name, name, MAX_QPATH);
 		mod->needload = NL_NEEDS_LOADED;
 	}
 
@@ -388,7 +388,7 @@ static void Mod_LoadTextures (lump_t *l)
 		if (!r_texture_external.integer)
 			goto bsp_tex_internal;
 		// try an external wal texture file first
-		snprintf (texname, sizeof(texname), "textures/%s.wal", mt->name);
+		q_snprintf (texname, sizeof(texname), "textures/%s.wal", mt->name);
 		if (texname[sizeof(WAL_EXT_DIRNAME)] == '*')
 			texname[sizeof(WAL_EXT_DIRNAME)] = WAL_REPLACE_ASTERIX;
 		mark = Hunk_LowMark ();
@@ -886,8 +886,8 @@ static void Mod_LoadFaces (lump_t *l)
 				out->texturemins[i] = -8192;
 			}
 
-			if ( (!Q_strncasecmp(out->texinfo->texture->name,"*rtex078",8)) ||
-					(!Q_strncasecmp(out->texinfo->texture->name,"*lowlight",9)) )
+			if ( (!q_strncasecmp(out->texinfo->texture->name,"*rtex078",8)) ||
+					(!q_strncasecmp(out->texinfo->texture->name,"*lowlight",9)) )
 				out->flags |= SURF_TRANSLUCENT;
 
 			continue;
@@ -1338,7 +1338,7 @@ static void Mod_LoadBrushModel (model_t *mod, void *buffer)
 		{	// duplicate the basic information
 			char	name[10];
 
-			snprintf (name, sizeof(name), "*%i", i+1);
+			q_snprintf (name, sizeof(name), "*%i", i+1);
 			loadmodel = Mod_FindName (name);
 			*loadmodel = *mod;
 			strcpy (loadmodel->name, name);
@@ -2285,7 +2285,7 @@ static void Mod_Print (void)
 	i = Cmd_Argc();
 	for (counter = 1; counter < i; counter++)
 	{
-		if (Q_strcasecmp(Cmd_Argv(counter),"save") == 0)
+		if (q_strcasecmp(Cmd_Argv(counter),"save") == 0)
 		{
 			FH = fopen(va("%s/mcache.txt", fs_userdir),"w");
 			break;

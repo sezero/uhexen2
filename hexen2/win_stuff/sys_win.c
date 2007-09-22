@@ -2,7 +2,7 @@
 	sys_win.c
 	Win32 system interface code
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/win_stuff/sys_win.c,v 1.58 2007-09-20 07:59:57 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/win_stuff/sys_win.c,v 1.59 2007-09-22 15:27:16 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -240,7 +240,7 @@ void Sys_Error (const char *error, ...)
 	double		err_begin;
 
 	va_start (argptr, error);
-	vsnprintf (text, sizeof (text), error, argptr);
+	q_vsnprintf (text, sizeof (text), error, argptr);
 	va_end (argptr);
 
 	if (con_debuglog)
@@ -254,7 +254,7 @@ void Sys_Error (const char *error, ...)
 
 	if (isDedicated)
 	{
-		snprintf (text2, sizeof (text2), "ERROR: %s\n", text);
+		q_snprintf (text2, sizeof (text2), "ERROR: %s\n", text);
 		if (text2[sizeof(text2)-2] != '\0')
 			text2[sizeof(text2)-2] = '\n';
 		WriteFile (houtput, text5, strlen (text5), &dummy, NULL);

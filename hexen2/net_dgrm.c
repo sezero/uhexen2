@@ -2,7 +2,7 @@
 	net_dgrm.c
 	This is enables a simple IP banning mechanism
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/net_dgrm.c,v 1.32 2007-08-25 11:15:02 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/net_dgrm.c,v 1.33 2007-09-22 15:27:12 sezero Exp $
 */
 
 #define BAN_TEST
@@ -98,7 +98,7 @@ static void NET_Ban_f (void)
 		break;
 
 	case 2:
-		if (Q_strcasecmp(Cmd_Argv(1), "off") == 0)
+		if (q_strcasecmp(Cmd_Argv(1), "off") == 0)
 			banAddr = 0x00000000;
 		else
 			banAddr = inet_addr(Cmd_Argv(1));
@@ -459,7 +459,7 @@ static void NET_Stats_f (void)
 	{
 		for (s = net_activeSockets; s; s = s->next)
 		{
-			if (Q_strcasecmp(Cmd_Argv(1), s->address) == 0)
+			if (q_strcasecmp(Cmd_Argv(1), s->address) == 0)
 				break;
 		}
 
@@ -467,7 +467,7 @@ static void NET_Stats_f (void)
 		{
 			for (s = net_freeSockets; s; s = s->next)
 			{
-				if (Q_strcasecmp(Cmd_Argv(1), s->address) == 0)
+				if (q_strcasecmp(Cmd_Argv(1), s->address) == 0)
 					break;
 			}
 		}
@@ -561,7 +561,7 @@ static void Test_f (void)
 	{
 		for (n = 0; n < hostCacheCount; n++)
 		{
-			if (Q_strcasecmp (host, hostcache[n].name) == 0)
+			if (q_strcasecmp (host, hostcache[n].name) == 0)
 			{
 				if (hostcache[n].driver != myDriverLevel)
 					continue;
@@ -693,7 +693,7 @@ static void Test2_f (void)
 	{
 		for (n = 0; n < hostCacheCount; n++)
 		{
-			if (Q_strcasecmp (host, hostcache[n].name) == 0)
+			if (q_strcasecmp (host, hostcache[n].name) == 0)
 			{
 				if (hostcache[n].driver != myDriverLevel)
 					continue;
@@ -1139,7 +1139,7 @@ static void _Datagram_SearchForHosts (qboolean xmit)
 		{
 			if (i == n)
 				continue;
-			if (Q_strcasecmp (hostcache[n].name, hostcache[i].name) == 0)
+			if (q_strcasecmp (hostcache[n].name, hostcache[i].name) == 0)
 			{
 				i = strlen(hostcache[n].name);
 				if (i < 15 && hostcache[n].name[i-1] > '8')

@@ -31,7 +31,7 @@
  */
 #if !HAVE_STRLCAT
 size_t
-Q_strlcat (char *dst, const char *src, size_t siz)
+q_strlcat (char *dst, const char *src, size_t siz)
 {
 	char *d = dst;
 	const char *s = src;

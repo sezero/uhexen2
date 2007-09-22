@@ -5,7 +5,7 @@
 	models are the only shared resource between a client and server
 	running on the same machine.
 
-	$Id: gl_model.c,v 1.46 2007-09-20 16:17:46 sezero Exp $
+	$Id: gl_model.c,v 1.47 2007-09-22 15:27:18 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -225,7 +225,7 @@ model_t *Mod_FindName (const char *name)
 			mod = &(mod_known[mod_numknown++]);
 		}
 	}
-	Q_strlcpy (mod->name, name, MAX_QPATH);
+	q_strlcpy (mod->name, name, MAX_QPATH);
 	mod->needload = NL_NEEDS_LOADED;
 	return mod;
 }
@@ -391,7 +391,7 @@ static void Mod_LoadTextures (lump_t *l)
 		if (!r_texture_external.integer)
 			goto bsp_tex_internal;
 		// try an external wal texture file first
-		snprintf (texname, sizeof(texname), "textures/%s.wal", mt->name);
+		q_snprintf (texname, sizeof(texname), "textures/%s.wal", mt->name);
 		if (texname[sizeof(WAL_EXT_DIRNAME)] == '*')
 			texname[sizeof(WAL_EXT_DIRNAME)] = WAL_REPLACE_ASTERIX;
 		mark = Hunk_LowMark ();
@@ -1092,8 +1092,8 @@ static void Mod_LoadFaces (lump_t *l)
 
 			GL_SubdivideSurface (out);	// cut up polygon for warps
 
-			if ( (!Q_strncasecmp(out->texinfo->texture->name,"*rtex078",8)) ||
-					(!Q_strncasecmp(out->texinfo->texture->name,"*lowlight",9)) )
+			if ( (!q_strncasecmp(out->texinfo->texture->name,"*rtex078",8)) ||
+					(!q_strncasecmp(out->texinfo->texture->name,"*lowlight",9)) )
 				out->flags |= SURF_TRANSLUCENT;
 
 			continue;
@@ -1185,7 +1185,7 @@ static void Mod_LoadLeafs (lump_t *l)
 	loadmodel->leafs = out;
 	loadmodel->numleafs = count;
 
-	snprintf (s, sizeof(s), "maps/%s.bsp", Info_ValueForKey(cl.serverinfo,"map"));
+	q_snprintf (s, sizeof(s), "maps/%s.bsp", Info_ValueForKey(cl.serverinfo,"map"));
 	if (!strcmp(s, loadmodel->name))
 		isnotmap = false;
 
@@ -1561,7 +1561,7 @@ static void Mod_LoadBrushModel (model_t *mod, void *buffer)
 		{	// duplicate the basic information
 			char	name[10];
 
-			snprintf (name, sizeof(name), "*%i", i+1);
+			q_snprintf (name, sizeof(name), "*%i", i+1);
 			loadmodel = Mod_FindName (name);
 			*loadmodel = *mod;
 			strcpy (loadmodel->name, name);
@@ -1899,7 +1899,7 @@ static void *Mod_LoadAllSkins (int numskins, daliasskintype_t *pskintype, int md
 				memcpy (player_8bit_texels[5], (byte *)(pskintype + 1), s);
 			}
 
-			snprintf (name, sizeof(name), "%s_%i", loadmodel->name, i);
+			q_snprintf (name, sizeof(name), "%s_%i", loadmodel->name, i);
 
 			pheader->gl_texturenum[i][0] =
 			pheader->gl_texturenum[i][1] =
@@ -1922,7 +1922,7 @@ static void *Mod_LoadAllSkins (int numskins, daliasskintype_t *pskintype, int md
 			for (j = 0; j < groupskins; j++)
 			{
 				Mod_FloodFillSkin (skin, pheader->skinwidth, pheader->skinheight);
-				snprintf (name, sizeof(name), "%s_%i_%i", loadmodel->name, i, j);
+				q_snprintf (name, sizeof(name), "%s_%i_%i", loadmodel->name, i, j);
 				pheader->gl_texturenum[i][j&3] = 
 					GL_LoadTexture (name, pheader->skinwidth, 
 						pheader->skinheight, (byte *)(pskintype), true, false, tex_mode, false);
@@ -1949,13 +1949,13 @@ static void Mod_SetAliasModelExtraFlags (model_t *mod)
 	mod->ex_flags = 0;
 
 	// Torch glows
-	if (!Q_strncasecmp (mod->name, "models/eflmtrch",15) ||
-	    !Q_strncasecmp (mod->name, "models/rflmtrch",15) ||
-	    !Q_strncasecmp (mod->name, "models/cflmtrch",15) ||
-	    !Q_strncasecmp (mod->name, "models/castrch",15)  ||
-	    !Q_strncasecmp (mod->name, "models/rometrch",15) ||
-	    !Q_strncasecmp (mod->name, "models/egtorch",14)  ||
-	    !Q_strncasecmp (mod->name, "models/flame",12))
+	if (!q_strncasecmp (mod->name, "models/eflmtrch",15) ||
+	    !q_strncasecmp (mod->name, "models/rflmtrch",15) ||
+	    !q_strncasecmp (mod->name, "models/cflmtrch",15) ||
+	    !q_strncasecmp (mod->name, "models/castrch",15)  ||
+	    !q_strncasecmp (mod->name, "models/rometrch",15) ||
+	    !q_strncasecmp (mod->name, "models/egtorch",14)  ||
+	    !q_strncasecmp (mod->name, "models/flame",12))
 	{
 		mod->ex_flags |= XF_TORCH_GLOW;
 		// set yellow color
@@ -1965,7 +1965,7 @@ static void Mod_SetAliasModelExtraFlags (model_t *mod)
 		mod->glow_color[3] = 1.0f;
 	}
 	// Mana glows
-	else if (!Q_strncasecmp (mod->name, "models/i_bmana",14))
+	else if (!q_strncasecmp (mod->name, "models/i_bmana",14))
 	{
 		mod->ex_flags |= XF_GLOW;
 		mod->glow_color[0] = 0.25f;
@@ -1973,7 +1973,7 @@ static void Mod_SetAliasModelExtraFlags (model_t *mod)
 		mod->glow_color[2] = 1.0f;
 		mod->glow_color[3] = 0.5f;
 	}
-	else if (!Q_strncasecmp (mod->name, "models/i_gmana",14))
+	else if (!q_strncasecmp (mod->name, "models/i_gmana",14))
 	{
 		mod->ex_flags |= XF_GLOW;
 		mod->glow_color[0] = 0.25f;
@@ -1981,7 +1981,7 @@ static void Mod_SetAliasModelExtraFlags (model_t *mod)
 		mod->glow_color[2] = 0.25f;
 		mod->glow_color[3] = 0.5f;
 	}
-	else if (!Q_strncasecmp (mod->name, "models/i_btmana",15))
+	else if (!q_strncasecmp (mod->name, "models/i_btmana",15))
 	{
 		mod->ex_flags |= XF_GLOW;
 		mod->glow_color[0] = 1.0f;
@@ -1990,7 +1990,7 @@ static void Mod_SetAliasModelExtraFlags (model_t *mod)
 		mod->glow_color[3] = 0.5f;
 	}
 	// Missile glows
-	else if (!Q_strncasecmp (mod->name, "models/drgnball",15))
+	else if (!q_strncasecmp (mod->name, "models/drgnball",15))
 	{
 		mod->ex_flags |= XF_MISSILE_GLOW;
 		mod->glow_color[0] = 1.0f;
@@ -1998,7 +1998,7 @@ static void Mod_SetAliasModelExtraFlags (model_t *mod)
 		mod->glow_color[2] = 0.25f;
 		mod->glow_color[3] = 0.5f;
 	}
-	else if (!Q_strncasecmp (mod->name, "models/eidoball",15))
+	else if (!q_strncasecmp (mod->name, "models/eidoball",15))
 	{
 		mod->ex_flags |= XF_MISSILE_GLOW;
 		mod->glow_color[0] = 1.0f;
@@ -2006,7 +2006,7 @@ static void Mod_SetAliasModelExtraFlags (model_t *mod)
 		mod->glow_color[2] = 0.25f;
 		mod->glow_color[3] = 0.5f;
 	}
-	else if (!Q_strncasecmp (mod->name, "models/lavaball",15))
+	else if (!q_strncasecmp (mod->name, "models/lavaball",15))
 	{
 		mod->ex_flags |= XF_MISSILE_GLOW;
 		mod->glow_color[0] = 1.0f;
@@ -2014,7 +2014,7 @@ static void Mod_SetAliasModelExtraFlags (model_t *mod)
 		mod->glow_color[2] = 0.25f;
 		mod->glow_color[3] = 0.5f;
 	}
-	else if (!Q_strncasecmp (mod->name, "models/glowball",15))
+	else if (!q_strncasecmp (mod->name, "models/glowball",15))
 	{
 		mod->ex_flags |= XF_MISSILE_GLOW;
 		mod->glow_color[0] = 1.0f;
@@ -2022,7 +2022,7 @@ static void Mod_SetAliasModelExtraFlags (model_t *mod)
 		mod->glow_color[2] = 0.25f;
 		mod->glow_color[3] = 0.5f;
 	}
-	else if (!Q_strncasecmp (mod->name, "models/fireball",15))
+	else if (!q_strncasecmp (mod->name, "models/fireball",15))
 	{
 		mod->ex_flags |= XF_MISSILE_GLOW;
 		mod->glow_color[0] = 1.0f;
@@ -2030,7 +2030,7 @@ static void Mod_SetAliasModelExtraFlags (model_t *mod)
 		mod->glow_color[2] = 0.25f;
 		mod->glow_color[3] = 0.5f;
 	}
-	else if (!Q_strncasecmp (mod->name, "models/famshot",14))
+	else if (!q_strncasecmp (mod->name, "models/famshot",14))
 	{
 		mod->ex_flags |= XF_MISSILE_GLOW;
 		mod->glow_color[0] = 0.2f;
@@ -2038,7 +2038,7 @@ static void Mod_SetAliasModelExtraFlags (model_t *mod)
 		mod->glow_color[2] = 0.2f;
 		mod->glow_color[3] = 0.5f;
 	}
-	else if (!Q_strncasecmp (mod->name, "models/pestshot",15))
+	else if (!q_strncasecmp (mod->name, "models/pestshot",15))
 	{
 		mod->ex_flags |= XF_MISSILE_GLOW;
 		mod->glow_color[0] = 0.2f;
@@ -2046,7 +2046,7 @@ static void Mod_SetAliasModelExtraFlags (model_t *mod)
 		mod->glow_color[2] = 0.2f;
 		mod->glow_color[3] = 0.5f;
 	}
-	else if (!Q_strncasecmp (mod->name, "models/mumshot",14))
+	else if (!q_strncasecmp (mod->name, "models/mumshot",14))
 	{
 		mod->ex_flags |= XF_MISSILE_GLOW;
 		mod->glow_color[0] = 1.0f;
@@ -2054,7 +2054,7 @@ static void Mod_SetAliasModelExtraFlags (model_t *mod)
 		mod->glow_color[2] = 0.25f;
 		mod->glow_color[3] = 0.5f;
 	}
-	else if (!Q_strncasecmp (mod->name, "models/scrbstp1",15))
+	else if (!q_strncasecmp (mod->name, "models/scrbstp1",15))
 	{
 		mod->ex_flags |= XF_MISSILE_GLOW;
 		mod->glow_color[0] = 1.0f;
@@ -2062,7 +2062,7 @@ static void Mod_SetAliasModelExtraFlags (model_t *mod)
 		mod->glow_color[2] = 0.05f;
 		mod->glow_color[3] = 0.5f;
 	}
-	else if (!Q_strncasecmp (mod->name, "models/scrbpbody",16))
+	else if (!q_strncasecmp (mod->name, "models/scrbpbody",16))
 	{
 		mod->ex_flags |= XF_MISSILE_GLOW;
 		mod->glow_color[0] = 1.0f;
@@ -2070,7 +2070,7 @@ static void Mod_SetAliasModelExtraFlags (model_t *mod)
 		mod->glow_color[2] = 0.05f;
 		mod->glow_color[3] = 0.5f;
 	}
-	else if (!Q_strncasecmp (mod->name, "models/iceshot2",15))
+	else if (!q_strncasecmp (mod->name, "models/iceshot2",15))
 	{
 		mod->ex_flags |= XF_MISSILE_GLOW;
 		mod->glow_color[0] = 0.25f;
@@ -2078,7 +2078,7 @@ static void Mod_SetAliasModelExtraFlags (model_t *mod)
 		mod->glow_color[2] = 1.0f;
 		mod->glow_color[3] = 0.5f;
 	}
-	else if (!Q_strncasecmp (mod->name, "models/iceshot",14))
+	else if (!q_strncasecmp (mod->name, "models/iceshot",14))
 	{
 		mod->ex_flags |= XF_MISSILE_GLOW;
 		mod->glow_color[0] = 0.25f;
@@ -2086,7 +2086,7 @@ static void Mod_SetAliasModelExtraFlags (model_t *mod)
 		mod->glow_color[2] = 1.0f;
 		mod->glow_color[3] = 0.5f;
 	}
-	else if (!Q_strncasecmp (mod->name, "models/flaming",14))
+	else if (!q_strncasecmp (mod->name, "models/flaming",14))
 	{
 		mod->ex_flags |= XF_MISSILE_GLOW;
 		mod->glow_color[0] = 1.0f;
@@ -2094,7 +2094,7 @@ static void Mod_SetAliasModelExtraFlags (model_t *mod)
 		mod->glow_color[2] = 0.55f;
 		mod->glow_color[3] = 0.5f;
 	}
-	else if (!Q_strncasecmp (mod->name, "models/sucwp1p",14))
+	else if (!q_strncasecmp (mod->name, "models/sucwp1p",14))
 	{
 		mod->ex_flags |= XF_MISSILE_GLOW;
 		mod->glow_color[0] = 8.0f;
@@ -2102,7 +2102,7 @@ static void Mod_SetAliasModelExtraFlags (model_t *mod)
 		mod->glow_color[2] = 0.2f;
 		mod->glow_color[3] = 0.5f;
 	}
-	else if (!Q_strncasecmp (mod->name, "models/sucwp2p",14))
+	else if (!q_strncasecmp (mod->name, "models/sucwp2p",14))
 	{
 		mod->ex_flags |= XF_MISSILE_GLOW;
 		mod->glow_color[0] = 0.2f;
@@ -2110,7 +2110,7 @@ static void Mod_SetAliasModelExtraFlags (model_t *mod)
 		mod->glow_color[2] = 0.2f;
 		mod->glow_color[3] = 0.5f;
 	}
-	else if (!Q_strncasecmp (mod->name, "models/goop",11))
+	else if (!q_strncasecmp (mod->name, "models/goop",11))
 	{
 		mod->ex_flags |= XF_MISSILE_GLOW;
 		mod->glow_color[0] = 1.0f;
@@ -2118,7 +2118,7 @@ static void Mod_SetAliasModelExtraFlags (model_t *mod)
 		mod->glow_color[2] = 0.2f;
 		mod->glow_color[3] = 0.5f;
 	}
-	else if (!Q_strncasecmp (mod->name, "models/purfir1",14))
+	else if (!q_strncasecmp (mod->name, "models/purfir1",14))
 	{
 		mod->ex_flags |= XF_MISSILE_GLOW;
 		mod->glow_color[0] = 1.0f;
@@ -2126,7 +2126,7 @@ static void Mod_SetAliasModelExtraFlags (model_t *mod)
 		mod->glow_color[2] = 0.25f;
 		mod->glow_color[3] = 0.5f;
 	}
-	else if (!Q_strncasecmp (mod->name, "models/golemmis",15))
+	else if (!q_strncasecmp (mod->name, "models/golemmis",15))
 	{
 		mod->ex_flags |= XF_MISSILE_GLOW;
 		mod->glow_color[0] = 1.0f;
@@ -2134,7 +2134,7 @@ static void Mod_SetAliasModelExtraFlags (model_t *mod)
 		mod->glow_color[2] = 0.25f;
 		mod->glow_color[3] = 0.5f;
 	}
-	else if (!Q_strncasecmp (mod->name, "models/shard",12) && strlen(mod->name) == 12)
+	else if (!q_strncasecmp (mod->name, "models/shard",12) && strlen(mod->name) == 12)
 	{
 		mod->ex_flags |= XF_MISSILE_GLOW;
 		mod->glow_color[0] = 1.0f;
@@ -2142,7 +2142,7 @@ static void Mod_SetAliasModelExtraFlags (model_t *mod)
 		mod->glow_color[2] = 0.25f;
 		mod->glow_color[3] = 0.5f;
 	}
-	else if (!Q_strncasecmp (mod->name, "models/shardice",15))
+	else if (!q_strncasecmp (mod->name, "models/shardice",15))
 	{
 		mod->ex_flags |= XF_MISSILE_GLOW;
 		mod->glow_color[0] = 0.25f;
@@ -2150,7 +2150,7 @@ static void Mod_SetAliasModelExtraFlags (model_t *mod)
 		mod->glow_color[2] = 1.0f;
 		mod->glow_color[3] = 0.5f;
 	}
-	else if (!Q_strncasecmp (mod->name, "models/snakearr",15))
+	else if (!q_strncasecmp (mod->name, "models/snakearr",15))
 	{
 		mod->ex_flags |= XF_MISSILE_GLOW;
 		mod->glow_color[0] = 1.0f;
@@ -2158,7 +2158,7 @@ static void Mod_SetAliasModelExtraFlags (model_t *mod)
 		mod->glow_color[2] = 0.25f;
 		mod->glow_color[3] = 0.5f;
 	}
-	else if (!Q_strncasecmp (mod->name, "models/spit",11))
+	else if (!q_strncasecmp (mod->name, "models/spit",11))
 	{
 		mod->ex_flags |= XF_MISSILE_GLOW;
 		mod->glow_color[0] = 0.25f;
@@ -2166,7 +2166,7 @@ static void Mod_SetAliasModelExtraFlags (model_t *mod)
 		mod->glow_color[2] = 0.25f;
 		mod->glow_color[3] = 0.5f;
 	}
-	else if (!Q_strncasecmp (mod->name, "models/spike",12))
+	else if (!q_strncasecmp (mod->name, "models/spike",12))
 	{
 		mod->ex_flags |= XF_MISSILE_GLOW;
 		mod->glow_color[0] = 1.0f;
@@ -2573,7 +2573,7 @@ static void *Mod_LoadSpriteFrame (void *pin, mspriteframe_t **ppframe, int frame
 	pspriteframe->left = origin[0];
 	pspriteframe->right = width + origin[0];
 
-	snprintf (name, sizeof(name), "%s_%i", loadmodel->name, framenum);
+	q_snprintf (name, sizeof(name), "%s_%i", loadmodel->name, framenum);
 	pspriteframe->gl_texturenum = GL_LoadTexture (name, width, height, (byte *)(pinframe + 1), true, true, 10, false);
 
 	return (void *)((byte *)pinframe + sizeof (dspriteframe_t) + size);
@@ -2752,7 +2752,7 @@ static void Mod_Print (void)
 	i = Cmd_Argc();
 	for (counter = 1; counter < i; counter++)
 	{
-		if (Q_strcasecmp(Cmd_Argv(counter),"save") == 0)
+		if (q_strcasecmp(Cmd_Argv(counter),"save") == 0)
 		{
 			FH = fopen(va("%s/mcache.txt", fs_userdir),"w");
 			break;

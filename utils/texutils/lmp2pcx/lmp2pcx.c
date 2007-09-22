@@ -1,6 +1,6 @@
 /*
 	lmp2pcx.c
-	$Id: lmp2pcx.c,v 1.5 2007-09-14 14:11:25 sezero Exp $
+	$Id: lmp2pcx.c,v 1.6 2007-09-22 15:27:42 sezero Exp $
 	Copyright (C) 2002-2007 Forest Hale
 
 	This program is free software; you can redistribute it and/or
@@ -394,7 +394,7 @@ static void ConvertLMP (const char *filename, int idx)
 	unsigned char		*data;
 	char		tempname[4096];
 
-	snprintf (tempname, sizeof(tempname), "%s/%s", OUTPUT_DIR, filename);
+	q_snprintf (tempname, sizeof(tempname), "%s/%s", OUTPUT_DIR, filename);
 	StripExtension (tempname);
 	// conchars = weird (hexen2 version)
 	if (!strcmp(tempname + sizeof(OUTPUT_DIR), "conchars"))
@@ -489,7 +489,7 @@ static void ConvertMIP (const char *filename, int idx)
 	data = LoadMIP (filename, idx);
 	if (!data)
 		return;
-	snprintf (tempname, sizeof(tempname), "%s/%s", OUTPUT_DIR, filename);
+	q_snprintf (tempname, sizeof(tempname), "%s/%s", OUTPUT_DIR, filename);
 	StripExtension (tempname);
 	strcat (tempname, ".pcx");
 	WritePCX (tempname, data, image_width, image_height, gamepalette);
@@ -566,7 +566,7 @@ static void ConvertWAD (const char *filename, int idx)
 		printf("%s: \"%s\" is not a %s file\n", __thisfunc__, filename, convertdata[idx].datatype);
 		return;
 	}
-	snprintf (tempname, sizeof(tempname), "%s/", OUTPUT_DIR);
+	q_snprintf (tempname, sizeof(tempname), "%s/", OUTPUT_DIR);
 	ptr = tempname + sizeof(OUTPUT_DIR);
 	wad->numlumps = LittleLong(wad->numlumps);
 	wad->infotableofs = LittleLong(wad->infotableofs);

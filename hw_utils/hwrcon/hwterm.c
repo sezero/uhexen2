@@ -1,6 +1,6 @@
 /*
 	hwterm.c
-	$Id: hwterm.c,v 1.19 2007-08-26 09:42:51 sezero Exp $
+	$Id: hwterm.c,v 1.20 2007-09-22 15:27:36 sezero Exp $
 
 	HWTERM 1.2 HexenWorld Remote Console Terminal
 	Idea based on QTerm 1.1 by Michael Dwyer/N0ZAP (18-May-1998).
@@ -42,6 +42,7 @@
 #include <sys/time.h>
 #endif
 #include "compiler.h"
+#include "qsnprint.h"
 #if defined(USE_HUFFMAN)
 #include "huffman.h"
 #endif
@@ -74,7 +75,7 @@ void Sys_Error (const char *error, ...)
 	char		text[1024];
 
 	va_start (argptr,error);
-	vsnprintf (text, sizeof (text), error,argptr);
+	q_vsnprintf (text, sizeof (text), error,argptr);
 	va_end (argptr);
 
 	printf ("\nERROR: %s\n\n", text);

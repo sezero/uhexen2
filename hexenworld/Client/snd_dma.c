@@ -2,7 +2,7 @@
 	snd_dma.c
 	main control for any streaming sound output device
 
-	$Id: snd_dma.c,v 1.64 2007-09-20 11:01:30 sezero Exp $
+	$Id: snd_dma.c,v 1.65 2007-09-22 15:27:19 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -293,7 +293,7 @@ static sfx_t *S_FindName (const char *name)
 		Sys_Error ("%s: out of sfx_t", __thisfunc__);
 
 	sfx = &known_sfx[i];
-	Q_strlcpy (sfx->name, name, MAX_QPATH);
+	q_strlcpy (sfx->name, name, MAX_QPATH);
 
 	num_sfx++;
 
@@ -974,10 +974,10 @@ static void S_Play (void)
 	i = 1;
 	while (i < Cmd_Argc())
 	{
-		Q_strlcpy(name, Cmd_Argv(i), sizeof(name));
+		q_strlcpy(name, Cmd_Argv(i), sizeof(name));
 		if (!strrchr(Cmd_Argv(i), '.'))
 		{
-			Q_strlcat(name, ".wav", sizeof(name));
+			q_strlcat(name, ".wav", sizeof(name));
 		}
 
 		sfx = S_PrecacheSound(name);
@@ -997,10 +997,10 @@ static void S_PlayVol (void)
 	i = 1;
 	while (i < Cmd_Argc())
 	{
-		Q_strlcpy(name, Cmd_Argv(i), sizeof(name));
+		q_strlcpy(name, Cmd_Argv(i), sizeof(name));
 		if (!strrchr(Cmd_Argv(i), '.'))
 		{
-			Q_strlcat(name, ".wav", sizeof(name));
+			q_strlcat(name, ".wav", sizeof(name));
 		}
 
 		sfx = S_PrecacheSound(name);

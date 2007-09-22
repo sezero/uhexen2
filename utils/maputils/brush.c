@@ -1,6 +1,6 @@
 /*
 	brush.c
-	$Id: brush.c,v 1.9 2007-07-08 17:01:16 sezero Exp $
+	$Id: brush.c,v 1.10 2007-09-22 15:27:42 sezero Exp $
 */
 
 #include "util_inc.h"
@@ -744,19 +744,19 @@ static brush_t *LoadBrush (mbrush_t *mb, int hullnumber)
 //
 	name = miptex[texinfo[mb->faces->texinfo].miptex];
 
-	if (!Q_strcasecmp(name, "clip") && hullnumber == 0)
+	if (!q_strcasecmp(name, "clip") && hullnumber == 0)
 		return NULL;	// "clip" brushes don't show up in the draw hull
 
 	if (name[0] == '*' && worldmodel)	// entities never use water merging
 	{
-		if (!Q_strncasecmp(name+1,"lava",4))
+		if (!q_strncasecmp(name+1,"lava",4))
 			contents = CONTENTS_LAVA;
-		else if (!Q_strncasecmp(name+1,"slime",5))
+		else if (!q_strncasecmp(name+1,"slime",5))
 			contents = CONTENTS_SLIME;
 		else
 			contents = CONTENTS_WATER;
 	}
-	else if (!Q_strncasecmp (name, "sky",3) && worldmodel && hullnumber == 0)
+	else if (!q_strncasecmp (name, "sky",3) && worldmodel && hullnumber == 0)
 		contents = CONTENTS_SKY;
 	else
 		contents = CONTENTS_SOLID;

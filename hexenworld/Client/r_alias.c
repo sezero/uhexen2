@@ -2,7 +2,7 @@
 	r_alias.c
 	routines for setting up to draw alias models
 
-	$Id: r_alias.c,v 1.17 2007-09-14 14:10:07 sezero Exp $
+	$Id: r_alias.c,v 1.18 2007-09-22 15:27:19 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -1024,7 +1024,7 @@ void R_AliasDrawModel (alight_t *plighting)
 			{
 				strncpy(this_team, Info_ValueForKey(cl.players[i].userinfo, "team"), 16);
 				this_team[15] = 0;
-				if (Q_strcasecmp(client_team, this_team) == 0)
+				if (q_strcasecmp(client_team, this_team) == 0)
 				{
 				//	OnTeam = true;
 					ColorShade = r_teamcolor.value;

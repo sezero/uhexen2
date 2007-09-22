@@ -1,12 +1,31 @@
 /*
-	common.h
-	misc utilities used in client and server
+	qsnprint.h
+	$Id: qsnprint.h,v 1.1 2007-09-22 15:30:22 sezero Exp $
 
-	$Id: common.h,v 1.3 2007-09-22 15:27:32 sezero Exp $
+	(v)snprintf wrappers
+	Copyright (C) 2007 O. Sezer <sezero@users.sourceforge.net>
+
+	This program is free software; you can redistribute it and/or
+	modify it under the terms of the GNU General Public License
+	as published by the Free Software Foundation; either version 2
+	of the License, or (at your option) any later version.
+
+	This program is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+
+	See the GNU General Public License for more details.
+
+	You should have received a copy of the GNU General Public License
+	along with this program; if not, write to:
+
+		Free Software Foundation, Inc.
+		51 Franklin St, Fifth Floor,
+		Boston, MA  02110-1301, USA
 */
 
-#ifndef __HX2_COMMON_H
-#define __HX2_COMMON_H
+#ifndef __Q_SNPRINF_H
+#define __Q_SNPRINF_H
 
 /* snprintf and vsnprintf : */
 #undef	SNPRINTF_RETURNS_NEGATIVE
@@ -43,15 +62,5 @@ extern int q_vsnprintf(char *str, size_t size, const char *format, va_list args)
 #define	q_vsnprintf		vsnprintf_func
 #endif
 
-
-extern	char		com_token[1024];
-
-char *COM_Parse (char *data);
-
-extern	int		com_argc;
-extern	char		**com_argv;
-
-int COM_CheckParm (const char *parm);
-
-#endif	/* __HX2_COMMON_H */
+#endif	/* __Q_SNPRINF_H */
 

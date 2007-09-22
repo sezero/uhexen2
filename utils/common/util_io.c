@@ -2,7 +2,7 @@
 	util_io.c
 	file and directory utilities
 
-	$Id: util_io.c,v 1.5 2007-07-11 16:47:20 sezero Exp $
+	$Id: util_io.c,v 1.6 2007-09-22 15:27:37 sezero Exp $
 */
 
 
@@ -75,7 +75,7 @@ char *Q_FindFirstFile (const char *path, const char *pattern)
 	if (findhandle)
 		Error ("FindFirst without FindClose");
 
-	snprintf (tmp_buf, sizeof(tmp_buf), "%s/%s", path, pattern);
+	q_snprintf (tmp_buf, sizeof(tmp_buf), "%s/%s", path, pattern);
 	findhandle = _findfirst (tmp_buf, &finddata);
 
 	if (findhandle != -1)
@@ -129,7 +129,7 @@ char *Q_FindNextFile (void)
 		{
 			if (!fnmatch (findpattern, finddata->d_name, FNM_PATHNAME))
 			{
-				snprintf(matchpath, sizeof(matchpath), "%s/%s", findpath, finddata->d_name);
+				q_snprintf(matchpath, sizeof(matchpath), "%s/%s", findpath, finddata->d_name);
 				if ( (stat(matchpath, &test) == 0)
 							&& S_ISREG(test.st_mode) )
 					return finddata->d_name;

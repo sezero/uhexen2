@@ -1,7 +1,7 @@
 /*
 	qdir.c
 
-	$Id: qdir.c,v 1.8 2007-06-14 09:02:04 sezero Exp $
+	$Id: qdir.c,v 1.9 2007-09-22 15:27:37 sezero Exp $
 */
 
 
@@ -56,7 +56,7 @@ void SetQdirFromPath (char *path)
 	// search for the basedir (as defined in BUILDDIR) in path
 	while (c != path)
 	{
-		if (!Q_strncasecmp (c, BUILDDIR, sizeof(BUILDDIR)-1))
+		if (!q_strncasecmp (c, BUILDDIR, sizeof(BUILDDIR)-1))
 		{
 			strncpy (qdir, path, c+sizeof(BUILDDIR)-path);
 			printf ("qdir: %s\n", qdir);

@@ -1,7 +1,7 @@
 /*
 	menu.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/menu.c,v 1.71 2007-08-03 09:22:30 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/menu.c,v 1.72 2007-09-22 15:27:19 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -530,7 +530,7 @@ void ScrollTitle (const char *name)
 		}
 	}
 
-	if (Q_strcasecmp(LastName,name) != 0 && TitleTargetPercent != 0)
+	if (q_strcasecmp(LastName,name) != 0 && TitleTargetPercent != 0)
 		TitleTargetPercent = 0;
 
 	if (CanSwitch)
@@ -704,7 +704,7 @@ void M_Menu_Options_f (void)
 
 	// get the current music type
 	if (old_bgmtype[0] == 0)
-		Q_strlcpy(old_bgmtype, bgmtype.string, sizeof(old_bgmtype));
+		q_strlcpy(old_bgmtype, bgmtype.string, sizeof(old_bgmtype));
 #if 0	// change to 1 if dont want to disable mouse in fullscreen
 	if ((options_cursor == OPT_USEMOUSE) && (modestate != MS_WINDOWED))
 		options_cursor = 0;
@@ -739,14 +739,14 @@ static void M_AdjustSliders (int dir)
 		Cvar_SetValue ("sensitivity", sensitivity.value);
 		break;
 	case OPT_MUSICTYPE:	// bgm type
-		if (Q_strcasecmp(bgmtype.string,"midi") == 0)
+		if (q_strcasecmp(bgmtype.string,"midi") == 0)
 		{
 			if (dir < 0)
 				Cvar_Set("bgmtype","none");
 			else
 				Cvar_Set("bgmtype","cd");
 		}
-		else if (Q_strcasecmp(bgmtype.string,"cd") == 0)
+		else if (q_strcasecmp(bgmtype.string,"cd") == 0)
 		{
 			if (dir < 0)
 				Cvar_Set("bgmtype","midi");
@@ -868,9 +868,9 @@ static void M_Options_Draw (void)
 	M_DrawSlider (220, 60 + (5 * 8), r);
 
 	M_Print (16 + (12 * 8), 60 + (6 * 8),	"Music Type");
-	if (Q_strcasecmp(bgmtype.string, "midi") == 0)
+	if (q_strcasecmp(bgmtype.string, "midi") == 0)
 		M_Print (220, 60 + (6 * 8), "MIDI");
-	else if (Q_strcasecmp(bgmtype.string, "cd") == 0)
+	else if (q_strcasecmp(bgmtype.string, "cd") == 0)
 		M_Print (220, 60 + (6 * 8), "CD");
 	else
 		M_Print (220, 60 + (6 * 8), "None");
@@ -1081,7 +1081,7 @@ static void M_OpenGL_Draw (void)
 	M_Print (32 + (6 * 8), 90 + 8*OGL_LIGHTMAPFMT,	"Lightmap Format:");
 	for (i = 0; i < MAX_LMFORMATS; i++)
 	{
-		if (!Q_strcasecmp(gl_lightmapfmt.string, lm_formats[i].name))
+		if (!q_strcasecmp(gl_lightmapfmt.string, lm_formats[i].name))
 			break;
 	}
 	lm_format = i;
@@ -1501,7 +1501,7 @@ static void M_Keys_Key (int k)
 		}
 		else if (k != '`')
 		{
-			snprintf (cmd, sizeof(cmd), "bind \"%s\" \"%s\"\n", Key_KeynumToString (k), bindnames[keys_cursor][0]);
+			q_snprintf (cmd, sizeof(cmd), "bind \"%s\" \"%s\"\n", Key_KeynumToString (k), bindnames[keys_cursor][0]);
 			Cbuf_InsertText (cmd);
 		}
 
@@ -2355,16 +2355,16 @@ static void M_Menu_Connect_f (void)
 
 	message = NULL;
 
-	Q_strlcpy(save_names[0], hostname1.string, sizeof(save_names[0]));
-	Q_strlcpy(save_names[1], hostname2.string, sizeof(save_names[0]));
-	Q_strlcpy(save_names[2], hostname3.string, sizeof(save_names[0]));
-	Q_strlcpy(save_names[3], hostname4.string, sizeof(save_names[0]));
-	Q_strlcpy(save_names[4], hostname5.string, sizeof(save_names[0]));
-	Q_strlcpy(save_names[5], hostname6.string, sizeof(save_names[0]));
-	Q_strlcpy(save_names[6], hostname7.string, sizeof(save_names[0]));
-	Q_strlcpy(save_names[7], hostname8.string, sizeof(save_names[0]));
-	Q_strlcpy(save_names[8], hostname9.string, sizeof(save_names[0]));
-	Q_strlcpy(save_names[9], hostname10.string, sizeof(save_names[0]));
+	q_strlcpy(save_names[0], hostname1.string, sizeof(save_names[0]));
+	q_strlcpy(save_names[1], hostname2.string, sizeof(save_names[0]));
+	q_strlcpy(save_names[2], hostname3.string, sizeof(save_names[0]));
+	q_strlcpy(save_names[3], hostname4.string, sizeof(save_names[0]));
+	q_strlcpy(save_names[4], hostname5.string, sizeof(save_names[0]));
+	q_strlcpy(save_names[5], hostname6.string, sizeof(save_names[0]));
+	q_strlcpy(save_names[6], hostname7.string, sizeof(save_names[0]));
+	q_strlcpy(save_names[7], hostname8.string, sizeof(save_names[0]));
+	q_strlcpy(save_names[8], hostname9.string, sizeof(save_names[0]));
+	q_strlcpy(save_names[9], hostname10.string, sizeof(save_names[0]));
 }
 
 static void M_Connect_Draw (void)
@@ -2379,7 +2379,7 @@ static void M_Connect_Draw (void)
 	{
 		M_DrawTextBox (16, 48, 34, 1);
 
-		Q_strlcpy(temp, save_names[connect_cursor], sizeof(save_names[0]));
+		q_strlcpy(temp, save_names[connect_cursor], sizeof(save_names[0]));
 		length = strlen(temp);
 		if (length > 33)
 		{
@@ -2396,7 +2396,7 @@ static void M_Connect_Draw (void)
 	y = 72;
 	for (i = 0; i < MAX_HOST_NAMES; i++, y += 8)
 	{
-		snprintf(temp, sizeof(temp), "%d.", i+1);
+		q_snprintf(temp, sizeof(temp), "%d.", i+1);
 		if (i == connect_cursor)
 		{
 			M_Print(24,y,temp);
@@ -2406,7 +2406,7 @@ static void M_Connect_Draw (void)
 			M_PrintWhite(24,y,temp);
 		}
 
-		Q_strlcpy(temp, save_names[i], sizeof(save_names[0]));
+		q_strlcpy(temp, save_names[i], sizeof(save_names[0]));
 		temp[30] = 0;
 		if (i == connect_cursor)
 		{
@@ -2523,7 +2523,7 @@ static void M_Menu_Setup_f (void)
 	key_dest = key_menu;
 	m_state = m_setup;
 	m_entersound = true;
-	Q_strlcpy(setup_myname, name.string, sizeof(setup_myname));
+	q_strlcpy(setup_myname, name.string, sizeof(setup_myname));
 	setup_top = setup_oldtop = topcolor.integer;
 	setup_bottom = setup_oldbottom = bottomcolor.integer;
 
@@ -2542,7 +2542,7 @@ static void M_Menu_Setup_f (void)
 	}
 	if (playerclass.integer == CLASS_DWARF)
 	{
-		if (Q_strcasecmp(fs_gamedir_nopath, "siege") != 0)
+		if (q_strcasecmp(fs_gamedir_nopath, "siege") != 0)
 			Cvar_SetValue ("playerclass", CLASS_PALADIN);
 	}
 
@@ -2616,7 +2616,7 @@ static void M_Setup_Draw (void)
 	}
 	if (setup_class == CLASS_DWARF)
 	{
-		if (Q_strcasecmp(fs_gamedir_nopath, "siege") != 0)
+		if (q_strcasecmp(fs_gamedir_nopath, "siege") != 0)
 			setup_class = 0;
 	}
 	switch (setup_class)
@@ -2648,7 +2648,7 @@ static void M_Setup_Draw (void)
 		{
 			if (!(gameflags & GAME_PORTALS))
 			{//not succubus
-				if (Q_strcasecmp(fs_gamedir_nopath, "siege") != 0)
+				if (q_strcasecmp(fs_gamedir_nopath, "siege") != 0)
 					which_class = (rand() % CLASS_THEIF) + 1;
 				else
 				{
@@ -2659,7 +2659,7 @@ static void M_Setup_Draw (void)
 			}
 			else
 			{
-				if (Q_strcasecmp(fs_gamedir_nopath, "siege") != 0)
+				if (q_strcasecmp(fs_gamedir_nopath, "siege") != 0)
 					which_class = (rand() % CLASS_DEMON) + 1;
 				else
 					which_class = (rand() % class_limit) + 1;
@@ -3023,12 +3023,12 @@ static void BGM_RestartMusic (void)
 	// called after exitting the menus and changing the music type
 	// this is pretty crude, but doen't seem to break anything S.A
 
-	if (Q_strcasecmp(bgmtype.string,"midi") == 0)
+	if (q_strcasecmp(bgmtype.string,"midi") == 0)
 	{
 		CDAudio_Stop();
 		MIDI_Play(cl.midi_name);
 	}
-	else if (Q_strcasecmp(bgmtype.string,"cd") == 0)
+	else if (q_strcasecmp(bgmtype.string,"cd") == 0)
 	{
 		MIDI_Stop();
 		CDAudio_Play ((byte)cl.cdtrack, true);

@@ -29,7 +29,7 @@
  */
 #if !HAVE_STRLCPY
 size_t
-Q_strlcpy (char *dst, const char *src, size_t siz)
+q_strlcpy (char *dst, const char *src, size_t siz)
 {
 	char *d = dst;
 	const char *s = src;
