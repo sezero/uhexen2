@@ -1,6 +1,6 @@
 /*
 	gl_vidnt.c -- NT GL vid component
-	$Id: gl_vidnt.c,v 1.116 2007-09-22 15:27:32 sezero Exp $
+	$Id: gl_vidnt.c,v 1.117 2007-09-22 15:55:05 sezero Exp $
 */
 
 #define	__GL_FUNC_EXTERN
@@ -2068,7 +2068,7 @@ static void VID_SortModes (void)
 		}
 	}
 	if (vid_deskmode < 0)
-		Con_SafePrintf ("WARNING: desktop resolution not found in modelist");
+		Con_SafePrintf ("WARNING: desktop resolution not found in modelist\n");
 }
 
 
@@ -2276,7 +2276,7 @@ void	VID_Init (unsigned char *palette)
 			}
 			else
 			{
-				Con_SafePrintf ("WARNING: desktop mode not available for the -current switch");
+				Con_SafePrintf ("WARNING: desktop mode not available for the -current switch\n");
 			}
 		}
 		else
