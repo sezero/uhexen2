@@ -3,6 +3,15 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2007-09-22 (CVS, 1.4.2-rc3):
+    * to overcome the the portability problems with snprintf and vsnprintf,
+      added suitable q_snprintf / q_vsnprintf wrappers with C99 compliant
+      return values. updated several other wrapper macros with a consistant
+      naming scheme.
+    * gl_vidnt.c: added missing newlines to some warning messages.
+    * undefine HAVE_STRLCPY and HAVE_STRLCAT in strl_fn.h (just in case..)
+    * updated the beta release version/date (1.4.2-rc3, 2007-09-22.)
+
 2007-09-21 (CVS, 1.4.2-rc3):
     * snd_sdl2.c: added missing casts to buffer allocation calls.
     * changed some qboolean types to int in model files where the variables
