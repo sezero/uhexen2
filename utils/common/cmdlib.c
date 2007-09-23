@@ -2,7 +2,7 @@
 	cmdlib.c
 	functions common to all of the utilities
 
-	$Id: cmdlib.c,v 1.12 2007-09-22 15:27:36 sezero Exp $
+	$Id: cmdlib.c,v 1.13 2007-09-23 18:45:09 sezero Exp $
 */
 
 
@@ -99,20 +99,18 @@ q_snprintf and q_vsnprintf
 
 ==============
 */
-#if defined(SNPRINTF_RETURNS_NEGATIVE) || defined(SNPRINTF_DOESNT_TERMINATE)
 int q_vsnprintf(char *str, size_t size, const char *format, va_list args)
 {
 	int		ret;
 
 	ret = vsnprintf_func (str, size, format, args);
-# if defined(SNPRINTF_RETURNS_NEGATIVE)
+
 	if (ret < 0)
 		ret = (int)size;
-# endif
-# if defined(SNPRINTF_DOESNT_TERMINATE)
-	if (ret >= (int)size)
+
+	if ((size_t)ret >= size)
 		str[size - 1] = '\0';
-# endif
+
 	return ret;
 }
 
@@ -124,9 +122,10 @@ int q_snprintf (char *str, size_t size, const char *format, ...)
 	va_start (argptr, format);
 	ret = q_vsnprintf (str, size, format, argptr);
 	va_end (argptr);
+
 	return ret;
 }
-#endif	/* SNPRINTF_RETURNS_NEGATIVE || SNPRINTF_DOESNT_TERMINATE */
+
 
 // CODE --------------------------------------------------------------------
 
