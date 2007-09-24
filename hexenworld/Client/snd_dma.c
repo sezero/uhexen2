@@ -2,7 +2,7 @@
 	snd_dma.c
 	main control for any streaming sound output device
 
-	$Id: snd_dma.c,v 1.65 2007-09-22 15:27:19 sezero Exp $
+	$Id: snd_dma.c,v 1.66 2007-09-24 17:34:23 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -109,7 +109,7 @@ static void S_SoundInfo_f (void)
 	Con_Printf("%5d samplepos\n", shm->samplepos);
 	Con_Printf("%5d submission_chunk\n", shm->submission_chunk);
 	Con_Printf("%5d total_channels\n", total_channels);
-	Con_Printf("0x%p dma buffer\n", shm->buffer);
+	Con_Printf("%p dma buffer\n", shm->buffer);
 }
 
 
