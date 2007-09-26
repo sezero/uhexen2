@@ -22,12 +22,12 @@
 
 # pre-release version: MAKE SURE to change this
 # to an %undefine for the final realease!!
-%define prerelease	rc2
+%define prerelease	rc3
 
 # package release number for final-release:
 %define pkg_final	1
 # package release number for pre-release:
-%define pkg_prerel	5
+%define pkg_prerel	6
 
 Name:		hexen2
 License:	GPL
@@ -285,6 +285,9 @@ desktop-file-install \
 %{_prefix}/games/%{name}/docs/README.hwmaster
 
 %changelog
+* Wed Sep 26 2007 O.Sezer <sezero@users.sourceforge.net> 1.4.2-0.6.rc3
+- 1.4.2-rc3.
+
 * Mon Aug 22 2007 O.Sezer <sezero@users.sourceforge.net>
 - removed the .gtk1 suffix from launcher gtk-1.2 builds
 
