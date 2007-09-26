@@ -149,7 +149,7 @@ compiler. You can then run the "build_cross_win32.sh" scripts residing in
 all directories. Read the scripts and edit them as necessary.
 
 I compiled all of the Hammer of Thyrion 1.4.2 windows binaries on linux
-using a snapshot of MinGW from Aug. 25, 2007. Both x86/glibc-2.3 binaries
+using a snapshot of MinGW from Aug. 05, 2007. Both x86/glibc-2.3 binaries
 and the sources for this snapshot can be found on our downloads page under
 the support files section.
 
