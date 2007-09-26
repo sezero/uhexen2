@@ -3,6 +3,10 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2007-09-26 (CVS):
+    * fixed sound buffer address printing.
+    * updated the compile instructions for windows.
+
 2007-09-23 (CVS, 1.4.2-rc3):
     * always use our q_snprintf and q_vsnprintf wrappers: it is virtually
       impossible to maintain a list of non-C99 compliant versions.
