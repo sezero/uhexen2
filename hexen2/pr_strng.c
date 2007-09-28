@@ -2,7 +2,7 @@
 	pr_strng.c
 	For international stuff
 
-	$Id: pr_strng.c,v 1.11 2007-09-21 14:26:37 sezero Exp $
+	$Id: pr_strng.c,v 1.12 2007-09-28 16:20:13 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -187,8 +187,7 @@ forward:
 			while ( *Start == '\r' || *Start == '\n' ||
 				*Start == ' ' || *Start == '\t' )
 			{
-				*Start = 0;
-				Start++;
+				*Start++ = 0;
 			}
 			if (*Start == 0)	/* EOF	*/
 				break;
