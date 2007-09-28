@@ -3,7 +3,7 @@
 	these are the only functions outside the refresh
 	allowed to touch the vid buffer
 
-	$Id: draw.h,v 1.24 2007-07-29 07:58:15 sezero Exp $
+	$Id: draw.h,v 1.25 2007-09-28 14:30:52 sezero Exp $
 */
 
 #ifndef __HX2_DRAW_H
@@ -17,6 +17,9 @@ void Draw_Init (void);
 void Draw_ReInit (void);
 
 qpic_t *Draw_PicFromWad (char *name);
+qpic_t *Draw_PicFromFile (const char *name);
+qpic_t *Draw_PicFileBuf (const char *name, void *p, size_t *size);
+
 qpic_t *Draw_CachePic (const char *path);
 qpic_t *Draw_CachePicNoTrans (const char *path);
 qpic_t *Draw_CachePicResize (const char *path, int targetWidth, int targetHeight);

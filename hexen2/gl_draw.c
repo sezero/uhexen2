@@ -2,7 +2,7 @@
 	gl_draw.c
 	this is the only file outside the refresh that touches the vid buffer
 
-	$Id: gl_draw.c,v 1.124 2007-09-22 15:27:10 sezero Exp $
+	$Id: gl_draw.c,v 1.125 2007-09-28 14:30:51 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -118,8 +118,7 @@ static void Draw_PicCheckError (void *ptr, const char *name)
 }
 
 
-#if 0
-static qpic_t *Draw_PicFromFile (const char *name)
+qpic_t *Draw_PicFromFile (const char *name)
 {
 	qpic_t	*p;
 	glpic_t	*gl;
@@ -145,7 +144,7 @@ static qpic_t *Draw_PicFromFile (const char *name)
 
 // Pa3PyX: Like Draw_PicFromFile, except loads pic into
 // a specified buffer if there is room
-static qpic_t *Draw_PicFileBuf (const char *name, void *p, size_t *size)
+qpic_t *Draw_PicFileBuf (const char *name, void *p, size_t *size)
 {
 	glpic_t	*gl;
 
@@ -164,7 +163,6 @@ static qpic_t *Draw_PicFileBuf (const char *name, void *p, size_t *size)
 
 	return p;
 }
-#endif
 
 qpic_t *Draw_PicFromWad (char *name)
 {
