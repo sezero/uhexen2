@@ -1,6 +1,6 @@
 /*
 	gl_vidnt.c -- NT GL vid component
-	$Id: gl_vidnt.c,v 1.115 2007-09-22 15:55:04 sezero Exp $
+	$Id: gl_vidnt.c,v 1.116 2007-09-28 14:28:40 sezero Exp $
 */
 
 #define	__GL_FUNC_EXTERN
@@ -159,7 +159,7 @@ unsigned short	d_8to16table[256];
 unsigned int	d_8to24table[256];
 unsigned int	d_8to24TranslucentTable[256];
 #if USE_HEXEN2_PALTEX_CODE
-unsigned char	inverse_pal[(1<<INVERSE_PAL_TOTAL_BITS)+1]; // +1: FS_LoadStackFile puts a 0 at the end of the data
+unsigned char	*inverse_pal;
 #else
 unsigned char	d_15to8table[65536];
 #endif
@@ -981,7 +981,89 @@ static void VID_CreateInversePalette (unsigned char *palette)
 	}
 
 	FS_CreatePath(va("%s/%s", fs_userdir, INVERSE_PALNAME));
-	FS_WriteFile (INVERSE_PALNAME, inverse_pal, sizeof(inverse_pal)-1);
+	FS_WriteFile (INVERSE_PALNAME, inverse_pal, INVERSE_PAL_SIZE);
+}
+#else	/* USE_HEXEN2_PALTEX_CODE */
+static void VID_Create8bitPalette (void)
+{
+	byte	*pal;
+	unsigned short	r, g, b;
+	int		v;
+	unsigned short	i;
+	int		r1, g1, b1;
+	int		j, k, l, m;
+	FILE	*f;
+	char	s[MAX_OSPATH];
+#if !defined(NO_SPLASHES)
+	HWND	hDlg, hProgress;
+
+	hDlg = CreateDialog(global_hInstance, MAKEINTRESOURCE(IDD_PROGRESS), NULL, NULL);
+	hProgress = GetDlgItem(hDlg, IDC_PROGRESS);
+	SendMessage(hProgress, PBM_SETSTEP, 1, 0);
+	SendMessage(hProgress, PBM_SETRANGE, 0, MAKELPARAM(0, 33));
+#endif
+
+	// FIXME: Endianness ???
+
+	// JACK: 3D distance calcs:
+	// k is last closest, l is the distance
+	for (i = 0, m = 0; i < (1<<15); i++, m++)
+	{
+		/* Maps
+		000000000000000
+		000000000011111 = Red  = 0x1F
+		000001111100000 = Blue = 0x03E0
+		111110000000000 = Grn  = 0x7C00
+		*/
+		r = ((i & 0x1F) << 3) + 4;
+		g = ((i & 0x03E0) >> 2) + 4;
+		b = ((i & 0x7C00) >> 7) + 4;
+#   if 0
+		r = (i << 11);
+		g = (i << 6);
+		b = (i << 1);
+		r >>= 11;
+		g >>= 11;
+		b >>= 11;
+#   endif
+		pal = (unsigned char *)d_8to24table;
+		for (v = 0, k = 0, l = 10000; v < 256; v++, pal += 4)
+		{
+			r1 = r - pal[0];
+			g1 = g - pal[1];
+			b1 = b - pal[2];
+			j = sqrt( (r1*r1) + (g1*g1) + (b1*b1) );
+			if (j < l)
+			{
+				k = v;
+				l = j;
+			}
+		}
+		d_15to8table[i] = k;
+		if (m >= 1000)
+		{
+#if !defined(NO_SPLASHES)
+#ifdef DEBUG_BUILD
+			q_snprintf(s, sizeof(s), "Done - %d\n", i);
+			OutputDebugString(s);
+#endif
+			SendMessage(hProgress, PBM_STEPIT, 0, 0);
+#endif
+			m = 0;
+		}
+	}
+	q_snprintf(s, sizeof(s), "%s/glhexen", fs_userdir);
+	Sys_mkdir (s);
+	q_snprintf(s, sizeof(s), "%s/glhexen/15to8.pal", fs_userdir);
+	f = fopen(s, "wb");
+	if (f)
+	{
+		fwrite(d_15to8table, 1<<15, 1, f);
+		fclose(f);
+	}
+#if !defined(NO_SPLASHES)
+	DestroyWindow(hDlg);
+#endif
 }
 #endif	/* USE_HEXEN2_PALTEX_CODE */
 
@@ -993,14 +1075,9 @@ void VID_SetPalette (unsigned char *palette)
 	int		v;
 	unsigned short	i, p, c;
 	unsigned int	*table;
+	size_t		palsize;
 #if !USE_HEXEN2_PALTEX_CODE
-	int		r1, g1, b1;
-	int		j, k, l, m;
 	FILE	*f;
-	char	s[MAX_OSPATH];
-#if !defined(NO_SPLASHES)
-	HWND	hDlg, hProgress;
-#endif
 #endif
 	static qboolean	been_here = false;
 
@@ -1065,93 +1142,31 @@ void VID_SetPalette (unsigned char *palette)
 	// Initialize the palettized textures data
 	if (been_here)
 		return;
+	been_here = true;
 
 #if USE_HEXEN2_PALTEX_CODE
 	// This is original hexen2 code for palettized textures
 	// Hexenworld replaced it with quake(world)'s code below
-	pal = (byte *) FS_LoadStackFile (INVERSE_PALNAME, inverse_pal, sizeof(inverse_pal));
-	if (pal == NULL || pal != inverse_pal)
+	inverse_pal = (unsigned char *) Hunk_AllocName (INVERSE_PAL_SIZE + 1, INVERSE_PALNAME);
+	palsize = INVERSE_PAL_SIZE;
+	pal = (byte *) FS_LoadBufFile (INVERSE_PALNAME, inverse_pal, &palsize);
+	if (pal != inverse_pal || palsize != INVERSE_PAL_SIZE)
 		VID_CreateInversePalette (palette);
 
-#else // end of HEXEN2_PALTEX_CODE
-	FS_OpenFile("glhexen/15to8.pal", &f, true);
-	if (f)
+#else /* end of HEXEN2_PALTEX_CODE */
+	palsize = FS_OpenFile("glhexen/15to8.pal", &f, true);
+	if (f && palsize == (1<<15))
 	{
 		fread(d_15to8table, 1<<15, 1, f);
 		fclose(f);
 	}
 	else
-	{	// JACK: 3D distance calcs:
-		// k is last closest, l is the distance
-
-#if !defined(NO_SPLASHES)
-		hDlg = CreateDialog(global_hInstance, MAKEINTRESOURCE(IDD_PROGRESS), NULL, NULL);
-		hProgress = GetDlgItem(hDlg, IDC_PROGRESS);
-		SendMessage(hProgress, PBM_SETSTEP, 1, 0);
-		SendMessage(hProgress, PBM_SETRANGE, 0, MAKELPARAM(0, 33));
-#endif
-
-		// FIXME: Endianness ???
-		for (i = 0, m = 0; i < (1<<15); i++, m++)
-		{
-			/* Maps
-			000000000000000
-			000000000011111 = Red  = 0x1F
-			000001111100000 = Blue = 0x03E0
-			111110000000000 = Grn  = 0x7C00
-			*/
-			r = ((i & 0x1F) << 3) + 4;
-			g = ((i & 0x03E0) >> 2) + 4;
-			b = ((i & 0x7C00) >> 7) + 4;
-#   if 0
-			r = (i << 11);
-			g = (i << 6);
-			b = (i << 1);
-			r >>= 11;
-			g >>= 11;
-			b >>= 11;
-#   endif
-			pal = (unsigned char *)d_8to24table;
-			for (v = 0, k = 0, l = 10000; v < 256; v++, pal += 4)
-			{
-				r1 = r - pal[0];
-				g1 = g - pal[1];
-				b1 = b - pal[2];
-				j = sqrt( (r1*r1) + (g1*g1) + (b1*b1) );
-				if (j < l)
-				{
-					k = v;
-					l = j;
-				}
-			}
-			d_15to8table[i] = k;
-			if (m >= 1000)
-			{
-#if !defined(NO_SPLASHES)
-#ifdef DEBUG_BUILD
-				q_snprintf(s, sizeof(s), "Done - %d\n", i);
-				OutputDebugString(s);
-#endif
-				SendMessage(hProgress, PBM_STEPIT, 0, 0);
-#endif
-				m = 0;
-			}
-		}
-		q_snprintf(s, sizeof(s), "%s/glhexen", fs_userdir);
-		Sys_mkdir (s);
-		q_snprintf(s, sizeof(s), "%s/glhexen/15to8.pal", fs_userdir);
-		f = fopen(s, "wb");
+	{
 		if (f)
-		{
-			fwrite(d_15to8table, 1<<15, 1, f);
 			fclose(f);
-		}
-#if !defined(NO_SPLASHES)
-		DestroyWindow(hDlg);
-#endif
+		VID_Create8bitPalette ();
 	}
-#endif	// end of hexenworld 8_BIT_PALETTE_CODE
-	been_here = true;
+#endif	/* end of hexenworld 8_BIT_PALETTE_CODE */
 }
 
 //==========================================================================

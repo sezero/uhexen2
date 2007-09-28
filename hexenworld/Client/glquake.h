@@ -2,7 +2,7 @@
 	glquake.h
 	common glquake header
 
-	$Id: glquake.h,v 1.63 2007-09-14 14:10:07 sezero Exp $
+	$Id: glquake.h,v 1.64 2007-09-28 14:28:41 sezero Exp $
 */
 
 
@@ -32,6 +32,7 @@
 #define	INVERSE_PAL_G_BITS	6
 #define	INVERSE_PAL_B_BITS	6
 #define	INVERSE_PAL_TOTAL_BITS	(INVERSE_PAL_R_BITS + INVERSE_PAL_G_BITS + INVERSE_PAL_B_BITS)
+#define	INVERSE_PAL_SIZE	(1 << INVERSE_PAL_TOTAL_BITS)
 
 /* r_local.h defs		*/
 #define ALIAS_BASE_SIZE_RATIO		(1.0 / 11.0)
@@ -153,7 +154,7 @@ extern	int		ColorIndex[16];
 extern	unsigned int	ColorPercent[16];
 extern	float		RTint[256], GTint[256], BTint[256];
 #if USE_HEXEN2_PALTEX_CODE
-extern	unsigned char	inverse_pal[(1<<INVERSE_PAL_TOTAL_BITS)+1];
+extern	unsigned char	*inverse_pal;
 #else
 extern	unsigned char	d_15to8table[65536];
 #endif
