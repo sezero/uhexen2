@@ -2,7 +2,7 @@
 	quakefs.c
 	Hexen II filesystem
 
-	$Id: quakefs.c,v 1.33 2007-09-22 15:27:19 sezero Exp $
+	$Id: quakefs.c,v 1.34 2007-09-28 14:32:16 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -1069,7 +1069,8 @@ size_t FS_OpenFile (const char *filename, FILE **file, qboolean override_pack)
 			if (!*file)
 				Sys_Error ("Couldn't reopen %s", netpath);
 			fs_filepath = search->filename;
-			return FS_filelength (*file);
+			fs_filesize = FS_filelength (*file);
+			return fs_filesize;
 		}
 	}
 
