@@ -2,7 +2,7 @@
 	host.c
 	coordinates spawning and killing of local servers
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/server/host.c,v 1.45 2007-09-29 11:06:15 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/server/host.c,v 1.46 2007-09-29 11:08:26 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -96,6 +96,20 @@ void Host_RemoveGIPFiles (const char *path)
 
 	Sys_FindClose();
 }
+
+void Host_DeleteSave (const char *savepath)
+{
+	char	tmppath[MAX_OSPATH];
+
+	if (strstr(savepath, fs_userdir) != savepath)
+		return;
+
+	Host_RemoveGIPFiles (savepath);
+	q_snprintf (tmppath, sizeof(tmppath), "%s/info.dat", savepath);
+	unlink (tmppath);
+	rmdir (savepath);
+}
+
 
 int Host_CopyFiles (const char *source, const char *pat, const char *dest)
 {

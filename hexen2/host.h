@@ -2,7 +2,7 @@
 	host.h
 	public host structures and functions
 
-	$Id: host.h,v 1.10 2007-06-26 13:37:19 sezero Exp $
+	$Id: host.h,v 1.11 2007-09-29 11:08:26 sezero Exp $
 */
 
 #ifndef __HX2_HOST_H
@@ -58,6 +58,7 @@ void Host_ShutdownServer (qboolean crash);
 void Host_ClearMemory (void);
 
 void Host_RemoveGIPFiles (const char *path);
+void Host_DeleteSave (const char *savepath);
 int Host_CopyFiles(const char *source, const char *pat, const char *dest);
 int SaveGamestate (qboolean ClientsOnly);
 

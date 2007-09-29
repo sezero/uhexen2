@@ -1,7 +1,7 @@
 /*
 	menu.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/menu.c,v 1.99 2007-09-22 15:27:12 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/menu.c,v 1.100 2007-09-29 11:08:26 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -1114,6 +1114,7 @@ static void M_SinglePlayer_Key (int key)
 static int		load_cursor;		// 0 < load_cursor < MAX_SAVEGAMES
 
 static char	m_filenames[MAX_SAVEGAMES][SAVEGAME_COMMENT_LENGTH+1];
+static char	savefile[MAX_OSPATH];
 static int		loadable[MAX_SAVEGAMES];
 
 static void M_ScanSaves (void)
@@ -1211,6 +1212,17 @@ static void M_Load_Key (int k)
 		M_Menu_SinglePlayer_f ();
 		break;
 
+	case K_DEL:
+		S_LocalSound ("raven/menu2.wav");
+		if (!loadable[load_cursor])
+			return;
+		if (!SCR_ModalMessage("Are you sure you want to\ndelete this saved game?\n"))
+			return;
+		q_snprintf (savefile, sizeof(savefile), "%s/s%i", fs_userdir, load_cursor);
+		Host_DeleteSave (savefile);
+		M_ScanSaves ();
+		break;
+
 	case K_ENTER:
 		S_LocalSound ("raven/menu2.wav");
 		if (!loadable[load_cursor])
@@ -1251,6 +1263,17 @@ static void M_Save_Key (int k)
 	{
 	case K_ESCAPE:
 		M_Menu_SinglePlayer_f ();
+		break;
+
+	case K_DEL:
+		S_LocalSound ("raven/menu2.wav");
+		if (!loadable[load_cursor])
+			return;
+		if (!SCR_ModalMessage("Are you sure you want to\ndelete this saved game?\n"))
+			return;
+		q_snprintf (savefile, sizeof(savefile), "%s/s%i", fs_userdir, load_cursor);
+		Host_DeleteSave (savefile);
+		M_ScanSaves ();
 		break;
 
 	case K_ENTER:
@@ -1349,6 +1372,17 @@ static void M_MLoad_Key (int k)
 		M_Menu_MultiPlayer_f ();
 		break;
 
+	case K_DEL:
+		S_LocalSound ("raven/menu2.wav");
+		if (!loadable[load_cursor])
+			return;
+		if (!SCR_ModalMessage("Are you sure you want to\ndelete this saved game?\n"))
+			return;
+		q_snprintf (savefile, sizeof(savefile), "%s/ms%i", fs_userdir, load_cursor);
+		Host_DeleteSave (savefile);
+		M_ScanMSaves ();
+		break;
+
 	case K_ENTER:
 		S_LocalSound ("raven/menu2.wav");
 		if (!loadable[load_cursor])
@@ -1393,6 +1427,17 @@ static void M_MSave_Key (int k)
 	{
 	case K_ESCAPE:
 		M_Menu_MultiPlayer_f ();
+		break;
+
+	case K_DEL:
+		S_LocalSound ("raven/menu2.wav");
+		if (!loadable[load_cursor])
+			return;
+		if (!SCR_ModalMessage("Are you sure you want to\ndelete this saved game?\n"))
+			return;
+		q_snprintf (savefile, sizeof(savefile), "%s/ms%i", fs_userdir, load_cursor);
+		Host_DeleteSave (savefile);
+		M_ScanMSaves ();
 		break;
 
 	case K_ENTER:

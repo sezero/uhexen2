@@ -2,7 +2,7 @@
 	host_cmd.c
 	console commands
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/server/host_cmd.c,v 1.34 2007-09-29 07:20:46 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/server/host_cmd.c,v 1.35 2007-09-29 11:08:31 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -541,6 +541,47 @@ static void Host_Savegame_f (void)
 finish:
 	if (error_state)
 		Host_Error ("%s: The game could not be saved properly!", __thisfunc__);
+}
+
+
+/*
+===============
+Host_DeleteSave_f
+===============
+*/
+static void Host_DeleteSave_f (void)
+{
+	int		i;
+	char		*p;
+
+	if (cmd_source != src_command)
+		return;
+
+	if (Cmd_Argc() != 2)
+	{
+		Con_Printf ("deletesave <savename> : delete saved a game\n");
+		return;
+	}
+
+	i = 0;
+	p = Cmd_Argv(1);
+	while (*p)
+	{
+		if (isalnum(*p))
+		{
+			p++;
+			i++;
+			continue;
+		}
+		Con_Printf ("Invalid save name.\n");
+		return;
+	}
+	p -= i;
+
+	if (q_snprintf(savename, sizeof(savename), "%s/%s", fs_userdir, p) >= sizeof(savename))
+		return;
+
+	Host_DeleteSave (savename);
 }
 
 
@@ -1773,6 +1814,7 @@ void Host_InitCommands (void)
 	Cmd_AddCommand ("ping", Host_Ping_f);
 	Cmd_AddCommand ("load", Host_Loadgame_f);
 	Cmd_AddCommand ("save", Host_Savegame_f);
+	Cmd_AddCommand ("deletesave", Host_DeleteSave_f);
 	Cmd_AddCommand ("give", Host_Give_f);
 }
 
