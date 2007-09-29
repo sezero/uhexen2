@@ -2,7 +2,7 @@
 	host.c
 	coordinates spawning and killing of local servers
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host.c,v 1.89 2007-09-29 07:20:43 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host.c,v 1.90 2007-09-29 11:06:11 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -85,19 +85,25 @@ SAVEGAME FILES HANDLING
 
 void Host_RemoveGIPFiles (const char *path)
 {
-	char	*name, tempdir[MAX_OSPATH];
+	char	*name, tempdir[MAX_OSPATH], *p;
+	size_t	len;
 
 	if (path)
-		q_snprintf(tempdir, MAX_OSPATH, "%s", path);
+		q_strlcpy(tempdir, path, MAX_OSPATH);
 	else
-		q_snprintf(tempdir, MAX_OSPATH, "%s", fs_userdir);
+		q_strlcpy(tempdir, fs_userdir, MAX_OSPATH);
+
+	len = strlen(tempdir);
+	p = tempdir + len;
+	len = sizeof(tempdir) - len;
 
 	name = Sys_FindFirstFile (tempdir, "*.gip");
 
 	while (name)
 	{
-		unlink (va("%s/%s", tempdir, name));
-
+		q_snprintf (p, len, "/%s", name);
+		unlink (tempdir);
+		*p = '\0';
 		name = Sys_FindNextFile();
 	}
 
