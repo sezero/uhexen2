@@ -2,7 +2,7 @@
 	r_alias.c
 	routines for setting up to draw alias models
 
-	$Id: r_alias.c,v 1.18 2007-09-22 15:27:19 sezero Exp $
+	$Id: r_alias.c,v 1.19 2007-09-29 18:10:25 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -1018,12 +1018,10 @@ void R_AliasDrawModel (alight_t *plighting)
 		}
 		else
 		{
-			strncpy(client_team, Info_ValueForKey(cl.players[cl.playernum].userinfo, "team"), 16);
-			client_team[15] = 0;
+			q_strlcpy (client_team, Info_ValueForKey(cl.players[cl.playernum].userinfo, "team"), sizeof(client_team));
 			if (client_team[0])
 			{
-				strncpy(this_team, Info_ValueForKey(cl.players[i].userinfo, "team"), 16);
-				this_team[15] = 0;
+				q_strlcpy (this_team, Info_ValueForKey(cl.players[i].userinfo, "team"), sizeof(this_team));
 				if (q_strcasecmp(client_team, this_team) == 0)
 				{
 				//	OnTeam = true;

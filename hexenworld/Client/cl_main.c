@@ -2,7 +2,7 @@
 	cl_main.c
 	client main loop
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/cl_main.c,v 1.87 2007-09-29 07:20:47 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/cl_main.c,v 1.88 2007-09-29 18:10:25 sezero Exp $
 */
 
 #include <sys/types.h>
@@ -234,7 +234,7 @@ static void CL_Connect_f (void)
 	CL_Disconnect ();
 
 	key_dest = key_game;		// remove console or menu
-	strncpy (cls.servername, server, sizeof(cls.servername)-1);
+	q_strlcpy (cls.servername, server, sizeof(cls.servername));
 	CL_SendConnectPacket ();
 }
 

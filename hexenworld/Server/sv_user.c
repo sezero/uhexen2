@@ -2,7 +2,7 @@
 	sv_user.c
 	server code for moving users
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Server/sv_user.c,v 1.25 2007-06-26 20:19:37 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Server/sv_user.c,v 1.26 2007-09-29 18:10:26 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -537,17 +537,14 @@ static void SV_Say (qboolean team)
 		return;
 
 	if (team)
-	{
-		strncpy (t1, Info_ValueForKey (host_client->userinfo, "team"), 31);
-		t1[31] = 0;
-	}
+		q_strlcpy (t1, Info_ValueForKey(host_client->userinfo, "team"), sizeof(t1));
 
 	if (host_client->spectator && (!sv_spectalk.integer || team))
-		sprintf (text, "[SPEC] %s: ", host_client->name);
+		q_snprintf (text, sizeof(text), "[SPEC] %s: ", host_client->name);
 	else if (team)
-		sprintf (text, "(%s): ", host_client->name);
+		q_snprintf (text, sizeof(text), "(%s): ", host_client->name);
 	else
-		sprintf (text, "%s: ", host_client->name);
+		q_snprintf (text, sizeof(text), "%s: ", host_client->name);
 
 	if (fp_messages)
 	{
@@ -594,14 +591,14 @@ static void SV_Say (qboolean team)
 		else
 		{
 			text[strlen(text)-2] = 0;
-			strcat(text," speaks!\n");
+			q_strlcat(text," speaks!\n", sizeof(text));
 		}
 	}
 
 	if (speaknum == -1)
 	{
-		strcat(text, p);
-		strcat(text, "\n");
+		q_strlcat(text, p, sizeof(text));
+		q_strlcat(text, "\n", sizeof(text));
 	}
 
 	Sys_Printf ("%s", text);
@@ -839,7 +836,7 @@ static void SV_SetInfo_f (void)
 		return;	// don't set priveledged values
 
 	Info_SetValueForKey (host_client->userinfo, Cmd_Argv(1), Cmd_Argv(2), MAX_INFO_STRING);
-	strncpy (host_client->name, Info_ValueForKey (host_client->userinfo, "name"), sizeof(host_client->name)-1);
+	q_strlcpy (host_client->name, Info_ValueForKey (host_client->userinfo, "name"), sizeof(host_client->name));
 //	SV_FullClientUpdate (host_client, &sv.reliable_datagram);
 	host_client->sendinfo = true;
 

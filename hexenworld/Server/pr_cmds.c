@@ -2,7 +2,7 @@
 	pr_cmds.c
 	prog commands
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Server/pr_cmds.c,v 1.36 2007-09-22 15:27:34 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Server/pr_cmds.c,v 1.37 2007-09-29 18:10:26 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -2877,7 +2877,7 @@ static void PF_setclass (void)
 
 	sprintf(temp,"%d",(int)NewClass);
 	Info_SetValueForKey (host_client->userinfo, "playerclass", temp, MAX_INFO_STRING);
-	strncpy (host_client->name, Info_ValueForKey(host_client->userinfo, "name"), sizeof(host_client->name)-1);
+	q_strlcpy (host_client->name, Info_ValueForKey(host_client->userinfo, "name"), sizeof(host_client->name));
 	host_client->sendinfo = true;
 
 	// process any changed values
@@ -2919,7 +2919,7 @@ static void PF_setsiegeteam (void)
 //???
 //	sprintf(temp,"%d",(int)NewTeam);
 //	Info_SetValueForKey (host_client->userinfo, "playerclass", temp, MAX_INFO_STRING);
-//	strncpy (host_client->name, Info_ValueForKey (host_client->userinfo, "name"), sizeof(host_client->name)-1);
+//	q_strlcpy (host_client->name, Info_ValueForKey(host_client->userinfo, "name"), sizeof(host_client->name));
 //	host_client->sendinfo = true;
 
 	//update everyone else about playerclass change

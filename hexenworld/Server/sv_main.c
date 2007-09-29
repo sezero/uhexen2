@@ -2,7 +2,7 @@
 	sv_main.c
 	server main program
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Server/sv_main.c,v 1.48 2007-09-22 15:27:34 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Server/sv_main.c,v 1.49 2007-09-29 18:10:26 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -497,7 +497,7 @@ static void SVC_DirectConnect (void)
 	int			clients, spectators;
 	qboolean	spectator;
 
-	strncpy (userinfo, Cmd_Argv(2), sizeof(userinfo)-1);
+	q_strlcpy (userinfo, Cmd_Argv(2), sizeof(userinfo));
 
 	// check for password or spectator_password
 	s = Info_ValueForKey (userinfo, "spectator");
@@ -553,7 +553,7 @@ static void SVC_DirectConnect (void)
 	}
 	else
 	{
-		strncpy (newcl->userinfo, userinfo, sizeof(newcl->userinfo)-1);
+		q_strlcpy (newcl->userinfo, userinfo, sizeof(newcl->userinfo));
 	}
 
 	// if there is already a slot for this ip, drop it
@@ -1426,9 +1426,7 @@ void SV_ExtractFromUserinfo (client_t *cl)
 	val = Info_ValueForKey (cl->userinfo, "name");
 
 	// trim user name
-	strncpy(newname, val, sizeof(newname) - 1);
-	newname[sizeof(newname) - 1] = 0;
-
+	q_strlcpy(newname, val, sizeof(newname));
 	for (p = newname; *p == ' ' && *p; p++)
 		;
 
@@ -1488,7 +1486,7 @@ void SV_ExtractFromUserinfo (client_t *cl)
 			break;
 	}
 
-	strncpy (cl->name, val, sizeof(cl->name)-1);
+	q_strlcpy (cl->name, val, sizeof(cl->name));
 
 	// rate command
 	val = Info_ValueForKey (cl->userinfo, "rate");

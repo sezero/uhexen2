@@ -2,7 +2,7 @@
 	cl_parse.c
 	parse a message received from the server
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/cl_parse.c,v 1.46 2007-09-22 15:27:17 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/cl_parse.c,v 1.47 2007-09-29 18:10:25 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -492,7 +492,7 @@ static void CL_ParseServerData (void)
 
 	// get the full level name
 	str = MSG_ReadString ();
-	strncpy (cl.levelname, str, sizeof(cl.levelname)-1);
+	q_strlcpy (cl.levelname, str, sizeof(cl.levelname));
 
 	// get the movevars
 	if (protover == PROTOCOL_VERSION)
@@ -885,9 +885,9 @@ static void CL_UpdateUserinfo (void)
 
 	player = &cl.players[slot];
 	player->userid = MSG_ReadLong ();
-	strncpy (player->userinfo, MSG_ReadString(), sizeof(player->userinfo)-1);
+	q_strlcpy (player->userinfo, MSG_ReadString(), sizeof(player->userinfo));
 
-	strncpy (player->name, Info_ValueForKey (player->userinfo, "name"), sizeof(player->name)-1);
+	q_strlcpy (player->name, Info_ValueForKey (player->userinfo, "name"), sizeof(player->name));
 	player->topcolor = atoi(Info_ValueForKey (player->userinfo, "topcolor"));
 	player->bottomcolor = atoi(Info_ValueForKey (player->userinfo, "bottomcolor"));
 	if (Info_ValueForKey (player->userinfo, "*spectator")[0])

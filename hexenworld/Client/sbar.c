@@ -2,7 +2,7 @@
 	sbar.c
 	Hexen II status bar
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/sbar.c,v 1.41 2007-09-22 15:27:19 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/sbar.c,v 1.42 2007-09-29 18:10:25 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -1234,10 +1234,10 @@ static void FindPuzzlePieceName(const char *which, char *name)
 
 	for (j = 0; j < puzzle_string_count; j += 2)
 	{
-		if (q_strcasecmp(which, puzzle_strings+puzzle_string_index[j]) == 0)
+		if (q_strcasecmp(which, puzzle_strings + puzzle_string_index[j]) == 0)
 		{
-			strncpy (name, puzzle_strings+puzzle_string_index[j+1], 39);
-			name[39] = 0;
+			q_strlcpy(name, puzzle_strings + puzzle_string_index[j+1], 40);
+				// 40 == sizeof(Name) in our caller Sbar_PuzzlePieceOverlay
 			return;
 		}
 	}

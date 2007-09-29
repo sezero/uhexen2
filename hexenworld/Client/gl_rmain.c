@@ -1,7 +1,7 @@
 /*
 	gl_main.c
 
-	$Id: gl_rmain.c,v 1.56 2007-09-22 15:27:18 sezero Exp $
+	$Id: gl_rmain.c,v 1.57 2007-09-29 18:10:25 sezero Exp $
 */
 
 
@@ -481,12 +481,10 @@ static void GL_DrawAliasFrame (aliashdr_t *paliashdr, int posenum)
 		}
 		else
 		{
-			strncpy(client_team, Info_ValueForKey(cl.players[cl.playernum].userinfo, "team"), 16);
-			client_team[15] = 0;
+			q_strlcpy (client_team, Info_ValueForKey(cl.players[cl.playernum].userinfo, "team"), sizeof(client_team));
 			if (client_team[0])
 			{
-				strncpy(this_team, Info_ValueForKey(cl.players[i].userinfo, "team"), 16);
-				this_team[15] = 0;
+				q_strlcpy (this_team, Info_ValueForKey(cl.players[i].userinfo, "team"), sizeof(this_team));
 				if (q_strcasecmp(client_team, this_team) == 0)
 				{
 				//	OnTeam = true;
