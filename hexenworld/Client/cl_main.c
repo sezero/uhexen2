@@ -2,7 +2,7 @@
 	cl_main.c
 	client main loop
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/cl_main.c,v 1.86 2007-09-22 15:27:17 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/cl_main.c,v 1.87 2007-09-29 07:20:47 sezero Exp $
 */
 
 #include <sys/types.h>
@@ -22,6 +22,7 @@
 #if defined(PLATFORM_WINDOWS)
 #include "winquake.h"
 #endif
+#include <ctype.h>
 
 static	cvar_t	rcon_password = {"rcon_password", "", CVAR_NONE};
 static	cvar_t	rcon_address = {"rcon_address", "", CVAR_NONE};
@@ -1225,16 +1226,29 @@ void Host_WriteConfiguration (const char *fname)
 
 static void Host_SaveConfig_f (void)
 {
+	char		*p;
+
 	if (Cmd_Argc() != 2)
 	{
 		Con_Printf ("saveconfig <savename> : save a config file\n");
 			return;
 	}
 
-	if (strstr(Cmd_Argv(1), ".."))
+	p = Cmd_Argv(1);
+	if (*p == '.' || strstr(p, ".."))
 	{
-		Con_Printf ("Relative pathnames are not allowed.\n");
-			return;
+		Con_Printf ("Invalid config name.\n");
+		return;
+	}
+	while (*p)
+	{
+		if (*p == '.' || isalnum(*p))
+		{
+			p++;
+			continue;
+		}
+		Con_Printf ("Invalid config name.\n");
+		return;
 	}
 
 	Host_WriteConfiguration (Cmd_Argv(1));

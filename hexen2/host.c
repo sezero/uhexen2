@@ -2,7 +2,7 @@
 	host.c
 	coordinates spawning and killing of local servers
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host.c,v 1.88 2007-09-22 15:27:12 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host.c,v 1.89 2007-09-29 07:20:43 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -16,6 +16,7 @@
 #ifdef PLATFORM_UNIX
 #include <unistd.h>
 #endif
+#include <ctype.h>
 
 /*
 
@@ -275,6 +276,8 @@ Host_SaveConfig_f
 */
 static void Host_SaveConfig_f (void)
 {
+	char		*p;
+
 	if (cmd_source != src_command)
 		return;
 
@@ -297,9 +300,20 @@ static void Host_SaveConfig_f (void)
 		return;
 	}
 
-	if (strstr(Cmd_Argv(1), ".."))
+	p = Cmd_Argv(1);
+	if (*p == '.' || strstr(p, ".."))
 	{
-		Con_Printf ("Relative pathnames are not allowed.\n");
+		Con_Printf ("Invalid config name.\n");
+		return;
+	}
+	while (*p)
+	{
+		if (*p == '.' || isalnum(*p))
+		{
+			p++;
+			continue;
+		}
+		Con_Printf ("Invalid config name.\n");
 		return;
 	}
 

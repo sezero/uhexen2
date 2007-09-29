@@ -2,7 +2,7 @@
 	host_cmd.c
 	console commands
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/server/host_cmd.c,v 1.33 2007-09-22 15:27:15 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/server/host_cmd.c,v 1.34 2007-09-29 07:20:46 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -425,6 +425,7 @@ static void Host_Savegame_f (void)
 	FILE	*f;
 	int		i;
 	char		comment[SAVEGAME_COMMENT_LENGTH+1];
+	char		*p;
 	int		error_state = 0;
 
 	if (cmd_source != src_command)
@@ -450,11 +451,20 @@ static void Host_Savegame_f (void)
 		return;
 	}
 
-	if (strstr(Cmd_Argv(1), ".."))
+	i = 0;
+	p = Cmd_Argv(1);
+	while (*p)
 	{
-		Con_Printf ("Relative pathnames are not allowed.\n");
+		if (isalnum(*p))
+		{
+			p++;
+			i++;
+			continue;
+		}
+		Con_Printf ("Invalid save name.\n");
 		return;
 	}
+	p -= i;
 
 	for (i = 0; i < svs.maxclients; i++)
 	{
@@ -470,7 +480,7 @@ static void Host_Savegame_f (void)
 	if (error_state)
 		return;
 
-	if (q_snprintf(savename, sizeof(savename), "%s/%s", fs_userdir, Cmd_Argv(1)) >= sizeof(savename))
+	if (q_snprintf(savename, sizeof(savename), "%s/%s", fs_userdir, p) >= sizeof(savename))
 	{
 		Con_Printf ("%s: save directory name too long\n", __thisfunc__);
 		return;
@@ -486,14 +496,14 @@ static void Host_Savegame_f (void)
 	q_snprintf (savename, sizeof(savename), "%s/clients.gip", fs_userdir);
 	unlink(savename);
 
-	q_snprintf (savedest, sizeof(savedest), "%s/%s", fs_userdir, Cmd_Argv(1));
+	q_snprintf (savedest, sizeof(savedest), "%s/%s", fs_userdir, p);
 	Con_Printf ("Saving game to %s...\n", savedest);
 
 	error_state = Host_CopyFiles(fs_userdir, "*.gip", savedest);
 	if (error_state)
 		goto finish;
 
-	if (q_snprintf(savedest, sizeof(savedest), "%s/%s/info.dat", fs_userdir, Cmd_Argv(1)) >= sizeof(savedest))
+	if (q_snprintf(savedest, sizeof(savedest), "%s/%s/info.dat", fs_userdir, p) >= sizeof(savedest))
 	{
 		Host_Error("%s: %d: string buffer overflow!", __thisfunc__, __LINE__);
 		return;

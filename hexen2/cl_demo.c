@@ -2,10 +2,11 @@
 	cl_demo.c
 	demo recording and playback
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cl_demo.c,v 1.23 2007-09-22 15:27:10 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cl_demo.c,v 1.24 2007-09-29 07:20:43 sezero Exp $
 */
 
 #include "quakedef.h"
+#include <ctype.h>
 
 int		stufftext_frame;
 
@@ -260,7 +261,7 @@ record <demoname> <map> [cd track]
 void CL_Record_f (void)
 {
 	int		c;
-	char	name[MAX_OSPATH];
+	char	name[MAX_OSPATH], *p;
 	int		track;
 
 	if (cmd_source != src_command)
@@ -276,9 +277,20 @@ void CL_Record_f (void)
 		return;
 	}
 
-	if (strstr(Cmd_Argv(1), ".."))
+	p = Cmd_Argv(1);
+	if (*p == '.' || strstr(p, ".."))
 	{
-		Con_Printf ("Relative pathnames are not allowed.\n");
+		Con_Printf ("Invalid demo name.\n");
+		return;
+	}
+	while (*p)
+	{
+		if (*p == '.' || isalnum(*p))
+		{
+			p++;
+			continue;
+		}
+		Con_Printf ("Invalid demo name.\n");
 		return;
 	}
 
