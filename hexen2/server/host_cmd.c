@@ -2,7 +2,7 @@
 	host_cmd.c
 	console commands
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/server/host_cmd.c,v 1.35 2007-09-29 11:08:31 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/server/host_cmd.c,v 1.36 2007-09-29 11:44:24 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -494,7 +494,7 @@ static void Host_Savegame_f (void)
 	Host_RemoveGIPFiles(savename);
 
 	q_snprintf (savename, sizeof(savename), "%s/clients.gip", fs_userdir);
-	unlink(savename);
+	Sys_unlink(savename);
 
 	q_snprintf (savedest, sizeof(savedest), "%s/%s", fs_userdir, p);
 	Con_Printf ("Saving game to %s...\n", savedest);

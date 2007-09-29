@@ -2,7 +2,7 @@
 	debuglog.c
 	logging console output to a file
 
-	$Id: debuglog.c,v 1.5 2007-09-22 15:27:17 sezero Exp $
+	$Id: debuglog.c,v 1.6 2007-09-29 11:44:24 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -85,7 +85,7 @@ void LOG_Init (quakeparms_t *parms)
 	if (con_debuglog == LOG_NONE)
 		return;
 
-	unlink (logfilename);
+	Sys_unlink (logfilename);
 
 	log_fd = open (logfilename, O_WRONLY | O_CREAT | O_APPEND, 0666);
 	if (log_fd < 0)
