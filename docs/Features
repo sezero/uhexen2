@@ -49,6 +49,8 @@ Features:
 * Improved console functionality (inline editing and tab completion),
   and a maplist command.
 
+* Ability to delete saved games from within the game.
+
 * Several hexen2 utilities are maintained and are being kept up to date.
 
 * Many bug fixes and other improvements.
