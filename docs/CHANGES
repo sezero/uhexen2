@@ -3,6 +3,29 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2007-09-29 (CVS):
+    * FS_OpenFile didn't set fs_filesize for files not residing in a pak. fixed.
+    * implemented deleting of saved games from within the game: pressing the
+      delete key in the load or save menu (and pressing y at the dialog) does
+      the job. alternatively, the new console command deletesave <savename>
+      does the same thing.
+    * limited recorded demo file, saved config file and game save directory
+      names to alphanumeric only.
+    * clean-up in Host_RemoveGIPFiles: replaced two unnecessary snprintf
+      usages with strlcpy. replaced a va() call with an snprintf onto the
+      already available local array, which is probably safer.
+    * allocated the large (256 kb) inverse_pal array on the Hunk rather than
+      the stack. while we were there, did a little tidy-up.
+    * replaced a few strncpy usage with strlcpy. surely there are some more
+      but these are the ones I'm sure about.
+    * exported Draw_PicFromFile and Draw_PicFileBuf again, in case we use them
+      someday.
+    * pr_strng.c: minor trivial clean-up.
+    * added Sys_unlink and Sys_rmdir. for platform_unix and platform_windows,
+      they are macros defined as the library functions themselves, for others
+      it must be implemented.
+    * updated documentation (2007-09-29.)
+
 2007-09-26 (CVS):
     * fixed sound buffer address printing.
     * updated the compile instructions for windows.
