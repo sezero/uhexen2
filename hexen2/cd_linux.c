@@ -1,6 +1,6 @@
 /*
 	cd_linux.c
-	$Id: cd_linux.c,v 1.25 2007-09-22 15:27:10 sezero Exp $
+	$Id: cd_linux.c,v 1.26 2007-09-29 13:32:31 sezero Exp $
 
 	Copyright (C) 1996-1997  Id Software, Inc.
 
@@ -434,8 +434,7 @@ int CDAudio_Init(void)
 
 	if ((i = COM_CheckParm("-cddev")) != 0 && i < com_argc - 1)
 	{
-		strncpy(cd_dev, com_argv[i + 1], sizeof(cd_dev));
-		cd_dev[sizeof(cd_dev) - 1] = 0;
+		q_strlcpy(cd_dev, com_argv[i + 1], sizeof(cd_dev));
 	}
 
 	if ((cdfile = open(cd_dev, O_RDONLY | O_NONBLOCK)) == -1)

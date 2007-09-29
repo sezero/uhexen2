@@ -2,7 +2,7 @@
 	cvar.c
 	dynamic variable tracking
 
-	$Id: cvar.c,v 1.32 2007-09-22 15:27:17 sezero Exp $
+	$Id: cvar.c,v 1.33 2007-09-29 13:32:32 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -263,8 +263,7 @@ void Cvar_RegisterVariable (cvar_t *variable)
 	cvar_vars = variable;
 
 // copy the value off, because future sets will Z_Free it
-	strncpy (value, variable->string, 511);
-	value[511] = '\0';
+	q_strlcpy (value, variable->string, sizeof(value));
 	variable->string = NULL;
 
 // set it through the function to be consistant

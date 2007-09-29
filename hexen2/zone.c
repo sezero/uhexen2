@@ -2,7 +2,7 @@
 	zone.c
 	Memory management
 
-	$Id: zone.c,v 1.47 2007-09-22 15:27:15 sezero Exp $
+	$Id: zone.c,v 1.48 2007-09-29 13:32:31 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -334,8 +334,7 @@ void *Hunk_AllocName (int size, const char *name)
 
 	h->size = size;
 	h->sentinal = HUNK_SENTINAL;
-	strncpy (h->name, name, HUNKNAME_LEN - 1);
-	h->name[HUNKNAME_LEN - 1] = 0;
+	q_strlcpy (h->name, name, HUNKNAME_LEN);
 
 	return (void *)(h + 1);
 }
@@ -426,8 +425,7 @@ void *Hunk_HighAllocName (int size, const char *name)
 	memset (h, 0, size);
 	h->size = size;
 	h->sentinal = HUNK_SENTINAL;
-	strncpy (h->name, name, HUNKNAME_LEN - 1);
-	h->name[HUNKNAME_LEN - 1] = 0;
+	q_strlcpy (h->name, name, HUNKNAME_LEN);
 
 	return (void *)(h + 1);
 }
@@ -772,8 +770,7 @@ void *Cache_Alloc (cache_user_t *c, int size, const char *name)
 		cs = Cache_TryAlloc (size, false);
 		if (cs)
 		{
-			strncpy (cs->name, name, CACHENAME_LEN - 1);
-			cs->name[CACHENAME_LEN - 1] = 0;
+			q_strlcpy (cs->name, name, CACHENAME_LEN);
 			c->data = (void *)(cs + 1);
 			cs->user = c;
 			break;
@@ -885,7 +882,7 @@ static void Hunk_Print (qboolean all, qboolean write_file)
 	// print the total
 	//
 		if (next == endlow || next == endhigh || 
-			strncmp (h->name, next->name, HUNKNAME_LEN))
+			strncmp (h->name, next->name, HUNKNAME_LEN - 1))
 		{
 			if (!all)
 				MEM_Printf(FH,"          :%8i %8s (TOTAL)\n",sum, h->name);
@@ -950,8 +947,7 @@ static void Cache_Print (qboolean write_file)
 		count++;
 		sum += cd->size;
 
-		strncpy (temp, cd->name, sizeof(temp)-1);
-		temp[sizeof(temp)-1] = 0;
+		q_strlcpy (temp, cd->name, sizeof(temp));
 		q_strlwr(temp);
 		if (strstr(temp,".mdl"))
 		{

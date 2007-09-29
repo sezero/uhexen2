@@ -1,7 +1,7 @@
 /*
 	menu.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/menu.c,v 1.100 2007-09-29 11:08:26 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/menu.c,v 1.101 2007-09-29 13:32:31 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -1126,7 +1126,7 @@ static void M_ScanSaves (void)
 
 	for (i = 0; i < MAX_SAVEGAMES; i++)
 	{
-		strncpy (m_filenames[i], "--- UNUSED SLOT ---", sizeof(m_filenames[0])-1);
+		q_strlcpy (m_filenames[i], "--- UNUSED SLOT ---", SAVEGAME_COMMENT_LENGTH+1);
 		loadable[i] = false;
 		q_snprintf (name, sizeof(name), "%s/s%i/info.dat", fs_userdir, i);
 		f = fopen (name, "r");
@@ -1139,7 +1139,7 @@ static void M_ScanSaves (void)
 			continue;
 		}
 		fscanf (f, "%79s\n", name);
-		strncpy (m_filenames[i], name, sizeof(m_filenames[0])-1);
+		q_strlcpy (m_filenames[i], name, SAVEGAME_COMMENT_LENGTH+1);
 
 	// change _ back to space
 		for (j = 0; j < SAVEGAME_COMMENT_LENGTH; j++)
@@ -1313,7 +1313,7 @@ static void M_ScanMSaves (void)
 
 	for (i = 0; i < MAX_SAVEGAMES; i++)
 	{
-		strncpy (m_filenames[i], "--- UNUSED SLOT ---", sizeof(m_filenames[0])-1);
+		q_strlcpy (m_filenames[i], "--- UNUSED SLOT ---", SAVEGAME_COMMENT_LENGTH+1);
 		loadable[i] = false;
 		q_snprintf (name, sizeof(name), "%s/ms%i/info.dat", fs_userdir, i);
 		f = fopen (name, "r");
@@ -1326,7 +1326,7 @@ static void M_ScanMSaves (void)
 			continue;
 		}
 		fscanf (f, "%79s\n", name);
-		strncpy (m_filenames[i], name, sizeof(m_filenames[0])-1);
+		q_strlcpy (m_filenames[i], name, SAVEGAME_COMMENT_LENGTH+1);
 
 	// change _ back to space
 		for (j = 0; j < SAVEGAME_COMMENT_LENGTH; j++)

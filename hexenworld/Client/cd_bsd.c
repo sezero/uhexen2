@@ -1,6 +1,6 @@
 /*
 	cd_bsd.c
-	$Id: cd_bsd.c,v 1.19 2007-09-22 15:27:17 sezero Exp $
+	$Id: cd_bsd.c,v 1.20 2007-09-29 13:32:32 sezero Exp $
 
 	Copyright (C) 1996-1997  Id Software, Inc.
 	A few BSD bits taken from the Dark Places project for Hammer
@@ -459,8 +459,7 @@ int CDAudio_Init(void)
 
 	if ((i = COM_CheckParm("-cddev")) != 0 && i < com_argc - 1)
 	{
-		strlcpy(cd_dev, com_argv[i + 1], sizeof(cd_dev));
-		cd_dev[sizeof(cd_dev) - 1] = 0;
+		q_strlcpy(cd_dev, com_argv[i + 1], sizeof(cd_dev));
 	}
 
 	if ((cdfile = open(cd_dev, O_RDONLY | O_NONBLOCK)) == -1)
