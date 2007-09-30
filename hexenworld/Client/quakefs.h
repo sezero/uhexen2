@@ -2,7 +2,7 @@
 	quakefs.h
 	Hexen II filesystem
 
-	$Id: quakefs.h,v 1.10 2007-09-20 06:40:05 sezero Exp $
+	$Id: quakefs.h,v 1.11 2007-09-30 08:15:09 sezero Exp $
 */
 
 #ifndef __QUAKEFS_H
@@ -82,16 +82,35 @@ int FS_FileInGamedir (const char *fname);
 // Returns -1 on failure. Files in pakfiles are NOT meant for this procedure!
 
 size_t FS_OpenFile (const char *filename, FILE **file, qboolean override_pack);
+// Opens a file (a standalone file or a file in pak) in the hexen2 filesystem,
+// returns fs_filesize on success or (size_t)-1 on failure.  if the game isn't
+// the registered version, it does not search beyond fs_basedir or fs_userdir
+// for standalone files unless override_pack is true.
 
+// these procedures open a file using FS_OpenFile and loads it into a proper
+// buffer. the buffer is allocated with a total size of fs_filesize + 1. the
+// procedures differ by their buffer allocation method.
 byte *FS_LoadZoneFile (const char *path, int zone_id);
-byte *FS_LoadStackFile (const char *path, void *buffer, size_t bufsize);
-byte *FS_LoadBufFile (const char *path, void *buffer, size_t *bufsize);
+	// allocates the buffer on the zone. zone_id: which zone to use.
 byte *FS_LoadTempFile (const char *path);
+	// allocates the buffer on the temp hunk.
 byte *FS_LoadHunkFile (const char *path);
+	// allocates the buffer on the hunk.
 byte *FS_LoadMallocFile (const char *path);
+	// allocates the buffer on the system mem (malloc).
+byte *FS_LoadStackFile (const char *path, void *buffer, size_t bufsize);
+	// uses the specified stack stack buffer with the specified size
+	// of bufsize. if bufsize is too short, uses temp hunk. the bufsize
+	// must include the +1
+byte *FS_LoadBufFile (const char *path, void *buffer, size_t *bufsize);
+	// uses the specified pre-allocated buffer with bufsize + 1 size.
+	// bufsize is the actual expected size (without the + 1).  if the
+	// space is too short or the buffer is NULL, loads onto the hunk.
+	// sets bufsize to fs_filesize for success, or to 0 for failure.
 
 struct cache_user_s;
 void  FS_LoadCacheFile (const char *path, struct cache_user_s *cu);
+	// uses cache mem for allocating the buffer.
 
 #endif	/* __QUAKEFS_H */
 
