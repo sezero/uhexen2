@@ -2,7 +2,7 @@
 	host_cmd.c
 	console commands
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host_cmd.c,v 1.90 2007-09-29 13:32:31 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host_cmd.c,v 1.91 2007-09-30 08:44:07 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -653,7 +653,7 @@ static void Host_DeleteSave_f (void)
 
 	if (Cmd_Argc() != 2)
 	{
-		Con_Printf ("deletesave <savename> : delete saved a game\n");
+		Con_Printf ("deletesave <savename> : delete a saved game\n");
 		return;
 	}
 
