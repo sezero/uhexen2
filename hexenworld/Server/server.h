@@ -1,7 +1,7 @@
 /*
 	server.h
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Server/server.h,v 1.16 2007-09-14 14:11:24 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Server/server.h,v 1.17 2007-09-30 11:04:40 sezero Exp $
 */
 
 #ifndef __H2W_SERVER_H
@@ -323,6 +323,7 @@ typedef struct
 
 extern	cvar_t	sv_mintic, sv_maxtic;
 extern	cvar_t	sv_maxspeed;
+extern	cvar_t	sv_highchars;
 
 extern	netadr_t	master_adr[MAX_MASTERS];	// address of the master server
 

@@ -2,7 +2,7 @@
 	info_str.c
 	Hexen2World info strings handling
 
-	$Id: info_str.c,v 1.5 2007-09-22 15:27:18 sezero Exp $
+	$Id: info_str.c,v 1.6 2007-09-30 11:04:33 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -155,9 +155,6 @@ void Info_SetValueForStarKey (char *s, const char *key, const char *value, int m
 {
 	char	newvalue[1024], *v;
 	int		c;
-#ifdef SERVERONLY
-	extern cvar_t sv_highchars;
-#endif
 
 	if (strstr (key, "\\") || strstr (value, "\\") )
 	{
