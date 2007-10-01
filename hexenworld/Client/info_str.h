@@ -2,7 +2,7 @@
 	info_str.h
 	Hexen2World info strings handling
 
-	$Id: info_str.h,v 1.2 2007-09-30 11:05:49 sezero Exp $
+	$Id: info_str.h,v 1.3 2007-10-01 11:00:32 sezero Exp $
 */
 
 #ifndef __H2W_INFOSTR_H
@@ -12,7 +12,9 @@
 #define	MAX_SERVERINFO_STRING		512
 #define	MAX_LOCALINFO_STRING		32768
 
-char *Info_ValueForKey (const char *s, const char *key);
+// none of these functions accept NULL input
+
+char *Info_ValueForKey (const char *s, const char *key);	// may return an empty string, but never NULL
 void Info_RemoveKey (char *s, const char *key);
 void Info_RemovePrefixedKeys (char *start, char prefix);
 void Info_SetValueForKey (char *s, const char *key, const char *value, size_t maxsize);

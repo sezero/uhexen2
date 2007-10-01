@@ -2,7 +2,7 @@
 	skin.c
 	skin loading
 
-	$Id: skin.c,v 1.12 2007-07-08 11:55:38 sezero Exp $
+	$Id: skin.c,v 1.13 2007-10-01 11:00:32 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -35,7 +35,7 @@ void Skin_Find (player_info_t *sc)
 	else
 	{
 		s = Info_ValueForKey (sc->userinfo, "skin");
-		if (s && s[0])
+		if (s[0])
 			strcpy (name, s);
 		else
 			strcpy (name, baseskin.string);

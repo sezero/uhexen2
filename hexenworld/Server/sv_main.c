@@ -2,7 +2,7 @@
 	sv_main.c
 	server main program
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Server/sv_main.c,v 1.49 2007-09-29 18:10:26 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Server/sv_main.c,v 1.50 2007-10-01 11:00:33 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -1490,7 +1490,7 @@ void SV_ExtractFromUserinfo (client_t *cl)
 
 	// rate command
 	val = Info_ValueForKey (cl->userinfo, "rate");
-	if (strlen(val))
+	if (*val)
 	{
 		i = atoi(val);
 		if (i < 500)
@@ -1502,7 +1502,7 @@ void SV_ExtractFromUserinfo (client_t *cl)
 
 	// playerclass command
 	val = Info_ValueForKey (cl->userinfo, "playerclass");
-	if (strlen(val))
+	if (*val)
 	{
 		i = atoi(val);
 		if (i > CLASS_DEMON && dmMode.integer != DM_SIEGE)
@@ -1522,7 +1522,7 @@ void SV_ExtractFromUserinfo (client_t *cl)
 
 	// msg command
 	val = Info_ValueForKey (cl->userinfo, "msg");
-	if (strlen(val))
+	if (*val)
 	{
 		cl->messagelevel = atoi(val);
 	}

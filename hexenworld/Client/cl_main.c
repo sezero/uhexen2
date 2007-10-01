@@ -2,7 +2,7 @@
 	cl_main.c
 	client main loop
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/cl_main.c,v 1.88 2007-09-29 18:10:25 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/cl_main.c,v 1.89 2007-10-01 11:00:32 sezero Exp $
 */
 
 #include <sys/types.h>
@@ -537,7 +537,8 @@ static void CL_FullServerinfo_f (void)
 
 	q_strlcpy (cl.serverinfo, Cmd_Argv(1), MAX_SERVERINFO_STRING);
 
-	if ((p = Info_ValueForKey(cl.serverinfo, "*version")) && *p)
+	p = Info_ValueForKey(cl.serverinfo, "*version");
+	if (*p)
 	{
 		v = atof(p);
 		if (v)

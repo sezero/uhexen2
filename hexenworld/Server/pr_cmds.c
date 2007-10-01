@@ -2,7 +2,7 @@
 	pr_cmds.c
 	prog commands
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Server/pr_cmds.c,v 1.37 2007-09-29 18:10:26 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Server/pr_cmds.c,v 1.38 2007-10-01 11:00:33 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -2393,7 +2393,8 @@ static void PF_infokey (void)
 
 	if (e1 == 0)
 	{
-		if ((value = Info_ValueForKey (svs.info, key)) == NULL || !*value)
+		value = Info_ValueForKey (svs.info, key);
+		if (!*value)
 			value = Info_ValueForKey(localinfo, key);
 	}
 	else if (e1 <= MAX_CLIENTS)
