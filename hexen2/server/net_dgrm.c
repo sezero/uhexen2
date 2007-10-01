@@ -2,7 +2,7 @@
 	net_dgrm.c
 	This is enables a simple IP banning mechanism
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/server/net_dgrm.c,v 1.23 2007-09-22 15:27:15 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/server/net_dgrm.c,v 1.24 2007-10-01 14:32:24 sezero Exp $
 */
 
 #define BAN_TEST
@@ -57,7 +57,7 @@ static void NET_Ban_f (void)
 {
 	char	addrStr [32];
 	char	maskStr [32];
-	void	(*print) (unsigned int flg, const char *fmt, ...);
+	void	(*print)(unsigned int flg, const char *fmt, ...) __attribute__((format(printf,2,3)));
 
 	if (cmd_source == src_command)
 	{
