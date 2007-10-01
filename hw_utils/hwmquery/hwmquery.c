@@ -1,6 +1,6 @@
 /*
 	hwmquery.c
-	$Id: hwmquery.c,v 1.16 2007-09-22 15:27:35 sezero Exp $
+	$Id: hwmquery.c,v 1.17 2007-10-01 11:45:31 sezero Exp $
 
 	HWMQUERY 0.1 HexenWorld Master Server Query
 	Copyright (C) 2006 O. Sezer <sezero@users.sourceforge.net>
@@ -55,6 +55,7 @@ static WSADATA		winsockdata;
 static int		socketfd = -1;
 
 void Sys_Error (const char *error, ...) __attribute__((format(printf,1,2), noreturn));
+static void Sys_Quit (int error_state) __attribute__((noreturn));
 
 //=============================================================================
 
@@ -191,8 +192,8 @@ static void Sys_Quit (int error_state)
 
 int main (int argc, char *argv[])
 {
-	int		size;
-	unsigned int	pos;
+	ssize_t		size;
+	size_t		pos;
 	socklen_t	fromlen;
 	unsigned char	packet[3];
 	unsigned char	response[MAX_PACKET];
@@ -248,7 +249,6 @@ int main (int argc, char *argv[])
 	if (size != 2)
 	{
 		perror ("Sendto failed");
-		printf ("Tried to send %i, sent %i\n", 2, size);
 		Sys_Quit (1);
 	}
 
@@ -300,23 +300,23 @@ int main (int argc, char *argv[])
 		}
 		else
 		{
-			char	*tmp = (char *)(response+HEADER_SIZE+2);
-			struct in_addr	*addr;
+			char	*tmp = (char *)(response + HEADER_SIZE + 2);
 
 			printf ("H2W Servers registered at %s:", NET_AdrToString(ipaddress));
-			if (!strlen(tmp))
+
+			if (!*tmp)
 				printf ("  NONE\n");
 			else
-				printf ("\n");
-
-			for (pos = 0; pos < strlen(tmp); pos = pos + 6)
 			{
-				addr = (struct in_addr*)(tmp + pos);
-				printf (
-					"%s:%u\n",
-						inet_ntoa(*addr),
-						htons( *((unsigned short*)(tmp + pos + 4)) )
-					);
+				struct in_addr	*addr;
+
+				printf ("\n");
+				// each address is 4 bytes (ip) + 2 bytes (port) == 6 bytes
+				for (pos = 0; pos < strlen(tmp); pos = pos + 6)
+				{
+					addr = (struct in_addr*)(tmp + pos);
+					printf ("%s:%u\n", inet_ntoa(*addr), htons( *((unsigned short *)(tmp + pos + 4)) ) );
+				}
 			}
 		}
 	}

@@ -1,6 +1,6 @@
 /*
 	hwrcon.c
-	$Id: hwrcon.c,v 1.14 2007-09-22 15:27:36 sezero Exp $
+	$Id: hwrcon.c,v 1.15 2007-10-01 11:45:37 sezero Exp $
 
 	HWRCON 1.2 HexenWorld Remote CONsole
 	Idea based on RCon 1.1 by Michael Dwyer/N0ZAP (18-May-1998).
@@ -266,7 +266,6 @@ int main (int argc, char *argv[])
 	if (size != len)
 	{
 		perror ("Sendto failed");
-		printf ("Tried to send %i, sent %i\n", len, size);
 		NET_Shutdown ();
 		exit (1);
 	}

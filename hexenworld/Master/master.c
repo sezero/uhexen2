@@ -2,7 +2,7 @@
 	hwmaster.c
 	main master server program
 
-	$Id: master.c,v 1.2 2007-07-11 16:47:16 sezero Exp $
+	$Id: master.c,v 1.3 2007-10-01 11:45:30 sezero Exp $
 */
 
 #include "defs.h"
@@ -437,7 +437,7 @@ static void Mst_SendList (void)
 	byte		buf[MAX_DATAGRAM];
 	sizebuf_t	msg;
 	server_t	*sv;
-	short int	sv_num = 0;
+	int		sv_num = 0;
 
 	SZ_Init (&msg, buf, sizeof(buf));
 	msg.allowoverflow = true;
