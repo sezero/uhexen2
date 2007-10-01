@@ -1,12 +1,23 @@
-HWMQUERY v0.1
+HWMQUERY v0.2
 
 Usage:  hwmquery <address>[:port]
 
 This tiny console application queries a hexenworld master server and
 lists the servers that it has registered without processing. It uses
 26900 as the default master server port. It is aimed mainly for linux
-(unix) users, but also works on windows.
+(unix) users, but works just as fine on windows, too.
 
 I put together this simple program because, as of this writing, qstat
 (therefore xqf, too) can't query a hexenworld master server.
+
+BUGS
+None. Please report, if you find any.
+
+COPYRIGHT
+Copyright (C) 2006-2007 O.Sezer <sezero@users.sourceforge.net>
+
+HWMQUERY is free software;  you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by the
+Free  Software  Foundation; either version 2, or (at your option) any
+later version.
 

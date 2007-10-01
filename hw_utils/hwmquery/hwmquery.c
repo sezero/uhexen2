@@ -1,9 +1,9 @@
 /*
 	hwmquery.c
-	$Id: hwmquery.c,v 1.17 2007-10-01 11:45:31 sezero Exp $
+	$Id: hwmquery.c,v 1.18 2007-10-01 12:37:58 sezero Exp $
 
-	HWMQUERY 0.1 HexenWorld Master Server Query
-	Copyright (C) 2006 O. Sezer <sezero@users.sourceforge.net>
+	HWMQUERY 0.2 HexenWorld Master Server Query
+	Copyright (C) 2006-2007 O. Sezer <sezero@users.sourceforge.net>
 
 	This program is free software; you can redistribute it and/or
 	modify it under the terms of the GNU General Public License
@@ -178,7 +178,9 @@ static void Sys_Quit (int error_state)
 
 //=============================================================================
 
-#define	VERSION_STR		"0.1"
+#define	VER_HWMQUERY_MAJ	0
+#define	VER_HWMQUERY_MID	2
+#define	VER_HWMQUERY_MIN	0
 
 #define	PORT_MASTER		26900
 #define	PORT_SERVER		26950
@@ -201,7 +203,7 @@ int main (int argc, char *argv[])
 	struct sockaddr_in	hostaddress;
 	unsigned long	_true = 1;
 
-	printf ("HWMASTER QUERY %s\n", VERSION_STR);
+	printf ("HWMASTER QUERY %d.%d.%d\n", VER_HWMQUERY_MAJ, VER_HWMQUERY_MID, VER_HWMQUERY_MIN);
 
 // Command Line Sanity Checking
 	if (argc < 2)

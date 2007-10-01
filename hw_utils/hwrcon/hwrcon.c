@@ -1,13 +1,13 @@
 /*
 	hwrcon.c
-	$Id: hwrcon.c,v 1.15 2007-10-01 11:45:37 sezero Exp $
+	$Id: hwrcon.c,v 1.16 2007-10-01 12:38:00 sezero Exp $
 
 	HWRCON 1.2 HexenWorld Remote CONsole
 	Idea based on RCon 1.1 by Michael Dwyer/N0ZAP (18-May-1998).
 	Made to work with HexenWorld using code from the HexenWorld
 	engine (C) Raven Software and ID Software.
 	Copyright (C) 1998 Michael Dwyer <mdwyer@holly.colostate.edu>
-	Copyright (C) 2006 O. Sezer <sezero@users.sourceforge.net>
+	Copyright (C) 2006-2007 O. Sezer <sezero@users.sourceforge.net>
 
 	This program is free software; you can redistribute it and/or
 	modify it under the terms of the GNU General Public License
@@ -161,7 +161,9 @@ static void NET_Shutdown (void)
 
 //=============================================================================
 
-#define	VERSION_STR		"1.2.2"
+#define	VER_HWRCON_MAJ		1
+#define	VER_HWRCON_MID		2
+#define	VER_HWRCON_MIN		4
 
 #define	PORT_SERVER		26950
 #define	MAX_RCON_PACKET		256
@@ -187,7 +189,7 @@ int main (int argc, char *argv[])
 	netadr_t		ipaddress;
 	struct sockaddr_in	hostaddress;
 
-	printf ("HWRCON %s\n", VERSION_STR);
+	printf ("HWRCON %d.%d.%d\n", VER_HWRCON_MAJ, VER_HWRCON_MID, VER_HWRCON_MIN);
 
 // Command Line Sanity Checking
 	if (argc < 3)

@@ -35,7 +35,7 @@ NOTES
 	   whatsup
 
 	This will produce output on the console log.  You may use
-	tail(1) in another weindow.
+	tail(1) in another window.
 
 AUTHOR
 	O.Sezer <sezero@users.sourceforge.net>, loosely based on QTerm
@@ -49,13 +49,13 @@ BUGS
 
 COPYRIGHT
 	Copyright (C) 1998 Michael Dwyer
-	Copyright (C) 2006 O. Sezer
+	Copyright (C) 2006-2007 O. Sezer
 
 	HWTerm is free software;  you can redistribute it and/or modify
 	it under the terms of the GNU General Public License as published
 	by the Free  Software  Foundation; either version 2, or (at your
 	option) any later version.
 
-hwterm Version 1.2.2		07-March-2006			1
+hwterm Version 1.2.4		07-March-2006			1
 
 HWTERM(n)							HWTERM(n)

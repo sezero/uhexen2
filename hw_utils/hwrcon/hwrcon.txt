@@ -45,13 +45,13 @@ BUGS
 
 COPYRIGHT
 	Copyright (C) 1998 Michael Dwyer
-	Copyright (C) 2006 O. Sezer
+	Copyright (C) 2006-2007 O. Sezer
 
 	HWRcon is free software;  you can redistribute it and/or modify
 	it under the terms of the GNU General Public License as published
 	by the Free  Software  Foundation; either version 2, or (at your
 	option) any later version.
 
-hwrcon Version 1.2.2		07-March-2006			1
+hwrcon Version 1.2.4		01-October-2007			1
 
 HWRCON(n)							HWRCON(n)
