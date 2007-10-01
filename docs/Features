@@ -51,7 +51,12 @@ Features:
 
 * Ability to delete saved games from within the game.
 
-* Several hexen2 utilities are maintained and are being kept up to date.
+* Several hexen2 utilities (hcc: the hexenc compiler, and other mapping
+  tools) are maintained and are being kept up to date.
+
+* Several hexenworld utilities (hwmaster: hexenworld master server,
+  hwmquery: tool for querying hw master servers, hwrcon and hwterm: rcon
+  tools) are maintained and are being kept up to date.
 
 * Many bug fixes and other improvements.
 

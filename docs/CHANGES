@@ -3,6 +3,21 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2007-10-01 (CVS):
+    * documented the quakefs file loading procedures.
+    * host_cmd.c: fixed a typo.
+    * hexenworld: exported sv_highchars through server.h.
+    * hexenworld: a few fixes in info strings handling.
+    * removed unnecessary NULL checks on the values returned by Info_ValueForKey
+      because it may return an empty string but never NULL. removed the strlen
+      usage from empty string checks on the values returned by Info_ValueForKey
+      and just used *val or val[0] instead.
+    * minor clean-ups in hexenworld utilities.
+    * updated the version numbers of the hexenworld utilities.
+    * added the missing printf format attributes to print function pointers in
+      Host_Status_f and NET_Ban_f.
+    * updated documentation (2007-10-01.)
+
 2007-09-29 (CVS):
     * FS_OpenFile didn't set fs_filesize for files not residing in a pak. fixed.
     * implemented deleting of saved games from within the game: pressing the
