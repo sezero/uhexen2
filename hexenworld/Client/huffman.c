@@ -2,7 +2,7 @@
 	huffman.c
 	huffman encoding/decoding for use in hexenworld networking
 
-	$Id: huffman.c,v 1.21 2007-07-09 20:52:34 sezero Exp $
+	$Id: huffman.c,v 1.22 2007-10-02 09:36:27 sezero Exp $
 */
 
 #include <stdlib.h>
@@ -251,7 +251,7 @@ void HuffDecode (unsigned char *in, unsigned char *out, int inlen, int *outlen, 
 		} while (tmp->zero);
 
 		if ( ++(*outlen) > maxlen )
-			return;
+			return;	// out[maxlen - 1] is written already
 		*out++ = tmp->val;
 	}
 }
