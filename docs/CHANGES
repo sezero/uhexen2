@@ -3,6 +3,13 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2007-10-02 (CVS):
+    * huffman.c: added a note.
+    * small final tidy-up in hwmquery.
+    * hexenworld tools: added extra patches against qstat and xqf for proper
+      rcon and hwmaster functionality.
+    * updated docs (2007-10-02.)
+
 2007-10-01 (CVS):
     * documented the quakefs file loading procedures.
     * host_cmd.c: fixed a typo.
