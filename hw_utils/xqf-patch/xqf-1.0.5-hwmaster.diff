@@ -1,0 +1,42 @@
+this patch adds hexenworld master server support to xqf. it applies
+to both xqf-1.0.5 and to the current cvs snapshot.
+
+This requires a patched, hwmaster-enabled qstat version: a
+patch is already submitted to the qstat tracker (see the patch
+tracker entry 1806170 at qstat sf.net project page, or the local
+version here in the qstat-patch directory.)
+
+this patch is also submitted to the xqf project. see the xqf patch
+tracker entry #1806173 at:
+http://sourceforge.net/tracker/?func=detail&atid=313296&aid=1806173&group_id=13296
+
+diff -urNp xqf-1.0.5/src/games.c xqf-1.0.5x/src/games.c
+--- xqf-1.0.5/src/games.c	2006-06-18 16:15:18.000000000 +0300
++++ xqf-1.0.5x/src/games.c	2007-10-02 11:01:45.000000000 +0300
+@@ -334,9 +334,11 @@ struct game games[] = {
+     flags               : GAME_CONNECT | GAME_QUAKE1_PLAYER_COLORS | GAME_RCON,
+     name                : "HexenWorld",
+     default_port        : 26950,
++    default_master_port : 26900,
+     id                  : "HWS",
+     qstat_str           : "HWS",
+     qstat_option        : "-hws",
++    qstat_master_option : "-hwm",
+     icon                : "hw.xpm",
+     parse_player        : qw_parse_player,
+     parse_server        : quake_parse_server,
+diff -urNp xqf-1.0.5/src/games.xml xqf-1.0.5x/src/games.xml
+--- xqf-1.0.5/src/games.xml	2006-06-18 16:15:18.000000000 +0300
++++ xqf-1.0.5x/src/games.xml	2007-10-02 10:56:48.000000000 +0300
+@@ -278,9 +278,11 @@
+ 	<flags>GAME_CONNECT | GAME_QUAKE1_PLAYER_COLORS | GAME_RCON</flags>
+ 	<name>HexenWorld</name>
+ 	<default_port>26950</default_port>
++	<default_master_port>26900</default_master_port>
+ 	<id>HWS</id>
+ 	<qstat_str>HWS</qstat_str>
+ 	<qstat_option>-hws</qstat_option>
++	<qstat_master_option>-hwm</qstat_master_option>
+ 	<icon>hw.xpm</icon>
+ 	<parse_player>qw_parse_player</parse_player>
+ 	<analyze_serverinfo>qw_analyze_serverinfo</analyze_serverinfo>

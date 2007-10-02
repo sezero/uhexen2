@@ -1,0 +1,109 @@
+this patch adds support for querying hexenworld master servers to
+qstat version 2.11.
+
+this patch is also submitted to the qstat project. see the qstat patch
+tracker entry #1806170 at:
+http://sourceforge.net/tracker/?func=detail&atid=481160&aid=1806170&group_id=56603
+
+diff -urNp qstat-2.11/qstat.c qstat-2.11x/qstat.c
+--- qstat-2.11/qstat.c	2006-10-28 15:37:18.000000000 +0300
++++ qstat-2.11x/qstat.c	2007-10-02 10:40:37.000000000 +0300
+@@ -6245,6 +6245,11 @@ deal_with_qwmaster_packet( struct qserve
+ 	{
+ 		rawpkt+= 4;	/* QW 1.5 */
+ 		pktlen-= 4;
++		if (rawpkt[0] == '\377' && rawpkt[1] == QW_SERVERS)
++		{
++			rawpkt++;	/* hwmaster */
++			pktlen--;
++		}
+ 	}
+ 
+ 	if ( rawpkt[0] == QW_SERVERS && rawpkt[1] == QW_NEWLINE)
+diff -urNp qstat-2.11/qstatdoc.html qstat-2.11x/qstatdoc.html
+--- qstat-2.11/qstatdoc.html	2005-11-17 07:06:04.000000000 +0200
++++ qstat-2.11x/qstatdoc.html	2007-10-02 10:41:03.000000000 +0300
+@@ -120,6 +120,7 @@ for the supported game types.  The type 
+ <tr><td>-tbs<td>tbs<td>28001<td>Starsiege: Tribes
+ <tr><td>-t2s<td>t2s<td>28000<td>Tribes 2
+ <tr><td>-qwm<td>qwm<td>27000<td>QuakeWorld master
++<tr><td>-hwm<td>hwm<td>27000<td>HexenWorld master
+ <tr><td>-q2m<td>q2m<td>27900<td>Quake II master
+ <tr><td>-hlm<td>hlm<td>27010<td>Half-Life master
+ <tr><td>-stm<td>stm<td>27010<td>Half-Life master (Steam)
+diff -urNp qstat-2.11/qstat.h qstat-2.11x/qstat.h
+--- qstat-2.11/qstat.h	2006-08-04 23:42:09.000000000 +0300
++++ qstat-2.11x/qstat.h	2007-10-02 10:40:37.000000000 +0300
+@@ -87,6 +87,7 @@ typedef struct _server_type server_type;
+ #define QW_DEFAULT_PORT			27500
+ #define QW_MASTER_DEFAULT_PORT		27000
+ #define HW_DEFAULT_PORT			26950
++#define HW_MASTER_DEFAULT_PORT		26900
+ #define UNREAL_DEFAULT_PORT		7777
+ #define UNREAL_MASTER_DEFAULT_PORT	28900
+ #define HALFLIFE_DEFAULT_PORT		27015
+@@ -183,8 +184,10 @@ typedef struct _server_type server_type;
+ #define GAMESPY4_PROTOCOL_SERVER 55
+ #define PREY_SERVER 56
+ #define TM_PROTOCOL_SERVER 57
++/* hexenworld master server: */
++#define HW_MASTER (58 | MASTER_SERVER)
+ 
+-#define LAST_BUILTIN_SERVER  57
++#define LAST_BUILTIN_SERVER  58
+ 
+ #define TF_SINGLE_QUERY		(1<<1)
+ #define TF_OUTFILE		(1<<2)
+@@ -512,6 +515,10 @@ char hl_details[12] =
+ #define QW_GET_SERVERS    'c'
+ char qw_masterquery[] = { QW_GET_SERVERS, '\n', '\0' };
+ 
++/* HEXENWORLD MASTER */
++#define HW_GET_SERVERS    'c'
++char hw_masterquery[] = { '\377', HW_GET_SERVERS, '\0' };
++
+ /* QUAKE 2 MASTER */
+ char q2_masterquery[] = { 'q', 'u', 'e', 'r', 'y', '\n', '\0' };
+ 
+@@ -1910,6 +1917,40 @@ server_type builtin_types[] = {
+     deal_with_qwmaster_packet,	/* packet_func */
+ },
+ {
++    /* HEXEN2WORLD MASTER */
++    HW_MASTER,			/* id */
++    "HWM",			/* type_prefix */
++    "hwm",			/* type_string */
++    "-hwm",			/* type_option */ /* ## also "-qw" */
++    "HexenWorld Master",	/* game_name */
++    HW_SERVER,			/* master */
++    HW_MASTER_DEFAULT_PORT,	/* default_port */
++    0,				/* port_offset */
++    TF_SINGLE_QUERY|TF_OUTFILE,	/* flags */
++    "",				/* game_rule */
++    "HWMASTER",			/* template_var */
++    NULL,			/* status_packet */
++    0,				/* status_len */
++    NULL,			/* player_packet */
++    0,				/* player_len */
++    NULL,			/* rule_packet */
++    0,				/* rule_len */
++    (char*) &hw_masterquery,	/* master_packet */
++    sizeof( hw_masterquery),	/* master_len */
++    NULL,			/* master_protocol */
++    NULL,			/* master_query */
++    display_qwmaster,		/* display_player_func */
++    NULL,	/* display_rule_func */
++    NULL,	/* display_raw_player_func */
++    NULL,	/* display_raw_rule_func */
++    NULL,	/* display_xml_player_func */
++    NULL,	/* display_xml_rule_func */
++    send_qwmaster_request_packet,/* status_query_func */
++    NULL,			/* rule_query_func */
++    NULL,			/* player_query_func */
++    deal_with_qwmaster_packet,	/* packet_func */
++},
++{
+     /* QUAKE 2 MASTER */
+     Q2_MASTER,			/* id */
+     "Q2M",			/* type_prefix */
+
