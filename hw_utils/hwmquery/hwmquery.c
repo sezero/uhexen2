@@ -1,6 +1,6 @@
 /*
 	hwmquery.c
-	$Id: hwmquery.c,v 1.18 2007-10-01 12:37:58 sezero Exp $
+	$Id: hwmquery.c,v 1.19 2007-10-02 13:39:19 sezero Exp $
 
 	HWMQUERY 0.2 HexenWorld Master Server Query
 	Copyright (C) 2006-2007 O. Sezer <sezero@users.sourceforge.net>
@@ -192,12 +192,14 @@ static void Sys_Quit (int error_state)
 #define	S2C_CHALLENGE		'c'
 #define	M2C_MASTER_REPLY	'd'
 
-int main (int argc, char *argv[])
+static const unsigned char query_msg[] =
+		{ 255, S2C_CHALLENGE, '\0' };
+
+int main (int argc, char **argv)
 {
 	ssize_t		size;
 	size_t		pos;
 	socklen_t	fromlen;
-	unsigned char	packet[3];
 	unsigned char	response[MAX_PACKET];
 	netadr_t		ipaddress;
 	struct sockaddr_in	hostaddress;
@@ -238,17 +240,13 @@ int main (int argc, char *argv[])
 		Sys_Error ("ioctl FIONBIO: %s", strerror(errno));
 	}
 
-	packet[0] = 255;
-	packet[1] = S2C_CHALLENGE;
-	packet[2] = '\0';
-
-	// Send the packet
+	// Send the query packet
 	printf ("Querying master server at %s\n", NET_AdrToString(ipaddress));
-	size = sendto(socketfd, (char *)packet, 2, 0,
+	size = sendto(socketfd, (const char *)query_msg, sizeof(query_msg), 0,
 			(struct sockaddr *)&hostaddress, sizeof(hostaddress));
 
 	// See if it worked
-	if (size != 2)
+	if (size != sizeof(query_msg))
 	{
 		perror ("Sendto failed");
 		Sys_Quit (1);
