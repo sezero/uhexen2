@@ -3,6 +3,9 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2007-10-03 (1.4.2-final):
+    * marked the cvs snapshot from Oct.03 2007 as 1.4.2-final.
+
 2007-10-02 (CVS):
     * huffman.c: added a note.
     * small final tidy-up in hwmquery.
