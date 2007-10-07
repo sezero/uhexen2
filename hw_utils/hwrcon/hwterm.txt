@@ -57,6 +57,6 @@ COPYRIGHT
 	by the Free  Software  Foundation; either version 2, or (at your
 	option) any later version.
 
-hwterm Version 1.2.4		07-March-2006			1
+hwterm Version 1.2.4		01-October-2007			1
 
 HWTERM(n)							HWTERM(n)
