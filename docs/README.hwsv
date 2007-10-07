@@ -34,7 +34,7 @@ file named strings.txt in your hw directory:
 - Between these two new lines, add the list of the maps you want to cycle,
   one map name on each line. Map names must stay between map_sequence_start
   and map_sequence_end.  Do not edit any other part of the file!
-- No empty lines, or lines with spaces only, are allowed. Extra spaces are
+- Empty lines or lines with spaces only are not allowed. Extra spaces are
   not allowed.
 - Any number of maps can be put in it.
 - Only the first occurence of a map name is used to determine next map,
@@ -74,24 +74,24 @@ damagescale 1.0	This is the default setting. This will scale all damage by
 Spawning:
 ---------
 
-tomerespawn 1	Players will respawn with a tome of power active.
+tomerespawn 1	Players will respawn with a tome of power active. 0 or 1.
 
 w2respawn 1	Players will respawn with their second weapon already in
-		their inventory and selected.
+		their inventory and selected. 0 or 1.
 
 altrespawn 1	When a player dies, he will drop his selected weapon, drop
 		1/2 of his remaining weapons, lose half of his mana, and
 		drop half of his inventory. He will keep the rest when he
-		respawns.
+		respawns. 0 or 1.
 
 shyRespawn 1	Artifacts taken from a place will be shy to respawn unless
 		there is no one around them. Items affected: Mystic Urn,
 		Krater of Might, Tome of Power, Invisibility Sphere, Seal
 		of the Ovinomancer, Ring of Flight, Icon of the Defender,
-		and the Purifier Pieces. Default: 0.
+		and the Purifier Pieces. 0 or 1. Default: 0.
 
 patternrunner 1	Some respawn times will be scaled with the rumber of players.
-		Default 0.
+		0 or 1. Default 0.
 
 
 Item Usage:
@@ -99,21 +99,12 @@ Item Usage:
 
 autoitems 1	Artifacts taken will be automatically used. Affected items:
 		Invisibility Sphere, Boots of Speed, Force Cube, Mystic Urn,
-		Krater of Might, Icon of the Defender.  Default is 0.  Not
-		functional in dmmode 1.
+		Krater of Might, Icon of the Defender. 0 or 1. Default is 0.
+		Not functional in dmmode 1.
 
 easyfourth 1	If a player gets a purifier piece, the complementary piece
 		will be automatically added and he will "easily" have the
-		fourth weapon. Default is 0.
-
-autoitems 1	Artifacts taken will be automatically used. Affected items
-		are: Invisibility Sphere, Boots of Speed, Force Cube, Mystic
-		Urn, Krater of Might, Icon of the Defender. Not functional
-		in dmmode 1. Default is 0.
-
-easyfourth 1	If a player gets a purifier piece, the complementary piece
-		will be automatically added and he will "easily" have the
-		fourth weapon. Default is 0.
+		fourth weapon. 0 or 1.  Default is 0.
 
 
 Player Levels:
@@ -160,7 +151,7 @@ teamplay 3	Cannot hurt your teammates, but you can hurt yourself.
 Mesage broadcasting:
 --------------------
 
-spartanPrint 1	Only sends chat and relevant death messages to clients.
+spartanPrint 1	Only sends chat and relevant death messages to clients. 0 or 1.
 		Default is 1.
 
 

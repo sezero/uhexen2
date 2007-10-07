@@ -9,17 +9,18 @@ SYNOPSIS
 DESCRIPTION
 	This is a remote terminal that acts similar to the console
 	of a hexenworld server, using the RCON interface. It acts as
-	a light weight quake client that will send rcon commands on
-	your behalf.  This allows you to administer the server without
-	being at the console, and without starting a full hexenworld
-	client.  As a neat side effect, CTRL-D will resend the last
-	command. Use CTRL-C to quit.
+	a light-weight hexenworld client that will send rcon commands
+	on your behalf.  This allows you to administer the server
+	without being at the console, and without starting a full
+	hexenworld client.  As a neat side effect, CTRL-D will resend
+	the last command.  Use CTRL-C to quit. It is aimed mainly for
+	linux (unix) users, but works just as fine on windows, too.
 
 OPTIONS
 	None.
 
 SEE ALSO
-	HWRCon - Command line version of this
+	hwrcon - Command line version of hwterm
 	tail(1) - output the last part of files
 
 NOTES

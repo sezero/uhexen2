@@ -4,7 +4,7 @@ NAME
 	hwrcon -- HexenWorld Remote CONsole
 
 SYNOPSIS
-	hwrcon ipaddress[:address] password commands ...
+	hwrcon ipaddress[:port] password commands ...
 
 DESCRIPTION
 	This is a remote interface to the HexenWorld rcon command.
@@ -12,14 +12,15 @@ DESCRIPTION
 	rcon commands on your behalf.  It will send only one command
 	at a time.  This allows you to administer the server without
 	being at the console, and without starting a full hexenworld
-	client.  It can also be embedded in shell scripts and cron
-	jobs.
+	client.  It can also be embedded in shell scripts and linux
+	cron jobs.  It is aimed mainly for linux (unix) users, but
+	works just as fine on windows, too.
 
 OPTIONS
 	None.
 
 SEE ALSO
-	hwterm - Interactive version of this
+	hwterm - Interactive version of hwrcon
 	tail(1) - output the last part of files
 
 NOTES
