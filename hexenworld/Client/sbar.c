@@ -2,7 +2,7 @@
 	sbar.c
 	Hexen II status bar
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/sbar.c,v 1.42 2007-09-29 18:10:25 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/sbar.c,v 1.43 2007-10-08 20:16:27 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -1689,7 +1689,7 @@ static void DrawArtifactInventory(void)
 		DrawBarArtifactIcon(x, y, cl.inv_order[(cl.inv_startpos + i) % cl.inv_count]);
 	}
 
-/*	Inv_DrawArrows (x, y);
+/*	//Inv_DrawArrows (x, y);
 	// Left arrow showing there are icons to the left
 	if (cl.inv_startpos)
 		Draw_Fill ( x , y - 5, 3, 1, 30);
