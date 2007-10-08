@@ -2,7 +2,7 @@
 	q_types.h
 	common type definitions
 
-	$Id: q_types.h,v 1.4 2007-07-21 08:11:23 sezero Exp $
+	$Id: q_types.h,v 1.5 2007-10-08 20:20:11 sezero Exp $
 */
 
 #ifndef __QTYPES_H
@@ -17,6 +17,7 @@
    sizeof (char)	== 1
    sizeof (short)	== 2
    sizeof (int)		== 4
+   sizeof (float)	== 4
    sizeof (long)	== 4/8
    sizeof (*ptr)	== 4/8
    For this, we need the stdint.h or inttypes.h header.
@@ -30,7 +31,11 @@
 /*==========================================================================*/
 
 #ifndef NULL
+#if defined(__cplusplus)
+#define	NULL		0
+#else
 #define	NULL		((void *)0)
+#endif
 #endif
 
 #define	Q_MAXCHAR	((char)0x7f)
