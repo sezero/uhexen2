@@ -1,12 +1,12 @@
 #!/bin/sh
 
-UHEXEN2_TOP=../..
+UHEXEN2_TOP=../../..
 . $UHEXEN2_TOP/scripts/cross_defs
 
 if [ "$1" = "strip" ]
 then
 	echo "Stripping lmp2pcx.exe"
-	$STRIPPER ../bin/lmp2pcx.exe
+	$STRIPPER ../../bin/lmp2pcx.exe
 	exit 0
 fi
 
