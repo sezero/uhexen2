@@ -2,7 +2,7 @@
 	wad.c
 	wad file loading
 
-	$Id: wad.c,v 1.13 2007-05-13 11:59:02 sezero Exp $
+	$Id: wad.c,v 1.14 2007-10-08 20:18:09 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -60,8 +60,8 @@ void W_LoadWadFile (const char *filename)
 	if (wad_base)
 		Z_Free (wad_base);
 	wad_base = FS_LoadZoneFile (filename, Z_SECZONE);
-//	if (!wad_base)
-//		Sys_Error ("%s: couldn't load %s", __thisfunc__, filename);
+	if (!wad_base)
+		Sys_Error ("%s: couldn't load %s", __thisfunc__, filename);
 
 	header = (wadinfo_t *)wad_base;
 
