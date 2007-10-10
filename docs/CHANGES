@@ -3,6 +3,31 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2007-10-10 (CVS):
+    * pass NULL as the timezone argument to gettimeofday.
+    * added a default MAXHOSTNAMELEN definition to net_sys.h in case we don't
+      have it through the system headers.
+    * always use MAXHOSTNAMELEN as the size of the buffer we give to gethostname().
+    * renamed our min and max macros to q_min and q_max and undefined any
+      possible default ones to avoid confusion.
+    * some proper ifdef usage in xdelta. changed S_IFREG usage with S_ISREG.
+    * arch defs: separated MorphOS (and Amiga) from platform_unix. Kiero (the
+      MorphOS guy) isn't responding to e-mails, so, it may take some time to
+      put those things in order.
+    * arch defs, #2: added a FIXME note about MorphOS: Since MorphOS (and Amiga)
+      aren't classified as PLATFORM_UNIX, several things may well be broken in
+      all of the uhexen2 tree. particularly, search for the __MORPHOS__ ifdefs..
+
+2007-10-08 (CVS):
+    * minor documentation updates and corrections after the 1.4.2 release.
+    * minor things.
+    * re-enabled the success check during wad_base loading: although we
+      are doing intensive pak file validity checks during FS_Init, this
+      gives more ease of mind.
+    * a few more comments in q_types.h and C++ NULL definition if we don't have
+      one.
+    * fixed the paths in texutils cross compilation scripts.
+
 2007-10-03 (1.4.2-final):
     * marked the cvs snapshot from Oct.03 2007 as 1.4.2-final.
 
