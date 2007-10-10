@@ -2,7 +2,7 @@
 	arch_def.h
 	platform specific definitions
 
-	$Id: arch_def.h,v 1.8 2007-07-11 21:00:17 sezero Exp $
+	$Id: arch_def.h,v 1.9 2007-10-10 19:19:23 sezero Exp $
 */
 
 #ifndef __HX2_ARCHDEFS__
@@ -20,6 +20,9 @@
 #	define __SOLARIS__		1
 #elif defined(__QNXNTO__) && !defined(__QNX__)
 #	define __QNX__			1
+#elif !defined(__AMIGA__) && (defined(__amigaos__) || defined(__AMIGA) || \
+	defined(__amigaos4__) || defined(__amigados__))
+#	define __AMIGA__		1
 #endif	/* end of custom definitions	*/
 
 
@@ -42,15 +45,20 @@
 #	define	PLATFORM_MAC		1
 #   endif
 
+#elif defined(__MORPHOS__) || defined(__AMIGA__)
+
+#   if !defined(PLATFORM_AMIGA)
+#	define	PLATFORM_AMIGA		1
+#   endif
+
 #else	/* here goes the unix platforms */
 
 #if defined(__unix) || defined(__unix__) || defined(unix)	|| \
     defined(__linux__) || defined(__linux)			|| \
     defined(__FreeBSD__) || defined(__DragonFly__)		|| \
     defined(__OpenBSD__) || defined(__NetBSD__)			|| \
-    defined(__MORPHOS__) || defined(__QNX__)			|| \
     defined(__hpux) || defined(__hpux__)			|| \
-    defined(__SOLARIS__) || defined(__MACOSX__)
+    defined(__SOLARIS__) || defined(__MACOSX__) || defined(__QNX__)
 #   if !defined(PLATFORM_UNIX)
 #	define	PLATFORM_UNIX		1
 #   endif
@@ -75,6 +83,8 @@
 #	define	PLATFORM_STRING	"OpenBSD"
 #elif defined(__MORPHOS__)
 #	define	PLATFORM_STRING	"MorphOS"
+#elif defined(__AMIGA__)
+#	define	PLATFORM_STRING	"AmigaOS"
 #elif defined(__QNX__)
 #	define	PLATFORM_STRING	"QNX"
 #elif defined(__MACOSX__)
