@@ -2,7 +2,7 @@
 	arch_def.h
 	platform specific definitions
 
-	$Id: arch_def.h,v 1.3 2007-10-10 19:19:26 sezero Exp $
+	$Id: arch_def.h,v 1.4 2007-10-10 20:03:38 sezero Exp $
 */
 
 #ifndef __HX2_ARCHDEFS__
@@ -46,7 +46,9 @@
 #   endif
 
 #elif defined(__MORPHOS__) || defined(__AMIGA__)
-
+/* FIXME: Since these aren't classified as PLATFORM_UNIX,
+   several things may well be broken in all of the uhexen2
+   tree. Particularly, search for __MORPHOS__ ifdefs... */
 #   if !defined(PLATFORM_AMIGA)
 #	define	PLATFORM_AMIGA		1
 #   endif
