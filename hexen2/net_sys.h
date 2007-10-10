@@ -2,7 +2,7 @@
 	net_sys.h
 	common network system header
 
-	$Id: net_sys.h,v 1.7 2007-07-11 21:00:11 sezero Exp $
+	$Id: net_sys.h,v 1.8 2007-10-10 14:30:37 sezero Exp $
 */
 
 #ifndef __NET_SYS_H__
@@ -15,9 +15,9 @@
 /* unix includes and compatibility macros */
 #if defined(PLATFORM_UNIX)
 
-#include <unistd.h>
-#include <sys/ioctl.h>
 #include <sys/param.h>
+#include <sys/ioctl.h>
+#include <unistd.h>
 
 #if defined(__SOLARIS__)
 #include <sys/filio.h>
@@ -77,6 +77,14 @@ typedef int	socklen_t;
 #define	ECONNREFUSED	WSAECONNREFUSED
 
 #endif	/* end of windows stuff */
+
+
+#if !defined(MAXHOSTNAMELEN)
+/* SUSv2 guarantees that `Host names are limited to 255 bytes'.
+   POSIX 1003.1-2001 guarantees that `Host names (not including
+   the terminating NUL) are limited to HOST_NAME_MAX bytes'. */
+#define	MAXHOSTNAMELEN		256
+#endif	/* MAXHOSTNAMELEN */
 
 
 #endif	/* __NET_SYS_H__ */
