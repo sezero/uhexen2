@@ -2,7 +2,7 @@
 	sys_unix.c
 	Unix system interface code
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sys_unix.c,v 1.93 2007-09-22 15:27:15 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sys_unix.c,v 1.94 2007-10-10 14:28:22 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -239,10 +239,9 @@ Sys_DoubleTime
 double Sys_DoubleTime (void)
 {
 	struct timeval	tp;
-	struct timezone	tzp;
 	double		now;
 
-	gettimeofday (&tp, &tzp);
+	gettimeofday (&tp, NULL);
 
 	now = tp.tv_sec + tp.tv_usec / 1e6;
 

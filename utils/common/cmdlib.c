@@ -2,7 +2,7 @@
 	cmdlib.c
 	functions common to all of the utilities
 
-	$Id: cmdlib.c,v 1.13 2007-09-23 18:45:09 sezero Exp $
+	$Id: cmdlib.c,v 1.14 2007-10-10 14:28:23 sezero Exp $
 */
 
 
@@ -144,11 +144,10 @@ double GetTime (void)
 	return t;
 #if 0
 // more precise, less portable
-	struct timeval tp;
-	struct timezone tzp;
+	struct timeval	tp;
 	static int		secbase;
 
-	gettimeofday(&tp, &tzp);
+	gettimeofday (&tp, NULL);
 
 	if (!secbase)
 	{

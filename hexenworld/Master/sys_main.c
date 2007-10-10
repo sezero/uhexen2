@@ -2,7 +2,7 @@
 	sys_main.c
 	main loop and system interface
 
-	$Id: sys_main.c,v 1.37 2007-09-22 15:27:32 sezero Exp $
+	$Id: sys_main.c,v 1.38 2007-10-10 14:28:23 sezero Exp $
 */
 
 // whether to use the password file to determine
@@ -200,10 +200,9 @@ double Sys_DoubleTime (void)
 	return (passed == 0) ? 0.0 : (passed / 1000.0);
 #else
 	struct timeval	tp;
-	struct timezone	tzp;
 	double		now;
 
-	gettimeofday (&tp, &tzp);
+	gettimeofday (&tp, NULL);
 
 	now = tp.tv_sec + tp.tv_usec / 1e6;
 

@@ -1,6 +1,6 @@
 /*
 	sys_unix.c
-	$Id: sys_unix.c,v 1.43 2007-09-22 15:27:34 sezero Exp $
+	$Id: sys_unix.c,v 1.44 2007-10-10 14:28:23 sezero Exp $
 
 	Unix system interface code
 */
@@ -193,10 +193,9 @@ Sys_DoubleTime
 double Sys_DoubleTime (void)
 {
 	struct timeval	tp;
-	struct timezone	tzp;
 	double		now;
 
-	gettimeofday (&tp, &tzp);
+	gettimeofday (&tp, NULL);
 
 	now = tp.tv_sec + tp.tv_usec / 1e6;
 
