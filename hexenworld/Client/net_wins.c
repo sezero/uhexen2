@@ -2,7 +2,7 @@
 	net_udp.c
 	network UDP driver
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/net_wins.c,v 1.38 2007-08-26 09:42:50 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/net_wins.c,v 1.39 2007-10-10 14:32:15 sezero Exp $
 */
 
 #include "net_sys.h"
@@ -251,13 +251,13 @@ static int UDP_OpenSocket (int port)
 
 static void NET_GetLocalAddress (void)
 {
-	char	buff[512];
+	char	buff[MAXHOSTNAMELEN];
 	struct sockaddr_in	address;
 	socklen_t		namelen;
 
-	if (gethostname(buff, 512) == -1)
+	if (gethostname(buff, MAXHOSTNAMELEN) == -1)
 		Sys_Error ("%s: gethostname: %s", __thisfunc__, strerror(errno));
-	buff[512-1] = 0;
+	buff[MAXHOSTNAMELEN-1] = 0;
 
 	NET_StringToAdr (buff, &net_local_adr);
 
