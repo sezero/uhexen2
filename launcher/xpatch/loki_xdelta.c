@@ -20,7 +20,7 @@
  *
  * Author: Josh MacDonald <jmacd@CS.Berkeley.EDU>
  *
- * $Id: loki_xdelta.c,v 1.4 2007-07-11 16:47:17 sezero Exp $
+ * $Id: loki_xdelta.c,v 1.5 2007-10-10 18:22:11 sezero Exp $
  */
 
 #include <stdio.h>
@@ -50,13 +50,21 @@
 #include <dpmi.h>
 #endif
 
+#if !defined(STDOUT_FILENO)
 #define STDOUT_FILENO 1
-#define lstat stat
+#endif
 
-#ifndef __DJGPP__
+#if !defined(S_IFMT)
 #define S_IFMT _S_IFMT
+#endif
+#if !defined(S_IFREG)
 #define S_IFREG _S_IFREG
-#endif /* !__DJGPP__ */
+#endif
+#if !defined(S_ISREG)
+#define S_ISREG(m) (((m) & S_IFMT) == S_IFREG)
+#endif
+
+#define lstat stat
 
 #endif /* !WINHACK_ */
 
@@ -641,8 +649,7 @@ open_common (const char* name, const char* real_name)
       return NULL;
     }
 
-  /* S_ISREG() is not on Windows */
-  if ((buf.st_mode & S_IFMT) != S_IFREG)
+  if (! S_ISREG(buf.st_mode & S_IFMT))
     {
       xd_error ("%s is not a regular file\n", name);
       return NULL;
