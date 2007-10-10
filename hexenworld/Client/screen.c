@@ -2,7 +2,7 @@
 	screen.c
 	master for refresh, status bar, console, chat, notify, etc
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/screen.c,v 1.38 2007-08-20 08:16:06 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/screen.c,v 1.39 2007-10-10 14:38:27 sezero Exp $
 */
 
 
@@ -194,7 +194,7 @@ static void SCR_EraseCenterString (void)
 		y = 48;
 
 	scr_copytop = 1;
-	Draw_TileClear (0, y, vid.width, min(8*scr_erase_lines, vid.height - y - 1));
+	Draw_TileClear (0, y, vid.width, q_min(8*scr_erase_lines, vid.height - y - 1));
 }
 */
 

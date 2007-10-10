@@ -2,7 +2,7 @@
 	zone.c
 	Memory management
 
-	$Id: zone.c,v 1.37 2007-09-29 13:32:32 sezero Exp $
+	$Id: zone.c,v 1.38 2007-10-10 14:38:27 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -258,7 +258,7 @@ void *Z_Realloc (void *ptr, int size, int zone_id)
 		Sys_Error ("%s: failed on allocation of %i bytes", __thisfunc__, size);
 
 	if (ptr != old_ptr)
-		memmove (ptr, old_ptr, min (old_size, size));
+		memmove (ptr, old_ptr, q_min(old_size, size));
 
 	return ptr;
 }

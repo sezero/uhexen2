@@ -5,7 +5,7 @@
 	models are the only shared resource between a client and server
 	running on the same machine.
 
-	$Id: gl_model.c,v 1.52 2007-09-22 15:27:11 sezero Exp $
+	$Id: gl_model.c,v 1.53 2007-10-10 14:38:26 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -697,9 +697,9 @@ static void Mod_LoadLighting (lump_t *l)
 							for (i = 0, j = 0, k = 0; i < l->filelen * 3; i += 3, j += 3)
 							{
 								// set some minimal light level
-								r = max(data[8+i], min_light);
-								g = max(data[8+i+1], min_light);
-								b = max(data[8+i+2], min_light);
+								r = q_max(data[8+i], min_light);
+								g = q_max(data[8+i+1], min_light);
+								b = q_max(data[8+i+2], min_light);
 
 								// compute brightness of colored ligths present in .lit file
 								lc = (r + g + b) / 3.0f;
@@ -711,15 +711,14 @@ static void Mod_LoadLighting (lump_t *l)
 									lc = min_light;
 
 								// compute light amplification level
-								//l2lc = max((float) li/lc, 1);
 								l2lc = (float) li/lc;
 								if ( l2lc < 1.5f )
 									l2lc = 1;
 
 								// update colors
-								data[8+j]   = (byte) min(max( ceil(r*l2lc), min_light ),255);
-								data[8+j+1] = (byte) min(max( ceil(g*l2lc), min_light ),255);
-								data[8+j+2] = (byte) min(max( ceil(b*l2lc), min_light ),255);
+								data[8+j]   = (byte) q_min(q_max( ceil(r*l2lc), min_light ),255);
+								data[8+j+1] = (byte) q_min(q_max( ceil(g*l2lc), min_light ),255);
+								data[8+j+2] = (byte) q_min(q_max( ceil(b*l2lc), min_light ),255);
 								k++;
 							}
 							Hunk_FreeToLowMark(mark);

@@ -2,7 +2,7 @@
 	mathlib.h
 	math primitives
 
-	$Header: /home/ozzie/Download/0000/uhexen2/utils/common/mathlib.h,v 1.3 2007-03-14 21:04:31 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/utils/common/mathlib.h,v 1.4 2007-10-10 14:38:27 sezero Exp $
 */
 
 #ifndef __MATHLIB_H
@@ -22,13 +22,10 @@
 
 #define	EQUAL_EPSILON	0.001
 
-#if !defined(min) || !defined(max)
 #undef	min
 #undef	max
-#define	min(a, b)		(((a) < (b)) ? (a) : (b))
-#define	max(a, b)		(((a) > (b)) ? (a) : (b))
-#endif
-#define	bound(min, num, max)	((num) >= (min) ? ((num) < (max) ? (num) : (max)) : (min))
+#define	q_min(a, b)		(((a) < (b)) ? (a) : (b))
+#define	q_max(a, b)		(((a) > (b)) ? (a) : (b))
 
 extern vec3_t vec3_origin;
 

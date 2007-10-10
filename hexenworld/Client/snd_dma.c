@@ -2,7 +2,7 @@
 	snd_dma.c
 	main control for any streaming sound output device
 
-	$Id: snd_dma.c,v 1.66 2007-09-24 17:34:23 sezero Exp $
+	$Id: snd_dma.c,v 1.67 2007-10-10 14:38:27 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -890,7 +890,7 @@ static void S_Update_ (void)
 // mix ahead of current position
 	endtime = soundtime + (unsigned int)(_snd_mixahead.value * shm->speed);
 	samps = shm->samples >> (shm->channels - 1);
-	endtime = min(endtime, (unsigned int)(soundtime + samps));
+	endtime = q_min(endtime, (unsigned int)(soundtime + samps));
 
 #ifdef PLATFORM_WINDOWS
 // if the buffer was lost or stopped, restore it and/or restart it

@@ -2,7 +2,7 @@
 	cl_main.c
 	client main loop
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/cl_main.c,v 1.89 2007-10-01 11:00:32 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/cl_main.c,v 1.90 2007-10-10 14:38:27 sezero Exp $
 */
 
 #include <sys/types.h>
@@ -1280,7 +1280,7 @@ void Host_Frame (float time)
 	if (oldrealtime > realtime)
 		oldrealtime = 0;
 
-	fps = max(30.0, min(rate.value/80.0, 72.0));
+	fps = q_max(30.0, q_min(rate.value/80.0, 72.0));
 
 	if (!cls.timedemo && realtime - oldrealtime < 1.0/fps)
 		return;	// framerate is too high

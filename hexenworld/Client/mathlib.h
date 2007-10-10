@@ -2,7 +2,7 @@
 	mathlib.h
 	math primitives
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/mathlib.h,v 1.17 2007-07-08 11:55:37 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/mathlib.h,v 1.18 2007-10-10 14:38:27 sezero Exp $
 */
 
 #ifndef __MATHLIB_H
@@ -12,13 +12,10 @@
 #define M_PI		3.14159265358979323846	// matches value in gcc v2 math.h
 #endif
 
-#if !defined(min) || !defined(max)
 #undef	min
 #undef	max
-#define	min(a, b)		(((a) < (b)) ? (a) : (b))
-#define	max(a, b)		(((a) > (b)) ? (a) : (b))
-#endif
-#define	bound(min, num, max)	((num) >= (min) ? ((num) < (max) ? (num) : (max)) : (min))
+#define	q_min(a, b)		(((a) < (b)) ? (a) : (b))
+#define	q_max(a, b)		(((a) > (b)) ? (a) : (b))
 
 #define	nanmask			(255<<23)
 #define	IS_NAN(x)		(((*(int *) (char *) &x) & nanmask) == nanmask)

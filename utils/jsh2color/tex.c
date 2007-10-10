@@ -21,7 +21,7 @@
 	only works with standard quake textures.
 	expand as you see fit - you'll get the idea :-)
 
-	$Id: tex.c,v 1.11 2007-05-12 09:58:57 sezero Exp $
+	$Id: tex.c,v 1.12 2007-10-10 14:38:27 sezero Exp $
 */
 
 // V0.4 modifications
@@ -90,8 +90,8 @@ static void ParseDefFile (const char *filename)
 		return;
 	}
 
-	num = max( 0, getNumLines(FH) );
-	num = min( num , MAX_ENTRYNUM );
+	num = q_max( 0, getNumLines(FH) );
+	num = q_min( num , MAX_ENTRYNUM );
 	tc_list.num = num;
 	tc_list.entries = (tex_col*) malloc(sizeof(tex_col) * num);
 
@@ -107,9 +107,9 @@ static void ParseDefFile (const char *filename)
 			if (strlen(name) > 0 )
 			{
 				strcpy(tc_list.entries[i].name, name);
-				tc_list.entries[i].red	= min( max(r,1), 255 );
-				tc_list.entries[i].green= min( max(g,1), 255 );
-				tc_list.entries[i].blue	= min( max(b,1), 255 );
+				tc_list.entries[i].red	= q_min( q_max(r,1), 255 );
+				tc_list.entries[i].green= q_min( q_max(g,1), 255 );
+				tc_list.entries[i].blue	= q_min( q_max(b,1), 255 );
 
 				i++;
 			}

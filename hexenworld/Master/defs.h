@@ -2,7 +2,7 @@
 	mst_defs.h
 	common definitions for hexenworld master server
 
-	$Id: defs.h,v 1.30 2007-07-11 16:47:16 sezero Exp $
+	$Id: defs.h,v 1.31 2007-10-10 14:38:27 sezero Exp $
 */
 
 #ifndef __HWMASTER_DEFS
@@ -51,6 +51,15 @@
 #include "net.h"
 #include "sys.h"
 #include "server.h"
+
+
+//=============================================================================
+// Macros
+
+#undef	min
+#undef	max
+#define	q_min(a, b)		(((a) < (b)) ? (a) : (b))
+#define	q_max(a, b)		(((a) > (b)) ? (a) : (b))
 
 
 //=============================================================================

@@ -2,7 +2,7 @@
 	sys_main.c
 	main loop and system interface
 
-	$Id: sys_main.c,v 1.38 2007-10-10 14:28:23 sezero Exp $
+	$Id: sys_main.c,v 1.39 2007-10-10 14:38:27 sezero Exp $
 */
 
 // whether to use the password file to determine
@@ -30,10 +30,6 @@
 #include <conio.h>
 #include <winsock.h>
 #include <mmsystem.h>
-#endif
-
-#ifndef max
-#define max(a,b) ((a) > (b) ? (a) : (b))
 #endif
 
 #if defined(PLATFORM_WINDOWS)
@@ -113,7 +109,7 @@ int Sys_CheckInput (int ns)
 	if (!sys_dead_sleep)
 		timeout = &_timeout;
 
-	res = select (max (ns, 0) + 1, &fdset, NULL, NULL, timeout);
+	res = select (q_max(ns, 0) + 1, &fdset, NULL, NULL, timeout);
 	if (res == 0 || res == -1)
 		return 0;
 
