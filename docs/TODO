@@ -9,6 +9,7 @@ TODO:
 - Re-visit the mouse grab code and clean it up.
 - Do a clean-up of the opengl system
 - Add multisampling support to win32
+- Make the fov command actually work in opengl.
 - Maybe add support for several image formats (jpeg, png, etc)
 - Software renderer: revisit the FoundTrans / TransCount usage
   in non-intel code (d_edge.c, r_edge.c).
@@ -18,6 +19,11 @@ TODO:
   tables.
 - Add a direct draw video driver, like the one in quake2, for
   mgl-free win64 software renderer support
+- HexenWorld: Spectator mode (chasecam) isn't as it should be,
+  compare with the quakeworld code and fix.
+- MorphOS: the port isn't touched since 1.4.0-prerelease times,
+  make sure it still works out of the box.
+- Maybe do other ports? (Amiga, DOS, etc?.)
 - Add sequencer (mpu-401) support for midi (alsa / oss)
 - MIDI-background music: re-write with proper decoder library
   usage (eg. wildmidi/timidity for software-midi, ogg-vorbis
