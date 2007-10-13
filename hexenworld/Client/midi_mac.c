@@ -1,6 +1,6 @@
 /*
 	midi_mac.c
-	$Id: midi_mac.c,v 1.16 2007-09-22 15:27:19 sezero Exp $
+	$Id: midi_mac.c,v 1.17 2007-10-13 20:48:57 sezero Exp $
 
 	MIDI module for Mac OS X using QuickTime:
 	Taken from the macglquake project with adjustments to make
@@ -32,9 +32,7 @@
 #include <unistd.h>
 
 #include <Sound.h>
-#include "/Developer/SDKs/MacOSX10.4u.sdk/System/Library/Frameworks/QuickTime.framework/Versions/A/Headers/Movies.h"
-//#include <QuickTime/QuickTime.h>
-
+#include <QuickTime/Movies.h>
 
 static Movie	midiTrack = NULL;
 static qboolean	bMidiInited, bPaused, bLooped;
