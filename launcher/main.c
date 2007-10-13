@@ -2,7 +2,7 @@
 	main.c
 	hexen2 launcher: main loop
 
-	$Id: main.c,v 1.31 2007-08-13 13:01:46 sezero Exp $
+	$Id: main.c,v 1.32 2007-10-13 06:33:52 sezero Exp $
 
 	This program is free software; you can redistribute it and/or
 	modify it under the terms of the GNU General Public License
@@ -27,7 +27,7 @@
 
 // whether to use the password file to determine
 // the path to the home directory
-#define USE_PASSWORD_FILE	0
+#define USE_PASSWORD_FILE	1
 
 #if USE_PASSWORD_FILE
 #include <pwd.h>

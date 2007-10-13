@@ -2,12 +2,12 @@
 	sys_main.c
 	main loop and system interface
 
-	$Id: sys_main.c,v 1.39 2007-10-10 14:38:27 sezero Exp $
+	$Id: sys_main.c,v 1.40 2007-10-13 06:33:52 sezero Exp $
 */
 
 // whether to use the password file to determine
 // the path to the home directory
-#define USE_PASSWORD_FILE	0
+#define USE_PASSWORD_FILE	1
 
 #include "defs.h"
 #if defined(PLATFORM_WINDOWS)
