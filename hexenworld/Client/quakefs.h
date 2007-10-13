@@ -2,7 +2,7 @@
 	quakefs.h
 	Hexen II filesystem
 
-	$Id: quakefs.h,v 1.12 2007-10-13 06:24:34 sezero Exp $
+	$Id: quakefs.h,v 1.13 2007-10-13 06:28:29 sezero Exp $
 */
 
 #ifndef __QUAKEFS_H
@@ -33,6 +33,13 @@ extern	char	*fs_basedir;
 extern	char	fs_gamedir[MAX_OSPATH];
 extern	char	fs_gamedir_nopath[MAX_QPATH];
 extern	char	fs_userdir[MAX_OSPATH];
+
+/* disable user directories on platforms where they
+   aren't necessary or not possible. */
+#if defined(PLATFORM_WINDOWS) || defined(PLATFORM_DOS)
+#undef	DO_USERDIRS
+#define	DO_USERDIRS	0
+#endif	/* DO_USERDIRS  */
 
 /* NOTE:  the savedir (fs_savedir, or the
    old com_savedir) is no longer available

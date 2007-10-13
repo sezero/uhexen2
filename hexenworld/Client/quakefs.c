@@ -2,7 +2,7 @@
 	quakefs.c
 	Hexen II filesystem
 
-	$Id: quakefs.c,v 1.35 2007-10-13 06:24:34 sezero Exp $
+	$Id: quakefs.c,v 1.36 2007-10-13 06:28:29 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -367,7 +367,7 @@ static void FS_AddGameDirectory (const char *dir, qboolean base_fs)
 //
 // add any pak files in the format pak0.pak pak1.pak, ...
 //
-#ifdef PLATFORM_UNIX
+#if DO_USERDIRS
 add_pakfile:
 #endif
 	for (i = 0; i < 10; i++)
@@ -414,7 +414,7 @@ add_pakfile:
 
 // add user's directory to the search path
 // add any pak files in the user's directory
-#ifdef PLATFORM_UNIX
+#if DO_USERDIRS
 	if (strcmp(fs_gamedir, fs_userdir))
 		goto add_pakfile;
 #endif
@@ -494,7 +494,7 @@ void FS_Gamedir (const char *dir)
 	// whatever the previous mod it was running and went back to
 	// pure hw. weird.. do as he wishes anyway and adjust our variables.
 		qerr_snprintf(fs_gamedir, sizeof(fs_gamedir), "%s/hw", fs_basedir);
-#    ifdef PLATFORM_UNIX
+#    if DO_USERDIRS
 		qerr_snprintf(fs_userdir, sizeof(fs_userdir), "%s/hw", host_parms->userdir);
 #    else
 		qerr_strlcpy (fs_userdir, fs_gamedir, sizeof(fs_userdir));
@@ -531,7 +531,7 @@ void FS_Gamedir (const char *dir)
 //
 // add any pak files in the format pak0.pak pak1.pak, ...
 //
-#ifdef PLATFORM_UNIX
+#if DO_USERDIRS
 add_pakfiles:
 #endif
 	for (i = 0; i < 10; i++)
@@ -579,7 +579,7 @@ add_pakfiles:
 #endif
 
 // add user's directory to the search path
-#ifdef PLATFORM_UNIX
+#if DO_USERDIRS
 	qerr_snprintf(fs_userdir, sizeof(fs_userdir), "%s/%s", host_parms->userdir, dir);
 	Sys_mkdir_err (fs_userdir);
 // add any pak files in the user's directory
@@ -603,7 +603,7 @@ Call from FS_Init ~just after~ setting fs_userdir
 to host_parms->userdir/data1
 ============
 */
-#ifdef PLATFORM_UNIX
+#if DO_USERDIRS
 static void do_movedata (const char *path1, const char *path2, FILE *logfile)
 {
 	Sys_Printf ("%s -> %s : ", path1, path2);
@@ -721,7 +721,7 @@ static void MoveUserData (void)
 	if (fh)
 		fclose (fh);
 }
-#endif
+#endif	/* DO_USERDIRS */
 
 
 //============================================================================
@@ -1013,8 +1013,7 @@ error_out:
 ===========
 FS_OpenFile
 
-Finds the file in the search path.
-Sets fs_filesize and one of handle or file
+Finds the file in the search path, returns fs_filesize.
 ===========
 */
 size_t FS_OpenFile (const char *filename, FILE **file, qboolean override_pack)
@@ -1037,6 +1036,7 @@ size_t FS_OpenFile (const char *filename, FILE **file, qboolean override_pack)
 		// look through all the pak file elements
 			pak = search->pack;
 			for (i = 0; i < pak->numfiles; i++)
+			{
 				if (!strcmp (pak->files[i].name, filename))
 				{	// found it!
 					// open a new file on the pakfile
@@ -1049,17 +1049,18 @@ size_t FS_OpenFile (const char *filename, FILE **file, qboolean override_pack)
 					fs_filepath = NULL;
 					return fs_filesize;
 				}
+			}
 		}
 		else
 		{
 	// check a file in the directory tree
-#ifndef H2W
+#if !defined(H2W)
 			if (!(gameflags & (GAME_REGISTERED|GAME_REGISTERED_OLD)) && !override_pack)
 			{	// if not a registered version, don't ever go beyond base
 				if ( strchr (filename, '/') || strchr (filename,'\\'))
 					continue;
 			}
-#endif	// !H2W
+#endif	/* ! H2W */
 
 			q_snprintf (netpath, sizeof(netpath), "%s/%s",search->filename, filename);
 			if (access(netpath, R_OK) == -1)
@@ -1489,7 +1490,7 @@ void FS_Init (void)
 // step 1: start up with data1 by default
 //
 	qerr_snprintf(fs_userdir, sizeof(fs_userdir), "%s/data1", host_parms->userdir);
-#ifdef PLATFORM_UNIX
+#if DO_USERDIRS
 // properly move the user data from older versions in the user's directory
 	Sys_mkdir_err (fs_userdir);
 	MoveUserData ();

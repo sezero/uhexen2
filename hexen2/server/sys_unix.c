@@ -2,7 +2,7 @@
 	sys_unix.c
 	Unix system interface code
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/server/sys_unix.c,v 1.30 2007-10-10 14:28:23 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/server/sys_unix.c,v 1.31 2007-10-13 06:28:28 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -15,9 +15,9 @@
 
 #include <errno.h>
 #include <unistd.h>
-#if USE_PASSWORD_FILE
+#if USE_PASSWORD_FILE && DO_USERDIRS
 #include <pwd.h>
-#endif
+#endif	/* USE_PASSWORD_FILE */
 #include <sys/stat.h>
 #include <sys/time.h>
 #include <fcntl.h>
@@ -262,6 +262,7 @@ void Sys_Sleep (void)
 	usleep(1);
 }
 
+#if DO_USERDIRS
 static int Sys_GetUserdir (char *buff, size_t path_len)
 {
 	char		*home_dir = NULL;
@@ -288,6 +289,7 @@ static int Sys_GetUserdir (char *buff, size_t path_len)
 	q_snprintf (buff, path_len, "%s/%s", home_dir, AOT_USERDIR);
 	return Sys_mkdir(buff);
 }
+#endif	/* DO_USERDIRS */
 
 static void PrintVersion (void)
 {
@@ -335,7 +337,10 @@ MAIN
 ===============================================================================
 */
 static quakeparms_t	parms;
-static char	cwd[MAX_OSPATH], userdir[MAX_OSPATH];
+static char	cwd[MAX_OSPATH];
+#if DO_USERDIRS
+static char	userdir[MAX_OSPATH];
+#endif
 
 int main(int argc, char *argv[])
 {
@@ -377,14 +382,20 @@ int main(int argc, char *argv[])
 			*tmp = 0;
 	}
 
+#if DO_USERDIRS
 	memset (userdir, 0, sizeof(userdir));
 	if (Sys_GetUserdir(userdir,sizeof(userdir)) != 0)
 		Sys_Error ("Couldn't determine userspace directory");
+#endif
 
 	/* initialize the host params */
 	memset (&parms, 0, sizeof(parms));
 	parms.basedir = cwd;
+#if DO_USERDIRS
 	parms.userdir = userdir;
+#else
+	parms.userdir = cwd;
+#endif
 	parms.argc = argc;
 	parms.argv = argv;
 	host_parms = &parms;

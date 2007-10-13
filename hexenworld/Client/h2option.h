@@ -2,7 +2,7 @@
 	h2option.h
 	Compile time options for Hexen II: Hammer of Thyrion
 
-	$Id: h2option.h,v 1.6 2007-06-02 05:50:12 sezero Exp $
+	$Id: h2option.h,v 1.7 2007-10-13 06:28:29 sezero Exp $
 */
 
 
@@ -26,6 +26,18 @@
 		any time!  besides, it really decreases the speed.
    =================================================================== */
 #undef	PARANOID
+
+
+/* =====================================================================
+   DO_USERDIRS
+   Value  :	0 or 1
+   Affects:	file system, quakefs.c.
+
+   Allows separating user directories on multi-user systems. We HIGHLY
+   recommend keeping it as 1. Also see quakefs.h where DO_USERDIRS may
+   be disabled on purpose for some platforms.
+   =================================================================== */
+#define	DO_USERDIRS			1
 
 
 /* ====================================================================
