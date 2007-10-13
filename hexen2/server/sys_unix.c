@@ -2,16 +2,12 @@
 	sys_unix.c
 	Unix system interface code
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/server/sys_unix.c,v 1.32 2007-10-13 06:33:52 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/server/sys_unix.c,v 1.33 2007-10-13 07:05:28 sezero Exp $
 */
 
 #include "quakedef.h"
 #include "userdir.h"
 #include "debuglog.h"
-
-// whether to use the password file to determine
-// the path to the home directory
-#define USE_PASSWORD_FILE	1
 
 #include <errno.h>
 #include <unistd.h>

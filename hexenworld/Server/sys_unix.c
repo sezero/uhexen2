@@ -1,16 +1,12 @@
 /*
 	sys_unix.c
-	$Id: sys_unix.c,v 1.46 2007-10-13 06:33:52 sezero Exp $
-
 	Unix system interface code
+
+	$Id: sys_unix.c,v 1.47 2007-10-13 07:05:29 sezero Exp $
 */
 
 #include "quakedef.h"
 #include "userdir.h"
-
-// whether to use the password file to determine
-// the path to the home directory
-#define USE_PASSWORD_FILE	1
 
 #include <errno.h>
 #include <sys/stat.h>

@@ -2,7 +2,7 @@
 	common.h
 	common header for hexen2 launcher
 
-	$Id: common.h,v 1.8 2007-08-09 06:08:22 sezero Exp $
+	$Id: common.h,v 1.9 2007-10-13 07:05:29 sezero Exp $
 
 	This program is free software; you can redistribute it and/or
 	modify it under the terms of the GNU General Public License
@@ -36,11 +36,20 @@
 
 #define MAX_OSPATH	256
 
-// from main.c
+/* =====================================================================
+   USE_PASSWORD_FILE, 0 or 1 (main.c)
+   On any sane unix system we shall get the home directory based on the
+   real uid. If this fails (not finding the user in the password file
+   isn't normal) or if you disable this, we will get it by reading the
+   HOME environment variable, only.
+   =================================================================== */
+#define	USE_PASSWORD_FILE		1
+
+/* from main.c */
 extern char	basedir[MAX_OSPATH];
 extern char	userdir[MAX_OSPATH];
 
-// from launch_bin.c
+/* from launch_bin.c */
 void launch_hexen2_bin (void);
 
 #endif	// LAUNCHER_COMMON_INC_H
