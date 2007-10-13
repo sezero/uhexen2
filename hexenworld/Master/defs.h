@@ -2,7 +2,7 @@
 	mst_defs.h
 	common definitions for hexenworld master server
 
-	$Id: defs.h,v 1.32 2007-10-13 07:05:28 sezero Exp $
+	$Id: defs.h,v 1.33 2007-10-13 19:27:39 sezero Exp $
 */
 
 #ifndef __HWMASTER_DEFS
@@ -33,7 +33,8 @@
    On any sane unix system we shall get the home directory based on the
    real uid. If this fails (not finding the user in the password file
    isn't normal) or if you disable this, we will get it by reading the
-   HOME environment variable, only.
+   HOME environment variable, only. Also see sys.h where USE_PASSWORD_FILE
+   may be disabled on purpose for some platforms.
    =================================================================== */
 #define	USE_PASSWORD_FILE		1
 

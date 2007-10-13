@@ -2,7 +2,7 @@
 	h2option.h
 	Compile time options for Hexen II: Hammer of Thyrion
 
-	$Id: h2option.h,v 1.8 2007-10-13 07:05:28 sezero Exp $
+	$Id: h2option.h,v 1.9 2007-10-13 19:27:38 sezero Exp $
 */
 
 
@@ -49,7 +49,8 @@
    directory. On any sane unix system we shall get the home directory
    based on the real uid. If this fails (not finding the user in the
    password file isn't normal) or if you disable this, we will get it
-   by reading the HOME environment variable, only.
+   by reading the HOME environment variable, only. Also see sys.h where
+   USE_PASSWORD_FILE may be disabled on purpose for some platforms.
    =================================================================== */
 #define	USE_PASSWORD_FILE		1
 
