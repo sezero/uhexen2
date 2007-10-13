@@ -2,7 +2,7 @@
 	net_sys.h
 	common network system header
 
-	$Id: net_sys.h,v 1.8 2007-10-10 14:30:38 sezero Exp $
+	$Id: net_sys.h,v 1.9 2007-10-13 19:30:11 sezero Exp $
 */
 
 #ifndef __NET_SYS_H__
@@ -13,7 +13,7 @@
 #include "arch_def.h"
 
 /* unix includes and compatibility macros */
-#if defined(PLATFORM_UNIX)
+#if defined(PLATFORM_UNIX) || defined(PLATFORM_AMIGA)
 
 #include <sys/param.h>
 #include <sys/ioctl.h>
@@ -23,7 +23,7 @@
 #include <sys/filio.h>
 #endif
 
-#if defined(__MORPHOS__)
+#if defined(PLATFORM_AMIGA)
 #include <proto/socket.h>
 #endif
 #include <sys/socket.h>
@@ -32,24 +32,13 @@
 #include <arpa/inet.h>
 #include <netdb.h>
 
-#ifndef INADDR_NONE
-#define	INADDR_NONE	((in_addr_t) 0xffffffff)
-#endif
-#ifndef INADDR_LOOPBACK
-#define	INADDR_LOOPBACK	((in_addr_t) 0x7f000001)	/* 127.0.0.1	*/
-#endif
-
-#define	SOCKETERRNO	errno
-
-#if defined(__MORPHOS__)
-/*#if !defined(ixemul)*/
-#undef	SOCKETERRNO
+#if defined(PLATFORM_AMIGA)
+typedef int	socklen_t;
 #define	SOCKETERRNO	Errno()
-/*#endif*/
-#define	socklen_t	int
 #define	ioctlsocket	IoctlSocket
 #define	closesocket	CloseSocket
 #else
+#define	SOCKETERRNO	errno
 #define	ioctlsocket	ioctl
 #define	closesocket	close
 #endif
@@ -63,20 +52,35 @@
 #include <windows.h>
 #include <winsock.h>
 
-/* there is no in_addr_t on win32: define it as
+/* there is no in_addr_t on windows: define it as
    the type of the S_addr of in_addr structure */
+#if defined(__GNUC__)
+typedef typeof(((struct in_addr *)0)->s_addr)	in_addr_t;
+#else
 typedef u_long	in_addr_t;
+#endif	/* in_addr_t type */
 
-#if !( defined(_WS2TCPIP_H) || defined(_WS2TCPIP_H_) )
-/* on win32, socklen_t seems to be a winsock2 thing */
+/* on windows, socklen_t is to be a winsock2 thing */
+#if !defined(IP_MSFILTER_SIZE)
 typedef int	socklen_t;
-#endif
+#endif	/* socklen_t type */
 
 #define	SOCKETERRNO	WSAGetLastError()
 #define	EWOULDBLOCK	WSAEWOULDBLOCK
 #define	ECONNREFUSED	WSAECONNREFUSED
 
 #endif	/* end of windows stuff */
+
+
+/* macros which may still be missing */
+
+#if !defined(INADDR_NONE)
+#define	INADDR_NONE	((in_addr_t) 0xffffffff)
+#endif	/* INADDR_NONE */
+
+#if !defined(INADDR_LOOPBACK)
+#define	INADDR_LOOPBACK	((in_addr_t) 0x7f000001)	/* 127.0.0.1	*/
+#endif	/* INADDR_LOOPBACK */
 
 
 #if !defined(MAXHOSTNAMELEN)
