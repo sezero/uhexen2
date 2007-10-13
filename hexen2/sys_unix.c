@@ -2,7 +2,7 @@
 	sys_unix.c
 	Unix system interface code
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sys_unix.c,v 1.97 2007-10-13 07:05:27 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sys_unix.c,v 1.98 2007-10-13 07:55:32 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -275,7 +275,7 @@ char *Sys_ConsoleInput (void)
 		read (0, &c, 1);
 		if (c == '\n' || c == '\r')
 		{
-			con_text[textlen] = 0;
+			con_text[textlen] = '\0';
 			textlen = 0;
 			return con_text;
 		}
@@ -284,15 +284,22 @@ char *Sys_ConsoleInput (void)
 			if (textlen)
 			{
 				textlen--;
-				con_text[textlen] = 0;
+				con_text[textlen] = '\0';
 			}
 			continue;
 		}
 		con_text[textlen] = c;
 		textlen++;
-		con_text[textlen] = 0;
-		if (textlen == sizeof(con_text))
+		if (textlen < sizeof(con_text))
+			con_text[textlen] = '\0';
+		else
+		{
+		// buffer is full
 			textlen = 0;
+			con_text[0] = '\0';
+			Sys_PrintTerm("\nConsole input too long!\n");
+			break;
+		}
 	}
 
 	return NULL;

@@ -2,7 +2,7 @@
 	sys_win.c
 	Win32 system interface code
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Server/win_stuff/sys_win.c,v 1.36 2007-09-22 15:27:35 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Server/win_stuff/sys_win.c,v 1.37 2007-10-13 07:55:33 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -206,7 +206,7 @@ char *Sys_ConsoleInput (void)
 		putch (c);
 		if (c == '\r')
 		{
-			con_text[textlen] = 0;
+			con_text[textlen] = '\0';
 			putch ('\n');
 			textlen = 0;
 			return con_text;
@@ -218,15 +218,22 @@ char *Sys_ConsoleInput (void)
 				putch (' ');
 				putch (c);
 				textlen--;
-				con_text[textlen] = 0;
+				con_text[textlen] = '\0';
 			}
 			continue;
 		}
 		con_text[textlen] = c;
 		textlen++;
-		con_text[textlen] = 0;
-		if (textlen == sizeof(con_text))
+		if (textlen < sizeof(con_text))
+			con_text[textlen] = '\0';
+		else
+		{
+		// buffer is full
 			textlen = 0;
+			con_text[0] = '\0';
+			Sys_PrintTerm("\nConsole input too long!\n");
+			break;
+		}
 	}
 
 	return NULL;

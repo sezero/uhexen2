@@ -2,7 +2,7 @@
 	sys_main.c
 	main loop and system interface
 
-	$Id: sys_main.c,v 1.41 2007-10-13 07:05:28 sezero Exp $
+	$Id: sys_main.c,v 1.42 2007-10-13 07:55:33 sezero Exp $
 */
 
 #include "defs.h"
@@ -124,13 +124,13 @@ char *Sys_ConsoleInput (void)
 	int		c;
 
 	// read a line out
-	while (_kbhit ())
+	while (_kbhit())
 	{
-		c = _getch ();
+		c = _getch();
 		putch (c);
 		if (c == '\r')
 		{
-			con_text[textlen] = 0;
+			con_text[textlen] = '\0';
 			putch ('\n');
 			textlen = 0;
 			return con_text;
@@ -142,15 +142,22 @@ char *Sys_ConsoleInput (void)
 				putch (' ');
 				putch (c);
 				textlen--;
-				con_text[textlen] = 0;
+				con_text[textlen] = '\0';
 			}
 			continue;
 		}
 		con_text[textlen] = c;
 		textlen++;
-		con_text[textlen] = 0;
-		if (textlen == sizeof (con_text))
+		if (textlen < sizeof(con_text))
+			con_text[textlen] = '\0';
+		else
+		{
+		// buffer is full
 			textlen = 0;
+			con_text[0] = '\0';
+			printf("\nConsole input too long!\n");
+			break;
+		}
 	}
 
 	return NULL;
@@ -167,7 +174,7 @@ char *Sys_ConsoleInput (void)
 	}
 	if (textlen < 1)
 		return NULL;
-	con_text[textlen - 1] = 0;	// rip off the \n and terminate
+	con_text[textlen - 1] = '\0';	// rip off the \n and terminate
 
 	return con_text;
 #endif
