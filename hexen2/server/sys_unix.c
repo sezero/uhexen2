@@ -2,7 +2,7 @@
 	sys_unix.c
 	Unix system interface code
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/server/sys_unix.c,v 1.34 2007-10-13 07:55:33 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/server/sys_unix.c,v 1.35 2007-10-13 09:50:28 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -260,9 +260,14 @@ char *Sys_ConsoleInput (void)
 	return NULL;
 }
 
-void Sys_Sleep (void)
+void Sys_Sleep (unsigned long msecs)
 {
-	usleep(1);
+	if (!msecs)
+		return;
+	else if (msecs > 1000)
+		msecs = 1000;
+
+	usleep (msecs * 1000);
 }
 
 #if DO_USERDIRS
@@ -345,7 +350,7 @@ static char	cwd[MAX_OSPATH];
 static char	userdir[MAX_OSPATH];
 #endif
 
-int main(int argc, char *argv[])
+int main (int argc, char **argv)
 {
 	int			i;
 	double		time, oldtime;
@@ -445,7 +450,7 @@ int main(int argc, char *argv[])
 
 		if (time - oldtime < sys_ticrate.value )
 		{
-			Sys_Sleep();
+			usleep (1000);
 			continue;
 		}
 

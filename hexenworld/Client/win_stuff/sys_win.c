@@ -2,7 +2,7 @@
 	sys_win.c
 	Win32 system interface code
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/win_stuff/sys_win.c,v 1.47 2007-09-22 15:27:32 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/win_stuff/sys_win.c,v 1.48 2007-10-13 09:50:28 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -274,9 +274,14 @@ double Sys_DoubleTime (void)
 }
 
 
-void Sys_Sleep (void)
+void Sys_Sleep (unsigned long msecs)
 {
-	Sleep (1);
+	if (!msecs)
+		return;
+	else if (msecs > 1000)
+		msecs = 1000;
+
+	Sleep (msecs);
 }
 
 

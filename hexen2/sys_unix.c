@@ -2,7 +2,7 @@
 	sys_unix.c
 	Unix system interface code
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sys_unix.c,v 1.98 2007-10-13 07:55:32 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sys_unix.c,v 1.99 2007-10-13 09:50:27 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -305,9 +305,14 @@ char *Sys_ConsoleInput (void)
 	return NULL;
 }
 
-void Sys_Sleep (void)
+void Sys_Sleep (unsigned long msecs)
 {
-	usleep(1);
+	if (!msecs)
+		return;
+	else if (msecs > 1000)
+		msecs = 1000;
+
+	usleep (msecs * 1000);
 }
 
 void Sys_SendKeyEvents (void)
@@ -476,7 +481,7 @@ static char	cwd[MAX_OSPATH];
 static char	userdir[MAX_OSPATH];
 #endif
 
-int main(int argc, char *argv[])
+int main (int argc, char **argv)
 {
 	int			i;
 	double		time, oldtime, newtime;
@@ -612,7 +617,7 @@ int main(int argc, char *argv[])
 
 			while (time < sys_ticrate.value )
 			{
-				Sys_Sleep();
+				usleep (1000);
 				newtime = Sys_DoubleTime ();
 				time = newtime - oldtime;
 			}

@@ -2,21 +2,22 @@
 	sys_unix.c
 	Unix system interface code
 
-	$Id: sys_unix.c,v 1.48 2007-10-13 07:55:33 sezero Exp $
+	$Id: sys_unix.c,v 1.49 2007-10-13 09:50:28 sezero Exp $
 */
 
 #include "quakedef.h"
 #include "userdir.h"
 
 #include <errno.h>
-#include <sys/stat.h>
-#include <sys/time.h>
-#include <dirent.h>
-#include <fnmatch.h>
 #include <unistd.h>
 #if USE_PASSWORD_FILE && DO_USERDIRS
 #include <pwd.h>
 #endif	/* USE_PASSWORD_FILE */
+#include <sys/stat.h>
+#include <sys/time.h>
+#include <dirent.h>
+#include <fnmatch.h>
+
 
 // heapsize: minimum 8 mb, standart 16 mb, max is 32 mb.
 // -heapsize argument will abide by these min/max settings
@@ -33,44 +34,13 @@ static qboolean		first = true;
 
 
 /*
-================
-Sys_GetUserdir
-================
+===============================================================================
+
+FILE IO
+
+===============================================================================
 */
-#if DO_USERDIRS
-static int Sys_GetUserdir (char *buff, size_t path_len)
-{
-	char		*home_dir = NULL;
-#if USE_PASSWORD_FILE
-	struct passwd	*pwent;
 
-	pwent = getpwuid( getuid() );
-	if (pwent == NULL)
-		perror("getpwuid");
-	else
-		home_dir = pwent->pw_dir;
-#endif
-	if (home_dir == NULL)
-		home_dir = getenv("HOME");
-	if (home_dir == NULL)
-		return 1;
-
-//	what would be a maximum path for a file in the user's directory...
-//	$HOME/AOT_USERDIR/game_dir/dirname1/dirname2/dirname3/filename.ext
-//	still fits in the MAX_OSPATH == 256 definition, but just in case :
-	if (strlen(home_dir) + strlen(AOT_USERDIR) + 50 > path_len)
-		return 1;
-
-	q_snprintf (buff, path_len, "%s/%s", home_dir, AOT_USERDIR);
-	return Sys_mkdir(buff);
-}
-#endif	/* DO_USERDIRS */
-
-/*
-================
-Sys_mkdir
-================
-*/
 int Sys_mkdir (const char *path)
 {
 	int rc;
@@ -157,12 +127,15 @@ void Sys_FindClose (void)
 	findpattern = NULL;
 }
 
-
 /*
-================
-Sys_Error
-================
+===============================================================================
+
+SYSTEM IO
+
+===============================================================================
 */
+
+#define ERROR_PREFIX	"\nFATAL ERROR: "
 void Sys_Error (const char *error, ...)
 {
 	va_list		argptr;
@@ -172,14 +145,31 @@ void Sys_Error (const char *error, ...)
 	q_vsnprintf (text, sizeof(text), error, argptr);
 	va_end (argptr);
 
-	printf ("\nFATAL ERROR: %s\n\n", text);
 	if (sv_logfile)
 	{
-		fprintf (sv_logfile, "\nFATAL ERROR: %s\n\n", text);
+		fprintf (sv_logfile, ERROR_PREFIX "%s\n\n", text);
 		fflush (sv_logfile);
 	}
 
+	fprintf(stderr, ERROR_PREFIX "%s\n\n", text);
+
 	exit (1);
+}
+
+void Sys_PrintTerm (const char *msgtxt)
+{
+	unsigned char		*p;
+
+	if (sys_nostdout.integer)
+		return;
+
+	for (p = (unsigned char *) msgtxt; *p; p++)
+		putc (*p, stdout);
+}
+
+void Sys_Quit (void)
+{
+	exit (0);
 }
 
 
@@ -217,7 +207,7 @@ char *Sys_ConsoleInput (void)
 {
 	static char	con_text[256];
 	static int	textlen;
-	char	c;
+	char		c;
 	fd_set		set;
 	struct timeval	timeout;
 
@@ -262,32 +252,34 @@ char *Sys_ConsoleInput (void)
 }
 
 
-/*
-================
-Sys_PrintTerm
-================
-*/
-void Sys_PrintTerm (const char *msgtxt)
+#if DO_USERDIRS
+static int Sys_GetUserdir (char *buff, size_t path_len)
 {
-	unsigned char		*p;
+	char		*home_dir = NULL;
+#if USE_PASSWORD_FILE
+	struct passwd	*pwent;
 
-	if (sys_nostdout.integer)
-		return;
+	pwent = getpwuid( getuid() );
+	if (pwent == NULL)
+		perror("getpwuid");
+	else
+		home_dir = pwent->pw_dir;
+#endif
+	if (home_dir == NULL)
+		home_dir = getenv("HOME");
+	if (home_dir == NULL)
+		return 1;
 
-	for (p = (unsigned char *) msgtxt; *p; p++)
-		putc (*p, stdout);
+//	what would be a maximum path for a file in the user's directory...
+//	$HOME/AOT_USERDIR/game_dir/dirname1/dirname2/dirname3/filename.ext
+//	still fits in the MAX_OSPATH == 256 definition, but just in case :
+	if (strlen(home_dir) + strlen(AOT_USERDIR) + 50 > path_len)
+		return 1;
+
+	q_snprintf (buff, path_len, "%s/%s", home_dir, AOT_USERDIR);
+	return Sys_mkdir(buff);
 }
-
-/*
-================
-Sys_Quit
-================
-*/
-void Sys_Quit (void)
-{
-	exit (0);
-}
-
+#endif	/* DO_USERDIRS */
 
 static void PrintVersion (void)
 {

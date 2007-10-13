@@ -2,7 +2,7 @@
 	sys.h
 	non-portable functions
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/sys.h,v 1.33 2007-09-29 11:44:24 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/sys.h,v 1.34 2007-10-13 09:50:28 sezero Exp $
 */
 
 #ifndef __HX2_SYS_H
@@ -59,9 +59,10 @@ double Sys_DoubleTime (void);
 
 char *Sys_ConsoleInput (void);
 
-void Sys_Sleep (void);
+void Sys_Sleep (unsigned long msecs);
 // called to yield for a little bit so as
 // not to hog cpu when paused or debugging
+// 1000 milliseconds most.
 
 void Sys_SendKeyEvents (void);
 // Perform Key_Event () callbacks until the input que is empty

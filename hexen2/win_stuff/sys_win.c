@@ -2,7 +2,7 @@
 	sys_win.c
 	Win32 system interface code
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/win_stuff/sys_win.c,v 1.59 2007-09-22 15:27:16 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/win_stuff/sys_win.c,v 1.60 2007-10-13 09:50:28 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -412,9 +412,14 @@ char *Sys_ConsoleInput (void)
 	return NULL;
 }
 
-void Sys_Sleep (void)
+void Sys_Sleep (unsigned long msecs)
 {
-	Sleep (1);
+	if (!msecs)
+		return;
+	else if (msecs > 1000)
+		msecs = 1000;
+
+	Sleep (msecs);
 }
 
 
@@ -449,9 +454,9 @@ void Sys_SendKeyEvents (void)
 SleepUntilInput
 ==================
 */
-static void SleepUntilInput (int time)
+static void SleepUntilInput (unsigned long msecs)
 {
-	MsgWaitForMultipleObjects(1, &tevent, FALSE, time, QS_ALLINPUT);
+	MsgWaitForMultipleObjects(1, &tevent, FALSE, msecs, QS_ALLINPUT);
 }
 
 
@@ -666,7 +671,7 @@ int WINAPI WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 
 			while (time < sys_ticrate.value )
 			{
-				Sys_Sleep();
+				Sleep (1);
 				newtime = Sys_DoubleTime ();
 				time = newtime - oldtime;
 			}

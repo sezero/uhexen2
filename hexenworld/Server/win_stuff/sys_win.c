@@ -2,7 +2,7 @@
 	sys_win.c
 	Win32 system interface code
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Server/win_stuff/sys_win.c,v 1.37 2007-10-13 07:55:33 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Server/win_stuff/sys_win.c,v 1.38 2007-10-13 09:50:30 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -34,10 +34,13 @@ static DWORD		starttime;
 
 
 /*
-================
-Sys_mkdir
-================
+===============================================================================
+
+FILE IO
+
+===============================================================================
 */
+
 int Sys_mkdir (const char *path)
 {
 	int rc;
@@ -109,10 +112,14 @@ void Sys_FindClose (void)
 
 
 /*
-================
-Sys_Error
-================
+===============================================================================
+
+SYSTEM IO
+
+===============================================================================
 */
+
+#define ERROR_PREFIX	"\nFATAL ERROR: "
 void Sys_Error (const char *error, ...)
 {
 	va_list		argptr;
@@ -122,12 +129,13 @@ void Sys_Error (const char *error, ...)
 	q_vsnprintf (text, sizeof(text), error, argptr);
 	va_end (argptr);
 
-	printf ("\nFATAL ERROR: %s\n\n", text);
 	if (sv_logfile)
 	{
-		fprintf (sv_logfile, "\nFATAL ERROR: %s\n\n", text);
+		fprintf (sv_logfile, ERROR_PREFIX "%s\n\n", text);
 		fflush (sv_logfile);
 	}
+
+	printf (ERROR_PREFIX "%s\n\n", text);
 
 #ifdef DEBUG_BUILD
 	getch();
@@ -136,12 +144,6 @@ void Sys_Error (const char *error, ...)
 	exit (1);
 }
 
-
-/*
-================
-Sys_PrintTerm
-================
-*/
 void Sys_PrintTerm (const char *msgtxt)
 {
 	unsigned char		*p;
@@ -153,11 +155,6 @@ void Sys_PrintTerm (const char *msgtxt)
 		putc (*p, stdout);
 }
 
-/*
-================
-Sys_Quit
-================
-*/
 void Sys_Quit (void)
 {
 	exit (0);
@@ -188,11 +185,6 @@ double Sys_DoubleTime (void)
 }
 
 
-/*
-================
-Sys_ConsoleInput
-================
-*/
 char *Sys_ConsoleInput (void)
 {
 	static char	con_text[256];
@@ -275,12 +267,12 @@ int main (int argc, char **argv)
 		for (i = 1; i < argc; i++)
 		{
 			if ( !(strcmp(argv[i], "-v")) || !(strcmp(argv[i], "-version" )) ||
-				!(strcmp(argv[i], "--version")) )
+				  !(strcmp(argv[i], "--version")) )
 			{
 				exit(0);
 			}
 			else if ( !(strcmp(argv[i], "-h")) || !(strcmp(argv[i], "-help" )) ||
-				  !(strcmp(argv[i], "-?")) || !(strcmp(argv[i], "--help")) )
+				  !(strcmp(argv[i], "--help")) || !(strcmp(argv[i], "-?")) )
 			{
 				printf ("See the documentation for details\n");
 				exit (0);

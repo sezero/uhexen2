@@ -2,7 +2,7 @@
 	sys_win.c
 	Win32 system interface code
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/server/sys_win.c,v 1.27 2007-10-13 07:55:33 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/server/sys_win.c,v 1.28 2007-10-13 09:50:28 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -238,9 +238,14 @@ char *Sys_ConsoleInput (void)
 	return NULL;
 }
 
-void Sys_Sleep (void)
+void Sys_Sleep (unsigned long msecs)
 {
-	Sleep (1);
+	if (!msecs)
+		return;
+	else if (msecs > 1000)
+		msecs = 1000;
+
+	Sleep (msecs);
 }
 
 
@@ -385,7 +390,7 @@ int main (int argc, char **argv)
 
 		if (time - oldtime < sys_ticrate.value )
 		{
-			Sys_Sleep();
+			Sleep (1);
 			continue;
 		}
 
