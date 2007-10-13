@@ -20,7 +20,7 @@
  *
  * Author: Josh MacDonald <jmacd@CS.Berkeley.EDU>
  *
- * $Id: loki_xdelta.c,v 1.5 2007-10-10 18:22:11 sezero Exp $
+ * $Id: loki_xdelta.c,v 1.6 2007-10-13 11:30:17 sezero Exp $
  */
 
 #include <stdio.h>
@@ -37,6 +37,7 @@
 #endif
 
 #ifndef WINHACK
+#include <sys/param.h>
 #include <unistd.h>
 #include <sys/mman.h>
 #define O_BINARY 0
@@ -48,6 +49,14 @@
 #ifdef __DJGPP__
 #include <unistd.h>
 #include <dpmi.h>
+#endif
+
+#if !defined(MAXPATHLEN)
+#if defined(PATH_MAX)
+#define MAXPATHLEN PATH_MAX
+#else
+#define MAXPATHLEN 256
+#endif
 #endif
 
 #if !defined(STDOUT_FILENO)
@@ -495,7 +504,7 @@ static int xd_edsio_started = 0;
 int loki_xdelta(const char *old, const char *new, const char *out)
 {
     int argc;
-    gchar args[3][PATH_MAX];
+    gchar args[3][MAXPATHLEN];
     gchar *argv[4];
 
     if ( ! xd_edsio_started ) {
@@ -523,7 +532,7 @@ int loki_xdelta(const char *old, const char *new, const char *out)
 int loki_xpatch(const char *pat, const char *old, const char *out)
 {
     int argc;
-    gchar args[3][PATH_MAX];
+    gchar args[3][MAXPATHLEN];
     gchar *argv[4];
 
     if ( ! xd_edsio_started ) {

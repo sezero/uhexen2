@@ -2,7 +2,7 @@
 	apply_patch.c
 	hexen2 launcher: binary patch starter
 
-	$Id: apply_patch.c,v 1.6 2007-08-13 14:50:35 sezero Exp $
+	$Id: apply_patch.c,v 1.7 2007-10-13 11:30:17 sezero Exp $
 
 	This program is free software; you can redistribute it and/or
 	modify it under the terms of the GNU General Public License
@@ -23,22 +23,12 @@
 		Boston, MA  02110-1301, USA
 */
 
-#include <stdlib.h>
-#include <stdio.h>
-#include <unistd.h>
-#include <string.h>
-#include <limits.h>
+#include "common.h"
 
 #include "md5.h"
 #include "loki_xdelta.h"
 #include "apply_patch.h"
 #include "launcher_ui.h"
-
-#if defined(PATH_MAX)
-#define MAX_OSPATH	PATH_MAX
-#else
-#define MAX_OSPATH	256
-#endif
 
 #define NUM_PATCHES	2
 
