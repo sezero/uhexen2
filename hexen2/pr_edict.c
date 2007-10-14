@@ -2,7 +2,7 @@
 	sv_edict.c
 	entity dictionary
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/pr_edict.c,v 1.49 2007-09-22 15:27:14 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/pr_edict.c,v 1.50 2007-10-14 11:08:49 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -1260,7 +1260,7 @@ void PR_LoadProgs (void)
 		}
 		fclose (FH);
 	}
-#endif	// end of USE_MULTIPLE_PROGS
+#endif	/* end of USE_MULTIPLE_PROGS */
 
 	progs = (dprograms_t *)FS_LoadHunkFile (finalprogname);
 	if (!progs)
@@ -1270,9 +1270,11 @@ void PR_LoadProgs (void)
 	for (i = 0; i < fs_filesize; i++)
 		CRC_ProcessByte (&pr_crc, ((byte *)progs)[i]);
 
+#if (BYTE_ORDER != LITTLE_ENDIAN)
 	// byte swap the header
 	for (i = 0; i < sizeof(*progs)/4; i++)
 		((int *)progs)[i] = LittleLong ( ((int *)progs)[i] );
+#endif	/* BYTE SWAP */
 
 	if (progs->version != PROG_VERSION)
 		Sys_Error ("%s has wrong version number %d (should be %d)", finalprogname, progs->version, PROG_VERSION);
@@ -1312,7 +1314,7 @@ void PR_LoadProgs (void)
 		pr_global_struct_v111 = NULL;
 	}
 
-#if BYTE_ORDER == BIG_ENDIAN
+#if (BYTE_ORDER != LITTLE_ENDIAN)
 	// byte swap the lumps
 	for (i = 0; i < progs->numstatements; i++)
 	{
@@ -1350,7 +1352,7 @@ void PR_LoadProgs (void)
 
 	for (i = 0; i < progs->numglobals; i++)
 		((int *)pr_globals)[i] = LittleLong (((int *)pr_globals)[i]);
-#endif	// BIG_ENDIAN
+#endif	/* BYTE SWAP */
 
 	pr_edict_size = progs->entityfields * 4 + sizeof(edict_t) - sizeof(entvars_t);
 	// round off to next highest whole word address (esp for Alpha)

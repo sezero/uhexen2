@@ -2,7 +2,7 @@
 	sv_edict.c
 	entity dictionary
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Server/pr_edict.c,v 1.31 2007-09-22 15:27:34 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Server/pr_edict.c,v 1.32 2007-10-14 11:08:51 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -1039,7 +1039,7 @@ void ED_LoadFromFile (char *data)
 
 			skip = 0;
 
-#if 0	// rjr not supported in hexenworld
+#if 0	/* rjr not supported in hexenworld */
 			if (((int)ent->v.spawnflags & SPAWNFLAG_NOT_PALADIN) &&
 				cl_playerclass.integer == CLASS_PALADIN)
 			{
@@ -1196,7 +1196,7 @@ void PR_LoadProgs (void)
 		}
 		fclose (FH);
 	}
-#endif	// end of USE_MULTIPLE_PROGS
+#endif	/* end of USE_MULTIPLE_PROGS */
 
 	progs = (dprograms_t *)FS_LoadHunkFile (finalprogname);
 	if (!progs)
@@ -1207,9 +1207,11 @@ void PR_LoadProgs (void)
 	sprintf (num, "%u", CRC_Block ((byte *)progs, fs_filesize));
 	Info_SetValueForStarKey (svs.info, "*progs", num, MAX_SERVERINFO_STRING);
 
+#if (BYTE_ORDER != LITTLE_ENDIAN)
 	// byte swap the header
 	for (i = 0; i < sizeof(*progs)/4; i++)
 		((int *)progs)[i] = LittleLong ( ((int *)progs)[i] );
+#endif	/* BYTE SWAP */
 
 	if (progs->version != PROG_VERSION)
 		SV_Error ("%s has wrong version number %d (should be %d)", finalprogname, progs->version, PROG_VERSION);
@@ -1234,6 +1236,7 @@ void PR_LoadProgs (void)
 	pr_global_struct = (globalvars_t *)((byte *)progs + progs->ofs_globals);
 	pr_globals = (float *)pr_global_struct;
 
+#if (BYTE_ORDER != LITTLE_ENDIAN)
 	// byte swap the lumps
 	for (i = 0; i < progs->numstatements; i++)
 	{
@@ -1271,6 +1274,7 @@ void PR_LoadProgs (void)
 
 	for (i = 0; i < progs->numglobals; i++)
 		((int *)pr_globals)[i] = LittleLong (((int *)pr_globals)[i]);
+#endif	/* BYTE SWAP */
 
 	pr_edict_size = progs->entityfields * 4 + sizeof(edict_t) - sizeof(entvars_t);
 	// round off to next highest whole word address (esp for Alpha)
