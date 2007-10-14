@@ -1,6 +1,6 @@
 /*
 	gl_vidnt.c -- NT GL vid component
-	$Id: gl_vidnt.c,v 1.118 2007-09-28 14:28:41 sezero Exp $
+	$Id: gl_vidnt.c,v 1.119 2007-10-14 11:12:29 sezero Exp $
 */
 
 #define	__GL_FUNC_EXTERN
@@ -1093,19 +1093,11 @@ void VID_SetPalette (unsigned char *palette)
 		b = pal[2];
 		pal += 3;
 
-#if BYTE_ORDER == BIG_ENDIAN
-		v = (255 << 0) + (r << 24) + (g << 16) + (b << 8);
-#else
-		v = (255 << 24) + (r << 0) + (g << 8) + (b << 16);
-#endif
+		v = (255 << SHIFT_a) + (r << SHIFT_r) + (g << SHIFT_g) + (b << SHIFT_b);
 		*table++ = v;
 	}
 
-#if BYTE_ORDER == BIG_ENDIAN
-	d_8to24table[255] &= 0xffffff00;	// 255 is transparent
-#else
-	d_8to24table[255] &= 0x00ffffff;	// 255 is transparent
-#endif
+	d_8to24table[255] &= MASK_rgb;	// 255 is transparent
 
 	pal = palette;
 	table = d_8to24TranslucentTable;
@@ -1120,17 +1112,7 @@ void VID_SetPalette (unsigned char *palette)
 
 		for (p = 0; p < 16; p++)
 		{
-#if BYTE_ORDER == BIG_ENDIAN
-			v = (ColorPercent[15 - p]) +
-						(r << 24) +
-						(g << 16) +
-						(b << 8);
-#else
-			v = (ColorPercent[15 - p] << 24) +
-						(r << 0) +
-						(g << 8) +
-						(b << 16);
-#endif
+			v = (ColorPercent[15 - p] << SHIFT_a) + (r << SHIFT_r) + (g << SHIFT_g) + (b << SHIFT_b);
 			*table++ = v;
 
 			RTint[i*16+p] = ((float)r) / ((float)ColorPercent[15-p]);
