@@ -2,19 +2,23 @@
 	q_endian.c
 	byte order functions
 
-	$Id: q_endian.c,v 1.1 2007-10-14 08:44:24 sezero Exp $
+	$Id: q_endian.c,v 1.2 2007-10-14 21:20:19 sezero Exp $
 */
 
 #include "q_endian.h"
+
+#if defined(ENDIAN_ASSUMED_UNSAFE)
+# if (ENDIAN_ASSUMED_UNSAFE == LITTLE_ENDIAN)
+#    warning "Cannot determine endianess. Using LIL endian as an UNSAFE default"
+# elif (ENDIAN_ASSUMED_UNSAFE == PDP_ENDIAN)
+#    warning "Cannot determine endianess. Using PDP (NUXI) as an UNSAFE default."
+# elif (ENDIAN_ASSUMED_UNSAFE == BIG_ENDIAN)
+#    warning "Cannot determine endianess. Using BIG endian as an UNSAFE default."
+# endif
+#endif	/* ENDIAN_ASSUMED_UNSAFE */
+
 #include <stdlib.h>
 
-#if defined(ASSUMED_LITTLE_ENDIAN)
-#warning "Unable to determine CPU endianess. Using LITTLE endian as a default"
-#elif defined (ASSUMED_PDP_ENDIAN)
-#warning "Unable to determine CPU endianess. Using PDP (NUXI) as the default."
-#elif defined (ASSUMED_BIG_ENDIAN)
-#warning "Unable to determine CPU endianess. Using BIG endian as the default."
-#endif
 
 int DetectByteorder (void)
 {
@@ -87,11 +91,13 @@ int LongSwapPDP2BE (int l)
 		int	l;
 		unsigned char	b[4];
 	} dat1, dat2;
+
 	dat1.l = l;
 	dat2.b[0] = dat1.b[1];
 	dat2.b[1] = dat1.b[0];
 	dat2.b[2] = dat1.b[3];
 	dat2.b[3] = dat1.b[2];
+
 	return dat2.l;
 }
 
@@ -102,9 +108,11 @@ int LongSwapPDP2LE (int l)
 		int	l;
 		short	s[2];
 	} dat1, dat2;
+
 	dat1.l = l;
 	dat2.s[0] = dat1.s[1];
 	dat2.s[1] = dat1.s[0];
+
 	return dat2.l;
 }
 
@@ -115,11 +123,13 @@ float FloatSwapPDP2BE (float f)
 		float	f;
 		unsigned char	b[4];
 	} dat1, dat2;
+
 	dat1.f = f;
 	dat2.b[0] = dat1.b[1];
 	dat2.b[1] = dat1.b[0];
 	dat2.b[2] = dat1.b[3];
 	dat2.b[3] = dat1.b[2];
+
 	return dat2.f;
 }
 
@@ -130,9 +140,11 @@ float FloatSwapPDP2LE (float f)
 		float	f;
 		short	s[2];
 	} dat1, dat2;
+
 	dat1.f = f;
 	dat2.s[0] = dat1.s[1];
 	dat2.s[1] = dat1.s[0];
+
 	return dat2.f;
 }
 
