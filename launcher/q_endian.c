@@ -2,7 +2,7 @@
 	q_endian.c
 	byte order functions
 
-	$Id: q_endian.c,v 1.5 2007-10-14 08:44:22 sezero Exp $
+	$Id: q_endian.c,v 1.1 2007-10-14 08:44:24 sezero Exp $
 */
 
 #include "q_endian.h"

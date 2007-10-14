@@ -2,7 +2,7 @@
 	games.c
 	hexen2 launcher, game installation scanning
 
-	$Id: games.c,v 1.7 2007-08-09 06:08:22 sezero Exp $
+	$Id: games.c,v 1.8 2007-10-14 08:44:24 sezero Exp $
 
 	This program is free software; you can redistribute it and/or
 	modify it under the terms of the GNU General Public License
@@ -24,47 +24,12 @@
 */
 
 #include "common.h"
+#include "q_endian.h"
 #include "games.h"
 #include "crc.h"
 #include "pakfile.h"
 #include "launcher_defs.h"
 #include "config_file.h"
-
-#if !defined(LITTLE_ENDIAN) || !defined(BIG_ENDIAN)
-#undef	LITTLE_ENDIAN
-#undef	BIG_ENDIAN
-#define	LITTLE_ENDIAN	1234
-#define	BIG_ENDIAN	4321
-#endif
-
-static int	endien;
-
-static int DetectByteorder (void)
-{
-	int	i = 0x12345678;
-
-	if ( *(char *)&i == 0x12 )
-		return BIG_ENDIAN;
-	else if ( *(char *)&i == 0x78 )
-		return LITTLE_ENDIAN;
-
-	return 0;
-}
-
-static int LongSwap (int l)
-{
-	unsigned char	b1, b2, b3, b4;
-
-	if (endien == LITTLE_ENDIAN)
-		return l;
-
-	b1 = l & 255;
-	b2 = (l>>8 ) & 255;
-	b3 = (l>>16) & 255;
-	b4 = (l>>24) & 255;
-
-	return ((int)b1<<24) + ((int)b2<<16) + ((int)b3<<8) + b4;
-}
 
 unsigned int	gameflags;
 static char	*scan_dir;
@@ -117,8 +82,8 @@ static void scan_pak_files (const char *packfile, int paknum)
 	    header.id[2] != 'C' || header.id[3] != 'K')
 		goto finish;
 
-	header.dirofs = LongSwap (header.dirofs);
-	header.dirlen = LongSwap (header.dirlen);
+	header.dirofs = LittleLong (header.dirofs);
+	header.dirlen = LittleLong (header.dirlen);
 
 	numpackfiles = header.dirlen / sizeof(dpackfile_t);
 
@@ -310,10 +275,6 @@ void scan_game_installation (void)
 	char			pakfile[MAX_OSPATH];
 
 	gameflags = 0;
-	endien = DetectByteorder();
-	if (endien == 0)
-		printf ("Warning: Unknown byte order!\n");
-
 	if (basedir_nonstd && game_basedir[0])
 		scan_dir = game_basedir;
 	else

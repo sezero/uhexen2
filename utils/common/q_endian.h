@@ -2,7 +2,7 @@
 	q_endian.h
 	endianness handling
 
-	$Id: q_endian.h,v 1.4 2007-07-11 21:00:19 sezero Exp $
+	$Id: q_endian.h,v 1.5 2007-10-14 08:44:24 sezero Exp $
 */
 
 #ifndef __QENDIAN_H
@@ -10,9 +10,16 @@
 
 #include <sys/types.h>
 
+extern int DetectByteorder (void);
+
 extern short	ShortSwap (short);
 extern int	LongSwap (int);
 extern float	FloatSwap (float);
+
+extern int	LongSwapPDP2BE (int);
+extern int	LongSwapPDP2LE (int);
+extern float	FloatSwapPDP2BE (float);
+extern float	FloatSwapPDP2LE (float);
 
 /*
  * endianness stuff: <sys/types.h> is supposed
@@ -20,10 +27,29 @@ extern float	FloatSwap (float);
  * this BSD style may not work everywhere.
  */
 
+#undef ASSUMED_BIG_ENDIAN
+#undef ASSUMED_LITTLE_ENDIAN
+#undef ASSUMED_PDP_ENDIAN
+
+#if !defined(PDP_ENDIAN)
+#if defined(__PDP_ENDIAN)
+#define	PDP_ENDIAN	__PDP_ENDIAN
+#else
+#define	PDP_ENDIAN	3412
+#endif
+#endif	/* the NUXI endian, not supported actually.. */
+
+#if defined(__LITTLE_ENDIAN) && !defined(LITTLE_ENDIAN)
+#define	LITTLE_ENDIAN	__LITTLE_ENDIAN
+#endif	/* __LITTLE_ENDIAN */
+
+#if defined(__BIG_ENDIAN) && !defined(BIG_ENDIAN)
+#define	BIG_ENDIAN	__BIG_ENDIAN
+#endif	/* __LITTLE_ENDIAN */
+
 #if defined(BYTE_ORDER) && defined(LITTLE_ENDIAN) && defined(BIG_ENDIAN)
 
-# if (BYTE_ORDER != LITTLE_ENDIAN) && (BYTE_ORDER != BIG_ENDIAN)
-/* pdp-endian, aka NUXI endian? not supported, at least not yet. */
+# if (BYTE_ORDER != LITTLE_ENDIAN) && (BYTE_ORDER != BIG_ENDIAN) && (BYTE_ORDER != PDP_ENDIAN)
 # error "Unsupported endianness."
 # endif
 
@@ -32,8 +58,10 @@ extern float	FloatSwap (float);
 # undef BYTE_ORDER
 # undef LITTLE_ENDIAN
 # undef BIG_ENDIAN
+# undef PDP_ENDIAN
 # define LITTLE_ENDIAN	1234
 # define BIG_ENDIAN	4321
+# define PDP_ENDIAN	3412
 
 #endif	/* byte order defs */
 
@@ -55,30 +83,40 @@ extern float	FloatSwap (float);
 #	define	BYTE_ORDER	FALLBACK_ORDER
 #	if  (FALLBACK_ORDER == BIG_ENDIAN)
 #		define	ASSUMED_BIG_ENDIAN
+#	elif (FALLBACK_ORDER == PDP_ENDIAN)
+#		define	ASSUMED_PDP_ENDIAN
 #	else
 #		define	ASSUMED_LITTLE_ENDIAN
 #	endif
 # endif
 #endif	/* BYTE_ORDER */
 
-#if BYTE_ORDER == BIG_ENDIAN
+#if (BYTE_ORDER == BIG_ENDIAN)
 
-#define BigShort(s) (s)
-#define LittleShort(s) ShortSwap((s))
-#define BigLong(l) (l)
-#define LittleLong(l) LongSwap((l))
-#define BigFloat(f) (f)
-#define LittleFloat(f) FloatSwap((f))
+#define BigShort(s)	(s)
+#define LittleShort(s)	ShortSwap((s))
+#define BigLong(l)	(l)
+#define LittleLong(l)	LongSwap((l))
+#define BigFloat(f)	(f)
+#define LittleFloat(f)	FloatSwap((f))
 
-#else
+#elif (BYTE_ORDER == PDP_ENDIAN)
 
-/* BYTE_ORDER == LITTLE_ENDIAN */
-#define BigShort(s) ShortSwap((s))
-#define LittleShort(s) (s)
-#define BigLong(l) LongSwap((l))
-#define LittleLong(l) (l)
-#define BigFloat(f) FloatSwap((f))
-#define LittleFloat(f) (f)
+#define BigShort(s)	ShortSwap((s))
+#define BigLong(l)	LongSwapPDP2BE((l))
+#define BigFloat(f)	FloatSwapPDP2BE((f))
+#define LittleShort(s)	(s)
+#define LittleLong(l)	LongSwapPDP2LE((l))
+#define LittleFloat(f)	FloatSwapPDP2LE((f))
+
+#else /* BYTE_ORDER == LITTLE_ENDIAN */
+
+#define BigShort(s)	ShortSwap((s))
+#define LittleShort(s)	(s)
+#define BigLong(l)	LongSwap((l))
+#define LittleLong(l)	(l)
+#define BigFloat(f)	FloatSwap((f))
+#define LittleFloat(f)	(f)
 
 #endif
 

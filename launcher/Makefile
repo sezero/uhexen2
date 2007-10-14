@@ -1,5 +1,5 @@
 # GNU Makefile for hexen2 gtk-launcher app using GCC.
-# $Header: /home/ozzie/Download/0000/uhexen2/launcher/Makefile,v 1.45 2007-08-13 13:01:46 sezero Exp $
+# $Header: /home/ozzie/Download/0000/uhexen2/launcher/Makefile,v 1.46 2007-10-14 08:44:24 sezero Exp $
 #
 #  gtk2 will be used default.
 #  to compile for gtk-1.2 type:  make GTK1=yes
@@ -119,7 +119,7 @@ all: $(H2LAUNCH)
 # activate the line below if you add pixmap support, etc
 #SUPPORT_OBJS := support.o
 GUI_OBJS     := gtk_ui.o $(SUPPORT_OBJS)
-LAUNCHER_OBJS:= crc.o games.o config_file.o launch_bin.o
+LAUNCHER_OBJS:= crc.o q_endian.o games.o config_file.o launch_bin.o
 LAUNCHER_MAIN:= main.o
 ALL_OBJECTS  := $(LAUNCHER_OBJS) $(GUI_OBJS) $(XPATCH_OBJS) \
 	$(LIBXDELTA_OBJS) $(LIBEDSIO_OBJS) $(LAUNCHER_MAIN)

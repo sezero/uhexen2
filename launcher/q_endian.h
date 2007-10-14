@@ -2,7 +2,7 @@
 	q_endian.h
 	endianness handling
 
-	$Id: q_endian.h,v 1.5 2007-10-14 08:44:22 sezero Exp $
+	$Id: q_endian.h,v 1.1 2007-10-14 08:44:24 sezero Exp $
 */
 
 #ifndef __QENDIAN_H
