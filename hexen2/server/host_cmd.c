@@ -2,7 +2,7 @@
 	host_cmd.c
 	console commands
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/server/host_cmd.c,v 1.38 2007-10-01 14:32:24 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/server/host_cmd.c,v 1.39 2007-10-14 13:15:42 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -48,7 +48,7 @@ static void Host_Status_f (void)
 	int			minutes;
 	int			hours = 0;
 	int			j;
-	void		(*print)(unsigned int flg, const char *fmt, ...) __attribute__((format(printf,2,3)));
+	void		(*print)(unsigned int flg, const char *fmt, ...) __fp_attribute__((format(printf,2,3)));
 
 	if (cmd_source == src_command)
 	{
