@@ -2,7 +2,7 @@
 	q_endian.h
 	endianness handling
 
-	$Id: q_endian.h,v 1.5 2007-10-14 08:44:22 sezero Exp $
+	$Id: q_endian.h,v 1.6 2007-10-14 14:01:44 sezero Exp $
 */
 
 #ifndef __QENDIAN_H
@@ -38,6 +38,10 @@ extern float	FloatSwapPDP2LE (float);
 #define	PDP_ENDIAN	3412
 #endif
 #endif	/* the NUXI endian, not supported actually.. */
+
+#if defined(__BYTE_ORDER) && !defined(BYTE_ORDER)
+#define	BYTE_ORDER	__BYTE_ORDER
+#endif	/* __BYTE_ORDER */
 
 #if defined(__LITTLE_ENDIAN) && !defined(LITTLE_ENDIAN)
 #define	LITTLE_ENDIAN	__LITTLE_ENDIAN
