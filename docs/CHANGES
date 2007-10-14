@@ -3,6 +3,39 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2007-10-14 (CVS):
+    * fs_gamedir_nopath should actually have an array size of MAX_QPATH.
+    * added a new compile time option DO_USERDIRS which allows disabling the
+      user directories even on multi-user platforms.
+    * re-enabled the use of password file when determining the user's home
+      directory.
+    * moved the USE_PASSWORD_FILE definition to appropriate headers (h2option.h).
+    * fixed a theoretical buffer overrun in Sys_ConsoleInput and printed a
+      warning message in such cases.
+    * tidied the sleep calls. made Sys_Sleep to take a milliseconds argument.
+      while we were there, did a little tidy-up between different versions of
+      a few sys* files.
+    * tidy-up for MAXPATHLEN definitions in xdelta.
+    * disabled USE_PASSWORD_FILE for platforms where it's not needed in sys.h.
+    * updates to net_sys.h header.
+    * enable sdl sound on more possible platforms.
+    * minor things (quicktime include in midi_mac.c).
+    * updates and some re-organization in arch_def.h headers.
+    * minor update to the Xcode project file.
+    * endianness handling: added PDP (NUXI) endian support, inspired from ezquake.
+      only serves academic purposes, though.. added a function for detectiong the
+      byte order at run-time. adjusted the game launcher to use the standart that
+      is already in the engine trees.
+    * fixed BYTE_ORDER conditional compilation in pr_edict.c: the code must
+      be compiled not simply for BIG_ENDIAN but for !LITTLE_ENDIAN cases.
+    * fixed the r, g and b shift values in gl_draw.c (thank god they were not
+      used there, the little endian values in macglquake must be a bad typo!),
+      added the corresponding nuxi values, moved all of them to the glquake.h
+      header. removed the BYTE_ORDER conditionals from gl_vid* files and used
+      these relevant shift and mask macros.
+    * fixed compilation with gcc2: argument format attributes for function
+      pointers are not supported for gcc < 3.
+
 2007-10-10 (CVS):
     * pass NULL as the timezone argument to gettimeofday.
     * added a default MAXHOSTNAMELEN definition to net_sys.h in case we don't
