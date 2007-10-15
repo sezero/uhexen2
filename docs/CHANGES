@@ -5,6 +5,8 @@ Development Progress	:
 
 2007-10-15 (CVS):
     * more updates to the endianness stuff.
+    * seems like gcc-3.0 wasn't enough for specifying format attributes for
+      function pointers: we need gcc >= 3.1. fixed.
     * added systest.c (the stupid little tool I use to see a report of type
       sizes and byte order) to the scripts folder.
     * a few build system tidy-ups: use lowercase host_os names, do not use
