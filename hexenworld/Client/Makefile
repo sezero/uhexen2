@@ -1,5 +1,5 @@
 # GNU Makefile for hexenworld clients using GCC.
-# $Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/Makefile,v 1.70 2007-09-15 14:16:44 sezero Exp $
+# $Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/Makefile,v 1.71 2007-10-15 12:15:28 sezero Exp $
 #
 # Type "make help" to see the valid targets.
 #
@@ -69,7 +69,7 @@
 #		yes =	link to the opengl libraries at compile time
 #
 # USE_3DFXGAMMA	yes =	(default) enable 3dfx glide hacks for native hardware
-# (Linux / BSD)		gamma for the old Voodoo Graphics and Voodoo2 cards.
+# (Linux / FreeBSD)	gamma for the old Voodoo Graphics and Voodoo2 cards.
 #		no  =	disable 3dfx glide gamma hacks.
 #
 # OPT_EXTRA	yes  =  Some extra optimization flags will be added (default)
@@ -151,7 +151,7 @@ CHECK_WINDRES=1
 include $(UHEXEN2_TOP)/scripts/sanity1.inc
 
 # Names of the binaries
-ifeq ($(TARGET_OS),WIN32)
+ifeq ($(TARGET_OS),win32)
 HW_BINARY=hwcl.exe
 GLHW_BINARY=glhwcl.exe
 else
@@ -183,8 +183,12 @@ CFLAGS := $(CFLAGS) $(call check_gcc,-fno-unit-at-a-time,)
 endif
 
 ifeq ($(OPT_EXTRA),yes)
-# Note: re-check these flags for non-ia32 machines
+ifeq ($(MACH_TYPE),x86)
 CFLAGS := $(CFLAGS) $(call check_gcc,-falign-loops=2 -falign-jumps=2 -falign-functions=2,-malign-loops=2 -malign-jumps=2 -malign-functions=2)
+endif
+ifeq ($(MACH_TYPE),x86_64)
+CFLAGS := $(CFLAGS) $(call check_gcc,-falign-loops=2 -falign-jumps=2 -falign-functions=2,-malign-loops=2 -malign-jumps=2 -malign-functions=2)
+endif
 CFLAGS := $(CFLAGS) -fomit-frame-pointer
 endif
 endif
@@ -202,7 +206,7 @@ endif
 # Other build flags
 EXT_FLAGS:=$(ARCHFLAGS) -DH2W
 
-ifeq ($(TARGET_OS),WIN32)
+ifeq ($(TARGET_OS),win32)
 # Main win32 specific includes and flags
 INCLUDES:= -I$(UHEXEN2_TOP)/w32stuff/dxsdk/inc -I$(MINGWDIR)/include -I.
 LDFLAGS := -L$(MINGWDIR)/lib -lwinmm -lwsock32 -mwindows
@@ -219,7 +223,16 @@ endif
 GL_DEFS := -DGLQUAKE
 GLFLAGS :=
 
-ifneq ($(TARGET_OS),WIN32)
+# allow 3dfx gamma hack only on linux and freebsd
+ifneq ($(TARGET_OS),win32)
+ifneq ($(HOST_OS),linux)
+ifneq ($(HOST_OS),freebsd)
+USE_3DFXGAMMA=no
+endif
+endif
+endif
+
+ifneq ($(TARGET_OS),win32)
 ifeq ($(USE_3DFXGAMMA),yes)
 GL_DEFS+= -DUSE_3DFXGAMMA
 endif
@@ -240,7 +253,7 @@ ifdef DEBUG
 EXT_FLAGS+= -DDEBUG_BUILD
 endif
 
-ifeq ($(TARGET_OS),UNIX)
+ifeq ($(TARGET_OS),unix)
 # Start Unix-specific extra flags/settings
 
 ifeq ($(USE_SOUND),yes)
@@ -268,7 +281,7 @@ endif
 endif
 
 
-ifeq ($(TARGET_OS),WIN32)
+ifeq ($(TARGET_OS),win32)
 # Start Win32-specific extra flags/settings
 
 ifeq ($(LINK_DIRECTX),no)
@@ -309,7 +322,7 @@ SYSOBJ_SND :=
 COMOBJ_SND := snd_null.o
 else
 COMOBJ_SND := snd_sys.o snd_dma.o snd_mix.o snd_mem.o
-ifeq ($(TARGET_OS),WIN32)
+ifeq ($(TARGET_OS),win32)
 SYSOBJ_SND := win_stuff/snd_win.o
 else
 SYSOBJ_SND := snd_oss.o snd_alsa.o snd_sun.o $(OBJ_SNDSDL)
@@ -322,12 +335,17 @@ ifneq ($(USE_MIDI),yes)
 SYSOBJ_MIDI:= midi_nul.o
 EXT_FLAGS += -DNO_MIDIMUSIC
 else
-ifeq ($(TARGET_OS),WIN32)
+ifeq ($(TARGET_OS),win32)
 SYSOBJ_MIDI:= win_stuff/midi.o win_stuff/mstrconv.o
+endif
+ifeq ($(TARGET_OS),unix)
+ifeq ($(HOST_OS),darwin)
+SYSOBJ_MIDI:= midi_mac.o
 else
 SYSOBJ_MIDI:= midi_sdl.o
 SDLLINK+= -lSDL_mixer
 EXT_FLAGS += -D_MIDI_SDLMIXER
+endif
 endif
 # end of MIDI objects
 endif
@@ -337,7 +355,7 @@ ifneq ($(USE_CDAUDIO),yes)
 SYSOBJ_CDA:= cd_null.o
 EXT_FLAGS += -D_NO_CDAUDIO
 else
-ifeq ($(TARGET_OS),WIN32)
+ifeq ($(TARGET_OS),win32)
 SYSOBJ_CDA := win_stuff/cd_win.o
 else
 SYSOBJ_CDA := cd_sdl.o cd_bsd.o cd_linux.o
@@ -346,7 +364,7 @@ endif
 endif
 
 # Other platform specific object settings
-ifeq ($(TARGET_OS),WIN32)
+ifeq ($(TARGET_OS),win32)
 SYSOBJ_INPUT := win_stuff/in_win.o
 SYSOBJ_GL_VID:= win_stuff/gl_vidnt.o
 SYSOBJ_SOFT_VID:= win_stuff/vid_win.o

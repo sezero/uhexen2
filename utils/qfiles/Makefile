@@ -1,5 +1,5 @@
 # GNU Makefile for hexen2 qfiles tool using GCC.
-# $Header: /home/ozzie/Download/0000/uhexen2/utils/qfiles/Makefile,v 1.10 2007-07-12 19:41:21 sezero Exp $
+# $Header: /home/ozzie/Download/0000/uhexen2/utils/qfiles/Makefile,v 1.11 2007-10-15 12:15:32 sezero Exp $
 #
 # if building a debug version :		make DEBUG=1 [other stuff]
 #
@@ -22,7 +22,7 @@ include $(UHEXEN2_TOP)/scripts/makefile.inc
 include $(UHEXEN2_TOP)/scripts/sanity1.inc
 
 # Names of the binaries
-ifeq ($(TARGET_OS),WIN32)
+ifeq ($(TARGET_OS),win32)
 BINARY=qfiles.exe
 else
 BINARY=qfiles
@@ -47,7 +47,7 @@ endif
 
 # Other build flags
 
-ifeq ($(TARGET_OS),WIN32)
+ifeq ($(TARGET_OS),win32)
 INCLUDES:= -I$(MINGWDIR)/include -I$(COMMONDIR)
 LDFLAGS := -mconsole
 LDLIBS  :=

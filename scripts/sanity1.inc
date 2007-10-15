@@ -22,7 +22,7 @@ endif
 endif
 
 ifeq ($(CHECK_WINDRES),1)
-ifeq ($(TARGET_OS),WIN32)
+ifeq ($(TARGET_OS),win32)
 __NOCMD_TMP:=$(call check_cmd,$(WINDRES))
 ifneq ($(__NOCMD_TMP),)
 __NOCMD:=$(__NOCMD) $(__NOCMD_TMP)
@@ -31,7 +31,7 @@ endif
 endif
 
 ifeq ($(CHECK_SDL),1)
-ifeq ($(TARGET_OS),UNIX)
+ifeq ($(TARGET_OS),unix)
 __NOCMD_TMP:=$(call check_cmd,$(CMD_SDLCFG))
 ifneq ($(__NOCMD_TMP),)
 __NOCMD:=$(__NOCMD) $(__NOCMD_TMP)

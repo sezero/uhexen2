@@ -1,5 +1,5 @@
 # GNU Makefile for hexen2 gtk-launcher app using GCC.
-# $Header: /home/ozzie/Download/0000/uhexen2/launcher/Makefile,v 1.46 2007-10-14 08:44:24 sezero Exp $
+# $Header: /home/ozzie/Download/0000/uhexen2/launcher/Makefile,v 1.47 2007-10-15 12:15:29 sezero Exp $
 #
 #  gtk2 will be used default.
 #  to compile for gtk-1.2 type:  make GTK1=yes
@@ -14,10 +14,10 @@
 UHEXEN2_TOP=..
 
 # whether we should use the gnu auto-tools support when
-# building xdelta libraries:
+# building xdelta libraries: 0 or 1.
 AUTOTOOLS ?= 0
 
-HOST_OS:=$(shell uname)
+HOST_OS:=$(shell uname|sed -e s/_.*//|tr '[:upper:]' '[:lower:]')
 
 CC_DEFAULT:=gcc
 ifeq ($(origin CC),environment)
@@ -54,6 +54,11 @@ GTK_CFLAGS:= $(shell pkg-config --cflags gtk+-2.0)
 GTK_LIBS:= $(shell pkg-config --libs gtk+-2.0)
 endif
 
+# pthread flags: do note that these change accross
+# different platforms!!!
+PTHREAD_CFLAGS:=-D_REENTRANT
+PTHREAD_LIBS:=-lpthread
+
 ifdef DEBUG
 CFLAGS := -Wall -g -DDEBUG_BUILD
 else
@@ -65,13 +70,13 @@ CFLAGS := $(CFLAGS) $(GTK_CFLAGS)
 ifdef DEMO
 CFLAGS := $(CFLAGS) -DDEMOBUILD
 else
-CFLAGS := $(CFLAGS) $(XDELTA_FLAGS) -I$(XDELTA_DIR) -I$(XDELTA_DIR)/libedsio -I. -I./xpatch
+CFLAGS := $(CFLAGS) $(PTHREAD_CFLAGS) $(XDELTA_FLAGS) -I$(XDELTA_DIR) -I$(XDELTA_DIR)/libedsio -I. -I./xpatch
 endif
 
 LDFLAGS:=$(GTK_LIBS)
 ifndef DEMO
-LDFLAGS:= $(LDFLAGS) -lz -lpthread
-ifneq ($(AUTOTOOLS),0)
+LDFLAGS:= $(LDFLAGS) -lz $(PTHREAD_LIBS)
+ifeq ($(AUTOTOOLS),1)
 LDFLAGS:=-Wl,-Bstatic $(XDELTA_LINK) -Wl,-Bdynamic $(LDFLAGS)
 endif
 endif

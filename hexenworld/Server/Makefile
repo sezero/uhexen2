@@ -1,5 +1,5 @@
 # GNU Makefile for hexenworld server using GCC.
-# $Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Server/Makefile,v 1.38 2007-07-12 19:41:20 sezero Exp $
+# $Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Server/Makefile,v 1.39 2007-10-15 12:15:29 sezero Exp $
 #
 # To cross-compile for Win32 on Unix, you must pass the WINBUILD=1
 # argument to make. It would be best if you examine the script named
@@ -41,7 +41,7 @@ include $(UHEXEN2_TOP)/scripts/makefile.inc
 include $(UHEXEN2_TOP)/scripts/sanity1.inc
 
 # Names of the binaries
-ifeq ($(TARGET_OS),WIN32)
+ifeq ($(TARGET_OS),win32)
 BINARY=hwsv.exe
 else
 BINARY=hwsv
@@ -71,8 +71,12 @@ CFLAGS := $(CFLAGS) $(call check_gcc,-fno-unit-at-a-time,)
 endif
 
 ifeq ($(OPT_EXTRA),yes)
-# Note: re-check these flags for non-ia32 machines
+ifeq ($(MACH_TYPE),x86)
 CFLAGS := $(CFLAGS) $(call check_gcc,-falign-loops=2 -falign-jumps=2 -falign-functions=2,-malign-loops=2 -malign-jumps=2 -malign-functions=2)
+endif
+ifeq ($(MACH_TYPE),x86_64)
+CFLAGS := $(CFLAGS) $(call check_gcc,-falign-loops=2 -falign-jumps=2 -falign-functions=2,-malign-loops=2 -malign-jumps=2 -malign-functions=2)
+endif
 CFLAGS := $(CFLAGS) -fomit-frame-pointer
 endif
 endif
@@ -86,7 +90,7 @@ endif
 EXT_FLAGS:= -DH2W -DSERVERONLY $(ARCHFLAGS)
 INCLUDES:= -I. -I../Client
 
-ifeq ($(TARGET_OS),WIN32)
+ifeq ($(TARGET_OS),win32)
 INCLUDES:= -I$(MINGWDIR)/include $(INCLUDES)
 LDFLAGS := -L$(MINGWDIR)/lib -lwinmm -lwsock32 -mconsole
 else
@@ -118,7 +122,7 @@ cl_objs/%.o: ../Client/%.c
 SYS_UNIX = sys_unix.o
 SYS_WIN32 = win_stuff/sys_win.o
 
-ifeq ($(TARGET_OS),WIN32)
+ifeq ($(TARGET_OS),win32)
 SYSOBJ_SYS = $(SYS_WIN32)
 else
 SYSOBJ_SYS = $(SYS_UNIX)

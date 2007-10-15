@@ -1,5 +1,5 @@
 # GNU Makefile for Hexen II Dedicated Server (h2ded) using GCC.
-# $Header: /home/ozzie/Download/0000/uhexen2/hexen2/Makefile.sv,v 1.14 2007-07-12 19:41:18 sezero Exp $
+# $Header: /home/ozzie/Download/0000/uhexen2/hexen2/Makefile.sv,v 1.15 2007-10-15 12:15:26 sezero Exp $
 #
 # It is ESSENTIAL that you run make clean between different
 # types of builds or different types of targets.
@@ -44,7 +44,7 @@ include $(UHEXEN2_TOP)/scripts/makefile.inc
 include $(UHEXEN2_TOP)/scripts/sanity1.inc
 
 # Names of the binaries
-ifeq ($(TARGET_OS),WIN32)
+ifeq ($(TARGET_OS),win32)
 BINARY=h2ded.exe
 else
 BINARY=h2ded
@@ -74,8 +74,12 @@ CFLAGS := $(CFLAGS) $(call check_gcc,-fno-unit-at-a-time,)
 endif
 
 ifeq ($(OPT_EXTRA),yes)
-# Note: re-check these flags for non-ia32 machines
+ifeq ($(MACH_TYPE),x86)
 CFLAGS := $(CFLAGS) $(call check_gcc,-falign-loops=2 -falign-jumps=2 -falign-functions=2,-malign-loops=2 -malign-jumps=2 -malign-functions=2)
+endif
+ifeq ($(MACH_TYPE),x86_64)
+CFLAGS := $(CFLAGS) $(call check_gcc,-falign-loops=2 -falign-jumps=2 -falign-functions=2,-malign-loops=2 -malign-jumps=2 -malign-functions=2)
+endif
 CFLAGS := $(CFLAGS) -fomit-frame-pointer
 endif
 endif
@@ -89,7 +93,7 @@ endif
 EXT_FLAGS:= -DSERVERONLY $(ARCHFLAGS)
 INCLUDES:= -I./server -I.
 
-ifeq ($(TARGET_OS),WIN32)
+ifeq ($(TARGET_OS),win32)
 INCLUDES:= -I$(MINGWDIR)/include $(INCLUDES)
 LDFLAGS := -L$(MINGWDIR)/lib -lwinmm -lwsock32 -mconsole
 else
@@ -126,7 +130,7 @@ NET_WIN32 = win_stuff/net_win.o \
 SYS_UNIX = sv_objs/sys_unix.o
 SYS_WIN32 = sv_objs/sys_win.o
 
-ifeq ($(TARGET_OS),WIN32)
+ifeq ($(TARGET_OS),win32)
 SYSOBJ_NET = $(NET_WIN32)
 SYSOBJ_SYS = $(SYS_WIN32)
 else

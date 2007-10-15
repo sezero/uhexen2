@@ -9,13 +9,13 @@ $STRIPPER hwsv.exe
 exit 0
 fi
 
-HOST_OS=`uname`
+HOST_OS=`uname|sed -e s/_.*//|tr '[:upper:]' '[:lower:]'`
 
 case "$HOST_OS" in
-FreeBSD|OpenBSD|NetBSD)
+freebsd|openbsd|netbsd)
 	MAKE_CMD=gmake
 	;;
-Linux)
+linux)
 	MAKE_CMD=make
 	;;
 *)

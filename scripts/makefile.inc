@@ -1,5 +1,5 @@
 # GNU Makefile using GCC in a unix shell.
-# $Header: /home/ozzie/Download/0000/uhexen2/scripts/makefile.inc,v 1.13 2007-07-12 19:41:20 sezero Exp $
+# $Header: /home/ozzie/Download/0000/uhexen2/scripts/makefile.inc,v 1.14 2007-10-15 12:15:30 sezero Exp $
 
 # This file is responsible for determining the Host OS and Target OS,
 # setting common paths, selecting the compiler, assigning the compiler
@@ -24,12 +24,12 @@ MINGWDIR ?=/mingw
 
 # OS and TARGET_OS detection:
 
-HOST_OS :=$(shell uname -s)
+HOST_OS :=$(shell uname|sed -e s/_.*//|tr '[:upper:]' '[:lower:]')
 
 # NOTE:	We only support one type of cross compilation:
 #	Compiling for windows on unix (linux).  This
 #	means, unless cross compiling (detected by the
-#	WINBUILD definition on a UNIX host, see below),
+#	WINBUILD definition on a unix host, see below),
 #	the actual TARGET_OS remains as the HOST_OS.
 
 # See if we are running on a Windows installation.
@@ -45,27 +45,27 @@ WIN_NATIVE := yes
 endif
 
 ifdef WIN_NATIVE
-# we are running on windows. set TARGET_OS to WIN32
+# we are running on windows. set TARGET_OS to win32
 # and set proper nasm binary name
 # NOTE: re-visit here when we have MINGW64
-ifeq (,$(findstring MINGW32,$(HOST_OS)))
-$(error MSys is required for this build system on Windows)
+ifeq (,$(findstring mingw32,$(HOST_OS)))
+$(error MSYS is required for this build system on Windows)
 endif
-HOST_OS :=Windows
-TARGET_OS:=WIN32
+HOST_OS :=windows
+TARGET_OS:=win32
 NASM_BIN :=nasmw
 else
 # we are running on a Unixish OS
 ifdef WINBUILD
 # cross compilation for windows
-TARGET_OS:=WIN32
+TARGET_OS:=win32
 else
-TARGET_OS:=UNIX
+TARGET_OS:=unix
 endif
 NASM_BIN :=nasm
 endif
 
-ifeq ($(TARGET_OS),WIN32)
+ifeq ($(TARGET_OS),win32)
 # FIXME: windows does not have to be x86.
 MACH_TYPE:=x86
 else
@@ -110,14 +110,14 @@ endif
 ARCHFLAGS:=
 
 ifndef WINBUILD
-ifeq ($(HOST_OS),MorphOS)
+ifeq ($(HOST_OS),morphos)
 ARCHFLAGS:=-noixemul
 endif
 endif
 
 # NASM flags:
 # These are required for IA32 assembly for hexen2/hexenworld clients
-ifeq ($(TARGET_OS),WIN32)
+ifeq ($(TARGET_OS),win32)
 NASMFLAGS:= -fwin32 -D__WIN32__ --prefix _
 else
 NASMFLAGS:= -f elf
@@ -129,7 +129,7 @@ CMD_SDLCFG ?=sdl-config
 # SDL flags:
 # If a makefile needs SDL, it should set CHECK_SDL to 1
 ifeq ($(CHECK_SDL),1)
-ifeq ($(TARGET_OS),UNIX)
+ifeq ($(TARGET_OS),unix)
 SDLFLAGS:= $(shell $(CMD_SDLCFG) --cflags)
 SDLLINK := $(shell $(CMD_SDLCFG) --libs)
 else
@@ -141,10 +141,10 @@ endif
 # -lsocket is needed on some arches
 LIBSOCKET:=
 ifndef WINBUILD
-ifeq ($(HOST_OS),QNX)
+ifeq ($(HOST_OS),qnx)
 LIBSOCKET:=-lsocket
 endif
-ifeq ($(HOST_OS),SunOS)
+ifeq ($(HOST_OS),sunos)
 LIBSOCKET:=-lsocket -lnsl
 endif
 endif
@@ -152,7 +152,7 @@ endif
 # MGL flags:
 # These are required for hexen2/hexenworld win32-software
 # renderer.
-ifeq ($(TARGET_OS),WIN32)
+ifeq ($(TARGET_OS),win32)
 MGL_FLAG:= -DMGL_DLL
 MGL_INCL:= -I$(UHEXEN2_TOP)/w32stuff/scitech
 MGL_LINK:= -L$(UHEXEN2_TOP)/w32stuff/scitech -lmglfx
@@ -164,7 +164,7 @@ endif
 
 # GL Linkage flags:
 # These flags will be used for linking to opengl library
-ifeq ($(TARGET_OS),WIN32)
+ifeq ($(TARGET_OS),win32)
 GL_LINK := -lopengl32
 else
 GL_LINK := -L$(X11BASE)/lib -lGL
