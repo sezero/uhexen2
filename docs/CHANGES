@@ -3,6 +3,14 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2007-10-15 (CVS):
+    * more updates to the endianness stuff.
+    * added systest.c (the stupid little tool I use to see a report of type
+      sizes and byte order) to the scripts folder.
+    * a few build system tidy-ups: use lowercase host_os names, do not use
+      the align directives on platforms other than x86 and x86_64, disable
+      3dfx gamma hack when not compiling for linux or freebsd.
+
 2007-10-14 (CVS):
     * fs_gamedir_nopath should actually have an array size of MAX_QPATH.
     * added a new compile time option DO_USERDIRS which allows disabling the
