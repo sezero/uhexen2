@@ -3,7 +3,7 @@
 	compiler specific definitions and settings
 	used in the uhexen2 (Hammer of Thyrion) tree.
 
-	$Id: compiler.h,v 1.7 2007-10-14 13:15:43 sezero Exp $
+	$Id: compiler.h,v 1.8 2007-10-15 17:45:19 sezero Exp $
 */
 
 #ifndef __HX2_COMPILER_H
@@ -14,9 +14,9 @@
 #endif	/* __GNUC__ */
 
 /* argument format attributes for function
- * pointers are not supported for gcc < 3.
+ * pointers are supported for gcc >= 3.1
  */
-#if defined(__GNUC__) && (__GNUC__ > 2)
+#if defined(__GNUC__) && (__GNUC__ > 3 || (__GNUC__ == 3 && __GNUC_MINOR__ > 0))
 #define	__fp_attribute__	__attribute__
 #else
 #define	__fp_attribute__(x)
