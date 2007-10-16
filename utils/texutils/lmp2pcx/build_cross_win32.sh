@@ -3,10 +3,10 @@
 UHEXEN2_TOP=../../..
 . $UHEXEN2_TOP/scripts/cross_defs
 
-if [ "$1" = "strip" ]
-then
-	echo "Stripping lmp2pcx.exe"
-	$STRIPPER ../../bin/lmp2pcx.exe
+BIN_DIR=../../bin
+
+if [ "$1" = "strip" ]; then
+	$STRIPPER $BIN_DIR/lmp2pcx.exe
 	exit 0
 fi
 
@@ -24,11 +24,10 @@ linux)
 	;;
 esac
 
-if [ "$1" = "clean" ]
-then
+if [ "$1" = "clean" ]; then
 	$MAKE_CMD -s clean
 	exit 0
 fi
 
-exec $MAKE_CMD $SENDARGS $*
+exec $MAKE_CMD $*
 

@@ -1,16 +1,24 @@
 #!/bin/sh
 
-EXE_EXT=
-BIN_FILES="bin/hcc bin/vis bin/qbsp bin/light 
-bin/qfiles bin/genmodel bin/bspinfo
-bin/jsh2colour
-bin/bsp2wal bin/lmp2pcx
-bin/dhcc hcc_old/hcc"
+BIN_DIR=bin
 
-if env | grep -i windir > __tmp.tmp; then
-EXE_EXT=".exe";
+if [ "$1" = "strip" ]; then
+	exe_ext=
+	if env | grep -i windir > __tmp.tmp; then
+		exe_ext=".exe"
+	fi
+	rm -f __tmp.tmp
+	strip hcc_old/hcc$exe_ext	\
+		$BIN_DIR/hcc$exe_ext	\
+		$BIN_DIR/dhcc$exe_ext	\
+		$BIN_DIR/vis$exe_ext $BIN_DIR/light$exe_ext	\
+		$BIN_DIR/qbsp$exe_ext $BIN_DIR/bspinfo$exe_ext	\
+		$BIN_DIR/qfiles$exe_ext	\
+		$BIN_DIR/genmodel$exe_ext	\
+		$BIN_DIR/jsh2colour$exe_ext	\
+		$BIN_DIR/bsp2wal$exe_ext $BIN_DIR/lmp2pcx$exe_ext
+	exit 0
 fi
-rm -f __tmp.tmp
 
 HOST_OS=`uname|sed -e s/_.*//|tr '[:upper:]' '[:lower:]'`
 
@@ -26,27 +34,17 @@ linux)
 	;;
 esac
 
-if [ "$1" = "strip" ]
-then
-	for i in ${BIN_FILES}
-	do
-	    strip ${i}${EXE_EXT}
-	done
-exit 0
-fi
-
-if [ "$1" = "clean" ]
-then
-$MAKE_CMD -s -C hcc clean
-$MAKE_CMD -s -C maputils clean
-$MAKE_CMD -s -C genmodel clean
-$MAKE_CMD -s -C qfiles clean
-$MAKE_CMD -s -C dcc clean
-$MAKE_CMD -s -C jsh2color clean
-$MAKE_CMD -s -C hcc_old clean
-$MAKE_CMD -s -C texutils/bsp2wal clean
-$MAKE_CMD -s -C texutils/lmp2pcx clean
-exit 0
+if [ "$1" = "clean" ]; then
+	$MAKE_CMD -s -C hcc clean
+	$MAKE_CMD -s -C maputils clean
+	$MAKE_CMD -s -C genmodel clean
+	$MAKE_CMD -s -C qfiles clean
+	$MAKE_CMD -s -C dcc clean
+	$MAKE_CMD -s -C jsh2color clean
+	$MAKE_CMD -s -C hcc_old clean
+	$MAKE_CMD -s -C texutils/bsp2wal clean
+	$MAKE_CMD -s -C texutils/lmp2pcx clean
+	exit 0
 fi
 
 echo "Building hcc, the HexenC compiler.."

@@ -15,27 +15,18 @@ endif
 __NOCMD:=$(call check_cmd,$(CC))
 
 ifeq ($(CHECK_NASM),1)
-__NOCMD_TMP:=$(call check_cmd,$(NASM))
-ifneq ($(__NOCMD_TMP),)
-__NOCMD:=$(__NOCMD) $(__NOCMD_TMP)
-endif
+__NOCMD:=$(__NOCMD) $(call check_cmd,$(NASM))
 endif
 
 ifeq ($(CHECK_WINDRES),1)
 ifeq ($(TARGET_OS),win32)
-__NOCMD_TMP:=$(call check_cmd,$(WINDRES))
-ifneq ($(__NOCMD_TMP),)
-__NOCMD:=$(__NOCMD) $(__NOCMD_TMP)
-endif
+__NOCMD:=$(__NOCMD) $(call check_cmd,$(WINDRES))
 endif
 endif
 
 ifeq ($(CHECK_SDL),1)
 ifeq ($(TARGET_OS),unix)
-__NOCMD_TMP:=$(call check_cmd,$(CMD_SDLCFG))
-ifneq ($(__NOCMD_TMP),)
-__NOCMD:=$(__NOCMD) $(__NOCMD_TMP)
-endif
+__NOCMD:=$(__NOCMD) $(call check_cmd,$(SDL_CONFIG))
 # FIXME what about win32
 endif
 endif

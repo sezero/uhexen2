@@ -3,10 +3,9 @@
 UHEXEN2_TOP=../..
 . $UHEXEN2_TOP/scripts/cross_defs
 
-if [ "$1" = "strip" ]
-then
-$STRIPPER hwrcon.exe hwterm.exe
-exit 0
+if [ "$1" = "strip" ]; then
+	$STRIPPER hwrcon.exe hwterm.exe
+	exit 0
 fi
 
 HOST_OS=`uname|sed -e s/_.*//|tr '[:upper:]' '[:lower:]'`
@@ -23,5 +22,5 @@ linux)
 	;;
 esac
 
-exec $MAKE_CMD $SENDARGS $*
+exec $MAKE_CMD $*
 

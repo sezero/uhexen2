@@ -1,5 +1,5 @@
 # GNU Makefile using GCC in a unix shell.
-# $Header: /home/ozzie/Download/0000/uhexen2/scripts/makefile.inc,v 1.14 2007-10-15 12:15:30 sezero Exp $
+# $Header: /home/ozzie/Download/0000/uhexen2/scripts/makefile.inc,v 1.15 2007-10-16 14:29:07 sezero Exp $
 
 # This file is responsible for determining the Host OS and Target OS,
 # setting common paths, selecting the compiler, assigning the compiler
@@ -118,20 +118,20 @@ endif
 # NASM flags:
 # These are required for IA32 assembly for hexen2/hexenworld clients
 ifeq ($(TARGET_OS),win32)
-NASMFLAGS:= -fwin32 -D__WIN32__ --prefix _
+NASMFLAGS:= -fwin32 --prefix _
 else
 NASMFLAGS:= -f elf
 endif
 
 # the "sdl-config" command
-CMD_SDLCFG ?=sdl-config
+SDL_CONFIG ?=sdl-config
 
 # SDL flags:
 # If a makefile needs SDL, it should set CHECK_SDL to 1
 ifeq ($(CHECK_SDL),1)
 ifeq ($(TARGET_OS),unix)
-SDLFLAGS:= $(shell $(CMD_SDLCFG) --cflags)
-SDLLINK := $(shell $(CMD_SDLCFG) --libs)
+SDLFLAGS:= $(shell $(SDL_CONFIG) --cflags 2> __tmp.tmp)
+SDLLINK := $(shell $(SDL_CONFIG) --libs  2> __tmp.tmp)
 else
 SDLFLAGS:=
 SDLLINK :=

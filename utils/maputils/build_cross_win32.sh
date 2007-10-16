@@ -3,10 +3,13 @@
 UHEXEN2_TOP=../..
 . $UHEXEN2_TOP/scripts/cross_defs
 
-if [ "$1" = "strip" ]
-then
+BIN_DIR=../bin
+
+if [ "$1" = "strip" ]; then
 	echo "Stripping binaries"
-	$STRIPPER ../bin/qbsp.exe ../bin/bspinfo.exe ../bin/light.exe ../bin/vis.exe ../bin/bsp2wal.exe
+	$STRIPPER $BIN_DIR/qbsp.exe	\
+		$BIN_DIR/bspinfo.exe	\
+		$BIN_DIR/light.exe $BIN_DIR/vis.exe
 	exit 0
 fi
 
@@ -24,11 +27,10 @@ linux)
 	;;
 esac
 
-if [ "$1" = "clean" ]
-then
+if [ "$1" = "clean" ]; then
 	$MAKE_CMD -s clean
 	exit 0
 fi
 
-exec $MAKE_CMD $SENDARGS $*
+exec $MAKE_CMD $*
 
