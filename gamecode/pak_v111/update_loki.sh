@@ -19,20 +19,22 @@ echo ""
 if [ ! -f "loki_patch" ]; then
 	echo "Patch binary loki_patch not found. Quitting."
 	echo "You can compile it from its up-to-date source"
-	echo "tarball loki_patch-src3.tgz, downloadable from"
-	echo -e "the Hammer of Thyrion website.\n"
+	echo "tarball loki_patch-src4.tgz, downloadable from"
+	echo "the Hammer of Thyrion website."
+	echo ""
 	exit 1
 fi
 
 PATCH_DAT="update_loki.dat"
 
 if [ ! -f ${PATCH_DAT} ]; then
-	echo -e "Patch data file ${PATCH_DAT} not found. Quitting.\n"
+	echo "Patch data file ${PATCH_DAT} not found. Quitting."
 	exit 1
 fi
 
 ./loki_patch ${PATCH_DAT} .
+
 status=$?
-echo -e "                \n"
+echo "                "
 exit $status
 

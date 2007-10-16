@@ -2,31 +2,38 @@
 # Script for patching cdrom versions of Hexen II pak files to v1.11
 # For use with Hammer of Thyrion v1.4.0 and probably laer versions.
 
-echo -e "\nHammer of Thyrion (http://uhexen2.sourceforge.net)"
-echo -e "Patch script for Raven's Hexen II v1.11 update\n"
+echo "Hammer of Thyrion (http://uhexen2.sourceforge.net)"
+echo "Patch script for Raven's Hexen II v1.11 update"
+echo ""
 
 # here are the correct md5sums:
 # cdrom-1.03 version:
-# b53c9391d16134cb3baddc1085f18683  data1/pak0.pak
-# 9a2010aafb9c0fe71c37d01292030270  data1/pak1.pak
+pak0old="b53c9391d16134cb3baddc1085f18683"
+pak1old="9a2010aafb9c0fe71c37d01292030270"
 # updated 1.11 version:
-# c9675191e75dd25a3b9ed81ee7e05eff  data1/pak0.pak
-# c2ac5b0640773eed9ebe1cda2eca2ad0  data1/pak1.pak
+pak0new="c9675191e75dd25a3b9ed81ee7e05eff"
+pak1new="c2ac5b0640773eed9ebe1cda2eca2ad0"
 
 # make sure the data1 directory exists
 if [ ! -d "data1" ]; then
-	echo -e "data1 directory not found. Quitting.\n"
+	echo "data1 directory not found. Quitting."
 	exit 1
 fi
 # make sure we have write permissions
 chmod 755 data1
 
-# make sure we have the md5sum utility program
-md5sum $0 &> /dev/null
+# make sure we have one of the md5 tools
+md5cmd="md5sum"
+$md5cmd $0 2> /dev/null 1> /dev/null
 status=$?
 if [ "$status" -ne 0 ]; then
-	echo -e "md5sum utility not installed. quitting"
-	exit 1
+	md5cmd="md5"
+	$md5cmd $0 2> /dev/null 1> /dev/null
+	status=$?
+	if [ "$status" -ne 0 ]; then
+		echo "neither md5 nor md5sum utility not installed. quitting"
+		exit 1
+	fi
 fi
 
 # make sure our xdelta-1.1.4 exists: people may have
@@ -53,102 +60,87 @@ do
 	echo "data1/pak${i}.pak :"
 	# make sure the pak file exists
 	if [ ! -f "data1/pak${i}.pak" ]; then
-		echo -e "\tFile not found. Quitting.\n"
+		echo "    File not found. Quitting."
 		exit 1
 	fi
-	echo -e "\tChecking md5sum..."
 
-	# make sure the pak file is not patched already
-	case $i in
-	0)
-		sum="c9675191e75dd25a3b9ed81ee7e05eff"
-		;;
-	1)
-		sum="c2ac5b0640773eed9ebe1cda2eca2ad0"
-		;;
-	*)
-		echo -e "Error in script!\n"
-		exit 1
-		;;
-	esac
-	echo "${sum}  data1/pak${i}.pak" > newpak${i}.md5
-	md5sum --status --check newpak${i}.md5
+	if [ $i -eq 0 ]; then
+		oldsum=$pak0old
+		newsum=$pak0new
+	else
+		oldsum=$pak1old
+		newsum=$pak1new
+	fi
+	echo "    Checking md5sum..."
+
+	testsum=`$md5cmd data1/pak${i}.pak`
+	echo "$testsum" | grep $newsum 1> /dev/null
 	status=$?
 	if [ "$status" -eq 0 ]; then
-		echo -e "\tAlready patched. Skipping"
-		rm -f newpak${i}.md5
-		let i=1+i
+		echo "    Already patched. Skipping"
+#		let i=1+i
+		if [ $i -eq 1 ]; then
+			break
+		fi
+		i=1
 		continue
 	fi
-
 	# make sure the pak file is cdrom version
-	case $i in
-	0)
-		sum="b53c9391d16134cb3baddc1085f18683"
-		;;
-	1)
-		sum="9a2010aafb9c0fe71c37d01292030270"
-		;;
-	*)
-		echo -e "Error in script!\n"
-		exit 1
-		;;
-	esac
-	echo "${sum}  data1/pak${i}.pak" > oldpak${i}.md5
-	md5sum --status --check oldpak${i}.md5
+	echo "$testsum" | grep $oldsum 1> /dev/null
 	status=$?
-	rm -f oldpak${i}.md5
 	if [ "$status" -ne 0 ]; then
-		echo -e "\tDoes not match cdrom version. Quitting\n"
+		echo "    Does not match cdrom version. Quitting"
 		exit 1
 	fi
 
 	# make sure the patch file exists
 	if [ ! -f "patchdata/data1/data1pak${i}.xd" ]; then
-		echo -e "\tpatchdata/data1/data1pak${i}.xd not found. Quitting.\n"
-		rm -f newpak${i}.md5
+		echo "    patchdata/data1/data1pak${i}.xd not found. Quitting."
 		exit 1
 	fi
 
 	# make sure our xdelta exists
 	if [ ${have_xdelta} -eq 0 ]; then
-		rm -f newpak${i}.md5
 		echo "Patch binary xdelta113 or xdelta114 not found."
 		echo "You can compile it from its up-to-date source"
 		echo "tarball downloadable from the Hammer of Thyrion"
-		echo -e "website.\n"
+		echo "website."
 		exit 1
 	fi
 
 	# rename the old pak file, patch process will produce the correct name
 	chmod 644 data1/pak${i}.pak
-	mv --force data1/pak${i}.pak data1/pak${i}.pak.103
+	mv -f data1/pak${i}.pak data1/pak${i}.pak.103
 	# apply the patch
 	chmod 755 ${xdelta_bin}
-	echo -n -e "\tPatching : "
+	echo "    Patching ...."
 	./${xdelta_bin} patch patchdata/data1/data1pak${i}.xd data1/pak${i}.pak.103 data1/pak${i}.pak
 	status=$?
 	if [ "$status" -ne 0 ]; then
-		echo -e "Failed. Quitting.\n"
-		rm -f newpak${i}.md5
+		echo "    Failed. Quitting."
 		mv --force data1/pak${i}.pak.103 data1/pak${i}.pak
 		exit 1
 	fi
 	# make sure the patched pak file is ok
-	md5sum --status --check newpak${i}.md5
+	testsum=`$md5cmd data1/pak${i}.pak`
+	echo "$testsum" | grep $newsum 1> /dev/null
 	status=$?
-	rm -f newpak${i}.md5
 	if [ "$status" -ne 0 ]; then
-		echo -e "Failed. Quitting.\n"
+		echo "    Failed. Quitting."
 		mv --force data1/pak${i}.pak.103 data1/pak${i}.pak
 		exit 1
 	fi
 	rm -f data1/pak${i}.pak.103
-	echo "Success."
-	let i=1+i
+	echo "    Success."
+
+#	let i=1+i
+	if [ $i -eq 1 ]; then
+		break
+	fi
+	i=1
+	continue
 done
 
 echo ""
-
 exit 0
 
