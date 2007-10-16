@@ -3,6 +3,12 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2007-10-16 (CVS):
+    * more updates to the build scripts.
+    * updated the loki_patch and xdelta pak patch scripts. the xdelta
+      script is less brain-damaged and now supports the md5 and md5sum
+      utilities both and should work on BSD derivatives.
+
 2007-10-15 (CVS):
     * more updates to the endianness stuff.
     * seems like gcc-3.0 wasn't enough for specifying format attributes for
