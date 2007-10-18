@@ -2,7 +2,7 @@
 	glquake.h
 	common glquake header
 
-	$Id: glquake.h,v 1.75 2007-10-14 11:12:28 sezero Exp $
+	$Id: glquake.h,v 1.76 2007-10-18 13:05:06 sezero Exp $
 */
 
 
@@ -55,7 +55,6 @@
 #define	MASK_r		0xff000000
 #define	MASK_g		0x00ff0000
 #define	MASK_b		0x0000ff00
-#define	MASK_rgb	0xffffff00
 #define	MASK_a		0x000000ff
 #define	SHIFT_r		24
 #define	SHIFT_g		16
@@ -65,7 +64,6 @@
 #define	MASK_r		0x000000ff
 #define	MASK_g		0x0000ff00
 #define	MASK_b		0x00ff0000
-#define	MASK_rgb	0x00ffffff
 #define	MASK_a		0xff000000
 #define	SHIFT_r		0
 #define	SHIFT_g		8
@@ -75,13 +73,14 @@
 #define	MASK_r		0x00ff0000
 #define	MASK_g		0xff000000
 #define	MASK_b		0x000000ff
-#define	MASK_rgb	0xffff00ff
 #define	MASK_a		0x0000ff00
 #define	SHIFT_r		16
 #define	SHIFT_g		24
 #define	SHIFT_b		0
 #define	SHIFT_a		8
 #endif
+
+#define	MASK_rgb	(MASK_r|MASK_g|MASK_b)
 
 
 /* ====================================================================
