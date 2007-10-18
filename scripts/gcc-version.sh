@@ -7,13 +7,13 @@
 #
 # adapted from the linux kernel tree
 
-if [ $# -lt 1 ]; then
+if test $# -lt 1; then
 	echo "No parameters given!"
 	exit 1
 fi
 
-$1 --version 2> /dev/null 1> /dev/null
-if [ $? -ne 0 ]; then
+$1 --version > /dev/null 2>&1
+if test $? -ne 0; then
 	echo "command $1 not found"
 	exit 1
 fi

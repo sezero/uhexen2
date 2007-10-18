@@ -1,6 +1,6 @@
 #!/bin/sh
 
-if [ "$1" = "strip" ]; then
+if test "$1" = "strip"; then
 	exe_ext=
 	if env | grep -i windir > __tmp.tmp; then
 		exe_ext=".exe"
@@ -27,7 +27,7 @@ linux)
 	;;
 esac
 
-if [ "$1" = "clean" ]; then
+if test "$1" = "clean"; then
 	$MAKE_CMD -s -C Client clean
 	$MAKE_CMD -s -C Master clean
 	$MAKE_CMD -s -C Server clean

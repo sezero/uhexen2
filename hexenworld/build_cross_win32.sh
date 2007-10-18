@@ -3,7 +3,7 @@
 UHEXEN2_TOP=..
 . $UHEXEN2_TOP/scripts/cross_defs
 
-if [ "$1" = "strip" ]; then
+if test "$1" = "strip"; then
 	echo "Stripping all HexenWorld binaries"
 	$STRIPPER Master/hwmaster.exe	\
 		Server/hwsv.exe	\
@@ -26,7 +26,7 @@ linux)
 	;;
 esac
 
-if [ "$1" = "clean" ]; then
+if test "$1" = "clean"; then
 	$MAKE_CMD -s -C Client clean
 	$MAKE_CMD -s -C Master clean
 	$MAKE_CMD -s -C Server clean

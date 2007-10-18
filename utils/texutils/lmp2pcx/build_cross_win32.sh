@@ -5,7 +5,7 @@ UHEXEN2_TOP=../../..
 
 BIN_DIR=../../bin
 
-if [ "$1" = "strip" ]; then
+if test "$1" = "strip"; then
 	$STRIPPER $BIN_DIR/lmp2pcx.exe
 	exit 0
 fi
@@ -24,7 +24,7 @@ linux)
 	;;
 esac
 
-if [ "$1" = "clean" ]; then
+if test "$1" = "clean"; then
 	$MAKE_CMD -s clean
 	exit 0
 fi

@@ -3,7 +3,7 @@
 UHEXEN2_TOP=../..
 . $UHEXEN2_TOP/scripts/cross_defs
 
-if [ "$1" = "strip" ]; then
+if test "$1" = "strip"; then
 	$STRIPPER hwcl.exe glhwcl.exe
 	exit 0
 fi
@@ -22,7 +22,7 @@ linux)
 	;;
 esac
 
-if [ "$1" = "all" ]; then
+if test "$1" = "all"; then
 	$MAKE_CMD clean
 	$MAKE_CMD $2 $3 $4 $5 $6 glhw || exit 1
 	$MAKE_CMD clean

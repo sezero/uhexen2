@@ -47,11 +47,9 @@ DetectOS()
 	return 0
 }
 
-if [ "$1" = "os" ]
-then
+if test "$1" = "os"; then
 	result=`DetectOS`
-elif [ "$1" = "arch" ]
-then
+elif test "$1" = "arch"; then
 	result=`DetectARCH`
 else
 	result="OS: `DetectOS`, Arch: `DetectARCH`"

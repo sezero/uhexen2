@@ -5,7 +5,7 @@ UHEXEN2_TOP=../..
 
 BIN_DIR=../bin
 
-if [ "$1" = "strip" ]; then
+if test "$1" = "strip"; then
 	echo "Stripping binaries"
 	$STRIPPER $BIN_DIR/qbsp.exe	\
 		$BIN_DIR/bspinfo.exe	\
@@ -27,7 +27,7 @@ linux)
 	;;
 esac
 
-if [ "$1" = "clean" ]; then
+if test "$1" = "clean"; then
 	$MAKE_CMD -s clean
 	exit 0
 fi

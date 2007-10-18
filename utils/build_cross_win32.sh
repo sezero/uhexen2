@@ -5,7 +5,7 @@ UHEXEN2_TOP=..
 
 BIN_DIR=bin
 
-if [ "$1" = "strip" ]; then
+if test "$1" = "strip"; then
 	echo "Stripping all hexen2-util binaries"
 	$STRIPPER hcc_old/hcc.exe	\
 		$BIN_DIR/hcc.exe	\
@@ -33,7 +33,7 @@ linux)
 	;;
 esac
 
-if [ "$1" = "clean" ]; then
+if test "$1" = "clean"; then
 	$MAKE_CMD -s -C hcc clean
 	$MAKE_CMD -s -C maputils clean
 	$MAKE_CMD -s -C genmodel clean

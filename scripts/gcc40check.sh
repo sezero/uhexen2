@@ -10,13 +10,13 @@
 # 4.1.x and 4.2 versions seem to produce good binaries.
 #
 
-if [ $# -lt 1 ]; then
+if test $# -lt 1; then
 	echo "No parameters given!"
 	exit 1
 fi
 
-$1 --version 2> /dev/null 1> /dev/null
-if [ $? -ne 0 ]; then
+$1 --version > /dev/null 2>&1
+if test $? -ne 0; then
 	echo "command $1 not found"
 	exit 1
 fi
@@ -26,9 +26,9 @@ compiler="$*"
 MAJOR=`echo __GNUC__ | $compiler -E -xc - | tail -n 1`
 MINOR=`echo __GNUC_MINOR__ | $compiler -E -xc - | tail -n 1`
 
-if [ $MAJOR -eq 4 ] && [ $MINOR -eq 0 ]; then
+if test $MAJOR -eq 4 -a $MINOR -eq 0; then
 	echo "yes"
-elif [ $MAJOR -eq 3 ] && [ $MINOR -eq 5 ]; then
+elif test $MAJOR -eq 3 -a $MINOR -eq 5; then
 	echo "yes"
 else
 	echo "no"

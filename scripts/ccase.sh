@@ -9,17 +9,14 @@ usage ()
     exit 2
 }
 
-if [ $# -lt 1 ]
-then
+if test $# -lt 1; then
     usage
 fi
 
-if [ "$1" = "-r" ]
-then
+if test "$1" = "-r"; then
     recursive=1
     shift
-    if [ $# -lt 1 ]
-    then
+    if test $# -lt 1; then
         usage
     fi
 else
@@ -29,13 +26,11 @@ fi
 for i in "$@"
 do
     new=`echo $i | tr "[:upper:]" "[:lower:]"`
-    if [ "$new" != "$i" ]
-    then
+    if test "$new" != "$i"; then
         echo $i "->" $new >&2
         mv "$i" "$new"
     fi
-    if [ $recursive = 1 -a -d "$new" ]
-    then
+    if test $recursive = 1 -a -d "$new"; then
         $0 -r "$new"/*
     fi
 done

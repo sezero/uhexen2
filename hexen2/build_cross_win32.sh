@@ -3,7 +3,7 @@
 UHEXEN2_TOP=..
 . $UHEXEN2_TOP/scripts/cross_defs
 
-if [ "$1" = "strip" ]; then
+if test "$1" = "strip"; then
 	$STRIPPER h2.exe glh2.exe h2ded.exe
 	exit 0
 fi
@@ -22,12 +22,12 @@ linux)
 	;;
 esac
 
-if [ "$1" = "h2ded" ]; then
+if test "$1" = "h2ded"; then
 	$MAKE_CMD -f Makefile.sv $2 $3 $4 $5 $6 || exit 1
 	exit 0
 fi
 
-if [ "$1" = "all" ]; then
+if test "$1" = "all"; then
 	$MAKE_CMD clean
 	$MAKE_CMD $2 $3 $4 $5 $6 h2  || exit 1
 	$MAKE_CMD clean
