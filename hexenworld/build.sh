@@ -2,10 +2,9 @@
 
 if test "$1" = "strip"; then
 	exe_ext=
-	if env | grep -i windir > __tmp.tmp; then
+	if env | grep -i windir > /dev/null; then
 		exe_ext=".exe"
 	fi
-	rm -f __tmp.tmp
 	strip Master/hwmaster$exe_ext	\
 		Server/hwsv$exe_ext	\
 		Client/hwcl$exe_ext	\

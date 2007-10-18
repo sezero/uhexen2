@@ -1,5 +1,5 @@
 # GNU Makefile for hexenworld clients using GCC.
-# $Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/Makefile,v 1.71 2007-10-15 12:15:28 sezero Exp $
+# $Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/Makefile,v 1.72 2007-10-18 16:55:50 sezero Exp $
 #
 # Type "make help" to see the valid targets.
 #
@@ -541,8 +541,8 @@ glhw: sanity $(GLOBJS) $(COMMON_ASM) $(COMMONOBJS)
 	$(LINKER) -o $(GLHW_BINARY) $(GLOBJS) $(COMMON_ASM) $(COMMONOBJS) $(LDFLAGS) $(GLFLAGS) $(SDLLINK)
 
 clean:
-	rm -f *.o win_stuff/*.o core .tmp *.tmp
+	rm -f *.o win_stuff/*.o core
 
 cleaner:
-	rm -f *.o win_stuff/*.o core .tmp *.tmp $(HW_BINARY) $(GLHW_BINARY)
+	rm -f *.o win_stuff/*.o core $(HW_BINARY) $(GLHW_BINARY)
 

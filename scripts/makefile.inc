@@ -1,5 +1,5 @@
 # GNU Makefile using GCC in a unix shell.
-# $Header: /home/ozzie/Download/0000/uhexen2/scripts/makefile.inc,v 1.15 2007-10-16 14:29:07 sezero Exp $
+# $Header: /home/ozzie/Download/0000/uhexen2/scripts/makefile.inc,v 1.16 2007-10-18 16:55:51 sezero Exp $
 
 # This file is responsible for determining the Host OS and Target OS,
 # setting common paths, selecting the compiler, assigning the compiler
@@ -33,7 +33,7 @@ HOST_OS :=$(shell uname|sed -e s/_.*//|tr '[:upper:]' '[:lower:]')
 #	the actual TARGET_OS remains as the HOST_OS.
 
 # See if we are running on a Windows installation.
-#WIN_NATIVE :=$(shell if env | grep -i windir > __tmp.tmp; then echo "yes"; fi)
+#WIN_NATIVE :=$(shell if env | grep -i windir > /dev/null; then echo "yes"; fi)
 ifdef windir
 WIN_NATIVE := yes
 endif
@@ -96,12 +96,8 @@ WINDRES ?= windres
 LINKER := $(CC)
 
 # Helper function to check if gcc supports a given flag.
-ifdef WIN_NATIVE
-# /dev/null stuff will not work on windows ;)
-check_gcc = $(shell echo > .tmp; if $(CC) $(1) -S -o _tmp.tmp -xc .tmp > __tmp.tmp 2>&1; then echo "$(1)"; else echo "$(2)"; fi)
-else
-check_gcc = $(shell if $(CC) $(1) -S -o /dev/null -xc /dev/null > /dev/null 2>&1; then echo "$(1)"; else echo "$(2)"; fi)
-endif
+# this relies on gcc option of taking input from stdin
+check_gcc = $(shell if echo | $(CC) $(1) -S -o /dev/null -xc - > /dev/null 2>&1; then echo "$(1)"; else echo "$(2)"; fi;)
 
 
 # Determine common build flags:
@@ -130,8 +126,8 @@ SDL_CONFIG ?=sdl-config
 # If a makefile needs SDL, it should set CHECK_SDL to 1
 ifeq ($(CHECK_SDL),1)
 ifeq ($(TARGET_OS),unix)
-SDLFLAGS:= $(shell $(SDL_CONFIG) --cflags 2> __tmp.tmp)
-SDLLINK := $(shell $(SDL_CONFIG) --libs  2> __tmp.tmp)
+SDLFLAGS:= $(shell $(SDL_CONFIG) --cflags 2> /dev/null)
+SDLLINK := $(shell $(SDL_CONFIG) --libs 2> /dev/null)
 else
 SDLFLAGS:=
 SDLLINK :=

@@ -1,5 +1,5 @@
 # GNU Makefile for hexenworld master server using GCC.
-# $Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Master/Makefile,v 1.18 2007-10-15 12:15:28 sezero Exp $
+# $Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Master/Makefile,v 1.19 2007-10-18 16:55:50 sezero Exp $
 #
 # if building a debug version :		make DEBUG=1 [other stuff]
 #
@@ -78,5 +78,5 @@ $(BINARY) : $(MASTEROBJS)
 	$(LINKER) -o $(BINARY) $(MASTEROBJS) $(LDFLAGS)
 
 clean:
-	rm -f *.o core .tmp *.tmp
+	rm -f *.o core
 

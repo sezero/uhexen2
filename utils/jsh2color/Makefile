@@ -1,5 +1,5 @@
 # GNU Makefile for hexen2 jsh2color tool using GCC.
-# $Header: /home/ozzie/Download/0000/uhexen2/utils/jsh2color/Makefile,v 1.17 2007-10-15 12:15:31 sezero Exp $
+# $Header: /home/ozzie/Download/0000/uhexen2/utils/jsh2color/Makefile,v 1.18 2007-10-18 16:55:54 sezero Exp $
 #
 # if building a debug version :		make DEBUG=1 [other stuff]
 #
@@ -95,5 +95,5 @@ $(BINARY) : $(JS_OBJS)
 	$(LINKER) -o $(DESTDIR)/$(BINARY) $(JS_OBJS) $(LDFLAGS) $(LDLIBS)
 
 clean : 
-	rm -f *.o $(COMMONDIR)/*.o .tmp *.tmp core
+	rm -f *.o $(COMMONDIR)/*.o core
 

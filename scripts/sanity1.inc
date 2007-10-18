@@ -2,7 +2,7 @@
 # namely, finding out the availability of the required build commands
 
 
-check_cmd=$(shell if which $(1) > __tmp.tmp 2>&1; then echo "";else echo $(1);fi)
+check_cmd=$(shell if which $(1) > /dev/null 2>&1; then echo "";else echo $(1);fi)
 
 # we need access to the which utility
 _DONT_HAVE_WHICH:=$(call check_cmd,which)

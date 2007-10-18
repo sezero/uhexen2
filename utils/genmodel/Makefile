@@ -1,5 +1,5 @@
 # GNU Makefile for hexen2 genmodel tool using GCC.
-# $Header: /home/ozzie/Download/0000/uhexen2/utils/genmodel/Makefile,v 1.13 2007-10-15 12:15:31 sezero Exp $
+# $Header: /home/ozzie/Download/0000/uhexen2/utils/genmodel/Makefile,v 1.14 2007-10-18 16:55:53 sezero Exp $
 #
 # if building a debug version :		make DEBUG=1 [other stuff]
 #
@@ -88,5 +88,5 @@ $(BINARY) : $(GENMODELOBJS)
 	$(LINKER) -o $(DESTDIR)/$(BINARY) $(GENMODELOBJS) $(LDFLAGS) $(LDLIBS)
 
 clean : 
-	rm -f *.o $(COMMONDIR)/*.o .tmp *.tmp core
+	rm -f *.o $(COMMONDIR)/*.o core
 

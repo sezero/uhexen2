@@ -1,5 +1,5 @@
 # GNU Makefile for hwmquery using GCC.
-# $Header: /home/ozzie/Download/0000/uhexen2/hw_utils/hwmquery/Makefile,v 1.8 2007-10-15 12:15:29 sezero Exp $
+# $Header: /home/ozzie/Download/0000/uhexen2/hw_utils/hwmquery/Makefile,v 1.9 2007-10-18 16:55:51 sezero Exp $
 #
 # if building a debug version :		make DEBUG=1 [other stuff]
 #
@@ -71,5 +71,5 @@ $(HWMQUERY) : $(HWMQUERY_OBJS)
 	$(LINKER) -o $(HWMQUERY) $(HWMQUERY_OBJS) $(LDFLAGS)
 
 clean:
-	rm -f *.o core .tmp *.tmp
+	rm -f *.o core
 

@@ -4,10 +4,9 @@ BIN_DIR=bin
 
 if test "$1" = "strip"; then
 	exe_ext=
-	if env | grep -i windir > __tmp.tmp; then
+	if env | grep -i windir > /dev/null; then
 		exe_ext=".exe"
 	fi
-	rm -f __tmp.tmp
 	strip hcc_old/hcc$exe_ext	\
 		$BIN_DIR/hcc$exe_ext	\
 		$BIN_DIR/dhcc$exe_ext	\

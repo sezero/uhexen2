@@ -1,5 +1,5 @@
 # GNU Makefile for hexen2 hcc tool (old version) using GCC.
-# $Header: /home/ozzie/Download/0000/uhexen2/utils/hcc_old/Makefile,v 1.10 2007-10-15 12:15:31 sezero Exp $
+# $Header: /home/ozzie/Download/0000/uhexen2/utils/hcc_old/Makefile,v 1.11 2007-10-18 16:55:54 sezero Exp $
 #
 # if building a debug version :		make DEBUG=1 [other stuff]
 #
@@ -85,5 +85,5 @@ $(BINARY) : $(HCCOBJS)
 	$(LINKER) -o $(BINARY) $(HCCOBJS) $(LDFLAGS) $(LDLIBS)
 
 clean : 
-	rm -f *.o $(COMMONDIR)/*.o .tmp *.tmp core
+	rm -f *.o $(COMMONDIR)/*.o core
 

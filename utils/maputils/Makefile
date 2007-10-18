@@ -1,5 +1,5 @@
 # GNU Makefile for hexen2 mapping tools using GCC.
-# $Header: /home/ozzie/Download/0000/uhexen2/utils/maputils/Makefile,v 1.14 2007-10-15 12:15:31 sezero Exp $
+# $Header: /home/ozzie/Download/0000/uhexen2/utils/maputils/Makefile,v 1.15 2007-10-18 16:55:54 sezero Exp $
 #
 # if building a debug version :		make DEBUG=1 [other stuff]
 #
@@ -133,5 +133,5 @@ $(BSPINFO) : $(BSPINFOBJS)
 	$(LINKER) -o $(DESTDIR)/$(BSPINFO) $(BSPINFOBJS) $(LDFLAGS)
 
 clean : 
-	rm -f *.o $(COMMONDIR)/*.o .tmp *.tmp core
+	rm -f *.o $(COMMONDIR)/*.o core
 

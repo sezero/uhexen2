@@ -1,5 +1,5 @@
 # GNU Makefile for hexenworld server using GCC.
-# $Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Server/Makefile,v 1.39 2007-10-15 12:15:29 sezero Exp $
+# $Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Server/Makefile,v 1.40 2007-10-18 16:55:51 sezero Exp $
 #
 # To cross-compile for Win32 on Unix, you must pass the WINBUILD=1
 # argument to make. It would be best if you examine the script named
@@ -177,5 +177,5 @@ $(BINARY): sanity $(COMMONOBJS)
 	$(LINKER) -o $(BINARY) $(COMMONOBJS) $(LDFLAGS)
 
 clean:
-	rm -f *.o win_stuff/*.o cl_objs/*.o core .tmp *.tmp
+	rm -f *.o win_stuff/*.o cl_objs/*.o core
 

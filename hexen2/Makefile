@@ -1,5 +1,5 @@
 # GNU Makefile for (gl)hexen2 client/server binaries using GCC.
-# $Header: /home/ozzie/Download/0000/uhexen2/hexen2/Makefile,v 1.75 2007-10-15 12:15:26 sezero Exp $
+# $Header: /home/ozzie/Download/0000/uhexen2/hexen2/Makefile,v 1.76 2007-10-18 16:55:45 sezero Exp $
 #
 # Type "make help" to see the valid targets.
 #
@@ -549,8 +549,8 @@ glh2: sanity $(GLOBJS) $(COMMON_ASM) $(COMMONOBJS)
 	$(LINKER) -o $(GLH2_BINARY) $(GLOBJS) $(COMMON_ASM) $(COMMONOBJS) $(LDFLAGS) $(GLFLAGS) $(SDLLINK)
 
 clean:
-	rm -f *.o win_stuff/*.o sv_objs/*.o core .tmp *.tmp
+	rm -f *.o win_stuff/*.o sv_objs/*.o core
 
 cleaner:
-	rm -f *.o win_stuff/*.o sv_objs/*.o core .tmp *.tmp $(H2_BINARY) $(GLH2_BINARY)
+	rm -f *.o win_stuff/*.o sv_objs/*.o core $(H2_BINARY) $(GLH2_BINARY)
 

@@ -1,5 +1,5 @@
 # GNU Makefile for hwrcon and hwterm using GCC.
-# $Header: /home/ozzie/Download/0000/uhexen2/hw_utils/hwrcon/Makefile,v 1.11 2007-10-15 12:15:29 sezero Exp $
+# $Header: /home/ozzie/Download/0000/uhexen2/hw_utils/hwrcon/Makefile,v 1.12 2007-10-18 16:55:51 sezero Exp $
 #
 # if building a debug version :		make DEBUG=1 [other stuff]
 #
@@ -94,5 +94,5 @@ $(HWTERM) : $(COMMONOBJ) $(HUFF_OBJS) $(TERM_OBJS)
 	$(LINKER) -o $(HWTERM) $(COMMONOBJ) $(HUFF_OBJS) $(TERM_OBJS) $(LDFLAGS)
 
 clean:
-	rm -f *.o core .tmp *.tmp
+	rm -f *.o core
 
