@@ -2,7 +2,7 @@
 	vid.h
 	video driver defs
 
-	$Id: vid.h,v 1.31 2007-09-14 14:10:02 sezero Exp $
+	$Id: vid.h,v 1.32 2007-10-21 15:38:02 sezero Exp $
 */
 
 #ifndef __VID_DEFS_H
@@ -89,14 +89,17 @@ void VID_Shutdown (void);
 void VID_Update (vrect_t *rects);
 // flushes the given rectangles from the view buffer to the screen
 
-#if defined(GLQUAKE)
+#if defined(PLATFORM_DOS)
 #define VID_LockBuffer()	do {} while (0)
 #define VID_UnlockBuffer()	do {} while (0)
-#else	/* real thing for S/W version */
+#elif defined(GLQUAKE)
+#define VID_LockBuffer()	do {} while (0)
+#define VID_UnlockBuffer()	do {} while (0)
+#else
 void VID_LockBuffer (void);
 void VID_UnlockBuffer (void);
-// vid buffer locking (not used in opengl version)
-#endif	/* GLQUAKE */
+// vid buffer locking, not used in opengl version or DOS software version
+#endif
 
 void VID_HandlePause (qboolean paused);
 // called only on Win32, when pause happens, so the mouse can be released
