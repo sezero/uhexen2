@@ -2,7 +2,7 @@
 	cmd.c
 	Quake script command processing module
 
-	$Id: cmd.c,v 1.33 2007-09-22 15:27:17 sezero Exp $
+	$Id: cmd.c,v 1.34 2007-10-21 15:26:49 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -693,7 +693,6 @@ void Cmd_ExecuteString (char *text, cmd_source_t src)
 		Con_Printf ("Unknown command \"%s\"\n", Cmd_Argv(0));
 }
 
-#if 0
 /*
 ================
 Cmd_CheckParm
@@ -715,7 +714,6 @@ int Cmd_CheckParm (const char *parm)
 
 	return 0;
 }
-#endif
 
 #ifndef SERVERONLY
 /*

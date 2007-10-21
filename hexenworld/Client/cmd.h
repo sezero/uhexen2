@@ -2,7 +2,7 @@
 	cmd.h
 	command buffer and command execution
 
-	$Id: cmd.h,v 1.10 2007-03-14 21:03:30 sezero Exp $
+	$Id: cmd.h,v 1.11 2007-10-21 15:26:49 sezero Exp $
 */
 
 #ifndef __HX2_CMD_H
@@ -91,7 +91,7 @@ char	*Cmd_Args (void);
 // functions. Cmd_Argv () will return an empty string, not a NULL
 // if arg > argc, so string operations are always safe.
 
-//int Cmd_CheckParm (char *parm);
+int Cmd_CheckParm (const char *parm);
 // Returns the position (1 to argc-1) in the command's argument list
 // where the given parameter apears, or 0 if not present
 
