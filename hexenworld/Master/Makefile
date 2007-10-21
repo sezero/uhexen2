@@ -1,5 +1,5 @@
 # GNU Makefile for hexenworld master server using GCC.
-# $Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Master/Makefile,v 1.19 2007-10-18 16:55:50 sezero Exp $
+# $Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Master/Makefile,v 1.20 2007-10-21 16:48:11 sezero Exp $
 #
 # if building a debug version :		make DEBUG=1 [other stuff]
 #
@@ -20,7 +20,8 @@ include $(UHEXEN2_TOP)/scripts/sanity1.inc
 # Names of the binaries
 ifeq ($(TARGET_OS),win32)
 BINARY=hwmaster.exe
-else
+endif
+ifeq ($(TARGET_OS),unix)
 BINARY=hwmaster
 endif
 
@@ -54,7 +55,8 @@ EXT_FLAGS:=$(ARCHFLAGS)
 ifeq ($(TARGET_OS),win32)
 INCLUDES := -I$(MINGWDIR)/include -I.
 LDFLAGS  := -L$(MINGWDIR)/lib -lwsock32 -lwinmm -mconsole
-else
+endif
+ifeq ($(TARGET_OS),unix)
 INCLUDES := -I.
 LDFLAGS  := $(LIBSOCKET)
 endif

@@ -1,5 +1,5 @@
 # GNU Makefile for hexen2 mapping tools using GCC.
-# $Header: /home/ozzie/Download/0000/uhexen2/utils/maputils/Makefile,v 1.15 2007-10-18 16:55:54 sezero Exp $
+# $Header: /home/ozzie/Download/0000/uhexen2/utils/maputils/Makefile,v 1.16 2007-10-21 16:48:12 sezero Exp $
 #
 # if building a debug version :		make DEBUG=1 [other stuff]
 #
@@ -27,7 +27,8 @@ QBSP=qbsp.exe
 LIGHT=light.exe
 VIS=vis.exe
 BSPINFO=bspinfo.exe
-else
+endif
+ifeq ($(TARGET_OS),unix)
 QBSP=qbsp
 LIGHT=light
 VIS=vis
@@ -58,7 +59,8 @@ ifeq ($(TARGET_OS),win32)
 INCLUDES:= -I$(MINGWDIR)/include -I$(COMMONDIR)
 LDFLAGS := -mconsole
 LDLIBS  :=
-else
+endif
+ifeq ($(TARGET_OS),unix)
 INCLUDES:= -I$(COMMONDIR)
 LDFLAGS :=
 LDLIBS  := -lm

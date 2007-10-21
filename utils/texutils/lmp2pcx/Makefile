@@ -1,5 +1,5 @@
 # GNU Makefile for hexen2 lmp2pcx tool using GCC.
-# $Header: /home/ozzie/Download/0000/uhexen2/utils/texutils/lmp2pcx/Makefile,v 1.5 2007-10-18 16:55:56 sezero Exp $
+# $Header: /home/ozzie/Download/0000/uhexen2/utils/texutils/lmp2pcx/Makefile,v 1.6 2007-10-21 16:48:13 sezero Exp $
 #
 # if building a debug version :		make DEBUG=1 [other stuff]
 #
@@ -24,7 +24,8 @@ include $(UHEXEN2_TOP)/scripts/sanity1.inc
 # Names of the binaries
 ifeq ($(TARGET_OS),win32)
 BINARY=lmp2pcx.exe
-else
+endif
+ifeq ($(TARGET_OS),unix)
 BINARY=lmp2pcx
 endif
 
@@ -51,7 +52,8 @@ ifeq ($(TARGET_OS),win32)
 INCLUDES:= -I$(MINGWDIR)/include -I$(COMMONDIR)
 LDFLAGS := -mconsole
 LDLIBS  :=
-else
+endif
+ifeq ($(TARGET_OS),unix)
 INCLUDES:= -I$(COMMONDIR)
 LDFLAGS :=
 LDLIBS  :=

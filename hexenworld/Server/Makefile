@@ -1,5 +1,5 @@
 # GNU Makefile for hexenworld server using GCC.
-# $Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Server/Makefile,v 1.40 2007-10-18 16:55:51 sezero Exp $
+# $Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Server/Makefile,v 1.41 2007-10-21 16:48:11 sezero Exp $
 #
 # To cross-compile for Win32 on Unix, you must pass the WINBUILD=1
 # argument to make. It would be best if you examine the script named
@@ -43,7 +43,8 @@ include $(UHEXEN2_TOP)/scripts/sanity1.inc
 # Names of the binaries
 ifeq ($(TARGET_OS),win32)
 BINARY=hwsv.exe
-else
+endif
+ifeq ($(TARGET_OS),unix)
 BINARY=hwsv
 endif
 
@@ -93,7 +94,8 @@ INCLUDES:= -I. -I../Client
 ifeq ($(TARGET_OS),win32)
 INCLUDES:= -I$(MINGWDIR)/include $(INCLUDES)
 LDFLAGS := -L$(MINGWDIR)/lib -lwinmm -lwsock32 -mconsole
-else
+endif
+ifeq ($(TARGET_OS),unix)
 LDFLAGS := $(LIBSOCKET) -lm
 endif
 
@@ -124,7 +126,8 @@ SYS_WIN32 = win_stuff/sys_win.o
 
 ifeq ($(TARGET_OS),win32)
 SYSOBJ_SYS = $(SYS_WIN32)
-else
+endif
+ifeq ($(TARGET_OS),unix)
 SYSOBJ_SYS = $(SYS_UNIX)
 endif
 

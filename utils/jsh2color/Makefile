@@ -1,5 +1,5 @@
 # GNU Makefile for hexen2 jsh2color tool using GCC.
-# $Header: /home/ozzie/Download/0000/uhexen2/utils/jsh2color/Makefile,v 1.18 2007-10-18 16:55:54 sezero Exp $
+# $Header: /home/ozzie/Download/0000/uhexen2/utils/jsh2color/Makefile,v 1.19 2007-10-21 16:48:12 sezero Exp $
 #
 # if building a debug version :		make DEBUG=1 [other stuff]
 #
@@ -24,7 +24,8 @@ include $(UHEXEN2_TOP)/scripts/sanity1.inc
 # Names of the binaries
 ifeq ($(TARGET_OS),win32)
 BINARY=jsh2colour.exe
-else
+endif
+ifeq ($(TARGET_OS),unix)
 BINARY=jsh2colour
 endif
 
@@ -52,7 +53,8 @@ ifeq ($(TARGET_OS),win32)
 INCLUDES:= -I$(MINGWDIR)/include -I$(COMMONDIR)
 LDFLAGS := -mconsole
 LDLIBS  :=
-else
+endif
+ifeq ($(TARGET_OS),unix)
 INCLUDES:= -I$(COMMONDIR)
 LDFLAGS :=
 LDLIBS  := -lm

@@ -1,5 +1,5 @@
 # GNU Makefile using GCC in a unix shell.
-# $Header: /home/ozzie/Download/0000/uhexen2/scripts/makefile.inc,v 1.16 2007-10-18 16:55:51 sezero Exp $
+# $Header: /home/ozzie/Download/0000/uhexen2/scripts/makefile.inc,v 1.17 2007-10-21 16:48:11 sezero Exp $
 
 # This file is responsible for determining the Host OS and Target OS,
 # setting common paths, selecting the compiler, assigning the compiler
@@ -22,15 +22,21 @@ X11BASE ?=/usr/X11R6
 # MinGW32 directory:
 MINGWDIR ?=/mingw
 
+# DJGPP directory:
+DJGPPDIR ?=/djgpp
+
 # OS and TARGET_OS detection:
 
 HOST_OS :=$(shell uname|sed -e s/_.*//|tr '[:upper:]' '[:lower:]')
 
-# NOTE:	We only support one type of cross compilation:
-#	Compiling for windows on unix (linux).  This
-#	means, unless cross compiling (detected by the
-#	WINBUILD definition on a unix host, see below),
-#	the actual TARGET_OS remains as the HOST_OS.
+# NOTE:	We only support these types of cross compilation:
+#	Compiling for windows or dos (djgpp) on unix.
+#	This means, unless cross compiling, the actual
+#	TARGET_OS remains as the HOST_OS.
+
+# NOTE:	DOS target is only tested/supported by cross compilation.
+
+CROSS_COMPILE:=n
 
 # See if we are running on a Windows installation.
 #WIN_NATIVE :=$(shell if env | grep -i windir > /dev/null; then echo "yes"; fi)
@@ -54,10 +60,13 @@ endif
 HOST_OS :=windows
 TARGET_OS:=win32
 NASM_BIN :=nasmw
-else
+endif
+
+ifndef WIN_NATIVE
 # we are running on a Unixish OS
 ifdef WINBUILD
 # cross compilation for windows
+CROSS_COMPILE:=y
 TARGET_OS:=win32
 else
 TARGET_OS:=unix
@@ -65,11 +74,11 @@ endif
 NASM_BIN :=nasm
 endif
 
-ifeq ($(TARGET_OS),win32)
+ifeq ($(TARGET_OS),unix)
+MACH_TYPE:=$(shell sh $(UHEXEN2_TOP)/scripts/detect.sh arch)
+else
 # FIXME: windows does not have to be x86.
 MACH_TYPE:=x86
-else
-MACH_TYPE:=$(shell sh $(UHEXEN2_TOP)/scripts/detect.sh arch)
 endif
 
 # Compiler selection:
@@ -105,7 +114,7 @@ check_gcc = $(shell if echo | $(CC) $(1) -S -o /dev/null -xc - > /dev/null 2>&1;
 # Possible ARCH flags
 ARCHFLAGS:=
 
-ifndef WINBUILD
+ifeq ($(CROSS_COMPILE),n)
 ifeq ($(HOST_OS),morphos)
 ARCHFLAGS:=-noixemul
 endif
@@ -115,8 +124,13 @@ endif
 # These are required for IA32 assembly for hexen2/hexenworld clients
 ifeq ($(TARGET_OS),win32)
 NASMFLAGS:= -fwin32 --prefix _
+endif
+ifeq ($(TARGET_OS),unix)
+ifeq ($(HOST_OS),darwin)
+NASMFLAGS:= -f macho
 else
 NASMFLAGS:= -f elf
+endif
 endif
 
 # the "sdl-config" command
@@ -136,7 +150,7 @@ endif
 
 # -lsocket is needed on some arches
 LIBSOCKET:=
-ifndef WINBUILD
+ifeq ($(CROSS_COMPILE),n)
 ifeq ($(HOST_OS),qnx)
 LIBSOCKET:=-lsocket
 endif

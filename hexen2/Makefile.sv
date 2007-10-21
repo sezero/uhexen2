@@ -1,5 +1,5 @@
 # GNU Makefile for Hexen II Dedicated Server (h2ded) using GCC.
-# $Header: /home/ozzie/Download/0000/uhexen2/hexen2/Makefile.sv,v 1.16 2007-10-18 16:55:45 sezero Exp $
+# $Header: /home/ozzie/Download/0000/uhexen2/hexen2/Makefile.sv,v 1.17 2007-10-21 16:48:09 sezero Exp $
 #
 # It is ESSENTIAL that you run make clean between different
 # types of builds or different types of targets.
@@ -46,7 +46,8 @@ include $(UHEXEN2_TOP)/scripts/sanity1.inc
 # Names of the binaries
 ifeq ($(TARGET_OS),win32)
 BINARY=h2ded.exe
-else
+endif
+ifeq ($(TARGET_OS),unix)
 BINARY=h2ded
 endif
 
@@ -96,7 +97,8 @@ INCLUDES:= -I./server -I.
 ifeq ($(TARGET_OS),win32)
 INCLUDES:= -I$(MINGWDIR)/include $(INCLUDES)
 LDFLAGS := -L$(MINGWDIR)/lib -lwinmm -lwsock32 -mconsole
-else
+endif
+ifeq ($(TARGET_OS),unix)
 LDFLAGS := $(LIBSOCKET) -lm
 endif
 
@@ -133,7 +135,8 @@ SYS_WIN32 = sv_objs/sys_win.o
 ifeq ($(TARGET_OS),win32)
 SYSOBJ_NET = $(NET_WIN32)
 SYSOBJ_SYS = $(SYS_WIN32)
-else
+endif
+ifeq ($(TARGET_OS),unix)
 SYSOBJ_NET = $(NET_UNIX)
 SYSOBJ_SYS = $(SYS_UNIX)
 endif

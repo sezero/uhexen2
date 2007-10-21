@@ -1,5 +1,5 @@
 # GNU Makefile for (gl)hexen2 client/server binaries using GCC.
-# $Header: /home/ozzie/Download/0000/uhexen2/hexen2/Makefile,v 1.76 2007-10-18 16:55:45 sezero Exp $
+# $Header: /home/ozzie/Download/0000/uhexen2/hexen2/Makefile,v 1.77 2007-10-21 16:48:09 sezero Exp $
 #
 # Type "make help" to see the valid targets.
 #
@@ -154,7 +154,8 @@ include $(UHEXEN2_TOP)/scripts/sanity1.inc
 ifeq ($(TARGET_OS),win32)
 H2_BINARY=h2.exe
 GLH2_BINARY=glh2.exe
-else
+endif
+ifeq ($(TARGET_OS),unix)
 H2_BINARY=hexen2
 GLH2_BINARY=glhexen2
 endif
@@ -210,7 +211,8 @@ ifeq ($(TARGET_OS),win32)
 # Main win32 specific includes and flags
 INCLUDES:= -I$(UHEXEN2_TOP)/w32stuff/dxsdk/inc -I$(MINGWDIR)/include -I.
 LDFLAGS := -L$(MINGWDIR)/lib -lwinmm -lwsock32 -mwindows
-else
+endif
+ifeq ($(TARGET_OS),unix)
 # Main unix specific includes and flags
 INCLUDES:= -I$(X11BASE)/include -I.
 LDFLAGS := $(LIBSOCKET)
@@ -224,18 +226,13 @@ GL_DEFS := -DGLQUAKE
 GLFLAGS :=
 
 # allow 3dfx gamma hack only on linux and freebsd
-ifneq ($(TARGET_OS),win32)
 ifneq ($(HOST_OS),linux)
 ifneq ($(HOST_OS),freebsd)
 USE_3DFXGAMMA=no
 endif
 endif
-endif
-
-ifneq ($(TARGET_OS),win32)
 ifeq ($(USE_3DFXGAMMA),yes)
 GL_DEFS+= -DUSE_3DFXGAMMA
-endif
 endif
 
 ifeq ($(LINK_GL_LIBS),no)
@@ -324,7 +321,8 @@ else
 COMOBJ_SND := snd_sys.o snd_dma.o snd_mix.o snd_mem.o
 ifeq ($(TARGET_OS),win32)
 SYSOBJ_SND := win_stuff/snd_win.o
-else
+endif
+ifeq ($(TARGET_OS),unix)
 SYSOBJ_SND := snd_oss.o snd_alsa.o snd_sun.o $(OBJ_SNDSDL)
 endif
 # end of Sound objects
@@ -357,7 +355,8 @@ EXT_FLAGS += -D_NO_CDAUDIO
 else
 ifeq ($(TARGET_OS),win32)
 SYSOBJ_CDA := win_stuff/cd_win.o
-else
+endif
+ifeq ($(TARGET_OS),unix)
 SYSOBJ_CDA := cd_sdl.o cd_bsd.o cd_linux.o
 endif
 # end of CDAudio objects
@@ -370,7 +369,8 @@ SYSOBJ_GL_VID:= win_stuff/gl_vidnt.o
 SYSOBJ_SOFT_VID:= win_stuff/vid_win.o
 SYSOBJ_NET := win_stuff/net_win.o win_stuff/net_wins.o win_stuff/net_wipx.o
 SYSOBJ_SYS := win_stuff/conproc.o win_stuff/sys_win.o win32res.o
-else
+endif
+ifeq ($(TARGET_OS),unix)
 SYSOBJ_INPUT := in_sdl.o
 SYSOBJ_GL_VID:= gl_vidsdl.o fx_gamma.o
 SYSOBJ_SOFT_VID:= vid_sdl.o

@@ -1,5 +1,5 @@
 # GNU Makefile for hwmquery using GCC.
-# $Header: /home/ozzie/Download/0000/uhexen2/hw_utils/hwmquery/Makefile,v 1.9 2007-10-18 16:55:51 sezero Exp $
+# $Header: /home/ozzie/Download/0000/uhexen2/hw_utils/hwmquery/Makefile,v 1.10 2007-10-21 16:48:11 sezero Exp $
 #
 # if building a debug version :		make DEBUG=1 [other stuff]
 #
@@ -20,7 +20,8 @@ include $(UHEXEN2_TOP)/scripts/sanity1.inc
 # Names of the binaries
 ifeq ($(TARGET_OS),win32)
 HWMQUERY=hwmquery.exe
-else
+endif
+ifeq ($(TARGET_OS),unix)
 HWMQUERY=hwmquery
 endif
 
@@ -47,7 +48,8 @@ EXT_FLAGS:=$(ARCHFLAGS)
 ifeq ($(TARGET_OS),win32)
 INCLUDES := -I$(MINGWDIR)/include -I.
 LDFLAGS  := -L$(MINGWDIR)/lib -lwsock32 -mconsole
-else
+endif
+ifeq ($(TARGET_OS),unix)
 INCLUDES := -I.
 LDFLAGS  := $(LIBSOCKET)
 endif

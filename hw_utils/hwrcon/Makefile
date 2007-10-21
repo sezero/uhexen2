@@ -1,5 +1,5 @@
 # GNU Makefile for hwrcon and hwterm using GCC.
-# $Header: /home/ozzie/Download/0000/uhexen2/hw_utils/hwrcon/Makefile,v 1.12 2007-10-18 16:55:51 sezero Exp $
+# $Header: /home/ozzie/Download/0000/uhexen2/hw_utils/hwrcon/Makefile,v 1.13 2007-10-21 16:48:11 sezero Exp $
 #
 # if building a debug version :		make DEBUG=1 [other stuff]
 #
@@ -21,7 +21,8 @@ include $(UHEXEN2_TOP)/scripts/sanity1.inc
 ifeq ($(TARGET_OS),win32)
 HWRCON=hwrcon.exe
 HWTERM=hwterm.exe
-else
+endif
+ifeq ($(TARGET_OS),unix)
 HWRCON=hwrcon
 HWTERM=hwterm
 endif
@@ -54,7 +55,8 @@ EXT_FLAGS:=$(ARCHFLAGS)
 ifeq ($(TARGET_OS),win32)
 INCLUDES := -I$(MINGWDIR)/include -I.
 LDFLAGS  := -L$(MINGWDIR)/lib -lwsock32 -mconsole
-else
+endif
+ifeq ($(TARGET_OS),unix)
 INCLUDES := -I.
 LDFLAGS  := $(LIBSOCKET)
 endif
