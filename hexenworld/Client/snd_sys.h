@@ -2,7 +2,7 @@
 	snd_sys.h
 	Platform specific macros and prototypes for sound
 
-	$Id: snd_sys.h,v 1.16 2007-10-13 20:15:36 sezero Exp $
+	$Id: snd_sys.h,v 1.17 2007-10-21 15:37:01 sezero Exp $
 */
 
 #ifndef __HX2_SND_SYS__
@@ -12,6 +12,7 @@
 #undef HAVE_OSS_SOUND
 #undef HAVE_SUN_SOUND
 #undef HAVE_ALSA_SOUND
+#undef HAVE_DOS_SOUND
 #undef HAVE_WIN_SOUND
 
 #undef SOUND_NUMDRIVERS
@@ -57,7 +58,13 @@
 #define HAVE_WIN_SOUND		0
 #endif
 
-#define SOUND_NUMDRIVERS	(HAVE_SDL_SOUND + HAVE_OSS_SOUND + HAVE_SUN_SOUND + HAVE_ALSA_SOUND + HAVE_WIN_SOUND)
+#if defined(PLATFORM_DOS)
+#define HAVE_DOS_SOUND		1
+#else
+#define HAVE_DOS_SOUND		0
+#endif
+
+#define SOUND_NUMDRIVERS	(HAVE_SDL_SOUND + HAVE_OSS_SOUND + HAVE_SUN_SOUND + HAVE_ALSA_SOUND + HAVE_WIN_SOUND + HAVE_DOS_SOUND)
 
 /* Sound system definitions */
 #define	S_SYS_NULL	0
@@ -66,7 +73,8 @@
 #define	S_SYS_ALSA	3
 #define	S_SYS_SUN	4
 #define	S_SYS_WIN	5
-#define	S_SYS_MAX	6
+#define	S_SYS_DOS	6
+#define	S_SYS_MAX	7
 
 #if defined(PLATFORM_WINDOWS)
 /* for the windows crap used in snd_dma.c */
@@ -102,6 +110,14 @@ extern qboolean S_WIN_Init(void);
 extern int S_WIN_GetDMAPos(void);
 extern void S_WIN_Shutdown(void);
 extern void S_WIN_Submit(void);
+#endif
+
+#if HAVE_DOS_SOUND
+/* DOS versions of the above */
+extern qboolean S_DOS_Init(void);
+extern int S_DOS_GetDMAPos(void);
+extern void S_DOS_Shutdown(void);
+extern void S_DOS_Submit(void);
 #endif
 
 #if HAVE_OSS_SOUND

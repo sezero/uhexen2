@@ -2,7 +2,7 @@
 	snd_sys.c
 	pre-Init platform specific sound stuff
 
-	$Id: snd_sys.c,v 1.11 2007-09-14 14:16:23 sezero Exp $
+	$Id: snd_sys.c,v 1.12 2007-10-21 15:37:01 sezero Exp $
 */
 
 
@@ -73,6 +73,8 @@ static void S_InitSys (void)
 	else
 #if HAVE_WIN_SOUND
 		snd_system = S_SYS_WIN;
+#elif HAVE_DOS_SOUND
+		snd_system = S_SYS_DOS;
 #elif HAVE_OSS_SOUND
 		snd_system = S_SYS_OSS;
 #elif HAVE_SUN_SOUND
@@ -103,6 +105,14 @@ void S_InitDrivers (void)
 		SNDDMA_GetDMAPos = S_WIN_GetDMAPos;
 		SNDDMA_Shutdown	 = S_WIN_Shutdown;
 		SNDDMA_Submit	 = S_WIN_Submit;
+		break;
+#endif
+#if HAVE_DOS_SOUND
+	case S_SYS_DOS:
+		SNDDMA_Init	 = S_DOS_Init;
+		SNDDMA_GetDMAPos = S_DOS_GetDMAPos;
+		SNDDMA_Shutdown	 = S_DOS_Shutdown;
+		SNDDMA_Submit	 = S_DOS_Submit;
 		break;
 #endif
 #if HAVE_SDL_SOUND

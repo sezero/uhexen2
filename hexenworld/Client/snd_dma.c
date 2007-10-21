@@ -2,7 +2,7 @@
 	snd_dma.c
 	main control for any streaming sound output device
 
-	$Id: snd_dma.c,v 1.68 2007-10-21 15:34:04 sezero Exp $
+	$Id: snd_dma.c,v 1.69 2007-10-21 15:37:01 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -45,7 +45,8 @@ static const struct
 	{  "SDL"  ,	HAVE_SDL_SOUND	},
 	{  "ALSA" ,	HAVE_ALSA_SOUND	},
 	{  "SUN"  ,	HAVE_SUN_SOUND	},
-	{  "WIN"  ,	HAVE_WIN_SOUND	}
+	{  "WIN"  ,	HAVE_WIN_SOUND	},
+	{  "DOS"  ,	HAVE_DOS_SOUND	}
 };
 
 volatile dma_t	sn;
