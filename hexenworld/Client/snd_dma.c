@@ -2,7 +2,7 @@
 	snd_dma.c
 	main control for any streaming sound output device
 
-	$Id: snd_dma.c,v 1.67 2007-10-10 14:38:27 sezero Exp $
+	$Id: snd_dma.c,v 1.68 2007-10-21 15:34:04 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -1035,7 +1035,7 @@ static void S_SoundList (void)
 }
 
 
-void S_LocalSound (const char *sound)
+void S_LocalSound (const char *name)
 {
 	sfx_t	*sfx;
 
@@ -1044,10 +1044,10 @@ void S_LocalSound (const char *sound)
 	if (!sound_started)
 		return;
 
-	sfx = S_PrecacheSound (sound);
+	sfx = S_PrecacheSound (name);
 	if (!sfx)
 	{
-		Con_Printf ("%s: can't cache %s\n", __thisfunc__, sound);
+		Con_Printf ("%s: can't cache %s\n", __thisfunc__, name);
 		return;
 	}
 	S_StartSound (cl.viewentity, -1, sfx, vec3_origin, 1, 1);

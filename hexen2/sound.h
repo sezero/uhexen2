@@ -2,7 +2,7 @@
 	sound.h
 	client sound i/o functions
 
-	$Id: sound.h,v 1.25 2007-09-15 13:55:01 sezero Exp $
+	$Id: sound.h,v 1.26 2007-10-21 15:34:04 sezero Exp $
 */
 
 #ifndef __HX2_SOUND_H
@@ -131,7 +131,7 @@ extern	cvar_t sfxvolume;
 
 extern int		snd_blocked;
 
-void S_LocalSound (const char *sound);
+void S_LocalSound (const char *name);
 sfxcache_t *S_LoadSound (sfx_t *s);
 
 wavinfo_t GetWavinfo (const char *name, byte *wav, size_t wavlength);
