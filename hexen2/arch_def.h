@@ -2,7 +2,7 @@
 	arch_def.h
 	platform specific definitions
 
-	$Id: arch_def.h,v 1.11 2007-10-13 22:15:23 sezero Exp $
+	$Id: arch_def.h,v 1.12 2007-10-21 15:25:19 sezero Exp $
 */
 
 #ifndef __HX2_ARCHDEFS__
@@ -33,7 +33,7 @@
 #endif	/* end of custom definitions	*/
 
 
-#if defined(__DOS__) || defined(__DJGPP__)
+#if defined(__DJGPP__) || defined(MSDOS) || defined(__MSDOS__)
 
 #   if !defined(PLATFORM_DOS)
 #	define	PLATFORM_DOS		1
@@ -91,6 +91,8 @@
 #	define	PLATFORM_STRING	"Win64"
 #elif defined(_WIN32)
 #	define	PLATFORM_STRING	"Windows"
+#elif defined(PLATFORM_DOS)
+#	define	PLATFORM_STRING	"DOS"
 #elif defined(__linux__) || defined(__linux)
 #	define	PLATFORM_STRING	"Linux"
 #elif defined(__DragonFly__)

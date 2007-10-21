@@ -2,7 +2,7 @@
 	q_endian.h
 	endianness handling
 
-	$Id: q_endian.h,v 1.7 2007-10-14 21:20:19 sezero Exp $
+	$Id: q_endian.h,v 1.8 2007-10-21 15:25:23 sezero Exp $
 */
 
 #ifndef __QENDIAN_H
@@ -87,8 +87,8 @@
  * flags, mostly.) so, proceed carefully..
  */
 
-# if defined(__DJGPP__) || defined(__DOS__)	/* DOS */
-#	define	BYTE_ORDER	LITTLE_ENDIAN
+# if defined(__DJGPP__) || defined(MSDOS) || defined(__MSDOS__)
+#	define	BYTE_ORDER	LITTLE_ENDIAN	/* DOS */
 
 # elif defined(__sun) || defined(__svr4__)	/* solaris */
 #   if defined(_LITTLE_ENDIAN)	/* x86 */
