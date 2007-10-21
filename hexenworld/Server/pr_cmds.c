@@ -2,13 +2,14 @@
 	pr_cmds.c
 	prog commands
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Server/pr_cmds.c,v 1.38 2007-10-01 11:00:33 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Server/pr_cmds.c,v 1.39 2007-10-21 15:32:23 sezero Exp $
 */
 
 #include "quakedef.h"
 #ifdef PLATFORM_WINDOWS
 #include <windows.h>
-#else
+#endif
+#ifdef PLATFORM_UNIX
 #include <signal.h>
 #include <unistd.h>
 #endif
@@ -979,12 +980,13 @@ static void PF_break (void)
 		DidIt = true;
 
 		Con_Printf ("break statement\n");
-#ifdef PLATFORM_WINDOWS
+#if defined(PLATFORM_WINDOWS)
 		DebugBreak();
-#else
+#elif defined(PLATFORM_UNIX)
 		kill(getpid(), SIGKILL);
+#else
+		*(int *)-4 = 0;	// dump to debugger
 #endif
-		//*(int *)-4 = 0;	// dump to debugger
 	}
 //	PR_RunError ("break statement");
 }

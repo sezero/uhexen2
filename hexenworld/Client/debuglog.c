@@ -2,7 +2,7 @@
 	debuglog.c
 	logging console output to a file
 
-	$Id: debuglog.c,v 1.6 2007-09-29 11:44:24 sezero Exp $
+	$Id: debuglog.c,v 1.7 2007-10-21 15:32:23 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -15,6 +15,9 @@
 #endif
 #ifdef PLATFORM_UNIX
 #include <unistd.h>	/* unlink() */
+#endif
+#ifdef PLATFORM_DOS
+#include <unistd.h>
 #endif
 
 

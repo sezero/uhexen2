@@ -2,7 +2,7 @@
 	screen.c
 	master for refresh, status bar, console, chat, notify, etc
 
-	$Id: gl_screen.c,v 1.54 2007-08-21 09:21:57 sezero Exp $
+	$Id: gl_screen.c,v 1.55 2007-10-21 15:32:22 sezero Exp $
 */
 
 /*=============================================================================
@@ -52,7 +52,8 @@
 #ifdef PLATFORM_WINDOWS
 #include "winquake.h"
 #include <io.h>
-#else
+#endif
+#ifdef PLATFORM_UNIX
 #include <unistd.h>
 #endif
 

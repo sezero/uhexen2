@@ -2,7 +2,7 @@
 	screen.c
 	master for refresh, status bar, console, chat, notify, etc
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/screen.c,v 1.39 2007-10-10 14:38:27 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/screen.c,v 1.40 2007-10-21 15:32:23 sezero Exp $
 */
 
 
@@ -54,7 +54,11 @@
 #ifdef PLATFORM_WINDOWS
 #include "winquake.h"
 #include <io.h>
-#else
+#endif
+#ifdef PLATFORM_UNIX
+#include <unistd.h>
+#endif
+#ifdef PLATFORM_DOS
 #include <unistd.h>
 #endif
 

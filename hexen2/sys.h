@@ -2,7 +2,7 @@
 	sys.h
 	non-portable functions
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sys.h,v 1.36 2007-10-13 19:27:37 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sys.h,v 1.37 2007-10-21 15:32:23 sezero Exp $
 */
 
 #ifndef __HX2_SYS_H
@@ -20,6 +20,8 @@ int Sys_mkdir (const char *path);
 
 #if defined(PLATFORM_WINDOWS)
 #define	Sys_rmdir	_rmdir
+#elif defined(PLATFORM_DOS)
+#define	Sys_rmdir	rmdir
 #elif defined(PLATFORM_UNIX)
 #define	Sys_rmdir	rmdir
 #else /* local implementation */
@@ -28,6 +30,8 @@ int Sys_rmdir (const char *path);
 
 #if defined(PLATFORM_WINDOWS)
 #define	Sys_unlink	_unlink
+#elif defined(PLATFORM_DOS)
+#define	Sys_unlink	unlink
 #elif defined(PLATFORM_UNIX)
 #define	Sys_unlink	unlink
 #else /* local implementation */
@@ -63,6 +67,9 @@ void Sys_Error (const char *error, ...) __attribute__((format(printf,1,2), noret
 
 void Sys_PrintTerm (const char *msgtxt);
 // prints the given string to the terminal
+
+void Sys_EnableTerm (void);
+void Sys_DisableTerm (void);
 
 void Sys_Quit (void) __attribute__((noreturn));
 
