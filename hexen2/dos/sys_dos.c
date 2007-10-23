@@ -3,7 +3,7 @@
 	DOS system interface code.
 	from quake1 source with adaptations for uhexen2.
 
-	$Id: sys_dos.c,v 1.1 2007-10-22 18:07:52 sezero Exp $
+	$Id: sys_dos.c,v 1.2 2007-10-23 17:19:09 sezero Exp $
 
 	Copyright (C) 1996-1997  Id Software, Inc.
 
@@ -591,6 +591,9 @@ void Sys_SendKeyEvents (void)
 		if (k == 0xe0)
 			continue;		// special / pause keys
 		next = keybuf[(keybuf_tail - 2) & (KEYBUF_SIZE - 1)];
+		// Pause generates e1 1d 45 e1 9d c5 when pressed, and
+		// nothing when released. e1 is generated only for the
+		// pause key.
 		if (next == 0xe1)
 			continue;		// pause key bullshit
 		if (k == 0xc5 && next == 0x9d)
