@@ -2,7 +2,7 @@
 	net_main.c
 	main networking module
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/net_main.c,v 1.31 2007-09-22 15:27:13 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/net_main.c,v 1.32 2007-10-23 18:07:42 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -19,6 +19,12 @@ int			DEFAULTnet_hostport = 26900;
 
 char		my_ipx_address[NET_NAMELEN];
 char		my_tcpip_address[NET_NAMELEN];
+
+qboolean	serialAvailable = false;
+void (*GetComPortConfig) (int portNumber, int *port, int *irq, int *baud, qboolean *useModem);
+void (*SetComPortConfig) (int portNumber, int port, int irq, int baud, qboolean useModem);
+void (*GetModemConfig) (int portNumber, char *dialType, char *clear, char *init, char *hangup);
+void (*SetModemConfig) (int portNumber, char *dialType, char *clear, char *init, char *hangup);
 
 static qboolean	listening = false;
 
@@ -46,6 +52,16 @@ static	cvar_t	net_messagetimeout = {"net_messagetimeout", "300", CVAR_NONE};
 cvar_t	hostname = {"hostname", "UNNAMED", CVAR_NONE};
 
 cvar_t	net_allowmultiple = {"net_allowmultiple", "0", CVAR_ARCHIVE};
+
+qboolean	configRestored = false;
+cvar_t	config_com_port = {"_config_com_port", "0x3f8", CVAR_ARCHIVE};
+cvar_t	config_com_irq = {"_config_com_irq", "4", CVAR_ARCHIVE};
+cvar_t	config_com_baud = {"_config_com_baud", "57600", CVAR_ARCHIVE};
+cvar_t	config_com_modem = {"_config_com_modem", "1", CVAR_ARCHIVE};
+cvar_t	config_modem_dialtype = {"_config_modem_dialtype", "T", CVAR_ARCHIVE};
+cvar_t	config_modem_clear = {"_config_modem_clear", "ATZ", CVAR_ARCHIVE};
+cvar_t	config_modem_init = {"_config_modem_init", "", CVAR_ARCHIVE};
+cvar_t	config_modem_hangup = {"_config_modem_hangup", "AT H", CVAR_ARCHIVE};
 
 // these two macros are to make the code more readable
 #define sfunc	net_drivers[sock->driver]

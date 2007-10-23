@@ -1,5 +1,5 @@
 # GNU Makefile for (gl)hexen2 client/server binaries using GCC.
-# $Header: /home/ozzie/Download/0000/uhexen2/hexen2/Makefile,v 1.77 2007-10-21 16:48:09 sezero Exp $
+# $Header: /home/ozzie/Download/0000/uhexen2/hexen2/Makefile,v 1.78 2007-10-23 18:07:42 sezero Exp $
 #
 # Type "make help" to see the valid targets.
 #
@@ -155,6 +155,9 @@ ifeq ($(TARGET_OS),win32)
 H2_BINARY=h2.exe
 GLH2_BINARY=glh2.exe
 endif
+ifeq ($(TARGET_OS),dos)
+H2_BINARY=h2dos.exe
+endif
 ifeq ($(TARGET_OS),unix)
 H2_BINARY=hexen2
 GLH2_BINARY=glhexen2
@@ -211,6 +214,14 @@ ifeq ($(TARGET_OS),win32)
 # Main win32 specific includes and flags
 INCLUDES:= -I$(UHEXEN2_TOP)/w32stuff/dxsdk/inc -I$(MINGWDIR)/include -I.
 LDFLAGS := -L$(MINGWDIR)/lib -lwinmm -lwsock32 -mwindows
+endif
+ifeq ($(TARGET_OS),dos)
+# Main dos specific includes and flags
+INCLUDES:= -I$(DJGPPDIR)/include -I.
+LDFLAGS := -L$(DJGPPDIR)/lib -lc -lgcc -lm
+ifndef DEBUG
+LDFLAGS := $(LDFLAGS) -s
+endif
 endif
 ifeq ($(TARGET_OS),unix)
 # Main unix specific includes and flags
@@ -322,6 +333,9 @@ COMOBJ_SND := snd_sys.o snd_dma.o snd_mix.o snd_mem.o
 ifeq ($(TARGET_OS),win32)
 SYSOBJ_SND := win_stuff/snd_win.o
 endif
+ifeq ($(TARGET_OS),dos)
+SYSOBJ_SND := dos/snd_dos.o dos/snd_gus.o
+endif
 ifeq ($(TARGET_OS),unix)
 SYSOBJ_SND := snd_oss.o snd_alsa.o snd_sun.o $(OBJ_SNDSDL)
 endif
@@ -335,6 +349,10 @@ EXT_FLAGS += -DNO_MIDIMUSIC
 else
 ifeq ($(TARGET_OS),win32)
 SYSOBJ_MIDI:= win_stuff/midi.o win_stuff/mstrconv.o
+endif
+ifeq ($(TARGET_OS),dos)
+SYSOBJ_MIDI:= midi_nul.o
+EXT_FLAGS += -DNO_MIDIMUSIC
 endif
 ifeq ($(TARGET_OS),unix)
 ifeq ($(HOST_OS),darwin)
@@ -356,6 +374,9 @@ else
 ifeq ($(TARGET_OS),win32)
 SYSOBJ_CDA := win_stuff/cd_win.o
 endif
+ifeq ($(TARGET_OS),dos)
+SYSOBJ_CDA := dos/cd_dos.o
+endif
 ifeq ($(TARGET_OS),unix)
 SYSOBJ_CDA := cd_sdl.o cd_bsd.o cd_linux.o
 endif
@@ -369,6 +390,14 @@ SYSOBJ_GL_VID:= win_stuff/gl_vidnt.o
 SYSOBJ_SOFT_VID:= win_stuff/vid_win.o
 SYSOBJ_NET := win_stuff/net_win.o win_stuff/net_wins.o win_stuff/net_wipx.o
 SYSOBJ_SYS := win_stuff/conproc.o win_stuff/sys_win.o win32res.o
+endif
+ifeq ($(TARGET_OS),dos)
+SYSOBJ_INPUT := dos/in_dos.o
+SYSOBJ_SOFT_VID:= dos/vid_vga.o dos/vid_ext.o d_copy.o dos/vid_dos.o dos/vregset.o
+SYSOBJ_NET := dos/net_dos.o dos/net_ser.o dos/net_bw.o dos/dos_inet.o dos/net_ipx.o \
+	dos/net_mp.o dos/mplib.o dos/mplpc.o
+SYSOBJ_SYS := dos/dos_v2.o dos/sys_dos.o
+#	dosasm.o
 endif
 ifeq ($(TARGET_OS),unix)
 SYSOBJ_INPUT := in_sdl.o
@@ -549,8 +578,8 @@ glh2: sanity $(GLOBJS) $(COMMON_ASM) $(COMMONOBJS)
 	$(LINKER) -o $(GLH2_BINARY) $(GLOBJS) $(COMMON_ASM) $(COMMONOBJS) $(LDFLAGS) $(GLFLAGS) $(SDLLINK)
 
 clean:
-	rm -f *.o win_stuff/*.o sv_objs/*.o core
+	rm -f *.o win_stuff/*.o dos/*.o sv_objs/*.o core
 
 cleaner:
-	rm -f *.o win_stuff/*.o sv_objs/*.o core $(H2_BINARY) $(GLH2_BINARY)
+	rm -f *.o win_stuff/*.o dos/*.o sv_objs/*.o core $(H2_BINARY) $(GLH2_BINARY)
 

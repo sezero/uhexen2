@@ -1,5 +1,5 @@
 # GNU Makefile using GCC in a unix shell.
-# $Header: /home/ozzie/Download/0000/uhexen2/scripts/makefile.inc,v 1.17 2007-10-21 16:48:11 sezero Exp $
+# $Header: /home/ozzie/Download/0000/uhexen2/scripts/makefile.inc,v 1.18 2007-10-23 18:07:42 sezero Exp $
 
 # This file is responsible for determining the Host OS and Target OS,
 # setting common paths, selecting the compiler, assigning the compiler
@@ -69,7 +69,13 @@ ifdef WINBUILD
 CROSS_COMPILE:=y
 TARGET_OS:=win32
 else
+ifdef DOSBUILD
+# cross compilation for dos
+CROSS_COMPILE:=y
+TARGET_OS:=dos
+else
 TARGET_OS:=unix
+endif
 endif
 NASM_BIN :=nasm
 endif
@@ -77,7 +83,7 @@ endif
 ifeq ($(TARGET_OS),unix)
 MACH_TYPE:=$(shell sh $(UHEXEN2_TOP)/scripts/detect.sh arch)
 else
-# FIXME: windows does not have to be x86.
+# windows or dos. FIXME: windows does not have to be x86.
 MACH_TYPE:=x86
 endif
 
@@ -124,6 +130,9 @@ endif
 # These are required for IA32 assembly for hexen2/hexenworld clients
 ifeq ($(TARGET_OS),win32)
 NASMFLAGS:= -fwin32 --prefix _
+endif
+ifeq ($(TARGET_OS),dos)
+NASMFLAGS:= -f coff --prefix _
 endif
 ifeq ($(TARGET_OS),unix)
 ifeq ($(HOST_OS),darwin)

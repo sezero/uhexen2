@@ -2,7 +2,7 @@
 	net.h
 	quake's interface to the networking layer
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/net.h,v 1.18 2007-08-23 14:04:55 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/net.h,v 1.19 2007-10-23 18:07:42 sezero Exp $
 */
 
 #ifndef __HX2_NET_H
@@ -295,6 +295,12 @@ extern	qboolean	ipxAvailable;
 extern	qboolean	tcpipAvailable;
 extern	char		my_ipx_address[NET_NAMELEN];
 extern	char		my_tcpip_address[NET_NAMELEN];
+
+extern	qboolean	serialAvailable;
+extern	void (*GetComPortConfig) (int portNumber, int *port, int *irq, int *baud, qboolean *useModem);
+extern	void (*SetComPortConfig) (int portNumber, int port, int irq, int baud, qboolean useModem);
+extern	void (*GetModemConfig) (int portNumber, char *dialType, char *clear, char *init, char *hangup);
+extern	void (*SetModemConfig) (int portNumber, char *dialType, char *clear, char *init, char *hangup);
 
 extern	qboolean	slistInProgress;
 extern	qboolean	slistSilent;
