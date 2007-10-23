@@ -2,7 +2,7 @@
 	keys.c
 	key up events are sent even if in console mode
 
-	$Id: keys.c,v 1.35 2007-09-22 15:27:19 sezero Exp $
+	$Id: keys.c,v 1.36 2007-10-23 17:30:06 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -12,7 +12,7 @@
 
 char	key_lines[32][MAXCMDLINE];
 int		key_linepos;
-static int	shift_down=false;
+static qboolean	shift_down = false;
 int		key_lastpress;
 int		key_insert;	// insert key toggle
 
@@ -802,6 +802,8 @@ void Key_Init (void)
 	for (i = 0; i < 12; i++)
 		menubound[K_F1+i] = true;
 
+	memset (key_repeats, 0, sizeof(key_repeats));
+
 //
 // register our functions
 //
@@ -840,27 +842,40 @@ void Key_Event (int key, qboolean down)
 // update auto-repeat status
 	if (down)
 	{
-		key_repeats[key]++;
+		/* Pause key doesn't generate a scancode when released,
+		 * never increment its auto-repeat status.
+		 */
+		if (key != K_PAUSE)
+			key_repeats[key]++;
 
-/*		if (key != K_BACKSPACE 
-			&& key != K_PAUSE 
+		/*
+		if (key != K_BACKSPACE 
 			&& key != K_PGUP 
 			&& key != K_PGDN
 			&& key_repeats[key] > 1)
 		{
 			return;	// ignore most autorepeats
 		}
-*/
-		// ignore all autorepeats unless chatting or in console
-		if (key_dest != key_console &&
-		    key_dest != key_message &&
-		    !(cls.state != ca_active && m_state == m_none) && /* hack to allow autorepeat in forcedup console */
-		    key_repeats[key] > 1)
+		*/
+
+		if (key_repeats[key] > 1)
+		{
+			// ignore autorepeats unless chatting or in console
+			if (key_dest == key_console)
+				goto autorep0;
+			if (key_dest == key_message)
+				goto autorep0;
+			// hack to allow autorepeat in forcedup console:
+			if (cls.state != ca_active && m_state == m_none)
+				goto autorep0;
 			return;
+		}
 
 		if (key >= 200 && !keybindings[key])
 			Con_Printf ("%s is unbound, hit F4 to set.\n", Key_KeynumToString (key) );
 	}
+
+autorep0:
 
 	if (key == K_SHIFT)
 		shift_down = down;
