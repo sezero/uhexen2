@@ -3,6 +3,55 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2007-10-24 (CVS):
+    * added a mechanism to reserve certain keys to ensure that they always
+      stay with their intended hardcoded bindings.. reserved '`', '~' and
+      the pause keys.
+    * draw.c, gl_draw.c: added a few missing error checks, plugged a very
+      minor memleak.
+    * added back serial driver functionality for the dos support.
+    * fixed the modem connection menus for dos.
+
+2007-10-23 (CVS):
+    * added a note about the pause key to Sys_SendKeyEvents.
+    * fixed an evil bug in key event handling which prevented almost all
+      pause key events on dos.
+    * enabled DOS builds of hexen2 software renderer (hey, I sitll love
+      my trusty old dos box!). compilation only testsed under under linux
+      using djgpp cross toolchain. at present, the beta 2.04 version of
+      djgpp is needed because 2.03 and earlier doesn't provide a vsnprintf
+      for us. some serial driver functionality, either was already absent
+      in hexen2, or was removed by uhexen2, will be added later. the midi
+      playback is not there, yet, either. the loading progress bars and the
+      rotating skull doesn't work yet. other than those, all things seem
+      to work just fine.
+
+2007-10-22 (CVS):
+    * added vga screen copy assembly code of quake, converted to nasm
+      format.
+    * added DOS support files, from quake1 source with minor adaptations
+      for uhexen2.
+    * net_ser.h and dosisms.h are no longer in the unused files directory.
+
+2007-10-21 (CVS):
+    * several tweaks to the makefiles.
+    * updated the qstat hwmaster patch for the svn version.
+
+2007-10-20 (CVS):
+    * platform definition fixes for DOS.
+    * re-enabled Cmd_CheckParm (will be needed later).
+    * added DOS conditionals to some includes, most notably unistd.h.
+    * minor fixes for -Wshadow warnings.
+    * added conditionals around some input functions which are related
+      to windowed environments.
+    * added dos definitions to snd_sys.
+    * dosquake doesn't use vid buffer locking.
+
+2007-10-18 (CVS):
+    * more updates to the build scripts.
+    * endianness macros clean-up for MASK_rgb.
+    * more updates to the build system, removing the rest of weirdness.
+
 2007-10-16 (CVS):
     * more updates to the build scripts.
     * updated the loki_patch and xdelta pak patch scripts. the xdelta
