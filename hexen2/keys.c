@@ -2,7 +2,7 @@
 	keys.c
 	key up events are sent even if in console mode
 
-	$Id: keys.c,v 1.35 2007-10-23 17:30:05 sezero Exp $
+	$Id: keys.c,v 1.36 2007-10-24 11:37:08 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -28,6 +28,7 @@ static qboolean	consolekeys[256];	// if true, can't be rebound while in console
 static qboolean	menubound[256];		// if true, can't be rebound while in menu
 static int	keyshift[256];		// key to map to if shift held down in console
 static int	key_repeats[256];	// if > 1, it is autorepeating
+static qboolean	keyreserved[256];	// hardcoded, can't be rebound by the user
 static qboolean	keydown[256];
 
 typedef struct
@@ -589,6 +590,8 @@ void Key_SetBinding (int keynum, const char *binding)
 {
 	if (keynum == -1)
 		return;
+	if (keyreserved[keynum])
+		return;
 
 // free old bindings
 	if (keybindings[keynum])
@@ -719,6 +722,10 @@ void Key_Init (void)
 	}
 	key_linepos = 1;
 
+	memset (consolekeys, 0, sizeof(consolekeys));
+	memset (menubound, 0, sizeof(menubound));
+	memset (keyreserved, 0, sizeof(keyreserved));
+
 //
 // init ascii characters in console mode
 //
@@ -774,6 +781,16 @@ void Key_Init (void)
 		menubound[K_F1+i] = true;
 
 	memset (key_repeats, 0, sizeof(key_repeats));
+
+//
+// bind our reserved keys
+//
+	Key_SetBinding ('`', "toggleconsole");
+	Key_SetBinding ('~', "toggleconsole");
+	Key_SetBinding (K_PAUSE, "pause");
+	keyreserved['`'] = true;
+	keyreserved['~'] = true;
+	keyreserved[K_PAUSE] = true;
 
 //
 // register our functions
