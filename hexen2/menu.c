@@ -1,7 +1,7 @@
 /*
 	menu.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/menu.c,v 1.102 2007-10-24 16:43:19 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/menu.c,v 1.103 2007-10-24 19:23:26 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -1879,7 +1879,7 @@ static void M_Net_Draw (void)
 	ScrollTitle("gfx/menu/title4.lmp");
 
 #if NET_USE_SERIAL
-	M_DrawBigString (72, (64 + _ser_draw_offset) + (_item_net_ser * 20), "SERIAL");
+	M_DrawBigString (72, (64 + _ser_draw_offset) + (_item_net_ser * 20), "MODEM");
 	M_DrawBigString (72, (64 + _ser_draw_offset) + (_item_net_dc  * 20), "DIRECT CONNECT");
 #endif
 	M_DrawBigString (72, (64 + _ser_draw_offset) + (_item_net_ipx * 20), "IPX");
@@ -3447,7 +3447,7 @@ static void M_Quit_Draw (void)
 #if NET_USE_SERIAL
 
 static int	serialConfig_cursor;
-static int	serialConfig_cursor_table[] = { 48, 64, 80, 96, 112, 132 };
+static int	serialConfig_cursor_table[] = { 80, 96, 112, 128, 144, 164 };	// { 48, 64, 80, 96, 112, 132 }
 #define	NUM_SERIALCONFIG_CMDS		6
 
 static int	ISA_uarts[4]	= { 0x3f8, 0x2f8, 0x3e8, 0x2e8};
@@ -3510,10 +3510,9 @@ static void M_SerialConfig_Draw (void)
 	char	*startJoin;
 	char	*directModem;
 
-	ScrollTitle("gfx/menu/title4.lmp");
-
 	p = Draw_CachePic ("gfx/menu/title4.lmp");
 	basex = (320 - p->width) / 2;
+	ScrollTitle("gfx/menu/title4.lmp");
 
 	if (StartingGame)
 		startJoin = "New Game";
@@ -3523,20 +3522,20 @@ static void M_SerialConfig_Draw (void)
 		directModem = "Modem";
 	else
 		directModem = "Direct Connect";
-	M_Print (basex, 32, va ("%s - %s", startJoin, directModem));
+	M_Print (basex, serialConfig_cursor_table[0]-16, va ("%s - %s", startJoin, directModem));
 	basex += 8;
 
 	M_Print (basex, serialConfig_cursor_table[0], "Port");
-	M_DrawTextBox (160, 40, 4, 1);
-	M_Print (168, serialConfig_cursor_table[0], va("COM%u", serialConfig_comport));
+	M_DrawTextBox (168, serialConfig_cursor_table[0]-8, 4, 1);
+	M_Print (176, serialConfig_cursor_table[0], va("COM%u", serialConfig_comport));
 
 	M_Print (basex, serialConfig_cursor_table[1], "IRQ");
-	M_DrawTextBox (160, serialConfig_cursor_table[1]-8, 1, 1);
-	M_Print (168, serialConfig_cursor_table[1], va("%u", serialConfig_irq));
+	M_DrawTextBox (168, serialConfig_cursor_table[1]-8, 1, 1);
+	M_Print (176, serialConfig_cursor_table[1], va("%u", serialConfig_irq));
 
 	M_Print (basex, serialConfig_cursor_table[2], "Baud");
-	M_DrawTextBox (160, serialConfig_cursor_table[2]-8, 5, 1);
-	M_Print (168, serialConfig_cursor_table[2], va("%u", serialConfig_baudrate[serialConfig_baud]));
+	M_DrawTextBox (168, serialConfig_cursor_table[2]-8, 5, 1);
+	M_Print (176, serialConfig_cursor_table[2], va("%u", serialConfig_baudrate[serialConfig_baud]));
 
 	if (SerialConfig)
 	{
@@ -3544,8 +3543,8 @@ static void M_SerialConfig_Draw (void)
 		if (JoiningGame)
 		{
 			M_Print (basex, serialConfig_cursor_table[4], "Phone number");
-			M_DrawTextBox (160, serialConfig_cursor_table[4]-8, 16, 1);
-			M_Print (168, serialConfig_cursor_table[4], serialConfig_phone);
+			M_DrawTextBox (168, serialConfig_cursor_table[4]-8, 16, 1);
+			M_Print (176, serialConfig_cursor_table[4], serialConfig_phone);
 		}
 	}
 
@@ -3563,7 +3562,7 @@ static void M_SerialConfig_Draw (void)
 	M_DrawCharacter (basex-8, serialConfig_cursor_table [serialConfig_cursor], 12+((int)(realtime*4)&1));
 
 	if (serialConfig_cursor == 4)
-		M_DrawCharacter (168 + 8*strlen(serialConfig_phone), serialConfig_cursor_table [serialConfig_cursor], 10+((int)(realtime*4)&1));
+		M_DrawCharacter (176 + 8*strlen(serialConfig_phone), serialConfig_cursor_table [serialConfig_cursor], 10+((int)(realtime*4)&1));
 
 	if (*m_return_reason)
 		M_PrintWhite (basex, 148, m_return_reason);
@@ -3740,7 +3739,7 @@ forward:
 /* MODEM CONFIG MENU */
 
 static int	modemConfig_cursor;
-static int	modemConfig_cursor_table[] = { 40, 56, 88, 120, 156 };
+static int	modemConfig_cursor_table[] = { 64, 78, 108, 138, 172 };	// { 40, 56, 88, 120, 156 }
 #define NUM_MODEMCONFIG_CMDS		5
 
 static char	modemConfig_dialing;
@@ -3761,10 +3760,13 @@ static void M_ModemConfig_Draw (void)
 	qpic_t	*p;
 	int		basex;
 
-	ScrollTitle("gfx/menu/title4.lmp");
 	p = Draw_CachePic ("gfx/menu/title4.lmp");
-	basex = (320 - p->width) / 2;
-	basex += 8;
+	// our p->width == 185: if we don't do the -8 here,
+	// drawing of the init string textbox with 30 chars
+	// width will fail with a 'bad coordinates' message
+	// from Draw_TransPic() at 320x200 resolution.
+	basex = (320 - p->width) / 2 - 8;
+	ScrollTitle("gfx/menu/title4.lmp");
 
 	if (modemConfig_dialing == 'P')
 		M_Print (basex, modemConfig_cursor_table[0], "Pulse Dialing");
