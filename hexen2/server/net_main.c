@@ -2,47 +2,67 @@
 	net_main.c
 	main networking module
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/server/net_main.c,v 1.20 2007-08-26 09:15:26 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/server/net_main.c,v 1.21 2007-10-24 16:43:20 sezero Exp $
 */
 
 #include "quakedef.h"
 
 qsocket_t	*net_activeSockets = NULL;
 qsocket_t	*net_freeSockets = NULL;
-int			net_numsockets = 0;
+int		net_numsockets = 0;
 
+qboolean	serialAvailable = false;
 qboolean	ipxAvailable = false;
 qboolean	tcpipAvailable = false;
 
-int			net_hostport;
-int			DEFAULTnet_hostport = 26900;
+int		net_hostport;
+int		DEFAULTnet_hostport = 26900;
 
 char		my_ipx_address[NET_NAMELEN];
 char		my_tcpip_address[NET_NAMELEN];
 
-sizebuf_t		net_message;
-//static byte		net_message_buffer[NET_MAXMESSAGE];
-int			net_activeconnections = 0;
+sizebuf_t	net_message;
+//static byte	net_message_buffer[NET_MAXMESSAGE];
+int		net_activeconnections		= 0;
 
-int messagesSent = 0;
-int messagesReceived = 0;
-int unreliableMessagesSent = 0;
-int unreliableMessagesReceived = 0;
+int		messagesSent			= 0;
+int		messagesReceived		= 0;
+int		unreliableMessagesSent		= 0;
+int		unreliableMessagesReceived	= 0;
 
 static	cvar_t	net_messagetimeout = {"net_messagetimeout", "300", CVAR_NONE};
 cvar_t	hostname = {"hostname", "UNNAMED", CVAR_NONE};
 
 cvar_t	net_allowmultiple = {"net_allowmultiple", "0", CVAR_ARCHIVE};
 
+#if NET_USE_SERIAL
+static qboolean	configRestored = false;
+
+void (*GetComPortConfig) (int portNumber, int *port, int *irq, int *baud, qboolean *useModem);
+void (*SetComPortConfig) (int portNumber, int port, int irq, int baud, qboolean useModem);
+void (*GetModemConfig) (int portNumber, char *dialType, char *clear, char *init, char *hangup);
+void (*SetModemConfig) (int portNumber, char *dialType, char *clear, char *init, char *hangup);
+
+cvar_t	config_com_port = {"_config_com_port", "0x3f8", CVAR_ARCHIVE};
+cvar_t	config_com_irq = {"_config_com_irq", "4", CVAR_ARCHIVE};
+cvar_t	config_com_baud = {"_config_com_baud", "57600", CVAR_ARCHIVE};
+cvar_t	config_com_modem = {"_config_com_modem", "1", CVAR_ARCHIVE};
+cvar_t	config_modem_dialtype = {"_config_modem_dialtype", "T", CVAR_ARCHIVE};
+cvar_t	config_modem_clear = {"_config_modem_clear", "ATZ", CVAR_ARCHIVE};
+cvar_t	config_modem_init = {"_config_modem_init", "", CVAR_ARCHIVE};
+cvar_t	config_modem_hangup = {"_config_modem_hangup", "AT H", CVAR_ARCHIVE};
+#endif	/* NET_USE_SERIAL */
+
 // these two macros are to make the code more readable
 #define sfunc	net_drivers[sock->driver]
 #define dfunc	net_drivers[net_driverlevel]
 
-int	net_driverlevel;
+int		net_driverlevel;
 
-double			net_time;
+double		net_time;
 
-double SetNetTime(void)
+
+double SetNetTime (void)
 {
 	net_time = Sys_DoubleTime();
 	return net_time;
@@ -413,6 +433,16 @@ void NET_Init (void)
 	Cvar_RegisterVariable (&net_messagetimeout);
 	Cvar_RegisterVariable (&hostname);
 	Cvar_RegisterVariable (&net_allowmultiple);
+#if NET_USE_SERIAL
+	Cvar_RegisterVariable (&config_com_port);
+	Cvar_RegisterVariable (&config_com_irq);
+	Cvar_RegisterVariable (&config_com_baud);
+	Cvar_RegisterVariable (&config_com_modem);
+	Cvar_RegisterVariable (&config_modem_dialtype);
+	Cvar_RegisterVariable (&config_modem_clear);
+	Cvar_RegisterVariable (&config_modem_init);
+	Cvar_RegisterVariable (&config_modem_hangup);
+#endif	/* NET_USE_SERIAL */
 
 	// initialize all the drivers
 	for (i = net_driverlevel = 0; net_driverlevel < net_numdrivers; net_driverlevel++)
@@ -469,6 +499,23 @@ static PollProcedure *pollProcedureList = NULL;
 void NET_Poll(void)
 {
 	PollProcedure *pp;
+
+#if NET_USE_SERIAL
+	if (!configRestored)
+	{
+		if (serialAvailable)
+		{
+			qboolean	useModem;
+			if (config_com_modem.value == 1.0)
+				useModem = true;
+			else
+				useModem = false;
+			SetComPortConfig (0, config_com_port.integer, config_com_irq.integer, config_com_baud.integer, useModem);
+			SetModemConfig (0, config_modem_dialtype.string, config_modem_clear.string, config_modem_init.string, config_modem_hangup.string);
+		}
+		configRestored = true;
+	}
+#endif	/* NET_USE_SERIAL */
 
 	SetNetTime();
 
