@@ -2,7 +2,7 @@
 	draw.c
 	This is the only file outside the refresh that touches the vid buffer.
 
-	$Id: draw.c,v 1.44 2007-09-22 15:27:10 sezero Exp $
+	$Id: draw.c,v 1.45 2007-10-24 11:51:03 sezero Exp $
 */
 
 
@@ -27,7 +27,7 @@ static qpic_t	*draw_disc[MAX_DISC] =
 	NULL  // make the first one null for sure
 };
 
-qboolean draw_reinit = false;	// for compatibility with the opengl version
+qboolean	draw_reinit = false;
 
 //=============================================================================
 /* Support Routines */
@@ -41,6 +41,13 @@ typedef struct cachepic_s
 #define	MAX_CACHED_PICS		256
 static cachepic_t	menu_cachepics[MAX_CACHED_PICS];
 static int		menu_numcachepics;
+
+
+static void Draw_PicCheckError (void *ptr, const char *name)
+{
+	if (!ptr)
+		Sys_Error ("Failed to load %s", name);
+}
 
 
 qpic_t	*Draw_PicFromWad (char *name)
@@ -82,11 +89,7 @@ qpic_t	*Draw_CachePic (const char *path)
 	FS_LoadCacheFile (path, &pic->cache);
 
 	dat = (qpic_t *)pic->cache.data;
-	if (!dat)
-	{
-		Sys_Error ("%s: failed to load %s", __thisfunc__, path);
-	}
-
+	Draw_PicCheckError (dat, path);
 	SwapPic (dat);
 
 	return dat;
@@ -124,6 +127,7 @@ qpic_t  *Draw_CachePicResize (const char *path, int targetWidth, int targetHeigh
 		return dat;
 	// Allocate original data temporarily
 	temp = (qpic_t *)FS_LoadTempFile(path);
+	Draw_PicCheckError (temp, path);
 	SwapPic(temp);
 	/* I wish Carmack would thought of something more intuitive than
 	   out-of-bounds array for storing image data */
@@ -171,6 +175,7 @@ void Draw_Init (void)
 	if (draw_chars)
 		Z_Free (draw_chars);
 	draw_chars = FS_LoadZoneFile ("gfx/menu/conchars.lmp", Z_SECZONE);
+	Draw_PicCheckError (draw_chars, "gfx/menu/conchars.lmp");
 
 	draw_smallchars = (byte *) W_GetLumpName("tinyfont");
 
@@ -182,10 +187,15 @@ void Draw_Init (void)
 			Z_Free (draw_disc[i]);
 		q_snprintf(temp, sizeof(temp), "gfx/menu/skull%d.lmp", i);
 		draw_disc[i] = (qpic_t *)FS_LoadZoneFile (temp, Z_SECZONE);
-		SwapPic (draw_disc[i]);
+	//	Draw_PicCheckError (draw_disc[i], temp);
+		if (draw_disc[i])
+			SwapPic (draw_disc[i]);
 	}
 
+	if (draw_backtile)
+		Z_Free (draw_backtile);
 	draw_backtile = (qpic_t	*)FS_LoadZoneFile ("gfx/menu/backtile.lmp", Z_SECZONE);
+	Draw_PicCheckError (draw_backtile, "gfx/menu/backtile.lmp");
 	SwapPic (draw_backtile);
 
 	r_rectdesc.width = draw_backtile->width;

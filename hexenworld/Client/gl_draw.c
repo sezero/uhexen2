@@ -2,7 +2,7 @@
 	gl_draw.c
 	this is the only file outside the refresh that touches the vid buffer
 
-	$Id: gl_draw.c,v 1.109 2007-10-14 11:12:28 sezero Exp $
+	$Id: gl_draw.c,v 1.110 2007-10-24 11:51:05 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -374,6 +374,7 @@ void Draw_Init (void)
 
 	// load the charset: 8*8 graphic characters
 	chars = FS_LoadTempFile ("gfx/menu/conchars.lmp");
+	Draw_PicCheckError (chars, "gfx/menu/conchars.lmp");
 	for (i = 0; i < 256*128; i++)
 	{
 		if (chars[i] == 0)
