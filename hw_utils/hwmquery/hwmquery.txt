@@ -7,9 +7,6 @@ lists the servers that it has registered without processing. It uses
 26900 as the default master server port. It is aimed mainly for linux
 (unix) users, but works just as fine on windows, too.
 
-I put together this simple program because, as of this writing, qstat
-(therefore xqf, too) can't query a hexenworld master server.
-
 BUGS
 None. Please report, if you find any.
 

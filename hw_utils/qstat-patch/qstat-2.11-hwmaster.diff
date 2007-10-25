@@ -1,9 +1,8 @@
 this patch adds support for querying hexenworld master servers to
 qstat version 2.11.
 
-this patch is also submitted to the qstat project. see the qstat patch
-tracker entry #1806170 at:
-http://sourceforge.net/tracker/?func=detail&atid=481160&aid=1806170&group_id=56603
+this functionality is already added in the qstat svn repository and it
+should be available in their next release (2.12 or something like it).
 
 diff -urNp qstat-2.11/qstat.c qstat-2.11x/qstat.c
 --- qstat-2.11/qstat.c	2006-10-28 15:37:18.000000000 +0300

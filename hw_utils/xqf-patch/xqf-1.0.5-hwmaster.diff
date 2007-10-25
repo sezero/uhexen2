@@ -1,14 +1,10 @@
-this patch adds hexenworld master server support to xqf. it applies
-to both xqf-1.0.5 and to the current cvs snapshot.
+this patch adds hexenworld master server support to xqf version 1.0.5.
+this functionality is already added in the xqf CVS repository and it
+should be available in their next release (1.0.6 or something like it).
 
-This requires a patched, hwmaster-enabled qstat version: a
-patch is already submitted to the qstat tracker (see the patch
-tracker entry 1806170 at qstat sf.net project page, or the local
-version here in the qstat-patch directory.)
-
-this patch is also submitted to the xqf project. see the xqf patch
-tracker entry #1806173 at:
-http://sourceforge.net/tracker/?func=detail&atid=313296&aid=1806173&group_id=13296
+this requires a patched, hwmaster-enabled version of qstat: for qstat
+version 2.11, use the patch provided here. otherwise use a newer, such
+as 2.12, or a development version of qstat.
 
 diff -urNp xqf-1.0.5/src/games.c xqf-1.0.5x/src/games.c
 --- xqf-1.0.5/src/games.c	2006-06-18 16:15:18.000000000 +0300
@@ -40,3 +36,4 @@ diff -urNp xqf-1.0.5/src/games.xml xqf-1.0.5x/src/games.xml
  	<icon>hw.xpm</icon>
  	<parse_player>qw_parse_player</parse_player>
  	<analyze_serverinfo>qw_analyze_serverinfo</analyze_serverinfo>
+
