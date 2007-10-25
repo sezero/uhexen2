@@ -1,5 +1,5 @@
 # GNU Makefile for hexen2 mapping tools using GCC.
-# $Header: /home/ozzie/Download/0000/uhexen2/utils/maputils/Makefile,v 1.16 2007-10-21 16:48:12 sezero Exp $
+# $Header: /home/ozzie/Download/0000/uhexen2/utils/maputils/Makefile,v 1.17 2007-10-25 09:06:53 sezero Exp $
 #
 # if building a debug version :		make DEBUG=1 [other stuff]
 #
@@ -9,11 +9,11 @@
 
 # Path settings:
 # main uhexen2 relative path
-UHEXEN2_TOP=../..
+UHEXEN2_TOP:=../..
 # where the common sources/objects are
-COMMONDIR=../common
+COMMONDIR:=../common
 # where to put the binaries
-DESTDIR =../bin
+DESTDIR  :=../bin
 
 # include the common dirty stuff
 include $(UHEXEN2_TOP)/scripts/makefile.inc
@@ -23,16 +23,16 @@ include $(UHEXEN2_TOP)/scripts/sanity1.inc
 
 # Names of the binaries
 ifeq ($(TARGET_OS),win32)
-QBSP=qbsp.exe
-LIGHT=light.exe
-VIS=vis.exe
-BSPINFO=bspinfo.exe
+QBSP:=qbsp.exe
+LIGHT:=light.exe
+VIS:=vis.exe
+BSPINFO:=bspinfo.exe
 endif
 ifeq ($(TARGET_OS),unix)
-QBSP=qbsp
-LIGHT=light
-VIS=vis
-BSPINFO=bspinfo
+QBSP:=qbsp
+LIGHT:=light
+VIS:=vis
+BSPINFO:=bspinfo
 endif
 
 # Compiler flags

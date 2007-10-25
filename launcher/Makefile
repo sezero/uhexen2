@@ -1,5 +1,5 @@
 # GNU Makefile for hexen2 gtk-launcher app using GCC.
-# $Header: /home/ozzie/Download/0000/uhexen2/launcher/Makefile,v 1.47 2007-10-15 12:15:29 sezero Exp $
+# $Header: /home/ozzie/Download/0000/uhexen2/launcher/Makefile,v 1.48 2007-10-25 09:06:52 sezero Exp $
 #
 #  gtk2 will be used default.
 #  to compile for gtk-1.2 type:  make GTK1=yes
@@ -11,7 +11,7 @@
 #  make DEBUG=1
 
 # main uhexen2 relative path
-UHEXEN2_TOP=..
+UHEXEN2_TOP:=..
 
 # whether we should use the gnu auto-tools support when
 # building xdelta libraries: 0 or 1.
@@ -19,18 +19,9 @@ AUTOTOOLS ?= 0
 
 HOST_OS:=$(shell uname|sed -e s/_.*//|tr '[:upper:]' '[:lower:]')
 
-CC_DEFAULT:=gcc
-ifeq ($(origin CC),environment)
-CC_OVERRIDE:=1
+CC ?= gcc
 ifeq ($(CC),)
-CC_OVERRIDE:=
-endif
-endif
-ifeq ($(origin CC),command line)
-CC_OVERRIDE:=1
-endif
-ifeq ($(CC_OVERRIDE),)
-CC := $(CC_DEFAULT)
+CC := gcc
 endif
 
 LINKER:= $(CC)
@@ -39,11 +30,7 @@ XDELTA_DIR := $(UHEXEN2_TOP)/xdelta11
 XDELTA_FLAGS:=
 XDELTA_LINK:= -L$(XDELTA_DIR)/.libs -lxdelta -L$(XDELTA_DIR)/libedsio/.libs -ledsio
 
-ifdef DEMO
-H2LAUNCH:= h2demo
-else
-H2LAUNCH:= h2launcher
-endif
+BINARY:= h2launcher
 
 ifdef GTK1
 GTK_CFLAGS:= $(shell gtk-config --cflags)
@@ -114,7 +101,7 @@ XPATCH_OBJS   :=xpatch/md5.o xpatch/loki_xdelta.o xpatch/apply_patch.o
 endif
 
 # Targets
-all: $(H2LAUNCH)
+all: $(BINARY)
 
 # Rules for turning source files into .o files
 %.o: %.c
@@ -129,13 +116,13 @@ LAUNCHER_MAIN:= main.o
 ALL_OBJECTS  := $(LAUNCHER_OBJS) $(GUI_OBJS) $(XPATCH_OBJS) \
 	$(LIBXDELTA_OBJS) $(LIBEDSIO_OBJS) $(LAUNCHER_MAIN)
 
-$(H2LAUNCH): $(LAUNCHER_OBJS) $(LAUNCHER_MAIN) $(GUI_OBJS) $(XPATCH_OBJS)
-	@rm -f $(H2LAUNCH)
-	$(LINKER) -o $(H2LAUNCH) $(ALL_OBJECTS) $(LDFLAGS)
+$(BINARY): $(LAUNCHER_OBJS) $(LAUNCHER_MAIN) $(GUI_OBJS) $(XPATCH_OBJS)
+	@rm -f $(BINARY)
+	$(LINKER) -o $(BINARY) $(ALL_OBJECTS) $(LDFLAGS)
 
 clean:
 	-rm -f *.o xpatch/*.o core
 
 cleaner:
-	-rm -f *.o xpatch/*.o core $(H2LAUNCH)
+	-rm -f *.o xpatch/*.o core $(BINARY)
 

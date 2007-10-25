@@ -1,5 +1,5 @@
 # GNU Makefile for hwrcon and hwterm using GCC.
-# $Header: /home/ozzie/Download/0000/uhexen2/hw_utils/hwrcon/Makefile,v 1.13 2007-10-21 16:48:11 sezero Exp $
+# $Header: /home/ozzie/Download/0000/uhexen2/hw_utils/hwrcon/Makefile,v 1.14 2007-10-25 09:06:52 sezero Exp $
 #
 # if building a debug version :		make DEBUG=1 [other stuff]
 #
@@ -9,7 +9,7 @@
 
 # Path settings:
 # main uhexen2 relative path
-UHEXEN2_TOP=../..
+UHEXEN2_TOP:=../..
 
 # include the common dirty stuff
 include $(UHEXEN2_TOP)/scripts/makefile.inc
@@ -19,12 +19,12 @@ include $(UHEXEN2_TOP)/scripts/sanity1.inc
 
 # Names of the binaries
 ifeq ($(TARGET_OS),win32)
-HWRCON=hwrcon.exe
-HWTERM=hwterm.exe
+HWRCON:=hwrcon.exe
+HWTERM:=hwterm.exe
 endif
 ifeq ($(TARGET_OS),unix)
-HWRCON=hwrcon
-HWTERM=hwterm
+HWRCON:=hwrcon
+HWTERM:=hwterm
 endif
 
 # Whether to use Huffman encoding with the simple hwrcon tool

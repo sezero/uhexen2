@@ -1,19 +1,10 @@
 # GNU Makefile for lib3dfxgamma using GCC.
-# $Header: /home/ozzie/Download/0000/uhexen2/lib3dfxgamma/Makefile,v 1.7 2007-07-06 11:01:58 sezero Exp $
+# $Header: /home/ozzie/Download/0000/uhexen2/lib3dfxgamma/Makefile,v 1.8 2007-10-25 09:06:52 sezero Exp $
 #
 
-CC_DEFAULT:=gcc
-ifeq ($(origin CC),environment)
-CC_OVERRIDE:=1
+CC ?= gcc
 ifeq ($(CC),)
-CC_OVERRIDE:=
-endif
-endif
-ifeq ($(origin CC),command line)
-CC_OVERRIDE:=1
-endif
-ifeq ($(CC_OVERRIDE),)
-CC := $(CC_DEFAULT)
+CC := gcc
 endif
 
 LINKER:= $(CC)

@@ -1,5 +1,5 @@
 # GNU Makefile for (gl)hexen2 client/server binaries using GCC.
-# $Header: /home/ozzie/Download/0000/uhexen2/hexen2/Makefile,v 1.78 2007-10-23 18:07:42 sezero Exp $
+# $Header: /home/ozzie/Download/0000/uhexen2/hexen2/Makefile,v 1.79 2007-10-25 09:06:50 sezero Exp $
 #
 # Type "make help" to see the valid targets.
 #
@@ -9,6 +9,11 @@
 # To cross-compile for Win32 on Unix, you must pass the WINBUILD=1
 # argument to make. It would be best if you examine the script named
 # build_cross_win32.sh for cross compilation.
+#
+# To (cross-)compile for DOS, you must pass the DOSBUILD=1 argument
+# to make, such as "DOSBUILD=1 make h2". You need djgpp compiler set.
+# Also examine the build_cross_dos.sh script for cross compilation
+# on linux / unix.
 #
 # Build Options:
 #
@@ -103,7 +108,7 @@
 
 # Path settings:
 # main uhexen2 relative path
-UHEXEN2_TOP=..
+UHEXEN2_TOP:=..
 
 # General options (see explanations at the top)
 USE_SOUND=yes
@@ -145,22 +150,24 @@ endif
 ifeq ($(USE_X86_ASM),yes)
 CHECK_NASM=1
 endif
+ifeq ($(TARGET_OS),win32)
 CHECK_WINDRES=1
+endif
 
 # include file for sanity checks
 include $(UHEXEN2_TOP)/scripts/sanity1.inc
 
 # Names of the binaries
 ifeq ($(TARGET_OS),win32)
-H2_BINARY=h2.exe
-GLH2_BINARY=glh2.exe
+H2_BINARY:=h2.exe
+GLH2_BINARY:=glh2.exe
 endif
 ifeq ($(TARGET_OS),dos)
-H2_BINARY=h2dos.exe
+H2_BINARY:=h2dos.exe
 endif
 ifeq ($(TARGET_OS),unix)
-H2_BINARY=hexen2
-GLH2_BINARY=glhexen2
+H2_BINARY:=hexen2
+GLH2_BINARY:=glhexen2
 endif
 
 # Compiler flags
@@ -242,8 +249,10 @@ ifneq ($(HOST_OS),freebsd)
 USE_3DFXGAMMA=no
 endif
 endif
+ifneq ($(TARGET_OS),win32)
 ifeq ($(USE_3DFXGAMMA),yes)
 GL_DEFS+= -DUSE_3DFXGAMMA
+endif
 endif
 
 ifeq ($(LINK_GL_LIBS),no)

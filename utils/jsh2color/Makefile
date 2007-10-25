@@ -1,5 +1,5 @@
 # GNU Makefile for hexen2 jsh2color tool using GCC.
-# $Header: /home/ozzie/Download/0000/uhexen2/utils/jsh2color/Makefile,v 1.19 2007-10-21 16:48:12 sezero Exp $
+# $Header: /home/ozzie/Download/0000/uhexen2/utils/jsh2color/Makefile,v 1.20 2007-10-25 09:06:53 sezero Exp $
 #
 # if building a debug version :		make DEBUG=1 [other stuff]
 #
@@ -9,11 +9,11 @@
 
 # Path settings:
 # main uhexen2 relative path
-UHEXEN2_TOP=../..
+UHEXEN2_TOP:=../..
 # where the common sources/objects are
-COMMONDIR=../common
+COMMONDIR:=../common
 # where to put the binaries
-DESTDIR =../bin
+DESTDIR  :=../bin
 
 # include the common dirty stuff
 include $(UHEXEN2_TOP)/scripts/makefile.inc
@@ -23,10 +23,10 @@ include $(UHEXEN2_TOP)/scripts/sanity1.inc
 
 # Names of the binaries
 ifeq ($(TARGET_OS),win32)
-BINARY=jsh2colour.exe
+BINARY:=jsh2colour.exe
 endif
 ifeq ($(TARGET_OS),unix)
-BINARY=jsh2colour
+BINARY:=jsh2colour
 endif
 
 # Compiler flags

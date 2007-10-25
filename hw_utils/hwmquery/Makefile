@@ -1,5 +1,5 @@
 # GNU Makefile for hwmquery using GCC.
-# $Header: /home/ozzie/Download/0000/uhexen2/hw_utils/hwmquery/Makefile,v 1.10 2007-10-21 16:48:11 sezero Exp $
+# $Header: /home/ozzie/Download/0000/uhexen2/hw_utils/hwmquery/Makefile,v 1.11 2007-10-25 09:06:51 sezero Exp $
 #
 # if building a debug version :		make DEBUG=1 [other stuff]
 #
@@ -9,7 +9,7 @@
 
 # Path settings:
 # main uhexen2 relative path
-UHEXEN2_TOP=../..
+UHEXEN2_TOP:=../..
 
 # include the common dirty stuff
 include $(UHEXEN2_TOP)/scripts/makefile.inc
@@ -19,10 +19,10 @@ include $(UHEXEN2_TOP)/scripts/sanity1.inc
 
 # Names of the binaries
 ifeq ($(TARGET_OS),win32)
-HWMQUERY=hwmquery.exe
+HWMQUERY:=hwmquery.exe
 endif
 ifeq ($(TARGET_OS),unix)
-HWMQUERY=hwmquery
+HWMQUERY:=hwmquery
 endif
 
 # Compiler flags

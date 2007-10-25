@@ -1,5 +1,5 @@
 # GNU Makefile for hexenworld server using GCC.
-# $Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Server/Makefile,v 1.41 2007-10-21 16:48:11 sezero Exp $
+# $Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Server/Makefile,v 1.42 2007-10-25 09:06:51 sezero Exp $
 #
 # To cross-compile for Win32 on Unix, you must pass the WINBUILD=1
 # argument to make. It would be best if you examine the script named
@@ -28,7 +28,7 @@
 
 # Path settings:
 # main uhexen2 relative path
-UHEXEN2_TOP=../..
+UHEXEN2_TOP:=../..
 
 # General options (see explanations at the top)
 OPT_EXTRA=yes
@@ -42,10 +42,10 @@ include $(UHEXEN2_TOP)/scripts/sanity1.inc
 
 # Names of the binaries
 ifeq ($(TARGET_OS),win32)
-BINARY=hwsv.exe
+BINARY:=hwsv.exe
 endif
 ifeq ($(TARGET_OS),unix)
-BINARY=hwsv
+BINARY:=hwsv
 endif
 
 # Compiler flags

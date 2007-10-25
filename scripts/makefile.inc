@@ -1,5 +1,5 @@
 # GNU Makefile using GCC in a unix shell.
-# $Header: /home/ozzie/Download/0000/uhexen2/scripts/makefile.inc,v 1.18 2007-10-23 18:07:42 sezero Exp $
+# $Header: /home/ozzie/Download/0000/uhexen2/scripts/makefile.inc,v 1.19 2007-10-25 09:06:52 sezero Exp $
 
 # This file is responsible for determining the Host OS and Target OS,
 # setting common paths, selecting the compiler, assigning the compiler
@@ -88,21 +88,9 @@ MACH_TYPE:=x86
 endif
 
 # Compiler selection:
-# refuse cc for CC which is the default for make
-# accept environment or command line overrides.
-CC_DEFAULT:=gcc
-ifeq ($(origin CC),environment)
-CC_OVERRIDE:=1
-# watch for stale environment defs
+CC ?= gcc
 ifeq ($(CC),)
-CC_OVERRIDE:=
-endif
-endif
-ifeq ($(origin CC),command line)
-CC_OVERRIDE:=1
-endif
-ifeq ($(CC_OVERRIDE),)
-CC := $(CC_DEFAULT)
+CC := gcc
 endif
 
 NASM ?= $(NASM_BIN)

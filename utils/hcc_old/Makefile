@@ -1,5 +1,5 @@
 # GNU Makefile for hexen2 hcc tool (old version) using GCC.
-# $Header: /home/ozzie/Download/0000/uhexen2/utils/hcc_old/Makefile,v 1.12 2007-10-21 16:48:12 sezero Exp $
+# $Header: /home/ozzie/Download/0000/uhexen2/utils/hcc_old/Makefile,v 1.13 2007-10-25 09:06:53 sezero Exp $
 #
 # if building a debug version :		make DEBUG=1 [other stuff]
 #
@@ -9,9 +9,9 @@
 
 # Path settings:
 # main uhexen2 relative path
-UHEXEN2_TOP=../..
+UHEXEN2_TOP:=../..
 # where the common sources/objects are
-COMMONDIR=../common
+COMMONDIR:=../common
 
 # include the common dirty stuff
 include $(UHEXEN2_TOP)/scripts/makefile.inc
@@ -21,10 +21,10 @@ include $(UHEXEN2_TOP)/scripts/sanity1.inc
 
 # Names of the binaries
 ifeq ($(TARGET_OS),win32)
-BINARY=hcc.exe
+BINARY:=hcc.exe
 endif
 ifeq ($(TARGET_OS),unix)
-BINARY=hcc
+BINARY:=hcc
 endif
 
 # Compiler flags

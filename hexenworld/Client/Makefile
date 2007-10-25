@@ -1,5 +1,5 @@
 # GNU Makefile for hexenworld clients using GCC.
-# $Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/Makefile,v 1.73 2007-10-21 16:48:11 sezero Exp $
+# $Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/Makefile,v 1.74 2007-10-25 09:06:51 sezero Exp $
 #
 # Type "make help" to see the valid targets.
 #
@@ -103,7 +103,7 @@
 
 # Path settings:
 # main uhexen2 relative path
-UHEXEN2_TOP=../..
+UHEXEN2_TOP:=../..
 
 # General options (see explanations at the top)
 USE_SOUND=yes
@@ -145,19 +145,21 @@ endif
 ifeq ($(USE_X86_ASM),yes)
 CHECK_NASM=1
 endif
+ifeq ($(TARGET_OS),win32)
 CHECK_WINDRES=1
+endif
 
 # include file for sanity checks
 include $(UHEXEN2_TOP)/scripts/sanity1.inc
 
 # Names of the binaries
 ifeq ($(TARGET_OS),win32)
-HW_BINARY=hwcl.exe
-GLHW_BINARY=glhwcl.exe
+HW_BINARY:=hwcl.exe
+GLHW_BINARY:=glhwcl.exe
 endif
 ifeq ($(TARGET_OS),unix)
-HW_BINARY=hwcl
-GLHW_BINARY=glhwcl
+HW_BINARY:=hwcl
+GLHW_BINARY:=glhwcl
 endif
 
 # Compiler flags
@@ -231,8 +233,10 @@ ifneq ($(HOST_OS),freebsd)
 USE_3DFXGAMMA=no
 endif
 endif
+ifneq ($(TARGET_OS),win32)
 ifeq ($(USE_3DFXGAMMA),yes)
 GL_DEFS+= -DUSE_3DFXGAMMA
+endif
 endif
 
 ifeq ($(LINK_GL_LIBS),no)

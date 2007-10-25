@@ -1,5 +1,5 @@
 # GNU Makefile for Hexen II Dedicated Server (h2ded) using GCC.
-# $Header: /home/ozzie/Download/0000/uhexen2/hexen2/Makefile.sv,v 1.17 2007-10-21 16:48:09 sezero Exp $
+# $Header: /home/ozzie/Download/0000/uhexen2/hexen2/Makefile.sv,v 1.18 2007-10-25 09:06:50 sezero Exp $
 #
 # It is ESSENTIAL that you run make clean between different
 # types of builds or different types of targets.
@@ -31,7 +31,7 @@
 
 # Path settings:
 # main uhexen2 relative path
-UHEXEN2_TOP=..
+UHEXEN2_TOP:=..
 
 # General options (see explanations at the top)
 OPT_EXTRA=yes
@@ -45,10 +45,10 @@ include $(UHEXEN2_TOP)/scripts/sanity1.inc
 
 # Names of the binaries
 ifeq ($(TARGET_OS),win32)
-BINARY=h2ded.exe
+BINARY:=h2ded.exe
 endif
 ifeq ($(TARGET_OS),unix)
-BINARY=h2ded
+BINARY:=h2ded
 endif
 
 # Compiler flags
