@@ -1,4 +1,4 @@
-/* systest.c, $Id: systest.c,v 1.1 2007-10-15 08:50:20 sezero Exp $
+/* $Id: systest.c,v 1.2 2007-10-25 21:35:49 sezero Exp $
  * stupid test tool that reports the type sizes and
  * their alignment offsets in structures, and the byte
  * order as detected at runtime and compile time.
@@ -83,8 +83,8 @@
  * flags, mostly.) so, proceed carefully..
  */
 
-# if defined(__DJGPP__) || defined(__DOS__)	/* DOS */
-#	define	BYTE_ORDER	LITTLE_ENDIAN
+# if defined(__DJGPP__) || defined(MSDOS) || defined(__MSDOS__)
+#	define	BYTE_ORDER	LITTLE_ENDIAN	/* DOS */
 
 # elif defined(__sun) || defined(__svr4__)	/* solaris */
 #   if defined(_LITTLE_ENDIAN)	/* x86 */
