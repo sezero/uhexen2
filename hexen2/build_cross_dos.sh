@@ -8,13 +8,15 @@ TARGET=i586-pc-msdosdjgpp
 PATH="$PREFIX/bin:$PREFIX/$TARGET/bin:$PATH"
 export PATH
 
+DJGPPDIR="$PREFIX/$TARGET"
+DOSBUILD=1
+
 CC="$TARGET-gcc"
 AS="$TARGET-as"
 AR="$TARGET-ar"
 NASM="nasm"
-DJGPPDIR="$PREFIX/$TARGET"
-DOSBUILD=1
-export CC NASM DJGPPDIR AS AR MINGWDIR DOSBUILD
+
+export CC NASM AS AR DJGPPDIR DOSBUILD
 
 HOST_OS=`uname|sed -e s/_.*//|tr '[:upper:]' '[:lower:]'`
 
