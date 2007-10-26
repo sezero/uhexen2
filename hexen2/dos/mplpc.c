@@ -3,7 +3,7 @@
 	support library for dosquake MPATH network driver.
 	from quake1 source with minor adaptations for uhexen2.
 
-	$Id: mplpc.c,v 1.1 2007-10-22 18:07:52 sezero Exp $
+	$Id: mplpc.c,v 1.2 2007-10-26 12:55:15 sezero Exp $
 
 	Copyright (C) 1996-1997  Id Software, Inc.
 
@@ -29,6 +29,9 @@
 
 #include <go32.h>
 #include "mpdosock.h"
+
+#include "compiler.h"
+void Sys_Error (const char *error, ...) __attribute__((format(printf,1,2), noreturn));
 
 //#include "types.h"
 typedef unsigned char	BYTE;
@@ -492,8 +495,9 @@ static void ReconstructHostEnt (struct hostent *s, void *flattened)
 
 	if (FARPKS(&old->h_length) != sizeof(struct in_addr))
 	{
-		printf("Error!\n");
-		exit (0);
+	//	printf("Error!\n");
+	//	exit (1);
+		Sys_Error ("MPATH: h_length != sizeof(struct in_addr)");
 	}
 
 	s->h_addr_list = (char **) HostEnt_addr_list;
