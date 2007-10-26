@@ -3,6 +3,14 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2007-10-26 (CVS):
+    * minor makefile tweaks. gave up refusing 'cc' as the compiler. gave
+      up using a different name for the launcher demo builds.
+    * small update to the common makefile includes.
+    * use standart sys_error for the error exit in dos mpath driver.
+    * hwmaster functionality is now integrated to qstat and xqf. cleaning
+      up the stuff here.
+
 2007-10-24 (CVS):
     * added a mechanism to reserve certain keys to ensure that they always
       stay with their intended hardcoded bindings.. reserved '`', '~' and
