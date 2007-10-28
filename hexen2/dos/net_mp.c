@@ -4,7 +4,7 @@
         for use when run from withing win95.
 	from quake1 source with minor adaptations for uhexen2.
 
-	$Id: net_mp.c,v 1.1 2007-10-22 18:07:52 sezero Exp $
+	$Id: net_mp.c,v 1.2 2007-10-28 08:19:58 sezero Exp $
 
 	Copyright (C) 1996-1997  Id Software, Inc.
 
@@ -280,7 +280,7 @@ int MPATH_Read (int mysocket, byte *buf, int len, struct qsockaddr *addr)
 	int addrlen = sizeof (struct qsockaddr);
 	int ret;
 
-	ret = recvfrom (mysocket, buf, len, 0, (struct sockaddr *)addr, &addrlen);
+	ret = recvfrom (mysocket, (char *)buf, len, 0, (struct sockaddr *)addr, &addrlen);
 	if (ret == -1)
 	{
 		int err = WSAGetLastError();
@@ -332,7 +332,7 @@ int MPATH_Write (int mysocket, byte *buf, int len, struct qsockaddr *addr)
 {
 	int	ret;
 
-	ret = sendto (mysocket, buf, len, 0, (struct sockaddr *)addr, sizeof(struct qsockaddr));
+	ret = sendto (mysocket, (char *)buf, len, 0, (struct sockaddr *)addr, sizeof(struct qsockaddr));
 	if (ret == -1)
 	{
 		if (WSAGetLastError() == WSAEWOULDBLOCK)

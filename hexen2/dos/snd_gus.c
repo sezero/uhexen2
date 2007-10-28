@@ -4,7 +4,7 @@
 	Author(s): Jayeson Lee-Steere
 	from quake1 source with minor adaptations for uhexen2.
 
-	$Id: snd_gus.c,v 1.1 2007-10-22 18:07:52 sezero Exp $
+	$Id: snd_gus.c,v 1.2 2007-10-28 08:19:58 sezero Exp $
 
 	Copyright (C) 1996-1997  Id Software, Inc.
 
@@ -75,7 +75,7 @@ static struct field_buffer	field_buffers[NUM_FIELD_BUFFERS];
 // Internal routines
 //***************************************************************************
 
-static char toupper (char c)
+static char my_toupper (char c)
 {
 	if (c >= 'a' && c <= 'z')
 		c -= ('a' - 'A');
@@ -117,7 +117,7 @@ static int is_section (char *s, const char *name)
 	{
 		if (!wild)
 		{
-			if (toupper(s[0]) != toupper(name[0]))
+			if (my_toupper(s[0]) != my_toupper(name[0]))
 				return (0);
 		}
 		s++;
@@ -159,7 +159,7 @@ static int is_field (char *s, const char *name)
 	{
 		if (!wild)
 		{
-			if (toupper(s[0])!=toupper(name[0]))
+			if (my_toupper(s[0]) != my_toupper(name[0]))
 				return(0);
 		}
 		s++;

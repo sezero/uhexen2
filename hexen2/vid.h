@@ -2,7 +2,7 @@
 	vid.h
 	video driver defs
 
-	$Id: vid.h,v 1.33 2007-10-23 18:07:42 sezero Exp $
+	$Id: vid.h,v 1.34 2007-10-28 08:19:56 sezero Exp $
 */
 
 #ifndef __VID_DEFS_H
@@ -116,12 +116,8 @@ char *VID_ReportConsize(void);
 #endif	/* ! GLQUAKE */
 
 #if !defined(H2W)
-#if defined(PLATFORM_DOS)
-#define D_ShowLoadingSize()	do {} while (0)	/* not implemented yet */
-#else
 void D_ShowLoadingSize (void);
 // displays progress bars while loading a map. (not used in hexenworld.)
-#endif
 #endif	/* ! H2W */
 
 extern void (*vid_menudrawfn)(void);

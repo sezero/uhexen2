@@ -3,7 +3,7 @@
 	DOS-specific video routines.
 	from quake1 source with minor adaptations for uhexen2.
 
-	$Id: vid_dos.c,v 1.1 2007-10-22 18:07:52 sezero Exp $
+	$Id: vid_dos.c,v 1.2 2007-10-28 08:19:58 sezero Exp $
 
 	Copyright (C) 1996-1997  Id Software, Inc.
 
@@ -534,6 +534,11 @@ void D_BeginDirectRect (int x, int y, byte *pbitmap, int width, int height)
 		return;
 
 	(*pcurrentmode->begindirectrect) (&vid, pcurrentmode, x, y, pbitmap, width, height);
+}
+
+
+void D_ShowLoadingSize (void)
+{
 }
 
 
