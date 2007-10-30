@@ -4,7 +4,7 @@
 	TODO: proper handling of page-swap failure
 	from quake1 source with minor adaptations for uhexen2.
 
-	$Id: vid_vga.c,v 1.1 2007-10-22 18:07:53 sezero Exp $
+	$Id: vid_vga.c,v 1.2 2007-10-30 17:09:58 sezero Exp $
 
 	Copyright (C) 1996-1997  Id Software, Inc.
 
@@ -295,14 +295,14 @@ qboolean VGA_FreeAndAllocVidbuffer (viddef_t *lvid, int allocnewbuffer)
 
 	VGA_highhunkmark = Hunk_HighMark ();
 
-	d_pzbuffer = Hunk_HighAllocName (VGA_buffersize, "video");
+	d_pzbuffer = (short *) Hunk_HighAllocName (VGA_buffersize, "video");
 
 	vid_surfcache = (byte *)d_pzbuffer
 		+ lvid->width * lvid->height * sizeof (*d_pzbuffer);
 	
 	if (allocnewbuffer)
 	{
-		lvid->buffer = (void *)( (byte *)vid_surfcache + vid_surfcachesize);
+		lvid->buffer = (pixel_t *)( (byte *)vid_surfcache + vid_surfcachesize);
 		lvid->conbuffer = lvid->buffer;
 	}
 
@@ -354,7 +354,7 @@ static int VGA_InitMode (viddef_t *lvid, vmode_t *pcurrentmode)
 {
 	vextra_t		*pextra;
 
-	pextra = pcurrentmode->pextradata;
+	pextra = (vextra_t *) pcurrentmode->pextradata;
 
 	if (!VGA_FreeAndAllocVidbuffer (lvid, pextra->vidbuffer))
 		return -1;	// memory alloc failed
@@ -367,7 +367,7 @@ static int VGA_InitMode (viddef_t *lvid, vmode_t *pcurrentmode)
 	regs.h.al = 0x13;
 	dos_int86(0x10);
 
-	VGA_pagebase = (void *)real2ptr(0xa0000);
+	VGA_pagebase = (byte *)real2ptr(0xa0000);
 	lvid->direct = (pixel_t *)VGA_pagebase;
 
 // set additional registers as needed

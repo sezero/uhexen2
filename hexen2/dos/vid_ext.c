@@ -4,7 +4,7 @@
 	TODO: make dependencies on vid_vga.c explicit or eliminate them
 	from quake1 source with minor adaptations for uhexen2.
 
-	$Id: vid_ext.c,v 1.1 2007-10-22 18:07:53 sezero Exp $
+	$Id: vid_ext.c,v 1.2 2007-10-30 17:09:58 sezero Exp $
 
 	Copyright (C) 1996-1997  Id Software, Inc.
 
@@ -579,7 +579,7 @@ static int VID_ExtraInitMode (viddef_t *lvid, vmode_t *pcurrentmode)
 	vesa_extra_t	*pextra;
 	int			pageoffset;
 
-	pextra = pcurrentmode->pextradata;
+	pextra = (vesa_extra_t *) pcurrentmode->pextradata;
 
 	if (vid_nopageflip.integer)
 		lvid->numpages = 1;
@@ -605,7 +605,7 @@ static int VID_ExtraInitMode (viddef_t *lvid, vmode_t *pcurrentmode)
 		return 0;
 
 	VID_banked = !(pextra->vesamode & LINEAR_MODE);
-	VID_membase = pextra->plinearmem;
+	VID_membase = (byte *) pextra->plinearmem;
 	VGA_width = lvid->width;
 	VGA_height = lvid->height;
 	VGA_rowbytes = lvid->rowbytes;

@@ -4,7 +4,7 @@
         for use when run from withing win95.
 	from quake1 source with minor adaptations for uhexen2.
 
-	$Id: net_mp.c,v 1.2 2007-10-28 08:19:58 sezero Exp $
+	$Id: net_mp.c,v 1.3 2007-10-30 17:09:58 sezero Exp $
 
 	Copyright (C) 1996-1997  Id Software, Inc.
 
@@ -178,7 +178,7 @@ int MPATH_OpenSocket (int port)
 	address.sin_family = AF_INET;
 	address.sin_addr.s_addr = INADDR_ANY;
 	address.sin_port = htons((unsigned short)port);
-	if ( bind (newsocket, (void *)&address, sizeof(address)) == -1)
+	if ( bind (newsocket, (struct sockaddr *)&address, sizeof(address)) == -1)
 		goto ErrorReturn;
 
 	return newsocket;

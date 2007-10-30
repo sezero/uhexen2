@@ -3,7 +3,7 @@
 	support library for dosquake MPATH network driver.
 	from quake1 source with minor adaptations for uhexen2.
 
-	$Id: mplpc.c,v 1.2 2007-10-26 12:55:15 sezero Exp $
+	$Id: mplpc.c,v 1.3 2007-10-30 17:09:58 sezero Exp $
 
 	Copyright (C) 1996-1997  Id Software, Inc.
 
@@ -828,7 +828,7 @@ int sendto (SOCKET s, const char *buf, int len, int flags, const struct sockaddr
 		return SOCKET_ERROR;
 	}
 
-	data = GetFreeBufferToQueue(PRIVATEQ, len + sizeof(WinSockData));
+	data = (WinSockData *) GetFreeBufferToQueue(PRIVATEQ, len + sizeof(WinSockData));
 
 	if (!data)
 	{

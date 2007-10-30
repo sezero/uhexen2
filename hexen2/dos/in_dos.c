@@ -3,7 +3,7 @@
 	dos mouse (input devices) code.
 	from quake1 source with minor adaptations for uhexen2.
 
-	$Id: in_dos.c,v 1.1 2007-10-22 18:07:52 sezero Exp $
+	$Id: in_dos.c,v 1.2 2007-10-30 17:09:58 sezero Exp $
 
 	Copyright (C) 1996-1997  Id Software, Inc.
 
@@ -178,7 +178,8 @@ void IN_Init (void)
 	i = COM_CheckParm ("-control");
 	if (i && !safemode)
 	{
-		extern_control = real2ptr(atoi (com_argv[i+1]));
+	// how is this supposed to work?? - O.S
+		extern_control = (externControl_t *) real2ptr(atoi (com_argv[i+1]));
 		IN_StartupExternal ();
 	}
 }
