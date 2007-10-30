@@ -3,7 +3,7 @@
 	TTY backend for the dosquake serial network driver.
 	from quake1 source with minor adaptations for uhexen2.
 
-	$Id: net_comx.c,v 1.2 2007-10-28 08:19:58 sezero Exp $
+	$Id: net_comx.c,v 1.3 2007-10-30 17:11:58 sezero Exp $
 
 	Copyright (C) 1996-1997  Id Software, Inc.
 
@@ -1274,7 +1274,7 @@ static void Modem_Hangup2 (void *p)
 {
 	ComPort	*_p = (ComPort *) p;
 	outportb(_p->uart + MODEM_CONTROL_REGISTER, inportb(_p->uart + MODEM_CONTROL_REGISTER) | MCR_DTR);
-	Modem_Command(p, "+++");
+	Modem_Command(_p, "+++");
 	_p->poll.procedure = Modem_Hangup3;
 	SchedulePollProcedure(&_p->poll, 1.5);
 }
