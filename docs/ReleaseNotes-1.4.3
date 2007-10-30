@@ -1,0 +1,27 @@
+Hexen II: Hammer of Thyrion
+Release Notes for version 1.4.3
+===============================
+
+Changes since HoT-1.4.2 :
+
+- Fixed compilation with gcc-2.x and gcc-3.0.x series.
+- Re-enabled the success check during gfx.wad loading.
+- Fixed some errors in a few endianness macros.
+- Fixed a bug in key events handler with prevented the
+  pause key events on some platforms.
+- Added back the use of password file on unix systems.
+- Passed NULL as the timezone argument to gettimeofday.
+- A few documentation updates and corrections.
+- Fixed a theoretical buffer overrun in console input.
+- Fixed the paths in texutils cross compilation scripts.
+- Added a new compile time option to disable the user
+  directories even on multi-user platforms (default is
+  off, of course.)
+- Always use MAXHOSTNAMELEN sized buffers with gethostname
+- Added PDP (NUXI) endian stuff (just for fun ;)
+- Added DOS support for the software renderer (another fun
+  thing: we have dosquake, why not have a dos-hexen2 ;)
+- Updates in platform headers to help more for better
+  portability.
+- Fixed and updated several build and patch scripts.
+

@@ -23,7 +23,7 @@ TODO:
   compare with the quakeworld code and fix.
 - MorphOS: the port isn't touched since 1.4.0-prerelease times,
   make sure it still works out of the box.
-- Maybe do other ports? (Amiga, DOS, etc?.)
+- Maybe do other ports? (Amiga, etc?)
 - Add sequencer (mpu-401) support for midi (alsa / oss)
 - MIDI-background music: re-write with proper decoder library
   usage (eg. wildmidi/timidity for software-midi, ogg-vorbis

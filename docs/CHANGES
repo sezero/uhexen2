@@ -3,6 +3,11 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2007-10-30 (CVS):
+    * a few minor warning fixes and clean-ups.
+    * fixed my typo in net_comx.c
+    * added missing casts in several dos files.
+
 2007-10-26 (CVS):
     * minor makefile tweaks. gave up refusing 'cc' as the compiler. gave
       up using a different name for the launcher demo builds.
