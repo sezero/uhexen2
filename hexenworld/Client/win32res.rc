@@ -2,7 +2,7 @@
 // win32res.rc
 // Win32 resource file for Hexen II
 //
-// $Id: win32res.rc,v 1.4 2007-03-14 21:03:43 sezero Exp $
+// $Id: win32res.rc,v 1.5 2007-10-31 18:56:38 sezero Exp $
 //
 
 #include <afxres.h>
@@ -10,7 +10,7 @@
 #include "resource.h"
 
 // Icon
-IDI_ICON2 ICON DISCARDABLE ICO_FILE
+IDI_ICON2 ICON DISCARDABLE RES_ICONFILE
 
 
 // Dialog
@@ -23,7 +23,7 @@ STYLE DS_MODALFRAME | DS_SETFOREGROUND | DS_3DLOOK | DS_CENTER | WS_POPUP | WS_V
 EXSTYLE WS_EX_TOOLWINDOW | WS_EX_CLIENTEDGE
 FONT 16, "Times New Roman", 0, 0, 0x1
 BEGIN
-    CTEXT "Starting " H2_STRING "...", IDC_STATIC, 2, 3, 74, 15, SS_CENTERIMAGE | SS_SUNKEN
+    CTEXT SPLASH_STR, IDC_STATIC, 2, 3, 74, 15, SS_CENTERIMAGE | SS_SUNKEN
 END
 
 #else	// OpenGL version
@@ -33,7 +33,7 @@ STYLE DS_MODALFRAME | DS_SETFOREGROUND | DS_3DLOOK | DS_CENTER | WS_POPUP | WS_V
 EXSTYLE WS_EX_TOOLWINDOW | WS_EX_CLIENTEDGE
 FONT 16, "Times New Roman", 0, 0, 0x1
 BEGIN
-    CONTROL 112,IDC_STATIC,"Static",SS_BITMAP | SS_REALSIZEIMAGE, 0, 0, 167, 28
+    CONTROL 112, IDC_STATIC, "Static", SS_BITMAP | SS_REALSIZEIMAGE, 0, 0, 167, 28
 END
 
 #include "h2option.h"
@@ -43,15 +43,14 @@ STYLE DS_MODALFRAME | DS_SETFOREGROUND | DS_3DLOOK | DS_CENTER | WS_POPUP | WS_V
 EXSTYLE WS_EX_TOOLWINDOW | WS_EX_CLIENTEDGE
 FONT 8, "MS Sans Serif", 0, 0, 0x1
 BEGIN
-    LTEXT "Creating 15 bit inverse palette.  This is only done once, so just be patient for the next 30-60 seconds.",
-		IDC_STATIC, 7, 51, 319, 10
+    LTEXT "Creating 15 bit inverse palette.  This is only done once, so just be patient for the next 30-60 seconds.", IDC_STATIC, 7, 51, 319, 10
     CONTROL 112, IDC_STATIC, "Static", SS_BITMAP | SS_REALSIZEIMAGE, 0, 0, 333, 49
     CONTROL "Progress1", IDC_PROGRESS, "msctls_progress32", 0x0, 7, 61, 319, 11
 END
 #endif	// !USE_HEXEN2_PALTEX_CODE
 
 // Bitmap
-IDB_HWBITMAP BITMAP  DISCARDABLE HWBITMAP
+IDB_HXBITMAP BITMAP DISCARDABLE SPLASH_BMP
 
 #endif	// GLQUAKE
 
@@ -61,6 +60,6 @@ IDB_HWBITMAP BITMAP  DISCARDABLE HWBITMAP
 // String Table
 STRINGTABLE DISCARDABLE
 BEGIN
-	IDS_STRING1 H2_STRING
+	IDS_STRING1 RES_STRING
 END
 

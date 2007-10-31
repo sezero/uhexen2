@@ -2,7 +2,7 @@
 // resource.h
 // Win32 resource header
 //
-// $Id: resource.h,v 1.6 2007-03-14 21:03:20 sezero Exp $
+// $Id: resource.h,v 1.7 2007-10-31 18:56:37 sezero Exp $
 //
 
 #ifndef __HX2_RESOURCE_H
@@ -12,35 +12,38 @@
 #define IDI_ICON2	1
 #define IDD_DIALOG1	108
 #define IDD_PROGRESS	109
-#define IDB_HWBITMAP	112
+#define IDB_HXBITMAP	112
 #define IDC_PROGRESS	1000
 
 // Icon file to use
 //
 #if defined(H2W)
-#define ICO_FILE	"../icons/hexenworld.ico"
+#define RES_ICONFILE	"../icons/hexenworld.ico"
 //#elif defined(H2MP)
-//#define ICO_FILE	"icons/h2mp.ico"
+//#define RES_ICONFILE	"icons/h2mp.ico"
 #else
-#define ICO_FILE	"icons/hexen2.ico"
+#define RES_ICONFILE	"icons/hexen2.ico"
 #endif
 
 // String
 //
 #if defined(H2W)
-#define H2_STRING	"HexenWorld"
+#define SPLASH_STR	"Starting HexenWorld..."
+#define RES_STRING	"HexenWorld"
 //#elif defined(H2MP)
-//#define H2_STRING	"Hexen II+"
+//#define SPLASH_STR	"Starting Hexen II+..."
+//#define RES_STRING	"HexenII"
 #else
-#define H2_STRING	"Hexen II"
+#define SPLASH_STR	"Starting Hexen II..."
+#define RES_STRING	"HexenII"
 #endif
 
 // Bitmap
-// 
+//
 #if defined(H2W)
-#define HWBITMAP	"win_stuff/hexenworld.bmp"
+#define SPLASH_BMP	"win_stuff/hexenworld.bmp"
 #else
-#define HWBITMAP	"win_stuff/hexen2.bmp"
+#define SPLASH_BMP	"win_stuff/hexen2.bmp"
 #endif
 
 #endif	/* __HX2_RESOURCE_H */
