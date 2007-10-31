@@ -2,7 +2,7 @@
 	sys.h
 	non-portable functions
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/sys.h,v 1.36 2007-10-21 15:32:23 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/sys.h,v 1.37 2007-10-31 19:55:47 sezero Exp $
 */
 
 #ifndef __HX2_SYS_H
@@ -68,8 +68,12 @@ void Sys_Error (const char *error, ...) __attribute__((format(printf,1,2), noret
 void Sys_PrintTerm (const char *msgtxt);
 // prints the given string to the terminal
 
+#if defined(PLATFORM_DOS)
+// under DOS, we stop the terminal output when we
+// will init the graphics
 void Sys_EnableTerm (void);
 void Sys_DisableTerm (void);
+#endif	/* PLATFORM_DOS */
 
 void Sys_Quit (void) __attribute__((noreturn));
 
