@@ -2,7 +2,7 @@
 	dos_inet.c
 	from quake1 source with minor adaptations for uhexen2.
 
-	$Id: dos_inet.c,v 1.1 2007-10-22 18:07:51 sezero Exp $
+	$Id: dos_inet.c,v 1.2 2007-11-03 17:20:07 sezero Exp $
 
 	Copyright (C) 1996-1997  Id Software, Inc.
 
@@ -28,11 +28,11 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <dpmi.h>
 
 #include "dos_inet.h"
 
 
+#if 0	/* using the OpenBSD version instead, see inet_addr.c */
 in_addr_t inet_addr (const char *cp)
 {
 	int	ret;
@@ -45,6 +45,7 @@ in_addr_t inet_addr (const char *cp)
 	ipaddr = (ha1 << 24) | (ha2 << 16) | (ha3 << 8) | ha4;
 	return ipaddr;
 }
+#endif
 
 char *inet_ntoa (struct in_addr in)
 {

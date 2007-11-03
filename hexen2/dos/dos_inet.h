@@ -3,7 +3,7 @@
 	net definitions for dos.
 	from quake1 source with minor adaptations for uhexen2.
 
-	$Id: dos_inet.h,v 1.1 2007-10-22 18:07:51 sezero Exp $
+	$Id: dos_inet.h,v 1.2 2007-11-03 17:20:07 sezero Exp $
 
 	Copyright (C) 1996-1997  Id Software, Inc.
 
@@ -73,6 +73,7 @@ struct	hostent {
 /* SUSv2 guarantees that `Host names are limited to 255 bytes'.
    POSIX 1003.1-2001 guarantees that `Host names (not including
    the terminating NUL) are limited to HOST_NAME_MAX bytes'. */
+/* NOTE: DJGPP <sys/params.h> defines MAXGETHOSTNAME as 128. */
 #define	MAXHOSTNAMELEN		256
 
 #ifdef __cplusplus
@@ -80,6 +81,7 @@ extern "C" {
 #endif
 
 char *inet_ntoa (struct in_addr in);
+int inet_aton(const char *cp, struct in_addr *addr);
 in_addr_t inet_addr(const char *cp);
 
 #ifdef __cplusplus
@@ -108,7 +110,7 @@ in_addr_t inet_addr(const char *cp);
 
 #define	PF_INET		AF_INET
 
-typedef int		socklen_t;
+typedef long		socklen_t;	/* NOT unsigned on DOS/WIN32.. */
 
 
 #endif	/* defined DOS */

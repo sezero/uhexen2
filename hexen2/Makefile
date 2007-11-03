@@ -1,5 +1,5 @@
 # GNU Makefile for (gl)hexen2 client/server binaries using GCC.
-# $Header: /home/ozzie/Download/0000/uhexen2/hexen2/Makefile,v 1.79 2007-10-25 09:06:50 sezero Exp $
+# $Header: /home/ozzie/Download/0000/uhexen2/hexen2/Makefile,v 1.80 2007-11-03 17:20:03 sezero Exp $
 #
 # Type "make help" to see the valid targets.
 #
@@ -403,8 +403,8 @@ endif
 ifeq ($(TARGET_OS),dos)
 SYSOBJ_INPUT := dos/in_dos.o
 SYSOBJ_SOFT_VID:= dos/vid_vga.o dos/vid_ext.o d_copy.o dos/vid_dos.o dos/vregset.o
-SYSOBJ_NET := dos/net_dos.o dos/net_ser.o dos/net_bw.o dos/dos_inet.o dos/net_ipx.o \
-	dos/net_mp.o dos/mplib.o dos/mplpc.o
+SYSOBJ_NET := dos/net_dos.o dos/net_ser.o dos/net_bw.o dos/dos_inet.o dos/inet_addr.o \
+	dos/net_ipx.o dos/net_mp.o dos/mplib.o dos/mplpc.o
 SYSOBJ_SYS := dos/dos_v2.o dos/sys_dos.o
 #	dosasm.o
 endif
