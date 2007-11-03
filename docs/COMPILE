@@ -195,6 +195,22 @@ select only "ppc"; then double click on the "SDK Path" value and
 delete "/Developer/SDKs/MacOSX10.4u.sdk" from there, build as usual.
 
 
+Compiling for DOS:
+========================================
+
+You need DJGPP. At present, the beta1 version of djgpp 2.04 is required,
+because 2.03 and earlier versions doesn't provide a stdint.h and / or
+inttypes.h header, besides, they don't have a vsnprintf implementation.
+Compilers other than djgpp most probably won't work at all.  I use
+gcc-3.3.6 and binutils-2.15 and compile the binaries on linux with a
+cross compilation toolchain: see the tiny script build_cross_dos.sh to
+have an idea of how I do it.  Compilation on DOS is never tested and is
+not supported.  As for compiling on windows in a command console, it
+should be possible, just remember to add DOSBUILD=1 to your environment.
+CWSDPMI.EXE is needed at runtime: the "r1" version from 1996 which was
+packaged with quake still works, or you can use the newer r5 version.
+
+
 Links:
 ------
 SDL homepage		:	http://www.libsdl.org/
@@ -206,4 +222,5 @@ YASM homepage		:	http://www.tortall.net/projects/yasm/
 MinGW/MSYS homepage	:	http://www.mingw.org/
 				http://mingw.sourceforge.net/
 MinGW cross compiling tips:	http://www.libsdl.org/extras/win32/cross/
+DJGPP homepage		:	http://www.delorie.com/djgpp/
 
