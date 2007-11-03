@@ -3,6 +3,14 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2007-11-03 (CVS):
+    * win32 resource files, minor update (clean-up).
+    * Sys_EnableTerm and Sys_DisableTerm are only for dos.
+    * relnotes-1.4.3: fixed a typo.
+    * added the OpenBSD version of inet_addr() for dos. while we are there,
+      did some minor clean-up in dos_inet.h.
+    * added short compilation instructions for DOS.
+
 2007-10-30 (CVS):
     * a few minor warning fixes and clean-ups.
     * fixed my typo in net_comx.c
