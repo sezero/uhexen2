@@ -3,6 +3,12 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2007-11-05 (CVS):
+    * added v1.11 pakfile data for the oem (Matrox m3D bundle) version.
+      data for older versions (1.08 and 1.10?) of oem are still missing.
+    * updated release notes for 1.4.3 (2007-11-05.)
+    * launcher: stat() the pakfiles before patching.
+
 2007-11-03 (CVS):
     * win32 resource files, minor update (clean-up).
     * Sys_EnableTerm and Sys_DisableTerm are only for dos.
