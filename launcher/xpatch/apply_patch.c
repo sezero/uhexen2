@@ -2,7 +2,7 @@
 	apply_patch.c
 	hexen2 launcher: binary patch starter
 
-	$Id: apply_patch.c,v 1.7 2007-10-13 11:30:17 sezero Exp $
+	$Id: apply_patch.c,v 1.8 2007-11-05 09:10:03 sezero Exp $
 
 	This program is free software; you can redistribute it and/or
 	modify it under the terms of the GNU General Public License
@@ -39,15 +39,18 @@ static const struct
 	char	*deltaname;	/* delta file to use	*/
 	char	*old_md5;	/* unpatched md5sum	*/
 	char	*new_md5;	/* md5sum after patch	*/
+	size_t	old_size, new_size;
 } patch_data[NUM_PATCHES] =
 {
 	{  "data1", "pak0.pak", "data1pak0.xd",
-	   "b53c9391d16134cb3baddc1085f18683" ,
-	   "c9675191e75dd25a3b9ed81ee7e05eff"
+	   "b53c9391d16134cb3baddc1085f18683",
+	   "c9675191e75dd25a3b9ed81ee7e05eff",
+	   21714275, 22704056
 	},
 	{  "data1", "pak1.pak", "data1pak1.xd",
-	   "9a2010aafb9c0fe71c37d01292030270" ,
-	   "c2ac5b0640773eed9ebe1cda2eca2ad0"
+	   "9a2010aafb9c0fe71c37d01292030270",
+	   "c2ac5b0640773eed9ebe1cda2eca2ad0",
+	   76958474, 75601170
 	}
 };
 
@@ -59,7 +62,8 @@ static	unsigned long		rc;
 
 void *apply_patches (void *workdir)
 {
-	int			i;
+	int	i;
+	struct stat	stbuf;
 	char	dst[MAX_OSPATH],
 		pat[MAX_OSPATH],
 		out[MAX_OSPATH];
@@ -74,6 +78,23 @@ void *apply_patches (void *workdir)
 		{
 			rc |= XPATCH_FAIL;
 			ui_log ("File %s not found\n", dst);
+			thread_alive = 0;
+			return &rc;
+		}
+
+		if ( stat(dst, &stbuf) != 0 )
+		{
+			rc |= XPATCH_FAIL;
+			ui_log ("Unable to stat %s\n", dst);
+			thread_alive = 0;
+			return &rc;
+		}
+
+		if (stbuf.st_size != patch_data[i].old_size &&
+			stbuf.st_size != patch_data[i].new_size)
+		{
+			rc |= XPATCH_FAIL;
+			ui_log ("File %s is an incompatible version\n", dst);
 			thread_alive = 0;
 			return &rc;
 		}
