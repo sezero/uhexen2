@@ -2,7 +2,7 @@
 	games.h
 	hexen2 launcher, game installation scanning
 
-	$Id: games.h,v 1.5 2007-08-09 06:08:22 sezero Exp $
+	$Id: games.h,v 1.6 2007-11-05 08:25:22 sezero Exp $
 
 	This program is free software; you can redistribute it and/or
 	modify it under the terms of the GNU General Public License
@@ -37,37 +37,41 @@
 
 #define	GAME_DEMO		(1 << 0)
 #define	GAME_OEM		(1 << 1)
-#define	GAME_MODIFIED		(1 << 2)
-#define	GAME_REGISTERED		(1 << 3)
-#define	GAME_REGISTERED0	(1 << 4)
-#define	GAME_REGISTERED1	(1 << 5)
-#define	GAME_PORTALS		(1 << 6)
-#define	GAME_HEXENWORLD		(1 << 7)
+#define	GAME_OEM0		(1 << 2)
+#define	GAME_OEM2		(1 << 3)
+#define	GAME_REGISTERED		(1 << 4)
+#define	GAME_REGISTERED0	(1 << 5)
+#define	GAME_REGISTERED1	(1 << 6)
+#define	GAME_PORTALS		(1 << 7)
+#define	GAME_HEXENWORLD		(1 << 8)
 
-/* FIXME:  data for Raven's interim releases, such
-   as 1.07, 1.08, 1.09 and 1.10 are not available.
-   Similarly, more detailed data are needed for the
-   oem (Matrox m3D bundle) version.		*/
-#define	GAME_OLD_CDROM0		(1 << 8)
-#define	GAME_OLD_CDROM1		(1 << 9)
-#define	GAME_OLD_DEMO		(1 << 10)
-#define	GAME_REGISTERED_OLD	(1 << 11)
+/* FIXME: more detailed data are needed for the
+   oem (Matrox m3D bundle) original version.	*/
+#define	GAME_OLD_CDROM0		(1 << 9)
+#define	GAME_OLD_CDROM1		(1 << 10)
+#define	GAME_OLD_DEMO		(1 << 11)
+#define	GAME_REGISTERED_OLD	(1 << 12)
+#define	GAME_OLD_OEM		(1 << 13)
+#define	GAME_OLD_OEM0		(1 << 14)
+#define	GAME_OLD_OEM2		(1 << 15)
 
-#define	GAME_CANPATCH0		(1 << 13)
-#define	GAME_CANPATCH1		(1 << 14)
-#define	GAME_CANPATCH		(1 << 15)
-#define	GAME_INSTBAD		(1 << 16)	/* bad data. reason flags below. */
-#define	GAME_INSTBAD0		(1 << 17)	/* un-patched data */
-#define	GAME_INSTBAD1		(1 << 18)	/* no valid data. */
-#define	GAME_INSTBAD2		(1 << 19)	/* mix'n'match data */
-#define	GAME_INSTBAD3		(1 << 20)	/* other unsupported data */
+#define	GAME_MODIFIED		(1 << 16)
+
+#define	GAME_CANPATCH0		(1 << 17)
+#define	GAME_CANPATCH1		(1 << 18)
+#define	GAME_CANPATCH		(1 << 19)
+#define	GAME_INSTBAD		(1 << 20)	/* bad data. reason flags below. */
+#define	GAME_INSTBAD0		(1 << 21)	/* un-patched data */
+#define	GAME_INSTBAD1		(1 << 22)	/* no valid data. */
+#define	GAME_INSTBAD2		(1 << 23)	/* mix'n'match data */
+#define	GAME_INSTBAD3		(1 << 24)	/* other unsupported data */
 
 /* binary availability flags: see scan_binaries()
    and CheckStats() before playing with these.	*/
-#define	HAVE_H2_BIN		(1 << 21)
-#define	HAVE_HW_BIN		(1 << 22)
-#define	HAVE_GLH2_BIN		(1 << 23)
-#define	HAVE_GLHW_BIN		(1 << 24)
+#define	HAVE_H2_BIN		(1 << 25)
+#define	HAVE_HW_BIN		(1 << 26)
+#define	HAVE_GLH2_BIN		(1 << 27)
+#define	HAVE_GLHW_BIN		(1 << 28)
 
 extern	unsigned int		gameflags;
 

@@ -2,7 +2,7 @@
 	quakefs.h
 	Hexen II filesystem
 
-	$Id: quakefs.h,v 1.13 2007-10-13 06:28:29 sezero Exp $
+	$Id: quakefs.h,v 1.14 2007-11-05 08:25:22 sezero Exp $
 */
 
 #ifndef __QUAKEFS_H
@@ -13,21 +13,25 @@
 //
 #define	GAME_DEMO		(1 << 0)
 #define	GAME_OEM		(1 << 1)
-#define	GAME_MODIFIED		(1 << 2)
-#define	GAME_REGISTERED		(1 << 3)
-#define	GAME_REGISTERED0	(1 << 4)
-#define	GAME_REGISTERED1	(1 << 5)
-#define	GAME_PORTALS		(1 << 6)
-#define	GAME_HEXENWORLD		(1 << 7)
+#define	GAME_OEM0		(1 << 2)
+#define	GAME_OEM2		(1 << 3)
+#define	GAME_REGISTERED		(1 << 4)
+#define	GAME_REGISTERED0	(1 << 5)
+#define	GAME_REGISTERED1	(1 << 6)
+#define	GAME_PORTALS		(1 << 7)
+#define	GAME_HEXENWORLD		(1 << 8)
 
-/* FIXME:  data for Raven's interim releases, such
-   as 1.07, 1.08, 1.09 and 1.10 are not available.
-   Similarly, more detailed data are needed for the
-   oem (Matrox m3D bundle) version.		*/
-#define	GAME_OLD_CDROM0		(1 << 8)
-#define	GAME_OLD_CDROM1		(1 << 9)
-#define	GAME_OLD_DEMO		(1 << 10)
-#define	GAME_REGISTERED_OLD	(1 << 11)
+/* FIXME: more detailed data are needed for the
+   oem (Matrox m3D bundle) original version.	*/
+#define	GAME_OLD_CDROM0		(1 << 9)
+#define	GAME_OLD_CDROM1		(1 << 10)
+#define	GAME_OLD_DEMO		(1 << 11)
+#define	GAME_REGISTERED_OLD	(1 << 12)
+#define	GAME_OLD_OEM		(1 << 13)
+#define	GAME_OLD_OEM0		(1 << 14)
+#define	GAME_OLD_OEM2		(1 << 15)
+
+#define	GAME_MODIFIED		(1 << 16)
 
 extern	char	*fs_basedir;
 extern	char	fs_gamedir[MAX_OSPATH];

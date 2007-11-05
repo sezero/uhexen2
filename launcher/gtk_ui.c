@@ -2,7 +2,7 @@
 	gtk_ui.c
 	hexen2 launcher gtk+ interface
 
-	$Id: gtk_ui.c,v 1.5 2007-08-13 15:14:13 sezero Exp $
+	$Id: gtk_ui.c,v 1.6 2007-11-05 08:25:22 sezero Exp $
 
 	This program is free software; you can redistribute it and/or
 	modify it under the terms of the GNU General Public License
@@ -232,8 +232,8 @@ static void report_status (GtkObject *Unused, PatchWindow_t *PatchWindow)
 	}
 	else
 	{
-		ui_log ("(%s version.)\n", (gameflags & (GAME_DEMO|GAME_OLD_DEMO)) ? "demo" : ((gameflags & GAME_OEM) ? "oem" : "retail"));
-		if (gameflags & (GAME_REGISTERED_OLD|GAME_OLD_DEMO))
+		ui_log ("(%s version.)\n", (gameflags & (GAME_DEMO|GAME_OLD_DEMO)) ? "demo" : ((gameflags & (GAME_OEM|GAME_OLD_OEM)) ? "oem" : "retail"));
+		if (gameflags & (GAME_REGISTERED_OLD|GAME_OLD_DEMO|GAME_OLD_OEM))
 			ui_log ("Using old/unsupported 1.03 version pak files.\n");
 		if (gameflags & GAME_CANPATCH)
 			ui_log ("Applying Raven's 1.11 pak patch is suggested.\n");

@@ -2,7 +2,7 @@
 	quakefs.c
 	Hexen II filesystem
 
-	$Id: quakefs.c,v 1.37 2007-10-21 15:32:23 sezero Exp $
+	$Id: quakefs.c,v 1.38 2007-11-05 08:25:21 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -66,24 +66,34 @@ static pakdata_t pakdata[] =
 {
 	{ 696,	34289, "data1"	},	/* pak0.pak, registered	*/
 	{ 523,	2995 , "data1"	},	/* pak1.pak, registered	*/
-	{ 183,	4807 , "data1"	},	/* pak2.pak, oem, data needs verification */
+	{ 183,	4807 , "data1"	},	/* pak2.pak, oem, v1.11 */
 	{ 245,	1478 , "portals"},	/* pak3.pak, portals	*/
-	{ 102,	41062, "hw"	},	/* pak4.pak, hexenworld	*/
-	{ 797,	22780, "data1"	}	/* pak0.pak, demo v1.11	*/
+	{ 102,	41062, "hw"	}	/* pak4.pak, hexenworld	*/
 };
 #define	MAX_PAKDATA	(sizeof(pakdata) / sizeof(pakdata[0]))
 
-/* FIXME:  data for Raven's interim releases, such
-   as 1.07, 1.08, 1.09 and 1.10 are not available.
-   Similarly, more detailed data are needed for the
-   oem (Matrox m3D bundle) version.		*/
-static pakdata_t old_pakdata[3] =
+static pakdata_t demo_pakdata[] =
+{
+	{ 797,	22780, "data1"	}	/* pak0.pak, demo v1.11	*/
+};
+
+static pakdata_t oem0_pakdata[] =
+{
+	{ 697,	9787 , "data1"	}	/* pak0.pak, oem, v1.11	*/
+};
+
+static pakdata_t old_pakdata[] =
 {
 	{ 697,	53062, "data1"	},	/* pak0.pak, original cdrom (1.03) version	*/
 	{ 525,	47762, "data1"	},	/* pak1.pak, original cdrom (1.03) version	*/
-	{ 701,	20870, "data1"	}	/* pak0.pak, Raven's first version of the demo	*/
+	{ 701,	20870, "data1"	},	/* pak0.pak, Raven's first version of the demo	*/
 			//	The old (28.8.1997, v0.42? 1.07?) demo is not supported:
 			//	pak0.pak::progs.dat : 19267 crc, progheader crc : 14046.
+/*
+ * FIXME: add the pak0 and pak2 data for
+ * the oem (Matrox m3D bundle) original
+ * version here...
+ */
 };
 
 // this graphic needs to be in the pak file to use registered features
@@ -234,7 +244,7 @@ static pack_t *FS_LoadPackFile (const char *packfile, int paknum, qboolean base_
 		CRC_ProcessByte (&crc, ((byte *)info)[i]);
 
 // check for modifications
-	if (base_fs && paknum < MAX_PAKDATA-1)
+	if (base_fs && paknum < MAX_PAKDATA)
 	{
 		if (strcmp(fs_gamedir_nopath, pakdata[paknum].dirname) != 0)
 		{
@@ -246,10 +256,16 @@ static pack_t *FS_LoadPackFile (const char *packfile, int paknum, qboolean base_
 			if (paknum == 0)
 			{
 				// demo ??
-				if (crc == pakdata[MAX_PAKDATA-1].crc &&
-				    numpackfiles == pakdata[MAX_PAKDATA-1].numfiles)
+				if (crc == demo_pakdata[0].crc &&
+				    numpackfiles == demo_pakdata[0].numfiles)
 				{
 					gameflags |= GAME_DEMO;
+				}
+				// oem ??
+				else if (crc == oem0_pakdata[0].crc &&
+					 numpackfiles == oem0_pakdata[0].numfiles)
+				{
+					gameflags |= GAME_OEM0;
 				}
 				// old version of demo ??
 				else if (crc == old_pakdata[2].crc &&
@@ -263,6 +279,10 @@ static pack_t *FS_LoadPackFile (const char *packfile, int paknum, qboolean base_
 				{
 					gameflags |= GAME_OLD_CDROM0;
 				}
+				/*
+				 * FIXME: add old oem version pak file
+				 * checks here...
+				 */
 				else
 				{	// not original
 					gameflags |= GAME_MODIFIED;
@@ -303,7 +323,7 @@ static pack_t *FS_LoadPackFile (const char *packfile, int paknum, qboolean base_
 				gameflags |= GAME_REGISTERED1;
 				break;
 			case 2:	// bundle version
-				gameflags |= GAME_OEM;
+				gameflags |= GAME_OEM2;
 				break;
 			case 3:	// mission pack
 				gameflags |= GAME_PORTALS;
@@ -1502,13 +1522,17 @@ void FS_Init (void)
 
 	if (gameflags & GAME_REGISTERED0 && gameflags & GAME_REGISTERED1)
 		gameflags |= GAME_REGISTERED;
+	if (gameflags & GAME_OEM0 && gameflags & GAME_OEM2)
+		gameflags |= GAME_OEM;
 	if (gameflags & GAME_OLD_CDROM0 && gameflags & GAME_OLD_CDROM1)
 		gameflags |= GAME_REGISTERED_OLD;
+	if (gameflags & GAME_OLD_OEM0 && gameflags & GAME_OLD_OEM2)
+		gameflags |= GAME_OLD_OEM;
 	// check for bad installations (mix'n'match data):
 	if ((gameflags & GAME_REGISTERED0 && gameflags & GAME_OLD_CDROM1) ||
 	    (gameflags & GAME_REGISTERED1 && gameflags & GAME_OLD_CDROM0) ||
-	    (gameflags & GAME_OEM && gameflags & (GAME_REGISTERED|GAME_REGISTERED_OLD|GAME_DEMO|GAME_OLD_DEMO)) ||
-	    (gameflags & (GAME_REGISTERED1|GAME_OLD_CDROM1) && gameflags & (GAME_DEMO|GAME_OLD_DEMO|GAME_OEM)))
+	    (gameflags & GAME_OEM2 && gameflags & (GAME_REGISTERED|GAME_REGISTERED_OLD|GAME_DEMO|GAME_OLD_DEMO)) ||
+	    (gameflags & (GAME_REGISTERED1|GAME_OLD_CDROM1) && gameflags & (GAME_DEMO|GAME_OLD_DEMO|GAME_OEM0|GAME_OEM2)))
 		Sys_Error ("Bad Hexen II installation: mixed data from incompatible versions");
 #if !ENABLE_OLD_DEMO
 	if (gameflags & GAME_OLD_DEMO)
@@ -1516,7 +1540,7 @@ void FS_Init (void)
 #endif	/* OLD_DEMO */
 #if !ENABLE_OLD_RETAIL
 	// check if we have 1.11 versions of pak0.pak and pak1.pak
-	if (gameflags & (GAME_OLD_CDROM0|GAME_OLD_CDROM1))
+	if (gameflags & (GAME_OLD_CDROM0|GAME_OLD_CDROM1|GAME_OLD_OEM0|GAME_OLD_OEM2))
 		Sys_Error ("You must patch your installation with Raven's 1.11 update");
 #endif	/* OLD_RETAIL */
 
@@ -1545,7 +1569,7 @@ void FS_Init (void)
 	oem.flags |= CVAR_ROM;
 	registered.flags |= CVAR_ROM;
 	Sys_Printf ("Playing %s version.\n", temp);
-	if (gameflags & (GAME_OLD_DEMO|GAME_REGISTERED_OLD))
+	if (gameflags & (GAME_OLD_DEMO|GAME_REGISTERED_OLD|GAME_OLD_OEM))
 		Sys_Printf ("Using old/unsupported, pre-1.11 version pak files.\n");
 	if (gameflags & (GAME_REGISTERED|GAME_REGISTERED_OLD))
 	{
