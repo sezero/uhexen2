@@ -1,6 +1,6 @@
 /*
 	snd_oss.c
-	$Id: snd_oss.c,v 1.31 2007-09-14 14:16:23 sezero Exp $
+	$Id: snd_oss.c,v 1.32 2007-11-07 16:54:58 sezero Exp $
 
 	Copyright (C) 1996-1997  Id Software, Inc.
 
@@ -285,9 +285,22 @@ void S_OSS_Shutdown (void)
 
 /*
 ==============
+SNDDMA_LockBuffer
+
+Makes sure dma buffer is valid
+==============
+*/
+void S_OSS_LockBuffer (void)
+{
+	/* nothing to do here */
+}
+
+/*
+==============
 SNDDMA_Submit
 
-Send sound to device if buffer isn't really the dma buffer
+Unlock the dma buffer /
+Send sound to the device
 ===============
 */
 void S_OSS_Submit(void)

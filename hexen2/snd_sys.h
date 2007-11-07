@@ -2,7 +2,7 @@
 	snd_sys.h
 	Platform specific macros and prototypes for sound
 
-	$Id: snd_sys.h,v 1.17 2007-10-21 15:37:01 sezero Exp $
+	$Id: snd_sys.h,v 1.18 2007-11-07 16:54:58 sezero Exp $
 */
 
 #ifndef __HX2_SND_SYS__
@@ -76,11 +76,6 @@
 #define	S_SYS_DOS	6
 #define	S_SYS_MAX	7
 
-#if defined(PLATFORM_WINDOWS)
-/* for the windows crap used in snd_dma.c */
-#include "winquake.h"
-#endif	/* PLATFORM_WINDOWS */
-
 
 extern unsigned int	snd_system;
 
@@ -98,7 +93,11 @@ extern int (*SNDDMA_GetDMAPos)(void);
 /* shutdown the DMA xfer and driver */
 extern void (*SNDDMA_Shutdown)(void);
 
-/* sends sound to the device */
+/* makes sure dma buffer is valid, locks the dma buffer */
+extern void (*SNDDMA_LockBuffer)(void);
+#define SNDDMA_BeginPainting SNDDMA_LockBuffer
+
+/* unlocks the dma buffer / sends sound to the device */
 extern void (*SNDDMA_Submit)(void);
 
 
@@ -109,6 +108,7 @@ extern void (*SNDDMA_Submit)(void);
 extern qboolean S_WIN_Init(void);
 extern int S_WIN_GetDMAPos(void);
 extern void S_WIN_Shutdown(void);
+extern void S_WIN_LockBuffer(void);
 extern void S_WIN_Submit(void);
 #endif
 
@@ -117,6 +117,7 @@ extern void S_WIN_Submit(void);
 extern qboolean S_DOS_Init(void);
 extern int S_DOS_GetDMAPos(void);
 extern void S_DOS_Shutdown(void);
+extern void S_DOS_LockBuffer(void);
 extern void S_DOS_Submit(void);
 #endif
 
@@ -125,6 +126,7 @@ extern void S_DOS_Submit(void);
 extern qboolean S_OSS_Init(void);
 extern int S_OSS_GetDMAPos(void);
 extern void S_OSS_Shutdown(void);
+extern void S_OSS_LockBuffer(void);
 extern void S_OSS_Submit(void);
 #endif	/* HAVE_OSS_SOUND */
 
@@ -133,6 +135,7 @@ extern void S_OSS_Submit(void);
 extern qboolean S_SUN_Init(void);
 extern int S_SUN_GetDMAPos(void);
 extern void S_SUN_Shutdown(void);
+extern void S_SUN_LockBuffer(void);
 extern void S_SUN_Submit(void);
 #endif	/* HAVE_SUN_SOUND */
 
@@ -140,8 +143,9 @@ extern void S_SUN_Submit(void);
 /* ALSA versions of the above */
 extern qboolean S_ALSA_Init(void);
 extern int S_ALSA_GetDMAPos(void);
-extern void S_ALSA_Submit(void);
 extern void S_ALSA_Shutdown(void);
+extern void S_ALSA_LockBuffer(void);
+extern void S_ALSA_Submit(void);
 #endif	/* HAVE_ALSA_SOUND */
 
 #if HAVE_SDL_SOUND
@@ -149,6 +153,7 @@ extern void S_ALSA_Shutdown(void);
 extern qboolean S_SDL_Init(void);
 extern int S_SDL_GetDMAPos(void);
 extern void S_SDL_Shutdown(void);
+extern void S_SDL_LockBuffer(void);
 extern void S_SDL_Submit(void);
 #endif	/* HAVE_SDL_SOUND */
 

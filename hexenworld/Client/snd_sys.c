@@ -2,7 +2,7 @@
 	snd_sys.c
 	pre-Init platform specific sound stuff
 
-	$Id: snd_sys.c,v 1.12 2007-10-21 15:37:01 sezero Exp $
+	$Id: snd_sys.c,v 1.13 2007-11-07 16:54:59 sezero Exp $
 */
 
 
@@ -18,6 +18,7 @@ static qboolean	snd_sys_inited = false;
 qboolean (*SNDDMA_Init)(void);
 int (*SNDDMA_GetDMAPos)(void);
 void (*SNDDMA_Shutdown)(void);
+void (*SNDDMA_LockBuffer)(void);
 void (*SNDDMA_Submit)(void);
 
 /* dummy SNDDMA functions, just in case */
@@ -37,6 +38,10 @@ static int S_NULL_GetDMAPos (void)
 }
 
 static void S_NULL_Shutdown (void)
+{
+}
+
+static void S_NULL_LockBuffer (void)
 {
 }
 
@@ -104,6 +109,7 @@ void S_InitDrivers (void)
 		SNDDMA_Init	 = S_WIN_Init;
 		SNDDMA_GetDMAPos = S_WIN_GetDMAPos;
 		SNDDMA_Shutdown	 = S_WIN_Shutdown;
+		SNDDMA_LockBuffer= S_WIN_LockBuffer;
 		SNDDMA_Submit	 = S_WIN_Submit;
 		break;
 #endif
@@ -112,6 +118,7 @@ void S_InitDrivers (void)
 		SNDDMA_Init	 = S_DOS_Init;
 		SNDDMA_GetDMAPos = S_DOS_GetDMAPos;
 		SNDDMA_Shutdown	 = S_DOS_Shutdown;
+		SNDDMA_LockBuffer= S_DOS_LockBuffer;
 		SNDDMA_Submit	 = S_DOS_Submit;
 		break;
 #endif
@@ -120,6 +127,7 @@ void S_InitDrivers (void)
 		SNDDMA_Init	 = S_SDL_Init;
 		SNDDMA_GetDMAPos = S_SDL_GetDMAPos;
 		SNDDMA_Shutdown	 = S_SDL_Shutdown;
+		SNDDMA_LockBuffer= S_SDL_LockBuffer;
 		SNDDMA_Submit	 = S_SDL_Submit;
 		break;
 #endif
@@ -128,6 +136,7 @@ void S_InitDrivers (void)
 		SNDDMA_Init	 = S_ALSA_Init;
 		SNDDMA_GetDMAPos = S_ALSA_GetDMAPos;
 		SNDDMA_Shutdown	 = S_ALSA_Shutdown;
+		SNDDMA_LockBuffer= S_ALSA_LockBuffer;
 		SNDDMA_Submit	 = S_ALSA_Submit;
 		break;
 #endif
@@ -136,6 +145,7 @@ void S_InitDrivers (void)
 		SNDDMA_Init	 = S_OSS_Init;
 		SNDDMA_GetDMAPos = S_OSS_GetDMAPos;
 		SNDDMA_Shutdown	 = S_OSS_Shutdown;
+		SNDDMA_LockBuffer= S_OSS_LockBuffer;
 		SNDDMA_Submit	 = S_OSS_Submit;
 		break;
 #endif
@@ -144,6 +154,7 @@ void S_InitDrivers (void)
 		SNDDMA_Init	 = S_SUN_Init;
 		SNDDMA_GetDMAPos = S_SUN_GetDMAPos;
 		SNDDMA_Shutdown	 = S_SUN_Shutdown;
+		SNDDMA_LockBuffer= S_SUN_LockBuffer;
 		SNDDMA_Submit	 = S_SUN_Submit;
 		break;
 #endif
@@ -152,6 +163,7 @@ void S_InitDrivers (void)
 		SNDDMA_Init	 = S_NULL_Init;
 		SNDDMA_GetDMAPos = S_NULL_GetDMAPos;
 		SNDDMA_Shutdown	 = S_NULL_Shutdown;
+		SNDDMA_LockBuffer= S_NULL_LockBuffer;
 		SNDDMA_Submit	 = S_NULL_Submit;
 		break;
 	}

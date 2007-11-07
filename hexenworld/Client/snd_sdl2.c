@@ -4,7 +4,7 @@
 	implementations found in the quakeforge and quake3-icculus.org
 	projects.
 
-	$Id: snd_sdl2.c,v 1.2 2007-09-20 16:15:21 sezero Exp $
+	$Id: snd_sdl2.c,v 1.3 2007-11-07 16:54:59 sezero Exp $
 */
 
 #define _SND_SYS_MACROS_ONLY
@@ -113,8 +113,6 @@ qboolean S_SDL_Init (void)
 		return false;
 	}
 
-	SDL_LockAudio();
-
 	memset ((void *) &sn, 0, sizeof(sn));
 	shm = &sn;
 
@@ -155,7 +153,6 @@ qboolean S_SDL_Init (void)
 	if (SDL_AudioDriverName(drivername, sizeof(drivername)) == NULL)
 		strcpy(drivername, "(UNKNOWN)");
 
-	SDL_UnlockAudio();
 	SDL_PauseAudio(0);
 
 	Con_Printf ("SDL audio driver: %s, buffer size: %d\n", drivername, buffersize);
@@ -186,8 +183,14 @@ void S_SDL_Shutdown (void)
 	}
 }
 
+void S_SDL_LockBuffer (void)
+{
+	SDL_LockAudio ();
+}
+
 void S_SDL_Submit (void)
 {
+	SDL_UnlockAudio();
 }
 
 #endif	/* HAVE_SDL_SOUND */

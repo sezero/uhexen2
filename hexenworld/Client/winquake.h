@@ -2,7 +2,7 @@
 	winquake.h
 	Win32-specific Quake header file
 
-	$Id: winquake.h,v 1.29 2007-08-23 19:45:30 sezero Exp $
+	$Id: winquake.h,v 1.30 2007-11-07 16:54:59 sezero Exp $
 */
 
 #if !defined(PLATFORM_WINDOWS)
@@ -30,10 +30,6 @@
 #define	CINTERFACE	/* for directx macros. */
 #endif
 
-#ifndef SERVERONLY
-#include <dsound.h>	/* FIXME: should go away from global headers */
-#endif
-
 extern	HINSTANCE	global_hInstance;
 extern	int			global_nCmdShow;
 
@@ -53,16 +49,7 @@ extern	int			global_nCmdShow;
 #endif
 
 
-#ifndef SERVERONLY
 extern qboolean			DDActive;
-/* FIXME: these should go away
-   and stay in snd_win.c only. */
-extern LPDIRECTSOUND pDS;
-extern LPDIRECTSOUNDBUFFER pDSBuf;
-
-extern DWORD gSndBufSize;
-//#define SNDBUFSIZE 65536
-#endif
 
 extern HWND			mainwindow;
 extern qboolean		ActiveApp, Minimized;

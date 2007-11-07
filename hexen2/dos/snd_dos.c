@@ -3,7 +3,7 @@
 	sound support for dosquake. sound blaster code.
 	from quake1 source with minor adaptations for uhexen2.
 
-	$Id: snd_dos.c,v 1.1 2007-10-22 18:07:52 sezero Exp $
+	$Id: snd_dos.c,v 1.2 2007-11-07 16:54:59 sezero Exp $
 
 	Copyright (C) 1996-1997  Id Software, Inc.
 
@@ -649,9 +649,22 @@ void S_DOS_Shutdown (void)
 
 /*
 ==============
+SNDDMA_LockBuffer
+
+Makes sure dma buffer is valid
+===============
+*/
+void S_DOS_LockBuffer (void)
+{
+	/* nothing to do here */
+}
+
+/*
+==============
 SNDDMA_Submit
 
-Send sound to device if buffer isn't really the dma buffer
+Unlock the dma buffer /
+Send sound to the device
 ===============
 */
 void S_DOS_Submit (void)

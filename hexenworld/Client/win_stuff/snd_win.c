@@ -1,11 +1,13 @@
 /*
 	snd_win.c
-	$Id: snd_win.c,v 1.30 2007-09-14 14:16:23 sezero Exp $
+	$Id: snd_win.c,v 1.31 2007-11-07 16:54:59 sezero Exp $
 */
 
 #include "quakedef.h"
 #include "winquake.h"
+#include <dsound.h>
 
+//#define SNDBUFSIZE		65536
 // 64K is > 1 second at 16-bit, 22050 Hz
 //#define	WAV_BUFFERS		64 
 #define	WAV_BUFFERS		128
@@ -19,8 +21,8 @@
 #define DSBSIZE_MAX		0x0FFFFFFF
 #endif
 
-LPDIRECTSOUND		pDS;
-LPDIRECTSOUNDBUFFER	pDSBuf, pDSPBuf;
+static LPDIRECTSOUND		pDS;
+static LPDIRECTSOUNDBUFFER	pDSBuf, pDSPBuf;
 
 #if defined(DX_DLSYM)	/* dynamic loading of dsound symbols */
 static HINSTANCE	hInstDS;
@@ -59,13 +61,8 @@ static LPWAVEHDR	lpWaveHdr;
 static HWAVEOUT	hWaveOut;
 //WAVEOUTCAPS	wavecaps;
 
-/*
- * Global variables. Must be visible to window-procedure function
- * so it can unlock and free the data block after it has been played.
- */
-
-DWORD		gSndBufSize;
-MMTIME		mmstarttime;
+static DWORD	gSndBufSize;
+static MMTIME	mmstarttime;
 
 
 /*
@@ -670,15 +667,69 @@ int S_WIN_GetDMAPos (void)
 
 /*
 ==============
+SNDDMA_LockBuffer
+
+Makes sure dma buffer is valid
+===============
+*/
+static DWORD	locksize;
+void S_WIN_LockBuffer (void)
+{
+	if (pDSBuf)
+	{
+		void	*pData;
+		int		reps;
+		HRESULT	hresult;
+		DWORD	dwStatus;
+
+		reps = 0;
+		shm->buffer = NULL;
+
+		if (IDirectSoundBuffer_GetStatus(pDSBuf, &dwStatus) != DD_OK)
+			Con_Printf ("Couldn't get sound buffer status\n");
+
+		if (dwStatus & DSBSTATUS_BUFFERLOST)
+			IDirectSoundBuffer_Restore(pDSBuf);
+
+		if (!(dwStatus & DSBSTATUS_PLAYING))
+			IDirectSoundBuffer_Play(pDSBuf, 0, 0, DSBPLAY_LOOPING);
+
+		while ((hresult = IDirectSoundBuffer_Lock(pDSBuf, 0, gSndBufSize, (void **) &pData, &locksize, NULL, NULL, 0)) != DS_OK)
+		{
+			if (hresult != DSERR_BUFFERLOST)
+			{
+				Con_Printf ("%s: DS::Lock Sound Buffer Failed\n", __thisfunc__);
+				S_Shutdown ();
+				return;
+			}
+
+			if (++reps > 10000)
+			{
+				Con_Printf ("%s: DS: couldn't restore buffer\n", __thisfunc__);
+				S_Shutdown ();
+				return;
+			}
+		}
+
+		shm->buffer = pData;
+	}
+}
+
+/*
+==============
 SNDDMA_Submit
 
-Send sound to device if buffer isn't really the dma buffer
+Unlock the dma buffer /
+Send sound to the device
 ===============
 */
 void S_WIN_Submit (void)
 {
 	LPWAVEHDR	h;
 	int			wResult;
+
+	if (pDSBuf)
+		IDirectSoundBuffer_Unlock(pDSBuf, shm->buffer, locksize, NULL, 0);
 
 	if (!wav_init)
 		return;
@@ -740,7 +791,7 @@ void S_WIN_Shutdown (void)
 	if (hInstDS)
 	{
 		FreeLibrary(hInstDS);
-		hInstDS=NULL;
+		hInstDS = NULL;
 	}
 #endif	/* DX_DLSYM */
 }

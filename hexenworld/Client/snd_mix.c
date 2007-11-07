@@ -2,14 +2,10 @@
 	snd_mix.c
 	portable code to mix sounds for snd_dma.c
 
-	$Id: snd_mix.c,v 1.19 2007-09-14 14:16:23 sezero Exp $
+	$Id: snd_mix.c,v 1.20 2007-11-07 16:54:59 sezero Exp $
 */
 
 #include "quakedef.h"
-
-#ifdef PLATFORM_WINDOWS
-#include "winquake.h"
-#endif
 
 #define	PAINTBUFFER_SIZE	512
 portable_samplepair_t paintbuffer[PAINTBUFFER_SIZE];
@@ -50,51 +46,14 @@ static void S_TransferStereo16 (int endtime)
 {
 	int		lpos;
 	int		lpaintedtime;
-	LPVOID	pbuf;
-#ifdef PLATFORM_WINDOWS
-// FIXME: move this to its platform driver!
-	int		reps;
-	DWORD	dwSize, dwSize2;
-	LPVOID	pbuf2;
-	HRESULT	hresult;
-#endif
+	void	*pbuf;
 
 	snd_vol = sfxvolume.value * 256;
 
 	snd_p = (int *) paintbuffer;
 	lpaintedtime = paintedtime;
 
-#ifdef PLATFORM_WINDOWS
-// FIXME: move this to its platform driver!
-	if (pDSBuf)
-	{
-		reps = 0;
-
-		while ((hresult = IDirectSoundBuffer_Lock(pDSBuf, 0, gSndBufSize, (LPVOID *) &pbuf, &dwSize, 
-								  (LPVOID *) &pbuf2, &dwSize2, 0)) != DS_OK)
-		{
-			if (hresult != DSERR_BUFFERLOST)
-			{
-				Con_Printf ("%s: DS::Lock Sound Buffer Failed\n", __thisfunc__);
-				S_Shutdown ();
-				S_Startup ();
-				return;
-			}
-
-			if (++reps > 10000)
-			{
-				Con_Printf ("%s: DS: couldn't restore buffer\n", __thisfunc__);
-				S_Shutdown ();
-				S_Startup ();
-				return;
-			}
-		}
-	}
-	else
-#endif
-	{
-		pbuf = shm->buffer;
-	}
+	pbuf = shm->buffer;
 
 	while (lpaintedtime < endtime)
 	{
@@ -115,12 +74,6 @@ static void S_TransferStereo16 (int endtime)
 		snd_p += snd_linear_count;
 		lpaintedtime += (snd_linear_count >> 1);
 	}
-
-#ifdef PLATFORM_WINDOWS
-// FIXME: move this to its platform driver!
-	if (pDSBuf)
-		IDirectSoundBuffer_Unlock(pDSBuf, pbuf, dwSize, NULL, 0);
-#endif
 }
 
 static void S_TransferPaintBuffer (int endtime)
@@ -128,14 +81,7 @@ static void S_TransferPaintBuffer (int endtime)
 	int	out_idx, out_mask;
 	int	count, step, val;
 	int	*p;
-	LPVOID	pbuf;
-#ifdef PLATFORM_WINDOWS
-// FIXME: move this to its platform driver!
-	int		reps;
-	DWORD	dwSize, dwSize2;
-	LPVOID	pbuf2;
-	HRESULT	hresult;
-#endif
+	void	*pbuf;
 
 	if (shm->samplebits == 16 && shm->channels == 2)
 	{
@@ -150,37 +96,7 @@ static void S_TransferPaintBuffer (int endtime)
 	step = 3 - shm->channels;
 	snd_vol = sfxvolume.value * 256;
 
-#ifdef PLATFORM_WINDOWS
-// FIXME: move this to its platform driver!
-	if (pDSBuf)
-	{
-		reps = 0;
-
-		while ((hresult = IDirectSoundBuffer_Lock(pDSBuf, 0, gSndBufSize, (LPVOID *) &pbuf, &dwSize, 
-								  (LPVOID *) &pbuf2, &dwSize2, 0)) != DS_OK)
-		{
-			if (hresult != DSERR_BUFFERLOST)
-			{
-				Con_Printf ("%s: DS::Lock Sound Buffer Failed\n", __thisfunc__);
-				S_Shutdown ();
-				S_Startup ();
-				return;
-			}
-
-			if (++reps > 10000)
-			{
-				Con_Printf ("%s: DS: couldn't restore buffer\n", __thisfunc__);
-				S_Shutdown ();
-				S_Startup ();
-				return;
-			}
-		}
-	}
-	else
-#endif
-	{
-		pbuf = shm->buffer;
-	}
+	pbuf = shm->buffer;
 
 	if (shm->samplebits == 16)
 	{
@@ -212,24 +128,6 @@ static void S_TransferPaintBuffer (int endtime)
 			out_idx = (out_idx + 1) & out_mask;
 		}
 	}
-
-#ifdef PLATFORM_WINDOWS
-// FIXME: move this to its platform driver!
-	if (pDSBuf)
-	{
-		DWORD dwNewpos, dwWrite;
-		int il = paintedtime;
-		int ir = endtime - paintedtime;
-
-		ir += il;
-
-		IDirectSoundBuffer_Unlock(pDSBuf, pbuf, dwSize, NULL, 0);
-		IDirectSoundBuffer_GetCurrentPosition(pDSBuf, &dwNewpos, &dwWrite);
-
-//		if ((dwNewpos >= il) && (dwNewpos <= ir))
-//			Con_Printf("%d-%d p %d c\n", il, ir, dwNewpos);
-	}
-#endif
 }
 
 

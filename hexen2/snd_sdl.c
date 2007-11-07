@@ -11,7 +11,7 @@
 	http://sourceforge.net/forum/forum.php?thread_id=1308186&forum_id=425207
 	http://sourceforge.net/forum/forum.php?thread_id=1821052&forum_id=425207
 
-	$Id: snd_sdl.c,v 1.29 2007-09-19 06:19:33 sezero Exp $
+	$Id: snd_sdl.c,v 1.30 2007-11-07 16:54:58 sezero Exp $
 */
 
 #define _SND_SYS_MACROS_ONLY
@@ -118,6 +118,10 @@ void S_SDL_Shutdown (void)
 		shm = NULL;
 		snd_skippaint = false;
 	}
+}
+
+void S_SDL_LockBuffer (void)
+{
 }
 
 void S_SDL_Submit (void)

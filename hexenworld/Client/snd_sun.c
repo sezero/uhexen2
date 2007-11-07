@@ -1,6 +1,6 @@
 /*
 	snd_sun.c
-	$Id: snd_sun.c,v 1.10 2007-09-14 14:16:23 sezero Exp $
+	$Id: snd_sun.c,v 1.11 2007-11-07 16:54:59 sezero Exp $
 
 	SUN Audio driver for BSD and SunOS
 
@@ -163,8 +163,21 @@ void S_SUN_Shutdown (void)
 
 /*
 ==============
+SNDDMA_LockBuffer
+
+Makes sure dma buffer is valid
+==============
+*/
+void S_SUN_LockBuffer (void)
+{
+	/* nothing to do here */
+}
+
+/*
+==============
 SNDDMA_Submit
 
+Unlock the dma buffer /
 Send sound to the device
 ===============
 */

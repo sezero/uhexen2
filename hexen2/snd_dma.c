@@ -2,7 +2,7 @@
 	snd_dma.c
 	main control for any streaming sound output device
 
-	$Id: snd_dma.c,v 1.71 2007-10-21 15:37:01 sezero Exp $
+	$Id: snd_dma.c,v 1.72 2007-11-07 16:54:58 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -583,12 +583,11 @@ void S_ClearBuffer (void)
 {
 	int		clear;
 
-#ifdef PLATFORM_WINDOWS
-// FIXME: move this to its platform driver!
-	if (!sound_started || !shm || (!shm->buffer && !pDSBuf))
-#else
-	if (!sound_started || !shm || !shm->buffer)
-#endif
+	if (!sound_started || !shm)
+		return;
+
+	SNDDMA_LockBuffer ();
+	if (! shm->buffer)
 		return;
 
 	if (shm->samplebits == 8)
@@ -596,43 +595,9 @@ void S_ClearBuffer (void)
 	else
 		clear = 0;
 
-#ifdef PLATFORM_WINDOWS
-// FIXME: move this to its platform driver!
-	if (pDSBuf)
-	{
-		DWORD	dwSize;
-		LPVOID	pData;
-		int		reps;
-		HRESULT	hresult;
+	memset(shm->buffer, clear, shm->samples * shm->samplebits/8);
 
-		reps = 0;
-
-		while ((hresult = IDirectSoundBuffer_Lock(pDSBuf, 0, gSndBufSize, (LPVOID *) &pData, &dwSize, NULL, NULL, 0)) != DS_OK)
-		{
-			if (hresult != DSERR_BUFFERLOST)
-			{
-				Con_Printf ("%s: DS::Lock Sound Buffer Failed\n", __thisfunc__);
-				S_Shutdown ();
-				return;
-			}
-
-			if (++reps > 10000)
-			{
-				Con_Printf ("%s: DS: couldn't restore buffer\n", __thisfunc__);
-				S_Shutdown ();
-				return;
-			}
-		}
-
-		memset(pData, clear, shm->samples * shm->samplebits/8);
-
-		IDirectSoundBuffer_Unlock(pDSBuf, pData, dwSize, NULL, 0);
-	}
-	else
-#endif
-	{
-		memset(shm->buffer, clear, shm->samples * shm->samplebits/8);
-	}
+	SNDDMA_Submit ();
 }
 
 
@@ -878,6 +843,10 @@ static void S_Update_ (void)
 	if (!sound_started || (snd_blocked > 0))
 		return;
 
+	SNDDMA_LockBuffer ();
+	if (! shm->buffer)
+		return;
+
 // Updates DMA time
 	GetSoundtime();
 
@@ -892,24 +861,6 @@ static void S_Update_ (void)
 	endtime = soundtime + (unsigned int)(_snd_mixahead.value * shm->speed);
 	samps = shm->samples >> (shm->channels - 1);
 	endtime = q_min(endtime, (unsigned int)(soundtime + samps));
-
-#ifdef PLATFORM_WINDOWS
-// if the buffer was lost or stopped, restore it and/or restart it
-// FIXME: move this to its platform driver!
-	if (pDSBuf)
-	{
-		DWORD	dwStatus;
-
-		if (IDirectSoundBuffer_GetStatus(pDSBuf, &dwStatus) != DD_OK)
-			Con_Printf ("Couldn't get sound buffer status\n");
-
-		if (dwStatus & DSBSTATUS_BUFFERLOST)
-			IDirectSoundBuffer_Restore(pDSBuf);
-
-		if (!(dwStatus & DSBSTATUS_PLAYING))
-			IDirectSoundBuffer_Play(pDSBuf, 0, 0, DSBPLAY_LOOPING);
-	}
-#endif
 
 	S_PaintChannels (endtime);
 

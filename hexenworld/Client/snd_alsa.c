@@ -1,6 +1,6 @@
 /*
 	snd_alsa.c
-	$Id: snd_alsa.c,v 1.36 2007-09-15 09:18:47 sezero Exp $
+	$Id: snd_alsa.c,v 1.37 2007-11-07 16:54:59 sezero Exp $
 
 	ALSA 1.0 sound driver for Linux Hexen II
 
@@ -308,8 +308,24 @@ void S_ALSA_Shutdown (void)
 }
 
 /*
-	SNDDMA_Submit
-	Send sound to the device
+==============
+SNDDMA_LockBuffer
+
+Makes sure dma buffer is valid
+==============
+*/
+void S_ALSA_LockBuffer (void)
+{
+	/* nothing to do here */
+}
+
+/*
+==============
+SNDDMA_Submit
+
+Unlock the dma buffer /
+Send sound to the device
+==============
 */
 void S_ALSA_Submit (void)
 {
