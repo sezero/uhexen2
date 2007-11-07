@@ -1,5 +1,5 @@
 # GNU Makefile for hexenworld clients using GCC.
-# $Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/Makefile,v 1.74 2007-10-25 09:06:51 sezero Exp $
+# $Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/Makefile,v 1.75 2007-11-07 17:06:52 sezero Exp $
 #
 # Type "make help" to see the valid targets.
 #
@@ -314,9 +314,6 @@ endif
 # Objects
 
 # Sound objects
-# which snd_sdl to use: snd_sdl.o is the old one,
-# snd_sdl2.o is the newer implementation.
-OBJ_SNDSDL:= snd_sdl2.o
 ifneq ($(USE_SOUND),yes)
 EXT_FLAGS += -D_NO_SOUND
 SYSOBJ_SND :=
@@ -327,7 +324,7 @@ ifeq ($(TARGET_OS),win32)
 SYSOBJ_SND := win_stuff/snd_win.o
 endif
 ifeq ($(TARGET_OS),unix)
-SYSOBJ_SND := snd_oss.o snd_alsa.o snd_sun.o $(OBJ_SNDSDL)
+SYSOBJ_SND := snd_oss.o snd_alsa.o snd_sun.o snd_sdl2.o
 endif
 # end of Sound objects
 endif
