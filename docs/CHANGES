@@ -3,6 +3,20 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2007-11-07 (CVS):
+    * moved all of windows crap from snd_dma.c and snd_mix.c to its
+      platform driver file snd_win.c. those things were only about
+      locking the directsound buffer, so added SNDDMA_LockBuffer
+      (equivalent to SNDDMA_BeginPainting of quake2 and quake3) among
+      the driver provided functions. while we are there, fixed a bug
+      in our sdl audio implementation (and usage): since sdl output
+      is callback based, it needs the same locking before every paint
+      and a corresponding unlock before the submit. those calls were
+      missing, they are added now.
+    * retired the old version of sdl audio driver.
+    * abandoned using hunk allocation for windows 'wave' sound.
+    * updated release notes for 1.4.3 (2007-11-07.)
+
 2007-11-05 (CVS):
     * added v1.11 pakfile data for the oem (Matrox m3D bundle) version.
       data for older versions (1.08 and 1.10?) of oem are still missing.
