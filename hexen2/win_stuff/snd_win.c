@@ -1,6 +1,6 @@
 /*
 	snd_win.c
-	$Id: snd_win.c,v 1.31 2007-11-07 16:54:59 sezero Exp $
+	$Id: snd_win.c,v 1.32 2007-11-07 17:02:15 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -47,7 +47,7 @@ static int	ds_sbuf_size, wv_buf_size;
 
 // whether to use hunk for allocating wave
 // sound memory. either 1, or 0.
-#define USE_HUNK_ALLOC		1
+#define USE_HUNK_ALLOC		0
 
 #if USE_HUNK_ALLOC
 static int	allocMark = 0;
