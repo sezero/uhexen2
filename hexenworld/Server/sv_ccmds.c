@@ -2,7 +2,7 @@
 	sv_ccmds.c
 	console commands
 
-	$Id: sv_ccmds.c,v 1.24 2007-09-22 15:27:34 sezero Exp $
+	$Id: sv_ccmds.c,v 1.25 2007-11-11 13:18:22 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -232,8 +232,8 @@ SV_Give_f
 */
 static void SV_Give_f (void)
 {
-	char	*t;
-	int		v;
+	const char	*t;
+	int	v;
 
 	if (!sv_allow_cheats)
 	{
@@ -606,8 +606,8 @@ SV_ConSay_f
 static void SV_ConSay_f(void)
 {
 	client_t *client;
-	int		j;
-	char	*p;
+	int	j = 0;
+	const char	*p;
 	char	text[1024];
 
 	if (Cmd_Argc () < 2)
@@ -623,10 +623,12 @@ static void SV_ConSay_f(void)
 	if (*p == '"')
 	{
 		p++;
-		p[strlen(p)-1] = 0;
+		j = 1;
 	}
 
 	q_strlcat (text, p, sizeof(text));
+	if (j == 1)	// remove trailing quotes
+		text[strlen(text)-1] = '\0';
 
 	for (j = 0, client = svs.clients; j < MAX_CLIENTS; j++, client++)
 	{
@@ -683,12 +685,12 @@ static void SV_Serverinfo_f (void)
 	var = Cvar_FindVar (Cmd_Argv(1));
 	if (var)
 	{
-		char	*c;
+		const char	*c;
 
-		Z_Free (var->string);	// free the old value string
+		Z_Free ((void *)var->string);	// free the old value string
 		c = Cmd_Argv(2);
 		var->string = (char *) Z_Malloc (strlen(c) + 1, Z_MAINZONE);
-		strcpy (var->string, c);
+		strcpy ((char *)var->string, c);
 		var->value = atof (var->string);
 	}
 
@@ -758,7 +760,7 @@ Sets the fake *gamedir to a different directory.
 */
 static void SV_Gamedir (void)
 {
-	char			*dir;
+	const char		*dir;
 
 	if (Cmd_Argc() == 1)
 	{
@@ -860,7 +862,7 @@ Sets the gamedir and path to a different directory.
 */
 static void SV_Gamedir_f (void)
 {
-	char			*dir;
+	const char		*dir;
 
 	if (Cmd_Argc() == 1)
 	{

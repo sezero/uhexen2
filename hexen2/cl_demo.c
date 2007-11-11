@@ -2,7 +2,7 @@
 	cl_demo.c
 	demo recording and playback
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cl_demo.c,v 1.24 2007-09-29 07:20:43 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cl_demo.c,v 1.25 2007-11-11 13:17:38 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -261,7 +261,8 @@ record <demoname> <map> [cd track]
 void CL_Record_f (void)
 {
 	int		c;
-	char	name[MAX_OSPATH], *p;
+	char	name[MAX_OSPATH];
+	const char	*p;
 	int		track;
 
 	if (cmd_source != src_command)

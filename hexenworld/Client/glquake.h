@@ -2,7 +2,7 @@
 	glquake.h
 	common glquake header
 
-	$Id: glquake.h,v 1.66 2007-10-18 13:05:07 sezero Exp $
+	$Id: glquake.h,v 1.67 2007-11-11 13:17:44 sezero Exp $
 */
 
 
@@ -114,7 +114,7 @@ typedef struct
 /* texture filters */
 typedef struct
 {
-	char *name;
+	const char	*name;
 	int	minimize, maximize;
 } glmode_t;
 

@@ -2,7 +2,7 @@
 	wad.c
 	wad file loading
 
-	$Id: wad.c,v 1.14 2007-10-08 20:18:09 sezero Exp $
+	$Id: wad.c,v 1.15 2007-11-11 13:17:42 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -24,7 +24,7 @@ Space padding is so names can be printed nicely in tables.
 Can safely be performed in place.
 ==================
 */
-static void W_CleanupName (char *in, char *out)
+static void W_CleanupName (const char *in, char *out)
 {
 	int		i;
 	int		c;
@@ -79,7 +79,7 @@ void W_LoadWadFile (const char *filename)
 	{
 		lump_p->filepos = LittleLong(lump_p->filepos);
 		lump_p->size = LittleLong(lump_p->size);
-		W_CleanupName (lump_p->name, lump_p->name);
+		W_CleanupName (lump_p->name, lump_p->name);	// CAUTION: in-place editing!!!
 		if (lump_p->type == TYP_QPIC)
 			SwapPic ( (qpic_t *)(wad_base + lump_p->filepos));
 	}
@@ -91,7 +91,7 @@ void W_LoadWadFile (const char *filename)
 W_GetLumpinfo
 =============
 */
-static lumpinfo_t *W_GetLumpinfo (char *name)
+static lumpinfo_t *W_GetLumpinfo (const char *name)
 {
 	int		i;
 	lumpinfo_t	*lump_p;
@@ -109,7 +109,7 @@ static lumpinfo_t *W_GetLumpinfo (char *name)
 	return NULL;
 }
 
-void *W_GetLumpName (char *name)
+void *W_GetLumpName (const char *name)
 {
 	lumpinfo_t	*lump;
 

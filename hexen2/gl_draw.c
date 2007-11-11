@@ -2,7 +2,7 @@
 	gl_draw.c
 	this is the only file outside the refresh that touches the vid buffer
 
-	$Id: gl_draw.c,v 1.127 2007-10-24 11:51:03 sezero Exp $
+	$Id: gl_draw.c,v 1.128 2007-11-11 13:17:39 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -23,7 +23,7 @@ static GLuint		char_menufonttexture;
 // Crosshair texture is a 32x32 alpha map with 8 levels of alpha.
 // The format is similar to an X11 pixmap, but not the same.
 // 7 is 100% solid, 0 and any other characters are transparent.
-static char *cs_data = {
+static const char	*cs_data = {
 /* This is actually the QuakeWorld crosshair
    which Raven didn't bother changing. It is
    possible to make class-based crosshairs. */
@@ -125,24 +125,26 @@ qpic_t *Draw_PicFromFile (const char *name)
 qpic_t *Draw_PicFileBuf (const char *name, void *p, size_t *size)
 {
 	glpic_t	*gl;
+	qpic_t	*_p;
 
 	p = (void *)FS_LoadBufFile(name, p, size);
 	if (!p)
 		return NULL;
+	_p = (qpic_t *)p;
 
-	SwapPic ((qpic_t *)p);
-	gl = (glpic_t *)(((qpic_t *)p)->data);
+	SwapPic (_p);
+	gl = (glpic_t *)_p->data;
 
-	gl->texnum = GL_LoadPicTexture(p);
+	gl->texnum = GL_LoadPicTexture(_p);
 	gl->sl = 0;
 	gl->sh = 1;
 	gl->tl = 0;
 	gl->th = 1;
 
-	return p;
+	return _p;
 }
 
-qpic_t *Draw_PicFromWad (char *name)
+qpic_t *Draw_PicFromWad (const char *name)
 {
 	qpic_t	*p;
 	glpic_t	*gl;

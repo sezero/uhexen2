@@ -2,7 +2,7 @@
 	common.h
 	misc utilities used in client and server
 
-	$Id: common.h,v 1.54 2007-09-23 18:45:05 sezero Exp $
+	$Id: common.h,v 1.55 2007-11-11 13:17:39 sezero Exp $
 */
 
 #ifndef __HX2_COMMON_H
@@ -85,7 +85,7 @@ extern char *q_strupr (char *str);
 extern	char		com_token[1024];
 extern	qboolean	com_eof;
 
-char *COM_Parse (char *data);
+const char *COM_Parse (const char *data);
 
 extern	int		safemode;
 /* safe mode: in true, the engine will behave as if one
@@ -101,8 +101,9 @@ int COM_CheckParm (const char *parm);
 #define	com_argc	host_parms->argc
 #define	com_argv	host_parms->argv
 
-char *COM_SkipPath (char *pathname);
+char *COM_SkipPath (const char *pathname);
 void COM_StripExtension (const char *in, char *out);
+void COM_FileExtension (const char *in, char *out);
 void COM_FileBase (const char *in, char *out);
 void COM_DefaultExtension (char *path, const char *extension, size_t len);
 

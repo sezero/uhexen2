@@ -53,7 +53,7 @@ ready to go.
 +static const struct
 +{
 +	Mix_MusicType	type;		/* as enum'ed in SDL_mixer.h	*/
-+	char		*ext;		/* the file extension		*/
++	const char	*ext;		/* the file extension		*/
 +} MusicFile[] =
 +{
 +	{ MUS_OGG, "ogg" },

@@ -3,7 +3,7 @@
 	TTY backend for the dosquake serial network driver.
 	from quake1 source with minor adaptations for uhexen2.
 
-	$Id: net_comx.c,v 1.3 2007-10-30 17:11:58 sezero Exp $
+	$Id: net_comx.c,v 1.4 2007-11-11 13:17:42 sezero Exp $
 
 	Copyright (C) 1996-1997  Id Software, Inc.
 
@@ -185,7 +185,7 @@ void TTY_Close (int handle);
 int TTY_ReadByte (int handle);
 int TTY_WriteByte (int handle, byte data);
 void TTY_Flush (int handle);
-int TTY_Connect (int handle, char *host);
+int TTY_Connect (int handle, const char *host);
 void TTY_Disconnect (int handle);
 qboolean TTY_CheckForConnection (int handle);
 qboolean TTY_IsEnabled (int serialPortNumber);
@@ -375,7 +375,7 @@ void TTY_GetModemConfig (int portNumber, char *dialType, char *clear, char *init
 	strcpy(hangup, p->shutdown);
 }
 
-void TTY_SetModemConfig (int portNumber, char *dialType, char *clear, char *init, char *hangup)
+void TTY_SetModemConfig (int portNumber, const char *dialType, const char *clear, const char *init, const char *hangup)
 {
 	ComPort	*p;
 

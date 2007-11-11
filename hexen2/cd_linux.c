@@ -1,6 +1,6 @@
 /*
 	cd_linux.c
-	$Id: cd_linux.c,v 1.26 2007-09-29 13:32:31 sezero Exp $
+	$Id: cd_linux.c,v 1.27 2007-11-11 13:17:38 sezero Exp $
 
 	Copyright (C) 1996-1997  Id Software, Inc.
 
@@ -52,7 +52,9 @@ static byte	playTrack;
 static byte	maxTrack;
 
 static int	cdfile = -1;
-static char	cd_dev[64] = _PATH_DEV "cdrom"; // user can always do -cddev
+static const char	default_dev[] = _PATH_DEV "cdrom"; // user can always do -cddev
+static const char	*cd_dev = default_dev;
+
 static float	old_cdvolume;
 static qboolean	hw_vol_works = true;
 static struct cdrom_volctrl	orig_vol;	// orig. setting to be restored upon exit
@@ -222,7 +224,7 @@ void CDAudio_Resume(void)
 
 static void CD_f (void)
 {
-	char	*command;
+	const char	*command;
 	int		ret;
 	int		n;
 
@@ -433,9 +435,7 @@ int CDAudio_Init(void)
 		return -1;
 
 	if ((i = COM_CheckParm("-cddev")) != 0 && i < com_argc - 1)
-	{
-		q_strlcpy(cd_dev, com_argv[i + 1], sizeof(cd_dev));
-	}
+		cd_dev = com_argv[i + 1];
 
 	if ((cdfile = open(cd_dev, O_RDONLY | O_NONBLOCK)) == -1)
 	{

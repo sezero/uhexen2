@@ -2,7 +2,7 @@
 	screen.c
 	master for refresh, status bar, console, chat, notify, etc
 
-	$Id: gl_screen.c,v 1.55 2007-10-21 15:32:22 sezero Exp $
+	$Id: gl_screen.c,v 1.56 2007-11-11 13:17:39 sezero Exp $
 */
 
 /*=============================================================================
@@ -99,6 +99,9 @@ static qpic_t	*scr_net;
 static qpic_t	*scr_turtle;
 
 static void SCR_ScreenShot_f (void);
+
+const char	*plaquemessage = NULL;	// pointer to current plaque message
+
 static void Plaque_Draw (const char *message, qboolean AlwaysDraw);
 // procedures for the mission pack intro messages
 static void Info_Plaque_Draw (const char *message);
@@ -743,12 +746,12 @@ static void SCR_ScreenShot_f (void)
 //=============================================================================
 
 
-static char	*scr_notifystring;
+static const char	*scr_notifystring;
 static qboolean	scr_drawdialog;
 
 static void SCR_DrawNotifyString (void)
 {
-	Plaque_Draw(scr_notifystring, 1);
+	Plaque_Draw(scr_notifystring, true);
 }
 
 /*
@@ -759,7 +762,7 @@ Displays a text string in the center of the screen
 and waits for a Y or N keypress.
 ==================
 */
-int SCR_ModalMessage (char *text)
+int SCR_ModalMessage (const char *text)
 {
 	if (cls.state == ca_dedicated)
 		return true;
@@ -937,7 +940,8 @@ static void SB_IntermissionOverlay (void)
 {
 	qpic_t	*pic = NULL;
 	int		elapsed, size, bx, by, i;
-	char	*message,temp[80];
+	char		temp[80];
+	const char	*message;
 
 	scr_copyeverything = 1;
 	scr_fullupdate = 0;
@@ -1235,11 +1239,9 @@ void SCR_UpdateScreen (void)
 		SCR_CheckDrawCenterString();
 		Sbar_Draw();
 
-		Plaque_Draw(plaquemessage,0);
+		Plaque_Draw(plaquemessage, false);
 		SCR_DrawConsole();
 		M_Draw();
-		if (errormessage)
-			Plaque_Draw(errormessage,1);
 
 		if (info_up)
 		{

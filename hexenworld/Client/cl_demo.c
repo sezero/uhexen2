@@ -2,7 +2,7 @@
 	cl_demo.c
 	demo recording and playback
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/cl_demo.c,v 1.22 2007-09-29 07:20:47 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/cl_demo.c,v 1.23 2007-11-11 13:17:44 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -301,7 +301,8 @@ record <demoname> <server>
 void CL_Record_f (void)
 {
 	int		c;
-	char	name[MAX_OSPATH], *p;
+	char	name[MAX_OSPATH];
+	const char	*p;
 
 	if (cls.demorecording)
 		CL_Stop_f();
@@ -366,7 +367,8 @@ record <demoname>
 void CL_ReRecord_f (void)
 {
 	int		c;
-	char	name[MAX_OSPATH], *p;
+	char	name[MAX_OSPATH];
+	const char	*p;
 
 	if (cls.demorecording)
 		CL_Stop_f();

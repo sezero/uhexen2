@@ -2,7 +2,7 @@
 	quakefs.c
 	Hexen II filesystem
 
-	$Id: quakefs.c,v 1.38 2007-11-05 08:25:22 sezero Exp $
+	$Id: quakefs.c,v 1.39 2007-11-11 13:17:44 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -59,7 +59,7 @@ typedef struct
 {
 	int	numfiles;
 	int	crc;
-	char	*dirname;
+	const char	*dirname;
 } pakdata_t;
 
 static pakdata_t pakdata[] =
@@ -652,14 +652,14 @@ static void MoveUserData (void)
 	FILE		*fh;
 	struct stat	test;
 	char	*tmp, tmp1[MAX_OSPATH], tmp2[MAX_OSPATH];
-	char	*movefiles[] = 
+	const char	*movefiles[] = 
 	{
 		"*.cfg",	// config files
 		"*.rc",		// config files
 		"*.dem",	// pre-recorded demos
 		"pak?.pak"	// pak files
 	};
-	char	*movedirs[] = 
+	const char	*movedirs[] = 
 	{
 		"quick",	// quick saves
 		"shots",	// screenshots
@@ -1383,7 +1383,7 @@ Prints map filenames to the console
 static void FS_Maplist_f (void)
 {
 	searchpath_t	*search;
-	char		*prefix;
+	const char	*prefix;
 	size_t		preLen;
 
 	if (Cmd_Argc() > 1)

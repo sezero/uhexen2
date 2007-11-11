@@ -2,7 +2,7 @@
 	cvar.h
 	dynamic variable tracking
 
-	$Id: cvar.h,v 1.16 2007-09-14 14:10:00 sezero Exp $
+	$Id: cvar.h,v 1.17 2007-11-11 13:17:39 sezero Exp $
 */
 
 #ifndef __CVAR_H__
@@ -61,8 +61,8 @@ interface from being ambiguous.
 
 typedef struct cvar_s
 {
-	char	*name;
-	char	*string;
+	const char	*name;
+	const char	*string;
 	unsigned int	flags;
 	float		value;
 	int		integer;
@@ -82,7 +82,7 @@ void	Cvar_SetValue (const char *var_name, const float value);
 float	Cvar_VariableValue (const char *var_name);
 // returns 0 if not defined or non numeric
 
-char	*Cvar_VariableString (const char *var_name);
+const char *Cvar_VariableString (const char *var_name);
 // returns an empty string if not defined
 
 qboolean Cvar_Command (void);

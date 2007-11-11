@@ -2,7 +2,7 @@
 	sys_unix.c
 	Unix system interface code
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sys_unix.c,v 1.99 2007-10-13 09:50:27 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sys_unix.c,v 1.100 2007-11-11 13:17:41 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -362,7 +362,7 @@ static void PrintVersion (void)
 
 #define _SND_SYS_MACROS_ONLY
 #include "snd_sys.h"
-static char *help_strings[] = {
+static const char *help_strings[] = {
 	"     [-v | --version]        Display version information",
 #ifndef DEMOBUILD
 #   if defined(H2MP)
@@ -407,7 +407,7 @@ static char *help_strings[] = {
 	NULL
 };
 
-static void PrintHelp(char *name)
+static void PrintHelp (const char *name)
 {
 	int i = 0;
 

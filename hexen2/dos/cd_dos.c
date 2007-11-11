@@ -3,7 +3,7 @@
 	dos cdaudio support.
 	from quake1 source with minor adaptations for uhexen2.
 
-	$Id: cd_dos.c,v 1.1 2007-10-22 18:07:51 sezero Exp $
+	$Id: cd_dos.c,v 1.2 2007-11-11 13:17:42 sezero Exp $
 
 	Quake is a trademark of Id Software, Inc., (c) 1996 Id Software, Inc.
 	All rights reserved.
@@ -636,7 +636,7 @@ void CDAudio_Resume (void)
 
 static void CD_f (void)
 {
-	char	*command;
+	const char	*command;
 	int		ret;
 	int		n;
 	int		startAddress;

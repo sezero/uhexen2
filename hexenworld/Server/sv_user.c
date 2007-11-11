@@ -2,7 +2,7 @@
 	sv_user.c
 	server code for moving users
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Server/sv_user.c,v 1.26 2007-09-29 18:10:26 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Server/sv_user.c,v 1.27 2007-11-11 13:18:22 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -47,8 +47,8 @@ This will be sent on the initial connection and upon each server load.
 */
 static void SV_New_f (void)
 {
-	char		*gamedir;
-	int			playernum;
+	const char	*gamedir;
+	int		playernum;
 
 	if (host_client->state == cs_spawned)
 		return;
@@ -453,9 +453,9 @@ SV_BeginDownload_f
 */
 static void SV_BeginDownload_f(void)
 {
-	char	*name, *p;
+	char	name[MAX_OSPATH], *p;
 
-	name = Cmd_Argv(1);
+	q_strlcpy (name, Cmd_Argv(1), sizeof(name));
 
 	// hacked by zoid to allow more conrol over download
 	// first off, no .. or global allow check
@@ -527,11 +527,12 @@ SV_Say
 static void SV_Say (qboolean team)
 {
 	client_t	*client;
-	int			j, tmp;
-	char		*p;
+	int		j = 0, tmp;
+	const char	*p;
 	char		text[2048];
-	char		t1[32], *t2;
-	int			speaknum = -1;
+	char		t1[32];
+	const char	*t2;
+	int		speaknum = -1;
 
 	if (Cmd_Argc () < 2)
 		return;
@@ -578,7 +579,7 @@ static void SV_Say (qboolean team)
 	if (*p == '"')
 	{
 		p++;
-		p[strlen(p)-1] = 0;
+		j = 1;
 	}
 
 	if (p[0] == '`' && (!host_client->spectator && sv_allowtaunts.integer) )
@@ -590,7 +591,7 @@ static void SV_Say (qboolean team)
 		}
 		else
 		{
-			text[strlen(text)-2] = 0;
+			text[strlen(text)-2] = '\0';
 			q_strlcat(text," speaks!\n", sizeof(text));
 		}
 	}
@@ -598,6 +599,8 @@ static void SV_Say (qboolean team)
 	if (speaknum == -1)
 	{
 		q_strlcat(text, p, sizeof(text));
+		if (j == 1)	// remove trailing quotes
+			text[strlen(text)-1] = '\0';
 		q_strlcat(text, "\n", sizeof(text));
 	}
 
@@ -642,7 +645,7 @@ static void SV_Say (qboolean team)
 		{
 			if (dmMode.integer == DM_SIEGE && host_client->siege_team != client->siege_team)
 				//other team speaking
-				SV_ClientPrintf(client, PRINT_CHAT, "%s", text);//fixme: print biege
+				SV_ClientPrintf(client, PRINT_CHAT, "%s", text); // FIXME: print siege
 			else
 				SV_ClientPrintf(client, PRINT_CHAT, "%s", text);
 		}
@@ -867,7 +870,7 @@ USER CMD EXECUTION
 
 typedef struct
 {
-	char	*name;
+	const char	*name;
 	void	(*func) (void);
 } ucmd_t;
 

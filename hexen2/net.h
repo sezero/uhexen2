@@ -2,7 +2,7 @@
 	net.h
 	quake's interface to the networking layer
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/net.h,v 1.20 2007-10-24 16:43:19 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/net.h,v 1.21 2007-11-11 13:17:40 sezero Exp $
 */
 
 #ifndef __HX2_NET_H
@@ -142,10 +142,10 @@ extern int			net_numsockets;
 
 typedef struct
 {
-	char		*name;
+	const char	*name;
 	qboolean	initialized;
-	int			controlSock;
-	int			(*Init) (void);
+	int		controlSock;
+	int		(*Init) (void);
 	void		(*Shutdown) (void);
 	void		(*Listen) (qboolean state);
 	int		(*Open_Socket) (int port);
@@ -171,23 +171,23 @@ extern const int	net_numlandrivers;
 
 typedef struct
 {
-	char		*name;
+	const char	*name;
 	qboolean	initialized;
-	int			(*Init) (void);
+	int		(*Init) (void);
 	void		(*Listen) (qboolean state);
 #if !defined(SERVERONLY)
 	void		(*SearchForHosts) (qboolean xmit);
-	qsocket_t	*(*Connect) (char *host);
+	qsocket_t	*(*Connect) (const char *host);
 #endif	/* SERVERONLY */
 	qsocket_t	*(*CheckNewConnections) (void);
-	int			(*QGetMessage) (qsocket_t *sock);
-	int			(*QSendMessage) (qsocket_t *sock, sizebuf_t *data);
-	int			(*SendUnreliableMessage) (qsocket_t *sock, sizebuf_t *data);
+	int		(*QGetMessage) (qsocket_t *sock);
+	int		(*QSendMessage) (qsocket_t *sock, sizebuf_t *data);
+	int		(*SendUnreliableMessage) (qsocket_t *sock, sizebuf_t *data);
 	qboolean	(*CanSendMessage) (qsocket_t *sock);
 	qboolean	(*CanSendUnreliableMessage) (qsocket_t *sock);
 	void		(*Close) (qsocket_t *sock);
 	void		(*Shutdown) (void);
-	int			controlSock;
+	int		controlSock;
 } net_driver_t;
 
 extern net_driver_t	net_drivers[];
@@ -244,7 +244,7 @@ void		NET_Shutdown (void);
 struct qsocket_s	*NET_CheckNewConnections (void);
 // returns a new connection number if there is one pending, else -1
 
-struct qsocket_s	*NET_Connect (char *host);
+struct qsocket_s	*NET_Connect (const char *host);
 // called by client to connect to a host.  Returns -1 if not able to
 
 qboolean NET_CanSendMessage (qsocket_t *sock);
@@ -307,7 +307,7 @@ extern	char		my_tcpip_address[NET_NAMELEN];
 extern	void (*GetComPortConfig) (int portNumber, int *port, int *irq, int *baud, qboolean *useModem);
 extern	void (*SetComPortConfig) (int portNumber, int port, int irq, int baud, qboolean useModem);
 extern	void (*GetModemConfig) (int portNumber, char *dialType, char *clear, char *init, char *hangup);
-extern	void (*SetModemConfig) (int portNumber, char *dialType, char *clear, char *init, char *hangup);
+extern	void (*SetModemConfig) (int portNumber, const char *dialType, const char *clear, const char *init, const char *hangup);
 #endif	/* NET_USE_SERIAL */
 
 extern	qboolean	slistInProgress;

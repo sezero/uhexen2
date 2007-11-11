@@ -1,7 +1,7 @@
 /*
 	menu.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/menu.c,v 1.72 2007-09-22 15:27:19 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/menu.c,v 1.73 2007-11-11 13:17:44 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -69,7 +69,7 @@ static float LogoTargetPercent = 1;
 
 static int	setup_class, which_class;
 
-static char *message,*message2;
+static const char	*message,*message2;
 static double message_time;
 
 static const char *ClassNames[MAX_PLAYER_CLASS] = 
@@ -654,12 +654,6 @@ static void M_Main_Key (int key)
 
 
 //=============================================================================
-
-char	*plaquemessage = NULL;   // Pointer to current plaque message
-char    *errormessage = NULL;
-
-
-//=============================================================================
 /* OPTIONS MENU */
 
 #define	SLIDER_RANGE	10
@@ -1019,9 +1013,9 @@ enum
 
 static const struct
 {
-	char	*name;	// legible string value
-	char	*desc;	// description for user
-	int	glenum;	// opengl enum
+	const char	*name;	// legible string value
+	const char	*desc;	// description for user
+	int		glenum;	// opengl enum
 } lm_formats[] =
 {
 	{ "gl_luminance",	"gl_luminance (8 bit)",	GL_LUMINANCE	},
@@ -1434,7 +1428,7 @@ static void M_Keys_Draw (void)
 {
 	int		i, x, y;
 	int		keys[2];
-	char		*name;
+	const char	*name;
 //	qpic_t	*p;
 
 	ScrollTitle("gfx/menu/title6.lmp");

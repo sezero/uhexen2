@@ -2,7 +2,7 @@
 	cd_win.c
 	Win32 cdaudio code
 
-	$Id: cd_win.c,v 1.16 2007-09-22 15:27:32 sezero Exp $
+	$Id: cd_win.c,v 1.17 2007-11-11 13:18:19 sezero Exp $
 
 	Quake is a trademark of Id Software, Inc., (c) 1996 Id Software, Inc. All
 	rights reserved.
@@ -245,7 +245,7 @@ void CDAudio_Resume(void)
 
 static void CD_f (void)
 {
-	char	*command;
+	const char	*command;
 	int		ret;
 	int		n;
 

@@ -2,7 +2,7 @@
 	pr_cmds.c
 	prog commands
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/pr_cmds.c,v 1.49 2007-10-21 15:32:22 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/pr_cmds.c,v 1.50 2007-11-11 13:17:40 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -262,7 +262,7 @@ setmodel(entity, model)
 static void PF_setmodel (void)
 {
 	int		i;
-	char	*m;
+	const char	*m;
 	model_t		*mod;
 	edict_t		*e;
 
@@ -293,7 +293,7 @@ static void PF_setmodel (void)
 static void PF_setpuzzlemodel (void)
 {
 	int		i;
-	char	*m, *temp;
+	const char	*m, *temp;
 	model_t		*mod;
 	edict_t		*e;
 
@@ -672,7 +672,7 @@ PF_ambientsound
 */
 static void PF_ambientsound (void)
 {
-	char		*samp;
+	const char	*samp;
 	float		*pos;
 	float		vol, attenuation;
 	int			i, soundnum;
@@ -769,7 +769,7 @@ Larger attenuations will drop off.
 */
 static void PF_sound (void)
 {
-	char		*sample;
+	const char	*sample;
 	int			channel;
 	edict_t		*entity;
 	int		volume;
@@ -1396,7 +1396,7 @@ stuffcmd (clientent, value)
 static void PF_stuffcmd (void)
 {
 	int		entnum;
-	char	*str;
+	const char	*str;
 	client_t	*old;
 
 	entnum = G_EDICTNUM(OFS_PARM0);
@@ -1421,7 +1421,7 @@ localcmd (string)
 */
 static void PF_localcmd (void)
 {
-	char	*str;
+	const char	*str;
 
 	str = G_STRING(OFS_PARM0);
 	Cbuf_AddText (str);
@@ -1436,7 +1436,7 @@ float cvar (string)
 */
 static void PF_cvar (void)
 {
-	char	*str;
+	const char	*str;
 
 	str = G_STRING(OFS_PARM0);
 
@@ -1452,7 +1452,7 @@ float cvar (string)
 */
 static void PF_cvar_set (void)
 {
-	char	*var, *val;
+	const char	*var, *val;
 
 	var = G_STRING(OFS_PARM0);
 	val = G_STRING(OFS_PARM1);
@@ -1625,7 +1625,7 @@ static void PF_Find (void)
 {
 	int		e;
 	int		f;
-	char	*s, *t;
+	const char	*s, *t;
 	edict_t	*ed;
 	edict_t	*first;
 	edict_t	*second;
@@ -1673,7 +1673,7 @@ static void PF_Find (void)
 {
 	int		e;
 	int		f;
-	char	*s, *t;
+	const char	*s, *t;
 	edict_t	*ed;
 
 	e = G_EDICTNUM(OFS_PARM0);
@@ -1745,7 +1745,7 @@ static void PF_precache_file (void)
 
 static void PF_precache_sound (void)
 {
-	char	*s;
+	const char	*s;
 	int		SOUNDS_MAX; // just to be on the safe side..
 	int		i;
 
@@ -1796,7 +1796,7 @@ static void PF_precache_sound4 (void)
 
 static void PF_precache_model (void)
 {
-	char	*s;
+	const char	*s;
 	int		i;
 
 	if (sv.state != ss_loading && !ignore_precache)
@@ -1851,7 +1851,7 @@ static void PF_precache_model4 (void)
 static void PF_precache_puzzle_model (void)
 {
 	int		i;
-	char	*s, *temp;
+	const char	*s, *temp;
 
 	if (sv.state != ss_loading && !ignore_precache)
 		PR_RunError ("%s: Precache can only be done in spawn functions", __thisfunc__);
@@ -1988,7 +1988,7 @@ void(float style, string value) lightstyle
 static void PF_lightstyle (void)
 {
 	int		style;
-	char	*val;
+	const char	*val;
 	client_t	*client;
 	int			j;
 
@@ -2043,18 +2043,19 @@ static void PF_lightstylevalue(void)
 //
 //==========================================================================
 
+static const char *styleDefs[] =
+{
+	"a", "b", "c", "d", "e", "f", "g",
+	"h", "i", "j", "k", "l", "m", "n",
+	"o", "p", "q", "r", "s", "t", "u",
+	"v", "w", "x", "y", "z"
+};
+
 static void PF_lightstylestatic(void)
 {
 	int	i, value, styleNumber;
-	char		*styleString;
+	const char	*styleString;
 	client_t	*client;
-	static char *styleDefs[] =
-	{
-		"a", "b", "c", "d", "e", "f", "g",
-		"h", "i", "j", "k", "l", "m", "n",
-		"o", "p", "q", "r", "s", "t", "u",
-		"v", "w", "x", "y", "z"
-	};
 
 	styleNumber = G_FLOAT(OFS_PARM0);
 	value = G_FLOAT(OFS_PARM1);
@@ -2509,7 +2510,7 @@ PF_changelevel
 */
 static void PF_changelevel (void)
 {
-	char	*s1, *s2;
+	const char	*s1, *s2;
 
 	if (svs.changelevel_issued)
 		return;

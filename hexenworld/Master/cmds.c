@@ -2,7 +2,7 @@
 	cmd.c
 	Quake script command processing module
 
-	$Id: cmds.c,v 1.16 2007-07-08 11:56:51 sezero Exp $
+	$Id: cmds.c,v 1.17 2007-11-11 13:18:22 sezero Exp $
 */
 
 #include "defs.h"
@@ -15,16 +15,16 @@ static sizebuf_t	cmd_text;
 typedef struct cmd_function_s
 {
 	struct cmd_function_s	*next;
-	char					*name;
-	xcommand_t				function;
+	const char		*name;
+	xcommand_t		function;
 } cmd_function_t;
 
 static cmd_function_t	*cmd_functions = NULL;
 
 static	int			cmd_argc;
 static	char		*cmd_argv[MAX_ARGS];
-static	char		*cmd_null_string = "";
-static	char		*cmd_args = NULL;
+static	char		cmd_null_string[] = "";
+static	const char	*cmd_args = NULL;
 
 //=============================================================================
 
@@ -178,7 +178,7 @@ int Cmd_Argc (void)
 Cmd_Argv
 ============
 */
-char *Cmd_Argv (int arg)
+const char *Cmd_Argv (int arg)
 {
 	if (arg < 0 || arg >= cmd_argc)
 		return cmd_null_string;
@@ -192,7 +192,7 @@ Cmd_TokenizeString
 Parses the given string into command line tokens.
 ============
 */
-void Cmd_TokenizeString (char *text)
+void Cmd_TokenizeString (const char *text)
 {
 	int		i;
 
@@ -242,7 +242,7 @@ void Cmd_TokenizeString (char *text)
 Cmd_AddCommand
 ============
 */
-void Cmd_AddCommand (char *cmd_name, xcommand_t function)
+void Cmd_AddCommand (const char *cmd_name, xcommand_t function)
 {
 	cmd_function_t	*cmd;
 
@@ -272,7 +272,7 @@ A complete command line has been parsed, so try to execute it
 FIXME: lookupnoadd the token to speed search?
 ============
 */
-void Cmd_ExecuteString (char *text)
+void Cmd_ExecuteString (const char *text)
 {
 	cmd_function_t	*cmd;
 

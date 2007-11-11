@@ -2,7 +2,7 @@
 	net_main.c
 	main networking module
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/net_main.c,v 1.33 2007-10-24 16:43:19 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/net_main.c,v 1.34 2007-11-11 13:17:40 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -54,7 +54,7 @@ static qboolean	configRestored = false;
 void (*GetComPortConfig) (int portNumber, int *port, int *irq, int *baud, qboolean *useModem);
 void (*SetComPortConfig) (int portNumber, int port, int irq, int baud, qboolean useModem);
 void (*GetModemConfig) (int portNumber, char *dialType, char *clear, char *init, char *hangup);
-void (*SetModemConfig) (int portNumber, char *dialType, char *clear, char *init, char *hangup);
+void (*SetModemConfig) (int portNumber, const char *dialType, const char *clear, const char *init, const char *hangup);
 
 cvar_t	config_com_port = {"_config_com_port", "0x3f8", CVAR_ARCHIVE};
 cvar_t	config_com_irq = {"_config_com_irq", "4", CVAR_ARCHIVE};
@@ -271,7 +271,7 @@ static void PrintSlistHeader(void)
 static void PrintSlist(void)
 {
 	int		n;
-	char	*name;
+	const char	*name;
 
 	for (n = slistLastShown; n < hostCacheCount; n++)
 	{
@@ -372,7 +372,7 @@ NET_Connect
 int hostCacheCount = 0;
 hostcache_t hostcache[HOSTCACHESIZE];
 
-qsocket_t *NET_Connect (char *host)
+qsocket_t *NET_Connect (const char *host)
 {
 	qsocket_t		*ret;
 	int				n;

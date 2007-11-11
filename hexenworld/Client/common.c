@@ -2,7 +2,7 @@
 	common.c
 	misc utility functions used in client and server
 
-	$Id: common.c,v 1.97 2007-09-23 18:45:08 sezero Exp $
+	$Id: common.c,v 1.98 2007-11-11 13:17:44 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -134,9 +134,9 @@ int COM_StrCompare (const void *arg1, const void *arg2)
 COM_SkipPath
 ============
 */
-char *COM_SkipPath (char *pathname)
+char *COM_SkipPath (const char *pathname)
 {
-	char	*last;
+	const char	*last;
 
 	last = pathname;
 	while (*pathname)
@@ -145,7 +145,7 @@ char *COM_SkipPath (char *pathname)
 			last = pathname+1;
 		pathname++;
 	}
-	return last;
+	return (char *)last;
 }
 
 /*
@@ -157,7 +157,7 @@ void COM_StripExtension (const char *in, char *out)
 {
 	while (*in && *in != '.')
 		*out++ = *in++;
-	*out = 0;
+	*out = '\0';
 }
 
 /*
@@ -165,20 +165,21 @@ void COM_StripExtension (const char *in, char *out)
 COM_FileExtension
 ============
 */
-char *COM_FileExtension (const char *in)
+void COM_FileExtension (const char *in, char *out)
 {
-	static char exten[8];
-	int		i;
-
 	while (*in && *in != '.')
 		in++;
+
 	if (!*in)
-		return "";
+	{
+		*out = '\0';
+		return;
+	}
+
 	in++;
-	for (i = 0; i < 7 && *in; i++, in++)
-		exten[i] = *in;
-	exten[i] = 0;
-	return exten;
+	while (*in)
+		*out++ = *in++;
+	*out = '\0';
 }
 
 /*
@@ -204,7 +205,7 @@ void COM_FileBase (const char *in, char *out)
 	{
 		s--;
 		strncpy (out, s2+1, s-s2);
-		out[s-s2] = 0;
+		out[s-s2] = '\0';
 	}
 }
 
@@ -250,7 +251,7 @@ COM_Parse
 Parse a token out of a string
 ==============
 */
-char *COM_Parse (char *data)
+const char *COM_Parse (const char *data)
 {
 	int		c;
 	int		len;

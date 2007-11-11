@@ -2,7 +2,7 @@
 	sys_unix.c
 	Unix system interface code
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/sys_unix.c,v 1.91 2007-10-13 09:50:28 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/sys_unix.c,v 1.92 2007-11-11 13:17:44 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -308,7 +308,7 @@ static void PrintVersion (void)
 
 #define _SND_SYS_MACROS_ONLY
 #include "snd_sys.h"
-static char *help_strings[] = {
+static const char *help_strings[] = {
 	"     [-v | --version]        Display version information",
 	"     [-noportals]            Disable the mission pack support",
 	"     [-w | -window ]         Run the game windowed",
@@ -346,7 +346,7 @@ static char *help_strings[] = {
 	NULL
 };
 
-static void PrintHelp(char *name)
+static void PrintHelp (const char *name)
 {
 	int i = 0;
 

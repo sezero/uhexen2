@@ -2,7 +2,7 @@
 	info_str.h
 	Hexen2World info strings handling
 
-	$Id: info_str.h,v 1.3 2007-10-01 11:00:32 sezero Exp $
+	$Id: info_str.h,v 1.4 2007-11-11 13:17:44 sezero Exp $
 */
 
 #ifndef __H2W_INFOSTR_H
@@ -14,7 +14,7 @@
 
 // none of these functions accept NULL input
 
-char *Info_ValueForKey (const char *s, const char *key);	// may return an empty string, but never NULL
+const char *Info_ValueForKey (const char *s, const char *key);	// may return an empty string, but never NULL
 void Info_RemoveKey (char *s, const char *key);
 void Info_RemovePrefixedKeys (char *start, char prefix);
 void Info_SetValueForKey (char *s, const char *key, const char *value, size_t maxsize);

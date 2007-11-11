@@ -2,7 +2,7 @@
 	snd_dma.c
 	main control for any streaming sound output device
 
-	$Id: snd_dma.c,v 1.70 2007-11-07 16:54:59 sezero Exp $
+	$Id: snd_dma.c,v 1.71 2007-11-11 13:17:44 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -36,7 +36,7 @@ static qboolean	snd_initialized = false;
 
 static const struct
 {
-	char	*name;
+	const char	*name;
 	int	available;
 } snd_drivers[S_SYS_MAX] =
 {

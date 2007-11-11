@@ -1,6 +1,6 @@
 /*
 	cd_bsd.c
-	$Id: cd_bsd.c,v 1.20 2007-09-29 13:32:32 sezero Exp $
+	$Id: cd_bsd.c,v 1.21 2007-11-11 13:17:44 sezero Exp $
 
 	Copyright (C) 1996-1997  Id Software, Inc.
 	A few BSD bits taken from the Dark Places project for Hammer
@@ -56,10 +56,12 @@ static byte	maxTrack;
 static int	cdfile = -1;
 // default path to cdrom device. user can always do -cddev
 #if !defined(__FreeBSD__)
-static char	cd_dev[64] = _PATH_DEV "cd0";
+static const char	default_dev[] = _PATH_DEV "cd0";
 #else
-static char	cd_dev[64] = _PATH_DEV "acd0";
+static const char	default_dev[] = _PATH_DEV "acd0";
 #endif
+static const char	*cd_dev = default_dev;
+
 static float	old_cdvolume;
 static qboolean	hw_vol_works = true;
 static struct ioc_vol		orig_vol;	// orig. setting to be restored upon exit
@@ -240,7 +242,7 @@ void CDAudio_Resume(void)
 
 static void CD_f (void)
 {
-	char	*command;
+	const char	*command;
 	int		ret;
 	int		n;
 
@@ -458,9 +460,7 @@ int CDAudio_Init(void)
 		return -1;
 
 	if ((i = COM_CheckParm("-cddev")) != 0 && i < com_argc - 1)
-	{
-		q_strlcpy(cd_dev, com_argv[i + 1], sizeof(cd_dev));
-	}
+		cd_dev = com_argv[i + 1];
 
 	if ((cdfile = open(cd_dev, O_RDONLY | O_NONBLOCK)) == -1)
 	{

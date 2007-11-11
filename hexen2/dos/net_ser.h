@@ -3,7 +3,7 @@
 	dosquake serial network driver.
 	from quake1 source with minor adaptations for uhexen2.
 
-	$Id: net_ser.h,v 1.1 2007-10-22 18:07:52 sezero Exp $
+	$Id: net_ser.h,v 1.2 2007-11-11 13:17:42 sezero Exp $
 
 	Copyright (C) 1996-1997  Id Software, Inc.
 
@@ -33,7 +33,7 @@
 int			Serial_Init (void);
 void		Serial_Listen (qboolean state);
 void		Serial_SearchForHosts (qboolean xmit);
-qsocket_t	*Serial_Connect (char *host);
+qsocket_t	*Serial_Connect (const char *host);
 qsocket_t 	*Serial_CheckNewConnections (void);
 int			Serial_GetMessage (qsocket_t *sock);
 int			Serial_SendMessage (qsocket_t *sock, sizebuf_t *data);

@@ -2,7 +2,7 @@
 	sys_win.c
 	Win32 system interface code
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/server/sys_win.c,v 1.28 2007-10-13 09:50:28 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/server/sys_win.c,v 1.29 2007-11-11 13:17:43 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -260,7 +260,7 @@ static void PrintVersion (void)
 	printf ("More info / sending bug reports:  http://uhexen2.sourceforge.net\n");
 }
 
-static char *help_strings[] = {
+static const char *help_strings[] = {
 	"     [-v | --version]        Display version information",
 #ifndef DEMOBUILD
 #   if defined(H2MP)
@@ -273,7 +273,7 @@ static char *help_strings[] = {
 	NULL
 };
 
-static void PrintHelp(char *name)
+static void PrintHelp (const char *name)
 {
 	int i = 0;
 

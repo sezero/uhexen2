@@ -2,7 +2,7 @@
 	cl_main.c
 	client main loop
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cl_main.c,v 1.42 2007-09-22 15:27:10 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cl_main.c,v 1.43 2007-11-11 13:17:38 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -152,7 +152,7 @@ CL_EstablishConnection
 Host should be either "local" or a net address to be passed on
 =====================
 */
-void CL_EstablishConnection (char *host)
+void CL_EstablishConnection (const char *host)
 {
 	if (cls.state == ca_dedicated)
 		return;

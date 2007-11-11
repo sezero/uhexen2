@@ -2,7 +2,7 @@
 	sys_win.c
 	Win32 system interface code
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/win_stuff/sys_win.c,v 1.48 2007-10-13 09:50:28 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/win_stuff/sys_win.c,v 1.49 2007-11-11 13:18:22 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -322,7 +322,7 @@ int			global_nCmdShow;
 HWND		hwnd_dialog;
 #endif	/* NO_SPLASHES */
 static char	*argv[MAX_NUM_ARGVS];
-static char	*empty_string = "";
+static char	empty_string[] = "";
 static char	cwd[1024];
 static quakeparms_t	parms;
 

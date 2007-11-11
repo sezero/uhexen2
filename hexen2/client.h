@@ -2,7 +2,7 @@
 	client.h
 	client main header
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/client.h,v 1.28 2007-04-08 18:50:38 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/client.h,v 1.29 2007-11-11 13:17:38 sezero Exp $
 */
 
 #ifndef __HX2_CLIENT_H
@@ -284,7 +284,7 @@ void CL_Init (void);
 
 void CL_ClearState (void);
 
-void CL_EstablishConnection (char *host);
+void CL_EstablishConnection (const char *host);
 void CL_SignonReply (void);
 
 int  CL_ReadFromServer (void);

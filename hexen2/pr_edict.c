@@ -2,7 +2,7 @@
 	sv_edict.c
 	entity dictionary
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/pr_edict.c,v 1.51 2007-11-11 12:50:51 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/pr_edict.c,v 1.52 2007-11-11 13:17:40 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -10,9 +10,10 @@
 dprograms_t		*progs;
 dfunction_t		*pr_functions;
 
+static	char		pr_null_string[] = "";
 static	char		*pr_strings;
 static	int		pr_stringssize;
-static	char		**pr_knownstrings;
+static	const char	**pr_knownstrings;
 static	int		pr_maxknownstrings;
 static	int		pr_numknownstrings;
 static	ddef_t		*pr_fielddefs;
@@ -513,7 +514,7 @@ void ED_Print (edict_t *ed)
 	ddef_t	*d;
 	int		*v;
 	int		i, j, l;
-	char	*name;
+	const char	*name;
 	int		type;
 
 	if (ed->free)
@@ -565,7 +566,7 @@ void ED_Write (FILE *f, edict_t *ed)
 	ddef_t	*d;
 	int		*v;
 	int		i, j;
-	char	*name;
+	const char	*name;
 	int		type;
 
 	fprintf (f, "{\n");
@@ -711,7 +712,7 @@ void ED_WriteGlobals (FILE *f)
 {
 	ddef_t		*def;
 	int			i;
-	char		*name;
+	const char		*name;
 	int			type;
 
 	fprintf (f, "{\n");
@@ -738,7 +739,7 @@ void ED_WriteGlobals (FILE *f)
 ED_ParseGlobals
 =============
 */
-void ED_ParseGlobals (char *data)
+void ED_ParseGlobals (const char *data)
 {
 	char	keyname[64];
 	ddef_t	*key;
@@ -891,7 +892,7 @@ ed should be a properly initialized empty edict.
 Used for initial level load and for savegames.
 ====================
 */
-char *ED_ParseEdict (char *data, edict_t *ent)
+const char *ED_ParseEdict (const char *data, edict_t *ent)
 {
 	ddef_t		*key;
 	qboolean	anglehack;
@@ -1007,14 +1008,14 @@ Used for both fresh maps and savegame loads.  A fresh map would also need
 to call ED_CallSpawnFunctions () to let the objects initialize themselves.
 ================
 */
-void ED_LoadFromFile (char *data)
+void ED_LoadFromFile (const char *data)
 {
 	dfunction_t	*func;
 	edict_t		*ent = NULL;
 	int		inhibit = 0;
 #if !defined(SERVERONLY)
 	int		start_amount = current_loading_size;
-	char		*orig = data;
+	const char	*orig = data;
 #endif	/* SERVERONLY */
 
 	if (old_progdefs)
@@ -1306,9 +1307,9 @@ void PR_LoadProgs (void)
 	pr_maxknownstrings = 0;
 	pr_stringssize = progs->numstrings;
 	if (pr_knownstrings)
-		Z_Free (pr_knownstrings);
+		Z_Free ((void *)pr_knownstrings);
 	pr_knownstrings = NULL;
-	PR_SetEngineString("");	// initialize the strings
+	PR_SetEngineString(pr_null_string);	// initialize the strings
 	pr_globaldefs = (ddef_t *)((byte *)progs + progs->ofs_globaldefs);
 	pr_fielddefs = (ddef_t *)((byte *)progs + progs->ofs_fielddefs);
 	pr_statements = (dstatement_t *)((byte *)progs + progs->ofs_statements);
@@ -1457,10 +1458,10 @@ static void PR_AllocStringSlots (void)
 {
 	pr_maxknownstrings += PR_STRING_ALLOCSLOTS;
 	Sys_DPrintf("%s: realloc'ing for %d slots\n", __thisfunc__, pr_maxknownstrings);
-	pr_knownstrings = (char **) Z_Realloc (pr_knownstrings, pr_maxknownstrings * sizeof(char *), Z_MAINZONE);
+	pr_knownstrings = (const char **) Z_Realloc ((void *)pr_knownstrings, pr_maxknownstrings * sizeof(char *), Z_MAINZONE);
 }
 
-char *PR_GetString (int num)
+const char *PR_GetString (int num)
 {
 	if (num >= 0 && num < pr_stringssize)
 		return pr_strings + num;
@@ -1481,7 +1482,7 @@ char *PR_GetString (int num)
 	}
 }
 
-int PR_SetEngineString (char *s)
+int PR_SetEngineString (const char *s)
 {
 	int		i;
 
@@ -1532,7 +1533,7 @@ int PR_AllocString (int size, char **ptr)
 //	}
 	pr_knownstrings[i] = (char *)Hunk_AllocName(size, "string");
 	if (ptr)
-		*ptr = pr_knownstrings[i];
+		*ptr = (char *) pr_knownstrings[i];
 	return -1 - i;
 }
 

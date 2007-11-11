@@ -1,6 +1,6 @@
 /*
 	gl_vidnt.c -- NT GL vid component
-	$Id: gl_vidnt.c,v 1.119 2007-10-14 11:12:29 sezero Exp $
+	$Id: gl_vidnt.c,v 1.120 2007-11-11 13:18:22 sezero Exp $
 */
 
 #define	__GL_FUNC_EXTERN
@@ -118,7 +118,7 @@ static PIXELFORMATDESCRIPTOR pfd =
 static LONG WINAPI MainWndProc (HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 static void AppActivate(BOOL fActive, BOOL minimize);
 static void VID_UpdateWindowStatus (void);
-static char *VID_GetModeDescription (int mode);
+static const char *VID_GetModeDescription (int mode);
 
 // vars for vid state
 viddef_t	vid;			// global video state
@@ -1552,9 +1552,9 @@ static vmode_t *VID_GetModePtr (int modenum)
 VID_GetModeDescription
 =================
 */
-static char *VID_GetModeDescription (int mode)
+static const char *VID_GetModeDescription (int mode)
 {
-	char		*pinfo;
+	const char	*pinfo;
 	vmode_t		*pv;
 
 	if ((mode < 0) || (mode >= *nummodes))
@@ -1569,7 +1569,7 @@ static char *VID_GetModeDescription (int mode)
 
 // KJB: Added this to return the mode driver name in description for console
 
-static char *VID_GetExtModeDescription (int mode)
+static const char *VID_GetExtModeDescription (int mode)
 {
 	static char	pinfo[100];
 	vmode_t		*pv;
@@ -1641,7 +1641,7 @@ VID_DescribeModes_f
 static void VID_DescribeModes_f (void)
 {
 	int	i, lnummodes;
-	char	*pinfo;
+	const char	*pinfo;
 	vmode_t	*pv;
 
 	lnummodes = VID_NumModes ();

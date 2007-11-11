@@ -2,7 +2,7 @@
 	wad.h
 	wad file loading
 
-	$Id: wad.h,v 1.5 2007-03-14 21:03:42 sezero Exp $
+	$Id: wad.h,v 1.6 2007-11-11 13:17:45 sezero Exp $
 */
 
 #ifndef __HX2_WAD_H
@@ -54,7 +54,7 @@ extern	lumpinfo_t	*wad_lumps;
 extern	byte		*wad_base;
 
 void	W_LoadWadFile (const char *filename);
-void	*W_GetLumpName (char *name);
+void	*W_GetLumpName (const char *name);
 void	*W_GetLumpNum (int num);
 
 void	SwapPic (qpic_t *pic);

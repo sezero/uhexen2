@@ -5,7 +5,7 @@
 	Quake is a trademark of Id Software, Inc., (c) 1996 Id Software, Inc.
 	All rights reserved.
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/cl_input.c,v 1.12 2007-06-30 11:19:47 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/cl_input.c,v 1.13 2007-11-11 13:17:44 sezero Exp $
 */
 
 
@@ -46,7 +46,7 @@ int		in_impulse;
 static void KeyDown (kbutton_t *b)
 {
 	int		k;
-	char	*c;
+	const char	*c;
 
 	c = Cmd_Argv(1);
 	if (c[0])
@@ -75,7 +75,7 @@ static void KeyDown (kbutton_t *b)
 static void KeyUp (kbutton_t *b)
 {
 	int		k;
-	char	*c;
+	const char	*c;
 
 	c = Cmd_Argv(1);
 	if (c[0])

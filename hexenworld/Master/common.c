@@ -2,7 +2,7 @@
 	common.c
 	misc utility functions
 
-	$Id: common.c,v 1.4 2007-09-23 18:45:09 sezero Exp $
+	$Id: common.c,v 1.5 2007-11-11 13:18:22 sezero Exp $
 */
 
 #include "defs.h"
@@ -80,7 +80,7 @@ STRING PARSING FUNCTIONS
 
 char		com_token[1024];
 
-char *COM_Parse (char *data)
+const char *COM_Parse (const char *data)
 {
 	int		c;
 	int		len;

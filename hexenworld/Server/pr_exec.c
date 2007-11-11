@@ -2,7 +2,7 @@
 	pr_exec.c
 	PROGS execution
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Server/pr_exec.c,v 1.21 2007-09-22 15:27:34 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Server/pr_exec.c,v 1.22 2007-11-11 13:18:22 sezero Exp $
 */
 
 // HEADER FILES ------------------------------------------------------------
@@ -68,7 +68,7 @@ static int pr_depth;
 static int localstack[LOCALSTACK_SIZE];
 static int localstack_used;
 
-static char *pr_opnames[] =
+static const char *pr_opnames[] =
 {
 	"DONE",
 	"MUL_F", "MUL_V",  "MUL_FV", "MUL_VF",
@@ -970,7 +970,7 @@ void PR_Profile_f (void)
 	int currentFile;
 	int bestFile;
 	int tally;
-	char *s;
+	const char *s;
 
 	byHC = false;
 	funcCount = 10;

@@ -2,7 +2,7 @@
 	net_dgrm.h
 	net-datagram header
 
-	$Id: net_dgrm.h,v 1.4 2007-03-14 21:03:11 sezero Exp $
+	$Id: net_dgrm.h,v 1.5 2007-11-11 13:17:40 sezero Exp $
 */
 
 #ifndef __NET_DATAGRAM_H
@@ -11,7 +11,7 @@
 int			Datagram_Init (void);
 void		Datagram_Listen (qboolean state);
 void		Datagram_SearchForHosts (qboolean xmit);
-qsocket_t	*Datagram_Connect (char *host);
+qsocket_t	*Datagram_Connect (const char *host);
 qsocket_t	*Datagram_CheckNewConnections (void);
 int			Datagram_GetMessage (qsocket_t *sock);
 int			Datagram_SendMessage (qsocket_t *sock, sizebuf_t *data);

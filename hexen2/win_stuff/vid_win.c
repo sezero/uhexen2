@@ -2,7 +2,7 @@
 	vid_win.c
 	Win32 video driver using MGL-4.05
 
-	$Id: vid_win.c,v 1.57 2007-09-22 15:27:16 sezero Exp $
+	$Id: vid_win.c,v 1.58 2007-11-11 13:17:43 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -55,7 +55,8 @@ static int		firstupdate = 1;
 static qboolean	vid_initialized = false, vid_palettized;
 static int		lockcount;
 static int		vid_fulldib_on_focus_mode;
-static qboolean	force_minimized, in_mode_set, is_mode0x13, force_mode_set;
+static qboolean	force_minimized, is_mode0x13, force_mode_set;
+qboolean		in_mode_set;
 static int		vid_stretched, enable_mouse;
 static qboolean	palette_changed, syscolchg, vid_mode_set, hide_window, pal_is_nostatic;
 static HICON	hIcon;
@@ -1137,9 +1138,9 @@ static void VID_CheckModedescFixup (int modenum)
 VID_GetModeDescriptionMemCheck
 =================
 */
-static char *VID_GetModeDescriptionMemCheck (int modenum)
+static const char *VID_GetModeDescriptionMemCheck (int modenum)
 {
-	char		*pinfo;
+	const char	*pinfo;
 	vmode_t		*pv;
 
 	if ((modenum < 0) || (modenum >= nummodes))
@@ -1167,9 +1168,9 @@ static char *VID_GetModeDescriptionMemCheck (int modenum)
 VID_GetModeDescription
 =================
 */
-static char *VID_GetModeDescription (int modenum)
+static const char *VID_GetModeDescription (int modenum)
 {
-	char		*pinfo;
+	const char	*pinfo;
 	vmode_t		*pv;
 
 	if ((modenum < 0) || (modenum >= nummodes))
@@ -1190,7 +1191,7 @@ VID_GetModeDescription2
 Tacks on "windowed" or "fullscreen"
 =================
 */
-static char *VID_GetModeDescription2 (int modenum)
+static const char *VID_GetModeDescription2 (int modenum)
 {
 	static char	pinfo[40];
 	vmode_t		*pv;
@@ -1221,7 +1222,7 @@ static char *VID_GetModeDescription2 (int modenum)
 
 // KJB: Added this to return the mode driver name in description for console
 
-static char *VID_GetExtModeDescription (int modenum)
+static const char *VID_GetExtModeDescription (int modenum)
 {
 	static char	pinfo[40];
 	vmode_t		*pv;
@@ -1997,7 +1998,7 @@ VID_DescribeModes_f
 static void VID_DescribeModes_f (void)
 {
 	int		i, lnummodes;
-	char		*pinfo;
+	const char	*pinfo;
 	qboolean	na;
 	vmode_t		*pv;
 
@@ -3274,7 +3275,7 @@ static int	vid_line, vid_wmodes;
 typedef struct
 {
 	int		modenum;
-	char	*desc;
+	const char	*desc;
 	int		iscur;
 	int		ismode13;
 	int		width;
@@ -3285,7 +3286,7 @@ typedef struct
 #define MAX_MODEDESCS		(MAX_COLUMN_SIZE * 3)
 
 static modedesc_t	modedescs[MAX_MODEDESCS];
-static char no_desc[4] = { 'N', '/', 'A', '\0' };
+static const char	no_desc[] = "N/A";
 
 /*
 ================
@@ -3294,7 +3295,7 @@ VID_MenuDraw
 */
 static void VID_MenuDraw (void)
 {
-	char		*ptr;
+	const char	*ptr;
 	int			lnummodes, i, j, k, column, row, dup, dupmode;
 	char		temp[100];
 	vmode_t		*pv;

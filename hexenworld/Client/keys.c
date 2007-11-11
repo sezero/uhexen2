@@ -2,7 +2,7 @@
 	keys.c
 	key up events are sent even if in console mode
 
-	$Id: keys.c,v 1.37 2007-10-24 11:37:10 sezero Exp $
+	$Id: keys.c,v 1.38 2007-11-11 13:17:44 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -33,7 +33,7 @@ static qboolean	keydown[256];
 
 typedef struct
 {
-	char	*name;
+	const char	*name;
 	int		keynum;
 } keyname_t;
 
@@ -158,8 +158,8 @@ static qboolean CheckForCommand (void)
 
 static void CompleteCommand (void)
 {
-	char	*matches[MAX_MATCHES];
-	char	*s, stmp[MAXCMDLINE];
+	const char	*matches[MAX_MATCHES];
+	char		*s, stmp[MAXCMDLINE];
 	qboolean	editing, partial;
 	int	count = 0, i, j;
 
@@ -586,7 +586,7 @@ given keynum.
 FIXME: handle quote special (general escape sequence?)
 ===================
 */
-char *Key_KeynumToString (int keynum)
+const char *Key_KeynumToString (int keynum)
 {
 	keyname_t	*kn;
 	static	char	tinystr[2];

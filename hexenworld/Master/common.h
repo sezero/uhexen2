@@ -2,7 +2,7 @@
 	common.h
 	misc utilities used in client and server
 
-	$Id: common.h,v 1.4 2007-09-23 18:45:09 sezero Exp $
+	$Id: common.h,v 1.5 2007-11-11 13:18:22 sezero Exp $
 */
 
 #ifndef __HX2_COMMON_H
@@ -24,7 +24,7 @@ extern int q_vsnprintf(char *str, size_t size, const char *format, va_list args)
 
 extern	char		com_token[1024];
 
-char *COM_Parse (char *data);
+const char *COM_Parse (const char *data);
 
 extern	int		com_argc;
 extern	char		**com_argv;

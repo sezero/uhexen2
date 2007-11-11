@@ -2,7 +2,7 @@
 	net_loop.c
 	network loop driver
 
-	$Id: net_loop.c,v 1.6 2007-05-13 11:58:29 sezero Exp $
+	$Id: net_loop.c,v 1.7 2007-11-11 13:17:40 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -48,7 +48,7 @@ void Loop_SearchForHosts (qboolean xmit)
 }
 
 
-qsocket_t *Loop_Connect (char *host)
+qsocket_t *Loop_Connect (const char *host)
 {
 	if (strcmp(host,"local") != 0)
 		return NULL;

@@ -2,7 +2,7 @@
 	screen.c
 	master for refresh, status bar, console, chat, notify, etc
 
-	$Id: gl_screen.c,v 1.46 2007-10-21 15:32:23 sezero Exp $
+	$Id: gl_screen.c,v 1.47 2007-11-11 13:17:44 sezero Exp $
 */
 
 /*=============================================================================
@@ -99,6 +99,9 @@ extern	cvar_t	show_fps;
 extern	int	fps_count;
 
 static void SCR_ScreenShot_f (void);
+
+const char	*plaquemessage = NULL;	// pointer to current plaque message
+
 static void Plaque_Draw (const char *message, qboolean AlwaysDraw);
 
 
@@ -628,12 +631,12 @@ static void SCR_ScreenShot_f (void)
 //=============================================================================
 
 
-static char	*scr_notifystring;
+static const char	*scr_notifystring;
 static qboolean	scr_drawdialog;
 
 static void SCR_DrawNotifyString (void)
 {
-	Plaque_Draw(scr_notifystring, 1);
+	Plaque_Draw(scr_notifystring, true);
 }
 
 /*
@@ -644,7 +647,7 @@ Displays a text string in the center of the screen
 and waits for a Y or N keypress.
 ==================
 */
-int SCR_ModalMessage (char *text)
+int SCR_ModalMessage (const char *text)
 {
 	scr_notifystring = text;
 
@@ -765,7 +768,8 @@ static void SB_IntermissionOverlay (void)
 {
 	qpic_t	*pic = NULL;
 	int		elapsed, size, bx, by, i;
-	char	*message,temp[80];
+	char		temp[80];
+	const char	*message;
 
 	scr_copyeverything = 1;
 	scr_fullupdate = 0;
@@ -1066,12 +1070,10 @@ void SCR_UpdateScreen (void)
 		SCR_CheckDrawCenterString();
 		Sbar_Draw();
 
-		Plaque_Draw(plaquemessage,0);
+		Plaque_Draw(plaquemessage, false);
 		SCR_DrawNet ();
 		SCR_DrawConsole();
 		M_Draw();
-		if (errormessage)
-			Plaque_Draw(errormessage,1);
 	}
 
 	V_UpdatePalette ();

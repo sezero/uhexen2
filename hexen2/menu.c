@@ -1,7 +1,7 @@
 /*
 	menu.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/menu.c,v 1.103 2007-10-24 19:23:26 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/menu.c,v 1.104 2007-11-11 13:17:40 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -120,7 +120,7 @@ static float	LogoTargetPercent = 1;
 
 static int	setup_class;
 
-static char	*message, *message2;
+static const char	*message, *message2;
 static double	message_time;
 
 
@@ -813,12 +813,6 @@ static void M_Main_Key (int key)
 		}
 	}
 }
-
-
-//=============================================================================
-
-char	*plaquemessage = NULL;   // Pointer to current plaque message
-char    *errormessage = NULL;
 
 
 //=============================================================================
@@ -2332,9 +2326,9 @@ enum
 
 static const struct
 {
-	char	*name;	// legible string value
-	char	*desc;	// description for user
-	int	glenum;	// opengl enum
+	const char	*name;	// legible string value
+	const char	*desc;	// description for user
+	int		glenum;	// opengl enum
 } lm_formats[] =
 {
 	{ "gl_luminance",	"gl_luminance (8 bit)",	GL_LUMINANCE	},
@@ -2748,7 +2742,7 @@ static void M_Keys_Draw (void)
 {
 	int		i, x, y;
 	int		keys[2];
-	char		*name;
+	const char	*name;
 //	qpic_t	*p;
 
 	ScrollTitle("gfx/menu/title6.lmp");
@@ -3963,8 +3957,8 @@ static void M_Menu_LanConfig_f (void)
 static void M_LanConfig_Draw (void)
 {
 	int	basex;
-	char	*startJoin;
-	char	*protocol;
+	const char	*startJoin;
+	const char	*protocol;
 
 	ScrollTitle("gfx/menu/title4.lmp");
 	basex = 48;
@@ -4186,8 +4180,8 @@ static void M_LanConfig_Key (int key)
 
 static const struct
 {
-	char	*name;
-	char	*description;
+	const char	*name;
+	const char	*description;
 } levels[] =
 {
 	{"demo1", "Blackmarsh"},			// 0
@@ -4277,7 +4271,7 @@ static const struct
 
 static const struct
 {
-	char	*description;
+	const char	*description;
 	int		firstLevel;
 	int		levels;
 } episodes[] =
@@ -4397,7 +4391,7 @@ static void M_GameOptions_Draw (void)
 
 	M_Print (0+8 + 9*8, 100, "Teamplay");
 	{
-		char *msg;
+		const char	*msg;
 
 		switch (teamplay.integer)
 		{
@@ -4758,7 +4752,8 @@ static void M_Menu_ServerList_f (void)
 static void M_ServerList_Draw (void)
 {
 	int	n;
-	char	string [64], *name;
+	char	string[64];
+	const char *name;
 
 	if (!slist_sorted)
 	{

@@ -2,7 +2,7 @@
 	progs.h
 	PROGS structures, public functions and vars
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/progs.h,v 1.15 2007-04-19 13:59:49 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/progs.h,v 1.16 2007-11-11 13:17:40 sezero Exp $
 */
 
 #ifndef __HX2_PROGS_H
@@ -86,8 +86,8 @@ void PR_Init (void);
 void PR_ExecuteProgram (func_t fnum);
 void PR_LoadProgs (void);
 
-char *PR_GetString (int num);
-int PR_SetEngineString (char *s);
+const char *PR_GetString (int num);
+int PR_SetEngineString (const char *s);
 int PR_AllocString (int bufferlength, char **ptr);
 
 void PR_Profile_f (void);
@@ -99,12 +99,12 @@ void ED_ClearEdict (edict_t *e);
 
 void ED_Print (edict_t *ed);
 void ED_Write (FILE *f, edict_t *ed);
-char *ED_ParseEdict (char *data, edict_t *ent);
+const char *ED_ParseEdict (const char *data, edict_t *ent);
 
 void ED_WriteGlobals (FILE *f);
-void ED_ParseGlobals (char *data);
+void ED_ParseGlobals (const char *data);
 
-void ED_LoadFromFile (char *data);
+void ED_LoadFromFile (const char *data);
 
 //define EDICT_NUM(n) ((edict_t *)(sv.edicts+ (n)*pr_edict_size))
 //define NUM_FOR_EDICT(e) (((byte *)(e) - sv.edicts)/pr_edict_size)

@@ -1,7 +1,7 @@
 /*
 	menu.h
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/menu.h,v 1.9 2007-04-07 19:55:38 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/menu.h,v 1.10 2007-11-11 13:17:40 sezero Exp $
 */
 
 #ifndef __HX2_MENU_H
@@ -15,9 +15,6 @@
 #define	MNET_TCP		2
 
 extern	int	m_activenet;
-
-extern char	*plaquemessage;     // Pointer to current plaque
-extern char	*errormessage;     // Pointer to current plaque
 
 //
 // menus

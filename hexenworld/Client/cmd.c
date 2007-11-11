@@ -2,7 +2,7 @@
 	cmd.c
 	Quake script command processing module
 
-	$Id: cmd.c,v 1.34 2007-10-21 15:26:49 sezero Exp $
+	$Id: cmd.c,v 1.35 2007-11-11 13:17:44 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -25,8 +25,8 @@ typedef struct cmdalias_s
 typedef struct cmd_function_s
 {
 	struct cmd_function_s	*next;
-	char					*name;
-	xcommand_t				function;
+	const char		*name;
+	xcommand_t		function;
 } cmd_function_t;
 
 static cmdalias_t	*cmd_alias = NULL;
@@ -34,8 +34,8 @@ static cmd_function_t	*cmd_functions = NULL;
 
 static	int			cmd_argc;
 static	char		*cmd_argv[MAX_ARGS];
-static	char		*cmd_null_string = "";
-static	char		*cmd_args = NULL;
+static	char		cmd_null_string[] = "";
+static	const char	*cmd_args = NULL;
 
 static qboolean	cmd_wait;
 
@@ -326,7 +326,7 @@ static void Cmd_Alias_f (void)
 	cmdalias_t	*a;
 	char		cmd[1024];
 	int			i, c;
-	char		*s;
+	const char	*s;
 
 	if (Cmd_Argc() == 1)
 	{
@@ -476,7 +476,7 @@ int Cmd_Argc (void)
 Cmd_Argv
 ============
 */
-char *Cmd_Argv (int arg)
+const char *Cmd_Argv (int arg)
 {
 	if (arg < 0 || arg >= cmd_argc)
 		return cmd_null_string;
@@ -490,10 +490,10 @@ Cmd_Args
 Returns a single string containing argv(1) to argv(argc()-1)
 ============
 */
-char *Cmd_Args (void)
+const char *Cmd_Args (void)
 {
 	if (!cmd_args)
-		return "";
+		return cmd_null_string;
 	return cmd_args;
 }
 
@@ -505,7 +505,7 @@ Cmd_TokenizeString
 Parses the given string into command line tokens.
 ============
 */
-void Cmd_TokenizeString (char *text)
+void Cmd_TokenizeString (const char *text)
 {
 	int		i;
 
@@ -555,7 +555,7 @@ void Cmd_TokenizeString (char *text)
 Cmd_AddCommand
 ============
 */
-void Cmd_AddCommand (char *cmd_name, xcommand_t function)
+void Cmd_AddCommand (const char *cmd_name, xcommand_t function)
 {
 	cmd_function_t	*cmd;
 
@@ -646,7 +646,7 @@ A complete command line has been parsed, so try to execute it
 FIXME: lookupnoadd the token to speed search?
 ============
 */
-void Cmd_ExecuteString (char *text, cmd_source_t src)
+void Cmd_ExecuteString (const char *text, cmd_source_t src)
 {
 	cmd_function_t	*cmd;
 	cmdalias_t		*a;
@@ -723,7 +723,7 @@ Cmd_List_f
 Lists the commands to the console
 ===============
 */
-int ListCommands (const char *prefix, char **buf, int pos)
+int ListCommands (const char *prefix, const char **buf, int pos)
 {
 	cmd_function_t	*cmd;
 	int	i = 0;
@@ -772,7 +772,7 @@ Cmd_ListCvar_f
 Lists the cvars to the console
 ===============
 */
-int ListCvars (const char *prefix, char **buf, int pos)
+int ListCvars (const char *prefix, const char **buf, int pos)
 {
 	cvar_t		*var;
 	int i = 0;
@@ -822,7 +822,7 @@ Cmd_ListAlias_f
 Lists the cvars to the console
 ===============
 */
-int ListAlias (const char *prefix, char **buf, int pos)
+int ListAlias (const char *prefix, const char **buf, int pos)
 {
 	cmdalias_t	*a;
 	int	i = 0;

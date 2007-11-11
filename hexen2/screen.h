@@ -1,7 +1,7 @@
 /*
 	screen.h
 
-	$Id: screen.h,v 1.11 2007-08-20 08:16:03 sezero Exp $
+	$Id: screen.h,v 1.12 2007-11-11 13:17:41 sezero Exp $
 */
 
 #ifndef __HX2_SCREEN_H
@@ -20,9 +20,11 @@ void SCR_CenterPrint (const char *str);
 void SCR_BeginLoadingPlaque (void);
 void SCR_EndLoadingPlaque (void);
 
-int SCR_ModalMessage (char *text);
+int SCR_ModalMessage (const char *text);
 
 void SCR_DrawLoading (void);	// for the Loading plaque
+
+extern	const char		*plaquemessage;	// pointer to current plaque message
 
 extern	int			total_loading_size;	// global vars for
 extern	int			current_loading_size;	// the Loading screen

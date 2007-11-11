@@ -2,7 +2,7 @@
 	info_str.c
 	Hexen2World info strings handling
 
-	$Id: info_str.c,v 1.8 2007-10-01 11:00:32 sezero Exp $
+	$Id: info_str.c,v 1.9 2007-11-11 13:17:44 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -16,7 +16,7 @@ Searches the string for the given
 key and returns the associated value, or an empty string.
 ===============
 */
-char *Info_ValueForKey (const char *s, const char *key)
+const char *Info_ValueForKey (const char *s, const char *key)
 {
 	char	pkey[512];
 	static	char value[4][512];	// use two buffers so compares

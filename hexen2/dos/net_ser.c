@@ -3,7 +3,7 @@
 	dosquake serial network driver.
 	from quake1 source with minor adaptations for uhexen2.
 
-	$Id: net_ser.c,v 1.1 2007-10-22 18:07:52 sezero Exp $
+	$Id: net_ser.c,v 1.2 2007-11-11 13:17:42 sezero Exp $
 
 	Copyright (C) 1996-1997  Id Software, Inc.
 
@@ -731,8 +731,10 @@ void Serial_Close (qsocket_t *sock)
 }
 
 
-char	*com_types[] = {"direct", "modem"};
-unsigned com_bauds[] = {9600, 14400, 19200, 28800, 57600};
+#if 0	/* unused globals */
+const char *com_types[] = {"direct", "modem"};
+unsigned com_bauds [] = {9600, 14400, 19200, 28800, 57600};
+#endif
 
 void Serial_SearchForHosts (qboolean xmit)
 {
@@ -776,7 +778,7 @@ void Serial_SearchForHosts (qboolean xmit)
 }
 
 
-static qsocket_t *_Serial_Connect (char *host, SerialLine *p)
+static qsocket_t *_Serial_Connect (const char *host, SerialLine *p)
 {
 	int		ret;
 	double	start_time;
@@ -852,7 +854,7 @@ ErrorReturn:
 	return NULL;
 }
 
-qsocket_t *Serial_Connect (char *host)
+qsocket_t *Serial_Connect (const char *host)
 {
 	int			n;
 	qsocket_t	*ret = NULL;

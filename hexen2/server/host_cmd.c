@@ -2,7 +2,7 @@
 	host_cmd.c
 	console commands
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/server/host_cmd.c,v 1.40 2007-10-21 15:32:23 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/server/host_cmd.c,v 1.41 2007-11-11 13:17:42 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -428,7 +428,7 @@ static void Host_Savegame_f (void)
 	FILE	*f;
 	int		i;
 	char		comment[SAVEGAME_COMMENT_LENGTH+1];
-	char		*p;
+	const char	*p;
 	int		error_state = 0;
 
 	if (cmd_source != src_command)
@@ -555,7 +555,7 @@ Host_DeleteSave_f
 static void Host_DeleteSave_f (void)
 {
 	int		i;
-	char		*p;
+	const char	*p;
 
 	if (cmd_source != src_command)
 		return;
@@ -895,7 +895,8 @@ static int LoadGamestate (const char *level, const char *startspot, int ClientsM
 	FILE	*f;
 	char		mapname[MAX_QPATH];
 	float		playtime, sk;
-	char		str[32768], *start;
+	char		str[32768];
+	const char	*start;
 	int		i, r;
 	edict_t		*ent;
 	int		entnum;
@@ -1094,16 +1095,16 @@ Host_Name_f
 */
 static void Host_Name_f (void)
 {
-	char	*newName;
+	char	newName[32];
 	char	*pdest;
 
 	if (cmd_source == src_command)
 		return;
 
 	if (Cmd_Argc () == 2)
-		newName = Cmd_Argv(1);
+		q_strlcpy (newName, Cmd_Argv(1), sizeof(newName));
 	else
-		newName = Cmd_Args();
+		q_strlcpy (newName, Cmd_Args(), sizeof(newName));
 	newName[15] = 0;	// client_t structure actually says name[32].
 
 	//this is for the fuckers who put braces in the name causing loadgame to crash.
@@ -1239,10 +1240,10 @@ static void Host_Version_f (void)
 
 static void Host_Say (qboolean teamonly)
 {
-	int			j;
+	int		j = 0;
 	client_t	*client;
 	client_t	*save;
-	char		*p;
+	const char	*p;
 	char		text[64];
 	qboolean	fromServer = false;
 
@@ -1258,11 +1259,12 @@ static void Host_Say (qboolean teamonly)
 	save = host_client;
 
 	p = Cmd_Args();
+
 // remove quotes if present
 	if (*p == '"')
 	{
 		p++;
-		p[strlen(p)-1] = 0;
+		j = 1;
 	}
 
 // turn on color set 1
@@ -1272,6 +1274,8 @@ static void Host_Say (qboolean teamonly)
 		q_snprintf (text, sizeof(text), "%c<%s> ", 1, hostname.string);
 
 	q_strlcat (text, p, sizeof(text));
+	if (j == 1)	// remove trailing quotes
+		text[strlen(text)-1] = '\0';
 	if (q_strlcat (text, "\n", sizeof(text)) >= sizeof(text))
 		text[sizeof(text)-2] = '\n';
 
@@ -1304,10 +1308,10 @@ static void Host_Say_Team_f (void)
 
 static void Host_Tell_f (void)
 {
-	int			j;
+	int		j = 0;
 	client_t	*client;
 	client_t	*save;
-	char		*p;
+	const char	*p;
 	char		text[64];
 
 	if (cmd_source == src_command)
@@ -1325,11 +1329,13 @@ static void Host_Tell_f (void)
 	if (*p == '"')
 	{
 		p++;
-		p[strlen(p)-1] = 0;
+		j = 1;
 	}
 
 // check length & truncate if necessary
 	q_strlcat (text, p, sizeof(text));
+	if (j == 1)	// remove trailing quotes
+		text[strlen(text)-1] = '\0';
 	if (q_strlcat (text, "\n", sizeof(text)) >= sizeof(text))
 		text[sizeof(text)-2] = '\n';
 
@@ -1652,8 +1658,8 @@ Kicks a user off of the server
 */
 static void Host_Kick_f (void)
 {
-	char		*who;
-	char		*message = NULL;
+	const char	*who;
+	const char	*message = NULL;
 	client_t	*save;
 	int			i;
 	qboolean	byNumber = false;
@@ -1741,7 +1747,7 @@ Host_Give_f
 */
 static void Host_Give_f (void)
 {
-	char	*t;
+	const char	*t;
 	int	v;
 
 	if (cmd_source == src_command)

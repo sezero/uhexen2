@@ -2,7 +2,7 @@
 	keys.h
 	key definitions and keyboard public functions
 
-	$Id: keys.h,v 1.12 2007-04-07 19:54:04 sezero Exp $
+	$Id: keys.h,v 1.13 2007-11-11 13:17:44 sezero Exp $
 */
 
 #ifndef __HX2_KEYS_H
@@ -124,7 +124,7 @@ void Key_WriteBindings (FILE *f);
 void Key_ClearStates (void);
 
 void Key_SetBinding (int keynum, const char *binding);
-char *Key_KeynumToString (int keynum);
+const char *Key_KeynumToString (int keynum);
 
 #endif	/* __HX2_KEYS_H */
 

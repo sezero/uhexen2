@@ -2,7 +2,7 @@
 	draw.c
 	This is the only file outside the refresh that touches the vid buffer.
 
-	$Id: draw.c,v 1.43 2007-10-24 11:51:04 sezero Exp $
+	$Id: draw.c,v 1.44 2007-11-11 13:17:44 sezero Exp $
 */
 
 
@@ -50,7 +50,7 @@ static void Draw_PicCheckError (void *ptr, const char *name)
 }
 
 
-qpic_t	*Draw_PicFromWad (char *name)
+qpic_t	*Draw_PicFromWad (const char *name)
 {
 	return (qpic_t *) W_GetLumpName(name);
 }

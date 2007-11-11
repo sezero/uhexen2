@@ -2,7 +2,7 @@
 	net_main.c
 	main networking module
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/server/net_main.c,v 1.21 2007-10-24 16:43:20 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/server/net_main.c,v 1.22 2007-11-11 13:17:42 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -41,7 +41,7 @@ static qboolean	configRestored = false;
 void (*GetComPortConfig) (int portNumber, int *port, int *irq, int *baud, qboolean *useModem);
 void (*SetComPortConfig) (int portNumber, int port, int irq, int baud, qboolean useModem);
 void (*GetModemConfig) (int portNumber, char *dialType, char *clear, char *init, char *hangup);
-void (*SetModemConfig) (int portNumber, char *dialType, char *clear, char *init, char *hangup);
+void (*SetModemConfig) (int portNumber, const char *dialType, const char *clear, const char *init, const char *hangup);
 
 cvar_t	config_com_port = {"_config_com_port", "0x3f8", CVAR_ARCHIVE};
 cvar_t	config_com_irq = {"_config_com_irq", "4", CVAR_ARCHIVE};

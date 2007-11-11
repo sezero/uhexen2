@@ -2,7 +2,7 @@
 	sys_win.c
 	Win32 system interface code
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/win_stuff/sys_win.c,v 1.60 2007-10-13 09:50:28 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/win_stuff/sys_win.c,v 1.61 2007-11-11 13:17:43 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -233,9 +233,9 @@ void Sys_Error (const char *error, ...)
 {
 	va_list		argptr;
 	char		text[MAX_PRINTMSG], text2[MAX_PRINTMSG];
-	char		*text3 = "Press Enter to exit\n";
-	char		*text4 = "***********************************\n";
-	char		*text5 = "\n";
+	const char	text3[] = "Press Enter to exit\n";
+	const char	text4[] = "***********************************\n";
+	const char	text5[] = "\n";
 	DWORD		dummy;
 	double		err_begin;
 
@@ -482,7 +482,7 @@ int			global_nCmdShow;
 HWND		hwnd_dialog;
 #endif	/* NO_SPLASHES */
 static char	*argv[MAX_NUM_ARGVS];
-static char	*empty_string = "";
+static char	empty_string[] = "";
 static char	cwd[1024];
 static quakeparms_t	parms;
 

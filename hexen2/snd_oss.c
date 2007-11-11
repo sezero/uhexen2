@@ -1,6 +1,6 @@
 /*
 	snd_oss.c
-	$Id: snd_oss.c,v 1.32 2007-11-07 16:54:58 sezero Exp $
+	$Id: snd_oss.c,v 1.33 2007-11-11 13:17:41 sezero Exp $
 
 	Copyright (C) 1996-1997  Id Software, Inc.
 
@@ -51,7 +51,8 @@
 #endif
 
 static int audio_fd = -1;
-static char *ossdev = "/dev/dsp";
+static const char oss_default[] = "/dev/dsp";
+static const char *ossdev = oss_default;
 static unsigned long mmaplen;
 
 qboolean S_OSS_Init (void)
@@ -61,8 +62,8 @@ qboolean S_OSS_Init (void)
 	struct audio_buf_info	info;
 
 	tmp = COM_CheckParm("-ossdev");
-	if (tmp != 0 && tmp < com_argc-1)
-		ossdev = com_argv[tmp+1];
+	if (tmp != 0 && tmp < com_argc - 1)
+		ossdev = com_argv[tmp + 1];
 	Con_Printf ("OSS: Using device: %s\n", ossdev);
 
 // open /dev/dsp, confirm capability to mmap, and get size of dma buffer

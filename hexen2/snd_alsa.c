@@ -1,6 +1,6 @@
 /*
 	snd_alsa.c
-	$Id: snd_alsa.c,v 1.37 2007-11-07 16:54:57 sezero Exp $
+	$Id: snd_alsa.c,v 1.38 2007-11-11 13:17:41 sezero Exp $
 
 	ALSA 1.0 sound driver for Linux Hexen II
 
@@ -37,8 +37,9 @@
 #include <alsa/asoundlib.h>
 
 static void *alsa_handle = NULL;
-//static char *pcmname = "hw:0,0";
-static char *pcmname = "default";
+//static const char alsa_default[] = "hw:0,0";
+static const char alsa_default[] = "default";
+static const char *pcmname = alsa_default;
 static snd_pcm_t *pcm = NULL;
 static snd_pcm_uframes_t buffer_size;
 
@@ -113,9 +114,9 @@ qboolean S_ALSA_Init (void)
 	if (!load_libasound())
 		return false;
 
-	err = COM_CheckParm("-alsadev");
-	if (err != 0 && err < com_argc-1)
-		pcmname = com_argv[err+1];
+	i = COM_CheckParm("-alsadev");
+	if (i != 0 && i < com_argc - 1)
+		pcmname = com_argv[i + 1];
 
 	err = hx2snd_pcm_open (&pcm, pcmname, SND_PCM_STREAM_PLAYBACK, SND_PCM_NONBLOCK);
 	if (err < 0)

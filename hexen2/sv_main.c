@@ -2,7 +2,7 @@
 	sv_main.c
 	server main program
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sv_main.c,v 1.63 2007-09-22 15:27:14 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sv_main.c,v 1.64 2007-11-11 13:17:41 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -135,7 +135,7 @@ void SV_Edicts (const char *Name)
 
 static void Sv_Edicts_f (void)
 {
-	char	*Name;
+	const char	*Name;
 
 	if (!sv.active)
 	{

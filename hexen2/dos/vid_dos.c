@@ -3,7 +3,7 @@
 	DOS-specific video routines.
 	from quake1 source with minor adaptations for uhexen2.
 
-	$Id: vid_dos.c,v 1.2 2007-10-28 08:19:58 sezero Exp $
+	$Id: vid_dos.c,v 1.3 2007-11-11 13:17:42 sezero Exp $
 
 	Copyright (C) 1996-1997  Id Software, Inc.
 
@@ -189,9 +189,9 @@ static int VID_NumModes (void)
 VID_ModeInfo
 ================
 */
-static char *VID_ModeInfo (int modenum, char **ppheader)
+static const char *VID_ModeInfo (int modenum, char **ppheader)
 {
-	static char	*badmodestr = "Bad mode number";
+	static const char	badmodestr[] = "Bad mode number";
 	vmode_t		*pv;
 
 	pv = VID_GetModePtr (modenum);
@@ -432,7 +432,8 @@ VID_DescribeModes_f
 void VID_DescribeModes_f (void)
 {
 	int		i, nummodes;
-	char		*pinfo, *pheader;
+	const char	*pinfo;
+	char		*pheader;
 	vmode_t		*pv;
 	qboolean	na;
 
@@ -470,9 +471,10 @@ void VID_DescribeModes_f (void)
 VID_GetModeDescription
 =================
 */
-static char *VID_GetModeDescription (int modenum)
+static const char *VID_GetModeDescription (int modenum)
 {
-	char		*pinfo, *pheader;
+	const char	*pinfo;
+	char		*pheader;
 	vmode_t		*pv;
 
 	pv = VID_GetModePtr (modenum);
@@ -570,7 +572,7 @@ static int	vid_line, vid_wmodes, vid_column_size;
 typedef struct
 {
 	int		modenum;
-	char		*desc;
+	const char	*desc;
 	int		iscur;
 } modedesc_t;
 
@@ -586,7 +588,7 @@ VID_MenuDraw
 */
 static void VID_MenuDraw (void)
 {
-	char		*ptr;
+	const char	*ptr;
 	int		nummodes, i, j, column, row, dup;
 	char		temp[100];
 

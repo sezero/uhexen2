@@ -1,6 +1,6 @@
 /*
 	mstrconv.c
-	$Id: mstrconv.c,v 1.23 2007-09-21 11:05:10 sezero Exp $
+	$Id: mstrconv.c,v 1.24 2007-11-11 13:17:43 sezero Exp $
 
 	Converting a MID file to a MIDI stream for
 	playback using the Win32 midiStream API.
@@ -40,17 +40,17 @@ extern qboolean	bLooped;
 
 // Messages
 //
-static char szInitErrInFile[]	= "Read error on input file or file is corrupt.\n";
+static const char szInitErrInFile[]	= "Read error on input file or file is corrupt.\n";
 #ifdef DEBUG_BUILD
-static char szEventAddErr[]	= "Unable to add event to stream buffer.";
-static char gteBadRunStat[]	= "Reference to missing running status.";
-static char gteRunStatMsgTrunc[]= "Running status message truncated";
-static char gteChanMsgTrunc[]	= "Channel message truncated";
-static char gteSysExLenTrunc[]	= "SysEx event truncated (length)";
-static char gteSysExTrunc[]	= "SysEx event truncated";
-static char gteMetaNoClass[]	= "Meta event truncated (no class byte)";
-static char gteMetaLenTrunc[]	= "Meta event truncated (length)";
-static char gteMetaTrunc[]	= "Meta event truncated";
+static const char szEventAddErr[]	= "Unable to add event to stream buffer.";
+static const char gteBadRunStat[]	= "Reference to missing running status.";
+static const char gteRunStatMsgTrunc[]	= "Running status message truncated";
+static const char gteChanMsgTrunc[]	= "Channel message truncated";
+static const char gteSysExLenTrunc[]	= "SysEx event truncated (length)";
+static const char gteSysExTrunc[]	= "SysEx event truncated";
+static const char gteMetaNoClass[]	= "Meta event truncated (no class byte)";
+static const char gteMetaLenTrunc[]	= "Meta event truncated (length)";
+static const char gteMetaTrunc[]	= "Meta event truncated";
 #endif
 
 // Prototypes

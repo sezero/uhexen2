@@ -2,7 +2,7 @@
 	client.h
 	client main header
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/client.h,v 1.19 2007-09-14 14:10:07 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/client.h,v 1.20 2007-11-11 13:17:44 sezero Exp $
 */
 
 #ifndef __H2W_CLIENT_H
@@ -460,7 +460,7 @@ void CL_WriteDemoCmd (usercmd_t *pcmd);
 // cl_parse.c
 //
 void CL_ParseServerMessage (void);
-qboolean CL_CheckOrDownloadFile (char *filename);
+qboolean CL_CheckOrDownloadFile (const char *filename);
 
 //
 // cl_cam.c

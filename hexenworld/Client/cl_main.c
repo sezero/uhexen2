@@ -2,7 +2,7 @@
 	cl_main.c
 	client main loop
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/cl_main.c,v 1.90 2007-10-10 14:38:27 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/cl_main.c,v 1.91 2007-11-11 13:17:44 sezero Exp $
 */
 
 #include <sys/types.h>
@@ -221,7 +221,7 @@ CL_Connect_f
 */
 static void CL_Connect_f (void)
 {
-	char	*server;
+	const char	*server;
 
 	if (Cmd_Argc() != 2)
 	{
@@ -526,7 +526,7 @@ Sent by server when serverinfo changes
 */
 static void CL_FullServerinfo_f (void)
 {
-	char	*p;
+	const char	*p;
 	float	v;
 
 	if (Cmd_Argc() != 2)
@@ -576,8 +576,8 @@ static void CL_FullInfo_f (void)
 {
 	char	key[512];
 	char	value[512];
-	char	*o;
-	char	*s;
+	char		*o;
+	const char	*s;
 
 	if (Cmd_Argc() != 2)
 	{
@@ -654,7 +654,8 @@ static void CL_Packet_f (void)
 {
 	char	senddata[2048];
 	int		i, l;
-	char	*in, *out;
+	const char	*in;
+	char		*out;
 	netadr_t	adr;
 
 	if (Cmd_Argc() != 3)
@@ -670,7 +671,7 @@ static void CL_Packet_f (void)
 	}
 
 	in = Cmd_Argv(2);
-	out = senddata+4;
+	out = senddata + 4;
 	senddata[0] = senddata[1] = senddata[2] = senddata[3] = 0xff;
 
 	l = strlen (in);
@@ -1227,7 +1228,7 @@ void Host_WriteConfiguration (const char *fname)
 
 static void Host_SaveConfig_f (void)
 {
-	char		*p;
+	const char	*p;
 
 	if (Cmd_Argc() != 2)
 	{

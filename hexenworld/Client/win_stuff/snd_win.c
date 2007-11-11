@@ -1,6 +1,6 @@
 /*
 	snd_win.c
-	$Id: snd_win.c,v 1.32 2007-11-07 17:02:15 sezero Exp $
+	$Id: snd_win.c,v 1.33 2007-11-11 13:18:22 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -711,7 +711,7 @@ void S_WIN_LockBuffer (void)
 			}
 		}
 
-		shm->buffer = pData;
+		shm->buffer = (unsigned char *) pData;
 	}
 }
 

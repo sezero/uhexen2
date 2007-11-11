@@ -1,6 +1,6 @@
 /*
 	cd_sdl.c
-	$Id: cd_sdl.c,v 1.16 2007-09-22 15:27:10 sezero Exp $
+	$Id: cd_sdl.c,v 1.17 2007-11-11 13:17:38 sezero Exp $
 
 	Copyright (C) 1996-1997  Id Software, Inc.
 	Taken from the Twilight project with modifications
@@ -189,7 +189,7 @@ void CDAudio_Resume(void)
 
 static void CD_f (void)
 {
-	char	*command;
+	const char	*command;
 	int		ret, n;
 
 	if (Cmd_Argc() < 2)

@@ -2,7 +2,7 @@
 	cl_parse.c
 	parse a message received from the server
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/cl_parse.c,v 1.47 2007-09-29 18:10:25 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/cl_parse.c,v 1.48 2007-11-11 13:17:44 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -132,7 +132,7 @@ Returns true if the file exists, otherwise it attempts
 to start a download from the server.
 ===============
 */
-qboolean CL_CheckOrDownloadFile (char *filename)
+qboolean CL_CheckOrDownloadFile (const char *filename)
 {
 	FILE	*f;
 

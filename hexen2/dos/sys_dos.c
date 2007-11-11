@@ -3,7 +3,7 @@
 	DOS system interface code.
 	from quake1 source with adaptations for uhexen2.
 
-	$Id: sys_dos.c,v 1.2 2007-10-23 17:19:09 sezero Exp $
+	$Id: sys_dos.c,v 1.3 2007-11-11 13:17:42 sezero Exp $
 
 	Copyright (C) 1996-1997  Id Software, Inc.
 
@@ -237,7 +237,7 @@ static void *dos_getmaxlockedmem (int *size)
 	void		*working_memory;
 	int		last_locked;
 	int		extra, 	i, j, allocsize;
-	static char	*msg = "Locking data...";
+	static const char msg[] = "Locking data...";
 	int		m, n;
 	byte		*x;
  
