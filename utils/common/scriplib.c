@@ -1,6 +1,6 @@
 /*
 	scriplib.c
-	$Id: scriplib.c,v 1.2 2007-11-11 16:11:46 sezero Exp $
+	$Id: scriplib.c,v 1.3 2007-11-11 18:48:05 sezero Exp $
 */
 
 #include "util_inc.h"
@@ -17,7 +17,8 @@ PARSING STUFF
 */
 
 char		token[MAXTOKEN];
-static char	*scriptbuffer, *script_p, *scriptend_p;
+static void	*scriptbuffer;
+static char	*script_p, *scriptend_p;
 int		scriptline;
 qboolean	endofscript;
 static qboolean	tokenready;	// only true if UnGetToken was just called
@@ -32,9 +33,9 @@ void LoadScriptFile (const char *filename)
 {
 	int		size;
 
-	size = LoadFile (filename, (void **) (char *) &scriptbuffer);
+	size = LoadFile (filename, &scriptbuffer);
 
-	script_p = scriptbuffer;
+	script_p = (char *) scriptbuffer;
 	scriptend_p = script_p + size;
 	scriptline = 1;
 	endofscript = false;

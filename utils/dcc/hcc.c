@@ -2,7 +2,7 @@
 	hcc.c
 	HCode compiler based on qcc, modifed by Eric Hobbs to work with DCC
 
-	$Header: /home/ozzie/Download/0000/uhexen2/utils/dcc/hcc.c,v 1.26 2007-11-11 16:11:47 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/utils/dcc/hcc.c,v 1.27 2007-11-11 18:48:06 sezero Exp $
 */
 
 #include "util_inc.h"
@@ -753,8 +753,8 @@ main
 */
 int main (int argc, char **argv)
 {
-	const char	*src;
-	char		*src2;
+	const char	*psrc;
+	void		*src, *src2;
 	char	filename[1024];
 	int		p, c;
 	unsigned short		crc;
@@ -913,10 +913,11 @@ int main (int argc, char **argv)
 	}
 
 	sprintf(filename, "%sprogs.src", sourcedir);
-	LoadFile(filename, (void **) (char *) &src);
+	LoadFile(filename, &src);
+	psrc = (char *) src;
 
-	src = COM_Parse(src);
-	if (!src)
+	psrc = COM_Parse(psrc);
+	if (!psrc)
 	{
 		Error("No destination filename.  HCC -help for info.\n");
 	}
@@ -931,15 +932,15 @@ int main (int argc, char **argv)
 	// compile all the files
 	do
 	{
-		src = COM_Parse(src);
-		if (!src)
+		psrc = COM_Parse(psrc);
+		if (!psrc)
 			break;
 
 		sprintf (filename, "%s%s", sourcedir, com_token);
 		printf ("compiling %s\n", filename);
-		LoadFile (filename, (void **) (char *) &src2);
+		LoadFile (filename, &src2);
 
-		if (!PR_CompileFile (src2, filename) )
+		if (!PR_CompileFile((char *)src2, filename))
 			exit (1);
 
 	} while (1);

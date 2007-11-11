@@ -1,6 +1,6 @@
 /*
 	token.c
-	$Id: token.c,v 1.6 2007-11-11 16:11:48 sezero Exp $
+	$Id: token.c,v 1.7 2007-11-11 18:48:07 sezero Exp $
 */
 
 // HEADER FILES ------------------------------------------------------------
@@ -50,7 +50,7 @@ char	tk_SourceName[MAX_FILE_NAME_LENGTH];
 // PRIVATE DATA DEFINITIONS ------------------------------------------------
 
 static char	Chr;
-static char	*FileStart;
+static void	*FileStart;
 static char	*FilePtr;
 static char	*FileEnd;
 static qboolean	SourceOpen;
@@ -174,11 +174,11 @@ void TK_OpenSource(char *fileName)
 	int		size;
 
 	TK_CloseSource();
-	size = LoadFile(fileName, (void **) (char *) &FileStart);
+	size = LoadFile(fileName, &FileStart);
 	strcpy(tk_SourceName, fileName);
 	SourceOpen = TRUE;
-	FileEnd = FileStart+size;
-	FilePtr = FileStart;
+	FileEnd = (char *)FileStart + size;
+	FilePtr = (char *)FileStart;
 	tk_Line = 1;
 	tk_Token = TK_NONE;
 	NextChr();

@@ -1,6 +1,6 @@
 /*
 	bspfile.c
-	$Id: bspfile.c,v 1.2 2007-05-13 11:59:44 sezero Exp $
+	$Id: bspfile.c,v 1.3 2007-11-11 18:48:05 sezero Exp $
 */
 
 #include "util_inc.h"
@@ -243,11 +243,13 @@ LoadBSPFile
 void LoadBSPFile (const char *filename)
 {
 	int			i;
+	void		*pbuf;
 
 //
 // load the file header
 //
-	LoadFile (filename, (void **) (char *) &header);
+	LoadFile (filename, &pbuf);
+	header = (dheader_t *)pbuf;
 
 // swap the header
 	for (i = 0 ; i < sizeof(dheader_t)/4 ; i++)
@@ -273,7 +275,7 @@ void LoadBSPFile (const char *filename)
 	lightdatasize = CopyLump (LUMP_LIGHTING, dlightdata, 1);
 	entdatasize = CopyLump (LUMP_ENTITIES, dentdata, 1);
 
-	free (header);		// everything has been copied out
+	free (pbuf);	// everything has been copied out
 
 //
 // swap everything

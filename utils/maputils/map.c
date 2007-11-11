@@ -1,6 +1,6 @@
 /*
 	map.c
-	$Id: map.c,v 1.12 2007-11-11 16:11:48 sezero Exp $
+	$Id: map.c,v 1.13 2007-11-11 18:48:07 sezero Exp $
 */
 
 #include "util_inc.h"
@@ -36,7 +36,7 @@ FindMiptex
 
 ===============
 */
-int FindMiptex (char *name)
+int FindMiptex (const char *name)
 {
 	int		i;
 
@@ -596,13 +596,13 @@ static qboolean ParseEntity (void)
 LoadMapFile
 ================
 */
-void LoadMapFile (char *filename)
+void LoadMapFile (const char *filename)
 {
-	char	*buf;
+	void	*buf;
 
-	LoadFile (filename, (void **) (char *) &buf);
+	LoadFile (filename, &buf);
 
-	StartTokenParsing (buf);
+	StartTokenParsing ((char *)buf);
 
 	num_entities = 0;
 

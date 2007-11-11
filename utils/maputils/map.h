@@ -1,6 +1,6 @@
 /*
 	map.h
-	$Id: map.h,v 1.5 2007-11-11 16:11:48 sezero Exp $
+	$Id: map.h,v 1.6 2007-11-11 18:48:07 sezero Exp $
 */
 
 #ifndef __H2UTILS_MAP_H
@@ -45,9 +45,9 @@ extern	entity_t	entities[MAX_MAP_ENTITIES];
 extern	int			nummiptex;
 extern	char		miptex[MAX_MAP_TEXINFO][16];
 
-void	LoadMapFile (char *filename);
+void	LoadMapFile (const char *filename);
 
-int	FindMiptex (char *name);
+int	FindMiptex (const char *name);
 
 void	PrintEntity (entity_t *ent);
 void	SetKeyValue (entity_t *ent, const char *key, const char *value);

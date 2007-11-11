@@ -1,6 +1,6 @@
 /*
 	loadtri.c
-	$Id: loadtri.c,v 1.7 2007-07-08 17:01:15 sezero Exp $
+	$Id: loadtri.c,v 1.8 2007-11-11 18:48:07 sezero Exp $
 */
 
 // HEADER FILES ------------------------------------------------------------
@@ -132,7 +132,7 @@ float	FixHTRTranslateZ = 0.0;
 //
 //==========================================================================
 
-void LoadTriangleList(char *fileName, triangle_t **triList, int *triangleCount)
+void LoadTriangleList(const char *fileName, triangle_t **triList, int *triangleCount)
 {
 	FILE	*input;
 

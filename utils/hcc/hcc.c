@@ -1,7 +1,7 @@
 /*
 	hcc.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/utils/hcc/hcc.c,v 1.15 2007-11-11 16:11:48 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/utils/hcc/hcc.c,v 1.16 2007-11-11 18:48:07 sezero Exp $
 
 	Hash table modifications based on fastqcc by Jonathan Roy
 	(roy@atlantic.net).
@@ -769,8 +769,8 @@ static void PrintFunction (const char *name)
 
 int main (int argc, char **argv)
 {
-	const char	*src;
-	char		*src2;
+	const char	*psrc;
+	void		*src, *src2;
 	char	filename[1024], infile[1024];
 	int		p, crc;
 	double	start, stop;
@@ -826,10 +826,11 @@ int main (int argc, char **argv)
 	EX_Init ();
 
 	sprintf(filename, "%s%s", sourcedir, infile);
-	LoadFile(filename, (void **) (char *) &src);
+	LoadFile(filename, &src);
+	psrc = (char *) src;
 
-	src = COM_Parse(src);
-	if (!src)
+	psrc = COM_Parse(psrc);
+	if (!psrc)
 	{
 		Error("No destination filename.  HCC -help for info.\n");
 	}
@@ -847,8 +848,8 @@ int main (int argc, char **argv)
 
 	do
 	{
-		src = COM_Parse(src);
-		if (!src)
+		psrc = COM_Parse(psrc);
+		if (!psrc)
 		{
 			break;
 		}
@@ -860,8 +861,8 @@ int main (int argc, char **argv)
 		{
 			printf("compiling %s\n", filename);
 		}
-		LoadFile(filename, (void **) (char *) &src2);
-		if (!CO_CompileFile(src2, filename))
+		LoadFile(filename, &src2);
+		if (!CO_CompileFile((char *)src2, filename))
 		{
 			exit (1);
 		}

@@ -1,6 +1,6 @@
 /*
 	loadtri.h
-	$Id: loadtri.h,v 1.4 2007-03-14 21:04:32 sezero Exp $
+	$Id: loadtri.h,v 1.5 2007-11-11 18:48:07 sezero Exp $
 */
 
 #ifndef __LOADTRI_H
@@ -13,7 +13,7 @@ typedef struct
 	vec3_t	verts[3];
 } triangle_t;
 
-void LoadTriangleList(char *fileName, triangle_t **triList, int *triangleCount);
+void LoadTriangleList(const char *fileName, triangle_t **triList, int *triangleCount);
 
 extern char	InputFileName[1024];
 

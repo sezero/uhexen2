@@ -1,6 +1,6 @@
 /*
 	lmp2pcx.c
-	$Id: lmp2pcx.c,v 1.7 2007-11-11 16:11:48 sezero Exp $
+	$Id: lmp2pcx.c,v 1.8 2007-11-11 18:48:07 sezero Exp $
 	Copyright (C) 2002-2007 Forest Hale
 
 	This program is free software; you can redistribute it and/or
@@ -687,6 +687,9 @@ int main (int argc, char **argv)
 	int		i, j;
 	unsigned int	flags;
 	char		*name;
+#if LOAD_PALETTEFILE
+	void		*pbuf;
+#endif	/* LOAD_PALETTEFILE */
 
 	flags = 0;
 	for (i = 1 ; i < argc ; i++)
@@ -723,12 +726,13 @@ int main (int argc, char **argv)
 		printf ("Unable to load palette.lmp, the hexen2 palette file.\n");
 		Error ("Put the correct file in this directory and try again.");
 	}
-	j = LoadFile ("palette.lmp", (void **) (unsigned char *) &gamepalette);
+	j = LoadFile ("palette.lmp", &pbuf);
 	if (j != 768)
 	{
 		printf ("Invalid size with the hexen2 palette file palette.lmp\n");
 		Error ("Put the correct file in this directory and try again.");
 	}
+	gamepalette = (unsigned char *) pbuf;
 #endif	/* LOAD_PALETTEFILE */
 
 	Q_mkdir (OUTPUT_DIR);

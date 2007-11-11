@@ -1,6 +1,6 @@
 /*
 	genmodel.c
-	$Id: genmodel.c,v 1.9 2007-11-11 16:11:48 sezero Exp $
+	$Id: genmodel.c,v 1.10 2007-11-11 18:48:07 sezero Exp $
 
 	Generates a .mdl file from a base frame, a texture bitmap,
 	and a series of frames.
@@ -102,9 +102,9 @@ typedef struct
 
 static void ClearModel(void);
 static void WriteModel(void);
-static void ReadModel(char *FileName);
+static void ReadModel(const char *FileName);
 static void ParseScript(void);
-static void LoadPCXSkin(char *filename, byte **buffer);
+static void LoadPCXSkin(const char *filename, byte **buffer);
 static int ExtractNumber(byte *pic, int x, int y);
 static int ExtractDigit(byte *pic, int x, int y);
 
@@ -841,7 +841,7 @@ static void WriteModel (void)
 	ClearModel ();
 }
 
-static void ReadModel(char *FileName)
+static void ReadModel(const char *FileName)
 {
 	FILE	*FH;
 	mdl_t	mdl;
@@ -853,7 +853,7 @@ static void ReadModel(char *FileName)
 		Error ("Could not open model %s\n",FileName);
 	}
 
-	SafeRead(FH, &mdl, sizeof(mdl));
+	SafeRead(FH, (void *)&mdl, sizeof(mdl));
 
 	if (mdl.ident != LittleLong (IDPOLYHEADER) ||
 		mdl.version != LittleLong (ALIAS_VERSION))
@@ -1313,7 +1313,7 @@ static int ExtractDigit(byte *pic, int x, int y)
 GrabFrame
 ===============
 */
-static void GrabFrame (char *frame, int isgroup)
+static void GrabFrame (const char *frame, int isgroup)
 {
 	triangle_t		*ptri;
 	int				i, j;
@@ -1798,10 +1798,11 @@ static void ParseScript (void)
 //
 //==========================================================================
 
-static void LoadPCXSkin(char *filename, byte **buffer)
+static void LoadPCXSkin(const char *filename, byte **buffer)
 {
 	int		i;
-	pcx_t	*pcx;
+	void		*buf;
+	pcx_t		*pcx;
 	int		w, h;
 	int		count;
 	byte	controlByte, repeatByte;
@@ -1809,8 +1810,8 @@ static void LoadPCXSkin(char *filename, byte **buffer)
 	byte	length;
 
 	// Load file
-//	LoadFile(filename, &pcx);
-	LoadFile(filename, (void **) (pcx_t *) &pcx);
+	LoadFile(filename, &buf);
+	pcx = (pcx_t *) buf;
 
 	// Check for a valid PCX header
 	w = pcx->xMax - pcx->xMin + 1;
@@ -1867,6 +1868,7 @@ static void LoadPCXSkin(char *filename, byte **buffer)
 			Error("PCX decompression overflow.\n");
 		}
 	}
-	free(pcx);
+
+	free (buf);
 }
 
