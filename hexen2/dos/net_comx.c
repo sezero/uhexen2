@@ -3,7 +3,7 @@
 	TTY backend for the dosquake serial network driver.
 	from quake1 source with minor adaptations for uhexen2.
 
-	$Id: net_comx.c,v 1.4 2007-11-11 13:17:42 sezero Exp $
+	$Id: net_comx.c,v 1.5 2007-11-11 20:00:08 sezero Exp $
 
 	Copyright (C) 1996-1997  Id Software, Inc.
 
@@ -752,7 +752,7 @@ void TTY_Flush (int handle)
 }
 
 
-int TTY_Connect (int handle, char *host)
+int TTY_Connect (int handle, const char *host)
 {
 	double	start;
 	ComPort	*p;
