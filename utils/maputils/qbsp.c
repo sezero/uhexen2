@@ -1,6 +1,6 @@
 /*
 	bsp5.c
-	$Id: qbsp.c,v 1.12 2007-07-11 16:47:21 sezero Exp $
+	$Id: qbsp.c,v 1.13 2007-11-11 16:11:48 sezero Exp $
 */
 
 #include "util_inc.h"
@@ -49,7 +49,7 @@ brushset_t	*brushset;
 
 //===========================================================================
 
-void qprintf (char *fmt, ...)
+void qprintf (const char *fmt, ...)
 {
 	va_list argptr;
 

@@ -2,7 +2,7 @@
 	pathutil.c
 	filename handling utilities
 
-	$Id: pathutil.c,v 1.2 2007-04-22 08:10:54 sezero Exp $
+	$Id: pathutil.c,v 1.3 2007-11-11 16:11:46 sezero Exp $
 */
 
 
@@ -101,8 +101,8 @@ void ExtractFilePath (const char *path, char *dest)
 //
 // back up until a \ or the start
 //
-//	while (src != path && *(src-1) != PATHSEPERATOR)
-	while (src != path && *(src-1) != '\\' && *(src-1) != '/')
+//	while (src != path && src[-1] != PATHSEPERATOR)
+	while (src != path && src[-1] != '\\' && src[-1] != '/')
 		src--;
 
 	memcpy (dest, path, src-path);
@@ -118,7 +118,7 @@ void ExtractFileBase (const char *path, char *dest)
 //
 // back up until a \ or the start
 //
-	while (src != path && *(src-1) != PATHSEPERATOR)
+	while (src != path && src[-1] != PATHSEPERATOR)
 		src--;
 
 	while (*src && *src != '.')
@@ -137,7 +137,7 @@ void ExtractFileExtension (const char *path, char *dest)
 //
 // back up until a . or the start
 //
-	while (src != path && *(src-1) != '.')
+	while (src != path && src[-1] != '.')
 		src--;
 	if (src == path)
 	{

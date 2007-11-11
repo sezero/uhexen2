@@ -1,7 +1,7 @@
 /*
 	cmdlib.h
 
-	$Id: cmdlib.h,v 1.22 2007-11-11 13:54:59 sezero Exp $
+	$Id: cmdlib.h,v 1.23 2007-11-11 16:11:45 sezero Exp $
 */
 
 #ifndef __CMDLIB_H__
@@ -97,7 +97,7 @@ double	GetTime (void);
 void	Error (const char *error, ...) __attribute__((format(printf,1,2), noreturn));
 int	CheckParm (const char *check);
 
-char	*COM_Parse (char *data);
+const char	*COM_Parse (const char *data);
 
 int	ParseHex (const char *hex);
 int	ParseNum (const char *str);

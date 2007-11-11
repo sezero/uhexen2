@@ -1,7 +1,7 @@
 /*
 	qdir.c
 
-	$Id: qdir.c,v 1.9 2007-09-22 15:27:37 sezero Exp $
+	$Id: qdir.c,v 1.10 2007-11-11 16:11:46 sezero Exp $
 */
 
 
@@ -24,7 +24,7 @@
 		h2mp/data1/somefile.dat
 */
 
-#define	BUILDDIR	"h2mp"
+static const char BUILDDIR[] = "h2mp";
 
 char		qdir[1024];
 char		gamedir[1024];
@@ -32,10 +32,10 @@ qboolean	archive;
 char		archivedir[1024];
 
 
-void SetQdirFromPath (char *path)
+void SetQdirFromPath (const char *path)
 {
 	char	temp[1024];
-	char	*c, *mark;
+	const char	*c, *mark;
 
 	if (!(path[0] == '/' || path[0] == '\\' || path[1] == ':'))
 	{	// path is partial

@@ -1,6 +1,6 @@
 /*
 	map.c
-	$Id: map.c,v 1.11 2007-09-22 15:27:42 sezero Exp $
+	$Id: map.c,v 1.12 2007-11-11 16:11:48 sezero Exp $
 */
 
 #include "util_inc.h"
@@ -20,7 +20,7 @@ int			nummiptex;
 char		miptex[MAX_MAP_TEXINFO][16];
 
 
-static char *copystring (char *s)
+static char *copystring (const char *s)
 {
 	char	*b;
 	b = (char *) malloc(strlen(s)+1);
@@ -629,7 +629,7 @@ void PrintEntity (entity_t *ent)
 }
 
 
-char *ValueForKey (entity_t *ent, char *key)
+const char *ValueForKey (entity_t *ent, const char *key)
 {
 	epair_t	*ep;
 
@@ -641,7 +641,7 @@ char *ValueForKey (entity_t *ent, char *key)
 	return "";
 }
 
-void SetKeyValue (entity_t *ent, char *key, char *value)
+void SetKeyValue (entity_t *ent, const char *key, const char *value)
 {
 	epair_t	*ep;
 
@@ -662,17 +662,17 @@ void SetKeyValue (entity_t *ent, char *key, char *value)
 	ep->value = copystring(value);
 }
 
-float FloatForKey (entity_t *ent, char *key)
+float FloatForKey (entity_t *ent, const char *key)
 {
-	char	*k;
+	const char	*k;
 
 	k = ValueForKey (ent, key);
 	return atof(k);
 }
 
-void GetVectorForKey (entity_t *ent, char *key, vec3_t vec)
+void GetVectorForKey (entity_t *ent, const char *key, vec3_t vec)
 {
-	char	*k;
+	const char	*k;
 
 	k = ValueForKey (ent, key);
 	sscanf (k, "%lf %lf %lf", &vec[0], &vec[1], &vec[2]);

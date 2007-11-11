@@ -19,7 +19,7 @@
 
 /*
 	tyrlite.c
-	$Id: tyrlite.c,v 1.19 2007-07-11 16:47:20 sezero Exp $
+	$Id: tyrlite.c,v 1.20 2007-11-11 16:11:48 sezero Exp $
 
 	Modifications by Kevin Shanahan, 1999-2000
 */
@@ -143,8 +143,8 @@ static void FindFaceOffsets (void)
 {
 	int		i, j;
 	entity_t	*ent;
-	char	name[ 20 ];
-	char	*classname;
+	char		name[20];
+	const char	*classname;
 	vec3_t	org;
 
 	memset (nolightface, 0, sizeof(nolightface));

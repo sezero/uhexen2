@@ -1,6 +1,6 @@
 /*
 	token.c
-	$Id: token.c,v 1.5 2007-07-08 17:01:15 sezero Exp $
+	$Id: token.c,v 1.6 2007-11-11 16:11:48 sezero Exp $
 */
 
 // HEADER FILES ------------------------------------------------------------
@@ -61,7 +61,7 @@ static char	TempBuffer[2048];
 
 static struct
 {
-	char	*name;
+	const char	*name;
 	tokenType_t	token;
 } Keywords[] =
 {
@@ -97,7 +97,7 @@ static struct
 	{ NULL,		TK_BAD		}
 };
 
-static char *TokenNames[] =
+static const char *TokenNames[] =
 {
 	"<nothing>",
 	"<unknown_char>",

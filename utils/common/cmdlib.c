@@ -2,7 +2,7 @@
 	cmdlib.c
 	functions common to all of the utilities
 
-	$Id: cmdlib.c,v 1.14 2007-10-10 14:28:23 sezero Exp $
+	$Id: cmdlib.c,v 1.15 2007-11-11 16:11:45 sezero Exp $
 */
 
 
@@ -166,7 +166,7 @@ COM_Parse
 Parse a token out of a string
 ==============
 */
-char *COM_Parse (char *data)
+const char *COM_Parse (const char *data)
 {
 	int		c;
 	int		len;

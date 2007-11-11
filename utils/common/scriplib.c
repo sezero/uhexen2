@@ -1,6 +1,6 @@
 /*
 	scriplib.c
-	$Id: scriplib.c,v 1.1 2007-05-05 11:18:47 sezero Exp $
+	$Id: scriplib.c,v 1.2 2007-11-11 16:11:46 sezero Exp $
 */
 
 #include "util_inc.h"
@@ -28,7 +28,7 @@ LoadScriptFile
 
 ==============
 */
-void LoadScriptFile (char *filename)
+void LoadScriptFile (const char *filename)
 {
 	int		size;
 
@@ -120,11 +120,13 @@ skipspace:
 			Error ("Line %i is incomplete\n",scriptline);
 
 		while (*script_p++ != '\n')
+		{
 			if (script_p >= scriptend_p)
 			{
 				endofscript = true;
 				return false;
 			}
+		}
 		goto skipspace;
 	}
 

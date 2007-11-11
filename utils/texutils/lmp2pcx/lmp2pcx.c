@@ -1,6 +1,6 @@
 /*
 	lmp2pcx.c
-	$Id: lmp2pcx.c,v 1.6 2007-09-22 15:27:42 sezero Exp $
+	$Id: lmp2pcx.c,v 1.7 2007-11-11 16:11:48 sezero Exp $
 	Copyright (C) 2002-2007 Forest Hale
 
 	This program is free software; you can redistribute it and/or
@@ -52,8 +52,8 @@ static struct
 {
 	unsigned int	flag;
 	convfunc_t	func;
-	char	*matchpattern;
-	char	*datatype;
+	const char	*matchpattern;
+	const char	*datatype;
 } convertdata[] =
 {
 	{ CONV_LMP, ConvertLMP, "*.lmp", "LMP"		},

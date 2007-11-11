@@ -19,7 +19,7 @@
 
 /*
 	entities.c
-	$Id: entities.c,v 1.17 2007-09-22 15:27:42 sezero Exp $
+	$Id: entities.c,v 1.18 2007-11-11 16:11:48 sezero Exp $
 */
 
 #include "util_inc.h"
@@ -116,7 +116,7 @@ LoadEntities
 */
 void LoadEntities (void)
 {
-	char		*data;
+	const char	*data;
 	entity_t	*entity;
 	char		key[64];
 	epair_t		*epair;
@@ -456,26 +456,30 @@ void LoadEntities (void)
 }
 
 
-char *ValueForKey (entity_t *ent, char *key)
+const char *ValueForKey (entity_t *ent, const char *key)
 {
 	epair_t	*ep;
 
 	for (ep = ent->epairs ; ep ; ep = ep->next)
+	{
 		if (!strcmp (ep->key, key) )
 			return ep->value;
+	}
 	return "";
 }
 
-void SetKeyValue (entity_t *ent, char *key, char *value)
+void SetKeyValue (entity_t *ent, const char *key, const char *value)
 {
 	epair_t	*ep;
 
 	for (ep = ent->epairs ; ep ; ep = ep->next)
+	{
 		if (!strcmp (ep->key, key) )
 		{
 			strcpy (ep->value, value);
 			return;
 		}
+	}
 
 	ep = (epair_t *) malloc (sizeof(*ep));
 	ep->next = ent->epairs;
@@ -484,17 +488,17 @@ void SetKeyValue (entity_t *ent, char *key, char *value)
 	strcpy (ep->value, value);
 }
 
-float FloatForKey (entity_t *ent, char *key)
+float FloatForKey (entity_t *ent, const char *key)
 {
-	char	*k;
+	const char	*k;
 
 	k = ValueForKey (ent, key);
 	return (float)atof(k);
 }
 
-void GetVectorForKey (entity_t *ent, char *key, vec3_t vec)
+void GetVectorForKey (entity_t *ent, const char *key, vec3_t vec)
 {
-	char	*k;
+	const char	*k;
 
 	k = ValueForKey (ent, key);
 #ifdef DOUBLEVEC_T
@@ -505,7 +509,7 @@ void GetVectorForKey (entity_t *ent, char *key, vec3_t vec)
 }
 
 
-entity_t *FindEntityWithKeyPair (char *key, char *value)
+entity_t *FindEntityWithKeyPair (const char *key, const char *value)
 {
 	entity_t	*ent;
 	epair_t	*ep;
@@ -514,13 +518,15 @@ entity_t *FindEntityWithKeyPair (char *key, char *value)
 	for (i = 0 ; i < num_entities ; i++)
 	{
 		ent = &entities[ i ];
-		for (ep=ent->epairs ; ep ; ep=ep->next)
+		for (ep = ent->epairs ; ep ; ep = ep->next)
+		{
 			if (!strcmp (ep->key, key))
 			{
 				if (!strcmp( ep->value, value ))
 					return ent;
 				break;
 			}
+		}
 	}
 	return NULL;
 }

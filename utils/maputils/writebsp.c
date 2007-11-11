@@ -1,6 +1,6 @@
 /*
 	writebsp.c
-	$Id: writebsp.c,v 1.9 2007-09-22 15:27:42 sezero Exp $
+	$Id: writebsp.c,v 1.10 2007-11-11 16:11:48 sezero Exp $
 */
 
 #include "util_inc.h"
@@ -462,7 +462,7 @@ static void WriteMiptex (void)
 	int		i, len;
 	byte	*data;
 	dmiptexlump_t	*l;
-	char	*path;
+	const char	*path;
 	char	fullpath[1024];
 
 	path = ValueForKey (&entities[0], "wad");

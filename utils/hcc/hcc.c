@@ -1,7 +1,7 @@
 /*
 	hcc.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/utils/hcc/hcc.c,v 1.14 2007-09-14 14:11:24 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/utils/hcc/hcc.c,v 1.15 2007-11-11 16:11:48 sezero Exp $
 
 	Hash table modifications based on fastqcc by Jonathan Roy
 	(roy@atlantic.net).
@@ -769,7 +769,8 @@ static void PrintFunction (const char *name)
 
 int main (int argc, char **argv)
 {
-	char	*src, *src2;
+	const char	*src;
+	char		*src2;
 	char	filename[1024], infile[1024];
 	int		p, crc;
 	double	start, stop;

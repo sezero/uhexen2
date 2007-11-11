@@ -2,7 +2,7 @@
 	hcc.c
 	HCode compiler based on qcc, modifed by Eric Hobbs to work with DCC
 
-	$Header: /home/ozzie/Download/0000/uhexen2/utils/dcc/hcc.c,v 1.25 2007-09-14 14:11:24 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/utils/dcc/hcc.c,v 1.26 2007-11-11 16:11:47 sezero Exp $
 */
 
 #include "util_inc.h"
@@ -753,7 +753,8 @@ main
 */
 int main (int argc, char **argv)
 {
-	char	*src, *src2;
+	const char	*src;
+	char		*src2;
 	char	filename[1024];
 	int		p, c;
 	unsigned short		crc;

@@ -1,6 +1,6 @@
 /*
 	map.h
-	$Id: map.h,v 1.4 2007-03-14 21:04:40 sezero Exp $
+	$Id: map.h,v 1.5 2007-11-11 16:11:48 sezero Exp $
 */
 
 #ifndef __H2UTILS_MAP_H
@@ -50,10 +50,10 @@ void	LoadMapFile (char *filename);
 int	FindMiptex (char *name);
 
 void	PrintEntity (entity_t *ent);
-char	*ValueForKey (entity_t *ent, char *key);
-void	SetKeyValue (entity_t *ent, char *key, char *value);
-float	FloatForKey (entity_t *ent, char *key);
-void	GetVectorForKey (entity_t *ent, char *key, vec3_t vec);
+void	SetKeyValue (entity_t *ent, const char *key, const char *value);
+const char	*ValueForKey (entity_t *ent, const char *key);
+float	FloatForKey (entity_t *ent, const char *key);
+void	GetVectorForKey (entity_t *ent, const char *key, vec3_t vec);
 
 void	WriteEntitiesToString (void);
 

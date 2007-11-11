@@ -19,7 +19,7 @@
 
 /*
 	entities.h
-	$Id: entities.h,v 1.8 2007-05-12 09:58:57 sezero Exp $
+	$Id: entities.h,v 1.9 2007-11-11 16:11:48 sezero Exp $
 */
 
 #ifndef __ENTITIES_H__
@@ -86,11 +86,11 @@ extern	int			num_entities;
 //extern int            numtexlights;
 //extern entity_t       texlights[MAX_MAP_FACES];
 
-entity_t *FindEntityWithKeyPair (char *key, char *value);
-char	*ValueForKey (entity_t *ent, char *key);
-void	SetKeyValue (entity_t *ent, char *key, char *value);
-float	FloatForKey (entity_t *ent, char *key);
-void	GetVectorForKey (entity_t *ent, char *key, vec3_t vec);
+void	SetKeyValue (entity_t *ent, const char *key, const char *value);
+const char	*ValueForKey (entity_t *ent, const char *key);
+float	FloatForKey (entity_t *ent, const char *key);
+void	GetVectorForKey (entity_t *ent, const char *key, vec3_t vec);
+entity_t *FindEntityWithKeyPair (const char *key, const char *value);
 
 void	LoadEntities (void);
 void	WriteEntitiesToString (void);

@@ -1,7 +1,7 @@
 /*
 	hcc.h
 
-	$Header: /home/ozzie/Download/0000/uhexen2/utils/hcc/hcc.h,v 1.6 2007-06-28 11:10:43 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/utils/hcc/hcc.h,v 1.7 2007-11-11 16:11:48 sezero Exp $
 */
 
 #ifndef __HCC_H__
@@ -95,8 +95,8 @@ typedef struct
 
 typedef struct
 {
-	char	*name;
-	char	*opname;
+	const char	*name;
+	const char	*opname;
 //	float		priority;
 	int		priority;
 	qboolean	right_associative;

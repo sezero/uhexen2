@@ -1,6 +1,6 @@
 /*
 	entities.h
-	$Id: entities.h,v 1.4 2007-03-14 21:04:39 sezero Exp $
+	$Id: entities.h,v 1.5 2007-11-11 16:11:48 sezero Exp $
 */
 
 #ifndef __ENTITIES_H__
@@ -31,10 +31,10 @@ typedef struct entity_s
 extern	entity_t	entities[MAX_MAP_ENTITIES];
 extern	int			num_entities;
 
-char	*ValueForKey (entity_t *ent, char *key);
-void	SetKeyValue (entity_t *ent, char *key, char *value);
-float	FloatForKey (entity_t *ent, char *key);
-void	GetVectorForKey (entity_t *ent, char *key, vec3_t vec);
+void	SetKeyValue (entity_t *ent, const char *key, const char *value);
+const char	*ValueForKey (entity_t *ent, const char *key);
+float	FloatForKey (entity_t *ent, const char *key);
+void	GetVectorForKey (entity_t *ent, const char *key, vec3_t vec);
 
 void	LoadEntities (void);
 void	WriteEntitiesToString (void);

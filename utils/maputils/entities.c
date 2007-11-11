@@ -1,6 +1,6 @@
 /*
 	entities.c
-	$Id: entities.c,v 1.8 2007-09-14 14:11:24 sezero Exp $
+	$Id: entities.c,v 1.9 2007-11-11 16:11:48 sezero Exp $
 */
 
 #include "util_inc.h"
@@ -90,7 +90,7 @@ LoadEntities
 */
 void LoadEntities (void)
 {
-	char		*data;
+	const char	*data;
 	entity_t	*entity;
 	char		key[64];
 	epair_t		*epair;
@@ -197,7 +197,7 @@ void LoadEntities (void)
 }
 
 
-char *ValueForKey (entity_t *ent, char *key)
+const char *ValueForKey (entity_t *ent, const char *key)
 {
 	epair_t	*ep;
 
@@ -210,7 +210,7 @@ char *ValueForKey (entity_t *ent, char *key)
 	return "";
 }
 
-void SetKeyValue (entity_t *ent, char *key, char *value)
+void SetKeyValue (entity_t *ent, const char *key, const char *value)
 {
 	epair_t	*ep;
 
@@ -230,17 +230,17 @@ void SetKeyValue (entity_t *ent, char *key, char *value)
 	strcpy (ep->value, value);
 }
 
-float FloatForKey (entity_t *ent, char *key)
+float FloatForKey (entity_t *ent, const char *key)
 {
-	char	*k;
+	const char	*k;
 
 	k = ValueForKey (ent, key);
 	return (float)atof(k);
 }
 
-void GetVectorForKey (entity_t *ent, char *key, vec3_t vec)
+void GetVectorForKey (entity_t *ent, const char *key, vec3_t vec)
 {
-	char	*k;
+	const char	*k;
 
 	k = ValueForKey (ent, key);
 	sscanf (k, "%lf %lf %lf", &vec[0], &vec[1], &vec[2]);

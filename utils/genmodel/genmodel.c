@@ -1,6 +1,6 @@
 /*
 	genmodel.c
-	$Id: genmodel.c,v 1.8 2007-09-22 15:27:38 sezero Exp $
+	$Id: genmodel.c,v 1.9 2007-11-11 16:11:48 sezero Exp $
 
 	Generates a .mdl file from a base frame, a texture bitmap,
 	and a series of frames.
@@ -163,7 +163,7 @@ static trivertx_t	tarray[MAXVERTS];
 static char	outname[1024];
 
 // Must match definitions in genskin.c
-static char *DigitDefs[] =
+static const char *DigitDefs[] =
 {
 	" *** *  *** * ***  * *** ",
 	"   *   **    *    *    * ",
