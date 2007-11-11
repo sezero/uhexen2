@@ -2,7 +2,7 @@
 	quakefs.c
 	Hexen II filesystem
 
-	$Id: quakefs.c,v 1.39 2007-11-11 13:17:41 sezero Exp $
+	$Id: quakefs.c,v 1.40 2007-11-11 13:54:56 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -244,7 +244,7 @@ static pack_t *FS_LoadPackFile (const char *packfile, int paknum, qboolean base_
 		CRC_ProcessByte (&crc, ((byte *)info)[i]);
 
 // check for modifications
-	if (base_fs && paknum < MAX_PAKDATA)
+	if (base_fs && paknum < (int)MAX_PAKDATA)
 	{
 		if (strcmp(fs_gamedir_nopath, pakdata[paknum].dirname) != 0)
 		{
@@ -648,7 +648,7 @@ static void do_movedata (const char *path1, const char *path2, FILE *logfile)
 
 static void MoveUserData (void)
 {
-	int		i;
+	unsigned int	i;
 	FILE		*fh;
 	struct stat	test;
 	char	*tmp, tmp1[MAX_OSPATH], tmp2[MAX_OSPATH];
@@ -702,12 +702,12 @@ static void MoveUserData (void)
 	// move the savegames
 	for (i = 0; i < MAX_SAVEGAMES; i++)
 	{
-		qerr_snprintf(tmp1, sizeof(tmp1), "%s/s%d", host_parms->userdir, i);
+		qerr_snprintf(tmp1, sizeof(tmp1), "%s/s%u", host_parms->userdir, i);
 		if (stat(tmp1, &test) == 0)
 		{
 			if ( S_ISDIR(test.st_mode) )
 			{
-				qerr_snprintf(tmp2, sizeof(tmp2), "%s/s%d", fs_userdir, i);
+				qerr_snprintf(tmp2, sizeof(tmp2), "%s/s%u", fs_userdir, i);
 				do_movedata (tmp1, tmp2, fh);
 			}
 		}
@@ -716,12 +716,12 @@ static void MoveUserData (void)
 	// move the savegames (multiplayer)
 	for (i = 0; i < MAX_SAVEGAMES; i++)
 	{
-		qerr_snprintf(tmp1, sizeof(tmp1), "%s/ms%d", host_parms->userdir, i);
+		qerr_snprintf(tmp1, sizeof(tmp1), "%s/ms%u", host_parms->userdir, i);
 		if (stat(tmp1, &test) == 0)
 		{
 			if ( S_ISDIR(test.st_mode) )
 			{
-				qerr_snprintf(tmp2, sizeof(tmp2), "%s/ms%d", fs_userdir, i);
+				qerr_snprintf(tmp2, sizeof(tmp2), "%s/ms%u", fs_userdir, i);
 				do_movedata (tmp1, tmp2, fh);
 			}
 		}
@@ -942,7 +942,7 @@ int FS_WriteFile (const char *filename, const void *data, size_t len)
 	char	name[MAX_OSPATH];
 	size_t	size;
 
-	if (q_snprintf(name, sizeof(name), "%s/%s", fs_userdir, filename) >= sizeof(name))
+	if (q_snprintf(name, sizeof(name), "%s/%s", fs_userdir, filename) >= (int)sizeof(name))
 	{
 		Host_Error("%s: %d: string buffer overflow!", __thisfunc__, __LINE__);
 		return 1;

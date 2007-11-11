@@ -2,7 +2,7 @@
 	sys_main.c
 	main loop and system interface
 
-	$Id: sys_main.c,v 1.42 2007-10-13 07:55:33 sezero Exp $
+	$Id: sys_main.c,v 1.43 2007-11-11 13:54:59 sezero Exp $
 */
 
 #include "defs.h"
@@ -290,7 +290,7 @@ int main (int argc, char **argv)
 	if (Sys_GetUserdir(userdir,sizeof(userdir)) != 0)
 		Sys_Error ("Couldn't determine userspace directory");
 	printf ("Userdir: %s\n", userdir);
-	if (q_snprintf(filters_file, sizeof(filters_file), "%s/filters.ini", userdir) >= sizeof(filters_file))
+	if (q_snprintf(filters_file, sizeof(filters_file), "%s/filters.ini", userdir) >= (int)sizeof(filters_file))
 		Sys_Error ("Insufficient string buffer size");
 #endif
 

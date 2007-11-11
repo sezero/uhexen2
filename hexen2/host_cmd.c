@@ -2,7 +2,7 @@
 	host_cmd.c
 	console commands
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host_cmd.c,v 1.95 2007-11-11 13:17:39 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host_cmd.c,v 1.96 2007-11-11 13:54:56 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -578,7 +578,7 @@ static void Host_Savegame_f (void)
 	if (error_state)
 		return;
 
-	if (q_snprintf(savename, sizeof(savename), "%s/%s", fs_userdir, p) >= sizeof(savename))
+	if (q_snprintf(savename, sizeof(savename), "%s/%s", fs_userdir, p) >= (int)sizeof(savename))
 	{
 		Con_Printf ("%s: save directory name too long\n", __thisfunc__);
 		return;
@@ -601,7 +601,7 @@ static void Host_Savegame_f (void)
 	if (error_state)
 		goto finish;
 
-	if (q_snprintf(savedest, sizeof(savedest), "%s/%s/info.dat", fs_userdir, p) >= sizeof(savedest))
+	if (q_snprintf(savedest, sizeof(savedest), "%s/%s/info.dat", fs_userdir, p) >= (int)sizeof(savedest))
 	{
 		Host_Error("%s: %d: string buffer overflow!", __thisfunc__, __LINE__);
 		return;
@@ -675,7 +675,7 @@ static void Host_DeleteSave_f (void)
 	}
 	p -= i;
 
-	if (q_snprintf(savename, sizeof(savename), "%s/%s", fs_userdir, p) >= sizeof(savename))
+	if (q_snprintf(savename, sizeof(savename), "%s/%s", fs_userdir, p) >= (int)sizeof(savename))
 		return;
 
 	Host_DeleteSave (savename);
@@ -715,14 +715,14 @@ static void Host_Loadgame_f (void)
 	Host_RemoveGIPFiles(NULL);
 	key_dest = key_game;		// remove console or menu
 
-	if (q_snprintf(savename, sizeof(savename), "%s/%s", fs_userdir, Cmd_Argv(1)) >= sizeof(savename))
+	if (q_snprintf(savename, sizeof(savename), "%s/%s", fs_userdir, Cmd_Argv(1)) >= (int)sizeof(savename))
 	{
 		Con_Printf ("%s: save directory name too long\n", __thisfunc__);
 		return;
 	}
 	Con_Printf ("Loading game from %s...\n", savename);
 
-	if (q_snprintf(savedest, sizeof(savedest), "%s/info.dat", savename) >= sizeof(savedest))
+	if (q_snprintf(savedest, sizeof(savedest), "%s/info.dat", savename) >= (int)sizeof(savedest))
 	{
 		Host_Error("%s: %d: string buffer overflow!", __thisfunc__, __LINE__);
 		return;
@@ -844,7 +844,7 @@ int SaveGamestate (qboolean ClientsOnly)
 		start = 1;
 		end = svs.maxclients+1;
 
-		if (q_snprintf(savename, sizeof(savename), "%s/clients.gip", fs_userdir) >= sizeof(savename))
+		if (q_snprintf(savename, sizeof(savename), "%s/clients.gip", fs_userdir) >= (int)sizeof(savename))
 		{
 			Host_Error("%s: %d: string buffer overflow!", __thisfunc__, __LINE__);
 			return -1;
@@ -855,7 +855,7 @@ int SaveGamestate (qboolean ClientsOnly)
 		start = 1;
 		end = sv.num_edicts;
 
-		if (q_snprintf(savename, sizeof(savename), "%s/%s.gip", fs_userdir, sv.name) >= sizeof(savename))
+		if (q_snprintf(savename, sizeof(savename), "%s/%s.gip", fs_userdir, sv.name) >= (int)sizeof(savename))
 		{
 			Host_Error("%s: %d: string buffer overflow!", __thisfunc__, __LINE__);
 			return -1;
@@ -1014,7 +1014,7 @@ static int LoadGamestate (const char *level, const char *startspot, int ClientsM
 			Con_Printf ("%s: server not active\n", __thisfunc__);
 			return -1;
 		}
-		if (q_snprintf(savename, sizeof(savename), "%s/clients.gip", fs_userdir) >= sizeof(savename))
+		if (q_snprintf(savename, sizeof(savename), "%s/clients.gip", fs_userdir) >= (int)sizeof(savename))
 		{
 			Host_Error("%s: %d: string buffer overflow!", __thisfunc__, __LINE__);
 			return -1;
@@ -1022,7 +1022,7 @@ static int LoadGamestate (const char *level, const char *startspot, int ClientsM
 	}
 	else
 	{
-		if (q_snprintf(savename, sizeof(savename), "%s/%s.gip", fs_userdir, level) >= sizeof(savename))
+		if (q_snprintf(savename, sizeof(savename), "%s/%s.gip", fs_userdir, level) >= (int)sizeof(savename))
 		{
 			Host_Error("%s: %d: string buffer overflow!", __thisfunc__, __LINE__);
 			return -1;
