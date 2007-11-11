@@ -3,6 +3,19 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2007-11-11 (CVS):
+    * invented PR_GetProgFilename and took maplist.txt parsing out of
+      PR_LoadProgs.
+    * const correctness improvement: largely trivial stuff with a few
+      places where a little more care was needed.
+    * fixed a few warnings about comparison between signed and unsigned
+      integer expressions.
+    * const correctness improvement, #2: utilities. more work is needed
+      here, though.
+    * more const stuff (#3) in the utilities. while we are there tidied
+      some type casts especially for LoadFile().
+    * net_comx.c: fixed compilation after the large commit.
+
 2007-11-07 (CVS):
     * moved all of windows crap from snd_dma.c and snd_mix.c to its
       platform driver file snd_win.c. those things were only about
