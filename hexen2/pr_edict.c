@@ -2,7 +2,7 @@
 	sv_edict.c
 	entity dictionary
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/pr_edict.c,v 1.50 2007-10-14 11:08:49 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/pr_edict.c,v 1.51 2007-11-11 12:50:51 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -1176,33 +1176,30 @@ void ED_LoadFromFile (char *data)
 
 /*
 ===============
-PR_LoadProgs
+PR_GetProgFilename
+
+find the correct progs.dat filename
+based on map name, using maplist.txt
 ===============
 */
-void PR_LoadProgs (void)
+static const char def_progname[] = "progs.dat";
+static const char *PR_GetProgFilename (void)
 {
-	unsigned int		i;
-	char	finalprogname[MAX_OSPATH];
-#if USE_MULTIPLE_PROGS
+// see the comments in progs.h about multiple progs
+#if !USE_MULTIPLE_PROGS
+	return def_progname;
+#else
+	static char	finalprogname[MAX_QPATH];
 	FILE	*FH;
-#endif
 
-	// flush the non-C variable lookup cache
-	for (i = 0; i < GEFV_CACHESIZE; i++)
-		gefvCache[i].field[0] = 0;
+	strcpy(finalprogname, def_progname);
 
-	CRC_Init (&pr_crc);
-
-	strcpy(finalprogname, "progs.dat");
-
-#if USE_MULTIPLE_PROGS
-	// see the comments in progs.h about multiple progs
 	FS_OpenFile ("maplist.txt", &FH, true);
 	if (FH)
 	{
 		char	build[2048], *test;
-		char	mapname[MAX_QPATH], progname[MAX_OSPATH];
-		int			j, k;
+		char	mapname[MAX_QPATH], progname[MAX_QPATH];
+		int			i, j, k;
 
 		// Format of maplist.txt :
 		// Line #1 : <number of lines excluding this one>
@@ -1260,11 +1257,31 @@ void PR_LoadProgs (void)
 		}
 		fclose (FH);
 	}
-#endif	/* end of USE_MULTIPLE_PROGS */
 
-	progs = (dprograms_t *)FS_LoadHunkFile (finalprogname);
+	return finalprogname;
+#endif	/* end of USE_MULTIPLE_PROGS */
+}
+
+/*
+===============
+PR_LoadProgs
+===============
+*/
+void PR_LoadProgs (void)
+{
+	unsigned int		i;
+	const char	*progname;
+
+	// flush the non-C variable lookup cache
+	for (i = 0; i < GEFV_CACHESIZE; i++)
+		gefvCache[i].field[0] = 0;
+
+	CRC_Init (&pr_crc);
+
+	progname = PR_GetProgFilename();
+	progs = (dprograms_t *)FS_LoadHunkFile (progname);
 	if (!progs)
-		Sys_Error ("%s: couldn't load %s", __thisfunc__, finalprogname);
+		Sys_Error ("%s: couldn't load %s", __thisfunc__, progname);
 	Con_DPrintf ("Programs occupy %luK.\n", (unsigned long)(fs_filesize/1024));
 
 	for (i = 0; i < fs_filesize; i++)
@@ -1277,14 +1294,14 @@ void PR_LoadProgs (void)
 #endif	/* BYTE SWAP */
 
 	if (progs->version != PROG_VERSION)
-		Sys_Error ("%s has wrong version number %d (should be %d)", finalprogname, progs->version, PROG_VERSION);
+		Sys_Error ("%s has wrong version number %d (should be %d)", progname, progs->version, PROG_VERSION);
 	if (progs->crc != PROGS_V111_CRC && progs->crc != PROGS_V112_CRC)
-		Sys_Error ("Unexpected crc ( %d ) for %s", progs->crc, finalprogname);
+		Sys_Error ("Unexpected crc ( %d ) for %s", progs->crc, progname);
 
 	pr_functions = (dfunction_t *)((byte *)progs + progs->ofs_functions);
 	pr_strings = (char *)progs + progs->ofs_strings;
 	if (progs->ofs_strings + progs->numstrings >= (int)fs_filesize)
-		Host_Error ("%s: strings go past end of file\n", finalprogname);
+		Host_Error ("%s: strings go past end of file\n", progname);
 	pr_numknownstrings = 0;
 	pr_maxknownstrings = 0;
 	pr_stringssize = progs->numstrings;
@@ -1296,7 +1313,7 @@ void PR_LoadProgs (void)
 	pr_fielddefs = (ddef_t *)((byte *)progs + progs->ofs_fielddefs);
 	pr_statements = (dstatement_t *)((byte *)progs + progs->ofs_statements);
 
-	Con_Printf ("Loaded %s ", finalprogname);
+	Con_Printf ("Loaded %s ", progname);
 	if (progs->crc == PROGS_V111_CRC)
 	{
 		Con_Printf ("(%d crc: 1.11 style)\n", PROGS_V111_CRC);
