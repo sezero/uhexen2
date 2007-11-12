@@ -2,7 +2,7 @@
 	huffman.c
 	huffman encoding/decoding for use in hexenworld networking
 
-	$Id: huffman.c,v 1.16 2007-10-02 09:36:29 sezero Exp $
+	$Id: huffman.c,v 1.17 2007-11-12 14:02:56 sezero Exp $
 */
 
 #include <stdlib.h>
@@ -43,7 +43,7 @@ typedef struct
 static huffnode_t *HuffTree = NULL;
 static hufftab_t HuffLookup[256];
 
-static float HuffFreq[256] =
+static const float HuffFreq[256] =
 {
 #	include "hufffreq.h"
 };
@@ -62,10 +62,10 @@ static int freqs[256];
 
 static void ZeroFreq (void)
 {
-	memset(freqs, 0, 256*sizeof(int));
+	memset(freqs, 0, 256 * sizeof(int));
 }
 
-static void CalcFreq (unsigned char *packet, int packetlen)
+static void CalcFreq (const unsigned char *packet, int packetlen)
 {
 	int		ix;
 
@@ -125,7 +125,7 @@ static void FindTab (huffnode_t *tmp, int len, unsigned int bits)
 	return;
 }
 
-static unsigned char Masks[8] =
+static unsigned char const Masks[8] =
 {
 	0x1,
 	0x2,
@@ -145,7 +145,7 @@ static void PutBit (unsigned char *buf, int pos, int bit)
 		buf[pos/8] &=~Masks[pos%8];
 }
 
-static int GetBit (unsigned char *buf, int pos)
+static int GetBit (const unsigned char *buf, int pos)
 {
 	if (buf[pos/8] & Masks[pos%8])
 		return 1;
@@ -153,7 +153,7 @@ static int GetBit (unsigned char *buf, int pos)
 		return 0;
 }
 
-static void BuildTree (float *freq)
+static void BuildTree (const float *freq)
 {
 	float	min1, min2;
 	int	i, j, minat1, minat2;
@@ -165,8 +165,8 @@ static void BuildTree (float *freq)
 		work[i] = (huffnode_t *) malloc(sizeof(huffnode_t));
 		work[i]->val = (unsigned char)i;
 		work[i]->freq = freq[i];
-		work[i]->zero = 0;
-		work[i]->one = 0;
+		work[i]->zero = NULL;
+		work[i]->one = NULL;
 		HuffLookup[i].len = 0;
 	}
 
@@ -195,7 +195,7 @@ static void BuildTree (float *freq)
 			}
 		}
 		if (minat1 < 0)
-			Sys_Error("minatl: %d", minat1);
+			Sys_Error("minat1: %d", minat1);
 		if (minat2 < 0)
 			Sys_Error("minat2: %d", minat2);
 		tmp = (huffnode_t *) malloc(sizeof(huffnode_t));
@@ -204,7 +204,7 @@ static void BuildTree (float *freq)
 		tmp->freq = work[minat2]->freq + work[minat1]->freq;
 		tmp->val = 0xff;
 		work[minat1] = tmp;
-		work[minat2] = 0;
+		work[minat2] = NULL;
 	}
 
 	HuffTree = tmp;
@@ -215,14 +215,14 @@ static void BuildTree (float *freq)
 	{
 		if (!HuffLookup[i].len && HuffLookup[i].len <= 32)
 		{
-		//	printf("%d %d %2X\n", HuffLookup[i].len, HuffLookup[i].bits, i);
+		//	HuffPrintf("%d %d %2X\n", HuffLookup[i].len, HuffLookup[i].bits, i);
 			Sys_Error("bad frequency table");
 		}
 	}
 #endif	/* _DEBUG_HUFFMAN */
 }
 
-void HuffDecode (unsigned char *in, unsigned char *out, int inlen, int *outlen, const int maxlen)
+void HuffDecode (const unsigned char *in, unsigned char *out, int inlen, int *outlen, const int maxlen)
 {
 	int	bits, tbits;
 	huffnode_t	*tmp;
@@ -257,7 +257,7 @@ void HuffDecode (unsigned char *in, unsigned char *out, int inlen, int *outlen, 
 	}
 }
 
-void HuffEncode (unsigned char *in, unsigned char *out, int inlen, int *outlen)
+void HuffEncode (const unsigned char *in, unsigned char *out, int inlen, int *outlen)
 {
 	int	i, j, bitat;
 	unsigned int	t;
