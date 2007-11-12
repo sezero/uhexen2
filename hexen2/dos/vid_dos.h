@@ -3,7 +3,7 @@
 	header file for DOS-specific video stuff.
 	from quake1 source with minor adaptations for uhexen2.
 
-	$Id: vid_dos.h,v 1.1 2007-10-22 18:07:53 sezero Exp $
+	$Id: vid_dos.h,v 1.2 2007-11-12 14:00:10 sezero Exp $
 
 	Copyright (C) 1996-1997  Id Software, Inc.
 
@@ -33,8 +33,8 @@
 typedef struct vmode_s
 {
 	struct vmode_s	*pnext;
-	char		*name;
-	char		*header;
+	const char	*name;
+	const char	*header;
 	unsigned int	width;
 	unsigned int	height;
 	float		aspect;

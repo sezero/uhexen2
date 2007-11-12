@@ -3,7 +3,7 @@
 	DOS-specific video routines.
 	from quake1 source with minor adaptations for uhexen2.
 
-	$Id: vid_dos.c,v 1.3 2007-11-11 13:17:42 sezero Exp $
+	$Id: vid_dos.c,v 1.4 2007-11-12 14:00:09 sezero Exp $
 
 	Copyright (C) 1996-1997  Id Software, Inc.
 
@@ -189,7 +189,7 @@ static int VID_NumModes (void)
 VID_ModeInfo
 ================
 */
-static const char *VID_ModeInfo (int modenum, char **ppheader)
+static const char *VID_ModeInfo (int modenum, const char **ppheader)
 {
 	static const char	badmodestr[] = "Bad mode number";
 	vmode_t		*pv;
@@ -433,7 +433,7 @@ void VID_DescribeModes_f (void)
 {
 	int		i, nummodes;
 	const char	*pinfo;
-	char		*pheader;
+	const char	*pheader;
 	vmode_t		*pv;
 	qboolean	na;
 
@@ -474,7 +474,7 @@ VID_GetModeDescription
 static const char *VID_GetModeDescription (int modenum)
 {
 	const char	*pinfo;
-	char		*pheader;
+	const char	*pheader;
 	vmode_t		*pv;
 
 	pv = VID_GetModePtr (modenum);
