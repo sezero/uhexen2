@@ -2,7 +2,7 @@
 	huffman.c
 	huffman encoding/decoding for use in hexenworld networking
 
-	$Id: huffman.c,v 1.23 2007-11-12 14:02:54 sezero Exp $
+	$Id: huffman.c,v 1.24 2007-11-12 14:06:40 sezero Exp $
 */
 
 #include <stdlib.h>
@@ -29,8 +29,9 @@ typedef struct huffnode_s
 {
 	struct huffnode_s *zero;
 	struct huffnode_s *one;
-	unsigned char	val;
 	float		freq;
+	unsigned char	val;
+	unsigned char	pad[3];
 } huffnode_t;
 
 typedef struct
@@ -39,6 +40,7 @@ typedef struct
 	int		len;
 } hufftab_t;
 
+static void *HuffMemBase = NULL;
 static huffnode_t *HuffTree = NULL;
 static hufftab_t HuffLookup[256];
 
@@ -159,17 +161,20 @@ static void BuildTree (const float *freq)
 	huffnode_t	*work[256];
 	huffnode_t	*tmp;
 
-	for (i = 0; i < 256; i++)
+	HuffMemBase = Hunk_HighAllocName(512 * sizeof(huffnode_t), "hufftree");
+	tmp = (huffnode_t *) HuffMemBase;
+
+	for (i = 0; i < 256; tmp++, i++)
 	{
-		work[i] = (huffnode_t *) Hunk_HighAllocName(sizeof(huffnode_t), "hufftree");
-		work[i]->val = (unsigned char)i;
-		work[i]->freq = freq[i];
-		work[i]->zero = NULL;
-		work[i]->one = NULL;
+		tmp->val = (unsigned char)i;
+		tmp->freq = freq[i];
+		tmp->zero = NULL;
+		tmp->one = NULL;
 		HuffLookup[i].len = 0;
+		work[i] = tmp;
 	}
 
-	for (i = 0; i < 255; i++)
+	for (i = 0; i < 255; tmp++, i++)
 	{
 		minat1 = -1;
 		minat2 = -1;
@@ -197,7 +202,6 @@ static void BuildTree (const float *freq)
 			Sys_Error("minat1: %d", minat1);
 		if (minat2 < 0)
 			Sys_Error("minat2: %d", minat2);
-		tmp = (huffnode_t *) Hunk_HighAllocName(sizeof(huffnode_t), "hufftree");
 		tmp->zero = work[minat2];
 		tmp->one = work[minat1];
 		tmp->freq = work[minat2]->freq + work[minat1]->freq;
@@ -206,7 +210,7 @@ static void BuildTree (const float *freq)
 		work[minat2] = NULL;
 	}
 
-	HuffTree = tmp;
+	HuffTree = --tmp; // last incrementation in the loop above wasn't used
 	FindTab (HuffTree, 0, 0);
 
 #if _DEBUG_HUFFMAN
