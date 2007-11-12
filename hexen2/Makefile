@@ -1,5 +1,5 @@
 # GNU Makefile for (gl)hexen2 client/server binaries using GCC.
-# $Header: /home/ozzie/Download/0000/uhexen2/hexen2/Makefile,v 1.81 2007-11-07 17:06:52 sezero Exp $
+# $Header: /home/ozzie/Download/0000/uhexen2/hexen2/Makefile,v 1.82 2007-11-12 14:01:29 sezero Exp $
 #
 # Type "make help" to see the valid targets.
 #
@@ -144,6 +144,10 @@ endif
 else
 USE_X86_ASM=no
 endif
+endif
+ifeq ($(TARGET_OS),dos)
+# x86 assembly if is needed for dos
+USE_X86_ASM=yes
 endif
 
 # build environment sanity checks
@@ -553,7 +557,7 @@ COMMON_ASM =
 endif
 
 # Targets
-.PHONY: help clean cleaner
+.PHONY: help _no_dos clean cleaner
 
 #default: glh2
 #all: default
@@ -580,7 +584,7 @@ h2: sanity $(SOFTOBJS) $(SOFT_ASM) $(COMMON_ASM) $(COMMONOBJS)
 	$(LINKER) -o $(H2_BINARY) $(SOFTOBJS) $(SOFT_ASM) $(COMMON_ASM) $(COMMONOBJS) $(LDFLAGS) $(SDLLINK) $(MGL_LINK)
 
 glh2: EXT_FLAGS+= $(GL_DEFS)
-glh2: sanity $(GLOBJS) $(COMMON_ASM) $(COMMONOBJS)
+glh2: _no_dos sanity $(GLOBJS) $(COMMON_ASM) $(COMMONOBJS)
 	$(LINKER) -o $(GLH2_BINARY) $(GLOBJS) $(COMMON_ASM) $(COMMONOBJS) $(LDFLAGS) $(GLFLAGS) $(SDLLINK)
 
 clean:
@@ -588,4 +592,10 @@ clean:
 
 cleaner:
 	rm -f *.o win_stuff/*.o dos/*.o sv_objs/*.o core $(H2_BINARY) $(GLH2_BINARY)
+
+_no_dos:
+ifeq ($(TARGET_OS),dos)
+	@echo "Error: That target is not available for DOS"
+	@exit 2
+endif
 
