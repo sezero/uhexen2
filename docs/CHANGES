@@ -3,6 +3,19 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2007-11-12 (CVS):
+    * more constifications (#4): things I missed in vid_dos.c/vid_dos.h.
+    * x86 assembly is needed for dos-hexen2: adjusted the makefile for it.
+      while we were there, made the makefile to error out imediately if one
+      wants to build glh2 for dos.
+    * more constifications (#5): things I missed in hexenworld/huffman.c.
+    * d_surf.c: cleaner size align code in D_SCAlloc, from quakeforge tree.
+      should have missed this in 1.4.2-release.
+    * hexenworld, huffman compression: instead of allocating memory 511 times
+      for each node, just allocate one chunk of memory (512*sizeof(huffnode_t))
+      and point to it properly.
+    * updated the huffman files from the main tree for the xqf rcon patch.
+
 2007-11-11 (CVS):
     * invented PR_GetProgFilename and took maplist.txt parsing out of
       PR_LoadProgs.
