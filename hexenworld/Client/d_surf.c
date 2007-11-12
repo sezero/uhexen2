@@ -2,7 +2,7 @@
 	d_surf.c
 	rasterization driver surface heap manager
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/d_surf.c,v 1.12 2007-07-31 21:03:28 sezero Exp $
+	$Id: d_surf.c,v 1.13 2007-11-12 14:04:52 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -125,7 +125,8 @@ static surfcache_t *D_SCAlloc (int width, int size)
 	if ((size <= 0) || (size > 0x10000))
 		Sys_Error ("%s: bad cache size %d", __thisfunc__, size);
 
-	size = (size_t)&((surfcache_t *)0)->data[size];
+	/* This adds the offset of data[0] in the surfcache_t struct. */
+	size += (size_t)&(((surfcache_t *)0)->data);
 #define SIZE_ALIGN	(sizeof (surfcache_t *) - 1)
 	size = (size + SIZE_ALIGN) & ~SIZE_ALIGN;
 #undef	SIZE_ALIGN
