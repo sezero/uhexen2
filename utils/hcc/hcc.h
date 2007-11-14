@@ -1,7 +1,7 @@
 /*
 	hcc.h
 
-	$Header: /home/ozzie/Download/0000/uhexen2/utils/hcc/hcc.h,v 1.7 2007-11-11 16:11:48 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/utils/hcc/hcc.h,v 1.8 2007-11-14 07:39:21 sezero Exp $
 */
 
 #ifndef __HCC_H__
@@ -56,7 +56,7 @@ typedef struct type_s
 typedef struct def_s
 {
 	type_t	*type;
-	char	*name;
+	const char	*name;
 	struct def_s	*next;
 	gofs_t	ofs;
 	struct def_s	*scope;	// function the var was defined in, or NULL
@@ -173,7 +173,7 @@ void	LX_ErrorRecovery (void);
 
 type_t	*PR_FindType (type_t *type);
 type_t	*PR_ParseType (void);
-char	*PR_ParseName (void);
+const char	*PR_ParseName (void);
 
 // comp.c
 

@@ -1,7 +1,7 @@
 /*
 	comp.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/utils/hcc/pr_comp.c,v 1.5 2007-07-08 17:01:15 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/utils/hcc/pr_comp.c,v 1.6 2007-11-14 07:39:21 sezero Exp $
 */
 
 
@@ -544,7 +544,7 @@ def_t *CO_ParseImmediate (void)
 
 static void ParseState (void)
 {
-	char	*name;
+	const char	*name;
 	def_t	*def;
 	def_t	*s1, *s2;
 	int	frame1, frame2;
@@ -750,7 +750,7 @@ def_t *PR_GetDef (type_t *type, const char *name, def_t *scope, qboolean allocat
 	def_t	*def;
 	def_t	*elementDef;
 	char	element[MAX_NAME];
-	char	key[100];
+	char	key[100], *tmp;
 	int			idx = 0;
 	struct hash_element *cell = NULL;
 
@@ -820,8 +820,9 @@ def_t *PR_GetDef (type_t *type, const char *name, def_t *scope, qboolean allocat
 	cell->def = def;
 	HashTable[idx] = cell;
 
-	def->name = (char *) malloc(strlen(name)+1);
-	strcpy(def->name, name);
+	tmp = (char *) malloc(strlen(name) + 1);
+	strcpy(tmp, name);
+	def->name = tmp;
 	def->type = type;
 
 	def->scope = scope;
@@ -876,7 +877,7 @@ def_t *PR_GetDef (type_t *type, const char *name, def_t *scope, qboolean allocat
 void CO_ParseDefs (void)
 {
 	int		i;
-	char	*name;
+	const char	*name;
 	def_t	*def;
 	type_t	*type;
 	int	elementCount;
@@ -1058,7 +1059,7 @@ static def_t *NewVarDef (const char *name, type_t *type)
 	def_t	*def;
 	int		idx;
 	struct hash_element *cell;
-	char	key[100];
+	char	key[100], *tmp;
 
 	// Allocate the array def
 	def = (def_t *) malloc(sizeof(def_t));
@@ -1082,8 +1083,9 @@ static def_t *NewVarDef (const char *name, type_t *type)
 	cell->def = def;
 	HashTable[idx] = cell;
 
-	def->name = (char *) malloc(strlen(name)+1);
-	strcpy(def->name, name);
+	tmp = (char *) malloc(strlen(name) + 1);
+	strcpy(tmp, name);
+	def->name = tmp;
 
 	def->type = type;
 	def->scope = pr_scope;
@@ -1140,7 +1142,7 @@ static int ParseArray (const char *name, type_t *type)
 
 static void ParseUnion (void)
 {
-	char	*name;
+	const char	*name;
 	type_t	*type;
 	int	startFieldOffset;
 	int	highestFieldOffset;
@@ -1271,7 +1273,7 @@ static void ParseFunctionDef (def_t *def, type_t *type)
 static void ParseCStyleFunctionDef (const char *funcName, type_t *type)
 {
 	int		i;
-	char	*name = NULL;	// FIXME: init to NULL, avoid compiler warning
+	const char	*name = NULL;	// FIXME: init to NULL, avoid compiler warning
 	type_t	newType;
 	type_t	*funcType;
 	def_t	*def;

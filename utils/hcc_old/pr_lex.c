@@ -1,7 +1,7 @@
 /*
 	lexi.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/utils/hcc_old/pr_lex.c,v 1.6 2007-07-08 17:01:15 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/utils/hcc_old/pr_lex.c,v 1.7 2007-11-14 07:39:21 sezero Exp $
 */
 
 
@@ -968,7 +968,7 @@ qboolean LX_Check (const char *string)
 //
 //==========================================================================
 
-char *PR_ParseName (void)
+const char *PR_ParseName (void)
 {
 	static char	ident[MAX_NAME];
 
@@ -1049,9 +1049,9 @@ char pr_parm_names[MAX_PARMS][MAX_NAME];
 
 type_t *PR_ParseType (void)
 {
+	const char	*name;
 	type_t	newtype;
 	type_t	*type;
-	char	*name;
 
 	if (TK_CHECK(TK_PERIOD))
 	{

@@ -1,6 +1,6 @@
 /*
 	qcc.h
-	$Id: qcc.h,v 1.11 2007-06-28 11:10:34 sezero Exp $
+	$Id: qcc.h,v 1.12 2007-11-14 07:39:20 sezero Exp $
 */
 
 #ifndef __QCC_H__
@@ -304,7 +304,7 @@ typedef struct type_s
 typedef struct def_s
 {
 	type_t	*type;
-	char	*name;
+	const char	*name;
 	struct def_s	*next;
 	struct def_s	*search_next;	// for finding faster
 	gofs_t	ofs;
@@ -349,8 +349,8 @@ typedef struct
 
 typedef struct
 {
-	char		*name;
-	char		*opname;
+	const char	*name;
+	const char	*opname;
 	float		priority;
 	qboolean	right_associative;
 	def_t		*type_a, *type_b, *type_c;
@@ -368,7 +368,7 @@ typedef enum
 
 int	CopyString (const char *str);
 type_t	*PR_ParseType (void);
-char	*PR_ParseName (void);
+const char	*PR_ParseName (void);
 
 void	PR_Lex (void);	// reads the next token into pr_token and classifies its type
 qboolean PR_Check (const char *string);

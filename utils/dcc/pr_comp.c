@@ -1,7 +1,7 @@
 /*
 	comp.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/utils/dcc/pr_comp.c,v 1.20 2007-09-14 14:11:24 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/utils/dcc/pr_comp.c,v 1.21 2007-11-14 07:39:20 sezero Exp $
 */
 
 
@@ -492,7 +492,7 @@ Returns the global ofs for the current token
 static def_t *PR_ParseValue (void)
 {
 	def_t		*d;
-	char		*name;
+	const char	*name;
 
 	// if the token is an immediate, allocate a constant for it
 	if (pr_token_type == tt_immediate)
@@ -853,7 +853,7 @@ set frame, nextthink (implicitly), and think (allowing forward definitions).
 */
 static void PR_ParseState (void)
 {
-	char	*name;
+	const char	*name;
 	def_t	*s1, *def;
 
 	if (pr_token_type != tt_immediate || pr_immediate_type != &type_float)
@@ -944,7 +944,7 @@ If allocate is true, a new def will be allocated if it can't be found
 def_t *PR_GetDef (type_t *type, const char *name, def_t *scope, qboolean allocate)
 {
 	def_t		*def, **old;
-	char	element[MAX_NAME];
+	char	element[MAX_NAME], *tmp;
 
 	// see if the name is already in use
 	old = &pr.search;
@@ -979,8 +979,9 @@ def_t *PR_GetDef (type_t *type, const char *name, def_t *scope, qboolean allocat
 	def->search_next = pr.search;
 	pr.search = def;
 
-	def->name = (char *) malloc (strlen(name)+1);
-	strcpy (def->name, name);
+	tmp = (char *) malloc (strlen(name) + 1);
+	strcpy (tmp, name);
+	def->name = tmp;
 	def->type = type;
 
 	def->scope = scope;
@@ -1062,10 +1063,10 @@ static void PR_InitArray (def_t *scope,int size)
 	printf("successfully read in %d array values\n", i+1);
 }
 
-static def_t *PR_AllocateArray (type_t *type, char *name, def_t *scope, qboolean allocate, int size)
+static def_t *PR_AllocateArray (type_t *type, const char *name, def_t *scope, qboolean allocate, int size)
 {
 	def_t		*def, **old;
-	char	element[MAX_NAME];
+	char	element[MAX_NAME], *tmp;
 
 	// see if the name is already in use
 	old = &pr.search;
@@ -1100,8 +1101,9 @@ static def_t *PR_AllocateArray (type_t *type, char *name, def_t *scope, qboolean
 	def->search_next = pr.search;
 	pr.search = def;
 
-	def->name = (char *) malloc (strlen(name)+1);
-	strcpy (def->name, name);
+	tmp = (char *) malloc (strlen(name) + 1);
+	strcpy (tmp, name);
+	def->name = tmp;
 	def->type = type;
 
 	def->scope = scope;
@@ -1164,7 +1166,8 @@ Called at the outer layer and when a local statement is hit
 */
 static void PR_ParseDefs (void)
 {
-	char		*name,*name2,a1[500];
+	char		a1[500];
+	const char	*name, *name2;
 	type_t		*type;
 	def_t		*def,*def2;
 	function_t	*f;

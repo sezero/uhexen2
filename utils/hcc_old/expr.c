@@ -1,8 +1,6 @@
 /*
 	expr.c
-
-	$Header: /home/ozzie/Download/0000/uhexen2/utils/hcc_old/expr.c,v 1.8 2007-09-14 14:11:24 sezero Exp $
-
+	$Header: /home/ozzie/Download/0000/uhexen2/utils/hcc_old/expr.c,v 1.9 2007-11-14 07:39:21 sezero Exp $
 */
 
 
@@ -237,8 +235,8 @@ def_t *EX_Expression (int priority)
 static def_t *Term (void)
 {
 	def_t	*d, *e, *e2;
-	etype_t	t;
-	char	*name;
+	etype_t		t;
+	const char	*name;
 
 	if (TK_CHECK(TK_NOT))
 	{

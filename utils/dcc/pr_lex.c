@@ -1,7 +1,7 @@
 /*
 	lexi.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/utils/dcc/pr_lex.c,v 1.12 2007-07-08 17:01:14 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/utils/dcc/pr_lex.c,v 1.13 2007-11-14 07:39:20 sezero Exp $
 */
 
 
@@ -540,7 +540,7 @@ PR_ParseName
 Checks to see if the current token is a valid name
 ============
 */
-char *PR_ParseName (void)
+const char *PR_ParseName (void)
 {
 	static char	ident[MAX_NAME];
 
@@ -625,9 +625,9 @@ char	pr_parm_names[MAX_PARMS][MAX_NAME];
 
 type_t *PR_ParseType (void)
 {
+	const char	*name;
 	type_t	newtype;
 	type_t	*type;
-	char	*name;
 
 	if (PR_Check ("."))
 	{

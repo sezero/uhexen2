@@ -2,7 +2,7 @@
 	dcc.c
 	An hcode compiler/decompiler for Hexen II by Eric Hobbs
 
-	$Id: dcc.c,v 1.39 2007-07-08 17:01:14 sezero Exp $
+	$Id: dcc.c,v 1.40 2007-11-14 07:39:20 sezero Exp $
 */
 
 
@@ -45,7 +45,7 @@ static int	DEC_GetFunctionIdxByName (const char *name);
 static void	PR_LocalGlobals (void);
 static int	DEC_AlreadySeen (const char *fname);
 static ddef_t	*DEC_GetParameter (gofs_t ofs);
-static char	*GetFieldFunctionHeader (const char *s_name);
+static const char *GetFieldFunctionHeader (const char *s_name);
 static void	DccStatement (dstatement_t *s);
 static void	AddProgramFlowInfo (dfunction_t *df);
 static void	PR_Locals (dfunction_t *df);
@@ -130,7 +130,7 @@ static char *PR_PrintStringAtOfs (gofs_t ofs, def_t* typ)
 	}
 
 	if ( !strcmp(strings + def->s_name, IMMEDIATE_VALUE) )
-		return DCC_ValueString (def->type, &pr_globals[ofs]);
+		return DCC_ValueString ((etype_t)def->type, &pr_globals[ofs]);
 
 	if (typ)
 	{
@@ -166,7 +166,7 @@ static char *PR_PrintGlobal (gofs_t ofs, def_t* typ)
 	}
 
 	if ( !strcmp(strings + def->s_name, IMMEDIATE_VALUE) )
-		return DCC_ValueString (def->type, &pr_globals[ofs]);
+		return DCC_ValueString ((etype_t)def->type, &pr_globals[ofs]);
 
 	if (typ)
 	{
@@ -897,7 +897,7 @@ static void PR_Locals (dfunction_t *df)
 			PR_Print(" %s", strings + par->s_name);
 
 			if (par->type == ev_float || par->type == ev_vector)
-				PR_Print(" = %s", DCC_ValueString(par->type, &pr_globals[par->ofs]));
+				PR_Print(" = %s", DCC_ValueString((etype_t)par->type, &pr_globals[par->ofs]));
 
 			PR_Print(";\n");
 		}
@@ -1354,11 +1354,11 @@ static void PR_InitValues (ddef_t *par, int size)
 
 	if (size > 1)
 	{
-		PR_Print("{ %s,\n", DCC_ValueString(par->type, &pr_globals[par->ofs]));
+		PR_Print("{ %s,\n", DCC_ValueString((etype_t)par->type, &pr_globals[par->ofs]));
 	}
 	else
 	{
-		PR_Print(" %s;\n", DCC_ValueString(par->type, &pr_globals[par->ofs]));
+		PR_Print(" %s;\n", DCC_ValueString((etype_t)par->type, &pr_globals[par->ofs]));
 		return;
 	}
 
@@ -1370,13 +1370,13 @@ static void PR_InitValues (ddef_t *par, int size)
 		if (j < size-1)
 		{
 			if ( !(j & 0x3) )
-				PR_Print(" %s,\n", DCC_ValueString(par->type, &pr_globals[par->ofs + (j*type_size[par->type])]));
+				PR_Print(" %s,\n", DCC_ValueString((etype_t)par->type, &pr_globals[par->ofs + (j*type_size[par->type])]));
 			else
-				PR_Print(" %s,", DCC_ValueString(par->type, &pr_globals[par->ofs + (j*type_size[par->type])]));
+				PR_Print(" %s,", DCC_ValueString((etype_t)par->type, &pr_globals[par->ofs + (j*type_size[par->type])]));
 		}
 		else
 		{
-			PR_Print(" %s", DCC_ValueString(par->type, &pr_globals[par->ofs + (j*type_size[par->type])]));
+			PR_Print(" %s", DCC_ValueString((etype_t)par->type, &pr_globals[par->ofs + (j*type_size[par->type])]));
 		}
 	}
 
@@ -1392,7 +1392,7 @@ static void PR_LocalGlobals (void)
 	dfunction_t	*df, *dfpred;
 	ddef_t		*par, *par2;
 	ddef_t		*ef;
-	char		*arg2;
+	const char	*arg2;
 
 	printf("finding declared globals:.");
 
@@ -1529,7 +1529,7 @@ static void PR_LocalGlobals (void)
 }
 
 
-static char *GetFieldFunctionHeader (const char *s_name)
+static const char *GetFieldFunctionHeader (const char *s_name)
 {
 	int		i, j = 0;
 	dstatement_t	*d;
