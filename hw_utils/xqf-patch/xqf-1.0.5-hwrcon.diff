@@ -536,8 +536,8 @@ diff -urNp xqf-1.0.5/src/hufffreq.h xqf-1.0.5x/src/hufffreq.h
 +	0.00160896
 diff -urNp xqf-1.0.5/src/huffman.c xqf-1.0.5x/src/huffman.c
 --- xqf-1.0.5/src/huffman.c	1970-01-01 02:00:00.000000000 +0200
-+++ xqf-1.0.5x/src/huffman.c	2007-11-12 16:28:08.000000000 +0200
-@@ -0,0 +1,255 @@
++++ xqf-1.0.5x/src/huffman.c	2007-11-14 18:03:32.000000000 +0200
+@@ -0,0 +1,263 @@
 +/*
 +	huffman.c
 +	huffman encoding/decoding for use in hexenworld networking
@@ -729,15 +729,23 @@ diff -urNp xqf-1.0.5/src/huffman.c xqf-1.0.5x/src/huffman.c
 +	int	bits, tbits;
 +	huffnode_t	*tmp;
 +
++	--inlen;
++	if (inlen < 0)
++	{
++		*outlen = 0;
++		return;
++	}
 +	if (*in == 0xff)
 +	{
-+		if (inlen > 1)
-+			memcpy (out, in+1, inlen-1);
-+		*outlen = inlen-1;
++		if (inlen > maxlen)
++			memcpy (out, in+1, maxlen);
++		else if (inlen)
++			memcpy (out, in+1, inlen);
++		*outlen = inlen;
 +		return;
 +	}
 +
-+	tbits = (inlen-1)*8 - *in;
++	tbits = inlen*8 - *in;
 +	bits = 0;
 +	*outlen = 0;
 +
