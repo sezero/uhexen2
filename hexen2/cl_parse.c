@@ -2,7 +2,7 @@
 	cl_parse.c
 	parse a message received from the server
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cl_parse.c,v 1.58 2007-09-29 18:10:22 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cl_parse.c,v 1.59 2007-11-14 07:27:34 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -228,7 +228,7 @@ CL_ParseServerInfo
 */
 static void CL_ParseServerInfo (void)
 {
-	char	*str;
+	const char	*str;
 	int		i;
 	int		nummodels, numsounds;
 	char	model_precache[MAX_MODELS][MAX_QPATH];

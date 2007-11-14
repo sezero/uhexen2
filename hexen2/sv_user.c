@@ -2,7 +2,7 @@
 	sv_user.c
 	server code for moving users
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sv_user.c,v 1.22 2007-09-22 15:27:15 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sv_user.c,v 1.23 2007-11-14 07:27:35 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -654,7 +654,7 @@ static qboolean SV_ReadClientMessage (void)
 {
 	int		ret;
 	int		ccmd;
-	char		*s;
+	const char	*s;
 
 	do
 	{

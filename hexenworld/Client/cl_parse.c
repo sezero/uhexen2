@@ -2,7 +2,7 @@
 	cl_parse.c
 	parse a message received from the server
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/cl_parse.c,v 1.48 2007-11-11 13:17:44 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/cl_parse.c,v 1.49 2007-11-14 07:27:35 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -433,7 +433,7 @@ CL_ParseServerData
 */
 static void CL_ParseServerData (void)
 {
-	char	*str;
+	const char	*str;
 	int		protover;
 
 	Con_DPrintf ("Serverdata packet received.\n");
@@ -544,7 +544,7 @@ CL_ParseSoundlist
 static void CL_ParseSoundlist (void)
 {
 	int	numsounds;
-	char	*str;
+	const char	*str;
 
 // precache sounds
 	memset (cl.sound_precache, 0, sizeof(cl.sound_precache));
@@ -571,7 +571,7 @@ CL_ParseModellist
 static void CL_ParseModellist (void)
 {
 	int	nummodels;
-	char	*str;
+	const char	*str;
 
 // precache models and note certain default indexes
 	memset (cl.model_precache, 0, sizeof(cl.model_precache));
@@ -1101,7 +1101,7 @@ int LastServerMessageSize = 0;
 void CL_ParseServerMessage (void)
 {
 	int		cmd;
-	char		*s;
+	const char	*s;
 	int		i, j;
 	unsigned int	sc1, sc2;
 	byte		test;

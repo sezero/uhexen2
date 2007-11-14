@@ -2,7 +2,7 @@
 	cl_main.c
 	client main loop
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/cl_main.c,v 1.91 2007-11-11 13:17:44 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/cl_main.c,v 1.92 2007-11-14 07:27:35 sezero Exp $
 */
 
 #include <sys/types.h>
@@ -779,7 +779,7 @@ Responses to broadcasts, etc
 */
 static void CL_ConnectionlessPacket (void)
 {
-	char	*s;
+	const char	*s;
 	int		c;
 
 	MSG_BeginReading ();

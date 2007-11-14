@@ -3,7 +3,7 @@
 	Message IO functions
 	Handles byte ordering and avoids alignment errors
 
-	$Id: msg_io.c,v 1.6 2007-07-09 16:41:06 sezero Exp $
+	$Id: msg_io.c,v 1.7 2007-11-14 07:27:35 sezero Exp $
 */
 
 #include "q_types.h"
@@ -286,7 +286,7 @@ float MSG_ReadFloat (void)
 	return dat.f;
 }
 
-char *MSG_ReadString (void)
+const char *MSG_ReadString (void)
 {
 	static char	string[2048];
 	int		c;
@@ -308,7 +308,7 @@ char *MSG_ReadString (void)
 }
 
 #if defined(H2W)
-char *MSG_ReadStringLine (void)
+const char *MSG_ReadStringLine (void)
 {
 	static char	string[2048];
 	int		c;

@@ -2,7 +2,7 @@
 	sv_user.c
 	server code for moving users
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Server/sv_user.c,v 1.27 2007-11-11 13:18:22 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Server/sv_user.c,v 1.28 2007-11-14 07:27:35 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -911,7 +911,7 @@ static ucmd_t ucmds[] =
 SV_ExecuteUserCommand
 ==================
 */
-void SV_ExecuteUserCommand (char *s)
+void SV_ExecuteUserCommand (const char *s)
 {
 	ucmd_t	*u;
 
@@ -1327,7 +1327,7 @@ The current net_message is parsed for the given client
 void SV_ExecuteClientMessage (client_t *cl)
 {
 	int		c;
-	char	*s;
+	const char	*s;
 	usercmd_t	oldest, oldcmd, newcmd;
 	client_frame_t	*frame;
 	vec3_t	o;

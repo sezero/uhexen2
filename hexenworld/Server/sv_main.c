@@ -2,7 +2,7 @@
 	sv_main.c
 	server main program
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Server/sv_main.c,v 1.51 2007-11-11 13:18:22 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Server/sv_main.c,v 1.52 2007-11-14 07:27:35 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -722,7 +722,7 @@ connectionless packets.
 */
 static void SV_ConnectionlessPacket (void)
 {
-	char		*s;
+	const char	*s;
 	const char	*c;
 
 	MSG_BeginReading ();

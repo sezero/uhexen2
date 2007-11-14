@@ -2,7 +2,7 @@
 	net_dgrm.c
 	This is enables a simple IP banning mechanism
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/net_dgrm.c,v 1.38 2007-11-11 13:17:40 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/net_dgrm.c,v 1.39 2007-11-14 07:27:35 sezero Exp $
 */
 
 #define BAN_TEST
@@ -925,8 +925,8 @@ static qsocket_t *_Datagram_CheckNewConnections (void)
 
 	if (command == CCREQ_RULE_INFO)
 	{
-		char	*prevCvarName;
-		cvar_t	*var;
+		const char	*prevCvarName;
+		cvar_t			*var;
 
 		// find the search start location
 		prevCvarName = MSG_ReadString();

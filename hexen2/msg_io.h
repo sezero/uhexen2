@@ -2,7 +2,7 @@
 	msg_io.h
 	Message IO functions
 
-	$Id: msg_io.h,v 1.1 2007-02-12 16:52:50 sezero Exp $
+	$Id: msg_io.h,v 1.2 2007-11-14 07:27:34 sezero Exp $
 */
 
 #ifndef __MSGIO_H
@@ -28,9 +28,9 @@ int MSG_ReadByte (void);
 int MSG_ReadShort (void);
 int MSG_ReadLong (void);
 float MSG_ReadFloat (void);
-char *MSG_ReadString (void);
+const char *MSG_ReadString (void);
 #if defined(H2W)
-char *MSG_ReadStringLine (void);
+const char *MSG_ReadStringLine (void);
 #endif	/* H2W */
 
 float MSG_ReadCoord (void);

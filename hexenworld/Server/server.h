@@ -1,7 +1,7 @@
 /*
 	server.h
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Server/server.h,v 1.17 2007-09-30 11:04:40 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Server/server.h,v 1.18 2007-11-14 07:27:35 sezero Exp $
 */
 
 #ifndef __H2W_SERVER_H
@@ -396,7 +396,7 @@ void SV_SaveSpawnparms (void);
 
 void SV_Physics_Client (edict_t	*ent);
 
-void SV_ExecuteUserCommand (char *s);
+void SV_ExecuteUserCommand (const char *s);
 void SV_InitOperatorCommands (void);
 
 void SV_SendServerinfo (client_t *client);
