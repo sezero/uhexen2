@@ -3,7 +3,7 @@
 	DOS-specific video routines.
 	from quake1 source with minor adaptations for uhexen2.
 
-	$Id: vid_dos.c,v 1.4 2007-11-12 14:00:09 sezero Exp $
+	$Id: vid_dos.c,v 1.5 2007-11-14 07:33:59 sezero Exp $
 
 	Copyright (C) 1996-1997  Id Software, Inc.
 
@@ -85,6 +85,9 @@ unsigned int	d_8to24table[256];	// not used in 8 bpp mode
 
 byte		globalcolormap[VID_GRADES*256], lastglobalcolor = 0;
 byte		*lastsourcecolormap = NULL;
+
+//intermission screen cache reference (to flush on video mode switch)
+extern	cache_user_t	*intermissionScreen;
 
 static void VID_MenuDraw (void);
 static void VID_MenuKey (int key);
@@ -244,6 +247,10 @@ static int VID_SetMode (int modenum, unsigned char *palette)
 
 	if (pnewmode == pcurrentmode)
 		return 1;	// already in the desired mode
+
+//flush the intermission screen if it's cached (Pa3PyX)
+	if (intermissionScreen && intermissionScreen->data)
+		Cache_Free(intermissionScreen);
 
 // initialize the new mode
 	poldmode = pcurrentmode;
