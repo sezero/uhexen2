@@ -2,7 +2,7 @@
 	dcc.c
 	An hcode compiler/decompiler for Hexen II by Eric Hobbs
 
-	$Id: dcc.c,v 1.42 2007-11-14 07:51:01 sezero Exp $
+	$Id: dcc.c,v 1.43 2007-11-14 15:53:17 sezero Exp $
 */
 
 
@@ -96,7 +96,7 @@ static const char *type_names[8] =
 	"ev_pointer"
 };
 
-static char	vsline[256], dsline[512], funcname[512];
+static char	vsline[256], dsline[2048], funcname[512];
 
 static int	regs_used = 0;
 static int	lindent;
@@ -2135,8 +2135,8 @@ static int DEC_AlreadySeen (const char *fname)
 	int		i;
 	char		*new1;
 
-	if (DEC_FileCtr >= MAX_DEC_FILES)
-		Error("%s: DEC_FileCtr: %d", __thisfunc__, DEC_FileCtr);
+//	if (DEC_FileCtr >= MAX_DEC_FILES)
+//		Error("%s: DEC_FileCtr: %d", __thisfunc__, DEC_FileCtr);
 
 	for (i = 0 ; i < DEC_FileCtr ; i++)
 	{
