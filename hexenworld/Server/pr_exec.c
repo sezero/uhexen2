@@ -2,7 +2,7 @@
 	pr_exec.c
 	PROGS execution
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Server/pr_exec.c,v 1.22 2007-11-11 13:18:22 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Server/pr_exec.c,v 1.23 2007-11-14 07:42:34 sezero Exp $
 */
 
 // HEADER FILES ------------------------------------------------------------
@@ -37,8 +37,8 @@ typedef struct
 
 // EXTERNAL FUNCTION PROTOTYPES --------------------------------------------
 
-char *PR_GlobalString(int ofs);
-char *PR_GlobalStringNoContents(int ofs);
+const char *PR_GlobalString(int ofs);
+const char *PR_GlobalStringNoContents(int ofs);
 
 // PUBLIC FUNCTION PROTOTYPES ----------------------------------------------
 

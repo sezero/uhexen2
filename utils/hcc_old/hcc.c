@@ -1,7 +1,7 @@
 /*
 	hcc.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/utils/hcc_old/hcc.c,v 1.15 2007-11-11 18:48:07 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/utils/hcc_old/hcc.c,v 1.16 2007-11-14 07:42:34 sezero Exp $
 
 	Hash table modifications based on fastqcc by Jonathan Roy
 	(roy@atlantic.net).
@@ -354,7 +354,7 @@ PR_String
 Returns a string suitable for printing (no newlines, max 60 chars length)
 ===============
 */
-static char *PR_String (const char *string)
+static const char *PR_String (const char *string)
 {
 	static char	buf[80];
 	char	*s;
@@ -414,7 +414,7 @@ PR_ValueString
 Returns a string describing *data in a type specific manner
 =============
 */
-static char *PR_ValueString (etype_t type, void *val)
+static const char *PR_ValueString (etype_t type, void *val)
 {
 	static char	line[256];
 	def_t		*def;
@@ -467,10 +467,10 @@ Returns a string with a description and the contents of a global,
 padded to 20 field width
 ============
 */
-static char *PR_GlobalStringNoContents (gofs_t ofs)
+static const char *PR_GlobalStringNoContents (gofs_t ofs)
 {
 	int		i;
-	def_t	*def;
+	def_t		*def;
 	static char	line[128];
 
 	def = pr_global_defs[ofs];
@@ -488,11 +488,11 @@ static char *PR_GlobalStringNoContents (gofs_t ofs)
 	return line;
 }
 
-static char *PR_GlobalString (gofs_t ofs)
+static const char *PR_GlobalString (gofs_t ofs)
 {
-	char	*s;
+	const char	*s;
 	int		i;
-	def_t	*def;
+	def_t		*def;
 	static char	line[128];
 
 	def = pr_global_defs[ofs];

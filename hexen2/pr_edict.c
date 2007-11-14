@@ -2,7 +2,7 @@
 	sv_edict.c
 	entity dictionary
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/pr_edict.c,v 1.52 2007-11-11 13:17:40 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/pr_edict.c,v 1.53 2007-11-14 07:42:34 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -353,7 +353,7 @@ PR_ValueString
 Returns a string describing *data in a type specific manner
 =============
 */
-static char *PR_ValueString (int type, eval_t *val)
+static const char *PR_ValueString (int type, eval_t *val)
 {
 	static char	line[256];
 	ddef_t		*def;
@@ -406,7 +406,7 @@ Returns a string describing *data in a type specific manner
 Easier to parse than PR_ValueString
 =============
 */
-static char *PR_UglyValueString (int type, eval_t *val)
+static const char *PR_UglyValueString (int type, eval_t *val)
 {
 	static char	line[256];
 	ddef_t		*def;
@@ -455,12 +455,12 @@ Returns a string with a description and the contents of a global,
 padded to 20 field width
 ============
 */
-char *PR_GlobalString (int ofs)
+const char *PR_GlobalString (int ofs)
 {
-	char	*s;
+	const char	*s;
 	int		i;
-	ddef_t	*def;
-	void	*val;
+	ddef_t		*def;
+	void		*val;
 	static char	line[128];
 
 	val = (void *)&pr_globals[ofs];
@@ -481,10 +481,10 @@ char *PR_GlobalString (int ofs)
 	return line;
 }
 
-char *PR_GlobalStringNoContents (int ofs)
+const char *PR_GlobalStringNoContents (int ofs)
 {
 	int		i;
-	ddef_t	*def;
+	ddef_t		*def;
 	static char	line[128];
 
 	def = ED_GlobalAtOfs(ofs);

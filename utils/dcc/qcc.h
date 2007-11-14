@@ -1,6 +1,6 @@
 /*
 	qcc.h
-	$Id: qcc.h,v 1.12 2007-11-14 07:39:20 sezero Exp $
+	$Id: qcc.h,v 1.13 2007-11-14 07:42:34 sezero Exp $
 */
 
 #ifndef __QCC_H__
@@ -379,7 +379,7 @@ def_t	*PR_GetDef (type_t *type, const char *name, def_t *scope, qboolean allocat
 void	PR_SkipToSemicolon (void);
 void	PR_ClearGrabMacros (void);
 qboolean PR_CompileFile (const char *string, const char *filename);
-char	*PR_ValueString (etype_t type, void *val);
+const char	*PR_ValueString (etype_t type, void *val);
 
 // PUBLIC DATA DECLARATIONS ------------------------------------------------
 

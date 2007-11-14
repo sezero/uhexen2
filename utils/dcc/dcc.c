@@ -2,7 +2,7 @@
 	dcc.c
 	An hcode compiler/decompiler for Hexen II by Eric Hobbs
 
-	$Id: dcc.c,v 1.40 2007-11-14 07:39:20 sezero Exp $
+	$Id: dcc.c,v 1.41 2007-11-14 07:42:34 sezero Exp $
 */
 
 
@@ -22,7 +22,7 @@
 
 // EXTERNAL FUNCTION PROTOTYPES --------------------------------------------
 
-extern char	*PR_String (const char *string);
+extern const char *PR_String (const char *string);
 extern def_t	*PR_DefForFieldOfs (gofs_t ofs);
 
 // PUBLIC FUNCTION PROTOTYPES ----------------------------------------------
@@ -39,7 +39,7 @@ static char	*Make_Immediate (gofs_t ofs, const char *linestr, int mode);
 static void	PR_Indent (void);
 static void	PR_FunctionHeader (dfunction_t *df);
 static void	PR_Print (const char *s,...) __attribute__((format(printf,1,2)));
-static char	*PR_PrintGlobal (gofs_t ofs, def_t* typ);
+static const char *PR_PrintGlobal (gofs_t ofs, def_t* typ);
 static ddef_t	*PR_GetField (const char *name, ddef_t*);
 static int	DEC_GetFunctionIdxByName (const char *name);
 static void	PR_LocalGlobals (void);
@@ -49,7 +49,7 @@ static const char *GetFieldFunctionHeader (const char *s_name);
 static void	DccStatement (dstatement_t *s);
 static void	AddProgramFlowInfo (dfunction_t *df);
 static void	PR_Locals (dfunction_t *df);
-static char	*DCC_ValueString (etype_t type, void *val);
+static const char *DCC_ValueString (etype_t type, void *val);
 static unsigned short	GetReturnType (int func);
 static unsigned short	BackBuildReturnType (dfunction_t *df, dstatement_t *dsf, gofs_t ofs);
 static unsigned short	GetType (gofs_t ofs);
@@ -102,13 +102,13 @@ static int	regs_used = 0;
 static int	lindent;
 static char	*DEC_FilesSeen[MAX_DEC_FILES];
 static int	DEC_FileCtr = 0;
-static qboolean	printassign = 0;
+static qboolean	printassign = false;
 static dfunction_t	*cfunc = NULL;
 
 
 // CODE --------------------------------------------------------------------
 
-static char *PR_PrintStringAtOfs (gofs_t ofs, def_t* typ)
+static const char *PR_PrintStringAtOfs (gofs_t ofs, def_t* typ)
 {
 	int		i;
 	ddef_t	*def = NULL;
@@ -144,7 +144,7 @@ static char *PR_PrintStringAtOfs (gofs_t ofs, def_t* typ)
 	return (strings + def->s_name);
 }
 
-static char *PR_PrintGlobal (gofs_t ofs, def_t* typ)
+static const char *PR_PrintGlobal (gofs_t ofs, def_t* typ)
 {
 	int		i;
 	ddef_t	*def = NULL;
@@ -181,7 +181,8 @@ static char *PR_PrintGlobal (gofs_t ofs, def_t* typ)
 
 static void DccStatement (dstatement_t *s)
 {
-	char		*arg1, *arg2, *arg3, a1[1024], a2[1024], a3[1024];
+	const char	*arg1, *arg2, *arg3;
+	char		a1[1024], a2[1024], a3[1024];
 	int		nargs, i, j;
 	dstatement_t	*t, *k;
 	unsigned short	doc, ifc, tom;
@@ -1032,7 +1033,7 @@ static unsigned short GetReturnType (int func)
 	ddef_t		*par = NULL;
 	dstatement_t	*ds, *di;
 	dfunction_t	*df;
-	char		*arg1;
+	const char	*arg1;
 	unsigned short	rtype[2] = {ev_void, ev_void};
 	def_t		*type1;
 
@@ -1498,7 +1499,7 @@ static void PR_LocalGlobals (void)
 							if (par->type == ev_entity || par->type == ev_void)
 							{
 								if (!strcmp(strings + par->s_name, "end_sys_fields"))
-									printassign = 1;
+									printassign = true;
 								PR_Print("%s %s;\n", type_names[par->type], strings + par->s_name);
 							}
 							else
@@ -1534,7 +1535,7 @@ static const char *GetFieldFunctionHeader (const char *s_name)
 	int		i, j = 0;
 	dstatement_t	*d;
 	def_t		*typ1, *typ2;
-	char		*arg1, *arg2, *arg3;
+	const char	*arg1, *arg2, *arg3;
 
 	for (i = 1; i < numstatements; i++)
 	{
@@ -1600,7 +1601,8 @@ void FindBuiltinParameters (int func)
 	unsigned short	type[9];
 	dstatement_t	*ds, *dsf = NULL;
 	dfunction_t	*df, *dft = NULL;
-	char		*arg1, sname[512], plist[512], parm[128];
+	const char	*arg1;
+	char		sname[512], plist[512], parm[128];
 
 	if (func_headers[func])
 		return;
@@ -1644,7 +1646,7 @@ void FindBuiltinParameters (int func)
 				}
 			}
 
-			arg1 = 0;
+			arg1 = NULL;
 			ds++;
 		//	ds = statements + (functions+i)->first_statement + j;
 		}
@@ -2133,7 +2135,6 @@ static int DEC_AlreadySeen (const char *fname)
 	int		i;
 	char		*new1;
 
-
 	for (i = 0 ; i < DEC_FileCtr ; i++)
 	{
 		if ( !strcmp(fname, DEC_FilesSeen[i] ) )
@@ -2147,8 +2148,7 @@ static int DEC_AlreadySeen (const char *fname)
 	if (new1 == NULL)
 		Error ("%s: malloc failed.", __thisfunc__);
 	strcpy (new1, fname);
-	DEC_FilesSeen[DEC_FileCtr] = new1;
-	DEC_FileCtr++;
+	DEC_FilesSeen[DEC_FileCtr++] = new1;
 
 	printf("decompiling %s\n", fname);
 
@@ -2178,7 +2178,7 @@ static void FixFunctionNames (void)
 #endif
 
 
-static char *DCC_ValueString (etype_t type, void *val)
+static const char *DCC_ValueString (etype_t type, void *val)
 {
 	def_t		*def;
 	dfunction_t	*f;
@@ -2228,7 +2228,7 @@ void PR_PrintFunction (const char *name)
 	int		i;
 	dstatement_t	*ds;
 	dfunction_t	*df;
-	char		*arg1, *arg2;
+	const char	*arg1, *arg2;
 	def_t		*typ1, *typ2;
 
 	for (i = 0 ; i < numfunctions ; i++)
@@ -2284,7 +2284,7 @@ static unsigned short GetLastFunctionReturn (dfunction_t *df, dstatement_t *ds)
 {
 	dstatement_t	*di;
 	int		i;
-	char		*arg1;
+	const char	*arg1;
 	def_t		*type1;
 
 	printf("looking for last return type\n");
