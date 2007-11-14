@@ -2,7 +2,7 @@
 	common.h
 	misc utilities used in client and server
 
-	$Id: common.h,v 1.54 2007-11-11 13:54:59 sezero Exp $
+	$Id: common.h,v 1.55 2007-11-14 07:19:53 sezero Exp $
 */
 
 #ifndef __HX2_COMMON_H
@@ -101,7 +101,7 @@ int COM_CheckParm (const char *parm);
 #define	com_argc	host_parms->argc
 #define	com_argv	host_parms->argv
 
-char *COM_SkipPath (const char *pathname);
+const char *COM_SkipPath (const char *pathname);
 void COM_StripExtension (const char *in, char *out);
 void COM_FileExtension (const char *in, char *out);
 void COM_FileBase (const char *in, char *out);

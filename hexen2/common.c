@@ -2,7 +2,7 @@
 	common.c
 	misc utility functions used in client and server
 
-	$Id: common.c,v 1.102 2007-11-11 13:17:38 sezero Exp $
+	$Id: common.c,v 1.103 2007-11-14 07:19:53 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -134,7 +134,7 @@ int COM_StrCompare (const void *arg1, const void *arg2)
 COM_SkipPath
 ============
 */
-char *COM_SkipPath (const char *pathname)
+const char *COM_SkipPath (const char *pathname)
 {
 	const char	*last;
 
@@ -145,7 +145,7 @@ char *COM_SkipPath (const char *pathname)
 			last = pathname+1;
 		pathname++;
 	}
-	return (char *)last;
+	return last;
 }
 
 /*
