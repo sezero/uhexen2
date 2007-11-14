@@ -2,7 +2,7 @@
 	huffman.c
 	huffman encoding/decoding for use in hexenworld networking
 
-	$Id: huffman.c,v 1.24 2007-11-12 14:06:40 sezero Exp $
+	$Id: huffman.c,v 1.25 2007-11-14 07:21:07 sezero Exp $
 */
 
 #include <stdlib.h>
@@ -230,15 +230,23 @@ void HuffDecode (const unsigned char *in, unsigned char *out, int inlen, int *ou
 	int	bits, tbits;
 	huffnode_t	*tmp;
 
+	--inlen;
+	if (inlen < 0)
+	{
+		*outlen = 0;
+		return;
+	}
 	if (*in == 0xff)
 	{
-		if (inlen > 1)
-			memcpy (out, in+1, inlen-1);
-		*outlen = inlen-1;
+		if (inlen > maxlen)
+			memcpy (out, in+1, maxlen);
+		else if (inlen)
+			memcpy (out, in+1, inlen);
+		*outlen = inlen;
 		return;
 	}
 
-	tbits = (inlen-1)*8 - *in;
+	tbits = inlen*8 - *in;
 	bits = 0;
 	*outlen = 0;
 
