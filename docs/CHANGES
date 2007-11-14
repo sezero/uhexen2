@@ -3,6 +3,41 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2007-11-14 (CVS):
+    * commented out the unused introdemofile from client_static structure.
+    * more constifications (#6): made COM_SkipPath to return const.
+    * fixed another buffer overrun vulnerability in hexenworld huffman
+      decoder. while we were there, handled a corner case problem. this
+      time all seems fine.
+    * updated the huffman files from the main tree for the xqf rcon patch.
+    * more constifications (#6): made MSG_ReadString and MSG_ReadStringLine
+      to return const.
+    * more constifications (#7): backed out some incorrect/unnecessary const
+      usage from a few months back.
+    * dos, video: fixed the bad coordinates error when someone changes
+      resolution during intermissions.
+    * more constifications (#8): continue with the utils, hcc and dcc.
+    * more constifications (#8): made PR_ValueString and friends to return const.
+    * utils, dcc: put a check in DEC_AlreadySeen for DEC_FileCtr to prevent
+      segfaults. there is a memory overwrite somewhere that I need to find,
+      it happens only when the program is compiled with versions 4.1.x or
+      4.2.x of g++ (the cplusplus compiler, and not gcc); here is the output
+      after applying this patch:
+      Statements for trigger_crosslevel:
+      finding declared globals:.
+      *** ERROR: ***
+      DEC_AlreadySeen: DEC_FileCtr: 690563383 (fname: triggers.hc)
+      This patch will stay in until I find the reason for this. [FIXED: see
+      below.]
+    * utils: fixed the buffer overrun in dhcc when compiled with g++ 4.1.x
+      and 4.2.x: the overwrite happened in function DccStatement() at line
+      278 when decompiling the trigger_crosslevel (triggers.hc) which has
+      a very very long if condition (see the source file itself...)  the
+      solution was to increase the size of dsline buffer from 512 to 2048
+      (just in case). it seems like we may need to dynamically allocate the
+      buffers someday. maybe start using snprintf, strlcat and strlcpy, too?
+    * updated release notes for the upcoming 1.4.3 version.
+
 2007-11-12 (CVS):
     * more constifications (#4): things I missed in vid_dos.c/vid_dos.h.
     * x86 assembly is needed for dos-hexen2: adjusted the makefile for it.
