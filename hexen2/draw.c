@@ -2,7 +2,7 @@
 	draw.c
 	This is the only file outside the refresh that touches the vid buffer.
 
-	$Id: draw.c,v 1.46 2007-11-11 13:17:39 sezero Exp $
+	$Id: draw.c,v 1.47 2007-11-14 07:32:20 sezero Exp $
 */
 
 
@@ -241,16 +241,15 @@ It can be clipped to the top of the screen to allow the console to be
 smoothly scrolled off.
 ================
 */
-void Draw_Character (int x, int y, const unsigned int num)
+void Draw_Character (int x, int y, unsigned int num)
 {
-	byte			*dest;
-	byte			*source;
+	byte		*dest;
+	byte		*source;
 	unsigned short	*pusdest;
-	int				drawline;
-	int				row, col;
-	unsigned int			c = num;
+	int		drawline;
+	int		row, col;
 
-	c &= 511;
+	num &= 511;
 
 	if (y <= -8)
 		return;			// totally off screen
@@ -258,8 +257,8 @@ void Draw_Character (int x, int y, const unsigned int num)
 	if (y > vid.height - 8 || x < 0 || x > vid.width - 8)
 		return;
 
-	row = c>>5;
-	col = c&31;
+	row = num >> 5;
+	col = num & 31;
 	source = draw_chars + (row<<11) + (col<<3);
 
 	if (y < 0)
@@ -453,28 +452,27 @@ void Draw_Crosshair (void)
 //
 //==========================================================================
 
-void Draw_SmallCharacter(int x, int y, const int num)
+void Draw_SmallCharacter (int x, int y, int num)
 {
 	byte		*dest, *source;
 	unsigned short	*pusdest;
 	int		height, row, col;
-	int		c = num;
 
-	if (c < 32)
+	if (num < 32)
 	{
-		c = 0;
+		num = 0;
 	}
-	else if (c >= 'a' && c <= 'z')
+	else if (num >= 'a' && num <= 'z')
 	{
-		c -= 64;
+		num -= 64;
 	}
-	else if (c > '_')
+	else if (num > '_')
 	{
-		c = 0;
+		num = 0;
 	}
 	else
 	{
-		c -= 32;
+		num -= 32;
 	}
 
 	if (y >= vid.height)
@@ -489,22 +487,22 @@ void Draw_SmallCharacter(int x, int y, const int num)
 	}
 #endif
 
-	if (y+5 > vid.height)
+	if (y + 5 > vid.height)
 	{
-		height = vid.height-y;
+		height = vid.height - y;
 	}
 	else
 	{
 		height = 5;
 	}
 
-	row = c>>4;
-	col = c&15;
-	source = draw_smallchars+(row<<10)+(col<<3);
+	row = num >> 4;
+	col = num & 15;
+	source = draw_smallchars + (row<<10) + (col<<3);
 
 	if (r_pixbytes == 1)
 	{
-		dest = vid.buffer+y*vid.rowbytes+x;
+		dest = vid.buffer + y*vid.rowbytes + x;
 		while (height--)
 		{
 			switch (trans_level)
@@ -572,7 +570,7 @@ void Draw_SmallCharacter(int x, int y, const int num)
 	else
 	{ // FIXME: pre-expand to native format?
 		pusdest = (unsigned short *)
-			((byte *)vid.buffer+y*vid.rowbytes+(x<<1));
+				((byte *)vid.buffer + y*vid.rowbytes + (x<<1));
 		while (height--)
 		{
 			if (source[0])

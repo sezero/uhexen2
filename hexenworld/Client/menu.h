@@ -1,7 +1,7 @@
 /*
 	menu.h
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/menu.h,v 1.8 2007-11-11 13:17:44 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/menu.h,v 1.9 2007-11-14 07:32:21 sezero Exp $
 */
 
 #ifndef __HX2_MENU_H
@@ -31,7 +31,7 @@ void M_Print2 (int cx, int cy, const char *str);
 void M_PrintWhite (int cx, int cy, const char *str);
 
 void M_Draw (void);
-void M_DrawCharacter (int cx, int line, const int num);
+void M_DrawCharacter (int cx, int line, int num);
 
 void M_DrawPic (int x, int y, qpic_t *pic);
 void M_DrawTransPic (int x, int y, qpic_t *pic);

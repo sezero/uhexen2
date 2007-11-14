@@ -1,7 +1,7 @@
 /*
 	menu.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/menu.c,v 1.104 2007-11-11 13:17:40 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/menu.c,v 1.105 2007-11-14 07:32:20 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -218,7 +218,7 @@ M_DrawCharacter
 Draws one solid graphics character, centered, on line
 ================
 */
-void M_DrawCharacter (int cx, int line, const int num)
+void M_DrawCharacter (int cx, int line, int num)
 {
 	Draw_Character ( cx + ((vid.width - 320)>>1), line, num);
 }
@@ -240,7 +240,7 @@ M_DrawCharacter2
 Draws one solid graphics character, centered H and V
 ================
 */
-static void M_DrawCharacter2 (int cx, int line, const int num)
+static void M_DrawCharacter2 (int cx, int line, int num)
 {
 	Draw_Character ( cx + ((vid.width - 320)>>1), line + ((vid.height - 200)>>1), num);
 }
@@ -580,52 +580,46 @@ static void M_BuildBigCharWidth (void)
 	FS_WriteFile (BIGCHAR_WIDTH_FILE, BigCharWidth, sizeof(BigCharWidth));
 }
 
-static int M_DrawBigCharacter (int x, int y, const int num, const int numNext)
+static int M_DrawBigCharacter (int x, int y, int num, int numNext)
 {
-	int	add, c, cNext;
+	int		add;
 
 	if (num == ' ')
 		return 32;
 
-	c = num;
-	cNext = numNext;
-
-	if (c == '/')
-		c = 26;
+	if (num == '/')
+		num = 26;
 	else
-		c -= 65;
+		num -= 65;
 
-	if (c < 0 || c >= 27)	// only a-z and /
+	if (num < 0 || num >= 27)	// only a-z and /
 		return 0;
 
-	if (cNext == '/')
-		cNext = 26;
+	if (numNext == '/')
+		numNext = 26;
 	else
-		cNext -= 65;
+		numNext -= 65;
 
-	Draw_BigCharacter (x, y, c);
+	Draw_BigCharacter (x, y, num);
 
-	if (cNext < 0 || cNext >= 27)
+	if (numNext < 0 || numNext >= 27)
 		return 0;
 
 	add = 0;
-	if (c == (int)'C'-65 && cNext == (int)'P'-65)
+	if (num == (int)'C'-65 && numNext == (int)'P'-65)
 		add = 3;
 
-	return BigCharWidth[c][cNext] + add;
+	return BigCharWidth[num][numNext] + add;
 }
 
 static void M_DrawBigString(int x, int y, const char *string)
 {
-	int		_x = x;
-	const char	*p = string;
+	x += ((vid.width - 320)>>1);
 
-	_x += ((vid.width - 320)>>1);
-
-	while (*p)
+	while (*string)
 	{
-		_x += M_DrawBigCharacter(_x, y, *p, *(p+1));
-		++p;
+		x += M_DrawBigCharacter(x, y, string[0], string[1]);
+		++string;
 	}
 }
 

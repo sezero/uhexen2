@@ -2,7 +2,7 @@
 	gl_draw.c
 	this is the only file outside the refresh that touches the vid buffer
 
-	$Id: gl_draw.c,v 1.128 2007-11-11 13:17:39 sezero Exp $
+	$Id: gl_draw.c,v 1.129 2007-11-14 07:32:20 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -486,22 +486,21 @@ It can be clipped to the top of the screen to allow the console to be
 smoothly scrolled off.
 ================
 */
-void Draw_Character (int x, int y, const unsigned int num)
+void Draw_Character (int x, int y, unsigned int num)
 {
 	int		row, col;
-	unsigned int	c = num;
 	float	frow, fcol, xsize,ysize;
 
-	c &= 511;
+	num &= 511;
 
-	if (c == 32)
+	if (num == 32)
 		return;		// space
 
 	if (y <= -8)
 		return;		// totally off screen
 
-	row = c>>5;
-	col = c&31;
+	row = num >> 5;
+	col = num & 31;
 
 	xsize = 0.03125;
 	ysize = 0.0625;
@@ -600,37 +599,36 @@ void Draw_Crosshair (void)
 // screen.
 //
 //==========================================================================
-void Draw_SmallCharacter (int x, int y, const int num)
+void Draw_SmallCharacter (int x, int y, int num)
 {
 	int		row, col;
-	int		c = num;
 	float	frow, fcol, xsize,ysize;
 
-	if (c < 32)
+	if (num < 32)
 	{
-		c = 0;
+		num = 0;
 	}
-	else if (c >= 'a' && c <= 'z')
+	else if (num >= 'a' && num <= 'z')
 	{
-		c -= 64;
+		num -= 64;
 	}
-	else if (c > '_')
+	else if (num > '_')
 	{
-		c = 0;
+		num = 0;
 	}
 	else
 	{
-		c -= 32;
+		num -= 32;
 	}
 
-	if (c == 0)
+	if (num == 0)
 		return;
 
 	if (y <= -8 || y >= vid.height)
 		return; 	// totally off screen
 
-	row = c>>4;
-	col = c&15;
+	row = num >> 4;
+	col = num & 15;
 
 	xsize = 0.0625;
 	ysize = 0.25;

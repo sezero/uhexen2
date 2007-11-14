@@ -3,7 +3,7 @@
 	these are the only functions outside the refresh
 	allowed to touch the vid buffer
 
-	$Id: draw.h,v 1.28 2007-11-11 13:17:39 sezero Exp $
+	$Id: draw.h,v 1.29 2007-11-14 07:32:20 sezero Exp $
 */
 
 #ifndef __HX2_DRAW_H
@@ -52,9 +52,9 @@ void Draw_TileClear (int x, int y, int w, int h);
 void Draw_Fill (int x, int y, int w, int h, int c);
 void Draw_FadeScreen (void);
 
-void Draw_Character (int x, int y, const unsigned int num);
+void Draw_Character (int x, int y, unsigned int num);
 void Draw_String (int x, int y, const char *str);
-void Draw_SmallCharacter (int x, int y, const int num);
+void Draw_SmallCharacter (int x, int y, int num);
 void Draw_SmallString (int x, int y, const char *str);
 void Draw_RedString (int x, int y, const char *str);
 void Draw_BigCharacter (int x, int y, int num);

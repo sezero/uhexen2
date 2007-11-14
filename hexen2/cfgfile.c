@@ -2,7 +2,7 @@
 	cfgfile.c
 	misc reads from the config file
 
-	$Id: cfgfile.c,v 1.2 2007-04-18 13:30:52 sezero Exp $
+	$Id: cfgfile.c,v 1.3 2007-11-14 07:32:20 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -21,7 +21,7 @@ the num_vars argument must be the exact number of strings in the
 array, otherwise I have nothing against going out of bounds.
 ===================
 */
-void CFG_ReadCvars (const char **vars, const int num_vars)
+void CFG_ReadCvars (const char **vars, int num_vars)
 {
 	char	buff[1024], *tmp;
 	int			i, j;
