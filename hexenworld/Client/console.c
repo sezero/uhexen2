@@ -2,7 +2,7 @@
 	console.c
 	in-game console and chat message buffer handling
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/console.c,v 1.32 2007-09-22 15:27:17 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/console.c,v 1.33 2007-11-16 10:24:57 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -28,10 +28,6 @@ static	cvar_t	con_notifytime = {"con_notifytime", "3", CVAR_NONE};	//seconds
 static float	con_times[NUM_CON_TIMES];	// realtime time the line was generated
 						// for transparent notify lines
 
-extern	char	key_lines[32][MAXCMDLINE];
-extern	int		edit_line;
-extern	int		key_linepos;
-extern	int		key_insert;
 extern qboolean		menu_disabled_mouse;
 
 

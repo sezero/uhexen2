@@ -2,7 +2,7 @@
 	keys.h
 	key definitions and keyboard public functions
 
-	$Id: keys.h,v 1.12 2007-11-11 13:17:40 sezero Exp $
+	$Id: keys.h,v 1.13 2007-11-16 10:24:57 sezero Exp $
 */
 
 #ifndef __HX2_KEYS_H
@@ -110,9 +110,14 @@
 typedef enum {key_game, key_console, key_message, key_menu} keydest_t;
 
 extern keydest_t	key_dest;
-extern char *keybindings[256];
+extern	char	*keybindings[256];
 extern	int		key_count;			// incremented every key event
 extern	int		key_lastpress;
+
+extern	char	key_lines[32][MAXCMDLINE];
+extern	int		edit_line;
+extern	int		key_linepos;
+extern	int		key_insert;
 
 void Key_Event (int key, qboolean down);
 void Key_Init (void);

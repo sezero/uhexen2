@@ -2,7 +2,7 @@
 	host_cmd.c
 	console commands
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host_cmd.c,v 1.96 2007-11-11 13:54:56 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host_cmd.c,v 1.97 2007-11-16 10:24:57 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -1813,10 +1813,6 @@ static void Host_Begin_f (void)
 
 
 dfunction_t *ED_FindFunctioni (const char *fn_name);
-
-extern char	key_lines[32][MAXCMDLINE];
-extern int		key_linepos;
-extern int		edit_line;
 
 static int strdiff (const char *s1, const char *s2)
 {
