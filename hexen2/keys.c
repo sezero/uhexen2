@@ -2,7 +2,7 @@
 	keys.c
 	key up events are sent even if in console mode
 
-	$Id: keys.c,v 1.37 2007-11-11 13:17:39 sezero Exp $
+	$Id: keys.c,v 1.38 2007-11-16 10:28:13 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -137,52 +137,54 @@ static keyname_t keynames[] =
 static void CompleteCommand (void)
 {
 	const char	*matches[MAX_MATCHES];
-	char		*s, stmp[MAXCMDLINE];
-	qboolean	editing, partial;
-	int	count = 0, i, j;
+	char		backup[MAXCMDLINE];
+	char		c, *prefix, *workline;
+	qboolean	editing;
+	int		count = 0, i;
+	size_t		len1, len2;
 
 	if (key_linepos < 2)
 		return;
 
-	editing = false;
-	partial = true;
+	workline = key_lines[edit_line];
+	c = workline[key_linepos];
+	editing = (c != 0);
 
-	if (strlen(key_lines[edit_line]+1) >= key_linepos)
+	if (editing)
 	{
-		editing = true;
 		// make a copy of the text starting from the
 		// cursor position (see below)
-		q_strlcpy(stmp, key_lines[edit_line]+key_linepos, sizeof(stmp));
+		q_strlcpy(backup, workline + key_linepos, sizeof(backup));
 	}
 
-	s = key_lines[edit_line]+1;
 	// complete the text only up to the cursor position:
 	// bash style. cut off the rest for now.
-	// 2005-12-15: actually no harm in trimming when not
-	// in edit mode as well
-	//if (editing)
-		s[key_linepos-1] = 0;
+	workline[key_linepos] = 0;
+	prefix = workline + 1;
 
 	// skip the leading whitespace and command markers
-	while (*s)
+	while (*prefix)
 	{
-		if (*s != '\\' && *s != '/' && *s > ' ')
+		if (*prefix != '\\' && *prefix != '/' && *prefix > ' ')
 			break;
-		s++;
+		++prefix;
 	}
 
 	// if the remainder line has no length or has
 	// spaces in it, don't bother
-	if (!*s || strstr(s," "))
-		goto finish;
+	if (!*prefix || strstr(prefix," "))
+	{
+		workline[key_linepos] = c;
+		return;
+	}
 
 	// store the length of the relevant partial
-	j = strlen(s);
+	len1 = len2 = strlen(prefix);
 
 	// start checking for matches, finally...
-	count += ListCommands(s, matches, count);
-	count += ListCvars(s, matches, count);
-	count += ListAlias(s, matches, count);
+	count += ListCommands(prefix, matches, count);
+	count += ListCvars(prefix, matches, count);
+	count += ListAlias(prefix, matches, count);
 
 	if (count)
 	{
@@ -190,12 +192,12 @@ static void CompleteCommand (void)
 		// unless there is only one match
 		if (count == 1)
 		{
-		//	key_lines[edit_line][1] = '/';
-		//	q_strlcpy (key_lines[edit_line]+2, matches[0], MAXCMDLINE-2);
-		//	key_linepos = strlen(matches[0])+2;
-			q_strlcpy (key_lines[edit_line]+1, matches[0], MAXCMDLINE-1);
-			key_linepos = strlen(matches[0])+1;
-			key_lines[edit_line][key_linepos] = ' ';
+		//	workline[1] = '/';
+		//	q_strlcpy (workline + 2, matches[0], MAXCMDLINE-2);
+		//	key_linepos = 2 + strlen(matches[0]);
+			q_strlcpy (workline + 1, matches[0], MAXCMDLINE-1);
+			key_linepos = 1 + strlen(matches[0]);
+			workline[key_linepos] = ' ';
 			key_linepos++;
 		}
 		else
@@ -217,37 +219,33 @@ static void CompleteCommand (void)
 
 			// cycle throgh all matches and see
 			// if there is a partial completion
-			while (partial)
+		_search:
+			for (i = 1; i < count && i < MAX_MATCHES; i++)
 			{
-				for (i = 1; i < count && i < MAX_MATCHES; i++)
-				{
-				//	if (memcmp (matches[0], matches[i], j+1))
-					if (strncmp(matches[0], matches[i], j+1))
-						partial = false;
-				}
-
-				if (partial)
-					j++;
+				if (matches[0][len2] != matches[i][len2])
+					goto _check;
 			}
-
-			if (j > strlen(s))	// found a partial match
+			++len2;
+			goto _search;
+		_check:
+			if (len2 > len1)	// found a partial match
 			{
-			//	key_lines[edit_line][1] = '/';
-			//	strncpy (key_lines[edit_line]+2, matches[0], j);
-			//	key_linepos = j+2;
-				strncpy (key_lines[edit_line]+1, matches[0], j);
-				key_linepos = j+1;
+			//	workline[1] = '/';
+			//	strncpy (workline + 2, matches[0], len2);
+			//	key_linepos = len2 + 2;
+				strncpy (workline + 1, matches[0], len2);
+				key_linepos = len2 + 1;
 			}
 		}
 
-		key_lines[edit_line][key_linepos] = 0;
+		workline[key_linepos] = 0;
 	}
-finish:
+
 	if (editing)
 	{
 		// put back the remainder of the original text
 		// which was lost after the trimming
-		q_strlcpy (key_lines[edit_line]+key_linepos, stmp, MAXCMDLINE-key_linepos);
+		q_strlcpy (workline + key_linepos, backup, MAXCMDLINE-key_linepos);
 	}
 }
 
@@ -260,16 +258,16 @@ Interactive line editing and console scrollback
 */
 static void Key_Console (int key)
 {
-	int		i, history_line_last;
-#ifdef PLATFORM_WINDOWS
-	HANDLE	th;
-	char	*clipText, *textCopied;
-#endif
-	if (key == K_ENTER)
+	int	history_line_last;
+	size_t		len;
+	char	*workline = key_lines[edit_line];
+
+	switch (key)
 	{
-		Cbuf_AddText (key_lines[edit_line]+1);	// skip the >
+	case K_ENTER:
+		Cbuf_AddText (workline + 1);	// skip the >
 		Cbuf_AddText ("\n");
-		Con_Printf ("%s\n",key_lines[edit_line]);
+		Con_Printf ("%s\n", workline);
 		edit_line = (edit_line + 1) & 31;
 		history_line = edit_line;
 		key_lines[edit_line][0] = ']';
@@ -279,65 +277,92 @@ static void Key_Console (int key)
 			SCR_UpdateScreen ();	// force an update, because the command
 								// may take some time
 		return;
-	}
 
-	if (key == K_TAB)
-	{	// command completion
+	case K_TAB:
 		CompleteCommand ();
 		return;
-	}
 
-	// left arrow will just move left one w/o earsing, backspace will
-	// actually erase charcter
-	if (key == K_LEFTARROW)
-	{
-		if (key_linepos > 1)
-			key_linepos--;
+	case K_LEFTARROW:
+		if (key_linepos < 2)
+			return;
+		if (keydown[K_CTRL])
+		{
+		/* ctrl - left, word processor style: first,
+		 * move to the ending of previous word, then
+		 * move to its beginning
+		 */
+			char *p = workline + key_linepos - 1;
+			while (p != workline && *p == ' ')
+				--p;
+			while (p != workline)
+			{
+				if (*--p == ' ')
+					break;
+			}
+			key_linepos = (int)(p - workline) + 1;
+		}
+		else	/* simple cursor-to-left, only. */
+		{
+			--key_linepos;
+		}
 		return;
-	}
 
-	if (key == K_BACKSPACE)	// delete char before cursor
-	{
+	case K_RIGHTARROW:
+		if (!workline[key_linepos])
+			return;
+		if (keydown[K_CTRL])
+		{
+		/* ctrl - right, word processor style: if
+		 * we are on a text move to its end, then
+		 * move to the beginning of the next word
+		 */
+			char *p = workline + key_linepos;
+			while (*p && *p != ' ')
+				++p;
+			while (*p && *p == ' ')
+				++p;
+			key_linepos = (int)(p - workline);
+		}
+		else	/* simple cursor-to-right only. */
+		{
+			++key_linepos;
+		}
+		return;
+
+	case K_BACKSPACE:
 		if (key_linepos > 1)
 		{
-			strcpy(key_lines[edit_line] + key_linepos - 1, key_lines[edit_line] + key_linepos);
+			workline += key_linepos - 1;
+			if (workline[1])
+			{
+				len = strlen(workline);
+				memmove (workline, workline + 1, len);
+			}
+			else
+				*workline = 0;
 			key_linepos--;
 		}
 		return;
-	}
 
-	if (key == K_DEL)	// delete char on cursor
-	{
-		if (key_linepos < strlen(key_lines[edit_line]))
-			strcpy(key_lines[edit_line] + key_linepos, key_lines[edit_line] + key_linepos + 1);
-		return;
-	}
-
-	// if we're at the end, get one character from previous line,
-	// otherwise just go right one
-	if (key == K_RIGHTARROW)
-	{
-		if (strlen(key_lines[edit_line]) == key_linepos)
+	case K_DEL:
+		workline += key_linepos;
+		if (*workline)
 		{
-			if (strlen(key_lines[(edit_line + 31) & 31]) <= key_linepos)
-				return;	// no character to get
-			key_lines[edit_line][key_linepos] = key_lines[(edit_line + 31) & 31][key_linepos];
-			key_linepos++;
-			key_lines[edit_line][key_linepos] = 0;
+			if (workline[1])
+			{
+				len = strlen(workline);
+				memmove (workline, workline + 1, len);
+			}
+			else
+				*workline = 0;
 		}
-		else
-			key_linepos++;
 		return;
-	}
 
-	if (key == K_INS)
-	{	// toggle insert mode
+	case K_INS:
 		key_insert ^= 1;
 		return;
-	}
 
-	if (key == K_UPARROW)
-	{
+	case K_UPARROW:
 		history_line_last = history_line;
 		do
 		{
@@ -347,13 +372,11 @@ static void Key_Console (int key)
 		if (history_line == edit_line)
 			history_line = history_line_last;
 
-		strcpy(key_lines[edit_line], key_lines[history_line]);
-		key_linepos = strlen(key_lines[edit_line]);
+		strcpy(workline, key_lines[history_line]);
+		key_linepos = strlen(workline);
 		return;
-	}
 
-	if (key == K_DOWNARROW)
-	{
+	case K_DOWNARROW:
 		if (history_line == edit_line)
 			return;
 
@@ -365,51 +388,43 @@ static void Key_Console (int key)
 
 		if (history_line == edit_line)
 		{
-			key_lines[edit_line][0] = ']';
-			key_lines[edit_line][1] = 0;
+			workline[0] = ']';
+			workline[1] = 0;
 			key_linepos = 1;
 		}
 		else
 		{
-			strcpy(key_lines[edit_line], key_lines[history_line]);
-			key_linepos = strlen(key_lines[edit_line]);
+			strcpy(workline, key_lines[history_line]);
+			key_linepos = strlen(workline);
 		}
 		return;
-	}
 
-	if (key == K_PGUP || key == K_MWHEELUP)
-	{
+	case K_PGUP:
+	case K_MWHEELUP:
 		con_backscroll += 2;
 		if (con_backscroll > con_totallines - (vid.height>>3) - 1)
 			con_backscroll = con_totallines - (vid.height>>3) - 1;
 		return;
-	}
 
-	if (key == K_PGDN || key == K_MWHEELDOWN)
-	{
+	case K_PGDN:
+	case K_MWHEELDOWN:
 		con_backscroll -= 2;
 		if (con_backscroll < 0)
 			con_backscroll = 0;
 		return;
-	}
 
-	if (key == K_HOME)
-	{
+	case K_HOME:
 		if (keydown[K_CTRL])
 			con_backscroll = con_totallines - (vid.height>>3) - 1;
 		else
 			key_linepos = 1;
-
 		return;
-	}
 
-	if (key == K_END)
-	{
+	case K_END:
 		if (keydown[K_CTRL])
 			con_backscroll = 0;
 		else
-			key_linepos = strlen(key_lines[edit_line]);
-
+			key_linepos = strlen(workline);
 		return;
 	}
 
@@ -418,9 +433,10 @@ static void Key_Console (int key)
 	{
 		if (OpenClipboard(NULL))
 		{
-			th = GetClipboardData(CF_TEXT);
+			HANDLE	th = GetClipboardData(CF_TEXT);
 			if (th)
 			{
+				char	*clipText, *textCopied;
 				clipText = (char *) GlobalLock(th);
 				if (clipText)
 				{
@@ -428,14 +444,14 @@ static void Key_Console (int key)
 					strcpy(textCopied, clipText);
 					/* Substitute a NULL for every token */
 					strtok(textCopied, "\n\r\b");
-					i = strlen(textCopied);
-					if (i + key_linepos >= MAXCMDLINE)
-						i = MAXCMDLINE-key_linepos;
-					if (i > 0)
+					len = strlen(textCopied);
+					if (len + key_linepos >= MAXCMDLINE)
+						len = MAXCMDLINE - key_linepos;
+					if (len)
 					{
-						textCopied[i] = 0;
-						strcat(key_lines[edit_line], textCopied);
-						key_linepos += i;
+						textCopied[len] = 0;
+						strcat(workline, textCopied);
+						key_linepos += len;
 					}
 					Z_Free(textCopied);
 				}
@@ -450,23 +466,27 @@ static void Key_Console (int key)
 	if (key < 32 || key > 127)
 		return;	// non printable
 
-	if (key_linepos < MAXCMDLINE-1)
+	if (key_linepos < MAXCMDLINE - 1)
 	{
-		// check insert mode
-		if (key_insert)
-		{	// can't do strcpy to move string to right
-			i = strlen(key_lines[edit_line]) - 1;
-			if (i == 254)
-				i--;
-			for ( ; i >= key_linepos; i--)
-				key_lines[edit_line][i + 1] = key_lines[edit_line][i];
+		qboolean endpos = !workline[key_linepos];
+		// if inserting, move the text to the right
+		if (key_insert && !endpos)
+		{
+			workline[MAXCMDLINE - 2] = 0;
+			workline += key_linepos;
+			len = strlen(workline) + 1;
+			memmove (workline + 1, workline, len);
+			*workline = key;
 		}
-		// only null terminate if at the end
-		i = key_lines[edit_line][key_linepos];
-		key_lines[edit_line][key_linepos] = key;
+		else
+		{
+			workline += key_linepos;
+			*workline = key;
+			// null terminate if at the end
+			if (endpos)
+				workline[1] = 0;
+		}
 		key_linepos++;
-		if (!i)
-			key_lines[edit_line][key_linepos] = 0;
 	}
 }
 
