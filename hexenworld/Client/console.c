@@ -2,7 +2,7 @@
 	console.c
 	in-game console and chat message buffer handling
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/console.c,v 1.33 2007-11-16 10:24:57 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/console.c,v 1.34 2007-11-16 10:26:09 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -468,35 +468,32 @@ The input line scrolls horizontally if typing goes beyond the right edge
 */
 static void Con_DrawInput (void)
 {
-	int		y;
-	int		i;
-	char	editlinecopy[256], *text;
+	int		i, y;
+	size_t		pos;
+	char	editlinecopy[MAXCMDLINE], *text;
 
 	if (key_dest != key_console && cls.state == ca_active)
 		return;		// don't draw anything (always draw if not active)
 
-	q_strlcpy(editlinecopy, key_lines[edit_line], sizeof(editlinecopy));
+	pos = q_strlcpy(editlinecopy, key_lines[edit_line], sizeof(editlinecopy));
 	text = editlinecopy;
 
-	y = strlen(text);
-
 // fill out remainder with spaces
-	for (i = y; i < 256; i++)
-		text[i] = ' ';
+	for ( ; pos < MAXCMDLINE; ++pos)
+		text[pos] = ' ';
 
 // add the cursor frame
 	if ((int)(realtime * con_cursorspeed) & 1)	// cursor is visible
-		text[key_linepos] = 95 - 84 * key_insert; // underscore for overwrite mode, square for insert
+		text[key_linepos] = (key_insert) ? 11 : 95; // underscore for overwrite mode, square for insert
 
 //	prestep if horizontally scrolling
 	if (key_linepos >= con_linewidth)
 		text += 1 + key_linepos - con_linewidth;
 
 // draw it
-	y = con_vislines-22;
-
+	y = con_vislines - 22;
 	for (i = 0; i < con_linewidth; i++)
-		Draw_Character ( (i+1)<<3, con_vislines - 22, text[i]);
+		Draw_Character ((i + 1)<<3, y, text[i]);
 
 // remove cursor
 	//key_lines[edit_line][key_linepos] = 0;
