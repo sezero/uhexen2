@@ -2,7 +2,7 @@
 	net_loop.c
 	network loop driver
 
-	$Id: net_loop.c,v 1.7 2007-11-11 13:17:40 sezero Exp $
+	$Id: net_loop.c,v 1.8 2007-11-16 10:23:17 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -128,7 +128,7 @@ int Loop_GetMessage (qsocket_t *sock)
 	sock->receiveMessageLength -= length;
 
 	if (sock->receiveMessageLength)
-		memcpy(sock->receiveMessage, &sock->receiveMessage[length], sock->receiveMessageLength);
+		memmove (sock->receiveMessage, &sock->receiveMessage[length], sock->receiveMessageLength);
 
 	if (sock->driverdata && ret == 1)
 		((qsocket_t *)sock->driverdata)->canSend = true;

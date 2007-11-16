@@ -2,7 +2,7 @@
 	cmd.c
 	Quake script command processing module
 
-	$Id: cmd.c,v 1.40 2007-11-11 13:17:38 sezero Exp $
+	$Id: cmd.c,v 1.41 2007-11-16 10:23:16 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -175,7 +175,7 @@ void Cbuf_Execute (void)
 		{
 			i++;
 			cmd_text.cursize -= i;
-			memcpy (text, text+i, cmd_text.cursize);
+			memmove (text, text + i, cmd_text.cursize);
 		}
 
 // execute the command line
