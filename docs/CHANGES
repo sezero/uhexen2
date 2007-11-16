@@ -3,6 +3,17 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2007-11-16 (CVS):
+    * using memcpy within the same buffer is not safe: replaced such calls
+      in cmd.c, net_dgrm.c and net_loop.c with memmove calls.
+    * exported edit_line, key_linepos, key_insert and key_lines through keys.h
+      and removed the relevant externs from source files.
+    * tiny clean-up in Con_DrawInput().
+    * keys.c clean-up: used memmove calls when moving text in the same buffer.
+      removed some weird behavior with the rightarrow. added word processor
+      style ctrl-right and ctrl-left handling.
+    * updated release notes for 1.4.3 (2007-11-16.)
+
 2007-11-14 (CVS):
     * commented out the unused introdemofile from client_static structure.
     * more constifications (#6): made COM_SkipPath to return const.
