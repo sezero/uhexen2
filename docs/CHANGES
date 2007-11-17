@@ -3,6 +3,10 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2007-11-17 (CVS):
+    * made Sys_Error to pop up an alert panel on Mac OS X.
+    * synchronized the Mac OS X Xcode project files with Levent's latest.
+
 2007-11-16 (CVS):
     * using memcpy within the same buffer is not safe: replaced such calls
       in cmd.c, net_dgrm.c and net_loop.c with memmove calls.
