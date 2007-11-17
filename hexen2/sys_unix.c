@@ -2,7 +2,7 @@
 	sys_unix.c
 	Unix system interface code
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sys_unix.c,v 1.100 2007-11-11 13:17:41 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sys_unix.c,v 1.101 2007-11-17 20:32:57 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -184,6 +184,12 @@ static void Sys_Init (void)
 }
 
 
+#if defined(__MACOSX__)
+void Sys_ErrorMessage (const char *errorMsg);	/* in SDLMain.m */
+#else
+#define Sys_ErrorMessage(T)	do {} while (0)
+#endif
+
 #define ERROR_PREFIX	"\nFATAL ERROR: "
 void Sys_Error (const char *error, ...)
 {
@@ -204,6 +210,8 @@ void Sys_Error (const char *error, ...)
 	Host_Shutdown ();
 
 	fprintf(stderr, ERROR_PREFIX "%s\n\n", text);
+	if (!isDedicated)
+		Sys_ErrorMessage (text);
 
 	exit (1);
 }
