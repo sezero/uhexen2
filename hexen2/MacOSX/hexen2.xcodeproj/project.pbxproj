@@ -1024,6 +1024,7 @@
 					_THREAD_SAFE,
 				);
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				HEADER_SEARCH_PATHS = /Library/Frameworks/SDL.framework/Headers;
 				INFOPLIST_FILE = hexen2.plist;
 				OTHER_CFLAGS = "";
 				OTHER_LDFLAGS = "";
@@ -1059,6 +1060,7 @@
 					_THREAD_SAFE,
 				);
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				HEADER_SEARCH_PATHS = /Library/Frameworks/SDL.framework/Headers;
 				INFOPLIST_FILE = hexen2.plist;
 				OTHER_CFLAGS = "";
 				OTHER_LDFLAGS = "";

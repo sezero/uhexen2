@@ -132,8 +132,8 @@
 	};
 	707D575A0AA9F4B100313A9F /* Project object */ = {
 		activeBuildConfigurationName = Debug;
-		activeExecutable = 707D58EB0AA9FBB700313A9F /* glhexen2 */;
-		activeTarget = 707D58710AA9FBB700313A9F /* glhexen2 */;
+		activeExecutable = 70158C540AAF3C8800F6437C /* hexen2 */;
+		activeTarget = 70158BF20AAF3C8800F6437C /* hexen2 */;
 		addToTargets = (
 			707D58710AA9FBB700313A9F /* glhexen2 */,
 			70158BF20AAF3C8800F6437C /* hexen2 */,
@@ -201,7 +201,7 @@
 				PBXFileTableDataSourceColumnWidthsKey = (
 					20,
 					200,
-					63,
+					10,
 					20,
 					48,
 					43,
@@ -217,12 +217,18 @@
 					PBXFileDataSource_Warnings_ColumnID,
 				);
 			};
-			PBXPerProjectTemplateStateSaveDate = 203857535;
-			PBXWorkspaceStateSaveDate = 203857535;
+			PBXPerProjectTemplateStateSaveDate = 217014557;
+			PBXWorkspaceStateSaveDate = 217014557;
 		};
 		perUserProjectItems = {
 			708FC78D0C22992100CF46B0 = 708FC78D0C22992100CF46B0 /* PBXBookmark */;
 			708FC7A50C22EA5000CF46B0 = 708FC7A50C22EA5000CF46B0 /* PBXTextBookmark */;
+			70DE08330CEF629F001BD5DE /* PBXTextBookmark */ = 70DE08330CEF629F001BD5DE /* PBXTextBookmark */;
+			70DE08340CEF629F001BD5DE /* PBXTextBookmark */ = 70DE08340CEF629F001BD5DE /* PBXTextBookmark */;
+			70DE083C0CEF6880001BD5DE /* PBXTextBookmark */ = 70DE083C0CEF6880001BD5DE /* PBXTextBookmark */;
+			70DE083D0CEF6880001BD5DE /* PBXTextBookmark */ = 70DE083D0CEF6880001BD5DE /* PBXTextBookmark */;
+			70DE083E0CEF6880001BD5DE /* PBXTextBookmark */ = 70DE083E0CEF6880001BD5DE /* PBXTextBookmark */;
+			70DE083F0CEF6880001BD5DE /* PBXTextBookmark */ = 70DE083F0CEF6880001BD5DE /* PBXTextBookmark */;
 		};
 		sourceControlManager = 707D575E0AA9F4B100313A9F /* Source Control */;
 		userBuildSettings = {
@@ -266,9 +272,9 @@
 	};
 	707D57A20AA9F6EE00313A9F /* gl_vidsdl.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {743, 24216}}";
-			sepNavSelRange = "{20443, 59}";
-			sepNavVisRect = "{{0, 9553}, {743, 203}}";
+			sepNavIntBoundsRect = "{{0, 0}, {743, 24288}}";
+			sepNavSelRange = "{17017, 55}";
+			sepNavVisRect = "{{0, 7849}, {743, 203}}";
 			sepNavWindowFrame = "{{55, 22}, {515, 719}}";
 		};
 	};
@@ -356,6 +362,13 @@
 			sepNavVisRect = "{{0, 292}, {764, 180}}";
 		};
 	};
+	707D57CB0AA9F6EE00313A9F /* sdl_inc.h */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {743, 1092}}";
+			sepNavSelRange = "{138, 17}";
+			sepNavVisRect = "{{0, 0}, {743, 203}}";
+		};
+	};
 	707D57CF0AA9F6EE00313A9F /* snd_mix.c */ = {
 		uiCtxt = {
 			sepNavIntBoundsRect = "{{0, 0}, {542, 4716}}";
@@ -419,5 +432,61 @@
 		rType = 0;
 		vrLen = 960;
 		vrLoc = 3794;
+	};
+	70DE08330CEF629F001BD5DE /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		comments = "warning: format '%i' expects type 'int', but argument 3 has type 'GLint'";
+		fRef = 707D57A20AA9F6EE00313A9F /* gl_vidsdl.c */;
+		rLen = 1;
+		rLoc = 662;
+		rType = 1;
+	};
+	70DE08340CEF629F001BD5DE /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 707D57A20AA9F6EE00313A9F /* gl_vidsdl.c */;
+		name = "Con_SafePrintf(\"Found %i TMUs support\\n\", num_tmus);";
+		rLen = 55;
+		rLoc = 17017;
+		rType = 0;
+		vrLen = 473;
+		vrLoc = 16756;
+	};
+	70DE083C0CEF6880001BD5DE /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 707D57A20AA9F6EE00313A9F /* gl_vidsdl.c */;
+		name = "Con_SafePrintf(\"Found %i TMUs support\\n\", num_tmus);";
+		rLen = 55;
+		rLoc = 17017;
+		rType = 0;
+		vrLen = 473;
+		vrLoc = 16756;
+	};
+	70DE083D0CEF6880001BD5DE /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		comments = "error: SDL.h: No such file or directory";
+		fRef = 707D57CB0AA9F6EE00313A9F /* sdl_inc.h */;
+		rLen = 1;
+		rLoc = 10;
+		rType = 1;
+	};
+	70DE083E0CEF6880001BD5DE /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 707D57A20AA9F6EE00313A9F /* gl_vidsdl.c */;
+		name = "Con_SafePrintf(\"Found %i TMUs support\\n\", num_tmus);";
+		rLen = 55;
+		rLoc = 17017;
+		rType = 0;
+		vrLen = 473;
+		vrLoc = 16756;
+	};
+	70DE083F0CEF6880001BD5DE /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 707D57CB0AA9F6EE00313A9F /* sdl_inc.h */;
+		name = "#include \"SDL.h\"";
+		rLen = 17;
+		rLoc = 138;
+		rType = 0;
+		vrLen = 463;
+		vrLoc = 0;
 	};
 }
