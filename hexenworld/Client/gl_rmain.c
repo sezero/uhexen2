@@ -1,7 +1,7 @@
 /*
 	gl_main.c
 
-	$Id: gl_rmain.c,v 1.57 2007-09-29 18:10:25 sezero Exp $
+	$Id: gl_rmain.c,v 1.58 2007-11-22 08:22:26 sezero Exp $
 */
 
 
@@ -65,6 +65,7 @@ cvar_t	r_norefresh = {"r_norefresh", "0", CVAR_NONE};
 cvar_t	r_drawentities = {"r_drawentities", "1", CVAR_NONE};
 cvar_t	r_drawviewmodel = {"r_drawviewmodel", "1", CVAR_NONE};
 cvar_t	r_speeds = {"r_speeds", "0", CVAR_NONE};
+cvar_t	r_waterwarp = {"r_waterwarp", "0", CVAR_ARCHIVE};
 cvar_t	r_fullbright = {"r_fullbright", "0", CVAR_NONE};
 cvar_t	r_lightmap = {"r_lightmap", "0", CVAR_NONE};
 cvar_t	r_shadows = {"r_shadows", "0", CVAR_ARCHIVE};
@@ -95,7 +96,6 @@ cvar_t	gl_nocolors = {"gl_nocolors", "0", CVAR_NONE};
 cvar_t	gl_keeptjunctions = {"gl_keeptjunctions", "1", CVAR_ARCHIVE};
 cvar_t	gl_reporttjunctions = {"gl_reporttjunctions", "0", CVAR_NONE};
 cvar_t	gl_waterripple = {"gl_waterripple", "2", CVAR_ARCHIVE};
-cvar_t	gl_waterwarp = {"gl_waterwarp", "0", CVAR_ARCHIVE};
 cvar_t	gl_stencilshadow = {"gl_stencilshadow", "0", CVAR_ARCHIVE};
 cvar_t	gl_glows = {"gl_glows", "1", CVAR_ARCHIVE};
 cvar_t	gl_other_glows = {"gl_other_glows", "0", CVAR_ARCHIVE};

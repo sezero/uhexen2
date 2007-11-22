@@ -2,7 +2,7 @@
 	r_surf.c
 	surface-related refresh code
 
-	$Id: gl_rsurf.c,v 1.38 2007-09-22 15:27:18 sezero Exp $
+	$Id: gl_rsurf.c,v 1.39 2007-11-22 08:22:26 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -419,7 +419,7 @@ static void DrawGLWaterPoly (glpoly_t *p)
 	{
 		glTexCoord2f_fp (v[3], v[4]);
 
-		if (gl_waterwarp.integer)
+		if (r_waterwarp.integer)
 		{
 			nv[0] = v[0] + 8*sin(v[1]*0.05+realtime)*sin(v[2]*0.05+realtime);
 			nv[1] = v[1] + 8*sin(v[0]*0.05+realtime)*sin(v[2]*0.05+realtime);
@@ -446,7 +446,7 @@ static void DrawGLWaterPolyLightmap (glpoly_t *p)
 	{
 		glTexCoord2f_fp (v[5], v[6]);
 
-		if (gl_waterwarp.integer)
+		if (r_waterwarp.integer)
 		{
 			nv[0] = v[0] + 8*sin(v[1]*0.05+realtime)*sin(v[2]*0.05+realtime);
 			nv[1] = v[1] + 8*sin(v[0]*0.05+realtime)*sin(v[2]*0.05+realtime);
@@ -474,7 +474,7 @@ static void DrawGLWaterPolyMTexLM (glpoly_t *p)
 		glMultiTexCoord2fARB_fp (GL_TEXTURE0_ARB, v[3], v[4]);
 		glMultiTexCoord2fARB_fp (GL_TEXTURE1_ARB, v[5], v[6]);
 
-		if (gl_waterwarp.integer)
+		if (r_waterwarp.integer)
 		{
 			nv[0] = v[0] + 8*sin(v[1]*0.05+realtime)*sin(v[2]*0.05+realtime);
 			nv[1] = v[1] + 8*sin(v[0]*0.05+realtime)*sin(v[2]*0.05+realtime);

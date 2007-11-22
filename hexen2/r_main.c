@@ -1,7 +1,7 @@
 /*
 	r_main.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/r_main.c,v 1.27 2007-08-09 06:12:45 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/r_main.c,v 1.28 2007-11-22 08:22:26 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -129,7 +129,7 @@ cvar_t	r_speeds = {"r_speeds", "0", CVAR_NONE};
 cvar_t	r_timegraph = {"r_timegraph", "0", CVAR_NONE};
 cvar_t	r_graphheight = {"r_graphheight", "10", CVAR_NONE};
 cvar_t	r_clearcolor = {"r_clearcolor", "0", CVAR_NONE};
-cvar_t	r_waterwarp = {"r_waterwarp", "1", CVAR_NONE};
+cvar_t	r_waterwarp = {"r_waterwarp", "1", CVAR_ARCHIVE};
 cvar_t	r_fullbright = {"r_fullbright", "0", CVAR_NONE};
 cvar_t	r_drawentities = {"r_drawentities", "1", CVAR_NONE};
 cvar_t	r_drawviewmodel = {"r_drawviewmodel", "1", CVAR_NONE};

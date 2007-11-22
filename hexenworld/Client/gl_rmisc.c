@@ -1,7 +1,7 @@
 /*
 	r_misc.c
 
-	$Id: gl_rmisc.c,v 1.46 2007-09-22 15:27:18 sezero Exp $
+	$Id: gl_rmisc.c,v 1.47 2007-11-22 08:22:26 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -219,6 +219,7 @@ void R_Init (void)
 	Cvar_RegisterVariable (&r_norefresh);
 	Cvar_RegisterVariable (&r_lightmap);
 	Cvar_RegisterVariable (&r_fullbright);
+	Cvar_RegisterVariable (&r_waterwarp);
 	Cvar_RegisterVariable (&r_drawentities);
 	Cvar_RegisterVariable (&r_drawviewmodel);
 	Cvar_RegisterVariable (&r_shadows);
@@ -244,7 +245,6 @@ void R_Init (void)
 	Cvar_RegisterVariable (&gl_playermip);
 	Cvar_RegisterVariable (&gl_nocolors);
 	Cvar_RegisterVariable (&gl_waterripple);
-	Cvar_RegisterVariable (&gl_waterwarp);
 
 	Cvar_RegisterVariable (&gl_ztrick);
 	Cvar_RegisterVariable (&gl_purge_maptex);
