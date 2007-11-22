@@ -3,7 +3,7 @@
 	dos mouse (input devices) code.
 	from quake1 source with minor adaptations for uhexen2.
 
-	$Id: in_dos.c,v 1.2 2007-10-30 17:09:58 sezero Exp $
+	$Id: in_dos.c,v 1.3 2007-11-22 08:15:41 sezero Exp $
 
 	Copyright (C) 1996-1997  Id Software, Inc.
 
@@ -84,9 +84,11 @@ typedef struct
 static cvar_t	m_filter = {"m_filter", "1", CVAR_NONE};
 
 static	qboolean	mouse_avail;
+static	qboolean	mouse_wheel;
 static	int		mouse_buttons;
 static	int		mouse_oldbuttonstate;
 static	int		mouse_buttonstate;
+static	int		mouse_wheelcounter;
 static	float	mouse_x, mouse_y;
 static	float	old_mouse_x, old_mouse_y;
 
@@ -154,6 +156,15 @@ static void IN_StartupMouse (void)
 	if (mouse_buttons > 3)
 		mouse_buttons = 3;
 	Con_Printf("%d-button mouse available\n", mouse_buttons);
+	if (!COM_CheckParm ("-mwheel"))
+		return;
+	regs.x.ax = 0x11;
+	dos_int86(0x33);
+	if (regs.x.ax == 0x574D && regs.h.cl == 1)
+	{
+		mouse_wheel = true;
+		Con_Printf("mouse wheel support available\n");
+	}
 }
 
 /*
@@ -208,7 +219,8 @@ void IN_Commands (void)
 	{
 		regs.x.ax = 3;		// read buttons
 		dos_int86(0x33);
-		mouse_buttonstate = regs.x.bx;
+		mouse_buttonstate = regs.x.bx;	// regs.h.bl
+		mouse_wheelcounter = (signed char) regs.h.bh;
 	// perform button actions
 		for (i = 0; i < mouse_buttons; i++)
 		{
@@ -219,6 +231,19 @@ void IN_Commands (void)
 			if ( !(mouse_buttonstate & (1<<i)) && (mouse_oldbuttonstate & (1<<i)) )
 			{
 				Key_Event (K_MOUSE1 + i, false);
+			}
+		}
+		if (mouse_wheel)
+		{
+			if (mouse_wheelcounter < 0)
+			{
+				Key_Event (K_MWHEELUP, true);
+				Key_Event (K_MWHEELUP, false);
+			}
+			else if (mouse_wheelcounter > 0)
+			{
+				Key_Event (K_MWHEELDOWN, true);
+				Key_Event (K_MWHEELDOWN, false);
 			}
 		}
 
