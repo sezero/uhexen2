@@ -3,6 +3,15 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2007-11-22 (CVS):
+    * added mousewheel support for dos. the latest alpha version of cutemouse
+      driver (ctmouse 2.0a4) is needed. use the command line argument -mwheel
+      in order to use it if it is available. doesn't work under win9x dos box
+      because the windows driver will be in the way.
+    * made the cvar r_waterwarp value to be written to the config. replaced
+      the cvar gl_waterwarp with r_waterwarp in order to maintain consistency
+      between opengl and software versions.
+
 2007-11-17 (CVS):
     * made Sys_Error to pop up an alert panel on Mac OS X.
     * synchronized the Mac OS X Xcode project files with Levent's latest.
