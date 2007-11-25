@@ -1,7 +1,7 @@
 /*
 	menu.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/menu.c,v 1.74 2007-11-14 07:32:21 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/menu.c,v 1.75 2007-11-25 09:22:56 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -1568,7 +1568,7 @@ static void M_Video_Key (int key)
 static int		help_page;
 
 #define	NUM_HELP_PAGES		5
-#define	NUM_SG_HELP_PAGES	10	// Siege has more help
+#define	NUM_SG_HELP_PAGES	10	/* Siege has more help */
 
 static void M_Menu_Help_f (void)
 {

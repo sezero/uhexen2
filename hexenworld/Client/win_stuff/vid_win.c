@@ -2,7 +2,7 @@
 	vid_win.c
 	Win32 video driver using MGL-4.05
 
-	$Id: vid_win.c,v 1.56 2007-11-11 13:18:22 sezero Exp $
+	$Id: vid_win.c,v 1.57 2007-11-25 09:22:57 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -37,9 +37,6 @@ byte *lastsourcecolormap = NULL;
 
 static qboolean	dibonly;
 HWND		mainwindow;
-
-//intermission screen cache reference (to flush on video mode switch)
-extern	cache_user_t	*intermissionScreen;
 
 static int	DIBWidth, DIBHeight;
 qboolean	DDActive;
@@ -1678,10 +1675,6 @@ static int VID_SetMode (int modenum, unsigned char *palette)
 
 	CDAudio_Pause ();
 	S_ClearBuffer ();
-
-	//flush the intermission screen if it's cached (Pa3PyX)
-	if (intermissionScreen && intermissionScreen->data)
-		Cache_Free(intermissionScreen);
 
 	if (vid_modenum == NO_MODE)
 		original_mode = windowed_default;

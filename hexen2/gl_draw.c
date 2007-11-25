@@ -2,7 +2,7 @@
 	gl_draw.c
 	this is the only file outside the refresh that touches the vid buffer
 
-	$Id: gl_draw.c,v 1.129 2007-11-14 07:32:20 sezero Exp $
+	$Id: gl_draw.c,v 1.130 2007-11-25 09:22:54 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -225,63 +225,6 @@ qpic_t	*Draw_CachePic (const char *path)
 
 	return &pic->pic;
 }
-
-/*
-================
-Draw_CachePicNoTrans
-
-Pa3PyX: Function added to cache pics ignoring transparent
-colors (e.g. in intermission screens)
-================
-*/
-qpic_t *Draw_CachePicNoTrans (const char *path)
-{
-	cachepic_t	*pic;
-	int			i;
-	qpic_t		*dat;
-	glpic_t		*gl;
-
-	for (pic = menu_cachepics, i = 0; i < menu_numcachepics; pic++, i++)
-	{
-		if (!strcmp (path, pic->name))
-			return &pic->pic;
-	}
-
-	if (menu_numcachepics == MAX_CACHED_PICS)
-		Sys_Error ("menu_numcachepics == MAX_CACHED_PICS");
-	menu_numcachepics++;
-	q_strlcpy (pic->name, path, MAX_QPATH);
-
-//
-// load the pic from disk
-//
-	dat = (qpic_t *)FS_LoadTempFile (path);
-	Draw_PicCheckError (dat, path);
-	SwapPic (dat);
-
-	pic->pic.width = dat->width;
-	pic->pic.height = dat->height;
-
-	gl = (glpic_t *)pic->pic.data;
-	// Get rid of transparencies
-	for (i = 0; i < dat->width * dat->height; i++)
-	{
-		if (dat->data[i] == 255)
-			dat->data[i] = 31; // pal(31) == pal(255) == FCFCFC (white)
-	}
-	gl->texnum = GL_LoadPicTexture (dat);
-
-	glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-	gl->sl = 0;
-	gl->sh = 1;
-	gl->tl = 0;
-	gl->th = 1;
-
-	return &pic->pic;
-}
-
 
 glmode_t gl_texmodes[NUM_GL_FILTERS] =
 {
@@ -760,6 +703,63 @@ void Draw_AlphaPic (int x, int y, qpic_t *pic, float alpha)
 	glDisable_fp (GL_BLEND);
 }
 
+#if FULLSCREEN_INTERMISSIONS
+/*
+================
+Draw_CachePicNoTrans
+
+Pa3PyX: Function added to cache pics ignoring transparent
+colors (e.g. in intermission screens)
+================
+*/
+qpic_t *Draw_CachePicNoTrans (const char *path)
+{
+	cachepic_t	*pic;
+	int			i;
+	qpic_t		*dat;
+	glpic_t		*gl;
+
+	for (pic = menu_cachepics, i = 0; i < menu_numcachepics; pic++, i++)
+	{
+		if (!strcmp (path, pic->name))
+			return &pic->pic;
+	}
+
+	if (menu_numcachepics == MAX_CACHED_PICS)
+		Sys_Error ("menu_numcachepics == MAX_CACHED_PICS");
+	menu_numcachepics++;
+	q_strlcpy (pic->name, path, MAX_QPATH);
+
+//
+// load the pic from disk
+//
+	dat = (qpic_t *)FS_LoadTempFile (path);
+	Draw_PicCheckError (dat, path);
+	SwapPic (dat);
+
+	pic->pic.width = dat->width;
+	pic->pic.height = dat->height;
+
+	gl = (glpic_t *)pic->pic.data;
+	// Get rid of transparencies
+	for (i = 0; i < dat->width * dat->height; i++)
+	{
+		if (dat->data[i] == 255)
+			dat->data[i] = 31; // pal(31) == pal(255) == FCFCFC (white)
+	}
+	gl->texnum = GL_LoadPicTexture (dat);
+
+	glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+	gl->sl = 0;
+	gl->sh = 1;
+	gl->tl = 0;
+	gl->th = 1;
+
+	return &pic->pic;
+}
+
 /*
 =============
 Draw_IntermissionPic
@@ -792,6 +792,8 @@ void Draw_IntermissionPic (qpic_t *pic)
 	glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
 	glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 }
+#endif	/* FULLSCREEN_INTERMISSIONS */
+
 
 void Draw_SubPic (int x, int y, qpic_t *pic, int srcx, int srcy, int width, int height)
 {

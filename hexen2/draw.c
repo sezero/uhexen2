@@ -2,7 +2,7 @@
 	draw.c
 	This is the only file outside the refresh that touches the vid buffer.
 
-	$Id: draw.c,v 1.47 2007-11-14 07:32:20 sezero Exp $
+	$Id: draw.c,v 1.48 2007-11-25 09:22:54 sezero Exp $
 */
 
 
@@ -96,14 +96,14 @@ qpic_t	*Draw_CachePic (const char *path)
 }
 
 
+#if FULLSCREEN_INTERMISSIONS
 /*
 ================
 Draw_CachePicResize
 New function by Pa3PyX; will load a pic resizing it (needed for intermissions)
 ================
 */
-cache_user_t *intermissionScreen = NULL;
-qpic_t  *Draw_CachePicResize (const char *path, int targetWidth, int targetHeight)
+qpic_t *Draw_CachePicResize (const char *path, int targetWidth, int targetHeight)
 {
 	cachepic_t *pic;
 	int i, j;
@@ -124,7 +124,12 @@ qpic_t  *Draw_CachePicResize (const char *path, int targetWidth, int targetHeigh
 	}
 	dat = (qpic_t *) Cache_Check(&pic->cache);
 	if (dat)
-		return dat;
+	{
+		if (targetWidth == dat->width && targetHeight == dat->height)
+			return dat;
+		else
+			Cache_Free (&pic->cache);
+	}
 	// Allocate original data temporarily
 	temp = (qpic_t *)FS_LoadTempFile(path);
 	Draw_PicCheckError (temp, path);
@@ -132,13 +137,6 @@ qpic_t  *Draw_CachePicResize (const char *path, int targetWidth, int targetHeigh
 	/* I wish Carmack would thought of something more intuitive than
 	   out-of-bounds array for storing image data */
 	Cache_Alloc(&pic->cache, targetWidth * targetHeight * sizeof(byte) + sizeof(qpic_t), path);
-	/* Make sure we memorize this cache entry. It is dependent upon the
-	   screen resolution; if for any obscure reason the user will want
-	   to switch resolutions during intermission playing, we need to
-	   flush this pic (force reload with updated width/height) or else
-	   it might end up being greater than the size of the screen, and
-	   cause an error in Draw_Pic(). */
-	intermissionScreen = &pic->cache;
 	dat = (qpic_t *)pic->cache.data;
 	if (!dat)
 		Sys_Error("%s: failed to load %s (cache flushed prematurely)", __thisfunc__, path);
@@ -155,6 +153,7 @@ qpic_t  *Draw_CachePicResize (const char *path, int targetWidth, int targetHeigh
 	}
 	return dat;
 }
+#endif	/* FULLSCREEN_INTERMISSIONS */
 
 /*
 ===============

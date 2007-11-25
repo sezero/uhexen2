@@ -2,7 +2,7 @@
 	screen.c
 	master for refresh, status bar, console, chat, notify, etc
 
-	$Id: gl_screen.c,v 1.56 2007-11-11 13:17:39 sezero Exp $
+	$Id: gl_screen.c,v 1.57 2007-11-25 09:22:54 sezero Exp $
 */
 
 /*=============================================================================
@@ -918,11 +918,11 @@ static void I_Print (int cx, int cy, char *str)
 }
 
 #if FULLSCREEN_INTERMISSIONS
-#	define	Load_IntermissonPic_FN(X,Y,Z)	Draw_CachePicNoTrans((X))
-#	define	Draw_IntermissonPic_FN(X,Y,Z)	Draw_IntermissionPic((Z))
+#	define	Load_IntermissionPic_FN(X,Y,Z)	Draw_CachePicNoTrans((X))
+#	define	Draw_IntermissionPic_FN(X,Y,Z)	Draw_IntermissionPic((Z))
 #else
-#	define	Load_IntermissonPic_FN(X,Y,Z)	Draw_CachePic((X))
-#	define	Draw_IntermissonPic_FN(X,Y,Z)	Draw_Pic((X),(Y),(Z))
+#	define	Load_IntermissionPic_FN(X,Y,Z)	Draw_CachePic((X))
+#	define	Draw_IntermissionPic_FN(X,Y,Z)	Draw_Pic((X),(Y),(Z))
 #endif
 
 #define	DEMO_MSG_INDEX	408
@@ -955,41 +955,41 @@ static void SB_IntermissionOverlay (void)
 	switch (cl.intermission)
 	{
 		case 1:
-			pic = Load_IntermissonPic_FN ("gfx/meso.lmp", vid.width, vid.height);
+			pic = Load_IntermissionPic_FN ("gfx/meso.lmp", vid.width, vid.height);
 			break;
 		case 2:
-			pic = Load_IntermissonPic_FN ("gfx/egypt.lmp", vid.width, vid.height);
+			pic = Load_IntermissionPic_FN ("gfx/egypt.lmp", vid.width, vid.height);
 			break;
 		case 3:
-			pic = Load_IntermissonPic_FN ("gfx/roman.lmp", vid.width, vid.height);
+			pic = Load_IntermissionPic_FN ("gfx/roman.lmp", vid.width, vid.height);
 			break;
 		case 4:
-			pic = Load_IntermissonPic_FN ("gfx/castle.lmp", vid.width, vid.height);
+			pic = Load_IntermissionPic_FN ("gfx/castle.lmp", vid.width, vid.height);
 			break;
 		case 5:
-			pic = Load_IntermissonPic_FN ("gfx/castle.lmp", vid.width, vid.height);
+			pic = Load_IntermissionPic_FN ("gfx/castle.lmp", vid.width, vid.height);
 			break;
 		case 6:
-			pic = Load_IntermissonPic_FN ("gfx/end-1.lmp", vid.width, vid.height);
+			pic = Load_IntermissionPic_FN ("gfx/end-1.lmp", vid.width, vid.height);
 			break;
 		case 7:
-			pic = Load_IntermissonPic_FN ("gfx/end-2.lmp", vid.width, vid.height);
+			pic = Load_IntermissionPic_FN ("gfx/end-2.lmp", vid.width, vid.height);
 			break;
 		case 8:
-			pic = Load_IntermissonPic_FN ("gfx/end-3.lmp", vid.width, vid.height);
+			pic = Load_IntermissionPic_FN ("gfx/end-3.lmp", vid.width, vid.height);
 			break;
 		case 9:
-			pic = Load_IntermissonPic_FN ("gfx/castle.lmp", vid.width, vid.height);
+			pic = Load_IntermissionPic_FN ("gfx/castle.lmp", vid.width, vid.height);
 			break;
 		// mission pack
 		case 10:
-			pic = Load_IntermissonPic_FN ("gfx/mpend.lmp", vid.width, vid.height);
+			pic = Load_IntermissionPic_FN ("gfx/mpend.lmp", vid.width, vid.height);
 			break;
 		case 11:
-			pic = Load_IntermissonPic_FN ("gfx/mpmid.lmp", vid.width, vid.height);
+			pic = Load_IntermissionPic_FN ("gfx/mpmid.lmp", vid.width, vid.height);
 			break;
 		case 12:
-			pic = Load_IntermissonPic_FN ("gfx/end-3.lmp", vid.width, vid.height);
+			pic = Load_IntermissionPic_FN ("gfx/end-3.lmp", vid.width, vid.height);
 			break;
 	}
 	if (pic == NULL)
@@ -998,7 +998,7 @@ static void SB_IntermissionOverlay (void)
 		return;
 	}
 
-	Draw_IntermissonPic_FN (((vid.width - 320)>>1), ((vid.height - 200)>>1), pic);
+	Draw_IntermissionPic_FN (((vid.width - 320)>>1), ((vid.height - 200)>>1), pic);
 
 	if (cl.intermission >= 6 && cl.intermission <= 8)
 	{

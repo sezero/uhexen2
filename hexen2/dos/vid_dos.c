@@ -3,7 +3,7 @@
 	DOS-specific video routines.
 	from quake1 source with minor adaptations for uhexen2.
 
-	$Id: vid_dos.c,v 1.5 2007-11-14 07:33:59 sezero Exp $
+	$Id: vid_dos.c,v 1.6 2007-11-25 09:22:56 sezero Exp $
 
 	Copyright (C) 1996-1997  Id Software, Inc.
 
@@ -247,10 +247,6 @@ static int VID_SetMode (int modenum, unsigned char *palette)
 
 	if (pnewmode == pcurrentmode)
 		return 1;	// already in the desired mode
-
-//flush the intermission screen if it's cached (Pa3PyX)
-	if (intermissionScreen && intermissionScreen->data)
-		Cache_Free(intermissionScreen);
 
 // initialize the new mode
 	poldmode = pcurrentmode;

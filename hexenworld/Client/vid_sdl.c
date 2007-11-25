@@ -3,7 +3,7 @@
 	SDL video driver
 	Select window size and mode and init SDL in SOFTWARE mode.
 
-	$Id: vid_sdl.c,v 1.79 2007-09-22 15:27:20 sezero Exp $
+	$Id: vid_sdl.c,v 1.80 2007-11-25 09:22:57 sezero Exp $
 
 	Changed by S.A. 7/11/04, 27/12/04
 	Options are now: -fullscreen | -window, -height , -width
@@ -32,9 +32,6 @@ unsigned int	d_8to24table[256];
 
 byte globalcolormap[VID_GRADES*256], lastglobalcolor = 0;
 byte *lastsourcecolormap = NULL;
-
-//intermission screen cache reference (to flush on video mode switch)
-extern cache_user_t	*intermissionScreen;
 
 static qboolean	vid_initialized = false;
 static int	lockcount;
@@ -480,10 +477,6 @@ static int VID_SetMode (int modenum, unsigned char *palette)
 	int	is_fullscreen;
 
 	in_mode_set = true;
-
-	//flush the intermission screen if it's cached (Pa3PyX)
-	if (intermissionScreen && intermissionScreen->data)
-		Cache_Free(intermissionScreen);
 
 	if (screen)
 		SDL_FreeSurface(screen);

@@ -3,7 +3,7 @@
 	these are the only functions outside the refresh
 	allowed to touch the vid buffer
 
-	$Id: draw.h,v 1.27 2007-11-14 07:32:21 sezero Exp $
+	$Id: draw.h,v 1.28 2007-11-25 09:22:56 sezero Exp $
 */
 
 #ifndef __HX2_DRAW_H
@@ -21,32 +21,42 @@ qpic_t *Draw_PicFromFile (const char *name);
 qpic_t *Draw_PicFileBuf (const char *name, void *p, size_t *size);
 
 qpic_t *Draw_CachePic (const char *path);
-qpic_t *Draw_CachePicNoTrans (const char *path);
-qpic_t *Draw_CachePicResize (const char *path, int targetWidth, int targetHeight);
 
 void Draw_Pic (int x, int y, qpic_t *pic);
-void Draw_AlphaPic (int x, int y, qpic_t *pic, float alpha);
-void Draw_IntermissionPic (qpic_t *pic);
 void Draw_PicCropped (int x, int y, qpic_t *pic);
 void Draw_SubPic (int x, int y, qpic_t *pic, int srcx, int srcy, int width, int height);
 void Draw_SubPicCropped (int x, int y, int h, qpic_t *pic);
 void Draw_TransPic (int x, int y, qpic_t *pic);
 void Draw_TransPicCropped (int x, int y, qpic_t *pic);
-#ifndef GLQUAKE
-void Draw_TransPicTranslate (int x, int y, qpic_t *pic, byte *translation);
-#else
-void Draw_TransPicTranslate (int x, int y, qpic_t *pic, byte *translation, int p_class, int top, int bottom);
-#endif
 void Draw_ConsoleBackground (int lines);
 void Draw_Crosshair (void);
 
 #if defined(GLQUAKE)
+void Draw_AlphaPic (int x, int y, qpic_t *pic, float alpha);
+#endif	/*  GLQUAKE */
+
+#if defined(GLQUAKE)
+void Draw_TransPicTranslate (int x, int y, qpic_t *pic, byte *translation, int p_class, int top, int bottom);
+#else	/* !GLQUAKE */
+void Draw_TransPicTranslate (int x, int y, qpic_t *pic, byte *translation);
+#endif	/*  GLQUAKE */
+
+#if FULLSCREEN_INTERMISSIONS
+# if defined(GLQUAKE)
+qpic_t *Draw_CachePicNoTrans (const char *path);
+void Draw_IntermissionPic (qpic_t *pic);
+# else	/* !GLQUAKE */
+qpic_t *Draw_CachePicResize (const char *path, int targetWidth, int targetHeight);
+# endif	/*  GLQUAKE */
+#endif	/*  FULLSCREEN_INTERMISSIONS */
+
+#if defined(GLQUAKE)
 #define Draw_BeginDisc()
 #define Draw_EndDisc()
-#else
+#else	/* !GLQUAKE */
 void Draw_BeginDisc (void);
 void Draw_EndDisc (void);
-#endif
+#endif	/*  GLQUAKE */
 
 void Draw_TileClear (int x, int y, int w, int h);
 void Draw_Fill (int x, int y, int w, int h, int c);
