@@ -3,6 +3,15 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2007-11-25 (CVS):
+    * pa3pyx's solution of resized pic size mismatches after resolution
+      changes was buggy, because it only handled one picture, probably
+      intending the intermission screen only and not others, such as the
+      help screens. Draw_CachePicResize now checks against the intended
+      dimensions and re-caches when necessary. while we were there, did
+      minor cleanups in the users of these funtions.
+    * updated release notes for 1.4.3 (2007-11-25.)
+
 2007-11-22 (CVS):
     * added mousewheel support for dos. the latest alpha version of cutemouse
       driver (ctmouse 2.0a4) is needed. use the command line argument -mwheel
