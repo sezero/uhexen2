@@ -1,7 +1,7 @@
 /*
 	menu.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/menu.c,v 1.75 2007-11-25 09:22:56 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/menu.c,v 1.76 2007-12-04 16:33:08 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -2498,7 +2498,7 @@ static int		setup_oldtop;
 static int		setup_oldbottom;
 static int		setup_top;
 static int		setup_bottom;
-static int		class_limit;
+static qboolean		is_siege;
 
 #define	NUM_SETUP_CMDS	7
 
@@ -2514,39 +2514,31 @@ static void M_Menu_Setup_f (void)
 	q_strlcpy(setup_myname, name.string, sizeof(setup_myname));
 	setup_top = setup_oldtop = topcolor.integer;
 	setup_bottom = setup_oldbottom = bottomcolor.integer;
+	is_siege = (q_strcasecmp(fs_gamedir_nopath, "siege") == 0);
 
 #if ENABLE_OLD_DEMO
 	if (gameflags & GAME_OLD_DEMO)
 	{
+		// FIXME: doesn't handle random class (setup_class == 0) feature.
 		if (playerclass.integer != CLASS_PALADIN && playerclass.integer != CLASS_THEIF)
 			Cvar_SetValue ("playerclass", CLASS_PALADIN);
 	}
-	else
 #endif	/* OLD_DEMO */
-	if (!(gameflags & GAME_PORTALS))
+	if (playerclass.integer == CLASS_DEMON)
 	{
-		if (playerclass.integer == CLASS_DEMON)
+		if (!(gameflags & GAME_PORTALS))
 			Cvar_SetValue ("playerclass", CLASS_PALADIN);
 	}
 	if (playerclass.integer == CLASS_DWARF)
 	{
-		if (q_strcasecmp(fs_gamedir_nopath, "siege") != 0)
+		if (!is_siege)
 			Cvar_SetValue ("playerclass", CLASS_PALADIN);
 	}
 
 	setup_class = playerclass.integer;
 
-//	if ((gameflags & GAME_PORTALS) || cl_siege)//FIXME!!!
-//	{
-		class_limit = MAX_PLAYER_CLASS;
-//	}
-//	else
-//	{
-//		class_limit = MAX_PLAYER_CLASS-1;
-//	}
-
-	if (setup_class < 0 || setup_class > class_limit)
-		setup_class = 1;
+	if (setup_class < 0 || setup_class > MAX_PLAYER_CLASS)
+		setup_class = CLASS_PALADIN;
 	which_class = setup_class;
 }
 
@@ -2589,24 +2581,6 @@ static void M_Setup_Draw (void)
 
 	M_Print (64, 88, "Current Class: ");
 
-#if ENABLE_OLD_DEMO
-	if (gameflags & GAME_OLD_DEMO)
-	{
-		if (setup_class != CLASS_PALADIN && setup_class != CLASS_THEIF)
-			setup_class = CLASS_PALADIN;
-	}
-	else
-#endif	/* OLD_DEMO */
-	if (!(gameflags & GAME_PORTALS))
-	{
-		if (setup_class == CLASS_DEMON)
-			setup_class = 0;
-	}
-	if (setup_class == CLASS_DWARF)
-	{
-		if (q_strcasecmp(fs_gamedir_nopath, "siege") != 0)
-			setup_class = 0;
-	}
 	switch (setup_class)
 	{
 		case 0:
@@ -2636,7 +2610,7 @@ static void M_Setup_Draw (void)
 		{
 			if (!(gameflags & GAME_PORTALS))
 			{//not succubus
-				if (q_strcasecmp(fs_gamedir_nopath, "siege") != 0)
+				if (!is_siege)
 					which_class = (rand() % CLASS_THEIF) + 1;
 				else
 				{
@@ -2647,10 +2621,10 @@ static void M_Setup_Draw (void)
 			}
 			else
 			{
-				if (q_strcasecmp(fs_gamedir_nopath, "siege") != 0)
+				if (!is_siege)
 					which_class = (rand() % CLASS_DEMON) + 1;
 				else
-					which_class = (rand() % class_limit) + 1;
+					which_class = (rand() % CLASS_DWARF) + 1;
 			}
 			wait = true;
 		}
@@ -2728,7 +2702,11 @@ static void M_Setup_Key (int k)
 #endif	/* OLD_DEMO */
 			setup_class--;
 			if (setup_class < 0)
-				setup_class = class_limit;
+				setup_class = MAX_PLAYER_CLASS;
+			if (!is_siege && setup_class == CLASS_DWARF)
+				setup_class--;
+			if (!(gameflags & GAME_PORTALS) && setup_class == CLASS_DEMON)
+				setup_class--;
 		}
 		else if (setup_cursor == 4)
 			setup_top = setup_top - 1;
@@ -2763,7 +2741,11 @@ forward:
 			}
 #endif	/* OLD_DEMO */
 			setup_class++;
-			if (setup_class > class_limit)
+			if (!(gameflags & GAME_PORTALS) && setup_class == CLASS_DEMON)
+				setup_class++;
+			if (!is_siege && setup_class == CLASS_DWARF)
+				setup_class++;
+			if (setup_class > MAX_PLAYER_CLASS)
 				setup_class = 0;
 		}
 		else if (setup_cursor == 4)
