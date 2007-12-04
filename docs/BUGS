@@ -30,6 +30,10 @@ Known Bugs
 - HexenWorld: Spectator mode (chasecam) isn't as it should be, compare
   with the quakeworld code and fix.
 
+- HexenWorld: Running the map romeric5 (Temple of Mars) crashes the
+  server. Known problem since Raven's latest beta versions. (how do I
+  fix that???)
+
 - HexenWorld: Coop mode is broken. Known problem since Raven's latest
   beta versions.
 
