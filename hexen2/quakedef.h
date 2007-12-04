@@ -2,7 +2,7 @@
 	quakedef.h
 	common definitions for client and server
 
-	$Id: quakedef.h,v 1.132 2007-10-03 07:02:18 sezero Exp $
+	$Id: quakedef.h,v 1.133 2007-12-04 15:26:21 sezero Exp $
 */
 
 #ifndef __QUAKEDEFS_H
@@ -196,10 +196,14 @@
 #define ABILITIES_STR_INDEX	400	/* starting number of class ability lines in strings.txt - 1	*/
 
 #define CLASS_PALADIN		1
-#define CLASS_CLERIC 		2
+#define CLASS_CLERIC		2
+#define CLASS_CRUSADER	CLASS_CLERIC	/* alias, the progs actually use this one */
 #define CLASS_NECROMANCER	3
-#define CLASS_THEIF   		4
+#define CLASS_THEIF		4
+#define CLASS_THIEF	CLASS_THEIF	/* for those who type correctly ;) */
+#define CLASS_ASSASSIN	CLASS_THEIF	/* another alias, progs actually use this one */
 #define CLASS_DEMON		5
+#define CLASS_SUCCUBUS	CLASS_DEMON	/* alias, the h2w progs actually use this one */
 
 //#define BASE_ENT_ON		1
 //#define BASE_ENT_SENT	2
