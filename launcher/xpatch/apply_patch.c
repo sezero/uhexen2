@@ -2,7 +2,7 @@
 	apply_patch.c
 	hexen2 launcher: binary patch starter
 
-	$Id: apply_patch.c,v 1.8 2007-11-05 09:10:03 sezero Exp $
+	$Id: apply_patch.c,v 1.9 2007-12-08 09:16:51 sezero Exp $
 
 	This program is free software; you can redistribute it and/or
 	modify it under the terms of the GNU General Public License
@@ -24,6 +24,7 @@
 */
 
 #include "common.h"
+#include <time.h>
 
 #include "md5.h"
 #include "loki_xdelta.h"
@@ -34,11 +35,11 @@
 
 static const struct
 {
-	char	*dir_name;	/* where the file is	*/
-	char	*filename;	/* file to patch	*/
-	char	*deltaname;	/* delta file to use	*/
-	char	*old_md5;	/* unpatched md5sum	*/
-	char	*new_md5;	/* md5sum after patch	*/
+	const char	*dir_name;	/* where the file is	*/
+	const char	*filename;	/* file to patch	*/
+	const char	*deltaname;	/* delta file to use	*/
+	const char	*old_md5;	/* unpatched md5sum	*/
+	const char	*new_md5;	/* md5sum after patch	*/
 	size_t	old_size, new_size;
 } patch_data[NUM_PATCHES] =
 {
@@ -58,26 +59,38 @@ static const struct
 
 int			thread_alive;
 
+/* gui progress bar support: */
+size_t		outsize, written_size;
+
 static	unsigned long		rc;
+static	char	dst[MAX_OSPATH],
+		pat[MAX_OSPATH],
+		out[MAX_OSPATH];
+static	char	csum[CHECKSUM_SIZE+1];
 
 void *apply_patches (void *workdir)
 {
 	int	i;
 	struct stat	stbuf;
-	char	dst[MAX_OSPATH],
-		pat[MAX_OSPATH],
-		out[MAX_OSPATH];
-	char	csum[CHECKSUM_SIZE+1];
+	time_t	starttime, temptime;
+	unsigned long	elapsed;
 
 	rc = XPATCH_NONE;
 
+	time (&starttime);
+	outsize = written_size = 0;
+	for (i = 0; i < NUM_PATCHES; i++)
+		outsize += patch_data[i].new_size;
+
+	ui_log ("Workdir: %s\n", (char *)workdir);
 	for (i = 0; i < NUM_PATCHES; i++)
 	{
+		ui_log ("File %s/%s :\n", patch_data[i].dir_name, patch_data[i].filename);
 		snprintf (dst, sizeof(dst), "%s/%s/%s", (char *)workdir, patch_data[i].dir_name, patch_data[i].filename);
 		if ( access(dst, R_OK|W_OK) != 0 )
 		{
 			rc |= XPATCH_FAIL;
-			ui_log ("File %s not found\n", dst);
+			ui_log ("... not found!\n");
 			thread_alive = 0;
 			return &rc;
 		}
@@ -85,7 +98,7 @@ void *apply_patches (void *workdir)
 		if ( stat(dst, &stbuf) != 0 )
 		{
 			rc |= XPATCH_FAIL;
-			ui_log ("Unable to stat %s\n", dst);
+			ui_log ("... unable to stat file!\n");
 			thread_alive = 0;
 			return &rc;
 		}
@@ -94,22 +107,23 @@ void *apply_patches (void *workdir)
 			stbuf.st_size != patch_data[i].new_size)
 		{
 			rc |= XPATCH_FAIL;
-			ui_log ("File %s is an incompatible version\n", dst);
+			ui_log ("... is an incompatible version!\n");
 			thread_alive = 0;
 			return &rc;
 		}
 
-		ui_log ("Checksumming %s...\n", dst);
+		ui_log ("... checksumming...\n");
 		md5_compute(dst, csum, 1);
 		if ( !strcmp(csum, patch_data[i].new_md5) )
 		{
-			ui_log ("File %s is already patched\n", dst);
+			written_size += patch_data[i].new_size;
+			ui_log ("... already patched.\n");
 			continue;
 		}
 		if ( strcmp(csum, patch_data[i].old_md5) )
 		{
 			rc |= XPATCH_FAIL;
-			ui_log ("File %s is an incompatible version\n", dst);
+			ui_log ("... is an incompatible version!\n");
 			thread_alive = 0;
 			return &rc;
 		}
@@ -118,7 +132,7 @@ void *apply_patches (void *workdir)
 		if ( access(pat, R_OK) != 0 )
 		{
 			rc |= XPATCH_FAIL;
-			ui_log ("File %s not found\n", pat);
+			ui_log ("... delta file not found!\n");
 			thread_alive = 0;
 			return &rc;
 		}
@@ -129,7 +143,8 @@ void *apply_patches (void *workdir)
 			remove (out);
 		}
 
-		ui_log ("Patching %s...\n", dst);
+		ui_log ("... applying patch...\n");
+		time (&temptime);
 		if ( loki_xpatch(pat, dst, out) < 0 )
 		{
 			rc |= XPATCH_FAIL;
@@ -137,18 +152,20 @@ void *apply_patches (void *workdir)
 			{
 				remove (out);
 			}
-			ui_log ("Failed patching %s\n", dst);
+			ui_log ("... patch failed!\n");
 			thread_alive = 0;
 			return &rc;
 		}
+		elapsed = time (NULL) - temptime;
+		ui_log ("... elapsed time %lum:%lus\n", elapsed / 60, elapsed % 60);
 
-		ui_log ("Checksumming %s...\n", out);
+		ui_log ("... verifying checksum...\n");
 		md5_compute(out, csum, 1);
 		if ( strcmp(csum, patch_data[i].new_md5) )
 		{
 			rc |= XPATCH_FAIL;
 			remove (out);
-			ui_log ("File %s failed checksum after patching\n", dst);
+			ui_log ("... checksum after patching failed!\n");
 			thread_alive = 0;
 			return &rc;
 		}
@@ -157,17 +174,20 @@ void *apply_patches (void *workdir)
 		{
 			rc |= XPATCH_FAIL;
 			remove (out);
-			ui_log ("Failed renaming patched file to %s\n", patch_data[i].filename);
+			ui_log ("... failed renaming patched file!\n");
 			thread_alive = 0;
 			return &rc;
 		}
 
 		rc |= XPATCH_APPLIED;
-		ui_log ("Patch successful for %s\n", dst);
+		ui_log ("... Patch successful.\n");
 	}
 
 	if (rc & XPATCH_APPLIED)
-		ui_log ("All patches successful\n");
+	{
+		elapsed = time (NULL) - starttime;
+		ui_log ("All patches successful in %lum:%lus.\n", elapsed / 60, elapsed % 60);
+	}
 
 	thread_alive = 0;
 	return &rc;

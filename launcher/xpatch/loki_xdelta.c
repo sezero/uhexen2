@@ -20,7 +20,7 @@
  *
  * Author: Josh MacDonald <jmacd@CS.Berkeley.EDU>
  *
- * $Id: loki_xdelta.c,v 1.6 2007-10-13 11:30:17 sezero Exp $
+ * $Id: loki_xdelta.c,v 1.7 2007-12-08 09:16:52 sezero Exp $
  */
 
 #include <stdio.h>
@@ -82,6 +82,7 @@
 #define LOKI_PATCH
 
 #include "xdelta.h"
+#include "loki_xdelta.h"
 
 static HandleFuncTable xd_handle_table;
 
@@ -1505,6 +1506,9 @@ xd_handle_unmap_page (XdFileHandle *fh, guint pgno, const guint8** mem)
 static gboolean
 xd_handle_copy (XdFileHandle *from, XdFileHandle *to, guint off, guint len)
 {
+  /* statistics */
+  written_size += len;
+
   if (from->in)
     {
       char buf[1024];

@@ -1,6 +1,6 @@
 /*
 	loki_xdelta.h
-	$Id: loki_xdelta.h,v 1.3 2007-03-15 18:18:16 sezero Exp $
+	$Id: loki_xdelta.h,v 1.4 2007-12-08 09:16:52 sezero Exp $
 
 	This program is free software; you can redistribute it and/or
 	modify it under the terms of the GNU General Public License
@@ -27,6 +27,9 @@
 /* XDelta is linked in, for space reasons .. I wish it didn't use glib.. */
 extern int loki_xdelta(const char *old, const char *new, const char *out);
 extern int loki_xpatch(const char *pat, const char *old, const char *out);
+
+/* gui progress bar support: */
+extern size_t		outsize, written_size;
 
 #endif	/* _LOKI_XDELTA_H */
 

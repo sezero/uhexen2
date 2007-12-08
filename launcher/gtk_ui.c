@@ -2,7 +2,7 @@
 	gtk_ui.c
 	hexen2 launcher gtk+ interface
 
-	$Id: gtk_ui.c,v 1.6 2007-11-05 08:25:22 sezero Exp $
+	$Id: gtk_ui.c,v 1.7 2007-12-08 09:16:50 sezero Exp $
 
 	This program is free software; you can redistribute it and/or
 	modify it under the terms of the GNU General Public License
@@ -267,6 +267,35 @@ static gboolean block_window_close (GtkWidget* widget, GdkEvent* event, gpointer
 	return TRUE;
 }
 
+static void create_progressbar (PatchWindow_t *PatchWindow)
+{
+	gtk_widget_hide (PatchWindow->bAPPLY);
+	gtk_widget_hide (PatchWindow->bCLOSE);
+	gtk_widget_hide (PatchWindow->bREPORT);
+
+	PatchWindow->palign = gtk_alignment_new (0, 0, 1, 1); /* (0.5, 0.5, 0, 0) */
+	gtk_object_set_data_full (GTK_OBJECT(PATCH_WINDOW), "pALIGN", PatchWindow->palign, GTK_DESTROYNOTIFY(gtk_widget_unref));
+	gtk_widget_ref (PatchWindow->palign);
+	gtk_widget_show (PatchWindow->palign);
+	gtk_fixed_put (GTK_FIXED(PATCH_TAB), PatchWindow->palign, 14, 218);
+	gtk_widget_set_size_request (PatchWindow->palign, 324, 24);
+	PatchWindow->progbar = gtk_progress_bar_new ();
+	gtk_container_add (GTK_CONTAINER(PatchWindow->palign), PatchWindow->progbar);
+	gtk_object_set_data_full (GTK_OBJECT(PATCH_WINDOW), "pROGBAR", PatchWindow->progbar, GTK_DESTROYNOTIFY(gtk_widget_unref));
+	gtk_widget_ref (PatchWindow->progbar);
+	gtk_widget_show (PatchWindow->progbar);
+	gtk_progress_bar_set_fraction(GTK_PROGRESS_BAR(PatchWindow->progbar), 0);
+}
+
+static void destroy_progressbar (PatchWindow_t *PatchWindow)
+{
+	gtk_widget_destroy (PatchWindow->progbar);
+	gtk_widget_destroy (PatchWindow->palign);
+	gtk_widget_show (PatchWindow->bCLOSE);
+	gtk_widget_show (PatchWindow->bAPPLY);
+	gtk_widget_show (PatchWindow->bREPORT);
+}
+
 static void start_xpatch (GtkObject *Unused, PatchWindow_t *PatchWindow)
 {
 	pthread_t		thr;
@@ -274,21 +303,22 @@ static void start_xpatch (GtkObject *Unused, PatchWindow_t *PatchWindow)
 	unsigned long	*ptr;
 	guint	delete_handler;
 	int		ret = 2;
+	size_t		lastsize;
+	gfloat		percentage;
 
 	if (basedir_nonstd && game_basedir[0])
 		wd = game_basedir;
 	else
 		wd = basedir;
 
-	gtk_widget_set_sensitive (PatchWindow->bAPPLY, FALSE);
 	gtk_widget_set_sensitive (PatchWindow->bBASEDIR, FALSE);
 	gtk_widget_set_sensitive (PatchWindow->dir_Entry, FALSE);
-	gtk_widget_set_sensitive (PatchWindow->bCLOSE, FALSE);
-	gtk_widget_set_sensitive (PatchWindow->bREPORT, FALSE);
+	create_progressbar (PatchWindow);
 	delete_handler =
 		gtk_signal_connect(GTK_OBJECT(PatchWindow->mywindow), "delete-event", GTK_SIGNAL_FUNC(block_window_close), NULL);
 	ui_LogInit (PatchWindow->LOGVIEW);
 
+	written_size = lastsize = 0;
 	thread_alive = 1;
 	if (pthread_create(&thr, NULL, apply_patches, wd) != 0)
 	{
@@ -300,6 +330,12 @@ static void start_xpatch (GtkObject *Unused, PatchWindow_t *PatchWindow)
 
 	while (thread_alive)
 	{
+		if (lastsize != written_size)
+		{
+			percentage = (gfloat)written_size / (gfloat)outsize;
+			lastsize = written_size;
+			gtk_progress_bar_set_fraction(GTK_PROGRESS_BAR(PatchWindow->progbar), percentage);
+		}
 		ui_pump ();
 		usleep (10000);
 	}
@@ -327,11 +363,9 @@ static void start_xpatch (GtkObject *Unused, PatchWindow_t *PatchWindow)
 	}
 finish:
 	gtk_signal_disconnect (GTK_OBJECT(PatchWindow->mywindow), delete_handler);
-	gtk_widget_set_sensitive (PatchWindow->bCLOSE, TRUE);
-	gtk_widget_set_sensitive (PatchWindow->bAPPLY, TRUE);
 	gtk_widget_set_sensitive (PatchWindow->bBASEDIR, TRUE);
 	gtk_widget_set_sensitive (PatchWindow->dir_Entry, TRUE);
-	gtk_widget_set_sensitive (PatchWindow->bREPORT, TRUE);
+	destroy_progressbar (PatchWindow);
 	gtk_statusbar_push (GTK_STATUSBAR(PatchWindow->StatusBar), PatchWindow->statbar_id, patch_status[ret]);
 	ui_LogEnd();
 }

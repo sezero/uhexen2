@@ -2,7 +2,7 @@
 	gtk_ui.h
 	gtk ui, main header
 
-	$Id: gtk_ui.h,v 1.4 2007-08-13 14:50:35 sezero Exp $
+	$Id: gtk_ui.h,v 1.5 2007-12-08 09:16:50 sezero Exp $
 
 	This program is free software; you can redistribute it and/or
 	modify it under the terms of the GNU General Public License
@@ -53,6 +53,7 @@
 #define	gtk_widget_set_size_request	gtk_widget_set_usize
 #define	gtk_window_set_resizable(x, y)	gtk_window_set_policy((x), (y), (y), (y))
 #define	gtk_button_set_label(x, y)	gtk_label_set_text (GTK_LABEL(GTK_BIN((x))->child), (y))
+#define	gtk_progress_bar_set_fraction	gtk_progress_bar_update
 
 #endif	/* _H2L_USE_GTK1 */
 
@@ -88,6 +89,8 @@ typedef struct
 	GtkWidget *bREPORT;	// Report installation status
 	GtkWidget *LOGVIEW;	// LogEntry line for patch process
 	GtkWidget *dir_Entry;	// path for game basedir
+	GtkWidget *progbar;	// patch progress bar
+	GtkWidget *palign;	// holder for progbar, GtkAlignment
 	GtkWidget *StatusBar;	// Status bar, (patch status)
 	gint	statbar_id;	// statbar context id
 } PatchWindow_t;
