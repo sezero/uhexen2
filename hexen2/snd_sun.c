@@ -1,6 +1,6 @@
 /*
 	snd_sun.c
-	$Id: snd_sun.c,v 1.12 2007-12-12 10:51:02 sezero Exp $
+	$Id: snd_sun.c,v 1.13 2007-12-12 19:55:31 sezero Exp $
 
 	SUN Audio driver for BSD and SunOS
 
@@ -87,7 +87,6 @@ qboolean S_SUN_Init (void)
 	snddev = "/dev/audio";
 #else
 	snddev = "/dev/sound";
-#endif
 #endif
 	audio_fd = open (snddev, O_WRONLY | O_NDELAY | O_NONBLOCK);
 	if (audio_fd < 0)
