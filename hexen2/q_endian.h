@@ -2,7 +2,7 @@
 	q_endian.h
 	endianness handling
 
-	$Id: q_endian.h,v 1.8 2007-10-21 15:25:19 sezero Exp $
+	$Id: q_endian.h,v 1.9 2007-12-12 10:51:02 sezero Exp $
 */
 
 #ifndef __QENDIAN_H
@@ -111,7 +111,7 @@
 # elif defined(_WIN32) || defined(_WIN64)	/* windows : */
 #	define	BYTE_ORDER	LITTLE_ENDIAN	/* should be safe */
 
-# elif defined(__hppa__) || defined(__sparc__)	/* others: check! */
+# elif defined(__hppa) || defined(__hppa__) || defined(__sparc) || defined(__sparc__)	/* others: check! */
 #	define	BYTE_ORDER	BIG_ENDIAN
 
 # endif

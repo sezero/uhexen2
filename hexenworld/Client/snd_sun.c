@@ -1,6 +1,6 @@
 /*
 	snd_sun.c
-	$Id: snd_sun.c,v 1.11 2007-11-07 16:54:59 sezero Exp $
+	$Id: snd_sun.c,v 1.12 2007-12-12 10:51:08 sezero Exp $
 
 	SUN Audio driver for BSD and SunOS
 
@@ -36,18 +36,18 @@
 
 #include <sys/param.h>
 #include <sys/audioio.h>
-#ifndef __SOLARIS__
+#if !(defined(__sun) || defined(sun))
 #include <sys/endian.h>
-#endif
+#endif	/* ! sun */
 #include <sys/ioctl.h>
 
 #include <fcntl.h>
-#ifndef __SOLARIS__
+#if !(defined(__sun) || defined(sun))
 #include <paths.h>
-#endif
+#endif	/* ! sun */
 #include <unistd.h>
 
-#if defined(__SOLARIS__)
+#if defined(__sun) || defined(sun)
 
 #define	FORMAT_U8	AUDIO_ENCODING_LINEAR8
 #define	FORMAT_S16	AUDIO_ENCODING_LINEAR
@@ -81,13 +81,12 @@ qboolean S_SUN_Init (void)
 	audio_info_t	info;
 
 	// Open the audio device
-#ifdef _PATH_SOUND
+#if defined(_PATH_SOUND)
 	snddev = _PATH_SOUND;
-#else
-#ifndef __SOLARIS__
-	snddev = "/dev/sound";
-#else
+#elif defined(__sun) || defined(sun)
 	snddev = "/dev/audio";
+#else
+	snddev = "/dev/sound";
 #endif
 #endif
 	audio_fd = open (snddev, O_WRONLY | O_NDELAY | O_NONBLOCK);

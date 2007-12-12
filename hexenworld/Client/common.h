@@ -2,15 +2,15 @@
 	common.h
 	misc utilities used in client and server
 
-	$Id: common.h,v 1.55 2007-11-14 07:19:53 sezero Exp $
+	$Id: common.h,v 1.56 2007-12-12 10:51:08 sezero Exp $
 */
 
 #ifndef __HX2_COMMON_H
 #define __HX2_COMMON_H
 
-#if defined(__SOLARIS__)
+#if defined(__sun) || defined(sun)
 /* Workaround conflict with /usr/include/sys/model.h */
-#define model_t hx2_model_t
+#define	model_t		hx2model_t
 #endif
 
 //============================================================================

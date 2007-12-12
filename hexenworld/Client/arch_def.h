@@ -2,7 +2,7 @@
 	arch_def.h
 	platform specific definitions
 
-	$Id: arch_def.h,v 1.12 2007-10-21 15:25:23 sezero Exp $
+	$Id: arch_def.h,v 1.13 2007-12-12 10:51:07 sezero Exp $
 */
 
 #ifndef __HX2_ARCHDEFS__
@@ -17,9 +17,18 @@
 #   if !defined(__MACOS__)
 #	define	__MACOS__		1
 #   endif
-#elif defined(__sun) && (defined(__svr4__) || defined(__SVR4))
+#elif (defined(__sun) || defined(sun)) && \
+		(defined(__svr4__) || defined(__SVR4))
 #   if !defined(__SOLARIS__)
 #	define	__SOLARIS__		1
+#   endif
+#elif defined(__sun) || defined(sun)
+#   if !defined(__SUNOS__)
+#	define	__SUNOS__		1
+#   endif
+#elif defined(__sgi) || defined(sgi) || defined(__sgi__) || defined(_SGI_SOURCE)
+#   if !defined(__IRIX__)
+#	define	__IRIX__		1
 #   endif
 #elif defined(__QNXNTO__)
 #   if !defined(__QNX__)
@@ -33,7 +42,7 @@
 #endif	/* end of custom definitions	*/
 
 
-#if defined(__DJGPP__) || defined(MSDOS) || defined(__MSDOS__)
+#if defined(__DJGPP__) || defined(MSDOS) || defined(__MSDOS__) || defined(__DOS__)
 
 #   if !defined(PLATFORM_DOS)
 #	define	PLATFORM_DOS		1
@@ -65,8 +74,9 @@
     defined(__linux__) || defined(__linux)			|| \
     defined(__FreeBSD__) || defined(__DragonFly__)		|| \
     defined(__OpenBSD__) || defined(__NetBSD__)			|| \
-    defined(__hpux) || defined(__hpux__)			|| \
-    defined(__SOLARIS__) || defined(__QNX__)
+    defined(__hpux) || defined(__hpux__) || defined(_hpux)	|| \
+    defined(__sun) || defined(sun) || defined(__IRIX__)		|| \
+    defined(__QNX__)
 #   if !defined(PLATFORM_UNIX)
 #	define	PLATFORM_UNIX		1
 #   endif
@@ -113,10 +123,14 @@
 #	define	PLATFORM_STRING	"MacOSX"
 #elif defined(__MACOS__)
 #	define	PLATFORM_STRING	"MacOS"
-#elif defined(__hpux) || defined(__hpux__)
+#elif defined(__hpux) || defined(__hpux__) || defined(_hpux)
 #	define	PLATFORM_STRING	"HP-UX"
 #elif defined(__SOLARIS__)
 #	define	PLATFORM_STRING	"Solaris"
+#elif defined(__SUNOS__)
+#	define	PLATFORM_STRING	"SunOS"
+#elif defined(__IRIX__)
+#	define	PLATFORM_STRING	"Irix"
 #elif defined(PLATFORM_UNIX)
 #	define	PLATFORM_STRING	"Unix"
 #else

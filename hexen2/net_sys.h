@@ -2,7 +2,7 @@
 	net_sys.h
 	common network system header
 
-	$Id: net_sys.h,v 1.9 2007-10-13 19:30:10 sezero Exp $
+	$Id: net_sys.h,v 1.10 2007-12-12 10:51:02 sezero Exp $
 */
 
 #ifndef __NET_SYS_H__
@@ -19,9 +19,9 @@
 #include <sys/ioctl.h>
 #include <unistd.h>
 
-#if defined(__SOLARIS__)
+#if defined(__sun) || defined(sun)
 #include <sys/filio.h>
-#endif
+#endif	/* __sunos__ */
 
 #if defined(PLATFORM_AMIGA)
 #include <proto/socket.h>

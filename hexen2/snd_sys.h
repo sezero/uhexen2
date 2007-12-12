@@ -2,7 +2,7 @@
 	snd_sys.h
 	Platform specific macros and prototypes for sound
 
-	$Id: snd_sys.h,v 1.18 2007-11-07 16:54:58 sezero Exp $
+	$Id: snd_sys.h,v 1.19 2007-12-12 10:51:02 sezero Exp $
 */
 
 #ifndef __HX2_SND_SYS__
@@ -20,7 +20,7 @@
 #if defined(NO_OSS_AUDIO)
 #define HAVE_OSS_SOUND	0
 /* add more systems with OSS here */
-#elif defined(__linux__) || defined(__FreeBSD__) || defined(__DragonFly__)
+#elif defined(__linux) || defined(__linux__) || defined(__FreeBSD__) || defined(__DragonFly__)
 #define HAVE_OSS_SOUND	1
 #else
 #define HAVE_OSS_SOUND	0
@@ -29,7 +29,7 @@
 #if defined(NO_SUN_AUDIO)
 #define HAVE_SUN_SOUND	0
 /* add more systems with SUN audio here */
-#elif defined(__OpenBSD__) || defined(__NetBSD__) || defined(__SOLARIS__)
+#elif defined(__OpenBSD__) || defined(__NetBSD__) || defined(__sun) || defined(sun)
 #define HAVE_SUN_SOUND	1
 #else
 #define HAVE_SUN_SOUND	0
@@ -37,7 +37,7 @@
 
 #if defined(NO_ALSA_AUDIO)
 #define HAVE_ALSA_SOUND	0
-#elif defined(__linux__)
+#elif defined(__linux) || defined(__linux__)
 /* add more systems with ALSA here */
 #define HAVE_ALSA_SOUND	1
 #else

@@ -1,6 +1,6 @@
 /*
 	cd_unix.h
-	$Id: cd_unix.h,v 1.3 2006-09-24 17:28:42 sezero Exp $
+	$Id: cd_unix.h,v 1.4 2007-12-12 10:51:08 sezero Exp $
 
 	Unix include file to compile the correct cdaudio code
 
@@ -39,7 +39,7 @@
 // edit the makefiles for USE_SDLCD
 #	define	__USE_SDL_CDROM__
 
-#elif defined (__linux__)
+#elif defined (__linux) || defined (__linux__)
 
 #	define	__USE_LINUX_CDROM__
 

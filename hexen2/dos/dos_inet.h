@@ -3,7 +3,7 @@
 	net definitions for dos.
 	from quake1 source with minor adaptations for uhexen2.
 
-	$Id: dos_inet.h,v 1.2 2007-11-03 17:20:07 sezero Exp $
+	$Id: dos_inet.h,v 1.3 2007-12-12 10:51:07 sezero Exp $
 
 	Copyright (C) 1996-1997  Id Software, Inc.
 
@@ -30,7 +30,7 @@
 #ifndef _DOS_INET_H
 #define _DOS_INET_H
 
-#if defined(__DJGPP__) || defined(MSDOS) || defined(__MSDOS__)
+#if defined(__DJGPP__) || defined(MSDOS) || defined(__MSDOS__) || defined(__DOS__)
 
 #include <sys/types.h>
 #include <errno.h>

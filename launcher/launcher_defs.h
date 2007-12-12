@@ -2,7 +2,7 @@
 	launcher_defs.h
 	hexen2 launcher: common definitions
 
-	$Id: launcher_defs.h,v 1.31 2007-12-08 09:21:38 sezero Exp $
+	$Id: launcher_defs.h,v 1.32 2007-12-12 10:51:08 sezero Exp $
 
 	This program is free software; you can redistribute it and/or
 	modify it under the terms of the GNU General Public License
@@ -65,17 +65,17 @@
 #define	RES_MAX		8
 
 /* which sound drivers are available: */
-#if defined(__linux__)
+#if defined(__linux) || defined(__linux__)
 #define	HAVE_ALSA_SOUND	1
 #else
 #define	HAVE_ALSA_SOUND	0
 #endif
-#if defined(__linux__) || defined(__FreeBSD__) || defined(__DragonFly__)
+#if defined(__linux) || defined(__linux__) || defined(__FreeBSD__) || defined(__DragonFly__)
 #define	HAVE_OSS_SOUND	1
 #else
 #define	HAVE_OSS_SOUND	0
 #endif
-#if defined(__OpenBSD__) || defined(__NetBSD__) || defined(__sun) || defined(__sun__)
+#if defined(__OpenBSD__) || defined(__NetBSD__) || defined(__sun) || defined(sun)
 #define	HAVE_SUN_SOUND	1
 #else
 #define	HAVE_SUN_SOUND	0
