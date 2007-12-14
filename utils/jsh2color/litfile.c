@@ -1,6 +1,6 @@
 /*
 	litfile.c
-	$Id: litfile.c,v 1.1 2007-05-12 09:56:35 sezero Exp $
+	$Id: litfile.c,v 1.2 2007-12-14 16:41:23 sezero Exp $
 
 	This program is free software; you can redistribute it and/or
 	modify it under the terms of the GNU General Public License
@@ -21,7 +21,9 @@
 		Boston, MA  02110-1301, USA
 */
 
-#include "util_inc.h"
+#include "q_stdinc.h"
+#include "compiler.h"
+#include "arch_def.h"
 #include "cmdlib.h"
 #include "util_io.h"
 #include "q_endian.h"

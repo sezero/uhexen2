@@ -21,7 +21,7 @@
 	only works with standard quake textures.
 	expand as you see fit - you'll get the idea :-)
 
-	$Id: tex.c,v 1.12 2007-10-10 14:38:27 sezero Exp $
+	$Id: tex.c,v 1.13 2007-12-14 16:41:23 sezero Exp $
 */
 
 // V0.4 modifications
@@ -30,7 +30,9 @@
 //   at least looks better - yellow is really only suited to base maps
 // - added rogue, hipnotic and zerstorer textures
 
-#include "util_inc.h"
+#include "q_stdinc.h"
+#include "compiler.h"
+#include "arch_def.h"
 #include "cmdlib.h"
 #include "mathlib.h"
 #include "bspfile.h"

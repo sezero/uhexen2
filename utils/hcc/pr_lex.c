@@ -1,13 +1,16 @@
 /*
 	lexi.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/utils/hcc/pr_lex.c,v 1.7 2007-11-14 07:39:21 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/utils/hcc/pr_lex.c,v 1.8 2007-12-14 16:41:17 sezero Exp $
 */
 
 
 // HEADER FILES ------------------------------------------------------------
 
-#include "util_inc.h"
+#include "q_stdinc.h"
+#include "compiler.h"
+#include "arch_def.h"
+#include <ctype.h>
 #include "cmdlib.h"
 #include "hcc.h"
 

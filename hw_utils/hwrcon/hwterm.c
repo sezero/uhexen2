@@ -1,6 +1,6 @@
 /*
 	hwterm.c
-	$Id: hwterm.c,v 1.22 2007-10-01 12:38:00 sezero Exp $
+	$Id: hwterm.c,v 1.23 2007-12-14 16:41:14 sezero Exp $
 
 	HWTERM 1.2 HexenWorld Remote Console Terminal
 	Idea based on QTerm 1.1 by Michael Dwyer/N0ZAP (18-May-1998).
@@ -33,16 +33,19 @@
 #undef	USE_HUFFMAN
 #define	USE_HUFFMAN	1
 
-#include "net_sys.h"
+#include <sys/types.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <stdarg.h>
+
+#include "arch_def.h"
+#include "compiler.h"
+#include "net_sys.h"
+#include "qsnprint.h"
 #if defined(PLATFORM_UNIX)
 #include <sys/time.h>
 #endif
-#include "compiler.h"
-#include "qsnprint.h"
 #if defined(USE_HUFFMAN)
 #include "huffman.h"
 #endif

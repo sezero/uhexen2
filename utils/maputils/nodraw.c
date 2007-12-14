@@ -1,9 +1,11 @@
 /*
 	nodraw.c
-	$Id: nodraw.c,v 1.3 2007-03-14 21:04:41 sezero Exp $
+	$Id: nodraw.c,v 1.4 2007-12-14 16:41:25 sezero Exp $
 */
 
-#include "util_inc.h"
+#include "q_stdinc.h"
+#include "compiler.h"
+#include "arch_def.h"
 #include "mathlib.h"
 #include "bspfile.h"
 #include "bsp5.h"

@@ -1,6 +1,6 @@
 /*
 	hwrcon.c
-	$Id: hwrcon.c,v 1.16 2007-10-01 12:38:00 sezero Exp $
+	$Id: hwrcon.c,v 1.17 2007-12-14 16:41:14 sezero Exp $
 
 	HWRCON 1.2 HexenWorld Remote CONsole
 	Idea based on RCon 1.1 by Michael Dwyer/N0ZAP (18-May-1998).
@@ -29,12 +29,15 @@
 */
 
 
-#include "net_sys.h"
+#include <sys/types.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <stdarg.h>
+
+#include "arch_def.h"
 #include "compiler.h"
+#include "net_sys.h"
 #include "qsnprint.h"
 #if defined(USE_HUFFMAN)
 #include "huffman.h"

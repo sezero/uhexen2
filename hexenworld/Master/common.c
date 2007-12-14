@@ -2,9 +2,12 @@
 	common.c
 	misc utility functions
 
-	$Id: common.c,v 1.5 2007-11-11 13:18:22 sezero Exp $
+	$Id: common.c,v 1.6 2007-12-14 16:41:13 sezero Exp $
 */
 
+#include "q_stdinc.h"
+#include "compiler.h"
+#include "arch_def.h"
 #include "defs.h"
 
 /*

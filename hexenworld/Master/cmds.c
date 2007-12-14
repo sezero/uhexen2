@@ -2,9 +2,12 @@
 	cmd.c
 	Quake script command processing module
 
-	$Id: cmds.c,v 1.17 2007-11-11 13:18:22 sezero Exp $
+	$Id: cmds.c,v 1.18 2007-12-14 16:41:12 sezero Exp $
 */
 
+#include "q_stdinc.h"
+#include "compiler.h"
+#include "arch_def.h"
 #include "defs.h"
 
 #define	MAX_ARGS	80

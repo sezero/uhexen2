@@ -1,11 +1,13 @@
 /*
 	comp.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/utils/dcc/pr_comp.c,v 1.21 2007-11-14 07:39:20 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/utils/dcc/pr_comp.c,v 1.22 2007-12-14 16:41:17 sezero Exp $
 */
 
 
-#include "util_inc.h"
+#include "q_stdinc.h"
+#include "compiler.h"
+#include "arch_def.h"
 #include "cmdlib.h"
 #include "qcc.h"
 

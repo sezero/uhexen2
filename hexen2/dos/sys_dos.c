@@ -3,7 +3,7 @@
 	DOS system interface code.
 	from quake1 source with adaptations for uhexen2.
 
-	$Id: sys_dos.c,v 1.3 2007-11-11 13:17:42 sezero Exp $
+	$Id: sys_dos.c,v 1.4 2007-12-14 16:41:11 sezero Exp $
 
 	Copyright (C) 1996-1997  Id Software, Inc.
 
@@ -27,20 +27,15 @@
 
 */
 
+#include "q_stdinc.h"
 #include <errno.h>
 #include <unistd.h>
 #include <signal.h>
-#include <stdlib.h>
-#include <limits.h>
 #include <sys/time.h>
-#include <sys/types.h>
 #include <dirent.h>
 #include <unistd.h>
 #include <fcntl.h>
-#include <stdarg.h>
-#include <stdio.h>
 #include <sys/stat.h>
-#include <string.h>
 #include <dpmi.h>
 #include <sys/nearptr.h>
 #include <conio.h>

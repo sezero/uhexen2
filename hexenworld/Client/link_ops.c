@@ -2,11 +2,10 @@
 	link_ops.c
 	link operations
 
-	$Id: link_ops.c,v 1.1 2007-02-12 16:53:09 sezero Exp $
+	$Id: link_ops.c,v 1.2 2007-12-14 16:41:11 sezero Exp $
 */
 
-#include <sys/types.h>
-#include <stdlib.h>
+#include "q_stdinc.h"
 #include "link_ops.h"
 
 // ClearLink is used for new headnodes

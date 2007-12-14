@@ -2,13 +2,15 @@
 	pathutil.c
 	filename handling utilities
 
-	$Id: pathutil.c,v 1.3 2007-11-11 16:11:46 sezero Exp $
+	$Id: pathutil.c,v 1.4 2007-12-14 16:41:16 sezero Exp $
 */
 
 
 // HEADER FILES ------------------------------------------------------------
 
-#include "util_inc.h"
+#include "q_stdinc.h"
+#include "compiler.h"
+#include "arch_def.h"
 #include "pathutil.h"
 
 // MACROS ------------------------------------------------------------------

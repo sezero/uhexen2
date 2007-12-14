@@ -1,9 +1,11 @@
 /*
 	bsp2wal.c
-	$Id: bsp2wal.c,v 1.3 2007-07-08 17:01:17 sezero Exp $
+	$Id: bsp2wal.c,v 1.4 2007-12-14 16:41:28 sezero Exp $
 */
 
-#include "util_inc.h"
+#include "q_stdinc.h"
+#include "compiler.h"
+#include "arch_def.h"
 #include "cmdlib.h"
 #include "pathutil.h"
 #include "util_io.h"

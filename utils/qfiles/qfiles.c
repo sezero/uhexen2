@@ -1,9 +1,11 @@
 /*
 	qfiles.c
-	$Id: qfiles.c,v 1.7 2007-04-19 09:36:54 sezero Exp $
+	$Id: qfiles.c,v 1.8 2007-12-14 16:41:28 sezero Exp $
 */
 
-#include "util_inc.h"
+#include "q_stdinc.h"
+#include "compiler.h"
+#include "arch_def.h"
 #include "cmdlib.h"
 #include "util_io.h"
 #include "crc.h"

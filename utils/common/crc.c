@@ -2,13 +2,11 @@
 	crc.c
 	crc functions
 
-	$Id: crc.c,v 1.2 2007-03-14 21:04:31 sezero Exp $
+	$Id: crc.c,v 1.3 2007-12-14 16:41:16 sezero Exp $
 */
 
-#include "q_types.h"
+#include "q_stdinc.h"
 #include "crc.h"
-#include <stdlib.h>
-#include <string.h>
 
 //==========================================================================
 //

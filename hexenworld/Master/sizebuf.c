@@ -2,13 +2,10 @@
 	sizebuf.c
 	sized buffers
 
-	$Id: sizebuf.c,v 1.4 2007-07-04 08:49:59 sezero Exp $
+	$Id: sizebuf.c,v 1.5 2007-12-14 16:41:13 sezero Exp $
 */
 
-#include "q_types.h"
-#include <stdlib.h>
-#include <stdio.h>
-#include <string.h>
+#include "q_stdinc.h"
 #include "compiler.h"
 #include "sys.h"
 #include "sizebuf.h"

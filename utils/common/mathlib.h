@@ -2,7 +2,7 @@
 	mathlib.h
 	math primitives
 
-	$Header: /home/ozzie/Download/0000/uhexen2/utils/common/mathlib.h,v 1.4 2007-10-10 14:38:27 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/utils/common/mathlib.h,v 1.5 2007-12-14 16:41:16 sezero Exp $
 */
 
 #ifndef __MATHLIB_H
@@ -16,16 +16,11 @@
 #define	SIDE_CROSS		-2
 
 #ifndef M_PI
-#define M_PI		3.14159265358979323846	// matches value in gcc v2 math.h
+#define M_PI		3.14159265358979323846	/* matches value in gcc v2 math.h */
 #endif
 #define	Q_PI		M_PI
 
 #define	EQUAL_EPSILON	0.001
-
-#undef	min
-#undef	max
-#define	q_min(a, b)		(((a) < (b)) ? (a) : (b))
-#define	q_max(a, b)		(((a) > (b)) ? (a) : (b))
 
 extern vec3_t vec3_origin;
 

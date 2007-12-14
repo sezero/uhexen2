@@ -1,7 +1,7 @@
 /*
 	cmdlib.h
 
-	$Id: cmdlib.h,v 1.23 2007-11-11 16:11:45 sezero Exp $
+	$Id: cmdlib.h,v 1.24 2007-12-14 16:41:16 sezero Exp $
 */
 
 #ifndef __CMDLIB_H__
@@ -15,6 +15,11 @@
 
 /* the dec offsetof macro doesn't work very well... */
 #define myoffsetof(type,identifier) ((size_t)&((type *)0)->identifier)
+
+#undef	min
+#undef	max
+#define	q_min(a, b)	(((a) < (b)) ? (a) : (b))
+#define	q_max(a, b)	(((a) > (b)) ? (a) : (b))
 
 #if defined(PLATFORM_WINDOWS)
 #define q_strncasecmp	_strnicmp

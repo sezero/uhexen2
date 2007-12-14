@@ -1,9 +1,11 @@
 /*
 	region.c
-	$Id: region.c,v 1.7 2007-05-13 12:00:17 sezero Exp $
+	$Id: region.c,v 1.8 2007-12-14 16:41:25 sezero Exp $
 */
 
-#include "util_inc.h"
+#include "q_stdinc.h"
+#include "compiler.h"
+#include "arch_def.h"
 #include "cmdlib.h"
 #include "mathlib.h"
 #include "bspfile.h"

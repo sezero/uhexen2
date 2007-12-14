@@ -5,11 +5,14 @@
 	FIXME:	kill this in the future and make each C
 		file include only the necessary headers.
 
-	$Id: quakeinc.h,v 1.17 2007-07-11 16:47:16 sezero Exp $
+	$Id: quakeinc.h,v 1.18 2007-12-14 16:41:12 sezero Exp $
 */
 
 #ifndef __QUAKEINC_H
 #define __QUAKEINC_H
+
+/* include the system stdc headers:			*/
+#include "q_stdinc.h"
 
 /* include the compiler specific stuff	*/
 #include "compiler.h"
@@ -18,18 +21,6 @@
 
 /* make sure to include our compile time options first	*/
 #include "h2option.h"
-
-/* include the system headers: make sure to use q_types.h
-   instead of <sys/types.h>				*/
-#include "q_types.h"
-#include <math.h>
-#include <stdio.h>
-#include <string.h>
-#if !defined(PLATFORM_WINDOWS)
-#include <strings.h>	/* strcasecmp and strncasecmp	*/
-#endif	/* ! PLATFORM_WINDOWS */
-#include <stdarg.h>
-#include <stdlib.h>
 
 /* include the quake headers				*/
 

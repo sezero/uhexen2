@@ -1,9 +1,11 @@
 /*
 	tjunc.c
-	$Id: tjunc.c,v 1.10 2007-09-14 14:11:24 sezero Exp $
+	$Id: tjunc.c,v 1.11 2007-12-14 16:41:28 sezero Exp $
 */
 
-#include "util_inc.h"
+#include "q_stdinc.h"
+#include "compiler.h"
+#include "arch_def.h"
 #include "cmdlib.h"
 #include "mathlib.h"
 #include "bspfile.h"

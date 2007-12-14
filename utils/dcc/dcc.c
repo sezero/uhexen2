@@ -2,13 +2,15 @@
 	dcc.c
 	An hcode compiler/decompiler for Hexen II by Eric Hobbs
 
-	$Id: dcc.c,v 1.43 2007-11-14 15:53:17 sezero Exp $
+	$Id: dcc.c,v 1.44 2007-12-14 16:41:17 sezero Exp $
 */
 
 
 // HEADER FILES ------------------------------------------------------------
 
-#include "util_inc.h"
+#include "q_stdinc.h"
+#include "compiler.h"
+#include "arch_def.h"
 #include "cmdlib.h"
 #include "util_io.h"
 #include "qcc.h"

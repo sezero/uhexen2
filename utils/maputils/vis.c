@@ -1,9 +1,11 @@
 /*
 	vis.c
-	$Id: vis.c,v 1.12 2007-07-11 16:47:21 sezero Exp $
+	$Id: vis.c,v 1.13 2007-12-14 16:41:28 sezero Exp $
 */
 
-#include "util_inc.h"
+#include "q_stdinc.h"
+#include "compiler.h"
+#include "arch_def.h"
 #include "cmdlib.h"
 #include "pathutil.h"
 #include "mathlib.h"

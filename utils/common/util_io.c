@@ -2,13 +2,15 @@
 	util_io.c
 	file and directory utilities
 
-	$Id: util_io.c,v 1.6 2007-09-22 15:27:37 sezero Exp $
+	$Id: util_io.c,v 1.7 2007-12-14 16:41:16 sezero Exp $
 */
 
 
 // HEADER FILES ------------------------------------------------------------
 
-#include "util_inc.h"
+#include "q_stdinc.h"
+#include "compiler.h"
+#include "arch_def.h"
 #include "util_io.h"
 #include <sys/stat.h>
 #include <errno.h>

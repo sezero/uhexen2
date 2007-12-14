@@ -1,6 +1,6 @@
 /*
 	net_udp.c
-	$Id: net_udp.c,v 1.34 2007-09-22 15:27:13 sezero Exp $
+	$Id: net_udp.c,v 1.35 2007-12-14 16:41:10 sezero Exp $
 
 	Copyright (C) 1996-1997  Id Software, Inc.
 
@@ -25,6 +25,8 @@
 */
 
 
+#include "q_stdinc.h"
+#include "arch_def.h"
 #include "net_sys.h"
 #include <net/if.h>
 #include "quakedef.h"

@@ -1,4 +1,9 @@
-// gl_ngraph.c
+/*
+	gl_ngraph.c
+	net graph drawing
+
+	$Id: gl_ngraph.c,v 1.10 2007-12-14 16:41:11 sezero Exp $
+*/
 
 #include "quakedef.h"
 

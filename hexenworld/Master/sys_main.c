@@ -2,14 +2,17 @@
 	sys_main.c
 	main loop and system interface
 
-	$Id: sys_main.c,v 1.43 2007-11-11 13:54:59 sezero Exp $
+	$Id: sys_main.c,v 1.44 2007-12-14 16:41:13 sezero Exp $
 */
 
-#include "defs.h"
+#include "q_stdinc.h"
+#include "compiler.h"
+#include "arch_def.h"
 #if defined(PLATFORM_WINDOWS)
 #include <windows.h>
 #endif
-#include <limits.h>
+
+#include "defs.h"
 
 #if defined(PLATFORM_UNIX)
 #include <errno.h>

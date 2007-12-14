@@ -2,9 +2,12 @@
 	hwmaster.c
 	main master server program
 
-	$Id: master.c,v 1.4 2007-10-21 15:32:23 sezero Exp $
+	$Id: master.c,v 1.5 2007-12-14 16:41:13 sezero Exp $
 */
 
+#include "q_stdinc.h"
+#include "compiler.h"
+#include "arch_def.h"
 #include "defs.h"
 
 #if defined(PLATFORM_WINDOWS) || defined(PLATFORM_DOS)

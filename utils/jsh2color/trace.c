@@ -19,12 +19,14 @@
 
 /*
 	trace.c
-	$Id: trace.c,v 1.8 2007-07-08 17:01:16 sezero Exp $
+	$Id: trace.c,v 1.9 2007-12-14 16:41:23 sezero Exp $
 
 	Modifications by Kevin Shanahan, 1999-2000
 */
 
-#include "util_inc.h"
+#include "q_stdinc.h"
+#include "compiler.h"
+#include "arch_def.h"
 #include "cmdlib.h"
 #include "mathlib.h"
 #include "bspfile.h"

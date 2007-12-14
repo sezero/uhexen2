@@ -2,27 +2,25 @@
 	cl_main.c
 	client main loop
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/cl_main.c,v 1.92 2007-11-14 07:27:35 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/cl_main.c,v 1.93 2007-12-14 16:41:11 sezero Exp $
 */
 
-#include <sys/types.h>
-
+#include "q_stdinc.h"
+#include <ctype.h>
+#include <setjmp.h>
 #include "arch_def.h"
+#if defined(PLATFORM_WINDOWS)
+#include "winquake.h"
+#endif
 #if defined(PLATFORM_UNIX)
 #include <netinet/in.h>
 #ifndef INADDR_LOOPBACK
 #define INADDR_LOOPBACK	((in_addr_t) 0x7f000001)	/* 127.0.0.1	*/
 #endif
 #endif
-
 #include "quakedef.h"
 #include "cfgfile.h"
 #include "debuglog.h"
-#include <setjmp.h>
-#if defined(PLATFORM_WINDOWS)
-#include "winquake.h"
-#endif
-#include <ctype.h>
 
 static	cvar_t	rcon_password = {"rcon_password", "", CVAR_NONE};
 static	cvar_t	rcon_address = {"rcon_address", "", CVAR_NONE};

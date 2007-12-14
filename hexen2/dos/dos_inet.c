@@ -2,7 +2,7 @@
 	dos_inet.c
 	from quake1 source with minor adaptations for uhexen2.
 
-	$Id: dos_inet.c,v 1.2 2007-11-03 17:20:07 sezero Exp $
+	$Id: dos_inet.c,v 1.3 2007-12-14 16:41:11 sezero Exp $
 
 	Copyright (C) 1996-1997  Id Software, Inc.
 
@@ -26,9 +26,7 @@
 
 */
 
-#include <stdio.h>
-#include <stdlib.h>
-
+#include "q_stdinc.h"
 #include "dos_inet.h"
 
 

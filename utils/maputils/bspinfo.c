@@ -1,9 +1,11 @@
 /*
 	bspinfo.c
-	$Id: bspinfo.c,v 1.4 2007-03-14 21:04:38 sezero Exp $
+	$Id: bspinfo.c,v 1.5 2007-12-14 16:41:23 sezero Exp $
 */
 
-#include "util_inc.h"
+#include "q_stdinc.h"
+#include "compiler.h"
+#include "arch_def.h"
 #include "cmdlib.h"
 #include "pathutil.h"
 #include "bspfile.h"

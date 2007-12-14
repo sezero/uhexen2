@@ -2,14 +2,17 @@
 	net_dgrm.c
 	This is enables a simple IP banning mechanism
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/server/net_dgrm.c,v 1.28 2007-11-16 10:23:18 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/server/net_dgrm.c,v 1.29 2007-12-14 16:41:11 sezero Exp $
 */
 
 #define BAN_TEST
 
+#include "q_stdinc.h"
+#include "arch_def.h"
 #if defined(BAN_TEST)
+#if defined(PLATFORM_DOS)
 #include "dos/dos_inet.h"
-#ifndef INADDR_LOOPBACK
+#else
 #include "net_sys.h"
 #endif
 #endif	/* BAN_TEST */

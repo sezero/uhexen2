@@ -19,12 +19,14 @@
 
 /*
 	tyrlite.c
-	$Id: tyrlite.c,v 1.20 2007-11-11 16:11:48 sezero Exp $
+	$Id: tyrlite.c,v 1.21 2007-12-14 16:41:23 sezero Exp $
 
 	Modifications by Kevin Shanahan, 1999-2000
 */
 
-#include "util_inc.h"
+#include "q_stdinc.h"
+#include "compiler.h"
+#include "arch_def.h"
 #include "cmdlib.h"
 #include "util_io.h"
 #include "pathutil.h"

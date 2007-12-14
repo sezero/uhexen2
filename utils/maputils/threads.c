@@ -1,9 +1,11 @@
 /*
 	threads.c
-	$Id: threads.c,v 1.5 2007-07-11 16:47:21 sezero Exp $
+	$Id: threads.c,v 1.6 2007-12-14 16:41:28 sezero Exp $
 */
 
-#include "util_inc.h"
+#include "q_stdinc.h"
+#include "compiler.h"
+#include "arch_def.h"
 #include "cmdlib.h"
 #include "threads.h"
 

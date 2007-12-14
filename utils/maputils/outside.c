@@ -1,9 +1,11 @@
 /*
 	outside.c
-	$Id: outside.c,v 1.4 2007-03-14 21:04:41 sezero Exp $
+	$Id: outside.c,v 1.5 2007-12-14 16:41:25 sezero Exp $
 */
 
-#include "util_inc.h"
+#include "q_stdinc.h"
+#include "compiler.h"
+#include "arch_def.h"
 #include "cmdlib.h"
 #include "mathlib.h"
 #include "bspfile.h"

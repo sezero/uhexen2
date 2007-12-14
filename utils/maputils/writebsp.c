@@ -1,9 +1,12 @@
 /*
 	writebsp.c
-	$Id: writebsp.c,v 1.10 2007-11-11 16:11:48 sezero Exp $
+	$Id: writebsp.c,v 1.11 2007-12-14 16:41:28 sezero Exp $
 */
 
-#include "util_inc.h"
+#include "q_stdinc.h"
+#include "compiler.h"
+#include "arch_def.h"
+#include <ctype.h>
 #include "cmdlib.h"
 #include "util_io.h"
 #include "mathlib.h"

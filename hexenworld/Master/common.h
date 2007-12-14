@@ -2,11 +2,16 @@
 	common.h
 	misc utilities used in client and server
 
-	$Id: common.h,v 1.5 2007-11-11 13:18:22 sezero Exp $
+	$Id: common.h,v 1.6 2007-12-14 16:41:13 sezero Exp $
 */
 
 #ifndef __HX2_COMMON_H
 #define __HX2_COMMON_H
+
+#undef	min
+#undef	max
+#define	q_min(a, b)	(((a) < (b)) ? (a) : (b))
+#define	q_max(a, b)	(((a) > (b)) ? (a) : (b))
 
 /* snprintf, vsnprintf : always use our versions. */
 /* platform dependant (v)snprintf function names: */

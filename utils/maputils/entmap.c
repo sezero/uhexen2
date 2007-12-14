@@ -2,10 +2,12 @@
 	entmap.c
 	a program for remapping entity key/value pairs
 
-	$Id: entmap.c,v 1.6 2007-05-13 12:00:12 sezero Exp $
+	$Id: entmap.c,v 1.7 2007-12-14 16:41:23 sezero Exp $
 */
 
-#include "util_inc.h"
+#include "q_stdinc.h"
+#include "compiler.h"
+#include "arch_def.h"
 #include "cmdlib.h"
 #include "util_io.h"
 #include "pathutil.h"

@@ -1,8 +1,8 @@
 /*
-	crc.c
+	crc.h
 	crc functions
 
-	$Id: crc.h,v 1.1 2007-04-14 21:30:15 sezero Exp $
+	$Id: crc.h,v 1.2 2007-12-14 16:46:25 sezero Exp $
 	Copyright (C) 1996-1997  Id Software, Inc.
 
 	This program is free software; you can redistribute it and/or

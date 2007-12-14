@@ -1,6 +1,6 @@
 /*
 	genmodel.c
-	$Id: genmodel.c,v 1.10 2007-11-11 18:48:07 sezero Exp $
+	$Id: genmodel.c,v 1.11 2007-12-14 16:41:17 sezero Exp $
 
 	Generates a .mdl file from a base frame, a texture bitmap,
 	and a series of frames.
@@ -12,7 +12,9 @@
 
 // HEADER FILES ------------------------------------------------------------
 
-#include "util_inc.h"
+#include "q_stdinc.h"
+#include "compiler.h"
+#include "arch_def.h"
 #include "cmdlib.h"
 #include "util_io.h"
 #include "pathutil.h"

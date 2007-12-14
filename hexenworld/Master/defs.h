@@ -2,7 +2,7 @@
 	mst_defs.h
 	common definitions for hexenworld master server
 
-	$Id: defs.h,v 1.33 2007-10-13 19:27:39 sezero Exp $
+	$Id: defs.h,v 1.34 2007-12-14 16:41:13 sezero Exp $
 */
 
 #ifndef __HWMASTER_DEFS
@@ -42,16 +42,6 @@
 //=============================================================================
 // Includes
 
-#include "compiler.h"
-#include "arch_def.h"
-#include "q_types.h"
-#include <stdio.h>
-#include <string.h>
-#if !defined(PLATFORM_WINDOWS)
-#include <strings.h>	/* strcasecmp and strncasecmp	*/
-#endif	/* ! PLATFORM_WINDOWS */
-#include <stdarg.h>
-#include <stdlib.h>
 #include "q_endian.h"
 #include "sizebuf.h"
 #include "msg_io.h"
@@ -65,11 +55,6 @@
 
 //=============================================================================
 // Macros
-
-#undef	min
-#undef	max
-#define	q_min(a, b)		(((a) < (b)) ? (a) : (b))
-#define	q_max(a, b)		(((a) > (b)) ? (a) : (b))
 
 
 //=============================================================================

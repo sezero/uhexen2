@@ -1,6 +1,6 @@
 /*
 	lmp2pcx.c
-	$Id: lmp2pcx.c,v 1.8 2007-11-11 18:48:07 sezero Exp $
+	$Id: lmp2pcx.c,v 1.9 2007-12-14 16:41:29 sezero Exp $
 	Copyright (C) 2002-2007 Forest Hale
 
 	This program is free software; you can redistribute it and/or
@@ -22,7 +22,9 @@
 		Boston, MA  02110-1301, USA
 */
 
-#include <util_inc.h>
+#include "q_stdinc.h"
+#include "compiler.h"
+#include "arch_def.h"
 #include "cmdlib.h"
 #include "pathutil.h"
 #include "util_io.h"

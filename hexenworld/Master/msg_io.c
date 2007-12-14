@@ -3,12 +3,10 @@
 	Message IO functions
 	Handles byte ordering and avoids alignment errors
 
-	$Id: msg_io.c,v 1.4 2007-07-08 11:56:51 sezero Exp $
+	$Id: msg_io.c,v 1.5 2007-12-14 16:41:13 sezero Exp $
 */
 
-#include "q_types.h"
-#include <stdlib.h>
-#include <string.h>
+#include "q_stdinc.h"
 #include "compiler.h"
 #include "q_endian.h"
 #include "sys.h"

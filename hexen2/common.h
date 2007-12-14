@@ -2,7 +2,7 @@
 	common.h
 	misc utilities used in client and server
 
-	$Id: common.h,v 1.58 2007-12-12 10:51:02 sezero Exp $
+	$Id: common.h,v 1.59 2007-12-14 16:41:10 sezero Exp $
 */
 
 #ifndef __HX2_COMMON_H
@@ -14,6 +14,11 @@
 #endif
 
 //============================================================================
+
+#undef	min
+#undef	max
+#define	q_min(a, b)	(((a) < (b)) ? (a) : (b))
+#define	q_max(a, b)	(((a) > (b)) ? (a) : (b))
 
 #if defined(PLATFORM_WINDOWS) && !defined(F_OK)
 // values for the mode argument of access(). MS does not define them

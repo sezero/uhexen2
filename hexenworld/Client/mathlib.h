@@ -2,25 +2,22 @@
 	mathlib.h
 	math primitives
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/mathlib.h,v 1.18 2007-10-10 14:38:27 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/mathlib.h,v 1.19 2007-12-14 16:41:11 sezero Exp $
 */
 
 #ifndef __MATHLIB_H
 #define __MATHLIB_H
 
+#include <math.h>
+
 #ifndef M_PI
-#define M_PI		3.14159265358979323846	// matches value in gcc v2 math.h
+#define M_PI		3.14159265358979323846	/* matches value in gcc v2 math.h */
 #endif
 
-#undef	min
-#undef	max
-#define	q_min(a, b)		(((a) < (b)) ? (a) : (b))
-#define	q_max(a, b)		(((a) > (b)) ? (a) : (b))
+#define	nanmask		(255<<23)
+#define	IS_NAN(x)	(((*(int *) (char *) &x) & nanmask) == nanmask)
 
-#define	nanmask			(255<<23)
-#define	IS_NAN(x)		(((*(int *) (char *) &x) & nanmask) == nanmask)
-
-int Q_isnan (float x);
+int Q_isnan (float x);	/* don't pass doubles to this */
 
 extern vec3_t vec3_origin;
 
