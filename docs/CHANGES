@@ -3,6 +3,30 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2007-12-14/15 (CVS):
+    * updated several headers. retired q_types.h and added q_stdinc.h.
+    * updated HoT version to 1.4.3 (rc0 : 2007-12-14.)
+
+2007-12-12 (CVS):
+    * updated several OS/arch definitions.
+    * snd_sun.c, fixed compilation.
+
+2007-12-08 (CVS):
+    * launcher: added a progress bar for the patch operation based on the
+      written bytes. tiny clean-ups, if any, while we were there.
+    * launcher: incremented version to 1.0.3
+    * minor documentation updates after the launcher changes.
+
+2007-12-04 (CVS):
+    * added aliases for class definitions because some of them are
+      referenced with a different name in the progs.
+    * filtered invalid class numbers in Host_Class_f. besides, the demoness
+      is only available in the mission pack WITH the is a mission pack progs
+      running, made sure of that, too.
+    * hexenworld: fixed a glitch in class selection menu.
+    * updated release notes for 1.4.3 (2007-12-04.)
+    * updated the list of known bugs (2007-12-04.)
+
 2007-11-25 (CVS):
     * pa3pyx's solution of resized pic size mismatches after resolution
       changes was buggy, because it only handled one picture, probably
