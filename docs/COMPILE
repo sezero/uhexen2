@@ -207,8 +207,9 @@ cross compilation toolchain: see the tiny script build_cross_dos.sh to
 have an idea of how I do it.  Compilation on DOS is never tested and is
 not supported.  As for compiling on windows in a command console, it
 should be possible, just remember to add DOSBUILD=1 to your environment.
-CWSDPMI.EXE is needed at runtime: the "r1" version from 1996 which was
-packaged with quake still works, or you can use the newer r5 version.
+CWSDPMI.EXE is needed at runtime: the "0.90+ r1" version from 1996 which
+was packaged with quake still seems to work but isn't recommended: use
+the "0.90+ r5" or a newer version.
 
 
 Links:

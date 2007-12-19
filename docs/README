@@ -1,5 +1,5 @@
 
-Hexen II: Hammer of Thyrion 1.4.2
+Hexen II: Hammer of Thyrion 1.4.3
 ---------------------------------
 
 
@@ -78,7 +78,7 @@ a. Using the installer:
 	hwmaster-  HexenWorld Master Server
 
 b. Manual install/update of data files:
-   Download the base binary tarball (e.g., hexen2-1.4.2.i586.tgz)
+   Download the base binary tarball (e.g., hexen2-1.4.3.i586.tgz)
    and extract it. Copy the two files pak0.pak and pak1.pak from
    your cdrom into the "data1" directory in your own installation.
    Run the command " chmod 644 data1/pak* "  to fix their permis-
@@ -104,7 +104,7 @@ b. Manual install/update of data files:
    77ae298dd0dcd16ab12f4a68067ff2c3  portals/pak3.pak
 
    If you want to install HexenWorld, download the HexenWorld
-   binary package (e.g., hexenworld-1.4.2.i586.tgz) and extract
+   binary package (e.g., hexenworld-1.4.3.i586.tgz) and extract
    it in the same directory you extracted the base HoT tarball.
    No additional patching is necessary for hexenworld.
 

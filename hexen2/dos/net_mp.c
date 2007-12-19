@@ -1,10 +1,10 @@
 /*
 	net_mpath.c
 	MPATH TCP driver: the (Winsock) UDP driver for dosquake
-        for use when run from withing win95.
+        for use when run from within win95.
 	from quake1 source with minor adaptations for uhexen2.
 
-	$Id: net_mp.c,v 1.3 2007-10-30 17:09:58 sezero Exp $
+	$Id: net_mp.c,v 1.4 2007-12-19 09:36:19 sezero Exp $
 
 	Copyright (C) 1996-1997  Id Software, Inc.
 

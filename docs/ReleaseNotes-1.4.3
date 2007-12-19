@@ -11,12 +11,10 @@ Changes since HoT-1.4.2 :
   pause key events on some platforms.
 - Added back the use of password file on unix systems.
 - Passed NULL as the timezone argument to gettimeofday.
-- Buffer lock fixes in SDL audio output.
-- A few documentation updates and corrections.
-- Fixed fullscreen intermission and help picture size
-  mismatches after resolution changes which would result
-  in bad coordinate errors under certain conditions in
-  the software renderer.
+- Sound: Buffer lock fixes in SDL audio output.
+- Software renderer: Fixed fullscreen intermission and
+  help picture size mismatches after resolution changes
+  which would cause errors under certain contidions.
 - Fixed a glitch in hexenworld class selection menu.
 - Fixed invalid class handling glitches in hexen2.
 - Fixed a buffer overrun in dhcc (the hexenc decompiler)
@@ -30,13 +28,12 @@ Changes since HoT-1.4.2 :
 - Launcher: added a progress bar for the patch operation.
 - Added support for the oem (Matrox m3D bundle) version.
 - Added a new compile time option to disable the user
-  directories even on multi-user platforms (default is
-  off, of course.)
+  directories even on multi-user platforms.
 - Always use MAXHOSTNAMELEN sized buffers with gethostname
 - Added PDP (NUXI) endian stuff (just for fun ;)
 - Added DOS support for the software renderer (another fun
   thing: we have dosquake, why not have a dos-hexen2 ;)
-- Updates in platform headers to help more for better
-  portability.
+- Updates in platform headers for better portability.
 - Fixed and updated several build and patch scripts.
+- A few documentation updates and corrections.
 
