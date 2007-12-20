@@ -2,7 +2,7 @@
 	winquake.h
 	Win32-specific Quake header file
 
-	$Id: winquake.h,v 1.30 2007-11-07 16:54:59 sezero Exp $
+	$Id: winquake.h,v 1.31 2007-12-20 21:36:00 sezero Exp $
 */
 
 #if !defined(PLATFORM_WINDOWS)
@@ -17,7 +17,6 @@
 #endif
 #include <windows.h>
 #include <winsock.h>
-#include <ctype.h>
 
 #include <mmsystem.h>
 
