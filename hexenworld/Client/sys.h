@@ -2,7 +2,7 @@
 	sys.h
 	non-portable functions
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/sys.h,v 1.37 2007-10-31 19:55:47 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/sys.h,v 1.38 2007-12-20 21:45:33 sezero Exp $
 */
 
 #ifndef __HX2_SYS_H
@@ -18,25 +18,8 @@ int Sys_mkdir (const char *path);
 		Sys_Error("Unable to create directory %s",(p));	\
 }
 
-#if defined(PLATFORM_WINDOWS)
-#define	Sys_rmdir	_rmdir
-#elif defined(PLATFORM_DOS)
-#define	Sys_rmdir	rmdir
-#elif defined(PLATFORM_UNIX)
-#define	Sys_rmdir	rmdir
-#else /* local implementation */
 int Sys_rmdir (const char *path);
-#endif
-
-#if defined(PLATFORM_WINDOWS)
-#define	Sys_unlink	_unlink
-#elif defined(PLATFORM_DOS)
-#define	Sys_unlink	unlink
-#elif defined(PLATFORM_UNIX)
-#define	Sys_unlink	unlink
-#else /* local implementation */
 int Sys_unlink (const char *path);
-#endif
 
 // simplified findfirst/findnext implementation
 char *Sys_FindFirstFile (const char *path, const char *pattern);

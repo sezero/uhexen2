@@ -2,7 +2,7 @@
 	sys_unix.c
 	Unix system interface code
 
-	$Id: sys_unix.c,v 1.49 2007-10-13 09:50:28 sezero Exp $
+	$Id: sys_unix.c,v 1.50 2007-12-20 21:45:34 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -50,6 +50,16 @@ int Sys_mkdir (const char *path)
 		rc = 0;
 
 	return rc;
+}
+
+int Sys_rmdir (const char *path)
+{
+	return rmdir(path);
+}
+
+int Sys_unlink (const char *path)
+{
+	return unlink(path);
 }
 
 /*

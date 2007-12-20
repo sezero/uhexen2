@@ -3,7 +3,7 @@
 	DOS system interface code.
 	from quake1 source with adaptations for uhexen2.
 
-	$Id: sys_dos.c,v 1.4 2007-12-14 16:41:11 sezero Exp $
+	$Id: sys_dos.c,v 1.5 2007-12-20 21:45:32 sezero Exp $
 
 	Copyright (C) 1996-1997  Id Software, Inc.
 
@@ -400,6 +400,16 @@ int Sys_mkdir (const char *path)
 		rc = 0;
 
 	return rc;
+}
+
+int Sys_rmdir (const char *path)
+{
+	return rmdir(path);
+}
+
+int Sys_unlink (const char *path)
+{
+	return unlink(path);
 }
 
 

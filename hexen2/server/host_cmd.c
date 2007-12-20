@@ -2,20 +2,10 @@
 	host_cmd.c
 	console commands
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/server/host_cmd.c,v 1.43 2007-12-04 15:28:10 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/server/host_cmd.c,v 1.44 2007-12-20 21:45:32 sezero Exp $
 */
 
 #include "quakedef.h"
-
-#ifdef PLATFORM_WINDOWS
-#include <io.h>
-#endif
-#ifdef PLATFORM_DOS
-#include <unistd.h>
-#endif
-#ifdef PLATFORM_UNIX
-#include <unistd.h>
-#endif
 #include <ctype.h>
 #include <time.h>
 

@@ -2,7 +2,7 @@
 	sys_unix.c
 	Unix system interface code
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sys_unix.c,v 1.101 2007-11-17 20:32:57 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sys_unix.c,v 1.102 2007-12-20 21:45:31 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -58,6 +58,16 @@ int Sys_mkdir (const char *path)
 		rc = 0;
 
 	return rc;
+}
+
+int Sys_rmdir (const char *path)
+{
+	return rmdir(path);
+}
+
+int Sys_unlink (const char *path)
+{
+	return unlink(path);
 }
 
 /*

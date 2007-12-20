@@ -2,7 +2,7 @@
 	sys_win.c
 	Win32 system interface code
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Server/win_stuff/sys_win.c,v 1.38 2007-10-13 09:50:30 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Server/win_stuff/sys_win.c,v 1.39 2007-12-20 21:45:34 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -50,6 +50,16 @@ int Sys_mkdir (const char *path)
 		rc = 0;
 
 	return rc;
+}
+
+int Sys_rmdir (const char *path)
+{
+	return rmdir(path);
+}
+
+int Sys_unlink (const char *path)
+{
+	return unlink(path);
 }
 
 /*
