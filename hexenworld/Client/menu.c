@@ -1,7 +1,7 @@
 /*
 	menu.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/menu.c,v 1.76 2007-12-04 16:33:08 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/menu.c,v 1.77 2007-12-20 21:37:27 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -1700,7 +1700,7 @@ static const char **LineText;
 static qboolean SoundPlayed;
 
 
-#define MAX_LINES 145+25
+#define	MAX_LINES	170
 
 static const char *CreditText[MAX_LINES] =
 {
@@ -1880,7 +1880,7 @@ static const char *CreditText[MAX_LINES] =
 #endif
 };
 
-#define MAX_LINES2 158+27
+#define	MAX_LINES2	185
 
 static const char *Credit2Text[MAX_LINES2] =
 {
@@ -2174,15 +2174,15 @@ static void M_Quit_Draw (void)
 	y -= (LinePos - (int)LinePos) * 8;
 	for (i = 0; i < QUIT_SIZE; i++, y += 8)
 	{
-		if (i+place-QUIT_SIZE >= MaxLines)
+		if (i + place - QUIT_SIZE >= MaxLines)
 			break;
-		if (i+place < QUIT_SIZE)
+		if (i + place < QUIT_SIZE)
 			continue;
 
-		if (LineText[i+place-QUIT_SIZE][0] == ' ')
-			M_PrintWhite(24,y,LineText[i+place-QUIT_SIZE]);
+		if (LineText[i + place - QUIT_SIZE][0] == ' ')
+			M_PrintWhite(24, y, LineText[i + place - QUIT_SIZE]);
 		else
-			M_Print(24,y,LineText[i+place-QUIT_SIZE]);
+			M_Print(24, y, LineText[i + place - QUIT_SIZE]);
 	}
 
 	p = Draw_CachePic ("gfx/box_mm2.lmp");

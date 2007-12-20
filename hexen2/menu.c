@@ -1,7 +1,7 @@
 /*
 	menu.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/menu.c,v 1.105 2007-11-14 07:32:20 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/menu.c,v 1.106 2007-12-20 21:37:27 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -1821,7 +1821,7 @@ forward:
 
 static int	m_net_cursor = 0;
 
-const char *net_helpMessage [] = 
+static const char *net_helpMessage[] =
 {
 /* .........1.........2.... */
 #if NET_USE_SERIAL
@@ -3000,7 +3000,7 @@ static const char **LineText;
 static qboolean SoundPlayed;
 
 
-#define MAX_LINES 138
+#define	MAX_LINES	138
 
 static const char *CreditText[MAX_LINES] =
 {
@@ -3144,7 +3144,7 @@ static const char *CreditText[MAX_LINES] =
    "making of this game!"
 };
 
-#define MAX_LINES2 150
+#define	MAX_LINES2	150
 
 static const char *Credit2Text[MAX_LINES2] =
 {
@@ -3404,15 +3404,15 @@ static void M_Quit_Draw (void)
 	y -= floor((LinePos - place) * 8);
 	for (i = 0; i < QUIT_SIZE; i++, y += 8)
 	{
-		if (i+place-QUIT_SIZE >= MaxLines)
+		if (i + place - QUIT_SIZE >= MaxLines)
 			break;
-		if (i+place < QUIT_SIZE)
+		if (i + place < QUIT_SIZE)
 			continue;
 
-		if (LineText[i+place-QUIT_SIZE][0] == ' ')
-			M_PrintWhite(24,y,LineText[i+place-QUIT_SIZE]);
+		if (LineText[i + place - QUIT_SIZE][0] == ' ')
+			M_PrintWhite(24, y, LineText[i + place - QUIT_SIZE]);
 		else
-			M_Print(24,y,LineText[i+place-QUIT_SIZE]);
+			M_Print(24, y, LineText[i + place - QUIT_SIZE]);
 	}
 
 	p = Draw_CachePic ("gfx/box_mm2.lmp");
@@ -3420,8 +3420,8 @@ static void M_Quit_Draw (void)
 	y = topy - 8;
 	for (i = 4; i < 38; i++, x += 8)
 	{
-		M_DrawPic(x, y, p);	//background at top for smooth scroll out
-		M_DrawPic(x, y+(QUIT_SIZE*8), p);	//draw at bottom for smooth scroll in
+		M_DrawPic(x, y, p);	// background at top for smooth scroll out
+		M_DrawPic(x, y + (QUIT_SIZE*8), p);	// draw at bottom for smooth scroll in
 	}
 
 	y += (QUIT_SIZE * 8) + 8;
