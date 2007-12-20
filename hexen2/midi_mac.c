@@ -1,6 +1,6 @@
 /*
 	midi_mac.c
-	$Id: midi_mac.c,v 1.17 2007-10-13 20:48:57 sezero Exp $
+	$Id: midi_mac.c,v 1.19 2007-12-20 22:15:35 sezero Exp $
 
 	MIDI module for Mac OS X using QuickTime:
 	Taken from the macglquake project with adjustments to make
@@ -29,8 +29,6 @@
 */
 
 #include "quakedef.h"
-#include <unistd.h>
-
 #include <Sound.h>
 #include <QuickTime/Movies.h>
 
