@@ -2,7 +2,7 @@
 	glquake.h
 	common glquake header
 
-	$Id: glquake.h,v 1.78 2007-11-22 08:22:26 sezero Exp $
+	$Id: glquake.h,v 1.79 2007-12-21 13:49:49 sezero Exp $
 */
 
 
@@ -146,8 +146,7 @@ extern	GLuint		gl_extra_textures[MAX_EXTRA_TEXTURES];	// generic textures for mo
 
 extern	int		gl_texlevel;
 extern	int		numgltextures;
-extern	qboolean	flush_textures;		// we can't detect mapname change early enough
-						// in hw, so flush_textures is only for hexen2
+extern	qboolean	flush_textures;
 extern	gltexture_t	gltextures[MAX_GLTEXTURES];
 
 extern	int		gl_filter_min;
