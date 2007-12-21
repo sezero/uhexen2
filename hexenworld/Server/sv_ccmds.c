@@ -2,7 +2,7 @@
 	sv_ccmds.c
 	console commands
 
-	$Id: sv_ccmds.c,v 1.25 2007-11-11 13:18:22 sezero Exp $
+	$Id: sv_ccmds.c,v 1.26 2007-12-21 15:05:23 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -435,7 +435,7 @@ static void SV_Status_f (void)
 	int			i, j, l, num_min, num_sec;
 	client_t	*cl;
 	float		cpu, avg, pak, t_limit,f_limit;
-	char		*s;
+	const char	*s;
 
 	cpu = (svs.stats.latched_active+svs.stats.latched_idle);
 	if (cpu)

@@ -3,7 +3,7 @@
 	Beame & Whiteside TCP/IP for dosquake.
 	from quake1 source with minor adaptations for uhexen2.
 
-	$Id: net_bw.h,v 1.1 2007-10-22 18:07:52 sezero Exp $
+	$Id: net_bw.h,v 1.2 2007-12-21 15:05:23 sezero Exp $
 
 	Copyright (C) 1996-1997  Id Software, Inc.
 
@@ -40,7 +40,7 @@ int  BW_CheckNewConnections (void);
 int  BW_Read (int mysocket, byte *buf, int len, struct qsockaddr *addr);
 int  BW_Write (int mysocket, byte *buf, int len, struct qsockaddr *addr);
 int  BW_Broadcast (int mysocket, byte *buf, int len);
-char *BW_AddrToString (struct qsockaddr *addr);
+const char *BW_AddrToString (struct qsockaddr *addr);
 int  BW_StringToAddr (const char *string, struct qsockaddr *addr);
 int  BW_GetSocketAddr (int mysocket, struct qsockaddr *addr);
 int  BW_GetNameFromAddr (struct qsockaddr *addr, char *name);

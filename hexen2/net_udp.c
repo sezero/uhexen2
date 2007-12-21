@@ -1,6 +1,6 @@
 /*
 	net_udp.c
-	$Id: net_udp.c,v 1.35 2007-12-14 16:41:10 sezero Exp $
+	$Id: net_udp.c,v 1.36 2007-12-21 15:05:23 sezero Exp $
 
 	Copyright (C) 1996-1997  Id Software, Inc.
 
@@ -413,7 +413,7 @@ int UDP_Write (int mysocket, byte *buf, int len, struct qsockaddr *addr)
 
 //=============================================================================
 
-char *UDP_AddrToString (struct qsockaddr *addr)
+const char *UDP_AddrToString (struct qsockaddr *addr)
 {
 	static char buffer[22];
 	int		haddr;

@@ -2,7 +2,7 @@
 	net_udp.c
 	network UDP driver
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/net_wins.c,v 1.41 2007-12-21 12:52:10 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/net_wins.c,v 1.42 2007-12-21 15:05:23 sezero Exp $
 */
 
 #include "q_stdinc.h"
@@ -60,7 +60,7 @@ qboolean NET_CompareAdr (netadr_t a, netadr_t b)
 	return false;
 }
 
-char *NET_AdrToString (netadr_t a)
+const char *NET_AdrToString (netadr_t a)
 {
 	static	char	s[64];
 
@@ -69,7 +69,7 @@ char *NET_AdrToString (netadr_t a)
 	return s;
 }
 
-char *NET_BaseAdrToString (netadr_t a)
+const char *NET_BaseAdrToString (netadr_t a)
 {
 	static	char	s[64];
 
@@ -97,10 +97,10 @@ qboolean NET_StringToAdr (const char *s, netadr_t *a)
 
 	memset (&sadr, 0, sizeof(sadr));
 	sadr.sin_family = AF_INET;
-
 	sadr.sin_port = 0;
 
-	strcpy (copy, s);
+	strncpy (copy, s, sizeof(copy) - 1);
+	copy[sizeof(copy) - 1] = '\0';
 	// strip off a trailing :port if present
 	for (colon = copy ; *colon ; colon++)
 	{

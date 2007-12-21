@@ -2,7 +2,7 @@
 	net.h
 	quake's interface to the networking layer
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/net.h,v 1.21 2007-11-11 13:17:40 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/net.h,v 1.22 2007-12-21 15:05:23 sezero Exp $
 */
 
 #ifndef __HX2_NET_H
@@ -34,64 +34,68 @@ struct qsockaddr
 
 #define NET_PROTOCOL_VERSION	5
 
-// This is the network info/connection protocol.  It is used to find Quake
-// servers, get info about them, and connect to them.  Once connected, the
-// Quake game protocol (documented elsewhere) is used.
-//
-//
-// General notes:
-//	game_name is currently always "QUAKE", but is there so this same protocol
-//		can be used for future games as well; can you say Quake2?
-//
-// CCREQ_CONNECT
-//		string	game_name				"QUAKE"
-//		byte	net_protocol_version	NET_PROTOCOL_VERSION
-//
-// CCREQ_SERVER_INFO
-//		string	game_name				"QUAKE"
-//		byte	net_protocol_version	NET_PROTOCOL_VERSION
-//
-// CCREQ_PLAYER_INFO
-//		byte	player_number
-//
-// CCREQ_RULE_INFO
-//		string	rule
-//
-// CCREP_ACCEPT
-//		long	port
-//
-// CCREP_REJECT
-//		string	reason
-//
-// CCREP_SERVER_INFO
-//		string	server_address
-//		string	host_name
-//		string	level_name
-//		byte	current_players
-//		byte	max_players
-//		byte	protocol_version	NET_PROTOCOL_VERSION
-//
-// CCREP_PLAYER_INFO
-//		byte	player_number
-//		string	name
-//		long	colors
-//		long	frags
-//		long	connect_time
-//		string	address
-//
-// CCREP_RULE_INFO
-//		string	rule
-//		string	value
+/**
 
-//	note:
-//		There are two address forms used above.  The short form is just a
-//		port number.  The address that goes along with the port is defined as
-//		"whatever address you receive this reponse from".  This lets us use
-//		the host OS to solve the problem of multiple host addresses (possibly
-//		with no routing between them); the host will use the right address
-//		when we reply to the inbound connection request.  The long from is
-//		a full address and port in a string.  It is used for returning the
-//		address of a server that is not running locally.
+This is the network info/connection protocol.  It is used to find Quake
+servers, get info about them, and connect to them.  Once connected, the
+Quake game protocol (documented elsewhere) is used.
+
+
+General notes:
+	game_name is currently always "QUAKE", but is there so this same protocol
+		can be used for future games as well; can you say Quake2?
+
+CCREQ_CONNECT
+		string	game_name		"QUAKE"
+		byte	net_protocol_version	NET_PROTOCOL_VERSION
+
+CCREQ_SERVER_INFO
+		string	game_name		"QUAKE"
+		byte	net_protocol_version	NET_PROTOCOL_VERSION
+
+CCREQ_PLAYER_INFO
+		byte	player_number
+
+CCREQ_RULE_INFO
+		string	rule
+
+CCREP_ACCEPT
+		long	port
+
+CCREP_REJECT
+		string	reason
+
+CCREP_SERVER_INFO
+		string	server_address
+		string	host_name
+		string	level_name
+		byte	current_players
+		byte	max_players
+		byte	protocol_version	NET_PROTOCOL_VERSION
+
+CCREP_PLAYER_INFO
+		byte	player_number
+		string	name
+		long	colors
+		long	frags
+		long	connect_time
+		string	address
+
+CCREP_RULE_INFO
+		string	rule
+		string	value
+
+	note:
+		There are two address forms used above.  The short form is just a
+		port number.  The address that goes along with the port is defined as
+		"whatever address you receive this reponse from".  This lets us use
+		the host OS to solve the problem of multiple host addresses (possibly
+		with no routing between them); the host will use the right address
+		when we reply to the inbound connection request.  The long from is
+		a full address and port in a string.  It is used for returning the
+		address of a server that is not running locally.
+
+**/
 
 #define CCREQ_CONNECT		0x01
 #define CCREQ_SERVER_INFO	0x02
@@ -107,38 +111,38 @@ struct qsockaddr
 typedef struct qsocket_s
 {
 	struct qsocket_s	*next;
-	double			connecttime;
-	double			lastMessageTime;
-	double			lastSendTime;
+	double		connecttime;
+	double		lastMessageTime;
+	double		lastSendTime;
 
-	qboolean		disconnected;
-	qboolean		canSend;
-	qboolean		sendNext;
+	qboolean	disconnected;
+	qboolean	canSend;
+	qboolean	sendNext;
 
-	int				driver;
-	int				landriver;
-	int				socket;
-	void			*driverdata;
+	int		driver;
+	int		landriver;
+	int		socket;
+	void		*driverdata;
 
 	unsigned int	ackSequence;
 	unsigned int	sendSequence;
 	unsigned int	unreliableSendSequence;
-	int				sendMessageLength;
-	byte			sendMessage [NET_MAXMESSAGE];
+	int		sendMessageLength;
+	byte		sendMessage [NET_MAXMESSAGE];
 
 	unsigned int	receiveSequence;
 	unsigned int	unreliableReceiveSequence;
-	int				receiveMessageLength;
-	byte			receiveMessage [NET_MAXMESSAGE];
+	int		receiveMessageLength;
+	byte		receiveMessage [NET_MAXMESSAGE];
 
 	struct qsockaddr	addr;
-	char				address[NET_NAMELEN];
+	char		address[NET_NAMELEN];
 
 } qsocket_t;
 
 extern qsocket_t	*net_activeSockets;
 extern qsocket_t	*net_freeSockets;
-extern int			net_numsockets;
+extern int		net_numsockets;
 
 typedef struct
 {
@@ -155,7 +159,7 @@ typedef struct
 	int		(*Read) (int mysocket, byte *buf, int len, struct qsockaddr *addr);
 	int		(*Write) (int mysocket, byte *buf, int len, struct qsockaddr *addr);
 	int		(*Broadcast) (int mysocket, byte *buf, int len);
-	char *		(*AddrToString) (struct qsockaddr *addr);
+	const char *	(*AddrToString) (struct qsockaddr *addr);
 	int		(*StringToAddr) (const char *string, struct qsockaddr *addr);
 	int		(*GetSocketAddr) (int mysocket, struct qsockaddr *addr);
 	int		(*GetNameFromAddr) (struct qsockaddr *addr, char *name);
@@ -193,10 +197,10 @@ typedef struct
 extern net_driver_t	net_drivers[];
 extern const int	net_numdrivers;
 
-extern int			DEFAULTnet_hostport;
-extern int			net_hostport;
+extern int		DEFAULTnet_hostport;
+extern int		net_hostport;
 
-extern int net_driverlevel;
+extern int		net_driverlevel;
 extern cvar_t		hostname;
 extern cvar_t		net_allowmultiple;
 
@@ -236,10 +240,10 @@ extern hostcache_t hostcache[HOSTCACHESIZE];
 
 extern	double		net_time;
 extern	sizebuf_t	net_message;
-extern	int			net_activeconnections;
+extern	int		net_activeconnections;
 
-void		NET_Init (void);
-void		NET_Shutdown (void);
+void	NET_Init (void);
+void	NET_Shutdown (void);
 
 struct qsocket_s	*NET_CheckNewConnections (void);
 // returns a new connection number if there is one pending, else -1
@@ -251,25 +255,25 @@ qboolean NET_CanSendMessage (qsocket_t *sock);
 // Returns true or false if the given qsocket can currently accept a
 // message to be transmitted.
 
-int			NET_GetMessage (struct qsocket_s *sock);
+int	NET_GetMessage (struct qsocket_s *sock);
 // returns data in net_message sizebuf
 // returns 0 if no data is waiting
 // returns 1 if a message was received
 // returns 2 if an unreliable message was received
 // returns -1 if the connection died
 
-int			NET_SendMessage (struct qsocket_s *sock, sizebuf_t *data);
-int			NET_SendUnreliableMessage (struct qsocket_s *sock, sizebuf_t *data);
+int	NET_SendMessage (struct qsocket_s *sock, sizebuf_t *data);
+int	NET_SendUnreliableMessage (struct qsocket_s *sock, sizebuf_t *data);
 // returns 0 if the message connot be delivered reliably, but the connection
 //		is still considered valid
 // returns 1 if the message was sent properly
 // returns -1 if the connection died
 
-int			NET_SendToAll(sizebuf_t *data, double blocktime);
+int	NET_SendToAll(sizebuf_t *data, double blocktime);
 // This is a reliable *blocking* send to all attached clients.
 
 
-void		NET_Close (struct qsocket_s *sock);
+void	NET_Close (struct qsocket_s *sock);
 // if a dead connection is returned by a get or send function, this function
 // should be called when it is convenient
 
@@ -278,15 +282,15 @@ void		NET_Close (struct qsocket_s *sock);
 // from a server.
 // A netcon_t number will not be reused until this function is called for it
 
-void NET_Poll(void);
+void	NET_Poll (void);
 
 
 typedef struct _PollProcedure
 {
 	struct _PollProcedure	*next;
-	double					nextTime;
-	void					(*procedure)(void *);
-	void					*arg;
+	double				nextTime;
+	void				(*procedure)(void *);
+	void				*arg;
 } PollProcedure;
 
 void SchedulePollProcedure(PollProcedure *pp, double timeOffset);
@@ -314,7 +318,7 @@ extern	qboolean	slistInProgress;
 extern	qboolean	slistSilent;
 extern	qboolean	slistLocal;
 
-void NET_Slist_f (void);
+void	NET_Slist_f (void);
 
 #endif	/* __HX2_NET_H */
 

@@ -2,7 +2,7 @@
 	net_wipx.c
 	winsock ipx driver
 
-	$Id: net_wipx.c,v 1.26 2007-12-21 13:01:28 sezero Exp $
+	$Id: net_wipx.c,v 1.27 2007-12-21 15:05:23 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -306,7 +306,7 @@ int WIPX_Write (int handle, byte *buf, int len, struct qsockaddr *addr)
 
 //=============================================================================
 
-char *WIPX_AddrToString (struct qsockaddr *addr)
+const char *WIPX_AddrToString (struct qsockaddr *addr)
 {
 	static char buf[28];
 

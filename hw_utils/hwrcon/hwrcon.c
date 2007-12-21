@@ -1,6 +1,6 @@
 /*
 	hwrcon.c
-	$Id: hwrcon.c,v 1.17 2007-12-14 16:41:14 sezero Exp $
+	$Id: hwrcon.c,v 1.18 2007-12-21 15:05:23 sezero Exp $
 
 	HWRCON 1.2 HexenWorld Remote CONsole
 	Idea based on RCon 1.1 by Michael Dwyer/N0ZAP (18-May-1998).
@@ -96,7 +96,7 @@ static void NetadrToSockadr (netadr_t *a, struct sockaddr_in *s)
 	s->sin_port = a->port;
 }
 
-char *NET_AdrToString (netadr_t a)
+const char *NET_AdrToString (netadr_t a)
 {
 	static	char	s[64];
 
@@ -105,7 +105,7 @@ char *NET_AdrToString (netadr_t a)
 	return s;
 }
 
-static int NET_StringToAdr (char *s, netadr_t *a)
+static int NET_StringToAdr (const char *s, netadr_t *a)
 {
 	struct hostent		*h;
 	struct sockaddr_in	sadr;
@@ -114,10 +114,10 @@ static int NET_StringToAdr (char *s, netadr_t *a)
 
 	memset (&sadr, 0, sizeof(sadr));
 	sadr.sin_family = AF_INET;
-
 	sadr.sin_port = 0;
 
-	strcpy (copy, s);
+	strncpy (copy, s, sizeof(copy) - 1);
+	copy[sizeof(copy) - 1] = '\0';
 	// strip off a trailing :port if present
 	for (colon = copy ; *colon ; colon++)
 	{

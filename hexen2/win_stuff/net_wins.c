@@ -2,7 +2,7 @@
 	net_wins.c
 	winsock udp driver
 
-	$Id: net_wins.c,v 1.26 2007-09-22 15:27:16 sezero Exp $
+	$Id: net_wins.c,v 1.27 2007-12-21 15:05:23 sezero Exp $
 */
 
 
@@ -411,7 +411,7 @@ int WINS_Write (int mysocket, byte *buf, int len, struct qsockaddr *addr)
 
 //=============================================================================
 
-char *WINS_AddrToString (struct qsockaddr *addr)
+const char *WINS_AddrToString (struct qsockaddr *addr)
 {
 	static char buffer[22];
 	int		haddr;

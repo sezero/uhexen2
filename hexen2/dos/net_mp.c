@@ -4,7 +4,7 @@
         for use when run from within win95.
 	from quake1 source with minor adaptations for uhexen2.
 
-	$Id: net_mp.c,v 1.5 2007-12-21 12:52:05 sezero Exp $
+	$Id: net_mp.c,v 1.6 2007-12-21 15:05:23 sezero Exp $
 
 	Copyright (C) 1996-1997  Id Software, Inc.
 
@@ -347,7 +347,7 @@ int MPATH_Write (int mysocket, byte *buf, int len, struct qsockaddr *addr)
 
 //=============================================================================
 
-char *MPATH_AddrToString (struct qsockaddr *addr)
+const char *MPATH_AddrToString (struct qsockaddr *addr)
 {
 	static char buffer[22];
 	int		haddr;

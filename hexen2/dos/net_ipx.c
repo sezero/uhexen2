@@ -3,7 +3,7 @@
 	IPX network driver for dosquake.
 	from quake1 source with minor adaptations for uhexen2.
 
-	$Id: net_ipx.c,v 1.1 2007-10-22 18:07:52 sezero Exp $
+	$Id: net_ipx.c,v 1.2 2007-12-21 15:05:23 sezero Exp $
 
 	Copyright (C) 1996-1997  Id Software, Inc.
 
@@ -585,7 +585,7 @@ int IPX_Write (int handle, byte *buf, int len, struct qsockaddr *addr)
 
 //=============================================================================
 
-char *IPX_AddrToString (struct qsockaddr *addr)
+const char *IPX_AddrToString (struct qsockaddr *addr)
 {
 	static char buf[28];
 

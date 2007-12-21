@@ -4,7 +4,7 @@
         for use when run from within win95.
 	from quake1 source with minor adaptations for uhexen2.
 
-	$Id: net_mp.h,v 1.2 2007-12-19 09:36:19 sezero Exp $
+	$Id: net_mp.h,v 1.3 2007-12-21 15:05:23 sezero Exp $
 
 	Copyright (C) 1996-1997  Id Software, Inc.
 
@@ -41,7 +41,7 @@ int  MPATH_CheckNewConnections (void);
 int  MPATH_Read (int mysocket, byte *buf, int len, struct qsockaddr *addr);
 int  MPATH_Write (int mysocket, byte *buf, int len, struct qsockaddr *addr);
 int  MPATH_Broadcast (int mysocket, byte *buf, int len);
-char *MPATH_AddrToString (struct qsockaddr *addr);
+const char *MPATH_AddrToString (struct qsockaddr *addr);
 int  MPATH_StringToAddr (const char *string, struct qsockaddr *addr);
 int  MPATH_GetSocketAddr (int mysocket, struct qsockaddr *addr);
 int  MPATH_GetNameFromAddr (struct qsockaddr *addr, char *name);

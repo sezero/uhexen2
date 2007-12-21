@@ -3,7 +3,7 @@
 	Beame & Whiteside TCP/IP for dosquake.
 	from quake1 source with minor adaptations for uhexen2.
 
-	$Id: net_bw.c,v 1.1 2007-10-22 18:07:52 sezero Exp $
+	$Id: net_bw.c,v 1.2 2007-12-21 15:05:23 sezero Exp $
 
 	Copyright (C) 1996-1997  Id Software, Inc.
 
@@ -624,7 +624,7 @@ int BW_Write (int s, byte *msg, int len, struct qsockaddr *to)
 
 //=============================================================================
 
-char *BW_AddrToString (struct qsockaddr *addr)
+const char *BW_AddrToString (struct qsockaddr *addr)
 {
 	static char buffer[22];
 
