@@ -2,7 +2,7 @@
 	glquake.h
 	common glquake header
 
-	$Id: glquake.h,v 1.69 2007-12-21 13:49:49 sezero Exp $
+	$Id: glquake.h,v 1.70 2007-12-21 13:55:41 sezero Exp $
 */
 
 
@@ -19,7 +19,7 @@
 #define	MAX_CACHED_PICS		256
 #define	MAX_LIGHTMAPS		64U
 
-#define	GL_UNUSED_TEXTURE	((GLuint)-1)
+#define	GL_UNUSED_TEXTURE	(~(GLuint)0)
 
 #define	gl_solid_format		3
 #define	gl_alpha_format		4
