@@ -2,7 +2,7 @@
 	net_udp.c
 	network UDP driver
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Master/net.c,v 1.35 2007-12-14 16:41:13 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Master/net.c,v 1.36 2007-12-21 12:52:10 sezero Exp $
 */
 
 #include "q_stdinc.h"
@@ -207,6 +207,7 @@ static int UDP_OpenSocket (int port)
 	if (ioctlsocket (newsocket, FIONBIO, &_true) == -1)
 		Sys_Error ("%s: ioctl FIONBIO: %s", __thisfunc__, strerror(errno));
 
+	memset(&address, 0, sizeof(struct sockaddr_in));
 	address.sin_family = AF_INET;
 	//ZOID -- check for interface binding option
 	i = COM_CheckParm("-ip");

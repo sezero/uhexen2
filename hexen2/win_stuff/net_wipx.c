@@ -2,7 +2,7 @@
 	net_wipx.c
 	winsock ipx driver
 
-	$Id: net_wipx.c,v 1.24 2007-08-29 01:20:30 sezero Exp $
+	$Id: net_wipx.c,v 1.25 2007-12-21 12:52:09 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -188,6 +188,7 @@ int WIPX_OpenSocket (int port)
 	if (setsockopt(newsocket, SOL_SOCKET, SO_BROADCAST, (char *)&_true, sizeof(_true)) < 0)
 		goto ErrorReturn;
 
+	memset(&address, 0, sizeof(struct sockaddr_ipx));
 	address.sa_family = AF_IPX;
 	memset(address.sa_netnum, 0, 4);
 	memset(address.sa_nodenum, 0, 6);
