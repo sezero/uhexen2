@@ -2,7 +2,7 @@
 	in_sdl.c
 	SDL game input code
 
-	$Id: in_sdl.c,v 1.48 2007-09-21 11:05:11 sezero Exp $
+	$Id: in_sdl.c,v 1.49 2007-12-21 12:00:18 sezero Exp $
 */
 
 #include "sdl_inc.h"
@@ -30,30 +30,19 @@ static int buttonremap[] =
 	K_MOUSE5
 };
 
-#define	USE_SDL_JOYSTICK	0	/* disabled until we add joystick support */
+#define	USE_JOYSTICK	0	/* disabled until we finish joystick support */
 
-// none of these cvars are saved over a session
-// this means that advanced controller configuration needs to be executed
-// each time.  this avoids any problems with getting back to a default usage
-// or when changing from one controller to another.  this way at least something
-// works.
-#if USE_SDL_JOYSTICK
-static	cvar_t	in_joystick = {"joystick", "1", CVAR_NONE};
-static	cvar_t	joy_forwardthreshold = {"joyforwardthreshold", "0.15", CVAR_NONE};
-static	cvar_t	joy_sidethreshold = {"joysidethreshold", "0.15", CVAR_NONE};
-static	cvar_t	joy_pitchthreshold = {"joypitchthreshold", "0.15", CVAR_NONE};
-static	cvar_t	joy_yawthreshold = {"joyyawthreshold", "0.15", CVAR_NONE};
-static	cvar_t	joy_forwardsensitivity = {"joyforwardsensitivity", "-1.0", CVAR_NONE};
-static	cvar_t	joy_sidesensitivity = {"joysidesensitivity", "-1.0", CVAR_NONE};
-static	cvar_t	joy_pitchsensitivity = {"joypitchsensitivity", "1.0", CVAR_NONE};
-static	cvar_t	joy_yawsensitivity = {"joyyawsensitivity", "-1.0", CVAR_NONE};
+#if USE_JOYSTICK
+static	cvar_t	in_joystick = {"joystick", "1", CVAR_ARCHIVE};
 
-static	qboolean	joy_avail, joy_haspov;
+#define	MAX_JOYSTICKS		8
+static	SDL_Joystick	*joy_id[MAX_JOYSTICKS];
+static	int		joy_available;
 
 // forward-referenced functions
 static void IN_StartupJoystick (void);
 static void IN_JoyMove (usercmd_t *cmd);
-#endif	/* USE_SDL_JOYSTICK */
+#endif	/* USE_JOYSTICK */
 
 /*
 ===========
@@ -190,25 +179,17 @@ void IN_Init (void)
 {
 	// mouse variables
 	Cvar_RegisterVariable (&m_filter);
-#if USE_SDL_JOYSTICK
+#if USE_JOYSTICK
 	// joystick variables
 	Cvar_RegisterVariable (&in_joystick);
-	Cvar_RegisterVariable (&joy_forwardthreshold);
-	Cvar_RegisterVariable (&joy_sidethreshold);
-	Cvar_RegisterVariable (&joy_pitchthreshold);
-	Cvar_RegisterVariable (&joy_yawthreshold);
-	Cvar_RegisterVariable (&joy_forwardsensitivity);
-	Cvar_RegisterVariable (&joy_sidesensitivity);
-	Cvar_RegisterVariable (&joy_pitchsensitivity);
-	Cvar_RegisterVariable (&joy_yawsensitivity);
-#endif	/* USE_SDL_JOYSTICK */
+#endif	/* USE_JOYSTICK */
 
 	Cmd_AddCommand ("force_centerview", Force_CenterView_f);
 
 	IN_StartupMouse ();
-#if USE_SDL_JOYSTICK
+#if USE_JOYSTICK
 	IN_StartupJoystick ();
-#endif	/* USE_SDL_JOYSTICK */
+#endif	/* USE_JOYSTICK */
 
 	SDL_EnableUNICODE (1);	/* needed for input in console */
 	SDL_EnableKeyRepeat (SDL_DEFAULT_REPEAT_DELAY, SDL_DEFAULT_REPEAT_INTERVAL*2);
@@ -318,10 +299,10 @@ IN_Move
 */
 void IN_Move (usercmd_t *cmd)
 {
-#if USE_SDL_JOYSTICK
+#if USE_JOYSTICK
 	Uint8	appState = SDL_GetAppState();	// make the one in sys_unix
 							// global and use??
-#endif	/* USE_SDL_JOYSTICK */
+#endif	/* USE_JOYSTICK */
 
 	if (cl.v.cameramode)	// Stuck in a different camera so don't move
 	{
@@ -334,14 +315,14 @@ void IN_Move (usercmd_t *cmd)
 		IN_MouseMove (cmd);
 	}
 
-#if USE_SDL_JOYSTICK
+#if USE_JOYSTICK
 	if (appState & SDL_APPACTIVE)
 		IN_JoyMove (cmd);
-#endif	/* USE_SDL_JOYSTICK */
+#endif	/* USE_JOYSTICK */
 }
 
 
-#if USE_SDL_JOYSTICK
+#if USE_JOYSTICK
 /*
 ===============
 IN_StartupJoystick
@@ -349,6 +330,48 @@ IN_StartupJoystick
 */
 static void IN_StartupJoystick (void)
 {
+	int		i, num_joys;
+	SDL_Joystick	*j;
+
+	memset (joy_id, 0, sizeof(joy_id));
+	joy_available = 0;
+	if (safemode || COM_CheckParm ("-nojoy"))
+		return;
+
+	if (SDL_InitSubSystem(SDL_INIT_JOYSTICK) < 0)
+	{
+		Con_Printf("Couldn't init SDL joystick: %s\n", SDL_GetError());
+		return;
+	}
+
+	num_joys = SDL_NumJoysticks();
+	if (num_joys < 1)
+	{
+		Con_Printf ("No joystick devices found\n");
+		return;
+	}
+	Con_Printf ("SDL_Joystick: %d devices are reported\n", num_joys);
+
+	for (i = 0; i < num_joys && joy_available < MAX_JOYSTICKS; i++)
+	{
+		j = SDL_JoystickOpen(i);
+		if (j == NULL)
+		{
+			Con_Printf("joystick #%d: open failed: %s\n", i, SDL_GetError());
+		}
+		else
+		{
+			joy_id[joy_available++] = j;
+			Con_Printf("joystick #%d: opened \"%s\" with %d axes, %d buttons, %d balls, %d hats\n",
+					i, SDL_JoystickName(i), SDL_JoystickNumAxes(j), SDL_JoystickNumButtons(j),
+					SDL_JoystickNumBalls(j), SDL_JoystickNumHats(j));
+		}
+	}
+
+	if (!joy_available)
+	{
+		Con_Printf ("Unable to open any of the joystick devices\n");
+	}
 }
 
 
@@ -359,6 +382,7 @@ IN_ReadJoystick
 */
 static qboolean IN_ReadJoystick (void)
 {
+	return false;	/* to be coded... */
 }
 
 /*
@@ -368,29 +392,29 @@ IN_JoyMove
 */
 static void IN_JoyMove (usercmd_t *cmd)
 {
-	// verify joystick is available and that the user wants to use it
-	if (!joy_avail || !in_joystick.integer)
-	{
+	if (!joy_available || !in_joystick.integer)
 		return;
-	}
 
-	// collect the joystick data, if possible
 	if (IN_ReadJoystick () != true)
 	{
 		return;
 	}
 
+	/*
 	if (in_speed.state & 1)
 		speed = cl_movespeedkey.value;
 	else
 		speed = 1;
 	aspeed = speed * host_frametime;
+	*/
 
-	// loop through the axes
+	/* loop through the axes */
+		/* to be coded.. */
 
-	// bounds check pitch
+	/* bounds check pitch */
+		/* to be coded.. */
 }
-#endif	/* USE_SDL_JOYSTICK */
+#endif	/* USE_JOYSTICK */
 
 /*
 ===========
@@ -399,20 +423,22 @@ IN_Commands
 */
 void IN_Commands (void)
 {
-#if USE_SDL_JOYSTICK
-	if (!joy_avail)
-	{
+#if USE_JOYSTICK
+	if (!joy_available)
 		return;
-	}
 
 	if (cls.state != ca_connected || cls.signon != SIGNONS)
 	{
 		IN_ReadJoystick ();
 	}
 
-	// loop through the joystick buttons
-	// key a joystick event or auxillary event for higher number buttons for each state change
-#endif	/* USE_SDL_JOYSTICK */
+	/* loop through the joystick buttons */
+		/* to be coded.. */
+
+	/* key a joystick event or auxillary event for
+	   higher number buttons for each state change */
+		/* to be coded.. */
+#endif	/* USE_JOYSTICK */
 }
 
 
@@ -678,6 +704,27 @@ void IN_SendKeyEvents (void)
 		case SDL_MOUSEMOTION:
 		//	SDL_GetMouseState (NULL, NULL);
 			break;
+
+#if USE_JOYSTICK
+		case SDL_JOYBUTTONDOWN:
+		case SDL_JOYBUTTONUP:
+			if (!in_joystick.value)
+				break;
+			if (event.jbutton.button > K_AUX32 - K_JOY1)
+			{
+				Con_Printf ("Ignored event for joystick button %d\n",
+							event.jbutton.button);
+				break;
+			}
+			Key_Event(K_JOY1 + event.jbutton.button, event.jbutton.state == SDL_PRESSED);
+			break;
+
+		case SDL_JOYAXISMOTION:
+		case SDL_JOYHATMOTION:
+		case SDL_JOYBALLMOTION:
+		/* to be coded.. */
+			break;
+#endif	/* USE_JOYSTICK */
 
 		case SDL_QUIT:
 			CL_Disconnect ();
