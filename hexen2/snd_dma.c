@@ -2,7 +2,7 @@
 	snd_dma.c
 	main control for any streaming sound output device
 
-	$Id: snd_dma.c,v 1.73 2007-11-11 13:17:41 sezero Exp $
+	$Id: snd_dma.c,v 1.74 2007-12-21 10:40:43 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -31,7 +31,6 @@ channel_t	snd_channels[MAX_CHANNELS];
 int		total_channels;
 
 int		snd_blocked = 0;
-qboolean	snd_skippaint = false;
 static qboolean	snd_initialized = false;
 
 static const struct
@@ -838,8 +837,6 @@ static void S_Update_ (void)
 	unsigned int	endtime;
 	int		samps;
 
-	if (snd_skippaint)
-		return;
 	if (!sound_started || (snd_blocked > 0))
 		return;
 
