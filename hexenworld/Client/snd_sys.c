@@ -2,7 +2,7 @@
 	snd_sys.c
 	pre-Init platform specific sound stuff
 
-	$Id: snd_sys.c,v 1.14 2007-12-22 12:20:42 sezero Exp $
+	$Id: snd_sys.c,v 1.15 2007-12-22 13:03:24 sezero Exp $
 
 	Copyright (C) 2007  O.Sezer
 
@@ -56,21 +56,16 @@ static int S_NULL_GetDMAPos (void)
 	return 0;
 }
 
-static void S_NULL_Shutdown (void)
-{
-}
-
-static void S_NULL_LockBuffer (void)
-{
-}
-
-static void S_NULL_Submit (void)
-{
-}
-
 static const char *S_NULL_DrvName (void)
 {
 	return s_null_driver;
+}
+
+#define S_NULL_Shutdown		NULL_void_func
+#define S_NULL_LockBuffer	NULL_void_func
+#define S_NULL_Submit		NULL_void_func
+static void NULL_void_func (void)
+{
 }
 
 static void S_NULL_LinkFuncs (snd_driver_t *p)
