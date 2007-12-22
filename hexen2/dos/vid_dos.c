@@ -3,7 +3,7 @@
 	DOS-specific video routines.
 	from quake1 source with minor adaptations for uhexen2.
 
-	$Id: vid_dos.c,v 1.6 2007-11-25 09:22:56 sezero Exp $
+	$Id: vid_dos.c,v 1.7 2007-12-22 23:24:39 sezero Exp $
 
 	Copyright (C) 1996-1997  Id Software, Inc.
 
@@ -40,6 +40,7 @@
 #include "dosisms.h"
 #include "vid_dos.h"
 
+modestate_t	modestate = MS_UNINIT;
 static int	vid_modenum;
 static vmode_t	*pcurrentmode = NULL;
 static int	vid_testingmode, vid_realmode;
@@ -85,9 +86,6 @@ unsigned int	d_8to24table[256];	// not used in 8 bpp mode
 
 byte		globalcolormap[VID_GRADES*256], lastglobalcolor = 0;
 byte		*lastsourcecolormap = NULL;
-
-//intermission screen cache reference (to flush on video mode switch)
-extern	cache_user_t	*intermissionScreen;
 
 static void VID_MenuDraw (void);
 static void VID_MenuKey (int key);
