@@ -1,6 +1,6 @@
 /*
 	snd_alsa.c
-	$Id: snd_alsa.c,v 1.38 2007-11-11 13:17:41 sezero Exp $
+	$Id: snd_alsa.c,v 1.40 2007-12-22 12:28:38 sezero Exp $
 
 	ALSA 1.0 sound driver for Linux Hexen II
 
@@ -26,8 +26,6 @@
 */
 
 
-#define _SND_SYS_MACROS_ONLY
-
 #include "quakedef.h"
 #include "snd_sys.h"
 
@@ -36,6 +34,17 @@
 #include <dlfcn.h>
 #include <alsa/asoundlib.h>
 
+/* all of these functions must be properly
+   assigned in LinkFuncs() below	*/
+static qboolean S_ALSA_Init (dma_t *dma);
+static int S_ALSA_GetDMAPos (void);
+static void S_ALSA_Shutdown (void);
+static void S_ALSA_LockBuffer (void);
+static void S_ALSA_Submit (void);
+static const char *S_ALSA_DrvName (void);
+
+static char s_alsa_driver[] = "ALSA";
+
 static void *alsa_handle = NULL;
 //static const char alsa_default[] = "hw:0,0";
 static const char alsa_default[] = "default";
@@ -43,12 +52,22 @@ static const char *pcmname = alsa_default;
 static snd_pcm_t *pcm = NULL;
 static snd_pcm_uframes_t buffer_size;
 
-int S_ALSA_GetDMAPos (void);
-
 #define ALSA_FUNC(ret, func, params) \
 static ret (*hx2##func) params;
 #include "alsa_funcs.h"
 #undef ALSA_FUNC
+
+
+void S_ALSA_LinkFuncs (snd_driver_t *p)
+{
+	p->Init		= S_ALSA_Init;
+	p->Shutdown	= S_ALSA_Shutdown;
+	p->GetDMAPos	= S_ALSA_GetDMAPos;
+	p->LockBuffer	= S_ALSA_LockBuffer;
+	p->Submit	= S_ALSA_Submit;
+	p->DrvName	= S_ALSA_DrvName;
+}
+
 
 static qboolean load_libasound (void)
 {
@@ -102,7 +121,7 @@ static snd_pcm_uframes_t round_buffer_size (snd_pcm_uframes_t sz)
 	return sz;
 }
 
-qboolean S_ALSA_Init (void)
+static qboolean S_ALSA_Init (dma_t *dma)
 {
 	int			i, err;
 	unsigned int		rate;
@@ -221,8 +240,8 @@ qboolean S_ALSA_Init (void)
 	err = hx2snd_pcm_sw_params (pcm, sw);
 	ALSA_CHECK_ERR(err, "unable to install software params. %s\n", hx2snd_strerror(err));
 
-	memset ((void *) &sn, 0, sizeof(sn));
-	shm = &sn;
+	memset ((void *) dma, 0, sizeof(dma_t));
+	shm = dma;
 
 	shm->channels = tmp_chan;
 
@@ -270,7 +289,7 @@ error:
 	return false;
 }
 
-int S_ALSA_GetDMAPos (void)
+static int S_ALSA_GetDMAPos (void)
 {
 	snd_pcm_uframes_t offset;
 	snd_pcm_uframes_t nframes;
@@ -292,7 +311,7 @@ int S_ALSA_GetDMAPos (void)
 	return shm->samplepos;
 }
 
-void S_ALSA_Shutdown (void)
+static void S_ALSA_Shutdown (void)
 {
 	if (shm)
 	{
@@ -315,7 +334,7 @@ SNDDMA_LockBuffer
 Makes sure dma buffer is valid
 ==============
 */
-void S_ALSA_LockBuffer (void)
+static void S_ALSA_LockBuffer (void)
 {
 	/* nothing to do here */
 }
@@ -328,7 +347,7 @@ Unlock the dma buffer /
 Send sound to the device
 ==============
 */
-void S_ALSA_Submit (void)
+static void S_ALSA_Submit (void)
 {
 	snd_pcm_uframes_t offset;
 	snd_pcm_uframes_t nframes;
@@ -353,6 +372,11 @@ void S_ALSA_Submit (void)
 	default:
 		break;
 	}
+}
+
+static const char *S_ALSA_DrvName (void)
+{
+	return s_alsa_driver;
 }
 
 #endif	/* HAVE_ALSA_SOUND */

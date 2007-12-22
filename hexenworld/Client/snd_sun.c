@@ -1,6 +1,6 @@
 /*
 	snd_sun.c
-	$Id: snd_sun.c,v 1.13 2007-12-12 19:55:32 sezero Exp $
+	$Id: snd_sun.c,v 1.15 2007-12-22 12:28:39 sezero Exp $
 
 	SUN Audio driver for BSD and SunOS
 
@@ -26,8 +26,6 @@
 		51 Franklin St, Fifth Floor, 
 		Boston, MA  02110-1301  USA
 */
-
-#define _SND_SYS_MACROS_ONLY
 
 #include "quakedef.h"
 #include "snd_sys.h"
@@ -63,6 +61,17 @@
 
 #endif
 
+/* all of these functions must be properly
+   assigned in LinkFuncs() below	*/
+static qboolean S_SUN_Init (dma_t *dma);
+static int S_SUN_GetDMAPos (void);
+static void S_SUN_Shutdown (void);
+static void S_SUN_LockBuffer (void);
+static void S_SUN_Submit (void);
+static const char *S_SUN_DrvName (void);
+
+static char s_sun_driver[] = "SunAudio";
+
 static int	audio_fd = -1;
 
 //#define	SND_BUFF_SIZE	65536
@@ -72,10 +81,19 @@ static unsigned char	dma_buffer [SND_BUFF_SIZE];
 static unsigned char	writebuf [1024];
 static int	wbufp;
 
-void S_SUN_Shutdown (void);
+
+void S_SUN_LinkFuncs (snd_driver_t *p)
+{
+	p->Init		= S_SUN_Init;
+	p->Shutdown	= S_SUN_Shutdown;
+	p->GetDMAPos	= S_SUN_GetDMAPos;
+	p->LockBuffer	= S_SUN_LockBuffer;
+	p->Submit	= S_SUN_Submit;
+	p->DrvName	= S_SUN_DrvName;
+}
 
 
-qboolean S_SUN_Init (void)
+static qboolean S_SUN_Init (dma_t *dma)
 {
 	const char	*snddev;
 	audio_info_t	info;
@@ -95,8 +113,8 @@ qboolean S_SUN_Init (void)
 		return false;
 	}
 
-	memset ((void *) &sn, 0, sizeof(sn));
-	shm = &sn;
+	memset ((void *) dma, 0, sizeof(dma_t));
+	shm = dma;
 
 	AUDIO_INITINFO (&info);
 
@@ -132,7 +150,7 @@ qboolean S_SUN_Init (void)
 	return true;
 }
 
-int S_SUN_GetDMAPos (void)
+static int S_SUN_GetDMAPos (void)
 {
 	audio_info_t	info;
 
@@ -149,7 +167,7 @@ int S_SUN_GetDMAPos (void)
 	return ((info.play.samples * shm->channels) % shm->samples);
 }
 
-void S_SUN_Shutdown (void)
+static void S_SUN_Shutdown (void)
 {
 	if (shm)
 	{
@@ -166,7 +184,7 @@ SNDDMA_LockBuffer
 Makes sure dma buffer is valid
 ==============
 */
-void S_SUN_LockBuffer (void)
+static void S_SUN_LockBuffer (void)
 {
 	/* nothing to do here */
 }
@@ -179,7 +197,7 @@ Unlock the dma buffer /
 Send sound to the device
 ===============
 */
-void S_SUN_Submit (void)
+static void S_SUN_Submit (void)
 {
 	int		bsize;
 	int		bytes, b;
@@ -219,6 +237,11 @@ void S_SUN_Submit (void)
 		Con_Printf("audio can't keep up!\n");
 
 	wbufp = stop;
+}
+
+static const char *S_SUN_DrvName (void)
+{
+	return s_sun_driver;
 }
 
 #endif	/* HAVE_SUN_SOUND */

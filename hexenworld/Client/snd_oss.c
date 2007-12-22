@@ -1,6 +1,6 @@
 /*
 	snd_oss.c
-	$Id: snd_oss.c,v 1.33 2007-11-11 13:17:44 sezero Exp $
+	$Id: snd_oss.c,v 1.35 2007-12-22 12:28:39 sezero Exp $
 
 	Copyright (C) 1996-1997  Id Software, Inc.
 
@@ -23,8 +23,6 @@
 		Boston, MA  02111-1307, USA
 
 */
-
-#define _SND_SYS_MACROS_ONLY
 
 #include "quakedef.h"
 #include "snd_sys.h"
@@ -50,12 +48,35 @@
 #define	FORMAT_S16	AFMT_S16_LE
 #endif
 
+/* all of these functions must be properly
+   assigned in LinkFuncs() below	*/
+static qboolean S_OSS_Init (dma_t *dma);
+static int S_OSS_GetDMAPos (void);
+static void S_OSS_Shutdown (void);
+static void S_OSS_LockBuffer (void);
+static void S_OSS_Submit (void);
+static const char *S_OSS_DrvName (void);
+
+static char s_oss_driver[] = "OSS";
+
 static int audio_fd = -1;
 static const char oss_default[] = "/dev/dsp";
 static const char *ossdev = oss_default;
 static unsigned long mmaplen;
 
-qboolean S_OSS_Init (void)
+
+void S_OSS_LinkFuncs (snd_driver_t *p)
+{
+	p->Init		= S_OSS_Init;
+	p->Shutdown	= S_OSS_Shutdown;
+	p->GetDMAPos	= S_OSS_GetDMAPos;
+	p->LockBuffer	= S_OSS_LockBuffer;
+	p->Submit	= S_OSS_Submit;
+	p->DrvName	= S_OSS_DrvName;
+}
+
+
+static qboolean S_OSS_Init (dma_t *dma)
 {
 	int		i, caps, tmp;
 	unsigned long		sz;
@@ -84,8 +105,8 @@ qboolean S_OSS_Init (void)
 		}
 	}
 
-	memset ((void *) &sn, 0, sizeof(sn));
-	shm = &sn;
+	memset ((void *) dma, 0, sizeof(dma_t));
+	shm = dma;
 
 	if (ioctl(audio_fd, SNDCTL_DSP_RESET, 0) == -1)
 	{
@@ -200,7 +221,7 @@ qboolean S_OSS_Init (void)
 		goto error;
 	}
 
-	shm->samples = info.fragstotal * info.fragsize / (shm->samplebits/8);
+	shm->samples = info.fragstotal * info.fragsize / (shm->samplebits / 8);
 	shm->submission_chunk = 1;
 
 // memory map the dma buffer
@@ -244,7 +265,7 @@ error:
 	return false;
 }
 
-int S_OSS_GetDMAPos (void)
+static int S_OSS_GetDMAPos (void)
 {
 	struct count_info	count;
 
@@ -268,7 +289,7 @@ int S_OSS_GetDMAPos (void)
 	return shm->samplepos;
 }
 
-void S_OSS_Shutdown (void)
+static void S_OSS_Shutdown (void)
 {
 	int	tmp = 0;
 	if (shm)
@@ -291,7 +312,7 @@ SNDDMA_LockBuffer
 Makes sure dma buffer is valid
 ==============
 */
-void S_OSS_LockBuffer (void)
+static void S_OSS_LockBuffer (void)
 {
 	/* nothing to do here */
 }
@@ -304,8 +325,13 @@ Unlock the dma buffer /
 Send sound to the device
 ===============
 */
-void S_OSS_Submit(void)
+static void S_OSS_Submit(void)
 {
+}
+
+static const char *S_OSS_DrvName (void)
+{
+	return s_oss_driver;
 }
 
 #endif	/* HAVE_OSS_SOUND */

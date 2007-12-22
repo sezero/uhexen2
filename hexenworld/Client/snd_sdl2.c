@@ -4,10 +4,26 @@
 	implementations found in the quakeforge and quake3-icculus.org
 	projects.
 
-	$Id: snd_sdl2.c,v 1.3 2007-11-07 16:54:59 sezero Exp $
-*/
+	$Id: snd_sdl2.c,v 1.5 2007-12-22 12:28:39 sezero Exp $
 
-#define _SND_SYS_MACROS_ONLY
+	This program is free software; you can redistribute it and/or
+	modify it under the terms of the GNU General Public License
+	as published by the Free Software Foundation; either version 2
+	of the License, or (at your option) any later version.
+
+	This program is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+
+	See the GNU General Public License for more details.
+
+	You should have received a copy of the GNU General Public License
+	along with this program; if not, write to:
+
+		Free Software Foundation, Inc.
+		51 Franklin St, Fifth Floor,
+		Boston, MA  02110-1301  USA
+*/
 
 #include "quakedef.h"
 #include "snd_sys.h"
@@ -20,7 +36,29 @@
 // buffer memory. either 1, or 0.
 #define USE_HUNK_ALLOC		0
 
+/* all of these functions must be properly
+   assigned in LinkFuncs() below	*/
+static qboolean S_SDL_Init (dma_t *dma);
+static int S_SDL_GetDMAPos (void);
+static void S_SDL_Shutdown (void);
+static void S_SDL_LockBuffer (void);
+static void S_SDL_Submit (void);
+static const char *S_SDL_DrvName (void);
+
+static char s_sdl_driver[] = "SDLAudio";
+
 static int	buffersize;
+
+
+void S_SDL_LinkFuncs (snd_driver_t *p)
+{
+	p->Init		= S_SDL_Init;
+	p->Shutdown	= S_SDL_Shutdown;
+	p->GetDMAPos	= S_SDL_GetDMAPos;
+	p->LockBuffer	= S_SDL_LockBuffer;
+	p->Submit	= S_SDL_Submit;
+	p->DrvName	= S_SDL_DrvName;
+}
 
 
 static void paint_audio (void *unused, Uint8 *stream, int len)
@@ -34,7 +72,7 @@ static void paint_audio (void *unused, Uint8 *stream, int len)
 		return;
 	}
 
-	pos = (shm->samplepos * (shm->samplebits/8));
+	pos = (shm->samplepos * (shm->samplebits / 8));
 	if (pos >= buffersize)
 		shm->samplepos = pos = 0;
 
@@ -52,19 +90,19 @@ static void paint_audio (void *unused, Uint8 *stream, int len)
 
 	if (len2 <= 0)
 	{
-		shm->samplepos += (len1 / (shm->samplebits/8));
+		shm->samplepos += (len1 / (shm->samplebits / 8));
 	}
 	else
 	{	/* wraparound? */
-		memcpy(stream+len1, shm->buffer, len2);
-		shm->samplepos = (len2 / (shm->samplebits/8));
+		memcpy(stream + len1, shm->buffer, len2);
+		shm->samplepos = (len2 / (shm->samplebits / 8));
 	}
 
 	if (shm->samplepos >= buffersize)
 		shm->samplepos = 0;
 }
 
-qboolean S_SDL_Init (void)
+static qboolean S_SDL_Init (dma_t *dma)
 {
 	SDL_AudioSpec desired, obtained;
 	int		tmp, val;
@@ -113,8 +151,8 @@ qboolean S_SDL_Init (void)
 		return false;
 	}
 
-	memset ((void *) &sn, 0, sizeof(sn));
-	shm = &sn;
+	memset ((void *) dma, 0, sizeof(dma_t));
+	shm = dma;
 
 	/* Fill the audio DMA information block */
 	shm->samplebits = (obtained.format & 0xFF); /* first byte of format is bits */
@@ -160,12 +198,12 @@ qboolean S_SDL_Init (void)
 	return true;
 }
 
-int S_SDL_GetDMAPos (void)
+static int S_SDL_GetDMAPos (void)
 {
 	return shm->samplepos;
 }
 
-void S_SDL_Shutdown (void)
+static void S_SDL_Shutdown (void)
 {
 	if (shm)
 	{
@@ -183,14 +221,19 @@ void S_SDL_Shutdown (void)
 	}
 }
 
-void S_SDL_LockBuffer (void)
+static void S_SDL_LockBuffer (void)
 {
 	SDL_LockAudio ();
 }
 
-void S_SDL_Submit (void)
+static void S_SDL_Submit (void)
 {
 	SDL_UnlockAudio();
+}
+
+static const char *S_SDL_DrvName (void)
+{
+	return s_sdl_driver;
 }
 
 #endif	/* HAVE_SDL_SOUND */
