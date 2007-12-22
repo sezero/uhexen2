@@ -12,6 +12,9 @@ Changes since HoT-1.4.2 :
 - Added back the use of password file on unix systems.
 - Passed NULL as the timezone argument to gettimeofday.
 - Sound: Buffer lock fixes in SDL audio output.
+- Sound: internal changes in the driver interface.
+- Video/Input: The game now blocks/unblocks sound upon
+  window focus loss/gain (SDL driver).
 - Software renderer: Fixed fullscreen intermission and
   help picture size mismatches after resolution changes
   which would cause errors under certain conditions.
