@@ -1,6 +1,6 @@
 /*
 	snd_oss.c
-	$Id: snd_oss.c,v 1.35 2007-12-22 12:28:39 sezero Exp $
+	$Id: snd_oss.c,v 1.36 2007-12-22 18:56:09 sezero Exp $
 
 	Copyright (C) 1996-1997  Id Software, Inc.
 
@@ -55,6 +55,8 @@ static int S_OSS_GetDMAPos (void);
 static void S_OSS_Shutdown (void);
 static void S_OSS_LockBuffer (void);
 static void S_OSS_Submit (void);
+static void S_OSS_BlockSound (void);
+static void S_OSS_UnblockSound (void);
 static const char *S_OSS_DrvName (void);
 
 static char s_oss_driver[] = "OSS";
@@ -72,6 +74,8 @@ void S_OSS_LinkFuncs (snd_driver_t *p)
 	p->GetDMAPos	= S_OSS_GetDMAPos;
 	p->LockBuffer	= S_OSS_LockBuffer;
 	p->Submit	= S_OSS_Submit;
+	p->BlockSound	= S_OSS_BlockSound;
+	p->UnblockSound	= S_OSS_UnblockSound;
 	p->DrvName	= S_OSS_DrvName;
 }
 
@@ -326,6 +330,14 @@ Send sound to the device
 ===============
 */
 static void S_OSS_Submit(void)
+{
+}
+
+static void S_OSS_BlockSound (void)
+{
+}
+
+static void S_OSS_UnblockSound (void)
 {
 }
 

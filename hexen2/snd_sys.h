@@ -2,7 +2,7 @@
 	snd_sys.h
 	Platform specific macros and prototypes for sound
 
-	$Id: snd_sys.h,v 1.20 2007-12-22 12:20:35 sezero Exp $
+	$Id: snd_sys.h,v 1.21 2007-12-22 18:56:07 sezero Exp $
 
 	Copyright (C) 2007  O.Sezer
 
@@ -106,6 +106,8 @@ typedef struct snd_driver_s
 	int (*GetDMAPos)(void);		/* returns the current dma position */
 	void (*LockBuffer)(void);	/* validates & locks the dma buffer */
 	void (*Submit)(void);		/* unlocks the dma buffer / sends sound to the device */
+	void (*BlockSound)(void);	/* blocks sound output upon window focus loss */
+	void (*UnblockSound)(void);	/* unblocks the output upon window focus gain */
 	const char *(*DrvName)(void);	/* returns the active driver's name */
 } snd_driver_t;
 

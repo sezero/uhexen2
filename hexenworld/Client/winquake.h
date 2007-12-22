@@ -2,7 +2,7 @@
 	winquake.h
 	Win32-specific Quake header file
 
-	$Id: winquake.h,v 1.31 2007-12-20 21:36:00 sezero Exp $
+	$Id: winquake.h,v 1.32 2007-12-22 18:56:09 sezero Exp $
 */
 
 #if !defined(PLATFORM_WINDOWS)
@@ -61,9 +61,6 @@ extern RECT		window_rect;
 #if !defined(NO_SPLASHES)
 extern HWND		hwnd_dialog;
 #endif
-
-void S_BlockSound (void);
-void S_UnblockSound (void);
 
 LONG CDAudio_MessageHandler (HWND, UINT, WPARAM, LPARAM);
 

@@ -2,7 +2,7 @@
 	vid_win.c
 	Win32 video driver using MGL-4.05
 
-	$Id: vid_win.c,v 1.59 2007-11-25 09:22:56 sezero Exp $
+	$Id: vid_win.c,v 1.60 2007-12-22 18:56:09 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -2860,13 +2860,11 @@ static void AppActivate (BOOL fActive, BOOL minimize)
 	if (!ActiveApp && sound_active)
 	{
 		S_BlockSound ();
-		S_ClearBuffer ();
 		sound_active = false;
 	}
 	else if (ActiveApp && !sound_active)
 	{
 		S_UnblockSound ();
-		S_ClearBuffer ();
 		sound_active = true;
 	}
 
@@ -3048,17 +3046,12 @@ static LONG WINAPI MainWndProc (HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPar
 		// fall through windowed and allow the screen saver to start
 		default:
 			if (!in_mode_set)
-			{
 				S_BlockSound ();
-				S_ClearBuffer ();
-			}
 
 			lRet = DefWindowProc (hWnd, uMsg, wParam, lParam);
 
 			if (!in_mode_set)
-			{
 				S_UnblockSound ();
-			}
 		}
 		break;
 

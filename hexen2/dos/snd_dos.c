@@ -3,7 +3,7 @@
 	sound support for dosquake. sound blaster code.
 	from quake1 source with minor adaptations for uhexen2.
 
-	$Id: snd_dos.c,v 1.3 2007-12-22 12:20:42 sezero Exp $
+	$Id: snd_dos.c,v 1.4 2007-12-22 18:56:08 sezero Exp $
 
 	Copyright (C) 1996-1997  Id Software, Inc.
 
@@ -39,6 +39,8 @@ static int S_DOS_GetDMAPos (void);
 static void S_DOS_Shutdown (void);
 static void S_DOS_LockBuffer (void);
 static void S_DOS_Submit (void);
+static void S_DOS_BlockSound (void);
+static void S_DOS_UnblockSound (void);
 static const char *S_DOS_DrvName (void);
 
 static char s_sb_driver[] = "Blaster";
@@ -92,6 +94,8 @@ void S_DOS_LinkFuncs (snd_driver_t *p)
 	p->GetDMAPos	= S_DOS_GetDMAPos;
 	p->LockBuffer	= S_DOS_LockBuffer;
 	p->Submit	= S_DOS_Submit;
+	p->BlockSound	= S_DOS_BlockSound;
+	p->UnblockSound	= S_DOS_UnblockSound;
 	p->DrvName	= S_DOS_DrvName;
 }
 
@@ -698,6 +702,14 @@ Send sound to the device
 static void S_DOS_Submit (void)
 {
 	/* nothing to do here */
+}
+
+static void S_DOS_BlockSound (void)
+{
+}
+
+static void S_DOS_UnblockSound (void)
+{
 }
 
 static const char *S_DOS_DrvName (void)

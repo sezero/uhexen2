@@ -2,7 +2,7 @@
 	snd_sys.c
 	pre-Init platform specific sound stuff
 
-	$Id: snd_sys.c,v 1.15 2007-12-22 13:03:24 sezero Exp $
+	$Id: snd_sys.c,v 1.16 2007-12-22 18:56:07 sezero Exp $
 
 	Copyright (C) 2007  O.Sezer
 
@@ -64,6 +64,8 @@ static const char *S_NULL_DrvName (void)
 #define S_NULL_Shutdown		NULL_void_func
 #define S_NULL_LockBuffer	NULL_void_func
 #define S_NULL_Submit		NULL_void_func
+#define S_NULL_BlockSound	NULL_void_func
+#define S_NULL_UnblockSound	NULL_void_func
 static void NULL_void_func (void)
 {
 }
@@ -75,6 +77,8 @@ static void S_NULL_LinkFuncs (snd_driver_t *p)
 	p->GetDMAPos	= S_NULL_GetDMAPos;
 	p->LockBuffer	= S_NULL_LockBuffer;
 	p->Submit	= S_NULL_Submit;
+	p->BlockSound	= S_NULL_BlockSound;
+	p->UnblockSound	= S_NULL_UnblockSound;
 	p->DrvName	= S_NULL_DrvName;
 }
 
@@ -150,6 +154,7 @@ void S_InitDrivers (snd_driver_t **p)
 	if (snd_linkfunc[snd_system].LinkFunc == NULL)
 		Sys_Error ("%s: NULL function pointer for %d", __thisfunc__, snd_system);
 
+	memset ((void *) &snd_driver, 0, sizeof(snd_driver_t));
 	snd_linkfunc[snd_system].LinkFunc(&snd_driver);
 	*p = &snd_driver;
 }

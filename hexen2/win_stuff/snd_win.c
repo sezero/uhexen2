@@ -1,6 +1,6 @@
 /*
 	snd_win.c
-	$Id: snd_win.c,v 1.34 2007-12-22 12:20:42 sezero Exp $
+	$Id: snd_win.c,v 1.35 2007-12-22 18:56:09 sezero Exp $
 
 	Copyright (C) 1996-1997  Id Software, Inc.
 
@@ -35,6 +35,8 @@ static int S_WIN_GetDMAPos (void);
 static void S_WIN_Shutdown (void);
 static void S_WIN_LockBuffer (void);
 static void S_WIN_Submit (void);
+static void S_WIN_BlockSound (void);
+static void S_WIN_UnblockSound (void);
 static const char *S_WIN_DrvName (void);
 
 static char s_wv_driver[] = "WinWAVE";
@@ -105,40 +107,9 @@ void S_WIN_LinkFuncs (snd_driver_t *p)
 	p->GetDMAPos	= S_WIN_GetDMAPos;
 	p->LockBuffer	= S_WIN_LockBuffer;
 	p->Submit	= S_WIN_Submit;
+	p->BlockSound	= S_WIN_BlockSound;
+	p->UnblockSound	= S_WIN_UnblockSound;
 	p->DrvName	= S_WIN_DrvName;
-}
-
-
-/*
-==================
-S_BlockSound
-==================
-*/
-void S_BlockSound (void)
-{
-	// DirectSound takes care of blocking itself
-	if (snd_iswave)
-	{
-		snd_blocked++;
-
-		if (snd_blocked == 1)
-			waveOutReset (hWaveOut);
-	}
-}
-
-
-/*
-==================
-S_UnblockSound
-==================
-*/
-void S_UnblockSound (void)
-{
-	// DirectSound takes care of blocking itself
-	if (snd_iswave)
-	{
-		snd_blocked--;
-	}
 }
 
 
@@ -820,6 +791,31 @@ static void S_WIN_Submit (void)
 		}
 	}
 }
+
+/*
+==================
+SNDDMA_BlockSound
+==================
+*/
+static void S_WIN_BlockSound (void)
+{
+	// DirectSound takes care of blocking itself
+	if (snd_iswave)
+	{
+		waveOutReset (hWaveOut);
+	}
+}
+
+
+/*
+==================
+SNDDMA_UnblockSound
+==================
+*/
+static void S_WIN_UnblockSound (void)
+{
+}
+
 
 /*
 ==============

@@ -1,6 +1,6 @@
 /*
 	snd_alsa.c
-	$Id: snd_alsa.c,v 1.40 2007-12-22 12:28:39 sezero Exp $
+	$Id: snd_alsa.c,v 1.41 2007-12-22 18:56:09 sezero Exp $
 
 	ALSA 1.0 sound driver for Linux Hexen II
 
@@ -41,6 +41,8 @@ static int S_ALSA_GetDMAPos (void);
 static void S_ALSA_Shutdown (void);
 static void S_ALSA_LockBuffer (void);
 static void S_ALSA_Submit (void);
+static void S_ALSA_BlockSound (void);
+static void S_ALSA_UnblockSound (void);
 static const char *S_ALSA_DrvName (void);
 
 static char s_alsa_driver[] = "ALSA";
@@ -65,6 +67,8 @@ void S_ALSA_LinkFuncs (snd_driver_t *p)
 	p->GetDMAPos	= S_ALSA_GetDMAPos;
 	p->LockBuffer	= S_ALSA_LockBuffer;
 	p->Submit	= S_ALSA_Submit;
+	p->BlockSound	= S_ALSA_BlockSound;
+	p->UnblockSound	= S_ALSA_UnblockSound;
 	p->DrvName	= S_ALSA_DrvName;
 }
 
@@ -372,6 +376,16 @@ static void S_ALSA_Submit (void)
 	default:
 		break;
 	}
+}
+
+static void S_ALSA_BlockSound (void)
+{
+	hx2snd_pcm_pause (pcm, 1);
+}
+
+static void S_ALSA_UnblockSound (void)
+{
+	hx2snd_pcm_pause (pcm, 0);
 }
 
 static const char *S_ALSA_DrvName (void)

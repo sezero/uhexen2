@@ -1,6 +1,6 @@
 /*
 	snd_sun.c
-	$Id: snd_sun.c,v 1.15 2007-12-22 12:28:38 sezero Exp $
+	$Id: snd_sun.c,v 1.16 2007-12-22 18:56:07 sezero Exp $
 
 	SUN Audio driver for BSD and SunOS
 
@@ -68,6 +68,8 @@ static int S_SUN_GetDMAPos (void);
 static void S_SUN_Shutdown (void);
 static void S_SUN_LockBuffer (void);
 static void S_SUN_Submit (void);
+static void S_SUN_BlockSound (void);
+static void S_SUN_UnblockSound (void);
 static const char *S_SUN_DrvName (void);
 
 static char s_sun_driver[] = "SunAudio";
@@ -89,6 +91,8 @@ void S_SUN_LinkFuncs (snd_driver_t *p)
 	p->GetDMAPos	= S_SUN_GetDMAPos;
 	p->LockBuffer	= S_SUN_LockBuffer;
 	p->Submit	= S_SUN_Submit;
+	p->BlockSound	= S_SUN_BlockSound;
+	p->UnblockSound	= S_SUN_UnblockSound;
 	p->DrvName	= S_SUN_DrvName;
 }
 
@@ -237,6 +241,14 @@ static void S_SUN_Submit (void)
 		Con_Printf("audio can't keep up!\n");
 
 	wbufp = stop;
+}
+
+static void S_SUN_BlockSound (void)
+{
+}
+
+static void S_SUN_UnblockSound (void)
+{
 }
 
 static const char *S_SUN_DrvName (void)

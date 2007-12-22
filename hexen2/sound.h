@@ -2,7 +2,7 @@
 	sound.h
 	client sound i/o functions
 
-	$Id: sound.h,v 1.28 2007-12-22 12:20:35 sezero Exp $
+	$Id: sound.h,v 1.29 2007-12-22 18:56:07 sezero Exp $
 
 	Copyright (C) 1996-1997  Id Software, Inc.
 
@@ -101,6 +101,9 @@ void S_ClearBuffer (void);
 void S_Update (vec3_t origin, vec3_t forward, vec3_t right, vec3_t up);
 void S_ExtraUpdate (void);
 
+void S_BlockSound (void);
+void S_UnblockSound (void);
+
 sfx_t *S_PrecacheSound (const char *sample);
 void S_TouchSound (const char *sample);
 void S_ClearPrecache (void);
@@ -146,8 +149,6 @@ extern	cvar_t loadas8bit;
 extern	cvar_t bgmvolume;
 extern	cvar_t bgmtype;
 extern	cvar_t sfxvolume;
-
-extern int		snd_blocked;
 
 void S_LocalSound (const char *name);
 sfxcache_t *S_LoadSound (sfx_t *s);

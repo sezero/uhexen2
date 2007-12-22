@@ -1,6 +1,6 @@
 /*
 	alsa_funcs.h
-	$Id: alsa_funcs.h,v 1.11 2007-07-11 16:47:16 sezero Exp $
+	$Id: alsa_funcs.h,v 1.12 2007-12-22 18:56:09 sezero Exp $
 
 	ALSA function list
 	make sure NOT to protect this file against multiple inclusions!
@@ -65,9 +65,7 @@ ALSA_FUNC (int, snd_pcm_hw_params_malloc, (snd_pcm_hw_params_t **ptr))
 ALSA_FUNC (int, snd_pcm_sw_params_malloc, (snd_pcm_sw_params_t **ptr))
 ALSA_FUNC (void, snd_pcm_hw_params_free, (snd_pcm_hw_params_t *obj))
 ALSA_FUNC (void, snd_pcm_sw_params_free, (snd_pcm_sw_params_t *obj))
-/*
 ALSA_FUNC (int, snd_pcm_pause, (snd_pcm_t *pcmdev, int enable))
-*/
 
 #ifdef UNDEF_ALSAFUNC
 #undef ALSA_FUNC

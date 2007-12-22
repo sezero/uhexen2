@@ -2,7 +2,7 @@
 	snd_dma.c
 	main control for any streaming sound output device
 
-	$Id: snd_dma.c,v 1.73 2007-12-22 12:20:42 sezero Exp $
+	$Id: snd_dma.c,v 1.74 2007-12-22 18:56:09 sezero Exp $
 
 	Copyright (C) 1996-1997  Id Software, Inc.
 
@@ -52,7 +52,7 @@ static void S_StopAllSoundsC (void);
 channel_t	snd_channels[MAX_CHANNELS];
 int		total_channels;
 
-int		snd_blocked = 0;
+static int	snd_blocked = 0;
 static qboolean	snd_initialized = false;
 
 static dma_t	sn;
@@ -259,6 +259,7 @@ void S_Shutdown (void)
 		return;
 
 	sound_started = 0;
+	snd_blocked = 0;
 
 	qsnd_driver->Shutdown();
 	shm = NULL;
@@ -868,6 +869,30 @@ static void S_Update_ (void)
 	S_PaintChannels (endtime);
 
 	qsnd_driver->Submit ();
+}
+
+void S_BlockSound (void)
+{
+/* FIXME: do we really need the blocking at the
+ * driver level?
+ */
+	if (sound_started && ++snd_blocked == 1)
+	{
+		S_ClearBuffer ();
+		if (shm)
+			qsnd_driver->BlockSound();
+	}
+}
+
+void S_UnblockSound (void)
+{
+	if (!sound_started || !snd_blocked)
+		return;
+	if (--snd_blocked == 0)
+	{
+		qsnd_driver->UnblockSound();
+		S_ClearBuffer ();
+	}
 }
 
 /*

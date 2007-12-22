@@ -4,7 +4,7 @@
 	implementations found in the quakeforge and quake3-icculus.org
 	projects.
 
-	$Id: snd_sdl2.c,v 1.5 2007-12-22 12:28:38 sezero Exp $
+	$Id: snd_sdl2.c,v 1.6 2007-12-22 18:56:07 sezero Exp $
 
 	This program is free software; you can redistribute it and/or
 	modify it under the terms of the GNU General Public License
@@ -43,6 +43,8 @@ static int S_SDL_GetDMAPos (void);
 static void S_SDL_Shutdown (void);
 static void S_SDL_LockBuffer (void);
 static void S_SDL_Submit (void);
+static void S_SDL_BlockSound (void);
+static void S_SDL_UnblockSound (void);
 static const char *S_SDL_DrvName (void);
 
 static char s_sdl_driver[] = "SDLAudio";
@@ -57,6 +59,8 @@ void S_SDL_LinkFuncs (snd_driver_t *p)
 	p->GetDMAPos	= S_SDL_GetDMAPos;
 	p->LockBuffer	= S_SDL_LockBuffer;
 	p->Submit	= S_SDL_Submit;
+	p->BlockSound	= S_SDL_BlockSound;
+	p->UnblockSound	= S_SDL_UnblockSound;
 	p->DrvName	= S_SDL_DrvName;
 }
 
@@ -229,6 +233,16 @@ static void S_SDL_LockBuffer (void)
 static void S_SDL_Submit (void)
 {
 	SDL_UnlockAudio();
+}
+
+static void S_SDL_BlockSound (void)
+{
+	SDL_PauseAudio(1);
+}
+
+static void S_SDL_UnblockSound (void)
+{
+	SDL_PauseAudio(0);
 }
 
 static const char *S_SDL_DrvName (void)
