@@ -1,11 +1,44 @@
 /*
 	snd_win.c
-	$Id: snd_win.c,v 1.33 2007-11-11 13:18:22 sezero Exp $
+	$Id: snd_win.c,v 1.34 2007-12-22 12:20:42 sezero Exp $
+
+	Copyright (C) 1996-1997  Id Software, Inc.
+
+	This program is free software; you can redistribute it and/or
+	modify it under the terms of the GNU General Public License
+	as published by the Free Software Foundation; either version 2
+	of the License, or (at your option) any later version.
+
+	This program is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+
+	See the GNU General Public License for more details.
+
+	You should have received a copy of the GNU General Public License
+	along with this program; if not, write to:
+
+		Free Software Foundation, Inc.
+		51 Franklin St, Fifth Floor,
+		Boston, MA  02110-1301  USA
 */
 
 #include "quakedef.h"
+#include "snd_sys.h"
 #include "winquake.h"
 #include <dsound.h>
+
+/* all of these functions must be properly
+   assigned in LinkFuncs() below	*/
+static qboolean S_WIN_Init (dma_t *dma);
+static int S_WIN_GetDMAPos (void);
+static void S_WIN_Shutdown (void);
+static void S_WIN_LockBuffer (void);
+static void S_WIN_Submit (void);
+static const char *S_WIN_DrvName (void);
+
+static char s_wv_driver[] = "WinWAVE";
+static char s_ds_driver[] = "DSound";
 
 //#define SNDBUFSIZE		65536
 // 64K is > 1 second at 16-bit, 22050 Hz
@@ -63,6 +96,17 @@ static HWAVEOUT	hWaveOut;
 
 static DWORD	gSndBufSize;
 static MMTIME	mmstarttime;
+
+
+void S_WIN_LinkFuncs (snd_driver_t *p)
+{
+	p->Init		= S_WIN_Init;
+	p->Shutdown	= S_WIN_Shutdown;
+	p->GetDMAPos	= S_WIN_GetDMAPos;
+	p->LockBuffer	= S_WIN_LockBuffer;
+	p->Submit	= S_WIN_Submit;
+	p->DrvName	= S_WIN_DrvName;
+}
 
 
 /*
@@ -184,7 +228,7 @@ SNDDMA_InitDirect
 Direct-Sound support
 ==================
 */
-static sndinitstat SNDDMA_InitDirect (void)
+static sndinitstat SNDDMA_InitDirect (dma_t *dma)
 {
 	DSBUFFERDESC	dsbuf;
 	DSBCAPS			dsbcaps;
@@ -194,8 +238,8 @@ static sndinitstat SNDDMA_InitDirect (void)
 	HRESULT			hresult;
 	int				reps;
 
-	memset((void *)&sn, 0, sizeof(sn));
-	shm = &sn;
+	memset((void *) dma, 0, sizeof(dma_t));
+	shm = dma;
 
 	shm->channels = desired_channels;
 	shm->samplebits = desired_bits;
@@ -401,7 +445,7 @@ static sndinitstat SNDDMA_InitDirect (void)
 	IDirectSoundBuffer_GetCurrentPosition(pDSBuf, &mmstarttime.u.sample, &dwWrite);
 	IDirectSoundBuffer_Play(pDSBuf, 0, 0, DSBPLAY_LOOPING);
 
-	shm->samples = gSndBufSize/(shm->samplebits/8);
+	shm->samples = gSndBufSize / (shm->samplebits / 8);
 	shm->samplepos = 0;
 	shm->submission_chunk = 1;
 	shm->buffer = (unsigned char *) lpData;
@@ -420,7 +464,7 @@ SNDDM_InitWav
 Crappy windows multimedia base
 ==================
 */
-static qboolean SNDDMA_InitWav (void)
+static qboolean SNDDMA_InitWav (dma_t *dma)
 {
 	WAVEFORMATEX	format;
 	int			i;
@@ -429,8 +473,8 @@ static qboolean SNDDMA_InitWav (void)
 	snd_sent = 0;
 	snd_completed = 0;
 
-	memset((void *)&sn, 0, sizeof(sn));
-	shm = &sn;
+	memset((void *) dma, 0, sizeof(dma_t));
+	shm = dma;
 
 	shm->channels = desired_channels;
 	shm->samplebits = desired_bits;
@@ -525,7 +569,7 @@ static qboolean SNDDMA_InitWav (void)
 		}
 	}
 
-	shm->samples = gSndBufSize/(shm->samplebits/8);
+	shm->samples = gSndBufSize / (shm->samplebits / 8);
 	shm->samplepos = 0;
 	shm->submission_chunk = 1;
 	shm->buffer = (unsigned char *) lpData;
@@ -553,7 +597,7 @@ Try to find a sound device to mix for.
 Returns false if nothing is found.
 ==================
 */
-qboolean S_WIN_Init (void)
+static qboolean S_WIN_Init (dma_t *dma)
 {
 	sndinitstat	stat;
 
@@ -574,7 +618,7 @@ qboolean S_WIN_Init (void)
 	{
 		if (snd_firsttime || snd_isdirect)
 		{
-			stat = SNDDMA_InitDirect ();
+			stat = SNDDMA_InitDirect (dma);
 
 			if (stat == SIS_SUCCESS)
 			{
@@ -599,7 +643,7 @@ qboolean S_WIN_Init (void)
 	{
 		if (snd_firsttime || snd_iswave)
 		{
-			snd_iswave = SNDDMA_InitWav ();
+			snd_iswave = SNDDMA_InitWav (dma);
 
 			if (snd_iswave)
 			{
@@ -637,7 +681,7 @@ inside the recirculating dma buffer, so the mixing code will know
 how many sample are required to fill it up.
 ===============
 */
-int S_WIN_GetDMAPos (void)
+static int S_WIN_GetDMAPos (void)
 {
 	MMTIME	mmtime;
 	int		s;
@@ -673,7 +717,7 @@ Makes sure dma buffer is valid
 ===============
 */
 static DWORD	locksize;
-void S_WIN_LockBuffer (void)
+static void S_WIN_LockBuffer (void)
 {
 	if (pDSBuf)
 	{
@@ -723,7 +767,7 @@ Unlock the dma buffer /
 Send sound to the device
 ===============
 */
-void S_WIN_Submit (void)
+static void S_WIN_Submit (void)
 {
 	LPWAVEHDR	h;
 	int			wResult;
@@ -784,7 +828,7 @@ SNDDMA_Shutdown
 Reset the sound device for exiting
 ===============
 */
-void S_WIN_Shutdown (void)
+static void S_WIN_Shutdown (void)
 {
 	FreeSound ();
 #if defined(DX_DLSYM)
@@ -794,5 +838,14 @@ void S_WIN_Shutdown (void)
 		hInstDS = NULL;
 	}
 #endif	/* DX_DLSYM */
+}
+
+static const char *S_WIN_DrvName (void)
+{
+	if (dsound_init)
+		return s_ds_driver;
+	else if (wav_init)
+		return s_wv_driver;
+	return "";
 }
 

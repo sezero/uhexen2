@@ -2,7 +2,27 @@
 	snd_sys.h
 	Platform specific macros and prototypes for sound
 
-	$Id: snd_sys.h,v 1.19 2007-12-12 10:51:02 sezero Exp $
+	$Id: snd_sys.h,v 1.20 2007-12-22 12:20:35 sezero Exp $
+
+	Copyright (C) 2007  O.Sezer
+
+	This program is free software; you can redistribute it and/or
+	modify it under the terms of the GNU General Public License
+	as published by the Free Software Foundation; either version 2
+	of the License, or (at your option) any later version.
+
+	This program is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+
+	See the GNU General Public License for more details.
+
+	You should have received a copy of the GNU General Public License
+	along with this program; if not, write to:
+
+		Free Software Foundation, Inc.
+		51 Franklin St, Fifth Floor,
+		Boston, MA  02110-1301  USA
 */
 
 #ifndef __HX2_SND_SYS__
@@ -79,87 +99,57 @@
 
 extern unsigned int	snd_system;
 
-#ifndef _SND_SYS_MACROS_ONLY
+typedef struct snd_driver_s
+{
+	qboolean (*Init)(dma_t *);	/* initializes the sound dma driver */
+	void (*Shutdown)(void);		/* shutdown the DMA xfer and driver */
+	int (*GetDMAPos)(void);		/* returns the current dma position */
+	void (*LockBuffer)(void);	/* validates & locks the dma buffer */
+	void (*Submit)(void);		/* unlocks the dma buffer / sends sound to the device */
+	const char *(*DrvName)(void);	/* returns the active driver's name */
+} snd_driver_t;
 
-/* chooses functions to call depending on audio subsystem */
-extern void S_InitDrivers(void);
-
-/* initializes driver and cycling through a DMA buffer */
-extern qboolean (*SNDDMA_Init)(void);
-
-/* gets the current DMA position */
-extern int (*SNDDMA_GetDMAPos)(void);
-
-/* shutdown the DMA xfer and driver */
-extern void (*SNDDMA_Shutdown)(void);
-
-/* makes sure dma buffer is valid, locks the dma buffer */
-extern void (*SNDDMA_LockBuffer)(void);
-#define SNDDMA_BeginPainting SNDDMA_LockBuffer
-
-/* unlocks the dma buffer / sends sound to the device */
-extern void (*SNDDMA_Submit)(void);
-
+extern void S_InitDrivers(snd_driver_t **sdrv);	/* initializes sound driver function pointers */
 
 #ifdef _SND_LIST_DRIVERS
 
 #if HAVE_WIN_SOUND
-/* Windows versions of the above */
-extern qboolean S_WIN_Init(void);
-extern int S_WIN_GetDMAPos(void);
-extern void S_WIN_Shutdown(void);
-extern void S_WIN_LockBuffer(void);
-extern void S_WIN_Submit(void);
+extern void S_WIN_LinkFuncs(snd_driver_t *);
+#else
+#define	S_WIN_LinkFuncs		NULL
 #endif
 
 #if HAVE_DOS_SOUND
-/* DOS versions of the above */
-extern qboolean S_DOS_Init(void);
-extern int S_DOS_GetDMAPos(void);
-extern void S_DOS_Shutdown(void);
-extern void S_DOS_LockBuffer(void);
-extern void S_DOS_Submit(void);
+extern void S_DOS_LinkFuncs(snd_driver_t *);
+#else
+#define	S_DOS_LinkFuncs		NULL
 #endif
 
 #if HAVE_OSS_SOUND
-/* OSS versions of the above */
-extern qboolean S_OSS_Init(void);
-extern int S_OSS_GetDMAPos(void);
-extern void S_OSS_Shutdown(void);
-extern void S_OSS_LockBuffer(void);
-extern void S_OSS_Submit(void);
+extern void S_OSS_LinkFuncs(snd_driver_t *);
+#else
+#define	S_OSS_LinkFuncs		NULL
 #endif	/* HAVE_OSS_SOUND */
 
 #if HAVE_SUN_SOUND
-/* SUN Audio versions of the above */
-extern qboolean S_SUN_Init(void);
-extern int S_SUN_GetDMAPos(void);
-extern void S_SUN_Shutdown(void);
-extern void S_SUN_LockBuffer(void);
-extern void S_SUN_Submit(void);
+extern void S_SUN_LinkFuncs(snd_driver_t *);
+#else
+#define	S_SUN_LinkFuncs		NULL
 #endif	/* HAVE_SUN_SOUND */
 
 #if HAVE_ALSA_SOUND
-/* ALSA versions of the above */
-extern qboolean S_ALSA_Init(void);
-extern int S_ALSA_GetDMAPos(void);
-extern void S_ALSA_Shutdown(void);
-extern void S_ALSA_LockBuffer(void);
-extern void S_ALSA_Submit(void);
+extern void S_ALSA_LinkFuncs(snd_driver_t *);
+#else
+#define	S_ALSA_LinkFuncs	NULL
 #endif	/* HAVE_ALSA_SOUND */
 
 #if HAVE_SDL_SOUND
-/* SDL versions of the above */
-extern qboolean S_SDL_Init(void);
-extern int S_SDL_GetDMAPos(void);
-extern void S_SDL_Shutdown(void);
-extern void S_SDL_LockBuffer(void);
-extern void S_SDL_Submit(void);
+extern void S_SDL_LinkFuncs(snd_driver_t *);
+#else
+#define	S_SDL_LinkFuncs		NULL
 #endif	/* HAVE_SDL_SOUND */
 
 #endif	/* _SND_LIST_DRIVERS */
-
-#endif	/* !(_SND_SYS_MACROS_ONLY) */
 
 #endif	/* __HX2_SND_SYS__ */
 

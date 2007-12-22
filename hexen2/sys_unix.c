@@ -2,7 +2,7 @@
 	sys_unix.c
 	Unix system interface code
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sys_unix.c,v 1.102 2007-12-20 21:45:31 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sys_unix.c,v 1.103 2007-12-22 12:20:35 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -378,7 +378,6 @@ static void PrintVersion (void)
 	printf ("More info / sending bug reports:  http://uhexen2.sourceforge.net\n");
 }
 
-#define _SND_SYS_MACROS_ONLY
 #include "snd_sys.h"
 static const char *help_strings[] = {
 	"     [-v | --version]        Display version information",

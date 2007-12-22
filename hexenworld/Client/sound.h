@@ -2,7 +2,27 @@
 	sound.h
 	client sound i/o functions
 
-	$Id: sound.h,v 1.28 2007-12-21 10:40:47 sezero Exp $
+	$Id: sound.h,v 1.29 2007-12-22 12:20:42 sezero Exp $
+
+	Copyright (C) 1996-1997  Id Software, Inc.
+
+	This program is free software; you can redistribute it and/or
+	modify it under the terms of the GNU General Public License
+	as published by the Free Software Foundation; either version 2
+	of the License, or (at your option) any later version.
+
+	This program is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+
+	See the GNU General Public License for more details.
+
+	You should have received a copy of the GNU General Public License
+	along with this program; if not, write to:
+
+		Free Software Foundation, Inc.
+		51 Franklin St, Fifth Floor,
+		Boston, MA  02110-1301  USA
 */
 
 #ifndef __HX2_SOUND_H
@@ -108,7 +128,6 @@ extern	channel_t	snd_channels[MAX_CHANNELS];
 // MAX_DYNAMIC_CHANNELS + NUM_AMBIENTS to total_channels = static sounds
 
 extern	volatile dma_t	*shm;
-extern	volatile dma_t	sn;
 
 extern	const int	MAX_TRYRATES;
 extern	const int	tryrates[];

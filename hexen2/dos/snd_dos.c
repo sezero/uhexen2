@@ -3,7 +3,7 @@
 	sound support for dosquake. sound blaster code.
 	from quake1 source with minor adaptations for uhexen2.
 
-	$Id: snd_dos.c,v 1.2 2007-11-07 16:54:59 sezero Exp $
+	$Id: snd_dos.c,v 1.3 2007-12-22 12:20:42 sezero Exp $
 
 	Copyright (C) 1996-1997  Id Software, Inc.
 
@@ -28,7 +28,22 @@
 */
 
 #include "quakedef.h"
+#include "snd_sys.h"
 #include "dosisms.h"
+
+
+/* all of these functions must be properly
+   assigned in LinkFuncs() below	*/
+static qboolean S_DOS_Init (dma_t *dma);
+static int S_DOS_GetDMAPos (void);
+static void S_DOS_Shutdown (void);
+static void S_DOS_LockBuffer (void);
+static void S_DOS_Submit (void);
+static const char *S_DOS_DrvName (void);
+
+static char s_sb_driver[] = "Blaster";
+static char s_gus_driver[] = "GUS";
+
 
 /*
 ===============================================================================
@@ -38,7 +53,7 @@ GUS SUPPORT (snd_gus.c)
 ===============================================================================
 */
 
-qboolean GUS_Init (void);
+qboolean GUS_Init (dma_t *dma);
 int GUS_GetDMAPos (void);
 void GUS_Shutdown (void);
 
@@ -68,6 +83,17 @@ static	int	dsp_version;
 static	int	dsp_minor_version;
 
 static	int	timeconstant = -1;
+
+
+void S_DOS_LinkFuncs (snd_driver_t *p)
+{
+	p->Init		= S_DOS_Init;
+	p->Shutdown	= S_DOS_Shutdown;
+	p->GetDMAPos	= S_DOS_GetDMAPos;
+	p->LockBuffer	= S_DOS_LockBuffer;
+	p->Submit	= S_DOS_Submit;
+	p->DrvName	= S_DOS_DrvName;
+}
 
 
 #if 0
@@ -366,7 +392,7 @@ BLASTER_Init
 Returns false if nothing is found.
 ==================
 */
-static qboolean BLASTER_Init (void)
+static qboolean BLASTER_Init (dma_t *dma)
 {
 	int	size;
 	int	realaddr;
@@ -422,7 +448,8 @@ static qboolean BLASTER_Init (void)
 	}
 
 // everyone does 11khz sampling rate unless told otherwise
-	shm = &sn;
+	memset ((void *) dma, 0, sizeof(dma_t));
+	shm = dma;
 	shm->speed = 11025;
 	rc = COM_CheckParm("-sndspeed");
 	if (rc && rc < com_argc - 1)
@@ -454,6 +481,7 @@ static qboolean BLASTER_Init (void)
 	dma_buffer = (short *) dos_getmemory(size * 2);
 	if (!dma_buffer)
 	{
+		shm = NULL;
 		Con_Printf("Couldn't allocate sound dma buffer");
 		return false;
 	}
@@ -579,14 +607,14 @@ Returns false if nothing is found.
 Returns true and fills in the "shm" structure with information for the mixer.
 ==================
 */
-qboolean S_DOS_Init (void)
+static qboolean S_DOS_Init (dma_t *dma)
 {
-	if (GUS_Init ())
+	if (GUS_Init (dma))
 	{
 		dmacard = dma_gus;
 		return true;
 	}
-	if (BLASTER_Init ())
+	if (BLASTER_Init (dma))
 	{
 		dmacard = dma_blaster;
 		return true;
@@ -606,7 +634,7 @@ inside the recirculating dma buffer, so the mixing code will know
 how many sample are required to fill it up.
 ===============
 */
-int S_DOS_GetDMAPos (void)
+static int S_DOS_GetDMAPos (void)
 {
 	switch (dmacard)
 	{
@@ -629,7 +657,7 @@ SNDDMA_Shutdown
 Reset the sound device for exiting
 ===============
 */
-void S_DOS_Shutdown (void)
+static void S_DOS_Shutdown (void)
 {
 	switch (dmacard)
 	{
@@ -654,7 +682,7 @@ SNDDMA_LockBuffer
 Makes sure dma buffer is valid
 ===============
 */
-void S_DOS_LockBuffer (void)
+static void S_DOS_LockBuffer (void)
 {
 	/* nothing to do here */
 }
@@ -667,7 +695,24 @@ Unlock the dma buffer /
 Send sound to the device
 ===============
 */
-void S_DOS_Submit (void)
+static void S_DOS_Submit (void)
 {
+	/* nothing to do here */
+}
+
+static const char *S_DOS_DrvName (void)
+{
+	switch (dmacard)
+	{
+	case dma_blaster:
+		return s_sb_driver;
+		break;
+	case dma_gus:
+		return s_gus_driver;
+		break;
+	case dma_none:
+	default:
+		return "";
+	}
 }
 

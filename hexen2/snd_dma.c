@@ -2,11 +2,33 @@
 	snd_dma.c
 	main control for any streaming sound output device
 
-	$Id: snd_dma.c,v 1.74 2007-12-21 10:40:43 sezero Exp $
+	$Id: snd_dma.c,v 1.75 2007-12-22 12:20:35 sezero Exp $
+
+	Copyright (C) 1996-1997  Id Software, Inc.
+
+	This program is free software; you can redistribute it and/or
+	modify it under the terms of the GNU General Public License
+	as published by the Free Software Foundation; either version 2
+	of the License, or (at your option) any later version.
+
+	This program is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+
+	See the GNU General Public License for more details.
+
+	You should have received a copy of the GNU General Public License
+	along with this program; if not, write to:
+
+		Free Software Foundation, Inc.
+		51 Franklin St, Fifth Floor,
+		Boston, MA  02110-1301  USA
 */
 
 #include "quakedef.h"
 #include "snd_sys.h"
+
+static snd_driver_t	*qsnd_driver;
 
 static void S_Play (void);
 static void S_PlayVol (void);
@@ -33,22 +55,7 @@ int		total_channels;
 int		snd_blocked = 0;
 static qboolean	snd_initialized = false;
 
-static const struct
-{
-	const char	*name;
-	int	available;
-} snd_drivers[S_SYS_MAX] =
-{
-	{  "NULL" ,	1		},
-	{  "OSS"  ,	HAVE_OSS_SOUND	},
-	{  "SDL"  ,	HAVE_SDL_SOUND	},
-	{  "ALSA" ,	HAVE_ALSA_SOUND	},
-	{  "SUN"  ,	HAVE_SUN_SOUND	},
-	{  "WIN"  ,	HAVE_WIN_SOUND	},
-	{  "DOS"  ,	HAVE_DOS_SOUND	}
-};
-
-volatile dma_t	sn;
+static dma_t	sn;
 volatile dma_t	*shm = NULL;
 
 vec3_t		listener_origin;
@@ -102,7 +109,7 @@ static void S_SoundInfo_f (void)
 		return;
 	}
 
-	Con_Printf("Driver: %s\n", snd_drivers[snd_system].name);
+	Con_Printf("Driver: %s\n", qsnd_driver->DrvName());
 	Con_Printf("%d bit, %s, %d Hz\n", shm->samplebits,
 			(shm->channels == 2) ? "stereo" : "mono", shm->speed);
 	Con_Printf("%5d samples\n", shm->samples);
@@ -126,9 +133,9 @@ void S_Startup (void)
 		return;
 
 	tmp = COM_CheckParm("-sndspeed");
-	if (tmp != 0 && tmp < com_argc-1)
+	if (tmp != 0 && tmp < com_argc - 1)
 	{
-		tmp = atoi(com_argv[tmp+1]);
+		tmp = atoi(com_argv[tmp + 1]);
 		/* I won't rely on users' precision in typing or their needs
 		   here. If you know what you're doing, then change this. */
 		for (i = 0; i < MAX_TRYRATES; i++)
@@ -142,9 +149,9 @@ void S_Startup (void)
 	}
 
 	tmp = COM_CheckParm("-sndbits");
-	if (tmp != 0 && tmp < com_argc-1)
+	if (tmp != 0 && tmp < com_argc - 1)
 	{
-		tmp = atoi(com_argv[tmp+1]);
+		tmp = atoi(com_argv[tmp + 1]);
 		if ((tmp == 16) || (tmp == 8))
 			desired_bits = tmp;
 	}
@@ -153,7 +160,7 @@ void S_Startup (void)
 	if (tmp != 0)
 		desired_channels = 1;
 
-	sound_started = SNDDMA_Init();
+	sound_started = qsnd_driver->Init(&sn);
 
 	if (!sound_started)
 	{
@@ -162,11 +169,10 @@ void S_Startup (void)
 	}
 	else
 	{
-		Con_Printf("%s Audio initialized (%d bit, %s, %d Hz)\n",
-				snd_drivers[snd_system].name,
+		Con_Printf("Audio: %d bit, %s, %d Hz, using %s\n",
 				shm->samplebits,
 				(shm->channels == 2) ? "stereo" : "mono",
-				shm->speed);
+				shm->speed, qsnd_driver->DrvName());
 	}
 }
 
@@ -185,7 +191,7 @@ void S_Init (void)
 	}
 
 // point to correct platform versions of driver functions
-	S_InitDrivers();
+	S_InitDrivers(&qsnd_driver);
 
 	Cvar_RegisterVariable(&precache);
 	Cvar_RegisterVariable(&bgmtype);
@@ -254,7 +260,7 @@ void S_Shutdown (void)
 
 	sound_started = 0;
 
-	SNDDMA_Shutdown();
+	qsnd_driver->Shutdown();
 	shm = NULL;
 }
 
@@ -585,7 +591,7 @@ void S_ClearBuffer (void)
 	if (!sound_started || !shm)
 		return;
 
-	SNDDMA_LockBuffer ();
+	qsnd_driver->LockBuffer ();
 	if (! shm->buffer)
 		return;
 
@@ -594,9 +600,9 @@ void S_ClearBuffer (void)
 	else
 		clear = 0;
 
-	memset(shm->buffer, clear, shm->samples * shm->samplebits/8);
+	memset(shm->buffer, clear, shm->samples * shm->samplebits / 8);
 
-	SNDDMA_Submit ();
+	qsnd_driver->Submit ();
 }
 
 
@@ -805,7 +811,7 @@ static void GetSoundtime (void)
 
 // it is possible to miscount buffers if it has wrapped twice between
 // calls to S_Update.  Oh well.
-	samplepos = SNDDMA_GetDMAPos();
+	samplepos = qsnd_driver->GetDMAPos();
 
 	if (samplepos < oldsamplepos)
 	{
@@ -840,7 +846,7 @@ static void S_Update_ (void)
 	if (!sound_started || (snd_blocked > 0))
 		return;
 
-	SNDDMA_LockBuffer ();
+	qsnd_driver->LockBuffer ();
 	if (! shm->buffer)
 		return;
 
@@ -861,7 +867,7 @@ static void S_Update_ (void)
 
 	S_PaintChannels (endtime);
 
-	SNDDMA_Submit ();
+	qsnd_driver->Submit ();
 }
 
 /*

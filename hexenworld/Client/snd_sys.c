@@ -2,7 +2,27 @@
 	snd_sys.c
 	pre-Init platform specific sound stuff
 
-	$Id: snd_sys.c,v 1.13 2007-11-07 16:54:59 sezero Exp $
+	$Id: snd_sys.c,v 1.14 2007-12-22 12:20:42 sezero Exp $
+
+	Copyright (C) 2007  O.Sezer
+
+	This program is free software; you can redistribute it and/or
+	modify it under the terms of the GNU General Public License
+	as published by the Free Software Foundation; either version 2
+	of the License, or (at your option) any later version.
+
+	This program is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+
+	See the GNU General Public License for more details.
+
+	You should have received a copy of the GNU General Public License
+	along with this program; if not, write to:
+
+		Free Software Foundation, Inc.
+		51 Franklin St, Fifth Floor,
+		Boston, MA  02110-1301  USA
 */
 
 
@@ -14,21 +34,20 @@
 unsigned int	snd_system = S_SYS_NULL;
 static qboolean	snd_sys_inited = false;
 
-/* pointers for SNDDMA_ functions */
-qboolean (*SNDDMA_Init)(void);
-int (*SNDDMA_GetDMAPos)(void);
-void (*SNDDMA_Shutdown)(void);
-void (*SNDDMA_LockBuffer)(void);
-void (*SNDDMA_Submit)(void);
+static snd_driver_t	snd_driver;
+
 
 /* dummy SNDDMA functions, just in case */
-static qboolean S_NULL_Init (void)
+static char s_null_driver[] = "NULL";
+
+static qboolean S_NULL_Init (dma_t *dma)
 {
 #if SOUND_NUMDRIVERS
 	Con_Printf ("No sound\n");
 #else
 	Con_Printf ("SOUND: no drivers available\n");
 #endif
+	shm = NULL;
 	return false;
 }
 
@@ -49,6 +68,35 @@ static void S_NULL_Submit (void)
 {
 }
 
+static const char *S_NULL_DrvName (void)
+{
+	return s_null_driver;
+}
+
+static void S_NULL_LinkFuncs (snd_driver_t *p)
+{
+	p->Init		= S_NULL_Init;
+	p->Shutdown	= S_NULL_Shutdown;
+	p->GetDMAPos	= S_NULL_GetDMAPos;
+	p->LockBuffer	= S_NULL_LockBuffer;
+	p->Submit	= S_NULL_Submit;
+	p->DrvName	= S_NULL_DrvName;
+}
+
+
+static struct
+{
+	void (*LinkFunc)(snd_driver_t *);
+} snd_linkfunc[S_SYS_MAX] =
+{
+	{ S_NULL_LinkFuncs },
+	{ S_OSS_LinkFuncs  },
+	{ S_SDL_LinkFuncs  },
+	{ S_ALSA_LinkFuncs },
+	{ S_SUN_LinkFuncs  },
+	{ S_WIN_LinkFuncs  },
+	{ S_DOS_LinkFuncs  },
+};
 
 static void S_InitSys (void)
 {
@@ -94,7 +142,7 @@ static void S_InitSys (void)
 }
 
 
-void S_InitDrivers (void)
+void S_InitDrivers (snd_driver_t **p)
 {
 	if (!snd_sys_inited)
 	{
@@ -102,70 +150,12 @@ void S_InitDrivers (void)
 		snd_sys_inited = true;
 	}
 
-	switch (snd_system)
-	{
-#if HAVE_WIN_SOUND
-	case S_SYS_WIN:
-		SNDDMA_Init	 = S_WIN_Init;
-		SNDDMA_GetDMAPos = S_WIN_GetDMAPos;
-		SNDDMA_Shutdown	 = S_WIN_Shutdown;
-		SNDDMA_LockBuffer= S_WIN_LockBuffer;
-		SNDDMA_Submit	 = S_WIN_Submit;
-		break;
-#endif
-#if HAVE_DOS_SOUND
-	case S_SYS_DOS:
-		SNDDMA_Init	 = S_DOS_Init;
-		SNDDMA_GetDMAPos = S_DOS_GetDMAPos;
-		SNDDMA_Shutdown	 = S_DOS_Shutdown;
-		SNDDMA_LockBuffer= S_DOS_LockBuffer;
-		SNDDMA_Submit	 = S_DOS_Submit;
-		break;
-#endif
-#if HAVE_SDL_SOUND
-	case S_SYS_SDL:
-		SNDDMA_Init	 = S_SDL_Init;
-		SNDDMA_GetDMAPos = S_SDL_GetDMAPos;
-		SNDDMA_Shutdown	 = S_SDL_Shutdown;
-		SNDDMA_LockBuffer= S_SDL_LockBuffer;
-		SNDDMA_Submit	 = S_SDL_Submit;
-		break;
-#endif
-#if HAVE_ALSA_SOUND
-	case S_SYS_ALSA:
-		SNDDMA_Init	 = S_ALSA_Init;
-		SNDDMA_GetDMAPos = S_ALSA_GetDMAPos;
-		SNDDMA_Shutdown	 = S_ALSA_Shutdown;
-		SNDDMA_LockBuffer= S_ALSA_LockBuffer;
-		SNDDMA_Submit	 = S_ALSA_Submit;
-		break;
-#endif
-#if HAVE_OSS_SOUND
-	case S_SYS_OSS:
-		SNDDMA_Init	 = S_OSS_Init;
-		SNDDMA_GetDMAPos = S_OSS_GetDMAPos;
-		SNDDMA_Shutdown	 = S_OSS_Shutdown;
-		SNDDMA_LockBuffer= S_OSS_LockBuffer;
-		SNDDMA_Submit	 = S_OSS_Submit;
-		break;
-#endif
-#if HAVE_SUN_SOUND
-	case S_SYS_SUN:
-		SNDDMA_Init	 = S_SUN_Init;
-		SNDDMA_GetDMAPos = S_SUN_GetDMAPos;
-		SNDDMA_Shutdown	 = S_SUN_Shutdown;
-		SNDDMA_LockBuffer= S_SUN_LockBuffer;
-		SNDDMA_Submit	 = S_SUN_Submit;
-		break;
-#endif
-	case S_SYS_NULL:
-	default:
-		SNDDMA_Init	 = S_NULL_Init;
-		SNDDMA_GetDMAPos = S_NULL_GetDMAPos;
-		SNDDMA_Shutdown	 = S_NULL_Shutdown;
-		SNDDMA_LockBuffer= S_NULL_LockBuffer;
-		SNDDMA_Submit	 = S_NULL_Submit;
-		break;
-	}
+	if (snd_system < 0 || snd_system >= S_SYS_MAX)
+		Sys_Error ("%s: Bad index %d", __thisfunc__, snd_system);
+	if (snd_linkfunc[snd_system].LinkFunc == NULL)
+		Sys_Error ("%s: NULL function pointer for %d", __thisfunc__, snd_system);
+
+	snd_linkfunc[snd_system].LinkFunc(&snd_driver);
+	*p = &snd_driver;
 }
 

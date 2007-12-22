@@ -4,7 +4,7 @@
 	Author(s): Jayeson Lee-Steere
 	from quake1 source with minor adaptations for uhexen2.
 
-	$Id: snd_gus.c,v 1.2 2007-10-28 08:19:58 sezero Exp $
+	$Id: snd_gus.c,v 1.3 2007-12-22 12:20:42 sezero Exp $
 
 	Copyright (C) 1996-1997  Id Software, Inc.
 
@@ -1106,7 +1106,7 @@ static void GUS_StartGf1 (int count, BYTE Voices)
 //=============================================================================
 // Figures out what kind of UltraSound we have, if any, and starts it playing
 //=============================================================================
-qboolean GUS_Init (void)
+qboolean GUS_Init (dma_t *dma)
 {
 	int		rc;
 	int		RealAddr;
@@ -1124,7 +1124,8 @@ qboolean GUS_Init (void)
 		}
 	}
 
-	shm = &sn;
+	memset ((void *) dma, 0, sizeof(dma_t));
+	shm = dma;
 
 	if (HaveCodec)
 	{
@@ -1160,6 +1161,7 @@ qboolean GUS_Init (void)
 		dma_buffer = (short *) dos_getmemory(BUFFER_SIZE * 2);
 		if (dma_buffer == NULL)
 		{
+			shm = NULL;
 			Con_Printf("Couldn't allocate sound dma buffer");
 			return false;
 		}
@@ -1213,6 +1215,7 @@ qboolean GUS_Init (void)
 		dma_buffer = (short *) dos_getmemory(BUFFER_SIZE * 2);
 		if (dma_buffer == NULL)
 		{
+			shm = NULL;
 			Con_Printf("Couldn't allocate sound dma buffer");
 			return false;
 		}
@@ -1322,5 +1325,6 @@ void GUS_Shutdown (void)
 	}
 
 	dos_outportb(DisableReg, DmaChannel | 4);	// disable dma channel
+	shm = NULL;
 }
 

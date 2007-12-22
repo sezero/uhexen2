@@ -2,7 +2,7 @@
 	midi_sdl.c
 	midiplay via SDL_mixer
 
-	$Id: midi_sdl.c,v 1.45 2007-12-20 22:15:35 sezero Exp $
+	$Id: midi_sdl.c,v 1.46 2007-12-22 12:20:42 sezero Exp $
 
 	Copyright (C) 2001  contributors of the Anvil of Thyrion project
 	Copyright (C) 2005-2007  O.Sezer
@@ -29,7 +29,6 @@
 #include "quakedef.h"
 #include <dlfcn.h>
 #include "sdl_inc.h"
-#define _SND_SYS_MACROS_ONLY
 #include "snd_sys.h"
 
 static Mix_Music *music = NULL;
