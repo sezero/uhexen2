@@ -3,6 +3,38 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2007-12-24 (CVS):
+    * changed the sound driver interface to be more like a 'plugin' interface.
+      still, I should properly separate the multi-driver cases, such as the
+      windows wave and dsound, and the dos blaster and gus cases.
+    * moved S_BlockSound and S_UnblockSound to the snd_dma api, added BlockSound
+      and UnblockSound among the driver provided functions. made S_BlockSound to
+      clear the sound buffer. FIXME: do we really need the blocking at the driver
+      level?
+    * made sdl input driver to respond to the SDL_ACTIVEEVENT events: made the
+      game to block/unblock sound upon focus loss/gain.
+    * simplified stub funcs usage in snd_sys.c.
+    * made Sys_rmdir and Sys_unlink into actual functions rather than macros.
+    * added beginnings of SDL joystick support. not complete at the moment, will
+      stay commented out until I finish it.
+    * net drivers: rest of the constifications, minor whitespace cleanups.
+    * now that the old version of sdl audio driver is removed, removed snd_skippaint
+      which was its dependency.
+    * added missing memsets to net drivers.
+    * removed two unnecessary memsets from net_wipx.c after the previous commit.
+    * removed a deprecated comment from glquake.h
+    * glquake.h: GL_UNUSED_TEXTURE definition
+    * removed the ctype.h includes from winquake.h, not necessary anymore.
+    * removed the unistd.h includes from midi_sdl.c and midi_mac.c, not necessary
+      any longer.
+    * added missing global to vid_dos.c. how did it even link before??
+    * insignificant clean-ups in menu.c..
+    * removed the snd_restart experimental extra patch. it broke after the sound
+      driver interface changes and it wasn't stable enough anyway..
+    * updated release date to 2007-12-24.
+    * updated the release notes for the upcoming 1.4.3 version.
+    * documentation, updated web links.
+
 2007-12-19 (CVS):
     * Several typo fixes. Changed the uhexen2 version number to 1.4.3
       in the documents.
