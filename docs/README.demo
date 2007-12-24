@@ -522,17 +522,31 @@ been suggested that I'll need a whole different physics engine."
 	Work-in-progress	: http://uhexen2.sourceforge.net/devel/
 	CVS Repository		: http://uhexen2.cvs.sourceforge.net/uhexen2/
 	MorphOS port		: http://www.binaryriot.org/users/kiero/
-	PalmOS port		: http://www.metaviewsoft.de
-	ebuilds for Gentoo	: http://bugs.gentoo.org/show_bug.cgi?id=105780
+				  http://aminet.net/package/game/shoot/GLHexen2
+	PalmOS port		: http://www.metaviewsoft.de/
+
+    Hammer of Thyrion Packages
+	FreshPorts for FreeBSD	:
+		main package	: http://www.freshports.org/games/uhexen2/
+		extra package	: http://www.freshports.org/games/uhexen2-extras/
+	SuSE RPM packages	: http://packman.links2linux.de/package/hexen2/
+	Arch Linux packages	: http://aur.archlinux.org/packages.php?do_Details=1&ID=12618
+	Gentoo ebuilds		:
+		the main ebuild	: http://bugs.gentoo.org/show_bug.cgi?id=105780
+		for demo data	: http://bugs.gentoo.org/show_bug.cgi?id=139262
+		for extra data	: http://bugs.gentoo.org/show_bug.cgi?id=139278
+		the cvs version	: http://bugs.gentoo.org/show_bug.cgi?id=181824
+	Gentoo Sunrise overlay	: http://overlays.gentoo.org/svn/proj/sunrise/reviewed/games-fps/
 
     Other Hexen II ports
+	Hexen II PSP port	: http://jurajstyk.host.sk/index.htm
 	Korax's UQE Hexen II	: http://www.quake-engine.com/
 
     Older, currently inactive Hexen II ports
 	Anvil of Thyrion	: http://aot.linuxgames.com/
 	Hexen II Mac port	: http://macglquake.sourceforge.net/
 	Hexen II Dreamcast	: http://dcquake.sourceforge.net/
-	JSHexen II		: http://jurajstyk.host.sk/
+	JSHexen II		: http://jurajstyk.host.sk/index.htm
 	Pa3PyX's Hexen II	: http://pa3pyx.dnsalias.org/
 	NewHexen		: http://newhexen.raven-games.com/
 
