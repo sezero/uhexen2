@@ -2,7 +2,28 @@
 	keys.c
 	key up events are sent even if in console mode
 
-	$Id: keys.c,v 1.39 2007-11-16 10:28:14 sezero Exp $
+	$Id: keys.c,v 1.40 2007-12-30 20:50:41 sezero Exp $
+
+	Copyright (C) 1996-1997  Id Software, Inc.
+	Copyright (C) 2006-2007  O.Sezer
+
+	This program is free software; you can redistribute it and/or
+	modify it under the terms of the GNU General Public License
+	as published by the Free Software Foundation; either version 2
+	of the License, or (at your option) any later version.
+
+	This program is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+
+	See the GNU General Public License for more details.
+
+	You should have received a copy of the GNU General Public License
+	along with this program; if not, write to:
+
+		Free Software Foundation, Inc.
+		51 Franklin St, Fifth Floor,
+		Boston, MA  02110-1301  USA
 */
 
 #include "quakedef.h"
@@ -14,7 +35,7 @@ char	key_lines[32][MAXCMDLINE];
 int		key_linepos;
 static qboolean	shift_down = false;
 int		key_lastpress;
-int		key_insert;	// insert key toggle
+int		key_insert = 1;		// insert/overwrite mode toggle
 
 int		edit_line = 0;
 static int	history_line = 0;
@@ -23,7 +44,7 @@ keydest_t	key_dest;
 
 int		key_count;		// incremented every key event
 
-char	*keybindings[256];
+char		*keybindings[256];
 static qboolean	consolekeys[256];	// if true, can't be rebound while in console
 static qboolean	menubound[256];		// if true, can't be rebound while in menu
 static int	keyshift[256];		// key to map to if shift held down in console
@@ -140,7 +161,7 @@ static qboolean CheckForCommand (void)
 	char	*s;
 	int		i;
 
-	s = key_lines[edit_line]+1;
+	s = key_lines[edit_line] + 1;
 
 	memset (command, 0, sizeof(command));
 	for (i = 0; i < 127; i++)
