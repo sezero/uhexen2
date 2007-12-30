@@ -1,6 +1,6 @@
 /*
 	snd_win.c
-	$Id: snd_win.c,v 1.35 2007-12-22 18:56:09 sezero Exp $
+	$Id: snd_win.c,v 1.36 2007-12-30 15:40:59 sezero Exp $
 
 	Copyright (C) 1996-1997  Id Software, Inc.
 
@@ -74,8 +74,6 @@ static qboolean	wav_init;
 static qboolean	snd_firsttime = true, snd_isdirect, snd_iswave;
 static qboolean	primary_format_set;
 
-// starts at 0 for disabled
-static int	snd_buffer_count = 0;
 static int	sample16;
 static int	snd_sent, snd_completed;
 static int	ds_sbuf_size, wv_buf_size;
@@ -628,17 +626,17 @@ static qboolean S_WIN_Init (dma_t *dma)
 		}
 	}
 
-	snd_firsttime = false;
-
-	snd_buffer_count = 1;
-
 	if (!dsound_init && !wav_init)
 	{
 		if (snd_firsttime)
 			Con_SafePrintf ("No sound device initialized\n");
 
+		snd_firsttime = false;
+
 		return false;
 	}
+
+	snd_firsttime = false;
 
 	return true;
 }
@@ -700,7 +698,7 @@ static void S_WIN_LockBuffer (void)
 		reps = 0;
 		shm->buffer = NULL;
 
-		if (IDirectSoundBuffer_GetStatus(pDSBuf, &dwStatus) != DD_OK)
+		if (IDirectSoundBuffer_GetStatus(pDSBuf, &dwStatus) != DS_OK)
 			Con_Printf ("Couldn't get sound buffer status\n");
 
 		if (dwStatus & DSBSTATUS_BUFFERLOST)

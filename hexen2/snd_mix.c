@@ -2,7 +2,27 @@
 	snd_mix.c
 	portable code to mix sounds for snd_dma.c
 
-	$Id: snd_mix.c,v 1.20 2007-11-07 16:54:58 sezero Exp $
+	$Id: snd_mix.c,v 1.21 2007-12-30 15:40:51 sezero Exp $
+
+	Copyright (C) 1996-1997  Id Software, Inc.
+
+	This program is free software; you can redistribute it and/or
+	modify it under the terms of the GNU General Public License
+	as published by the Free Software Foundation; either version 2
+	of the License, or (at your option) any later version.
+
+	This program is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+
+	See the GNU General Public License for more details.
+
+	You should have received a copy of the GNU General Public License
+	along with this program; if not, write to:
+
+		Free Software Foundation, Inc.
+		51 Franklin St, Fifth Floor,
+		Boston, MA  02110-1301  USA
 */
 
 #include "quakedef.h"
@@ -46,21 +66,18 @@ static void S_TransferStereo16 (int endtime)
 {
 	int		lpos;
 	int		lpaintedtime;
-	void	*pbuf;
 
 	snd_vol = sfxvolume.value * 256;
 
 	snd_p = (int *) paintbuffer;
 	lpaintedtime = paintedtime;
 
-	pbuf = shm->buffer;
-
 	while (lpaintedtime < endtime)
 	{
 	// handle recirculating buffer issues
 		lpos = lpaintedtime & ((shm->samples >> 1) - 1);
 
-		snd_out = (short *) pbuf + (lpos << 1);
+		snd_out = (short *)shm->buffer + (lpos << 1);
 
 		snd_linear_count = (shm->samples >> 1) - lpos;
 		if (lpaintedtime + snd_linear_count > endtime)
@@ -81,7 +98,6 @@ static void S_TransferPaintBuffer (int endtime)
 	int	out_idx, out_mask;
 	int	count, step, val;
 	int	*p;
-	void	*pbuf;
 
 	if (shm->samplebits == 16 && shm->channels == 2)
 	{
@@ -96,11 +112,9 @@ static void S_TransferPaintBuffer (int endtime)
 	step = 3 - shm->channels;
 	snd_vol = sfxvolume.value * 256;
 
-	pbuf = shm->buffer;
-
 	if (shm->samplebits == 16)
 	{
-		short *out = (short *) pbuf;
+		short *out = (short *)shm->buffer;
 		while (count--)
 		{
 			val = (*p * snd_vol) >> 8;
@@ -115,7 +129,7 @@ static void S_TransferPaintBuffer (int endtime)
 	}
 	else if (shm->samplebits == 8)
 	{
-		unsigned char *out = (unsigned char *) pbuf;
+		unsigned char *out = shm->buffer;
 		while (count--)
 		{
 			val = (*p * snd_vol) >> 8;
