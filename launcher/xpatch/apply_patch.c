@@ -2,7 +2,7 @@
 	apply_patch.c
 	hexen2 launcher: binary patch starter
 
-	$Id: apply_patch.c,v 1.9 2007-12-08 09:16:51 sezero Exp $
+	$Id: apply_patch.c,v 1.10 2008-01-02 14:45:10 sezero Exp $
 
 	This program is free software; you can redistribute it and/or
 	modify it under the terms of the GNU General Public License
@@ -113,7 +113,7 @@ void *apply_patches (void *workdir)
 		}
 
 		ui_log ("... checksumming...\n");
-		md5_compute(dst, csum, 1);
+		md5_compute(dst, csum, 0);
 		if ( !strcmp(csum, patch_data[i].new_md5) )
 		{
 			written_size += patch_data[i].new_size;
@@ -160,7 +160,7 @@ void *apply_patches (void *workdir)
 		ui_log ("... elapsed time %lum:%lus\n", elapsed / 60, elapsed % 60);
 
 		ui_log ("... verifying checksum...\n");
-		md5_compute(out, csum, 1);
+		md5_compute(out, csum, 0);
 		if ( strcmp(csum, patch_data[i].new_md5) )
 		{
 			rc |= XPATCH_FAIL;
