@@ -3,6 +3,13 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2007-12-30 / 2008-01-04 (CVS):
+    * small clean-ups in snd_mix.c and snd_win.c
+    * console line editing: made insert mode the default (Steven's request).
+    * updated release notes for the upcoming 1.4.3 version (2007-12-30.)
+    * launcher, md5 checksum: no need for the unpack option.
+    * updated release date to 2008-01-04.
+
 2007-12-24 (CVS):
     * changed the sound driver interface to be more like a 'plugin' interface.
       still, I should properly separate the multi-driver cases, such as the
