@@ -6,7 +6,7 @@
 		for byte order use q_endian.h,
 		for math stuff use mathlib.h.
 
-	$Id: q_stdinc.h,v 1.1 2007-12-14 16:41:11 sezero Exp $
+	$Id: q_stdinc.h,v 1.2 2008-01-10 17:10:41 sezero Exp $
 
 	Copyright (C) 1996-1997  Id Software, Inc.
 	Copyright (C) 2007  O.Sezer <sezero@users.sourceforge.net>
@@ -52,7 +52,9 @@
    FIXME: Properly replace certain short and int usage
 	  with int16_t and int32_t.
  */
-#ifndef _MSC_VER
+#ifdef _MSC_VER
+#include "msinttypes/stdint.h"
+#else
 #include <stdint.h>
 #endif
 
