@@ -1,5 +1,5 @@
 # GNU Makefile using GCC in a unix shell.
-# $Header: /home/ozzie/Download/0000/uhexen2/scripts/makefile.inc,v 1.20 2007-10-25 21:30:11 sezero Exp $
+# $Header: /home/ozzie/Download/0000/uhexen2/scripts/makefile.inc,v 1.21 2008-01-10 17:21:07 sezero Exp $
 
 # This file is responsible for determining the Host OS and Target OS,
 # setting common paths, selecting the compiler, assigning the compiler
@@ -31,11 +31,8 @@ check_cmd=$(shell if which $(1) > /dev/null 2>&1; then echo "";else echo $(1);fi
 # X directory
 X11BASE ?=/usr/X11R6
 
-# MinGW32 directory:
-MINGWDIR ?=/mingw
-
-# DJGPP directory:
-DJGPPDIR ?=/djgpp
+# Local w32stuff directory:
+W32STUFF :=$(UHEXEN2_TOP)/w32stuff
 
 
 ################################
@@ -207,8 +204,8 @@ endif
 
 ifeq ($(TARGET_OS),win32)
 MGL_FLAG:= -DMGL_DLL
-MGL_INCL:= -I$(UHEXEN2_TOP)/w32stuff/scitech
-MGL_LINK:= -L$(UHEXEN2_TOP)/w32stuff/scitech -lmglfx
+MGL_INCL:= -I$(W32STUFF)/scitech
+MGL_LINK:= -L$(W32STUFF)/scitech -lmglfx
 else
 MGL_FLAG:=
 MGL_INCL:=

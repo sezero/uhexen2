@@ -1,5 +1,6 @@
 #!/bin/sh
 
+# $Header: /home/ozzie/Download/0000/uhexen2/hexen2/build_cross_dos.sh,v 1.3 2008-01-10 17:21:06 sezero Exp $
 # used for building h2dos.exe with djgpp cross toolchain
 
 PREFIX=/usr/local/cross-djgpp
@@ -8,7 +9,6 @@ TARGET=i586-pc-msdosdjgpp
 PATH="$PREFIX/bin:$PREFIX/$TARGET/bin:$PATH"
 export PATH
 
-DJGPPDIR="$PREFIX/$TARGET"
 DOSBUILD=1
 
 CC="$TARGET-gcc"
@@ -16,7 +16,7 @@ AS="$TARGET-as"
 AR="$TARGET-ar"
 NASM="nasm"
 
-export CC NASM AS AR DJGPPDIR DOSBUILD
+export CC NASM AS AR DOSBUILD
 
 HOST_OS=`uname|sed -e s/_.*//|tr '[:upper:]' '[:lower:]'`
 

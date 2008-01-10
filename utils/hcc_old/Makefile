@@ -1,5 +1,5 @@
 # GNU Makefile for hexen2 hcc tool (old version) using GCC.
-# $Header: /home/ozzie/Download/0000/uhexen2/utils/hcc_old/Makefile,v 1.13 2007-10-25 09:06:53 sezero Exp $
+# $Header: /home/ozzie/Download/0000/uhexen2/utils/hcc_old/Makefile,v 1.14 2008-01-10 17:21:11 sezero Exp $
 #
 # if building a debug version :		make DEBUG=1 [other stuff]
 #
@@ -49,7 +49,7 @@ CFLAGS+= -Wno-char-subscripts
 # Other build flags
 
 ifeq ($(TARGET_OS),win32)
-INCLUDES:= -I$(MINGWDIR)/include -I$(COMMONDIR)
+INCLUDES:= -I$(W32STUFF) -I$(COMMONDIR)
 LDFLAGS := -mconsole
 LDLIBS  :=
 endif

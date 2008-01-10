@@ -1,5 +1,5 @@
 # GNU Makefile for hexenworld clients using GCC.
-# $Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/Makefile,v 1.75 2007-11-07 17:06:52 sezero Exp $
+# $Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/Makefile,v 1.76 2008-01-10 17:21:06 sezero Exp $
 #
 # Type "make help" to see the valid targets.
 #
@@ -211,8 +211,8 @@ EXT_FLAGS:=$(ARCHFLAGS) -DH2W
 
 ifeq ($(TARGET_OS),win32)
 # Main win32 specific includes and flags
-INCLUDES:= -I$(UHEXEN2_TOP)/w32stuff/dxsdk/inc -I$(MINGWDIR)/include -I.
-LDFLAGS := -L$(MINGWDIR)/lib -lwinmm -lwsock32 -mwindows
+INCLUDES:= -I$(W32STUFF) -I$(W32STUFF)/dxsdk/inc -I.
+LDFLAGS := -lwinmm -lwsock32 -mwindows
 endif
 ifeq ($(TARGET_OS),unix)
 # Main unix specific includes and flags
@@ -309,7 +309,7 @@ endif
 %.o: %.asm
 	$(NASM) $(NASMFLAGS) -o $@ $<
 %.o: %.rc
-	$(WINDRES) $(EXT_FLAGS) --include=$(MINGWDIR)/include --output=coff -o $@ $<
+	$(WINDRES) $(EXT_FLAGS) --output=coff -o $@ $<
 
 # Objects
 

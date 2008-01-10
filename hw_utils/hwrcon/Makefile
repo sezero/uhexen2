@@ -1,5 +1,5 @@
 # GNU Makefile for hwrcon and hwterm using GCC.
-# $Header: /home/ozzie/Download/0000/uhexen2/hw_utils/hwrcon/Makefile,v 1.14 2007-10-25 09:06:52 sezero Exp $
+# $Header: /home/ozzie/Download/0000/uhexen2/hw_utils/hwrcon/Makefile,v 1.15 2008-01-10 17:21:06 sezero Exp $
 #
 # if building a debug version :		make DEBUG=1 [other stuff]
 #
@@ -53,8 +53,8 @@ endif
 EXT_FLAGS:=$(ARCHFLAGS)
 
 ifeq ($(TARGET_OS),win32)
-INCLUDES := -I$(MINGWDIR)/include -I.
-LDFLAGS  := -L$(MINGWDIR)/lib -lwsock32 -mconsole
+INCLUDES := -I$(W32STUFF) -I.
+LDFLAGS  := -lwsock32 -mconsole
 endif
 ifeq ($(TARGET_OS),unix)
 INCLUDES := -I.

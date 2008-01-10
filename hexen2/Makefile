@@ -1,5 +1,5 @@
 # GNU Makefile for (gl)hexen2 client/server binaries using GCC.
-# $Header: /home/ozzie/Download/0000/uhexen2/hexen2/Makefile,v 1.82 2007-11-12 14:01:29 sezero Exp $
+# $Header: /home/ozzie/Download/0000/uhexen2/hexen2/Makefile,v 1.83 2008-01-10 17:21:06 sezero Exp $
 #
 # Type "make help" to see the valid targets.
 #
@@ -223,13 +223,13 @@ EXT_FLAGS:=$(ARCHFLAGS)
 
 ifeq ($(TARGET_OS),win32)
 # Main win32 specific includes and flags
-INCLUDES:= -I$(UHEXEN2_TOP)/w32stuff/dxsdk/inc -I$(MINGWDIR)/include -I.
-LDFLAGS := -L$(MINGWDIR)/lib -lwinmm -lwsock32 -mwindows
+INCLUDES:= -I$(W32STUFF) -I$(W32STUFF)/dxsdk/inc -I.
+LDFLAGS := -lwinmm -lwsock32 -mwindows
 endif
 ifeq ($(TARGET_OS),dos)
 # Main dos specific includes and flags
-INCLUDES:= -I$(DJGPPDIR)/include -I.
-LDFLAGS := -L$(DJGPPDIR)/lib -lc -lgcc -lm
+INCLUDES:= -I.
+LDFLAGS := -lc -lgcc -lm
 ifndef DEBUG
 LDFLAGS := $(LDFLAGS) -s
 endif
@@ -329,7 +329,7 @@ endif
 %.o: %.asm
 	$(NASM) $(NASMFLAGS) -o $@ $<
 %.o: %.rc
-	$(WINDRES) $(EXT_FLAGS) --include=$(MINGWDIR)/include --output=coff -o $@ $<
+	$(WINDRES) $(EXT_FLAGS) --output=coff -o $@ $<
 
 # Objects
 

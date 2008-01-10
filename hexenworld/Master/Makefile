@@ -1,5 +1,5 @@
 # GNU Makefile for hexenworld master server using GCC.
-# $Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Master/Makefile,v 1.21 2007-10-25 09:06:51 sezero Exp $
+# $Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Master/Makefile,v 1.22 2008-01-10 17:21:06 sezero Exp $
 #
 # if building a debug version :		make DEBUG=1 [other stuff]
 #
@@ -53,8 +53,8 @@ endif
 EXT_FLAGS:=$(ARCHFLAGS)
 
 ifeq ($(TARGET_OS),win32)
-INCLUDES := -I$(MINGWDIR)/include -I.
-LDFLAGS  := -L$(MINGWDIR)/lib -lwsock32 -lwinmm -mconsole
+INCLUDES := -I$(W32STUFF) -I.
+LDFLAGS  := -lwsock32 -lwinmm -mconsole
 endif
 ifeq ($(TARGET_OS),unix)
 INCLUDES := -I.

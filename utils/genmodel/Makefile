@@ -1,5 +1,5 @@
 # GNU Makefile for hexen2 genmodel tool using GCC.
-# $Header: /home/ozzie/Download/0000/uhexen2/utils/genmodel/Makefile,v 1.16 2007-10-25 09:06:52 sezero Exp $
+# $Header: /home/ozzie/Download/0000/uhexen2/utils/genmodel/Makefile,v 1.17 2008-01-10 17:21:07 sezero Exp $
 #
 # if building a debug version :		make DEBUG=1 [other stuff]
 #
@@ -49,7 +49,7 @@ endif
 # Other build flags
 
 ifeq ($(TARGET_OS),win32)
-INCLUDES:= -I$(MINGWDIR)/include -I$(COMMONDIR)
+INCLUDES:= -I$(W32STUFF) -I$(COMMONDIR)
 LDFLAGS := -mconsole
 LDLIBS  :=
 endif
