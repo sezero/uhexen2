@@ -1,8 +1,8 @@
-/* $Id: systest.c,v 1.2 2007-10-25 21:35:49 sezero Exp $
+/* $Id: systest.c,v 1.3 2008-01-10 16:00:20 sezero Exp $
  * stupid test tool that reports the type sizes and
  * their alignment offsets in structures, and the byte
  * order as detected at runtime and compile time.
-*/
+ */
 
 /*
  * endianness stuff: <sys/types.h> is supposed
@@ -15,6 +15,18 @@
 
 
 #include <sys/types.h>
+
+#include <stddef.h>
+#include <limits.h>
+
+#ifndef _MSC_VER
+#include <stdint.h>
+#endif
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdarg.h>
+#include <string.h>
 
 /* include more if it didn't work: */
 #if !defined(BYTE_ORDER)
@@ -107,7 +119,7 @@
 # elif defined(_WIN32) || defined(_WIN64)	/* windows : */
 #	define	BYTE_ORDER	LITTLE_ENDIAN	/* should be safe */
 
-# elif defined(__hppa__) || defined(__sparc__)	/* others: check! */
+# elif defined(__hppa) || defined(__hppa__) || defined(__sparc) || defined(__sparc__)	/* others: check! */
 #	define	BYTE_ORDER	BIG_ENDIAN
 
 # endif
@@ -208,11 +220,6 @@ struct align_test_longdouble
 	char dummy; long double test;
 };
 
-struct align_test_charptr
-{
-	char dummy; char *test;
-};
-
 struct align_test_voidptr
 {
 	char dummy; void *test;
@@ -233,7 +240,6 @@ int main (void)
 	printf ("float : %d, packing offset: %d\n", (int)sizeof(float), (int)(sizeof(struct align_test_float) - sizeof(float)));
 	printf ("double: %d, packing offset: %d\n", (int)sizeof(double), (int)(sizeof(struct align_test_double) - sizeof(double)));
 	printf ("long double: %d, packing offset: %d\n", (int)sizeof(long double), (int)(sizeof(struct align_test_longdouble) - sizeof(long double)));
-	printf ("PTR (char*): %d, packing offset: %d\n", (int)sizeof(char *), (int)(sizeof(struct align_test_charptr) - sizeof(char *)));
 	printf ("PTR (void*): %d, packing offset: %d\n", (int)sizeof(void *), (int)(sizeof(struct align_test_voidptr) - sizeof(void *)));
 
 	printf ("ENDIANNESS (BYTE ORDER):\n");
