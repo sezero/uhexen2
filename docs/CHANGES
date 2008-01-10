@@ -3,6 +3,16 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2008-01-10 (CVS):
+    * removed an obsoleted comment from arch headers.
+    * updated my systest tool source.
+    * added msinttypes stuff for M$VC (from msinttypes.googlecode.com)
+    * added msinttypes/stdint.h conditional include for M$VC.
+    * makefiles: added our locl w32stuff directory to the includes path so
+      that include msinttypes/stdint.h works. removed unnecessary mingwdir
+      and djgppdir paths.
+    * updated release date to 2007-01-10.
+
 2007-12-30 / 2008-01-04 (CVS):
     * small clean-ups in snd_mix.c and snd_win.c
     * console line editing: made insert mode the default (Steven's request).
