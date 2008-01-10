@@ -6,7 +6,7 @@
 	- shouldn't depend on compiler.h, q_stdinc.h, or
 	  any other headers
 
-	$Id: arch_def.h,v 1.8 2007-12-14 16:41:14 sezero Exp $
+	$Id: arch_def.h,v 1.9 2008-01-10 15:30:41 sezero Exp $
 
 	Copyright (C) 2007  O.Sezer <sezero@users.sourceforge.net>
 
@@ -85,9 +85,7 @@
 #   endif
 
 #elif defined(__MORPHOS__) || defined(__AMIGA__)
-/* FIXME: Since these aren't classified as PLATFORM_UNIX,
-   several things may well be broken in all of the uhexen2
-   tree. Particularly, search for __MORPHOS__ ifdefs... */
+
 #   if !defined(PLATFORM_AMIGA)
 #	define	PLATFORM_AMIGA		1
 #   endif
