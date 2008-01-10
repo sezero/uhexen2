@@ -6,10 +6,10 @@
 		for byte order use q_endian.h,
 		for math stuff use mathlib.h.
 
-	$Id: q_stdinc.h,v 1.2 2008-01-10 17:10:41 sezero Exp $
+	$Id: q_stdinc.h,v 1.3 2008-01-10 21:25:08 sezero Exp $
 
 	Copyright (C) 1996-1997  Id Software, Inc.
-	Copyright (C) 2007  O.Sezer <sezero@users.sourceforge.net>
+	Copyright (C) 2007-2008  O.Sezer <sezero@users.sourceforge.net>
 
 	This program is free software; you can redistribute it and/or
 	modify it under the terms of the GNU General Public License
@@ -45,16 +45,16 @@
    sizeof (short)	== 2
    sizeof (int)		== 4
    sizeof (float)	== 4
-   sizeof (long)	== 4/8
-   sizeof (*ptr)	== 4/8
+   sizeof (long)	== 4 / 8
+   sizeof (pointer *)	== 4 / 8
    For this, we need stdint.h (or inttypes.h)
    FIXME: On some platforms, only inttypes.h is available.
    FIXME: Properly replace certain short and int usage
 	  with int16_t and int32_t.
  */
-#ifdef _MSC_VER
+#if defined(_MSC_VER)
 #include "msinttypes/stdint.h"
-#else
+#else	/* not M$ compiler: */
 #include <stdint.h>
 #endif
 
@@ -88,6 +88,18 @@
 #define	Q_MINLONG	((int)0x80000000)
 #define	Q_MINFLOAT	((int)0x7fffffff)
 
+/* Make sure the types really have the right
+ * sizes: These macros are from SDL headers.
+ */
+#define	COMPILE_TIME_ASSERT(name, x)	\
+	typedef int dummy_ ## name[(x) * 2 - 1]
+
+COMPILE_TIME_ASSERT(char, sizeof(char) == 1);
+COMPILE_TIME_ASSERT(float, sizeof(float) == 4);
+COMPILE_TIME_ASSERT(long, sizeof(long) >= 4);
+COMPILE_TIME_ASSERT(int, sizeof(int) == 4);
+COMPILE_TIME_ASSERT(short, sizeof(short) == 2);
+
 
 /*==========================================================================*/
 
@@ -95,7 +107,7 @@ typedef unsigned char		byte;
 
 #undef true
 #undef false
-#ifdef __cplusplus
+#if defined(__cplusplus)
 typedef bool	qboolean;
 #else
 typedef	enum	{false, true} qboolean;
@@ -120,11 +132,11 @@ typedef int	fixed16_t;
 /*==========================================================================*/
 
 /* compatibility with M$ types */
-#if !defined(_WIN32) && !defined(_WIN64)
+#if !(defined(_WIN32) || defined(_WIN64))
 
-#define	APIENTRY
 #define	PASCAL
 #define	FAR
+#define	APIENTRY
 
 #endif	/* ! WINDOWS */
 
