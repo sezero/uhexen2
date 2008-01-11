@@ -2,7 +2,7 @@
 	sys_main.c
 	main loop and system interface
 
-	$Id: sys_main.c,v 1.44 2007-12-14 16:41:13 sezero Exp $
+	$Id: sys_main.c,v 1.45 2008-01-11 19:56:56 sezero Exp $
 */
 
 #include "q_stdinc.h"
@@ -232,7 +232,7 @@ int Sys_mkdir (const char *path)
 	return rc;
 }
 
-static int Sys_GetUserdir (char *buff, size_t path_len)
+static int Sys_GetUserdir (char *dst, size_t dstsize)
 {
 	char		*home_dir = NULL;
 #if USE_PASSWORD_FILE
@@ -249,11 +249,11 @@ static int Sys_GetUserdir (char *buff, size_t path_len)
 	if (home_dir == NULL)
 		return 1;
 
-	if (strlen(home_dir) + strlen(HWM_USERDIR) + 12 > path_len)
+	if (strlen(home_dir) + strlen(HWM_USERDIR) + 12 > dstsize)
 		return 1;
 
-	q_snprintf (buff, path_len, "%s/%s", home_dir, HWM_USERDIR);
-	return Sys_mkdir(buff);
+	q_snprintf (dst, dstsize, "%s/%s", home_dir, HWM_USERDIR);
+	return Sys_mkdir(dst);
 }
 #endif
 
@@ -289,8 +289,7 @@ int main (int argc, char **argv)
 	com_argc = argc;
 
 #ifdef PLATFORM_UNIX
-// userdir stuff
-	if (Sys_GetUserdir(userdir,sizeof(userdir)) != 0)
+	if (Sys_GetUserdir(userdir, sizeof(userdir)) != 0)
 		Sys_Error ("Couldn't determine userspace directory");
 	printf ("Userdir: %s\n", userdir);
 	if (q_snprintf(filters_file, sizeof(filters_file), "%s/filters.ini", userdir) >= (int)sizeof(filters_file))

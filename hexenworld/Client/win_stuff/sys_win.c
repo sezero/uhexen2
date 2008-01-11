@@ -2,7 +2,7 @@
 	sys_win.c
 	Win32 system interface code
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/win_stuff/sys_win.c,v 1.50 2007-12-20 21:45:33 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/win_stuff/sys_win.c,v 1.51 2008-01-11 19:56:56 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -312,6 +312,26 @@ void Sys_SendKeyEvents (void)
 }
 
 
+static int Sys_GetBasedir (char *argv0, char *dst, size_t dstsize)
+{
+	char		*tmp;
+
+	if (GetCurrentDirectory(dstsize, dst) == 0)
+		return -1;
+
+	tmp = dst;
+	while (*tmp != 0)
+		tmp++;
+	while (*tmp == 0 && tmp != dst)
+	{
+		--tmp;
+		if (tmp != dst && (*tmp == '/' || *tmp == '\\'))
+			*tmp = 0;
+	}
+
+	return 0;
+}
+
 /*
 ==============================================================================
 
@@ -338,11 +358,11 @@ static quakeparms_t	parms;
 
 int WINAPI WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
 {
-	int				i;
-	double			time, oldtime, newtime;
+	int		i;
+	double		time, oldtime, newtime;
 	MEMORYSTATUS	lpBuffer;
 #if !defined(NO_SPLASHES)
-	RECT			rect;
+	RECT		rect;
 #endif	/* NO_SPLASHES */
 
 	/* previous instances do not exist in Win32 */
@@ -356,11 +376,8 @@ int WINAPI WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 	GlobalMemoryStatus (&lpBuffer);
 
 	memset (cwd, 0, sizeof(cwd));
-	if (!GetCurrentDirectory (sizeof(cwd), cwd))
+	if (Sys_GetBasedir(NULL, cwd, sizeof(cwd)) != 0)
 		Sys_Error ("Couldn't determine current directory");
-
-	if (cwd[strlen(cwd)-1] == '/')
-		cwd[strlen(cwd)-1] = 0;
 
 	memset (&parms, 0, sizeof(parms));
 	parms.basedir = cwd;

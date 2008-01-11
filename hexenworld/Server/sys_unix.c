@@ -2,7 +2,7 @@
 	sys_unix.c
 	Unix system interface code
 
-	$Id: sys_unix.c,v 1.50 2007-12-20 21:45:34 sezero Exp $
+	$Id: sys_unix.c,v 1.51 2008-01-11 19:56:56 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -262,8 +262,28 @@ char *Sys_ConsoleInput (void)
 }
 
 
+static int Sys_GetBasedir (char *argv0, char *dst, size_t dstsize)
+{
+	char	*tmp;
+
+	if (getcwd(dst, dstsize - 1) == NULL)
+		return -1;
+
+	tmp = dst;
+	while (*tmp != 0)
+		tmp++;
+	while (*tmp == 0 && tmp != dst)
+	{
+		--tmp;
+		if (tmp != dst && *tmp == '/')
+			*tmp = 0;
+	}
+
+	return 0;
+}
+
 #if DO_USERDIRS
-static int Sys_GetUserdir (char *buff, size_t path_len)
+static int Sys_GetUserdir (char *dst, size_t dstsize)
 {
 	char		*home_dir = NULL;
 #if USE_PASSWORD_FILE
@@ -280,14 +300,15 @@ static int Sys_GetUserdir (char *buff, size_t path_len)
 	if (home_dir == NULL)
 		return 1;
 
-//	what would be a maximum path for a file in the user's directory...
-//	$HOME/AOT_USERDIR/game_dir/dirname1/dirname2/dirname3/filename.ext
-//	still fits in the MAX_OSPATH == 256 definition, but just in case :
-	if (strlen(home_dir) + strlen(AOT_USERDIR) + 50 > path_len)
+/* what would be a maximum path for a file in the user's directory...
+ * $HOME/AOT_USERDIR/game_dir/dirname1/dirname2/dirname3/filename.ext
+ * still fits in the MAX_OSPATH == 256 definition, but just in case :
+ */
+	if (strlen(home_dir) + strlen(AOT_USERDIR) + 50 > dstsize)
 		return 1;
 
-	q_snprintf (buff, path_len, "%s/%s", home_dir, AOT_USERDIR);
-	return Sys_mkdir(buff);
+	q_snprintf (dst, dstsize, "%s/%s", home_dir, AOT_USERDIR);
+	return Sys_mkdir(dst);
 }
 #endif	/* DO_USERDIRS */
 
@@ -318,7 +339,6 @@ int main (int argc, char **argv)
 {
 	int			i;
 	double		newtime, time, oldtime;
-	char		*tmp;
 	struct timeval	timeout;
 	fd_set		fdset;
 
@@ -343,22 +363,12 @@ int main (int argc, char **argv)
 	}
 
 	memset (cwd, 0, sizeof(cwd));
-	if ( getcwd (cwd, sizeof(cwd)-1) == NULL )
+	if (Sys_GetBasedir(argv[0], cwd, sizeof(cwd)) != 0)
 		Sys_Error ("Couldn't determine current directory");
-
-	tmp = cwd;
-	while (*tmp != 0)
-		tmp++;
-	while (*tmp == 0)
-	{
-		--tmp;
-		if (*tmp == '/')
-			*tmp = 0;
-	}
 
 #if DO_USERDIRS
 	memset (userdir, 0, sizeof(userdir));
-	if (Sys_GetUserdir(userdir,sizeof(userdir)) != 0)
+	if (Sys_GetUserdir(userdir, sizeof(userdir)) != 0)
 		Sys_Error ("Couldn't determine userspace directory");
 #endif
 

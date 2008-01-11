@@ -3,7 +3,7 @@
 	DOS system interface code.
 	from quake1 source with adaptations for uhexen2.
 
-	$Id: sys_dos.c,v 1.5 2007-12-20 21:45:32 sezero Exp $
+	$Id: sys_dos.c,v 1.6 2008-01-11 19:56:55 sezero Exp $
 
 	Copyright (C) 1996-1997  Id Software, Inc.
 
@@ -914,6 +914,27 @@ static void Sys_DefaultExceptionHandler (int whatever)
 }
 
 
+static int Sys_GetBasedir (char *argv0, char *dst, size_t dstsize)
+{
+	char	*tmp;
+
+	if (getcwd(dst, dstsize - 1) == NULL)
+		return -1;
+
+	tmp = dst;
+	while (*tmp != 0)
+		tmp++;
+	while (*tmp == 0 && tmp != dst)
+	{
+		--tmp;
+		if (tmp != dst && (*tmp == '/' || *tmp == '\\'))
+			*tmp = 0;
+	}
+
+	return 0;
+}
+
+
 static void PrintVersion (void)
 {
 #if HOT_VERSION_BETA
@@ -936,7 +957,6 @@ static char	cwd[MAX_OSPATH];
 int main (int argc, char **argv)
 {
 	double		time, oldtime, newtime;
-	char		*tmp;
 
 	PrintVersion();
 
@@ -954,18 +974,8 @@ int main (int argc, char **argv)
 	dos_error_func = Sys_Error;
 
 	memset (cwd, 0, sizeof(cwd));
-	if ( getcwd (cwd, sizeof(cwd)-1) == NULL )
+	if (Sys_GetBasedir(argv[0], cwd, sizeof(cwd)) != 0)
 		Sys_Error ("Couldn't determine current directory");
-
-	tmp = cwd;
-	while (*tmp != 0)
-		tmp++;
-	while (*tmp == 0)
-	{
-		--tmp;
-		if (*tmp == '\\' || *tmp == '/')
-			*tmp = 0;
-	}
 
 	/* initialize the host params */
 	memset (&quakeparms, 0, sizeof(quakeparms));

@@ -2,7 +2,7 @@
 	sys_unix.c
 	Unix system interface code
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/sys_unix.c,v 1.95 2007-12-22 12:20:42 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/sys_unix.c,v 1.96 2008-01-11 19:56:56 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -283,8 +283,95 @@ void Sys_SendKeyEvents (void)
 	IN_SendKeyEvents();
 }
 
+#ifdef __MACOSX__
+/*
+=================
+Sys_StripAppBundle
+
+If passed dir is suffixed with the directory structure of a Mac OS X
+.app bundle, the .app directory structure is stripped off the end and
+the result is returned. If not, dir is returned untouched. Taken from
+the quake3 project at icculus.org.
+
+For Mac OS X, we package the game like this:
+
+	Hexen II	( --> the holder directory)
+	|
+	 - Hexen II gl.app (bundle dir for the opengl application)
+	|  |
+	|   - Contents
+	|  |  |
+	|  |   - MacOS	(the actual binary resides here)
+	|  |
+	|   - Resources (icons here)
+	|
+	 - data1	( --> game data directories)
+	|
+	 - portals	( ditto)
+
+=================
+*/
+static char *Sys_StripAppBundle (char *dir)
+{
+	static char	osx_path[MAX_OSPATH];
+
+	q_strlcpy (osx_path, dir, sizeof(osx_path));
+	if (strcmp(basename(osx_path), "MacOS"))
+		return dir;
+	q_strlcpy (osx_path, dirname(osx_path), sizeof(osx_path));
+	if (strcmp(basename(osx_path), "Contents"))
+		return dir;
+	q_strlcpy (osx_path, dirname(osx_path), sizeof(osx_path));
+	if (!strstr(basename(osx_path), ".app"))
+		return dir;
+	q_strlcpy (osx_path, dirname(osx_path), sizeof(osx_path));
+	return osx_path;
+}
+#endif	/* __MACOSX__ */
+
+static int Sys_GetBasedir (char *argv0, char *dst, size_t dstsize)
+{
+	char	*tmp;
+
+#ifdef __MACOSX__
+	if (realpath(argv0, dst) == NULL)
+	{
+		if (getcwd(dst, dstsize - 1) == NULL)
+			return -1;
+	}
+	else
+	{
+		/* strip off the binary name */
+		tmp = strdup (dst);
+		if (!tmp)
+			return -1;
+		q_strlcpy (dst, dirname(tmp), dstsize);
+		free (tmp);
+	}
+
+	tmp = Sys_StripAppBundle(dst);
+	if (tmp != dst)
+		q_strlcpy (dst, tmp, dstsize);
+#else
+	if (getcwd(dst, dstsize - 1) == NULL)
+		return -1;
+
+	tmp = dst;
+	while (*tmp != 0)
+		tmp++;
+	while (*tmp == 0 && tmp != dst)
+	{
+		--tmp;
+		if (tmp != dst && *tmp == '/')
+			*tmp = 0;
+	}
+#endif
+
+	return 0;
+}
+
 #if DO_USERDIRS
-static int Sys_GetUserdir (char *buff, size_t path_len)
+static int Sys_GetUserdir (char *dst, size_t dstsize)
 {
 	char		*home_dir = NULL;
 #if USE_PASSWORD_FILE
@@ -301,14 +388,15 @@ static int Sys_GetUserdir (char *buff, size_t path_len)
 	if (home_dir == NULL)
 		return 1;
 
-//	what would be a maximum path for a file in the user's directory...
-//	$HOME/AOT_USERDIR/game_dir/dirname1/dirname2/dirname3/filename.ext
-//	still fits in the MAX_OSPATH == 256 definition, but just in case :
-	if (strlen(home_dir) + strlen(AOT_USERDIR) + 50 > path_len)
+/* what would be a maximum path for a file in the user's directory...
+ * $HOME/AOT_USERDIR/game_dir/dirname1/dirname2/dirname3/filename.ext
+ * still fits in the MAX_OSPATH == 256 definition, but just in case :
+ */
+	if (strlen(home_dir) + strlen(AOT_USERDIR) + 50 > dstsize)
 		return 1;
 
-	q_snprintf (buff, path_len, "%s/%s", home_dir, AOT_USERDIR);
-	return Sys_mkdir(buff);
+	q_snprintf (dst, dstsize, "%s/%s", home_dir, AOT_USERDIR);
+	return Sys_mkdir(dst);
 }
 #endif	/* DO_USERDIRS */
 
@@ -376,52 +464,6 @@ static void PrintHelp (const char *name)
 	printf ("\n");
 }
 
-#ifdef __MACOSX__
-/*
-=================
-Sys_StripAppBundle
-
-If passed dir is suffixed with the directory structure of a Mac OS X
-.app bundle, the .app directory structure is stripped off the end and
-the result is returned. If not, dir is returned untouched. Taken from
-the quake3 project at icculus.org.
-
-For Mac OS X, we package the game like this:
-
-	Hexen II	( --> the holder directory)
-	|
-	 - Hexen II gl.app (bundle dir for the opengl application)
-	|  |
-	|   - Contents
-	|  |  |
-	|  |   - MacOS	(the actual binary resides here)
-	|  |
-	|   - Resources (icons here)
-	|
-	 - data1	( --> game data directories)
-	|
-	 - portals	( ditto)
-
-=================
-*/
-static char *Sys_StripAppBundle (char *dir)
-{
-	static char	osx_path[MAX_OSPATH];
-
-	q_strlcpy (osx_path, dir, sizeof(osx_path));
-	if (strcmp(basename(osx_path), "MacOS"))
-		return dir;
-	q_strlcpy (osx_path, dirname(osx_path), sizeof(osx_path));
-	if (strcmp(basename(osx_path), "Contents"))
-		return dir;
-	q_strlcpy (osx_path, dirname(osx_path), sizeof(osx_path));
-	if (!strstr(basename(osx_path), ".app"))
-		return dir;
-	q_strlcpy (osx_path, dirname(osx_path), sizeof(osx_path));
-	return osx_path;
-}
-#endif	/* __MACOSX__ */
-
 /*
 ===============================================================================
 
@@ -440,7 +482,6 @@ int main (int argc, char **argv)
 {
 	int			i;
 	double		time, oldtime, newtime;
-	char		*tmp;
 	const SDL_version *sdl_version;
 
 	PrintVersion();
@@ -464,38 +505,12 @@ int main (int argc, char **argv)
 	}
 
 	memset (cwd, 0, sizeof(cwd));
-#ifdef __MACOSX__
-	if ( realpath(argv[0], cwd) == NULL )
-	{
-		if ( getcwd (cwd, sizeof(cwd)-1) == NULL )
-			Sys_Error ("Couldn't determine current directory");
-	}
-	else
-	{
-		// strip off the binary name
-		q_strlcpy (cwd, dirname(cwd), sizeof(cwd));
-	}
-
-	tmp = Sys_StripAppBundle(cwd);
-	q_strlcpy (cwd, tmp, sizeof(cwd));
-#else
-	if ( getcwd (cwd, sizeof(cwd)-1) == NULL )
+	if (Sys_GetBasedir(argv[0], cwd, sizeof(cwd)) != 0)
 		Sys_Error ("Couldn't determine current directory");
-
-	tmp = cwd;
-	while (*tmp != 0)
-		tmp++;
-	while (*tmp == 0)
-	{
-		--tmp;
-		if (*tmp == '/')
-			*tmp = 0;
-	}
-#endif
 
 #if DO_USERDIRS
 	memset (userdir, 0, sizeof(userdir));
-	if (Sys_GetUserdir(userdir,sizeof(userdir)) != 0)
+	if (Sys_GetUserdir(userdir, sizeof(userdir)) != 0)
 		Sys_Error ("Couldn't determine userspace directory");
 #endif
 
@@ -520,8 +535,7 @@ int main (int argc, char **argv)
 	Sys_Printf("Found SDL version %i.%i.%i\n",sdl_version->major,sdl_version->minor,sdl_version->patch);
 	if (SDL_VERSIONNUM(sdl_version->major,sdl_version->minor,sdl_version->patch) < SDL_REQUIREDVERSION)
 	{	//reject running under SDL versions older than what is stated in sdl_inc.h
-		Sys_Printf("You need at least v%d.%d.%d of SDL to run this game\n",SDL_MIN_X,SDL_MIN_Y,SDL_MIN_Z);
-		exit (1);
+		Sys_Error("You need at least v%d.%d.%d of SDL to run this game\n",SDL_MIN_X,SDL_MIN_Y,SDL_MIN_Z);
 	}
 
 	parms.memsize = STD_MEM_ALLOC;

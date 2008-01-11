@@ -2,7 +2,7 @@
 	main.c
 	hexen2 launcher: main loop
 
-	$Id: main.c,v 1.33 2007-10-13 07:05:29 sezero Exp $
+	$Id: main.c,v 1.34 2008-01-11 19:56:56 sezero Exp $
 
 	This program is free software; you can redistribute it and/or
 	modify it under the terms of the GNU General Public License
@@ -117,12 +117,12 @@ static void Sys_FindBinDir (char *filename, char *out)
 	while (*tmp)
 	{
 		if (*tmp == '/')
-			last = tmp+1;
+			last = tmp + 1;
 		tmp++;
 	}
 
 	printf("Launcher : %s\n", last);
-	if (last > cmd && last-1 != cmd)
+	if (last > cmd && last - 1 != cmd)
 		last--;		/* exclude the trailing slash */
 	while (cmd < last)
 		*out++ = *cmd++;
@@ -139,7 +139,7 @@ static int Sys_mkdir (char *path)
 	return rc;
 }
 
-static int Sys_GetUserdir (char *buff, size_t path_len)
+static int Sys_GetUserdir (char *dst, size_t dstsize)
 {
 	char		*home_dir = NULL;
 #if USE_PASSWORD_FILE
@@ -156,14 +156,14 @@ static int Sys_GetUserdir (char *buff, size_t path_len)
 	if (home_dir == NULL)
 		return 1;
 
-	if (strlen(home_dir) + strlen(AOT_USERDIR) + strlen(LAUNCHER_CONFIG_FILE) + 2 >= path_len)
+	if (strlen(home_dir) + strlen(AOT_USERDIR) + strlen(LAUNCHER_CONFIG_FILE) + 2 >= dstsize)
 	{
 		printf ("Insufficient buffer size for user directory name\n");
 		return 1;
 	}
 
-	snprintf (buff, path_len, "%s/%s", home_dir, AOT_USERDIR);
-	return Sys_mkdir(buff);
+	snprintf (dst, dstsize, "%s/%s", home_dir, AOT_USERDIR);
+	return Sys_mkdir(dst);
 }
 
 
