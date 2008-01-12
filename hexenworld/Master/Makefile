@@ -1,5 +1,5 @@
 # GNU Makefile for hexenworld master server using GCC.
-# $Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Master/Makefile,v 1.22 2008-01-10 17:21:06 sezero Exp $
+# $Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Master/Makefile,v 1.23 2008-01-12 08:15:46 sezero Exp $
 #
 # if building a debug version :		make DEBUG=1 [other stuff]
 #
@@ -67,7 +67,7 @@ endif
 	$(CC) -c $(CFLAGS) $(EXT_FLAGS) $(INCLUDES) -o $@ $<
 
 # Objects
-MASTEROBJS = q_endian.o sizebuf.o msg_io.o cmds.o common.o net.o master.o sys_main.o
+MASTEROBJS = sizebuf.o msg_io.o cmds.o common.o net.o master.o sys_main.o
 
 # Targets
 default: $(BINARY)

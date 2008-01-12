@@ -2,7 +2,7 @@
 	mst_defs.h
 	common definitions for hexenworld master server
 
-	$Id: defs.h,v 1.34 2007-12-14 16:41:13 sezero Exp $
+	$Id: defs.h,v 1.35 2008-01-12 08:15:46 sezero Exp $
 */
 
 #ifndef __HWMASTER_DEFS
@@ -42,7 +42,6 @@
 //=============================================================================
 // Includes
 
-#include "q_endian.h"
 #include "sizebuf.h"
 #include "msg_io.h"
 #include "protocol.h"

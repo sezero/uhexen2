@@ -2,12 +2,13 @@
 	hwmaster.c
 	main master server program
 
-	$Id: master.c,v 1.5 2007-12-14 16:41:13 sezero Exp $
+	$Id: master.c,v 1.6 2008-01-12 08:15:46 sezero Exp $
 */
 
 #include "q_stdinc.h"
 #include "compiler.h"
 #include "arch_def.h"
+#include "net_sys.h"
 #include "defs.h"
 
 #if defined(PLATFORM_WINDOWS) || defined(PLATFORM_DOS)
@@ -122,10 +123,10 @@ static void FL_FilterAdd (void)
 	NET_StringToAdr(Cmd_Argv(3+argv_index_add), &to);
 
 	if (to.port == 0)
-		from.port = BigShort(PORT_SERVER);
+		from.port = htons(PORT_SERVER);
 
 	if (from.port == 0)
-		from.port = BigShort(PORT_SERVER);
+		from.port = htons(PORT_SERVER);
 
 	if ( !(filter = FL_Find(from)) )
 	{
