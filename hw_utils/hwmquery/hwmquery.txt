@@ -1,4 +1,4 @@
-HWMQUERY v0.2
+HWMQUERY v0.2.1
 
 Usage:  hwmquery <address>[:port]
 
@@ -11,7 +11,7 @@ BUGS
 None. Please report, if you find any.
 
 COPYRIGHT
-Copyright (C) 2006-2007 O.Sezer <sezero@users.sourceforge.net>
+Copyright (C) 2006-2008 O.Sezer <sezero@users.sourceforge.net>
 
 HWMQUERY is free software;  you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by the
