@@ -3,6 +3,25 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2008-01-12 (CVS):
+    * q_stdinc.h: added compile time assert macros in order to make sure
+      certain types (ie. char, float, int and long) have the right sizes.
+      the macro was taken from recent SDL headers. some minor formatting
+      cleanup while we were there.
+    * tidied up procedures determining the cwd and the userdir.
+    * removed q_endian stuff from hwmaster. its only use was doing BigShort
+      on a server port constant and it is now done by htons.
+    * incremented several version numbers.
+    * added detection of byte order (endianism) at runtime as a new compile
+      time option. it is off by default, because compile time decision is a
+      little bit faster on old hardware. edit the file q_endian.h in order to
+      change it. compile time byte order is now checked against the runtime
+      detected order before doing anything else.
+    * launcher/config_file.c: minor clean-up.
+    * launcher: better separation of ui and non-ui parts.
+    * launcher: added ui_error for displaying error messages when the gui
+      is inactive.
+
 2008-01-10 (CVS):
     * removed an obsoleted comment from arch headers.
     * updated my systest tool source.
