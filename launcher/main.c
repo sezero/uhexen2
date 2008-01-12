@@ -2,7 +2,7 @@
 	main.c
 	hexen2 launcher: main loop
 
-	$Id: main.c,v 1.36 2008-01-12 12:02:34 sezero Exp $
+	$Id: main.c,v 1.37 2008-01-12 14:45:39 sezero Exp $
 
 	This program is free software; you can redistribute it and/or
 	modify it under the terms of the GNU General Public License
@@ -25,6 +25,7 @@
 
 #include "common.h"
 #include "q_endian.h"
+#include <stdarg.h>
 
 #if USE_PASSWORD_FILE
 #include <pwd.h>
@@ -37,6 +38,24 @@
 
 char		basedir[MAX_OSPATH];
 char		userdir[MAX_OSPATH];
+
+static void
+   __attribute__((format(printf,2,3), noreturn))
+Sys_Error (int exitcode, const char *error, ...)
+{
+	va_list		argptr;
+	char		text[4096];
+
+	va_start (argptr, error);
+	vsnprintf (text, sizeof(text), error, argptr);
+	va_end (argptr);
+
+	fprintf(stderr, "%s\n", text);
+	ui_error (text);
+	ui_quit ();	/* shouldn't be necessary.. */
+
+	exit (exitcode);
+}
 
 static char *Sys_SearchCommand (char *filename)
 {
@@ -70,10 +89,7 @@ static char *Sys_SearchCommand (char *filename)
 		}
 
 		if (n >= sizeof(buff))
-		{
-			printf ("Insufficient buffer size for pathnames\n");
 			return NULL;
-		}
 		strncpy(buff, path, n);
 
 		if (n && buff[n - 1] != '/')
@@ -81,20 +97,14 @@ static char *Sys_SearchCommand (char *filename)
 			buff[n++] = '/';
 		}
 
-		if (strlen(filename) >= sizeof(buff)-n)
-		{
-			printf ("Insufficient buffer size for pathnames\n");
+		if (strlen(filename) >= sizeof(buff) - n)
 			return NULL;
-		}
 		strcpy(buff + n, filename);
 
 		if (!access(buff, F_OK))
 		{
 			if ( realpath(buff, pathname) == NULL )
-			{
-				printf ("Unable to resolve pathname %s\n", buff);
 				return NULL;
-			}
 			return pathname;
 		}
 	}
@@ -108,10 +118,8 @@ static void Sys_FindBinDir (char *filename, char *out)
 
 	cmd = Sys_SearchCommand (filename);
 	if (cmd == NULL)
-	{
-		printf ("Unable to determine realpath for %s\n", filename);
-		exit (1);
-	}
+		Sys_Error (1, "Unable to determine realpath for %s", filename);
+
 	last = cmd;
 	tmp = cmd;
 
@@ -158,10 +166,7 @@ static int Sys_GetUserdir (char *dst, size_t dstsize)
 		return 1;
 
 	if (strlen(home_dir) + strlen(AOT_USERDIR) + strlen(LAUNCHER_CONFIG_FILE) + 2 >= dstsize)
-	{
-		printf ("Insufficient buffer size for user directory name\n");
 		return 1;
-	}
 
 	snprintf (dst, dstsize, "%s/%s", home_dir, AOT_USERDIR);
 	return Sys_mkdir(dst);
@@ -174,10 +179,7 @@ static void ValidateByteorder (void)
 
 	ByteOrder_Init ();
 	if (host_byteorder < 0)
-	{
-		fprintf(stderr, "Unsupported byte order.\n");
-		exit(1);
-	}
+		Sys_Error (1, "Unsupported byte order.");
 	switch (host_byteorder)
 	{
 	case BIG_ENDIAN:
@@ -213,8 +215,7 @@ static void ValidateByteorder (void)
 			tmp2 = endianism[3];
 			break;
 		}
-		fprintf (stderr, "Detected byte order %s doesn't match compiled %s order!\n", tmp, tmp2);
-		exit(1);
+		Sys_Error (1, "Detected byte order %s doesn't match compiled %s order!", tmp, tmp2);
 	}
 #endif	/* ENDIAN_RUNTIME_DETECT */
 }
@@ -239,10 +240,7 @@ int main (int argc, char **argv)
 
 	ret = Sys_GetUserdir(userdir, sizeof(userdir));
 	if (ret != 0)
-	{
-		fprintf (stderr, "Couldn't determine userspace directory\n");
-		exit (ret);
-	}
+		Sys_Error (ret, "Couldn't determine userspace directory");
 
 	memset(basedir, 0, sizeof(basedir));
 	Sys_FindBinDir (argv[0], basedir);

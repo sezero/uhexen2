@@ -2,7 +2,7 @@
 	gtk_ui.c
 	hexen2 launcher gtk+ interface
 
-	$Id: gtk_ui.c,v 1.8 2008-01-12 12:02:34 sezero Exp $
+	$Id: gtk_ui.c,v 1.9 2008-01-12 14:45:39 sezero Exp $
 
 	This program is free software; you can redistribute it and/or
 	modify it under the terms of the GNU General Public License
@@ -908,11 +908,7 @@ static void create_window1 (void)
 
 	MAIN_WINDOW = gtk_window_new (GTK_WINDOW_TOPLEVEL);
 	gtk_object_set_data (GTK_OBJECT(MAIN_WINDOW), "mywindow", MAIN_WINDOW);
-#ifndef DEMOBUILD
 	gtk_window_set_title (GTK_WINDOW(MAIN_WINDOW), "Hexen II Launcher " LAUNCHER_VERSION_STR);
-#else
-	gtk_window_set_title (GTK_WINDOW(MAIN_WINDOW), "Hexen2 demo Launcher " LAUNCHER_VERSION_STR);
-#endif
 	gtk_window_set_resizable (GTK_WINDOW(MAIN_WINDOW), FALSE);
 	gtk_widget_set_size_request(MAIN_WINDOW, 230, 354);
 
@@ -1746,7 +1742,8 @@ int ui_main (void)
 
 void ui_quit (void)
 {
-	gtk_main_quit ();
+	if (gtk_main_level ())
+		gtk_main_quit ();
 }
 
 void ui_pump (void)
@@ -1754,4 +1751,57 @@ void ui_pump (void)
 	while (gtk_events_pending ())
 		gtk_main_iteration ();
 }
+
+#if !defined(_H2L_USE_GTK1)
+void ui_error (const char *msg)
+{
+	GtkWidget	*dialog;
+
+	dialog = gtk_message_dialog_new (NULL, GTK_DIALOG_MODAL, GTK_MESSAGE_ERROR, GTK_BUTTONS_CLOSE, msg);
+	gtk_window_set_title (GTK_WINDOW(dialog), "Hexen II Launcher: Error");
+	gtk_dialog_run (GTK_DIALOG(dialog));
+	gtk_widget_destroy (dialog);
+}
+#else	/* gtk-1.2.x version, from loki_setup tools. */
+/* this looks butt-ugly, it's here for compatibility */
+static gboolean	user_responded;
+static void prompt_button_slot (GtkWidget* widget, gpointer func_data)
+{
+	user_responded = TRUE;
+}
+
+void ui_error (const char *msg)
+{
+	GtkWidget	*dialog;
+	GtkWidget	*label, *ok_button;
+
+	dialog = gtk_dialog_new();
+	label = gtk_label_new (NULL);
+	gtk_label_set_line_wrap (GTK_LABEL(label), TRUE);
+	gtk_label_set_text (GTK_LABEL(label), msg);
+	ok_button = gtk_button_new_with_label("Close");
+
+	/* Ensure that the dialog box is destroyed when the user clicks ok. */
+	gtk_signal_connect_object (GTK_OBJECT(ok_button), "clicked", GTK_SIGNAL_FUNC(prompt_button_slot), GTK_OBJECT(dialog));
+	gtk_signal_connect_object (GTK_OBJECT(dialog), "delete-event", GTK_SIGNAL_FUNC(prompt_button_slot), GTK_OBJECT(dialog));
+	gtk_container_add (GTK_CONTAINER (GTK_DIALOG(dialog)->action_area), ok_button);
+
+	/* Add the label, and show everything we've added to the dialog. */
+	gtk_container_add (GTK_CONTAINER(GTK_DIALOG(dialog)->vbox), label);
+	gtk_window_set_title (GTK_WINDOW(dialog), "Hexen II Launcher: Error");
+	gtk_window_set_modal (GTK_WINDOW(dialog), TRUE);
+	gtk_window_set_position (GTK_WINDOW(dialog), GTK_WIN_POS_CENTER);
+	gtk_widget_show_all (dialog);
+
+	user_responded = FALSE;
+
+	while (user_responded != TRUE)
+	{
+		usleep (10000);
+		gtk_main_iteration ();
+	}
+
+	gtk_widget_destroy(dialog);
+}
+#endif
 
