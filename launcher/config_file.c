@@ -2,7 +2,7 @@
 	config_file.c
 	hexen2 launcher config file handling
 
-	$Id: config_file.c,v 1.47 2007-08-09 06:08:22 sezero Exp $
+	$Id: config_file.c,v 1.48 2008-01-12 12:00:12 sezero Exp $
 
 	This program is free software; you can redistribute it and/or
 	modify it under the terms of the GNU General Public License
@@ -28,7 +28,7 @@
 #include "games.h"
 #include "config_file.h"
 
-// Default values for the options
+/* Default values for the options */
 char game_basedir[MAX_OSPATH]	= GAME_DATADIR;
 int basedir_nonstd	= 0;
 int destiny		= DEST_H2;
@@ -60,25 +60,26 @@ int heapsize		= HEAP_DEFAULT;
 int zonesize		= ZONE_DEFAULT;
 int use_extra		= 0;
 char ext_args[MAX_EXTARGS]	= "";
-#ifndef DEMOBUILD
+#if !defined(DEMOBUILD)
 int mp_support		= 0;
 int h2game		= 0;
 int hwgame		= 0;
-#endif
+#endif	/* ! DEMOBUILD */
 
 
-static FILE * open_config_file (char *flags)
+static FILE * open_config_file (const char *flags)
 {
 	FILE	*thefile;
-	char	*config_file_name =0;
+	char	*config_file_name;
 
 	config_file_name = (char *)calloc(MAX_OSPATH, sizeof(char));
+	if (!config_file_name)
+		return NULL;
 
 	snprintf (config_file_name, MAX_OSPATH, "%s/%s", userdir, LAUNCHER_CONFIG_FILE);
 	thefile = fopen(config_file_name, flags);
 	free (config_file_name);
-	// NULL check has to be done later
-	return thefile;
+	return thefile;	/* NULL check done by te caller. */
 }
 
 
@@ -100,11 +101,11 @@ int write_config_file (void)
 		fprintf(cfg_file, "game_basedir=\"%s\"\n",game_basedir);
 		fprintf(cfg_file, "basedir_nonstd=%d\n",basedir_nonstd);
 		fprintf(cfg_file, "destiny=%d\n",destiny);
-#ifndef DEMOBUILD
+#if !defined(DEMOBUILD)
 		fprintf(cfg_file, "h2game=%d\n",h2game);
 		fprintf(cfg_file, "hwgame=%d\n",hwgame);
 		fprintf(cfg_file, "mp_support=%d\n",mp_support);
-#endif
+#endif	/* ! DEMOBUILD */
 		fprintf(cfg_file, "opengl_support=%d\n",opengl_support);
 		fprintf(cfg_file, "fullscreen=%d\n",fullscreen);
 		fprintf(cfg_file, "resolution=%d\n",resolution);
@@ -162,7 +163,7 @@ int cfg_read_basedir (void)
 			{
 				if (buff[0] == '#')
 					continue;
-				// remove end-of-line characters
+				/* remove end-of-line characters */
 				tmp = buff;
 				while (*tmp)
 				{
@@ -170,13 +171,13 @@ int cfg_read_basedir (void)
 						*tmp = '\0';
 					tmp++;
 				}
-				// parse: whitespace isn't tolerated.
+				/* parse: whitespace isn't tolerated */
 				if (strstr(buff, "game_basedir=") == buff)
 				{
 					size_t		len;
-					tmp = buff+13;
+					tmp = buff + 13;
 					len = strlen(tmp);
-					// first and last chars must be quotes
+					/* first and last chars must be quotes */
 					if (tmp[0] != '\"' || tmp[len-1] != '\"' || len-2 >= sizeof(game_basedir))
 						continue;
 					memset (game_basedir, 0, sizeof(game_basedir));
@@ -224,7 +225,7 @@ int read_config_file (void)
 			{
 				if (buff[0] == '#')
 					continue;
-				// remove end-of-line characters
+				/* remove end-of-line characters */
 				tmp = buff;
 				while (*tmp)
 				{
@@ -232,7 +233,7 @@ int read_config_file (void)
 						*tmp = '\0';
 					tmp++;
 				}
-				// parse: whitespace isn't tolerated.
+				/* parse: whitespace isn't tolerated */
 				if (strstr(buff, "destiny=") == buff)
 				{
 					destiny = atoi(buff + 8);
@@ -241,7 +242,7 @@ int read_config_file (void)
 					if (!(gameflags & GAME_HEXENWORLD))
 						destiny = DEST_H2;
 				}
-#ifndef DEMOBUILD
+#if !defined(DEMOBUILD)
 				else if (strstr(buff, "h2game=") == buff)
 				{
 					h2game = atoi(buff + 7);
@@ -270,7 +271,7 @@ int read_config_file (void)
 					if (!(gameflags & GAME_PORTALS && gameflags & (GAME_REGISTERED|GAME_REGISTERED_OLD)))
 						mp_support = 0;
 				}
-#endif
+#endif	/* ! DEMOBUILD */
 				else if (strstr(buff, "opengl_support=") == buff)
 				{
 					opengl_support = atoi(buff + 15);
@@ -348,13 +349,13 @@ int read_config_file (void)
 				else if (strstr(buff, "gllibrary=") == buff)
 				{
 					size_t		len;
-					tmp = buff+10;
+					tmp = buff + 10;
 					len = strlen(tmp);
-					// first and last chars must be quotes
-					if (tmp[0] != '\"' || tmp[len-1] != '\"' || len-2 >= sizeof(gllibrary))
+					/* first and last chars must be quotes */
+					if (tmp[0] != '\"' || tmp[len - 1] != '\"' || len - 2 >= sizeof(gllibrary))
 						continue;
 					memset (gllibrary, 0, sizeof(gllibrary));
-					memcpy (gllibrary, tmp+1, len-2);
+					memcpy (gllibrary, tmp + 1, len - 2);
 				}
 				else if (strstr(buff, "sound=") == buff)
 				{
@@ -443,13 +444,13 @@ int read_config_file (void)
 				else if (strstr(buff, "ext_args=") == buff)
 				{
 					size_t		len;
-					tmp = buff+9;
+					tmp = buff + 9;
 					len = strlen(tmp);
-					// first and last chars must be quotes
-					if (tmp[0] != '\"' || tmp[len-1] != '\"' || len-2 >= sizeof(ext_args))
+					/* first and last chars must be quotes */
+					if (tmp[0] != '\"' || tmp[len - 1] != '\"' || len - 2 >= sizeof(ext_args))
 						continue;
 					memset (ext_args, 0, sizeof(ext_args));
-					memcpy (ext_args, tmp+1, len-2);
+					memcpy (ext_args, tmp + 1, len - 2);
 				}
 			}
 
