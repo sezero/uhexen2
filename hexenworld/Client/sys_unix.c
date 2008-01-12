@@ -2,7 +2,7 @@
 	sys_unix.c
 	Unix system interface code
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/sys_unix.c,v 1.96 2008-01-11 19:56:56 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/sys_unix.c,v 1.97 2008-01-12 09:46:17 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -530,6 +530,8 @@ int main (int argc, char **argv)
 
 	Sys_Printf("basedir is: %s\n", parms.basedir);
 	Sys_Printf("userdir is: %s\n", parms.userdir);
+
+	COM_ValidateByteorder ();
 
 	sdl_version = SDL_Linked_Version();
 	Sys_Printf("Found SDL version %i.%i.%i\n",sdl_version->major,sdl_version->minor,sdl_version->patch);

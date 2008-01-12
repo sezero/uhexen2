@@ -2,10 +2,10 @@
 	q_endian.c
 	byte order functions
 
-	$Id: q_endian.c,v 1.7 2007-12-14 16:41:16 sezero Exp $
+	$Id: q_endian.c,v 1.8 2008-01-12 09:46:18 sezero Exp $
 
 	Copyright (C) 1996-1997  Id Software, Inc.
-	Copyright (C) 2007  O.Sezer <sezero@users.sourceforge.net>
+	Copyright (C) 2007-2008  O.Sezer <sezero@users.sourceforge.net>
 
 	This program is free software; you can redistribute it and/or
 	modify it under the terms of the GNU General Public License
@@ -29,16 +29,31 @@
 #include "q_stdinc.h"
 #include "q_endian.h"
 
-#if defined(ENDIAN_ASSUMED_UNSAFE)
+#if ENDIAN_RUNTIME_DETECT
+#define	__byteswap_func	static
+#else
+#define	__byteswap_func
+#endif	/* ENDIAN_RUNTIME_DETECT */
+
+#if ENDIAN_RUNTIME_DETECT
+/*
+# warning "Byte order will be detected at runtime"
+*/
+#elif defined(ENDIAN_ASSUMED_UNSAFE)
+# warning "Cannot determine byte order:"
 # if (ENDIAN_ASSUMED_UNSAFE == LITTLE_ENDIAN)
-#    warning "Cannot determine endianess. Using LIL endian as an UNSAFE default"
+#    warning "Using LIL endian as an UNSAFE default."
 # elif (ENDIAN_ASSUMED_UNSAFE == PDP_ENDIAN)
-#    warning "Cannot determine endianess. Using PDP (NUXI) as an UNSAFE default."
+#    warning "Using PDP (NUXI) as an UNSAFE default."
 # elif (ENDIAN_ASSUMED_UNSAFE == BIG_ENDIAN)
-#    warning "Cannot determine endianess. Using BIG endian as an UNSAFE default."
+#    warning "Using BIG endian as an UNSAFE default."
 # endif
+# warning "Revise the macros in q_endian.h for this"
+# warning "machine or use runtime detection !!!"
 #endif	/* ENDIAN_ASSUMED_UNSAFE */
 
+
+int host_byteorder;
 
 int DetectByteorder (void)
 {
@@ -66,6 +81,7 @@ int DetectByteorder (void)
 	return -1;
 }
 
+__byteswap_func
 short ShortSwap (short l)
 {
 	unsigned char	b1, b2;
@@ -76,6 +92,7 @@ short ShortSwap (short l)
 	return (b1<<8) + b2;
 }
 
+__byteswap_func
 int LongSwap (int l)
 {
 	unsigned char	b1, b2, b3, b4;
@@ -88,6 +105,7 @@ int LongSwap (int l)
 	return ((int)b1<<24) + ((int)b2<<16) + ((int)b3<<8) + b4;
 }
 
+__byteswap_func
 float FloatSwap (float f)
 {
 	union
@@ -104,6 +122,7 @@ float FloatSwap (float f)
 	return dat2.f;
 }
 
+__byteswap_func
 int LongSwapPDP2BE (int l)
 {
 	union
@@ -121,6 +140,7 @@ int LongSwapPDP2BE (int l)
 	return dat2.l;
 }
 
+__byteswap_func
 int LongSwapPDP2LE (int l)
 {
 	union
@@ -136,6 +156,7 @@ int LongSwapPDP2LE (int l)
 	return dat2.l;
 }
 
+__byteswap_func
 float FloatSwapPDP2BE (float f)
 {
 	union
@@ -153,6 +174,7 @@ float FloatSwapPDP2BE (float f)
 	return dat2.f;
 }
 
+__byteswap_func
 float FloatSwapPDP2LE (float f)
 {
 	union
@@ -166,5 +188,74 @@ float FloatSwapPDP2LE (float f)
 	dat2.s[1] = dat1.s[0];
 
 	return dat2.f;
+}
+
+#if ENDIAN_RUNTIME_DETECT
+
+__byteswap_func
+short ShortNoSwap (short l)
+{
+	return l;
+}
+
+__byteswap_func
+int LongNoSwap (int l)
+{
+	return l;
+}
+
+__byteswap_func
+float FloatNoSwap (float f)
+{
+	return f;
+}
+
+short	(*BigShort) (short l);
+short	(*LittleShort) (short l);
+int	(*BigLong) (int l);
+int	(*LittleLong) (int l);
+float	(*BigFloat) (float l);
+float	(*LittleFloat) (float l);
+
+#endif	/* ENDIAN_RUNTIME_DETECT */
+
+void ByteOrder_Init (void)
+{
+	host_byteorder = DetectByteorder ();
+
+#if ENDIAN_RUNTIME_DETECT
+	switch (host_byteorder)
+	{
+	case BIG_ENDIAN:
+		BigShort = ShortNoSwap;
+		LittleShort = ShortSwap;
+		BigLong = LongNoSwap;
+		LittleLong = LongSwap;
+		BigFloat = FloatNoSwap;
+		LittleFloat = FloatSwap;
+		break;
+
+	case LITTLE_ENDIAN:
+		BigShort = ShortSwap;
+		LittleShort = ShortNoSwap;
+		BigLong = LongSwap;
+		LittleLong = LongNoSwap;
+		BigFloat = FloatSwap;
+		LittleFloat = FloatNoSwap;
+		break;
+
+	case PDP_ENDIAN:
+		BigShort = ShortSwap;
+		LittleShort = ShortNoSwap;
+		BigLong = LongSwapPDP2BE;
+		LittleLong = LongSwapPDP2LE;
+		BigFloat = FloatSwapPDP2BE;
+		LittleFloat = FloatSwapPDP2LE;
+		break;
+
+	default:
+		break;
+	}
+#endif	/* ENDIAN_RUNTIME_DETECT */
 }
 

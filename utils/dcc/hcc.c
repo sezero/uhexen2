@@ -2,7 +2,7 @@
 	hcc.c
 	HCode compiler based on qcc, modifed by Eric Hobbs to work with DCC
 
-	$Header: /home/ozzie/Download/0000/uhexen2/utils/dcc/hcc.c,v 1.29 2007-12-14 16:41:17 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/utils/dcc/hcc.c,v 1.30 2008-01-12 09:46:18 sezero Exp $
 */
 
 #include "q_stdinc.h"
@@ -13,6 +13,7 @@
 #include "qcc.h"
 #include "crc.h"
 #include "q_endian.h"
+#include "byteordr.h"
 
 static char	sourcedir[1024];
 static char	destfile[1024];
@@ -763,8 +764,6 @@ int main (int argc, char **argv)
 	double	start, stop;
 	FILE	*f;
 
-	start = GetTime ();
-
 	myargc = argc;
 	myargv = argv;
 
@@ -778,6 +777,10 @@ int main (int argc, char **argv)
 		printf(" -dcc -dump -asm <functionname> : same as above but will show\n\t\tinstructions (opcodes and parms) as well\n");
 		exit(0);
 	}
+
+	ValidateByteorder ();
+
+	start = GetTime ();
 
 	p = CheckParm("-src");
 	if (p && p < argc-1)

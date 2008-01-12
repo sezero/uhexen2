@@ -1,6 +1,6 @@
 /*
 	bsp2wal.c
-	$Id: bsp2wal.c,v 1.4 2007-12-14 16:41:28 sezero Exp $
+	$Id: bsp2wal.c,v 1.5 2008-01-12 09:46:20 sezero Exp $
 */
 
 #include "q_stdinc.h"
@@ -10,6 +10,7 @@
 #include "pathutil.h"
 #include "util_io.h"
 #include "q_endian.h"
+#include "byteordr.h"
 #include "bspfile.h"
 #include "hwal.h"
 
@@ -126,6 +127,8 @@ int main (int argc, char **argv)
 {
 	int			i;
 	char		source[1024];
+
+	ValidateByteorder ();
 
 	for (i = 1 ; i < argc ; i++)
 	{

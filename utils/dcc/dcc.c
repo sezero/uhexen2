@@ -2,7 +2,7 @@
 	dcc.c
 	An hcode compiler/decompiler for Hexen II by Eric Hobbs
 
-	$Id: dcc.c,v 1.44 2007-12-14 16:41:17 sezero Exp $
+	$Id: dcc.c,v 1.45 2008-01-12 09:46:18 sezero Exp $
 */
 
 
@@ -2041,7 +2041,6 @@ void DEC_ReadData (const char *srcfile)
 	numpr_globals = progs.numglobals;
 	SafeRead (h, pr_globals, numpr_globals*4);
 
-#if BYTE_ORDER == BIG_ENDIAN
 	// byte swap the lumps
 	for (i = 0; i < numstatements; i++)
 	{
@@ -2079,7 +2078,6 @@ void DEC_ReadData (const char *srcfile)
 
 	for (i = 0; i < numpr_globals; i++)
 		*(int *)&pr_globals[i] = LittleLong (*(int *)&pr_globals[i]);
-#endif	// BIG_ENDIAN
 
 	printf ("read data from %s:\n", srcfile);
 	printf ("total size is: %7i\n", Q_filelength(h));

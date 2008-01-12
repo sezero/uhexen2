@@ -1,12 +1,14 @@
 /*
 	lighting.c
-	$Id: light.c,v 1.9 2007-12-14 16:41:24 sezero Exp $
+	$Id: light.c,v 1.10 2008-01-12 09:46:19 sezero Exp $
 */
 
 #include "q_stdinc.h"
 #include "compiler.h"
 #include "arch_def.h"
 #include "cmdlib.h"
+#include "q_endian.h"
+#include "byteordr.h"
 #include "pathutil.h"
 #include "mathlib.h"
 #include "bspfile.h"
@@ -94,6 +96,9 @@ int main (int argc, char **argv)
 	char		source[1024];
 
 	printf ("----- LightFaces ----\n");
+
+	ValidateByteorder ();
+
 	for (i = 1 ; i < argc ; i++)
 	{
 		if (!strcmp(argv[i],"-threads"))

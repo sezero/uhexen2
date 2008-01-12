@@ -1,6 +1,6 @@
 /*
 	lmp2pcx.c
-	$Id: lmp2pcx.c,v 1.9 2007-12-14 16:41:29 sezero Exp $
+	$Id: lmp2pcx.c,v 1.10 2008-01-12 09:46:20 sezero Exp $
 	Copyright (C) 2002-2007 Forest Hale
 
 	This program is free software; you can redistribute it and/or
@@ -29,6 +29,7 @@
 #include "pathutil.h"
 #include "util_io.h"
 #include "q_endian.h"
+#include "byteordr.h"
 
 
 /* Whether to load the hexen2 palette data at runtime:
@@ -692,6 +693,8 @@ int main (int argc, char **argv)
 #if LOAD_PALETTEFILE
 	void		*pbuf;
 #endif	/* LOAD_PALETTEFILE */
+
+	ValidateByteorder ();
 
 	flags = 0;
 	for (i = 1 ; i < argc ; i++)

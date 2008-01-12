@@ -2,7 +2,7 @@
 	sys_unix.c
 	Unix system interface code
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/server/sys_unix.c,v 1.38 2008-01-11 19:56:56 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/server/sys_unix.c,v 1.39 2008-01-12 09:46:16 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -432,6 +432,8 @@ int main (int argc, char **argv)
 
 	Sys_Printf("basedir is: %s\n", parms.basedir);
 	Sys_Printf("userdir is: %s\n", parms.userdir);
+
+	COM_ValidateByteorder ();
 
 	parms.memsize = STD_MEM_ALLOC;
 

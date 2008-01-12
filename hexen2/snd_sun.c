@@ -1,6 +1,6 @@
 /*
 	snd_sun.c
-	$Id: snd_sun.c,v 1.16 2007-12-22 18:56:07 sezero Exp $
+	$Id: snd_sun.c,v 1.17 2008-01-12 09:46:16 sezero Exp $
 
 	SUN Audio driver for BSD and SunOS
 
@@ -32,34 +32,46 @@
 
 #if HAVE_SUN_SOUND
 
+#undef	_SUNAUDIO_BSD
+#undef	_SUNAUDIO_SUNOS
+#if defined(__sun) || defined(sun)
+#define	_SUNAUDIO_BSD		0
+#define	_SUNAUDIO_SUNOS		1
+#else	/* NetBSD and OpenBSD */
+#define	_SUNAUDIO_BSD		1
+#define	_SUNAUDIO_SUNOS		0
+#endif
+
 #include <sys/param.h>
 #include <sys/audioio.h>
-#if !(defined(__sun) || defined(sun))
-#include <sys/endian.h>
-#endif	/* ! sun */
 #include <sys/ioctl.h>
 
 #include <fcntl.h>
-#if !(defined(__sun) || defined(sun))
-#include <paths.h>
-#endif	/* ! sun */
 #include <unistd.h>
 
-#if defined(__sun) || defined(sun)
+#if _SUNAUDIO_SUNOS
 
 #define	FORMAT_U8	AUDIO_ENCODING_LINEAR8
 #define	FORMAT_S16	AUDIO_ENCODING_LINEAR
 
-#else	/* BSD */
+#elif _SUNAUDIO_BSD
+
+#include <paths.h>
 
 #define	FORMAT_U8	AUDIO_ENCODING_LINEAR8
-#if BYTE_ORDER == BIG_ENDIAN
-#define	FORMAT_S16	AUDIO_ENCODING_SLINEAR_BE
+#if ENDIAN_RUNTIME_DETECT
+static int		FORMAT_S16;
 #else
+#if (BYTE_ORDER == BIG_ENDIAN)
+#define	FORMAT_S16	AUDIO_ENCODING_SLINEAR_BE
+#elif (BYTE_ORDER == LITTLE_ENDIAN)
 #define	FORMAT_S16	AUDIO_ENCODING_SLINEAR_LE
+#else
+#error "Unsupported endianness."
 #endif
+#endif	/* ENDIAN_RUNTIME_DETECT */
 
-#endif
+#endif	/* _SUNAUDIO_BSD */
 
 /* all of these functions must be properly
    assigned in LinkFuncs() below	*/
@@ -76,10 +88,8 @@ static char s_sun_driver[] = "SunAudio";
 
 static int	audio_fd = -1;
 
-//#define	SND_BUFF_SIZE	65536
 #define	SND_BUFF_SIZE	8192
 static unsigned char	dma_buffer [SND_BUFF_SIZE];
-//static unsigned char	writebuf [SND_BUFF_SIZE];
 static unsigned char	writebuf [1024];
 static int	wbufp;
 
@@ -102,12 +112,27 @@ static qboolean S_SUN_Init (dma_t *dma)
 	const char	*snddev;
 	audio_info_t	info;
 
+#if ENDIAN_RUNTIME_DETECT && _SUNAUDIO_BSD
+	switch (host_byteorder)
+	{
+	case BIG_ENDIAN:
+		FORMAT_S16 = AUDIO_ENCODING_SLINEAR_BE;
+		break;
+	case LITTLE_ENDIAN:
+		FORMAT_S16 = AUDIO_ENCODING_SLINEAR_LE;
+		break;
+	default:
+		Sys_Error("%s: Unsupported byte order.", __thisfunc__);
+		break;
+	}
+#endif	/* ENDIAN_RUNTIME_DETECT */
+
 	// Open the audio device
 #if defined(_PATH_SOUND)
 	snddev = _PATH_SOUND;
-#elif defined(__sun) || defined(sun)
+#elif _SUNAUDIO_SUNOS
 	snddev = "/dev/audio";
-#else
+#else	/* bsd */
 	snddev = "/dev/sound";
 #endif
 	audio_fd = open (snddev, O_WRONLY | O_NDELAY | O_NONBLOCK);

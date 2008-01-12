@@ -3,7 +3,7 @@
 	DOS system interface code.
 	from quake1 source with adaptations for uhexen2.
 
-	$Id: sys_dos.c,v 1.6 2008-01-11 19:56:55 sezero Exp $
+	$Id: sys_dos.c,v 1.7 2008-01-12 09:46:16 sezero Exp $
 
 	Copyright (C) 1996-1997  Id Software, Inc.
 
@@ -986,6 +986,8 @@ int main (int argc, char **argv)
 	host_parms = &quakeparms;
 
 	LOG_Init (&quakeparms);
+
+	COM_ValidateByteorder ();
 
 	Sys_DetectWin95 ();
 	Sys_PageInProgram ();

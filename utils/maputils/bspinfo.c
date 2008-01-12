@@ -1,12 +1,14 @@
 /*
 	bspinfo.c
-	$Id: bspinfo.c,v 1.5 2007-12-14 16:41:23 sezero Exp $
+	$Id: bspinfo.c,v 1.6 2008-01-12 09:46:19 sezero Exp $
 */
 
 #include "q_stdinc.h"
 #include "compiler.h"
 #include "arch_def.h"
 #include "cmdlib.h"
+#include "q_endian.h"
+#include "byteordr.h"
 #include "pathutil.h"
 #include "bspfile.h"
 
@@ -17,6 +19,8 @@ int main (int argc, char **argv)
 
 	if (argc == 1)
 		Error ("usage: bspinfo bspfile [bspfiles]");
+
+	ValidateByteorder ();
 
 	for (i = 1 ; i < argc ; i++)
 	{

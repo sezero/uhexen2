@@ -2,7 +2,7 @@
 	common.h
 	misc utilities used in client and server
 
-	$Id: common.h,v 1.57 2007-12-14 16:41:11 sezero Exp $
+	$Id: common.h,v 1.58 2008-01-12 09:46:17 sezero Exp $
 */
 
 #ifndef __HX2_COMMON_H
@@ -105,6 +105,8 @@ int COM_CheckParm (const char *parm);
 /* macros for compatibility with quake api */
 #define	com_argc	host_parms->argc
 #define	com_argv	host_parms->argv
+
+void COM_ValidateByteorder (void);
 
 const char *COM_SkipPath (const char *pathname);
 void COM_StripExtension (const char *in, char *out);

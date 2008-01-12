@@ -2,7 +2,7 @@
 	gl_vidsdl.c -- SDL GL vid component
 	Select window size and mode and init SDL in GL mode.
 
-	$Id: gl_vidsdl.c,v 1.170 2007-10-14 11:12:28 sezero Exp $
+	$Id: gl_vidsdl.c,v 1.171 2008-01-12 09:46:17 sezero Exp $
 
 	Changed 7/11/04 by S.A.
 	- Fixed fullscreen opengl mode, window sizes
@@ -1027,9 +1027,8 @@ void VID_SetPalette (unsigned char *palette)
 {
 	byte	*pal;
 	unsigned short	r, g, b;
-	int		v;
 	unsigned short	i, p, c;
-	unsigned int	*table;
+	unsigned int	v, *table;
 	size_t		palsize;
 #if !USE_HEXEN2_PALTEX_CODE
 	FILE	*f;
@@ -1484,6 +1483,45 @@ void	VID_Init (unsigned char *palette)
 	Cmd_AddCommand ("vid_restart", VID_Restart_f);
 
 	vid.numpages = 2;
+
+#if ENDIAN_RUNTIME_DETECT
+	switch (host_byteorder)
+	{
+	case BIG_ENDIAN:	/* R G B A */
+		MASK_r	=	0xff000000;
+		MASK_g	=	0x00ff0000;
+		MASK_b	=	0x0000ff00;
+		MASK_a	=	0x000000ff;
+		SHIFT_r	=	24;
+		SHIFT_g	=	16;
+		SHIFT_b	=	8;
+		SHIFT_a	=	0;
+		break;
+	case LITTLE_ENDIAN:	/* A B G R */
+		MASK_r	=	0x000000ff;
+		MASK_g	=	0x0000ff00;
+		MASK_b	=	0x00ff0000;
+		MASK_a	=	0xff000000;
+		SHIFT_r	=	0;
+		SHIFT_g	=	8;
+		SHIFT_b	=	16;
+		SHIFT_a	=	24;
+		break;
+	case PDP_ENDIAN:	/* G R A B */
+		MASK_r	=	0x00ff0000;
+		MASK_g	=	0xff000000;
+		MASK_b	=	0x000000ff;
+		MASK_a	=	0x0000ff00;
+		SHIFT_r	=	16;
+		SHIFT_g	=	24;
+		SHIFT_b	=	0;
+		SHIFT_a	=	8;
+		break;
+	default:
+		break;
+	}
+	MASK_rgb	=	(MASK_r|MASK_g|MASK_b);
+#endif	/* ENDIAN_RUNTIME_DETECT */
 
 #if DO_MESH_CACHE
 	// prepare directories for caching mesh files

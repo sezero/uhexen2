@@ -2,7 +2,7 @@
 	common.c
 	misc utility functions used in client and server
 
-	$Id: common.c,v 1.99 2007-11-14 07:19:53 sezero Exp $
+	$Id: common.c,v 1.100 2008-01-12 09:46:17 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -364,6 +364,63 @@ static void COM_Cmdline_f (void)
 			Con_Printf (" %s", com_argv[i]);
 	}
 	Con_Printf ("\n");
+}
+
+/*
+============================================================================
+
+INIT, ETC..
+
+============================================================================
+*/
+
+void COM_ValidateByteorder (void)
+{
+	const char	*endianism[] = { "BE", "LE", "PDP", "Unknown" };
+	const char	*tmp;
+
+	ByteOrder_Init ();
+	if (host_byteorder < 0)
+		Sys_Error ("%s: Unsupported byte order.", __thisfunc__);
+	switch (host_byteorder)
+	{
+	case BIG_ENDIAN:
+		tmp = endianism[0];
+		break;
+	case LITTLE_ENDIAN:
+		tmp = endianism[1];
+		break;
+	case PDP_ENDIAN:
+		tmp = endianism[2];
+		break;
+	default:
+		tmp = endianism[3];
+		break;
+	}
+	Sys_Printf("Detected byte order: %s\n", tmp);
+#if !ENDIAN_RUNTIME_DETECT
+	if (host_byteorder != BYTE_ORDER)
+	{
+		const char	*tmp2;
+
+		switch (BYTE_ORDER)
+		{
+		case BIG_ENDIAN:
+			tmp2 = endianism[0];
+			break;
+		case LITTLE_ENDIAN:
+			tmp2 = endianism[1];
+			break;
+		case PDP_ENDIAN:
+			tmp2 = endianism[2];
+			break;
+		default:
+			tmp2 = endianism[3];
+			break;
+		}
+		Sys_Error ("Detected byte order %s doesn't match compiled %s order!", tmp, tmp2);
+	}
+#endif	/* ENDIAN_RUNTIME_DETECT */
 }
 
 /*

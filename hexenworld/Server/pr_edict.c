@@ -2,7 +2,7 @@
 	sv_edict.c
 	entity dictionary
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Server/pr_edict.c,v 1.35 2007-11-14 07:42:34 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Server/pr_edict.c,v 1.36 2008-01-12 09:46:18 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -1225,11 +1225,9 @@ void PR_LoadProgs (void)
 	sprintf (num, "%u", CRC_Block ((byte *)progs, fs_filesize));
 	Info_SetValueForStarKey (svs.info, "*progs", num, MAX_SERVERINFO_STRING);
 
-#if (BYTE_ORDER != LITTLE_ENDIAN)
 	// byte swap the header
 	for (i = 0; i < sizeof(*progs)/4; i++)
 		((int *)progs)[i] = LittleLong ( ((int *)progs)[i] );
-#endif	/* BYTE SWAP */
 
 	if (progs->version != PROG_VERSION)
 		SV_Error ("%s has wrong version number %d (should be %d)", progname, progs->version, PROG_VERSION);
@@ -1254,7 +1252,6 @@ void PR_LoadProgs (void)
 	pr_global_struct = (globalvars_t *)((byte *)progs + progs->ofs_globals);
 	pr_globals = (float *)pr_global_struct;
 
-#if (BYTE_ORDER != LITTLE_ENDIAN)
 	// byte swap the lumps
 	for (i = 0; i < progs->numstatements; i++)
 	{
@@ -1292,7 +1289,6 @@ void PR_LoadProgs (void)
 
 	for (i = 0; i < progs->numglobals; i++)
 		((int *)pr_globals)[i] = LittleLong (((int *)pr_globals)[i]);
-#endif	/* BYTE SWAP */
 
 	pr_edict_size = progs->entityfields * 4 + sizeof(edict_t) - sizeof(entvars_t);
 	// round off to next highest whole word address (esp for Alpha)

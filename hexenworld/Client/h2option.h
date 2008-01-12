@@ -2,7 +2,7 @@
 	h2option.h
 	Compile time options for Hexen II: Hammer of Thyrion
 
-	$Id: h2option.h,v 1.9 2007-10-13 19:27:38 sezero Exp $
+	$Id: h2option.h,v 1.10 2008-01-12 09:46:17 sezero Exp $
 */
 
 
@@ -13,6 +13,16 @@
    Read the explanations for each option and edit the relevant option
    accordingly. Most probably, you will need to perform a clean build
    after editing.
+   ================================================================== */
+
+
+/* ====================================================================
+   ENDIAN_RUNTIME_DETECT
+   Value  :	0 or 1
+   Affects:	everywhere in all source using byte order functions.
+
+   This option has to be edited in the file q_endian.h, NOT here !!!
+   Default is off which is a little bit faster.
    ================================================================== */
 
 

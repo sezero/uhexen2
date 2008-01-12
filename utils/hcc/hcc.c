@@ -1,7 +1,7 @@
 /*
 	hcc.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/utils/hcc/hcc.c,v 1.18 2007-12-14 16:41:17 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/utils/hcc/hcc.c,v 1.19 2008-01-12 09:46:19 sezero Exp $
 
 	Hash table modifications based on fastqcc by Jonathan Roy
 	(roy@atlantic.net).
@@ -18,6 +18,7 @@
 #include "crc.h"
 #include "hcc.h"
 #include "q_endian.h"
+#include "byteordr.h"
 
 // MACROS ------------------------------------------------------------------
 
@@ -782,8 +783,6 @@ int main (int argc, char **argv)
 	int		fileInfo;
 	int		quiet;
 
-	start = GetTime ();
-
 	myargc = argc;
 	myargv = argv;
 
@@ -797,6 +796,10 @@ int main (int argc, char **argv)
 		printf(" -name <source>   : Specify the name of the .src file\n");
 		exit(0);
 	}
+
+	ValidateByteorder ();
+
+	start = GetTime ();
 
 	p = CheckParm("-src");
 	if (p && p < argc-1)

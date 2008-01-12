@@ -1,5 +1,5 @@
 # GNU Makefile for hexen2 bsp2wal tool using GCC.
-# $Header: /home/ozzie/Download/0000/uhexen2/utils/texutils/bsp2wal/Makefile,v 1.8 2008-01-10 17:21:12 sezero Exp $
+# $Header: /home/ozzie/Download/0000/uhexen2/utils/texutils/bsp2wal/Makefile,v 1.9 2008-01-12 09:46:20 sezero Exp $
 #
 # if building a debug version :		make DEBUG=1 [other stuff]
 #
@@ -71,6 +71,7 @@ bspfile.o: $(COMMONDIR)/bspfile.c
 # Objects
 BSP2WALOBJS= $(COMMONDIR)/cmdlib.o \
 	$(COMMONDIR)/q_endian.o \
+	$(COMMONDIR)/byteordr.o \
 	$(COMMONDIR)/util_io.o \
 	$(COMMONDIR)/pathutil.o \
 	bspfile.o \

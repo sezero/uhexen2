@@ -2,7 +2,7 @@
 	sys_win.c
 	Win32 system interface code
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/win_stuff/sys_win.c,v 1.63 2008-01-11 19:56:56 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/win_stuff/sys_win.c,v 1.64 2008-01-12 09:46:17 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -574,6 +574,8 @@ int WINAPI WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 
 	Sys_Printf("basedir is: %s\n", parms.basedir);
 	Sys_Printf("userdir is: %s\n", parms.userdir);
+
+	COM_ValidateByteorder ();
 
 	isDedicated = (COM_CheckParm ("-dedicated") != 0);
 

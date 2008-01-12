@@ -1,12 +1,14 @@
 /*
 	vis.c
-	$Id: vis.c,v 1.13 2007-12-14 16:41:28 sezero Exp $
+	$Id: vis.c,v 1.14 2008-01-12 09:46:19 sezero Exp $
 */
 
 #include "q_stdinc.h"
 #include "compiler.h"
 #include "arch_def.h"
 #include "cmdlib.h"
+#include "q_endian.h"
+#include "byteordr.h"
 #include "pathutil.h"
 #include "mathlib.h"
 #include "bspfile.h"
@@ -1002,6 +1004,8 @@ int main (int argc, char **argv)
 	double	start, end;
 
 	printf ("---- vis ----\n");
+
+	ValidateByteorder ();
 
 	for (i = 1 ; i < argc ; i++)
 	{

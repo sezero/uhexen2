@@ -2,10 +2,23 @@
 	gl_draw.c
 	this is the only file outside the refresh that touches the vid buffer
 
-	$Id: gl_draw.c,v 1.130 2007-11-25 09:22:54 sezero Exp $
+	$Id: gl_draw.c,v 1.131 2008-01-12 09:46:16 sezero Exp $
 */
 
 #include "quakedef.h"
+
+#if ENDIAN_RUNTIME_DETECT
+/* initialized by VID_Init() */
+unsigned int	MASK_r;
+unsigned int	MASK_g;
+unsigned int	MASK_b;
+unsigned int	MASK_a;
+unsigned int	MASK_rgb;
+unsigned int	SHIFT_r;
+unsigned int	SHIFT_g;
+unsigned int	SHIFT_b;
+unsigned int	SHIFT_a;
+#endif
 
 qboolean	draw_reinit = false;
 

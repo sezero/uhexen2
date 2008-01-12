@@ -1,5 +1,5 @@
 # GNU Makefile for hexen2 genmodel tool using GCC.
-# $Header: /home/ozzie/Download/0000/uhexen2/utils/genmodel/Makefile,v 1.17 2008-01-10 17:21:07 sezero Exp $
+# $Header: /home/ozzie/Download/0000/uhexen2/utils/genmodel/Makefile,v 1.18 2008-01-12 09:46:18 sezero Exp $
 #
 # if building a debug version :		make DEBUG=1 [other stuff]
 #
@@ -72,6 +72,7 @@ mathlib.o: $(COMMONDIR)/mathlib.c
 # Objects
 GENMODELOBJS= $(COMMONDIR)/cmdlib.o \
 	$(COMMONDIR)/q_endian.o \
+	$(COMMONDIR)/byteordr.o \
 	$(COMMONDIR)/util_io.o \
 	$(COMMONDIR)/pathutil.o \
 	$(COMMONDIR)/scriplib.o \

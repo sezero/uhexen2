@@ -2,7 +2,7 @@
 	sys_win.c
 	Win32 system interface code
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Server/win_stuff/sys_win.c,v 1.40 2008-01-11 19:56:56 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Server/win_stuff/sys_win.c,v 1.41 2008-01-12 09:46:18 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -325,6 +325,8 @@ int main (int argc, char **argv)
 
 	Sys_Printf("basedir is: %s\n", parms.basedir);
 	Sys_Printf("userdir is: %s\n", parms.userdir);
+
+	COM_ValidateByteorder ();
 
 	parms.memsize = STD_MEM_ALLOC;
 

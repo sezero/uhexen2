@@ -1,6 +1,6 @@
 /*
 	qfiles.c
-	$Id: qfiles.c,v 1.8 2007-12-14 16:41:28 sezero Exp $
+	$Id: qfiles.c,v 1.9 2008-01-12 09:46:20 sezero Exp $
 */
 
 #include "q_stdinc.h"
@@ -10,6 +10,7 @@
 #include "util_io.h"
 #include "crc.h"
 #include "q_endian.h"
+#include "byteordr.h"
 #include "qdir.h"
 #include "pakfile.h"
 
@@ -230,6 +231,8 @@ int main (int argc, char **argv)
 		printf ("qfiles -bspmodels : regenerates all brush models\n");
 		exit (1);
 	}
+
+	ValidateByteorder ();
 
 	SetQdirFromPath ("");
 

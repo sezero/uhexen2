@@ -1,6 +1,6 @@
 /*
 	snd_oss.c
-	$Id: snd_oss.c,v 1.36 2007-12-22 18:56:07 sezero Exp $
+	$Id: snd_oss.c,v 1.37 2008-01-12 09:46:16 sezero Exp $
 
 	Copyright (C) 1996-1997  Id Software, Inc.
 
@@ -40,13 +40,19 @@
 #include <sys/soundcard.h>
 #include <errno.h>
 
+#if ENDIAN_RUNTIME_DETECT
+static int		FORMAT_S16;
+#else
 #if defined(AFMT_S16_NE)
 #define	FORMAT_S16	AFMT_S16_NE
 #elif (BYTE_ORDER == BIG_ENDIAN)
 #define	FORMAT_S16	AFMT_S16_BE
-#else	/* LITTLE_ENDIAN */
+#elif (BYTE_ORDER == LITTLE_ENDIAN)
 #define	FORMAT_S16	AFMT_S16_LE
+#else
+#error "Unsupported endianness."
 #endif
+#endif	/* ENDIAN_RUNTIME_DETECT */
 
 /* all of these functions must be properly
    assigned in LinkFuncs() below	*/
@@ -85,6 +91,21 @@ static qboolean S_OSS_Init (dma_t *dma)
 	int		i, caps, tmp;
 	unsigned long		sz;
 	struct audio_buf_info	info;
+
+#if ENDIAN_RUNTIME_DETECT
+	switch (host_byteorder)
+	{
+	case BIG_ENDIAN:
+		FORMAT_S16 = AFMT_S16_BE;
+		break;
+	case LITTLE_ENDIAN:
+		FORMAT_S16 = AFMT_S16_LE;
+		break;
+	default:
+		Sys_Error("%s: Unsupported byte order.", __thisfunc__);
+		break;
+	}
+#endif	/* ENDIAN_RUNTIME_DETECT */
 
 	tmp = COM_CheckParm("-ossdev");
 	if (tmp != 0 && tmp < com_argc - 1)

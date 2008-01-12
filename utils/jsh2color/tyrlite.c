@@ -19,7 +19,7 @@
 
 /*
 	tyrlite.c
-	$Id: tyrlite.c,v 1.21 2007-12-14 16:41:23 sezero Exp $
+	$Id: tyrlite.c,v 1.22 2008-01-12 09:46:19 sezero Exp $
 
 	Modifications by Kevin Shanahan, 1999-2000
 */
@@ -28,6 +28,8 @@
 #include "compiler.h"
 #include "arch_def.h"
 #include "cmdlib.h"
+#include "q_endian.h"
+#include "byteordr.h"
 #include "util_io.h"
 #include "pathutil.h"
 #include "mathlib.h"
@@ -319,6 +321,8 @@ int main (int argc, char **argv)
 	printf ("JSH2Colour %s - %s\n", JSH2COLOR_VER, PLATFORM_STRING);
 	printf ("based on Tyrlite 0.8, MHColour 0.5 and JSColour 1.0\n");
 	printf ("---------------------------------------------------\n");
+
+	ValidateByteorder ();
 
 	// set the options we always want
 	makelit = true;

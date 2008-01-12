@@ -1,5 +1,5 @@
 # GNU Makefile for hexen2 mapping tools using GCC.
-# $Header: /home/ozzie/Download/0000/uhexen2/utils/maputils/Makefile,v 1.18 2008-01-10 17:21:12 sezero Exp $
+# $Header: /home/ozzie/Download/0000/uhexen2/utils/maputils/Makefile,v 1.19 2008-01-12 09:46:19 sezero Exp $
 #
 # if building a debug version :		make DEBUG=1 [other stuff]
 #
@@ -81,6 +81,7 @@ bspfile.o: $(COMMONDIR)/bspfile.c
 # Objects
 COMMONOBJS= $(COMMONDIR)/cmdlib.o \
 	$(COMMONDIR)/q_endian.o \
+	$(COMMONDIR)/byteordr.o \
 	$(COMMONDIR)/util_io.o \
 	$(COMMONDIR)/pathutil.o \
 	mathlib.o \
@@ -114,6 +115,7 @@ QBSPOBJS= brush.o \
 
 BSPINFOBJS= $(COMMONDIR)/cmdlib.o \
 	$(COMMONDIR)/q_endian.o \
+	$(COMMONDIR)/byteordr.o \
 	$(COMMONDIR)/util_io.o \
 	$(COMMONDIR)/pathutil.o \
 	bspfile.o \

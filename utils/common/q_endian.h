@@ -2,10 +2,10 @@
 	q_endian.h
 	endianness handling
 
-	$Id: q_endian.h,v 1.10 2007-12-14 16:41:16 sezero Exp $
+	$Id: q_endian.h,v 1.11 2008-01-12 09:46:18 sezero Exp $
 
 	Copyright (C) 1996-1997  Id Software, Inc.
-	Copyright (C) 2007  O.Sezer <sezero@users.sourceforge.net>
+	Copyright (C) 2007-2008  O.Sezer <sezero@users.sourceforge.net>
 
 	This program is free software; you can redistribute it and/or
 	modify it under the terms of the GNU General Public License
@@ -37,6 +37,12 @@
 
 #undef ENDIAN_GUESSED_SAFE
 #undef ENDIAN_ASSUMED_UNSAFE
+#undef ENDIAN_RUNTIME_DETECT
+
+/* if you want to detect byte order at runtime
+ * instead of compile time, define this as 1 :
+ */
+#define	ENDIAN_RUNTIME_DETECT		0
 
 
 #include <sys/types.h>
@@ -148,7 +154,7 @@
 #if !defined(BYTE_ORDER)
 
 /* brain-dead fallback: default to little endian.
- * change if necessary!!!!
+ * change if necessary, or use runtime detection!
  */
 # define BYTE_ORDER	LITTLE_ENDIAN
 # define ENDIAN_ASSUMED_UNSAFE		BYTE_ORDER
@@ -156,7 +162,26 @@
 #endif	/* fallback. */
 
 
+extern int host_byteorder;
 extern int DetectByteorder (void);
+extern void ByteOrder_Init (void);
+
+
+/* byte swapping. most times we want to convert to
+ * little endian: our data files are written in LE
+ * format.  sometimes, such as when writing to net,
+ * we also convert to big endian.
+*/
+#if ENDIAN_RUNTIME_DETECT
+
+extern short	(*BigShort) (short l);
+extern short	(*LittleShort) (short l);
+extern int	(*BigLong) (int l);
+extern int	(*LittleLong) (int l);
+extern float	(*BigFloat) (float l);
+extern float	(*LittleFloat) (float l);
+
+#else	/* ! ENDIAN_RUNTIME_DETECT */
 
 extern short	ShortSwap (short);
 extern int	LongSwap (int);
@@ -167,12 +192,6 @@ extern int	LongSwapPDP2LE (int);
 extern float	FloatSwapPDP2BE (float);
 extern float	FloatSwapPDP2LE (float);
 
-
-/* byte swapping. most times we want to convert to
- * little endian: our data files are written in LE
- * format.  sometimes, such as when writing to net,
- * we also convert to big endian.
-*/
 #if (BYTE_ORDER == BIG_ENDIAN)
 
 #define BigShort(s)	(s)
@@ -201,6 +220,8 @@ extern float	FloatSwapPDP2LE (float);
 #define LittleFloat(f)	(f)
 
 #endif	/* swap macros */
+
+#endif	/* runtime det */
 
 #endif	/* __QENDIAN_H */
 

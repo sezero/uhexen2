@@ -2,7 +2,7 @@
 	main.c
 	hexen2 launcher: main loop
 
-	$Id: main.c,v 1.34 2008-01-11 19:56:56 sezero Exp $
+	$Id: main.c,v 1.35 2008-01-12 09:46:18 sezero Exp $
 
 	This program is free software; you can redistribute it and/or
 	modify it under the terms of the GNU General Public License
@@ -24,6 +24,7 @@
 */
 
 #include "common.h"
+#include "q_endian.h"
 
 #if USE_PASSWORD_FILE
 #include <pwd.h>
@@ -166,15 +167,69 @@ static int Sys_GetUserdir (char *dst, size_t dstsize)
 	return Sys_mkdir(dst);
 }
 
+static void ValidateByteorder (void)
+{
+	const char	*endianism[] = { "BE", "LE", "PDP", "Unknown" };
+	const char	*tmp;
+
+	ByteOrder_Init ();
+	if (host_byteorder < 0)
+	{
+		fprintf(stderr, "Unsupported byte order.\n");
+		exit(1);
+	}
+	switch (host_byteorder)
+	{
+	case BIG_ENDIAN:
+		tmp = endianism[0];
+		break;
+	case LITTLE_ENDIAN:
+		tmp = endianism[1];
+		break;
+	case PDP_ENDIAN:
+		tmp = endianism[2];
+		break;
+	default:
+		tmp = endianism[3];
+		break;
+	}
+	printf("Detected byte order: %s\n", tmp);
+#if !ENDIAN_RUNTIME_DETECT
+	if (host_byteorder != BYTE_ORDER)
+	{
+		const char	*tmp2;
+		switch (BYTE_ORDER)
+		{
+		case BIG_ENDIAN:
+			tmp2 = endianism[0];
+			break;
+		case LITTLE_ENDIAN:
+			tmp2 = endianism[1];
+			break;
+		case PDP_ENDIAN:
+			tmp2 = endianism[2];
+			break;
+		default:
+			tmp2 = endianism[3];
+			break;
+		}
+		fprintf (stderr, "Detected byte order %s doesn't match compiled %s order!\n", tmp, tmp2);
+		exit(1);
+	}
+#endif	/* ENDIAN_RUNTIME_DETECT */
+}
+
 
 int main (int argc, char **argv)
 {
 	printf("Hexen II: Hammer of Thyrion Launcher, version %i.%i.%i\n",
 		LAUNCHER_VERSION_MAJ, LAUNCHER_VERSION_MID, LAUNCHER_VERSION_MIN);
 
+	ValidateByteorder ();
+
 	if ((Sys_GetUserdir(userdir, sizeof(userdir))) != 0)
 	{
-		fprintf (stderr,"Couldn't determine userspace directory");
+		fprintf (stderr, "Couldn't determine userspace directory\n");
 		exit(1);
 	}
 

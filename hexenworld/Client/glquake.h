@@ -2,7 +2,7 @@
 	glquake.h
 	common glquake header
 
-	$Id: glquake.h,v 1.70 2007-12-21 13:55:41 sezero Exp $
+	$Id: glquake.h,v 1.71 2008-01-12 09:46:17 sezero Exp $
 */
 
 
@@ -51,6 +51,21 @@
    ENDIANNESS: RGBA
    ================================================================== */
 
+#if ENDIAN_RUNTIME_DETECT
+
+/* initialized by VID_Init() */
+extern unsigned int	MASK_r;
+extern unsigned int	MASK_g;
+extern unsigned int	MASK_b;
+extern unsigned int	MASK_a;
+extern unsigned int	MASK_rgb;
+extern unsigned int	SHIFT_r;
+extern unsigned int	SHIFT_g;
+extern unsigned int	SHIFT_b;
+extern unsigned int	SHIFT_a;
+
+#else	/* ENDIAN_RUNTIME_DETECT */
+
 #if (BYTE_ORDER == BIG_ENDIAN)	/* R G B A */
 #define	MASK_r		0xff000000
 #define	MASK_g		0x00ff0000
@@ -81,6 +96,8 @@
 #endif
 
 #define	MASK_rgb	(MASK_r|MASK_g|MASK_b)
+
+#endif	/* ENDIAN_RUNTIME_DETECT */
 
 
 /* ====================================================================

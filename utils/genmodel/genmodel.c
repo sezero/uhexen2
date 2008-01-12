@@ -1,6 +1,6 @@
 /*
 	genmodel.c
-	$Id: genmodel.c,v 1.11 2007-12-14 16:41:17 sezero Exp $
+	$Id: genmodel.c,v 1.12 2008-01-12 09:46:19 sezero Exp $
 
 	Generates a .mdl file from a base frame, a texture bitmap,
 	and a series of frames.
@@ -21,6 +21,7 @@
 #include "scriplib.h"
 #include "mathlib.h"
 #include "q_endian.h"
+#include "byteordr.h"
 #include "loadtri.h"
 #include "genmodel.h"
 #include "qdir.h"
@@ -194,11 +195,14 @@ int main(int argc, char **argv)
 
 	printf("GENMODEL Version "VERSION_TEXT" ("__DATE__")\n\n");
 
-	if (argc ==1)
+	if (argc == 1)
 	{
 		printf("usage: genmodel [-archive path] [-opt] model.hc\n");
 		return 0;
 	}
+
+	ValidateByteorder ();
+
 	path[0] = 0;
 
 	for (i = 1; i < argc; i++)

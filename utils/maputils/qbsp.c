@@ -1,12 +1,14 @@
 /*
 	bsp5.c
-	$Id: qbsp.c,v 1.14 2007-12-14 16:41:25 sezero Exp $
+	$Id: qbsp.c,v 1.15 2008-01-12 09:46:19 sezero Exp $
 */
 
 #include "q_stdinc.h"
 #include "compiler.h"
 #include "arch_def.h"
 #include "cmdlib.h"
+#include "q_endian.h"
+#include "byteordr.h"
 #include "pathutil.h"
 #include "mathlib.h"
 #include "bspfile.h"
@@ -1168,6 +1170,8 @@ int main (int argc, char **argv)
 	char		destname[1024];
 
 	printf ("---- qbsp ----\n");
+
+	ValidateByteorder ();
 
 #ifdef PLATFORM_WINDOWS
 	gargs[0] = 0;
