@@ -2,7 +2,7 @@
 	main.c
 	hexen2 launcher: main loop
 
-	$Id: main.c,v 1.35 2008-01-12 09:46:18 sezero Exp $
+	$Id: main.c,v 1.36 2008-01-12 12:02:34 sezero Exp $
 
 	This program is free software; you can redistribute it and/or
 	modify it under the terms of the GNU General Public License
@@ -222,15 +222,26 @@ static void ValidateByteorder (void)
 
 int main (int argc, char **argv)
 {
+	int	ret;
+
 	printf("Hexen II: Hammer of Thyrion Launcher, version %i.%i.%i\n",
 		LAUNCHER_VERSION_MAJ, LAUNCHER_VERSION_MID, LAUNCHER_VERSION_MIN);
 
+/* initialize the user interface */
+	ret = ui_init(&argc, &argv);
+	if (ret != 0)
+	{
+		fprintf (stderr, "Couldn't initialize user interface\n");
+		exit (ret);
+	}
+
 	ValidateByteorder ();
 
-	if ((Sys_GetUserdir(userdir, sizeof(userdir))) != 0)
+	ret = Sys_GetUserdir(userdir, sizeof(userdir));
+	if (ret != 0)
 	{
 		fprintf (stderr, "Couldn't determine userspace directory\n");
-		exit(1);
+		exit (ret);
 	}
 
 	memset(basedir, 0, sizeof(basedir));
@@ -238,16 +249,18 @@ int main (int argc, char **argv)
 	printf ("Basedir  : %s\n", basedir);
 	printf ("Userdir  : %s\n", userdir);
 
-//	go into the binary's directory
+/* go into the binary's directory */
 	chdir (basedir);
 
 	cfg_read_basedir();
 	scan_game_installation();
 	read_config_file();
 
-//	run the user interface
-	ui_main (&argc, &argv);
+/* run the graphical user interface */
+	ret = ui_main ();
+	if (ret == 0)
+		ret = write_config_file ();
 
-	return 0;
+	return ret;
 }
 

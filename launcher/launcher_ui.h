@@ -2,7 +2,7 @@
 	launcher_ui.h
 	hexen2 launcher, global ui functions
 
-	$Id: launcher_ui.h,v 1.3 2007-08-13 14:51:44 sezero Exp $
+	$Id: launcher_ui.h,v 1.4 2008-01-12 12:02:34 sezero Exp $
 
 	This program is free software; you can redistribute it and/or
 	modify it under the terms of the GNU General Public License
@@ -26,13 +26,16 @@
 #ifndef	LAUNCHER_UI_H
 #define	LAUNCHER_UI_H
 
-int  ui_main (int *argc, char ***argv);
-	/* initializes and runs the gui loop.
-	   call this from your main() . */
+int  ui_init (int *argc, char ***argv);
+	/* initializes the gui loop.
+	   call this from your main() */
+
+int  ui_main (void);
+	/* runs the gui loop.
+	   call this from your main() */
 
 void ui_quit (void);
-	/* aborts the gui loop and saves the
-	   user's options to the config */
+	/* aborts the gui loop. */
 
 void ui_pump (void);
 	/* updates the gui. use it when doing

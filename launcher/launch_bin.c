@@ -2,7 +2,7 @@
 	launch_bin.c
 	hexen2 launcher: binary launching
 
-	$Id: launch_bin.c,v 1.48 2007-08-29 13:05:34 sezero Exp $
+	$Id: launch_bin.c,v 1.49 2008-01-12 12:02:34 sezero Exp $
 
 	This program is free software; you can redistribute it and/or
 	modify it under the terms of the GNU General Public License
@@ -245,6 +245,7 @@ void launch_hexen2_bin (void)
 /* finish the list of args */
 	args[++i] = NULL;
 
+	write_config_file ();
 	ui_quit ();
 
 	printf ("\nLaunching %s\n", &string_buf[0]);
@@ -258,5 +259,7 @@ void launch_hexen2_bin (void)
 	printf ("\n\n");
 
 	execv (&string_buf[0], args);
+
+	exit (0);
 }
 

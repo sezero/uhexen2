@@ -2,7 +2,7 @@
 	gtk_ui.c
 	hexen2 launcher gtk+ interface
 
-	$Id: gtk_ui.c,v 1.7 2007-12-08 09:16:50 sezero Exp $
+	$Id: gtk_ui.c,v 1.8 2008-01-12 12:02:34 sezero Exp $
 
 	This program is free software; you can redistribute it and/or
 	modify it under the terms of the GNU General Public License
@@ -1696,7 +1696,7 @@ static void create_window1 (void)
 /*********************************************************************/
 // EXPOSED UI FUNCTIONS:
 
-static gint ui_init (gpointer user_data)
+static gint ui_start (gpointer user_data)
 {
 // create the main window
 	create_window1();
@@ -1716,7 +1716,7 @@ static gint ui_init (gpointer user_data)
 	return 0;
 }
 
-int ui_main (int *argc, char ***argv)
+int ui_init (int *argc, char ***argv)
 {
 /*
 #ifdef ENABLE_NLS
@@ -1732,7 +1732,13 @@ int ui_main (int *argc, char ***argv)
 	add_pixmap_directory (PACKAGE_SOURCE_DIR "/pixmaps");
 */
 
-	gtk_init_add (GTK_INIT_FUNC(ui_init), NULL);
+	return 0;
+}
+
+int ui_main (void)
+{
+//	gtk_init_add (GTK_INIT_FUNC(ui_start), NULL);
+	ui_start (NULL);
 	gtk_main ();
 
 	return 0;
@@ -1740,7 +1746,6 @@ int ui_main (int *argc, char ***argv)
 
 void ui_quit (void)
 {
-	write_config_file ();
 	gtk_main_quit ();
 }
 
