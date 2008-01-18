@@ -1,0 +1,113 @@
+
+-------------------------------------------------------------------------
+
+This is a pretty messy draft of notes I gathered while working on the
+Hexen II, HexenWorld and utilities code.  For known bugs, see the file
+named BUGS.  This file lists several issues in the code which mostly
+are not actually bugs, but still issues, anyway.  I also provided some
+documentation and some info about hexen2-specific data files, although
+very incomplete at the moment.
+
+-------------------------------------------------------------------------
+
+
+Client to Server / Server to Client code intrusions:
+--------------------------------------------------------------
+
+host.c and host_cmd.c already hold code shared by both the client and
+the server, they are quake standart.  Aside from them, here are the
+specific intrusions in the hexen2 code:
+
+- sv_main.c :: SV_SpawnServer() :  Loading Progress Bar data
+  (server operations are progress bar'red during the loading stage)
+  vars: total_loading_size, current_loading_size, loading_stage
+  functions: D_ShowLoadingSize()
+
+- sv_main.c :: SV_SpawnServer()
+  vars: scr_centertime_off
+
+- sv_main.c :: SV_SpawnServer() :  gl texture flush data
+  vars: flush_textures (if the new map name is different we'll flush the
+  textures from opengl. can't detect map name change anywhere else.)
+
+- sv_kingofhill :  sv_main.c, cl_parse.c, sbar.c
+  King of the Hill status (mission pack specific). Broken by design:
+  the server message svc_update_kingofhill is sent by the progs and is
+  read by cl_parse.c, therefore if you are running a dedicated server
+  it will never be read and always be reset at every new map start.
+
+- cl_playerclass : host_cmd.c, pr_edict.c
+  For the mission pack, this value is sent to the progs as soon as the
+  progs is loaded. For single player games, it makes worldspawn() to
+  load the specific player model stuff and not all of the player models.
+  It can't be acquired by the server early enough by way of the client
+  connection messages..
+
+
+SV_SpawnServer, Host_ShutdownServer and SCR_UpdateScreen:
+--------------------------------------------------------------
+The timeout in SCR_UpdateScreen(), and more (actually a bug) :
+
+When in a map, suppose that you touched a level exit but the map file
+for the changelevel target doesn't exist:  SV_SpawnServer() will issue
+an error message and return, SCR_UpdateScreen() will wait for its timeout
+and then spit the stupid 'load failed' message.  Here, SV_SpawnServer()
+didn't do any Host_ShutDown(), didn't drop any of its clients and didn't
+decrement the active connections.  Now if you try loading a saved game,
+Loop_Connect() naturally fails with a message 'no qsocket available'.
+The problem is the same for the Quake engine, too.
+
+
+Intermission indices:
+--------------------------------------------------------------
+
+Accepted range: 1-12
+
+num:					strings.txt index:
+---------------------------------	-------------------
+ 1: famine ending (episode 1 to 2)	395
+ 2: death ending (episode 2 to 3)	396
+ 3: pestilence ending (episode 3 to 4)	397
+ 4: war ending (episode 4 to last)	398
+ 5: finale for the demo version		408 (410 for the mission pack.)
+ 6: eidolon, finale, part 1/3		392
+ 7: eidolon, finale, part 2/3		393
+ 8: eidolon, finale, part 3/3		394
+ 9: finale for the bundle version	391
+10: mission pack, praevus ending	538
+11: mission pack, eps. change to tibet	545
+12: mission pack, opening		561
+
+#12 is not a 'real' intermission:
+- running a new single player mission pack game through
+  the menu system starts an 'intermission screen' (#12)
+  first: some scrolling text giving a story background.
+- this intermission screen #12 is only started by this
+  menu system: unlike the other intermissions, it isn't
+  progs (server) controlled.
+- there is no svc_intermission message for this, so, we
+  set cl.completed_time and cl.intermission by hand.
+- since the user may just have started the game, we must
+  load strings.txt for the scrolling text before setting
+  cl.intermission, if necessary.
+- running the keep1 map is also a client-side thing:  it
+  is triggered by Key_Event() when the user hits a key.
+
+
+Specific Hexen II data files:
+--------------------------------------------------------------
+
+gfx/invpal.lmp :
+	262144 bytes, 8 bit pallette for the opengl version.
+	Can be created from the palette during start-up, too.
+
+gfx/menu/bigfont.lmp
+gfx/menu/bigfont2.lmp :
+	729 bytes. a set of 27 characters with large font, A-Z
+	and '/', for main menu titles. 20x20.  bigfont2 is the
+	one actually in use now.
+
+gfx/menu/fontsize.lmp :
+	font size data for the bigfont characters. Can be created
+	from the bigfont file during start-up, too.
+
