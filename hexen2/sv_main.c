@@ -2,7 +2,7 @@
 	sv_main.c
 	server main program
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sv_main.c,v 1.64 2007-11-11 13:17:41 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sv_main.c,v 1.65 2008-01-18 07:17:02 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -1836,7 +1836,7 @@ static void SV_SendReconnect (void)
 	NET_SendToAll (&msg, 5.0);
 
 #if !defined(SERVERONLY)
-	if (cls.state != ca_dedicated)
+	if (!isDedicated)
 #ifdef QUAKE2
 		Cbuf_InsertText ("reconnect\n");
 #else
