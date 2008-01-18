@@ -3,7 +3,7 @@
 	DOS system interface code.
 	from quake1 source with adaptations for uhexen2.
 
-	$Id: sys_dos.c,v 1.7 2008-01-12 09:46:16 sezero Exp $
+	$Id: sys_dos.c,v 1.8 2008-01-18 07:29:08 sezero Exp $
 
 	Copyright (C) 1996-1997  Id Software, Inc.
 
@@ -1015,7 +1015,7 @@ int main (int argc, char **argv)
 		newtime = Sys_DoubleTime ();
 		time = newtime - oldtime;
 
-		if (cls.state == ca_dedicated && (time<sys_ticrate.value))
+		if (isDedicated && (time < sys_ticrate.value))
 			continue;
 
 		Host_Frame (time);
