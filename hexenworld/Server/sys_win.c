@@ -2,7 +2,7 @@
 	sys_win.c
 	Win32 system interface code
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Server/win_stuff/sys_win.c,v 1.41 2008-01-12 09:46:18 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Server/sys_win.c,v 1.8 2008-01-22 13:01:16 sezero Exp $
 */
 
 #include "quakedef.h"
