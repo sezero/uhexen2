@@ -2,7 +2,7 @@
 	sv_edict.c
 	entity dictionary
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Server/pr_edict.c,v 1.37 2008-01-22 12:01:08 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Server/pr_edict.c,v 1.38 2008-01-22 12:39:04 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -1251,7 +1251,7 @@ void PR_LoadProgs (void)
 
 	Con_Printf ("Loaded %s, v%d, %d crc, %s structures\n",
 			progname, progs->version, progs->crc,
-			(progs->crc == PROGHEADER_CRC) ? "H2W/v0.15" : "Unknown");
+			(progs->crc == PROGS_V015_CRC) ? "HW/v0.15" : "Unknown");
 
 	pr_global_struct = (globalvars_t *)((byte *)progs + progs->ofs_globals);
 	pr_globals = (float *)pr_global_struct;
