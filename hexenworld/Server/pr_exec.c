@@ -2,7 +2,7 @@
 	pr_exec.c
 	PROGS execution
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Server/pr_exec.c,v 1.23 2007-11-14 07:42:34 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Server/pr_exec.c,v 1.24 2008-01-22 12:01:08 sezero Exp $
 */
 
 // HEADER FILES ------------------------------------------------------------
@@ -131,20 +131,20 @@ enum {SWITCH_F,SWITCH_V,SWITCH_S,SWITCH_E,SWITCH_FNC};
 
 void PR_ExecuteProgram (func_t fnum)
 {
-	int i;
-	int s;
-	eval_t *a, *b, *c;
-	eval_t *ptr;
-	dstatement_t *st;
-	dfunction_t *f, *newf;
-	int runaway;
-	edict_t *ed;
-	int exitdepth;
-	int startFrame;
-	int endFrame;
-	float val;
-	int case_type = -1;
-	float switch_float = 0;	// shut up compiler
+	int		i;
+	int		s;
+	eval_t		*a, *b, *c;
+	eval_t		*ptr;
+	dstatement_t	*st;
+	dfunction_t	*f, *newf;
+	int		runaway;
+	edict_t		*ed;
+	int		exitdepth;
+	int		startFrame;
+	int		endFrame;
+	float		val;
+	int		case_type = -1;
+	float		switch_float = 0;	// shut up compiler
 
 	if (!fnum || fnum >= progs->numfunctions)
 	{
@@ -351,11 +351,11 @@ void PR_ExecuteProgram (func_t fnum)
 		b->vector[2] *= a->_float;
 		break;
 	case OP_MULSTOREP_F:	// e.f *= f
-		ptr = (eval_t *)((byte *)sv.edicts+b->_int);
+		ptr = (eval_t *)((byte *)sv.edicts + b->_int);
 		c->_float = (ptr->_float *= a->_float);
 		break;
 	case OP_MULSTOREP_V:	// e.v *= f
-		ptr = (eval_t *)((byte *)sv.edicts+b->_int);
+		ptr = (eval_t *)((byte *)sv.edicts + b->_int);
 		c->vector[0] = (ptr->vector[0] *= a->_float);
 		c->vector[0] = (ptr->vector[1] *= a->_float);
 		c->vector[0] = (ptr->vector[2] *= a->_float);
@@ -365,7 +365,7 @@ void PR_ExecuteProgram (func_t fnum)
 		b->_float /= a->_float;
 		break;
 	case OP_DIVSTOREP_F:	// e.f /= f
-		ptr = (eval_t *)((byte *)sv.edicts+b->_int);
+		ptr = (eval_t *)((byte *)sv.edicts + b->_int);
 		c->_float = (ptr->_float /= a->_float);
 		break;
 
@@ -378,11 +378,11 @@ void PR_ExecuteProgram (func_t fnum)
 		b->vector[2] += a->vector[2];
 		break;
 	case OP_ADDSTOREP_F:	// e.f += f
-		ptr = (eval_t *)((byte *)sv.edicts+b->_int);
+		ptr = (eval_t *)((byte *)sv.edicts + b->_int);
 		c->_float = (ptr->_float += a->_float);
 		break;
 	case OP_ADDSTOREP_V:	// e.v += v
-		ptr = (eval_t *)((byte *)sv.edicts+b->_int);
+		ptr = (eval_t *)((byte *)sv.edicts + b->_int);
 		c->vector[0] = (ptr->vector[0] += a->vector[0]);
 		c->vector[1] = (ptr->vector[1] += a->vector[1]);
 		c->vector[2] = (ptr->vector[2] += a->vector[2]);
@@ -397,11 +397,11 @@ void PR_ExecuteProgram (func_t fnum)
 		b->vector[2] -= a->vector[2];
 		break;
 	case OP_SUBSTOREP_F:	// e.f -= f
-		ptr = (eval_t *)((byte *)sv.edicts+b->_int);
+		ptr = (eval_t *)((byte *)sv.edicts + b->_int);
 		c->_float = (ptr->_float -= a->_float);
 		break;
 	case OP_SUBSTOREP_V:	// e.v -= v
-		ptr = (eval_t *)((byte *)sv.edicts+b->_int);
+		ptr = (eval_t *)((byte *)sv.edicts + b->_int);
 		c->vector[0] = (ptr->vector[0] -= a->vector[0]);
 		c->vector[1] = (ptr->vector[1] -= a->vector[1]);
 		c->vector[2] = (ptr->vector[2] -= a->vector[2]);
@@ -428,7 +428,7 @@ void PR_ExecuteProgram (func_t fnum)
 #ifdef PARANOID
 		NUM_FOR_EDICT(ed);	// Make sure it's in range
 #endif
-		a = (eval_t *)((int *)&ed->v+b->_int);
+		a = (eval_t *)((int *)&ed->v + b->_int);
 		c->_int = a->_int;
 		break;
 
@@ -522,8 +522,8 @@ void PR_ExecuteProgram (func_t fnum)
 	case OP_DONE:
 	case OP_RETURN:
 		pr_globals[OFS_RETURN] = pr_globals[(unsigned short)st->a];
-		pr_globals[OFS_RETURN+1] = pr_globals[(unsigned short)st->a+1];
-		pr_globals[OFS_RETURN+2] = pr_globals[(unsigned short)st->a+2];
+		pr_globals[OFS_RETURN + 1] = pr_globals[(unsigned short)st->a + 1];
+		pr_globals[OFS_RETURN + 2] = pr_globals[(unsigned short)st->a + 2];
 #ifdef TIMESNAP_ACTIVE
 		pr_xfunction->profile += ProgsTimer();
 #endif
@@ -554,7 +554,7 @@ void PR_ExecuteProgram (func_t fnum)
 	case OP_CSTATE:	// Cycle state
 		ed = PROG_TO_EDICT(PR_GLOBAL_STRUCT(self));
 		ed->v.nextthink = PR_GLOBAL_STRUCT(time) + HX_FRAME_TIME;
-		ed->v.think = pr_xfunction-pr_functions;
+		ed->v.think = pr_xfunction - pr_functions;
 			pr_global_struct->cycle_wrapped = false;
 		startFrame = (int)a->_float;
 		endFrame = (int)b->_float;
@@ -590,7 +590,7 @@ void PR_ExecuteProgram (func_t fnum)
 	case OP_CWSTATE:	// Cycle weapon state
 		ed = PROG_TO_EDICT(PR_GLOBAL_STRUCT(self));
 		ed->v.nextthink = PR_GLOBAL_STRUCT(time) + HX_FRAME_TIME;
-		ed->v.think = pr_xfunction-pr_functions;
+		ed->v.think = pr_xfunction - pr_functions;
 			pr_global_struct->cycle_wrapped = false;
 		startFrame = (int)a->_float;
 		endFrame = (int)b->_float;
@@ -634,21 +634,21 @@ void PR_ExecuteProgram (func_t fnum)
 		{
 			PR_RunError("assignment to world entity");
 		}
-		ed->v.nextthink = PR_GLOBAL_STRUCT(time)+b->_float;
+		ed->v.nextthink = PR_GLOBAL_STRUCT(time) + b->_float;
 		break;
 
 	case OP_BITSET:		// f (+) f
 		b->_float = (int)b->_float | (int)a->_float;
 		break;
 	case OP_BITSETP:	// e.f (+) f
-		ptr = (eval_t *)((byte *)sv.edicts+b->_int);
+		ptr = (eval_t *)((byte *)sv.edicts + b->_int);
 		ptr->_float = (int)ptr->_float | (int)a->_float;
 		break;
 	case OP_BITCLR:		// f (-) f
 		b->_float = (int)b->_float & ~((int)a->_float);
 		break;
 	case OP_BITCLRP:	// e.f (-) f
-		ptr = (eval_t *)((byte *)sv.edicts+b->_int);
+		ptr = (eval_t *)((byte *)sv.edicts + b->_int);
 		ptr->_float = (int)ptr->_float & ~((int)a->_float);
 		break;
 
@@ -673,19 +673,19 @@ void PR_ExecuteProgram (func_t fnum)
 		break;
 	case OP_RANDV0:
 		val = (rand() & 0x7fff) / ((float)0x7fff);
-		G_FLOAT(OFS_RETURN+0) = val;
+		G_FLOAT(OFS_RETURN + 0) = val;
 		val = (rand() & 0x7fff) / ((float)0x7fff);
-		G_FLOAT(OFS_RETURN+1) = val;
+		G_FLOAT(OFS_RETURN + 1) = val;
 		val = (rand() & 0x7fff) / ((float)0x7fff);
-		G_FLOAT(OFS_RETURN+2) = val;
+		G_FLOAT(OFS_RETURN + 2) = val;
 		break;
 	case OP_RANDV1:
 		val = (rand() & 0x7fff) / ((float)0x7fff) * a->vector[0];
-		G_FLOAT(OFS_RETURN+0) = val;
+		G_FLOAT(OFS_RETURN + 0) = val;
 		val = (rand() & 0x7fff) / ((float)0x7fff) * a->vector[1];
-		G_FLOAT(OFS_RETURN+1) = val;
+		G_FLOAT(OFS_RETURN + 1) = val;
 		val = (rand() & 0x7fff) / ((float)0x7fff) * a->vector[2];
-		G_FLOAT(OFS_RETURN+2) = val;
+		G_FLOAT(OFS_RETURN + 2) = val;
 		break;
 	case OP_RANDV2:
 		for (i = 0; i < 3; i++)
@@ -698,13 +698,13 @@ void PR_ExecuteProgram (func_t fnum)
 			{
 				val = b->vector[i] + (rand() * (1.0 / RAND_MAX) * (a->vector[i]-b->vector[i]));
 			}
-			G_FLOAT(OFS_RETURN+i) = val;
+			G_FLOAT(OFS_RETURN + i) = val;
 		}
 		break;
 	case OP_SWITCH_F:
 		case_type = SWITCH_F;
 		switch_float = a->_float;
-		s += st->b-1;	// -1 to offset the s++
+		s += st->b - 1;	// -1 to offset the s++
 		break;
 	case OP_SWITCH_V:
 		PR_RunError("switch v not done yet!");
@@ -764,7 +764,7 @@ void PR_ExecuteProgram (func_t fnum)
 
 static int EnterFunction (dfunction_t *f)
 {
-	int i, j, c, o;
+	int	i, j, c, o;
 
 	pr_stack[pr_depth].s = pr_xstatement;
 	pr_stack[pr_depth].f = pr_xfunction;
@@ -783,7 +783,7 @@ static int EnterFunction (dfunction_t *f)
 
 	for (i = 0; i < c ; i++)
 	{
-		localstack[localstack_used+i] = ((int *)pr_globals)[f->parm_start + i];
+		localstack[localstack_used + i] = ((int *)pr_globals)[f->parm_start + i];
 	}
 	localstack_used += c;
 
@@ -793,7 +793,7 @@ static int EnterFunction (dfunction_t *f)
 	{
 		for (j = 0; j < f->parm_size[i]; j++)
 		{
-			((int *)pr_globals)[o] = ((int *)pr_globals)[OFS_PARM0+i*3+j];
+			((int *)pr_globals)[o] = ((int *)pr_globals)[OFS_PARM0 + i*3 + j];
 			o++;
 		}
 	}
@@ -811,7 +811,7 @@ static int EnterFunction (dfunction_t *f)
 
 static int LeaveFunction (void)
 {
-	int i, c;
+	int	i, c;
 
 	if (pr_depth <= 0)
 	{
@@ -828,8 +828,7 @@ static int LeaveFunction (void)
 
 	for (i = 0; i < c; i++)
 	{
-		((int *)pr_globals)[pr_xfunction->parm_start+i] =
-				localstack[localstack_used+i];
+		((int *)pr_globals)[pr_xfunction->parm_start + i] = localstack[localstack_used + i];
 	}
 
 	// up stack
@@ -847,8 +846,8 @@ static int LeaveFunction (void)
 
 void PR_RunError (const char *error, ...)
 {
-	va_list argptr;
-	char string[1024];
+	va_list	argptr;
+	char	string[1024];
 
 	va_start (argptr, error);
 	q_vsnprintf (string, sizeof(string), error, argptr);
@@ -959,18 +958,18 @@ static void PrintStatement (dstatement_t *s)
 
 void PR_Profile_f (void)
 {
-	int i, j;
-	int max;
-	dfunction_t *f, *bestFunc;
-	int total;
-	int funcCount;
-	qboolean byHC;
-	char saveName[MAX_OSPATH];
-	FILE *saveFile = NULL;
-	int currentFile;
-	int bestFile;
-	int tally;
-	const char *s;
+	int		i, j;
+	int		max;
+	dfunction_t	*f, *bestFunc;
+	int		total;
+	int		funcCount;
+	qboolean	byHC;
+	char	saveName[MAX_OSPATH];
+	FILE	*saveFile = NULL;
+	int		currentFile;
+	int		bestFile;
+	int		tally;
+	const char	*s;
 
 	byHC = false;
 	funcCount = 10;
@@ -984,7 +983,7 @@ void PR_Profile_f (void)
 		}
 		else if (tolower(*s) == 's')
 		{ // Save to file
-			if (i+1 < Cmd_Argc() && !isdigit(*Cmd_Argv(i+1)))
+			if (i + 1 < Cmd_Argc() && !isdigit(*Cmd_Argv(i + 1)))
 			{
 				i++;
 				sprintf(saveName, "%s/%s", fs_userdir, Cmd_Argv(i));
@@ -1051,14 +1050,14 @@ void PR_Profile_f (void)
 					if (saveFile)
 					{
 						fprintf(saveFile, "%05.2f %s\n",
-							((float)bestFunc->profile/(float)total)*100.0,
-							PR_GetString(bestFunc->s_name));
+								((float)bestFunc->profile / (float)total) * 100.0,
+								PR_GetString(bestFunc->s_name));
 					}
 					else
 					{
 						Con_Printf("%05.2f %s\n",
-							((float)bestFunc->profile/(float)total)*100.0,
-							PR_GetString(bestFunc->s_name));
+								((float)bestFunc->profile / (float)total) * 100.0,
+								PR_GetString(bestFunc->s_name));
 					}
 				}
 				j++;
@@ -1125,14 +1124,14 @@ void PR_Profile_f (void)
 						if (saveFile)
 						{
 							fprintf(saveFile, "   %05.2f %s\n",
-								((float)bestFunc->profile/(float)total)*100.0,
-								PR_GetString(bestFunc->s_name));
+									((float)bestFunc->profile / (float)total) * 100.0,
+									PR_GetString(bestFunc->s_name));
 						}
 						else
 						{
 							Con_Printf("   %05.2f %s\n",
-								((float)bestFunc->profile/(float)total)*100.0,
-								PR_GetString(bestFunc->s_name));
+									((float)bestFunc->profile / (float)total) * 100.0,
+									PR_GetString(bestFunc->s_name));
 						}
 					}
 					j++;

@@ -2,7 +2,7 @@
 	host_cmd.c
 	console commands
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/server/host_cmd.c,v 1.44 2007-12-20 21:45:32 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/server/host_cmd.c,v 1.45 2008-01-22 12:01:08 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -852,7 +852,7 @@ static void RestoreClients (void)
 			ent->v.netname = PR_SetEngineString(host_client->name);
 			ent->v.playerclass = host_client->playerclass;
 
-			if (old_progdefs)
+			if (is_progdefs111)
 			{
 			// copy spawn parms out of the client_t
 				for (j = 0; j < NUM_SPAWN_PARMS; j++)
@@ -1001,7 +1001,7 @@ static int LoadGamestate (const char *level, const char *startspot, int ClientsM
 		{
 			ED_ParseGlobals (start);
 			// Need to restore this
-			if (old_progdefs)
+			if (is_progdefs111)
 				pr_global_struct_v111->startspot = PR_SetEngineString(sv.startspot);
 			else
 				pr_global_struct->startspot = PR_SetEngineString(sv.startspot);
@@ -1041,7 +1041,7 @@ static int LoadGamestate (const char *level, const char *startspot, int ClientsM
 		sv.time = playtime;
 		sv.paused = true;
 
-		if (old_progdefs)
+		if (is_progdefs111)
 			pr_global_struct_v111->serverflags = svs.serverflags;
 		else
 			pr_global_struct->serverflags = svs.serverflags;
@@ -1056,7 +1056,7 @@ static int LoadGamestate (const char *level, const char *startspot, int ClientsM
 	{
 		sv.time = playtime;
 
-		if (old_progdefs)
+		if (is_progdefs111)
 			pr_global_struct_v111->serverflags = svs.serverflags;
 		else
 			pr_global_struct->serverflags = svs.serverflags;
@@ -1169,7 +1169,7 @@ static void Host_Class_f (void)
 	host_client->edict->v.playerclass = newClass;
 
 	// Change the weapon model used
-	if (old_progdefs)
+	if (is_progdefs111)
 	{
 		pr_global_struct_v111->self = EDICT_TO_PROG(host_client->edict);
 		PR_ExecuteProgram (pr_global_struct_v111->ClassChangeWeapon);
@@ -1414,7 +1414,7 @@ static void Host_Kill_f (void)
 		return;
 	}
 
-	if (old_progdefs)
+	if (is_progdefs111)
 	{
 		pr_global_struct_v111->time = sv.time;
 		pr_global_struct_v111->self = EDICT_TO_PROG(sv_player);
@@ -1535,7 +1535,7 @@ static void Host_Spawn_f (void)
 			ent->v.netname = PR_SetEngineString(host_client->name);
 			ent->v.playerclass = host_client->playerclass;
 
-			if (old_progdefs)
+			if (is_progdefs111)
 			{
 			// copy spawn parms out of the client_t
 				for (i = 0; i < NUM_SPAWN_PARMS; i++)

@@ -2,7 +2,7 @@
 	pr_cmds.c
 	prog commands
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/pr_cmds.c,v 1.50 2007-11-11 13:17:40 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/pr_cmds.c,v 1.51 2008-01-22 12:01:04 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -822,7 +822,7 @@ static void PF_break (void)
 
 static void PR_SetTrace (trace_t trace)
 {
-	if (old_progdefs)
+	if (is_progdefs111)
 	{
 		pr_global_struct_v111->trace_allsolid = trace.allsolid;
 		pr_global_struct_v111->trace_startsolid = trace.startsolid;
@@ -1940,7 +1940,7 @@ static void PF_walkmove (void)
 
 // restore program state
 	pr_xfunction = oldf;
-	if (old_progdefs)
+	if (is_progdefs111)
 		pr_global_struct_v111->self = oldself;
 	else
 		pr_global_struct->self = oldself;
@@ -2496,7 +2496,7 @@ static void PF_setspawnparms (void)
 
 	for (i = 0; i < NUM_SPAWN_PARMS; i++)
 	{
-	    if (old_progdefs)
+	    if (is_progdefs111)
 		(&pr_global_struct_v111->parm1)[i] = client->spawn_parms[i];
 	    else
 		(&pr_global_struct->parm1)[i] = client->spawn_parms[i];
@@ -2784,7 +2784,7 @@ static void PF_movestep (void)
 
 // restore program state
 	pr_xfunction = oldf;
-	if (old_progdefs)
+	if (is_progdefs111)
 		pr_global_struct_v111->self = oldself;
 	else
 		pr_global_struct->self = oldself;

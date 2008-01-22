@@ -2,7 +2,7 @@
 	sv_edict.c
 	entity dictionary
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Server/pr_edict.c,v 1.36 2008-01-12 09:46:18 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Server/pr_edict.c,v 1.37 2008-01-22 12:01:08 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -1230,7 +1230,7 @@ void PR_LoadProgs (void)
 		((int *)progs)[i] = LittleLong ( ((int *)progs)[i] );
 
 	if (progs->version != PROG_VERSION)
-		SV_Error ("%s has wrong version number %d (should be %d)", progname, progs->version, PROG_VERSION);
+		SV_Error ("%s is of unsupported version (%d, should be %d)", progname, progs->version, PROG_VERSION);
 	if (progs->crc != PROGHEADER_CRC)
 		SV_Error ("Unexpected crc ( %d ) for %s", progs->crc, progname);
 
@@ -1248,6 +1248,10 @@ void PR_LoadProgs (void)
 	pr_globaldefs = (ddef_t *)((byte *)progs + progs->ofs_globaldefs);
 	pr_fielddefs = (ddef_t *)((byte *)progs + progs->ofs_fielddefs);
 	pr_statements = (dstatement_t *)((byte *)progs + progs->ofs_statements);
+
+	Con_Printf ("Loaded %s, v%d, %d crc, %s structures\n",
+			progname, progs->version, progs->crc,
+			(progs->crc == PROGHEADER_CRC) ? "H2W/v0.15" : "Unknown");
 
 	pr_global_struct = (globalvars_t *)((byte *)progs + progs->ofs_globals);
 	pr_globals = (float *)pr_global_struct;

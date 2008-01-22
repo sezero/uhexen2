@@ -2,7 +2,7 @@
 	progs.h
 	PROGS structures, public functions and vars
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Server/progs.h,v 1.15 2007-11-11 13:18:22 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Server/progs.h,v 1.16 2008-01-22 12:01:08 sezero Exp $
 */
 
 #ifndef __HX2_PROGS_H
@@ -45,12 +45,12 @@ typedef struct edict_s
 
 extern	dprograms_t		*progs;
 extern	dfunction_t		*pr_functions;
-extern	dstatement_t	*pr_statements;
-extern	globalvars_t	*pr_global_struct;
+extern	dstatement_t		*pr_statements;
+extern	globalvars_t		*pr_global_struct;
 #define	PR_GLOBAL_STRUCT(parm)	(pr_global_struct->parm)
-extern	float			*pr_globals;		// same as pr_global_struct
+extern	float			*pr_globals;	// same as pr_global_struct
 
-extern	int				pr_edict_size;	// in bytes
+extern	int			pr_edict_size;	// in bytes
 
 //============================================================================
 

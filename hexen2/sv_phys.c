@@ -2,7 +2,7 @@
 	sv_phys.c
 	sv physics
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sv_phys.c,v 1.24 2007-06-30 11:19:43 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sv_phys.c,v 1.25 2008-01-22 12:01:05 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -133,7 +133,7 @@ static qboolean SV_RunThink (edict_t *ent)
 					// it is possible to start that way
 					// by a trigger with a local time.
 	ent->v.nextthink = 0;
-	if (old_progdefs)
+	if (is_progdefs111)
 	{
 		pr_global_struct_v111->time = thinktime;
 		pr_global_struct_v111->self = EDICT_TO_PROG(ent);
@@ -162,7 +162,7 @@ static void SV_Impact (edict_t *e1, edict_t *e2)
 {
 	int		old_self, old_other;
 
-	if (old_progdefs)
+	if (is_progdefs111)
 	{
 		old_self = pr_global_struct_v111->self;
 		old_other = pr_global_struct_v111->other;
@@ -662,7 +662,7 @@ static void SV_PushMove (edict_t *pusher, float movetime, qboolean update_time)
 			// otherwise, just stay in place until the obstacle is gone
 			if (pusher->v.blocked)
 			{
-				if (old_progdefs)
+				if (is_progdefs111)
 				{
 					pr_global_struct_v111->self = EDICT_TO_PROG(pusher);
 					pr_global_struct_v111->other = EDICT_TO_PROG(check);
@@ -887,7 +887,7 @@ static void SV_PushRotate (edict_t *pusher, float movetime)
 			// otherwise, just stay in place until the obstacle is gone
 			if (pusher->v.blocked)
 			{
-				if (old_progdefs)
+				if (is_progdefs111)
 				{
 					pr_global_struct_v111->self = EDICT_TO_PROG(pusher);
 					pr_global_struct_v111->other = EDICT_TO_PROG(check);
@@ -1264,7 +1264,7 @@ static void SV_PushRotate (edict_t *pusher, float movetime)
 				// otherwise, just stay in place until the obstacle is gone
 				if (pusher->v.blocked)
 				{
-					if (old_progdefs)
+					if (is_progdefs111)
 					{
 						pr_global_struct_v111->self = EDICT_TO_PROG(pusher);
 						pr_global_struct_v111->other = EDICT_TO_PROG(check);
@@ -1346,7 +1346,7 @@ static void SV_Physics_Pusher (edict_t *ent)
 	if (thinktime > oldltime && thinktime <= ent->v.ltime)
 	{
 		ent->v.nextthink = 0;
-		if (old_progdefs)
+		if (is_progdefs111)
 		{
 			pr_global_struct_v111->time = sv.time;
 			pr_global_struct_v111->self = EDICT_TO_PROG(ent);
@@ -1718,7 +1718,7 @@ static void SV_Physics_Client (edict_t *ent, int num)
 //
 // call standard client pre-think
 //
-	if (old_progdefs)
+	if (is_progdefs111)
 	{
 		pr_global_struct_v111->time = sv.time;
 		pr_global_struct_v111->self = EDICT_TO_PROG(ent);
@@ -1791,7 +1791,7 @@ static void SV_Physics_Client (edict_t *ent, int num)
 //
 	SV_LinkEdict (ent, true);
 
-	if (old_progdefs)
+	if (is_progdefs111)
 	{
 		pr_global_struct_v111->time = sv.time;
 		pr_global_struct_v111->self = EDICT_TO_PROG(ent);
@@ -2066,7 +2066,7 @@ static void SV_Physics_Step (edict_t *ent)
 	else
 		VectorCopy(vec_origin, ent->v.basevelocity);
 //@@
-	if (old_progdefs)
+	if (is_progdefs111)
 	{
 		pr_global_struct_v111->time = sv.time;
 		pr_global_struct_v111->self = EDICT_TO_PROG(ent);
@@ -2220,7 +2220,7 @@ void SV_Physics (void)
 	vec3_t	oldOrigin, oldAngle;
 
 // let the progs know that a new frame has started
-	if (old_progdefs)
+	if (is_progdefs111)
 	{
 		pr_global_struct_v111->self = EDICT_TO_PROG(sv.edicts);
 		pr_global_struct_v111->other = EDICT_TO_PROG(sv.edicts);
@@ -2306,7 +2306,7 @@ void SV_Physics (void)
 
 					if (originMoved && ent2->v.chainmoved)
 					{	// callback function
-						if (old_progdefs)
+						if (is_progdefs111)
 						{
 							pr_global_struct_v111->self = EDICT_TO_PROG(ent2);
 							pr_global_struct_v111->other = EDICT_TO_PROG(ent);
@@ -2327,7 +2327,7 @@ void SV_Physics (void)
 		}
 	}
 
-	if (old_progdefs)
+	if (is_progdefs111)
 	{
 		if (pr_global_struct_v111->force_retouch)
 			pr_global_struct_v111->force_retouch--;

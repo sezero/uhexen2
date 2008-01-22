@@ -2,7 +2,7 @@
 	host.c
 	coordinates spawning and killing of local servers
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host.c,v 1.96 2007-12-20 21:45:31 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host.c,v 1.97 2008-01-22 12:01:03 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -507,7 +507,7 @@ void SV_DropClient (qboolean crash)
 		{
 		// call the prog function for removing a client
 		// this will set the body to a dead frame, among other things
-			if (old_progdefs)
+			if (is_progdefs111)
 			{
 				saveSelf = pr_global_struct_v111->self;
 				pr_global_struct_v111->self = EDICT_TO_PROG(host_client->edict);
@@ -720,7 +720,7 @@ Host_ServerFrame
 static void _Host_ServerFrame (void)
 {
 // run the world state
-	if (old_progdefs)
+	if (is_progdefs111)
 		pr_global_struct_v111->frametime = host_frametime;
 	else
 		pr_global_struct->frametime = host_frametime;
@@ -745,7 +745,7 @@ static void Host_ServerFrame (void)
 	float	temp_host_frametime;
 
 // run the world state
-	if (old_progdefs)
+	if (is_progdefs111)
 		pr_global_struct_v111->frametime = host_frametime;
 	else
 		pr_global_struct->frametime = host_frametime;
@@ -777,7 +777,7 @@ static void Host_ServerFrame (void)
 static void Host_ServerFrame (void)
 {
 // run the world state
-	if (old_progdefs)
+	if (is_progdefs111)
 		pr_global_struct_v111->frametime = host_frametime;
 	else
 		pr_global_struct->frametime = host_frametime;

@@ -2,7 +2,7 @@
 	sv_move.c
 	monster movement
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sv_move.c,v 1.16 2007-04-30 17:04:32 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sv_move.c,v 1.17 2008-01-22 12:01:04 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -186,7 +186,7 @@ realcheck:	// check it for real...
 
 static void set_move_trace(trace_t *trace)
 {
-	if (old_progdefs)
+	if (is_progdefs111)
 	{
 		pr_global_struct_v111->trace_allsolid = trace->allsolid;
 		pr_global_struct_v111->trace_startsolid = trace->startsolid;

@@ -2,7 +2,7 @@
 	world.c
 	world query functions
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/world.c,v 1.22 2007-08-01 13:51:20 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/world.c,v 1.23 2008-01-22 12:01:05 sezero Exp $
 
 	entities never clip against themselves, or their owner
 	line of sight checks trace->crosscontent, but bullets don't
@@ -320,7 +320,7 @@ static void SV_TouchLinks (edict_t *ent, areanode_t *node)
 				|| ent->v.absmax[2] < touch->v.absmin[2] )
 			continue;
 
-		if (old_progdefs)
+		if (is_progdefs111)
 		{
 			old_self = pr_global_struct_v111->self;
 			old_other = pr_global_struct_v111->other;

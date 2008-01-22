@@ -2,7 +2,7 @@
 	sv_edict.c
 	entity dictionary
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/pr_edict.c,v 1.54 2008-01-12 09:46:16 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/pr_edict.c,v 1.55 2008-01-22 12:01:04 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -22,7 +22,7 @@ static	ddef_t		*pr_globaldefs;
 dstatement_t	*pr_statements;
 globalvars_t	*pr_global_struct;
 globalvars_v111_t	*pr_global_struct_v111;
-qboolean	old_progdefs;	// whether we have a Hexen2-v1.11 globals struct
+qboolean	is_progdefs111;	// whether we have a Hexen2-v1.11 globals struct
 float		*pr_globals;		// same as pr_global_struct
 int		pr_edict_size;		// in bytes
 
@@ -1018,7 +1018,7 @@ void ED_LoadFromFile (const char *data)
 	const char	*orig = data;
 #endif	/* SERVERONLY */
 
-	if (old_progdefs)
+	if (is_progdefs111)
 		pr_global_struct_v111->time = sv.time;
 	else
 		pr_global_struct->time = sv.time;
@@ -1164,7 +1164,7 @@ void ED_LoadFromFile (const char *data)
 			continue;
 		}
 
-		if (old_progdefs)
+		if (is_progdefs111)
 			pr_global_struct_v111->self = EDICT_TO_PROG(ent);
 		else
 			pr_global_struct->self = EDICT_TO_PROG(ent);
@@ -1293,7 +1293,7 @@ void PR_LoadProgs (void)
 		((int *)progs)[i] = LittleLong ( ((int *)progs)[i] );
 
 	if (progs->version != PROG_VERSION)
-		Sys_Error ("%s has wrong version number %d (should be %d)", progname, progs->version, PROG_VERSION);
+		Sys_Error ("%s is of unsupported version (%d, should be %d)", progname, progs->version, PROG_VERSION);
 	if (progs->crc != PROGS_V111_CRC && progs->crc != PROGS_V112_CRC)
 		Sys_Error ("Unexpected crc ( %d ) for %s", progs->crc, progname);
 
@@ -1312,19 +1312,20 @@ void PR_LoadProgs (void)
 	pr_fielddefs = (ddef_t *)((byte *)progs + progs->ofs_fielddefs);
 	pr_statements = (dstatement_t *)((byte *)progs + progs->ofs_statements);
 
-	Con_Printf ("Loaded %s ", progname);
+	Con_Printf ("Loaded %s, v%d, %d crc, %s structures\n",
+			progname, progs->version, progs->crc,
+			(progs->crc == PROGS_V111_CRC) ? "H2/v1.11" : "H2MP/v1.12");
+
 	if (progs->crc == PROGS_V111_CRC)
 	{
-		Con_Printf ("(%d crc: 1.11 style)\n", PROGS_V111_CRC);
-		old_progdefs = true;
+		is_progdefs111 = true;
 		pr_global_struct_v111 = (globalvars_v111_t *)((byte *)progs + progs->ofs_globals);
 		pr_globals = (float *)pr_global_struct_v111;
 		pr_global_struct = NULL;
 	}
 	else
 	{
-		Con_Printf ("(%d crc: 1.12 style)\n", PROGS_V112_CRC);
-		old_progdefs = false;
+		is_progdefs111 = false;
 		pr_global_struct = (globalvars_t *)((byte *)progs + progs->ofs_globals);
 		pr_globals = (float *)pr_global_struct;
 		pr_global_struct_v111 = NULL;

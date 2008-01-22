@@ -2,7 +2,7 @@
 	sv_main.c
 	server main program
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sv_main.c,v 1.65 2008-01-18 07:17:02 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sv_main.c,v 1.66 2008-01-22 12:01:04 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -515,7 +515,7 @@ static void SV_ConnectClient (int clientnum)
 	//	PR_ExecuteProgram (PR_GLOBAL_STRUCT(SetNewParms));
 	//	for (i = 0; i < NUM_SPAWN_PARMS; i++)
 	//	{
-	//	    if (old_progdefs)
+	//	    if (is_progdefs111)
 	//		client->spawn_parms[i] = (&pr_global_struct_v111->parm1)[i];
 	//	    else
 	//		client->spawn_parms[i] = (&pr_global_struct->parm1)[i];
@@ -1867,7 +1867,7 @@ void SV_SaveSpawnparms (void)
 			continue;
 
 	// call the progs to get default spawn parms for the new client
-//		if (old_progdefs)
+//		if (is_progdefs111)
 //		{
 //			pr_global_struct_v111->self = EDICT_TO_PROG(host_client->edict);
 //			PR_ExecuteProgram (pr_global_struct_v111->SetChangeParms);
@@ -2043,7 +2043,7 @@ void SV_SpawnServer (const char *server, const char *startspot)
 	ent->v.solid = SOLID_BSP;
 	ent->v.movetype = MOVETYPE_PUSH;
 
-	if (old_progdefs)
+	if (is_progdefs111)
 	{
 		if (coop.integer)
 			pr_global_struct_v111->coop = coop.value;
