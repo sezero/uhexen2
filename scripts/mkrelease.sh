@@ -1,6 +1,7 @@
 #!/bin/sh
 
 # the script I use to prepare a release tree from the H.o.T. CVS snapshot
+# $Id: mkrelease.sh,v 1.17 2008-01-22 13:05:48 sezero Exp $
 
 if echo `pwd` | grep "\/scripts" > /dev/null 2>&1 ; then
 cd ..
@@ -17,7 +18,7 @@ find . -name CVS | xargs rm -rf
 
 # kill the obsoleted empty directories
 rm -rf utils/h2_utils utils/h2mp_utils utils/dcc/bin
-rm -rf hexen2/obsolete hexenworld/Master/win_stuff launcher/obsolete
+rm -rf hexen2/obsolete hexenworld/Server/win_stuff hexenworld/Master/win_stuff launcher/obsolete
 rm -rf gamecode/hc/h2_single_prog gamecode/hc/hw_bossmaps
 rm -rf docs/activision
 rm -rf asm/obsolete xdelta11/doc/dcc99
