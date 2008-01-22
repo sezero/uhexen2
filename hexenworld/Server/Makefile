@@ -1,5 +1,5 @@
 # GNU Makefile for hexenworld server using GCC.
-# $Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Server/Makefile,v 1.43 2008-01-10 17:21:06 sezero Exp $
+# $Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Server/Makefile,v 1.44 2008-01-22 13:01:16 sezero Exp $
 #
 # To cross-compile for Win32 on Unix, you must pass the WINBUILD=1
 # argument to make. It would be best if you examine the script named
@@ -122,7 +122,7 @@ cl_objs/%.o: ../Client/%.c
 # Objects
 # Platform specific object settings
 SYS_UNIX = sys_unix.o
-SYS_WIN32 = win_stuff/sys_win.o
+SYS_WIN32 = sys_win.o
 
 ifeq ($(TARGET_OS),win32)
 SYSOBJ_SYS = $(SYS_WIN32)
