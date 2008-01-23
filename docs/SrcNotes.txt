@@ -58,6 +58,35 @@ Loop_Connect() naturally fails with a message 'no qsocket available'.
 The problem is the same for the Quake engine, too.
 
 
+Protocol 18 vs 19, soundnum message size, MAX_SOUNDS:
+--------------------------------------------------------------
+Quake1 protocol sends the soundnum as a byte through its net protocol,
+it has MAX_SOUND defined as 256. Although we don't have the source code
+to it, Hexen2-1.11 obviously did the same thing. On the other hand, the
+mission pack, Portal of Praevus, for which we have the source code, has
+a different behavior:
+
+H2MP defines MAX_SOUNDS as 512 which is not directly sendable as a byte.
+SV_StartSound() checks if the number of the sound is more than 256, if
+yes, then it sets a flag, SND_OVERFLOW, to the field_mask and substracts
+256 from the number; the client code checks accordingly.  By this way,
+numbers larger than 256 ARE actually sent as a byte.  On the other hand,
+the SV_StartSound code as released by Raven was buggy: it used to set
+SND_ATTENUATION flag instead of SND_OVERFLOW; what a mess..  And here is
+even more mess: While SV_StartSound() is using this mechanism and sending
+the soundnum as a byte, PF_ambientsound() is sending it as a short!
+
+Did the 1.11 version actually use 256 sounds as quake1, or did it use 512
+sounds and used this mechanism in order to send it as a byte, we do NOT
+know that by direct evidence.  However, hexenworld sends that number as a
+byte (ie. quake1/quakeworld way) and defines MAX_SOUNDS as 256, it does
+not use the SND_OVERFLOW mechanism. Since hexenworld seems to have forked
+from hexen2-v1.11, it is plausible that protocol 18 of hexen2-1.11 didn't
+use the SND_OVERFLOW thing.. Also see the notes at the end of protocol.h
+in the original code.
+
+
+
 Intermission indices:
 --------------------------------------------------------------
 
@@ -95,6 +124,8 @@ num:					strings.txt index:
 
 
 Specific Hexen II data files:
+(This is, and will be, far from being a complete list. They
+are just notes of mine when I felt like making notes...)
 --------------------------------------------------------------
 
 gfx/invpal.lmp :
