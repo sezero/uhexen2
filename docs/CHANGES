@@ -3,6 +3,23 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2008-01-22 (CVS):
+    * added my SrcNotes.txt among the documents.
+    * updated my SrcNotes.txt (2007-01-22).
+    * a little whitespace cleanup up pr_exec.c and pr_edict.c. while
+      I was there, renamed the global old_progdefs to is_progdefs111.
+      added older hwprogs header crc values from hexenworld versions
+      0.11 and 0.14 for reference.
+    * added further notes / documentation about old progs versions: 1.09
+      progheader_crc is the same as that of 1.11!
+    * hexenworld server: retired the win_stuff directory which only held
+      sys_win.c.
+    * updated the mkrelease script.
+    * minor cleanups.
+    * removed the eula thing from docs, irrelevant after all these years.
+    * updated web links again.
+    * updated release notes for 1.4.3 (2008-01-13).
+
 2008-01-12 (CVS):
     * q_stdinc.h: added compile time assert macros in order to make sure
       certain types (ie. char, float, int and long) have the right sizes.
