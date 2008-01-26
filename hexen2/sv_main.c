@@ -2,7 +2,7 @@
 	sv_main.c
 	server main program
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sv_main.c,v 1.66 2008-01-22 12:01:04 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sv_main.c,v 1.67 2008-01-26 18:55:40 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -57,6 +57,7 @@ SV_Init
 void SV_Init (void)
 {
 	int		i;
+	const char	*p;
 
 	Cvar_RegisterVariable (&sv_maxvelocity);
 	Cvar_RegisterVariable (&sv_gravity);
@@ -90,17 +91,25 @@ void SV_Init (void)
 	sv_kingofhill = 0;
 
 	i = COM_CheckParm ("-protocol");
-	if (i && i < com_argc-1)
+	if (i && i < com_argc - 1)
+		sv_protocol = atoi (com_argv[i + 1]);
+	switch (sv_protocol)
 	{
-		sv_protocol = atoi (com_argv[i+1]);
-		if (sv_protocol != PROTOCOL_RAVEN_112 &&
-		    sv_protocol != PROTOCOL_RAVEN_111)
-		{
-			Sys_Error ("Bad protocol request %i: Only %i or %i are accepted as protocol version.",
-					sv_protocol, PROTOCOL_RAVEN_111, PROTOCOL_RAVEN_112);
-		}
+	case PROTOCOL_RAVEN_111:
+		p = "Raven/H2/1.11";
+		break;
+	case PROTOCOL_RAVEN_112:
+		p = "Raven/MP/1.12";
+		break;
+	case PROTOCOL_UQE_113:
+		p = "UQE/1.13";
+		break;
+	default:
+		Sys_Error ("Bad protocol version request %i. Accepted values: %i, %i, %i.",
+				sv_protocol, PROTOCOL_RAVEN_111, PROTOCOL_RAVEN_112, PROTOCOL_UQE_113);
+		p = "Unknown";
 	}
-	Sys_Printf ("Server using %s protocol %i\n", (sv_protocol == PROTOCOL_VERSION) ? "default" : "old", sv_protocol);
+	Sys_Printf ("Server using protocol %i (%s)\n", sv_protocol, p);
 }
 
 void SV_Edicts (const char *Name)
@@ -366,8 +375,14 @@ void SV_StartSound (edict_t *entity, int channel, const char *sample, int volume
 		field_mask |= SND_VOLUME;
 	if (attenuation != DEFAULT_SOUND_PACKET_ATTENUATION)
 		field_mask |= SND_ATTENUATION;
-	if (sound_num > MAX_SOUNDS_OLD-1)
+	if (sound_num >= MAX_SOUNDS_OLD)
 	{
+		if (sv_protocol == PROTOCOL_RAVEN_111)
+		{
+			Con_DPrintf("%s: protocol 18 violation: %s sound_num == %i >= %i\n",
+					__thisfunc__, sample, sound_num, MAX_SOUNDS_OLD);
+			return;
+		}
 		field_mask |= SND_OVERFLOW;
 		sound_num -= MAX_SOUNDS_OLD;
 	}
@@ -450,6 +465,15 @@ static void SV_SendServerinfo (client_t *client)
 
 	MSG_WriteByte (&client->message, svc_midi_name);
 	MSG_WriteString (&client->message, sv.midi_name);
+
+	if (sv_protocol >= PROTOCOL_UQE_113)
+	{
+		MSG_WriteByte (&client->message, svc_mod_name);
+		MSG_WriteString (&client->message, "");	// UQE sends sv.mod_name
+
+		MSG_WriteByte (&client->message, svc_skybox);
+		MSG_WriteString (&client->message, "");	// UQE sends sv.skybox
+	}
 
 // set view
 	MSG_WriteByte (&client->message, svc_setview);
