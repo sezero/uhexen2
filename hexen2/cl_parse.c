@@ -2,7 +2,7 @@
 	cl_parse.c
 	parse a message received from the server
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cl_parse.c,v 1.61 2008-01-26 16:45:22 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cl_parse.c,v 1.62 2008-01-26 20:02:07 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -147,6 +147,17 @@ static void CL_ParseStartSoundPacket(void)
 	sound_num = MSG_ReadByte ();
 	if (field_mask & SND_OVERFLOW)
 		sound_num += MAX_SOUNDS_OLD;
+	if (field_mask & SND_OVERFLOW2)
+	{
+	/* this means the server has MAX_SOUNDS > 512 (== 1024)
+	 * and is sending it to us as a byte: Kor Skarn's code.
+	 * UQE does this but I haven't seen this in real life yet.
+	 * Currently not supported.  TODO: in a newer protocol.
+	 */
+		sound_num += MAX_SOUNDS_H2MP;	/* +512  */
+		Con_DPrintf("%s: field_mask & SND_OVERFLOW2 (%d)\n", __thisfunc__, sound_num);
+		return;
+	}
 
 	ent = channel >> 3;
 	channel &= 7;

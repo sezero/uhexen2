@@ -2,7 +2,7 @@
 	protocol.h
 	communications protocols
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/protocol.h,v 1.14 2008-01-26 16:49:54 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/protocol.h,v 1.15 2008-01-26 20:02:07 sezero Exp $
 */
 
 #ifndef __HX2_PROTOCOL_H
@@ -221,9 +221,10 @@
 //==============================================
 
 // a sound with no channel is a local only sound
-#define	SND_VOLUME	(1<<0)	// a byte
-#define	SND_ATTENUATION	(1<<1)	// a byte
-#define	SND_OVERFLOW	(1<<2)	// add 255 to snd num
+#define	SND_VOLUME	(1<<0)	/* a byte	*/
+#define	SND_ATTENUATION	(1<<1)	/* a byte	*/
+#define	SND_OVERFLOW	(1<<2)	/* add 256 to snd num			*/
+#define	SND_OVERFLOW2	(1<<3)	/* add 512 to snd num: a UQE/1.13 thing	*/
 
 // gonna use the rest of the bits to pack the ent+channel
 #define DEFAULT_SOUND_PACKET_VOLUME		255

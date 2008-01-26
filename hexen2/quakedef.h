@@ -2,7 +2,7 @@
 	quakedef.h
 	common definitions for client and server
 
-	$Id: quakedef.h,v 1.139 2008-01-23 10:57:51 sezero Exp $
+	$Id: quakedef.h,v 1.140 2008-01-26 20:02:07 sezero Exp $
 */
 
 #ifndef __QUAKEDEFS_H
@@ -76,9 +76,13 @@
 //
 #define	MAX_EDICTS	600		// FIXME: ouch! ouch! ouch!
 #define	MAX_LIGHTSTYLES	64
-#define	MAX_MODELS	512		// Sent over the net as a word
-#define	MAX_SOUNDS	512		// Sent over the net as a short
-#define	MAX_SOUNDS_OLD	256		// for Hexen II 1.11: sent as a byte
+
+#define	MAX_MODELS	512		/* Sent over the net as a word */
+#define	MAX_SOUNDS_OLD	256		/* Hexen2 v1.11 (protocol 18) and older: sent as a byte	*/
+#define	MAX_SOUNDS_H2MP	512		/* Mission Pack (protocol 19), messy thing:		*/
+					/* SV_StartSound sends it as a byte, but PF_ambientsound
+					   sends it as a word.					*/
+#define	MAX_SOUNDS	(MAX_SOUNDS_H2MP)
 
 
 #define	MAX_STYLESTRING		64
