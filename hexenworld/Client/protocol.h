@@ -2,7 +2,7 @@
 	protocol.h
 	communications protocols
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/protocol.h,v 1.6 2007-03-18 12:35:36 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/protocol.h,v 1.7 2008-01-26 20:15:29 sezero Exp $
 */
 
 #ifndef __H2W_PROTOCOL_H
@@ -293,8 +293,8 @@
 
 // a sound with no channel is a local only sound
 // the sound field has bits 0-2: channel, 3-12: entity
-#define	SND_VOLUME	(1<<15)	// a byte
-#define	SND_ATTENUATION	(1<<14)	// a byte
+#define	SND_VOLUME	(1<<15)
+#define	SND_ATTENUATION	(1<<14)
 
 #define DEFAULT_SOUND_PACKET_VOLUME		255
 #define DEFAULT_SOUND_PACKET_ATTENUATION	1.0
