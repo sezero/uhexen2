@@ -2,7 +2,7 @@
 	cl_parse.c
 	parse a message received from the server
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cl_parse.c,v 1.59 2007-11-14 07:27:34 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cl_parse.c,v 1.60 2008-01-26 14:02:14 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -243,17 +243,17 @@ static void CL_ParseServerInfo (void)
 
 // parse protocol version number
 	cl_protocol = MSG_ReadLong ();
-	if (cl_protocol != PROTOCOL_RAVEN_112 &&
-	    cl_protocol != PROTOCOL_RAVEN_111 &&
-	    cl_protocol != PROTOCOL_UQE_113)
+	switch (cl_protocol)
 	{
+	case PROTOCOL_RAVEN_111:
+	case PROTOCOL_RAVEN_112:
+	case PROTOCOL_UQE_113:
+		Con_Printf ("\nServer using protocol %i\n", cl_protocol);
+		break;
+	default:
 		Con_Printf ("\nServer returned version %i, not %i or %i\n",
 				cl_protocol, PROTOCOL_RAVEN_112, PROTOCOL_UQE_113);
 		return;
-	}
-	else
-	{
-		Con_Printf ("\nServer using protocol %i\n", cl_protocol);
 	}
 
 // parse maxclients
@@ -1259,17 +1259,17 @@ void CL_ParseServerMessage (void)
 
 		case svc_version:
 			cl_protocol = MSG_ReadLong ();
-			if (cl_protocol != PROTOCOL_RAVEN_112 &&
-			    cl_protocol != PROTOCOL_RAVEN_111 &&
-			    cl_protocol != PROTOCOL_UQE_113)
+			switch (cl_protocol)
 			{
+			case PROTOCOL_RAVEN_111:
+			case PROTOCOL_RAVEN_112:
+			case PROTOCOL_UQE_113:
+				Con_Printf ("Server using protocol %i\n", cl_protocol);
+				break;
+			default:
 				Host_Error ("%s: Server is protocol %i instead of %i or %i",
 						__thisfunc__, cl_protocol,
 						PROTOCOL_RAVEN_112, PROTOCOL_UQE_113);
-			}
-			else
-			{
-				Con_Printf ("Server using protocol %i\n", cl_protocol);
 			}
 			break;
 
@@ -1827,7 +1827,7 @@ void CL_ParseServerMessage (void)
 
 			// SC2_OBJ, SC2_OBJ2: mission pack objectives
 			// With protocol 18 (PROTOCOL_RAVEN_111), these
-			// bits get set somehow: let's avoid them.
+			// bits get set somehow (?!): let's avoid them.
 			if (cl_protocol > PROTOCOL_RAVEN_111)
 			{
 				if (sc2 & SC2_OBJ)
