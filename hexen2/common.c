@@ -2,7 +2,7 @@
 	common.c
 	misc utility functions used in client and server
 
-	$Id: common.c,v 1.104 2008-01-12 09:46:16 sezero Exp $
+	$Id: common.c,v 1.105 2008-01-26 14:00:21 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -96,8 +96,9 @@ is defined in VA_NUM_BUFFS.
 static char *get_va_buffer(void)
 {
 	static char va_buffers[VA_NUM_BUFFS][VA_BUFFERLEN];
-	static unsigned char	buf_idx;
-	return va_buffers[(VA_NUM_BUFFS-1) & ++buf_idx];
+	static int buffer_idx = 0;
+	buffer_idx = (buffer_idx + 1) & (VA_NUM_BUFFS - 1);
+	return va_buffers[buffer_idx];
 }
 
 char *va (const char *format, ...)
@@ -107,7 +108,7 @@ char *va (const char *format, ...)
 
 	va_buf = get_va_buffer ();
 	va_start (argptr, format);
-	if ( q_vsnprintf(va_buf, VA_BUFFERLEN, format, argptr) >= VA_BUFFERLEN )
+	if (q_vsnprintf(va_buf, VA_BUFFERLEN, format, argptr) >= VA_BUFFERLEN)
 		Con_DPrintf("%s: overflow (string truncated)\n", __thisfunc__);
 	va_end (argptr);
 
