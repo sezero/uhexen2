@@ -3,6 +3,25 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2008-01-26 (CVS):
+    * don't rely on value to wrap around in get_va_buffer().
+    * cl_protocol parsing clean-up: use switch statements for better
+      readability.
+    * changed the debug message for svc_skybox and svc_mod_name to a
+      Con_DPrintf.
+    * added some more info about the hexen2 protocols to protocol.h.
+    * added 20 among the accepted values for the -protocol command line
+      argument. a little tidying up. added a debug message to SV_StartSound
+      to make sure everything is ok with the protocol mess. send empty
+      strings for svc_mod_name and svc_skybox if running with protocol 20,
+      uqe handles those empty strings correctly.
+    * handled the SND_OVERFLOW2 crap (used by UQE, for example). those who
+      increase the sound limit but don't increment the protocol make their
+      implementation incompatible with other older clients because they will
+      not be aware of such a mechanism.
+    * minor synchronization of headers / comments correction.
+    * changed the beta release date to 2008-01-26.
+
 2008-01-22 (CVS):
     * added my SrcNotes.txt among the documents.
     * updated my SrcNotes.txt (2007-01-22).
