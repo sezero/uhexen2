@@ -2,16 +2,19 @@
 	protocol.h
 	communications protocols
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/protocol.h,v 1.11 2007-03-18 12:35:11 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/protocol.h,v 1.14 2008-01-26 16:49:54 sezero Exp $
 */
 
 #ifndef __HX2_PROTOCOL_H
 #define __HX2_PROTOCOL_H
 
-#define	PROTOCOL_RAVEN_111		18
-#define	PROTOCOL_RAVEN_112		19
-#define	PROTOCOL_UQE_113		20
-#define	PROTOCOL_VERSION		PROTOCOL_RAVEN_112
+#define	PROTOCOL_RAVEN_107		15	/* cd version, aka 1.03 (not supported) */
+#define	PROTOCOL_RAVEN_109		17	/* official 1.09 update (not supported) */
+#define	PROTOCOL_RAVEN_111		18	/* official 1.11 update */
+#define	PROTOCOL_RAVEN_112		19	/* 1.12, mission pack */
+#define	PROTOCOL_UQE_113		20	/* Korax UQE patch 1.13 */
+/* the default protocol: */
+#define	PROTOCOL_VERSION		(PROTOCOL_RAVEN_112)
 
 //=========================================
 
