@@ -5,7 +5,7 @@
 	models are the only shared resource between a client and server
 	running on the same machine.
 
-	$Id: gl_model.c,v 1.54 2008-01-29 10:03:12 sezero Exp $
+	$Id: gl_model.c,v 1.55 2008-01-29 19:56:32 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -2187,7 +2187,7 @@ static void Mod_LoadAliasModelNew (model_t *mod, void *buffer)
 		Sys_Error ("%s: Invalid # of frames: %d", __thisfunc__, numframes);
 
 	pheader->size = LittleFloat (pinmodel->size) * ALIAS_BASE_SIZE_RATIO;
-	mod->synctype = LittleLong (pinmodel->synctype);
+	mod->synctype = (synctype_t) LittleLong (pinmodel->synctype);
 	mod->numframes = pheader->numframes;
 
 	for (i = 0; i < 3; i++)
@@ -2244,7 +2244,7 @@ static void Mod_LoadAliasModelNew (model_t *mod, void *buffer)
 	{
 		aliasframetype_t	frametype;
 
-		frametype = LittleLong (pframetype->type);
+		frametype = (aliasframetype_t) LittleLong (pframetype->type);
 
 		if (frametype == ALIAS_SINGLE)
 		{
@@ -2365,7 +2365,7 @@ static void Mod_LoadAliasModel (model_t *mod, void *buffer)
 		Sys_Error ("%s: Invalid # of frames: %d", __thisfunc__, numframes);
 
 	pheader->size = LittleFloat (pinmodel->size) * ALIAS_BASE_SIZE_RATIO;
-	mod->synctype = LittleLong (pinmodel->synctype);
+	mod->synctype = (synctype_t) LittleLong (pinmodel->synctype);
 	mod->numframes = pheader->numframes;
 
 	for (i = 0; i < 3; i++)
@@ -2422,7 +2422,7 @@ static void Mod_LoadAliasModel (model_t *mod, void *buffer)
 	{
 		aliasframetype_t	frametype;
 
-		frametype = LittleLong (pframetype->type);
+		frametype = (aliasframetype_t) LittleLong (pframetype->type);
 
 		if (frametype == ALIAS_SINGLE)
 		{
@@ -2629,7 +2629,7 @@ static void Mod_LoadSpriteModel (model_t *mod, void *buffer)
 	psprite->maxwidth = LittleLong (pin->width);
 	psprite->maxheight = LittleLong (pin->height);
 	psprite->beamlength = LittleFloat (pin->beamlength);
-	mod->synctype = LittleLong (pin->synctype);
+	mod->synctype = (synctype_t) LittleLong (pin->synctype);
 	psprite->numframes = numframes;
 
 	mod->mins[0] = mod->mins[1] = -psprite->maxwidth/2;
@@ -2651,7 +2651,7 @@ static void Mod_LoadSpriteModel (model_t *mod, void *buffer)
 	{
 		spriteframetype_t	frametype;
 
-		frametype = LittleLong (pframetype->type);
+		frametype = (spriteframetype_t) LittleLong (pframetype->type);
 		psprite->frames[i].type = frametype;
 
 		if (frametype == SPR_SINGLE)

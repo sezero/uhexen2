@@ -1,6 +1,6 @@
 /*
 	genmodel.c
-	$Id: genmodel.c,v 1.14 2008-01-29 15:01:36 sezero Exp $
+	$Id: genmodel.c,v 1.15 2008-01-29 19:56:32 sezero Exp $
 
 	Generates a .mdl file from a base frame, a texture bitmap,
 	and a series of frames.
@@ -485,7 +485,7 @@ static void WriteModelFile (FILE *modelouthandle)
 	newmodeltemp.numverts = modeltemp.numverts = LittleLong (model.numverts);
 	newmodeltemp.numtris = modeltemp.numtris = LittleLong (model.numtris - degeneratetris);
 	newmodeltemp.numframes = modeltemp.numframes = LittleLong (model.numframes);
-	newmodeltemp.synctype = modeltemp.synctype = LittleFloat (model.synctype);
+	newmodeltemp.synctype = modeltemp.synctype = (synctype_t) LittleLong (model.synctype);
 
 	if (!ModelReadIn)
 	{
@@ -885,7 +885,7 @@ static void ReadModel(const char *FileName)
 	model.numverts = LittleLong (mdl.numverts);
 	model.numtris = LittleLong (mdl.numtris - degeneratetris);
 	framecount = model.numframes = LittleLong (mdl.numframes);
-	model.synctype = LittleFloat (mdl.synctype);
+	model.synctype = (synctype_t) LittleLong (mdl.synctype);
 
 	model.size = LittleFloat (mdl.size);
 
