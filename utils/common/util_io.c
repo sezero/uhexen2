@@ -2,7 +2,7 @@
 	util_io.c
 	file and directory utilities
 
-	$Id: util_io.c,v 1.10 2008-01-29 12:03:10 sezero Exp $
+	$Id: util_io.c,v 1.11 2008-01-29 15:01:35 sezero Exp $
 */
 
 
@@ -154,25 +154,28 @@ char *Q_FindFirstFile (const char *path, const char *pattern)
 		return NULL;
 
 	tmp_len = strlen (pattern);
-	findpattern = (char *) malloc (tmp_len + 1);
+	findpattern = (char *) calloc (tmp_len + 1, sizeof(char));
 	if (!findpattern)
 	{
 		Q_FindClose();
 		return NULL;
 	}
 	strcpy (findpattern, pattern);
-	findpattern[tmp_len] = '\0';
 	tmp_len = strlen (path);
-	findpath = (char *) malloc (tmp_len + 1);
+	findpath = (char *) calloc (tmp_len + 1, sizeof(char));
 	if (!findpath)
 	{
 		Q_FindClose();
 		return NULL;
 	}
 	strcpy (findpath, path);
-	findpath[tmp_len] = '\0';
-	if (findpath[tmp_len-1] == '/' || findpath[tmp_len-1] == '\\')
-		findpath[tmp_len-1] = '\0';
+	if (tmp_len)
+	{
+		--tmp_len;
+		/* searching / won't be a good idea, for example.. */
+		if (findpath[tmp_len] == '/' || findpath[tmp_len] == '\\')
+			findpath[tmp_len] = '\0';
+	}
 
 	return Q_FindNextFile();
 }

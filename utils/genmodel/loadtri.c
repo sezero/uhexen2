@@ -1,6 +1,6 @@
 /*
 	loadtri.c
-	$Id: loadtri.c,v 1.9 2007-12-14 16:41:17 sezero Exp $
+	$Id: loadtri.c,v 1.10 2008-01-29 15:01:36 sezero Exp $
 */
 
 // HEADER FILES ------------------------------------------------------------
@@ -138,10 +138,10 @@ void LoadTriangleList(const char *fileName, triangle_t **triList, int *triangleC
 {
 	FILE	*input;
 
-	strcpy(InputFileName, fileName);
+	q_strlcpy(InputFileName, fileName, sizeof(InputFileName));
 
 	StripExtension(InputFileName);
-	strcat(InputFileName, ".asc");
+	q_strlcat(InputFileName, ".asc", sizeof(InputFileName));
 	if ((input = fopen(InputFileName, "rb")) != NULL)
 	{
 		fclose(input);
@@ -150,7 +150,7 @@ void LoadTriangleList(const char *fileName, triangle_t **triList, int *triangleC
 	}
 
 	StripExtension(InputFileName);
-	strcat(InputFileName, ".hrc");
+	q_strlcat(InputFileName, ".hrc", sizeof(InputFileName));
 	if ((input = fopen(InputFileName, "rb")) != NULL)
 	{
 		fclose(input);
@@ -159,7 +159,7 @@ void LoadTriangleList(const char *fileName, triangle_t **triList, int *triangleC
 	}
 
 	StripExtension(InputFileName);
-	strcat(InputFileName, ".htr");
+	q_strlcat(InputFileName, ".htr", sizeof(InputFileName));
 	if ((input = fopen(InputFileName, "rb")) != NULL)
 	{
 		fclose(input);
@@ -168,7 +168,7 @@ void LoadTriangleList(const char *fileName, triangle_t **triList, int *triangleC
 	}
 
 	StripExtension(InputFileName);
-	strcat(InputFileName, ".tri");
+	q_strlcat(InputFileName, ".tri", sizeof(InputFileName));
 	if ((input = fopen(InputFileName, "rb")) != NULL)
 	{
 		LoadTRI(input, triList, triangleCount);

@@ -1,6 +1,6 @@
 /*
 	token.c
-	$Id: token.c,v 1.8 2007-12-14 16:41:17 sezero Exp $
+	$Id: token.c,v 1.9 2008-01-29 15:01:36 sezero Exp $
 */
 
 // HEADER FILES ------------------------------------------------------------
@@ -177,7 +177,7 @@ void TK_OpenSource(char *fileName)
 
 	TK_CloseSource();
 	size = LoadFile(fileName, &FileStart);
-	strcpy(tk_SourceName, fileName);
+	q_strlcpy(tk_SourceName, fileName, sizeof(tk_SourceName));
 	SourceOpen = TRUE;
 	FileEnd = (char *)FileStart + size;
 	FilePtr = (char *)FileStart;

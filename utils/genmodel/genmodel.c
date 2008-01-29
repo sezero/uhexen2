@@ -1,6 +1,6 @@
 /*
 	genmodel.c
-	$Id: genmodel.c,v 1.13 2008-01-29 12:03:13 sezero Exp $
+	$Id: genmodel.c,v 1.14 2008-01-29 15:01:36 sezero Exp $
 
 	Generates a .mdl file from a base frame, a texture bitmap,
 	and a series of frames.
@@ -210,7 +210,7 @@ int main(int argc, char **argv)
 		if (!q_strcasecmp(argv[i], "-archive"))
 		{
 			archive = true;
-			strcpy(archivedir, argv[i+1]);
+			q_strlcpy(archivedir, argv[i+1], sizeof(archivedir));
 			printf("Archiving source to: %s\n", archivedir);
 
 			i++;
@@ -221,7 +221,7 @@ int main(int argc, char **argv)
 		}
 		else
 		{
-			strcpy(path, argv[i]);
+			q_strlcpy(path, argv[i], sizeof(path));
 			break;
 		}
 	}
@@ -234,16 +234,16 @@ int main(int argc, char **argv)
 	}
 	ClearModel();
 
-	strcpy(outname, path);
+	q_strlcpy(outname, path, sizeof(outname));
 
 	i = strlen(path);
-	if (i > 4 && q_strcasecmp(&path[i-4],".mdl") == 0)
+	if (i > 4 && q_strcasecmp(&path[i - 4],".mdl") == 0)
 	{
-		strcpy(outname,path);
+		q_strlcpy(outname, path, sizeof(outname));
 		ReadModel(path);
 
-		strcpy(bakname, path);
-		bakname[i-4] = 0;
+		q_strlcpy(bakname, path, sizeof(bakname));
+		bakname[i - 4] = 0;
 		DefaultExtension(bakname, ".bak", sizeof(bakname));
 		if (rename(path, bakname))
 		{
@@ -811,7 +811,7 @@ static void WriteModel (void)
 		Error ("frames with no skins\n");
 
 	StripExtension (outname);
-	strcat (outname, ".mdl");
+	q_strlcat(outname, ".mdl", sizeof(outname));
 
 	if (DoOpts)
 	{
@@ -1130,16 +1130,16 @@ static void Cmd_Base (void)
 	byte	*pskinbitmap;
 
 	GetToken(false);
-	strcpy(qbasename, token);
+	q_strlcpy(qbasename, token, sizeof(qbasename));
 
-	//sprintf (file1, "%s/%s.tri", cdpartial, token);
+	//q_snprintf(file1, sizeof(file1), "%s/%s.tri", cdpartial, token);
 	//ExpandPathAndArchive (file1);
 
-	sprintf (file1, "%s/%s", cddir, token);
+	q_snprintf(file1, sizeof(file1), "%s/%s", cddir, token);
 
 	// Extract the scaling information from a skin page
 	GetToken(false);
-	sprintf(file2, "%s/%s.pcx", cddir, token);
+	q_snprintf(file2, sizeof(file2), "%s/%s.pcx", cddir, token);
 	LoadPCXSkin(file2, &pskinbitmap);
 	ScaleWidth = (float)ExtractNumber(pskinbitmap, ENCODED_WIDTH_X, ENCODED_WIDTH_Y);
 	ScaleHeight = (float)ExtractNumber(pskinbitmap, ENCODED_HEIGHT_X, ENCODED_HEIGHT_Y);
@@ -1221,12 +1221,12 @@ static void Cmd_Skin (void)
 	float	scw, sch;
 
 	GetToken (false);
-	strcpy (skinname, token);
+	q_strlcpy(skinname, token, sizeof(skinname));
 
-	//sprintf (file1, "%s/%s.lbm", cdpartial, token);
+	//q_snprintf(file1, sizeof(file1), "%s/%s.lbm", cdpartial, token);
 	//ExpandPathAndArchive (file1);
 
-	sprintf (file1, "%s/%s.pcx", cddir, token);
+	q_snprintf(file1, sizeof(file1), "%s/%s.pcx", cddir, token);
 
 	if (TokenAvailable ())
 	{
@@ -1326,14 +1326,14 @@ static void GrabFrame (const char *frame, int isgroup)
 	trivert_t		*ptrivert;
 	int				numtris;
 
-	//sprintf (file1, "%s/%s.tri", cdpartial, frame);
+	//q_snprintf(file1, sizeof(file1), "%s/%s.tri", cdpartial, frame);
 	//ExpandPathAndArchive (file1);
 
-	sprintf (file1, "%s/%s", cddir, frame);
+	q_snprintf(file1, sizeof(file1), "%s/%s", cddir, frame);
 
 	printf ("grabbing %s\n", file1);
 	frames[framecount].interval = 0.1F;
-	strcpy (frames[framecount].name, frame);
+	q_strlcpy(frames[framecount].name, frame, sizeof(frames[0].name));
 
 //
 // load the frame
@@ -1704,7 +1704,7 @@ static void Cmd_Modelname (void)
 {
 	WriteModel ();
 	GetToken (false);
-	strcpy (outname, token);
+	q_strlcpy(outname, token, sizeof(outname));
 }
 
 /*
@@ -1741,8 +1741,8 @@ static void ParseScript (void)
 				Error ("Two $cd in one model");
 			cdset = true;
 			GetToken (false);
-			strcpy (cdpartial, token);
-			strcpy (cddir, ExpandPath(token));
+			q_strlcpy (cdpartial, token, sizeof(cdpartial));
+			q_strlcpy (cddir, ExpandPath(token), sizeof(cddir));
 		}
 		else if (!strcmp (token, "$sync"))
 		{

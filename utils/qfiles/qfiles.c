@@ -1,6 +1,6 @@
 /*
 	qfiles.c
-	$Id: qfiles.c,v 1.9 2008-01-12 09:46:20 sezero Exp $
+	$Id: qfiles.c,v 1.10 2008-01-29 15:01:36 sezero Exp $
 */
 
 #include "q_stdinc.h"
@@ -60,7 +60,7 @@ void PackFile (const char *src, const char *name)
 
 	pf->filepos = LittleLong (ftell (packhandle));
 	pf->filelen = LittleLong (remaining);
-	strcpy (pf->name, name);
+	q_strlcpy (pf->name, name, sizeof(pfiles[0].name));
 	printf ("%64s : %7i\n", pf->name, remaining);
 
 	packbytes += remaining;
@@ -98,7 +98,7 @@ void CopyQFiles (int blocknum)
 	// create a pak file
 	pf = pfiles;
 
-	sprintf (destfile, "%spak%i.pak", gamedir, blocknum);
+	q_snprintf (destfile, sizeof(destfile), "%spak%i.pak", gamedir, blocknum);
 	packhandle = SafeOpenWrite (destfile);
 	SafeWrite (packhandle, &header, sizeof(header));
 
@@ -110,8 +110,8 @@ void CopyQFiles (int blocknum)
 			(blocknum == 2 && precache_sounds_block[i] < blocknum))
 			continue;
 
-		sprintf (name, "sound/%s", precache_sounds[i]);
-		sprintf (srcfile,"%s%s",gamedir, name);
+		q_snprintf (name, sizeof(name), "sound/%s", precache_sounds[i]);
+		q_snprintf (srcfile, sizeof(srcfile), "%s%s", gamedir, name);
 		PackFile (srcfile, name);
 	}
 	for (i = 0 ; i < nummodels ; i++)
@@ -120,7 +120,7 @@ void CopyQFiles (int blocknum)
 			(blocknum == 2 && precache_models_block[i] < blocknum))
 			continue;
 
-		sprintf (srcfile,"%s%s",gamedir, precache_models[i]);
+		q_snprintf (srcfile, sizeof(srcfile), "%s%s", gamedir, precache_models[i]);
 		PackFile (srcfile, precache_models[i]);
 	}
 	for (i = 0 ; i < numfiles ; i++)
@@ -129,7 +129,7 @@ void CopyQFiles (int blocknum)
 			(blocknum == 2 && precache_files_block[i] < blocknum))
 			continue;
 
-		sprintf (srcfile,"%s%s",gamedir, precache_files[i]);
+		q_snprintf (srcfile, sizeof(srcfile), "%s%s", gamedir, precache_files[i]);
 		PackFile (srcfile, precache_files[i]);
 	}
 
@@ -174,14 +174,14 @@ void BspModels (void)
 	for (i = 0 ; i < nummodels ; i++)
 	{
 		m = precache_models[i];
-		if (strcmp(m+strlen(m)-4, ".bsp"))
+		if (strcmp(m + strlen(m) - 4, ".bsp"))
 			continue;
-		strcpy (name, m);
-		name[strlen(m)-4] = 0;
+		q_strlcpy (name, m, sizeof(name));
+		name[strlen(m) - 4] = '\0';
 
-		sprintf (cmd, "qbsp %s%s",gamedir, name);
+		q_snprintf (cmd, sizeof(cmd), "qbsp %s%s",gamedir, name);
 		system (cmd);
-		sprintf (cmd, "light -extra %s%s", gamedir, name);
+		q_snprintf (cmd, sizeof(cmd), "light -extra %s%s", gamedir, name);
 		system (cmd);
 	}
 }
