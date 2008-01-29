@@ -1,6 +1,6 @@
 /*
 	bsp2wal.c
-	$Id: bsp2wal.c,v 1.5 2008-01-12 09:46:20 sezero Exp $
+	$Id: bsp2wal.c,v 1.6 2008-01-29 12:03:13 sezero Exp $
 */
 
 #include "q_stdinc.h"
@@ -20,6 +20,7 @@
 #define	HWAL_SHIFT		(sizeof(miptex_wal_t) - sizeof(miptex_t))
 
 static char	workpath[1024];
+static size_t	workpath_size;
 static int		miponly;
 
 //===========================================================================
@@ -28,6 +29,7 @@ static char *MakeWorkPath (const char *infilename)
 {
 	char		*tmp;
 
+	workpath_size = sizeof(workpath);
 	memset (workpath, 0, sizeof(workpath));
 	tmp = strrchr (infilename, '/');
 	if (!tmp)
@@ -37,11 +39,17 @@ static char *MakeWorkPath (const char *infilename)
 	else
 	{
 		tmp++;
+		if (tmp - infilename > workpath_size)
+			Error("%s: insufficient buffer size", __thisfunc__);
 		memcpy (workpath, infilename, tmp - infilename);
 		tmp = workpath + (tmp - infilename);
+		workpath_size -= (tmp - infilename);
 	}
+	if (workpath_size < sizeof(WAL_EXT_DIRNAME) + 1)
+		Error("%s: insufficient buffer size", __thisfunc__);
 	memcpy (tmp, WAL_EXT_DIRNAME, sizeof(WAL_EXT_DIRNAME));
-	tmp += sizeof(WAL_EXT_DIRNAME)-1;
+	tmp += sizeof(WAL_EXT_DIRNAME) - 1;
+	workpath_size -= sizeof(WAL_EXT_DIRNAME) + 1;
 	Q_mkdir (workpath);
 	*tmp++ = '/';
 	return tmp;
@@ -77,7 +85,7 @@ static void WriteWALFile (const char *bspfilename)
 
 		if (miponly)
 		{
-			sprintf (tmp, "%s.mip", mt->name);
+			q_snprintf (tmp, workpath_size, "%s.mip", mt->name);
 			if (tmp[0] == '*')
 				tmp[0] = WAL_REPLACE_ASTERIX;
 			printf ("%15s (%4u x %-4u) -> %s\n", mt->name, mt->width, mt->height, workpath);
@@ -104,7 +112,7 @@ static void WriteWALFile (const char *bspfilename)
 		memcpy (wt+1,  (byte *)m + m->dataofs[i] + sizeof(miptex_t), pixels);
 
 		// save file
-		sprintf (tmp, "%s.wal", mt->name);
+		q_snprintf (tmp, workpath_size, "%s.wal", mt->name);
 		if (tmp[0] == '*')
 			tmp[0] = WAL_REPLACE_ASTERIX;
 		printf ("%15s (%4u x %-4u) -> %s\n", mt->name, mt->width, mt->height, workpath);
@@ -157,8 +165,8 @@ int main (int argc, char **argv)
 	for ( ; i < argc ; i++)
 	{
 		printf ("---------------------\n");
-		strcpy (source, argv[i]);
-		DefaultExtension (source, ".bsp");
+		q_strlcpy (source, argv[i], sizeof(source));
+		DefaultExtension (source, ".bsp", sizeof(source));
 
 		WriteWALFile (source);
 		printf ("---------------------\n");

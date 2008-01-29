@@ -2,7 +2,7 @@
 	util_io.c
 	file and directory utilities
 
-	$Id: util_io.c,v 1.9 2008-01-29 10:47:03 sezero Exp $
+	$Id: util_io.c,v 1.10 2008-01-29 12:03:10 sezero Exp $
 */
 
 
@@ -178,14 +178,14 @@ char *Q_FindFirstFile (const char *path, const char *pattern)
 }
 #endif	/* End of FindFile */
 
-void Q_getwd (char *out)
+void Q_getwd (char *out, size_t size)
 {
 #ifdef PLATFORM_WINDOWS
-	_getcwd (out, 256);
-	strcat (out, "\\");
+	_getcwd (out, size);
+	qerr_strlcat(__thisfunc__, __LINE__, out, "\\", size);
 #else
-	getcwd (out, 256);
-	strcat (out, "/");
+	getcwd (out, size);
+	qerr_strlcat(__thisfunc__, __LINE__, out, "/", size);
 #endif
 }
 
@@ -357,7 +357,7 @@ void CreatePath (char *path)
 	if (path[1] == ':')
 		path += 2;
 
-	for (ofs = path+1 ; *ofs ; ofs++)
+	for (ofs = path + 1; *ofs; ofs++)
 	{
 		c = *ofs;
 		if (c == '/' || c == '\\')
@@ -378,13 +378,12 @@ Used to archive source files
 */
 void Q_CopyFile (const char *from, const char *to)
 {
-	char		temp[1024];
+	char	temp[1024];
 	void	*buffer;
-	int		length;
+	int	length;
 
 	length = LoadFile (from, &buffer);
-	strncpy (temp, to, sizeof(temp)-1);
-	temp[sizeof(temp)-1] = 0;
+	q_strlcpy (temp, to, sizeof(temp));
 	CreatePath (temp);
 	SaveFile (to, buffer, length);
 	free (buffer);

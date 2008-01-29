@@ -1,6 +1,6 @@
 /*
 	genmodel.c
-	$Id: genmodel.c,v 1.12 2008-01-12 09:46:19 sezero Exp $
+	$Id: genmodel.c,v 1.13 2008-01-29 12:03:13 sezero Exp $
 
 	Generates a .mdl file from a base frame, a texture bitmap,
 	and a series of frames.
@@ -244,7 +244,7 @@ int main(int argc, char **argv)
 
 		strcpy(bakname, path);
 		bakname[i-4] = 0;
-		DefaultExtension(bakname, ".bak");
+		DefaultExtension(bakname, ".bak", sizeof(bakname));
 		if (rename(path, bakname))
 		{
 			Error("Could not rename file!\n");
@@ -252,7 +252,7 @@ int main(int argc, char **argv)
 	}
 	else
 	{
-		DefaultExtension(path, ".hc");
+		DefaultExtension(path, ".hc", sizeof(path));
 		// Load the .hc script file
 		LoadScriptFile(path);
 

@@ -1,6 +1,6 @@
 /*
 	litfile.c
-	$Id: litfile.c,v 1.2 2007-12-14 16:41:23 sezero Exp $
+	$Id: litfile.c,v 1.3 2008-01-29 12:03:13 sezero Exp $
 
 	This program is free software; you can redistribute it and/or
 	modify it under the terms of the GNU General Public License
@@ -40,7 +40,7 @@ void MakeLITFile (const char *filename)
 
 	strcpy (litname, filename);
 	StripExtension (litname);
-	DefaultExtension (litname, ".lit");
+	DefaultExtension (litname, ".lit", sizeof(litname));
 	litfile = fopen (litname, "wb");
 
 	if (!litfile)

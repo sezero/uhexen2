@@ -1,6 +1,6 @@
 /*
 	bsp5.c
-	$Id: qbsp.c,v 1.15 2008-01-12 09:46:19 sezero Exp $
+	$Id: qbsp.c,v 1.16 2008-01-29 12:03:13 sezero Exp $
 */
 
 #include "q_stdinc.h"
@@ -1235,7 +1235,7 @@ int main (int argc, char **argv)
 // create destination name if not specified
 //
 	strcpy (sourcename, argv[i]);
-	DefaultExtension (sourcename, ".map");
+	DefaultExtension (sourcename, ".map", sizeof(sourcename));
 
 	if (i != argc - 2)
 	{

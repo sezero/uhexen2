@@ -1,6 +1,6 @@
 /*
 	bspinfo.c
-	$Id: bspinfo.c,v 1.6 2008-01-12 09:46:19 sezero Exp $
+	$Id: bspinfo.c,v 1.7 2008-01-29 12:03:13 sezero Exp $
 */
 
 #include "q_stdinc.h"
@@ -26,7 +26,7 @@ int main (int argc, char **argv)
 	{
 		printf ("---------------------\n");
 		strcpy (source, argv[i]);
-		DefaultExtension (source, ".bsp");
+		DefaultExtension (source, ".bsp", sizeof(source));
 		printf ("%s\n", source);
 
 		LoadBSPFile (source);

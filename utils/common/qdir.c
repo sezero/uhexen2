@@ -1,7 +1,7 @@
 /*
 	qdir.c
 
-	$Id: qdir.c,v 1.11 2007-12-14 16:41:16 sezero Exp $
+	$Id: qdir.c,v 1.12 2008-01-29 12:03:10 sezero Exp $
 */
 
 
@@ -41,8 +41,8 @@ void SetQdirFromPath (const char *path)
 
 	if (!(path[0] == '/' || path[0] == '\\' || path[1] == ':'))
 	{	// path is partial
-		Q_getwd (temp);
-		strcat (temp, path);
+		Q_getwd (temp, sizeof(temp));
+		qerr_strlcat(__thisfunc__, __LINE__, temp, path, sizeof(temp));
 		path = temp;
 	}
 
@@ -58,9 +58,9 @@ void SetQdirFromPath (const char *path)
 	// search for the basedir (as defined in BUILDDIR) in path
 	while (c != path)
 	{
-		if (!q_strncasecmp (c, BUILDDIR, sizeof(BUILDDIR)-1))
+		if (!q_strncasecmp (c, BUILDDIR, sizeof(BUILDDIR) - 1))
 		{
-			strncpy (qdir, path, c+sizeof(BUILDDIR)-path);
+			strncpy (qdir, path, c + sizeof(BUILDDIR) - path);
 			printf ("qdir: %s\n", qdir);
 			// now search for a gamedir in path
 			c += sizeof(BUILDDIR);
@@ -68,7 +68,7 @@ void SetQdirFromPath (const char *path)
 			{
 				if (*c == '/' || *c == '\\')
 				{
-					strncpy (gamedir, path, c+1-path);
+					strncpy (gamedir, path, c + 1 - path);
 					printf ("gamedir: %s\n", gamedir);
 					return;
 				}
@@ -88,11 +88,13 @@ char *ExpandArg (const char *path)
 
 	if (path[0] != '/' && path[0] != '\\' && path[1] != ':')
 	{
-		Q_getwd (full);
-		strcat (full, path);
+		Q_getwd (full, sizeof(full));
+		qerr_strlcat(__thisfunc__, __LINE__, full, path, sizeof(full));
 	}
 	else
-		strcpy (full, path);
+	{
+		qerr_strlcpy(__thisfunc__, __LINE__, full, path, sizeof(full));
+	}
 
 	return full;
 }
@@ -106,11 +108,11 @@ char *ExpandPath (const char *path)
 
 	if (path[0] == '/' || path[0] == '\\' || path[1] == ':')
 	{
-		sprintf (full, "%s", path);
+		qerr_snprintf(__thisfunc__, __LINE__, full, sizeof(full), "%s", path);
 	}
 	else
 	{
-		sprintf (full, "%s%s", qdir, path);
+		qerr_snprintf(__thisfunc__, __LINE__, full, sizeof(full), "%s%s", qdir, path);
 	}
 
 	return full;
@@ -125,7 +127,7 @@ char *ExpandPathAndArchive (const char *path)
 
 	if (archive)
 	{
-		sprintf (archivename, "%s/%s", archivedir, path);
+		qerr_snprintf(__thisfunc__, __LINE__, archivename, sizeof(archivename), "%s/%s", archivedir, path);
 		Q_CopyFile (expanded, archivename);
 	}
 	return expanded;

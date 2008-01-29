@@ -2,7 +2,7 @@
 	util_io.h
 	file and directory utilities
 
-	$Id: util_io.h,v 1.5 2007-12-20 21:45:34 sezero Exp $
+	$Id: util_io.h,v 1.6 2008-01-29 12:03:10 sezero Exp $
 */
 
 #ifndef __UTILIO_H
@@ -25,7 +25,7 @@
 void	Q_mkdir (const char *path);
 int	Q_rmdir (const char *path);
 int	Q_unlink (const char *path);
-void	Q_getwd (char *out);
+void	Q_getwd (char *out, size_t size);
 int	Q_filelength (FILE *f);
 int	FileTime (const char *path);
 

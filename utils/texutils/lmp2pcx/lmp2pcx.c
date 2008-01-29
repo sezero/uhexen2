@@ -1,6 +1,6 @@
 /*
 	lmp2pcx.c
-	$Id: lmp2pcx.c,v 1.10 2008-01-12 09:46:20 sezero Exp $
+	$Id: lmp2pcx.c,v 1.11 2008-01-29 12:03:14 sezero Exp $
 	Copyright (C) 2002-2007 Forest Hale
 
 	This program is free software; you can redistribute it and/or
@@ -419,10 +419,10 @@ static void ConvertLMP (const char *filename, int idx)
 	}
 	if (!data)
 		return;
-	strcat (tempname, ".pcx");
+	q_strlcat (tempname, ".pcx", sizeof(tempname));
 	WritePCX (tempname, data, image_width, image_height, gamepalette);
 	StripExtension (tempname);
-	strcat (tempname, ".tga");
+	q_strlcat (tempname, ".tga", sizeof(tempname));
 	WriteTGA (tempname, data, image_width, image_height, gamepalette);
 	free (data);
 }
@@ -494,10 +494,10 @@ static void ConvertMIP (const char *filename, int idx)
 		return;
 	q_snprintf (tempname, sizeof(tempname), "%s/%s", OUTPUT_DIR, filename);
 	StripExtension (tempname);
-	strcat (tempname, ".pcx");
+	q_strlcat (tempname, ".pcx", sizeof(tempname));
 	WritePCX (tempname, data, image_width, image_height, gamepalette);
 	StripExtension (tempname);
-	strcat (tempname, ".tga");
+	q_strlcat (tempname, ".tga", sizeof(tempname));
 	WriteTGA (tempname, data, image_width, image_height, gamepalette);
 	free (data);
 }
@@ -593,13 +593,13 @@ static void ConvertWAD (const char *filename, int idx)
 			height = 32;
 		if (height != 0)
 		{
-			strcat (tempname, ".bin");
+			q_strlcat (tempname, ".bin", sizeof(tempname));
 			SaveFile (tempname, data, lump->disksize);
 			StripExtension (tempname);
-			strcat (tempname, ".pcx");
+			q_strlcat (tempname, ".pcx", sizeof(tempname));
 			WritePCX (tempname, data, 128, height, gamepalette);
 			StripExtension (tempname);
-			strcat (tempname, ".tga");
+			q_strlcat (tempname, ".tga", sizeof(tempname));
 			WriteTGA (tempname, data, 128, height, gamepalette);
 			continue;
 		}
@@ -616,7 +616,7 @@ static void ConvertWAD (const char *filename, int idx)
 			wad_cleanname (lump->name, ptr);
 			if (*ptr == '*')
 				*ptr = ASTERIX_REPLACE;
-			strcat (tempname, ".bin");
+			q_strlcat (tempname, ".bin", sizeof(tempname));
 			SaveFile (tempname, data, lump->disksize);
 			break;
 		case TYP_QTEX:
@@ -634,13 +634,13 @@ static void ConvertWAD (const char *filename, int idx)
 			wad_cleanname (lump->name, ptr);
 			if (*ptr == '*')
 				*ptr = ASTERIX_REPLACE;
-			strcat (tempname, ".lmp");
+			q_strlcat (tempname, ".lmp", sizeof(tempname));
 			SaveFile (tempname, data, lump->disksize);
 			StripExtension (tempname);
-			strcat (tempname, ".pcx");
+			q_strlcat (tempname, ".pcx", sizeof(tempname));
 			WritePCX (tempname, data+8, width, height, gamepalette);
 			StripExtension (tempname);
-			strcat (tempname, ".tga");
+			q_strlcat (tempname, ".tga", sizeof(tempname));
 			WriteTGA (tempname, data+8, width, height, gamepalette);
 			break;
 		case TYP_SOUND:
@@ -658,13 +658,13 @@ static void ConvertWAD (const char *filename, int idx)
 			wad_cleanname (lump->name, ptr);
 			if (*ptr == '*')
 				*ptr = ASTERIX_REPLACE;
-			strcat (tempname, ".mip");
+			q_strlcat (tempname, ".mip", sizeof(tempname));
 			SaveFile (tempname, data, lump->disksize);
 			StripExtension (tempname);
-			strcat (tempname, ".pcx");
+			q_strlcat (tempname, ".pcx", sizeof(tempname));
 			WritePCX (tempname, data+40, width, height, gamepalette);
 			StripExtension (tempname);
-			strcat (tempname, ".tga");
+			q_strlcat (tempname, ".tga", sizeof(tempname));
 			WriteTGA (tempname, data+40, width, height, gamepalette);
 			break;
 		default:

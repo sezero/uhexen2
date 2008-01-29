@@ -19,7 +19,7 @@
 
 /*
 	tyrlite.c
-	$Id: tyrlite.c,v 1.22 2008-01-12 09:46:19 sezero Exp $
+	$Id: tyrlite.c,v 1.23 2008-01-29 12:03:13 sezero Exp $
 
 	Modifications by Kevin Shanahan, 1999-2000
 */
@@ -424,7 +424,7 @@ int main (int argc, char **argv)
 
 	strcpy (source, argv[i]);
 	StripExtension (source);
-	DefaultExtension (source, ".bsp");
+	DefaultExtension (source, ".bsp", sizeof(source));
 
 	LoadBSPFile (source);
 	Init_JSColor();

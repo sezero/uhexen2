@@ -1,6 +1,6 @@
 /*
 	lighting.c
-	$Id: light.c,v 1.10 2008-01-12 09:46:19 sezero Exp $
+	$Id: light.c,v 1.11 2008-01-29 12:03:13 sezero Exp $
 */
 
 #include "q_stdinc.h"
@@ -136,7 +136,7 @@ int main (int argc, char **argv)
 
 	strcpy (source, argv[i]);
 	StripExtension (source);
-	DefaultExtension (source, ".bsp");
+	DefaultExtension (source, ".bsp", sizeof(source));
 
 	LoadBSPFile (source);
 	LoadEntities ();
