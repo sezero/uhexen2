@@ -5,7 +5,7 @@
 	models are the only shared resource between a client and server
 	running on the same machine.
 
-	$Id: gl_model.c,v 1.53 2007-10-10 14:38:26 sezero Exp $
+	$Id: gl_model.c,v 1.54 2008-01-29 10:03:12 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -291,7 +291,7 @@ static model_t *Mod_LoadModel (model_t *mod, qboolean crash)
 //
 // allocate a new model
 //
-	COM_FileBase (mod->name, loadname);
+	COM_FileBase (mod->name, loadname, sizeof(loadname));
 
 	loadmodel = mod;
 
@@ -654,7 +654,7 @@ static void Mod_LoadLighting (lump_t *l)
 		if (gl_coloredlight.integer)
 		{	// LordHavoc: check for a .lit file
 			strcpy(litfilename, loadmodel->name);
-			COM_StripExtension(litfilename, litfilename);
+			COM_StripExtension(litfilename, litfilename, sizeof(litfilename));
 			strcat(litfilename, ".lit");
 			Con_DPrintf("trying to load %s\n", litfilename);
 			data = (byte*) FS_LoadHunkFile (litfilename);

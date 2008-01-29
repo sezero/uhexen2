@@ -2,7 +2,7 @@
 	common.c
 	misc utility functions used in client and server
 
-	$Id: common.c,v 1.101 2008-01-26 14:00:22 sezero Exp $
+	$Id: common.c,v 1.102 2008-01-29 10:03:14 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -143,7 +143,7 @@ const char *COM_SkipPath (const char *pathname)
 	while (*pathname)
 	{
 		if (*pathname == '/')
-			last = pathname+1;
+			last = pathname + 1;
 		pathname++;
 	}
 	return last;
@@ -154,11 +154,21 @@ const char *COM_SkipPath (const char *pathname)
 COM_StripExtension
 ============
 */
-void COM_StripExtension (const char *in, char *out)
+void COM_StripExtension (const char *in, char *out, size_t outsize)
 {
-	while (*in && *in != '.')
-		*out++ = *in++;
-	*out = '\0';
+	int		length;
+
+	if (in != out)	/* copy when not in-place editing */
+		q_strlcpy (out, in, outsize);
+	length = (int)strlen(out) - 1;
+	while (length > 0 && out[length] != '.')
+	{
+		--length;
+		if (out[length] == '/' || out[length] == '\\')
+			return;	/* no extension */
+	}
+	if (length)
+		out[length] = '\0';
 }
 
 /*
@@ -166,47 +176,61 @@ void COM_StripExtension (const char *in, char *out)
 COM_FileExtension
 ============
 */
-void COM_FileExtension (const char *in, char *out)
+void COM_FileExtension (const char *in, char *out, size_t outsize)
 {
-	while (*in && *in != '.')
-		in++;
+	const char	*src;
+	size_t		len;
 
-	if (!*in)
+	len = strlen(in);
+	if (len < 2)	/* nothing meaningful */
 	{
+	_noext:
 		*out = '\0';
 		return;
 	}
+	src = in + len - 1;
+	while (src != in && src[-1] != '.')
+		src--;
+	if (src == in || strchr(src, '/') != NULL || strchr(src, '\\') != NULL)
+		goto _noext;	/* no extension, at not least in the file itself. */
 
-	in++;
-	while (*in)
-		*out++ = *in++;
-	*out = '\0';
+	q_strlcpy (out, src, outsize);
 }
 
 /*
 ============
 COM_FileBase
+take 'somedir/otherdir/filename.ext',
+write only 'filename' to the output
 ============
 */
-void COM_FileBase (const char *in, char *out)
+void COM_FileBase (const char *in, char *out, size_t outsize)
 {
-	const char	*s, *s2;
+	const char	*dot, *slash, *s;
 
-	s = in + strlen(in) - 1;
+	s = in;
+	slash = in;
+	dot = NULL;
+	while (*s)
+	{
+		if (*s == '/')
+			slash = s + 1;
+		if (*s == '.')
+			dot = s;
+		s++;
+	}
+	if (dot == NULL)
+		dot = s;
 
-	while (s != in && *s != '.')
-		s--;
-
-	for (s2 = s; s2 >= in && *s2 && *s2 != '/'; s2--)
-		;
-
-	if (s-s2 < 2)
-		strcpy (out,"?model?");
+	if (dot - slash < 2)
+		q_strlcpy (out, "?model?", outsize);
 	else
 	{
-		s--;
-		strncpy (out, s2+1, s-s2);
-		out[s-s2] = '\0';
+		size_t	len = dot - slash;
+		if (len >= outsize)
+			len = outsize - 1;
+		memcpy (out, slash, len);
+		out[len] = '\0';
 	}
 }
 
@@ -222,12 +246,14 @@ void COM_DefaultExtension (char *path, const char *extension, size_t len)
 // if path doesn't have a .EXT, append extension
 // (extension should include the .)
 //
+	if (!*path)
+		return;
 	src = path + strlen(path) - 1;
 
 	while (*src != '/' && src != path)
 	{
 		if (*src == '.')
-			return;                 // it has an extension
+			return;		// it has an extension
 		src--;
 	}
 

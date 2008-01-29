@@ -2,7 +2,7 @@
 	cl_parse.c
 	parse a message received from the server
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/cl_parse.c,v 1.49 2007-11-14 07:27:35 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/cl_parse.c,v 1.50 2008-01-29 10:03:14 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -165,8 +165,8 @@ qboolean CL_CheckOrDownloadFile (const char *filename)
 	// download to a temp name, and only rename
 	// to the real name when done, so if interrupted
 	// a runt file wont be left
-	COM_StripExtension (cls.downloadname, cls.downloadtempname);
-	strcat (cls.downloadtempname, ".tmp");
+	COM_StripExtension (cls.downloadname, cls.downloadtempname, sizeof(cls.downloadtempname));
+	q_strlcat (cls.downloadtempname, ".tmp", sizeof(cls.downloadtempname));
 
 	MSG_WriteByte (&cls.netchan.message, clc_stringcmd);
 	MSG_WriteString (&cls.netchan.message, va("download %s", cls.downloadname));
@@ -218,7 +218,7 @@ static void Model_NextDownload (void)
 	}
 
 	// copy the naked name of the map file to the cl structure
-	COM_StripExtension (COM_SkipPath(cl.model_name[1]), cl.mapname);
+	COM_StripExtension (COM_SkipPath(cl.model_name[1]), cl.mapname, sizeof(cl.mapname));
 
 	// all done
 	cl.worldmodel = cl.model_precache[1];

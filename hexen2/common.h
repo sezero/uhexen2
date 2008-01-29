@@ -2,7 +2,7 @@
 	common.h
 	misc utilities used in client and server
 
-	$Id: common.h,v 1.60 2008-01-12 09:46:16 sezero Exp $
+	$Id: common.h,v 1.61 2008-01-29 10:03:12 sezero Exp $
 */
 
 #ifndef __HX2_COMMON_H
@@ -109,9 +109,9 @@ int COM_CheckParm (const char *parm);
 void COM_ValidateByteorder (void);
 
 const char *COM_SkipPath (const char *pathname);
-void COM_StripExtension (const char *in, char *out);
-void COM_FileExtension (const char *in, char *out);
-void COM_FileBase (const char *in, char *out);
+void COM_StripExtension (const char *in, char *out, size_t outsize);
+void COM_FileExtension (const char *in, char *out, size_t outsize);
+void COM_FileBase (const char *in, char *out, size_t outsize);
 void COM_DefaultExtension (char *path, const char *extension, size_t len);
 
 char	*va (const char *format, ...) __attribute__((format(printf,1,2)));

@@ -8,7 +8,7 @@
 	This version of model.c and model.h are based on a quake dedicated
 	server application, lhnqserver, by LordHavoc.
 
-	$Id: model.c,v 1.18 2007-09-22 15:27:15 sezero Exp $
+	$Id: model.c,v 1.19 2008-01-29 10:03:14 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -190,7 +190,7 @@ static model_t *Mod_LoadModel (model_t *mod, qboolean crash)
 //
 // allocate a new model
 //
-	COM_FileBase (mod->name, loadname);
+	COM_FileBase (mod->name, loadname, sizeof(loadname));
 
 	loadmodel = mod;
 

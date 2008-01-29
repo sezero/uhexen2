@@ -2,7 +2,7 @@
 	quakefs.c
 	Hexen II filesystem
 
-	$Id: quakefs.c,v 1.41 2007-11-14 07:27:35 sezero Exp $
+	$Id: quakefs.c,v 1.42 2008-01-29 10:03:12 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -1170,7 +1170,7 @@ static byte *FS_LoadFile (const char *path, int usehunk)
 		return NULL;
 
 // extract the filename base name for hunk tag
-	COM_FileBase (path, base);
+	COM_FileBase (path, base, sizeof(base));
 
 	switch (usehunk)
 	{

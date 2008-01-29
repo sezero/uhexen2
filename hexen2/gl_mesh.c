@@ -2,7 +2,7 @@
 	gl_mesh.c
 	triangle model functions
 
-	$Id: gl_mesh.c,v 1.19 2007-09-22 15:27:11 sezero Exp $
+	$Id: gl_mesh.c,v 1.20 2008-01-29 10:03:12 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -318,12 +318,14 @@ void GL_MakeAliasModelDisplayLists (model_t *m, aliashdr_t *hdr)
 #if DO_MESH_CACHE
 	char	cache[MAX_OSPATH];
 	FILE	*f;
+	size_t	len;
 
 	//
 	// look for a cached version
 	//
 	q_snprintf (cache, sizeof(cache), "%s/glhexen/", fs_userdir);
-	COM_StripExtension (m->name+strlen("models/"), cache+strlen(cache));
+	len = strlen(cache);
+	COM_StripExtension (m->name + (sizeof("models/") - 1), cache + len, sizeof(cache) - len);
 	q_strlcat (cache, ".ms2", sizeof(cache));
 
 	f = fopen (cache, "rb");
