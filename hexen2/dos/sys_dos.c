@@ -3,7 +3,7 @@
 	DOS system interface code.
 	from quake1 source with adaptations for uhexen2.
 
-	$Id: sys_dos.c,v 1.9 2008-01-29 10:47:01 sezero Exp $
+	$Id: sys_dos.c,v 1.10 2008-01-29 15:20:51 sezero Exp $
 
 	Copyright (C) 1996-1997  Id Software, Inc.
 
@@ -437,16 +437,10 @@ char *Sys_FindFirstFile (const char *path, const char *pattern)
 
 	tmp_len = strlen (pattern);
 	findpattern = (char *) Z_Malloc (tmp_len + 1, Z_MAINZONE);
-//	if (!findpattern)
-//		return NULL;
 	strcpy (findpattern, pattern);
-	findpattern[tmp_len] = '\0';
 	tmp_len = strlen (path);
 	findpath = (char *) Z_Malloc (tmp_len + 1, Z_MAINZONE);
-//	if (!findpath)
-//		return NULL;
 	strcpy (findpath, path);
-	findpath[tmp_len] = '\0';
 
 	return Sys_FindNextFile();
 }
