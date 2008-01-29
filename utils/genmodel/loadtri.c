@@ -1,6 +1,6 @@
 /*
 	loadtri.c
-	$Id: loadtri.c,v 1.10 2008-01-29 15:01:36 sezero Exp $
+	$Id: loadtri.c,v 1.12 2008-01-29 19:49:20 sezero Exp $
 */
 
 // HEADER FILES ------------------------------------------------------------
@@ -98,7 +98,7 @@ static void LoadTRI(FILE *input, triangle_t **triList, int *triangleCount);
 
 static void ByteSwapTri(tf_triangle *tri);
 
-#if 0	// unused 3DS stuff
+#if 0	/* unused 3DS stuff */
 static void Load3DS(FILE *input, triangle_t **triList, int *triangleCount);
 static void _3DSError(char *message);
 
@@ -597,7 +597,7 @@ static void LoadHTR(char *fileName, triangle_t **triList, int *triangleCount)
 // Load3DS
 //
 //==========================================================================
-#if 0	// 3DS stuff is unused. don't even know whether it's working
+#if 0	/* 3DS stuff is unused. don't even know whether it's working */
 static void Load3DS(FILE *input, triangle_t **triList, int *triangleCount)
 {
 	unsigned int i, j;
