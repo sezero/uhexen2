@@ -2,7 +2,7 @@
 	sys_unix.c
 	Unix system interface code
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/sys_unix.c,v 1.97 2008-01-12 09:46:17 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/sys_unix.c,v 1.98 2008-01-29 10:47:03 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -48,14 +48,13 @@ FILE IO
 ===============================================================================
 */
 
-int Sys_mkdir (const char *path)
+int Sys_mkdir (const char *path, qboolean crash)
 {
-	int rc;
-
-	rc = mkdir (path, 0777);
+	int rc = mkdir (path, 0777);
 	if (rc != 0 && errno == EEXIST)
 		rc = 0;
-
+	if (rc != 0 && crash)
+		Sys_Error("Unable to create directory %s", path);
 	return rc;
 }
 
@@ -396,7 +395,7 @@ static int Sys_GetUserdir (char *dst, size_t dstsize)
 		return 1;
 
 	q_snprintf (dst, dstsize, "%s/%s", home_dir, AOT_USERDIR);
-	return Sys_mkdir(dst);
+	return Sys_mkdir(dst, false);
 }
 #endif	/* DO_USERDIRS */
 

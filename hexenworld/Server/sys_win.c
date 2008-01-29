@@ -2,7 +2,7 @@
 	sys_win.c
 	Win32 system interface code
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Server/sys_win.c,v 1.8 2008-01-22 13:01:16 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Server/sys_win.c,v 1.9 2008-01-29 10:47:03 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -41,14 +41,13 @@ FILE IO
 ===============================================================================
 */
 
-int Sys_mkdir (const char *path)
+int Sys_mkdir (const char *path, qboolean crash)
 {
-	int rc;
-
-	rc = _mkdir (path);
+	int rc = _mkdir (path);
 	if (rc != 0 && errno == EEXIST)
 		rc = 0;
-
+	if (rc != 0 && crash)
+		Sys_Error("Unable to create directory %s", path);
 	return rc;
 }
 

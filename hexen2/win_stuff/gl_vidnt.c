@@ -1,6 +1,6 @@
 /*
 	gl_vidnt.c -- NT GL vid component
-	$Id: gl_vidnt.c,v 1.119 2008-01-12 09:46:16 sezero Exp $
+	$Id: gl_vidnt.c,v 1.120 2008-01-29 10:47:02 sezero Exp $
 */
 
 #define	__GL_FUNC_EXTERN
@@ -1053,7 +1053,7 @@ static void VID_Create8bitPalette (void)
 		}
 	}
 	q_snprintf(s, sizeof(s), "%s/glhexen", fs_userdir);
-	Sys_mkdir (s);
+	Sys_mkdir (s, false);
 	q_snprintf(s, sizeof(s), "%s/glhexen/15to8.pal", fs_userdir);
 	f = fopen(s, "wb");
 	if (f)
@@ -2158,11 +2158,11 @@ void	VID_Init (unsigned char *palette)
 #if DO_MESH_CACHE
 	// prepare directories for caching mesh files
 	q_snprintf (gldir, sizeof(gldir), "%s/glhexen", fs_userdir);
-	Sys_mkdir (gldir);
+	Sys_mkdir (gldir, false);
 	q_snprintf (gldir, sizeof(gldir), "%s/glhexen/boss", fs_userdir);
-	Sys_mkdir (gldir);
+	Sys_mkdir (gldir, false);
 	q_snprintf (gldir, sizeof(gldir), "%s/glhexen/puzzle", fs_userdir);
-	Sys_mkdir (gldir);
+	Sys_mkdir (gldir, false);
 #endif
 
 	hIcon = LoadIcon (global_hInstance, MAKEINTRESOURCE (IDI_ICON2));

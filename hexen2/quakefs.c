@@ -2,7 +2,7 @@
 	quakefs.c
 	Hexen II filesystem
 
-	$Id: quakefs.c,v 1.42 2008-01-29 10:03:12 sezero Exp $
+	$Id: quakefs.c,v 1.43 2008-01-29 10:47:01 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -345,13 +345,13 @@ static pack_t *FS_LoadPackFile (const char *packfile, int paknum, qboolean base_
 // parse the directory
 	for (i = 0; i < numpackfiles; i++)
 	{
-		qerr_strlcpy(newfiles[i].name, info[i].name, MAX_QPATH);
+		qerr_strlcpy(__thisfunc__, __LINE__, newfiles[i].name, info[i].name, MAX_QPATH);
 		newfiles[i].filepos = LittleLong(info[i].filepos);
 		newfiles[i].filelen = LittleLong(info[i].filelen);
 	}
 
 	pack = (pack_t *) Z_Malloc (sizeof(pack_t), Z_MAINZONE);
-	qerr_strlcpy(pack->filename, packfile, MAX_OSPATH);
+	qerr_strlcpy(__thisfunc__, __LINE__, pack->filename, packfile, MAX_OSPATH);
 	pack->handle = packhandle;
 	pack->numfiles = numpackfiles;
 	pack->files = newfiles;
@@ -383,9 +383,9 @@ static void FS_AddGameDirectory (const char *dir, qboolean base_fs)
 	char			*p;
 	qboolean		been_here = false;
 
-	qerr_strlcpy(fs_gamedir, dir, sizeof(fs_gamedir));
+	qerr_strlcpy(__thisfunc__, __LINE__, fs_gamedir, dir, sizeof(fs_gamedir));
 	p = strrchr (fs_gamedir, '/');
-	qerr_strlcpy(fs_gamedir_nopath, ++p, sizeof(fs_gamedir_nopath));
+	qerr_strlcpy(__thisfunc__, __LINE__, fs_gamedir_nopath, ++p, sizeof(fs_gamedir_nopath));
 
 //
 // add any pak files in the format pak0.pak pak1.pak, ...
@@ -397,11 +397,11 @@ add_pakfile:
 	{
 		if (been_here)
 		{
-			qerr_snprintf(pakfile, sizeof(pakfile), "%s/pak%i.pak", fs_userdir, i);
+			qerr_snprintf(__thisfunc__, __LINE__, pakfile, sizeof(pakfile), "%s/pak%i.pak", fs_userdir, i);
 		}
 		else
 		{
-			qerr_snprintf(pakfile, sizeof(pakfile), "%s/pak%i.pak", dir, i);
+			qerr_snprintf(__thisfunc__, __LINE__, pakfile, sizeof(pakfile), "%s/pak%i.pak", dir, i);
 		}
 		pak = FS_LoadPackFile (pakfile, i, base_fs);
 		if (!pak)
@@ -422,11 +422,11 @@ add_pakfile:
 	search = (searchpath_t *) Hunk_AllocName (sizeof(searchpath_t), "searchpath");
 	if (been_here)
 	{
-		qerr_strlcpy(search->filename, fs_userdir, MAX_OSPATH);
+		qerr_strlcpy(__thisfunc__, __LINE__, search->filename, fs_userdir, MAX_OSPATH);
 	}
 	else
 	{
-		qerr_strlcpy(search->filename, dir, MAX_OSPATH);
+		qerr_strlcpy(__thisfunc__, __LINE__, search->filename, dir, MAX_OSPATH);
 	}
 	search->next = fs_searchpaths;
 	fs_searchpaths = search;
@@ -475,7 +475,7 @@ void FS_Gamedir (const char *dir)
 
 	if (!q_strcasecmp(fs_gamedir_nopath, dir))
 		return;		// still the same
-	qerr_strlcpy(fs_gamedir_nopath, dir, sizeof(fs_gamedir_nopath));
+	qerr_strlcpy(__thisfunc__, __LINE__, fs_gamedir_nopath, dir, sizeof(fs_gamedir_nopath));
 
 	// FIXME: Should I check for directory's existence ??
 
@@ -516,11 +516,11 @@ void FS_Gamedir (const char *dir)
 	// that we reached here means the hw server decided to abandon
 	// whatever the previous mod it was running and went back to
 	// pure hw. weird.. do as he wishes anyway and adjust our variables.
-		qerr_snprintf(fs_gamedir, sizeof(fs_gamedir), "%s/hw", fs_basedir);
+		qerr_snprintf(__thisfunc__, __LINE__, fs_gamedir, sizeof(fs_gamedir), "%s/hw", fs_basedir);
 #    if DO_USERDIRS
-		qerr_snprintf(fs_userdir, sizeof(fs_userdir), "%s/hw", host_parms->userdir);
+		qerr_snprintf(__thisfunc__, __LINE__, fs_userdir, sizeof(fs_userdir), "%s/hw", host_parms->userdir);
 #    else
-		qerr_strlcpy (fs_userdir, fs_gamedir, sizeof(fs_userdir));
+		qerr_strlcpy (__thisfunc__, __LINE__, fs_userdir, fs_gamedir, sizeof(fs_userdir));
 #    endif
 #    if defined(SERVERONLY)
 	// change the *gamedir serverinfo properly
@@ -548,7 +548,7 @@ void FS_Gamedir (const char *dir)
 	else
 	{
 	// a new gamedir: let's set it here.
-		qerr_snprintf(fs_gamedir, sizeof(fs_gamedir), "%s/%s", fs_basedir, dir);
+		qerr_snprintf(__thisfunc__, __LINE__, fs_gamedir, sizeof(fs_gamedir), "%s/%s", fs_basedir, dir);
 	}
 
 //
@@ -561,11 +561,11 @@ add_pakfiles:
 	{
 		if (been_here)
 		{
-			qerr_snprintf(pakfile, sizeof(pakfile), "%s/pak%i.pak", fs_userdir, i);
+			qerr_snprintf(__thisfunc__, __LINE__, pakfile, sizeof(pakfile), "%s/pak%i.pak", fs_userdir, i);
 		}
 		else
 		{
-			qerr_snprintf(pakfile, sizeof(pakfile), "%s/pak%i.pak", fs_gamedir, i);
+			qerr_snprintf(__thisfunc__, __LINE__, pakfile, sizeof(pakfile), "%s/pak%i.pak", fs_gamedir, i);
 		}
 		pak = FS_LoadPackFile (pakfile, i, false);
 		if (!pak)
@@ -583,11 +583,11 @@ add_pakfiles:
 	search = (searchpath_t *) Z_Malloc (sizeof(searchpath_t), Z_MAINZONE);
 	if (been_here)
 	{
-		qerr_strlcpy(search->filename, fs_userdir, MAX_OSPATH);
+		qerr_strlcpy(__thisfunc__, __LINE__, search->filename, fs_userdir, MAX_OSPATH);
 	}
 	else
 	{
-		qerr_strlcpy(search->filename, fs_gamedir, MAX_OSPATH);
+		qerr_strlcpy(__thisfunc__, __LINE__, search->filename, fs_gamedir, MAX_OSPATH);
 	}
 	search->next = fs_searchpaths;
 	fs_searchpaths = search;
@@ -603,13 +603,13 @@ add_pakfiles:
 
 // add user's directory to the search path
 #if DO_USERDIRS
-	qerr_snprintf(fs_userdir, sizeof(fs_userdir), "%s/%s", host_parms->userdir, dir);
-	Sys_mkdir_err (fs_userdir);
+	qerr_snprintf(__thisfunc__, __LINE__, fs_userdir, sizeof(fs_userdir), "%s/%s", host_parms->userdir, dir);
+	Sys_mkdir (fs_userdir, true);
 // add any pak files in the user's directory
 	if (strcmp(fs_gamedir, fs_userdir))
 		goto add_pakfiles;
 #else
-	qerr_strlcpy (fs_userdir, fs_gamedir, sizeof(fs_userdir));
+	qerr_strlcpy (__thisfunc__, __LINE__, fs_userdir, fs_gamedir, sizeof(fs_userdir));
 #endif
 }
 
@@ -674,7 +674,7 @@ static void MoveUserData (void)
 #	define NUM_MOVEFILES	(sizeof(movefiles)/sizeof(movefiles[0]))
 #	define NUM_MOVEDIRS	(sizeof(movedirs)/sizeof(movedirs[0]))
 
-	qerr_snprintf(tmp1, sizeof(tmp1), "%s/userdata.moved", fs_userdir);
+	qerr_snprintf(__thisfunc__, __LINE__, tmp1, sizeof(tmp1), "%s/userdata.moved", fs_userdir);
 	if (stat(tmp1, &test) == 0)
 	{
 	/* the data should have already been moved in earlier
@@ -691,8 +691,8 @@ static void MoveUserData (void)
 		tmp = Sys_FindFirstFile (host_parms->userdir, movefiles[i]);
 		while (tmp)
 		{
-			qerr_snprintf(tmp1, sizeof(tmp1), "%s/%s", host_parms->userdir, tmp);
-			qerr_snprintf(tmp2, sizeof(tmp2), "%s/%s", fs_userdir, tmp);
+			qerr_snprintf(__thisfunc__, __LINE__, tmp1, sizeof(tmp1), "%s/%s", host_parms->userdir, tmp);
+			qerr_snprintf(__thisfunc__, __LINE__, tmp2, sizeof(tmp2), "%s/%s", fs_userdir, tmp);
 			do_movedata (tmp1, tmp2, fh);
 			tmp = Sys_FindNextFile ();
 		}
@@ -702,12 +702,12 @@ static void MoveUserData (void)
 	// move the savegames
 	for (i = 0; i < MAX_SAVEGAMES; i++)
 	{
-		qerr_snprintf(tmp1, sizeof(tmp1), "%s/s%u", host_parms->userdir, i);
+		qerr_snprintf(__thisfunc__, __LINE__, tmp1, sizeof(tmp1), "%s/s%u", host_parms->userdir, i);
 		if (stat(tmp1, &test) == 0)
 		{
 			if ( S_ISDIR(test.st_mode) )
 			{
-				qerr_snprintf(tmp2, sizeof(tmp2), "%s/s%u", fs_userdir, i);
+				qerr_snprintf(__thisfunc__, __LINE__, tmp2, sizeof(tmp2), "%s/s%u", fs_userdir, i);
 				do_movedata (tmp1, tmp2, fh);
 			}
 		}
@@ -716,12 +716,12 @@ static void MoveUserData (void)
 	// move the savegames (multiplayer)
 	for (i = 0; i < MAX_SAVEGAMES; i++)
 	{
-		qerr_snprintf(tmp1, sizeof(tmp1), "%s/ms%u", host_parms->userdir, i);
+		qerr_snprintf(__thisfunc__, __LINE__, tmp1, sizeof(tmp1), "%s/ms%u", host_parms->userdir, i);
 		if (stat(tmp1, &test) == 0)
 		{
 			if ( S_ISDIR(test.st_mode) )
 			{
-				qerr_snprintf(tmp2, sizeof(tmp2), "%s/ms%u", fs_userdir, i);
+				qerr_snprintf(__thisfunc__, __LINE__, tmp2, sizeof(tmp2), "%s/ms%u", fs_userdir, i);
 				do_movedata (tmp1, tmp2, fh);
 			}
 		}
@@ -730,12 +730,12 @@ static void MoveUserData (void)
 	// other dirs
 	for (i = 0; i < NUM_MOVEDIRS; i++)
 	{
-		qerr_snprintf(tmp1, sizeof(tmp1), "%s/%s", host_parms->userdir, movedirs[i]);
+		qerr_snprintf(__thisfunc__, __LINE__, tmp1, sizeof(tmp1), "%s/%s", host_parms->userdir, movedirs[i]);
 		if (stat(tmp1, &test) == 0)
 		{
 			if ( S_ISDIR(test.st_mode) )
 			{
-				qerr_snprintf(tmp2, sizeof(tmp2), "%s/%s", fs_userdir, movedirs[i]);
+				qerr_snprintf(__thisfunc__, __LINE__, tmp2, sizeof(tmp2), "%s/%s", fs_userdir, movedirs[i]);
 				do_movedata (tmp1, tmp2, fh);
 			}
 		}
@@ -1021,7 +1021,7 @@ error_out:
 		if (*ofs == '/')
 		{	// create the directory
 			*ofs = 0;
-			error_state = Sys_mkdir (path);
+			error_state = Sys_mkdir (path, false);
 			*ofs = '/';
 			if (error_state)
 				break;
@@ -1507,15 +1507,15 @@ void FS_Init (void)
 		fs_basedir = host_parms->basedir;
 	}
 
-	qerr_strlcpy(fs_userdir, host_parms->userdir, sizeof(fs_userdir));
+	qerr_strlcpy(__thisfunc__, __LINE__, fs_userdir, host_parms->userdir, sizeof(fs_userdir));
 
 //
 // step 1: start up with data1 by default
 //
-	qerr_snprintf(fs_userdir, sizeof(fs_userdir), "%s/data1", host_parms->userdir);
+	qerr_snprintf(__thisfunc__, __LINE__, fs_userdir, sizeof(fs_userdir), "%s/data1", host_parms->userdir);
 #if DO_USERDIRS
 // properly move the user data from older versions in the user's directory
-	Sys_mkdir_err (fs_userdir);
+	Sys_mkdir (fs_userdir, true);
 	MoveUserData ();
 #endif
 	FS_AddGameDirectory (va("%s/data1", fs_basedir), true);
@@ -1613,8 +1613,8 @@ void FS_Init (void)
 		i = Hunk_LowMark ();
 		search_tmp = fs_searchpaths;
 
-		qerr_snprintf(fs_userdir, sizeof(fs_userdir), "%s/portals", host_parms->userdir);
-		Sys_mkdir_err (fs_userdir);
+		qerr_snprintf(__thisfunc__, __LINE__, fs_userdir, sizeof(fs_userdir), "%s/portals", host_parms->userdir);
+		Sys_mkdir (fs_userdir, true);
 		FS_AddGameDirectory (va("%s/portals", fs_basedir), true);
 
 		// back out searchpaths from invalid mission pack installations
@@ -1647,8 +1647,8 @@ void FS_Init (void)
 // step 3: hw directory (hexenworld)
 //
 #if defined(H2W)
-	qerr_snprintf(fs_userdir, sizeof(fs_userdir), "%s/hw", host_parms->userdir);
-	Sys_mkdir_err (fs_userdir);
+	qerr_snprintf(__thisfunc__, __LINE__, fs_userdir, sizeof(fs_userdir), "%s/hw", host_parms->userdir);
+	Sys_mkdir (fs_userdir, true);
 	FS_AddGameDirectory (va("%s/hw", fs_basedir), true);
 	// error out for H2W builds if GAME_HEXENWORLD isn't set
 	if (!(gameflags & GAME_HEXENWORLD))

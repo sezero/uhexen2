@@ -2,7 +2,7 @@
 	host_cmd.c
 	console commands
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host_cmd.c,v 1.100 2008-01-22 12:01:03 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host_cmd.c,v 1.101 2008-01-29 10:47:01 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -573,7 +573,7 @@ static void Host_Savegame_f (void)
 		Con_Printf ("%s: save directory name too long\n", __thisfunc__);
 		return;
 	}
-	if (Sys_mkdir(savename))
+	if (Sys_mkdir(savename, false) != 0)
 	{
 		Con_Printf ("Unable to create save directory\n");
 		return;

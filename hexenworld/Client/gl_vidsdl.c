@@ -2,7 +2,7 @@
 	gl_vidsdl.c -- SDL GL vid component
 	Select window size and mode and init SDL in GL mode.
 
-	$Id: gl_vidsdl.c,v 1.171 2008-01-12 09:46:17 sezero Exp $
+	$Id: gl_vidsdl.c,v 1.172 2008-01-29 10:47:02 sezero Exp $
 
 	Changed 7/11/04 by S.A.
 	- Fixed fullscreen opengl mode, window sizes
@@ -1010,7 +1010,7 @@ static void VID_Create8bitPalette (void)
 			m = 0;
 	}
 	q_snprintf(s, sizeof(s), "%s/glhexen", fs_userdir);
-	Sys_mkdir (s);
+	Sys_mkdir (s, false);
 	q_snprintf(s, sizeof(s), "%s/glhexen/15to8.pal", fs_userdir);
 	f = fopen(s, "wb");
 	if (f)
@@ -1526,11 +1526,11 @@ void	VID_Init (unsigned char *palette)
 #if DO_MESH_CACHE
 	// prepare directories for caching mesh files
 	q_snprintf (gldir, sizeof(gldir), "%s/glhexen", fs_userdir);
-	Sys_mkdir (gldir);
+	Sys_mkdir (gldir, false);
 	q_snprintf (gldir, sizeof(gldir), "%s/glhexen/boss", fs_userdir);
-	Sys_mkdir (gldir);
+	Sys_mkdir (gldir, false);
 	q_snprintf (gldir, sizeof(gldir), "%s/glhexen/puzzle", fs_userdir);
-	Sys_mkdir (gldir);
+	Sys_mkdir (gldir, false);
 #endif
 
 	// see if the SDL version we linked to is multisampling-capable

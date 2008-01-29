@@ -2,7 +2,7 @@
 	common.h
 	misc utilities used in client and server
 
-	$Id: common.h,v 1.61 2008-01-29 10:03:12 sezero Exp $
+	$Id: common.h,v 1.62 2008-01-29 10:47:01 sezero Exp $
 */
 
 #ifndef __HX2_COMMON_H
@@ -62,25 +62,14 @@ extern size_t q_strlcat (char *dst, const char *src, size_t size);
 extern int q_snprintf (char *str, size_t size, const char *format, ...) __attribute__((format(printf,3,4)));
 extern int q_vsnprintf(char *str, size_t size, const char *format, va_list args);
 
-#define qerr_strlcat(DST,SRC,SIZE) {							\
-	if (q_strlcat((DST),(SRC),(SIZE)) >= (SIZE))					\
-		Sys_Error("%s: %d: string buffer overflow!",__thisfunc__,__LINE__);	\
-}
-#define qerr_strlcpy(DST,SRC,SIZE) {							\
-	if (q_strlcpy((DST),(SRC),(SIZE)) >= (SIZE))					\
-		Sys_Error("%s: %d: string buffer overflow!",__thisfunc__,__LINE__);	\
-}
-#if defined(__GNUC__) && !(defined(__STDC_VERSION__) && __STDC_VERSION__ >= 199901L)
-#define qerr_snprintf(DST,SIZE,fmt,args...) {						\
-	if (q_snprintf((DST),(SIZE),fmt,##args) >= (int)(SIZE))				\
-		Sys_Error("%s: %d: string buffer overflow!",__thisfunc__,__LINE__);	\
-}
-#else
-#define qerr_snprintf(DST,SIZE,...) {							\
-	if (q_snprintf((DST),(SIZE),__VA_ARGS__) >= (int)(SIZE))			\
-		Sys_Error("%s: %d: string buffer overflow!",__thisfunc__,__LINE__);	\
-}
-#endif
+/* these qerr_ versions of functions error out if they detect, well, an error.
+ * their first two arguments must the name of the caller function (see compiler.h
+ * for the __thisfunc__ macro) and the line number, which should be __LINE__ .
+ */
+extern size_t qerr_strlcat (const char *caller, int linenum, char *dst, const char *src, size_t size);
+extern size_t qerr_strlcpy (const char *caller, int linenum, char *dst, const char *src, size_t size);
+extern int qerr_snprintf (const char *caller, int linenum, char *str, size_t size, const char *format, ...)
+									__attribute__((format(printf,5,6)));
 
 extern char *q_strlwr (char *str);
 extern char *q_strupr (char *str);

@@ -2,7 +2,7 @@
 	sys.h
 	non-portable functions
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/sys.h,v 1.38 2007-12-20 21:45:33 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/sys.h,v 1.39 2008-01-29 10:47:03 sezero Exp $
 */
 
 #ifndef __HX2_SYS_H
@@ -11,12 +11,7 @@
 //
 // file IO
 //
-int Sys_mkdir (const char *path);
-
-#define	Sys_mkdir_err(p)	{				\
-	if (Sys_mkdir((p)))					\
-		Sys_Error("Unable to create directory %s",(p));	\
-}
+int Sys_mkdir (const char *path, qboolean crash);
 
 int Sys_rmdir (const char *path);
 int Sys_unlink (const char *path);

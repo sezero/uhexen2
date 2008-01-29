@@ -2,7 +2,7 @@
 	gl_mesh.c
 	triangle model functions
 
-	$Id: gl_mesh.c,v 1.19 2008-01-29 10:03:14 sezero Exp $
+	$Id: gl_mesh.c,v 1.20 2008-01-29 10:47:02 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -356,11 +356,11 @@ void GL_MakeAliasModelDisplayLists (model_t *m, aliashdr_t *hdr)
 			char gldir[MAX_OSPATH];
 
 			q_snprintf (gldir, sizeof(gldir), "%s/glhexen", fs_userdir);
-			Sys_mkdir (gldir);
+			Sys_mkdir (gldir, false);
 			q_snprintf (gldir, sizeof(gldir), "%s/glhexen/boss", fs_userdir);
-			Sys_mkdir (gldir);
+			Sys_mkdir (gldir, false);
 			q_snprintf (gldir, sizeof(gldir), "%s/glhexen/puzzle", fs_userdir);
-			Sys_mkdir (gldir);
+			Sys_mkdir (gldir, false);
 			f = fopen (cache, "wb");
 		}
 

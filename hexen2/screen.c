@@ -2,7 +2,7 @@
 	screen.c
 	master for refresh, status bar, console, chat, notify, etc
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/screen.c,v 1.54 2007-11-25 09:22:54 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/screen.c,v 1.55 2008-01-29 10:47:01 sezero Exp $
 */
 
 /*=============================================================================
@@ -798,7 +798,7 @@ static void SCR_ScreenShot_f (void)
 	char		checkname[MAX_OSPATH];
 
 	sprintf (checkname, "%s/shots", fs_userdir);
-	Sys_mkdir (checkname);
+	Sys_mkdir (checkname, false);
 //
 // find a file name to save it to
 //

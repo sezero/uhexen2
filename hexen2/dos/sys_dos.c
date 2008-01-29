@@ -3,7 +3,7 @@
 	DOS system interface code.
 	from quake1 source with adaptations for uhexen2.
 
-	$Id: sys_dos.c,v 1.8 2008-01-18 07:29:08 sezero Exp $
+	$Id: sys_dos.c,v 1.9 2008-01-29 10:47:01 sezero Exp $
 
 	Copyright (C) 1996-1997  Id Software, Inc.
 
@@ -391,14 +391,13 @@ UpdateSbrk:
 }
 
 
-int Sys_mkdir (const char *path)
+int Sys_mkdir (const char *path, qboolean crash)
 {
-	int rc;
-
-	rc = mkdir (path, 0777);
+	int rc = mkdir (path, 0777);
 	if (rc != 0 && errno == EEXIST)
 		rc = 0;
-
+	if (rc != 0 && crash)
+		Sys_Error("Unable to create directory %s", path);
 	return rc;
 }
 

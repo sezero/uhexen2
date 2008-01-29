@@ -2,7 +2,7 @@
 	common.c
 	misc utility functions used in client and server
 
-	$Id: common.c,v 1.106 2008-01-29 10:03:12 sezero Exp $
+	$Id: common.c,v 1.107 2008-01-29 10:47:01 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -69,6 +69,39 @@ int q_snprintf (char *str, size_t size, const char *format, ...)
 	ret = q_vsnprintf (str, size, format, argptr);
 	va_end (argptr);
 
+	return ret;
+}
+
+size_t qerr_strlcat (const char *caller, int linenum,
+		     char *dst, const char *src, size_t size)
+{
+	size_t	ret = q_strlcat (dst, src, size);
+	if (ret >= size)
+		Sys_Error("%s: %d: string buffer overflow!", caller, linenum);
+	return ret;
+}
+
+size_t qerr_strlcpy (const char *caller, int linenum,
+		     char *dst, const char *src, size_t size)
+{
+	size_t	ret = q_strlcpy (dst, src, size);
+	if (ret >= size)
+		Sys_Error("%s: %d: string buffer overflow!", caller, linenum);
+	return ret;
+}
+
+int qerr_snprintf (const char *caller, int linenum,
+		   char *str, size_t size, const char *format, ...)
+{
+	int		ret;
+	va_list		argptr;
+
+	va_start (argptr, format);
+	ret = q_vsnprintf (str, size, format, argptr);
+	va_end (argptr);
+
+	if ((size_t)ret >= size)
+		Sys_Error("%s: %d: string buffer overflow!", caller, linenum);
 	return ret;
 }
 
@@ -257,7 +290,7 @@ void COM_DefaultExtension (char *path, const char *extension, size_t len)
 		src--;
 	}
 
-	qerr_strlcat(path, extension, len);
+	qerr_strlcat(__thisfunc__, __LINE__, path, extension, len);
 }
 
 

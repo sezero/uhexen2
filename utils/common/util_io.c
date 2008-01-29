@@ -2,7 +2,7 @@
 	util_io.c
 	file and directory utilities
 
-	$Id: util_io.c,v 1.8 2007-12-20 21:45:34 sezero Exp $
+	$Id: util_io.c,v 1.9 2008-01-29 10:47:03 sezero Exp $
 */
 
 
@@ -199,7 +199,7 @@ void Q_mkdir (const char *path)
 		return;
 #endif
 	if (errno != EEXIST)
-		Error ("mkdir %s: %s",path, strerror(errno));
+		Error ("Unable to create directory %s", path);
 }
 
 int Q_rmdir (const char *path)

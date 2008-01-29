@@ -2,7 +2,7 @@
 	cmdlib.c
 	functions common to all of the utilities
 
-	$Id: cmdlib.c,v 1.16 2007-12-14 16:41:16 sezero Exp $
+	$Id: cmdlib.c,v 1.17 2008-01-29 10:47:03 sezero Exp $
 */
 
 
@@ -126,6 +126,39 @@ int q_snprintf (char *str, size_t size, const char *format, ...)
 	ret = q_vsnprintf (str, size, format, argptr);
 	va_end (argptr);
 
+	return ret;
+}
+
+size_t qerr_strlcat (const char *caller, int linenum,
+		     char *dst, const char *src, size_t size)
+{
+	size_t	ret = q_strlcat (dst, src, size);
+	if (ret >= size)
+		Error("%s: %d: string buffer overflow!", caller, linenum);
+	return ret;
+}
+
+size_t qerr_strlcpy (const char *caller, int linenum,
+		     char *dst, const char *src, size_t size)
+{
+	size_t	ret = q_strlcpy (dst, src, size);
+	if (ret >= size)
+		Error("%s: %d: string buffer overflow!", caller, linenum);
+	return ret;
+}
+
+int qerr_snprintf (const char *caller, int linenum,
+		   char *str, size_t size, const char *format, ...)
+{
+	int		ret;
+	va_list		argptr;
+
+	va_start (argptr, format);
+	ret = q_vsnprintf (str, size, format, argptr);
+	va_end (argptr);
+
+	if ((size_t)ret >= size)
+		Error("%s: %d: string buffer overflow!", caller, linenum);
 	return ret;
 }
 

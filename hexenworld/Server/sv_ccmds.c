@@ -2,7 +2,7 @@
 	sv_ccmds.c
 	console commands
 
-	$Id: sv_ccmds.c,v 1.26 2007-12-21 15:05:23 sezero Exp $
+	$Id: sv_ccmds.c,v 1.27 2008-01-29 10:47:03 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -88,7 +88,7 @@ static void SV_Logfile_f (void)
 		return;
 	}
 
-	qerr_snprintf(name, sizeof(name), "%s/hwsv.log", fs_userdir);
+	qerr_snprintf(__thisfunc__, __LINE__, name, sizeof(name), "%s/hwsv.log", fs_userdir);
 
 	Con_Printf ("Logging text to %s.\n", name);
 	sv_logfile = fopen (name, "w");
@@ -120,7 +120,7 @@ static void SV_Fraglogfile_f (void)
 	// find an unused name
 	for (i = 0; i < 1000; i++)
 	{
-		qerr_snprintf(name, sizeof(name), "%s/frag_%i.log", fs_userdir, i);
+		qerr_snprintf(__thisfunc__, __LINE__, name, sizeof(name), "%s/frag_%i.log", fs_userdir, i);
 
 		sv_fraglogfile = fopen (name, "r");
 		if (!sv_fraglogfile)

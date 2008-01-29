@@ -2,7 +2,7 @@
 	screen.c
 	master for refresh, status bar, console, chat, notify, etc
 
-	$Id: gl_screen.c,v 1.57 2007-11-25 09:22:54 sezero Exp $
+	$Id: gl_screen.c,v 1.58 2008-01-29 10:47:01 sezero Exp $
 */
 
 /*=============================================================================
@@ -696,7 +696,7 @@ static void SCR_ScreenShot_f (void)
 	int			mark;
 
 	sprintf (checkname, "%s/shots", fs_userdir);
-	Sys_mkdir (checkname);
+	Sys_mkdir (checkname, false);
 //
 // find a file name to save it to
 //

@@ -2,7 +2,7 @@
 	sys_main.c
 	main loop and system interface
 
-	$Id: sys_main.c,v 1.45 2008-01-11 19:56:56 sezero Exp $
+	$Id: sys_main.c,v 1.46 2008-01-29 10:47:03 sezero Exp $
 */
 
 #include "q_stdinc.h"
@@ -221,14 +221,13 @@ double Sys_DoubleTime (void)
 
 #ifdef PLATFORM_UNIX
 
-int Sys_mkdir (const char *path)
+int Sys_mkdir (const char *path, qboolean crash)
 {
-	int rc;
-
-	rc = mkdir (path, 0777);
+	int rc = mkdir (path, 0777);
 	if (rc != 0 && errno == EEXIST)
 		rc = 0;
-
+	if (rc != 0 && crash)
+		Sys_Error("Unable to create directory %s", path);
 	return rc;
 }
 
@@ -253,7 +252,7 @@ static int Sys_GetUserdir (char *dst, size_t dstsize)
 		return 1;
 
 	q_snprintf (dst, dstsize, "%s/%s", home_dir, HWM_USERDIR);
-	return Sys_mkdir(dst);
+	return Sys_mkdir(dst, false);
 }
 #endif
 
