@@ -2,14 +2,10 @@
 	huffman.c
 	huffman encoding/decoding for use in hexenworld networking
 
-	$Id: huffman.c,v 1.25 2007-11-14 07:21:07 sezero Exp $
+	$Id: huffman.c,v 1.26 2008-01-29 19:00:12 sezero Exp $
 */
 
-#include <stdlib.h>
-#include <sys/types.h>
-#include <stdio.h>
-#include <string.h>
-#include <stdarg.h>
+#include "q_stdinc.h"
 #include "compiler.h"
 #include "huffman.h"
 /* h2w engine includes */
