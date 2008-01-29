@@ -1,5 +1,5 @@
 # GNU Makefile for hexen2 genmodel tool using GCC.
-# $Header: /home/ozzie/Download/0000/uhexen2/utils/genmodel/Makefile,v 1.18 2008-01-12 09:46:18 sezero Exp $
+# $Header: /home/ozzie/Download/0000/uhexen2/utils/genmodel/Makefile,v 1.19 2008-01-29 10:08:05 sezero Exp $
 #
 # if building a debug version :		make DEBUG=1 [other stuff]
 #
@@ -71,6 +71,8 @@ mathlib.o: $(COMMONDIR)/mathlib.c
 
 # Objects
 GENMODELOBJS= $(COMMONDIR)/cmdlib.o \
+	$(COMMONDIR)/strlcat.o \
+	$(COMMONDIR)/strlcpy.o \
 	$(COMMONDIR)/q_endian.o \
 	$(COMMONDIR)/byteordr.o \
 	$(COMMONDIR)/util_io.o \
@@ -81,8 +83,6 @@ GENMODELOBJS= $(COMMONDIR)/cmdlib.o \
 	loadtri.o \
 	token.o \
 	genmodel.o
-#	$(COMMONDIR)/strlcat.o \
-#	$(COMMONDIR)/strlcpy.o \
 
 # include file for sanity check target
 include $(UHEXEN2_TOP)/scripts/sanity2.inc

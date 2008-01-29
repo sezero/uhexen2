@@ -1,5 +1,5 @@
 # GNU Makefile for hexen2 dhcc tool using GCC.
-# $Header: /home/ozzie/Download/0000/uhexen2/utils/dcc/Makefile,v 1.32 2008-01-12 09:46:18 sezero Exp $
+# $Header: /home/ozzie/Download/0000/uhexen2/utils/dcc/Makefile,v 1.33 2008-01-29 10:08:05 sezero Exp $
 #
 # if building a debug version :		make DEBUG=1 [other stuff]
 #
@@ -73,6 +73,8 @@ $(COMLIB_DIR)/%.o: $(COMMONDIR)/%.c
 
 # Objects
 COMMONOBJ= $(COMLIB_DIR)/cmdlib.o \
+	$(COMLIB_DIR)/strlcat.o \
+	$(COMLIB_DIR)/strlcpy.o \
 	$(COMLIB_DIR)/util_io.o \
 	$(COMLIB_DIR)/q_endian.o \
 	$(COMLIB_DIR)/byteordr.o \

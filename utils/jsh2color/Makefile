@@ -1,5 +1,5 @@
 # GNU Makefile for hexen2 jsh2color tool using GCC.
-# $Header: /home/ozzie/Download/0000/uhexen2/utils/jsh2color/Makefile,v 1.22 2008-01-12 09:46:19 sezero Exp $
+# $Header: /home/ozzie/Download/0000/uhexen2/utils/jsh2color/Makefile,v 1.23 2008-01-29 10:08:05 sezero Exp $
 #
 # if building a debug version :		make DEBUG=1 [other stuff]
 #
@@ -74,6 +74,8 @@ bspfile.o: $(COMMONDIR)/bspfile.c
 
 # Objects
 JS_OBJS= $(COMMONDIR)/cmdlib.o \
+	$(COMMONDIR)/strlcat.o \
+	$(COMMONDIR)/strlcpy.o \
 	$(COMMONDIR)/q_endian.o \
 	$(COMMONDIR)/byteordr.o \
 	$(COMMONDIR)/util_io.o \
@@ -88,8 +90,6 @@ JS_OBJS= $(COMMONDIR)/cmdlib.o \
 	jscolor.o \
 	tex.o \
 	tyrlite.o
-#	$(COMMONDIR)/strlcat.o \
-#	$(COMMONDIR)/strlcpy.o \
 
 # include file for sanity check target
 include $(UHEXEN2_TOP)/scripts/sanity2.inc

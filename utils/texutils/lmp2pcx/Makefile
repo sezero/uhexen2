@@ -1,5 +1,5 @@
 # GNU Makefile for hexen2 lmp2pcx tool using GCC.
-# $Header: /home/ozzie/Download/0000/uhexen2/utils/texutils/lmp2pcx/Makefile,v 1.9 2008-01-12 09:46:20 sezero Exp $
+# $Header: /home/ozzie/Download/0000/uhexen2/utils/texutils/lmp2pcx/Makefile,v 1.10 2008-01-29 10:08:06 sezero Exp $
 #
 # if building a debug version :		make DEBUG=1 [other stuff]
 #
@@ -68,13 +68,13 @@ all : $(BINARY)
 
 # Objects
 LMP2PCXOBJS= $(COMMONDIR)/cmdlib.o \
+	$(COMMONDIR)/strlcat.o \
+	$(COMMONDIR)/strlcpy.o \
 	$(COMMONDIR)/util_io.o \
 	$(COMMONDIR)/pathutil.o \
 	$(COMMONDIR)/q_endian.o \
 	$(COMMONDIR)/byteordr.o \
 	lmp2pcx.o
-#	$(COMMONDIR)/strlcat.o \
-#	$(COMMONDIR)/strlcpy.o \
 
 # include file for sanity check target
 include $(UHEXEN2_TOP)/scripts/sanity2.inc

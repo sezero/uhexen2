@@ -1,5 +1,5 @@
 # GNU Makefile for hexen2 hcc tool (old version) using GCC.
-# $Header: /home/ozzie/Download/0000/uhexen2/utils/hcc_old/Makefile,v 1.15 2008-01-12 09:46:19 sezero Exp $
+# $Header: /home/ozzie/Download/0000/uhexen2/utils/hcc_old/Makefile,v 1.16 2008-01-29 10:08:05 sezero Exp $
 #
 # if building a debug version :		make DEBUG=1 [other stuff]
 #
@@ -68,6 +68,8 @@ all : $(BINARY)
 
 # Objects
 HCCOBJS= $(COMMONDIR)/cmdlib.o \
+	$(COMMONDIR)/strlcat.o \
+	$(COMMONDIR)/strlcpy.o \
 	$(COMMONDIR)/util_io.o \
 	$(COMMONDIR)/q_endian.o \
 	$(COMMONDIR)/byteordr.o \
@@ -78,8 +80,6 @@ HCCOBJS= $(COMMONDIR)/cmdlib.o \
 	pr_lex.o \
 	pr_parse.o \
 	stmt.o
-#	$(COMMONDIR)/strlcat.o \
-#	$(COMMONDIR)/strlcpy.o \
 
 # include file for sanity check target
 include $(UHEXEN2_TOP)/scripts/sanity2.inc
