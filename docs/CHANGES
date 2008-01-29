@@ -3,6 +3,35 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2008-01-29 (CVS):
+    * made COM_StripExtension, COM_FileExtension, COM_DefaultExtension and
+      COM_FileBase buffer size safe.
+    * added back strlcat and strlcpy to the utilities' build.
+    * changed the error check macros qerr_strlcat, qerr_strlcpy and
+      qerr_snprintf into actual functions. They take two additional arguments:
+      the name of the caller function and the line number. Killed the
+      Sys_mkdir_err macro, too, Sys_mkdir now takes a second argument,
+      qboolean crash.
+    * buffer size safety stuff in the utilities after the similar operation
+      in the engine tree. actually there is *much* to be done in the utilities
+      for q_strlcpy, q_strlcat and q_snprintf usage, but this is a good start.
+    * re-diff'ed the external music file support patch after today's api
+      changes.
+    * utilities: started using q_strlcat, q_strlcpy and q_snprintf: common,
+      genmodel, qfiles.
+    * minor Sys_FindFirstFile cleanup: Z_Malloc ensures allocation and zeroes
+      the memory.
+    * fixed huffman.c compilation after today's api changes.
+    * fixed compilation by cplusplus compilers (g++) when we configure for
+      runtime byte order detection: the usual int to enum problems, added
+      proper enum casts in model.c, gl_model.c and genmodel.c. the testing also
+      revealed a weird thing in genmodel.c: in its two functions, ReadModel
+      and WriteModelFile, byte swap operation on the synctype member is done
+      using LittleFloat, not LittleLong, although synctye_t is an enum and has
+      nothing to do about float: changed the code to use LittleLong. any ideas
+      on this? the modelgen tool of quake1 also uses LittleFloat, hmm...
+    * changed the beta release date to 2008-01-29.
+
 2008-01-26 (CVS):
     * don't rely on value to wrap around in get_va_buffer().
     * cl_protocol parsing clean-up: use switch statements for better
