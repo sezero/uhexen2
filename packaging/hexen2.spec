@@ -1,3 +1,6 @@
+# RPM spec file for RedHat and Fedora Core
+# $Id: hexen2.spec,v 1.52 2008-02-05 17:55:44 sezero Exp $
+
 # build options :
 # --without alsa: build without alsa audio support
 # --without midi: build without midi support
@@ -18,7 +21,7 @@
 
 %define desktop_vendor	uhexen2
 
-%define gamecode_ver	1.19
+%define gamecode_ver	1.19a
 
 # pre-release version: MAKE SURE to change this
 # to an %undefine for the final realease!!
@@ -285,6 +288,9 @@ desktop-file-install \
 %{_prefix}/games/%{name}/docs/README.hwmaster
 
 %changelog
+* Wed Feb 05 2008 O.Sezer <sezero@users.sourceforge.net>
+- incremented the gamecode version number to 1.19a
+
 * Wed Oct 03 2007 O.Sezer <sezero@users.sourceforge.net> 1.4.2-1
 - 1.4.2-final.
 
