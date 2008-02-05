@@ -4,6 +4,10 @@ Game code for Hexen2 / H2MP / HexenWorld
 Changes
 -------
 
+2008-01-01 (1.19a):
+===================
+- Updated the patch shell scripts for much better compatibility with BSD
+  and other systems. No other source code or binary data change.
 2006-03-18 (1.19):
 ===================
 - Origin fixes for tomed fires of vorpal sword and purifier: paladin used
