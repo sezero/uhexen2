@@ -1,5 +1,5 @@
 # GNU Makefile for (gl)hexen2 client/server binaries using GCC.
-# $Header: /home/ozzie/Download/0000/uhexen2/hexen2/Makefile,v 1.83 2008-01-10 17:21:06 sezero Exp $
+# $Header: /home/ozzie/Download/0000/uhexen2/hexen2/Makefile,v 1.84 2008-02-07 09:51:23 sezero Exp $
 #
 # Type "make help" to see the valid targets.
 #
@@ -441,6 +441,7 @@ SOFTOBJS = d_edge.o \
 	r_light.o \
 	r_main.o \
 	r_misc.o \
+	r_part.o \
 	r_sky.o \
 	r_sprite.o \
 	r_surf.o \
@@ -455,6 +456,7 @@ GLOBJS = gl_draw.o \
 	gl_rlight.o \
 	gl_rmain.o \
 	gl_rmisc.o \
+	r_part.o \
 	gl_rsurf.o \
 	gl_screen.o \
 	gl_warp.o \
@@ -496,7 +498,6 @@ COMMONOBJS = chase.o \
 	pr_cmds.o \
 	pr_edict.o \
 	pr_exec.o \
-	r_part.o \
 	sbar.o \
 	$(COMOBJ_SND) \
 	$(SYSOBJ_SND) \
