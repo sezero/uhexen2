@@ -14,7 +14,7 @@ Changes since HoT-1.4.2 :
 - Sound: Buffer lock fixes in SDL audio output.
 - Sound: internal changes in the driver interface.
 - Video/Input: The game now blocks/unblocks sound upon
-  window focus loss/gain (SDL driver).
+  window focus loss/gain (SDL input driver).
 - Software renderer: Fixed fullscreen intermission and
   help picture size mismatches after resolution changes
   which would cause errors under certain conditions.
@@ -24,8 +24,10 @@ Changes since HoT-1.4.2 :
 - Fixed a buffer overrun vulnerability in the hexenworld
   huffman decoder (Secunia advisory SA28124).
 - Fixed a theoretical buffer overrun in console input.
+- Several other fixes elsewhere for buffer size safety.
 - Replaced some technically dangerous memcpy calls with
   memmove calls.
+- Some protocol related clean-ups and documentation.
 - Fixed the paths in texutils cross compilation scripts.
 - Console: added ctrl-right and ctrl-left key handling.
 - Console line editing: made insert mode the default.
@@ -43,6 +45,7 @@ Changes since HoT-1.4.2 :
 - Completed the const correctness effort.
 - Incremented the engine versions to 1.21 for Hexen II and
   0.21 for HexenWorld.
+- Incremented the gamecode version number to 1.19a.
 - Fixed and updated several build and patch scripts.
 - A few documentation updates and corrections.
 
