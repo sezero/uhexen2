@@ -2,7 +2,7 @@
 	cl_pred.c
 	client side player movement prediction
 
-	$Id: cl_pred.c,v 1.12 2007-07-11 16:47:16 sezero Exp $
+	$Id: cl_pred.c,v 1.13 2008-02-07 09:27:24 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -142,7 +142,7 @@ void CL_PredictMove (void)
 		char		text[1024];
 		cls.state = ca_active;
 
-		sprintf (text, "HexenWorld: %s", cls.servername);
+		q_snprintf (text, sizeof(text), "HexenWorld: %s", cls.servername);
 #ifdef PLATFORM_WINDOWS
 		SetWindowText (mainwindow, text);
 #endif

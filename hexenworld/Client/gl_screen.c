@@ -2,7 +2,7 @@
 	screen.c
 	master for refresh, status bar, console, chat, notify, etc
 
-	$Id: gl_screen.c,v 1.49 2008-01-29 10:47:02 sezero Exp $
+	$Id: gl_screen.c,v 1.50 2008-02-07 09:27:24 sezero Exp $
 */
 
 /*=============================================================================
@@ -580,18 +580,18 @@ static void SCR_ScreenShot_f (void)
 	int			i, c, temp;
 	int			mark;
 
-	sprintf (checkname, "%s/shots", fs_userdir);
+	q_snprintf (checkname, sizeof(checkname), "%s/shots", fs_userdir);
 	Sys_mkdir (checkname, false);
 //
 // find a file name to save it to
 //
-	strcpy(pcxname,"shots/hw00.tga");
+	q_strlcpy (pcxname, "shots/hw00.tga", sizeof(pcxname));
 
 	for (i = 0; i <= 99; i++)
 	{
 		pcxname[8] = i/10 + '0';
 		pcxname[9] = i%10 + '0';
-		sprintf (checkname, "%s/%s", fs_userdir, pcxname);
+		q_snprintf (checkname, sizeof(checkname), "%s/%s", fs_userdir, pcxname);
 		if (access(checkname, F_OK) == -1)
 			break;	// file doesn't exist
 	}

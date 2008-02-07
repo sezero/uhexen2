@@ -2,7 +2,7 @@
 	sv_main.c
 	server main program
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sv_main.c,v 1.67 2008-01-26 18:55:40 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sv_main.c,v 1.68 2008-02-07 09:27:22 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -2026,8 +2026,8 @@ void SV_SpawnServer (const char *server, const char *startspot)
 
 	sv.time = 1.0;
 
-	strcpy (sv.name, server);
-	sprintf (sv.modelname,"maps/%s.bsp", server);
+	q_strlcpy (sv.name, server, sizeof(sv.name));
+	q_snprintf (sv.modelname, sizeof(sv.modelname), "maps/%s.bsp", server);
 
 	sv.worldmodel = Mod_ForName (sv.modelname, false);
 	if (!sv.worldmodel)

@@ -2,7 +2,7 @@
 	cl_parse.c
 	parse a message received from the server
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cl_parse.c,v 1.63 2008-01-29 10:03:12 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cl_parse.c,v 1.64 2008-02-07 09:27:22 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -308,7 +308,7 @@ static void CL_ParseServerInfo (void)
 			Con_Printf ("Server sent too many model precaches\n");
 			return;
 		}
-		strcpy (model_precache[nummodels], str);
+		q_strlcpy (model_precache[nummodels], str, MAX_QPATH);
 		Mod_TouchModel (str);
 	}
 
@@ -324,7 +324,7 @@ static void CL_ParseServerInfo (void)
 			Con_Printf ("Server sent too many sound precaches\n");
 			return;
 		}
-		strcpy (sound_precache[numsounds], str);
+		q_strlcpy (sound_precache[numsounds], str, MAX_QPATH);
 		S_TouchSound (str);
 	}
 
@@ -932,21 +932,21 @@ static void CL_ParseClientdata (int bits)
 	if (sc2 & SC2_TOME_T)
 		cl.v.tome_time = MSG_ReadFloat();
 	if (sc2 & SC2_PUZZLE1)
-		sprintf(cl.puzzle_pieces[0], "%.9s", MSG_ReadString());
+		q_snprintf(cl.puzzle_pieces[0], sizeof(cl.puzzle_pieces[0]), "%.9s", MSG_ReadString());
 	if (sc2 & SC2_PUZZLE2)
-		sprintf(cl.puzzle_pieces[1], "%.9s", MSG_ReadString());
+		q_snprintf(cl.puzzle_pieces[1], sizeof(cl.puzzle_pieces[0]), "%.9s", MSG_ReadString());
 	if (sc2 & SC2_PUZZLE3)
-		sprintf(cl.puzzle_pieces[2], "%.9s", MSG_ReadString());
+		q_snprintf(cl.puzzle_pieces[2], sizeof(cl.puzzle_pieces[0]), "%.9s", MSG_ReadString());
 	if (sc2 & SC2_PUZZLE4)
-		sprintf(cl.puzzle_pieces[3], "%.9s", MSG_ReadString());
+		q_snprintf(cl.puzzle_pieces[3], sizeof(cl.puzzle_pieces[0]), "%.9s", MSG_ReadString());
 	if (sc2 & SC2_PUZZLE5)
-		sprintf(cl.puzzle_pieces[4], "%.9s", MSG_ReadString());
+		q_snprintf(cl.puzzle_pieces[4], sizeof(cl.puzzle_pieces[0]), "%.9s", MSG_ReadString());
 	if (sc2 & SC2_PUZZLE6)
-		sprintf(cl.puzzle_pieces[5], "%.9s", MSG_ReadString());
+		q_snprintf(cl.puzzle_pieces[5], sizeof(cl.puzzle_pieces[0]), "%.9s", MSG_ReadString());
 	if (sc2 & SC2_PUZZLE7)
-		sprintf(cl.puzzle_pieces[6], "%.9s", MSG_ReadString());
+		q_snprintf(cl.puzzle_pieces[6], sizeof(cl.puzzle_pieces[0]), "%.9s", MSG_ReadString());
 	if (sc2 & SC2_PUZZLE8)
-		sprintf(cl.puzzle_pieces[7], "%.9s", MSG_ReadString());
+		q_snprintf(cl.puzzle_pieces[7], sizeof(cl.puzzle_pieces[0]), "%.9s", MSG_ReadString());
 	if (sc2 & SC2_MAXHEALTH)
 		cl.v.max_health = MSG_ReadShort();
 	if (sc2 & SC2_MAXMANA)
@@ -1366,7 +1366,7 @@ void CL_ParseServerMessage (void)
 			i = MSG_ReadByte ();
 			if (i >= MAX_LIGHTSTYLES)
 				Sys_Error ("svc_lightstyle > MAX_LIGHTSTYLES");
-			strcpy (cl_lightstyle[i].map,  MSG_ReadString());
+			q_strlcpy (cl_lightstyle[i].map, MSG_ReadString(), MAX_STYLESTRING);
 			cl_lightstyle[i].length = strlen(cl_lightstyle[i].map);
 			break;
 
@@ -1408,7 +1408,7 @@ void CL_ParseServerMessage (void)
 			i = MSG_ReadByte ();
 			if (i >= cl.maxclients)
 				Host_Error ("%s: svc_updatename > MAX_CLIENTS", __thisfunc__);
-			strcpy (cl.scores[i].name, MSG_ReadString ());
+			q_strlcpy (cl.scores[i].name, MSG_ReadString(), MAX_SCOREBOARDNAME);
 			break;
 
 		case svc_updateclass:
@@ -1528,7 +1528,7 @@ void CL_ParseServerMessage (void)
 			break;
 
 		case svc_midi_name:
-			strcpy(cl.midi_name,MSG_ReadString ());
+			q_strlcpy (cl.midi_name, MSG_ReadString(), sizeof(cl.midi_name));
 			if (q_strcasecmp(bgmtype.string,"midi") == 0)
 				MIDI_Play(cl.midi_name);
 			else
@@ -1814,21 +1814,21 @@ void CL_ParseServerMessage (void)
 			if (sc2 & SC2_TOME_T)
 				cl.v.tome_time = MSG_ReadFloat();
 			if (sc2 & SC2_PUZZLE1)
-				sprintf(cl.puzzle_pieces[0], "%.9s", MSG_ReadString());
+				q_snprintf(cl.puzzle_pieces[0], sizeof(cl.puzzle_pieces[0]), "%.9s", MSG_ReadString());
 			if (sc2 & SC2_PUZZLE2)
-				sprintf(cl.puzzle_pieces[1], "%.9s", MSG_ReadString());
+				q_snprintf(cl.puzzle_pieces[1], sizeof(cl.puzzle_pieces[0]), "%.9s", MSG_ReadString());
 			if (sc2 & SC2_PUZZLE3)
-				sprintf(cl.puzzle_pieces[2], "%.9s", MSG_ReadString());
+				q_snprintf(cl.puzzle_pieces[2], sizeof(cl.puzzle_pieces[0]), "%.9s", MSG_ReadString());
 			if (sc2 & SC2_PUZZLE4)
-				sprintf(cl.puzzle_pieces[3], "%.9s", MSG_ReadString());
+				q_snprintf(cl.puzzle_pieces[3], sizeof(cl.puzzle_pieces[0]), "%.9s", MSG_ReadString());
 			if (sc2 & SC2_PUZZLE5)
-				sprintf(cl.puzzle_pieces[4], "%.9s", MSG_ReadString());
+				q_snprintf(cl.puzzle_pieces[4], sizeof(cl.puzzle_pieces[0]), "%.9s", MSG_ReadString());
 			if (sc2 & SC2_PUZZLE6)
-				sprintf(cl.puzzle_pieces[5], "%.9s", MSG_ReadString());
+				q_snprintf(cl.puzzle_pieces[5], sizeof(cl.puzzle_pieces[0]), "%.9s", MSG_ReadString());
 			if (sc2 & SC2_PUZZLE7)
-				sprintf(cl.puzzle_pieces[6], "%.9s", MSG_ReadString());
+				q_snprintf(cl.puzzle_pieces[6], sizeof(cl.puzzle_pieces[0]), "%.9s", MSG_ReadString());
 			if (sc2 & SC2_PUZZLE8)
-				sprintf(cl.puzzle_pieces[7], "%.9s", MSG_ReadString());
+				q_snprintf(cl.puzzle_pieces[7], sizeof(cl.puzzle_pieces[0]), "%.9s", MSG_ReadString());
 			if (sc2 & SC2_MAXHEALTH)
 				cl.v.max_health = MSG_ReadShort();
 			if (sc2 & SC2_MAXMANA)

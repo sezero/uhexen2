@@ -2,7 +2,7 @@
 	screen.c
 	master for refresh, status bar, console, chat, notify, etc
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/screen.c,v 1.55 2008-01-29 10:47:01 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/screen.c,v 1.56 2008-02-07 09:27:22 sezero Exp $
 */
 
 /*=============================================================================
@@ -797,18 +797,18 @@ static void SCR_ScreenShot_f (void)
 	char		pcxname[80];
 	char		checkname[MAX_OSPATH];
 
-	sprintf (checkname, "%s/shots", fs_userdir);
+	q_snprintf (checkname, sizeof(checkname), "%s/shots", fs_userdir);
 	Sys_mkdir (checkname, false);
 //
 // find a file name to save it to
 //
-	strcpy(pcxname,"shots/hexen00.pcx");
+	q_strlcpy (pcxname, "shots/hexen00.pcx", sizeof(pcxname));
 
 	for (i = 0; i <= 99; i++)
 	{
 		pcxname[11] = i/10 + '0';
 		pcxname[12] = i%10 + '0';
-		sprintf (checkname, "%s/%s", fs_userdir, pcxname);
+		q_snprintf (checkname, sizeof(checkname), "%s/%s", fs_userdir, pcxname);
 		if (access(checkname, F_OK) == -1)
 			break;	// file doesn't exist
 	}

@@ -2,7 +2,7 @@
 	cl_main.c
 	client main loop
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/cl_main.c,v 1.93 2007-12-14 16:41:11 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/cl_main.c,v 1.94 2008-02-07 09:27:24 sezero Exp $
 */
 
 #include "q_stdinc.h"
@@ -181,7 +181,7 @@ void CL_SendConnectPacket (void)
 	connect_time = realtime+t2-t1;	// for retransmit requests
 
 	Con_Printf ("Connecting to %s...\n", cls.servername);
-	sprintf (data, "%c%c%c%cconnect %d \"%s\"\n",
+	q_snprintf (data, sizeof(data), "%c%c%c%cconnect %d \"%s\"\n",
 			255, 255, 255, 255,
 			((gameflags & GAME_PORTALS) == GAME_PORTALS),
 			cls.userinfo);

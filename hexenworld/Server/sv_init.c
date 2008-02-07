@@ -2,7 +2,7 @@
 	sv_init.c
 	server spawning
 
-	$Id: sv_init.c,v 1.17 2007-09-22 15:27:34 sezero Exp $
+	$Id: sv_init.c,v 1.18 2008-02-07 09:27:24 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -317,8 +317,8 @@ void SV_SpawnServer (const char *server, const char *startspot)
 
 	sv.time = 1.0;
 
-	strcpy (sv.name, server);
-	sprintf (sv.modelname,"maps/%s.bsp", server);
+	q_strlcpy (sv.name, server, sizeof(sv.name));
+	q_snprintf (sv.modelname, sizeof(sv.modelname), "maps/%s.bsp", server);
 	sv.worldmodel = Mod_ForName (sv.modelname, true);
 	SV_CalcPHS ();
 
