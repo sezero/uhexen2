@@ -2,7 +2,7 @@
 	sys_win.c
 	Win32 system interface code
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/win_stuff/sys_win.c,v 1.65 2008-01-29 10:47:02 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/win_stuff/sys_win.c,v 1.66 2008-02-07 15:00:14 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -533,6 +533,11 @@ int WINAPI WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 
 	lpBuffer.dwLength = sizeof(MEMORYSTATUS);
 	GlobalMemoryStatus (&lpBuffer);
+	/* Maximum of 2GiB to work around signed int */
+	if (lpBuffer.dwAvailPhys > 0x7FFFFFFF)
+		lpBuffer.dwAvailPhys = 0x7FFFFFFF;
+	if (lpBuffer.dwTotalPhys > 0x7FFFFFFF)
+		lpBuffer.dwTotalPhys = 0x7FFFFFFF;
 
 	memset (cwd, 0, sizeof(cwd));
 	if (Sys_GetBasedir(NULL, cwd, sizeof(cwd)) != 0)
