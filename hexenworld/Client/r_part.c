@@ -2,7 +2,7 @@
 	r_part.c
 	particles rendering
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/r_part.c,v 1.19 2007-08-09 06:12:45 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/r_part.c,v 1.20 2008-02-07 23:41:22 sezero Exp $
 */
 
 
@@ -114,9 +114,9 @@ void R_DarkFieldParticles (entity_t *ent)
 				p->color = 150 + (rand() % 6);
 				p->type = pt_slowgrav;
 
-				dir[0] = j*8;
-				dir[1] = i*8;
-				dir[2] = k*8;
+				dir[0] = j * 8;
+				dir[1] = i * 8;
+				dir[2] = k * 8;
 
 				p->org[0] = org[0] + i + (rand() & 3);
 				p->org[1] = org[1] + j + (rand() & 3);
@@ -243,7 +243,7 @@ void R_EntityParticles (entity_t *ent)
 
 	if (!avelocities[0][0])
 	{
-		for (i = 0; i < NUMVERTEXNORMALS*3; i++)
+		for (i = 0; i < NUMVERTEXNORMALS * 3; i++)
 		{
 			avelocities[0][i] = (rand() & 255) * 0.01;
 		}
@@ -284,14 +284,14 @@ void R_SuccubusInvincibleParticles (entity_t *ent)
 	vec3_t		ent_angles,forward,org;
 
 	ent_angles[0] = ent_angles[2] = 0;
-	ent_angles[1] = cl.time*12;
-	forward[0] = cos(ent_angles[1])*32;
-	forward[1] = sin(ent_angles[1])*32;
+	ent_angles[1] = cl.time * 12;
+	forward[0] = cos(ent_angles[1]) * 32;
+	forward[1] = sin(ent_angles[1]) * 32;
 	forward[2] = 0;
 	VectorCopy(ent->origin, org);
 	org[2] += 28;
 
-	count = 140*host_frametime;
+	count = 140 * host_frametime;
 	while (count > 0)
 	{
 		p = AllocParticle();
@@ -312,7 +312,7 @@ void R_SuccubusInvincibleParticles (entity_t *ent)
 		count--;
 	}
 
-	count = 60*host_frametime;
+	count = 60 * host_frametime;
 	while (count > 0)
 	{
 		p = AllocParticle();
@@ -453,7 +453,7 @@ void R_ParseRainEffect(void)
 	color = MSG_ReadShort();
 	count = MSG_ReadShort();
 
-	R_RainEffect (org,e_size,x_dir,y_dir,color,count);
+	R_RainEffect (org, e_size, x_dir, y_dir, color, count);
 }
 
 
@@ -615,7 +615,7 @@ void R_RunParticleEffect (vec3_t org, vec3_t dir, int color, int count)
 		else
 		{
 			p->die = cl.time + 0.1 * (rand() % 5);
-//			p->color = (color&~7) + (rand() & 7);
+//			p->color = (color & ~7) + (rand() & 7);
 //			p->color = 265 + (rand() % 9);
 			p->color = 256 + 16 + 12 + (rand() % 4);
 			p->type = pt_slowgrav;
@@ -947,9 +947,9 @@ void R_TeleportSplash (vec3_t org)
 				p->color = 7 + (rand() & 7);
 				p->type = pt_slowgrav;
 
-				dir[0] = j*8;
-				dir[1] = i*8;
-				dir[2] = k*8;
+				dir[0] = j * 8;
+				dir[1] = i * 8;
+				dir[2] = k * 8;
 
 				p->org[0] = org[0] + i + (rand() & 3);
 				p->org[1] = org[1] + j + (rand() & 3);
@@ -1039,7 +1039,7 @@ void R_SunStaffTrail(vec3_t source, vec3_t dest)
 		if ((p = AllocParticle()) == NULL)
 			return;
 
-		p->die = cl.time+2;
+		p->die = cl.time + 2;
 
 		p->ramp = rand() & 3;
 		p->color = ramp6[(int)(p->ramp)];
@@ -1075,11 +1075,11 @@ void RiderParticle (int count, vec3_t origin)
 			return;
 
 		p->die = cl.time + 4;
-		p->color = 256+16+15;
+		p->color = 256 + 16 + 15;
 		p->type = pt_rd;
 		p->ramp = 0;
 
-		VectorCopy(origin,p->org);
+		VectorCopy(origin, p->org);
 
 		//num = rand() / RAND_MAX;
 		angle = (rand() % 360) / (2 * M_PI);
@@ -1123,7 +1123,7 @@ void R_RocketTrail (vec3_t start, vec3_t end, int type)
 
 		case 8:
 		// Ice
-			size = 5*3;
+			size = 5 * 3;
 			break;
 
 		case rt_acidball:
@@ -1145,7 +1145,7 @@ void R_RocketTrail (vec3_t start, vec3_t end, int type)
 			break;
 
 	}
-	VectorScale(dist,size,dist);
+	VectorScale(dist, size, dist);
 
 	while (len > 0)
 	{
@@ -1559,13 +1559,13 @@ static void R_RenderParticle (particle_t *p)
 	if (p->color <= 255)
 	{
 		if (p->type == pt_fire)
-			theAlpha = 255*(6-p->ramp)/6;
+			theAlpha = 255 * (6 - p->ramp) / 6;
 	//		theAlpha = 192;
 	//	else if (p->type == pt_explode || p->type == pt_explode2)
 	//		theAlpha = 255 * (8 - p->ramp)/8;
 		else
 			theAlpha = 255;
-		glColor4ub_fp (*at, *(at+1), *(at+2), theAlpha);
+		glColor4ub_fp (*at, *(at + 1), *(at + 2), theAlpha);
 	}
 	else
 	{
@@ -1636,7 +1636,7 @@ void R_DrawParticles (void)
 	time1 = frametime * 5;
 	grav = frametime * movevars.gravity * 0.05;
 	grav2 = frametime * movevars.gravity * 0.025;
-	dvel = 4*frametime;
+	dvel = 4 * frametime;
 	percent = (frametime / HX_FRAME_TIME);
 
 /*	temp_p.org[0] = -1013;
@@ -1691,9 +1691,9 @@ void R_DrawParticles (void)
 		}
 
 		R_RenderParticle(p);
-		p->org[0] += p->vel[0]*frametime;
-		p->org[1] += p->vel[1]*frametime;
-		p->org[2] += p->vel[2]*frametime;
+		p->org[0] += p->vel[0] * frametime;
+		p->org[1] += p->vel[1] * frametime;
+		p->org[2] += p->vel[2] * frametime;
 
 		switch (p->type)
 		{
@@ -1727,7 +1727,7 @@ void R_DrawParticles (void)
 			else
 				p->color = ramp2[(int)p->ramp];
 			for (i = 0; i < 3; i++)
-				p->vel[i] -= p->vel[i]*frametime;
+				p->vel[i] -= p->vel[i] * frametime;
 			p->vel[2] -= grav;
 			break;
 
@@ -1749,7 +1749,7 @@ void R_DrawParticles (void)
 			else if (time3)
 				p->color -= 2;
 			for (i = 0; i < 3; i++)
-				p->vel[i] -= p->vel[i]*frametime;
+				p->vel[i] -= p->vel[i] * frametime;
 			p->vel[2] -= grav;
 			break;
 
@@ -1781,7 +1781,7 @@ void R_DrawParticles (void)
 			break;
 
 		case pt_fastgrav:
-			p->vel[2] -= grav*4;
+			p->vel[2] -= grav * 4;
 			break;
 
 		case pt_rain:
@@ -1796,7 +1796,7 @@ void R_DrawParticles (void)
 			break;
 
 		case pt_acidball:
-			p->ramp += time4*1.4;
+			p->ramp += time4 * 1.4;
 			if ((int)p->ramp >= 23)
 				p->die = -1;
 			else if ((int)p->ramp >= 15)
@@ -1812,7 +1812,7 @@ void R_DrawParticles (void)
 				p->die = -1;
 			else
 				p->color = ramp6[(int)p->ramp];
-		//	p->vel[2] += grav*2;
+		//	p->vel[2] += grav * 2;
 			break;
 
 		case pt_ice:
@@ -1830,7 +1830,7 @@ void R_DrawParticles (void)
 				p->die = -1;
 			else
 				p->color = ramp7[(int)p->ramp];
-		//	p->vel[2] += grav*2;
+		//	p->vel[2] += grav * 2;
 			break;
 
 		case pt_test:
@@ -1845,11 +1845,11 @@ void R_DrawParticles (void)
 		case pt_quake:
 			p->vel[0] *= 1.05;
 			p->vel[1] *= 1.05;
-			p->vel[2] -= grav*4;
+			p->vel[2] -= grav * 4;
 			if (p->color < 160 && p->color > 143)
-				p->color = 152 + 7 * ((p->die - cl.time)*2.0);
+				p->color = 152 + 7 * ((p->die - cl.time) * 2.0);
 			if (p->color < 144 && p->color > 127)
-				p->color = 136 + 7 * ((p->die - cl.time)*2.0);
+				p->color = 136 + 7 * ((p->die - cl.time) * 2.0);
 			break;
 
 		case pt_rd:
@@ -1862,7 +1862,7 @@ void R_DrawParticles (void)
 				p->ramp = 50;
 				p->die = -1;
 			}
-			p->color = 256+16+16 - (p->ramp/(50/16));
+			p->color = 256 + 16 + 16 - (p->ramp / (50/16));
 
 			VectorSubtract(rider_origin, p->org, diff);
 
@@ -1897,11 +1897,11 @@ void R_DrawParticles (void)
 			break;
 
 		case pt_redfire:
-			p->ramp += frametime*3;
+			p->ramp += frametime * 3;
 			if ((int)p->ramp >= 8)
 				p->die = -1;
 			else
-				p->color = ramp12[(int)p->ramp]+256;
+				p->color = ramp12[(int)p->ramp] + 256;
 
 			p->vel[0] *= .9;
 			p->vel[1] *= .9;
@@ -1909,11 +1909,11 @@ void R_DrawParticles (void)
 			break;
 
 		case pt_bluestep:
-			p->ramp += frametime*8;
+			p->ramp += frametime * 8;
 			if ((int)p->ramp >= 16)
 				p->die = -1;
 			else
-				p->color = ramp13[(int)p->ramp]+256;
+				p->color = ramp13[(int)p->ramp] + 256;
 
 			p->vel[0] *= .9;
 			p->vel[1] *= .9;
@@ -1944,7 +1944,7 @@ void R_DrawParticles (void)
 		case pt_darken:
 		    {
 			int	colindex;
-			p->vel[2] -= grav * 2;	//Also gravity
+			p->vel[2] -= grav * 2;	// Also gravity
 			if (rand() & 1)
 				--p->color;
 			colindex = 0;

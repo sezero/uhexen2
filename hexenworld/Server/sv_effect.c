@@ -2,7 +2,7 @@
 	sv_effect.c
 	Client side effects.
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Server/sv_effect.c,v 1.15 2007-05-13 11:59:43 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Server/sv_effect.c,v 1.16 2008-02-07 23:41:23 sezero Exp $
 */
 
 // HEADER FILES ------------------------------------------------------------
@@ -21,8 +21,8 @@
 
 // EXTERNAL DATA DECLARATIONS ----------------------------------------------
 
-extern cvar_t sv_ce_scale;
-extern cvar_t sv_ce_max_size;
+extern cvar_t	sv_ce_scale;
+extern cvar_t	sv_ce_max_size;
 
 // PUBLIC DATA DEFINITIONS -------------------------------------------------
 
@@ -34,7 +34,7 @@ extern cvar_t sv_ce_max_size;
 #if 0	// only used by currently unused SV_LoadEffects
 static void SV_ClearEffects (void)
 {
-	memset(sv.Effects,0,sizeof(sv.Effects));
+	memset(sv.Effects, 0, sizeof(sv.Effects));
 }
 #endif	// 0
 
@@ -394,7 +394,7 @@ void SV_SendEffect (sizebuf_t *sb, int idx)
 			MSG_WriteCoord(&sv.multicast, sv.Effects[idx].ef.Chain.origin[0]);
 			MSG_WriteCoord(&sv.multicast, sv.Effects[idx].ef.Chain.origin[1]);
 			MSG_WriteCoord(&sv.multicast, sv.Effects[idx].ef.Chain.origin[2]);
-			MSG_WriteShort(&sv.multicast, sv.Effects[idx].ef.Chain.owner+sv.Effects[idx].ef.Chain.material);
+			MSG_WriteShort(&sv.multicast, sv.Effects[idx].ef.Chain.owner + sv.Effects[idx].ef.Chain.material);
 			MSG_WriteByte(&sv.multicast, sv.Effects[idx].ef.Chain.tag);
 			break;
 
@@ -505,7 +505,7 @@ void SV_ParseEffect (sizebuf_t *sb)
 
 //	Con_Printf("Effect #%d\n", idx);
 
-	memset(&sv.Effects[idx],0,sizeof(struct EffectT));
+	memset(&sv.Effects[idx], 0, sizeof(struct EffectT));
 
 	sv.Effects[idx].type = effect;
 	G_FLOAT(OFS_RETURN) = idx;
@@ -513,10 +513,10 @@ void SV_ParseEffect (sizebuf_t *sb)
 	switch (effect)
 	{
 		case CE_RAIN:
-			VectorCopy(G_VECTOR(OFS_PARM1),sv.Effects[idx].ef.Rain.min_org);
-			VectorCopy(G_VECTOR(OFS_PARM2),sv.Effects[idx].ef.Rain.max_org);
-			VectorCopy(G_VECTOR(OFS_PARM3),sv.Effects[idx].ef.Rain.e_size);
-			VectorCopy(G_VECTOR(OFS_PARM4),sv.Effects[idx].ef.Rain.dir);
+			VectorCopy(G_VECTOR(OFS_PARM1), sv.Effects[idx].ef.Rain.min_org);
+			VectorCopy(G_VECTOR(OFS_PARM2), sv.Effects[idx].ef.Rain.max_org);
+			VectorCopy(G_VECTOR(OFS_PARM3), sv.Effects[idx].ef.Rain.e_size);
+			VectorCopy(G_VECTOR(OFS_PARM4), sv.Effects[idx].ef.Rain.dir);
 			sv.Effects[idx].ef.Rain.color = G_FLOAT(OFS_PARM5);
 			sv.Effects[idx].ef.Rain.count = G_FLOAT(OFS_PARM6);
 			sv.Effects[idx].ef.Rain.wait = G_FLOAT(OFS_PARM7);
@@ -525,9 +525,9 @@ void SV_ParseEffect (sizebuf_t *sb)
 			break;
 
 		case CE_FOUNTAIN:
-			VectorCopy(G_VECTOR(OFS_PARM1),sv.Effects[idx].ef.Fountain.pos);
-			VectorCopy(G_VECTOR(OFS_PARM2),sv.Effects[idx].ef.Fountain.angle);
-			VectorCopy(G_VECTOR(OFS_PARM3),sv.Effects[idx].ef.Fountain.movedir);
+			VectorCopy(G_VECTOR(OFS_PARM1), sv.Effects[idx].ef.Fountain.pos);
+			VectorCopy(G_VECTOR(OFS_PARM2), sv.Effects[idx].ef.Fountain.angle);
+			VectorCopy(G_VECTOR(OFS_PARM3), sv.Effects[idx].ef.Fountain.movedir);
 			sv.Effects[idx].ef.Fountain.color = G_FLOAT(OFS_PARM4);
 			sv.Effects[idx].ef.Fountain.cnt = G_FLOAT(OFS_PARM5);
 			break;
@@ -623,7 +623,7 @@ void SV_ParseEffect (sizebuf_t *sb)
 
 		case CE_TELEPORTERBODY:
 			VectorCopy(G_VECTOR(OFS_PARM1), sv.Effects[idx].ef.Teleporter.origin);
-			VectorCopy(G_VECTOR(OFS_PARM2),sv.Effects[idx].ef.Teleporter.velocity[0]);
+			VectorCopy(G_VECTOR(OFS_PARM2), sv.Effects[idx].ef.Teleporter.velocity[0]);
 			sv.Effects[idx].ef.Teleporter.skinnum = G_FLOAT(OFS_PARM3);
 			sv.Effects[idx].expire_time = sv.time + 1;
 			break;
@@ -631,9 +631,9 @@ void SV_ParseEffect (sizebuf_t *sb)
 		case CE_BONESHRAPNEL:
 		case CE_HWBONEBALL:
 			VectorCopy(G_VECTOR(OFS_PARM1), sv.Effects[idx].ef.Missile.origin);
-			VectorCopy(G_VECTOR(OFS_PARM2),sv.Effects[idx].ef.Missile.velocity);
-			VectorCopy(G_VECTOR(OFS_PARM3),sv.Effects[idx].ef.Missile.angle);
-			VectorCopy(G_VECTOR(OFS_PARM2),sv.Effects[idx].ef.Missile.avelocity);
+			VectorCopy(G_VECTOR(OFS_PARM2), sv.Effects[idx].ef.Missile.velocity);
+			VectorCopy(G_VECTOR(OFS_PARM3), sv.Effects[idx].ef.Missile.angle);
+			VectorCopy(G_VECTOR(OFS_PARM2), sv.Effects[idx].ef.Missile.avelocity);
 
 			sv.Effects[idx].expire_time = sv.time + 10;
 			break;
@@ -644,7 +644,7 @@ void SV_ParseEffect (sizebuf_t *sb)
 		case CE_HWEIDOLONSTAR:
 		case CE_HWRAVENPOWER:
 			VectorCopy(G_VECTOR(OFS_PARM1), sv.Effects[idx].ef.Missile.origin);
-			VectorCopy(G_VECTOR(OFS_PARM2),sv.Effects[idx].ef.Missile.velocity);
+			VectorCopy(G_VECTOR(OFS_PARM2), sv.Effects[idx].ef.Missile.velocity);
 			sv.Effects[idx].expire_time = sv.time + 10;
 			break;
 
@@ -657,20 +657,20 @@ void SV_ParseEffect (sizebuf_t *sb)
 
 		case CE_HWDRILLA:
 			VectorCopy(G_VECTOR(OFS_PARM1), sv.Effects[idx].ef.Missile.origin);
-			VectorCopy(G_VECTOR(OFS_PARM2),sv.Effects[idx].ef.Missile.angle);
+			VectorCopy(G_VECTOR(OFS_PARM2), sv.Effects[idx].ef.Missile.angle);
 			sv.Effects[idx].ef.Missile.speed = G_FLOAT(OFS_PARM3);
 			sv.Effects[idx].expire_time = sv.time + 10;
 			break;
 
 		case CE_TRIPMINESTILL:
 			VectorCopy(G_VECTOR(OFS_PARM1), sv.Effects[idx].ef.Chain.origin);
-			VectorCopy(G_VECTOR(OFS_PARM2),sv.Effects[idx].ef.Chain.velocity);
+			VectorCopy(G_VECTOR(OFS_PARM2), sv.Effects[idx].ef.Chain.velocity);
 			sv.Effects[idx].expire_time = sv.time + 70;
 			break;
 
 		case CE_TRIPMINE:
 			VectorCopy(G_VECTOR(OFS_PARM1), sv.Effects[idx].ef.Chain.origin);
-			VectorCopy(G_VECTOR(OFS_PARM2),sv.Effects[idx].ef.Chain.velocity);
+			VectorCopy(G_VECTOR(OFS_PARM2), sv.Effects[idx].ef.Chain.velocity);
 			sv.Effects[idx].expire_time = sv.time + 10;
 			break;
 
@@ -725,7 +725,7 @@ void SV_ParseEffect (sizebuf_t *sb)
 			PR_RunError ("%s: bad type", __thisfunc__);
 	}
 
-	SV_SendEffect(sb,idx);
+	SV_SendEffect(sb, idx);
 }
 
 

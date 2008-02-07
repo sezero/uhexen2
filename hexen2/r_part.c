@@ -2,7 +2,7 @@
 	r_part.c
 	particles rendering
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/r_part.c,v 1.22 2007-09-21 11:05:10 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/r_part.c,v 1.23 2008-02-07 23:41:11 sezero Exp $
 */
 
 
@@ -128,9 +128,9 @@ void R_DarkFieldParticles (entity_t *ent)
 				p->color = 150 + (rand() % 6);
 				p->type = pt_slowgrav;
 
-				dir[0] = j*8;
-				dir[1] = i*8;
-				dir[2] = k*8;
+				dir[0] = j * 8;
+				dir[1] = i * 8;
+				dir[2] = k * 8;
 
 				p->org[0] = org[0] + i + (rand() & 3);
 				p->org[1] = org[1] + j + (rand() & 3);
@@ -421,7 +421,7 @@ void R_RunParticleEffect (vec3_t org, vec3_t dir, int color, int count)
 		else
 		{
 			p->die = cl.time + 0.1 * (rand() % 5);
-//			p->color = (color&~7) + (rand() & 7);
+//			p->color = (color & ~7) + (rand() & 7);
 //			p->color = 265 + (rand() % 9);
 			p->color = 256 + 16 + 12 + (rand() & 3);
 			p->type = pt_slowgrav;
@@ -603,9 +603,9 @@ void R_TeleportSplash (vec3_t org)
 				p->color = 7 + (rand() & 7);
 				p->type = pt_slowgrav;
 
-				dir[0] = j*8;
-				dir[1] = i*8;
-				dir[2] = k*8;
+				dir[0] = j * 8;
+				dir[1] = i * 8;
+				dir[2] = k * 8;
 
 				p->org[0] = org[0] + i + (rand() & 3);
 				p->org[1] = org[1] + j + (rand() & 3);
@@ -694,7 +694,7 @@ void R_SunStaffTrail(vec3_t source, vec3_t dest)
 		if ((p = AllocParticle()) == NULL)
 			return;
 
-		p->die = cl.time+2;
+		p->die = cl.time + 2;
 
 		p->ramp = rand() & 3;
 		p->color = ramp6[(int)(p->ramp)];
@@ -729,11 +729,11 @@ void RiderParticle (int count, vec3_t origin)
 			return;
 
 		p->die = cl.time + 4;
-		p->color = 256+16+15;
+		p->color = 256 + 16 + 15;
 		p->type = pt_rd;
 		p->ramp = 0;
 
-		VectorCopy(origin,p->org);
+		VectorCopy(origin, p->org);
 
 		//num = (rand() & 0x7fff) / ((float)0x7fff);
 		angle = (rand() % 360) / (2 * M_PI);
@@ -767,7 +767,7 @@ void GravityWellParticle (int count, vec3_t origin, int color)
 		p->type = pt_gravwell;
 		p->ramp = 0;
 
-		VectorCopy(origin,p->org);
+		VectorCopy(origin, p->org);
 
 		angle = (rand() % 360) / (2 * M_PI);
 		radius = 300 + (rand() & 255);
@@ -810,10 +810,10 @@ void R_RocketTrail (vec3_t start, vec3_t end, int type)
 
 		case 8:
 		// Ice
-			size *= 5*3;
-			dist[0] *= 5*3;
-			dist[1] *= 5*3;
-			dist[2] *= 5*3;
+			size *= 5 * 3;
+			dist[0] *= 5 * 3;
+			dist[1] *= 5 * 3;
+			dist[2] *= 5 * 3;
 			break;
 
 		case rt_acidball:
@@ -1125,25 +1125,26 @@ void R_SnowEffect (vec3_t org1, vec3_t org2, int flags, vec3_t alldir, int count
 		p->flags = flags;
 
 #ifdef GLQUAKE
-		if ((rand() & 0x7f) <= 1)	// have a console variable 'happy_snow' that makes all snowflakes happy snow!
+		// have a console variable 'happy_snow' that makes all snowflakes happy snow!
+		if ((rand() & 0x7f) <= 1)
 			p->count = 69;	// happy snow!
-		else if (flags & SFL_FLUFFY || (flags&SFL_MIXED && (rand() & 3)))
-			p->count = (rand() & 31) + 10;//From 10 to 41 scale, will be divided
+		else if (flags & SFL_FLUFFY || (flags & SFL_MIXED && (rand() & 3)))
+			p->count = (rand() & 31) + 10;	// From 10 to 41 scale, will be divided
 		else
 			p->count = 10;
 #else
-		if (flags & SFL_FLUFFY || (flags&SFL_MIXED && (rand() & 3)))
-			p->count = (rand() & 3) + 2;//From 2 to 5 extra
+		if (flags & SFL_FLUFFY || (flags & SFL_MIXED && (rand() & 3)))
+			p->count = (rand() & 3) + 2;	// From 2 to 5 extra
 		else
-			p->count = 1;	//Only one particle
+			p->count = 1;	// Only one particle
 #endif
 
-		if (flags & SFL_HALF_BRIGHT)//Start darker
+		if (flags & SFL_HALF_BRIGHT)	// Start darker
 			p->color = 26 + (rand() % 5);
 		else
 			p->color = 18 + (rand() % 12);
 
-		if (!(flags & SFL_NO_TRANS))//Start translucent
+		if (!(flags & SFL_NO_TRANS))	// Start translucent
 			p->color += 256;
 
 		p->die = cl.time + 7;
@@ -1161,19 +1162,19 @@ void R_SnowEffect (vec3_t org1, vec3_t org2, int flags, vec3_t alldir, int count
 		l = Mod_PointInLeaf (p->org, cl.worldmodel);
 	//	while (SV_PointContents(p->org) != CONTENTS_EMPTY && j < 50)
 		while (l->contents != CONTENTS_EMPTY && j)
-		{	//Make sure it doesn't start in a solid
+		{	// Make sure it doesn't start in a solid
 			holdint = org2[0] - org1[0];
 			p->org[0] = org1[0] + (rand() % holdint);
 			holdint = org2[1] - org1[1];
 			p->org[1] = org1[1] + (rand() % holdint);
-			j--;	//No infinite loops
+			j--;	// No infinite loops
 			l = Mod_PointInLeaf (p->org, cl.worldmodel);
 		}
 		if (l->contents != CONTENTS_EMPTY)
 			Sys_Error ("Snow entity top plane is not in an empty area (sorry!)");
 
-		VectorCopy(org1,p->min_org);
-		VectorCopy(org2,p->max_org);
+		VectorCopy(org1, p->min_org);
+		VectorCopy(org2, p->max_org);
 	}
 }
 
@@ -1308,7 +1309,7 @@ void R_DrawParticles (void)
 		switch (p->type)
 		{
 		case pt_snow:
-			VectorCopy(p->org,save_org);
+			VectorCopy(p->org, save_org);
 			D_DrawParticle (p);
 
 			for (i = 1; i < p->count; i++)
@@ -1351,11 +1352,11 @@ void R_DrawParticles (void)
 				}
 				D_DrawParticle (p);
 			}
-			VectorCopy(save_org,p->org);//Restore origin
+			VectorCopy(save_org, p->org);	// Restore origin
 			break;
 
 		case pt_rain:
-			VectorCopy(p->org,save_org);
+			VectorCopy(p->org, save_org);
 
 			vel0 = p->vel[0]*.001;
 			vel1 = p->vel[1]*.001;
@@ -1370,7 +1371,7 @@ void R_DrawParticles (void)
  			}
 			D_DrawParticle(p);
 
-			VectorCopy(save_org,p->org);//Restore origin
+			VectorCopy(save_org, p->org);	// Restore origin
 			break;
 
 		default:
@@ -1402,14 +1403,14 @@ void R_UpdateParticles (void)
 		return;
 
 	frametime = cl.time - cl.oldtime;
-//	Con_Printf("%10.5f\n",frametime);
+//	Con_Printf("%10.5f\n", frametime);
 	time4 = frametime * 20;
 	time3 = frametime * 15;
 	time2 = frametime * 10;
 	time1 = frametime * 5;
 	grav = frametime * sv_gravity.value * 0.05;
 	grav2 = frametime * sv_gravity.value * 0.025;
-	dvel = 4*frametime;
+	dvel = 4 * frametime;
 	percent = (frametime / HX_FRAME_TIME);
 
 	for ( ;; )
@@ -1451,16 +1452,16 @@ void R_UpdateParticles (void)
 				p->org[1] += vel1;
 				p->org[2] += vel2;
 			}
-			p->org[0] += p->vel[0]*(frametime-.004);
-			p->org[1] += p->vel[1]*(frametime-.004);
-			p->org[2] += p->vel[2]*(frametime-.004);
+			p->org[0] += p->vel[0] * (frametime - .004);
+			p->org[1] += p->vel[1] * (frametime - .004);
+			p->org[2] += p->vel[2] * (frametime - .004);
 		}
 		else if (p->type == pt_snow)
 		{
 			if (p->vel[0] == 0 && p->vel[1] == 0 && p->vel[2] == 0)
 			{
 			// Stopped moving
-				if (p->color == 256+31)	//Most translucent white
+				if (p->color == 256 + 31)	// Most translucent white
 				{
 				// Go away
 					p->die = -1;
@@ -1489,7 +1490,7 @@ void R_UpdateParticles (void)
 				{
 				    if (rand() & 31)
 				    {
-				//Add flurry movement
+				// Add flurry movement
 					float			snow_speed;
 					vec3_t			save_vel;
 					snow_speed = p->vel[0] * p->vel[0] +
@@ -1505,7 +1506,7 @@ void R_UpdateParticles (void)
 						save_vel[2] += ( (rand() * (2.0 / RAND_MAX)) - 1 ) * 30;
 
 					VectorNormalize(save_vel);
-					VectorScale(save_vel, snow_speed, p->vel);//retain speed but use new dir
+					VectorScale(save_vel, snow_speed, p->vel);	// retain speed but use new dir
 				    }
 				}
 
@@ -1514,13 +1515,13 @@ void R_UpdateParticles (void)
 				in_solid = false;
 				if (!(p->flags & SFL_IN_BOUNDS))
 				{
-				//Not cut off by bounds
+				// Not cut off by bounds
 					if (speed >= 8)
 					{
-					//Moving more than 8 pixels this turn
+					// Moving more than 8 pixels this turn
 						for (i = 4; i < speed; i += 4)
 						{
-						//Check for solid in increments of 4
+						// Check for solid in increments of 4
 							VectorScale(diff, i, save_org);
 							VectorAdd(p->org, save_org, save_org);
 						//	if (SV_PointContents(save_org) != CONTENTS_EMPTY)
@@ -1537,8 +1538,8 @@ void R_UpdateParticles (void)
 */
 //				if (!in_solid)
 				{
-					VectorScale(p->vel,frametime,diff);
-					VectorAdd(p->org,diff,p->org);
+					VectorScale(p->vel, frametime, diff);
+					VectorAdd(p->org, diff, p->org);
 				}
 
 				if (p->flags & SFL_IN_BOUNDS)
@@ -1593,9 +1594,9 @@ void R_UpdateParticles (void)
 		}
 		else
 		{
-			p->org[0] += p->vel[0]*frametime;
-			p->org[1] += p->vel[1]*frametime;
-			p->org[2] += p->vel[2]*frametime;
+			p->org[0] += p->vel[0] * frametime;
+			p->org[1] += p->vel[1] * frametime;
+			p->org[2] += p->vel[2] * frametime;
 		}
 
 		switch (p->type)
@@ -1630,7 +1631,7 @@ void R_UpdateParticles (void)
 			else
 				p->color = ramp2[(int)p->ramp];
 			for (i = 0; i < 3; i++)
-				p->vel[i] -= p->vel[i]*frametime;
+				p->vel[i] -= p->vel[i] * frametime;
 			p->vel[2] -= grav;
 			break;
 
@@ -1652,7 +1653,7 @@ void R_UpdateParticles (void)
 			else if (time3)
 				p->color -= 2;
 			for (i = 0; i < 3; i++)
-				p->vel[i] -= p->vel[i]*frametime;
+				p->vel[i] -= p->vel[i] * frametime;
 			p->vel[2] -= grav;
 			break;
 
@@ -1666,7 +1667,7 @@ void R_UpdateParticles (void)
 			break;
 
 		case pt_fastgrav:
-			p->vel[2] -= grav*4;
+			p->vel[2] -= grav * 4;
 			break;
 
 		case pt_rain:
@@ -1684,7 +1685,7 @@ void R_UpdateParticles (void)
 			break;
 
 		case pt_acidball:
-			p->ramp += time4*1.4;
+			p->ramp += time4 * 1.4;
 			if ((int)p->ramp >= 23)
 				p->die = -1;
 			else if ((int)p->ramp >= 15)
@@ -1700,7 +1701,7 @@ void R_UpdateParticles (void)
 				p->die = -1;
 			else
 				p->color = ramp6[(int)p->ramp];
-		//	p->vel[2] += grav*2;
+		//	p->vel[2] += grav * 2;
 			break;
 
 		case pt_ice:
@@ -1718,7 +1719,7 @@ void R_UpdateParticles (void)
 				p->die = -1;
 			else
 				p->color = ramp7[(int)p->ramp];
-		//	p->vel[2] += grav*2;
+		//	p->vel[2] += grav * 2;
 			break;
 
 		case pt_test:
@@ -1733,7 +1734,7 @@ void R_UpdateParticles (void)
 		case pt_quake:
 			p->vel[0] *= 1.05;
 			p->vel[1] *= 1.05;
-			p->vel[2] -= grav*4;
+			p->vel[2] -= grav * 4;
 			break;
 
 		case pt_rd:
@@ -1746,7 +1747,7 @@ void R_UpdateParticles (void)
 				p->ramp = 50;
 				p->die = -1;
 			}
-			p->color = 256+16+16 - (p->ramp/(50/16));
+			p->color = 256 + 16 + 16 - (p->ramp / (50/16));
 
 			VectorSubtract(rider_origin, p->org, diff);
 
@@ -1806,11 +1807,11 @@ void R_UpdateParticles (void)
 			break;
 
 		case pt_redfire:
-			p->ramp += frametime*3;
+			p->ramp += frametime * 3;
 			if ((int)p->ramp >= 8)
 				p->die = -1;
 			else
-				p->color = ramp12[(int)p->ramp]+256;
+				p->color = ramp12[(int)p->ramp] + 256;
 
 			p->vel[0] *= .9;
 			p->vel[1] *= .9;

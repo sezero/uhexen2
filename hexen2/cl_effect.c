@@ -2,7 +2,7 @@
 	cl_effect.c
 	Client side effects.
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cl_effect.c,v 1.17 2007-07-08 11:55:17 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cl_effect.c,v 1.18 2008-02-07 23:41:09 sezero Exp $
 */
 
 // HEADER FILES ------------------------------------------------------------
@@ -30,9 +30,9 @@ static void FreeEffectEntity (int idx);
 
 // PRIVATE DATA DEFINITIONS ------------------------------------------------
 
-static entity_t EffectEntities[MAX_EFFECT_ENTITIES];
-static qboolean EntityUsed[MAX_EFFECT_ENTITIES];
-static int EffectEntityCount;
+static entity_t	EffectEntities[MAX_EFFECT_ENTITIES];
+static qboolean	EntityUsed[MAX_EFFECT_ENTITIES];
+static int	EffectEntityCount;
 
 // CODE --------------------------------------------------------------------
 
@@ -49,8 +49,8 @@ void CL_InitEffects (void)
 
 void CL_ClearEffects (void)
 {
-	memset(cl.Effects,0,sizeof(cl.Effects));
-	memset(EntityUsed,0,sizeof(EntityUsed));
+	memset(cl.Effects, 0, sizeof(cl.Effects));
+	memset(EntityUsed, 0, sizeof(EntityUsed));
 	EffectEntityCount = 0;
 }
 
@@ -164,7 +164,7 @@ static void CL_FreeEffect (int idx)
 			break;
 	}
 
-	memset(&cl.Effects[idx],0,sizeof(struct EffectT));
+	memset(&cl.Effects[idx], 0, sizeof(struct EffectT));
 }
 
 //==========================================================================
@@ -191,7 +191,7 @@ void CL_ParseEffect (void)
 	if (cl.Effects[idx].type)
 		CL_FreeEffect(idx);
 
-	memset(&cl.Effects[idx],0,sizeof(struct EffectT));
+	memset(&cl.Effects[idx], 0, sizeof(struct EffectT));
 
 	cl.Effects[idx].type = MSG_ReadByte();
 
@@ -316,7 +316,7 @@ void CL_ParseEffect (void)
 					ent->model = Mod_ForName("models/firewal2.spr", true);
 				else if (cl.Effects[idx].type == CE_ONFIRE)
 				{
-					float rdm = rand() & 3;
+					float	rdm = rand() & 3;
 
 					if (rdm < 1)
 						ent->model = Mod_ForName("models/firewal1.spr", true);
@@ -990,9 +990,9 @@ void CL_UpdateEffects (void)
 				break;
 
 			case CE_SNOW:
-				VectorCopy(cl.Effects[idx].ef.Rain.min_org,org);
-				VectorCopy(cl.Effects[idx].ef.Rain.max_org,org2);
-				VectorCopy(cl.Effects[idx].ef.Rain.dir,alldir);
+				VectorCopy(cl.Effects[idx].ef.Rain.min_org, org);
+				VectorCopy(cl.Effects[idx].ef.Rain.max_org, org2);
+				VectorCopy(cl.Effects[idx].ef.Rain.dir, alldir);
 
 				VectorAdd(org, org2, snow_org);
 
@@ -1047,9 +1047,9 @@ void CL_UpdateEffects (void)
 				R_RunParticleEffect2 (cl.Effects[idx].ef.Fountain.pos, mymin, mymax,
 							cl.Effects[idx].ef.Fountain.color, pt_fastgrav, cl.Effects[idx].ef.Fountain.cnt);
 
-			/*	memset(&test,0,sizeof(test));
+			/*	memset(&test, 0, sizeof(test));
 				trace = SV_Move (cl.Effects[idx].ef.Fountain.pos, mymin, mymax, mymin, false, &test);
-				Con_Printf("Fraction is %f\n",trace.fraction);
+				Con_Printf("Fraction is %f\n", trace.fraction);
 			*/
 				break;
 
@@ -1093,7 +1093,9 @@ void CL_UpdateEffects (void)
 					CL_FreeEffect(idx);
 				}
 				else
+				{
 					CL_LinkEntity(ent);
+				}
 
 				break;
 
@@ -1154,7 +1156,9 @@ void CL_UpdateEffects (void)
 					CL_FreeEffect(idx);
 				}
 				else
+				{
 					CL_LinkEntity(ent);
+				}
 				break;
 
 			case CE_LSHOCK:
@@ -1169,7 +1173,9 @@ void CL_UpdateEffects (void)
 					CL_FreeEffect(idx);
 				}
 				else
+				{
 					CL_LinkEntity(ent);
+				}
 				break;
 
 			// Go forward then backward through animation then remove
@@ -1204,7 +1210,9 @@ void CL_UpdateEffects (void)
 					CL_FreeEffect(idx);
 				}
 				else
+				{
 					CL_LinkEntity(ent);
+				}
 				break;
 
 			case CE_RIDER_DEATH:
@@ -1215,13 +1223,13 @@ void CL_UpdateEffects (void)
 					cl.Effects[idx].ef.RD.time_amount -= 1;
 				}
 
-				VectorCopy(cl.Effects[idx].ef.RD.origin,org);
+				VectorCopy(cl.Effects[idx].ef.RD.origin, org);
 				org[0] += sin(cl.Effects[idx].ef.RD.time_amount * 2 * M_PI) * 30;
 				org[1] += cos(cl.Effects[idx].ef.RD.time_amount * 2 * M_PI) * 30;
 
 				if (cl.Effects[idx].ef.RD.stage <= 6)
-				//	RiderParticle(cl.Effects[idx].ef.RD.stage+1, cl.Effects[idx].ef.RD.origin);
-					RiderParticle(cl.Effects[idx].ef.RD.stage+1, org);
+				//	RiderParticle(cl.Effects[idx].ef.RD.stage + 1, cl.Effects[idx].ef.RD.origin);
+					RiderParticle(cl.Effects[idx].ef.RD.stage + 1, org);
 				else
 				{
 					// To set the rider's origin point for the particles
@@ -1246,7 +1254,7 @@ void CL_UpdateEffects (void)
 				if (cl.Effects[idx].ef.RD.time_amount >= 1)
 					cl.Effects[idx].ef.RD.time_amount -= 1;
 
-				VectorCopy(cl.Effects[idx].ef.RD.origin,org);
+				VectorCopy(cl.Effects[idx].ef.RD.origin, org);
 				org[0] += sin(cl.Effects[idx].ef.RD.time_amount * 2 * M_PI) * 30;
 				org[1] += cos(cl.Effects[idx].ef.RD.time_amount * 2 * M_PI) * 30;
 
@@ -1255,7 +1263,9 @@ void CL_UpdateEffects (void)
 					CL_FreeEffect(idx);
 				}
 				else
+				{
 					GravityWellParticle(rand() % 8, org, cl.Effects[idx].ef.RD.color);
+				}
 
 				break;
 
