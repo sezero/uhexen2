@@ -8,7 +8,7 @@ Features:
 
 * Cross-platform code: Tested on Linux, FreeBSD, OpenBSD, Mac OS X and
   Windows. The software renderer version is tested on QNX. Other unices
-  should also work. DOS is also supported for nostalgic purposes. There
+  should also work. Even DOS is supported for nostalgic purposes. There
   are seperate ports to MorphOS and PalmOS.
 
 * Tested on 32 bit and 64 bit platforms.
