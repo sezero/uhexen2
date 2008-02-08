@@ -2,7 +2,7 @@
 	pathutil.c
 	filename handling utilities
 
-	$Id: pathutil.c,v 1.5 2008-01-29 12:03:10 sezero Exp $
+	$Id: pathutil.c,v 1.6 2008-02-08 12:00:16 sezero Exp $
 */
 
 
@@ -74,7 +74,8 @@ void StripFilename (char *path)
 	length = (int)strlen(path) - 1;
 	while (length > 0 && path[length] != '/' && path[length] != '\\')
 		length--;
-	path[length] = 0;
+	if (length >= 0)
+		path[length] = 0;
 }
 
 void StripExtension (char *path)
@@ -88,7 +89,7 @@ void StripExtension (char *path)
 		if (path[length] == '/' || path[length] == '\\')
 			return;		/* no extension */
 	}
-	if (length)
+	if (length > 0)
 		path[length] = 0;
 }
 

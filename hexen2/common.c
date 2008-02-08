@@ -2,7 +2,7 @@
 	common.c
 	misc utility functions used in client and server
 
-	$Id: common.c,v 1.107 2008-01-29 10:47:01 sezero Exp $
+	$Id: common.c,v 1.108 2008-02-08 12:00:16 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -200,7 +200,7 @@ void COM_StripExtension (const char *in, char *out, size_t outsize)
 		if (out[length] == '/' || out[length] == '\\')
 			return;	/* no extension */
 	}
-	if (length)
+	if (length > 0)
 		out[length] = '\0';
 }
 
