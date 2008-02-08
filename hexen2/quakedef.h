@@ -2,7 +2,7 @@
 	quakedef.h
 	common definitions for client and server
 
-	$Id: quakedef.h,v 1.142 2008-01-29 20:00:18 sezero Exp $
+	$Id: quakedef.h,v 1.143 2008-02-08 12:08:55 sezero Exp $
 */
 
 #ifndef __QUAKEDEFS_H
@@ -14,9 +14,9 @@
 #define	HOT_VERSION_MAJ		1
 #define	HOT_VERSION_MID		4
 #define	HOT_VERSION_MIN		3
-#define	HOT_VERSION_REL_DATE	"2008-01-29"
+#define	HOT_VERSION_REL_DATE	"2008-02-07"
 #define	HOT_VERSION_BETA	1
-#define	HOT_VERSION_BETA_STR	"rc0"
+#define	HOT_VERSION_BETA_STR	"rc1"
 #define	HOT_VERSION_STR		STRINGIFY(HOT_VERSION_MAJ) "." STRINGIFY(HOT_VERSION_MID) "." STRINGIFY(HOT_VERSION_MIN)
 #define	GLQUAKE_VERSION		1.00
 #define	ENGINE_VERSION		1.21

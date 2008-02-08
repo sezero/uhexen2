@@ -1,5 +1,5 @@
-# RPM spec file for RedHat and Fedora Core
-# $Id: hexen2.spec,v 1.52 2008-02-05 17:55:44 sezero Exp $
+# RPM spec file for RedHat and Fedora
+# $Id: hexen2.spec,v 1.53 2008-02-08 12:08:55 sezero Exp $
 
 # build options :
 # --without alsa: build without alsa audio support
@@ -25,17 +25,17 @@
 
 # pre-release version: MAKE SURE to change this
 # to an %undefine for the final realease!!
-%undefine prerelease
+%define prerelease	rc1
 
 # package release number for final-release:
 %define pkg_final	1
 # package release number for pre-release:
-%define pkg_prerel	7
+%define pkg_prerel	1
 
 Name:		hexen2
 License:	GPL
 Group:		Amusements/Games
-Version:	1.4.2
+Version:	1.4.3
 Release:	%{?prerelease:0.%{pkg_prerel}.%{prerelease}}%{!?prerelease:%{pkg_final}}
 Summary:	Hexen II: Hammer of Thyrion
 URL:		http://uhexen2.sourceforge.net/
@@ -288,6 +288,9 @@ desktop-file-install \
 %{_prefix}/games/%{name}/docs/README.hwmaster
 
 %changelog
+* Thu Feb 07 2008 O.Sezer <sezero@users.sourceforge.net> 1.4.3-0.1.rc1
+- 1.4.3-rc1.
+
 * Wed Feb 05 2008 O.Sezer <sezero@users.sourceforge.net>
 - incremented the gamecode version number to 1.19a
 
