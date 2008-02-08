@@ -1,5 +1,5 @@
 # RPM spec file for RedHat and Fedora
-# $Id: hexen2.spec,v 1.53 2008-02-08 12:08:55 sezero Exp $
+# $Id: hexen2.spec,v 1.54 2008-02-08 17:09:24 sezero Exp $
 
 # build options :
 # --without alsa: build without alsa audio support
@@ -168,6 +168,7 @@ utils/bin/hcc -src gamecode-%{gamecode_ver}/hc/hw -oi -on
 %{__install} -D -m644 docs/ReleaseNotes-1.3.0 %{buildroot}/%{_prefix}/games/%{name}/docs/ReleaseNotes-1.3.0
 %{__install} -D -m644 docs/ReleaseNotes-1.4.0 %{buildroot}/%{_prefix}/games/%{name}/docs/ReleaseNotes-1.4.0
 %{__install} -D -m644 docs/ReleaseNotes-1.4.1 %{buildroot}/%{_prefix}/games/%{name}/docs/ReleaseNotes-1.4.1
+%{__install} -D -m644 docs/ReleaseNotes-1.4.1 %{buildroot}/%{_prefix}/games/%{name}/docs/ReleaseNotes-1.4.2
 
 # Install the gamedata
 %{__mkdir_p} %{buildroot}/%{_prefix}/games/%{name}/data1/
@@ -270,6 +271,7 @@ desktop-file-install \
 %{_prefix}/games/%{name}/docs/ReleaseNotes-1.3.0
 %{_prefix}/games/%{name}/docs/ReleaseNotes-1.4.0
 %{_prefix}/games/%{name}/docs/ReleaseNotes-1.4.1
+%{_prefix}/games/%{name}/docs/ReleaseNotes-1.4.2
 %{!?_without_freedesktop:%{_datadir}/applications/%{desktop_vendor}-%{name}.desktop}
 %{?_without_freedesktop:%{_sysconfdir}/X11/applnk/Games/%{name}.desktop}
 
