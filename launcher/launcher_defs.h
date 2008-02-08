@@ -2,7 +2,7 @@
 	launcher_defs.h
 	hexen2 launcher: common definitions
 
-	$Id: launcher_defs.h,v 1.32 2007-12-12 10:51:08 sezero Exp $
+	$Id: launcher_defs.h,v 1.33 2008-02-08 17:10:31 sezero Exp $
 
 	This program is free software; you can redistribute it and/or
 	modify it under the terms of the GNU General Public License
@@ -34,7 +34,7 @@
 // Hammer of Thyrion version num.
 #define HOT_VERSION_MAJ		1
 #define HOT_VERSION_MID		4
-#define HOT_VERSION_MIN		2
+#define HOT_VERSION_MIN		3
 #define HOT_VERSION_STR		STRINGIFY(HOT_VERSION_MAJ) "." STRINGIFY(HOT_VERSION_MID) "." STRINGIFY(HOT_VERSION_MIN)
 
 // Launcher version num.
