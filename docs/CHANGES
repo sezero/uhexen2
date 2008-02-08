@@ -3,6 +3,18 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2008-02-07 (CVS, 1.4.3-rc1):
+    * another bunch of sprintf/strcpy to snprintf/strlcpy changes.
+    * minor tweak: r_part.o must stay among the softobjs and globs despite
+      the fact that it is the same. in fact, I should chop it into pieces
+      like, r_part.c, gl_rpart.c and cl_part.c, someday..
+    * windows fix: limit GlobalMemoryStatus results to 2GiB in order to workaround
+      for signed int. found in ezquake.
+    * fixed a corner case in StripExtension.
+    * some whitespace clean-up.
+    * updated release notes for 1.4.3 (2008-02-07.)
+    * updated beta release date and version (1.4.3-rc1, 2008-02-07.)
+
 2008-01-29 (CVS):
     * made COM_StripExtension, COM_FileExtension, COM_DefaultExtension and
       COM_FileBase buffer size safe.
