@@ -3,6 +3,14 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2008-02-28 (CVS):
+    * several documentation updates.
+
+2008-02-08 (CVS):
+    * minor doc updates.
+    * updated rpm spec file.
+    * updated HoT version number in the launcher.
+
 2008-02-07 (CVS, 1.4.3-rc1):
     * another bunch of sprintf/strcpy to snprintf/strlcpy changes.
     * minor tweak: r_part.o must stay among the softobjs and globs despite
