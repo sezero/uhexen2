@@ -203,10 +203,14 @@ because 2.03 and earlier versions doesn't provide a stdint.h and / or
 inttypes.h header, besides, they don't have a vsnprintf implementation.
 Compilers other than djgpp most probably won't work at all.  I use
 gcc-3.3.6 and binutils-2.15 and compile the binaries on linux with a
-cross compilation toolchain: see the tiny script build_cross_dos.sh to
-have an idea of how I do it.  Compilation on DOS is never tested and is
-not supported.  As for compiling on windows in a command console, it
-should be possible, just remember to add DOSBUILD=1 to your environment.
+cross compilation toolchain using 2.04 runtime library from the CVS
+(snapshot from 28 Dec. 2007): see the tiny script build_cross_dos.sh
+to have an idea of how I do it.  You can download both the sources and
+the x86/glibc-2.3 binaries of my toolchain from our downloads page under
+the support files section.
+Compilation on DOS is never tested and is not supported.  Compiling on
+windows in a command console, however, ~should~ be possible:  remember
+adding DOSBUILD=1 to your environment.
 CWSDPMI.EXE is needed at runtime: the "0.90+ r1" version from 1996 which
 was packaged with quake still seems to work but isn't recommended: use
 the "0.90+ r5" or a newer version.
