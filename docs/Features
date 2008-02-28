@@ -7,9 +7,10 @@ Features:
   and HexenWorld.
 
 * Cross-platform code: Tested on Linux, FreeBSD, OpenBSD, Mac OS X and
-  Windows. The software renderer version is tested on QNX. Other unices
-  should also work. Even DOS is supported for nostalgic purposes. There
-  are seperate ports to MorphOS and PalmOS.
+  Windows. Also reported to build and run fine on QNX and Nokia N770,
+  N800 and N810. Other unices should also work. Even DOS is supported
+  for nostalgic purposes. There are seperate ports to MorphOS, PalmOS
+  and GP2X.
 
 * Tested on 32 bit and 64 bit platforms.
 
@@ -59,5 +60,5 @@ Features:
   hwmquery: tool for querying hw master servers, hwrcon and hwterm: rcon
   tools) are maintained and are being kept up to date.
 
-* Many bug fixes and other improvements.
+* Many bug fixes, security fixes and other improvements.
 

@@ -614,9 +614,11 @@ been suggested that I'll need a whole different physics engine."
 	CVS Repository		: http://uhexen2.cvs.sourceforge.net/uhexen2/
 	MorphOS port		: http://www.binaryriot.org/users/kiero/
 				  http://aminet.net/package/game/shoot/GLHexen2
+	GP2X port		: http://www.gp32x.com/board/index.php?showtopic=40562
+				  http://www.dcemu.co.uk/vbulletin/showthread.php?p=2148019592
 	PalmOS port		: http://www.metaviewsoft.de/
 
-    Hammer of Thyrion Packages
+    Hammer of Thyrion Packages / builds
 	FreshPorts for FreeBSD	:
 		main package	: http://www.freshports.org/games/uhexen2/
 		extra package	: http://www.freshports.org/games/uhexen2-extras/
@@ -628,6 +630,7 @@ been suggested that I'll need a whole different physics engine."
 		for extra data	: http://bugs.gentoo.org/show_bug.cgi?id=139278
 		the cvs version	: http://bugs.gentoo.org/show_bug.cgi?id=181824
 	Gentoo Sunrise overlay	: http://overlays.gentoo.org/svn/proj/sunrise/reviewed/games-fps/
+	Nokia N770/800/810 build: http://www.internettablettalk.com/forums/showthread.php?p=134552
 
     Other Hexen II ports
 	Hexen II PSP port	: http://jurajstyk.host.sk/

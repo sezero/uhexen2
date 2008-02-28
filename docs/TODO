@@ -33,6 +33,8 @@ TODO:
   quicktime dependancy on OSX): opening the sound device twice
   is not a good thing. and we won't be needing any crap such as
   fmod or other habaloo for windows external music.
+- DOS: Implement MIDI music playback.
+- DOS: Implement loading progress bars.
 - Add pthread support to the utilities and revise the current
   windows threads mess there. the alpha ifdefs need cleaning.
 - utils/jsh2colour: clean-up the huge mess and improve a bit.
