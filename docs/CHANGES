@@ -3,6 +3,12 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2008-03-04 (CVS):
+    * silenced a compiler warning, although a false one, which showed up
+      with gcc-4.3.0 (20080301 prerelease).
+		pr_cmds.c: In function 'PF_setpuzzlemodel':
+		pr_cmds.c:315: warning: array subscript is above array bounds
+
 2008-02-28 (CVS):
     * several documentation updates.
 
