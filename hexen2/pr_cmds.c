@@ -2,7 +2,7 @@
 	pr_cmds.c
 	prog commands
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/pr_cmds.c,v 1.51 2008-01-22 12:01:04 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/pr_cmds.c,v 1.52 2008-03-04 21:36:21 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -276,18 +276,22 @@ static void PF_setmodel (void)
 			break;
 	}
 
-	if (i == MAX_MODELS)
+	if (i >= MAX_MODELS)
+	{
 		PR_RunError ("no precache: %s", m);
-
-	e->v.model = PR_SetEngineString(sv.model_precache[i]);
-	e->v.modelindex = i; //SV_ModelIndex (m);
-
-	mod = sv.models[ (int)e->v.modelindex];	// Mod_ForName (m, true);
-
-	if (mod)
-		SetMinMaxSize (e, mod->mins, mod->maxs, true);
+	}
 	else
-		SetMinMaxSize (e, vec3_origin, vec3_origin, true);
+	{
+		e->v.model = PR_SetEngineString(sv.model_precache[i]);
+		e->v.modelindex = i; //SV_ModelIndex (m);
+
+		mod = sv.models[ (int)e->v.modelindex];	// Mod_ForName (m, true);
+
+		if (mod)
+			SetMinMaxSize (e, mod->mins, mod->maxs, true);
+		else
+			SetMinMaxSize (e, vec3_origin, vec3_origin, true);
+	}
 }
 
 static void PF_setpuzzlemodel (void)
@@ -308,33 +312,36 @@ static void PF_setpuzzlemodel (void)
 			break;
 	}
 
-	if (i == MAX_MODELS)
+	if (i >= MAX_MODELS)
 	{
 		PR_RunError ("%s: overflow", __thisfunc__);
 	}
-	if (!sv.model_precache[i][0])
+	else
 	{
-		Con_Printf("NO PRECACHE FOR PUZZLE PIECE: %s\n", temp);
-		q_strlcpy (sv.model_precache[i], temp, sizeof(sv.model_precache[0]));
+		if (!sv.model_precache[i][0])
+		{
+			Con_Printf("NO PRECACHE FOR PUZZLE PIECE: %s\n", temp);
+			q_strlcpy (sv.model_precache[i], temp, sizeof(sv.model_precache[0]));
 
-		e->v.model = PR_SetEngineString(sv.model_precache[i]);
+			e->v.model = PR_SetEngineString(sv.model_precache[i]);
 #if !defined(SERVERONLY)
-		sv.models[i] = Mod_ForName (temp, true);
+			sv.models[i] = Mod_ForName (temp, true);
 #endif	/* SERVERONLY */
+		}
+		else
+		{
+			e->v.model = PR_SetEngineString(sv.model_precache[i]);
+		}
+
+		e->v.modelindex = i;	//SV_ModelIndex (m);
+
+		mod = sv.models[ (int)e->v.modelindex];	// Mod_ForName (m, true);
+
+		if (mod)
+			SetMinMaxSize (e, mod->mins, mod->maxs, true);
+		else
+			SetMinMaxSize (e, vec3_origin, vec3_origin, true);
 	}
-	else
-	{
-		e->v.model = PR_SetEngineString(sv.model_precache[i]);
-	}
-
-	e->v.modelindex = i;	//SV_ModelIndex (m);
-
-	mod = sv.models[ (int)e->v.modelindex];	// Mod_ForName (m, true);
-
-	if (mod)
-		SetMinMaxSize (e, mod->mins, mod->maxs, true);
-	else
-		SetMinMaxSize (e, vec3_origin, vec3_origin, true);
 }
 
 /*
@@ -698,7 +705,6 @@ static void PF_ambientsound (void)
 	}
 
 // add an svc_spawnambient command to the level signon packet
-
 	MSG_WriteByte (&sv.signon,svc_spawnstaticsound);
 	for (i = 0; i < 3; i++)
 		MSG_WriteCoord(&sv.signon, pos[i]);
