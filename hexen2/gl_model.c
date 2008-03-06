@@ -5,7 +5,7 @@
 	models are the only shared resource between a client and server
 	running on the same machine.
 
-	$Id: gl_model.c,v 1.55 2008-01-29 19:56:32 sezero Exp $
+	$Id: gl_model.c,v 1.56 2008-03-06 21:55:18 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -1732,7 +1732,7 @@ typedef struct
 #define	FLOODFILL_FIFO_MASK		(FLOODFILL_FIFO_SIZE - 1)
 
 #define FLOODFILL_STEP( off, dx, dy )				\
-{								\
+do {								\
 	if (pos[(off)] == fillcolor)				\
 	{							\
 		pos[(off)] = 255;				\
@@ -1741,7 +1741,7 @@ typedef struct
 	}							\
 	else if (pos[(off)] != 255)				\
 		fdc = pos[(off)];				\
-}
+} while (0)
 
 static void Mod_FloodFillSkin (byte *skin, int skinwidth, int skinheight)
 {
@@ -2677,15 +2677,17 @@ Mod_Print
 ================
 */
 #if defined(__GNUC__) && !(defined(__STDC_VERSION__) && __STDC_VERSION__ >= 199901L)
-#define MOD_Printf(FH, fmt, args...) {		\
+#define MOD_Printf(FH, fmt, args...)		\
+    do {					\
 	if ((FH)) fprintf((FH), fmt, ##args);	\
 	else Con_Printf(fmt, ##args);		\
-}
+    } while (0)
 #else
-#define MOD_Printf(FH, ...) {			\
+#define MOD_Printf(FH, ...)			\
+    do {					\
 	if ((FH)) fprintf((FH), __VA_ARGS__);	\
 	else Con_Printf(__VA_ARGS__);		\
-}
+    } while (0)
 #endif
 static void Mod_Print (void)
 {
