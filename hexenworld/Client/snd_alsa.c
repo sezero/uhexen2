@@ -1,6 +1,6 @@
 /*
 	snd_alsa.c
-	$Id: snd_alsa.c,v 1.41 2007-12-22 18:56:09 sezero Exp $
+	$Id: snd_alsa.c,v 1.42 2008-03-06 19:10:08 sezero Exp $
 
 	ALSA 1.0 sound driver for Linux Hexen II
 
@@ -54,7 +54,7 @@ static const char *pcmname = alsa_default;
 static snd_pcm_t *pcm = NULL;
 static snd_pcm_uframes_t buffer_size;
 
-#define ALSA_FUNC(ret, func, params) \
+#define ALSA_FUNC(ret, func, params)	\
 static ret (*hx2##func) params;
 #include "alsa_funcs.h"
 #undef ALSA_FUNC
@@ -83,13 +83,16 @@ static qboolean load_libasound (void)
 	}
 
 #define ALSA_FUNC(ret, func, params)					\
-	if ((hx2##func = (ret (*) params) dlsym (alsa_handle, #func))	\
-							==	NULL) {	\
+    do {								\
+	hx2##func = (ret (*) params) dlsym (alsa_handle, #func);	\
+	if (hx2##func == NULL)						\
+	{								\
 		Con_Printf ("Couldn't load ALSA function %s\n", #func);	\
 		dlclose (alsa_handle);					\
 		alsa_handle = NULL;					\
 		return false;						\
-}
+	}								\
+    } while (0);
 
 #include "alsa_funcs.h"
 #undef ALSA_FUNC
@@ -98,19 +101,21 @@ static qboolean load_libasound (void)
 }
 
 #if defined(__GNUC__)
-#define ALSA_CHECK_ERR(check, fmt, args...) {		\
+#define ALSA_CHECK_ERR(check, fmt, args...)		\
+    do {						\
 	if (check < 0) {				\
 		Con_Printf ("ALSA: " fmt, ##args);	\
 		goto error;				\
 	}						\
-}
+    } while (0)
 #else
-#define ALSA_CHECK_ERR(check, ...) {			\
+#define ALSA_CHECK_ERR(check, ...)			\
+    do {						\
 	if (check < 0) {				\
 		Con_Printf ("ALSA: " __VA_ARGS__);	\
 		goto error;				\
 	}						\
-}
+    } while (0)
 #endif
 
 static snd_pcm_uframes_t round_buffer_size (snd_pcm_uframes_t sz)
