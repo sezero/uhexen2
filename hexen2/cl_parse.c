@@ -2,7 +2,7 @@
 	cl_parse.c
 	parse a message received from the server
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cl_parse.c,v 1.64 2008-02-07 09:27:22 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cl_parse.c,v 1.65 2008-03-06 19:06:22 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -1164,9 +1164,11 @@ static void CL_DumpPacket (void)
 }
 #endif	/* CL_DumpPacket */
 
-#define SHOWNET(x) \
-	if (cl_shownet.integer == 2) \
-		Con_Printf ("%3i:%s\n", msg_readcount-1, (x));
+#define SHOWNET(S)							\
+	do {								\
+		if (cl_shownet.integer == 2)				\
+			Con_Printf ("%3i:%s\n", msg_readcount-1, (S));	\
+	} while (0)
 
 /*
 =====================
