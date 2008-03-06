@@ -2,7 +2,7 @@
 	mathlib.h
 	math primitives
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/mathlib.h,v 1.19 2007-12-14 16:41:11 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/mathlib.h,v 1.20 2008-03-06 18:55:07 sezero Exp $
 */
 
 #ifndef __MATHLIB_H
@@ -21,50 +21,97 @@ int Q_isnan (float x);	/* don't pass doubles to this */
 
 extern vec3_t vec3_origin;
 
-#define VectorCompare(v1,v2)	( ((v1)[0] == (v2)[0]) && ((v1)[1] == (v2)[1]) && ((v1)[2] == (v2)[2]) )
-#define DotProduct(x,y)		( (x)[0]*(y)[0] + (x)[1]*(y)[1] + (x)[2]*(y)[2] )
+#define VectorCompare(v1,v2)	(((v1)[0] == (v2)[0]) && ((v1)[1] == (v2)[1]) && ((v1)[2] == (v2)[2]))
+#define DotProduct(x,y)		((x)[0] * (y)[0] + (x)[1] * (y)[1] + (x)[2] * (y)[2])
 #define VectorLength(a)		sqrt(DotProduct((a),(a)))
-#define CrossProduct(v1,v2,cross) { \
-	(cross)[0] = (v1)[1]*(v2)[2] - (v1)[2]*(v2)[1]; \
-	(cross)[1] = (v1)[2]*(v2)[0] - (v1)[0]*(v2)[2]; \
-	(cross)[2] = (v1)[0]*(v2)[1] - (v1)[1]*(v2)[0]; \
-}
-#define VectorAdd(a,b,c) { \
-	(c)[0] = (a)[0] + (b)[0]; \
-	(c)[1] = (a)[1] + (b)[1]; \
-	(c)[2] = (a)[2] + (b)[2]; \
-}
-#define VectorSubtract(a,b,c) { \
-	(c)[0] = (a)[0] - (b)[0]; \
-	(c)[1] = (a)[1] - (b)[1]; \
-	(c)[2] = (a)[2] - (b)[2]; \
-}
-#define VectorInverse(v) { \
-	(v)[0] = -(v)[0];	\
-	(v)[1] = -(v)[1];	\
-	(v)[2] = -(v)[2];	\
-}
-#define VectorCopy(a,b) { \
-	memcpy((b), (a), sizeof(vec3_t)); \
-}
-#define VectorSet(vec,a,b,c) {	\
-	(vec)[0] = (a);		\
-	(vec)[1] = (b);		\
-	(vec)[2] = (c);		\
-}
-#define VectorClear(a) {	\
-	(a)[0] = (a)[1] = (a)[2] = 0;	\
-}
-#define VectorNegate(a,b) {	\
-	(b)[0] = -(a)[0];	\
-	(b)[1] = -(a)[1];	\
-	(b)[2] = -(a)[2];	\
-}
 
-void VectorMA (vec3_t veca, float scale, vec3_t vecb, vec3_t vecc);
+#define CrossProduct(v1,v2,cross)					\
+	do {								\
+		(cross)[0] = (v1)[1] * (v2)[2] - (v1)[2] * (v2)[1];	\
+		(cross)[1] = (v1)[2] * (v2)[0] - (v1)[0] * (v2)[2];	\
+		(cross)[2] = (v1)[0] * (v2)[1] - (v1)[1] * (v2)[0];	\
+	} while (0)
 
-static inline float VectorNormalize (vec3_t v);		// returns vector length
-static inline void VectorScale (vec3_t in, vec_t scale, vec3_t out);
+#define VectorAdd(a,b,c)						\
+	do {								\
+		(c)[0] = (a)[0] + (b)[0];				\
+		(c)[1] = (a)[1] + (b)[1];				\
+		(c)[2] = (a)[2] + (b)[2];				\
+	} while (0)
+
+#define VectorSubtract(a,b,c)						\
+	do {								\
+		(c)[0] = (a)[0] - (b)[0];				\
+		(c)[1] = (a)[1] - (b)[1];				\
+		(c)[2] = (a)[2] - (b)[2];				\
+	} while (0)
+
+#define VectorInverse(v)						\
+	do {								\
+		(v)[0] = -(v)[0];					\
+		(v)[1] = -(v)[1];					\
+		(v)[2] = -(v)[2];					\
+	} while (0)
+
+#define VectorClear(a)		((a)[2] = (a)[1] = (a)[0] = 0);
+#if 0
+#define VectorCopy(a,b)		memcpy((b),(a),sizeof(vec3_t))
+#else
+#define VectorCopy(a,b)							\
+	do {								\
+		(b)[0] = (a)[0];					\
+		(b)[1] = (a)[1];					\
+		(b)[2] = (a)[2];					\
+	} while (0)
+#endif
+
+#define VectorSet(v,a,b,c)						\
+	do {								\
+		(v)[0] = (a);						\
+		(v)[1] = (b);						\
+		(v)[2] = (c);						\
+	} while (0)
+
+#define VectorNegate(a,b)						\
+	do {								\
+		(b)[0] = -(a)[0];					\
+		(b)[1] = -(a)[1];					\
+		(b)[2] = -(a)[2];					\
+	} while (0)
+
+#define VectorScale(a,b,c)						\
+	do {								\
+		(c)[0] = (a)[0] * (b);					\
+		(c)[1] = (a)[1] * (b);					\
+		(c)[2] = (a)[2] * (b);					\
+	} while (0)
+
+#define VectorMA(a,s,b,c)						\
+	do {								\
+		(c)[0] = (a)[0] + (s) * (b)[0];				\
+		(c)[1] = (a)[1] + (s) * (b)[1];				\
+		(c)[2] = (a)[2] + (s) * (b)[2];				\
+	} while (0)
+
+static inline float VectorNormalize (vec3_t v);	/* returns vector length */
+
+static inline float VectorNormalize (vec3_t v)
+{
+	float	length;
+
+	length = VectorLength(v);
+
+	if (length)
+	{
+		float	ilength;
+		ilength = 1.0 / length;
+		v[0] *= ilength;
+		v[1] *= ilength;
+		v[2] *= ilength;
+	}
+
+	return length;
+}
 
 int Q_log2(int val);
 
@@ -81,45 +128,12 @@ float	anglemod(float a);
 struct mplane_s;
 int BoxOnPlaneSide (vec3_t emins, vec3_t emaxs, struct mplane_s *plane);
 
-#define BOX_ON_PLANE_SIDE(emins, emaxs, p)	\
-	(((p)->type < 3)?						\
-	(								\
-		((p)->dist <= (emins)[(p)->type])?	\
-			1						\
+#define BOX_ON_PLANE_SIDE(emins, emaxs, p)				\
+	(((p)->type < 3) ?						\
+		( ((p)->dist <= (emins)[(p)->type]) ?	1  :		\
+			( ((p)->dist >= (emaxs)[(p)->type]) ? 2 : 3 ) )	\
 		:							\
-		(							\
-			((p)->dist >= (emaxs)[(p)->type])?\
-				2					\
-			:						\
-				3					\
-		)							\
-	)								\
-	:								\
-		BoxOnPlaneSide( (emins), (emaxs), (p)))
-
-static inline float VectorNormalize (vec3_t v)
-{
-	float	length, ilength;
-
-	length = VectorLength(v);
-
-	if (length)
-	{
-		ilength = 1/length;
-		v[0] *= ilength;
-		v[1] *= ilength;
-		v[2] *= ilength;
-	}
-
-	return length;
-}
-
-static inline void VectorScale (vec3_t in, vec_t scale, vec3_t out)
-{
-	out[0] = in[0]*scale;
-	out[1] = in[1]*scale;
-	out[2] = in[2]*scale;
-}
+			BoxOnPlaneSide((emins), (emaxs), (p)))
 
 #endif	/* __MATHLIB_H */
 

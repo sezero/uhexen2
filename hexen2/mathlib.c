@@ -2,12 +2,13 @@
 	mathlib.c
 	math primitives
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/mathlib.c,v 1.21 2007-07-17 16:50:27 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/mathlib.c,v 1.22 2008-03-06 18:55:07 sezero Exp $
 */
 
 #include "quakedef.h"
 
 vec3_t vec3_origin = { 0, 0, 0 };
+
 
 /*
 ================
@@ -33,14 +34,8 @@ int Q_isnan (float x)
 }
 
 
-float	anglemod(float a)
+float anglemod (float a)
 {
-#if 0
-	if (a >= 0)
-		a -= 360*(int)(a/360);
-	else
-		a += 360*( 1 + (int)(-a/360) );
-#endif
 	a = (360.0/65536) * ((int)(a*(65536/360.0)) & 65535);
 	return a;
 }
@@ -52,7 +47,6 @@ BOPS_Error
 Split out like this for ASM to call.
 ==================
 */
-extern void Sys_Error (const char *error, ...) __attribute__((format(printf,1,2), noreturn));
 void BOPS_Error (void) __attribute__((noreturn));
 void BOPS_Error (void)
 {
@@ -73,9 +67,8 @@ int BoxOnPlaneSide (vec3_t emins, vec3_t emaxs, mplane_t *p)
 	float	dist1, dist2;
 	int		sides;
 
-#if 0	// this is done by the BOX_ON_PLANE_SIDE macro before calling this
-		// function
-// fast axial cases
+/* fast axial cases */
+#if 0	/* this is done by the BOX_ON_PLANE_SIDE macro before calling this function */
 	if (p->type < 3)
 	{
 		if (p->dist <= emins[p->type])
@@ -86,7 +79,7 @@ int BoxOnPlaneSide (vec3_t emins, vec3_t emaxs, mplane_t *p)
 	}
 #endif
 
-// general case
+/* general case */
 	switch (p->signbits)
 	{
 	case 0:
@@ -123,7 +116,7 @@ int BoxOnPlaneSide (vec3_t emins, vec3_t emaxs, mplane_t *p)
 		break;
 	default:
 		BOPS_Error ();
-		dist1 = dist2 = 0;		// shut up compiler
+		dist1 = dist2 = 0;	/* shut up compiler */
 		break;
 	}
 
@@ -167,7 +160,7 @@ int BoxOnPlaneSide (vec3_t emins, vec3_t emaxs, mplane_t *p)
 	return sides;
 }
 
-#endif
+#endif	/* id386 */
 
 
 void AngleVectors (vec3_t angles, vec3_t forward, vec3_t right, vec3_t up)
@@ -194,22 +187,6 @@ void AngleVectors (vec3_t angles, vec3_t forward, vec3_t right, vec3_t up)
 	up[0] = (cr * sp * cy + -sr * -sy);
 	up[1] = (cr * sp * sy + -sr * cy);
 	up[2] = cr * cp;
-}
-
-void VectorMA (vec3_t veca, float scale, vec3_t vecb, vec3_t vecc)
-{
-	vecc[0] = veca[0] + scale*vecb[0];
-	vecc[1] = veca[1] + scale*vecb[1];
-	vecc[2] = veca[2] + scale*vecb[2];
-}
-
-
-int Q_log2 (int val)
-{
-	int answer = 0;
-	while (val >>= 1)
-		answer++;
-	return answer;
 }
 
 
@@ -271,9 +248,10 @@ void FloorDivMod (double numer, double denom, int *quotient, int *rem)
 #ifndef PARANOID
 	if (denom <= 0.0)
 		Sys_Error ("%s: bad denominator %f", __thisfunc__, denom);
-
-//	if ((floor(numer) != numer) || (floor(denom) != denom))
-//		Sys_Error ("%s: non-integer numer or denom %f %f", __thisfunc__, numer, denom);
+	/*
+	if ((floor(numer) != numer) || (floor(denom) != denom))
+		Sys_Error ("%s: non-integer numer or denom %f %f", __thisfunc__, numer, denom);
+	*/
 #endif
 
 	if (numer >= 0.0)
@@ -284,9 +262,9 @@ void FloorDivMod (double numer, double denom, int *quotient, int *rem)
 	}
 	else
 	{
-	//
-	// perform operations with positive values, and fix mod to make floor-based
-	//
+	/* perform operations with positive values,
+	 * and fix mod to make floor-based
+	 */
 		x = floor(-numer / denom);
 		q = -(int)x;
 		r = (int)floor(-numer - (x * denom));
@@ -321,6 +299,15 @@ int GreatestCommonDivisor (int i1, int i2)
 			return (i2);
 		return GreatestCommonDivisor (i1, i2 % i1);
 	}
+}
+
+
+int Q_log2 (int val)
+{
+	int answer = 0;
+	while (val >>= 1)
+		answer++;
+	return answer;
 }
 
 
