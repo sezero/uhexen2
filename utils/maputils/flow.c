@@ -1,6 +1,6 @@
 /*
 	flow.c
-	$Id: flow.c,v 1.10 2007-12-14 16:41:24 sezero Exp $
+	$Id: flow.c,v 1.11 2008-03-06 18:26:48 sezero Exp $
 */
 
 #include "q_stdinc.h"
@@ -111,7 +111,7 @@ static int BoundSphereReject (winding_t *source, winding_t *pass, winding_t *tar
 	cp[2] *= h;
 	VectorAdd(cp,cone,cp);
 	//cp is closest to ct on line connecting cone and cp,
-	VectorSubtract(cp,ct,ct)
+	VectorSubtract(cp,ct,ct);
 	rtot = VectorLength(ct);
 	h *= rp;
 	if (rtot-rt > h)
