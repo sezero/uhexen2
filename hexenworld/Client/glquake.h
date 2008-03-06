@@ -2,7 +2,7 @@
 	glquake.h
 	common glquake header
 
-	$Id: glquake.h,v 1.71 2008-01-12 09:46:17 sezero Exp $
+	$Id: glquake.h,v 1.72 2008-03-06 21:35:28 sezero Exp $
 */
 
 
@@ -154,12 +154,14 @@ extern	GLuint		plyrtex[MAX_PLAYER_CLASS][16][16];	// player textures in multipla
 extern	GLuint		gl_extra_textures[MAX_EXTRA_TEXTURES];	// generic textures for models
 
 /* the GL_Bind macro */
-#define GL_Bind(texnum)	{					\
-	if (currenttexture != (texnum)) {			\
-		currenttexture = (texnum);			\
-		glBindTexture_fp(GL_TEXTURE_2D,currenttexture);	\
-	}							\
-}
+#define GL_Bind(texnum)							\
+	do {								\
+		if (currenttexture != (texnum))				\
+		{							\
+			currenttexture = (texnum);			\
+			glBindTexture_fp(GL_TEXTURE_2D,currenttexture);	\
+		}							\
+	} while (0)
 
 extern	int		gl_texlevel;
 extern	int		numgltextures;

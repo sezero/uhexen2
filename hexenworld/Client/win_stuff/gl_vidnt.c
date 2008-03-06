@@ -1,6 +1,6 @@
 /*
 	gl_vidnt.c -- NT GL vid component
-	$Id: gl_vidnt.c,v 1.122 2008-01-29 10:47:03 sezero Exp $
+	$Id: gl_vidnt.c,v 1.123 2008-03-06 21:35:28 sezero Exp $
 */
 
 #define	__GL_FUNC_EXTERN
@@ -711,10 +711,12 @@ static qboolean GL_OpenLibrary (const char *name)
 	}
 
 	// link to necessary wgl functions
-#define GL_FUNCTION(ret, func, params) \
-	func##_fp = (func##_f) GetProcAddress(hInstGL, #func); \
-	if (func##_fp == 0) \
-		Sys_Error("Couldn't link to %s", #func);
+#define GL_FUNCTION(ret, func, params)				\
+    do {							\
+	func##_fp = (func##_f) GetProcAddress(hInstGL, #func);	\
+	if (func##_fp == NULL)					\
+		Sys_Error("Couldn't link to %s", #func);	\
+    } while (0);
 #define GL_FUNCTION_OPT(ret, func, params)
 #include "wgl_func.h"
 #undef	GL_FUNCTION_OPT
@@ -726,7 +728,7 @@ static qboolean GL_OpenLibrary (const char *name)
 static void GL_CloseLibrary (void)
 {
 	// clear the wgl function pointers
-#define GL_FUNCTION(ret, func, params) \
+#define GL_FUNCTION(ret, func, params)	\
 	func##_fp = NULL;
 #define GL_FUNCTION_OPT(ret, func, params)
 #include "wgl_func.h"
@@ -741,16 +743,18 @@ static void GL_CloseLibrary (void)
 
 static void GL_Init_Functions (void)
 {
-#define GL_FUNCTION(ret, func, params) \
-	func##_fp = (func##_f) GetProcAddress(hInstGL, #func); \
-	if (func##_fp == 0) \
-		Sys_Error("%s not found in GL library", #func);
+#define GL_FUNCTION(ret, func, params)				\
+    do {							\
+	func##_fp = (func##_f) GetProcAddress(hInstGL, #func);	\
+	if (func##_fp == NULL)					\
+		Sys_Error("%s not found in GL library", #func);	\
+    } while (0);
 #define GL_FUNCTION_OPT(ret, func, params)
 #include "gl_func.h"
 #undef	GL_FUNCTION_OPT
 #undef	GL_FUNCTION
 }
-#endif	// GL_DLSYM
+#endif	/* GL_DLSYM */
 
 static void GL_ResetFunctions (void)
 {
@@ -761,7 +765,7 @@ static void GL_ResetFunctions (void)
 #include "gl_func.h"
 #undef	GL_FUNCTION_OPT
 #undef	GL_FUNCTION
-#endif	// GL_DLSYM
+#endif	/* GL_DLSYM */
 
 	have_stencil = false;
 

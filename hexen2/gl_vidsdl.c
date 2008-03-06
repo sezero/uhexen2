@@ -2,7 +2,7 @@
 	gl_vidsdl.c -- SDL GL vid component
 	Select window size and mode and init SDL in GL mode.
 
-	$Id: gl_vidsdl.c,v 1.180 2008-01-29 10:47:01 sezero Exp $
+	$Id: gl_vidsdl.c,v 1.181 2008-03-06 21:35:25 sezero Exp $
 
 	Changed 7/11/04 by S.A.
 	- Fixed fullscreen opengl mode, window sizes
@@ -727,33 +727,35 @@ static qboolean GL_OpenLibrary(const char *name)
 
 	return true;
 }
-#endif	// GL_DLSYM
+#endif	/* GL_DLSYM */
 
 
 #ifdef GL_DLSYM
 static void GL_Init_Functions(void)
 {
-#define GL_FUNCTION(ret, func, params) \
-	func##_fp = (func##_f) SDL_GL_GetProcAddress(#func); \
-	if (func##_fp == 0) \
-		Sys_Error("%s not found in GL library", #func);
+#define GL_FUNCTION(ret, func, params)				\
+    do {							\
+	func##_fp = (func##_f) SDL_GL_GetProcAddress(#func);	\
+	if (func##_fp == NULL)					\
+		Sys_Error("%s not found in GL library", #func);	\
+    } while (0);
 #define GL_FUNCTION_OPT(ret, func, params)
 #include "gl_func.h"
 #undef	GL_FUNCTION_OPT
 #undef	GL_FUNCTION
 }
-#endif	// GL_DLSYM
+#endif	/* GL_DLSYM */
 
 static void GL_ResetFunctions(void)
 {
 #ifdef	GL_DLSYM
-#define GL_FUNCTION(ret, func, params) \
+#define GL_FUNCTION(ret, func, params)	\
 	func##_fp = NULL;
 #define GL_FUNCTION_OPT(ret, func, params)
 #include "gl_func.h"
 #undef	GL_FUNCTION_OPT
 #undef	GL_FUNCTION
-#endif	// GL_DLSYM
+#endif	/* GL_DLSYM */
 
 	have_stencil = false;
 
