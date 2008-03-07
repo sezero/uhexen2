@@ -3,7 +3,7 @@
 	header file for DOS-specific video stuff.
 	from quake1 source with minor adaptations for uhexen2.
 
-	$Id: vid_dos.h,v 1.2 2007-11-12 14:00:10 sezero Exp $
+	$Id: vid_dos.h,v 1.3 2008-03-07 08:10:57 sezero Exp $
 
 	Copyright (C) 1996-1997  Id Software, Inc.
 
@@ -84,9 +84,11 @@ void VGA_BeginDirectRect (viddef_t *lvid, struct vmode_s *pcurrentmode, int x,
 void VGA_EndDirectRect (viddef_t *lvid, struct vmode_s *pcurrentmode, int x,
 					int y, int width, int height);
 
+__ASM_FUNCS_BEGIN
 void VGA_UpdatePlanarScreen (void *srcbuffer);
 void VGA_UpdateLinearScreen (void *srcptr, void *destptr, int width,
 					int height, int srcrowbytes, int destrowbytes);
+__ASM_FUNCS_END
 
 #endif	/* __VID_DOS_H */
 

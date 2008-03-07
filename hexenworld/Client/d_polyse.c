@@ -3,38 +3,12 @@
 	routines for drawing sets of polygons sharing the same
 	texture (used for Alias models)
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/d_polyse.c,v 1.15 2007-08-06 09:16:43 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/d_polyse.c,v 1.16 2008-03-07 08:10:57 sezero Exp $
 */
 
 #include "quakedef.h"
 #include "r_local.h"
 #include "d_local.h"
-
-// TODO: put in span spilling to shrink list size
-// !!! if this is changed, it must be changed in d_polysa.s too !!!
-#define	DPS_MAXSPANS	(MAXHEIGHT + 1)
-// 1 extra for spanpackage that marks end
-
-// !!! if this is changed, it must be changed in asm_draw.h too !!!
-typedef struct {
-	void		*pdest;
-	short		*pz;
-	int		count;
-	byte		*ptex;
-	int		sfrac, tfrac, light, zi;
-} spanpackage_t;
-
-typedef struct {
-	int		isflattop;
-	int		numleftedges;
-	int		*pleftedgevert0;
-	int		*pleftedgevert1;
-	int		*pleftedgevert2;
-	int		numrightedges;
-	int		*prightedgevert0;
-	int		*prightedgevert1;
-	int		*prightedgevert2;
-} edgetable;
 
 int		r_p0[6], r_p1[6], r_p2[6];
 
@@ -43,9 +17,9 @@ byte		*d_pcolormap;
 int		d_aflatcolor;
 int		d_xdenom;
 
-static edgetable	*pedgetable;
+static edgetable_t	*pedgetable;
 
-static edgetable	edgetables[12] =
+static edgetable_t	edgetables[12] =
 {
 	{ 0, 1, r_p0, r_p2, NULL, 2, r_p0, r_p1, r_p2 },
 	{ 0, 2, r_p1, r_p0, r_p2, 1, r_p1, r_p2, NULL },
@@ -94,9 +68,6 @@ byte	*skintable[MAX_SKIN_HEIGHT];
 int		skinwidth;
 byte	*skinstart;
 
-void D_PolysetSetEdgeTable (void);
-void D_RasterizeAliasPolySmooth (void);
-
 #if !id386
 static spanpackage_t	spans[DPS_MAXSPANS + 1 + ((CACHE_SIZE - 1) / sizeof(spanpackage_t)) + 1];
 						/* one extra because of cache line pretouching */
@@ -105,14 +76,6 @@ static void D_PolysetDrawSpans8T (spanpackage_t *pspanpackage);
 static void D_PolysetDrawSpans8T2 (spanpackage_t *pspanpackage);
 static void D_PolysetDrawSpans8T3 (spanpackage_t *pspanpackage);
 static void D_PolysetDrawSpans8T5 (spanpackage_t *pspanpackage);
-#endif
-
-#if id386
-extern void D_PolysetDrawSpans8 (spanpackage_t *pspanpackage);
-extern void D_PolysetDrawSpans8T (spanpackage_t *pspanpackage);
-extern void D_PolysetDrawSpans8T2 (spanpackage_t *pspanpackage);
-extern void D_PolysetDrawSpans8T3 (spanpackage_t *pspanpackage);
-extern void D_PolysetDrawSpans8T5 (spanpackage_t *pspanpackage);
 #endif
 
 
@@ -1149,7 +1112,7 @@ void D_PolysetDrawT5 (void)
 }
 
 
-#endif	// !id386
+#endif	/* !id386 */
 
 
 /*
@@ -1246,7 +1209,7 @@ static void D_PolysetScanLeftEdge (int height)
 	} while (--height);
 }
 
-#endif	// !id386
+#endif	/* !id386 */
 
 
 /*
@@ -1344,7 +1307,7 @@ static void D_PolysetCalcGradients (int skin_width)
 	a_ststepxwhole = skin_width * (r_tstepx >> 16) + (r_sstepx >> 16);
 }
 
-#endif	// !id386
+#endif	/* !id386 */
 
 
 #if 0
@@ -1720,7 +1683,7 @@ static void D_PolysetDrawSpans8T5 (spanpackage_t *pspanpackage)
 	} while (pspanpackage->count != -999999);
 }
 
-#endif	// !id386
+#endif	/* !id386 */
 
 
 /*

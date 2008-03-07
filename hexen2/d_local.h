@@ -2,7 +2,7 @@
 	d_local.h
 	private rasterization driver defs
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/d_local.h,v 1.15 2007-09-14 14:10:00 sezero Exp $
+	$Id: d_local.h,v 1.16 2008-03-07 08:10:37 sezero Exp $
 */
 
 #ifndef __D_LOCAL_H
@@ -46,6 +46,32 @@ typedef struct sspan_s
 	int			u, v, count;
 } sspan_t;
 
+// TODO: put in span spilling to shrink list size
+// !!! if this is changed, it must be changed in d_polysa.s too !!!
+#define	DPS_MAXSPANS	(MAXHEIGHT + 1)
+// 1 extra for spanpackage that marks end
+
+// !!! if this is changed, it must be changed in asm_draw.h too !!!
+typedef struct {
+	void		*pdest;
+	short		*pz;
+	int		count;
+	byte		*ptex;
+	int		sfrac, tfrac, light, zi;
+} spanpackage_t;
+
+typedef struct {
+	int		isflattop;
+	int		numleftedges;
+	int		*pleftedgevert0;
+	int		*pleftedgevert1;
+	int		*pleftedgevert2;
+	int		numrightedges;
+	int		*prightedgevert0;
+	int		*prightedgevert1;
+	int		*prightedgevert2;
+} edgetable_t;
+
 extern float	scale_for_mip;
 
 extern qboolean		d_roverwrapped;
@@ -62,63 +88,77 @@ extern fixed16_t	bbextents, bbextentt;
 
 extern void (*d_drawspans) (espan_t *pspan);
 
-extern void D_DrawSpans8 (espan_t *pspans);
-extern void D_DrawSpans8T(espan_t *pspans);
-extern void D_DrawZSpans (espan_t *pspans);
-extern void D_DrawSingleZSpans (espan_t *pspans);
-extern void Turbulent8 (surf_t *s);
+__ASM_FUNCS_BEGIN
 
-extern void D_DrawSkyScans8 (espan_t *pspan);
-extern void D_DrawSkyScans16 (espan_t *pspan);
+void D_DrawSpans8 (espan_t *pspans);
+void D_DrawSpans8T(espan_t *pspans);
+void D_DrawZSpans (espan_t *pspans);
+void D_DrawSingleZSpans (espan_t *pspans);
 
 #if id386
-extern void D_DrawSpans16 (espan_t *pspans);
-extern void D_DrawSpans16T (espan_t *pspans);
-extern void D_SpriteDrawSpans (sspan_t *pspan);
-extern void D_SpriteDrawSpansT (sspan_t *pspan);
-extern void D_SpriteDrawSpansT2 (sspan_t *pspan);
-extern void D_DrawTurbulent8Span (void);
-extern void D_DrawTurbulent8TSpan (void);
-extern void D_DrawTurbulent8TQuickSpan (void);
+void D_DrawSpans16 (espan_t *pspans);
+void D_DrawSpans16T (espan_t *pspans);
+void D_SpriteDrawSpans (sspan_t *pspan);
+void D_SpriteDrawSpansT (sspan_t *pspan);
+void D_SpriteDrawSpansT2 (sspan_t *pspan);
+void D_DrawTurbulent8Span (void);
+void D_DrawTurbulent8TSpan (void);
+void D_DrawTurbulent8TQuickSpan (void);
+
+void D_PolysetDrawSpans8 (spanpackage_t *pspanpackage);
+void D_PolysetDrawSpans8T (spanpackage_t *pspanpackage);
+void D_PolysetDrawSpans8T2 (spanpackage_t *pspanpackage);
+void D_PolysetDrawSpans8T3 (spanpackage_t *pspanpackage);
+void D_PolysetDrawSpans8T5 (spanpackage_t *pspanpackage);
+
+void D_Draw16StartT (void);
+void D_Draw16EndT (void);
+void D_DrawTurbulent8TSpanEnd (void);
+void D_PolysetAff8Start (void);
+void D_PolysetAff8StartT (void);
+void D_PolysetAff8StartT2 (void);
+void D_PolysetAff8StartT3 (void);
+void D_PolysetAff8StartT5 (void);
+void D_PolysetAff8End (void);
+void D_PolysetAff8EndT (void);
+void D_PolysetAff8EndT2 (void);
+void D_PolysetAff8EndT3 (void);
+void D_PolysetAff8EndT5 (void);
+void D_SpriteSpansStartT (void);
+void D_SpriteSpansEndT (void);
+void D_SpriteSpansStartT2 (void);
+void D_SpriteSpansEndT2 (void);
+
+void D_Aff8Patch (void *pcolormap);
+void D_Aff8PatchT (void *pcolormap);
+void D_Aff8PatchT2 (void *pcolormap);
+void D_Aff8PatchT3 (void *pcolormap);
+void D_Aff8PatchT5 (void *pcolormap);
+
+void R_TranPatch1 (void);
+void R_TranPatch2 (void);
+void R_TranPatch3 (void);
+void R_TranPatch4 (void);
+void R_TranPatch5 (void);
+void R_TranPatch6 (void);
+void R_TranPatch7 (void);
 #endif
 
-extern void D_Patch (void);
+/* C funcs called from asm code: */
+void D_PolysetSetEdgeTable (void);
+void D_RasterizeAliasPolySmooth (void);
 
-#if id386
-extern void D_Draw16StartT (void);
-extern void D_Draw16EndT (void);
-extern void D_DrawTurbulent8TSpanEnd (void);
-extern void D_PolysetAff8Start (void);
-extern void D_PolysetAff8StartT (void);
-extern void D_PolysetAff8StartT2 (void);
-extern void D_PolysetAff8StartT3 (void);
-extern void D_PolysetAff8StartT5 (void);
-extern void D_PolysetAff8End (void);
-extern void D_PolysetAff8EndT (void);
-extern void D_PolysetAff8EndT2 (void);
-extern void D_PolysetAff8EndT3 (void);
-extern void D_PolysetAff8EndT5 (void);
-extern void D_SpriteSpansStartT (void);
-extern void D_SpriteSpansEndT (void);
-extern void D_SpriteSpansStartT2 (void);
-extern void D_SpriteSpansEndT2 (void);
+__ASM_FUNCS_END
 
-extern void D_Aff8Patch (void *pcolormap);
-extern void D_Aff8PatchT (void *pcolormap);
-extern void D_Aff8PatchT2 (void *pcolormap);
-extern void D_Aff8PatchT3 (void *pcolormap);
-extern void D_Aff8PatchT5 (void *pcolormap);
 
-extern void R_TranPatch1 (void);
-extern void R_TranPatch2 (void);
-extern void R_TranPatch3 (void);
-extern void R_TranPatch4 (void);
-extern void R_TranPatch5 (void);
-extern void R_TranPatch6 (void);
-extern void R_TranPatch7 (void);
-#endif
+void Turbulent8 (surf_t *s);
 
-extern surfcache_t *D_CacheSurface (msurface_t *surface, int miplevel);
+void D_DrawSkyScans8 (espan_t *pspan);
+void D_DrawSkyScans16 (espan_t *pspan);
+
+surfcache_t *D_CacheSurface (msurface_t *surface, int miplevel);
+
+void D_Patch (void);
 
 
 extern short	*d_pzbuffer;

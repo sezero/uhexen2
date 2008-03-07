@@ -2,7 +2,7 @@
 	d_iface.h
 	interface header file for rasterization driver modules
 
-	$Id: d_iface.h,v 1.14 2007-08-09 06:12:45 sezero Exp $
+	$Id: d_iface.h,v 1.15 2008-03-07 08:10:36 sezero Exp $
 */
 
 #ifndef __D_IFACE_H
@@ -110,39 +110,45 @@ extern polydesc_t	r_polydesc;
 extern vec3_t	r_pright, r_pup, r_ppn;
 
 
-extern void D_DrawPoly (void);
-extern void D_DrawSprite (void);
-extern void D_DrawSurfaces (qboolean Translucent);
+void D_DrawPoly (void);
+void D_DrawSprite (void);
+void D_DrawSurfaces (qboolean Translucent);
 
-extern void D_PolysetDraw (void);
-extern void D_PolysetDrawT (void);
-extern void D_PolysetDrawT2 (void);
-extern void D_PolysetDrawT3 (void);
-extern void D_PolysetDrawT5 (void);
 
-extern void D_PolysetDrawFinalVerts (finalvert_t *p1, finalvert_t *p2, finalvert_t *p3);
-extern void D_PolysetDrawFinalVertsT (finalvert_t *p1, finalvert_t *p2, finalvert_t *p3);
-extern void D_PolysetDrawFinalVertsT2 (finalvert_t *p1, finalvert_t *p2, finalvert_t *p3);
-extern void D_PolysetDrawFinalVertsT3 (finalvert_t *p1, finalvert_t *p2, finalvert_t *p3);
-extern void D_PolysetDrawFinalVertsT5 (finalvert_t *p1, finalvert_t *p2, finalvert_t *p3);
+__ASM_FUNCS_BEGIN
+
+void D_PolysetDraw (void);
+void D_PolysetDrawT (void);
+void D_PolysetDrawT2 (void);
+void D_PolysetDrawT3 (void);
+void D_PolysetDrawT5 (void);
+
+void D_PolysetDrawFinalVerts (finalvert_t *p1, finalvert_t *p2, finalvert_t *p3);
+void D_PolysetDrawFinalVertsT (finalvert_t *p1, finalvert_t *p2, finalvert_t *p3);
+void D_PolysetDrawFinalVertsT2 (finalvert_t *p1, finalvert_t *p2, finalvert_t *p3);
+void D_PolysetDrawFinalVertsT3 (finalvert_t *p1, finalvert_t *p2, finalvert_t *p3);
+void D_PolysetDrawFinalVertsT5 (finalvert_t *p1, finalvert_t *p2, finalvert_t *p3);
 
 #if id386
-extern void D_DrawNonSubdiv (void);
-extern void D_PolysetCalcGradients (int skinwidth);
-extern void D_PolysetCalcGradientsT (int skinwidth);
-extern void D_PolysetCalcGradientsT2 (int skinwidth);
-extern void D_PolysetCalcGradientsT3 (int skinwidth);
-extern void D_PolysetCalcGradientsT5 (int skinwidth);
-extern void D_PolysetRecursiveTriangle (int *p1, int *p2, int *p3);
-extern void D_PolysetScanLeftEdge (int height);
-extern void D_PolysetScanLeftEdgeT (int height);
-extern void D_PolysetScanLeftEdgeT2 (int height);
-extern void D_PolysetScanLeftEdgeT3 (int height);
-extern void D_PolysetScanLeftEdgeT5 (int height);
-extern void D_DrawParticle1x1b (particle_t *pparticle);
+void D_DrawNonSubdiv (void);
+void D_PolysetCalcGradients (int skinwidth);
+void D_PolysetCalcGradientsT (int skinwidth);
+void D_PolysetCalcGradientsT2 (int skinwidth);
+void D_PolysetCalcGradientsT3 (int skinwidth);
+void D_PolysetCalcGradientsT5 (int skinwidth);
+void D_PolysetRecursiveTriangle (int *p1, int *p2, int *p3);
+void D_PolysetScanLeftEdge (int height);
+void D_PolysetScanLeftEdgeT (int height);
+void D_PolysetScanLeftEdgeT2 (int height);
+void D_PolysetScanLeftEdgeT3 (int height);
+void D_PolysetScanLeftEdgeT5 (int height);
+void D_DrawParticle1x1b (particle_t *pparticle);
 #endif
 
-extern void D_DrawParticle (particle_t *pparticle);
+void D_DrawParticle (particle_t *pparticle);
+
+__ASM_FUNCS_END
+
 
 void D_BeginDirectRect (int x, int y, byte *pbitmap, int width, int height);
 void D_EndDirectRect (int x, int y, int width, int height);

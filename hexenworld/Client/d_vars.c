@@ -2,7 +2,7 @@
 	d_vars.c
 	rasterization driver global variables
 
-	$Id: d_vars.c,v 1.2 2006-04-05 18:21:48 sezero Exp $
+	$Id: d_vars.c,v 1.3 2008-03-07 08:10:57 sezero Exp $
 */
 
 #include	"quakedef.h"
@@ -32,5 +32,5 @@ short		*d_pzbuffer;
 unsigned int	d_zrowbytes;
 unsigned int	d_zwidth;
 
-#endif	// !id386
+#endif	/* !id386 */
 

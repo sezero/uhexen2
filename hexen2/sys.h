@@ -2,7 +2,7 @@
 	sys.h
 	non-portable functions
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sys.h,v 1.40 2008-01-29 10:47:01 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sys.h,v 1.41 2008-03-07 08:10:39 sezero Exp $
 */
 
 #ifndef __HX2_SYS_H
@@ -72,18 +72,29 @@ void Sys_SendKeyEvents (void);
 
 #	define	id386		1
 #	define	UNALIGNED_OK	1	/* set to 0 if unaligned accesses are not supported */
+#   if defined(__cplusplus)
+#	define	__ASM_FUNCS_BEGIN	extern "C" {
+#	define	__ASM_FUNCS_END			}
+#   else
+#	define	__ASM_FUNCS_BEGIN
+#	define	__ASM_FUNCS_END
+#   endif
 /* fpu stuff */
+__ASM_FUNCS_BEGIN
 void	MaskExceptions (void);
 void	Sys_SetFPCW (void);
 void	Sys_LowFPPrecision (void);
 void	Sys_HighFPPrecision (void);
 void	Sys_PopFPCW (void);
 void	Sys_PushFPCW_SetHigh (void);
+__ASM_FUNCS_END
 
 #else	/* not i386 or no intel asm */
 
 #	define	id386		0
 #	define	UNALIGNED_OK	0
+#	define	__ASM_FUNCS_BEGIN
+#	define	__ASM_FUNCS_END
 #	define	MaskExceptions()	do {} while (0)
 #	define	Sys_SetFPCW()		do {} while (0)
 #	define	Sys_LowFPPrecision()	do {} while (0)

@@ -2,7 +2,7 @@
 	r_vars.c
 	global refresh variables
 
-	$Id: r_vars.c,v 1.4 2007-03-14 21:03:20 sezero Exp $
+	$Id: r_vars.c,v 1.5 2008-03-07 08:10:39 sezero Exp $
 */
 
 #include	"quakedef.h"
@@ -21,5 +21,5 @@
 
 int		r_bmodelactive;
 
-#endif	// !id386
+#endif	/* !id386 */
 

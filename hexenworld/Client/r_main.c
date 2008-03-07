@@ -1,7 +1,7 @@
 /*
 	r_main.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/r_main.c,v 1.24 2007-11-22 08:22:26 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/r_main.c,v 1.25 2008-03-07 08:10:58 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -575,7 +575,7 @@ void R_ViewChanged (vrect_t *pvrect, int lineadj, float aspect)
 		colormap = vid.colormap16;
 		R_Surf16Patch ();
 	}
-#endif	// id386
+#endif	/* id386 */
 
 	D_ViewChanged ();
 }

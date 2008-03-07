@@ -3,7 +3,7 @@
 	general refresh-related stuff shared between the refresh
 	and the driver
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/r_shared.h,v 1.8 2007-08-09 06:12:45 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/r_shared.h,v 1.9 2008-03-07 08:10:38 sezero Exp $
 */
 
 #ifndef __R_SHARED_H
@@ -117,13 +117,15 @@ extern	float	xscaleshrink, yscaleshrink;
 
 extern	int	d_lightstylevalue[256];	// 8.8 frac of base light value
 
-extern void TransformVector (vec3_t in, vec3_t out);
-
 extern	int	ubasestep, errorterm, erroradjustup, erroradjustdown;
 
 extern	int	r_skymade;
 
-extern void R_MakeSky (void);
+__ASM_FUNCS_BEGIN
+void TransformVector (vec3_t in, vec3_t out);
+__ASM_FUNCS_END
+
+void R_MakeSky (void);
 
 
 // flags in finalvert_t.flags
@@ -152,6 +154,8 @@ typedef struct edge_s
 extern	byte	*mainTransTable;
 extern	byte	*playerTranslation;
 extern	const int	color_offsets[MAX_PLAYER_CLASS];
+
+extern	long	FoundTrans;	/* FIXME: see d_edge.c and r_edge.c !!! - O.S. */
 
 #endif	/*  !GLQUAKE	*/
 

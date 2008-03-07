@@ -2,7 +2,7 @@
 	snd_mix.c
 	portable code to mix sounds for snd_dma.c
 
-	$Id: snd_mix.c,v 1.21 2007-12-30 15:40:51 sezero Exp $
+	$Id: snd_mix.c,v 1.22 2008-03-07 08:10:39 sezero Exp $
 
 	Copyright (C) 1996-1997  Id Software, Inc.
 
@@ -33,9 +33,7 @@ int		snd_scaletable[32][256];
 int		*snd_p, snd_linear_count, snd_vol;
 short		*snd_out;
 
-#if	id386
-extern void Snd_WriteLinearBlastStereo16 (void);
-#else
+#if	!id386
 static void Snd_WriteLinearBlastStereo16 (void)
 {
 	int		i;
@@ -153,9 +151,7 @@ CHANNEL MIXING
 ===============================================================================
 */
 
-#if	id386
-extern void SND_PaintChannelFrom8 (channel_t *ch, sfxcache_t *sc, int endtime);
-#else
+#if	!id386
 static void SND_PaintChannelFrom8 (channel_t *ch, sfxcache_t *sc, int endtime);
 #endif
 static void SND_PaintChannelFrom16 (channel_t *ch, sfxcache_t *sc, int endtime);

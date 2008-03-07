@@ -2,7 +2,7 @@
 	world.c
 	world query functions
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/world.c,v 1.23 2008-01-22 12:01:05 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/world.c,v 1.24 2008-03-07 08:10:39 sezero Exp $
 
 	entities never clip against themselves, or their owner
 	line of sight checks trace->crosscontent, but bullets don't
@@ -21,9 +21,7 @@ typedef struct
 	edict_t		*passedict;
 } moveclip_t;
 
-#if	id386
-extern int SV_HullPointContents (hull_t *hull, int num, vec3_t p);
-#else
+#if	!id386
 static int SV_HullPointContents (hull_t *hull, int num, vec3_t p);
 #endif
 

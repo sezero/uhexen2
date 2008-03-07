@@ -2,7 +2,7 @@
 	r_local.h
 	private refresh defs
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/r_local.h,v 1.14 2007-08-09 06:12:45 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/r_local.h,v 1.15 2008-03-07 08:10:58 sezero Exp $
 */
 
 #ifndef __R_LOCAL_H
@@ -142,20 +142,48 @@ void R_AliasDrawModel (alight_t *plighting);
 void R_BeginEdgeFrame (void);
 void R_ScanEdges (qboolean Translucent);
 
-#if id386
-extern void R_Surf8Patch (void);
-extern void R_Surf16Patch (void);
-extern void R_SurfacePatch (void);
 
-extern void R_Surf8Start (void);
-extern void R_Surf8End (void);
-extern void R_Surf16Start (void);
-extern void R_Surf16End (void);
-extern void R_EdgeCodeStart (void);
-extern void R_EdgeCodeEnd (void);
-extern void R_EdgeCodeStartT (void);
-extern void R_EdgeCodeEndT (void);
+__ASM_FUNCS_BEGIN
+
+#if id386
+void R_Surf8Patch (void);
+void R_Surf16Patch (void);
+void R_SurfacePatch (void);
+
+void R_Surf8Start (void);
+void R_Surf8End (void);
+void R_Surf16Start (void);
+void R_Surf16End (void);
+void R_EdgeCodeStart (void);
+void R_EdgeCodeEnd (void);
+void R_EdgeCodeStartT (void);
+void R_EdgeCodeEndT (void);
+
+void R_DrawSurfaceBlock16 (void);
+void R_DrawSurfaceBlock8_mip0 (void);
+void R_DrawSurfaceBlock8_mip1 (void);
+void R_DrawSurfaceBlock8_mip2 (void);
+void R_DrawSurfaceBlock8_mip3 (void);
+
+void R_GenerateSpans (void);
+void R_GenerateTSpans (void);
+void R_InsertNewEdges (edge_t *edgestoadd, edge_t *edgelist);
+void R_RemoveEdges (edge_t *pedge);
+void R_StepActiveU (edge_t *pedge);
+
+void R_Alias_clip_top (finalvert_t *pfv0, finalvert_t *pfv1, finalvert_t *out);
+void R_Alias_clip_bottom (finalvert_t *pfv0, finalvert_t *pfv1, finalvert_t *out);
+void R_Alias_clip_left (finalvert_t *pfv0, finalvert_t *pfv1, finalvert_t *out);
+void R_Alias_clip_right (finalvert_t *pfv0, finalvert_t *pfv1, finalvert_t *out);
+
+void R_AliasTransformAndProjectFinalVerts (finalvert_t *fv, stvert_t *pstverts);
+
+void R_ClipEdge (mvertex_t *pv0, mvertex_t *pv1, clipplane_t *clip);
 #endif
+
+__ASM_FUNCS_END
+
+void R_AliasProjectFinalVert (finalvert_t *, auxvert_t *);
 
 
 extern	int	c_faceclip;

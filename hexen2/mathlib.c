@@ -2,7 +2,7 @@
 	mathlib.c
 	math primitives
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/mathlib.c,v 1.22 2008-03-06 18:55:07 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/mathlib.c,v 1.23 2008-03-07 08:10:38 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -47,7 +47,9 @@ BOPS_Error
 Split out like this for ASM to call.
 ==================
 */
+__ASM_FUNCS_BEGIN	/* called from asm. */
 void BOPS_Error (void) __attribute__((noreturn));
+__ASM_FUNCS_END
 void BOPS_Error (void)
 {
 	Sys_Error ("BoxOnPlaneSide:  Bad signbits");

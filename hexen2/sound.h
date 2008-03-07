@@ -2,7 +2,7 @@
 	sound.h
 	client sound i/o functions
 
-	$Id: sound.h,v 1.29 2007-12-22 18:56:07 sezero Exp $
+	$Id: sound.h,v 1.30 2008-03-07 08:10:39 sezero Exp $
 
 	Copyright (C) 1996-1997  Id Software, Inc.
 
@@ -156,6 +156,13 @@ sfxcache_t *S_LoadSound (sfx_t *s);
 wavinfo_t GetWavinfo (const char *name, byte *wav, size_t wavlength);
 
 void SND_InitScaletable (void);
+
+__ASM_FUNCS_BEGIN
+#if id386
+void Snd_WriteLinearBlastStereo16 (void);
+void SND_PaintChannelFrom8 (channel_t *ch, sfxcache_t *sc, int endtime);
+#endif
+__ASM_FUNCS_END
 
 #endif	/* __HX2_SOUND_H */
 

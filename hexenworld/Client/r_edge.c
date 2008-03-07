@@ -1,7 +1,7 @@
 /*
 	r_edge.c
 
-	$Id: r_edge.c,v 1.10 2007-07-09 21:50:57 sezero Exp $
+	$Id: r_edge.c,v 1.11 2008-03-07 08:10:58 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -49,21 +49,16 @@ float	fv;
 
 //static int	show = 0;
 int		TransCount;
+#if	!id386
+long		FoundTrans;
+#endif
 
 static void (*pdrawfunc)(void);
 static void (*pdrawTfunc)(void);
 
 #if	!id386
-long		FoundTrans;		// O.S: FIXME: see d_edge.c
 static void R_GenerateSpans (void);
 static void R_GenerateTSpans (void);
-#else
-extern long	FoundTrans;		// O.S: FIXME: see d_edge.c
-extern void R_GenerateSpans (void);
-extern void R_GenerateTSpans (void);
-extern void R_InsertNewEdges (edge_t *edgestoadd, edge_t *edgelist);
-extern void R_RemoveEdges (edge_t *pedge);
-extern void R_StepActiveU (edge_t *pedge);
 #endif
 static void R_GenerateSpansBackward (void);
 static void R_TrailingEdge (surf_t *surf, edge_t *edge);
@@ -287,7 +282,7 @@ pushback:
 	}
 }
 
-#endif	// !id386
+#endif	/* !id386 */
 
 
 /*
@@ -359,7 +354,7 @@ static void R_CleanupSpanT (void)
 	} while (surf != &surfaces[1]);
 }
 
-#endif	// !id386
+#endif	/* !id386 */
 
 
 /*
@@ -938,7 +933,7 @@ static void R_GenerateTSpans (void)
 	R_CleanupSpanT ();
 }
 
-#endif	// !id386
+#endif	/* !id386 */
 
 
 /*

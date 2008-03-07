@@ -3,7 +3,7 @@
 	support library for dosquake MPATH network driver.
 	from quake1 source with minor adaptations for uhexen2.
 
-	$Id: mplib.c,v 1.1 2007-10-22 18:07:52 sezero Exp $
+	$Id: mplib.c,v 1.2 2008-03-07 08:10:57 sezero Exp $
 
 	Copyright (C) 1996-1997  Id Software, Inc.
 
@@ -110,7 +110,13 @@ RTQ_PARAM_MOVENODE
 
 RTQ_NODE	*rtq_fetch(RTQ_NODE*, RTQ_NODE*);	// To, From
 
+#ifdef __cplusplus
+extern "C" {
+#endif
 int _int86 (int vector, __dpmi_regs *iregs, __dpmi_regs *oregs);
+#ifdef __cplusplus
+}
+#endif
 
 #define	CHUNNEL_INT	0x48
 

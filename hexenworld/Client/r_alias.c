@@ -2,7 +2,7 @@
 	r_alias.c
 	routines for setting up to draw alias models
 
-	$Id: r_alias.c,v 1.19 2007-09-29 18:10:25 sezero Exp $
+	$Id: r_alias.c,v 1.20 2008-03-07 08:10:58 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -59,12 +59,9 @@ float	r_avertexnormals[NUMVERTEXNORMALS][3] =
 };
 
 
-#if	id386
-extern void R_AliasTransformAndProjectFinalVerts (finalvert_t *fv, stvert_t *pstverts);
-#else
+#if !id386
 static void R_AliasTransformAndProjectFinalVerts (finalvert_t *fv, stvert_t *pstverts);
 #endif
-void R_AliasProjectFinalVert (finalvert_t *fv, auxvert_t *av);
 static void R_AliasSetUpTransform (int trivial_accept);
 static void R_AliasTransformVector (vec3_t in, vec3_t out);
 static void R_AliasTransformFinalVert (finalvert_t *fv, auxvert_t *av, trivertx_t *pverts);

@@ -2,7 +2,7 @@
 	r_aclip.c
 	clip routines for drawing Alias models directly to the screen
 
-	$Id: r_aclip.c,v 1.8 2007-09-14 14:10:07 sezero Exp $
+	$Id: r_aclip.c,v 1.9 2008-03-07 08:10:58 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -12,13 +12,7 @@
 static finalvert_t		fv[2][8];
 static auxvert_t		av[8];
 
-extern void R_AliasProjectFinalVert (finalvert_t *, auxvert_t *);
-#if id386
-extern void R_Alias_clip_top (finalvert_t *pfv0, finalvert_t *pfv1, finalvert_t *out);
-extern void R_Alias_clip_bottom (finalvert_t *pfv0, finalvert_t *pfv1, finalvert_t *out);
-extern void R_Alias_clip_left (finalvert_t *pfv0, finalvert_t *pfv1, finalvert_t *out);
-extern void R_Alias_clip_right (finalvert_t *pfv0, finalvert_t *pfv1, finalvert_t *out);
-#else
+#if !id386
 static void R_Alias_clip_top (finalvert_t *pfv0, finalvert_t *pfv1, finalvert_t *out);
 static void R_Alias_clip_bottom (finalvert_t *pfv0, finalvert_t *pfv1, finalvert_t *out);
 static void R_Alias_clip_left (finalvert_t *pfv0, finalvert_t *pfv1, finalvert_t *out);

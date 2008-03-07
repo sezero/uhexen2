@@ -2,7 +2,7 @@
 	r_surf.c
 	surface-related refresh code
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/r_surf.c,v 1.12 2007-09-14 14:10:08 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/r_surf.c,v 1.13 2008-03-07 08:10:58 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -25,13 +25,7 @@ unsigned char	*r_source, *r_sourcemax;
 
 static unsigned int	blocklights[18*18];
 
-#if id386
-extern void R_DrawSurfaceBlock16 (void);
-extern void R_DrawSurfaceBlock8_mip0 (void);
-extern void R_DrawSurfaceBlock8_mip1 (void);
-extern void R_DrawSurfaceBlock8_mip2 (void);
-extern void R_DrawSurfaceBlock8_mip3 (void);
-#else
+#if !id386
 static void R_DrawSurfaceBlock16 (void);
 static void R_DrawSurfaceBlock8_mip0 (void);
 static void R_DrawSurfaceBlock8_mip1 (void);

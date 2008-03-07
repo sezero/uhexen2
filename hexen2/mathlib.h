@@ -2,7 +2,7 @@
 	mathlib.h
 	math primitives
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/mathlib.h,v 1.22 2008-03-06 18:55:07 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/mathlib.h,v 1.23 2008-03-07 08:10:38 sezero Exp $
 */
 
 #ifndef __MATHLIB_H
@@ -14,7 +14,7 @@
 #define M_PI		3.14159265358979323846	/* matches value in gcc v2 math.h */
 #endif
 
-#define	nanmask		(255<<23)
+#define	nanmask		(255 << 23)
 #define	IS_NAN(x)	(((*(int *) (char *) &x) & nanmask) == nanmask)
 
 int Q_isnan (float x);	/* don't pass doubles to this */
@@ -119,14 +119,15 @@ void R_ConcatRotations (float in1[3][3], float in2[3][3], float out[3][3]);
 void R_ConcatTransforms (float in1[3][4], float in2[3][4], float out[3][4]);
 
 void FloorDivMod (double numer, double denom, int *quotient, int *rem);
-fixed16_t Invert24To16(fixed16_t val);
 int GreatestCommonDivisor (int i1, int i2);
 
 void AngleVectors (vec3_t angles, vec3_t forward, vec3_t right, vec3_t up);
-float	anglemod(float a);
+float anglemod (float a);
 
 struct mplane_s;
+__ASM_FUNCS_BEGIN
 int BoxOnPlaneSide (vec3_t emins, vec3_t emaxs, struct mplane_s *plane);
+__ASM_FUNCS_END
 
 #define BOX_ON_PLANE_SIDE(emins, emaxs, p)				\
 	(((p)->type < 3) ?						\
@@ -134,6 +135,10 @@ int BoxOnPlaneSide (vec3_t emins, vec3_t emaxs, struct mplane_s *plane);
 			( ((p)->dist >= (emaxs)[(p)->type]) ? 2 : 3 ) )	\
 		:							\
 			BoxOnPlaneSide((emins), (emaxs), (p)))
+
+__ASM_FUNCS_BEGIN
+fixed16_t Invert24To16 (fixed16_t val);
+__ASM_FUNCS_END
 
 #endif	/* __MATHLIB_H */
 

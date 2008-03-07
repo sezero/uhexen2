@@ -1,7 +1,7 @@
 /*
 	r_draw.c
 
-	$Id: r_draw.c,v 1.7 2007-09-14 14:10:02 sezero Exp $
+	$Id: r_draw.c,v 1.8 2008-03-07 08:10:38 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -50,9 +50,7 @@ int		r_ceilv1;
 
 qboolean	r_lastvertvalid;
 
-#if id386
-extern void R_ClipEdge (mvertex_t *pv0, mvertex_t *pv1, clipplane_t *clip);
-#else
+#if !id386
 static void R_ClipEdge (mvertex_t *pv0, mvertex_t *pv1, clipplane_t *clip);
 #endif
 
@@ -338,7 +336,7 @@ static void R_ClipEdge (mvertex_t *pv0, mvertex_t *pv1, clipplane_t *clip)
 	R_EmitEdge (pv0, pv1);
 }
 
-#endif	// !id386
+#endif	/* !id386 */
 
 
 /*
