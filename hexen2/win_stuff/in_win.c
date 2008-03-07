@@ -1,6 +1,6 @@
 /*
 	in_win.c
-	$Id: in_win.c,v 1.32 2007-08-14 10:16:52 sezero Exp $
+	$Id: in_win.c,v 1.33 2008-03-07 08:36:41 sezero Exp $
 
 	windows 95 mouse and joystick code
 
@@ -389,7 +389,11 @@ static qboolean IN_InitDInput (void)
 	}
 
 // obtain an interface to the system mouse device.
+#if defined(__cplusplus)
+	hr = IDirectInput_CreateDevice(g_pdi, GUID_SysMouse, &g_pMouse, NULL);
+#else
 	hr = IDirectInput_CreateDevice(g_pdi, &GUID_SysMouse, &g_pMouse, NULL);
+#endif
 
 	if (FAILED(hr))
 	{
@@ -646,17 +650,16 @@ static void IN_MouseMove (usercmd_t *cmd)
 			}
 
 			/* Look at the element to see what happened */
-			switch (od.dwOfs)
+			if (od.dwOfs == DIMOFS_X)
 			{
-			case DIMOFS_X:
 				mx += (LONG) od.dwData;
-				break;
-
-			case DIMOFS_Y:
+			}
+			else if (od.dwOfs == DIMOFS_Y)
+			{
 				my += (LONG) od.dwData;
-				break;
-
-			case DIMOFS_Z:
+			}
+			else if (od.dwOfs == DIMOFS_Z)
+			{
 				if ((LONG) od.dwData < 0)
 				{
 					Key_Event (K_MWHEELDOWN, true);
@@ -667,35 +670,34 @@ static void IN_MouseMove (usercmd_t *cmd)
 					Key_Event (K_MWHEELUP, true);
 					Key_Event (K_MWHEELUP, false);
 				}
-				break;
-
-			case DIMOFS_BUTTON0:
+			}
+			else if (od.dwOfs == DIMOFS_BUTTON0)
+			{
 				if (od.dwData & 0x80)
 					mstate_di |= 1;
 				else
 					mstate_di &= ~1;
-				break;
-
-			case DIMOFS_BUTTON1:
+			}
+			else if (od.dwOfs == DIMOFS_BUTTON1)
+			{
 				if (od.dwData & 0x80)
 					mstate_di |= (1<<1);
 				else
 					mstate_di &= ~(1<<1);
-				break;
-
-			case DIMOFS_BUTTON2:
+			}
+			else if (od.dwOfs == DIMOFS_BUTTON2)
+			{
 				if (od.dwData & 0x80)
 					mstate_di |= (1<<2);
 				else
 					mstate_di &= ~(1<<2);
-				break;
-
-			case DIMOFS_BUTTON3:
+			}
+			else if (od.dwOfs == DIMOFS_BUTTON3)
+			{
 				if (od.dwData & 0x80)
 					mstate_di |= (1<<3);
 				else
 					mstate_di &= ~(1<<3);
-				break;
 			}
 		}
 
