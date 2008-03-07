@@ -3,6 +3,21 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2008-03-07 (CVS):
+    * maputils/flow.c: added missing semicolon after VectorSubstract.
+    * mathlib macro clean-up: macros with multiple statements are now
+      enclosed in do-while blocks. changed VectorMA and VectorScale into
+      macros. not using memcpy for VectorCopy anymore (doesn't work with
+      DOUBLEVEC_T). usual whitespace clean-up while we were there.
+    * cl_input.c: whitespace.
+    * enclosed several macros with multiple statements in do-while blocks.
+    * added proper ifdefs to make hexen2 and hexenworld compilable with
+      cplusplus compilers (ie. g++) even when using x86 asm: no linkage
+      problems anymore.  opengl version runs just fine but the software
+      version suffers severe rendering glitches in that mode except for
+      the DOS port which surprisingly runs fine.
+    * updated BUGS (Mar. 07, 2008.)
+
 2008-03-04 (CVS):
     * silenced a compiler warning, although a false one, which showed up
       with gcc-4.3.0 (20080301 prerelease).
