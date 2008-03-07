@@ -21,6 +21,11 @@ Known Bugs
   fade out as they do in the intel assembly code. The origin of Famine's
   tractor beam isn't translucent as it should be.
 
+- Software renderer, x86 asm code: if compiled using cplusplus compilers,
+  ie. g++, there are many graphical glitches. Seen on linux, windows and
+  freebsd, but dos (djgpp) version is interestingly fine. By the way, why
+  would anyone use cplusplus compilers AND keep intel-assembly enabled...
+
 - Hexen II dedicated server: The swords on the weapon racks in village1
   and demo2 levels are placed incorrectly. To be looked into.
 
