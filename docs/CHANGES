@@ -17,6 +17,7 @@ Development Progress	:
       version suffers severe rendering glitches in that mode except for
       the DOS port which surprisingly runs fine.
     * updated BUGS (Mar. 07, 2008.)
+    * made in_win.c to compile using cplusplus compilers (ie. g++).
 
 2008-03-04 (CVS):
     * silenced a compiler warning, although a false one, which showed up
