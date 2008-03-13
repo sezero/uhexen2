@@ -1,5 +1,7 @@
 ; dosasm.asm
-; $Id: dosasm.asm,v 1.1 2007-10-22 18:07:51 sezero Exp $
+;
+; $Id: dosasm.asm,v 1.2 2008-03-13 22:02:32 sezero Exp $
+; this file uses NASM syntax.
 ;
 
 SEGMENT .data

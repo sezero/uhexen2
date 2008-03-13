@@ -1,7 +1,9 @@
 ;
 ; surf8.asm
-; $Id: surf8.asm,v 1.2 2007-06-16 09:21:56 sezero Exp $
 ; x86 assembly-language 8 bpp surface block drawing code.
+;
+; this file uses NASM syntax.
+; $Id: surf8.asm,v 1.3 2008-03-13 22:02:32 sezero Exp $
 ;
 
 %idefine offset
@@ -721,4 +723,3 @@ LPatchLoop8:
  pop ebx
  ret
 
- END

@@ -1,7 +1,9 @@
 ;
 ; r_edgea.asm
-; $Id: r_edgea.asm,v 1.4 2007-06-16 09:21:56 sezero Exp $
 ; x86 assembly-language edge-processing code.
+;
+; this file uses NASM syntax.
+; $Id: r_edgea.asm,v 1.5 2008-03-13 22:02:32 sezero Exp $
 ;
 
 %idefine offset
@@ -742,4 +744,3 @@ R_SurfacePatch:
  call R_SurfacePatchT			; call near R_SurfacePatchT
  ret
 
- END

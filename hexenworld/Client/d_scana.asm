@@ -1,7 +1,9 @@
 ;
 ; d_scana.asm
-; $Id: d_scana.asm,v 1.2 2007-06-16 09:21:56 sezero Exp $
 ; x86 assembly-language turbulent texture mapping code
+;
+; this file uses NASM syntax.
+; $Id: d_scana.asm,v 1.3 2008-03-13 22:02:32 sezero Exp $
 ;
 
 %idefine offset
@@ -345,12 +347,6 @@ skip1:
  jmp skip2
 
 
-
-
-
-
-
-
  ALIGN 4
  global D_DrawTurbulent8TQuickSpan
 D_DrawTurbulent8TQuickSpan:
@@ -429,4 +425,3 @@ LPatchLoop:
  pop ebx
  ret
 
- END

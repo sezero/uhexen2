@@ -1,7 +1,9 @@
 ;
 ; r_aclipa.asm
-; $Id: r_aclipa.asm,v 1.2 2007-06-16 09:21:51 sezero Exp $
 ; x86 assembly-language Alias model transform and project code.
+;
+; this file uses NASM syntax.
+; $Id: r_aclipa.asm,v 1.3 2008-03-13 22:02:30 sezero Exp $
 ;
 
 %idefine offset
@@ -347,4 +349,3 @@ R_Alias_clip_left:
  mov eax, dword [r_refdef+20+0]
  jmp LRightLeftEntry
 
- END

@@ -1,8 +1,10 @@
 ;
 ; d_draw16t.asm
-; $Id: d_draw16t.asm,v 1.4 2007-06-16 09:21:55 sezero Exp $
 ; x86 assembly-language horizontal 8-bpp span-drawing code, with 16-pixel
 ; subdivision and translucency handling.
+;
+; this file uses NASM syntax.
+; $Id: d_draw16t.asm,v 1.5 2008-03-13 22:02:32 sezero Exp $
 ;
 
 %idefine offset
@@ -1478,4 +1480,3 @@ LPatchLoop:
  pop ebx
  ret
 
- END

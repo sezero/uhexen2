@@ -1,7 +1,9 @@
 ;
 ; snd_mixa.asm
-; $Id: snd_mixa.asm,v 1.2 2007-06-16 09:21:51 sezero Exp $
 ; x86 assembly-language sound code
+;
+; this file uses NASM syntax.
+; $Id: snd_mixa.asm,v 1.3 2008-03-13 22:02:30 sezero Exp $
 ;
 
 %idefine offset
@@ -335,4 +337,3 @@ LClampDone2:
  pop esi
  ret
 
- END

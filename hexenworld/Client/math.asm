@@ -1,7 +1,9 @@
 ;
 ; math.asm
-; $Id: math.asm,v 1.4 2007-06-16 09:21:56 sezero Exp $
 ; x86 assembly-language math routines.
+;
+; this file uses NASM syntax.
+; $Id: math.asm,v 1.5 2008-03-13 22:02:32 sezero Exp $
 ;
 
 %idefine offset
@@ -276,4 +278,3 @@ LSetSides:
 Lerror:
  call BOPS_Error			; call near BOPS_Error
 
- END

@@ -1,7 +1,9 @@
 ;
 ; worlda.asm
-; $Id: worlda.asm,v 1.2 2007-06-16 09:21:51 sezero Exp $
 ; x86 assembly-language server testing stuff
+;
+; this file uses NASM syntax.
+; $Id: worlda.asm,v 1.3 2008-03-13 22:02:30 sezero Exp $
 ;
 
 %idefine offset
@@ -76,4 +78,3 @@ Lhquickout:
  pop edi
  ret
 
- END

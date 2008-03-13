@@ -1,7 +1,9 @@
 ;
 ; d_polysa.asm
-; $Id: d_polysa.asm,v 1.4 2007-06-16 09:21:55 sezero Exp $
 ; x86 assembly-language polygon model drawing code
+;
+; this file uses NASM syntax.
+; $Id: d_polysa.asm,v 1.5 2008-03-13 22:02:32 sezero Exp $
 ;
 
 %idefine offset
@@ -1137,4 +1139,3 @@ LNextTri:
  add esp,offset (((1024+1 + 1 + ((32 - 1) / 32)) + 1) * 32)
  ret
 
- END

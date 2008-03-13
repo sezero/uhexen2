@@ -1,7 +1,9 @@
 ;
 ; d_varsa.asm
-; $Id: d_varsa.asm,v 1.2 2007-06-16 09:21:56 sezero Exp $
 ; rasterization driver global variables
+;
+; this file uses NASM syntax.
+; $Id: d_varsa.asm,v 1.3 2008-03-13 22:02:32 sezero Exp $
 ;
 
 %idefine offset
@@ -415,4 +417,3 @@ spr8T2entryvec_table dd 0, Spr8Entry2_8T2, Spr8Entry3_8T2, Spr8Entry4_8T2
  dd Spr8Entry5_8T2, Spr8Entry6_8T2, Spr8Entry7_8T2, Spr8Entry8_8T2
 
 
- END

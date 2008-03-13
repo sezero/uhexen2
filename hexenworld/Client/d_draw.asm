@@ -1,7 +1,9 @@
 ;
 ; d_draw.asm
-; $Id: d_draw.asm,v 1.2 2007-06-16 09:21:55 sezero Exp $
 ; x86 assembly-language horizontal 8-bpp span-drawing code.
+;
+; this file uses NASM syntax.
+; $Id: d_draw.asm,v 1.3 2008-03-13 22:02:32 sezero Exp $
 ;
 
 %idefine offset
@@ -1086,8 +1088,3 @@ LFDone2:
  pop ebp
  ret
 
-
-
-
-
- END

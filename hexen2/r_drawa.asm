@@ -1,7 +1,9 @@
 ;
 ; r_drawa.asm
-; $Id: r_drawa.asm,v 1.4 2007-06-16 09:21:51 sezero Exp $
 ; x86 assembly-language edge clipping and emission code
+;
+; this file uses NASM syntax.
+; $Id: r_drawa.asm,v 1.5 2008-03-13 22:02:30 sezero Exp $
 ;
 
 %idefine offset
@@ -675,4 +677,3 @@ LClampP2:
 LClampP3:
  ret
 
- END

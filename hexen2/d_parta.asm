@@ -1,7 +1,9 @@
 ;
 ; d_parta.asm
-; $Id: d_parta.asm,v 1.2 2007-06-16 09:21:51 sezero Exp $
 ; x86 assembly-language 8-bpp particle-drawing code.
+;
+; this file uses NASM syntax.
+; $Id: d_parta.asm,v 1.3 2008-03-13 22:02:30 sezero Exp $
 ;
 
 %idefine offset
@@ -896,4 +898,3 @@ LPop1AndDone:
  fstp st0
  jmp LDone
 
- END

@@ -1,7 +1,9 @@
 ;
 ; r_varsa.asm
-; $Id: r_varsa.asm,v 1.2 2007-06-16 09:21:51 sezero Exp $
 ; global refresh variables
+;
+; this file uses NASM syntax.
+; $Id: r_varsa.asm,v 1.3 2008-03-13 22:02:30 sezero Exp $
 ;
 
 %idefine offset
@@ -260,4 +262,3 @@ FloatMinus2ToThe31nd dd 0cf000000h
  global r_bmodelactive
 r_bmodelactive dd 0
 
- END

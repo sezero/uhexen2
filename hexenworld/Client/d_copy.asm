@@ -1,7 +1,9 @@
 ;
 ; d_copy.asm
-; $Id: d_copy.asm,v 1.1 2007-10-22 11:05:27 sezero Exp $
 ; x86 assembly-language screen copying code.
+;
+; this file uses NASM syntax.
+; $Id: d_copy.asm,v 1.2 2008-03-13 22:02:32 sezero Exp $
 ;
 
 %idefine offset
