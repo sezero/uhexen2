@@ -4,23 +4,17 @@
 ; with translucency handling, #2.
 ;
 ; this file uses NASM syntax.
-; $Id: d_spr8t2.asm,v 1.3 2008-03-13 22:02:30 sezero Exp $
+; $Id: d_spr8t2.asm,v 1.4 2008-03-14 20:30:26 sezero Exp $
 ;
 
 %idefine offset
+
+; externs from C code
  extern d_zistepu
  extern d_pzbuffer
  extern d_zistepv
  extern d_zrowbytes
  extern d_ziorigin
- extern r_turb_s
- extern r_turb_t
- extern r_turb_pdest
- extern r_turb_spancount
- extern r_turb_turb
- extern r_turb_pbase
- extern r_turb_sstep
- extern r_turb_tstep
  extern r_bmodelactive
  extern d_sdivzstepu
  extern d_tdivzstepu
@@ -35,179 +29,24 @@
  extern cacheblock
  extern d_viewbuffer
  extern cachewidth
- extern d_pzbuffer
- extern d_zrowbytes
- extern d_zwidth
  extern d_scantable
- extern r_lightptr
- extern r_numvblocks
- extern prowdestbase
- extern pbasesource
- extern r_lightwidth
- extern lightright
- extern lightrightstep
- extern lightdeltastep
- extern lightdelta
- extern lightright
- extern lightdelta
- extern sourcetstep
- extern surfrowbytes
- extern lightrightstep
- extern lightdeltastep
- extern r_sourcemax
- extern r_stepback
- extern colormap
- extern blocksize
- extern sourcesstep
- extern lightleft
- extern blockdivshift
- extern blockdivmask
- extern lightleftstep
- extern r_origin
- extern r_ppn
- extern r_pup
- extern r_pright
- extern ycenter
- extern xcenter
- extern d_vrectbottom_particle
- extern d_vrectright_particle
- extern d_vrecty
- extern d_vrectx
- extern d_pix_shift
- extern d_pix_min
- extern d_pix_max
- extern d_y_aspect_shift
- extern screenwidth
- extern r_leftclipped
- extern r_leftenter
- extern r_rightclipped
- extern r_rightenter
- extern modelorg
- extern xscale
- extern r_refdef
- extern yscale
- extern r_leftexit
- extern r_rightexit
- extern r_lastvertvalid
- extern cacheoffset
- extern newedges
- extern removeedges
- extern r_pedge
- extern r_framecount
- extern r_u1
- extern r_emitted
- extern edge_p
- extern surface_p
- extern surfaces
- extern r_lzi1
- extern r_v1
- extern r_ceilv1
- extern r_nearzi
- extern r_nearzionly
- extern edge_aftertail
- extern edge_tail
- extern current_iv
- extern edge_head_u_shift20
- extern span_p
- extern edge_head
- extern fv
- extern edge_tail_u_shift20
- extern r_apverts
- extern r_anumverts
- extern aliastransform
- extern r_avertexnormals
- extern r_plightvec
- extern r_ambientlight
- extern r_shadelight
- extern aliasxcenter
- extern aliasycenter
- extern a_sstepxfrac
- extern r_affinetridesc
- extern acolormap
- extern d_pcolormap
- extern r_affinetridesc
- extern d_sfrac
- extern d_ptex
- extern d_pedgespanpackage
- extern d_tfrac
- extern d_light
- extern d_zi
- extern d_pdest
- extern d_pz
- extern d_aspancount
- extern erroradjustup
- extern errorterm
- extern d_xdenom
- extern r_p0
- extern r_p1
- extern r_p2
- extern a_tstepxfrac
- extern r_sstepx
- extern r_tstepx
- extern a_ststepxwhole
- extern zspantable
- extern skintable
- extern r_zistepx
- extern erroradjustdown
- extern d_countextrastep
- extern ubasestep
- extern a_ststepxwhole
- extern a_tstepxfrac
- extern r_lstepx
- extern a_spans
- extern erroradjustdown
- extern d_pdestextrastep
- extern d_pzextrastep
- extern d_sfracextrastep
- extern d_ptexextrastep
- extern d_countextrastep
- extern d_tfracextrastep
- extern d_lightextrastep
- extern d_ziextrastep
- extern d_pdestbasestep
- extern d_pzbasestep
- extern d_sfracbasestep
- extern d_ptexbasestep
- extern ubasestep
- extern d_tfracbasestep
- extern d_lightbasestep
- extern d_zibasestep
- extern zspantable
- extern r_lstepy
- extern r_sstepy
- extern r_tstepy
- extern r_zistepy
- extern D_PolysetSetEdgeTable
- extern D_RasterizeAliasPolySmooth
- extern float_point5
- extern Float2ToThe31nd
- extern izistep
- extern izi
- extern FloatMinus2ToThe31nd
- extern float_1
- extern float_particle_z_clip
- extern float_minus_1
- extern float_0
- extern fp_16
- extern fp_64k
+ extern mainTransTable
+
+; externs from ASM-only code
  extern fp_1m
  extern fp_1m_minus_1
  extern fp_8
- extern entryvec_table
- extern advancetable
+ extern fp_16
+ extern fp_64k
+ extern fp_64kx64k
+ extern izi
+ extern izistep
  extern sstep
  extern tstep
- extern pspantemp
- extern counttemp
- extern jumptemp
+ extern advancetable
+ extern spr8T2entryvec_table
  extern reciprocal_table
- extern DP_Count
- extern DP_u
- extern DP_v
- extern DP_32768
- extern DP_Color
- extern DP_Pix
- extern DP_EntryTable
+ extern reciprocal_table_16
  extern pbase
  extern s
  extern t
@@ -222,25 +61,11 @@
  extern zi8stepu
  extern sdivz8stepu
  extern tdivz8stepu
- extern reciprocal_table_16
- extern entryvec_table_16
- extern ceil_cw
- extern single_cw
- extern fp_64kx64k
  extern pz
- extern spr8T2entryvec_table
- extern snd_scaletable
- extern paintbuffer
- extern snd_linear_count
- extern snd_p
- extern snd_vol
- extern snd_out
- extern vright
- extern vup
- extern vpn
- extern BOPS_Error
- extern mainTransTable
+
+
 SEGMENT .text
+
 LClampHigh0:
  mov esi, dword [bbextents]
  jmp LClampReentry0
@@ -279,9 +104,20 @@ LClampLow5:
 LClampHigh5:
  mov ebx, dword [bbextentt]
  jmp LClampReentry5
+
+;;;;;;;;;;;;;;;;;;;;;;;;
+; D_SpriteSpansStartT2
+;;;;;;;;;;;;;;;;;;;;;;;;
+
  ALIGN 4
+
  global D_SpriteSpansStartT2
 D_SpriteSpansStartT2:
+
+;;;;;;;;;;;;;;;;;;;;;;;;
+; D_SpriteDrawSpansT2
+;;;;;;;;;;;;;;;;;;;;;;;;
+
  global D_SpriteDrawSpansT2
 D_SpriteDrawSpansT2:
  push ebp
@@ -403,7 +239,9 @@ LCleanup1:
  fistp  dword [s]
  fistp  dword [t]
  jmp LFDIVInFlight1
+
  ALIGN 4
+
 LSetupNotLast1:
  fxch st1
  fld st0
@@ -652,7 +490,9 @@ Lp5:
  faddp st4,st0
  fdiv st0,st1
  jmp LFDIVInFlight2
+
  ALIGN 4
+
 LSetupNotLast2:
  fadd  dword [zi8stepu]
  fxch st2
@@ -828,37 +668,48 @@ LOnlyOneStep:
  mov ebp,eax
  mov edx,ebx
  jmp LSetEntryvec
+
+;;;;;;;;;;;;;;;;;;;;;;;;
+; globals Spr8Entry?_8T2
+;;;;;;;;;;;;;;;;;;;;;;;;
+
  global Spr8Entry2_8T2
 Spr8Entry2_8T2:
  sub edi,6
  sub ecx,12
  mov al, byte [esi]
  jmp LLEntry2_8
+
  global Spr8Entry3_8T2
 Spr8Entry3_8T2:
  sub edi,5
  sub ecx,10
  jmp LLEntry3_8
+
  global Spr8Entry4_8T2
 Spr8Entry4_8T2:
  sub edi,4
  sub ecx,8
  jmp LLEntry4_8
+
  global Spr8Entry5_8T2
 Spr8Entry5_8T2:
  sub edi,3
  sub ecx,6
  jmp LLEntry5_8
+
  global Spr8Entry6_8T2
 Spr8Entry6_8T2:
  sub edi,2
  sub ecx,4
  jmp LLEntry6_8
+
  global Spr8Entry7_8T2
 Spr8Entry7_8T2:
  dec edi
  sub ecx,2
  jmp LLEntry7_8
+
  global Spr8Entry8_8T2
 Spr8Entry8_8T2:
  cmp bp, word [ecx]
@@ -1085,11 +936,18 @@ LNextSpan:
  pop edi
  pop ebp
  ret
+
+;;;;;;;;;;;;;;;;;;;;;;;;
+; D_SpriteSpansEndT2
+;;;;;;;;;;;;;;;;;;;;;;;;
+
  global D_SpriteSpansEndT2
 D_SpriteSpansEndT2:
 
 SEGMENT .data
+
  ALIGN 4
+
 LPatchTable:
  dd TranPatch1-4
  dd TranPatch2-4
@@ -1109,7 +967,13 @@ LPatchTable:
  dd TranPatch16-4
 
 SEGMENT .text
+
+;;;;;;;;;;;;;;;;;;;;;;;;
+; R_TranPatch5
+;;;;;;;;;;;;;;;;;;;;;;;;
+
  ALIGN 4
+
  global R_TranPatch5
 R_TranPatch5:
  push ebx
