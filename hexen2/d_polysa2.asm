@@ -4,128 +4,19 @@
 ; with translucency handling, #1.
 ;
 ; this file uses NASM syntax.
-; $Id: d_polysa2.asm,v 1.5 2008-03-13 22:02:30 sezero Exp $
+; $Id: d_polysa2.asm,v 1.6 2008-03-14 16:01:22 sezero Exp $
 ;
 
 %idefine offset
- extern d_zistepu
- extern d_pzbuffer
- extern d_zistepv
- extern d_zrowbytes
- extern d_ziorigin
- extern r_turb_s
- extern r_turb_t
- extern r_turb_pdest
- extern r_turb_spancount
- extern r_turb_turb
- extern r_turb_pbase
- extern r_turb_sstep
- extern r_turb_tstep
- extern r_bmodelactive
- extern d_sdivzstepu
- extern d_tdivzstepu
- extern d_sdivzstepv
- extern d_tdivzstepv
- extern d_sdivzorigin
- extern d_tdivzorigin
- extern sadjust
- extern tadjust
- extern bbextents
- extern bbextentt
- extern cacheblock
+
+; externs from C code
  extern d_viewbuffer
- extern cachewidth
- extern d_pzbuffer
- extern d_zrowbytes
- extern d_zwidth
  extern d_scantable
- extern r_lightptr
- extern r_numvblocks
- extern prowdestbase
- extern pbasesource
- extern r_lightwidth
- extern lightright
- extern lightrightstep
- extern lightdeltastep
- extern lightdelta
- extern lightright
- extern lightdelta
- extern sourcetstep
- extern surfrowbytes
- extern lightrightstep
- extern lightdeltastep
- extern r_sourcemax
- extern r_stepback
- extern colormap
- extern blocksize
- extern sourcesstep
- extern lightleft
- extern blockdivshift
- extern blockdivmask
- extern lightleftstep
- extern r_origin
- extern r_ppn
- extern r_pup
- extern r_pright
- extern ycenter
- extern xcenter
- extern d_vrectbottom_particle
- extern d_vrectright_particle
- extern d_vrecty
- extern d_vrectx
- extern d_pix_shift
- extern d_pix_min
- extern d_pix_max
- extern d_y_aspect_shift
- extern screenwidth
- extern r_leftclipped
- extern r_leftenter
- extern r_rightclipped
- extern r_rightenter
- extern modelorg
- extern xscale
  extern r_refdef
- extern yscale
- extern r_leftexit
- extern r_rightexit
- extern r_lastvertvalid
- extern cacheoffset
- extern newedges
- extern removeedges
- extern r_pedge
- extern r_framecount
- extern r_u1
- extern r_emitted
- extern edge_p
- extern surface_p
- extern surfaces
- extern r_lzi1
- extern r_v1
- extern r_ceilv1
- extern r_nearzi
- extern r_nearzionly
- extern edge_aftertail
- extern edge_tail
- extern current_iv
- extern edge_head_u_shift20
- extern span_p
- extern edge_head
- extern fv
- extern edge_tail_u_shift20
- extern r_apverts
- extern r_anumverts
- extern aliastransform
- extern r_avertexnormals
- extern r_plightvec
- extern r_ambientlight
- extern r_shadelight
- extern aliasxcenter
- extern aliasycenter
  extern a_sstepxfrac
  extern r_affinetridesc
  extern acolormap
  extern d_pcolormap
- extern r_affinetridesc
  extern d_sfrac
  extern d_ptex
  extern d_pedgespanpackage
@@ -136,31 +27,23 @@
  extern d_pz
  extern d_aspancount
  extern erroradjustup
+ extern erroradjustdown
  extern errorterm
  extern d_xdenom
  extern r_p0
  extern r_p1
  extern r_p2
  extern a_tstepxfrac
- extern r_sstepx
- extern r_tstepx
  extern a_ststepxwhole
  extern zspantable
  extern skintable
- extern r_zistepx
- extern erroradjustdown
  extern d_countextrastep
  extern ubasestep
- extern a_ststepxwhole
- extern a_tstepxfrac
- extern r_lstepx
  extern a_spans
- extern erroradjustdown
  extern d_pdestextrastep
  extern d_pzextrastep
  extern d_sfracextrastep
  extern d_ptexextrastep
- extern d_countextrastep
  extern d_tfracextrastep
  extern d_lightextrastep
  extern d_ziextrastep
@@ -168,80 +51,37 @@
  extern d_pzbasestep
  extern d_sfracbasestep
  extern d_ptexbasestep
- extern ubasestep
  extern d_tfracbasestep
  extern d_lightbasestep
  extern d_zibasestep
- extern zspantable
+ extern r_lstepx
  extern r_lstepy
+ extern r_sstepx
  extern r_sstepy
+ extern r_tstepx
  extern r_tstepy
+ extern r_zistepx
  extern r_zistepy
+ extern mainTransTable
  extern D_PolysetSetEdgeTable
  extern D_RasterizeAliasPolySmooth
+
+; externs from ASM-only code
  extern float_point5
- extern Float2ToThe31nd
- extern izistep
- extern izi
- extern FloatMinus2ToThe31nd
  extern float_1
- extern float_particle_z_clip
  extern float_minus_1
  extern float_0
- extern fp_16
- extern fp_64k
- extern fp_1m
- extern fp_1m_minus_1
- extern fp_8
- extern entryvec_table
  extern advancetable
  extern sstep
  extern tstep
- extern pspantemp
- extern counttemp
- extern jumptemp
- extern reciprocal_table
- extern DP_Count
- extern DP_u
- extern DP_v
- extern DP_32768
- extern DP_Color
- extern DP_Pix
- extern DP_EntryTable
- extern pbase
- extern s
- extern t
- extern sfracf
- extern tfracf
- extern snext
- extern tnext
- extern spancountminus1
- extern zi16stepu
- extern sdivz16stepu
- extern tdivz16stepu
- extern zi8stepu
- extern sdivz8stepu
- extern tdivz8stepu
- extern reciprocal_table_16
- extern entryvec_table_16
  extern ceil_cw
  extern single_cw
- extern fp_64kx64k
- extern pz
- extern spr8entryvec_table
- extern snd_scaletable
- extern paintbuffer
- extern snd_linear_count
- extern snd_p
- extern snd_vol
- extern snd_out
- extern vright
- extern vup
- extern vpn
- extern BOPS_Error
- extern mainTransTable
+
+
 SEGMENT .data
+
  ALIGN 4
+
 p10_minus_p20 dd 0
 p01_minus_p21 dd 0
 temp0 dd 0
@@ -252,18 +92,25 @@ aff8entryvec_table dd LDraw8, LDraw7, LDraw6, LDraw5
 lzistepx dd 0
 
 SEGMENT .text
- extern D_PolysetSetEdgeTable
- extern D_RasterizeAliasPolySmooth
+
+;;;;;;;;;;;;;;;;;;;;;;;;
+; D_PolysetAff8StartT
+;;;;;;;;;;;;;;;;;;;;;;;;
  global D_PolysetAff8StartT
 D_PolysetAff8StartT:
+
+;;;;;;;;;;;;;;;;;;;;;;;;
+; D_PolysetCalcGradientsT
+;;;;;;;;;;;;;;;;;;;;;;;;
+
  global D_PolysetCalcGradientsT
 D_PolysetCalcGradientsT:
- fild  dword [r_p0+0]
- fild  dword [r_p2+0]
- fild  dword [r_p0+4]
- fild  dword [r_p2+4]
- fild  dword [r_p1+0]
- fild  dword [r_p1+4]
+ fild dword [r_p0+0]
+ fild dword [r_p2+0]
+ fild dword [r_p0+4]
+ fild dword [r_p2+4]
+ fild dword [r_p1+0]
+ fild dword [r_p1+4]
  fxch st3
  fsub st0,st2
  fxch st1
@@ -273,14 +120,14 @@ D_PolysetCalcGradientsT:
  fxch st2
  fsubrp st1,st0
  fxch st1
- fld  dword [d_xdenom]
+ fld dword [d_xdenom]
  fxch st4
- fstp  dword [p10_minus_p20]
- fstp  dword [p01_minus_p21]
+ fstp dword [p10_minus_p20]
+ fstp dword [p01_minus_p21]
  fxch st2
- fild  dword [r_p2+16]
- fild  dword [r_p0+16]
- fild  dword [r_p1+16]
+ fild dword [r_p2+16]
+ fild dword [r_p0+16]
+ fild dword [r_p1+16]
  fxch st2
  fld st0
  fsubp st2,st0
@@ -289,27 +136,27 @@ D_PolysetCalcGradientsT:
  fmul st0,st5
  fxch st2
  fld st0
- fmul  dword [p01_minus_p21]
+ fmul dword [p01_minus_p21]
  fxch st2
- fmul  dword [p10_minus_p20]
+ fmul dword [p10_minus_p20]
  fxch st1
  fmul st0,st5
  fxch st2
  fsubrp st3,st0
  fsubp st1,st0
  fld st2
- fmul  dword [float_minus_1]
+ fmul dword [float_minus_1]
  fxch st2
  fmul st0,st3
  fxch st1
  fmul st0,st2
- fldcw  word [ceil_cw]
- fistp  dword [r_lstepy]
- fistp  dword [r_lstepx]
- fldcw  word [single_cw]
- fild  dword [r_p2+8]
- fild  dword [r_p0+8]
- fild  dword [r_p1+8]
+ fldcw word [ceil_cw]
+ fistp dword [r_lstepy]
+ fistp dword [r_lstepx]
+ fldcw word [single_cw]
+ fild dword [r_p2+8]
+ fild dword [r_p0+8]
+ fild dword [r_p1+8]
  fxch st2
  fld st0
  fsubp st2,st0
@@ -318,9 +165,9 @@ D_PolysetCalcGradientsT:
  fmul st0,st6
  fxch st2
  fld st0
- fmul  dword [p01_minus_p21]
+ fmul dword [p01_minus_p21]
  fxch st2
- fmul  dword [p10_minus_p20]
+ fmul dword [p10_minus_p20]
  fxch st1
  fmul st0,st6
  fxch st2
@@ -330,11 +177,11 @@ D_PolysetCalcGradientsT:
  fxch st1
  fmul st0,st3
  fxch st1
- fistp  dword [r_sstepy]
- fistp  dword [r_sstepx]
- fild  dword [r_p2+12]
- fild  dword [r_p0+12]
- fild  dword [r_p1+12]
+ fistp dword [r_sstepy]
+ fistp dword [r_sstepx]
+ fild dword [r_p2+12]
+ fild dword [r_p0+12]
+ fild dword [r_p1+12]
  fxch st2
  fld st0
  fsubp st2,st0
@@ -343,9 +190,9 @@ D_PolysetCalcGradientsT:
  fmul st0,st6
  fxch st2
  fld st0
- fmul  dword [p01_minus_p21]
+ fmul dword [p01_minus_p21]
  fxch st2
- fmul  dword [p10_minus_p20]
+ fmul dword [p10_minus_p20]
  fxch st1
  fmul st0,st6
  fxch st2
@@ -355,11 +202,11 @@ D_PolysetCalcGradientsT:
  fxch st1
  fmul st0,st3
  fxch st1
- fistp  dword [r_tstepy]
- fistp  dword [r_tstepx]
- fild  dword [r_p2+20]
- fild  dword [r_p0+20]
- fild  dword [r_p1+20]
+ fistp dword [r_tstepy]
+ fistp dword [r_tstepx]
+ fild dword [r_p2+20]
+ fild dword [r_p0+20]
+ fild dword [r_p1+20]
  fxch st2
  fld st0
  fsubp st2,st0
@@ -368,9 +215,9 @@ D_PolysetCalcGradientsT:
  fmulp st6,st0
  fxch st1
  fld st0
- fmul  dword [p01_minus_p21]
+ fmul dword [p01_minus_p21]
  fxch st2
- fmul  dword [p10_minus_p20]
+ fmul dword [p10_minus_p20]
  fxch st1
  fmulp st5,st0
  fxch st5
@@ -380,22 +227,28 @@ D_PolysetCalcGradientsT:
  fxch st1
  fmulp st2,st0
  fmulp st2,st0
- fistp  dword [r_zistepx]
- fistp  dword [r_zistepy]
+ fistp dword [r_zistepx]
+ fistp dword [r_zistepy]
  mov eax, dword [r_sstepx]
  mov edx, dword [r_tstepx]
  shl eax,16
  shl edx,16
- mov  dword [a_sstepxfrac],eax
- mov  dword [a_tstepxfrac],edx
+ mov dword [a_sstepxfrac],eax
+ mov dword [a_tstepxfrac],edx
  mov ecx, dword [r_sstepx]
  mov eax, dword [r_tstepx]
  sar ecx,16
  sar eax,16
- imul  dword [4+0+esp]
+ imul dword [4+0+esp]
  add eax,ecx
- mov  dword [a_ststepxwhole],eax
+ mov dword [a_ststepxwhole],eax
  ret
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;
+; D_PolysetRecursiveTriangleT
+;;;;;;;;;;;;;;;;;;;;;;;;
+
  global D_PolysetRecursiveTriangleT
 D_PolysetRecursiveTriangleT:
  push ebp
@@ -461,25 +314,25 @@ LSplit:
  mov edx, dword [12+esi]
  sar eax,1
  add ecx,edx
- mov  dword [8+esp],eax
+ mov dword [8+esp],eax
  mov eax, dword [20+ebx]
  sar ecx,1
  mov edx, dword [20+esi]
- mov  dword [12+esp],ecx
+ mov dword [12+esp],ecx
  add eax,edx
  mov ecx, dword [0+ebx]
  mov edx, dword [0+esi]
  sar eax,1
  add edx,ecx
- mov  dword [20+esp],eax
+ mov dword [20+esp],eax
  mov eax, dword [4+ebx]
  sar edx,1
  mov ebp, dword [4+esi]
- mov  dword [0+esp],edx
+ mov dword [0+esp],edx
  add ebp,eax
  sar ebp,1
- mov  dword [4+esp],ebp
- cmp  dword [4+esi],eax
+ mov dword [4+esp],ebp
+ cmp dword [4+esi],eax
  jg LNoDraw
  mov edx, dword [0+esi]
  jnz LDraw
@@ -493,7 +346,7 @@ LDraw:
  mov eax, dword [zspantable+ecx*4]
  cmp dx, word [eax+ebp*2]
  jnge LNoDraw
-;rj2 mov  word [eax+ebp*2],dx
+;rj2 mov word [eax+ebp*2],dx
  mov eax, dword [12+esp]
  sar eax,16
  mov edx, dword [8+esp]
@@ -511,17 +364,14 @@ LDraw:
  add ecx,eax
  mov eax, dword [d_viewbuffer]
 
-
 ; trans stuff 
  mov dl, byte [eax+ecx]
  and edx, 0ffffh
- mov dh, byte [12345678h + edx]
+ mov dh, byte [12345678h+edx]
 TranPatch1:
-
- mov  byte [eax+ecx],dh
-; rjr   distance
-;  mov  byte [eax+ecx],0
-
+ mov byte [eax+ecx],dh
+;rjr distance
+;mov byte [eax+ecx],0
 
 Skip1B:
 LNoDraw:
@@ -541,6 +391,12 @@ LDone:
  pop esi
  pop ebp
  ret 12
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;
+; D_PolysetDrawSpans8T
+;;;;;;;;;;;;;;;;;;;;;;;;
+
  global D_PolysetDrawSpans8T
 D_PolysetDrawSpans8T:
  push esi
@@ -551,7 +407,7 @@ D_PolysetDrawSpans8T:
  push edi
  ror ecx,16
  mov edx, dword [8+esi]
- mov  dword [lzistepx],ecx
+ mov dword [lzistepx],ecx
 LSpanLoop:
  mov eax, dword [d_aspancount]
  sub eax,edx
@@ -563,29 +419,29 @@ LSpanLoop:
  mov edi, dword [d_countextrastep]
  sub ebx,edx
  mov ebp, dword [d_aspancount]
- mov  dword [errorterm],ebx
+ mov dword [errorterm],ebx
  add ebp,edi
- mov  dword [d_aspancount],ebp
+ mov dword [d_aspancount],ebp
  jmp LRightEdgeStepped
 LNoTurnover:
  mov edi, dword [d_aspancount]
  mov edx, dword [ubasestep]
- mov  dword [errorterm],ebx
+ mov dword [errorterm],ebx
  add edi,edx
- mov  dword [d_aspancount],edi
+ mov dword [d_aspancount],edi
 LRightEdgeStepped:
  cmp eax,1
  jl near LNextSpan
  jz near LExactlyOneLong
  mov ecx, dword [a_ststepxwhole]
  mov edx, dword [r_affinetridesc+8]
- mov  dword [advancetable+4],ecx
+ mov dword [advancetable+4],ecx
  add ecx,edx
- mov  dword [advancetable],ecx
+ mov dword [advancetable],ecx
  mov ecx, dword [a_tstepxfrac]
  mov cx, word [r_lstepx]
  mov edx,eax
- mov  dword [tstep],ecx
+ mov dword [tstep],ecx
  add edx,7
  shr edx,3
  mov ebx, dword [16+esi]
@@ -613,19 +469,17 @@ LDraw8:
  mov al, byte [esi]   ; texture pixel
  or al,al
  jz SkipA2  ; color 0 = no draw
-;rj2 mov  word [ecx],bp
+;rj2 mov word [ecx],bp
  mov ah, byte [12345678h+eax]
 LPatch8:
 
 ; trans stuff 
  mov al, byte [edi]
- mov ah, byte [12345678h + eax]
+ mov ah, byte [12345678h+eax]
 TranPatch2:
-
- mov  byte [edi],ah
- ; rj   
- ;mov  byte [edi],0
-
+ mov byte [edi],ah
+;rj
+;mov byte [edi],0
 
 SkipA2:
 Lp1:
@@ -643,19 +497,17 @@ LDraw7:
  mov al, byte [esi] ; texture pixel
  or al,al
  jz SkipB2  ; color 0 = no draw
-;rj2 mov  word [2+ecx],bp
+;rj2 mov word [2+ecx],bp
  mov ah, byte [12345678h+eax]
 LPatch7:
 
 ; trans stuff 
  mov al, byte [edi+1]
- mov ah, byte [12345678h + eax]
+ mov ah, byte [12345678h+eax]
 TranPatch3:
-
- mov  byte [1+edi],ah
- ; rj
- ;mov  byte [1+edi],0
-
+ mov byte [1+edi],ah
+;rj
+;mov byte [1+edi],0
 
 SkipB2:
 Lp2:
@@ -673,18 +525,17 @@ LDraw6:
  mov al, byte [esi] ; texture pixel
  or al,al
  jz SkipC2  ; color 0 = no draw
-;rj2 mov  word [4+ecx],bp
+;rj2 mov word [4+ecx],bp
  mov ah, byte [12345678h+eax]
 LPatch6:
 
 ; trans stuff 
  mov al, byte [edi+2]
- mov ah, byte [12345678h + eax]
+ mov ah, byte [12345678h+eax]
 TranPatch4:
-
- mov  byte [2+edi],ah
- ; rj
- ;mov  byte [2+edi],0
+ mov byte [2+edi],ah
+;rj
+;mov byte [2+edi],0
 
 SkipC2:
 Lp3:
@@ -702,18 +553,17 @@ LDraw5:
  mov al, byte [esi] ; texture pixel
  or al,al
  jz SkipD2  ; color 0 = no draw
-;rj2 mov  word [6+ecx],bp
+;rj2 mov word [6+ecx],bp
  mov ah, byte [12345678h+eax]
 LPatch5:
 
 ; trans stuff 
  mov al, byte [edi+3]
- mov ah, byte [12345678h + eax]
+ mov ah, byte [12345678h+eax]
 TranPatch5:
-
- mov  byte [3+edi],ah
- ; rj
- ;mov  byte [3+edi],0
+ mov byte [3+edi],ah
+;rj
+;mov byte [3+edi],0
 
 SkipD2:
 Lp4:
@@ -731,18 +581,17 @@ LDraw4:
  mov al, byte [esi] ; texture pixel
  or al,al
  jz SkipE2  ; color 0 = no draw
-;rj2 mov  word [8+ecx],bp
+;rj2 mov word [8+ecx],bp
  mov ah, byte [12345678h+eax]
 LPatch4:
 
 ; trans stuff 
  mov al, byte [edi+4]
- mov ah, byte [12345678h + eax]
+ mov ah, byte [12345678h+eax]
 TranPatch6:
-
- mov  byte [4+edi],ah
- ; rj
- ;mov  byte [4+edi],0
+ mov byte [4+edi],ah
+;rj
+;mov byte [4+edi],0
 
 SkipE2:
 Lp5:
@@ -760,18 +609,17 @@ LDraw3:
  mov al, byte [esi] ; texture pixel
  or al,al
  jz SkipF2  ; color 0 = no draw
-;rj2 mov  word [10+ecx],bp
+;rj2 mov word [10+ecx],bp
  mov ah, byte [12345678h+eax]
 LPatch3:
 
 ; trans stuff 
  mov al, byte [edi+5]
- mov ah, byte [12345678h + eax]
+ mov ah, byte [12345678h+eax]
 TranPatch7:
-
- mov  byte [5+edi],ah
- ; rj
- ;mov  byte [5+edi],0
+ mov byte [5+edi],ah
+;rj
+;mov byte [5+edi],0
 
 SkipF2:
 Lp6:
@@ -789,18 +637,17 @@ LDraw2:
  mov al, byte [esi] ; texture pixel
  or al,al
  jz SkipG2  ; color 0 = no draw
-;rj2 mov  word [12+ecx],bp
+;rj2 mov word [12+ecx],bp
  mov ah, byte [12345678h+eax]
 LPatch2:
 
 ; trans stuff 
  mov al, byte [edi+6]
- mov ah, byte [12345678h + eax]
+ mov ah, byte [12345678h+eax]
 TranPatch8:
-
- mov  byte [6+edi],ah
- ; rj
- ;mov  byte [6+edi],0
+ mov byte [6+edi],ah
+;rj
+;mov byte [6+edi],0
 
 SkipG2:
 Lp7:
@@ -818,18 +665,17 @@ LDraw1:
  mov al, byte [esi] ; texture pixel
  or al,al
  jz SkipH2  ; color 0 = no draw
-;rj2 mov  word [14+ecx],bp
+;rj2 mov word [14+ecx],bp
  mov ah, byte [12345678h+eax]
 LPatch1:
 
 ; trans stuff 
  mov al, byte [edi+7]
- mov ah, byte [12345678h + eax]
+ mov ah, byte [12345678h+eax]
 TranPatch9:
-
- mov  byte [7+edi],ah
- ; rj
- ;mov  byte [7+edi],0
+ mov byte [7+edi],ah
+;rj
+;mov byte [7+edi],0
 
 SkipH2:
 Lp8:
@@ -869,48 +715,57 @@ LExactlyOneLong:
  mov al, byte [ebx] ; texture pixel
  or al,al
  jz SkipI2  ; color 0 = no draw
-;rj2 mov  word [ecx],bp
+;rj2 mov word [ecx],bp
  mov ah, byte [12345678h+eax]
 LPatch9:
 
 ; trans stuff 
  mov al, byte [edi]
- mov ah, byte [12345678h + eax]
+ mov ah, byte [12345678h+eax]
 TranPatch10:
-
- mov  byte [edi],ah
- ; rjr
-  ;mov  byte [edi],0
+ mov byte [edi],ah
+;rjr
+;mov byte [edi],0
 
 SkipI2:
  jmp LNextSpanESISet
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;
+; D_Aff8PatchT
+;;;;;;;;;;;;;;;;;;;;;;;;
  global D_Aff8PatchT
 D_Aff8PatchT:
  mov eax, dword [4+esp]
- mov  dword [LPatch1-4],eax
- mov  dword [LPatch2-4],eax
- mov  dword [LPatch3-4],eax
- mov  dword [LPatch4-4],eax
- mov  dword [LPatch5-4],eax
- mov  dword [LPatch6-4],eax
- mov  dword [LPatch7-4],eax
- mov  dword [LPatch8-4],eax
- mov  dword [LPatch9-4],eax
+ mov dword [LPatch1-4],eax
+ mov dword [LPatch2-4],eax
+ mov dword [LPatch3-4],eax
+ mov dword [LPatch4-4],eax
+ mov dword [LPatch5-4],eax
+ mov dword [LPatch6-4],eax
+ mov dword [LPatch7-4],eax
+ mov dword [LPatch8-4],eax
+ mov dword [LPatch9-4],eax
  ret
+
+;;;;;;;;;;;;;;;;;;;;;;;;
+; D_PolysetDrawT
+;;;;;;;;;;;;;;;;;;;;;;;;
+
  global D_PolysetDrawT
 D_PolysetDrawT:
  sub esp,offset (((1024+1 + 1 + ((32 - 1) / 32)) + 1) * 32)
  mov eax,esp
  add eax,32 - 1
  and eax,offset ~(32 - 1)
- mov  dword [a_spans],eax
+ mov dword [a_spans],eax
  mov eax, dword [r_affinetridesc+28]
  test eax,eax
  jz near D_DrawNonSubdivT
- ;push ebp
- ;mov ebp, dword [r_affinetridesc+24]
+;push ebp
+;mov ebp, dword [r_affinetridesc+24]
  push esi
- ;shl ebp,4
+;shl ebp,4
  push ebx
  mov ebx, dword [r_affinetridesc+16]
  push edi
@@ -928,16 +783,16 @@ Llooptop:
  shl edx,5
  add esi,edi
  add edx,edi
- fild  dword [0+4+ecx]
- fild  dword [0+4+esi]
- fild  dword [0+0+ecx]
- fild  dword [0+0+edx]
+ fild dword [0+4+ecx]
+ fild dword [0+4+esi]
+ fild dword [0+0+ecx]
+ fild dword [0+0+edx]
  fxch st2
  fsubr st0,st3
- fild  dword [0+0+esi]
+ fild dword [0+0+esi]
  fxch st2
  fsubr st3,st0
- fild  dword [0+4+edx]
+ fild dword [0+4+edx]
  fxch st1
  fsubrp st3,st0
  fxch st1
@@ -948,8 +803,8 @@ Llooptop:
  fmulp st2,st0
  add eax, dword [acolormap]
  fsubrp st1,st0
- mov  dword [d_pcolormap],eax
- fstp  dword [Ltemp]
+ mov dword [d_pcolormap],eax
+ fstp dword [Ltemp]
  mov eax, dword [Ltemp]
  sub eax,080000001h
  jc Lskip
@@ -960,8 +815,8 @@ Llooptop:
  push esi
  push ecx
  call D_PolysetRecursiveTriangleT	; call near D_PolysetRecursiveTriangleT
-; sub ebp,16
-; jnz Llooptop
+;sub ebp,16
+;jnz Llooptop
  jmp Ldone2
 Lfacesback:
  mov eax, dword [0+8+ecx]
@@ -973,17 +828,17 @@ Lfacesback:
  push ecx
  push edx
  mov eax, dword [r_affinetridesc+32]
- test  dword [24+ecx],00020h
+ test dword [24+ecx],00020h
  jz Lp11
- add  dword [0+8+ecx],eax
+ add dword [0+8+ecx],eax
 Lp11:
- test  dword [24+esi],00020h
+ test dword [24+esi],00020h
  jz Lp12
- add  dword [0+8+esi],eax
+ add dword [0+8+esi],eax
 Lp12:
- test  dword [24+edx],00020h
+ test dword [24+edx],00020h
  jz Lp13
- add  dword [0+8+edx],eax
+ add dword [0+8+edx],eax
 Lp13:
  push edx
  push esi
@@ -992,21 +847,26 @@ Lp13:
  pop edx
  pop ecx
  pop eax
- mov  dword [0+8+edx],eax
+ mov dword [0+8+edx],eax
  pop eax
- mov  dword [0+8+esi],eax
+ mov dword [0+8+esi],eax
  pop eax
- mov  dword [0+8+ecx],eax
+ mov dword [0+8+ecx],eax
 Lskip:
-; sub ebp,16
-; jnz Llooptop
+;sub ebp,16
+;jnz Llooptop
 Ldone2:
  pop edi
  pop ebx
  pop esi
-; pop ebp
+;pop ebp
  add esp,offset (((1024+1 + 1 + ((32 - 1) / 32)) + 1) * 32)
  ret
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;
+; D_PolysetScanLeftEdgeT
+;;;;;;;;;;;;;;;;;;;;;;;;
 
  global D_PolysetScanLeftEdgeT
 D_PolysetScanLeftEdgeT:
@@ -1024,38 +884,38 @@ D_PolysetScanLeftEdgeT:
  mov edi, dword [d_light]
  mov ebp, dword [d_zi]
 LScanLoop:
- mov  dword [12+esi],ebx
+ mov dword [12+esi],ebx
  mov eax, dword [d_pdest]
- mov  dword [0+esi],eax
+ mov dword [0+esi],eax
  mov eax, dword [d_pz]
- mov  dword [4+esi],eax
+ mov dword [4+esi],eax
  mov eax, dword [d_aspancount]
- mov  dword [8+esi],eax
- mov  dword [24+esi],edi
- mov  dword [28+esi],ebp
- mov  dword [16+esi],ecx
- mov  dword [20+esi],edx
+ mov dword [8+esi],eax
+ mov dword [24+esi],edi
+ mov dword [28+esi],ebp
+ mov dword [16+esi],ecx
+ mov dword [20+esi],edx
  mov al, byte [32+esi]
  add esi,32
  mov eax, dword [erroradjustup]
- mov  dword [d_pedgespanpackage],esi
+ mov dword [d_pedgespanpackage],esi
  mov esi, dword [errorterm]
  add esi,eax
  mov eax, dword [d_pdest]
  js near LNoLeftEdgeTurnover
  sub esi, dword [erroradjustdown]
  add eax, dword [d_pdestextrastep]
- mov  dword [errorterm],esi
- mov  dword [d_pdest],eax
+ mov dword [errorterm],esi
+ mov dword [d_pdest],eax
  mov eax, dword [d_pz]
  mov esi, dword [d_aspancount]
  add eax, dword [d_pzextrastep]
  add ecx, dword [d_sfracextrastep]
  adc ebx, dword [d_ptexextrastep]
  add esi, dword [d_countextrastep]
- mov  dword [d_pz],eax
+ mov dword [d_pz],eax
  mov eax, dword [d_tfracextrastep]
- mov  dword [d_aspancount],esi
+ mov dword [d_aspancount],esi
  add edx,eax
  jnc LSkip1
  add ebx, dword [r_affinetridesc+8]
@@ -1072,17 +932,17 @@ LSkip1:
  pop ebp
  ret
 LNoLeftEdgeTurnover:
- mov  dword [errorterm],esi
+ mov dword [errorterm],esi
  add eax, dword [d_pdestbasestep]
- mov  dword [d_pdest],eax
+ mov dword [d_pdest],eax
  mov eax, dword [d_pz]
  mov esi, dword [d_aspancount]
  add eax, dword [d_pzbasestep]
  add ecx, dword [d_sfracbasestep]
  adc ebx, dword [d_ptexbasestep]
  add esi, dword [ubasestep]
- mov  dword [d_pz],eax
- mov  dword [d_aspancount],esi
+ mov dword [d_pz],eax
+ mov dword [d_aspancount],esi
  mov esi, dword [d_tfracbasestep]
  add edx,esi
  jnc LSkip2
@@ -1116,7 +976,7 @@ L_PDFVertT:
  shr edx,16
  cmp dx, word [edi+eax*2]
  jl LNextVert
-;rj2 mov  word [edi+eax*2],dx
+;rj2 mov word [edi+eax*2],dx
  mov edi, dword [0+12+ebx]
  shr edi,16
  mov edi, dword [skintable+edi*4]
@@ -1139,17 +999,22 @@ L_PDFVertT:
 ; trans stuff 
  mov dl, byte [esi+edi]
  and edx, 0ffffh
- mov dh, byte [12345678h + edx]
+ mov dh, byte [12345678h+edx]
 TranPatch11:
+ mov byte [esi+edi],dh
+;rjr distance
+;mov byte [esi+edi],0
 
- mov  byte [esi+edi],dh
- ; rjr   distance
- ;mov  byte [esi+edi],0
 Skip2B:
 LNextVert:
  pop edi
  pop esi
-ret
+ ret
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;
+; D_PolysetDrawFinalVertsT
+;;;;;;;;;;;;;;;;;;;;;;;;
 
  global D_PolysetDrawFinalVertsT
 D_PolysetDrawFinalVertsT:
@@ -1165,12 +1030,17 @@ D_PolysetDrawFinalVertsT:
  pop ebp
  ret
 
+
+;;;;;;;;;;;;;;;;;;;;;;;;
+; D_DrawNonSubdivT
+;;;;;;;;;;;;;;;;;;;;;;;;
+
  global D_DrawNonSubdivT
 D_DrawNonSubdivT:
-; push ebp
-; mov ebp, dword [r_affinetridesc+24]
+;push ebp
+;mov ebp, dword [r_affinetridesc+24]
  push ebx
-; shl ebp,4
+;shl ebp,4
  push esi
  mov esi, dword [r_affinetridesc+16]
  push edi
@@ -1200,46 +1070,46 @@ LNDLoop:
  imul edi,esi
  sub eax,edi
  jns near LNextTri
- mov  dword [d_xdenom],eax
- fild  dword [d_xdenom]
+ mov dword [d_xdenom],eax
+ fild dword [d_xdenom]
  mov eax, dword [0+0+ecx]
  mov esi, dword [0+4+ecx]
- mov  dword [r_p0+0],eax
- mov  dword [r_p0+4],esi
+ mov dword [r_p0+0],eax
+ mov dword [r_p0+4],esi
  mov eax, dword [0+8+ecx]
  mov esi, dword [0+12+ecx]
- mov  dword [r_p0+8],eax
- mov  dword [r_p0+12],esi
+ mov dword [r_p0+8],eax
+ mov dword [r_p0+12],esi
  mov eax, dword [0+16+ecx]
  mov esi, dword [0+20+ecx]
- mov  dword [r_p0+16],eax
- mov  dword [r_p0+20],esi
- fdivr  dword [float_1]
+ mov dword [r_p0+16],eax
+ mov dword [r_p0+20],esi
+ fdivr dword [float_1]
  mov eax, dword [0+0+edx]
  mov esi, dword [0+4+edx]
- mov  dword [r_p1+0],eax
- mov  dword [r_p1+4],esi
+ mov dword [r_p1+0],eax
+ mov dword [r_p1+4],esi
  mov eax, dword [0+8+edx]
  mov esi, dword [0+12+edx]
- mov  dword [r_p1+8],eax
- mov  dword [r_p1+12],esi
+ mov dword [r_p1+8],eax
+ mov dword [r_p1+12],esi
  mov eax, dword [0+16+edx]
  mov esi, dword [0+20+edx]
- mov  dword [r_p1+16],eax
- mov  dword [r_p1+20],esi
+ mov dword [r_p1+16],eax
+ mov dword [r_p1+20],esi
  mov eax, dword [0+0+ebx]
  mov esi, dword [0+4+ebx]
- mov  dword [r_p2+0],eax
- mov  dword [r_p2+4],esi
+ mov dword [r_p2+0],eax
+ mov dword [r_p2+4],esi
  mov eax, dword [0+8+ebx]
  mov esi, dword [0+12+ebx]
- mov  dword [r_p2+8],eax
- mov  dword [r_p2+12],esi
+ mov dword [r_p2+8],eax
+ mov dword [r_p2+12],esi
  mov eax, dword [0+16+ebx]
  mov esi, dword [0+20+ebx]
- mov  dword [r_p2+16],eax
+ mov dword [r_p2+16],eax
  mov edi, dword [r_affinetridesc+16]
- mov  dword [r_p2+20],esi
+ mov dword [r_p2+20],esi
  mov eax, dword [0+edi]
  test eax,eax
  jnz LFacesFront
@@ -1249,35 +1119,41 @@ LNDLoop:
  test eax,00020h
  mov eax, dword [r_affinetridesc+32]
  jz LOnseamDone0
- add  dword [r_p0+8],eax
+ add dword [r_p0+8],eax
 LOnseamDone0:
  test esi,00020h
  jz LOnseamDone1
- add  dword [r_p1+8],eax
+ add dword [r_p1+8],eax
 LOnseamDone1:
  test edi,00020h
  jz LOnseamDone2
- add  dword [r_p2+8],eax
+ add dword [r_p2+8],eax
 LOnseamDone2:
 LFacesFront:
- fstp  dword [d_xdenom]
+ fstp dword [d_xdenom]
  call D_PolysetSetEdgeTable		; call near D_PolysetSetEdgeTable
  call D_RasterizeAliasPolySmooth	; call near D_RasterizeAliasPolySmooth
 LNextTri:
  mov esi, dword [r_affinetridesc+16]
-; sub ebp,16
-; jnz LNDLoop
+;sub ebp,16
+;jnz LNDLoop
  pop edi
  pop esi
  pop ebx
-; pop ebp
+;pop ebp
  add esp,offset (((1024+1 + 1 + ((32 - 1) / 32)) + 1) * 32)
  ret
+
+;;;;;;;;;;;;;;;;;;;;;;;;
+; D_PolysetAff8EndT
+;;;;;;;;;;;;;;;;;;;;;;;;
  global D_PolysetAff8EndT
 D_PolysetAff8EndT:
 
 SEGMENT .data
+
  ALIGN 4
+
 LPatchTable:
  dd TranPatch1-4
  dd TranPatch2-4
@@ -1292,7 +1168,12 @@ LPatchTable:
  dd TranPatch11-4
 
 SEGMENT .text
+
  ALIGN 4
+
+;;;;;;;;;;;;;;;;;;;;;;;;
+; R_TranPatch1
+;;;;;;;;;;;;;;;;;;;;;;;;
  global R_TranPatch1
 R_TranPatch1:
  push ebx
@@ -1302,7 +1183,7 @@ R_TranPatch1:
 LPatchLoop:
  mov edx, dword [ebx]
  add ebx,4
- mov  dword [edx],eax
+ mov dword [edx],eax
  dec ecx
  jnz LPatchLoop
  pop ebx
