@@ -3,26 +3,25 @@
 ; x86 assembly-language math routines.
 ;
 ; this file uses NASM syntax.
-; $Id: math.asm,v 1.5 2008-03-13 22:02:32 sezero Exp $
+; $Id: math.asm,v 1.6 2008-03-14 09:08:15 sezero Exp $
 ;
 
 %idefine offset
- extern snd_scaletable
- extern paintbuffer
- extern snd_linear_count
- extern snd_p
- extern snd_vol
- extern snd_out
+
  extern vright
  extern vup
  extern vpn
  extern BOPS_Error
+
 SEGMENT .data
  ALIGN 4
+
 Ljmptab dd Lcase0, Lcase1, Lcase2, Lcase3
  dd Lcase4, Lcase5, Lcase6, Lcase7
 
+
 SEGMENT .text
+
  global Invert24To16
 Invert24To16:
  mov ecx, dword [4+esp]
@@ -35,7 +34,10 @@ Invert24To16:
 LOutOfRange:
  mov eax,0FFFFFFFFh
  ret
+
+
  ALIGN 2
+
  global TransformVector
 TransformVector:
  mov eax, dword [4+esp]
@@ -70,7 +72,10 @@ TransformVector:
  fstp  dword [4+edx]
  fstp  dword [edx]
  ret
+
+
  ALIGN 2
+
  global BoxOnPlaneSide
 BoxOnPlaneSide:
  push ebx

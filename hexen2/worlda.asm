@@ -3,25 +3,19 @@
 ; x86 assembly-language server testing stuff
 ;
 ; this file uses NASM syntax.
-; $Id: worlda.asm,v 1.3 2008-03-13 22:02:30 sezero Exp $
+; $Id: worlda.asm,v 1.4 2008-03-14 09:08:13 sezero Exp $
 ;
 
 %idefine offset
- extern snd_scaletable
- extern paintbuffer
- extern snd_linear_count
- extern snd_p
- extern snd_vol
- extern snd_out
- extern vright
- extern vup
- extern vpn
- extern BOPS_Error
+
 SEGMENT .data
+
 Ltemp dd 0
+
 
 SEGMENT .text
  ALIGN 4
+
  global SV_HullPointContents
 SV_HullPointContents:
  push edi
