@@ -4,7 +4,7 @@
 ; subdivision and translucency handling.
 ;
 ; this file uses NASM syntax.
-; $Id: d_draw16t.asm,v 1.6 2008-03-14 10:24:01 sezero Exp $
+; $Id: d_draw16t.asm,v 1.7 2008-03-14 12:01:17 sezero Exp $
 ;
 
 %idefine offset
@@ -29,6 +29,9 @@
  extern d_viewbuffer
  extern cachewidth
  extern d_scantable
+ extern mainTransTable
+ extern scanList
+ extern D_DrawSingleZSpans
 
 ; externs from ASM-only code
  extern float_point5
@@ -70,9 +73,6 @@
  extern reciprocal_table_16
  extern entryvec_table_16T
  extern fp_64kx64k
- extern mainTransTable
- extern scanList
- extern D_DrawSingleZSpans
 
 SEGMENT .data
 masktemp dw 0

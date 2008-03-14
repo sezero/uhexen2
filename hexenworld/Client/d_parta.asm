@@ -3,65 +3,16 @@
 ; x86 assembly-language 8-bpp particle-drawing code.
 ;
 ; this file uses NASM syntax.
-; $Id: d_parta.asm,v 1.3 2008-03-13 22:02:32 sezero Exp $
+; $Id: d_parta.asm,v 1.4 2008-03-14 12:01:24 sezero Exp $
 ;
 
 %idefine offset
- extern d_zistepu
+
+; externs from C code
  extern d_pzbuffer
- extern d_zistepv
  extern d_zrowbytes
- extern d_ziorigin
- extern r_turb_s
- extern r_turb_t
- extern r_turb_pdest
- extern r_turb_spancount
- extern r_turb_turb
- extern r_turb_pbase
- extern r_turb_sstep
- extern r_turb_tstep
- extern r_bmodelactive
- extern d_sdivzstepu
- extern d_tdivzstepu
- extern d_sdivzstepv
- extern d_tdivzstepv
- extern d_sdivzorigin
- extern d_tdivzorigin
- extern sadjust
- extern tadjust
- extern bbextents
- extern bbextentt
- extern cacheblock
  extern d_viewbuffer
- extern cachewidth
- extern d_pzbuffer
- extern d_zrowbytes
- extern d_zwidth
  extern d_scantable
- extern r_lightptr
- extern r_numvblocks
- extern prowdestbase
- extern pbasesource
- extern r_lightwidth
- extern lightright
- extern lightrightstep
- extern lightdeltastep
- extern lightdelta
- extern lightright
- extern lightdelta
- extern sourcetstep
- extern surfrowbytes
- extern lightrightstep
- extern lightdeltastep
- extern r_sourcemax
- extern r_stepback
- extern colormap
- extern blocksize
- extern sourcesstep
- extern lightleft
- extern blockdivshift
- extern blockdivmask
- extern lightleftstep
  extern r_origin
  extern r_ppn
  extern r_pup
@@ -77,139 +28,16 @@
  extern d_pix_max
  extern d_y_aspect_shift
  extern screenwidth
- extern vright
- extern vup
- extern vpn
- extern BOPS_Error
- extern snd_scaletable
- extern paintbuffer
- extern snd_linear_count
- extern snd_p
- extern snd_vol
- extern snd_out
- extern r_leftclipped
- extern r_leftenter
- extern r_rightclipped
- extern r_rightenter
- extern modelorg
- extern xscale
- extern r_refdef
- extern yscale
- extern r_leftexit
- extern r_rightexit
- extern r_lastvertvalid
- extern cacheoffset
- extern newedges
- extern removeedges
- extern r_pedge
- extern r_framecount
- extern r_u1
- extern r_emitted
- extern edge_p
- extern surface_p
- extern surfaces
- extern r_lzi1
- extern r_v1
- extern r_ceilv1
- extern r_nearzi
- extern r_nearzionly
- extern edge_aftertail
- extern edge_tail
- extern current_iv
- extern edge_head_u_shift20
- extern span_p
- extern edge_head
- extern fv
- extern edge_tail_u_shift20
- extern r_apverts
- extern r_anumverts
- extern aliastransform
- extern r_avertexnormals
- extern r_plightvec
- extern r_ambientlight
- extern r_shadelight
- extern aliasxcenter
- extern aliasycenter
- extern a_sstepxfrac
- extern r_affinetridesc
- extern acolormap
- extern d_pcolormap
- extern r_affinetridesc
- extern d_sfrac
- extern d_ptex
- extern d_pedgespanpackage
- extern d_tfrac
- extern d_light
- extern d_zi
- extern d_pdest
- extern d_pz
- extern d_aspancount
- extern erroradjustup
- extern errorterm
- extern d_xdenom
- extern r_p0
- extern r_p1
- extern r_p2
- extern a_tstepxfrac
- extern r_sstepx
- extern r_tstepx
- extern a_ststepxwhole
- extern zspantable
- extern skintable
- extern r_zistepx
- extern erroradjustdown
- extern d_countextrastep
- extern ubasestep
- extern a_ststepxwhole
- extern a_tstepxfrac
- extern r_lstepx
- extern a_spans
- extern erroradjustdown
- extern d_pdestextrastep
- extern d_pzextrastep
- extern d_sfracextrastep
- extern d_ptexextrastep
- extern d_countextrastep
- extern d_tfracextrastep
- extern d_lightextrastep
- extern d_ziextrastep
- extern d_pdestbasestep
- extern d_pzbasestep
- extern d_sfracbasestep
- extern d_ptexbasestep
- extern ubasestep
- extern d_tfracbasestep
- extern d_lightbasestep
- extern d_zibasestep
- extern zspantable
- extern r_lstepy
- extern r_sstepy
- extern r_tstepy
- extern r_zistepy
- extern D_PolysetSetEdgeTable
- extern D_RasterizeAliasPolySmooth
+ extern transTable
+
+; externs from ASM-only code
  extern float_point5
- extern Float2ToThe31nd
  extern izistep
  extern izi
- extern FloatMinus2ToThe31nd
  extern float_1
  extern float_particle_z_clip
  extern float_minus_1
  extern float_0
- extern fp_16
- extern fp_64k
- extern fp_1m
- extern fp_1m_minus_1
- extern fp_8
- extern entryvec_table
- extern advancetable
- extern sstep
- extern tstep
- extern pspantemp
- extern counttemp
- extern jumptemp
- extern reciprocal_table
  extern DP_Count
  extern DP_u
  extern DP_v
@@ -218,30 +46,16 @@
  extern DP_Pix
  extern DP_EntryTable
  extern DP_EntryTransTable
- extern pbase
- extern s
- extern t
- extern sfracf
- extern tfracf
- extern snext
- extern tnext
- extern spancountminus1
- extern zi16stepu
- extern sdivz16stepu
- extern tdivz16stepu
- extern zi8stepu
- extern sdivz8stepu
- extern tdivz8stepu
- extern reciprocal_table_16
- extern entryvec_table_16
- extern ceil_cw
- extern single_cw
- extern fp_64kx64k
- extern pz
- extern spr8entryvec_table
- extern transTable
+
+
 SEGMENT .text
+
  ALIGN 4
+
+;;;;;;;;;;;;;;;;;;;;;;;;
+; D_DrawParticle
+;;;;;;;;;;;;;;;;;;;;;;;;
+
  global D_DrawParticle
 D_DrawParticle:
  push ebp
@@ -364,8 +178,10 @@ Trans:
  jmp dword[DP_EntryTransTable-4+eax*4]
 
 
+;;;;;;;;;;;;;;;;;;;;;;;;
+; globals DP_?x?
+;;;;;;;;;;;;;;;;;;;;;;;;
 
- 
  global DP_1x1
 DP_1x1:
  cmp  word [edx],bp
@@ -373,8 +189,8 @@ DP_1x1:
  mov  word [edx],bp
  mov  byte [edi],cl
  jmp LDone
- global DP_2x2
 
+ global DP_2x2
 DP_2x2:
  push esi
  mov ebx, dword [screenwidth]
@@ -401,8 +217,8 @@ L2x2_3:
 L2x2_4:
  pop esi
  jmp LDone
- global DP_3x3
 
+ global DP_3x3
 DP_3x3:
  push esi
  mov ebx, dword [screenwidth]
@@ -454,8 +270,8 @@ L3x3_8:
 L3x3_9:
  pop esi
  jmp LDone
- global DP_4x4
 
+ global DP_4x4
 DP_4x4:
  push esi
  mov ebx, dword [screenwidth]
@@ -546,6 +362,9 @@ L4x4_16:
  jmp LDone
 
 
+;;;;;;;;;;;;;;;;;;;;;;;;
+; globals DP_T?x?
+;;;;;;;;;;;;;;;;;;;;;;;;
 
  global DP_T1x1
 DP_T1x1:
@@ -558,8 +377,8 @@ DP_T1x1:
  mov cl,  byte [eax+ecx]
  mov  byte [edi],cl
  jmp LDone
- global DP_T2x2
 
+ global DP_T2x2
 DP_T2x2:
  mov eax,  dword [transTable]
 
@@ -600,8 +419,8 @@ LT2x2_3:
 LT2x2_4:
  pop esi
  jmp LDone
- global DP_T3x3
 
+ global DP_T3x3
 DP_T3x3:
  mov eax,  dword [transTable]
 
@@ -682,8 +501,8 @@ LT3x3_8:
 LT3x3_9:
  pop esi
  jmp LDone
- global DP_T4x4
 
+ global DP_T4x4
 DP_T4x4:
  mov eax,  dword [transTable]
 
@@ -821,7 +640,6 @@ LT4x4_15:
 LT4x4_16:
  pop esi
  jmp LDone
-
 
 
 LDefault:

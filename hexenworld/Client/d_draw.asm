@@ -3,7 +3,7 @@
 ; x86 assembly-language horizontal 8-bpp span-drawing code.
 ;
 ; this file uses NASM syntax.
-; $Id: d_draw.asm,v 1.4 2008-03-14 10:24:03 sezero Exp $
+; $Id: d_draw.asm,v 1.5 2008-03-14 12:01:24 sezero Exp $
 ;
 
 %idefine offset
@@ -28,6 +28,8 @@
  extern d_viewbuffer
  extern cachewidth
  extern d_scantable
+ extern scanList
+ extern ZScanCount
 
 ; externs from ASM-only code
  extern float_point5
@@ -69,8 +71,6 @@
  extern reciprocal_table_16
  extern entryvec_table_16
  extern fp_64kx64k
- extern scanList
- extern ZScanCount
 
 SEGMENT .text
 
