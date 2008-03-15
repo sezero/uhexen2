@@ -2,7 +2,7 @@
 	r_part.c
 	particles rendering
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/r_part.c,v 1.20 2008-02-07 23:41:22 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/r_part.c,v 1.21 2008-03-15 10:36:47 sezero Exp $
 */
 
 
@@ -32,8 +32,6 @@ static int ramp12[8] = { 136, 137, 138, 139, 140, 141, 142, 143 };
 static int ramp13[16] ={ 144, 145, 146, 147, 148, 149, 150, 151, 152, 153, 154, 155, 156, 157, 158, 159 };
 
 //=============================================================================
-
-byte		*transTable;
 
 particle_t	*active_particles, *free_particles;
 particle_t	*particles;
@@ -79,12 +77,6 @@ void R_InitParticles (void)
 	particles = (particle_t *) Hunk_AllocName (r_numparticles * sizeof(particle_t), "particles");
 
 	Cvar_RegisterVariable (&leak_color);
-
-	transTable = (byte *)FS_LoadHunkFile ("gfx/tinttab.lmp");
-	if (!transTable)
-		Sys_Error ("Couldn't load gfx/tinttab.lmp");
-	if (fs_filesize != 65536)
-		Sys_Error ("Unexpected file size (%lu) for %s\n", (unsigned long)fs_filesize, "gfx/tinttab.lmp");
 }
 
 

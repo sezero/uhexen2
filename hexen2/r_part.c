@@ -2,7 +2,7 @@
 	r_part.c
 	particles rendering
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/r_part.c,v 1.23 2008-02-07 23:41:11 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/r_part.c,v 1.24 2008-03-15 10:36:42 sezero Exp $
 */
 
 
@@ -41,8 +41,6 @@ static int ramp11[8] = { 424, 424+1, 424+2, 424+3, 424+4, 424+5, 424+6, 424+7 };
 static int ramp12[8] = { 136, 137, 138, 139, 140, 141, 142, 143 };
 
 //=============================================================================
-
-byte		*transTable;
 
 particle_t	*active_particles, *free_particles;
 particle_t	*particles;
@@ -93,12 +91,6 @@ void R_InitParticles (void)
 	//JFM: snow test
 	Cvar_RegisterVariable (&snow_flurry);
 	Cvar_RegisterVariable (&snow_active);
-
-	transTable = (byte *)FS_LoadHunkFile ("gfx/tinttab.lmp");
-	if (!transTable)
-		Sys_Error ("Couldn't load gfx/tinttab.lmp");
-	if (fs_filesize != 65536)
-		Sys_Error ("Unexpected file size (%lu) for %s\n", (unsigned long)fs_filesize, "gfx/tinttab.lmp");
 }
 
 

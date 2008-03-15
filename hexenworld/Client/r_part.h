@@ -2,13 +2,11 @@
 	r_part.h
 	exported functions from r_part.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/r_part.h,v 1.2 2007-07-31 11:09:44 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/r_part.h,v 1.3 2008-03-15 10:36:47 sezero Exp $
 */
 
 #ifndef __R_PART_H
 #define __R_PART_H
-
-extern byte	*transTable;
 
 void R_DrawParticles (void);
 void R_InitParticles (void);

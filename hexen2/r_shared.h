@@ -3,7 +3,7 @@
 	general refresh-related stuff shared between the refresh
 	and the driver
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/r_shared.h,v 1.9 2008-03-07 08:10:38 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/r_shared.h,v 1.10 2008-03-15 10:36:42 sezero Exp $
 */
 
 #ifndef __R_SHARED_H
@@ -152,6 +152,7 @@ typedef struct edge_s
 } edge_t;
 
 extern	byte	*mainTransTable;
+extern	byte	*transTable;	/* the particle table */
 extern	byte	*playerTranslation;
 extern	const int	color_offsets[MAX_PLAYER_CLASS];
 

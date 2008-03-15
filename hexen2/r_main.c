@@ -1,7 +1,7 @@
 /*
 	r_main.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/r_main.c,v 1.29 2008-03-07 08:10:38 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/r_main.c,v 1.30 2008-03-15 10:36:42 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -33,6 +33,7 @@ int		r_outofsurfaces;
 int		r_outofedges;
 
 byte		*mainTransTable;
+byte		*transTable;	/* the particle table */
 byte		*playerTranslation;
 const int	color_offsets[MAX_PLAYER_CLASS] =
 {
@@ -266,6 +267,12 @@ void R_Init (void)
 	R_InitParticles ();
 
 	D_Init ();
+
+	transTable = (byte *)FS_LoadHunkFile ("gfx/tinttab.lmp");
+	if (!transTable)
+		Sys_Error ("Couldn't load gfx/tinttab.lmp");
+	if (fs_filesize != 65536)
+		Sys_Error ("Unexpected file size (%lu) for %s\n", (unsigned long)fs_filesize, "gfx/tinttab.lmp");
 
 	mainTransTable = (byte *)FS_LoadHunkFile ("gfx/tinttab2.lmp");
 	if (!mainTransTable)
