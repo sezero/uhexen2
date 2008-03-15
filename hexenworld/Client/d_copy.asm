@@ -3,16 +3,22 @@
 ; x86 assembly-language screen copying code.
 ;
 ; this file uses NASM syntax.
-; $Id: d_copy.asm,v 1.2 2008-03-13 22:02:32 sezero Exp $
+; $Id: d_copy.asm,v 1.3 2008-03-15 09:05:05 sezero Exp $
 ;
 
 %idefine offset
 
+; externs from C code
+;
 	extern	VGA_bufferrowbytes
 	extern	VGA_rowbytes
 	extern	VGA_pagebase
 	extern	VGA_height
 	extern	VGA_width
+
+; externs from ASM-only code
+;
+
 
 SEGMENT .data
 

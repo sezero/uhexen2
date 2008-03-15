@@ -1,13 +1,23 @@
 ; dosasm.asm
 ;
-; $Id: dosasm.asm,v 1.2 2008-03-13 22:02:32 sezero Exp $
+; $Id: dosasm.asm,v 1.3 2008-03-15 09:01:08 sezero Exp $
 ; this file uses NASM syntax.
 ;
 
+; externs from C code
+;
+
+; externs from ASM-only code
+;
+
+
 SEGMENT .data
+
 fpenv:	dd	0,0,0,0,0,0,0,0
 
+
 SEGMENT .text
+
 global StartMSRInterval
 StartMSRInterval:
 	mov	ecx,011h	; read the CESR
