@@ -3,7 +3,7 @@
 ; x86 assembly-language horizontal 8-bpp sprite span-drawing code.
 ;
 ; this file uses NASM syntax.
-; $Id: d_spr8.asm,v 1.4 2008-03-14 20:30:25 sezero Exp $
+; $Id: d_spr8.asm,v 1.5 2008-03-16 00:00:22 sezero Exp $
 ;
 
 %idefine offset
@@ -14,7 +14,6 @@
  extern d_zistepv
  extern d_zrowbytes
  extern d_ziorigin
- extern r_bmodelactive
  extern d_sdivzstepu
  extern d_tdivzstepu
  extern d_sdivzstepv

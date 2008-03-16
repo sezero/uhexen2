@@ -4,7 +4,7 @@
 ; with translucency handling, #1.
 ;
 ; this file uses NASM syntax.
-; $Id: d_spr8t.asm,v 1.4 2008-03-14 20:30:29 sezero Exp $
+; $Id: d_spr8t.asm,v 1.5 2008-03-16 00:00:29 sezero Exp $
 ;
 
 %idefine offset
@@ -15,7 +15,6 @@
  extern d_zistepv
  extern d_zrowbytes
  extern d_ziorigin
- extern r_bmodelactive
  extern d_sdivzstepu
  extern d_tdivzstepu
  extern d_sdivzstepv

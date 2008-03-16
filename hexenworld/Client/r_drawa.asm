@@ -3,7 +3,7 @@
 ; x86 assembly-language edge clipping and emission code
 ;
 ; this file uses NASM syntax.
-; $Id: r_drawa.asm,v 1.6 2008-03-15 09:01:08 sezero Exp $
+; $Id: r_drawa.asm,v 1.7 2008-03-16 00:00:29 sezero Exp $
 ;
 
 %idefine offset
@@ -37,6 +37,9 @@
  extern r_ceilv1
  extern r_nearzi
  extern r_nearzionly
+ extern vright
+ extern vup
+ extern vpn
 
 ; externs from ASM-only code
  extern float_point5
@@ -51,9 +54,6 @@
  extern fp_64kx64k
  extern ceil_cw
  extern single_cw
- extern vright
- extern vup
- extern vpn
 
 
 SEGMENT .data
