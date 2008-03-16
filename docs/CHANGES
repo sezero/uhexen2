@@ -3,6 +3,30 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2008-03-16 (CVS):
+    * nasm symbol prefix handling: added header file asm_nasm.inc and moved
+      common definitions into it. created macro _sym_prefix which adds an
+      underscore prefix to its given argument: all C-shared symbols are now
+      processed by this macro, unless the nasm flags contain _NO_PREFIX. for
+      elf targets, we add _NO_PREFIX to the nasm flags and that disables
+      symbol prefixing. this has some advantages over what we have been doing
+      previously: the "--prefix _" command line option used to prefix all of
+      the symbols, not just the ones we wanted. besides, yasm doesn't support
+      the --prefix option. now we can use yasm for win32 and dos, too. this
+      is actually like the id asm code with the C(label) macro.
+
+2008-03-15 (CVS):
+    * removed the END labels from asm files, silencing the assembler
+      warning from nasm-2.01 and newer versions:
+      'warning: label alone on a line without a colon might be in error'
+    * removed unnecessary extern declarations from asm files.
+    * transTable, the particle translucency table, is for software renderer
+      only. it is used by particle translucency, for EF_SPECIAL_TRANS by
+      D_Polyset???T5 functions, and by R_AliasDrawModel.
+    * llight is not used in D_PolysetDrawSpans8T5.
+    * initialize the translucency tables before R_InitParticles and D_Init
+      (just in case).
+
 2008-03-07 (CVS):
     * maputils/flow.c: added missing semicolon after VectorSubstract.
     * mathlib macro clean-up: macros with multiple statements are now
