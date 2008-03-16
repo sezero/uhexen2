@@ -3,10 +3,81 @@
 ; x86 assembly-language polygon model drawing code
 ;
 ; this file uses NASM syntax.
-; $Id: d_polysa.asm,v 1.6 2008-03-14 16:01:24 sezero Exp $
+; $Id: d_polysa.asm,v 1.7 2008-03-16 14:30:51 sezero Exp $
 ;
 
-%idefine offset
+%include "asm_nasm.inc"
+
+; underscore prefix handling
+; for C-shared symbols:
+%ifmacro _sym_prefix
+; C-shared externs:
+ _sym_prefix d_viewbuffer
+ _sym_prefix d_scantable
+ _sym_prefix r_refdef
+ _sym_prefix a_sstepxfrac
+ _sym_prefix r_affinetridesc
+ _sym_prefix acolormap
+ _sym_prefix d_pcolormap
+ _sym_prefix d_sfrac
+ _sym_prefix d_ptex
+ _sym_prefix d_pedgespanpackage
+ _sym_prefix d_tfrac
+ _sym_prefix d_light
+ _sym_prefix d_zi
+ _sym_prefix d_pdest
+ _sym_prefix d_pz
+ _sym_prefix d_aspancount
+ _sym_prefix erroradjustup
+ _sym_prefix erroradjustdown
+ _sym_prefix errorterm
+ _sym_prefix d_xdenom
+ _sym_prefix r_p0
+ _sym_prefix r_p1
+ _sym_prefix r_p2
+ _sym_prefix a_tstepxfrac
+ _sym_prefix a_ststepxwhole
+ _sym_prefix zspantable
+ _sym_prefix skintable
+ _sym_prefix d_countextrastep
+ _sym_prefix ubasestep
+ _sym_prefix a_spans
+ _sym_prefix d_pdestextrastep
+ _sym_prefix d_pzextrastep
+ _sym_prefix d_sfracextrastep
+ _sym_prefix d_ptexextrastep
+ _sym_prefix d_tfracextrastep
+ _sym_prefix d_lightextrastep
+ _sym_prefix d_ziextrastep
+ _sym_prefix d_pdestbasestep
+ _sym_prefix d_pzbasestep
+ _sym_prefix d_sfracbasestep
+ _sym_prefix d_ptexbasestep
+ _sym_prefix d_tfracbasestep
+ _sym_prefix d_lightbasestep
+ _sym_prefix d_zibasestep
+ _sym_prefix r_lstepx
+ _sym_prefix r_lstepy
+ _sym_prefix r_sstepx
+ _sym_prefix r_sstepy
+ _sym_prefix r_tstepx
+ _sym_prefix r_tstepy
+ _sym_prefix r_zistepx
+ _sym_prefix r_zistepy
+ _sym_prefix D_PolysetSetEdgeTable
+ _sym_prefix D_RasterizeAliasPolySmooth
+; C-shared globals:
+ _sym_prefix D_PolysetCalcGradients
+ _sym_prefix D_PolysetRecursiveTriangle
+ _sym_prefix D_PolysetAff8Start
+ _sym_prefix D_PolysetDrawSpans8
+ _sym_prefix D_PolysetAff8End
+ _sym_prefix D_Aff8Patch
+ _sym_prefix D_PolysetDraw
+ _sym_prefix D_PolysetScanLeftEdge
+ _sym_prefix D_PolysetDrawFinalVerts
+ _sym_prefix D_DrawNonSubdiv
+%endif	; _sym_prefix
 
 ; externs from C code
  extern d_viewbuffer

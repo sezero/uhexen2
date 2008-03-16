@@ -1,5 +1,5 @@
 # GNU Makefile using GCC in a unix shell.
-# $Header: /home/ozzie/Download/0000/uhexen2/scripts/makefile.inc,v 1.21 2008-01-10 17:21:07 sezero Exp $
+# $Header: /home/ozzie/Download/0000/uhexen2/scripts/makefile.inc,v 1.22 2008-03-16 14:30:56 sezero Exp $
 
 # This file is responsible for determining the Host OS and Target OS,
 # setting common paths, selecting the compiler, assigning the compiler
@@ -147,18 +147,20 @@ endif
 ################################
 # NASM flags:
 # These are required for IA32 assembly for hexen2/hexenworld clients
+# Note: for ELF targets, add the -D_NO_PREFIX flag so that the symbols
+# shall not be prefixed by '_'
 
 ifeq ($(TARGET_OS),win32)
-NASMFLAGS:= -fwin32 --prefix _
+NASMFLAGS:= -f win32
 endif
 ifeq ($(TARGET_OS),dos)
-NASMFLAGS:= -f coff --prefix _
+NASMFLAGS:= -f coff
 endif
 ifeq ($(TARGET_OS),unix)
 ifeq ($(HOST_OS),darwin)
 NASMFLAGS:= -f macho
 else
-NASMFLAGS:= -f elf
+NASMFLAGS:= -f elf -d_NO_PREFIX
 endif
 endif
 

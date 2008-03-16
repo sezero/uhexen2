@@ -3,10 +3,41 @@
 ; x86 assembly-language horizontal 8-bpp span-drawing code.
 ;
 ; this file uses NASM syntax.
-; $Id: d_draw.asm,v 1.5 2008-03-14 12:01:24 sezero Exp $
+; $Id: d_draw.asm,v 1.6 2008-03-16 14:30:51 sezero Exp $
 ;
 
-%idefine offset
+%include "asm_nasm.inc"
+
+; underscore prefix handling
+; for C-shared symbols:
+%ifmacro _sym_prefix
+; C-shared externs:
+ _sym_prefix d_zistepu
+ _sym_prefix d_pzbuffer
+ _sym_prefix d_zistepv
+ _sym_prefix d_zrowbytes
+ _sym_prefix d_ziorigin
+ _sym_prefix d_sdivzstepu
+ _sym_prefix d_tdivzstepu
+ _sym_prefix d_sdivzstepv
+ _sym_prefix d_tdivzstepv
+ _sym_prefix d_sdivzorigin
+ _sym_prefix d_tdivzorigin
+ _sym_prefix sadjust
+ _sym_prefix tadjust
+ _sym_prefix bbextents
+ _sym_prefix bbextentt
+ _sym_prefix cacheblock
+ _sym_prefix d_viewbuffer
+ _sym_prefix cachewidth
+ _sym_prefix d_scantable
+ _sym_prefix scanList
+ _sym_prefix ZScanCount
+; C-shared globals:
+ _sym_prefix D_DrawSpans8
+ _sym_prefix D_DrawZSpans
+ _sym_prefix D_DrawSingleZSpans
+%endif	; _sym_prefix
 
 ; externs from C code
  extern d_zistepu

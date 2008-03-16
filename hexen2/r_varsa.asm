@@ -3,10 +3,18 @@
 ; global refresh variables
 ;
 ; this file uses NASM syntax.
-; $Id: r_varsa.asm,v 1.4 2008-03-14 09:08:13 sezero Exp $
+; $Id: r_varsa.asm,v 1.5 2008-03-16 14:30:46 sezero Exp $
 ;
 
-%idefine offset
+%include "asm_nasm.inc"
+
+; underscore prefix handling
+; for C-shared symbols:
+%ifmacro _sym_prefix
+; C-shared externs:
+; C-shared globals:
+ _sym_prefix r_bmodelactive
+%endif	; _sym_prefix
 
 SEGMENT .data
 

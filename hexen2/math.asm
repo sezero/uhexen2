@@ -3,15 +3,33 @@
 ; x86 assembly-language math routines.
 ;
 ; this file uses NASM syntax.
-; $Id: math.asm,v 1.6 2008-03-14 09:08:13 sezero Exp $
+; $Id: math.asm,v 1.7 2008-03-16 14:30:46 sezero Exp $
 ;
 
-%idefine offset
+%include "asm_nasm.inc"
 
+; underscore prefix handling
+; for C-shared symbols:
+%ifmacro _sym_prefix
+; C-shared externs:
+ _sym_prefix vright
+ _sym_prefix vup
+ _sym_prefix vpn
+ _sym_prefix BOPS_Error
+; C-shared globals:
+ _sym_prefix Invert24To16
+ _sym_prefix TransformVector
+ _sym_prefix BoxOnPlaneSide
+%endif	;_sym_prefix
+
+; externs from C code
  extern vright
  extern vup
  extern vpn
  extern BOPS_Error
+
+; externs from ASM-only code
+
 
 SEGMENT .data
  ALIGN 4

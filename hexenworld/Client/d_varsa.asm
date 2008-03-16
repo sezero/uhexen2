@@ -3,10 +3,36 @@
 ; rasterization driver global variables
 ;
 ; this file uses NASM syntax.
-; $Id: d_varsa.asm,v 1.4 2008-03-14 09:08:15 sezero Exp $
+; $Id: d_varsa.asm,v 1.5 2008-03-16 14:30:55 sezero Exp $
 ;
 
-%idefine offset
+%include "asm_nasm.inc"
+
+; underscore prefix handling
+; for C-shared symbols:
+%ifmacro _sym_prefix
+; C-shared externs:
+; C-shared globals:
+ _sym_prefix d_sdivzstepu
+ _sym_prefix d_tdivzstepu
+ _sym_prefix d_zistepu
+ _sym_prefix d_sdivzstepv
+ _sym_prefix d_tdivzstepv
+ _sym_prefix d_zistepv
+ _sym_prefix d_sdivzorigin
+ _sym_prefix d_tdivzorigin
+ _sym_prefix d_ziorigin
+ _sym_prefix sadjust
+ _sym_prefix tadjust
+ _sym_prefix bbextents
+ _sym_prefix bbextentt
+ _sym_prefix cacheblock
+ _sym_prefix d_viewbuffer
+ _sym_prefix cachewidth
+ _sym_prefix d_pzbuffer
+ _sym_prefix d_zrowbytes
+ _sym_prefix d_zwidth
+%endif	; _sym_prefix
 
 SEGMENT .data
 
@@ -53,6 +79,9 @@ d_pzbuffer dd 0
 d_zrowbytes dd 0
 d_zwidth dd 0
 
+;
+; ASM-only variables
+;
  global izi
 izi dd 0
 

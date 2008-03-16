@@ -4,10 +4,37 @@
 ; subdivision.
 ;
 ; this file uses NASM syntax.
-; $Id: d_draw16.asm,v 1.4 2008-03-14 10:24:01 sezero Exp $
+; $Id: d_draw16.asm,v 1.5 2008-03-16 14:30:46 sezero Exp $
 ;
 
-%idefine offset
+%include "asm_nasm.inc"
+
+; underscore prefix handling
+; for C-shared symbols:
+%ifmacro _sym_prefix
+; C-shared externs:
+ _sym_prefix d_zistepu
+ _sym_prefix d_pzbuffer
+ _sym_prefix d_zistepv
+ _sym_prefix d_zrowbytes
+ _sym_prefix d_ziorigin
+ _sym_prefix d_sdivzstepu
+ _sym_prefix d_tdivzstepu
+ _sym_prefix d_sdivzstepv
+ _sym_prefix d_tdivzstepv
+ _sym_prefix d_sdivzorigin
+ _sym_prefix d_tdivzorigin
+ _sym_prefix sadjust
+ _sym_prefix tadjust
+ _sym_prefix bbextents
+ _sym_prefix bbextentt
+ _sym_prefix cacheblock
+ _sym_prefix d_viewbuffer
+ _sym_prefix cachewidth
+ _sym_prefix d_scantable
+; C-shared globals:
+ _sym_prefix D_DrawSpans16
+%endif	; _sym_prefix
 
 ; externs from C code
  extern d_zistepu

@@ -3,10 +3,24 @@
 ; x86 assembly-language screen copying code.
 ;
 ; this file uses NASM syntax.
-; $Id: d_copy.asm,v 1.3 2008-03-15 09:05:05 sezero Exp $
+; $Id: d_copy.asm,v 1.4 2008-03-16 14:30:51 sezero Exp $
 ;
 
-%idefine offset
+%include "asm_nasm.inc"
+
+; underscore prefix handling
+; for C-shared symbols:
+%ifmacro _sym_prefix
+; C-shared externs:
+_sym_prefix VGA_bufferrowbytes
+_sym_prefix VGA_rowbytes
+_sym_prefix VGA_pagebase
+_sym_prefix VGA_height
+_sym_prefix VGA_width
+; C-shared globals:
+_sym_prefix VGA_UpdatePlanarScreen
+_sym_prefix VGA_UpdateLinearScreen
+%endif	; _sym_prefix
 
 ; externs from C code
 ;

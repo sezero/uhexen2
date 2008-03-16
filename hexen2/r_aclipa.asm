@@ -3,10 +3,22 @@
 ; x86 assembly-language Alias model transform and project code.
 ;
 ; this file uses NASM syntax.
-; $Id: r_aclipa.asm,v 1.4 2008-03-15 09:01:05 sezero Exp $
+; $Id: r_aclipa.asm,v 1.5 2008-03-16 14:30:46 sezero Exp $
 ;
 
-%idefine offset
+%include "asm_nasm.inc"
+
+; underscore prefix handling
+; for C-shared symbols:
+%ifmacro _sym_prefix
+; C-shared externs:
+ _sym_prefix r_refdef
+; C-shared globals:
+ _sym_prefix R_Alias_clip_bottom
+ _sym_prefix R_Alias_clip_top
+ _sym_prefix R_Alias_clip_right
+ _sym_prefix R_Alias_clip_left
+%endif	; _sym_prefix
 
 ; externs from C code
  extern r_refdef

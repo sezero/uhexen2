@@ -3,10 +3,38 @@
 ; x86 assembly-language 8-bpp particle-drawing code.
 ;
 ; this file uses NASM syntax.
-; $Id: d_parta.asm,v 1.4 2008-03-14 12:01:17 sezero Exp $
+; $Id: d_parta.asm,v 1.5 2008-03-16 14:30:46 sezero Exp $
 ;
 
-%idefine offset
+%include "asm_nasm.inc"
+
+; underscore prefix handling
+; for C-shared symbols:
+%ifmacro _sym_prefix
+; C-shared externs:
+ _sym_prefix d_pzbuffer
+ _sym_prefix d_zrowbytes
+ _sym_prefix d_viewbuffer
+ _sym_prefix d_scantable
+ _sym_prefix r_origin
+ _sym_prefix r_ppn
+ _sym_prefix r_pup
+ _sym_prefix r_pright
+ _sym_prefix ycenter
+ _sym_prefix xcenter
+ _sym_prefix d_vrectbottom_particle
+ _sym_prefix d_vrectright_particle
+ _sym_prefix d_vrecty
+ _sym_prefix d_vrectx
+ _sym_prefix d_pix_shift
+ _sym_prefix d_pix_min
+ _sym_prefix d_pix_max
+ _sym_prefix d_y_aspect_shift
+ _sym_prefix screenwidth
+ _sym_prefix transTable
+; C-shared globals:
+ _sym_prefix D_DrawParticle
+%endif	; _sym_prefix
 
 ; externs from C code
  extern d_pzbuffer

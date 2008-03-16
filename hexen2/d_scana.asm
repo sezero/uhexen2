@@ -3,10 +3,32 @@
 ; x86 assembly-language turbulent texture mapping code
 ;
 ; this file uses NASM syntax.
-; $Id: d_scana.asm,v 1.4 2008-03-14 18:55:55 sezero Exp $
+; $Id: d_scana.asm,v 1.5 2008-03-16 14:30:46 sezero Exp $
 ;
 
-%idefine offset
+%include "asm_nasm.inc"
+
+; underscore prefix handling
+; for C-shared symbols:
+%ifmacro _sym_prefix
+; C-shared externs:
+ _sym_prefix r_turb_s
+ _sym_prefix r_turb_t
+ _sym_prefix r_turb_pdest
+ _sym_prefix r_turb_spancount
+ _sym_prefix r_turb_turb
+ _sym_prefix r_turb_pbase
+ _sym_prefix r_turb_sstep
+ _sym_prefix r_turb_tstep
+ _sym_prefix mainTransTable
+ _sym_prefix scanList
+; C-shared globals:
+ _sym_prefix D_DrawTurbulent8Span
+ _sym_prefix D_DrawTurbulent8TSpan
+ _sym_prefix D_DrawTurbulent8TQuickSpan
+ _sym_prefix D_DrawTurbulent8TSpanEnd
+ _sym_prefix R_TranPatch7
+%endif	; _sym_prefix
 
 ; externs from C code
  extern r_turb_s

@@ -3,10 +3,44 @@
 ; x86 assembly-language 8 bpp surface block drawing code.
 ;
 ; this file uses NASM syntax.
-; $Id: surf8.asm,v 1.4 2008-03-14 18:55:57 sezero Exp $
+; $Id: surf8.asm,v 1.5 2008-03-16 14:30:55 sezero Exp $
 ;
 
-%idefine offset
+%include "asm_nasm.inc"
+
+; underscore prefix handling
+; for C-shared symbols:
+%ifmacro _sym_prefix
+; C-shared externs:
+ _sym_prefix prowdestbase
+ _sym_prefix pbasesource
+ _sym_prefix lightright
+ _sym_prefix lightrightstep
+ _sym_prefix lightleft
+ _sym_prefix lightleftstep
+ _sym_prefix lightdeltastep
+ _sym_prefix lightdelta
+ _sym_prefix sourcetstep
+ _sym_prefix surfrowbytes
+ _sym_prefix colormap
+ _sym_prefix blocksize
+ _sym_prefix sourcesstep
+ _sym_prefix blockdivshift
+ _sym_prefix blockdivmask
+ _sym_prefix r_lightptr
+ _sym_prefix r_lightwidth
+ _sym_prefix r_numvblocks
+ _sym_prefix r_sourcemax
+ _sym_prefix r_stepback
+; C-shared globals:
+ _sym_prefix R_Surf8Start
+ _sym_prefix R_DrawSurfaceBlock8_mip0
+ _sym_prefix R_DrawSurfaceBlock8_mip1
+ _sym_prefix R_DrawSurfaceBlock8_mip2
+ _sym_prefix R_DrawSurfaceBlock8_mip3
+ _sym_prefix R_Surf8End
+ _sym_prefix R_Surf8Patch
+%endif	; _sym_prefix
 
 ; externs from C code
  extern prowdestbase

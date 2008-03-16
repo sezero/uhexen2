@@ -3,10 +3,24 @@
 ; x86 assembly-language misc system routines.
 ;
 ; this file uses NASM syntax.
-; $Id: sys_ia32.asm,v 1.4 2008-03-14 09:08:15 sezero Exp $
+; $Id: sys_ia32.asm,v 1.5 2008-03-16 14:30:55 sezero Exp $
 ;
 
-%idefine offset
+%include "asm_nasm.inc"
+
+; underscore prefix handling
+; for C-shared symbols:
+%ifmacro _sym_prefix
+; C-shared externs:
+; C-shared globals:
+ _sym_prefix MaskExceptions
+ _sym_prefix Sys_LowFPPrecision
+ _sym_prefix Sys_HighFPPrecision
+ _sym_prefix Sys_PushFPCW_SetHigh
+ _sym_prefix Sys_PopFPCW
+ _sym_prefix Sys_SetFPCW
+%endif	; _sym_prefix
+
 
 SEGMENT .data
  ALIGN 4

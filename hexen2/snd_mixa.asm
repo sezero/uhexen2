@@ -3,17 +3,36 @@
 ; x86 assembly-language sound code
 ;
 ; this file uses NASM syntax.
-; $Id: snd_mixa.asm,v 1.4 2008-03-14 09:08:13 sezero Exp $
+; $Id: snd_mixa.asm,v 1.5 2008-03-16 14:30:46 sezero Exp $
 ;
 
-%idefine offset
+%include "asm_nasm.inc"
 
+; underscore prefix handling
+; for C-shared symbols:
+%ifmacro _sym_prefix
+; C-shared externs:
+ _sym_prefix snd_scaletable
+ _sym_prefix paintbuffer
+ _sym_prefix snd_linear_count
+ _sym_prefix snd_p
+ _sym_prefix snd_vol
+ _sym_prefix snd_out
+; C-shared globals:
+ _sym_prefix SND_PaintChannelFrom8
+ _sym_prefix Snd_WriteLinearBlastStereo16
+%endif	; _sym_prefix
+
+; externs from C code
  extern snd_scaletable
  extern paintbuffer
  extern snd_linear_count
  extern snd_p
  extern snd_vol
  extern snd_out
+
+; externs from ASM-only code
+
 
 SEGMENT .text
 

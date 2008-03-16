@@ -3,10 +3,31 @@
 ; x86 assembly-language edge-processing code.
 ;
 ; this file uses NASM syntax.
-; $Id: r_edgeb.asm,v 1.6 2008-03-15 09:01:08 sezero Exp $
+; $Id: r_edgeb.asm,v 1.7 2008-03-16 14:30:55 sezero Exp $
 ;
 
-%idefine offset
+%include "asm_nasm.inc"
+
+; underscore prefix handling
+; for C-shared symbols:
+%ifmacro _sym_prefix
+; C-shared externs:
+ _sym_prefix r_bmodelactive
+ _sym_prefix surfaces
+ _sym_prefix edge_tail
+ _sym_prefix edge_aftertail
+ _sym_prefix edge_head
+ _sym_prefix edge_head_u_shift20
+ _sym_prefix edge_tail_u_shift20
+ _sym_prefix current_iv
+ _sym_prefix span_p
+ _sym_prefix fv
+; C-shared globals:
+ _sym_prefix R_EdgeCodeStartT
+ _sym_prefix R_GenerateTSpans
+ _sym_prefix R_EdgeCodeEndT
+;_sym_prefix R_SurfacePatchT
+%endif	; _sym_prefix
 
 ; externs from C code
  extern r_bmodelactive

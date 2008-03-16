@@ -3,10 +3,49 @@
 ; x86 assembly-language edge clipping and emission code
 ;
 ; this file uses NASM syntax.
-; $Id: r_drawa.asm,v 1.7 2008-03-16 00:00:25 sezero Exp $
+; $Id: r_drawa.asm,v 1.8 2008-03-16 14:30:46 sezero Exp $
 ;
 
-%idefine offset
+%include "asm_nasm.inc"
+
+; underscore prefix handling
+; for C-shared symbols:
+%ifmacro _sym_prefix
+; C-shared externs:
+ _sym_prefix r_refdef
+ _sym_prefix ycenter
+ _sym_prefix xcenter
+ _sym_prefix r_leftclipped
+ _sym_prefix r_leftenter
+ _sym_prefix r_rightclipped
+ _sym_prefix r_rightenter
+ _sym_prefix modelorg
+ _sym_prefix xscale
+ _sym_prefix yscale
+ _sym_prefix r_leftexit
+ _sym_prefix r_rightexit
+ _sym_prefix r_lastvertvalid
+ _sym_prefix cacheoffset
+ _sym_prefix newedges
+ _sym_prefix removeedges
+ _sym_prefix r_pedge
+ _sym_prefix r_framecount
+ _sym_prefix r_u1
+ _sym_prefix r_emitted
+ _sym_prefix edge_p
+ _sym_prefix surface_p
+ _sym_prefix surfaces
+ _sym_prefix r_lzi1
+ _sym_prefix r_v1
+ _sym_prefix r_ceilv1
+ _sym_prefix r_nearzi
+ _sym_prefix r_nearzionly
+ _sym_prefix vright
+ _sym_prefix vup
+ _sym_prefix vpn
+; C-shared globals:
+ _sym_prefix R_ClipEdge
+%endif	; _sym_prefix
 
 ; externs from C code
  extern r_refdef
