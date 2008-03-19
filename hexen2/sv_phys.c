@@ -2,7 +2,7 @@
 	sv_phys.c
 	sv physics
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sv_phys.c,v 1.25 2008-01-22 12:01:05 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sv_phys.c,v 1.26 2008-03-19 08:08:09 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -1017,6 +1017,8 @@ static void SV_PushRotate (edict_t *pusher, float movetime)
 	// see if any solid entities are inside the final position
 	num_moved = 0;
 	check = NEXT_EDICT(sv.edicts);
+	VectorClear(testmove);	// avoid compiler warning:  testmove is
+				// initialized with case 0 in the switch
 	for (e = 1; e < sv.num_edicts; e++, check = NEXT_EDICT(check))
 	{
 		if (check->free)
@@ -2241,6 +2243,8 @@ void SV_Physics (void)
 // treat each object in turn
 //
 	ent = sv.edicts;
+	VectorClear(oldOrigin);	// avoid compiler warning
+	VectorClear(oldAngle);	// avoid compiler warning	
 	for (i = 0; i < sv.num_edicts; i++, ent = NEXT_EDICT(ent))
 	{
 		if (ent->free)
