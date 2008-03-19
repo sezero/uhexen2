@@ -3,6 +3,23 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2008-03-19 (CVS):
+    * maputils: commented out RecursiveGrowRegion along with its servants whose
+      all uses are commented out.. found by a gcc-4.3 warning.
+    * silenced a pair of bogus gcc-4.x warnings in sv_phys.c which showed up after
+      the mathlib macro clean-ups:
+	sv_phys.c: In function 'SV_PushRotate':
+	sv_phys.c:941: warning: 'testmove[2]' may be used uninitialized in this function
+	sv_phys.c:941: warning: 'testmove[1]' may be used uninitialized in this function
+	sv_phys.c:941: warning: 'testmove[0]' may be used uninitialized in this function
+	sv_phys.c: In function 'SV_Physics':
+	sv_phys.c:2220: warning: 'oldAngle[0]' may be used uninitialized in this function
+	sv_phys.c:2220: warning: 'oldAngle[1]' may be used uninitialized in this function
+	sv_phys.c:2220: warning: 'oldAngle[2]' may be used uninitialized in this function
+	sv_phys.c:2220: warning: 'oldOrigin[0]' may be used uninitialized in this function
+	sv_phys.c:2220: warning: 'oldOrigin[1]' may be used uninitialized in this function
+	sv_phys.c:2220: warning: 'oldOrigin[2]' may be used uninitialized in this function
+
 2008-03-16 (CVS):
     * nasm symbol prefix handling: added header file asm_nasm.inc and moved
       common definitions into it. created macro _sym_prefix which adds an
