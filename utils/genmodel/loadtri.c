@@ -1,6 +1,6 @@
 /*
 	loadtri.c
-	$Id: loadtri.c,v 1.12 2008-01-29 19:49:20 sezero Exp $
+	$Id: loadtri.c,v 1.13 2008-03-19 20:00:15 sezero Exp $
 */
 
 // HEADER FILES ------------------------------------------------------------
@@ -829,14 +829,17 @@ static unsigned long FilePosition(void)
 static void LoadTRI(FILE *input, triangle_t **triList, int *triangleCount)
 {
 	int		i, j, k;
-	float	start;
 	char	text[256];
 	int		count;
 	int		magic;
 	tf_triangle	tri;
 	triangle_t	*ptri;
 	int		exitpattern;
-	float	t;
+	float		t;
+	union {
+		float	_f;
+		int	_i;
+	} start;
 
 	t = -FLOAT_START;
 	*((unsigned char *)&exitpattern + 0) = *((unsigned char *)&t + 3);
@@ -856,12 +859,12 @@ static void LoadTRI(FILE *input, triangle_t **triList, int *triangleCount)
 
 	while (feof(input) == 0)
 	{
-		fread(&start, sizeof(float), 1, input);
-		*(int *) (char *) &start = BigLong(*(int *) (char *) &start);
+		fread(&start._f, sizeof(float), 1, input);
+		start._i = BigLong(start._i);
 
-		if (*(int *) (char *) &start != exitpattern)
+		if (start._i != exitpattern)
 		{
-			if (start == FLOAT_START)
+			if (start._f == FLOAT_START)
 			{ // Start of an object or group of objects
 				i = -1;
 				do
@@ -885,7 +888,7 @@ static void LoadTRI(FILE *input, triangle_t **triList, int *triangleCount)
 					//fprintf(stdout,"  Object texture name: '%s'\n", text);
 				}
 			}
-			else if (start == FLOAT_END)
+			else if (start._f == FLOAT_END)
 			{
 				i = -1;
 				do
@@ -943,7 +946,7 @@ static void ByteSwapTri(tf_triangle *tri)
 {
 	int		i;
 
-	for (i = 0; i < sizeof(tf_triangle)/4; i++)
+	for (i = 0; i < (int) sizeof(tf_triangle)/4; i++)
 	{
 		((int *)tri)[i] = BigLong(((int *)tri)[i]);
 	}
