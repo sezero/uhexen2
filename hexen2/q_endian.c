@@ -2,7 +2,7 @@
 	q_endian.c
 	byte order functions
 
-	$Id: q_endian.c,v 1.8 2008-01-12 09:46:16 sezero Exp $
+	$Id: q_endian.c,v 1.9 2008-03-19 18:48:04 sezero Exp $
 
 	Copyright (C) 1996-1997  Id Software, Inc.
 	Copyright (C) 2007-2008  O.Sezer <sezero@users.sourceforge.net>
@@ -210,12 +210,12 @@ float FloatNoSwap (float f)
 	return f;
 }
 
-short	(*BigShort) (short l);
-short	(*LittleShort) (short l);
-int	(*BigLong) (int l);
-int	(*LittleLong) (int l);
-float	(*BigFloat) (float l);
-float	(*LittleFloat) (float l);
+short	(*BigShort) (short);
+short	(*LittleShort) (short);
+int	(*BigLong) (int);
+int	(*LittleLong) (int);
+float	(*BigFloat) (float);
+float	(*LittleFloat) (float);
 
 #endif	/* ENDIAN_RUNTIME_DETECT */
 

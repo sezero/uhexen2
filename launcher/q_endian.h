@@ -2,7 +2,7 @@
 	q_endian.h
 	endianness handling
 
-	$Id: q_endian.h,v 1.7 2008-01-12 09:46:18 sezero Exp $
+	$Id: q_endian.h,v 1.8 2008-03-19 18:48:07 sezero Exp $
 
 	Copyright (C) 1996-1997  Id Software, Inc.
 	Copyright (C) 2007-2008  O.Sezer <sezero@users.sourceforge.net>
@@ -42,7 +42,6 @@
 /* if you want to detect byte order at runtime
  * instead of compile time, define this as 1 :
  */
-
 #define	ENDIAN_RUNTIME_DETECT		0
 
 
@@ -175,12 +174,12 @@ extern void ByteOrder_Init (void);
 */
 #if ENDIAN_RUNTIME_DETECT
 
-extern short	(*BigShort) (short l);
-extern short	(*LittleShort) (short l);
-extern int	(*BigLong) (int l);
-extern int	(*LittleLong) (int l);
-extern float	(*BigFloat) (float l);
-extern float	(*LittleFloat) (float l);
+extern short	(*BigShort) (short);
+extern short	(*LittleShort) (short);
+extern int	(*BigLong) (int);
+extern int	(*LittleLong) (int);
+extern float	(*BigFloat) (float);
+extern float	(*LittleFloat) (float);
 
 #else	/* ! ENDIAN_RUNTIME_DETECT */
 
