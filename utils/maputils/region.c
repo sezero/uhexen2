@@ -1,6 +1,6 @@
 /*
 	region.c
-	$Id: region.c,v 1.8 2007-12-14 16:41:25 sezero Exp $
+	$Id: region.c,v 1.9 2008-03-19 08:15:20 sezero Exp $
 */
 
 #include "q_stdinc.h"
@@ -32,6 +32,7 @@ face to region mapping numbers
 #define	MAX_EDGES_IN_REGION	32
 
 static int		firstedge;
+#if 0	/* all uses are commented out */
 static vec3_t	region_mins, region_maxs;
 
 static void AddPointToRegion (vec3_t p)
@@ -47,13 +48,11 @@ static void AddPointToRegion (vec3_t p)
 	}
 }
 
-#if 0	// all uses are commented out
 static void ClearRegionSize (void)
 {
 	region_mins[0] = region_mins[1] = region_mins[2] = 9999;
 	region_maxs[0] = region_maxs[1] = region_maxs[2] = -9999;
 }
-#endif
 
 static void AddFaceToRegionSize (face_t *f)
 {
@@ -162,8 +161,9 @@ static void RecursiveGrowRegion (dface_t *r, face_t *f)
 		}
 	}
 }
+#endif	/* all uses commented out */
 
-#if 0	// no uses
+#if 0	/* no uses */
 void PrintDface (int f)
 {	// for debugging
 	dface_t	*df;
@@ -223,10 +223,10 @@ void FindEdgeUse (int v)
 		}
 	}
 }
-#endif
+#endif	/* no uses */
 
 
-#if 0	// all uses are commented out
+#if 0	/* all uses are commented out */
 /*
 ================
 HealEdges
@@ -382,7 +382,7 @@ static void RemoveColinearEdges (void)
 //	qprintf ("%5i c3+\n", c3);
 	qprintf ("%5i deges removed by tjunction healing\n", c2);
 }
-#endif
+#endif	/* all uses commented out */
 
 
 /*
