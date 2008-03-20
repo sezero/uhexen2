@@ -19,7 +19,9 @@ Known Bugs
 
 - Software renderer, C-only code, Rider Bosses: The death beams doesn't
   fade out as they do in the intel assembly code. The origin of Famine's
-  tractor beam isn't translucent as it should be.
+  tractor beam isn't translucent as it should be. These models are using
+  D_Polyset???T5 functions (EF_SPECIAL_TRANS) and we are doing something
+  wrong with their C-implementation.
 
 - Software renderer, x86 asm code: if compiled using cplusplus compilers,
   ie. g++, there are many graphical glitches. Seen on linux, windows and
