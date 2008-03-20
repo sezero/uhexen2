@@ -3,6 +3,14 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2008-03-20 (CVS):
+    * various insignificant clean-ups / tidy-ups.
+    * fixed a gcc-4.3 / type-punned pointer / strict aliasing warning in
+      utils/genmodel/loadtri.c.
+    * d_polyse.c: pointer must be cast to intptr_t, not necessarily long.
+    * d_polyse.c (D_DrawSubdivT5): d_pcolormap pointer isn't used by T5 functions.
+    * updated BUGS (2008-03-20.)
+
 2008-03-19 (CVS):
     * maputils: commented out RecursiveGrowRegion along with its servants whose
       all uses are commented out.. found by a gcc-4.3 warning.
