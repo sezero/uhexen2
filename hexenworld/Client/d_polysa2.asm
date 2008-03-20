@@ -4,7 +4,7 @@
 ; with translucency handling, #1.
 ;
 ; this file uses NASM syntax.
-; $Id: d_polysa2.asm,v 1.7 2008-03-16 14:30:51 sezero Exp $
+; $Id: d_polysa2.asm,v 1.8 2008-03-20 14:07:53 sezero Exp $
 ;
 
 %include "asm_nasm.inc"
@@ -1033,6 +1033,11 @@ LSkip2:
  pop ebp
  ret
 
+
+;;;;;;;;;;;;;;;;;;;;;;;;
+; D_PolysetDrawFinalVertsT
+;;;;;;;;;;;;;;;;;;;;;;;;
+
 L_PDFVertT:
  push esi
  push edi
@@ -1083,11 +1088,6 @@ LNextVert:
  pop edi
  pop esi
  ret
-
-
-;;;;;;;;;;;;;;;;;;;;;;;;
-; D_PolysetDrawFinalVertsT
-;;;;;;;;;;;;;;;;;;;;;;;;
 
  global D_PolysetDrawFinalVertsT
 D_PolysetDrawFinalVertsT:

@@ -3,7 +3,7 @@
 ; x86 assembly-language polygon model drawing code
 ;
 ; this file uses NASM syntax.
-; $Id: d_polysa.asm,v 1.7 2008-03-16 14:30:46 sezero Exp $
+; $Id: d_polysa.asm,v 1.8 2008-03-20 14:07:51 sezero Exp $
 ;
 
 %include "asm_nasm.inc"
@@ -924,6 +924,11 @@ LSkip2:
  pop ebp
  ret
 
+
+;;;;;;;;;;;;;;;;;;;;;;;;
+; D_PolysetDrawFinalVerts
+;;;;;;;;;;;;;;;;;;;;;;;;
+
 L_PDFVert:
  push esi
  push edi
@@ -961,11 +966,6 @@ LNextVert:
  pop edi
  pop esi
  ret
-
-
-;;;;;;;;;;;;;;;;;;;;;;;;
-; D_PolysetDrawFinalVerts
-;;;;;;;;;;;;;;;;;;;;;;;;
 
  global D_PolysetDrawFinalVerts
 D_PolysetDrawFinalVerts:
