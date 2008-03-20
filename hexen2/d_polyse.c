@@ -3,7 +3,7 @@
 	routines for drawing sets of polygons sharing the same
 	texture (used for Alias models)
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/d_polyse.c,v 1.21 2008-03-20 14:10:28 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/d_polyse.c,v 1.22 2008-03-20 14:12:10 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -932,8 +932,6 @@ static void D_DrawSubdivT5 (void)
 		{
 			continue;
 		}
-
-		d_pcolormap = &((byte *)acolormap)[index0->v[4] & 0xFF00];
 
 		if (ptri[i].facesfront)
 		{
