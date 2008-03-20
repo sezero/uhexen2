@@ -3,7 +3,7 @@
 	routines for drawing sets of polygons sharing the same
 	texture (used for Alias models)
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/d_polyse.c,v 1.17 2008-03-15 10:45:29 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/d_polyse.c,v 1.18 2008-03-20 14:10:28 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -1069,7 +1069,7 @@ void D_PolysetDrawT (void)
 void D_PolysetDrawT2 (void)
 {
 	a_spans = (spanpackage_t *)
-			(((long)&spans[0] + CACHE_SIZE - 1) & ~(CACHE_SIZE - 1));
+			(((intptr_t)&spans[0] + CACHE_SIZE - 1) & ~(CACHE_SIZE - 1));
 
 	if (r_affinetridesc.drawtype)
 	{
