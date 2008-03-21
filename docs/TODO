@@ -11,8 +11,6 @@ TODO:
 - Add multisampling support to win32
 - Make the fov command actually work in opengl.
 - Maybe add support for several image formats (jpeg, png, etc)
-- Software renderer: revisit the FoundTrans / TransCount usage
-  in non-intel code (d_edge.c, r_edge.c).
 - Software renderer: maybe add 16 bit support (r_pixbytes = 2,
   and even 4 for 32 bit)? The current code is largely missing
   translucency pieces and the d_8to16 and d_8to24 translation
