@@ -3,7 +3,7 @@
 	general refresh-related stuff shared between the refresh
 	and the driver
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/r_shared.h,v 1.11 2008-03-21 10:24:14 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/r_shared.h,v 1.12 2008-03-21 14:45:11 sezero Exp $
 */
 
 #ifndef __R_SHARED_H
@@ -155,8 +155,6 @@ extern	byte	*mainTransTable;
 extern	byte	*transTable;	/* the particle table */
 extern	byte	*playerTranslation;
 extern	const int	color_offsets[MAX_PLAYER_CLASS];
-
-extern	int	FoundTrans;	/* FIXME: see d_edge.c and r_edge.c !!! - O.S. */
 
 #endif	/*  !GLQUAKE	*/
 

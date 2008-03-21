@@ -2,7 +2,7 @@
 	r_local.h
 	private refresh defs
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/r_local.h,v 1.15 2008-03-07 08:10:58 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/r_local.h,v 1.16 2008-03-21 14:45:16 sezero Exp $
 */
 
 #ifndef __R_LOCAL_H
@@ -301,6 +301,7 @@ extern	int	r_clipflags;
 extern	int	r_dlightframecount;
 extern	qboolean	r_fov_greater_than_90;
 
+extern	int	FoundTrans;
 extern	int	TransCount;
 
 void R_StoreEfrags (efrag_t **ppefrag);

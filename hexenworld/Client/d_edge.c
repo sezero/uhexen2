@@ -1,7 +1,7 @@
 /*
 	d_edge.c
 
-	$Id: d_edge.c,v 1.17 2008-03-21 10:24:17 sezero Exp $
+	$Id: d_edge.c,v 1.18 2008-03-21 14:45:16 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -192,8 +192,6 @@ void D_DrawSurfaces (qboolean Translucent)
 	surfcache_t		*pcurrentcache;
 	vec3_t			world_transformed_modelorg;
 	vec3_t			local_modelorg;
-// O.S: FIXME: Raven commented this out. See r_edge.c for FoundTrans non-Intel usage
-//	static int		FoundTrans = 0;
 	int			count;
 
 	// Restore the settings
@@ -240,10 +238,7 @@ void D_DrawSurfaces (qboolean Translucent)
 				r_drawnpolycount++;
 
 				if (s->flags & SURF_TRANSLUCENT)
-				{
-				//	FoundTrans++;
 					continue;
-				}
 
 				d_zistepu = s->d_zistepu;
 				d_zistepv = s->d_zistepv;
@@ -376,7 +371,7 @@ void D_DrawSurfaces (qboolean Translucent)
 				}
 			}
 		}
-		else //if (FoundTrans)
+		else
 		{
 			count = 0;
 
@@ -386,7 +381,6 @@ void D_DrawSurfaces (qboolean Translucent)
 					continue;
 
 				count++;
-			//	FoundTrans--;
 
 				d_zistepu = s->d_zistepu;
 				d_zistepv = s->d_zistepv;

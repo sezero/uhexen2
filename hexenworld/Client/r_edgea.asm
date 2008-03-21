@@ -3,7 +3,7 @@
 ; x86 assembly-language edge-processing code.
 ;
 ; this file uses NASM syntax.
-; $Id: r_edgea.asm,v 1.7 2008-03-16 14:30:55 sezero Exp $
+; $Id: r_edgea.asm,v 1.8 2008-03-21 14:45:16 sezero Exp $
 ;
 
 %include "asm_nasm.inc"
@@ -29,6 +29,7 @@
  _sym_prefix R_RemoveEdges
  _sym_prefix R_StepActiveU
  _sym_prefix R_GenerateSpans
+;_sym_prefix R_GenerateTSpans
  _sym_prefix R_EdgeCodeEnd
  _sym_prefix R_SurfacePatch
 %endif	; _sym_prefix
@@ -47,7 +48,7 @@
 
 ; externs from ASM-only code
  extern R_SurfacePatchT
-;extern R_GenerateSpansT
+;extern R_GenerateTSpans
 
 
 SEGMENT .data
@@ -284,7 +285,7 @@ LPatch0:
  mov  dword [4+edx],esi
  ret
 LNoEmit3:
- mov  dword [FoundTrans],1
+ mov  dword [FoundTrans],1	; O.S.: this isn't reached..
 LNoEmit2:
  mov  dword [16+ecx],eax
  mov edx, dword [0+esi]
@@ -512,9 +513,10 @@ LPatch4:
  jnz Lgs_resetspanstate
  mov  dword [span_p],ebp
 
- ;cmp  dword [FoundTrans],1
- ;jne Done
- ;call near_R_GenerateSpansT
+;cmp  dword [FoundTrans],1
+;jne Done
+;call near R_GenerateTSpans
+
 Done:
  pop ebx
  pop esi

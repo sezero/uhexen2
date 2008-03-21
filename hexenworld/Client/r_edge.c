@@ -1,7 +1,7 @@
 /*
 	r_edge.c
 
-	$Id: r_edge.c,v 1.12 2008-03-21 10:24:17 sezero Exp $
+	$Id: r_edge.c,v 1.13 2008-03-21 14:45:16 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -47,7 +47,6 @@ edge_t	edge_sentinel;
 
 float	fv;
 
-//static int	show = 0;
 int		TransCount;
 #if	!id386
 int		FoundTrans;
@@ -308,11 +307,7 @@ static void R_CleanupSpan (void)
 		span->v = current_iv;
 		span->pnext = surf->spans;
 		surf->spans = span;
-	//	if (show == 1)
-	//		Con_Printf("Cleanup: %d,%d\n",span->u,span->count);
 	}
-	//else if (surf->flags & SURF_TRANSLUCENT)
-	//	FoundTrans = 1;
 
 // reset spanstate for all surfaces in the surface stack
 	do
@@ -342,8 +337,6 @@ static void R_CleanupSpanT (void)
 		span->v = current_iv;
 		span->pnext = surf->spans;
 		surf->spans = span;
-	//	if (show == 1)
-	//		Con_Printf("CleanupT: %d,%d\n",span->u,span->count);
 	}
 
 // reset spanstate for all surfaces in the surface stack
@@ -452,14 +445,12 @@ static void R_TrailingEdge (surf_t *surf, edge_t *edge)
 // edge preceding the start edge (that is, we haven't seen the
 // start edge yet)
 
-#if !id386
-	if ((surf->flags & SURF_TRANSLUCENT))
+	if (surf->flags & SURF_TRANSLUCENT)
 	{
 		FoundTrans = 1;
-		// inverted span
 		return;
 	}
-#endif
+
 	if (--surf->spanstate == 0)
 	{
 		if (surf->insubmodel)
@@ -469,11 +460,7 @@ static void R_TrailingEdge (surf_t *surf, edge_t *edge)
 		{
 		// emit a span (current top going away)
 			iu = edge->u >> 20;
-#if !id386
 			if (iu > surf->last_u)
-#else
-			if (iu > surf->last_u && !(surf->flags & SURF_TRANSLUCENT))
-#endif
 			{
 				span = span_p++;
 				span->u = surf->last_u;
@@ -481,11 +468,7 @@ static void R_TrailingEdge (surf_t *surf, edge_t *edge)
 				span->v = current_iv;
 				span->pnext = surf->spans;
 				surf->spans = span;
-			//	if (show == 1)
-			//		Con_Printf("Trailing: %d,%d\n",span->u,span->count);
 			}
-			//else if (surf->flags & SURF_TRANSLUCENT)
-			//	FoundTrans = 1;
 
 		// set last_u on the surface below
 			surf->next->last_u = iu;
@@ -494,12 +477,6 @@ static void R_TrailingEdge (surf_t *surf, edge_t *edge)
 		surf->prev->next = surf->next;
 		surf->next->prev = surf->prev;
 	}
-#if id386
-	else
-	{
-		surf->spanstate = 0;
-	}
-#endif
 }
 
 #if	!id386
@@ -529,8 +506,6 @@ static void R_TrailingEdgeT (surf_t *surf, edge_t *edge)
 				span->v = current_iv;
 				span->pnext = surf->spans;
 				surf->spans = span;
-			//	if (show == 1)
-			//		Con_Printf("TrailingT: %d,%d\n",span->u,span->count);
 			}
 
 		// set last_u on the surface below
@@ -561,8 +536,6 @@ static void R_LeadingEdge (edge_t *edge)
 		if (surf->flags & SURF_TRANSLUCENT) 
 		{
 			FoundTrans = 1;
-		//	if (show == 0)
-		//		show = 1;
 			return;
 		}
 
@@ -666,11 +639,7 @@ newtop:
 				span->v = current_iv;
 				span->pnext = surf2->spans;
 				surf2->spans = span;
-			//	if (show == 1)
-			//		Con_Printf("Leading: %d,%d\n",span->u,span->count);
 			}
-			//else if (surf2->flags & SURF_TRANSLUCENT)
-			//	FoundTrans = 1;
 
 		// set last_u on the new span
 			surf->last_u = iu;
@@ -802,8 +771,6 @@ newtop:
 				span->v = current_iv;
 				span->pnext = surf2->spans;
 				surf2->spans = span;
-			//	if (show == 1)
-			//		Con_Printf("LeadingT: %d,%d\n",span->u,span->count);
 			}
 
 		// set last_u on the new span
@@ -831,7 +798,7 @@ static void R_GenerateSpans (void)
 	surf_t		*surf;
 
 	r_bmodelactive = 0;
-	FoundTrans = 0;	/* FIXME ! */
+	FoundTrans = 0;
 
 // clear active surfaces to just the background surface
 	surfaces[1].next = surfaces[1].prev = &surfaces[1];
@@ -861,6 +828,9 @@ static void R_GenerateSpans (void)
 	R_CleanupSpan ();
 
 #if 0
+/* also disabled in asm code: see the commented
+ * out cmp / jne (under LPatch4) in r_edgea.asm
+ */
 	if (!FoundTrans)
 		return;
 
@@ -888,12 +858,6 @@ static void R_GenerateSpans (void)
 
 	R_CleanupSpanT ();
 #endif
-/*	if (show == 1)
-	{
-		show = 2;
-		Con_Printf("DONE\n");
-	}
-*/
 }
 
 /*
@@ -1024,8 +988,6 @@ void R_ScanEdges (qboolean Translucent)
 //
 	bottom = r_refdef.vrectbottom - 1;
 
-	//show = 0;
-
 	if (!Translucent)
 	{
 //		memset(TransList,0,sizeof(TransList));
@@ -1113,8 +1075,5 @@ void R_ScanEdges (qboolean Translucent)
 	{
 		D_DrawSurfaces (Translucent);
 	}
-
-	//if (!Translucent)
-	//	Con_Printf("Trans = %d\n",TransCount);
 }
 
