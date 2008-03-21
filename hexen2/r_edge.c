@@ -1,7 +1,7 @@
 /*
 	r_edge.c
 
-	$Id: r_edge.c,v 1.12 2008-03-07 08:10:38 sezero Exp $
+	$Id: r_edge.c,v 1.13 2008-03-21 10:24:14 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -50,7 +50,7 @@ float	fv;
 //static int	show = 0;
 int		TransCount;
 #if	!id386
-long		FoundTrans;
+int		FoundTrans;
 #endif
 
 static void (*pdrawfunc)(void);
@@ -312,7 +312,7 @@ static void R_CleanupSpan (void)
 	//		Con_Printf("Cleanup: %d,%d\n",span->u,span->count);
 	}
 	//else if (surf->flags & SURF_TRANSLUCENT)
-	//	FoundTrans = true;
+	//	FoundTrans = 1;
 
 // reset spanstate for all surfaces in the surface stack
 	do
@@ -455,7 +455,7 @@ static void R_TrailingEdge (surf_t *surf, edge_t *edge)
 #if !id386
 	if ((surf->flags & SURF_TRANSLUCENT))
 	{
-		FoundTrans = true;
+		FoundTrans = 1;
 		// inverted span
 		return;
 	}
@@ -485,7 +485,7 @@ static void R_TrailingEdge (surf_t *surf, edge_t *edge)
 			//		Con_Printf("Trailing: %d,%d\n",span->u,span->count);
 			}
 			//else if (surf->flags & SURF_TRANSLUCENT)
-			//	FoundTrans = true;
+			//	FoundTrans = 1;
 
 		// set last_u on the surface below
 			surf->next->last_u = iu;
@@ -560,7 +560,7 @@ static void R_LeadingEdge (edge_t *edge)
 		surf = &surfaces[edge->surfs[1]];
 		if (surf->flags & SURF_TRANSLUCENT) 
 		{
-			FoundTrans = true;
+			FoundTrans = 1;
 		//	if (show == 0)
 		//		show = 1;
 			return;
@@ -670,7 +670,7 @@ newtop:
 			//		Con_Printf("Leading: %d,%d\n",span->u,span->count);
 			}
 			//else if (surf2->flags & SURF_TRANSLUCENT)
-			//	FoundTrans = true;
+			//	FoundTrans = 1;
 
 		// set last_u on the new span
 			surf->last_u = iu;
@@ -831,7 +831,7 @@ static void R_GenerateSpans (void)
 	surf_t		*surf;
 
 	r_bmodelactive = 0;
-	FoundTrans = false;	/* FIXME ! */
+	FoundTrans = 0;	/* FIXME ! */
 
 // clear active surfaces to just the background surface
 	surfaces[1].next = surfaces[1].prev = &surfaces[1];
