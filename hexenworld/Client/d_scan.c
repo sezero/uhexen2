@@ -2,7 +2,7 @@
 	d_scan.c
 	Portable C scan-level rasterization code, all pixel depths.
 
-	$Id: d_scan.c,v 1.12 2007-09-14 14:10:07 sezero Exp $
+	$Id: d_scan.c,v 1.13 2008-03-21 15:55:03 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -630,14 +630,20 @@ void D_DrawZSpans (espan_t *pspan)
 	} while ((pspan = pspan->pnext) != NULL);
 }
 
-#if 0	/* old version */
+/*
+=============
+D_DrawSingleZSpans
+=============
+*/
 void D_DrawSingleZSpans (espan_t *pspan)
 {
-	int				count, izistep;
-	int				izi;
+	int			count, izistep;
+	int			izi;
 	short			*pdest;
 	float			zi;
 	float			du, dv;
+
+	ZScanCount = 0;
 
 // FIXME: check for clamping/range problems
 // we count on FP exceptions being turned off to avoid range problems
@@ -655,93 +661,6 @@ void D_DrawSingleZSpans (espan_t *pspan)
 // we count on FP exceptions being turned off to avoid range problems
 	izi = (int)(zi * 0x8000 * 0x10000);
 
-	if ((intptr_t)pdest & 0x02)
-	{
-		if (*pdest > (short)(izi >> 16))
-		{
-			ZScanCount++;
-			if (count > 0)
-				scanList[count-1] = 0;
-		}
-		else
-		{
-			if (count > 0)
-				scanList[count-1] = 1;
-			*pdest = (short)(izi >> 16);
-		}
-		pdest++;
-		izi += izistep;
-		count--;
-	}
-
-	if (count > 1)
-	{
-		do
-		{
-			if (*pdest > (short)(izi >> 16))
-			{
-				ZScanCount++;
-				if (count > 0)
-					scanList[count-1] = 0;
-			}
-			else
-			{
-				if (count > 0)
-					scanList[count-1] = 1;
-				*pdest = (short)(izi >> 16);
-			}
-			izi += izistep;
-			pdest++;
-			count--;
-		} while (count > 0);
-	}
-
-	if (count & 1)
-	{
-		if (*pdest > (short)(izi >> 16))
-		{
-			ZScanCount++;
-			if (count > 0)
-				scanList[count-1] = 0;
-		}
-		else
-		{
-			if (count > 0)
-				scanList[count-1] = 1;
-			*pdest = (short)(izi >> 16);
-		}
-		pdest++;
-		izi += izistep;
-		count--;
-	}
-}
-#endif	/* old D_DrawSingleZSpans */
-
-void D_DrawSingleZSpans (espan_t *pspan)
-{
-	int				count, izistep;
-	int				izi;
-	short			*pdest;
-	float			zi;
-	float			du, dv;
-
-// FIXME: check for clamping/range problems
-// we count on FP exceptions being turned off to avoid range problems
-	izistep = (int)(d_zistepu * 0x8000 * 0x10000);
-
-	pdest = d_pzbuffer + (d_zwidth * pspan->v) + pspan->u;
-
-	count = pspan->count;
-
-// calculate the initial 1/z
-	du = (float)pspan->u;
-	dv = (float)pspan->v;
-
-	zi = d_ziorigin + dv*d_zistepv + du*d_zistepu;
-// we count on FP exceptions being turned off to avoid range problems
-	izi = (int)(zi * 0x8000 * 0x10000);
-
-//	ZScanCount = 0;
 	if (count > 0)
 	{
 		do
