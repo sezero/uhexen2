@@ -3,6 +3,17 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2008-03-21 (CVS):
+    * FoundTrans isn't a long but an int, or int32_t to be exact because the asm
+      code uses it as a dword. it acts as a bool only. changed the type to int.
+    * r_edge.c, d_edge.c: FoundTrans clean-up; matched the C-only code to the
+      assembly code. FoundTrans stuff is only in refresh, not in drivers.
+    * d_scan.c: removed the old version of D_DrawSingleZSpans which didn't
+      match the asm code. the version in use did not reset ZScanCount for
+      which reason I don't know at all: enabled the "ZScanCount = 0" line
+      which is what the asm code does, anyway.
+    * updated the TODO list (2008-03-21.)
+
 2008-03-20 (CVS):
     * various insignificant clean-ups / tidy-ups.
     * fixed a gcc-4.3 / type-punned pointer / strict aliasing warning in
