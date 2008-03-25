@@ -254,20 +254,12 @@
 			sepNavWindowFrame = "{{15, 40}, {507, 706}}";
 		};
 	};
-	707D579A0AA9F6EE00313A9F /* h2_opt.h */ = {
+	707D579A0AA9F6EE00313A9F /* h2option.h */ = {
 		uiCtxt = {
 			sepNavIntBoundsRect = "{{0, 0}, {498, 2412}}";
 			sepNavSelRange = "{2838, 0}";
 			sepNavVisRect = "{{0, 0}, {498, 646}}";
 			sepNavWindowFrame = "{{18, 27}, {513, 719}}";
-		};
-	};
-	707D57A10AA9F6EE00313A9F /* gl_test.c */ = {
-		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {496, 2028}}";
-			sepNavSelRange = "{0, 0}";
-			sepNavVisRect = "{{0, 1382}, {496, 646}}";
-			sepNavWindowFrame = "{{15, 22}, {511, 719}}";
 		};
 	};
 	707D57A20AA9F6EE00313A9F /* gl_vidsdl.c */ = {
@@ -332,13 +324,6 @@
 			sepNavIntBoundsRect = "{{0, 0}, {842, 17064}}";
 			sepNavSelRange = "{1658, 0}";
 			sepNavVisRect = "{{0, 960}, {743, 203}}";
-		};
-	};
-	707D57BC0AA9F6EE00313A9F /* net_vcr.h */ = {
-		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {764, 420}}";
-			sepNavSelRange = "{0, 0}";
-			sepNavVisRect = "{{0, 0}, {764, 180}}";
 		};
 	};
 	707D57C00AA9F6EE00313A9F /* pr_edict.c */ = {
