@@ -1,5 +1,5 @@
 # GNU Makefile for hexenworld clients using GCC.
-# $Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/Makefile,v 1.77 2008-02-07 09:51:23 sezero Exp $
+# $Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/Makefile,v 1.78 2008-03-25 08:50:55 sezero Exp $
 #
 # Type "make help" to see the valid targets.
 #
@@ -288,7 +288,7 @@ ifeq ($(TARGET_OS),win32)
 ifeq ($(LINK_DIRECTX),no)
 EXT_FLAGS+= -DDX_DLSYM
 else
-LDFLAGS += -ldsound -ldinput -ldxguid
+LDFLAGS += -L$(W32STUFF)/dxsdk/lib -ldsound -ldinput -ldxguid
 endif
 
 ifeq ($(WITH_SPLASHES),no)

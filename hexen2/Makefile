@@ -1,5 +1,5 @@
 # GNU Makefile for (gl)hexen2 client/server binaries using GCC.
-# $Header: /home/ozzie/Download/0000/uhexen2/hexen2/Makefile,v 1.84 2008-02-07 09:51:23 sezero Exp $
+# $Header: /home/ozzie/Download/0000/uhexen2/hexen2/Makefile,v 1.85 2008-03-25 08:50:55 sezero Exp $
 #
 # Type "make help" to see the valid targets.
 #
@@ -308,7 +308,7 @@ ifeq ($(TARGET_OS),win32)
 ifeq ($(LINK_DIRECTX),no)
 EXT_FLAGS+= -DDX_DLSYM
 else
-LDFLAGS += -ldsound -ldinput -ldxguid
+LDFLAGS += -L$(W32STUFF)/dxsdk/lib -ldsound -ldinput -ldxguid
 endif
 
 ifeq ($(WITH_SPLASHES),no)
