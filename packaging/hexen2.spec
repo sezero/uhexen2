@@ -1,5 +1,5 @@
 # RPM spec file for RedHat and Fedora
-# $Id: hexen2.spec,v 1.54 2008-02-08 17:09:24 sezero Exp $
+# $Id: hexen2.spec,v 1.55 2008-03-25 14:05:03 sezero Exp $
 
 # build options :
 # --without alsa: build without alsa audio support
@@ -25,12 +25,12 @@
 
 # pre-release version: MAKE SURE to change this
 # to an %undefine for the final realease!!
-%define prerelease	rc1
+%define prerelease	rc2
 
 # package release number for final-release:
 %define pkg_final	1
 # package release number for pre-release:
-%define pkg_prerel	1
+%define pkg_prerel	2
 
 Name:		hexen2
 License:	GPL
@@ -290,6 +290,9 @@ desktop-file-install \
 %{_prefix}/games/%{name}/docs/README.hwmaster
 
 %changelog
+* Tue Mar 25 2008 O.Sezer <sezero@users.sourceforge.net> 1.4.3-0.2.rc2
+- 1.4.3-rc2.
+
 * Thu Feb 07 2008 O.Sezer <sezero@users.sourceforge.net> 1.4.3-0.1.rc1
 - 1.4.3-rc1.
 
