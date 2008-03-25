@@ -1,4 +1,3 @@
-
 Hexen II: Hammer of Thyrion
 Version 1.4.3
 
@@ -134,7 +133,7 @@ own cross compiler.  You can then run the "build_cross_win32.sh" scripts
 residing in all directories. Read the scripts and edit them as necessary.
 
 I usually compile all of the Hammer of Thyrion windows binaries on linux
-using a snapshot of MinGW from Aug. 05, 2007. Both x86/glibc-2.3 binaries
+using a snapshot of MinGW from Mar. 24, 2008. Both x86/glibc-2.3 binaries
 and the sources for this snapshot can be found on our downloads page under
 the support files section.
 
@@ -188,7 +187,7 @@ inttypes.h header, besides, they don't have a vsnprintf implementation.
 Compilers other than djgpp most probably won't work at all.  I use
 gcc-3.3.6 and binutils-2.15 and compile the binaries on linux with a
 cross compilation toolchain using 2.04 runtime library from the CVS
-(snapshot from 28 Dec. 2007): see the tiny script build_cross_dos.sh
+snapshot from Mar. 24, 2008:  see the tiny script build_cross_dos.sh
 to have an idea of how I do it.  You can download both the sources and
 the x86/glibc-2.3 binaries of my toolchain from our downloads page under
 the support files section.
@@ -203,7 +202,7 @@ the "0.90+ r5" or a newer version.
 Links:
 ------
 SDL homepage		:	http://www.libsdl.org/
-SDL_mixer homepage	:	http://www.libsdl.org/projects/SDL_mixer
+SDL_mixer homepage	:	http://www.libsdl.org/projects/SDL_mixer/
 ALSA homepage		:	http://www.alsa-project.org/
 GCC homepage		:	http://gcc.gnu.org/
 NASM homepage		:	http://nasm.sourceforge.net/
