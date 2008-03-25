@@ -3,6 +3,16 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2008-03-25 (CVS, 1.4.3-rc2):
+    * a few updates to the documentation.
+    * updated compilation instructions.
+    * added link libraries path for directx stuff to the makefiles.
+    * added directx link libs for mingw.
+    * added sources for building the directx link libs (from icculus.org sources).
+    * removed outdated entries from OSX Xcode files.
+    * updated beta release version / date (1.4.3-rc2 / 2008-03-25).
+    * marked the cvs snapshot from Mar. 25, 2008, as 1.4.3-rc2.
+
 2008-03-21 (CVS):
     * FoundTrans isn't a long but an int, or int32_t to be exact because the asm
       code uses it as a dword. it acts as a bool only. changed the type to int.
