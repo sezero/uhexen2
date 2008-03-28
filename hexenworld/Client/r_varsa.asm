@@ -3,7 +3,7 @@
 ; global refresh variables
 ;
 ; this file uses NASM syntax.
-; $Id: r_varsa.asm,v 1.5 2008-03-16 14:30:55 sezero Exp $
+; $Id: r_varsa.asm,v 1.6 2008-03-28 08:01:56 sezero Exp $
 ;
 
 %include "asm_nasm.inc"
@@ -14,10 +14,14 @@
 ; C-shared externs:
 ; C-shared globals:
  _sym_prefix r_bmodelactive
+ _sym_prefix FoundTrans
 %endif	; _sym_prefix
 
 SEGMENT .data
 
+;
+; ASM-only variables
+;
  global float_1, float_particle_z_clip, float_point5
  global float_minus_1, float_0
 float_0 dd 0.0
@@ -41,6 +45,12 @@ FloatZero dd 0
 Float2ToThe31nd dd 04f000000h
 FloatMinus2ToThe31nd dd 0cf000000h
 
+;
+; C-shared variables
+;
  global r_bmodelactive
 r_bmodelactive dd 0
+
+ global FoundTrans
+FoundTrans dd 0
 

@@ -1,7 +1,7 @@
 /*
 	r_edge.c
 
-	$Id: r_edge.c,v 1.14 2008-03-21 14:45:11 sezero Exp $
+	$Id: r_edge.c,v 1.15 2008-03-28 08:01:56 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -48,9 +48,6 @@ edge_t	edge_sentinel;
 float	fv;
 
 int		TransCount;
-#if	!id386
-int		FoundTrans;
-#endif
 
 static void (*pdrawfunc)(void);
 static void (*pdrawTfunc)(void);

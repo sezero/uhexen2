@@ -2,7 +2,7 @@
 	r_vars.c
 	global refresh variables
 
-	$Id: r_vars.c,v 1.4 2008-03-07 08:10:58 sezero Exp $
+	$Id: r_vars.c,v 1.5 2008-03-28 08:01:56 sezero Exp $
 */
 
 #include	"quakedef.h"
@@ -20,6 +20,8 @@
 // FIXME: do separately for refresh engine and driver
 
 int		r_bmodelactive;
+
+int		FoundTrans;
 
 #endif	/* !id386 */
 

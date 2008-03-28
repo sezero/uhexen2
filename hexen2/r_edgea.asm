@@ -3,7 +3,7 @@
 ; x86 assembly-language edge-processing code.
 ;
 ; this file uses NASM syntax.
-; $Id: r_edgea.asm,v 1.8 2008-03-21 14:45:11 sezero Exp $
+; $Id: r_edgea.asm,v 1.9 2008-03-28 08:01:56 sezero Exp $
 ;
 
 %include "asm_nasm.inc"
@@ -12,6 +12,7 @@
 ; for C-shared symbols:
 %ifmacro _sym_prefix
 ; C-shared externs:
+ _sym_prefix FoundTrans
  _sym_prefix r_bmodelactive
  _sym_prefix surfaces
  _sym_prefix edge_tail
@@ -23,7 +24,6 @@
  _sym_prefix span_p
  _sym_prefix fv
 ; C-shared globals:
- _sym_prefix FoundTrans
  _sym_prefix R_EdgeCodeStart
  _sym_prefix R_InsertNewEdges
  _sym_prefix R_RemoveEdges
@@ -35,6 +35,7 @@
 %endif	; _sym_prefix
 
 ; externs from C code
+ extern FoundTrans
  extern r_bmodelactive
  extern surfaces
  extern edge_tail
@@ -57,9 +58,6 @@ Ltemp dd 0
 float_1_div_0100000h dd 035800000h
 float_point_999 dd 0.999
 float_1_point_001 dd 1.001
-
- global FoundTrans
-FoundTrans dd 0
 
 
 SEGMENT .text
