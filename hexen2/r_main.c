@@ -1,7 +1,7 @@
 /*
 	r_main.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/r_main.c,v 1.31 2008-03-15 10:55:07 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/r_main.c,v 1.32 2008-03-28 07:54:50 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -276,6 +276,10 @@ void R_Init (void)
 	if (fs_filesize != 65536)
 		Sys_Error ("Unexpected file size (%lu) for %s\n", (unsigned long)fs_filesize, "gfx/tinttab2.lmp");
 
+	playerTranslation = (byte *)FS_LoadHunkFile ("gfx/player.lmp");
+	if (!playerTranslation)
+		Sys_Error ("Couldn't load gfx/player.lmp");
+
 	R_InitParticles ();
 
 	D_Init ();
@@ -301,10 +305,6 @@ void R_Init (void)
 	Sys_MakeCodeWriteable ((int)D_DrawTurbulent8TSpan, (int)D_DrawTurbulent8TSpanEnd - (int)D_DrawTurbulent8TSpan);
 	R_TranPatch7();
 #endif
-
-	playerTranslation = (byte *)FS_LoadHunkFile ("gfx/player.lmp");
-	if (!playerTranslation)
-		Sys_Error ("Couldn't load gfx/player.lmp");
 }
 
 
