@@ -3,7 +3,7 @@
 	routines for drawing sets of polygons sharing the same
 	texture (used for Alias models)
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/d_polyse.c,v 1.22 2008-03-20 14:12:10 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/d_polyse.c,v 1.23 2008-03-28 07:44:58 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -89,7 +89,7 @@ D_PolysetDrawFinalVerts
 static void do_PolysetDrawFinalVerts (finalvert_t *pv)
 {
 	int		z;
-	short	*zbuf;
+	short		*zbuf;
 
 	// valid triangle coordinates for filling can include the bottom and
 	// right clip edges, due to the fill rule; these shouldn't be drawn
@@ -99,7 +99,7 @@ static void do_PolysetDrawFinalVerts (finalvert_t *pv)
 		zbuf = zspantable[pv->v[1]] + pv->v[0];
 		if (z >= *zbuf)
 		{
-			int		pix;
+			unsigned int	pix;
 
 			*zbuf = z;
 			pix = skintable[pv->v[3]>>16][pv->v[2]>>16];
@@ -112,8 +112,8 @@ static void do_PolysetDrawFinalVerts (finalvert_t *pv)
 static void do_PolysetDrawFinalVertsT (finalvert_t *pv)
 {
 	int		z;
-	short	*zbuf;
-	byte	color_map_idx;
+	short		*zbuf;
+	unsigned int	color_map_idx;
 
 	// valid triangle coordinates for filling can include the bottom and
 	// right clip edges, due to the fill rule; these shouldn't be drawn
@@ -127,7 +127,7 @@ static void do_PolysetDrawFinalVertsT (finalvert_t *pv)
 
 			if (color_map_idx != 0)
 			{
-				int		pix, pix2;
+				unsigned int	pix, pix2;
 
 				*zbuf = z;
 				pix = ((byte *)acolormap)[color_map_idx + (pv->v[4] & 0xFF00)];
@@ -142,8 +142,8 @@ static void do_PolysetDrawFinalVertsT (finalvert_t *pv)
 static void do_PolysetDrawFinalVertsT2 (finalvert_t *pv)
 {
 	int		z;
-	short	*zbuf;
-	byte	color_map_idx;
+	short		*zbuf;
+	unsigned int	color_map_idx;
 
 	// valid triangle coordinates for filling can include the bottom and
 	// right clip edges, due to the fill rule; these shouldn't be drawn
@@ -157,7 +157,7 @@ static void do_PolysetDrawFinalVertsT2 (finalvert_t *pv)
 
 			if (color_map_idx != 0)
 			{
-				int		pix, pix2;
+				unsigned int	pix, pix2;
 
 				*zbuf = z;
 				pix = ((byte *)acolormap)[color_map_idx + (pv->v[4] & 0xFF00)];
@@ -179,8 +179,8 @@ static void do_PolysetDrawFinalVertsT2 (finalvert_t *pv)
 static void do_PolysetDrawFinalVertsT3 (finalvert_t *pv)
 {
 	int		z;
-	short	*zbuf;
-	byte	color_map_idx;
+	short		*zbuf;
+	unsigned int	color_map_idx;
 
 	// valid triangle coordinates for filling can include the bottom and
 	// right clip edges, due to the fill rule; these shouldn't be drawn
@@ -194,7 +194,7 @@ static void do_PolysetDrawFinalVertsT3 (finalvert_t *pv)
 
 			if (color_map_idx != 0)
 			{
-				int		pix;
+				unsigned int	pix;
 
 				*zbuf = z;
 				pix = ((byte *)acolormap)[color_map_idx + (pv->v[4] & 0xFF00)];
@@ -207,8 +207,8 @@ static void do_PolysetDrawFinalVertsT3 (finalvert_t *pv)
 static void do_PolysetDrawFinalVertsT5 (finalvert_t *pv)
 {
 	int		z;
-	short	*zbuf;
-	byte	color_map_idx;
+	short		*zbuf;
+	unsigned int	color_map_idx;
 
 	// valid triangle coordinates for filling can include the bottom and
 	// right clip edges, due to the fill rule; these shouldn't be drawn
@@ -222,7 +222,7 @@ static void do_PolysetDrawFinalVertsT5 (finalvert_t *pv)
 
 			if (color_map_idx != 0)
 			{
-				int		pix, pix2;
+				unsigned int	pix, pix2;
 
 				*zbuf = z;
 				pix = color_map_idx;
@@ -281,7 +281,7 @@ static void D_PolysetRecursiveTriangle (int *lp1, int *lp2, int *lp3)
 	int		d;
 	int		new_p[6];
 	int		z;
-	short	*zbuf;
+	short		*zbuf;
 
 	d = lp2[0] - lp1[0];
 	if (d < -1 || d > 1)
@@ -338,7 +338,7 @@ split:
 	zbuf = zspantable[new_p[1]] + new_p[0];
 	if (z >= *zbuf)
 	{
-		int		pix;
+		unsigned int	pix;
 
 		*zbuf = z;
 		pix = d_pcolormap[skintable[new_p[3]>>16][new_p[2]>>16]];
@@ -357,8 +357,8 @@ static void D_PolysetRecursiveTriangleT (int *lp1, int *lp2, int *lp3)
 	int		d;
 	int		new_p[6];
 	int		z;
-	short	*zbuf;
-	byte	color_map_idx;
+	short		*zbuf;
+	unsigned int	color_map_idx;
 
 	d = lp2[0] - lp1[0];
 	if (d < -1 || d > 1)
@@ -419,7 +419,7 @@ split:
 
 		if (color_map_idx != 0)
 		{
-			int		pix, pix2;
+			unsigned int	pix, pix2;
 
 			*zbuf = z;
 			pix = d_pcolormap[color_map_idx];
@@ -441,8 +441,8 @@ static void D_PolysetRecursiveTriangleT2 (int *lp1, int *lp2, int *lp3)
 	int		d;
 	int		new_p[6];
 	int		z;
-	short	*zbuf;
-	byte	color_map_idx;
+	short		*zbuf;
+	unsigned int	color_map_idx;
 
 	d = lp2[0] - lp1[0];
 	if (d < -1 || d > 1)
@@ -503,7 +503,7 @@ split:
 
 		if (color_map_idx != 0)
 		{
-			int		pix, pix2;
+			unsigned int	pix, pix2;
 
 			*zbuf = z;
 			pix = d_pcolormap[color_map_idx];
@@ -533,8 +533,8 @@ static void D_PolysetRecursiveTriangleT3 (int *lp1, int *lp2, int *lp3)
 	int		d;
 	int		new_p[6];
 	int		z;
-	short	*zbuf;
-	byte	color_map_idx;
+	short		*zbuf;
+	unsigned int	color_map_idx;
 
 	d = lp2[0] - lp1[0];
 	if (d < -1 || d > 1)
@@ -595,7 +595,7 @@ split:
 
 		if (color_map_idx != 0)
 		{
-			int		pix;
+			unsigned int	pix;
 
 			*zbuf = z;
 			pix = d_pcolormap[color_map_idx];
@@ -615,8 +615,8 @@ static void D_PolysetRecursiveTriangleT5 (int *lp1, int *lp2, int *lp3)
 	int		d;
 	int		new_p[6];
 	int		z;
-	short	*zbuf;
-	byte	color_map_idx;
+	short		*zbuf;
+	unsigned int	color_map_idx;
 
 	d = lp2[0] - lp1[0];
 	if (d < -1 || d > 1)
@@ -677,7 +677,7 @@ split:
 
 		if (color_map_idx != 0)
 		{
-			int		pix, pix2;
+			unsigned int	pix, pix2;
 
 			*zbuf = z;
 			pix = color_map_idx;
@@ -702,8 +702,7 @@ static void D_DrawSubdiv (void)
 {
 	mtriangle_t		*ptri;
 	finalvert_t		*pfv, *index0, *index1, *index2;
-	int				i;
-	int				lnumtriangles;
+	int			i, lnumtriangles;
 
 	pfv = r_affinetridesc.pfinalverts;
 	ptri = r_affinetridesc.ptriangles;
@@ -755,8 +754,7 @@ static void D_DrawSubdivT (void)
 {
 	mtriangle_t		*ptri;
 	finalvert_t		*pfv, *index0, *index1, *index2;
-	int				i;
-	int				lnumtriangles;
+	int			i, lnumtriangles;
 
 	pfv = r_affinetridesc.pfinalverts;
 	ptri = r_affinetridesc.ptriangles;
@@ -808,8 +806,7 @@ static void D_DrawSubdivT2 (void)
 {
 	mtriangle_t		*ptri;
 	finalvert_t		*pfv, *index0, *index1, *index2;
-	int				i;
-	int				lnumtriangles;
+	int			i, lnumtriangles;
 
 	pfv = r_affinetridesc.pfinalverts;
 	ptri = r_affinetridesc.ptriangles;
@@ -861,8 +858,7 @@ static void D_DrawSubdivT3 (void)
 {
 	mtriangle_t		*ptri;
 	finalvert_t		*pfv, *index0, *index1, *index2;
-	int				i;
-	int				lnumtriangles;
+	int			i, lnumtriangles;
 
 	pfv = r_affinetridesc.pfinalverts;
 	ptri = r_affinetridesc.ptriangles;
@@ -914,8 +910,7 @@ static void D_DrawSubdivT5 (void)
 {
 	mtriangle_t		*ptri;
 	finalvert_t		*pfv, *index0, *index1, *index2;
-	int				i;
-	int				lnumtriangles;
+	int			i, lnumtriangles;
 
 	pfv = r_affinetridesc.pfinalverts;
 	ptri = r_affinetridesc.ptriangles;
@@ -971,8 +966,7 @@ static void D_DrawNonSubdiv (void)
 {
 	mtriangle_t		*ptri;
 	finalvert_t		*pfv, *index0, *index1, *index2;
-	int				i;
-	int				lnumtriangles;
+	int			i, lnumtriangles;
 
 	pfv = r_affinetridesc.pfinalverts;
 	ptri = r_affinetridesc.ptriangles;
@@ -1121,7 +1115,7 @@ D_PolysetUpdateTables
 void D_PolysetUpdateTables (void)
 {
 	int		i;
-	byte	*s;
+	byte		*s;
 
 	if (r_affinetridesc.skinwidth != skinwidth ||
 		r_affinetridesc.pskin != skinstart)
@@ -1219,7 +1213,7 @@ static void D_PolysetSetUpForLineScan(fixed8_t startvertu, fixed8_t startvertv,
 					fixed8_t endvertu, fixed8_t endvertv)
 {
 	double		dm, dn;
-	int			tm, tn;
+	int		tm, tn;
 	adivtab_t	*ptemp;
 
 // TODO: implement x86 version
@@ -1335,12 +1329,12 @@ D_PolysetDrawSpans8
 static void D_PolysetDrawSpans8 (spanpackage_t *pspanpackage)
 {
 	int		lcount;
-	byte	*lpdest;
-	byte	*lptex;
+	byte		*lpdest;
+	byte		*lptex;
 	int		lsfrac, ltfrac;
 	int		llight;
 	int		lzi;
-	short	*lpz;
+	short		*lpz;
 
 	do
 	{
@@ -1400,12 +1394,12 @@ static void D_PolysetDrawSpans8 (spanpackage_t *pspanpackage)
 static void D_PolysetDrawSpans8T (spanpackage_t *pspanpackage)
 {
 	int		lcount;
-	byte	*lpdest;
-	byte	*lptex;
+	byte		*lpdest;
+	byte		*lptex;
 	int		lsfrac, ltfrac;
 	int		llight;
 	int		lzi;
-	short	*lpz;
+	short		*lpz;
 	byte	btemp, color_map_idx;
 
 	do
@@ -1469,12 +1463,12 @@ static void D_PolysetDrawSpans8T (spanpackage_t *pspanpackage)
 static void D_PolysetDrawSpans8T2 (spanpackage_t *pspanpackage)
 {
 	int		lcount;
-	byte	*lpdest;
-	byte	*lptex;
+	byte		*lpdest;
+	byte		*lptex;
 	int		lsfrac, ltfrac;
 	int		llight;
 	int		lzi;
-	short	*lpz;
+	short		*lpz;
 	byte	btemp, color_map_idx;
 
 	do
@@ -1547,13 +1541,13 @@ static void D_PolysetDrawSpans8T2 (spanpackage_t *pspanpackage)
 static void D_PolysetDrawSpans8T3 (spanpackage_t *pspanpackage)
 {
 	int		lcount;
-	byte	*lpdest;
-	byte	*lptex;
+	byte		*lpdest;
+	byte		*lptex;
 	int		lsfrac, ltfrac;
 	int		llight;
 	int		lzi;
-	short	*lpz;
-	byte	color_map_idx;
+	short		*lpz;
+	unsigned int	color_map_idx;
 
 	do
 	{
@@ -1615,11 +1609,11 @@ static void D_PolysetDrawSpans8T3 (spanpackage_t *pspanpackage)
 static void D_PolysetDrawSpans8T5 (spanpackage_t *pspanpackage)
 {
 	int		lcount;
-	byte	*lpdest;
-	byte	*lptex;
+	byte		*lpdest;
+	byte		*lptex;
 	int		lsfrac, ltfrac;
 	int		lzi;
-	short	*lpz;
+	short		*lpz;
 	byte	btemp, color_map_idx;
 
 	do
@@ -2106,7 +2100,7 @@ split:
 	ofs = d_scantable[new_p[1]] + new_p[0];
 	if (new_p[5] > d_pzbuffer[ofs])
 	{
-		int		pix;
+		unsigned int	pix;
 
 		d_pzbuffer[ofs] = new_p[5];
 		pix = skintable[new_p[3]>>16][new_p[2]>>16];
