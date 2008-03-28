@@ -3,7 +3,7 @@
 	routines for drawing sets of polygons sharing the same
 	texture (used for Alias models)
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/d_polyse.c,v 1.23 2008-03-28 07:44:58 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/d_polyse.c,v 1.24 2008-03-28 07:48:10 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -1400,7 +1400,7 @@ static void D_PolysetDrawSpans8T (spanpackage_t *pspanpackage)
 	int		llight;
 	int		lzi;
 	short		*lpz;
-	byte	btemp, color_map_idx;
+	unsigned int	btemp, color_map_idx;
 
 	do
 	{
@@ -1469,7 +1469,7 @@ static void D_PolysetDrawSpans8T2 (spanpackage_t *pspanpackage)
 	int		llight;
 	int		lzi;
 	short		*lpz;
-	byte	btemp, color_map_idx;
+	unsigned int	btemp, color_map_idx;
 
 	do
 	{
@@ -1506,7 +1506,7 @@ static void D_PolysetDrawSpans8T2 (spanpackage_t *pspanpackage)
 						if (color_map_idx % 2 == 0)
 						{
 							btemp = ((byte *) acolormap)[*lptex + (llight & 0xFF00)];
-							*lpdest = btemp;
+							*lpdest = (byte) btemp;
 							*lpz = lzi >> 16;
 						}
 						else
@@ -1614,7 +1614,7 @@ static void D_PolysetDrawSpans8T5 (spanpackage_t *pspanpackage)
 	int		lsfrac, ltfrac;
 	int		lzi;
 	short		*lpz;
-	byte	btemp, color_map_idx;
+	unsigned int	btemp, color_map_idx;
 
 	do
 	{
