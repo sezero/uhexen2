@@ -3,6 +3,18 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2008-03-28 (CVS):
+    * d_polyse.c: changed to types of the variables pix and pix2 from int to
+      unsigned int.
+    * d_polyse.c: changed the type of the variable btemp from byte to unsigned int
+      because we left shift it while using it as part of an index value (btemp<<8)
+      anyway.
+    * r_main.c: R_Init() : finish loading of all files before initing the driver and
+      performing the protection changes.
+    * moved FoundTrans from r_edge.c/r_edgea.asm to r_vars.c/r_varsa.asm following
+      the same style of quake1 with such variables.
+    * changed beta release version date (2008-03-28 / 1.4.3-rc3).
+
 2008-03-25 (CVS, 1.4.3-rc2):
     * a few updates to the documentation.
     * updated compilation instructions.
