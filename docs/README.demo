@@ -24,11 +24,9 @@ Hexen II: Hammer of Thyrion 1.4.3 (demo version)
   3.1 Mods
   3.2 Game Console
   3.3 Hardware Acceleration
-  3.4 System Stability
-  3.5 Other
-  3.6 Links
-  3.7 Thanks
-  3.8 Contact
+  3.4 Links
+  3.5 Thanks
+  3.6 Contact
 
 4. Appendix
 
@@ -175,7 +173,7 @@ a. OSS sound code
 -----------------
 This is the default sound driver for Linux and FreeBSD. It uses OSS
 (Open Sound System) kernel modules. It is compatible with most of
-the Linux distributions but it is known not to work for some people.
+the Linux distributions but it is known not to work for a few people.
 If you use the game launcher, select the OSS option from the sound
 menu. If you use command line, "-sndoss" tells the game engine to use
 OSS, but it isn't necessary (it is the default). If OSS doesn't work
@@ -287,7 +285,7 @@ combination whenever you want.
 First, we recommend using high sampling rates. This can be done either
 by a command line argument like "-sndspeed 44100" or "-sndspeed 48000",
 or by using the game launcher. ALSA is the driver of choice - the OSS
-driver doesn't work with all cards, and with SDL you have no midi.
+driver may not work with all cards, and with SDL you have no midi.
 
 If you have problems making sound to work correctly, using the arts
 sound server may help you:    artsd & ; artsdsp -m glhexen2 -sndoss
@@ -298,20 +296,36 @@ We have reports that some i8x0 sound chips not working correctly with
 hexen2, and this is overcome either by using alsa driver of hexen2 at
 48000 sampling rate, or by the arts workaround mentioned above.
 
-If none of the three sound drivers work and you're using the older
-linux 2.4 kernel and built-in sound modules, you may try swapping to
-the ALSA kernel sound modules. This is not simple process, with good
-documentation scarce, but once they are installed and configured, you
-can do (for example, on Mandrake):
+The ALSA driver may complain about a non-power-of-two buffer size and
+unsatisfactory sound may result.  The following was once reported for
+an onboard VIA82xx audiocard:
 
-    rmmod emu10k1          ;# remove OSS sound module for SBLive
-    /etc/init.d/alsa start ;# start ALSA sound modules
+	ALSA: Using device: default
+	ALSA: 14867 bytes buffer with mmap interleaved access
+	ALSA: WARNING: non-power of 2 buffer size. sound may be
+	unsatisfactory. Recommend using either the plughw or hw
+	devices or adjusting dmix to have a power of 2 buf size
+	ALSA Audio initialized (16 bit, stereo, 44100 Hz)
 
-Make SURE oss-emulation is enabled: lsmod should list snd-pcm-oss.
-Check with alsamixer that the volumes are not turned down to zero.
-With ALSA + OSS Emulation, oss-sound in hexen2 should work fine.
-On new linux distributions, alsa-0.9.8 or better is already included.
-Users of old distributions can visit ALSA site for alsa-sound support.
+You may resolve this by using a .asoundrc like the following,
+
+	pcm.alsa_fixh2 {
+		type dmix
+		ipc_key 2048
+		slave {
+			pcm "hw:0"
+			rate 48000
+			period_time 0
+			period_size 1024
+			buffer_size 16384
+			channels 4
+		}
+	}
+
+and starting uhexen2 with (notice the -sndalsa -alsadev alsa_fixh2
+parameters; tested and documented by Davide Cendron):
+
+	$ glhexen2 -sndalsa -alsadev alsa_fixh2 -sndspeed 48000
 
 
 2.2 Lines on Screen
@@ -475,45 +489,12 @@ windowed mode and redraw the screen. This behavior is the same
 for glquake.
 
 3dfx Voodoo1, Voodoo2 and Voodoo Rush are no longer hardware
-accelerated under recent XFree-4.0 releases.  You need Glide,
-and Mesa compiled against Glide. For some more detailed info,
+accelerated under XFree-4.x and X.org releases.  You need Glide,
+and Mesa compiled against Glide.  For some more detailed info,
 consult the document README.3dfx.
 
 
-3.4 System Stability
---------------------
-
-3D games are probably the most intensive workout you can give
-your PC, and associated problems are not always easy to track down.
-I recently had some trouble with glquake which I eventually 
-racked down to Mandrake's XFree86-4.3 packages - probably due
-to compiler pentium optimizations. I switched to XFree86-4.3
-(from Redhat-9.0) and quake now is rock solid.
-
-I've also had crashes in 3D games associated with
-
-  * Hard drives overheating, seizing system.
-  * Bios ram settings being too aggressive, crashing game.
-  * Cpu overclocked / overheating with unpredictable results.
-
-
-3.5 Other
----------
-
-"Thyrion is the world Hexen II takes place in.  An anvil is used
-by blacksmiths to create weapons and tools.  I stole the anvil
-paradigm from AoT's distant cousin, QuakeForge.
-
-"Raven didn't give us Hexen 2 source, they gave us Portal of
-Praevus source. PoP is a few levels short of being an entirely
-different game....  I think once I nail a few simple physics
-bugs, we'll have PoP emulating Hexen 2 quite nicely, but it's
-been suggested that I'll need a whole different physics engine."
-
-- Dan Olson
-
-
-3.6 Links
+3.4 Links
 ---------
 
     Hammer of Thyrion
@@ -565,7 +546,7 @@ been suggested that I'll need a whole different physics engine."
 	Lowercase Utility	: http://filerenameutils.sourceforge.net/
 
 
-3.7 Thanks
+3.5 Thanks
 ----------
 
 Thanks to ID Software, Raven Games and Activision for a great
@@ -575,7 +556,7 @@ Dan Olson and Clément Bourdarias for the initial Linux port
 Mega thanks to all the unheralded Doom/Quake/Hexen modders.
 
 
-3.8 Contact
+3.6 Contact
 -----------
 
 Ozkan Sezer      <sezero@users.sourceforge.net>
