@@ -51,6 +51,8 @@ The timeout in SCR_UpdateScreen(), and more (actually a bug) :
 When in a map, suppose that you touched a level exit but the map file
 for the changelevel target doesn't exist:  SV_SpawnServer() will issue
 an error message and return, SCR_UpdateScreen() will wait for its timeout
+(it will feel like the game has crashed/frozen because the screen will
+not be updated due to the boolean scr_disabled_for_loading being true)
 and then spit the stupid 'load failed' message.  Here, SV_SpawnServer()
 didn't do any Host_ShutDown(), didn't drop any of its clients and didn't
 decrement the active connections.  Now if you try loading a saved game,
