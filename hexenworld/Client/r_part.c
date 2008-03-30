@@ -2,7 +2,7 @@
 	r_part.c
 	particles rendering
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/r_part.c,v 1.21 2008-03-15 10:36:47 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/r_part.c,v 1.22 2008-03-30 12:25:19 sezero Exp $
 */
 
 
@@ -651,14 +651,15 @@ void R_RunParticleEffect2 (vec3_t org, vec3_t dmin, vec3_t dmax, int color, ptyp
 			p->vel[j] = dmin[j] + ((dmax[j] - dmin[j]) * num);
 		}
 
-/*		num = rand() / RAND_MAX;
+		/*
+		num = rand() / RAND_MAX;
 		num2 = (int)(host_time * 20)%25 + 10;
 		num2 = (int)(host_time * 20)%10 + 10;
-//		num2 = rand() / RAND_MAX * 5;
+	//	num2 = rand() / RAND_MAX * 5;
 		p->org[0] = org[0] + cos(num * 2 * M_PI)*num2;
 		p->org[1] = org[1] + sin(num * 2 * M_PI)*num2;
 		p->org[2] = org[2];
-*/
+		*/
 	}
 }
 
@@ -995,11 +996,12 @@ void R_RunQuakeEffect (vec3_t org, float distance)
 		num = rand() / RAND_MAX;
 		p->vel[2] = 65*num + 80;
 
-/*		for (j = 0; j < 2; j++)
+		/*
+		for (j = 0; j < 2; j++)
 		{
 			p->vel[j] = dmin[j] + ((dmax[j] - dmin[j]) * num);
 		}
-*/
+		*/
 	}
 }
 
@@ -1198,8 +1200,7 @@ void R_RocketTrail (vec3_t start, vec3_t end, int type)
 				p->die = cl.time + 0.5;
 				p->type = pt_static;
 				if (type == 3)
-					p->color = 130 + (rand() & 6);
-				//	p->color = 243 + (rand() & 3);
+					p->color = 130 + (rand() & 6);	// 243 + (rand() & 3);
 				else
 					p->color = 230 + ((tracercount & 4) << 1);
 
@@ -1564,8 +1565,6 @@ static void R_RenderParticle (particle_t *p)
 		glColor4ubv_fp ((byte *)&d_8to24TranslucentTable[(int)p->color-256]);
 	}
 
-//		glColor3ubv_fp (at);
-//		glColor3ubv_fp ((byte *)&d_8to24table[(int)p->color]);
 	glTexCoord2f_fp (0,0);
 	glVertex3fv_fp (p->org);
 	glTexCoord2f_fp (1,0);
@@ -1614,7 +1613,7 @@ void R_DrawParticles (void)
 	VectorScale (vup, 1.5, up);
 	VectorScale (vright, 1.5, right);
 #else
-	//D_StartParticles ();
+	D_StartParticles ();
 
 	VectorScale (vright, xscaleshrink, r_pright);
 	VectorScale (vup, yscaleshrink, r_pup);
@@ -1631,12 +1630,13 @@ void R_DrawParticles (void)
 	dvel = 4 * frametime;
 	percent = (frametime / HX_FRAME_TIME);
 
-/*	temp_p.org[0] = -1013;
+	/*
+	temp_p.org[0] = -1013;
 	temp_p.org[1] = -1863;
 	temp_p.org[2] = 50;
 	temp_p.color = 31;
 	R_RenderParticle(&temp_p);
-*/
+	*/
 	for ( ;; )
 	{
 		kill = active_particles;
@@ -1858,11 +1858,11 @@ void R_DrawParticles (void)
 
 			VectorSubtract(rider_origin, p->org, diff);
 
-/*			p->org[0] += diff[0] * p->ramp / 80;
+			/*
+			p->org[0] += diff[0] * p->ramp / 80;
 			p->org[1] += diff[1] * p->ramp / 80;
 			p->org[2] += diff[2] * p->ramp / 80;
-*/
-
+			*/
 			vel0 = 1 / (51 - p->ramp);
 			p->org[0] += diff[0] * vel0;
 			p->org[1] += diff[1] * vel0;
@@ -1961,7 +1961,7 @@ void R_DrawParticles (void)
 		glEnable_fp(GL_ALPHA_TEST);
 	glTexEnvf_fp(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
 #else
-	//D_EndParticles ();
+	D_EndParticles ();
 #endif
 }
 

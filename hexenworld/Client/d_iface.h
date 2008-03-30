@@ -2,7 +2,7 @@
 	d_iface.h
 	interface header file for rasterization driver modules
 
-	$Id: d_iface.h,v 1.13 2008-03-07 08:10:57 sezero Exp $
+	$Id: d_iface.h,v 1.14 2008-03-30 12:25:19 sezero Exp $
 */
 
 #ifndef __D_IFACE_H
@@ -102,6 +102,11 @@ extern float	r_aliasuvscale;		// scale-up factor for screen u and v
 extern int	r_pixbytes;
 extern qboolean	r_dowarp;
 
+extern int	d_con_indirect;		// if 0, Quake will draw console directly
+					//  to vid.buffer; if 1, Quake will
+					//  draw console via D_DrawRect. Must be
+					//  defined by the driver (vid_*.c)
+
 extern affinetridesc_t	r_affinetridesc;
 extern spritedesc_t	r_spritedesc;
 extern zpointdesc_t	r_zpointdesc;
@@ -163,7 +168,11 @@ void D_TurnZOn (void);
 void D_WarpScreen (void);
 
 void D_FillRect (vrect_t *vrect, int color);
+void D_DrawRect (void);
 void D_UpdateRects (vrect_t *prect);
+
+void D_StartParticles (void);
+void D_EndParticles (void);
 
 // currently for internal use only, and should be a do-nothing function in
 // hardware drivers

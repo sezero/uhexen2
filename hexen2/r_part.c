@@ -2,7 +2,7 @@
 	r_part.c
 	particles rendering
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/r_part.c,v 1.24 2008-03-15 10:36:42 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/r_part.c,v 1.25 2008-03-30 12:25:16 sezero Exp $
 */
 
 
@@ -727,7 +727,6 @@ void RiderParticle (int count, vec3_t origin)
 
 		VectorCopy(origin, p->org);
 
-		//num = (rand() & 0x7fff) / ((float)0x7fff);
 		angle = (rand() % 360) / (2 * M_PI);
 		radius = 300 + (rand() & 255);
 		p->org[0] += sin(angle) * radius;
@@ -867,8 +866,7 @@ void R_RocketTrail (vec3_t start, vec3_t end, int type)
 				p->die = cl.time + 0.5;
 				p->type = pt_static;
 				if (type == 3)
-					p->color = 130 + (rand() & 6);
-				//	p->color = 243 + (rand() & 3);
+					p->color = 130 + (rand() & 6);	// 243 + (rand() & 3);
 				else
 					p->color = 230 + ((tracercount & 4) << 1);
 
@@ -1284,13 +1282,15 @@ void R_DrawParticles (void)
 	glDisable_fp (GL_BLEND);
 	glTexEnvf_fp(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
 }
-#else	// !GLQUAKE
+#else	/* !GLQUAKE */
 void R_DrawParticles (void)
 {
 	particle_t	*p;
 	int		i;
 	float		vel0, vel1, vel2;
 	vec3_t		save_org;
+
+	D_StartParticles ();
 
 	VectorScale (vright, xscaleshrink, r_pright);
 	VectorScale (vup, yscaleshrink, r_pup);
@@ -1371,8 +1371,10 @@ void R_DrawParticles (void)
 			break;
 		}
 	}
+
+	D_EndParticles ();
 }
-#endif	// R_DrawParticles
+#endif	/* R_DrawParticles */
 
 
 void R_UpdateParticles (void)
@@ -1502,7 +1504,8 @@ void R_UpdateParticles (void)
 				    }
 				}
 
-/*				VectorScale(p->vel, frametime, diff);
+				/*
+				VectorScale(p->vel, frametime, diff);
 				speed = VectorNormalize(diff);
 				in_solid = false;
 				if (!(p->flags & SFL_IN_BOUNDS))
@@ -1527,8 +1530,9 @@ void R_UpdateParticles (void)
 						}
 					}
 				}
-*/
-//				if (!in_solid)
+
+				if (!in_solid)
+				*/
 				{
 					VectorScale(p->vel, frametime, diff);
 					VectorAdd(p->org, diff, p->org);
@@ -1743,11 +1747,11 @@ void R_UpdateParticles (void)
 
 			VectorSubtract(rider_origin, p->org, diff);
 
-/*			p->org[0] += diff[0] * p->ramp / 80;
+			/*
+			p->org[0] += diff[0] * p->ramp / 80;
 			p->org[1] += diff[1] * p->ramp / 80;
 			p->org[2] += diff[2] * p->ramp / 80;
-*/
-
+			*/
 			vel0 = 1 / (51 - p->ramp);
 			p->org[0] += diff[0] * vel0;
 			p->org[1] += diff[1] * vel0;
@@ -1767,11 +1771,11 @@ void R_UpdateParticles (void)
 			}
 
 			VectorSubtract(rider_origin, p->org, diff);
-
-/*			p->org[0] += diff[0] * p->ramp / 80;
+			/*
+			p->org[0] += diff[0] * p->ramp / 80;
 			p->org[1] += diff[1] * p->ramp / 80;
 			p->org[2] += diff[2] * p->ramp / 80;
-*/
+			*/
 
 			vel0 = 1 / (36 - p->ramp);
 			p->org[0] += diff[0] * vel0;
