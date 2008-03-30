@@ -3,6 +3,10 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2008-03-30 (CVS):
+    * added back some dead and previously removed software renderer stuff for
+      reference. doesn't affect the current functionality.
+
 2008-03-29 (CVS):
     * updated the README documents: removed some stuff which are irrelevant
       or outdated; added an ALSA workaround by Davide Cendron which resolves
