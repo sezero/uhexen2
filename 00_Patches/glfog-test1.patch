@@ -28,7 +28,7 @@ diff -urNp uhexen2-20070921/hexen2/gl_func.h uhexen2-20070921a/hexen2/gl_func.h
 diff -urNp uhexen2-20070921/hexen2/glquake.h uhexen2-20070921a/hexen2/glquake.h
 --- uhexen2-20070921/hexen2/glquake.h	2007-09-14 17:10:01.000000000 +0300
 +++ uhexen2-20070921a/hexen2/glquake.h	2007-09-21 20:32:32.000000000 +0300
-@@ -204,6 +204,16 @@ extern	cvar_t	gl_glows;
+@@ -258,6 +258,16 @@ extern	cvar_t	gl_glows;
  extern	cvar_t	gl_other_glows;
  extern	cvar_t	gl_missile_glows;
  

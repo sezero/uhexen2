@@ -24,7 +24,7 @@ ready to go.
 
 --- midi_sdl.c~	2007-12-22 14:20:35.000000000 +0200
 +++ midi_sdl.c	2008-01-29 14:15:05.000000000 +0200
-@@ -118,6 +118,7 @@ qboolean MIDI_Init(void)
+@@ -117,6 +117,7 @@ qboolean MIDI_Init(void)
  	int audio_channels = 2;
  	int audio_buffers = 4096;
  
@@ -32,7 +32,7 @@ ready to go.
  	void	*selfsyms;
  	const SDL_version *smixer_version;
  	const SDL_version *(*Mix_Linked_Version_fp)(void) = NULL;
-@@ -185,6 +186,9 @@ bad_version:
+@@ -184,6 +185,9 @@ bad_version:
  	if (midi_endmusicfnc)
  		Mix_HookMusicFinished(midi_endmusicfnc);
  
@@ -42,7 +42,7 @@ ready to go.
  	Con_Printf("MIDI music initialized.\n");
  
  	Cmd_AddCommand ("midi_play", MIDI_Play_f);
-@@ -204,11 +208,30 @@ bad_version:
+@@ -203,11 +207,30 @@ bad_version:
  
  
  #define	TEMP_MUSICNAME	"tmpmusic"
@@ -73,7 +73,7 @@ ready to go.
  
  	if (!bMidiInited)	//don't try to play if there is no midi
  		return;
-@@ -221,11 +244,50 @@ void MIDI_Play (const char *Name)
+@@ -220,11 +243,50 @@ void MIDI_Play (const char *Name)
  		return;
  	}
  
@@ -127,7 +127,7 @@ ready to go.
  		return;
  	}
  	else
-@@ -235,7 +297,7 @@ void MIDI_Play (const char *Name)
+@@ -234,7 +296,7 @@ void MIDI_Play (const char *Name)
  			int		ret;
  
  			Con_Printf("Extracting %s from pakfile\n", tempName);
@@ -136,7 +136,7 @@ ready to go.
  			ret = FS_CopyFromFile (midiFile, midiName, fs_filesize);
  			fclose (midiFile);
  			if (ret != 0)
-@@ -247,7 +309,8 @@ void MIDI_Play (const char *Name)
+@@ -246,7 +308,8 @@ void MIDI_Play (const char *Name)
  		else	/* use the file directly */
  		{
  			fclose (midiFile);
