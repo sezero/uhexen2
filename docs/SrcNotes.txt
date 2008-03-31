@@ -43,6 +43,9 @@ specific intrusions in the hexen2 code:
   It can't be acquired by the server early enough by way of the client
   connection messages..
 
+- sv_gravity : r_part.c, in function: R_UpdateParticles()
+  Used for particle velocity calculations.  Hexen II only.
+
 
 SV_SpawnServer, Host_ShutdownServer and SCR_UpdateScreen:
 --------------------------------------------------------------
