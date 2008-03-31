@@ -3,6 +3,16 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2008-03-31 (CVS):
+    * minor update to SrcNotes.txt.
+    * removed unnecessary extern declarations from a few C files.
+    * renamed sound.h to q_sound.h (avoid probable conflicts with system headers
+      on some platforms).
+    * re-diff'ed some extra patches.
+    * removed unnecessary includes from cd_win.c.
+    * removed a few more obsoleted entries from OSX Xcode files.
+    * changed beta release version date (2008-03-31 / 1.4.3-rc3).
+
 2008-03-30 (CVS):
     * added back some dead and previously removed software renderer stuff for
       reference. doesn't affect the current functionality.
