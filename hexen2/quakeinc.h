@@ -5,7 +5,7 @@
 	FIXME:	kill this in the future and make each C
 		file include only the necessary headers.
 
-	$Id: quakeinc.h,v 1.20 2007-12-14 16:41:11 sezero Exp $
+	$Id: quakeinc.h,v 1.21 2008-03-31 12:01:27 sezero Exp $
 */
 
 #ifndef __QUAKEINC_H
@@ -54,7 +54,7 @@
 #include "view.h"
 #include "screen.h"
 #include "sbar.h"
-#include "sound.h"
+#include "q_sound.h"
 #include "cdaudio.h"
 #include "mididef.h"
 #endif	/* !SERVERONLY */

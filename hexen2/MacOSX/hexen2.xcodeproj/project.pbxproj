@@ -163,7 +163,7 @@
 		707D58980AA9FBB700313A9F /* sdl_inc.h in Headers */ = {isa = PBXBuildFile; fileRef = 707D57CB0AA9F6EE00313A9F /* sdl_inc.h */; };
 		707D58990AA9FBB700313A9F /* server.h in Headers */ = {isa = PBXBuildFile; fileRef = 707D57CC0AA9F6EE00313A9F /* server.h */; };
 		707D589A0AA9FBB700313A9F /* snd_sys.h in Headers */ = {isa = PBXBuildFile; fileRef = 707D57D20AA9F6EE00313A9F /* snd_sys.h */; };
-		707D589B0AA9FBB700313A9F /* sound.h in Headers */ = {isa = PBXBuildFile; fileRef = 707D57D30AA9F6EE00313A9F /* sound.h */; };
+		707D589B0AA9FBB700313A9F /* q_sound.h in Headers */ = {isa = PBXBuildFile; fileRef = 707D57D30AA9F6EE00313A9F /* q_sound.h */; };
 		707D589C0AA9FBB700313A9F /* spritegn.h in Headers */ = {isa = PBXBuildFile; fileRef = 707D57D40AA9F6EE00313A9F /* spritegn.h */; };
 		707D589D0AA9FBB700313A9F /* sys.h in Headers */ = {isa = PBXBuildFile; fileRef = 707D57DB0AA9F6EE00313A9F /* sys.h */; };
 		707D589E0AA9FBB700313A9F /* vid.h in Headers */ = {isa = PBXBuildFile; fileRef = 707D57DC0AA9F6EE00313A9F /* vid.h */; };
@@ -390,7 +390,7 @@
 		707D57D00AA9F6EE00313A9F /* snd_sdl2.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = snd_sdl2.c; path = ../snd_sdl2.c; sourceTree = SOURCE_ROOT; };
 		707D57D10AA9F6EE00313A9F /* snd_sys.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = snd_sys.c; path = ../snd_sys.c; sourceTree = SOURCE_ROOT; };
 		707D57D20AA9F6EE00313A9F /* snd_sys.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = snd_sys.h; path = ../snd_sys.h; sourceTree = SOURCE_ROOT; };
-		707D57D30AA9F6EE00313A9F /* sound.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = sound.h; path = ../sound.h; sourceTree = SOURCE_ROOT; };
+		707D57D30AA9F6EE00313A9F /* q_sound.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = sound.h; path = ../q_sound.h; sourceTree = SOURCE_ROOT; };
 		707D57D40AA9F6EE00313A9F /* spritegn.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = spritegn.h; path = ../spritegn.h; sourceTree = SOURCE_ROOT; };
 		707D57D50AA9F6EE00313A9F /* sv_effect.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = sv_effect.c; path = ../sv_effect.c; sourceTree = SOURCE_ROOT; };
 		707D57D60AA9F6EE00313A9F /* sv_main.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = sv_main.c; path = ../sv_main.c; sourceTree = SOURCE_ROOT; };
@@ -615,7 +615,7 @@
 				707D57D00AA9F6EE00313A9F /* snd_sdl2.c */,
 				707D57D10AA9F6EE00313A9F /* snd_sys.c */,
 				707D57D20AA9F6EE00313A9F /* snd_sys.h */,
-				707D57D30AA9F6EE00313A9F /* sound.h */,
+				707D57D30AA9F6EE00313A9F /* q_sound.h */,
 				707D57D40AA9F6EE00313A9F /* spritegn.h */,
 				707D57D50AA9F6EE00313A9F /* sv_effect.c */,
 				707D57D60AA9F6EE00313A9F /* sv_main.c */,
@@ -713,7 +713,7 @@
 				707D58980AA9FBB700313A9F /* sdl_inc.h in Headers */,
 				707D58990AA9FBB700313A9F /* server.h in Headers */,
 				707D589A0AA9FBB700313A9F /* snd_sys.h in Headers */,
-				707D589B0AA9FBB700313A9F /* sound.h in Headers */,
+				707D589B0AA9FBB700313A9F /* q_sound.h in Headers */,
 				707D589C0AA9FBB700313A9F /* spritegn.h in Headers */,
 				707D589D0AA9FBB700313A9F /* sys.h in Headers */,
 				707D589E0AA9FBB700313A9F /* vid.h in Headers */,

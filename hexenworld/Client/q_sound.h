@@ -1,8 +1,8 @@
 /*
-	sound.h
+	q_sound.h
 	client sound i/o functions
 
-	$Id: sound.h,v 1.31 2008-03-07 08:10:58 sezero Exp $
+	$Id: q_sound.h,v 1.1 2008-03-31 12:01:27 sezero Exp $
 
 	Copyright (C) 1996-1997  Id Software, Inc.
 
@@ -28,7 +28,7 @@
 #ifndef __HX2_SOUND_H
 #define __HX2_SOUND_H
 
-// !!! if this is changed, it must be changed in asm_i386.h too !!!
+/* !!! if this is changed, it must be changed in asm_i386.h too !!! */
 typedef struct
 {
 	int left;
@@ -41,7 +41,7 @@ typedef struct sfx_s
 	cache_user_t	cache;
 } sfx_t;
 
-// !!! if this is changed, it much be changed in asm_i386.h too !!!
+/* !!! if this is changed, it much be changed in asm_i386.h too !!! */
 typedef struct
 {
 	int	length;
@@ -49,34 +49,34 @@ typedef struct
 	int	speed;
 	int	width;
 	int	stereo;
-	byte	data[1];	// variable sized
+	byte	data[1];	/* variable sized	*/
 } sfxcache_t;
 
 typedef struct
 {
 	int	channels;
-	int	samples;		// mono samples in buffer
-	int	submission_chunk;	// don't mix less than this #
-	int	samplepos;		// in mono samples
+	int	samples;		/* mono samples in buffer			*/
+	int	submission_chunk;	/* don't mix less than this #			*/
+	int	samplepos;		/* in mono samples				*/
 	int	samplebits;
 	int	speed;
 	unsigned char	*buffer;
 } dma_t;
 
-// !!! if this is changed, it much be changed in asm_i386.h too !!!
+/* !!! if this is changed, it much be changed in asm_i386.h too !!! */
 typedef struct
 {
-	sfx_t		*sfx;		// sfx number
-	int	leftvol;		// 0-255 volume
-	int	rightvol;		// 0-255 volume
-	int	end;			// end time in global paintsamples
-	int	pos;			// sample position in sfx
-//	int	looping;		// where to loop, -1 = no looping
-	int	entnum;			// to allow overriding a specific sound
-	int	entchannel;		//
-	vec3_t		origin;		// origin of sound effect
-	vec_t		dist_mult;	// distance multiplier (attenuation/clipK)
-	int	master_vol;		// 0-255 master volume
+	sfx_t		*sfx;		/* sfx number					*/
+	int	leftvol;		/* 0-255 volume					*/
+	int	rightvol;		/* 0-255 volume					*/
+	int	end;			/* end time in global paintsamples		*/
+	int	pos;			/* sample position in sfx			*/
+//	int	looping;		/* where to loop, -1 = no looping		*/
+	int	entnum;			/* to allow overriding a specific sound		*/
+	int	entchannel;
+	vec3_t		origin;		/* origin of sound effect			*/
+	vec_t		dist_mult;	/* distance multiplier (attenuation/clipK)	*/
+	int	master_vol;		/* 0-255 master volume				*/
 } channel_t;
 
 typedef struct
@@ -86,7 +86,7 @@ typedef struct
 	int	channels;
 	int	loopstart;
 	int	samples;
-	int	dataofs;		// chunk starts this many bytes from file start
+	int	dataofs;		/* chunk starts this many bytes from file start	*/
 } wavinfo_t;
 
 void S_Init (void);
@@ -112,23 +112,25 @@ void S_EndPrecaching (void);
 void S_PaintChannels (int endtime);
 void S_InitPaintChannels (void);
 
-// picks a channel based on priorities, empty slots, number of channels
+/* picks a channel based on priorities, empty slots, number of channels */
 channel_t *SND_PickChannel (int entnum, int entchannel);
 
-// spatializes a channel
+/* spatializes a channel */
 void SND_Spatialize (channel_t *ch);
 
-// ====================================================================
-// User-setable variables
-// ====================================================================
+/* ====================================================================
+ * User-setable variables
+ * ====================================================================
+ */
 
 #define	MAX_CHANNELS		128
 #define	MAX_DYNAMIC_CHANNELS	8
 
 extern	channel_t	snd_channels[MAX_CHANNELS];
-// 0 to MAX_DYNAMIC_CHANNELS-1	= normal entity sounds
-// MAX_DYNAMIC_CHANNELS to MAX_DYNAMIC_CHANNELS + NUM_AMBIENTS -1 = water, etc
-// MAX_DYNAMIC_CHANNELS + NUM_AMBIENTS to total_channels = static sounds
+/* 0 to MAX_DYNAMIC_CHANNELS-1	= normal entity sounds
+ * MAX_DYNAMIC_CHANNELS to MAX_DYNAMIC_CHANNELS + NUM_AMBIENTS -1 = water, etc
+ * MAX_DYNAMIC_CHANNELS + NUM_AMBIENTS to total_channels = static sounds
+ */
 
 extern	volatile dma_t	*shm;
 
@@ -140,15 +142,17 @@ extern	int		total_channels;
 extern	int		soundtime;
 extern	int		paintedtime;
 
-extern	vec3_t	listener_origin;
-extern	vec3_t	listener_forward;
-extern	vec3_t	listener_right;
-extern	vec3_t	listener_up;
+extern	vec3_t		listener_origin;
+extern	vec3_t		listener_forward;
+extern	vec3_t		listener_right;
+extern	vec3_t		listener_up;
 
-extern	cvar_t loadas8bit;
-extern	cvar_t bgmvolume;
-extern	cvar_t bgmtype;
-extern	cvar_t sfxvolume;
+extern	cvar_t		sfxvolume;
+extern	cvar_t		loadas8bit;
+
+extern	cvar_t		bgmtype;
+extern	cvar_t		bgmvolume;
+
 
 void S_LocalSound (const char *name);
 sfxcache_t *S_LoadSound (sfx_t *s);
