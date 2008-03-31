@@ -169,7 +169,6 @@
 		707D589E0AA9FBB700313A9F /* vid.h in Headers */ = {isa = PBXBuildFile; fileRef = 707D57DC0AA9F6EE00313A9F /* vid.h */; };
 		707D589F0AA9FBB700313A9F /* view.h in Headers */ = {isa = PBXBuildFile; fileRef = 707D57DE0AA9F6EE00313A9F /* view.h */; };
 		707D58A00AA9FBB700313A9F /* wad.h in Headers */ = {isa = PBXBuildFile; fileRef = 707D57E00AA9F6EE00313A9F /* wad.h */; };
-		707D58A10AA9FBB700313A9F /* winquake.h in Headers */ = {isa = PBXBuildFile; fileRef = 707D57E10AA9F6EE00313A9F /* winquake.h */; };
 		707D58A20AA9FBB700313A9F /* world.h in Headers */ = {isa = PBXBuildFile; fileRef = 707D57E30AA9F6EE00313A9F /* world.h */; };
 		707D58A30AA9FBB700313A9F /* zone.h in Headers */ = {isa = PBXBuildFile; fileRef = 707D57E50AA9F6EE00313A9F /* zone.h */; };
 		707D58A60AA9FBB700313A9F /* cd_sdl.c in Sources */ = {isa = PBXBuildFile; fileRef = 707D577C0AA9F6EE00313A9F /* cd_sdl.c */; };
@@ -404,7 +403,6 @@
 		707D57DE0AA9F6EE00313A9F /* view.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = view.h; path = ../view.h; sourceTree = SOURCE_ROOT; };
 		707D57DF0AA9F6EE00313A9F /* wad.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = wad.c; path = ../wad.c; sourceTree = SOURCE_ROOT; };
 		707D57E00AA9F6EE00313A9F /* wad.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = wad.h; path = ../wad.h; sourceTree = SOURCE_ROOT; };
-		707D57E10AA9F6EE00313A9F /* winquake.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = winquake.h; path = ../winquake.h; sourceTree = SOURCE_ROOT; };
 		707D57E20AA9F6EE00313A9F /* world.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = world.c; path = ../world.c; sourceTree = SOURCE_ROOT; };
 		707D57E30AA9F6EE00313A9F /* world.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = world.h; path = ../world.h; sourceTree = SOURCE_ROOT; };
 		707D57E40AA9F6EE00313A9F /* zone.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = zone.c; path = ../zone.c; sourceTree = SOURCE_ROOT; };
@@ -629,7 +627,6 @@
 				707D57DE0AA9F6EE00313A9F /* view.h */,
 				707D57DF0AA9F6EE00313A9F /* wad.c */,
 				707D57E00AA9F6EE00313A9F /* wad.h */,
-				707D57E10AA9F6EE00313A9F /* winquake.h */,
 				707D57E20AA9F6EE00313A9F /* world.c */,
 				707D57E30AA9F6EE00313A9F /* world.h */,
 				707D57E40AA9F6EE00313A9F /* zone.c */,
@@ -719,7 +716,6 @@
 				707D589E0AA9FBB700313A9F /* vid.h in Headers */,
 				707D589F0AA9FBB700313A9F /* view.h in Headers */,
 				707D58A00AA9FBB700313A9F /* wad.h in Headers */,
-				707D58A10AA9FBB700313A9F /* winquake.h in Headers */,
 				707D58A20AA9FBB700313A9F /* world.h in Headers */,
 				707D58A30AA9FBB700313A9F /* zone.h in Headers */,
 				707D59050AAA019300313A9F /* SDLMain.h in Headers */,
