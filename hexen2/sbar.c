@@ -2,7 +2,7 @@
 	sbar.c
 	Hexen II status bar
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sbar.c,v 1.46 2007-10-08 20:16:24 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sbar.c,v 1.47 2008-03-31 11:25:21 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -32,8 +32,6 @@
 // TYPES -------------------------------------------------------------------
 
 // EXTERNAL FUNCTION PROTOTYPES --------------------------------------------
-
-extern void M_DrawPic(int x, int y, qpic_t *pic);
 
 // PUBLIC FUNCTION PROTOTYPES ----------------------------------------------
 

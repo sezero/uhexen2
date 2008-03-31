@@ -1,6 +1,6 @@
 /*
 	midi_mac.c
-	$Id: midi_mac.c,v 1.19 2007-12-20 22:15:35 sezero Exp $
+	$Id: midi_mac.c,v 1.20 2008-03-31 11:25:22 sezero Exp $
 
 	MIDI module for Mac OS X using QuickTime:
 	Taken from the macglquake project with adjustments to make
@@ -34,7 +34,6 @@
 
 static Movie	midiTrack = NULL;
 static qboolean	bMidiInited, bPaused, bLooped;
-extern cvar_t	bgmvolume;
 static float	old_volume = -1.0f;
 
 static void MIDI_SetVolume (cvar_t *var)

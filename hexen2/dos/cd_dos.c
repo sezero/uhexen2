@@ -3,7 +3,7 @@
 	dos cdaudio support.
 	from quake1 source with minor adaptations for uhexen2.
 
-	$Id: cd_dos.c,v 1.2 2007-11-11 13:17:42 sezero Exp $
+	$Id: cd_dos.c,v 1.3 2008-03-31 11:25:22 sezero Exp $
 
 	Quake is a trademark of Id Software, Inc., (c) 1996 Id Software, Inc.
 	All rights reserved.
@@ -33,8 +33,6 @@
 #include <dpmi.h>
 #include "quakedef.h"
 #include "dosisms.h"
-
-extern	cvar_t	bgmvolume;
 
 #define ADDRESS_MODE_HSG		0
 #define ADDRESS_MODE_RED_BOOK		1

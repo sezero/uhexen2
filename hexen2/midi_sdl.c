@@ -2,7 +2,7 @@
 	midi_sdl.c
 	midiplay via SDL_mixer
 
-	$Id: midi_sdl.c,v 1.48 2007-12-22 12:20:35 sezero Exp $
+	$Id: midi_sdl.c,v 1.49 2008-03-31 11:25:21 sezero Exp $
 
 	Copyright (C) 2001  contributors of the Anvil of Thyrion project
 	Copyright (C) 2005-2007  O.Sezer
@@ -35,7 +35,6 @@ static Mix_Music *music = NULL;
 static int audio_wasinit = 0;
 
 static qboolean	bMidiInited, bFileOpen, bPlaying, bPaused, bLooped;
-extern cvar_t	bgmvolume;
 static float	old_volume = -1.0f;
 
 static void (*midi_endmusicfnc)(void);

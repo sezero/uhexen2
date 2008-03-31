@@ -1,6 +1,6 @@
 /*
 	midi_win.c
-	$Id: midi.c,v 1.27 2007-09-22 15:27:32 sezero Exp $
+	$Id: midi.c,v 1.28 2008-03-31 11:25:23 sezero Exp $
 
 	MIDI module for Win32
 */
@@ -22,7 +22,6 @@ qboolean	bLooped;
 static UINT	uMIDIDeviceID = MIDI_MAPPER, uCallbackStatus;
 static int	nCurrentBuffer, nEmptyBuffers;
 DWORD		dwBufferTickLength, dwTempoMultiplier, dwCurrentTempo, dwProgressBytes;
-extern cvar_t	bgmvolume;
 static float	old_volume = -1.0f;
 static DWORD	dwVolCache[NUM_CHANNELS];
 static qboolean	hw_vol_capable = false;
@@ -43,7 +42,7 @@ static void CALLBACK MidiProc (HMIDIIN, UINT, DWORD, DWORD, DWORD);
 static void SetAllChannelVolumes (DWORD dwVolumePercent);
 //static void SetChannelVolume (DWORD dwChannel, DWORD dwVolumePercent);
 
-static void MidiErrorMessageBox(MMRESULT mmr)
+static void MidiErrorMessageBox (MMRESULT mmr)
 {
 	char temp[1024];
 
