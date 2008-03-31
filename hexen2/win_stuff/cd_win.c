@@ -2,14 +2,12 @@
 	cd_win.c
 	Win32 cdaudio code
 
-	$Id: cd_win.c,v 1.18 2008-03-31 11:25:22 sezero Exp $
+	$Id: cd_win.c,v 1.19 2008-03-31 15:30:14 sezero Exp $
 
 	Quake is a trademark of Id Software, Inc., (c) 1996 Id Software, Inc. All
 	rights reserved.
 */
 
-#include <windows.h>
-#include <mmsystem.h>
 #include "quakedef.h"
 #include "winquake.h"
 
