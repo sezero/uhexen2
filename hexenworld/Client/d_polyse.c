@@ -3,7 +3,7 @@
 	routines for drawing sets of polygons sharing the same
 	texture (used for Alias models)
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/d_polyse.c,v 1.21 2008-03-28 07:48:10 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/d_polyse.c,v 1.22 2008-04-01 08:15:37 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -227,6 +227,9 @@ static void do_PolysetDrawFinalVertsT5 (finalvert_t *pv)
 				*zbuf = z;
 				pix = color_map_idx;
 				pix2 = d_viewbuffer[d_scantable[pv->v[1]] + pv->v[0]];
+				/* FIXME: x86-assembly code uses transTable here,
+				 * but we must actually fix the T5 functions first
+				 * before changing that. See BUGS for details.	*/
 				pix = mainTransTable[(pix<<8) + pix2];
 				d_viewbuffer[d_scantable[pv->v[1]] + pv->v[0]] = pix;
 			}
@@ -682,6 +685,9 @@ split:
 			*zbuf = z;
 			pix = color_map_idx;
 			pix2 = d_viewbuffer[d_scantable[new_p[1]] + new_p[0]];
+			/* FIXME: x86-assembly code uses transTable here,
+			 * but we must actually fix the T5 functions first
+			 * before changing that. See BUGS for details.	*/
 			pix = mainTransTable[(pix<<8) + pix2];
 			d_viewbuffer[d_scantable[new_p[1]] + new_p[0]] = pix;
 		}
@@ -1648,6 +1654,9 @@ static void D_PolysetDrawSpans8T5 (spanpackage_t *pspanpackage)
 					if ((lzi >> 16) >= *lpz)
 					{
 						btemp = ((byte *) acolormap)[*lptex];
+						/* FIXME: x86-assembly code uses transTable here,
+						 * but we must actually fix the T5 functions first
+						 * before changing that. See BUGS for details.	*/
 						*lpdest = mainTransTable[(btemp<<8) + (*lpdest)];
 						*lpz = lzi >> 16;
 					}
