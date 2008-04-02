@@ -1,10 +1,12 @@
 # GNU Makefile for (gl)hexen2 client/server binaries using GCC.
-# $Header: /home/ozzie/Download/0000/uhexen2/hexen2/Makefile,v 1.87 2008-04-02 18:38:30 sezero Exp $
+# $Header: /home/ozzie/Download/0000/uhexen2/hexen2/Makefile,v 1.88 2008-04-02 19:28:29 sezero Exp $
 #
 # Type "make help" to see the valid targets.
 #
 # It is ESSENTIAL that you run make clean between different
 # types of builds or different types of targets.
+#
+# Unix platforms require SDL !!!
 #
 # To cross-compile for Win32 on Unix, you must pass the WINBUILD=1
 # argument to make. It would be best if you examine the script named
