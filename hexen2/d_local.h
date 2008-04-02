@@ -2,7 +2,7 @@
 	d_local.h
 	private rasterization driver defs
 
-	$Id: d_local.h,v 1.16 2008-03-07 08:10:37 sezero Exp $
+	$Id: d_local.h,v 1.17 2008-04-02 16:44:46 sezero Exp $
 */
 
 #ifndef __D_LOCAL_H
@@ -74,6 +74,7 @@ typedef struct {
 
 extern float	scale_for_mip;
 
+extern qboolean		msg_suppress_1;	/* suppresses resolution and cache size console output */
 extern qboolean		d_roverwrapped;
 extern surfcache_t	*sc_rover;
 extern surfcache_t	*d_initial_rover;
