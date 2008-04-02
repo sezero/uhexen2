@@ -1,5 +1,5 @@
 # GNU Makefile for hexenworld server using GCC.
-# $Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Server/Makefile,v 1.46 2008-04-02 17:55:23 sezero Exp $
+# $Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Server/Makefile,v 1.47 2008-04-02 18:38:32 sezero Exp $
 #
 # To cross-compile for Win32 on Unix, you must pass the WINBUILD=1
 # argument to make. It would be best if you examine the script named
@@ -172,7 +172,7 @@ COMMONOBJS = cl_objs/q_endian.o \
 default: $(BINARY)
 all: default
 
-$(BINARY): report $(COMMONOBJS)
+$(BINARY): $(COMMONOBJS)
 	$(LINKER) -o $(BINARY) $(COMMONOBJS) $(LDFLAGS)
 
 clean:

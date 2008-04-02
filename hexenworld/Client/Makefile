@@ -1,5 +1,5 @@
 # GNU Makefile for hexenworld clients using GCC.
-# $Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/Makefile,v 1.79 2008-04-02 17:55:23 sezero Exp $
+# $Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/Makefile,v 1.80 2008-04-02 18:38:31 sezero Exp $
 #
 # Type "make help" to see the valid targets.
 #
@@ -518,11 +518,11 @@ glhwcl: glhw
 
 hw: EXT_FLAGS+=$(MGL_FLAG)
 hw: INCLUDES+=$(MGL_INCL)
-hw: report $(SOFTOBJS) $(SOFT_ASM) $(COMMON_ASM) $(COMMONOBJS)
+hw: $(SOFTOBJS) $(SOFT_ASM) $(COMMON_ASM) $(COMMONOBJS)
 	$(LINKER) -o $(HW_BINARY) $(SOFTOBJS) $(SOFT_ASM) $(COMMON_ASM) $(COMMONOBJS) $(LDFLAGS) $(SDLLINK) $(MGL_LINK)
 
 glhw: EXT_FLAGS+= $(GL_DEFS)
-glhw: report $(GLOBJS) $(COMMON_ASM) $(COMMONOBJS)
+glhw: $(GLOBJS) $(COMMON_ASM) $(COMMONOBJS)
 	$(LINKER) -o $(GLHW_BINARY) $(GLOBJS) $(COMMON_ASM) $(COMMONOBJS) $(LDFLAGS) $(GLFLAGS) $(SDLLINK)
 
 clean:

@@ -1,5 +1,5 @@
 # GNU Makefile for (gl)hexen2 client/server binaries using GCC.
-# $Header: /home/ozzie/Download/0000/uhexen2/hexen2/Makefile,v 1.86 2008-04-02 17:55:22 sezero Exp $
+# $Header: /home/ozzie/Download/0000/uhexen2/hexen2/Makefile,v 1.87 2008-04-02 18:38:30 sezero Exp $
 #
 # Type "make help" to see the valid targets.
 #
@@ -544,7 +544,7 @@ COMMON_ASM =
 endif
 
 # Targets
-.PHONY: help _no_dos clean cleaner report
+.PHONY: help clean cleaner report
 
 #default: glh2
 #all: default
@@ -564,11 +564,11 @@ glhexen2: glh2
 
 h2: EXT_FLAGS+=$(MGL_FLAG)
 h2: INCLUDES+=$(MGL_INCL)
-h2: report $(SOFTOBJS) $(SOFT_ASM) $(COMMON_ASM) $(COMMONOBJS)
+h2: $(SOFTOBJS) $(SOFT_ASM) $(COMMON_ASM) $(COMMONOBJS)
 	$(LINKER) -o $(H2_BINARY) $(SOFTOBJS) $(SOFT_ASM) $(COMMON_ASM) $(COMMONOBJS) $(LDFLAGS) $(SDLLINK) $(MGL_LINK)
 
 glh2: EXT_FLAGS+= $(GL_DEFS)
-glh2: report _no_dos $(GLOBJS) $(COMMON_ASM) $(COMMONOBJS)
+glh2: $(GLOBJS) $(COMMON_ASM) $(COMMONOBJS)
 	$(LINKER) -o $(GLH2_BINARY) $(GLOBJS) $(COMMON_ASM) $(COMMONOBJS) $(LDFLAGS) $(GLFLAGS) $(SDLLINK)
 
 clean:
@@ -581,10 +581,4 @@ report:
 	@echo "Host OS  :" $(HOST_OS)
 	@echo "Target OS:" $(TARGET_OS)
 	@echo "Machine  :" $(MACH_TYPE)
-
-_no_dos:
-ifeq ($(TARGET_OS),dos)
-	@echo "Error: That target is not available for DOS"
-	@exit 2
-endif
 
