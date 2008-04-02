@@ -2,7 +2,7 @@
 	vid_svgalib.c:	Linux SVGALIB specific video driver.
 	from quake1 source with minor adaptations for uhexen2.
 
-	$Id: vid_svgalib.c,v 1.6 2008-04-02 13:20:11 sezero Exp $
+	$Id: vid_svgalib.c,v 1.7 2008-04-02 16:25:46 sezero Exp $
 
 	Copyright (C) 1996-1997  Id Software, Inc.
 
@@ -55,6 +55,11 @@ __ASM_FUNCS_END
 unsigned short	d_8to16table[256];	/* not used in 8 bpp mode */
 unsigned int	d_8to24table[256];	/* not used in 8 bpp mode */
 
+byte		globalcolormap[VID_GRADES*256], lastglobalcolor = 0;
+byte		*lastsourcecolormap = NULL;
+
+viddef_t	vid;			/* global video state	*/
+
 int		VGA_width, VGA_height, VGA_rowbytes, VGA_bufferrowbytes;
 byte		*VGA_pagebase;
 static byte	*framebuffer_ptr;
@@ -81,6 +86,7 @@ static cvar_t	vid_waitforrefresh = {"vid_waitforrefresh", "0", CVAR_ARCHIVE};
 /* globals for compatibility: */
 modestate_t	modestate = MS_UNINIT;
 cvar_t	_enable_mouse = {"_enable_mouse", "1", CVAR_ARCHIVE};
+qboolean	msg_suppress_1 = false;
 
 
 #if 0
@@ -697,5 +703,10 @@ void D_EndDirectRect (int x, int y, int width, int height)
 			}
 		}
 	}
+}
+
+
+void VID_HandlePause (qboolean paused)
+{
 }
 
