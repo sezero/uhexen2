@@ -141,10 +141,11 @@ b. On Windows, using win32-native MinGW compiler:
 -------------------------------------------------
 Download a prebuilt MinGW installer and install it to C:\MinGW .  Then
 download MSys and install it to c:\msys , 1.0.11-2004.04.30 is the version
-I use.  As the assembler, download nasm version 0.98.39 and put nasmw.exe
-into the C:\MinGW\bin directory.  Adding the mingw directory to your PATH
-may be a good idea, too.  MinGW-3.1.0 comes with gcc-3.2.3.  MinGW-5.1.3,
-on the other hand, comes with gcc-3.4.5 and is recommended.
+I use.  As the assembler, download nasm version 0.98.39, put nasmw.exe into
+the C:\MinGW\bin directory and rename it to "nasm.exe".  Adding the mingw
+directory to your PATH may be a good idea, too.  MinGW-3.1.0 comes with
+gcc-3.2.3.  MinGW-5.1.3, on the other hand, comes with gcc-3.4.5 and is
+recommended.
 
 Open a console window, cd into \msys and type "msys sh.exe". You will be
 in a unixish sh environment. The rest is just like doing things in linux:

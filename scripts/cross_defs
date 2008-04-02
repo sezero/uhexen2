@@ -1,4 +1,4 @@
-# $Header: /home/ozzie/Download/0000/uhexen2/scripts/cross_defs,v 1.4 2008-01-10 17:21:07 sezero Exp $
+# $Header: /home/ozzie/Download/0000/uhexen2/scripts/cross_defs,v 1.5 2008-04-02 18:03:06 sezero Exp $
 
 # This file contains all common Win32 cross compilation definitions for
 # use with all other build_cross_win32.sh scripts for the uhexen2 tree.
@@ -19,8 +19,7 @@ CC="$TARGET-gcc"
 AS="$TARGET-as"
 AR="$TARGET-ar"
 WINDRES="$TARGET-windres"
-NASM="nasm"
-export CC NASM WINDRES AS AR WINBUILD
+export CC WINDRES AS AR WINBUILD
 
 STRIPPER="$TARGET-strip"
 
