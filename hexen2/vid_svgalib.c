@@ -2,7 +2,7 @@
 	vid_svgalib.c:	Linux SVGALIB specific video driver.
 	from quake1 source with minor adaptations for uhexen2.
 
-	$Id: vid_svgalib.c,v 1.5 2008-04-02 13:16:22 sezero Exp $
+	$Id: vid_svgalib.c,v 1.6 2008-04-02 13:20:11 sezero Exp $
 
 	Copyright (C) 1996-1997  Id Software, Inc.
 
@@ -72,6 +72,7 @@ static int	current_mode;
 static byte	vid_current_palette[768];
 
 static int	svgalib_inited = 0;
+static int	svgalib_backgrounded = 0;
 
 static cvar_t	vid_mode = {"vid_mode", "5", CVAR_NONE};
 static cvar_t	vid_redrawfull = {"vid_redrawfull", "0", CVAR_NONE};
@@ -275,6 +276,8 @@ void VID_SetPalette (byte *palette)
 
 	if (!svgalib_inited)
 		return;
+	if (svgalib_backgrounded)
+		return;
 
 	memcpy(vid_current_palette, palette, sizeof(vid_current_palette));
 
@@ -378,6 +381,17 @@ static int VID_SetMode (int modenum, unsigned char *palette)
 	return 0;
 }
 
+/* backgrounding fixes (quakeforge) */
+static void goto_background (void)
+{
+	svgalib_backgrounded = 1;
+}
+
+static void comefrom_background (void)
+{
+	svgalib_backgrounded = 0;
+}
+
 void VID_Init (unsigned char *palette)
 {
 	int	i, w, h, d;
@@ -388,6 +402,19 @@ void VID_Init (unsigned char *palette)
 
 	if (vga_init() != 0)
 		Sys_Error ("SVGALib failed to allocate a new VC");
+
+	i = vga_runinbackground_version();
+	if (i > 0)
+	{
+		Sys_Printf ("SVGALIB background support %i detected\n", i);
+		vga_runinbackground (VGA_GOTOBACK, goto_background);
+		vga_runinbackground (VGA_COMEFROMBACK, comefrom_background);
+		vga_runinbackground (1);
+	}
+	else
+	{
+		vga_runinbackground (0);
+	}
 
 	VID_InitModes();
 
@@ -449,16 +476,14 @@ void VID_Init (unsigned char *palette)
 	VID_SetMode(current_mode, palette);
 
 	VID_SetPalette(palette);
-
-/* we do want to run in the background when switched away */
-	vga_runinbackground(1);
 }
 
 void VID_Update (vrect_t *rects)
 {
 	if (!svgalib_inited)
 		return;
-
+	if (svgalib_backgrounded)
+		return;
 	if (!vga_oktowrite())
 		return;	/* can't update screen if it's not active */
 
@@ -532,6 +557,8 @@ void D_BeginDirectRect (int x, int y, byte *pbitmap, int width, int height)
 	int	i, j, k, plane, reps, repshift, offset, vidpage, off;
 
 	if (!svgalib_inited || !vid.direct || !vga_oktowrite())
+		return;
+	if (svgalib_backgrounded)
 		return;
 
 	if (vid.aspect > 1.5)
@@ -612,6 +639,8 @@ void D_EndDirectRect (int x, int y, int width, int height)
 	int	i, j, k, plane, reps, repshift, offset, vidpage, off;
 
 	if (!svgalib_inited || !vid.direct || !vga_oktowrite())
+		return;
+	if (svgalib_backgrounded)
 		return;
 
 	if (vid.aspect > 1.5)
