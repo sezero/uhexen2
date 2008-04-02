@@ -2,11 +2,15 @@
 	sdl_inc.h
 	common SDL header
 
-	$Id: sdl_inc.h,v 1.5 2007-03-14 21:03:21 sezero Exp $
+	$Id: sdl_inc.h,v 1.6 2008-04-02 20:37:36 sezero Exp $
 */
 
 #ifndef __HX2_SDL_INC
 #define __HX2_SDL_INC
+
+#if !defined(SDLQUAKE)
+#error "SDLQUAKE must be defined in order to use sdl_inc.h"
+#endif	/* SDLQUAKE */
 
 #include "SDL.h"
 

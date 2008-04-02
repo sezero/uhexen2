@@ -2,7 +2,7 @@
 	sys_unix.c
 	Unix system interface code
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/sys_unix.c,v 1.99 2008-01-29 15:20:51 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/sys_unix.c,v 1.100 2008-04-02 20:37:39 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -24,7 +24,9 @@
 #include <signal.h>
 #include <dirent.h>
 #include <fnmatch.h>
+#if defined(SDLQUAKE)
 #include "sdl_inc.h"
+#endif	/* SDLQUAKE */
 
 
 // heapsize: minimum 16mb, standart 32 mb, max is 96 mb.
@@ -393,6 +395,20 @@ static int Sys_GetUserdir (char *dst, size_t dstsize)
 }
 #endif	/* DO_USERDIRS */
 
+static void Sys_CheckSDL (void)
+{
+#if defined(SDLQUAKE)
+	const SDL_version *sdl_version;
+
+	sdl_version = SDL_Linked_Version();
+	Sys_Printf("Found SDL version %i.%i.%i\n",sdl_version->major,sdl_version->minor,sdl_version->patch);
+	if (SDL_VERSIONNUM(sdl_version->major,sdl_version->minor,sdl_version->patch) < SDL_REQUIREDVERSION)
+	{	/*reject running under SDL versions older than what is stated in sdl_inc.h */
+		Sys_Error("You need at least v%d.%d.%d of SDL to run this game\n",SDL_MIN_X,SDL_MIN_Y,SDL_MIN_Z);
+	}
+#endif	/* SDLQUAKE */
+}
+
 static void PrintVersion (void)
 {
 #if HOT_VERSION_BETA
@@ -436,8 +452,8 @@ static const char *help_strings[] = {
 #if HAVE_SDL_SOUND
 	"     [-sndsdl]               Use SDL sound",
 #endif
-#endif	//  SOUND_NUMDRIVERS
-#endif	// _NO_SOUND
+#endif	/*  SOUND_NUMDRIVERS */
+#endif	/* _NO_SOUND */
 	"     [-nomouse]              Disable mouse usage",
 	"     [-heapsize Bytes]       Heapsize (memory to allocate)",
 	NULL
@@ -464,18 +480,19 @@ MAIN
 
 ===============================================================================
 */
-static Uint8		appState;
 static quakeparms_t	parms;
 static char	cwd[MAX_OSPATH];
 #if DO_USERDIRS
 static char	userdir[MAX_OSPATH];
+#endif
+#if defined(SDLQUAKE)
+static Uint8		appState;
 #endif
 
 int main (int argc, char **argv)
 {
 	int			i;
 	double		time, oldtime, newtime;
-	const SDL_version *sdl_version;
 
 	PrintVersion();
 
@@ -526,12 +543,7 @@ int main (int argc, char **argv)
 
 	COM_ValidateByteorder ();
 
-	sdl_version = SDL_Linked_Version();
-	Sys_Printf("Found SDL version %i.%i.%i\n",sdl_version->major,sdl_version->minor,sdl_version->patch);
-	if (SDL_VERSIONNUM(sdl_version->major,sdl_version->minor,sdl_version->patch) < SDL_REQUIREDVERSION)
-	{	//reject running under SDL versions older than what is stated in sdl_inc.h
-		Sys_Error("You need at least v%d.%d.%d of SDL to run this game\n",SDL_MIN_X,SDL_MIN_Y,SDL_MIN_Z);
-	}
+	Sys_CheckSDL ();
 
 	parms.memsize = STD_MEM_ALLOC;
 
@@ -568,14 +580,14 @@ int main (int argc, char **argv)
 	/* main window message loop */
 	while (1)
 	{
+#if defined(SDLQUAKE)
 		appState = SDL_GetAppState();
-
-		// If we have no input focus at all, sleep a bit
+		/* If we have no input focus at all, sleep a bit */
 		if ( !(appState & (SDL_APPMOUSEFOCUS | SDL_APPINPUTFOCUS)) || cl.paused)
 		{
 			usleep (16000);
 		}
-		// If we're minimised, sleep a bit more
+		/* If we're minimised, sleep a bit more */
 		if ( !(appState & SDL_APPACTIVE) )
 		{
 			scr_skipupdate = 1;
@@ -585,7 +597,7 @@ int main (int argc, char **argv)
 		{
 			scr_skipupdate = 0;
 		}
-
+#endif	/* SDLQUAKE */
 		newtime = Sys_DoubleTime ();
 		time = newtime - oldtime;
 

@@ -2,7 +2,7 @@
 	snd_sys.h
 	Platform specific macros and prototypes for sound
 
-	$Id: snd_sys.h,v 1.21 2007-12-22 18:56:07 sezero Exp $
+	$Id: snd_sys.h,v 1.22 2008-04-02 20:37:36 sezero Exp $
 
 	Copyright (C) 2007  O.Sezer
 
@@ -66,7 +66,7 @@
 
 #if defined(NO_SDL_AUDIO)
 #define HAVE_SDL_SOUND	0
-#elif defined(PLATFORM_UNIX) || defined(PLATFORM_MAC) || defined(PLATFORM_AMIGA)
+#elif defined(SDLQUAKE)
 #define HAVE_SDL_SOUND	1
 #else
 #define HAVE_SDL_SOUND	0

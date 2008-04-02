@@ -1,6 +1,6 @@
 /*
 	cd_unix.h
-	$Id: cd_unix.h,v 1.4 2007-12-12 10:51:08 sezero Exp $
+	$Id: cd_unix.h,v 1.5 2008-04-02 20:37:39 sezero Exp $
 
 	Unix include file to compile the correct cdaudio code
 
@@ -32,26 +32,21 @@
 #undef	__USE_LINUX_CDROM__
 #undef	__USE_SDL_CDROM__
 
-
 #if defined (WITH_SDLCD)
-
-// for this to happen, you need to
-// edit the makefiles for USE_SDLCD
-#	define	__USE_SDL_CDROM__
-
+/* This means that the makefile is edited for USE_SDLCD */
+# if defined(SDLQUAKE)
+#  define	__USE_SDL_CDROM__	1
+# else
+#  error "cd_unix.h: WITH_SDLCD is defined but SDLQUAKE is not."
+# endif
 #elif defined (__linux) || defined (__linux__)
-
-#	define	__USE_LINUX_CDROM__
-
+#  define	__USE_LINUX_CDROM__	1
 #elif defined (__FreeBSD__) || defined (__OpenBSD__) || defined (__NetBSD__)
-
-#	define	__USE_BSD_CDROM__
-
+#  define	__USE_BSD_CDROM__	1
+#elif defined (SDLQUAKE)
+#  define	__USE_SDL_CDROM__	1
 #else
-
-// default to SDL_cdrom
-#	define	__USE_SDL_CDROM__
-
+#  error "no cdaudio module defined. edit cd_unix.h or your makefile.."
 #endif
 
 #endif	/* __CD_UNIX_H */

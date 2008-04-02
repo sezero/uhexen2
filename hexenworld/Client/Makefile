@@ -1,5 +1,5 @@
 # GNU Makefile for hexenworld clients using GCC.
-# $Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/Makefile,v 1.81 2008-04-02 19:28:29 sezero Exp $
+# $Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/Makefile,v 1.82 2008-04-02 20:37:39 sezero Exp $
 #
 # Type "make help" to see the valid targets.
 #
@@ -244,6 +244,10 @@ endif
 
 ifeq ($(TARGET_OS),unix)
 # Start Unix-specific extra flags/settings
+
+# We rely on SDL:  SDLQUAKE must be defined for all SDL using
+# platforms / targets.
+EXT_FLAGS+= -DSDLQUAKE
 
 ifeq ($(USE_SOUND),yes)
 ifeq ($(USE_ALSA),no)

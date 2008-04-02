@@ -1,5 +1,5 @@
 # GNU Makefile for (gl)hexen2 client/server binaries using GCC.
-# $Header: /home/ozzie/Download/0000/uhexen2/hexen2/Makefile,v 1.88 2008-04-02 19:28:29 sezero Exp $
+# $Header: /home/ozzie/Download/0000/uhexen2/hexen2/Makefile,v 1.89 2008-04-02 20:37:36 sezero Exp $
 #
 # Type "make help" to see the valid targets.
 #
@@ -264,6 +264,10 @@ endif
 
 ifeq ($(TARGET_OS),unix)
 # Start Unix-specific extra flags/settings
+
+# We rely on SDL:  SDLQUAKE must be defined for all SDL using
+# platforms / targets.
+EXT_FLAGS+= -DSDLQUAKE
 
 ifeq ($(USE_SOUND),yes)
 ifeq ($(USE_ALSA),no)
