@@ -2,7 +2,7 @@
 	vid_win.c
 	Win32 video driver using MGL-4.05
 
-	$Id: vid_win.c,v 1.58 2007-12-22 18:56:09 sezero Exp $
+	$Id: vid_win.c,v 1.59 2008-04-02 16:37:29 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -23,8 +23,6 @@
 #define MAX_MODE_LIST	30
 #define MAX_DESC	13
 #define VID_ROW_SIZE	3
-
-qboolean	msg_suppress_1 = false;
 
 // new variables. Pa3PyX
 static LONG_PTR		mgl_wnd_proc;

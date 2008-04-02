@@ -3,7 +3,7 @@
 	DOS-specific video routines.
 	from quake1 source with minor adaptations for uhexen2.
 
-	$Id: vid_dos.c,v 1.7 2007-12-22 23:24:39 sezero Exp $
+	$Id: vid_dos.c,v 1.8 2008-04-02 16:37:29 sezero Exp $
 
 	Copyright (C) 1996-1997  Id Software, Inc.
 
@@ -67,7 +67,6 @@ int		numvidmodes;
 vmode_t		*pvidmodes;
 
 static int	firstupdate = 1;
-qboolean	msg_suppress_1 = false;
 
 static void VID_TestMode_f (void);
 static void VID_NumModes_f (void);

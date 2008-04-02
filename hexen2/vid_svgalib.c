@@ -2,7 +2,7 @@
 	vid_svgalib.c:	Linux SVGALIB specific video driver.
 	from quake1 source with minor adaptations for uhexen2.
 
-	$Id: vid_svgalib.c,v 1.7 2008-04-02 16:25:46 sezero Exp $
+	$Id: vid_svgalib.c,v 1.8 2008-04-02 16:37:29 sezero Exp $
 
 	Copyright (C) 1996-1997  Id Software, Inc.
 
@@ -86,7 +86,6 @@ static cvar_t	vid_waitforrefresh = {"vid_waitforrefresh", "0", CVAR_ARCHIVE};
 /* globals for compatibility: */
 modestate_t	modestate = MS_UNINIT;
 cvar_t	_enable_mouse = {"_enable_mouse", "1", CVAR_ARCHIVE};
-qboolean	msg_suppress_1 = false;
 
 
 #if 0

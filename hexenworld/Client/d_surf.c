@@ -2,7 +2,7 @@
 	d_surf.c
 	rasterization driver surface heap manager
 
-	$Id: d_surf.c,v 1.13 2007-11-12 14:04:52 sezero Exp $
+	$Id: d_surf.c,v 1.14 2008-04-02 16:37:29 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -10,7 +10,8 @@
 #include "r_local.h"
 
 static float	surfscale;
-qboolean	r_cache_thrash;		// set if surface cache is thrashing
+qboolean	r_cache_thrash = false;	// set if surface cache is thrashing
+qboolean	msg_suppress_1 = false;
 
 static int				sc_size;
 surfcache_t			*sc_rover, *sc_base;
