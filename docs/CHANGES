@@ -3,6 +3,14 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2008-04-01/02 (CVS):
+    * d_polyse.c: added FIXME notes about mistaken use of mainTransTable instead
+      of transTable in the T5 series functions, namely D_PolysetRecursiveTriangleT5,
+      D_PolysetDrawSpans8T5 and D_PolysetDrawFinalVertsT5.
+    * added video and input drivers for svgalib, adapted from quake1 source.
+      compiles fine but not tested: not for release at the moment.
+    * re-diff'ed the extra patches.
+
 2008-03-31 (CVS):
     * minor update to SrcNotes.txt.
     * removed unnecessary extern declarations from a few C files.
