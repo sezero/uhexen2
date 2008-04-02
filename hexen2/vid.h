@@ -2,7 +2,7 @@
 	vid.h
 	video driver defs
 
-	$Id: vid.h,v 1.35 2008-04-02 16:44:46 sezero Exp $
+	$Id: vid.h,v 1.36 2008-04-02 19:10:34 sezero Exp $
 */
 
 #ifndef __VID_DEFS_H
@@ -89,7 +89,7 @@ void VID_Shutdown (void);
 void VID_Update (vrect_t *rects);
 // flushes the given rectangles from the view buffer to the screen
 
-#if defined(PLATFORM_DOS)
+#if defined(PLATFORM_DOS) || defined(SVGAQUAKE)
 #define VID_LockBuffer()	do {} while (0)
 #define VID_UnlockBuffer()	do {} while (0)
 #elif defined(GLQUAKE)
@@ -98,11 +98,15 @@ void VID_Update (vrect_t *rects);
 #else
 void VID_LockBuffer (void);
 void VID_UnlockBuffer (void);
-// vid buffer locking, not used in opengl version or DOS software version
+// vid buffer locking, not used in opengl version or DOS/SVGA software version
 #endif
 
+#if defined(PLATFORM_DOS) || defined(SVGAQUAKE)
+#define VID_HandlePause(x)	do {} while (0)
+#else
 void VID_HandlePause (qboolean paused);
-// called only on Win32, when pause happens, so the mouse can be released
+// called on windowed environments when pause happens, so the mouse can be released
+#endif
 
 void VID_ToggleFullscreen (void);	// from Steven
 // toggles between windowed/fullscreen modes. for unix/sdl
@@ -115,10 +119,8 @@ char *VID_ReportConsize(void);
 // reports effective console size as a string to the opengl features menu
 #endif	/* ! GLQUAKE */
 
-#if !defined(H2W)
 void D_ShowLoadingSize (void);
 // displays progress bars while loading a map. (not used in hexenworld.)
-#endif	/* ! H2W */
 
 extern void (*vid_menudrawfn)(void);
 extern void (*vid_menukeyfn)(int key);

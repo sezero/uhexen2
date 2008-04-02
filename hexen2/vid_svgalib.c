@@ -2,7 +2,7 @@
 	vid_svgalib.c:	Linux SVGALIB specific video driver.
 	from quake1 source with minor adaptations for uhexen2.
 
-	$Id: vid_svgalib.c,v 1.8 2008-04-02 16:37:29 sezero Exp $
+	$Id: vid_svgalib.c,v 1.9 2008-04-02 19:10:34 sezero Exp $
 
 	Copyright (C) 1996-1997  Id Software, Inc.
 
@@ -36,6 +36,7 @@
 #include <stdio.h>
 #include <signal.h>
 #endif
+
 #include "q_stdinc.h"
 #include <asm/io.h>	/* outb */
 
@@ -702,10 +703,5 @@ void D_EndDirectRect (int x, int y, int width, int height)
 			}
 		}
 	}
-}
-
-
-void VID_HandlePause (qboolean paused)
-{
 }
 

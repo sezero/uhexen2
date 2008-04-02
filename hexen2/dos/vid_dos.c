@@ -3,7 +3,7 @@
 	DOS-specific video routines.
 	from quake1 source with minor adaptations for uhexen2.
 
-	$Id: vid_dos.c,v 1.8 2008-04-02 16:37:29 sezero Exp $
+	$Id: vid_dos.c,v 1.9 2008-04-02 19:10:34 sezero Exp $
 
 	Copyright (C) 1996-1997  Id Software, Inc.
 
@@ -62,7 +62,7 @@ static cvar_t	block_switch = {"block_switch", "0", CVAR_ARCHIVE};
 static cvar_t	vid_window_x = {"vid_window_x", "0", CVAR_ARCHIVE};
 static cvar_t	vid_window_y = {"vid_window_y", "0", CVAR_ARCHIVE};
 
-viddef_t	vid;		// global video state
+viddef_t	vid;		/* global video state	*/
 int		numvidmodes;
 vmode_t		*pvidmodes;
 
@@ -76,28 +76,18 @@ static void VID_DescribeModes_f (void);
 
 static int  VID_SetMode (int modenum, unsigned char *palette);
 
-static byte	vid_current_palette[768];	// save for mode changes
+static byte	vid_current_palette[768];	/* save for mode changes */
 
 static qboolean	nomodecheck = false;
 
-unsigned short	d_8to16table[256];	// not used in 8 bpp mode
-unsigned int	d_8to24table[256];	// not used in 8 bpp mode
+unsigned short	d_8to16table[256];	/* not used in 8 bpp mode */
+unsigned int	d_8to24table[256];	/* not used in 8 bpp mode */
 
 byte		globalcolormap[VID_GRADES*256], lastglobalcolor = 0;
 byte		*lastsourcecolormap = NULL;
 
 static void VID_MenuDraw (void);
 static void VID_MenuKey (int key);
-
-
-/*
-================
-VID_HandlePause
-================
-*/
-void VID_HandlePause (qboolean paused)
-{
-}
 
 
 /*
