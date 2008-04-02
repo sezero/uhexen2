@@ -3,6 +3,20 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2008-04-02 (CVS):
+    * various fixes for the experimental svgalib client.
+    * moved msg_suppress_1 from vid files to d_surf.c.
+    * build system cleanup (removed sanity checks, added a phony report target
+      to engine makefiles, changed the default nasm command for windows from
+      nasmw to nasm, maybe a few other things.)
+    * minor platform clean-up in vid.h and input.h.
+    * added a note to the main makefiles for SDL requirement.
+    * added SDLQUAKE as a new preprocessor define: SDLQUAKE must be defined for
+      all SDL using platforms / targets.
+    * added a makefile for the svgalib-client. the client compiles fine but it
+      isn't tested and isn't supported, yet.
+    * updated release notes for version 1.4.3.
+
 2008-04-01/02 (CVS):
     * d_polyse.c: added FIXME notes about mistaken use of mainTransTable instead
       of transTable in the T5 series functions, namely D_PolysetRecursiveTriangleT5,
