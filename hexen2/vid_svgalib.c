@@ -2,7 +2,7 @@
 	vid_svgalib.c:	Linux SVGALIB specific video driver.
 	from quake1 source with minor adaptations for uhexen2.
 
-	$Id: vid_svgalib.c,v 1.2 2008-04-02 07:08:34 sezero Exp $
+	$Id: vid_svgalib.c,v 1.3 2008-04-02 13:14:37 sezero Exp $
 
 	Copyright (C) 1996-1997  Id Software, Inc.
 
@@ -113,7 +113,7 @@ static void VID_Gamma_f (void)
 
 	if (Cmd_Argc () == 2)
 	{
-		gamma = Q_atof (Cmd_Argv(1));
+		gamma = atof (Cmd_Argv(1));
 
 		for (i = 0; i < 768; i++)
 		{
