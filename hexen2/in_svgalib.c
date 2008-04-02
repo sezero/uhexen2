@@ -2,7 +2,7 @@
 	in_svgalib.c:	Linux SVGALIB specific input driver.
 	from quake1 source with minor adaptations for uhexen2.
 
-	$Id: in_svgalib.c,v 1.2 2008-04-02 07:08:34 sezero Exp $
+	$Id: in_svgalib.c,v 1.3 2008-04-02 07:18:25 sezero Exp $
 
 	Copyright (C) 1996-1997  Id Software, Inc.
 
@@ -28,7 +28,7 @@
 
 #include "q_stdinc.h"
 
-#include "vga.h"	/* vga_getmousetype() */
+#include "vga.h" /* vga_getmousetype() */
 #include "vgakeyboard.h"
 #include "vgamouse.h"
 
@@ -49,13 +49,6 @@ static int	mouse_oldbuttonstate;
 static float	mouse_x, mouse_y;
 static float	old_mouse_x, old_mouse_y;
 static int	mx, my;
-
-static cvar_t	mouse_button_commands[3] =
-{
-	{"mouse1", "+attack", CVAR_NONE },
-	{"mouse2", "+strafe", CVAR_NONE },
-	{"mouse3", "+forward",CVAR_NONE }
-};
 
 cvar_t	m_filter = {"m_filter", "0", CVAR_NONE};
 
@@ -219,9 +212,6 @@ static void IN_InitMouse (void)
 	char	*mousedev;
 	int	mouserate;
 
-	Cvar_RegisterVariable (&mouse_button_commands[0]);
-	Cvar_RegisterVariable (&mouse_button_commands[1]);
-	Cvar_RegisterVariable (&mouse_button_commands[2]);
 	Cvar_RegisterVariable (&m_filter);
 	Cmd_AddCommand ("force_centerview", Force_CenterView_f);
 
