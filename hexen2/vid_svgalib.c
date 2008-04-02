@@ -2,7 +2,7 @@
 	vid_svgalib.c:	Linux SVGALIB specific video driver.
 	from quake1 source with minor adaptations for uhexen2.
 
-	$Id: vid_svgalib.c,v 1.4 2008-04-02 13:15:32 sezero Exp $
+	$Id: vid_svgalib.c,v 1.5 2008-04-02 13:16:22 sezero Exp $
 
 	Copyright (C) 1996-1997  Id Software, Inc.
 
@@ -386,7 +386,8 @@ void VID_Init (unsigned char *palette)
 	if (svgalib_inited)
 		return;
 
-	vga_init();
+	if (vga_init() != 0)
+		Sys_Error ("SVGALib failed to allocate a new VC");
 
 	VID_InitModes();
 
