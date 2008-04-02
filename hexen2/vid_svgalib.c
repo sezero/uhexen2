@@ -2,7 +2,7 @@
 	vid_svgalib.c:	Linux SVGALIB specific video driver.
 	from quake1 source with minor adaptations for uhexen2.
 
-	$Id: vid_svgalib.c,v 1.3 2008-04-02 13:14:37 sezero Exp $
+	$Id: vid_svgalib.c,v 1.4 2008-04-02 13:15:32 sezero Exp $
 
 	Copyright (C) 1996-1997  Id Software, Inc.
 
@@ -236,7 +236,7 @@ static int get_mode (char *name, int width, int height, int depth)
 	}
 	else
 	{
-		for (i=0 ; i<num_modes ; i++)
+		for (i = 0; i < num_modes; i++)
 		{
 			if (modes[i].width)
 			{
@@ -380,7 +380,8 @@ static int VID_SetMode (int modenum, unsigned char *palette)
 
 void VID_Init (unsigned char *palette)
 {
-	int	w, h, d;
+	int	i, w, h, d;
+	char	*modename;
 
 	if (svgalib_inited)
 		return;
@@ -401,22 +402,46 @@ void VID_Init (unsigned char *palette)
 	Cmd_AddCommand("vid_debug", VID_Debug_f);
 
 /* interpret command-line params */
+	current_mode = -1;
 	w = h = d = 0;
-	if (getenv("GSVGAMODE"))
-		current_mode = get_mode(getenv("GSVGAMODE"), w, h, d);
-	else if (COM_CheckParm("-mode"))
-		current_mode = get_mode(com_argv[COM_CheckParm("-mode")+1], w, h, d);
-	else if (COM_CheckParm("-w") || COM_CheckParm("-h") || COM_CheckParm("-d"))
-	{
-		if (COM_CheckParm("-w"))
-			w = atoi(com_argv[COM_CheckParm("-w")+1]);
-		if (COM_CheckParm("-h"))
-			h = atoi(com_argv[COM_CheckParm("-h")+1]);
-		if (COM_CheckParm("-d"))
-			d = atoi(com_argv[COM_CheckParm("-d")+1]);
-		current_mode = get_mode(0, w, h, d);
-	}
+	modename = getenv("GSVGAMODE");
+	if (modename)
+		current_mode = get_mode(modename, 0, 0, 0);
 	else
+	{
+		i = COM_CheckParm("-mode");
+		if (i)
+		{
+			if (i >= com_argc - 1)
+				Sys_Error("%s: -mode <modename>", __thisfunc__);
+			current_mode = get_mode(com_argv[i + 1], 0, 0, 0);
+		}
+	}
+	if (current_mode == -1)
+	{
+		i = COM_CheckParm("-width");
+		if (i)
+		{
+			if (i >= com_argc - 1)
+				Sys_Error("%s: -width <width>", __thisfunc__);
+			w = atoi(com_argv[i + 1]);
+		}
+		i = COM_CheckParm("-height");
+		{
+			if (i >= com_argc - 1)
+				Sys_Error("%s: -height <height>", __thisfunc__);
+			h = atoi(com_argv[i + 1]);
+		}
+		i = COM_CheckParm("-bpp");
+		{
+			if (i >= com_argc - 1)
+				Sys_Error("%s: -bpp <depth>", __thisfunc__);
+			d = atoi(com_argv[i + 1]);
+		}
+		if (w || h || d)
+			current_mode = get_mode(NULL, w, h, d);
+	}
+	if (current_mode == -1)
 		current_mode = G320x200x256;
 
 /* set vid parameters */
