@@ -1,5 +1,5 @@
 # GNU Makefile for hexen2 lmp2pcx tool using GCC.
-# $Header: /home/ozzie/Download/0000/uhexen2/utils/texutils/lmp2pcx/Makefile,v 1.10 2008-01-29 10:08:06 sezero Exp $
+# $Header: /home/ozzie/Download/0000/uhexen2/utils/texutils/lmp2pcx/Makefile,v 1.11 2008-04-02 17:55:24 sezero Exp $
 #
 # if building a debug version :		make DEBUG=1 [other stuff]
 #
@@ -17,9 +17,6 @@ DESTDIR  :=../../bin
 
 # include the common dirty stuff
 include $(UHEXEN2_TOP)/scripts/makefile.inc
-
-# include file for sanity checks
-include $(UHEXEN2_TOP)/scripts/sanity1.inc
 
 # Names of the binaries
 ifeq ($(TARGET_OS),win32)
@@ -75,9 +72,6 @@ LMP2PCXOBJS= $(COMMONDIR)/cmdlib.o \
 	$(COMMONDIR)/q_endian.o \
 	$(COMMONDIR)/byteordr.o \
 	lmp2pcx.o
-
-# include file for sanity check target
-include $(UHEXEN2_TOP)/scripts/sanity2.inc
 
 $(BINARY) : $(LMP2PCXOBJS)
 	$(LINKER) -o $(DESTDIR)/$(BINARY) $(LMP2PCXOBJS) $(LDFLAGS) $(LDLIBS)

@@ -1,5 +1,5 @@
 # GNU Makefile for hexenworld clients using GCC.
-# $Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/Makefile,v 1.78 2008-03-25 08:50:55 sezero Exp $
+# $Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/Makefile,v 1.79 2008-04-02 17:55:23 sezero Exp $
 #
 # Type "make help" to see the valid targets.
 #
@@ -122,9 +122,6 @@ USE_3DFXGAMMA=yes
 USE_X86_ASM=yes
 COMPILE_32BITS=no
 
-# build environment sanity checks
-CHECK_SDL=1
-
 # include the common dirty stuff
 include $(UHEXEN2_TOP)/scripts/makefile.inc
 
@@ -140,17 +137,6 @@ else
 USE_X86_ASM=no
 endif
 endif
-
-# build environment sanity checks
-ifeq ($(USE_X86_ASM),yes)
-CHECK_NASM=1
-endif
-ifeq ($(TARGET_OS),win32)
-CHECK_WINDRES=1
-endif
-
-# include file for sanity checks
-include $(UHEXEN2_TOP)/scripts/sanity1.inc
 
 # Names of the binaries
 ifeq ($(TARGET_OS),win32)
@@ -512,7 +498,7 @@ COMMON_ASM =
 endif
 
 # Targets
-.PHONY: help clean cleaner
+.PHONY: help clean cleaner report
 
 #default: glhw
 #all: default
@@ -530,16 +516,13 @@ help:
 hwcl: hw
 glhwcl: glhw
 
-# include file for sanity check target
-include $(UHEXEN2_TOP)/scripts/sanity2.inc
-
 hw: EXT_FLAGS+=$(MGL_FLAG)
 hw: INCLUDES+=$(MGL_INCL)
-hw: sanity $(SOFTOBJS) $(SOFT_ASM) $(COMMON_ASM) $(COMMONOBJS)
+hw: report $(SOFTOBJS) $(SOFT_ASM) $(COMMON_ASM) $(COMMONOBJS)
 	$(LINKER) -o $(HW_BINARY) $(SOFTOBJS) $(SOFT_ASM) $(COMMON_ASM) $(COMMONOBJS) $(LDFLAGS) $(SDLLINK) $(MGL_LINK)
 
 glhw: EXT_FLAGS+= $(GL_DEFS)
-glhw: sanity $(GLOBJS) $(COMMON_ASM) $(COMMONOBJS)
+glhw: report $(GLOBJS) $(COMMON_ASM) $(COMMONOBJS)
 	$(LINKER) -o $(GLHW_BINARY) $(GLOBJS) $(COMMON_ASM) $(COMMONOBJS) $(LDFLAGS) $(GLFLAGS) $(SDLLINK)
 
 clean:
@@ -547,4 +530,9 @@ clean:
 
 cleaner:
 	rm -f *.o win_stuff/*.o core $(HW_BINARY) $(GLHW_BINARY)
+
+report:
+	@echo "Host OS  :" $(HOST_OS)
+	@echo "Target OS:" $(TARGET_OS)
+	@echo "Machine  :" $(MACH_TYPE)
 

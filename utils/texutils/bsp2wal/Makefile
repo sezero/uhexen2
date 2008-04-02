@@ -1,5 +1,5 @@
 # GNU Makefile for hexen2 bsp2wal tool using GCC.
-# $Header: /home/ozzie/Download/0000/uhexen2/utils/texutils/bsp2wal/Makefile,v 1.10 2008-01-29 10:08:06 sezero Exp $
+# $Header: /home/ozzie/Download/0000/uhexen2/utils/texutils/bsp2wal/Makefile,v 1.11 2008-04-02 17:55:24 sezero Exp $
 #
 # if building a debug version :		make DEBUG=1 [other stuff]
 #
@@ -17,9 +17,6 @@ DESTDIR  :=../../bin
 
 # include the common dirty stuff
 include $(UHEXEN2_TOP)/scripts/makefile.inc
-
-# include file for sanity checks
-include $(UHEXEN2_TOP)/scripts/sanity1.inc
 
 # Names of the binaries
 ifeq ($(TARGET_OS),win32)
@@ -79,12 +76,8 @@ BSP2WALOBJS= $(COMMONDIR)/cmdlib.o \
 	bspfile.o \
 	bsp2wal.o
 
-# include file for sanity check target
-include $(UHEXEN2_TOP)/scripts/sanity2.inc
-
 $(BINARY) : $(BSP2WALOBJS)
 	$(LINKER) -o $(DESTDIR)/$(BINARY) $(BSP2WALOBJS) $(LDFLAGS) $(LDLIBS)
-
 
 clean : 
 	rm -f *.o $(COMMONDIR)/*.o core

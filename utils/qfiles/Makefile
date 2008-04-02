@@ -1,5 +1,5 @@
 # GNU Makefile for hexen2 qfiles tool using GCC.
-# $Header: /home/ozzie/Download/0000/uhexen2/utils/qfiles/Makefile,v 1.17 2008-01-29 10:08:06 sezero Exp $
+# $Header: /home/ozzie/Download/0000/uhexen2/utils/qfiles/Makefile,v 1.18 2008-04-02 17:55:24 sezero Exp $
 #
 # if building a debug version :		make DEBUG=1 [other stuff]
 #
@@ -17,9 +17,6 @@ DESTDIR  :=../bin
 
 # include the common dirty stuff
 include $(UHEXEN2_TOP)/scripts/makefile.inc
-
-# include file for sanity checks
-include $(UHEXEN2_TOP)/scripts/sanity1.inc
 
 # Names of the binaries
 ifeq ($(TARGET_OS),win32)
@@ -76,9 +73,6 @@ QFILESOBJS= $(COMMONDIR)/cmdlib.o \
 	$(COMMONDIR)/q_endian.o \
 	$(COMMONDIR)/byteordr.o \
 	qfiles.o
-
-# include file for sanity check target
-include $(UHEXEN2_TOP)/scripts/sanity2.inc
 
 $(BINARY) : $(QFILESOBJS)
 	$(LINKER) -o $(DESTDIR)/$(BINARY) $(QFILESOBJS) $(LDFLAGS) $(LDLIBS)

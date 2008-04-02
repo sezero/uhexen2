@@ -1,5 +1,5 @@
 # GNU Makefile for hexen2 mapping tools using GCC.
-# $Header: /home/ozzie/Download/0000/uhexen2/utils/maputils/Makefile,v 1.20 2008-01-29 10:08:05 sezero Exp $
+# $Header: /home/ozzie/Download/0000/uhexen2/utils/maputils/Makefile,v 1.21 2008-04-02 17:55:23 sezero Exp $
 #
 # if building a debug version :		make DEBUG=1 [other stuff]
 #
@@ -17,9 +17,6 @@ DESTDIR  :=../bin
 
 # include the common dirty stuff
 include $(UHEXEN2_TOP)/scripts/makefile.inc
-
-# include file for sanity checks
-include $(UHEXEN2_TOP)/scripts/sanity1.inc
 
 # Names of the binaries
 ifeq ($(TARGET_OS),win32)
@@ -122,9 +119,6 @@ BSPINFOBJS= $(COMMONDIR)/cmdlib.o \
 	$(COMMONDIR)/pathutil.o \
 	bspfile.o \
 	bspinfo.o
-
-# include file for sanity check target
-include $(UHEXEN2_TOP)/scripts/sanity2.inc
 
 $(LIGHT) : $(COMMONOBJS) $(LIGHTOBJS)
 	$(LINKER) -o $(DESTDIR)/$(LIGHT) $(COMMONOBJS) $(LIGHTOBJS) $(LDFLAGS) $(LDLIBS)

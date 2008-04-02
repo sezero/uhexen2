@@ -1,5 +1,5 @@
 # GNU Makefile for hexen2 genmodel tool using GCC.
-# $Header: /home/ozzie/Download/0000/uhexen2/utils/genmodel/Makefile,v 1.19 2008-01-29 10:08:05 sezero Exp $
+# $Header: /home/ozzie/Download/0000/uhexen2/utils/genmodel/Makefile,v 1.20 2008-04-02 17:55:23 sezero Exp $
 #
 # if building a debug version :		make DEBUG=1 [other stuff]
 #
@@ -17,9 +17,6 @@ DESTDIR  :=../bin
 
 # include the common dirty stuff
 include $(UHEXEN2_TOP)/scripts/makefile.inc
-
-# include file for sanity checks
-include $(UHEXEN2_TOP)/scripts/sanity1.inc
 
 # Names of the binaries
 ifeq ($(TARGET_OS),win32)
@@ -83,9 +80,6 @@ GENMODELOBJS= $(COMMONDIR)/cmdlib.o \
 	loadtri.o \
 	token.o \
 	genmodel.o
-
-# include file for sanity check target
-include $(UHEXEN2_TOP)/scripts/sanity2.inc
 
 $(BINARY) : $(GENMODELOBJS)
 	$(LINKER) -o $(DESTDIR)/$(BINARY) $(GENMODELOBJS) $(LDFLAGS) $(LDLIBS)

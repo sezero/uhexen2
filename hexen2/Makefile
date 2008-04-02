@@ -1,5 +1,5 @@
 # GNU Makefile for (gl)hexen2 client/server binaries using GCC.
-# $Header: /home/ozzie/Download/0000/uhexen2/hexen2/Makefile,v 1.85 2008-03-25 08:50:55 sezero Exp $
+# $Header: /home/ozzie/Download/0000/uhexen2/hexen2/Makefile,v 1.86 2008-04-02 17:55:22 sezero Exp $
 #
 # Type "make help" to see the valid targets.
 #
@@ -127,9 +127,6 @@ USE_3DFXGAMMA=yes
 USE_X86_ASM=yes
 COMPILE_32BITS=no
 
-# build environment sanity checks
-CHECK_SDL=1
-
 # include the common dirty stuff
 include $(UHEXEN2_TOP)/scripts/makefile.inc
 
@@ -149,17 +146,6 @@ ifeq ($(TARGET_OS),dos)
 # x86 assembly if is needed for dos
 USE_X86_ASM=yes
 endif
-
-# build environment sanity checks
-ifeq ($(USE_X86_ASM),yes)
-CHECK_NASM=1
-endif
-ifeq ($(TARGET_OS),win32)
-CHECK_WINDRES=1
-endif
-
-# include file for sanity checks
-include $(UHEXEN2_TOP)/scripts/sanity1.inc
 
 # Names of the binaries
 ifeq ($(TARGET_OS),win32)
@@ -558,7 +544,7 @@ COMMON_ASM =
 endif
 
 # Targets
-.PHONY: help _no_dos clean cleaner
+.PHONY: help _no_dos clean cleaner report
 
 #default: glh2
 #all: default
@@ -576,16 +562,13 @@ help:
 hexen2: h2
 glhexen2: glh2
 
-# include file for sanity check target
-include $(UHEXEN2_TOP)/scripts/sanity2.inc
-
 h2: EXT_FLAGS+=$(MGL_FLAG)
 h2: INCLUDES+=$(MGL_INCL)
-h2: sanity $(SOFTOBJS) $(SOFT_ASM) $(COMMON_ASM) $(COMMONOBJS)
+h2: report $(SOFTOBJS) $(SOFT_ASM) $(COMMON_ASM) $(COMMONOBJS)
 	$(LINKER) -o $(H2_BINARY) $(SOFTOBJS) $(SOFT_ASM) $(COMMON_ASM) $(COMMONOBJS) $(LDFLAGS) $(SDLLINK) $(MGL_LINK)
 
 glh2: EXT_FLAGS+= $(GL_DEFS)
-glh2: _no_dos sanity $(GLOBJS) $(COMMON_ASM) $(COMMONOBJS)
+glh2: report _no_dos $(GLOBJS) $(COMMON_ASM) $(COMMONOBJS)
 	$(LINKER) -o $(GLH2_BINARY) $(GLOBJS) $(COMMON_ASM) $(COMMONOBJS) $(LDFLAGS) $(GLFLAGS) $(SDLLINK)
 
 clean:
@@ -593,6 +576,11 @@ clean:
 
 cleaner:
 	rm -f *.o win_stuff/*.o dos/*.o sv_objs/*.o core $(H2_BINARY) $(GLH2_BINARY)
+
+report:
+	@echo "Host OS  :" $(HOST_OS)
+	@echo "Target OS:" $(TARGET_OS)
+	@echo "Machine  :" $(MACH_TYPE)
 
 _no_dos:
 ifeq ($(TARGET_OS),dos)

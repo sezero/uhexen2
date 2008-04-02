@@ -1,5 +1,5 @@
 # GNU Makefile for hexenworld master server using GCC.
-# $Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Master/Makefile,v 1.23 2008-01-12 08:15:46 sezero Exp $
+# $Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Master/Makefile,v 1.24 2008-04-02 17:55:23 sezero Exp $
 #
 # if building a debug version :		make DEBUG=1 [other stuff]
 #
@@ -13,9 +13,6 @@ UHEXEN2_TOP:=../..
 
 # include the common dirty stuff
 include $(UHEXEN2_TOP)/scripts/makefile.inc
-
-# include file for sanity checks
-include $(UHEXEN2_TOP)/scripts/sanity1.inc
 
 # Names of the binaries
 ifeq ($(TARGET_OS),win32)
@@ -72,9 +69,6 @@ MASTEROBJS = sizebuf.o msg_io.o cmds.o common.o net.o master.o sys_main.o
 # Targets
 default: $(BINARY)
 all: default
-
-# include file for sanity check target
-include $(UHEXEN2_TOP)/scripts/sanity2.inc
 
 $(BINARY) : $(MASTEROBJS)
 	$(LINKER) -o $(BINARY) $(MASTEROBJS) $(LDFLAGS)

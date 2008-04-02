@@ -1,5 +1,5 @@
 # GNU Makefile for Hexen II Dedicated Server (h2ded) using GCC.
-# $Header: /home/ozzie/Download/0000/uhexen2/hexen2/Makefile.sv,v 1.19 2008-01-10 17:21:06 sezero Exp $
+# $Header: /home/ozzie/Download/0000/uhexen2/hexen2/Makefile.sv,v 1.20 2008-04-02 17:55:22 sezero Exp $
 #
 # It is ESSENTIAL that you run make clean between different
 # types of builds or different types of targets.
@@ -39,9 +39,6 @@ COMPILE_32BITS=no
 
 # include the common dirty stuff
 include $(UHEXEN2_TOP)/scripts/makefile.inc
-
-# include file for sanity checks
-include $(UHEXEN2_TOP)/scripts/sanity1.inc
 
 # Names of the binaries
 ifeq ($(TARGET_OS),win32)
@@ -176,13 +173,12 @@ H2DED_OBJS = q_endian.o \
 
 
 # Targets
+.PHONY: clean cleaner report
+
 default: $(BINARY)
 all: default
 
-# include file for sanity check target
-include $(UHEXEN2_TOP)/scripts/sanity2.inc
-
-$(BINARY): sanity $(H2DED_OBJS)
+$(BINARY): report $(H2DED_OBJS)
 	$(LINKER) -o $(BINARY) $(H2DED_OBJS) $(LDFLAGS)
 
 clean:
@@ -190,4 +186,9 @@ clean:
 
 cleaner:
 	rm -f *.o win_stuff/*.o sv_objs/*.o core $(BINARY)
+
+report:
+	@echo "Host OS  :" $(HOST_OS)
+	@echo "Target OS:" $(TARGET_OS)
+	@echo "Machine  :" $(MACH_TYPE)
 

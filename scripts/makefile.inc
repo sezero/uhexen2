@@ -1,5 +1,5 @@
 # GNU Makefile using GCC in a unix shell.
-# $Header: /home/ozzie/Download/0000/uhexen2/scripts/makefile.inc,v 1.22 2008-03-16 14:30:56 sezero Exp $
+# $Header: /home/ozzie/Download/0000/uhexen2/scripts/makefile.inc,v 1.23 2008-04-02 17:55:23 sezero Exp $
 
 # This file is responsible for determining the Host OS and Target OS,
 # setting common paths, selecting the compiler, assigning the compiler
@@ -53,7 +53,6 @@ HOST_OS :=$(shell uname|sed -e s/_.*//|tr '[:upper:]' '[:lower:]')
 #ifneq (,$(findstring DOS,$(HOST_OS0)))
 #HOST_OS :=dos
 #TARGET_OS:=dos
-#NASM_BIN :=nasm
 #endif
 
 ifneq (,$(findstring mingw32,$(HOST_OS)))
@@ -67,11 +66,9 @@ ifdef DOSBUILD
 # compiling for dos
 CROSS_COMPILE:=y
 TARGET_OS:=dos
-NASM_BIN :=nasmw
 else
 # compiling for windows
 TARGET_OS:=win32
-NASM_BIN :=nasmw
 endif
 
 endif  # Windows
@@ -96,7 +93,6 @@ else
 TARGET_OS:=unix
 endif
 endif
-NASM_BIN :=nasm
 
 endif
 endif
@@ -118,7 +114,7 @@ ifeq ($(CC),)
 CC := gcc
 endif
 
-NASM ?= $(NASM_BIN)
+NASM ?= nasm
 WINDRES ?= windres
 
 LINKER := $(CC)
@@ -172,16 +168,13 @@ SDL_CONFIG ?=sdl-config
 
 ################################
 # SDL flags:
-# If a makefile needs SDL, it should set CHECK_SDL to 1
 
-ifeq ($(CHECK_SDL),1)
 ifeq ($(TARGET_OS),unix)
 SDLFLAGS:= $(shell $(SDL_CONFIG) --cflags 2> /dev/null)
 SDLLINK := $(shell $(SDL_CONFIG) --libs 2> /dev/null)
 else
 SDLFLAGS:=
 SDLLINK :=
-endif
 endif
 
 
@@ -201,8 +194,7 @@ endif
 
 ################################
 # MGL flags:
-# These are required for hexen2/hexenworld win32-software
-# renderer.
+# Required for hexen2/hexenworld win32-software renderer.
 
 ifeq ($(TARGET_OS),win32)
 MGL_FLAG:= -DMGL_DLL

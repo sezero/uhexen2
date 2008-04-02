@@ -1,5 +1,5 @@
 # GNU Makefile for hexen2 hcc tool (old version) using GCC.
-# $Header: /home/ozzie/Download/0000/uhexen2/utils/hcc_old/Makefile,v 1.16 2008-01-29 10:08:05 sezero Exp $
+# $Header: /home/ozzie/Download/0000/uhexen2/utils/hcc_old/Makefile,v 1.17 2008-04-02 17:55:23 sezero Exp $
 #
 # if building a debug version :		make DEBUG=1 [other stuff]
 #
@@ -15,9 +15,6 @@ COMMONDIR:=../common
 
 # include the common dirty stuff
 include $(UHEXEN2_TOP)/scripts/makefile.inc
-
-# include file for sanity checks
-include $(UHEXEN2_TOP)/scripts/sanity1.inc
 
 # Names of the binaries
 ifeq ($(TARGET_OS),win32)
@@ -80,9 +77,6 @@ HCCOBJS= $(COMMONDIR)/cmdlib.o \
 	pr_lex.o \
 	pr_parse.o \
 	stmt.o
-
-# include file for sanity check target
-include $(UHEXEN2_TOP)/scripts/sanity2.inc
 
 $(BINARY) : $(HCCOBJS)
 	$(LINKER) -o $(BINARY) $(HCCOBJS) $(LDFLAGS) $(LDLIBS)
