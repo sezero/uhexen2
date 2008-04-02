@@ -2,7 +2,7 @@
 	in_svgalib.c:	Linux SVGALIB specific input driver.
 	from quake1 source with minor adaptations for uhexen2.
 
-	$Id: in_svgalib.c,v 1.3 2008-04-02 07:18:25 sezero Exp $
+	$Id: in_svgalib.c,v 1.4 2008-04-02 13:23:10 sezero Exp $
 
 	Copyright (C) 1996-1997  Id Software, Inc.
 
@@ -229,7 +229,13 @@ static void IN_InitMouse (void)
 	if (COM_CheckParm("-mrate"))
 		mouserate = atoi(com_argv[COM_CheckParm("-mrate")+1]);
 
-//	printf("Mouse: dev=%s,type=%s,speed=%d\n", mousedev, mice[mtype].name, mouserate);
+/* vga_init() opens the mouse automoatically, closing it to ensure it
+ * is opened the way we want it (from quakeforge.)
+ * FIXME: should I check for a return value >= 0 from mouse_update()
+ * before doing this?
+ */
+	mouse_close();
+
 	if (mouse_init(mousedev, mtype, mouserate))
 		Con_Printf("No mouse found\n");
 	else
