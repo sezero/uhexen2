@@ -1,0 +1,340 @@
+# GNU Makefile for hexen2 svgalib-client using GCC.
+# $Header: /home/ozzie/Download/0000/uhexen2/hexen2/Makefile.svga,v 1.1 2008-04-02 21:36:38 sezero Exp $
+#
+# This makefile builds SVGALib dependant software renderer client
+# for linux-x86 only. This makefile is a butchered version of the
+# main makefile for SDL clients.  The svgalib-client isn't tested
+# and isn't supported, yet.
+#
+# It is ESSENTIAL that you run make clean between different
+# types of builds or different types of targets.
+#
+# Build Options:
+#
+# USE_SOUND :	yes  =	Include sound support (default).
+#		no   =	Don't include sound support.
+#
+# USE_ALSA :	yes  =	Include ALSA sound support (default).
+#		no   =	Don't include alsa support.
+#		Requires alsa-lib and alsa-kernel modules >= 1.0.1
+#		(0.9.8 and 1.0.0 should also work, but isn't supported.)
+#		On any platform other than Linux, ALSA support will be
+#		automatically be disabled.
+#
+# USE_OSS :	yes  =	Include OSS audio support (default).
+#		no   =	Don't include OSS support.
+#		OSS is enabled on Linux and FreeBSD.
+#		It is automatically disabled on other platforms.
+#		See snd_sys.h for a more complete list.
+#
+# USE_CDAUDIO :	yes  =	Include CDAudio support (default).
+#		no   =	Don't include CDAudio support.
+#
+# USE_MIDI :	yes  =	Include MIDI music support.
+#		no   =	Don't include MIDI music support (default).
+#		Midi support isn't implemented yet.
+#
+# OPT_EXTRA	yes  =  Some extra optimization flags will be added (default)
+#		no   =	No extra optimizations will be made
+#
+# USE_X86_ASM	yes  =  Use x86 assembly on ia32 machines which is faster.
+#			Automatically disabled for any other cpu.
+#		!!! IMPORTANT: SVGA-Hexen II requires x86-ASM !!!
+#
+# COMPILE_32BITS yes =  Compile as a 32 bit binary. If you are on a 64 bit
+#			platform and having problems with 64 bit compiled
+#			binaries, set this option to yes. Default: no .
+#			If you set this to yes, you need to have the 32 bit
+#			versions of the libraries that you link against.
+#		no   =	Compile for the native word size of your platform,
+#			which is the default option.
+#
+# The default compiler is gcc
+# To build with a different compiler:	make CC=compiler_name [other stuff]
+#
+# The default x86 assembler is nasm. To use a different nasm-compatible
+# assembler, such as yasm	:	make NASM=yasm [other stuff]
+#
+# To build for the demo version:	make DEMO=1 [other stuff]
+#
+# if building a debug version :		make DEBUG=1 [other stuff]
+#
+
+# Path settings:
+# main uhexen2 relative path
+UHEXEN2_TOP:=..
+
+# General options (see explanations at the top)
+USE_SOUND=yes
+USE_ALSA=yes
+USE_OSS=yes
+USE_MIDI=no
+USE_CDAUDIO=yes
+OPT_EXTRA=yes
+
+# include the common dirty stuff
+include $(UHEXEN2_TOP)/scripts/makefile.inc
+
+ifeq ($(MACH_TYPE),x86)
+COMPILE_32BITS:=no
+else
+ifeq ($(MACH_TYPE),x86_64)
+# compile as a 32 bit binary (-m32) ?..
+COMPILE_32BITS:=yes
+else
+$(error Shall not compile SVGA Client on non-x86.)
+endif
+endif
+
+ifneq ($(HOST_OS),linux)
+$(error Shall not compile SVGA Client for non-Linux.)
+endif
+
+H2_BINARY:=hexen2.svga
+
+# Compiler flags
+
+CPUFLAGS:=
+# Overrides for the default CPUFLAGS
+CPUFLAGS:=-march=i586
+
+# Overrides for the default ARCHFLAGS
+#ARCHFLAGS:=
+
+ifdef DEBUG
+
+CFLAGS := -g -Wall
+
+else
+
+CFLAGS := $(CPUFLAGS) -O2 -Wall -ffast-math -fexpensive-optimizations
+
+ifdef NO_UNIT_AT_A_TIME
+CFLAGS := $(CFLAGS) $(call check_gcc,-fno-unit-at-a-time,)
+endif
+
+ifeq ($(OPT_EXTRA),yes)
+CFLAGS := $(CFLAGS) $(call check_gcc,-falign-loops=2 -falign-jumps=2 -falign-functions=2,-malign-loops=2 -malign-jumps=2 -malign-functions=2)
+CFLAGS := $(CFLAGS) -fomit-frame-pointer
+endif
+endif
+
+ifeq ($(COMPILE_32BITS),yes)
+CFLAGS := $(CFLAGS) -m32
+endif
+# end of compiler flags
+
+# use x86 assembly
+CFLAGS := $(CFLAGS) -DUSE_INTEL_ASM
+
+# Other build flags
+EXT_FLAGS:=$(ARCHFLAGS)
+
+# Main unix specific includes and flags
+INCLUDES:= -I.
+LDFLAGS := $(LIBSOCKET) -ldl -lm -lvga
+
+ifeq ($(COMPILE_32BITS),yes)
+LDFLAGS := $(LDFLAGS) -m32
+endif
+
+ifdef DEMO
+EXT_FLAGS+= -DDEMOBUILD
+endif
+
+ifdef DEBUG
+# This activates come extra code in hexen2/hexenworld C source
+EXT_FLAGS+= -DDEBUG_BUILD
+endif
+
+EXT_FLAGS+= -DSVGAQUAKE
+
+ifeq ($(USE_SOUND),yes)
+ifeq ($(USE_ALSA),no)
+EXT_FLAGS+= -DNO_ALSA_AUDIO
+endif
+ifeq ($(USE_OSS),no)
+EXT_FLAGS+= -DNO_OSS_AUDIO
+endif
+EXT_FLAGS+= -DNO_SUN_AUDIO
+EXT_FLAGS+= -DNO_SDL_AUDIO
+endif
+
+
+# Rules for turning source files into .o files
+%.o: %.c
+	$(CC) -c $(CFLAGS) $(EXT_FLAGS) $(INCLUDES) -o $@ $<
+%.o: %.asm
+	$(NASM) $(NASMFLAGS) -o $@ $<
+
+# Objects
+
+# Sound objects
+ifneq ($(USE_SOUND),yes)
+EXT_FLAGS += -D_NO_SOUND
+SYSOBJ_SND :=
+COMOBJ_SND := snd_null.o
+else
+COMOBJ_SND := snd_sys.o snd_dma.o snd_mix.o snd_mem.o
+SYSOBJ_SND := snd_oss.o snd_alsa.o
+# end of Sound objects
+endif
+
+# MIDI objects
+ifneq ($(USE_MIDI),yes)
+SYSOBJ_MIDI:= midi_nul.o
+EXT_FLAGS += -DNO_MIDIMUSIC
+else
+$(error Midi support not implemented yet.)
+# end of MIDI objects
+endif
+
+# CDAudio objects
+ifneq ($(USE_CDAUDIO),yes)
+SYSOBJ_CDA:= cd_null.o
+EXT_FLAGS += -D_NO_CDAUDIO
+else
+SYSOBJ_CDA := cd_linux.o
+# end of CDAudio objects
+endif
+
+# Other platform specific object settings
+SYSOBJ_INPUT := in_svgalib.o
+SYSOBJ_SOFT_VID:= d_copy.o vid_svgalib.o
+SYSOBJ_NET := net_bsd.o net_udp.o
+SYSOBJ_SYS := sys_unix.o
+
+# Final list of objects
+SOFTOBJS = d_edge.o \
+	d_fill.o \
+	d_init.o \
+	d_modech.o \
+	d_part.o \
+	d_polyse.o \
+	d_scan.o \
+	d_sky.o \
+	d_sprite.o \
+	d_surf.o \
+	d_vars.o \
+	d_zpoint.o \
+	draw.o \
+	model.o \
+	r_aclip.o \
+	r_alias.o \
+	r_bsp.o \
+	r_draw.o \
+	r_edge.o \
+	r_efrag.o \
+	r_light.o \
+	r_main.o \
+	r_misc.o \
+	r_part.o \
+	r_sky.o \
+	r_sprite.o \
+	r_surf.o \
+	r_vars.o \
+	screen.o \
+	$(SYSOBJ_SOFT_VID)
+
+COMMONOBJS = chase.o \
+	cl_demo.o \
+	cl_effect.o \
+	cl_input.o \
+	cl_main.o \
+	cl_parse.o \
+	cl_tent.o \
+	cl_cmd.o \
+	cmd.o \
+	q_endian.o \
+	link_ops.o \
+	sizebuf.o \
+	strlcat.o \
+	strlcpy.o \
+	msg_io.o \
+	common.o \
+	debuglog.o \
+	quakefs.o \
+	console.o \
+	crc.o \
+	cvar.o \
+	cfgfile.o \
+	host.o \
+	host_cmd.o \
+	pr_strng.o \
+	$(SYSOBJ_INPUT) \
+	keys.o \
+	mathlib.o \
+	menu.o \
+	$(SYSOBJ_NET) \
+	net_dgrm.o \
+	net_loop.o \
+	net_main.o \
+	pr_cmds.o \
+	pr_edict.o \
+	pr_exec.o \
+	sbar.o \
+	$(COMOBJ_SND) \
+	$(SYSOBJ_SND) \
+	$(SYSOBJ_CDA) \
+	$(SYSOBJ_MIDI) \
+	sv_main.o \
+	sv_move.o \
+	sv_phys.o \
+	sv_effect.o \
+	sv_user.o \
+	view.o \
+	wad.o \
+	world.o \
+	zone.o \
+	$(SYSOBJ_SYS)
+
+# Intel asm objects
+ifeq ($(USE_SOUND),yes)
+SOUND_ASM := snd_mixa.o
+else
+SOUND_ASM :=
+endif
+COMMON_ASM = math.o \
+	worlda.o \
+	$(SOUND_ASM) \
+	sys_ia32.o
+
+SOFT_ASM = d_draw.o \
+	d_draw16.o \
+	d_draw16t.o \
+	d_parta.o \
+	d_partb.o \
+	d_polysa.o \
+	d_polysa2.o \
+	d_polysa3.o \
+	d_polysa4.o \
+	d_polysa5.o \
+	d_scana.o \
+	d_spr8.o \
+	d_spr8t.o \
+	d_spr8t2.o \
+	d_varsa.o \
+	r_aclipa.o \
+	r_aliasa.o \
+	r_drawa.o \
+	r_edgea.o \
+	r_edgeb.o \
+	r_varsa.o \
+	surf8.o \
+	surf16.o
+
+
+# Targets
+.PHONY: clean
+
+default: h2
+all: default
+
+hexen2: h2
+
+h2: $(SOFTOBJS) $(SOFT_ASM) $(COMMON_ASM) $(COMMONOBJS)
+	$(LINKER) -o $(H2_BINARY) $(SOFTOBJS) $(SOFT_ASM) $(COMMON_ASM) $(COMMONOBJS) $(LDFLAGS)
+
+clean:
+	rm -f *.o win_stuff/*.o dos/*.o sv_objs/*.o core
+
