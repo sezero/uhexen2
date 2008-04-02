@@ -2,7 +2,7 @@
 	vid_svgalib.c:	Linux SVGALIB specific video driver.
 	from quake1 source with minor adaptations for uhexen2.
 
-	$Id: vid_svgalib.c,v 1.1 2008-04-02 07:05:44 sezero Exp $
+	$Id: vid_svgalib.c,v 1.2 2008-04-02 07:08:34 sezero Exp $
 
 	Copyright (C) 1996-1997  Id Software, Inc.
 
@@ -27,6 +27,7 @@
 */
 
 #if 0
+/* these should be for vt stuff */
 #include <termios.h>
 #include <sys/ioctl.h>
 #include <sys/stat.h>

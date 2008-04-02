@@ -2,7 +2,7 @@
 	in_svgalib.c:	Linux SVGALIB specific input driver.
 	from quake1 source with minor adaptations for uhexen2.
 
-	$Id: in_svgalib.c,v 1.1 2008-04-02 07:05:44 sezero Exp $
+	$Id: in_svgalib.c,v 1.2 2008-04-02 07:08:34 sezero Exp $
 
 	Copyright (C) 1996-1997  Id Software, Inc.
 
@@ -33,7 +33,6 @@
 #include "vgamouse.h"
 
 #include "quakedef.h"
-#include "d_local.h"
 
 
 static qboolean	mouse_initialized = false;
