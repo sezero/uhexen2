@@ -1,0 +1,645 @@
+/*
+	vid_svgalib.c:	Linux SVGALIB specific video driver.
+	from quake1 source with minor adaptations for uhexen2.
+
+	$Id: vid_svgalib.c,v 1.1 2008-04-02 07:05:44 sezero Exp $
+
+	Copyright (C) 1996-1997  Id Software, Inc.
+
+	This program is free software; you can redistribute it and/or
+	modify it under the terms of the GNU General Public License
+	as published by the Free Software Foundation; either version 2
+	of the License, or (at your option) any later version.
+
+	This program is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+
+	See the GNU General Public License for more details.
+
+	You should have received a copy of the GNU General Public License
+	along with this program; if not, write to:
+
+		Free Software Foundation, Inc.
+		59 Temple Place - Suite 330
+		Boston, MA  02111-1307, USA
+
+*/
+
+#if 0
+#include <termios.h>
+#include <sys/ioctl.h>
+#include <sys/stat.h>
+#include <sys/vt.h>
+#include <stdarg.h>
+#include <stdio.h>
+#include <signal.h>
+#endif
+#include "q_stdinc.h"
+#include <asm/io.h>	/* outb */
+
+#include "vga.h"
+
+#include "quakedef.h"
+#include "d_local.h"
+
+
+/* extern funcs from d_copy.asm */
+__ASM_FUNCS_BEGIN
+void VGA_UpdatePlanarScreen (void *srcbuffer);
+void VGA_UpdateLinearScreen (void *srcptr, void *destptr, int width,
+					int height, int srcrowbytes, int destrowbytes);
+__ASM_FUNCS_END
+
+unsigned short	d_8to16table[256];	/* not used in 8 bpp mode */
+unsigned int	d_8to24table[256];	/* not used in 8 bpp mode */
+
+int		VGA_width, VGA_height, VGA_rowbytes, VGA_bufferrowbytes;
+byte		*VGA_pagebase;
+static byte	*framebuffer_ptr;
+static int	VGA_planar;
+
+static byte	backingbuf[48*24];
+
+static byte	*vid_surfcache;
+static int	VID_highhunkmark;
+
+static int	num_modes;
+static vga_modeinfo	*modes;
+static int	current_mode;
+
+static byte	vid_current_palette[768];
+
+static int	svgalib_inited = 0;
+
+static cvar_t	vid_mode = {"vid_mode", "5", CVAR_NONE};
+static cvar_t	vid_redrawfull = {"vid_redrawfull", "0", CVAR_NONE};
+static cvar_t	vid_waitforrefresh = {"vid_waitforrefresh", "0", CVAR_ARCHIVE};
+
+/* globals for compatibility: */
+modestate_t	modestate = MS_UNINIT;
+cvar_t	_enable_mouse = {"_enable_mouse", "1", CVAR_ARCHIVE};
+
+
+#if 0
+static void vtswitch (int newconsole)
+{
+	int		fd;
+	struct vt_stat	x;
+
+/* switch consoles and wait until reactivated */
+	fd = open("/dev/console", O_RDONLY);
+	ioctl(fd, VT_GETSTATE, &x);
+	ioctl(fd, VT_ACTIVATE, newconsole);
+	ioctl(fd, VT_WAITACTIVE, x.v_active);
+	close(fd);
+}
+#endif
+
+/*
+=================
+VID_Gamma_f
+
+Keybinding command
+=================
+*/
+#if 0
+static void VID_Gamma_f (void)
+{
+	float	gamma, f, inf;
+	unsigned char	palette[768];
+	int		i;
+
+	if (Cmd_Argc () == 2)
+	{
+		gamma = Q_atof (Cmd_Argv(1));
+
+		for (i = 0; i < 768; i++)
+		{
+			f = pow ((host_basepal[i] + 1) / 256.0, gamma);
+			inf = f*255 + 0.5;
+			if (inf < 0)
+				inf = 0;
+			if (inf > 255)
+				inf = 255;
+			palette[i] = inf;
+		}
+
+		VID_SetPalette (palette);
+
+		vid.recalc_refdef = 1;	/* force a surface cache flush */
+	}
+}
+#endif
+
+static void VID_DescribeMode_f (void)
+{
+	int	modenum;
+
+	modenum = atoi (Cmd_Argv(1));
+	if ((modenum >= num_modes) || (modenum < 0 ) || !modes[modenum].width)
+		Con_Printf("Invalid video mode: %d!\n", modenum);
+	else
+	{
+		Con_Printf("%d: %d x %d - ", modenum, modes[modenum].width, modes[modenum].height);
+		if (modes[modenum].bytesperpixel == 0)
+			Con_Printf("ModeX\n");
+		else
+			Con_Printf("%d bpp\n", modes[modenum].bytesperpixel<<3);
+	}
+}
+
+static void VID_DescribeModes_f (void)
+{
+	int	i;
+
+	for (i = 0; i < num_modes; i++)
+	{
+		if (modes[i].width)
+		{
+			Con_Printf("%d: %d x %d - ", i, modes[i].width, modes[i].height);
+			if (modes[i].bytesperpixel == 0)
+				Con_Printf("ModeX\n");
+			else
+				Con_Printf("%d bpp\n", modes[i].bytesperpixel<<3);
+		}
+	}
+}
+
+/*
+================
+VID_NumModes
+================
+*/
+static int VID_NumModes (void)
+{
+	int	i, i1 = 0;
+
+	for (i = 0; i < num_modes; i++)
+		i1 += (modes[i].width ? 1 : 0);
+	return (i1);
+}
+
+static void VID_NumModes_f (void)
+{
+	Con_Printf("%d modes\n", VID_NumModes());
+}
+
+static void VID_Debug_f (void)
+{
+	Con_Printf("mode: %d\n", current_mode);
+	Con_Printf("height x width: %d x %d\n", vid.height, vid.width);
+	Con_Printf("bpp: %d\n", modes[current_mode].bytesperpixel*8);
+	Con_Printf("vid.aspect: %f\n", vid.aspect);
+}
+
+
+static void VID_InitModes (void)
+{
+	int	i;
+
+/* get complete information on all modes */
+	num_modes = vga_lastmodenumber() + 1;
+	modes = (vga_modeinfo *) Z_Malloc(num_modes * sizeof(vga_modeinfo), Z_MAINZONE);
+	for (i = 0; i < num_modes; i++)
+	{
+		if (vga_hasmode(i))
+			memcpy(&modes[i], vga_getmodeinfo(i), sizeof(vga_modeinfo));
+		else
+			modes[i].width = 0;	/* means not available */
+	}
+
+/* filter for modes i don't support */
+	for (i = 0; i < num_modes; i++)
+	{
+		if (modes[i].bytesperpixel != 1 && modes[i].colors != 256)
+			modes[i].width = 0;
+	}
+}
+
+static int get_mode (char *name, int width, int height, int depth)
+{
+	int	i;
+	int	ok, match;
+
+	match = (!!width) + (!!height)*2 + (!!depth)*4;
+
+	if (name)
+	{
+		i = vga_getmodenumber(name);
+		if (!modes[i].width)
+		{
+			Sys_Printf("Mode [%s] not supported\n", name);
+			i = G320x200x256;
+		}
+	}
+	else
+	{
+		for (i=0 ; i<num_modes ; i++)
+		{
+			if (modes[i].width)
+			{
+				ok = (modes[i].width == width)
+					+ (modes[i].height == height)*2
+					+ (modes[i].bytesperpixel == depth/8)*4;
+				if ((ok & match) == ok)
+					break;
+			}
+		}
+		if (i == num_modes)
+		{
+			Sys_Printf("Mode %dx%d (%d bits) not supported\n", width, height, depth);
+			i = G320x200x256;
+		}
+	}
+
+	return i;
+}
+
+void VID_Shutdown (void)
+{
+	if (!svgalib_inited)
+		return;
+
+	vga_setmode(TEXT);
+
+	svgalib_inited = 0;
+}
+
+void VID_SetPalette (byte *palette)
+{
+	static int	tmppal[256*3];
+	int		*tp;
+	int		i;
+
+	if (!svgalib_inited)
+		return;
+
+	memcpy(vid_current_palette, palette, sizeof(vid_current_palette));
+
+	if (vga_getcolors() == 256)
+	{
+		tp = tmppal;
+		for (i = 256 * 3; i; i--)
+			*(tp++) = *(palette++) >> 2;
+
+		if (vga_oktowrite())
+			vga_setpalvec(0, 256, tmppal);
+	}
+}
+
+void VID_ShiftPalette (unsigned char *p)
+{
+	VID_SetPalette(p);
+}
+
+static int VID_SetMode (int modenum, unsigned char *palette)
+{
+	int	bsize, zsize, tsize;
+
+	if ((modenum >= num_modes) || (modenum < 0) || !modes[modenum].width)
+	{
+		Cvar_SetValue ("vid_mode", (float)current_mode);
+		Con_Printf("No such video mode: %d\n",modenum);
+		return 0;
+	}
+
+	Cvar_SetValue ("vid_mode", (float)modenum);
+
+	current_mode = modenum;
+
+	vid.width = modes[current_mode].width;
+	vid.height = modes[current_mode].height;
+
+	VGA_width = modes[current_mode].width;
+	VGA_height = modes[current_mode].height;
+	VGA_planar = modes[current_mode].bytesperpixel == 0;
+	VGA_rowbytes = modes[current_mode].linewidth;
+	vid.rowbytes = modes[current_mode].linewidth;
+	if (VGA_planar)
+	{
+		VGA_bufferrowbytes = modes[current_mode].linewidth * 4;
+		vid.rowbytes = modes[current_mode].linewidth*4;
+	}
+
+	vid.aspect = ((float)vid.height / (float)vid.width) * (320.0 / 240.0);
+	vid.colormap = (pixel_t *) host_colormap;
+	vid.fullbright = 256 - LittleLong (*((int *)vid.colormap + 2048));
+	vid.conrowbytes = vid.rowbytes;
+	vid.conwidth = vid.width;
+	vid.conheight = vid.height;
+	vid.numpages = 1;
+
+	vid.maxwarpwidth = WARP_WIDTH;
+	vid.maxwarpheight = WARP_HEIGHT;
+
+	/* alloc zbuffer and surface cache */
+	if (d_pzbuffer)
+	{
+		D_FlushCaches();
+		Hunk_FreeToHighMark (VID_highhunkmark);
+		d_pzbuffer = NULL;
+		vid_surfcache = NULL;
+	}
+
+	bsize = vid.rowbytes * vid.height;
+	tsize = D_SurfaceCacheForRes (vid.width, vid.height);
+	zsize = vid.width * vid.height * sizeof(*d_pzbuffer);
+
+	VID_highhunkmark = Hunk_HighMark ();
+
+	d_pzbuffer = (short *) Hunk_HighAllocName (bsize + tsize + zsize, "video");
+
+	vid_surfcache = ((byte *)d_pzbuffer) + zsize;
+
+	vid.conbuffer = vid.buffer = (pixel_t *)(((byte *)d_pzbuffer) + zsize + tsize);
+
+	D_InitCaches (vid_surfcache, tsize);
+
+	/* get goin' */
+	vga_setmode(current_mode);
+	VID_SetPalette(palette);
+
+	VGA_pagebase = vid.direct = framebuffer_ptr = (byte *) vga_getgraphmem();
+	/*
+	if (vga_setlinearaddressing() > 0)
+		framebuffer_ptr = (char *) vga_getgraphmem();
+	*/
+	if (!framebuffer_ptr)
+		Sys_Error("This mode isn't hapnin'\n");
+
+	vga_setpage(0);
+
+	svgalib_inited = 1;
+
+	vid.recalc_refdef = 1;	/* force a surface cache flush */
+
+	return 0;
+}
+
+void VID_Init (unsigned char *palette)
+{
+	int	w, h, d;
+
+	if (svgalib_inited)
+		return;
+
+	vga_init();
+
+	VID_InitModes();
+
+//	Cvar_RegisterVariable (&_enable_mouse);
+	Cvar_RegisterVariable (&vid_mode);
+	Cvar_RegisterVariable (&vid_redrawfull);
+	Cvar_RegisterVariable (&vid_waitforrefresh);
+
+//	Cmd_AddCommand ("gamma", VID_Gamma_f);
+	Cmd_AddCommand("vid_nummodes", VID_NumModes_f);
+	Cmd_AddCommand("vid_describemode", VID_DescribeMode_f);
+	Cmd_AddCommand("vid_describemodes", VID_DescribeModes_f);
+	Cmd_AddCommand("vid_debug", VID_Debug_f);
+
+/* interpret command-line params */
+	w = h = d = 0;
+	if (getenv("GSVGAMODE"))
+		current_mode = get_mode(getenv("GSVGAMODE"), w, h, d);
+	else if (COM_CheckParm("-mode"))
+		current_mode = get_mode(com_argv[COM_CheckParm("-mode")+1], w, h, d);
+	else if (COM_CheckParm("-w") || COM_CheckParm("-h") || COM_CheckParm("-d"))
+	{
+		if (COM_CheckParm("-w"))
+			w = atoi(com_argv[COM_CheckParm("-w")+1]);
+		if (COM_CheckParm("-h"))
+			h = atoi(com_argv[COM_CheckParm("-h")+1]);
+		if (COM_CheckParm("-d"))
+			d = atoi(com_argv[COM_CheckParm("-d")+1]);
+		current_mode = get_mode(0, w, h, d);
+	}
+	else
+		current_mode = G320x200x256;
+
+/* set vid parameters */
+	VID_SetMode(current_mode, palette);
+
+	VID_SetPalette(palette);
+
+/* we do want to run in the background when switched away */
+	vga_runinbackground(1);
+}
+
+void VID_Update (vrect_t *rects)
+{
+	if (!svgalib_inited)
+		return;
+
+	if (!vga_oktowrite())
+		return;	/* can't update screen if it's not active */
+
+	if (vid_waitforrefresh.integer)
+		vga_waitretrace();
+
+	if (VGA_planar)
+	{
+		VGA_UpdatePlanarScreen (vid.buffer);
+	}
+	else if (vid_redrawfull.integer)
+	{
+		int total = vid.rowbytes * vid.height;
+		int offset;
+
+		for (offset = 0; offset < total; offset += 0x10000)
+		{
+			vga_setpage(offset / 0x10000);
+			memcpy(framebuffer_ptr, vid.buffer + offset, ((total-offset > 0x10000) ? 0x10000 : (total - offset)));
+		}
+	}
+	else
+	{
+		int ycount;
+		int offset;
+		int vidpage = 0;
+
+		vga_setpage(0);
+
+		while (rects)
+		{
+			ycount = rects->height;
+			offset = rects->y * vid.rowbytes + rects->x;
+			while (ycount--)
+			{
+				register int i = offset % 0x10000;
+
+				if ((offset / 0x10000) != vidpage)
+				{
+					vidpage = offset / 0x10000;
+					vga_setpage(vidpage);
+				}
+				if (rects->width + i > 0x10000)
+				{
+					memcpy(framebuffer_ptr + i, vid.buffer + offset, 0x10000 - i);
+					vga_setpage(++vidpage);
+					memcpy(framebuffer_ptr, vid.buffer + offset + 0x10000 - i, rects->width - 0x10000 + i);
+				}
+				else
+					memcpy(framebuffer_ptr + i, vid.buffer + offset, rects->width);
+
+				offset += vid.rowbytes;
+			}
+
+			rects = rects->pnext;
+		}
+	}
+
+	if (vid_mode.integer != current_mode)
+		VID_SetMode (vid_mode.integer, vid_current_palette);
+}
+
+
+/*
+================
+D_BeginDirectRect
+================
+*/
+void D_BeginDirectRect (int x, int y, byte *pbitmap, int width, int height)
+{
+	int	i, j, k, plane, reps, repshift, offset, vidpage, off;
+
+	if (!svgalib_inited || !vid.direct || !vga_oktowrite())
+		return;
+
+	if (vid.aspect > 1.5)
+	{
+		reps = 2;
+		repshift = 1;
+	}
+	else
+	{
+		reps = 1;
+		repshift = 0;
+	}
+
+	vidpage = 0;
+	vga_setpage(0);
+
+	if (VGA_planar)
+	{
+		for (plane = 0; plane < 4; plane++)
+		{
+		/* select the correct plane for reading and writing */
+			outb(0x02, 0x3C4);
+			outb(1 << plane, 0x3C5);
+			outb(4, 0x3CE);
+			outb(plane, 0x3CF);
+
+			for (i = 0; i < (height << repshift); i += reps)
+			{
+				for (k = 0; k < reps; k++)
+				{
+					for (j = 0; j < (width >> 2); j++)
+					{
+						backingbuf[(i + k) * 24 + (j << 2) + plane] =
+								vid.direct[(y + i + k) * VGA_rowbytes +
+								(x >> 2) + j];
+						vid.direct[(y + i + k) * VGA_rowbytes + (x>>2) + j] =
+								pbitmap[(i >> repshift) * 24 +
+								(j << 2) + plane];
+					}
+				}
+			}
+		}
+	}
+	else
+	{
+		for (i = 0; i < (height << repshift); i += reps)
+		{
+			for (j = 0; j < reps; j++)
+			{
+				offset = x + ((y << repshift) + i + j) * vid.rowbytes;
+				off = offset % 0x10000;
+				if ((offset / 0x10000) != vidpage)
+				{
+					vidpage = offset / 0x10000;
+					vga_setpage(vidpage);
+				}
+				memcpy (&backingbuf[(i + j) * 24], vid.direct + off, width);
+				memcpy (vid.direct + off, &pbitmap[(i >> repshift)*width], width);
+			}
+		}
+	}
+}
+
+
+void D_ShowLoadingSize (void)
+{
+/* to be implemented. */
+}
+
+
+/*
+================
+D_EndDirectRect
+================
+*/
+void D_EndDirectRect (int x, int y, int width, int height)
+{
+	int	i, j, k, plane, reps, repshift, offset, vidpage, off;
+
+	if (!svgalib_inited || !vid.direct || !vga_oktowrite())
+		return;
+
+	if (vid.aspect > 1.5)
+	{
+		reps = 2;
+		repshift = 1;
+	}
+	else
+	{
+		reps = 1;
+		repshift = 0;
+	}
+
+	vidpage = 0;
+	vga_setpage(0);
+
+	if (VGA_planar)
+	{
+		for (plane = 0; plane < 4; plane++)
+		{
+		/* select the correct plane for writing */
+			outb(2, 0x3C4);
+			outb(1 << plane, 0x3C5);
+			outb(4, 0x3CE);
+			outb(plane, 0x3CF);
+
+			for (i = 0; i < (height << repshift); i += reps)
+			{
+				for (k = 0; k < reps; k++)
+				{
+					for (j = 0; j < (width >> 2); j++)
+					{
+						vid.direct[(y + i + k) * VGA_rowbytes + (x>>2) + j] =
+								backingbuf[(i + k) * 24 + (j << 2) + plane];
+					}
+				}
+			}
+		}
+	}
+	else
+	{
+		for (i = 0; i < (height << repshift); i += reps)
+		{
+			for (j = 0; j < reps; j++)
+			{
+				offset = x + ((y << repshift) + i + j) * vid.rowbytes;
+				off = offset % 0x10000;
+				if ((offset / 0x10000) != vidpage)
+				{
+					vidpage = offset / 0x10000;
+					vga_setpage(vidpage);
+				}
+				memcpy (vid.direct + off, &backingbuf[(i +j)*24], width);
+			}
+		}
+	}
+}
+
