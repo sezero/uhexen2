@@ -1,5 +1,5 @@
 # GNU Makefile for Hexen II Dedicated Server (h2ded) using GCC.
-# $Header: /home/ozzie/Download/0000/uhexen2/hexen2/Makefile.sv,v 1.22 2008-04-03 09:25:52 sezero Exp $
+# $Header: /home/ozzie/Download/0000/uhexen2/hexen2/Makefile.sv,v 1.23 2008-04-03 23:37:23 sezero Exp $
 #
 # It is ESSENTIAL that you run make clean between different
 # types of builds or different types of targets.
@@ -123,26 +123,20 @@ sv_objs/%.o: server/%.c
 	$(CC) -c $(CFLAGS) $(EXT_FLAGS) $(INCLUDES) -o $@ $<
 
 # Objects
-# Platform specific object settings
-NET_UNIX = net_bsd.o \
-	net_udp.o
-NET_WIN32 = win_stuff/net_win.o \
-	win_stuff/net_wins.o \
-	win_stuff/net_wipx.o
-SYS_UNIX = sv_objs/sys_unix.o
-SYS_WIN32 = sv_objs/sys_win.o
 
+# Platform specific object settings
 ifeq ($(TARGET_OS),win32)
-SYSOBJ_NET = $(NET_WIN32)
-SYSOBJ_SYS = $(SYS_WIN32)
+SYSOBJ_NET := win_stuff/net_win.o win_stuff/net_wins.o win_stuff/net_wipx.o
+SYSOBJ_SYS := sv_objs/sys_win.o
 endif
 ifeq ($(TARGET_OS),unix)
-SYSOBJ_NET = $(NET_UNIX)
-SYSOBJ_SYS = $(SYS_UNIX)
+SYSOBJ_NET := net_bsd.o net_udp.o
+SYSOBJ_SYS := sv_objs/sys_unix.o
 endif
 
 # Final list of objects
-H2DED_OBJS = q_endian.o \
+H2DED_OBJS = \
+	q_endian.o \
 	link_ops.o \
 	sizebuf.o \
 	strlcat.o \
@@ -156,20 +150,20 @@ H2DED_OBJS = q_endian.o \
 	cvar.o \
 	mathlib.o \
 	zone.o \
-	sv_objs/host.o \
-	sv_objs/host_cmd.o \
 	$(SYSOBJ_NET) \
 	sv_objs/net_dgrm.o \
 	sv_objs/net_main.o \
 	sv_objs/model.o \
+	sv_objs/host.o \
+	sv_objs/host_cmd.o \
 	pr_cmds.o \
 	pr_edict.o \
 	pr_exec.o \
 	pr_strng.o \
+	sv_effect.o \
 	sv_main.o \
 	sv_move.o \
 	sv_phys.o \
-	sv_effect.o \
 	sv_user.o \
 	world.o \
 	$(SYSOBJ_SYS)

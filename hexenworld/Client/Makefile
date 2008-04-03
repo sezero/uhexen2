@@ -1,5 +1,5 @@
 # GNU Makefile for hexenworld clients using GCC.
-# $Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/Makefile,v 1.83 2008-04-03 09:25:54 sezero Exp $
+# $Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/Makefile,v 1.84 2008-04-03 23:37:25 sezero Exp $
 #
 # Type "make help" to see the valid targets.
 #
@@ -308,13 +308,54 @@ endif
 
 # Objects
 
+# Intel asm objects
+ifeq ($(USE_X86_ASM),yes)
+COMMON_ASM= math.o \
+	sys_ia32.o
+
+SOFT_ASM = \
+	d_draw.o \
+	d_draw16.o \
+	d_draw16t.o \
+	d_parta.o \
+	d_partb.o \
+	d_polysa.o \
+	d_polysa2.o \
+	d_polysa3.o \
+	d_polysa4.o \
+	d_polysa5.o \
+	d_scana.o \
+	d_spr8.o \
+	d_spr8t.o \
+	d_spr8t2.o \
+	d_varsa.o \
+	r_aclipa.o \
+	r_aliasa.o \
+	r_drawa.o \
+	r_edgea.o \
+	r_edgeb.o \
+	r_varsa.o \
+	surf8.o \
+	surf16.o
+
+SOUND_ASM = snd_mixa.o
+
+else
+
+SOFT_ASM =
+COMMON_ASM =
+SOUND_ASM =
+
+endif
+
 # Sound objects
 ifneq ($(USE_SOUND),yes)
+SOUND_ASM :=
 EXT_FLAGS += -D_NO_SOUND
 SYSOBJ_SND :=
 COMOBJ_SND := snd_null.o
 else
-COMOBJ_SND := snd_sys.o snd_dma.o snd_mix.o snd_mem.o
+COMOBJ_SND := snd_sys.o snd_dma.o snd_mix.o $(SOUND_ASM) snd_mem.o
 ifeq ($(TARGET_OS),win32)
 SYSOBJ_SND := win_stuff/snd_win.o
 endif
@@ -373,7 +414,8 @@ SYSOBJ_SYS := sys_unix.o
 endif
 
 # Final list of objects
-SOFTOBJS = d_edge.o \
+SOFTOBJS = \
+	d_edge.o \
 	d_fill.o \
 	d_init.o \
 	d_modech.o \
@@ -385,8 +427,6 @@ SOFTOBJS = d_edge.o \
 	d_surf.o \
 	d_vars.o \
 	d_zpoint.o \
-	draw.o \
-	model.o \
 	r_aclip.o \
 	r_alias.o \
 	r_bsp.o \
@@ -402,23 +442,35 @@ SOFTOBJS = d_edge.o \
 	r_surf.o \
 	r_vars.o \
 	screen.o \
-	$(SYSOBJ_SOFT_VID)
+	$(SYSOBJ_SOFT_VID) \
+	draw.o \
+	model.o
 
-GLOBJS = gl_draw.o \
-	gl_mesh.o \
-	gl_model.o \
-	gl_ngraph.o \
+GLOBJS = \
 	gl_refrag.o \
 	gl_rlight.o \
 	gl_rmain.o \
 	gl_rmisc.o \
+	gl_ngraph.o \
 	r_part.o \
 	gl_rsurf.o \
 	gl_screen.o \
 	gl_warp.o \
-	$(SYSOBJ_GL_VID)
+	$(SYSOBJ_GL_VID) \
+	gl_draw.o \
+	gl_mesh.o \
+	gl_model.o
 
-COMMONOBJS = cl_cam.o \
+COMMONOBJS = \
+	$(SYSOBJ_INPUT) \
+	$(COMOBJ_SND) \
+	$(SYSOBJ_SND) \
+	$(SYSOBJ_CDA) \
+	$(SYSOBJ_MIDI) \
+	huffman.o \
+	net_wins.o \
+	net_chan.o \
+	cl_cam.o \
 	cl_demo.o \
 	cl_effect.o \
 	cl_ents.o \
@@ -428,6 +480,13 @@ COMMONOBJS = cl_cam.o \
 	cl_pred.o \
 	cl_tent.o \
 	cl_cmd.o \
+	console.o \
+	keys.o \
+	menu.o \
+	sbar.o \
+	skin.o \
+	view.o \
+	wad.o \
 	cmd.o \
 	q_endian.o \
 	link_ops.o \
@@ -439,72 +498,16 @@ COMMONOBJS = cl_cam.o \
 	debuglog.o \
 	quakefs.o \
 	info_str.o \
-	console.o \
 	crc.o \
 	cvar.o \
 	cfgfile.o \
 	pr_strng.o \
-	$(SYSOBJ_INPUT) \
-	keys.o \
 	mathlib.o \
-	menu.o \
-	huffman.o \
-	net_wins.o \
-	net_chan.o \
 	pmove.o \
 	pmovetst.o \
-	sbar.o \
-	skin.o \
-	$(COMOBJ_SND) \
-	$(SYSOBJ_SND) \
-	$(SYSOBJ_CDA) \
-	$(SYSOBJ_MIDI) \
-	view.o \
-	wad.o \
 	zone.o \
 	$(SYSOBJ_SYS)
 
-# Intel asm objects
-ifeq ($(USE_X86_ASM),yes)
-ifeq ($(USE_SOUND),yes)
-SOUND_ASM := snd_mixa.o
-else
-SOUND_ASM :=
-endif
-COMMON_ASM = math.o \
-	$(SOUND_ASM) \
-	sys_ia32.o
-
-SOFT_ASM = d_draw.o \
-	d_draw16.o \
-	d_draw16t.o \
-	d_parta.o \
-	d_partb.o \
-	d_polysa.o \
-	d_polysa2.o \
-	d_polysa3.o \
-	d_polysa4.o \
-	d_polysa5.o \
-	d_scana.o \
-	d_spr8.o \
-	d_spr8t.o \
-	d_spr8t2.o \
-	d_varsa.o \
-	r_aclipa.o \
-	r_aliasa.o \
-	r_drawa.o \
-	r_edgea.o \
-	r_edgeb.o \
-	r_varsa.o \
-	surf8.o \
-	surf16.o
-
-
-else
-
-SOFT_ASM = 
-COMMON_ASM = 
-endif
 
 # Targets
 .PHONY: help clean cleaner report
@@ -527,8 +530,8 @@ glhwcl: glhw
 
 hw: EXT_FLAGS+=$(MGL_FLAG)
 hw: INCLUDES+=$(MGL_INCL)
-hw: $(SOFTOBJS) $(SOFT_ASM) $(COMMON_ASM) $(COMMONOBJS)
-	$(LINKER) -o $(HW_BINARY) $(SOFTOBJS) $(SOFT_ASM) $(COMMON_ASM) $(COMMONOBJS) $(LDFLAGS) $(SDLLINK) $(MGL_LINK)
+hw: $(SOFT_ASM) $(SOFTOBJS) $(COMMON_ASM) $(COMMONOBJS)
+	$(LINKER) -o $(HW_BINARY) $(SOFT_ASM) $(SOFTOBJS) $(COMMON_ASM) $(COMMONOBJS) $(LDFLAGS) $(SDLLINK) $(MGL_LINK)
 
 glhw: EXT_FLAGS+= $(GL_DEFS)
 glhw: $(GLOBJS) $(COMMON_ASM) $(COMMONOBJS)

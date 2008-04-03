@@ -1,5 +1,5 @@
 # GNU Makefile for hexenworld server using GCC.
-# $Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Server/Makefile,v 1.48 2008-04-03 09:25:54 sezero Exp $
+# $Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Server/Makefile,v 1.49 2008-04-03 23:37:25 sezero Exp $
 #
 # To cross-compile for Win32 on Unix, you must pass the WINBUILD=1
 # argument to make. It would be best if you examine the script named
@@ -120,19 +120,18 @@ cl_objs/%.o: ../Client/%.c
 	$(CC) -c $(CFLAGS) $(EXT_FLAGS) $(INCLUDES) -o $@ $<
 
 # Objects
-# Platform specific object settings
-SYS_UNIX = sys_unix.o
-SYS_WIN32 = sys_win.o
 
+# Platform specific object settings
 ifeq ($(TARGET_OS),win32)
-SYSOBJ_SYS = $(SYS_WIN32)
+SYSOBJ_SYS = sys_win.o
 endif
 ifeq ($(TARGET_OS),unix)
-SYSOBJ_SYS = $(SYS_UNIX)
+SYSOBJ_SYS = sys_unix.o
 endif
 
 # Final list of objects
-COMMONOBJS = cl_objs/q_endian.o \
+HWSV_OBJS = \
+	cl_objs/q_endian.o \
 	cl_objs/link_ops.o \
 	cl_objs/sizebuf.o \
 	cl_objs/strlcat.o \
@@ -146,18 +145,18 @@ COMMONOBJS = cl_objs/q_endian.o \
 	cl_objs/cvar.o \
 	cl_objs/pr_strng.o \
 	cl_objs/mathlib.o \
+	cl_objs/zone.o \
 	cl_objs/huffman.o \
 	cl_objs/net_wins.o \
 	cl_objs/net_chan.o \
 	cl_objs/pmove.o \
 	cl_objs/pmovetst.o \
-	cl_objs/zone.o \
 	model.o \
 	pr_cmds.o \
 	pr_edict.o \
 	pr_exec.o \
-	sv_ccmds.o \
 	sv_effect.o \
+	sv_ccmds.o \
 	sv_ents.o \
 	sv_init.o \
 	sv_main.o \
@@ -175,8 +174,8 @@ COMMONOBJS = cl_objs/q_endian.o \
 default: $(BINARY)
 all: default
 
-$(BINARY): $(COMMONOBJS)
-	$(LINKER) -o $(BINARY) $(COMMONOBJS) $(LDFLAGS)
+$(BINARY): $(HWSV_OBJS)
+	$(LINKER) -o $(BINARY) $(HWSV_OBJS) $(LDFLAGS)
 
 clean:
 	rm -f *.o cl_objs/*.o core
