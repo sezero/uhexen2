@@ -1,5 +1,5 @@
 # GNU Makefile for hexen2 lmp2pcx tool using GCC.
-# $Header: /home/ozzie/Download/0000/uhexen2/utils/texutils/lmp2pcx/Makefile,v 1.11 2008-04-02 17:55:24 sezero Exp $
+# $Header: /home/ozzie/Download/0000/uhexen2/utils/texutils/lmp2pcx/Makefile,v 1.12 2008-04-03 09:25:55 sezero Exp $
 #
 # if building a debug version :		make DEBUG=1 [other stuff]
 #
@@ -43,6 +43,9 @@ else
 CFLAGS = $(CPUFLAGS) -O2 -Wall
 endif
 
+CFLAGS := $(CFLAGS) $(ARCHFLAGS)
+
+
 # Other build flags
 
 ifeq ($(TARGET_OS),win32)
@@ -61,7 +64,7 @@ all : $(BINARY)
 
 # Rules for turning source files into .o files
 %.o: %.c
-	$(CC) -c $(CFLAGS) $(ARCHFLAGS) $(INCLUDES) -o $@ $<
+	$(CC) -c $(CFLAGS) $(INCLUDES) -o $@ $<
 
 # Objects
 LMP2PCXOBJS= $(COMMONDIR)/cmdlib.o \

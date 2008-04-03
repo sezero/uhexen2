@@ -1,5 +1,5 @@
 # GNU Makefile for hexen2 genmodel tool using GCC.
-# $Header: /home/ozzie/Download/0000/uhexen2/utils/genmodel/Makefile,v 1.20 2008-04-02 17:55:23 sezero Exp $
+# $Header: /home/ozzie/Download/0000/uhexen2/utils/genmodel/Makefile,v 1.21 2008-04-03 09:25:54 sezero Exp $
 #
 # if building a debug version :		make DEBUG=1 [other stuff]
 #
@@ -43,6 +43,9 @@ else
 CFLAGS := $(CPUFLAGS) -O2 -Wall -ffast-math -fexpensive-optimizations
 endif
 
+CFLAGS := $(CFLAGS) $(ARCHFLAGS)
+
+
 # Other build flags
 
 ifeq ($(TARGET_OS),win32)
@@ -61,10 +64,10 @@ all : $(BINARY)
 
 # Rules for turning source files into .o files
 %.o: %.c
-	$(CC) -c $(CFLAGS) $(ARCHFLAGS) $(INCLUDES) -o $@ $<
+	$(CC) -c $(CFLAGS) $(INCLUDES) -o $@ $<
 # special rule for mathlib because of DOUBLEVEC_T
 mathlib.o: $(COMMONDIR)/mathlib.c
-	$(CC) -c $(CFLAGS) $(ARCHFLAGS) $(INCLUDES) -o $@ $<
+	$(CC) -c $(CFLAGS) $(INCLUDES) -o $@ $<
 
 # Objects
 GENMODELOBJS= $(COMMONDIR)/cmdlib.o \

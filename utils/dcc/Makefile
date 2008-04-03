@@ -1,5 +1,5 @@
 # GNU Makefile for hexen2 dhcc tool using GCC.
-# $Header: /home/ozzie/Download/0000/uhexen2/utils/dcc/Makefile,v 1.34 2008-04-02 17:55:23 sezero Exp $
+# $Header: /home/ozzie/Download/0000/uhexen2/utils/dcc/Makefile,v 1.35 2008-04-03 09:25:54 sezero Exp $
 #
 # if building a debug version :		make DEBUG=1 [other stuff]
 #
@@ -42,6 +42,9 @@ else
 CFLAGS := $(CPUFLAGS) -O2 -Wall
 endif
 
+CFLAGS := $(CFLAGS) $(ARCHFLAGS)
+
+
 # Other build flags
 
 ifeq ($(TARGET_OS),win32)
@@ -64,9 +67,9 @@ COMLIB_DIR:=cmnlibs
 
 # Rules for turning source files into .o files
 %.o: %.c
-	$(CC) -c $(CFLAGS) $(ARCHFLAGS) $(INCLUDES) -o $@ $<
+	$(CC) -c $(CFLAGS) $(INCLUDES) -o $@ $<
 $(COMLIB_DIR)/%.o: $(COMMONDIR)/%.c
-	$(CC) -c $(CFLAGS) $(ARCHFLAGS) $(INCLUDES) -o $@ $<
+	$(CC) -c $(CFLAGS) $(INCLUDES) -o $@ $<
 
 # Objects
 COMMONOBJ= $(COMLIB_DIR)/cmdlib.o \

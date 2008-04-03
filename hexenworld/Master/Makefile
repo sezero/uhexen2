@@ -1,5 +1,5 @@
 # GNU Makefile for hexenworld master server using GCC.
-# $Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Master/Makefile,v 1.24 2008-04-02 17:55:23 sezero Exp $
+# $Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Master/Makefile,v 1.25 2008-04-03 09:25:54 sezero Exp $
 #
 # if building a debug version :		make DEBUG=1 [other stuff]
 #
@@ -46,9 +46,10 @@ CFLAGS := $(CFLAGS) $(call check_gcc,-fno-unit-at-a-time,)
 endif
 endif
 
-# Other build flags
-EXT_FLAGS:=$(ARCHFLAGS)
+CFLAGS := $(CFLAGS) $(ARCHFLAGS)
 
+
+# Other build flags
 ifeq ($(TARGET_OS),win32)
 INCLUDES := -I$(W32STUFF) -I.
 LDFLAGS  := -lwsock32 -lwinmm -mconsole
@@ -61,7 +62,7 @@ endif
 
 # Rules for turning source files into .o files
 %.o: %.c
-	$(CC) -c $(CFLAGS) $(EXT_FLAGS) $(INCLUDES) -o $@ $<
+	$(CC) -c $(CFLAGS) $(INCLUDES) -o $@ $<
 
 # Objects
 MASTEROBJS = sizebuf.o msg_io.o cmds.o common.o net.o master.o sys_main.o

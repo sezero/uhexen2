@@ -1,5 +1,5 @@
 # GNU Makefile for hwrcon and hwterm using GCC.
-# $Header: /home/ozzie/Download/0000/uhexen2/hw_utils/hwrcon/Makefile,v 1.16 2008-04-02 17:55:23 sezero Exp $
+# $Header: /home/ozzie/Download/0000/uhexen2/hw_utils/hwrcon/Makefile,v 1.17 2008-04-03 09:25:54 sezero Exp $
 #
 # if building a debug version :		make DEBUG=1 [other stuff]
 #
@@ -46,8 +46,10 @@ else
 CFLAGS := $(CPUFLAGS) -O2 -Wall
 endif
 
+CFLAGS := $(CFLAGS) $(ARCHFLAGS)
+
+
 # Other build flags
-EXT_FLAGS:=$(ARCHFLAGS)
 
 ifeq ($(TARGET_OS),win32)
 INCLUDES := -I$(W32STUFF) -I.
@@ -61,7 +63,7 @@ endif
 
 # Rules for turning source files into .o files
 %.o: %.c
-	$(CC) -c $(CFLAGS) $(EXT_FLAGS) $(INCLUDES) -o $@ $<
+	$(CC) -c $(CFLAGS) $(INCLUDES) -o $@ $<
 
 # Objects
 COMMONOBJ = qsnprint.o

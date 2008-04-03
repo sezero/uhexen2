@@ -1,5 +1,5 @@
 # GNU Makefile for hwmquery using GCC.
-# $Header: /home/ozzie/Download/0000/uhexen2/hw_utils/hwmquery/Makefile,v 1.13 2008-04-02 17:55:23 sezero Exp $
+# $Header: /home/ozzie/Download/0000/uhexen2/hw_utils/hwmquery/Makefile,v 1.14 2008-04-03 09:25:54 sezero Exp $
 #
 # if building a debug version :		make DEBUG=1 [other stuff]
 #
@@ -39,8 +39,10 @@ else
 CFLAGS := $(CPUFLAGS) -O2 -Wall
 endif
 
+CFLAGS := $(CFLAGS) $(ARCHFLAGS)
+
+
 # Other build flags
-EXT_FLAGS:=$(ARCHFLAGS)
 
 ifeq ($(TARGET_OS),win32)
 INCLUDES := -I$(W32STUFF) -I.
@@ -54,7 +56,7 @@ endif
 
 # Rules for turning source files into .o files
 %.o: %.c
-	$(CC) -c $(CFLAGS) $(EXT_FLAGS) $(INCLUDES) -o $@ $<
+	$(CC) -c $(CFLAGS) $(INCLUDES) -o $@ $<
 
 # Objects
 HWMQUERY_OBJS = qsnprint.o hwmquery.o

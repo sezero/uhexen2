@@ -1,5 +1,5 @@
 # GNU Makefile for hexen2 jsh2color tool using GCC.
-# $Header: /home/ozzie/Download/0000/uhexen2/utils/jsh2color/Makefile,v 1.24 2008-04-02 17:55:23 sezero Exp $
+# $Header: /home/ozzie/Download/0000/uhexen2/utils/jsh2color/Makefile,v 1.25 2008-04-03 09:25:54 sezero Exp $
 #
 # if building a debug version :		make DEBUG=1 [other stuff]
 #
@@ -42,7 +42,10 @@ CFLAGS := -g -Wall
 else
 CFLAGS := $(CPUFLAGS) -O2 -Wall -ffast-math -fexpensive-optimizations
 endif
+
+CFLAGS := $(CFLAGS) $(ARCHFLAGS)
 CFLAGS := $(CFLAGS) -DDOUBLEVEC_T
+
 
 # Other build flags
 
@@ -62,12 +65,12 @@ all : $(BINARY)
 
 # Rules for turning source files into .o files
 %.o: %.c
-	$(CC) -c $(CFLAGS) $(ARCHFLAGS) $(INCLUDES) -o $@ $<
+	$(CC) -c $(CFLAGS) $(INCLUDES) -o $@ $<
 # special rule for mathlib because of DOUBLEVEC_T
 mathlib.o: $(COMMONDIR)/mathlib.c
-	$(CC) -c $(CFLAGS) $(ARCHFLAGS) $(INCLUDES) -o $@ $<
+	$(CC) -c $(CFLAGS) $(INCLUDES) -o $@ $<
 bspfile.o: $(COMMONDIR)/bspfile.c
-	$(CC) -c $(CFLAGS) $(ARCHFLAGS) $(INCLUDES) -o $@ $<
+	$(CC) -c $(CFLAGS) $(INCLUDES) -o $@ $<
 
 # Objects
 JS_OBJS= $(COMMONDIR)/cmdlib.o \

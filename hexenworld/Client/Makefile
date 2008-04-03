@@ -1,5 +1,5 @@
 # GNU Makefile for hexenworld clients using GCC.
-# $Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/Makefile,v 1.82 2008-04-02 20:37:39 sezero Exp $
+# $Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/Makefile,v 1.83 2008-04-03 09:25:54 sezero Exp $
 #
 # Type "make help" to see the valid targets.
 #
@@ -187,15 +187,18 @@ endif
 ifeq ($(COMPILE_32BITS),yes)
 CFLAGS := $(CFLAGS) -m32
 endif
+
+CFLAGS := $(CFLAGS) $(ARCHFLAGS)
 # end of compiler flags
+
+
+# Other build flags
+EXT_FLAGS:= -DH2W
 
 # whether to use x86 assembly
 ifeq ($(USE_X86_ASM),yes)
-CFLAGS := $(CFLAGS) -DUSE_INTEL_ASM
+EXT_FLAGS:= $(EXT_FLAGS) -DUSE_INTEL_ASM
 endif
-
-# Other build flags
-EXT_FLAGS:=$(ARCHFLAGS) -DH2W
 
 ifeq ($(TARGET_OS),win32)
 # Main win32 specific includes and flags

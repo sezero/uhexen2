@@ -1,5 +1,5 @@
 # GNU Makefile for hexen2 hcc tool using GCC.
-# $Header: /home/ozzie/Download/0000/uhexen2/utils/hcc/Makefile,v 1.18 2008-04-02 17:55:23 sezero Exp $
+# $Header: /home/ozzie/Download/0000/uhexen2/utils/hcc/Makefile,v 1.19 2008-04-03 09:25:54 sezero Exp $
 #
 # if building a debug version :		make DEBUG=1 [other stuff]
 #
@@ -45,6 +45,9 @@ endif
 # avoid the compiler warnings in pr_lex.c for now
 CFLAGS+= -Wno-char-subscripts
 
+CFLAGS := $(CFLAGS) $(ARCHFLAGS)
+
+
 # Other build flags
 
 ifeq ($(TARGET_OS),win32)
@@ -63,7 +66,7 @@ all : $(BINARY)
 
 # Rules for turning source files into .o files
 %.o: %.c
-	$(CC) -c $(CFLAGS) $(ARCHFLAGS) $(INCLUDES) -o $@ $<
+	$(CC) -c $(CFLAGS) $(INCLUDES) -o $@ $<
 
 # Objects
 HCCOBJS= $(COMMONDIR)/cmdlib.o \

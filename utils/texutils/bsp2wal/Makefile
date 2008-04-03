@@ -1,5 +1,5 @@
 # GNU Makefile for hexen2 bsp2wal tool using GCC.
-# $Header: /home/ozzie/Download/0000/uhexen2/utils/texutils/bsp2wal/Makefile,v 1.11 2008-04-02 17:55:24 sezero Exp $
+# $Header: /home/ozzie/Download/0000/uhexen2/utils/texutils/bsp2wal/Makefile,v 1.12 2008-04-03 09:25:55 sezero Exp $
 #
 # if building a debug version :		make DEBUG=1 [other stuff]
 #
@@ -43,6 +43,9 @@ else
 CFLAGS = $(CPUFLAGS) -O2 -Wall
 endif
 
+CFLAGS := $(CFLAGS) $(ARCHFLAGS)
+
+
 # Other build flags
 
 ifeq ($(TARGET_OS),win32)
@@ -61,9 +64,9 @@ all : $(BINARY)
 
 # Rules for turning source files into .o files
 %.o: %.c
-	$(CC) -c $(CFLAGS) $(ARCHFLAGS) $(INCLUDES) -o $@ $<
+	$(CC) -c $(CFLAGS) $(INCLUDES) -o $@ $<
 bspfile.o: $(COMMONDIR)/bspfile.c
-	$(CC) -c $(CFLAGS) $(ARCHFLAGS) $(INCLUDES) -o $@ $<
+	$(CC) -c $(CFLAGS) $(INCLUDES) -o $@ $<
 
 # Objects
 BSP2WALOBJS= $(COMMONDIR)/cmdlib.o \

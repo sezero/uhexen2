@@ -1,5 +1,5 @@
 # GNU Makefile for (gl)hexen2 client/server binaries using GCC.
-# $Header: /home/ozzie/Download/0000/uhexen2/hexen2/Makefile,v 1.89 2008-04-02 20:37:36 sezero Exp $
+# $Header: /home/ozzie/Download/0000/uhexen2/hexen2/Makefile,v 1.90 2008-04-03 09:25:52 sezero Exp $
 #
 # Type "make help" to see the valid targets.
 #
@@ -199,15 +199,18 @@ endif
 ifeq ($(COMPILE_32BITS),yes)
 CFLAGS := $(CFLAGS) -m32
 endif
+
+CFLAGS := $(CFLAGS) $(ARCHFLAGS)
 # end of compiler flags
+
+
+# Other build flags
+EXT_FLAGS:=
 
 # whether to use x86 assembly
 ifeq ($(USE_X86_ASM),yes)
-CFLAGS := $(CFLAGS) -DUSE_INTEL_ASM
+EXT_FLAGS:= $(EXT_FLAGS) -DUSE_INTEL_ASM
 endif
-
-# Other build flags
-EXT_FLAGS:=$(ARCHFLAGS)
 
 ifeq ($(TARGET_OS),win32)
 # Main win32 specific includes and flags

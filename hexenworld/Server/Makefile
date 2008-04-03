@@ -1,5 +1,5 @@
 # GNU Makefile for hexenworld server using GCC.
-# $Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Server/Makefile,v 1.47 2008-04-02 18:38:32 sezero Exp $
+# $Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Server/Makefile,v 1.48 2008-04-03 09:25:54 sezero Exp $
 #
 # To cross-compile for Win32 on Unix, you must pass the WINBUILD=1
 # argument to make. It would be best if you examine the script named
@@ -82,10 +82,13 @@ endif
 ifeq ($(COMPILE_32BITS),yes)
 CFLAGS := $(CFLAGS) -m32
 endif
+
+CFLAGS := $(CFLAGS) $(ARCHFLAGS)
 # end of compiler flags
 
+
 # Other build flags
-EXT_FLAGS:= -DH2W -DSERVERONLY $(ARCHFLAGS)
+EXT_FLAGS:= -DH2W -DSERVERONLY
 INCLUDES:= -I. -I../Client
 
 ifeq ($(TARGET_OS),win32)
