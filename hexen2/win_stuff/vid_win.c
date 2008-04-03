@@ -2,7 +2,7 @@
 	vid_win.c
 	Win32 video driver using MGL-4.05
 
-	$Id: vid_win.c,v 1.61 2008-04-02 16:37:29 sezero Exp $
+	$Id: vid_win.c,v 1.62 2008-04-03 07:11:51 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -24,20 +24,23 @@
 #define MAX_DESC	13
 #define VID_ROW_SIZE	3
 
-// new variables. Pa3PyX
+
+/* New variables (Pa3PyX) */
 static LONG_PTR		mgl_wnd_proc;
 static MGL_surfaceAccessFlagsType	mgldcAccessMode = MGL_NO_ACCESS,
 					memdcAccessMode = MGL_NO_ACCESS;
 static int				mgldcWidth = 0, memdcWidth = 0;
 
-byte globalcolormap[VID_GRADES*256], lastglobalcolor = 0;
-byte *lastsourcecolormap = NULL;
+byte		globalcolormap[VID_GRADES*256], lastglobalcolor = 0;
+byte		*lastsourcecolormap = NULL;
+
+HWND		mainwindow;
+qboolean	DDActive;
+qboolean	msg_suppress_1 = false;
 
 static qboolean	dibonly;
-HWND		mainwindow;
 
 static int	DIBWidth, DIBHeight;
-qboolean	DDActive;
 static RECT	WindowRect;
 static LONG	WindowStyle, ExWindowStyle;
 
@@ -45,18 +48,18 @@ int		window_center_x, window_center_y, window_x, window_y, window_width, window_
 RECT		window_rect;
 
 static DEVMODE	gdevmode;
-static qboolean	startwindowed = 0, windowed_mode_set = 0;
-static int		firstupdate = 1;
+static qboolean	startwindowed = false, windowed_mode_set = false;
+static qboolean	firstupdate = true;
 static qboolean	vid_initialized = false, vid_palettized;
-static int		lockcount;
-static int		vid_fulldib_on_focus_mode;
+static int	lockcount;
+static int	vid_fulldib_on_focus_mode;
 static qboolean	force_minimized, is_mode0x13, force_mode_set;
-qboolean		in_mode_set;
-static int		vid_stretched, enable_mouse;
+static int	vid_stretched, enable_mouse;
 static qboolean	palette_changed, syscolchg, vid_mode_set, hide_window, pal_is_nostatic;
 static HICON	hIcon;
 
-viddef_t	vid;				// global video state
+viddef_t	vid;		// global video state
+qboolean	in_mode_set;
 
 // Note that 0 is MODE_WINDOWED
 static	cvar_t	vid_mode = {"vid_mode", "0", CVAR_NONE};
@@ -168,8 +171,8 @@ static int		vPage;	// Current visible display page
    "1" wait for vertical retrace, "2" triple buffer, and now
    "-1" will mean autodetect.
 */
-static MGL_waitVRTFlagType	waitVRT = MGL_waitVRT,
-				defaultVRT = MGL_waitVRT;
+static MGL_waitVRTFlagType	waitVRT		= MGL_waitVRT,
+				defaultVRT	= MGL_waitVRT;
 
 static vmode_t	badmode;
 
@@ -373,7 +376,7 @@ static void VID_Fullscreen_f (void)
 
 static int VID_Suspend (MGLDC *dc, int flags)
 {
-	int		i;
+	qboolean	s;
 
 	if (flags & MGL_DEACTIVATE)
 	{
@@ -396,12 +399,12 @@ static int VID_Suspend (MGLDC *dc, int flags)
 
 		block_drawing = false;
 //		vid.recalc_refdef = 1;
-		force_mode_set = 1;
-		i = msg_suppress_1;
-		msg_suppress_1 = 1;
+		force_mode_set = true;
+		s = msg_suppress_1;
+		msg_suppress_1 = true;
 		VID_Fullscreen_f();
-		msg_suppress_1 = i;
-		force_mode_set = 0;
+		msg_suppress_1 = s;
+		force_mode_set = false;
 	}
 
 	return 1;
@@ -781,7 +784,7 @@ static void VID_InitMGLDIB (HINSTANCE hInstance)
 
 	nummodes = 3;	// reserve space for windowed mode
 
-	DDActive = 0;
+	DDActive = false;
 }
 
 
@@ -1307,12 +1310,12 @@ static qboolean VID_SetWindowedMode (int modenum)
 			Cvar_SetValue ("vid_window_y", 0.0);
 		}
 
-		windowed_mode_set = 1;
+		windowed_mode_set = true;
 	}
 
 	VID_CheckModedescFixup (modenum);
 
-	DDActive = 0;
+	DDActive = false;
 	lastmodestate = modestate;
 
 	DestroyFullscreenWindow ();
@@ -1445,7 +1448,7 @@ static qboolean VID_SetWindowedMode (int modenum)
 
 static qboolean VID_SetFullscreenMode (int modenum)
 {
-	DDActive = 1;
+	DDActive = true;
 
 	DestroyDIBWindow ();
 	DestroyFullDIBWindow ();
@@ -1511,7 +1514,7 @@ static qboolean VID_SetFullDIBMode (int modenum)
 	pixel_format_t	pf;
 	int		lastmodestate;
 
-	DDActive = 0;
+	DDActive = false;
 
 	DestroyFullscreenWindow ();
 	DestroyDIBWindow ();
@@ -2075,9 +2078,9 @@ static void VID_ForceMode_f (void)
 	{
 		modenum = atoi (Cmd_Argv(1));
 
-		force_mode_set = 1;
+		force_mode_set = true;
 		VID_SetMode (modenum, vid_curpal);
-		force_mode_set = 0;
+		force_mode_set = false;
 	}
 }
 
@@ -2174,7 +2177,7 @@ void	VID_Init (unsigned char *palette)
 
 	if (COM_CheckParm("-startwindowed") || COM_CheckParm("-window") || COM_CheckParm("-w"))
 	{
-		startwindowed = 1;
+		startwindowed = true;
 		vid_default = windowed_default;
 	}
 
@@ -2403,7 +2406,7 @@ void VID_Update (vrect_t *rects)
 		   it is the same as hardcoded default */
 		if (!startwindowed || _vid_default_mode_win.integer < MODE_FULLSCREEN_DEFAULT)
 		{
-			firstupdate = 0;
+			firstupdate = false;
 
 			if (COM_CheckParm ("-resetwinpos"))
 			{
@@ -2797,8 +2800,9 @@ static void AppActivate (BOOL fActive, BOOL minimize)
 ****************************************************************************/
 {
 	HDC			hdc;
-	int			i, t;
-	static BOOL	sound_active;
+	int			i;
+	qboolean		t;
+	static qboolean	sound_active;
 
 	ActiveApp = fActive;
 
@@ -2974,7 +2978,7 @@ extern cvar_t	mwheelthreshold;
 static LONG WINAPI MainWndProc (HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
 //	LONG	lRet = 0;	// ignore irrelevant messages in DDRAW/VESA/VGA modes
-	LONG	lRet = DDActive;
+	LONG	lRet = (DDActive);
 	int	fActive, fMinimized, temp;
 	HDC		hdc;
 	PAINTSTRUCT	ps;
@@ -3527,7 +3531,7 @@ static void VID_MenuKey (int key)
 	case 'D':
 	case 'd':
 		S_LocalSound ("raven/menu1.wav");
-		firstupdate = 0;
+		firstupdate = false;
 		Cvar_SetValue ("_vid_default_mode_win", vid_modenum);
 		break;
 

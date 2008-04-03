@@ -2,7 +2,7 @@
 	vid.h
 	video driver defs
 
-	$Id: vid.h,v 1.36 2008-04-02 19:10:34 sezero Exp $
+	$Id: vid.h,v 1.37 2008-04-03 07:11:50 sezero Exp $
 */
 
 #ifndef __VID_DEFS_H
@@ -125,6 +125,14 @@ void D_ShowLoadingSize (void);
 extern void (*vid_menudrawfn)(void);
 extern void (*vid_menukeyfn)(int key);
 // video menu function pointers
+
+#if !defined(PLATFORM_WINDOWS)
+#define	msg_suppress_1		false
+#else
+extern	qboolean	msg_suppress_1;
+// suppresses resolution and cache size console output a fullscreen
+// DIB focus gain/loss. used by the Win32 software (MGL) renderer.
+#endif
 
 #endif	/* __VID_DEFS_H */
 
