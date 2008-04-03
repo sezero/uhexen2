@@ -3,6 +3,11 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2008-04-03 (CVS):
+    * msg_suppress_1 is used by the Win32 software (MGL) renderer: removed from
+      all other platforms and defined it as false.
+    * minor makefile cleanup for svga client.
+    * updated release notes for version 1.4.3 (2008-04-03.)
 2008-04-02 (CVS):
     * various fixes for the experimental svgalib client.
     * moved msg_suppress_1 from vid files to d_surf.c.
@@ -16,7 +21,6 @@ Development Progress	:
     * added a makefile for the svgalib-client. the client compiles fine but it
       isn't tested and isn't supported, yet.
     * updated release notes for version 1.4.3.
-
 2008-04-01/02 (CVS):
     * d_polyse.c: added FIXME notes about mistaken use of mainTransTable instead
       of transTable in the T5 series functions, namely D_PolysetRecursiveTriangleT5,
