@@ -2,7 +2,7 @@
 	cl_main.c
 	client main loop
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/cl_main.c,v 1.94 2008-02-07 09:27:24 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/cl_main.c,v 1.95 2008-04-04 07:55:14 sezero Exp $
 */
 
 #include "q_stdinc.h"
@@ -1143,6 +1143,7 @@ void CL_Init (void)
 Host_EndGame
 
 Call this to drop to a console without exiting the qwcl
+Does not return due longjmp()
 ================
 */
 void Host_EndGame (const char *message, ...)
@@ -1151,7 +1152,7 @@ void Host_EndGame (const char *message, ...)
 	char		string[1024];
 
 	va_start (argptr,message);
-	q_vsnprintf (string,sizeof(string),message,argptr);
+	q_vsnprintf (string, sizeof(string), message, argptr);
 	va_end (argptr);
 	Con_Printf ("\n===========================\n");
 	Con_Printf ("%s: %s\n", __thisfunc__, string);
@@ -1180,7 +1181,7 @@ void Host_Error (const char *error, ...)
 	inerror = true;
 
 	va_start (argptr,error);
-	q_vsnprintf (string,sizeof(string),error,argptr);
+	q_vsnprintf (string, sizeof(string), error, argptr);
 	va_end (argptr);
 	Con_Printf ("%s: %s\n", __thisfunc__, string);
 

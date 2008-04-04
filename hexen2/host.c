@@ -2,7 +2,7 @@
 	host.c
 	coordinates spawning and killing of local servers
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host.c,v 1.97 2008-01-22 12:01:03 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host.c,v 1.98 2008-04-04 07:55:12 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -157,6 +157,8 @@ error_out:
 /*
 ================
 Host_EndGame
+
+Does not return either due to Sys_Error() or longjmp()
 ================
 */
 void Host_EndGame (const char *message, ...)
@@ -165,7 +167,7 @@ void Host_EndGame (const char *message, ...)
 	char		string[1024];
 
 	va_start (argptr,message);
-	q_vsnprintf (string,sizeof(string),message,argptr);
+	q_vsnprintf (string, sizeof(string), message, argptr);
 	va_end (argptr);
 	Con_DPrintf ("%s: %s\n", __thisfunc__, string);
 
@@ -188,6 +190,7 @@ void Host_EndGame (const char *message, ...)
 Host_Error
 
 This shuts down both the client and server
+Does not return either due to Sys_Error() or longjmp()
 ================
 */
 void Host_Error (const char *error, ...)
@@ -203,7 +206,7 @@ void Host_Error (const char *error, ...)
 	SCR_EndLoadingPlaque ();		// reenable screen updates
 
 	va_start (argptr,error);
-	q_vsnprintf (string,sizeof(string),error,argptr);
+	q_vsnprintf (string, sizeof(string), error, argptr);
 	va_end (argptr);
 	Con_Printf ("%s: %s\n", __thisfunc__, string);
 

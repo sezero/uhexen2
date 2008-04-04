@@ -2,7 +2,7 @@
 	host.c
 	coordinates spawning and killing of local servers
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/server/host.c,v 1.51 2008-01-22 12:01:08 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/server/host.c,v 1.52 2008-04-04 07:55:14 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -158,7 +158,7 @@ void Host_Error (const char *error, ...)
 	inerror = true;
 
 	va_start (argptr,error);
-	q_vsnprintf (string,sizeof(string),error,argptr);
+	q_vsnprintf (string, sizeof(string), error, argptr);
 	va_end (argptr);
 	Con_Printf ("%s: %s\n", __thisfunc__, string);
 

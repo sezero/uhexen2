@@ -2,7 +2,7 @@
 	host.h
 	public host structures and functions
 
-	$Id: host.h,v 1.11 2007-09-29 11:08:26 sezero Exp $
+	$Id: host.h,v 1.12 2008-04-04 07:55:12 sezero Exp $
 */
 
 #ifndef __HX2_HOST_H
@@ -44,12 +44,9 @@ extern	double		realtime;		// not bounded in any way, changed at
 void Host_Init (void);
 void Host_InitCommands (void);
 void Host_Shutdown(void);
-#if defined(SERVERONLY)	/* dedicated: no return. */
+/* Host_Error and Host_EndGame doesn't return either due to Sys_Error() or longjmp() */
 void Host_Error (const char *error, ...) __attribute__((format(printf,1,2), noreturn));
-#else	/* the client-server version does return */
-void Host_Error (const char *error, ...) __attribute__((format(printf,1,2)));
-#endif	/* SERVERONLY */
-void Host_EndGame (const char *message, ...) __attribute__((format(printf,1,2)));
+void Host_EndGame (const char *message, ...) __attribute__((format(printf,1,2), noreturn));
 void Host_Frame (float time);
 void Host_Quit_f (void);
 void Host_ClientCommands (const char *fmt, ...) __attribute__((format(printf,1,2)));
