@@ -1,5 +1,5 @@
 # RPM spec file for RedHat and Fedora
-# $Id: hexen2.spec,v 1.55 2008-03-25 14:05:03 sezero Exp $
+# $Id: hexen2.spec,v 1.56 2008-04-04 08:30:24 sezero Exp $
 
 # build options :
 # --without alsa: build without alsa audio support
@@ -25,12 +25,12 @@
 
 # pre-release version: MAKE SURE to change this
 # to an %undefine for the final realease!!
-%define prerelease	rc2
+%undefine prerelease
 
 # package release number for final-release:
 %define pkg_final	1
 # package release number for pre-release:
-%define pkg_prerel	2
+%define pkg_prerel	3
 
 Name:		hexen2
 License:	GPL
@@ -67,7 +67,7 @@ Group:		Amusements/Games
 Summary:	HexenWorld Client and Server
 Requires:	SDL >= 1.2.4
 %{!?_without_midi:Requires: SDL_mixer >= 1.2.4}
-Requires:	hexen2 >= 1.4.1
+Requires:	hexen2 >= 1.4.3
 
 %description -n hexenworld
 Hexen II is a class based shooter game by Raven Software from 1997.
@@ -98,10 +98,11 @@ run a HexenWorld server or client, and a master server application.
 %{__make} -C hexen2 -f Makefile.sv
 # HexenWorld binaries
 %{__make} -C hexenworld/Server
-%{__make} -C hexenworld/Master
 %{__make} -C hexenworld/Client hw
 %{__make} -s -C hexenworld/Client clean
 %{__make} -C hexenworld/Client glhw
+# HexenWorld master server
+%{__make} -C hexenworld/Master
 
 # Build xdelta binary and its libraries: do this before
 # building the launcher, it uses its object files.
@@ -290,6 +291,9 @@ desktop-file-install \
 %{_prefix}/games/%{name}/docs/README.hwmaster
 
 %changelog
+* Fri Apr 04 2008 O.Sezer <sezero@users.sourceforge.net> 1.4.3-1
+- 1.4.3-final.
+
 * Tue Mar 25 2008 O.Sezer <sezero@users.sourceforge.net> 1.4.3-0.2.rc2
 - 1.4.3-rc2.
 
