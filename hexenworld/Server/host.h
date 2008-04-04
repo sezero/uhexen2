@@ -2,8 +2,12 @@
 	host.h
 	public host structures and functions
 
-	$Id: host.h,v 1.8 2007-08-29 16:32:48 sezero Exp $
+	$Id: host.h,v 1.9 2008-04-04 08:27:30 sezero Exp $
 */
+
+#if !defined(SERVERONLY)
+#error "this header is for hw server only"
+#endif	/* SERVERONLY */
 
 #ifndef __HX2_HOST_H
 #define __HX2_HOST_H
