@@ -3,6 +3,15 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2008-04-04 (1.4.3-final / CVS):
+    * fixed the declarations of Host_Error and Host_EndGame: they don't return
+      either due to Sys_Error() or longjmp().
+    * added server/client definition checks to hexenworld host.h headers, just
+      in case.
+    * even more clean-up in the makefiles.
+    * some tweaks in the objects link order.
+    * marked the cvs snapshot from Apr.04 2008 as 1.4.3-final.
+
 2008-04-03 (CVS):
     * msg_suppress_1 is used by the Win32 software (MGL) renderer: removed from
       all other platforms and defined it as false.
