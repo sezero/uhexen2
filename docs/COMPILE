@@ -38,7 +38,7 @@ NASM	:	Netwide Assembler. An x86 assembler.
 		The assemblers nasm or yasm are required for compiling
 		hexen2 and hexenworld clients for 32 bit x86 machines.
 		The makefiles present an option to not use x86 assembly,
-		in that case nasm of yasm will not be necessary.
+		in that case nasm or yasm will not be necessary.
 
 GCC	:	GNU C Compiler.  NO other compilers (such as MS VisualC,
 		LCC, or Watcom) are tested.
