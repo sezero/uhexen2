@@ -2,7 +2,7 @@
 	r_local.h
 	private refresh defs
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/r_local.h,v 1.16 2008-03-21 14:45:16 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/r_local.h,v 1.17 2008-04-22 13:06:10 sezero Exp $
 */
 
 #ifndef __R_LOCAL_H
@@ -133,8 +133,8 @@ texture_t *R_TextureAnimation (texture_t *base);
 void R_GenSkyTile (void *pdest);
 void R_GenSkyTile16 (void *pdest);
 
-void R_DrawSubmodelPolygons (model_t *pmodel, int clipflags);
-void R_DrawSolidClippedSubmodelPolygons (model_t *pmodel);
+void R_DrawSubmodelPolygons (qmodel_t *pmodel, int clipflags);
+void R_DrawSolidClippedSubmodelPolygons (qmodel_t *pmodel);
 
 void R_AddPolygonEdges (emitpoint_t *pverts, int numverts, int miplevel);
 surf_t *R_GetSurf (void);
@@ -222,7 +222,7 @@ typedef struct btofpoly_s
 extern	int	numbtofpolys;
 extern	btofpoly_t	*pbtofpolys;
 
-void R_ZDrawSubmodelPolys (model_t *clmodel);
+void R_ZDrawSubmodelPolys (qmodel_t *clmodel);
 
 //=========================================================
 // Alias models

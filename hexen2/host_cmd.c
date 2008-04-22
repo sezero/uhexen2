@@ -2,7 +2,7 @@
 	host_cmd.c
 	console commands
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host_cmd.c,v 1.101 2008-01-29 10:47:01 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host_cmd.c,v 1.102 2008-04-22 13:06:06 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -2107,8 +2107,8 @@ Host_Viewmodel_f
 */
 static void Host_Viewmodel_f (void)
 {
-	edict_t	*e;
-	model_t	*m;
+	edict_t		*e;
+	qmodel_t	*m;
 
 	e = FindViewthing ();
 	if (!e)
@@ -2132,9 +2132,9 @@ Host_Viewframe_f
 */
 static void Host_Viewframe_f (void)
 {
-	edict_t	*e;
+	edict_t		*e;
+	qmodel_t	*m;
 	int		f;
-	model_t	*m;
 
 	e = FindViewthing ();
 	if (!e)
@@ -2149,7 +2149,7 @@ static void Host_Viewframe_f (void)
 }
 
 
-static void PrintFrameName (model_t *m, int frame)
+static void PrintFrameName (qmodel_t *m, int frame)
 {
 	aliashdr_t 			*hdr;
 	maliasframedesc_t	*pframedesc;
@@ -2169,8 +2169,8 @@ Host_Viewnext_f
 */
 static void Host_Viewnext_f (void)
 {
-	edict_t	*e;
-	model_t	*m;
+	edict_t		*e;
+	qmodel_t	*m;
 
 	e = FindViewthing ();
 	if (!e)
@@ -2191,8 +2191,8 @@ Host_Viewprev_f
 */
 static void Host_Viewprev_f (void)
 {
-	edict_t	*e;
-	model_t	*m;
+	edict_t		*e;
+	qmodel_t	*m;
 
 	e = FindViewthing ();
 	if (!e)

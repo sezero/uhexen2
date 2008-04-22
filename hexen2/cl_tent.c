@@ -2,7 +2,7 @@
 	cl_tent.c
 	Client side temporary entity effects.
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cl_tent.c,v 1.17 2007-05-13 11:58:28 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cl_tent.c,v 1.18 2008-04-22 13:06:06 sezero Exp $
 */
 
 
@@ -49,7 +49,7 @@ typedef struct
 	int		tag;
 	int		flags;
 	int		skin;
-	struct model_s *models[4];
+	struct qmodel_s *models[4];
 	vec3_t	source;
 	vec3_t	dest;
 	vec3_t	offset;
@@ -278,7 +278,7 @@ static void ParseStream(int type)
 	vec3_t	source, dest;
 	float	duration;
 	stream_t	*stream;
-	model_t		*models[4];
+	qmodel_t	*models[4];
 
 	ent = MSG_ReadShort();
 	flags = MSG_ReadByte();

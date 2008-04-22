@@ -1,7 +1,7 @@
 /*
 	r_draw.c
 
-	$Id: r_draw.c,v 1.8 2008-03-07 08:10:38 sezero Exp $
+	$Id: r_draw.c,v 1.9 2008-04-22 13:06:06 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -861,7 +861,7 @@ void R_RenderPoly (msurface_t *fa, int clipflags)
 R_ZDrawSubmodelPolys
 ================
 */
-void R_ZDrawSubmodelPolys (model_t *pmodel)
+void R_ZDrawSubmodelPolys (qmodel_t *pmodel)
 {
 	int			i, numsurfaces;
 	msurface_t	*psurf;

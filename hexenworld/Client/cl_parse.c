@@ -2,7 +2,7 @@
 	cl_parse.c
 	parse a message received from the server
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/cl_parse.c,v 1.52 2008-03-06 19:06:22 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/cl_parse.c,v 1.53 2008-04-22 13:06:10 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -115,7 +115,7 @@ static const char *svc_strings[] =
 int		parsecountmod;
 double		parsecounttime;
 
-model_t *player_models[MAX_PLAYER_CLASS];
+qmodel_t	*player_models[MAX_PLAYER_CLASS];
 
 int		cl_spikeindex, cl_playerindex[MAX_PLAYER_CLASS], cl_flagindex;
 int		cl_ballindex, cl_missilestarindex, cl_ravenindex, cl_raven2index;
@@ -623,15 +623,15 @@ static void CL_ParseModellist (void)
 			cl_raven2index = nummodels;
 	}
 
-	player_models[0] = (model_t *)Mod_FindName ("models/paladin.mdl");
+	player_models[0] = (qmodel_t *)Mod_FindName ("models/paladin.mdl");
 	// Note: old demo doesnt have necro and crusader classes. add
 	// a GAME_OLD_DEMO flag check ?
-	player_models[1] = (model_t *)Mod_FindName ("models/crusader.mdl");
-	player_models[2] = (model_t *)Mod_FindName ("models/necro.mdl");
-	player_models[3] = (model_t *)Mod_FindName ("models/assassin.mdl");
-	player_models[4] = (model_t *)Mod_FindName ("models/succubus.mdl");
+	player_models[1] = (qmodel_t *)Mod_FindName ("models/crusader.mdl");
+	player_models[2] = (qmodel_t *)Mod_FindName ("models/necro.mdl");
+	player_models[3] = (qmodel_t *)Mod_FindName ("models/assassin.mdl");
+	player_models[4] = (qmodel_t *)Mod_FindName ("models/succubus.mdl");
 //siege
-	player_models[5] = (model_t *)Mod_FindName ("models/hank.mdl");
+	player_models[5] = (qmodel_t *)Mod_FindName ("models/hank.mdl");
 
 	cls.downloadnumber = 0;
 	cls.downloadtype = dl_model;

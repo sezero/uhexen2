@@ -2,7 +2,7 @@
 	client.h
 	client main header
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/client.h,v 1.20 2007-11-11 13:17:44 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/client.h,v 1.21 2008-04-22 13:06:10 sezero Exp $
 */
 
 #ifndef __H2W_CLIENT_H
@@ -274,7 +274,7 @@ typedef struct
 	char		model_name[MAX_MODELS][MAX_QPATH];
 	char		sound_name[MAX_SOUNDS][MAX_QPATH];
 
-	struct model_s	*model_precache[MAX_MODELS];
+	struct qmodel_s	*model_precache[MAX_MODELS];
 	struct sfx_s	*sound_precache[MAX_SOUNDS];
 
 	char		mapname[40];
@@ -282,7 +282,7 @@ typedef struct
 	int		playernum;
 
 // refresh related state
-	struct model_s	*worldmodel;		// cl_entitites[0].model
+	struct qmodel_s	*worldmodel;		// cl_entitites[0].model
 	struct efrag_s	*free_efrags;
 	int		num_entities;		// stored bottom up in cl_entities array
 	int		num_statics;		// stored top down in cl_entitiers

@@ -2,7 +2,7 @@
 	refresh.h
 	public interface to refresh functions
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/render.h,v 1.7 2007-07-08 11:55:38 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/render.h,v 1.8 2008-04-22 13:06:10 sezero Exp $
 */
 
 #ifndef __HX2_RENDER_H
@@ -28,7 +28,7 @@ typedef struct entity_s
 	vec3_t			origin;
 	vec3_t			angles;
 	vec3_t			angleAdd;	// For clientside rotation stuff
-	struct model_s		*model;		// NULL = no model
+	struct qmodel_s		*model;		// NULL = no model
 	int			frame;
 	byte			*colormap, *sourcecolormap;
 	byte			colorshade;

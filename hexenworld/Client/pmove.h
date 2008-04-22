@@ -2,7 +2,7 @@
 	pmove.h
 	player movement
 
-	$Id: pmove.h,v 1.5 2007-03-14 21:03:35 sezero Exp $
+	$Id: pmove.h,v 1.6 2008-04-22 13:06:10 sezero Exp $
 */
 
 #ifndef __PLAYERMOVE_H
@@ -30,7 +30,7 @@ typedef struct
 typedef struct
 {
 	vec3_t	origin;
-	model_t	*model;		// only for bsp models
+	qmodel_t	*model;	// only for bsp models
 	vec3_t	mins, maxs;	// only for non-bsp models
 	vec3_t	angles;
 	int		info;	// for client or server to identify

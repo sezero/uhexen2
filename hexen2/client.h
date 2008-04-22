@@ -2,7 +2,7 @@
 	client.h
 	client main header
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/client.h,v 1.30 2007-11-14 07:18:38 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/client.h,v 1.31 2008-04-22 13:06:06 sezero Exp $
 */
 
 #ifndef __HX2_CLIENT_H
@@ -187,7 +187,7 @@ typedef struct
 //
 // information that is static for the entire time connected to a server
 //
-	struct model_s	*model_precache[MAX_MODELS];
+	struct qmodel_s	*model_precache[MAX_MODELS];
 	struct sfx_s	*sound_precache[MAX_SOUNDS];
 
 	char		mapname[40];
@@ -197,7 +197,7 @@ typedef struct
 	int		gametype;
 
 // refresh related state
-	struct model_s	*worldmodel;		// cl_entitites[0].model
+	struct qmodel_s	*worldmodel;		// cl_entitites[0].model
 	struct efrag_s	*free_efrags;
 	int		num_entities;		// held in cl_entities array
 	int		num_statics;		// held in cl_staticentities array

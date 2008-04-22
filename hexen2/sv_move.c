@@ -2,7 +2,7 @@
 	sv_move.c
 	monster movement
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sv_move.c,v 1.17 2008-01-22 12:01:04 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sv_move.c,v 1.18 2008-04-22 13:06:07 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -21,7 +21,7 @@ qboolean SV_CheckBottom (edict_t *ent)
 {
 	// By this point, ent has been moved to its new position after the
 	// move, and adjusted for steps
-/*	model_t	*model;
+/*	qmodel_t	*model;
 	hull_t	*wclip_hull;
 	int	index;
 	vec3_t	check, size; */

@@ -2,7 +2,7 @@
 	cl_ents.c
 	entity parsing and management
 
-	$Id: cl_ents.c,v 1.18 2007-09-22 15:27:17 sezero Exp $
+	$Id: cl_ents.c,v 1.19 2008-04-22 13:06:10 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -11,7 +11,7 @@ extern	cvar_t	cl_predict_players;
 extern	cvar_t	cl_predict_players2;
 extern	cvar_t	cl_solid_players;
 
-extern model_t *player_models[MAX_PLAYER_CLASS];
+extern qmodel_t	*player_models[MAX_PLAYER_CLASS];
 
 static struct predicted_player {
 	int flags;
@@ -671,11 +671,11 @@ CL_LinkPacketEntities
 */
 static void CL_LinkPacketEntities (void)
 {
-	entity_t			*ent;
+	entity_t		*ent;
 	packet_entities_t	*pack;
 	entity_state_t		*s1, *s2;
 	float				f;
-	model_t				*model;
+	qmodel_t		*model;
 	vec3_t				old_origin;
 //	float				autorotate;
 	int					i;

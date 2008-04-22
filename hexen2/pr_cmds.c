@@ -2,7 +2,7 @@
 	pr_cmds.c
 	prog commands
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/pr_cmds.c,v 1.52 2008-03-04 21:36:21 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/pr_cmds.c,v 1.53 2008-04-22 13:06:06 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -263,7 +263,7 @@ static void PF_setmodel (void)
 {
 	int		i;
 	const char	*m;
-	model_t		*mod;
+	qmodel_t	*mod;
 	edict_t		*e;
 
 	e = G_EDICT(OFS_PARM0);
@@ -298,7 +298,7 @@ static void PF_setpuzzlemodel (void)
 {
 	int		i;
 	const char	*m, *temp;
-	model_t		*mod;
+	qmodel_t	*mod;
 	edict_t		*e;
 
 	e = G_EDICT(OFS_PARM0);

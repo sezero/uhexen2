@@ -5,29 +5,29 @@
 	models are the only shared resource between a client and server
 	running on the same machine.
 
-	$Id: gl_model.c,v 1.51 2008-03-06 21:55:19 sezero Exp $
+	$Id: gl_model.c,v 1.52 2008-04-22 13:06:10 sezero Exp $
 */
 
 #include "quakedef.h"
 #include "hwal.h"
 
-model_t	*loadmodel;
+qmodel_t	*loadmodel;
 static char	loadname[MAX_QPATH];	// for hunk tags
 
-static void Mod_LoadSpriteModel (model_t *mod, void *buffer);
-static void Mod_LoadBrushModel (model_t *mod, void *buffer);
-static void Mod_LoadAliasModel (model_t *mod, void *buffer);
-static void Mod_LoadAliasModelNew (model_t *mod, void *buffer);
+static void Mod_LoadSpriteModel (qmodel_t *mod, void *buffer);
+static void Mod_LoadBrushModel (qmodel_t *mod, void *buffer);
+static void Mod_LoadAliasModel (qmodel_t *mod, void *buffer);
+static void Mod_LoadAliasModelNew (qmodel_t *mod, void *buffer);
 
 static void Mod_Print (void);
 
-static model_t *Mod_LoadModel (model_t *mod, qboolean crash);
+static qmodel_t *Mod_LoadModel (qmodel_t *mod, qboolean crash);
 
 static byte	mod_novis[MAX_MAP_LEAFS/8];
 
 // 650 should be enough with model handle recycling, but.. (Pa3PyX)
 #define	MAX_MOD_KNOWN	2048
-static model_t	mod_known[MAX_MOD_KNOWN];
+static qmodel_t	mod_known[MAX_MOD_KNOWN];
 static int	mod_numknown;
 
 static vec3_t	mins, maxs;
@@ -54,7 +54,7 @@ Mod_Extradata
 Caches the data if needed
 ===============
 */
-void *Mod_Extradata (model_t *mod)
+void *Mod_Extradata (qmodel_t *mod)
 {
 	void	*r;
 
@@ -74,7 +74,7 @@ void *Mod_Extradata (model_t *mod)
 Mod_PointInLeaf
 ===============
 */
-mleaf_t *Mod_PointInLeaf (vec3_t p, model_t *model)
+mleaf_t *Mod_PointInLeaf (vec3_t p, qmodel_t *model)
 {
 	mnode_t		*node;
 	float		d;
@@ -107,7 +107,7 @@ mleaf_t *Mod_PointInLeaf (vec3_t p, model_t *model)
 Mod_DecompressVis
 ===================
 */
-static byte *Mod_DecompressVis (byte *in, model_t *model)
+static byte *Mod_DecompressVis (byte *in, qmodel_t *model)
 {
 	static byte	decompressed[MAX_MAP_LEAFS/8];
 	int		c;
@@ -147,7 +147,7 @@ static byte *Mod_DecompressVis (byte *in, model_t *model)
 	return decompressed;
 }
 
-byte *Mod_LeafPVS (mleaf_t *leaf, model_t *model)
+byte *Mod_LeafPVS (mleaf_t *leaf, qmodel_t *model)
 {
 	if (leaf == model->leafs)
 		return mod_novis;
@@ -162,7 +162,7 @@ Mod_ClearAll
 void Mod_ClearAll (void)
 {
 	int		i;
-	model_t	*mod;
+	qmodel_t	*mod;
 
 	for (i = 0, mod = mod_known; i < mod_numknown; i++, mod++)
 	{	// clear alias models only if textures were flushed (Pa3PyX)
@@ -177,7 +177,7 @@ void Mod_ClearAll (void)
 		}
 		else
 		{	// Clear all other models completely
-			memset(mod, 0, sizeof(model_t));
+			memset(mod, 0, sizeof(qmodel_t));
 			mod->needload = NL_UNREFERENCED;
 		}
 	}
@@ -189,10 +189,10 @@ Mod_FindName
 
 ==================
 */
-model_t *Mod_FindName (const char *name)
+qmodel_t *Mod_FindName (const char *name)
 {
 	int		i;
-	model_t	*mod = NULL;
+	qmodel_t	*mod = NULL;
 
 	if (!name[0])
 		Sys_Error ("%s: NULL name", __thisfunc__);
@@ -238,7 +238,7 @@ Mod_TouchModel
 */
 void Mod_TouchModel (const char *name)
 {
-	model_t	*mod;
+	qmodel_t	*mod;
 
 	mod = Mod_FindName (name);
 
@@ -256,7 +256,7 @@ Mod_LoadModel
 Loads a model into the cache
 ==================
 */
-static model_t *Mod_LoadModel (model_t *mod, qboolean crash)
+static qmodel_t *Mod_LoadModel (qmodel_t *mod, qboolean crash)
 {
 	unsigned int	*buf;
 	byte	stackbuf[1024];		// avoid dirtying the cache heap
@@ -326,9 +326,9 @@ Mod_ForName
 Loads in a model for the given name
 ==================
 */
-model_t *Mod_ForName (const char *name, qboolean crash)
+qmodel_t *Mod_ForName (const char *name, qboolean crash)
 {
-	model_t	*mod;
+	qmodel_t	*mod;
 
 	mod = Mod_FindName (name);
 
@@ -572,7 +572,7 @@ which all OpenGL textures are gone.
 void Mod_ReloadTextures (void)
 {
 	int			j;
-	model_t		*mod;
+	qmodel_t	*mod;
 	texture_t	*tx;
 	player_info_t	*s;
 
@@ -1490,7 +1490,7 @@ static float RadiusFromBounds (vec3_t arg_mins, vec3_t arg_maxs)
 Mod_LoadBrushModel
 =================
 */
-static void Mod_LoadBrushModel (model_t *mod, void *buffer)
+static void Mod_LoadBrushModel (qmodel_t *mod, void *buffer)
 {
 	int			i, j;
 	dheader_t	*header;
@@ -1943,7 +1943,7 @@ skin_too_large:
 
 //=========================================================================
 
-static void Mod_SetAliasModelExtraFlags (model_t *mod)
+static void Mod_SetAliasModelExtraFlags (qmodel_t *mod)
 {
 	mod->ex_flags = 0;
 
@@ -2182,7 +2182,7 @@ Mod_LoadAliasModelNew
 reads extra field for num ST verts, and extra index list of them
 =================
 */
-static void Mod_LoadAliasModelNew (model_t *mod, void *buffer)
+static void Mod_LoadAliasModelNew (qmodel_t *mod, void *buffer)
 {
 	int			i, j;
 	newmdl_t		*pinmodel;
@@ -2361,7 +2361,7 @@ static void Mod_LoadAliasModelNew (model_t *mod, void *buffer)
 Mod_LoadAliasModel
 =================
 */
-static void Mod_LoadAliasModel (model_t *mod, void *buffer)
+static void Mod_LoadAliasModel (qmodel_t *mod, void *buffer)
 {
 	int			i, j;
 	mdl_t			*pinmodel;
@@ -2647,7 +2647,7 @@ static void *Mod_LoadSpriteGroup (void *pin, mspriteframe_t **ppframe, int frame
 Mod_LoadSpriteModel
 =================
 */
-static void Mod_LoadSpriteModel (model_t *mod, void *buffer)
+static void Mod_LoadSpriteModel (qmodel_t *mod, void *buffer)
 {
 	int			i;
 	int			version;
@@ -2748,7 +2748,7 @@ static void Mod_Print (void)
 {
 	int		i, counter;
 	FILE		*FH = NULL;
-	model_t	*mod;
+	qmodel_t	*mod;
 
 	i = Cmd_Argc();
 	for (counter = 1; counter < i; counter++)

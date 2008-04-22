@@ -2,7 +2,7 @@
 	r_surf.c
 	surface-related refresh code
 
-	$Id: gl_rsurf.c,v 1.39 2007-11-22 08:22:26 sezero Exp $
+	$Id: gl_rsurf.c,v 1.40 2008-04-22 13:06:10 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -1172,7 +1172,7 @@ void R_DrawBrushModel (entity_t *e, qboolean Translucent)
 	msurface_t	*psurf;
 	float		dot;
 	mplane_t	*pplane;
-	model_t		*clmodel;
+	qmodel_t	*clmodel;
 	qboolean	rotated;
 
 	currententity = e;
@@ -1484,7 +1484,7 @@ static unsigned int AllocBlock (int w, int h, int *x, int *y)
 
 #define	COLINEAR_EPSILON	0.001
 static mvertex_t	*r_pcurrentvertbase;
-static model_t		*currentmodel;
+static qmodel_t		*currentmodel;
 
 /*
 ================
@@ -1629,7 +1629,7 @@ with all the surfaces from all brush models
 void GL_BuildLightmaps (void)
 {
 	int		i, j;
-	model_t	*m;
+	qmodel_t	*m;
 
 	memset (allocated, 0, sizeof(allocated));
 

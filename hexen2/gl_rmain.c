@@ -1,7 +1,7 @@
 /*
 	gl_main.c
 
-	$Id: gl_rmain.c,v 1.69 2007-11-22 08:22:26 sezero Exp $
+	$Id: gl_rmain.c,v 1.70 2008-04-22 13:06:06 sezero Exp $
 */
 
 
@@ -36,7 +36,7 @@ static float	model_constant_alpha;
 static float	r_time1;
 static float	r_lasttime1 = 0;
 
-extern model_t *player_models[MAX_PLAYER_CLASS];
+extern qmodel_t	*player_models[MAX_PLAYER_CLASS];
 
 //
 // view origin
@@ -686,7 +686,7 @@ static void R_DrawAliasModel (entity_t *e)
 	int		lnum;
 	vec3_t		dist;
 	float		add;
-	model_t		*clmodel;
+	qmodel_t	*clmodel;
 	vec3_t		mins, maxs;
 	aliashdr_t	*paliashdr;
 	float		an;
@@ -1150,7 +1150,7 @@ static void R_DrawTransEntitiesOnList (qboolean inwater)
 
 static void R_DrawGlow (entity_t *e)
 {
-	model_t		*clmodel;
+	qmodel_t	*clmodel;
 
 	clmodel = currententity->model;
 

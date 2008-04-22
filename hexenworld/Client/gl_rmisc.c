@@ -1,7 +1,7 @@
 /*
 	r_misc.c
 
-	$Id: gl_rmisc.c,v 1.47 2007-11-22 08:22:26 sezero Exp $
+	$Id: gl_rmisc.c,v 1.48 2008-04-22 13:06:10 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -285,7 +285,7 @@ R_TranslatePlayerSkin
 Translates a skin texture by the per-player color lookup
 ===============
 */
-extern	model_t	*player_models[MAX_PLAYER_CLASS];
+extern	qmodel_t	*player_models[MAX_PLAYER_CLASS];
 extern	byte	player_8bit_texels[MAX_PLAYER_CLASS][620*245];
 
 void R_TranslatePlayerSkin (int playernum)
@@ -294,7 +294,7 @@ void R_TranslatePlayerSkin (int playernum)
 	byte		translate[256];
 	unsigned int	translate32[256];
 	int		i, j, s;
-	model_t		*model;
+	qmodel_t	*model;
 	aliashdr_t	*paliashdr;
 	byte		*original;
 	unsigned int	pixels[512*256], *out;

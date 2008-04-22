@@ -5,7 +5,7 @@
 	This version of model.c and model.h are based on a quake dedicated
 	server application, lhnqserver, by LordHavoc.
 
-	$Id: model.h,v 1.6 2007-09-20 16:17:45 sezero Exp $
+	$Id: model.h,v 1.7 2008-04-22 13:06:09 sezero Exp $
 */
 
 #ifndef __HX2_MODEL_H
@@ -151,7 +151,7 @@ typedef struct
 
 typedef enum {mod_brush, mod_sprite, mod_alias} modtype_t;
 
-typedef struct model_s
+typedef struct qmodel_s
 {
 	char		name[MAX_QPATH];
 	int		needload;		// bmodels and sprites don't cache normally
@@ -200,9 +200,9 @@ typedef struct model_s
 	byte		*visdata;
 	byte		*lightdata;
 	char		*entities;
-} model_t;
+} qmodel_t;
 
-// values for model_t->needload
+// values for qmodel_t->needload
 #define	NL_PRESENT		0
 #define	NL_NEEDS_LOADED		1
 #define	NL_UNREFERENCED		2
@@ -211,11 +211,11 @@ typedef struct model_s
 
 void	Mod_Init (void);
 void	Mod_ClearAll (void);
-model_t *Mod_ForName (const char *name, qboolean crash);
-model_t *Mod_FindName (const char *name);
+qmodel_t *Mod_ForName (const char *name, qboolean crash);
+qmodel_t *Mod_FindName (const char *name);
 
-mleaf_t *Mod_PointInLeaf (float *p, model_t *model);
-byte	*Mod_LeafPVS (mleaf_t *leaf, model_t *model);
+mleaf_t *Mod_PointInLeaf (float *p, qmodel_t *model);
+byte	*Mod_LeafPVS (mleaf_t *leaf, qmodel_t *model);
 
 #endif	/* __HX2_MODEL_H */
 

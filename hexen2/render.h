@@ -2,7 +2,7 @@
 	refresh.h
 	public interface to refresh functions
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/render.h,v 1.13 2007-07-08 11:55:22 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/render.h,v 1.14 2008-04-22 13:06:07 sezero Exp $
 */
 
 #ifndef __HX2_RENDER_H
@@ -37,7 +37,7 @@ typedef struct entity_s
 	vec3_t			origin;
 	vec3_t			msg_angles[2];	// last two updates (0 is newest)
 	vec3_t			angles;
-	struct model_s		*model;		// NULL = no model
+	struct qmodel_s		*model;		// NULL = no model
 	struct efrag_s		*efrag;		// linked list of efrags
 	int			frame;
 	float			syncbase;	// for client-side animations

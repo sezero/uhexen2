@@ -2,7 +2,7 @@
 	model.h
 	header for model loading and caching
 
-	$Id: model.h,v 1.10 2007-09-20 16:17:46 sezero Exp $
+	$Id: model.h,v 1.11 2008-04-22 13:06:10 sezero Exp $
 */
 
 #ifndef __HX2_MODEL_H
@@ -346,7 +346,7 @@ typedef enum {mod_brush, mod_sprite, mod_alias} modtype_t;
 
 #define	EF_MIP_MAP_FAR		(1 << 24)	/* Set per frame, this model will use the far mip map	*/
 
-typedef struct model_s
+typedef struct qmodel_s
 {
 	char		name[MAX_QPATH];
 	int		needload;		// bmodels and sprites don't cache normally
@@ -359,7 +359,7 @@ typedef struct model_s
 
 //
 // volume occupied by the model graphics
-//		
+//
 	vec3_t		mins, maxs;
 	float		radius;
 
@@ -415,9 +415,9 @@ typedef struct model_s
 //
 	cache_user_t	cache;		// only access through Mod_Extradata
 
-} model_t;
+} qmodel_t;
 
-// values for model_t->needload
+// values for qmodel_t->needload
 #define	NL_PRESENT		0
 #define	NL_NEEDS_LOADED		1
 #define	NL_UNREFERENCED		2
@@ -426,13 +426,13 @@ typedef struct model_s
 
 void	Mod_Init (void);
 void	Mod_ClearAll (void);
-model_t *Mod_ForName (const char *name, qboolean crash);
-model_t *Mod_FindName (const char *name);
-void	*Mod_Extradata (model_t *mod);	// handles caching
+qmodel_t *Mod_ForName (const char *name, qboolean crash);
+qmodel_t *Mod_FindName (const char *name);
+void	*Mod_Extradata (qmodel_t *mod);	// handles caching
 void	Mod_TouchModel (const char *name);
 
-mleaf_t *Mod_PointInLeaf (float *p, model_t *model);
-byte	*Mod_LeafPVS (mleaf_t *leaf, model_t *model);
+mleaf_t *Mod_PointInLeaf (float *p, qmodel_t *model);
+byte	*Mod_LeafPVS (mleaf_t *leaf, qmodel_t *model);
 
 #endif	/* __HX2_MODEL_H */
 

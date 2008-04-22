@@ -2,7 +2,7 @@
 	gl_mesh.c
 	triangle model functions
 
-	$Id: gl_mesh.c,v 1.21 2008-01-29 10:47:01 sezero Exp $
+	$Id: gl_mesh.c,v 1.22 2008-04-22 13:06:06 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -310,7 +310,7 @@ static void BuildTris (void)
 GL_MakeAliasModelDisplayLists
 ================
 */
-void GL_MakeAliasModelDisplayLists (model_t *m, aliashdr_t *hdr)
+void GL_MakeAliasModelDisplayLists (qmodel_t *m, aliashdr_t *hdr)
 {
 	int		i, j;
 	int		*cmds;

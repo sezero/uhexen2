@@ -2,7 +2,7 @@
 	cl_parse.c
 	parse a message received from the server
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cl_parse.c,v 1.65 2008-03-06 19:06:22 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cl_parse.c,v 1.66 2008-04-22 13:06:06 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -79,7 +79,7 @@ static const char *svc_strings[] =
 int		cl_protocol;	/* protocol version used by the server */
 int		LastServerMessageSize;
 
-model_t *player_models[MAX_PLAYER_CLASS];
+qmodel_t	*player_models[MAX_PLAYER_CLASS];
 
 // when recording demos across multiple levels and we hit an intermission,
 // we issue an +attack to skip the intermission. when reconnecting to the
@@ -353,7 +353,7 @@ static void CL_ParseServerInfo (void)
 			D_ShowLoadingSize();
 		}
 		else
-			cl.model_precache[i] = (model_t *)Mod_FindName (model_precache[i]);
+			cl.model_precache[i] = (qmodel_t *)Mod_FindName (model_precache[i]);
 
 		if (cl.model_precache[i] == NULL)
 		{
@@ -363,14 +363,14 @@ static void CL_ParseServerInfo (void)
 		CL_KeepaliveMessage ();
 	}
 
-	player_models[0] = (model_t *)Mod_FindName ("models/paladin.mdl");
+	player_models[0] = (qmodel_t *)Mod_FindName ("models/paladin.mdl");
 	// Note: old demo doesnt have necro and crusader classes. add
 	// a GAME_OLD_DEMO flag check ?
-	player_models[1] = (model_t *)Mod_FindName ("models/crusader.mdl");
-	player_models[2] = (model_t *)Mod_FindName ("models/necro.mdl");
-	player_models[3] = (model_t *)Mod_FindName ("models/assassin.mdl");
+	player_models[1] = (qmodel_t *)Mod_FindName ("models/crusader.mdl");
+	player_models[2] = (qmodel_t *)Mod_FindName ("models/necro.mdl");
+	player_models[3] = (qmodel_t *)Mod_FindName ("models/assassin.mdl");
 	if (gameflags & GAME_PORTALS)
-		player_models[4] = (model_t *)Mod_FindName ("models/succubus.mdl");
+		player_models[4] = (qmodel_t *)Mod_FindName ("models/succubus.mdl");
 
 	S_BeginPrecaching ();
 	for (i = 1; i < numsounds; i++)
@@ -423,7 +423,7 @@ relinked.  Other attributes can change without relinking.
 static void CL_ParseUpdate (int bits)
 {
 	int		i;
-	model_t		*model;
+	qmodel_t	*model;
 	int		modnum;
 	qboolean	forcelink;
 	entity_t	*ent;

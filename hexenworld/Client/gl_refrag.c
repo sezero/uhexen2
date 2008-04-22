@@ -2,7 +2,7 @@
 	r_efrag.c
 	entity fragments
 
-	$Id: gl_refrag.c,v 1.8 2007-05-13 11:59:00 sezero Exp $
+	$Id: gl_refrag.c,v 1.9 2008-04-22 13:06:10 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -144,7 +144,7 @@ R_AddEfrags
 */
 void R_AddEfrags (entity_t *ent)
 {
-	model_t		*entmodel;
+	qmodel_t	*entmodel;
 	int			i;
 
 	if (!ent->model)
@@ -179,7 +179,7 @@ R_StoreEfrags
 void R_StoreEfrags (efrag_t **ppefrag)
 {
 	entity_t	*pent;
-	model_t		*clmodel;
+	qmodel_t	*clmodel;
 	efrag_t		*pefrag;
 
 	while ((pefrag = *ppefrag) != NULL)

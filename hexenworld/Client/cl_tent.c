@@ -2,7 +2,7 @@
 	cl_tent.c
 	client side temporary entities
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/cl_tent.c,v 1.29 2007-07-08 11:55:34 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/cl_tent.c,v 1.30 2008-04-22 13:06:10 sezero Exp $
 */
 
 
@@ -38,7 +38,7 @@ float seedrand(void)
 typedef struct
 {
 	int	entity;
-	struct model_s	*model;
+	struct qmodel_s	*model;
 	float	endtime;
 	vec3_t	start, end;
 } beam_t;
@@ -50,7 +50,7 @@ typedef struct
 	int	tag;
 	int	flags;
 	int	skin;
-	struct model_s *models[4];
+	struct qmodel_s *models[4];
 	vec3_t	source;
 	vec3_t	dest;
 	vec3_t	offset;
@@ -83,7 +83,7 @@ struct explosion_t
 	int		exflags;
 	int		skin;
 	int		scale;
-	model_t		*model;
+	qmodel_t	*model;
 	void (*frameFunc)(explosion_t *ex);
 	void (*removeFunc)(explosion_t *ex);
 	float		data; //for easy transition of script code that relied on counters of some sort
@@ -332,7 +332,7 @@ static explosion_t *CL_AllocExplosion (void)
 CL_ParseBeam
 =================
 */
-static void CL_ParseBeam (model_t *m)
+static void CL_ParseBeam (qmodel_t *m)
 {
 	int	i, ent;
 	vec3_t	start, end;
@@ -428,7 +428,7 @@ entity_state_t *FindState(int EntNum)
 void CreateStream(int type, int ent, int flags, int tag, float duration, int skin, vec3_t source, vec3_t dest)
 {
 	stream_t	*stream;
-	model_t		*models[4];
+	qmodel_t	*models[4];
 	entity_state_t	*state;
 
 	models[1] = models[2] = models[3] = NULL;
@@ -653,7 +653,7 @@ static void ParseStream(int type)
 	vec3_t		source, dest;
 	stream_t		*stream;
 	float			duration;
-	model_t			*models[4];
+	qmodel_t		*models[4];
 	entity_state_t	*state;
 
 	ent = MSG_ReadShort();
@@ -1719,7 +1719,7 @@ void CL_ParseTEnt (void)
 				int		ent;
 				vec3_t		center;
 				stream_t	*stream;
-				model_t		*models[2];
+				qmodel_t	*models[2];
 				entity_state_t	*state;
 
 				ent = MSG_ReadShort();
@@ -1799,7 +1799,7 @@ void CL_ParseTEnt (void)
 				short int	tempVal;
 				entity_state_t	*state;
 				stream_t	*stream;
-				model_t		*models[4];
+				qmodel_t	*models[4];
 
 				ent = MSG_ReadShort();
 				reflect_count = MSG_ReadByte();
@@ -1878,7 +1878,7 @@ void CL_ParseTEnt (void)
 			{
 				int		ent;
 				stream_t	*stream;
-				model_t		*models[2];
+				qmodel_t	*models[2];
 				entity_state_t	*state;
 
 				ent = MSG_ReadShort();
@@ -1973,7 +1973,7 @@ void CL_ParseTEnt (void)
 			{
 				int		ent;
 				stream_t	*stream;
-				model_t		*models[2];
+				qmodel_t	*models[2];
 				entity_state_t	*state;
 
 				pos[0] = MSG_ReadCoord();
@@ -2171,7 +2171,7 @@ void CL_ParseTEnt (void)
 			{
 				int		ent;
 				stream_t	*stream;
-				model_t		*models[4];
+				qmodel_t	*models[4];
 				entity_state_t	*state;
 
 				ent = MSG_ReadShort();
@@ -3292,7 +3292,7 @@ void CL_ParseTEnt (void)
 			{
 				int		ent;
 				stream_t	*stream;
-				model_t		*models[2];
+				qmodel_t	*models[2];
 				entity_state_t	*state;
 				float	tempAng, tempPitch;
 
@@ -3412,7 +3412,7 @@ void CL_ParseTEnt (void)
 				int		numTargs = 0;
 				int		ent, oldNum, temp;
 				stream_t	*stream;
-				model_t		*models[2];
+				qmodel_t	*models[2];
 
 				ent = MSG_ReadShort();
 
@@ -5166,7 +5166,7 @@ static void CL_UpdateTargetBall(void)
 	int	i;
 	explosion_t *ex1 = NULL;
 	explosion_t *ex2 = NULL;
-	model_t		*iceMod;
+	qmodel_t	*iceMod;
 	vec3_t		newOrg;
 	float		newScale;
 

@@ -2,18 +2,12 @@
 	common.h
 	misc utilities used in client and server
 
-	$Id: common.h,v 1.60 2008-01-29 10:47:02 sezero Exp $
+	$Id: common.h,v 1.61 2008-04-22 13:06:10 sezero Exp $
 */
 
 #ifndef __HX2_COMMON_H
 #define __HX2_COMMON_H
 
-#if defined(__sun) || defined(sun)
-/* Workaround conflict with /usr/include/sys/model.h */
-#define	model_t		hx2model_t
-#endif
-
-//============================================================================
 
 #undef	min
 #undef	max

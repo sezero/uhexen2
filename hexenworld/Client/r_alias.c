@@ -2,7 +2,7 @@
 	r_alias.c
 	routines for setting up to draw alias models
 
-	$Id: r_alias.c,v 1.20 2008-03-07 08:10:58 sezero Exp $
+	$Id: r_alias.c,v 1.21 2008-04-22 13:06:10 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -28,7 +28,7 @@ aliashdr_t		*paliashdr;
 finalvert_t		*pfinalverts;
 auxvert_t		*pauxverts;
 static float		ziscale;
-static model_t		*pmodel;
+static qmodel_t		*pmodel;
 
 static vec3_t		alias_forward, alias_right, alias_up;
 

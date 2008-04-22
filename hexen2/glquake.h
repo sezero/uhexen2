@@ -2,7 +2,7 @@
 	glquake.h
 	common glquake header
 
-	$Id: glquake.h,v 1.82 2008-03-06 21:35:25 sezero Exp $
+	$Id: glquake.h,v 1.83 2008-04-22 13:06:06 sezero Exp $
 */
 
 
@@ -324,7 +324,7 @@ int R_LightPoint (vec3_t p);
 float R_LightPointColor (vec3_t p);
 void GL_BuildLightmaps (void);
 void GL_SetupLightmapFmt (qboolean check_cmdline);
-void GL_MakeAliasModelDisplayLists (model_t *m, aliashdr_t *hdr);
+void GL_MakeAliasModelDisplayLists (qmodel_t *m, aliashdr_t *hdr);
 
 void R_InitParticleTexture (void);
 #if defined(H2W)

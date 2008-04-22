@@ -1,7 +1,7 @@
 /*
 	r_main.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/r_main.c,v 1.28 2008-03-28 07:54:50 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/r_main.c,v 1.29 2008-04-22 13:06:10 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -855,7 +855,7 @@ static void R_DrawViewModel (void)
 R_BmodelCheckBBox
 =============
 */
-static int R_BmodelCheckBBox (model_t *clmodel, float *minmaxs)
+static int R_BmodelCheckBBox (qmodel_t *clmodel, float *minmaxs)
 {
 	int		i, *pindex, clipflags;
 	vec3_t		acceptpt, rejectpt;
@@ -984,7 +984,7 @@ static void R_DrawBEntitiesOnList (void)
 {
 	int		i, j, k, clipflags;
 	vec3_t		oldorigin;
-	model_t		*clmodel;
+	qmodel_t	*clmodel;
 	float		minmaxs[6];
 	vec3_t		mins, maxs;
 
