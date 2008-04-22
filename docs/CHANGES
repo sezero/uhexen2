@@ -3,6 +3,9 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2008-04-22 (CVS):
+    * renamed model_t to qmodel_t in order to avoid conflicts on solaris.
+
 2008-04-04 (1.4.3-final / CVS):
     * fixed the declarations of Host_Error and Host_EndGame: they don't return
       either due to Sys_Error() or longjmp().
