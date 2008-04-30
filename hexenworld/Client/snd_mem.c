@@ -2,7 +2,7 @@
 	snd_mem.c
 	sound caching
 
-	$Id: snd_mem.c,v 1.20 2007-09-22 15:27:19 sezero Exp $
+	$Id: snd_mem.c,v 1.21 2008-04-30 17:30:03 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -173,25 +173,27 @@ static void FindNextChunk (const char *name)
 {
 	while (1)
 	{
-		data_p = last_chunk;
-
-		if (data_p >= iff_end)
-		{	// didn't find the chunk
-			data_p = NULL;
-			return;
-		}
-
-		data_p += 4;
-		iff_chunk_len = GetLittleLong();
-		if (iff_chunk_len < 0)
+	// Need at least 8 bytes for a chunk
+		if (last_chunk + 8 >= iff_end)
 		{
 			data_p = NULL;
 			return;
 		}
-//		if (iff_chunk_len > 1024*1024)
-//			Sys_Error ("%s: %i length is past the 1 meg sanity limit", __thisfunc__, iff_chunk_len);
+
+		data_p = last_chunk + 4;
+		iff_chunk_len = GetLittleLong();
+		if (iff_chunk_len < 0 || iff_chunk_len > iff_end - data_p)
+		{
+			data_p = NULL;
+			Con_DPrintf("Bad \"%s\" chunk length (%d) in wav file\n", name, iff_chunk_len);
+			return;
+		}
+#if 0
+		if (iff_chunk_len > 1024*1024)
+			Sys_Error ("%s: %i length is past the 1 meg sanity limit", __thisfunc__, iff_chunk_len);
+#endif
+		last_chunk = data_p + ((iff_chunk_len + 1) & ~1);
 		data_p -= 8;
-		last_chunk = data_p + 8 + ((iff_chunk_len + 1) & ~1);
 		if (!strncmp((char *)data_p, name, 4))
 			return;
 	}
