@@ -3,6 +3,10 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2008-04-30 (CVS):
+    * stricter checking on the values pulled out of .wav file chunk headers.
+      from the tyrquake tree.
+
 2008-04-22 (CVS):
     * renamed model_t to qmodel_t in order to avoid conflicts on solaris.
 
