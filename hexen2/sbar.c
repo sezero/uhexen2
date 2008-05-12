@@ -2,7 +2,7 @@
 	sbar.c
 	Hexen II status bar
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sbar.c,v 1.47 2008-03-31 11:25:21 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sbar.c,v 1.48 2008-05-12 14:06:03 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -958,6 +958,8 @@ void Sbar_DeathmatchOverlay(void)
 
 	x = 80 + ((vid.width - 320)>>1);
 	y = 62;
+	top = bottom = 0;
+
 	for (i = 0; i < l; i++)
 	{
 		if (y+10 >= vid.height)
@@ -1110,6 +1112,8 @@ static void Sbar_SmallDeathmatchOverlay(void)
 	}
 
 	x = 10;
+	top = bottom = 0;
+
 	for (i = 0; i < l; i++)
 	{
 		k = fragsort[i];

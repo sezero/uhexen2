@@ -2,7 +2,7 @@
 	sbar.c
 	Hexen II status bar
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/sbar.c,v 1.44 2008-03-31 11:25:23 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/sbar.c,v 1.45 2008-05-12 14:06:04 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -1076,6 +1076,7 @@ void Sbar_DeathmatchOverlay(void)
 	Sbar_DrawRedString (x+88, y-1, "TIME");
 	Sbar_DrawRedString (x+128, y-1, "NAME");
 	y += 12;
+	top = bottom = 0;
 
 	for (i = 0; i < l; i++)
 	{
@@ -1342,6 +1343,8 @@ static void Sbar_SmallDeathmatchOverlay(void)
 	l = scoreboardlines;
 
 	x = 10;
+	top = bottom = 0;
+
 	if (DMMode.integer == 1)
 	{
 		i = (vid.height - 120) / 10;
