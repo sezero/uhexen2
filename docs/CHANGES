@@ -3,6 +3,25 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2008-05-12 (CVS):
+    * utils/map.c: fixed an array going out-of-bounds warning from gcc-4.3.
+      with i >= 4, the for loop was actually stepping into vecs[1] and the
+      code was, ehm, 'actually correct'.
+	map.c: In function 'ParseBrush':
+	map.c:84: warning: array subscript is above array bounds
+	map.c:84: warning: array subscript is above array bounds
+	map.c:84: warning: array subscript is above array bounds
+	map.c:84: warning: array subscript is above array bounds
+    * silenced another pair of bogus gcc-4.3 'maybe used uninitialized' warnings.
+	sbar.c: In function 'Sbar_DeathmatchOverlay':
+	sbar.c:942: warning: 'bottom' may be used uninitialized in this function
+	sbar.c:942: warning: 'top' may be used uninitialized in this function
+	sbar.c: In function 'Sbar_Draw':
+	sbar.c:1070: warning: 'bottom' may be used uninitialized in this function
+	sbar.c:1070: note: 'bottom' was declared here
+	sbar.c:1070: warning: 'top' may be used uninitialized in this function
+	sbar.c:1070: note: 'top' was declared here
+
 2008-04-30 (CVS):
     * stricter checking on the values pulled out of .wav file chunk headers.
       from the tyrquake tree.
