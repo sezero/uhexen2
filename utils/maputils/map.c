@@ -1,6 +1,6 @@
 /*
 	map.c
-	$Id: map.c,v 1.14 2007-12-14 16:41:25 sezero Exp $
+	$Id: map.c,v 1.15 2008-05-12 14:08:06 sezero Exp $
 */
 
 #include "q_stdinc.h"
@@ -72,20 +72,27 @@ static int FindTexinfo (texinfo_t *t)
 		t->flags |= TEX_SPECIAL;
 
 	tex = texinfo;
-	for (i = 0 ; i < numtexinfo;i++, tex++)
+	for (i = 0 ; i < numtexinfo; i++, tex++)
 	{
 		if (t->miptex != tex->miptex)
 			continue;
 		if (t->flags != tex->flags)
 			continue;
 
-		for (j = 0 ; j < 8 ; j++)
+		for (j = 0 ; j < 4 ; j++)
 		{
 			if (t->vecs[0][j] != tex->vecs[0][j])
 				break;
 		}
+		if (j != 4)
+			continue;
 
-		if (j != 8)
+		for (j = 0 ; j < 4 ; j++)
+		{
+			if (t->vecs[1][j] != tex->vecs[1][j])
+				break;
+		}
+		if (j != 4)
 			continue;
 
 		return i;
