@@ -3,6 +3,13 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2008-05-14 (CVS):
+    * docs: minor tidy-up.
+    * added back some unused code for future reference, and for symmetry
+      between hexen2 and hexenworld versions, only. doesn't affect the
+      current functionality in any way. while we were there, removed the
+      last remnants of PF_AwardExperience which was never ever used.
+
 2008-05-12 (CVS):
     * utils/map.c: fixed an array going out-of-bounds warning from gcc-4.3.
       with i >= 4, the for loop was actually stepping into vecs[1] and the
