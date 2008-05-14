@@ -389,10 +389,12 @@ You may resolve this by using a .asoundrc like the following,
 		}
 	}
 
-and starting uhexen2 with (notice the -sndalsa -alsadev alsa_fixh2
-parameters; tested and documented by Davide Cendron):
+and starting uhexen2 with:
 
 	$ glhexen2 -sndalsa -alsadev alsa_fixh2 -sndspeed 48000
+
+(Notice the -sndalsa -alsadev alsa_fixh2 parameters. Tested and
+documented by Davide Cendron.)
 
 
 2.2 Lines on Screen
