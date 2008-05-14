@@ -2,7 +2,7 @@
 	sbar.c
 	Hexen II status bar
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/sbar.c,v 1.45 2008-05-12 14:06:04 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/sbar.c,v 1.46 2008-05-14 08:37:20 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -51,6 +51,9 @@ static int Sbar_itoa(int num, char *buf);
 static void Sbar_DrawNum(int x, int y, int number, int digits);
 static void Sbar_SortFrags (qboolean includespec);
 #if 0	/* all uses are commented out */
+static void Sbar_DrawFrags(void);
+static void Sbar_DrawCharacter(int x, int y, int num);
+static void Sbar_DrawSmallCharacter(int x, int y, int num);
 static void Sbar_DrawString(int x, int y, const char *str);
 #endif
 static void Sbar_DrawRedString (int cx, int cy, const char *str);
@@ -907,7 +910,7 @@ static int Sbar_ColorForMap (int m)
 //
 //==========================================================================
 
-static void SoloScoreboard(void)
+static void Sbar_SoloScoreboard(void)
 {
 	char	str[80];
 	int		minutes, seconds, tens, units;
@@ -940,10 +943,73 @@ static void SoloScoreboard(void)
 
 void Sbar_DrawScoreboard(void)
 {
-	SoloScoreboard();
+	Sbar_SoloScoreboard();
 //rjr	if (cl.gametype == GAME_DEATHMATCH)
 	{
 		Sbar_DeathmatchOverlay();
+	}
+}
+
+//==========================================================================
+//
+// Sbar_DrawFrags
+//
+//==========================================================================
+
+static void Sbar_DrawFrags (void)
+{
+	int		i, k, l;
+	int		top, bottom;
+	int		x, y, f;
+//	int		xofs;
+	char		num[12];
+	player_info_t	*s;
+
+	Sbar_SortFrags (false);
+
+// draw the text
+	l = scoreboardlines <= 4 ? scoreboardlines : 4;
+
+	x = 23;
+//	xofs = (vid.width - 320)>>1;
+	y = vid.height - BAR_TOP_HEIGHT - 23;
+
+	for (i = 0 ; i < l ; i++)
+	{
+		k = fragsort[i];
+		s = &cl.players[k];
+		if (!s->name[0])
+			continue;
+		if (s->spectator)
+			continue;
+
+	// draw background
+		top = s->topcolor;
+		bottom = s->bottomcolor;
+		top = (top < 0) ? 0 : ((top > 13) ? 13 : top);
+		bottom = (bottom < 0) ? 0 : ((bottom > 13) ? 13 : bottom);
+		top = Sbar_ColorForMap (top);
+		bottom = Sbar_ColorForMap (bottom);
+
+	//	Draw_Fill (xofs + x*8 + 10, y, 28, 4, top);
+	//	Draw_Fill (xofs + x*8 + 10, y+4, 28, 3, bottom);
+		Draw_Fill (x*8 + 10, y, 28, 4, top);
+		Draw_Fill (x*8 + 10, y+4, 28, 3, bottom);
+
+	// draw number
+		f = s->frags;
+		sprintf (num, "%3i",f);
+
+		Sbar_DrawCharacter ((x+1)*8, -24, num[0]);
+		Sbar_DrawCharacter ((x+2)*8, -24, num[1]);
+		Sbar_DrawCharacter ((x+3)*8, -24, num[2]);
+
+		if (k == cl.playernum)
+		{
+			Sbar_DrawCharacter (x*8+2, -24, 16);
+			Sbar_DrawCharacter ((x+4)*8-4, -24, 17);
+		}
+		x += 4;
 	}
 }
 
@@ -2077,17 +2143,41 @@ static void Sbar_DrawTransPic(int x, int y, qpic_t *pic)
 	Draw_TransPicCropped (x+((vid.width-320)>>1), y+(vid.height-(int)BarHeight), pic);
 }
 
+#if 0	/* all uses are commented out */
+
+//==========================================================================
+//
+// Sbar_DrawCharacter
+//
+//==========================================================================
+
+static void Sbar_DrawCharacter(int x, int y, int num)
+{
+	Draw_Character (x+((vid.width-320)>>1)+4, y+vid.height-(int)BarHeight, num);
+}
+
 //==========================================================================
 //
 // Sbar_DrawString
 //
 //==========================================================================
-#if 0	/* all uses are commented out */
+
 static void Sbar_DrawString(int x, int y, const char *str)
 {
 	Draw_String (x+((vid.width-320)>>1), y+vid.height-(int)BarHeight, str);
 }
-#endif
+
+//==========================================================================
+//
+// Sbar_DrawSmallCharacter
+//
+//==========================================================================
+
+static void Sbar_DrawSmallCharacter(int x, int y, int num)
+{
+	Draw_SmallCharacter (x+((vid.width-320)>>1)+4, y+vid.height-(int)BarHeight, num);
+}
+#endif	/* end of unused stuff */
 
 static void Sbar_DrawRedString (int cx, int cy, const char *str)
 {

@@ -1,7 +1,7 @@
 /*
 	gl_main.c
 
-	$Id: gl_rmain.c,v 1.59 2008-04-22 13:06:10 sezero Exp $
+	$Id: gl_rmain.c,v 1.60 2008-05-14 08:37:20 sezero Exp $
 */
 
 
@@ -401,20 +401,20 @@ ALIAS MODELS
 =============================================================
 */
 
-#if defined(H2W)
-// hexenworld needs r_avertexnormals in R_EntityParticles
 #define NUMVERTEXNORMALS	162
-float	r_avertexnormals[NUMVERTEXNORMALS][3] = {
+/* needed in R_EntityParticles() */
+float	r_avertexnormals[NUMVERTEXNORMALS][3] =
+{
 #include "anorms.h"
 };
-#endif	/* H2W */
 
 static vec3_t	shadevector;
 static float	shadelight, ambientlight;
 
 // precalculated dot products for quantized angles
 #define SHADEDOT_QUANT		16
-static float	r_avertexnormal_dots[SHADEDOT_QUANT][256] = {
+static float	r_avertexnormal_dots[SHADEDOT_QUANT][256] =
+{
 #include "anorm_dots.h"
 };
 

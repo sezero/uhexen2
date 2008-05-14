@@ -2,7 +2,7 @@
 	cl_main.c
 	client main loop
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cl_main.c,v 1.43 2007-11-11 13:17:38 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cl_main.c,v 1.44 2008-05-14 08:37:20 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -38,8 +38,6 @@ entity_t		cl_entities[MAX_EDICTS];
 entity_t		cl_static_entities[MAX_STATIC_ENTITIES];
 lightstyle_t		cl_lightstyle[MAX_LIGHTSTYLES];
 dlight_t		cl_dlights[MAX_DLIGHTS];
-
-//static int			lastc = 0;
 
 int				cl_numvisedicts;
 entity_t		*cl_visedicts[MAX_VISEDICTS];
@@ -471,9 +469,6 @@ static void CL_RelinkEntities (void)
 	vec3_t		delta;
 	vec3_t		oldorg;
 	dlight_t	*dl;
-	//int			c;
-
-	//c = 0;
 
 // determine partial update time
 	frac = CL_LerpPoint ();
@@ -551,7 +546,8 @@ static void CL_RelinkEntities (void)
 
 		}
 
-		//c++;
+	//	if (ent->effects & EF_BRIGHTFIELD);
+	//		R_EntityParticles (ent);
 
 		if (ent->effects & EF_DARKFIELD)
 			R_DarkFieldParticles (ent);
@@ -650,10 +646,12 @@ static void CL_RelinkEntities (void)
 		else if (ent->model->flags & EF_ROCKET)
 		{
 			R_RocketTrail (oldorg, ent->origin, 0);
-/*			dl = CL_AllocDlight (i);
+			/*
+			dl = CL_AllocDlight (i);
 			VectorCopy (ent->origin, dl->origin);
 			dl->radius = 200;
-			dl->die = cl.time + 0.01;*/
+			dl->die = cl.time + 0.01;
+			*/
 		}
 		else if (ent->model->flags & EF_FIREBALL)
 		{
@@ -811,13 +809,6 @@ static void CL_RelinkEntities (void)
 			cl_numvisedicts++;
 		}
 	}
-
-/*	if (c != lastc)
-	{
-		Con_Printf("Number of entities: %d\n",c);
-		lastc = c;
-	}
-*/
 }
 
 

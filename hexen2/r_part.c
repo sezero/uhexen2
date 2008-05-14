@@ -2,7 +2,7 @@
 	r_part.c
 	particles rendering
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/r_part.c,v 1.25 2008-03-30 12:25:16 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/r_part.c,v 1.26 2008-05-14 08:37:20 sezero Exp $
 */
 
 
@@ -227,6 +227,64 @@ void R_ReadPointFile_f (void)
 
 /*
 ===============
+R_EntityParticles
+===============
+*/
+
+#define NUMVERTEXNORMALS	162
+extern	float	r_avertexnormals[NUMVERTEXNORMALS][3];
+static	vec3_t	avelocities[NUMVERTEXNORMALS];
+static	float	beamlength = 16;
+
+void R_EntityParticles (entity_t *ent)
+{
+	int		i;
+	particle_t	*p;
+	float		angle, dist;
+	float		sp, sy, cp, cy;
+	vec3_t		forward;
+
+	dist = 64;
+
+	if (!avelocities[0][0])
+	{
+		for (i = 0; i < NUMVERTEXNORMALS * 3; i++)
+		{
+			avelocities[0][i] = (rand() & 255) * 0.01;
+		}
+	}
+
+	for (i = 0; i < NUMVERTEXNORMALS; i++)
+	{
+		angle = cl.time * avelocities[i][0];
+		sy = sin(angle);
+		cy = cos(angle);
+		angle = cl.time * avelocities[i][1];
+		sp = sin(angle);
+		cp = cos(angle);
+		angle = cl.time * avelocities[i][2];
+
+		forward[0] = cp*cy;
+		forward[1] = cp*sy;
+		forward[2] = -sp;
+
+		p = AllocParticle();
+		if (!p)
+			return;
+
+		p->die = cl.time + 0.01;
+		p->color = 0x6f;
+		p->type = pt_fireball;	//pt_explode;
+
+		p->org[0] = ent->origin[0] + r_avertexnormals[i][0]*dist + forward[0]*beamlength;
+		p->org[1] = ent->origin[1] + r_avertexnormals[i][1]*dist + forward[1]*beamlength;
+		p->org[2] = ent->origin[2] + r_avertexnormals[i][2]*dist + forward[2]*beamlength;
+	}
+}
+
+
+/*
+===============
 R_ParseParticleEffect
 
 Parse an effect out of the server message
@@ -359,6 +417,79 @@ void R_ParticleExplosion (vec3_t org)
 		else
 		{
 			p->type = pt_explode2;
+			for (j = 0; j < 3; j++)
+			{
+				p->org[j] = org[j] + ((rand() & 31) - 16);
+				p->vel[j] = (rand() & 511) - 256;
+			}
+		}
+	}
+}
+
+/*
+===============
+R_ParticleExplosion2
+color mapped explosion
+===============
+*/
+void R_ParticleExplosion2 (vec3_t org, int colorStart, int colorLength)
+{
+	int		i, j;
+	particle_t	*p;
+	int		colorMod = 0;
+
+	for (i = 0; i < 512; i++)
+	{
+		p = AllocParticle();
+		if (!p)
+			return;
+
+		p->die = cl.time + 0.3;
+		p->color = colorStart + (colorMod % colorLength);
+		colorMod++;
+
+		p->type = pt_blob;
+		for (j = 0; j < 3; j++)
+		{
+			p->org[j] = org[j] + ((rand() & 31) - 16);
+			p->vel[j] = (rand() & 511) - 256;
+		}
+	}
+}
+
+/*
+===============
+R_BlobExplosion
+tarbaby explosion
+===============
+*/
+void R_BlobExplosion (vec3_t org)
+{
+	int		i, j;
+	particle_t	*p;
+
+	for (i = 0; i < 1024; i++)
+	{
+		p = AllocParticle();
+		if (!p)
+			return;
+
+		p->die = cl.time + 1 + (rand() & 8) * 0.05;
+
+		if (i & 1)
+		{
+			p->type = pt_blob;
+			p->color = 66 + (rand() % 6);
+			for (j = 0; j < 3; j++)
+			{
+				p->org[j] = org[j] + ((rand() & 31) - 16);
+				p->vel[j] = (rand() & 511) - 256;
+			}
+		}
+		else
+		{
+			p->type = pt_blob2;
+			p->color = 150 + (rand() % 6);
 			for (j = 0; j < 3; j++)
 			{
 				p->org[j] = org[j] + ((rand() & 31) - 16);

@@ -2,7 +2,7 @@
 	r_part.h
 	exported functions from r_part.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/r_part.h,v 1.3 2008-03-15 10:36:47 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/r_part.h,v 1.4 2008-05-14 08:37:20 sezero Exp $
 */
 
 #ifndef __R_PART_H
@@ -48,6 +48,11 @@ void R_BrightFieldSource (vec3_t org);
 void R_SuccubusInvincibleParticles (entity_t *ent);
 
 void R_EntityParticles (entity_t *ent);
+
+/*
+ * NOTES: R_EntityParticles, R_ParticleExplosion2
+ *	and R_BlobExplosion actually are not used.
+ */
 
 #endif	/* __R_PART_H */
 

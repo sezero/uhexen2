@@ -2,7 +2,7 @@
 	r_part.h
 	exported functions from r_part.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/r_part.h,v 1.3 2008-03-15 10:36:42 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/r_part.h,v 1.4 2008-05-14 08:37:20 sezero Exp $
 */
 
 #ifndef __R_PART_H
@@ -23,7 +23,9 @@ void R_RunParticleEffect2 (vec3_t org, vec3_t dmin, vec3_t dmax, int color, ptyp
 					/* for ptype_t, d_iface.h or glquake.h must be included before. */
 
 void R_ParticleExplosion (vec3_t org);
+void R_ParticleExplosion2 (vec3_t org, int colorStart, int colorLength);
 void R_ColoredParticleExplosion (vec3_t org, int color, int radius, int counter);
+void R_BlobExplosion (vec3_t org);
 
 void R_RocketTrail (vec3_t start, vec3_t end, int type);
 void R_SunStaffTrail (vec3_t source, vec3_t dest);
@@ -39,6 +41,13 @@ void R_RunQuakeEffect (vec3_t org, float distance);
 void RiderParticle (int count, vec3_t origin);
 void GravityWellParticle (int count, vec3_t origin, int color);
 void R_DarkFieldParticles (entity_t *ent);
+
+void R_EntityParticles (entity_t *ent);
+
+/*
+ * NOTES: R_EntityParticles, R_ParticleExplosion2
+ *	and R_BlobExplosion actually are not used.
+ */
 
 #endif	/* __R_PART_H */
 

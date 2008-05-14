@@ -2,7 +2,7 @@
 	cl_ents.c
 	entity parsing and management
 
-	$Id: cl_ents.c,v 1.19 2008-04-22 13:06:10 sezero Exp $
+	$Id: cl_ents.c,v 1.20 2008-05-14 08:37:20 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -240,8 +240,10 @@ static void CL_ParseDelta (entity_state_t *from, entity_state_t *to, int bits)
 
 	// count the bits for net profiling
 	for (i = 0; i < 19; i++)
+	{
 		if (bits & (1<<i))
 			bitcounts[i]++;
+	}
 
 	to->flags = bits;
 
@@ -402,7 +404,6 @@ void CL_ParsePacketEntities (qboolean delta)
 
 	while (1)
 	{
-//nextword:
 		word = (unsigned short)MSG_ReadShort ();
 		if (msg_badread)
 		{	// something didn't parse right...
@@ -423,7 +424,7 @@ void CL_ParsePacketEntities (qboolean delta)
 			}
 			break;
 		}
-		newnum = word&511;
+		newnum = word & 511;
 		oldnum = oldindex >= oldp->num_entities ? 9999 : oldp->entities[oldindex].number;
 
 		while (newnum > oldnum)
@@ -839,11 +840,12 @@ static void CL_LinkPacketEntities (void)
 		else if (ent->model->flags & EF_ROCKET)
 		{
 			R_RocketTrail (old_origin, ent->origin, 0);
-/*			dl = CL_AllocDlight (i);
+			/*
+			dl = CL_AllocDlight (i);
 			VectorCopy (ent->origin, dl->origin);
 			dl->radius = 200;
 			dl->die = cl.time + 0.01;
-*/
+			*/
 		}
 		else if (ent->model->flags & EF_FIREBALL)
 		{
