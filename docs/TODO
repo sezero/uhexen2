@@ -23,6 +23,7 @@ TODO:
 - MorphOS: the port isn't touched since 1.4.0-prerelease times,
   make sure it still works out of the box.
 - Maybe do other ports? (Amiga, etc?)
+- Does Solaris compile / work?
 - Add sequencer (mpu-401) support for midi (alsa / oss)
 - MIDI-background music: re-write with proper decoder library
   usage (eg. wildmidi/timidity for software-midi, ogg-vorbis

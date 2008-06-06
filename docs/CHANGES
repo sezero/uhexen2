@@ -3,6 +3,9 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2008-06-06 (CVS):
+    * minor documentation tidy-ups.
+
 2008-05-14 (CVS):
     * docs: minor tidy-up.
     * added back some unused code for future reference, and for symmetry
