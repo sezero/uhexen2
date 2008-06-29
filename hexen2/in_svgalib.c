@@ -2,7 +2,7 @@
 	in_svgalib.c:	Linux SVGALIB specific input driver.
 	from quake1 source with minor adaptations for uhexen2.
 
-	$Id: in_svgalib.c,v 1.5 2008-04-02 13:32:02 sezero Exp $
+	$Id: in_svgalib.c,v 1.6 2008-06-29 11:25:31 sezero Exp $
 
 	Copyright (C) 1996-1997  Id Software, Inc.
 
@@ -213,7 +213,7 @@ static void IN_InitMouse (void)
 	int	mouserate;
 
 	mtype = vga_getmousetype();
-
+	Sys_Printf("SVGALib reports MTYPE: %d\n", mtype);
 	mousedev = default_mouse;
 	if (getenv("MOUSEDEV"))
 		mousedev = getenv("MOUSEDEV");

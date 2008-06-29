@@ -2,7 +2,7 @@
 	vid_svgalib.c:	Linux SVGALIB specific video driver.
 	from quake1 source with minor adaptations for uhexen2.
 
-	$Id: vid_svgalib.c,v 1.9 2008-04-02 19:10:34 sezero Exp $
+	$Id: vid_svgalib.c,v 1.10 2008-06-29 11:25:31 sezero Exp $
 
 	Copyright (C) 1996-1997  Id Software, Inc.
 
@@ -461,12 +461,14 @@ void VID_Init (unsigned char *palette)
 			w = atoi(com_argv[i + 1]);
 		}
 		i = COM_CheckParm("-height");
+		if (i)
 		{
 			if (i >= com_argc - 1)
 				Sys_Error("%s: -height <height>", __thisfunc__);
 			h = atoi(com_argv[i + 1]);
 		}
 		i = COM_CheckParm("-bpp");
+		if (i)
 		{
 			if (i >= com_argc - 1)
 				Sys_Error("%s: -bpp <depth>", __thisfunc__);
