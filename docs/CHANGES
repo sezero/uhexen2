@@ -3,6 +3,16 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2008-06-29 (CVS):
+    * SVGALib: fixed my stupid error in command line argument checking. it works
+      just fine now. then again, if someone can help me configure my mouse with
+      svgalib ;)
+
+2008-06-12 (CVS):
+    * SCR_EraseCenterString: make sure we don't draw off the bottom of the screen
+      (this function isn't used in hexen2, but for completeness sake. the bug was
+      fixed in the hexenworld version, too.  ran into this in the tyrquake tree).
+
 2008-06-06 (CVS):
     * minor documentation tidy-ups.
 
