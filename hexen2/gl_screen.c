@@ -2,7 +2,7 @@
 	screen.c
 	master for refresh, status bar, console, chat, notify, etc
 
-	$Id: gl_screen.c,v 1.59 2008-02-07 09:27:22 sezero Exp $
+	$Id: gl_screen.c,v 1.60 2008-07-15 06:52:02 sezero Exp $
 */
 
 /*=============================================================================
@@ -1146,7 +1146,7 @@ void SCR_UpdateScreen (void)
 
 	if (scr_disabled_for_loading)
 	{
-		if (realtime - scr_disabled_time > 60)
+		if (realtime - scr_disabled_time > 20)
 		{
 			scr_disabled_for_loading = false;
 			total_loading_size = 0;

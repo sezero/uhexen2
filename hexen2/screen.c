@@ -2,7 +2,7 @@
 	screen.c
 	master for refresh, status bar, console, chat, notify, etc
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/screen.c,v 1.57 2008-06-12 15:39:58 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/screen.c,v 1.58 2008-07-15 06:52:02 sezero Exp $
 */
 
 /*=============================================================================
@@ -1283,7 +1283,7 @@ void SCR_UpdateScreen (void)
 
 	if (scr_disabled_for_loading)
 	{
-		if (realtime - scr_disabled_time > 60)
+		if (realtime - scr_disabled_time > 20)
 		{
 			scr_disabled_for_loading = false;
 			total_loading_size = 0;
