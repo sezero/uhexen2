@@ -3,6 +3,12 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2008-07-15 (CVS):
+    * reduced the load fail timeout to 20 seconds in SCR_UpdateScreen. this is
+      actually a complex bug and must be fixed somehow. see SrcNotes.txt for its
+      details.
+    * don't print -window and -fullscreen help entries for the for the svga version.
+
 2008-06-29 (CVS):
     * SVGALib: fixed my stupid error in command line argument checking. it works
       just fine now. then again, if someone can help me configure my mouse with
