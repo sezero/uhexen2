@@ -2,7 +2,7 @@
 	sys_unix.c
 	Unix system interface code
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sys_unix.c,v 1.108 2008-04-02 20:37:37 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sys_unix.c,v 1.109 2008-07-15 06:45:19 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -486,8 +486,10 @@ static const char *help_strings[] = {
 	"     [-portals | -h2mp ]     Run the Portal of Praevus mission pack",
 #   endif
 #endif
+#ifndef SVGAQUAKE
 	"     [-w | -window ]         Run the game windowed",
 	"     [-f | -fullscreen]      Run the game fullscreen",
+#endif
 	"     [-width X [-height Y]]  Select screen size",
 #ifdef GLQUAKE
 	"     [-bpp]                  Depth for GL fullscreen mode",

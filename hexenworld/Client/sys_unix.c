@@ -2,7 +2,7 @@
 	sys_unix.c
 	Unix system interface code
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/sys_unix.c,v 1.100 2008-04-02 20:37:39 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/sys_unix.c,v 1.101 2008-07-15 06:45:22 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -424,8 +424,10 @@ static void PrintVersion (void)
 static const char *help_strings[] = {
 	"     [-v | --version]        Display version information",
 	"     [-noportals]            Disable the mission pack support",
+#ifndef SVGAQUAKE
 	"     [-w | -window ]         Run the game windowed",
 	"     [-f | -fullscreen]      Run the game fullscreen",
+#endif
 	"     [-width X [-height Y]]  Select screen size",
 #ifdef GLQUAKE
 	"     [-bpp]                  Depth for GL fullscreen mode",
