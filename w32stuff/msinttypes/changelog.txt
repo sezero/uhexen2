@@ -1,4 +1,11 @@
 ------------------------------------------------------------------------
+r21 | 2008-07-17 09:47:22 +0400 | 4 lines
+
+Get rid of these compiler warnings when compiling for 32-bit:
+  warning C4311: 'type cast' : pointer truncation from 'void *' to 'uintptr_t'
+  warning C4312: 'type cast' : conversion from 'uintptr_t' to 'const void *' of greater size
+
+------------------------------------------------------------------------
 r20 | 2007-10-09 16:54:27 +0400 | 2 lines
 
 Better C99 conformance: macros for format specifiers should only be included in C++ implementations if __STDC_FORMAT_MACROS is defined before <inttypes.h> is included.
@@ -98,7 +105,7 @@ r2 | 2006-12-11 21:39:27 +0300 | 2 lines
 Initial check in.
 
 ------------------------------------------------------------------------
-r1 | (no author) | 2006-12-11 21:30:23 +0300 | 1 line
+r1 | 2006-12-11 21:30:23 +0300 | 1 line
 
 Initial directory structure.
 ------------------------------------------------------------------------
