@@ -3,6 +3,9 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2008-07-24 (CVS):
+    * updated msinttypes to r21.
+
 2008-07-15 (CVS):
     * reduced the load fail timeout to 20 seconds in SCR_UpdateScreen. this is
       actually a complex bug and must be fixed somehow. see SrcNotes.txt for its
