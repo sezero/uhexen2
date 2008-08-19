@@ -4,7 +4,7 @@
 	implementations found in the quakeforge and quake3-icculus.org
 	projects.
 
-	$Id: snd_sdl2.c,v 1.6 2007-12-22 18:56:09 sezero Exp $
+	$Id: snd_sdl2.c,v 1.7 2008-08-19 17:21:18 sezero Exp $
 
 	This program is free software; you can redistribute it and/or
 	modify it under the terms of the GNU General Public License
@@ -164,7 +164,7 @@ static qboolean S_SDL_Init (dma_t *dma)
 		Con_Printf ("Warning: Rate set (%d) didn't match requested rate (%d)!\n", obtained.freq, desired_speed);
 	shm->speed = obtained.freq;
 	shm->channels = obtained.channels;
-	tmp = (obtained.samples * obtained.channels) * 8;
+	tmp = (obtained.samples * obtained.channels) * 10;
 	if (tmp & (tmp - 1))
 	{	/* make it a power of two */
 		val = 1;
@@ -177,7 +177,13 @@ static qboolean S_SDL_Init (dma_t *dma)
 	shm->samplepos = 0;
 	shm->submission_chunk = 1;
 
+	Con_Printf ("SDL audio spec  : %d Hz, %d samples, %d channels\n",
+			obtained.freq, obtained.samples, obtained.channels);
+	if (SDL_AudioDriverName(drivername, sizeof(drivername)) == NULL)
+		strcpy(drivername, "(UNKNOWN)");
 	buffersize = shm->samples * (shm->samplebits / 8);
+	Con_Printf ("SDL audio driver: %s, %d bytes buffer\n", drivername, buffersize);
+
 #if USE_HUNK_ALLOC
 	shm->buffer = (unsigned char *) Hunk_AllocName(buffersize, "sdl_audio");
 #else
@@ -192,12 +198,7 @@ static qboolean S_SDL_Init (dma_t *dma)
 	}
 #endif
 
-	if (SDL_AudioDriverName(drivername, sizeof(drivername)) == NULL)
-		strcpy(drivername, "(UNKNOWN)");
-
 	SDL_PauseAudio(0);
-
-	Con_Printf ("SDL audio driver: %s, buffer size: %d\n", drivername, buffersize);
 
 	return true;
 }
