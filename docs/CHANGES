@@ -3,6 +3,10 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2008-08-19 (CVS):
+    * increased the buffersize for sdl audio. made it to print a little more
+      detailed info at startup.
+
 2008-07-24 (CVS):
     * updated msinttypes to r21.
 
