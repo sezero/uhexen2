@@ -6,6 +6,7 @@ Development Progress	:
 2008-08-19 (CVS):
     * increased the buffersize for sdl audio. made it to print a little more
       detailed info at startup.
+    * vid_svgalib: include <sys/io.h> instead of <asm/io.h>
 
 2008-07-24 (CVS):
     * updated msinttypes to r21.
