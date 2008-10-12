@@ -1,6 +1,6 @@
 /*
 	writebsp.c
-	$Id: writebsp.c,v 1.11 2007-12-14 16:41:28 sezero Exp $
+	$Id: writebsp.c,v 1.12 2008-10-12 07:07:13 sezero Exp $
 */
 
 #include "q_stdinc.h"
@@ -359,7 +359,7 @@ static void CleanupName (char *in, char *out)
 TEX_InitFromWad
 =================
 */
-static void TEX_InitFromWad (char *path)
+static void TEX_InitFromWad (const char *path)
 {
 	int			i;
 
