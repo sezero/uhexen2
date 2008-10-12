@@ -2,7 +2,7 @@
 	midi_sdl.c
 	midiplay via SDL_mixer
 
-	$Id: midi_sdl.c,v 1.47 2008-03-31 11:25:22 sezero Exp $
+	$Id: midi_sdl.c,v 1.48 2008-10-12 08:01:04 sezero Exp $
 
 	Copyright (C) 2001  contributors of the Anvil of Thyrion project
 	Copyright (C) 2005-2007  O.Sezer
@@ -112,8 +112,8 @@ static void MIDI_EndMusicFinished(void)
 
 qboolean MIDI_Init(void)
 {
+	Uint16 audio_format = AUDIO_S16SYS;
 	int audio_rate = 22050;
-	int audio_format = AUDIO_S16SYS;
 	int audio_channels = 2;
 	int audio_buffers = 4096;
 
