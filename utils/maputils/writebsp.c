@@ -1,6 +1,6 @@
 /*
 	writebsp.c
-	$Id: writebsp.c,v 1.12 2008-10-12 07:07:13 sezero Exp $
+	$Id: writebsp.c,v 1.13 2008-10-12 07:08:10 sezero Exp $
 */
 
 #include "q_stdinc.h"
@@ -476,9 +476,14 @@ static void WriteMiptex (void)
 		return;
 	}
 
-	sprintf (fullpath, "%s%s", projectpath, path);
-
-	TEX_InitFromWad (fullpath);
+	if (strchr(path, '/') || strchr(path, '\\') || strchr(path, ':'))
+	/* worldcraft uses a full path for the wad file... */
+		TEX_InitFromWad (path);
+	else
+	{
+		sprintf (fullpath, "%s%s", projectpath, path);
+		TEX_InitFromWad (fullpath);
+	}
 
 	AddAnimatingTextures ();
 
