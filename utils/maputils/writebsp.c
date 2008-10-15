@@ -1,6 +1,6 @@
 /*
 	writebsp.c
-	$Id: writebsp.c,v 1.14 2008-10-15 06:45:46 sezero Exp $
+	$Id: writebsp.c,v 1.15 2008-10-15 07:10:31 sezero Exp $
 */
 
 #include "q_stdinc.h"
@@ -420,10 +420,17 @@ static qboolean TEX_InitWads (void)
 		mark = strchr (path, ';');
 		if (mark)
 			*mark = '\0';
-		if (strchr(path, '/') || strchr(path, '\\') || strchr(path, ':'))
-		/* worldcraft uses a full path for the wad file... */
+		/* worldcraft uses an absolute path: */
+		if (*path == '/')
 			tmp = fullpath;
-		else
+#  ifdef PLATFORM_WINDOWS
+		/* absolute path with drive? */
+		else if ( path[1] == ':' &&
+			 ((path[0] >= 'A' && path[0] <= 'Z') ||
+			  (path[0] >= 'a' && path[0] <= 'z')) )
+			tmp = fullpath;
+#  endif /* WINDOWS */
+		else	/* relative path or no path. */
 		{
 			sprintf (fullpath, "%s", projectpath);
 			tmp = strchr (fullpath, '\0');
