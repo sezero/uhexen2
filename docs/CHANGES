@@ -3,6 +3,36 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2008-10-15 (CVS):
+    * utils, qbsp: constified the path arg of TEX_InitFromWad.
+    * utils, qbsp: worldcraft sets the wad value to a full path. so,
+      if we encounter a directory separator or a drive indicator in
+      the path we don't prepend it with the project path anymore and
+      use it as it is.  issue reported by 'leileilol' at
+      http://sourceforge.net/forum/forum.php?thread_id=2357371&forum_id=425207
+    * qbsp now accepts more than one wad file specified in the value
+      of the "wad" key. (feature requested by leileilol.) the wad file
+      names must be separated by a semicolon. spaces are allowed in the
+      file names. quoted paths aren't allowed.
+    * qbsp: reworked the parsing of path information in the wad key value.
+      only the absolute path values are not touched, ie. the paths beginning
+      with a '/' on unix or with a drive specified string like C: on windows.
+      all other values with no path information or relative path information
+      are prefixed with the project path.
+    * sdl midi: audio_format should be Uint16 type (not that it actually
+      matters, but for correctness sake..)
+    * added a test patch to support midi when using sdl audio. the patch
+      is an extra patch (in 00_Patches, not actually applied.)  its idea
+      was adapted from an implementation found in prboom. we use SDL_mixer
+      for both sfx and midi here, and use the Mix_SetPostMix() as a hack
+      to mix in our sfx. if you use the -nomidi commandline switch, the
+      normal sdl audio behavior is restored. this patch received minimal
+      testing and is a bit crude. the audio is restricted to 16 bit stereo
+      at 22050 Hz and commandline switches don't have any effects on them,
+      yet.  NOTE:  if you want to use the external music files patch, you
+      must apply this one first.
+    * fixed a typo in SrcNotes.txt.
+
 2008-08-19 (CVS):
     * increased the buffersize for sdl audio. made it to print a little more
       detailed info at startup.
