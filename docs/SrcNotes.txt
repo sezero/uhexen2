@@ -139,11 +139,12 @@ gfx/invpal.lmp :
 
 gfx/menu/bigfont.lmp
 gfx/menu/bigfont2.lmp :
-	729 bytes. a set of 27 characters with large font, A-Z
-	and '/', for main menu titles. 20x20.  bigfont2 is the
-	one actually in use now.
+	a set of 27 characters with large font, A-Z and '/',
+	for main menu titles. 20x20.  bigfont2 is the one
+	actually in use now.
 
 gfx/menu/fontsize.lmp :
-	font size data for the bigfont characters. Can be created
-	from the bigfont file during start-up, too.
+	729 bytes. font size data for the bigfont characters.
+	Can be created from the bigfont file during start-up,
+	too.
 
