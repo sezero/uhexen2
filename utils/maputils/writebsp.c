@@ -1,6 +1,6 @@
 /*
 	writebsp.c
-	$Id: writebsp.c,v 1.13 2008-10-12 07:08:10 sezero Exp $
+	$Id: writebsp.c,v 1.14 2008-10-15 06:45:46 sezero Exp $
 */
 
 #include "q_stdinc.h"
@@ -333,9 +333,15 @@ typedef struct
 	char		name[16];			// must be null terminated
 } lumpinfo_t;
 
-static FILE		*texfile;
-static wadinfo_t	wadinfo;
-static lumpinfo_t	*lumpinfo;
+typedef struct wadlist_s
+{
+	struct wadlist_s	*next;
+	FILE		*texfile;
+	wadinfo_t	wadinfo;
+	lumpinfo_t	*lumpinfo;
+} wadlist_t;
+
+static wadlist_t	*wadlist = NULL;
 
 static void CleanupName (char *in, char *out)
 {
@@ -362,23 +368,91 @@ TEX_InitFromWad
 static void TEX_InitFromWad (const char *path)
 {
 	int			i;
+	wadlist_t	*wl;
 
-	texfile = SafeOpenRead (path);
-	SafeRead (texfile, &wadinfo, sizeof(wadinfo));
-	if (strncmp (wadinfo.identification, "WAD2", 4))
+	wl = (wadlist_t *) malloc (sizeof(wadlist_t));
+	wl->next = wadlist;
+	wadlist = wl;
+
+	wl->texfile = SafeOpenRead (path);
+	SafeRead (wl->texfile, &wl->wadinfo, sizeof(wadinfo_t));
+	if (strncmp (wl->wadinfo.identification, "WAD2", 4))
 		Error ("%s: %s isn't a wadfile", __thisfunc__, path);
-	wadinfo.numlumps = LittleLong(wadinfo.numlumps);
-	wadinfo.infotableofs = LittleLong(wadinfo.infotableofs);
-	fseek (texfile, wadinfo.infotableofs, SEEK_SET);
-	lumpinfo = (lumpinfo_t *) malloc(wadinfo.numlumps*sizeof(lumpinfo_t));
-	SafeRead (texfile, lumpinfo, wadinfo.numlumps*sizeof(lumpinfo_t));
+	wl->wadinfo.numlumps = LittleLong(wl->wadinfo.numlumps);
+	wl->wadinfo.infotableofs = LittleLong(wl->wadinfo.infotableofs);
+	fseek (wl->texfile, wl->wadinfo.infotableofs, SEEK_SET);
+	wl->lumpinfo = (lumpinfo_t *) malloc(wl->wadinfo.numlumps*sizeof(lumpinfo_t));
+	SafeRead (wl->texfile, wl->lumpinfo, wl->wadinfo.numlumps*sizeof(lumpinfo_t));
 
-	for (i = 0 ; i < wadinfo.numlumps ; i++)
+	for (i = 0 ; i < wl->wadinfo.numlumps ; i++)
 	{
-		CleanupName (lumpinfo[i].name, lumpinfo[i].name);
-		lumpinfo[i].filepos = LittleLong(lumpinfo[i].filepos);
-		lumpinfo[i].disksize = LittleLong(lumpinfo[i].disksize);
+		CleanupName (wl->lumpinfo[i].name, wl->lumpinfo[i].name);
+		wl->lumpinfo[i].filepos = LittleLong(wl->lumpinfo[i].filepos);
+		wl->lumpinfo[i].disksize = LittleLong(wl->lumpinfo[i].disksize);
 	}
+	printf ("Loaded wadfile %s\n", path);
+}
+
+static qboolean TEX_InitWads (void)
+{
+	int		c = 0;
+	const char	*str;
+	char	fullpath[1024];
+	char	*path, *mark, *tmp;
+
+	str = ValueForKey (&entities[0], "wad");
+	if (!str || !str[0])
+		goto nowad;
+
+	path = strdup (str);
+	str = path;
+
+	while (*path && (*path == ';' || *path == ' ' || *path == '\t'))
+		path++;
+	if (!path[0])
+	{
+		free ((void *)str);
+		goto nowad;
+	}
+
+	do
+	{
+		mark = strchr (path, ';');
+		if (mark)
+			*mark = '\0';
+		if (strchr(path, '/') || strchr(path, '\\') || strchr(path, ':'))
+		/* worldcraft uses a full path for the wad file... */
+			tmp = fullpath;
+		else
+		{
+			sprintf (fullpath, "%s", projectpath);
+			tmp = strchr (fullpath, '\0');
+		}
+		if (mark)
+			*mark = ';';
+		mark = tmp;
+		while (*path && *path != ';')
+			*tmp++ = *path++;
+		while (tmp != mark && (tmp[-1] == ' ' || tmp[-1] == '\t'))
+			tmp--;
+		if (tmp != mark)
+		{
+			*tmp = '\0';
+			TEX_InitFromWad (fullpath);
+			c++;
+		}
+		while (*path && (*path == ';' || *path == ' ' || *path == '\t'))
+			path++;
+	} while (*path);
+
+	free ((void *)str);
+	if (c != 0)
+		return true;
+
+  nowad:
+	texdatasize = 0;
+	printf ("WARNING: no wadfile specified\n");
+	return false;
 }
 
 /*
@@ -389,20 +463,23 @@ LoadLump
 static int LoadLump (char *name, byte *dest)
 {
 	int		i;
+	wadlist_t	*wl;
 	char	cname[16];
 
 	CleanupName (name, cname);
 
-	for (i = 0 ; i < wadinfo.numlumps ; i++)
+	for (wl = wadlist; wl; wl = wl->next)
 	{
-	//	if (!strcmp(cname, lumpinfo[i].name))
-	//	do a case insensitive search. some wadfiles
-	//	doesn't have the texture name in expected case
-		if (!q_strcasecmp(cname, lumpinfo[i].name))
+		for (i = 0 ; i < wl->wadinfo.numlumps ; i++)
 		{
-			fseek (texfile, lumpinfo[i].filepos, SEEK_SET);
-			SafeRead (texfile, dest, lumpinfo[i].disksize);
-			return lumpinfo[i].disksize;
+		//	do a case insensitive search. some wadfiles
+		//	doesn't have the texture name in expected case
+			if (!q_strcasecmp(cname, wl->lumpinfo[i].name))
+			{
+				fseek (wl->texfile, wl->lumpinfo[i].filepos, SEEK_SET);
+				SafeRead (wl->texfile, dest, wl->lumpinfo[i].disksize);
+				return wl->lumpinfo[i].disksize;
+			}
 		}
 	}
 
@@ -420,6 +497,7 @@ static void AddAnimatingTextures (void)
 {
 	int		base;
 	int		i, j, k;
+	wadlist_t	*wl;
 	char	name[32];
 
 	base = nummiptex;
@@ -438,17 +516,22 @@ static void AddAnimatingTextures (void)
 				name[1] = 'A'+j-10;	// alternate animation
 
 		// see if this name exists in the wadfile
-			for (k = 0 ; k < wadinfo.numlumps ; k++)
+		// FIXME: this allows different anims to be found in different
+		//	  wadfiles. would that be a problem?
+			for (wl = wadlist ; wl ; wl = wl->next)
 			{
-			//	if (!strcmp(name, lumpinfo[k].name))
-			//	do a case insensitive search. some wadfiles
-			//	doesn't have the texture name in expected case
-				if (!q_strcasecmp(name, lumpinfo[k].name))
+				for (k = 0 ; k < wl->wadinfo.numlumps ; k++)
 				{
-					FindMiptex (name);	// add to the miptex list
-					break;
+				//	do a case insensitive search. some wadfiles
+				//	doesn't have the texture name in expected case
+					if (!q_strcasecmp(name, wl->lumpinfo[k].name))
+					{
+						FindMiptex (name);	// add to the miptex list
+						goto foundit;
+					}
 				}
 			}
+			foundit: ;
 		}
 	}
 
@@ -465,25 +548,9 @@ static void WriteMiptex (void)
 	int		i, len;
 	byte	*data;
 	dmiptexlump_t	*l;
-	const char	*path;
-	char	fullpath[1024];
 
-	path = ValueForKey (&entities[0], "wad");
-	if (!path || !path[0])
-	{
-		printf ("WARNING: no wadfile specified\n");
-		texdatasize = 0;
+	if (!TEX_InitWads())
 		return;
-	}
-
-	if (strchr(path, '/') || strchr(path, '\\') || strchr(path, ':'))
-	/* worldcraft uses a full path for the wad file... */
-		TEX_InitFromWad (path);
-	else
-	{
-		sprintf (fullpath, "%s%s", projectpath, path);
-		TEX_InitFromWad (fullpath);
-	}
 
 	AddAnimatingTextures ();
 
