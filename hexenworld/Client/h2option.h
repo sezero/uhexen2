@@ -2,7 +2,7 @@
 	h2option.h
 	Compile time options for Hexen II: Hammer of Thyrion
 
-	$Id: h2option.h,v 1.10 2008-01-12 09:46:17 sezero Exp $
+	$Id: h2option.h,v 1.11 2008-10-16 11:33:54 sezero Exp $
 */
 
 
@@ -123,7 +123,7 @@
    H2MP
    Whether we want the mission pack support to be activated directly.
    Value  :	not a value, but a define or undef
-   Affects:	common.c (filesystem initialization)
+   Affects:	quakefs.c (filesystem initialization)
 
    Default is no: player must use the -portals command line argument
    to activate it.  If you want direct activation, change the below
