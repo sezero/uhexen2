@@ -2,7 +2,7 @@
 	quakefs.c
 	Hexen II filesystem
 
-	$Id: quakefs.c,v 1.43 2008-01-29 10:47:01 sezero Exp $
+	$Id: quakefs.c,v 1.44 2008-10-16 11:36:15 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -142,41 +142,6 @@ especially over ISDN / T1 lines.  If there is a cache directory specified, when
 a file is found by the normal search path, it will be mirrored into the cache
 directory, then opened there.
 */
-
-
-/*
-================
-CheckRegistered
-
-Looks for the pop.txt file and verifies it.
-Sets the registered flag.
-================
-*/
-static int CheckRegistered (void)
-{
-	FILE		*h;
-	unsigned short	check[128];
-	int			i;
-
-	FS_OpenFile("gfx/pop.lmp", &h, false);
-
-	if (!h)
-		return -1;
-
-	fread (check, 1, sizeof(check), h);
-	fclose (h);
-
-	for (i = 0; i < 128; i++)
-	{
-		if ( pop[i] != (unsigned short)BigShort(check[i]) )
-		{
-			Sys_Printf ("Corrupted data file\n");
-			return -1;
-		}
-	}
-
-	return 0;
-}
 
 
 /*
@@ -612,139 +577,6 @@ add_pakfiles:
 	qerr_strlcpy (__thisfunc__, __LINE__, fs_userdir, fs_gamedir, sizeof(fs_userdir));
 #endif
 }
-
-/*
-============
-MoveUserData
-moves all <userdir>/userdata to <userdir>/data1/userdata
-
-AoT and earlier versions of HoT didn't create <userdir>/data1
-and kept all user the data in <userdir> instead. Starting with
-HoT 1.4.1, we are creating and using <userdir>/data1 . This
-procedure is intended to update the user direcory accordingly.
-Call from FS_Init ~just after~ setting fs_userdir
-to host_parms->userdir/data1
-============
-*/
-#if DO_USERDIRS
-static void do_movedata (const char *path1, const char *path2, FILE *logfile)
-{
-	Sys_Printf ("%s -> %s : ", path1, path2);
-	if (logfile)
-		fprintf (logfile, "%s -> %s : ", path1, path2);
-	if (rename (path1, path2) == 0)
-	{
-		Sys_Printf("OK\n");
-		if (logfile)
-			fprintf(logfile, "OK\n");
-	}
-	else
-	{
-		Sys_Printf("Failed (%s)\n", strerror(errno));
-		if (logfile)
-			fprintf(logfile, "Failed (%s)\n", strerror(errno));
-	}
-}
-
-static void MoveUserData (void)
-{
-	unsigned int	i;
-	FILE		*fh;
-	struct stat	test;
-	char	*tmp, tmp1[MAX_OSPATH], tmp2[MAX_OSPATH];
-	const char	*movefiles[] = 
-	{
-		"*.cfg",	// config files
-		"*.rc",		// config files
-		"*.dem",	// pre-recorded demos
-		"pak?.pak"	// pak files
-	};
-	const char	*movedirs[] = 
-	{
-		"quick",	// quick saves
-		"shots",	// screenshots
-		"glhexen",	// model mesh cache
-		/* these are highly unlikely, but just in case.. */
-		"maps",
-		"midi",
-		"sound",
-		"models",
-		"gfx"
-	};
-#	define NUM_MOVEFILES	(sizeof(movefiles)/sizeof(movefiles[0]))
-#	define NUM_MOVEDIRS	(sizeof(movedirs)/sizeof(movedirs[0]))
-
-	qerr_snprintf(__thisfunc__, __LINE__, tmp1, sizeof(tmp1), "%s/userdata.moved", fs_userdir);
-	if (stat(tmp1, &test) == 0)
-	{
-	/* the data should have already been moved in earlier
-	   runs:  Don't even bother doing an S_ISREG check. */
-	//	if ( S_ISREG(test.st_mode) )
-			return;
-	}
-	fh = fopen(tmp1, "wb");
-
-	Sys_Printf ("Moving user data from root of userdir to userdir/data1\n");
-
-	for (i = 0; i < NUM_MOVEFILES; i++)
-	{
-		tmp = Sys_FindFirstFile (host_parms->userdir, movefiles[i]);
-		while (tmp)
-		{
-			qerr_snprintf(__thisfunc__, __LINE__, tmp1, sizeof(tmp1), "%s/%s", host_parms->userdir, tmp);
-			qerr_snprintf(__thisfunc__, __LINE__, tmp2, sizeof(tmp2), "%s/%s", fs_userdir, tmp);
-			do_movedata (tmp1, tmp2, fh);
-			tmp = Sys_FindNextFile ();
-		}
-		Sys_FindClose ();
-	}
-
-	// move the savegames
-	for (i = 0; i < MAX_SAVEGAMES; i++)
-	{
-		qerr_snprintf(__thisfunc__, __LINE__, tmp1, sizeof(tmp1), "%s/s%u", host_parms->userdir, i);
-		if (stat(tmp1, &test) == 0)
-		{
-			if ( S_ISDIR(test.st_mode) )
-			{
-				qerr_snprintf(__thisfunc__, __LINE__, tmp2, sizeof(tmp2), "%s/s%u", fs_userdir, i);
-				do_movedata (tmp1, tmp2, fh);
-			}
-		}
-	}
-
-	// move the savegames (multiplayer)
-	for (i = 0; i < MAX_SAVEGAMES; i++)
-	{
-		qerr_snprintf(__thisfunc__, __LINE__, tmp1, sizeof(tmp1), "%s/ms%u", host_parms->userdir, i);
-		if (stat(tmp1, &test) == 0)
-		{
-			if ( S_ISDIR(test.st_mode) )
-			{
-				qerr_snprintf(__thisfunc__, __LINE__, tmp2, sizeof(tmp2), "%s/ms%u", fs_userdir, i);
-				do_movedata (tmp1, tmp2, fh);
-			}
-		}
-	}
-
-	// other dirs
-	for (i = 0; i < NUM_MOVEDIRS; i++)
-	{
-		qerr_snprintf(__thisfunc__, __LINE__, tmp1, sizeof(tmp1), "%s/%s", host_parms->userdir, movedirs[i]);
-		if (stat(tmp1, &test) == 0)
-		{
-			if ( S_ISDIR(test.st_mode) )
-			{
-				qerr_snprintf(__thisfunc__, __LINE__, tmp2, sizeof(tmp2), "%s/%s", fs_userdir, movedirs[i]);
-				do_movedata (tmp1, tmp2, fh);
-			}
-		}
-	}
-
-	if (fh)
-		fclose (fh);
-}
-#endif	/* DO_USERDIRS */
 
 
 //============================================================================
@@ -1467,6 +1299,173 @@ INIT
 */
 
 /*
+============
+MoveUserData
+moves all <userdir>/userdata to <userdir>/data1/userdata
+
+AoT and earlier versions of HoT didn't create <userdir>/data1
+and kept all user the data in <userdir> instead. Starting with
+HoT 1.4.1, we are creating and using <userdir>/data1 . This
+procedure is intended to update the user direcory accordingly.
+Call from FS_Init ~just after~ setting fs_userdir
+to host_parms->userdir/data1
+============
+*/
+#if DO_USERDIRS
+static void do_movedata (const char *path1, const char *path2, FILE *logfile)
+{
+	Sys_Printf ("%s -> %s : ", path1, path2);
+	if (logfile)
+		fprintf (logfile, "%s -> %s : ", path1, path2);
+	if (rename (path1, path2) == 0)
+	{
+		Sys_Printf("OK\n");
+		if (logfile)
+			fprintf(logfile, "OK\n");
+	}
+	else
+	{
+		Sys_Printf("Failed (%s)\n", strerror(errno));
+		if (logfile)
+			fprintf(logfile, "Failed (%s)\n", strerror(errno));
+	}
+}
+
+static void MoveUserData (void)
+{
+	unsigned int	i;
+	FILE		*fh;
+	struct stat	test;
+	char	*tmp, tmp1[MAX_OSPATH], tmp2[MAX_OSPATH];
+	const char	*movefiles[] = 
+	{
+		"*.cfg",	// config files
+		"*.rc",		// config files
+		"*.dem",	// pre-recorded demos
+		"pak?.pak"	// pak files
+	};
+	const char	*movedirs[] = 
+	{
+		"quick",	// quick saves
+		"shots",	// screenshots
+		"glhexen",	// model mesh cache
+		/* these are highly unlikely, but just in case.. */
+		"maps",
+		"midi",
+		"sound",
+		"models",
+		"gfx"
+	};
+#	define NUM_MOVEFILES	(sizeof(movefiles)/sizeof(movefiles[0]))
+#	define NUM_MOVEDIRS	(sizeof(movedirs)/sizeof(movedirs[0]))
+
+	qerr_snprintf(__thisfunc__, __LINE__, tmp1, sizeof(tmp1), "%s/userdata.moved", fs_userdir);
+	if (stat(tmp1, &test) == 0)
+	{
+	/* the data should have already been moved in earlier
+	   runs:  Don't even bother doing an S_ISREG check. */
+	//	if ( S_ISREG(test.st_mode) )
+			return;
+	}
+	fh = fopen(tmp1, "wb");
+
+	Sys_Printf ("Moving user data from root of userdir to userdir/data1\n");
+
+	for (i = 0; i < NUM_MOVEFILES; i++)
+	{
+		tmp = Sys_FindFirstFile (host_parms->userdir, movefiles[i]);
+		while (tmp)
+		{
+			qerr_snprintf(__thisfunc__, __LINE__, tmp1, sizeof(tmp1), "%s/%s", host_parms->userdir, tmp);
+			qerr_snprintf(__thisfunc__, __LINE__, tmp2, sizeof(tmp2), "%s/%s", fs_userdir, tmp);
+			do_movedata (tmp1, tmp2, fh);
+			tmp = Sys_FindNextFile ();
+		}
+		Sys_FindClose ();
+	}
+
+	// move the savegames
+	for (i = 0; i < MAX_SAVEGAMES; i++)
+	{
+		qerr_snprintf(__thisfunc__, __LINE__, tmp1, sizeof(tmp1), "%s/s%u", host_parms->userdir, i);
+		if (stat(tmp1, &test) == 0)
+		{
+			if ( S_ISDIR(test.st_mode) )
+			{
+				qerr_snprintf(__thisfunc__, __LINE__, tmp2, sizeof(tmp2), "%s/s%u", fs_userdir, i);
+				do_movedata (tmp1, tmp2, fh);
+			}
+		}
+	}
+
+	// move the savegames (multiplayer)
+	for (i = 0; i < MAX_SAVEGAMES; i++)
+	{
+		qerr_snprintf(__thisfunc__, __LINE__, tmp1, sizeof(tmp1), "%s/ms%u", host_parms->userdir, i);
+		if (stat(tmp1, &test) == 0)
+		{
+			if ( S_ISDIR(test.st_mode) )
+			{
+				qerr_snprintf(__thisfunc__, __LINE__, tmp2, sizeof(tmp2), "%s/ms%u", fs_userdir, i);
+				do_movedata (tmp1, tmp2, fh);
+			}
+		}
+	}
+
+	// other dirs
+	for (i = 0; i < NUM_MOVEDIRS; i++)
+	{
+		qerr_snprintf(__thisfunc__, __LINE__, tmp1, sizeof(tmp1), "%s/%s", host_parms->userdir, movedirs[i]);
+		if (stat(tmp1, &test) == 0)
+		{
+			if ( S_ISDIR(test.st_mode) )
+			{
+				qerr_snprintf(__thisfunc__, __LINE__, tmp2, sizeof(tmp2), "%s/%s", fs_userdir, movedirs[i]);
+				do_movedata (tmp1, tmp2, fh);
+			}
+		}
+	}
+
+	if (fh)
+		fclose (fh);
+}
+#endif	/* DO_USERDIRS */
+
+/*
+================
+CheckRegistered
+
+Looks for the pop.txt file and verifies it.
+Sets the registered flag.
+================
+*/
+static int CheckRegistered (void)
+{
+	FILE		*h;
+	unsigned short	check[128];
+	int			i;
+
+	FS_OpenFile("gfx/pop.lmp", &h, false);
+
+	if (!h)
+		return -1;
+
+	fread (check, 1, sizeof(check), h);
+	fclose (h);
+
+	for (i = 0; i < 128; i++)
+	{
+		if ( pop[i] != (unsigned short)BigShort(check[i]) )
+		{
+			Sys_Printf ("Corrupted data file\n");
+			return -1;
+		}
+	}
+
+	return 0;
+}
+
+/*
 ================
 FS_Init
 ================
@@ -1663,15 +1662,13 @@ void FS_Init (void)
 	fs_base_searchpaths = fs_searchpaths;
 
 	i = COM_CheckParm ("-game");
-	if (i && !(gameflags & (GAME_REGISTERED|GAME_REGISTERED_OLD)))
+	if (i != 0)
 	{
-	// only registered versions can do -game
-		Sys_Error ("You must have the full version of Hexen II to play modified games");
-	}
-	else
-	{
-	// add basedir/gamedir as an override game
-		if (i && i < com_argc-1)
+		// only registered versions can do -game
+		if (! (gameflags & (GAME_REGISTERED|GAME_REGISTERED_OLD)))
+			Sys_Error ("You must have the full version of Hexen II to play modified games");
+		// add basedir/gamedir as an override game
+		if (i < com_argc - 1)
 			FS_Gamedir (com_argv[i+1]);
 	}
 }
