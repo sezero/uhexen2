@@ -1,7 +1,7 @@
 /*
 	menu.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/menu.c,v 1.106 2007-12-20 21:37:27 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/menu.c,v 1.107 2008-10-20 17:37:50 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -1301,6 +1301,8 @@ static void M_Save_Key (int k)
 		m_state = m_none;
 		key_dest = key_game;
 		Cbuf_AddText (va("save s%i\n", load_cursor));
+		menu_disabled_mouse = false;
+		IN_ActivateMouse ();
 		return;
 
 	case K_UPARROW:
@@ -1465,6 +1467,8 @@ static void M_MSave_Key (int k)
 		m_state = m_none;
 		key_dest = key_game;
 		Cbuf_AddText (va("save ms%i\n", load_cursor));
+		menu_disabled_mouse = false;
+		IN_ActivateMouse ();
 		return;
 
 	case K_UPARROW:
