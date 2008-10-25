@@ -21,6 +21,29 @@ wasn't linked against smpeg or libmad, then mp3 files won't be played.
 In the game, choose midi as the background music format and you'll be
 ready to go.
 
+Corresponding midi filenames for cdrom audio tracks (from 'plusminus',
+http://sourceforge.net/forum/message.php?msg_id=5443576 ):
+
+	TRACK :		Original	Portal of
+			Hexen II:	Praevus :
+	-----------------------------------------
+	track02		casa1		tulku7
+	track03		casa2		tulku1
+	track04		casa3		tulku4
+	track05		casa4		tulku2
+	track06		egyp1		tulku9
+	track07		egyp2		tulku10
+	track08		egyp3		tulku6
+	track09		meso1		tulku5
+	track10		meso2		tulku8
+	track11		meso3		tulku3
+	track12		roma1		(none)
+	track13		roma2
+	track14		roma3
+	track15		casb1
+	track16		casb2
+	track17		casb3
+
 
 --- midi_sdl.c~	2008-03-31 14:25:21.000000000 +0300
 +++ midi_sdl.c	2008-04-01 11:23:44.000000000 +0300
