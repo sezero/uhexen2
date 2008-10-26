@@ -3,6 +3,20 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2008-10-26 (CVS, 1.4.4-pre1):
+    * quakefs.[c|h]: added initial support for standalone free contents (mods).
+    * documented the standalone mod support (docs/StandaloneMods.txt)
+    * bumped the HoT version to 1.4.4-pre1, hexen2 engine version to 1.22, and
+      hexenworld engine version to 0.22.
+
+2008-10-25 (CVS):
+    * Fixed bug #2176384: In windowed mode, when you save using the menus,
+      the game quits the menu without grabbing the mouse properly.
+    * fixed a typo in h2option.h.
+    * minor re-organization in quakefs.c.
+    * external-music-file-support extra patch: documented corresponding midi
+      filenames for cdrom audio tracks.
+
 2008-10-15 (CVS):
     * utils, qbsp: constified the path arg of TEX_InitFromWad.
     * utils, qbsp: worldcraft sets the wad value to a full path. so,
