@@ -2,7 +2,7 @@
 	quakefs.h
 	Hexen II filesystem
 
-	$Id: quakefs.h,v 1.15 2007-11-14 07:27:35 sezero Exp $
+	$Id: quakefs.h,v 1.16 2008-10-26 14:00:11 sezero Exp $
 */
 
 #ifndef __QUAKEFS_H
@@ -32,6 +32,12 @@
 #define	GAME_OLD_OEM2		(1 << 15)
 
 #define	GAME_MODIFIED		(1 << 16)
+
+#define	GAME_STANDALONE		(1 << 31)
+/* standalone game requirement flags : */
+#define	GAME_WANT_PORTALS	(1 << 7)
+#define	GAME_ONLY_HEXEN2	(1 << 15)
+#define	GAME_ONLY_H2W		(1 << 16)
 
 extern	const char	*fs_basedir;
 extern	char	fs_gamedir[MAX_OSPATH];
