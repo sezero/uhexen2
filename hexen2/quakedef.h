@@ -2,7 +2,7 @@
 	quakedef.h
 	common definitions for client and server
 
-	$Id: quakedef.h,v 1.152 2008-04-04 08:30:23 sezero Exp $
+	$Id: quakedef.h,v 1.153 2008-10-26 14:02:30 sezero Exp $
 */
 
 #ifndef __QUAKEDEFS_H
@@ -13,13 +13,13 @@
 
 #define	HOT_VERSION_MAJ		1
 #define	HOT_VERSION_MID		4
-#define	HOT_VERSION_MIN		3
-#define	HOT_VERSION_REL_DATE	"2008-04-04"
-#define	HOT_VERSION_BETA	0
-#define	HOT_VERSION_BETA_STR	"final"
+#define	HOT_VERSION_MIN		4
+#define	HOT_VERSION_REL_DATE	"2008-10-26"
+#define	HOT_VERSION_BETA	1
+#define	HOT_VERSION_BETA_STR	"pre1"
 #define	HOT_VERSION_STR		STRINGIFY(HOT_VERSION_MAJ) "." STRINGIFY(HOT_VERSION_MID) "." STRINGIFY(HOT_VERSION_MIN)
 #define	GLQUAKE_VERSION		1.00
-#define	ENGINE_VERSION		1.21
+#define	ENGINE_VERSION		1.22
 #define	ENGINE_NAME		"Hexen2"
 
 #define	MAX_QPATH	64	// max length of a quake game pathname
