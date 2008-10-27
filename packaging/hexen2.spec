@@ -1,5 +1,5 @@
 # RPM spec file for RedHat and Fedora
-# $Id: hexen2.spec,v 1.56 2008-04-04 08:30:24 sezero Exp $
+# $Id: hexen2.spec,v 1.57 2008-10-27 07:00:13 sezero Exp $
 
 # build options :
 # --without alsa: build without alsa audio support
@@ -25,17 +25,17 @@
 
 # pre-release version: MAKE SURE to change this
 # to an %undefine for the final realease!!
-%undefine prerelease
+%define prerelease	pre1
 
 # package release number for final-release:
 %define pkg_final	1
 # package release number for pre-release:
-%define pkg_prerel	3
+%define pkg_prerel	1
 
 Name:		hexen2
 License:	GPL
 Group:		Amusements/Games
-Version:	1.4.3
+Version:	1.4.4
 Release:	%{?prerelease:0.%{pkg_prerel}.%{prerelease}}%{!?prerelease:%{pkg_final}}
 Summary:	Hexen II: Hammer of Thyrion
 URL:		http://uhexen2.sourceforge.net/
@@ -162,6 +162,8 @@ utils/bin/hcc -src gamecode-%{gamecode_ver}/hc/hw -oi -on
 %{__install} -D -m644 docs/README.hwcl %{buildroot}/%{_prefix}/games/%{name}/docs/README.hwcl
 %{__install} -D -m644 docs/README.hwsv %{buildroot}/%{_prefix}/games/%{name}/docs/README.hwsv
 %{__install} -D -m644 docs/README.hwmaster %{buildroot}/%{_prefix}/games/%{name}/docs/README.hwmaster
+%{__install} -D -m644 docs/SrcNotes.txt %{buildroot}/%{_prefix}/games/%{name}/docs/SrcNotes.txt
+%{__install} -D -m644 docs/StandaloneMods.txt %{buildroot}/%{_prefix}/games/%{name}/docs/StandaloneMods.txt
 %{__install} -D -m644 docs/ReleaseNotes-%{version} %{buildroot}/%{_prefix}/games/%{name}/docs/ReleaseNotes-%{version}
 # install release notes for the older versions
 %{__install} -D -m644 docs/ReleaseNotes-1.2.3 %{buildroot}/%{_prefix}/games/%{name}/docs/ReleaseNotes-1.2.3
@@ -170,6 +172,7 @@ utils/bin/hcc -src gamecode-%{gamecode_ver}/hc/hw -oi -on
 %{__install} -D -m644 docs/ReleaseNotes-1.4.0 %{buildroot}/%{_prefix}/games/%{name}/docs/ReleaseNotes-1.4.0
 %{__install} -D -m644 docs/ReleaseNotes-1.4.1 %{buildroot}/%{_prefix}/games/%{name}/docs/ReleaseNotes-1.4.1
 %{__install} -D -m644 docs/ReleaseNotes-1.4.1 %{buildroot}/%{_prefix}/games/%{name}/docs/ReleaseNotes-1.4.2
+%{__install} -D -m644 docs/ReleaseNotes-1.4.1 %{buildroot}/%{_prefix}/games/%{name}/docs/ReleaseNotes-1.4.3
 
 # Install the gamedata
 %{__mkdir_p} %{buildroot}/%{_prefix}/games/%{name}/data1/
@@ -266,6 +269,8 @@ desktop-file-install \
 %{_prefix}/games/%{name}/docs/README.launcher
 %{_prefix}/games/%{name}/docs/README.3dfx
 %{_prefix}/games/%{name}/docs/TODO
+%{_prefix}/games/%{name}/docs/SrcNotes.txt
+%{_prefix}/games/%{name}/docs/StandaloneMods.txt
 %{_prefix}/games/%{name}/docs/ReleaseNotes-%{version}
 %{_prefix}/games/%{name}/docs/ReleaseNotes-1.2.3
 %{_prefix}/games/%{name}/docs/ReleaseNotes-1.2.4a
@@ -273,6 +278,7 @@ desktop-file-install \
 %{_prefix}/games/%{name}/docs/ReleaseNotes-1.4.0
 %{_prefix}/games/%{name}/docs/ReleaseNotes-1.4.1
 %{_prefix}/games/%{name}/docs/ReleaseNotes-1.4.2
+%{_prefix}/games/%{name}/docs/ReleaseNotes-1.4.3
 %{!?_without_freedesktop:%{_datadir}/applications/%{desktop_vendor}-%{name}.desktop}
 %{?_without_freedesktop:%{_sysconfdir}/X11/applnk/Games/%{name}.desktop}
 
@@ -291,6 +297,9 @@ desktop-file-install \
 %{_prefix}/games/%{name}/docs/README.hwmaster
 
 %changelog
+* Mon Oct 27 2008 O.Sezer <sezero@users.sourceforge.net> 1.4.4-0.1.pre1
+- 1.4.4-pre1 (new prerelease version)
+
 * Fri Apr 04 2008 O.Sezer <sezero@users.sourceforge.net> 1.4.3-1
 - 1.4.3-final.
 
