@@ -1,0 +1,33 @@
+Hexen II: Hammer of Thyrion (uhexen2), CVS snapshot, Oct. 26, 2008.
+Version 1.4.4-pre1
+
+Changes since the HoT-1.4.3 release:
+
+* bumped the hexen2 engine version to 1.22, and hexenworld engine version
+  to 0.22.
+* added initial support for standalone free contents (mods). see the file
+  docs/StandaloneMods.txt for details.
+* stricter checking on the values pulled out of .wav file chunk headers.
+* renamed model_t to qmodel_t in order to avoid conflicts on solaris.
+* fixed 'array going out-of-bounds' (utils/map.c) and bogus 'maybe used
+  uninitialized' warnings (sbar.c) from gcc-4.3.
+* fixes to the SVGALib driver. it is functional now.
+* fixed bug #2176384: in windowed mode, when you save using the menus, the game
+  used to quit the menu without grabbing the mouse properly.
+* utils, qbsp: accept more than one wad file specified in the value of the
+  "wad" key. the wad file names must be separated by a semicolon. spaces are
+  allowed in the file names. quoted paths aren't allowed.
+* utils, qbsp: the absolute paths in wad values are not touched, ie. the paths
+  beginning with a '/' on unix or with a drive specifying string like
+  "C:\foo\bar.wad" on windows. all other values with no path information or
+  relative path information are prefixed with the project path. this fixes the
+  issues reported for qbsp usage from within worldcraft.
+* increased the buffersize for sdl audio. made it to print a little more
+  detailed info at startup.
+* added an extra test patch to support midi when using sdl audio. the patch is
+  an extra patch (in 00_Patches, not actually applied.)
+* other minor fixes.
+* added back some unused code for future reference.  removed some truly dead
+  code.
+* minor documentation tidy-ups.
+
