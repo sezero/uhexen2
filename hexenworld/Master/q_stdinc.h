@@ -6,7 +6,7 @@
 		for byte order use q_endian.h,
 		for math stuff use mathlib.h.
 
-	$Id: q_stdinc.h,v 1.3 2008-01-10 21:25:08 sezero Exp $
+	$Id: q_stdinc.h,v 1.4 2008-10-31 14:44:34 sezero Exp $
 
 	Copyright (C) 1996-1997  Id Software, Inc.
 	Copyright (C) 2007-2008  O.Sezer <sezero@users.sourceforge.net>
@@ -100,6 +100,12 @@ COMPILE_TIME_ASSERT(long, sizeof(long) >= 4);
 COMPILE_TIME_ASSERT(int, sizeof(int) == 4);
 COMPILE_TIME_ASSERT(short, sizeof(short) == 2);
 
+/* make sure enums are the size of ints for structure packing */
+typedef enum {
+	THE_DUMMY_VALUE
+} THE_DUMMY_ENUM;
+COMPILE_TIME_ASSERT(enum, sizeof(THE_DUMMY_ENUM) == sizeof(int));
+
 
 /*==========================================================================*/
 
@@ -108,9 +114,15 @@ typedef unsigned char		byte;
 #undef true
 #undef false
 #if defined(__cplusplus)
-typedef bool	qboolean;
+/* do NOT use the bool of C++ because some structures have boolean and they
+ * expect it to be 4 bytes long. as a hack, typedef it as int. */
+/* DO HOPE that the compiler built-ins for true and false are 1 and 0 ... */
+typedef int	qboolean;
 #else
-typedef	enum	{false, true} qboolean;
+typedef enum {
+	false = 0,
+	true  = 1
+} qboolean;
 #endif
 
 
