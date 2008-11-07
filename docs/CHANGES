@@ -3,6 +3,17 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2008-10-31 (CVS):
+    * compiler defs: Provide a substitute for offsetof() if we don't have
+      one.  make sure __i386__ is defined if __386__ is defined.
+    * added compile time asserts to make sure enums are the size of ints for
+      structure packing (stolen from SDL headers.)
+    * do NOT use the bool of C++ because some structures have boolean and they
+      expect it to be 4 bytes long. as a hack, typedef it as int: this fixes the
+      broken software renderer binaries from c++ compilers with x86-asm enabled.
+    * P.S. : in case of c++ compilers, DO HOPE that the compiler built-ins for
+      true and false are 1 and 0 ;)
+
 2008-10-26 (CVS, 1.4.4-pre1):
     * quakefs.[c|h]: added initial support for standalone free contents (mods).
     * documented the standalone mod support (docs/StandaloneMods.txt)
