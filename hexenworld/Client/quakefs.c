@@ -2,7 +2,7 @@
 	quakefs.c
 	Hexen II filesystem
 
-	$Id: quakefs.c,v 1.45 2008-10-26 14:00:12 sezero Exp $
+	$Id: quakefs.c,v 1.46 2008-11-07 18:40:35 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -1502,7 +1502,35 @@ static int CheckRegistered (void)
 FS_Init
 ================
 */
-void FS_InitRaven (void)
+static void FS_InitRaven (void);
+static void FS_InitStandalone (void);
+
+void FS_Init (void)
+{
+	if (!COM_CheckParm ("-standalone"))
+	{
+		FS_InitRaven();
+	}
+	else
+	{
+		int		i;
+
+		i = COM_CheckParm ("-basegame");
+		if (i == 0)
+			Sys_Error ("standalone games require a valid -bagegame argument");
+		if (i >= com_argc - 1)
+			Sys_Error ("-basegame requires a valid game directory name as argument");
+		qerr_strlcpy (__thisfunc__, __LINE__, fs_dirstdalone, com_argv[i + 1], sizeof(fs_dirstdalone));
+		// check for reserved directory names:
+		if (!q_strcasecmp(fs_dirstdalone, "data1") ||
+		    !q_strcasecmp(fs_dirstdalone, "portals") ||
+		    !q_strcasecmp(fs_dirstdalone, "hw"))
+			Sys_Error ("standalone game shouldn't use a reserved directory name (%s)", fs_dirstdalone);
+		FS_InitStandalone();
+	}
+}
+
+static void FS_InitRaven (void)
 {
 	int		i;
 	char		temp[32];
@@ -1705,7 +1733,7 @@ void FS_InitRaven (void)
 	}
 }
 
-void FS_InitStandalone (void)
+static void FS_InitStandalone (void)
 {
 	int		i;
 	char	*flagstring;
@@ -1762,7 +1790,7 @@ void FS_InitStandalone (void)
 			FS_Gamedir (com_argv[i+1]);
 	}
 
-	flagstring = (char *)FS_LoadMallocFile ("stdalone.flg");
+	flagstring = (char *)FS_LoadZoneFile ("stdalone.flg", Z_MAINZONE);
 	if (!flagstring)
 	{
 		flags = 0;
@@ -1776,7 +1804,7 @@ void FS_InitStandalone (void)
 		{
 			gameflags |= GAME_PORTALS;
 		}
-		free (flagstring);
+		Z_Free (flagstring);
 	}
 #if defined(H2W)
 	gameflags |= GAME_HEXENWORLD;
@@ -1788,31 +1816,5 @@ void FS_InitStandalone (void)
 	if (sv_protocol == PROTOCOL_RAVEN_111 && flags & GAME_PORTALS)
 		Sys_Error ("Old protocol requested but the game requires mission pack support.");
 #endif	/* H2W */
-}
-
-void FS_Init (void)
-{
-	int		i;
-
-	i = COM_CheckParm ("-standalone");
-	if (i == 0)
-	{
-		FS_InitRaven();
-	}
-	else
-	{
-		i = COM_CheckParm ("-basegame");
-		if (i == 0)
-			Sys_Error ("standalone games require a valid -bagegame argument");
-		if (i >= com_argc - 1)
-			Sys_Error ("-basegame requires a valid game directory name as argument");
-		qerr_strlcpy (__thisfunc__, __LINE__, fs_dirstdalone, com_argv[i + 1], sizeof(fs_dirstdalone));
-		// check for reserved directory names:
-		if (!q_strcasecmp(fs_dirstdalone, "data1") ||
-		    !q_strcasecmp(fs_dirstdalone, "portals") ||
-		    !q_strcasecmp(fs_dirstdalone, "hw"))
-			Sys_Error ("standalone game shouldn't use a reserved directory name (%s)", fs_dirstdalone);
-		FS_InitStandalone();
-	}
 }
 
