@@ -1,6 +1,6 @@
 /*
 	writebsp.c
-	$Id: writebsp.c,v 1.15 2008-10-15 07:10:31 sezero Exp $
+	$Id: writebsp.c,v 1.16 2008-11-07 18:02:42 sezero Exp $
 */
 
 #include "q_stdinc.h"
@@ -396,31 +396,32 @@ static void TEX_InitFromWad (const char *path)
 static qboolean TEX_InitWads (void)
 {
 	int		c = 0;
-	const char	*str;
+	const char	*path;
 	char	fullpath[1024];
-	char	*path, *mark, *tmp;
+	char	*mark, *tmp;
 
-	str = ValueForKey (&entities[0], "wad");
-	if (!str || !str[0])
+	path = ValueForKey (&entities[0], "wad");
+	if (!path || !path[0])
 		goto nowad;
 
-	path = strdup (str);
-	str = path;
-
-	while (*path && (*path == ';' || *path == ' ' || *path == '\t'))
+	/* qbsp now accepts more than one wad file specified in the value
+	 * of the wad key (feature requested by leileilol):  the file
+	 * names must be separated by a semicolon.  spaces are allowed,
+	 * quoted paths aren't allowed.
+	 */
+	while (*path == ';' || *path == ' ' || *path == '\t')
 		path++;
 	if (!path[0])
-	{
-		free ((void *)str);
 		goto nowad;
-	}
 
 	do
 	{
-		mark = strchr (path, ';');
-		if (mark)
-			*mark = '\0';
-		/* worldcraft uses an absolute path: */
+	/* worldcraft uses an absolute path (reported by 'leileilol'):
+	 * so don't touch absolute path values, ie. the paths beginning
+	 * with a '/' on unix or with a drive specified string like C:
+	 * on windows. all other values with relative or no path path
+	 * information are prefixed with the project path as usual.
+	 */
 		if (*path == '/')
 			tmp = fullpath;
 #  ifdef PLATFORM_WINDOWS
@@ -432,11 +433,9 @@ static qboolean TEX_InitWads (void)
 #  endif /* WINDOWS */
 		else	/* relative path or no path. */
 		{
-			sprintf (fullpath, "%s", projectpath);
+			strcpy (fullpath, projectpath);
 			tmp = strchr (fullpath, '\0');
 		}
-		if (mark)
-			*mark = ';';
 		mark = tmp;
 		while (*path && *path != ';')
 			*tmp++ = *path++;
@@ -448,11 +447,10 @@ static qboolean TEX_InitWads (void)
 			TEX_InitFromWad (fullpath);
 			c++;
 		}
-		while (*path && (*path == ';' || *path == ' ' || *path == '\t'))
+		while (*path == ';' || *path == ' ' || *path == '\t')
 			path++;
 	} while (*path);
 
-	free ((void *)str);
 	if (c != 0)
 		return true;
 
