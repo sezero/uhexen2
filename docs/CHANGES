@@ -3,11 +3,12 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
-2008-11-07 (CVS):
+2008-11-08 (CVS, 1.4.4-pre2):
     * quakefs.c: small tidy-up for FS_Init() procedures.
     * qbsp (writebsp.c): cleaned up TEX_InitWads() after the recent multi-wadfile
       changes and documented it.
     * StandaloneMods.txt: minor clarification.
+    * bumped the HoT version to 1.4.4-pre2.
 
 2008-10-31 (CVS):
     * compiler defs: Provide a substitute for offsetof() if we don't have

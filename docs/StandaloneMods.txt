@@ -1,7 +1,7 @@
 Hexen II: Hammer of Thyrion
 Support for Standalone Free contents
 
-[STATUS:  H.o.T. version 1.4.4-pre1 (2008-11-07),
+[STATUS:  H.o.T. version 1.4.4-pre2 (2008-11-08),
 	  Engine version 1.22 ]
 
 
