@@ -1,5 +1,5 @@
 # RPM spec file for RedHat and Fedora
-# $Id: hexen2.spec,v 1.58 2008-11-08 09:18:10 sezero Exp $
+# $Id: hexen2.spec,v 1.59 2008-11-11 07:54:34 sezero Exp $
 
 # build options :
 # --without alsa: build without alsa audio support
@@ -163,7 +163,6 @@ utils/bin/hcc -src gamecode-%{gamecode_ver}/hc/hw -oi -on
 %{__install} -D -m644 docs/README.hwsv %{buildroot}/%{_prefix}/games/%{name}/docs/README.hwsv
 %{__install} -D -m644 docs/README.hwmaster %{buildroot}/%{_prefix}/games/%{name}/docs/README.hwmaster
 %{__install} -D -m644 docs/SrcNotes.txt %{buildroot}/%{_prefix}/games/%{name}/docs/SrcNotes.txt
-%{__install} -D -m644 docs/StandaloneMods.txt %{buildroot}/%{_prefix}/games/%{name}/docs/StandaloneMods.txt
 %{__install} -D -m644 docs/ReleaseNotes-%{version} %{buildroot}/%{_prefix}/games/%{name}/docs/ReleaseNotes-%{version}
 # install release notes for the older versions
 %{__install} -D -m644 docs/ReleaseNotes-1.2.3 %{buildroot}/%{_prefix}/games/%{name}/docs/ReleaseNotes-1.2.3
@@ -270,7 +269,6 @@ desktop-file-install \
 %{_prefix}/games/%{name}/docs/README.3dfx
 %{_prefix}/games/%{name}/docs/TODO
 %{_prefix}/games/%{name}/docs/SrcNotes.txt
-%{_prefix}/games/%{name}/docs/StandaloneMods.txt
 %{_prefix}/games/%{name}/docs/ReleaseNotes-%{version}
 %{_prefix}/games/%{name}/docs/ReleaseNotes-1.2.3
 %{_prefix}/games/%{name}/docs/ReleaseNotes-1.2.4a
