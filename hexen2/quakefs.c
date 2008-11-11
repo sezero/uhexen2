@@ -2,7 +2,7 @@
 	quakefs.c
 	Hexen II filesystem
 
-	$Id: quakefs.c,v 1.46 2008-11-07 18:40:35 sezero Exp $
+	$Id: quakefs.c,v 1.47 2008-11-11 07:51:17 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -54,8 +54,6 @@ unsigned int	gameflags;
 
 cvar_t	oem = {"oem", "0", CVAR_ROM};
 cvar_t	registered = {"registered", "0", CVAR_ROM};
-
-static char	fs_dirstdalone[MAX_QPATH];	// game dir for standalone games
 
 typedef struct
 {
@@ -211,7 +209,7 @@ static pack_t *FS_LoadPackFile (const char *packfile, int paknum, qboolean base_
 		CRC_ProcessByte (&crc, ((byte *)info)[i]);
 
 // check for modifications
-	if (!(gameflags & GAME_STANDALONE) && base_fs && paknum < (int)MAX_PAKDATA)
+	if (base_fs && paknum < (int)MAX_PAKDATA)
 	{
 		if (strcmp(fs_gamedir_nopath, pakdata[paknum].dirname) != 0)
 		{
@@ -475,10 +473,6 @@ void FS_Gamedir (const char *dir)
 // check for reserved gamedirs
 	if (!q_strcasecmp(dir, "hw"))
 	{
-	// standalone games don't touch Raven directories and they
-	// don't have an additional directory for hexenworld, either.
-		if (gameflags & GAME_STANDALONE)
-			return;	// don't even bother for a message.
 #if !defined(H2W)
 	// hw is reserved for hexenworld only. hexen2 shouldn't use it
 		Sys_Printf ("WARNING: Gamedir not set to hw :\n"
@@ -516,31 +510,6 @@ void FS_Gamedir (const char *dir)
 	// as for hexen2, it can only reach here by a silly
 	// command line argument like -game data1, ignore it.
 		return;
-	}
-	else if (gameflags & GAME_STANDALONE && !q_strcasecmp(dir, fs_dirstdalone))
-	{
-#if !defined(H2W)
-	// same as the data1 above, but for standalone mods.
-		return;
-#else
-	// Standalone mods don't have an additional directory for hw.
-	// that we reached here means the hw server decided to abandon
-	// whatever the previous mod it was running and went back to
-	// pure hw. weird.. do as he wishes anyway and adjust our variables.
-		qerr_snprintf(__thisfunc__, __LINE__, fs_gamedir, sizeof(fs_gamedir),
-						"%s/%s", fs_basedir, fs_dirstdalone);
-#    if DO_USERDIRS
-		qerr_snprintf(__thisfunc__, __LINE__, fs_userdir, sizeof(fs_userdir),
-						"%s/%s", host_parms->userdir, fs_dirstdalone);
-#    else
-		qerr_strlcpy (__thisfunc__, __LINE__, fs_userdir, fs_gamedir, sizeof(fs_userdir));
-#    endif
-#    if defined(SERVERONLY)
-	// change the *gamedir serverinfo properly
-		Info_SetValueForStarKey (svs.info, "*gamedir", fs_dirstdalone, MAX_SERVERINFO_STRING);
-#    endif
-		return;
-#endif	/* H2W */
 	}
 	else
 	{
@@ -942,7 +911,7 @@ size_t FS_OpenFile (const char *filename, FILE **file, qboolean override_pack)
 		{
 	// check a file in the directory tree
 #if !defined(H2W)
-			if (!(gameflags & (GAME_REGISTERED|GAME_REGISTERED_OLD|GAME_STANDALONE)) && !override_pack)
+			if (!(gameflags & (GAME_REGISTERED|GAME_REGISTERED_OLD)) && !override_pack)
 			{	// if not a registered version, don't ever go beyond base
 				if ( strchr (filename, '/') || strchr (filename,'\\'))
 					continue;
@@ -1502,35 +1471,7 @@ static int CheckRegistered (void)
 FS_Init
 ================
 */
-static void FS_InitRaven (void);
-static void FS_InitStandalone (void);
-
 void FS_Init (void)
-{
-	if (!COM_CheckParm ("-standalone"))
-	{
-		FS_InitRaven();
-	}
-	else
-	{
-		int		i;
-
-		i = COM_CheckParm ("-basegame");
-		if (i == 0)
-			Sys_Error ("standalone games require a valid -bagegame argument");
-		if (i >= com_argc - 1)
-			Sys_Error ("-basegame requires a valid game directory name as argument");
-		qerr_strlcpy (__thisfunc__, __LINE__, fs_dirstdalone, com_argv[i + 1], sizeof(fs_dirstdalone));
-		// check for reserved directory names:
-		if (!q_strcasecmp(fs_dirstdalone, "data1") ||
-		    !q_strcasecmp(fs_dirstdalone, "portals") ||
-		    !q_strcasecmp(fs_dirstdalone, "hw"))
-			Sys_Error ("standalone game shouldn't use a reserved directory name (%s)", fs_dirstdalone);
-		FS_InitStandalone();
-	}
-}
-
-static void FS_InitRaven (void)
 {
 	int		i;
 	char		temp[32];
@@ -1731,90 +1672,5 @@ static void FS_InitRaven (void)
 		if (i < com_argc - 1)
 			FS_Gamedir (com_argv[i+1]);
 	}
-}
-
-static void FS_InitStandalone (void)
-{
-	int		i;
-	char	*flagstring;
-	unsigned int	flags;
-
-	gameflags |= GAME_STANDALONE;
-
-	Cvar_RegisterVariable (&oem);
-	Cvar_RegisterVariable (&registered);
-
-	Cmd_AddCommand ("path", FS_Path_f);
-#if !defined(SERVERONLY)
-	Cmd_AddCommand ("maplist", FS_Maplist_f);
-#endif	/* SERVERONLY */
-
-	i = COM_CheckParm ("-basedir");
-	if (i && i < com_argc-1)
-	{
-		fs_basedir = com_argv[i+1];
-		Sys_Printf ("%s: basedir changed to: %s\n", __thisfunc__, fs_basedir);
-	}
-	else
-	{
-		fs_basedir = host_parms->basedir;
-	}
-
-	qerr_strlcpy(__thisfunc__, __LINE__, fs_userdir, host_parms->userdir, sizeof(fs_userdir));
-
-	qerr_snprintf(__thisfunc__, __LINE__, fs_userdir, sizeof(fs_userdir), "%s/%s", host_parms->userdir, fs_dirstdalone);
-#if DO_USERDIRS
-	Sys_mkdir (fs_userdir, true);
-#endif
-	FS_AddGameDirectory (va("%s/%s", fs_basedir, fs_dirstdalone), true);
-
-	// force-add the registered flags:
-	registered.flags &= ~CVAR_ROM;
-	Cvar_SetValue ("registered", 1);
-	registered.flags |= CVAR_ROM;
-	gameflags |= GAME_REGISTERED;
-	Sys_Printf ("Playing standalone/mod version.\n");
-
-// this is the end of our base searchpath:
-// any set gamedirs, such as those from -game commandline
-// arguments, from exec'ed configs or the ones dictated by
-// the server, will be freed up to here upon a new gamedir
-// command
-	fs_base_searchpaths = fs_searchpaths;
-
-	i = COM_CheckParm ("-game");
-	if (i != 0)
-	{
-		// add basedir/gamedir as an override game
-		if (i < com_argc - 1)
-			FS_Gamedir (com_argv[i+1]);
-	}
-
-	flagstring = (char *)FS_LoadZoneFile ("stdalone.flg", Z_MAINZONE);
-	if (!flagstring)
-	{
-		flags = 0;
-		Sys_Printf ("Warning: couldn't load standalone game flags\n");
-	}
-	else
-	{
-		// see which game modes it requires :
-		flags = (unsigned int) atoi(flagstring);
-		if (flags & GAME_WANT_PORTALS)
-		{
-			gameflags |= GAME_PORTALS;
-		}
-		Z_Free (flagstring);
-	}
-#if defined(H2W)
-	gameflags |= GAME_HEXENWORLD;
-	if (flags & GAME_ONLY_HEXEN2)
-		Sys_Error ("This standalone game cannot be run with HexenWorld");
-#else
-	if (flags & GAME_ONLY_H2W)
-		Sys_Error ("This standalone game is for HexenWorld only.");
-	if (sv_protocol == PROTOCOL_RAVEN_111 && flags & GAME_PORTALS)
-		Sys_Error ("Old protocol requested but the game requires mission pack support.");
-#endif	/* H2W */
 }
 
