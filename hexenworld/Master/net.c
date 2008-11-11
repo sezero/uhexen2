@@ -2,7 +2,7 @@
 	net_udp.c
 	network UDP driver
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Master/net.c,v 1.37 2007-12-21 15:05:23 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Master/net.c,v 1.38 2008-11-11 07:35:28 sezero Exp $
 */
 
 #include "q_stdinc.h"
@@ -199,7 +199,7 @@ static int UDP_OpenSocket (int port)
 {
 	int	i, newsocket;
 	struct sockaddr_in	address;
-	unsigned long _true = true;
+	unsigned long _true = 1;
 
 	if ((newsocket = socket (PF_INET, SOCK_DGRAM, IPPROTO_UDP)) == -1)
 		Sys_Error ("%s: socket: %s", __thisfunc__, strerror(errno));
