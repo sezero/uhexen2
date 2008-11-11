@@ -3,6 +3,17 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2008-11-11 (CVS):
+    * Makefiles: from now on, 3dfx gamme hacks are disabled by default at compile
+      time.
+    * hexenworld, net*.c: don't assign 'true' to a non-boolean variable.
+    * reverted the standalone free contents support changes from mainstream. it is
+      incomplete and it isn't coming along fast enough. the mainstream code will
+      be kept clean and the relevant code will be provided as an extra patch.
+    * added initial support for standalone free contents (mods) as an extra patch.
+    * updated the rpm spec file.
+    * updated release notes for HoT-1.4.4.
+
 2008-11-08 (CVS, 1.4.4-pre2):
     * quakefs.c: small tidy-up for FS_Init() procedures.
     * qbsp (writebsp.c): cleaned up TEX_InitWads() after the recent multi-wadfile
