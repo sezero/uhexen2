@@ -202,7 +202,8 @@ launcher, as well.
 
 If you run HoT-1.4.0 and newer versions with -3dfxgamma command-line
 argument, some 3dfx specific hacks will be searched and activated for
-brightness control. This option is also available on the launcher.
+brightness control (make sure that you enable that option in the Makefile
+when compiling). This option is also available on the launcher.
 
 6.  Using the fxMesa opengl library for other games:
 ----------------------------------------------------
