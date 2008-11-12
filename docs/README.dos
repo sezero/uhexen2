@@ -56,16 +56,20 @@ NOTES:
 * MOUSE: The driver that came with your mouse must be running.  In
   order to disable mouse, use the command line argument -nomouse.
   "CuteMouse" is recommended as a DOS mouse driver. CuteMouse official
-  homepage is at  http://cutemouse.sourceforge.net/ , but the latest
-  versions are listed at:
+  homepage is at  http://cutemouse.sourceforge.net/ , you can also
+  check here:
   http://www.ibiblio.org/pub/micro/pc-stuff/freedos/files/dos/mouse/
 
 * MOUSE WHEEL:  If you use the latest beta version of cutemouse, which
-  is 2.1b3 (ctmouse21b3.zip), the wheel should work nicely.  Since this
-  is technically an experimental feature, you must run the game using
-  the -mwheel command line argument, such as:
+  is 2.1b3 (ctmouse21b3.zip), the wheel should work nicely. We tested
+  with the 2.0-alpha and 2.1-beta versions.  Since this is technically
+  an experimental feature, you must run the game using the "-mwheel"
+  command line argument, such as:
 
 	h2dos -mwheel
+
+  Note: Since cutemouse 2.1 beta 4 version (cutemouse21b4.zip), the
+  wheel is not enabled by default: you must use their /O switch.
 
 * SOUND:  You must install the DOS drivers for your sound card.  For
   sound blaster emulation, the BLASTER environment variable must be set.
