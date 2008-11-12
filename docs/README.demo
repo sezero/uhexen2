@@ -158,7 +158,8 @@ use the "xgamma" utility: Here is the script I use for xgamma:
     xgamma -q -gamma 1;         # restore old brightness
 
 3dfx Voodoo1 and Voodoo2 users can employ the -3dfxgamma command line
-switch to activate native 3dfx gamma controls.
+switch to activate native 3dfx gamma controls (make sure that you enable
+that option in the Makefile when compiling).
 
 
 1.4 Sound and Midi
