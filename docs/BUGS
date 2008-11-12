@@ -10,6 +10,17 @@ Known Bugs
   partially or completely. If you suffer from that problem, use Alsa
   or SDL sound.
 
+- BUG # 2176023: Can't move backwards after dying:
+  http://sourceforge.net/tracker/?func=detail&aid=2176023&group_id=124987&atid=701006
+  Die, auto-reload and can't move backwards; probably can't use some
+  artifacts such as the tome of power or the torch, either. The problem
+  seems to have stuck in the savegame. This is reported for the mission
+  pack; validity for the original Hexen II is unknown; whether this is
+  a bug in the engine or a bug in the HCode (progs) is unknown. Raven's
+  original bugs.txt file lists an issue of "Tome of Power (use/die/can't
+  use)" with a status of "CNR" (can't reproduce) and it seems related to
+  this one.  To be analyzed.
+
 - Software renderer, C-only code, 64 bit: amd64 DEBUG builds (with all
   optimizations turned off) may not draw some objects depending on the
   viewpoint of the player, e.g. the trees are virtually always missing
