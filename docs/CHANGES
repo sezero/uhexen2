@@ -3,6 +3,15 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2008-11-15 (CVS):
+    * updated the list of known bugs.
+    * minor documentation updates.
+    * killed MoveUserData: it used to be there in order to provide compatibility
+      with user directories from HoT-1.4.0 and earlier but they are ancient history
+      now.
+    * re-diff'ed the StandaloneMods extra patch.
+    * updated the beta version timestamp (2008-11-15.)
+
 2008-11-11 (CVS):
     * Makefiles: from now on, 3dfx gamme hacks are disabled by default at compile
       time.
