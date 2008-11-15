@@ -74,7 +74,7 @@ diff -urNp uhexen2/hexen2/quakefs.c.orig uhexen2/hexen2/quakefs.c
  			{	// if not a registered version, don't ever go beyond base
  				if ( strchr (filename, '/') || strchr (filename,'\\'))
  					continue;
-@@ -1471,8 +1502,36 @@ static int CheckRegistered (void)
+@@ -1338,8 +1369,36 @@ static int CheckRegistered (void)
  FS_Init
  ================
  */
@@ -111,7 +111,7 @@ diff -urNp uhexen2/hexen2/quakefs.c.orig uhexen2/hexen2/quakefs.c
  	int		i;
  	char		temp[32];
  	qboolean	check_portals = false;
-@@ -1674,3 +1733,88 @@ void FS_Init (void)
+@@ -1537,3 +1596,88 @@ void FS_Init (void)
  	}
  }
  
@@ -289,7 +289,7 @@ diff -urNp uhexen2/hexenworld/Client/quakefs.c.orig uhexen2/hexenworld/Client/qu
  			{	// if not a registered version, don't ever go beyond base
  				if ( strchr (filename, '/') || strchr (filename,'\\'))
  					continue;
-@@ -1471,8 +1502,36 @@ static int CheckRegistered (void)
+@@ -1338,8 +1369,36 @@ static int CheckRegistered (void)
  FS_Init
  ================
  */
@@ -326,7 +326,7 @@ diff -urNp uhexen2/hexenworld/Client/quakefs.c.orig uhexen2/hexenworld/Client/qu
  	int		i;
  	char		temp[32];
  	qboolean	check_portals = false;
-@@ -1674,3 +1733,88 @@ void FS_Init (void)
+@@ -1537,3 +1596,88 @@ void FS_Init (void)
  	}
  }
  
