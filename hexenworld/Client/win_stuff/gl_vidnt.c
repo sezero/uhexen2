@@ -1,6 +1,6 @@
 /*
 	gl_vidnt.c -- NT GL vid component
-	$Id: gl_vidnt.c,v 1.123 2008-03-06 21:35:28 sezero Exp $
+	$Id: gl_vidnt.c,v 1.124 2008-11-17 22:12:28 sezero Exp $
 */
 
 #define	__GL_FUNC_EXTERN
@@ -345,7 +345,7 @@ set_size:
 			(float)modelist[vid_modenum].width/vid.conwidth, vid.conwidth, vid.conheight);
 }
 
-char *VID_ReportConsize (void)
+const char *VID_ReportConsize (void)
 {
 	return vid_consize;
 }
