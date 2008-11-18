@@ -1,11 +1,11 @@
 Hexen II: Hammer of Thyrion (uhexen2), CVS snapshot / pre-release,
-Version 1.4.4-pre2 / Nov. 15, 2008.
+Version 1.4.4-pre3 / Nov. 18, 2008.
 
 Changes since the HoT-1.4.3 release:
 
 * bumped the hexen2 engine version to 1.22, and hexenworld engine version
   to 0.22.
-* fixed the broken software renderer binaries from c++ compilers with x86
+* fixed the broken software renderer binaries from C++ compilers with x86
   assembly enabled (do not use the bool keyword of C++).
 * stricter checking on the values pulled out of .wav file chunk headers.
 * renamed model_t to qmodel_t in order to avoid conflicts on solaris.
@@ -16,7 +16,7 @@ Changes since the HoT-1.4.3 release:
   used to quit the menu without grabbing the mouse properly.
 * increased the buffersize for sdl audio. made it to print a little more
   detailed info at startup.
-* 3dfx gamme hacks are disabled by default at compile time (see the Makefile).
+* 3dfx gamma hacks are disabled by default at compile time (see the Makefile).
 * killed compatibility with user directories from HoT-1.4.0 and earlier which
   didn't operate with a data1 subdirectory. they are ancient history now.
 * added initial support for standalone free contents (mods) as an extra patch.
