@@ -2,7 +2,7 @@
 	glquake.h
 	common glquake header
 
-	$Id: glquake.h,v 1.83 2008-04-22 13:06:06 sezero Exp $
+	$Id: glquake.h,v 1.84 2008-11-18 20:35:03 sezero Exp $
 */
 
 
@@ -295,7 +295,11 @@ void GL_EndRendering (void);
 
 void GL_Set2D (void);
 
-GLuint GL_LoadTexture (const char *identifier, int width, int height, byte *data, qboolean mipmap, qboolean alpha, int mode, qboolean rgba);
+GLuint GL_LoadTexture (const char *identifier,
+			int width, int height,
+			byte *data,
+			qboolean mipmap, qboolean alpha,
+			int mode, qboolean rgba);
 GLuint GL_LoadPicTexture (qpic_t *pic);
 void D_ClearOpenGLTextures (int last_tex);
 
