@@ -5,7 +5,7 @@
 	models are the only shared resource between a client and server
 	running on the same machine.
 
-	$Id: gl_model.c,v 1.52 2008-04-22 13:06:10 sezero Exp $
+	$Id: gl_model.c,v 1.53 2008-11-18 20:23:16 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -1940,7 +1940,6 @@ skin_too_large:
 	return NULL;	// silence warnings
 }
 
-
 //=========================================================================
 
 static void Mod_SetAliasModelExtraFlags (qmodel_t *mod)
@@ -2464,7 +2463,7 @@ static void Mod_LoadAliasModel (qmodel_t *mod, void *buffer)
 
 		for (j = 0; j < 3; j++)
 		{
-			triangles[i].vertindex[j] =	LittleLong (pintriangles[i].vertindex[j]);
+			triangles[i].vertindex[j] = (unsigned short)LittleLong (pintriangles[i].vertindex[j]);
 			triangles[i].stindex[j]	  = triangles[i].vertindex[j];
 		}
 	}
@@ -2543,7 +2542,7 @@ static void *Mod_LoadSpriteFrame (void *pin, mspriteframe_t **ppframe, int frame
 	dspriteframe_t		*pinframe;
 	mspriteframe_t		*pspriteframe;
 	int			width, height, size, origin[2];
-	char			name[64];
+	char			name[MAX_QPATH];
 
 	pinframe = (dspriteframe_t *)pin;
 
@@ -2573,7 +2572,7 @@ static void *Mod_LoadSpriteFrame (void *pin, mspriteframe_t **ppframe, int frame
 	pspriteframe->right = width + origin[0];
 
 	q_snprintf (name, sizeof(name), "%s_%i", loadmodel->name, framenum);
-	pspriteframe->gl_texturenum = GL_LoadTexture (name, width, height, (byte *)(pinframe + 1), true, true, 10, false);
+	pspriteframe->gl_texturenum = GL_LoadTexture (name, width, height, (byte *)(pinframe + 1), true, true, 0, false);
 
 	return (void *)((byte *)pinframe + sizeof (dspriteframe_t) + size);
 }
