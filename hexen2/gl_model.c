@@ -5,7 +5,7 @@
 	models are the only shared resource between a client and server
 	running on the same machine.
 
-	$Id: gl_model.c,v 1.57 2008-04-22 13:06:06 sezero Exp $
+	$Id: gl_model.c,v 1.58 2008-11-19 22:55:26 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -1821,11 +1821,21 @@ static void *Mod_LoadAllSkins (int numskins, daliasskintype_t *pskintype, int md
 	if (numskins < 1 || numskins > MAX_SKINS)
 		Sys_Error ("%s: Invalid # of skins: %d", __thisfunc__, numskins);
 
+	s = pheader->skinwidth * pheader->skinheight;
+
+	if (mdl_flags & EF_HOLEY)
+		tex_mode = 2;
+	else if (mdl_flags & EF_TRANSPARENT)
+		tex_mode = 1;
+	else if (mdl_flags & EF_SPECIAL_TRANS)
+		tex_mode = 3;
+	else
+		tex_mode = 0;
+
 	for (i = 0; i < numskins; i++)
 	{
 		Mod_FloodFillSkin (skin, pheader->skinwidth, pheader->skinheight);
 
-		s = pheader->skinwidth * pheader->skinheight;
 		// save 8 bit texels for the player model to remap
 		if (!strcmp(loadmodel->name,"models/paladin.mdl"))
 		{
@@ -1859,14 +1869,6 @@ static void *Mod_LoadAllSkins (int numskins, daliasskintype_t *pskintype, int md
 		}
 
 		q_snprintf (name, sizeof(name), "%s_%i", loadmodel->name, i);
-		if (mdl_flags & EF_HOLEY)
-			tex_mode = 2;
-		else if (mdl_flags & EF_TRANSPARENT)
-			tex_mode = 1;
-		else if (mdl_flags & EF_SPECIAL_TRANS)
-			tex_mode = 3;
-		else
-			tex_mode = 0;
 
 		pheader->gl_texturenum[i] =
 					GL_LoadTexture (name, pheader->skinwidth, 
@@ -2404,7 +2406,7 @@ static void Mod_LoadAliasModel (qmodel_t *mod, void *buffer)
 
 		for (j = 0; j < 3; j++)
 		{
-			triangles[i].vertindex[j] =	(unsigned short)LittleLong (pintriangles[i].vertindex[j]);
+			triangles[i].vertindex[j] = (unsigned short)LittleLong (pintriangles[i].vertindex[j]);
 			triangles[i].stindex[j]	  = triangles[i].vertindex[j];
 		}
 	}
@@ -2482,7 +2484,7 @@ static void Mod_LoadAliasModel (qmodel_t *mod, void *buffer)
 Mod_LoadSpriteFrame
 =================
 */
-static void *Mod_LoadSpriteFrame (qmodel_t *mod, void *pin, mspriteframe_t **ppframe, int framenum)
+static void *Mod_LoadSpriteFrame (void *pin, mspriteframe_t **ppframe, int framenum)
 {
 	dspriteframe_t		*pinframe;
 	mspriteframe_t		*pspriteframe;
@@ -2517,7 +2519,6 @@ static void *Mod_LoadSpriteFrame (qmodel_t *mod, void *pin, mspriteframe_t **ppf
 	pspriteframe->right = width + origin[0];
 
 	q_snprintf (name, sizeof(name), "%s_%i", loadmodel->name, framenum);
-
 	pspriteframe->gl_texturenum = GL_LoadTexture (name, width, height, (byte *)(pinframe + 1), true, true, 0, false);
 
 	return (void *)((byte *)pinframe + sizeof (dspriteframe_t) + size);
@@ -2529,7 +2530,7 @@ static void *Mod_LoadSpriteFrame (qmodel_t *mod, void *pin, mspriteframe_t **ppf
 Mod_LoadSpriteGroup
 =================
 */
-static void *Mod_LoadSpriteGroup (qmodel_t *mod, void *pin, mspriteframe_t **ppframe, int framenum)
+static void *Mod_LoadSpriteGroup (void *pin, mspriteframe_t **ppframe, int framenum)
 {
 	dspritegroup_t		*pingroup;
 	mspritegroup_t		*pspritegroup;
@@ -2580,7 +2581,7 @@ static void *Mod_LoadSpriteGroup (qmodel_t *mod, void *pin, mspriteframe_t **ppf
 
 	for (i = 0; i < numframes; i++)
 	{
-		ptemp = Mod_LoadSpriteFrame (mod, ptemp, &pspritegroup->frames[i], framenum * 100 + i);
+		ptemp = Mod_LoadSpriteFrame (ptemp, &pspritegroup->frames[i], framenum * 100 + i);
 	}
 
 	return ptemp;
@@ -2657,12 +2658,12 @@ static void Mod_LoadSpriteModel (qmodel_t *mod, void *buffer)
 		if (frametype == SPR_SINGLE)
 		{
 			pframetype = (dspriteframetype_t *)
-					Mod_LoadSpriteFrame (mod, pframetype + 1, &psprite->frames[i].frameptr, i);
+					Mod_LoadSpriteFrame (pframetype + 1, &psprite->frames[i].frameptr, i);
 		}
 		else
 		{
 			pframetype = (dspriteframetype_t *)
-					Mod_LoadSpriteGroup (mod, pframetype + 1, &psprite->frames[i].frameptr, i);
+					Mod_LoadSpriteGroup (pframetype + 1, &psprite->frames[i].frameptr, i);
 		}
 	}
 

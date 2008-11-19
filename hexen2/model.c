@@ -5,7 +5,7 @@
 	models are the only shared resource between a client and server
 	running on the same machine.
 
-	$Id: model.c,v 1.37 2008-04-22 13:06:06 sezero Exp $
+	$Id: model.c,v 1.38 2008-11-19 22:55:26 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -2080,7 +2080,7 @@ static void Mod_LoadAliasModel (qmodel_t *mod, void *buffer)
 Mod_LoadSpriteFrame
 =================
 */
-static void *Mod_LoadSpriteFrame (qmodel_t *mod, void *pin, mspriteframe_t **ppframe)
+static void *Mod_LoadSpriteFrame (void *pin, mspriteframe_t **ppframe)
 {
 	dspriteframe_t		*pinframe;
 	mspriteframe_t		*pspriteframe;
@@ -2094,7 +2094,7 @@ static void *Mod_LoadSpriteFrame (qmodel_t *mod, void *pin, mspriteframe_t **ppf
 	height = LittleLong (pinframe->height);
 	size = width * height;
 
-	pspriteframe = (mspriteframe_t *) Hunk_AllocName (sizeof(mspriteframe_t) + size*r_pixbytes, mod->name);
+	pspriteframe = (mspriteframe_t *) Hunk_AllocName (sizeof(mspriteframe_t) + size*r_pixbytes, loadname);
 
 	memset (pspriteframe, 0, sizeof(mspriteframe_t) + size);
 	*ppframe = pspriteframe;
@@ -2135,7 +2135,7 @@ static void *Mod_LoadSpriteFrame (qmodel_t *mod, void *pin, mspriteframe_t **ppf
 Mod_LoadSpriteGroup
 =================
 */
-static void *Mod_LoadSpriteGroup (qmodel_t *mod, void *pin, mspriteframe_t **ppframe)
+static void *Mod_LoadSpriteGroup (void *pin, mspriteframe_t **ppframe)
 {
 	dspritegroup_t		*pingroup;
 	mspritegroup_t		*pspritegroup;
@@ -2148,7 +2148,7 @@ static void *Mod_LoadSpriteGroup (qmodel_t *mod, void *pin, mspriteframe_t **ppf
 
 	numframes = LittleLong (pingroup->numframes);
 
-	pspritegroup = (mspritegroup_t *) Hunk_AllocName (sizeof(mspritegroup_t) + (numframes - 1) * sizeof(pspritegroup->frames[0]), mod->name);
+	pspritegroup = (mspritegroup_t *) Hunk_AllocName (sizeof(mspritegroup_t) + (numframes - 1) * sizeof(pspritegroup->frames[0]), loadname);
 
 	pspritegroup->numframes = numframes;
 
@@ -2156,7 +2156,7 @@ static void *Mod_LoadSpriteGroup (qmodel_t *mod, void *pin, mspriteframe_t **ppf
 
 	pin_intervals = (dspriteinterval_t *)(pingroup + 1);
 
-	poutintervals = (float *) Hunk_AllocName (numframes * sizeof(float), mod->name);
+	poutintervals = (float *) Hunk_AllocName (numframes * sizeof(float), loadname);
 
 	pspritegroup->intervals = poutintervals;
 
@@ -2174,7 +2174,7 @@ static void *Mod_LoadSpriteGroup (qmodel_t *mod, void *pin, mspriteframe_t **ppf
 
 	for (i = 0; i < numframes; i++)
 	{
-		ptemp = Mod_LoadSpriteFrame (mod, ptemp, &pspritegroup->frames[i]);
+		ptemp = Mod_LoadSpriteFrame (ptemp, &pspritegroup->frames[i]);
 	}
 
 	return ptemp;
@@ -2244,13 +2244,13 @@ static void Mod_LoadSpriteModel (qmodel_t *mod, void *buffer)
 		if (frametype == SPR_SINGLE)
 		{
 			pframetype = (dspriteframetype_t *)
-					Mod_LoadSpriteFrame (mod, pframetype + 1,
+					Mod_LoadSpriteFrame (pframetype + 1,
 								&psprite->frames[i].frameptr);
 		}
 		else
 		{
 			pframetype = (dspriteframetype_t *)
-					Mod_LoadSpriteGroup (mod, pframetype + 1,
+					Mod_LoadSpriteGroup (pframetype + 1,
 								&psprite->frames[i].frameptr);
 		}
 	}
