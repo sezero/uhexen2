@@ -2,7 +2,7 @@
 	snd_dma.c
 	main control for any streaming sound output device
 
-	$Id: snd_dma.c,v 1.76 2007-12-22 18:56:07 sezero Exp $
+	$Id: snd_dma.c,v 1.77 2008-11-21 17:02:40 sezero Exp $
 
 	Copyright (C) 1996-1997  Id Software, Inc.
 
@@ -195,6 +195,17 @@ void S_Init (void)
 
 	Cvar_RegisterVariable(&precache);
 	Cvar_RegisterVariable(&bgmtype);
+	Cvar_RegisterVariable(&nosound);
+	Cvar_RegisterVariable(&sfxvolume);
+	Cvar_RegisterVariable(&sfx_mutedvol);
+	Cvar_RegisterVariable(&loadas8bit);
+	Cvar_RegisterVariable(&bgmvolume);
+	Cvar_RegisterVariable(&bgm_mutedvol);
+	Cvar_RegisterVariable(&ambient_level);
+	Cvar_RegisterVariable(&ambient_fade);
+	Cvar_RegisterVariable(&snd_noextraupdate);
+	Cvar_RegisterVariable(&snd_show);
+	Cvar_RegisterVariable(&_snd_mixahead);
 
 	if (safemode || COM_CheckParm("-nosound") || COM_CheckParm("-s"))
 		return;
@@ -209,18 +220,6 @@ void S_Init (void)
 	Cmd_AddCommand("mute", S_ToggleMute);
 	Cmd_AddCommand("volumeup", S_VolumeUp);
 	Cmd_AddCommand("volumedown", S_VolumeDown);
-
-	Cvar_RegisterVariable(&nosound);
-	Cvar_RegisterVariable(&sfxvolume);
-	Cvar_RegisterVariable(&sfx_mutedvol);
-	Cvar_RegisterVariable(&loadas8bit);
-	Cvar_RegisterVariable(&bgmvolume);
-	Cvar_RegisterVariable(&bgm_mutedvol);
-	Cvar_RegisterVariable(&ambient_level);
-	Cvar_RegisterVariable(&ambient_fade);
-	Cvar_RegisterVariable(&snd_noextraupdate);
-	Cvar_RegisterVariable(&snd_show);
-	Cvar_RegisterVariable(&_snd_mixahead);
 
 	if (host_parms->memsize < 0x800000)
 	{
