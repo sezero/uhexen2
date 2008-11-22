@@ -3,6 +3,20 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2008-11-21 (CVS):
+    * fixed stupid copy/paste errors in the rpm spec file.
+    * hexenworld/gl_model.c: GL_LoadTexture doesn't use mode == 10 for sprites for
+      quite some time, now. I must have missed this.
+    * glquake.h: minor tidy-up.
+    * model.c, gl_model.c: made hexen2 versions look more like the hexenworld ones:
+      Mod_LoadAllSkins: the 's' and 'tex_mode' values needn't be calculated in
+      every iteration of the for loop.
+      Mod_LoadSpriteFrame: doesn't need the model argument. it only provides the
+      model name to Hunk_AllocName and so can 'loadname'.
+      Mod_LoadSpriteGroup: likewise.
+    * snd_dma.c: unconditionally register the sound cvars so that we don't lose
+      settings when we do -nosound
+
 2008-11-18 (CVS, 1.4.4-pre3):
     * VID_ReportConsize() should return const
     * bumped the HoT version to 1.4.4-pre3.
