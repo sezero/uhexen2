@@ -2,7 +2,7 @@
 	apply_patch.c
 	hexen2 launcher: binary patch starter
 
-	$Id: apply_patch.c,v 1.12 2008-12-19 17:55:06 sezero Exp $
+	$Id: apply_patch.c,v 1.13 2008-12-19 20:33:28 sezero Exp $
 
 	This program is free software; you can redistribute it and/or
 	modify it under the terms of the GNU General Public License
@@ -194,6 +194,7 @@ void *apply_patches (void *workdir)
 
 		free (csum);
 
+		remove (dst);	/* not all implementations overwrite existing files */
 		if ( rename(out, dst) < 0 )
 		{
 			rc |= XPATCH_FAIL;
