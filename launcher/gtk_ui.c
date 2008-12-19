@@ -2,7 +2,7 @@
 	gtk_ui.c
 	hexen2 launcher gtk+ interface
 
-	$Id: gtk_ui.c,v 1.10 2008-12-19 14:48:19 sezero Exp $
+	$Id: gtk_ui.c,v 1.11 2008-12-19 17:55:05 sezero Exp $
 
 	This program is free software; you can redistribute it and/or
 	modify it under the terms of the GNU General Public License
@@ -207,6 +207,44 @@ void ui_log (const char *fmt, ...)
 	ui_LogPrint(text);
 }
 
+typedef struct LogQueue_s
+{
+	char		*data;
+	struct LogQueue_s *next;
+} LogQueue_t;
+
+static LogQueue_t *log_queue, *old_queue;
+static pthread_mutex_t logmutex = PTHREAD_MUTEX_INITIALIZER;
+
+void ui_log_queue (const char *fmt, ...)
+{
+	pthread_mutex_lock (&logmutex);
+
+	if (log_queue->data)
+	{	/* append to the queue: */
+		va_list argptr;
+		LogQueue_t *tmp, *newdata;
+		newdata = (LogQueue_t *) g_malloc(sizeof(LogQueue_t));
+		va_start (argptr, fmt);
+		newdata->data = g_strdup_vprintf (fmt, argptr);
+		va_end (argptr);
+		newdata->next = NULL;
+		tmp = log_queue;
+		while (tmp->next)
+			tmp = tmp->next;
+		tmp->next = newdata;
+	}
+	else
+	{	/* assign the initial data: */
+		va_list argptr;
+		va_start (argptr, fmt);
+		log_queue->data = g_strdup_vprintf (fmt, argptr);
+		va_end (argptr);
+	}
+
+	pthread_mutex_unlock (&logmutex);
+}
+
 static void report_status (GtkObject *Unused, PatchWindow_t *PatchWindow)
 {
 	int	end_log = 0;
@@ -266,6 +304,9 @@ static void report_status (GtkObject *Unused, PatchWindow_t *PatchWindow)
 }
 
 #if !defined(DEMOBUILD)
+static size_t	lastsize;
+static gfloat	percentage;
+
 static gboolean block_window_close (GtkWidget* widget, GdkEvent* event, gpointer user_data)
 {
 	return TRUE;
@@ -300,6 +341,50 @@ static void destroy_progressbar (PatchWindow_t *PatchWindow)
 	gtk_widget_show (PatchWindow->bREPORT);
 }
 
+static void flush_log_queue (void)
+{
+	LogQueue_t *next;
+
+	if (! log_queue->data)
+		return;
+
+	pthread_mutex_lock (&logmutex);
+	old_queue = log_queue;
+	log_queue = (LogQueue_t *) g_malloc(sizeof(LogQueue_t));
+	log_queue->data = NULL;
+	log_queue->next = NULL;
+	pthread_mutex_unlock (&logmutex);
+
+	do
+	{
+		next = old_queue->next;
+		ui_LogPrint(old_queue->data);
+		g_free(old_queue->data);
+		g_free(old_queue);
+		old_queue = next;
+	} while (next);
+}
+
+static void patch_gui_loop (PatchWindow_t *PatchWindow)
+{
+	while (thread_alive)
+	{
+		if (lastsize != written_size)
+		{
+			/* update progress bar: */
+			percentage = (gfloat)written_size / (gfloat)outsize;
+			lastsize = written_size;
+			gtk_progress_bar_set_fraction(GTK_PROGRESS_BAR(PatchWindow->progbar), percentage);
+		}
+		flush_log_queue ();
+		ui_pump ();
+		g_usleep (10000);	/* usleep (10000) */
+	}
+
+	/* finish leftovers */
+	flush_log_queue ();
+}
+
 static void start_xpatch (GtkObject *Unused, PatchWindow_t *PatchWindow)
 {
 	pthread_t		thr;
@@ -307,8 +392,6 @@ static void start_xpatch (GtkObject *Unused, PatchWindow_t *PatchWindow)
 	unsigned long	*ptr;
 	guint	delete_handler;
 	int		ret = 2;
-	size_t		lastsize;
-	gfloat		percentage;
 
 	if (basedir_nonstd && game_basedir[0])
 		wd = game_basedir;
@@ -332,17 +415,7 @@ static void start_xpatch (GtkObject *Unused, PatchWindow_t *PatchWindow)
 
 	gtk_statusbar_push (GTK_STATUSBAR(PatchWindow->StatusBar), PatchWindow->statbar_id, patch_status[0]);
 
-	while (thread_alive)
-	{
-		if (lastsize != written_size)
-		{
-			percentage = (gfloat)written_size / (gfloat)outsize;
-			lastsize = written_size;
-			gtk_progress_bar_set_fraction(GTK_PROGRESS_BAR(PatchWindow->progbar), percentage);
-		}
-		ui_pump ();
-		usleep (10000);
-	}
+	patch_gui_loop (PatchWindow);
 
 	if (pthread_join(thr, (void **) (char *) &ptr) != 0)
 	{
@@ -1718,19 +1791,20 @@ static gint ui_start (gpointer user_data)
 
 int ui_init (int *argc, char ***argv)
 {
-/*
 #ifdef ENABLE_NLS
-	bindtextdomain (PACKAGE, PACKAGE_LOCALE_DIR);
-	textdomain (PACKAGE);
+//	bindtextdomain (PACKAGE, PACKAGE_LOCALE_DIR);
+//	textdomain (PACKAGE);
 #endif
-	gtk_set_locale ();
-*/
+//	gtk_set_locale ();
 
 	gtk_init (argc, argv);
 
-/*	add_pixmap_directory (PACKAGE_DATA_DIR "/pixmaps");
-	add_pixmap_directory (PACKAGE_SOURCE_DIR "/pixmaps");
-*/
+//	add_pixmap_directory (PACKAGE_DATA_DIR "/pixmaps");
+//	add_pixmap_directory (PACKAGE_SOURCE_DIR "/pixmaps");
+
+	log_queue = (LogQueue_t *) g_malloc(sizeof(LogQueue_t));
+	log_queue->data = NULL;
+	log_queue->next = NULL;
 
 	return 0;
 }

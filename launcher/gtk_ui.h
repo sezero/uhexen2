@@ -2,7 +2,7 @@
 	gtk_ui.h
 	gtk ui, main header
 
-	$Id: gtk_ui.h,v 1.5 2007-12-08 09:16:50 sezero Exp $
+	$Id: gtk_ui.h,v 1.6 2008-12-19 17:55:05 sezero Exp $
 
 	This program is free software; you can redistribute it and/or
 	modify it under the terms of the GNU General Public License
@@ -56,6 +56,10 @@
 #define	gtk_progress_bar_set_fraction	gtk_progress_bar_update
 
 #endif	/* _H2L_USE_GTK1 */
+
+#if (GLIB_MAJOR_VERSION < 2)
+#define g_usleep			usleep
+#endif	/* glib-1.2.x */
 
 
 /*

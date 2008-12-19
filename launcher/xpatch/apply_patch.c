@@ -2,7 +2,7 @@
 	apply_patch.c
 	hexen2 launcher: binary patch starter
 
-	$Id: apply_patch.c,v 1.11 2008-12-19 14:40:13 sezero Exp $
+	$Id: apply_patch.c,v 1.12 2008-12-19 17:55:06 sezero Exp $
 
 	This program is free software; you can redistribute it and/or
 	modify it under the terms of the GNU General Public License
@@ -83,15 +83,15 @@ void *apply_patches (void *workdir)
 	for (i = 0; i < NUM_PATCHES; i++)
 		outsize += patch_data[i].new_size;
 
-	ui_log ("Workdir: %s\n", (char *)workdir);
+	ui_log_queue ("Workdir: %s\n", (char *)workdir);
 	for (i = 0; i < NUM_PATCHES; i++)
 	{
-		ui_log ("File %s/%s :\n", patch_data[i].dir_name, patch_data[i].filename);
+		ui_log_queue ("File %s/%s :\n", patch_data[i].dir_name, patch_data[i].filename);
 		snprintf (dst, sizeof(dst), "%s/%s/%s", (char *)workdir, patch_data[i].dir_name, patch_data[i].filename);
 		if ( access(dst, R_OK|W_OK) != 0 )
 		{
 			rc |= XPATCH_FAIL;
-			ui_log ("... not found!\n");
+			ui_log_queue ("... not found!\n");
 			thread_alive = 0;
 			return &rc;
 		}
@@ -99,7 +99,7 @@ void *apply_patches (void *workdir)
 		if ( stat(dst, &stbuf) != 0 )
 		{
 			rc |= XPATCH_FAIL;
-			ui_log ("... unable to stat file!\n");
+			ui_log_queue ("... unable to stat file!\n");
 			thread_alive = 0;
 			return &rc;
 		}
@@ -108,18 +108,18 @@ void *apply_patches (void *workdir)
 			stbuf.st_size != patch_data[i].new_size)
 		{
 			rc |= XPATCH_FAIL;
-			ui_log ("... is an incompatible version!\n");
+			ui_log_queue ("... is an incompatible version!\n");
 			thread_alive = 0;
 			return &rc;
 		}
 
-		ui_log ("... checksumming...\n");
+		ui_log_queue ("... checksumming...\n");
 		csum = MD5File(dst, NULL);
 		if (csum == NULL)
 		{
 			free (csum);
 			rc |= XPATCH_FAIL;
-			ui_log ("... md5_compute() failed!\n");
+			ui_log_queue ("... md5_compute() failed!\n");
 			thread_alive = 0;
 			return &rc;
 		}
@@ -127,14 +127,14 @@ void *apply_patches (void *workdir)
 		{
 			free (csum);
 			written_size += patch_data[i].new_size;
-			ui_log ("... already patched.\n");
+			ui_log_queue ("... already patched.\n");
 			continue;
 		}
 		if ( strcmp(csum, patch_data[i].old_md5) )
 		{
 			free (csum);
 			rc |= XPATCH_FAIL;
-			ui_log ("... is an incompatible version!\n");
+			ui_log_queue ("... is an incompatible version!\n");
 			thread_alive = 0;
 			return &rc;
 		}
@@ -145,7 +145,7 @@ void *apply_patches (void *workdir)
 		if ( access(pat, R_OK) != 0 )
 		{
 			rc |= XPATCH_FAIL;
-			ui_log ("... delta file not found!\n");
+			ui_log_queue ("... delta file not found!\n");
 			thread_alive = 0;
 			return &rc;
 		}
@@ -156,7 +156,7 @@ void *apply_patches (void *workdir)
 			remove (out);
 		}
 
-		ui_log ("... applying patch...\n");
+		ui_log_queue ("... applying patch...\n");
 		time (&temptime);
 		if ( loki_xpatch(pat, dst, out) < 0 )
 		{
@@ -165,20 +165,20 @@ void *apply_patches (void *workdir)
 			{
 				remove (out);
 			}
-			ui_log ("... patch failed!\n");
+			ui_log_queue ("... patch failed!\n");
 			thread_alive = 0;
 			return &rc;
 		}
 		elapsed = time (NULL) - temptime;
-		ui_log ("... elapsed time %lum:%lus\n", elapsed / 60, elapsed % 60);
+		ui_log_queue ("... elapsed time %lum:%lus\n", elapsed / 60, elapsed % 60);
 
-		ui_log ("... verifying checksum...\n");
+		ui_log_queue ("... verifying checksum...\n");
 		csum = MD5File(out, NULL);
 		if (csum == NULL)
 		{
 			free (csum);
 			rc |= XPATCH_FAIL;
-			ui_log ("... md5_compute() failed!\n");
+			ui_log_queue ("... md5_compute() failed!\n");
 			thread_alive = 0;
 			return &rc;
 		}
@@ -187,7 +187,7 @@ void *apply_patches (void *workdir)
 			free (csum);
 			rc |= XPATCH_FAIL;
 			remove (out);
-			ui_log ("... checksum after patching failed!\n");
+			ui_log_queue ("... checksum after patching failed!\n");
 			thread_alive = 0;
 			return &rc;
 		}
@@ -198,19 +198,19 @@ void *apply_patches (void *workdir)
 		{
 			rc |= XPATCH_FAIL;
 			remove (out);
-			ui_log ("... failed renaming patched file!\n");
+			ui_log_queue ("... failed renaming patched file!\n");
 			thread_alive = 0;
 			return &rc;
 		}
 
 		rc |= XPATCH_APPLIED;
-		ui_log ("... Patch successful.\n");
+		ui_log_queue ("... Patch successful.\n");
 	}
 
 	if (rc & XPATCH_APPLIED)
 	{
 		elapsed = time (NULL) - starttime;
-		ui_log ("All patches successful in %lum:%lus.\n", elapsed / 60, elapsed % 60);
+		ui_log_queue ("All patches successful in %lum:%lus.\n", elapsed / 60, elapsed % 60);
 	}
 
 	thread_alive = 0;
