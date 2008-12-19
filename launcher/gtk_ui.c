@@ -2,7 +2,7 @@
 	gtk_ui.c
 	hexen2 launcher gtk+ interface
 
-	$Id: gtk_ui.c,v 1.9 2008-01-12 14:45:39 sezero Exp $
+	$Id: gtk_ui.c,v 1.10 2008-12-19 14:48:19 sezero Exp $
 
 	This program is free software; you can redistribute it and/or
 	modify it under the terms of the GNU General Public License
@@ -146,6 +146,8 @@ static void ui_LogInit (GtkWidget *wgt)
 
 static void ui_LogPrint (const char *txt)
 {
+	if (! *txt)	/* nothing to do. */
+		return;
 	gtk_text_insert (LogEntry, NULL, NULL, NULL, txt, strlen(txt));
 }
 
@@ -174,6 +176,8 @@ static void ui_LogPrint (const char *txt)
 	GtkTextBuffer	*buf;
 	GtkTextIter	end;
 
+	if (! *txt)	/* nothing to do. */
+		return;
 	buf = gtk_text_view_get_buffer (LogEntry);
 	gtk_text_buffer_get_end_iter (buf, &end);
 	gtk_text_buffer_insert (buf, &end, txt, strlen(txt));
@@ -1733,7 +1737,6 @@ int ui_init (int *argc, char ***argv)
 
 int ui_main (void)
 {
-//	gtk_init_add (GTK_INIT_FUNC(ui_start), NULL);
 	ui_start (NULL);
 	gtk_main ();
 
