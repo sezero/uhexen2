@@ -3,6 +3,17 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2008-12-19 (CVS):
+    * launcher: replaced the old md5 code the maintained one from libbsd.
+    * launcher, patching: re-written the inter-threads textview log printing to
+      use queued logs and mutexes. this fixes the erratic crashes on smp systems,
+      such as my Pentium D running with an smp kernel.
+    * launcher, patching: remove the old file before renaming the patched version.
+      not all implementations overwrite existing files.
+    * launcher: minor clean-up.
+    * launcher: bumped version to 1.0.4
+    * fixed autotools configure failure in xdelta.
+
 2008-11-21 (CVS):
     * fixed stupid copy/paste errors in the rpm spec file.
     * hexenworld/gl_model.c: GL_LoadTexture doesn't use mode == 10 for sprites for
