@@ -2,7 +2,7 @@
 	launcher_defs.h
 	hexen2 launcher: common definitions
 
-	$Id: launcher_defs.h,v 1.33 2008-02-08 17:10:31 sezero Exp $
+	$Id: launcher_defs.h,v 1.34 2008-12-19 18:00:05 sezero Exp $
 
 	This program is free software; you can redistribute it and/or
 	modify it under the terms of the GNU General Public License
@@ -40,7 +40,7 @@
 // Launcher version num.
 #define LAUNCHER_VERSION_MAJ	1
 #define LAUNCHER_VERSION_MID	0
-#define LAUNCHER_VERSION_MIN	3
+#define LAUNCHER_VERSION_MIN	4
 #define LAUNCHER_VERSION_STR	STRINGIFY(LAUNCHER_VERSION_MAJ) "." STRINGIFY(LAUNCHER_VERSION_MID) "." STRINGIFY(LAUNCHER_VERSION_MIN)
 
 #ifndef DEMOBUILD
