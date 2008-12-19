@@ -1,5 +1,5 @@
 # GNU Makefile for hexen2 gtk-launcher app using GCC.
-# $Header: /home/ozzie/Download/0000/uhexen2/launcher/Makefile,v 1.48 2007-10-25 09:06:52 sezero Exp $
+# $Header: /home/ozzie/Download/0000/uhexen2/launcher/Makefile,v 1.49 2008-12-19 14:40:13 sezero Exp $
 #
 #  gtk2 will be used default.
 #  to compile for gtk-1.2 type:  make GTK1=yes
@@ -97,7 +97,7 @@ LIBXDELTA_OBJS:=
 LIBEDSIO_OBJS :=
 endif
 
-XPATCH_OBJS   :=xpatch/md5.o xpatch/loki_xdelta.o xpatch/apply_patch.o
+XPATCH_OBJS   :=xpatch/md5.o xpatch/md5helper.o xpatch/loki_xdelta.o xpatch/apply_patch.o
 endif
 
 # Targets

@@ -1,42 +1,63 @@
+/*	$OpenBSD: md5.h,v 1.16 2004/06/22 01:57:30 jfb Exp $	*/
+
+/*
+ * This code implements the MD5 message-digest algorithm.
+ * The algorithm is due to Ron Rivest.  This code was
+ * written by Colin Plumb in 1993, no copyright is claimed.
+ * This code is in the public domain; do with it what you wish.
+ *
+ * Equivalent code is available from RSA Data Security, Inc.
+ * This code has been tested against that, and is equivalent,
+ * except that you don't need to include two pages of legalese
+ * with every copy.
+ */
+
 #ifndef _MD5_H_
 #define _MD5_H_
 
-#define CHECKSUM_SIZE   32
+#define	MD5_BLOCK_LENGTH		64
+#define	MD5_DIGEST_LENGTH		16
+#define	MD5_DIGEST_STRING_LENGTH	(MD5_DIGEST_LENGTH * 2 + 1)
 
-typedef struct {
-    unsigned int A,B,C,D;	  /* chaining variables */
-    unsigned int  nblocks;
-    unsigned char buf[64];
-    int  count;
-} MD5_CONTEXT;
+typedef struct MD5Context {
+	uint32_t state[4];			/* state */
+	uint64_t count;				/* number of bits, mod 2^64 */
+	uint8_t buffer[MD5_BLOCK_LENGTH];	/* input buffer */
+} MD5_CTX;
 
-void md5_init( MD5_CONTEXT *ctx );
+/* #include <sys/cdefs.h> */
 
-/* The routine updates the message-digest context to
- * account for the presence of each of the characters inBuf[0..inLen-1]
- * in the message whose digest is being computed.
- */
-void md5_write( MD5_CONTEXT *hd, unsigned char *inbuf, size_t inlen);
-
-/* The routine final terminates the message-digest computation and
- * ends with the desired message digest in mdContext->digest[0...15].
- * The handle is prepared for a new MD5 cycle.
- * Returns 16 bytes representing the digest.
- */
-
-void md5_final( MD5_CONTEXT *hd );
-
-/* Compute the MD5 sum of a file.
-   md5sum[] must be at least CHECKSUM_SIZE+1 chars long.
-   If 'unpack' is true, then the checksum will be on the uncompressed
-   contents. (Currently only implemented for gzip compressed files.)
- */
-int md5_compute(const char *path, char md5sum[], int unpack);
-
-/* Get the ASCII representation of a binary MD5 checksum */
-const char *get_md5(unsigned char *binsum);
-
-/* Reverse operation: translate an ASCII checksum to binary */
-unsigned char *get_md5_bin(const char *asciisum);
-
+#if defined(__GNUC__) && defined(__bounded__)
+# define __attribute_bounded__(x,y,z)	__attribute__((__bounded__((x),(y),(z))))
+#else
+# define __attribute_bounded__(x,y,z)
 #endif
+
+#ifdef	__cplusplus
+extern "C" {
+#endif
+
+void	 MD5Init(MD5_CTX *);
+void	 MD5Update(MD5_CTX *, const uint8_t *, size_t)
+		__attribute_bounded__(__string__,2,3);
+void	 MD5Pad(MD5_CTX *);
+void	 MD5Final(uint8_t [MD5_DIGEST_LENGTH], MD5_CTX *)
+		__attribute_bounded__(__minbytes__,1,MD5_DIGEST_LENGTH);
+void	 MD5Transform(uint32_t [4], const uint8_t [MD5_BLOCK_LENGTH])
+		__attribute_bounded__(__minbytes__,1,4)
+		__attribute_bounded__(__minbytes__,2,MD5_BLOCK_LENGTH);
+char	*MD5End(MD5_CTX *, char *)
+		__attribute_bounded__(__minbytes__,2,MD5_DIGEST_STRING_LENGTH);
+char	*MD5File(const char *, char *)
+		__attribute_bounded__(__minbytes__,2,MD5_DIGEST_STRING_LENGTH);
+char	*MD5FileChunk(const char *, char *, off_t, off_t)
+		__attribute_bounded__(__minbytes__,2,MD5_DIGEST_STRING_LENGTH);
+char	*MD5Data(const uint8_t *, size_t, char *)
+		__attribute_bounded__(__string__,1,2)
+		__attribute_bounded__(__minbytes__,3,MD5_DIGEST_STRING_LENGTH);
+#ifdef	__cplusplus
+}
+#endif
+
+#endif /* _MD5_H_ */
+

@@ -2,7 +2,7 @@
 	apply_patch.c
 	hexen2 launcher: binary patch starter
 
-	$Id: apply_patch.c,v 1.10 2008-01-02 14:45:10 sezero Exp $
+	$Id: apply_patch.c,v 1.11 2008-12-19 14:40:13 sezero Exp $
 
 	This program is free software; you can redistribute it and/or
 	modify it under the terms of the GNU General Public License
@@ -24,6 +24,7 @@
 */
 
 #include "common.h"
+#include <stdint.h>
 #include <time.h>
 
 #include "md5.h"
@@ -66,12 +67,12 @@ static	unsigned long		rc;
 static	char	dst[MAX_OSPATH],
 		pat[MAX_OSPATH],
 		out[MAX_OSPATH];
-static	char	csum[CHECKSUM_SIZE+1];
 
 void *apply_patches (void *workdir)
 {
 	int	i;
 	struct stat	stbuf;
+	char		*csum;
 	time_t	starttime, temptime;
 	unsigned long	elapsed;
 
@@ -113,20 +114,32 @@ void *apply_patches (void *workdir)
 		}
 
 		ui_log ("... checksumming...\n");
-		md5_compute(dst, csum, 0);
+		csum = MD5File(dst, NULL);
+		if (csum == NULL)
+		{
+			free (csum);
+			rc |= XPATCH_FAIL;
+			ui_log ("... md5_compute() failed!\n");
+			thread_alive = 0;
+			return &rc;
+		}
 		if ( !strcmp(csum, patch_data[i].new_md5) )
 		{
+			free (csum);
 			written_size += patch_data[i].new_size;
 			ui_log ("... already patched.\n");
 			continue;
 		}
 		if ( strcmp(csum, patch_data[i].old_md5) )
 		{
+			free (csum);
 			rc |= XPATCH_FAIL;
 			ui_log ("... is an incompatible version!\n");
 			thread_alive = 0;
 			return &rc;
 		}
+
+		free (csum);
 
 		snprintf (pat, sizeof(pat), "%s/%s/%s/%s", (char *)workdir, DELTA_DIR, patch_data[i].dir_name, patch_data[i].deltaname);
 		if ( access(pat, R_OK) != 0 )
@@ -160,15 +173,26 @@ void *apply_patches (void *workdir)
 		ui_log ("... elapsed time %lum:%lus\n", elapsed / 60, elapsed % 60);
 
 		ui_log ("... verifying checksum...\n");
-		md5_compute(out, csum, 0);
+		csum = MD5File(out, NULL);
+		if (csum == NULL)
+		{
+			free (csum);
+			rc |= XPATCH_FAIL;
+			ui_log ("... md5_compute() failed!\n");
+			thread_alive = 0;
+			return &rc;
+		}
 		if ( strcmp(csum, patch_data[i].new_md5) )
 		{
+			free (csum);
 			rc |= XPATCH_FAIL;
 			remove (out);
 			ui_log ("... checksum after patching failed!\n");
 			thread_alive = 0;
 			return &rc;
 		}
+
+		free (csum);
 
 		if ( rename(out, dst) < 0 )
 		{
