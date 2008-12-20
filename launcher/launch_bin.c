@@ -2,7 +2,7 @@
 	launch_bin.c
 	hexen2 launcher: binary launching
 
-	$Id: launch_bin.c,v 1.49 2008-01-12 12:02:34 sezero Exp $
+	$Id: launch_bin.c,v 1.50 2008-12-20 08:10:04 sezero Exp $
 
 	This program is free software; you can redistribute it and/or
 	modify it under the terms of the GNU General Public License
@@ -86,7 +86,7 @@ void launch_hexen2_bin (void)
 
 /* add the binary name first: */
 	if (opengl_support)
-		strcpy (string_buf, "gl");
+		strcpy (string_buf, BIN_OGL_PREFIX);
 	if (destiny == DEST_HW)
 		strcat (string_buf, HW_BINARY_NAME);
 	else

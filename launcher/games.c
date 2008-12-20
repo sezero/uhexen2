@@ -2,7 +2,7 @@
 	games.c
 	hexen2 launcher, game installation scanning
 
-	$Id: games.c,v 1.9 2007-11-05 08:25:22 sezero Exp $
+	$Id: games.c,v 1.10 2008-12-20 08:10:04 sezero Exp $
 
 	This program is free software; you can redistribute it and/or
 	modify it under the terms of the GNU General Public License
@@ -271,22 +271,16 @@ static void scan_hw_mods (void)
 
 static void scan_binaries (void)
 {
-	int		pass = 0;
-	char		tempname[32];
-rescan:
-	if (pass != 0)
-		strcpy (tempname, "gl");
-	strcpy (tempname + pass, H2_BINARY_NAME);
-	if (access(tempname, X_OK) == 0)
-		gameflags |= HAVE_H2_BIN << pass;
-	strcpy (tempname + pass, HW_BINARY_NAME);
-	if (access(tempname, X_OK) == 0)
-		gameflags |= HAVE_HW_BIN << pass;
-	if (pass == 0)
-	{
-		pass = 2;
-		goto rescan;
-	}
+	gameflags &= ~(HAVE_H2_BIN|HAVE_HW_BIN|HAVE_GLH2_BIN|HAVE_GLHW_BIN);
+
+	if (access(H2_BINARY_NAME, X_OK) == 0)
+		gameflags |= HAVE_H2_BIN;
+	if (access(HW_BINARY_NAME, X_OK) == 0)
+		gameflags |= HAVE_HW_BIN;
+	if (access(BIN_OGL_PREFIX H2_BINARY_NAME, X_OK) == 0)
+		gameflags |= HAVE_GLH2_BIN;
+	if (access(BIN_OGL_PREFIX HW_BINARY_NAME, X_OK) == 0)
+		gameflags |= HAVE_GLHW_BIN;
 }
 
 void scan_game_installation (void)

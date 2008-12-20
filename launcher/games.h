@@ -2,7 +2,7 @@
 	games.h
 	hexen2 launcher, game installation scanning
 
-	$Id: games.h,v 1.6 2007-11-05 08:25:22 sezero Exp $
+	$Id: games.h,v 1.7 2008-12-20 08:10:04 sezero Exp $
 
 	This program is free software; you can redistribute it and/or
 	modify it under the terms of the GNU General Public License
@@ -30,6 +30,7 @@
    the gl prefix and the nul terminator, or change
    the definition below accordingly.		*/
 #define BINNAME_CHARS	16U
+#define	BIN_OGL_PREFIX	"gl"
 #define	H2_BINARY_NAME	"hexen2"
 #define	HW_BINARY_NAME	"hwcl"
 
