@@ -5,7 +5,7 @@
 	models are the only shared resource between a client and server
 	running on the same machine.
 
-	$Id: model.c,v 1.38 2008-04-22 13:06:10 sezero Exp $
+	$Id: model.c,v 1.39 2008-12-20 08:32:40 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -250,8 +250,9 @@ Loads a model into the cache
 */
 static qmodel_t *Mod_LoadModel (qmodel_t *mod, qboolean crash)
 {
-	unsigned int	*buf;
+	byte	*buf;
 	byte	stackbuf[1024];		// avoid dirtying the cache heap
+	int	mod_type;
 
 	if (mod->type == mod_alias)
 	{
@@ -269,7 +270,7 @@ static qmodel_t *Mod_LoadModel (qmodel_t *mod, qboolean crash)
 //
 // load the file
 //
-	buf = (unsigned int *)FS_LoadStackFile (mod->name, stackbuf, sizeof(stackbuf));
+	buf = FS_LoadStackFile (mod->name, stackbuf, sizeof(stackbuf));
 	if (!buf)
 	{
 		if (crash)
@@ -290,8 +291,8 @@ static qmodel_t *Mod_LoadModel (qmodel_t *mod, qboolean crash)
 
 // call the apropriate loader
 	mod->needload = NL_PRESENT;
-
-	switch (LittleLong(*(unsigned int *)buf))
+	mod_type = (buf[0] | (buf[1] << 8) | (buf[2] << 16) | (buf[3] << 24));
+	switch (mod_type)
 	{
 	case RAPOLYHEADER:
 		Mod_LoadAliasModelNew (mod, buf);
