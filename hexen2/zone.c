@@ -2,7 +2,7 @@
 	zone.c
 	Memory management
 
-	$Id: zone.c,v 1.50 2008-03-06 22:00:26 sezero Exp $
+	$Id: zone.c,v 1.51 2008-12-21 18:51:40 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -12,12 +12,8 @@
 #define	Z_CHECKHEAP		0
 
 // whether we compile the debug report commands (see in
-// Memory_Init() at the end). always on in debug builds.
+// Memory_Init() at the end).
 #define	Z_DEBUG_COMMANDS	0
-#if defined(DEBUG_BUILD)
-#undef	Z_DEBUG_COMMANDS
-#define	Z_DEBUG_COMMANDS	1
-#endif	/* DEBUG_BUILD */
 
 #define	ZONE_MINSIZE	0x40000
 #define	ZONE_MAXSIZE	0x100000
