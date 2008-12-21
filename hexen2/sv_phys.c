@@ -2,7 +2,7 @@
 	sv_phys.c
 	sv physics
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sv_phys.c,v 1.26 2008-03-19 08:08:09 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sv_phys.c,v 1.27 2008-12-21 18:25:09 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -2161,7 +2161,7 @@ static void SV_Physics_Step (edict_t *ent)
 
 		SV_LinkEdict (ent, true);
 
-		if (((int)ent->v.flags & FL_ONGROUND) && (!ent->v.flags & FL_MONSTER))
+		if (((int)ent->v.flags & FL_ONGROUND) && !((int)ent->v.flags & FL_MONSTER))
 		{
 			if (!wasonground)
 				if (hitsound)
@@ -2192,7 +2192,7 @@ static void SV_Physics_Step (edict_t *ent)
 		SV_LinkEdict (ent, true);
 
 	//	if ( (int)ent->v.flags & FL_ONGROUND )	// just hit ground
-		if (((int)ent->v.flags & FL_ONGROUND) && (!ent->v.flags & FL_MONSTER))
+		if (((int)ent->v.flags & FL_ONGROUND) && !((int)ent->v.flags & FL_MONSTER))
 		{
 			if (hitsound)
 				SV_StartSound (ent, 0, "fx/thngland.wav", 255, 1);

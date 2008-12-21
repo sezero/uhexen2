@@ -2,7 +2,7 @@
 	sv_phys.c
 	sv physics
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Server/sv_phys.c,v 1.18 2008-03-19 08:08:11 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Server/sv_phys.c,v 1.19 2008-12-21 18:25:09 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -1999,7 +1999,7 @@ static void SV_Physics_Step (edict_t *ent)
 		SV_FlyMove (ent, host_frametime, NULL);
 		SV_LinkEdict (ent, true);
 
-		if (((int)ent->v.flags & FL_ONGROUND) && (!ent->v.flags & FL_MONSTER))
+		if (((int)ent->v.flags & FL_ONGROUND) && !((int)ent->v.flags & FL_MONSTER))
 		{	// just hit ground
 			if (hitsound)
 				SV_StartSound (ent, 0, "demon/dland2.wav", 255, 1);
