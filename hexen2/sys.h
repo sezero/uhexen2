@@ -2,7 +2,7 @@
 	sys.h
 	non-portable functions
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sys.h,v 1.41 2008-03-07 08:10:39 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sys.h,v 1.42 2008-12-21 18:10:02 sezero Exp $
 */
 
 #ifndef __HX2_SYS_H
@@ -15,6 +15,8 @@ int Sys_mkdir (const char *path, qboolean crash);
 
 int Sys_rmdir (const char *path);
 int Sys_unlink (const char *path);
+
+int Sys_CopyFile (const char *frompath, const char *topath);
 
 // simplified findfirst/findnext implementation
 char *Sys_FindFirstFile (const char *path, const char *pattern);

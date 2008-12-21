@@ -2,7 +2,7 @@
 	sys_win.c
 	Win32 system interface code
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Server/sys_win.c,v 1.9 2008-01-29 10:47:03 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Server/sys_win.c,v 1.10 2008-12-21 18:10:04 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -60,6 +60,15 @@ int Sys_unlink (const char *path)
 {
 	return unlink(path);
 }
+
+#define NO_OVERWRITING	FALSE /* allow overwriting files */
+int Sys_CopyFile (const char *frompath, const char *topath)
+{
+	int	err;
+	err = ! CopyFile (frompath, topath, NO_OVERWRITING);
+	return err;
+}
+#undef  NO_OVERWRITING
 
 /*
 =================================================

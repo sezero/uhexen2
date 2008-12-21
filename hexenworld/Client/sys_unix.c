@@ -2,7 +2,7 @@
 	sys_unix.c
 	Unix system interface code
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/sys_unix.c,v 1.101 2008-07-15 06:45:22 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/sys_unix.c,v 1.102 2008-12-21 18:10:04 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -24,6 +24,8 @@
 #include <signal.h>
 #include <dirent.h>
 #include <fnmatch.h>
+#include <time.h>
+#include <utime.h>
 #if defined(SDLQUAKE)
 #include "sdl_inc.h"
 #endif	/* SDLQUAKE */
@@ -68,6 +70,72 @@ int Sys_rmdir (const char *path)
 int Sys_unlink (const char *path)
 {
 	return unlink(path);
+}
+
+#define	COPY_READ_BUFSIZE		8192	/* BUFSIZ */
+int Sys_CopyFile (const char *frompath, const char *topath)
+{
+	char	buf[COPY_READ_BUFSIZE];
+	FILE	*in, *out;
+	struct stat	st;
+	int		err = 0;
+//	off_t		remaining, count;
+	size_t		remaining, count;
+
+	if (stat(frompath, &st) != 0)
+	{
+		Con_Printf ("%s: unable to stat %s\n", frompath, __thisfunc__);
+		return 1;
+	}
+	in = fopen (frompath, "rb");
+	if (!in)
+	{
+		Con_Printf ("%s: unable to open %s\n", frompath, __thisfunc__);
+		return 1;
+	}
+	out = fopen (topath, "wb");
+	if (!out)
+	{
+		Con_Printf ("%s: unable to create %s\n", topath, __thisfunc__);
+		fclose (in);
+		return 1;
+	}
+
+	remaining = st.st_size;
+	memset (buf, 0, sizeof(buf));
+	while (remaining)
+	{
+		if (remaining < sizeof(buf))
+			count = remaining;
+		else
+			count = sizeof(buf);
+
+		fread (buf, 1, count, in);
+		err = ferror (in);
+		if (err)
+			break;
+
+		fwrite (buf, 1, count, out);
+		err = ferror (out);
+		if (err)
+			break;
+
+		remaining -= count;
+	}
+
+	fclose (in);
+	fclose (out);
+
+	if (!err)
+	{
+	// restore the file's timestamp
+		struct utimbuf		tm;
+		tm.actime = time (NULL);
+		tm.modtime = st.st_mtime;
+		utime (topath, &tm);
+	}
+
+	return err;
 }
 
 /*

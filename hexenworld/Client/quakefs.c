@@ -2,7 +2,7 @@
 	quakefs.c
 	Hexen II filesystem
 
-	$Id: quakefs.c,v 1.48 2008-11-15 09:45:42 sezero Exp $
+	$Id: quakefs.c,v 1.49 2008-12-21 18:10:04 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -17,9 +17,6 @@
 #include <unistd.h>
 #include <errno.h>
 #endif
-#include <sys/stat.h>
-#include <time.h>
-#include <utime.h>
 
 typedef struct
 {
@@ -621,97 +618,40 @@ Copies the FROMPATH file as TOPATH file, creating any dirs needed.
 Used for saving the game. Returns 0 on success, non-zero on error.
 ===========
 */
-#define	COPY_READ_BUFSIZE		16384
 int FS_CopyFile (const char *frompath, const char *topath)
 {
-	char	buf[COPY_READ_BUFSIZE];
-	FILE	*in, *out;
-	struct stat	st;
-	int		err = 0;
-//	off_t		remaining, count;
-	size_t		remaining, count;
+	char		*tmp;
+	int		err;
 
 	if (!frompath || !topath)
 	{
 		Con_Printf ("%s: null input\n", __thisfunc__);
 		return 1;
 	}
-
-	if (stat(frompath, &st) != 0)
-	{
-		Con_Printf ("%s: unable to stat %s\n", frompath, __thisfunc__);
-		return 1;
-	}
-//	remaining = st.st_size;
-
-	in = fopen (frompath, "rb");
-	if (!in)
-	{
-		Con_Printf ("%s: unable to open %s\n", frompath, __thisfunc__);
-		return 1;
-	}
-
 	// create directories up to the dest file
-	q_strlcpy (buf, topath, sizeof(buf));
-	if (FS_CreatePath(buf) != 0)
+	tmp = (char *) Z_Malloc (strlen(topath) + 1, Z_MAINZONE);
+	strcpy (tmp, topath);
+	err = FS_CreatePath(tmp);
+	Z_Free (tmp);
+	if (err != 0)
 	{
 		Con_Printf ("%s: unable to create directory\n", __thisfunc__);
-		fclose (in);
-		return 1;
+		return err;
 	}
 
-	out = fopen (topath, "wb");
-	if (!out)
-	{
-		Con_Printf ("%s: unable to create %s\n", topath, __thisfunc__);
-		fclose (in);
-		return 1;
-	}
-
-	memset (buf, 0, sizeof(buf));
-	remaining = FS_filelength (in);
-	while (remaining)
-	{
-		if (remaining < sizeof(buf))
-			count = remaining;
-		else
-			count = sizeof(buf);
-
-		fread (buf, 1, count, in);
-		err = ferror (in);
-		if (err)
-			break;
-
-		fwrite (buf, 1, count, out);
-		err = ferror (out);
-		if (err)
-			break;
-
-		remaining -= count;
-	}
-
-	fclose (in);
-	fclose (out);
-
-	if (!err)
-	{
-	// restore the file's timestamp
-		struct utimbuf		tm;
-		tm.actime = time (NULL);
-		tm.modtime = st.st_mtime;
-		utime (topath, &tm);
-	}
-
+	err = Sys_CopyFile (frompath, topath);
 	return err;
 }
 
+#define	COPY_READ_BUFSIZE		8192	/* BUFSIZ */
 int FS_CopyFromFile (FILE *fromfile, const char *topath, size_t size)
 {
 	char	buf[COPY_READ_BUFSIZE];
 	FILE	*out;
 //	off_t		remaining, count;
 	size_t		remaining, count;
-	int		err = 0;
+	char		*tmp;
+	int		err;
 
 	if (!fromfile || !topath)
 	{
@@ -720,11 +660,14 @@ int FS_CopyFromFile (FILE *fromfile, const char *topath, size_t size)
 	}
 
 	// create directories up to the dest file
-	q_strlcpy (buf, topath, sizeof(buf));
-	if (FS_CreatePath(buf) != 0)
+	tmp = (char *) Z_Malloc (strlen(topath) + 1, Z_MAINZONE);
+	strcpy (tmp, topath);
+	err = FS_CreatePath(tmp);
+	Z_Free (tmp);
+	if (err != 0)
 	{
 		Con_Printf ("%s: unable to create directory\n", __thisfunc__);
-		return 1;
+		return err;
 	}
 
 	out = fopen (topath, "wb");

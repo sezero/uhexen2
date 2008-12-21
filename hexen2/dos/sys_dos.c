@@ -3,7 +3,7 @@
 	DOS system interface code.
 	from quake1 source with adaptations for uhexen2.
 
-	$Id: sys_dos.c,v 1.10 2008-01-29 15:20:51 sezero Exp $
+	$Id: sys_dos.c,v 1.11 2008-12-21 18:10:03 sezero Exp $
 
 	Copyright (C) 1996-1997  Id Software, Inc.
 
@@ -40,6 +40,8 @@
 #include <sys/nearptr.h>
 #include <conio.h>
 #include <fnmatch.h>
+#include <time.h>
+#include <utime.h>
 
 #include <crt0.h>	/* for sbrk unix flag below */
 
@@ -411,6 +413,71 @@ int Sys_unlink (const char *path)
 	return unlink(path);
 }
 
+#define	COPY_READ_BUFSIZE		8192	/* BUFSIZ */
+int Sys_CopyFile (const char *frompath, const char *topath)
+{
+	char	buf[COPY_READ_BUFSIZE];
+	FILE	*in, *out;
+	struct stat	st;
+	int		err = 0;
+//	off_t		remaining, count;
+	size_t		remaining, count;
+
+	if (stat(frompath, &st) != 0)
+	{
+		Con_Printf ("%s: unable to stat %s\n", frompath, __thisfunc__);
+		return 1;
+	}
+	in = fopen (frompath, "rb");
+	if (!in)
+	{
+		Con_Printf ("%s: unable to open %s\n", frompath, __thisfunc__);
+		return 1;
+	}
+	out = fopen (topath, "wb");
+	if (!out)
+	{
+		Con_Printf ("%s: unable to create %s\n", topath, __thisfunc__);
+		fclose (in);
+		return 1;
+	}
+
+	remaining = st.st_size;
+	memset (buf, 0, sizeof(buf));
+	while (remaining)
+	{
+		if (remaining < sizeof(buf))
+			count = remaining;
+		else
+			count = sizeof(buf);
+
+		fread (buf, 1, count, in);
+		err = ferror (in);
+		if (err)
+			break;
+
+		fwrite (buf, 1, count, out);
+		err = ferror (out);
+		if (err)
+			break;
+
+		remaining -= count;
+	}
+
+	fclose (in);
+	fclose (out);
+
+	if (!err)
+	{
+	// restore the file's timestamp
+		struct utimbuf		tm;
+		tm.actime = time (NULL);
+		tm.modtime = st.st_mtime;
+		utime (topath, &tm);
+	}
+
+	return err;
+}
 
 /*
 =================================================
