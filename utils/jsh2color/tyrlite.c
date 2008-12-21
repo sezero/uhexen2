@@ -19,7 +19,7 @@
 
 /*
 	tyrlite.c
-	$Id: tyrlite.c,v 1.23 2008-01-29 12:03:13 sezero Exp $
+	$Id: tyrlite.c,v 1.24 2008-12-21 22:26:53 sezero Exp $
 
 	Modifications by Kevin Shanahan, 1999-2000
 */
@@ -77,7 +77,7 @@ byte *GetFileSpace (int size)
 	byte	*buf;
 
 	LOCK;
-	file_p = (byte *)(((long)file_p + 3) & ~3);
+	file_p = (byte *)(((intptr_t)file_p + 3) & ~3);
 	buf = file_p;
 	file_p += size;
 	UNLOCK;

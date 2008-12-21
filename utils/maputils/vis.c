@@ -1,6 +1,6 @@
 /*
 	vis.c
-	$Id: vis.c,v 1.15 2008-01-29 12:03:13 sezero Exp $
+	$Id: vis.c,v 1.16 2008-12-21 22:26:54 sezero Exp $
 */
 
 #include "q_stdinc.h"
@@ -140,12 +140,12 @@ NewWinding
 static winding_t *OldNewWinding (int points)
 {
 	winding_t	*w;
-	int			size;
+	size_t			size;
 
 	if (points > MAX_POINTS_ON_WINDING)
 		Error ("%s: %i points", __thisfunc__, points);
 
-	size = (int)((winding_t *)0)->points[points];
+	size = (size_t)((winding_t *)0)->points[points];
 	w = (winding_t *) malloc (size);
 //	memset (w, 0, size);
 	w->fixedsize = 0;
