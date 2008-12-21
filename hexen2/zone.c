@@ -2,7 +2,7 @@
 	zone.c
 	Memory management
 
-	$Id: zone.c,v 1.51 2008-12-21 18:51:40 sezero Exp $
+	$Id: zone.c,v 1.52 2008-12-21 18:55:22 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -256,6 +256,13 @@ void *Z_Realloc (void *ptr, int size, int zone_id)
 	if (ptr != old_ptr)
 		memmove (ptr, old_ptr, q_min(old_size, size));
 
+	return ptr;
+}
+
+char *Z_Strdup (const char *s)
+{
+	char *ptr = (char *) Z_Malloc (strlen(s) + 1, Z_MAINZONE);
+	strcpy (ptr, s);
 	return ptr;
 }
 
