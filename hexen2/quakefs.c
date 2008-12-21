@@ -2,7 +2,7 @@
 	quakefs.c
 	Hexen II filesystem
 
-	$Id: quakefs.c,v 1.49 2008-12-21 18:10:02 sezero Exp $
+	$Id: quakefs.c,v 1.50 2008-12-21 19:00:02 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -629,8 +629,7 @@ int FS_CopyFile (const char *frompath, const char *topath)
 		return 1;
 	}
 	// create directories up to the dest file
-	tmp = (char *) Z_Malloc (strlen(topath) + 1, Z_MAINZONE);
-	strcpy (tmp, topath);
+	tmp = Z_Strdup (topath);
 	err = FS_CreatePath(tmp);
 	Z_Free (tmp);
 	if (err != 0)
@@ -660,8 +659,7 @@ int FS_CopyFromFile (FILE *fromfile, const char *topath, size_t size)
 	}
 
 	// create directories up to the dest file
-	tmp = (char *) Z_Malloc (strlen(topath) + 1, Z_MAINZONE);
-	strcpy (tmp, topath);
+	tmp = Z_Strdup (topath);
 	err = FS_CreatePath(tmp);
 	Z_Free (tmp);
 	if (err != 0)
