@@ -2,7 +2,7 @@
 	cd_win.c
 	Win32 cdaudio code
 
-	$Id: cd_win.c,v 1.19 2008-03-31 15:30:25 sezero Exp $
+	$Id: cd_win.c,v 1.20 2008-12-22 12:21:24 sezero Exp $
 
 	Quake is a trademark of Id Software, Inc., (c) 1996 Id Software, Inc. All
 	rights reserved.
@@ -10,6 +10,11 @@
 
 #include "quakedef.h"
 #include "winquake.h"
+#if defined(_MSC_VER)
+#include "msinttypes/inttypes.h"
+#else	/* not M$ compiler: */
+#include <inttypes.h>
+#endif
 
 /*
  * You just can't set the volume of CD playback via MCI :
@@ -43,7 +48,7 @@ static void CDAudio_Eject(void)
 
 	dwReturn = mciSendCommand(wDeviceID, MCI_SET, MCI_SET_DOOR_OPEN, (DWORD_PTR)NULL);
 	if (dwReturn)
-		Con_DPrintf("MCI_SET_DOOR_OPEN failed (%lu)\n", (unsigned long)dwReturn);
+		Con_DPrintf("MCI_SET_DOOR_OPEN failed (%u)\n", (unsigned int)dwReturn);
 }
 
 
@@ -53,7 +58,7 @@ static void CDAudio_CloseDoor(void)
 
 	dwReturn = mciSendCommand(wDeviceID, MCI_SET, MCI_SET_DOOR_CLOSED, (DWORD_PTR)NULL);
 	if (dwReturn)
-		Con_DPrintf("MCI_SET_DOOR_CLOSED failed (%lu)\n", (unsigned long)dwReturn);
+		Con_DPrintf("MCI_SET_DOOR_CLOSED failed (%u)\n", (unsigned int)dwReturn);
 }
 
 
@@ -127,7 +132,7 @@ void CDAudio_Play(byte track, qboolean looping)
 	dwReturn = mciSendCommand(wDeviceID, MCI_STATUS, MCI_STATUS_ITEM | MCI_TRACK | MCI_WAIT, (DWORD_PTR) (LPVOID) &mciStatusParms);
 	if (dwReturn)
 	{
-		Con_DPrintf("MCI_STATUS failed (%lu)\n", (unsigned long)dwReturn);
+		Con_DPrintf("MCI_STATUS failed (%u)\n", (unsigned int)dwReturn);
 		return;
 	}
 	if (mciStatusParms.dwReturn != MCI_CDA_TRACK_AUDIO)
@@ -142,7 +147,7 @@ void CDAudio_Play(byte track, qboolean looping)
 	dwReturn = mciSendCommand(wDeviceID, MCI_STATUS, MCI_STATUS_ITEM | MCI_TRACK | MCI_WAIT, (DWORD_PTR) (LPVOID) &mciStatusParms);
 	if (dwReturn)
 	{
-		Con_DPrintf("MCI_STATUS failed (%lu)\n", (unsigned long)dwReturn);
+		Con_DPrintf("MCI_STATUS failed (%u)\n", (unsigned int)dwReturn);
 		return;
 	}
 
@@ -159,7 +164,7 @@ void CDAudio_Play(byte track, qboolean looping)
 	dwReturn = mciSendCommand(wDeviceID, MCI_PLAY, MCI_NOTIFY | MCI_FROM | MCI_TO, (DWORD_PTR)(LPVOID) &mciPlayParms);
 	if (dwReturn)
 	{
-		Con_DPrintf("CDAudio: MCI_PLAY failed (%lu)\n", (unsigned long)dwReturn);
+		Con_DPrintf("CDAudio: MCI_PLAY failed (%u)\n", (unsigned int)dwReturn);
 		return;
 	}
 
@@ -184,7 +189,7 @@ void CDAudio_Stop(void)
 
 	dwReturn = mciSendCommand(wDeviceID, MCI_STOP, 0, (DWORD_PTR)NULL);
 	if (dwReturn)
-		Con_DPrintf("MCI_STOP failed (%lu)", (unsigned long)dwReturn);
+		Con_DPrintf("MCI_STOP failed (%u)", (unsigned int)dwReturn);
 
 	wasPlaying = false;
 	playing = false;
@@ -205,7 +210,7 @@ void CDAudio_Pause(void)
 	mciGenericParms.dwCallback = (DWORD_PTR)mainwindow;
 	dwReturn = mciSendCommand(wDeviceID, MCI_PAUSE, 0, (DWORD_PTR)(LPVOID) &mciGenericParms);
 	if (dwReturn)
-		Con_DPrintf("MCI_PAUSE failed (%lu)", (unsigned long)dwReturn);
+		Con_DPrintf("MCI_PAUSE failed (%u)", (unsigned int)dwReturn);
 
 	wasPlaying = playing;
 	playing = false;
@@ -232,7 +237,7 @@ void CDAudio_Resume(void)
 	dwReturn = mciSendCommand(wDeviceID, MCI_PLAY, MCI_TO | MCI_NOTIFY, (DWORD_PTR)(LPVOID) &mciPlayParms);
 	if (dwReturn)
 	{
-		Con_DPrintf("CDAudio: MCI_PLAY failed (%lu)\n", (unsigned long)dwReturn);
+		Con_DPrintf("CDAudio: MCI_PLAY failed (%u)\n", (unsigned int)dwReturn);
 		return;
 	}
 	playing = true;
@@ -391,7 +396,7 @@ LONG CDAudio_MessageHandler(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 			break;
 
 		default:
-			Con_DPrintf("Unexpected MM_MCINOTIFY type (%i)\n", wParam);
+			Con_DPrintf("Unexpected MM_MCINOTIFY type (%Iu)\n", wParam);
 			return 1;
 	}
 
@@ -473,7 +478,7 @@ int CDAudio_Init(void)
 	dwReturn = mciSendCommand(0, MCI_OPEN, MCI_OPEN_TYPE | MCI_OPEN_SHAREABLE, (DWORD_PTR) (LPVOID) &mciOpenParms);
 	if (dwReturn)
 	{
-		Con_Printf("%s: MCI_OPEN failed (%lu)\n", __thisfunc__, (unsigned long)dwReturn);
+		Con_Printf("%s: MCI_OPEN failed (%u)\n", __thisfunc__, (unsigned int)dwReturn);
 		return -1;
 	}
 	wDeviceID = mciOpenParms.wDeviceID;
@@ -483,7 +488,7 @@ int CDAudio_Init(void)
 	dwReturn = mciSendCommand(wDeviceID, MCI_SET, MCI_SET_TIME_FORMAT, (DWORD_PTR)(LPVOID) &mciSetParms);
 	if (dwReturn)
 	{
-		Con_Printf("MCI_SET_TIME_FORMAT failed (%lu)\n", (unsigned long)dwReturn);
+		Con_Printf("MCI_SET_TIME_FORMAT failed (%u)\n", (unsigned int)dwReturn);
 		mciSendCommand(wDeviceID, MCI_CLOSE, 0, (DWORD_PTR)NULL);
 		return -1;
 	}
