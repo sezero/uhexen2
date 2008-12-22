@@ -1,5 +1,5 @@
 # GNU Makefile for hwmquery using GCC.
-# $Header: /home/ozzie/Download/0000/uhexen2/hw_utils/hwmquery/Makefile,v 1.15 2008-12-22 12:58:07 sezero Exp $
+# $Header: /home/ozzie/Download/0000/uhexen2/hw_utils/hwmquery/Makefile,v 1.16 2008-12-22 14:34:59 sezero Exp $
 #
 # if building a debug version :		make DEBUG=1 [other stuff]
 #
@@ -60,6 +60,7 @@ endif
 EXT_FLAGS:=
 
 ifeq ($(TARGET_OS),win32)
+CFLAGS  := $(CFLAGS) -DWIN32_LEAN_AND_MEAN
 ifeq ($(USE_WINSOCK2),yes)
 EXT_FLAGS+= -D_USE_WINSOCK2
 endif
@@ -67,6 +68,7 @@ INCLUDES := -I$(W32STUFF) -I.
 LDFLAGS  := $(LIBWINSOCK) -mconsole
 endif
 ifeq ($(TARGET_OS),win64)
+CFLAGS  := $(CFLAGS) -DWIN32_LEAN_AND_MEAN
 EXT_FLAGS+= -D_USE_WINSOCK2
 INCLUDES := -I$(W32STUFF) -I.
 LDFLAGS  := $(LIBWINSOCK) -mconsole

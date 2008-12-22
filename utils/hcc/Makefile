@@ -1,5 +1,5 @@
 # GNU Makefile for hexen2 hcc tool using GCC.
-# $Header: /home/ozzie/Download/0000/uhexen2/utils/hcc/Makefile,v 1.20 2008-12-22 12:58:07 sezero Exp $
+# $Header: /home/ozzie/Download/0000/uhexen2/utils/hcc/Makefile,v 1.21 2008-12-22 14:34:59 sezero Exp $
 #
 # if building a debug version :		make DEBUG=1 [other stuff]
 #
@@ -46,11 +46,13 @@ CFLAGS := $(CFLAGS) $(ARCHFLAGS)
 # Other build flags
 
 ifeq ($(TARGET_OS),win32)
+CFLAGS  := $(CFLAGS) -DWIN32_LEAN_AND_MEAN
 INCLUDES:= -I$(W32STUFF) -I$(COMMONDIR)
 LDFLAGS := -mconsole
 LDLIBS  :=
 endif
 ifeq ($(TARGET_OS),win64)
+CFLAGS  := $(CFLAGS) -DWIN32_LEAN_AND_MEAN
 INCLUDES:= -I$(W32STUFF) -I$(COMMONDIR)
 LDFLAGS := -mconsole
 LDLIBS  :=

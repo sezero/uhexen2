@@ -1,5 +1,5 @@
 # GNU Makefile for (gl)hexen2 client/server binaries using GCC.
-# $Header: /home/ozzie/Download/0000/uhexen2/hexen2/Makefile,v 1.94 2008-12-22 14:26:58 sezero Exp $
+# $Header: /home/ozzie/Download/0000/uhexen2/hexen2/Makefile,v 1.95 2008-12-22 14:34:58 sezero Exp $
 #
 # Type "make help" to see the valid targets.
 #
@@ -233,11 +233,13 @@ endif
 
 ifeq ($(TARGET_OS),win32)
 # Main win32 specific includes and flags
+CFLAGS  := $(CFLAGS) -DWIN32_LEAN_AND_MEAN
 INCLUDES:= -I$(W32STUFF) -I$(W32STUFF)/dxsdk/inc -I.
 LDFLAGS := $(LIBWINSOCK) -lwinmm -mwindows
 endif
 ifeq ($(TARGET_OS),win64)
 # Main win64 specific includes and flags
+CFLAGS  := $(CFLAGS) -DWIN32_LEAN_AND_MEAN
 INCLUDES:= -I$(W32STUFF) -I$(W32STUFF)/dxsdk_new/inc -I.
 LDFLAGS := $(LIBWINSOCK) -lwinmm -mwindows
 endif
@@ -373,7 +375,7 @@ endif
 %.o: %.asm
 	$(NASM) $(NASMFLAGS) -o $@ $<
 %.o: %.rc
-	$(WINDRES) $(EXT_FLAGS) --output=coff -o $@ $<
+	$(WINDRES) -DWIN32_LEAN_AND_MEAN $(EXT_FLAGS) --output=coff -o $@ $<
 
 # Objects
 
