@@ -2,7 +2,7 @@
 	net_wins.c
 	winsock udp driver
 
-	$Id: net_wins.c,v 1.27 2007-12-21 15:05:23 sezero Exp $
+	$Id: net_wins.c,v 1.28 2008-12-22 12:25:40 sezero Exp $
 */
 
 
@@ -34,6 +34,7 @@ WSADATA		winsockdata;
 
 //=============================================================================
 
+#if !defined(_USE_WINSOCK2)
 static double	blocktime;
 
 static BOOL PASCAL FAR BlockingHook(void)
@@ -60,7 +61,7 @@ static BOOL PASCAL FAR BlockingHook(void)
 	/* TRUE if we got a message */
 	return ret;
 }
-
+#endif	/* ! _USE_WINSOCK2 */
 
 int WINS_Init (void)
 {
@@ -94,10 +95,14 @@ int WINS_Init (void)
 	}
 	buff[MAXHOSTNAMELEN-1] = 0;
 
+#if !defined(_USE_WINSOCK2)
 	blocktime = Sys_DoubleTime();
 	WSASetBlockingHook(BlockingHook);
+#endif	/* ! _USE_WINSOCK2 */
 	local = gethostbyname(buff);
+#if !defined(_USE_WINSOCK2)
 	WSAUnhookBlockingHook();
+#endif	/* ! _USE_WINSOCK2 */
 	if (local == NULL)
 	{
 		Con_SafePrintf("%s: gethostbyname timed out, UDP disabled.\n", __thisfunc__);
