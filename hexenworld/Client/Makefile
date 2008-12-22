@@ -1,5 +1,5 @@
 # GNU Makefile for hexenworld clients using GCC.
-# $Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/Makefile,v 1.86 2008-12-22 12:58:06 sezero Exp $
+# $Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/Makefile,v 1.87 2008-12-22 14:26:58 sezero Exp $
 #
 # Type "make help" to see the valid targets.
 #
@@ -216,7 +216,7 @@ LDFLAGS := $(LIBWINSOCK) -lwinmm -mwindows
 endif
 ifeq ($(TARGET_OS),win64)
 # Main win64 specific includes and flags
-INCLUDES:= -I$(W32STUFF) -I$(W32STUFF)/dxsdk/inc -I.
+INCLUDES:= -I$(W32STUFF) -I$(W32STUFF)/dxsdk_new/inc -I.
 LDFLAGS := $(LIBWINSOCK) -lwinmm -mwindows
 endif
 ifeq ($(TARGET_OS),unix)
