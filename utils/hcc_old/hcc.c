@@ -1,7 +1,7 @@
 /*
 	hcc.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/utils/hcc_old/hcc.c,v 1.18 2008-01-12 09:46:19 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/utils/hcc_old/hcc.c,v 1.19 2008-12-22 15:44:10 sezero Exp $
 
 	Hash table modifications based on fastqcc by Jonathan Roy
 	(roy@atlantic.net).
@@ -268,11 +268,11 @@ static void WriteData (int crc)
 	strofs = (strofs + 3) & ~3;
 
 	printf("object file %s\n", destfile);
-	printf("      registers: %-6d / %-6d (%6lu)\n", numpr_globals, MAX_REGS, (unsigned long)numpr_globals*sizeof(float));
-	printf("     statements: %-6d / %-6d (%6lu)\n", numstatements, MAX_STATEMENTS, (unsigned long)numstatements*sizeof(dstatement_t));
-	printf("      functions: %-6d / %-6d (%6lu)\n", numfunctions, MAX_FUNCTIONS, (unsigned long)numfunctions*sizeof(dfunction_t));
-	printf("    global defs: %-6d / %-6d (%6lu)\n", numglobaldefs, MAX_GLOBALS, (unsigned long)numglobaldefs*sizeof(ddef_t));
-	printf("     field defs: %-6d / %-6d (%6lu)\n", numfielddefs, MAX_FIELDS, (unsigned long)numfielddefs*sizeof(ddef_t));
+	printf("      registers: %-6d / %-6d (%6d)\n", numpr_globals, MAX_REGS, numpr_globals*(int)sizeof(float));
+	printf("     statements: %-6d / %-6d (%6d)\n", numstatements, MAX_STATEMENTS, numstatements*(int)sizeof(dstatement_t));
+	printf("      functions: %-6d / %-6d (%6d)\n", numfunctions, MAX_FUNCTIONS, numfunctions*(int)sizeof(dfunction_t));
+	printf("    global defs: %-6d / %-6d (%6d)\n", numglobaldefs, MAX_GLOBALS, numglobaldefs*(int)sizeof(ddef_t));
+	printf("     field defs: %-6d / %-6d (%6d)\n", numfielddefs, MAX_FIELDS, numfielddefs*(int)sizeof(ddef_t));
 	printf("    string heap: %-6d / %-6d\n", strofs, MAX_STRINGS);
 	printf("  entity fields: %d\n", pr.size_fields);
 
