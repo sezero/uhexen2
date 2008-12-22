@@ -1,6 +1,6 @@
 /*
 	lmp2pcx.c
-	$Id: lmp2pcx.c,v 1.11 2008-01-29 12:03:14 sezero Exp $
+	$Id: lmp2pcx.c,v 1.12 2008-12-22 12:20:04 sezero Exp $
 	Copyright (C) 2002-2007 Forest Hale
 
 	This program is free software; you can redistribute it and/or
@@ -724,7 +724,7 @@ int main (int argc, char **argv)
 	if (flags == 0)
 		flags = (CONV_LMP|CONV_MIP|CONV_WAL|CONV_WAD);
 
-	j = FileTime ("palette.lmp");
+	j = access("palette.lmp", R_OK);
 #if LOAD_PALETTEFILE
 	if (j == -1)
 	{
