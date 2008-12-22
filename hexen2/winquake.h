@@ -2,7 +2,7 @@
 	winquake.h
 	Win32-specific Quake header file
 
-	$Id: winquake.h,v 1.34 2008-12-22 12:32:23 sezero Exp $
+	$Id: winquake.h,v 1.35 2008-12-22 14:30:21 sezero Exp $
 */
 
 #if !defined(PLATFORM_WINDOWS)
@@ -26,9 +26,11 @@
 #include <mmsystem.h>
 
 /* required compatibility versions for directx components */
+#if !defined(_WIN64)
 #define	DIRECTDRAW_VERSION	0x0300
 #define	DIRECTSOUND_VERSION	0x0300
 #define	DIRECTINPUT_VERSION	0x0300
+#endif	/* _WIN64 */
 
 #if !defined(__cplusplus) && !defined(CINTERFACE)
 #define	CINTERFACE	/* for directx macros. */
