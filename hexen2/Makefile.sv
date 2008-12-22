@@ -1,10 +1,10 @@
 # GNU Makefile for Hexen II Dedicated Server (h2ded) using GCC.
-# $Header: /home/ozzie/Download/0000/uhexen2/hexen2/Makefile.sv,v 1.23 2008-04-03 23:37:23 sezero Exp $
+# $Header: /home/ozzie/Download/0000/uhexen2/hexen2/Makefile.sv,v 1.24 2008-12-22 12:58:06 sezero Exp $
 #
 # It is ESSENTIAL that you run make clean between different
 # types of builds or different types of targets.
 #
-# To cross-compile for Win32 on Unix, you must pass the WINBUILD=1
+# To cross-compile for Win32 on Unix, you must pass the W32BUILD=1
 # argument to make. It would be best if you examine the script named
 # build_cross_win32.sh for cross compilation.
 #
@@ -12,6 +12,10 @@
 #
 # OPT_EXTRA	yes  =  Some extra optimization flags will be added (default)
 #		no   =	No extra optimizations will be made
+#
+# USE_WINSOCK2	yes  =	Use WinSock2 and link to ws2_32 instead of wsock32
+# (for Win32)	no   =	(default) Use WinSock1.1 for compatibility with old
+#			Windows 95 machines.
 #
 # COMPILE_32BITS yes =  Compile as a 32 bit binary. If you are on a 64 bit
 #			platform and having problems with 64 bit compiled
@@ -36,17 +40,17 @@ UHEXEN2_TOP:=..
 # General options (see explanations at the top)
 OPT_EXTRA=yes
 COMPILE_32BITS=no
+USE_WINSOCK2=no
 
 # include the common dirty stuff
 include $(UHEXEN2_TOP)/scripts/makefile.inc
 
+ifeq ($(TARGET_OS),win64)
+USE_WINSOCK2=yes
+endif
+
 # Names of the binaries
-ifeq ($(TARGET_OS),win32)
-BINARY:=h2ded.exe
-endif
-ifeq ($(TARGET_OS),unix)
-BINARY:=h2ded
-endif
+BINARY:=h2ded$(exe_ext)
 
 # Compiler flags
 
@@ -94,9 +98,23 @@ CFLAGS := $(CFLAGS) $(ARCHFLAGS)
 EXT_FLAGS:= -DSERVERONLY
 INCLUDES:= -I./server -I.
 
+ifeq ($(USE_WINSOCK2),yes)
+LIBWINSOCK=-lws2_32
+else
+LIBWINSOCK=-lwsock32
+endif
+
 ifeq ($(TARGET_OS),win32)
+ifeq ($(USE_WINSOCK2),yes)
+EXT_FLAGS+= -D_USE_WINSOCK2
+endif
 INCLUDES:= -I$(W32STUFF) $(INCLUDES)
-LDFLAGS := -lwinmm -lwsock32 -mconsole
+LDFLAGS := $(LIBWINSOCK) -lwinmm -mconsole
+endif
+ifeq ($(TARGET_OS),win64)
+EXT_FLAGS+= -D_USE_WINSOCK2
+INCLUDES:= -I$(W32STUFF) $(INCLUDES)
+LDFLAGS := $(LIBWINSOCK) -lwinmm -mconsole
 endif
 ifeq ($(TARGET_OS),unix)
 LDFLAGS := $(LIBSOCKET) -lm
@@ -126,6 +144,10 @@ sv_objs/%.o: server/%.c
 
 # Platform specific object settings
 ifeq ($(TARGET_OS),win32)
+SYSOBJ_NET := win_stuff/net_win.o win_stuff/net_wins.o win_stuff/net_wipx.o
+SYSOBJ_SYS := sv_objs/sys_win.o
+endif
+ifeq ($(TARGET_OS),win64)
 SYSOBJ_NET := win_stuff/net_win.o win_stuff/net_wins.o win_stuff/net_wipx.o
 SYSOBJ_SYS := sv_objs/sys_win.o
 endif

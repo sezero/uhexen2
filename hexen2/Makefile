@@ -1,5 +1,5 @@
 # GNU Makefile for (gl)hexen2 client/server binaries using GCC.
-# $Header: /home/ozzie/Download/0000/uhexen2/hexen2/Makefile,v 1.92 2008-11-11 07:33:52 sezero Exp $
+# $Header: /home/ozzie/Download/0000/uhexen2/hexen2/Makefile,v 1.93 2008-12-22 12:58:06 sezero Exp $
 #
 # Type "make help" to see the valid targets.
 #
@@ -8,7 +8,7 @@
 #
 # Unix platforms require SDL !!!
 #
-# To cross-compile for Win32 on Unix, you must pass the WINBUILD=1
+# To cross-compile for Win32 on Unix, you must pass the W32BUILD=1
 # argument to make. It would be best if you examine the script named
 # build_cross_win32.sh for cross compilation.
 #
@@ -62,6 +62,10 @@
 #
 # WITH_SPLASHES	yes  =	(default) enable startup splash screens
 # (for Win32)	no   =	disable startup splash screens
+#
+# USE_WINSOCK2	yes  =	Use WinSock2 and link to ws2_32 instead of wsock32
+# (for Win32)	no   =	(default) Use WinSock1.1 for compatibility with old
+#			Windows 95 machines.
 #
 # LINK_DIRECTX	no  =	(default) Don't link to the dsound and dinput at compile
 # (for Win32)		time. The binaries will dynamically load the necessary
@@ -122,6 +126,7 @@ USE_MIDI=yes
 USE_CDAUDIO=yes
 USE_SDLCD=no
 WITH_SPLASHES=yes
+USE_WINSOCK2=no
 LINK_DIRECTX=no
 OPT_EXTRA=yes
 LINK_GL_LIBS=no
@@ -149,8 +154,16 @@ ifeq ($(TARGET_OS),dos)
 USE_X86_ASM=yes
 endif
 
+ifeq ($(TARGET_OS),win64)
+USE_WINSOCK2=yes
+endif
+
 # Names of the binaries
 ifeq ($(TARGET_OS),win32)
+H2_BINARY:=h2.exe
+GLH2_BINARY:=glh2.exe
+endif
+ifeq ($(TARGET_OS),win64)
 H2_BINARY:=h2.exe
 GLH2_BINARY:=glh2.exe
 endif
@@ -158,8 +171,8 @@ ifeq ($(TARGET_OS),dos)
 H2_BINARY:=h2dos.exe
 endif
 ifeq ($(TARGET_OS),unix)
-H2_BINARY:=hexen2
-GLH2_BINARY:=glhexen2
+H2_BINARY:=hexen2$(exe_ext)
+GLH2_BINARY:=glhexen2$(exe_ext)
 endif
 
 # Compiler flags
@@ -212,10 +225,21 @@ ifeq ($(USE_X86_ASM),yes)
 EXT_FLAGS:= $(EXT_FLAGS) -DUSE_INTEL_ASM
 endif
 
+ifeq ($(USE_WINSOCK2),yes)
+LIBWINSOCK=-lws2_32
+else
+LIBWINSOCK=-lwsock32
+endif
+
 ifeq ($(TARGET_OS),win32)
 # Main win32 specific includes and flags
 INCLUDES:= -I$(W32STUFF) -I$(W32STUFF)/dxsdk/inc -I.
-LDFLAGS := -lwinmm -lwsock32 -mwindows
+LDFLAGS := $(LIBWINSOCK) -lwinmm -mwindows
+endif
+ifeq ($(TARGET_OS),win64)
+# Main win64 specific includes and flags
+INCLUDES:= -I$(W32STUFF) -I$(W32STUFF)/dxsdk/inc -I.
+LDFLAGS := $(LIBWINSOCK) -lwinmm -mwindows
 endif
 ifeq ($(TARGET_OS),dos)
 # Main dos specific includes and flags
@@ -244,10 +268,8 @@ ifneq ($(HOST_OS),freebsd)
 USE_3DFXGAMMA=no
 endif
 endif
-ifneq ($(TARGET_OS),win32)
 ifeq ($(USE_3DFXGAMMA),yes)
 GL_DEFS+= -DUSE_3DFXGAMMA
-endif
 endif
 
 ifeq ($(LINK_GL_LIBS),no)
@@ -300,6 +322,10 @@ endif
 ifeq ($(TARGET_OS),win32)
 # Start Win32-specific extra flags/settings
 
+ifeq ($(USE_WINSOCK2),yes)
+EXT_FLAGS+= -D_USE_WINSOCK2
+endif
+
 ifeq ($(LINK_DIRECTX),no)
 EXT_FLAGS+= -DDX_DLSYM
 else
@@ -315,6 +341,29 @@ else
 #GLFLAGS+=-lcomctl32
 endif
 # End of Win32 specific extras
+endif
+
+
+ifeq ($(TARGET_OS),win64)
+# Start Win64-specific extra flags/settings
+
+EXT_FLAGS+= -D_USE_WINSOCK2
+
+ifeq ($(LINK_DIRECTX),no)
+EXT_FLAGS+= -DDX_DLSYM
+else
+LDFLAGS += -ldsound -ldinput -ldxguid
+endif
+
+ifeq ($(WITH_SPLASHES),no)
+EXT_FLAGS+= -DNO_SPLASHES
+else
+# gl version needs linking to comctl32.dll because of that progress
+# bar thingy. it is necessary for the InitCommonControls call, only
+# when USE_HEXEN2_PALTEX_CODE is defined as 0 in h2option.h
+#GLFLAGS+=-lcomctl32
+endif
+# End of Win64 specific extras
 endif
 
 
@@ -381,6 +430,9 @@ COMOBJ_SND := snd_sys.o snd_dma.o snd_mix.o $(SOUND_ASM) snd_mem.o
 ifeq ($(TARGET_OS),win32)
 SYSOBJ_SND := win_stuff/snd_win.o
 endif
+ifeq ($(TARGET_OS),win64)
+SYSOBJ_SND := win_stuff/snd_win.o
+endif
 ifeq ($(TARGET_OS),dos)
 SYSOBJ_SND := dos/snd_dos.o dos/snd_gus.o
 endif
@@ -396,6 +448,9 @@ SYSOBJ_MIDI:= midi_nul.o
 EXT_FLAGS += -DNO_MIDIMUSIC
 else
 ifeq ($(TARGET_OS),win32)
+SYSOBJ_MIDI:= win_stuff/midi.o win_stuff/mstrconv.o
+endif
+ifeq ($(TARGET_OS),win64)
 SYSOBJ_MIDI:= win_stuff/midi.o win_stuff/mstrconv.o
 endif
 ifeq ($(TARGET_OS),dos)
@@ -422,6 +477,9 @@ else
 ifeq ($(TARGET_OS),win32)
 SYSOBJ_CDA := win_stuff/cd_win.o
 endif
+ifeq ($(TARGET_OS),win64)
+SYSOBJ_CDA := win_stuff/cd_win.o
+endif
 ifeq ($(TARGET_OS),dos)
 SYSOBJ_CDA := dos/cd_dos.o
 endif
@@ -433,6 +491,13 @@ endif
 
 # Other platform specific object settings
 ifeq ($(TARGET_OS),win32)
+SYSOBJ_INPUT := win_stuff/in_win.o
+SYSOBJ_GL_VID:= win_stuff/gl_vidnt.o
+SYSOBJ_SOFT_VID:= win_stuff/vid_win.o
+SYSOBJ_NET := win_stuff/net_win.o win_stuff/net_wins.o win_stuff/net_wipx.o
+SYSOBJ_SYS := win_stuff/conproc.o win_stuff/sys_win.o win32res.o
+endif
+ifeq ($(TARGET_OS),win64)
 SYSOBJ_INPUT := win_stuff/in_win.o
 SYSOBJ_GL_VID:= win_stuff/gl_vidnt.o
 SYSOBJ_SOFT_VID:= win_stuff/vid_win.o

@@ -1,0 +1,24 @@
+# $Header: /home/ozzie/Download/0000/uhexen2/scripts/cross_defs_w64,v 1.1 2008-12-22 12:58:07 sezero Exp $
+
+# This file contains all common Win64 cross compilation definitions for
+# use with all other build_cross_win64.sh scripts for the uhexen2 tree.
+
+TARGET=x86_64-pc-mingw32
+
+# change this to meet your setup:
+#PREFIX=/opt/buildbot/mingw-w64/slave-linux/linux-i386/build/root
+PREFIX=/opt/cross_win64
+
+PATH="$PREFIX/bin:$PREFIX/$TARGET/bin:$PATH"
+export PATH
+
+W64BUILD=1
+
+CC="$TARGET-gcc"
+AS="$TARGET-as"
+AR="$TARGET-ar"
+WINDRES="$TARGET-windres"
+export CC WINDRES AS AR W64BUILD
+
+STRIPPER="$TARGET-strip"
+

@@ -1,9 +1,9 @@
 # GNU Makefile for hexen2 lmp2pcx tool using GCC.
-# $Header: /home/ozzie/Download/0000/uhexen2/utils/texutils/lmp2pcx/Makefile,v 1.12 2008-04-03 09:25:55 sezero Exp $
+# $Header: /home/ozzie/Download/0000/uhexen2/utils/texutils/lmp2pcx/Makefile,v 1.13 2008-12-22 12:58:08 sezero Exp $
 #
 # if building a debug version :		make DEBUG=1 [other stuff]
 #
-# To cross-compile for Win32 on Unix, you must pass the WINBUILD=1
+# To cross-compile for Win32 on Unix, you must pass the W32BUILD=1
 # argument to make. It would be best if you examine the script named
 # build_cross_win32.sh for cross compilation.
 
@@ -19,12 +19,7 @@ DESTDIR  :=../../bin
 include $(UHEXEN2_TOP)/scripts/makefile.inc
 
 # Names of the binaries
-ifeq ($(TARGET_OS),win32)
-BINARY:=lmp2pcx.exe
-endif
-ifeq ($(TARGET_OS),unix)
-BINARY:=lmp2pcx
-endif
+BINARY:=lmp2pcx$(exe_ext)
 
 # Compiler flags
 
@@ -49,6 +44,11 @@ CFLAGS := $(CFLAGS) $(ARCHFLAGS)
 # Other build flags
 
 ifeq ($(TARGET_OS),win32)
+INCLUDES:= -I$(W32STUFF) -I$(COMMONDIR)
+LDFLAGS := -mconsole
+LDLIBS  :=
+endif
+ifeq ($(TARGET_OS),win64)
 INCLUDES:= -I$(W32STUFF) -I$(COMMONDIR)
 LDFLAGS := -mconsole
 LDLIBS  :=

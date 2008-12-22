@@ -1,5 +1,5 @@
 # GNU Makefile using GCC in a unix shell.
-# $Header: /home/ozzie/Download/0000/uhexen2/scripts/makefile.inc,v 1.23 2008-04-02 17:55:23 sezero Exp $
+# $Header: /home/ozzie/Download/0000/uhexen2/scripts/makefile.inc,v 1.24 2008-12-22 12:58:07 sezero Exp $
 
 # This file is responsible for determining the Host OS and Target OS,
 # setting common paths, selecting the compiler, assigning the compiler
@@ -68,6 +68,7 @@ CROSS_COMPILE:=y
 TARGET_OS:=dos
 else
 # compiling for windows
+# !!! FIXME !!! what about win64
 TARGET_OS:=win32
 endif
 
@@ -79,19 +80,24 @@ ifneq ($(HOST_OS),dos)
 
 # running on a Unixish OS
 
-ifdef WINBUILD
+ifdef W32BUILD
 # cross compilation for windows
 CROSS_COMPILE:=y
 TARGET_OS:=win32
-else
+endif
+ifdef W64BUILD
+# cross compilation for windows
+CROSS_COMPILE:=y
+TARGET_OS:=win64
+endif
 ifdef DOSBUILD
 # cross compilation for dos
 CROSS_COMPILE:=y
 TARGET_OS:=dos
-else
+endif
+ifeq ($(CROSS_COMPILE),n)
 # compiling for the host os.
 TARGET_OS:=unix
-endif
 endif
 
 endif
@@ -100,9 +106,33 @@ endif
 
 ifeq ($(TARGET_OS),unix)
 MACH_TYPE:=$(shell sh $(UHEXEN2_TOP)/scripts/detect.sh arch)
-else
-# windows or dos. FIXME: windows does not have to be x86.
+endif
+ifeq ($(TARGET_OS),dos)
 MACH_TYPE:=x86
+endif
+ifeq ($(TARGET_OS),win32)
+# FIXME: win32 does not have to be x86.
+MACH_TYPE:=x86
+endif
+ifeq ($(TARGET_OS),win64)
+# FIXME: uname from msys might not work here
+#MACH_TYPE:=ia64
+MACH_TYPE:=x86_64
+endif
+
+
+################################
+# Binary filename extension:
+
+exe_ext:=
+ifeq ($(TARGET_OS),dos)
+exe_ext:=.exe
+endif
+ifeq ($(TARGET_OS),win32)
+exe_ext:=.exe
+endif
+ifeq ($(TARGET_OS),win64)
+exe_ext:=.exe
 endif
 
 
@@ -213,6 +243,11 @@ endif
 ifeq ($(TARGET_OS),win32)
 GL_LINK := -lopengl32
 else
+ifeq ($(TARGET_OS),win64)
+GL_LINK := -lopengl32
+else
+# general X11/unix
 GL_LINK := -L$(X11BASE)/lib -lGL
+endif
 endif
 

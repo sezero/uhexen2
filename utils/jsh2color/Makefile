@@ -1,9 +1,9 @@
 # GNU Makefile for hexen2 jsh2color tool using GCC.
-# $Header: /home/ozzie/Download/0000/uhexen2/utils/jsh2color/Makefile,v 1.25 2008-04-03 09:25:54 sezero Exp $
+# $Header: /home/ozzie/Download/0000/uhexen2/utils/jsh2color/Makefile,v 1.26 2008-12-22 12:58:07 sezero Exp $
 #
 # if building a debug version :		make DEBUG=1 [other stuff]
 #
-# To cross-compile for Win32 on Unix, you must pass the WINBUILD=1
+# To cross-compile for Win32 on Unix, you must pass the W32BUILD=1
 # argument to make. It would be best if you examine the script named
 # build_cross_win32.sh for cross compilation.
 
@@ -19,12 +19,7 @@ DESTDIR  :=../bin
 include $(UHEXEN2_TOP)/scripts/makefile.inc
 
 # Names of the binaries
-ifeq ($(TARGET_OS),win32)
-BINARY:=jsh2colour.exe
-endif
-ifeq ($(TARGET_OS),unix)
-BINARY:=jsh2colour
-endif
+BINARY:=jsh2colour$(exe_ext)
 
 # Compiler flags
 
@@ -50,6 +45,11 @@ CFLAGS := $(CFLAGS) -DDOUBLEVEC_T
 # Other build flags
 
 ifeq ($(TARGET_OS),win32)
+INCLUDES:= -I$(W32STUFF) -I$(COMMONDIR)
+LDFLAGS := -mconsole
+LDLIBS  :=
+endif
+ifeq ($(TARGET_OS),win64)
 INCLUDES:= -I$(W32STUFF) -I$(COMMONDIR)
 LDFLAGS := -mconsole
 LDLIBS  :=
