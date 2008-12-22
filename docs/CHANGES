@@ -3,6 +3,33 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2008-12-22 (CVS):
+    * utils: fixed some 'cast from pointer to integer of different size' warnings
+      for win64.
+    * utils: removed FileTime(), not really useful.
+    * cd_win.c: revised/fixed the printf format strings.
+    * hexen2/sys_win.c: fixed atoi to HANDLE cast for win64.
+    * updated net_sys.h for winsock2.
+    * hexen2/net_wins.c: don't use WSASetBlockingHook with winsock2.
+    * winquake.h: updated for winsock2.
+    * support for win64 builds: adjusted the makefiles and added build_cross_win64
+      scripts.  at present, only cross compilation on linux was tested using the
+      mingw-w64 beta builds from mingw-w64.sourceforge.net. there are some warnings
+      but they can be fixed and the whole thing should be functional soon.
+    * added new directx headers from the extracted from mingw-w64-snapshot-20081115.
+      win64 builds will use them instead of the old dx6 headers.
+    * don't define directx3 compatibility versions for win64 builds.
+    * build the windows versions with WIN32_LEAN_AND_MEAN defined.
+
+2008-12-21 (CVS):
+    * FS_CopyFile: separated the file copying procedure into a new Sys_CopyFile.
+    * sv_phys.c: fixed warning from gcc-4.4:
+	sv_phys.c: In function 'SV_Physics_Step':
+	sv_phys.c:2195: warning: suggest parentheses around operand of '!' or change '&' to '&&' or '!' to '~'
+    * zone.c: don't unconditionally enable Z_DEBUG_COMMANDS for debug builds.
+    * zone: added Z_Strdup as a utility.
+    * FS_CopyFile, FS_CopyFromFile: use Z_Strdup
+
 2008-12-20 (CVS):
     * launcher: replaced the old md5 code the maintained one from libbsd.
     * launcher, patching: re-written the inter-threads textview log printing to
