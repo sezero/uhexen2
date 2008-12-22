@@ -20,6 +20,7 @@ Development Progress	:
       win64 builds will use them instead of the old dx6 headers.
     * don't define directx3 compatibility versions for win64 builds.
     * build the windows versions with WIN32_LEAN_AND_MEAN defined.
+    * hcc, hcc_old: fixed printf format strings.
 
 2008-12-21 (CVS):
     * FS_CopyFile: separated the file copying procedure into a new Sys_CopyFile.
