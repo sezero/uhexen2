@@ -4,7 +4,7 @@
 	- depends on arch_def.h
 	- may depend on q_stdinc.h
 
-	$Id: net_sys.h,v 1.11 2007-12-14 16:41:10 sezero Exp $
+	$Id: net_sys.h,v 1.12 2008-12-22 12:24:11 sezero Exp $
 
 	Copyright (C) 2007  O.Sezer <sezero@users.sourceforge.net>
 
@@ -71,7 +71,15 @@ typedef int	socklen_t;
 #if defined(PLATFORM_WINDOWS)
 
 #include <windows.h>
+#if defined(_WIN64) && !defined(_USE_WINSOCK2)
+#define _USE_WINSOCK2	1
+#endif
+#if !defined(_USE_WINSOCK2)
 #include <winsock.h>
+#else
+#include <winsock2.h>
+#include <ws2tcpip.h>
+#endif
 
 /* there is no in_addr_t on windows: define it as
    the type of the S_addr of in_addr structure */
