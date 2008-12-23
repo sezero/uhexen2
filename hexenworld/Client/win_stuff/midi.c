@@ -1,6 +1,6 @@
 /*
 	midi_win.c
-	$Id: midi.c,v 1.28 2008-03-31 11:25:23 sezero Exp $
+	$Id: midi.c,v 1.29 2008-12-23 18:37:08 sezero Exp $
 
 	MIDI module for Win32
 */
@@ -37,7 +37,7 @@ static HANDLE		hBufferReturnEvent;
 
 
 static void FreeBuffers (void);
-static BOOL StreamBufferSetup (const char *Name);
+static int  StreamBufferSetup (const char *Name);
 static void CALLBACK MidiProc (HMIDIIN, UINT, DWORD, DWORD, DWORD);
 static void SetAllChannelVolumes (DWORD dwVolumePercent);
 //static void SetChannelVolume (DWORD dwChannel, DWORD dwVolumePercent);
@@ -364,12 +364,12 @@ static void FreeBuffers(void)
 /* StreamBufferSetup()								*/
 /*										*/
 /* This function uses the filename stored in the global character array to	*/
-/* open a MIDI file. Then it goes tabout converting at least the first part of	*/
+/* open a MIDI file. Then it goes about converting at least the first part of	*/
 /* that file into a midiStream buffer for playback.				*/
 /********************************************************************************/
-static BOOL StreamBufferSetup(const char *Name)
+static int StreamBufferSetup(const char *Name)
 {
-	int nChkErr;
+	int err;
 	BOOL bFoundEnd = FALSE;
 	DWORD dwConvertFlag, idx;
 	MMRESULT mmrRetVal;
@@ -381,7 +381,7 @@ static BOOL StreamBufferSetup(const char *Name)
 		if (mmrRetVal != MMSYSERR_NOERROR)
 		{
 			MidiErrorMessageBox(mmrRetVal);
-			return(TRUE);
+			return 1;
 		}
 	}
 
@@ -393,12 +393,12 @@ static BOOL StreamBufferSetup(const char *Name)
 		{
 		// Buffers we already allocated will be killed by WM_DESTROY
 		// after we fail on the create by returning with -1
-			return(-1);
+			return (-1);
 		}
 	}
 
 	if (ConverterInit(Name))
-		return(TRUE);
+		return 1;
 
 	// Initialize the volume cache array to some pre-defined value
 	for (idx = 0; idx < NUM_CHANNELS; idx++)
@@ -412,7 +412,7 @@ static BOOL StreamBufferSetup(const char *Name)
 	{
 		MidiErrorMessageBox(mmrRetVal);
 		ConverterCleanup();
-		return(TRUE);
+		return 1;
 	}
 
 	nEmptyBuffers = 0;
@@ -428,10 +428,10 @@ static BOOL StreamBufferSetup(const char *Name)
 		ciStreamBuffers[nCurrentBuffer].tkStart = 0;
 		ciStreamBuffers[nCurrentBuffer].bTimesUp = FALSE;
 
-		nChkErr = ConvertToBuffer(dwConvertFlag, &ciStreamBuffers[nCurrentBuffer]);
-		if (nChkErr != CONVERTERR_NOERROR)
+		err = ConvertToBuffer(dwConvertFlag, &ciStreamBuffers[nCurrentBuffer]);
+		if (err != CONVERTERR_NOERROR)
 		{
-			if (nChkErr == CONVERTERR_DONE)
+			if (err == CONVERTERR_DONE)
 			{
 				bFoundEnd = TRUE;
 			}
@@ -439,7 +439,7 @@ static BOOL StreamBufferSetup(const char *Name)
 			{
 				DEBUG_Printf("%s: Initial conversion pass failed\n", __thisfunc__);
 				ConverterCleanup();
-				return(TRUE);
+				return 1;
 			}
 		}
 		ciStreamBuffers[nCurrentBuffer].mhBuffer.dwBytesRecorded = ciStreamBuffers[nCurrentBuffer].dwBytesRecorded;
@@ -451,7 +451,7 @@ static BOOL StreamBufferSetup(const char *Name)
 			{
 				MidiErrorMessageBox(mmrRetVal);
 				ConverterCleanup();
-				return(TRUE);
+				return 1;
 			}
 		}
 
@@ -470,7 +470,7 @@ static BOOL StreamBufferSetup(const char *Name)
 	bBuffersPrepared = true;
 	nCurrentBuffer = 0;
 
-	return(FALSE);
+	return 0;
 }
 
 
@@ -486,7 +486,7 @@ static void CALLBACK MidiProc(HMIDIIN hMidi, UINT uMsg, DWORD dwInstance, DWORD 
 	MIDIEVENT *pme;
 	MIDIHDR *pmh;
 	MMRESULT mmrRetVal;
-	int nChkErr;
+	int err;
 
 	switch (uMsg)
 	{
@@ -545,10 +545,10 @@ static void CALLBACK MidiProc(HMIDIIN hMidi, UINT uMsg, DWORD dwInstance, DWORD 
 			ciStreamBuffers[nCurrentBuffer].dwBytesRecorded = 0;
 			ciStreamBuffers[nCurrentBuffer].bTimesUp = FALSE;
 
-			nChkErr = ConvertToBuffer(0, &ciStreamBuffers[nCurrentBuffer]);
-			if (nChkErr != CONVERTERR_NOERROR)
+			err = ConvertToBuffer(0, &ciStreamBuffers[nCurrentBuffer]);
+			if (err != CONVERTERR_NOERROR)
 			{
-				if (nChkErr == CONVERTERR_DONE)
+				if (err == CONVERTERR_DONE)
 				{
 					// Don't include this one in the count
 					nWaitingBuffers = NUM_STREAM_BUFFERS - 1;

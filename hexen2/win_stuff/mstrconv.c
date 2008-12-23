@@ -1,6 +1,6 @@
 /*
 	mstrconv.c
-	$Id: mstrconv.c,v 1.24 2007-11-11 13:17:43 sezero Exp $
+	$Id: mstrconv.c,v 1.25 2008-12-23 18:37:08 sezero Exp $
 
 	Converting a MID file to a MIDI stream for
 	playback using the Win32 midiStream API.
@@ -55,13 +55,13 @@ static const char gteMetaTrunc[]	= "Meta event truncated";
 
 // Prototypes
 //
-static int  AddEventToStreamBuffer (PTEMPEVENT pteTemp, LPCONVERTINFO);
-static BOOL GetInFileData (LPVOID lpDest, DWORD cbToGet);
-static BOOL GetTrackByte (PINTRACKSTATE ptsTrack, LPBYTE lpbyByte);
-static BOOL GetTrackEvent (PINTRACKSTATE ptsTrack, PTEMPEVENT pteTemp);
-static BOOL GetTrackVDWord (PINTRACKSTATE ptsTrack, LPDWORD lpdw);
-static BOOL RefillTrackBuffer (PINTRACKSTATE ptsTrack);
-static BOOL RewindConverter (void);
+static int AddEventToStreamBuffer (PTEMPEVENT pteTemp, LPCONVERTINFO);
+static int GetInFileData (LPVOID lpDest, DWORD cbToGet);
+static int GetTrackByte (PINTRACKSTATE ptsTrack, LPBYTE lpbyByte);
+static int GetTrackEvent (PINTRACKSTATE ptsTrack, PTEMPEVENT pteTemp);
+static int GetTrackVDWord (PINTRACKSTATE ptsTrack, LPDWORD lpdw);
+static int RefillTrackBuffer (PINTRACKSTATE ptsTrack);
+static int RewindConverter (void);
 
 #ifdef DEBUG_BUILD
 static void ShowTrackError (PINTRACKSTATE ptsTrack, const char *szErr)
@@ -119,12 +119,12 @@ static BOOL ReadFromFile (LPVOID lpBuffer, DWORD nNumberOfBytesToRead, LPDWORD l
 // Allocate the input track structures and initialize them
 // Initialize the output track structures
 //
-// Return TRUE on success
+// Return zero on success
 // Prints its own error message if something goes wrong
 //
-BOOL ConverterInit (const char *szInFile)
+int ConverterInit (const char *szInFile)
 {
-	BOOL	fRet = TRUE;
+	int	err = 1;
 	DWORD	cbRead, dwTag, cbHeader, dwToRead;
 	UINT	idx;
 	MIDIFILEHDR	Header;
@@ -234,7 +234,7 @@ BOOL ConverterInit (const char *szInFile)
 		// We always preread the time from each track so the mixer code can
 		// determine which track has the next event with a minimum of work
 		//
-		if ( GetTrackVDWord(ptsTrack, &ptsTrack->tkNextEventDue) )
+		if (GetTrackVDWord(ptsTrack, &ptsTrack->tkNextEventDue))
 		{
 			Con_Printf("MIDI: %s\n", szInitErrInFile);
 			goto Init_Cleanup;
@@ -246,13 +246,13 @@ BOOL ConverterInit (const char *szInFile)
 
 	}	// End of track initialization code
 
-	fRet = FALSE;
+	err = 0;
 
 Init_Cleanup:
-	if (fRet)
+	if (err)
 		ConverterCleanup();
 
-	return (fRet);
+	return err;
 }
 
 
@@ -261,20 +261,19 @@ Init_Cleanup:
 //
 // Gets the requested number of bytes of data from the input file and returns
 // a pointer to them.
-// 
-// Returns a pointer to the data or NULL if we'd read more than is
-// there.
 //
-static BOOL GetInFileData (LPVOID lpDest, DWORD cbToGet)
+// Returns a pointer to the data or NULL if we'd read more than is there.
+//
+static int GetInFileData (LPVOID lpDest, DWORD cbToGet)
 {
 	DWORD	cbRead;
 
 	if (!ReadFromFile(lpDest, cbToGet, &cbRead) || (cbRead != cbToGet))
 	{
-		return (TRUE);
+		return 1;
 	}
 
-	return (FALSE);
+	return 0;
 }
 
 
@@ -308,10 +307,10 @@ void ConverterCleanup (void)
 /* resets the tracks without closing and opening the file, thus reducing the	*/
 /* time it takes to loop back to the beginning when looping.			*/
 /********************************************************************************/
-static BOOL RewindConverter (void)
+static int RewindConverter (void)
 {
 	DWORD	dwToRead, cbRead, idx;
-	BOOL	fRet;
+	int	err = 1;
 
 	PINTRACKSTATE	ptsTrack;
 
@@ -373,14 +372,10 @@ static BOOL RewindConverter (void)
 
 	} // End of track initialization code
 
-	fRet = FALSE;
+	err = 0;
 
 Rewind_Cleanup:
-
-	if (fRet)
-		return (TRUE);
-
-	return (FALSE);
+	return err;
 }
 
 
@@ -403,8 +398,8 @@ int ConvertToBuffer (DWORD dwFlags, LPCONVERTINFO lpciInfo)
 	static DWORD		tkNext;
 	static TEMPEVENT	teTemp;
 
-	int	nChkErr;
-	DWORD	idx;
+	int		err;
+	DWORD		idx;
 
 	lpciInfo->dwBytesRecorded = 0;
 
@@ -457,16 +452,16 @@ int ConvertToBuffer (DWORD dwFlags, LPCONVERTINFO lpciInfo)
 				dwMallocBlocks--;
 			}
 		}
-		else if ( (nChkErr = AddEventToStreamBuffer( &teTemp, lpciInfo ))
-							  != CONVERTERR_NOERROR )
+		else if ( (err = AddEventToStreamBuffer( &teTemp, lpciInfo ))
+							!= CONVERTERR_NOERROR )
 		{
-			if (nChkErr == CONVERTERR_BUFFERFULL)
+			if (err == CONVERTERR_BUFFERFULL)
 			{
 				// Do some processing and tell caller that this buffer's full
 				dwStatus |= CONVERTF_STATUS_GOTEVENT;
 				return (CONVERTERR_NOERROR);
 			}
-			else if (nChkErr == CONVERTERR_METASKIP)
+			else if (err == CONVERTERR_METASKIP)
 			{
 				// We skip by all meta events that aren't tempo changes...
 			}
@@ -531,16 +526,16 @@ int ConvertToBuffer (DWORD dwFlags, LPCONVERTINFO lpciInfo)
 			continue;
 		}
 
-		if ( (nChkErr = AddEventToStreamBuffer( &teTemp, lpciInfo ))
-						     != CONVERTERR_NOERROR )
+		if ( (err = AddEventToStreamBuffer( &teTemp, lpciInfo ))
+						 != CONVERTERR_NOERROR )
 		{
-			if (nChkErr == CONVERTERR_BUFFERFULL)
+			if (err == CONVERTERR_BUFFERFULL)
 			{
 				// Do some processing and tell somebody this buffer is full...
 				dwStatus |= CONVERTF_STATUS_GOTEVENT;
 				return (CONVERTERR_NOERROR);
 			}
-			else if (nChkErr == CONVERTERR_METASKIP)
+			else if (err == CONVERTERR_METASKIP)
 			{
 				// We skip by all meta events that aren't tempo changes...
 			}
@@ -552,12 +547,12 @@ int ConvertToBuffer (DWORD dwFlags, LPCONVERTINFO lpciInfo)
 					Z_Free(teTemp.pLongData);
 					dwMallocBlocks--;
 				}
-				return (TRUE);
+				return 1;
 			}
 		}
 	}
 
-//	return( CONVERTERR_NOERROR );	// unreachable
+	return CONVERTERR_NOERROR;	/* unreachable */
 }
 
 
@@ -569,35 +564,35 @@ int ConvertToBuffer (DWORD dwFlags, LPCONVERTINFO lpciInfo)
 /*  (a) is in lo-hi format							*/
 /*  (b) has the high bit set on every byte except the last			*/
 /*										*/
-/* Returns the DWORD in *lpdw and TRUE on success; else				*/
-/* FALSE if we hit end of track first. Sets ITS_F_ENDOFTRK			*/
+/* Returns the DWORD in *lpdw and zero on success; else				*/
+/* non-zero if we hit end of track first. Sets ITS_F_ENDOFTRK			*/
 /* if we hit end of track.							*/
 /********************************************************************************/
-static BOOL GetTrackVDWord (PINTRACKSTATE ptsTrack, LPDWORD lpdw)
+static int GetTrackVDWord (PINTRACKSTATE ptsTrack, LPDWORD lpdw)
 {
 	BYTE	byByte;
 	DWORD	dw = 0;
 
 	if (ptsTrack->fdwTrack & ITS_F_ENDOFTRK)
-		return (TRUE);
+		return 1;
 
 	do
 	{
 		if (!ptsTrack->dwLeftInBuffer && !ptsTrack->dwLeftOnDisk)
 		{
 			ptsTrack->fdwTrack |= ITS_F_ENDOFTRK;
-			return (TRUE);
+			return 1;
 		}
 
 		if (GetTrackByte(ptsTrack, &byByte))
-			return (TRUE);
+			return 1;
 
 		dw = ( dw << 7 ) | ( byByte & 0x7F );
 	} while (byByte & 0x80);
 
 	*lpdw = dw;
 
-	return (FALSE);
+	return 0;
 }
 
 
@@ -624,13 +619,13 @@ static BOOL GetTrackVDWord (PINTRACKSTATE ptsTrack, LPDWORD lpdw)
 /*  event is a SysEx or meta event with non-zero length; else			*/
 /*  it will contain NULL							*/
 /*										*/
-/* Returns FALSE on success or TRUE on any kind of parse error			*/
+/* Returns zero on success or non-zero on any kind of parse error		*/
 /* Prints its own error message ONLY in the debug version			*/
 /*										*/
 /* Maintains the state of the input track (i.e. ptsTrack->dwLeftInBuffer,	*/
 /* ptsTrack->pTrackPointers, and ptsTrack->byRunningStatus).			*/
 /********************************************************************************/
-static BOOL GetTrackEvent (INTRACKSTATE *ptsTrack, PTEMPEVENT pteTemp)
+static int GetTrackEvent (INTRACKSTATE *ptsTrack, PTEMPEVENT pteTemp)
 {
 	DWORD	idx;
 	BYTE	byByte;
@@ -643,12 +638,12 @@ static BOOL GetTrackEvent (INTRACKSTATE *ptsTrack, PTEMPEVENT pteTemp)
 	//
 	if ( (ptsTrack->fdwTrack & ITS_F_ENDOFTRK) ||
 	     (!ptsTrack->dwLeftInBuffer && !ptsTrack->dwLeftOnDisk) )
-		return (TRUE);
+		return 1;
 
 	// Get the first byte, which determines the type of event.
 	//
 	if (GetTrackByte(ptsTrack, &byByte))
-		return (TRUE);
+		return 1;
 
 	// If the high bit is not set, then this is a channel message
 	// which uses the status byte from the last channel message
@@ -662,7 +657,7 @@ static BOOL GetTrackEvent (INTRACKSTATE *ptsTrack, PTEMPEVENT pteTemp)
 		if (!ptsTrack->byRunningStatus)
 		{
 			TRACKERR(ptsTrack, gteBadRunStat);
-			return (TRUE);
+			return 1;
 		}
 
 		pteTemp->byShortData[0] = ptsTrack->byRunningStatus;
@@ -680,11 +675,11 @@ static BOOL GetTrackEvent (INTRACKSTATE *ptsTrack, PTEMPEVENT pteTemp)
 			{
 				TRACKERR(ptsTrack, gteRunStatMsgTrunc);
 				ptsTrack->fdwTrack |= ITS_F_ENDOFTRK;
-				return (TRUE);
+				return 1;
 			}
 
 			if (GetTrackByte(ptsTrack, &pteTemp->byShortData[2]))
-				return( TRUE );
+				return 1;
 			++pteTemp->dwEventLength;
 		}
 	}
@@ -707,16 +702,16 @@ static BOOL GetTrackEvent (INTRACKSTATE *ptsTrack, PTEMPEVENT pteTemp)
 		{
 			TRACKERR(ptsTrack, gteChanMsgTrunc);
 			ptsTrack->fdwTrack |= ITS_F_ENDOFTRK;
-			return (TRUE);
+			return 1;
 		}
 
 		if (GetTrackByte(ptsTrack, &pteTemp->byShortData[1]))
-			return (TRUE);
+			return 1;
 
 		if (dwEventLength == 2)
 		{
 			if (GetTrackByte( ptsTrack, &pteTemp->byShortData[2]))
-				return (TRUE);
+				return 1;
 		}
 	}
 	else if ((byByte == MIDI_SYSEX) || (byByte == MIDI_SYSEXEND))
@@ -735,14 +730,14 @@ static BOOL GetTrackEvent (INTRACKSTATE *ptsTrack, PTEMPEVENT pteTemp)
 		if (GetTrackVDWord(ptsTrack, &pteTemp->dwEventLength))
 		{
 			TRACKERR(ptsTrack, gteSysExLenTrunc);
-			return (TRUE);
+			return 1;
 		}
 
 		if ((ptsTrack->dwLeftInBuffer + ptsTrack->dwLeftOnDisk) < pteTemp->dwEventLength)
 		{
 			TRACKERR(ptsTrack, gteSysExTrunc);
 			ptsTrack->fdwTrack |= ITS_F_ENDOFTRK;
-			return (TRUE);
+			return 1;
 		}
 
 		// Malloc a temporary memory block to hold the parameter data
@@ -753,7 +748,7 @@ static BOOL GetTrackEvent (INTRACKSTATE *ptsTrack, PTEMPEVENT pteTemp)
 			if (GetTrackByte(ptsTrack, pteTemp->pLongData + idx))
 			{
 				TRACKERR(ptsTrack, gteSysExTrunc);
-				return (TRUE);
+				return 1;
 			}
 		}
 		// Increment our counter, which tells the program to look around for
@@ -775,16 +770,16 @@ static BOOL GetTrackEvent (INTRACKSTATE *ptsTrack, PTEMPEVENT pteTemp)
 		{
 			TRACKERR(ptsTrack, gteMetaNoClass);
 			ptsTrack->fdwTrack |= ITS_F_ENDOFTRK;
-			return (TRUE);
+			return 1;
 		}
 
 		if (GetTrackByte(ptsTrack, &pteTemp->byShortData[1]))
-			return (TRUE);
+			return 1;
 
 		if (GetTrackVDWord(ptsTrack, &pteTemp->dwEventLength))
 		{
 			TRACKERR(ptsTrack, gteMetaLenTrunc);
-			return (TRUE);
+			return 1;
 		}
 
 		// NOTE: It's perfectly valid to have a meta with no data
@@ -796,7 +791,7 @@ static BOOL GetTrackEvent (INTRACKSTATE *ptsTrack, PTEMPEVENT pteTemp)
 			{
 				TRACKERR(ptsTrack, gteMetaTrunc);
 				ptsTrack->fdwTrack |= ITS_F_ENDOFTRK;
-				return (TRUE);
+				return 1;
 			}
 
 			// Malloc a temporary memory block to hold the parameter data
@@ -807,7 +802,7 @@ static BOOL GetTrackEvent (INTRACKSTATE *ptsTrack, PTEMPEVENT pteTemp)
 				if (GetTrackByte(ptsTrack, pteTemp->pLongData + idx))
 				{
 					TRACKERR(ptsTrack, gteMetaTrunc);
-					return (TRUE);
+					return 1;
 				}
 			}
 			// Increment our counter, which tells the program to look around for
@@ -825,7 +820,7 @@ static BOOL GetTrackEvent (INTRACKSTATE *ptsTrack, PTEMPEVENT pteTemp)
 		// be in a normal MIDI file. If they are, we've either misparsed or the
 		// authoring software is stupid.
 		//
-		return (TRUE);
+		return 1;
 	}
 
 	// Event time was already stored as the current track time
@@ -842,12 +837,12 @@ static BOOL GetTrackEvent (INTRACKSTATE *ptsTrack, PTEMPEVENT pteTemp)
 		DWORD	tkDelta;
 
 		if (GetTrackVDWord(ptsTrack, &tkDelta))
-			return (TRUE);
+			return 1;
 
 		ptsTrack->tkNextEventDue += tkDelta;
 	}
 
-	return (FALSE);
+	return 0;
 }
 
 
@@ -857,17 +852,17 @@ static BOOL GetTrackEvent (INTRACKSTATE *ptsTrack, PTEMPEVENT pteTemp)
 // Retrieve the next byte from the track buffer, refilling the buffer from
 // disk if necessary.
 //
-static BOOL GetTrackByte (PINTRACKSTATE ptsTrack, LPBYTE lpbyByte)
+static int GetTrackByte (PINTRACKSTATE ptsTrack, LPBYTE lpbyByte)
 {
 	if (!ptsTrack->dwLeftInBuffer)
 	{
 		if (RefillTrackBuffer(ptsTrack))
-			return (TRUE);
+			return 1;
 	}
 
 	*lpbyByte = *ptsTrack->pTrackCurrent++;
 	ptsTrack->dwLeftInBuffer--;
-	return (FALSE);
+	return 0;
 }
 
 
@@ -876,7 +871,7 @@ static BOOL GetTrackByte (PINTRACKSTATE ptsTrack, LPBYTE lpbyByte)
 //
 // This function attempts to read in a buffer-full of data for a MIDI track.
 //
-static BOOL RefillTrackBuffer (PINTRACKSTATE ptsTrack)
+static int RefillTrackBuffer (PINTRACKSTATE ptsTrack)
 {
 	DWORD	dwBytesRead, dwResult;
 	BOOL	bResult;
@@ -892,7 +887,7 @@ static BOOL RefillTrackBuffer (PINTRACKSTATE ptsTrack)
 		if (dwResult == (DWORD)(-1))
 		{
 			Con_Printf("MIDI: Unable to seek to track buffer location in RefillTrackBuffer()!!\n");
-			return (TRUE);
+			return 1;
 		}
 
 		if (ptsTrack->dwLeftOnDisk > TRACK_BUFFER_SIZE)
@@ -910,13 +905,13 @@ static BOOL RefillTrackBuffer (PINTRACKSTATE ptsTrack)
 		{
 			Con_Printf("MIDI: Read operation failed prematurely!!\n");
 			ptsTrack->dwLeftInBuffer = dwBytesRead;
-			return (TRUE);
+			return 1;
 		}
 		else
-			return (FALSE);
+			return 0;
 	}
 
-	return (TRUE);
+	return 1;
 }
 
 
@@ -927,7 +922,7 @@ static BOOL RefillTrackBuffer (PINTRACKSTATE ptsTrack)
 // pteTemp must point to an event filled out in accordance with the
 // description given in GetTrackEvent
 //
-// Returns FALSE on sucess or TRUE on an error condition
+// Returns zero on sucess or non-zero on an error condition
 // Handles its own error notification by displaying to the appropriate
 // output device (either our debugging window, or the screen).
 //
@@ -1088,6 +1083,6 @@ static int AddEventToStreamBuffer (PTEMPEVENT pteTemp, CONVERTINFO *lpciInfo)
 		lpciInfo->dwBytesRecorded += 3 *sizeof(DWORD);
 	}
 
-	return (FALSE);
+	return 0;
 }
 

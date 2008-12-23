@@ -1,6 +1,6 @@
 /*
 	midi_win.h
-	$Id: midi.h,v 1.9 2007-06-22 12:01:58 sezero Exp $
+	$Id: midi.h,v 1.10 2008-12-23 18:37:08 sezero Exp $
 
 	Header file for Win32 MIDI module
 */
@@ -65,7 +65,7 @@ typedef struct _ConvertInfo
 } CONVERTINFO, *LPCONVERTINFO;
 
 
-BOOL ConverterInit (const char *szInFile);
+int ConverterInit (const char *szInFile);
 void ConverterCleanup (void);
 int ConvertToBuffer (DWORD, LPCONVERTINFO);
 
