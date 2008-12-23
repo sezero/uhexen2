@@ -2,7 +2,7 @@
 	glquake.h
 	common glquake header
 
-	$Id: glquake.h,v 1.74 2008-11-18 20:35:03 sezero Exp $
+	$Id: glquake.h,v 1.75 2008-12-23 16:05:57 sezero Exp $
 */
 
 
@@ -124,8 +124,7 @@ typedef struct
 	char	identifier[MAX_QPATH];
 	int		width, height;
 	qboolean	mipmap;
-//	unsigned short	crc;
-	unsigned long	hash;
+	unsigned short	crc;
 } gltexture_t;
 
 /* texture filters */

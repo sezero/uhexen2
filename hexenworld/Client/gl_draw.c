@@ -2,7 +2,7 @@
 	gl_draw.c
 	this is the only file outside the refresh that touches the vid buffer
 
-	$Id: gl_draw.c,v 1.114 2008-01-12 09:46:17 sezero Exp $
+	$Id: gl_draw.c,v 1.115 2008-12-23 16:05:57 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -1837,8 +1837,7 @@ GL_LoadTexture
 GLuint GL_LoadTexture (const char *identifier, int width, int height, byte *data, qboolean mipmap, qboolean alpha, int mode, qboolean rgba)
 {
 	int		i, size;
-	unsigned long	hash = 0;
-//	unsigned short	crc;
+	unsigned short	crc;
 	gltexture_t	*glt;
 
 #if !defined (H2W)
@@ -1849,13 +1848,7 @@ GLuint GL_LoadTexture (const char *identifier, int width, int height, byte *data
 	size = width * height;
 	if (rgba)
 		size *= 4;
-
-// generate texture checksum
-	for (i = 0; i < size; i++)
-		hash += data[i];
-
-// alternative: use stock crc functions for checksumming
-//	crc = CRC_Block (data, size);
+	crc = CRC_Block (data, size);
 
 	// see if the texture is already present
 	if (identifier[0])
@@ -1864,8 +1857,7 @@ GLuint GL_LoadTexture (const char *identifier, int width, int height, byte *data
 		{
 			if (!strcmp (identifier, glt->identifier))
 			{
-				//if ( crc != glt->crc ||
-				if ( hash != glt->hash ||
+				if ( crc != glt->crc ||
 					width  != glt->width  ||
 					height != glt->height ||
 					mipmap != glt->mipmap )
@@ -1895,8 +1887,7 @@ gl_rebind:
 	glt->width = width;
 	glt->height = height;
 	glt->mipmap = mipmap;
-//	glt->crc = crc;
-	glt->hash = hash;
+	glt->crc = crc;
 
 	GL_Bind (glt->texnum);
 	if (rgba)
