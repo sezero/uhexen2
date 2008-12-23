@@ -3,6 +3,16 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2008-12-23 (CVS):
+    * windows midi code: changed almost all of the bool functions to return int
+      instead. fixed their incorrect and/or misleading documentation about their
+      return codes.
+    * windows midi: fixed the callback function for win64. hopefully correct.
+      caught by the mingw64 compiler:
+	midi.c: In function 'MidiProc':
+	midi.c:581: warning: cast to pointer from integer of different size
+    * gl_draw.c: use the stoc crc functions for texture checksumming.
+
 2008-12-22 (CVS):
     * utils: fixed some 'cast from pointer to integer of different size' warnings
       for win64.
