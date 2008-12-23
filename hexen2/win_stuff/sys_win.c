@@ -2,7 +2,7 @@
 	sys_win.c
 	Win32 system interface code
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/win_stuff/sys_win.c,v 1.67 2008-12-21 18:10:03 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/win_stuff/sys_win.c,v 1.69 2008-12-23 09:17:48 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -670,23 +670,28 @@ int WINAPI WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 		hinput = GetStdHandle (STD_INPUT_HANDLE);
 		houtput = GetStdHandle (STD_OUTPUT_HANDLE);
 
+#if !defined(_WIN64)
+# define a_to_intptr						 atoi
+#else
+# define a_to_intptr						_atoi64
+#endif	/* _WIN64 */
 	// give QHOST a chance to hook into the console
 		i = COM_CheckParm ("-HFILE");
 		if (i && i < com_argc-1)
 		{
-			hFile = (HANDLE)atoi (com_argv[i+1]);
+			hFile = (HANDLE)a_to_intptr(com_argv[i+1]);
 		}
 
 		i = COM_CheckParm ("-HPARENT");
 		if (i && i < com_argc-1)
 		{
-			heventParent = (HANDLE)atoi (com_argv[i+1]);
+			heventParent = (HANDLE)a_to_intptr(com_argv[i+1]);
 		}
 
 		i = COM_CheckParm ("-HCHILD");
 		if (i && i < com_argc-1)
 		{
-			heventChild = (HANDLE)atoi (com_argv[i+1]);
+			heventChild = (HANDLE)a_to_intptr(com_argv[i+1]);
 		}
 
 		InitConProc (hFile, heventParent, heventChild);
