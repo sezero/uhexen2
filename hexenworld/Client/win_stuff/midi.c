@@ -1,6 +1,6 @@
 /*
 	midi_win.c
-	$Id: midi.c,v 1.29 2008-12-23 18:37:08 sezero Exp $
+	$Id: midi.c,v 1.30 2008-12-23 18:45:34 sezero Exp $
 
 	MIDI module for Win32
 */
@@ -38,7 +38,7 @@ static HANDLE		hBufferReturnEvent;
 
 static void FreeBuffers (void);
 static int  StreamBufferSetup (const char *Name);
-static void CALLBACK MidiProc (HMIDIIN, UINT, DWORD, DWORD, DWORD);
+static void CALLBACK MidiProc (HMIDIIN, UINT, DWORD_PTR, DWORD_PTR, DWORD_PTR);
 static void SetAllChannelVolumes (DWORD dwVolumePercent);
 //static void SetChannelVolume (DWORD dwChannel, DWORD dwVolumePercent);
 
@@ -480,7 +480,7 @@ static int StreamBufferSetup(const char *Name)
 /* This is the callback handler which continually refills MIDI data buffers	*/
 /* as they're returned to us from the audio subsystem.				*/
 /********************************************************************************/
-static void CALLBACK MidiProc(HMIDIIN hMidi, UINT uMsg, DWORD dwInstance, DWORD dwParam1, DWORD dwParam2)
+static void CALLBACK MidiProc(HMIDIIN hMidi, UINT uMsg, DWORD_PTR dwInstance, DWORD_PTR dwParam1, DWORD_PTR dwParam2)
 {
 	static int nWaitingBuffers = 0;
 	MIDIEVENT *pme;
