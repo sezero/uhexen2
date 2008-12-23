@@ -1,12 +1,12 @@
 #!/bin/sh
 
 UHEXEN2_TOP=..
-. $UHEXEN2_TOP/scripts/cross_defs
+. $UHEXEN2_TOP/scripts/cross_defs_w64
 
 BIN_DIR=bin
 
 if test "$1" = "strip"; then
-	echo "Stripping all hexen2util win32 binaries"
+	echo "Stripping all hexen2util win64 binaries"
 	$STRIPPER hcc_old/hcc.exe	\
 		$BIN_DIR/hcc.exe	\
 		$BIN_DIR/dhcc.exe	\
@@ -22,11 +22,11 @@ fi
 HOST_OS=`uname|sed -e s/_.*//|tr '[:upper:]' '[:lower:]'`
 
 case "$HOST_OS" in
-freebsd|openbsd|netbsd)
-	MAKE_CMD=gmake
-	;;
 linux)
 	MAKE_CMD=make
+	;;
+freebsd|openbsd|netbsd)
+	MAKE_CMD=gmake
 	;;
 *)
 	MAKE_CMD=make
