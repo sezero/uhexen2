@@ -2,7 +2,7 @@
 	gl_draw.c
 	this is the only file outside the refresh that touches the vid buffer
 
-	$Id: gl_draw.c,v 1.132 2008-12-23 16:05:57 sezero Exp $
+	$Id: gl_draw.c,v 1.133 2008-12-24 19:55:44 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -112,7 +112,7 @@ static void Draw_PicCheckError (void *ptr, const char *name)
 qpic_t *Draw_PicFromFile (const char *name)
 {
 	qpic_t	*p;
-	glpic_t	*gl;
+	glpic_t	gl;
 
 	p = (qpic_t *)FS_LoadHunkFile (name);
 	if (!p)
@@ -121,14 +121,13 @@ qpic_t *Draw_PicFromFile (const char *name)
 	}
 
 	SwapPic (p);
-	gl = (glpic_t *)p->data;
 
-	gl->texnum = GL_LoadPicTexture (p);
-
-	gl->sl = 0;
-	gl->sh = 1;
-	gl->tl = 0;
-	gl->th = 1;
+	gl.texnum = GL_LoadPicTexture (p);
+	gl.sl = 0;
+	gl.sh = 1;
+	gl.tl = 0;
+	gl.th = 1;
+	memcpy (p->data, &gl, sizeof(glpic_t));
 
 	return p;
 }
@@ -137,8 +136,8 @@ qpic_t *Draw_PicFromFile (const char *name)
 // a specified buffer if there is room
 qpic_t *Draw_PicFileBuf (const char *name, void *p, size_t *size)
 {
-	glpic_t	*gl;
 	qpic_t	*_p;
+	glpic_t	gl;
 
 	p = (void *)FS_LoadBufFile(name, p, size);
 	if (!p)
@@ -146,13 +145,13 @@ qpic_t *Draw_PicFileBuf (const char *name, void *p, size_t *size)
 	_p = (qpic_t *)p;
 
 	SwapPic (_p);
-	gl = (glpic_t *)_p->data;
 
-	gl->texnum = GL_LoadPicTexture(_p);
-	gl->sl = 0;
-	gl->sh = 1;
-	gl->tl = 0;
-	gl->th = 1;
+	gl.texnum = GL_LoadPicTexture(_p);
+	gl.sl = 0;
+	gl.sh = 1;
+	gl.tl = 0;
+	gl.th = 1;
+	memcpy (_p->data, &gl, sizeof(glpic_t));
 
 	return _p;
 }
@@ -160,16 +159,17 @@ qpic_t *Draw_PicFileBuf (const char *name, void *p, size_t *size)
 qpic_t *Draw_PicFromWad (const char *name)
 {
 	qpic_t	*p;
-	glpic_t	*gl;
+	glpic_t	gl;
 
 	p = (qpic_t *) W_GetLumpName (name);
-	gl = (glpic_t *)p->data;
 
-	gl->texnum = GL_LoadPicTexture (p);
-	gl->sl = 0;
-	gl->sh = 1;
-	gl->tl = 0;
-	gl->th = 1;
+	gl.texnum = GL_LoadPicTexture (p);
+	gl.sl = 0;
+	gl.sh = 1;
+	gl.tl = 0;
+	gl.th = 1;
+	memcpy (p->data, &gl, sizeof(glpic_t));
+
 	return p;
 }
 
@@ -184,7 +184,7 @@ qpic_t	*Draw_CachePic (const char *path)
 	cachepic_t	*pic;
 	int			i;
 	qpic_t		*dat;
-	glpic_t		*gl;
+	glpic_t		gl;
 
 	for (pic = menu_cachepics, i = 0; i < menu_numcachepics; pic++, i++)
 	{
@@ -229,12 +229,12 @@ qpic_t	*Draw_CachePic (const char *path)
 	glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-	gl = (glpic_t *)pic->pic.data;
-	gl->texnum = GL_LoadPicTexture (dat);
-	gl->sl = 0;
-	gl->sh = 1;
-	gl->tl = 0;
-	gl->th = 1;
+	gl.texnum = GL_LoadPicTexture (dat);
+	gl.sl = 0;
+	gl.sh = 1;
+	gl.tl = 0;
+	gl.th = 1;
+	memcpy (pic->pic.data, &gl, sizeof(glpic_t));
 
 	return &pic->pic;
 }
@@ -728,9 +728,9 @@ colors (e.g. in intermission screens)
 qpic_t *Draw_CachePicNoTrans (const char *path)
 {
 	cachepic_t	*pic;
-	int			i;
+	int		i;
 	qpic_t		*dat;
-	glpic_t		*gl;
+	glpic_t		gl;
 
 	for (pic = menu_cachepics, i = 0; i < menu_numcachepics; pic++, i++)
 	{
@@ -753,22 +753,22 @@ qpic_t *Draw_CachePicNoTrans (const char *path)
 	pic->pic.width = dat->width;
 	pic->pic.height = dat->height;
 
-	gl = (glpic_t *)pic->pic.data;
 	// Get rid of transparencies
 	for (i = 0; i < dat->width * dat->height; i++)
 	{
 		if (dat->data[i] == 255)
 			dat->data[i] = 31; // pal(31) == pal(255) == FCFCFC (white)
 	}
-	gl->texnum = GL_LoadPicTexture (dat);
+	gl.texnum = GL_LoadPicTexture (dat);
 
 	glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-	gl->sl = 0;
-	gl->sh = 1;
-	gl->tl = 0;
-	gl->th = 1;
+	gl.sl = 0;
+	gl.sh = 1;
+	gl.tl = 0;
+	gl.th = 1;
+	memcpy (pic->pic.data, &gl, sizeof(glpic_t));
 
 	return &pic->pic;
 }
