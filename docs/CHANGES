@@ -3,6 +3,25 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2008-12-24 (CVS):
+    * makefiles, windows: fixed windres commands.
+    * cd_win.c: inttypes.h include isn't necessary.
+    * fixed gcc-4.4 warnings from glpic structure member assignments. anything better??
+	gl_draw.c: In function 'Draw_CachePicNoTrans':
+	gl_draw.c:771: warning: dereferencing pointer 'gl' does break strict-aliasing rules
+	gl_draw.c:770: warning: dereferencing pointer 'gl' does break strict-aliasing rules
+	gl_draw.c:769: warning: dereferencing pointer 'gl' does break strict-aliasing rules
+	gl_draw.c:768: warning: dereferencing pointer 'gl' does break strict-aliasing rules
+	gl_draw.c:763: warning: dereferencing pointer 'gl' does break strict-aliasing rules
+	gl_draw.c:756: note: initialized from here
+	gl_draw.c: In function 'Draw_CachePic':
+	gl_draw.c:237: warning: dereferencing pointer 'gl' does break strict-aliasing rules
+	gl_draw.c:236: warning: dereferencing pointer 'gl' does break strict-aliasing rules
+	gl_draw.c:235: warning: dereferencing pointer 'gl' does break strict-aliasing rules
+	gl_draw.c:234: warning: dereferencing pointer 'gl' does break strict-aliasing rules
+	gl_draw.c:233: warning: dereferencing pointer 'gl' does break strict-aliasing rules
+	gl_draw.c:232: note: initialized from here
+
 2008-12-23 (CVS):
     * windows midi code: changed almost all of the bool functions to return int
       instead. fixed their incorrect and/or misleading documentation about their
