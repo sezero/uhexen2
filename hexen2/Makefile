@@ -1,5 +1,5 @@
 # GNU Makefile for (gl)hexen2 client/server binaries using GCC.
-# $Header: /home/ozzie/Download/0000/uhexen2/hexen2/Makefile,v 1.95 2008-12-22 14:34:58 sezero Exp $
+# $Header: /home/ozzie/Download/0000/uhexen2/hexen2/Makefile,v 1.96 2008-12-24 19:40:10 sezero Exp $
 #
 # Type "make help" to see the valid targets.
 #
@@ -374,8 +374,8 @@ endif
 	$(CC) -c $(CFLAGS) $(EXT_FLAGS) $(SDLFLAGS) $(INCLUDES) -o $@ $<
 %.o: %.asm
 	$(NASM) $(NASMFLAGS) -o $@ $<
-%.o: %.rc
-	$(WINDRES) -DWIN32_LEAN_AND_MEAN $(EXT_FLAGS) --output=coff -o $@ $<
+%.res: %.rc
+	$(WINDRES) -DWIN32_LEAN_AND_MEAN $(EXT_FLAGS) --output-format=coff -o $@ $<
 
 # Objects
 
@@ -497,14 +497,14 @@ SYSOBJ_INPUT := win_stuff/in_win.o
 SYSOBJ_GL_VID:= win_stuff/gl_vidnt.o
 SYSOBJ_SOFT_VID:= win_stuff/vid_win.o
 SYSOBJ_NET := win_stuff/net_win.o win_stuff/net_wins.o win_stuff/net_wipx.o
-SYSOBJ_SYS := win_stuff/conproc.o win_stuff/sys_win.o win32res.o
+SYSOBJ_SYS := win_stuff/conproc.o win_stuff/sys_win.o win32res.res
 endif
 ifeq ($(TARGET_OS),win64)
 SYSOBJ_INPUT := win_stuff/in_win.o
 SYSOBJ_GL_VID:= win_stuff/gl_vidnt.o
 SYSOBJ_SOFT_VID:= win_stuff/vid_win.o
 SYSOBJ_NET := win_stuff/net_win.o win_stuff/net_wins.o win_stuff/net_wipx.o
-SYSOBJ_SYS := win_stuff/conproc.o win_stuff/sys_win.o win32res.o
+SYSOBJ_SYS := win_stuff/conproc.o win_stuff/sys_win.o win32res.res
 endif
 ifeq ($(TARGET_OS),dos)
 SYSOBJ_INPUT := dos/in_dos.o
@@ -653,10 +653,10 @@ glh2: $(GLOBJS) $(COMMON_ASM) $(COMMONOBJS)
 	$(LINKER) -o $(GLH2_BINARY) $(GLOBJS) $(COMMON_ASM) $(COMMONOBJS) $(LDFLAGS) $(GLFLAGS) $(SDLLINK)
 
 clean:
-	rm -f *.o win_stuff/*.o dos/*.o sv_objs/*.o core
+	rm -f *.o *.res win_stuff/*.o dos/*.o sv_objs/*.o core
 
-cleaner:
-	rm -f *.o win_stuff/*.o dos/*.o sv_objs/*.o core $(H2_BINARY) $(GLH2_BINARY)
+cleaner: clean
+	rm -f $(H2_BINARY) $(GLH2_BINARY)
 
 report:
 	@echo "Host OS  :" $(HOST_OS)

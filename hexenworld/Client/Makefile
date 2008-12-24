@@ -1,5 +1,5 @@
 # GNU Makefile for hexenworld clients using GCC.
-# $Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/Makefile,v 1.88 2008-12-22 14:34:58 sezero Exp $
+# $Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/Makefile,v 1.89 2008-12-24 19:40:11 sezero Exp $
 #
 # Type "make help" to see the valid targets.
 #
@@ -344,8 +344,8 @@ endif
 	$(CC) -c $(CFLAGS) $(EXT_FLAGS) $(SDLFLAGS) $(INCLUDES) -o $@ $<
 %.o: %.asm
 	$(NASM) $(NASMFLAGS) -o $@ $<
-%.o: %.rc
-	$(WINDRES) -DWIN32_LEAN_AND_MEAN $(EXT_FLAGS) --output=coff -o $@ $<
+%.res: %.rc
+	$(WINDRES) -DWIN32_LEAN_AND_MEAN $(EXT_FLAGS) --output-format=coff -o $@ $<
 
 # Objects
 
@@ -454,13 +454,13 @@ ifeq ($(TARGET_OS),win32)
 SYSOBJ_INPUT := win_stuff/in_win.o
 SYSOBJ_GL_VID:= win_stuff/gl_vidnt.o
 SYSOBJ_SOFT_VID:= win_stuff/vid_win.o
-SYSOBJ_SYS := win_stuff/sys_win.o win32res.o
+SYSOBJ_SYS := win_stuff/sys_win.o win32res.res
 endif
 ifeq ($(TARGET_OS),win64)
 SYSOBJ_INPUT := win_stuff/in_win.o
 SYSOBJ_GL_VID:= win_stuff/gl_vidnt.o
 SYSOBJ_SOFT_VID:= win_stuff/vid_win.o
-SYSOBJ_SYS := win_stuff/sys_win.o win32res.o
+SYSOBJ_SYS := win_stuff/sys_win.o win32res.res
 endif
 ifeq ($(TARGET_OS),unix)
 SYSOBJ_INPUT := in_sdl.o
@@ -594,10 +594,10 @@ glhw: $(GLOBJS) $(COMMON_ASM) $(COMMONOBJS)
 	$(LINKER) -o $(GLHW_BINARY) $(GLOBJS) $(COMMON_ASM) $(COMMONOBJS) $(LDFLAGS) $(GLFLAGS) $(SDLLINK)
 
 clean:
-	rm -f *.o win_stuff/*.o core
+	rm -f *.o *.res win_stuff/*.o core
 
-cleaner:
-	rm -f *.o win_stuff/*.o core $(HW_BINARY) $(GLHW_BINARY)
+cleaner: clean
+	rm -f $(HW_BINARY) $(GLHW_BINARY)
 
 report:
 	@echo "Host OS  :" $(HOST_OS)

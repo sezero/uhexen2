@@ -1,5 +1,5 @@
 # GNU Makefile for Hexen II Dedicated Server (h2ded) using GCC.
-# $Header: /home/ozzie/Download/0000/uhexen2/hexen2/Makefile.sv,v 1.25 2008-12-22 14:34:58 sezero Exp $
+# $Header: /home/ozzie/Download/0000/uhexen2/hexen2/Makefile.sv,v 1.26 2008-12-24 19:40:11 sezero Exp $
 #
 # It is ESSENTIAL that you run make clean between different
 # types of builds or different types of targets.
@@ -203,10 +203,10 @@ $(BINARY): $(H2DED_OBJS)
 	$(LINKER) -o $(BINARY) $(H2DED_OBJS) $(LDFLAGS)
 
 clean:
-	rm -f *.o win_stuff/*.o sv_objs/*.o core
+	rm -f *.o *.res win_stuff/*.o sv_objs/*.o core
 
-cleaner:
-	rm -f *.o win_stuff/*.o sv_objs/*.o core $(BINARY)
+cleaner: clean
+	rm -f $(BINARY)
 
 report:
 	@echo "Host OS  :" $(HOST_OS)
