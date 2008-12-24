@@ -2,7 +2,7 @@
 	cd_win.c
 	Win32 cdaudio code
 
-	$Id: cd_win.c,v 1.20 2008-12-22 12:21:24 sezero Exp $
+	$Id: cd_win.c,v 1.21 2008-12-24 19:41:28 sezero Exp $
 
 	Quake is a trademark of Id Software, Inc., (c) 1996 Id Software, Inc. All
 	rights reserved.
@@ -10,11 +10,6 @@
 
 #include "quakedef.h"
 #include "winquake.h"
-#if defined(_MSC_VER)
-#include "msinttypes/inttypes.h"
-#else	/* not M$ compiler: */
-#include <inttypes.h>
-#endif
 
 /*
  * You just can't set the volume of CD playback via MCI :
@@ -22,6 +17,7 @@
  * OTOH, using the aux APIs to control the CD audio volume is broken.
  */
 #undef	USE_AUX_API
+
 
 static qboolean cdValid = false;
 static qboolean	playing = false;
