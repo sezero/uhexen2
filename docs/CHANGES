@@ -3,6 +3,14 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2008-12-26 (CVS):
+    * launcher pak patch: set the pak files' read+write permissions for the user
+      (and for the group) if we can, because if the files were copied from the
+      cdrom, some perms would be missing and access() would fail the R_OK|W_OK
+      check. proper regular file check. other small clean-ups/tidy-ups..
+    * launcher pak patch: reverted the md5 code update (having problems with the
+      binaries generated from that code for windows and dos..)
+
 2008-12-24 (CVS):
     * makefiles, windows: fixed windres commands.
     * cd_win.c: inttypes.h include isn't necessary.
