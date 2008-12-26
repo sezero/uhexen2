@@ -2,7 +2,7 @@
 	apply_patch.c
 	hexen2 launcher: binary patch starter
 
-	$Id: apply_patch.c,v 1.14 2008-12-26 18:38:15 sezero Exp $
+	$Id: apply_patch.c,v 1.15 2008-12-26 18:40:22 sezero Exp $
 
 	This program is free software; you can redistribute it and/or
 	modify it under the terms of the GNU General Public License
@@ -24,7 +24,6 @@
 */
 
 #include "common.h"
-#include <stdint.h>
 #include <time.h>
 
 #include "md5.h"
@@ -67,6 +66,7 @@ static	unsigned long		rc;
 static	char	dst[MAX_OSPATH],
 		pat[MAX_OSPATH],
 		out[MAX_OSPATH];
+static	char	csum[CHECKSUM_SIZE+1];
 
 #define DELTA_DIR	"patchdata"
 #define patch_tmpname	"uh2patch.tmp"
@@ -92,7 +92,6 @@ void *apply_patches (void *workdir)
 {
 	int	i;
 	struct stat	stbuf;
-	char		*csum;
 	time_t	starttime, temptime;
 	unsigned long	elapsed;
 
@@ -153,32 +152,21 @@ void *apply_patches (void *workdir)
 		}
 
 		ui_log_queue ("... checksumming...\n");
-		csum = MD5File(dst, NULL);
-		if (csum == NULL)
-		{
-			free (csum);
-			rc |= XPATCH_FAIL;
-			ui_log_queue ("... md5_compute() failed!\n");
-			thread_alive = 0;
-			return &rc;
-		}
+		memset (csum, 0, sizeof(csum));
+		md5_compute(dst, csum);
 		if (strcmp(csum, patch_data[i].new_md5) == 0)
 		{
-			free (csum);
 			written_size += patch_data[i].new_size;
 			ui_log_queue ("... already patched.\n");
 			continue;
 		}
 		if (strcmp(csum, patch_data[i].old_md5) != 0)
 		{
-			free (csum);
 			rc |= XPATCH_FAIL;
 			ui_log_queue ("... is an incompatible version!\n");
 			thread_alive = 0;
 			return &rc;
 		}
-
-		free (csum);
 
 		snprintf (pat, sizeof(pat), "%s/%s/%s/%s", (char *)workdir,
 					DELTA_DIR, patch_data[i].dir_name,
@@ -212,26 +200,16 @@ void *apply_patches (void *workdir)
 						elapsed / 60, elapsed % 60);
 
 		ui_log_queue ("... verifying checksum...\n");
-		csum = MD5File(out, NULL);
-		if (csum == NULL)
-		{
-			free (csum);
-			rc |= XPATCH_FAIL;
-			ui_log_queue ("... md5_compute() failed!\n");
-			thread_alive = 0;
-			return &rc;
-		}
+		memset (csum, 0, sizeof(csum));
+		md5_compute(out, csum);
 		if (strcmp(csum, patch_data[i].new_md5) != 0)
 		{
-			free (csum);
 			rc |= XPATCH_FAIL;
 			remove (out);
 			ui_log_queue ("... checksum after patching failed!\n");
 			thread_alive = 0;
 			return &rc;
 		}
-
-		free (csum);
 
 		remove (dst);	/* not all implementations overwrite existing files */
 		if (rename(out, dst) < 0)
