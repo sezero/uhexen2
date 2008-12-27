@@ -1,7 +1,7 @@
 /*
 	lexi.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/utils/hcc_old/pr_lex.c,v 1.8 2007-12-14 16:41:22 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/utils/hcc_old/pr_lex.c,v 1.9 2008-12-27 16:54:56 sezero Exp $
 */
 
 
@@ -435,7 +435,7 @@ static void LexName (void)
 static void LexPunctuation (void)
 {
 	pr_token_type = tt_punct;
-	*(int *)pr_token = 0;
+	memset(pr_token, 0, 4);
 	*pr_token = *pr_file_p;
 	switch (*pr_file_p++)
 	{
