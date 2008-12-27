@@ -1,6 +1,6 @@
 /*
 	bspfile.c
-	$Id: bspfile.c,v 1.4 2007-12-14 16:41:16 sezero Exp $
+	$Id: bspfile.c,v 1.5 2008-12-27 16:56:39 sezero Exp $
 */
 
 #include "q_stdinc.h"
@@ -366,7 +366,10 @@ void PrintBSPFileSizes (void)
 	if (!texdatasize)
 		printf ("    0 textures          0\n");
 	else
-		printf ("%5i textures     %6i\n",((dmiptexlump_t*)dtexdata)->nummiptex, texdatasize);
+	{
+		dmiptexlump_t	*mtl = (dmiptexlump_t *)dtexdata;
+		printf ("%5i textures     %6i\n", mtl->nummiptex, texdatasize);
+	}
 	printf ("      lightdata    %6i\n", lightdatasize);
 	printf ("      visdata      %6i\n", visdatasize);
 	printf ("      entdata      %6i\n", entdatasize);

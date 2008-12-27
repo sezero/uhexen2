@@ -1,6 +1,6 @@
 /*
 	soundpvs.c
-	$Id: soundpvs.c,v 1.6 2007-12-14 16:41:28 sezero Exp $
+	$Id: soundpvs.c,v 1.7 2008-12-27 16:56:39 sezero Exp $
 */
 
 #include "q_stdinc.h"
@@ -73,10 +73,13 @@ void CalcAmbientSounds (void)
 	float	maxd;
 	int		ambient_type;
 	texinfo_t	*info;
+	dmiptexlump_t	*mtl;
 	miptex_t	*miptex;
 	int		ofs;
 	float	dists[NUM_AMBIENTS];
 	float	vol;
+
+	mtl = (dmiptexlump_t *)dtexdata;
 
 	for (i = 0 ; i < portalleafs ; i++)
 	{
@@ -104,7 +107,7 @@ void CalcAmbientSounds (void)
 			{
 				surf = &dfaces[dmarksurfaces[hit->firstmarksurface + k]];
 				info = &texinfo[surf->texinfo];
-				ofs = ((dmiptexlump_t *)dtexdata)->dataofs[info->miptex];
+				ofs = mtl->dataofs[info->miptex];
 				miptex = (miptex_t *)(&dtexdata[ofs]);
 
 				if ( !q_strncasecmp (miptex->name, "*water", 6) )
