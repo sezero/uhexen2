@@ -1,6 +1,6 @@
 /*
 	threads.h
-	$Id: threads.h,v 1.1 2008-12-27 17:15:33 sezero Exp $
+	$Id: threads.h,v 1.2 2008-12-27 19:30:06 sezero Exp $
 	Copyright (C) 1996-1997  Id Software, Inc.
 
 	This program is free software; you can redistribute it and/or
@@ -29,23 +29,21 @@
 #include <windows.h>
 #endif
 
-#ifdef __alpha
+#if defined(__alpha) && defined(PLATFORM_WINDOWS)
+	/* FIXME: __alpha shouldn't be needed.. */
 
-#  ifdef PLATFORM_WINDOWS
-extern void* my_mutex;
+extern	HANDLE	my_mutex;
 #define	LOCK	WaitForSingleObject (my_mutex, INFINITE)
 #define	UNLOCK	ReleaseMutex (my_mutex)
 
-#  else /* windows */
+#elif defined(__osf__)	/* __alpha */
 
 #include <pthread.h>
-extern  pthread_mutex_t *my_mutex;
+extern	pthread_mutex_t	*my_mutex;
 #define LOCK	pthread_mutex_lock (my_mutex)
 #define UNLOCK	pthread_mutex_unlock (my_mutex)
 
-#  endif /* windows */
-
-#else	/* __alpha  */
+#else	/* no threads  */
 
 #define LOCK
 #define UNLOCK
@@ -57,7 +55,7 @@ extern	int		numthreads;
 typedef void (threadfunc_t) (void *);
 
 void	InitThreads (void);
-void	RunThreadsOn ( threadfunc_t func );
+void	RunThreadsOn (threadfunc_t func);
 
 #endif	/* __H2UTILS_THREADS_H */
 

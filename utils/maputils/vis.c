@@ -1,6 +1,6 @@
 /*
 	vis.c
-	$Id: vis.c,v 1.16 2008-12-21 22:26:54 sezero Exp $
+	$Id: vis.c,v 1.17 2008-12-27 19:30:12 sezero Exp $
 */
 
 #include "q_stdinc.h"
@@ -27,15 +27,15 @@ leaf_t			*leafs;
 int			leafon;		// the next leaf to be given
 					// to a thread to process
 
-#ifdef __alpha
-
-#  ifdef PLATFORM_WINDOWS
+#if defined(__alpha) && defined (PLATFORM_WINDOWS)
+	/* FIXME: __alpha shouldn't be needed.. */
+int		numthreads = 4;
 HANDLE		my_mutex;
-#  else
+#elif defined(__osf__)
 pthread_mutex_t *my_mutex;
-#  endif /* windows */
-
-#endif	/* __alpha  */
+#else	/* no threads  */
+int		numthreads = 1;
+#endif
 
 static byte	*vismap, *vismap_p, *vismap_end;        // past visfile
 static int		originalvismapsize;
@@ -44,12 +44,6 @@ byte		*uncompressed;			// [bitbytes*portalleafs]
 
 int			bitbytes;		// (portalleafs+63)>>3
 int			bitlongs;
-
-#ifdef __alpha
-int			numthreads = 4;
-#else
-int			numthreads = 1;
-#endif
 
 static qboolean		fastvis;
 qboolean		verbose;
@@ -161,8 +155,12 @@ static void OldFreeWinding (winding_t *w)
 		free (w);
 }
 
-__declspec( thread ) static int nFreeWindings = 0;
-__declspec( thread ) static winding_t *FreeWindings[MAX_FREE_WINDINGS];
+/* FIXME: __declspec(thread) is MSVC.  MinGW doesn't support it.
+ * Newer MinGW versions support __thread.  We are not compiling
+ * for Win32 threads for now, so no problems, but this TLS code
+ * MUST be fixed!.. */
+static __declspec(thread) int nFreeWindings = 0;
+static __declspec(thread) winding_t *FreeWindings[MAX_FREE_WINDINGS];
 
 winding_t *NewWinding (int points)
 {
@@ -221,7 +219,7 @@ void FreeWinding (winding_t *w)
 #endif
 
 
-#if 0	// not used
+#if 0	/* not used */
 void pw (winding_t *w)
 {
 	int			i;
@@ -243,7 +241,7 @@ void prl(leaf_t *l)
 		printf ("portal %4i to leaf %4i : %7.1f : (%4.1f, %4.1f, %4.1f)\n",(int)(p-portals),p->leaf,pl.dist, pl.normal[0], pl.normal[1], pl.normal[2]);
 	}
 }
-#endif
+#endif	/* not used */
 
 
 /*
@@ -384,7 +382,7 @@ the earlier information.
 =============
 */
 #if 1
-//static int maxpercent=0;
+//static int maxpercent = 0;
 static portal_t *GetNextPortal (void)
 {
 	int			j;
@@ -414,7 +412,8 @@ static portal_t *GetNextPortal (void)
 		p->status = stat_working;
 
 	UNLOCK;
-/*
+
+	/*
 	if (GilMode)
 	{
 		ndone *= 50;
@@ -425,7 +424,7 @@ static portal_t *GetNextPortal (void)
 			printf("%d %% done\t", ndone);
 		}
 	}
-*/
+	*/
 
 	return p;
 }
@@ -465,13 +464,12 @@ static portal_t *GetNextPortal (void)
 LeafThread
 ==============
 */
-#ifdef __alpha
-#  ifdef PLATFORM_WINDOWS
+#if defined(__alpha) && defined(PLATFORM_WINDOWS)
+	/* FIXME: __alpha shouldn't be needed.. */
 static	LPVOID	LeafThread (LPVOID thread)
-#  else
+#elif defined(__osf__)	/*__alpha  */
 static	pthread_addr_t	LeafThread (pthread_addr_t thread)
-#  endif
-#else
+#else	/* no threads  */
 static	void	*LeafThread (int thread)
 #endif
 {
@@ -627,8 +625,8 @@ static void CalcPortalVis (void)
 
 	leafon = 0;
 
-#ifdef __alpha
-#   ifdef PLATFORM_WINDOWS
+#if defined(__alpha) && defined(PLATFORM_WINDOWS)
+	/* FIXME: __alpha shouldn't be needed.. */
     {
 	DWORD	IDThread;
 	HANDLE	work_threads[MAX_THREADS];
@@ -659,7 +657,7 @@ static void CalcPortalVis (void)
 
 	CloseHandle (my_mutex);
     }
-#   else
+#elif defined(__osf__)	/* __alpha */
     {
 	pthread_t	work_threads[MAX_THREADS];
 	pthread_addr_t	status;
@@ -695,14 +693,12 @@ static void CalcPortalVis (void)
 
 	if (pthread_mutex_destroy (my_mutex) == -1)
 		Error ("pthread_mutex_destroy failed");
-}
-#   endif /* windows */
-
-#else	/* ! __alpha */
+    }
+#else	/* no threads */
 
 	LeafThread (0);
 
-#endif  /*  __alpha  */
+#endif
 
 	if (verbose)
 	{

@@ -1,6 +1,6 @@
 /*
 	threads.c
-	$Id: threads.c,v 1.1 2008-12-27 17:15:33 sezero Exp $
+	$Id: threads.c,v 1.2 2008-12-27 19:30:06 sezero Exp $
 	Copyright (C) 1996-1997  Id Software, Inc.
 
 	This program is free software; you can redistribute it and/or
@@ -29,40 +29,16 @@
 #include "threads.h"
 
 
-#ifdef __alpha
+#if defined(__alpha) && defined(PLATFORM_WINDOWS)
+	/* FIXME: __alpha shouldn't be needed.. */
 
 int		numthreads = 4;
-
-#  ifdef PLATFORM_WINDOWS
-HANDLE	my_mutex;
-#  else
-pthread_mutex_t *my_mutex;
-#  endif /* windows */
-
-#else
-
-int		numthreads = 1;
-
-#endif	/* __alpha  */
+HANDLE		my_mutex;
 
 
 void InitThreads (void)
 {
-#ifdef __alpha
-#  ifdef PLATFORM_WINDOWS
 	my_mutex = CreateMutex(NULL, FALSE, NULL);	//cleared
-#  else
-	pthread_mutexattr_t	mattrib;
-
-	my_mutex = (pthread_mutex_t *) malloc (sizeof(*my_mutex));
-	if (pthread_mutexattr_create (&mattrib) == -1)
-		Error ("pthread_mutex_attr_create failed");
-	if (pthread_mutexattr_setkind_np (&mattrib, MUTEX_FAST_NP) == -1)
-		Error ("pthread_mutexattr_setkind_np failed");
-	if (pthread_mutex_init (my_mutex, mattrib) == -1)
-		Error ("pthread_mutex_init failed");
-#  endif /* windows */
-#endif	/* __alpha  */
 }
 
 /*
@@ -72,8 +48,6 @@ RunThreadsOn
 */
 void RunThreadsOn ( threadfunc_t func )
 {
-#ifdef __alpha
-#  ifdef PLATFORM_WINDOWS
 	DWORD	IDThread;
 	HANDLE	work_threads[256];
 	int		i;
@@ -101,8 +75,34 @@ void RunThreadsOn ( threadfunc_t func )
 	{
 		WaitForSingleObject(work_threads[i], INFINITE);
 	}
+}
 
-#  else
+#elif defined(__osf__)	/* __alpha */
+
+int		numthreads = 4;
+pthread_mutex_t	*my_mutex;
+
+
+void InitThreads (void)
+{
+	pthread_mutexattr_t	mattrib;
+
+	my_mutex = (pthread_mutex_t *) malloc (sizeof(*my_mutex));
+	if (pthread_mutexattr_create (&mattrib) == -1)
+		Error ("pthread_mutex_attr_create failed");
+	if (pthread_mutexattr_setkind_np (&mattrib, MUTEX_FAST_NP) == -1)
+		Error ("pthread_mutexattr_setkind_np failed");
+	if (pthread_mutex_init (my_mutex, mattrib) == -1)
+		Error ("pthread_mutex_init failed");
+}
+
+/*
+===============
+RunThreadsOn
+===============
+*/
+void RunThreadsOn (threadfunc_t func)
+{
 	pthread_t	work_threads[256];
 	pthread_addr_t	status;
 	pthread_attr_t	attrib;
@@ -132,10 +132,27 @@ void RunThreadsOn ( threadfunc_t func )
 		if (pthread_join (work_threads[i], &status) == -1)
 			Error ("pthread_join failed");
 	}
-#  endif /* windows */
-
-#else
-	func (NULL);
-#endif	/* __alpha  */
 }
+
+#else	/* no threads  */
+
+int		numthreads = 1;
+
+
+void InitThreads (void)
+{
+	/* ( nothing ) */
+}
+
+/*
+===============
+RunThreadsOn
+===============
+*/
+void RunThreadsOn (threadfunc_t func)
+{
+	func (NULL);
+}
+
+#endif	/* no threads  */
 
