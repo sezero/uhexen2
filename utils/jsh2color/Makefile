@@ -1,5 +1,5 @@
 # GNU Makefile for hexen2 jsh2color tool using GCC.
-# $Header: /home/ozzie/Download/0000/uhexen2/utils/jsh2color/Makefile,v 1.27 2008-12-22 14:34:59 sezero Exp $
+# $Header: /home/ozzie/Download/0000/uhexen2/utils/jsh2color/Makefile,v 1.28 2008-12-27 17:15:33 sezero Exp $
 #
 # if building a debug version :		make DEBUG=1 [other stuff]
 #
@@ -82,12 +82,12 @@ JS_OBJS= $(COMMONDIR)/cmdlib.o \
 	$(COMMONDIR)/byteordr.o \
 	$(COMMONDIR)/util_io.o \
 	$(COMMONDIR)/pathutil.o \
+	$(COMMONDIR)/threads.o \
 	mathlib.o \
 	bspfile.o \
 	litfile.o \
 	entities.o \
 	ltface.o \
-	threads.o \
 	trace.o \
 	jscolor.o \
 	tex.o \

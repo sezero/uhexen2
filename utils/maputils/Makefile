@@ -1,5 +1,5 @@
 # GNU Makefile for hexen2 mapping tools using GCC.
-# $Header: /home/ozzie/Download/0000/uhexen2/utils/maputils/Makefile,v 1.24 2008-12-22 14:34:59 sezero Exp $
+# $Header: /home/ozzie/Download/0000/uhexen2/utils/maputils/Makefile,v 1.25 2008-12-27 17:15:33 sezero Exp $
 #
 # if building a debug version :		make DEBUG=1 [other stuff]
 #
@@ -88,10 +88,10 @@ COMMONOBJS= $(COMMONDIR)/cmdlib.o \
 	mathlib.o \
 	bspfile.o
 
-LIGHTOBJS= entities.o \
+LIGHTOBJS= $(COMMONDIR)/threads.o \
+	entities.o \
 	light.o \
 	ltface.o \
-	threads.o \
 	trace.o
 
 VISOBJS= flow.o \
