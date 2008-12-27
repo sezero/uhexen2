@@ -3,6 +3,24 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2008-12-27 (CVS):
+    * utils, light.c: fixed win64 warning. this is actually a workaround,
+      because of the argument passed to the thread function and should be
+      further looked into in the future.
+	light.c: In function 'LightThread':
+	light.c:54: warning: cast from pointer to integer of different size
+    * utils, hcc, pr_lex.c: fixed gcc-4.4 warning.
+	pr_lex.c: In function 'LexPunctuation':
+	pr_lex.c:438: warning: dereferencing type-punned pointer will break strict-aliasing rules
+    * utils, bspfile.c, soundpvs.c: fixed gcc-4.4 warnings.
+	bspfile.c: In function 'PrintBSPFileSizes':
+	bspfile.c:369: warning: dereferencing type-punned pointer will break strict-aliasing rules
+	soundpvs.c: In function 'CalcAmbientSounds':
+	soundpvs.c:107: warning: dereferencing type-punned pointer will break strict-aliasing rules
+    * utils: moved threads code to the common directory.
+    * utils: revised the ifdefs for the threads support.
+    * updated the TODO list (2008-12-27.)
+
 2008-12-26 (CVS):
     * launcher pak patch: set the pak files' read+write permissions for the user
       (and for the group) if we can, because if the files were copied from the
