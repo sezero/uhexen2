@@ -36,7 +36,7 @@ TODO:
 - DOS: Implement MIDI music playback.
 - DOS: Implement loading progress bars.
 - Add pthread support to the utilities and revise the current
-  windows threads mess there. the alpha ifdefs need cleaning.
+  windows threads mess there. threads need't be for alpha only.
 - utils/jsh2colour: clean-up the huge mess and improve a bit.
 - utils/maputils: improvements on the light tool?
 - utils/texutils: add some more texture tools (pcx2wal, etc.)
