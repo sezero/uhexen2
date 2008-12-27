@@ -1,6 +1,6 @@
 /*
 	lighting.c
-	$Id: light.c,v 1.12 2008-12-21 22:26:54 sezero Exp $
+	$Id: light.c,v 1.13 2008-12-27 16:45:08 sezero Exp $
 */
 
 #include "q_stdinc.h"
@@ -51,7 +51,7 @@ void LightThread (void *junk)
 {
 	int			i;
 
-	printf("Thread %ld started\n", (long)junk);
+	printf("Thread %d started\n", (int)(intptr_t)junk);
 	while (1)
 	{
 		LOCK;
