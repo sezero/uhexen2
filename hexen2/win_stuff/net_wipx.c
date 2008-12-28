@@ -2,14 +2,15 @@
 	net_wipx.c
 	winsock ipx driver
 
-	$Id: net_wipx.c,v 1.27 2007-12-21 15:05:23 sezero Exp $
+	$Id: net_wipx.c,v 1.28 2008-12-28 14:12:15 sezero Exp $
 */
 
 #include "quakedef.h"
-#include "winquake.h"
+#include "net_sys.h"
 
-#ifdef __LCC__
-// no wsipx.h in lcc
+#ifndef __LCC__
+#include <wsipx.h>
+#else	/* no wsipx.h in lcc */
 #define NSPROTO_IPX	1000
 #define NSPROTO_SPX	1256
 #define NSPROTO_SPXII	1257
@@ -20,9 +21,6 @@ typedef struct sockaddr_ipx {
 	char sa_nodenum[6];
 	unsigned short sa_socket;
 } SOCKADDR_IPX, *PSOCKADDR_IPX, *LPSOCKADDR_IPX;
-#else
-// not LCC, include the header
-#include <wsipx.h>
 #endif
 
 #include "net_wipx.h"

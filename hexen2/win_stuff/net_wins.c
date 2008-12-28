@@ -2,12 +2,12 @@
 	net_wins.c
 	winsock udp driver
 
-	$Id: net_wins.c,v 1.28 2008-12-22 12:25:40 sezero Exp $
+	$Id: net_wins.c,v 1.29 2008-12-28 14:12:15 sezero Exp $
 */
 
 
 #include "quakedef.h"
-#include "winquake.h"
+#include "net_sys.h"
 
 #define MAXHOSTNAMELEN		256
 
