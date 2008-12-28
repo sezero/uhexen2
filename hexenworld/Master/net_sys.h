@@ -4,7 +4,7 @@
 	- depends on arch_def.h
 	- may depend on q_stdinc.h
 
-	$Id: net_sys.h,v 1.13 2008-12-28 10:20:33 sezero Exp $
+	$Id: net_sys.h,v 1.14 2008-12-28 10:23:39 sezero Exp $
 
 	Copyright (C) 2007  O.Sezer <sezero@users.sourceforge.net>
 
@@ -83,11 +83,7 @@ typedef int	socklen_t;
 
 /* there is no in_addr_t on windows: define it as
    the type of the S_addr of in_addr structure */
-#if defined(__GNUC__)
-typedef typeof(((struct in_addr *)0)->s_addr)	in_addr_t;
-#else
-typedef u_long	in_addr_t;
-#endif	/* in_addr_t type */
+typedef u_long	in_addr_t;	/* uint32_t */
 
 /* on windows, socklen_t is to be a winsock2 thing */
 #if !defined(IP_MSFILTER_SIZE)
