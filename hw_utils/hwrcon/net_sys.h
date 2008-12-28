@@ -4,7 +4,7 @@
 	- depends on arch_def.h
 	- may depend on q_stdinc.h
 
-	$Id: net_sys.h,v 1.12 2008-12-22 12:24:12 sezero Exp $
+	$Id: net_sys.h,v 1.13 2008-12-28 10:20:33 sezero Exp $
 
 	Copyright (C) 2007  O.Sezer <sezero@users.sourceforge.net>
 
