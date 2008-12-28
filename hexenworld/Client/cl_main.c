@@ -2,7 +2,7 @@
 	cl_main.c
 	client main loop
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/cl_main.c,v 1.95 2008-04-04 07:55:14 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/cl_main.c,v 1.96 2008-12-28 12:30:11 sezero Exp $
 */
 
 #include "q_stdinc.h"
@@ -11,12 +11,6 @@
 #include "arch_def.h"
 #if defined(PLATFORM_WINDOWS)
 #include "winquake.h"
-#endif
-#if defined(PLATFORM_UNIX)
-#include <netinet/in.h>
-#ifndef INADDR_LOOPBACK
-#define INADDR_LOOPBACK	((in_addr_t) 0x7f000001)	/* 127.0.0.1	*/
-#endif
 #endif
 #include "quakedef.h"
 #include "cfgfile.h"
@@ -805,8 +799,8 @@ static void CL_ConnectionlessPacket (void)
 	// remote command from gui front end
 	if (c == A2C_CLIENT_COMMAND)
 	{
-		if ( *(unsigned int *)net_from.ip != *(unsigned int *)net_local_adr.ip
-			&& *(unsigned int *)net_from.ip != htonl(INADDR_LOOPBACK) )
+		if (!NET_CompareBaseAdr(net_from, net_local_adr)
+			&& !NET_CompareBaseAdr(net_from, net_loopback_adr))
 		{
 			Con_Printf ("Command packet from remote host. Ignored.\n");
 			return;
