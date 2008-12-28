@@ -2,13 +2,18 @@
 	sys_main.c
 	main loop and system interface
 
-	$Id: sys_main.c,v 1.46 2008-01-29 10:47:03 sezero Exp $
+	$Id: sys_main.c,v 1.47 2008-12-28 14:18:17 sezero Exp $
 */
 
 #include "q_stdinc.h"
 #include "compiler.h"
 #include "arch_def.h"
 #if defined(PLATFORM_WINDOWS)
+#ifdef _WIN64
+# ifndef _USE_WINSOCK2
+# define _USE_WINSOCK2	1
+# endif
+#endif
 #include <windows.h>
 #endif
 
@@ -27,7 +32,12 @@
 #if defined(PLATFORM_WINDOWS)
 #include <io.h>
 #include <conio.h>
+/* fd_set, struct timeval */
+#ifndef _USE_WINSOCK2
 #include <winsock.h>
+#else
+#include <winsock2.h>
+#endif
 #include <mmsystem.h>
 #endif
 

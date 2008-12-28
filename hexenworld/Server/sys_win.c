@@ -2,13 +2,24 @@
 	sys_win.c
 	Win32 system interface code
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Server/sys_win.c,v 1.10 2008-12-21 18:10:04 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Server/sys_win.c,v 1.11 2008-12-28 14:18:18 sezero Exp $
 */
 
 #include "quakedef.h"
 #include <sys/types.h>
 #include <limits.h>
+#include <windows.h>
+#ifdef _WIN64
+# ifndef _USE_WINSOCK2
+# define _USE_WINSOCK2	1
+# endif
+#endif
+/* fd_set, struct timeval */
+#ifndef _USE_WINSOCK2
 #include <winsock.h>
+#else
+#include <winsock2.h>
+#endif
 #include <mmsystem.h>
 #include <errno.h>
 #include <io.h>
