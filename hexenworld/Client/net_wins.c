@@ -2,7 +2,7 @@
 	net_udp.c
 	network UDP driver
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/net_wins.c,v 1.43 2008-11-11 07:35:28 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/net_wins.c,v 1.44 2008-12-28 12:12:37 sezero Exp $
 */
 
 #include "q_stdinc.h"
@@ -53,10 +53,19 @@ static void SockadrToNetadr (struct sockaddr_in *s, netadr_t *a)
 	a->port = s->sin_port;
 }
 
+qboolean NET_CompareBaseAdr (netadr_t a, netadr_t b)
+{
+	if (a.ip[0] == b.ip[0] && a.ip[1] == b.ip[1] && a.ip[2] == b.ip[2] && a.ip[3] == b.ip[3])
+		return true;
+
+	return false;
+}
+
 qboolean NET_CompareAdr (netadr_t a, netadr_t b)
 {
 	if (a.ip[0] == b.ip[0] && a.ip[1] == b.ip[1] && a.ip[2] == b.ip[2] && a.ip[3] == b.ip[3] && a.port == b.port)
 		return true;
+
 	return false;
 }
 
@@ -151,13 +160,13 @@ qboolean NET_GetPacket (void)
 			Con_Printf ("%s: Connection refused\n", __thisfunc__);
 			return false;
 		}
-#	ifdef PLATFORM_WINDOWS
+# ifdef PLATFORM_WINDOWS
 		if (err == WSAEMSGSIZE)
 		{
 			Con_Printf ("Oversize packet from %s\n", NET_AdrToString (net_from));
 			return false;
 		}
-#	endif
+# endif	/* _WINDOWS */
 		Sys_Error ("%s: %s", __thisfunc__, strerror(err));
 	}
 
@@ -246,7 +255,7 @@ static int UDP_OpenSocket (int port)
 	else
 		address.sin_port = htons((short)port);
 
-	if ( bind(newsocket, (struct sockaddr *)&address, sizeof(address)) == -1 )
+	if ( bind(newsocket, (struct sockaddr *)&address, sizeof(address)) == -1)
 		Sys_Error ("%s: bind: %s", __thisfunc__, strerror(errno));
 
 	return newsocket;
