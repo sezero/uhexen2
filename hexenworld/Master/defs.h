@@ -2,7 +2,7 @@
 	mst_defs.h
 	common definitions for hexenworld master server
 
-	$Id: defs.h,v 1.36 2008-01-12 08:45:03 sezero Exp $
+	$Id: defs.h,v 1.37 2008-12-28 12:10:04 sezero Exp $
 */
 
 #ifndef __HWMASTER_DEFS
@@ -16,7 +16,7 @@
 
 #define VER_HWMASTER_MAJ	1
 #define VER_HWMASTER_MID	2
-#define VER_HWMASTER_MIN	5
+#define VER_HWMASTER_MIN	6
 #define VER_HWMASTER_STR	STRINGIFY(VER_HWMASTER_MAJ) "." STRINGIFY(VER_HWMASTER_MID) "." STRINGIFY(VER_HWMASTER_MIN)
 
 #define HWM_USERDIR	".hwmaster"	/* user directory for unix	*/
