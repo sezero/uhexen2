@@ -2,7 +2,7 @@
 	hwmaster.c
 	main master server program
 
-	$Id: master.c,v 1.6 2008-01-12 08:15:46 sezero Exp $
+	$Id: master.c,v 1.7 2008-12-28 12:08:01 sezero Exp $
 */
 
 #include "q_stdinc.h"
@@ -71,13 +71,13 @@ static void FL_Clear (void)
 	filter_list = NULL;
 }
 
-static filter_t *FL_New (netadr_t adr1, netadr_t adr2)
+static filter_t *FL_New (netadr_t *adr1, netadr_t *adr2)
 {
 	filter_t *filter;
 
 	filter = (filter_t *)malloc(sizeof(filter_t));
-	NET_CopyAdr(&filter->from, &adr1);
-	NET_CopyAdr(&filter->to, &adr2);
+	memcpy(&filter->from, adr1, sizeof(netadr_t));
+	memcpy(&filter->to, adr2, sizeof(netadr_t));
 
 	return filter;
 }
@@ -97,7 +97,7 @@ static filter_t *FL_Find (netadr_t adr)
 
 	for (filter = filter_list ; filter ; filter = filter->next)
 	{
-		if (NET_CompareAdrNoPort(filter->from, adr))
+		if (NET_CompareBaseAdr(filter->from, adr))
 			return filter;
 	}
 
@@ -132,7 +132,7 @@ static void FL_FilterAdd (void)
 	{
 		printf("Added filter %s\t\t%s\n", Cmd_Argv(2+argv_index_add), Cmd_Argv(3+argv_index_add));
 
-		filter = FL_New(from, to);
+		filter = FL_New(&from, &to);
 		FL_Add(filter);
 	}
 	else
@@ -259,12 +259,12 @@ static void SV_Filter (void)
 
 	NET_StringToAdr("127.0.0.1:26950", &filter_adr);
 
-	if (NET_CompareAdrNoPort(net_from, filter_adr))
+	if (NET_CompareBaseAdr(net_from, filter_adr))
 	{
 		NET_StringToAdr("0.0.0.0:26950", &filter_adr);
-		if ( !NET_CompareAdrNoPort(net_local_adr, filter_adr) )
+		if (!NET_CompareBaseAdr(net_local_adr, filter_adr))
 		{
-			NET_CopyAdr(&net_from, &net_local_adr);
+			memcpy(&net_from, &net_local_adr, sizeof(netadr_t));
 			net_from.port = hold_port;
 		}
 		return;
@@ -273,7 +273,7 @@ static void SV_Filter (void)
 	//if no compare with filter list
 	if ( (filter = FL_Find(net_from)) )
 	{
-		NET_CopyAdr(&net_from, &filter->to);
+		memcpy(&net_from, &filter->to, sizeof(netadr_t));
 		net_from.port = hold_port;
 	}
 }
@@ -333,21 +333,13 @@ static void SVL_Clear (void)
 	printf("Cleared the server list\n\n");
 }
 
-static server_t *SVL_New (netadr_t adr)
+static server_t *SVL_New (netadr_t *adr)
 {
 	server_t *sv;
 
 	sv = (server_t *)malloc(sizeof(server_t));
-	sv->ip.ip[0] = 
-		sv->ip.ip[1] = 
-		sv->ip.ip[2] = 
-		sv->ip.ip[3] = 0;
-	sv->ip.pad = 0;
-	sv->ip.port = 0;
-	sv->next = NULL;
-	sv->previous = NULL;
-
-	NET_CopyAdr(&sv->ip,&adr);
+	memset(sv, 0, sizeof(server_t));
+	memcpy(&sv->ip, adr, sizeof(netadr_t));
 
 	return sv;
 }
@@ -487,7 +479,7 @@ static void Mst_Packet (void)
 		printf("%s >> A2A_PING\n", NET_AdrToString(net_from));
 		if ( !(sv = SVL_Find(net_from)) )
 		{
-			sv = SVL_New(net_from);
+			sv = SVL_New(&net_from);
 			SVL_Add(sv);
 		}
 		sv->timeout = Sys_DoubleTime();
@@ -498,7 +490,7 @@ static void Mst_Packet (void)
 		printf("%s >> S2M_HEARTBEAT\n", NET_AdrToString(net_from));
 		if ( !(sv = SVL_Find(net_from)) )
 		{
-			sv = SVL_New(net_from);
+			sv = SVL_New(&net_from);
 			SVL_Add(sv);
 		}
 		sv->timeout = Sys_DoubleTime();

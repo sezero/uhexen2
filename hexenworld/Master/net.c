@@ -2,7 +2,7 @@
 	net_udp.c
 	network UDP driver
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Master/net.c,v 1.38 2008-11-11 07:35:28 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Master/net.c,v 1.39 2008-12-28 12:08:01 sezero Exp $
 */
 
 #include "q_stdinc.h"
@@ -18,6 +18,7 @@
 //
 
 netadr_t	net_local_adr;
+netadr_t	net_loopback_adr;
 netadr_t	net_from;
 sizebuf_t	net_message;
 int			net_socket;
@@ -51,7 +52,7 @@ static void SockadrToNetadr (struct sockaddr_in *s, netadr_t *a)
 	a->port = s->sin_port;
 }
 
-qboolean NET_CompareAdrNoPort (netadr_t a, netadr_t b)
+qboolean NET_CompareBaseAdr (netadr_t a, netadr_t b)
 {
 	if (a.ip[0] == b.ip[0] && a.ip[1] == b.ip[1] && a.ip[2] == b.ip[2] && a.ip[3] == b.ip[3])
 		return true;
@@ -67,21 +68,20 @@ qboolean NET_CompareAdr (netadr_t a, netadr_t b)
 	return false;
 }
 
-void NET_CopyAdr (netadr_t *a, netadr_t *b)
-{
-	a->ip[0] = b->ip[0];
-	a->ip[1] = b->ip[1];
-	a->ip[2] = b->ip[2];
-	a->ip[3] = b->ip[3];
-	a->port = b->port;
-	a->pad = b->pad;
-}
-
 const char *NET_AdrToString (netadr_t a)
 {
 	static	char	s[64];
 
 	sprintf (s, "%i.%i.%i.%i:%i", a.ip[0], a.ip[1], a.ip[2], a.ip[3], ntohs(a.port));
+
+	return s;
+}
+
+const char *NET_BaseAdrToString (netadr_t a)
+{
+	static	char	s[64];
+
+	sprintf (s, "%i.%i.%i.%i", a.ip[0], a.ip[1], a.ip[2], a.ip[3]);
 
 	return s;
 }
@@ -149,14 +149,14 @@ qboolean NET_GetPacket (void)
 		int err = SOCKETERRNO;
 		if (err == EWOULDBLOCK)
 			return false;
-#ifdef PLATFORM_WINDOWS
+# ifdef PLATFORM_WINDOWS
 		if (err == WSAEMSGSIZE)
 		{
 			printf ("Warning:  Oversize packet from %s\n",
 				NET_AdrToString (net_from));
 			return false;
 		}
-#endif
+# endif	/* _WINDOWS */
 	//	Sys_Error ("NET_GetPacket: %s", strerror(err));
 		printf ("Warning:  Unrecognized recvfrom error, error code = %i\n",err);
 		return false;
@@ -282,6 +282,9 @@ void NET_Init (int port)
 	// determine my name & address
 	//
 	NET_GetLocalAddress ();
+
+	memset (&net_loopback_adr, 0, sizeof(netadr_t));
+	*(unsigned int *)net_loopback_adr.ip = htonl(INADDR_LOOPBACK);
 
 	printf("UDP Initialized\n");
 }
