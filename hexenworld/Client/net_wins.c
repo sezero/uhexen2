@@ -2,7 +2,7 @@
 	net_udp.c
 	network UDP driver
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/net_wins.c,v 1.44 2008-12-28 12:12:37 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/net_wins.c,v 1.45 2008-12-28 12:18:25 sezero Exp $
 */
 
 #include "q_stdinc.h"
@@ -20,6 +20,7 @@
 int LastCompMessageSize = 0;
 
 netadr_t	net_local_adr;
+netadr_t	net_loopback_adr;
 netadr_t	net_from;
 sizebuf_t	net_message;
 int			net_socket;
@@ -309,6 +310,9 @@ void NET_Init (int port)
 	// determine my name & address
 	//
 	NET_GetLocalAddress ();
+
+	memset (&net_loopback_adr, 0, sizeof(netadr_t));
+	*(unsigned int *)net_loopback_adr.ip = htonl(INADDR_LOOPBACK);
 
 	Con_SafePrintf("UDP Initialized\n");
 }

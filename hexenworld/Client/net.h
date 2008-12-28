@@ -2,7 +2,7 @@
 	net.h
 	quake's interface to the networking layer
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/net.h,v 1.9 2008-12-28 12:12:37 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/net.h,v 1.10 2008-12-28 12:18:25 sezero Exp $
 */
 
 #ifndef __H2W_NET_H
@@ -18,6 +18,7 @@ typedef struct
 } netadr_t;
 
 extern	netadr_t	net_local_adr;
+extern	netadr_t	net_loopback_adr;
 extern	netadr_t	net_from;	// address of who sent the packet
 extern	sizebuf_t	net_message;
 
