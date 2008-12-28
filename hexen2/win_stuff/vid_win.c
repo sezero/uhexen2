@@ -2,11 +2,12 @@
 	vid_win.c
 	Win32 video driver using MGL-4.05
 
-	$Id: vid_win.c,v 1.62 2008-04-03 07:11:51 sezero Exp $
+	$Id: vid_win.c,v 1.63 2008-12-28 14:39:04 sezero Exp $
 */
 
 #include "quakedef.h"
 #include "winquake.h"
+#include <mmsystem.h>
 #include "d_local.h"
 #include "resource.h"
 #include <ddraw.h>

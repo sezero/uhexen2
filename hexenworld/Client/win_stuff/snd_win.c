@@ -1,6 +1,6 @@
 /*
 	snd_win.c
-	$Id: snd_win.c,v 1.36 2007-12-30 15:40:59 sezero Exp $
+	$Id: snd_win.c,v 1.37 2008-12-28 14:34:34 sezero Exp $
 
 	Copyright (C) 1996-1997  Id Software, Inc.
 
@@ -26,6 +26,7 @@
 #include "quakedef.h"
 #include "snd_sys.h"
 #include "winquake.h"
+#include <mmsystem.h>
 #include <dsound.h>
 
 /* all of these functions must be properly

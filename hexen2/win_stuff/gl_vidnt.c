@@ -1,12 +1,13 @@
 /*
 	gl_vidnt.c -- NT GL vid component
-	$Id: gl_vidnt.c,v 1.122 2008-11-17 22:12:28 sezero Exp $
+	$Id: gl_vidnt.c,v 1.123 2008-12-28 14:34:34 sezero Exp $
 */
 
 #define	__GL_FUNC_EXTERN
 
 #include "quakedef.h"
 #include "winquake.h"
+#include <mmsystem.h>
 #include "cfgfile.h"
 #include "resource.h"
 #include "wgl_func.h"

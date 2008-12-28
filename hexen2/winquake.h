@@ -2,7 +2,7 @@
 	winquake.h
 	Win32-specific Quake header file
 
-	$Id: winquake.h,v 1.35 2008-12-22 14:30:21 sezero Exp $
+	$Id: winquake.h,v 1.36 2008-12-28 14:34:34 sezero Exp $
 */
 
 #if !defined(PLATFORM_WINDOWS)
@@ -15,15 +15,9 @@
 #ifdef _MSC_VER
 #pragma warning( disable : 4229 )  /* mgraph gets this */
 #endif
-#include <windows.h>
-#if defined(_WIN64) || defined(_USE_WINSOCK2)
-#include <winsock2.h>
-#include <ws2tcpip.h>
-#else
-#include <winsock.h>
-#endif
 
-#include <mmsystem.h>
+/* include windows.h here, because we need the data types */
+#include <windows.h>
 
 /* required compatibility versions for directx components */
 #if !defined(_WIN64)

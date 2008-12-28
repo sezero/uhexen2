@@ -1,6 +1,6 @@
 /*
 	in_win.c
-	$Id: in_win.c,v 1.33 2008-03-07 08:36:41 sezero Exp $
+	$Id: in_win.c,v 1.34 2008-12-28 14:34:34 sezero Exp $
 
 	windows 95 mouse and joystick code
 
@@ -10,6 +10,7 @@
 
 #include "quakedef.h"
 #include "winquake.h"
+#include <mmsystem.h>
 #include <dinput.h>
 
 // mouse variables
