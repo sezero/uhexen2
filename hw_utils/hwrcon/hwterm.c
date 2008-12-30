@@ -1,6 +1,6 @@
 /*
 	hwterm.c
-	$Id: hwterm.c,v 1.25 2008-01-12 08:45:04 sezero Exp $
+	$Id: hwterm.c,v 1.26 2008-12-30 07:26:09 sezero Exp $
 
 	HWTERM 1.2 HexenWorld Remote Console Terminal
 	Idea based on QTerm 1.1 by Michael Dwyer/N0ZAP (18-May-1998).
@@ -89,26 +89,27 @@ void Sys_Error (const char *error, ...)
 
 //=============================================================================
 
-static void SockadrToNetadr (struct sockaddr_in *s, netadr_t *a)
-{
-	*(int *)&a->ip = *(int *)&s->sin_addr;
-	a->port = s->sin_port;
-}
-
 static void NetadrToSockadr (netadr_t *a, struct sockaddr_in *s)
 {
 	memset (s, 0, sizeof(*s));
 	s->sin_family = AF_INET;
 
-	*(int *)&s->sin_addr = *(int *)&a->ip;
+	memcpy (&s->sin_addr, a->ip, 4);
 	s->sin_port = a->port;
+}
+
+static void SockadrToNetadr (struct sockaddr_in *s, netadr_t *a)
+{
+	memcpy (a->ip, &s->sin_addr, 4);
+	a->port = s->sin_port;
 }
 
 const char *NET_AdrToString (netadr_t a)
 {
 	static	char	s[64];
 
-	sprintf (s, "%i.%i.%i.%i:%i", a.ip[0], a.ip[1], a.ip[2], a.ip[3], ntohs(a.port));
+	sprintf (s, "%i.%i.%i.%i:%i", a.ip[0], a.ip[1], a.ip[2], a.ip[3],
+							ntohs(a.port));
 
 	return s;
 }
@@ -138,14 +139,14 @@ static int NET_StringToAdr (const char *s, netadr_t *a)
 
 	if (copy[0] >= '0' && copy[0] <= '9')
 	{
-		*(int *)&sadr.sin_addr = inet_addr(copy);
+		sadr.sin_addr.s_addr = inet_addr(copy);
 	}
 	else
 	{
 		h = gethostbyname (copy);
 		if (!h)
 			return 0;
-		*(int *)&sadr.sin_addr = *(int *)h->h_addr_list[0];
+		sadr.sin_addr.s_addr = *(in_addr_t *)h->h_addr_list[0];
 	}
 
 	SockadrToNetadr (&sadr, a);

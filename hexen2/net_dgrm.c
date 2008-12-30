@@ -2,7 +2,7 @@
 	net_dgrm.c
 	This is enables a simple IP banning mechanism
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/net_dgrm.c,v 1.41 2007-12-14 16:41:10 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/net_dgrm.c,v 1.42 2008-12-30 07:26:08 sezero Exp $
 */
 
 #define BAN_TEST
@@ -65,8 +65,8 @@ static char *StrAddr (struct qsockaddr *addr)
 
 #ifdef BAN_TEST
 
-static in_addr_t	banAddr = 0x00000000;
-static in_addr_t	banMask = 0xffffffff;
+static struct in_addr	banAddr;
+static struct in_addr	banMask;
 
 static void NET_Ban_f (void)
 {
@@ -93,10 +93,10 @@ static void NET_Ban_f (void)
 	switch (Cmd_Argc ())
 	{
 	case 1:
-		if (((struct in_addr *)&banAddr)->s_addr)
+		if (banAddr.s_addr != INADDR_ANY)
 		{
-			strcpy(addrStr, inet_ntoa(*(struct in_addr *)&banAddr));
-			strcpy(maskStr, inet_ntoa(*(struct in_addr *)&banMask));
+			strcpy(addrStr, inet_ntoa(banAddr));
+			strcpy(maskStr, inet_ntoa(banMask));
 			print(_PRINT_NORMAL, "Banning %s [%s]\n", addrStr, maskStr);
 		}
 		else
@@ -105,15 +105,15 @@ static void NET_Ban_f (void)
 
 	case 2:
 		if (q_strcasecmp(Cmd_Argv(1), "off") == 0)
-			banAddr = 0x00000000;
+			banAddr.s_addr = INADDR_ANY;
 		else
-			banAddr = inet_addr(Cmd_Argv(1));
-		banMask = 0xffffffff;
+			banAddr.s_addr = inet_addr(Cmd_Argv(1));
+		banMask.s_addr = INADDR_NONE;
 		break;
 
 	case 3:
-		banAddr = inet_addr(Cmd_Argv(1));
-		banMask = inet_addr(Cmd_Argv(2));
+		banAddr.s_addr = inet_addr(Cmd_Argv(1));
+		banMask.s_addr = inet_addr(Cmd_Argv(2));
 		break;
 
 	default:
@@ -771,6 +771,9 @@ int Datagram_Init (void)
 		return -1;
 
 #ifdef BAN_TEST
+	banAddr.s_addr = INADDR_ANY;
+	banMask.s_addr = INADDR_NONE;
+
 	Cmd_AddCommand ("ban", NET_Ban_f);
 #endif
 	Cmd_AddCommand ("test", Test_f);
@@ -967,7 +970,7 @@ static qsocket_t *_Datagram_CheckNewConnections (void)
 	{
 		in_addr_t	testAddr;
 		testAddr = ((struct sockaddr_in *)&clientaddr)->sin_addr.s_addr;
-		if ((testAddr & banMask) == banAddr)
+		if ((testAddr & banMask.s_addr) == banAddr.s_addr)
 			return Datagram_Reject("You have been banned.\n", acceptsock, &clientaddr);
 	}
 #endif

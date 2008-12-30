@@ -1,6 +1,6 @@
 /*
 	hwmquery.c
-	$Id: hwmquery.c,v 1.22 2008-01-12 08:45:03 sezero Exp $
+	$Id: hwmquery.c,v 1.23 2008-12-30 07:26:09 sezero Exp $
 
 	HWMQUERY 0.2 HexenWorld Master Server Query
 	Copyright (C) 2006-2008 O. Sezer <sezero@users.sourceforge.net>
@@ -80,7 +80,7 @@ void Sys_Error (const char *error, ...)
 
 static void SockadrToNetadr (struct sockaddr_in *s, netadr_t *a)
 {
-	*(int *)&a->ip = *(int *)&s->sin_addr;
+	memcpy (a->ip, &s->sin_addr, 4);
 	a->port = s->sin_port;
 }
 
@@ -89,7 +89,7 @@ static void NetadrToSockadr (netadr_t *a, struct sockaddr_in *s)
 	memset (s, 0, sizeof(*s));
 	s->sin_family = AF_INET;
 
-	*(int *)&s->sin_addr = *(int *)&a->ip;
+	memcpy (&s->sin_addr, a->ip, 4);
 	s->sin_port = a->port;
 }
 
@@ -97,7 +97,8 @@ const char *NET_AdrToString (netadr_t a)
 {
 	static	char	s[64];
 
-	sprintf (s, "%i.%i.%i.%i:%i", a.ip[0], a.ip[1], a.ip[2], a.ip[3], ntohs(a.port));
+	sprintf (s, "%i.%i.%i.%i:%i", a.ip[0], a.ip[1], a.ip[2], a.ip[3],
+							ntohs(a.port));
 
 	return s;
 }
@@ -127,14 +128,14 @@ static int NET_StringToAdr (const char *s, netadr_t *a)
 
 	if (copy[0] >= '0' && copy[0] <= '9')
 	{
-		*(int *)&sadr.sin_addr = inet_addr(copy);
+		sadr.sin_addr.s_addr = inet_addr(copy);
 	}
 	else
 	{
 		h = gethostbyname (copy);
 		if (!h)
 			return 0;
-		*(int *)&sadr.sin_addr = *(int *)h->h_addr_list[0];
+		sadr.sin_addr.s_addr = *(in_addr_t *)h->h_addr_list[0];
 	}
 
 	SockadrToNetadr (&sadr, a);

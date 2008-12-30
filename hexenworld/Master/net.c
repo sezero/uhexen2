@@ -2,7 +2,7 @@
 	net_udp.c
 	network UDP driver
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Master/net.c,v 1.39 2008-12-28 12:08:01 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Master/net.c,v 1.40 2008-12-30 07:26:09 sezero Exp $
 */
 
 #include "q_stdinc.h"
@@ -42,29 +42,34 @@ static void NetadrToSockadr (netadr_t *a, struct sockaddr_in *s)
 	memset (s, 0, sizeof(*s));
 	s->sin_family = AF_INET;
 
-	*(int *)&s->sin_addr = *(int *)&a->ip;
+	memcpy (&s->sin_addr, a->ip, 4);
 	s->sin_port = a->port;
 }
 
 static void SockadrToNetadr (struct sockaddr_in *s, netadr_t *a)
 {
-	*(int *)&a->ip = *(int *)&s->sin_addr;
+	memcpy (a->ip, &s->sin_addr, 4);
 	a->port = s->sin_port;
 }
 
 qboolean NET_CompareBaseAdr (netadr_t a, netadr_t b)
 {
-	if (a.ip[0] == b.ip[0] && a.ip[1] == b.ip[1] && a.ip[2] == b.ip[2] && a.ip[3] == b.ip[3])
+	if (a.ip[0] == b.ip[0] && a.ip[1] == b.ip[1] &&
+	    a.ip[2] == b.ip[2] && a.ip[3] == b.ip[3])
+	{
 		return true;
-
+	}
 	return false;
 }
 
 qboolean NET_CompareAdr (netadr_t a, netadr_t b)
 {
-	if (a.ip[0] == b.ip[0] && a.ip[1] == b.ip[1] && a.ip[2] == b.ip[2] && a.ip[3] == b.ip[3] && a.port == b.port)
+	if (a.ip[0] == b.ip[0] && a.ip[1] == b.ip[1] &&
+	    a.ip[2] == b.ip[2] && a.ip[3] == b.ip[3] &&
+	    a.port == b.port)
+	{
 		return true;
-
+	}
 	return false;
 }
 
@@ -72,7 +77,8 @@ const char *NET_AdrToString (netadr_t a)
 {
 	static	char	s[64];
 
-	sprintf (s, "%i.%i.%i.%i:%i", a.ip[0], a.ip[1], a.ip[2], a.ip[3], ntohs(a.port));
+	sprintf (s, "%i.%i.%i.%i:%i", a.ip[0], a.ip[1], a.ip[2], a.ip[3],
+							ntohs(a.port));
 
 	return s;
 }
@@ -116,14 +122,14 @@ qboolean NET_StringToAdr (const char *s, netadr_t *a)
 
 	if (copy[0] >= '0' && copy[0] <= '9')
 	{
-		*(int *)&sadr.sin_addr = inet_addr(copy);
+		sadr.sin_addr.s_addr = inet_addr(copy);
 	}
 	else
 	{
 		h = gethostbyname (copy);
 		if (!h)
 			return 0;
-		*(int *)&sadr.sin_addr = *(int *)h->h_addr_list[0];
+		sadr.sin_addr.s_addr = *(in_addr_t *)h->h_addr_list[0];
 	}
 
 	SockadrToNetadr (&sadr, a);
@@ -141,7 +147,8 @@ qboolean NET_GetPacket (void)
 	socklen_t		fromlen;
 
 	fromlen = sizeof(from);
-	ret = recvfrom (net_socket, (char *)net_message_buffer, sizeof(net_message_buffer), 0, (struct sockaddr *)&from, &fromlen);
+	ret = recvfrom(net_socket, (char *)net_message_buffer, sizeof(net_message_buffer), 0,
+			(struct sockaddr *)&from, &fromlen);
 	SockadrToNetadr (&from, &net_from);
 
 	if (ret == -1)
@@ -263,6 +270,8 @@ NET_Init
 */
 void NET_Init (int port)
 {
+	in_addr_t a = htonl(INADDR_LOOPBACK);
+
 #ifdef PLATFORM_WINDOWS
 	if (WSAStartup(MAKEWORD(1,1), &winsockdata) != 0)
 		Sys_Error ("Winsock initialization failed.");
@@ -284,7 +293,7 @@ void NET_Init (int port)
 	NET_GetLocalAddress ();
 
 	memset (&net_loopback_adr, 0, sizeof(netadr_t));
-	*(unsigned int *)net_loopback_adr.ip = htonl(INADDR_LOOPBACK);
+	memcpy (net_loopback_adr.ip, &a, 4);
 
 	printf("UDP Initialized\n");
 }

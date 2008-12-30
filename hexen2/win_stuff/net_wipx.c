@@ -2,7 +2,7 @@
 	net_wipx.c
 	winsock ipx driver
 
-	$Id: net_wipx.c,v 1.28 2008-12-28 14:12:15 sezero Exp $
+	$Id: net_wipx.c,v 1.29 2008-12-30 07:26:09 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -287,7 +287,7 @@ int WIPX_Write (int handle, byte *buf, int len, struct qsockaddr *addr)
 	int ret;
 
 	// build packet with sequence number
-	*(int *)(&netpacketBuffer[0]) = sequence[handle];
+	memcpy(&netpacketBuffer[0], &sequence[handle], 4);
 	sequence[handle]++;
 	memcpy(&netpacketBuffer[4], buf, len);
 	len += 4;

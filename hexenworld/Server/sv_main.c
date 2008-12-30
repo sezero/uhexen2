@@ -2,7 +2,7 @@
 	sv_main.c
 	server main program
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Server/sv_main.c,v 1.52 2007-11-14 07:27:35 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Server/sv_main.c,v 1.53 2008-12-30 07:26:09 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -863,8 +863,8 @@ static qboolean StringToFilter (const char *s, ipfilter_t *f)
 		s++;
 	}
 
-	f->mask = *(unsigned int *)m;
-	f->compare = *(unsigned int *)b;
+	memcpy (&f->mask, m, 4);
+	memcpy (&f->compare, b, 4);
 
 	return true;
 }
@@ -937,12 +937,12 @@ SV_ListIP_f
 static void SV_ListIP_f (void)
 {
 	int		i;
-	byte	b[4];
+	byte	*b;
 
 	Con_Printf ("Filter list:\n");
 	for (i = 0; i < numipfilters; i++)
 	{
-		*(unsigned int *)b = ipfilters[i].compare;
+		b = (byte *)&ipfilters[i].compare;
 		Con_Printf ("%3i.%3i.%3i.%3i\n", b[0], b[1], b[2], b[3]);
 	}
 }
@@ -957,7 +957,7 @@ static void SV_WriteIP_f (void)
 {
 	FILE	*f;
 	char	name[MAX_OSPATH];
-	byte	b[4];
+	byte	*b;
 	int		i;
 
 	sprintf (name, "%s/listip.cfg", fs_userdir);
@@ -973,7 +973,7 @@ static void SV_WriteIP_f (void)
 
 	for (i = 0; i < numipfilters; i++)
 	{
-		*(unsigned int *)b = ipfilters[i].compare;
+		b = (byte *)&ipfilters[i].compare;
 		fprintf (f, "addip %i.%i.%i.%i\n", b[0], b[1], b[2], b[3]);
 	}
 
@@ -1009,7 +1009,7 @@ static qboolean SV_FilterPacket (void)
 	int		i;
 	unsigned int	in;
 
-	in = *(unsigned int *)net_from.ip;
+	memcpy (&in, net_from.ip, 4);
 
 	for (i = 0; i < numipfilters; i++)
 	{
