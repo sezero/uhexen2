@@ -3,7 +3,7 @@
 	IPX network driver for dosquake.
 	from quake1 source with minor adaptations for uhexen2.
 
-	$Id: net_ipx.c,v 1.2 2007-12-21 15:05:23 sezero Exp $
+	$Id: net_ipx.c,v 1.3 2008-12-30 07:51:08 sezero Exp $
 
 	Copyright (C) 1996-1997  Id Software, Inc.
 
@@ -616,12 +616,13 @@ int IPX_StringToAddr (const char *string, struct qsockaddr *addr)
 	memset(addr, 0, sizeof(struct qsockaddr));
 	addr->sa_family = AF_NETWARE;
 
-#define DO(src,dest)	\
-	buf[0] = string[src];	\
-	buf[1] = string[src + 1];	\
-	if (sscanf (buf, "%x", &val) != 1)	\
-		return -1;	\
-	((struct sockaddr_ipx *)addr)->sipx_addr.dest = val
+#define DO(src,dest) do {				\
+	buf[0] = string[src];				\
+	buf[1] = string[src + 1];			\
+	if (sscanf (buf, "%x", &val) != 1)		\
+		return -1;				\
+	((struct sockaddr_ipx *)addr)->sipx_addr.dest = val; \
+      } while (0)
 
 	DO(0, network[0]);
 	DO(2, network[1]);

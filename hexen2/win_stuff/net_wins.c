@@ -2,14 +2,14 @@
 	net_wins.c
 	winsock udp driver
 
-	$Id: net_wins.c,v 1.29 2008-12-28 14:12:15 sezero Exp $
+	$Id: net_wins.c,v 1.30 2008-12-30 07:51:08 sezero Exp $
 */
 
 
-#include "quakedef.h"
+#include "q_stdinc.h"
+#include "arch_def.h"
 #include "net_sys.h"
-
-#define MAXHOSTNAMELEN		256
+#include "quakedef.h"
 
 static int net_acceptsocket = -1;	// socket for fielding new connections
 static int net_controlsocket;
@@ -182,7 +182,7 @@ int WINS_Init (void)
 	((struct sockaddr_in *)&broadcastaddr)->sin_port = htons((unsigned short)net_hostport);
 
 	WINS_GetSocketAddr (net_controlsocket, &addr);
-	strcpy(my_tcpip_address,  WINS_AddrToString (&addr));
+	strcpy(my_tcpip_address, WINS_AddrToString (&addr));
 	colon = strrchr (my_tcpip_address, ':');
 	if (colon)
 		*colon = 0;
@@ -349,7 +349,7 @@ int WINS_CheckNewConnections (void)
 
 int WINS_Read (int mysocket, byte *buf, int len, struct qsockaddr *addr)
 {
-	int addrlen = sizeof (struct qsockaddr);
+	socklen_t addrlen = sizeof(struct qsockaddr);
 	int ret;
 
 	ret = recvfrom (mysocket, (char *)buf, len, 0, (struct sockaddr *)addr, &addrlen);
@@ -447,7 +447,7 @@ int WINS_StringToAddr (const char *string, struct qsockaddr *addr)
 
 int WINS_GetSocketAddr (int mysocket, struct qsockaddr *addr)
 {
-	int addrlen = sizeof(struct qsockaddr);
+	socklen_t addrlen = sizeof(struct qsockaddr);
 	struct sockaddr_in *address = (struct sockaddr_in *)addr;
 	struct in_addr	a;
 

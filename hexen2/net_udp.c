@@ -1,6 +1,6 @@
 /*
 	net_udp.c
-	$Id: net_udp.c,v 1.36 2007-12-21 15:05:23 sezero Exp $
+	$Id: net_udp.c,v 1.37 2008-12-30 07:51:08 sezero Exp $
 
 	Copyright (C) 1996-1997  Id Software, Inc.
 
@@ -176,7 +176,7 @@ int UDP_Init (void)
 	((struct sockaddr_in *)&broadcastaddr)->sin_port = htons((unsigned short)net_hostport);
 
 	UDP_GetSocketAddr (net_controlsocket, &addr);
-	strcpy(my_tcpip_address,  UDP_AddrToString (&addr));
+	strcpy(my_tcpip_address, UDP_AddrToString (&addr));
 	colon = strrchr (my_tcpip_address, ':');
 	if (colon)
 		*colon = 0;

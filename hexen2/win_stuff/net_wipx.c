@@ -2,11 +2,13 @@
 	net_wipx.c
 	winsock ipx driver
 
-	$Id: net_wipx.c,v 1.29 2008-12-30 07:26:09 sezero Exp $
+	$Id: net_wipx.c,v 1.30 2008-12-30 07:51:08 sezero Exp $
 */
 
-#include "quakedef.h"
+#include "q_stdinc.h"
+#include "arch_def.h"
 #include "net_sys.h"
+#include "quakedef.h"
 
 #ifndef __LCC__
 #include <wsipx.h>
@@ -26,8 +28,6 @@ typedef struct sockaddr_ipx {
 #include "net_wipx.h"
 
 extern cvar_t hostname;
-
-#define MAXHOSTNAMELEN		256
 
 static int net_acceptsocket = -1;		// socket for fielding new connections
 static int net_controlsocket;
@@ -118,7 +118,7 @@ loc0:
 	((struct sockaddr_ipx *)&broadcastaddr)->sa_socket = htons((unsigned short)net_hostport);
 
 	WIPX_GetSocketAddr (net_controlsocket, &addr);
-	strcpy(my_ipx_address,  WIPX_AddrToString (&addr));
+	strcpy(my_ipx_address, WIPX_AddrToString (&addr));
 	colon = strrchr (my_ipx_address, ':');
 	if (colon)
 		*colon = 0;
@@ -249,7 +249,7 @@ static byte netpacketBuffer[NET_MAXMESSAGE + 4];
 
 int WIPX_Read (int handle, byte *buf, int len, struct qsockaddr *addr)
 {
-	int addrlen = sizeof (struct qsockaddr);
+	socklen_t addrlen = sizeof(struct qsockaddr);
 	int mysocket = ipxsocket[handle];
 	int ret;
 
@@ -328,19 +328,20 @@ const char *WIPX_AddrToString (struct qsockaddr *addr)
 
 int WIPX_StringToAddr (const char *string, struct qsockaddr *addr)
 {
-	int		val;
+	int	val;
 	char	buf[3];
 
 	buf[2] = 0;
 	memset(addr, 0, sizeof(struct qsockaddr));
 	addr->sa_family = AF_IPX;
 
-#define DO(src,dest)	\
-	buf[0] = string[src];	\
-	buf[1] = string[src + 1];	\
-	if (sscanf (buf, "%x", &val) != 1)	\
-		return -1;	\
-	((struct sockaddr_ipx *)addr)->dest = val
+#define DO(src,dest) do {				\
+	buf[0] = string[src];				\
+	buf[1] = string[src + 1];			\
+	if (sscanf (buf, "%x", &val) != 1)		\
+		return -1;				\
+	((struct sockaddr_ipx *)addr)->dest = val;	\
+      } while (0)
 
 	DO(0, sa_netnum[0]);
 	DO(2, sa_netnum[1]);
@@ -365,7 +366,7 @@ int WIPX_StringToAddr (const char *string, struct qsockaddr *addr)
 int WIPX_GetSocketAddr (int handle, struct qsockaddr *addr)
 {
 	int mysocket = ipxsocket[handle];
-	int addrlen = sizeof(struct qsockaddr);
+	socklen_t addrlen = sizeof(struct qsockaddr);
 
 	memset(addr, 0, sizeof(struct qsockaddr));
 	if (getsockname(mysocket, (struct sockaddr *)addr, &addrlen) != 0)
