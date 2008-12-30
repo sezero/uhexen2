@@ -2,7 +2,7 @@
 	hwmaster.c
 	main master server program
 
-	$Id: master.c,v 1.7 2008-12-28 12:08:01 sezero Exp $
+	$Id: master.c,v 1.8 2008-12-30 10:03:43 sezero Exp $
 */
 
 #include "q_stdinc.h"
@@ -385,47 +385,27 @@ MASTER SERVER PACKET HANDLING
 
 static void SV_AnalysePacket (void)
 {
-	byte	c;
-	byte	*p;
-	int		i;
+	byte	buf[16];
+	byte	*p, *data;
+	int	i, size, rsize;
 
-	printf("Unknown packet from %s:\n", NET_AdrToString(net_from));
+	printf ("%s >> unknown packet:\n", NET_AdrToString(net_from));
 
-	p = net_message.data;
+	data = net_message.data;
+	size = net_message.cursize;
 
-	for (i = 0; i < net_message.cursize; i++, p++)
+	for (p = data; (rsize = q_min(size - (p - data), 16)); p += rsize)
 	{
-		c = p[0];
-		printf(" %3i ", c);
-
-		if (i % 8 == 7)
-			printf("\n");
+		printf ("%04X:", (unsigned) (p - data));
+		memcpy (buf, p, rsize);
+		for (i = 0; i < rsize; i++)
+		{
+			printf (" %02X", buf[i]);
+			if (buf[i] < ' ' || buf [i] > '~')
+				buf[i] = '.';
+		}
+		printf ("%*.*s\n", 1 + (16 - rsize) * 3 + rsize, rsize, buf);
 	}
-
-	printf("\n\n");
-
-	p = net_message.data;
-
-	for (i = 0; i < net_message.cursize; i++, p++)
-	{
-		c = p[0];
-
-		if (c == '\n')
-			printf("  \\n ");
-		else if (c >= 32 && c <= 127)
-			printf("   %c ", c);
-		else if (c < 10)
-			printf("  \\%1i ", c);
-		else if (c < 100)
-			printf(" \\%2i ", c);
-		else
-			printf("\\%3i ", c);
-
-		if (i % 8 == 7)
-			printf("\n");
-	}
-
-	printf("\n");
 }
 
 static void Mst_SendList (void)
