@@ -2,7 +2,7 @@
 	net.h
 	quake's interface to the networking layer
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/net.h,v 1.22 2007-12-21 15:05:23 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/net.h,v 1.23 2008-12-30 09:50:26 sezero Exp $
 */
 
 #ifndef __HX2_NET_H
@@ -10,8 +10,8 @@
 
 struct qsockaddr
 {
-	short sa_family;
-	unsigned char sa_data[14];
+	short qsa_family;
+	unsigned char qsa_data[14];
 };
 
 #define NET_NAME_ID		"HEXENII"

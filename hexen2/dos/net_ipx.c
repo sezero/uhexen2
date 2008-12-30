@@ -3,7 +3,7 @@
 	IPX network driver for dosquake.
 	from quake1 source with minor adaptations for uhexen2.
 
-	$Id: net_ipx.c,v 1.3 2008-12-30 07:51:08 sezero Exp $
+	$Id: net_ipx.c,v 1.4 2008-12-30 09:50:26 sezero Exp $
 
 	Copyright (C) 1996-1997  Id Software, Inc.
 
@@ -614,7 +614,7 @@ int IPX_StringToAddr (const char *string, struct qsockaddr *addr)
 
 	buf[2] = 0;
 	memset(addr, 0, sizeof(struct qsockaddr));
-	addr->sa_family = AF_NETWARE;
+	addr->qsa_family = AF_NETWARE;
 
 #define DO(src,dest) do {				\
 	buf[0] = string[src];				\
@@ -647,7 +647,7 @@ int IPX_StringToAddr (const char *string, struct qsockaddr *addr)
 int IPX_GetSocketAddr (int handle, struct qsockaddr *addr)
 {
 	memset(addr, 0, sizeof(struct qsockaddr));
-	addr->sa_family = AF_NETWARE;
+	addr->qsa_family = AF_NETWARE;
 	IPX_GetLocalAddress(&((struct sockaddr_ipx *)addr)->sipx_addr);
 	((struct sockaddr_ipx *)addr)->sipx_port = ipxsocket[handle];
 	return 0;
@@ -690,7 +690,7 @@ int IPX_GetAddrFromName (const char *name, struct qsockaddr *addr)
 
 int IPX_AddrCompare (struct qsockaddr *addr1, struct qsockaddr *addr2)
 {
-	if (addr1->sa_family != addr2->sa_family)
+	if (addr1->qsa_family != addr2->qsa_family)
 		return -1;
 
 	if (memcmp(&((struct sockaddr_ipx *)addr1)->sipx_addr, &((struct sockaddr_ipx *)addr2)->sipx_addr, 10))

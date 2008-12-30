@@ -3,7 +3,7 @@
 	Beame & Whiteside TCP/IP for dosquake.
 	from quake1 source with minor adaptations for uhexen2.
 
-	$Id: net_bw.c,v 1.2 2007-12-21 15:05:23 sezero Exp $
+	$Id: net_bw.c,v 1.3 2008-12-30 09:50:26 sezero Exp $
 
 	Copyright (C) 1996-1997  Id Software, Inc.
 
@@ -534,7 +534,7 @@ int BW_Read (int s, byte *buf, int len, struct qsockaddr *from)
 
 	if (from)
 	{
-		from->sa_family = AF_INET;
+		from->qsa_family = AF_INET;
 		((struct sockaddr_in *)from)->sin_addr = info1->remoteAddr;
 		((struct sockaddr_in *)from)->sin_port = htons(info2->remotePort);
 	}
@@ -646,7 +646,7 @@ int BW_StringToAddr (const char *string, struct qsockaddr *addr)
 	sscanf(string, "%d.%d.%d.%d:%d", &ha1, &ha2, &ha3, &ha4, &hp);
 	ipaddr = (ha1 << 24) | (ha2 << 16) | (ha3 << 8) | ha4;
 
-	addr->sa_family = AF_INET;
+	addr->qsa_family = AF_INET;
 	((struct sockaddr_in *)addr)->sin_addr.s_addr = htonl(ipaddr);
 	((struct sockaddr_in *)addr)->sin_port = htons((short)hp);
 	return 0;
@@ -663,7 +663,7 @@ int BW_GetSocketAddr (int mysocket, struct qsockaddr *addr)
 	regs.x.ds = lowmem_bufseg;
 	dos_int86(0x21);
 
-	addr->sa_family = AF_INET;
+	addr->qsa_family = AF_INET;
 	((struct sockaddr_in *)addr)->sin_addr.s_addr = ((BW_UDPinfo_t *)lowmem_buffer)->localAddr.s_addr;
 	((struct sockaddr_in *)addr)->sin_port = htons(((BW_UDPinfo_t *)lowmem_buffer)->localPort);
 
@@ -723,7 +723,7 @@ int BW_GetAddrFromName (const char *name, struct qsockaddr *hostaddr)
 	else
 		port = net_hostport;
 
-	hostaddr->sa_family = AF_INET;
+	hostaddr->qsa_family = AF_INET;
 	((struct sockaddr_in *)hostaddr)->sin_port = htons((short)port);
 	((struct sockaddr_in *)hostaddr)->sin_addr.s_addr = ((ethdevinfo.inetAddr & mask) | addr);
 
@@ -734,7 +734,7 @@ int BW_GetAddrFromName (const char *name, struct qsockaddr *hostaddr)
 
 int BW_AddrCompare (struct qsockaddr *addr1, struct qsockaddr *addr2)
 {
-	if (addr1->sa_family != addr2->sa_family)
+	if (addr1->qsa_family != addr2->qsa_family)
 		return -1;
 
 	if (((struct sockaddr_in *)addr1)->sin_addr.s_addr != ((struct sockaddr_in *)addr2)->sin_addr.s_addr)

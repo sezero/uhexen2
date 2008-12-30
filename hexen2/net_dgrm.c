@@ -2,7 +2,7 @@
 	net_dgrm.c
 	This is enables a simple IP banning mechanism
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/net_dgrm.c,v 1.42 2008-12-30 07:26:08 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/net_dgrm.c,v 1.43 2008-12-30 09:50:26 sezero Exp $
 */
 
 #define BAN_TEST
@@ -966,7 +966,7 @@ static qsocket_t *_Datagram_CheckNewConnections (void)
 
 #ifdef BAN_TEST
 	// check for a ban
-	if (clientaddr.sa_family == AF_INET)
+	if (clientaddr.qsa_family == AF_INET)
 	{
 		in_addr_t	testAddr;
 		testAddr = ((struct sockaddr_in *)&clientaddr)->sin_addr.s_addr;

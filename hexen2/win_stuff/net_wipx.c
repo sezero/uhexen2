@@ -2,7 +2,7 @@
 	net_wipx.c
 	winsock ipx driver
 
-	$Id: net_wipx.c,v 1.30 2008-12-30 07:51:08 sezero Exp $
+	$Id: net_wipx.c,v 1.31 2008-12-30 09:50:26 sezero Exp $
 */
 
 #include "q_stdinc.h"
@@ -333,7 +333,7 @@ int WIPX_StringToAddr (const char *string, struct qsockaddr *addr)
 
 	buf[2] = 0;
 	memset(addr, 0, sizeof(struct qsockaddr));
-	addr->sa_family = AF_IPX;
+	addr->qsa_family = AF_IPX;
 
 #define DO(src,dest) do {				\
 	buf[0] = string[src];				\
@@ -417,7 +417,7 @@ int WIPX_GetAddrFromName (const char *name, struct qsockaddr *addr)
 
 int WIPX_AddrCompare (struct qsockaddr *addr1, struct qsockaddr *addr2)
 {
-	if (addr1->sa_family != addr2->sa_family)
+	if (addr1->qsa_family != addr2->qsa_family)
 		return -1;
 
 	if (*((struct sockaddr_ipx *)addr1)->sa_netnum && *((struct sockaddr_ipx *)addr2)->sa_netnum)

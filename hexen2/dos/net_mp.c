@@ -4,7 +4,7 @@
         for use when run from within win95.
 	from quake1 source with minor adaptations for uhexen2.
 
-	$Id: net_mp.c,v 1.6 2007-12-21 15:05:23 sezero Exp $
+	$Id: net_mp.c,v 1.7 2008-12-30 09:50:26 sezero Exp $
 
 	Copyright (C) 1996-1997  Id Software, Inc.
 
@@ -246,7 +246,7 @@ static int PartialIPAddress (const char *in, struct qsockaddr *hostaddr)
 	else
 		port = net_hostport;
 
-	hostaddr->sa_family = AF_INET;
+	hostaddr->qsa_family = AF_INET;
 	((struct sockaddr_in *)hostaddr)->sin_port = htons((unsigned short)port);
 	((struct sockaddr_in *)hostaddr)->sin_addr.s_addr = (myAddr & htonl(mask)) | htonl(addr);
 
@@ -368,7 +368,7 @@ int MPATH_StringToAddr (const char *string, struct qsockaddr *addr)
 	sscanf(string, "%d.%d.%d.%d:%d", &ha1, &ha2, &ha3, &ha4, &hp);
 	ipaddr = (ha1 << 24) | (ha2 << 16) | (ha3 << 8) | ha4;
 
-	addr->sa_family = AF_INET;
+	addr->qsa_family = AF_INET;
 	((struct sockaddr_in *)addr)->sin_addr.s_addr = htonl(ipaddr);
 	((struct sockaddr_in *)addr)->sin_port = htons((unsigned short)hp);
 	return 0;
@@ -420,7 +420,7 @@ int MPATH_GetAddrFromName (const char *name, struct qsockaddr *addr)
 	if (!hostentry)
 		return -1;
 
-	addr->sa_family = AF_INET;
+	addr->qsa_family = AF_INET;
 	((struct sockaddr_in *)addr)->sin_port = htons((unsigned short)net_hostport);
 	((struct sockaddr_in *)addr)->sin_addr.s_addr = *(int *)hostentry->h_addr_list[0];
 
@@ -431,7 +431,7 @@ int MPATH_GetAddrFromName (const char *name, struct qsockaddr *addr)
 
 int MPATH_AddrCompare (struct qsockaddr *addr1, struct qsockaddr *addr2)
 {
-	if (addr1->sa_family != addr2->sa_family)
+	if (addr1->qsa_family != addr2->qsa_family)
 		return -1;
 
 	if (((struct sockaddr_in *)addr1)->sin_addr.s_addr != ((struct sockaddr_in *)addr2)->sin_addr.s_addr)
