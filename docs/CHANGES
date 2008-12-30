@@ -3,6 +3,78 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2008-12-30 (CVS):
+    * hwmaster: made SV_AnalysePacket to output a proper hexdump of the packet
+      (from the quakeforge tree.)
+    * hexen2 net: renamed qsockaddr structure members sa_family to qsa_family
+      and sa_data to qsa_data in order to avoid any possible confusion. besides,
+      old CVS logs of quakeforge say that this fixed their compilation issues
+      on Irix.
+    * fixed gcc-4.4 warnings in the net layer revealed by the mingw64
+      (mingw-w64.sf.net) compiler. most of them are fixed by using memcpy in place
+      of typecast assingment.
+	(hexen2 net:)
+	win_stuff/net_wipx.c: In function 'WIPX_Write':
+	win_stuff/net_wipx.c:292: warning: dereferencing type-punned pointer will
+	break strict-aliasing rules
+	net_dgrm.c: In function 'NET_Ban_f':
+	net_dgrm.c:98: warning: dereferencing pointer 'banAddr.101' does break
+	strict-aliasing rules
+	net_dgrm.c:98: note: initialized from here
+	net_dgrm.c:99: warning: dereferencing pointer 'banMask.102' does break
+	strict-aliasing rules
+	net_dgrm.c:99: note: initialized from here
+	(hexenworld, hw_utils:)
+	net_wins.c: In function 'NetadrToSockadr':
+	net_wins.c:46: warning: dereferencing type-punned pointer will break
+	strict-aliasing rules
+	net_wins.c: In function 'SockadrToNetadr':
+	net_wins.c:52: warning: dereferencing type-punned pointer will break
+	strict-aliasing rules
+	net_wins.c: In function 'NET_SendPacket':
+	net_wins.c:46: warning: dereferencing pointer '({anonymous})' does break
+	strict-aliasing rules
+	net_wins.c:46: note: initialized from here
+	net_wins.c: In function 'NET_StringToAdr':
+	net_wins.c:116: warning: dereferencing pointer '({anonymous})' does break
+	strict-aliasing rules
+	net_wins.c:116: note: initialized from here
+	net_wins.c:123: warning: dereferencing pointer '({anonymous})' does break
+	strict-aliasing rules
+	net_wins.c:123: note: initialized from here
+	net_wins.c: In function 'NET_GetPacket':
+	net_wins.c:52: warning: dereferencing pointer '({anonymous})' does break
+	strict-aliasing rules
+	net_wins.c:52: note: initialized from here
+	sv_main.c: In function 'StringToFilter':
+	sv_main.c:866: warning: dereferencing type-punned pointer will break
+	strict-aliasing rules
+	sv_main.c:867: warning: dereferencing type-punned pointer will break
+	strict-aliasing rules
+	sv_main.c: In function 'SV_ListIP_f':
+	sv_main.c:945: warning: dereferencing type-punned pointer will break
+	strict-aliasing rules
+	sv_main.c: In function 'SV_WriteIP_f':
+	sv_main.c:976: warning: dereferencing type-punned pointer will break
+	strict-aliasing rules
+	sv_main.c: In function 'SV_FilterPacket':
+	sv_main.c:1012: warning: dereferencing type-punned pointer will break
+	strict-aliasing rules
+    * hexen2 net: minor clean-ups.
+
+2008-12-28 (CVS):
+    * net_sys.h: minor clean-up.
+    * hwmaster: small updates and clean-ups.
+    * hwmaster: bumped version to 1.2.6.
+    * hexenworld, net: added NET_CompareBaseAdr.
+    * hexenworld, net: added net_loopback_adr
+    * hexenworld, cl_main.c: use NET_CompareBaseAdr and remove system net headers.
+    * hexen2 net, windows: use net_sys.h.
+    * h2ded: sys_win.c doesn't need winsock.h.
+    * hwsv, hwmaster: sys_win winsock includes.
+    * winquake.h: made it to include only windows.h. other headers will be
+      explicitly included by whoever needs them.
+
 2008-12-27 (CVS):
     * utils, light.c: fixed win64 warning. this is actually a workaround,
       because of the argument passed to the thread function and should be
@@ -11,12 +83,15 @@ Development Progress	:
 	light.c:54: warning: cast from pointer to integer of different size
     * utils, hcc, pr_lex.c: fixed gcc-4.4 warning.
 	pr_lex.c: In function 'LexPunctuation':
-	pr_lex.c:438: warning: dereferencing type-punned pointer will break strict-aliasing rules
+	pr_lex.c:438: warning: dereferencing type-punned pointer will break
+	strict-aliasing rules
     * utils, bspfile.c, soundpvs.c: fixed gcc-4.4 warnings.
 	bspfile.c: In function 'PrintBSPFileSizes':
-	bspfile.c:369: warning: dereferencing type-punned pointer will break strict-aliasing rules
+	bspfile.c:369: warning: dereferencing type-punned pointer will break
+	strict-aliasing rules
 	soundpvs.c: In function 'CalcAmbientSounds':
-	soundpvs.c:107: warning: dereferencing type-punned pointer will break strict-aliasing rules
+	soundpvs.c:107: warning: dereferencing type-punned pointer will break
+	strict-aliasing rules
     * utils: moved threads code to the common directory.
     * utils: revised the ifdefs for the threads support.
     * updated the TODO list (2008-12-27.)
