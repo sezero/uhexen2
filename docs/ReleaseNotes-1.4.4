@@ -1,5 +1,5 @@
 Hexen II: Hammer of Thyrion (uhexen2), CVS snapshot / pre-release,
-Version 1.4.4-pre3 / Nov. 18, 2008.
+Version 1.4.4-pre4 / Jan. 01, 2009.
 
 Changes since the HoT-1.4.3 release:
 
@@ -7,6 +7,8 @@ Changes since the HoT-1.4.3 release:
   to 0.22.
 * fixed the broken software renderer binaries from C++ compilers with x86
   assembly enabled (do not use the bool keyword of C++).
+* compilations using the gcc-4.4 development versions were tested.
+* added support for 64 bit windows versions (x64) using mingw-w64.
 * stricter checking on the values pulled out of .wav file chunk headers.
 * renamed model_t to qmodel_t in order to avoid conflicts on solaris.
 * fixed 'array going out-of-bounds' (utils/map.c) and bogus 'maybe used
@@ -17,7 +19,10 @@ Changes since the HoT-1.4.3 release:
 * increased the buffersize for sdl audio. made it to print a little more
   detailed info at startup.
 * launcher, patching: rewritten the inter-threads log printing and fixed the
-  erratic crashes on smp systems.
+  erratic crashes on smp systems. launcher version is 1.0.4 now.
+* hexenworld master server: unknown packets are properly output as hexdump.
+  hwmaster version is 1.2.6 now.
+* other minor fixes.
 * 3dfx gamma hacks are disabled by default at compile time (see the Makefile).
 * killed compatibility with user directories from HoT-1.4.0 and earlier which
   didn't operate with a data1 subdirectory. they are ancient history now.
@@ -31,7 +36,6 @@ Changes since the HoT-1.4.3 release:
   "C:\foo\bar.wad" on windows. all other values with no path information or
   relative path information are prefixed with the project path. this fixes the
   issues reported for qbsp usage from within worldcraft.
-* other minor fixes.
 * added back some unused code for future reference.  removed some truly dead
   code.
 * minor documentation tidy-ups.

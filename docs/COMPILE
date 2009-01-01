@@ -210,6 +210,7 @@ NASM homepage		:	http://nasm.sourceforge.net/
 YASM homepage		:	http://www.tortall.net/projects/yasm/
 MinGW/MSYS homepage	:	http://www.mingw.org/
 				http://mingw.sourceforge.net/
+MinGW64 homepage	:	http://mingw-w64.sourceforge.net/
 MinGW cross compiling tips:	http://www.libsdl.org/extras/win32/cross/
 DJGPP homepage		:	http://www.delorie.com/djgpp/
 
