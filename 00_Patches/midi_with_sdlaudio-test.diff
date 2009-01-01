@@ -6,13 +6,14 @@ switch, the normal sdl audio behavior is restored.
 this patch received minimal testing and is a bit crude. the audio
 is restricted to 16 bit stereo at 22050 Hz and commandline switches
 don't have any effects on them, yet.
-NOTE:  if you want to use the external music files patch, you must
-apply this one first.
 
-diff -urNp uhexen2-20081012/hexen2/midi_sdl.c uhexen2/hexen2/midi_sdl.c
---- uhexen2-20081012/hexen2/midi_sdl.c	2008-10-12 10:32:00.000000000 +0300
-+++ uhexen2/hexen2/midi_sdl.c	2008-10-12 10:32:42.000000000 +0300
-@@ -110,18 +110,76 @@ static void MIDI_EndMusicFinished(void)
+NOTE:  if you want to use the external music files patch, too,  you
+must apply this one first.
+
+diff -urNp uhexen2-20090101/hexen2/midi_sdl.c uhexen2/hexen2/midi_sdl.c
+--- uhexen2-20090101/hexen2/midi_sdl.c	2009-01-01 12:07:03.000000000 +0200
++++ uhexen2/hexen2/midi_sdl.c	2009-01-01 12:18:53.000000000 +0200
+@@ -109,16 +109,74 @@ static void MIDI_EndMusicFinished(void)
  	}
  }
  
@@ -82,9 +83,7 @@ diff -urNp uhexen2-20081012/hexen2/midi_sdl.c uhexen2/hexen2/midi_sdl.c
 -	int audio_buffers = 4096;
 +	int audio_buffers = 512;
  
- 	void	*selfsyms;
- 	const SDL_version *smixer_version;
- 	const SDL_version *(*Mix_Linked_Version_fp)(void) = NULL;
+ 	const SDL_version *v;
  
 -	bMidiInited = false;
 +	if (bMidiInited)
@@ -92,7 +91,7 @@ diff -urNp uhexen2-20081012/hexen2/midi_sdl.c uhexen2/hexen2/midi_sdl.c
  	Con_Printf("%s: ", __thisfunc__);
  
  	if (safemode || COM_CheckParm("-nomidi") || COM_CheckParm("-nosound") || COM_CheckParm("-s"))
-@@ -129,11 +187,6 @@ qboolean MIDI_Init(void)
+@@ -126,11 +184,6 @@ qboolean MIDI_Init(void)
  		Con_Printf("disabled by commandline\n");
  		return false;
  	}
@@ -103,8 +102,8 @@ diff -urNp uhexen2-20081012/hexen2/midi_sdl.c uhexen2/hexen2/midi_sdl.c
 -	}
  
  	Con_Printf("SDL_Mixer ");
- 	// this is to avoid relocation errors with very old SDL_Mixer versions
-@@ -183,6 +236,19 @@ bad_version:
+ 	v = Mix_Linked_Version();
+@@ -168,6 +221,19 @@ qboolean MIDI_Init(void)
  	midi_endmusicfnc = &MIDI_EndMusicFinished;
  	if (midi_endmusicfnc)
  		Mix_HookMusicFinished(midi_endmusicfnc);
@@ -197,10 +196,10 @@ diff -urNp uhexen2-20081012/hexen2/win_stuff/midi.c uhexen2/hexen2/win_stuff/mid
  {
  	MMRESULT mmrRetVal;
  	MIDIOUTCAPS midi_caps;
-diff -urNp uhexen2-20081012/hexenworld/Client/midi_sdl.c uhexen2/hexenworld/Client/midi_sdl.c
---- uhexen2-20081012/hexenworld/Client/midi_sdl.c	2008-10-12 10:32:00.000000000 +0300
-+++ uhexen2/hexenworld/Client/midi_sdl.c	2008-10-12 10:32:57.000000000 +0300
-@@ -110,18 +110,76 @@ static void MIDI_EndMusicFinished(void)
+diff -urNp uhexen2-20090101/hexenworld/Client/midi_sdl.c uhexen2/hexenworld/Client/midi_sdl.c
+--- uhexen2-20090101/hexenworld/Client/midi_sdl.c	2009-01-01 12:07:03.000000000 +0200
++++ uhexen2/hexenworld/Client/midi_sdl.c	2009-01-01 12:18:53.000000000 +0200
+@@ -109,16 +109,74 @@ static void MIDI_EndMusicFinished(void)
  	}
  }
  
@@ -270,9 +269,7 @@ diff -urNp uhexen2-20081012/hexenworld/Client/midi_sdl.c uhexen2/hexenworld/Clie
 -	int audio_buffers = 4096;
 +	int audio_buffers = 512;
  
- 	void	*selfsyms;
- 	const SDL_version *smixer_version;
- 	const SDL_version *(*Mix_Linked_Version_fp)(void) = NULL;
+ 	const SDL_version *v;
  
 -	bMidiInited = false;
 +	if (bMidiInited)
@@ -280,7 +277,7 @@ diff -urNp uhexen2-20081012/hexenworld/Client/midi_sdl.c uhexen2/hexenworld/Clie
  	Con_Printf("%s: ", __thisfunc__);
  
  	if (safemode || COM_CheckParm("-nomidi") || COM_CheckParm("-nosound") || COM_CheckParm("-s"))
-@@ -129,11 +187,6 @@ qboolean MIDI_Init(void)
+@@ -126,11 +184,6 @@ qboolean MIDI_Init(void)
  		Con_Printf("disabled by commandline\n");
  		return false;
  	}
@@ -291,8 +288,8 @@ diff -urNp uhexen2-20081012/hexenworld/Client/midi_sdl.c uhexen2/hexenworld/Clie
 -	}
  
  	Con_Printf("SDL_Mixer ");
- 	// this is to avoid relocation errors with very old SDL_Mixer versions
-@@ -183,6 +236,19 @@ bad_version:
+ 	v = Mix_Linked_Version();
+@@ -168,6 +221,19 @@ qboolean MIDI_Init(void)
  	midi_endmusicfnc = &MIDI_EndMusicFinished;
  	if (midi_endmusicfnc)
  		Mix_HookMusicFinished(midi_endmusicfnc);
@@ -337,10 +334,10 @@ diff -urNp uhexen2-20081012/hexenworld/Client/snd_sdl2.c uhexen2/hexenworld/Clie
  	p->GetDMAPos	= S_SDL_GetDMAPos;
  	p->LockBuffer	= S_SDL_LockBuffer;
  	p->Submit	= S_SDL_Submit;
-diff -urNp uhexen2-20081012/hexenworld/Client/cl_main.c uhexen2/hexenworld/Client/cl_main.c
---- uhexen2-20081012/hexenworld/Client/cl_main.c	2008-04-04 10:55:14.000000000 +0300
-+++ uhexen2/hexenworld/Client/cl_main.c	2008-10-12 10:32:11.000000000 +0300
-@@ -1417,7 +1417,7 @@ void Host_Init (void)
+diff -urNp uhexen2-20090101/hexenworld/Client/cl_main.c uhexen2/hexenworld/Client/cl_main.c
+--- uhexen2-20090101/hexenworld/Client/cl_main.c	2008-12-28 14:30:11.000000000 +0200
++++ uhexen2/hexenworld/Client/cl_main.c	2009-01-01 12:15:11.000000000 +0200
+@@ -1411,7 +1411,7 @@ void Host_Init (void)
  
  	S_Init ();
  	CDAudio_Init ();
