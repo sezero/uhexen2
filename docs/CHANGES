@@ -3,6 +3,10 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2008-12-31 (CVS):
+    * several updates to docs.
+    * version bump (1.4.4-pre4 / 2009-01-01.)
+
 2008-12-30 (CVS):
     * hwmaster: made SV_AnalysePacket to output a proper hexdump of the packet
       (from the quakeforge tree.)
