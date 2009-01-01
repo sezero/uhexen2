@@ -45,35 +45,36 @@ http://sourceforge.net/forum/message.php?msg_id=5443576 ):
 	track17		casb3
 
 
---- midi_sdl.c~	2008-10-12 11:01:04.000000000 +0300
-+++ midi_sdl.c	2008-12-11 17:00:21.000000000 +0200
+--- midi_sdl.c~	2009-01-01 12:07:03.000000000 +0200
++++ midi_sdl.c	2009-01-01 12:08:23.000000000 +0200
 @@ -27,6 +27,7 @@
  */
  
  #include "quakedef.h"
 +#include <unistd.h>
- #include <dlfcn.h>
  #include "sdl_inc.h"
  #include "snd_sys.h"
-@@ -117,6 +118,7 @@ qboolean MIDI_Init(void)
+ 
+@@ -116,6 +117,7 @@ qboolean MIDI_Init(void)
  	int audio_channels = 2;
  	int audio_buffers = 4096;
  
 +	char	musicdir[MAX_OSPATH];
- 	void	*selfsyms;
- 	const SDL_version *smixer_version;
- 	const SDL_version *(*Mix_Linked_Version_fp)(void) = NULL;
-@@ -184,6 +186,9 @@ bad_version:
+ 	const SDL_version *v;
+ 
+ 	bMidiInited = false;
+@@ -169,6 +171,10 @@ qboolean MIDI_Init(void)
  	if (midi_endmusicfnc)
  		Mix_HookMusicFinished(midi_endmusicfnc);
  
-+	qerr_snprintf(__thisfunc__, __LINE__, musicdir, sizeof(musicdir), "%s/music", fs_userdir);
++	qerr_snprintf(__thisfunc__, __LINE__, musicdir, sizeof(musicdir),
++						"%s/music", fs_userdir);
 +	Sys_mkdir (musicdir, false);
 +
  	Con_Printf("MIDI music initialized.\n");
  
  	Cmd_AddCommand ("midi_play", MIDI_Play_f);
-@@ -203,11 +208,30 @@ bad_version:
+@@ -188,11 +194,30 @@ qboolean MIDI_Init(void)
  
  
  #define	TEMP_MUSICNAME	"tmpmusic"
@@ -104,7 +105,7 @@ http://sourceforge.net/forum/message.php?msg_id=5443576 ):
  
  	if (!bMidiInited)	//don't try to play if there is no midi
  		return;
-@@ -220,11 +244,50 @@ void MIDI_Play (const char *Name)
+@@ -205,11 +230,56 @@ void MIDI_Play (const char *Name)
  		return;
  	}
  
@@ -139,13 +140,19 @@ http://sourceforge.net/forum/message.php?msg_id=5443576 ):
 +				++i;
 +				continue;
 +			}
-+			q_snprintf (tempName, sizeof(tempName), "track%02d.%s", cl.cdtrack, MusicFile[i].ext);
++			q_snprintf (tempName, sizeof(tempName), "track%02d.%s",
++							cl.cdtrack, MusicFile[i].ext);
 +		}
 +		else
 +		{
-+			q_snprintf (tempName, sizeof(tempName), "%s.%s", Name, MusicFile[i].ext);
++			q_snprintf (tempName, sizeof(tempName), "%s.%s",
++							Name, MusicFile[i].ext);
 +		}
-+		FS_OpenFile (va("%s/%s", MusicFile[i].type == MUS_MID ? MIDI_DIRNAME : MUSIC_DIRNAME, tempName), &midiFile, false);
++		FS_OpenFile (va("%s/%s", (MusicFile[i].type == MUS_MID)?
++							  MIDI_DIRNAME :
++							  MUSIC_DIRNAME,
++							  tempName),
++							&midiFile, false);
 +		if (midiFile)
 +			break;
 +		++i;
@@ -158,23 +165,23 @@ http://sourceforge.net/forum/message.php?msg_id=5443576 ):
  		return;
  	}
  	else
-@@ -234,7 +297,7 @@ void MIDI_Play (const char *Name)
- 			int		ret;
- 
- 			Con_Printf("Extracting %s from pakfile\n", tempName);
--			q_snprintf (midiName, sizeof(midiName), "%s/%s.%s", host_parms->userdir, TEMP_MUSICNAME, "mid");
-+			q_snprintf (midiName, sizeof(midiName), "%s/%s.%s", host_parms->userdir, TEMP_MUSICNAME, MusicFile[i].ext);
+@@ -222,7 +292,7 @@ void MIDI_Play (const char *Name)
+ 			q_snprintf (midiName, sizeof(midiName), "%s/%s.%s",
+ 							host_parms->userdir,
+ 							TEMP_MUSICNAME,
+-							"mid" );
++							MusicFile[i].ext );
  			ret = FS_CopyFromFile (midiFile, midiName, fs_filesize);
  			fclose (midiFile);
  			if (ret != 0)
-@@ -246,7 +309,8 @@ void MIDI_Play (const char *Name)
- 		else	/* use the file directly */
- 		{
+@@ -236,7 +306,9 @@ void MIDI_Play (const char *Name)
  			fclose (midiFile);
--			q_snprintf (midiName, sizeof(midiName), "%s/%s/%s", fs_filepath, "midi", tempName);
-+			q_snprintf (midiName, sizeof(midiName), "%s/%s/%s",
-+				  fs_filepath, MusicFile[i].type == MUS_MID ? MIDI_DIRNAME : MUSIC_DIRNAME, tempName);
+ 			q_snprintf (midiName, sizeof(midiName), "%s/%s/%s",
+ 							fs_filepath,
+-							"midi",
++							(MusicFile[i].type == MUS_MID)?
++									 MIDI_DIRNAME :
++									 MUSIC_DIRNAME,
+ 							tempName );
  		}
  	}
- 
-
