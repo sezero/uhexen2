@@ -2,7 +2,7 @@
 	net_wins.c
 	winsock udp driver
 
-	$Id: net_wins.c,v 1.31 2008-12-30 09:50:26 sezero Exp $
+	$Id: net_wins.c,v 1.32 2009-01-01 12:50:34 sezero Exp $
 */
 
 
@@ -14,7 +14,7 @@
 static int net_acceptsocket = -1;	// socket for fielding new connections
 static int net_controlsocket;
 static int net_broadcastsocket = 0;
-static struct qsockaddr broadcastaddr;
+static struct sockaddr_in broadcastaddr;
 
 static struct in_addr	myAddr,		// the local address returned by the OS.
 			localAddr,	// address to advertise by embedding in
@@ -177,9 +177,9 @@ int WINS_Init (void)
 		return -1;
 	}
 
-	((struct sockaddr_in *)&broadcastaddr)->sin_family = AF_INET;
-	((struct sockaddr_in *)&broadcastaddr)->sin_addr.s_addr = INADDR_BROADCAST;
-	((struct sockaddr_in *)&broadcastaddr)->sin_port = htons((unsigned short)net_hostport);
+	broadcastaddr.sin_family = AF_INET;
+	broadcastaddr.sin_addr.s_addr = INADDR_BROADCAST;
+	broadcastaddr.sin_port = htons((unsigned short)net_hostport);
 
 	WINS_GetSocketAddr (net_controlsocket, &addr);
 	strcpy(my_tcpip_address, WINS_AddrToString (&addr));
@@ -395,7 +395,7 @@ int WINS_Broadcast (int mysocket, byte *buf, int len)
 		}
 	}
 
-	return WINS_Write (mysocket, buf, len, &broadcastaddr);
+	return WINS_Write (mysocket, buf, len, (struct qsockaddr *)&broadcastaddr);
 }
 
 //=============================================================================
@@ -422,7 +422,7 @@ const char *WINS_AddrToString (struct qsockaddr *addr)
 	int		haddr;
 
 	haddr = ntohl(((struct sockaddr_in *)addr)->sin_addr.s_addr);
-	q_snprintf (buffer, sizeof (buffer), "%d.%d.%d.%d:%d", (haddr >> 24) & 0xff,
+	q_snprintf (buffer, sizeof(buffer), "%d.%d.%d.%d:%d", (haddr >> 24) & 0xff,
 			  (haddr >> 16) & 0xff, (haddr >> 8) & 0xff, haddr & 0xff,
 			  ntohs(((struct sockaddr_in *)addr)->sin_port));
 	return buffer;

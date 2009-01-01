@@ -2,7 +2,7 @@
 	net_wipx.c
 	winsock ipx driver
 
-	$Id: net_wipx.c,v 1.31 2008-12-30 09:50:26 sezero Exp $
+	$Id: net_wipx.c,v 1.32 2009-01-01 12:50:34 sezero Exp $
 */
 
 #include "q_stdinc.h"
@@ -31,7 +31,7 @@ extern cvar_t hostname;
 
 static int net_acceptsocket = -1;		// socket for fielding new connections
 static int net_controlsocket;
-static struct qsockaddr broadcastaddr;
+static struct sockaddr_ipx broadcastaddr;
 
 extern qboolean winsock_initialized;
 extern WSADATA		winsockdata;
@@ -112,10 +112,10 @@ loc0:
 		return -1;
 	}
 
-	((struct sockaddr_ipx *)&broadcastaddr)->sa_family = AF_IPX;
-	memset(((struct sockaddr_ipx *)&broadcastaddr)->sa_netnum, 0, 4);
-	memset(((struct sockaddr_ipx *)&broadcastaddr)->sa_nodenum, 0xff, 6);
-	((struct sockaddr_ipx *)&broadcastaddr)->sa_socket = htons((unsigned short)net_hostport);
+	broadcastaddr.sa_family = AF_IPX;
+	memset(broadcastaddr.sa_netnum, 0, 4);
+	memset(broadcastaddr.sa_nodenum, 0xff, 6);
+	broadcastaddr.sa_socket = htons((unsigned short)net_hostport);
 
 	WIPX_GetSocketAddr (net_controlsocket, &addr);
 	strcpy(my_ipx_address, WIPX_AddrToString (&addr));
@@ -276,7 +276,7 @@ int WIPX_Read (int handle, byte *buf, int len, struct qsockaddr *addr)
 
 int WIPX_Broadcast (int handle, byte *buf, int len)
 {
-	return WIPX_Write (handle, buf, len, &broadcastaddr);
+	return WIPX_Write (handle, buf, len, (struct qsockaddr *)&broadcastaddr);
 }
 
 //=============================================================================
