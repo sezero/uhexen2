@@ -3,7 +3,7 @@
 	Beame & Whiteside TCP/IP for dosquake.
 	from quake1 source with minor adaptations for uhexen2.
 
-	$Id: net_bw.c,v 1.3 2008-12-30 09:50:26 sezero Exp $
+	$Id: net_bw.c,v 1.4 2009-01-01 09:24:36 sezero Exp $
 
 	Copyright (C) 1996-1997  Id Software, Inc.
 
@@ -441,7 +441,8 @@ int BW_OpenSocket (int port)
 	// if a socket was specified, bind to it and return
 	if (port)
 	{
-		*(short *)&bind_msg[1] = port;
+		bind_msg[1] = (((short)port) & 0x00ff);
+		bind_msg[2] = (((short)port) & 0xff00) >> 8;
 		if (BW_ioctl(s, bind_msg, 3))
 		{
 			BW_CloseSocket(s);
@@ -457,7 +458,8 @@ int BW_OpenSocket (int port)
 		if (dynamic == 4096)
 			dynamic = 1024;
 		deadman--;
-		*(short *)&bind_msg[1] = port;
+		bind_msg[1] = (((short)port) & 0x00ff);
+		bind_msg[2] = (((short)port) & 0xff00) >> 8;
 		ret = BW_ioctl(s, bind_msg, 3);
 	}
 	while (ret && deadman);
