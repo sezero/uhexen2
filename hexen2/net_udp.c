@@ -1,6 +1,6 @@
 /*
 	net_udp.c
-	$Id: net_udp.c,v 1.38 2008-12-30 09:50:26 sezero Exp $
+	$Id: net_udp.c,v 1.39 2009-01-01 12:54:54 sezero Exp $
 
 	Copyright (C) 1996-1997  Id Software, Inc.
 
@@ -34,7 +34,7 @@
 static int net_acceptsocket = -1;	// socket for fielding new connections
 static int net_controlsocket;
 static int net_broadcastsocket = 0;
-static struct qsockaddr broadcastaddr;
+static struct sockaddr_in broadcastaddr;
 
 static char		ifname[IFNAMSIZ];
 static struct in_addr	myAddr,		// the local address returned by the OS.
@@ -171,9 +171,9 @@ int UDP_Init (void)
 			Con_SafePrintf ("Local address: %s (%s)\n", inet_ntoa(myAddr), ifname);
 	}
 
-	((struct sockaddr_in *)&broadcastaddr)->sin_family = AF_INET;
-	((struct sockaddr_in *)&broadcastaddr)->sin_addr.s_addr = INADDR_BROADCAST;
-	((struct sockaddr_in *)&broadcastaddr)->sin_port = htons((unsigned short)net_hostport);
+	broadcastaddr.sin_family = AF_INET;
+	broadcastaddr.sin_addr.s_addr = INADDR_BROADCAST;
+	broadcastaddr.sin_port = htons((unsigned short)net_hostport);
 
 	UDP_GetSocketAddr (net_controlsocket, &addr);
 	strcpy(my_tcpip_address, UDP_AddrToString (&addr));
@@ -396,7 +396,7 @@ int UDP_Broadcast (int mysocket, byte *buf, int len)
 		}
 	}
 
-	return UDP_Write (mysocket, buf, len, &broadcastaddr);
+	return UDP_Write (mysocket, buf, len, (struct qsockaddr *)&broadcastaddr);
 }
 
 //=============================================================================
@@ -419,7 +419,9 @@ const char *UDP_AddrToString (struct qsockaddr *addr)
 	int		haddr;
 
 	haddr = ntohl(((struct sockaddr_in *)addr)->sin_addr.s_addr);
-	q_snprintf (buffer, sizeof(buffer), "%d.%d.%d.%d:%d", (haddr >> 24) & 0xff, (haddr >> 16) & 0xff, (haddr >> 8) & 0xff, haddr & 0xff, ntohs(((struct sockaddr_in *)addr)->sin_port));
+	q_snprintf (buffer, sizeof(buffer), "%d.%d.%d.%d:%d", (haddr >> 24) & 0xff,
+			(haddr >> 16) & 0xff, (haddr >> 8) & 0xff, haddr & 0xff,
+			ntohs(((struct sockaddr_in *)addr)->sin_port));
 	return buffer;
 }
 

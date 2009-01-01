@@ -4,7 +4,7 @@
         for use when run from within win95.
 	from quake1 source with minor adaptations for uhexen2.
 
-	$Id: net_mp.c,v 1.7 2008-12-30 09:50:26 sezero Exp $
+	$Id: net_mp.c,v 1.8 2009-01-01 12:54:54 sezero Exp $
 
 	Copyright (C) 1996-1997  Id Software, Inc.
 
@@ -43,9 +43,9 @@ static int	net_acceptsocket = -1;		// socket for fielding new connections
 static int	net_controlsocket;
 static int	net_broadcastsocket = 0;
 //static qboolean ifbcastinit = false;
-static struct qsockaddr	broadcastaddr;
+static struct sockaddr_in broadcastaddr;
 
-static unsigned long	myAddr;
+static struct in_addr	myAddr;
 
 #include "net_mp.h"
 
@@ -84,7 +84,7 @@ int MPATH_Init (void)
 		local = gethostbyname(buff);
 	if (local)
 	{
-		myAddr = *(int *)local->h_addr_list[0];
+		myAddr = *(struct in_addr *)local->h_addr_list[0];
 
 		// if the quake hostname isn't set, set it to the machine name
 		if (strcmp(hostname.string, "UNNAMED") == 0)
@@ -116,9 +116,9 @@ int MPATH_Init (void)
 	if ((net_controlsocket = MPATH_OpenSocket (0)) == -1)
 		Sys_Error("MPATH_Init: Unable to open control socket\n");
 
-	((struct sockaddr_in *)&broadcastaddr)->sin_family = AF_INET;
-	((struct sockaddr_in *)&broadcastaddr)->sin_addr.s_addr = INADDR_BROADCAST;
-	((struct sockaddr_in *)&broadcastaddr)->sin_port = htons((unsigned short)net_hostport);
+	broadcastaddr.sin_family = AF_INET;
+	broadcastaddr.sin_addr.s_addr = INADDR_BROADCAST;
+	broadcastaddr.sin_port = htons((unsigned short)net_hostport);
 
 	MPATH_GetSocketAddr (net_controlsocket, &addr);
 	strcpy(my_tcpip_address,  MPATH_AddrToString (&addr));
@@ -248,7 +248,7 @@ static int PartialIPAddress (const char *in, struct qsockaddr *hostaddr)
 
 	hostaddr->qsa_family = AF_INET;
 	((struct sockaddr_in *)hostaddr)->sin_port = htons((unsigned short)port);
-	((struct sockaddr_in *)hostaddr)->sin_addr.s_addr = (myAddr & htonl(mask)) | htonl(addr);
+	((struct sockaddr_in *)hostaddr)->sin_addr.s_addr = (myAddr.s_addr & htonl(mask)) | htonl(addr);
 
 	return 0;
 }
@@ -324,7 +324,7 @@ int MPATH_Broadcast (int mysocket, byte *buf, int len)
 		}
 	}
 
-	return MPATH_Write (mysocket, buf, len, &broadcastaddr);
+	return MPATH_Write (mysocket, buf, len, (struct qsockaddr *)&broadcastaddr);
 }
 
 //=============================================================================
@@ -353,7 +353,7 @@ const char *MPATH_AddrToString (struct qsockaddr *addr)
 	int		haddr;
 
 	haddr = ntohl(((struct sockaddr_in *)addr)->sin_addr.s_addr);
-	q_snprintf (buffer, sizeof (buffer), "%d.%d.%d.%d:%d", (haddr >> 24) & 0xff,
+	q_snprintf (buffer, sizeof(buffer), "%d.%d.%d.%d:%d", (haddr >> 24) & 0xff,
 			  (haddr >> 16) & 0xff, (haddr >> 8) & 0xff, haddr & 0xff,
 			  ntohs(((struct sockaddr_in *)addr)->sin_port));
 	return buffer;
@@ -379,13 +379,14 @@ int MPATH_StringToAddr (const char *string, struct qsockaddr *addr)
 int MPATH_GetSocketAddr (int mysocket, struct qsockaddr *addr)
 {
 	int addrlen = sizeof(struct qsockaddr);
-	unsigned int a;
+	struct sockaddr_in *address = (struct sockaddr_in *)addr;
+	struct in_addr	a;
 
 	memset(addr, 0, sizeof(struct qsockaddr));
 	getsockname(mysocket, (struct sockaddr *)addr, &addrlen);
-	a = ((struct sockaddr_in *)addr)->sin_addr.s_addr;
-	if (a == 0 || a == htonl(INADDR_LOOPBACK))
-		((struct sockaddr_in *)addr)->sin_addr.s_addr = myAddr;
+	a = address->sin_addr;
+	if (a.s_addr == 0 || a.s_addr == htonl(INADDR_LOOPBACK))
+		address->sin_addr.s_addr = myAddr.s_addr;
 
 	return 0;
 }
