@@ -2,7 +2,7 @@
 	midi_sdl.c
 	midiplay via SDL_mixer
 
-	$Id: midi_sdl.c,v 1.50 2008-10-12 08:01:04 sezero Exp $
+	$Id: midi_sdl.c,v 1.51 2009-01-01 10:07:03 sezero Exp $
 
 	Copyright (C) 2001  contributors of the Anvil of Thyrion project
 	Copyright (C) 2005-2007  O.Sezer
@@ -27,7 +27,6 @@
 */
 
 #include "quakedef.h"
-#include <dlfcn.h>
 #include "sdl_inc.h"
 #include "snd_sys.h"
 
@@ -117,9 +116,7 @@ qboolean MIDI_Init(void)
 	int audio_channels = 2;
 	int audio_buffers = 4096;
 
-	void	*selfsyms;
-	const SDL_version *smixer_version;
-	const SDL_version *(*Mix_Linked_Version_fp)(void) = NULL;
+	const SDL_version *v;
 
 	bMidiInited = false;
 	Con_Printf("%s: ", __thisfunc__);
@@ -136,27 +133,14 @@ qboolean MIDI_Init(void)
 	}
 
 	Con_Printf("SDL_Mixer ");
-	// this is to avoid relocation errors with very old SDL_Mixer versions
-	selfsyms = (void *) dlopen(NULL, RTLD_LAZY);
-	if (selfsyms != NULL)
-	{
-		Mix_Linked_Version_fp = (const SDL_version * (*) (void)) dlsym(selfsyms, "Mix_Linked_Version");
-		dlclose(selfsyms);
-	}
-	if (Mix_Linked_Version_fp == NULL)
-	{
-		Con_Printf("version can't be determined, disabled.\n");
-		goto bad_version;
-	}
-
-	smixer_version = Mix_Linked_Version_fp();
-	Con_Printf("v%d.%d.%d is ",smixer_version->major,smixer_version->minor,smixer_version->patch);
+	v = Mix_Linked_Version();
+	Con_Printf("v%d.%d.%d is ", v->major, v->minor, v->patch);
 	// reject running with SDL_Mixer versions older than what is stated in sdl_inc.h
-	if (SDL_VERSIONNUM(smixer_version->major,smixer_version->minor,smixer_version->patch) < MIX_REQUIREDVERSION)
+	if (SDL_VERSIONNUM(v->major, v->minor, v->patch) < MIX_REQUIREDVERSION)
 	{
 		Con_Printf("too old, disabled.\n");
-bad_version:
-		Con_Printf("You need at least v%d.%d.%d of SDL_Mixer\n",SDL_MIXER_MIN_X,SDL_MIXER_MIN_Y,SDL_MIXER_MIN_Z);
+		Con_Printf("You need at least v%d.%d.%d of SDL_Mixer\n",
+				SDL_MIXER_MIN_X,SDL_MIXER_MIN_Y,SDL_MIXER_MIN_Z);
 		return false;
 	}
 	Con_Printf("found.\n");
@@ -167,7 +151,8 @@ bad_version:
 	{
 		if (SDL_InitSubSystem(SDL_INIT_AUDIO) != 0)
 		{
-			Con_Printf("%s: Cannot initialize SDL_AUDIO: %s\n", __thisfunc__, SDL_GetError());
+			Con_Printf("%s: Cannot initialize SDL_AUDIO: %s\n",
+						__thisfunc__, SDL_GetError());
 			return false;
 		}
 	}
@@ -234,7 +219,10 @@ void MIDI_Play (const char *Name)
 			int		ret;
 
 			Con_Printf("Extracting %s from pakfile\n", tempName);
-			q_snprintf (midiName, sizeof(midiName), "%s/%s.%s", host_parms->userdir, TEMP_MUSICNAME, "mid");
+			q_snprintf (midiName, sizeof(midiName), "%s/%s.%s",
+							host_parms->userdir,
+							TEMP_MUSICNAME,
+							"mid" );
 			ret = FS_CopyFromFile (midiFile, midiName, fs_filesize);
 			fclose (midiFile);
 			if (ret != 0)
@@ -246,7 +234,10 @@ void MIDI_Play (const char *Name)
 		else	/* use the file directly */
 		{
 			fclose (midiFile);
-			q_snprintf (midiName, sizeof(midiName), "%s/%s/%s", fs_filepath, "midi", tempName);
+			q_snprintf (midiName, sizeof(midiName), "%s/%s/%s",
+							fs_filepath,
+							"midi",
+							tempName );
 		}
 	}
 
