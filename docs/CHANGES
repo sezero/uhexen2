@@ -3,6 +3,14 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2009-01-02 (CVS):
+    * Mac OS X: updated SDLMain.m from SDL subversion repository (rev 3579 from
+      the SDL-1.2 branch.)
+    * added NDEBUG among the CFLAGS when not building debug binaries. (I just
+      have to be careful with assert() now.)
+    * windows midi: fixed leftovers from the recent return code cleanup.
+    * sys_win.c, WinMain: return 0, not TRUE. not that it actually matters..
+
 2009-01-01 (CVS):
     * dos, net_bw.c: replaced the typecast assignment of port bits.
     * sdl midi: removed the dlsym check very old SDL_mixer versions detection.
