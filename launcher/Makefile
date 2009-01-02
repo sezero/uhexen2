@@ -1,5 +1,5 @@
 # GNU Makefile for hexen2 gtk-launcher app using GCC.
-# $Header: /home/ozzie/Download/0000/uhexen2/launcher/Makefile,v 1.50 2008-12-28 23:01:32 sezero Exp $
+# $Header: /home/ozzie/Download/0000/uhexen2/launcher/Makefile,v 1.51 2009-01-02 15:55:15 sezero Exp $
 #
 #  gtk2 will be used default.
 #  to compile for gtk-1.2 type:  make GTK1=yes
@@ -47,9 +47,9 @@ PTHREAD_CFLAGS:=-D_REENTRANT
 PTHREAD_LIBS:=-lpthread
 
 ifdef DEBUG
-CFLAGS := -Wall -g -DDEBUG_BUILD
+CFLAGS := -Wall -g -DDEBUG=1 -DDEBUG_BUILD=1
 else
-CFLAGS := -Wall -O2
+CFLAGS := -Wall -O2 -DNDEBUG
 endif
 
 CFLAGS := $(CFLAGS) $(GTK_CFLAGS)

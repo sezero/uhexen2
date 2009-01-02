@@ -1,5 +1,5 @@
 # GNU Makefile for hexen2 bsp2wal tool using GCC.
-# $Header: /home/ozzie/Download/0000/uhexen2/utils/texutils/bsp2wal/Makefile,v 1.14 2008-12-22 14:35:00 sezero Exp $
+# $Header: /home/ozzie/Download/0000/uhexen2/utils/texutils/bsp2wal/Makefile,v 1.15 2009-01-02 15:55:15 sezero Exp $
 #
 # if building a debug version :		make DEBUG=1 [other stuff]
 #
@@ -35,7 +35,7 @@ endif
 ifdef DEBUG
 CFLAGS := -g -Wall
 else
-CFLAGS = $(CPUFLAGS) -O2 -Wall
+CFLAGS = $(CPUFLAGS) -O2 -Wall -DNDEBUG
 endif
 
 CFLAGS := $(CFLAGS) $(ARCHFLAGS)

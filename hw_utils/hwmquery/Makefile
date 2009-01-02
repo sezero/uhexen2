@@ -1,5 +1,5 @@
 # GNU Makefile for hwmquery using GCC.
-# $Header: /home/ozzie/Download/0000/uhexen2/hw_utils/hwmquery/Makefile,v 1.16 2008-12-22 14:34:59 sezero Exp $
+# $Header: /home/ozzie/Download/0000/uhexen2/hw_utils/hwmquery/Makefile,v 1.17 2009-01-02 15:55:14 sezero Exp $
 #
 # if building a debug version :		make DEBUG=1 [other stuff]
 #
@@ -44,7 +44,7 @@ endif
 ifdef DEBUG
 CFLAGS := -g -Wall
 else
-CFLAGS := $(CPUFLAGS) -O2 -Wall
+CFLAGS := $(CPUFLAGS) -O2 -Wall -DNDEBUG
 endif
 
 CFLAGS := $(CFLAGS) $(ARCHFLAGS)

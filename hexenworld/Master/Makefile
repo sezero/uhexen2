@@ -1,5 +1,5 @@
 # GNU Makefile for hexenworld master server using GCC.
-# $Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Master/Makefile,v 1.27 2008-12-22 14:34:59 sezero Exp $
+# $Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Master/Makefile,v 1.28 2009-01-02 15:55:14 sezero Exp $
 #
 # if building a debug version :		make DEBUG=1 [other stuff]
 #
@@ -47,7 +47,7 @@ CFLAGS := -g -Wall
 
 else
 
-CFLAGS := $(CPUFLAGS) -O2 -Wall
+CFLAGS := $(CPUFLAGS) -O2 -Wall -DNDEBUG
 
 ifdef NO_UNIT_AT_A_TIME
 CFLAGS := $(CFLAGS) $(call check_gcc,-fno-unit-at-a-time,)

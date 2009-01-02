@@ -1,5 +1,5 @@
 # GNU Makefile for hexenworld server using GCC.
-# $Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Server/Makefile,v 1.51 2008-12-22 14:34:59 sezero Exp $
+# $Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Server/Makefile,v 1.52 2009-01-02 15:55:14 sezero Exp $
 #
 # To cross-compile for Win32 on Unix, you must pass the W32BUILD=1
 # argument to make. It would be best if you examine the script named
@@ -66,7 +66,7 @@ CFLAGS := -g -Wall
 
 else
 
-CFLAGS := $(CPUFLAGS) -O2 -Wall -ffast-math -fexpensive-optimizations
+CFLAGS := $(CPUFLAGS) -O2 -Wall -DNDEBUG -ffast-math -fexpensive-optimizations
 
 ifdef NO_UNIT_AT_A_TIME
 CFLAGS := $(CFLAGS) $(call check_gcc,-fno-unit-at-a-time,)
@@ -129,7 +129,7 @@ endif
 
 ifdef DEBUG
 # This activates come extra code in hexen2/hexenworld C source
-EXT_FLAGS+= -DDEBUG_BUILD
+EXT_FLAGS+= -DDEBUG=1 -DDEBUG_BUILD=1
 endif
 
 

@@ -1,5 +1,5 @@
 # GNU Makefile for hexen2 genmodel tool using GCC.
-# $Header: /home/ozzie/Download/0000/uhexen2/utils/genmodel/Makefile,v 1.23 2008-12-22 14:34:59 sezero Exp $
+# $Header: /home/ozzie/Download/0000/uhexen2/utils/genmodel/Makefile,v 1.24 2009-01-02 15:55:15 sezero Exp $
 #
 # if building a debug version :		make DEBUG=1 [other stuff]
 #
@@ -35,7 +35,7 @@ endif
 ifdef DEBUG
 CFLAGS := -g -Wall
 else
-CFLAGS := $(CPUFLAGS) -O2 -Wall -ffast-math -fexpensive-optimizations
+CFLAGS := $(CPUFLAGS) -O2 -Wall -DNDEBUG -ffast-math -fexpensive-optimizations
 endif
 
 CFLAGS := $(CFLAGS) $(ARCHFLAGS)

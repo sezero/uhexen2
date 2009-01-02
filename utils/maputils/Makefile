@@ -1,5 +1,5 @@
 # GNU Makefile for hexen2 mapping tools using GCC.
-# $Header: /home/ozzie/Download/0000/uhexen2/utils/maputils/Makefile,v 1.25 2008-12-27 17:15:33 sezero Exp $
+# $Header: /home/ozzie/Download/0000/uhexen2/utils/maputils/Makefile,v 1.26 2009-01-02 15:55:15 sezero Exp $
 #
 # if building a debug version :		make DEBUG=1 [other stuff]
 #
@@ -38,7 +38,7 @@ endif
 ifdef DEBUG
 CFLAGS := -g -Wall
 else
-CFLAGS := $(CPUFLAGS) -O2 -Wall -ffast-math -fexpensive-optimizations
+CFLAGS := $(CPUFLAGS) -O2 -Wall -DNDEBUG -ffast-math -fexpensive-optimizations
 endif
 
 CFLAGS := $(CFLAGS) $(ARCHFLAGS)
