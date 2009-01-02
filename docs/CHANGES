@@ -3,6 +3,35 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2009-01-01 (CVS):
+    * dos, net_bw.c: replaced the typecast assignment of port bits.
+    * sdl midi: removed the dlsym check very old SDL_mixer versions detection.
+      not needed with new machines and the readme files clearly state that 1.2.4
+      is needed.
+    * re-diff'ed the external music files support extra patch.
+    * re-diff'ed the midi with sdlaudio extra test patch.
+    * hexen2 net, net_wins.c, net_wipx.c: fixed the gcc-4.4 / mingw64 warnings:
+      broadcastaddr is now declared as struct sockaddr_in instead of qsockaddr.
+	win_stuff/net_wins.c: In function 'WINS_Init':
+	win_stuff/net_wins.c:180: warning: dereferencing pointer 'broadcastaddr.107'
+	does break strict-aliasing rules
+	win_stuff/net_wins.c:180: note: initialized from here
+	win_stuff/net_wins.c:181: warning: dereferencing pointer 'broadcastaddr.107'
+	does break strict-aliasing rules
+	win_stuff/net_wins.c:181: note: initialized from here
+	win_stuff/net_wins.c:182: warning: dereferencing pointer 'broadcastaddr.107'
+	does break strict-aliasing rules
+	win_stuff/net_wins.c:182: note: initialized from here
+	win_stuff/net_wipx.c: In function 'WIPX_Init':
+	win_stuff/net_wipx.c:117: warning: dereferencing pointer 'broadcastaddr.102'
+	does break strict-aliasing rules
+	win_stuff/net_wipx.c:117: note: initialized from here
+	win_stuff/net_wipx.c:120: warning: dereferencing pointer 'broadcastaddr.102'
+	does break strict-aliasing rules
+	win_stuff/net_wipx.c:120: note: initialized from here
+    * hexen2 net, net_udp.c, net_mp.c: applied the same gcc-4.4 clean-ups / fixes
+      that went into net_wins.c.
+
 2008-12-31 (CVS):
     * several updates to docs.
     * version bump (1.4.4-pre4 / 2009-01-01.)
