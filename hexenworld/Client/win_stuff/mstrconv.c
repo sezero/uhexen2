@@ -1,6 +1,6 @@
 /*
 	mstrconv.c
-	$Id: mstrconv.c,v 1.24 2008-12-23 18:37:08 sezero Exp $
+	$Id: mstrconv.c,v 1.25 2009-01-02 21:15:18 sezero Exp $
 
 	Converting a MID file to a MIDI stream for
 	playback using the Win32 midiStream API.
@@ -473,7 +473,7 @@ int ConvertToBuffer (DWORD dwFlags, LPCONVERTINFO lpciInfo)
 					Z_Free(teTemp.pLongData);
 					dwMallocBlocks--;
 				}
-				return (TRUE);
+				return err;
 			}
 		}
 	}
@@ -547,7 +547,7 @@ int ConvertToBuffer (DWORD dwFlags, LPCONVERTINFO lpciInfo)
 					Z_Free(teTemp.pLongData);
 					dwMallocBlocks--;
 				}
-				return 1;
+				return err;
 			}
 		}
 	}
