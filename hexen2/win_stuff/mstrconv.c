@@ -1,6 +1,6 @@
 /*
 	mstrconv.c
-	$Id: mstrconv.c,v 1.26 2009-01-02 21:15:18 sezero Exp $
+	$Id: mstrconv.c,v 1.27 2009-01-02 21:55:19 sezero Exp $
 
 	Converting a MID file to a MIDI stream for
 	playback using the Win32 midiStream API.
@@ -30,7 +30,7 @@ static LONG	MidiOffset, MidiSize;
 
 // Tracks how many malloc blocks exist. If there are any and we decide to shut
 // down, we must scan for them and free them.  Malloc blocks are only created as
-// temporary storgae blocks for extra parameter data associated with MIDI_SYSEX,
+// temporary storage blocks for extra parameter data associated with MIDI_SYSEX,
 // MIDI_SYSEXEND, and MIDI_META events.
 static DWORD	dwMallocBlocks = 0;
 
@@ -40,7 +40,7 @@ extern qboolean	bLooped;
 
 // Messages
 //
-static const char szInitErrInFile[]	= "Read error on input file or file is corrupt.\n";
+static const char szInitErrInFile[]	= "Read error on input file or file is corrupt.";
 #ifdef DEBUG_BUILD
 static const char szEventAddErr[]	= "Unable to add event to stream buffer.";
 static const char gteBadRunStat[]	= "Reference to missing running status.";
