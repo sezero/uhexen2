@@ -2,7 +2,7 @@
 	net_wins.c
 	winsock udp driver
 
-	$Id: net_wins.c,v 1.32 2009-01-01 12:50:34 sezero Exp $
+	$Id: net_wins.c,v 1.33 2009-01-03 12:05:07 sezero Exp $
 */
 
 
@@ -504,7 +504,7 @@ int WINS_GetAddrFromName (const char *name, struct qsockaddr *addr)
 
 	addr->qsa_family = AF_INET;
 	((struct sockaddr_in *)addr)->sin_port = htons((unsigned short)net_hostport);
-	((struct sockaddr_in *)addr)->sin_addr.s_addr = *(int *)hostentry->h_addr_list[0];
+	((struct sockaddr_in *)addr)->sin_addr.s_addr = *(in_addr_t *)hostentry->h_addr_list[0];
 
 	return 0;
 }

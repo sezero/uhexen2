@@ -1,6 +1,6 @@
 /*
 	net_udp.c
-	$Id: net_udp.c,v 1.39 2009-01-01 12:54:54 sezero Exp $
+	$Id: net_udp.c,v 1.40 2009-01-03 12:05:07 sezero Exp $
 
 	Copyright (C) 1996-1997  Id Software, Inc.
 
@@ -501,7 +501,7 @@ int UDP_GetAddrFromName (const char *name, struct qsockaddr *addr)
 
 	addr->qsa_family = AF_INET;
 	((struct sockaddr_in *)addr)->sin_port = htons((unsigned short)net_hostport);
-	((struct sockaddr_in *)addr)->sin_addr.s_addr = *(int *)hostentry->h_addr_list[0];
+	((struct sockaddr_in *)addr)->sin_addr.s_addr = *(in_addr_t *)hostentry->h_addr_list[0];
 
 	return 0;
 }
