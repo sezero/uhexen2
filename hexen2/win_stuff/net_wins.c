@@ -2,7 +2,7 @@
 	net_wins.c
 	winsock udp driver
 
-	$Id: net_wins.c,v 1.34 2009-01-03 16:50:17 sezero Exp $
+	$Id: net_wins.c,v 1.35 2009-01-03 16:55:14 sezero Exp $
 */
 
 
@@ -86,31 +86,38 @@ int WINS_Init (void)
 	winsock_initialized++;
 
 	// determine my name & address
+	myAddr.s_addr = htonl(INADDR_LOOPBACK);
 	if (gethostname(buff, MAXHOSTNAMELEN) != 0)
 	{
-		Con_SafePrintf("%s: gethostname failed, UDP disabled.\n", __thisfunc__);
-		if (--winsock_initialized == 0)
-			WSACleanup ();
-		return -1;
+		Con_SafePrintf("%s: WARNING: gethostname failed.\n", __thisfunc__);
 	}
-	buff[MAXHOSTNAMELEN - 1] = 0;
-
-#if !defined(_USE_WINSOCK2)
-	blocktime = Sys_DoubleTime();
-	WSASetBlockingHook(BlockingHook);
-#endif	/* ! _USE_WINSOCK2 */
-	local = gethostbyname(buff);
-#if !defined(_USE_WINSOCK2)
-	WSAUnhookBlockingHook();
-#endif	/* ! _USE_WINSOCK2 */
-	if (local == NULL)
+	else
 	{
-		Con_SafePrintf("%s: gethostbyname timed out, UDP disabled.\n", __thisfunc__);
-		if (--winsock_initialized == 0)
-			WSACleanup ();
-		return -1;
+		buff[MAXHOSTNAMELEN - 1] = 0;
+#if !defined(_USE_WINSOCK2)
+		blocktime = Sys_DoubleTime();
+		WSASetBlockingHook(BlockingHook);
+#endif	/* ! _USE_WINSOCK2 */
+		local = gethostbyname(buff);
+#if !defined(_USE_WINSOCK2)
+		WSAUnhookBlockingHook();
+#endif	/* ! _USE_WINSOCK2 */
+		if (local == NULL)
+		{
+			Con_SafePrintf("%s: WARNING: gethostbyname timed out.\n",
+					__thisfunc__);
+		}
+		else if (local->h_addrtype != AF_INET)
+		{
+			Con_SafePrintf("%s: address from gethostbyname not IPv4\n",
+					__thisfunc__);
+		}
+		else
+		{
+			myAddr = *(struct in_addr *)local->h_addr_list[0];
+		}
 	}
-	myAddr = *(struct in_addr *)local->h_addr_list[0];
+	Con_SafePrintf("UDP, Local address: %s\n", inet_ntoa(myAddr));
 
 	// check for interface binding option
 	i = COM_CheckParm("-ip");

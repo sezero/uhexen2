@@ -1,6 +1,6 @@
 /*
 	net_udp.c
-	$Id: net_udp.c,v 1.41 2009-01-03 16:50:15 sezero Exp $
+	$Id: net_udp.c,v 1.42 2009-01-03 16:55:14 sezero Exp $
 
 	Copyright (C) 1996-1997  Id Software, Inc.
 
@@ -68,7 +68,10 @@ static int udp_scan_iface (int sock)
 	ifc.ifc_buf = buf;
 
 	if (ioctl(sock, SIOCGIFCONF, &ifc) == -1)
+	{
+		Con_SafePrintf("%s: SIOCGIFCONF failed\n", __thisfunc__);
 		return -1;
+	}
 
 	ifr = ifc.ifc_req;
 	n = ifc.ifc_len / sizeof(struct ifreq);
@@ -103,19 +106,31 @@ int UDP_Init (void)
 		return -1;
 
 	// determine my name & address
+	myAddr.s_addr = htonl(INADDR_LOOPBACK);
 	if (gethostname(buff, MAXHOSTNAMELEN) != 0)
 	{
-		Con_SafePrintf("%s: gethostname failed, UDP disabled (errno: %i)\n", __thisfunc__, errno);
-		return -1;
+		Con_SafePrintf("%s: WARNING: gethostname failed (%s)\n",
+					__thisfunc__, strerror(errno));
 	}
-	buff[MAXHOSTNAMELEN - 1] = 0;
-	local = gethostbyname(buff);
-	if (local == NULL)
+	else
 	{
-		Con_SafePrintf("%s: gethostbyname failed, UDP disabled (errno: %i)\n", __thisfunc__, h_errno);
-		return -1;
+		buff[MAXHOSTNAMELEN - 1] = 0;
+		local = gethostbyname(buff);
+		if (local == NULL)
+		{
+			Con_SafePrintf("%s: WARNING: gethostname failed (%s)\n",
+					__thisfunc__, hstrerror(h_errno));
+		}
+		else if (local->h_addrtype != AF_INET)
+		{
+			Con_SafePrintf("%s: address from gethostbyname not IPv4\n",
+					__thisfunc__);
+		}
+		else
+		{
+			myAddr = *(struct in_addr *)local->h_addr_list[0];
+		}
 	}
-	myAddr = *(struct in_addr *)local->h_addr_list[0];
 
 	// check for interface binding option
 	i = COM_CheckParm("-ip");
@@ -162,12 +177,19 @@ int UDP_Init (void)
 		return -1;
 	}
 
-	memset (ifname, 0, sizeof(ifname));
-	if (bindAddr.s_addr == INADDR_NONE && localAddr.s_addr == INADDR_NONE)
-	{
 	// myAddr may resolve to 127.0.0.1, see if we can do any better
+	memset (ifname, 0, sizeof(ifname));
+	if (myAddr.s_addr == htonl(INADDR_LOOPBACK))
+	{
 		if (udp_scan_iface(net_controlsocket) == 0)
-			Con_SafePrintf ("Local address: %s (%s)\n", inet_ntoa(myAddr), ifname);
+		{
+			Con_SafePrintf ("UDP, Local address: %s (%s)\n",
+						inet_ntoa(myAddr), ifname);
+		}
+	}
+	if (ifname[0] == 0)
+	{
+		Con_SafePrintf("UDP, Local address: %s\n", inet_ntoa(myAddr));
 	}
 
 	broadcastaddr.sin_family = AF_INET;

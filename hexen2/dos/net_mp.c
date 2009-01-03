@@ -4,7 +4,7 @@
         for use when run from within win95.
 	from quake1 source with minor adaptations for uhexen2.
 
-	$Id: net_mp.c,v 1.10 2009-01-03 16:50:16 sezero Exp $
+	$Id: net_mp.c,v 1.11 2009-01-03 16:55:14 sezero Exp $
 
 	Copyright (C) 1996-1997  Id Software, Inc.
 
@@ -54,7 +54,7 @@ static struct in_addr	myAddr;
 
 int MPATH_Init (void)
 {
-	struct hostent	*local = NULL;
+	struct hostent	*local;
 	char	buff[MAXHOSTNAMELEN];
 	struct qsockaddr	addr;
 	char	*colon;
@@ -78,16 +78,31 @@ int MPATH_Init (void)
 		Con_Printf("MPATH_Init: Can't set segment limit\n");
 		return -1;
 	}
+
 	// determine my name & address
-	if (gethostname(buff, MAXHOSTNAMELEN) == 0)
+	myAddr.s_addr = htonl(INADDR_LOOPBACK);
+	if (gethostname(buff, MAXHOSTNAMELEN) != 0)
+	{
+		Con_Printf("MPATH_Init: WARNING: gethostname failed.\n");
+	}
+	else
 	{
 		buff[MAXHOSTNAMELEN - 1] = 0;
 		local = gethostbyname(buff);
+		if (local == NULL)
+		{
+			Con_Printf("MPATH_Init: WARNING: gethostbyname failed.\n");
+		}
+		else if (local->h_addrtype != AF_INET)
+		{
+			Con_Printf("MPATH_Init: address from gethostbyname not IPv4\n");
+		}
+		else
+		{
+			myAddr = *(struct in_addr *)local->h_addr_list[0];
+		}
 	}
-	if (local)
-	{
-		myAddr = *(struct in_addr *)local->h_addr_list[0];
-	}
+	Con_Printf("UDP, Local address: %s\n", inet_ntoa(myAddr));
 
 	if ((net_controlsocket = MPATH_OpenSocket(0)) == -1)
 		Sys_Error("MPATH_Init: Unable to open control socket\n");

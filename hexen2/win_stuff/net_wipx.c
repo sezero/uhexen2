@@ -2,7 +2,7 @@
 	net_wipx.c
 	winsock ipx driver
 
-	$Id: net_wipx.c,v 1.33 2009-01-03 16:50:17 sezero Exp $
+	$Id: net_wipx.c,v 1.34 2009-01-03 16:55:14 sezero Exp $
 */
 
 #include "q_stdinc.h"
@@ -67,17 +67,15 @@ int WIPX_Init (void)
 		ipxsocket[i] = 0;
 
 	// determine my name & address
-	if (winsock_initialized > 1)
-		goto loc0;	// already done in net_wins.c::WINS_Init
 	if (gethostname(buff, MAXHOSTNAMELEN) != 0)
 	{
-		Con_SafePrintf("%s: gethostname failed\n", __thisfunc__);
-		// something is borked, for sure, but let's try anyway...
-		goto loc0;
+		Con_SafePrintf("%s: WARNING: gethostname failed.\n", __thisfunc__);
 	}
-	buff[MAXHOSTNAMELEN - 1] = 0;
+	else
+	{
+		buff[MAXHOSTNAMELEN - 1] = 0;
+	}
 
-loc0:
 	if ((net_controlsocket = WIPX_OpenSocket(0)) == -1)
 	{
 		Con_SafePrintf("%s: Unable to open control socket, IPX disabled\n",
