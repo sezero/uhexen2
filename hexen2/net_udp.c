@@ -1,6 +1,6 @@
 /*
 	net_udp.c
-	$Id: net_udp.c,v 1.40 2009-01-03 12:05:07 sezero Exp $
+	$Id: net_udp.c,v 1.41 2009-01-03 16:50:15 sezero Exp $
 
 	Copyright (C) 1996-1997  Id Software, Inc.
 
@@ -52,7 +52,7 @@ static struct in_addr	myAddr,		// the local address returned by the OS.
 
 //=============================================================================
 
-static int UDP_GetLocalAddress (int sock)
+static int udp_scan_iface (int sock)
 {
 	struct ifconf	ifc;
 	struct ifreq	*ifr;
@@ -64,7 +64,7 @@ static int UDP_GetLocalAddress (int sock)
 	if (COM_CheckParm("-noifscan"))
 		return -1;
 
-	ifc.ifc_len = sizeof (buf);
+	ifc.ifc_len = sizeof(buf);
 	ifc.ifc_buf = buf;
 
 	if (ioctl(sock, SIOCGIFCONF, &ifc) == -1)
@@ -108,35 +108,29 @@ int UDP_Init (void)
 		Con_SafePrintf("%s: gethostname failed, UDP disabled (errno: %i)\n", __thisfunc__, errno);
 		return -1;
 	}
-	buff[MAXHOSTNAMELEN-1] = 0;
-
+	buff[MAXHOSTNAMELEN - 1] = 0;
 	local = gethostbyname(buff);
-
 	if (local == NULL)
 	{
 		Con_SafePrintf("%s: gethostbyname failed, UDP disabled (errno: %i)\n", __thisfunc__, h_errno);
 		return -1;
 	}
-
-	// if the quake hostname isn't set, set it to the machine name
-	if (strcmp(hostname.string, "UNNAMED") == 0)
-	{
-		buff[15] = 0;
-		Cvar_Set("hostname", buff);
-	}
-
 	myAddr = *(struct in_addr *)local->h_addr_list[0];
 
 	// check for interface binding option
 	i = COM_CheckParm("-ip");
-	if (!i)
+	if (i == 0)
 		i = COM_CheckParm("-bindip");
-	if (i && i < com_argc-1)
+	if (i && i < com_argc - 1)
 	{
-		bindAddr.s_addr = inet_addr(com_argv[i+1]);
+		bindAddr.s_addr = inet_addr(com_argv[i + 1]);
 		if (bindAddr.s_addr == INADDR_NONE)
-			Sys_Error("%s: %s is not a valid IP address", __thisfunc__, com_argv[i+1]);
-		Con_SafePrintf("Binding to IP Interface Address of %s\n", com_argv[i+1]);
+		{
+			Sys_Error("%s: %s is not a valid IP address",
+					__thisfunc__, com_argv[i + 1]);
+		}
+		Con_SafePrintf("Binding to IP Interface Address of %s\n",
+							com_argv[i + 1]);
 	}
 	else
 	{
@@ -145,21 +139,26 @@ int UDP_Init (void)
 
 	// check for ip advertise option
 	i = COM_CheckParm("-localip");
-	if (i && i < com_argc-1)
+	if (i && i < com_argc - 1)
 	{
-		localAddr.s_addr = inet_addr(com_argv[i+1]);
+		localAddr.s_addr = inet_addr(com_argv[i + 1]);
 		if (localAddr.s_addr == INADDR_NONE)
-			Sys_Error("%s: %s is not a valid IP address", __thisfunc__, com_argv[i+1]);
-		Con_SafePrintf("Advertising %s as the local IP in response packets\n", com_argv[i+1]);
+		{
+			Sys_Error("%s: %s is not a valid IP address",
+					__thisfunc__, com_argv[i + 1]);
+		}
+		Con_SafePrintf("Advertising %s as the local IP in response packets\n",
+							com_argv[i + 1]);
 	}
 	else
 	{
 		localAddr.s_addr = INADDR_NONE;
 	}
 
-	if ((net_controlsocket = UDP_OpenSocket (0)) == -1)
+	if ((net_controlsocket = UDP_OpenSocket(0)) == -1)
 	{
-		Con_SafePrintf("%s: Unable to open control socket, UDP disabled\n", __thisfunc__);
+		Con_SafePrintf("%s: Unable to open control socket, UDP disabled\n",
+				__thisfunc__);
 		return -1;
 	}
 
@@ -167,7 +166,7 @@ int UDP_Init (void)
 	if (bindAddr.s_addr == INADDR_NONE && localAddr.s_addr == INADDR_NONE)
 	{
 	// myAddr may resolve to 127.0.0.1, see if we can do any better
-		if (UDP_GetLocalAddress(net_controlsocket) == 0)
+		if (udp_scan_iface(net_controlsocket) == 0)
 			Con_SafePrintf ("Local address: %s (%s)\n", inet_ntoa(myAddr), ifname);
 	}
 
@@ -355,7 +354,7 @@ int UDP_CheckNewConnections (void)
 
 int UDP_Read (int mysocket, byte *buf, int len, struct qsockaddr *addr)
 {
-	socklen_t addrlen = sizeof (struct qsockaddr);
+	socklen_t addrlen = sizeof(struct qsockaddr);
 	int ret;
 
 	ret = recvfrom (mysocket, buf, len, 0, (struct sockaddr *)addr, &addrlen);
@@ -420,8 +419,8 @@ const char *UDP_AddrToString (struct qsockaddr *addr)
 
 	haddr = ntohl(((struct sockaddr_in *)addr)->sin_addr.s_addr);
 	q_snprintf (buffer, sizeof(buffer), "%d.%d.%d.%d:%d", (haddr >> 24) & 0xff,
-			(haddr >> 16) & 0xff, (haddr >> 8) & 0xff, haddr & 0xff,
-			ntohs(((struct sockaddr_in *)addr)->sin_port));
+			  (haddr >> 16) & 0xff, (haddr >> 8) & 0xff, haddr & 0xff,
+			  ntohs(((struct sockaddr_in *)addr)->sin_port));
 	return buffer;
 }
 

@@ -2,7 +2,7 @@
 	net_wipx.c
 	winsock ipx driver
 
-	$Id: net_wipx.c,v 1.32 2009-01-01 12:50:34 sezero Exp $
+	$Id: net_wipx.c,v 1.33 2009-01-03 16:50:17 sezero Exp $
 */
 
 #include "q_stdinc.h"
@@ -75,38 +75,13 @@ int WIPX_Init (void)
 		// something is borked, for sure, but let's try anyway...
 		goto loc0;
 	}
-	buff[MAXHOSTNAMELEN-1] = 0;
-
-	// if the quake hostname isn't set, set it to the machine name
-	if (strcmp(hostname.string, "UNNAMED") == 0)
-	{
-		char	*p = buff;
-
-		// see if it's a text IP address (well, close enough)
-		while (*p)
-		{
-			if ((*p < '0' || *p > '9') && *p != '.')
-				break;
-			p++;
-		}
-
-		// if it is a real name, strip off the domain; we only want the host
-		if (*p)
-		{
-			for (i = 0; i < 15; i++)
-			{
-				if (buff[i] == '.')
-					break;
-			}
-			buff[i] = 0;
-		}
-		Cvar_Set("hostname", buff);
-	}
+	buff[MAXHOSTNAMELEN - 1] = 0;
 
 loc0:
-	if ((net_controlsocket = WIPX_OpenSocket (0)) == -1)
+	if ((net_controlsocket = WIPX_OpenSocket(0)) == -1)
 	{
-		Con_SafePrintf("%s: Unable to open control socket, IPX disabled\n", __thisfunc__);
+		Con_SafePrintf("%s: Unable to open control socket, IPX disabled\n",
+				__thisfunc__);
 		if (--winsock_initialized == 0)
 			WSACleanup ();
 		return -1;

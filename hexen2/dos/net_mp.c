@@ -4,7 +4,7 @@
         for use when run from within win95.
 	from quake1 source with minor adaptations for uhexen2.
 
-	$Id: net_mp.c,v 1.9 2009-01-03 12:05:07 sezero Exp $
+	$Id: net_mp.c,v 1.10 2009-01-03 16:50:16 sezero Exp $
 
 	Copyright (C) 1996-1997  Id Software, Inc.
 
@@ -54,7 +54,6 @@ static struct in_addr	myAddr;
 
 int MPATH_Init (void)
 {
-	int		i;
 	struct hostent	*local = NULL;
 	char	buff[MAXHOSTNAMELEN];
 	struct qsockaddr	addr;
@@ -81,39 +80,16 @@ int MPATH_Init (void)
 	}
 	// determine my name & address
 	if (gethostname(buff, MAXHOSTNAMELEN) == 0)
+	{
+		buff[MAXHOSTNAMELEN - 1] = 0;
 		local = gethostbyname(buff);
+	}
 	if (local)
 	{
 		myAddr = *(struct in_addr *)local->h_addr_list[0];
-
-		// if the quake hostname isn't set, set it to the machine name
-		if (strcmp(hostname.string, "UNNAMED") == 0)
-		{
-			char	*p = buff;
-
-			// see if it's a text IP address (well, close enough)
-			while (*p)
-			{
-				if ((*p < '0' || *p > '9') && *p != '.')
-					break;
-				p++;
-			}
-
-			// if it is a real name, strip off the domain; we only want the host
-			if (*p)
-			{
-				for (i = 0; i < 15; i++)
-				{
-					if (buff[i] == '.')
-						break;
-				}
-				buff[i] = 0;
-			}
-			Cvar_Set ("hostname", buff);
-		}
 	}
 
-	if ((net_controlsocket = MPATH_OpenSocket (0)) == -1)
+	if ((net_controlsocket = MPATH_OpenSocket(0)) == -1)
 		Sys_Error("MPATH_Init: Unable to open control socket\n");
 
 	broadcastaddr.sin_family = AF_INET;
@@ -278,7 +254,7 @@ int MPATH_CheckNewConnections (void)
 
 int MPATH_Read (int mysocket, byte *buf, int len, struct qsockaddr *addr)
 {
-	int addrlen = sizeof (struct qsockaddr);
+	int addrlen = sizeof(struct qsockaddr);
 	int ret;
 
 	ret = recvfrom (mysocket, (char *)buf, len, 0, (struct sockaddr *)addr, &addrlen);

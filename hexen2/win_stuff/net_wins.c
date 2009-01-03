@@ -2,7 +2,7 @@
 	net_wins.c
 	winsock udp driver
 
-	$Id: net_wins.c,v 1.33 2009-01-03 12:05:07 sezero Exp $
+	$Id: net_wins.c,v 1.34 2009-01-03 16:50:17 sezero Exp $
 */
 
 
@@ -93,7 +93,7 @@ int WINS_Init (void)
 			WSACleanup ();
 		return -1;
 	}
-	buff[MAXHOSTNAMELEN-1] = 0;
+	buff[MAXHOSTNAMELEN - 1] = 0;
 
 #if !defined(_USE_WINSOCK2)
 	blocktime = Sys_DoubleTime();
@@ -110,45 +110,22 @@ int WINS_Init (void)
 			WSACleanup ();
 		return -1;
 	}
-
-	// if the quake hostname isn't set, set it to the machine name
-	if (strcmp(hostname.string, "UNNAMED") == 0)
-	{
-		char	*p = buff;
-
-		// see if it's a text IP address (well, close enough)
-		while (*p)
-		{
-			if ((*p < '0' || *p > '9') && *p != '.')
-				break;
-			p++;
-		}
-
-		// if it is a real name, strip off the domain; we only want the host
-		if (*p)
-		{
-			for (i = 0; i < 15; i++)
-			{
-				if (buff[i] == '.')
-					break;
-			}
-			buff[i] = 0;
-		}
-		Cvar_Set("hostname", buff);
-	}
-
 	myAddr = *(struct in_addr *)local->h_addr_list[0];
 
 	// check for interface binding option
 	i = COM_CheckParm("-ip");
-	if (!i)
+	if (i == 0)
 		i = COM_CheckParm("-bindip");
-	if (i && i < com_argc-1)
+	if (i && i < com_argc - 1)
 	{
-		bindAddr.s_addr = inet_addr(com_argv[i+1]);
+		bindAddr.s_addr = inet_addr(com_argv[i + 1]);
 		if (bindAddr.s_addr == INADDR_NONE)
-			Sys_Error("%s: %s is not a valid IP address", __thisfunc__, com_argv[i+1]);
-		Con_SafePrintf("Binding to IP Interface Address of %s\n", com_argv[i+1]);
+		{
+			Sys_Error("%s: %s is not a valid IP address",
+					__thisfunc__, com_argv[i + 1]);
+		}
+		Con_SafePrintf("Binding to IP Interface Address of %s\n",
+							com_argv[i + 1]);
 	}
 	else
 	{
@@ -157,21 +134,26 @@ int WINS_Init (void)
 
 	// check for ip advertise option
 	i = COM_CheckParm("-localip");
-	if (i && i < com_argc-1)
+	if (i && i < com_argc - 1)
 	{
-		localAddr.s_addr = inet_addr(com_argv[i+1]);
+		localAddr.s_addr = inet_addr(com_argv[i + 1]);
 		if (localAddr.s_addr == INADDR_NONE)
-			Sys_Error("%s: %s is not a valid IP address", __thisfunc__, com_argv[i+1]);
-		Con_SafePrintf ("Advertising %s as the local IP in response packets\n", com_argv[i+1]);
+		{
+			Sys_Error("%s: %s is not a valid IP address",
+					__thisfunc__, com_argv[i + 1]);
+		}
+		Con_SafePrintf("Advertising %s as the local IP in response packets\n",
+							com_argv[i + 1]);
 	}
 	else
 	{
 		localAddr.s_addr = INADDR_NONE;
 	}
 
-	if ((net_controlsocket = WINS_OpenSocket (0)) == -1)
+	if ((net_controlsocket = WINS_OpenSocket(0)) == -1)
 	{
-		Con_SafePrintf("%s: Unable to open control socket, UDP disabled\n", __thisfunc__);
+		Con_SafePrintf("%s: Unable to open control socket, UDP disabled\n",
+				__thisfunc__);
 		if (--winsock_initialized == 0)
 			WSACleanup ();
 		return -1;
