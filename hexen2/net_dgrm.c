@@ -2,7 +2,7 @@
 	net_dgrm.c
 	This is enables a simple IP banning mechanism
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/net_dgrm.c,v 1.44 2009-01-03 12:02:40 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/net_dgrm.c,v 1.45 2009-01-03 12:48:32 sezero Exp $
 */
 
 #define BAN_TEST
@@ -310,9 +310,9 @@ int	Datagram_GetMessage (qsocket_t *sock)
 		if (sfunc.AddrCompare(&readaddr, &sock->addr) != 0)
 		{
 #ifdef DEBUG_BUILD
-			Con_DPrintf("Forged packet received\n");
-			Con_DPrintf("Expected: %s\n", StrAddr (&sock->addr));
-			Con_DPrintf("Received: %s\n", StrAddr (&readaddr));
+			Con_Printf("Forged packet received\n");
+			Con_Printf("Expected: %s\n", StrAddr (&sock->addr));
+			Con_Printf("Received: %s\n", StrAddr (&readaddr));
 #endif
 			continue;
 		}
