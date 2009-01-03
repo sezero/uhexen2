@@ -3,6 +3,19 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2009-01-03 (CVS):
+    * net_dgrm.c: fixed a Con_Printf call that is passed a string as the format string.
+    * net_udp.c, net_wins.c: cast h_addr_list[0] to in_addr_t*, instead of int*.
+    * net_dgrm.c: no need for  Con_DPrintf for forged packet prints, they are already
+      in debug builds only.
+    * net_udp.c, net_wins.c, net_mp.c, net_wipx.c: init cleanup #1: automatic
+      changing of the "hostname" cvar according to internet hostname has been
+      removed. servers will be called "UNNAMED" if they don't set it.  did a
+      little formatting and whitespace tidy-up, too, while I was there.
+    * net_udp.c, net_wins.c, net_mp.c, net_wipx.c: init cleanup #2: gethostname
+      and/or gethostbyname failures needn't fail UDP_Init outright. in case they
+      fail, set myAddr to INADDR_LOOPBACK.
+
 2009-01-02 (CVS):
     * Mac OS X: updated SDLMain.m from SDL subversion repository (rev 3579 from
       the SDL-1.2 branch.)
