@@ -2,7 +2,7 @@
 	net_dgrm.c
 	This is enables a simple IP banning mechanism
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/net_dgrm.c,v 1.43 2008-12-30 09:50:26 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/net_dgrm.c,v 1.44 2009-01-03 12:02:40 sezero Exp $
 */
 
 #define BAN_TEST
@@ -1300,7 +1300,7 @@ static qsocket_t *_Datagram_Connect (const char *host)
 	if (ret == CCREP_REJECT)
 	{
 		reason = MSG_ReadString();
-		Con_Printf(reason);
+		Con_Printf("%s\n", reason);
 		q_strlcpy(m_return_reason, reason, sizeof(m_return_reason));
 		goto ErrorReturn;
 	}
