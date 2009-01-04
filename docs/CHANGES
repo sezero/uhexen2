@@ -3,6 +3,15 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2009-01-04 (CVS, 1.4.4-pre4):
+    * gl_vidnt.c: we don't free and reload the opengl dll during resolution
+      changing anymore. a combination of Vista and ATI crashes with it. the
+      dll already loaded at program init is still valid, we aren't changing
+      the opengl library, so no problems without it.
+    * updated release notes for 1.4.4 (2009-01-04, 1.4.4-pre4)
+    * updated the list of known bugs (2009-01-04.)
+    * bumped version to 1.4.4-pre4 (Jan. 04, 2009.)
+
 2009-01-03 (CVS):
     * net_dgrm.c: fixed a Con_Printf call that is passed a string as the format string.
     * net_udp.c, net_wins.c: cast h_addr_list[0] to in_addr_t*, instead of int*.
