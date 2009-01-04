@@ -1,5 +1,5 @@
 Hexen II: Hammer of Thyrion (uhexen2), CVS snapshot / pre-release,
-Version 1.4.4-pre4 / Jan. 01, 2009.
+Version 1.4.4-pre4 / Jan. 04, 2009.
 
 Changes since the HoT-1.4.3 release:
 
@@ -9,6 +9,8 @@ Changes since the HoT-1.4.3 release:
   assembly enabled (do not use the bool keyword of C++).
 * compilations using the gcc-4.4 development versions were tested.
 * added support for 64 bit windows versions (x64) using mingw-w64.
+* opengl: fixed an issue that changing resolution from within the game might
+  crash on Windows Vista.
 * stricter checking on the values pulled out of .wav file chunk headers.
 * renamed model_t to qmodel_t in order to avoid conflicts on solaris.
 * fixed 'array going out-of-bounds' (utils/map.c) and bogus 'maybe used
