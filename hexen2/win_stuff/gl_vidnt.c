@@ -1,6 +1,6 @@
 /*
 	gl_vidnt.c -- NT GL vid component
-	$Id: gl_vidnt.c,v 1.123 2008-12-28 14:34:34 sezero Exp $
+	$Id: gl_vidnt.c,v 1.124 2009-01-04 09:20:32 sezero Exp $
 */
 
 #define	__GL_FUNC_EXTERN
@@ -1931,6 +1931,10 @@ static void VID_ChangeVideoMode (int newmode)
 	mainwindow = NULL;
 	classregistered = false;
 
+#if 0	/* some setups (Vista) don't like this: */
+	/* the dll already loaded at program init
+	   is still valid, we aren't changing the
+	   opengl library, so no problems...	*/
 #ifdef GL_DLSYM
 	// reload the opengl library
 	GL_CloseLibrary();
@@ -1938,6 +1942,7 @@ static void VID_ChangeVideoMode (int newmode)
 	if (!GL_OpenLibrary(gl_library))
 		Sys_Error ("Unable to load GL library %s", gl_library);
 #endif
+#endif /* #if 0 */
 
 	// Register main window class and create main window
 	VID_RegisterWndClass(global_hInstance);
@@ -2538,9 +2543,6 @@ void	VID_Shutdown (void)
 		maindc = NULL;
 
 		AppActivate(false, false);
-#ifdef GL_DLSYM
-		GL_CloseLibrary();
-#endif
 		if (mainwindow)
 		{
 			ShowWindow(mainwindow, SW_HIDE);
@@ -2550,6 +2552,9 @@ void	VID_Shutdown (void)
 			UnregisterClass(WM_CLASSNAME, global_hInstance);
 		mainwindow = NULL;
 		classregistered = false;
+#ifdef GL_DLSYM
+		GL_CloseLibrary();
+#endif
 	}
 }
 
