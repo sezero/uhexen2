@@ -2,7 +2,7 @@
 	screen.c
 	master for refresh, status bar, console, chat, notify, etc
 
-	$Id: gl_screen.c,v 1.60 2008-07-15 06:52:02 sezero Exp $
+	$Id: gl_screen.c,v 1.61 2009-01-07 09:30:23 sezero Exp $
 */
 
 /*=============================================================================
@@ -1146,6 +1146,11 @@ void SCR_UpdateScreen (void)
 
 	if (scr_disabled_for_loading)
 	{
+	/* FIXME -- This really needs to be fixed properly:
+	 * Simply starting a new game and typing "changelevel fubar"
+	 * will hang the engine for 20s if fubar.bsp does not exist.
+	 * See docs/SrcNotes.txt for details.
+	 */
 		if (realtime - scr_disabled_time > 20)
 		{
 			scr_disabled_for_loading = false;
