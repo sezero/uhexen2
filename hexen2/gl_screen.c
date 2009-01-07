@@ -2,7 +2,7 @@
 	screen.c
 	master for refresh, status bar, console, chat, notify, etc
 
-	$Id: gl_screen.c,v 1.61 2009-01-07 09:30:23 sezero Exp $
+	$Id: gl_screen.c,v 1.62 2009-01-07 09:36:33 sezero Exp $
 */
 
 /*=============================================================================
@@ -654,7 +654,7 @@ static void SCR_DrawConsole (void)
 	if (scr_con_current)
 	{
 		scr_copyeverything = 1;
-		Con_DrawConsole (scr_con_current, true);
+		Con_DrawConsole (scr_con_current);
 		clearconsole = 0;
 	}
 	else

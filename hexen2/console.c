@@ -2,7 +2,7 @@
 	console.c
 	in-game console and chat message buffer handling
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/console.c,v 1.40 2007-11-16 10:26:09 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/console.c,v 1.41 2009-01-07 09:36:33 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -549,7 +549,7 @@ Draws the console with the solid background
 The typing input line at the bottom should only be drawn if typing is allowed
 ================
 */
-void Con_DrawConsole (int lines, qboolean drawinput)
+void Con_DrawConsole (int lines)
 {
 	int				i, j, x, y;
 	int				rows;
@@ -579,8 +579,7 @@ void Con_DrawConsole (int lines, qboolean drawinput)
 	}
 
 // draw the input prompt, user text, and cursor if desired
-	if (drawinput)
-		Con_DrawInput ();
+	Con_DrawInput ();
 }
 
 

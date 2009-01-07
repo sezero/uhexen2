@@ -2,7 +2,7 @@
 	console.h
 	the game console
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/console.h,v 1.10 2007-03-15 13:36:45 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/console.h,v 1.11 2009-01-07 09:36:33 sezero Exp $
 */
 
 #ifndef __CONSOLE_H
@@ -20,7 +20,7 @@ void Con_DrawCharacter (int cx, int line, int num);
 
 void Con_CheckResize (void);
 void Con_Init (void);
-void Con_DrawConsole (int lines, qboolean drawinput);
+void Con_DrawConsole (int lines);
 
 void Con_ShowList (int , const char **);
 //void Con_Clear_f (void);
