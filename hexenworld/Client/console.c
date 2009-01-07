@@ -2,14 +2,13 @@
 	console.c
 	in-game console and chat message buffer handling
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/console.c,v 1.35 2009-01-07 09:33:16 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/console.c,v 1.36 2009-01-07 09:48:58 sezero Exp $
 */
 
 #include "quakedef.h"
 #include "debuglog.h"
 
 
-static console_t	con_main;
 console_t	*con;
 
 qboolean	con_initialized;
@@ -202,7 +201,7 @@ Con_Init
 */
 void Con_Init (void)
 {
-	con = &con_main;
+	con = (console_t *) Hunk_AllocName (sizeof(console_t), "con_main");
 	con_linewidth = -1;
 	Con_CheckResize ();
 
