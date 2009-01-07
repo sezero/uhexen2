@@ -2,16 +2,15 @@
 	console.c
 	in-game console and chat message buffer handling
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/console.c,v 1.34 2007-11-16 10:26:09 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/console.c,v 1.35 2009-01-07 09:33:16 sezero Exp $
 */
 
 #include "quakedef.h"
 #include "debuglog.h"
 
 
-console_t	con_main;
-console_t	con_chat;
-console_t	*con;			// point to either con_main or con_chat
+static console_t	con_main;
+console_t	*con;
 
 qboolean	con_initialized;
 
@@ -90,10 +89,8 @@ Con_Clear_f
 */
 static void Con_Clear_f (void)
 {
-	memset (con_main.text, ' ', CON_TEXTSIZE);
-	memset (con_main.text_attr, 0, CON_TEXTSIZE);
-	memset (con_chat.text, ' ', CON_TEXTSIZE);
-	memset (con_chat.text_attr, 0, CON_TEXTSIZE);
+	memset (con->text, ' ', CON_TEXTSIZE);
+	memset (con->text_attr, 0, CON_TEXTSIZE);
 }
 
 
@@ -135,11 +132,12 @@ static void Con_MessageMode2_f (void)
 
 /*
 ================
-Con_Resize
+Con_CheckResize
 
+If the line width has changed, reformat the buffer.
 ================
 */
-static void Con_Resize (console_t *cons)
+void Con_CheckResize (void)
 {
 	int		i, j, width, oldwidth, oldtotallines, numlines, numchars;
 	char	tbuf[CON_TEXTSIZE], tbuf_attr[CON_TEXTSIZE];
@@ -154,8 +152,8 @@ static void Con_Resize (console_t *cons)
 		width = 38;
 		con_linewidth = width;
 		con_totallines = CON_TEXTSIZE / con_linewidth;
-		memset (cons->text, ' ', CON_TEXTSIZE);
-		memset (cons->text_attr, 0, CON_TEXTSIZE);
+		memset (con->text, ' ', CON_TEXTSIZE);
+		memset (con->text_attr, 0, CON_TEXTSIZE);
 	}
 	else
 	{
@@ -173,41 +171,27 @@ static void Con_Resize (console_t *cons)
 		if (con_linewidth < numchars)
 			numchars = con_linewidth;
 
-		memcpy (tbuf, cons->text, CON_TEXTSIZE);
-		memcpy (tbuf_attr, cons->text_attr, CON_TEXTSIZE);
-		memset (cons->text, ' ', CON_TEXTSIZE);
-		memset (cons->text_attr, 0, CON_TEXTSIZE);
+		memcpy (tbuf, con->text, CON_TEXTSIZE);
+		memcpy (tbuf_attr, con->text_attr, CON_TEXTSIZE);
+		memset (con->text, ' ', CON_TEXTSIZE);
+		memset (con->text_attr, 0, CON_TEXTSIZE);
 
 		for (i = 0; i < numlines; i++)
 		{
 			for (j = 0; j < numchars; j++)
 			{
-				cons->text[(con_totallines - 1 - i) * con_linewidth + j] =
-						tbuf[((cons->current - i + oldtotallines) % oldtotallines) * oldwidth + j];
-				cons->text_attr[(con_totallines - 1 - i) * con_linewidth + j] =
-						tbuf_attr[((cons->current - i + oldtotallines) % oldtotallines) * oldwidth + j];
+				con->text[(con_totallines - 1 - i) * con_linewidth + j] =
+						tbuf[((con->current - i + oldtotallines) % oldtotallines) * oldwidth + j];
+				con->text_attr[(con_totallines - 1 - i) * con_linewidth + j] =
+						tbuf_attr[((con->current - i + oldtotallines) % oldtotallines) * oldwidth + j];
 			}
 		}
 
 		Con_ClearNotify ();
 	}
 
-	cons->current = con_totallines - 1;
-	cons->display = cons->current;
-}
-
-
-/*
-================
-Con_CheckResize
-
-If the line width has changed, reformat the buffer.
-================
-*/
-void Con_CheckResize (void)
-{
-	Con_Resize (&con_main);
-	Con_Resize (&con_chat);
+	con->current = con_totallines - 1;
+	con->display = con->current;
 }
 
 
