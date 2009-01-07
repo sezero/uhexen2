@@ -2,7 +2,7 @@
 	keys.c
 	key up events are sent even if in console mode
 
-	$Id: keys.c,v 1.39 2007-12-30 20:50:34 sezero Exp $
+	$Id: keys.c,v 1.40 2009-01-07 19:07:20 sezero Exp $
 
 	Copyright (C) 1996-1997  Id Software, Inc.
 	Copyright (C) 2006-2007  O.Sezer
@@ -422,28 +422,26 @@ static void Key_Console (int key)
 
 	case K_PGUP:
 	case K_MWHEELUP:
-		con_backscroll += 2;
-		if (con_backscroll > con_totallines - (vid.height>>3) - 1)
-			con_backscroll = con_totallines - (vid.height>>3) - 1;
+		con->display -= 2;
 		return;
 
 	case K_PGDN:
 	case K_MWHEELDOWN:
-		con_backscroll -= 2;
-		if (con_backscroll < 0)
-			con_backscroll = 0;
+		con->display += 2;
+		if (con->display > con->current)
+			con->display = con->current;
 		return;
 
 	case K_HOME:
 		if (keydown[K_CTRL])
-			con_backscroll = con_totallines - (vid.height>>3) - 1;
+			con->display = con->current - con_totallines + 10;
 		else
 			key_linepos = 1;
 		return;
 
 	case K_END:
 		if (keydown[K_CTRL])
-			con_backscroll = 0;
+			con->display = con->current;
 		else
 			key_linepos = strlen(workline);
 		return;
