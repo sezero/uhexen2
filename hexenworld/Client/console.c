@@ -2,7 +2,7 @@
 	console.c
 	in-game console and chat message buffer handling
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/console.c,v 1.36 2009-01-07 09:48:58 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/console.c,v 1.37 2009-01-07 18:38:12 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -88,8 +88,9 @@ Con_Clear_f
 */
 static void Con_Clear_f (void)
 {
-	memset (con->text, ' ', CON_TEXTSIZE);
-	memset (con->text_attr, 0, CON_TEXTSIZE);
+	int	i;
+	for (i = 0; i < CON_TEXTSIZE; i++)
+		con->text[i] = ' ';
 }
 
 
@@ -138,8 +139,8 @@ If the line width has changed, reformat the buffer.
 */
 void Con_CheckResize (void)
 {
-	int		i, j, width, oldwidth, oldtotallines, numlines, numchars;
-	char	tbuf[CON_TEXTSIZE], tbuf_attr[CON_TEXTSIZE];
+	int	i, j, width, oldwidth, oldtotallines, numlines, numchars;
+	short	tbuf[CON_TEXTSIZE];
 
 	width = (vid.width >> 3) - 2;
 
@@ -151,8 +152,7 @@ void Con_CheckResize (void)
 		width = 38;
 		con_linewidth = width;
 		con_totallines = CON_TEXTSIZE / con_linewidth;
-		memset (con->text, ' ', CON_TEXTSIZE);
-		memset (con->text_attr, 0, CON_TEXTSIZE);
+		Con_Clear_f();
 	}
 	else
 	{
@@ -170,10 +170,8 @@ void Con_CheckResize (void)
 		if (con_linewidth < numchars)
 			numchars = con_linewidth;
 
-		memcpy (tbuf, con->text, CON_TEXTSIZE);
-		memcpy (tbuf_attr, con->text_attr, CON_TEXTSIZE);
-		memset (con->text, ' ', CON_TEXTSIZE);
-		memset (con->text_attr, 0, CON_TEXTSIZE);
+		memcpy (tbuf, con->text, CON_TEXTSIZE*sizeof(short));
+		Con_Clear_f();
 
 		for (i = 0; i < numlines; i++)
 		{
@@ -181,8 +179,6 @@ void Con_CheckResize (void)
 			{
 				con->text[(con_totallines - 1 - i) * con_linewidth + j] =
 						tbuf[((con->current - i + oldtotallines) % oldtotallines) * oldwidth + j];
-				con->text_attr[(con_totallines - 1 - i) * con_linewidth + j] =
-						tbuf_attr[((con->current - i + oldtotallines) % oldtotallines) * oldwidth + j];
 			}
 		}
 
@@ -229,12 +225,15 @@ Con_Linefeed
 */
 static void Con_Linefeed (void)
 {
+	int	i, j;
+
 	con->x = 0;
 	if (con->display == con->current)
 		con->display++;
 	con->current++;
-	memset (&con->text[(con->current%con_totallines)*con_linewidth], ' ', con_linewidth);
-	memset (&con->text_attr[(con->current%con_totallines)*con_linewidth], 0, con_linewidth);
+	j = (con->current%con_totallines) * con_linewidth;
+	for (i = 0; i < con_linewidth; i++)
+		con->text[i+j] = ' ';
 }
 
 /*
@@ -255,13 +254,13 @@ static void Con_Print (const char *txt)
 
 	if (txt[0] == 1 || txt[0] == 2)
 	{
-		mask = 128;		// go to colored text
+		mask = 256;		// go to colored text
 		txt++;
 	}
 	else
 		mask = 0;
 
-	while ( (c = *txt) )
+	while ( (c = (byte)*txt) )
 	{
 	// count word length
 		for (l = 0; l < con_linewidth; l++)
@@ -301,8 +300,7 @@ static void Con_Print (const char *txt)
 
 		default:	// display character and advance
 			y = con->current % con_totallines;
-			con->text[y*con_linewidth+con->x] = c;
-			con->text_attr[y*con_linewidth+con->x] = mask | con_ormask;
+			con->text[y*con_linewidth+con->x] = c | mask | con_ormask;
 			con->x++;
 			if (con->x >= con_linewidth)
 				con->x = 0;
@@ -492,13 +490,11 @@ Draws the last few lines of output transparently over the game top
 */
 void Con_DrawNotify (void)
 {
-	int		x, v;
-	char	*text;
-	byte	*text_attr;
-	int		i;
+	int	i, x, v;
+	short	*text;
 	float	time;
 	char	*s;
-	int		skip;
+	int	skip;
 
 	v = 0;
 	for (i = con->current-NUM_CON_TIMES+1; i <= con->current; i++)
@@ -512,13 +508,12 @@ void Con_DrawNotify (void)
 		if (time > con_notifytime.value)
 			continue;
 		text = con->text + (i % con_totallines)*con_linewidth;
-		text_attr = con->text_attr + (i % con_totallines)*con_linewidth;
 
 		clearnotify = 0;
 		scr_copytop = 1;
 
 		for (x = 0; x < con_linewidth; x++)
-			Draw_Character ( (x+1)<<3, v, text[x] + 256*text_attr[x]);
+			Draw_Character ( (x+1)<<3, v, text[x]);
 
 		v += 8;
 	}
@@ -558,6 +553,68 @@ void Con_DrawNotify (void)
 
 /*
 ================
+Con_DrawDownloadBar
+
+Draws the download progress for Con_DrawConsole
+================
+*/
+static void Con_DrawDownloadBar (void)
+{
+	int		i, x, y;
+	int		j, n;
+	char		dlbar[1024], *text;
+
+	text = strrchr(cls.downloadname, '/');
+	if (text != NULL)
+		text++;
+	else
+		text = cls.downloadname;
+
+	// figure out width
+	x = con_linewidth - ((con_linewidth * 7) / 40);
+	y = x - strlen(text) - 8;
+	i = con_linewidth/3;
+	if (strlen(text) > i)
+	{
+		y = x - i - 11;
+		strncpy(dlbar, text, i);
+		dlbar[i] = 0;
+		strcat(dlbar, "...");
+	}
+	else
+	{
+		strcpy(dlbar, text);
+	}
+	strcat(dlbar, ": ");
+	i = strlen(dlbar);
+	dlbar[i++] = '\x80';
+	// where's the dot go?
+	if (cls.downloadpercent == 0)
+		n = 0;
+	else
+		n = y * cls.downloadpercent / 100;
+
+	for (j = 0; j < y; j++)
+	{
+		if (j == n)
+			dlbar[i++] = '\x83';
+		else
+			dlbar[i++] = '\x81';
+	}
+
+	dlbar[i++] = '\x82';
+	dlbar[i] = 0;
+
+	sprintf(dlbar + strlen(dlbar), " %02d%%", cls.downloadpercent);
+
+	// draw it
+	y = con_vislines-22 + 8;
+	for (i = 0; i < strlen(dlbar); i++)
+		Draw_Character ( (i+1)<<3, y, dlbar[i]);
+}
+
+/*
+================
 Con_DrawConsole
 
 Draws the console with the solid background
@@ -565,12 +622,9 @@ Draws the console with the solid background
 */
 void Con_DrawConsole (int lines)
 {
-	int				i, j, x, y, n;
-	int				rows;
-	char			*text;
-	byte			*text_attr;
-	int				row;
-	char			dlbar[1024];
+	int		i, x, y;
+	int		row, rows;
+	short		*text;
 
 	if (lines <= 0)
 		return;
@@ -606,60 +660,14 @@ void Con_DrawConsole (int lines)
 			break;		// past scrollback wrap point
 
 		text = con->text + (row % con_totallines)*con_linewidth;
-		text_attr = con->text_attr + (row % con_totallines)*con_linewidth;
 
 		for (x = 0; x < con_linewidth; x++)
-			Draw_Character ( (x+1)<<3, y, text[x] + 256*text_attr[x]);
+			Draw_Character ( (x+1)<<3, y, text[x]);
 	}
 
 	// draw the download bar
-	// figure out width
 	if (cls.download)
-	{
-		if ((text = strrchr(cls.downloadname, '/')) != NULL)
-			text++;
-		else
-			text = cls.downloadname;
-
-		x = con_linewidth - ((con_linewidth * 7) / 40);
-		y = x - strlen(text) - 8;
-		i = con_linewidth/3;
-		if (strlen(text) > i)
-		{
-			y = x - i - 11;
-			strncpy(dlbar, text, i);
-			dlbar[i] = 0;
-			strcat(dlbar, "...");
-		}
-		else
-		{
-			strcpy(dlbar, text);
-		}
-		strcat(dlbar, ": ");
-		i = strlen(dlbar);
-		dlbar[i++] = '\x80';
-		// where's the dot go?
-		if (cls.downloadpercent == 0)
-			n = 0;
-		else
-			n = y * cls.downloadpercent / 100;
-
-		for (j = 0; j < y; j++)
-			if (j == n)
-				dlbar[i++] = '\x83';
-			else
-				dlbar[i++] = '\x81';
-
-		dlbar[i++] = '\x82';
-		dlbar[i] = 0;
-
-		sprintf(dlbar + strlen(dlbar), " %02d%%", cls.downloadpercent);
-
-		// draw it
-		y = con_vislines-22 + 8;
-		for (i = 0; i < strlen(dlbar); i++)
-			Draw_Character ( (i+1)<<3, y, dlbar[i]);
-	}
+		Con_DrawDownloadBar ();
 
 // draw the input prompt, user text, and cursor if desired
 	Con_DrawInput ();

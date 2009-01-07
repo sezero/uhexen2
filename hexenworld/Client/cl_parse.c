@@ -2,7 +2,7 @@
 	cl_parse.c
 	parse a message received from the server
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/cl_parse.c,v 1.53 2008-04-22 13:06:10 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/cl_parse.c,v 1.54 2009-01-07 18:38:12 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -994,7 +994,7 @@ static void CL_IndexedPrint(void)
 	if (i == PRINT_CHAT)
 	{
 		S_LocalSound ("misc/talk.wav");
-		con_ormask = 1;
+		con_ormask = 256;
 	}
 
 	idx = MSG_ReadShort ();
@@ -1018,7 +1018,7 @@ static void CL_NamePrint(void)
 	if (i == PRINT_CHAT)
 	{
 		S_LocalSound ("misc/talk.wav");
-		con_ormask = 1;
+		con_ormask = 256;
 	}
 
 	idx = MSG_ReadByte ();
@@ -1175,7 +1175,7 @@ void CL_ParseServerMessage (void)
 			if (i == PRINT_CHAT)
 			{
 				S_LocalSound ("misc/talk.wav");
-				con_ormask = 1;
+				con_ormask = 256;
 			}
 			else if (i >= PRINT_SOUND)
 			{
@@ -1183,7 +1183,7 @@ void CL_ParseServerMessage (void)
 				{
 					q_snprintf (temp, sizeof(temp), "taunt/taunt%.3d.wav", i - PRINT_SOUND + 1);
 					S_LocalSound (temp);
-					con_ormask = 1;
+					con_ormask = 256;
 				}
 				else
 				{

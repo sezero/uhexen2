@@ -2,7 +2,7 @@
 	console.h
 	the game console
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/console.h,v 1.11 2009-01-07 09:33:16 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/console.h,v 1.12 2009-01-07 18:38:12 sezero Exp $
 */
 
 #ifndef __CONSOLE_H
@@ -11,8 +11,7 @@
 #define		CON_TEXTSIZE	16384
 typedef struct
 {
-	char	text[CON_TEXTSIZE];
-	byte	text_attr[CON_TEXTSIZE];
+	short	text[CON_TEXTSIZE];
 	int		current;		// line where next message will be printed
 	int		x;			// offset in current line for next print
 	int		display;		// bottom of console displays this line
