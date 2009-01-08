@@ -2,7 +2,7 @@
 	net.h
 	quake's interface to the networking layer
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/net.h,v 1.23 2008-12-30 09:50:26 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/net.h,v 1.24 2009-01-08 12:01:50 sezero Exp $
 */
 
 #ifndef __HX2_NET_H
@@ -153,15 +153,15 @@ typedef struct
 	void		(*Shutdown) (void);
 	void		(*Listen) (qboolean state);
 	int		(*Open_Socket) (int port);
-	int		(*Close_Socket) (int mysocket);
-	int		(*Connect) (int mysocket, struct qsockaddr *addr);
+	int		(*Close_Socket) (int socketid);
+	int		(*Connect) (int socketid, struct qsockaddr *addr);
 	int		(*CheckNewConnections) (void);
-	int		(*Read) (int mysocket, byte *buf, int len, struct qsockaddr *addr);
-	int		(*Write) (int mysocket, byte *buf, int len, struct qsockaddr *addr);
-	int		(*Broadcast) (int mysocket, byte *buf, int len);
+	int		(*Read) (int socketid, byte *buf, int len, struct qsockaddr *addr);
+	int		(*Write) (int socketid, byte *buf, int len, struct qsockaddr *addr);
+	int		(*Broadcast) (int socketid, byte *buf, int len);
 	const char *	(*AddrToString) (struct qsockaddr *addr);
 	int		(*StringToAddr) (const char *string, struct qsockaddr *addr);
-	int		(*GetSocketAddr) (int mysocket, struct qsockaddr *addr);
+	int		(*GetSocketAddr) (int socketid, struct qsockaddr *addr);
 	int		(*GetNameFromAddr) (struct qsockaddr *addr, char *name);
 	int		(*GetAddrFromName) (const char *name, struct qsockaddr *addr);
 	int		(*AddrCompare) (struct qsockaddr *addr1, struct qsockaddr *addr2);

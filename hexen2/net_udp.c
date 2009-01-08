@@ -1,6 +1,6 @@
 /*
 	net_udp.c
-	$Id: net_udp.c,v 1.42 2009-01-03 16:55:14 sezero Exp $
+	$Id: net_udp.c,v 1.43 2009-01-08 12:01:50 sezero Exp $
 
 	Copyright (C) 1996-1997  Id Software, Inc.
 
@@ -270,11 +270,11 @@ ErrorReturn:
 
 //=============================================================================
 
-int UDP_CloseSocket (int mysocket)
+int UDP_CloseSocket (int socketid)
 {
-	if (mysocket == net_broadcastsocket)
+	if (socketid == net_broadcastsocket)
 		net_broadcastsocket = 0;
-	return closesocket (mysocket);
+	return closesocket (socketid);
 }
 
 //=============================================================================
@@ -334,7 +334,7 @@ static int PartialIPAddress (const char *in, struct qsockaddr *hostaddr)
 
 //=============================================================================
 
-int UDP_Connect (int mysocket, struct qsockaddr *addr)
+int UDP_Connect (int socketid, struct qsockaddr *addr)
 {
 	return 0;
 }
@@ -374,12 +374,12 @@ int UDP_CheckNewConnections (void)
 
 //=============================================================================
 
-int UDP_Read (int mysocket, byte *buf, int len, struct qsockaddr *addr)
+int UDP_Read (int socketid, byte *buf, int len, struct qsockaddr *addr)
 {
 	socklen_t addrlen = sizeof(struct qsockaddr);
 	int ret;
 
-	ret = recvfrom (mysocket, buf, len, 0, (struct sockaddr *)addr, &addrlen);
+	ret = recvfrom (socketid, buf, len, 0, (struct sockaddr *)addr, &addrlen);
 	if (ret == -1 && (errno == EWOULDBLOCK || errno == ECONNREFUSED))
 		return 0;
 	return ret;
@@ -387,29 +387,29 @@ int UDP_Read (int mysocket, byte *buf, int len, struct qsockaddr *addr)
 
 //=============================================================================
 
-static int UDP_MakeSocketBroadcastCapable (int mysocket)
+static int UDP_MakeSocketBroadcastCapable (int socketid)
 {
 	int	i = 1;
 
 	// make this socket broadcast capable
-	if (setsockopt(mysocket, SOL_SOCKET, SO_BROADCAST, (char *)&i, sizeof(i)) < 0)
+	if (setsockopt(socketid, SOL_SOCKET, SO_BROADCAST, (char *)&i, sizeof(i)) < 0)
 		return -1;
-	net_broadcastsocket = mysocket;
+	net_broadcastsocket = socketid;
 
 	return 0;
 }
 
 //=============================================================================
 
-int UDP_Broadcast (int mysocket, byte *buf, int len)
+int UDP_Broadcast (int socketid, byte *buf, int len)
 {
 	int	ret;
 
-	if (mysocket != net_broadcastsocket)
+	if (socketid != net_broadcastsocket)
 	{
 		if (net_broadcastsocket != 0)
 			Sys_Error("Attempted to use multiple broadcasts sockets");
-		ret = UDP_MakeSocketBroadcastCapable (mysocket);
+		ret = UDP_MakeSocketBroadcastCapable (socketid);
 		if (ret == -1)
 		{
 			Con_Printf("Unable to make socket broadcast capable\n");
@@ -417,16 +417,16 @@ int UDP_Broadcast (int mysocket, byte *buf, int len)
 		}
 	}
 
-	return UDP_Write (mysocket, buf, len, (struct qsockaddr *)&broadcastaddr);
+	return UDP_Write (socketid, buf, len, (struct qsockaddr *)&broadcastaddr);
 }
 
 //=============================================================================
 
-int UDP_Write (int mysocket, byte *buf, int len, struct qsockaddr *addr)
+int UDP_Write (int socketid, byte *buf, int len, struct qsockaddr *addr)
 {
 	int	ret;
 
-	ret = sendto (mysocket, buf, len, 0, (struct sockaddr *)addr, sizeof(struct qsockaddr));
+	ret = sendto (socketid, buf, len, 0, (struct sockaddr *)addr, sizeof(struct qsockaddr));
 	if (ret == -1 && errno == EWOULDBLOCK)
 		return 0;
 	return ret;
@@ -463,14 +463,14 @@ int UDP_StringToAddr (const char *string, struct qsockaddr *addr)
 
 //=============================================================================
 
-int UDP_GetSocketAddr (int mysocket, struct qsockaddr *addr)
+int UDP_GetSocketAddr (int socketid, struct qsockaddr *addr)
 {
 	socklen_t addrlen = sizeof(struct qsockaddr);
 	struct sockaddr_in *address = (struct sockaddr_in *)addr;
 	struct in_addr	a;
 
 	memset(addr, 0, sizeof(struct qsockaddr));
-	getsockname(mysocket, (struct sockaddr *)addr, &addrlen);
+	getsockname(socketid, (struct sockaddr *)addr, &addrlen);
 
 	/*
 	 * The returned IP is embedded in our repsonse to a broadcast

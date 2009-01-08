@@ -2,7 +2,7 @@
 	net_wins.c
 	winsock udp driver
 
-	$Id: net_wins.c,v 1.35 2009-01-03 16:55:14 sezero Exp $
+	$Id: net_wins.c,v 1.36 2009-01-08 12:01:51 sezero Exp $
 */
 
 
@@ -249,11 +249,11 @@ ErrorReturn:
 
 //=============================================================================
 
-int WINS_CloseSocket (int mysocket)
+int WINS_CloseSocket (int socketid)
 {
-	if (mysocket == net_broadcastsocket)
+	if (socketid == net_broadcastsocket)
 		net_broadcastsocket = 0;
-	return closesocket (mysocket);
+	return closesocket (socketid);
 }
 
 //=============================================================================
@@ -313,7 +313,7 @@ static int PartialIPAddress (const char *in, struct qsockaddr *hostaddr)
 
 //=============================================================================
 
-int WINS_Connect (int mysocket, struct qsockaddr *addr)
+int WINS_Connect (int socketid, struct qsockaddr *addr)
 {
 	return 0;
 }
@@ -336,12 +336,12 @@ int WINS_CheckNewConnections (void)
 
 //=============================================================================
 
-int WINS_Read (int mysocket, byte *buf, int len, struct qsockaddr *addr)
+int WINS_Read (int socketid, byte *buf, int len, struct qsockaddr *addr)
 {
 	socklen_t addrlen = sizeof(struct qsockaddr);
 	int ret;
 
-	ret = recvfrom (mysocket, (char *)buf, len, 0, (struct sockaddr *)addr, &addrlen);
+	ret = recvfrom (socketid, (char *)buf, len, 0, (struct sockaddr *)addr, &addrlen);
 	if (ret == -1)
 	{
 		int err = WSAGetLastError();
@@ -354,29 +354,29 @@ int WINS_Read (int mysocket, byte *buf, int len, struct qsockaddr *addr)
 
 //=============================================================================
 
-static int WINS_MakeSocketBroadcastCapable (int mysocket)
+static int WINS_MakeSocketBroadcastCapable (int socketid)
 {
 	int	i = 1;
 
 	// make this socket broadcast capable
-	if (setsockopt(mysocket, SOL_SOCKET, SO_BROADCAST, (char *)&i, sizeof(i)) < 0)
+	if (setsockopt(socketid, SOL_SOCKET, SO_BROADCAST, (char *)&i, sizeof(i)) < 0)
 		return -1;
-	net_broadcastsocket = mysocket;
+	net_broadcastsocket = socketid;
 
 	return 0;
 }
 
 //=============================================================================
 
-int WINS_Broadcast (int mysocket, byte *buf, int len)
+int WINS_Broadcast (int socketid, byte *buf, int len)
 {
 	int	ret;
 
-	if (mysocket != net_broadcastsocket)
+	if (socketid != net_broadcastsocket)
 	{
 		if (net_broadcastsocket != 0)
 			Sys_Error("Attempted to use multiple broadcasts sockets");
-		ret = WINS_MakeSocketBroadcastCapable (mysocket);
+		ret = WINS_MakeSocketBroadcastCapable (socketid);
 		if (ret == -1)
 		{
 			Con_Printf("Unable to make socket broadcast capable\n");
@@ -384,16 +384,16 @@ int WINS_Broadcast (int mysocket, byte *buf, int len)
 		}
 	}
 
-	return WINS_Write (mysocket, buf, len, (struct qsockaddr *)&broadcastaddr);
+	return WINS_Write (socketid, buf, len, (struct qsockaddr *)&broadcastaddr);
 }
 
 //=============================================================================
 
-int WINS_Write (int mysocket, byte *buf, int len, struct qsockaddr *addr)
+int WINS_Write (int socketid, byte *buf, int len, struct qsockaddr *addr)
 {
 	int	ret;
 
-	ret = sendto (mysocket, (char *)buf, len, 0, (struct sockaddr *)addr, sizeof(struct qsockaddr));
+	ret = sendto (socketid, (char *)buf, len, 0, (struct sockaddr *)addr, sizeof(struct qsockaddr));
 	if (ret == -1)
 	{
 		if (WSAGetLastError() == WSAEWOULDBLOCK)
@@ -434,14 +434,14 @@ int WINS_StringToAddr (const char *string, struct qsockaddr *addr)
 
 //=============================================================================
 
-int WINS_GetSocketAddr (int mysocket, struct qsockaddr *addr)
+int WINS_GetSocketAddr (int socketid, struct qsockaddr *addr)
 {
 	socklen_t addrlen = sizeof(struct qsockaddr);
 	struct sockaddr_in *address = (struct sockaddr_in *)addr;
 	struct in_addr	a;
 
 	memset(addr, 0, sizeof(struct qsockaddr));
-	getsockname(mysocket, (struct sockaddr *)addr, &addrlen);
+	getsockname(socketid, (struct sockaddr *)addr, &addrlen);
 
 	/*
 	 * The returned IP is embedded in our repsonse to a broadcast

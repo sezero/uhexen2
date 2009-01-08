@@ -4,7 +4,7 @@
         for use when run from within win95.
 	from quake1 source with minor adaptations for uhexen2.
 
-	$Id: net_mp.h,v 1.3 2007-12-21 15:05:23 sezero Exp $
+	$Id: net_mp.h,v 1.4 2009-01-08 12:01:51 sezero Exp $
 
 	Copyright (C) 1996-1997  Id Software, Inc.
 
@@ -35,15 +35,15 @@ int  MPATH_Init (void);
 void MPATH_Shutdown (void);
 void MPATH_Listen (qboolean state);
 int  MPATH_OpenSocket (int port);
-int  MPATH_CloseSocket (int mysocket);
-int  MPATH_Connect (int mysocket, struct qsockaddr *addr);
+int  MPATH_CloseSocket (int socketid);
+int  MPATH_Connect (int socketid, struct qsockaddr *addr);
 int  MPATH_CheckNewConnections (void);
-int  MPATH_Read (int mysocket, byte *buf, int len, struct qsockaddr *addr);
-int  MPATH_Write (int mysocket, byte *buf, int len, struct qsockaddr *addr);
-int  MPATH_Broadcast (int mysocket, byte *buf, int len);
+int  MPATH_Read (int socketid, byte *buf, int len, struct qsockaddr *addr);
+int  MPATH_Write (int socketid, byte *buf, int len, struct qsockaddr *addr);
+int  MPATH_Broadcast (int socketid, byte *buf, int len);
 const char *MPATH_AddrToString (struct qsockaddr *addr);
 int  MPATH_StringToAddr (const char *string, struct qsockaddr *addr);
-int  MPATH_GetSocketAddr (int mysocket, struct qsockaddr *addr);
+int  MPATH_GetSocketAddr (int socketid, struct qsockaddr *addr);
 int  MPATH_GetNameFromAddr (struct qsockaddr *addr, char *name);
 int  MPATH_GetAddrFromName (const char *name, struct qsockaddr *addr);
 int  MPATH_AddrCompare (struct qsockaddr *addr1, struct qsockaddr *addr2);

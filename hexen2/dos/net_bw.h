@@ -3,7 +3,7 @@
 	Beame & Whiteside TCP/IP for dosquake.
 	from quake1 source with minor adaptations for uhexen2.
 
-	$Id: net_bw.h,v 1.2 2007-12-21 15:05:23 sezero Exp $
+	$Id: net_bw.h,v 1.3 2009-01-08 12:01:51 sezero Exp $
 
 	Copyright (C) 1996-1997  Id Software, Inc.
 
@@ -34,15 +34,15 @@ int  BW_Init (void);
 void BW_Shutdown (void);
 void BW_Listen (qboolean state);
 int  BW_OpenSocket (int port);
-int  BW_CloseSocket (int mysocket);
-int  BW_Connect (int mysocket, struct qsockaddr *addr);
+int  BW_CloseSocket (int socketid);
+int  BW_Connect (int socketid, struct qsockaddr *addr);
 int  BW_CheckNewConnections (void);
-int  BW_Read (int mysocket, byte *buf, int len, struct qsockaddr *addr);
-int  BW_Write (int mysocket, byte *buf, int len, struct qsockaddr *addr);
-int  BW_Broadcast (int mysocket, byte *buf, int len);
+int  BW_Read (int socketid, byte *buf, int len, struct qsockaddr *addr);
+int  BW_Write (int socketid, byte *buf, int len, struct qsockaddr *addr);
+int  BW_Broadcast (int socketid, byte *buf, int len);
 const char *BW_AddrToString (struct qsockaddr *addr);
 int  BW_StringToAddr (const char *string, struct qsockaddr *addr);
-int  BW_GetSocketAddr (int mysocket, struct qsockaddr *addr);
+int  BW_GetSocketAddr (int socketid, struct qsockaddr *addr);
 int  BW_GetNameFromAddr (struct qsockaddr *addr, char *name);
 int  BW_GetAddrFromName (const char *name, struct qsockaddr *addr);
 int  BW_AddrCompare (struct qsockaddr *addr1, struct qsockaddr *addr2);

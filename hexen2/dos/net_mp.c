@@ -4,7 +4,7 @@
         for use when run from within win95.
 	from quake1 source with minor adaptations for uhexen2.
 
-	$Id: net_mp.c,v 1.11 2009-01-03 16:55:14 sezero Exp $
+	$Id: net_mp.c,v 1.12 2009-01-08 12:01:51 sezero Exp $
 
 	Copyright (C) 1996-1997  Id Software, Inc.
 
@@ -182,11 +182,11 @@ ErrorReturn:
 
 //=============================================================================
 
-int MPATH_CloseSocket (int mysocket)
+int MPATH_CloseSocket (int socketid)
 {
-	if (mysocket == net_broadcastsocket)
+	if (socketid == net_broadcastsocket)
 		net_broadcastsocket = 0;
-	return closesocket (mysocket);
+	return closesocket (socketid);
 }
 
 //=============================================================================
@@ -246,7 +246,7 @@ static int PartialIPAddress (const char *in, struct qsockaddr *hostaddr)
 
 //=============================================================================
 
-int MPATH_Connect (int mysocket, struct qsockaddr *addr)
+int MPATH_Connect (int socketid, struct qsockaddr *addr)
 {
 	return 0;
 }
@@ -267,12 +267,12 @@ int MPATH_CheckNewConnections (void)
 
 //=============================================================================
 
-int MPATH_Read (int mysocket, byte *buf, int len, struct qsockaddr *addr)
+int MPATH_Read (int socketid, byte *buf, int len, struct qsockaddr *addr)
 {
 	int addrlen = sizeof(struct qsockaddr);
 	int ret;
 
-	ret = recvfrom (mysocket, (char *)buf, len, 0, (struct sockaddr *)addr, &addrlen);
+	ret = recvfrom (socketid, (char *)buf, len, 0, (struct sockaddr *)addr, &addrlen);
 	if (ret == -1)
 	{
 		int err = WSAGetLastError();
@@ -285,29 +285,29 @@ int MPATH_Read (int mysocket, byte *buf, int len, struct qsockaddr *addr)
 
 //=============================================================================
 
-int MPATH_MakeSocketBroadcastCapable (int mysocket)
+int MPATH_MakeSocketBroadcastCapable (int socketid)
 {
 	int	i = 1;
 
 	// make this socket broadcast capable
-	if (setsockopt(mysocket, SOL_SOCKET, SO_BROADCAST, (char *)&i, sizeof(i)) < 0)
+	if (setsockopt(socketid, SOL_SOCKET, SO_BROADCAST, (char *)&i, sizeof(i)) < 0)
 		return -1;
-	net_broadcastsocket = mysocket;
+	net_broadcastsocket = socketid;
 
 	return 0;
 }
 
 //=============================================================================
 
-int MPATH_Broadcast (int mysocket, byte *buf, int len)
+int MPATH_Broadcast (int socketid, byte *buf, int len)
 {
 	int ret;
 
-	if (mysocket != net_broadcastsocket)
+	if (socketid != net_broadcastsocket)
 	{
 		if (net_broadcastsocket != 0)
 			Sys_Error("Attempted to use multiple broadcasts sockets\n");
-		ret = MPATH_MakeSocketBroadcastCapable (mysocket);
+		ret = MPATH_MakeSocketBroadcastCapable (socketid);
 		if (ret == -1)
 		{
 			Con_Printf("Unable to make socket broadcast capable\n");
@@ -315,16 +315,16 @@ int MPATH_Broadcast (int mysocket, byte *buf, int len)
 		}
 	}
 
-	return MPATH_Write (mysocket, buf, len, (struct qsockaddr *)&broadcastaddr);
+	return MPATH_Write (socketid, buf, len, (struct qsockaddr *)&broadcastaddr);
 }
 
 //=============================================================================
 
-int MPATH_Write (int mysocket, byte *buf, int len, struct qsockaddr *addr)
+int MPATH_Write (int socketid, byte *buf, int len, struct qsockaddr *addr)
 {
 	int	ret;
 
-	ret = sendto (mysocket, (char *)buf, len, 0, (struct sockaddr *)addr, sizeof(struct qsockaddr));
+	ret = sendto (socketid, (char *)buf, len, 0, (struct sockaddr *)addr, sizeof(struct qsockaddr));
 	if (ret == -1)
 	{
 		if (WSAGetLastError() == WSAEWOULDBLOCK)
@@ -367,14 +367,14 @@ int MPATH_StringToAddr (const char *string, struct qsockaddr *addr)
 
 //=============================================================================
 
-int MPATH_GetSocketAddr (int mysocket, struct qsockaddr *addr)
+int MPATH_GetSocketAddr (int socketid, struct qsockaddr *addr)
 {
 	int addrlen = sizeof(struct qsockaddr);
 	struct sockaddr_in *address = (struct sockaddr_in *)addr;
 	struct in_addr	a;
 
 	memset(addr, 0, sizeof(struct qsockaddr));
-	getsockname(mysocket, (struct sockaddr *)addr, &addrlen);
+	getsockname(socketid, (struct sockaddr *)addr, &addrlen);
 	a = address->sin_addr;
 	if (a.s_addr == 0 || a.s_addr == htonl(INADDR_LOOPBACK))
 		address->sin_addr.s_addr = myAddr.s_addr;

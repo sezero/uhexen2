@@ -3,7 +3,7 @@
 	Beame & Whiteside TCP/IP for dosquake.
 	from quake1 source with minor adaptations for uhexen2.
 
-	$Id: net_bw.c,v 1.4 2009-01-01 09:24:36 sezero Exp $
+	$Id: net_bw.c,v 1.5 2009-01-08 12:01:51 sezero Exp $
 
 	Copyright (C) 1996-1997  Id Software, Inc.
 
@@ -470,13 +470,13 @@ int BW_OpenSocket (int port)
 
 //=============================================================================
 
-int BW_CloseSocket (int mysocket)
+int BW_CloseSocket (int socketid)
 {
 	regs.h.ah = 0x3e;
-	regs.x.bx = mysocket;
+	regs.x.bx = socketid;
 	if (dos_int86(0x21))
 	{
-		Con_Printf("BW_CloseSocket %d failed: %d\n", mysocket, BW_TranslateError(regs.x.ax));
+		Con_Printf("BW_CloseSocket %d failed: %d\n", socketid, BW_TranslateError(regs.x.ax));
 		return -1;
 	}
 	return 0;
@@ -484,7 +484,7 @@ int BW_CloseSocket (int mysocket)
 
 //=============================================================================
 
-int BW_Connect (int mysocket, struct qsockaddr *hostaddr)
+int BW_Connect (int socketid, struct qsockaddr *hostaddr)
 {
 	return 0;
 }
@@ -656,10 +656,10 @@ int BW_StringToAddr (const char *string, struct qsockaddr *addr)
 
 //=============================================================================
 
-int BW_GetSocketAddr (int mysocket, struct qsockaddr *addr)
+int BW_GetSocketAddr (int socketid, struct qsockaddr *addr)
 {
 	regs.x.ax = 0x4402;
-	regs.x.bx = mysocket;
+	regs.x.bx = socketid;
 	regs.x.cx = sizeof(BW_UDPinfo_t);
 	regs.x.dx = lowmem_bufoff;
 	regs.x.ds = lowmem_bufseg;
