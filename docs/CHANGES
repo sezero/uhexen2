@@ -3,6 +3,23 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2009-01-07/08 (CVS):
+    * screen.c, gl_screen.c: added a fixme note about the "load failed bug".
+    * hexenworld console: con_chat has never been used. removed it.
+    * hexen2 console: the drawinput argument to Con_DrawConsole() has never been
+      used (always true). removed it.
+    * hexenworld console: allocate the console structure on the hunk.
+    * hexenworld console: fixed and tidied up the colored printing. the additional
+      text_attr member in the console stucture wasn't used correctly and it wasn't
+      necessary, because the hexen2 solution is better: using short type for the
+      text buffer instead of char and using 256 as the colored text mask instead of
+      128. the ormask is fixed similarly. did some whitespace/indentation cleanup,
+      too.
+    * hexen2 console: started synchronizing the hexen2 and hexenworld console
+      code. as a side effect, the weird 'mirrored prints' at high resolutions
+      such as 1280x960 disappeared. more might follow.
+    * renamed the socket argument of the net functions. no code change, just cosmetics.
+
 2009-01-04 (CVS, 1.4.4-pre4):
     * gl_vidnt.c: we don't free and reload the opengl dll during resolution
       changing anymore. a combination of Vista and ATI crashes with it. the
