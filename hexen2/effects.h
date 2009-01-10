@@ -1,16 +1,16 @@
 /*
-	cl_effect.h
-	common effects header
+	effects.h
+	effect types and defs for Hexen II
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cl_effect.h,v 1.8 2007-03-14 21:03:01 sezero Exp $
+	$Id: effects.h,v 1.1 2009-01-10 22:08:50 sezero Exp $
 */
 
-#ifndef __CL_EFFECT_H
-#define __CL_EFFECT_H
+#ifndef __EFFECTS_H
+#define __EFFECTS_H
 
 #define MAX_EFFECTS		256
 
-// Types for various chunks
+/* Types for various chunks */
 #define THINGTYPE_GREYSTONE	1
 #define THINGTYPE_WOOD		2
 #define THINGTYPE_METAL		3
@@ -40,46 +40,47 @@
 #define CE_RAIN			1
 #define CE_FOUNTAIN		2
 #define CE_QUAKE		3
-#define CE_WHITE_SMOKE		4	// whtsmk1.spr
-#define CE_BLUESPARK		5	// bspark.spr
-#define CE_YELLOWSPARK		6	// spark.spr
-#define CE_SM_CIRCLE_EXP	7	// fcircle.spr
-#define CE_BG_CIRCLE_EXP	8	// fcircle.spr
-#define CE_SM_WHITE_FLASH	9	// sm_white.spr
-#define CE_WHITE_FLASH		10	// gryspt.spr
-#define CE_YELLOWRED_FLASH	11	// yr_flash.spr
-#define CE_BLUE_FLASH		12	// bluflash.spr
-#define CE_SM_BLUE_FLASH	13	// bluflash.spr
-#define CE_RED_FLASH		14	// redspt.spr
-#define CE_SM_EXPLOSION		15	// sm_expld.spr
-#define CE_LG_EXPLOSION		16	// bg_expld.spr
-#define CE_FLOOR_EXPLOSION	17	// fl_expld.spr
+#define CE_WHITE_SMOKE		4	/* whtsmk1.spr */
+#define CE_BLUESPARK		5	/* bspark.spr */
+#define CE_YELLOWSPARK		6	/* spark.spr */
+#define CE_SM_CIRCLE_EXP	7	/* fcircle.spr */
+#define CE_BG_CIRCLE_EXP	8	/* fcircle.spr */
+#define CE_SM_WHITE_FLASH	9	/* sm_white.spr */
+#define CE_WHITE_FLASH		10	/* gryspt.spr */
+#define CE_YELLOWRED_FLASH	11	/* yr_flash.spr */
+#define CE_BLUE_FLASH		12	/* bluflash.spr */
+#define CE_SM_BLUE_FLASH	13	/* bluflash.spr */
+#define CE_RED_FLASH		14	/* redspt.spr */
+#define CE_SM_EXPLOSION		15	/* sm_expld.spr */
+#define CE_LG_EXPLOSION		16	/* bg_expld.spr */
+#define CE_FLOOR_EXPLOSION	17	/* fl_expld.spr */
 #define CE_RIDER_DEATH		18
-#define CE_BLUE_EXPLOSION	19	// xpspblue.spr
-#define CE_GREEN_SMOKE		20	// grnsmk1.spr
-#define CE_GREY_SMOKE		21	// grysmk1.spr
-#define CE_RED_SMOKE		22	// redsmk1.spr
-#define CE_SLOW_WHITE_SMOKE	23	// whtsmk1.spr
-#define CE_REDSPARK		24	// rspark.spr
-#define CE_GREENSPARK		25	// gspark.spr
-#define CE_TELESMK1		26	// telesmk1.spr
-#define CE_TELESMK2		27	// telesmk2.spr
-#define CE_ICEHIT		28	// icehit.spr
-#define CE_MEDUSA_HIT		29	// medhit.spr
-#define CE_MEZZO_REFLECT	30	// mezzoref.spr
-#define CE_FLOOR_EXPLOSION2	31	// flrexpl2.spr
-#define CE_XBOW_EXPLOSION	32	// xbowexpl.spr
-#define CE_NEW_EXPLOSION	33	// gen_expl.spr
-#define CE_MAGIC_MISSILE_EXPLOSION 34	// mm_expld.spr
-#define CE_GHOST		35	// ghost.spr
+#define CE_BLUE_EXPLOSION	19	/* xpspblue.spr */
+#define CE_GREEN_SMOKE		20	/* grnsmk1.spr */
+#define CE_GREY_SMOKE		21	/* grysmk1.spr */
+#define CE_RED_SMOKE		22	/* redsmk1.spr */
+#define CE_SLOW_WHITE_SMOKE	23	/* whtsmk1.spr */
+#define CE_REDSPARK		24	/* rspark.spr */
+#define CE_GREENSPARK		25	/* gspark.spr */
+#define CE_TELESMK1		26	/* telesmk1.spr */
+#define CE_TELESMK2		27	/* telesmk2.spr */
+#define CE_ICEHIT		28	/* icehit.spr */
+#define CE_MEDUSA_HIT		29	/* medhit.spr */
+#define CE_MEZZO_REFLECT	30	/* mezzoref.spr */
+#define CE_FLOOR_EXPLOSION2	31	/* flrexpl2.spr */
+#define CE_XBOW_EXPLOSION	32	/* xbowexpl.spr */
+#define CE_NEW_EXPLOSION	33	/* gen_expl.spr */
+#define CE_MAGIC_MISSILE_EXPLOSION 34	/* mm_expld.spr */
+#define CE_GHOST		35	/* ghost.spr */
 #define CE_BONE_EXPLOSION	36
 #define CE_REDCLOUD		37
 #define CE_TELEPORTERPUFFS	38
 #define CE_TELEPORTERBODY	39
 #define CE_BONESHARD		40
 #define CE_BONESHRAPNEL		41
-// New for Mission Pack...
-#define CE_FLAMESTREAM		42	// Flamethrower
+
+/* New for Mission Pack... */
+#define CE_FLAMESTREAM		42	/* Flamethrower */
 #define CE_SNOW			43
 #define CE_GRAVITYWELL		44
 #define CE_BLDRN_EXPL		45
@@ -137,7 +138,8 @@ struct EffectT
 			vec3_t origin;
 			int entity_index;
 			float time_amount;
-			int reverse;  // Forward animation has been run, now go backwards
+			int reverse;  /* Forward animation has been run,
+					 now go backwards */
 		} Flash;
 		struct
 		{
@@ -147,7 +149,7 @@ struct EffectT
 			int stage;
 			int color;
 			float lifetime;
-		} RD; // Rider Death
+		} RD; /* Rider Death */
 		struct
 		{
 			int entity_index[16];
@@ -181,15 +183,5 @@ struct EffectT
 	} ef;
 };
 
-void CL_InitEffects (void);
-void CL_ClearEffects (void);
-void CL_EndEffect (void);
-void CL_ParseEffect (void);
-void CL_UpdateEffects (void);
-void SV_ParseEffect (sizebuf_t *sb);
-void SV_UpdateEffects (sizebuf_t *sb);
-void SV_SaveEffects (FILE *FH);
-void SV_LoadEffects (FILE *FH);
-
-#endif	/* __CL_EFFECT_H */
+#endif	/* __EFFECTS_H */
 

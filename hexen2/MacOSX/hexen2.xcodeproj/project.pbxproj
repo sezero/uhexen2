@@ -133,7 +133,7 @@
 		707D58770AA9FBB700313A9F /* bspfile.h in Headers */ = {isa = PBXBuildFile; fileRef = 707D577B0AA9F6EE00313A9F /* bspfile.h */; };
 		707D58780AA9FBB700313A9F /* cd_unix.h in Headers */ = {isa = PBXBuildFile; fileRef = 707D577D0AA9F6EE00313A9F /* cd_unix.h */; };
 		707D58790AA9FBB700313A9F /* cdaudio.h in Headers */ = {isa = PBXBuildFile; fileRef = 707D577E0AA9F6EE00313A9F /* cdaudio.h */; };
-		707D587A0AA9FBB700313A9F /* cl_effect.h in Headers */ = {isa = PBXBuildFile; fileRef = 707D57830AA9F6EE00313A9F /* cl_effect.h */; };
+		707D587A0AA9FBB700313A9F /* effects.h in Headers */ = {isa = PBXBuildFile; fileRef = 707D57830AA9F6EE00313A9F /* effects.h */; };
 		707D587B0AA9FBB700313A9F /* client.h in Headers */ = {isa = PBXBuildFile; fileRef = 707D57880AA9F6EE00313A9F /* client.h */; };
 		707D587C0AA9FBB700313A9F /* cmd.h in Headers */ = {isa = PBXBuildFile; fileRef = 707D578A0AA9F6EE00313A9F /* cmd.h */; };
 		707D587D0AA9FBB700313A9F /* common.h in Headers */ = {isa = PBXBuildFile; fileRef = 707D578C0AA9F6EE00313A9F /* common.h */; };
@@ -313,7 +313,7 @@
 		707D57800AA9F6EE00313A9F /* cl_cmd.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = cl_cmd.c; path = ../cl_cmd.c; sourceTree = SOURCE_ROOT; };
 		707D57810AA9F6EE00313A9F /* cl_demo.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = cl_demo.c; path = ../cl_demo.c; sourceTree = SOURCE_ROOT; };
 		707D57820AA9F6EE00313A9F /* cl_effect.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = cl_effect.c; path = ../cl_effect.c; sourceTree = SOURCE_ROOT; };
-		707D57830AA9F6EE00313A9F /* cl_effect.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = cl_effect.h; path = ../cl_effect.h; sourceTree = SOURCE_ROOT; };
+		707D57830AA9F6EE00313A9F /* effects.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = effects.h; path = ../effects.h; sourceTree = SOURCE_ROOT; };
 		707D57840AA9F6EE00313A9F /* cl_input.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = cl_input.c; path = ../cl_input.c; sourceTree = SOURCE_ROOT; };
 		707D57850AA9F6EE00313A9F /* cl_main.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = cl_main.c; path = ../cl_main.c; sourceTree = SOURCE_ROOT; };
 		707D57860AA9F6EE00313A9F /* cl_parse.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = cl_parse.c; path = ../cl_parse.c; sourceTree = SOURCE_ROOT; };
@@ -537,7 +537,7 @@
 				707D57800AA9F6EE00313A9F /* cl_cmd.c */,
 				707D57810AA9F6EE00313A9F /* cl_demo.c */,
 				707D57820AA9F6EE00313A9F /* cl_effect.c */,
-				707D57830AA9F6EE00313A9F /* cl_effect.h */,
+				707D57830AA9F6EE00313A9F /* effects.h */,
 				707D57840AA9F6EE00313A9F /* cl_input.c */,
 				707D57850AA9F6EE00313A9F /* cl_main.c */,
 				707D57860AA9F6EE00313A9F /* cl_parse.c */,
@@ -680,7 +680,7 @@
 				707D58770AA9FBB700313A9F /* bspfile.h in Headers */,
 				707D58780AA9FBB700313A9F /* cd_unix.h in Headers */,
 				707D58790AA9FBB700313A9F /* cdaudio.h in Headers */,
-				707D587A0AA9FBB700313A9F /* cl_effect.h in Headers */,
+				707D587A0AA9FBB700313A9F /* effects.h in Headers */,
 				707D587B0AA9FBB700313A9F /* client.h in Headers */,
 				707D587C0AA9FBB700313A9F /* cmd.h in Headers */,
 				707D587D0AA9FBB700313A9F /* common.h in Headers */,

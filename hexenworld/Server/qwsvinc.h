@@ -5,7 +5,7 @@
 	FIXME:	kill this in the future and make each C
 		file include only the necessary headers.
 
-	$Id: qwsvinc.h,v 1.11 2007-12-14 16:41:14 sezero Exp $
+	$Id: qwsvinc.h,v 1.12 2009-01-10 22:08:51 sezero Exp $
 */
 
 #ifndef __HWSVINC_H
@@ -48,7 +48,7 @@
 
 #include "progs.h"
 #include "pr_strng.h"
-#include "cl_effect.h"
+#include "effects.h"
 #include "model.h"
 
 #include "server.h"

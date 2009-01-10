@@ -2,7 +2,7 @@
 	client.h
 	client main header
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/client.h,v 1.31 2008-04-22 13:06:06 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/client.h,v 1.32 2009-01-10 22:08:50 sezero Exp $
 */
 
 #ifndef __HX2_CLIENT_H
@@ -355,6 +355,15 @@ void V_UpdatePalette (void);
 void V_Register (void);
 void V_ParseDamage (void);
 void V_SetContentsColor (int contents);
+
+//
+// cl_effect
+//
+void CL_InitEffects (void);
+void CL_ClearEffects (void);
+void CL_EndEffect (void);
+void CL_ParseEffect (void);
+void CL_UpdateEffects (void);
 
 //
 // cl_tent

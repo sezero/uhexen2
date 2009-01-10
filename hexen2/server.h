@@ -1,7 +1,7 @@
 /*
 	server.h
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/server.h,v 1.25 2008-04-22 13:06:07 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/server.h,v 1.26 2009-01-10 22:08:50 sezero Exp $
 */
 
 #ifndef __HX2_SERVER_H
@@ -283,6 +283,11 @@ void SV_CheckForNewClients (void);
 void SV_RunClients (void);
 void SV_SaveSpawnparms (void);
 void SV_SpawnServer (const char *server, const char *startspot);
+
+void SV_ParseEffect (sizebuf_t *sb);
+void SV_UpdateEffects (sizebuf_t *sb);
+void SV_SaveEffects (FILE *FH);
+void SV_LoadEffects (FILE *FH);
 
 #endif	/* __HX2_SERVER_H */
 

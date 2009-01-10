@@ -2,7 +2,7 @@
 	client.h
 	client main header
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/client.h,v 1.21 2008-04-22 13:06:10 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/client.h,v 1.22 2009-01-10 22:08:51 sezero Exp $
 */
 
 #ifndef __H2W_CLIENT_H
@@ -487,6 +487,19 @@ void V_ParseTarget(void);
 extern	float		v_targAngle;
 extern	float		v_targPitch;
 extern	float		v_targDist;
+
+//
+// cl_effect
+//
+void CL_InitEffects (void);
+void CL_ClearEffects (void);
+void CL_EndEffect (void);
+void CL_ParseEffect (void);
+void CL_ParseMultiEffect (void);
+void CL_UpdateEffects (void);
+void CL_TurnEffect (void);
+void CL_ReviseEffect (void);
+
 
 //
 // cl_tent
