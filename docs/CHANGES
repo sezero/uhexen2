@@ -3,6 +3,13 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2009-01-10/15 (CVS):
+    * cl_effect.c, sv_effect.c: indentation and whitespace cleanup.
+      cl_effect.h: removed. moved the types and definitions to the
+      new effects.h header and the function prototypes to server.h
+      and client.h.
+    * updated beta version and date (2009-01-15, 1.4.4-pre5)
+
 2009-01-07/08 (CVS):
     * screen.c, gl_screen.c: added a fixme note about the "load failed bug".
     * hexenworld console: con_chat has never been used. removed it.
