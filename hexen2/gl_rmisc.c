@@ -1,7 +1,7 @@
 /*
 	r_misc.c
 
-	$Id: gl_rmisc.c,v 1.51 2008-04-22 13:06:06 sezero Exp $
+	$Id: gl_rmisc.c,v 1.52 2009-01-18 18:43:52 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -135,7 +135,12 @@ Grab six views for environment mapping tests
 static void R_Envmap_f (void)
 {
 	byte	buffer[256*256*4];
+	refdef_t	save_refdef;
 
+	if (cls.state != ca_connected)
+		return;
+
+	memcpy (&save_refdef, &r_refdef, sizeof(refdef_t));
 	glDrawBuffer_fp (GL_FRONT);
 	glReadBuffer_fp (GL_FRONT);
 	envmap = true;
@@ -189,6 +194,9 @@ static void R_Envmap_f (void)
 	glDrawBuffer_fp (GL_BACK);
 	glReadBuffer_fp (GL_BACK);
 	GL_EndRendering ();
+
+	memcpy (&r_refdef, &save_refdef, sizeof(refdef_t));
+	vid.recalc_refdef = 1;
 }
 
 /*
