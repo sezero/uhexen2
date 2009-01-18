@@ -2,7 +2,7 @@
 	pr_exec.c
 	PROGS execution
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Server/pr_exec.c,v 1.24 2008-01-22 12:01:08 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Server/pr_exec.c,v 1.25 2009-01-18 18:40:45 sezero Exp $
 */
 
 // HEADER FILES ------------------------------------------------------------
@@ -970,6 +970,9 @@ void PR_Profile_f (void)
 	int		bestFile;
 	int		tally;
 	const char	*s;
+
+	if (sv.state != ss_active)
+		return;
 
 	byHC = false;
 	funcCount = 10;
