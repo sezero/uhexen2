@@ -158,7 +158,7 @@ Important command-line switches:
 			playing the Portal of Praevus mission pack.
  -f | -fullscreen	Run the game fullscreen (can also be set from the menu)
  -w | -window		Run the game windowed (can also be set from the menu)
- -g | -gllibrary	Select 3D rendering library
+ -g | -gllibrary <lib>	Override the OpenGL library to use
  -width   N		Select screen size (can also be set from the menu)
  -height  N		Optional, Must be used with -width (can also be set
 			from the menu)
@@ -202,8 +202,25 @@ Important command-line switches:
  -listen  N		Enable multiplayer with maximum N players
  -protocol N		Run the server using protocol version N, instead of
 			the default. Valid values: 18 (old), 19 (default).
+ -port <portnum>	Change the default port. Default is 26900 for hexen2,
+			26950 for hexenworld server and 26900 for hexenworld
+			master server.  hexenworld client always uses 26901.
+ -localip <address>	For Hexen II only. Changes the ip address embedded
+			in the response packets for serverinfo and connect
+			requests to use the command line provided ip address.
+			The server still binds to INADDR_ANY and it can see
+			the broadcast requests.
+ -ip <address>		Enables the server admins to bind to a specific IP
+			address on a multi-homed host. Note that using this
+			option will prevent the us from receiving broadcast
+			packets, so the server discovery on the LAN will not
+			work if the server is started this way.
+ -bindip <address>	Same as the -ip option
+ -noifscan		Hexen II only. Disable the local address detection
+			through network interface scan.
  -condebug | -debuglog	Logs the console output.
  -devlog		Enable full logging even when not in developer mode
+ -developer		Enable developer mode early during initialization
  -v | -version		Display the game version
  -h | -help		Display short help message
 
