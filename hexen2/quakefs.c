@@ -2,7 +2,7 @@
 	quakefs.c
 	Hexen II filesystem
 
-	$Id: quakefs.c,v 1.50 2008-12-21 19:00:02 sezero Exp $
+	$Id: quakefs.c,v 1.51 2009-01-20 20:55:47 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -1284,7 +1284,7 @@ void FS_Init (void)
 	int		i;
 	char		temp[32];
 	qboolean	check_portals = false;
-	searchpath_t	*search_tmp, *next_tmp;
+	searchpath_t	*mark;
 
 //
 // Register our cvars
@@ -1388,8 +1388,13 @@ void FS_Init (void)
 //
 // step 2: portals directory (mission pack)
 //
-#if defined(H2MP) || defined(H2W)
+#if defined(H2MP)
 	if (! COM_CheckParm ("-noportals"))
+		check_portals = true;
+	if (check_portals && !(gameflags & (GAME_REGISTERED|GAME_REGISTERED_OLD)))
+		Sys_Error ("Portal of Praevus requires registered version of Hexen II");
+#elif defined(H2W)
+	if (! COM_CheckParm ("-noportals") && gameflags & (GAME_REGISTERED|GAME_REGISTERED_OLD))
 		check_portals = true;
 #else
 	// see if the user wants mission pack support
@@ -1400,32 +1405,33 @@ void FS_Init (void)
 		if (!q_strcasecmp(com_argv[i+1], "portals"))
 			check_portals = true;
 	}
+	if (check_portals && !(gameflags & (GAME_REGISTERED|GAME_REGISTERED_OLD)))
+		Sys_Error ("Portal of Praevus requires registered version of Hexen II");
 #endif
 #if !defined(H2W)
-	if (sv_protocol == PROTOCOL_RAVEN_111)
-	{
-		if (check_portals)
-			Sys_Printf ("Old protocol requested: disabling mission pack support request.\n");
-		check_portals = false;
-	}
+	if (sv_protocol == PROTOCOL_RAVEN_111 && check_portals)
+		Sys_Error ("Old protocol request not compatible with the Mission Pack");
 #endif
 
-//	if (check_portals && !(gameflags & (GAME_REGISTERED|GAME_REGISTERED_OLD)))
-//		Sys_Error ("Portal of Praevus requires registered version of Hexen II");
-	if (check_portals && gameflags & (GAME_REGISTERED|GAME_REGISTERED_OLD))
+	if (check_portals)
 	{
 		i = Hunk_LowMark ();
-		search_tmp = fs_searchpaths;
+		mark = fs_searchpaths;
 
 		qerr_snprintf(__thisfunc__, __LINE__, fs_userdir, sizeof(fs_userdir), "%s/portals", host_parms->userdir);
 		Sys_mkdir (fs_userdir, true);
 		FS_AddGameDirectory (va("%s/portals", fs_basedir), true);
 
-		// back out searchpaths from invalid mission pack installations
 		if ( !(gameflags & GAME_PORTALS))
 		{
+#if !defined(H2W)
+			Sys_Error ("Missing or invalid mission pack installation\n");
+#else
+			// back out searchpaths from invalid mission pack installations
+			// because the portals directory is reserved for the mission pack
+			searchpath_t	*next;
 			Sys_Printf ("Missing or invalid mission pack installation\n");
-			while (fs_searchpaths != search_tmp)
+			while (fs_searchpaths != mark)
 			{
 				if (fs_searchpaths->pack)
 				{
@@ -1436,14 +1442,15 @@ void FS_Init (void)
 				{
 					Sys_Printf ("Removed path %s\n", fs_searchpaths->filename);
 				}
-				next_tmp = fs_searchpaths->next;
-				fs_searchpaths = next_tmp;
+				next = fs_searchpaths->next;
+				fs_searchpaths = next;
 			}
-			fs_searchpaths = search_tmp;
+			fs_searchpaths = mark;
 			Hunk_FreeToLowMark (i);
 			// back to data1
 			q_snprintf (fs_gamedir, sizeof(fs_gamedir), "%s/data1", fs_basedir);
 			q_snprintf (fs_userdir, sizeof(fs_userdir), "%s/data1", host_parms->userdir);
+#endif	/* H2W */
 		}
 	}
 
