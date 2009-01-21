@@ -3,6 +3,21 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2009-01-20 (CVS):
+    * simply error out if mission pack support is requested and it isn't found.
+      ignoring it and running the ordinary game is confusing. don't silently
+      ignore the request and error out if we aren't playing the registered game,
+      too.
+
+2009-01-19 (CVS):
+    * documented some network related command line options.
+
+2009-01-18 (CVS):
+    * pr_exec.c: the profile command can only be run when the server is active.
+    * gl_rmisc.c: the envmap command can only be run when there's something to
+      render, ie. when connected to a server. besides, the refdef must be restored
+      when it is completed.
+
 2009-01-10/15 (CVS):
     * cl_effect.c, sv_effect.c: indentation and whitespace cleanup.
       cl_effect.h: removed. moved the types and definitions to the
