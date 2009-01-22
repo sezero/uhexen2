@@ -1,6 +1,6 @@
 /*
 	midi_win.c
-	$Id: midi.c,v 1.30 2008-12-23 18:45:34 sezero Exp $
+	$Id: midi.c,v 1.31 2009-01-22 08:06:19 sezero Exp $
 
 	MIDI module for Win32
 */
@@ -72,11 +72,11 @@ static void MIDI_Loop_f (void)
 {
 	if (Cmd_Argc () == 2)
 	{
-		if (q_strcasecmp(Cmd_Argv(1),"on") == 0 || q_strcasecmp(Cmd_Argv(1),"1") == 0) 
+		if (q_strcasecmp(Cmd_Argv(1),"on") == 0 || q_strcasecmp(Cmd_Argv(1),"1") == 0)
 			MIDI_Loop(MIDI_ENABLE_LOOP);
-		else if (q_strcasecmp(Cmd_Argv(1),"off") == 0 || q_strcasecmp(Cmd_Argv(1),"0") == 0) 
+		else if (q_strcasecmp(Cmd_Argv(1),"off") == 0 || q_strcasecmp(Cmd_Argv(1),"0") == 0)
 			MIDI_Loop(MIDI_DISABLE_LOOP);
-		else if (q_strcasecmp(Cmd_Argv(1),"toggle") == 0) 
+		else if (q_strcasecmp(Cmd_Argv(1),"toggle") == 0)
 			MIDI_Loop(MIDI_TOGGLE_LOOP);
 	}
 
@@ -657,7 +657,7 @@ static void SetChannelVolume(DWORD dwChannel, DWORD dwVolumePercent)
 	mmrRetVal = midiOutShortMsg((HMIDIOUT)hStream, dwEvent);
 	if (mmrRetVal != MMSYSERR_NOERROR )
 	{
-		MidiErrorMessageBox( mmrRetVal );
+		MidiErrorMessageBox(mmrRetVal);
 		return;
 	}
 }

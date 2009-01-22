@@ -1,6 +1,6 @@
 /*
 	midi_mac.c
-	$Id: midi_mac.c,v 1.20 2008-03-31 11:25:21 sezero Exp $
+	$Id: midi_mac.c,v 1.21 2009-01-22 08:06:18 sezero Exp $
 
 	MIDI module for Mac OS X using QuickTime:
 	Taken from the macglquake project with adjustments to make
@@ -35,52 +35,6 @@
 static Movie	midiTrack = NULL;
 static qboolean	bMidiInited, bPaused, bLooped;
 static float	old_volume = -1.0f;
-
-static void MIDI_SetVolume (cvar_t *var)
-{
-	if (!bMidiInited || !midiTrack)
-		return;
-
-	if (var->value < 0.0)
-		Cvar_SetValue (var->name, 0.0);
-	else if (var->value > 1.0)
-		Cvar_SetValue (var->name, 1.0);
-	old_volume = var->value;
-	SetMovieVolume(midiTrack, (short)(var->value * 256.0));
-}
-
-//
-// MusicEvents
-// Called in the event loop to keep track of MIDI music
-//
-void MIDI_Update (void)
-{
-	if (midiTrack)
-	{
-		// pOx - adjust volume if changed
-		if (old_volume != bgmvolume.value)
-			MIDI_SetVolume (&bgmvolume);
-
-		// Let QuickTime get some time
-		MoviesTask (midiTrack, 0);
-
-		// If this song is looping, restart it
-		if (IsMovieDone (midiTrack))
-		{
-			if (bLooped)
-			{
-				GoToBeginningOfMovie (midiTrack);
-				StartMovie (midiTrack);
-			}
-			else
-			{
-				DisposeMovie (midiTrack);
-				midiTrack = NULL;
-			}
-		}
-	}
-}
-
 
 static void MIDI_Play_f (void)
 {
@@ -118,6 +72,51 @@ static void MIDI_Loop_f (void)
 		Con_Printf("MIDI music will not be looped\n");
 }
 
+static void MIDI_SetVolume (cvar_t *var)
+{
+	if (!bMidiInited || !midiTrack)
+		return;
+
+	if (var->value < 0.0)
+		Cvar_SetValue (var->name, 0.0);
+	else if (var->value > 1.0)
+		Cvar_SetValue (var->name, 1.0);
+	old_volume = var->value;
+	SetMovieVolume(midiTrack, (short)(var->value * 256.0));
+}
+
+//
+// MusicEvents
+// Called in the event loop to keep track of MIDI music
+//
+void MIDI_Update(void)
+{
+	if (midiTrack)
+	{
+		// pOx - adjust volume if changed
+		if (old_volume != bgmvolume.value)
+			MIDI_SetVolume (&bgmvolume);
+
+		// Let QuickTime get some time
+		MoviesTask (midiTrack, 0);
+
+		// If this song is looping, restart it
+		if (IsMovieDone (midiTrack))
+		{
+			if (bLooped)
+			{
+				GoToBeginningOfMovie (midiTrack);
+				StartMovie (midiTrack);
+			}
+			else
+			{
+				DisposeMovie (midiTrack);
+				midiTrack = NULL;
+			}
+		}
+	}
+}
+
 qboolean MIDI_Init(void)
 {
 	OSErr		theErr;
@@ -140,27 +139,16 @@ qboolean MIDI_Init(void)
 
 	Con_Printf("Started QuickTime midi.\n");
 
-	bPaused = false;
-	bLooped = true;
-	bMidiInited = true;
-
 	Cmd_AddCommand ("midi_play", MIDI_Play_f);
 	Cmd_AddCommand ("midi_stop", MIDI_Stop_f);
 	Cmd_AddCommand ("midi_pause", MIDI_Pause_f);
 	Cmd_AddCommand ("midi_loop", MIDI_Loop_f);
 
-	return true;
-}
+	bLooped = true;
+	bPaused = false;
+	bMidiInited = true;
 
-void MIDI_Cleanup (void)
-{
-	if (bMidiInited)
-	{
-		MIDI_Stop();
-		Con_Printf("%s: closing QuickTime.\n", __thisfunc__);
-		ExitMovies ();
-		bMidiInited = false;
-	}
+	return true;
 }
 
 
@@ -200,7 +188,10 @@ void MIDI_Play (const char *Name)
 			int		ret;
 
 			Con_Printf("Extracting %s from pakfile\n", tempName);
-			q_snprintf (midiName, sizeof(midiName), "%s/%s.%s", host_parms->userdir, TEMP_MUSICNAME, "mid");
+			q_snprintf (midiName, sizeof(midiName), "%s/%s.%s",
+							host_parms->userdir,
+							TEMP_MUSICNAME,
+							"mid" );
 			ret = FS_CopyFromFile (midiFile, midiName, fs_filesize);
 			fclose (midiFile);
 			if (ret != 0)
@@ -212,7 +203,10 @@ void MIDI_Play (const char *Name)
 		else	/* use the file directly */
 		{
 			fclose (midiFile);
-			q_snprintf (midiName, sizeof(midiName), "%s/%s/%s", fs_filepath, "midi", tempName);
+			q_snprintf (midiName, sizeof(midiName), "%s/%s/%s",
+							fs_filepath,
+							"midi",
+							tempName );
 		}
 	}
 
@@ -301,6 +295,17 @@ void MIDI_Stop(void)
 		DisposeMovie (midiTrack);
 		midiTrack = NULL;
 		bPaused = false;
+	}
+}
+
+void MIDI_Cleanup(void)
+{
+	if (bMidiInited)
+	{
+		MIDI_Stop();
+		bMidiInited = false;
+		Con_Printf("%s: closing QuickTime.\n", __thisfunc__);
+		ExitMovies ();
 	}
 }
 
