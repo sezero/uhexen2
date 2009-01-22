@@ -6,7 +6,7 @@
 		for byte order use q_endian.h,
 		for math stuff use mathlib.h.
 
-	$Id: q_stdinc.h,v 1.4 2008-10-31 14:44:33 sezero Exp $
+	$Id: q_stdinc.h,v 1.5 2009-01-22 08:50:26 sezero Exp $
 
 	Copyright (C) 1996-1997  Id Software, Inc.
 	Copyright (C) 2007-2008  O.Sezer <sezero@users.sourceforge.net>
@@ -105,6 +105,14 @@ typedef enum {
 	THE_DUMMY_VALUE
 } THE_DUMMY_ENUM;
 COMPILE_TIME_ASSERT(enum, sizeof(THE_DUMMY_ENUM) == sizeof(int));
+
+
+/* Provide a substitute for offsetof() if we don't have one.
+ * This variant works on most (but not *all*) systems...
+ */
+#ifndef offsetof
+#define offsetof(t,m) ((size_t)&(((t *)0)->m))
+#endif
 
 
 /*==========================================================================*/

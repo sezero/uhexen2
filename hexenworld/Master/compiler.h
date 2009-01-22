@@ -7,7 +7,7 @@
 	- shouldn't depend on arch_def.h, q_stdinc.h, or
 	  any other headers
 
-	$Id: compiler.h,v 1.10 2008-10-31 07:23:54 sezero Exp $
+	$Id: compiler.h,v 1.11 2009-01-22 08:50:26 sezero Exp $
 
 	Copyright (C) 2007  O.Sezer <sezero@users.sourceforge.net>
 
@@ -67,14 +67,7 @@
  * from the DOS universe, define __386__ instead of __i386__
  */
 #if defined(__386__) && !defined(__i386__)
-#define __i386__	1
-#endif
-
-/* Provide a substitute for offsetof() if we don't have one.
- * This variant works on most (but not *all*) systems...
- */
-#ifndef offsetof
-#define offsetof(t,m) ((size_t)&(((t *)0)->m))
+#define __i386__		1
 #endif
 
 
