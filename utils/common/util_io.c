@@ -2,7 +2,7 @@
 	util_io.c
 	file and directory utilities
 
-	$Id: util_io.c,v 1.12 2008-12-22 12:20:02 sezero Exp $
+	$Id: util_io.c,v 1.13 2009-01-24 17:21:43 sezero Exp $
 */
 
 
@@ -18,6 +18,7 @@
 #include <conio.h>
 #include <io.h>
 #include <direct.h>
+#include "io_msvc.h"
 #else	/* Unix */
 #include <unistd.h>
 #include <dirent.h>

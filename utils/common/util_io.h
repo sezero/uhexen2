@@ -2,7 +2,7 @@
 	util_io.h
 	file and directory utilities
 
-	$Id: util_io.h,v 1.7 2008-12-22 12:20:02 sezero Exp $
+	$Id: util_io.h,v 1.8 2009-01-24 17:21:43 sezero Exp $
 */
 
 #ifndef __UTILIO_H
@@ -10,6 +10,7 @@
 
 #if defined(PLATFORM_WINDOWS)
 #include <io.h>
+#include "io_msvc.h"
 #else
 #include <unistd.h>
 #endif

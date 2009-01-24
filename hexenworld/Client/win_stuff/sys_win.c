@@ -2,7 +2,7 @@
 	sys_win.c
 	Win32 system interface code
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/win_stuff/sys_win.c,v 1.57 2009-01-02 21:19:56 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/win_stuff/sys_win.c,v 1.58 2009-01-24 17:21:43 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -15,6 +15,7 @@
 #include <io.h>
 #include <direct.h>
 #include <fcntl.h>
+#include "io_msvc.h"
 
 
 // heapsize: minimum 16mb, standart 32 mb, max is 96 mb.

@@ -2,7 +2,7 @@
 	sys_main.c
 	main loop and system interface
 
-	$Id: sys_main.c,v 1.47 2008-12-28 14:18:17 sezero Exp $
+	$Id: sys_main.c,v 1.48 2009-01-24 17:21:43 sezero Exp $
 */
 
 #include "q_stdinc.h"
@@ -39,7 +39,8 @@
 #include <winsock2.h>
 #endif
 #include <mmsystem.h>
-#endif
+#include "io_msvc.h"
+#endif	/* WINDOWS */
 
 #if defined(PLATFORM_WINDOWS)
 /*
