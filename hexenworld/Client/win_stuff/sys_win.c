@@ -2,7 +2,7 @@
 	sys_win.c
 	Win32 system interface code
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/win_stuff/sys_win.c,v 1.58 2009-01-24 17:21:43 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/win_stuff/sys_win.c,v 1.59 2009-01-24 23:41:27 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -62,12 +62,12 @@ int Sys_mkdir (const char *path, qboolean crash)
 
 int Sys_rmdir (const char *path)
 {
-	return rmdir(path);
+	return _rmdir(path);
 }
 
 int Sys_unlink (const char *path)
 {
-	return unlink(path);
+	return _unlink(path);
 }
 
 #define NO_OVERWRITING	FALSE /* allow overwriting files */

@@ -1,6 +1,6 @@
 /*
 	jscolor.c
-	$Id: jscolor.c,v 1.5 2007-12-14 16:41:23 sezero Exp $
+	$Id: jscolor.c,v 1.6 2009-01-24 23:41:28 sezero Exp $
 
 	This program is free software; you can redistribute it and/or
 	modify it under the terms of the GNU General Public License
@@ -251,7 +251,7 @@ void DecisionTime (const char *msg)
 	printf ("Continue? [Y/N] ");
 	while (1)
 	{
-		c = getch ();
+		c = _getch ();
 
 		if (c == 'y' || c == 'Y' || c == 'n' || c == 'N')
 			break;

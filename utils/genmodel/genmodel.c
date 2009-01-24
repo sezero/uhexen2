@@ -1,6 +1,6 @@
 /*
 	genmodel.c
-	$Id: genmodel.c,v 1.15 2008-01-29 19:56:32 sezero Exp $
+	$Id: genmodel.c,v 1.16 2009-01-24 23:41:28 sezero Exp $
 
 	Generates a .mdl file from a base frame, a texture bitmap,
 	and a series of frames.
@@ -261,10 +261,6 @@ int main(int argc, char **argv)
 	}
 
 	WriteModel();
-
-#ifdef _DEBUG
-	getch();
-#endif
 
 	return 0;
 }

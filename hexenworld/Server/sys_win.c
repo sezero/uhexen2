@@ -2,7 +2,7 @@
 	sys_win.c
 	Win32 system interface code
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Server/sys_win.c,v 1.12 2009-01-24 17:21:43 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Server/sys_win.c,v 1.13 2009-01-24 23:41:28 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -65,12 +65,12 @@ int Sys_mkdir (const char *path, qboolean crash)
 
 int Sys_rmdir (const char *path)
 {
-	return rmdir(path);
+	return _rmdir(path);
 }
 
 int Sys_unlink (const char *path)
 {
-	return unlink(path);
+	return _unlink(path);
 }
 
 #define NO_OVERWRITING	FALSE /* allow overwriting files */
@@ -168,7 +168,7 @@ void Sys_Error (const char *error, ...)
 	printf (ERROR_PREFIX "%s\n\n", text);
 
 #ifdef DEBUG_BUILD
-	getch();
+	_getch();
 #endif
 
 	exit (1);
@@ -225,11 +225,11 @@ char *Sys_ConsoleInput (void)
 	while (_kbhit())
 	{
 		c = _getch();
-		putch (c);
+		_putch (c);
 		if (c == '\r')
 		{
 			con_text[textlen] = '\0';
-			putch ('\n');
+			_putch ('\n');
 			textlen = 0;
 			return con_text;
 		}
@@ -237,8 +237,8 @@ char *Sys_ConsoleInput (void)
 		{
 			if (textlen)
 			{
-				putch (' ');
-				putch (c);
+				_putch (' ');
+				_putch (c);
 				textlen--;
 				con_text[textlen] = '\0';
 			}

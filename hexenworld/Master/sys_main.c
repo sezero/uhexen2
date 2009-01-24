@@ -2,7 +2,7 @@
 	sys_main.c
 	main loop and system interface
 
-	$Id: sys_main.c,v 1.48 2009-01-24 17:21:43 sezero Exp $
+	$Id: sys_main.c,v 1.49 2009-01-24 23:41:27 sezero Exp $
 */
 
 #include "q_stdinc.h"
@@ -141,11 +141,11 @@ char *Sys_ConsoleInput (void)
 	while (_kbhit())
 	{
 		c = _getch();
-		putch (c);
+		_putch (c);
 		if (c == '\r')
 		{
 			con_text[textlen] = '\0';
-			putch ('\n');
+			_putch ('\n');
 			textlen = 0;
 			return con_text;
 		}
@@ -153,8 +153,8 @@ char *Sys_ConsoleInput (void)
 		{
 			if (textlen)
 			{
-				putch (' ');
-				putch (c);
+				_putch (' ');
+				_putch (c);
 				textlen--;
 				con_text[textlen] = '\0';
 			}
