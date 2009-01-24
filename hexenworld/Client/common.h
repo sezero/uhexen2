@@ -2,7 +2,7 @@
 	common.h
 	misc utilities used in client and server
 
-	$Id: common.h,v 1.61 2008-04-22 13:06:10 sezero Exp $
+	$Id: common.h,v 1.62 2009-01-24 18:10:44 sezero Exp $
 */
 
 #ifndef __HX2_COMMON_H
@@ -29,6 +29,19 @@
 #define q_strncasecmp	strncasecmp
 #define q_strcasecmp	strcasecmp
 #endif
+
+#ifdef _MSC_VER	/* MS Visual C */
+/* disable some silent conversion warnings */
+#  pragma warning(disable:4244)
+	/* 'argument'	: conversion from 'type1' to 'type2',
+			  possible loss of data */
+#  pragma warning(disable:4305)
+	/* 'identifier'	: truncation from 'type1' to 'type2' */
+	/*  in our case, truncation from 'double' to 'float' */
+#  pragma warning(disable:4267)
+	/* 'var'	: conversion from 'size_t' to 'type',
+			  possible loss of data (/Wp64 warning) */
+#endif	/* _MSC_VER */
 
 /* strlcpy and strlcat : */
 #include "strl_fn.h"
