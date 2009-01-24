@@ -2,7 +2,7 @@
 	pr_exec.c
 	PROGS execution
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Server/pr_exec.c,v 1.25 2009-01-18 18:40:45 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Server/pr_exec.c,v 1.26 2009-01-24 20:00:13 sezero Exp $
 */
 
 // HEADER FILES ------------------------------------------------------------
@@ -15,7 +15,7 @@
 #define MAX_STACK_DEPTH 32
 #define LOCALSTACK_SIZE 2048
 
-#if defined(_MSC_VER) && defined(_WIN32) && defined(DEBUG_BUILD)
+#if defined(_MSC_VER) && defined(_M_IX86) && defined(DEBUG_BUILD)
 // Uses the Pentium specific opcode RDTSC (ReaD TimeStamp Counter)
 #define TIMESNAP_ACTIVE
 #define TIMESNAP(clock) __asm push eax\
