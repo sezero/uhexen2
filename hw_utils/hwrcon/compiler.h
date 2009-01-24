@@ -7,7 +7,7 @@
 	- shouldn't depend on arch_def.h, q_stdinc.h, or
 	  any other headers
 
-	$Id: compiler.h,v 1.11 2009-01-22 08:50:26 sezero Exp $
+	$Id: compiler.h,v 1.12 2009-01-24 10:59:18 sezero Exp $
 
 	Copyright (C) 2007  O.Sezer <sezero@users.sourceforge.net>
 
@@ -69,6 +69,11 @@
 #if defined(__386__) && !defined(__i386__)
 #define __i386__		1
 #endif
+
+/* inline keyword: */
+#if defined(_MSC_VER) && !defined(__cplusplus)
+#define inline __inline
+#endif	/* _MSC_VER */
 
 
 #endif	/* __HX2_COMPILER_H */
