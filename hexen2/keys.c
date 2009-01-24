@@ -2,7 +2,7 @@
 	keys.c
 	key up events are sent even if in console mode
 
-	$Id: keys.c,v 1.40 2009-01-07 19:07:20 sezero Exp $
+	$Id: keys.c,v 1.41 2009-01-24 17:13:01 sezero Exp $
 
 	Copyright (C) 1996-1997  Id Software, Inc.
 	Copyright (C) 2006-2007  O.Sezer
@@ -157,7 +157,7 @@ static keyname_t keynames[] =
 
 static void CompleteCommand (void)
 {
-	const char	*matches[MAX_MATCHES];
+	char	*matches[MAX_MATCHES];
 	char		backup[MAXCMDLINE];
 	char		c, *prefix, *workline;
 	qboolean	editing;
@@ -203,9 +203,9 @@ static void CompleteCommand (void)
 	len1 = len2 = strlen(prefix);
 
 	// start checking for matches, finally...
-	count += ListCommands(prefix, matches, count);
-	count += ListCvars(prefix, matches, count);
-	count += ListAlias(prefix, matches, count);
+	count += ListCommands(prefix, (const char**)matches, count);
+	count += ListCvars   (prefix, (const char**)matches, count);
+	count += ListAlias   (prefix, (const char**)matches, count);
 
 	if (count)
 	{

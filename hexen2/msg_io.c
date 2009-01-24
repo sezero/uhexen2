@@ -3,7 +3,7 @@
 	Message IO functions
 	Handles byte ordering and avoids alignment errors
 
-	$Id: msg_io.c,v 1.8 2007-12-14 16:41:10 sezero Exp $
+	$Id: msg_io.c,v 1.9 2009-01-24 17:13:01 sezero Exp $
 */
 
 #include "q_stdinc.h"
@@ -95,7 +95,7 @@ void MSG_WriteString (sizebuf_t *sb, const char *s)
 	if (!s)
 		SZ_Write (sb, "", 1);
 	else
-		SZ_Write (sb, s, strlen(s)+1);
+		SZ_Write (sb, s, (int)strlen(s) + 1);
 }
 
 void MSG_WriteCoord (sizebuf_t *sb, float f)
@@ -330,18 +330,18 @@ const char *MSG_ReadStringLine (void)
 
 float MSG_ReadCoord (void)
 {
-	return MSG_ReadShort() * (1.0/8.0);
+	return MSG_ReadShort() * (1.0f/8.0f);
 }
 
 float MSG_ReadAngle (void)
 {
-	return MSG_ReadChar() * (360.0/256.0);
+	return MSG_ReadChar() * (360.0f/256.0f);
 }
 
 #if defined(H2W)
 float MSG_ReadAngle16 (void)
 {
-	return MSG_ReadShort() * (360.0/65536.0);
+	return MSG_ReadShort() * (360.0f/65536.0f);
 }
 
 void MSG_ReadUsercmd (usercmd_t *move, qboolean long_msg)

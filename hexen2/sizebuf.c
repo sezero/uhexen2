@@ -2,7 +2,7 @@
 	sizebuf.c
 	sized buffers
 
-	$Id: sizebuf.c,v 1.6 2007-12-14 16:41:11 sezero Exp $
+	$Id: sizebuf.c,v 1.7 2009-01-24 17:13:01 sezero Exp $
 */
 
 #include "q_stdinc.h"
@@ -67,13 +67,11 @@ void SZ_Write (sizebuf_t *buf, const void *data, int length)
 
 void SZ_Print (sizebuf_t *buf, const char *data)
 {
-	int		len;
-
-	len = strlen(data)+1;
+	int		len = (int)strlen(data) + 1;
 
 	if (!buf->cursize || buf->data[buf->cursize-1])
-		memcpy ((byte *)SZ_GetSpace(buf, len),data,len); // no trailing 0
+		memcpy ((byte *)SZ_GetSpace(buf, len  )  , data, len); // no trailing 0
 	else
-		memcpy ((byte *)SZ_GetSpace(buf, len-1)-1,data,len); // write over trailing 0
+		memcpy ((byte *)SZ_GetSpace(buf, len-1)-1, data, len); // write over trailing 0
 }
 
