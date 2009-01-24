@@ -2,7 +2,7 @@
 	vid_win.c
 	Win32 video driver using MGL-4.05
 
-	$Id: vid_win.c,v 1.63 2008-12-28 14:39:04 sezero Exp $
+	$Id: vid_win.c,v 1.64 2009-01-24 18:17:23 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -11,6 +11,9 @@
 #include "d_local.h"
 #include "resource.h"
 #include <ddraw.h>
+#if defined(_MSC_VER)
+#pragma warning(disable:4229)	/* mgraph gets this */
+#endif	/* _MSC_VER */
 #include <mgraph.h>
 
 #if defined(H2W)
