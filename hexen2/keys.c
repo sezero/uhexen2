@@ -2,7 +2,7 @@
 	keys.c
 	key up events are sent even if in console mode
 
-	$Id: keys.c,v 1.42 2009-01-26 10:48:34 sezero Exp $
+	$Id: keys.c,v 1.43 2009-01-26 12:05:08 sezero Exp $
 
 	Copyright (C) 1996-1997  Id Software, Inc.
 	Copyright (C) 2006-2007  O.Sezer
@@ -376,10 +376,6 @@ static void Key_Console (int key)
 		}
 		return;
 
-	case K_INS:
-		key_insert ^= 1;
-		return;
-
 	case K_UPARROW:
 		history_line_last = history_line;
 		do
@@ -457,7 +453,7 @@ static void Key_Console (int key)
 				if (*p == '\n' || *p == '\r' ||
 						  *p == '\b')
 				{
-					*p++ = 0;
+					*p = 0;
 					break;
 				}
 				p++;
@@ -473,6 +469,12 @@ static void Key_Console (int key)
 			}
 			Z_Free (cbd);
 		}
+		return;
+	}
+
+	if (key == K_INS)
+	{
+		key_insert ^= 1;
 		return;
 	}
 
