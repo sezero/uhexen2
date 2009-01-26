@@ -2,7 +2,7 @@
 	debuglog.c
 	logging console output to a file
 
-	$Id: debuglog.c,v 1.9 2009-01-24 17:21:43 sezero Exp $
+	$Id: debuglog.c,v 1.10 2009-01-26 09:15:07 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -28,8 +28,7 @@ static int			log_fd = -1;
 static char		logfilename[MAX_OSPATH];	/* current logfile name	*/
 static char		logbuff[MAX_PRINTMSG];		/* our log text buffer	*/
 
-#define SEPARATOR_LINE	"=======================================\n"
-#define SEPARATOR_LEN	( sizeof(SEPARATOR_LINE) - 1 )
+static const char	separator_line[] = "=======================================\n"
 
 void LOG_Print (const char *logdata)
 {
@@ -53,7 +52,7 @@ void LOG_Printf (const char *fmt, ...)
 
 static void LOG_PrintVersion (void)
 {
-// repeating the PrintVersion() messages from main() here
+/* repeating the PrintVersion() messages from main() here */
 #if HOT_VERSION_BETA
 	LOG_Printf("Hammer of Thyrion, %s-%s (%s) pre-release\n", HOT_VERSION_STR, HOT_VERSION_BETA_STR, HOT_VERSION_REL_DATE);
 #else
@@ -101,7 +100,7 @@ void LOG_Init (quakeparms_t *parms)
 
 	LOG_Printf("LOG started on: %s - LOG LEVEL: %s\n", session, (con_debuglog & LOG_DEVEL) ? "full" : "normal");
 
-	// build the commandline args as a string
+	/* build the commandline args as a string */
 	q_strlcpy (logbuff, "Command line: ", sizeof(logbuff));
 	for (i = 0, j = 0; i < parms->argc; i++)
 	{
@@ -124,9 +123,9 @@ void LOG_Init (quakeparms_t *parms)
 		LOG_Print (logbuff);
 	}
 
-	// print the version information to the log
+	/* print the version information to the log */
 	LOG_PrintVersion ();
-	LOG_Print (SEPARATOR_LINE);
+	LOG_Print (separator_line);
 }
 
 void LOG_Close (void)
