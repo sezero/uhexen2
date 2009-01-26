@@ -2,7 +2,7 @@
 	debuglog.c
 	logging console output to a file
 
-	$Id: debuglog.c,v 1.10 2009-01-26 09:15:07 sezero Exp $
+	$Id: debuglog.c,v 1.11 2009-01-26 10:55:39 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -28,7 +28,7 @@ static int			log_fd = -1;
 static char		logfilename[MAX_OSPATH];	/* current logfile name	*/
 static char		logbuff[MAX_PRINTMSG];		/* our log text buffer	*/
 
-static const char	separator_line[] = "=======================================\n"
+static const char	separator_line[] = "=======================================\n";
 
 void LOG_Print (const char *logdata)
 {
