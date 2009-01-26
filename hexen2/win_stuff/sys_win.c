@@ -2,7 +2,7 @@
 	sys_win.c
 	Win32 system interface code
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/win_stuff/sys_win.c,v 1.75 2009-01-26 10:57:07 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/win_stuff/sys_win.c,v 1.76 2009-01-26 12:25:07 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -459,7 +459,7 @@ void Sys_SendKeyEvents (void)
 	}
 }
 
-
+#define MAX_CLIPBOARDTXT	MAXCMDLINE	/* 256 */
 char *Sys_GetClipboardData (void)
 {
 	char *data = NULL;
@@ -478,8 +478,8 @@ char *Sys_GetClipboardData (void)
 				 * copies, such as ip addresses, etc:
 				 * do chop the size here, otherwise we may
 				 * experience Z_Malloc failures, or integer
-				 * integer overflow crashes for worse. */
-				size = q_min(1024, size);
+				 * overflow crashes for worse. */
+				size = q_min(MAX_CLIPBOARDTXT, size);
 				data = (char *) Z_Malloc(size, Z_MAINZONE);
 				q_strlcpy (data, cliptext, size);
 				GlobalUnlock (hClipboardData);
