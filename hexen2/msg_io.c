@@ -3,7 +3,7 @@
 	Message IO functions
 	Handles byte ordering and avoids alignment errors
 
-	$Id: msg_io.c,v 1.9 2009-01-24 17:13:01 sezero Exp $
+	$Id: msg_io.c,v 1.10 2009-01-26 09:05:22 sezero Exp $
 */
 
 #include "q_stdinc.h"
@@ -102,9 +102,9 @@ void MSG_WriteCoord (sizebuf_t *sb, float f)
 {
 //	MSG_WriteShort (sb, (int)(f*8));
 	if (f >= 0)
-		MSG_WriteShort (sb, (int)(f * 8.0 + 0.5));
+		MSG_WriteShort (sb, (int)(f * 8.0f + 0.5f));
 	else
-		MSG_WriteShort (sb, (int)(f * 8.0 - 0.5));
+		MSG_WriteShort (sb, (int)(f * 8.0f - 0.5f));
 }
 
 void MSG_WriteAngle (sizebuf_t *sb, float f)
@@ -112,9 +112,9 @@ void MSG_WriteAngle (sizebuf_t *sb, float f)
 //	MSG_WriteByte (sb, (int)(f*256/360) & 255);
 //	LordHavoc: round to nearest value, rather than rounding toward zero
 	if (f >= 0)
-		MSG_WriteByte (sb, (int)(f*(256.0/360.0) + 0.5) & 255);
+		MSG_WriteByte (sb, (int)(f*(256.0f/360.0f) + 0.5f) & 255);
 	else
-		MSG_WriteByte (sb, (int)(f*(256.0/360.0) - 0.5) & 255);
+		MSG_WriteByte (sb, (int)(f*(256.0f/360.0f) - 0.5f) & 255);
 }
 
 #if defined(H2W)
@@ -122,9 +122,9 @@ void MSG_WriteAngle16 (sizebuf_t *sb, float f)
 {
 //	MSG_WriteShort (sb, (int)(f*65536/360) & 65535);
 	if (f >= 0)
-		MSG_WriteShort (sb, (int)(f*(65536.0/360.0) + 0.5) & 65535);
+		MSG_WriteShort (sb, (int)(f*(65536.0f/360.0f) + 0.5f) & 65535);
 	else
-		MSG_WriteShort (sb, (int)(f*(65536.0/360.0) - 0.5) & 65535);
+		MSG_WriteShort (sb, (int)(f*(65536.0f/360.0f) - 0.5f) & 65535);
 }
 
 void MSG_WriteUsercmd (sizebuf_t *buf, usercmd_t *cmd, qboolean long_msg)
@@ -165,11 +165,11 @@ void MSG_WriteUsercmd (sizebuf_t *buf, usercmd_t *cmd, qboolean long_msg)
 		MSG_WriteAngle16 (buf, cmd->angles[2]);
 
 	if (bits & CM_FORWARD)
-		MSG_WriteChar (buf, (int)(cmd->forwardmove*0.25));
+		MSG_WriteChar (buf, (int)(cmd->forwardmove*0.25f));
 	if (bits & CM_SIDE)
-	  	MSG_WriteChar (buf, (int)(cmd->sidemove*0.25));
+	  	MSG_WriteChar (buf, (int)(cmd->sidemove*0.25f));
 	if (bits & CM_UP)
-		MSG_WriteChar (buf, (int)(cmd->upmove*0.25));
+		MSG_WriteChar (buf, (int)(cmd->upmove*0.25f));
 
 	if (bits & CM_BUTTONS)
 	  	MSG_WriteByte (buf, cmd->buttons);
@@ -320,7 +320,7 @@ const char *MSG_ReadStringLine (void)
 			break;
 		string[l] = c;
 		l++;
-	} while (l < sizeof(string)-1);
+	} while (l < sizeof(string) - 1);
 
 	string[l] = 0;
 
