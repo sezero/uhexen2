@@ -3,7 +3,7 @@
 	DOS system interface code.
 	from quake1 source with adaptations for uhexen2.
 
-	$Id: sys_dos.c,v 1.11 2008-12-21 18:10:03 sezero Exp $
+	$Id: sys_dos.c,v 1.12 2009-01-26 10:48:34 sezero Exp $
 
 	Copyright (C) 1996-1997  Id Software, Inc.
 
@@ -686,6 +686,12 @@ void Sys_SendKeyEvents (void)
 		else
 			Key_Event (outkey, true);
 	}
+}
+
+
+char *Sys_GetClipboardData (void)
+{
+	return NULL;
 }
 
 

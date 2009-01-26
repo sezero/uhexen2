@@ -2,7 +2,7 @@
 	keys.c
 	key up events are sent even if in console mode
 
-	$Id: keys.c,v 1.41 2009-01-24 17:13:01 sezero Exp $
+	$Id: keys.c,v 1.42 2009-01-26 10:48:34 sezero Exp $
 
 	Copyright (C) 1996-1997  Id Software, Inc.
 	Copyright (C) 2006-2007  O.Sezer
@@ -27,9 +27,6 @@
 */
 
 #include "quakedef.h"
-#ifdef PLATFORM_WINDOWS
-#include <windows.h>
-#endif
 
 char	key_lines[32][MAXCMDLINE];
 int		key_linepos;
@@ -447,40 +444,37 @@ static void Key_Console (int key)
 		return;
 	}
 
-#ifdef PLATFORM_WINDOWS
-	if ((key == 'V' || key == 'v') && GetKeyState(VK_CONTROL) < 0)
+	/* check for a CTRL+V or SHIFT+INS paste request */
+	if ((keydown[K_CTRL] && (key == 'V' || key == 'v')) ||
+	    (keydown[K_SHIFT] && key == K_INS))
 	{
-		if (OpenClipboard(NULL))
+		char *cbd, *p;
+		if ((cbd = Sys_GetClipboardData()) != NULL)
 		{
-			HANDLE	th = GetClipboardData(CF_TEXT);
-			if (th)
+			p = cbd;
+			while (*p)
 			{
-				char	*clipText, *textCopied;
-				clipText = (char *) GlobalLock(th);
-				if (clipText)
+				if (*p == '\n' || *p == '\r' ||
+						  *p == '\b')
 				{
-					textCopied = (char *) Z_Malloc(GlobalSize(th)+1, Z_MAINZONE);
-					strcpy(textCopied, clipText);
-					/* Substitute a NULL for every token */
-					strtok(textCopied, "\n\r\b");
-					len = strlen(textCopied);
-					if (len + key_linepos >= MAXCMDLINE)
-						len = MAXCMDLINE - key_linepos;
-					if (len)
-					{
-						textCopied[len] = 0;
-						strcat(workline, textCopied);
-						key_linepos += len;
-					}
-					Z_Free(textCopied);
+					*p++ = 0;
+					break;
 				}
-				GlobalUnlock(th);
+				p++;
 			}
-			CloseClipboard();
-			return;
+			len = p - cbd;
+			if (len + key_linepos >= MAXCMDLINE)
+				len = MAXCMDLINE - key_linepos;
+			if (len)
+			{
+				cbd[len] = 0;
+				strcat(workline, cbd);
+				key_linepos += len;
+			}
+			Z_Free (cbd);
 		}
+		return;
 	}
-#endif
 
 	if (key < 32 || key > 127)
 		return;	// non printable

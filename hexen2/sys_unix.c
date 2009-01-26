@@ -2,7 +2,7 @@
 	sys_unix.c
 	Unix system interface code
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sys_unix.c,v 1.110 2008-12-21 18:10:02 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sys_unix.c,v 1.111 2009-01-26 10:48:34 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -399,6 +399,11 @@ void Sys_Sleep (unsigned long msecs)
 void Sys_SendKeyEvents (void)
 {
 	IN_SendKeyEvents();
+}
+
+char *Sys_GetClipboardData (void)
+{
+	return NULL;
 }
 
 #ifdef __MACOSX__

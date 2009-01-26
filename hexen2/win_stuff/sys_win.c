@@ -2,7 +2,7 @@
 	sys_win.c
 	Win32 system interface code
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/win_stuff/sys_win.c,v 1.73 2009-01-24 23:41:27 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/win_stuff/sys_win.c,v 1.74 2009-01-26 10:48:34 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -457,6 +457,37 @@ void Sys_SendKeyEvents (void)
 		TranslateMessage (&msg);
 		DispatchMessage (&msg);
 	}
+}
+
+
+char *Sys_GetClipboardData (void)
+{
+	char *data = NULL;
+	char *cliptext;
+
+	if (OpenClipboard(NULL) != 0)
+	{
+		HANDLE hClipboardData;
+
+		if ((hClipboardData = GetClipboardData(CF_TEXT)) != NULL)
+		{
+			if ((cliptext = GlobalLock(hClipboardData)) != NULL)
+			{
+				size_t size = GlobalSize(hClipboardData) + 1;
+				/* this is intended for simple small text
+				 * copies, such as ip addresses, etc:
+				 * do chop the size here, otherwise we may
+				 * experience Z_Malloc failures, or integer
+				 * integer overflow crashes for worse. */
+				size = qmin(1024, size);
+				data = (char *) Z_Malloc(size, Z_MAINZONE);
+				q_strlcpy (data, cliptext, size);
+				GlobalUnlock (hClipboardData);
+			}
+		}
+		CloseClipboard ();
+	}
+	return data;
 }
 
 

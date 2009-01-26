@@ -2,7 +2,7 @@
 	sys.h
 	non-portable functions
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sys.h,v 1.42 2008-12-21 18:10:02 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sys.h,v 1.43 2009-01-26 10:48:34 sezero Exp $
 */
 
 #ifndef __HX2_SYS_H
@@ -68,6 +68,8 @@ void Sys_Sleep (unsigned long msecs);
 
 void Sys_SendKeyEvents (void);
 // Perform Key_Event () callbacks until the input que is empty
+
+char *Sys_GetClipboardData (void);
 
 
 #if defined(USE_INTEL_ASM) && !defined(SERVERONLY) && (defined(_M_IX86) || defined(__i386__))
