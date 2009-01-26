@@ -2,7 +2,7 @@
 	sys_win.c
 	Win32 system interface code
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/win_stuff/sys_win.c,v 1.74 2009-01-26 10:48:34 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/win_stuff/sys_win.c,v 1.75 2009-01-26 10:57:07 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -479,7 +479,7 @@ char *Sys_GetClipboardData (void)
 				 * do chop the size here, otherwise we may
 				 * experience Z_Malloc failures, or integer
 				 * integer overflow crashes for worse. */
-				size = qmin(1024, size);
+				size = q_min(1024, size);
 				data = (char *) Z_Malloc(size, Z_MAINZONE);
 				q_strlcpy (data, cliptext, size);
 				GlobalUnlock (hClipboardData);
