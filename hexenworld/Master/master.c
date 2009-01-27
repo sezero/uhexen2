@@ -2,7 +2,7 @@
 	hwmaster.c
 	main master server program
 
-	$Id: master.c,v 1.8 2008-12-30 10:03:43 sezero Exp $
+	$Id: master.c,v 1.9 2009-01-27 12:33:06 sezero Exp $
 */
 
 #include "q_stdinc.h"
@@ -394,7 +394,7 @@ static void SV_AnalysePacket (void)
 	data = net_message.data;
 	size = net_message.cursize;
 
-	for (p = data; (rsize = q_min(size - (p - data), 16)); p += rsize)
+	for (p = data; (rsize = q_min(size - (int)(p - data), 16)); p += rsize)
 	{
 		printf ("%04X:", (unsigned) (p - data));
 		memcpy (buf, p, rsize);
