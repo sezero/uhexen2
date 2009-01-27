@@ -2,7 +2,7 @@
 	huffman.c
 	huffman encoding/decoding for use in hexenworld networking
 
-	$Id: huffman.c,v 1.19 2007-11-14 07:21:07 sezero Exp $
+	$Id: huffman.c,v 1.20 2009-01-27 10:49:04 sezero Exp $
 */
 
 #include <stdlib.h>
@@ -45,6 +45,10 @@ static void *HuffMemBase = NULL;
 static huffnode_t *HuffTree = NULL;
 static hufftab_t HuffLookup[256];
 
+#ifdef _MSC_VER
+#pragma warning(disable:4305)
+/* double to float truncation */
+#endif
 static const float HuffFreq[256] =
 {
 #	include "hufffreq.h"
