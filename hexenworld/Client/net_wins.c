@@ -2,7 +2,7 @@
 	net_udp.c
 	network UDP driver
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/net_wins.c,v 1.46 2008-12-30 07:26:09 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/net_wins.c,v 1.47 2009-01-27 14:41:42 sezero Exp $
 */
 
 #include "q_stdinc.h"
@@ -171,7 +171,14 @@ qboolean NET_GetPacket (void)
 # ifdef PLATFORM_WINDOWS
 		if (err == WSAEMSGSIZE)
 		{
-			Con_Printf ("Oversize packet from %s\n", NET_AdrToString (net_from));
+			Con_Printf ("Oversize packet from %s\n",
+					NET_AdrToString (net_from));
+			return false;
+		}
+		if (err == WSAECONNRESET)
+		{
+			Con_Printf ("Connection reset by peer %s\n",
+					NET_AdrToString (net_from));
 			return false;
 		}
 # endif	/* _WINDOWS */
@@ -182,16 +189,19 @@ qboolean NET_GetPacket (void)
 
 	if (ret == sizeof(net_message_buffer) )
 	{
-		Con_Printf ("Oversize packet from %s\n", NET_AdrToString (net_from));
+		Con_Printf ("Oversize packet from %s\n",
+					NET_AdrToString (net_from));
 		return false;
 	}
 
-	LastCompMessageSize += ret;//keep track of bytes actually received for debugging
+	LastCompMessageSize += ret;	// debug: bytes actually received
 
-	HuffDecode(huffbuff, net_message_buffer, ret, &ret, sizeof(net_message_buffer));
+	HuffDecode(huffbuff, net_message_buffer, ret, &ret,
+				sizeof(net_message_buffer));
 	if (ret > sizeof(net_message_buffer))
 	{
-		Con_Printf ("Oversize compressed data from %s\n", NET_AdrToString (net_from));
+		Con_Printf ("Oversize compressed data from %s\n",
+					NET_AdrToString (net_from));
 		return false;
 	}
 	net_message.cursize = ret;
@@ -210,7 +220,8 @@ void NET_SendPacket (int length, void *data, netadr_t to)
 	NetadrToSockadr (&to, &addr);
 	HuffEncode((unsigned char *)data, huffbuff, length, &outlen);
 
-	ret = sendto (net_socket, (char *) huffbuff, outlen, 0, (struct sockaddr *)&addr, sizeof(addr) );
+	ret = sendto (net_socket, (char *) huffbuff, outlen, 0,
+				(struct sockaddr *)&addr, sizeof(addr) );
 	if (ret == -1)
 	{
 		int err = SOCKETERRNO;

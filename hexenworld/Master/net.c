@@ -2,7 +2,7 @@
 	net_udp.c
 	network UDP driver
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Master/net.c,v 1.40 2008-12-30 07:26:09 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Master/net.c,v 1.41 2009-01-27 14:42:22 sezero Exp $
 */
 
 #include "q_stdinc.h"
@@ -160,7 +160,13 @@ qboolean NET_GetPacket (void)
 		if (err == WSAEMSGSIZE)
 		{
 			printf ("Warning:  Oversize packet from %s\n",
-				NET_AdrToString (net_from));
+					NET_AdrToString (net_from));
+			return false;
+		}
+		if (err == WSAECONNRESET)
+		{
+			printf ("Connection reset by peer %s\n",
+					NET_AdrToString (net_from));
 			return false;
 		}
 # endif	/* _WINDOWS */
@@ -172,7 +178,8 @@ qboolean NET_GetPacket (void)
 	net_message.cursize = ret;
 	if (ret == sizeof(net_message_buffer))
 	{
-		printf ("Oversize packet from %s\n", NET_AdrToString (net_from));
+		printf ("Oversize packet from %s\n",
+					NET_AdrToString (net_from));
 		return false;
 	}
 
@@ -189,7 +196,8 @@ void NET_SendPacket (int length, void *data, netadr_t to)
 
 	NetadrToSockadr (&to, &addr);
 
-	ret = sendto (net_socket, (char *)data, length, 0, (struct sockaddr *)&addr, sizeof(addr) );
+	ret = sendto (net_socket, (char *)data, length, 0,
+				(struct sockaddr *)&addr, sizeof(addr) );
 	if (ret == -1)
 	{
 		int err = SOCKETERRNO;
