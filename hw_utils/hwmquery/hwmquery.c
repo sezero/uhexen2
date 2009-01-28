@@ -1,6 +1,6 @@
 /*
 	hwmquery.c
-	$Id: hwmquery.c,v 1.23 2008-12-30 07:26:09 sezero Exp $
+	$Id: hwmquery.c,v 1.24 2009-01-28 13:50:30 sezero Exp $
 
 	HWMQUERY 0.2 HexenWorld Master Server Query
 	Copyright (C) 2006-2008 O. Sezer <sezero@users.sourceforge.net>
@@ -50,6 +50,14 @@ typedef struct
 } netadr_t;
 
 //=============================================================================
+
+#if defined(_MSC_VER)
+#if defined(_WIN64)
+#define ssize_t	SSIZE_T
+#else
+typedef int	ssize_t;
+#endif	/* _WIN64 */
+#endif	/* _MSC_VER */
 
 #if defined(PLATFORM_WINDOWS)
 static WSADATA		winsockdata;
