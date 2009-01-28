@@ -6,7 +6,7 @@
 		for byte order use q_endian.h,
 		for math stuff use mathlib.h.
 
-	$Id: q_stdinc.h,v 1.5 2009-01-22 08:50:26 sezero Exp $
+	$Id: q_stdinc.h,v 1.6 2009-01-28 14:05:10 sezero Exp $
 
 	Copyright (C) 1996-1997  Id Software, Inc.
 	Copyright (C) 2007-2008  O.Sezer <sezero@users.sourceforge.net>
@@ -150,6 +150,14 @@ typedef int	fixed16_t;
 
 
 /*==========================================================================*/
+
+#if defined(_MSC_VER)
+#if defined(_WIN64)
+#define ssize_t	SSIZE_T
+#else
+typedef int	ssize_t;
+#endif	/* _WIN64 */
+#endif	/* _MSC_VER */
 
 /* compatibility with M$ types */
 #if !(defined(_WIN32) || defined(_WIN64))
