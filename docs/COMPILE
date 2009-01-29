@@ -1,5 +1,5 @@
 Hexen II: Hammer of Thyrion
-Version 1.4.3
+Version 1.4.4
 
 Instructions for Compiling:
 ===========================
@@ -131,11 +131,20 @@ compiling tips (link down below). The icculus.org page provides prebuilt
 cross compiler tools: Either download and install them, or prepare your
 own cross compiler.  You can then run the "build_cross_win32.sh" scripts
 residing in all directories. Read the scripts and edit them as necessary.
+The main settings for them are in the scripts/cross_defs file. Edit it
+to meet your needs, if necessary.
 
 I usually compile all of the Hammer of Thyrion windows binaries on linux
 using a snapshot of MinGW from Mar. 24, 2008. Both x86/glibc-2.3 binaries
 and the sources for this snapshot can be found on our downloads page under
 the support files section.
+
+To compile for Win64 (X64), mingw-w64 (also known as mingw64) can be used
+as a cross compiler under linux (link down below).
+Use the "build_cross_win64.sh" scripts. residing in all directories. Read
+the scripts and edit them as necessary. The main settings for them are in
+the scripts/cross_defs_w64 file. Edit it to meet your needs, if necessary.
+
 
 b. On Windows, using win32-native MinGW compiler:
 -------------------------------------------------
@@ -156,6 +165,19 @@ commands to compile.
 Note that "make" may be named "mingw32-make". In that case, you may want
 to try "mingw32-make" if "make" command itself fails to run. Remember to
 do a make clean between each different build.
+
+c. On Windows, Visual Studio:
+-------------------------------------------------
+Visual Studio 2008 has been tested to compile all uhexen2 code successfully.
+Earlier versions such as VS2005 might work, too, but not tested. All of the
+directories contain proper *.vcproj project files and *.sln solution files,
+so, double-clicking on them should start visual studio 2008 and you'll be
+ready to go. Projects are adjusted for x86 and x64 targets.
+
+Compilation of the software renderer versions h2.exe and hwcl.exe require
+YASM as the x86 assembler (link down below). It is very easy to integrate
+into Visual Studio using a rule file:
+http://www.tortall.net/projects/yasm/wiki/VisualStudio2005
 
 
 Compiling for Mac OS X:
