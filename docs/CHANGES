@@ -3,6 +3,45 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2009-01-22/29 (CVS):
+    * added Visual Studio 2008 project files for hexen2, glhexen2, h2ded, hwsv,
+      hwmaster, hwcl, glhwcl, and hw_utils (hwmquery, hwrcon, hwterm).  project
+      files for the utils will be added shortly.
+    * docs: updated windows compilation instructions.
+    * hexenworld net: NET_GetPacket can really hit WSAECONNRESET, so made it
+      non-fatal.
+    * keys.c, sys.h, sys_win.c, sys_unix.c, sys_dos.c: moved the windows specific
+      clipboard handling code from keys.c into the new Sys_GetClipboardData() in
+      sys_win.c.
+    * keys.c, clipboard pasting: no need to increment the pointer when terminating
+      it. moved K_INS insert mode handling down in order to make SHIFT-INS paste
+      code to work.
+    * sys_win.c: limited clipbord text cap to MAXCMDLINE (256).
+    * midi_mac.c, midi_win.c: minor tidy up.
+    * compiler.h: moved offsetof definition to q_stdinc.h
+    * compiler.h: MSVC recognizes __inline, not inline.
+    * keys.c, msg_io.c, sizebuf.c: minor MSVC warning fixes.
+    * w32stuff: added io_msvc.h as a workaround for MSVC underscore prefixed
+      io.h function names, because new MSVC versions spit deprecation warnings
+      for the ones that aren't prefixed. make sure to include it AFTER io.h,
+      conio.h and direct.h.
+    * common.h: added pragmas in order to disable some of the MSVC silent
+      conversion warnings (4244, 4305 and 4267).
+    * huffman.c: disabled the MSVC 4305 (double to float possible truncation)
+      warnings.
+    * winquake.h, vid_win.c: moved the MSVC warning 4229 pragma from winquake.h
+      to vid_win.c which is where it is intended for.
+    * pr_exec.c: fixed MSVC x64 DEBUG builds (TIMESNAP asm code.)
+    * sys_win.c, sys_main.c, genmodel.c, jscolor.c: switched to _prefixed io and
+      conio functions where it is windows-only code
+    * updated io_msvc.h wrappers to support more compilers in the future (watcom
+      and lcc).
+    * debuglog.c, msg_io.c, sizebuf.c: minor clean-ups
+    * hwmaster, master.c: minor warning fix.
+    * hwmquery.c: fixed hwmquery compilation using MSVC (ssize_t type definition).
+    * q_stdinc.h: added ssize_t (lowercase) type definition for MSVC.
+    * updated beta version and date (2009-01-29, 1.4.4-pre5)
+
 2009-01-20 (CVS):
     * simply error out if mission pack support is requested and it isn't found.
       ignoring it and running the ordinary game is confusing. don't silently
