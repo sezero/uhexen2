@@ -31,26 +31,28 @@ binutils:	A GNU collection of binary utilities.
 
 NASM	:	Netwide Assembler. An x86 assembler.
 		Minimum version required is 0.98.  Versions 0.98.38 and
-		0.98.39, or 2.02 from the new 2.x series are recommended.
+		0.98.39 from the old series, or 2.02, 2.03.01 or 2.05.01
+		from the new 2.x series are recommended.
 		YASM, a re-write of NASM, is also supported:  Versions
-		0.5.0, 0.6.0-0.6.2 and 0.7.1 are tested.
+		0.5.0, 0.6.0-0.6.2 and 0.7.1-0.7.2 are tested, versions
+		0.6.2 or 0.7.2 are highly recommended.
 
 		The assemblers nasm or yasm are required for compiling
 		hexen2 and hexenworld clients for 32 bit x86 machines.
 		The makefiles present an option to not use x86 assembly,
 		in that case nasm or yasm will not be necessary.
 
-GCC	:	GNU C Compiler.  NO other compilers (such as MS VisualC,
-		LCC, or Watcom) are tested.
+GCC	:	GNU C Compiler.
 
 		Minimum version required is GCC 2.95.  GCC versions in
-		the 2.95/2.96, 3.x and 4.x series up to 4.3.0 are tested
+		the 2.95/2.96, 3.x and 4.x series up to 4.3.3 are tested
 		and work fine.  Versions 3.2.2, 3.3.6, 3.4.6, or newer
-		are recommended.
+		are recommended.  As of this writing, the experimental
+		4.4 series seem to work fine, too.
 
 		Of the old versions, gcc-2.91.66 (aka. egcs-1.1.2) still
-		seems to work.  Even 2.7.2 is reported to compile fine (it
-		doesn't like the -march option, though.)
+		seems to work.  Even 2.7.2 is reported to compile fine
+		(said to not like the -march option, though.)
 
 
 Libraries needed for various platforms:
@@ -132,16 +134,19 @@ cross compiler tools: Either download and install them, or prepare your
 own cross compiler.  You can then run the "build_cross_win32.sh" scripts
 residing in all directories. Read the scripts and edit them as necessary.
 The main settings for them are in the scripts/cross_defs file. Edit it
-to meet your needs, if necessary.
-
-I usually compile all of the Hammer of Thyrion windows binaries on linux
-using a snapshot of MinGW from Mar. 24, 2008. Both x86/glibc-2.3 binaries
-and the sources for this snapshot can be found on our downloads page under
-the support files section.
+to meet your needs, if necessary. I usually compile all of the Hammer of
+Thyrion windows binaries on linux using a snapshot of MinGW from Jan. 12,
+2009.  We provide source and binary (x86/linux glibc-2.3) packages of
+cross compiler toolchains on our downloads page under the support files
+section, too.
 
 To compile for Win64 (X64), mingw-w64 (also known as mingw64) can be used
-as a cross compiler under linux (link down below).
-Use the "build_cross_win64.sh" scripts. residing in all directories. Read
+as a cross compiler under linux (link down below).  If you compile your
+own toolchain, make sure that you use gcc svn revision 143780 or later:
+older revisions down to and including 143119 had a serious win64 bug.  If
+you use a pre-compiled toolchain from the mingw-w64 site, use a snapshot
+dated 20090130 or newer which has the mentioned bug fixed.  To compile,
+use the "build_cross_win64.sh" scripts residing in all directories. Read
 the scripts and edit them as necessary. The main settings for them are in
 the scripts/cross_defs_w64 file. Edit it to meet your needs, if necessary.
 
@@ -166,18 +171,18 @@ Note that "make" may be named "mingw32-make". In that case, you may want
 to try "mingw32-make" if "make" command itself fails to run. Remember to
 do a make clean between each different build.
 
-c. On Windows, Visual Studio:
+c. On Windows, using Visual Studio 2008:
 -------------------------------------------------
 Visual Studio 2008 has been tested to compile all uhexen2 code successfully.
 Earlier versions such as VS2005 might work, too, but not tested. All of the
 directories contain proper *.vcproj project files and *.sln solution files,
-so, double-clicking on them should start visual studio 2008 and you'll be
-ready to go. Projects are adjusted for x86 and x64 targets.
+so, double-clicking on them should start visual studio 2008 and you will be
+ready to go.  Projects are adjusted for Win32 (x86) and x64 targets.
 
 Compilation of the software renderer versions h2.exe and hwcl.exe require
-YASM as the x86 assembler (link down below). It is very easy to integrate
-into Visual Studio using a rule file:
-http://www.tortall.net/projects/yasm/wiki/VisualStudio2005
+YASM as the x86 assembler (link down below), versions 0.7.2 or newer are
+recommended. It is very easy to integrate into Visual Studio using a rule
+file:  http://www.tortall.net/projects/yasm/wiki/VisualStudio2005
 
 
 Compiling for Mac OS X:
@@ -207,19 +212,21 @@ Compiling for DOS:
 You need DJGPP. At present, the beta1 version of djgpp 2.04 is required,
 because 2.03 and earlier versions doesn't provide a stdint.h and / or
 inttypes.h header, besides, they don't have a vsnprintf implementation.
-Compilers other than djgpp most probably won't work at all.  I use
-gcc-3.3.6 and binutils-2.15 and compile the binaries on linux with a
+Compilers other than djgpp probably won't work at all.  I use gcc-3.3.6
+or 3.4.6 and binutils-2.16.1 and compile the binaries on linux with a
 cross compilation toolchain using 2.04 runtime library from the CVS
-snapshot from Mar. 24, 2008:  see the tiny script build_cross_dos.sh
-to have an idea of how I do it.  You can download both the sources and
-the x86/glibc-2.3 binaries of my toolchain from our downloads page under
-the support files section.
+snapshot from Dec. 23, 2008:  see the tiny script build_cross_dos.sh
+to have an idea of how I do it.  We provide source and binary (x86/linux
+glibc-2.3) packages of cross compiler toolchains on our downloads page
+under the support files section, too.
+
 Compilation on DOS is never tested and is not supported.  Compiling on
 windows in a command console, however, ~should~ be possible:  remember
 adding DOSBUILD=1 to your environment.
-CWSDPMI.EXE is needed at runtime: the "0.90+ r1" version from 1996 which
-was packaged with quake still seems to work but isn't recommended: use
-the "0.90+ r5" or a newer version.
+
+CWSDPMI.EXE is needed at runtime: use the "0.90+ r5" or a newer version.
+(the "0.90+ r1" version from 1996 which was packaged with quake still
+seems to work, but isn't recommended.)
 
 
 Links:
