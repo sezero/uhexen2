@@ -2,7 +2,7 @@
 	util_io.c
 	file and directory utilities
 
-	$Id: util_io.c,v 1.13 2009-01-24 17:21:43 sezero Exp $
+	$Id: util_io.c,v 1.14 2009-01-31 08:55:23 sezero Exp $
 */
 
 
@@ -18,6 +18,7 @@
 #include <conio.h>
 #include <io.h>
 #include <direct.h>
+#include <windows.h>
 #include "io_msvc.h"
 #else	/* Unix */
 #include <unistd.h>
@@ -46,26 +47,26 @@
 
 #ifdef PLATFORM_WINDOWS
 
-static long			findhandle;
-static struct _finddata_t	finddata;
+static HANDLE  findhandle;
+static WIN32_FIND_DATA finddata;
 
 char *Q_FindNextFile (void)
 {
-	int		retval;
+	BOOL	retval;
 
-	if (!findhandle || findhandle == -1)
+	if (!findhandle || findhandle == INVALID_HANDLE_VALUE)
 		return NULL;
 
-	retval = _findnext (findhandle, &finddata);
-	while (retval != -1)
+	retval = FindNextFile(findhandle,&finddata);
+	while (retval)
 	{
-		if (finddata.attrib & _A_SUBDIR)
+		if (finddata.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)
 		{
-			retval = _findnext (findhandle, &finddata);
+			retval = FindNextFile(findhandle,&finddata);
 			continue;
 		}
 
-		return finddata.name;
+		return finddata.cFileName;
 	}
 
 	return NULL;
@@ -79,14 +80,14 @@ char *Q_FindFirstFile (const char *path, const char *pattern)
 		Error ("FindFirst without FindClose");
 
 	q_snprintf (tmp_buf, sizeof(tmp_buf), "%s/%s", path, pattern);
-	findhandle = _findfirst (tmp_buf, &finddata);
+	findhandle = FindFirstFile(tmp_buf, &finddata);
 
-	if (findhandle != -1)
+	if (findhandle != INVALID_HANDLE_VALUE)
 	{
-		if (finddata.attrib & _A_SUBDIR)
+		if (finddata.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)
 			return Q_FindNextFile();
 		else
-			return finddata.name;
+			return finddata.cFileName;
 	}
 
 	return NULL;
@@ -94,9 +95,9 @@ char *Q_FindFirstFile (const char *path, const char *pattern)
 
 void Q_FindClose (void)
 {
-	if (findhandle != -1)
-		_findclose (findhandle);
-	findhandle = 0;
+	if (findhandle != INVALID_HANDLE_VALUE)
+		FindClose(findhandle);
+	findhandle = NULL;
 }
 
 #else	/* FindFile for Unix */
