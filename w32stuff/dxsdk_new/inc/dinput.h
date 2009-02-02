@@ -390,6 +390,7 @@ typedef struct DIDEVICEOBJECTINSTANCEA {
     DWORD	dwType;
     DWORD	dwFlags;
     CHAR	tszName[MAX_PATH];
+#if(DIRECTINPUT_VERSION >= 0x0500)
     DWORD	dwFFMaxForce;
     DWORD	dwFFForceResolution;
     WORD	wCollectionNumber;
@@ -399,6 +400,7 @@ typedef struct DIDEVICEOBJECTINSTANCEA {
     DWORD	dwDimension;
     WORD	wExponent;
     WORD	wReserved;
+#endif /* DIRECTINPUT_VERSION >= 0x0500 */
 } DIDEVICEOBJECTINSTANCEA, *LPDIDEVICEOBJECTINSTANCEA;
 typedef const DIDEVICEOBJECTINSTANCEA *LPCDIDEVICEOBJECTINSTANCEA;
 
@@ -409,6 +411,7 @@ typedef struct DIDEVICEOBJECTINSTANCEW {
     DWORD	dwType;
     DWORD	dwFlags;
     WCHAR	tszName[MAX_PATH];
+#if(DIRECTINPUT_VERSION >= 0x0500)
     DWORD	dwFFMaxForce;
     DWORD	dwFFForceResolution;
     WORD	wCollectionNumber;
@@ -418,6 +421,7 @@ typedef struct DIDEVICEOBJECTINSTANCEW {
     DWORD	dwDimension;
     WORD	wExponent;
     WORD	wReserved;
+#endif /* DIRECTINPUT_VERSION >= 0x0500 */
 } DIDEVICEOBJECTINSTANCEW, *LPDIDEVICEOBJECTINSTANCEW;
 typedef const DIDEVICEOBJECTINSTANCEW *LPCDIDEVICEOBJECTINSTANCEW;
 
@@ -467,9 +471,11 @@ typedef struct DIDEVICEINSTANCEA {
     DWORD	dwDevType;
     CHAR	tszInstanceName[MAX_PATH];
     CHAR	tszProductName[MAX_PATH];
+#if(DIRECTINPUT_VERSION >= 0x0500)
     GUID	guidFFDriver;
     WORD	wUsagePage;
     WORD	wUsage;
+#endif /* DIRECTINPUT_VERSION >= 0x0500 */
 } DIDEVICEINSTANCEA, *LPDIDEVICEINSTANCEA;
 typedef const DIDEVICEINSTANCEA *LPCDIDEVICEINSTANCEA;
 
@@ -480,9 +486,11 @@ typedef struct DIDEVICEINSTANCEW {
     DWORD	dwDevType;
     WCHAR	tszInstanceName[MAX_PATH];
     WCHAR	tszProductName[MAX_PATH];
+#if(DIRECTINPUT_VERSION >= 0x0500)
     GUID	guidFFDriver;
     WORD	wUsagePage;
     WORD	wUsage;
+#endif /* DIRECTINPUT_VERSION >= 0x0500 */
 } DIDEVICEINSTANCEW, *LPDIDEVICEINSTANCEW;
 typedef const DIDEVICEINSTANCEW *LPCDIDEVICEINSTANCEW;
 
@@ -504,12 +512,14 @@ typedef LPDIENUMDEVICESCALLBACKW LPDIENUMDEVICESCALLBACK;
 typedef LPDIENUMDEVICESCALLBACKA LPDIENUMDEVICESCALLBACK;
 #endif
 
+#if DIRECTINPUT_VERSION >= 0x0800
 typedef BOOL (CALLBACK *LPDIENUMDEVICESBYSEMANTICSCBA)(LPCDIDEVICEINSTANCEA,LPDIRECTINPUTDEVICE8A,DWORD,DWORD,LPVOID);
 typedef BOOL (CALLBACK *LPDIENUMDEVICESBYSEMANTICSCBW)(LPCDIDEVICEINSTANCEW,LPDIRECTINPUTDEVICE8W,DWORD,DWORD,LPVOID);
 #ifdef UNICODE
 typedef LPDIENUMDEVICESBYSEMANTICSCBW LPDIENUMDEVICESBYSEMANTICSCB;
 #else
 typedef LPDIENUMDEVICESBYSEMANTICSCBA LPDIENUMDEVICESBYSEMANTICSCB;
+#endif
 #endif
 
 typedef BOOL (CALLBACK *LPDICONFIGUREDEVICESCALLBACK)(LPUNKNOWN,LPVOID);
@@ -705,7 +715,9 @@ typedef struct DIDEVICEOBJECTDATA {
     DWORD	dwData;
     DWORD	dwTimeStamp;
     DWORD	dwSequence;
+#if(DIRECTINPUT_VERSION >= 0x0800)
     UINT_PTR	uAppData;
+#endif /* DIRECTINPUT_VERSION >= 0x0800 */
 } DIDEVICEOBJECTDATA, *LPDIDEVICEOBJECTDATA;
 typedef const DIDEVICEOBJECTDATA *LPCDIDEVICEOBJECTDATA;
 
@@ -830,11 +842,13 @@ typedef struct DIDEVCAPS {
     DWORD	dwAxes;
     DWORD	dwButtons;
     DWORD	dwPOVs;
+#if(DIRECTINPUT_VERSION >= 0x0500)
     DWORD	dwFFSamplePeriod;
     DWORD	dwFFMinTimeResolution;
     DWORD	dwFirmwareRevision;
     DWORD	dwHardwareRevision;
     DWORD	dwFFDriverVersion;
+#endif /* DIRECTINPUT_VERSION >= 0x0500 */
 } DIDEVCAPS,*LPDIDEVCAPS;
 
 #define DIDC_ATTACHED		0x00000001
@@ -1158,6 +1172,7 @@ typedef const DIFILEEFFECT *LPCDIFILEEFFECT;
 typedef BOOL (CALLBACK *LPDIENUMEFFECTSINFILECALLBACK)(LPCDIFILEEFFECT , LPVOID);
 
 /* DInput 8 structures and types */
+#if DIRECTINPUT_VERSION >= 0x0800
 typedef struct _DIACTIONA {
 	UINT_PTR	uAppData;
 	DWORD		dwSemantics;
@@ -1465,6 +1480,8 @@ DECLARE_INTERFACE_(IDirectInputEffect,IUnknown)
 #define IDirectInputEffect_Escape(p,a)            (p)->Escape(a)
 #endif
 
+#endif /* DI8 */
+
 
 /*****************************************************************************
  * IDirectInputDeviceA interface
@@ -1711,6 +1728,7 @@ DECLARE_INTERFACE_(IDirectInputDevice2W,IDirectInputDeviceW)
 #define IDirectInputDevice2_SendDeviceData(p,a,b,c,d)         (p)->SendDeviceData(a,b,c,d)
 #endif
 
+#if DIRECTINPUT_VERSION >= 0x0700
 /*****************************************************************************
  * IDirectInputDevice7A interface
  */
@@ -1865,7 +1883,9 @@ DECLARE_INTERFACE_(IDirectInputDevice7W,IDirectInputDevice2W)
 #define IDirectInputDevice7_WriteEffectToFile(p,a,b,c,d) (p)->WriteEffectToFile(a,b,c,d)
 #endif
 
+#endif /* DI7 */
 
+#if DIRECTINPUT_VERSION >= 0x0800
 /*****************************************************************************
  * IDirectInputDevice8A interface
  */
@@ -2035,6 +2055,8 @@ DECLARE_INTERFACE_(IDirectInputDevice8W,IDirectInputDevice7W)
 #define IDirectInputDevice8_SetActionMap(p,a,b,c)   (p)->SetActionMap(a,b,c)
 #define IDirectInputDevice8_GetImageInfo(p,a)       (p)->GetImageInfo(a)
 #endif
+
+#endif /* DI8 */
 
 /* "Standard" Mouse report... */
 typedef struct DIMOUSESTATE {
@@ -2208,6 +2230,7 @@ DECLARE_INTERFACE_(IDirectInput2W,IDirectInputW)
 #define IDirectInput2_FindDevice(p,a,b,c)    (p)->FindDevice(a,b,c)
 #endif
 
+#if DIRECTINPUT_VERSION >= 0x0700
 /*****************************************************************************
  * IDirectInput7A interface
  */
@@ -2286,7 +2309,9 @@ DECLARE_INTERFACE_(IDirectInput7W,IDirectInput2W)
 #define IDirectInput7_CreateDeviceEx(p,a,b,c,d) (p)->CreateDeviceEx(a,b,c,d)
 #endif
 
+#endif /* DI7 */
 
+#if DIRECTINPUT_VERSION >= 0x0800
 /*****************************************************************************
  * IDirectInput8A interface
  */
@@ -2361,6 +2386,7 @@ DECLARE_INTERFACE_(IDirectInput8W,IUnknown)
 #define IDirectInput8_ConfigureDevices(p,a,b,c,d) (p)->ConfigureDevices(a,b,c,d)
 #endif
 
+#endif /* DI8 */
 
 /* Export functions */
 
@@ -2368,7 +2394,9 @@ DECLARE_INTERFACE_(IDirectInput8W,IUnknown)
 extern "C" {
 #endif
 
+#if DIRECTINPUT_VERSION >= 0x0800
 HRESULT WINAPI DirectInput8Create(HINSTANCE,DWORD,REFIID,LPVOID *,LPUNKNOWN);
+#endif
 
 HRESULT WINAPI DirectInputCreateA(HINSTANCE,DWORD,LPDIRECTINPUTA *,LPUNKNOWN);
 HRESULT WINAPI DirectInputCreateW(HINSTANCE,DWORD,LPDIRECTINPUTW *,LPUNKNOWN);
