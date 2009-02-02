@@ -19,6 +19,7 @@
 #ifndef __WINE_DINPUT_H
 #define __WINE_DINPUT_H
 
+#define COM_NO_WINDOWS_H
 #include <objbase.h>
 
 #ifndef DUMMYUNIONNAME
@@ -1442,7 +1443,7 @@ DECLARE_INTERFACE_(IDirectInputEffect,IUnknown)
 #define IDirectInputEffect_SetParameters(p,a,b)   (p)->lpVtbl->SetParameters(p,a,b)
 #define IDirectInputEffect_Start(p,a,b)           (p)->lpVtbl->Start(p,a,b)
 #define IDirectInputEffect_Stop(p)                (p)->lpVtbl->Stop(p)
-#define IDirectInputEffect_GetEffectStatus(p,a,b) (p)->lpVtbl->GetEffectStatus(p,a)
+#define IDirectInputEffect_GetEffectStatus(p,a)   (p)->lpVtbl->GetEffectStatus(p,a)
 #define IDirectInputEffect_Download(p)            (p)->lpVtbl->Download(p)
 #define IDirectInputEffect_Unload(p)              (p)->lpVtbl->Unload(p)
 #define IDirectInputEffect_Escape(p,a)            (p)->lpVtbl->Escape(p,a)
@@ -1458,7 +1459,7 @@ DECLARE_INTERFACE_(IDirectInputEffect,IUnknown)
 #define IDirectInputEffect_SetParameters(p,a,b)   (p)->SetParameters(a,b)
 #define IDirectInputEffect_Start(p,a,b)           (p)->Start(a,b)
 #define IDirectInputEffect_Stop(p)                (p)->Stop()
-#define IDirectInputEffect_GetEffectStatus(p,a,b) (p)->GetEffectStatus(a)
+#define IDirectInputEffect_GetEffectStatus(p,a)   (p)->GetEffectStatus(a)
 #define IDirectInputEffect_Download(p)            (p)->Download()
 #define IDirectInputEffect_Unload(p)              (p)->Unload()
 #define IDirectInputEffect_Escape(p,a)            (p)->Escape(a)
