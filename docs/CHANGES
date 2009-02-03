@@ -3,6 +3,9 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2009-02-02/2009-02-03 (CVS, 1.4.4-pre5):
+    * HoT version 1.4.4-pre5 (2009-02-02.)
+
 2009-01-30/2009-02-02 (CVS):
     * more updates to the compilation instructions (2009-01-30.)
     * utils, io: use windows api for the findfirst & co.
