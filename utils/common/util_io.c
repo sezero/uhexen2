@@ -2,7 +2,7 @@
 	util_io.c
 	file and directory utilities
 
-	$Id: util_io.c,v 1.14 2009-01-31 08:55:23 sezero Exp $
+	$Id: util_io.c,v 1.15 2009-02-20 18:49:59 sezero Exp $
 */
 
 
@@ -11,7 +11,6 @@
 #include "q_stdinc.h"
 #include "compiler.h"
 #include "arch_def.h"
-#include "util_io.h"
 #include <sys/stat.h>
 #include <errno.h>
 #ifdef PLATFORM_WINDOWS
@@ -25,6 +24,7 @@
 #include <dirent.h>
 #include <fnmatch.h>
 #endif
+#include "util_io.h"
 #include "cmdlib.h"
 
 // MACROS ------------------------------------------------------------------
