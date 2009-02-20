@@ -2,7 +2,7 @@
 	util_io.c
 	file and directory utilities
 
-	$Id: util_io.c,v 1.15 2009-02-20 18:49:59 sezero Exp $
+	$Id: util_io.c,v 1.16 2009-02-20 18:55:04 sezero Exp $
 */
 
 
@@ -248,7 +248,7 @@ FILE *SafeOpenWrite (const char *filename)
 	f = fopen(filename, "wb");
 
 	if (!f)
-		Error("Error opening %s: %s",filename,strerror(errno));
+		Error("Error opening %s: %s", filename, strerror(errno));
 
 	return f;
 }
@@ -266,7 +266,7 @@ FILE *SafeOpenRead (const char *filename)
 	f = fopen(filename, "rb");
 
 	if (!f)
-		Error("Error opening %s: %s",filename,strerror(errno));
+		Error("Error opening %s: %s", filename, strerror(errno));
 
 	return f;
 }
