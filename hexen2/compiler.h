@@ -7,7 +7,7 @@
 	- shouldn't depend on arch_def.h, q_stdinc.h, or
 	  any other headers
 
-	$Id: compiler.h,v 1.12 2009-01-24 10:59:17 sezero Exp $
+	$Id: compiler.h,v 1.13 2009-02-20 19:00:40 sezero Exp $
 
 	Copyright (C) 2007  O.Sezer <sezero@users.sourceforge.net>
 
@@ -45,6 +45,10 @@
 #else
 #define	__fp_attribute__(x)
 #endif
+
+#if !(defined(__GNUC__) &&  (__GNUC__ > 2 || (__GNUC__ == 2 && __GNUC_MINOR__ >= 8)))
+#define __extension__
+#endif	/* __GNUC__ */
 
 #if defined(__STDC_VERSION__) && __STDC_VERSION__ >= 199901L
 #define	__thisfunc__	__func__
