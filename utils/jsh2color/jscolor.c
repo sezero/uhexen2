@@ -1,6 +1,6 @@
 /*
 	jscolor.c
-	$Id: jscolor.c,v 1.6 2009-01-24 23:41:28 sezero Exp $
+	$Id: jscolor.c,v 1.7 2009-02-23 19:30:41 sezero Exp $
 
 	This program is free software; you can redistribute it and/or
 	modify it under the terms of the GNU General Public License
@@ -24,6 +24,9 @@
 #include "q_stdinc.h"
 #include "compiler.h"
 #include "arch_def.h"
+#if defined(PLATFORM_WINDOWS)
+#include <conio.h>
+#endif	/* PLATFORM_WINDOWS */
 #include "cmdlib.h"
 #include "util_io.h"
 #include "q_endian.h"
@@ -31,9 +34,7 @@
 #include "bspfile.h"
 #include "tyrlite.h"
 #include "jscolor.h"
-#if defined(PLATFORM_WINDOWS)
-#include <conio.h>
-#endif	/* PLATFORM_WINDOWS */
+
 
 miptex_t		miptex[512];
 int				numlighttex;
