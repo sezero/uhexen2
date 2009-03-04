@@ -3,6 +3,25 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2009-03-04 (CVS):
+    * hexen2 and hwcl msvc project files: fixed resource compiler preprocessor
+      definitions for the software renderer.
+
+2009-02-20/24 (CVS):
+    * added visual studio project files for the utilities. all uhexen2 executables
+      can now be compiled by msvc.
+    * util_io.c: avoid including io_msvc.h before conio.h (include order)
+    * jscolor.c: avoid including io_msvc.h before conio.h (include order)
+    * compiler.h: added empty definition of __extension__ for gcc versions < 2.8.0
+      and for compilers other than gcc.
+    * ddraw.h: synchronized with the mingw-w64 subversion repository:
+      Rev. 628: Add to some unnamed unions/structure the __extension__
+      extension so that people using -std=gnu89 get happy, too.
+      Rev. 634: Add definition of DUMMYUNIONNAME1.
+    * dinput.h: synchronized with the mingw-w64 subversion repository:
+      Rev. 638: Add additional keyboard scan codes (DIK_...) provided by
+      http://www.alrj.org/docs/hardware/keycode.txt
+
 2009-02-02/2009-02-03 (CVS, 1.4.4-pre5):
     * HoT version 1.4.4-pre5 (2009-02-02.)
 
