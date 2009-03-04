@@ -63,7 +63,7 @@
 			/>
 			<Tool
 				Name="VCResourceCompilerTool"
-				PreprocessorDefinitions="H2W;GLQUAKE;WIN32_LEAN_AND_MEAN"
+				PreprocessorDefinitions="H2W;WIN32_LEAN_AND_MEAN"
 			/>
 			<Tool
 				Name="VCPreLinkEventTool"
@@ -145,7 +145,7 @@
 			/>
 			<Tool
 				Name="VCResourceCompilerTool"
-				PreprocessorDefinitions="H2W;GLQUAKE;WIN32_LEAN_AND_MEAN"
+				PreprocessorDefinitions="H2W;WIN32_LEAN_AND_MEAN"
 			/>
 			<Tool
 				Name="VCPreLinkEventTool"
