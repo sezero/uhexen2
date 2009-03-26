@@ -171,16 +171,17 @@ Note that "make" may be named "mingw32-make". In that case, you may want
 to try "mingw32-make" if "make" command itself fails to run. Remember to
 do a make clean between each different build.
 
-c. On Windows, using Visual Studio 2008:
+c. On Windows, using Visual Studio 2005 or 2008:
 -------------------------------------------------
-Visual Studio 2008 has been tested to compile all uhexen2 code successfully.
-Earlier versions such as VS2005 might work, too, but not tested. All of the
-directories contain proper *.vcproj project files and *.sln solution files,
-so, double-clicking on them should start visual studio 2008 and you will be
-ready to go.  Projects are adjusted for Win32 (x86) and x64 targets.
+Visual Studio 2005 and Visual Studio 2008 have been tested to compile all
+uhexen2 code successfully. The VisualStudio2005.zip and VisualStudio2008.zip
+files contain the *.vcproj project files and *.sln solution files: unzipping
+the correct version and double-clicking on them should start visual studio
+and you will be ready to go.  All projects are adjusted for Win32 (x86) and
+x64 targets.
 
 Compilation of the software renderer versions h2.exe and hwcl.exe require
-YASM as the x86 assembler (link down below), versions 0.7.2 or newer are
+YASM as the x86 assembler (link down below). Versions 0.7.2 or newer are
 recommended. It is very easy to integrate into Visual Studio using a rule
 file:  http://www.tortall.net/projects/yasm/wiki/VisualStudio2005
 
