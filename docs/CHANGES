@@ -3,6 +3,16 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2009-04-07 (CVS):
+    * synchronized the directx headers with the mingw-w64 svn repository
+      revision 740.
+
+2009-03-26/27 (CVS):
+    * deleted all visual studio *.sln and *.vcproj files, added them in zipped form
+      for both visual studio 2005 and for 2008, instead. users only need to unzip the
+      necessary version and all will work.
+    * added a local copy of yasm.rules file to our w32stuff directory.
+
 2009-03-04 (CVS):
     * hexen2 and hwcl msvc project files: fixed resource compiler preprocessor
       definitions for the software renderer.
