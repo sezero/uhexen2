@@ -2,7 +2,7 @@
 	pr_cmds.c
 	prog commands
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Server/pr_cmds.c,v 1.43 2008-05-14 08:37:20 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Server/pr_cmds.c,v 1.44 2009-04-11 15:34:38 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -2376,7 +2376,7 @@ static void PF_logfrag (void)
 	SZ_Print (&svs.log[svs.logsequence&1], s);
 	if (sv_fraglogfile)
 	{
-		fprintf (sv_fraglogfile, s);
+		fprintf (sv_fraglogfile, "%s", s);
 		fflush (sv_fraglogfile);
 	}
 }

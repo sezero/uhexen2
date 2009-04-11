@@ -3,7 +3,7 @@
 	dosquake serial network driver.
 	from quake1 source with minor adaptations for uhexen2.
 
-	$Id: net_ser.c,v 1.2 2007-11-11 13:17:42 sezero Exp $
+	$Id: net_ser.c,v 1.3 2009-04-11 15:34:36 sezero Exp $
 
 	Copyright (C) 1996-1997  Id Software, Inc.
 
@@ -833,7 +833,7 @@ static qsocket_t *_Serial_Connect (const char *host, SerialLine *p)
 	ret = MSG_ReadByte();
 	if (ret == CCREP_REJECT)
 	{
-		Con_Printf(MSG_ReadString());
+		Con_Printf("%s\n", MSG_ReadString());
 		goto ErrorReturn;
 	}
 	if (ret != CCREP_ACCEPT)
