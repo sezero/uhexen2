@@ -2,7 +2,7 @@
 	host.h
 	public host structures and functions
 
-	$Id: host.h,v 1.9 2008-04-04 08:27:30 sezero Exp $
+	$Id: host.h,v 1.10 2009-04-25 11:07:34 sezero Exp $
 */
 
 #if !defined(SERVERONLY)
@@ -18,8 +18,11 @@
 
 typedef struct quakeparms_s
 {
-	char	*basedir;
-	char	*userdir;	// userspace directory on UNIX platforms
+	const char *basedir;
+	const char *userdir;	// user's directory on UNIX platforms.
+				// if user directories are enabled, basedir
+				// and userdir will point to different
+				// memory locations, otherwise to the same.
 	int	argc;
 	char	**argv;
 	void	*membase;

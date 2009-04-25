@@ -2,7 +2,7 @@
 	quakefs.c
 	Hexen II filesystem
 
-	$Id: quakefs.c,v 1.52 2009-01-24 17:21:43 sezero Exp $
+	$Id: quakefs.c,v 1.53 2009-04-25 11:07:34 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -481,11 +481,7 @@ void FS_Gamedir (const char *dir)
 	// whatever the previous mod it was running and went back to
 	// pure hw. weird.. do as he wishes anyway and adjust our variables.
 		qerr_snprintf(__thisfunc__, __LINE__, fs_gamedir, sizeof(fs_gamedir), "%s/hw", fs_basedir);
-#    if DO_USERDIRS
 		qerr_snprintf(__thisfunc__, __LINE__, fs_userdir, sizeof(fs_userdir), "%s/hw", host_parms->userdir);
-#    else
-		qerr_strlcpy (__thisfunc__, __LINE__, fs_userdir, fs_gamedir, sizeof(fs_userdir));
-#    endif
 #    if defined(SERVERONLY)
 	// change the *gamedir serverinfo properly
 		Info_SetValueForStarKey (svs.info, "*gamedir", "hw", MAX_SERVERINFO_STRING);
@@ -771,15 +767,14 @@ int FS_CreatePath (char *path)
 		return 1;
 	}
 
-	ofs = host_parms->userdir;
-	if (strstr(path, ofs) != path)
+	if (strstr(path, host_parms->userdir) != path)
 	{
 error_out:
 		Sys_Error ("Attempted to create a directory out of user's path");
 		return 1;
 	}
 
-	offset = strlen(ofs);
+	offset = strlen(host_parms->userdir);
 	ofs = path + offset;
 	// check for the path separator after the userdir.
 	if (!*ofs)
@@ -1309,6 +1304,9 @@ void FS_Init (void)
 	if (i && i < com_argc-1)
 	{
 		fs_basedir = com_argv[i+1];
+#if !DO_USERDIRS
+		host_parms->userdir = com_argv[i+1];
+#endif
 		Sys_Printf ("%s: basedir changed to: %s\n", __thisfunc__, fs_basedir);
 	}
 	else
