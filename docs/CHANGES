@@ -3,6 +3,15 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2009-04-25 (CVS):
+    * constified host_parms->basedir and host_parms->userdir. fixed an oversight
+      where when "-basedir" is specified on the command line, host_parms->userdir
+      used to be left unmodified if the user diectories are not enabled.
+    * re-diff'ed the standalone mods patch.
+
+2009-04-21 (CVS):
+    * minor cleanup in cross compilation scripts.
+
 2009-04-11 (CVS):
     * hexen2/dos/net_ser.c, hexenworld/Server/pr_cmds.c: fixed a few more printf
       calls which were passed a string as the format string.
