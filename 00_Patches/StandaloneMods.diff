@@ -2,9 +2,9 @@ this patch adds initial support for standalone free contents (mods).
 see the documentation file StandaloneMods.txt for details.
 
 diff -urNp uhexen2/hexen2/quakefs.c.orig uhexen2/hexen2/quakefs.c
---- uhexen2/hexen2/quakefs.c.orig	2008-11-11 09:51:17.000000000 +0200
-+++ uhexen2/hexen2/quakefs.c	2008-11-11 10:05:22.000000000 +0200
-@@ -55,6 +55,8 @@ unsigned int	gameflags;
+--- uhexen2/hexen2/quakefs.c.orig	2009-04-25 14:07:33.000000000 +0300
++++ uhexen2/hexen2/quakefs.c	2009-04-25 14:15:01.000000000 +0300
+@@ -53,6 +53,8 @@ unsigned int	gameflags;
  cvar_t	oem = {"oem", "0", CVAR_ROM};
  cvar_t	registered = {"registered", "0", CVAR_ROM};
  
@@ -13,7 +13,7 @@ diff -urNp uhexen2/hexen2/quakefs.c.orig uhexen2/hexen2/quakefs.c
  typedef struct
  {
  	int	numfiles;
-@@ -209,7 +211,7 @@ static pack_t *FS_LoadPackFile (const ch
+@@ -207,7 +209,7 @@ static pack_t *FS_LoadPackFile (const ch
  		CRC_ProcessByte (&crc, ((byte *)info)[i]);
  
  // check for modifications
@@ -22,7 +22,7 @@ diff -urNp uhexen2/hexen2/quakefs.c.orig uhexen2/hexen2/quakefs.c
  	{
  		if (strcmp(fs_gamedir_nopath, pakdata[paknum].dirname) != 0)
  		{
-@@ -473,6 +475,10 @@ void FS_Gamedir (const char *dir)
+@@ -471,6 +473,10 @@ void FS_Gamedir (const char *dir)
  // check for reserved gamedirs
  	if (!q_strcasecmp(dir, "hw"))
  	{
@@ -33,7 +33,7 @@ diff -urNp uhexen2/hexen2/quakefs.c.orig uhexen2/hexen2/quakefs.c
  #if !defined(H2W)
  	// hw is reserved for hexenworld only. hexen2 shouldn't use it
  		Sys_Printf ("WARNING: Gamedir not set to hw :\n"
-@@ -511,6 +517,31 @@ void FS_Gamedir (const char *dir)
+@@ -505,6 +511,27 @@ void FS_Gamedir (const char *dir)
  	// command line argument like -game data1, ignore it.
  		return;
  	}
@@ -49,12 +49,8 @@ diff -urNp uhexen2/hexen2/quakefs.c.orig uhexen2/hexen2/quakefs.c
 +	// pure hw. weird.. do as he wishes anyway and adjust our variables.
 +		qerr_snprintf(__thisfunc__, __LINE__, fs_gamedir, sizeof(fs_gamedir),
 +						"%s/%s", fs_basedir, fs_dirstdalone);
-+#    if DO_USERDIRS
 +		qerr_snprintf(__thisfunc__, __LINE__, fs_userdir, sizeof(fs_userdir),
 +						"%s/%s", host_parms->userdir, fs_dirstdalone);
-+#    else
-+		qerr_strlcpy (__thisfunc__, __LINE__, fs_userdir, fs_gamedir, sizeof(fs_userdir));
-+#    endif
 +#    if defined(SERVERONLY)
 +	// change the *gamedir serverinfo properly
 +		Info_SetValueForStarKey (svs.info, "*gamedir", fs_dirstdalone, MAX_SERVERINFO_STRING);
@@ -65,7 +61,7 @@ diff -urNp uhexen2/hexen2/quakefs.c.orig uhexen2/hexen2/quakefs.c
  	else
  	{
  	// a new gamedir: let's set it here.
-@@ -911,7 +942,7 @@ size_t FS_OpenFile (const char *filename
+@@ -848,7 +875,7 @@ size_t FS_OpenFile (const char *filename
  		{
  	// check a file in the directory tree
  #if !defined(H2W)
@@ -74,7 +70,7 @@ diff -urNp uhexen2/hexen2/quakefs.c.orig uhexen2/hexen2/quakefs.c
  			{	// if not a registered version, don't ever go beyond base
  				if ( strchr (filename, '/') || strchr (filename,'\\'))
  					continue;
-@@ -1338,8 +1369,36 @@ static int CheckRegistered (void)
+@@ -1275,8 +1302,36 @@ static int CheckRegistered (void)
  FS_Init
  ================
  */
@@ -111,7 +107,7 @@ diff -urNp uhexen2/hexen2/quakefs.c.orig uhexen2/hexen2/quakefs.c
  	int		i;
  	char		temp[32];
  	qboolean	check_portals = false;
-@@ -1537,3 +1596,88 @@ void FS_Init (void)
+@@ -1484,3 +1539,91 @@ void FS_Init (void)
  	}
  }
  
@@ -135,6 +131,9 @@ diff -urNp uhexen2/hexen2/quakefs.c.orig uhexen2/hexen2/quakefs.c
 +	if (i && i < com_argc-1)
 +	{
 +		fs_basedir = com_argv[i+1];
++#if !DO_USERDIRS
++		host_parms->userdir = com_argv[i+1];
++#endif
 +		Sys_Printf ("%s: basedir changed to: %s\n", __thisfunc__, fs_basedir);
 +	}
 +	else
@@ -202,7 +201,7 @@ diff -urNp uhexen2/hexen2/quakefs.c.orig uhexen2/hexen2/quakefs.c
 +
 diff -urNp uhexen2/hexen2/quakefs.h.orig uhexen2/hexen2/quakefs.h
 --- uhexen2/hexen2/quakefs.h.orig	2008-11-11 09:51:17.000000000 +0200
-+++ uhexen2/hexen2/quakefs.h	2008-11-11 10:05:22.000000000 +0200
++++ uhexen2/hexen2/quakefs.h	2009-04-25 14:15:03.000000000 +0300
 @@ -33,6 +33,12 @@
  
  #define	GAME_MODIFIED		(1 << 16)
@@ -217,9 +216,9 @@ diff -urNp uhexen2/hexen2/quakefs.h.orig uhexen2/hexen2/quakefs.h
  extern	char	fs_gamedir[MAX_OSPATH];
  extern	char	fs_gamedir_nopath[MAX_QPATH];
 diff -urNp uhexen2/hexenworld/Client/quakefs.c.orig uhexen2/hexenworld/Client/quakefs.c
---- uhexen2/hexenworld/Client/quakefs.c.orig	2008-11-11 09:51:17.000000000 +0200
-+++ uhexen2/hexenworld/Client/quakefs.c	2008-11-11 10:05:22.000000000 +0200
-@@ -55,6 +55,8 @@ unsigned int	gameflags;
+--- uhexen2/hexenworld/Client/quakefs.c.orig	2009-04-25 14:07:34.000000000 +0300
++++ uhexen2/hexenworld/Client/quakefs.c	2009-04-25 14:15:10.000000000 +0300
+@@ -53,6 +53,8 @@ unsigned int	gameflags;
  cvar_t	oem = {"oem", "0", CVAR_ROM};
  cvar_t	registered = {"registered", "0", CVAR_ROM};
  
@@ -228,7 +227,7 @@ diff -urNp uhexen2/hexenworld/Client/quakefs.c.orig uhexen2/hexenworld/Client/qu
  typedef struct
  {
  	int	numfiles;
-@@ -209,7 +211,7 @@ static pack_t *FS_LoadPackFile (const ch
+@@ -207,7 +209,7 @@ static pack_t *FS_LoadPackFile (const ch
  		CRC_ProcessByte (&crc, ((byte *)info)[i]);
  
  // check for modifications
@@ -237,7 +236,7 @@ diff -urNp uhexen2/hexenworld/Client/quakefs.c.orig uhexen2/hexenworld/Client/qu
  	{
  		if (strcmp(fs_gamedir_nopath, pakdata[paknum].dirname) != 0)
  		{
-@@ -473,6 +475,10 @@ void FS_Gamedir (const char *dir)
+@@ -471,6 +473,10 @@ void FS_Gamedir (const char *dir)
  // check for reserved gamedirs
  	if (!q_strcasecmp(dir, "hw"))
  	{
@@ -248,7 +247,7 @@ diff -urNp uhexen2/hexenworld/Client/quakefs.c.orig uhexen2/hexenworld/Client/qu
  #if !defined(H2W)
  	// hw is reserved for hexenworld only. hexen2 shouldn't use it
  		Sys_Printf ("WARNING: Gamedir not set to hw :\n"
-@@ -511,6 +517,31 @@ void FS_Gamedir (const char *dir)
+@@ -505,6 +511,27 @@ void FS_Gamedir (const char *dir)
  	// command line argument like -game data1, ignore it.
  		return;
  	}
@@ -264,12 +263,8 @@ diff -urNp uhexen2/hexenworld/Client/quakefs.c.orig uhexen2/hexenworld/Client/qu
 +	// pure hw. weird.. do as he wishes anyway and adjust our variables.
 +		qerr_snprintf(__thisfunc__, __LINE__, fs_gamedir, sizeof(fs_gamedir),
 +						"%s/%s", fs_basedir, fs_dirstdalone);
-+#    if DO_USERDIRS
 +		qerr_snprintf(__thisfunc__, __LINE__, fs_userdir, sizeof(fs_userdir),
 +						"%s/%s", host_parms->userdir, fs_dirstdalone);
-+#    else
-+		qerr_strlcpy (__thisfunc__, __LINE__, fs_userdir, fs_gamedir, sizeof(fs_userdir));
-+#    endif
 +#    if defined(SERVERONLY)
 +	// change the *gamedir serverinfo properly
 +		Info_SetValueForStarKey (svs.info, "*gamedir", fs_dirstdalone, MAX_SERVERINFO_STRING);
@@ -280,7 +275,7 @@ diff -urNp uhexen2/hexenworld/Client/quakefs.c.orig uhexen2/hexenworld/Client/qu
  	else
  	{
  	// a new gamedir: let's set it here.
-@@ -911,7 +942,7 @@ size_t FS_OpenFile (const char *filename
+@@ -848,7 +875,7 @@ size_t FS_OpenFile (const char *filename
  		{
  	// check a file in the directory tree
  #if !defined(H2W)
@@ -289,7 +284,7 @@ diff -urNp uhexen2/hexenworld/Client/quakefs.c.orig uhexen2/hexenworld/Client/qu
  			{	// if not a registered version, don't ever go beyond base
  				if ( strchr (filename, '/') || strchr (filename,'\\'))
  					continue;
-@@ -1338,8 +1369,36 @@ static int CheckRegistered (void)
+@@ -1275,8 +1302,36 @@ static int CheckRegistered (void)
  FS_Init
  ================
  */
@@ -326,7 +321,7 @@ diff -urNp uhexen2/hexenworld/Client/quakefs.c.orig uhexen2/hexenworld/Client/qu
  	int		i;
  	char		temp[32];
  	qboolean	check_portals = false;
-@@ -1537,3 +1596,88 @@ void FS_Init (void)
+@@ -1484,3 +1539,91 @@ void FS_Init (void)
  	}
  }
  
@@ -350,6 +345,9 @@ diff -urNp uhexen2/hexenworld/Client/quakefs.c.orig uhexen2/hexenworld/Client/qu
 +	if (i && i < com_argc-1)
 +	{
 +		fs_basedir = com_argv[i+1];
++#if !DO_USERDIRS
++		host_parms->userdir = com_argv[i+1];
++#endif
 +		Sys_Printf ("%s: basedir changed to: %s\n", __thisfunc__, fs_basedir);
 +	}
 +	else
@@ -417,7 +415,7 @@ diff -urNp uhexen2/hexenworld/Client/quakefs.c.orig uhexen2/hexenworld/Client/qu
 +
 diff -urNp uhexen2/hexenworld/Client/quakefs.h.orig uhexen2/hexenworld/Client/quakefs.h
 --- uhexen2/hexenworld/Client/quakefs.h.orig	2008-11-11 09:51:17.000000000 +0200
-+++ uhexen2/hexenworld/Client/quakefs.h	2008-11-11 10:05:22.000000000 +0200
++++ uhexen2/hexenworld/Client/quakefs.h	2009-04-25 14:15:12.000000000 +0300
 @@ -33,6 +33,12 @@
  
  #define	GAME_MODIFIED		(1 << 16)
