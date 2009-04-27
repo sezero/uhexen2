@@ -1,13 +1,13 @@
 /*
 	hwrcon.c
-	$Id: hwrcon.c,v 1.21 2009-04-27 12:35:10 sezero Exp $
+	$Id: hwrcon.c,v 1.22 2009-04-27 12:50:43 sezero Exp $
 
 	HWRCON 1.2 HexenWorld Remote CONsole
 	Idea based on RCon 1.1 by Michael Dwyer/N0ZAP (18-May-1998).
 	Made to work with HexenWorld using code from the HexenWorld
 	engine (C) Raven Software and ID Software.
 	Copyright (C) 1998 Michael Dwyer <mdwyer@holly.colostate.edu>
-	Copyright (C) 2006-2008 O. Sezer <sezero@users.sourceforge.net>
+	Copyright (C) 2006-2009 O. Sezer <sezero@users.sourceforge.net>
 
 	This program is free software; you can redistribute it and/or
 	modify it under the terms of the GNU General Public License
@@ -170,7 +170,7 @@ static void NET_Shutdown (void)
 
 #define	VER_HWRCON_MAJ		1
 #define	VER_HWRCON_MID		2
-#define	VER_HWRCON_MIN		5
+#define	VER_HWRCON_MIN		6
 
 #define	PORT_SERVER		26950
 #define	MAX_RCON_PACKET		256

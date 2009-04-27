@@ -1,9 +1,9 @@
 /*
 	hwmquery.c
-	$Id: hwmquery.c,v 1.25 2009-04-27 12:35:09 sezero Exp $
+	$Id: hwmquery.c,v 1.26 2009-04-27 12:50:43 sezero Exp $
 
 	HWMQUERY 0.2 HexenWorld Master Server Query
-	Copyright (C) 2006-2008 O. Sezer <sezero@users.sourceforge.net>
+	Copyright (C) 2006-2009 O. Sezer <sezero@users.sourceforge.net>
 
 	This program is free software; you can redistribute it and/or
 	modify it under the terms of the GNU General Public License
@@ -195,7 +195,7 @@ static void Sys_Quit (int error_state)
 
 #define	VER_HWMQUERY_MAJ	0
 #define	VER_HWMQUERY_MID	2
-#define	VER_HWMQUERY_MIN	1
+#define	VER_HWMQUERY_MIN	2
 
 #define	PORT_MASTER		26900
 #define	PORT_SERVER		26950

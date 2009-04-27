@@ -1,6 +1,6 @@
 /*
 	hwterm.c
-	$Id: hwterm.c,v 1.27 2009-04-27 12:35:10 sezero Exp $
+	$Id: hwterm.c,v 1.28 2009-04-27 12:50:43 sezero Exp $
 
 	HWTERM 1.2 HexenWorld Remote Console Terminal
 	Idea based on QTerm 1.1 by Michael Dwyer/N0ZAP (18-May-1998).
@@ -8,7 +8,7 @@
 	engine (C) Raven Software and ID Software. Socket timeout code
 	taken from the XQF project.
 	Copyright (C) 1998 Michael Dwyer <mdwyer@holly.colostate.edu>
-	Copyright (C) 2006-2008 O. Sezer <sezero@users.sourceforge.net>
+	Copyright (C) 2006-2009 O. Sezer <sezero@users.sourceforge.net>
 
 	This program is free software; you can redistribute it and/or
 	modify it under the terms of the GNU General Public License
@@ -198,7 +198,7 @@ static void Sys_Quit (int error_state)
 
 #define	VER_HWTERM_MAJ		1
 #define	VER_HWTERM_MID		2
-#define	VER_HWTERM_MIN		5
+#define	VER_HWTERM_MIN		6
 
 #define	PORT_SERVER		26950
 #define	MAX_RCON_PACKET		256
