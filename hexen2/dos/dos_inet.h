@@ -3,7 +3,7 @@
 	net definitions for dos.
 	from quake1 source with minor adaptations for uhexen2.
 
-	$Id: dos_inet.h,v 1.3 2007-12-12 10:51:07 sezero Exp $
+	$Id: dos_inet.h,v 1.4 2009-04-27 10:55:05 sezero Exp $
 
 	Copyright (C) 1996-1997  Id Software, Inc.
 
@@ -111,6 +111,10 @@ in_addr_t inet_addr(const char *cp);
 #define	PF_INET		AF_INET
 
 typedef long		socklen_t;	/* NOT unsigned on DOS/WIN32.. */
+
+typedef int		sys_socket_t;
+#define	INVALID_SOCKET	(-1)
+#define	SOCKET_ERROR	(-1)
 
 
 #endif	/* defined DOS */

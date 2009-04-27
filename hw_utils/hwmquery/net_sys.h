@@ -4,7 +4,7 @@
 	- depends on arch_def.h
 	- may depend on q_stdinc.h
 
-	$Id: net_sys.h,v 1.14 2008-12-28 10:23:39 sezero Exp $
+	$Id: net_sys.h,v 1.15 2009-04-27 10:55:05 sezero Exp $
 
 	Copyright (C) 2007  O.Sezer <sezero@users.sourceforge.net>
 
@@ -53,6 +53,10 @@
 #include <arpa/inet.h>
 #include <netdb.h>
 
+typedef int	sys_socket_t;
+#define	INVALID_SOCKET	(-1)
+#define	SOCKET_ERROR	(-1)
+
 #if defined(PLATFORM_AMIGA)
 typedef int	socklen_t;
 #define	SOCKETERRNO	Errno()
@@ -89,6 +93,8 @@ typedef u_long	in_addr_t;	/* uint32_t */
 #if !defined(IP_MSFILTER_SIZE)
 typedef int	socklen_t;
 #endif	/* socklen_t type */
+
+typedef SOCKET	sys_socket_t;
 
 #define	SOCKETERRNO	WSAGetLastError()
 #define	EWOULDBLOCK	WSAEWOULDBLOCK
