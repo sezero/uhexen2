@@ -1,6 +1,6 @@
 /*
 	hwmquery.c
-	$Id: hwmquery.c,v 1.24 2009-01-28 13:50:30 sezero Exp $
+	$Id: hwmquery.c,v 1.25 2009-04-27 12:35:09 sezero Exp $
 
 	HWMQUERY 0.2 HexenWorld Master Server Query
 	Copyright (C) 2006-2008 O. Sezer <sezero@users.sourceforge.net>
@@ -63,7 +63,7 @@ typedef int	ssize_t;
 static WSADATA		winsockdata;
 #endif
 
-static int		socketfd = -1;
+static sys_socket_t	socketfd = INVALID_SOCKET;
 
 void Sys_Error (const char *error, ...) __attribute__((format(printf,1,2), noreturn));
 static void Sys_Quit (int error_state) __attribute__((noreturn));
@@ -151,7 +151,7 @@ static int NET_StringToAdr (const char *s, netadr_t *a)
 	return 1;
 }
 
-static int NET_WaitReadTimeout (int fd, long sec, long usec)
+static int NET_WaitReadTimeout (sys_socket_t fd, long sec, long usec)
 {
 	fd_set rfds;
 	struct timeval tv;
@@ -175,8 +175,11 @@ static void NET_Init (void)
 
 static void NET_Shutdown (void)
 {
-	if (socketfd != -1)
+	if (socketfd != INVALID_SOCKET)
+	{
 		closesocket (socketfd);
+		socketfd = INVALID_SOCKET;
+	}
 #if defined(PLATFORM_WINDOWS)
 	WSACleanup ();
 #endif
@@ -240,13 +243,14 @@ int main (int argc, char **argv)
 	NetadrToSockadr(&ipaddress, &hostaddress);
 
 // Open the Socket
-	if ((socketfd = socket(PF_INET, SOCK_DGRAM, IPPROTO_UDP)) == -1)
+	socketfd = socket(PF_INET, SOCK_DGRAM, IPPROTO_UDP);
+	if (socketfd == INVALID_SOCKET)
 	{
 		NET_Shutdown ();
 		Sys_Error ("Couldn't open socket: %s", strerror(errno));
 	}
 // Set the socket to non-blocking mode
-	if (ioctlsocket (socketfd, FIONBIO, &_true) == -1)
+	if (ioctlsocket (socketfd, FIONBIO, &_true) == SOCKET_ERROR)
 	{
 		NET_Shutdown ();
 		Sys_Error ("ioctl FIONBIO: %s", strerror(errno));
@@ -277,7 +281,7 @@ int main (int argc, char **argv)
 	{
 		size = recvfrom(socketfd, (char *)response, sizeof(response), 0,
 				(struct sockaddr *)&hostaddress, &fromlen);
-		if (size < 0)
+		if (size == SOCKET_ERROR)
 		{
 #if defined(PLATFORM_WINDOWS)
 			int err = WSAGetLastError();

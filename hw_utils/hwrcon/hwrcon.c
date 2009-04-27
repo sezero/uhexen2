@@ -1,6 +1,6 @@
 /*
 	hwrcon.c
-	$Id: hwrcon.c,v 1.20 2008-12-30 07:26:09 sezero Exp $
+	$Id: hwrcon.c,v 1.21 2009-04-27 12:35:10 sezero Exp $
 
 	HWRCON 1.2 HexenWorld Remote CONsole
 	Idea based on RCon 1.1 by Michael Dwyer/N0ZAP (18-May-1998).
@@ -59,7 +59,7 @@ typedef struct
 static WSADATA		winsockdata;
 #endif
 
-static int		socketfd = -1;
+static sys_socket_t	socketfd = INVALID_SOCKET;
 
 void Sys_Error (const char *error, ...) __attribute__((format(printf,1,2), noreturn));
 
@@ -156,8 +156,11 @@ static void NET_Init (void)
 
 static void NET_Shutdown (void)
 {
-	if (socketfd != -1)
+	if (socketfd != INVALID_SOCKET)
+	{
 		closesocket (socketfd);
+		socketfd = INVALID_SOCKET;
+	}
 #if defined(PLATFORM_WINDOWS)
 	WSACleanup ();
 #endif
@@ -233,13 +236,13 @@ int main (int argc, char *argv[])
 		for (j = 0 ; j < strlen(argv[i]) ; j++)
 		{
 			packet[k] = argv[i][j];
-			if (++k > sizeof(packet)-1)
+			if (++k > sizeof(packet) - 1)
 				Sys_Error ("Command too long");
 		}
-		if (i != argc-1)
+		if (i != argc - 1)
 		{
 			packet[k] = 0x20;	// add a space
-			if (++k > sizeof(packet)-1)
+			if (++k > sizeof(packet) - 1)
 				Sys_Error ("Command too long");
 		}
 	}
@@ -248,7 +251,8 @@ int main (int argc, char *argv[])
 	len = k + 1;
 
 // Open the Socket
-	if ((socketfd = socket(PF_INET, SOCK_DGRAM, IPPROTO_UDP)) == -1)
+	socketfd = socket(PF_INET, SOCK_DGRAM, IPPROTO_UDP);
+	if (socketfd == INVALID_SOCKET)
 	{
 		NET_Shutdown ();
 		Sys_Error ("Couldn't open socket: %s", strerror(errno));

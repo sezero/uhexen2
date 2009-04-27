@@ -1,6 +1,6 @@
 /*
 	hwterm.c
-	$Id: hwterm.c,v 1.26 2008-12-30 07:26:09 sezero Exp $
+	$Id: hwterm.c,v 1.27 2009-04-27 12:35:10 sezero Exp $
 
 	HWTERM 1.2 HexenWorld Remote Console Terminal
 	Idea based on QTerm 1.1 by Michael Dwyer/N0ZAP (18-May-1998).
@@ -66,7 +66,7 @@ typedef struct
 static WSADATA		winsockdata;
 #endif
 
-static int		socketfd = -1;
+static sys_socket_t	socketfd = INVALID_SOCKET;
 
 void Sys_Error (const char *error, ...) __attribute__((format(printf,1,2), noreturn));
 static void Sys_Quit (int error_state) __attribute__((noreturn));
@@ -154,7 +154,7 @@ static int NET_StringToAdr (const char *s, netadr_t *a)
 	return 1;
 }
 
-static int NET_WaitReadTimeout (int fd, long sec, long usec)
+static int NET_WaitReadTimeout (sys_socket_t fd, long sec, long usec)
 {
 	fd_set rfds;
 	struct timeval tv;
@@ -178,8 +178,11 @@ static void NET_Init (void)
 
 static void NET_Shutdown (void)
 {
-	if (socketfd != -1)
+	if (socketfd != INVALID_SOCKET)
+	{
 		closesocket (socketfd);
+		socketfd = INVALID_SOCKET;
+	}
 #if defined(PLATFORM_WINDOWS)
 	WSACleanup ();
 #endif
@@ -239,13 +242,14 @@ int main (int argc, char *argv[])
 	printf ("Using address %s\n", NET_AdrToString(ipaddress));
 
 // Open the Socket
-	if ((socketfd = socket(PF_INET, SOCK_DGRAM, IPPROTO_UDP)) == -1)
+	socketfd = socket(PF_INET, SOCK_DGRAM, IPPROTO_UDP);
+	if (socketfd == INVALID_SOCKET)
 	{
 		NET_Shutdown ();
 		Sys_Error ("Couldn't open socket: %s", strerror(errno));
 	}
 // Set the socket to non-blocking mode
-	if (ioctlsocket (socketfd, FIONBIO, &_true) == -1)
+	if (ioctlsocket (socketfd, FIONBIO, &_true) == SOCKET_ERROR)
 	{
 		NET_Shutdown ();
 		Sys_Error ("ioctl FIONBIO: %s", strerror(errno));
@@ -313,7 +317,7 @@ int main (int argc, char *argv[])
 		{
 			size = recvfrom(socketfd, (char *)huffbuff, sizeof(response), 0,
 				(struct sockaddr *)&hostaddress, &fromlen);
-			if (size < 0)
+			if (size == SOCKET_ERROR)
 			{
 #if defined(PLATFORM_WINDOWS)
 				int err = WSAGetLastError();
