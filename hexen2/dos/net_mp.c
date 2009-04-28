@@ -4,7 +4,7 @@
         for use when run from within win95.
 	from quake1 source with minor adaptations for uhexen2.
 
-	$Id: net_mp.c,v 1.12 2009-01-08 12:01:51 sezero Exp $
+	$Id: net_mp.c,v 1.13 2009-04-28 12:02:34 sezero Exp $
 
 	Copyright (C) 1996-1997  Id Software, Inc.
 
@@ -31,6 +31,8 @@
 #include <dpmi.h>
 #include "quakedef.h"
 #include "mpdosock.h"
+
+#define sys_socket_t int	/* messy... */
 
 short	flat_selector;
 

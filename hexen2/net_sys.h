@@ -4,7 +4,7 @@
 	- depends on arch_def.h
 	- may depend on q_stdinc.h
 
-	$Id: net_sys.h,v 1.15 2009-04-27 10:55:03 sezero Exp $
+	$Id: net_sys.h,v 1.16 2009-04-28 12:02:32 sezero Exp $
 
 	Copyright (C) 2007  O.Sezer <sezero@users.sourceforge.net>
 
@@ -101,6 +101,16 @@ typedef SOCKET	sys_socket_t;
 #define	ECONNREFUSED	WSAECONNREFUSED
 
 #endif	/* end of windows stuff */
+
+
+/* dos includes and compatibility macros */
+#if defined(PLATFORM_DOS)
+
+/* our local headers : */
+#include "dos/dos_inet.h"
+#include "dos/dos_sock.h"
+
+#endif	/* end of dos stuff. */
 
 
 /* macros which may still be missing */
