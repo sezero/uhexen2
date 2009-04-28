@@ -3,6 +3,28 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2009-04-28 (CVS):
+    * added new definitions sys_socket_t, INVALID_SOCKET and SOCKET_ERROR to net_sys.h
+      in order to provide compatibility between unix/windows socket api usage.
+    * added dos_sock.h compatibility header, made net_sys.h to provide some dos
+      data, too.
+    * hexen2: use the newly added unix/windows socket api compatibility macros:
+      using just an int as the socketfd wasn't a problem until we added win64
+      support: the windows SOCKET type is not only unsigned but may actually be
+      wider (uintptr_t which is 8 bytes on win64). hexenworld will have similar
+      changes, soon.
+      as a side effect, I also separated the functions and data exported through
+      net.h into two: net.h now holds all public exports and the new net_defs.h
+      holds the exports only required by the net layer. besides the net_* files,
+      host_cmd.c and sv_main.c are the only reasonable foreign importers of
+      net_defs.h: they require accessing the qsocket_s structure members. The
+      only one that doesn't fit is menu.c needing some net exports, but it may
+      be properly handled, later on.
+    * use the new definitions sys_socket_t, INVALID_SOCKET and SOCKET_ERROR in the
+      hexenworld utilities.
+    * bumped hexenworld utilities' versions, hwmquery to 0.2.2, hwrcon and hwterm
+      to 1.2.6.
+
 2009-04-25 (CVS):
     * constified host_parms->basedir and host_parms->userdir. fixed an oversight
       where when "-basedir" is specified on the command line, host_parms->userdir
