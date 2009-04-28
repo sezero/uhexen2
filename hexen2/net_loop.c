@@ -2,10 +2,14 @@
 	net_loop.c
 	network loop driver
 
-	$Id: net_loop.c,v 1.8 2007-11-16 10:23:17 sezero Exp $
+	$Id: net_loop.c,v 1.9 2009-04-28 14:00:32 sezero Exp $
 */
 
+#include "q_stdinc.h"
+#include "arch_def.h"
+#include "net_sys.h"
 #include "quakedef.h"
+#include "net_defs.h"
 #include "net_loop.h"
 
 static qboolean	localconnectpending = false;

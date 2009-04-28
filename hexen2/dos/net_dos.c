@@ -2,7 +2,7 @@
 	net_dos.c
 	from quake1 source with minor adaptations for uhexen2.
 
-	$Id: net_dos.c,v 1.1 2007-10-22 18:07:52 sezero Exp $
+	$Id: net_dos.c,v 1.2 2009-04-28 14:00:34 sezero Exp $
 
 	Copyright (C) 1996-1997  Id Software, Inc.
 
@@ -28,6 +28,8 @@
 
 #include "quakedef.h"
 
+#include "dos_sock.h"
+#include "net_defs.h"
 #include "net_dgrm.h"
 #include "net_ser.h"
 #if !defined(SERVERONLY)

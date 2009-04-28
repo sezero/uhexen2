@@ -2,7 +2,7 @@
 	net_dgrm.c
 	This is enables a simple IP banning mechanism
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/server/net_dgrm.c,v 1.32 2009-04-28 12:02:34 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/server/net_dgrm.c,v 1.33 2009-04-28 14:00:34 sezero Exp $
 */
 
 #define BAN_TEST
@@ -11,6 +11,7 @@
 #include "arch_def.h"
 #include "net_sys.h"
 #include "quakedef.h"
+#include "net_defs.h"
 #include "net_dgrm.h"
 
 // these two macros are to make the code more readable
@@ -470,7 +471,8 @@ static void NET_Stats_f (void)
 
 int Datagram_Init (void)
 {
-	int	i, csock, num_inited;
+	int	i, num_inited;
+	sys_socket_t	csock;
 
 	Cmd_AddCommand ("net_stats", NET_Stats_f);
 
@@ -481,7 +483,7 @@ int Datagram_Init (void)
 	for (i = 0; i < net_numlandrivers; i++)
 	{
 		csock = net_landrivers[i].Init ();
-		if (csock == -1)
+		if (csock == INVALID_SOCKET)
 			continue;
 		net_landrivers[i].initialized = true;
 		net_landrivers[i].controlSock = csock;
@@ -538,7 +540,7 @@ void Datagram_Listen (qboolean state)
 }
 
 
-static qsocket_t *Datagram_Reject (const char *message, int acceptsocket, struct qsockaddr *addr)
+static qsocket_t *Datagram_Reject (const char *message, sys_socket_t acceptsocket, struct qsockaddr *addr)
 {
 	SZ_Clear(&net_message);
 	// save space for the header, filled in later
@@ -555,8 +557,8 @@ static qsocket_t *_Datagram_CheckNewConnections (void)
 {
 	struct qsockaddr clientaddr;
 	struct qsockaddr newaddr;
-	int			newsock;
-	int			acceptsock;
+	sys_socket_t		newsock;
+	sys_socket_t		acceptsock;
 	qsocket_t	*sock;
 	qsocket_t	*s;
 	int			len;
@@ -565,7 +567,7 @@ static qsocket_t *_Datagram_CheckNewConnections (void)
 	int			ret;
 
 	acceptsock = dfunc.CheckNewConnections();
-	if (acceptsock == -1)
+	if (acceptsock == INVALID_SOCKET)
 		return NULL;
 
 	SZ_Clear(&net_message);
@@ -731,7 +733,7 @@ static qsocket_t *_Datagram_CheckNewConnections (void)
 
 	// allocate a network socket
 	newsock = dfunc.Open_Socket(0);
-	if (newsock == -1)
+	if (newsock == INVALID_SOCKET)
 	{
 		NET_FreeQSocket(sock);
 		return NULL;

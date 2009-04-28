@@ -3,7 +3,7 @@
 	dosquake serial network driver.
 	from quake1 source with minor adaptations for uhexen2.
 
-	$Id: net_ser.c,v 1.4 2009-04-28 12:02:34 sezero Exp $
+	$Id: net_ser.c,v 1.5 2009-04-28 14:00:34 sezero Exp $
 
 	Copyright (C) 1996-1997  Id Software, Inc.
 
@@ -31,6 +31,8 @@
 #include "dosisms.h"
 #include "crc.h"
 
+#include "dos_sock.h"
+#include "net_defs.h"
 #include "net_ser.h"
 #include "net_comx.c"
 

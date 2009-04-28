@@ -2,10 +2,14 @@
 	sv_main.c
 	server main program
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sv_main.c,v 1.68 2008-02-07 09:27:22 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sv_main.c,v 1.69 2009-04-28 14:00:32 sezero Exp $
 */
 
+#include "q_stdinc.h"
+#include "arch_def.h"
+#include "net_sys.h"	/* for net_defs.h */
 #include "quakedef.h"
+#include "net_defs.h"	/* for struct qsocket_s details */
 
 server_t	sv;
 server_static_t	svs;

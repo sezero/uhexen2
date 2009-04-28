@@ -1,9 +1,13 @@
 /*
 	net_win.c
-	$Id: net_win.c,v 1.9 2007-08-23 14:04:57 sezero Exp $
+	$Id: net_win.c,v 1.10 2009-04-28 14:00:34 sezero Exp $
 */
 
+#include "q_stdinc.h"
+#include "arch_def.h"
+#include "net_sys.h"
 #include "quakedef.h"
+#include "net_defs.h"
 
 #include "net_dgrm.h"
 #if !defined(SERVERONLY)

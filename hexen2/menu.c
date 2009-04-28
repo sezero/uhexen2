@@ -1,10 +1,14 @@
 /*
 	menu.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/menu.c,v 1.107 2008-10-20 17:37:50 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/menu.c,v 1.108 2009-04-28 14:00:32 sezero Exp $
 */
 
+#include "q_stdinc.h"
+#include "arch_def.h"
+#include "net_sys.h"	/* FIXME */
 #include "quakedef.h"
+#include "net_defs.h"	/* FIXME */
 #include "r_shared.h"
 
 void (*vid_menudrawfn)(void);

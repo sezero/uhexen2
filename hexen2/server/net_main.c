@@ -2,10 +2,14 @@
 	net_main.c
 	main networking module
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/server/net_main.c,v 1.22 2007-11-11 13:17:42 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/server/net_main.c,v 1.23 2009-04-28 14:00:34 sezero Exp $
 */
 
+#include "q_stdinc.h"
+#include "arch_def.h"
+#include "net_sys.h"
 #include "quakedef.h"
+#include "net_defs.h"
 
 qsocket_t	*net_activeSockets = NULL;
 qsocket_t	*net_freeSockets = NULL;

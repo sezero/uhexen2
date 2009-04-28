@@ -2,10 +2,14 @@
 	host_cmd.c
 	console commands
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/server/host_cmd.c,v 1.46 2008-01-29 10:47:01 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/server/host_cmd.c,v 1.47 2009-04-28 14:00:34 sezero Exp $
 */
 
+#include "q_stdinc.h"
+#include "arch_def.h"
+#include "net_sys.h"	/* for net_defs.h */
 #include "quakedef.h"
+#include "net_defs.h"	/* for struct qsocket_s details */
 #include <ctype.h>
 #include <time.h>
 

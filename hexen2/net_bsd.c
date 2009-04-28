@@ -1,6 +1,6 @@
 /*
 	net_bsd.c
-	$Id: net_bsd.c,v 1.9 2007-08-23 14:04:55 sezero Exp $
+	$Id: net_bsd.c,v 1.10 2009-04-28 14:00:32 sezero Exp $
 
 	Copyright (C) 1996-1997  Id Software, Inc.
 
@@ -24,8 +24,11 @@
 
 */
 
-
+#include "q_stdinc.h"
+#include "arch_def.h"
+#include "net_sys.h"
 #include "quakedef.h"
+#include "net_defs.h"
 
 #include "net_dgrm.h"
 #if !defined(SERVERONLY)

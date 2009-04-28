@@ -2,13 +2,12 @@
 	net_wipx.c
 	winsock ipx driver
 
-	$Id: net_wipx.c,v 1.35 2009-01-08 12:01:51 sezero Exp $
+	$Id: net_wipx.c,v 1.36 2009-04-28 14:00:34 sezero Exp $
 */
 
 #include "q_stdinc.h"
 #include "arch_def.h"
 #include "net_sys.h"
-#include "quakedef.h"
 
 #ifndef __LCC__
 #include <wsipx.h>
@@ -25,24 +24,26 @@ typedef struct sockaddr_ipx {
 } SOCKADDR_IPX, *PSOCKADDR_IPX, *LPSOCKADDR_IPX;
 #endif
 
+#include "quakedef.h"
+#include "net_defs.h"
 #include "net_wipx.h"
 
 extern cvar_t hostname;
 
-static int net_acceptsocket = -1;		// socket for fielding new connections
-static int net_controlsocket;
+static sys_socket_t net_acceptsocket = INVALID_SOCKET;	// socket for fielding new connections
+static sys_socket_t net_controlsocket;
 static struct sockaddr_ipx broadcastaddr;
 
 extern qboolean winsock_initialized;
 extern WSADATA		winsockdata;
 
 #define IPXSOCKETS 18
-static int ipxsocket[IPXSOCKETS];
+static sys_socket_t ipxsocket[IPXSOCKETS];
 static int sequence[IPXSOCKETS];
 
 //=============================================================================
 
-int WIPX_Init (void)
+sys_socket_t WIPX_Init (void)
 {
 	int		i;
 	char	*colon;
@@ -50,7 +51,7 @@ int WIPX_Init (void)
 	struct qsockaddr	addr;
 
 	if (COM_CheckParm ("-noipx") || (winsock_initialized == -1))
-		return -1;
+		return INVALID_SOCKET;
 
 	if (winsock_initialized == 0)
 	{
@@ -58,7 +59,7 @@ int WIPX_Init (void)
 		{
 			winsock_initialized = -1;
 			Con_SafePrintf("Winsock initialization failed.\n");
-			return -1;
+			return INVALID_SOCKET;
 		}
 	}
 	winsock_initialized++;
@@ -76,13 +77,13 @@ int WIPX_Init (void)
 		buff[MAXHOSTNAMELEN - 1] = 0;
 	}
 
-	if ((net_controlsocket = WIPX_OpenSocket(0)) == -1)
+	if ((net_controlsocket = WIPX_OpenSocket(0)) == INVALID_SOCKET)
 	{
 		Con_SafePrintf("%s: Unable to open control socket, IPX disabled\n",
 				__thisfunc__);
 		if (--winsock_initialized == 0)
 			WSACleanup ();
-		return -1;
+		return INVALID_SOCKET;
 	}
 
 	broadcastaddr.sa_family = AF_IPX;
@@ -119,25 +120,25 @@ void WIPX_Listen (qboolean state)
 	// enable listening
 	if (state)
 	{
-		if (net_acceptsocket != -1)
+		if (net_acceptsocket != INVALID_SOCKET)
 			return;
-		if ((net_acceptsocket = WIPX_OpenSocket (net_hostport)) == -1)
+		if ((net_acceptsocket = WIPX_OpenSocket (net_hostport)) == INVALID_SOCKET)
 			Sys_Error ("%s: Unable to open accept socket", __thisfunc__);
 		return;
 	}
 
 	// disable listening
-	if (net_acceptsocket == -1)
+	if (net_acceptsocket == INVALID_SOCKET)
 		return;
 	WIPX_CloseSocket (net_acceptsocket);
-	net_acceptsocket = -1;
+	net_acceptsocket = INVALID_SOCKET;
 }
 
 //=============================================================================
 
-int WIPX_OpenSocket (int port)
+sys_socket_t WIPX_OpenSocket (int port)
 {
-	int		handle;
+	sys_socket_t	handle;
 	int		newsocket;
 	struct sockaddr_ipx address;
 	u_long _true = 1;
@@ -148,21 +149,22 @@ int WIPX_OpenSocket (int port)
 			break;
 	}
 	if (handle == IPXSOCKETS)
-		return -1;
+		return INVALID_SOCKET;
 
 	if ((newsocket = socket (AF_IPX, SOCK_DGRAM, NSPROTO_IPX)) == INVALID_SOCKET)
-		return -1;
+		return INVALID_SOCKET;
 
-	if (ioctlsocket (newsocket, FIONBIO, &_true) == -1)
+	if (ioctlsocket (newsocket, FIONBIO, &_true) == SOCKET_ERROR)
 		goto ErrorReturn;
 
-	if (setsockopt(newsocket, SOL_SOCKET, SO_BROADCAST, (char *)&_true, sizeof(_true)) < 0)
+	if (setsockopt(newsocket, SOL_SOCKET, SO_BROADCAST, (char *)&_true, sizeof(_true))
+									 == SOCKET_ERROR)
 		goto ErrorReturn;
 
 	memset(&address, 0, sizeof(struct sockaddr_ipx));
 	address.sa_family = AF_IPX;
 	address.sa_socket = htons((unsigned short)port);
-	if ( bind (newsocket, (struct sockaddr *)&address, sizeof(address)) == 0)
+	if (bind (newsocket, (struct sockaddr *)&address, sizeof(address)) == 0)
 	{
 		ipxsocket[handle] = newsocket;
 		sequence[handle] = 0;
@@ -176,14 +178,14 @@ int WIPX_OpenSocket (int port)
 
 ErrorReturn:
 	closesocket (newsocket);
-	return -1;
+	return INVALID_SOCKET;
 }
 
 //=============================================================================
 
-int WIPX_CloseSocket (int handle)
+int WIPX_CloseSocket (sys_socket_t handle)
 {
-	int socketid = ipxsocket[handle];
+	sys_socket_t socketid = ipxsocket[handle];
 	int ret;
 
 	ret =  closesocket (socketid);
@@ -193,25 +195,25 @@ int WIPX_CloseSocket (int handle)
 
 //=============================================================================
 
-int WIPX_Connect (int handle, struct qsockaddr *addr)
+int WIPX_Connect (sys_socket_t handle, struct qsockaddr *addr)
 {
 	return 0;
 }
 
 //=============================================================================
 
-int WIPX_CheckNewConnections (void)
+sys_socket_t WIPX_CheckNewConnections (void)
 {
-	unsigned long	available;
+	u_long	available;
 
-	if (net_acceptsocket == -1)
-		return -1;
+	if (net_acceptsocket == INVALID_SOCKET)
+		return INVALID_SOCKET;
 
-	if (ioctlsocket (ipxsocket[net_acceptsocket], FIONREAD, &available) == -1)
+	if (ioctlsocket (ipxsocket[net_acceptsocket], FIONREAD, &available) == SOCKET_ERROR)
 		Sys_Error ("WIPX: ioctlsocket (FIONREAD) failed\n");
 	if (available)
 		return net_acceptsocket;
-	return -1;
+	return INVALID_SOCKET;
 }
 
 //=============================================================================
@@ -220,14 +222,14 @@ int WIPX_CheckNewConnections (void)
 static byte netpacketBuffer[NET_MAXMESSAGE + 4];
 //_Datagram_SearchForHosts calls this with net_message.maxsize as len!
 
-int WIPX_Read (int handle, byte *buf, int len, struct qsockaddr *addr)
+int WIPX_Read (sys_socket_t handle, byte *buf, int len, struct qsockaddr *addr)
 {
 	socklen_t addrlen = sizeof(struct qsockaddr);
-	int socketid = ipxsocket[handle];
+	sys_socket_t socketid = ipxsocket[handle];
 	int ret;
 
 	ret = recvfrom (socketid, (char *)netpacketBuffer, len+4, 0, (struct sockaddr *)addr, &addrlen);
-	if (ret == -1)
+	if (ret == SOCKET_ERROR)
 	{
 		int err = WSAGetLastError();
 
@@ -247,16 +249,16 @@ int WIPX_Read (int handle, byte *buf, int len, struct qsockaddr *addr)
 
 //=============================================================================
 
-int WIPX_Broadcast (int handle, byte *buf, int len)
+int WIPX_Broadcast (sys_socket_t handle, byte *buf, int len)
 {
 	return WIPX_Write (handle, buf, len, (struct qsockaddr *)&broadcastaddr);
 }
 
 //=============================================================================
 
-int WIPX_Write (int handle, byte *buf, int len, struct qsockaddr *addr)
+int WIPX_Write (sys_socket_t handle, byte *buf, int len, struct qsockaddr *addr)
 {
-	int socketid = ipxsocket[handle];
+	sys_socket_t socketid = ipxsocket[handle];
 	int ret;
 
 	// build packet with sequence number
@@ -266,7 +268,7 @@ int WIPX_Write (int handle, byte *buf, int len, struct qsockaddr *addr)
 	len += 4;
 
 	ret = sendto (socketid, (char *)netpacketBuffer, len, 0, (struct sockaddr *)addr, sizeof(struct qsockaddr));
-	if (ret == -1)
+	if (ret == SOCKET_ERROR)
 	{
 		if (WSAGetLastError() == WSAEWOULDBLOCK)
 			return 0;
@@ -336,9 +338,9 @@ int WIPX_StringToAddr (const char *string, struct qsockaddr *addr)
 
 //=============================================================================
 
-int WIPX_GetSocketAddr (int handle, struct qsockaddr *addr)
+int WIPX_GetSocketAddr (sys_socket_t handle, struct qsockaddr *addr)
 {
-	int socketid = ipxsocket[handle];
+	sys_socket_t socketid = ipxsocket[handle];
 	socklen_t addrlen = sizeof(struct qsockaddr);
 
 	memset(addr, 0, sizeof(struct qsockaddr));

@@ -3,7 +3,7 @@
 	Beame & Whiteside TCP/IP for dosquake.
 	from quake1 source with minor adaptations for uhexen2.
 
-	$Id: net_bw.c,v 1.5 2009-01-08 12:01:51 sezero Exp $
+	$Id: net_bw.c,v 1.6 2009-04-28 14:00:34 sezero Exp $
 
 	Copyright (C) 1996-1997  Id Software, Inc.
 
@@ -35,6 +35,8 @@
 
 #include "quakedef.h"
 #include "dosisms.h"
+#include "dos_sock.h"
+#include "net_defs.h"
 
 
 // this section is general Unix stuff that we need

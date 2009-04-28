@@ -2,18 +2,18 @@
 	net_wins.c
 	winsock udp driver
 
-	$Id: net_wins.c,v 1.36 2009-01-08 12:01:51 sezero Exp $
+	$Id: net_wins.c,v 1.37 2009-04-28 14:00:34 sezero Exp $
 */
-
 
 #include "q_stdinc.h"
 #include "arch_def.h"
 #include "net_sys.h"
 #include "quakedef.h"
+#include "net_defs.h"
 
-static int net_acceptsocket = -1;	// socket for fielding new connections
-static int net_controlsocket;
-static int net_broadcastsocket = 0;
+static sys_socket_t net_acceptsocket = INVALID_SOCKET;	// socket for fielding new connections
+static sys_socket_t net_controlsocket;
+static sys_socket_t net_broadcastsocket = 0;
 static struct sockaddr_in broadcastaddr;
 
 static struct in_addr	myAddr,		// the local address returned by the OS.
@@ -63,7 +63,7 @@ static BOOL PASCAL FAR BlockingHook(void)
 }
 #endif	/* ! _USE_WINSOCK2 */
 
-int WINS_Init (void)
+sys_socket_t WINS_Init (void)
 {
 	int		i;
 	char	*colon;
@@ -72,7 +72,7 @@ int WINS_Init (void)
 	struct qsockaddr	addr;
 
 	if (COM_CheckParm ("-noudp") || (winsock_initialized == -1))
-		return -1;
+		return INVALID_SOCKET;
 
 	if (winsock_initialized == 0)
 	{
@@ -80,7 +80,7 @@ int WINS_Init (void)
 		{
 			winsock_initialized = -1;
 			Con_SafePrintf("Winsock initialization failed.\n");
-			return -1;
+			return INVALID_SOCKET;
 		}
 	}
 	winsock_initialized++;
@@ -157,13 +157,13 @@ int WINS_Init (void)
 		localAddr.s_addr = INADDR_NONE;
 	}
 
-	if ((net_controlsocket = WINS_OpenSocket(0)) == -1)
+	if ((net_controlsocket = WINS_OpenSocket(0)) == INVALID_SOCKET)
 	{
 		Con_SafePrintf("%s: Unable to open control socket, UDP disabled\n",
 				__thisfunc__);
 		if (--winsock_initialized == 0)
 			WSACleanup ();
-		return -1;
+		return INVALID_SOCKET;
 	}
 
 	broadcastaddr.sin_family = AF_INET;
@@ -199,32 +199,32 @@ void WINS_Listen (qboolean state)
 	// enable listening
 	if (state)
 	{
-		if (net_acceptsocket != -1)
+		if (net_acceptsocket != INVALID_SOCKET)
 			return;
-		if ((net_acceptsocket = WINS_OpenSocket (net_hostport)) == -1)
+		if ((net_acceptsocket = WINS_OpenSocket (net_hostport)) == INVALID_SOCKET)
 			Sys_Error ("%s: Unable to open accept socket", __thisfunc__);
 		return;
 	}
 
 	// disable listening
-	if (net_acceptsocket == -1)
+	if (net_acceptsocket == INVALID_SOCKET)
 		return;
 	WINS_CloseSocket (net_acceptsocket);
-	net_acceptsocket = -1;
+	net_acceptsocket = INVALID_SOCKET;
 }
 
 //=============================================================================
 
-int WINS_OpenSocket (int port)
+sys_socket_t WINS_OpenSocket (int port)
 {
-	int newsocket;
+	sys_socket_t newsocket;
 	struct sockaddr_in address;
 	u_long _true = 1;
 
-	if ((newsocket = socket (PF_INET, SOCK_DGRAM, IPPROTO_UDP)) == -1)
-		return -1;
+	if ((newsocket = socket (PF_INET, SOCK_DGRAM, IPPROTO_UDP)) == INVALID_SOCKET)
+		return INVALID_SOCKET;
 
-	if (ioctlsocket (newsocket, FIONBIO, &_true) == -1)
+	if (ioctlsocket (newsocket, FIONBIO, &_true) == INVALID_SOCKET)
 		goto ErrorReturn;
 
 	memset(&address, 0, sizeof(struct sockaddr_in));
@@ -234,7 +234,7 @@ int WINS_OpenSocket (int port)
 	else
 		address.sin_addr.s_addr = INADDR_ANY;
 	address.sin_port = htons((unsigned short)port);
-	if ( bind (newsocket, (struct sockaddr *)&address, sizeof(address)) == 0)
+	if (bind (newsocket, (struct sockaddr *)&address, sizeof(address)) == 0)
 		return newsocket;
 
 	if (tcpipAvailable)
@@ -244,12 +244,12 @@ int WINS_OpenSocket (int port)
 
 ErrorReturn:
 	closesocket (newsocket);
-	return -1;
+	return INVALID_SOCKET;
 }
 
 //=============================================================================
 
-int WINS_CloseSocket (int socketid)
+int WINS_CloseSocket (sys_socket_t socketid)
 {
 	if (socketid == net_broadcastsocket)
 		net_broadcastsocket = 0;
@@ -313,36 +313,37 @@ static int PartialIPAddress (const char *in, struct qsockaddr *hostaddr)
 
 //=============================================================================
 
-int WINS_Connect (int socketid, struct qsockaddr *addr)
+int WINS_Connect (sys_socket_t socketid, struct qsockaddr *addr)
 {
 	return 0;
 }
 
 //=============================================================================
 
-int WINS_CheckNewConnections (void)
+sys_socket_t WINS_CheckNewConnections (void)
 {
 	char		buf[4096];
 
-	if (net_acceptsocket == -1)
+	if (net_acceptsocket == INVALID_SOCKET)
 		return -1;
 
-	if (recvfrom (net_acceptsocket, buf, sizeof(buf), MSG_PEEK, NULL, NULL) >= 0)
+	if (recvfrom (net_acceptsocket, buf, sizeof(buf), MSG_PEEK, NULL, NULL)
+							!= SOCKET_ERROR) /* >= 0 */
 	{
 		return net_acceptsocket;
 	}
-	return -1;
+	return INVALID_SOCKET;
 }
 
 //=============================================================================
 
-int WINS_Read (int socketid, byte *buf, int len, struct qsockaddr *addr)
+int WINS_Read (sys_socket_t socketid, byte *buf, int len, struct qsockaddr *addr)
 {
 	socklen_t addrlen = sizeof(struct qsockaddr);
 	int ret;
 
 	ret = recvfrom (socketid, (char *)buf, len, 0, (struct sockaddr *)addr, &addrlen);
-	if (ret == -1)
+	if (ret == SOCKET_ERROR)
 	{
 		int err = WSAGetLastError();
 
@@ -354,12 +355,13 @@ int WINS_Read (int socketid, byte *buf, int len, struct qsockaddr *addr)
 
 //=============================================================================
 
-static int WINS_MakeSocketBroadcastCapable (int socketid)
+static int WINS_MakeSocketBroadcastCapable (sys_socket_t socketid)
 {
 	int	i = 1;
 
 	// make this socket broadcast capable
-	if (setsockopt(socketid, SOL_SOCKET, SO_BROADCAST, (char *)&i, sizeof(i)) < 0)
+	if (setsockopt(socketid, SOL_SOCKET, SO_BROADCAST, (char *)&i, sizeof(i))
+								 == SOCKET_ERROR)
 		return -1;
 	net_broadcastsocket = socketid;
 
@@ -368,7 +370,7 @@ static int WINS_MakeSocketBroadcastCapable (int socketid)
 
 //=============================================================================
 
-int WINS_Broadcast (int socketid, byte *buf, int len)
+int WINS_Broadcast (sys_socket_t socketid, byte *buf, int len)
 {
 	int	ret;
 
@@ -389,12 +391,12 @@ int WINS_Broadcast (int socketid, byte *buf, int len)
 
 //=============================================================================
 
-int WINS_Write (int socketid, byte *buf, int len, struct qsockaddr *addr)
+int WINS_Write (sys_socket_t socketid, byte *buf, int len, struct qsockaddr *addr)
 {
 	int	ret;
 
 	ret = sendto (socketid, (char *)buf, len, 0, (struct sockaddr *)addr, sizeof(struct qsockaddr));
-	if (ret == -1)
+	if (ret == SOCKET_ERROR)
 	{
 		if (WSAGetLastError() == WSAEWOULDBLOCK)
 			return 0;
@@ -434,7 +436,7 @@ int WINS_StringToAddr (const char *string, struct qsockaddr *addr)
 
 //=============================================================================
 
-int WINS_GetSocketAddr (int socketid, struct qsockaddr *addr)
+int WINS_GetSocketAddr (sys_socket_t socketid, struct qsockaddr *addr)
 {
 	socklen_t addrlen = sizeof(struct qsockaddr);
 	struct sockaddr_in *address = (struct sockaddr_in *)addr;
