@@ -4,7 +4,7 @@
 	- depends on arch_def.h
 	- may depend on q_stdinc.h
 
-	$Id: net_sys.h,v 1.16 2009-04-28 12:02:32 sezero Exp $
+	$Id: net_sys.h,v 1.17 2009-04-29 15:36:00 sezero Exp $
 
 	Copyright (C) 2007  O.Sezer <sezero@users.sourceforge.net>
 
@@ -68,6 +68,8 @@ typedef int	socklen_t;
 #define	closesocket	close
 #endif
 
+#define	socketerror(x)	strerror((x))
+
 #endif	/* end of unix stuff */
 
 
@@ -99,6 +101,8 @@ typedef SOCKET	sys_socket_t;
 #define	SOCKETERRNO	WSAGetLastError()
 #define	EWOULDBLOCK	WSAEWOULDBLOCK
 #define	ECONNREFUSED	WSAECONNREFUSED
+/* must #include "wsaerror.h" for this : */
+#define	socketerror(x)	__WSAE_StrError((x))
 
 #endif	/* end of windows stuff */
 
