@@ -1,6 +1,6 @@
 /*
 	hwrcon.c
-	$Id: hwrcon.c,v 1.22 2009-04-27 12:50:43 sezero Exp $
+	$Id: hwrcon.c,v 1.23 2009-04-29 17:35:12 sezero Exp $
 
 	HWRCON 1.2 HexenWorld Remote CONsole
 	Idea based on RCon 1.1 by Michael Dwyer/N0ZAP (18-May-1998).
@@ -56,6 +56,7 @@ typedef struct
 //=============================================================================
 
 #if defined(PLATFORM_WINDOWS)
+#include "wsaerror.h"
 static WSADATA		winsockdata;
 #endif
 
@@ -149,8 +150,9 @@ static int NET_StringToAdr (const char *s, netadr_t *a)
 static void NET_Init (void)
 {
 #if defined(PLATFORM_WINDOWS)
-	if (WSAStartup(MAKEWORD(1,1), &winsockdata) != 0)
-		Sys_Error ("Winsock initialization failed.");
+	int err = WSAStartup(MAKEWORD(1,1), &winsockdata);
+	if (err != 0)
+		Sys_Error ("Winsock initialization failed (%s)", socketerror(err));
 #endif	/* PLATFORM_WINDOWS */
 }
 
@@ -195,6 +197,7 @@ int main (int argc, char *argv[])
 	unsigned char	packet[MAX_RCON_PACKET];
 	netadr_t		ipaddress;
 	struct sockaddr_in	hostaddress;
+	int		err;
 
 	printf ("HWRCON %d.%d.%d\n", VER_HWRCON_MAJ, VER_HWRCON_MID, VER_HWRCON_MIN);
 
@@ -254,8 +257,9 @@ int main (int argc, char *argv[])
 	socketfd = socket(PF_INET, SOCK_DGRAM, IPPROTO_UDP);
 	if (socketfd == INVALID_SOCKET)
 	{
+		err = SOCKETERRNO;
 		NET_Shutdown ();
-		Sys_Error ("Couldn't open socket: %s", strerror(errno));
+		Sys_Error ("Couldn't open socket: %s", socketerror(err));
 	}
 
 // Send the packet
@@ -275,7 +279,8 @@ int main (int argc, char *argv[])
 #endif
 	if (size != len)
 	{
-		perror ("Sendto failed");
+		err = SOCKETERRNO;
+		printf ("Sendto failed: %s\n", socketerror(err));
 		NET_Shutdown ();
 		exit (1);
 	}

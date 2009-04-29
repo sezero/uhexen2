@@ -1,6 +1,6 @@
 /*
 	hwterm.c
-	$Id: hwterm.c,v 1.28 2009-04-27 12:50:43 sezero Exp $
+	$Id: hwterm.c,v 1.29 2009-04-29 17:35:12 sezero Exp $
 
 	HWTERM 1.2 HexenWorld Remote Console Terminal
 	Idea based on QTerm 1.1 by Michael Dwyer/N0ZAP (18-May-1998).
@@ -63,6 +63,7 @@ typedef struct
 //=============================================================================
 
 #if defined(PLATFORM_WINDOWS)
+#include "wsaerror.h"
 static WSADATA		winsockdata;
 #endif
 
@@ -171,8 +172,9 @@ static int NET_WaitReadTimeout (sys_socket_t fd, long sec, long usec)
 static void NET_Init (void)
 {
 #if defined(PLATFORM_WINDOWS)
-	if (WSAStartup(MAKEWORD(1,1), &winsockdata) != 0)
-		Sys_Error ("Winsock initialization failed.");
+	int err = WSAStartup(MAKEWORD(1,1), &winsockdata);
+	if (err != 0)
+		Sys_Error ("Winsock initialization failed (%s)", socketerror(err));
 #endif	/* PLATFORM_WINDOWS */
 }
 
@@ -217,6 +219,7 @@ int main (int argc, char *argv[])
 	netadr_t		ipaddress;
 	struct sockaddr_in	hostaddress;
 	unsigned long	_true = 1;
+	int		err;
 
 	printf ("HWTERM %d.%d.%d\n", VER_HWTERM_MAJ, VER_HWTERM_MID, VER_HWTERM_MIN);
 
@@ -245,14 +248,16 @@ int main (int argc, char *argv[])
 	socketfd = socket(PF_INET, SOCK_DGRAM, IPPROTO_UDP);
 	if (socketfd == INVALID_SOCKET)
 	{
+		err = SOCKETERRNO;
 		NET_Shutdown ();
-		Sys_Error ("Couldn't open socket: %s", strerror(errno));
+		Sys_Error ("Couldn't open socket: %s", socketerror(err));
 	}
 // Set the socket to non-blocking mode
 	if (ioctlsocket (socketfd, FIONBIO, &_true) == SOCKET_ERROR)
 	{
+		err = SOCKETERRNO;
 		NET_Shutdown ();
-		Sys_Error ("ioctl FIONBIO: %s", strerror(errno));
+		Sys_Error ("ioctl FIONBIO: %s", socketerror(err));
 	}
 
 	printf ("Use CTRL-C to exit\n");
@@ -301,7 +306,8 @@ int main (int argc, char *argv[])
 	// See if it worked
 		if (size != hufflen)
 		{
-			perror ("Sendto failed");
+			err = SOCKETERRNO;
+			printf ("Sendto failed: %s\n", socketerror(err));
 			Sys_Quit (1);
 		}
 
@@ -319,20 +325,12 @@ int main (int argc, char *argv[])
 				(struct sockaddr *)&hostaddress, &fromlen);
 			if (size == SOCKET_ERROR)
 			{
-#if defined(PLATFORM_WINDOWS)
-				int err = WSAGetLastError();
-				if (err != WSAEWOULDBLOCK)
+				err = SOCKETERRNO;
+				if (err != EWOULDBLOCK)
 				{
-					printf ("Recv failed: %s\n", strerror(err));
+					printf ("Recv failed: %s\n", socketerror(err));
 					Sys_Quit (1);
 				}
-#else
-				if (errno != EWOULDBLOCK)
-				{
-					perror("Recv failed");
-					Sys_Quit (1);
-				}
-#endif
 			}
 			else if (size == sizeof(response))
 			{

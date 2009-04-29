@@ -2,7 +2,7 @@
 	net_udp.c
 	network UDP driver
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/net_wins.c,v 1.48 2009-04-29 07:49:27 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/net_wins.c,v 1.49 2009-04-29 17:35:12 sezero Exp $
 */
 
 #include "q_stdinc.h"
@@ -27,6 +27,7 @@ sizebuf_t	net_message;
 static sys_socket_t	net_socket = INVALID_SOCKET;
 
 #ifdef PLATFORM_WINDOWS
+#include "wsaerror.h"
 static WSADATA	winsockdata;
 #endif
 
@@ -183,7 +184,7 @@ int NET_GetPacket (void)
 			return 0;
 		}
 # endif	/* _WINDOWS */
-		Sys_Error ("%s: %s", __thisfunc__, strerror(err));
+		Sys_Error ("%s: %s", __thisfunc__, socketerror(err));
 	}
 
 	SockadrToNetadr (&from, &net_from);
@@ -233,7 +234,7 @@ void NET_SendPacket (int length, void *data, netadr_t to)
 			Con_Printf ("%s: Connection refused\n", __thisfunc__);
 			return;
 		}
-		Con_Printf ("%s ERROR: %i\n", __thisfunc__, errno);
+		Con_Printf ("%s ERROR: %s\n", __thisfunc__, socketerror(err));
 	}
 }
 
@@ -265,13 +266,20 @@ static sys_socket_t UDP_OpenSocket (int port)
 	sys_socket_t	newsocket;
 	struct sockaddr_in	address;
 	unsigned long _true = 1;
+	int		err;
 
 	newsocket = socket (PF_INET, SOCK_DGRAM, IPPROTO_UDP);
 	if (newsocket == INVALID_SOCKET)
-		Sys_Error ("%s: socket: %s", __thisfunc__, strerror(errno));
+	{
+		err = SOCKETERRNO;
+		Sys_Error ("%s: socket: %s", __thisfunc__, socketerror(err));
+	}
 
 	if (ioctlsocket (newsocket, FIONBIO, &_true) == SOCKET_ERROR)
-		Sys_Error ("%s: ioctl FIONBIO: %s", __thisfunc__, strerror(errno));
+	{
+		err = SOCKETERRNO;
+		Sys_Error ("%s: ioctl FIONBIO: %s", __thisfunc__, socketerror(err));
+	}
 
 	memset(&address, 0, sizeof(struct sockaddr_in));
 	address.sin_family = AF_INET;
@@ -297,7 +305,10 @@ static sys_socket_t UDP_OpenSocket (int port)
 		address.sin_port = htons((short)port);
 
 	if (bind(newsocket, (struct sockaddr *)&address, sizeof(address)) == SOCKET_ERROR)
-		Sys_Error ("%s: bind: %s", __thisfunc__, strerror(errno));
+	{
+		err = SOCKETERRNO;
+		Sys_Error ("%s: bind: %s", __thisfunc__, socketerror(err));
+	}
 
 	return newsocket;
 }
@@ -307,16 +318,23 @@ static void NET_GetLocalAddress (void)
 	char	buff[MAXHOSTNAMELEN];
 	struct sockaddr_in	address;
 	socklen_t		namelen;
+	int		err;
 
 	if (gethostname(buff, MAXHOSTNAMELEN) == SOCKET_ERROR)
-		Sys_Error ("%s: gethostname: %s", __thisfunc__, strerror(errno));
+	{
+		err = SOCKETERRNO;
+		Sys_Error ("%s: gethostname: %s", __thisfunc__, socketerror(err));
+	}
 	buff[MAXHOSTNAMELEN-1] = 0;
 
 	NET_StringToAdr (buff, &net_local_adr);
 
 	namelen = sizeof(address);
 	if (getsockname (net_socket, (struct sockaddr *)&address, &namelen) == SOCKET_ERROR)
-		Sys_Error ("%s: getsockname: %s", __thisfunc__, strerror(errno));
+	{
+		err = SOCKETERRNO;
+		Sys_Error ("%s: getsockname: %s", __thisfunc__, socketerror(err));
+	}
 	net_local_adr.port = address.sin_port;
 
 	Con_SafePrintf("IP address %s\n", NET_AdrToString(net_local_adr));
@@ -330,13 +348,13 @@ NET_Init
 void NET_Init (int port)
 {
 	in_addr_t a = htonl(INADDR_LOOPBACK);
+#ifdef PLATFORM_WINDOWS
+	int err = WSAStartup(MAKEWORD(1,1), &winsockdata);
+	if (err != 0)
+		Sys_Error ("Winsock initialization failed (%s)", socketerror(err));
+#endif
 
 	HuffInit();
-
-#ifdef PLATFORM_WINDOWS
-	if (WSAStartup(MAKEWORD(1,1), &winsockdata) != 0)
-		Sys_Error ("Winsock initialization failed.");
-#endif
 
 	//
 	// open the single socket to be used for all communications
