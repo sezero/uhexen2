@@ -9,6 +9,17 @@ Development Progress	:
       returning the result from the select() call on the net_socket, and removed the
       select() calls from sys_* files.  while we were there, changed NET_GetPacket to
       return int instead of qboolean.
+    * added winsock error codes as a header file, with static __WSAE_StrError()
+      function returning the proper string.
+    * net_sys.h: added a socketerror macro to receive error strings either by
+      strerror() or by newly added __WSAE_StrError() of wsaerror.h.
+    * wsaerror.h: minor update.
+    * used the newly added wsaerror.h in hexenworld engine and utilities.
+    * used the newly added wsaerror.h in hexen2 engine (net_wins.c, net_wipx.c).
+      also added some strerror debug output to net_udp.c .
+    * hexen2 net_udp.c, net_wins.c, net_wipx.c: fixed compilation after the previous
+      commit.
+    * bumped the version to 1.4.4-pre6/2009-04-29.
 
 2009-04-28 (CVS):
     * added new definitions sys_socket_t, INVALID_SOCKET and SOCKET_ERROR to net_sys.h
