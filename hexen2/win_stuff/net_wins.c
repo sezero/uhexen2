@@ -2,7 +2,7 @@
 	net_wins.c
 	winsock udp driver
 
-	$Id: net_wins.c,v 1.38 2009-04-29 19:45:59 sezero Exp $
+	$Id: net_wins.c,v 1.39 2009-04-29 20:00:14 sezero Exp $
 */
 
 #include "q_stdinc.h"
@@ -34,7 +34,7 @@ WSADATA		winsockdata;
 #define __wsaerr_static			/* not static: used by net_wipx.c too */
 #include "wsaerror.h"
 
-static int sock_errno;
+static int	sock_errno;
 
 //=============================================================================
 
@@ -371,7 +371,8 @@ int WINS_Read (sys_socket_t socketid, byte *buf, int len, struct qsockaddr *addr
 		sock_errno = WSAGetLastError();
 		if (sock_errno == WSAEWOULDBLOCK || sock_errno == WSAECONNREFUSED)
 			return 0;
-		Con_SafeDPrintf ("%s, recvfrom: %s\n", __WSAE_StrError(sock_errno));
+		Con_SafeDPrintf ("%s, recvfrom: %s\n",
+				__thisfunc__, __WSAE_StrError(sock_errno));
 	}
 	return ret;
 }
@@ -387,7 +388,8 @@ static int WINS_MakeSocketBroadcastCapable (sys_socket_t socketid)
 								 == SOCKET_ERROR)
 	{
 		sock_errno = WSAGetLastError();
-		Con_SafePrintf ("%s, setsockopt: %s\n", __WSAE_StrError(sock_errno));
+		Con_SafePrintf ("%s, setsockopt: %s\n",
+				__thisfunc__, __WSAE_StrError(sock_errno));
 		return -1;
 	}
 	net_broadcastsocket = socketid;
@@ -429,7 +431,8 @@ int WINS_Write (sys_socket_t socketid, byte *buf, int len, struct qsockaddr *add
 		sock_errno = WSAGetLastError();
 		if (sock_errno == WSAEWOULDBLOCK)
 			return 0;
-		Con_SafeDPrintf ("%s, sendto: %s\n", __WSAE_StrError(sock_errno));
+		Con_SafeDPrintf ("%s, sendto: %s\n",
+				__thisfunc__, __WSAE_StrError(sock_errno));
 	}
 
 	return ret;

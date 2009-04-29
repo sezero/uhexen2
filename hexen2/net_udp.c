@@ -1,6 +1,6 @@
 /*
 	net_udp.c
-	$Id: net_udp.c,v 1.45 2009-04-29 19:45:40 sezero Exp $
+	$Id: net_udp.c,v 1.46 2009-04-29 20:00:14 sezero Exp $
 
 	Copyright (C) 1996-1997  Id Software, Inc.
 
@@ -390,7 +390,7 @@ int UDP_Read (sys_socket_t socketid, byte *buf, int len, struct qsockaddr *addr)
 	{
 		if (errno == EWOULDBLOCK || errno == ECONNREFUSED)
 			return 0;
-		Con_SafeDPrintf ("%s, recvfrom: %s\n", strerror(errno));
+		Con_SafeDPrintf ("%s, recvfrom: %s\n", __thisfunc__, strerror(errno));
 	}
 	return ret;
 }
@@ -405,7 +405,7 @@ static int UDP_MakeSocketBroadcastCapable (sys_socket_t socketid)
 	if (setsockopt(socketid, SOL_SOCKET, SO_BROADCAST, (char *)&i, sizeof(i))
 								 == SOCKET_ERROR)
 	{
-		Con_SafePrintf ("%s, setsockopt: %s\n", strerror(errno));
+		Con_SafePrintf ("%s, setsockopt: %s\n", __thisfunc__, strerror(errno));
 		return -1;
 	}
 	net_broadcastsocket = socketid;
@@ -446,7 +446,7 @@ int UDP_Write (sys_socket_t socketid, byte *buf, int len, struct qsockaddr *addr
 	{
 		if (errno == EWOULDBLOCK)
 			return 0;
-		Con_SafeDPrintf ("%s, sendto: %s\n", strerror(errno));
+		Con_SafeDPrintf ("%s, sendto: %s\n", __thisfunc__, strerror(errno));
 	}
 	return ret;
 }

@@ -2,7 +2,7 @@
 	net_wipx.c
 	winsock ipx driver
 
-	$Id: net_wipx.c,v 1.37 2009-04-29 19:45:59 sezero Exp $
+	$Id: net_wipx.c,v 1.38 2009-04-29 20:00:14 sezero Exp $
 */
 
 #include "q_stdinc.h"
@@ -260,7 +260,8 @@ int WIPX_Read (sys_socket_t handle, byte *buf, int len, struct qsockaddr *addr)
 
 		if (sock_errno == WSAEWOULDBLOCK || sock_errno == WSAECONNREFUSED)
 			return 0;
-		Con_SafeDPrintf ("%s, recvfrom: %s\n", __WSAE_StrError(sock_errno));
+		Con_SafeDPrintf ("%s, recvfrom: %s\n",
+				__thisfunc__, __WSAE_StrError(sock_errno));
 	}
 
 	if (ret < 4)
@@ -299,7 +300,8 @@ int WIPX_Write (sys_socket_t handle, byte *buf, int len, struct qsockaddr *addr)
 		sock_errno = WSAGetLastError();
 		if (sock_errno == WSAEWOULDBLOCK)
 			return 0;
-		Con_SafeDPrintf ("%s, sendto: %s\n", __WSAE_StrError(sock_errno));
+		Con_SafeDPrintf ("%s, sendto: %s\n",
+				__thisfunc__, __WSAE_StrError(sock_errno));
 	}
 
 	return ret;
@@ -376,7 +378,8 @@ int WIPX_GetSocketAddr (sys_socket_t handle, struct qsockaddr *addr)
 	{
 		sock_errno = WSAGetLastError();
 		/* FIXME: what action should be taken?... */
-		Con_SafePrintf ("%s, getsockname: %s\n", __WSAE_StrError(sock_errno));
+		Con_SafePrintf ("%s, getsockname: %s\n",
+				__thisfunc__, __WSAE_StrError(sock_errno));
 	}
 
 	return 0;
