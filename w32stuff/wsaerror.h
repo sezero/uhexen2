@@ -1,11 +1,16 @@
 
 /* strings for winsock error codes.
  * from online references, such as
+ * http://aluigi.org/mytoolz/winerr.h
  * http://www.winsock-error.com or
  * http://www.sockets.com/err_lst1.htm
  */
 
-static const char *__WSAE_StrError (int err)
+#ifndef __wsaerr_static
+#define __wsaerr_static static
+#endif	/* static */
+
+__wsaerr_static const char *__WSAE_StrError (int err)
 {
 	switch (err)
 	{
