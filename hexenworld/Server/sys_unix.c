@@ -2,7 +2,7 @@
 	sys_unix.c
 	Unix system interface code
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Server/sys_unix.c,v 1.56 2008-12-21 18:10:04 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Server/sys_unix.c,v 1.57 2009-04-29 07:49:28 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -400,8 +400,6 @@ int main (int argc, char **argv)
 {
 	int			i;
 	double		newtime, time, oldtime;
-	struct timeval	timeout;
-	fd_set		fdset;
 
 	PrintVersion();
 
@@ -493,15 +491,7 @@ int main (int argc, char **argv)
 	oldtime = Sys_DoubleTime () - HX_FRAME_TIME;
 	while (1)
 	{
-	// select on the net socket and stdin
-	// the only reason we have a timeout at all is so that if the last
-	// connected client times out, the message would not otherwise
-	// be printed until the next event.
-		FD_ZERO(&fdset);
-		FD_SET(net_socket, &fdset);
-		timeout.tv_sec = 0;
-		timeout.tv_usec = 10000;
-		if (select (net_socket+1, &fdset, NULL, NULL, &timeout) == -1)
+		if (NET_CheckSockets() == -1)
 			continue;
 
 	// find time passed since last cycle

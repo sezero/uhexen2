@@ -2,7 +2,7 @@
 	hwmaster.c
 	main master server program
 
-	$Id: master.c,v 1.9 2009-01-27 12:33:06 sezero Exp $
+	$Id: master.c,v 1.10 2009-04-29 07:49:28 sezero Exp $
 */
 
 #include "q_stdinc.h"
@@ -573,13 +573,13 @@ static void SV_TimeOut(void)
 
 void SV_Frame (void)
 {
-	Sys_CheckInput (net_socket);
-
 	SV_GetConsoleCommands ();
 
 	Cbuf_Execute ();
 
 	SV_TimeOut();
+
+	NET_CheckSockets ();	/* FIXME: check return code ? */
 
 	SV_ReadPackets();
 }

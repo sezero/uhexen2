@@ -2,20 +2,12 @@
 	sys_main.c
 	main loop and system interface
 
-	$Id: sys_main.c,v 1.49 2009-01-24 23:41:27 sezero Exp $
+	$Id: sys_main.c,v 1.50 2009-04-29 07:49:28 sezero Exp $
 */
 
 #include "q_stdinc.h"
 #include "compiler.h"
 #include "arch_def.h"
-#if defined(PLATFORM_WINDOWS)
-#ifdef _WIN64
-# ifndef _USE_WINSOCK2
-# define _USE_WINSOCK2	1
-# endif
-#endif
-#include <windows.h>
-#endif
 
 #include "defs.h"
 
@@ -30,14 +22,9 @@
 #endif
 
 #if defined(PLATFORM_WINDOWS)
+#include <windows.h>
 #include <io.h>
 #include <conio.h>
-/* fd_set, struct timeval */
-#ifndef _USE_WINSOCK2
-#include <winsock.h>
-#else
-#include <winsock2.h>
-#endif
 #include <mmsystem.h>
 #include "io_msvc.h"
 #endif	/* WINDOWS */
@@ -54,10 +41,7 @@ static DWORD		starttime;
 static double		starttime;
 static qboolean		first = true;
 
-static int	do_stdin = 1;
-static qboolean	stdin_ready;
 static char	userdir[MAX_OSPATH];
-
 extern char	filters_file[MAX_OSPATH];
 #endif	/* PLATFORM_UNIX */
 
@@ -85,49 +69,6 @@ void Sys_Quit (void)
 
 
 //=============================================================================
-
-/* sys_dead_sleep: When set, the server gets NO cpu if no clients are connected
-   and there's no other activity. *MIGHT* cause problems with some mods. */
-static qboolean sys_dead_sleep	= 0;
-
-int Sys_CheckInput (int ns)
-{
-	fd_set		fdset;
-	int		res;
-	struct timeval	_timeout;
-	struct timeval	*timeout = 0;
-
-	_timeout.tv_sec = 0;
-#ifdef PLATFORM_WINDOWS
-	_timeout.tv_usec = ns < 0 ? 0 : 100;
-#else
-	_timeout.tv_usec = ns < 0 ? 0 : 10000;
-#endif
-	// select on the net socket and stdin
-	// the only reason we have a timeout at all is so that if the last
-	// connected client times out, the message would not otherwise
-	// be printed until the next event.
-	FD_ZERO (&fdset);
-
-#ifndef PLATFORM_WINDOWS
-	if (do_stdin)
-		FD_SET (0, &fdset);
-#endif
-	if (ns >= 0)
-		FD_SET (ns, &fdset);
-
-	if (!sys_dead_sleep)
-		timeout = &_timeout;
-
-	res = select (q_max(ns, 0) + 1, &fdset, NULL, NULL, timeout);
-	if (res == 0 || res == -1)
-		return 0;
-
-#ifndef PLATFORM_WINDOWS
-	stdin_ready = FD_ISSET (0, &fdset);
-#endif
-	return 1;
-}
 
 char *Sys_ConsoleInput (void)
 {
@@ -175,22 +116,51 @@ char *Sys_ConsoleInput (void)
 	}
 
 	return NULL;
-#else
-	if (!stdin_ready || !do_stdin)
-		return NULL;	// the select didn't say it was ready
-	stdin_ready = false;
 
-	textlen = read (0, con_text, sizeof (con_text));
-	if (textlen == 0)
-	{	// end of file
-		do_stdin = 0;
-		return NULL;
+#else	/* UNIX: */
+
+	char		c;
+	fd_set		set;
+	struct timeval	timeout;
+
+	FD_ZERO (&set);
+	FD_SET (0, &set);	// stdin
+	timeout.tv_sec = 0;
+	timeout.tv_usec = 0;
+
+	while (select (1, &set, NULL, NULL, &timeout))
+	{
+		read (0, &c, 1);
+		if (c == '\n' || c == '\r')
+		{
+			con_text[textlen] = '\0';
+			textlen = 0;
+			return con_text;
+		}
+		else if (c == 8)
+		{
+			if (textlen)
+			{
+				textlen--;
+				con_text[textlen] = '\0';
+			}
+			continue;
+		}
+		con_text[textlen] = c;
+		textlen++;
+		if (textlen < sizeof(con_text))
+			con_text[textlen] = '\0';
+		else
+		{
+		// buffer is full
+			textlen = 0;
+			con_text[0] = '\0';
+			printf("\nConsole input too long!\n");
+			break;
+		}
 	}
-	if (textlen < 1)
-		return NULL;
-	con_text[textlen - 1] = '\0';	// rip off the \n and terminate
 
-	return con_text;
+	return NULL;
 #endif
 }
 

@@ -2,7 +2,7 @@
 	net.h
 	quake's interface to the networking layer
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/net.h,v 1.10 2008-12-28 12:18:25 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/net.h,v 1.11 2009-04-29 07:49:27 sezero Exp $
 */
 
 #ifndef __H2W_NET_H
@@ -24,12 +24,11 @@ extern	sizebuf_t	net_message;
 
 extern	cvar_t	hostname;
 
-extern	int		net_socket;
-
 void		NET_Init (int port);
 void		NET_Shutdown (void);
-qboolean	NET_GetPacket (void);
+int		NET_GetPacket (void);
 void		NET_SendPacket (int length, void *data, netadr_t to);
+int		NET_CheckSockets (void);
 
 qboolean	NET_CompareAdr (netadr_t a, netadr_t b);
 qboolean	NET_CompareBaseAdr (netadr_t a, netadr_t b);	// without port.

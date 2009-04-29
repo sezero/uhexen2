@@ -2,7 +2,7 @@
 	net_udp.c
 	network UDP driver
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Master/net.c,v 1.41 2009-01-27 14:42:22 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Master/net.c,v 1.42 2009-04-29 07:49:28 sezero Exp $
 */
 
 #include "q_stdinc.h"
@@ -21,13 +21,14 @@ netadr_t	net_local_adr;
 netadr_t	net_loopback_adr;
 netadr_t	net_from;
 sizebuf_t	net_message;
-int			net_socket;
+
+static sys_socket_t	net_socket = INVALID_SOCKET;
 
 #ifdef PLATFORM_WINDOWS
 static WSADATA	winsockdata;
 #endif
 
-#define	MAX_UDP_PACKET	(MAX_MSGLEN+9)	// one more than msg + header
+#define	MAX_UDP_PACKET	(MAX_MSGLEN + 9)	/* one more than msg + header */
 static byte	net_message_buffer[MAX_UDP_PACKET];
 
 
@@ -128,7 +129,7 @@ qboolean NET_StringToAdr (const char *s, netadr_t *a)
 	{
 		h = gethostbyname (copy);
 		if (!h)
-			return 0;
+			return false;
 		sadr.sin_addr.s_addr = *(in_addr_t *)h->h_addr_list[0];
 	}
 
@@ -140,7 +141,7 @@ qboolean NET_StringToAdr (const char *s, netadr_t *a)
 
 //=============================================================================
 
-qboolean NET_GetPacket (void)
+int NET_GetPacket (void)
 {
 	int	ret;
 	struct sockaddr_in	from;
@@ -151,36 +152,36 @@ qboolean NET_GetPacket (void)
 			(struct sockaddr *)&from, &fromlen);
 	SockadrToNetadr (&from, &net_from);
 
-	if (ret == -1)
+	if (ret == SOCKET_ERROR)
 	{
 		int err = SOCKETERRNO;
 		if (err == EWOULDBLOCK)
-			return false;
+			return 0;
 # ifdef PLATFORM_WINDOWS
 		if (err == WSAEMSGSIZE)
 		{
 			printf ("Warning:  Oversize packet from %s\n",
 					NET_AdrToString (net_from));
-			return false;
+			return 0;
 		}
 		if (err == WSAECONNRESET)
 		{
 			printf ("Connection reset by peer %s\n",
 					NET_AdrToString (net_from));
-			return false;
+			return 0;
 		}
 # endif	/* _WINDOWS */
 	//	Sys_Error ("NET_GetPacket: %s", strerror(err));
-		printf ("Warning:  Unrecognized recvfrom error, error code = %i\n",err);
-		return false;
+		printf ("Warning:  Unrecognized recvfrom error, error code = %i\n", err);
+		return 0;
 	}
 
 	net_message.cursize = ret;
-	if (ret == sizeof(net_message_buffer))
+	if (ret == (int) sizeof(net_message_buffer))
 	{
 		printf ("Oversize packet from %s\n",
 					NET_AdrToString (net_from));
-		return false;
+		return 0;
 	}
 
 	return ret;
@@ -198,7 +199,7 @@ void NET_SendPacket (int length, void *data, netadr_t to)
 
 	ret = sendto (net_socket, (char *)data, length, 0,
 				(struct sockaddr *)&addr, sizeof(addr) );
-	if (ret == -1)
+	if (ret == SOCKET_ERROR)
 	{
 		int err = SOCKETERRNO;
 		if (err == EWOULDBLOCK)
@@ -210,16 +211,37 @@ void NET_SendPacket (int length, void *data, netadr_t to)
 
 //=============================================================================
 
-static int UDP_OpenSocket (int port)
+int NET_CheckSockets (void)
 {
-	int	i, newsocket;
+	fd_set		fdset;
+	struct timeval	timeout;
+	int	ret;
+
+	FD_ZERO (&fdset);
+	FD_SET (net_socket, &fdset);
+	timeout.tv_sec = 0;
+	timeout.tv_usec = 10000;
+
+	ret = select (net_socket + 1, &fdset, NULL, NULL, &timeout);
+	if (ret == SOCKET_ERROR)
+		return -1;
+	return ret;
+}
+
+//=============================================================================
+
+static sys_socket_t UDP_OpenSocket (int port)
+{
+	int			i;
+	sys_socket_t	newsocket;
 	struct sockaddr_in	address;
 	unsigned long _true = 1;
 
-	if ((newsocket = socket (PF_INET, SOCK_DGRAM, IPPROTO_UDP)) == -1)
+	newsocket = socket (PF_INET, SOCK_DGRAM, IPPROTO_UDP);
+	if (newsocket == INVALID_SOCKET)
 		Sys_Error ("%s: socket: %s", __thisfunc__, strerror(errno));
 
-	if (ioctlsocket (newsocket, FIONBIO, &_true) == -1)
+	if (ioctlsocket (newsocket, FIONBIO, &_true) == SOCKET_ERROR)
 		Sys_Error ("%s: ioctl FIONBIO: %s", __thisfunc__, strerror(errno));
 
 	memset(&address, 0, sizeof(struct sockaddr_in));
@@ -245,7 +267,7 @@ static int UDP_OpenSocket (int port)
 	else
 		address.sin_port = htons((short)port);
 
-	if ( bind(newsocket, (struct sockaddr *)&address, sizeof(address)) == -1)
+	if (bind(newsocket, (struct sockaddr *)&address, sizeof(address)) == SOCKET_ERROR)
 		Sys_Error ("%s: bind: %s", __thisfunc__, strerror(errno));
 
 	return newsocket;
@@ -257,18 +279,18 @@ static void NET_GetLocalAddress (void)
 	struct sockaddr_in	address;
 	socklen_t		namelen;
 
-	if (gethostname(buff, MAXHOSTNAMELEN) == -1)
+	if (gethostname(buff, MAXHOSTNAMELEN) == SOCKET_ERROR)
 		Sys_Error ("%s: gethostname: %s", __thisfunc__, strerror(errno));
 	buff[MAXHOSTNAMELEN-1] = 0;
 
 	NET_StringToAdr (buff, &net_local_adr);
 
 	namelen = sizeof(address);
-	if (getsockname (net_socket, (struct sockaddr *)&address, &namelen) == -1)
+	if (getsockname (net_socket, (struct sockaddr *)&address, &namelen) == SOCKET_ERROR)
 		Sys_Error ("%s: getsockname: %s", __thisfunc__, strerror(errno));
 	net_local_adr.port = address.sin_port;
 
-	printf("IP address %s\n", NET_AdrToString (net_local_adr) );
+	printf("IP address %s\n", NET_AdrToString(net_local_adr));
 }
 
 /*
@@ -313,7 +335,11 @@ NET_Shutdown
 */
 void	NET_Shutdown (void)
 {
-	closesocket (net_socket);
+	if (net_socket != INVALID_SOCKET)
+	{
+		closesocket (net_socket);
+		net_socket = INVALID_SOCKET;
+	}
 #ifdef PLATFORM_WINDOWS
 	WSACleanup ();
 #endif
