@@ -2,7 +2,7 @@
 	net_wipx.c
 	winsock ipx driver
 
-	$Id: net_wipx.c,v 1.36 2009-04-28 14:00:34 sezero Exp $
+	$Id: net_wipx.c,v 1.37 2009-04-29 19:45:59 sezero Exp $
 */
 
 #include "q_stdinc.h"
@@ -34,12 +34,16 @@ static sys_socket_t net_acceptsocket = INVALID_SOCKET;	// socket for fielding ne
 static sys_socket_t net_controlsocket;
 static struct sockaddr_ipx broadcastaddr;
 
+/* externs from net_wins.c: */
 extern qboolean winsock_initialized;
 extern WSADATA		winsockdata;
+extern const char *__WSAE_StrError (int);
 
 #define IPXSOCKETS 18
 static sys_socket_t ipxsocket[IPXSOCKETS];
 static int sequence[IPXSOCKETS];
+
+static int sock_errno;
 
 //=============================================================================
 
@@ -55,10 +59,12 @@ sys_socket_t WIPX_Init (void)
 
 	if (winsock_initialized == 0)
 	{
-		if (WSAStartup(MAKEWORD(1,1), &winsockdata) != 0)
+		sock_errno = WSAStartup(MAKEWORD(1,1), &winsockdata);
+		if (sock_errno != 0)
 		{
 			winsock_initialized = -1;
-			Con_SafePrintf("Winsock initialization failed.\n");
+			Con_SafePrintf("Winsock initialization failed (%s)\n",
+					__WSAE_StrError(sock_errno));
 			return INVALID_SOCKET;
 		}
 	}
@@ -70,7 +76,9 @@ sys_socket_t WIPX_Init (void)
 	// determine my name & address
 	if (gethostname(buff, MAXHOSTNAMELEN) != 0)
 	{
-		Con_SafePrintf("%s: WARNING: gethostname failed.\n", __thisfunc__);
+		sock_errno = WSAGetLastError();
+		Con_SafePrintf("%s: WARNING: gethostname failed (%s)\n",
+				__thisfunc__, __WSAE_StrError(sock_errno));
 	}
 	else
 	{
@@ -149,10 +157,17 @@ sys_socket_t WIPX_OpenSocket (int port)
 			break;
 	}
 	if (handle == IPXSOCKETS)
+	{
+		Con_SafePrintf("%s: Out of free IPX handles.\n", __thisfunc__);
 		return INVALID_SOCKET;
+	}
 
 	if ((newsocket = socket (AF_IPX, SOCK_DGRAM, NSPROTO_IPX)) == INVALID_SOCKET)
+	{
+		sock_errno = WSAGetLastError();
+		Con_SafePrintf("%s: %s\n", __thisfunc__, __WSAE_StrError(sock_errno));
 		return INVALID_SOCKET;
+	}
 
 	if (ioctlsocket (newsocket, FIONBIO, &_true) == SOCKET_ERROR)
 		goto ErrorReturn;
@@ -170,13 +185,20 @@ sys_socket_t WIPX_OpenSocket (int port)
 		sequence[handle] = 0;
 		return handle;
 	}
-
-	if (ipxAvailable)
-		Sys_Error ("IPX bind failed\n");
-	else // we are still in init phase, no need to error
-		Con_SafePrintf("IPX bind failed\n");
+	else
+	{
+		sock_errno = WSAGetLastError();
+		if (ipxAvailable)
+			Sys_Error ("IPX bind failed (%s)\n", __WSAE_StrError(sock_errno));
+		else /* we are still in init phase, no need to error */
+			Con_SafePrintf("IPX bind failed (%s)\n", __WSAE_StrError(sock_errno));
+		closesocket (newsocket);
+		return INVALID_SOCKET;
+	}
 
 ErrorReturn:
+	sock_errno = WSAGetLastError();
+	Con_SafePrintf("%s: %s\n", __thisfunc__, __WSAE_StrError(sock_errno));
 	closesocket (newsocket);
 	return INVALID_SOCKET;
 }
@@ -210,7 +232,10 @@ sys_socket_t WIPX_CheckNewConnections (void)
 		return INVALID_SOCKET;
 
 	if (ioctlsocket (ipxsocket[net_acceptsocket], FIONREAD, &available) == SOCKET_ERROR)
-		Sys_Error ("WIPX: ioctlsocket (FIONREAD) failed\n");
+	{
+		sock_errno = WSAGetLastError();
+		Sys_Error ("WIPX: ioctlsocket (FIONREAD) failed (%s)", __WSAE_StrError(sock_errno));
+	}
 	if (available)
 		return net_acceptsocket;
 	return INVALID_SOCKET;
@@ -231,10 +256,11 @@ int WIPX_Read (sys_socket_t handle, byte *buf, int len, struct qsockaddr *addr)
 	ret = recvfrom (socketid, (char *)netpacketBuffer, len+4, 0, (struct sockaddr *)addr, &addrlen);
 	if (ret == SOCKET_ERROR)
 	{
-		int err = WSAGetLastError();
+		sock_errno = WSAGetLastError();
 
-		if (err == WSAEWOULDBLOCK || err == WSAECONNREFUSED)
+		if (sock_errno == WSAEWOULDBLOCK || sock_errno == WSAECONNREFUSED)
 			return 0;
+		Con_SafeDPrintf ("%s, recvfrom: %s\n", __WSAE_StrError(sock_errno));
 	}
 
 	if (ret < 4)
@@ -270,8 +296,10 @@ int WIPX_Write (sys_socket_t handle, byte *buf, int len, struct qsockaddr *addr)
 	ret = sendto (socketid, (char *)netpacketBuffer, len, 0, (struct sockaddr *)addr, sizeof(struct qsockaddr));
 	if (ret == SOCKET_ERROR)
 	{
-		if (WSAGetLastError() == WSAEWOULDBLOCK)
+		sock_errno = WSAGetLastError();
+		if (sock_errno == WSAEWOULDBLOCK)
 			return 0;
+		Con_SafeDPrintf ("%s, sendto: %s\n", __WSAE_StrError(sock_errno));
 	}
 
 	return ret;
@@ -346,10 +374,9 @@ int WIPX_GetSocketAddr (sys_socket_t handle, struct qsockaddr *addr)
 	memset(addr, 0, sizeof(struct qsockaddr));
 	if (getsockname(socketid, (struct sockaddr *)addr, &addrlen) != 0)
 	{
-		int err;
-
-		err = WSAGetLastError();
-		// FIXME: the oscar goes to ?...
+		sock_errno = WSAGetLastError();
+		/* FIXME: what action should be taken?... */
+		Con_SafePrintf ("%s, getsockname: %s\n", __WSAE_StrError(sock_errno));
 	}
 
 	return 0;

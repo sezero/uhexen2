@@ -2,7 +2,7 @@
 	net_wins.c
 	winsock udp driver
 
-	$Id: net_wins.c,v 1.37 2009-04-28 14:00:34 sezero Exp $
+	$Id: net_wins.c,v 1.38 2009-04-29 19:45:59 sezero Exp $
 */
 
 #include "q_stdinc.h"
@@ -31,6 +31,10 @@ static struct in_addr	myAddr,		// the local address returned by the OS.
 
 int winsock_initialized = 0;
 WSADATA		winsockdata;
+#define __wsaerr_static			/* not static: used by net_wipx.c too */
+#include "wsaerror.h"
+
+static int sock_errno;
 
 //=============================================================================
 
@@ -76,10 +80,12 @@ sys_socket_t WINS_Init (void)
 
 	if (winsock_initialized == 0)
 	{
-		if (WSAStartup(MAKEWORD(1,1), &winsockdata) != 0)
+		sock_errno = WSAStartup(MAKEWORD(1,1), &winsockdata);
+		if (sock_errno != 0)
 		{
 			winsock_initialized = -1;
-			Con_SafePrintf("Winsock initialization failed.\n");
+			Con_SafePrintf("Winsock initialization failed (%s)\n",
+					__WSAE_StrError(sock_errno));
 			return INVALID_SOCKET;
 		}
 	}
@@ -89,7 +95,9 @@ sys_socket_t WINS_Init (void)
 	myAddr.s_addr = htonl(INADDR_LOOPBACK);
 	if (gethostname(buff, MAXHOSTNAMELEN) != 0)
 	{
-		Con_SafePrintf("%s: WARNING: gethostname failed.\n", __thisfunc__);
+		sock_errno = WSAGetLastError();
+		Con_SafePrintf("%s: WARNING: gethostname failed (%s)\n",
+				__thisfunc__, __WSAE_StrError(sock_errno));
 	}
 	else
 	{
@@ -99,13 +107,14 @@ sys_socket_t WINS_Init (void)
 		WSASetBlockingHook(BlockingHook);
 #endif	/* ! _USE_WINSOCK2 */
 		local = gethostbyname(buff);
+		sock_errno = WSAGetLastError();
 #if !defined(_USE_WINSOCK2)
 		WSAUnhookBlockingHook();
 #endif	/* ! _USE_WINSOCK2 */
 		if (local == NULL)
 		{
-			Con_SafePrintf("%s: WARNING: gethostbyname timed out.\n",
-					__thisfunc__);
+			Con_SafePrintf("%s: WARNING: gethostbyname failed (%s)\n",
+					__thisfunc__, __WSAE_StrError(sock_errno));
 		}
 		else if (local->h_addrtype != AF_INET)
 		{
@@ -222,7 +231,11 @@ sys_socket_t WINS_OpenSocket (int port)
 	u_long _true = 1;
 
 	if ((newsocket = socket (PF_INET, SOCK_DGRAM, IPPROTO_UDP)) == INVALID_SOCKET)
+	{
+		sock_errno = WSAGetLastError();
+		Con_SafePrintf("%s: %s\n", __thisfunc__, __WSAE_StrError(sock_errno));
 		return INVALID_SOCKET;
+	}
 
 	if (ioctlsocket (newsocket, FIONBIO, &_true) == INVALID_SOCKET)
 		goto ErrorReturn;
@@ -236,13 +249,22 @@ sys_socket_t WINS_OpenSocket (int port)
 	address.sin_port = htons((unsigned short)port);
 	if (bind (newsocket, (struct sockaddr *)&address, sizeof(address)) == 0)
 		return newsocket;
-
-	if (tcpipAvailable)
-		Sys_Error ("Unable to bind to %s\n", WINS_AddrToString ((struct qsockaddr *) &address));
-	else // we are still in init phase, no need to error
-		Con_SafePrintf("Unable to bind to %s\n", WINS_AddrToString ((struct qsockaddr *) &address));
+	else
+	{
+		sock_errno = WSAGetLastError();
+		if (tcpipAvailable)
+			Sys_Error ("Unable to bind to %s (%s)\n",
+					__WSAE_StrError(sock_errno),
+					WINS_AddrToString ((struct qsockaddr *) &address));
+		else /* we are still in init phase, no need to error */
+			Con_SafePrintf("Unable to bind to %s (%s)\n",
+					__WSAE_StrError(sock_errno),
+					WINS_AddrToString ((struct qsockaddr *) &address));
+	}
 
 ErrorReturn:
+	sock_errno = WSAGetLastError();
+	Con_SafePrintf("%s: %s\n", __thisfunc__, __WSAE_StrError(sock_errno));
 	closesocket (newsocket);
 	return INVALID_SOCKET;
 }
@@ -306,7 +328,8 @@ static int PartialIPAddress (const char *in, struct qsockaddr *hostaddr)
 
 	hostaddr->qsa_family = AF_INET;
 	((struct sockaddr_in *)hostaddr)->sin_port = htons((unsigned short)port);
-	((struct sockaddr_in *)hostaddr)->sin_addr.s_addr = (myAddr.s_addr & htonl(mask)) | htonl(addr);
+	((struct sockaddr_in *)hostaddr)->sin_addr.s_addr =
+					(myAddr.s_addr & htonl(mask)) | htonl(addr);
 
 	return 0;
 }
@@ -345,10 +368,10 @@ int WINS_Read (sys_socket_t socketid, byte *buf, int len, struct qsockaddr *addr
 	ret = recvfrom (socketid, (char *)buf, len, 0, (struct sockaddr *)addr, &addrlen);
 	if (ret == SOCKET_ERROR)
 	{
-		int err = WSAGetLastError();
-
-		if (err == WSAEWOULDBLOCK || err == WSAECONNREFUSED)
+		sock_errno = WSAGetLastError();
+		if (sock_errno == WSAEWOULDBLOCK || sock_errno == WSAECONNREFUSED)
 			return 0;
+		Con_SafeDPrintf ("%s, recvfrom: %s\n", __WSAE_StrError(sock_errno));
 	}
 	return ret;
 }
@@ -362,7 +385,11 @@ static int WINS_MakeSocketBroadcastCapable (sys_socket_t socketid)
 	// make this socket broadcast capable
 	if (setsockopt(socketid, SOL_SOCKET, SO_BROADCAST, (char *)&i, sizeof(i))
 								 == SOCKET_ERROR)
+	{
+		sock_errno = WSAGetLastError();
+		Con_SafePrintf ("%s, setsockopt: %s\n", __WSAE_StrError(sock_errno));
 		return -1;
+	}
 	net_broadcastsocket = socketid;
 
 	return 0;
@@ -395,11 +422,14 @@ int WINS_Write (sys_socket_t socketid, byte *buf, int len, struct qsockaddr *add
 {
 	int	ret;
 
-	ret = sendto (socketid, (char *)buf, len, 0, (struct sockaddr *)addr, sizeof(struct qsockaddr));
+	ret = sendto (socketid, (char *)buf, len, 0, (struct sockaddr *)addr,
+							sizeof(struct qsockaddr));
 	if (ret == SOCKET_ERROR)
 	{
-		if (WSAGetLastError() == WSAEWOULDBLOCK)
+		sock_errno = WSAGetLastError();
+		if (sock_errno == WSAEWOULDBLOCK)
 			return 0;
+		Con_SafeDPrintf ("%s, sendto: %s\n", __WSAE_StrError(sock_errno));
 	}
 
 	return ret;
@@ -469,7 +499,8 @@ int WINS_GetNameFromAddr (struct qsockaddr *addr, char *name)
 {
 	struct hostent *hostentry;
 
-	hostentry = gethostbyaddr ((char *)&((struct sockaddr_in *)addr)->sin_addr, sizeof(struct in_addr), AF_INET);
+	hostentry = gethostbyaddr ((char *)&((struct sockaddr_in *)addr)->sin_addr,
+						sizeof(struct in_addr), AF_INET);
 	if (hostentry)
 	{
 		strncpy (name, (char *)hostentry->h_name, NET_NAMELEN - 1);
@@ -495,7 +526,8 @@ int WINS_GetAddrFromName (const char *name, struct qsockaddr *addr)
 
 	addr->qsa_family = AF_INET;
 	((struct sockaddr_in *)addr)->sin_port = htons((unsigned short)net_hostport);
-	((struct sockaddr_in *)addr)->sin_addr.s_addr = *(in_addr_t *)hostentry->h_addr_list[0];
+	((struct sockaddr_in *)addr)->sin_addr.s_addr =
+						*(in_addr_t *)hostentry->h_addr_list[0];
 
 	return 0;
 }
@@ -507,10 +539,12 @@ int WINS_AddrCompare (struct qsockaddr *addr1, struct qsockaddr *addr2)
 	if (addr1->qsa_family != addr2->qsa_family)
 		return -1;
 
-	if (((struct sockaddr_in *)addr1)->sin_addr.s_addr != ((struct sockaddr_in *)addr2)->sin_addr.s_addr)
+	if (((struct sockaddr_in *)addr1)->sin_addr.s_addr !=
+	    ((struct sockaddr_in *)addr2)->sin_addr.s_addr)
 		return -1;
 
-	if (((struct sockaddr_in *)addr1)->sin_port != ((struct sockaddr_in *)addr2)->sin_port)
+	if (((struct sockaddr_in *)addr1)->sin_port !=
+	    ((struct sockaddr_in *)addr2)->sin_port)
 		return 1;
 
 	return 0;

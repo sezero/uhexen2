@@ -1,6 +1,6 @@
 /*
 	net_udp.c
-	$Id: net_udp.c,v 1.44 2009-04-28 14:00:32 sezero Exp $
+	$Id: net_udp.c,v 1.45 2009-04-29 19:45:40 sezero Exp $
 
 	Copyright (C) 1996-1997  Id Software, Inc.
 
@@ -70,7 +70,8 @@ static int udp_scan_iface (sys_socket_t socketfd)
 
 	if (ioctl(socketfd, SIOCGIFCONF, &ifc) == -1)
 	{
-		Con_SafePrintf("%s: SIOCGIFCONF failed\n", __thisfunc__);
+		Con_SafePrintf("%s: SIOCGIFCONF failed (%s)\n",
+				__thisfunc__, strerror(errno));
 		return -1;
 	}
 
@@ -119,7 +120,7 @@ sys_socket_t UDP_Init (void)
 		local = gethostbyname(buff);
 		if (local == NULL)
 		{
-			Con_SafePrintf("%s: WARNING: gethostname failed (%s)\n",
+			Con_SafePrintf("%s: WARNING: gethostbyname failed (%s)\n",
 					__thisfunc__, hstrerror(h_errno));
 		}
 		else if (local->h_addrtype != AF_INET)
@@ -247,7 +248,10 @@ sys_socket_t UDP_OpenSocket (int port)
 	int _true = 1;
 
 	if ((newsocket = socket (PF_INET, SOCK_DGRAM, IPPROTO_UDP)) == INVALID_SOCKET)
+	{
+		Con_SafePrintf("%s: %s\n", __thisfunc__, strerror(errno));
 		return INVALID_SOCKET;
+	}
 
 	if (ioctlsocket (newsocket, FIONBIO, &_true) == SOCKET_ERROR)
 		goto ErrorReturn;
@@ -263,6 +267,7 @@ sys_socket_t UDP_OpenSocket (int port)
 		return newsocket;
 
 ErrorReturn:
+	Con_SafePrintf("%s: %s\n", __thisfunc__, strerror(errno));
 	UDP_CloseSocket (newsocket);
 	return INVALID_SOCKET;
 }
@@ -326,7 +331,8 @@ static int PartialIPAddress (const char *in, struct qsockaddr *hostaddr)
 
 	hostaddr->qsa_family = AF_INET;
 	((struct sockaddr_in *)hostaddr)->sin_port = htons((unsigned short)port);
-	((struct sockaddr_in *)hostaddr)->sin_addr.s_addr = (myAddr.s_addr & htonl(mask)) | htonl(addr);
+	((struct sockaddr_in *)hostaddr)->sin_addr.s_addr =
+					(myAddr.s_addr & htonl(mask)) | htonl(addr);
 
 	return 0;
 }
@@ -363,7 +369,7 @@ sys_socket_t UDP_CheckNewConnections (void)
 		return INVALID_SOCKET;
 
 	if (ioctl (net_acceptsocket, FIONREAD, &available) == -1)
-		Sys_Error ("UDP: ioctlsocket (FIONREAD) failed");
+		Sys_Error ("UDP: ioctlsocket (FIONREAD) failed (%s)", strerror(errno));
 	if (available)
 		return net_acceptsocket;
 	// quietly absorb empty packets
@@ -380,8 +386,12 @@ int UDP_Read (sys_socket_t socketid, byte *buf, int len, struct qsockaddr *addr)
 	int ret;
 
 	ret = recvfrom (socketid, buf, len, 0, (struct sockaddr *)addr, &addrlen);
-	if (ret == -1 && (errno == EWOULDBLOCK || errno == ECONNREFUSED))
-		return 0;
+	if (ret == SOCKET_ERROR)
+	{
+		if (errno == EWOULDBLOCK || errno == ECONNREFUSED)
+			return 0;
+		Con_SafeDPrintf ("%s, recvfrom: %s\n", strerror(errno));
+	}
 	return ret;
 }
 
@@ -394,7 +404,10 @@ static int UDP_MakeSocketBroadcastCapable (sys_socket_t socketid)
 	// make this socket broadcast capable
 	if (setsockopt(socketid, SOL_SOCKET, SO_BROADCAST, (char *)&i, sizeof(i))
 								 == SOCKET_ERROR)
+	{
+		Con_SafePrintf ("%s, setsockopt: %s\n", strerror(errno));
 		return -1;
+	}
 	net_broadcastsocket = socketid;
 
 	return 0;
@@ -427,9 +440,14 @@ int UDP_Write (sys_socket_t socketid, byte *buf, int len, struct qsockaddr *addr
 {
 	int	ret;
 
-	ret = sendto (socketid, buf, len, 0, (struct sockaddr *)addr, sizeof(struct qsockaddr));
-	if (ret == SOCKET_ERROR && errno == EWOULDBLOCK)
-		return 0;
+	ret = sendto (socketid, buf, len, 0, (struct sockaddr *)addr,
+							sizeof(struct qsockaddr));
+	if (ret == SOCKET_ERROR)
+	{
+		if (errno == EWOULDBLOCK)
+			return 0;
+		Con_SafeDPrintf ("%s, sendto: %s\n", strerror(errno));
+	}
 	return ret;
 }
 
@@ -497,7 +515,8 @@ int UDP_GetNameFromAddr (struct qsockaddr *addr, char *name)
 {
 	struct hostent *hostentry;
 
-	hostentry = gethostbyaddr ((char *)&((struct sockaddr_in *)addr)->sin_addr, sizeof(struct in_addr), AF_INET);
+	hostentry = gethostbyaddr ((char *)&((struct sockaddr_in *)addr)->sin_addr,
+						sizeof(struct in_addr), AF_INET);
 	if (hostentry)
 	{
 		strncpy (name, (char *)hostentry->h_name, NET_NAMELEN - 1);
@@ -523,7 +542,8 @@ int UDP_GetAddrFromName (const char *name, struct qsockaddr *addr)
 
 	addr->qsa_family = AF_INET;
 	((struct sockaddr_in *)addr)->sin_port = htons((unsigned short)net_hostport);
-	((struct sockaddr_in *)addr)->sin_addr.s_addr = *(in_addr_t *)hostentry->h_addr_list[0];
+	((struct sockaddr_in *)addr)->sin_addr.s_addr =
+						*(in_addr_t *)hostentry->h_addr_list[0];
 
 	return 0;
 }
@@ -535,10 +555,12 @@ int UDP_AddrCompare (struct qsockaddr *addr1, struct qsockaddr *addr2)
 	if (addr1->qsa_family != addr2->qsa_family)
 		return -1;
 
-	if (((struct sockaddr_in *)addr1)->sin_addr.s_addr != ((struct sockaddr_in *)addr2)->sin_addr.s_addr)
+	if (((struct sockaddr_in *)addr1)->sin_addr.s_addr !=
+	    ((struct sockaddr_in *)addr2)->sin_addr.s_addr)
 		return -1;
 
-	if (((struct sockaddr_in *)addr1)->sin_port != ((struct sockaddr_in *)addr2)->sin_port)
+	if (((struct sockaddr_in *)addr1)->sin_port !=
+	    ((struct sockaddr_in *)addr2)->sin_port)
 		return 1;
 
 	return 0;
