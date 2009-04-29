@@ -3,6 +3,13 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2009-04-29 (CVS):
+    * hexenworld: use the newly added unix/windows socket api compatibility macros.
+      made net_socket private to net.c. added a new NET_ procedure, NET_CheckSocket(),
+      returning the result from the select() call on the net_socket, and removed the
+      select() calls from sys_* files.  while we were there, changed NET_GetPacket to
+      return int instead of qboolean.
+
 2009-04-28 (CVS):
     * added new definitions sys_socket_t, INVALID_SOCKET and SOCKET_ERROR to net_sys.h
       in order to provide compatibility between unix/windows socket api usage.
