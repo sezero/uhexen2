@@ -2,7 +2,7 @@
 	net_wins.c
 	winsock udp driver
 
-	$Id: net_wins.c,v 1.39 2009-04-29 20:00:14 sezero Exp $
+	$Id: net_wins.c,v 1.40 2009-04-30 07:01:14 sezero Exp $
 */
 
 #include "q_stdinc.h"
@@ -33,8 +33,6 @@ int winsock_initialized = 0;
 WSADATA		winsockdata;
 #define __wsaerr_static			/* not static: used by net_wipx.c too */
 #include "wsaerror.h"
-
-static int	sock_errno;
 
 //=============================================================================
 
@@ -69,7 +67,7 @@ static BOOL PASCAL FAR BlockingHook(void)
 
 sys_socket_t WINS_Init (void)
 {
-	int		i;
+	int	i, err;
 	char	*colon;
 	char	buff[MAXHOSTNAMELEN];
 	struct hostent		*local;
@@ -80,12 +78,12 @@ sys_socket_t WINS_Init (void)
 
 	if (winsock_initialized == 0)
 	{
-		sock_errno = WSAStartup(MAKEWORD(1,1), &winsockdata);
-		if (sock_errno != 0)
+		err = WSAStartup(MAKEWORD(1,1), &winsockdata);
+		if (err != 0)
 		{
 			winsock_initialized = -1;
 			Con_SafePrintf("Winsock initialization failed (%s)\n",
-					__WSAE_StrError(sock_errno));
+					socketerror(err));
 			return INVALID_SOCKET;
 		}
 	}
@@ -95,9 +93,9 @@ sys_socket_t WINS_Init (void)
 	myAddr.s_addr = htonl(INADDR_LOOPBACK);
 	if (gethostname(buff, MAXHOSTNAMELEN) != 0)
 	{
-		sock_errno = WSAGetLastError();
+		err = SOCKETERRNO;
 		Con_SafePrintf("%s: WARNING: gethostname failed (%s)\n",
-				__thisfunc__, __WSAE_StrError(sock_errno));
+					__thisfunc__, socketerror(err));
 	}
 	else
 	{
@@ -107,14 +105,14 @@ sys_socket_t WINS_Init (void)
 		WSASetBlockingHook(BlockingHook);
 #endif	/* ! _USE_WINSOCK2 */
 		local = gethostbyname(buff);
-		sock_errno = WSAGetLastError();
+		err = WSAGetLastError();
 #if !defined(_USE_WINSOCK2)
 		WSAUnhookBlockingHook();
 #endif	/* ! _USE_WINSOCK2 */
 		if (local == NULL)
 		{
 			Con_SafePrintf("%s: WARNING: gethostbyname failed (%s)\n",
-					__thisfunc__, __WSAE_StrError(sock_errno));
+					__thisfunc__, __WSAE_StrError(err));
 		}
 		else if (local->h_addrtype != AF_INET)
 		{
@@ -229,15 +227,16 @@ sys_socket_t WINS_OpenSocket (int port)
 	sys_socket_t newsocket;
 	struct sockaddr_in address;
 	u_long _true = 1;
+	int err;
 
 	if ((newsocket = socket (PF_INET, SOCK_DGRAM, IPPROTO_UDP)) == INVALID_SOCKET)
 	{
-		sock_errno = WSAGetLastError();
-		Con_SafePrintf("%s: %s\n", __thisfunc__, __WSAE_StrError(sock_errno));
+		err = SOCKETERRNO;
+		Con_SafePrintf("%s: %s\n", __thisfunc__, socketerror(err));
 		return INVALID_SOCKET;
 	}
 
-	if (ioctlsocket (newsocket, FIONBIO, &_true) == INVALID_SOCKET)
+	if (ioctlsocket (newsocket, FIONBIO, &_true) == SOCKET_ERROR)
 		goto ErrorReturn;
 
 	memset(&address, 0, sizeof(struct sockaddr_in));
@@ -251,20 +250,20 @@ sys_socket_t WINS_OpenSocket (int port)
 		return newsocket;
 	else
 	{
-		sock_errno = WSAGetLastError();
+		err = SOCKETERRNO;
 		if (tcpipAvailable)
 			Sys_Error ("Unable to bind to %s (%s)\n",
-					__WSAE_StrError(sock_errno),
-					WINS_AddrToString ((struct qsockaddr *) &address));
+					WINS_AddrToString ((struct qsockaddr *) &address),
+					socketerror(err));
 		else /* we are still in init phase, no need to error */
 			Con_SafePrintf("Unable to bind to %s (%s)\n",
-					__WSAE_StrError(sock_errno),
-					WINS_AddrToString ((struct qsockaddr *) &address));
+					WINS_AddrToString ((struct qsockaddr *) &address),
+					socketerror(err));
 	}
 
 ErrorReturn:
-	sock_errno = WSAGetLastError();
-	Con_SafePrintf("%s: %s\n", __thisfunc__, __WSAE_StrError(sock_errno));
+	err = SOCKETERRNO;
+	Con_SafePrintf("%s: %s\n", __thisfunc__, socketerror(err));
 	closesocket (newsocket);
 	return INVALID_SOCKET;
 }
@@ -348,7 +347,7 @@ sys_socket_t WINS_CheckNewConnections (void)
 	char		buf[4096];
 
 	if (net_acceptsocket == INVALID_SOCKET)
-		return -1;
+		return INVALID_SOCKET;
 
 	if (recvfrom (net_acceptsocket, buf, sizeof(buf), MSG_PEEK, NULL, NULL)
 							!= SOCKET_ERROR) /* >= 0 */
@@ -368,11 +367,10 @@ int WINS_Read (sys_socket_t socketid, byte *buf, int len, struct qsockaddr *addr
 	ret = recvfrom (socketid, (char *)buf, len, 0, (struct sockaddr *)addr, &addrlen);
 	if (ret == SOCKET_ERROR)
 	{
-		sock_errno = WSAGetLastError();
-		if (sock_errno == WSAEWOULDBLOCK || sock_errno == WSAECONNREFUSED)
+		int err = SOCKETERRNO;
+		if (err == EWOULDBLOCK || err == ECONNREFUSED)
 			return 0;
-		Con_SafeDPrintf ("%s, recvfrom: %s\n",
-				__thisfunc__, __WSAE_StrError(sock_errno));
+		Con_SafeDPrintf ("%s, recvfrom: %s\n", __thisfunc__, socketerror(err));
 	}
 	return ret;
 }
@@ -387,9 +385,8 @@ static int WINS_MakeSocketBroadcastCapable (sys_socket_t socketid)
 	if (setsockopt(socketid, SOL_SOCKET, SO_BROADCAST, (char *)&i, sizeof(i))
 								 == SOCKET_ERROR)
 	{
-		sock_errno = WSAGetLastError();
-		Con_SafePrintf ("%s, setsockopt: %s\n",
-				__thisfunc__, __WSAE_StrError(sock_errno));
+		int err = SOCKETERRNO;
+		Con_SafePrintf ("%s, setsockopt: %s\n", __thisfunc__, socketerror(err));
 		return -1;
 	}
 	net_broadcastsocket = socketid;
@@ -428,13 +425,11 @@ int WINS_Write (sys_socket_t socketid, byte *buf, int len, struct qsockaddr *add
 							sizeof(struct qsockaddr));
 	if (ret == SOCKET_ERROR)
 	{
-		sock_errno = WSAGetLastError();
-		if (sock_errno == WSAEWOULDBLOCK)
+		int err = SOCKETERRNO;
+		if (err == EWOULDBLOCK)
 			return 0;
-		Con_SafeDPrintf ("%s, sendto: %s\n",
-				__thisfunc__, __WSAE_StrError(sock_errno));
+		Con_SafeDPrintf ("%s, sendto: %s\n", __thisfunc__, socketerror(err));
 	}
-
 	return ret;
 }
 
