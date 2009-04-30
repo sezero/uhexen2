@@ -2,7 +2,7 @@
 	net_udp.c
 	network UDP driver
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Master/net.c,v 1.43 2009-04-29 17:35:12 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Master/net.c,v 1.44 2009-04-30 07:06:13 sezero Exp $
 */
 
 #include "q_stdinc.h"
@@ -161,7 +161,7 @@ int NET_GetPacket (void)
 # ifdef PLATFORM_WINDOWS
 		if (err == WSAEMSGSIZE)
 		{
-			printf ("Warning:  Oversize packet from %s\n",
+			printf ("Oversize packet from %s\n",
 					NET_AdrToString (net_from));
 			return 0;
 		}
@@ -319,7 +319,6 @@ NET_Init
 void NET_Init (int port)
 {
 	in_addr_t a = htonl(INADDR_LOOPBACK);
-
 #ifdef PLATFORM_WINDOWS
 	int err = WSAStartup(MAKEWORD(1,1), &winsockdata);
 	if (err != 0)
