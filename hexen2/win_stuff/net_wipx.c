@@ -2,7 +2,7 @@
 	net_wipx.c
 	winsock ipx driver
 
-	$Id: net_wipx.c,v 1.39 2009-04-30 07:01:14 sezero Exp $
+	$Id: net_wipx.c,v 1.40 2009-04-30 15:32:32 sezero Exp $
 */
 
 #include "q_stdinc.h"
@@ -183,16 +183,14 @@ sys_socket_t WIPX_OpenSocket (int port)
 		sequence[handle] = 0;
 		return handle;
 	}
-	else
+
+	if (ipxAvailable)
 	{
 		err = SOCKETERRNO;
-		if (ipxAvailable)
-			Sys_Error ("IPX bind failed (%s)\n", socketerror(err));
-		else /* we are still in init phase, no need to error */
-			Con_SafePrintf("IPX bind failed (%s)\n", socketerror(err));
-		closesocket (newsocket);
-		return INVALID_SOCKET;
+		Sys_Error ("IPX bind failed (%s)", socketerror(err));
+		return INVALID_SOCKET;	/* not reached */
 	}
+	/* else: we are still in init phase, no need to error */
 
 ErrorReturn:
 	err = SOCKETERRNO;

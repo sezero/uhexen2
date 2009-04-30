@@ -2,7 +2,7 @@
 	net_wins.c
 	winsock udp driver
 
-	$Id: net_wins.c,v 1.40 2009-04-30 07:01:14 sezero Exp $
+	$Id: net_wins.c,v 1.41 2009-04-30 15:32:32 sezero Exp $
 */
 
 #include "q_stdinc.h"
@@ -248,18 +248,16 @@ sys_socket_t WINS_OpenSocket (int port)
 	address.sin_port = htons((unsigned short)port);
 	if (bind (newsocket, (struct sockaddr *)&address, sizeof(address)) == 0)
 		return newsocket;
-	else
+
+	if (tcpipAvailable)
 	{
 		err = SOCKETERRNO;
-		if (tcpipAvailable)
-			Sys_Error ("Unable to bind to %s (%s)\n",
-					WINS_AddrToString ((struct qsockaddr *) &address),
-					socketerror(err));
-		else /* we are still in init phase, no need to error */
-			Con_SafePrintf("Unable to bind to %s (%s)\n",
-					WINS_AddrToString ((struct qsockaddr *) &address),
-					socketerror(err));
+		Sys_Error ("Unable to bind to %s (%s)",
+				WINS_AddrToString ((struct qsockaddr *) &address),
+				socketerror(err));
+		return INVALID_SOCKET;	/* not reached */
 	}
+	/* else: we are still in init phase, no need to error */
 
 ErrorReturn:
 	err = SOCKETERRNO;
