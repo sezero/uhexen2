@@ -3,6 +3,11 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2009-04-30 (CVS):
+    * net: multiple fixes and cleanups after the recent changes.
+    * updated 1.4.4 release notes.
+    * changed beta version date to 2009-04-30.
+
 2009-04-29 (CVS):
     * hexenworld: use the newly added unix/windows socket api compatibility macros.
       made net_socket private to net.c. added a new NET_ procedure, NET_CheckSocket(),
