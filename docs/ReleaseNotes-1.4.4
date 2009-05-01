@@ -1,5 +1,5 @@
 Hexen II: Hammer of Thyrion (uhexen2), CVS snapshot / pre-release,
-Version 1.4.4-pre5 / Feb. 02, 2009.
+Version 1.4.4-pre6 / Apr. 30, 2009.
 
 Changes since the HoT-1.4.3 release:
 
@@ -8,8 +8,14 @@ Changes since the HoT-1.4.3 release:
 * fixed the broken software renderer binaries from C++ compilers with x86
   assembly enabled (do not use the bool keyword of C++).
 * compilations using the gcc-4.4 development versions were tested.
+* added support for 64 bit windows versions (x64).
+* added support for mingw-w64 compilers.
 * added support for Microsoft Visual Studio 2005 and Visual Studio 2008.
-* added support for 64 bit windows versions (x64) using mingw-w64.
+* filesystem: fixed an oversight with builds without user directories, where
+  the "-basedir" command line argument failed to change the internal userdir
+  variables.
+* net: made the socket api usage compatible with windows especially with
+  relation to 64 bit windows.
 * opengl: fixed an issue that changing resolution from within the game might
   crash on Windows Vista.
 * stricter checking on the values pulled out of .wav file chunk headers.
@@ -19,8 +25,8 @@ Changes since the HoT-1.4.3 release:
 * fixed 'array going out-of-bounds' (utils/map.c) and bogus 'maybe used
   uninitialized' warnings (sbar.c) from gcc-4.3.
 * fixes to the SVGALib driver. it is functional now.
-* fixed bug #2176384: in windowed mode, when you save using the menus, the game
-  used to quit the menu without grabbing the mouse properly.
+* fixed bug #2176384: in windowed mode, when you save using the menus, the
+  game used to quit the menu without grabbing the mouse properly.
 * increased the buffersize for sdl audio. made it to print a little more
   detailed info at startup.
 * launcher, patching: rewritten the inter-threads log printing and fixed the
