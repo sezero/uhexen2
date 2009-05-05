@@ -1,6 +1,6 @@
 /*
 	bspfile.c
-	$Id: bspfile.c,v 1.5 2008-12-27 16:56:39 sezero Exp $
+	$Id: bspfile.c,v 1.6 2009-05-05 16:02:49 sezero Exp $
 */
 
 #include "q_stdinc.h"
@@ -254,7 +254,7 @@ void LoadBSPFile (const char *filename)
 	header = (dheader_t *)pbuf;
 
 // swap the header
-	for (i = 0 ; i < sizeof(dheader_t)/4 ; i++)
+	for (i = 0 ; i < (int)sizeof(dheader_t)/4 ; i++)
 		((int *)header)[i] = LittleLong ( ((int *)header)[i]);
 
 	if (header->version != BSPVERSION)

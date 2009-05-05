@@ -2,7 +2,7 @@
 	hcc.c
 	HCode compiler based on qcc, modifed by Eric Hobbs to work with DCC
 
-	$Header: /home/ozzie/Download/0000/uhexen2/utils/dcc/hcc.c,v 1.30 2008-01-12 09:46:18 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/utils/dcc/hcc.c,v 1.31 2009-05-05 16:02:51 sezero Exp $
 */
 
 #include "q_stdinc.h"
@@ -18,7 +18,8 @@
 static char	sourcedir[1024];
 static char	destfile[1024];
 
-float		pr_globals[MAX_REGS];
+byte		_pr_globals[MAX_REGS * sizeof(float)];
+float		*pr_globals = (float *)_pr_globals;
 int			numpr_globals;
 
 char		strings[MAX_STRINGS];
@@ -189,7 +190,7 @@ static void PrintPRGlobals (void)
 
 	for (i = 0 ; i < numpr_globals ; i++)
 	{
-		printf ("%5i %5.5f %5d\n", i, pr_globals[i], *(int *)&pr_globals[i]);
+		printf ("%5i %5.5f %5d\n", i, pr_globals[i], ((int *)pr_globals)[i]);
 	}
 }
 
@@ -327,7 +328,7 @@ static void WriteData (int crc)
 	progs.ofs_globals = ftell (h);
 	progs.numglobals = numpr_globals;
 	for (i = 0 ; i < numpr_globals ; i++)
-		*(int *)&pr_globals[i] = LittleLong (*(int *)&pr_globals[i]);
+		((int *)pr_globals)[i] = LittleLong (((int *)pr_globals)[i]);
 	SafeWrite (h, pr_globals, numpr_globals*4);
 
 	printf ("%6i TOTAL SIZE\n", (int)ftell (h));	
@@ -338,7 +339,7 @@ static void WriteData (int crc)
 	progs.crc = crc;
 
 // byte swap the header and write it out
-	for (i = 0 ; i < sizeof(progs)/4 ; i++)
+	for (i = 0 ; i < (int)sizeof(progs)/4 ; i++)
 		((int *)&progs)[i] = LittleLong ( ((int *)&progs)[i] );
 	fseek (h, 0, SEEK_SET);
 	SafeWrite (h, &progs, sizeof(progs));
@@ -398,7 +399,7 @@ def_t *PR_DefForFieldOfs (gofs_t ofs)
 	{
 		if (d->type->type != ev_field)
 			continue;
-		if (*((int *)&pr_globals[d->ofs]) == ofs)
+		if (((int *)pr_globals)[d->ofs] == ofs)
 			return d;
 	}
 	Error ("%s: couldn't find %i", __thisfunc__, ofs);
@@ -517,7 +518,7 @@ static const char *PR_GlobalString (gofs_t ofs)
 PR_PrintOfs
 ============
 */
-#if 0	// all uses are commented out
+#if 0	/* all uses are commented out */
 void PR_PrintOfs (gofs_t ofs)
 {
 	printf ("%s\n", PR_GlobalString(ofs));

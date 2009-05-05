@@ -1,6 +1,6 @@
 /*
 	qcc.h
-	$Id: qcc.h,v 1.13 2007-11-14 07:42:34 sezero Exp $
+	$Id: qcc.h,v 1.14 2009-05-05 16:02:51 sezero Exp $
 */
 
 #ifndef __QCC_H__
@@ -427,7 +427,7 @@ extern	int		statement_linenums[MAX_STATEMENTS];
 extern	dfunction_t	functions[MAX_FUNCTIONS];
 extern	int		numfunctions;
 
-extern	float		pr_globals[MAX_REGS];
+extern	float		*pr_globals;	/* [MAX_REGS] */
 extern	int		numpr_globals;
 
 extern	char	pr_immediate_string[2048];

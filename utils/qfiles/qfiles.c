@@ -1,6 +1,6 @@
 /*
 	qfiles.c
-	$Id: qfiles.c,v 1.10 2008-01-29 15:01:36 sezero Exp $
+	$Id: qfiles.c,v 1.11 2009-05-05 16:02:52 sezero Exp $
 */
 
 #include "q_stdinc.h"
@@ -52,7 +52,7 @@ void PackFile (const char *src, const char *name)
 	int		remaining, count;
 	char	buf[4096];
 
-	if ( (byte *)pf - (byte *)pfiles > sizeof(pfiles) )
+	if ((byte *)pf - (byte *)pfiles > (ptrdiff_t)sizeof(pfiles))
 		Error ("Too many files in pak file");
 
 	in = SafeOpenRead (src);
@@ -67,7 +67,7 @@ void PackFile (const char *src, const char *name)
 
 	while (remaining)
 	{
-		if (remaining < sizeof(buf))
+		if (remaining < (int)sizeof(buf))
 			count = remaining;
 		else
 			count = sizeof(buf);

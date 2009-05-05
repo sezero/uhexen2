@@ -1,7 +1,7 @@
 /*
 	hcc.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/utils/hcc_old/hcc.c,v 1.19 2008-12-22 15:44:10 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/utils/hcc_old/hcc.c,v 1.20 2009-05-05 16:02:51 sezero Exp $
 
 	Hash table modifications based on fastqcc by Jonathan Roy
 	(roy@atlantic.net).
@@ -44,7 +44,8 @@ int		hcc_OptimizeNameTable;
 qboolean	hcc_WarningsActive;
 qboolean	hcc_ShowUnrefFuncs;
 
-float		pr_globals[MAX_REGS];
+byte		_pr_globals[MAX_REGS * sizeof(float)];
+float		*pr_globals = (float *)_pr_globals;
 int			numpr_globals;
 
 char		strings[MAX_STRINGS];
@@ -330,8 +331,7 @@ static void WriteData (int crc)
 	progs.ofs_globals = ftell (h);
 	progs.numglobals = numpr_globals;
 	for (i = 0 ; i < numpr_globals ; i++)
-	//	((int *)pr_globals)[i] = LittleLong (((int *)pr_globals)[i]);
-		*(int *)&pr_globals[i] = LittleLong (*(int *)&pr_globals[i]);
+		((int *)pr_globals)[i] = LittleLong (((int *)pr_globals)[i]);
 	SafeWrite (h, pr_globals, numpr_globals*4);
 
 	printf("     total size: %d\n", (int)ftell(h));
@@ -342,7 +342,7 @@ static void WriteData (int crc)
 	progs.crc = crc;
 
 // byte swap the header and write it out
-	for (i = 0 ; i < sizeof(progs)/4 ; i++)
+	for (i = 0 ; i < (int)sizeof(progs)/4 ; i++)
 		((int *)&progs)[i] = LittleLong ( ((int *)&progs)[i] );
 	fseek (h, 0, SEEK_SET);
 	SafeWrite (h, &progs, sizeof(progs));

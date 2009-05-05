@@ -1,7 +1,7 @@
 /*
 	hcc.h
 
-	$Header: /home/ozzie/Download/0000/uhexen2/utils/hcc/hcc.h,v 1.8 2007-11-14 07:39:21 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/utils/hcc/hcc.h,v 1.9 2009-05-05 16:02:51 sezero Exp $
 */
 
 #ifndef __HCC_H__
@@ -254,7 +254,7 @@ extern	int		statement_linenums[MAX_STATEMENTS];
 extern	dfunction_t	functions[MAX_FUNCTIONS];
 extern	int		numfunctions;
 
-extern	float		pr_globals[MAX_REGS];
+extern	float		*pr_globals;	/* [MAX_REGS] */
 extern	int		numpr_globals;
 
 extern	char	pr_immediate_string[2048];

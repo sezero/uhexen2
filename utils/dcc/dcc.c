@@ -2,7 +2,7 @@
 	dcc.c
 	An hcode compiler/decompiler for Hexen II by Eric Hobbs
 
-	$Id: dcc.c,v 1.45 2008-01-12 09:46:18 sezero Exp $
+	$Id: dcc.c,v 1.46 2009-05-05 16:02:51 sezero Exp $
 */
 
 
@@ -58,18 +58,6 @@ static unsigned short	GetType (gofs_t ofs);
 static unsigned short	GetLastFunctionReturn (dfunction_t *df, dstatement_t *ds);
 
 // EXTERNAL DATA DECLARATIONS ----------------------------------------------
-
-extern float		pr_globals[MAX_REGS];
-extern int			numpr_globals;
-
-extern char		strings[MAX_STRINGS];
-extern int			strofs;
-
-extern dstatement_t	statements[MAX_STATEMENTS];
-extern int			numstatements;
-
-extern dfunction_t	functions[MAX_FUNCTIONS];
-extern int			numfunctions;
 
 extern ddef_t		globals[MAX_GLOBALS];
 extern int			numglobaldefs;
@@ -2014,7 +2002,7 @@ void DEC_ReadData (const char *srcfile)
 	SafeRead (h, &progs, sizeof(progs));
 
         // byte swap the header
-	for (i = 0; i < sizeof(progs)/4; i++)
+	for (i = 0; i < (int)sizeof(progs)/4; i++)
 		((int *)&progs)[i] = LittleLong ( ((int *)&progs)[i] );
 
 	fseek (h, progs.ofs_strings, SEEK_SET);
@@ -2077,7 +2065,7 @@ void DEC_ReadData (const char *srcfile)
 	}
 
 	for (i = 0; i < numpr_globals; i++)
-		*(int *)&pr_globals[i] = LittleLong (*(int *)&pr_globals[i]);
+		((int *)pr_globals)[i] = LittleLong (((int *)pr_globals)[i]);
 
 	printf ("read data from %s:\n", srcfile);
 	printf ("total size is: %7i\n", Q_filelength(h));
