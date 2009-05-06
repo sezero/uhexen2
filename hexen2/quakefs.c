@@ -2,7 +2,7 @@
 	quakefs.c
 	Hexen II filesystem
 
-	$Id: quakefs.c,v 1.54 2009-05-06 06:05:47 sezero Exp $
+	$Id: quakefs.c,v 1.55 2009-05-06 06:17:59 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -1313,8 +1313,6 @@ void FS_Init (void)
 	{
 		fs_basedir = host_parms->basedir;
 	}
-
-	qerr_strlcpy(__thisfunc__, __LINE__, fs_userdir, host_parms->userdir, sizeof(fs_userdir));
 
 //
 // step 1: start up with data1 by default
