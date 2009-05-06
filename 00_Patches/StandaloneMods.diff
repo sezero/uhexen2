@@ -2,8 +2,8 @@ this patch adds initial support for standalone free contents (mods).
 see the documentation file StandaloneMods.txt for details.
 
 diff -urNp uhexen2/hexen2/quakefs.c.orig uhexen2/hexen2/quakefs.c
---- uhexen2/hexen2/quakefs.c.orig	2009-04-25 14:07:33.000000000 +0300
-+++ uhexen2/hexen2/quakefs.c	2009-04-25 14:15:01.000000000 +0300
+--- uhexen2/hexen2/quakefs.c.orig	2009-05-06 09:17:59.000000000 +0300
++++ uhexen2/hexen2/quakefs.c	2009-05-06 09:20:16.000000000 +0300
 @@ -53,6 +53,8 @@ unsigned int	gameflags;
  cvar_t	oem = {"oem", "0", CVAR_ROM};
  cvar_t	registered = {"registered", "0", CVAR_ROM};
@@ -107,7 +107,7 @@ diff -urNp uhexen2/hexen2/quakefs.c.orig uhexen2/hexen2/quakefs.c
  	int		i;
  	char		temp[32];
  	qboolean	check_portals = false;
-@@ -1484,3 +1539,91 @@ void FS_Init (void)
+@@ -1485,3 +1540,90 @@ void FS_Init (void)
  	}
  }
  
@@ -141,11 +141,10 @@ diff -urNp uhexen2/hexen2/quakefs.c.orig uhexen2/hexen2/quakefs.c
 +		fs_basedir = host_parms->basedir;
 +	}
 +
-+	qerr_strlcpy(__thisfunc__, __LINE__, fs_userdir, host_parms->userdir, sizeof(fs_userdir));
-+
 +	qerr_snprintf(__thisfunc__, __LINE__, fs_userdir, sizeof(fs_userdir), "%s/%s", host_parms->userdir, fs_dirstdalone);
 +#if DO_USERDIRS
-+	Sys_mkdir (fs_userdir, true);
++	if (strcmp(fs_gamedir, fs_userdir))
++		Sys_mkdir (fs_userdir, true);
 +#endif
 +	FS_AddGameDirectory (va("%s/%s", fs_basedir, fs_dirstdalone), true);
 +
@@ -216,8 +215,8 @@ diff -urNp uhexen2/hexen2/quakefs.h.orig uhexen2/hexen2/quakefs.h
  extern	char	fs_gamedir[MAX_OSPATH];
  extern	char	fs_gamedir_nopath[MAX_QPATH];
 diff -urNp uhexen2/hexenworld/Client/quakefs.c.orig uhexen2/hexenworld/Client/quakefs.c
---- uhexen2/hexenworld/Client/quakefs.c.orig	2009-04-25 14:07:34.000000000 +0300
-+++ uhexen2/hexenworld/Client/quakefs.c	2009-04-25 14:15:10.000000000 +0300
+--- uhexen2/hexenworld/Client/quakefs.c.orig	2009-05-06 09:17:59.000000000 +0300
++++ uhexen2/hexenworld/Client/quakefs.c	2009-05-06 09:20:09.000000000 +0300
 @@ -53,6 +53,8 @@ unsigned int	gameflags;
  cvar_t	oem = {"oem", "0", CVAR_ROM};
  cvar_t	registered = {"registered", "0", CVAR_ROM};
@@ -321,7 +320,7 @@ diff -urNp uhexen2/hexenworld/Client/quakefs.c.orig uhexen2/hexenworld/Client/qu
  	int		i;
  	char		temp[32];
  	qboolean	check_portals = false;
-@@ -1484,3 +1539,91 @@ void FS_Init (void)
+@@ -1485,3 +1540,90 @@ void FS_Init (void)
  	}
  }
  
@@ -355,11 +354,10 @@ diff -urNp uhexen2/hexenworld/Client/quakefs.c.orig uhexen2/hexenworld/Client/qu
 +		fs_basedir = host_parms->basedir;
 +	}
 +
-+	qerr_strlcpy(__thisfunc__, __LINE__, fs_userdir, host_parms->userdir, sizeof(fs_userdir));
-+
 +	qerr_snprintf(__thisfunc__, __LINE__, fs_userdir, sizeof(fs_userdir), "%s/%s", host_parms->userdir, fs_dirstdalone);
 +#if DO_USERDIRS
-+	Sys_mkdir (fs_userdir, true);
++	if (strcmp(fs_gamedir, fs_userdir))
++		Sys_mkdir (fs_userdir, true);
 +#endif
 +	FS_AddGameDirectory (va("%s/%s", fs_basedir, fs_dirstdalone), true);
 +
