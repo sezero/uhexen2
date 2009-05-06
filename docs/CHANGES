@@ -3,7 +3,15 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
-2009-04-30 (CVS):
+2009-05-05 (CVS):
+    * utils: fixed strict aliasing violation warnings from g++-4.x series compilers.
+      a few comparison between signed and unsigned warnings are also fixed.
+    * quakefs.c (FS_Init): do not attempt to create the userdir for base folders if
+      they are the same as the base game directories.
+    * quakefs.c (FS_Init): removed a redundant strlcpy call.
+    * updated the StandaloneMods patch after today's changes.
+
+2009-04-30 (CVS, 1.4.4-pre6):
     * net: multiple fixes and cleanups after the recent changes.
     * updated 1.4.4 release notes.
     * changed beta version date to 2009-04-30.
