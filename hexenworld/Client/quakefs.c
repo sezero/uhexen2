@@ -2,7 +2,7 @@
 	quakefs.c
 	Hexen II filesystem
 
-	$Id: quakefs.c,v 1.53 2009-04-25 11:07:34 sezero Exp $
+	$Id: quakefs.c,v 1.54 2009-05-06 06:05:48 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -1320,7 +1320,8 @@ void FS_Init (void)
 // step 1: start up with data1 by default
 //
 	qerr_snprintf(__thisfunc__, __LINE__, fs_userdir, sizeof(fs_userdir), "%s/data1", host_parms->userdir);
-	Sys_mkdir (fs_userdir, true);
+	if (strcmp(fs_gamedir, fs_userdir))
+		Sys_mkdir (fs_userdir, true);
 	FS_AddGameDirectory (va("%s/data1", fs_basedir), true);
 
 	if (gameflags & GAME_REGISTERED0 && gameflags & GAME_REGISTERED1)
@@ -1418,7 +1419,8 @@ void FS_Init (void)
 		mark = fs_searchpaths;
 
 		qerr_snprintf(__thisfunc__, __LINE__, fs_userdir, sizeof(fs_userdir), "%s/portals", host_parms->userdir);
-		Sys_mkdir (fs_userdir, true);
+		if (strcmp(fs_gamedir, fs_userdir))
+			Sys_mkdir (fs_userdir, true);
 		FS_AddGameDirectory (va("%s/portals", fs_basedir), true);
 
 		if ( !(gameflags & GAME_PORTALS))
@@ -1458,9 +1460,10 @@ void FS_Init (void)
 //
 #if defined(H2W)
 	qerr_snprintf(__thisfunc__, __LINE__, fs_userdir, sizeof(fs_userdir), "%s/hw", host_parms->userdir);
-	Sys_mkdir (fs_userdir, true);
+	if (strcmp(fs_gamedir, fs_userdir))
+		Sys_mkdir (fs_userdir, true);
 	FS_AddGameDirectory (va("%s/hw", fs_basedir), true);
-	// error out for H2W builds if GAME_HEXENWORLD isn't set
+	// error out if GAME_HEXENWORLD isn't set
 	if (!(gameflags & GAME_HEXENWORLD))
 		Sys_Error ("You must have the HexenWorld data installed");
 #endif	/* H2W */
