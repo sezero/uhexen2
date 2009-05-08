@@ -186,7 +186,7 @@ recommended.  As an alternative, you can use NASM as the assembler: version
 2.05.01 or newer are recommended.  Both nasm and yasm are very easy to
 integrate into Visual Studio using a rule file: see the w32stuff/yasm and
 w32stuff/nasm directories.  Our project files are currently adjusted for
-using nasm.
+using yasm.
 
 
 Compiling for Mac OS X:
