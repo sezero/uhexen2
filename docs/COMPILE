@@ -182,8 +182,11 @@ x64 targets.
 
 Compilation of the software renderer versions h2.exe and hwcl.exe require
 YASM as the x86 assembler (link down below). Versions 0.7.2 or newer are
-recommended. It is very easy to integrate into Visual Studio using a rule
-file:  http://www.tortall.net/projects/yasm/wiki/VisualStudio2005
+recommended.  As an alternative, you can use NASM as the assembler: version
+2.05.01 or newere are recommended.  Both nasm and yasm are very easy to
+ntegrate into Visual Studio using a rule file: see the w32stuff/yasm and
+w32stuff/nasm directories.  Our project files are currently adjusted for
+using nasm.
 
 
 Compiling for Mac OS X:
