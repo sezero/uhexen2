@@ -3,6 +3,9 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2009-05-12 (CVS):
+    * utils: added proper TLS support for vis with gcc >= 4.3
+
 2009-05-08 (CVS):
     * added nasm.rules file (adapted from the vbam project) as an alternative custom
       build tool for visual studio.
