@@ -1,6 +1,6 @@
 /*
 	vis.h
-	$Id: vis.h,v 1.6 2007-07-11 16:47:21 sezero Exp $
+	$Id: vis.h,v 1.7 2009-05-12 14:23:13 sezero Exp $
 */
 
 #ifndef __H2UTILS_VIS_H
@@ -96,31 +96,6 @@ typedef struct
 	portal_t	*base;
 	pstack_t	pstack_head;
 } threaddata_t;
-
-
-#ifdef __alpha
-
-#  ifdef PLATFORM_WINDOWS
-
-extern HANDLE my_mutex;
-#define	LOCK	WaitForSingleObject (my_mutex, INFINITE)
-#define	UNLOCK	ReleaseMutex (my_mutex)
-
-#  else
-
-#include <pthread.h>
-extern	pthread_mutex_t	*my_mutex;
-#define	LOCK	pthread_mutex_lock (my_mutex)
-#define	UNLOCK	pthread_mutex_unlock (my_mutex)
-
-#  endif /* windows */
-
-#else	/* __alpha  */
-
-#define	LOCK
-#define	UNLOCK
-
-#endif
 
 
 extern	int			numportals;

@@ -1,6 +1,6 @@
 /*
 	vis.c
-	$Id: vis.c,v 1.17 2008-12-27 19:30:12 sezero Exp $
+	$Id: vis.c,v 1.18 2009-05-12 14:23:13 sezero Exp $
 */
 
 #include "q_stdinc.h"
@@ -12,6 +12,7 @@
 #include "pathutil.h"
 #include "mathlib.h"
 #include "bspfile.h"
+#include "threads.h"
 #include "vis.h"
 
 
@@ -155,12 +156,8 @@ static void OldFreeWinding (winding_t *w)
 		free (w);
 }
 
-/* FIXME: __declspec(thread) is MSVC.  MinGW doesn't support it.
- * Newer MinGW versions support __thread.  We are not compiling
- * for Win32 threads for now, so no problems, but this TLS code
- * MUST be fixed!.. */
-static __declspec(thread) int nFreeWindings = 0;
-static __declspec(thread) winding_t *FreeWindings[MAX_FREE_WINDINGS];
+static __threadlocal__ int nFreeWindings = 0;
+static __threadlocal__ winding_t *FreeWindings[MAX_FREE_WINDINGS];
 
 winding_t *NewWinding (int points)
 {
@@ -636,14 +633,12 @@ static void CalcPortalVis (void)
 
 	for (i = 0 ; i < numthreads-1 ; i++)
 	{
-		work_threads[i] = CreateThread(
-						NULL,		// no security attrib
+		work_threads[i] = CreateThread( NULL,		// no security attrib
 						0x100000,	// stack size
 						(LPTHREAD_START_ROUTINE) LeafThread,	// thread function
 						(LPVOID) i,	// thread function arg
 						0,		// use default creation flags
-						&IDThread
-				);
+						&IDThread);
 
 		if (work_threads[i] == NULL)
 			Error ("pthread_create failed");

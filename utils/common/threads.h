@@ -1,6 +1,6 @@
 /*
 	threads.h
-	$Id: threads.h,v 1.2 2008-12-27 19:30:06 sezero Exp $
+	$Id: threads.h,v 1.3 2009-05-12 14:23:12 sezero Exp $
 	Copyright (C) 1996-1997  Id Software, Inc.
 
 	This program is free software; you can redistribute it and/or
@@ -27,7 +27,17 @@
 
 #ifdef PLATFORM_WINDOWS
 #include <windows.h>
-#endif
+/* Thread Local Storage definitions */
+#if defined(_MSC_VER) /* MS Visual Studio */
+#define __threadlocal__ __declspec(thread)
+#elif defined(__GNUC__) && ((__GNUC__ > 4) \
+  || (__GNUC__ == 4 && __GNUC_MINOR__ >= 3))
+/* gcc >= 4.3, also needs binutils >= 2.19 */
+#define __threadlocal__ __thread
+#else	/* default to MS definition */
+#define __threadlocal__ __declspec(thread)
+#endif	/* TLS definitions */
+#endif	/* PLATFORM_WINDOWS */
 
 #if defined(__alpha) && defined(PLATFORM_WINDOWS)
 	/* FIXME: __alpha shouldn't be needed.. */
