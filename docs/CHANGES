@@ -3,6 +3,9 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2009-05-26 (CVS):
+    * updated msinttypes headers to r24
+
 2009-05-12 (CVS):
     * utils: added proper TLS support for vis with gcc >= 4.3
 
