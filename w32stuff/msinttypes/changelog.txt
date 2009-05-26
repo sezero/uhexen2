@@ -1,4 +1,21 @@
 ------------------------------------------------------------------------
+r24 | 2009-05-13 14:53:48 +0400 | 2 lines
+
+Forgot about #ifdef __cplusplus guard around 'extern "C"', so inclusion to C files has been broken.
+
+------------------------------------------------------------------------
+r23 | 2009-05-12 01:27:45 +0400 | 3 lines
+
+[Issue 2] Always wrap <wcharîàž with external "C" {}.
+It turns out that not only Visual Studio 6 requires this, but also newer versions when compiling for ARM.
+
+------------------------------------------------------------------------
+r22 | 2009-05-11 22:22:15 +0400 | 3 lines
+
+[Issue 3] Visual Studio 6 and Embedded Visual C++ 4 doesn't realize that, e.g. char has the same size as __int8 so we give up on __intX for them.
+his should close Issue 3 in issue tracker.
+
+------------------------------------------------------------------------
 r21 | 2008-07-17 09:47:22 +0400 | 4 lines
 
 Get rid of these compiler warnings when compiling for 32-bit:
