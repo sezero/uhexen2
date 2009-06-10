@@ -7,7 +7,7 @@
 	- shouldn't depend on arch_def.h, q_stdinc.h, or
 	  any other headers
 
-	$Id: compiler.h,v 1.13 2009-02-20 19:00:40 sezero Exp $
+	$Id: compiler.h,v 1.14 2009-06-10 08:10:51 sezero Exp $
 
 	Copyright (C) 2007  O.Sezer <sezero@users.sourceforge.net>
 
@@ -44,6 +44,15 @@
 #define	__fp_attribute__	__attribute__
 #else
 #define	__fp_attribute__(x)
+#endif
+
+/* function optimize attribute is added
+ * starting with gcc 4.4.0
+ */
+#if defined(__GNUC__) && (__GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ > 3))
+#define	__no_optimize		__attribute__((optimize("0")))
+#else
+#define	__no_optimize
 #endif
 
 #if !(defined(__GNUC__) &&  (__GNUC__ > 2 || (__GNUC__ == 2 && __GNUC_MINOR__ >= 8)))
