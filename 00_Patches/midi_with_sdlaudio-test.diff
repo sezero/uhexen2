@@ -10,10 +10,10 @@ don't have any effects on them, yet.
 NOTE:  if you want to use the external music files patch, too,  you
 must apply this one first.
 
-diff -urNp uhexen2-20090101/hexen2/midi_sdl.c uhexen2/hexen2/midi_sdl.c
---- uhexen2-20090101/hexen2/midi_sdl.c	2009-01-01 12:07:03.000000000 +0200
-+++ uhexen2/hexen2/midi_sdl.c	2009-01-01 12:18:53.000000000 +0200
-@@ -109,16 +109,74 @@ static void MIDI_EndMusicFinished(void)
+diff -urNp uhexen2-20090614/hexen2/midi_sdl.c uhexen2/hexen2/midi_sdl.c
+--- uhexen2-20090614/hexen2/midi_sdl.c	2009-06-14 14:20:05.000000000 +0300
++++ uhexen2/hexen2/midi_sdl.c	2009-06-14 14:25:28.000000000 +0300
+@@ -113,7 +113,64 @@ static void MIDI_EndMusicFinished(void)
  	}
  }
  
@@ -79,19 +79,7 @@ diff -urNp uhexen2-20090101/hexen2/midi_sdl.c uhexen2/hexen2/midi_sdl.c
  {
  	Uint16 audio_format = AUDIO_S16SYS;
  	int audio_rate = 22050;
- 	int audio_channels = 2;
--	int audio_buffers = 4096;
-+	int audio_buffers = 512;
- 
- 	const SDL_version *v;
- 
--	bMidiInited = false;
-+	if (bMidiInited)
-+		return true;
- 	Con_Printf("%s: ", __thisfunc__);
- 
- 	if (safemode || COM_CheckParm("-nomidi") || COM_CheckParm("-nosound") || COM_CheckParm("-s"))
-@@ -126,11 +184,6 @@ qboolean MIDI_Init(void)
+@@ -131,11 +188,6 @@ qboolean MIDI_Init(void)
  		Con_Printf("disabled by commandline\n");
  		return false;
  	}
@@ -103,10 +91,10 @@ diff -urNp uhexen2-20090101/hexen2/midi_sdl.c uhexen2/hexen2/midi_sdl.c
  
  	Con_Printf("SDL_Mixer ");
  	v = Mix_Linked_Version();
-@@ -168,6 +221,19 @@ qboolean MIDI_Init(void)
- 	midi_endmusicfnc = &MIDI_EndMusicFinished;
- 	if (midi_endmusicfnc)
- 		Mix_HookMusicFinished(midi_endmusicfnc);
+@@ -171,6 +223,19 @@ qboolean MIDI_Init(void)
+ 	}
+ 
+ 	Mix_HookMusicFinished(MIDI_EndMusicFinished);
 +	if (dma != NULL)
 +	{
 +		memset ((void *) dma, 0, sizeof(dma_t));
@@ -175,8 +163,8 @@ diff -urNp uhexen2-20081012/hexen2/mididef.h uhexen2/hexen2/mididef.h
 diff -urNp uhexen2-20081012/hexen2/midi_mac.c uhexen2/hexen2/midi_mac.c
 --- uhexen2-20081012/hexen2/midi_mac.c	2008-03-31 14:25:21.000000000 +0300
 +++ uhexen2/hexen2/midi_mac.c	2008-10-12 10:32:11.000000000 +0300
-@@ -118,7 +118,7 @@ static void MIDI_Loop_f (void)
- 		Con_Printf("MIDI music will not be looped\n");
+@@ -117,7 +117,7 @@ void MIDI_Update(void)
+ 	}
  }
  
 -qboolean MIDI_Init(void)
@@ -196,10 +184,10 @@ diff -urNp uhexen2-20081012/hexen2/win_stuff/midi.c uhexen2/hexen2/win_stuff/mid
  {
  	MMRESULT mmrRetVal;
  	MIDIOUTCAPS midi_caps;
-diff -urNp uhexen2-20090101/hexenworld/Client/midi_sdl.c uhexen2/hexenworld/Client/midi_sdl.c
---- uhexen2-20090101/hexenworld/Client/midi_sdl.c	2009-01-01 12:07:03.000000000 +0200
-+++ uhexen2/hexenworld/Client/midi_sdl.c	2009-01-01 12:18:53.000000000 +0200
-@@ -109,16 +109,74 @@ static void MIDI_EndMusicFinished(void)
+diff -urNp uhexen2-20090614/hexenworld/Client/midi_sdl.c uhexen2/hexenworld/Client/midi_sdl.c
+--- uhexen2-20090614/hexenworld/Client/midi_sdl.c	2009-06-14 14:20:05.000000000 +0300
++++ uhexen2/hexenworld/Client/midi_sdl.c	2009-06-14 14:25:28.000000000 +0300
+@@ -113,7 +113,64 @@ static void MIDI_EndMusicFinished(void)
  	}
  }
  
@@ -265,19 +253,7 @@ diff -urNp uhexen2-20090101/hexenworld/Client/midi_sdl.c uhexen2/hexenworld/Clie
  {
  	Uint16 audio_format = AUDIO_S16SYS;
  	int audio_rate = 22050;
- 	int audio_channels = 2;
--	int audio_buffers = 4096;
-+	int audio_buffers = 512;
- 
- 	const SDL_version *v;
- 
--	bMidiInited = false;
-+	if (bMidiInited)
-+		return true;
- 	Con_Printf("%s: ", __thisfunc__);
- 
- 	if (safemode || COM_CheckParm("-nomidi") || COM_CheckParm("-nosound") || COM_CheckParm("-s"))
-@@ -126,11 +184,6 @@ qboolean MIDI_Init(void)
+@@ -131,11 +188,6 @@ qboolean MIDI_Init(void)
  		Con_Printf("disabled by commandline\n");
  		return false;
  	}
@@ -289,10 +265,10 @@ diff -urNp uhexen2-20090101/hexenworld/Client/midi_sdl.c uhexen2/hexenworld/Clie
  
  	Con_Printf("SDL_Mixer ");
  	v = Mix_Linked_Version();
-@@ -168,6 +221,19 @@ qboolean MIDI_Init(void)
- 	midi_endmusicfnc = &MIDI_EndMusicFinished;
- 	if (midi_endmusicfnc)
- 		Mix_HookMusicFinished(midi_endmusicfnc);
+@@ -171,6 +223,19 @@ qboolean MIDI_Init(void)
+ 	}
+ 
+ 	Mix_HookMusicFinished(MIDI_EndMusicFinished);
 +	if (dma != NULL)
 +	{
 +		memset ((void *) dma, 0, sizeof(dma_t));
@@ -361,8 +337,8 @@ diff -urNp uhexen2-20081012/hexenworld/Client/mididef.h uhexen2/hexenworld/Clien
 diff -urNp uhexen2-20081012/hexenworld/Client/midi_mac.c uhexen2/hexenworld/Client/midi_mac.c
 --- uhexen2-20081012/hexenworld/Client/midi_mac.c	2008-03-31 14:25:22.000000000 +0300
 +++ uhexen2/hexenworld/Client/midi_mac.c	2008-10-12 10:32:11.000000000 +0300
-@@ -118,7 +118,7 @@ static void MIDI_Loop_f (void)
- 		Con_Printf("MIDI music will not be looped\n");
+@@ -117,7 +117,7 @@ void MIDI_Update(void)
+ 	}
  }
  
 -qboolean MIDI_Init(void)

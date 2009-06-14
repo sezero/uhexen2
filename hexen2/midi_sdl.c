@@ -2,10 +2,10 @@
 	midi_sdl.c
 	midiplay via SDL_mixer
 
-	$Id: midi_sdl.c,v 1.51 2009-01-01 10:07:03 sezero Exp $
+	$Id: midi_sdl.c,v 1.52 2009-06-14 14:01:34 sezero Exp $
 
 	Copyright (C) 2001  contributors of the Anvil of Thyrion project
-	Copyright (C) 2005-2007  O.Sezer
+	Copyright (C) 2005-2009  O.Sezer
 
 	This program is free software; you can redistribute it and/or
 	modify it under the terms of the GNU General Public License
@@ -36,7 +36,6 @@ static int audio_wasinit = 0;
 static qboolean	bMidiInited, bFileOpen, bPlaying, bPaused, bLooped;
 static float	old_volume = -1.0f;
 
-static void (*midi_endmusicfnc)(void);
 
 static void MIDI_Play_f (void)
 {
@@ -95,17 +94,22 @@ void MIDI_Update(void)
 
 static void MIDI_EndMusicFinished(void)
 {
-	Sys_DPrintf("Music finished\n");
+	if (!bFileOpen || !music)
+		return;
 
 	if (bLooped)
 	{
 		if (Mix_PlayingMusic())
 			Mix_HaltMusic();
 
-		Sys_DPrintf("Playing again\n");
 		Mix_RewindMusic();
-		Mix_FadeInMusic(music,0,2000);
+		Mix_FadeInMusic(music, 0, 0);
 		bPlaying = true;
+	}
+	else
+	{
+		bPlaying = false;
+		// bFileOpen is still true
 	}
 }
 
@@ -114,11 +118,12 @@ qboolean MIDI_Init(void)
 	Uint16 audio_format = AUDIO_S16SYS;
 	int audio_rate = 22050;
 	int audio_channels = 2;
-	int audio_buffers = 4096;
-
+	int audio_buffers = 512;
 	const SDL_version *v;
 
-	bMidiInited = false;
+	if (bMidiInited)
+		return true;
+
 	Con_Printf("%s: ", __thisfunc__);
 
 	if (safemode || COM_CheckParm("-nomidi") || COM_CheckParm("-nosound") || COM_CheckParm("-s"))
@@ -165,9 +170,7 @@ qboolean MIDI_Init(void)
 		return false;
 	}
 
-	midi_endmusicfnc = &MIDI_EndMusicFinished;
-	if (midi_endmusicfnc)
-		Mix_HookMusicFinished(midi_endmusicfnc);
+	Mix_HookMusicFinished(MIDI_EndMusicFinished);
 
 	Con_Printf("MIDI music initialized.\n");
 
@@ -201,7 +204,7 @@ void MIDI_Play (const char *Name)
 
 	if (!Name || !*Name)
 	{
-		Sys_Printf("no midi music to play\n");
+		Sys_DPrintf("no midi music to play\n");
 		return;
 	}
 
@@ -242,15 +245,15 @@ void MIDI_Play (const char *Name)
 	}
 
 	music = Mix_LoadMUS(midiName);
-	if ( music == NULL )
+	if (music == NULL)
 	{
 		Con_Printf("Couldn't load %s: %s\n", tempName, SDL_GetError());
 	}
 	else
 	{
 		bFileOpen = true;
-		Con_Printf ("Started music %s\n", tempName);
-		Mix_FadeInMusic(music,0,2000);
+		Con_Printf("Started music %s\n", tempName);
+		Mix_FadeInMusic(music, 0, 500);
 		bPlaying = true;
 	}
 }
@@ -262,13 +265,13 @@ void MIDI_Pause(int mode)
 
 	if ((mode == MIDI_TOGGLE_PAUSE && bPaused) || mode == MIDI_ALWAYS_RESUME)
 	{
-		Mix_ResumeMusic();
 		bPaused = false;
+		Mix_ResumeMusic();
 	}
 	else
 	{
-		Mix_PauseMusic();
 		bPaused = true;
+		Mix_PauseMusic();
 	}
 }
 
@@ -288,7 +291,11 @@ void MIDI_Loop(int mode)
 		break;
 	}
 
-	MIDI_EndMusicFinished();
+	// restart previously finished music
+	if (bLooped && bFileOpen && !bPlaying)
+	{
+		MIDI_EndMusicFinished();
+	}
 }
 
 void MIDI_Stop(void)
@@ -298,12 +305,14 @@ void MIDI_Stop(void)
 
 	if (bFileOpen || bPlaying)
 	{
+		bFileOpen = false;
+		bPlaying = false;
 		Mix_HaltMusic();
 		Mix_FreeMusic(music);
+		music = NULL;
 	}
 
-	bPlaying = bPaused = false;
-	bFileOpen = false;
+	bPaused = false;
 }
 
 void MIDI_Cleanup(void)
