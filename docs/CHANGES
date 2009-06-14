@@ -3,6 +3,19 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2009-06-14 (CVS):
+    * midi_sdl.c: reduced the audio buffers param from 4096 to 512. removed some
+      of the unnecessary debug messages. removed unnecessary midi_endmusicfnc
+      function pointer. reduced the fade-in time from 2000 to 500 milliseconds.
+      adjusted MIDI_Loop() so that it calls MIDI_EndMusicFinished() only when
+      necessary. made MIDI_EndMusicFinished() to set bPlaying to false when not
+      looping. re-diff'ed the external music file support and midi with sdlsnd
+      patches after these changes.
+
+2009-06-10 (CVS):
+    * compiler.h:  added a __no_optimize macro wrapping around the new optimize
+      attribute of gcc-4.4.
+
 2009-05-26 (CVS):
     * updated msinttypes headers to r24
 

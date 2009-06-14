@@ -1,5 +1,5 @@
 Hexen II: Hammer of Thyrion (uhexen2), CVS snapshot / pre-release,
-Version 1.4.4-pre6 / Apr. 30, 2009.
+Version 1.4.4-pre6+ / June 14, 2009
 
 Changes since the HoT-1.4.3 release:
 
@@ -27,8 +27,10 @@ Changes since the HoT-1.4.3 release:
 * fixes to the SVGALib driver. it is functional now.
 * fixed bug #2176384: in windowed mode, when you save using the menus, the
   game used to quit the menu without grabbing the mouse properly.
-* increased the buffersize for sdl audio. made it to print a little more
-  detailed info at startup.
+* slightly increased the buffersize for sdl audio. made it to print a little
+  more detailed info at startup.
+* decreased the buffersize of sdl midi driver from 4096 to 512 in addition to
+  several minor cleanups and fixes.
 * launcher, patching: rewritten the inter-threads log printing and fixed the
   erratic crashes on smp systems. launcher version is 1.0.4 now.
 * hexenworld master server: unknown packets are properly output as hexdump.
