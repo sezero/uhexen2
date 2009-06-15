@@ -2,7 +2,7 @@
 	hcc.c
 	HCode compiler based on qcc, modifed by Eric Hobbs to work with DCC
 
-	$Header: /home/ozzie/Download/0000/uhexen2/utils/dcc/hcc.c,v 1.31 2009-05-05 16:02:51 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/utils/dcc/hcc.c,v 1.32 2009-06-15 09:12:20 sezero Exp $
 */
 
 #include "q_stdinc.h"
@@ -267,12 +267,12 @@ static void WriteData (int crc)
 
 	strofs = (strofs + 3) & ~3;
 
-	printf ("%6i strofs\n", strofs);
-	printf ("%6i numstatements\n", numstatements);
-	printf ("%6i numfunctions\n", numfunctions);
-	printf ("%6i numglobaldefs\n", numglobaldefs);
-	printf ("%6i numfielddefs\n", numfielddefs);
-	printf ("%6i numpr_globals\n", numpr_globals);
+	printf ("%10i strofs\n", strofs);
+	printf ("%10i numstatements\n", numstatements);
+	printf ("%10i numfunctions\n", numfunctions);
+	printf ("%10i numglobaldefs\n", numglobaldefs);
+	printf ("%10i numfielddefs\n", numfielddefs);
+	printf ("%10i numpr_globals\n", numpr_globals);
 
 	h = SafeOpenWrite (destfile);
 	SafeWrite (h, &progs, sizeof(progs));
@@ -331,7 +331,7 @@ static void WriteData (int crc)
 		((int *)pr_globals)[i] = LittleLong (((int *)pr_globals)[i]);
 	SafeWrite (h, pr_globals, numpr_globals*4);
 
-	printf ("%6i TOTAL SIZE\n", (int)ftell (h));	
+	printf ("%10i TOTAL SIZE\n", (int)ftell (h));
 
 	progs.entityfields = pr.size_fields;
 
@@ -925,7 +925,7 @@ int main (int argc, char **argv)
 	psrc = COM_Parse(psrc);
 	if (!psrc)
 	{
-		Error("No destination filename.  HCC -help for info.\n");
+		Error("No destination filename. dhcc -help for info.\n");
 	}
 
 	strcpy(destfile, com_token);

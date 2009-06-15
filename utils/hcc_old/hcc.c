@@ -1,7 +1,7 @@
 /*
 	hcc.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/utils/hcc_old/hcc.c,v 1.20 2009-05-05 16:02:51 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/utils/hcc_old/hcc.c,v 1.21 2009-06-15 09:12:21 sezero Exp $
 
 	Hash table modifications based on fastqcc by Jonathan Roy
 	(roy@atlantic.net).
@@ -269,13 +269,13 @@ static void WriteData (int crc)
 	strofs = (strofs + 3) & ~3;
 
 	printf("object file %s\n", destfile);
-	printf("      registers: %-6d / %-6d (%6d)\n", numpr_globals, MAX_REGS, numpr_globals*(int)sizeof(float));
-	printf("     statements: %-6d / %-6d (%6d)\n", numstatements, MAX_STATEMENTS, numstatements*(int)sizeof(dstatement_t));
-	printf("      functions: %-6d / %-6d (%6d)\n", numfunctions, MAX_FUNCTIONS, numfunctions*(int)sizeof(dfunction_t));
-	printf("    global defs: %-6d / %-6d (%6d)\n", numglobaldefs, MAX_GLOBALS, numglobaldefs*(int)sizeof(ddef_t));
-	printf("     field defs: %-6d / %-6d (%6d)\n", numfielddefs, MAX_FIELDS, numfielddefs*(int)sizeof(ddef_t));
-	printf("    string heap: %-6d / %-6d\n", strofs, MAX_STRINGS);
-	printf("  entity fields: %d\n", pr.size_fields);
+	printf("      registers: %10d / %10d (%10d bytes)\n", numpr_globals, MAX_REGS, numpr_globals*(int)sizeof(float));
+	printf("     statements: %10d / %10d (%10d bytes)\n", numstatements, MAX_STATEMENTS, numstatements*(int)sizeof(dstatement_t));
+	printf("      functions: %10d / %10d (%10d bytes)\n", numfunctions, MAX_FUNCTIONS, numfunctions*(int)sizeof(dfunction_t));
+	printf("    global defs: %10d / %10d (%10d bytes)\n", numglobaldefs, MAX_GLOBALS, numglobaldefs*(int)sizeof(ddef_t));
+	printf("     field defs: %10d / %10d (%10d bytes)\n", numfielddefs, MAX_FIELDS, numfielddefs*(int)sizeof(ddef_t));
+	printf("    string heap: %10d / %10d\n", strofs, MAX_STRINGS);
+	printf("  entity fields: %10d\n", pr.size_fields);
 
 	h = SafeOpenWrite (destfile);
 	SafeWrite (h, &progs, sizeof(progs));
@@ -334,7 +334,7 @@ static void WriteData (int crc)
 		((int *)pr_globals)[i] = LittleLong (((int *)pr_globals)[i]);
 	SafeWrite (h, pr_globals, numpr_globals*4);
 
-	printf("     total size: %d\n", (int)ftell(h));
+	printf("     total size: %10d bytes\n", (int)ftell(h));
 
 	progs.entityfields = pr.size_fields;
 
@@ -862,10 +862,10 @@ int main (int argc, char **argv)
 			statementSize = statementCount*sizeof(dstatement_t);
 			functionCount = numfunctions-functionCount;
 			functionSize = functionCount*sizeof(dfunction_t);
-			printf("      registers: %d (%d)\n", registerCount, registerSize);
-			printf("     statements: %d (%d)\n", statementCount, statementSize);
-			printf("      functions: %d (%d)\n", functionCount, functionSize);
-			printf("     total size: %d\n", registerSize+statementSize+functionSize);
+			printf("      registers: %10d (%10d bytes)\n", registerCount, registerSize);
+			printf("     statements: %10d (%10d bytes)\n", statementCount, statementSize);
+			printf("      functions: %10d (%10d bytes)\n", functionCount, functionSize);
+			printf("     total size: %10d bytes\n", registerSize+statementSize+functionSize);
 		}
 	} while (1);
 
@@ -896,9 +896,9 @@ int main (int argc, char **argv)
 
 	// write files.dat
 	WriteFiles();
-	printf(" precache_sound: %d\n", numsounds);
-	printf(" precache_model: %d\n", nummodels);
-	printf("  precache_file: %d\n", numfiles);
+	printf(" precache_sound: %10d / %10d\n", numsounds, MAX_SOUNDS);
+	printf(" precache_model: %10d / %10d\n", nummodels, MAX_MODELS);
+	printf("  precache_file: %10d / %10d\n", numfiles, MAX_FILES);
 
 	stop = GetTime ();
 	printf("\n%d seconds elapsed.\n", (int)(stop-start));

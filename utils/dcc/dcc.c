@@ -2,7 +2,7 @@
 	dcc.c
 	An hcode compiler/decompiler for Hexen II by Eric Hobbs
 
-	$Id: dcc.c,v 1.46 2009-05-05 16:02:51 sezero Exp $
+	$Id: dcc.c,v 1.47 2009-06-15 09:12:20 sezero Exp $
 */
 
 
@@ -2068,16 +2068,14 @@ void DEC_ReadData (const char *srcfile)
 		((int *)pr_globals)[i] = LittleLong (((int *)pr_globals)[i]);
 
 	printf ("read data from %s:\n", srcfile);
-	printf ("total size is: %7i\n", Q_filelength(h));
-	printf ("version code is %i\n", progs.version);
-	printf ("crc is %i\n", progs.crc);
-	printf ("%6i strofs\n", strofs);
-	printf ("%6i numstatements\n", numstatements);
-	printf ("%6i numfunctions\n", numfunctions);
-	printf ("%6i numglobaldefs\n", numglobaldefs);
-	printf ("%6i numfielddefs\n", numfielddefs);
-	printf ("%6i numpr_globals\n", numpr_globals);
-	printf ("--------------------------\n");
+	printf ("%10i bytes, version %i, crc: %i\n", Q_filelength(h), progs.version, progs.crc);
+	printf ("%10i strofs\n", strofs);
+	printf ("%10i numstatements\n", numstatements);
+	printf ("%10i numfunctions\n", numfunctions);
+	printf ("%10i numglobaldefs\n", numglobaldefs);
+	printf ("%10i numfielddefs\n", numfielddefs);
+	printf ("%10i numpr_globals\n", numpr_globals);
+	printf ("----------------------------------------\n");
 
 	fclose (h);
 }
