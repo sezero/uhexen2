@@ -1,7 +1,7 @@
 #!/bin/sh
 
 # the script I use to prepare a release tree from the H.o.T. CVS snapshot
-# $Id: mkrelease.sh,v 1.18 2008-02-05 17:55:44 sezero Exp $
+# $Id: mkrelease.sh,v 1.19 2009-06-15 07:31:20 sezero Exp $
 
 if echo `pwd` | grep "\/scripts" > /dev/null 2>&1 ; then
 cd ..
@@ -35,6 +35,7 @@ find . -name *.sh | xargs chmod 755
 
 # move the unused/reference asm files directory into 00_unused
 mv asm 00_unused/asm_ref
+mv lib3dfxgamma 00_unused/3dfxgamma
 
 # rename the gamecode directory to include its version number
 mv gamecode gamecode-$GAMECODE_VER
