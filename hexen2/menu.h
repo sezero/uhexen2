@@ -1,7 +1,7 @@
 /*
 	menu.h
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/menu.h,v 1.12 2007-11-25 09:22:54 sezero Exp $
+	$Id: menu.h,v 1.13 2009-06-22 14:00:22 sezero Exp $
 */
 
 #ifndef __HX2_MENU_H
@@ -36,7 +36,12 @@ void M_DrawCharacter (int cx, int line, int num);
 void M_DrawPic (int x, int y, qpic_t *pic);
 void M_DrawTransPic (int x, int y, qpic_t *pic);
 void M_DrawTextBox (int x, int y, int width, int lines);
+#ifdef H2W
+void M_DrawTextBox2 (int x, int y, int width, int lines);
+#else
+/* the bottom argument is for the intro messages of the expansion pack */
 void M_DrawTextBox2 (int x, int y, int width, int lines, qboolean bottom);
+#endif
 
 void M_DrawCheckbox (int x, int y, int on);
 

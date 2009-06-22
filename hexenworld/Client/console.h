@@ -2,7 +2,7 @@
 	console.h
 	the game console
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/console.h,v 1.12 2009-01-07 18:38:12 sezero Exp $
+	$Id: console.h,v 1.13 2009-06-22 14:00:42 sezero Exp $
 */
 
 #ifndef __CONSOLE_H
@@ -22,6 +22,7 @@ extern	console_t	*con;
 extern	int		con_ormask;
 
 extern	int con_totallines;
+extern	qboolean con_forcedup;	// because no entities to refresh
 extern	qboolean con_initialized;
 extern	byte *con_chars;
 extern	int con_notifylines;	// scan lines to clear for notify lines
@@ -33,7 +34,6 @@ void Con_Init (void);
 void Con_DrawConsole (int lines);
 
 void Con_ShowList (int , const char **);
-//void Con_Clear_f (void);
 void Con_DrawNotify (void);
 void Con_ClearNotify (void);
 void Con_ToggleConsole_f (void);

@@ -2,7 +2,7 @@
 	r_local.h
 	private refresh defs
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/r_local.h,v 1.17 2008-04-22 13:06:10 sezero Exp $
+	$Id: r_local.h,v 1.18 2009-06-22 14:00:42 sezero Exp $
 */
 
 #ifndef __R_LOCAL_H
@@ -65,7 +65,9 @@ extern cvar_t	r_maxedges;
 extern cvar_t	r_numedges;
 extern cvar_t	r_aliasmip;
 extern cvar_t	r_transwater;
+#ifdef H2W
 extern cvar_t	r_teamcolor;
+#endif
 extern cvar_t	r_texture_external;
 
 #define XCENTERING	(1.0 / 2.0)

@@ -2,7 +2,7 @@
 	console.h
 	the game console
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/console.h,v 1.12 2009-01-07 19:07:20 sezero Exp $
+	$Id: console.h,v 1.13 2009-06-22 14:00:21 sezero Exp $
 */
 
 #ifndef __CONSOLE_H
@@ -34,7 +34,6 @@ void Con_Init (void);
 void Con_DrawConsole (int lines);
 
 void Con_ShowList (int , const char **);
-//void Con_Clear_f (void);
 void Con_DrawNotify (void);
 void Con_ClearNotify (void);
 void Con_ToggleConsole_f (void);
