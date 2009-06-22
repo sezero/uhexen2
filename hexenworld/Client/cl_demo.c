@@ -2,7 +2,7 @@
 	cl_demo.c
 	demo recording and playback
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/cl_demo.c,v 1.23 2007-11-11 13:17:44 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/cl_demo.c,v 1.24 2009-06-22 12:15:22 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -36,9 +36,9 @@ void CL_StopPlayback (void)
 		return;
 
 	fclose (cls.demofile);
+	cls.demoplayback = false;
 	cls.demofile = NULL;
 	cls.state = ca_disconnected;
-	cls.demoplayback = 0;
 
 	if (cls.timedemo)
 		CL_FinishTimeDemo ();
@@ -57,14 +57,14 @@ Writes the current user cmd
 void CL_WriteDemoCmd (usercmd_t *pcmd)
 {
 	int	i;
-	float	fl;
+	float	f;
 	byte	c;
 	usercmd_t cmd;
 
 	//Con_Printf("write: %ld bytes, %4.4f\n", msg->cursize, realtime);
 
-	fl = LittleFloat((float)realtime);
-	fwrite (&fl, sizeof(fl), 1, cls.demofile);
+	f = LittleFloat((float)realtime);
+	fwrite (&f, 4, 1, cls.demofile);
 
 	c = dem_cmd;
 	fwrite (&c, sizeof(c), 1, cls.demofile);
@@ -82,8 +82,8 @@ void CL_WriteDemoCmd (usercmd_t *pcmd)
 
 	for (i = 0; i < 3; i++)
 	{
-		fl = LittleFloat (cl.viewangles[i]);
-		fwrite (&fl, 4, 1, cls.demofile);
+		f = LittleFloat (cl.viewangles[i]);
+		fwrite (&f, 4, 1, cls.demofile);
 	}
 
 	fflush (cls.demofile);
@@ -99,16 +99,16 @@ Dumps the current net message, prefixed by the length and view angles
 static void CL_WriteDemoMessage (sizebuf_t *msg)
 {
 	int	len;
-	float	fl;
+	float	f;
 	byte	c;
-
-	//Con_Printf("write: %ld bytes, %4.4f\n", msg->cursize, realtime);
 
 	if (!cls.demorecording)
 		return;
 
-	fl = LittleFloat((float)realtime);
-	fwrite (&fl, sizeof(fl), 1, cls.demofile);
+//	Con_Printf("write: %ld bytes, %4.4f\n", msg->cursize, realtime);
+
+	f = LittleFloat((float)realtime);
+	fwrite (&f, 4, 1, cls.demofile);
 
 	c = dem_read;
 	fwrite (&c, sizeof(c), 1, cls.demofile);
@@ -256,7 +256,8 @@ qboolean CL_GetMessage (void)
 	if (!NET_GetPacket ())
 		return false;
 
-	CL_WriteDemoMessage (&net_message);
+	if (cls.demorecording)
+		CL_WriteDemoMessage (&net_message);
 
 	return true;
 }
@@ -434,7 +435,7 @@ play [demoname]
 */
 void CL_PlayDemo_f (void)
 {
-	char	name[256];
+	char	name[MAX_OSPATH];
 
 	if (Cmd_Argc() != 2)
 	{
@@ -479,7 +480,7 @@ CL_FinishTimeDemo
 */
 static void CL_FinishTimeDemo (void)
 {
-	int		frames;
+	int	frames;
 	float	time;
 
 	cls.timedemo = false;

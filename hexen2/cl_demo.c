@@ -2,7 +2,7 @@
 	cl_demo.c
 	demo recording and playback
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cl_demo.c,v 1.25 2007-11-11 13:17:38 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cl_demo.c,v 1.26 2009-06-22 12:15:19 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -12,12 +12,15 @@ int		stufftext_frame;
 
 static void CL_FinishTimeDemo (void);
 
-// vars for the mission pack intro:
-qboolean	intro_playing = false;	// whether the mission pack intro is playing
-#if 0		/* skip_start and num_intro_msg are not used at present - O.S	*/
+/* vars for the mission pack intro */
+qboolean	intro_playing = false;
+#if 0
+/* these should have been used for
+ * recording the mission pack intro
+ */
 qboolean	skip_start = false;
 int		num_intro_msg = 0;
-#endif		/* 0		*/
+#endif
 
 /*
 ==============================================================================
@@ -68,9 +71,12 @@ Dumps the current net message, prefixed by the length and view angles
 */
 static void CL_WriteDemoMessage (void)
 {
-	int		len;
-	int		i;
+	int	len;
+	int	i;
 	float	f;
+
+	if (!cls.demorecording)
+		return;
 
 	len = LittleLong (net_message.cursize);
 	fwrite (&len, 4, 1, cls.demofile);
@@ -89,6 +95,110 @@ static void CL_WriteDemoMessage (void)
 
 /*
 ====================
+CL_GetDemoMessage
+====================
+*/
+static int CL_GetDemoMessage (void)
+{
+	int	r, i;
+	float	f;
+
+	// decide if it is time to grab the next message
+	if (cls.signon == SIGNONS)	// always grab until fully connected
+	{
+		// Always wait for full frame update on stuff messages.
+		// If the server stuffs a reconnect, we must wait for
+		// the client to re-initialize before accepting further
+		// messages. Otherwise demo playback may freeze. Pa3PyX
+		if (stufftext_frame == host_framecount)
+			return 0;
+
+		if (cls.timedemo)
+		{
+			if (host_framecount == cls.td_lastframe)
+				return 0;	// already read this frame's message
+			cls.td_lastframe = host_framecount;
+		// if this is the second frame, grab the real td_starttime
+		// so the bogus time on the first frame doesn't count
+			if (host_framecount == cls.td_startframe + 1)
+				cls.td_starttime = realtime;
+		}
+		else if (/* cl.time > 0 && */ cl.time <= cl.mtime[0])
+		{
+			return 0;	// don't need another message yet
+		}
+	}
+
+// get the next message
+	/*
+	if (intro_playing && num_intro_msg > 0 && num_intro_msg < 21)
+		V_DarkFlash_f();	// Fade into demo
+	*/
+	/*
+	if (skip_start && num_intro_msg > 3)
+	{
+		while (num_intro_msg < 1110)
+		{
+			fread (&net_message.cursize, 4, 1, cls.demofile);
+			VectorCopy (cl.mviewangles[0], cl.mviewangles[1]);
+			for (i = 0; i < 3; i++)
+			{
+				r = fread (&f, 4, 1, cls.demofile);
+				cl.mviewangles[0][i] = LittleFloat (f);
+			}
+
+			net_message.cursize = LittleLong (net_message.cursize);
+			num_intro_msg++;
+			if (net_message.cursize > MAX_MSGLEN)
+				Sys_Error ("Demo message > MAX_MSGLEN");
+			r = fread (net_message.data, net_message.cursize, 1, cls.demofile);
+			if (r != 1)
+			{
+				CL_StopPlayback ();
+				return 0;
+			}
+			if (num_intro_msg == 174 ||
+				num_intro_msg == 178 ||
+				num_intro_msg == 428 ||
+				num_intro_msg == 553 ||
+				num_intro_msg == 1012)
+				break;
+		}
+		if (num_intro_msg == 1110)
+			skip_start = false;
+		goto skipit;
+	}
+	*/
+	fread (&net_message.cursize, 4, 1, cls.demofile);
+	VectorCopy (cl.mviewangles[0], cl.mviewangles[1]);
+	for (i = 0 ; i < 3 ; i++)
+	{
+		r = fread (&f, 4, 1, cls.demofile);
+		cl.mviewangles[0][i] = LittleFloat (f);
+	}
+
+	net_message.cursize = LittleLong (net_message.cursize);
+//	num_intro_msg++;
+	if (net_message.cursize > MAX_MSGLEN)
+		Sys_Error ("Demo message > MAX_MSGLEN");
+	r = fread (net_message.data, net_message.cursize, 1, cls.demofile);
+	if (r != 1)
+	{
+		CL_StopPlayback ();
+		return 0;
+	}
+
+	/*
+  skipit:
+	if (cls.demorecording)
+		CL_WriteDemoMessage ();
+	*/
+
+	return 1;
+}
+
+/*
+====================
 CL_GetMessage
 
 Handles recording and playback of demos, on top of NET_ code
@@ -96,104 +206,10 @@ Handles recording and playback of demos, on top of NET_ code
 */
 int CL_GetMessage (void)
 {
-	int		r, i;
-	float	f;
+	int	r;
 
 	if (cls.demoplayback)
-	{
-		// decide if it is time to grab the next message
-		if (cls.signon == SIGNONS)	// always grab until fully connected
-		{
-
-			// Always wait for full frame update on stuff messages.
-			// If the server stuffs a reconnect, we must wait for
-			// the client to re-initialize before accepting further
-			// messages. Otherwise demo playback may freeze. Pa3PyX
-			if (stufftext_frame == host_framecount)
-				return 0;
-
-			if (cls.timedemo)
-			{
-				if (host_framecount == cls.td_lastframe)
-					return 0;	// already read this frame's message
-				cls.td_lastframe = host_framecount;
-			// if this is the second frame, grab the real td_starttime
-			// so the bogus time on the first frame doesn't count
-				if (host_framecount == cls.td_startframe + 1)
-					cls.td_starttime = realtime;
-			}
-			else if ( /* cl.time > 0 && */ cl.time <= cl.mtime[0])
-			{
-				return 0;	// don't need another message yet
-			}
-		}
-
-	// get the next message
-//		if (intro_playing && num_intro_msg > 0 && num_intro_msg < 21)
-//			V_DarkFlash_f();	//Fade into demo
-
-/*		if (skip_start && num_intro_msg > 3)
-		{
-			while (num_intro_msg < 1110)
-			{
-				fread (&net_message.cursize, 4, 1, cls.demofile);
-				VectorCopy (cl.mviewangles[0], cl.mviewangles[1]);
-				for (i = 0; i < 3; i++)
-				{
-					r = fread (&f, 4, 1, cls.demofile);
-					cl.mviewangles[0][i] = LittleFloat (f);
-				}
-
-				net_message.cursize = LittleLong (net_message.cursize);
-				num_intro_msg++;
-				if (net_message.cursize > MAX_MSGLEN)
-					Sys_Error ("Demo message > MAX_MSGLEN");
-				r = fread (net_message.data, net_message.cursize, 1, cls.demofile);
-				if (r != 1)
-				{
-					CL_StopPlayback ();
-					return 0;
-				}
-				if (num_intro_msg == 174 ||
-					num_intro_msg == 178 ||
-					num_intro_msg == 428 ||
-					num_intro_msg == 553 ||
-					num_intro_msg == 1012)
-					break;
-			}
-			if (num_intro_msg == 1110)
-				skip_start = false;
-			goto skipit;
-		} */
-
-		fread (&net_message.cursize, 4, 1, cls.demofile);
-		VectorCopy (cl.mviewangles[0], cl.mviewangles[1]);
-		for (i = 0 ; i < 3 ; i++)
-		{
-			r = fread (&f, 4, 1, cls.demofile);
-			cl.mviewangles[0][i] = LittleFloat (f);
-		}
-
-		net_message.cursize = LittleLong (net_message.cursize);
-
-	//	num_intro_msg++;
-
-		if (net_message.cursize > MAX_MSGLEN)
-			Sys_Error ("Demo message > MAX_MSGLEN");
-		r = fread (net_message.data, net_message.cursize, 1, cls.demofile);
-		if (r != 1)
-		{
-			CL_StopPlayback ();
-			return 0;
-		}
-
-//skipit:
-
-//		if (cls.demorecording)
-//			CL_WriteDemoMessage ();
-
-		return 1;
-	}
+		return CL_GetDemoMessage ();
 
 	while (1)
 	{
@@ -349,7 +365,7 @@ play [demoname]
 */
 void CL_PlayDemo_f (void)
 {
-	char	name[256];
+	char	name[MAX_OSPATH];
 
 	if (cmd_source != src_command)
 		return;
@@ -373,28 +389,32 @@ void CL_PlayDemo_f (void)
 //
 	q_strlcpy (name, Cmd_Argv(1), sizeof(name));
 
-	if (!q_strcasecmp(name,"t9"))
+	intro_playing = false;
+	if (gameflags & GAME_PORTALS)
 	{
-	// the mission pack specific intro actually
-	// is a pre-recorded demo named t9.dem
-		intro_playing = true;
-	//	skip_start = true;
-	}
-	else
-	{
-		intro_playing = false;
+	/* the mission pack specific intro is actually
+	 * a pre-recorded demo named t9.dem, which is
+	 * plain crap, because it reserves an ordinary
+	 * name for a special purpose...
+	 */
+		if (q_strcasecmp(name, "t9") == 0)
+		{
+			intro_playing = true;
+		//	skip_start = true;
+		}
 	}
 
 	COM_DefaultExtension (name, ".dem", sizeof(name));
 
 	Con_Printf ("Playing demo from %s.\n", name);
 
-/*	if (intro_playing)
+	/*
+	if (intro_playing)
 	{
 		cls.demorecording = true;
 		cls.introdemofile = fopen("t9.dem", "wb");
 	}
-*/
+	*/
 
 	FS_OpenFile (name, &cls.demofile, false);
 	if (!cls.demofile)
@@ -421,7 +441,7 @@ CL_FinishTimeDemo
 */
 static void CL_FinishTimeDemo (void)
 {
-	int		frames;
+	int	frames;
 	float	time;
 
 	cls.timedemo = false;
