@@ -2,7 +2,7 @@
 	view.c
 	player eye positioning
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/view.c,v 1.24 2007-07-28 09:33:59 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/view.c,v 1.25 2009-06-22 17:50:28 sezero Exp $
 
 	The view is allowed to move slightly from it's true position
 	for bobbing, but if it exceeds 8 pixels linear distance
@@ -1113,7 +1113,7 @@ void V_RenderView (void)
 	R_RenderView ();
 
 #ifndef GLQUAKE
-	if (crosshair.integer)
+	if (crosshair.integer && !cls.demoplayback)
 		Draw_Crosshair();
 #endif
 }
