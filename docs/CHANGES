@@ -3,6 +3,14 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2009-06-22 (CVS):
+    * reformatted hcc and dhcc output giving 10 digits to the size fields.
+    * cl_demo.c (h2/h2w): several small cleanups.
+    * console.h, menu.h, r_local.h: sync'ed h2 and h2w versions.
+    * view.c, gl_screen.c: don't draw the crosshair during demo playback.
+    * remove the extra copies of fxgamma stuff which are not needed nowadays.
+      move 3dfxgamma directory to 00_unused when making a release tarball.
+
 2009-06-14 (CVS):
     * midi_sdl.c: reduced the audio buffers param from 4096 to 512. removed some
       of the unnecessary debug messages. removed unnecessary midi_endmusicfnc
