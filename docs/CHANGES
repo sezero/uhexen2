@@ -3,6 +3,11 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2009-07-06 (CVS):
+    * launcher (gtk): fixed the GtkSpinButton runtime warnings about setting an
+      adjustment with non-zero page size being deprecated with new GTK+ versions:
+      just set the page_size values to 0 in gtk_adjustment_new().
+
 2009-06-22 (CVS):
     * reformatted hcc and dhcc output giving 10 digits to the size fields.
     * cl_demo.c (h2/h2w): several small cleanups.
