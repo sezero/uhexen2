@@ -2,7 +2,7 @@
 	gtk_ui.c
 	hexen2 launcher gtk+ interface
 
-	$Id: gtk_ui.c,v 1.11 2008-12-19 17:55:05 sezero Exp $
+	$Id: gtk_ui.c,v 1.12 2009-07-06 11:02:23 sezero Exp $
 
 	This program is free software; you can redistribute it and/or
 	modify it under the terms of the GNU General Public License
@@ -1429,7 +1429,7 @@ static void create_window1 (void)
 	gtk_tooltips_set_tip (tooltips, WGT_FSAA, _("Enable Antialiasing"), NULL);
 	gtk_widget_set_sensitive (WGT_FSAA, opengl_support);
 
-	WGT_ADJFSAA =  gtk_adjustment_new (aasamples, 0, 4, 2, 10, 10);
+	WGT_ADJFSAA =  gtk_adjustment_new (aasamples, 0, 4, 2, 10, 0);
 	WGT_AASAMPLES = gtk_spin_button_new (GTK_ADJUSTMENT (WGT_ADJFSAA), 2, 0);
 	gtk_entry_set_editable (GTK_ENTRY(WGT_AASAMPLES), FALSE);
 	gtk_widget_show (WGT_AASAMPLES);
@@ -1581,7 +1581,7 @@ static void create_window1 (void)
 	GTK_WIDGET_UNSET_FLAGS (WGT_MEMHEAP, GTK_CAN_FOCUS);
 	gtk_tooltips_set_tip (tooltips, WGT_MEMHEAP, _("The main memory to allocate in KB"), NULL);
 
-	WGT_HEAPADJ =  gtk_adjustment_new (heapsize, HEAP_MINSIZE, HEAP_MAXSIZE, 1024, 10, 10);
+	WGT_HEAPADJ =  gtk_adjustment_new (heapsize, HEAP_MINSIZE, HEAP_MAXSIZE, 1024, 10, 0);
 	WGT_HEAPSIZE = gtk_spin_button_new (GTK_ADJUSTMENT (WGT_HEAPADJ), 1024, 0);
 	gtk_entry_set_editable (GTK_ENTRY(WGT_HEAPSIZE), FALSE);
 	gtk_widget_show (WGT_HEAPSIZE);
@@ -1599,7 +1599,7 @@ static void create_window1 (void)
 	GTK_WIDGET_UNSET_FLAGS (WGT_MEMZONE, GTK_CAN_FOCUS);
 	gtk_tooltips_set_tip (tooltips, WGT_MEMZONE, _("Dynamic zone memory to allocate in KB"), NULL);
 
-	WGT_ZONEADJ =  gtk_adjustment_new (zonesize, ZONE_MINSIZE, ZONE_MAXSIZE, 1, 10, 10);
+	WGT_ZONEADJ =  gtk_adjustment_new (zonesize, ZONE_MINSIZE, ZONE_MAXSIZE, 1, 10, 0);
 	WGT_ZONESIZE = gtk_spin_button_new (GTK_ADJUSTMENT (WGT_ZONEADJ), 1, 0);
 	gtk_entry_set_editable (GTK_ENTRY(WGT_ZONESIZE), FALSE);
 	gtk_widget_show (WGT_ZONESIZE);
