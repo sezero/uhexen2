@@ -1,6 +1,6 @@
 /*
 	snd_alsa.c
-	$Id: snd_alsa.c,v 1.42 2008-03-06 19:10:08 sezero Exp $
+	$Id: snd_alsa.c,v 1.43 2009-07-08 12:04:21 sezero Exp $
 
 	ALSA 1.0 sound driver for Linux Hexen II
 
@@ -100,7 +100,8 @@ static qboolean load_libasound (void)
 	return true;
 }
 
-#if defined(__GNUC__)
+#if defined(__GNUC__) &&  \
+  !(defined(__STDC_VERSION__) && __STDC_VERSION__ >= 199901L)
 #define ALSA_CHECK_ERR(check, fmt, args...)		\
     do {						\
 	if (check < 0) {				\

@@ -2,7 +2,7 @@
 	zone.c
 	Memory management
 
-	$Id: zone.c,v 1.41 2008-12-21 18:55:22 sezero Exp $
+	$Id: zone.c,v 1.42 2009-07-08 12:04:21 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -800,7 +800,8 @@ CONSOLE COMMANDS
 
 #if Z_DEBUG_COMMANDS
 
-#if defined(__GNUC__)
+#if defined(__GNUC__)  \
+  !(defined(__STDC_VERSION__) && __STDC_VERSION__ >= 199901L)
 #define MEM_Printf(FH, fmt, args...)		\
     do {					\
 	if ((FH)) fprintf((FH), fmt, ##args);	\
