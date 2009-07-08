@@ -3,6 +3,11 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2009-07-08 (CVS):
+    * snd_alsa.c, zone.c: in c99 mode, use generic versions of the variadic macros
+      instead of gcc-specific ones.
+    * xdelta: removed the extra semicolon after the function edsio_edsio_init().
+
 2009-07-06 (CVS):
     * launcher (gtk): fixed the GtkSpinButton runtime warnings about setting an
       adjustment with non-zero page size being deprecated with new GTK+ versions:
