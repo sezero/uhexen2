@@ -3,6 +3,9 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2009-07-14 (CVS):
+    * hexen2/hwcl, sys_win.c: fixed compilation with c++ compilers, ie. g++.
+
 2009-07-08 (CVS):
     * snd_alsa.c, zone.c: in c99 mode, use generic versions of the variadic macros
       instead of gcc-specific ones.
