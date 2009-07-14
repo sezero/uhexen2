@@ -2,7 +2,7 @@
 	sys_win.c
 	Win32 system interface code
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/win_stuff/sys_win.c,v 1.76 2009-01-26 12:25:07 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/win_stuff/sys_win.c,v 1.77 2009-07-14 19:32:55 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -471,7 +471,8 @@ char *Sys_GetClipboardData (void)
 
 		if ((hClipboardData = GetClipboardData(CF_TEXT)) != NULL)
 		{
-			if ((cliptext = GlobalLock(hClipboardData)) != NULL)
+			cliptext = (char *) GlobalLock(hClipboardData);
+			if (cliptext != NULL)
 			{
 				size_t size = GlobalSize(hClipboardData) + 1;
 				/* this is intended for simple small text
