@@ -64,7 +64,9 @@
 #endif
 
 #ifdef	__GNUC__
-//#define	__cdecl			/* GCC doesn't know about __cdecl modifiers		*/
+#ifndef	_WIN32
+#define	__cdecl			/* GCC doesn't know about __cdecl modifiers		*/
+#endif
 #define	__FLAT__		/* GCC is always 32 bit flat model				*/
 #define	__HAS_BOOL__	/* Latest GNU C++ has ibool type					*/
 #include <stdio.h>		/* Bring in for definition of NULL				*/
