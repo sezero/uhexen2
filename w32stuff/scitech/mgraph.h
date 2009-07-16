@@ -3032,19 +3032,19 @@ extern int _VARAPI PACKED32_driver[];
  *-------------------------------------------------------------------------*/
 
 #ifndef	__16BIT__
-#define	_HUGE
+#define	_MGL_HUGE
 #else
-#define	_HUGE	_huge
+#define	_MGL_HUGE	_huge
 #endif
 
 void MGL_availableMemory(ulong *physical,ulong *total);
-void MGL_useLocalMalloc(void _HUGE * (*my_malloc)(long size),void (*my_free)(void _HUGE *p));
+void MGL_useLocalMalloc(void _MGL_HUGE * (*my_malloc)(long size),void (*my_free)(void _MGL_HUGE *p));
 void * MGLAPI MGL_malloc(long size);
 void * MGLAPI MGL_calloc(long size,long n);
-void MGLAPI MGL_free(void _HUGE *p);
-void MGLAPI MGL_memset(void _HUGE *s,int c,long n);
-void MGLAPI MGL_memsetw(void _HUGE *s,int c,long n);
-void MGLAPI MGL_memsetl(void _HUGE *s,long c,long n);
+void MGLAPI MGL_free(void _MGL_HUGE *p);
+void MGLAPI MGL_memset(void _MGL_HUGE *s,int c,long n);
+void MGLAPI MGL_memsetw(void _MGL_HUGE *s,int c,long n);
+void MGLAPI MGL_memsetl(void _MGL_HUGE *s,long c,long n);
 
 /*---------------------------------------------------------------------------
  * Set a fullscreen suspend application callback function. This is used in
