@@ -172,6 +172,18 @@ diff -urNp uhexen2-20081012/hexen2/midi_mac.c uhexen2/hexen2/midi_mac.c
  {
  	OSErr		theErr;
  
+diff -urNp uhexen2-20081012/hexen2/midi_nul.c uhexen2/hexen2/midi_nul.c
+--- uhexen2-20081012/hexen2/midi_nul.c	2007-09-21 14:05:10.000000000 +0300
++++ uhexen2/hexen2/midi_nul.c	2008-10-12 10:32:11.000000000 +0300
+@@ -7,7 +7,7 @@
+ 
+ #include "quakedef.h"
+ 
+-qboolean MIDI_Init (void)
++qboolean MIDI_Init (dma_t *dma)
+ {
+ 	Con_Printf("MIDI: disabled at compile time\n");
+ 	return false;
 diff -urNp uhexen2-20081012/hexen2/win_stuff/midi.c uhexen2/hexen2/win_stuff/midi.c
 --- uhexen2-20081012/hexen2/win_stuff/midi.c	2008-03-31 14:25:22.000000000 +0300
 +++ uhexen2/hexen2/win_stuff/midi.c	2008-10-12 10:32:11.000000000 +0300
@@ -346,6 +358,18 @@ diff -urNp uhexen2-20081012/hexenworld/Client/midi_mac.c uhexen2/hexenworld/Clie
  {
  	OSErr		theErr;
  
+diff -urNp uhexen2-20081012/hexenworld/Client/midi_nul.c uhexen2/hexenworld/Client/midi_nul.c
+--- uhexen2-20081012/hexenworld/Client/midi_nul.c	2007-09-21 14:05:11.000000000 +0300
++++ uhexen2/hexenworld/Client/midi_nul.c	2008-10-12 10:32:11.000000000 +0300
+@@ -7,7 +7,7 @@
+ 
+ #include "quakedef.h"
+ 
+-qboolean MIDI_Init (void)
++qboolean MIDI_Init (dma_t *dma)
+ {
+ 	Con_Printf("MIDI: disabled at compile time\n");
+ 	return false;
 diff -urNp uhexen2-20081012/hexenworld/Client/win_stuff/midi.c uhexen2/hexenworld/Client/win_stuff/midi.c
 --- uhexen2-20081012/hexenworld/Client/win_stuff/midi.c	2008-03-31 14:25:23.000000000 +0300
 +++ uhexen2/hexenworld/Client/win_stuff/midi.c	2008-10-12 10:32:11.000000000 +0300
