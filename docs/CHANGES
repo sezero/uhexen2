@@ -3,6 +3,10 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2009-08-02 (CVS, 1.4.4-pre7 ):
+
+    * HoT version 1.4.4-pre7 (2009-08-02.)
+
 2009-07-16 (CVS):
     * scitech mgraph headers: tweak the __cdecl defnition for gcc case.
     * scitech mgraph headers: rename the _HUGE define to _MGL_HUGE to avoid
