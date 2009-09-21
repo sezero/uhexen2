@@ -3,6 +3,12 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2009-09-21 (CVS):
+
+    * sv_effect.c: fixed strict aliasing issues in reading chunk type and count from
+      saved games.
+    * minor update to Mac OS X Cocoa error message box code.
+
 2009-08-02 (CVS, 1.4.4-pre7 ):
 
     * HoT version 1.4.4-pre7 (2009-08-02.)
