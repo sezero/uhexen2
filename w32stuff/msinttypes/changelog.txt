@@ -1,4 +1,9 @@
 ------------------------------------------------------------------------
+r25 | 2009-09-17 23:46:49 +0400 | 2 lines
+
+[Issue 4] Fix incorrect int8_t behaviour if compiled with /J flag.
+
+------------------------------------------------------------------------
 r24 | 2009-05-13 14:53:48 +0400 | 2 lines
 
 Forgot about #ifdef __cplusplus guard around 'extern "C"', so inclusion to C files has been broken.
