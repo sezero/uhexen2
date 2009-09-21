@@ -8,6 +8,8 @@ Development Progress	:
     * sv_effect.c: fixed strict aliasing issues in reading chunk type and count from
       saved games.
     * minor update to Mac OS X Cocoa error message box code.
+    * updated SDLMain.h for Mac OS X to the latest from SDL-1.2 branch.
+    * updated msinttypes headers to r25 from googlecode.
 
 2009-08-02 (CVS, 1.4.4-pre7 ):
 
