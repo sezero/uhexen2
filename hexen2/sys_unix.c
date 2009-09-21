@@ -2,7 +2,7 @@
 	sys_unix.c
 	Unix system interface code
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sys_unix.c,v 1.111 2009-01-26 10:48:34 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sys_unix.c,v 1.112 2009-09-21 08:00:16 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -258,7 +258,8 @@ static void Sys_Init (void)
 
 
 #if defined(__MACOSX__)
-void Sys_ErrorMessage (const char *errorMsg);	/* in SDLMain.m */
+#define Sys_ErrorMessage	Cocoa_ErrorMessage
+extern void Cocoa_ErrorMessage (const char *errorMsg);	/* in SDLMain.m */
 #else
 #define Sys_ErrorMessage(T)	do {} while (0)
 #endif
