@@ -2,7 +2,7 @@
 	sv_effect.c
 	Client side effects.
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sv_effect.c,v 1.11 2009-01-10 22:08:50 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sv_effect.c,v 1.12 2009-09-21 08:14:51 sezero Exp $
 */
 
 // HEADER FILES ------------------------------------------------------------
@@ -1049,15 +1049,18 @@ void SV_LoadEffects (FILE *FH)
 			break;
 
 		case CE_CHUNK:
+		    {	unsigned int u;
 			fscanf(FH, "%f ", &sv.Effects[idx].ef.Chunk.origin[0]);
 			fscanf(FH, "%f ", &sv.Effects[idx].ef.Chunk.origin[1]);
 			fscanf(FH, "%f ", &sv.Effects[idx].ef.Chunk.origin[2]);
-			fscanf(FH, "%u ", (unsigned int *)&sv.Effects[idx].ef.Chunk.type);
+			fscanf(FH, "%u ", &u);
+			sv.Effects[idx].ef.Chunk.type = u & 0xff;
 			fscanf(FH, "%f ", &sv.Effects[idx].ef.Chunk.srcVel[0]);
 			fscanf(FH, "%f ", &sv.Effects[idx].ef.Chunk.srcVel[1]);
 			fscanf(FH, "%f ", &sv.Effects[idx].ef.Chunk.srcVel[2]);
-			fscanf(FH, "%u ", (unsigned int *)&sv.Effects[idx].ef.Chunk.numChunks);
-
+			fscanf(FH, "%u ", &u);
+			sv.Effects[idx].ef.Chunk.numChunks = u & 0xff;
+			}
 			/*
 			O.S:	a linefeed is missing here. not adding
 				it so as not to break existing saves.
