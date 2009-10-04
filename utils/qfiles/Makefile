@@ -1,11 +1,14 @@
 # GNU Makefile for hexen2 qfiles tool using GCC.
-# $Header: /home/ozzie/Download/0000/uhexen2/utils/qfiles/Makefile,v 1.22 2009-01-02 15:55:15 sezero Exp $
+# $Header: /home/ozzie/Download/0000/uhexen2/utils/qfiles/Makefile,v 1.23 2009-10-04 11:00:49 sezero Exp $
 #
 # if building a debug version :		make DEBUG=1 [other stuff]
 #
 # To cross-compile for Win32 on Unix, you must pass the W32BUILD=1
 # argument to make. It would be best if you examine the script named
 # build_cross_win32.sh for cross compilation.
+#
+# To cross-compile for Win64 on Unix, you must pass the W64BUILD=1
+# argument to make. Also see build_cross_win64.sh for details.
 
 # Path settings:
 # main uhexen2 relative path

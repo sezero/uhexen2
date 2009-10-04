@@ -1,5 +1,5 @@
 # GNU Makefile for Hexen II Dedicated Server (h2ded) using GCC.
-# $Header: /home/ozzie/Download/0000/uhexen2/hexen2/Makefile.sv,v 1.27 2009-01-02 15:55:14 sezero Exp $
+# $Header: /home/ozzie/Download/0000/uhexen2/hexen2/Makefile.sv,v 1.28 2009-10-04 11:00:48 sezero Exp $
 #
 # It is ESSENTIAL that you run make clean between different
 # types of builds or different types of targets.
@@ -7,6 +7,9 @@
 # To cross-compile for Win32 on Unix, you must pass the W32BUILD=1
 # argument to make. It would be best if you examine the script named
 # build_cross_win32.sh for cross compilation.
+#
+# To cross-compile for Win64 on Unix, you must pass the W64BUILD=1
+# argument to make. Also see build_cross_win64.sh for details.
 #
 # Build Options:
 #

@@ -1,10 +1,10 @@
 # GNU Makefile for hexen2 svgalib-client using GCC.
-# $Header: /home/ozzie/Download/0000/uhexen2/hexen2/Makefile.svga,v 1.6 2009-01-02 15:55:14 sezero Exp $
+# $Header: /home/ozzie/Download/0000/uhexen2/hexen2/Makefile.svga,v 1.7 2009-10-04 11:00:48 sezero Exp $
 #
 # This makefile builds SVGALib dependant software renderer client
 # for linux-x86 only. This makefile is a butchered version of the
 # main makefile for SDL clients.  The svgalib-client isn't tested
-# and isn't supported, yet.
+# and isn't supported for x86_64 and/or FreeBSD.
 #
 # It is ESSENTIAL that you run make clean between different
 # types of builds or different types of targets.

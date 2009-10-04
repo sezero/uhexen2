@@ -1,5 +1,5 @@
 # GNU Makefile for hexenworld clients using GCC.
-# $Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/Makefile,v 1.90 2009-01-02 15:55:14 sezero Exp $
+# $Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/Makefile,v 1.91 2009-10-04 11:00:49 sezero Exp $
 #
 # Type "make help" to see the valid targets.
 #
@@ -11,6 +11,9 @@
 # To cross-compile for Win32 on Unix, you must pass the W32BUILD=1
 # argument to make. It would be best if you examine the script named
 # build_cross_win32.sh for cross compilation.
+#
+# To cross-compile for Win64 on Unix, you must pass the W64BUILD=1
+# argument to make. Also see build_cross_win64.sh for details.
 #
 # Build Options:
 #
@@ -49,6 +52,8 @@
 #			See cd_unix.h for the availability of platform
 #			specific cdaudio drivers.
 #		yes  =	Use SDL for cdaudio instead of platform specific code
+#		NOTE :	SDL dropped support for cd audio in version 1.3.0 and
+#			later!
 #
 # USE_MIDI :	yes  =	Include MIDI music support (default).
 #		no   =	Don't include MIDI music support.

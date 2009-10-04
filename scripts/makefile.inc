@@ -1,5 +1,5 @@
 # GNU Makefile using GCC in a unix shell.
-# $Header: /home/ozzie/Download/0000/uhexen2/scripts/makefile.inc,v 1.24 2008-12-22 12:58:07 sezero Exp $
+# $Header: /home/ozzie/Download/0000/uhexen2/scripts/makefile.inc,v 1.25 2009-10-04 11:00:49 sezero Exp $
 
 # This file is responsible for determining the Host OS and Target OS,
 # setting common paths, selecting the compiler, assigning the compiler
@@ -68,8 +68,12 @@ CROSS_COMPILE:=y
 TARGET_OS:=dos
 else
 # compiling for windows
-# !!! FIXME !!! what about win64
+ifdef W64BUILD
+CROSS_COMPILE:=y
+TARGET_OS:=win64
+else
 TARGET_OS:=win32
+endif
 endif
 
 endif  # Windows
