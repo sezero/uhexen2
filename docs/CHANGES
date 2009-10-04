@@ -3,8 +3,13 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
-2009-09-21 (CVS):
+2009-10-04 (CVS):
+    * added win64 cross-compilation notes to the makefiles. adjusted makefile.inc so
+      that cross-compilation to win64 from within msys would be possible. added note
+      to the hexen2 and hexenworld client makefiles that SDL dropped support for cd
+      audio in version 1.3.0 and later. updated a note in svgalib client's makefile.
 
+2009-09-21 (CVS):
     * sv_effect.c: fixed strict aliasing issues in reading chunk type and count from
       saved games.
     * minor update to Mac OS X Cocoa error message box code.
@@ -12,7 +17,6 @@ Development Progress	:
     * updated msinttypes headers to r25 from googlecode.
 
 2009-08-02 (CVS, 1.4.4-pre7 ):
-
     * HoT version 1.4.4-pre7 (2009-08-02.)
 
 2009-07-16 (CVS):
