@@ -5,6 +5,7 @@ Development Progress	:
 
 2009-10-13 (CVS):
     * updated SDLMain.m for Mac OS X to the latest from SDL-1.2 branch.
+    * updated msinttypes headers to r26 from googlecode.
 
 2009-10-04 (CVS):
     * added win64 cross-compilation notes to the makefiles. adjusted makefile.inc so
