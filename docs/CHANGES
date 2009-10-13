@@ -3,6 +3,9 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2009-10-13 (CVS):
+    * updated SDLMain.m for Mac OS X to the latest from SDL-1.2 branch.
+
 2009-10-04 (CVS):
     * added win64 cross-compilation notes to the makefiles. adjusted makefile.inc so
       that cross-compilation to win64 from within msys would be possible. added note
