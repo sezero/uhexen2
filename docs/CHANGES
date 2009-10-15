@@ -3,6 +3,9 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2009-10-15 (CVS):
+    * updated SDLMain.m for Mac OS X, again, to the latest from SDL-1.2 branch.
+
 2009-10-13 (CVS):
     * updated SDLMain.m for Mac OS X to the latest from SDL-1.2 branch.
     * updated msinttypes headers to r26 from googlecode.
