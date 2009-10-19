@@ -4,12 +4,17 @@ Development Progress	:
 ---------------------------
 
 2009-10-19 (CVS):
-    * gcc-4.x series miscompiles R_EdgeDrawing() when optimizitions are turned
-      off.  the effect can be seen on the demo3 map where alias models disappear
-      depending on the view angle.  moving the two array variables ledges and
-      lsurfs local to the top of the source as static variables seems to solve
-      the problem. thusly fixed in r_main.c. updated the list of known bugs.
-      reported to gcc bugzilla: http://gcc.gnu.org/bugzilla/show_bug.cgi?id=41751
+    * R_EdgeDrawing() is called twice by R_RenderView_(), first with Translucent
+      as false where the three pointers r_edges, surfaces and surf_max are set
+      to the automatic array, then with Translucent as true where R_EdgeDrawing()
+      does not actually set the pointers and the code assumed them to be still
+      valid, but they pointed to variables which went out of scope by that time.
+      the result used to be seen on the demo3 map as disappearing alias models
+      depending on the view angle when compiled for x86_64 without optimisation.
+      moving the two array variables ledges and lsurfs to the top of the source
+      as static variables solves the problem. thusly fixed in r_main.c. updated
+      the list of known bugs.  it is amazing how this thing worked correctly for
+      all these years.
 
 2009-10-15 (CVS):
     * updated SDLMain.m for Mac OS X, again, to the latest from SDL-1.2 branch.
