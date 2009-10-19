@@ -27,13 +27,6 @@ Known Bugs
   video options menu and change the color depth to 32 bit before doing
   anything (or, run the game with the "-bpp 32" command line argument.)
 
-- Software renderer, C-only code, 64 bit: amd64 DEBUG builds (with all
-  optimizations turned off) may not draw some objects depending on the
-  viewpoint of the player, e.g. the trees are virtually always missing
-  at the start of the demo3 map.  32 bit binaries doesn't have such a
-  problem. The problem shows up when gcc-4.1.x is used as the compiler
-  without any -O flags, gcc-3.4.x is reported to be fine.
-
 - Software renderer, C-only code, Rider Bosses: The death beams doesn't
   fade out as they do in the intel assembly code. The origin of Famine's
   tractor beam isn't translucent as it should be. These models are using
