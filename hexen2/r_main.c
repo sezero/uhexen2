@@ -1,7 +1,7 @@
 /*
 	r_main.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/r_main.c,v 1.33 2008-04-22 13:06:07 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/r_main.c,v 1.34 2009-10-19 09:32:53 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -118,9 +118,11 @@ int		d_lightstylevalue[256];	// 8.8 fraction of base light value
 float		dp_time1, dp_time2, db_time1, db_time2, rw_time1, rw_time2;
 float		se_time1, se_time2, de_time1, de_time2, dv_time1, dv_time2;
 
-static surf_t	*SaveSurfaces;
+static edge_t	ledges[NUMSTACKEDGES + ((CACHE_SIZE - 1) / sizeof(edge_t)) + 1];
 static edge_t	*SaveEdges;
-static int	SaveEdgesCount,SaveSurfacesCount,SaveEdgesSize,SaveSurfacesSize;
+static surf_t	lsurfs[NUMSTACKSURFACES + ((CACHE_SIZE - 1) / sizeof(surf_t)) + 1];
+static surf_t	*SaveSurfaces;
+static int	SaveEdgesCount, SaveSurfacesCount, SaveEdgesSize, SaveSurfacesSize;
 static qboolean	AllowTranslucency;
 
 extern	cvar_t		scr_fov;
@@ -1075,8 +1077,6 @@ R_EdgeDrawing
 */
 static void R_EdgeDrawing (qboolean Translucent)
 {
-	edge_t	ledges[NUMSTACKEDGES + ((CACHE_SIZE - 1) / sizeof(edge_t)) + 1];
-	surf_t	lsurfs[NUMSTACKSURFACES + ((CACHE_SIZE - 1) / sizeof(surf_t)) + 1];
 	int	EdgesSize, SurfacesSize;
 
 	if (!Translucent)
