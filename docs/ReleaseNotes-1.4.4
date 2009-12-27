@@ -1,5 +1,5 @@
 Hexen II: Hammer of Thyrion (uhexen2), CVS snapshot / pre-release,
-Version 1.4.4-pre7 / Aug. 02, 2009
+Version 1.4.4-pre8 / Dec. 27, 2009
 
 Changes since the HoT-1.4.3 release:
 
@@ -18,6 +18,8 @@ Changes since the HoT-1.4.3 release:
   relation to 64 bit windows.
 * opengl: fixed an issue that changing resolution from within the game might
   crash on Windows Vista.
+* software renderer: fixed a long standing stack corruption bug which used
+  to cause alias models not to be drawn at all.
 * stricter checking on the values pulled out of .wav file chunk headers.
 * renamed model_t to qmodel_t in order to avoid conflicts on solaris.
 * fixed the "mirrored prints" problem of hexen2 console at high resolutions.
