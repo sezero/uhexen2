@@ -45,10 +45,9 @@ NASM	:	Netwide Assembler. An x86 assembler.
 GCC	:	GNU C Compiler.
 
 		Minimum version required is GCC 2.95.  GCC versions in
-		the 2.95/2.96, 3.x and 4.x series up to 4.3.3 are tested
+		the 2.95/2.96, 3.x and 4.x series up to 4.4.3 are tested
 		and work fine.  Versions 3.2.2, 3.3.6, 3.4.6, or newer
-		are recommended.  As of this writing, the experimental
-		4.4 series seem to work fine, too.
+		are recommended.
 
 		Of the old versions, gcc-2.91.66 (aka. egcs-1.1.2) still
 		seems to work.  Even 2.7.2 is reported to compile fine
@@ -64,14 +63,14 @@ General Unix requirements:
 SDL	:	Simple DirectMedia Layer libraries.
 		Required for compiling hexen2 and hexenworld clients
 		on unix platforms. Minimum version required is 1.2.4.
-		As of this writing, the latest version is 1.2.13, which
+		As of this writing, the latest version is 1.2.14, which
 		is recommended.
 
 SDL_mixer:	SDL mixer library.
 		Required for midi playback support on unix platforms.
 		Should be compiled with timidity+ support. The minimum
 		version required is 1.2.4. As of this writing, the
-		latest version is 1.2.8, which is recommended.
+		latest version is 1.2.11, which is recommended.
 		The makefiles present an option for disabling midi
 		support, in that case this library will not be
 		necessary.
@@ -95,9 +94,9 @@ Windows requirements	:
 
 MSVCRT.DLL:	The windows exe files depend on msvcrt.dll, the microsoft
 		C runtime library. Any sane windows installation already
-		has it unless it is an ancient windows version.  In case
-		you need it, here is a download link from the MS site:
-		http://support.microsoft.com/kb/259403
+		has it unless it is a very ancient windows version, such as
+		win95.  In case you need it, here is a download link from
+		the MS site:  http://support.microsoft.com/kb/259403
 		or:
 		http://support.microsoft.com/default.aspx?scid=kb;en-us;259403
 
@@ -107,7 +106,7 @@ Mac OS X requirements	:
 Xcode, SDKs:	Install the free Xcode suite from developer.apple.com :  It
 		comes with all required things except SDL.  Our own project
 		files are for the latest xcode.  SDL framework for Mac OS X:
-		http://www.libsdl.org/release/SDL-1.2.13.dmg
+		http://www.libsdl.org/release/SDL-1.2.14.dmg
 		Copy the SDL.framework from that package into your
 		/Library/Frameworks  folder.
 
@@ -141,14 +140,12 @@ cross compiler toolchains on our downloads page under the support files
 section, too.
 
 To compile for Win64 (X64), mingw-w64 (also known as mingw64) can be used
-as a cross compiler under linux (link down below).  If you compile your
-own toolchain, make sure that you use gcc svn revision 143780 or later:
-older revisions down to and including 143119 had a serious win64 bug.  If
-you use a pre-compiled toolchain from the mingw-w64 site, use a snapshot
-dated 20090130 or newer which has the mentioned bug fixed.  To compile,
-use the "build_cross_win64.sh" scripts residing in all directories. Read
-the scripts and edit them as necessary. The main settings for them are in
-the scripts/cross_defs_w64 file. Edit it to meet your needs, if necessary.
+as a cross compiler under linux (link down below). We provide win64 cross
+compiler toolchains on our downloads page under the support files section,
+too.  To compile, use the "build_cross_win64.sh" scripts residing in all
+directories.  Read the scripts and edit them as necessary. The main settings
+for them are in the scripts/cross_defs_w64 file. Edit it to meet your needs,
+if necessary.
 
 
 b. On Windows, using win32-native MinGW compiler:
@@ -213,13 +210,13 @@ delete "/Developer/SDKs/MacOSX10.4u.sdk" from there, build as usual.
 Compiling for DOS:
 ========================================
 
-You need DJGPP. At present, the beta1 version of djgpp 2.04 is required,
+You need DJGPP. At present, the development version 2.04 is required,
 because 2.03 and earlier versions doesn't provide a stdint.h and / or
 inttypes.h header, besides, they don't have a vsnprintf implementation.
 Compilers other than djgpp probably won't work at all.  I use gcc-3.3.6
 or 3.4.6 and binutils-2.16.1 and compile the binaries on linux with a
 cross compilation toolchain using 2.04 runtime library from the CVS
-snapshot from Dec. 23, 2008:  see the tiny script build_cross_dos.sh
+snapshot from Dec. 25, 2009:  see the tiny script build_cross_dos.sh
 to have an idea of how I do it.  We provide source and binary (x86/linux
 glibc-2.3) packages of cross compiler toolchains on our downloads page
 under the support files section, too.
@@ -239,11 +236,11 @@ SDL homepage		:	http://www.libsdl.org/
 SDL_mixer homepage	:	http://www.libsdl.org/projects/SDL_mixer/
 ALSA homepage		:	http://www.alsa-project.org/
 GCC homepage		:	http://gcc.gnu.org/
-NASM homepage		:	http://nasm.sourceforge.net/
+NASM homepage		:	http://www.nasm.us/
 YASM homepage		:	http://www.tortall.net/projects/yasm/
+DJGPP homepage		:	http://www.delorie.com/djgpp/
 MinGW/MSYS homepage	:	http://www.mingw.org/
 				http://mingw.sourceforge.net/
-MinGW64 homepage	:	http://mingw-w64.sourceforge.net/
+MinGW-w64 homepage	:	http://mingw-w64.sourceforge.net/
 MinGW cross compiling tips:	http://www.libsdl.org/extras/win32/cross/
-DJGPP homepage		:	http://www.delorie.com/djgpp/
 
