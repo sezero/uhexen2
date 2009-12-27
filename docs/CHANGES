@@ -3,6 +3,9 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2009-12-27 (CVS, 1.4.4-pre8):
+    * HoT version 1.4.4-pre8 (2009-12-27.)
+
 2009-10-19 (CVS):
     * R_EdgeDrawing() is called twice by R_RenderView_(), first with Translucent
       as false where the three pointers r_edges, surfaces and surf_max are set
