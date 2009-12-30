@@ -408,7 +408,7 @@
 		707D57E40AA9F6EE00313A9F /* zone.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = zone.c; path = ../zone.c; sourceTree = SOURCE_ROOT; };
 		707D57E50AA9F6EE00313A9F /* zone.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = zone.h; path = ../zone.h; sourceTree = SOURCE_ROOT; };
 		707D58E90AA9FBB700313A9F /* Info-glhexen2__Upgraded_.plist */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = "Info-glhexen2__Upgraded_.plist"; sourceTree = "<group>"; };
-		707D58EA0AA9FBB700313A9F /* Hexen II gl.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = "Hexen II gl.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		707D58EA0AA9FBB700313A9F /* Hexen II gl.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Hexen II gl.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		707D59030AAA019300313A9F /* SDLMain.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = SDLMain.h; sourceTree = "<group>"; };
 		707D59040AAA019300313A9F /* SDLMain.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = SDLMain.m; sourceTree = "<group>"; };
 		707D59200AAA071800313A9F /* SDL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL.framework; path = /Library/Frameworks/SDL.framework; sourceTree = "<absolute>"; };
@@ -1015,7 +1015,10 @@
 					_THREAD_SAFE,
 				);
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
-				HEADER_SEARCH_PATHS = /Library/Frameworks/SDL.framework/Headers;
+				HEADER_SEARCH_PATHS = (
+					/Library/Frameworks/SDL.framework/Headers,
+					/Developer/SDKs/MacOSX10.4u.sdk/Developer/Headers/FlatCarbon,
+				);
 				INFOPLIST_FILE = hexen2.plist;
 				OTHER_CFLAGS = "";
 				OTHER_LDFLAGS = "";
@@ -1052,7 +1055,10 @@
 					_THREAD_SAFE,
 				);
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
-				HEADER_SEARCH_PATHS = /Library/Frameworks/SDL.framework/Headers;
+				HEADER_SEARCH_PATHS = (
+					/Library/Frameworks/SDL.framework/Headers,
+					/Developer/SDKs/MacOSX10.4u.sdk/Developer/Headers/FlatCarbon,
+				);
 				INFOPLIST_FILE = hexen2.plist;
 				OTHER_CFLAGS = "";
 				OTHER_LDFLAGS = "";
@@ -1141,7 +1147,10 @@
 					_THREAD_SAFE,
 				);
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
-				HEADER_SEARCH_PATHS = /Library/Frameworks/SDL.framework/Headers;
+				HEADER_SEARCH_PATHS = (
+					/Library/Frameworks/SDL.framework/Headers,
+					/Developer/SDKs/MacOSX10.4u.sdk/Developer/Headers/FlatCarbon,
+				);
 				INFOPLIST_FILE = glhexen2.plist;
 				MACOSX_DEPLOYMENT_TARGET = "";
 				OTHER_CFLAGS = "";
@@ -1183,7 +1192,10 @@
 					_THREAD_SAFE,
 				);
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
-				HEADER_SEARCH_PATHS = /Library/Frameworks/SDL.framework/Headers;
+				HEADER_SEARCH_PATHS = (
+					/Library/Frameworks/SDL.framework/Headers,
+					/Developer/SDKs/MacOSX10.4u.sdk/Developer/Headers/FlatCarbon,
+				);
 				INFOPLIST_FILE = glhexen2.plist;
 				MACOSX_DEPLOYMENT_TARGET = "";
 				OTHER_CFLAGS = "";

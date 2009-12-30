@@ -350,7 +350,7 @@ static void CustomApplicationMain (int argc, char **argv)
 void Cocoa_ErrorMessage (const char *errorMsg)
 {
     NSRunCriticalAlertPanel(@"Hexen II Error",
-			    [NSString stringWithUTF8String:errorMsg],,
+			    [NSString stringWithUTF8String:errorMsg],
 			    @"OK", nil, nil);
 }
 
