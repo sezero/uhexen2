@@ -389,7 +389,7 @@
 		707D57D00AA9F6EE00313A9F /* snd_sdl2.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = snd_sdl2.c; path = ../snd_sdl2.c; sourceTree = SOURCE_ROOT; };
 		707D57D10AA9F6EE00313A9F /* snd_sys.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = snd_sys.c; path = ../snd_sys.c; sourceTree = SOURCE_ROOT; };
 		707D57D20AA9F6EE00313A9F /* snd_sys.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = snd_sys.h; path = ../snd_sys.h; sourceTree = SOURCE_ROOT; };
-		707D57D30AA9F6EE00313A9F /* q_sound.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = sound.h; path = ../q_sound.h; sourceTree = SOURCE_ROOT; };
+		707D57D30AA9F6EE00313A9F /* q_sound.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = q_sound.h; path = ../q_sound.h; sourceTree = SOURCE_ROOT; };
 		707D57D40AA9F6EE00313A9F /* spritegn.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = spritegn.h; path = ../spritegn.h; sourceTree = SOURCE_ROOT; };
 		707D57D50AA9F6EE00313A9F /* sv_effect.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = sv_effect.c; path = ../sv_effect.c; sourceTree = SOURCE_ROOT; };
 		707D57D60AA9F6EE00313A9F /* sv_main.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = sv_main.c; path = ../sv_main.c; sourceTree = SOURCE_ROOT; };
