@@ -241,8 +241,8 @@
 		707D59310AAA076A00313A9F /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 707D59290AAA076A00313A9F /* IOKit.framework */; };
 		707D59320AAA076A00313A9F /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 707D592A0AAA076A00313A9F /* OpenGL.framework */; };
 		707D59330AAA076A00313A9F /* QuickTime.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 707D592B0AAA076A00313A9F /* QuickTime.framework */; };
-		7086E4E60AC0070900E9F894 /* hexen2.icns in Resources */ = {isa = PBXBuildFile; fileRef = 7086E4E50AC0070900E9F894 /* hexen2.icns */; };
-		7086E4E70AC0070900E9F894 /* hexen2.icns in Resources */ = {isa = PBXBuildFile; fileRef = 7086E4E50AC0070900E9F894 /* hexen2.icns */; };
+		7086E4E60AC0070900E9F894 /* Hexen2.icns in Resources */ = {isa = PBXBuildFile; fileRef = 7086E4E50AC0070900E9F894 /* Hexen2.icns */; };
+		7086E4E70AC0070900E9F894 /* Hexen2.icns in Resources */ = {isa = PBXBuildFile; fileRef = 7086E4E50AC0070900E9F894 /* Hexen2.icns */; };
 		708C407D0C1E8A4F00B4A314 /* debuglog.c in Sources */ = {isa = PBXBuildFile; fileRef = 70310B320BFDE90900CA35D3 /* debuglog.c */; };
 		708C408F0C1E8B8200B4A314 /* link_ops.c in Sources */ = {isa = PBXBuildFile; fileRef = 70310B370BFDE94700CA35D3 /* link_ops.c */; };
 /* End PBXBuildFile section */
@@ -284,7 +284,6 @@
 		70158B920AAF3B3600F6437C /* render.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = render.h; path = ../render.h; sourceTree = SOURCE_ROOT; };
 		70158B930AAF3B3600F6437C /* screen.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = screen.c; path = ../screen.c; sourceTree = SOURCE_ROOT; };
 		70158B940AAF3B3600F6437C /* screen.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = screen.h; path = ../screen.h; sourceTree = SOURCE_ROOT; };
-		70158C520AAF3C8800F6437C /* Info-hexen2__Upgraded_.plist */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = "Info-hexen2__Upgraded_.plist"; sourceTree = "<group>"; };
 		70158C530AAF3C8800F6437C /* Hexen II.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Hexen II.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		70158F0A0AAF427F00F6437C /* vid_sdl.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = vid_sdl.c; path = ../vid_sdl.c; sourceTree = SOURCE_ROOT; };
 		70310B240BFDE84D00CA35D3 /* msg_io.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = msg_io.c; path = ../msg_io.c; sourceTree = SOURCE_ROOT; };
@@ -353,7 +352,6 @@
 		707D57A90AA9F6EE00313A9F /* input.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = input.h; path = ../input.h; sourceTree = SOURCE_ROOT; };
 		707D57AA0AA9F6EE00313A9F /* keys.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = keys.c; path = ../keys.c; sourceTree = SOURCE_ROOT; };
 		707D57AB0AA9F6EE00313A9F /* keys.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = keys.h; path = ../keys.h; sourceTree = SOURCE_ROOT; };
-		707D57AC0AA9F6EE00313A9F /* linux_inc.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = linux_inc.h; path = ../linux_inc.h; sourceTree = SOURCE_ROOT; };
 		707D57AD0AA9F6EE00313A9F /* mathlib.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = mathlib.c; path = ../mathlib.c; sourceTree = SOURCE_ROOT; };
 		707D57AE0AA9F6EE00313A9F /* mathlib.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = mathlib.h; path = ../mathlib.h; sourceTree = SOURCE_ROOT; };
 		707D57AF0AA9F6EE00313A9F /* menu.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = menu.c; path = ../menu.c; sourceTree = SOURCE_ROOT; };
@@ -407,8 +405,7 @@
 		707D57E30AA9F6EE00313A9F /* world.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = world.h; path = ../world.h; sourceTree = SOURCE_ROOT; };
 		707D57E40AA9F6EE00313A9F /* zone.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = zone.c; path = ../zone.c; sourceTree = SOURCE_ROOT; };
 		707D57E50AA9F6EE00313A9F /* zone.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = zone.h; path = ../zone.h; sourceTree = SOURCE_ROOT; };
-		707D58E90AA9FBB700313A9F /* Info-glhexen2__Upgraded_.plist */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = "Info-glhexen2__Upgraded_.plist"; sourceTree = "<group>"; };
-		707D58EA0AA9FBB700313A9F /* Hexen II gl.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Hexen II gl.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		707D58EA0AA9FBB700313A9F /* Hexen II gl.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = "Hexen II gl.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		707D59030AAA019300313A9F /* SDLMain.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = SDLMain.h; sourceTree = "<group>"; };
 		707D59040AAA019300313A9F /* SDLMain.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = SDLMain.m; sourceTree = "<group>"; };
 		707D59200AAA071800313A9F /* SDL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL.framework; path = /Library/Frameworks/SDL.framework; sourceTree = "<absolute>"; };
@@ -420,7 +417,7 @@
 		707D59290AAA076A00313A9F /* IOKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = IOKit.framework; path = /System/Library/Frameworks/IOKit.framework; sourceTree = "<absolute>"; };
 		707D592A0AAA076A00313A9F /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = /System/Library/Frameworks/OpenGL.framework; sourceTree = "<absolute>"; };
 		707D592B0AAA076A00313A9F /* QuickTime.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuickTime.framework; path = /System/Library/Frameworks/QuickTime.framework; sourceTree = "<absolute>"; };
-		7086E4E50AC0070900E9F894 /* hexen2.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = hexen2.icns; sourceTree = "<group>"; };
+		7086E4E50AC0070900E9F894 /* Hexen2.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = Hexen2.icns; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -476,7 +473,7 @@
 				70310B2B0BFDE89200CA35D3 /* q_endian.h */,
 				70310B240BFDE84D00CA35D3 /* msg_io.c */,
 				70310B250BFDE84D00CA35D3 /* msg_io.h */,
-				7086E4E50AC0070900E9F894 /* hexen2.icns */,
+				7086E4E50AC0070900E9F894 /* Hexen2.icns */,
 				70158F0A0AAF427F00F6437C /* vid_sdl.c */,
 				70158B710AAF3B3600F6437C /* d_edge.c */,
 				70158B720AAF3B3600F6437C /* d_fill.c */,
@@ -577,7 +574,6 @@
 				707D57A90AA9F6EE00313A9F /* input.h */,
 				707D57AA0AA9F6EE00313A9F /* keys.c */,
 				707D57AB0AA9F6EE00313A9F /* keys.h */,
-				707D57AC0AA9F6EE00313A9F /* linux_inc.h */,
 				707D57AD0AA9F6EE00313A9F /* mathlib.c */,
 				707D57AE0AA9F6EE00313A9F /* mathlib.h */,
 				707D57AF0AA9F6EE00313A9F /* menu.c */,
@@ -632,8 +628,6 @@
 				707D57E40AA9F6EE00313A9F /* zone.c */,
 				707D57E50AA9F6EE00313A9F /* zone.h */,
 				707D57720AA9F4ED00313A9F /* Products */,
-				707D58E90AA9FBB700313A9F /* Info-glhexen2__Upgraded_.plist */,
-				70158C520AAF3C8800F6437C /* Info-hexen2__Upgraded_.plist */,
 			);
 			sourceTree = "<group>";
 		};
@@ -795,7 +789,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				7086E4E70AC0070900E9F894 /* hexen2.icns in Resources */,
+				7086E4E70AC0070900E9F894 /* Hexen2.icns in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -803,7 +797,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				7086E4E60AC0070900E9F894 /* hexen2.icns in Resources */,
+				7086E4E60AC0070900E9F894 /* Hexen2.icns in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
