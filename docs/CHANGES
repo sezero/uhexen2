@@ -3,6 +3,16 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2010-01-11 (CVS):
+    * pre and postfix gcc attribute specifiers by '__'
+    * updated beta version date stamp to 2010-01-11.
+
+2010-01-06 (CVS):
+    * Latest Xcode project files (Mac OS X) from Levent (2010-01-06.)
+
+2009-12-30 (CVS):
+    * MacOSX fixes from Levent (2009-12-30.)
+
 2009-12-27 (CVS, 1.4.4-pre8):
     * HoT version 1.4.4-pre8 (2009-12-27.)
 
