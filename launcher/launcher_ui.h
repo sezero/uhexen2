@@ -2,7 +2,7 @@
 	launcher_ui.h
 	hexen2 launcher, global ui functions
 
-	$Id: launcher_ui.h,v 1.6 2008-12-19 17:55:05 sezero Exp $
+	$Id: launcher_ui.h,v 1.7 2010-01-11 18:48:20 sezero Exp $
 
 	This program is free software; you can redistribute it and/or
 	modify it under the terms of the GNU General Public License
@@ -45,11 +45,11 @@ void ui_pump (void);
 	/* updates the gui. use it when doing
 	   time consuming stuff (eg. patch) */
 
-void ui_log (const char *fmt, ...) __attribute__((format(printf,1,2)));
+void ui_log (const char *fmt, ...) __attribute__((__format__(__printf__,1,2)));
 	/* prints the given log content to a
 	   text box on the user interface.  */
 
-void ui_log_queue (const char *fmt, ...) __attribute__((format(printf,1,2)));
+void ui_log_queue (const char *fmt, ...) __attribute__((__format__(__printf__,1,2)));
 	/* queues the given log content for printing to a
 	   text box on the user interface.  */
 

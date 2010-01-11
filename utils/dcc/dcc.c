@@ -2,7 +2,7 @@
 	dcc.c
 	An hcode compiler/decompiler for Hexen II by Eric Hobbs
 
-	$Id: dcc.c,v 1.47 2009-06-15 09:12:20 sezero Exp $
+	$Id: dcc.c,v 1.48 2010-01-11 18:48:20 sezero Exp $
 */
 
 
@@ -40,7 +40,7 @@ void		PR_PrintFunction (const char *name);
 static char	*Make_Immediate (gofs_t ofs, const char *linestr, int mode);
 static void	PR_Indent (void);
 static void	PR_FunctionHeader (dfunction_t *df);
-static void	PR_Print (const char *s,...) __attribute__((format(printf,1,2)));
+static void	PR_Print (const char *s,...) __attribute__((__format__(__printf__,1,2)));
 static const char *PR_PrintGlobal (gofs_t ofs, def_t* typ);
 static ddef_t	*PR_GetField (const char *name, ddef_t*);
 static int	DEC_GetFunctionIdxByName (const char *name);

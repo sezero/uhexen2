@@ -3,7 +3,7 @@
 	support library for dosquake MPATH network driver.
 	from quake1 source with minor adaptations for uhexen2.
 
-	$Id: mplpc.c,v 1.3 2007-10-30 17:09:58 sezero Exp $
+	$Id: mplpc.c,v 1.4 2010-01-11 18:48:19 sezero Exp $
 
 	Copyright (C) 1996-1997  Id Software, Inc.
 
@@ -31,7 +31,7 @@
 #include "mpdosock.h"
 
 #include "compiler.h"
-void Sys_Error (const char *error, ...) __attribute__((format(printf,1,2), noreturn));
+void Sys_Error (const char *error, ...) __attribute__((__format__(__printf__,1,2), __noreturn__));
 
 //#include "types.h"
 typedef unsigned char	BYTE;

@@ -2,7 +2,7 @@
 	main.c
 	hexen2 launcher: main loop
 
-	$Id: main.c,v 1.37 2008-01-12 14:45:39 sezero Exp $
+	$Id: main.c,v 1.38 2010-01-11 18:48:20 sezero Exp $
 
 	This program is free software; you can redistribute it and/or
 	modify it under the terms of the GNU General Public License
@@ -40,7 +40,7 @@ char		basedir[MAX_OSPATH];
 char		userdir[MAX_OSPATH];
 
 static void
-   __attribute__((format(printf,2,3), noreturn))
+   __attribute__((__format__(__printf__,2,3), __noreturn__))
 Sys_Error (int exitcode, const char *error, ...)
 {
 	va_list		argptr;

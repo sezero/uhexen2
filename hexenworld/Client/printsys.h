@@ -2,7 +2,7 @@
 	printsys.h
 	console printing
 
-	$Id: printsys.h,v 1.6 2007-08-14 09:00:32 sezero Exp $
+	$Id: printsys.h,v 1.7 2010-01-11 18:48:19 sezero Exp $
 */
 
 #ifndef __PRINTSYS_H
@@ -17,7 +17,7 @@
  *		HexenWorld server: sv_send.c
  *	Hexen II dedicated server: host.c
  */
-void CON_Printf (unsigned int flags, const char *fmt, ...) __attribute__((format(printf,2,3)));
+void CON_Printf (unsigned int flags, const char *fmt, ...) __attribute__((__format__(__printf__,2,3)));
 
 /* common print flags */
 #define	_PRINT_NORMAL			0	/* print to both terminal and to the in-game console */

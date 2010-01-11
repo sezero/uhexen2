@@ -2,7 +2,7 @@
 	sys.h
 	non-portable functions
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sys.h,v 1.43 2009-01-26 10:48:34 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sys.h,v 1.44 2010-01-11 18:48:17 sezero Exp $
 */
 
 #ifndef __HX2_SYS_H
@@ -42,7 +42,7 @@ void Sys_MakeCodeWriteable (unsigned long startaddr, unsigned long length);
 //
 // system IO
 //
-void Sys_Error (const char *error, ...) __attribute__((format(printf,1,2), noreturn));
+void Sys_Error (const char *error, ...) __attribute__((__format__(__printf__,1,2), __noreturn__));
 // an error will cause the entire program to exit
 
 void Sys_PrintTerm (const char *msgtxt);
@@ -55,7 +55,7 @@ void Sys_EnableTerm (void);
 void Sys_DisableTerm (void);
 #endif	/* PLATFORM_DOS */
 
-void Sys_Quit (void) __attribute__((noreturn));
+void Sys_Quit (void) __attribute__((__noreturn__));
 
 double Sys_DoubleTime (void);
 

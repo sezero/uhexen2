@@ -2,7 +2,7 @@
 	common.h
 	misc utilities used in client and server
 
-	$Id: common.h,v 1.6 2007-12-14 16:41:13 sezero Exp $
+	$Id: common.h,v 1.7 2010-01-11 18:48:19 sezero Exp $
 */
 
 #ifndef __HX2_COMMON_H
@@ -23,7 +23,7 @@
 #define	vsnprintf_func		vsnprintf
 #endif
 
-extern int q_snprintf (char *str, size_t size, const char *format, ...) __attribute__((format(printf,3,4)));
+extern int q_snprintf (char *str, size_t size, const char *format, ...) __attribute__((__format__(__printf__,3,4)));
 extern int q_vsnprintf(char *str, size_t size, const char *format, va_list args);
 
 

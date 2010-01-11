@@ -1,6 +1,6 @@
 /*
 	bsp5.h
-	$Id: bsp5.h,v 1.8 2007-11-11 16:11:48 sezero Exp $
+	$Id: bsp5.h,v 1.9 2010-01-11 18:48:20 sezero Exp $
 */
 
 #ifndef __BSP5_H__
@@ -283,7 +283,7 @@ extern	qboolean	worldmodel;
 // verbose printf
 
 extern	qboolean	verbose;
-void	qprintf (const char *fmt, ...) __attribute__((format(printf,1,2)));	// only prints if verbose
+void	qprintf (const char *fmt, ...) __attribute__((__format__(__printf__,1,2)));	// only prints if verbose
 
 
 //=============================================================================

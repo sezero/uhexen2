@@ -1,6 +1,6 @@
 /*
 	hwmquery.c
-	$Id: hwmquery.c,v 1.27 2009-04-29 17:35:12 sezero Exp $
+	$Id: hwmquery.c,v 1.28 2010-01-11 18:48:19 sezero Exp $
 
 	HWMQUERY 0.2 HexenWorld Master Server Query
 	Copyright (C) 2006-2009 O. Sezer <sezero@users.sourceforge.net>
@@ -66,8 +66,8 @@ static WSADATA		winsockdata;
 
 static sys_socket_t	socketfd = INVALID_SOCKET;
 
-void Sys_Error (const char *error, ...) __attribute__((format(printf,1,2), noreturn));
-static void Sys_Quit (int error_state) __attribute__((noreturn));
+void Sys_Error (const char *error, ...) __attribute__((__format__(__printf__,1,2), __noreturn__));
+static void Sys_Quit (int error_state) __attribute__((__noreturn__));
 
 //=============================================================================
 

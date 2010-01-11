@@ -1,6 +1,6 @@
 /*
 	hwterm.c
-	$Id: hwterm.c,v 1.29 2009-04-29 17:35:12 sezero Exp $
+	$Id: hwterm.c,v 1.30 2010-01-11 18:48:19 sezero Exp $
 
 	HWTERM 1.2 HexenWorld Remote Console Terminal
 	Idea based on QTerm 1.1 by Michael Dwyer/N0ZAP (18-May-1998).
@@ -69,8 +69,8 @@ static WSADATA		winsockdata;
 
 static sys_socket_t	socketfd = INVALID_SOCKET;
 
-void Sys_Error (const char *error, ...) __attribute__((format(printf,1,2), noreturn));
-static void Sys_Quit (int error_state) __attribute__((noreturn));
+void Sys_Error (const char *error, ...) __attribute__((__format__(__printf__,1,2), __noreturn__));
+static void Sys_Quit (int error_state) __attribute__((__noreturn__));
 
 //=============================================================================
 

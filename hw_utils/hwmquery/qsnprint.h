@@ -1,6 +1,6 @@
 /*
 	qsnprint.h
-	$Id: qsnprint.h,v 1.2 2007-09-23 18:45:09 sezero Exp $
+	$Id: qsnprint.h,v 1.3 2010-01-11 18:48:19 sezero Exp $
 
 	(v)snprintf wrappers
 	Copyright (C) 2007 O. Sezer <sezero@users.sourceforge.net>
@@ -37,7 +37,7 @@
 #define	vsnprintf_func		vsnprintf
 #endif
 
-extern int q_snprintf (char *str, size_t size, const char *format, ...) __attribute__((format(printf,3,4)));
+extern int q_snprintf (char *str, size_t size, const char *format, ...) __attribute__((__format__(__printf__,3,4)));
 extern int q_vsnprintf(char *str, size_t size, const char *format, va_list args);
 
 #endif	/* __Q_SNPRINF_H */

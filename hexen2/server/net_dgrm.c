@@ -2,7 +2,7 @@
 	net_dgrm.c
 	This is enables a simple IP banning mechanism
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/server/net_dgrm.c,v 1.33 2009-04-28 14:00:34 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/server/net_dgrm.c,v 1.34 2010-01-11 18:48:19 sezero Exp $
 */
 
 #define BAN_TEST
@@ -57,7 +57,8 @@ static void NET_Ban_f (void)
 {
 	char	addrStr [32];
 	char	maskStr [32];
-	void	(*print)(unsigned int flg, const char *fmt, ...) __fp_attribute__((format(printf,2,3)));
+	void	(*print_fn)(unsigned int flg, const char *fmt, ...)
+				__fp_attribute__((__format__(__printf__,2,3)));
 
 	if (cmd_source == src_command)
 	{
@@ -66,13 +67,13 @@ static void NET_Ban_f (void)
 			Con_Printf("Server not active\n");
 			return;
 		}
-		print = CON_Printf;
+		print_fn = CON_Printf;
 	}
 	else
 	{
 		if (PR_GLOBAL_STRUCT(deathmatch))
 			return;
-		print = SV_ClientPrintf;
+		print_fn = SV_ClientPrintf;
 	}
 
 	switch (Cmd_Argc ())
@@ -82,10 +83,10 @@ static void NET_Ban_f (void)
 		{
 			strcpy(addrStr, inet_ntoa(banAddr));
 			strcpy(maskStr, inet_ntoa(banMask));
-			print(_PRINT_NORMAL, "Banning %s [%s]\n", addrStr, maskStr);
+			print_fn(_PRINT_NORMAL, "Banning %s [%s]\n", addrStr, maskStr);
 		}
 		else
-			print(_PRINT_NORMAL, "Banning not active\n");
+			print_fn(_PRINT_NORMAL, "Banning not active\n");
 		break;
 
 	case 2:
@@ -102,7 +103,7 @@ static void NET_Ban_f (void)
 		break;
 
 	default:
-		print(_PRINT_NORMAL, "BAN ip_address [mask]\n");
+		print_fn(_PRINT_NORMAL, "BAN ip_address [mask]\n");
 		break;
 	}
 }

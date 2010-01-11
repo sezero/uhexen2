@@ -1,7 +1,7 @@
 /*
 	cmdlib.h
 
-	$Id: cmdlib.h,v 1.25 2008-01-29 10:47:03 sezero Exp $
+	$Id: cmdlib.h,v 1.26 2010-01-11 18:48:20 sezero Exp $
 */
 
 #ifndef __CMDLIB_H__
@@ -52,7 +52,7 @@ extern size_t q_strlcat (char *dst, const char *src, size_t size);
 #define	vsnprintf_func		vsnprintf
 #endif
 
-extern int q_snprintf (char *str, size_t size, const char *format, ...) __attribute__((format(printf,3,4)));
+extern int q_snprintf (char *str, size_t size, const char *format, ...) __attribute__((__format__(__printf__,3,4)));
 extern int q_vsnprintf(char *str, size_t size, const char *format, va_list args);
 
 /* these qerr_ versions of functions error out if they detect, well, an error.
@@ -62,7 +62,7 @@ extern int q_vsnprintf(char *str, size_t size, const char *format, va_list args)
 extern size_t qerr_strlcat (const char *caller, int linenum, char *dst, const char *src, size_t size);
 extern size_t qerr_strlcpy (const char *caller, int linenum, char *dst, const char *src, size_t size);
 extern int qerr_snprintf (const char *caller, int linenum, char *str, size_t size, const char *format, ...)
-									__attribute__((format(printf,5,6)));
+									__attribute__((__format__(__printf__,5,6)));
 
 
 // PUBLIC DATA DECLARATIONS ------------------------------------------------
@@ -88,7 +88,7 @@ int	Sys_kbhit(void);
 
 double	GetTime (void);
 
-void	Error (const char *error, ...) __attribute__((format(printf,1,2), noreturn));
+void	Error (const char *error, ...) __attribute__((__format__(__printf__,1,2), __noreturn__));
 int	CheckParm (const char *check);
 
 const char	*COM_Parse (const char *data);

@@ -1,7 +1,7 @@
 /*
 	hcc.h
 
-	$Header: /home/ozzie/Download/0000/uhexen2/utils/hcc_old/hcc.h,v 1.9 2009-05-05 16:02:51 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/utils/hcc_old/hcc.h,v 1.10 2010-01-11 18:48:20 sezero Exp $
 */
 
 #ifndef __HCC_H__
@@ -187,8 +187,8 @@ def_t	*PR_GetDef (type_t *type, const char *name, def_t *scope, qboolean allocat
 
 // parseerr.c
 
-void	PR_ParseError(const char *error, ...) __attribute__((format(printf,1,2)));
-void	PR_ParseWarning(const char *error, ...) __attribute__((format(printf,1,2)));
+void	PR_ParseError(const char *error, ...) __attribute__((__format__(__printf__,1,2)));
+void	PR_ParseWarning(const char *error, ...) __attribute__((__format__(__printf__,1,2)));
 
 // expr.c
 

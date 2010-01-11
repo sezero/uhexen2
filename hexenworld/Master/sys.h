@@ -2,14 +2,14 @@
 	sys.h
 	non-portable functions
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Master/sys.h,v 1.6 2009-04-29 07:49:28 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Master/sys.h,v 1.7 2010-01-11 18:48:19 sezero Exp $
 */
 
 #ifndef __HX2_SYS_H
 #define __HX2_SYS_H
 
-void Sys_Error (const char *error, ...) __attribute__((format(printf,1,2), noreturn));
-void Sys_Quit (void) __attribute__((noreturn));
+void Sys_Error (const char *error, ...) __attribute__((__format__(__printf__,1,2), __noreturn__));
+void Sys_Quit (void) __attribute__((__noreturn__));
 double Sys_DoubleTime (void);
 
 char *Sys_ConsoleInput (void);

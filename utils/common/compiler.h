@@ -7,7 +7,7 @@
 	- shouldn't depend on arch_def.h, q_stdinc.h, or
 	  any other headers
 
-	$Id: compiler.h,v 1.14 2009-06-10 08:10:51 sezero Exp $
+	$Id: compiler.h,v 1.15 2010-01-11 18:48:20 sezero Exp $
 
 	Copyright (C) 2007  O.Sezer <sezero@users.sourceforge.net>
 
@@ -50,7 +50,7 @@
  * starting with gcc 4.4.0
  */
 #if defined(__GNUC__) && (__GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ > 3))
-#define	__no_optimize		__attribute__((optimize("0")))
+#define	__no_optimize		__attribute__((__optimize__("0")))
 #else
 #define	__no_optimize
 #endif

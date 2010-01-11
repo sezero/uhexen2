@@ -2,7 +2,7 @@
 	host.h
 	public host structures and functions
 
-	$Id: host.h,v 1.13 2009-04-25 11:07:33 sezero Exp $
+	$Id: host.h,v 1.14 2010-01-11 18:48:17 sezero Exp $
 */
 
 #ifndef __HX2_HOST_H
@@ -48,11 +48,11 @@ void Host_Init (void);
 void Host_InitCommands (void);
 void Host_Shutdown(void);
 /* Host_Error and Host_EndGame doesn't return either due to Sys_Error() or longjmp() */
-void Host_Error (const char *error, ...) __attribute__((format(printf,1,2), noreturn));
-void Host_EndGame (const char *message, ...) __attribute__((format(printf,1,2), noreturn));
+void Host_Error (const char *error, ...) __attribute__((__format__(__printf__,1,2), __noreturn__));
+void Host_EndGame (const char *message, ...) __attribute__((__format__(__printf__,1,2), __noreturn__));
 void Host_Frame (float time);
 void Host_Quit_f (void);
-void Host_ClientCommands (const char *fmt, ...) __attribute__((format(printf,1,2)));
+void Host_ClientCommands (const char *fmt, ...) __attribute__((__format__(__printf__,1,2)));
 void Host_ShutdownServer (qboolean crash);
 
 void Host_ClearMemory (void);

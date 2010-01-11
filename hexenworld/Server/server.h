@@ -1,7 +1,7 @@
 /*
 	server.h
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Server/server.h,v 1.20 2009-01-10 22:08:51 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Server/server.h,v 1.21 2010-01-11 18:48:19 sezero Exp $
 */
 
 #ifndef __H2W_SERVER_H
@@ -442,9 +442,9 @@ void SV_StartParticle2 (vec3_t org, vec3_t dmin, vec3_t dmax, int color, int eff
 void SV_StartParticle3 (vec3_t org, vec3_t box, int color, int effect, int count);
 void SV_StartParticle4 (vec3_t org, float radius, int color, int effect, int count);
 void SV_StartRainEffect (vec3_t org, vec3_t e_size, int x_dir, int y_dir, int color, int count);
-void SV_ClientPrintf (client_t *cl, int level, const char *fmt, ...) __attribute__((format(printf,3,4)));
-void SV_BroadcastPrintf (int level, const char *fmt, ...) __attribute__((format(printf,2,3)));
-void SV_BroadcastCommand (const char *fmt, ...) __attribute__((format(printf,1,2)));
+void SV_ClientPrintf (client_t *cl, int level, const char *fmt, ...) __attribute__((__format__(printf,3,4)));
+void SV_BroadcastPrintf (int level, const char *fmt, ...) __attribute__((__format__(__printf__,2,3)));
+void SV_BroadcastCommand (const char *fmt, ...) __attribute__((__format__(__printf__,1,2)));
 void SV_SendMessagesToAll (void);
 void SV_FindModelNumbers (void);
 

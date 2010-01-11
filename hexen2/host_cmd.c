@@ -2,7 +2,7 @@
 	host_cmd.c
 	console commands
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host_cmd.c,v 1.103 2009-04-28 14:00:32 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host_cmd.c,v 1.104 2010-01-11 18:48:17 sezero Exp $
 */
 
 #include "q_stdinc.h"
@@ -52,7 +52,8 @@ static void Host_Status_f (void)
 	int			minutes;
 	int			hours = 0;
 	int			j;
-	void		(*print)(unsigned int flg, const char *fmt, ...) __fp_attribute__((format(printf,2,3)));
+	void		(*print_fn)(unsigned int flg, const char *fmt, ...)
+				__fp_attribute__((__format__(__printf__,2,3)));
 
 	if (cmd_source == src_command)
 	{
@@ -61,19 +62,20 @@ static void Host_Status_f (void)
 			Cmd_ForwardToServer ();
 			return;
 		}
-		print = CON_Printf;
+		print_fn = CON_Printf;
 	}
 	else
-		print = SV_ClientPrintf;
+		print_fn = SV_ClientPrintf;
 
-	print (_PRINT_NORMAL, "host:    %s\n", Cvar_VariableString ("hostname"));
-	print (_PRINT_NORMAL, "version: %4.2f\n", ENGINE_VERSION);
+	print_fn (_PRINT_NORMAL, "host:    %s\n", Cvar_VariableString ("hostname"));
+	print_fn (_PRINT_NORMAL, "version: %4.2f\n", ENGINE_VERSION);
 	if (tcpipAvailable)
-		print (_PRINT_NORMAL, "tcp/ip:  %s\n", my_tcpip_address);
+		print_fn (_PRINT_NORMAL, "tcp/ip:  %s\n", my_tcpip_address);
 	if (ipxAvailable)
-		print (_PRINT_NORMAL, "ipx:     %s\n", my_ipx_address);
-	print (_PRINT_NORMAL, "map:     %s\n", sv.name);
-	print (_PRINT_NORMAL, "players: %i active (%i max)\n\n", net_activeconnections, svs.maxclients);
+		print_fn (_PRINT_NORMAL, "ipx:     %s\n", my_ipx_address);
+	print_fn (_PRINT_NORMAL, "map:     %s\n", sv.name);
+	print_fn (_PRINT_NORMAL, "players: %i active (%i max)\n\n",
+					net_activeconnections, svs.maxclients);
 	for (j = 0, client = svs.clients; j < svs.maxclients; j++, client++)
 	{
 		if (!client->active)
@@ -89,8 +91,10 @@ static void Host_Status_f (void)
 		}
 		else
 			hours = 0;
-		print (_PRINT_NORMAL, "#%-2u %-16.16s  %3i  %2i:%02i:%02i\n", j+1, client->name, (int)client->edict->v.frags, hours, minutes, seconds);
-		print (_PRINT_NORMAL, "   %s\n", client->netconnection->address);
+		print_fn (_PRINT_NORMAL, "#%-2u %-16.16s  %3i  %2i:%02i:%02i\n",
+					j + 1, client->name, (int)client->edict->v.frags,
+					hours, minutes, seconds);
+		print_fn (_PRINT_NORMAL, "   %s\n", client->netconnection->address);
 	}
 }
 

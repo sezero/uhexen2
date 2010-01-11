@@ -2,7 +2,7 @@
 	common.h
 	misc utilities used in client and server
 
-	$Id: common.h,v 1.62 2009-01-24 18:10:44 sezero Exp $
+	$Id: common.h,v 1.63 2010-01-11 18:48:19 sezero Exp $
 */
 
 #ifndef __HX2_COMMON_H
@@ -66,7 +66,7 @@ extern size_t q_strlcat (char *dst, const char *src, size_t size);
 #define	vsnprintf_func		vsnprintf
 #endif
 
-extern int q_snprintf (char *str, size_t size, const char *format, ...) __attribute__((format(printf,3,4)));
+extern int q_snprintf (char *str, size_t size, const char *format, ...) __attribute__((__format__(__printf__,3,4)));
 extern int q_vsnprintf(char *str, size_t size, const char *format, va_list args);
 
 /* these qerr_ versions of functions error out if they detect, well, an error.
@@ -76,7 +76,7 @@ extern int q_vsnprintf(char *str, size_t size, const char *format, va_list args)
 extern size_t qerr_strlcat (const char *caller, int linenum, char *dst, const char *src, size_t size);
 extern size_t qerr_strlcpy (const char *caller, int linenum, char *dst, const char *src, size_t size);
 extern int qerr_snprintf (const char *caller, int linenum, char *str, size_t size, const char *format, ...)
-									__attribute__((format(printf,5,6)));
+									__attribute__((__format__(__printf__,5,6)));
 
 extern char *q_strlwr (char *str);
 extern char *q_strupr (char *str);
@@ -110,7 +110,7 @@ void COM_FileExtension (const char *in, char *out, size_t outsize);
 void COM_FileBase (const char *in, char *out, size_t outsize);
 void COM_DefaultExtension (char *path, const char *extension, size_t len);
 
-char	*va (const char *format, ...) __attribute__((format(printf,1,2)));
+char	*va (const char *format, ...) __attribute__((__format__(__printf__,1,2)));
 // does a varargs printf into a temp buffer. cycles between
 // 4 different static buffers. the number of buffers cycled
 // is defined in VA_NUM_BUFFS.

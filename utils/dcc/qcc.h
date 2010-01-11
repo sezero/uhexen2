@@ -1,6 +1,6 @@
 /*
 	qcc.h
-	$Id: qcc.h,v 1.14 2009-05-05 16:02:51 sezero Exp $
+	$Id: qcc.h,v 1.15 2010-01-11 18:48:20 sezero Exp $
 */
 
 #ifndef __QCC_H__
@@ -373,7 +373,7 @@ const char	*PR_ParseName (void);
 void	PR_Lex (void);	// reads the next token into pr_token and classifies its type
 qboolean PR_Check (const char *string);
 void	PR_Expect (const char *string);
-void	PR_ParseError (const char *error, ...) __attribute__((format(printf,1,2)));
+void	PR_ParseError (const char *error, ...) __attribute__((__format__(__printf__,1,2)));
 void	PR_NewLine (void);
 def_t	*PR_GetDef (type_t *type, const char *name, def_t *scope, qboolean allocate);
 void	PR_SkipToSemicolon (void);

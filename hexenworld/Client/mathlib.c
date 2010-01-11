@@ -2,7 +2,7 @@
 	mathlib.c
 	math primitives
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/mathlib.c,v 1.21 2008-03-07 08:10:57 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/mathlib.c,v 1.22 2010-01-11 18:48:19 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -48,7 +48,7 @@ Split out like this for ASM to call.
 ==================
 */
 __ASM_FUNCS_BEGIN	/* called from asm. */
-void BOPS_Error (void) __attribute__((noreturn));
+void BOPS_Error (void) __attribute__((__noreturn__));
 __ASM_FUNCS_END
 void BOPS_Error (void)
 {

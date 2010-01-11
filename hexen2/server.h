@@ -1,7 +1,7 @@
 /*
 	server.h
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/server.h,v 1.26 2009-01-10 22:08:50 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/server.h,v 1.27 2010-01-11 18:48:17 sezero Exp $
 */
 
 #ifndef __HX2_SERVER_H
@@ -266,8 +266,8 @@ void SV_AddUpdates (void);
 void SV_ClientThink (void);
 void SV_AddClientToServer (struct qsocket_s	*ret);
 
-void SV_ClientPrintf (unsigned int unused, const char *fmt, ...) __attribute__((format(printf,2,3)));
-void SV_BroadcastPrintf (const char *fmt, ...) __attribute__((format(printf,1,2)));
+void SV_ClientPrintf (unsigned int unused, const char *fmt, ...) __attribute__((__format__(__printf__,2,3)));
+void SV_BroadcastPrintf (const char *fmt, ...) __attribute__((__format__(__printf__,1,2)));
 
 void SV_Physics (void);
 
