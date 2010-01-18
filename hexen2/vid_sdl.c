@@ -3,7 +3,7 @@
 	SDL video driver
 	Select window size and mode and init SDL in SOFTWARE mode.
 
-	$Id: vid_sdl.c,v 1.84 2008-04-02 16:37:29 sezero Exp $
+	$Id: vid_sdl.c,v 1.85 2010-01-18 20:34:16 sezero Exp $
 
 	Changed by S.A. 7/11/04, 27/12/04
 	Options are now: -fullscreen | -window, -height , -width
@@ -98,7 +98,7 @@ static const stdmode_t	std_modes[] = {
 	{1024, 768}	// 5, RES_640X480 + 2
 };
 
-#define MAX_MODE_LIST	30
+#define MAX_MODE_LIST	40
 #define MAX_STDMODES	(sizeof(std_modes) / sizeof(std_modes[0]))
 #define NUM_LOWRESMODES	(RES_640X480)
 static vmode_t	fmodelist[MAX_MODE_LIST+1];	// list of enumerated fullscreen modes

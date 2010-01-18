@@ -1,6 +1,6 @@
 /*
 	gl_vidnt.c -- NT GL vid component
-	$Id: gl_vidnt.c,v 1.124 2009-01-04 09:20:32 sezero Exp $
+	$Id: gl_vidnt.c,v 1.125 2010-01-18 20:34:18 sezero Exp $
 */
 
 #define	__GL_FUNC_EXTERN
@@ -59,7 +59,7 @@ static const stdmode_t	std_modes[] = {
 	{1600, 1200}	// 7
 };
 
-#define MAX_MODE_LIST	40
+#define MAX_MODE_LIST	60
 #define MAX_STDMODES	(sizeof(std_modes) / sizeof(std_modes[0]))
 #define NUM_LOWRESMODES	(RES_640X480)
 static vmode_t	fmodelist[MAX_MODE_LIST+1];	// list of enumerated fullscreen modes
