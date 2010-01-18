@@ -3,6 +3,11 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2010-01-18 (CVS):
+    * increased the maximum number of video mode slots to 60 for opengl
+      (wgl and sdl) and to 40 for software (mgl and sdl) drivers.
+    * updated beta version date stamp to 2010-01-18.
+
 2010-01-11 (CVS):
     * pre and postfix gcc attribute specifiers by '__'
     * updated beta version date stamp to 2010-01-11.
