@@ -3,6 +3,10 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2010-01-23 (CVS):
+    * made the return code check for SDL_WM_ToggleFullScreen() "by the book"
+    * updated beta version date stamp to 2010-01-23.
+
 2010-01-18 (CVS):
     * increased the maximum number of video mode slots to 60 for opengl
       (wgl and sdl) and to 40 for software (mgl and sdl) drivers.
