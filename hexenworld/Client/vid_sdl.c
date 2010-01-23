@@ -3,7 +3,7 @@
 	SDL video driver
 	Select window size and mode and init SDL in SOFTWARE mode.
 
-	$Id: vid_sdl.c,v 1.82 2010-01-18 20:34:18 sezero Exp $
+	$Id: vid_sdl.c,v 1.83 2010-01-23 10:15:35 sezero Exp $
 
 	Changed by S.A. 7/11/04, 27/12/04
 	Options are now: -fullscreen | -window, -height , -width
@@ -1018,7 +1018,7 @@ void VID_ToggleFullscreen (void)
 
 	S_ClearBuffer ();
 
-	if ( SDL_WM_ToggleFullScreen(screen) > 0 )
+	if ( SDL_WM_ToggleFullScreen(screen) == 1 )
 	{
 		is_fullscreen = (screen->flags & SDL_FULLSCREEN) ? 1 : 0;
 		Cvar_SetValue("vid_config_fscr", is_fullscreen);
