@@ -4,7 +4,12 @@ Development Progress	:
 ---------------------------
 
 2010-01-23 (CVS):
-    * made the return code check for SDL_WM_ToggleFullScreen() "by the book"
+    * made the return code check for SDL_WM_ToggleFullScreen() by the book
+      by checking for quality to 1, not for being positive.
+    * made more of error return checks, namely return values from open(),
+      mprotect(), SDL_Init(), SDL_InitSubSystem(), SDL_GL_LoadLibrary(),
+      SDL_OpenAudio() and SDL_CD*(), by the book by checking for equality
+      to -1, not for being negative.
     * updated beta version date stamp to 2010-01-23.
 
 2010-01-18 (CVS):
