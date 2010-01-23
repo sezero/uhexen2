@@ -1,6 +1,6 @@
 /*
 	cd_sdl.c
-	$Id: cd_sdl.c,v 1.17 2007-11-11 13:17:44 sezero Exp $
+	$Id: cd_sdl.c,v 1.18 2010-01-23 12:01:24 sezero Exp $
 
 	Copyright (C) 1996-1997  Id Software, Inc.
 	Taken from the Twilight project with modifications
@@ -52,7 +52,7 @@ static void CDAudio_Eject(void)
 	if (!cd_handle || !enabled)
 		return;
 
-	if (SDL_CDEject(cd_handle) < 0)
+	if (SDL_CDEject(cd_handle) == -1)
 		Con_Printf ("Unable to eject CD-ROM: %s\n", SDL_GetError ());
 }
 
@@ -106,7 +106,7 @@ void CDAudio_Play(byte track, qboolean looping)
 		CDAudio_Stop ();
 	}
 
-	if (SDL_CDPlay(cd_handle, cd_handle->track[track-1].offset, cd_handle->track[track-1].length) < 0)
+	if (SDL_CDPlay(cd_handle, cd_handle->track[track-1].offset, cd_handle->track[track-1].length) == -1)
 	{
 		// ok, check for status now
 		int cd_status = SDL_CDStatus(cd_handle);
@@ -144,7 +144,7 @@ void CDAudio_Stop(void)
 	if (!playing)
 		return;
 
-	if (SDL_CDStop(cd_handle) < 0)
+	if (SDL_CDStop(cd_handle) == -1)
 		Con_Printf ("%s: Unable to stop CD-ROM (%s)\n", __thisfunc__, SDL_GetError());
 
 	wasPlaying = false;
@@ -161,7 +161,7 @@ void CDAudio_Pause(void)
 	if (!playing)
 		return;
 
-	if (SDL_CDPause(cd_handle) < 0)
+	if (SDL_CDPause(cd_handle) == -1)
 		Con_Printf ("Unable to pause CD-ROM: %s\n", SDL_GetError());
 
 	wasPlaying = playing;
@@ -180,7 +180,7 @@ void CDAudio_Resume(void)
 	if (!wasPlaying)
 		return;
 
-	if (SDL_CDResume(cd_handle) < 0)
+	if (SDL_CDResume(cd_handle) == -1)
 		Con_Printf ("Unable to resume CD-ROM: %s\n", SDL_GetError());
 	playing = true;
 	endOfTrack += realtime - pausetime;
@@ -391,7 +391,7 @@ int CDAudio_Init(void)
 	if (safemode || COM_CheckParm("-nocdaudio"))
 		return -1;
 
-	if (SDL_InitSubSystem(SDL_INIT_CDROM) < 0)
+	if (SDL_InitSubSystem(SDL_INIT_CDROM) == -1)
 	{
 		Con_Printf("Couldn't init SDL cdrom: %s\n", SDL_GetError());
 		return -1;

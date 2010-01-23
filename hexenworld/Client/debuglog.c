@@ -2,7 +2,7 @@
 	debuglog.c
 	logging console output to a file
 
-	$Id: debuglog.c,v 1.11 2009-01-26 10:55:39 sezero Exp $
+	$Id: debuglog.c,v 1.12 2010-01-23 12:01:24 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -34,7 +34,7 @@ void LOG_Print (const char *logdata)
 {
 	if (!logdata || !*logdata)
 		return;
-	if (log_fd < 0)
+	if (log_fd == -1)
 		return;
 
 	write (log_fd, logdata, strlen(logdata));
@@ -91,7 +91,7 @@ void LOG_Init (quakeparms_t *parms)
 	Sys_unlink (logfilename);
 
 	log_fd = open (logfilename, O_WRONLY | O_CREAT | O_APPEND, 0666);
-	if (log_fd < 0)
+	if (log_fd == -1)
 	{
 		con_debuglog = LOG_NONE;
 		fprintf (stderr, "Error: Unable to create log file\n");
@@ -130,7 +130,7 @@ void LOG_Init (quakeparms_t *parms)
 
 void LOG_Close (void)
 {
-	if (log_fd < 0)
+	if (log_fd == -1)
 		return;
 	close (log_fd);
 	log_fd = -1;

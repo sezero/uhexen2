@@ -1,6 +1,6 @@
 /*
 	snd_sun.c
-	$Id: snd_sun.c,v 1.17 2008-01-12 09:46:16 sezero Exp $
+	$Id: snd_sun.c,v 1.18 2010-01-23 12:01:23 sezero Exp $
 
 	SUN Audio driver for BSD and SunOS
 
@@ -136,7 +136,7 @@ static qboolean S_SUN_Init (dma_t *dma)
 	snddev = "/dev/sound";
 #endif
 	audio_fd = open (snddev, O_WRONLY | O_NDELAY | O_NONBLOCK);
-	if (audio_fd < 0)
+	if (audio_fd == -1)
 	{
 		Con_Printf("Can't open the sound device (%s)\n", snddev);
 		return false;
@@ -186,7 +186,7 @@ static int S_SUN_GetDMAPos (void)
 	if (!shm)
 		return 0;
 
-	if (ioctl(audio_fd, AUDIO_GETINFO, &info) < 0)
+	if (ioctl(audio_fd, AUDIO_GETINFO, &info) == -1)
 	{
 		Con_Printf("Error: can't get audio info\n");
 		S_SUN_Shutdown ();

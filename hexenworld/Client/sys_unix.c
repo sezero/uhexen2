@@ -2,7 +2,7 @@
 	sys_unix.c
 	Unix system interface code
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/sys_unix.c,v 1.104 2009-09-21 08:00:17 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/sys_unix.c,v 1.105 2010-01-23 12:01:24 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -238,7 +238,7 @@ void Sys_MakeCodeWriteable (unsigned long startaddr, unsigned long length)
 	// need to page align the arguments to mprotect (eg, QNX)
 	r = mprotect ((char *) startaddr, endaddr - startaddr, PROT_WRITE | PROT_READ | PROT_EXEC);
 
-	if (r < 0)
+	if (r == -1)
 		Sys_Error("Protection change failed\n");
 }
 #endif	/* id386, !GLQUAKE */

@@ -3,7 +3,7 @@
 	SDL video driver
 	Select window size and mode and init SDL in SOFTWARE mode.
 
-	$Id: vid_sdl.c,v 1.86 2010-01-23 10:15:34 sezero Exp $
+	$Id: vid_sdl.c,v 1.87 2010-01-23 12:01:23 sezero Exp $
 
 	Changed by S.A. 7/11/04, 27/12/04
 	Options are now: -fullscreen | -window, -height , -width
@@ -679,7 +679,7 @@ void VID_Init (unsigned char *palette)
 	// the first check is actually unnecessary
 	if ( (SDL_WasInit(SDL_INIT_VIDEO)) == 0 )
 	{
-		if (SDL_Init(SDL_INIT_VIDEO) < 0)
+		if (SDL_Init(SDL_INIT_VIDEO) == -1)
 			Sys_Error("VID: Couldn't load SDL: %s", SDL_GetError());
 	}
 

@@ -1,6 +1,6 @@
 /*
 	snd_oss.c
-	$Id: snd_oss.c,v 1.37 2008-01-12 09:46:16 sezero Exp $
+	$Id: snd_oss.c,v 1.38 2010-01-23 12:01:23 sezero Exp $
 
 	Copyright (C) 1996-1997  Id Software, Inc.
 
@@ -114,16 +114,16 @@ static qboolean S_OSS_Init (dma_t *dma)
 
 // open /dev/dsp, confirm capability to mmap, and get size of dma buffer
 	audio_fd = open(ossdev, O_RDWR|O_NONBLOCK);
-	if (audio_fd < 0)
+	if (audio_fd == -1)
 	{	// Failed open, retry up to 3 times if it's busy
 		tmp = 3;
-		while ( (audio_fd < 0) && tmp-- &&
+		while ( (audio_fd == -1) && tmp-- &&
 			((errno == EAGAIN) || (errno == EBUSY)) )
 		{
 			sleep (1);
 			audio_fd = open(ossdev, O_RDWR|O_NONBLOCK);
 		}
-		if (audio_fd < 0)
+		if (audio_fd == -1)
 		{
 			Con_Printf("Could not open %s. %s\n", ossdev, strerror(errno));
 			return false;

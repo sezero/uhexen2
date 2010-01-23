@@ -4,7 +4,7 @@
 	implementations found in the quakeforge and quake3-icculus.org
 	projects.
 
-	$Id: snd_sdl2.c,v 1.7 2008-08-19 17:21:17 sezero Exp $
+	$Id: snd_sdl2.c,v 1.8 2010-01-23 12:01:23 sezero Exp $
 
 	This program is free software; you can redistribute it and/or
 	modify it under the terms of the GNU General Public License
@@ -112,7 +112,7 @@ static qboolean S_SDL_Init (dma_t *dma)
 	int		tmp, val;
 	char	drivername[128];
 
-	if (SDL_InitSubSystem(SDL_INIT_AUDIO) < 0)
+	if (SDL_InitSubSystem(SDL_INIT_AUDIO) == -1)
 	{
 		Con_Printf("Couldn't init SDL audio: %s\n", SDL_GetError());
 		return false;
@@ -134,7 +134,7 @@ static qboolean S_SDL_Init (dma_t *dma)
 	desired.userdata = NULL;
 
 	/* Open the audio device */
-	if (SDL_OpenAudio(&desired, &obtained) < 0)
+	if (SDL_OpenAudio(&desired, &obtained) == -1)
 	{
 		Con_Printf("Couldn't open SDL audio: %s\n", SDL_GetError());
 		SDL_QuitSubSystem(SDL_INIT_AUDIO);

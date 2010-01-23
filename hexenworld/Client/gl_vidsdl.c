@@ -2,7 +2,7 @@
 	gl_vidsdl.c -- SDL GL vid component
 	Select window size and mode and init SDL in GL mode.
 
-	$Id: gl_vidsdl.c,v 1.176 2010-01-23 10:15:35 sezero Exp $
+	$Id: gl_vidsdl.c,v 1.177 2010-01-23 12:01:24 sezero Exp $
 
 	Changed 7/11/04 by S.A.
 	- Fixed fullscreen opengl mode, window sizes
@@ -693,7 +693,7 @@ static qboolean GL_OpenLibrary(const char *name)
 
 	ret = SDL_GL_LoadLibrary(name);
 
-	if (ret < 0)
+	if (ret == -1)
 	{
 		// In case of user-specified gl library, look for it under the
 		// installation directory, too: the user may forget providing
@@ -710,7 +710,7 @@ static qboolean GL_OpenLibrary(const char *name)
 					"Trying to load %s\n", name, gl_liblocal);
 
 			ret = SDL_GL_LoadLibrary(gl_liblocal);
-			if (ret < 0)
+			if (ret == -1)
 				return false;
 
 			Con_SafePrintf("Using GL library: %s\n", gl_liblocal);
@@ -1180,7 +1180,7 @@ static void VID_ChangeVideoMode (int newmode)
 	SDL_QuitSubSystem(SDL_INIT_VIDEO);	// also unloads the opengl driver
 
 	// re-init sdl_video, set the mode and re-init opengl
-	if (SDL_Init(SDL_INIT_VIDEO) < 0)
+	if (SDL_Init(SDL_INIT_VIDEO) == -1)
 		Sys_Error ("Couldn't init video: %s", SDL_GetError());
 #ifdef GL_DLSYM
 	if (!GL_OpenLibrary(gl_library))
@@ -1555,7 +1555,7 @@ void	VID_Init (unsigned char *palette)
 	// the first check is actually unnecessary
 	if ( (SDL_WasInit(SDL_INIT_VIDEO)) == 0 )
 	{
-		if (SDL_Init(SDL_INIT_VIDEO) < 0)
+		if (SDL_Init(SDL_INIT_VIDEO) == -1)
 			Sys_Error ("Couldn't init video: %s", SDL_GetError());
 	}
 
