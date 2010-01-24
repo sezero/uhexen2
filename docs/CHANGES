@@ -3,6 +3,11 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2010-01-24 (CVS):
+    * made more of error return checks, namely return values from stat(),
+      fstat(), open() and rename(), by the book by checking for equality
+      to -1, not for being negative, this time in xdelta and launcher.
+
 2010-01-23 (CVS):
     * made the return code check for SDL_WM_ToggleFullScreen() by the book
       by checking for quality to 1, not for being positive.
