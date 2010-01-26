@@ -3,6 +3,10 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2010-01-26 (CVS):
+    * copied over svgalib support of hexen2 to hexenworld client.
+    * updated release notes for 1.4.4 (2010-01-26.)
+
 2010-01-24 (CVS):
     * made more of error return checks, namely return values from stat(),
       fstat(), open() and rename(), by the book by checking for equality
