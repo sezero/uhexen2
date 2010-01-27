@@ -2,7 +2,7 @@
 	sdl_inc.h
 	common SDL header
 
-	$Id: sdl_inc.h,v 1.8 2010-01-27 17:05:38 sezero Exp $
+	$Id: sdl_inc.h,v 1.9 2010-01-27 19:23:32 sezero Exp $
 */
 
 #ifndef __HX2_SDL_INC
@@ -48,8 +48,7 @@ hence the SDL_NEW_VERSION_REJECT macro below.
 
 #else	/* SDL-1.2.x */
 
-#define SDL_NEW_VERSION_REJECT SDL_VERSION_ATLEAST(1,3,0)
-		/* reject 1.3.0 and newer at runtime. */
+#define SDL_NEW_VERSION_REJECT	(SDL_VERSIONNUM(1,3,0))	/* reject 1.3.0 and newer at runtime. */
 
 #define SDL_MIXER_MIN_X	1
 #define SDL_MIXER_MIN_Y	2
