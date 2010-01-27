@@ -2,7 +2,7 @@
 	sys_unix.c
 	Unix system interface code
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/sys_unix.c,v 1.105 2010-01-23 12:01:24 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/sys_unix.c,v 1.106 2010-01-27 16:40:11 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -478,8 +478,15 @@ static void Sys_CheckSDL (void)
 	Sys_Printf("Found SDL version %i.%i.%i\n",sdl_version->major,sdl_version->minor,sdl_version->patch);
 	if (SDL_VERSIONNUM(sdl_version->major,sdl_version->minor,sdl_version->patch) < SDL_REQUIREDVERSION)
 	{	/*reject running under SDL versions older than what is stated in sdl_inc.h */
-		Sys_Error("You need at least v%d.%d.%d of SDL to run this game\n",SDL_MIN_X,SDL_MIN_Y,SDL_MIN_Z);
+		Sys_Error("You need at least v%d.%d.%d of SDL to run this game.", SDL_MIN_X,SDL_MIN_Y,SDL_MIN_Z);
 	}
+# if defined(SDL_NEW_VERSION_REJECT)
+	if (SDL_VERSIONNUM(sdl_version->major,sdl_version->minor,sdl_version->patch) >= SDL_NEW_VERSION_REJECT)
+	{	/*reject running under SDL versions newer than what is stated in sdl_inc.h */
+		Sys_Error("Your version of SDL library is incompatible with me.\n"
+			  "You need a library version in the line of %d.%d.%d\n", SDL_MIN_X,SDL_MIN_Y,SDL_MIN_Z);
+	}
+# endif /* SDL_NEW_VERSION_REJECT */
 #endif	/* SDLQUAKE */
 }
 
