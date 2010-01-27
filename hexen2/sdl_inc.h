@@ -2,7 +2,7 @@
 	sdl_inc.h
 	common SDL header
 
-	$Id: sdl_inc.h,v 1.6 2008-04-02 20:37:36 sezero Exp $
+	$Id: sdl_inc.h,v 1.7 2010-01-27 16:33:59 sezero Exp $
 */
 
 #ifndef __HX2_SDL_INC
@@ -28,19 +28,41 @@ of SDL_Mixer, but 1.2.4 have several fixes in it.
 #define MIX_REQUIREDVERSION	(SDL_VERSIONNUM(SDL_MIXER_MIN_X,SDL_MIXER_MIN_Y,SDL_MIXER_MIN_Z))
 
 #define SDL_MIN_X	1
-#define SDL_MIN_Y	2
-#if defined(__MACOSX__) || defined(__APPLE__)
-#   define SDL_MIN_Z	8
-#elif defined(_MIDI_SDLMIXER)
-#   if MIX_REQUIREDVERSION > (SDL_VERSIONNUM(1,2,6))
-#   define SDL_MIN_Z	10
-#   elif MIX_REQUIREDVERSION > (SDL_VERSIONNUM(1,2,1))
-#   define SDL_MIN_Z	4
-#   else
-#   define SDL_MIN_Z	0
-#   endif
+/* =================================================================
+if we are compiling against SDL-1.3.x, then require version 1.3.0 or
+newer at runtime, too.
+
+2010-01-27:
+SDL-1.3 is still in active development and its API hasn't solidified
+yet.  As of this writing, SDL-1.2 and 1.3 has some api differences:
+see, for example, SDL_GetMouseState() which is not binary compatible
+between SDL-1.2 / 1.3: http://forums.libsdl.org/viewtopic.php?t=5458
+For now, I am limiting our own requirement to the compiled version,
+hence the SDL_NEW_VERSION_REJECT macro below.
+=================================================================== */
+#if SDL_VERSION_ATLEAST(1,3,0)
+#define SDL_MIN_Y	3
 #else
+#define SDL_MIN_Y	2
+#endif
+
+#if SDL_MIN_Y >= 3
 #   define SDL_MIN_Z	0
+#else	/* SDL-1.2.x: */
+# define SDL_NEW_VERSION_REJECT SDL_VERSION_ATLEAST(1,3,0) /* reject 1.3.0 and newer at runtime. */
+# if defined(__MACOSX__) || defined(__APPLE__)
+#   define SDL_MIN_Z	8
+# elif defined(_MIDI_SDLMIXER)
+#   if MIX_REQUIREDVERSION > (SDL_VERSIONNUM(1,2,6))
+#     define SDL_MIN_Z	10
+#   elif MIX_REQUIREDVERSION > (SDL_VERSIONNUM(1,2,1))
+#     define SDL_MIN_Z	4
+#   else
+#     define SDL_MIN_Z	0
+#   endif
+# else
+#   define SDL_MIN_Z	0
+# endif
 #endif
 
 #define SDL_REQUIREDVERSION	(SDL_VERSIONNUM(SDL_MIN_X,SDL_MIN_Y,SDL_MIN_Z))
