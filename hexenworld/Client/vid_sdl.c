@@ -3,7 +3,7 @@
 	SDL video driver
 	Select window size and mode and init SDL in SOFTWARE mode.
 
-	$Id: vid_sdl.c,v 1.84 2010-01-23 12:01:24 sezero Exp $
+	$Id: vid_sdl.c,v 1.85 2010-01-27 16:28:50 sezero Exp $
 
 	Changed by S.A. 7/11/04, 27/12/04
 	Options are now: -fullscreen | -window, -height , -width
@@ -42,6 +42,9 @@ static int	num_wmodes;
 static int	*nummodes;
 //static int	bpp = 8;
 static const SDL_VideoInfo	*vid_info;
+	/* NOTE: SDL-1.3 doesn't have the Uint32 colorkey
+	   and Uint8 alpha members in SDL_PixelFormat
+	   which is a member of SDL_VideoInfo structure. */
 static SDL_Surface	*screen;
 static qboolean	vid_menu_fs;
 static qboolean	fs_toggle_works = true;
@@ -460,13 +463,11 @@ static void VID_ShowInfo_f (void)
 			"BitsPerPixel: %d,\n"
 			"Rmask : %u, Gmask : %u, Bmask : %u\n"
 			"Rshift: %u, Gshift: %u, Bshift: %u\n"
-			"Rloss : %u, Gloss : %u, Bloss : %u\n"
-			"alpha : %u, colorkey: %u\n",
+			"Rloss : %u, Gloss : %u, Bloss : %u\n",
 			vid_info->vfmt->BitsPerPixel,
 			vid_info->vfmt->Rmask, vid_info->vfmt->Gmask, vid_info->vfmt->Bmask,
 			vid_info->vfmt->Rshift, vid_info->vfmt->Gshift, vid_info->vfmt->Bshift,
-			vid_info->vfmt->Rloss, vid_info->vfmt->Gloss, vid_info->vfmt->Bloss,
-			vid_info->vfmt->alpha, vid_info->vfmt->colorkey	);
+			vid_info->vfmt->Rloss, vid_info->vfmt->Gloss, vid_info->vfmt->Bloss);
 }
 
 static int VID_SetMode (int modenum, unsigned char *palette)
