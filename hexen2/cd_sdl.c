@@ -1,6 +1,6 @@
 /*
 	cd_sdl.c
-	$Id: cd_sdl.c,v 1.18 2010-01-23 12:01:23 sezero Exp $
+	$Id: cd_sdl.c,v 1.19 2010-01-27 16:22:42 sezero Exp $
 
 	Copyright (C) 1996-1997  Id Software, Inc.
 	Taken from the Twilight project with modifications
@@ -31,6 +31,16 @@
 #ifdef	__USE_SDL_CDROM__
 
 #include "sdl_inc.h"
+
+#ifndef	SDL_INIT_CDROM
+
+/* SDL dropped support for
+   cd audio since v1.3.0 */
+#warning SDL CDAudio support disabled
+#include "cd_null.c"
+
+#else	/* SDL_INIT_CDROM */
+
 #include "quakedef.h"
 
 static qboolean cdValid = false;
@@ -469,5 +479,7 @@ void CDAudio_Shutdown(void)
 	SDL_QuitSubSystem(SDL_INIT_CDROM);
 }
 
-#endif	// __USE_SDL_CDROM__
+#endif	/* SDL_INIT_CDROM */
+
+#endif	/* __USE_SDL_CDROM__ */
 
