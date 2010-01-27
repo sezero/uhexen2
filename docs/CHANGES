@@ -3,6 +3,24 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2010-01-27 (CVS):
+    * cd_sdl.c: for SDL-1.3, do not compile actual code but include cd_null.c,
+      instead.
+    * SDL-1.3, at least as it is today, doesn't have the Uint32 colorkey and
+      Uint8 alpha members in SDL_PixelFormat which is a member of SDL_VideoInfo
+      structure. removed their reference from our video code.
+    * sdl_inc.h: if we are compiling against SDL-1.3.x, then require version 1.3.0 or
+      newer at runtime, too. SDL-1.3 is still in active development and its API hasn't
+      solidified yet.  As of this writing, SDL-1.2 and 1.3 has some api differences:
+      see, for example, SDL_GetMouseState() which is not binary compatible between
+      SDL-1.2/1.3: http://forums.libsdl.org/viewtopic.php?t=5458.  For now, I am
+      limiting our own requirement to the compiled version, the SDL_NEW_VERSION_REJECT
+      macro added newly for this purpose.
+    * sys_unix.c: if we are compiling against SDL-1.2.x, reject SDL libraries of version
+      1.3 or newer (use the new SDL_NEW_VERSION_REJECT macro) at runtime.
+    * sdl_inc.h: if we are compiling against SDL-1.3, require SDL_mixer version
+      1.2.11 or newer. shuffled the ifdefs around for arguably better readability.
+
 2010-01-26 (CVS):
     * copied over svgalib support of hexen2 to hexenworld client.
     * updated release notes for 1.4.4 (2010-01-26.)
