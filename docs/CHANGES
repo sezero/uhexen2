@@ -3,6 +3,10 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2010-02-03 (CVS):
+    * dxsdk_new: updated dinput.h and dsound.h from the mingw-w64 svn repo (r1833,
+      2010-02-03.)
+
 2010-01-27 (CVS):
     * cd_sdl.c: for SDL-1.3, do not compile actual code but include cd_null.c,
       instead.
