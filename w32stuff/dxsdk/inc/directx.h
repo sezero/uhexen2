@@ -2,6 +2,10 @@
 #ifndef _directx_h_
 #define _directx_h
 
+#ifdef __GNUC__
+#define NONAMELESSUNION
+#endif
+
 /* Include all of the DirectX 5.0 headers and adds any necessary tweaks */
 
 #include <windows.h>
@@ -69,9 +73,6 @@
 /* DirectX 6.0 header includes
    (if it isn't included, I haven't tested it yet)
  */
-#ifdef __GNUC__
-#define NONAMELESSUNION
-#endif
 #include <ddraw.h>
 #include <dsound.h>
 #include <dinput.h>
