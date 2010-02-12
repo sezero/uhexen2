@@ -226,8 +226,8 @@ windows in a command console, however, ~should~ be possible:  remember
 adding DOSBUILD=1 to your environment.
 
 CWSDPMI.EXE is needed at runtime: use the "0.90+ r5" or a newer version.
-(the "0.90+ r1" version from 1996 which was packaged with quake still
-seems to work, but isn't recommended.)
+I have been using the "release 5, 2008 refresh" version (dated 21 August
+2008) for quite some time with success.
 
 
 Links:
