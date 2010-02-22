@@ -2,7 +2,7 @@
 	util_io.c
 	file and directory utilities
 
-	$Id: util_io.c,v 1.19 2010-02-22 23:21:33 sezero Exp $
+	$Id: util_io.c,v 1.20 2010-02-22 23:45:37 sezero Exp $
 */
 
 
@@ -341,7 +341,7 @@ void CreatePath (char *path)
 {
 	char	*ofs, c;
 
-	if (!path || *path)
+	if (!path || !*path)
 		return;
 	if (path[1] == ':')
 		path += 2;
