@@ -2,7 +2,7 @@
 	util_io.c
 	file and directory utilities
 
-	$Id: util_io.c,v 1.17 2010-02-22 22:11:16 sezero Exp $
+	$Id: util_io.c,v 1.18 2010-02-22 22:40:41 sezero Exp $
 */
 
 
@@ -223,10 +223,9 @@ Q_filelength
 
 ==============
 */
-int Q_filelength (FILE *f)
+long Q_filelength (FILE *f)
 {
-	int		pos;
-	int		end;
+	long	pos, end;
 
 	pos = ftell (f);
 	fseek (f, 0, SEEK_END);
@@ -304,7 +303,7 @@ LoadFile
 int LoadFile (const char *filename, void **bufferptr)
 {
 	FILE	*f;
-	int	length;
+	long	length;
 	void	*buffer;
 
 	f = SafeOpenRead (filename);
