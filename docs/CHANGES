@@ -3,6 +3,11 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2010-02-22 (CVS):
+    * hexenworld: moved Huffman initialization to Host_Init().
+    * hexenworld, huffman: added a compile-time macro USE_HUNKMEM, on by default.
+      if we are compiling for DOS, force-enable USE_HUNKMEM.
+
 2010-02-03 (CVS):
     * dxsdk_new: updated dinput.h and dsound.h from the mingw-w64 svn repo (r1833,
       2010-02-03.)
