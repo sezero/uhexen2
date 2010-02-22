@@ -1,6 +1,6 @@
 /*
 	loadtri.c
-	$Id: loadtri.c,v 1.13 2008-03-19 20:00:15 sezero Exp $
+	$Id: loadtri.c,v 1.14 2010-02-22 22:30:33 sezero Exp $
 */
 
 // HEADER FILES ------------------------------------------------------------
@@ -16,12 +16,6 @@
 #include "q_endian.h"
 
 // MACROS ------------------------------------------------------------------
-
-#define SafeMalloc(PTR,TYPE,SIZE,DESC) {							\
-	PTR = TYPE malloc((SIZE));								\
-	if (PTR == NULL)								\
-		Error("Failed to allocate %lu bytes for '%s'.\n", (unsigned long)(SIZE), DESC);	\
-}
 
 //#undef M_PI
 //#define M_PI	3.14159265
@@ -238,7 +232,7 @@ static void LoadHRC(char *fileName, triangle_t **triList, int *triangleCount)
 	TK_Beyond(TK_MESH);
 	TK_BeyondRequire(TK_VERTICES, TK_INTNUMBER);
 	vertexCount = tk_IntNumber;
-	SafeMalloc(vList, (struct vList_s *), vertexCount * sizeof(vList[0]), "Vertex list");
+	vList = (struct vList_s *) SafeMalloc(vertexCount * sizeof(vList[0]));
 	for (i = 0; i < vertexCount; i++)
 	{
 		TK_BeyondRequire(TK_LBRACKET, TK_INTNUMBER);
@@ -283,7 +277,7 @@ static void LoadHRC(char *fileName, triangle_t **triList, int *triangleCount)
 		Error("Too many triangles in file %s\n", InputFileName);
 	}
 	*triangleCount = triCount;
-	SafeMalloc(tList, (triangle_t *), MAXTRIANGLES * sizeof(triangle_t), "Triangle list");
+	tList = (triangle_t *) SafeMalloc(MAXTRIANGLES * sizeof(triangle_t));
 	*triList = tList;
 	for (i = 0; i < triCount; i++)
 	{
@@ -376,7 +370,7 @@ static void LoadASC(char *fileName, triangle_t **triList, int *triangleCount)
 		Error("Too many triangles in file %s\n", InputFileName);
 	}
 	*triangleCount = triCount;
-	SafeMalloc(tList, (triangle_t *), MAXTRIANGLES * sizeof(triangle_t), "Triangle list");
+	tList = (triangle_t *) SafeMalloc(MAXTRIANGLES * sizeof(triangle_t));
 	*triList = tList;
 	TK_BeyondRequire(TK_C_VERTEX, TK_LIST);
 
@@ -385,7 +379,7 @@ static void LoadASC(char *fileName, triangle_t **triList, int *triangleCount)
 	ry = (rotation[1]/360.0)*2.0*MY_PI;
 	rz = (rotation[2]/360.0)*2.0*MY_PI;
 */
-	SafeMalloc(vList, (struct vList_s *), vertexCount * sizeof(vList[0]), "Vertex list");
+	vList = (struct vList_s *) SafeMalloc(vertexCount * sizeof(vList[0]));
 	for (i = 0; i < vertexCount; i++)
 	{
 		TK_BeyondRequire(TK_C_VERTEX, TK_INTNUMBER);
@@ -496,7 +490,7 @@ static void LoadHTR(char *fileName, triangle_t **triList, int *triangleCount)
 	// Get vertex count
 	TK_BeyondRequire(TK_VERTICES, TK_INTNUMBER);
 	vertexCount = tk_IntNumber;
-	SafeMalloc(vList, (struct vList_s *), vertexCount * sizeof(vList[0]), "Vertex list");
+	vList = (struct vList_s *) SafeMalloc(vertexCount * sizeof(vList[0]));
 
 	// Get triangle count
 	TK_BeyondRequire(TK_FACES, TK_INTNUMBER);
@@ -506,7 +500,7 @@ static void LoadHTR(char *fileName, triangle_t **triList, int *triangleCount)
 		Error("Too many triangles in file %s\n", InputFileName);
 	}
 	*triangleCount = triCount;
-	SafeMalloc(tList, (triangle_t *), MAXTRIANGLES * sizeof(triangle_t), "Triangle list");
+	tList = (triangle_t *) SafeMalloc(MAXTRIANGLES * sizeof(triangle_t));
 	*triList = tList;
 
 	// Get origin
@@ -710,7 +704,7 @@ static void Load3DS(FILE *input, triangle_t **triList, int *triangleCount)
 			case _3DS_TRI_VERTEXL:
 				chunkSize = ReadLong();
 				vertexCount = ReadShort();
-				SafeMalloc(vList, (struct vList_s *), vertexCount * sizeof(vList[0]), "Vertex list");
+				vList = (struct vList_s *) SafeMalloc(vertexCount * sizeof(vList[0]));
 				for (i = 0; i < vertexCount; i++)
 				{
 					vList[i].v[0] = ReadFloat();
@@ -729,7 +723,7 @@ static void Load3DS(FILE *input, triangle_t **triList, int *triangleCount)
 								InputFileName);
 				}
 				*triangleCount = triCount;
-				SafeMalloc(tList, (triangle_t *), MAXTRIANGLES * sizeof(triangle_t), "Triangle list");
+				tList = (triangle_t *) SafeMalloc(MAXTRIANGLES * sizeof(triangle_t));
 				*triList = tList;
 				for (i = 0; i < triCount; i++)
 				{
@@ -853,8 +847,7 @@ static void LoadTRI(FILE *input, triangle_t **triList, int *triangleCount)
 		Error("Bad .TRI file: %s\n", InputFileName);
 	}
 
-	SafeMalloc(ptri, (triangle_t *), MAXTRIANGLES*sizeof(triangle_t), "Triangle list");
-
+	ptri = (triangle_t *) SafeMalloc(MAXTRIANGLES * sizeof(triangle_t));
 	*triList = ptri;
 
 	while (feof(input) == 0)
