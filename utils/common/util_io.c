@@ -2,7 +2,7 @@
 	util_io.c
 	file and directory utilities
 
-	$Id: util_io.c,v 1.18 2010-02-22 22:40:41 sezero Exp $
+	$Id: util_io.c,v 1.19 2010-02-22 23:21:33 sezero Exp $
 */
 
 
@@ -365,6 +365,7 @@ Q_CopyFile
 Used to archive source files
 ============
 */
+#if 0
 void Q_CopyFile (const char *from, const char *to)
 {
 	char	temp[1024];
@@ -380,5 +381,97 @@ void Q_CopyFile (const char *from, const char *to)
 	CreatePath (temp);
 	SaveFile (to, buffer, length);
 	free (buffer);
+}
+#endif
+
+#define	COPY_READ_BUFSIZE		8192	/* BUFSIZ */
+int Q_CopyFile (const char *frompath, const char *topath)
+{
+	char	buf[COPY_READ_BUFSIZE];
+	FILE	*in, *out;
+	char		temp[1024];
+	int		err = 0;
+//	off_t		remaining, count;
+	size_t		remaining, count;
+
+	strcpy (temp, topath);
+	CreatePath (temp);
+
+	in = fopen (frompath, "rb");
+	if (!in)
+		Error ("Unable to open file %s\n", frompath);
+	out = fopen (topath, "wb");
+	if (!out)
+		Error ("Unable to create file %s\n", topath);
+
+	remaining = Q_filelength (in);
+	memset (buf, 0, sizeof(buf));
+	while (remaining)
+	{
+		if (remaining < sizeof(buf))
+			count = remaining;
+		else
+			count = sizeof(buf);
+
+		fread (buf, 1, count, in);
+		err = ferror (in);
+		if (err)
+			break;
+
+		fwrite (buf, 1, count, out);
+		err = ferror (out);
+		if (err)
+			break;
+
+		remaining -= count;
+	}
+
+	fclose (in);
+	fclose (out);
+
+	return err;
+}
+
+int Q_CopyFromFile (FILE *fromfile, const char *topath, size_t size)
+{
+	char	buf[COPY_READ_BUFSIZE];
+	FILE	*out;
+//	off_t		remaining, count;
+	size_t		remaining, count;
+	char		temp[1024];
+	int		err = 0;
+
+	strcpy (temp, topath);
+	CreatePath (temp);
+
+	out = fopen (topath, "wb");
+	if (!out)
+		Error ("Unable to create file %s\n", topath);
+
+	memset (buf, 0, sizeof(buf));
+	remaining = size;
+	while (remaining)
+	{
+		if (remaining < sizeof(buf))
+			count = remaining;
+		else
+			count = sizeof(buf);
+
+		fread (buf, 1, count, fromfile);
+		err = ferror (fromfile);
+		if (err)
+			break;
+
+		fwrite (buf, 1, count, out);
+		err = ferror (out);
+		if (err)
+			break;
+
+		remaining -= count;
+	}
+
+	fclose (out);
+
+	return err;
 }
 

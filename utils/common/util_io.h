@@ -2,7 +2,7 @@
 	util_io.h
 	file and directory utilities
 
-	$Id: util_io.h,v 1.9 2010-02-22 22:40:41 sezero Exp $
+	$Id: util_io.h,v 1.10 2010-02-22 23:21:33 sezero Exp $
 */
 
 #ifndef __UTILIO_H
@@ -42,7 +42,9 @@ int	LoadFile (const char *filename, void **bufferptr);
 void	SaveFile (const char *filename, const void *buffer, int count);
 
 void	CreatePath (char *path);
-void	Q_CopyFile (const char *from, const char *to);
+//void	Q_CopyFile (const char *frompath, const char *topath);
+int	Q_CopyFile (const char *frompath, const char *topath);
+int	Q_CopyFromFile (FILE *fromfile, const char *topath, size_t size);
 
 #endif	/* __UTILIO_H */
 
