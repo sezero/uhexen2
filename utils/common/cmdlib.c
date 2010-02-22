@@ -2,7 +2,7 @@
 	cmdlib.c
 	functions common to all of the utilities
 
-	$Id: cmdlib.c,v 1.17 2008-01-29 10:47:03 sezero Exp $
+	$Id: cmdlib.c,v 1.18 2010-02-22 22:22:42 sezero Exp $
 */
 
 
@@ -344,6 +344,19 @@ void Error (const char *error, ...)
 	va_end (argptr);
 	printf ("\n\n");
 	exit (1);
+}
+
+/*
+==============
+SafeMalloc
+==============
+*/
+void *SafeMalloc (size_t size)
+{
+	void *ptr = calloc(1, size);
+	if (!ptr)
+		Error ("Malloc failed for %lu bytes.", (unsigned long)size);
+	return ptr;
 }
 
 /*

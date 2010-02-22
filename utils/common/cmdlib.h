@@ -1,7 +1,7 @@
 /*
 	cmdlib.h
 
-	$Id: cmdlib.h,v 1.26 2010-01-11 18:48:20 sezero Exp $
+	$Id: cmdlib.h,v 1.27 2010-02-22 22:22:42 sezero Exp $
 */
 
 #ifndef __CMDLIB_H__
@@ -87,6 +87,8 @@ int	Sys_kbhit(void);
 */
 
 double	GetTime (void);
+
+void	*SafeMalloc (size_t size);
 
 void	Error (const char *error, ...) __attribute__((__format__(__printf__,1,2), __noreturn__));
 int	CheckParm (const char *check);
