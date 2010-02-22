@@ -7,6 +7,13 @@ Development Progress	:
     * hexenworld: moved Huffman initialization to Host_Init().
     * hexenworld, huffman: added a compile-time macro USE_HUNKMEM, on by default.
       if we are compiling for DOS, force-enable USE_HUNKMEM.
+    * utils: added null checks for the agruments of CreatePath and Q_CopyFile.
+    * utils, common: added back SafeMalloc.
+    * utils: fixed genmodel compilation after reintroduction of SafeMalloc.
+    * utils, common: made Q_filelength to return long instead of int.
+    * utils, util_io: replaced Q_CopyFile from the game engine's unix version.
+      added Q_CopyFromFile which reads from an open FILE*.
+    * utils, dcc: fixed compiler warning after Q_filelength return type change.
 
 2010-02-03 (CVS):
     * dxsdk_new: updated dinput.h and dsound.h from the mingw-w64 svn repo (r1833,
