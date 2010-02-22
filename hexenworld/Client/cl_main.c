@@ -2,7 +2,7 @@
 	cl_main.c
 	client main loop
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/cl_main.c,v 1.96 2008-12-28 12:30:11 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/cl_main.c,v 1.97 2010-02-22 10:50:34 sezero Exp $
 */
 
 #include "q_stdinc.h"
@@ -13,6 +13,7 @@
 #include "winquake.h"
 #endif
 #include "quakedef.h"
+#include "huffman.h"
 #include "cfgfile.h"
 #include "debuglog.h"
 
@@ -1368,6 +1369,7 @@ void Host_Init (void)
 	Sys_Printf ("Host_Init\n");
 
 	Memory_Init (host_parms->membase, host_parms->memsize);
+	HuffInit ();
 	Cbuf_Init ();
 	Cmd_Init ();
 

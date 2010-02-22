@@ -2,10 +2,11 @@
 	sv_main.c
 	server main program
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Server/sv_main.c,v 1.53 2008-12-30 07:26:09 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Server/sv_main.c,v 1.54 2010-02-22 10:50:36 sezero Exp $
 */
 
 #include "quakedef.h"
+#include "huffman.h"
 
 quakeparms_t	*host_parms;
 
@@ -1566,6 +1567,7 @@ void SV_Init (void)
 	Sys_Printf ("Host_Init\n");
 
 	Memory_Init (host_parms->membase, host_parms->memsize);
+	HuffInit ();
 	Cbuf_Init ();
 	Cmd_Init ();
 

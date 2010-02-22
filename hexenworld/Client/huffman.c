@@ -2,7 +2,7 @@
 	huffman.c
 	huffman encoding/decoding for use in hexenworld networking
 
-	$Id: huffman.c,v 1.27 2009-01-27 10:48:18 sezero Exp $
+	$Id: huffman.c,v 1.28 2010-02-22 10:50:34 sezero Exp $
 */
 
 #include "q_stdinc.h"
@@ -161,7 +161,14 @@ static void BuildTree (const float *freq)
 	huffnode_t	*work[256];
 	huffnode_t	*tmp;
 
-	HuffMemBase = Hunk_HighAllocName(512 * sizeof(huffnode_t), "hufftree");
+#if 1
+	HuffMemBase = Hunk_AllocName(512 * sizeof(huffnode_t), "hufftree");
+#else
+	HuffMemBase = malloc(512 * sizeof(huffnode_t));
+	if (!HuffMemBase)
+		Sys_Error("Failed allocating memory for HuffTree");
+	memset(HuffMemBase, 0, 512 * sizeof(huffnode_t));
+#endif
 	tmp = (huffnode_t *) HuffMemBase;
 
 	for (i = 0; i < 256; tmp++, i++)
