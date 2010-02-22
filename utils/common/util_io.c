@@ -2,7 +2,7 @@
 	util_io.c
 	file and directory utilities
 
-	$Id: util_io.c,v 1.16 2009-02-20 18:55:04 sezero Exp $
+	$Id: util_io.c,v 1.17 2010-02-22 22:11:16 sezero Exp $
 */
 
 
@@ -342,6 +342,8 @@ void CreatePath (char *path)
 {
 	char	*ofs, c;
 
+	if (!path || *path)
+		return;
 	if (path[1] == ':')
 		path += 2;
 
@@ -370,6 +372,10 @@ void Q_CopyFile (const char *from, const char *to)
 	void	*buffer;
 	int	length;
 
+	if (!from || !*from)
+		Error ("%s: null source", __thisfunc__);
+	if (!to || !*to)
+		Error ("%s: null destination", __thisfunc__);
 	length = LoadFile (from, &buffer);
 	q_strlcpy (temp, to, sizeof(temp));
 	CreatePath (temp);
