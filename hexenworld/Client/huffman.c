@@ -2,7 +2,7 @@
 	huffman.c
 	huffman encoding/decoding for use in hexenworld networking
 
-	$Id: huffman.c,v 1.28 2010-02-22 10:50:34 sezero Exp $
+	$Id: huffman.c,v 1.29 2010-02-22 12:00:39 sezero Exp $
 */
 
 #include "q_stdinc.h"
@@ -10,10 +10,18 @@
 #include "huffman.h"
 /* h2w engine includes */
 #undef	USE_INTEL_ASM
+/* use Hunk_Alloc or malloc : */
+#define USE_HUNKMEM	1
+#include "arch_def.h"
 #include "sys.h"
 #include "printsys.h"
+#if defined(PLATFORM_DOS)
+#undef  USE_HUNKMEM
+#define USE_HUNKMEM	1
+#endif
+#if USE_HUNKMEM
 #include "zone.h"
-
+#endif
 #define HuffPrintf	Sys_Printf
 
 
@@ -161,7 +169,7 @@ static void BuildTree (const float *freq)
 	huffnode_t	*work[256];
 	huffnode_t	*tmp;
 
-#if 1
+#if USE_HUNKMEM
 	HuffMemBase = Hunk_AllocName(512 * sizeof(huffnode_t), "hufftree");
 #else
 	HuffMemBase = malloc(512 * sizeof(huffnode_t));
