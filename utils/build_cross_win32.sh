@@ -13,7 +13,7 @@ if test "$1" = "strip"; then
 		$BIN_DIR/vis.exe $BIN_DIR/light.exe	\
 		$BIN_DIR/qbsp.exe $BIN_DIR/bspinfo.exe	\
 		$BIN_DIR/qfiles.exe	\
-		$BIN_DIR/pakx.exe	\
+		$BIN_DIR/pakx.exe $BIN_DIR/paklist.exe	\
 		$BIN_DIR/genmodel.exe	\
 		$BIN_DIR/jsh2colour.exe	\
 		$BIN_DIR/bsp2wal.exe $BIN_DIR/lmp2pcx.exe
@@ -57,7 +57,7 @@ $MAKE_CMD -C hcc_old || exit 1
 echo "" && echo "Now building qfiles.."
 $MAKE_CMD -C qfiles || exit 1
 
-echo "" && echo "Now building pakx.."
+echo "" && echo "Now building pak tools.."
 $MAKE_CMD -C pak || exit 1
 
 echo "" && echo "Now building genmodel.."

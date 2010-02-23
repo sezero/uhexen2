@@ -13,7 +13,7 @@ if test "$1" = "strip"; then
 		$BIN_DIR/vis$exe_ext $BIN_DIR/light$exe_ext	\
 		$BIN_DIR/qbsp$exe_ext $BIN_DIR/bspinfo$exe_ext	\
 		$BIN_DIR/qfiles$exe_ext	\
-		$BIN_DIR/pakx$exe_ext	\
+		$BIN_DIR/pakx$exe_ext $BIN_DIR/paklist$exe_ext	\
 		$BIN_DIR/genmodel$exe_ext	\
 		$BIN_DIR/jsh2colour$exe_ext	\
 		$BIN_DIR/bsp2wal$exe_ext $BIN_DIR/lmp2pcx$exe_ext
@@ -54,7 +54,7 @@ echo "" && echo "Now building hcc, old version"
 $MAKE_CMD -C hcc_old || exit 1
 echo "" && echo "Now building qfiles.."
 $MAKE_CMD -C qfiles || exit 1
-echo "" && echo "Now building pakx.."
+echo "" && echo "Now building pak tools.."
 $MAKE_CMD -C pak || exit 1
 echo "" && echo "Now building genmodel.."
 $MAKE_CMD -C genmodel || exit 1

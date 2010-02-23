@@ -6,7 +6,7 @@ UHEXEN2_TOP=../..
 BIN_DIR=../bin
 
 if test "$1" = "strip"; then
-	$STRIPPER $BIN_DIR/pakx.exe
+	$STRIPPER $BIN_DIR/pakx.exe $BIN_DIR/paklist.exe
 	exit 0
 fi
 

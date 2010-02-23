@@ -31,6 +31,8 @@ genmodel: The 3-D model grabber. From Raven's h2mputil package.
 	  Combines skin graphics with 3d frames to produce a .mdl
 	  file. The commands are parsed out of .hc files.
 
+pak	: A few small PAK file tools.
+
 qfiles	: From Raven's h2mputil package. Builds pak files based
 	  on the contents of "files.dat" writen out by hcc. It
 	  can also regenerate all of the .bsp models used in a

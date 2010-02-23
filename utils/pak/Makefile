@@ -1,5 +1,5 @@
 # GNU Makefile for hexen2 pak tools using GCC.
-# $Header: /home/ozzie/Download/0000/uhexen2/utils/pak/Makefile,v 1.1 2010-02-23 10:50:17 sezero Exp $
+# $Header: /home/ozzie/Download/0000/uhexen2/utils/pak/Makefile,v 1.2 2010-02-23 12:40:12 sezero Exp $
 #
 # if building a debug version :		make DEBUG=1 [other stuff]
 #
@@ -22,7 +22,8 @@ DESTDIR  :=../bin
 include $(UHEXEN2_TOP)/scripts/makefile.inc
 
 # Names of the binaries
-BINARY:=pakx$(exe_ext)
+PAKX:=pakx$(exe_ext)
+PAKLIST:=paklist$(exe_ext)
 
 # Compiler flags
 
@@ -65,24 +66,29 @@ LDLIBS  :=
 endif
 
 # Targets
-all : $(BINARY)
+all : $(PAKX) $(PAKLIST)
 
 # Rules for turning source files into .o files
 %.o: %.c
 	$(CC) -c $(CFLAGS) $(INCLUDES) -o $@ $<
 
 # Objects
-QFILESOBJS= $(COMMONDIR)/cmdlib.o \
+COMMONOBJS= $(COMMONDIR)/cmdlib.o \
 	$(COMMONDIR)/strlcat.o \
 	$(COMMONDIR)/strlcpy.o \
 	$(COMMONDIR)/util_io.o \
 	$(COMMONDIR)/crc.o \
 	$(COMMONDIR)/q_endian.o \
 	$(COMMONDIR)/byteordr.o \
-	pakx.o
+	pakfile.o
+PAKXOBJS= pakx.o
+PAKLISTOBJS= paklist.o
 
-$(BINARY) : $(QFILESOBJS)
-	$(LINKER) -o $(DESTDIR)/$(BINARY) $(QFILESOBJS) $(LDFLAGS) $(LDLIBS)
+$(PAKX) : $(COMMONOBJS) $(PAKXOBJS)
+	$(LINKER) -o $(DESTDIR)/$(PAKX) $(COMMONOBJS) $(PAKXOBJS) $(LDFLAGS) $(LDLIBS)
+
+$(PAKLIST) : $(COMMONOBJS) $(PAKLISTOBJS)
+	$(LINKER) -o $(DESTDIR)/$(PAKLIST) $(COMMONOBJS) $(PAKLISTOBJS) $(LDFLAGS) $(LDLIBS)
 
 clean : 
 	rm -f *.o $(COMMONDIR)/*.o core

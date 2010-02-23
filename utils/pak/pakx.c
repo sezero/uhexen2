@@ -2,7 +2,7 @@
 	pakx.c
 	pack file extraction tool.
 
-	$Id: pakx.c,v 1.1 2010-02-23 10:50:17 sezero Exp $
+	$Id: pakx.c,v 1.2 2010-02-23 12:40:12 sezero Exp $
 
 	Copyright (C) 1996-2001 Id Software, Inc.
 	Copyright (C) 2010 Ozkan Sezer <sezero@users.sourceforge.net>
@@ -31,30 +31,14 @@
 #include "arch_def.h"
 #include "cmdlib.h"
 #include "util_io.h"
-#include "q_endian.h"
 #include "byteordr.h"
 #include "pathutil.h"
 #include "pakfile.h"
-
-#define	MAX_FILES_IN_PACK	2048
-
-typedef struct
-{
-	char	name[MAX_OSPATH];
-	int		filepos, filelen;
-} pakfiles_t;
-
-typedef struct pack_s
-{
-	char	filename[MAX_OSPATH];
-	FILE	*handle;
-	int		numfiles;
-	pakfiles_t	*files;
-} pack_t;
+#include "pak.h"
 
 //======================================================================
 
-void ExtractFile (pack_t *pak, const char *filename, const char *destdir)
+static void ExtractFile (pack_t *pak, const char *filename, const char *destdir)
 {
 	char	dest[1024], *dptr;
 	int	i;
@@ -108,68 +92,7 @@ void ExtractFile (pack_t *pak, const char *filename, const char *destdir)
 		fprintf (stderr, "** %s not in %s\n", filename, pak->filename);
 }
 
-pack_t *LoadPackFile (const char *packfile)
-{
-	dpackheader_t	header;
-	int			i, numpackfiles;
-	pakfiles_t		*newfiles;
-	pack_t			*pack;
-	FILE			*packhandle;
-	dpackfile_t		*info;
-
-	packhandle = fopen (packfile, "rb");
-	if (!packhandle)
-		return NULL;
-
-	fread (&header, 1, sizeof(header), packhandle);
-	if (header.id[0] != 'P' || header.id[1] != 'A' ||
-	    header.id[2] != 'C' || header.id[3] != 'K')
-	{
-		Error ("%s is not a packfile.", packfile);
-	}
-
-	header.dirofs = LittleLong (header.dirofs);
-	header.dirlen = LittleLong (header.dirlen);
-
-	numpackfiles = header.dirlen / sizeof(dpackfile_t);
-
-	if (header.dirlen < 0 || header.dirofs < 0)
-	{
-		Error ("Invalid packfile %s (dirlen: %i, dirofs: %i)",
-				packfile, header.dirlen, header.dirofs);
-	}
-	pack = (pack_t *) SafeMalloc (sizeof(pack_t));
-	strcpy(pack->filename, packfile);
-	pack->handle = packhandle;
-	pack->numfiles = numpackfiles;
-	if (!numpackfiles)
-	{
-		pack->files = (pakfiles_t *) SafeMalloc (sizeof(pakfiles_t));
-		goto done;
-	}
-// we are extracting, so don't mind about MAX_FILES_IN_PACK limit.
-	info = (dpackfile_t *) SafeMalloc (header.dirlen);
-	newfiles = (pakfiles_t *) SafeMalloc (numpackfiles * sizeof(pakfiles_t));
-
-	fseek (packhandle, header.dirofs, SEEK_SET);
-	fread (info, 1, header.dirlen, packhandle);
-
-// parse the directory
-	for (i = 0; i < numpackfiles; i++)
-	{
-		strcpy (newfiles[i].name, info[i].name);
-		newfiles[i].filepos = LittleLong(info[i].filepos);
-		newfiles[i].filelen = LittleLong(info[i].filelen);
-	}
-	free (info);
-
-	pack->files = newfiles;
-   done:
-	printf ("Opened %s (%i files)\n", packfile, numpackfiles);
-	return pack;
-}
-
-void Usage (void)
+static void Usage (void)
 {
 	printf ("Usage:  pakx [-outdir <destdir>] <pakfile> [file [file ....]]\n");
 	printf ("        pakx  -h  to display this help message.\n");
@@ -218,8 +141,9 @@ int main (int argc, char **argv)
 	pak = LoadPackFile (argv[i]);
 	if (!pak)
 		Error ("Unable to open file %s", argv[i]);
+	printf ("Opened %s (%i files)\n", pak->filename, pak->numfiles);
 	if (!pak->numfiles)
-		Error ("%s has no files.", argv[i]);
+		Error ("%s has no files.", pak->filename);
 	if (++i >= argc)
 		ExtractFile (pak, NULL, destdir);
 	else
