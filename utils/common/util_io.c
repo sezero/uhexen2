@@ -2,7 +2,7 @@
 	util_io.c
 	file and directory utilities
 
-	$Id: util_io.c,v 1.20 2010-02-22 23:45:37 sezero Exp $
+	$Id: util_io.c,v 1.21 2010-02-23 10:55:20 sezero Exp $
 */
 
 
@@ -399,10 +399,10 @@ int Q_CopyFile (const char *frompath, const char *topath)
 
 	in = fopen (frompath, "rb");
 	if (!in)
-		Error ("Unable to open file %s\n", frompath);
+		Error ("Unable to open file %s", frompath);
 	out = fopen (topath, "wb");
 	if (!out)
-		Error ("Unable to create file %s\n", topath);
+		Error ("Unable to create file %s", topath);
 
 	remaining = Q_filelength (in);
 	memset (buf, 0, sizeof(buf));
@@ -446,7 +446,7 @@ int Q_CopyFromFile (FILE *fromfile, const char *topath, size_t size)
 
 	out = fopen (topath, "wb");
 	if (!out)
-		Error ("Unable to create file %s\n", topath);
+		Error ("Unable to create file %s", topath);
 
 	memset (buf, 0, sizeof(buf));
 	remaining = size;
