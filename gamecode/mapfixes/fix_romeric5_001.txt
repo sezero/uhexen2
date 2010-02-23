@@ -1,0 +1,34 @@
+Map: romeric5.bsp (Hexen II registered version, in the data1/pak1.pak
+pakfile.)
+
+One of the prizes (the chaos device in the southeast corner) never shows
+because the trigger_crosslevel_target that is supposed to spawn it is
+missing a spawnflag (128).  In short, the ent that reads in the original
+like:
+
+{
+"target" "t14"
+"classname" "trigger_crosslevel_target"
+"model" "*13"
+}
+
+... should look like:
+
+{
+"target" "t14"
+"spawnflags" "128"
+"classname" "trigger_crosslevel_target"
+"model" "*13"
+}
+
+(See around line 643 of the romeric5.ent file included here. Identified
+and fixed by Keith Rozett.)
+
+- go into the hexen2 installation directory
+- copy qbsp into there (from hexen2 utils)
+- copy pakx into there (from hexen2 utils)
+- place romeric5.ent there so that you have it like data1/maps/romeric5.ent
+- run:
+  ./pakx -outdir data1 data1/pak1.pak maps/romeric5.bsp
+  ./qbsp -onlyents data1/maps/romeric5.ent
+
