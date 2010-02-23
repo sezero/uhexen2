@@ -3,6 +3,14 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2010-02-23 (CVS):
+    * utils: added pak as a new group. added pakx as a tiny pak extraction tool.
+    * utils: stripped off extra line feed from some error messages.
+    * utils: reorganized the pak tools. added paklist as a tiny pak information
+      tool.
+    * added the updated romeric5.bsp entities fixing a buggy cross-level prize.
+      from Keith Rozett.
+
 2010-02-22 (CVS):
     * hexenworld: moved Huffman initialization to Host_Init().
     * hexenworld, huffman: added a compile-time macro USE_HUNKMEM, on by default.
