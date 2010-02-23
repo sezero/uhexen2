@@ -2,7 +2,7 @@
 	pathutil.c
 	filename handling utilities
 
-	$Id: pathutil.c,v 1.6 2008-02-08 12:00:16 sezero Exp $
+	$Id: pathutil.c,v 1.7 2010-02-23 00:10:43 sezero Exp $
 */
 
 
@@ -55,7 +55,7 @@ void DefaultExtension (char *path, const char *extension, size_t len)
 
 void DefaultPath (char *path, const char *basepath, size_t len)
 {
-	char	temp[128];
+	char	temp[MAX_OSPATH];
 
 	if (path[0] == '/' || path[0] == '\\')
 		return;		// absolute path location
