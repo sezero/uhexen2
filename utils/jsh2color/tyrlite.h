@@ -19,7 +19,7 @@
 
 /*
 	tyrlite.h
-	$Id: tyrlite.h,v 1.15 2007-07-11 16:47:20 sezero Exp $
+	$Id: tyrlite.h,v 1.16 2010-02-23 00:07:50 sezero Exp $
 
 	Modifications by Kevin Shanahan, 1999-2000
 */
@@ -34,11 +34,6 @@
 #define	MAXLIGHTS	1024
 
 // js features
-#ifdef _MAX_PATH
-#define	MAX_OSPATH	_MAX_PATH
-#else
-#define	MAX_OSPATH	256
-#endif
 #define	MAX_ENTRYNUM	32784
 #define	MAX_TEX_NAME	64
 
