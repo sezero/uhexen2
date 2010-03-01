@@ -2,7 +2,7 @@
 	cl_parse.c
 	parse a message received from the server
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/cl_parse.c,v 1.54 2009-01-07 18:38:12 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/cl_parse.c,v 1.55 2010-03-01 18:15:16 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -1382,7 +1382,20 @@ void CL_ParseServerMessage (void)
 
 		case svc_cdtrack:
 			cl.cdtrack = MSG_ReadByte ();
+			if (q_strcasecmp(bgmtype.string,"cd") != 0)
+			{
+				CDAudio_Stop();
+				break;
+			}
 			CDAudio_Play ((byte)cl.cdtrack, true);
+			break;
+
+		case svc_midi_name:
+			q_strlcpy (cl.midi_name, MSG_ReadString(), sizeof(cl.midi_name));
+			if (q_strcasecmp(bgmtype.string,"midi") == 0)
+				MIDI_Play(cl.midi_name);
+			else
+				MIDI_Stop();
 			break;
 
 		case svc_intermission:
@@ -1684,14 +1697,6 @@ void CL_ParseServerMessage (void)
 
 		case svc_multieffect:
 			CL_ParseMultiEffect();
-			break;
-
-		case svc_midi_name:
-			q_strlcpy (cl.midi_name, MSG_ReadString(), sizeof(cl.midi_name));
-			if (q_strcasecmp(bgmtype.string,"midi") == 0)
-				MIDI_Play(cl.midi_name);
-			else
-				MIDI_Stop();
 			break;
 
 		case svc_raineffect:
