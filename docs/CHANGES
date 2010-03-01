@@ -3,6 +3,16 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2010-03-01 (CVS):
+    * hexenworld/Client/cl_parse.c: upon svc_cdtrack, start cd music  only if
+      bgmtype is set as "cd", otherwise stop cdaudio. (bug reported by RaVeN.)
+      moved the svc_midi_name case just below the svc_cdtrack case for better
+      readability.
+    * hexen2/cl_parse.c: reorganized the code for svc_cdtrack for some better
+      readability.
+    * updated release notes file for 1.4.4 (2010-03-01.)
+    * updated the beta version date to 2010-03-01.
+
 2010-02-23 (CVS):
     * utils: added pak as a new group. added pakx as a tiny pak extraction tool.
     * utils: stripped off extra line feed from some error messages.
