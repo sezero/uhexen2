@@ -2,7 +2,7 @@
 	net_wins.c
 	winsock udp driver
 
-	$Id: net_wins.c,v 1.41 2009-04-30 15:32:32 sezero Exp $
+	$Id: net_wins.c,v 1.42 2010-03-07 20:21:36 sezero Exp $
 */
 
 #include "q_stdinc.h"
@@ -39,7 +39,7 @@ WSADATA		winsockdata;
 #if !defined(_USE_WINSOCK2)
 static double	blocktime;
 
-static BOOL PASCAL FAR BlockingHook(void)
+static INT_PTR PASCAL FAR BlockingHook (void)
 {
 	MSG	msg;
 	BOOL	ret;
