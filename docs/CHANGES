@@ -3,6 +3,11 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2010-03-07 (CVS):
+    * hexen2, net_wins.c: changed return type of BlockingHook to INT_PTR. it
+      is required to be FARPROC, which is an int in win32, but an INT_PTR in
+      win64.
+
 2010-03-01 (CVS):
     * hexenworld/Client/cl_parse.c: upon svc_cdtrack, start cd music  only if
       bgmtype is set as "cd", otherwise stop cdaudio. (bug reported by RaVeN.)
