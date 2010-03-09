@@ -2,7 +2,7 @@
 	sv_main.c
 	server main program
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sv_main.c,v 1.69 2009-04-28 14:00:32 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/sv_main.c,v 1.70 2010-03-09 15:00:26 sezero Exp $
 */
 
 #include "q_stdinc.h"
@@ -358,13 +358,13 @@ void SV_StartSound (edict_t *entity, int channel, const char *sample, int volume
 		return;
 
 // find precache number for sound
-	for (sound_num = 1; sound_num < MAX_SOUNDS && sv.sound_precache[sound_num][0]; sound_num++)
+	for (sound_num = 1; sound_num < MAX_SOUNDS && sv.sound_precache[sound_num]; sound_num++)
 	{
 		if (!strcmp(sample, sv.sound_precache[sound_num]))
 			break;
 	}
 
-	if (sound_num == MAX_SOUNDS || !sv.sound_precache[sound_num][0])
+	if (sound_num == MAX_SOUNDS || !sv.sound_precache[sound_num])
 	{
 		Con_Printf ("%s: %s not precached\n", __thisfunc__, sample);
 		return;
@@ -423,6 +423,7 @@ This will be sent on the initial connection and upon each server load.
 static void SV_SendServerinfo (client_t *client)
 {
 	int			i;
+	const char		**s;
 	char			message[2048];
 
 	MSG_WriteByte (&client->message, svc_print);
@@ -452,12 +453,12 @@ static void SV_SendServerinfo (client_t *client)
 		MSG_WriteString(&client->message, PR_GetString(sv.edicts->v.netname));
 	}
 
-	for (i = 1; i < MAX_MODELS && sv.model_precache[i][0]; i++)
-		MSG_WriteString (&client->message, sv.model_precache[i]);
+	for (i = 1, s = sv.model_precache + 1; i < MAX_MODELS && *s; s++)
+		MSG_WriteString (&client->message, *s);
 	MSG_WriteByte (&client->message, 0);
 
-	for (i = 1; i < MAX_SOUNDS && sv.sound_precache[i][0]; i++)
-		MSG_WriteString (&client->message, sv.sound_precache[i]);
+	for (i = 1, s = sv.sound_precache + 1; i < MAX_SOUNDS && *s; s++)
+		MSG_WriteString (&client->message, *s);
 	MSG_WriteByte (&client->message, 0);
 
 // send music
@@ -798,7 +799,7 @@ static void SV_PrepareClientEntities (client_t *client, edict_t	*clent, sizebuf_
 		// ignore if not touching a PV leaf
 		if (ent != clent)	// clent is ALWAYS sent
 		{	// ignore ents without visible models
-			if (!ent->v.modelindex || !PR_GetString(ent->v.model)[0])
+			if (!ent->v.modelindex || !*PR_GetString(ent->v.model))
 			{
 				DoRemove = true;
 				goto skipA;
@@ -1764,13 +1765,13 @@ int SV_ModelIndex (const char *name)
 	if (!name || !name[0])
 		return 0;
 
-	for (i = 1; i < MAX_MODELS && sv.model_precache[i][0]; i++)
+	for (i = 0; i < MAX_MODELS && sv.model_precache[i]; i++)
 	{
 		if (!strcmp(sv.model_precache[i], name))
 			return i;
 	}
 
-	if (i == MAX_MODELS || !sv.model_precache[i][0])
+	if (i == MAX_MODELS || !sv.model_precache[i])
 	{
 		Con_Printf("%s: model %s not precached\n", __thisfunc__, name);
 		return 0;
@@ -1922,6 +1923,7 @@ This is called at the start of each level
 */
 void SV_SpawnServer (const char *server, const char *startspot)
 {
+	static char	dummy[8] = { 0,0,0,0,0,0,0,0 };
 	edict_t		*ent;
 	int			i;
 
@@ -2051,12 +2053,12 @@ void SV_SpawnServer (const char *server, const char *startspot)
 //
 	SV_ClearWorld ();
 
-	sv.sound_precache[0][0] = '\0';
-	sv.model_precache[0][0] = '\0';
-	q_strlcpy (sv.model_precache[1], sv.modelname, sizeof(sv.model_precache[0]));
+	sv.sound_precache[0] = dummy;
+	sv.model_precache[0] = dummy;
+	sv.model_precache[1] = sv.modelname;
 	for (i = 1; i < sv.worldmodel->numsubmodels; i++)
 	{
-		q_strlcpy (sv.model_precache[1+i], localmodels[i], sizeof(sv.model_precache[0]));
+		sv.model_precache[1+i] = localmodels[i];
 		sv.models[i+1] = Mod_ForName (localmodels[i], false);
 	}
 

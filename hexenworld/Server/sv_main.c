@@ -2,7 +2,7 @@
 	sv_main.c
 	server main program
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Server/sv_main.c,v 1.54 2010-02-22 10:50:36 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Server/sv_main.c,v 1.55 2010-03-09 15:00:28 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -223,7 +223,7 @@ void SV_DropClient (client_t *drop)
 	}
 	else if (dmMode.integer == DM_SIEGE)
 	{
-		if (PR_GetString(drop->edict->v.puzzle_inv1)[0] != '\0')
+		if (*PR_GetString(drop->edict->v.puzzle_inv1) != '\0')
 		{
 			// this guy has a puzzle piece, call this function anyway
 			// to make sure he leaves it behind

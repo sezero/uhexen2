@@ -2,7 +2,7 @@
 	sv_user.c
 	server code for moving users
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Server/sv_user.c,v 1.28 2007-11-14 07:27:35 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Server/sv_user.c,v 1.29 2010-03-09 15:00:28 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -120,6 +120,7 @@ SV_Soundlist_f
 static void SV_Soundlist_f (void)
 {
 	int		i;
+	const char	**s;
 
 	if (host_client->state != cs_connected)
 	{
@@ -136,8 +137,8 @@ static void SV_Soundlist_f (void)
 	}
 
 	MSG_WriteByte (&host_client->netchan.message, svc_soundlist);
-	for (i = 1; i < MAX_SOUNDS && sv.sound_precache[i][0]; i++)
-		MSG_WriteString (&host_client->netchan.message, sv.sound_precache[i]);
+	for (i = 1, s = sv.sound_precache + 1; i < MAX_SOUNDS && *s; s++)
+		MSG_WriteString (&host_client->netchan.message, *s);
 	MSG_WriteByte (&host_client->netchan.message, 0);
 }
 
@@ -149,6 +150,7 @@ SV_Modellist_f
 static void SV_Modellist_f (void)
 {
 	int		i;
+	const char	**s;
 
 	if (host_client->state != cs_connected)
 	{
@@ -165,8 +167,8 @@ static void SV_Modellist_f (void)
 	}
 
 	MSG_WriteByte (&host_client->netchan.message, svc_modellist);
-	for (i = 1; i < MAX_MODELS && sv.model_precache[i][0]; i++)
-		MSG_WriteString (&host_client->netchan.message, sv.model_precache[i]);
+	for (i = 1, s = sv.model_precache + 1; i < MAX_MODELS && *s; s++)
+		MSG_WriteString (&host_client->netchan.message, *s);
 	MSG_WriteByte (&host_client->netchan.message, 0);
 }
 

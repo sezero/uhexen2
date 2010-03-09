@@ -1,7 +1,7 @@
 /*
 	server.h
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/server.h,v 1.27 2010-01-11 18:48:17 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/server.h,v 1.28 2010-03-09 15:00:26 sezero Exp $
 */
 
 #ifndef __HX2_SERVER_H
@@ -43,10 +43,10 @@ typedef struct
 	char		startspot[64];
 	char		modelname[MAX_QPATH];	// maps/<name>.bsp, for model_precache[0]
 	struct qmodel_s	*worldmodel;
-	char		model_precache[MAX_MODELS][MAX_QPATH];	// NULL terminated
+	const char	*model_precache[MAX_MODELS];	// NULL terminated
 	struct qmodel_s	*models[MAX_MODELS];
-	char		sound_precache[MAX_SOUNDS][MAX_QPATH];	// NULL terminated
-	char		lightstyles[MAX_LIGHTSTYLES][MAX_STYLESTRING];
+	const char	*sound_precache[MAX_SOUNDS];	// NULL terminated
+	const char	*lightstyles[MAX_LIGHTSTYLES];
 	struct EffectT	Effects[MAX_EFFECTS];
 
 	client_state2_t	*states;

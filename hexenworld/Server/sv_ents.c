@@ -2,7 +2,7 @@
 	sv_ents.c
 	server entities handling
 
-	$Id: sv_ents.c,v 1.9 2007-05-09 18:11:37 sezero Exp $
+	$Id: sv_ents.c,v 1.10 2010-03-09 15:00:28 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -1404,7 +1404,7 @@ void SV_WriteEntitiesToClient (client_t *client, sizebuf_t *msg)
 	for (e = MAX_CLIENTS+1, ent = EDICT_NUM(e); e < sv.num_edicts; e++, ent = NEXT_EDICT(ent))
 	{
 		// ignore ents without visible models
-		if (!ent->v.modelindex || !PR_GetString(ent->v.model)[0])
+		if (!ent->v.modelindex || !*PR_GetString(ent->v.model))
 			continue;
 
 		if ((int)ent->v.effects & EF_NODRAW)

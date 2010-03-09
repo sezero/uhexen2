@@ -2,7 +2,7 @@
 	host_cmd.c
 	console commands
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/server/host_cmd.c,v 1.48 2010-01-11 18:48:19 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/server/host_cmd.c,v 1.49 2010-03-09 15:00:27 sezero Exp $
 */
 
 #include "q_stdinc.h"
@@ -785,7 +785,7 @@ int SaveGamestate (qboolean ClientsOnly)
 
 		for (i = 0; i < MAX_LIGHTSTYLES; i++)
 		{
-			if (sv.lightstyles[i][0])
+			if (sv.lightstyles[i])
 				fprintf (f, "%s\n", sv.lightstyles[i]);
 			else
 				fprintf (f, "m\n");
@@ -972,7 +972,7 @@ static int LoadGamestate (const char *level, const char *startspot, int ClientsM
 		for (i = 0; i < MAX_LIGHTSTYLES; i++)
 		{
 			fscanf (f, "%s\n", str);
-			q_strlcpy (sv.lightstyles[i], str, sizeof(sv.lightstyles[0]));
+			sv.lightstyles[i] = (const char *)Hunk_Strdup (str, "lightstyles");
 		}
 		SV_LoadEffects (f);
 	}

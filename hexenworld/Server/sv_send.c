@@ -2,7 +2,7 @@
 	sv_send.c
 	server communication module
 
-	$Id: sv_send.c,v 1.22 2007-09-22 15:27:34 sezero Exp $
+	$Id: sv_send.c,v 1.23 2010-03-09 15:00:28 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -443,13 +443,13 @@ void SV_StartSound (edict_t *entity, int channel, const char *sample, int volume
 		SV_Error ("%s: channel = %i", __thisfunc__, channel);
 
 // find precache number for sound
-	for (sound_num = 1; sound_num < MAX_SOUNDS && sv.sound_precache[sound_num][0]; sound_num++)
+	for (sound_num = 0; sound_num < MAX_SOUNDS && sv.sound_precache[sound_num]; sound_num++)
 	{
 		if (!strcmp(sample, sv.sound_precache[sound_num]))
 			break;
 	}
 
-	if (sound_num == MAX_SOUNDS || !sv.sound_precache[sound_num][0])
+	if (sound_num == MAX_SOUNDS || !sv.sound_precache[sound_num])
 	{
 		Con_Printf ("%s: %s not precached\n", __thisfunc__, sample);
 		return;
@@ -657,9 +657,9 @@ void SV_FindModelNumbers (void)
 	sv_ravenmodel = -1;
 	sv_raven2model = -1;
 
-	for (i = 1; i < MAX_MODELS; i++)
+	for (i = 0; i < MAX_MODELS; i++)
 	{
-		if (!sv.model_precache[i][0])
+		if (!sv.model_precache[i])
 			break;
 //		if (!strcmp(sv.model_precache[i],"progs/spike.mdl"))
 //			sv_nailmodel = i;

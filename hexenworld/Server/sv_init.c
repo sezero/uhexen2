@@ -2,7 +2,7 @@
 	sv_init.c
 	server spawning
 
-	$Id: sv_init.c,v 1.18 2008-02-07 09:27:24 sezero Exp $
+	$Id: sv_init.c,v 1.19 2010-03-09 15:00:28 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -28,13 +28,13 @@ int SV_ModelIndex (const char *name)
 	if (!name || !name[0])
 		return 0;
 
-	for (i = 1; i < MAX_MODELS && sv.model_precache[i][0]; i++)
+	for (i = 0; i < MAX_MODELS && sv.model_precache[i]; i++)
 	{
 		if (!strcmp(sv.model_precache[i], name))
 			return i;
 	}
 
-	if (i == MAX_MODELS || !sv.model_precache[i][0])
+	if (i == MAX_MODELS || !sv.model_precache[i])
 		SV_Error ("%s: model %s not precached", __thisfunc__, name);
 
 	return i;
@@ -264,6 +264,7 @@ This is only called from the SV_Map_f() function.
 */
 void SV_SpawnServer (const char *server, const char *startspot)
 {
+	static char	dummy[8] = { 0,0,0,0,0,0,0,0 };
 	edict_t		*ent;
 	int			i;
 
@@ -327,13 +328,13 @@ void SV_SpawnServer (const char *server, const char *startspot)
 	//
 	SV_ClearWorld ();
 
-	sv.sound_precache[0][0] = '\0';
-	sv.model_precache[0][0] = '\0';
-	q_strlcpy (sv.model_precache[1], sv.modelname, sizeof(sv.model_precache[0]));
+	sv.sound_precache[0] = dummy;
+	sv.model_precache[0] = dummy;
+	sv.model_precache[1] = sv.modelname;
 	sv.models[1] = sv.worldmodel;
 	for (i = 1; i < sv.worldmodel->numsubmodels; i++)
 	{
-		q_strlcpy (sv.model_precache[1+i], localmodels[i], sizeof(sv.model_precache[0]));
+		sv.model_precache[1+i] = localmodels[i];
 		sv.models[i+1] = Mod_ForName (localmodels[i], false);
 	}
 

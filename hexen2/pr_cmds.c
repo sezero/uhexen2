@@ -2,7 +2,7 @@
 	pr_cmds.c
 	prog commands
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/pr_cmds.c,v 1.53 2008-04-22 13:06:06 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/pr_cmds.c,v 1.54 2010-03-09 15:00:26 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -262,7 +262,7 @@ setmodel(entity, model)
 static void PF_setmodel (void)
 {
 	int		i;
-	const char	*m;
+	const char	*m, **check;
 	qmodel_t	*mod;
 	edict_t		*e;
 
@@ -270,19 +270,20 @@ static void PF_setmodel (void)
 	m = G_STRING(OFS_PARM1);
 
 // check to see if model was properly precached
-	for (i = 0; i < MAX_MODELS; i++)
+	for (i = 0, check = sv.model_precache;
+	     i < MAX_MODELS && *check; i++, check++)
 	{
-		if (!strcmp(sv.model_precache[i], m))
+		if (!strcmp(*check, m))
 			break;
 	}
 
-	if (i >= MAX_MODELS)
+	if (i >= MAX_MODELS || !*check)
 	{
 		PR_RunError ("no precache: %s", m);
 	}
 	else
 	{
-		e->v.model = PR_SetEngineString(sv.model_precache[i]);
+		e->v.model = PR_SetEngineString(*check);
 		e->v.modelindex = i; //SV_ModelIndex (m);
 
 		mod = sv.models[ (int)e->v.modelindex];	// Mod_ForName (m, true);
@@ -297,18 +298,19 @@ static void PF_setmodel (void)
 static void PF_setpuzzlemodel (void)
 {
 	int		i;
-	const char	*m, *temp;
+	const char	*m, **check;
 	qmodel_t	*mod;
 	edict_t		*e;
 
 	e = G_EDICT(OFS_PARM0);
 	m = G_STRING(OFS_PARM1);
 
-	temp = va ("models/puzzle/%s.mdl", m);
+	m = va ("models/puzzle/%s.mdl", m);
 // check to see if model was properly precached
-	for (i = 1; i < MAX_MODELS && sv.model_precache[i][0]; i++)
+	for (i = 0, check = sv.model_precache;
+	     i < MAX_MODELS && *check; i++, check++)
 	{
-		if (!strcmp(sv.model_precache[i], temp))
+		if (!strcmp(*check, m))
 			break;
 	}
 
@@ -318,19 +320,19 @@ static void PF_setpuzzlemodel (void)
 	}
 	else
 	{
-		if (!sv.model_precache[i][0])
+		if (!*check)
 		{
-			Con_Printf("NO PRECACHE FOR PUZZLE PIECE: %s\n", temp);
-			q_strlcpy (sv.model_precache[i], temp, sizeof(sv.model_precache[0]));
-
-			e->v.model = PR_SetEngineString(sv.model_precache[i]);
+			Con_Printf("NO PRECACHE FOR PUZZLE PIECE: %s\n", m);
+			m = (const char *)Hunk_Strdup(m, "puzzlemodel");
+			sv.model_precache[i] = m;
+			e->v.model = PR_SetEngineString(m);
 #if !defined(SERVERONLY)
-			sv.models[i] = Mod_ForName (temp, true);
+			sv.models[i] = Mod_ForName (m, true);
 #endif	/* SERVERONLY */
 		}
 		else
 		{
-			e->v.model = PR_SetEngineString(sv.model_precache[i]);
+			e->v.model = PR_SetEngineString(*check);
 		}
 
 		e->v.modelindex = i;	//SV_ModelIndex (m);
@@ -679,7 +681,7 @@ PF_ambientsound
 */
 static void PF_ambientsound (void)
 {
-	const char	*samp;
+	const char	*samp, **check;
 	float		*pos;
 	float		vol, attenuation;
 	int			i, soundnum;
@@ -692,13 +694,14 @@ static void PF_ambientsound (void)
 
 // check to see if samp was properly precached
 	SOUNDS_MAX = (sv_protocol == PROTOCOL_RAVEN_111) ? MAX_SOUNDS_OLD : MAX_SOUNDS;
-	for (soundnum = 0; soundnum < SOUNDS_MAX; soundnum++)
+	for (soundnum = 0, check = sv.sound_precache;
+	     soundnum < SOUNDS_MAX && *check; soundnum++, check++)
 	{
-		if (!strcmp(sv.sound_precache[soundnum], samp))
+		if (!strcmp(*check, samp))
 			break;
 	}
 
-	if (soundnum == SOUNDS_MAX)
+	if (soundnum == SOUNDS_MAX || !*check)
 	{
 		Con_Printf ("no precache: %s\n", samp);
 		return;
@@ -1763,11 +1766,11 @@ static void PF_precache_sound (void)
 	PR_CheckEmptyString (s);
 
 	SOUNDS_MAX = (sv_protocol == PROTOCOL_RAVEN_111) ? MAX_SOUNDS_OLD : MAX_SOUNDS;
-	for (i = 1; i < SOUNDS_MAX; i++)
+	for (i = 0; i < SOUNDS_MAX; i++)
 	{
-		if (!sv.sound_precache[i][0])
+		if (!sv.sound_precache[i])
 		{
-			q_strlcpy (sv.sound_precache[i], s, sizeof(sv.sound_precache[0]));
+			sv.sound_precache[i] = s;
 			return;
 		}
 		if (!strcmp(sv.sound_precache[i], s))
@@ -1812,13 +1815,13 @@ static void PF_precache_model (void)
 	G_INT(OFS_RETURN) = G_INT(OFS_PARM0);
 	PR_CheckEmptyString (s);
 
-	for (i = 1; i < MAX_MODELS; i++)
+	for (i = 0; i < MAX_MODELS; i++)
 	{
-		if (!sv.model_precache[i][0])
+		if (!sv.model_precache[i])
 		{
-			q_strlcpy (sv.model_precache[i], s, sizeof(sv.model_precache[0]));
+			sv.model_precache[i] = s;
 #if !defined(SERVERONLY)
-			sv.models[i] = Mod_ForName (sv.model_precache[i], true);
+			sv.models[i] = Mod_ForName (s, true);
 #endif	/* SERVERONLY */
 			return;
 		}
@@ -1868,13 +1871,14 @@ static void PF_precache_puzzle_model (void)
 	PR_CheckEmptyString (s);
 	temp = va ("models/puzzle/%s.mdl", s);
 
-	for (i = 1; i < MAX_MODELS; i++)
+	for (i = 0; i < MAX_MODELS; i++)
 	{
-		if (!sv.model_precache[i][0])
+		if (!sv.model_precache[i])
 		{
-			q_strlcpy (sv.model_precache[i], temp, sizeof(sv.model_precache[i]));
+			s = (const char *)Hunk_Strdup(temp, "puzzlemodel");
+			sv.model_precache[i] = s;
 #if !defined(SERVERONLY)
-			sv.models[i] = Mod_ForName (sv.model_precache[i], true);
+			sv.models[i] = Mod_ForName (s, true);
 #endif	/* SERVERONLY */
 			return;
 		}
@@ -2002,7 +2006,7 @@ static void PF_lightstyle (void)
 	val = G_STRING(OFS_PARM1);
 
 // change the string in sv
-	q_strlcpy (sv.lightstyles[style], val, sizeof(sv.lightstyles[0]));
+	sv.lightstyles[style] = val;
 
 // send message to all clients on this server
 	if (sv.state != ss_active)
@@ -2014,7 +2018,7 @@ static void PF_lightstyle (void)
 		{
 			MSG_WriteChar (&client->message, svc_lightstyle);
 			MSG_WriteChar (&client->message, style);
-			MSG_WriteString (&client->message, sv.lightstyles[style]);
+			MSG_WriteString (&client->message, val);
 		}
 	}
 }
@@ -2076,7 +2080,7 @@ static void PF_lightstylestatic(void)
 	styleString = styleDefs[value];
 
 	// Change the string in sv
-	q_strlcpy (sv.lightstyles[styleNumber], styleString, sizeof(sv.lightstyles[0]));
+	sv.lightstyles[styleNumber] = styleString;
 #if defined(SERVERONLY)
 	d_lightstylevalue[styleNumber] = value;
 #endif	/* SERVERONLY */
@@ -2093,7 +2097,7 @@ static void PF_lightstylestatic(void)
 		{
 			MSG_WriteChar(&client->message, svc_lightstyle);
 			MSG_WriteChar(&client->message, styleNumber);
-			MSG_WriteString(&client->message, sv.lightstyles[styleNumber]);
+			MSG_WriteString(&client->message, styleString);
 		}
 	}
 }

@@ -2,7 +2,7 @@
 	sv_edict.c
 	entity dictionary
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Server/pr_edict.c,v 1.38 2008-01-22 12:39:04 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Server/pr_edict.c,v 1.39 2010-03-09 15:00:28 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -1404,8 +1404,13 @@ int PR_SetEngineString (const char *s)
 
 	if (!s)
 		return 0;
+#if 0	/* can't: sv.model_precache & sv.sound_precache points to pr_strings */
 	if (s >= pr_strings && s <= pr_strings + pr_stringssize)
 		SV_Error ("%s: \"%s\" is in pr_strings area\n", __thisfunc__, s);
+#else
+	if (s >= pr_strings && s <= pr_strings + pr_stringssize - 2)
+		return (int)(s - pr_strings);
+#endif
 	for (i = 0; i < pr_numknownstrings; i++)
 	{
 		if (pr_knownstrings[i] == s)
