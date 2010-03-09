@@ -3,6 +3,17 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2010-03-09 (CVS):
+    * zone.c, zone.h: added Hunk_Strdup() as a new utility function.
+    * zone.c (Z_Realloc): Fixed the old_size value.
+    * made sv.model_precache, sv.sound_precache and sv.lightstyles pointers to
+      strings again. adjusted PR_SetEngineString() to work with this change.
+      in sv_main.c, assigned a static array of zeroes to sv.model_precache[0]
+      and sv.sound_precache[0], so that it would work with the mentioned change.
+      adjusted pr_cmds.c to use the engine's original shortcuts so that it does
+      not go through the whole array to not find a non-existant string.
+    * updated the beta version date to 2010-03-09.
+
 2010-03-07 (CVS):
     * hexen2, net_wins.c: changed return type of BlockingHook to INT_PTR. it
       is required to be FARPROC, which is an int in win32, but an INT_PTR in
