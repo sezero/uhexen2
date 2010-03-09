@@ -2,7 +2,7 @@
 	zone.c
 	Memory management
 
-	$Id: zone.c,v 1.53 2009-07-08 12:04:11 sezero Exp $
+	$Id: zone.c,v 1.54 2010-03-09 12:01:47 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -246,6 +246,7 @@ void *Z_Realloc (void *ptr, int size, int zone_id)
 		Sys_Error ("%s: realloced a freed pointer", __thisfunc__);
 
 	old_size = block->size;
+	old_size -= (4 + (int)sizeof(memblock_t));	/* see Z_TagMalloc() */
 	old_ptr = ptr;
 
 	Z_Free (ptr);
