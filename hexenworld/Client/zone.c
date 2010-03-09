@@ -2,7 +2,7 @@
 	zone.c
 	Memory management
 
-	$Id: zone.c,v 1.43 2010-03-09 12:01:47 sezero Exp $
+	$Id: zone.c,v 1.44 2010-03-09 12:50:32 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -461,6 +461,13 @@ void *Hunk_TempAlloc (int size)
 	hunk_tempactive = true;
 
 	return buf;
+}
+
+char *Hunk_Strdup (const char *s, const char *name)
+{
+	char *ptr = (char *) Hunk_AllocName (strlen(s) + 1, name);
+	strcpy (ptr, s);
+	return ptr;
 }
 
 /*

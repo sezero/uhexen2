@@ -1,7 +1,7 @@
 /*
 	zone.h
 
-	$Id: zone.h,v 1.11 2008-12-21 18:55:22 sezero Exp $
+	$Id: zone.h,v 1.12 2010-03-09 12:50:31 sezero Exp $
 */
 
 #ifndef __ZZONE_H
@@ -82,8 +82,8 @@ char *Z_Strdup (const char *s);
 
 void *Hunk_Alloc (int size);		// returns 0 filled memory
 void *Hunk_AllocName (int size, const char *name);
-
 void *Hunk_HighAllocName (int size, const char *name);
+char *Hunk_Strdup (const char *s, const char *name);
 
 int	Hunk_LowMark (void);
 void Hunk_FreeToLowMark (int mark);
