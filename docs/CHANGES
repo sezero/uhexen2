@@ -3,6 +3,12 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2010-03-23 (CVS):
+    * hexen2, cl_tent.c (CL_UpdateTEnts): fixed bad loop counter usage.
+    * increased the maximum number of video mode slots to 128 for opengl
+      (wgl and sdl) and to 64 for software (mgl and sdl) drivers.
+    * bumped the beta date to 2010-03-23
+
 2010-03-09 (CVS):
     * zone.c, zone.h: added Hunk_Strdup() as a new utility function.
     * zone.c (Z_Realloc): Fixed the old_size value.
