@@ -2,7 +2,7 @@
 	cl_tent.c
 	Client side temporary entity effects.
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cl_tent.c,v 1.18 2008-04-22 13:06:06 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cl_tent.c,v 1.19 2010-03-23 17:50:04 sezero Exp $
 */
 
 
@@ -402,10 +402,10 @@ static stream_t *NewStream(int ent, int tag)
 
 void CL_UpdateTEnts(void)
 {
-	int			i;
+	int		i, j;
 	stream_t	*stream;
-	vec3_t	dist, org;
-	float	d;
+	vec3_t		dist, org;
+	float		d;
 	entity_t	*ent;
 	float	yaw, pitch, forward;
 	int		offset;
@@ -465,9 +465,9 @@ void CL_UpdateTEnts(void)
 		if (stream->type == TE_STREAM_ICECHUNKS)
 		{
 			offset = (int)(cl.time*40)%30;
-			for (i = 0; i < 3; i++)
+			for (j = 0; j < 3; i++)
 			{
-				org[i] += dist[i]*offset;
+				org[j] += dist[j]*offset;
 			}
 		}
 
@@ -574,9 +574,9 @@ void CL_UpdateTEnts(void)
 				ent->angles[2] = 0;
 			}
 
-			for (i = 0; i < 3; i++)
+			for (j = 0; j < 3; i++)
 			{
-				org[i] += dist[i]*30;
+				org[j] += dist[j]*30;
 			}
 
 			d -= 30;
