@@ -2,7 +2,7 @@
 	vid_win.c
 	Win32 video driver using MGL-4.05
 
-	$Id: vid_win.c,v 1.65 2010-01-18 20:34:18 sezero Exp $
+	$Id: vid_win.c,v 1.66 2010-03-23 18:00:09 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -24,7 +24,7 @@
 #define WM_WINDOWNAME	"HexenII"
 #endif
 
-#define MAX_MODE_LIST	40
+#define MAX_MODE_LIST	64
 #define MAX_DESC	13
 #define VID_ROW_SIZE	3
 

@@ -2,7 +2,7 @@
 	gl_vidsdl.c -- SDL GL vid component
 	Select window size and mode and init SDL in GL mode.
 
-	$Id: gl_vidsdl.c,v 1.178 2010-01-27 16:28:50 sezero Exp $
+	$Id: gl_vidsdl.c,v 1.179 2010-03-23 18:00:10 sezero Exp $
 
 	Changed 7/11/04 by S.A.
 	- Fixed fullscreen opengl mode, window sizes
@@ -64,7 +64,7 @@ static const stdmode_t	std_modes[] = {
 	{1600, 1200}	// 7
 };
 
-#define MAX_MODE_LIST	60
+#define MAX_MODE_LIST	128
 #define MAX_STDMODES	(sizeof(std_modes) / sizeof(std_modes[0]))
 #define NUM_LOWRESMODES	(RES_640X480)
 static vmode_t	fmodelist[MAX_MODE_LIST+1];	// list of enumerated fullscreen modes
