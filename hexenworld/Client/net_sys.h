@@ -4,7 +4,7 @@
 	- depends on arch_def.h
 	- may depend on q_stdinc.h
 
-	$Id: net_sys.h,v 1.17 2009-04-29 15:36:21 sezero Exp $
+	$Id: net_sys.h,v 1.18 2010-03-29 10:55:18 sezero Exp $
 
 	Copyright (C) 2007  O.Sezer <sezero@users.sourceforge.net>
 
@@ -76,10 +76,7 @@ typedef int	socklen_t;
 /* windows includes and compatibility macros */
 #if defined(PLATFORM_WINDOWS)
 
-#include <windows.h>
-#if defined(_WIN64) && !defined(_USE_WINSOCK2)
-#define _USE_WINSOCK2	1
-#endif
+/* NOTE: winsock[2].h already includes windows.h */
 #if !defined(_USE_WINSOCK2)
 #include <winsock.h>
 #else
