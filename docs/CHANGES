@@ -3,6 +3,11 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2010-03-29 (CVS):
+    * net_sys.h (windows): no need to include windows.h, because it is
+      already included by winsock[2].h. do not force winsock2 for win64
+      if not specified on the compiler command line.
+
 2010-03-23 (CVS):
     * hexen2, cl_tent.c (CL_UpdateTEnts): fixed bad loop counter usage.
     * increased the maximum number of video mode slots to 128 for opengl
