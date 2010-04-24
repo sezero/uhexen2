@@ -3,6 +3,12 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2010-04-24 (CVS):
+    * removed the old OSX icons from the XCode project directory.
+    * made the m_state enum public through menu.h. adjusted its users
+      accordingly.
+    * bumped the beta date to 2010-04-24
+
 2010-03-29 (CVS):
     * net_sys.h (windows): no need to include windows.h, because it is
       already included by winsock[2].h. do not force winsock2 for win64
