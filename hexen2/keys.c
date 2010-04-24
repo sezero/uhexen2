@@ -2,7 +2,7 @@
 	keys.c
 	key up events are sent even if in console mode
 
-	$Id: keys.c,v 1.43 2009-01-26 12:05:08 sezero Exp $
+	$Id: keys.c,v 1.44 2010-04-24 17:56:54 sezero Exp $
 
 	Copyright (C) 1996-1997  Id Software, Inc.
 	Copyright (C) 2006-2007  O.Sezer
@@ -843,8 +843,6 @@ Called by the system between frames for both key up and key down events
 Should NOT be called during an interrupt!
 ===================
 */
-extern int			m_state;
-#define	m_none	0		// enumerated type from menu.c
 void Key_Event (int key, qboolean down)
 {
 	char	*kb;

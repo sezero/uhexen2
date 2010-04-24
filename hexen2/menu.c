@@ -1,7 +1,7 @@
 /*
 	menu.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/menu.c,v 1.108 2009-04-28 14:00:32 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/menu.c,v 1.109 2010-04-24 17:56:54 sezero Exp $
 */
 
 #include "q_stdinc.h"
@@ -14,37 +14,6 @@
 void (*vid_menudrawfn)(void);
 void (*vid_menukeyfn)(int key);
 
-enum m_state_e
-{
-	m_none = 0,
-	m_main,
-	m_singleplayer,
-	m_load,
-	m_save,
-	m_multiplayer,
-	m_setup,
-	m_net,
-	m_options,
-#ifdef GLQUAKE
-	m_opengl,
-#endif
-	m_video,
-	m_keys,
-	m_help,
-	m_quit,
-#if NET_USE_SERIAL
-	m_serialconfig,
-	m_modemconfig,
-#endif
-	m_lanconfig,
-	m_gameoptions,
-	m_search,
-	m_slist,
-	m_class,
-	m_difficulty,
-	m_mload,
-	m_msave
-};
 enum m_state_e	m_state;
 
 void M_Menu_Main_f (void);
@@ -111,7 +80,7 @@ static qboolean	m_entersound;		// play after drawing a frame, so caching
 					// won't disrupt the sound
 static qboolean	m_recursiveDraw;
 
-int		m_return_state;
+enum m_state_e	m_return_state;
 qboolean	m_return_onerror;
 char		m_return_reason [32];
 

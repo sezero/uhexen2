@@ -1,7 +1,7 @@
 /*
 	menu.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/menu.c,v 1.77 2007-12-20 21:37:27 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/menu.c,v 1.78 2010-04-24 17:56:54 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -10,22 +10,6 @@
 void (*vid_menudrawfn)(void);
 void (*vid_menukeyfn)(int key);
 
-enum m_state_e
-{
-	m_none = 0,
-	m_main,
-	m_multiplayer,
-	m_setup,
-	m_options,
-#ifdef GLQUAKE
-	m_opengl,
-#endif
-	m_video,
-	m_keys,
-	m_help,
-	m_quit,
-	m_mconnect
-};
 enum m_state_e	m_state;
 
 void M_Menu_Main_f (void);

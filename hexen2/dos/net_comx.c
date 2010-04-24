@@ -3,7 +3,7 @@
 	TTY backend for the dosquake serial network driver.
 	from quake1 source with minor adaptations for uhexen2.
 
-	$Id: net_comx.c,v 1.5 2007-11-11 20:00:08 sezero Exp $
+	$Id: net_comx.c,v 1.6 2010-04-24 17:56:54 sezero Exp $
 
 	Copyright (C) 1996-1997  Id Software, Inc.
 
@@ -60,8 +60,6 @@ extern cvar_t	config_modem_clear;
 extern cvar_t	config_modem_init;
 extern cvar_t	config_modem_hangup;
 
-extern int	m_return_state;
-extern int	m_state;
 extern qboolean	m_return_onerror;
 extern char	m_return_reason[32];
 

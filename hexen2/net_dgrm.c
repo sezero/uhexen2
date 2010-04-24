@@ -2,7 +2,7 @@
 	net_dgrm.c
 	This is enables a simple IP banning mechanism
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/net_dgrm.c,v 1.48 2010-01-11 18:48:17 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/net_dgrm.c,v 1.49 2010-04-24 17:56:54 sezero Exp $
 */
 
 #define BAN_TEST
@@ -37,8 +37,6 @@ static struct
 	byte			data[MAX_DATAGRAM];
 } packetBuffer;
 
-extern int m_return_state;
-extern int m_state;
 extern qboolean m_return_onerror;
 extern char m_return_reason[32];
 
