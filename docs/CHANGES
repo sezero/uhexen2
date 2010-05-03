@@ -3,6 +3,10 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2010-05-03 (CVS):
+    * Some Makefile tidy-up.
+    * updated the list of supported compilers.
+
 2010-04-24 (CVS):
     * removed the old OSX icons from the XCode project directory.
     * made the m_state enum public through menu.h. adjusted its users
