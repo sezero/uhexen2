@@ -1,5 +1,5 @@
 # GNU Makefile for hexenworld clients using GCC.
-# $Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/Makefile,v 1.91 2009-10-04 11:00:49 sezero Exp $
+# $Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/Makefile,v 1.92 2010-05-03 12:03:55 sezero Exp $
 #
 # Type "make help" to see the valid targets.
 #
@@ -151,6 +151,7 @@ endif
 endif
 
 ifeq ($(TARGET_OS),win64)
+# use winsock2 for win64
 USE_WINSOCK2=yes
 endif
 
@@ -324,7 +325,9 @@ endif
 ifeq ($(TARGET_OS),win64)
 # Start Win64-specific extra flags/settings
 
+ifeq ($(USE_WINSOCK2),yes)
 EXT_FLAGS+= -D_USE_WINSOCK2
+endif
 
 ifeq ($(LINK_DIRECTX),no)
 EXT_FLAGS+= -DDX_DLSYM

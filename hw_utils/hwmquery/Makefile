@@ -1,5 +1,5 @@
 # GNU Makefile for hwmquery using GCC.
-# $Header: /home/ozzie/Download/0000/uhexen2/hw_utils/hwmquery/Makefile,v 1.18 2009-10-04 11:00:49 sezero Exp $
+# $Header: /home/ozzie/Download/0000/uhexen2/hw_utils/hwmquery/Makefile,v 1.19 2010-05-03 12:03:57 sezero Exp $
 #
 # if building a debug version :		make DEBUG=1 [other stuff]
 #
@@ -27,6 +27,7 @@ USE_WINSOCK2=no
 include $(UHEXEN2_TOP)/scripts/makefile.inc
 
 ifeq ($(TARGET_OS),win64)
+# use winsock2 for win64
 USE_WINSOCK2=yes
 endif
 
@@ -72,7 +73,9 @@ LDFLAGS  := $(LIBWINSOCK) -mconsole
 endif
 ifeq ($(TARGET_OS),win64)
 CFLAGS  := $(CFLAGS) -DWIN32_LEAN_AND_MEAN
+ifeq ($(USE_WINSOCK2),yes)
 EXT_FLAGS+= -D_USE_WINSOCK2
+endif
 INCLUDES := -I$(W32STUFF) -I.
 LDFLAGS  := $(LIBWINSOCK) -mconsole
 endif

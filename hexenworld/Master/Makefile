@@ -1,5 +1,5 @@
 # GNU Makefile for hexenworld master server using GCC.
-# $Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Master/Makefile,v 1.29 2009-10-04 11:00:49 sezero Exp $
+# $Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Master/Makefile,v 1.30 2010-05-03 12:03:56 sezero Exp $
 #
 # if building a debug version :		make DEBUG=1 [other stuff]
 #
@@ -27,6 +27,7 @@ USE_WINSOCK2=no
 include $(UHEXEN2_TOP)/scripts/makefile.inc
 
 ifeq ($(TARGET_OS),win64)
+# use winsock2 for win64
 USE_WINSOCK2=yes
 endif
 
@@ -78,7 +79,9 @@ LDFLAGS  := $(LIBWINSOCK) -lwinmm -mconsole
 endif
 ifeq ($(TARGET_OS),win64)
 CFLAGS  := $(CFLAGS) -DWIN32_LEAN_AND_MEAN
+ifeq ($(USE_WINSOCK2),yes)
 EXT_FLAGS+= -D_USE_WINSOCK2
+endif
 INCLUDES := -I$(W32STUFF) -I.
 LDFLAGS  := $(LIBWINSOCK) -lwinmm -mconsole
 endif

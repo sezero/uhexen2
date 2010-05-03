@@ -1,5 +1,5 @@
 # GNU Makefile for (gl)hexen2 client/server binaries using GCC.
-# $Header: /home/ozzie/Download/0000/uhexen2/hexen2/Makefile,v 1.98 2009-10-04 11:00:48 sezero Exp $
+# $Header: /home/ozzie/Download/0000/uhexen2/hexen2/Makefile,v 1.99 2010-05-03 12:00:48 sezero Exp $
 #
 # Type "make help" to see the valid targets.
 #
@@ -160,6 +160,7 @@ USE_X86_ASM=yes
 endif
 
 ifeq ($(TARGET_OS),win64)
+# use winsock2 for win64
 USE_WINSOCK2=yes
 endif
 
@@ -354,7 +355,9 @@ endif
 ifeq ($(TARGET_OS),win64)
 # Start Win64-specific extra flags/settings
 
+ifeq ($(USE_WINSOCK2),yes)
 EXT_FLAGS+= -D_USE_WINSOCK2
+endif
 
 ifeq ($(LINK_DIRECTX),no)
 EXT_FLAGS+= -DDX_DLSYM

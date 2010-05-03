@@ -1,5 +1,5 @@
 # GNU Makefile for Hexen II Dedicated Server (h2ded) using GCC.
-# $Header: /home/ozzie/Download/0000/uhexen2/hexen2/Makefile.sv,v 1.28 2009-10-04 11:00:48 sezero Exp $
+# $Header: /home/ozzie/Download/0000/uhexen2/hexen2/Makefile.sv,v 1.29 2010-05-03 12:00:53 sezero Exp $
 #
 # It is ESSENTIAL that you run make clean between different
 # types of builds or different types of targets.
@@ -49,6 +49,7 @@ USE_WINSOCK2=no
 include $(UHEXEN2_TOP)/scripts/makefile.inc
 
 ifeq ($(TARGET_OS),win64)
+# use winsock2 for win64
 USE_WINSOCK2=yes
 endif
 
@@ -117,7 +118,9 @@ LDFLAGS := $(LIBWINSOCK) -lwinmm -mconsole
 endif
 ifeq ($(TARGET_OS),win64)
 CFLAGS  := $(CFLAGS) -DWIN32_LEAN_AND_MEAN
+ifeq ($(USE_WINSOCK2),yes)
 EXT_FLAGS+= -D_USE_WINSOCK2
+endif
 INCLUDES:= -I$(W32STUFF) $(INCLUDES)
 LDFLAGS := $(LIBWINSOCK) -lwinmm -mconsole
 endif
