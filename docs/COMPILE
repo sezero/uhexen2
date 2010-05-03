@@ -45,9 +45,9 @@ NASM	:	Netwide Assembler. An x86 assembler.
 GCC	:	GNU C Compiler.
 
 		Minimum version required is GCC 2.95.  GCC versions in
-		the 2.95/2.96, 3.x and 4.x series up to 4.4.3 are tested
-		and work fine.  Versions 3.2.2, 3.3.6, 3.4.6, or newer
-		are recommended.
+		the 2.95/2.96, 3.x and 4.x series up to 4.4.4 and 4.5.0
+		are tested and work fine.  Versions 3.2.2, 3.3.6, 3.4.6
+		or newer are recommended.
 
 		Of the old versions, gcc-2.91.66 (aka. egcs-1.1.2) still
 		seems to work.  Even 2.7.2 is reported to compile fine
