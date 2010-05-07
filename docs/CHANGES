@@ -3,6 +3,9 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2010-05-07 (CVS):
+    * added visual studio project files for pakx and paklist.
+
 2010-05-03 (CVS):
     * Some Makefile tidy-up.
     * updated the list of supported compilers.
