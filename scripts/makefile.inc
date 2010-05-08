@@ -1,5 +1,5 @@
 # GNU Makefile using GCC in a unix shell.
-# $Header: /home/ozzie/Download/0000/uhexen2/scripts/makefile.inc,v 1.25 2009-10-04 11:00:49 sezero Exp $
+# $Header: /home/ozzie/Download/0000/uhexen2/scripts/makefile.inc,v 1.26 2010-05-08 07:55:03 sezero Exp $
 
 # This file is responsible for determining the Host OS and Target OS,
 # setting common paths, selecting the compiler, assigning the compiler
@@ -182,6 +182,9 @@ endif
 
 ifeq ($(TARGET_OS),win32)
 NASMFLAGS:= -f win32
+endif
+ifeq ($(TARGET_OS),win64)
+NASMFLAGS:= -f win64 -d_NO_PREFIX
 endif
 ifeq ($(TARGET_OS),dos)
 NASMFLAGS:= -f coff
