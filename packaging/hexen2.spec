@@ -1,5 +1,5 @@
 # RPM spec file for RedHat and Fedora
-# $Id: hexen2.spec,v 1.65 2009-12-27 09:13:16 sezero Exp $
+# $Id: hexen2.spec,v 1.66 2010-05-08 07:46:06 sezero Exp $
 
 # build options :
 # --without alsa: build without alsa audio support
@@ -21,7 +21,7 @@
 
 %define desktop_vendor	uhexen2
 
-%define gamecode_ver	1.19a
+%define gamecode_ver	1.19b
 
 # pre-release version: MAKE SURE to change this
 # to an %undefine for the final realease!!

@@ -1,7 +1,7 @@
 #!/bin/sh
 
 # the script I use to prepare a release tree from the H.o.T. CVS snapshot
-# $Id: mkrelease.sh,v 1.19 2009-06-15 07:31:20 sezero Exp $
+# $Id: mkrelease.sh,v 1.20 2010-05-08 07:46:06 sezero Exp $
 
 if echo `pwd` | grep "\/scripts" > /dev/null 2>&1 ; then
 cd ..
@@ -10,7 +10,7 @@ fi
 test -f scripts/mkrelease.sh || { echo "change into the cvs snapshot directory before running this script"; exit 1; }
 
 # the current gamecode version
-GAMECODE_VER=1.19a
+GAMECODE_VER=1.19b
 
 # kill the unwanted CVS* directories
 rm -rf CVSROOT
