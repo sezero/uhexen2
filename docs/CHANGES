@@ -3,6 +3,17 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2010-05-08 (CVS, 1.4.4-pre9):
+    * bumped the gamecode version to 1.19b to indicate the newly added
+      mapfixes section.
+    * minor update to the mkrelease script.
+    * added _NO_PREFIX to NASMFLAGS for win64. although we don't have any
+      x86_64 asm today, this is to make me remember the symbol decoration
+      convention for M$ x64.
+    * updated the beta version date to 2010-05-08.
+    * updated version numbers in the launcher README file.
+    * HoT version 1.4.4-pre9 (2010-05-08.)
+
 2010-05-07 (CVS):
     * added visual studio project files for pakx and paklist.
 
