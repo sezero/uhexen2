@@ -1,7 +1,7 @@
 #!/bin/sh
 
 # the script I use to prepare a release tree from the H.o.T. CVS snapshot
-# $Id: mkrelease.sh,v 1.20 2010-05-08 07:46:06 sezero Exp $
+# $Id: mkrelease.sh,v 1.21 2010-05-08 07:50:03 sezero Exp $
 
 if echo `pwd` | grep "\/scripts" > /dev/null 2>&1 ; then
 cd ..
@@ -31,7 +31,7 @@ rm -rf packaging
 mv docs/LICENSE ./LICENSE
 
 # change all shell scripts' permissions
-find . -name *.sh | xargs chmod 755 
+find . -name *.sh | xargs chmod a+x 
 
 # move the unused/reference asm files directory into 00_unused
 mv asm 00_unused/asm_ref
