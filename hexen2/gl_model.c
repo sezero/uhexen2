@@ -5,7 +5,7 @@
 	models are the only shared resource between a client and server
 	running on the same machine.
 
-	$Id: gl_model.c,v 1.59 2008-12-20 08:32:40 sezero Exp $
+	$Id: gl_model.c,v 1.60 2010-06-01 12:11:34 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -358,7 +358,7 @@ Mod_LoadTextures
 */
 static void Mod_LoadTextures (lump_t *l)
 {
-	int		i, j, pixels, num, max, altmax;
+	int		i, j, pixels, num, maxanim, altmax;
 	miptex_t	*mt;
 	texture_t	*tx, *tx2;
 	texture_t	*anims[10];
@@ -484,21 +484,21 @@ bsp_tex_internal:
 		memset (anims, 0, sizeof(anims));
 		memset (altanims, 0, sizeof(altanims));
 
-		max = tx->name[1];
+		maxanim = tx->name[1];
 		altmax = 0;
-		if (max >= 'a' && max <= 'z')
-			max -= 'a' - 'A';
-		if (max >= '0' && max <= '9')
+		if (maxanim >= 'a' && maxanim <= 'z')
+			maxanim -= 'a' - 'A';
+		if (maxanim >= '0' && maxanim <= '9')
 		{
-			max -= '0';
+			maxanim -= '0';
 			altmax = 0;
-			anims[max] = tx;
-			max++;
+			anims[maxanim] = tx;
+			maxanim++;
 		}
-		else if (max >= 'A' && max <= 'J')
+		else if (maxanim >= 'A' && maxanim <= 'J')
 		{
-			altmax = max - 'A';
-			max = 0;
+			altmax = maxanim - 'A';
+			maxanim = 0;
 			altanims[altmax] = tx;
 			altmax++;
 		}
@@ -520,8 +520,8 @@ bsp_tex_internal:
 			{
 				num -= '0';
 				anims[num] = tx2;
-				if (num+1 > max)
-					max = num + 1;
+				if (num+1 > maxanim)
+					maxanim = num + 1;
 			}
 			else if (num >= 'A' && num <= 'J')
 			{
@@ -536,15 +536,15 @@ bsp_tex_internal:
 
 #define	ANIM_CYCLE	2
 	// link them all together
-		for (j = 0; j < max; j++)
+		for (j = 0; j < maxanim; j++)
 		{
 			tx2 = anims[j];
 			if (!tx2)
 				Sys_Error ("Missing frame %i of %s",j, tx->name);
-			tx2->anim_total = max * ANIM_CYCLE;
+			tx2->anim_total = maxanim * ANIM_CYCLE;
 			tx2->anim_min = j * ANIM_CYCLE;
 			tx2->anim_max = (j+1) * ANIM_CYCLE;
-			tx2->anim_next = anims[ (j+1)%max ];
+			tx2->anim_next = anims[ (j+1)%maxanim ];
 			if (altmax)
 				tx2->alternate_anims = altanims[0];
 		}
@@ -557,7 +557,7 @@ bsp_tex_internal:
 			tx2->anim_min = j * ANIM_CYCLE;
 			tx2->anim_max = (j+1) * ANIM_CYCLE;
 			tx2->anim_next = altanims[ (j+1)%altmax ];
-			if (max)
+			if (maxanim)
 				tx2->alternate_anims = anims[0];
 		}
 	}

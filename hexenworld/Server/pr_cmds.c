@@ -2,7 +2,7 @@
 	pr_cmds.c
 	prog commands
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Server/pr_cmds.c,v 1.45 2010-03-09 15:00:28 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Server/pr_cmds.c,v 1.46 2010-06-01 12:11:36 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -158,7 +158,7 @@ static void PF_setorigin (void)
 }
 
 
-static void SetMinMaxSize (edict_t *e, float *min, float *max, qboolean rotate)
+static void SetMinMaxSize (edict_t *e, float *minvec, float *maxvec, qboolean rotate)
 {
 	float	*angles;
 	vec3_t	rmin, rmax;
@@ -170,7 +170,7 @@ static void SetMinMaxSize (edict_t *e, float *min, float *max, qboolean rotate)
 
 	for (i = 0; i < 3; i++)
 	{
-		if (min[i] > max[i])
+		if (minvec[i] > maxvec[i])
 			PR_RunError ("backwards mins/maxs");
 	}
 
@@ -178,8 +178,8 @@ static void SetMinMaxSize (edict_t *e, float *min, float *max, qboolean rotate)
 
 	if (!rotate)
 	{
-		VectorCopy (min, rmin);
-		VectorCopy (max, rmax);
+		VectorCopy (minvec, rmin);
+		VectorCopy (maxvec, rmax);
 	}
 	else
 	{
@@ -193,8 +193,8 @@ static void SetMinMaxSize (edict_t *e, float *min, float *max, qboolean rotate)
 		yvector[0] = -sin(a);
 		yvector[1] = cos(a);
 
-		VectorCopy (min, bounds[0]);
-		VectorCopy (max, bounds[1]);
+		VectorCopy (minvec, bounds[0]);
+		VectorCopy (maxvec, bounds[1]);
 
 		rmin[0] = rmin[1] = rmin[2] = 9999;
 		rmax[0] = rmax[1] = rmax[2] = -9999;
@@ -229,7 +229,7 @@ static void SetMinMaxSize (edict_t *e, float *min, float *max, qboolean rotate)
 // set derived values
 	VectorCopy (rmin, e->v.mins);
 	VectorCopy (rmax, e->v.maxs);
-	VectorSubtract (max, min, e->v.size);
+	VectorSubtract (maxvec, minvec, e->v.size);
 
 	SV_LinkEdict (e, false);
 }
@@ -246,12 +246,12 @@ setsize (entity, minvector, maxvector)
 static void PF_setsize (void)
 {
 	edict_t	*e;
-	float	*min, *max;
+	float	*minvec, *maxvec;
 
 	e = G_EDICT(OFS_PARM0);
-	min = G_VECTOR(OFS_PARM1);
-	max = G_VECTOR(OFS_PARM2);
-	SetMinMaxSize (e, min, max, false);
+	minvec = G_VECTOR(OFS_PARM1);
+	maxvec = G_VECTOR(OFS_PARM2);
+	SetMinMaxSize (e, minvec, maxvec, false);
 }
 
 

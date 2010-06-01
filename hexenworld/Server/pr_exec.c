@@ -2,7 +2,7 @@
 	pr_exec.c
 	PROGS execution
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Server/pr_exec.c,v 1.26 2009-01-24 20:00:13 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Server/pr_exec.c,v 1.27 2010-06-01 12:11:36 sezero Exp $
 */
 
 // HEADER FILES ------------------------------------------------------------
@@ -959,7 +959,7 @@ static void PrintStatement (dstatement_t *s)
 void PR_Profile_f (void)
 {
 	int		i, j;
-	int		max;
+	int		pmax;
 	dfunction_t	*f, *bestFunc;
 	int		total;
 	int		funcCount;
@@ -1035,14 +1035,14 @@ void PR_Profile_f (void)
 		j = 0;
 		do
 		{
-			max = 0;
+			pmax = 0;
 			bestFunc = NULL;
 			for (i = 0; i < progs->numfunctions; i++)
 			{
 				f = &pr_functions[i];
-				if (f->profile > max)
+				if (f->profile > pmax)
 				{
-					max = f->profile;
+					pmax = f->profile;
 					bestFunc = f;
 				}
 			}
@@ -1109,14 +1109,14 @@ void PR_Profile_f (void)
 			j = 0;
 			do
 			{
-				max = 0;
+				pmax = 0;
 				bestFunc = NULL;
 				for (i = 0; i < progs->numfunctions; i++)
 				{
 					f = &pr_functions[i];
-					if (f->s_file == currentFile && f->profile > max)
+					if (f->s_file == currentFile && f->profile > pmax)
 					{
-						max = f->profile;
+						pmax = f->profile;
 						bestFunc = f;
 					}
 				}

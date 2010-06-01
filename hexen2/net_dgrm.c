@@ -2,7 +2,7 @@
 	net_dgrm.c
 	This is enables a simple IP banning mechanism
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/net_dgrm.c,v 1.49 2010-04-24 17:56:54 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/net_dgrm.c,v 1.50 2010-06-01 12:11:35 sezero Exp $
 */
 
 #define BAN_TEST
@@ -548,7 +548,7 @@ static void Test_f (void)
 {
 	const char	*host;
 	int		n;
-	int		max = MAX_CLIENTS;
+	int		maxusers = MAX_CLIENTS;
 	struct qsockaddr sendaddr;
 
 	if (testInProgress)
@@ -565,7 +565,7 @@ static void Test_f (void)
 				if (hostcache[n].driver != myDriverLevel)
 					continue;
 				net_landriverlevel = hostcache[n].ldriver;
-				max = hostcache[n].maxusers;
+				maxusers = hostcache[n].maxusers;
 				memcpy(&sendaddr, &hostcache[n].addr, sizeof(struct qsockaddr));
 				break;
 			}
@@ -597,7 +597,7 @@ JustDoIt:
 	testPollCount = 20;
 	testDriver = net_landriverlevel;
 
-	for (n = 0; n < max; n++)
+	for (n = 0; n < maxusers; n++)
 	{
 		SZ_Clear(&net_message);
 		// save space for the header, filled in later
