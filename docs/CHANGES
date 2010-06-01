@@ -3,6 +3,12 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2010-06-01 (CVS):
+    * gl_model.c (Mod_LoadTextures): Don't use "min" or "max" as a var name.
+      net_dgrm.c (Net_Test_f): Likewise.
+      pr_cmds.c (SetMinMaxSize, PF_setsize): Likewise.
+      pr_exec.c (PR_Profile_f): Likewise.
+
 2010-05-08 (CVS, 1.4.4-pre9):
     * bumped the gamecode version to 1.19b to indicate the newly added
       mapfixes section.
