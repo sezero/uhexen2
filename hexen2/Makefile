@@ -1,5 +1,5 @@
 # GNU Makefile for (gl)hexen2 client/server binaries using GCC.
-# $Header: /home/ozzie/Download/0000/uhexen2/hexen2/Makefile,v 1.99 2010-05-03 12:00:48 sezero Exp $
+# $Header: /home/ozzie/Download/0000/uhexen2/hexen2/Makefile,v 1.100 2010-06-03 21:20:22 sezero Exp $
 #
 # Type "make help" to see the valid targets.
 #
@@ -199,10 +199,6 @@ CFLAGS := -g -Wall
 else
 
 CFLAGS := $(CPUFLAGS) -O2 -Wall -DNDEBUG -ffast-math -fexpensive-optimizations
-
-ifdef NO_UNIT_AT_A_TIME
-CFLAGS := $(CFLAGS) $(call check_gcc,-fno-unit-at-a-time,)
-endif
 
 ifeq ($(OPT_EXTRA),yes)
 ifeq ($(MACH_TYPE),x86)

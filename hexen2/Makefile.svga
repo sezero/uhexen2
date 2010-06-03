@@ -1,5 +1,5 @@
 # GNU Makefile for hexen2 svgalib-client using GCC.
-# $Header: /home/ozzie/Download/0000/uhexen2/hexen2/Makefile.svga,v 1.7 2009-10-04 11:00:48 sezero Exp $
+# $Header: /home/ozzie/Download/0000/uhexen2/hexen2/Makefile.svga,v 1.8 2010-06-03 21:20:22 sezero Exp $
 #
 # This makefile builds SVGALib dependant software renderer client
 # for linux-x86 only. This makefile is a butchered version of the
@@ -107,10 +107,6 @@ CFLAGS := -g -Wall
 else
 
 CFLAGS := $(CPUFLAGS) -O2 -Wall -DNDEBUG -ffast-math -fexpensive-optimizations
-
-ifdef NO_UNIT_AT_A_TIME
-CFLAGS := $(CFLAGS) $(call check_gcc,-fno-unit-at-a-time,)
-endif
 
 ifeq ($(OPT_EXTRA),yes)
 CFLAGS := $(CFLAGS) $(call check_gcc,-falign-loops=2 -falign-jumps=2 -falign-functions=2,-malign-loops=2 -malign-jumps=2 -malign-functions=2)

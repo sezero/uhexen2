@@ -1,5 +1,5 @@
 # GNU Makefile for Hexen II Dedicated Server (h2ded) using GCC.
-# $Header: /home/ozzie/Download/0000/uhexen2/hexen2/Makefile.sv,v 1.29 2010-05-03 12:00:53 sezero Exp $
+# $Header: /home/ozzie/Download/0000/uhexen2/hexen2/Makefile.sv,v 1.30 2010-06-03 21:20:22 sezero Exp $
 #
 # It is ESSENTIAL that you run make clean between different
 # types of builds or different types of targets.
@@ -74,10 +74,6 @@ CFLAGS := -g -Wall
 else
 
 CFLAGS := $(CPUFLAGS) -O2 -Wall -DNDEBUG -ffast-math -fexpensive-optimizations
-
-ifdef NO_UNIT_AT_A_TIME
-CFLAGS := $(CFLAGS) $(call check_gcc,-fno-unit-at-a-time,)
-endif
 
 ifeq ($(OPT_EXTRA),yes)
 ifeq ($(MACH_TYPE),x86)
