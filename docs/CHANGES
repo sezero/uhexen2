@@ -3,6 +3,10 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2010-06-03 (CVS):
+    * removed references of NO_UNIT_AT_A_TIME from the makefiles. not needed
+      any longer.
+
 2010-06-01 (CVS):
     * gl_model.c (Mod_LoadTextures): Don't use "min" or "max" as a var name.
       net_dgrm.c (Net_Test_f): Likewise.
