@@ -2,7 +2,7 @@
 	net_dgrm.c
 	This is enables a simple IP banning mechanism
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/net_dgrm.c,v 1.50 2010-06-01 12:11:35 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/net_dgrm.c,v 1.51 2010-06-04 08:51:57 sezero Exp $
 */
 
 #define BAN_TEST
@@ -744,6 +744,10 @@ int Datagram_Init (void)
 	int	i, num_inited;
 	sys_socket_t	csock;
 
+#ifdef BAN_TEST
+	banAddr.s_addr = INADDR_ANY;
+	banMask.s_addr = INADDR_NONE;
+#endif
 	myDriverLevel = net_driverlevel;
 	Cmd_AddCommand ("net_stats", NET_Stats_f);
 
@@ -765,9 +769,6 @@ int Datagram_Init (void)
 		return -1;
 
 #ifdef BAN_TEST
-	banAddr.s_addr = INADDR_ANY;
-	banMask.s_addr = INADDR_NONE;
-
 	Cmd_AddCommand ("ban", NET_Ban_f);
 #endif
 	Cmd_AddCommand ("test", Test_f);
