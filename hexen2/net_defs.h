@@ -2,7 +2,7 @@
 	net_defs.h
 	functions and data private to the network layer
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/net_defs.h,v 1.1 2009-04-28 14:00:32 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/net_defs.h,v 1.2 2010-06-04 09:32:38 sezero Exp $
 */
 
 #ifndef __NET_DEFS_H
@@ -188,7 +188,6 @@ typedef struct
 	qboolean	(*CanSendUnreliableMessage) (qsocket_t *sock);
 	void		(*Close) (qsocket_t *sock);
 	void		(*Shutdown) (void);
-	sys_socket_t	controlSock;
 } net_driver_t;
 
 extern net_driver_t	net_drivers[];

@@ -2,7 +2,7 @@
 	net_main.c
 	main networking module
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/net_main.c,v 1.35 2009-04-28 14:00:32 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/net_main.c,v 1.36 2010-06-04 09:32:38 sezero Exp $
 */
 
 #include "q_stdinc.h"
@@ -712,7 +712,6 @@ NET_Init
 void NET_Init (void)
 {
 	int			i;
-	int			controlSocket;
 	qsocket_t	*s;
 
 	i = COM_CheckParm ("-port");
@@ -772,12 +771,10 @@ void NET_Init (void)
 	// initialize all the drivers
 	for (i = net_driverlevel = 0; net_driverlevel < net_numdrivers; net_driverlevel++)
 	{
-		controlSocket = net_drivers[net_driverlevel].Init();
-		if (controlSocket == -1)
+		if (net_drivers[net_driverlevel].Init() == -1)
 			continue;
 		i++;
 		net_drivers[net_driverlevel].initialized = true;
-		net_drivers[net_driverlevel].controlSock = controlSocket;
 		if (listening)
 			net_drivers[net_driverlevel].Listen (true);
 	}
