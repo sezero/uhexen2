@@ -3,6 +3,17 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2010-06-04 (CVS):
+    * net_defs.h (net_driver_t): Removed the controlSock member. It is not used
+      for any purpose in either of Loop, Datagram or Serial drivers. It used to
+      be assigned the value returned by the Init() procedure of the relevant
+      driver which is either 0 for success or -1 for failure, therefore there is
+      no purpose to it at all.
+      net_main.c (NET_Init): Removed the controlSocket var and adjusted for the
+      net_driver_t change.
+    * net_dgrm.c (Datagram_Init): Initialize banAddr and banMask before all else,
+      just in case.
+
 2010-06-03 (CVS):
     * removed references of NO_UNIT_AT_A_TIME from the makefiles. not needed
       any longer.
