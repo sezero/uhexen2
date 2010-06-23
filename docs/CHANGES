@@ -3,6 +3,10 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2010-06-23 (CVS):
+    * updated the directx headers under dxsdk_new from mingw-w64 svn repo rev.
+      2611.
+
 2010-06-04 (CVS):
     * net_defs.h (net_driver_t): Removed the controlSock member. It is not used
       for any purpose in either of Loop, Datagram or Serial drivers. It used to
