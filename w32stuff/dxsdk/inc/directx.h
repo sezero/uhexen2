@@ -2,10 +2,6 @@
 #ifndef _directx_h_
 #define _directx_h
 
-#ifdef __GNUC__
-#define NONAMELESSUNION
-#endif
-
 /* Include all of the DirectX 5.0 headers and adds any necessary tweaks */
 
 #include <windows.h>
