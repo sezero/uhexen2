@@ -372,8 +372,20 @@ typedef struct _DDSCAPS2 {
 	DWORD	dwCaps;	/* capabilities of surface wanted */
 	DWORD   dwCaps2; /* additional capabilities */
 	DWORD   dwCaps3; /* reserved capabilities */
-	DWORD   dwCaps4; /* more reserved capabilities */
+	__extension__ union {
+	  DWORD dwCaps4; /* low word is the depth for a volume texture */
+	  DWORD dwVolumeDepth;
+	} DUMMYUNIONNAME1;
 } DDSCAPS2,*LPDDSCAPS2;
+
+typedef struct _DDSCAPSEX {
+    DWORD	dwCaps2;
+    DWORD	dwCaps3;
+    __extension__ union {
+	DWORD	dwCaps4;
+	DWORD	dwVolumeDepth;
+    } DUMMYUNIONNAME1;
+} DDSCAPSEX,*LPDDSCAPSEX;
 
 #define	DD_ROP_SPACE	(256/32)	/* space required to store ROP array */
 
@@ -1028,6 +1040,22 @@ typedef struct _DDSURFACEDESC2
 	DDSCAPS2	ddsCaps;  /* 68: DDraw surface caps */
 	DWORD		dwTextureStage; /* 78: stage in multitexture cascade */
 } DDSURFACEDESC2,*LPDDSURFACEDESC2;
+
+
+typedef struct _DDARGB {
+	BYTE	blue;
+	BYTE	green;
+	BYTE	red;
+	BYTE	alpha;
+} DDARGB, *LPDDARGB;
+
+typedef struct _DDRGBA {
+	BYTE	red;
+	BYTE	green;
+	BYTE	blue;
+	BYTE	alpha;
+} DDRGBA, *LPDDRGBA;
+
 
 /* DDCOLORCONTROL.dwFlags */
 #define DDCOLOR_BRIGHTNESS	0x00000001
