@@ -4,9 +4,9 @@
 	- depends on arch_def.h
 	- may depend on q_stdinc.h
 
-	$Id: net_sys.h,v 1.18 2010-03-29 10:55:18 sezero Exp $
+	$Id: net_sys.h,v 1.19 2010-08-09 14:33:12 sezero Exp $
 
-	Copyright (C) 2007  O.Sezer <sezero@users.sourceforge.net>
+	Copyright (C) 2007-2010  O.Sezer <sezero@users.sourceforge.net>
 
 	This program is free software; you can redistribute it and/or
 	modify it under the terms of the GNU General Public License
@@ -32,6 +32,24 @@
 
 #include <sys/types.h>
 #include <errno.h>
+#include <stddef.h>
+#include <limits.h>
+
+#if defined(__FreeBSD__) || defined(__DragonFly__)	|| \
+    defined(__OpenBSD__) || defined(__NetBSD__)		|| \
+    defined(__MACOSX__)
+/* struct sockaddr has unsigned char sa_len as the first member in BSD
+ * variants and the family member is also an unsigned char instead of an
+ * unsigned short. This should matter only when PLATFORM_UNIX is defined,
+ * however, checking for the offset of sa_family in every platform that
+ * provide a struct sockaddr doesn't hurt either (see down below for the
+ * compile time asserts.) */
+#define	HAVE_SA_LEN	1
+#define	SA_FAM_OFFSET	1
+#else
+#undef	HAVE_SA_LEN
+#define	SA_FAM_OFFSET	0
+#endif	/* BSD, sockaddr */
 
 /* unix includes and compatibility macros */
 #if defined(PLATFORM_UNIX) || defined(PLATFORM_AMIGA)
@@ -70,6 +88,9 @@ typedef int	socklen_t;
 
 #define	socketerror(x)	strerror((x))
 
+/* Verify that we defined HAVE_SA_LEN correctly: */
+COMPILE_TIME_ASSERT(sockaddr, offsetof(struct sockaddr, sa_family) == SA_FAM_OFFSET);
+
 #endif	/* end of unix stuff */
 
 
@@ -100,6 +121,9 @@ typedef SOCKET	sys_socket_t;
 #define	ECONNREFUSED	WSAECONNREFUSED
 /* must #include "wsaerror.h" for this : */
 #define	socketerror(x)	__WSAE_StrError((x))
+
+/* Verify that we defined HAVE_SA_LEN correctly: */
+COMPILE_TIME_ASSERT(sockaddr, offsetof(struct sockaddr, sa_family) == SA_FAM_OFFSET);
 
 #endif	/* end of windows stuff */
 

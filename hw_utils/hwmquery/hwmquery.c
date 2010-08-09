@@ -1,9 +1,9 @@
 /*
 	hwmquery.c
-	$Id: hwmquery.c,v 1.28 2010-01-11 18:48:19 sezero Exp $
+	$Id: hwmquery.c,v 1.29 2010-08-09 14:33:12 sezero Exp $
 
 	HWMQUERY 0.2 HexenWorld Master Server Query
-	Copyright (C) 2006-2009 O. Sezer <sezero@users.sourceforge.net>
+	Copyright (C) 2006-2010 O. Sezer <sezero@users.sourceforge.net>
 
 	This program is free software; you can redistribute it and/or
 	modify it under the terms of the GNU General Public License
@@ -33,6 +33,10 @@
 
 #include "arch_def.h"
 #include "compiler.h"
+
+#define	COMPILE_TIME_ASSERT(name, x)	\
+	typedef int dummy_ ## name[(x) * 2 - 1]
+
 #include "net_sys.h"
 #include "qsnprint.h"
 #if defined(PLATFORM_UNIX)

@@ -3,6 +3,17 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2010-09-09 (CVS):
+    * net_sys.h, net_def.h: struct sockaddr has unsigned char sa_len as the
+      first member in BSD variants and the family member is also an unsigned
+      char instead of unsigned short. So, we define HAVE_SA_LEN for those BSD
+      variants and check for the offsetof for the sa_family member and also
+      change the struct qsockaddr to mirror that. This would matter in places
+      such as UDP_AddrCompare():  if one of the two addresses being compared
+      is really a sockaddr that was only cast to qsockaddr and the other is a
+      real qsockaddr, the qsa_family values are different because in the fake
+      qsockaddr, we are reading the sa_len field and not the sa_family field.
+
 2010-06-23 (CVS):
     * updated the directx headers under dxsdk_new from mingw-w64 svn repo rev.
       2611.

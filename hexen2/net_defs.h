@@ -2,7 +2,10 @@
 	net_defs.h
 	functions and data private to the network layer
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/net_defs.h,v 1.2 2010-06-04 09:32:38 sezero Exp $
+	net_sys.h and its dependencies must be included
+	before net_defs.h.
+
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/net_defs.h,v 1.3 2010-08-09 14:33:12 sezero Exp $
 */
 
 #ifndef __NET_DEFS_H
@@ -10,7 +13,12 @@
 
 struct qsockaddr
 {
+#if defined(HAVE_SA_LEN)
+	unsigned char qsa_len;
+	unsigned char qsa_family;
+#else
 	short qsa_family;
+#endif	/* BSD, sockaddr */
 	unsigned char qsa_data[14];
 };
 

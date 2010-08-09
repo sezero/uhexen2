@@ -50,7 +50,7 @@ BUGS
 
 COPYRIGHT
 	Copyright (C) 1998 Michael Dwyer
-	Copyright (C) 2006-2009 O. Sezer
+	Copyright (C) 2006-2010 O. Sezer
 
 	HWTerm is free software;  you can redistribute it and/or modify
 	it under the terms of the GNU General Public License as published
