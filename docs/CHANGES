@@ -3,7 +3,7 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
-2010-09-09 (CVS):
+2010-08-09 (CVS):
     * net_sys.h, net_def.h: struct sockaddr has unsigned char sa_len as the
       first member in BSD variants and the family member is also an unsigned
       char instead of unsigned short. So, we define HAVE_SA_LEN for those BSD
