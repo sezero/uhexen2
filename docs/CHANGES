@@ -3,6 +3,14 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2010-08-22 (CVS):
+    * r_main.c (R_EdgeDrawing): Apparently the x86 assembler code has magic
+      to look for the array vars ledges and lsurfs on the stack, therefore
+      they have to stay as local to R_EdgeDrawing() when compiling with x86
+      asm enabled: added proper id386 ifdefs for them, which fixes the win32
+      version and makes it work again. For normal cases, however, they still
+      stay static.
+
 2010-08-09 (CVS):
     * net_sys.h, net_def.h: struct sockaddr has unsigned char sa_len as the
       first member in BSD variants and the family member is also an unsigned
