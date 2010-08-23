@@ -1,6 +1,6 @@
 /*
 	cd_sdl.c
-	$Id: cd_sdl.c,v 1.19 2010-01-27 16:22:42 sezero Exp $
+	$Id: cd_sdl.c,v 1.20 2010-08-23 16:27:51 sezero Exp $
 
 	Copyright (C) 1996-1997  Id Software, Inc.
 	Taken from the Twilight project with modifications
@@ -394,9 +394,55 @@ void CDAudio_Update(void)
 	}
 }
 
+static const char *get_cddev_arg (const char *arg)
+{
+#if defined(_WIN32)
+/* arg should be like "D:\", make sure it is so,
+ * but tolerate args like "D" or "D:", as well. */
+	static char drive[4];
+	if (!arg || ! *arg)
+		return NULL;
+	if (arg[1] != '\0')
+	{
+		if (arg[1] != ':')
+			return NULL;
+		if (arg[2] != '\0')
+		{
+			if (arg[2] != '\\' &&
+			    arg[2] != '/')
+				return NULL;
+			if (arg[3] != '\0')
+				return NULL;
+		}
+	}
+	if (*arg >= 'A' && *arg <= 'Z')
+	{
+		drive[0] = *arg;
+		drive[1] = ':';
+		drive[2] = '\\';
+		drive[3] = '\0';
+		return drive;
+	}
+	else if (*arg >= 'a' && *arg <= 'z')
+	{
+	/* make it uppercase for SDL */
+		drive[0] = *arg - ('a' - 'A');
+		drive[1] = ':';
+		drive[2] = '\\';
+		drive[3] = '\0';
+		return drive;
+	}
+	return NULL;
+#else
+	if (!arg || ! *arg)
+		return NULL;
+	return arg;
+#endif
+}
+
 int CDAudio_Init(void)
 {
-	int	i, x, sdl_num_drives;
+	int	i, sdl_num_drives;
 
 	if (safemode || COM_CheckParm("-nocdaudio"))
 		return -1;
@@ -416,17 +462,23 @@ int CDAudio_Init(void)
 
 	if ((i = COM_CheckParm("-cddev")) != 0 && i < com_argc - 1)
 	{
-		for (x = 0; x < sdl_num_drives; x++)
+		const char *userdev = get_cddev_arg(com_argv[i+1]);
+		if (!userdev)
 		{
-			if (!q_strcasecmp(SDL_CDName(x), com_argv[i+1]))
+			Con_Printf("Invalid argument to -cddev\n");
+			return -1;
+		}
+		for (i = 0; i < sdl_num_drives; i++)
+		{
+			if (!q_strcasecmp(SDL_CDName(i), userdev))
 			{
-				cd_dev = x;
+				cd_dev = i;
 				break;
 			}
 		}
 		if (cd_dev == -1)
 		{
-			Con_Printf("SDL couldn't find cdrom device %s\n", com_argv[i+1]);
+			Con_Printf("SDL couldn't find cdrom device %s\n", userdev);
 			return -1;
 		}
 	}
