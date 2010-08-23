@@ -1,5 +1,5 @@
 Hexen II: Hammer of Thyrion (uhexen2), CVS snapshot / pre-release,
-Version 1.4.4-pre9 / Aug. 20, 2010
+Version 1.4.4-pre9 / Aug. 23, 2010
 
 Changes since the HoT-1.4.3 release:
 
@@ -16,6 +16,8 @@ Changes since the HoT-1.4.3 release:
 * filesystem: fixed an oversight with builds without user directories, where
   the "-basedir" command line argument failed to change the internal userdir
   variables.
+* windows cdaudio: added -cddev as a new command line option for choosing the
+  cdrom drive to use.  syntax: -cddev E
 * net: made the socket api usage compatible with windows especially with
   relation to 64 bit windows.
 * net (hexen2): fixed BSD and Mac OS X socket api usage.

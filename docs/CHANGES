@@ -4,6 +4,10 @@ Development Progress	:
 ---------------------------
 
 2010-08-23 (CVS):
+    * cd_win.c: Added -cddev as a new command line option for choosing the
+      cdrom drive to use. Syntax: -cddev <DriveLetter>
+
+2010-08-23 (CVS):
     * vid_mgl4.c: Copied from vid_win.c. SciTech MGL is for Win32-x86 only.
     * vid_win.c: Added a new version of windows software video driver based
       on Quake2 and an initial work by MH with many modifications to make

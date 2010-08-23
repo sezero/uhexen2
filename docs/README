@@ -195,6 +195,8 @@ Important command-line switches:
  -sndspeed N		Sampling rate of sound playback (eg 22050,44100)
  -cddev			CD Audio device to use (default:
 				/dev/cdrom for linux, /dev/acd0 for BSD)
+				For windows, use a single drive letter, like:
+				glh2 -cddev E
  -nocdaudio		Disable cdrom music
  -nomidi		Disable MIDI music
  -s | -nosound		Run the game without sound

@@ -2,7 +2,7 @@
 	cd_win.c
 	Win32 cdaudio code
 
-	$Id: cd_win.c,v 1.22 2008-12-28 14:34:34 sezero Exp $
+	$Id: cd_win.c,v 1.23 2010-08-23 16:21:31 sezero Exp $
 
 	Quake is a trademark of Id Software, Inc., (c) 1996 Id Software, Inc. All
 	rights reserved.
@@ -461,21 +461,85 @@ static void CD_SetVolume(unsigned long Volume)
 }
 #endif	/* USE_AUX_API */
 
+static const char *get_cddev_arg (const char *arg)
+{
+/* arg should be like "D", "D:" or "D:\", make
+ * sure it is so. Also check if this is really
+ * a CDROM drive. */
+	static char drive[4];
+	if (!arg || ! *arg)
+		return NULL;
+	if (arg[1] != '\0')
+	{
+		if (arg[1] != ':')
+			return NULL;
+		if (arg[2] != '\0')
+		{
+			if (arg[2] != '\\' &&
+			    arg[2] != '/')
+				return NULL;
+			if (arg[3] != '\0')
+				return NULL;
+		}
+	}
+	if (*arg >= 'A' && *arg <= 'Z')
+	{
+		drive[0] = *arg;
+		drive[1] = ':';
+		drive[2] = '\\';
+		drive[3] = '\0';
+	}
+	else if (*arg >= 'a' && *arg <= 'z')
+	{
+	/* make it uppercase */
+		drive[0] = *arg - ('a' - 'A');
+		drive[1] = ':';
+		drive[2] = '\\';
+		drive[3] = '\0';
+	}
+	else
+	{
+		return NULL;
+	}
+	if (GetDriveType(drive) != DRIVE_CDROM)
+	{
+		Con_Printf("%c is not a CDROM drive\n", drive[0]);
+		return NULL;
+	}
+	drive[2] = '\0';
+	return drive;
+}
+
 int CDAudio_Init(void)
 {
 	DWORD	dwReturn;
 	MCI_OPEN_PARMS	mciOpenParms;
 	MCI_SET_PARMS	mciSetParms;
+	const char	*userdev = NULL;
 	int	n;
 
 	if (safemode || COM_CheckParm("-nocdaudio"))
 		return -1;
 
+	if ((n = COM_CheckParm("-cddev")) != 0 && n < com_argc - 1)
+	{
+		userdev = get_cddev_arg(com_argv[n + 1]);
+		if (!userdev)
+		{
+			Con_Printf("Invalid argument to -cddev\n");
+			return -1;
+		}
+		mciOpenParms.lpstrElementName = userdev;
+	}
+
 	mciOpenParms.lpstrDeviceType = "cdaudio";
 	dwReturn = mciSendCommand(0, MCI_OPEN, MCI_OPEN_TYPE | MCI_OPEN_SHAREABLE, (DWORD_PTR) (LPVOID) &mciOpenParms);
+	if (!userdev)
+		userdev = "default cdrom";
 	if (dwReturn)
 	{
-		Con_Printf("%s: MCI_OPEN failed (%u)\n", __thisfunc__, (unsigned int)dwReturn);
+		Con_Printf("%s: MCI_OPEN failed for %s (%u)\n",
+				__thisfunc__, userdev, (unsigned int)dwReturn);
 		return -1;
 	}
 	wDeviceID = mciOpenParms.wDeviceID;
