@@ -1,6 +1,6 @@
 /*
 	cd_sdl.c
-	$Id: cd_sdl.c,v 1.21 2010-08-23 17:21:40 sezero Exp $
+	$Id: cd_sdl.c,v 1.22 2010-08-23 23:55:17 sezero Exp $
 
 	Copyright (C) 1996-1997  Id Software, Inc.
 	Taken from the Twilight project with modifications
@@ -448,8 +448,8 @@ static void export_cddev_arg (void)
 	int i = COM_CheckParm("-cddev");
 	if (i != 0 && i < com_argc - 1 && com_argv[i+1][0] != '\0')
 	{
-		char arg[64];
-		q_snprintf("SDL_CDROM=%s", sizeof(arg), com_argv[i+1]);
+		static char arg[64];
+		q_snprintf(arg, sizeof(arg), "SDL_CDROM=%s", com_argv[i+1]);
 		putenv(arg);
 	}
 #endif
