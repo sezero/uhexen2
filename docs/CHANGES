@@ -4,6 +4,10 @@ Development Progress	:
 ---------------------------
 
 2010-08-23 (CVS):
+    * cd_sdl.c (export_cddev_arg): New helper function, a bad and ugly hack
+      to work around SDL's cdrom device detection when it doesn't work on
+      unix-like platforms and doesn't recognize the user's choice of device.
+      Called it from CDAudio_Init() before initializing SDL_cdrom.
     * cd_sdl.c: Updated -cddev argument parsing based on the code we added
       to quakespasm.
     * cd_win.c: Added -cddev as a new command line option for choosing the

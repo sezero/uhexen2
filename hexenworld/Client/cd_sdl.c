@@ -1,6 +1,6 @@
 /*
 	cd_sdl.c
-	$Id: cd_sdl.c,v 1.20 2010-08-23 16:27:51 sezero Exp $
+	$Id: cd_sdl.c,v 1.21 2010-08-23 17:21:40 sezero Exp $
 
 	Copyright (C) 1996-1997  Id Software, Inc.
 	Taken from the Twilight project with modifications
@@ -440,12 +440,29 @@ static const char *get_cddev_arg (const char *arg)
 #endif
 }
 
+static void export_cddev_arg (void)
+{
+/* Bad ugly hack to workaround SDL's cdrom device detection.
+ * not needed for windows due to the way SDL_cdrom works. */
+#if !defined(_WIN32)
+	int i = COM_CheckParm("-cddev");
+	if (i != 0 && i < com_argc - 1 && com_argv[i+1][0] != '\0')
+	{
+		char arg[64];
+		q_snprintf("SDL_CDROM=%s", sizeof(arg), com_argv[i+1]);
+		putenv(arg);
+	}
+#endif
+}
+
 int CDAudio_Init(void)
 {
 	int	i, sdl_num_drives;
 
 	if (safemode || COM_CheckParm("-nocdaudio"))
 		return -1;
+
+	export_cddev_arg();
 
 	if (SDL_InitSubSystem(SDL_INIT_CDROM) == -1)
 	{
