@@ -16,8 +16,6 @@ TODO:
   and even 4 for 32 bit)? The current code is largely missing
   translucency pieces and the d_8to16 and d_8to24 translation
   tables.
-- Add a direct draw video driver, like the one in quake2, for
-  mgl-free win64 software renderer support
 - HexenWorld: Spectator mode (chasecam) isn't as it should be,
   compare with the quakeworld code and fix.
 - MorphOS: the port isn't touched since 1.4.0-prerelease times,

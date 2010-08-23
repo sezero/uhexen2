@@ -3,6 +3,21 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2010-08-23 (CVS):
+    * vid_mgl4.c: Copied from vid_win.c. SciTech MGL is for Win32-x86 only.
+    * vid_win.c: Added a new version of windows software video driver based
+      on Quake2 and an initial work by MH with many modifications to make
+      it work in uhexen2. Uses only DIB sections/GDI for now. Compiles and
+      works for both win32 (both x86-asm and C-only) and for win64 (C-only).
+      - TODO: Add back more low resolutions.
+      - TODO: Add DDRAW (see Quake2)
+      - TODO: Better video mode management? Early config reading?
+    * Makefiles: Added USE_MGL a new variable for windows targets, adjusted
+      for mgl and dib/gdi video drivers.
+    * build_cross_win64.sh: Software renderer works for Win64 now. Adjusted
+      the cross-compilation scripts.
+    * TODO file: Updated.
+
 2010-08-22 (CVS):
     * r_main.c (R_EdgeDrawing): Apparently the x86 assembler code has magic
       to look for the array vars ledges and lsurfs on the stack, therefore

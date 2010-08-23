@@ -7,8 +7,8 @@ if test "$1" = "strip"; then
 	echo "Stripping all HexenWorld binaries"
 	$STRIPPER Master/hwmaster.exe	\
 		Server/hwsv.exe	\
+		Client/hwcl.exe	\
 		Client/glhwcl.exe
-#		Client/hwcl.exe	\
 	exit 0
 fi
 
@@ -39,8 +39,8 @@ $MAKE_CMD -C Server $* || exit 1
 echo "" && echo "Building HexenWorld Master Server"
 $MAKE_CMD -C Master $* || exit 1
 
-#echo "" && echo "Building HexenWorld Client (Software renderer)"
-#$MAKE_CMD -C Client $* hw || exit 1
+echo "" && echo "Building HexenWorld Client (Software renderer)"
+$MAKE_CMD -C Client $* hw || exit 1
 
 echo "" && echo "Building HexenWorld Client (OpenGL renderer)"
 $MAKE_CMD -C Client clean

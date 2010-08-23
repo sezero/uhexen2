@@ -1,5 +1,5 @@
 # GNU Makefile for hexenworld clients using GCC.
-# $Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/Makefile,v 1.93 2010-06-03 21:20:23 sezero Exp $
+# $Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/Makefile,v 1.94 2010-08-23 00:20:31 sezero Exp $
 #
 # Type "make help" to see the valid targets.
 #
@@ -62,6 +62,11 @@
 #
 # WITH_SPLASHES	yes  =	(default) enable startup splash screens
 # (for Win32)	no   =	disable startup splash screens
+#
+# USE_MGL	yes  =	Use SciTech MGL for Win32 software video driver.
+#			Defaults to yes for x86. Force-set to no for Win64.
+# (for Win32)	no   =	Use the DIB/GDI-only compatibility software video
+#			driver, which is the default for Win64.
 #
 # USE_WINSOCK2	yes  =	Use WinSock2 and link to ws2_32 instead of wsock32
 # (for Win32)	no   =	(default) Use WinSock1.1 for compatibility with old
@@ -126,6 +131,7 @@ USE_MIDI=yes
 USE_CDAUDIO=yes
 USE_SDLCD=no
 WITH_SPLASHES=yes
+USE_MGL=yes
 USE_WINSOCK2=no
 LINK_DIRECTX=no
 OPT_EXTRA=yes
@@ -151,6 +157,8 @@ endif
 endif
 
 ifeq ($(TARGET_OS),win64)
+# cant use MGL for Win64
+USE_MGL=no
 # use winsock2 for win64
 USE_WINSOCK2=yes
 endif
@@ -209,6 +217,12 @@ ifeq ($(USE_WINSOCK2),yes)
 LIBWINSOCK=-lws2_32
 else
 LIBWINSOCK=-lwsock32
+endif
+
+ifneq ($(USE_MGL),yes)
+MGL_FLAG:=
+MGL_INCL:=
+MGL_LINK:=
 endif
 
 ifeq ($(TARGET_OS),win32)
@@ -457,7 +471,11 @@ endif
 ifeq ($(TARGET_OS),win32)
 SYSOBJ_INPUT := win_stuff/in_win.o
 SYSOBJ_GL_VID:= win_stuff/gl_vidnt.o
+ifeq ($(USE_MGL),yes)
+SYSOBJ_SOFT_VID:= win_stuff/vid_mgl4.o
+else
 SYSOBJ_SOFT_VID:= win_stuff/vid_win.o
+endif
 SYSOBJ_SYS := win_stuff/sys_win.o win32res.res
 endif
 ifeq ($(TARGET_OS),win64)

@@ -22,17 +22,12 @@ freebsd|openbsd|netbsd)
 	;;
 esac
 
-if test "$1" = "hw" -o "$1" = "hwcl.exe" -o "$1" = "hwcl"; then
-	echo "Software renderer hwcl.exe isn't supported for Win64 builds yet."
-	exit 1
-fi
-
 if test "$1" = "all"; then
 	$MAKE_CMD clean
 	$MAKE_CMD $2 $3 $4 $5 $6 glhw || exit 1
 	$MAKE_CMD clean
-#	$MAKE_CMD $2 $3 $4 $5 $6 hw || exit 1
-#	$MAKE_CMD clean
+	$MAKE_CMD $2 $3 $4 $5 $6 hw || exit 1
+	$MAKE_CMD clean
 	exit 0
 fi
 
