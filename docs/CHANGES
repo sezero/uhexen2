@@ -3,6 +3,9 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2010-08-24 (CVS):
+    * Bumped the version numbers for 1.4.4-pre10 / Aug. 23, 2010.
+
 2010-08-23 (CVS):
     * updated the MS Visual Studio project files after the software renderer
       updates.
