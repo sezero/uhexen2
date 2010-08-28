@@ -1,6 +1,6 @@
 /*
 	gl_vidnt.c -- NT GL vid component
-	$Id: gl_vidnt.c,v 1.126 2010-03-23 18:00:09 sezero Exp $
+	$Id: gl_vidnt.c,v 1.127 2010-08-28 10:05:24 sezero Exp $
 */
 
 #define	__GL_FUNC_EXTERN
@@ -1321,8 +1321,6 @@ static void AppActivate (BOOL fActive, BOOL minimize)
 	{
 		if (modestate == MS_FULLDIB)
 		{
-			IN_ActivateMouse ();
-			IN_HideMouse ();
 			if (vid_canalttab && vid_wassuspended)
 			{
 				vid_wassuspended = false;
@@ -1332,11 +1330,15 @@ static void AppActivate (BOOL fActive, BOOL minimize)
 				MoveWindow(mainwindow, 0, 0, gdevmode.dmPelsWidth,
 						gdevmode.dmPelsHeight, false);
 			}
+			IN_ActivateMouse ();
+			IN_HideMouse ();
 		}
 		else if (modestate == MS_WINDOWED && _enable_mouse.integer)
 		{
-			IN_ActivateMouse ();
-			IN_HideMouse ();
+		//	IN_ActivateMouse ();
+		//	IN_HideMouse ();
+		// S.A. Don't reactivate mouse if windowed && !direct input
+			IN_RestoreMouse ();
 		}
 		VID_ShiftPalette(NULL);
 	}

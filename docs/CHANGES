@@ -3,6 +3,18 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2010-08-28 (CVS): Windows mouse fixes from Steven:
+    * in_win.c (IN_RestoreMouse): New procedure, calling IN_ActivateMouse()
+      and IN_HideMouse() only for direct input driver.
+      (IN_ActivateMouse): Check for _enable_mouse cvar before activating,
+      also hide the cursor.
+    * vid_win.c (AppActivate): Call the new IN_RestoreMouse() in windowed
+      mode instead of IN_ActivateMouse().
+    * vid_mgl4.c (AppActivate): Same as in vid_win.c.
+    * gl_vidnt.c (AppActivate): Same as in vid_win.c. Deal with the mouse
+      after finishing with the window operations.
+    * input.h (IN_RestoreMouse): Add prototype.
+
 2010-08-24 (CVS):
     * Bumped the version numbers for 1.4.4-pre10 / Aug. 23, 2010.
 

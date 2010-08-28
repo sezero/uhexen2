@@ -1,6 +1,6 @@
 /*
 	in_win.c
-	$Id: in_win.c,v 1.34 2008-12-28 14:34:34 sezero Exp $
+	$Id: in_win.c,v 1.35 2010-08-28 10:05:24 sezero Exp $
 
 	windows 95 mouse and joystick code
 
@@ -237,8 +237,9 @@ void IN_ActivateMouse (void)
 
 	mouseactivatetoggle = true;
 
-	if (mouseinitialized)
+	if (mouseinitialized && _enable_mouse.integer)
 	{
+		IN_HideMouse();
 		if (dinput_init)
 		{
 			if (g_pMouse)
@@ -269,6 +270,16 @@ void IN_ActivateMouse (void)
 }
 
 
+void IN_RestoreMouse (void)
+{
+// S.A -- only reactivate if direct mouse enabled
+	if (dinput_init) {
+		IN_ActivateMouse ();
+		IN_HideMouse ();
+	}
+}
+
+
 /*
 ===========
 IN_SetQuakeMouseState
@@ -293,6 +304,7 @@ void IN_DeactivateMouse (void)
 
 	if (mouseinitialized)
 	{
+		IN_ShowMouse();
 		if (dinput_init)
 		{
 			if (g_pMouse)

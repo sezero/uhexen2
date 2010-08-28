@@ -2,7 +2,7 @@
 	input.h
 	external (non-keyboard) input devices
 
-	$Id: input.h,v 1.10 2008-04-02 19:10:34 sezero Exp $
+	$Id: input.h,v 1.11 2010-08-28 10:05:24 sezero Exp $
 */
 
 #ifndef __HX2_INPUT_H
@@ -42,6 +42,7 @@ void IN_ClearStates (void);
 void IN_Accumulate (void);
 void IN_SetQuakeMouseState (void);
 void IN_RestoreOriginalMouseState (void);
+void IN_RestoreMouse (void); // S.A. Don't reactivate mouse if windowed && !direct input
 void IN_UpdateClipCursor (void);
 #else	/* not used by other drivers */
 #define IN_MouseEvent(E)

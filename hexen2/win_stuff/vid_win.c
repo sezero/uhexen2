@@ -9,7 +9,7 @@
 	- TODO: Add DDRAW (see Quake2)
 	- TODO: Better video mode management? Early config reading?
 
-	$Id: vid_win.c,v 1.67 2010-08-23 00:20:31 sezero Exp $
+	$Id: vid_win.c,v 1.68 2010-08-28 10:05:24 sezero Exp $
 
 	Copyright (C) 1996-1997  Id Software, Inc.
 
@@ -1850,8 +1850,10 @@ static void AppActivate (BOOL fActive, BOOL minimize)
 			}
 			else if (modestate == MS_WINDOWED && _enable_mouse.integer)
 			{
-				IN_ActivateMouse ();
-				IN_HideMouse ();
+			//	IN_ActivateMouse ();
+			//	IN_HideMouse ();
+			// S.A. Don't reactivate mouse if windowed && !direct input
+				IN_RestoreMouse ();
 			}
 		}
 

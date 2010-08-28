@@ -2,7 +2,7 @@
 	vid_mgl4.c
 	Win32 video driver using SciTech MGL-4.05
 
-	$Id: vid_mgl4.c,v 1.1 2010-08-23 00:20:31 sezero Exp $
+	$Id: vid_mgl4.c,v 1.2 2010-08-28 10:05:25 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -2898,8 +2898,10 @@ static void AppActivate (BOOL fActive, BOOL minimize)
 			}
 			else if (modestate == MS_WINDOWED && _enable_mouse.integer)
 			{
-				IN_ActivateMouse ();
-				IN_HideMouse ();
+			//	IN_ActivateMouse ();
+			//	IN_HideMouse ();
+			// S.A. Don't reactivate mouse if windowed && !direct input
+				IN_RestoreMouse ();
 			}
 		}
 
