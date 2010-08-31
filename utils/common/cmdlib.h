@@ -1,7 +1,7 @@
 /*
 	cmdlib.h
 
-	$Id: cmdlib.h,v 1.27 2010-02-22 22:22:42 sezero Exp $
+	$Id: cmdlib.h,v 1.28 2010-08-31 13:32:08 sezero Exp $
 */
 
 #ifndef __CMDLIB_H__
@@ -53,7 +53,8 @@ extern size_t q_strlcat (char *dst, const char *src, size_t size);
 #endif
 
 extern int q_snprintf (char *str, size_t size, const char *format, ...) __attribute__((__format__(__printf__,3,4)));
-extern int q_vsnprintf(char *str, size_t size, const char *format, va_list args);
+extern int q_vsnprintf(char *str, size_t size, const char *format, va_list args)
+									__attribute__((__format__(__printf__,3,0)));
 
 /* these qerr_ versions of functions error out if they detect, well, an error.
  * their first two arguments must the name of the caller function (see compiler.h

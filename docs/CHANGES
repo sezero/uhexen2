@@ -4,6 +4,7 @@ Development Progress	:
 ---------------------------
 
 2010-08-31 (CVS):
+    * hexen2, hewenworld, utils: add printf format attribute to q_vsnprintf()
     * hexen2/host_cmd.c (Host_Say_f, Host_Tell_f): Remove trailing quote
       only if it is present. Adjustments, mostly inspired from the darkplaces
       engine.
