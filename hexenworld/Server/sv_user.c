@@ -2,7 +2,7 @@
 	sv_user.c
 	server code for moving users
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Server/sv_user.c,v 1.29 2010-03-09 15:00:28 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Server/sv_user.c,v 1.30 2010-08-31 12:37:32 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -602,7 +602,11 @@ static void SV_Say (qboolean team)
 	{
 		q_strlcat(text, p, sizeof(text));
 		if (j == 1)	// remove trailing quotes
-			text[strlen(text)-1] = '\0';
+		{
+			j = strlen(text) - 1;
+			if (text[j] == '"')
+				text[j] = '\0';
+		}
 		q_strlcat(text, "\n", sizeof(text));
 	}
 

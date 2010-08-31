@@ -2,7 +2,7 @@
 	host_cmd.c
 	console commands
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host_cmd.c,v 1.105 2010-03-09 15:00:26 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host_cmd.c,v 1.106 2010-08-31 12:37:32 sezero Exp $
 */
 
 #include "q_stdinc.h"
@@ -1386,11 +1386,12 @@ static void Host_Version_f (void)
 
 static void Host_Say (qboolean teamonly)
 {
-	int		j = 0;
+	int		j;
 	client_t	*client;
 	client_t	*save;
 	const char	*p;
-	char		text[64];
+	char		text[64], *p2;
+	qboolean	quoted;
 	qboolean	fromServer = false;
 
 	if (cmd_source == src_command)
@@ -1413,25 +1414,40 @@ static void Host_Say (qboolean teamonly)
 	save = host_client;
 
 	p = Cmd_Args();
-
 // remove quotes if present
-	if (*p == '"')
+	quoted = false;
+	if (*p == '\"')
 	{
 		p++;
-		j = 1;
+		quoted = true;
 	}
-
 // turn on color set 1
 	if (!fromServer)
-		q_snprintf (text, sizeof(text), "%c%s: ", 1, save->name);
+		q_snprintf (text, sizeof(text), "\001%s: %s", save->name, p);
 	else
-		q_snprintf (text, sizeof(text), "%c<%s> ", 1, hostname.string);
+		q_snprintf (text, sizeof(text), "\001<%s> %s", hostname.string, p);
 
-	q_strlcat (text, p, sizeof(text));
-	if (j == 1)	// remove trailing quotes
-		text[strlen(text)-1] = '\0';
-	if (q_strlcat (text, "\n", sizeof(text)) >= sizeof(text))
-		text[sizeof(text)-2] = '\n';
+// check length & truncate if necessary
+	j = strlen(text);
+	if (j >= sizeof(text) - 1)
+	{
+		text[sizeof(text) - 2] = '\n';
+		text[sizeof(text) - 1] = '\0';
+	}
+	else
+	{
+		p2 = text + j;
+		while ((const char *)p2 > (const char *)text &&
+			(p2[-1] == '\r' || p2[-1] == '\n' || (p2[-1] == '\"' && quoted)) )
+		{
+			if (p2[-1] == '\"' && quoted)
+				quoted = false;
+			p2[-1] = '\0';
+			p2--;
+		}
+		p2[0] = '\n';
+		p2[1] = '\0';
+	}
 
 	for (j = 0, client = svs.clients; j < svs.maxclients; j++, client++)
 	{
@@ -1444,7 +1460,8 @@ static void Host_Say (qboolean teamonly)
 	}
 	host_client = save;
 
-	Sys_Printf("%s", &text[1]);
+	if (cls.state == ca_dedicated)
+		Sys_Printf("%s", &text[1]);
 }
 
 
@@ -1462,11 +1479,12 @@ static void Host_Say_Team_f (void)
 
 static void Host_Tell_f (void)
 {
-	int		j = 0;
+	int		j;
 	client_t	*client;
 	client_t	*save;
 	const char	*p;
-	char		text[64];
+	char		text[64], *p2;
+	qboolean	quoted;
 
 	if (cmd_source == src_command)
 	{
@@ -1477,31 +1495,43 @@ static void Host_Tell_f (void)
 	if (Cmd_Argc () < 3)
 		return;
 
-	q_strlcpy(text, host_client->name, sizeof(text));
-	q_strlcat(text, ": ", sizeof(text));
-
 	p = Cmd_Args();
-
 // remove quotes if present
-	if (*p == '"')
+	quoted = false;
+	if (*p == '\"')
 	{
 		p++;
-		j = 1;
+		quoted = true;
 	}
+	q_snprintf (text, sizeof(text), "%s: %s", host_client->name, p);
 
 // check length & truncate if necessary
-	q_strlcat (text, p, sizeof(text));
-	if (j == 1)	// remove trailing quotes
-		text[strlen(text)-1] = '\0';
-	if (q_strlcat (text, "\n", sizeof(text)) >= sizeof(text))
-		text[sizeof(text)-2] = '\n';
+	j = strlen(text);
+	if (j >= sizeof(text) - 1)
+	{
+		text[sizeof(text) - 2] = '\n';
+		text[sizeof(text) - 1] = '\0';
+	}
+	else
+	{
+		p2 = text + j;
+		while ((const char *)p2 > (const char *)text &&
+			(p2[-1] == '\r' || p2[-1] == '\n' || (p2[-1] == '\"' && quoted)) )
+		{
+			if (p2[-1] == '\"' && quoted)
+				quoted = false;
+			p2[-1] = '\0';
+			p2--;
+		}
+		p2[0] = '\n';
+		p2[1] = '\0';
+	}
 
 	save = host_client;
 	for (j = 0, client = svs.clients; j < svs.maxclients; j++, client++)
 	{
 		if (!client->active || !client->spawned)
 			continue;
-
 		if (q_strcasecmp(client->name, Cmd_Argv(1)))
 			continue;
 		host_client = client;

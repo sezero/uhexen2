@@ -3,6 +3,12 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2010-08-31 (CVS):
+    * hexen2/host_cmd.c (Host_Say_f, Host_Tell_f): Remove trailing quote
+      only if it is present. Adjustments, mostly inspired from the darkplaces
+      engine.
+    * hexenworld/sv_user.c (SV_Say): Remove trailing quote only if present.
+
 2010-08-28 (CVS): Windows mouse fixes from Steven:
     * in_win.c (IN_RestoreMouse): New procedure, calling IN_ActivateMouse()
       and IN_HideMouse() only for direct input driver.
