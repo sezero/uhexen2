@@ -2,7 +2,7 @@
 	keys.c
 	key up events are sent even if in console mode
 
-	$Id: keys.c,v 1.44 2010-04-24 17:56:54 sezero Exp $
+	$Id: keys.c,v 1.45 2010-10-04 07:33:30 sezero Exp $
 
 	Copyright (C) 1996-1997  Id Software, Inc.
 	Copyright (C) 2006-2007  O.Sezer
@@ -670,8 +670,7 @@ void Key_SetBinding (int keynum, const char *binding)
 // allocate memory for new binding
 	if (binding)
 	{
-		keybindings[keynum] = (char *) Z_Malloc(strlen(binding) + 1, Z_MAINZONE);
-		strcpy(keybindings[keynum], binding);
+		keybindings[keynum] = Z_Strdup(binding);
 	}
 }
 

@@ -2,7 +2,7 @@
 	cmd.c
 	Quake script command processing module
 
-	$Id: cmd.c,v 1.41 2007-11-16 10:23:16 sezero Exp $
+	$Id: cmd.c,v 1.42 2010-10-04 07:33:30 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -392,8 +392,7 @@ static void Cmd_Alias_f (void)
 		cmd[1] = 0;
 	}
 
-	a->value = (char *) Z_Malloc (strlen(cmd) + 1, Z_MAINZONE);
-	strcpy (a->value, cmd);
+	a->value = Z_Strdup (cmd);
 }
 
 /*
@@ -542,8 +541,7 @@ void Cmd_TokenizeString (const char *text)
 
 		if (cmd_argc < MAX_ARGS)
 		{
-			cmd_argv[cmd_argc] = (char *) Z_Malloc (strlen(com_token)+1, Z_MAINZONE);
-			strcpy (cmd_argv[cmd_argc], com_token);
+			cmd_argv[cmd_argc] = Z_Strdup (com_token);
 			cmd_argc++;
 		}
 	}
