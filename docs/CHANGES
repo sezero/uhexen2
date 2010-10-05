@@ -3,6 +3,9 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2010-10-05 (CVS):
+    * Updated README and Features files.
+
 2010-10-04 (CVS):
     * replace several occasions of Z_Malloc() + strcpy() by Z_Strdup().
 
