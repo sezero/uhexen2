@@ -2,7 +2,7 @@
 	pr_exec.c
 	PROGS execution
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Server/pr_exec.c,v 1.28 2010-10-11 09:35:17 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Server/pr_exec.c,v 1.29 2010-10-11 09:41:21 sezero Exp $
 */
 
 // HEADER FILES ------------------------------------------------------------
@@ -34,6 +34,15 @@ typedef struct
 	int		s;
 	dfunction_t	*f;
 } prstack_t;
+
+/* switch types */
+enum {
+	SWITCH_F,
+	SWITCH_V,
+	SWITCH_S,
+	SWITCH_E,
+	SWITCH_FNC
+};
 
 // EXTERNAL FUNCTION PROTOTYPES --------------------------------------------
 
@@ -116,15 +125,6 @@ static const char *pr_opnames[] =
 	"OP_CASE",
 	"OP_CASERANGE"
 
-};
-
-/* switch types */
-enum {
-	SWITCH_F,
-	SWITCH_V,
-	SWITCH_S,
-	SWITCH_E,
-	SWITCH_FNC
 };
 
 // CODE --------------------------------------------------------------------
