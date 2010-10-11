@@ -3,6 +3,12 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2010-10-11 (CVS):
+    * pr_exec.c: Increased MAX_STACK_DEPTH from 32 to 64.  Prevents a rare
+      stack overflow error when battling bosses with assassin class, using
+      the tome of power and launching at the enemy A LOT of projectiles.
+      The problem was reported and the fix was tested by Ruber Eaglenest.
+
 2010-10-05 (CVS):
     * Updated README and Features files.
 

@@ -2,7 +2,7 @@
 	pr_exec.c
 	PROGS execution
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/pr_exec.c,v 1.28 2010-06-01 12:11:35 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/pr_exec.c,v 1.29 2010-10-11 09:35:17 sezero Exp $
 */
 
 // HEADER FILES ------------------------------------------------------------
@@ -12,11 +12,11 @@
 
 // MACROS ------------------------------------------------------------------
 
-#define MAX_STACK_DEPTH 32
-#define LOCALSTACK_SIZE 2048
+#define MAX_STACK_DEPTH	64	/* was 32 */
+#define LOCALSTACK_SIZE	2048
 
 #if defined(_MSC_VER) && defined(_M_IX86) && defined(DEBUG_BUILD)
-// Uses the Pentium specific opcode RDTSC (ReaD TimeStamp Counter)
+/* Uses the Pentium specific opcode RDTSC (ReaD TimeStamp Counter) */
 #define TIMESNAP_ACTIVE
 #define TIMESNAP(clock) __asm push eax\
 	__asm push edx\
@@ -118,6 +118,15 @@ static const char *pr_opnames[] =
 
 };
 
+/* switch types */
+enum {
+	SWITCH_F,
+	SWITCH_V,
+	SWITCH_S,
+	SWITCH_E,
+	SWITCH_FNC
+};
+
 // CODE --------------------------------------------------------------------
 
 //==========================================================================
@@ -125,9 +134,6 @@ static const char *pr_opnames[] =
 // PR_ExecuteProgram
 //
 //==========================================================================
-
-//switch types
-enum {SWITCH_F,SWITCH_V,SWITCH_S,SWITCH_E,SWITCH_FNC};
 
 void PR_ExecuteProgram (func_t fnum)
 {
