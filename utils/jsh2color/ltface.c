@@ -19,7 +19,7 @@
 
 /*
 	ltface.c
-	$Id: ltface.c,v 1.12 2007-12-14 16:41:23 sezero Exp $
+	$Id: ltface.c,v 1.13 2010-10-24 08:35:47 sezero Exp $
 
 	Modifications by Kevin Shanahan, 1999-2000
 */
@@ -88,7 +88,14 @@ towards the center until it is valid.
 ===============================================================================
 */
 
-#define	SINGLEMAP	(18*18*4)
+/* FIXME: HACK HACK HACK:  TEX_SPECIAL cases don't fit into 18*18 lightmap
+ * size and the code still wants to play them (see TestLightFace() calling
+ * CalcFaceExtents() with a no-failure flag), so I bumped the SINGLEMAP
+ * definition from 18*18*4 to 64*64*4.  Otherwise the surf pointer goes out
+ * of bounds in CalcPoints() and also probably in SingleLightFace(),
+ * SkyLightFace() and TestSingleLightFace() and overwrites other data
+ * resulting in stack corruption:  See the Error() statements down below.  */
+#define	SINGLEMAP	(64*64*4)	// (18*18*4)
 
 typedef struct
 {
@@ -322,6 +329,8 @@ static void CalcPoints (lightinfo_t *l)
 	{
 		for (s = 0 ; s < w ; s++, surf+=3)
 		{
+			if (surf > l->surfpt[SINGLEMAP - 1])
+				Error ("%s: surf out of bounds (numsurfpt=%d)", __thisfunc__, l->numsurfpt);
 			us = starts + s*step;
 			ut = startt + t*step;
 
@@ -537,6 +546,8 @@ static void SingleLightFace (entity_t *light, lightinfo_t *l, vec3_t faceoffset,
 	surf = l->surfpt[0];
 	for (c = 0 ; c < l->numsurfpt ; c++, surf+=3)
 	{
+		if (surf > l->surfpt[SINGLEMAP - 1])
+			Error ("%s: surf out of bounds (numsurfpt=%d)", __thisfunc__, l->numsurfpt);
 		//dist = CastRay(light->origin, surf)*scaledist;
 		dist = scaledDistance(CastRay(light->origin, surf), light);
 		if (dist < 0)
@@ -634,6 +645,8 @@ void SkyLightFace (lightinfo_t *l, vec3_t faceoffset)
 	surf = l->surfpt[0];
 	for (j = 0 ; j < l->numsurfpt ; j++, surf+=3)
 	{
+		if (surf > l->surfpt[SINGLEMAP - 1])
+			Error ("%s: surf out of bounds (numsurfpt=%d)", __thisfunc__, l->numsurfpt);
 		if (TestSky(surf, sunmangle))
 		{
 			l->lightmaps[i][j] += (angle*sunlight);
@@ -1117,6 +1130,8 @@ static void TestSingleLightFace (entity_t *light, lightinfo_t *l, vec3_t faceoff
 	// faces may have a light that only hits the middle.
 	for (c = 0 ; c < l->numsurfpt ; c++, surf+=3)
 	{
+		if (surf > l->surfpt[SINGLEMAP - 1])
+			Error ("%s: surf out of bounds (numsurfpt=%d)", __thisfunc__, l->numsurfpt);
 		dist = scaledDistance(CastRay(light->origin, surf), light);
 
 		if (dist < 0)

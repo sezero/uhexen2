@@ -3,7 +3,16 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
-2010-10-11 (CVS):
+2010-10-24 (CVS):
+    * jsh2color/ltface.c (SINGLEMAP): TEX_SPECIAL cases don't fit into 18*18
+      lightmap size and the code still wants to play them (see TestLightFace()
+      calling CalcFaceExtents() with a no-failure flag), so I bumped the
+      SINGLEMAP definition from 18*18*4 to 64*64*4. Otherwise the surf pointer
+      goes out of bounds in CalcPoints() and also probably in SingleLightFace(),
+      SkyLightFace() and TestSingleLightFace() and overwrites other data
+      resulting in stack corruption. Added bound checks and Error() statements
+      in the relevant functions.  This is surely a workaround, better solutions
+      are welcome.
     * cmd.c (Cmd_StuffCmds_f): Fix so that arguments to commands can have '-'
       or '+' within their names.  A command like "hexen2 +map mymap-01" works
       properly now.
