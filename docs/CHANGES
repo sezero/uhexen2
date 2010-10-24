@@ -16,6 +16,7 @@ Development Progress	:
     * cmd.c (Cmd_StuffCmds_f): Fix so that arguments to commands can have '-'
       or '+' within their names.  A command like "hexen2 +map mymap-01" works
       properly now.
+    * Updated the release notes file for 1.4.4.
 
 2010-10-11 (CVS):
     * pr_exec.c: Increased MAX_STACK_DEPTH from 32 to 64.  Prevents a rare

@@ -1,5 +1,5 @@
 Hexen II: Hammer of Thyrion (uhexen2), CVS snapshot / pre-release,
-Version 1.4.4-pre9 / Aug. 23, 2010
+Version 1.4.4-pre11 / Oct. 24, 2010
 
 Changes since the HoT-1.4.3 release:
 
@@ -16,6 +16,8 @@ Changes since the HoT-1.4.3 release:
 * filesystem: fixed an oversight with builds without user directories, where
   the "-basedir" command line argument failed to change the internal userdir
   variables.
+* fixed stuffcmds so that arguments to commands can have '-' or '+' within
+  their names.  A command like "hexen2 +map mymap-01" works properly now.
 * windows cdaudio: added -cddev as a new command line option for choosing the
   cdrom drive to use.  syntax: -cddev E
 * net: made the socket api usage compatible with windows especially with
@@ -51,6 +53,8 @@ Changes since the HoT-1.4.3 release:
   didn't operate with a data1 subdirectory. they are ancient history now.
 * added initial support for standalone free contents (mods) as an extra patch.
 * added extra testing code to support midi when using sdl audio  (extra patch).
+* utils, jsh2color: worked around a stack corruption resulting in crashes due
+  to the code's way of dealing with TEX_SPECIAL cases.
 * utils, qbsp: accept more than one wad file specified in the value of the
   "wad" key. the wad file names must be separated by a semicolon. spaces are
   allowed in the file names. quoted paths aren't allowed.
