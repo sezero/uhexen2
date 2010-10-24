@@ -4,6 +4,11 @@ Development Progress	:
 ---------------------------
 
 2010-10-11 (CVS):
+    * cmd.c (Cmd_StuffCmds_f): Fix so that arguments to commands can have '-'
+      or '+' within their names.  A command like "hexen2 +map mymap-01" works
+      properly now.
+
+2010-10-11 (CVS):
     * pr_exec.c: Increased MAX_STACK_DEPTH from 32 to 64.  Prevents a rare
       stack overflow error when battling bosses with assassin class, using
       the tome of power and launching at the enemy A LOT of projectiles.

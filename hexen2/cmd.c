@@ -2,7 +2,7 @@
 	cmd.c
 	Quake script command processing module
 
-	$Id: cmd.c,v 1.42 2010-10-04 07:33:30 sezero Exp $
+	$Id: cmd.c,v 1.43 2010-10-24 08:10:17 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -210,11 +210,10 @@ quake -nosound +cmd amlev1
 */
 void Cmd_StuffCmds_f (void)
 {
-	int		i, j;
+	int		i;
 	int		s;
-	char	*text, *build, c;
+	char		*text;
 
-// build the combined string to parse from
 	s = 0;
 	for (i = 1; i < com_argc; i++)
 	{
@@ -226,44 +225,45 @@ void Cmd_StuffCmds_f (void)
 		return;
 
 	text = (char *) Z_Malloc (s+1, Z_MAINZONE);
-	text[0] = 0;
+	text[0] = '\0';
+
 	for (i = 1; i < com_argc; i++)
 	{
 		if (!com_argv[i])
 			continue;		// NEXTSTEP nulls out -NXHost
-		strcat (text,com_argv[i]);
-		if (i != com_argc-1)
-			strcat (text, " ");
-	}
-
-// pull out the commands
-	build = (char *) Z_Malloc (s+1, Z_MAINZONE);
-	build[0] = 0;
-
-	for (i = 0; i < s-1; i++)
-	{
-		if (text[i] == '+')
+		if (com_argv[i][0] != '+')
+			continue;
+		// found a command
+		if (text[0] != '\0')
+			strcat (text, " ");	// separate it from previous one
+		strcat (text, &com_argv[i][1]);
+		if (i == com_argc - 1)
 		{
-			i++;
-
-			for (j = i; (text[j] != '+') && (text[j] != '-') && (text[j] != 0); j++)
-				;
-
-			c = text[j];
-			text[j] = 0;
-
-			strcat (build, text+i);
-			strcat (build, "\n");
-			text[j] = c;
-			i = j-1;
+			strcat (text, "\n");	// finished all args
+			break;
+		}
+		// add the arguments of the command
+		++i;
+		for ( ; i < com_argc; i++)
+		{
+			if (com_argv[i][0] == '+' || com_argv[i][0] == '-')
+			{
+			// found a new command or a new command-line switch
+				strcat (text, "\n");
+				--i;
+				break;
+			}
+			strcat (text, " ");
+			strcat (text, com_argv[i]);
+			if (i == com_argc - 1)
+				strcat (text, "\n");	// finished all args
 		}
 	}
 
-	if (build[0])
-		Cbuf_InsertText (build);
+	if (text[0] != '\0')
+		Cbuf_InsertText (text);
 
 	Z_Free (text);
-	Z_Free (build);
 }
 
 
