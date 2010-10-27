@@ -1,5 +1,5 @@
 # GNU Makefile for hexen2 jsh2color tool using GCC.
-# $Header: /home/ozzie/Download/0000/uhexen2/utils/jsh2color/Makefile,v 1.30 2009-10-04 11:00:49 sezero Exp $
+# $Header: /home/ozzie/Download/0000/uhexen2/utils/jsh2color/Makefile,v 1.31 2010-10-27 12:10:29 sezero Exp $
 #
 # if building a debug version :		make DEBUG=1 [other stuff]
 #
@@ -50,13 +50,15 @@ CFLAGS := $(CFLAGS) -DDOUBLEVEC_T
 ifeq ($(TARGET_OS),win32)
 CFLAGS  := $(CFLAGS) -DWIN32_LEAN_AND_MEAN
 INCLUDES:= -I$(W32STUFF) -I$(COMMONDIR)
-LDFLAGS := -mconsole
+# default 2 MB stack is not enough
+LDFLAGS := -mconsole -Wl,--stack,4194304
 LDLIBS  :=
 endif
 ifeq ($(TARGET_OS),win64)
 CFLAGS  := $(CFLAGS) -DWIN32_LEAN_AND_MEAN
 INCLUDES:= -I$(W32STUFF) -I$(COMMONDIR)
-LDFLAGS := -mconsole
+# default 2 MB stack is not enough
+LDFLAGS := -mconsole -Wl,--stack,4194304
 LDLIBS  :=
 endif
 ifeq ($(TARGET_OS),unix)
