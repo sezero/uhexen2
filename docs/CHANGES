@@ -4,6 +4,7 @@ Development Progress	:
 ---------------------------
 
 2010-10-28 (CVS):
+    * Updated the release notes file for 1.4.4.
     * menu.c (M_Options_Draw): Use enumerated values for the y offset, instead
       of absolute numbers for better maintainability.
 
