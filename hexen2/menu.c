@@ -1,7 +1,7 @@
 /*
 	menu.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/menu.c,v 1.109 2010-04-24 17:56:54 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/menu.c,v 1.110 2010-10-28 14:56:31 sezero Exp $
 */
 
 #include "q_stdinc.h"
@@ -2127,40 +2127,40 @@ static void M_Options_Draw (void)
 
 //	we use 22 character option titles. the increment to
 //	the x offset is: (22 - strlen(option_title)) * 8
-	M_Print (16 + (4 * 8), 60 + (0 * 8),	"Customize controls");
-	M_Print (16 + (9 * 8), 60 + (1 * 8),	"Go to console");
-	M_Print (16 + (5 * 8), 60 + (2 * 8),	"Reset to defaults");
+	M_Print (16 + (4 * 8), 60 + 8*OPT_CUSTOMIZE,	"Customize controls");
+	M_Print (16 + (9 * 8), 60 + 8*OPT_CONSOLE,	"Go to console");
+	M_Print (16 + (5 * 8), 60 + 8*OPT_DEFAULTS,	"Reset to defaults");
 
-	M_Print (16 + (11 * 8), 60 + (3 * 8),	"Screen size");
+	M_Print (16 + (11 * 8), 60 + 8*OPT_SCRSIZE,	"Screen size");
 	r = (scr_viewsize.value - 30.0) / (120 - 30);
-	M_DrawSlider (220, 60 + (3 * 8), r);
+	M_DrawSlider (220, 60 + 8*OPT_SCRSIZE, r);
 
-	M_Print (16 + (12 * 8), 60 + (4 * 8),	"Brightness");
+	M_Print (16 + (12 * 8), 60 + 8*OPT_GAMMA,	"Brightness");
 	r = (1.0 - v_gamma.value) / 0.5;
-	M_DrawSlider (220, 60 + (4 * 8), r);
+	M_DrawSlider (220, 60 + 8*OPT_GAMMA, r);
 
-	M_Print (16 + (11 * 8), 60 + (5 * 8),	"Mouse Speed");
-	r = (sensitivity.value - 1)/10;
-	M_DrawSlider (220, 60 + (5 * 8), r);
+	M_Print (16 + (11 * 8), 60 + 8*OPT_MOUSESPEED,	"Mouse Speed");
+	r = (sensitivity.value - 1) / 10;
+	M_DrawSlider (220, 60 + 8*OPT_MOUSESPEED, r);
 
-	M_Print (16 + (12 * 8), 60 + (6 * 8),	"Music Type");
+	M_Print (16 + (12 * 8), 60 + 8*OPT_MUSICTYPE,	"Music Type");
 	if (q_strcasecmp(bgmtype.string, "midi") == 0)
-		M_Print (220, 60 + (6 * 8), "MIDI");
+		M_Print (220, 60 + 8*OPT_MUSICTYPE,	"MIDI");
 	else if (q_strcasecmp(bgmtype.string, "cd") == 0)
-		M_Print (220, 60 + (6 * 8), "CD");
+		M_Print (220, 60 + 8*OPT_MUSICTYPE,	"CD");
 	else
-		M_Print (220, 60 + (6 * 8), "None");
+		M_Print (220, 60 + 8*OPT_MUSICTYPE,	"None");
 
-	M_Print (16 + (10 * 8), 60 + (7 * 8),	"Music Volume");
+	M_Print (16 + (10 * 8), 60 + 8*OPT_MUSICVOL,	"Music Volume");
 	r = bgmvolume.value;
-	M_DrawSlider (220, 60 + (7 * 8), r);
+	M_DrawSlider (220, 60 + 8*OPT_MUSICVOL, r);
 
-	M_Print (16 + (10 * 8), 60 + (8 * 8),	"Sound Volume");
+	M_Print (16 + (10 * 8), 60 + 8*OPT_SNDVOL,	"Sound Volume");
 	r = sfxvolume.value;
-	M_DrawSlider (220, 60 + (8 * 8), r);
+	M_DrawSlider (220, 60 + 8*OPT_SNDVOL, r);
 
-	M_Print (16 + (12 * 8), 60 + (9 * 8),	"Always Run");
-	M_DrawCheckbox (220, 60 + (9 * 8), (cl_forwardspeed.value > 200));
+	M_Print (16 + (12 * 8), 60 + 8*OPT_ALWAYRUN,	"Always Run");
+	M_DrawCheckbox (220, 60 + 8*OPT_ALWAYRUN, (cl_forwardspeed.value > 200));
 
 	M_Print (16 + (10 * 8), 60 + 8*OPT_INVMOUSE,	"Invert Mouse");
 	M_DrawCheckbox (220, 60 + 8*OPT_INVMOUSE, m_pitch.value < 0);
@@ -2186,7 +2186,7 @@ static void M_Options_Draw (void)
 
 	// cursor
 	// doesn't get drawn properly with XFree4.3/MGA200 S.A.
-	M_DrawCharacter (200, 60 + options_cursor*8, 12+((int)(realtime*4)&1));
+	M_DrawCharacter (200, 60 + 8*options_cursor, 12 + ((int)(realtime*4) & 1));
 }
 
 

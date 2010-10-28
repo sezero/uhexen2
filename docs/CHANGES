@@ -3,6 +3,10 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2010-10-28 (CVS):
+    * menu.c (M_Options_Draw): Use enumerated values for the y offset, instead
+      of absolute numbers for better maintainability.
+
 2010-10-27 (CVS):
     * jsh2color (Makefile, MSVC project files): Changed stack reserve size to
       4 MB for windows builds.
