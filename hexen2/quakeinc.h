@@ -5,7 +5,7 @@
 	FIXME:	kill this in the future and make each C
 		file include only the necessary headers.
 
-	$Id: quakeinc.h,v 1.22 2009-01-10 22:08:50 sezero Exp $
+	$Id: quakeinc.h,v 1.23 2010-10-30 11:33:15 sezero Exp $
 */
 
 #ifndef __QUAKEINC_H
@@ -20,7 +20,7 @@
 #include "arch_def.h"
 
 /* make sure to include our compile time options first	*/
-#include "h2option.h"
+#include "h2config.h"
 
 /* include the quake headers				*/
 

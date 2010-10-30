@@ -335,7 +335,7 @@
 		707D57970AA9F6EE00313A9F /* gl_mesh.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = gl_mesh.c; path = ../gl_mesh.c; sourceTree = SOURCE_ROOT; };
 		707D57980AA9F6EE00313A9F /* gl_model.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = gl_model.c; path = ../gl_model.c; sourceTree = SOURCE_ROOT; };
 		707D57990AA9F6EE00313A9F /* gl_model.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = gl_model.h; path = ../gl_model.h; sourceTree = SOURCE_ROOT; };
-		707D579A0AA9F6EE00313A9F /* h2option.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = h2option.h; path = ../h2option.h; sourceTree = SOURCE_ROOT; };
+		707D579A0AA9F6EE00313A9F /* h2config.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = h2config.h; path = ../h2config.h; sourceTree = SOURCE_ROOT; };
 		707D579B0AA9F6EE00313A9F /* gl_refrag.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = gl_refrag.c; path = ../gl_refrag.c; sourceTree = SOURCE_ROOT; };
 		707D579C0AA9F6EE00313A9F /* gl_rlight.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = gl_rlight.c; path = ../gl_rlight.c; sourceTree = SOURCE_ROOT; };
 		707D579D0AA9F6EE00313A9F /* gl_rmain.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = gl_rmain.c; path = ../gl_rmain.c; sourceTree = SOURCE_ROOT; };
@@ -557,7 +557,7 @@
 				707D57970AA9F6EE00313A9F /* gl_mesh.c */,
 				707D57980AA9F6EE00313A9F /* gl_model.c */,
 				707D57990AA9F6EE00313A9F /* gl_model.h */,
-				707D579A0AA9F6EE00313A9F /* h2option.h */,
+				707D579A0AA9F6EE00313A9F /* h2config.h */,
 				707D579B0AA9F6EE00313A9F /* gl_refrag.c */,
 				707D579C0AA9F6EE00313A9F /* gl_rlight.c */,
 				707D579D0AA9F6EE00313A9F /* gl_rmain.c */,

@@ -2,7 +2,7 @@
 // win32res.rc
 // Win32 resource file for Hexen II
 //
-// $Id: win32res.rc,v 1.5 2007-10-31 18:56:38 sezero Exp $
+// $Id: win32res.rc,v 1.6 2010-10-30 11:33:16 sezero Exp $
 //
 
 #include <afxres.h>
@@ -36,7 +36,7 @@ BEGIN
     CONTROL 112, IDC_STATIC, "Static", SS_BITMAP | SS_REALSIZEIMAGE, 0, 0, 167, 28
 END
 
-#include "h2option.h"
+#include "h2config.h"
 #if !USE_HEXEN2_PALTEX_CODE
 IDD_PROGRESS DIALOGEX 0, 0, 333, 75
 STYLE DS_MODALFRAME | DS_SETFOREGROUND | DS_3DLOOK | DS_CENTER | WS_POPUP | WS_VISIBLE

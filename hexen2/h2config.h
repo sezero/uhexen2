@@ -1,20 +1,17 @@
 /*
-	h2option.h
+	h2config.h
 	Compile time options for Hexen II: Hammer of Thyrion
 
-	$Id: h2option.h,v 1.12 2010-10-30 09:57:14 sezero Exp $
+	$Id: h2config.h,v 1.1 2010-10-30 11:33:15 sezero Exp $
+
+	Read the explanations for each option and edit the
+	relevant option accordingly.  Most probably, you will
+	need to do a clean rebuild after editing.
 */
 
 
 #ifndef	__HEXEN2_OPTIONS_H
 #define	__HEXEN2_OPTIONS_H
-
-/* ====================================================================
-   Read the explanations for each option and edit the relevant option
-   accordingly. Most probably, you will need to perform a clean build
-   after editing.
-   ================================================================== */
-
 
 /* ====================================================================
    ENDIAN_RUNTIME_DETECT
@@ -138,19 +135,6 @@
 
 
 /* ====================================================================
-   FULLSCREEN_INTERMISSIONS
-   Value  :	0 or 1
-   Affects:	screen.c, gl_screen.c, menu.c (hexen2 and hexenworld)
-
-   If you want the intermissions and help screens to be drawn full-
-   screen keep the define below as 1. Otherwise, if you want them to
-   be drawn unscaled with regard to the resolution, change the define
-   below to 0
-   ================================================================== */
-#define	FULLSCREEN_INTERMISSIONS	1
-
-
-/* ====================================================================
    USE_AOT_FRICTION
    Value  :	0 or 1
    Affects:	sv_user.c (SV_UserFriction(), hexen2 only)
@@ -167,11 +151,47 @@
 #define	USE_AOT_FRICTION		0
 
 
+/* ====================================================================
+   MGNET
+   Value  :	not a value, but a define or undef
+   Affects:	HexenWorld, Server/sv_ents.c :: SV_WritePlayersToClient
+
+   This doesn't ~seem~ to be in the latest binary release of Raven, but
+   it is in the source release and the macro is defined in qwsv.dsp ie.
+   the MSVC project file. It uses cardioid_rating() and might send an
+   additional server message, svc_playerskipped.  The client calls
+   CL_SavePlayer() upon receiving this message (see in cl_parse.c) but
+   that code seems incomplete (see in cl_ents.c).  Enabling this option
+   should require bumping the protocol version.  Disabled by default.
+   ================================================================== */
+#undef	MGNET
+
 
 /* ====================================================================
+   FULLSCREEN_INTERMISSIONS
+   Value  :	0 or 1
+   Affects:	screen.c, gl_screen.c, menu.c (hexen2 and hexenworld)
 
-   OpenGL OPTIONS:
+   If you want the intermissions and help screens to be drawn full-
+   screen keep the define below as 1.  Otherwise, if you want them to
+   be drawn unscaled with regard to the resolution, change the define
+   below to 0
+   ================================================================== */
+#define	FULLSCREEN_INTERMISSIONS	1
 
+
+/* ====================================================================
+   =======================  OpenGL OPTIONS:  ==========================
+   ================================================================== */
+
+/* ====================================================================
+   GL_DLSYM
+   Value  :	not a value, but a define or undef
+   Affects:	all gl sources and linkage.
+
+   This option has to be edited in the Makefile (see the LINK_GL_LIBS
+   option in there), not here.  This affects the final linkage of the
+   binary.
    ================================================================== */
 
 
@@ -185,8 +205,8 @@
    result in lower quality. see gl_draw.c (and gl_vidXXX.c) for more
    details.
    NOTE: If you set this to 0 and you are compiling for windows with
-   the splash screens enabled, make sure to enable the comctl32 link
-   flag in the Makefile.
+   the splash screens enabled, make sure to enable the comctl32 linkage
+   in the Makefile.
    ================================================================== */
 #define	USE_HEXEN2_PALTEX_CODE		1
 
@@ -204,34 +224,6 @@
    old voodoo boards.)
    ================================================================== */
 #define	USE_HEXEN2_RESAMPLER_CODE	1
-
-
-/* ====================================================================
-   GL_DLSYM
-   Value  :	not a value, but a define or undef
-   Affects:	all gl sources and linkage.
-
-   This option has to be edited in the Makefile (see the LINK_GL_LIBS
-   option in there), not here.  This affects the final linkage of the
-   binary.
-   ================================================================== */
-
-
-/* ====================================================================
-   MGNET
-   Value  :	not a value, but a define or undef
-   Affects:	HexenWorld, Server/sv_ents.c :: SV_WritePlayersToClient
-
-   This doesn't ~seem~ to be in the latest binary release of Raven, but
-   it is in the source release. The definition exists in the qwsv.dsp
-   among the compiler flags, too. It uses cardioid_rating() and might
-   send an additional server message, svc_playerskipped. The client
-   calls CL_SavePlayer upon receiving this message (see in cl_parse.c),
-   but that code seems incomplete (see in cl_ents.c).
-   Enabling this option should require bumping the protocol version.
-   Disabled by default.
-   ================================================================== */
-#undef	MGNET
 
 
 #endif	/* __HEXEN2_OPTIONS_H		*/

@@ -12,7 +12,7 @@ work just fine.
 
 By editing the makefiles, you can change some compile time options. Other
 than the makefiles, we have gathered most, if not all, of our compile time
-options in the header file named "h2option.h".  You can edit it, as well,
+options in the header file named "h2config.h".  You can edit it, as well,
 but be careful.
 
 Here is the recommended software for building:

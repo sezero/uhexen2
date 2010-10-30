@@ -1,6 +1,6 @@
 /*
 	gl_vidnt.c -- NT GL vid component
-	$Id: gl_vidnt.c,v 1.131 2010-10-30 09:57:14 sezero Exp $
+	$Id: gl_vidnt.c,v 1.132 2010-10-30 11:33:16 sezero Exp $
 */
 
 #define	__GL_FUNC_EXTERN

@@ -1,5 +1,5 @@
 # GNU Makefile for (gl)hexen2 client/server binaries using GCC.
-# $Header: /home/ozzie/Download/0000/uhexen2/hexen2/Makefile,v 1.101 2010-08-23 00:20:31 sezero Exp $
+# $Header: /home/ozzie/Download/0000/uhexen2/hexen2/Makefile,v 1.102 2010-10-30 11:33:15 sezero Exp $
 #
 # Type "make help" to see the valid targets.
 #
@@ -355,7 +355,7 @@ EXT_FLAGS+= -DNO_SPLASHES
 else
 # gl version needs linking to comctl32.dll because of that progress
 # bar thingy. it is necessary for the InitCommonControls call, only
-# when USE_HEXEN2_PALTEX_CODE is defined as 0 in h2option.h
+# when USE_HEXEN2_PALTEX_CODE is defined as 0 in h2config.h
 #GLFLAGS+=-lcomctl32
 endif
 # End of Win32 specific extras
@@ -380,7 +380,7 @@ EXT_FLAGS+= -DNO_SPLASHES
 else
 # gl version needs linking to comctl32.dll because of that progress
 # bar thingy. it is necessary for the InitCommonControls call, only
-# when USE_HEXEN2_PALTEX_CODE is defined as 0 in h2option.h
+# when USE_HEXEN2_PALTEX_CODE is defined as 0 in h2config.h
 #GLFLAGS+=-lcomctl32
 endif
 # End of Win64 specific extras

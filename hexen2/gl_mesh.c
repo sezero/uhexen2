@@ -2,7 +2,7 @@
 	gl_mesh.c
 	triangle model functions
 
-	$Id: gl_mesh.c,v 1.23 2010-10-30 09:57:14 sezero Exp $
+	$Id: gl_mesh.c,v 1.24 2010-10-30 11:33:15 sezero Exp $
 */
 
 #include "quakedef.h"
