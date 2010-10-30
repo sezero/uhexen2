@@ -1,6 +1,6 @@
 /*
 	gl_vidnt.c -- NT GL vid component
-	$Id: gl_vidnt.c,v 1.130 2010-10-30 08:55:22 sezero Exp $
+	$Id: gl_vidnt.c,v 1.131 2010-10-30 09:57:14 sezero Exp $
 */
 
 #define	__GL_FUNC_EXTERN
@@ -2078,9 +2078,6 @@ void	VID_Init (unsigned char *palette)
 {
 	int	i, j, existingmode;
 	int	width, height, bpp, zbits, findbpp, done;
-#if DO_MESH_CACHE
-	char	gldir[MAX_OSPATH];
-#endif
 	HDC	hdc;
 	const char	*read_vars[] = {
 				"vid_config_fscr",
@@ -2155,16 +2152,6 @@ void	VID_Init (unsigned char *palette)
 	}
 	MASK_rgb	=	(MASK_r|MASK_g|MASK_b);
 #endif	/* ENDIAN_RUNTIME_DETECT */
-
-#if DO_MESH_CACHE
-	// prepare directories for caching mesh files
-	q_snprintf (gldir, sizeof(gldir), "%s/glhexen", fs_userdir);
-	Sys_mkdir (gldir, false);
-	q_snprintf (gldir, sizeof(gldir), "%s/glhexen/boss", fs_userdir);
-	Sys_mkdir (gldir, false);
-	q_snprintf (gldir, sizeof(gldir), "%s/glhexen/puzzle", fs_userdir);
-	Sys_mkdir (gldir, false);
-#endif
 
 	hIcon = LoadIcon (global_hInstance, MAKEINTRESOURCE (IDI_ICON2));
 

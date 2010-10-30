@@ -2,7 +2,7 @@
 	gl_mesh.c
 	triangle model functions
 
-	$Id: gl_mesh.c,v 1.21 2008-04-22 13:06:10 sezero Exp $
+	$Id: gl_mesh.c,v 1.22 2010-10-30 09:57:14 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -315,67 +315,9 @@ void GL_MakeAliasModelDisplayLists (qmodel_t *m, aliashdr_t *hdr)
 	int		i, j;
 	int		*cmds;
 	trivertx_t	*verts;
-#if DO_MESH_CACHE
-	char	cache[MAX_OSPATH];
-	FILE	*f;
-	size_t	len;
 
-	//
-	// look for a cached version
-	//
-	q_snprintf (cache, sizeof(cache), "%s/glhexen/", fs_userdir);
-	len = strlen(cache);
-	COM_StripExtension (m->name + (sizeof("models/") - 1), cache + len, sizeof(cache) - len);
-	q_strlcat (cache, ".ms2", sizeof(cache));
-
-	f = fopen (cache, "rb");
-	if (f)
-	{
-		fread (&numcommands, 4, 1, f);
-		fread (&numorder, 4, 1, f);
-		fread (&commands, numcommands * sizeof(commands[0]), 1, f);
-		fread (&vertexorder, numorder * sizeof(vertexorder[0]), 1, f);
-		fclose (f);
-	}
-	else
-	{
-#endif
-		//
-		// build it from scratch
-		//
-		DEBUG_Printf ("meshing %s...\n", m->name);
-		BuildTris ();		// trifans or lists
-
-		//
-		// save out the cached version in user's directory
-		//
-#if DO_MESH_CACHE
-		f = fopen (cache, "wb");
-		if (!f)
-		{
-			char gldir[MAX_OSPATH];
-
-			q_snprintf (gldir, sizeof(gldir), "%s/glhexen", fs_userdir);
-			Sys_mkdir (gldir, false);
-			q_snprintf (gldir, sizeof(gldir), "%s/glhexen/boss", fs_userdir);
-			Sys_mkdir (gldir, false);
-			q_snprintf (gldir, sizeof(gldir), "%s/glhexen/puzzle", fs_userdir);
-			Sys_mkdir (gldir, false);
-			f = fopen (cache, "wb");
-		}
-
-		if (f)
-		{
-			fwrite (&numcommands, 4, 1, f);
-			fwrite (&numorder, 4, 1, f);
-			fwrite (&commands, numcommands * sizeof(commands[0]), 1, f);
-			fwrite (&vertexorder, numorder * sizeof(vertexorder[0]), 1, f);
-			fclose (f);
-		}
-	}
-#endif
-
-	// save the data out
+	DEBUG_Printf ("meshing %s...\n", m->name);
+	BuildTris ();		// trifans or lists
 
 	hdr->poseverts = numorder;
 

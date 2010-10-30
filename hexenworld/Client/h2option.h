@@ -2,7 +2,7 @@
 	h2option.h
 	Compile time options for Hexen II: Hammer of Thyrion
 
-	$Id: h2option.h,v 1.11 2008-10-16 11:33:54 sezero Exp $
+	$Id: h2option.h,v 1.12 2010-10-30 09:57:14 sezero Exp $
 */
 
 
@@ -173,23 +173,6 @@
    OpenGL OPTIONS:
 
    ================================================================== */
-
-
-/* ====================================================================
-   DO_MESH_CACHE
-   Value  :	0 or 1
-   Affects:	gl_mesh.c
-
-   If you want to cache the alias model meshes to disk, the defini-
-   tion below must be 1, otherwise 0. Caching gives bad results upon
-   the following conditions:
-   - you change the mdl file with an override file, but you have a
-     cached ms2 file in the glhexen directory from the old mdl,
-   - you run a mod without the mission pack first and with mission
-     pack later, or vice versa, and the ms2 cache from the previous
-     instance would mismatch the mdl from the latter.
-   ================================================================== */
-#define	DO_MESH_CACHE			0
 
 
 /* ====================================================================

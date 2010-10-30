@@ -4,6 +4,7 @@ Development Progress	:
 ---------------------------
 
 2010-10-30 (CVS):
+    * Killed the DO_MESH_CACHE compile time option.
     * Text and HUD scaling patch from Steven:
     - menu.c: move the menu item from opengl fetures menu to the main options
       as a slider.
