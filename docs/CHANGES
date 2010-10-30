@@ -3,6 +3,15 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2010-10-30 (CVS):
+    * Text and HUD scaling patch from Steven:
+    - menu.c: move the menu item from opengl fetures menu to the main options
+      as a slider.
+    - gl_vidsdl.c, gl_vidnt.c: adjust VID_ChangeConsize(), VID_ReportConsize()
+      and VID_ConWidth() accordingly.
+    - vid.h: adjust the VID_ChangeConsize() and VID_ReportConsize() prototypes
+      accordingly.
+
 2010-10-28 (CVS):
     * Updated the release notes file for 1.4.4.
     * menu.c (M_Options_Draw): Use enumerated values for the y offset, instead

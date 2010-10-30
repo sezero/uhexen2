@@ -2,7 +2,7 @@
 	gl_vidsdl.c -- SDL GL vid component
 	Select window size and mode and init SDL in GL mode.
 
-	$Id: gl_vidsdl.c,v 1.179 2010-03-23 18:00:10 sezero Exp $
+	$Id: gl_vidsdl.c,v 1.180 2010-10-30 08:55:22 sezero Exp $
 
 	Changed 7/11/04 by S.A.
 	- Fixed fullscreen opengl mode, window sizes
@@ -112,7 +112,6 @@ static int	vid_default = -1;	// modenum of 640x480 as a safe default
 static int	vid_modenum = -1;	// current video mode, set after mode setting succeeds
 static int	vid_maxwidth = 640, vid_maxheight = 480;
 static qboolean	vid_conscale = false;
-static char	vid_consize[MAX_DESC];
 static int	WRHeight, WRWidth;
 
 static qboolean	vid_initialized = false;
@@ -278,7 +277,7 @@ static void VID_ConWidth (int modenum)
 	if (!vid_conscale)
 	{
 		Cvar_SetValue ("vid_config_consize", modelist[modenum].width);
-		goto finish;
+		return;
 	}
 
 	w = vid_config_consize.integer;
@@ -296,7 +295,7 @@ static void VID_ConWidth (int modenum)
 	{
 		Cvar_SetValue ("vid_config_consize", modelist[modenum].width);
 		vid_conscale = false;
-		goto finish;
+		return;
 	}
 	vid.width = vid.conwidth = w;
 	vid.height = vid.conheight = h;
@@ -304,36 +303,30 @@ static void VID_ConWidth (int modenum)
 		vid_conscale = true;
 	else
 		vid_conscale = false;
-finish:
-	q_snprintf (vid_consize, sizeof(vid_consize), "x%.2f (at %ux%u)",
-			(float)modelist[vid_modenum].width/vid.conwidth, vid.conwidth, vid.conheight);
 }
 
-void VID_ChangeConsize(int key)
+void VID_ChangeConsize(int dir)
 {
-	int	i, w, h;
+	int	w, h;
 
-	switch (key)
+	switch (dir)
 	{
-	case K_LEFTARROW:	// smaller text, bigger res nums
-		for (i = 0; i <= RES_640X480+1; i++)
-		{
-			w = std_modes[i].width;
-			if (w > vid.conwidth && w <= modelist[vid_modenum].width)
-				goto set_size;
-		}
+	case -1:	// smaller text, bigger res nums
+	//	w = (((float)vid.conwidth/vid.width) + .1) * vid.width;
+		w = ((vid.conwidth/vid.width) + .05) * vid.width;
+		if (w > vid.conwidth && w <= modelist[vid_modenum].width)
+			goto set_size;
 		w = modelist[vid_modenum].width;
 		goto set_size;
 
-	case K_RIGHTARROW:	// bigger text, smaller res nums
-		for (i = RES_640X480+1; i >= 0; i--)
-		{
-			w = std_modes[i].width;
-			if (w < vid.conwidth && w <= modelist[vid_modenum].width)
-				goto set_size;
-		}
-		w = std_modes[0].width;
-		goto set_size;
+	case 1:	// bigger text, smaller res nums
+		w = ((vid.conwidth/vid.width) - .05) * vid.width;
+		// 18 is magic number to constrain text size (19 even safer) - S.A
+		if (w + 18 < vid.conwidth && w <= modelist[vid_modenum].width)
+			goto set_size;
+		// Scale is getting too big, don't increase it
+		// w = std_modes[0].width;
+		// goto set_size;
 
 	default:	// bad key
 		return;
@@ -342,7 +335,6 @@ void VID_ChangeConsize(int key)
 set_size:
 	// preserve the same aspect ratio as the resolution
 	h = w * modelist[vid_modenum].height / modelist[vid_modenum].width;
-//	if (h < MIN_HEIGHT)
 	if (h < 200)
 		return;
 	vid.width = vid.conwidth = w;
@@ -353,14 +345,11 @@ set_size:
 		vid_conscale = true;
 	else
 		vid_conscale = false;
-
-	q_snprintf (vid_consize, sizeof(vid_consize), "x%.2f (at %ux%u)",
-			(float)modelist[vid_modenum].width/vid.conwidth, vid.conwidth, vid.conheight);
 }
 
-const char *VID_ReportConsize(void)
+float VID_ReportConsize(void)
 {
-	return vid_consize;
+	return (float)modelist[vid_modenum].width/vid.conwidth;
 }
 
 

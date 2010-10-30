@@ -2,7 +2,7 @@
 	vid.h
 	video driver defs
 
-	$Id: vid.h,v 1.38 2008-11-17 22:12:27 sezero Exp $
+	$Id: vid.h,v 1.39 2010-10-30 08:55:22 sezero Exp $
 */
 
 #ifndef __VID_DEFS_H
@@ -112,11 +112,11 @@ void VID_ToggleFullscreen (void);	// from Steven
 // toggles between windowed/fullscreen modes. for unix/sdl
 
 #if defined(GLQUAKE)
-void VID_ChangeConsize (int key);
+void VID_ChangeConsize (int dir);
 // changes effective console size. callback for the opengl features menu
 
-const char *VID_ReportConsize(void);
-// reports effective console size as a string to the opengl features menu
+float VID_ReportConsize(void);
+// returns console size scale for the opengl features menu.
 #endif	/* ! GLQUAKE */
 
 void D_ShowLoadingSize (void);

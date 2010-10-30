@@ -1,7 +1,7 @@
 /*
 	menu.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/menu.c,v 1.110 2010-10-28 14:56:31 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/menu.c,v 1.111 2010-10-30 08:55:22 sezero Exp $
 */
 
 #include "q_stdinc.h"
@@ -1940,17 +1940,20 @@ enum
 	OPT_CUSTOMIZE = 0,
 	OPT_CONSOLE,
 	OPT_DEFAULTS,
-	OPT_SCRSIZE,	//3
-	OPT_GAMMA,	//4
-	OPT_MOUSESPEED,	//5
-	OPT_MUSICTYPE,	//6
-	OPT_MUSICVOL,	//7
-	OPT_SNDVOL,	//8
-	OPT_ALWAYRUN,	//9
-	OPT_INVMOUSE,	//10
-	OPT_ALWAYSMLOOK,//11
-	OPT_USEMOUSE,	//12
-	OPT_CROSSHAIR,	//13
+#ifdef GLQUAKE
+	OPT_SCALE,
+#endif
+	OPT_SCRSIZE,
+	OPT_GAMMA,
+	OPT_MOUSESPEED,
+	OPT_MUSICTYPE,
+	OPT_MUSICVOL,
+	OPT_SNDVOL,
+	OPT_ALWAYRUN,
+	OPT_INVMOUSE,
+	OPT_ALWAYSMLOOK,
+	OPT_USEMOUSE,
+	OPT_CROSSHAIR,
 	OPT_CHASE_ACTIVE,
 #ifdef GLQUAKE
 	OPT_OPENGL,
@@ -1990,6 +1993,11 @@ static void M_AdjustSliders (int dir)
 
 	switch (options_cursor)
 	{
+#ifdef GLQUAKE
+	case OPT_SCALE: 	// scale slider S.A.
+		VID_ChangeConsize(dir);
+		break;
+#endif
 	case OPT_SCRSIZE:	// screen size
 		scr_viewsize.integer += dir * 10;
 		Cvar_SetValue ("viewsize", scr_viewsize.integer);
@@ -2127,10 +2135,15 @@ static void M_Options_Draw (void)
 
 //	we use 22 character option titles. the increment to
 //	the x offset is: (22 - strlen(option_title)) * 8
+//	r goes from 0 (left) to 1 (right)
 	M_Print (16 + (4 * 8), 60 + 8*OPT_CUSTOMIZE,	"Customize controls");
 	M_Print (16 + (9 * 8), 60 + 8*OPT_CONSOLE,	"Go to console");
 	M_Print (16 + (5 * 8), 60 + 8*OPT_DEFAULTS,	"Reset to defaults");
-
+#ifdef GLQUAKE
+	M_Print (16 + (17 * 8), 60 + 8*OPT_SCALE,	"Scale");
+	r = VID_ReportConsize();
+	M_DrawSlider (220, 60 + 8*OPT_SCALE, (r-1)/2);
+#endif
 	M_Print (16 + (11 * 8), 60 + 8*OPT_SCRSIZE,	"Screen size");
 	r = (scr_viewsize.value - 30.0) / (120 - 30);
 	M_DrawSlider (220, 60 + 8*OPT_SCRSIZE, r);
@@ -2145,11 +2158,11 @@ static void M_Options_Draw (void)
 
 	M_Print (16 + (12 * 8), 60 + 8*OPT_MUSICTYPE,	"Music Type");
 	if (q_strcasecmp(bgmtype.string, "midi") == 0)
-		M_Print (220, 60 + 8*OPT_MUSICTYPE,	"MIDI");
+		M_Print (220, 60 + 8*OPT_MUSICTYPE, "MIDI");
 	else if (q_strcasecmp(bgmtype.string, "cd") == 0)
-		M_Print (220, 60 + 8*OPT_MUSICTYPE,	"CD");
+		M_Print (220, 60 + 8*OPT_MUSICTYPE, "CD");
 	else
-		M_Print (220, 60 + 8*OPT_MUSICTYPE,	"None");
+		M_Print (220, 60 + 8*OPT_MUSICTYPE, "None");
 
 	M_Print (16 + (10 * 8), 60 + 8*OPT_MUSICVOL,	"Music Volume");
 	r = bgmvolume.value;
@@ -2278,7 +2291,6 @@ static void M_Options_Key (int k)
 
 enum
 {
-	OGL_CONSIZE,
 	OGL_MULTITEX,
 	OGL_PURGETEX,
 	OGL_GLOW1,
@@ -2335,8 +2347,6 @@ static void M_OpenGL_Draw (void)
 
 //	we use 22 character option titles. the increment to
 //	the x offset is: (22 - strlen(option_title)) * 8
-	M_Print (32 + (5 * 8), 90 + 8*OGL_CONSIZE,	"Text and HUD size");
-	M_Print (232, 90 + 8*OGL_CONSIZE, VID_ReportConsize());
 
 	M_Print (32 + (8 * 8), 90 + 8*OGL_MULTITEX,	"Multitexturing");
 	if (gl_mtexable)
@@ -2478,10 +2488,6 @@ static void M_OpenGL_Key (int k)
 		m_entersound = true;
 		switch (opengl_cursor)
 		{
-		case OGL_CONSIZE:	// effective console size
-			VID_ChangeConsize(k);
-			break;
-
 		case OGL_MULTITEX:	// multitexturing
 			Cvar_SetValue ("gl_multitexture", !gl_multitexture.integer);
 			break;
