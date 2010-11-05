@@ -2,7 +2,7 @@
 	zone.c
 	Memory management
 
-	$Id: zone.c,v 1.44 2010-03-09 12:50:32 sezero Exp $
+	$Id: zone.c,v 1.45 2010-11-05 16:11:39 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -16,9 +16,12 @@
 #define	Z_DEBUG_COMMANDS	0
 
 #define	ZONE_MINSIZE	0x40000
-#define	ZONE_MAXSIZE	0x100000
-#define	ZONE_MINSIZE_KB	(ZONE_MINSIZE / 1024)
-#define	ZONE_MAXSIZE_KB	(ZONE_MAXSIZE / 1024)
+#define	ZONE_MAXSIZE	0x200000
+#if defined(SERVERONLY)
+#define	ZONE_DEFSIZE	0x40000
+#else
+#define	ZONE_DEFSIZE	0x60000
+#endif	/* SERVERONLY */
 #define	ZONEID		0x1d4a11
 #define	ZONEID2		0xf382da
 #define	HUNK_SENTINAL	0x1df001ed
@@ -1200,7 +1203,7 @@ static void Memory_InitZone (memzone_t *zone, int zone_id, int size)
 void Memory_Init (void *buf, int size)
 {
 	int p;
-	int zonesize = ZONE_MINSIZE;
+	int zonesize = ZONE_DEFSIZE;
 
 	hunk_base = (byte *) buf;
 	hunk_size = size;
@@ -1217,13 +1220,15 @@ void Memory_Init (void *buf, int size)
 		zonesize = atoi (com_argv[p+1]) * 1024;
 		if (zonesize < ZONE_MINSIZE && !COM_CheckParm ("-forcemem"))
 		{
-			Sys_Printf ("Requested zone size (%d Kb) too little, using %d Kb.\n", zonesize/1024, ZONE_MINSIZE_KB);
+			Sys_Printf ("Requested zone size (%d Kb) too little, using %d Kb.\n",
+					zonesize / 1024, (ZONE_MINSIZE / 1024));
 			Sys_Printf ("If you are sure, use the -forcemem switch.\n");
 			zonesize = ZONE_MINSIZE;
 		}
 		else if (zonesize > ZONE_MAXSIZE && !COM_CheckParm ("-forcemem"))
 		{
-			Sys_Printf ("Requested zone size (%d Kb) too large, using %d Kb.\n", zonesize/1024, ZONE_MAXSIZE_KB);
+			Sys_Printf ("Requested zone size (%d Kb) too large, using %d Kb.\n",
+					zonesize / 1024, (ZONE_MAXSIZE / 1024));
 			Sys_Printf ("If you are sure, use the -forcemem switch.\n");
 			zonesize = ZONE_MAXSIZE;
 		}
