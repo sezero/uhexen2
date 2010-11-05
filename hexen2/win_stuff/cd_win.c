@@ -2,7 +2,7 @@
 	cd_win.c
 	Win32 cdaudio code
 
-	$Id: cd_win.c,v 1.23 2010-08-23 16:21:31 sezero Exp $
+	$Id: cd_win.c,v 1.24 2010-11-05 15:27:53 sezero Exp $
 
 	Quake is a trademark of Id Software, Inc., (c) 1996 Id Software, Inc. All
 	rights reserved.
@@ -32,6 +32,7 @@ static byte	maxTrack;
 
 static float	old_cdvolume;
 static UINT		wDeviceID;
+static DWORD		end_pos;
 #if defined(USE_AUX_API)
 static UINT		CD_ID;
 static unsigned long	CD_OrigVolume;
@@ -157,6 +158,7 @@ void CDAudio_Play(byte track, qboolean looping)
 
 	mciPlayParms.dwFrom = MCI_MAKE_TMSF(track, 0, 0, 0);
 	mciPlayParms.dwTo = (mciStatusParms.dwReturn << 8) | track;
+	end_pos = mciPlayParms.dwTo;
 	mciPlayParms.dwCallback = (DWORD_PTR)mainwindow;
 	dwReturn = mciSendCommand(wDeviceID, MCI_PLAY, MCI_NOTIFY | MCI_FROM | MCI_TO, (DWORD_PTR)(LPVOID) &mciPlayParms);
 	if (dwReturn)
@@ -217,21 +219,34 @@ void CDAudio_Pause(void)
 void CDAudio_Resume(void)
 {
 	DWORD			dwReturn;
+	MCI_STATUS_PARMS	mciStatusParms;
 	MCI_PLAY_PARMS	mciPlayParms;
 
 	if (!enabled)
 		return;
-	
 	if (!cdValid)
 		return;
-
 	if (!wasPlaying)
 		return;
-	
+
+#if 0
+/*	dwReturn = mciSendCommand(wDeviceID, MCI_RESUME, MCI_WAIT, NULL); */
 	mciPlayParms.dwFrom = MCI_MAKE_TMSF(playTrack, 0, 0, 0);
 	mciPlayParms.dwTo = MCI_MAKE_TMSF(playTrack + 1, 0, 0, 0);
 	mciPlayParms.dwCallback = (DWORD_PTR)mainwindow;
 	dwReturn = mciSendCommand(wDeviceID, MCI_PLAY, MCI_TO | MCI_NOTIFY, (DWORD_PTR)(LPVOID) &mciPlayParms);
+#endif
+	mciStatusParms.dwItem = MCI_STATUS_POSITION;
+	dwReturn = mciSendCommand(wDeviceID, MCI_STATUS, MCI_STATUS_ITEM | MCI_WAIT, (DWORD_PTR) (LPVOID) &mciStatusParms);
+	if (dwReturn)
+	{
+		Con_DPrintf("MCI_STATUS failed (%u)\n", (unsigned int)dwReturn);
+		return;
+	}
+	mciPlayParms.dwFrom = mciStatusParms.dwReturn;
+	mciPlayParms.dwTo = end_pos;	/* set in CDAudio_Play() */
+	mciPlayParms.dwCallback = (DWORD_PTR)mainwindow;
+	dwReturn = mciSendCommand(wDeviceID, MCI_PLAY, MCI_FROM | MCI_TO | MCI_NOTIFY, (DWORD_PTR)(LPVOID) &mciPlayParms);
 	if (dwReturn)
 	{
 		Con_DPrintf("CDAudio: MCI_PLAY failed (%u)\n", (unsigned int)dwReturn);
