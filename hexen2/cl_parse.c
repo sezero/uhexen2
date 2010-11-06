@@ -2,7 +2,7 @@
 	cl_parse.c
 	parse a message received from the server
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cl_parse.c,v 1.67 2010-03-01 18:15:15 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cl_parse.c,v 1.68 2010-11-06 21:20:45 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -1479,11 +1479,13 @@ void CL_ParseServerMessage (void)
 			if (cl.paused)
 			{
 				CDAudio_Pause ();
+				MIDI_Pause (MIDI_ALWAYS_PAUSE);
 				VID_HandlePause (true);
 			}
 			else
 			{
 				CDAudio_Resume ();
+				MIDI_Pause (MIDI_ALWAYS_RESUME);
 				VID_HandlePause (false);
 			}
 			break;

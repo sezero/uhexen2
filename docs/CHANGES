@@ -4,6 +4,8 @@ Development Progress	:
 ---------------------------
 
 2010-11-05 (CVS):
+    * cl_parse.c (CL_ParseServerMessage): pause/resume midi (background music)
+      along with cdaudio upon svc_setpause.
     * zone.c: Increased default zone memory size to 384 KB. Increased maximum
       zone memory size to 2 MB.
     * cd_win.c: Fixed MCI errors when resuming the last track of a cdrom.
