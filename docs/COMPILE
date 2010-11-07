@@ -30,12 +30,12 @@ binutils:	A GNU collection of binary utilities.
 		are recommended.
 
 NASM	:	Netwide Assembler. An x86 assembler.
-		Minimum version required is 0.98.  Versions 0.98.38 and
-		0.98.39 from the old series, or 2.02, 2.03.01 or 2.05.01
+		Minimum version required is 0.98.38 or 0.98.39 from the
+		old series.  Versions 2.02, 2.03.01, 2.05.01 or 2.09.03
 		from the new 2.x series are recommended.
 		YASM, a re-write of NASM, is also supported:  Versions
-		0.5.0, 0.6.0-0.6.2 and 0.7.1-0.7.2 are tested, versions
-		0.6.2 or 0.7.2 are highly recommended.
+		0.5.0, 0.6.x, 0.7.x and 1.1.0 are tested. Versions 0.7.2
+		or 1.1.0 are highly recommended.
 
 		The assemblers nasm or yasm are required for compiling
 		hexen2 and hexenworld clients for 32 bit x86 machines.
@@ -45,7 +45,7 @@ NASM	:	Netwide Assembler. An x86 assembler.
 GCC	:	GNU C Compiler.
 
 		Minimum version required is GCC 2.95.  GCC versions in
-		the 2.95/2.96, 3.x and 4.x series up to 4.4.4 and 4.5.0
+		the 2.95/2.96, 3.x and 4.x series up to 4.4.5 and 4.5.1
 		are tested and work fine.  Versions 3.2.2, 3.3.6, 3.4.6
 		or newer are recommended.
 
@@ -221,8 +221,8 @@ to have an idea of how I do it.  We provide source and binary (x86/linux
 glibc-2.3) packages of cross compiler toolchains on our downloads page
 under the support files section, too.
 
-Compilation on DOS is never tested and is not supported.  Compiling on
-windows in a command console, however, ~should~ be possible:  remember
+Compilation on DOS is never tested and is not supported.  However,
+compiling on windows in a command console ~should~ be possible: remember
 adding DOSBUILD=1 to your environment.
 
 CWSDPMI.EXE is needed at runtime: use the "0.90+ r5" or a newer version.
@@ -236,11 +236,13 @@ SDL homepage		:	http://www.libsdl.org/
 SDL_mixer homepage	:	http://www.libsdl.org/projects/SDL_mixer/
 ALSA homepage		:	http://www.alsa-project.org/
 GCC homepage		:	http://gcc.gnu.org/
+Binutils homepage	:	http://sourceware.org/binutils/
 NASM homepage		:	http://www.nasm.us/
+				http://sourceforge.net/projects/nasm/
 YASM homepage		:	http://www.tortall.net/projects/yasm/
 DJGPP homepage		:	http://www.delorie.com/djgpp/
 MinGW/MSYS homepage	:	http://www.mingw.org/
-				http://mingw.sourceforge.net/
+				http://sourceforge.net/projects/mingw/
 MinGW-w64 homepage	:	http://mingw-w64.sourceforge.net/
-MinGW cross compiling tips:	http://www.libsdl.org/extras/win32/cross/
+				http://sourceforge.net/projects/mingw-w64/
 

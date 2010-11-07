@@ -63,18 +63,6 @@ is necessary. Here are the names of the binaries:
 			    be compiled with timidity+ support)
 			    1.2.5 and newer highly recommended.
 
-   ALSA (min.: 0.9.8)	  : Advanced Linux Sound Architecture
-			    libraries and kernel modules.
-			    Necessary, if you use alsa-sound.
-			    1.0.7 (or newer) recommended.
-
-   GLIBC		  : If you compile your own binaries
-			    any glibc >= 2.1 should be fine.
-			    If you are using our linux binary
-			    tarballs, you need glibc >= 2.3.
-			    As for FreeBSD, version >= 5.3 is
-			    required.
-
    To compile your own binaries, you'll need a standard unix build
    environment. See the file COMPILE for details.
 
@@ -160,9 +148,9 @@ Important command-line switches:
  -bindip <address>	Same as the -ip option
  -noifscan		Hexen II only. Disable the local address detection
 			through network interface scan.
+ -developer		Enable developer mode early during initialization
  -condebug | -debuglog	Logs the console output.
  -devlog		Enable full logging even when not in developer mode
- -developer		Enable developer mode early during initialization
  -v | -version		Display the game version
  -h | -help		Display short help message
 
@@ -172,8 +160,7 @@ use the "xgamma" utility: Here is the script I use for xgamma:
 
     cd /usr/local/games/hexen2demo
     xgamma -q -gamma 1.3;       # brighten the display
-    ./glhexen2 -width 800 -height 600 -f -heapsize 48000
-	    			# default heapsize is 32768
+    ./glhexen2
     xgamma -q -gamma 1;         # restore old brightness
 
 3dfx Voodoo1 and Voodoo2 users can employ the -3dfxgamma command line
@@ -533,7 +520,7 @@ consult the document README.3dfx.
 	Pandora (GP2X) port	: http://dl.openhandhelds.org/cgi-bin/pandora.cgi?0,0,0,0,30,66
 	PalmOS port		: http://www.metaviewsoft.de/
 
-    Hammer of Thyrion Packages / builds
+    Hammer of Thyrion packages / builds
 	FreshPorts for FreeBSD	:
 		main package	: http://www.freshports.org/games/uhexen2/
 		extra package	: http://www.freshports.org/games/uhexen2-extras/

@@ -34,7 +34,8 @@ Known Bugs
   wrong with their C-implementation.
 
 - Hexen II dedicated server: The swords on the weapon racks in village1
-  and demo2 levels are placed incorrectly. To be looked into.
+  and demo2 levels are placed incorrectly.  (NOTE: Can't reproduce since
+  at least version 1.4.4-pre10.)  To be looked into.
 
 - Hexen II dedicated server: Some teleportation sounds get lost by being
   marked as 'not audible at all' in S_StartSound(). To be looked into.

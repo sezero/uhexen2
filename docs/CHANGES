@@ -3,6 +3,9 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2010-11-07 (CVS):
+    * Updated README, BUGS and COMPILE documents.
+
 2010-11-05 (CVS):
     * cl_parse.c (CL_ParseServerMessage): pause/resume midi (background music)
       along with cdaudio upon svc_setpause.
