@@ -3,6 +3,9 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2010-11-13 (CVS):
+    * snd_alsa.c: Print the device name upon snd_pcm_open failures.
+
 2010-11-07 (CVS):
     * Updated README, BUGS and COMPILE documents.
 

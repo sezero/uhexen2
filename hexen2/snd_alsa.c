@@ -1,6 +1,6 @@
 /*
 	snd_alsa.c
-	$Id: snd_alsa.c,v 1.43 2009-07-08 12:04:11 sezero Exp $
+	$Id: snd_alsa.c,v 1.44 2010-11-13 07:42:07 sezero Exp $
 
 	ALSA 1.0 sound driver for Linux Hexen II
 
@@ -150,7 +150,7 @@ static qboolean S_ALSA_Init (dma_t *dma)
 	err = hx2snd_pcm_open (&pcm, pcmname, SND_PCM_STREAM_PLAYBACK, SND_PCM_NONBLOCK);
 	if (err < 0)
 	{
-		Con_Printf ("ALSA: audio open error: %s\n", hx2snd_strerror(err));
+		Con_Printf ("ALSA: error opening device \"%s\": %s\n", pcmname, hx2snd_strerror(err));
 		return false;
 	}
 	Con_Printf ("ALSA: Using device: %s\n", pcmname);
