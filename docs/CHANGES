@@ -9,6 +9,8 @@ Development Progress	:
       (adapted from darkplaces.)
     * snd_alsa.c: Print the device name upon snd_pcm_open failures.
     * alsa_funcs.h: Added more functions in commented out form for future use.
+    * utils/lmp2pcx: Tweaked and documented palette file usage, allowed the
+      embedded palette again.
 
 2010-11-07 (CVS):
     * Updated README, BUGS and COMPILE documents.

@@ -1,6 +1,6 @@
 /*
 	lmp2pcx.c
-	$Id: lmp2pcx.c,v 1.12 2008-12-22 12:20:04 sezero Exp $
+	$Id: lmp2pcx.c,v 1.13 2010-11-13 10:20:23 sezero Exp $
 	Copyright (C) 2002-2007 Forest Hale
 
 	This program is free software; you can redistribute it and/or
@@ -31,11 +31,6 @@
 #include "q_endian.h"
 #include "byteordr.h"
 
-
-/* Whether to load the hexen2 palette data at runtime:
-   if the file becomes public domain some day, define
-   this as 0 and just embed the data in the binary. */
-#define	LOAD_PALETTEFILE	1
 
 #define	OUTPUT_DIR		"outfiles"
 #define	ASTERIX_REPLACE			'_'
@@ -351,15 +346,12 @@ void WriteTGA (const char *filename, unsigned char *data, int width, int height,
 }
 
 
-#if LOAD_PALETTEFILE
 static unsigned char *gamepalette;
-#else
-static unsigned char gamepalette[768] =
+static unsigned char gamepal[768] =
 {
 //#include		"quakepal.h"
 #include		"hexen2pal.h"
 };
-#endif
 
 /*
 =============
@@ -682,6 +674,9 @@ static void print_usage (void)
 	printf ("Adapted to Hexen II for the Hammer of Thyrion project by O.Sezer\n");
 	printf ("Converts all lmp, mip, wal and wad files in current directory to\n");
 	printf ("pcx and tga files. New files are placed in \"%s\" directory\n", OUTPUT_DIR);
+	printf ("The palette will be loaded from palette.lmp file if found in the\n");
+	printf ("currect directory, otherwise the embedded hexen2 palette will be\n");
+	printf ("used.\n");
 	printf ("Usage: lmp2pcx [-lmp] [-wad] [-mip] [-wal] [-all]\n");
 }
 
@@ -690,9 +685,7 @@ int main (int argc, char **argv)
 	int		i, j;
 	unsigned int	flags;
 	char		*name;
-#if LOAD_PALETTEFILE
 	void		*pbuf;
-#endif	/* LOAD_PALETTEFILE */
 
 	ValidateByteorder ();
 
@@ -725,20 +718,28 @@ int main (int argc, char **argv)
 		flags = (CONV_LMP|CONV_MIP|CONV_WAL|CONV_WAD);
 
 	j = access("palette.lmp", R_OK);
-#if LOAD_PALETTEFILE
 	if (j == -1)
 	{
-		printf ("Unable to load palette.lmp, the hexen2 palette file.\n");
-		Error ("Put the correct file in this directory and try again.");
+		printf ("Using embedded hexen2 palette.\n");
+		gamepalette = (unsigned char *) gamepal;
 	}
-	j = LoadFile ("palette.lmp", &pbuf);
-	if (j != 768)
+	else
 	{
-		printf ("Invalid size with the hexen2 palette file palette.lmp\n");
-		Error ("Put the correct file in this directory and try again.");
+		j = LoadFile ("palette.lmp", &pbuf);
+		if (j != 768)
+		{
+			Error ("palette.lmp has invalid size.");
+			/*
+			free (pbuf);
+			gamepalette = (unsigned char *) gamepal;
+			*/
+		}
+		else
+		{
+			printf ("Using palette from palette.lmp.\n");
+			gamepalette = (unsigned char *) pbuf;
+		}
 	}
-	gamepalette = (unsigned char *) pbuf;
-#endif	/* LOAD_PALETTEFILE */
 
 	Q_mkdir (OUTPUT_DIR);
 
