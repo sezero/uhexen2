@@ -1,6 +1,6 @@
 /*
 	alsa_funcs.h
-	$Id: alsa_funcs.h,v 1.12 2007-12-22 18:56:09 sezero Exp $
+	$Id: alsa_funcs.h,v 1.13 2010-11-13 07:51:16 sezero Exp $
 
 	ALSA function list
 	make sure NOT to protect this file against multiple inclusions!
@@ -45,6 +45,7 @@ ALSA_FUNC (int, snd_pcm_hw_params_any, (snd_pcm_t *pcmdev, snd_pcm_hw_params_t *
 ALSA_FUNC (int, snd_pcm_hw_params_get_buffer_size, (const snd_pcm_hw_params_t *params, snd_pcm_uframes_t *val))
 ALSA_FUNC (int, snd_pcm_hw_params_get_period_size, (const snd_pcm_hw_params_t *params, snd_pcm_uframes_t *frames, int *dir))
 ALSA_FUNC (int, snd_pcm_hw_params_set_access, (snd_pcm_t *pcmdev, snd_pcm_hw_params_t *params, snd_pcm_access_t acc))
+ALSA_FUNC (int, snd_pcm_hw_params_set_buffer_size_near, (snd_pcm_t *pcm, snd_pcm_hw_params_t *params, snd_pcm_uframes_t *val))
 ALSA_FUNC (int, snd_pcm_hw_params_set_period_size_near, (snd_pcm_t *pcmdev, snd_pcm_hw_params_t *params, snd_pcm_uframes_t *val, int *dir))
 ALSA_FUNC (int, snd_pcm_hw_params_set_rate_near, (snd_pcm_t *pcmdev, snd_pcm_hw_params_t *params, unsigned int *val, int *dir))
 ALSA_FUNC (int, snd_pcm_hw_params_set_channels, (snd_pcm_t *pcmdev, snd_pcm_hw_params_t *params, unsigned int val))

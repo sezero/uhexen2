@@ -1,6 +1,6 @@
 /*
 	snd_alsa.c
-	$Id: snd_alsa.c,v 1.44 2010-11-13 07:42:07 sezero Exp $
+	$Id: snd_alsa.c,v 1.45 2010-11-13 07:51:16 sezero Exp $
 
 	ALSA 1.0 sound driver for Linux Hexen II
 
@@ -33,6 +33,8 @@
 
 #include <dlfcn.h>
 #include <alsa/asoundlib.h>
+
+#define NB_PERIODS 4
 
 /* all of these functions must be properly
    assigned in LinkFuncs() below	*/
@@ -118,18 +120,6 @@ static qboolean load_libasound (void)
 	}						\
     } while (0)
 #endif
-
-static snd_pcm_uframes_t round_buffer_size (snd_pcm_uframes_t sz)
-{
-	snd_pcm_uframes_t mask = ~0;
-
-	while (sz & mask)
-	{
-		sz &= mask;
-		mask <<= 1;
-	}
-	return sz;
-}
 
 static qboolean S_ALSA_Init (dma_t *dma)
 {
@@ -226,8 +216,29 @@ static qboolean S_ALSA_Init (dma_t *dma)
 		}
 	}
 
-	frag_size = 8 * tmp_bits * rate / 11025;
+	/* pick a buffer size that is a power of 2 (by masking off low bits) */
+	buffer_size = i = (int)(rate * 0.15f);
+	while (buffer_size & (buffer_size-1))
+		buffer_size &= (buffer_size-1);
+	/* then check if it is the nearest power of 2 and bump it up if not */
+	if (i - buffer_size >= buffer_size >> 1)
+		buffer_size *= 2;
 
+	err = hx2snd_pcm_hw_params_set_buffer_size_near (pcm, hw, &buffer_size);
+	ALSA_CHECK_ERR(err, "unable to set buffer size near %lu (%s)\n",
+				(unsigned long)buffer_size, hx2snd_strerror(err));
+
+	err = hx2snd_pcm_hw_params_get_buffer_size (hw, &buffer_size);
+	ALSA_CHECK_ERR(err, "unable to get buffer size. %s\n", hx2snd_strerror(err));
+	if (buffer_size & (buffer_size-1))
+	{
+		Con_Printf ("ALSA: WARNING: non-power of 2 buffer size. sound may be\n");
+		Con_Printf ("unsatisfactory. Recommend using either the plughw or hw\n");
+		Con_Printf ("devices or adjusting dmix to have a power of 2 buf size\n");
+	}
+
+	/* pick a period size near the buffer_size we got from ALSA */
+	frag_size = buffer_size / NB_PERIODS;
 	err = hx2snd_pcm_hw_params_set_period_size_near (pcm, hw, &frag_size, 0);
 	ALSA_CHECK_ERR(err, "unable to set period size near %i. %s\n",
 				(int)frag_size, hx2snd_strerror(err));
@@ -255,25 +266,17 @@ static qboolean S_ALSA_Init (dma_t *dma)
 
 	shm->channels = tmp_chan;
 
+	/*
 	// don't mix less than this in mono samples:
-/*	err = hx2snd_pcm_hw_params_get_period_size (hw, 
+	err = hx2snd_pcm_hw_params_get_period_size (hw, 
 			(snd_pcm_uframes_t *) (char *) (&shm->submission_chunk), 0);
 	ALSA_CHECK_ERR(err, "unable to get period size. %s\n", hx2snd_strerror(err));
-*/
+	*/
 	shm->submission_chunk = 1;
 	shm->samplepos = 0;
 	shm->samplebits = tmp_bits;
-	err = hx2snd_pcm_hw_params_get_buffer_size (hw, &buffer_size);
-	ALSA_CHECK_ERR(err, "unable to get buffer size. %s\n", hx2snd_strerror(err));
 
 	Con_Printf ("ALSA: %lu bytes buffer with mmap interleaved access\n", (unsigned long)buffer_size);
-
-	if (buffer_size != round_buffer_size (buffer_size))
-	{
-		Con_Printf ("ALSA: WARNING: non-power of 2 buffer size. sound may be\n");
-		Con_Printf ("unsatisfactory. Recommend using either the plughw or hw\n");
-		Con_Printf ("devices or adjusting dmix to have a power of 2 buf size\n");
-	}
 
 	shm->samples = buffer_size * shm->channels; // mono samples in buffer
 	shm->speed = rate;

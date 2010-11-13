@@ -4,6 +4,9 @@ Development Progress	:
 ---------------------------
 
 2010-11-13 (CVS):
+    * snd_alsa.c: Set the buffer size manually before setting the period size.
+      Works around non-power of two buffer size problems on some systems.
+      (adapted from darkplaces.)
     * snd_alsa.c: Print the device name upon snd_pcm_open failures.
 
 2010-11-07 (CVS):
