@@ -3,6 +3,16 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2010-11-14 (CVS):
+    * Host_Init: Set host_initialized as true before executing hexen.rc.
+    * Host_Init: In case one of the command's execution fails and causes a
+      longjmp() call such as by way of a Host_Error(), we would segfault
+      because we haven't saved the stack context/environment. This was the
+      case with a command line like "glh2 +connect localhost" without any
+      servers running. So, added a setjmp() call before Cbuf_Execute().
+    * Updated the release notes file for 1.4.4.
+    * Updated the beta version number and date.
+
 2010-11-13 (CVS):
     * snd_alsa.c: Set the buffer size manually before setting the period size.
       Works around non-power of two buffer size problems on some systems.

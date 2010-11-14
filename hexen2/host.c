@@ -2,7 +2,7 @@
 	host.c
 	coordinates spawning and killing of local servers
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host.c,v 1.98 2008-04-04 07:55:12 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host.c,v 1.99 2010-11-14 08:21:23 sezero Exp $
 */
 
 #include "quakedef.h"
@@ -1077,20 +1077,25 @@ void Host_Init (void)
 	Hunk_AllocName (0, "-HOST_HUNKLEVEL-");
 	host_hunklevel = Hunk_LowMark ();
 
+	host_initialized = true;
+	Con_Printf("\n======== Hexen II Initialized =========\n\n");
+
 	if (cls.state != ca_dedicated)
 	{
 	// execute the hexen.rc file: a valid file runs default.cfg,
 	// config.cfg and autoexec.cfg in this order, then processes
 	// the command line arguments by sending a stuffcmds.
 		Cbuf_InsertText ("exec hexen.rc\n");
+	// in case the execution fails and causes a longjmp() call
+	// such as by way of a Host_Error(), we will just segfault
+	// because we haven't saved the stack context/environment.
+	// do so here:
+		setjmp (host_abortserver);
 		Cbuf_Execute();
 	}
+
 	// unlock the early-set cvars after init
 	Cvar_UnlockAll ();
-
-	Con_Printf("\n======== Hexen II Initialized =========\n\n");
-
-	host_initialized = true;
 
 	if (cls.state == ca_dedicated)
 	{

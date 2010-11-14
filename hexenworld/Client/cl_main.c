@@ -2,7 +2,7 @@
 	cl_main.c
 	client main loop
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/cl_main.c,v 1.97 2010-02-22 10:50:34 sezero Exp $
+	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/cl_main.c,v 1.98 2010-11-14 08:21:23 sezero Exp $
 */
 
 #include "q_stdinc.h"
@@ -1429,17 +1429,21 @@ void Host_Init (void)
 	Hunk_AllocName (0, "-HOST_HUNKLEVEL-");
 	host_hunklevel = Hunk_LowMark ();
 
+	host_initialized = true;
+	Con_Printf ("\n======= HexenWorld Initialized ========\n\n");
+
 	// execute the hexen.rc file: a valid file runs default.cfg,
 	// config.cfg and autoexec.cfg in this order, then processes
 	// the command line arguments by sending a stuffcmds.
 	Cbuf_InsertText ("exec hexen.rc\n");
+	// in case the execution fails and causes a longjmp() call
+	// such as by way of a Host_Error(), we will just segfault
+	// because we haven't saved the stack context/environment.
+	// do so here:
+	setjmp (host_abort);
 	Cbuf_Execute();
 	// unlock the early-set cvars after init
 	Cvar_UnlockAll ();
-
-	Con_Printf ("\n======= HexenWorld Initialized ========\n\n");
-
-	host_initialized = true;
 }
 
 
