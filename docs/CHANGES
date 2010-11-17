@@ -3,6 +3,12 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2010-11-17 (CVS):
+    * snd_dma.c (S_StartSound): Allow initially silent channels to be active
+      because the player might teleport to them. From quakeforge/darkplaces.
+      Fixes the lost teleport sounds when playing on a h2ded server, such as
+      in demo3 level when going through the mill portal, or in village1, etc.
+
 2010-11-14 (CVS):
     * Host_Init: Set host_initialized as true before executing hexen.rc.
     * Host_Init: In case one of the command's execution fails and causes a

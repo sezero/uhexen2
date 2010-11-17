@@ -1,5 +1,5 @@
 Hexen II: Hammer of Thyrion (uhexen2), CVS snapshot / pre-release,
-Version 1.4.4-pre11 / Nov. 14, 2010
+Version 1.4.4-pre11 / Nov. 17, 2010
 
 Changes since the HoT-1.4.3 release:
 
@@ -19,7 +19,10 @@ Changes since the HoT-1.4.3 release:
 * fixed stuffcmds so that arguments to commands can have '-' or '+' within
   their names.  A command like "hexen2 +map mymap-01" works properly now.
 * increased default zone memory size to 384kb.
-* fixed a rare segmentation fault with certain command line arguments.
+* fixed a rare segmentation fault with certain command line arguments (bug
+  was introduced sometime between version 1.3.0 and 1.4.0).
+* fixed a problem in sound effects code where some teleportation sounds might
+  have got lost.
 * alsa audio: added workarouds for better behavior on some linux setups.
 * hexen2 client: pause/resume midi (background music) along with cdaudio upon
   pause message.

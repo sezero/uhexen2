@@ -2,7 +2,7 @@
 	snd_dma.c
 	main control for any streaming sound output device
 
-	$Id: snd_dma.c,v 1.77 2008-11-21 17:02:40 sezero Exp $
+	$Id: snd_dma.c,v 1.78 2010-11-17 20:50:58 sezero Exp $
 
 	Copyright (C) 1996-1997  Id Software, Inc.
 
@@ -487,11 +487,14 @@ void S_StartSound (int entnum, int entchannel, sfx_t *sfx, vec3_t origin, float 
 	target_chan->entchannel = entchannel;
 	SND_Spatialize(target_chan);
 
+#if 0	/* Allow initially silent channels to be active */
+	/* because the player might teleport to them.   */
 	if (!skip_dist_check)
 	{
 		if (!target_chan->leftvol && !target_chan->rightvol)
 			return;		// not audible at all
 	}
+#endif
 
 // new channel
 	sc = S_LoadSound (sfx);
@@ -514,7 +517,13 @@ void S_StartSound (int entnum, int entchannel, sfx_t *sfx, vec3_t origin, float 
 			continue;
 		if (check->sfx == sfx && !check->pos)
 		{
-			skip = 0.1 * shm->speed;
+			/*
+			skip = rand () % (int)(0.1 * shm->speed);
+			if (skip >= target_chan->end)
+				skip = target_chan->end - 1;
+			*/
+			/* LordHavoc: fixed skip calculations */
+			skip = 0.1 * shm->speed; /* 0.1 * sc->speed */
 			if (skip > sc->length)
 				skip = sc->length;
 			if (skip > 0)
