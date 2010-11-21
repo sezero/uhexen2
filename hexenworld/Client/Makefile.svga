@@ -1,5 +1,5 @@
 # GNU Makefile for hexenworld svgalib-client using GCC.
-# $Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/Makefile.svga,v 1.2 2010-06-03 21:20:23 sezero Exp $
+# $Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/Makefile.svga,v 1.3 2010-11-21 10:23:24 sezero Exp $
 #
 # This makefile builds SVGALib dependant software renderer client
 # for linux-x86 only. This makefile is a butchered version of the
@@ -130,7 +130,7 @@ EXT_FLAGS:= $(EXT_FLAGS) -DUSE_INTEL_ASM
 
 # Main unix specific includes and flags
 INCLUDES:= -I.
-LDFLAGS := $(LIBSOCKET) -ldl -lm -lvga
+LDFLAGS := $(LIBSOCKET) -lm -lvga
 
 ifeq ($(COMPILE_32BITS),yes)
 LDFLAGS := $(LDFLAGS) -m32
@@ -148,6 +148,9 @@ endif
 ifeq ($(USE_SOUND),yes)
 ifeq ($(USE_ALSA),no)
 EXT_FLAGS+= -DNO_ALSA_AUDIO
+else
+# snd_alsa uses dlopen() & co.
+LDFLAGS += -ldl
 endif
 ifeq ($(USE_OSS),no)
 EXT_FLAGS+= -DNO_OSS_AUDIO

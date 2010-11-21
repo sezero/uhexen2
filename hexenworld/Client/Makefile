@@ -1,5 +1,5 @@
 # GNU Makefile for hexenworld clients using GCC.
-# $Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/Makefile,v 1.95 2010-10-30 11:33:16 sezero Exp $
+# $Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/Makefile,v 1.96 2010-11-21 10:23:24 sezero Exp $
 #
 # Type "make help" to see the valid targets.
 #
@@ -240,7 +240,7 @@ endif
 ifeq ($(TARGET_OS),unix)
 # Main unix specific includes and flags
 INCLUDES:= -I$(X11BASE)/include -I.
-LDFLAGS := $(LIBSOCKET)
+LDFLAGS := $(LIBSOCKET) -lm
 endif
 
 ifeq ($(COMPILE_32BITS),yes)
@@ -285,6 +285,9 @@ EXT_FLAGS+= -DSDLQUAKE
 ifeq ($(USE_SOUND),yes)
 ifeq ($(USE_ALSA),no)
 EXT_FLAGS+= -DNO_ALSA_AUDIO
+else
+# snd_alsa uses dlopen() & co.
+LDFLAGS += -ldl
 endif
 ifeq ($(USE_OSS),no)
 EXT_FLAGS+= -DNO_OSS_AUDIO
