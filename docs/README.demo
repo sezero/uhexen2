@@ -119,7 +119,7 @@ Important command-line switches:
  -sndsdl		Use SDL for audio
  -sndbsd		Use sunaudio (default for for openbsd and netbsd)
  -ossdev		OSS Audio device to use (default: /dev/dsp)
- -alsadev		ALSA Audio device to use (default: hw:0,0 )
+ -alsadev		ALSA Audio device to use (default is "default")
  -sndspeed N		Sampling rate of sound playback (eg 22050,44100)
  -cddev			CD Audio device to use (default:
 				/dev/cdrom for linux, /dev/acd0 for BSD)
@@ -189,14 +189,18 @@ for you, then please try the other options below.
 
 b. ALSA sound code
 ------------------
-This driver is for Linux and is based on the new ALSA (Advanced Linux
-Sound Architecture) 1.0.x libraries. It can be used with new Linux
-distributions such as Mandrake 10.x, Fedora Core 2/3, Debian-unstable
-and the like. It works best with higher sampling rates. If you use the
-game launcher, select the ALSA option from the sound menu. If you use
-command line, then start the game with "-sndalsa" option. For example:
+This driver is for Linux and is based on the new ALSA 1.0.x libraries.
+It works best with higher sampling rates. If you use the game launcher,
+select the ALSA option from the sound menu. If you use command line,
+then start the game with "-sndalsa" option. For example:
 
   ./glhexen2 -sndalsa -sndspeed 44100
+
+If ALSA gives you trouble, try using "plughw:0" or "hw:0,0" instead
+of the default device. A lot of ALSA installations have a misconfigured
+default device. Example:
+
+  ./glhexen2 -sndalsa -alsadev plughw:0 -sndspeed 44100
 
 
 c. SDL sound code

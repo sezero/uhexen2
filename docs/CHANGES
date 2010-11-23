@@ -3,6 +3,9 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2010-11-23 (CVS):
+    * Updated the README file for the -alsadev command line argument.
+
 2010-11-21 (CVS):
     * Makefile: Add -lm to the common unix LDFLAGS. When compiling with alsa
       option, add -ldl to the LDFLAGS.
