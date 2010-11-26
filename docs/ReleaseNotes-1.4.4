@@ -1,5 +1,5 @@
 Hexen II: Hammer of Thyrion (uhexen2), CVS snapshot / pre-release,
-Version 1.4.4-pre11 / Nov. 17, 2010
+Version 1.4.4-pre11 / Nov. 25, 2010
 
 Changes since the HoT-1.4.3 release:
 
@@ -32,6 +32,7 @@ Changes since the HoT-1.4.3 release:
 * net: made the socket api usage compatible with windows especially with
   relation to 64 bit windows.
 * net (hexen2): fixed BSD and Mac OS X socket api usage.
+* opengl: reworked text and HUD scaling menu option.
 * opengl: fixed an issue that changing resolution from within the game might
   crash on Windows Vista.
 * software renderer: fixed a long standing stack corruption bug which used
@@ -48,6 +49,7 @@ Changes since the HoT-1.4.3 release:
   hexenworld clients.
 * fixed bug #2176384: in windowed mode, when you save using the menus, the
   game used to quit the menu without grabbing the mouse properly.
+* windows mouse: fixed behavior upon minimize/restore in windowed mode.
 * slightly increased the buffersize for sdl audio. made it to print a little
   more detailed info at startup.
 * decreased the buffersize of sdl midi driver from 4096 to 512 in addition to
@@ -66,6 +68,8 @@ Changes since the HoT-1.4.3 release:
 * added extra testing code to support midi when using sdl audio  (extra patch).
 * utils, jsh2color: worked around a stack corruption resulting in crashes due
   to the code's way of dealing with TEX_SPECIAL cases.
+* utils, lmp2pcx: Tweaked and documented palette file usage, allowed the
+  embedded palette again.
 * utils, qbsp: accept more than one wad file specified in the value of the
   "wad" key. the wad file names must be separated by a semicolon. spaces are
   allowed in the file names. quoted paths aren't allowed.
