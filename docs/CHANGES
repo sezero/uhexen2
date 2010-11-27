@@ -3,6 +3,10 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2010-11-27 (CVS):
+    * Added the updated egypt5.bsp entities fixing the Dark Pharaoh's Scepter
+      appearing a little stuck in the wall. from Thomas Freundt.
+
 2010-11-25 (CVS):
     * Updated the release notes file for 1.4.4.
     * Updated the beta version number and date.

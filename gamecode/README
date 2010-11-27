@@ -4,10 +4,10 @@ Game code for Hexen2 / H2MP / HexenWorld
 Changes
 -------
 
-2010-02-23 (1.19b):
+2010-11-27 (1.19b):
 ===================
-- Added a "mapfixes" section. Added an entity fix for romeric5.bsp among
-  the mapfixes.
+- Added a "mapfixes" section. Added entity fixes for romeric5.bsp and
+  egypt5.bsp among the mapfixes.
 2008-01-01 (1.19a):
 ===================
 - Updated the patch shell scripts for much better compatibility with BSD
