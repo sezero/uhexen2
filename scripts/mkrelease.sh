@@ -1,7 +1,6 @@
 #!/bin/sh
 
-# the script I use to prepare a release tree from the H.o.T. CVS snapshot
-# $Id: mkrelease.sh,v 1.21 2010-05-08 07:50:03 sezero Exp $
+# the script I use to prepare a release tree from the H.o.T. svn snapshot
 
 if echo `pwd` | grep "\/scripts" > /dev/null 2>&1 ; then
 cd ..
@@ -12,17 +11,6 @@ test -f scripts/mkrelease.sh || { echo "change into the cvs snapshot directory b
 # the current gamecode version
 GAMECODE_VER=1.19b
 
-# kill the unwanted CVS* directories
-rm -rf CVSROOT
-find . -name CVS | xargs rm -rf 
-
-# kill the obsoleted empty directories
-rm -rf utils/h2_utils utils/h2mp_utils utils/dcc/bin
-rm -rf hexen2/obsolete hexenworld/Server/win_stuff hexenworld/Master/win_stuff launcher/obsolete
-rm -rf gamecode/hc/h2_single_prog gamecode/hc/hw_bossmaps
-rm -rf docs/activision
-rm -rf asm/obsolete xdelta11/doc/dcc99
-
 # move the spec file to the root
 cp -p packaging/hexen2.spec ./hexen2.spec
 rm -rf packaging
@@ -32,10 +20,6 @@ mv docs/LICENSE ./LICENSE
 
 # change all shell scripts' permissions
 find . -name *.sh | xargs chmod a+x 
-
-# move the unused/reference asm files directory into 00_unused
-mv asm 00_unused/asm_ref
-mv lib3dfxgamma 00_unused/3dfxgamma
 
 # rename the gamecode directory to include its version number
 mv gamecode gamecode-$GAMECODE_VER
