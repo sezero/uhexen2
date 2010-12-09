@@ -102,7 +102,7 @@ run a HexenWorld server or client, and a master server application.
 %{__make} -s -C engine/hexenworld/client clean
 %{__make} -C engine/hexenworld/client glhw
 # HexenWorld master server
-%{__make} -C engine/hexenworld/master
+%{__make} -C hw_utils/hwmaster
 
 # Build xdelta binary and its libraries: do this before
 # building the launcher, it uses its object files.
@@ -143,7 +143,7 @@ utils/bin/hcc -src gamecode-%{gamecode_ver}/hc/hw -oi -on
 %{__install} -D -m755 engine/hexenworld/client/hwcl %{buildroot}/%{_prefix}/games/%{name}/hwcl
 %{__install} -D -m755 engine/hexenworld/client/glhwcl %{buildroot}/%{_prefix}/games/%{name}/glhwcl
 %{__install} -D -m755 engine/hexenworld/server/hwsv %{buildroot}/%{_prefix}/games/%{name}/hwsv
-%{__install} -D -m755 engine/hexenworld/master/hwmaster %{buildroot}/%{_prefix}/games/%{name}/hwmaster
+%{__install} -D -m755 hw_utils/hwmaster/hwmaster %{buildroot}/%{_prefix}/games/%{name}/hwmaster
 %{__install} -D -m755 launcher/h2launcher %{buildroot}/%{_prefix}/games/%{name}/h2launcher
 # Make a symlink of the game-launcher
 %{__mkdir_p} %{buildroot}/%{_bindir}
