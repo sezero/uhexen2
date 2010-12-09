@@ -5,10 +5,10 @@ UHEXEN2_TOP=..
 
 if test "$1" = "strip"; then
 	echo "Stripping all HexenWorld binaries"
-	$STRIPPER Master/hwmaster.exe	\
-		Server/hwsv.exe	\
-		Client/hwcl.exe	\
-		Client/glhwcl.exe
+	$STRIPPER master/hwmaster.exe	\
+		server/hwsv.exe	\
+		client/hwcl.exe	\
+		client/glhwcl.exe
 	exit 0
 fi
 
@@ -27,22 +27,22 @@ freebsd|openbsd|netbsd)
 esac
 
 if test "$1" = "clean"; then
-	$MAKE_CMD -s -C Client clean
-	$MAKE_CMD -s -C Master clean
-	$MAKE_CMD -s -C Server clean
+	$MAKE_CMD -s -C client clean
+	$MAKE_CMD -s -C master clean
+	$MAKE_CMD -s -C server clean
 	exit 0
 fi
 
 echo "Building HexenWorld Server"
-$MAKE_CMD -C Server $* || exit 1
+$MAKE_CMD -C server $* || exit 1
 
 echo "" && echo "Building HexenWorld Master Server"
-$MAKE_CMD -C Master $* || exit 1
+$MAKE_CMD -C master $* || exit 1
 
 echo "" && echo "Building HexenWorld Client (Software renderer)"
-$MAKE_CMD -C Client $* hw || exit 1
+$MAKE_CMD -C client $* hw || exit 1
 
 echo "" && echo "Building HexenWorld Client (OpenGL renderer)"
-$MAKE_CMD -C Client clean
-$MAKE_CMD -C Client $* glhw || exit 1
+$MAKE_CMD -C client clean
+$MAKE_CMD -C client $* glhw || exit 1
 

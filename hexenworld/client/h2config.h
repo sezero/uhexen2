@@ -154,7 +154,7 @@
 /* ====================================================================
    MGNET
    Value  :	not a value, but a define or undef
-   Affects:	HexenWorld, Server/sv_ents.c :: SV_WritePlayersToClient
+   Affects:	HexenWorld, server/sv_ents.c :: SV_WritePlayersToClient
 
    This doesn't ~seem~ to be in the latest binary release of Raven, but
    it is in the source release and the macro is defined in qwsv.dsp ie.

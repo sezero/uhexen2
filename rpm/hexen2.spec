@@ -79,13 +79,13 @@ run a HexenWorld server or client, and a master server application.
 %prep
 %setup -q -n hexen2source-%{version}%{?prerelease:-%{prerelease}} -a1 -a2
 %if %{?_without_asm:1}0
-%__sed -i 's/USE_X86_ASM=yes/USE_X86_ASM=no/' hexen2/Makefile hexenworld/Client/Makefile
+%__sed -i 's/USE_X86_ASM=yes/USE_X86_ASM=no/' hexen2/Makefile hexenworld/client/Makefile
 %endif
 %if %{?_without_alsa:1}0
-%__sed -i 's/USE_ALSA=yes/USE_ALSA=no/' hexen2/Makefile hexenworld/Client/Makefile
+%__sed -i 's/USE_ALSA=yes/USE_ALSA=no/' hexen2/Makefile hexenworld/client/Makefile
 %endif
 %if %{?_without_midi:1}0
-%__sed -i 's/USE_MIDI=yes/USE_MIDI=no/' hexen2/Makefile hexenworld/Client/Makefile
+%__sed -i 's/USE_MIDI=yes/USE_MIDI=no/' hexen2/Makefile hexenworld/client/Makefile
 %endif
 
 %build
@@ -97,12 +97,12 @@ run a HexenWorld server or client, and a master server application.
 # Build the dedicated server
 %{__make} -C hexen2 -f Makefile.sv
 # HexenWorld binaries
-%{__make} -C hexenworld/Server
-%{__make} -C hexenworld/Client hw
-%{__make} -s -C hexenworld/Client clean
-%{__make} -C hexenworld/Client glhw
+%{__make} -C hexenworld/server
+%{__make} -C hexenworld/client hw
+%{__make} -s -C hexenworld/client clean
+%{__make} -C hexenworld/client glhw
 # HexenWorld master server
-%{__make} -C hexenworld/Master
+%{__make} -C hexenworld/master
 
 # Build xdelta binary and its libraries: do this before
 # building the launcher, it uses its object files.
@@ -140,10 +140,10 @@ utils/bin/hcc -src gamecode-%{gamecode_ver}/hc/hw -oi -on
 %{__install} -D -m755 hexen2/h2ded %{buildroot}/%{_prefix}/games/%{name}/h2ded
 %{__install} -D -m755 hexen2/glhexen2 %{buildroot}/%{_prefix}/games/%{name}/glhexen2
 %{__install} -D -m755 hexen2/hexen2 %{buildroot}/%{_prefix}/games/%{name}/hexen2
-%{__install} -D -m755 hexenworld/Client/hwcl %{buildroot}/%{_prefix}/games/%{name}/hwcl
-%{__install} -D -m755 hexenworld/Client/glhwcl %{buildroot}/%{_prefix}/games/%{name}/glhwcl
-%{__install} -D -m755 hexenworld/Server/hwsv %{buildroot}/%{_prefix}/games/%{name}/hwsv
-%{__install} -D -m755 hexenworld/Master/hwmaster %{buildroot}/%{_prefix}/games/%{name}/hwmaster
+%{__install} -D -m755 hexenworld/client/hwcl %{buildroot}/%{_prefix}/games/%{name}/hwcl
+%{__install} -D -m755 hexenworld/client/glhwcl %{buildroot}/%{_prefix}/games/%{name}/glhwcl
+%{__install} -D -m755 hexenworld/server/hwsv %{buildroot}/%{_prefix}/games/%{name}/hwsv
+%{__install} -D -m755 hexenworld/master/hwmaster %{buildroot}/%{_prefix}/games/%{name}/hwmaster
 %{__install} -D -m755 launcher/h2launcher %{buildroot}/%{_prefix}/games/%{name}/h2launcher
 # Make a symlink of the game-launcher
 %{__mkdir_p} %{buildroot}/%{_bindir}

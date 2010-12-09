@@ -99,7 +99,7 @@ endif
 
 # Other build flags
 EXT_FLAGS:= -DH2W -DSERVERONLY
-INCLUDES:= -I. -I../Client
+INCLUDES:= -I. -I../client
 
 ifeq ($(TARGET_OS),win32)
 CFLAGS  := $(CFLAGS) -DWIN32_LEAN_AND_MEAN
@@ -138,7 +138,7 @@ endif
 # Rules for turning source files into .o files
 %.o: %.c
 	$(CC) -c $(CFLAGS) $(EXT_FLAGS) $(INCLUDES) -o $@ $<
-cl_objs/%.o: ../Client/%.c
+cl_objs/%.o: ../client/%.c
 	$(CC) -c $(CFLAGS) $(EXT_FLAGS) $(INCLUDES) -o $@ $<
 
 # Objects

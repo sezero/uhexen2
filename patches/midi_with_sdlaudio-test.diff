@@ -196,9 +196,9 @@ diff -urNp uhexen2-20081012/hexen2/win_stuff/midi.c uhexen2/hexen2/win_stuff/mid
  {
  	MMRESULT mmrRetVal;
  	MIDIOUTCAPS midi_caps;
-diff -urNp uhexen2-20090614/hexenworld/Client/midi_sdl.c uhexen2/hexenworld/Client/midi_sdl.c
---- uhexen2-20090614/hexenworld/Client/midi_sdl.c	2009-06-14 14:20:05.000000000 +0300
-+++ uhexen2/hexenworld/Client/midi_sdl.c	2009-06-14 14:25:28.000000000 +0300
+diff -urNp uhexen2-20090614/hexenworld/client/midi_sdl.c uhexen2/hexenworld/client/midi_sdl.c
+--- uhexen2-20090614/hexenworld/client/midi_sdl.c	2009-06-14 14:20:05.000000000 +0300
++++ uhexen2/hexenworld/client/midi_sdl.c	2009-06-14 14:25:28.000000000 +0300
 @@ -113,7 +113,64 @@ static void MIDI_EndMusicFinished(void)
  	}
  }
@@ -297,9 +297,9 @@ diff -urNp uhexen2-20090614/hexenworld/Client/midi_sdl.c uhexen2/hexenworld/Clie
  
  	Con_Printf("MIDI music initialized.\n");
  
-diff -urNp uhexen2-20081012/hexenworld/Client/snd_sdl2.c uhexen2/hexenworld/Client/snd_sdl2.c
---- uhexen2-20081012/hexenworld/Client/snd_sdl2.c	2008-08-19 20:21:18.000000000 +0300
-+++ uhexen2/hexenworld/Client/snd_sdl2.c	2008-10-12 10:32:11.000000000 +0300
+diff -urNp uhexen2-20081012/hexenworld/client/snd_sdl2.c uhexen2/hexenworld/client/snd_sdl2.c
+--- uhexen2-20081012/hexenworld/client/snd_sdl2.c	2008-08-19 20:21:18.000000000 +0300
++++ uhexen2/hexenworld/client/snd_sdl2.c	2008-10-12 10:32:11.000000000 +0300
 @@ -54,8 +54,21 @@ static int	buffersize;
  
  void S_SDL_LinkFuncs (snd_driver_t *p)
@@ -322,9 +322,9 @@ diff -urNp uhexen2-20081012/hexenworld/Client/snd_sdl2.c uhexen2/hexenworld/Clie
  	p->GetDMAPos	= S_SDL_GetDMAPos;
  	p->LockBuffer	= S_SDL_LockBuffer;
  	p->Submit	= S_SDL_Submit;
-diff -urNp uhexen2-20100323/hexenworld/Client/cl_main.c uhexen2/hexenworld/Client/cl_main.c
---- uhexen2-20100323/hexenworld/Client/cl_main.c	2010-02-22 12:50:34.000000000 +0200
-+++ uhexen2/hexenworld/Client/cl_main.c	2010-03-23 22:02:10.000000000 +0200
+diff -urNp uhexen2-20100323/hexenworld/client/cl_main.c uhexen2/hexenworld/client/cl_main.c
+--- uhexen2-20100323/hexenworld/client/cl_main.c	2010-02-22 12:50:34.000000000 +0200
++++ uhexen2/hexenworld/client/cl_main.c	2010-03-23 22:02:10.000000000 +0200
 @@ -1413,7 +1413,7 @@ void Host_Init (void)
  
  	S_Init ();
@@ -334,9 +334,9 @@ diff -urNp uhexen2-20100323/hexenworld/Client/cl_main.c uhexen2/hexenworld/Clien
  
  	CL_Init ();
  	IN_Init ();
-diff -urNp uhexen2-20081012/hexenworld/Client/mididef.h uhexen2/hexenworld/Client/mididef.h
---- uhexen2-20081012/hexenworld/Client/mididef.h	2007-09-21 14:05:11.000000000 +0300
-+++ uhexen2/hexenworld/Client/mididef.h	2008-10-12 10:32:11.000000000 +0300
+diff -urNp uhexen2-20081012/hexenworld/client/mididef.h uhexen2/hexenworld/client/mididef.h
+--- uhexen2-20081012/hexenworld/client/mididef.h	2007-09-21 14:05:11.000000000 +0300
++++ uhexen2/hexenworld/client/mididef.h	2008-10-12 10:32:11.000000000 +0300
 @@ -8,7 +8,7 @@
  #ifndef __MIDIDEFS_H
  #define __MIDIDEFS_H
@@ -346,9 +346,9 @@ diff -urNp uhexen2-20081012/hexenworld/Client/mididef.h uhexen2/hexenworld/Clien
  void		MIDI_Cleanup (void);
  void		MIDI_Play (const char *Name);
  void		MIDI_Stop (void);
-diff -urNp uhexen2-20081012/hexenworld/Client/midi_mac.c uhexen2/hexenworld/Client/midi_mac.c
---- uhexen2-20081012/hexenworld/Client/midi_mac.c	2008-03-31 14:25:22.000000000 +0300
-+++ uhexen2/hexenworld/Client/midi_mac.c	2008-10-12 10:32:11.000000000 +0300
+diff -urNp uhexen2-20081012/hexenworld/client/midi_mac.c uhexen2/hexenworld/client/midi_mac.c
+--- uhexen2-20081012/hexenworld/client/midi_mac.c	2008-03-31 14:25:22.000000000 +0300
++++ uhexen2/hexenworld/client/midi_mac.c	2008-10-12 10:32:11.000000000 +0300
 @@ -117,7 +117,7 @@ void MIDI_Update(void)
  	}
  }
@@ -358,9 +358,9 @@ diff -urNp uhexen2-20081012/hexenworld/Client/midi_mac.c uhexen2/hexenworld/Clie
  {
  	OSErr		theErr;
  
-diff -urNp uhexen2-20081012/hexenworld/Client/midi_nul.c uhexen2/hexenworld/Client/midi_nul.c
---- uhexen2-20081012/hexenworld/Client/midi_nul.c	2007-09-21 14:05:11.000000000 +0300
-+++ uhexen2/hexenworld/Client/midi_nul.c	2008-10-12 10:32:11.000000000 +0300
+diff -urNp uhexen2-20081012/hexenworld/client/midi_nul.c uhexen2/hexenworld/client/midi_nul.c
+--- uhexen2-20081012/hexenworld/client/midi_nul.c	2007-09-21 14:05:11.000000000 +0300
++++ uhexen2/hexenworld/client/midi_nul.c	2008-10-12 10:32:11.000000000 +0300
 @@ -7,7 +7,7 @@
  
  #include "quakedef.h"
@@ -370,9 +370,9 @@ diff -urNp uhexen2-20081012/hexenworld/Client/midi_nul.c uhexen2/hexenworld/Clie
  {
  	Con_Printf("MIDI: disabled at compile time\n");
  	return false;
-diff -urNp uhexen2-20081012/hexenworld/Client/win_stuff/midi.c uhexen2/hexenworld/Client/win_stuff/midi.c
---- uhexen2-20081012/hexenworld/Client/win_stuff/midi.c	2008-03-31 14:25:23.000000000 +0300
-+++ uhexen2/hexenworld/Client/win_stuff/midi.c	2008-10-12 10:32:11.000000000 +0300
+diff -urNp uhexen2-20081012/hexenworld/client/win_stuff/midi.c uhexen2/hexenworld/client/win_stuff/midi.c
+--- uhexen2-20081012/hexenworld/client/win_stuff/midi.c	2008-03-31 14:25:23.000000000 +0300
++++ uhexen2/hexenworld/client/win_stuff/midi.c	2008-10-12 10:32:11.000000000 +0300
 @@ -116,7 +116,7 @@ void MIDI_Update(void)
  		MIDI_SetVolume (&bgmvolume);
  }

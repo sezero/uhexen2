@@ -5,10 +5,10 @@ if test "$1" = "strip"; then
 	if env | grep -i windir > /dev/null; then
 		exe_ext=".exe"
 	fi
-	strip Master/hwmaster$exe_ext	\
-		Server/hwsv$exe_ext	\
-		Client/hwcl$exe_ext	\
-		Client/glhwcl$exe_ext
+	strip master/hwmaster$exe_ext	\
+		server/hwsv$exe_ext	\
+		client/hwcl$exe_ext	\
+		client/glhwcl$exe_ext
 	exit 0
 fi
 
@@ -27,22 +27,22 @@ linux)
 esac
 
 if test "$1" = "clean"; then
-	$MAKE_CMD -s -C Client clean
-	$MAKE_CMD -s -C Master clean
-	$MAKE_CMD -s -C Server clean
+	$MAKE_CMD -s -C client clean
+	$MAKE_CMD -s -C master clean
+	$MAKE_CMD -s -C server clean
 	exit 0
 fi
 
 echo "Building hexenworld server..."
-$MAKE_CMD -C Server || exit 1
+$MAKE_CMD -C server || exit 1
 
 echo "" && echo "Building hexenworld master server.."
-$MAKE_CMD -C Master || exit 1
+$MAKE_CMD -C master || exit 1
 
 echo "" && echo "Building hexenworld client (software renderer)"
-$MAKE_CMD -C Client hw || exit 1
+$MAKE_CMD -C client hw || exit 1
 
 echo "" && echo "Building hexenworld client (opengl renderer)"
-$MAKE_CMD -s -C Client clean
-$MAKE_CMD -C Client glhw || exit 1
+$MAKE_CMD -s -C client clean
+$MAKE_CMD -C client glhw || exit 1
 
