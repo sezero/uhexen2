@@ -2,7 +2,7 @@
 	draw.c
 	This is the only file outside the refresh that touches the vid buffer.
 
-	$Id: draw.c,v 1.46 2007-11-25 09:22:56 sezero Exp $
+	$Id: draw.c,v 1.48 2007-11-25 09:22:54 sezero Exp $
 */
 
 
@@ -1756,7 +1756,7 @@ void Draw_BeginDisc (void)
 		disc_idx = 0;
 
 	D_BeginDirectRect (vid.width - 28, 0, draw_disc[disc_idx]->data, 28, 24);
-//rjr	scr_topupdate = 0;
+	scr_topupdate = 0;	// this was disabled by rjr in the hw source for what reason?
 }
 
 
@@ -1781,7 +1781,7 @@ void Draw_EndDisc (void)
 		return;
 
 	D_EndDirectRect (vid.width - 28, 0, 28, 24);
-//rjr	scr_topupdate = 0;
+	scr_topupdate = 0;	// this was disabled by rjr in the hw source for what reason?
 #endif
 }
 
