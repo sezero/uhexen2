@@ -19,7 +19,7 @@
 
 # Path settings:
 # main uhexen2 relative path
-UHEXEN2_TOP:=../../..
+UHEXEN2_TOP:=../..
 
 USE_WINSOCK2=no
 
