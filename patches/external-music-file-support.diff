@@ -45,8 +45,8 @@ http://sourceforge.net/forum/message.php?msg_id=5443576 ):
 	track17		casb3
 
 
---- midi_sdl.c~	2009-06-14 11:00:32.000000000 +0300
-+++ midi_sdl.c	2009-06-14 11:01:40.000000000 +0300
+--- engine/h2shared/midi_sdl.c~	2009-06-14 11:00:32.000000000 +0300
++++ engine/h2shared/midi_sdl.c	2009-06-14 11:01:40.000000000 +0300
 @@ -27,6 +27,7 @@
  */
  

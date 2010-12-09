@@ -98,7 +98,7 @@ CFLAGS := $(CFLAGS) $(ARCHFLAGS)
 
 # Other build flags
 EXT_FLAGS:= -DSERVERONLY
-INCLUDES:= -I./server -I$(COMMONDIR) -I.
+INCLUDES:= -I./server -I. -I$(COMMONDIR)
 
 ifeq ($(USE_WINSOCK2),yes)
 LIBWINSOCK=-lws2_32

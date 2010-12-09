@@ -38,6 +38,7 @@
 UHEXEN2_TOP:=../../..
 # common sources path:
 COMMONDIR:=../../h2shared
+COMMON_HW:=../shared
 
 # General options (see explanations at the top)
 OPT_EXTRA=yes
@@ -101,7 +102,7 @@ endif
 
 # Other build flags
 EXT_FLAGS:= -DH2W -DSERVERONLY
-INCLUDES:= -I$(COMMONDIR) -I. -I../client
+INCLUDES:= -I. -I$(COMMON_HW) -I$(COMMONDIR)
 
 ifeq ($(TARGET_OS),win32)
 CFLAGS  := $(CFLAGS) -DWIN32_LEAN_AND_MEAN
@@ -140,9 +141,9 @@ endif
 # Rules for turning source files into .o files
 %.o: %.c
 	$(CC) -c $(CFLAGS) $(EXT_FLAGS) $(INCLUDES) -o $@ $<
-%.o: $(COMMONDIR)/%.c
+%.o: $(COMMON_HW)/%.c
 	$(CC) -c $(CFLAGS) $(EXT_FLAGS) $(INCLUDES) -o $@ $<
-%.o: ../client/%.c
+%.o: $(COMMONDIR)/%.c
 	$(CC) -c $(CFLAGS) $(EXT_FLAGS) $(INCLUDES) -o $@ $<
 
 # Objects

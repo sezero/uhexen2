@@ -122,6 +122,7 @@
 UHEXEN2_TOP:=../../..
 # common sources path:
 COMMONDIR:=../../h2shared
+COMMON_HW:=../shared
 
 # General options (see explanations at the top)
 USE_SOUND=yes
@@ -230,18 +231,18 @@ endif
 ifeq ($(TARGET_OS),win32)
 # Main win32 specific includes and flags
 CFLAGS  := $(CFLAGS) -DWIN32_LEAN_AND_MEAN
-INCLUDES:= -I$(W32STUFF) -I$(W32STUFF)/dxsdk/inc -I$(COMMONDIR) -I.
+INCLUDES:= -I$(W32STUFF) -I$(W32STUFF)/dxsdk/inc -I. -I$(COMMON_HW) -I$(COMMONDIR)
 LDFLAGS := $(LIBWINSOCK) -lwinmm -mwindows
 endif
 ifeq ($(TARGET_OS),win64)
 # Main win64 specific includes and flags
 CFLAGS  := $(CFLAGS) -DWIN32_LEAN_AND_MEAN
-INCLUDES:= -I$(W32STUFF) -I$(W32STUFF)/dxsdk_new/inc -I$(COMMONDIR) -I.
+INCLUDES:= -I$(W32STUFF) -I$(W32STUFF)/dxsdk_new/inc -I. -I$(COMMON_HW) -I$(COMMONDIR)
 LDFLAGS := $(LIBWINSOCK) -lwinmm -mwindows
 endif
 ifeq ($(TARGET_OS),unix)
 # Main unix specific includes and flags
-INCLUDES:= -I$(X11BASE)/include -I$(COMMONDIR) -I.
+INCLUDES:= -I$(X11BASE)/include -I. -I$(COMMON_HW) -I$(COMMONDIR)
 LDFLAGS := $(LIBSOCKET) -lm
 endif
 
@@ -365,16 +366,22 @@ endif
 # Rules for turning source files into .o files
 %.o: %.c
 	$(CC) -c $(CFLAGS) $(EXT_FLAGS) $(SDLFLAGS) $(INCLUDES) -o $@ $<
+%.o: $(COMMON_HW)/%.c
+	$(CC) -c $(CFLAGS) $(EXT_FLAGS) $(SDLFLAGS) $(INCLUDES) -o $@ $<
 %.o: $(COMMONDIR)/%.c
 	$(CC) -c $(CFLAGS) $(EXT_FLAGS) $(SDLFLAGS) $(INCLUDES) -o $@ $<
-%.o: $(COMMONDIR)/%.asm
-	$(NASM) $(NASMFLAGS) -I$(COMMONDIR)/ -o $@ $<
 %.o: %.asm
-	$(NASM) $(NASMFLAGS) -I$(COMMONDIR)/ -o $@ $<
+	$(NASM) $(NASMFLAGS) -I./ -I$(COMMON_HW)/ -I$(COMMONDIR)/ -o $@ $<
+%.o: $(COMMON_HW)/%.asm
+	$(NASM) $(NASMFLAGS) -I./ -I$(COMMON_HW)/ -I$(COMMONDIR)/ -o $@ $<
+%.o: $(COMMONDIR)/%.asm
+	$(NASM) $(NASMFLAGS) -I./ -I$(COMMON_HW)/ -I$(COMMONDIR)/ -o $@ $<
 %.res: %.rc
-	$(WINDRES) -DWIN32_LEAN_AND_MEAN $(EXT_FLAGS) -I. -I$(COMMONDIR) --output-format=coff -o $@ $<
+	$(WINDRES) -DWIN32_LEAN_AND_MEAN $(EXT_FLAGS) -I. -I$(COMMON_HW) -I$(COMMONDIR) --output-format=coff -o $@ $<
+%.res: $(COMMON_HW)/%.rc
+	$(WINDRES) -DWIN32_LEAN_AND_MEAN $(EXT_FLAGS) -I. -I$(COMMON_HW) -I$(COMMONDIR) --output-format=coff -o $@ $<
 %.res: $(COMMONDIR)/%.rc
-	$(WINDRES) -DWIN32_LEAN_AND_MEAN $(EXT_FLAGS) -I. -I$(COMMONDIR) --output-format=coff -o $@ $<
+	$(WINDRES) -DWIN32_LEAN_AND_MEAN $(EXT_FLAGS) -I. -I$(COMMON_HW) -I$(COMMONDIR) --output-format=coff -o $@ $<
 
 # Objects
 

@@ -65,6 +65,7 @@
 UHEXEN2_TOP:=../../..
 # common sources path:
 COMMONDIR:=../../h2shared
+COMMON_HW:=../shared
 
 # General options (see explanations at the top)
 USE_SOUND=yes
@@ -131,7 +132,7 @@ EXT_FLAGS:= -DH2W -DSVGAQUAKE
 EXT_FLAGS:= $(EXT_FLAGS) -DUSE_INTEL_ASM
 
 # Main unix specific includes and flags
-INCLUDES:= -I$(COMMONDIR) -I.
+INCLUDES:= -I. -I$(COMMON_HW) -I$(COMMONDIR)
 LDFLAGS := $(LIBSOCKET) -lm -lvga
 
 ifeq ($(COMPILE_32BITS),yes)
@@ -165,12 +166,16 @@ endif
 # Rules for turning source files into .o files
 %.o: %.c
 	$(CC) -c $(CFLAGS) $(EXT_FLAGS) $(INCLUDES) -o $@ $<
+%.o: $(COMMON_HW)/%.c
+	$(CC) -c $(CFLAGS) $(EXT_FLAGS) $(INCLUDES) -o $@ $<
 %.o: $(COMMONDIR)/%.c
 	$(CC) -c $(CFLAGS) $(EXT_FLAGS) $(INCLUDES) -o $@ $<
 %.o: %.asm
-	$(NASM) $(NASMFLAGS) -o $@ $<
+	$(NASM) $(NASMFLAGS) -I./ -I$(COMMON_HW)/ -I$(COMMONDIR)/ -o $@ $<
+%.o: $(COMMON_HW)/%.asm
+	$(NASM) $(NASMFLAGS) -I./ -I$(COMMON_HW)/ -I$(COMMONDIR)/ -o $@ $<
 %.o: $(COMMONDIR)/%.asm
-	$(NASM) $(NASMFLAGS) -o $@ $<
+	$(NASM) $(NASMFLAGS) -I./ -I$(COMMON_HW)/ -I$(COMMONDIR)/ -o $@ $<
 
 # Objects
 

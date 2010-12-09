@@ -10,9 +10,9 @@ don't have any effects on them, yet.
 NOTE:  if you want to use the external music files patch, too,  you
 must apply this one first.
 
-diff -urNp uhexen2-20090614/hexen2/midi_sdl.c uhexen2/hexen2/midi_sdl.c
---- uhexen2-20090614/hexen2/midi_sdl.c	2009-06-14 14:20:05.000000000 +0300
-+++ uhexen2/hexen2/midi_sdl.c	2009-06-14 14:25:28.000000000 +0300
+diff -urNp engine/h2shared/midi_sdl.c engine/h2shared/midi_sdl.c
+--- engine/h2shared/midi_sdl.c	2009-06-14 14:20:05.000000000 +0300
++++ engine/h2shared/midi_sdl.c	2009-06-14 14:25:28.000000000 +0300
 @@ -113,7 +113,64 @@ static void MIDI_EndMusicFinished(void)
  	}
  }
@@ -111,9 +111,9 @@ diff -urNp uhexen2-20090614/hexen2/midi_sdl.c uhexen2/hexen2/midi_sdl.c
  
  	Con_Printf("MIDI music initialized.\n");
  
-diff -urNp uhexen2-20081012/hexen2/snd_sdl2.c uhexen2/hexen2/snd_sdl2.c
---- uhexen2-20081012/hexen2/snd_sdl2.c	2008-08-19 20:21:17.000000000 +0300
-+++ uhexen2/hexen2/snd_sdl2.c	2008-10-12 10:32:11.000000000 +0300
+diff -urNp engine/h2shared/snd_sdl.c engine/h2shared/snd_sdl.c
+--- engine/h2shared/snd_sdl.c	2008-08-19 20:21:17.000000000 +0300
++++ engine/h2shared/snd_sdl.c	2008-10-12 10:32:11.000000000 +0300
 @@ -54,8 +54,21 @@ static int	buffersize;
  
  void S_SDL_LinkFuncs (snd_driver_t *p)
@@ -136,9 +136,57 @@ diff -urNp uhexen2-20081012/hexen2/snd_sdl2.c uhexen2/hexen2/snd_sdl2.c
  	p->GetDMAPos	= S_SDL_GetDMAPos;
  	p->LockBuffer	= S_SDL_LockBuffer;
  	p->Submit	= S_SDL_Submit;
-diff -urNp uhexen2-20081012/hexen2/host.c uhexen2/hexen2/host.c
---- uhexen2-20081012/hexen2/host.c	2008-04-04 10:55:12.000000000 +0300
-+++ uhexen2/hexen2/host.c	2008-10-12 10:32:11.000000000 +0300
+diff -urNp engine/h2shared/mididef.h engine/h2shared/mididef.h
+--- engine/h2shared/mididef.h	2007-09-21 14:05:10.000000000 +0300
++++ engine/h2shared/mididef.h	2008-10-12 10:32:11.000000000 +0300
+@@ -8,7 +8,7 @@
+ #ifndef __MIDIDEFS_H
+ #define __MIDIDEFS_H
+ 
+-qboolean	MIDI_Init (void);
++qboolean	MIDI_Init (dma_t *dma);
+ void		MIDI_Cleanup (void);
+ void		MIDI_Play (const char *Name);
+ void		MIDI_Stop (void);
+diff -urNp engine/h2shared/midi_mac.c engine/h2shared/midi_mac.c
+--- engine/h2shared/midi_mac.c	2008-03-31 14:25:21.000000000 +0300
++++ engine/h2shared/midi_mac.c	2008-10-12 10:32:11.000000000 +0300
+@@ -117,7 +117,7 @@ void MIDI_Update(void)
+ 	}
+ }
+ 
+-qboolean MIDI_Init(void)
++qboolean MIDI_Init(dma_t *dma)
+ {
+ 	OSErr		theErr;
+ 
+diff -urNp engine/h2shared/midi_nul.c engine/h2shared/midi_nul.c
+--- engine/h2shared/midi_nul.c	2007-09-21 14:05:10.000000000 +0300
++++ engine/h2shared/midi_nul.c	2008-10-12 10:32:11.000000000 +0300
+@@ -7,7 +7,7 @@
+ 
+ #include "quakedef.h"
+ 
+-qboolean MIDI_Init (void)
++qboolean MIDI_Init (dma_t *dma)
+ {
+ 	Con_Printf("MIDI: disabled at compile time\n");
+ 	return false;
+diff -urNp engine/h2shared/midi_win.c engine/h2shared/midi_win.c
+--- engine/h2shared/midi_win.c	2008-03-31 14:25:22.000000000 +0300
++++ engine/h2shared/midi_win.c	2008-10-12 10:32:11.000000000 +0300
+@@ -116,7 +116,7 @@ void MIDI_Update(void)
+ 		MIDI_SetVolume (&bgmvolume);
+ }
+ 
+-qboolean MIDI_Init(void)
++qboolean MIDI_Init(dma_t *dma)
+ {
+ 	MMRESULT mmrRetVal;
+ 	MIDIOUTCAPS midi_caps;
+diff -urNp engine/hexen2/host.c engine/hexen2/hexen2/host.c
+--- engine/hexen2/host.c	2008-04-04 10:55:12.000000000 +0300
++++ engine/hexen2/host.c	2008-10-12 10:32:11.000000000 +0300
 @@ -1060,7 +1060,7 @@ void Host_Init (void)
  
  		S_Init ();
@@ -148,183 +196,9 @@ diff -urNp uhexen2-20081012/hexen2/host.c uhexen2/hexen2/host.c
  
  		CL_Init();
  		IN_Init();
-diff -urNp uhexen2-20081012/hexen2/mididef.h uhexen2/hexen2/mididef.h
---- uhexen2-20081012/hexen2/mididef.h	2007-09-21 14:05:10.000000000 +0300
-+++ uhexen2/hexen2/mididef.h	2008-10-12 10:32:11.000000000 +0300
-@@ -8,7 +8,7 @@
- #ifndef __MIDIDEFS_H
- #define __MIDIDEFS_H
- 
--qboolean	MIDI_Init (void);
-+qboolean	MIDI_Init (dma_t *dma);
- void		MIDI_Cleanup (void);
- void		MIDI_Play (const char *Name);
- void		MIDI_Stop (void);
-diff -urNp uhexen2-20081012/hexen2/midi_mac.c uhexen2/hexen2/midi_mac.c
---- uhexen2-20081012/hexen2/midi_mac.c	2008-03-31 14:25:21.000000000 +0300
-+++ uhexen2/hexen2/midi_mac.c	2008-10-12 10:32:11.000000000 +0300
-@@ -117,7 +117,7 @@ void MIDI_Update(void)
- 	}
- }
- 
--qboolean MIDI_Init(void)
-+qboolean MIDI_Init(dma_t *dma)
- {
- 	OSErr		theErr;
- 
-diff -urNp uhexen2-20081012/hexen2/midi_nul.c uhexen2/hexen2/midi_nul.c
---- uhexen2-20081012/hexen2/midi_nul.c	2007-09-21 14:05:10.000000000 +0300
-+++ uhexen2/hexen2/midi_nul.c	2008-10-12 10:32:11.000000000 +0300
-@@ -7,7 +7,7 @@
- 
- #include "quakedef.h"
- 
--qboolean MIDI_Init (void)
-+qboolean MIDI_Init (dma_t *dma)
- {
- 	Con_Printf("MIDI: disabled at compile time\n");
- 	return false;
-diff -urNp uhexen2-20081012/hexen2/win_stuff/midi.c uhexen2/hexen2/win_stuff/midi.c
---- uhexen2-20081012/hexen2/win_stuff/midi.c	2008-03-31 14:25:22.000000000 +0300
-+++ uhexen2/hexen2/win_stuff/midi.c	2008-10-12 10:32:11.000000000 +0300
-@@ -116,7 +116,7 @@ void MIDI_Update(void)
- 		MIDI_SetVolume (&bgmvolume);
- }
- 
--qboolean MIDI_Init(void)
-+qboolean MIDI_Init(dma_t *dma)
- {
- 	MMRESULT mmrRetVal;
- 	MIDIOUTCAPS midi_caps;
-diff -urNp uhexen2-20090614/hexenworld/client/midi_sdl.c uhexen2/hexenworld/client/midi_sdl.c
---- uhexen2-20090614/hexenworld/client/midi_sdl.c	2009-06-14 14:20:05.000000000 +0300
-+++ uhexen2/hexenworld/client/midi_sdl.c	2009-06-14 14:25:28.000000000 +0300
-@@ -113,7 +113,64 @@ static void MIDI_EndMusicFinished(void)
- 	}
- }
- 
--qboolean MIDI_Init(void)
-+static int	buffersize;
-+
-+static void paint_audio (void *unused, Uint8 *stream, int len)
-+{
-+	int	pos, tobufend;
-+	int	len1, len2;
-+	short	*buf, *src;
-+
-+	if (!shm)
-+	{	/* shouldn't happen, but just in case */
-+		return;
-+	}
-+
-+	pos = (shm->samplepos * (shm->samplebits / 8));
-+	if (pos >= buffersize)
-+		shm->samplepos = pos = 0;
-+
-+	tobufend = buffersize - pos;  /* bytes to buffer's end. */
-+	len1 = len;
-+	len2 = 0;
-+
-+	if (len1 > tobufend)
-+	{
-+		len1 = tobufend;
-+		len2 = len - len1;
-+	}
-+
-+	buf = (short *)stream;
-+	src = (short *) (shm->buffer + pos);
-+	len = len1;
-+	while (len >= 0)
-+	{
-+		*buf++ += *src++;
-+		len -= 2;
-+	}
-+
-+	if (len2 <= 0)
-+	{
-+		shm->samplepos += (len1 / (shm->samplebits / 8));
-+	}
-+	else
-+	{	/* wraparound? */
-+		src = (short *) shm->buffer;
-+		buf = (short *) (stream + len1);
-+		len = len2;
-+		while (len >= 0)
-+		{
-+			*buf++ += *src++;
-+			len -= 2;
-+		}
-+		shm->samplepos = (len2 / (shm->samplebits / 8));
-+	}
-+
-+	if (shm->samplepos >= buffersize)
-+		shm->samplepos = 0;
-+}
-+
-+qboolean MIDI_Init(dma_t *dma)
- {
- 	Uint16 audio_format = AUDIO_S16SYS;
- 	int audio_rate = 22050;
-@@ -131,11 +188,6 @@ qboolean MIDI_Init(void)
- 		Con_Printf("disabled by commandline\n");
- 		return false;
- 	}
--	if (snd_system == S_SYS_SDL)
--	{
--		Con_Printf("SDL_mixer conflicts SDL audio.\n");
--		return false;
--	}
- 
- 	Con_Printf("SDL_Mixer ");
- 	v = Mix_Linked_Version();
-@@ -171,6 +223,19 @@ qboolean MIDI_Init(void)
- 	}
- 
- 	Mix_HookMusicFinished(MIDI_EndMusicFinished);
-+	if (dma != NULL)
-+	{
-+		memset ((void *) dma, 0, sizeof(dma_t));
-+		shm = dma;
-+		shm->samplepos = 0;
-+		shm->submission_chunk = 1;
-+		Mix_QuerySpec (&dma->speed, &audio_format, &dma->channels);
-+		shm->samplebits = audio_format & 0xFF;
-+		shm->samples = 16384;
-+		buffersize = shm->samples * (shm->samplebits / 8);
-+		shm->buffer = (unsigned char *) calloc (1, buffersize);
-+		Mix_SetPostMix(paint_audio, NULL);
-+	}
- 
- 	Con_Printf("MIDI music initialized.\n");
- 
-diff -urNp uhexen2-20081012/hexenworld/client/snd_sdl2.c uhexen2/hexenworld/client/snd_sdl2.c
---- uhexen2-20081012/hexenworld/client/snd_sdl2.c	2008-08-19 20:21:18.000000000 +0300
-+++ uhexen2/hexenworld/client/snd_sdl2.c	2008-10-12 10:32:11.000000000 +0300
-@@ -54,8 +54,21 @@ static int	buffersize;
- 
- void S_SDL_LinkFuncs (snd_driver_t *p)
- {
-+#if defined(_MIDI_SDLMIXER)
-+	if (safemode || COM_CheckParm("-nomidi"))
-+	{
-+		p->Init		= S_SDL_Init;
-+		p->Shutdown	= S_SDL_Shutdown;
-+	}
-+	else
-+	{
-+		p->Init		= MIDI_Init;
-+		p->Shutdown	= MIDI_Cleanup;
-+	}
-+#else
- 	p->Init		= S_SDL_Init;
- 	p->Shutdown	= S_SDL_Shutdown;
-+#endif	/* _MIDI_SDLMIXER */
- 	p->GetDMAPos	= S_SDL_GetDMAPos;
- 	p->LockBuffer	= S_SDL_LockBuffer;
- 	p->Submit	= S_SDL_Submit;
-diff -urNp uhexen2-20100323/hexenworld/client/cl_main.c uhexen2/hexenworld/client/cl_main.c
---- uhexen2-20100323/hexenworld/client/cl_main.c	2010-02-22 12:50:34.000000000 +0200
-+++ uhexen2/hexenworld/client/cl_main.c	2010-03-23 22:02:10.000000000 +0200
+diff -urNp engine/hexenworld/client/cl_main.c engine/hexenworld/client/cl_main.c
+--- engine/hexenworld/client/cl_main.c	2010-02-22 12:50:34.000000000 +0200
++++ engine/hexenworld/client/cl_main.c	2010-03-23 22:02:10.000000000 +0200
 @@ -1413,7 +1413,7 @@ void Host_Init (void)
  
  	S_Init ();
@@ -334,52 +208,3 @@ diff -urNp uhexen2-20100323/hexenworld/client/cl_main.c uhexen2/hexenworld/clien
  
  	CL_Init ();
  	IN_Init ();
-diff -urNp uhexen2-20081012/hexenworld/client/mididef.h uhexen2/hexenworld/client/mididef.h
---- uhexen2-20081012/hexenworld/client/mididef.h	2007-09-21 14:05:11.000000000 +0300
-+++ uhexen2/hexenworld/client/mididef.h	2008-10-12 10:32:11.000000000 +0300
-@@ -8,7 +8,7 @@
- #ifndef __MIDIDEFS_H
- #define __MIDIDEFS_H
- 
--qboolean	MIDI_Init (void);
-+qboolean	MIDI_Init (dma_t *dma);
- void		MIDI_Cleanup (void);
- void		MIDI_Play (const char *Name);
- void		MIDI_Stop (void);
-diff -urNp uhexen2-20081012/hexenworld/client/midi_mac.c uhexen2/hexenworld/client/midi_mac.c
---- uhexen2-20081012/hexenworld/client/midi_mac.c	2008-03-31 14:25:22.000000000 +0300
-+++ uhexen2/hexenworld/client/midi_mac.c	2008-10-12 10:32:11.000000000 +0300
-@@ -117,7 +117,7 @@ void MIDI_Update(void)
- 	}
- }
- 
--qboolean MIDI_Init(void)
-+qboolean MIDI_Init(dma_t *dma)
- {
- 	OSErr		theErr;
- 
-diff -urNp uhexen2-20081012/hexenworld/client/midi_nul.c uhexen2/hexenworld/client/midi_nul.c
---- uhexen2-20081012/hexenworld/client/midi_nul.c	2007-09-21 14:05:11.000000000 +0300
-+++ uhexen2/hexenworld/client/midi_nul.c	2008-10-12 10:32:11.000000000 +0300
-@@ -7,7 +7,7 @@
- 
- #include "quakedef.h"
- 
--qboolean MIDI_Init (void)
-+qboolean MIDI_Init (dma_t *dma)
- {
- 	Con_Printf("MIDI: disabled at compile time\n");
- 	return false;
-diff -urNp uhexen2-20081012/hexenworld/client/win_stuff/midi.c uhexen2/hexenworld/client/win_stuff/midi.c
---- uhexen2-20081012/hexenworld/client/win_stuff/midi.c	2008-03-31 14:25:23.000000000 +0300
-+++ uhexen2/hexenworld/client/win_stuff/midi.c	2008-10-12 10:32:11.000000000 +0300
-@@ -116,7 +116,7 @@ void MIDI_Update(void)
- 		MIDI_SetVolume (&bgmvolume);
- }
- 
--qboolean MIDI_Init(void)
-+qboolean MIDI_Init(dma_t *dma)
- {
- 	MMRESULT mmrRetVal;
- 	MIDIOUTCAPS midi_caps;
-

@@ -252,18 +252,18 @@ endif
 ifeq ($(TARGET_OS),win32)
 # Main win32 specific includes and flags
 CFLAGS  := $(CFLAGS) -DWIN32_LEAN_AND_MEAN
-INCLUDES:= -I$(W32STUFF) -I$(W32STUFF)/dxsdk/inc -I$(COMMONDIR) -I.
+INCLUDES:= -I$(W32STUFF) -I$(W32STUFF)/dxsdk/inc -I. -I$(COMMONDIR)
 LDFLAGS := $(LIBWINSOCK) -lwinmm -mwindows
 endif
 ifeq ($(TARGET_OS),win64)
 # Main win64 specific includes and flags
 CFLAGS  := $(CFLAGS) -DWIN32_LEAN_AND_MEAN
-INCLUDES:= -I$(W32STUFF) -I$(W32STUFF)/dxsdk_new/inc -I$(COMMONDIR) -I.
+INCLUDES:= -I$(W32STUFF) -I$(W32STUFF)/dxsdk_new/inc -I. -I$(COMMONDIR)
 LDFLAGS := $(LIBWINSOCK) -lwinmm -mwindows
 endif
 ifeq ($(TARGET_OS),dos)
 # Main dos specific includes and flags
-INCLUDES:= -I$(COMMONDIR) -I.
+INCLUDES:= -I. -I$(COMMONDIR)
 LDFLAGS := -lc -lgcc -lm
 ifndef DEBUG
 LDFLAGS := $(LDFLAGS) -s
@@ -271,7 +271,7 @@ endif
 endif
 ifeq ($(TARGET_OS),unix)
 # Main unix specific includes and flags
-INCLUDES:= -I$(X11BASE)/include -I$(COMMONDIR) -I.
+INCLUDES:= -I$(X11BASE)/include -I. -I$(COMMONDIR)
 LDFLAGS := $(LIBSOCKET) -lm
 endif
 
@@ -398,9 +398,9 @@ endif
 %.o: $(COMMONDIR)/%.c
 	$(CC) -c $(CFLAGS) $(EXT_FLAGS) $(SDLFLAGS) $(INCLUDES) -o $@ $<
 %.o: %.asm
-	$(NASM) $(NASMFLAGS) -I$(COMMONDIR)/ -o $@ $<
+	$(NASM) $(NASMFLAGS) -I./ -I$(COMMONDIR)/ -o $@ $<
 %.o: $(COMMONDIR)/%.asm
-	$(NASM) $(NASMFLAGS) -I$(COMMONDIR)/ -o $@ $<
+	$(NASM) $(NASMFLAGS) -I./ -I$(COMMONDIR)/ -o $@ $<
 %.res: %.rc
 	$(WINDRES) -DWIN32_LEAN_AND_MEAN $(EXT_FLAGS) -I. -I$(COMMONDIR) --output-format=coff -o $@ $<
 %.res: $(COMMONDIR)/%.rc

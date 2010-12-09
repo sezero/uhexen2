@@ -131,7 +131,7 @@ EXT_FLAGS:= -DSVGAQUAKE
 EXT_FLAGS:= $(EXT_FLAGS) -DUSE_INTEL_ASM
 
 # Main unix specific includes and flags
-INCLUDES:= -I$(COMMONDIR) -I.
+INCLUDES:= -I. -I$(COMMONDIR)
 LDFLAGS := $(LIBSOCKET) -lm -lvga
 
 ifeq ($(COMPILE_32BITS),yes)
@@ -168,9 +168,9 @@ endif
 %.o: $(COMMONDIR)/%.c
 	$(CC) -c $(CFLAGS) $(EXT_FLAGS) $(INCLUDES) -o $@ $<
 %.o: %.asm
-	$(NASM) $(NASMFLAGS) -I$(COMMONDIR)/ -o $@ $<
+	$(NASM) $(NASMFLAGS) -I./ -I$(COMMONDIR)/ -o $@ $<
 %.o: $(COMMONDIR)/%.asm
-	$(NASM) $(NASMFLAGS) -I$(COMMONDIR)/ -o $@ $<
+	$(NASM) $(NASMFLAGS) -I./ -I$(COMMONDIR)/ -o $@ $<
 
 # Objects
 
