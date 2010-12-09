@@ -1,7 +1,7 @@
 #!/bin/sh
 
-UHEXEN2_TOP=..
-. $UHEXEN2_TOP/scripts/cross_defs
+UHEXEN2_TOP=../..
+. $UHEXEN2_TOP/scripts/cross_defs_w64
 
 if test "$1" = "strip"; then
 	$STRIPPER h2.exe glh2.exe h2ded.exe
@@ -11,11 +11,11 @@ fi
 HOST_OS=`uname|sed -e s/_.*//|tr '[:upper:]' '[:lower:]'`
 
 case "$HOST_OS" in
-freebsd|openbsd|netbsd)
-	MAKE_CMD=gmake
-	;;
 linux)
 	MAKE_CMD=make
+	;;
+freebsd|openbsd|netbsd)
+	MAKE_CMD=gmake
 	;;
 *)
 	MAKE_CMD=make
@@ -29,11 +29,11 @@ fi
 
 if test "$1" = "all"; then
 	$MAKE_CMD clean
-	$MAKE_CMD $2 $3 $4 $5 $6 h2  || exit 1
+	$MAKE_CMD -f Makefile.sv $2 $3 $4 $5 $6 || exit 1
 	$MAKE_CMD clean
 	$MAKE_CMD $2 $3 $4 $5 $6 glh2 || exit 1
 	$MAKE_CMD clean
-	$MAKE_CMD -f Makefile.sv $2 $3 $4 $5 $6 || exit 1
+	$MAKE_CMD $2 $3 $4 $5 $6 h2 || exit 1
 	$MAKE_CMD clean
 	exit 0
 fi

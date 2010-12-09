@@ -119,7 +119,7 @@
 
 # Path settings:
 # main uhexen2 relative path
-UHEXEN2_TOP:=../..
+UHEXEN2_TOP:=../../..
 
 # General options (see explanations at the top)
 USE_SOUND=yes

@@ -1,10 +1,10 @@
 #!/bin/sh
 
-UHEXEN2_TOP=../..
+UHEXEN2_TOP=../../..
 . $UHEXEN2_TOP/scripts/cross_defs_w64
 
 if test "$1" = "strip"; then
-	$STRIPPER hwmaster.exe
+	$STRIPPER hwsv.exe
 	exit 0
 fi
 
