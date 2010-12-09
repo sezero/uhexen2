@@ -39,6 +39,8 @@
 # Path settings:
 # main uhexen2 relative path
 UHEXEN2_TOP:=../..
+# common sources path:
+COMMONDIR:=../h2shared
 
 # General options (see explanations at the top)
 OPT_EXTRA=yes
@@ -96,7 +98,7 @@ CFLAGS := $(CFLAGS) $(ARCHFLAGS)
 
 # Other build flags
 EXT_FLAGS:= -DSERVERONLY
-INCLUDES:= -I./server -I.
+INCLUDES:= -I./server -I$(COMMONDIR) -I.
 
 ifeq ($(USE_WINSOCK2),yes)
 LIBWINSOCK=-lws2_32
@@ -139,25 +141,27 @@ endif
 
 
 # Rules for turning source files into .o files
+%.o: server/%.c
+	$(CC) -c $(CFLAGS) $(EXT_FLAGS) $(INCLUDES) -o $@ $<
 %.o: %.c
 	$(CC) -c $(CFLAGS) $(EXT_FLAGS) $(INCLUDES) -o $@ $<
-sv_objs/%.o: server/%.c
+%.o: $(COMMONDIR)/%.c
 	$(CC) -c $(CFLAGS) $(EXT_FLAGS) $(INCLUDES) -o $@ $<
 
 # Objects
 
 # Platform specific object settings
 ifeq ($(TARGET_OS),win32)
-SYSOBJ_NET := win_stuff/net_win.o win_stuff/net_wins.o win_stuff/net_wipx.o
-SYSOBJ_SYS := sv_objs/sys_win.o
+SYSOBJ_NET := net_win.o net_wins.o net_wipx.o
+SYSOBJ_SYS := sys_win.o
 endif
 ifeq ($(TARGET_OS),win64)
-SYSOBJ_NET := win_stuff/net_win.o win_stuff/net_wins.o win_stuff/net_wipx.o
-SYSOBJ_SYS := sv_objs/sys_win.o
+SYSOBJ_NET := net_win.o net_wins.o net_wipx.o
+SYSOBJ_SYS := sys_win.o
 endif
 ifeq ($(TARGET_OS),unix)
 SYSOBJ_NET := net_bsd.o net_udp.o
-SYSOBJ_SYS := sv_objs/sys_unix.o
+SYSOBJ_SYS := sys_unix.o
 endif
 
 # Final list of objects
@@ -177,11 +181,11 @@ H2DED_OBJS = \
 	mathlib.o \
 	zone.o \
 	$(SYSOBJ_NET) \
-	sv_objs/net_dgrm.o \
-	sv_objs/net_main.o \
-	sv_objs/model.o \
-	sv_objs/host.o \
-	sv_objs/host_cmd.o \
+	net_dgrm.o \
+	net_main.o \
+	model.o \
+	host.o \
+	host_cmd.o \
 	pr_cmds.o \
 	pr_edict.o \
 	pr_exec.o \
@@ -205,7 +209,7 @@ $(BINARY): $(H2DED_OBJS)
 	$(LINKER) -o $(BINARY) $(H2DED_OBJS) $(LDFLAGS)
 
 clean:
-	rm -f *.o *.res win_stuff/*.o sv_objs/*.o core
+	rm -f *.o *.res core
 
 cleaner: clean
 	rm -f $(BINARY)

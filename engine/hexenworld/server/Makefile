@@ -36,6 +36,8 @@
 # Path settings:
 # main uhexen2 relative path
 UHEXEN2_TOP:=../../..
+# common sources path:
+COMMONDIR:=../../h2shared
 
 # General options (see explanations at the top)
 OPT_EXTRA=yes
@@ -99,7 +101,7 @@ endif
 
 # Other build flags
 EXT_FLAGS:= -DH2W -DSERVERONLY
-INCLUDES:= -I. -I../client
+INCLUDES:= -I$(COMMONDIR) -I. -I../client
 
 ifeq ($(TARGET_OS),win32)
 CFLAGS  := $(CFLAGS) -DWIN32_LEAN_AND_MEAN
@@ -138,7 +140,9 @@ endif
 # Rules for turning source files into .o files
 %.o: %.c
 	$(CC) -c $(CFLAGS) $(EXT_FLAGS) $(INCLUDES) -o $@ $<
-cl_objs/%.o: ../client/%.c
+%.o: $(COMMONDIR)/%.c
+	$(CC) -c $(CFLAGS) $(EXT_FLAGS) $(INCLUDES) -o $@ $<
+%.o: ../client/%.c
 	$(CC) -c $(CFLAGS) $(EXT_FLAGS) $(INCLUDES) -o $@ $<
 
 # Objects
@@ -156,26 +160,26 @@ endif
 
 # Final list of objects
 HWSV_OBJS = \
-	cl_objs/q_endian.o \
-	cl_objs/link_ops.o \
-	cl_objs/sizebuf.o \
-	cl_objs/strlcat.o \
-	cl_objs/strlcpy.o \
-	cl_objs/msg_io.o \
-	cl_objs/common.o \
-	cl_objs/quakefs.o \
-	cl_objs/info_str.o \
-	cl_objs/cmd.o \
-	cl_objs/crc.o \
-	cl_objs/cvar.o \
-	cl_objs/pr_strng.o \
-	cl_objs/mathlib.o \
-	cl_objs/zone.o \
-	cl_objs/huffman.o \
-	cl_objs/net_wins.o \
-	cl_objs/net_chan.o \
-	cl_objs/pmove.o \
-	cl_objs/pmovetst.o \
+	q_endian.o \
+	link_ops.o \
+	sizebuf.o \
+	strlcat.o \
+	strlcpy.o \
+	msg_io.o \
+	common.o \
+	quakefs.o \
+	info_str.o \
+	cmd.o \
+	crc.o \
+	cvar.o \
+	pr_strng.o \
+	mathlib.o \
+	zone.o \
+	huffman.o \
+	net_wins.o \
+	net_chan.o \
+	pmove.o \
+	pmovetst.o \
 	model.o \
 	pr_cmds.o \
 	pr_edict.o \

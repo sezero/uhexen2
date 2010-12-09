@@ -125,6 +125,8 @@
 # Path settings:
 # main uhexen2 relative path
 UHEXEN2_TOP:=../..
+# common sources path:
+COMMONDIR:=../h2shared
 
 # General options (see explanations at the top)
 USE_SOUND=yes
@@ -250,18 +252,18 @@ endif
 ifeq ($(TARGET_OS),win32)
 # Main win32 specific includes and flags
 CFLAGS  := $(CFLAGS) -DWIN32_LEAN_AND_MEAN
-INCLUDES:= -I$(W32STUFF) -I$(W32STUFF)/dxsdk/inc -I.
+INCLUDES:= -I$(W32STUFF) -I$(W32STUFF)/dxsdk/inc -I$(COMMONDIR) -I.
 LDFLAGS := $(LIBWINSOCK) -lwinmm -mwindows
 endif
 ifeq ($(TARGET_OS),win64)
 # Main win64 specific includes and flags
 CFLAGS  := $(CFLAGS) -DWIN32_LEAN_AND_MEAN
-INCLUDES:= -I$(W32STUFF) -I$(W32STUFF)/dxsdk_new/inc -I.
+INCLUDES:= -I$(W32STUFF) -I$(W32STUFF)/dxsdk_new/inc -I$(COMMONDIR) -I.
 LDFLAGS := $(LIBWINSOCK) -lwinmm -mwindows
 endif
 ifeq ($(TARGET_OS),dos)
 # Main dos specific includes and flags
-INCLUDES:= -I.
+INCLUDES:= -I$(COMMONDIR) -I.
 LDFLAGS := -lc -lgcc -lm
 ifndef DEBUG
 LDFLAGS := $(LDFLAGS) -s
@@ -269,7 +271,7 @@ endif
 endif
 ifeq ($(TARGET_OS),unix)
 # Main unix specific includes and flags
-INCLUDES:= -I$(X11BASE)/include -I.
+INCLUDES:= -I$(X11BASE)/include -I$(COMMONDIR) -I.
 LDFLAGS := $(LIBSOCKET) -lm
 endif
 
@@ -393,10 +395,16 @@ endif
 # Rules for turning source files into .o files
 %.o: %.c
 	$(CC) -c $(CFLAGS) $(EXT_FLAGS) $(SDLFLAGS) $(INCLUDES) -o $@ $<
+%.o: $(COMMONDIR)/%.c
+	$(CC) -c $(CFLAGS) $(EXT_FLAGS) $(SDLFLAGS) $(INCLUDES) -o $@ $<
 %.o: %.asm
-	$(NASM) $(NASMFLAGS) -o $@ $<
+	$(NASM) $(NASMFLAGS) -I$(COMMONDIR)/ -o $@ $<
+%.o: $(COMMONDIR)/%.asm
+	$(NASM) $(NASMFLAGS) -I$(COMMONDIR)/ -o $@ $<
 %.res: %.rc
-	$(WINDRES) -DWIN32_LEAN_AND_MEAN $(EXT_FLAGS) --output-format=coff -o $@ $<
+	$(WINDRES) -DWIN32_LEAN_AND_MEAN $(EXT_FLAGS) -I. -I$(COMMONDIR) --output-format=coff -o $@ $<
+%.res: $(COMMONDIR)/%.rc
+	$(WINDRES) -DWIN32_LEAN_AND_MEAN $(EXT_FLAGS) -I. -I$(COMMONDIR) --output-format=coff -o $@ $<
 
 # Objects
 
@@ -451,16 +459,16 @@ COMOBJ_SND := snd_null.o
 else
 COMOBJ_SND := snd_sys.o snd_dma.o snd_mix.o $(SOUND_ASM) snd_mem.o
 ifeq ($(TARGET_OS),win32)
-SYSOBJ_SND := win_stuff/snd_win.o
+SYSOBJ_SND := snd_win.o
 endif
 ifeq ($(TARGET_OS),win64)
-SYSOBJ_SND := win_stuff/snd_win.o
+SYSOBJ_SND := snd_win.o
 endif
 ifeq ($(TARGET_OS),dos)
 SYSOBJ_SND := dos/snd_dos.o dos/snd_gus.o
 endif
 ifeq ($(TARGET_OS),unix)
-SYSOBJ_SND := snd_oss.o snd_alsa.o snd_sun.o snd_sdl2.o
+SYSOBJ_SND := snd_oss.o snd_alsa.o snd_sun.o snd_sdl.o
 endif
 # end of Sound objects
 endif
@@ -471,10 +479,10 @@ SYSOBJ_MIDI:= midi_nul.o
 EXT_FLAGS += -DNO_MIDIMUSIC
 else
 ifeq ($(TARGET_OS),win32)
-SYSOBJ_MIDI:= win_stuff/midi.o win_stuff/mstrconv.o
+SYSOBJ_MIDI:= midi_win.o mstrconv.o
 endif
 ifeq ($(TARGET_OS),win64)
-SYSOBJ_MIDI:= win_stuff/midi.o win_stuff/mstrconv.o
+SYSOBJ_MIDI:= midi_win.o mstrconv.o
 endif
 ifeq ($(TARGET_OS),dos)
 SYSOBJ_MIDI:= midi_nul.o
@@ -498,10 +506,10 @@ SYSOBJ_CDA:= cd_null.o
 EXT_FLAGS += -D_NO_CDAUDIO
 else
 ifeq ($(TARGET_OS),win32)
-SYSOBJ_CDA := win_stuff/cd_win.o
+SYSOBJ_CDA := cd_win.o
 endif
 ifeq ($(TARGET_OS),win64)
-SYSOBJ_CDA := win_stuff/cd_win.o
+SYSOBJ_CDA := cd_win.o
 endif
 ifeq ($(TARGET_OS),dos)
 SYSOBJ_CDA := dos/cd_dos.o
@@ -514,22 +522,22 @@ endif
 
 # Other platform specific object settings
 ifeq ($(TARGET_OS),win32)
-SYSOBJ_INPUT := win_stuff/in_win.o
-SYSOBJ_GL_VID:= win_stuff/gl_vidnt.o
+SYSOBJ_INPUT := in_win.o
+SYSOBJ_GL_VID:= gl_vidnt.o
 ifeq ($(USE_MGL),yes)
-SYSOBJ_SOFT_VID:= win_stuff/vid_mgl4.o
+SYSOBJ_SOFT_VID:= vid_mgl4.o
 else
-SYSOBJ_SOFT_VID:= win_stuff/vid_win.o
+SYSOBJ_SOFT_VID:= vid_win.o
 endif
-SYSOBJ_NET := win_stuff/net_win.o win_stuff/net_wins.o win_stuff/net_wipx.o
-SYSOBJ_SYS := win_stuff/conproc.o win_stuff/sys_win.o win32res.res
+SYSOBJ_NET := net_win.o net_wins.o net_wipx.o
+SYSOBJ_SYS := conproc.o sys_win.o win32res.res
 endif
 ifeq ($(TARGET_OS),win64)
-SYSOBJ_INPUT := win_stuff/in_win.o
-SYSOBJ_GL_VID:= win_stuff/gl_vidnt.o
-SYSOBJ_SOFT_VID:= win_stuff/vid_win.o
-SYSOBJ_NET := win_stuff/net_win.o win_stuff/net_wins.o win_stuff/net_wipx.o
-SYSOBJ_SYS := win_stuff/conproc.o win_stuff/sys_win.o win32res.res
+SYSOBJ_INPUT := in_win.o
+SYSOBJ_GL_VID:= gl_vidnt.o
+SYSOBJ_SOFT_VID:= vid_win.o
+SYSOBJ_NET := net_win.o net_wins.o net_wipx.o
+SYSOBJ_SYS := conproc.o sys_win.o win32res.res
 endif
 ifeq ($(TARGET_OS),dos)
 SYSOBJ_INPUT := dos/in_dos.o
@@ -678,7 +686,7 @@ glh2: $(GLOBJS) $(COMMON_ASM) $(COMMONOBJS)
 	$(LINKER) -o $(GLH2_BINARY) $(GLOBJS) $(COMMON_ASM) $(COMMONOBJS) $(LDFLAGS) $(GLFLAGS) $(SDLLINK)
 
 clean:
-	rm -f *.o *.res win_stuff/*.o dos/*.o sv_objs/*.o core
+	rm -f *.o *.res dos/*.o sv_objs/*.o core
 
 cleaner: clean
 	rm -f $(H2_BINARY) $(GLH2_BINARY)
