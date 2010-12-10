@@ -4,6 +4,8 @@ Development Progress	:
 ---------------------------
 
 2010-12-10 (CVS):
+    * snd_mix.c: Increased PAINTBUFFER_SIZE from 512 to 2048.
+
     * quakefs.c, quakefs.h: Added new structure fshandle_t. Added new procedures
       FS_fread, FS_fseek, FS_ftell, FS_rewind, FS_feof, FS_ferror and FS_fclose.
       The new FS_*() stdio replacements are necessary if one is to perform non-
