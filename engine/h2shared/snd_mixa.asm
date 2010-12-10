@@ -16,7 +16,7 @@
  _sym_prefix paintbuffer
  _sym_prefix snd_linear_count
  _sym_prefix snd_p
- _sym_prefix snd_vol
+;_sym_prefix snd_vol
  _sym_prefix snd_out
 ; C-shared globals:
  _sym_prefix SND_PaintChannelFrom8
@@ -28,7 +28,7 @@
  extern paintbuffer
  extern snd_linear_count
  extern snd_p
- extern snd_vol
+;extern snd_vol
  extern snd_out
 
 ; externs from ASM-only code
@@ -105,16 +105,16 @@ LDone:
 
  global Snd_WriteLinearBlastStereo16
 Snd_WriteLinearBlastStereo16:
- push esi
+;push esi
  push edi
  push ebx
  mov ecx, dword [snd_linear_count]
  mov ebx, dword [snd_p]
- mov esi, dword [snd_vol]
+;mov esi, dword [snd_vol]
  mov edi, dword [snd_out]
 LWLBLoopTop:
  mov eax, dword [-8+ebx+ecx*4]
- imul eax,esi
+;imul eax,esi
  sar eax,8
  cmp eax,07FFFh
  jg LClampHigh
@@ -126,7 +126,7 @@ LClampHigh:
  mov eax,07FFFh
 LClampDone:
  mov edx, dword [-4+ebx+ecx*4]
- imul edx,esi
+;imul edx,esi
  sar edx,8
  cmp edx,07FFFh
  jg LClampHigh2
@@ -145,6 +145,6 @@ LClampDone2:
  jnz LWLBLoopTop
  pop ebx
  pop edi
- pop esi
+;pop esi
  ret
 

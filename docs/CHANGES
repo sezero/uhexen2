@@ -4,6 +4,25 @@ Development Progress	:
 ---------------------------
 
 2010-12-10 (CVS):
+    * Preparing for streaming music through soon-to-be-added S_RawSamples:
+      snd_mix.c: snd_vol is static now. it is calculated in S_PaintChannels and
+      only used in SND_PaintChannelFrom16. all its other uses are removed from
+      Snd_WriteLinearBlastStereo16, S_TransferStereo16, S_TransferPaintBuffer.
+      The way it way, the sound volume was applied to the whole final contents
+      of the paint buffer, but with this new quake2+ way we can add raw samples
+      to the paint buffer with its own volume, such as bgmvolume. However, this
+      makes the snd_scaletable to be recalculated everytime the sfxvolume is,
+      changed, therefore it is adjusted that way to incorporate sfxvolume.
+      snd_mixa.asm: snd_vol is no longer used in Snd_WriteLinearBlastStereo16,
+      therefore no need to push, play with and pop the esi register.
+      snd_dma.c: Added old_volume to detect sfxvolume changes. Made S_Update to
+      compare it to sfxvolume.value and call SND_InitScaletable() if it changed.
+      During init phase in S_Init, early-read volume and bgmvolume from config
+      and also check for "+" overrides to them from the command line, then lock
+      them until Host_Init is done. This way, the volume settings will be in
+      effect without a glitch when the very first sound is played, and one can
+      happily do "glhexen2 +volume <n>", too, if he wants.
+
     * snd_mix.c: Increased PAINTBUFFER_SIZE from 512 to 2048.
 
     * quakefs.c, quakefs.h: Added new structure fshandle_t. Added new procedures

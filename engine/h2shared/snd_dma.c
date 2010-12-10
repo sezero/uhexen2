@@ -90,6 +90,8 @@ cvar_t		sfxvolume = {"volume", "0.7", CVAR_ARCHIVE};
 cvar_t		precache = {"precache", "1", CVAR_NONE};
 cvar_t		loadas8bit = {"loadas8bit", "0", CVAR_NONE};
 
+static	float	oldvolume = -1.0;
+
 static	cvar_t	sfx_mutedvol = {"sfx_mutedvol", "0", CVAR_ARCHIVE};
 static	cvar_t	bgm_mutedvol = {"bgm_mutedvol", "0", CVAR_ARCHIVE};
 
@@ -184,6 +186,12 @@ S_Init
 */
 void S_Init (void)
 {
+	const char	*read_vars[] = {
+				"bgmvolume",
+				"volume" };
+#define num_readvars	( sizeof(read_vars)/sizeof(read_vars[0]) )
+	int		i;
+
 	if (snd_initialized)
 	{
 		Con_Printf("Sound is already initialized\n");
@@ -226,6 +234,24 @@ void S_Init (void)
 		Cvar_SetValue ("loadas8bit", 1);
 		Con_Printf ("loading all sounds as 8bit\n");
 	}
+
+	// perform an early read of config.cfg
+	CFG_ReadCvars (read_vars, num_readvars);
+	// check for command line overrides
+	CFG_ReadCvarOverrides (read_vars, num_readvars);
+
+	if (sfxvolume.value < 0)
+		Cvar_Set("volume", "0");
+	else if (sfxvolume.value > 1.0)
+		Cvar_Set("volume", "1");
+	if (bgmvolume.value < 0)
+		Cvar_Set("bgmvolume", "0");
+	else if (bgmvolume.value > 1.0)
+		Cvar_Set("bgmvolume", "1");
+
+	// lock the early-read cvars until Host_Init is finished
+	for (i = 0; i < (int)num_readvars; i++)
+		Cvar_LockVar (read_vars[i]);
 
 	SND_InitScaletable ();
 
@@ -727,6 +753,12 @@ void S_Update (vec3_t origin, vec3_t forward, vec3_t right, vec3_t up)
 
 	if (!sound_started || (snd_blocked > 0))
 		return;
+
+	if (sfxvolume.value != oldvolume)
+	{
+		oldvolume = sfxvolume.value;
+		SND_InitScaletable ();
+	}
 
 	VectorCopy(origin, listener_origin);
 	VectorCopy(forward, listener_forward);

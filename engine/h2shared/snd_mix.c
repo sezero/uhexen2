@@ -30,8 +30,10 @@
 #define	PAINTBUFFER_SIZE	2048
 portable_samplepair_t paintbuffer[PAINTBUFFER_SIZE];
 int		snd_scaletable[32][256];
-int		*snd_p, snd_linear_count, snd_vol;
+int		*snd_p, snd_linear_count;
 short		*snd_out;
+
+static int	snd_vol;
 
 #if	!id386
 static void Snd_WriteLinearBlastStereo16 (void)
@@ -41,7 +43,7 @@ static void Snd_WriteLinearBlastStereo16 (void)
 
 	for (i = 0; i < snd_linear_count; i += 2)
 	{
-		val = (snd_p[i]*snd_vol) >> 8;
+		val = snd_p[i] >> 8;
 		if (val > 0x7fff)
 			snd_out[i] = 0x7fff;
 		else if (val < (short)0x8000)
@@ -49,7 +51,7 @@ static void Snd_WriteLinearBlastStereo16 (void)
 		else
 			snd_out[i] = val;
 
-		val = (snd_p[i+1]*snd_vol) >> 8;
+		val = snd_p[i+1] >> 8;
 		if (val > 0x7fff)
 			snd_out[i+1] = 0x7fff;
 		else if (val < (short)0x8000)
@@ -64,8 +66,6 @@ static void S_TransferStereo16 (int endtime)
 {
 	int		lpos;
 	int		lpaintedtime;
-
-	snd_vol = sfxvolume.value * 256;
 
 	snd_p = (int *) paintbuffer;
 	lpaintedtime = paintedtime;
@@ -108,14 +108,13 @@ static void S_TransferPaintBuffer (int endtime)
 	out_mask = shm->samples - 1;
 	out_idx = paintedtime * shm->channels & out_mask;
 	step = 3 - shm->channels;
-	snd_vol = sfxvolume.value * 256;
 
 	if (shm->samplebits == 16)
 	{
 		short *out = (short *)shm->buffer;
 		while (count--)
 		{
-			val = (*p * snd_vol) >> 8;
+			val = *p >> 8;
 			p+= step;
 			if (val > 0x7fff)
 				val = 0x7fff;
@@ -130,7 +129,7 @@ static void S_TransferPaintBuffer (int endtime)
 		unsigned char *out = shm->buffer;
 		while (count--)
 		{
-			val = (*p * snd_vol) >> 8;
+			val = *p >> 8;
 			p+= step;
 			if (val > 0x7fff)
 				val = 0x7fff;
@@ -162,6 +161,8 @@ void S_PaintChannels (int endtime)
 	int		end, ltime, count;
 	channel_t	*ch;
 	sfxcache_t	*sc;
+
+	snd_vol = sfxvolume.value * 256;
 
 	while (paintedtime < endtime)
 	{
@@ -230,9 +231,11 @@ void S_PaintChannels (int endtime)
 void SND_InitScaletable (void)
 {
 	int		i, j;
+	int		scale;
 
 	for (i = 0; i < 32; i++)
 	{
+		scale = i * 8 * 256 * sfxvolume.value;
 		for (j = 0; j < 256; j++)
 		/* When compiling with gcc-4.1.0 at optimisations O1 and
 		   higher, the tricky signed char type conversion is not
@@ -240,8 +243,8 @@ void SND_InitScaletable (void)
 		   value from the index as required. From Kevin Shanahan.
 		   See: http://gcc.gnu.org/bugzilla/show_bug.cgi?id=26719
 		*/
-		//	snd_scaletable[i][j] = ((signed char)j) * i * 8;
-			snd_scaletable[i][j] = ((j < 128) ? j : j - 0xff) * i * 8;
+		//	snd_scaletable[i][j] = ((signed char)j) * scale;
+			snd_scaletable[i][j] = ((j < 128) ? j : j - 0xff) * scale;
 	}
 }
 
@@ -285,8 +288,8 @@ static void SND_PaintChannelFrom16 (channel_t *ch, sfxcache_t *sc, int count)
 	signed short	*sfx;
 	int	i;
 
-	leftvol = ch->leftvol;
-	rightvol = ch->rightvol;
+	leftvol = ch->leftvol * snd_vol;
+	rightvol = ch->rightvol * snd_vol;
 	sfx = (signed short *)sc->data + ch->pos;
 
 	for (i = 0; i < count; i++)
