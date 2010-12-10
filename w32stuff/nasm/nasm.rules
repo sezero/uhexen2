@@ -17,7 +17,7 @@
 					Name="ObjectFileName"
 					DisplayName="Object File Name"
 					Description="Specifies the name of the output object file.     (-o [file])"
-					Switch="-o &quot;[value]&quot;"
+					Switch="-o [value]"
 					DefaultValue="$(IntDir)\$(InputName).obj"
 				/>
 				<EnumProperty
@@ -47,7 +47,7 @@
 					Name="IncludePath"
 					DisplayName="Include Path"
 					Description="Adds a pathname to the include file path.     (-I[path])"
-					Switch="-I&quot;[value]&quot;"
+					Switch="-I[value]"
 					Delimited="true"
 				/>
 				<EnumProperty
