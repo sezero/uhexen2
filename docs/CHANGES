@@ -4,6 +4,13 @@ Development Progress	:
 ---------------------------
 
 2010-12-10 (CVS):
+    * quakefs.c, quakefs.h: Added new structure fshandle_t. Added new procedures
+      FS_fread, FS_fseek, FS_ftell, FS_rewind, FS_feof, FS_ferror and FS_fclose.
+      The new FS_*() stdio replacements are necessary if one is to perform non-
+      sequential reads on files reopened on pak files because bookkeeping about
+      file start/end positions is needed. Allocating and filling in the fshandle_t
+      structure is the users' responsibility when the file is initially opened.
+
     * cfgfile.c (CFG_ReadCvarOverrides): Added new helper procedure to read the
       "+" command line override values of cvars in a given list. it doesn't care
       about the config file. to be called after CFG_ReadCvars and before locking
