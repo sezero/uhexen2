@@ -2,7 +2,7 @@
 	keys.h
 	key definitions and keyboard public functions
 
-	$Id: keys.h,v 1.14 2007-11-16 10:24:57 sezero Exp $
+	$Id: keys.h,v 1.13 2007-11-16 10:24:57 sezero Exp $
 */
 
 #ifndef __HX2_KEYS_H
@@ -119,9 +119,11 @@ extern	int		edit_line;
 extern	int		key_linepos;
 extern	int		key_insert;
 
+#if defined(H2W)
 extern char chat_buffer[];
 extern	int chat_bufferlen;
 extern	qboolean	chat_team;
+#endif	/* H2W */
 
 void Key_Event (int key, qboolean down);
 void Key_Init (void);
