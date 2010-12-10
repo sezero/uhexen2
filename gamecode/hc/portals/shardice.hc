@@ -1,5 +1,5 @@
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/portals/shardice.hc,v 1.2 2007-02-07 16:59:36 sezero Exp $
+ * $Header: /cvsroot/uhexen2/gamecode/hc/portals/shardice.hc,v 1.2 2007-02-07 16:59:36 sezero Exp $
  */
 /*
 ==============================================================================

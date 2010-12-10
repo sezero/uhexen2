@@ -1,5 +1,5 @@
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/portals/fx.hc,v 1.2 2007-02-07 16:59:32 sezero Exp $
+ * $Header: /cvsroot/uhexen2/gamecode/hc/portals/fx.hc,v 1.2 2007-02-07 16:59:32 sezero Exp $
  */
 
 float WHITE_PUFF	= 0;

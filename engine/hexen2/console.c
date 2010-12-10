@@ -2,7 +2,7 @@
 	console.c
 	in-game console and chat message buffer handling
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/console.c,v 1.42 2009-01-07 19:07:20 sezero Exp $
+	$Header: /cvsroot/uhexen2/engine/hexen2/console.c,v 1.42 2009-01-07 19:07:20 sezero Exp $
 */
 
 #include "quakedef.h"

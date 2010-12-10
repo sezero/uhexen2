@@ -2,7 +2,7 @@
 	screen.c
 	master for refresh, status bar, console, chat, notify, etc
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/screen.c,v 1.61 2009-01-24 17:21:42 sezero Exp $
+	$Header: /cvsroot/uhexen2/engine/hexen2/screen.c,v 1.61 2009-01-24 17:21:42 sezero Exp $
 */
 
 /*=============================================================================

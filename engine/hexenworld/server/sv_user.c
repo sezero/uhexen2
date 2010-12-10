@@ -2,7 +2,7 @@
 	sv_user.c
 	server code for moving users
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Server/sv_user.c,v 1.30 2010-08-31 12:37:32 sezero Exp $
+	$Header: /cvsroot/uhexen2/engine/hexenworld/server/sv_user.c,v 1.30 2010-08-31 12:37:32 sezero Exp $
 */
 
 #include "quakedef.h"

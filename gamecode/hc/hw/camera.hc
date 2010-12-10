@@ -1,5 +1,5 @@
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/hw/camera.hc,v 1.2 2007-02-07 16:57:50 sezero Exp $
+ * $Header: /cvsroot/uhexen2/gamecode/hc/hw/camera.hc,v 1.2 2007-02-07 16:57:50 sezero Exp $
  */
 void(entity voyeur, entity viewthing) CameraViewPort =
 {//FIXME: Doesn't work in H2W

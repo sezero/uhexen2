@@ -1,5 +1,5 @@
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/hw/sound.hc,v 1.2 2007-02-07 16:58:05 sezero Exp $
+ * $Header: /cvsroot/uhexen2/gamecode/hc/hw/sound.hc,v 1.2 2007-02-07 16:58:05 sezero Exp $
  */
 
 void sound_maker_run(void)

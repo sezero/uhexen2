@@ -1,5 +1,5 @@
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/portals/stats.hc,v 1.3 2007-02-07 16:59:37 sezero Exp $
+ * $Header: /cvsroot/uhexen2/gamecode/hc/portals/stats.hc,v 1.3 2007-02-07 16:59:37 sezero Exp $
  */
 
 // ExperienceValues for each level indicate the minimum at which

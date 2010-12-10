@@ -3,7 +3,7 @@
 //**
 //** builtin.hc
 //**
-//** $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/h2/builtin.hc,v 1.1.1.1 2004-11-29 11:37:19 sezero Exp $
+//** $Header: /cvsroot/uhexen2/gamecode/hc/h2/builtin.hc,v 1.1.1.1 2004-11-29 11:37:19 sezero Exp $
 //**
 //**************************************************************************
 

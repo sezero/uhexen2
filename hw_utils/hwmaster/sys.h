@@ -2,7 +2,7 @@
 	sys.h
 	non-portable functions
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Master/sys.h,v 1.7 2010-01-11 18:48:19 sezero Exp $
+	$Header: /cvsroot/uhexen2/hw_utils/hwmaster/sys.h,v 1.7 2010-01-11 18:48:19 sezero Exp $
 */
 
 #ifndef __HX2_SYS_H

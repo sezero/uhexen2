@@ -2,7 +2,7 @@
 	refresh.h
 	public interface to refresh functions
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/render.h,v 1.8 2008-04-22 13:06:10 sezero Exp $
+	$Header: /cvsroot/uhexen2/engine/hexenworld/client/render.h,v 1.8 2008-04-22 13:06:10 sezero Exp $
 */
 
 #ifndef __HX2_RENDER_H

@@ -1,5 +1,5 @@
 # GNU Makefile for hexenworld clients using GCC.
-# $Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/Makefile,v 1.96 2010-11-21 10:23:24 sezero Exp $
+# $Header: /cvsroot/uhexen2/engine/hexenworld/client/Makefile,v 1.96 2010-11-21 10:23:24 sezero Exp $
 #
 # Type "make help" to see the valid targets.
 #

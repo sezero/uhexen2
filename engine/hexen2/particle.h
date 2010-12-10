@@ -3,7 +3,7 @@
 	particle enums and types: note that hexen2 and
 	hexenworld versions of these are different !!!
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/particle.h,v 1.1 2007-07-28 12:28:14 sezero Exp $
+	$Header: /cvsroot/uhexen2/engine/hexen2/particle.h,v 1.1 2007-07-28 12:28:14 sezero Exp $
 */
 
 #ifndef __PARTICLE_H

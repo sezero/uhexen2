@@ -2,7 +2,7 @@
 	cl_main.c
 	client main loop
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cl_main.c,v 1.44 2008-05-14 08:37:20 sezero Exp $
+	$Header: /cvsroot/uhexen2/engine/hexen2/cl_main.c,v 1.44 2008-05-14 08:37:20 sezero Exp $
 */
 
 #include "quakedef.h"

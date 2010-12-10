@@ -2,7 +2,7 @@
 	cl_cmd.c
 	client command forwarding to server
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/cl_cmd.c,v 1.5 2007-02-25 19:01:15 sezero Exp $
+	$Header: /cvsroot/uhexen2/engine/hexenworld/client/cl_cmd.c,v 1.5 2007-02-25 19:01:15 sezero Exp $
 */
 
 #include "quakedef.h"

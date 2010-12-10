@@ -2,7 +2,7 @@
 	sv_phys.c
 	sv physics
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Server/sv_phys.c,v 1.19 2008-12-21 18:25:09 sezero Exp $
+	$Header: /cvsroot/uhexen2/engine/hexenworld/server/sv_phys.c,v 1.19 2008-12-21 18:25:09 sezero Exp $
 */
 
 #include "quakedef.h"

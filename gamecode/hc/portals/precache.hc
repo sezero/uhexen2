@@ -1,5 +1,5 @@
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/portals/precache.hc,v 1.3 2007-02-07 16:59:35 sezero Exp $
+ * $Header: /cvsroot/uhexen2/gamecode/hc/portals/precache.hc,v 1.3 2007-02-07 16:59:35 sezero Exp $
  */
 
 // called by worldspawn

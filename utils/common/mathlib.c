@@ -2,7 +2,7 @@
 	mathlib.c
 	math primitives
 
-	$Header: /home/ozzie/Download/0000/uhexen2/utils/common/mathlib.c,v 1.4 2008-03-06 18:55:07 sezero Exp $
+	$Header: /cvsroot/uhexen2/utils/common/mathlib.c,v 1.4 2008-03-06 18:55:07 sezero Exp $
 */
 
 #include "q_stdinc.h"

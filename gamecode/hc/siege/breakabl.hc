@@ -1,5 +1,5 @@
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/siege/breakabl.hc,v 1.2 2007-02-07 17:00:33 sezero Exp $
+ * $Header: /cvsroot/uhexen2/gamecode/hc/siege/breakabl.hc,v 1.2 2007-02-07 17:00:33 sezero Exp $
  */
 
 /*

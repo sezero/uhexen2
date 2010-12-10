@@ -1,5 +1,5 @@
 # GNU Makefile for hexen2 jsh2color tool using GCC.
-# $Header: /home/ozzie/Download/0000/uhexen2/utils/jsh2color/Makefile,v 1.31 2010-10-27 12:10:29 sezero Exp $
+# $Header: /cvsroot/uhexen2/utils/jsh2color/Makefile,v 1.31 2010-10-27 12:10:29 sezero Exp $
 #
 # if building a debug version :		make DEBUG=1 [other stuff]
 #

@@ -1,7 +1,7 @@
 /*
 	hcc.h
 
-	$Header: /home/ozzie/Download/0000/uhexen2/utils/hcc/hcc.h,v 1.10 2010-01-11 18:48:20 sezero Exp $
+	$Header: /cvsroot/uhexen2/utils/hcc/hcc.h,v 1.10 2010-01-11 18:48:20 sezero Exp $
 */
 
 #ifndef __HCC_H__

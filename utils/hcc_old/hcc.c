@@ -1,7 +1,7 @@
 /*
 	hcc.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/utils/hcc_old/hcc.c,v 1.21 2009-06-15 09:12:21 sezero Exp $
+	$Header: /cvsroot/uhexen2/utils/hcc_old/hcc.c,v 1.21 2009-06-15 09:12:21 sezero Exp $
 
 	Hash table modifications based on fastqcc by Jonathan Roy
 	(roy@atlantic.net).

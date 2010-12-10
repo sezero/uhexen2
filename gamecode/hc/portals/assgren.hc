@@ -1,5 +1,5 @@
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/portals/assgren.hc,v 1.2 2007-02-07 16:59:29 sezero Exp $
+ * $Header: /cvsroot/uhexen2/gamecode/hc/portals/assgren.hc,v 1.2 2007-02-07 16:59:29 sezero Exp $
 * Grenade Throw, Assassin. 
 */
 

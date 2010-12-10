@@ -1,5 +1,5 @@
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/siege/imp.hc,v 1.2 2005-07-29 15:29:35 sezero Exp $
+ * $Header: /cvsroot/uhexen2/gamecode/hc/siege/imp.hc,v 1.2 2005-07-29 15:29:35 sezero Exp $
  */
 /*
 ==============================================================================

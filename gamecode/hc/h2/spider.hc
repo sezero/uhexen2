@@ -4,7 +4,7 @@
 //** spider.hc
 //** bgokey
 //**
-//** $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/h2/spider.hc,v 1.1.1.1 2004-11-29 11:40:42 sezero Exp $
+//** $Header: /cvsroot/uhexen2/gamecode/hc/h2/spider.hc,v 1.1.1.1 2004-11-29 11:40:42 sezero Exp $
 //**
 //**************************************************************************
 

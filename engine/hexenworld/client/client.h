@@ -2,7 +2,7 @@
 	client.h
 	client main header
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/client.h,v 1.22 2009-01-10 22:08:51 sezero Exp $
+	$Header: /cvsroot/uhexen2/engine/hexenworld/client/client.h,v 1.22 2009-01-10 22:08:51 sezero Exp $
 */
 
 #ifndef __H2W_CLIENT_H

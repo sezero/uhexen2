@@ -1,7 +1,7 @@
 /*
 	menu.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/menu.c,v 1.80 2010-10-30 08:55:22 sezero Exp $
+	$Header: /cvsroot/uhexen2/engine/hexenworld/client/menu.c,v 1.80 2010-10-30 08:55:22 sezero Exp $
 */
 
 #include "quakedef.h"

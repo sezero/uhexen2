@@ -1,5 +1,5 @@
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/siege/monsters.hc,v 1.2 2007-02-07 17:01:21 sezero Exp $
+ * $Header: /cvsroot/uhexen2/gamecode/hc/siege/monsters.hc,v 1.2 2007-02-07 17:01:21 sezero Exp $
  */
 /* ALL MONSTERS SHOULD BE 1 0 0 IN COLOR */
 

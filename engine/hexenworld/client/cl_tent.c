@@ -2,7 +2,7 @@
 	cl_tent.c
 	client side temporary entities
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/cl_tent.c,v 1.30 2008-04-22 13:06:10 sezero Exp $
+	$Header: /cvsroot/uhexen2/engine/hexenworld/client/cl_tent.c,v 1.30 2008-04-22 13:06:10 sezero Exp $
 */
 
 

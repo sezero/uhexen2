@@ -2,7 +2,7 @@
 	world.c
 	world query functions
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/world.c,v 1.25 2008-04-22 13:06:07 sezero Exp $
+	$Header: /cvsroot/uhexen2/engine/hexen2/world.c,v 1.25 2008-04-22 13:06:07 sezero Exp $
 
 	entities never clip against themselves, or their owner
 	line of sight checks trace->crosscontent, but bullets don't

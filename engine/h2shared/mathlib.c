@@ -2,7 +2,7 @@
 	mathlib.c
 	math primitives
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/mathlib.c,v 1.24 2010-01-11 18:48:17 sezero Exp $
+	$Header: /cvsroot/uhexen2/engine/h2shared/mathlib.c,v 1.24 2010-01-11 18:48:17 sezero Exp $
 */
 
 #include "quakedef.h"

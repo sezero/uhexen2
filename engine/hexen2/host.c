@@ -2,7 +2,7 @@
 	host.c
 	coordinates spawning and killing of local servers
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host.c,v 1.99 2010-11-14 08:21:23 sezero Exp $
+	$Header: /cvsroot/uhexen2/engine/hexen2/host.c,v 1.99 2010-11-14 08:21:23 sezero Exp $
 */
 
 #include "quakedef.h"

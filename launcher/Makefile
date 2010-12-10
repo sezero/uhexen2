@@ -1,5 +1,5 @@
 # GNU Makefile for hexen2 gtk-launcher app using GCC.
-# $Header: /home/ozzie/Download/0000/uhexen2/launcher/Makefile,v 1.51 2009-01-02 15:55:15 sezero Exp $
+# $Header: /cvsroot/uhexen2/launcher/Makefile,v 1.51 2009-01-02 15:55:15 sezero Exp $
 #
 #  gtk2 will be used default.
 #  to compile for gtk-1.2 type:  make GTK1=yes

@@ -2,7 +2,7 @@
 	net.h
 	quake's interface to the networking layer
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/net.h,v 1.12 2010-01-11 18:48:19 sezero Exp $
+	$Header: /cvsroot/uhexen2/engine/hexenworld/shared/net.h,v 1.12 2010-01-11 18:48:19 sezero Exp $
 */
 
 #ifndef __H2W_NET_H

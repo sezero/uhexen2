@@ -1,5 +1,5 @@
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/hw/subs.hc,v 1.2 2007-02-07 16:58:07 sezero Exp $
+ * $Header: /cvsroot/uhexen2/gamecode/hc/hw/subs.hc,v 1.2 2007-02-07 16:58:07 sezero Exp $
  */
 float SPAWNFLAG_ACTIVATED	= 8;
 

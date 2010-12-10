@@ -1,5 +1,5 @@
 # GNU Makefile for hexenworld svgalib-client using GCC.
-# $Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/Makefile.svga,v 1.3 2010-11-21 10:23:24 sezero Exp $
+# $Header: /cvsroot/uhexen2/engine/hexenworld/client/Makefile.svga,v 1.3 2010-11-21 10:23:24 sezero Exp $
 #
 # This makefile builds SVGALib dependant software renderer client
 # for linux-x86 only. This makefile is a butchered version of the

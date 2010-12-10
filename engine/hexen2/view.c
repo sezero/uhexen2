@@ -2,7 +2,7 @@
 	view.c
 	player eye positioning
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/view.c,v 1.29 2009-06-22 17:50:27 sezero Exp $
+	$Header: /cvsroot/uhexen2/engine/hexen2/view.c,v 1.29 2009-06-22 17:50:27 sezero Exp $
 
 	The view is allowed to move slightly from it's true position
 	for bobbing, but if it exceeds 8 pixels linear distance

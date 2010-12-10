@@ -2,7 +2,7 @@
 	cl_effect.c
 	Client side effects.
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/cl_effect.c,v 1.17 2009-01-10 22:08:51 sezero Exp $
+	$Header: /cvsroot/uhexen2/engine/hexenworld/client/cl_effect.c,v 1.17 2009-01-10 22:08:51 sezero Exp $
 */
 
 // HEADER FILES ------------------------------------------------------------

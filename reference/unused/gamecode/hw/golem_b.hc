@@ -3,7 +3,7 @@
 //**
 //** golem_b.hc
 //**
-//** $Header: /home/ozzie/Download/0000/uhexen2/00_unused/gamecode/hw/golem_b.hc,v 1.1.1.1 2005-07-29 20:44:28 sezero Exp $
+//** $Header: /cvsroot/uhexen2/reference/unused/gamecode/hw/golem_b.hc,v 1.1.1.1 2005-07-29 20:44:28 sezero Exp $
 //**
 //** Bronze golem.
 //**

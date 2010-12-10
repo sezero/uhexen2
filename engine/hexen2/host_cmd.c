@@ -2,7 +2,7 @@
 	host_cmd.c
 	console commands
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/host_cmd.c,v 1.106 2010-08-31 12:37:32 sezero Exp $
+	$Header: /cvsroot/uhexen2/engine/hexen2/host_cmd.c,v 1.106 2010-08-31 12:37:32 sezero Exp $
 */
 
 #include "q_stdinc.h"

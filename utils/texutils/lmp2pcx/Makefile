@@ -1,5 +1,5 @@
 # GNU Makefile for hexen2 lmp2pcx tool using GCC.
-# $Header: /home/ozzie/Download/0000/uhexen2/utils/texutils/lmp2pcx/Makefile,v 1.16 2009-10-04 11:00:49 sezero Exp $
+# $Header: /cvsroot/uhexen2/utils/texutils/lmp2pcx/Makefile,v 1.16 2009-10-04 11:00:49 sezero Exp $
 #
 # if building a debug version :		make DEBUG=1 [other stuff]
 #

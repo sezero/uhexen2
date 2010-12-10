@@ -1,5 +1,5 @@
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/siege/soul.hc,v 1.2 2007-02-07 17:01:24 sezero Exp $
+ * $Header: /cvsroot/uhexen2/gamecode/hc/siege/soul.hc,v 1.2 2007-02-07 17:01:24 sezero Exp $
  */
 
 // Possible improvement: Make model shrink before disappearing

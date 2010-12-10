@@ -1,5 +1,5 @@
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/portals/imp.hc,v 1.2 2006-10-12 13:03:42 sezero Exp $
+ * $Header: /cvsroot/uhexen2/gamecode/hc/portals/imp.hc,v 1.2 2006-10-12 13:03:42 sezero Exp $
  */
 /*
 ==============================================================================

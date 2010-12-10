@@ -2,7 +2,7 @@
 	r_part.c
 	particles rendering
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/r_part.c,v 1.26 2008-05-14 08:37:20 sezero Exp $
+	$Header: /cvsroot/uhexen2/engine/hexen2/r_part.c,v 1.26 2008-05-14 08:37:20 sezero Exp $
 */
 
 

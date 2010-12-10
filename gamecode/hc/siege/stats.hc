@@ -1,5 +1,5 @@
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/siege/stats.hc,v 1.2 2007-02-07 17:01:25 sezero Exp $
+ * $Header: /cvsroot/uhexen2/gamecode/hc/siege/stats.hc,v 1.2 2007-02-07 17:01:25 sezero Exp $
  */
 
 //  min health, max health,

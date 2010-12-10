@@ -3,7 +3,7 @@
 //**
 //** golem_i.hc
 //**
-//** $Header: /home/ozzie/Download/0000/uhexen2/00_unused/gamecode/siege/golem_i.hc,v 1.1.1.1 2005-07-29 20:43:02 sezero Exp $
+//** $Header: /cvsroot/uhexen2/reference/unused/gamecode/siege/golem_i.hc,v 1.1.1.1 2005-07-29 20:43:02 sezero Exp $
 //**
 //** Iron golem.
 //**

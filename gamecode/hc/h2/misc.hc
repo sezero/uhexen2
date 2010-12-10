@@ -1,5 +1,5 @@
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/h2/misc.hc,v 1.3 2007-02-07 16:57:07 sezero Exp $
+ * $Header: /cvsroot/uhexen2/gamecode/hc/h2/misc.hc,v 1.3 2007-02-07 16:57:07 sezero Exp $
  */
 
 /*QUAKED info_null (0 0.5 0) (-4 -4 -4) (4 4 4)

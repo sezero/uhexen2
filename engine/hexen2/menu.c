@@ -1,7 +1,7 @@
 /*
 	menu.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/menu.c,v 1.111 2010-10-30 08:55:22 sezero Exp $
+	$Header: /cvsroot/uhexen2/engine/hexen2/menu.c,v 1.111 2010-10-30 08:55:22 sezero Exp $
 */
 
 #include "q_stdinc.h"

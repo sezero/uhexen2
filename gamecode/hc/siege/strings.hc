@@ -3,7 +3,7 @@
 //**
 //** strings.hc
 //**
-//** $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/siege/strings.hc,v 1.1 2005-01-26 17:26:13 sezero Exp $
+//** $Header: /cvsroot/uhexen2/gamecode/hc/siege/strings.hc,v 1.1 2005-01-26 17:26:13 sezero Exp $
 //**
 //**************************************************************************
 

@@ -2,7 +2,7 @@
 	sbar.c
 	Hexen II status bar
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/sbar.c,v 1.46 2008-05-14 08:37:20 sezero Exp $
+	$Header: /cvsroot/uhexen2/engine/hexenworld/client/sbar.c,v 1.46 2008-05-14 08:37:20 sezero Exp $
 */
 
 #include "quakedef.h"

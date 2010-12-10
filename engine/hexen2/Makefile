@@ -1,5 +1,5 @@
 # GNU Makefile for (gl)hexen2 client/server binaries using GCC.
-# $Header: /home/ozzie/Download/0000/uhexen2/hexen2/Makefile,v 1.103 2010-11-21 10:23:24 sezero Exp $
+# $Header: /cvsroot/uhexen2/engine/hexen2/Makefile,v 1.103 2010-11-21 10:23:24 sezero Exp $
 #
 # Type "make help" to see the valid targets.
 #

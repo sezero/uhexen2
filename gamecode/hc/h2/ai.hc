@@ -1,5 +1,5 @@
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/h2/ai.hc,v 1.7 2007-02-07 16:56:54 sezero Exp $
+ * $Header: /cvsroot/uhexen2/gamecode/hc/h2/ai.hc,v 1.7 2007-02-07 16:56:54 sezero Exp $
  */
 void(entity etemp, entity stemp, entity stemp, float dmg) T_Damage;
 /*

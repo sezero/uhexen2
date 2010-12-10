@@ -1,5 +1,5 @@
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/00_unused/gamecode/siege/hknight.hc,v 1.3 2007-02-07 16:56:45 sezero Exp $
+ * $Header: /cvsroot/uhexen2/reference/unused/gamecode/siege/hknight.hc,v 1.3 2007-02-07 16:56:45 sezero Exp $
  */
 /*
 ==============================================================================

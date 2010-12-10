@@ -1,5 +1,5 @@
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/h2/medusa.hc,v 1.1.1.1 2004-11-29 11:39:08 sezero Exp $
+ * $Header: /cvsroot/uhexen2/gamecode/hc/h2/medusa.hc,v 1.1.1.1 2004-11-29 11:39:08 sezero Exp $
  */
 
 /*

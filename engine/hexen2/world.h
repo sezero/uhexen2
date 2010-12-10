@@ -2,7 +2,7 @@
 	world.c
 	world query functions
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/world.h,v 1.6 2008-03-07 08:10:39 sezero Exp $
+	$Header: /cvsroot/uhexen2/engine/hexen2/world.h,v 1.6 2008-03-07 08:10:39 sezero Exp $
 */
 
 #ifndef __HX2_WORLD_H

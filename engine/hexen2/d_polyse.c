@@ -3,7 +3,7 @@
 	routines for drawing sets of polygons sharing the same
 	texture (used for Alias models)
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/d_polyse.c,v 1.25 2008-04-01 08:15:36 sezero Exp $
+	$Header: /cvsroot/uhexen2/engine/hexen2/d_polyse.c,v 1.25 2008-04-01 08:15:36 sezero Exp $
 */
 
 #include "quakedef.h"

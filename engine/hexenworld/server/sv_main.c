@@ -2,7 +2,7 @@
 	sv_main.c
 	server main program
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Server/sv_main.c,v 1.55 2010-03-09 15:00:28 sezero Exp $
+	$Header: /cvsroot/uhexen2/engine/hexenworld/server/sv_main.c,v 1.55 2010-03-09 15:00:28 sezero Exp $
 */
 
 #include "quakedef.h"

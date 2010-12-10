@@ -1,5 +1,5 @@
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/portals/soul.hc,v 1.4 2007-02-07 16:59:37 sezero Exp $
+ * $Header: /cvsroot/uhexen2/gamecode/hc/portals/soul.hc,v 1.4 2007-02-07 16:59:37 sezero Exp $
  */
 
 // Possible improvement: Make model shrink before disappearing

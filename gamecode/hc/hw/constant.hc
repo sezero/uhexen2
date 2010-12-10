@@ -1,5 +1,5 @@
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/hw/constant.hc,v 1.2 2005-09-19 19:50:09 sezero Exp $
+ * $Header: /cvsroot/uhexen2/gamecode/hc/hw/constant.hc,v 1.2 2005-09-19 19:50:09 sezero Exp $
  */
 
 //

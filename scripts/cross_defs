@@ -1,4 +1,4 @@
-# $Header: /home/ozzie/Download/0000/uhexen2/scripts/cross_defs,v 1.8 2009-12-26 12:01:22 sezero Exp $
+# $Header: /cvsroot/uhexen2/scripts/cross_defs,v 1.8 2009-12-26 12:01:22 sezero Exp $
 
 # This file contains all common Win32 cross compilation definitions for
 # use with all other build_cross_win32.sh scripts for the uhexen2 tree.

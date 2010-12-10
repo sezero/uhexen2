@@ -1,5 +1,5 @@
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/hw/impulse.hc,v 1.4 2007-02-07 16:57:55 sezero Exp $
+ * $Header: /cvsroot/uhexen2/gamecode/hc/hw/impulse.hc,v 1.4 2007-02-07 16:57:55 sezero Exp $
  */
 
 void PlayerAdvanceLevel(float NewLevel);

@@ -2,7 +2,7 @@
 	pr_exec.c
 	PROGS execution
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/pr_exec.c,v 1.30 2010-10-11 09:41:21 sezero Exp $
+	$Header: /cvsroot/uhexen2/engine/hexen2/pr_exec.c,v 1.30 2010-10-11 09:41:21 sezero Exp $
 */
 
 // HEADER FILES ------------------------------------------------------------

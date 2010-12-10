@@ -2,7 +2,7 @@
 	net_udp.c
 	network UDP driver
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/net_wins.c,v 1.50 2010-02-22 10:50:34 sezero Exp $
+	$Header: /cvsroot/uhexen2/engine/hexenworld/shared/net_wins.c,v 1.50 2010-02-22 10:50:34 sezero Exp $
 */
 
 #include "q_stdinc.h"

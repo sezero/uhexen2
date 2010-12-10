@@ -2,7 +2,7 @@
 	pr_cmds.c
 	prog commands
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Server/pr_cmds.c,v 1.46 2010-06-01 12:11:36 sezero Exp $
+	$Header: /cvsroot/uhexen2/engine/hexenworld/server/pr_cmds.c,v 1.46 2010-06-01 12:11:36 sezero Exp $
 */
 
 #include "quakedef.h"

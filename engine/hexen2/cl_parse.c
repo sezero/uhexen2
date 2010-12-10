@@ -2,7 +2,7 @@
 	cl_parse.c
 	parse a message received from the server
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/cl_parse.c,v 1.68 2010-11-06 21:20:45 sezero Exp $
+	$Header: /cvsroot/uhexen2/engine/hexen2/cl_parse.c,v 1.68 2010-11-06 21:20:45 sezero Exp $
 */
 
 #include "quakedef.h"

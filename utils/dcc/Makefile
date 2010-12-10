@@ -1,5 +1,5 @@
 # GNU Makefile for hexen2 dhcc tool using GCC.
-# $Header: /home/ozzie/Download/0000/uhexen2/utils/dcc/Makefile,v 1.39 2009-10-04 11:00:49 sezero Exp $
+# $Header: /cvsroot/uhexen2/utils/dcc/Makefile,v 1.39 2009-10-04 11:00:49 sezero Exp $
 #
 # if building a debug version :		make DEBUG=1 [other stuff]
 #

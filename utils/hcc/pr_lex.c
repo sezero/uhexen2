@@ -1,7 +1,7 @@
 /*
 	lexi.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/utils/hcc/pr_lex.c,v 1.9 2008-12-27 16:54:56 sezero Exp $
+	$Header: /cvsroot/uhexen2/utils/hcc/pr_lex.c,v 1.9 2008-12-27 16:54:56 sezero Exp $
 */
 
 

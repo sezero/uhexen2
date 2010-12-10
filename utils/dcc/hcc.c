@@ -2,7 +2,7 @@
 	hcc.c
 	HCode compiler based on qcc, modifed by Eric Hobbs to work with DCC
 
-	$Header: /home/ozzie/Download/0000/uhexen2/utils/dcc/hcc.c,v 1.32 2009-06-15 09:12:20 sezero Exp $
+	$Header: /cvsroot/uhexen2/utils/dcc/hcc.c,v 1.32 2009-06-15 09:12:20 sezero Exp $
 */
 
 #include "q_stdinc.h"

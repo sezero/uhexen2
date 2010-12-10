@@ -2,7 +2,7 @@
 	sv_move.c
 	monster movement
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Server/sv_move.c,v 1.8 2007-04-30 17:04:33 sezero Exp $
+	$Header: /cvsroot/uhexen2/engine/hexenworld/server/sv_move.c,v 1.8 2007-04-30 17:04:33 sezero Exp $
 */
 
 #include "quakedef.h"

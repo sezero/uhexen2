@@ -2,7 +2,7 @@
 	net_main.c
 	main networking module
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/server/net_main.c,v 1.24 2010-06-04 09:32:44 sezero Exp $
+	$Header: /cvsroot/uhexen2/engine/hexen2/server/net_main.c,v 1.24 2010-06-04 09:32:44 sezero Exp $
 */
 
 #include "q_stdinc.h"

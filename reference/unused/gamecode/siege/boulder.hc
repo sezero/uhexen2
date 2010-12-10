@@ -1,5 +1,5 @@
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/00_unused/gamecode/siege/boulder.hc,v 1.2 2007-02-07 16:56:42 sezero Exp $
+ * $Header: /cvsroot/uhexen2/reference/unused/gamecode/siege/boulder.hc,v 1.2 2007-02-07 16:56:42 sezero Exp $
  */
 
 $cd \art\models\objects\boulder\final

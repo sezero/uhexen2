@@ -2,7 +2,7 @@
 	bspfile.h
 	common bspfile header
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/bspfile.h,v 1.6 2007-09-14 14:10:00 sezero Exp $
+	$Header: /cvsroot/uhexen2/engine/hexen2/bspfile.h,v 1.6 2007-09-14 14:10:00 sezero Exp $
 */
 
 #ifndef __BSPFILE_H

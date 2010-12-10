@@ -1,5 +1,5 @@
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/h2/damage.hc,v 1.3 2007-02-07 16:57:00 sezero Exp $
+ * $Header: /cvsroot/uhexen2/gamecode/hc/h2/damage.hc,v 1.3 2007-02-07 16:57:00 sezero Exp $
  */
 
 void() T_MissileTouch;

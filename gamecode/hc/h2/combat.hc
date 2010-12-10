@@ -1,5 +1,5 @@
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/h2/combat.hc,v 1.3 2007-02-07 16:56:59 sezero Exp $
+ * $Header: /cvsroot/uhexen2/gamecode/hc/h2/combat.hc,v 1.3 2007-02-07 16:56:59 sezero Exp $
  */
 void(vector org, vector vel, float damage, entity victim) SpawnPuff;
 

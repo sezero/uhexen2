@@ -1,7 +1,7 @@
 /*
 	r_main.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/r_main.c,v 1.36 2010-08-22 22:11:41 sezero Exp $
+	$Header: /cvsroot/uhexen2/engine/hexen2/r_main.c,v 1.36 2010-08-22 22:11:41 sezero Exp $
 */
 
 #include "quakedef.h"

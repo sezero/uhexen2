@@ -1,5 +1,5 @@
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/siege/weapons.hc,v 1.3 2007-02-07 17:01:26 sezero Exp $
+ * $Header: /cvsroot/uhexen2/gamecode/hc/siege/weapons.hc,v 1.3 2007-02-07 17:01:26 sezero Exp $
  */
 /*
 */

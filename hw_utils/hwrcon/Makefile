@@ -1,5 +1,5 @@
 # GNU Makefile for hwrcon and hwterm using GCC.
-# $Header: /home/ozzie/Download/0000/uhexen2/hw_utils/hwrcon/Makefile,v 1.22 2010-05-03 12:03:57 sezero Exp $
+# $Header: /cvsroot/uhexen2/hw_utils/hwrcon/Makefile,v 1.22 2010-05-03 12:03:57 sezero Exp $
 #
 # if building a debug version :		make DEBUG=1 [other stuff]
 #

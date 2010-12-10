@@ -2,7 +2,7 @@
 	mathlib.h
 	math primitives
 
-	$Header: /home/ozzie/Download/0000/uhexen2/utils/common/mathlib.h,v 1.6 2008-03-06 18:55:07 sezero Exp $
+	$Header: /cvsroot/uhexen2/utils/common/mathlib.h,v 1.6 2008-03-06 18:55:07 sezero Exp $
 */
 
 #ifndef __MATHLIB_H

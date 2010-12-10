@@ -4,7 +4,7 @@
 	network functions and data, common to the
 	whole engine
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/net.h,v 1.25 2009-04-28 14:00:32 sezero Exp $
+	$Header: /cvsroot/uhexen2/engine/hexen2/net.h,v 1.25 2009-04-28 14:00:32 sezero Exp $
 */
 
 #ifndef __HX2_NET_H

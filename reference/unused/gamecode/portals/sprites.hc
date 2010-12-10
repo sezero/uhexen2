@@ -1,5 +1,5 @@
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/00_unused/gamecode/portals/sprites.hc,v 1.3 2007-02-07 16:56:40 sezero Exp $
+ * $Header: /cvsroot/uhexen2/reference/unused/gamecode/portals/sprites.hc,v 1.3 2007-02-07 16:56:40 sezero Exp $
  */
 
 // these are the only sprites still in the game...

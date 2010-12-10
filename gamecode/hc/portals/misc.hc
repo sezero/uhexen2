@@ -1,6 +1,6 @@
 
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/portals/misc.hc,v 1.3 2007-02-07 16:59:34 sezero Exp $
+ * $Header: /cvsroot/uhexen2/gamecode/hc/portals/misc.hc,v 1.3 2007-02-07 16:59:34 sezero Exp $
  */
 float DONT_REMOVE = 1;
 /*QUAKED miscellaneous_info (0 0 0) ?

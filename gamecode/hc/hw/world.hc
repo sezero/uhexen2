@@ -1,5 +1,5 @@
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/hw/world.hc,v 1.9 2006-10-31 19:31:47 sezero Exp $
+ * $Header: /cvsroot/uhexen2/gamecode/hc/hw/world.hc,v 1.9 2006-10-31 19:31:47 sezero Exp $
  */
 
 //void() InitBodyQue;

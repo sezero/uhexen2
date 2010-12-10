@@ -2,7 +2,7 @@
 	view.h
 	player eye positioning
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/view.h,v 1.9 2007-07-29 07:58:08 sezero Exp $
+	$Header: /cvsroot/uhexen2/engine/h2shared/view.h,v 1.9 2007-07-29 07:58:08 sezero Exp $
 */
 
 #ifndef __HX2_VIEW_H

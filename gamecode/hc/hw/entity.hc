@@ -3,7 +3,7 @@
 //**
 //** entity.hc
 //**
-//** $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/hw/entity.hc,v 1.3 2007-02-07 16:24:57 sezero Exp $
+//** $Header: /cvsroot/uhexen2/gamecode/hc/hw/entity.hc,v 1.3 2007-02-07 16:24:57 sezero Exp $
 //**
 //**************************************************************************
 

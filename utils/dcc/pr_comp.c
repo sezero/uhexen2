@@ -1,7 +1,7 @@
 /*
 	comp.c
 
-	$Header: /home/ozzie/Download/0000/uhexen2/utils/dcc/pr_comp.c,v 1.22 2007-12-14 16:41:17 sezero Exp $
+	$Header: /cvsroot/uhexen2/utils/dcc/pr_comp.c,v 1.22 2007-12-14 16:41:17 sezero Exp $
 */
 
 

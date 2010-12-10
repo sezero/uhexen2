@@ -2,7 +2,7 @@
 	cl_main.c
 	client main loop
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexenworld/Client/cl_main.c,v 1.98 2010-11-14 08:21:23 sezero Exp $
+	$Header: /cvsroot/uhexen2/engine/hexenworld/client/cl_main.c,v 1.98 2010-11-14 08:21:23 sezero Exp $
 */
 
 #include "q_stdinc.h"

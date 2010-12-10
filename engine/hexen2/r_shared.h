@@ -3,7 +3,7 @@
 	general refresh-related stuff shared between the refresh
 	and the driver
 
-	$Header: /home/ozzie/Download/0000/uhexen2/hexen2/r_shared.h,v 1.12 2008-03-21 14:45:11 sezero Exp $
+	$Header: /cvsroot/uhexen2/engine/hexen2/r_shared.h,v 1.12 2008-03-21 14:45:11 sezero Exp $
 */
 
 #ifndef __R_SHARED_H

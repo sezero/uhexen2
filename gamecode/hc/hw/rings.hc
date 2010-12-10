@@ -1,5 +1,5 @@
 /*
- * $Header: /home/ozzie/Download/0000/uhexen2/gamecode/hc/hw/rings.hc,v 1.2 2007-02-07 16:58:01 sezero Exp $
+ * $Header: /cvsroot/uhexen2/gamecode/hc/hw/rings.hc,v 1.2 2007-02-07 16:58:01 sezero Exp $
  */
 void player_fly(void);
 void Ring_Init(string modelname,float name);
