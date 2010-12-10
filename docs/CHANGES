@@ -3,6 +3,12 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2010-12-10 (CVS):
+    * q_sound.h: add WAV_FORMAT_PCM as a new macro, defined as 1.
+      snd_mem.h (S_LoadSound): use WAV_FORMAT_PCM. reject wav files which are
+      neither 8 nor 16 bit. reject wav files which have zero samples. report
+      the wav file name with the error messages so that they mean something.
+
 2010-11-27 (CVS):
     * Added the updated egypt5.bsp entities fixing the Dark Pharaoh's Scepter
       appearing a little stuck in the wall. from Thomas Freundt.
