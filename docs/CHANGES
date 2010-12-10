@@ -4,6 +4,13 @@ Development Progress	:
 ---------------------------
 
 2010-12-10 (CVS):
+    * cfgfile.c (CFG_ReadCvarOverrides): Added new helper procedure to read the
+      "+" command line override values of cvars in a given list. it doesn't care
+      about the config file. to be called after CFG_ReadCvars and before locking
+      the cvars. this may come in handy when we early-read cvars and lock them
+      where stuffcmds cannot change them.
+      cfgfile.h (CFG_ReadCvarOverrides): Added prototype.
+
     * q_sound.h: add WAV_FORMAT_PCM as a new macro, defined as 1.
       snd_mem.h (S_LoadSound): use WAV_FORMAT_PCM. reject wav files which are
       neither 8 nor 16 bit. reject wav files which have zero samples. report

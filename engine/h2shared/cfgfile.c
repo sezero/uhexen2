@@ -97,6 +97,28 @@ void CFG_ReadCvars (const char **vars, int num_vars)
 	fseek (cfg_file, 0, SEEK_SET);
 }
 
+void CFG_ReadCvarOverrides (const char **vars, int num_vars)
+{
+	char	buff[64];
+	int		i, j;
+
+	if (num_vars < 1)
+		return;
+
+	buff[0] = '+';
+
+	for (i = 0; i < num_vars; i++)
+	{
+		q_strlcpy (&buff[1], vars[i], sizeof(buff) - 1);
+		j = COM_CheckParm(buff);
+		if (j != 0 && j < com_argc - 1)
+		{
+			if (com_argv[j + 1][0] != '-' && com_argv[j + 1][0] != '+')
+				Cvar_Set(vars[i], com_argv[j + 1]);
+		}
+	}
+}
+
 void CFG_CloseConfig (void)
 {
 	if (cfg_file)

@@ -19,5 +19,11 @@ void CFG_ReadCvars (const char **vars, int num_vars);
 // reads the values of cvars in the given list
 // from the currently open config file
 
+void CFG_ReadCvarOverrides (const char **vars, int num_vars);
+// reads the "+" command line override values of cvars
+// in the given list.  doesn't care about the config file.
+// call this after CFG_ReadCvars() and before locking your
+// cvars.
+
 #endif	/* __CFGFILE_H */
 
