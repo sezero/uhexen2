@@ -323,7 +323,7 @@
 		707D578B0AA9F6EE00313A9F /* common.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = common.c; path = ../../h2shared/common.c; sourceTree = SOURCE_ROOT; };
 		707D578C0AA9F6EE00313A9F /* common.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = common.h; path = ../../h2shared/common.h; sourceTree = SOURCE_ROOT; };
 		707D578D0AA9F6EE00313A9F /* console.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = console.c; path = ../console.c; sourceTree = SOURCE_ROOT; };
-		707D578E0AA9F6EE00313A9F /* console.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = console.h; path = ../console.h; sourceTree = SOURCE_ROOT; };
+		707D578E0AA9F6EE00313A9F /* console.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = console.h; path = ../../h2shared/console.h; sourceTree = SOURCE_ROOT; };
 		707D578F0AA9F6EE00313A9F /* crc.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = crc.c; path = ../../h2shared/crc.c; sourceTree = SOURCE_ROOT; };
 		707D57900AA9F6EE00313A9F /* crc.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = crc.h; path = ../../h2shared/crc.h; sourceTree = SOURCE_ROOT; };
 		707D57910AA9F6EE00313A9F /* cvar.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = cvar.c; path = ../../h2shared/cvar.c; sourceTree = SOURCE_ROOT; };
@@ -351,7 +351,7 @@
 		707D57A80AA9F6EE00313A9F /* in_sdl.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = in_sdl.c; path = ../../h2shared/in_sdl.c; sourceTree = SOURCE_ROOT; };
 		707D57A90AA9F6EE00313A9F /* input.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = input.h; path = ../../h2shared/input.h; sourceTree = SOURCE_ROOT; };
 		707D57AA0AA9F6EE00313A9F /* keys.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = keys.c; path = ../keys.c; sourceTree = SOURCE_ROOT; };
-		707D57AB0AA9F6EE00313A9F /* keys.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = keys.h; path = ../keys.h; sourceTree = SOURCE_ROOT; };
+		707D57AB0AA9F6EE00313A9F /* keys.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = keys.h; path = ../../h2shared/keys.h; sourceTree = SOURCE_ROOT; };
 		707D57AD0AA9F6EE00313A9F /* mathlib.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = mathlib.c; path = ../../h2shared/mathlib.c; sourceTree = SOURCE_ROOT; };
 		707D57AE0AA9F6EE00313A9F /* mathlib.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = mathlib.h; path = ../../h2shared/mathlib.h; sourceTree = SOURCE_ROOT; };
 		707D57AF0AA9F6EE00313A9F /* menu.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = menu.c; path = ../menu.c; sourceTree = SOURCE_ROOT; };
@@ -398,7 +398,7 @@
 		707D57DB0AA9F6EE00313A9F /* sys.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = sys.h; path = ../../h2shared/sys.h; sourceTree = SOURCE_ROOT; };
 		707D57DC0AA9F6EE00313A9F /* vid.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = vid.h; path = ../../h2shared/vid.h; sourceTree = SOURCE_ROOT; };
 		707D57DD0AA9F6EE00313A9F /* view.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = view.c; path = ../view.c; sourceTree = SOURCE_ROOT; };
-		707D57DE0AA9F6EE00313A9F /* view.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = view.h; path = ../view.h; sourceTree = SOURCE_ROOT; };
+		707D57DE0AA9F6EE00313A9F /* view.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = view.h; path = ../../h2shared/view.h; sourceTree = SOURCE_ROOT; };
 		707D57DF0AA9F6EE00313A9F /* wad.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = wad.c; path = ../../h2shared/wad.c; sourceTree = SOURCE_ROOT; };
 		707D57E00AA9F6EE00313A9F /* wad.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = wad.h; path = ../../h2shared/wad.h; sourceTree = SOURCE_ROOT; };
 		707D57E20AA9F6EE00313A9F /* world.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = world.c; path = ../world.c; sourceTree = SOURCE_ROOT; };
