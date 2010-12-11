@@ -4,13 +4,23 @@ Development Progress	:
 ---------------------------
 
 2010-12-11 (CVS):
+    * Preparing for streaming music through S_RawSamples, part #2:
+    - q_sound.h: Add new macro MAX_RAW_SAMPLES, defined as 8192. Add externs
+      for new globals s_rawsamples and s_rawend. Add prototype for the new
+      S_RawSamples function.
+    - snd_dma.c: Add new globals s_rawsamples and s_rawend. Reset s_rawend to 0
+      in S_ClearBuffer. Add new function S_RawSamples, adapted from quake2 with
+      its 8 bit stereo playback fixed.
+    - snd_mix.c: In S_PaintChannels, check against s_rawend and copy from the
+      streaming sound source if necessary.
+
     * snd_dma.c: Added missing cfgfile.h include.
 
     * set svn:keywords Id on the files that had changes since the cvs times.
 
 2010-12-10 (CVS):
     * Preparing for streaming music through soon-to-be-added S_RawSamples:
-      snd_mix.c: snd_vol is static now. it is calculated in S_PaintChannels and
+    - snd_mix.c: snd_vol is static now. it is calculated in S_PaintChannels and
       only used in SND_PaintChannelFrom16. all its other uses are removed from
       Snd_WriteLinearBlastStereo16, S_TransferStereo16, S_TransferPaintBuffer.
       The way it way, the sound volume was applied to the whole final contents
@@ -18,9 +28,9 @@ Development Progress	:
       to the paint buffer with its own volume, such as bgmvolume. However, this
       makes the snd_scaletable to be recalculated everytime the sfxvolume is,
       changed, therefore it is adjusted that way to incorporate sfxvolume.
-      snd_mixa.asm: snd_vol is no longer used in Snd_WriteLinearBlastStereo16,
+    - snd_mixa.asm: snd_vol is no longer used in Snd_WriteLinearBlastStereo16,
       therefore no need to push, play with and pop the esi register.
-      snd_dma.c: Added old_volume to detect sfxvolume changes. Made S_Update to
+    - snd_dma.c: Added old_volume to detect sfxvolume changes. Made S_Update to
       compare it to sfxvolume.value and call SND_InitScaletable() if it changed.
       During init phase in S_Init, early-read volume and bgmvolume from config
       and also check for "+" overrides to them from the command line, then lock

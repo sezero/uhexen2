@@ -69,6 +69,9 @@ vec3_t		listener_up;
 int		soundtime;	// sample PAIRS
 int		paintedtime;	// sample PAIRS
 
+int		s_rawend;
+portable_samplepair_t	s_rawsamples[MAX_RAW_SAMPLES];
+
 
 #define	MAX_SFX		512
 static sfx_t	*known_sfx = NULL;	// hunk allocated [MAX_SFX]
@@ -631,6 +634,8 @@ void S_ClearBuffer (void)
 	if (! shm->buffer)
 		return;
 
+	s_rawend = 0;
+
 	if (shm->samplebits == 8)
 		clear = 0x80;
 	else
@@ -737,6 +742,106 @@ static void S_UpdateAmbientSounds (void)
 	}
 }
 
+
+/*
+===================
+S_RawSamples		(from QuakeII)
+
+Streaming music support. Byte swapping
+of data must be handled by the codec.
+===================
+*/
+void S_RawSamples (int samples, int rate, int width, int channels, byte *data, float volume)
+{
+	int i;
+	int src, dst;
+	float scale;
+	int intVolume;
+
+	if (s_rawend < paintedtime)
+	{
+		s_rawend = paintedtime;
+	}
+
+	scale = (float) rate / shm->speed;
+	intVolume = (int) (256 * volume);
+
+	if (channels == 2 && width == 2)
+	{
+		for (i = 0; ; i++)
+		{
+			src = i * scale;
+
+			if (src >= samples)
+			{
+				break;
+			}
+
+			dst = s_rawend & (MAX_RAW_SAMPLES - 1);
+			s_rawend++;
+			s_rawsamples [dst].left = ((short *) data)[src * 2] * intVolume;
+			s_rawsamples [dst].right = ((short *) data)[src * 2 + 1] * intVolume;
+		}
+	}
+	else if (channels == 1 && width == 2)
+	{
+		for (i = 0; ; i++)
+		{
+			src = i * scale;
+
+			if (src >= samples)
+			{
+				break;
+			}
+
+			dst = s_rawend & (MAX_RAW_SAMPLES - 1);
+			s_rawend++;
+			s_rawsamples [dst].left = ((short *) data)[src] * intVolume;
+			s_rawsamples [dst].right = ((short *) data)[src] * intVolume;
+		}
+	}
+	else if (channels == 2 && width == 1)
+	{
+		intVolume *= 256;
+
+		for (i = 0; ; i++)
+		{
+			src = i * scale;
+
+			if (src >= samples)
+			{
+				break;
+			}
+
+			dst = s_rawend & (MAX_RAW_SAMPLES - 1);
+			s_rawend++;
+		//	s_rawsamples [dst].left = ((char *) data)[src * 2] * intVolume;
+		//	s_rawsamples [dst].right = ((char *) data)[src * 2 + 1] * intVolume;
+		/* the above doesn't work for me with U8, only the unsigned ones below do */
+			s_rawsamples [dst].left = (((byte *) data)[src * 2] - 128) * intVolume;
+			s_rawsamples [dst].right = (((byte *) data)[src * 2 + 1] - 128) * intVolume;
+		}
+	}
+	else if (channels == 1 && width == 1)
+	{
+		intVolume *= 256;
+
+		for (i = 0; ; i++)
+		{
+			src = i * scale;
+
+			if (src >= samples)
+			{
+				break;
+			}
+
+			dst = s_rawend & (MAX_RAW_SAMPLES - 1);
+			s_rawend++;
+			s_rawsamples [dst].left = (((byte *) data)[src] - 128) * intVolume;
+			s_rawsamples [dst].right = (((byte *) data)[src] - 128) * intVolume;
+		}
+	}
+}
 
 /*
 ============

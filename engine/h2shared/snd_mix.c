@@ -172,7 +172,32 @@ void S_PaintChannels (int endtime)
 			end = paintedtime + PAINTBUFFER_SIZE;
 
 	// clear the paint buffer
-		memset(paintbuffer, 0, (end - paintedtime) * sizeof(portable_samplepair_t));
+		if (s_rawend < paintedtime)
+		{	// clear
+			memset(paintbuffer, 0, (end - paintedtime) * sizeof(portable_samplepair_t));
+		}
+		else
+		{	// copy from the streaming sound source
+			int		s;
+			int		stop;
+
+			stop = (end < s_rawend) ? end : s_rawend;
+
+			for (i = paintedtime; i < stop; i++)
+			{
+				s = i & (MAX_RAW_SAMPLES - 1);
+				paintbuffer[i - paintedtime] = s_rawsamples[s];
+			}
+		//	if (i != end)
+		//		Con_Printf ("partial stream\n");
+		//	else
+		//		Con_Printf ("full stream\n");
+			for ( ; i < end; i++)
+			{
+				paintbuffer[i - paintedtime].left =
+				paintbuffer[i - paintedtime].right = 0;
+			}
+		}
 
 	// paint in the channels.
 		ch = snd_channels;

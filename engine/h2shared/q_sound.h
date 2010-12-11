@@ -120,6 +120,9 @@ channel_t *SND_PickChannel (int entnum, int entchannel);
 /* spatializes a channel */
 void SND_Spatialize (channel_t *ch);
 
+/* music stream support */
+void S_RawSamples(int samples, int rate, int width, int channels, byte * data, float volume);
+
 /* ====================================================================
  * User-setable variables
  * ====================================================================
@@ -143,6 +146,7 @@ extern	int		desired_bits, desired_speed, desired_channels;
 extern	int		total_channels;
 extern	int		soundtime;
 extern	int		paintedtime;
+extern	int		s_rawend;
 
 extern	vec3_t		listener_origin;
 extern	vec3_t		listener_forward;
@@ -151,6 +155,9 @@ extern	vec3_t		listener_up;
 
 extern	cvar_t		sfxvolume;
 extern	cvar_t		loadas8bit;
+
+#define	MAX_RAW_SAMPLES	8192
+extern	portable_samplepair_t	s_rawsamples[MAX_RAW_SAMPLES];
 
 extern	cvar_t		bgmtype;
 extern	cvar_t		bgmvolume;
