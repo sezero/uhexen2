@@ -2,7 +2,7 @@
 	quakefs.h
 	Hexen II filesystem
 
-	$Id: quakefs.h,v 1.17 2008-11-11 07:51:17 sezero Exp $
+	$Id$
 */
 
 #ifndef __QUAKEFS_H

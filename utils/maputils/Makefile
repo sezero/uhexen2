@@ -1,5 +1,5 @@
 # GNU Makefile for hexen2 mapping tools using GCC.
-# $Header: /cvsroot/uhexen2/utils/maputils/Makefile,v 1.27 2009-10-04 11:00:49 sezero Exp $
+# $Id$
 #
 # if building a debug version :		make DEBUG=1 [other stuff]
 #

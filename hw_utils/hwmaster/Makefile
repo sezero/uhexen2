@@ -1,5 +1,5 @@
 # GNU Makefile for hexenworld master server using GCC.
-# $Header: /cvsroot/uhexen2/hw_utils/hwmaster/Makefile,v 1.31 2010-06-03 21:20:24 sezero Exp $
+# $Id$
 #
 # if building a debug version :		make DEBUG=1 [other stuff]
 #

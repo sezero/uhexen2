@@ -1,5 +1,5 @@
 # GNU Makefile for hexen2 pak tools using GCC.
-# $Header: /cvsroot/uhexen2/utils/pak/Makefile,v 1.2 2010-02-23 12:40:12 sezero Exp $
+# $Id$
 #
 # if building a debug version :		make DEBUG=1 [other stuff]
 #

@@ -2,7 +2,7 @@
 	snd_mem.c
 	sound caching
 
-	$Id: snd_mem.c,v 1.21 2008-04-30 17:30:02 sezero Exp $
+	$Id$
 */
 
 #include "quakedef.h"

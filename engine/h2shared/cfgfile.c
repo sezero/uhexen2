@@ -2,7 +2,7 @@
 	cfgfile.c
 	misc reads from the config file
 
-	$Id: cfgfile.c,v 1.3 2007-11-14 07:32:20 sezero Exp $
+	$Id$
 */
 
 #include "quakedef.h"

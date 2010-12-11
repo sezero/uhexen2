@@ -1,6 +1,5 @@
 #!/bin/sh
 
-# $Header: /cvsroot/uhexen2/engine/hexen2/build_cross_dos.sh,v 1.5 2009-04-21 08:40:47 sezero Exp $
 # used for building h2dos.exe with djgpp cross toolchain
 
 TARGET=i586-pc-msdosdjgpp

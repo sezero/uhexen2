@@ -3,7 +3,7 @@
 ; x86 assembly-language sound code
 ;
 ; this file uses NASM syntax.
-; $Id: snd_mixa.asm,v 1.5 2008-03-16 14:30:46 sezero Exp $
+; $Id$
 ;
 
 %include "asm_nasm.inc"

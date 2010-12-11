@@ -1,5 +1,5 @@
 # GNU Makefile using GCC in a unix shell.
-# $Header: /cvsroot/uhexen2/scripts/makefile.inc,v 1.26 2010-05-08 07:55:03 sezero Exp $
+# $Id$
 
 # This file is responsible for determining the Host OS and Target OS,
 # setting common paths, selecting the compiler, assigning the compiler

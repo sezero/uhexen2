@@ -1,5 +1,5 @@
 # GNU Makefile for hexenworld server using GCC.
-# $Header: /cvsroot/uhexen2/engine/hexenworld/server/Makefile,v 1.55 2010-06-03 21:20:24 sezero Exp $
+# $Id$
 #
 # To cross-compile for Win32 on Unix, you must pass the W32BUILD=1
 # argument to make. It would be best if you examine the script named

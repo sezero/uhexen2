@@ -1,5 +1,5 @@
 # GNU Makefile for hwmquery using GCC.
-# $Header: /cvsroot/uhexen2/hw_utils/hwmquery/Makefile,v 1.19 2010-05-03 12:03:57 sezero Exp $
+# $Id$
 #
 # if building a debug version :		make DEBUG=1 [other stuff]
 #

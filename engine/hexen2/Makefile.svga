@@ -1,5 +1,5 @@
 # GNU Makefile for hexen2 svgalib-client using GCC.
-# $Header: /cvsroot/uhexen2/engine/hexen2/Makefile.svga,v 1.9 2010-11-21 10:23:24 sezero Exp $
+# $Id$
 #
 # This makefile builds SVGALib dependant software renderer client
 # for linux-x86 only. This makefile is a butchered version of the

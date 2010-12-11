@@ -1,5 +1,5 @@
 # GNU Makefile for Hexen II Dedicated Server (h2ded) using GCC.
-# $Header: /cvsroot/uhexen2/engine/hexen2/Makefile.sv,v 1.30 2010-06-03 21:20:22 sezero Exp $
+# $Id$
 #
 # It is ESSENTIAL that you run make clean between different
 # types of builds or different types of targets.

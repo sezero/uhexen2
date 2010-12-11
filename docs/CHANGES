@@ -3,6 +3,11 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2010-12-11 (CVS):
+    * snd_dma.c: Added missing cfgfile.h include.
+
+    * set svn:keywords Id on the files that had changes since the cvs times.
+
 2010-12-10 (CVS):
     * Preparing for streaming music through soon-to-be-added S_RawSamples:
       snd_mix.c: snd_vol is static now. it is calculated in S_PaintChannels and

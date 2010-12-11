@@ -2,7 +2,7 @@
 	cfgfile.h
 	misc reads from the config file
 
-	$Id: cfgfile.h,v 1.2 2007-11-14 07:32:20 sezero Exp $
+	$Id$
 */
 
 #ifndef __CFGFILE_H

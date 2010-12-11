@@ -2,7 +2,7 @@
 	q_sound.h
 	client sound i/o functions
 
-	$Id: q_sound.h,v 1.1 2008-03-31 12:01:27 sezero Exp $
+	$Id$
 
 	Copyright (C) 1996-1997  Id Software, Inc.
 

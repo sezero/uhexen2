@@ -2,7 +2,7 @@
 	snd_dma.c
 	main control for any streaming sound output device
 
-	$Id: snd_dma.c,v 1.78 2010-11-17 20:50:58 sezero Exp $
+	$Id$
 
 	Copyright (C) 1996-1997  Id Software, Inc.
 
@@ -26,6 +26,7 @@
 */
 
 #include "quakedef.h"
+#include "cfgfile.h"
 #include "snd_sys.h"
 
 static snd_driver_t	*qsnd_driver;
