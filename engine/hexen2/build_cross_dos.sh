@@ -12,9 +12,10 @@ DOSBUILD=1
 
 CC="$TARGET-gcc"
 AS="$TARGET-as"
+RANLIB="$TARGET-ranlib"
 AR="$TARGET-ar"
 
-export CC AS AR DOSBUILD
+export CC AS RANLIB AR DOSBUILD
 
 HOST_OS=`uname|sed -e s/_.*//|tr '[:upper:]' '[:lower:]'`
 

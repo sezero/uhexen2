@@ -4,6 +4,8 @@ Development Progress	:
 ---------------------------
 
 2010-12-11 (CVS):
+    * cross defs: Add ranlib among the target tools.
+
     * Preparing for streaming music through S_RawSamples, part #2:
     - q_sound.h: Add new macro MAX_RAW_SAMPLES, defined as 8192. Add externs
       for new globals s_rawsamples and s_rawend. Add prototype for the new
