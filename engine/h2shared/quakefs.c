@@ -7,6 +7,7 @@
 
 #include "quakedef.h"
 #include "pakfile.h"
+#include <errno.h>
 #ifdef PLATFORM_WINDOWS
 #include <io.h>
 #include "io_msvc.h"
@@ -16,7 +17,6 @@
 #endif
 #ifdef PLATFORM_UNIX
 #include <unistd.h>
-#include <errno.h>
 #endif
 
 typedef struct

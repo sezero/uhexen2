@@ -4,6 +4,9 @@ Development Progress	:
 ---------------------------
 
 2010-12-13 (CVS):
+    * quakefs.c: Always include errno.h, because the FS_* stdio functions
+      play with errno.
+
     * snd_dma.c (S_FileExtension): Add new function which returns the given
       sound file's extension including the dot, or NULL.
     * q_sound.h (S_FileExtension): Add prototype for the new function.
