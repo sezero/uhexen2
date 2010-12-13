@@ -93,9 +93,12 @@ ifneq ($(HOST_OS),linux)
 $(error Shall not compile SVGA Client for non-Linux.)
 endif
 
+# Names of the binaries
 HW_BINARY:=hwcl.svga
 
+#############################################################
 # Compiler flags
+#############################################################
 
 # Overrides for the default CPUFLAGS
 CPUFLAGS:=-march=i586
@@ -104,17 +107,24 @@ CPUFLAGS:=-march=i586
 #ARCHFLAGS:=
 
 ifdef DEBUG
+# Debug type flags
 
 CFLAGS := -g -Wall
 
 else
+# Release type flags
 
 CFLAGS := $(CPUFLAGS) -O2 -Wall -DNDEBUG -ffast-math -fexpensive-optimizations
 
 ifeq ($(OPT_EXTRA),yes)
-CFLAGS := $(CFLAGS) $(call check_gcc,-falign-loops=2 -falign-jumps=2 -falign-functions=2,-malign-loops=2 -malign-jumps=2 -malign-functions=2)
+ALIGN_OPT:= $(call check_gcc,-falign-loops=2 -falign-jumps=2 -falign-functions=2,)
+ifeq ($(ALIGN_OPT),)
+ALIGN_OPT:= $(call check_gcc,-malign-loops=2 -malign-jumps=2 -malign-functions=2,)
+endif
+CFLAGS := $(CFLAGS) $(ALIGN_OPT)
 CFLAGS := $(CFLAGS) -fomit-frame-pointer
 endif
+#
 endif
 
 ifeq ($(COMPILE_32BITS),yes)
@@ -123,30 +133,47 @@ endif
 
 CFLAGS := $(CFLAGS) $(ARCHFLAGS)
 # end of compiler flags
+#############################################################
 
 
+#############################################################
 # Other build flags
+#############################################################
 EXT_FLAGS:= -DH2W -DSVGAQUAKE
 
 # use x86 assembly
 EXT_FLAGS:= $(EXT_FLAGS) -DUSE_INTEL_ASM
-
-# Main unix specific includes and flags
-INCLUDES:= -I. -I$(COMMON_HW) -I$(COMMONDIR)
-LDFLAGS := $(LIBSOCKET) -lm -lvga
-
-ifeq ($(COMPILE_32BITS),yes)
-LDFLAGS := $(LDFLAGS) -m32
-endif
 
 ifdef DEMO
 EXT_FLAGS+= -DDEMOBUILD
 endif
 
 ifdef DEBUG
-# This activates come extra code in hexen2/hexenworld C source
+# This activates some extra code in hexen2/hexenworld C source
 EXT_FLAGS+= -DDEBUG=1 -DDEBUG_BUILD=1
 endif
+
+
+#############################################################
+# Unix flags/settings
+#############################################################
+INCLUDES:= -I. -I$(COMMON_HW) -I$(COMMONDIR)
+LDFLAGS := $(LIBSOCKET) -lm -lvga
+
+# End of Unix settings
+#############################################################
+
+
+#############################################################
+# any other settings/flags
+#############################################################
+ifeq ($(COMPILE_32BITS),yes)
+LDFLAGS := $(LDFLAGS) -m32
+endif
+
+# End of other settings/flags
+#############################################################
+
 
 ifeq ($(USE_SOUND),yes)
 ifeq ($(USE_ALSA),no)

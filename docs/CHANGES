@@ -4,6 +4,8 @@ Development Progress	:
 ---------------------------
 
 2010-12-13 (CVS):
+    * hexen2 and hexenworld Makefiles: Reorganized.
+
     * quakefs.c: Always include errno.h, because the FS_* stdio functions
       play with errno.
 

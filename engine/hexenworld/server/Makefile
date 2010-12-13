@@ -56,7 +56,9 @@ endif
 # Names of the binaries
 BINARY:=hwsv$(exe_ext)
 
+#############################################################
 # Compiler flags
+#############################################################
 
 CPUFLAGS:=
 # Overrides for the default CPUFLAGS
@@ -68,22 +70,35 @@ endif
 #ARCHFLAGS:=
 
 ifdef DEBUG
+# Debug type flags
 
 CFLAGS := -g -Wall
 
 else
+# Release type flags
 
 CFLAGS := $(CPUFLAGS) -O2 -Wall -DNDEBUG -ffast-math -fexpensive-optimizations
 
 ifeq ($(OPT_EXTRA),yes)
 ifeq ($(MACH_TYPE),x86)
-CFLAGS := $(CFLAGS) $(call check_gcc,-falign-loops=2 -falign-jumps=2 -falign-functions=2,-malign-loops=2 -malign-jumps=2 -malign-functions=2)
+ALIGN_OPT:= $(call check_gcc,-falign-loops=2 -falign-jumps=2 -falign-functions=2,)
+ifeq ($(ALIGN_OPT),)
+ALIGN_OPT:= $(call check_gcc,-malign-loops=2 -malign-jumps=2 -malign-functions=2,)
 endif
+CFLAGS := $(CFLAGS) $(ALIGN_OPT)
+endif
+
 ifeq ($(MACH_TYPE),x86_64)
-CFLAGS := $(CFLAGS) $(call check_gcc,-falign-loops=2 -falign-jumps=2 -falign-functions=2,-malign-loops=2 -malign-jumps=2 -malign-functions=2)
+ALIGN_OPT:= $(call check_gcc,-falign-loops=2 -falign-jumps=2 -falign-functions=2,)
+ifeq ($(ALIGN_OPT),)
+ALIGN_OPT:= $(call check_gcc,-malign-loops=2 -malign-jumps=2 -malign-functions=2,)
 endif
+CFLAGS := $(CFLAGS) $(ALIGN_OPT)
+endif
+
 CFLAGS := $(CFLAGS) -fomit-frame-pointer
 endif
+#
 endif
 
 ifeq ($(COMPILE_32BITS),yes)
@@ -92,50 +107,89 @@ endif
 
 CFLAGS := $(CFLAGS) $(ARCHFLAGS)
 # end of compiler flags
+#############################################################
 
 
-ifeq ($(USE_WINSOCK2),yes)
-LIBWINSOCK=-lws2_32
-else
-LIBWINSOCK=-lwsock32
-endif
-
+#############################################################
 # Other build flags
+#############################################################
 EXT_FLAGS:= -DH2W -DSERVERONLY
 INCLUDES:= -I. -I$(COMMON_HW) -I$(COMMONDIR)
-
-ifeq ($(TARGET_OS),win32)
-CFLAGS  := $(CFLAGS) -DWIN32_LEAN_AND_MEAN
-ifeq ($(USE_WINSOCK2),yes)
-EXT_FLAGS+= -D_USE_WINSOCK2
-endif
-INCLUDES:= -I$(W32STUFF) $(INCLUDES)
-LDFLAGS := $(LIBWINSOCK) -lwinmm -mconsole
-endif
-ifeq ($(TARGET_OS),win64)
-CFLAGS  := $(CFLAGS) -DWIN32_LEAN_AND_MEAN
-ifeq ($(USE_WINSOCK2),yes)
-EXT_FLAGS+= -D_USE_WINSOCK2
-endif
-INCLUDES:= -I$(W32STUFF) $(INCLUDES)
-LDFLAGS := $(LIBWINSOCK) -lwinmm -mconsole
-endif
-ifeq ($(TARGET_OS),unix)
-LDFLAGS := $(LIBSOCKET) -lm
-endif
-
-ifeq ($(COMPILE_32BITS),yes)
-LDFLAGS := $(LDFLAGS) -m32
-endif
 
 ifdef DEMO
 EXT_FLAGS+= -DDEMOBUILD
 endif
 
 ifdef DEBUG
-# This activates come extra code in hexen2/hexenworld C source
+# This activates some extra code in hexen2/hexenworld C source
 EXT_FLAGS+= -DDEBUG=1 -DDEBUG_BUILD=1
 endif
+
+
+#############################################################
+# Win32 flags/settings
+#############################################################
+ifeq ($(TARGET_OS),win32)
+
+CFLAGS  := $(CFLAGS) -DWIN32_LEAN_AND_MEAN
+
+ifeq ($(USE_WINSOCK2),yes)
+EXT_FLAGS+= -D_USE_WINSOCK2
+LIBWINSOCK=-lws2_32
+else
+LIBWINSOCK=-lwsock32
+endif
+
+INCLUDES:= -I$(W32STUFF) $(INCLUDES)
+LDFLAGS := $(LIBWINSOCK) -lwinmm -mconsole
+
+endif
+# End of Win32 settings
+#############################################################
+
+
+#############################################################
+# Win64 flags/settings
+#############################################################
+ifeq ($(TARGET_OS),win64)
+
+CFLAGS  := $(CFLAGS) -DWIN32_LEAN_AND_MEAN
+
+ifeq ($(USE_WINSOCK2),yes)
+EXT_FLAGS+= -D_USE_WINSOCK2
+LIBWINSOCK=-lws2_32
+else
+LIBWINSOCK=-lwsock32
+endif
+
+INCLUDES:= -I$(W32STUFF) $(INCLUDES)
+LDFLAGS := $(LIBWINSOCK) -lwinmm -mconsole
+
+endif
+# End of Win64 settings
+#############################################################
+
+
+#############################################################
+# Unix flags/settings
+#############################################################
+ifeq ($(TARGET_OS),unix)
+LDFLAGS := $(LIBSOCKET) -lm
+
+endif
+# End of Unix settings
+#############################################################
+
+
+#############################################################
+# any other settings/flags
+#############################################################
+ifeq ($(COMPILE_32BITS),yes)
+LDFLAGS := $(LDFLAGS) -m32
+endif
+
+# End of other settings/flags
+#############################################################
 
 
 # Rules for turning source files into .o files

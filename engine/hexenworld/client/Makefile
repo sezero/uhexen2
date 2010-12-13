@@ -146,6 +146,69 @@ COMPILE_32BITS=no
 # include the common dirty stuff
 include $(UHEXEN2_TOP)/scripts/makefile.inc
 
+# Names of the binaries
+HW_BINARY:=hwcl$(exe_ext)
+GLHW_BINARY:=glhwcl$(exe_ext)
+
+#############################################################
+# Compiler flags
+#############################################################
+
+CPUFLAGS:=
+# Overrides for the default CPUFLAGS
+ifeq ($(MACH_TYPE),x86)
+CPUFLAGS:=-march=i586
+endif
+
+# Overrides for the default ARCHFLAGS
+#ARCHFLAGS:=
+
+ifdef DEBUG
+# Debug type flags
+
+CFLAGS := -g -Wall
+
+else
+# Release type flags
+
+CFLAGS := $(CPUFLAGS) -O2 -Wall -DNDEBUG -ffast-math -fexpensive-optimizations
+
+ifeq ($(OPT_EXTRA),yes)
+ifeq ($(MACH_TYPE),x86)
+ALIGN_OPT:= $(call check_gcc,-falign-loops=2 -falign-jumps=2 -falign-functions=2,)
+ifeq ($(ALIGN_OPT),)
+ALIGN_OPT:= $(call check_gcc,-malign-loops=2 -malign-jumps=2 -malign-functions=2,)
+endif
+CFLAGS := $(CFLAGS) $(ALIGN_OPT)
+endif
+
+ifeq ($(MACH_TYPE),x86_64)
+ALIGN_OPT:= $(call check_gcc,-falign-loops=2 -falign-jumps=2 -falign-functions=2,)
+ifeq ($(ALIGN_OPT),)
+ALIGN_OPT:= $(call check_gcc,-malign-loops=2 -malign-jumps=2 -malign-functions=2,)
+endif
+CFLAGS := $(CFLAGS) $(ALIGN_OPT)
+endif
+
+CFLAGS := $(CFLAGS) -fomit-frame-pointer
+endif
+#
+endif
+
+ifeq ($(COMPILE_32BITS),yes)
+CFLAGS := $(CFLAGS) -m32
+endif
+
+CFLAGS := $(CFLAGS) $(ARCHFLAGS)
+# end of compiler flags
+#############################################################
+
+
+#############################################################
+# Other build flags
+#############################################################
+EXT_FLAGS:= -DH2W
+
 # disable x86 assembly if it is not an x86.
 ifneq ($(MACH_TYPE),x86)
 ifeq ($(MACH_TYPE),x86_64)
@@ -159,114 +222,9 @@ USE_X86_ASM=no
 endif
 endif
 
-ifeq ($(TARGET_OS),win64)
-# cant use MGL for Win64
-USE_MGL=no
-# use winsock2 for win64
-USE_WINSOCK2=yes
-endif
-
-# Names of the binaries
-HW_BINARY:=hwcl$(exe_ext)
-GLHW_BINARY:=glhwcl$(exe_ext)
-
-# Compiler flags
-
-CPUFLAGS:=
-# Overrides for the default CPUFLAGS
-ifeq ($(MACH_TYPE),x86)
-CPUFLAGS:=-march=i586
-endif
-
-# Overrides for the default ARCHFLAGS
-#ARCHFLAGS:=
-
-ifdef DEBUG
-
-CFLAGS := -g -Wall
-
-else
-
-CFLAGS := $(CPUFLAGS) -O2 -Wall -DNDEBUG -ffast-math -fexpensive-optimizations
-
-ifeq ($(OPT_EXTRA),yes)
-ifeq ($(MACH_TYPE),x86)
-CFLAGS := $(CFLAGS) $(call check_gcc,-falign-loops=2 -falign-jumps=2 -falign-functions=2,-malign-loops=2 -malign-jumps=2 -malign-functions=2)
-endif
-ifeq ($(MACH_TYPE),x86_64)
-CFLAGS := $(CFLAGS) $(call check_gcc,-falign-loops=2 -falign-jumps=2 -falign-functions=2,-malign-loops=2 -malign-jumps=2 -malign-functions=2)
-endif
-CFLAGS := $(CFLAGS) -fomit-frame-pointer
-endif
-endif
-
-ifeq ($(COMPILE_32BITS),yes)
-CFLAGS := $(CFLAGS) -m32
-endif
-
-CFLAGS := $(CFLAGS) $(ARCHFLAGS)
-# end of compiler flags
-
-
-# Other build flags
-EXT_FLAGS:= -DH2W
-
 # whether to use x86 assembly
 ifeq ($(USE_X86_ASM),yes)
 EXT_FLAGS:= $(EXT_FLAGS) -DUSE_INTEL_ASM
-endif
-
-ifeq ($(USE_WINSOCK2),yes)
-LIBWINSOCK=-lws2_32
-else
-LIBWINSOCK=-lwsock32
-endif
-
-ifneq ($(USE_MGL),yes)
-MGL_FLAG:=
-MGL_INCL:=
-MGL_LINK:=
-endif
-
-ifeq ($(TARGET_OS),win32)
-# Main win32 specific includes and flags
-CFLAGS  := $(CFLAGS) -DWIN32_LEAN_AND_MEAN
-INCLUDES:= -I$(W32STUFF) -I$(W32STUFF)/dxsdk/inc -I. -I$(COMMON_HW) -I$(COMMONDIR)
-LDFLAGS := $(LIBWINSOCK) -lwinmm -mwindows
-endif
-ifeq ($(TARGET_OS),win64)
-# Main win64 specific includes and flags
-CFLAGS  := $(CFLAGS) -DWIN32_LEAN_AND_MEAN
-INCLUDES:= -I$(W32STUFF) -I$(W32STUFF)/dxsdk_new/inc -I. -I$(COMMON_HW) -I$(COMMONDIR)
-LDFLAGS := $(LIBWINSOCK) -lwinmm -mwindows
-endif
-ifeq ($(TARGET_OS),unix)
-# Main unix specific includes and flags
-INCLUDES:= -I$(X11BASE)/include -I. -I$(COMMON_HW) -I$(COMMONDIR)
-LDFLAGS := $(LIBSOCKET) -lm
-endif
-
-ifeq ($(COMPILE_32BITS),yes)
-LDFLAGS := $(LDFLAGS) -m32
-endif
-
-GL_DEFS := -DGLQUAKE
-GLFLAGS :=
-
-# allow 3dfx gamma hack only on linux and freebsd
-ifneq ($(HOST_OS),linux)
-ifneq ($(HOST_OS),freebsd)
-USE_3DFXGAMMA=no
-endif
-endif
-ifeq ($(USE_3DFXGAMMA),yes)
-GL_DEFS+= -DUSE_3DFXGAMMA
-endif
-
-ifeq ($(LINK_GL_LIBS),no)
-GL_DEFS+= -DGL_DLSYM
-else
-GLFLAGS+= $(GL_LINK)
 endif
 
 ifdef DEMO
@@ -274,12 +232,34 @@ EXT_FLAGS+= -DDEMOBUILD
 endif
 
 ifdef DEBUG
-# This activates come extra code in hexen2/hexenworld C source
+# This activates some extra code in hexen2/hexenworld C source
 EXT_FLAGS+= -DDEBUG=1 -DDEBUG_BUILD=1
 endif
 
+
+#############################################################
+# OpenGL settings
+#############################################################
+GL_DEFS := -DGLQUAKE
+GLFLAGS :=
+ifeq ($(USE_3DFXGAMMA),yes)
+# linux 3dfx gamma hack
+GL_DEFS+= -DUSE_3DFXGAMMA
+endif
+ifeq ($(LINK_GL_LIBS),no)
+GL_DEFS+= -DGL_DLSYM
+else
+GLFLAGS+= $(GL_LINK)
+endif
+
+
+#############################################################
+# Unix flags/settings
+#############################################################
 ifeq ($(TARGET_OS),unix)
-# Start Unix-specific extra flags/settings
+
+INCLUDES:= -I$(X11BASE)/include -I. -I$(COMMON_HW) -I$(COMMONDIR)
+LDFLAGS := $(LIBSOCKET) -lm
 
 # We rely on SDL:  SDLQUAKE must be defined for all SDL using
 # platforms / targets.
@@ -309,15 +289,31 @@ EXT_FLAGS+= -DWITH_SDLCD
 endif
 endif
 
-# End of Unix specific extras
 endif
+# End of Unix settings
+#############################################################
 
 
+#############################################################
+# Win32 flags/settings
+#############################################################
 ifeq ($(TARGET_OS),win32)
-# Start Win32-specific extra flags/settings
 
 ifeq ($(USE_WINSOCK2),yes)
 EXT_FLAGS+= -D_USE_WINSOCK2
+LIBWINSOCK=-lws2_32
+else
+LIBWINSOCK=-lwsock32
+endif
+
+CFLAGS  := $(CFLAGS) -DWIN32_LEAN_AND_MEAN
+INCLUDES:= -I$(W32STUFF) -I$(W32STUFF)/dxsdk/inc -I. -I$(COMMON_HW) -I$(COMMONDIR)
+LDFLAGS := $(LIBWINSOCK) -lwinmm -mwindows
+
+ifneq ($(USE_MGL),yes)
+MGL_FLAG:=
+MGL_INCL:=
+MGL_LINK:=
 endif
 
 ifeq ($(LINK_DIRECTX),no)
@@ -334,16 +330,35 @@ else
 # when USE_HEXEN2_PALTEX_CODE is defined as 0 in h2config.h
 #GLFLAGS+=-lcomctl32
 endif
-# End of Win32 specific extras
+
 endif
+# End of Win32 settings
+#############################################################
 
 
+#############################################################
+# Win64 extra flags/settings
+#############################################################
 ifeq ($(TARGET_OS),win64)
-# Start Win64-specific extra flags/settings
+
+# cant use MGL for Win64
+USE_MGL=no
+MGL_FLAG:=
+MGL_INCL:=
+MGL_LINK:=
+# use winsock2 for win64
+USE_WINSOCK2=yes
 
 ifeq ($(USE_WINSOCK2),yes)
 EXT_FLAGS+= -D_USE_WINSOCK2
+LIBWINSOCK=-lws2_32
+else
+LIBWINSOCK=-lwsock32
 endif
+
+CFLAGS  := $(CFLAGS) -DWIN32_LEAN_AND_MEAN
+INCLUDES:= -I$(W32STUFF) -I$(W32STUFF)/dxsdk_new/inc -I. -I$(COMMON_HW) -I$(COMMONDIR)
+LDFLAGS := $(LIBWINSOCK) -lwinmm -mwindows
 
 ifeq ($(LINK_DIRECTX),no)
 EXT_FLAGS+= -DDX_DLSYM
@@ -359,8 +374,21 @@ else
 # when USE_HEXEN2_PALTEX_CODE is defined as 0 in h2config.h
 #GLFLAGS+=-lcomctl32
 endif
-# End of Win64 specific extras
+
 endif
+# End of Win64 settings
+#############################################################
+
+
+#############################################################
+# any other settings/flags
+#############################################################
+ifeq ($(COMPILE_32BITS),yes)
+LDFLAGS:= $(LDFLAGS) -m32
+endif
+
+# End of other settings/flags
+#############################################################
 
 
 # Rules for turning source files into .o files
