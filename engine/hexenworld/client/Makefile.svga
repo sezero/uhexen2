@@ -160,21 +160,6 @@ endif
 INCLUDES:= -I. -I$(COMMON_HW) -I$(COMMONDIR)
 LDFLAGS := $(LIBSOCKET) -lm -lvga
 
-# End of Unix settings
-#############################################################
-
-
-#############################################################
-# any other settings/flags
-#############################################################
-ifeq ($(COMPILE_32BITS),yes)
-LDFLAGS := $(LDFLAGS) -m32
-endif
-
-# End of other settings/flags
-#############################################################
-
-
 ifeq ($(USE_SOUND),yes)
 ifeq ($(USE_ALSA),no)
 EXT_FLAGS+= -DNO_ALSA_AUDIO
@@ -188,6 +173,20 @@ endif
 EXT_FLAGS+= -DNO_SUN_AUDIO
 EXT_FLAGS+= -DNO_SDL_AUDIO
 endif
+
+# End of Unix settings
+#############################################################
+
+
+#############################################################
+# any other settings/flags
+#############################################################
+ifeq ($(COMPILE_32BITS),yes)
+LDFLAGS:= $(LDFLAGS) -m32
+endif
+
+# End of other settings/flags
+#############################################################
 
 
 # Rules for turning source files into .o files
@@ -252,7 +251,7 @@ endif
 # MIDI objects
 ifneq ($(USE_MIDI),yes)
 SYSOBJ_MIDI:= midi_nul.o
-EXT_FLAGS += -DNO_MIDIMUSIC
+EXT_FLAGS += -D_NO_MIDIDRV
 else
 $(error Midi support not implemented yet.)
 # end of MIDI objects

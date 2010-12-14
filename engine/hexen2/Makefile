@@ -513,7 +513,7 @@ endif
 # MIDI objects
 ifneq ($(USE_MIDI),yes)
 SYSOBJ_MIDI:= midi_nul.o
-EXT_FLAGS += -DNO_MIDIMUSIC
+EXT_FLAGS += -D_NO_MIDIDRV
 else
 ifeq ($(TARGET_OS),win32)
 SYSOBJ_MIDI:= midi_win.o mstrconv.o
@@ -523,7 +523,7 @@ SYSOBJ_MIDI:= midi_win.o mstrconv.o
 endif
 ifeq ($(TARGET_OS),dos)
 SYSOBJ_MIDI:= midi_nul.o
-EXT_FLAGS += -DNO_MIDIMUSIC
+EXT_FLAGS += -D_NO_MIDIDRV
 endif
 ifeq ($(TARGET_OS),unix)
 ifeq ($(HOST_OS),darwin)
