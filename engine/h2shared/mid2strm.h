@@ -1,8 +1,9 @@
 /*
-	midi_win.h
-	$Id: midi_win.h,v 1.10 2008-12-23 18:37:08 sezero Exp $
+	mid2strm.h
+	$Id$
 
-	Header file for Win32 MIDI module
+	Convert MIDI data to a MIDI stream for playback using
+	the Windows midiStream API.
 */
 
 #ifndef __MSTREAM_INCLUDED__

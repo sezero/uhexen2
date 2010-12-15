@@ -516,10 +516,10 @@ SYSOBJ_MIDI:= midi_nul.o
 EXT_FLAGS += -D_NO_MIDIDRV
 else
 ifeq ($(TARGET_OS),win32)
-SYSOBJ_MIDI:= midi_win.o mstrconv.o
+SYSOBJ_MIDI:= midi_win.o mid2strm.o
 endif
 ifeq ($(TARGET_OS),win64)
-SYSOBJ_MIDI:= midi_win.o mstrconv.o
+SYSOBJ_MIDI:= midi_win.o mid2strm.o
 endif
 ifeq ($(TARGET_OS),dos)
 SYSOBJ_MIDI:= midi_nul.o

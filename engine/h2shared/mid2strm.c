@@ -1,9 +1,9 @@
 /*
-	mstrconv.c
-	$Id: mstrconv.c,v 1.27 2009-01-02 21:55:19 sezero Exp $
+	mid2strm.c
+	$Id$
 
-	Converting a MID file to a MIDI stream for
-	playback using the Win32 midiStream API.
+	Convert MIDI data to a MIDI stream for playback using
+	the Windows midiStream API.
 */
 
 #include <windows.h>
@@ -13,7 +13,7 @@
 #include <assert.h>
 #include <stdio.h>
 
-#include "midi_win.h"
+#include "mid2strm.h"
 #include "midstuff.h"
 #include "quakedef.h"
 

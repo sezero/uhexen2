@@ -1,8 +1,8 @@
 /*
 	midi_win.c
-	$Id: midi_win.c,v 1.31 2009-01-22 08:06:19 sezero Exp $
+	$Id$
 
-	MIDI module for Win32
+	MIDI module for Windows using midiStream API
 */
 
 #include <windows.h>
@@ -13,7 +13,7 @@
 #include <mmsystem.h>
 
 #include "midstuff.h"
-#include "midi_win.h"
+#include "mid2strm.h"
 #include "quakedef.h"
 
 
@@ -29,7 +29,7 @@ static qboolean	hw_vol_capable = false;
 static HMIDISTRM	hStream;
 static CONVERTINFO	ciStreamBuffers[NUM_STREAM_BUFFERS];
 
-// From mstrconv.c
+// From mid2strm.c
 extern INFILESTATE	ifs;
 
 // Private to this module...
