@@ -2,7 +2,7 @@
 	main.c
 	hexen2 launcher: main loop
 
-	$Id: main.c,v 1.38 2010-01-11 18:48:20 sezero Exp $
+	$Id$
 
 	This program is free software; you can redistribute it and/or
 	modify it under the terms of the GNU General Public License
@@ -178,8 +178,6 @@ static void ValidateByteorder (void)
 	const char	*tmp;
 
 	ByteOrder_Init ();
-	if (host_byteorder < 0)
-		Sys_Error (1, "Unsupported byte order.");
 	switch (host_byteorder)
 	{
 	case BIG_ENDIAN:
@@ -190,11 +188,14 @@ static void ValidateByteorder (void)
 		break;
 	case PDP_ENDIAN:
 		tmp = endianism[2];
+		host_byteorder = -1;	/* error out */
 		break;
 	default:
 		tmp = endianism[3];
 		break;
 	}
+	if (host_byteorder < 0)
+		Sys_Error (1, "Unsupported byte order [%s]", tmp);
 	printf("Detected byte order: %s\n", tmp);
 #if !ENDIAN_RUNTIME_DETECT
 	if (host_byteorder != BYTE_ORDER)

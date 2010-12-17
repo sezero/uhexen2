@@ -440,8 +440,6 @@ void COM_ValidateByteorder (void)
 	const char	*tmp;
 
 	ByteOrder_Init ();
-	if (host_byteorder < 0)
-		Sys_Error ("%s: Unsupported byte order.", __thisfunc__);
 	switch (host_byteorder)
 	{
 	case BIG_ENDIAN:
@@ -452,11 +450,14 @@ void COM_ValidateByteorder (void)
 		break;
 	case PDP_ENDIAN:
 		tmp = endianism[2];
+		host_byteorder = -1;	/* not supported */
 		break;
 	default:
 		tmp = endianism[3];
 		break;
 	}
+	if (host_byteorder < 0)
+		Sys_Error ("%s: Unsupported byte order [%s]", __thisfunc__, tmp);
 	Sys_Printf("Detected byte order: %s\n", tmp);
 #if !ENDIAN_RUNTIME_DETECT
 	if (host_byteorder != BYTE_ORDER)

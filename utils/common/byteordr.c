@@ -2,7 +2,7 @@
 	byteordr.c
 	init / validate byteorder functions.
 
-	$Id: byteordr.c,v 1.1 2008-01-12 09:46:18 sezero Exp $
+	$Id$
 */
 
 #include "q_stdinc.h"
@@ -19,8 +19,6 @@ void ValidateByteorder (void)
 	const char	*tmp;
 
 	ByteOrder_Init ();
-	if (host_byteorder < 0)
-		Error ("%s: Unsupported byte order.", __thisfunc__);
 	switch (host_byteorder)
 	{
 	case BIG_ENDIAN:
@@ -31,11 +29,14 @@ void ValidateByteorder (void)
 		break;
 	case PDP_ENDIAN:
 		tmp = endianism[2];
+		host_byteorder = -1;	/* not supported */
 		break;
 	default:
 		tmp = endianism[3];
 		break;
 	}
+	if (host_byteorder < 0)
+		Error ("%s: Unsupported byte order [%s]", __thisfunc__, tmp);
 //	printf("Detected byte order: %s\n", tmp);
 #if !ENDIAN_RUNTIME_DETECT
 	if (host_byteorder != BYTE_ORDER)
