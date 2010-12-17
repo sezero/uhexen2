@@ -1,8 +1,8 @@
 /*
 	cl_main.c
-	client main loop
+	hexenworld client main loop
 
-	$Header: /cvsroot/uhexen2/engine/hexenworld/client/cl_main.c,v 1.98 2010-11-14 08:21:23 sezero Exp $
+	$Id$
 */
 
 #include "q_stdinc.h"
@@ -178,7 +178,9 @@ void CL_SendConnectPacket (void)
 	Con_Printf ("Connecting to %s...\n", cls.servername);
 	q_snprintf (data, sizeof(data), "%c%c%c%cconnect %d \"%s\"\n",
 			255, 255, 255, 255,
-			((gameflags & GAME_PORTALS) == GAME_PORTALS),
+			/* hw/pak4.pak has all succubus stuff
+			 * already, so just sending 1 here: */
+			1, /* ((gameflags & GAME_PORTALS) == GAME_PORTALS) */
 			cls.userinfo);
 	NET_SendPacket (strlen(data), data, adr);
 
