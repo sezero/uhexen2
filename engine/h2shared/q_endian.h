@@ -2,7 +2,7 @@
 	q_endian.h
 	endianness handling
 
-	$Id: q_endian.h,v 1.12 2008-03-19 18:48:04 sezero Exp $
+	$Id$
 
 	Copyright (C) 1996-1997  Id Software, Inc.
 	Copyright (C) 2007-2008  O.Sezer <sezero@users.sourceforge.net>
@@ -90,7 +90,7 @@
 
 #if defined(BYTE_ORDER) && defined(LITTLE_ENDIAN) && defined(BIG_ENDIAN)
 
-# if (BYTE_ORDER != LITTLE_ENDIAN) && (BYTE_ORDER != BIG_ENDIAN) && (BYTE_ORDER != PDP_ENDIAN)
+# if (BYTE_ORDER != LITTLE_ENDIAN) && (BYTE_ORDER != BIG_ENDIAN)
 # error "Unsupported endianness."
 # endif
 
@@ -187,11 +187,6 @@ extern short	ShortSwap (short);
 extern int	LongSwap (int);
 extern float	FloatSwap (float);
 
-extern int	LongSwapPDP2BE (int);
-extern int	LongSwapPDP2LE (int);
-extern float	FloatSwapPDP2BE (float);
-extern float	FloatSwapPDP2LE (float);
-
 #if (BYTE_ORDER == BIG_ENDIAN)
 
 #define BigShort(s)	(s)
@@ -200,15 +195,6 @@ extern float	FloatSwapPDP2LE (float);
 #define LittleLong(l)	LongSwap((l))
 #define BigFloat(f)	(f)
 #define LittleFloat(f)	FloatSwap((f))
-
-#elif (BYTE_ORDER == PDP_ENDIAN)
-
-#define BigShort(s)	ShortSwap((s))
-#define BigLong(l)	LongSwapPDP2BE((l))
-#define BigFloat(f)	FloatSwapPDP2BE((f))
-#define LittleShort(s)	(s)
-#define LittleLong(l)	LongSwapPDP2LE((l))
-#define LittleFloat(f)	FloatSwapPDP2LE((f))
 
 #else /* BYTE_ORDER == LITTLE_ENDIAN */
 

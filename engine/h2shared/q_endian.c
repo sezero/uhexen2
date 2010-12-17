@@ -2,7 +2,7 @@
 	q_endian.c
 	byte order functions
 
-	$Id: q_endian.c,v 1.9 2008-03-19 18:48:04 sezero Exp $
+	$Id$
 
 	Copyright (C) 1996-1997  Id Software, Inc.
 	Copyright (C) 2007-2008  O.Sezer <sezero@users.sourceforge.net>
@@ -43,8 +43,6 @@
 # warning "Cannot determine byte order:"
 # if (ENDIAN_ASSUMED_UNSAFE == LITTLE_ENDIAN)
 #    warning "Using LIL endian as an UNSAFE default."
-# elif (ENDIAN_ASSUMED_UNSAFE == PDP_ENDIAN)
-#    warning "Using PDP (NUXI) as an UNSAFE default."
 # elif (ENDIAN_ASSUMED_UNSAFE == BIG_ENDIAN)
 #    warning "Using BIG endian as an UNSAFE default."
 # endif
@@ -122,74 +120,6 @@ float FloatSwap (float f)
 	return dat2.f;
 }
 
-__byteswap_func
-int LongSwapPDP2BE (int l)
-{
-	union
-	{
-		int	l;
-		unsigned char	b[4];
-	} dat1, dat2;
-
-	dat1.l = l;
-	dat2.b[0] = dat1.b[1];
-	dat2.b[1] = dat1.b[0];
-	dat2.b[2] = dat1.b[3];
-	dat2.b[3] = dat1.b[2];
-
-	return dat2.l;
-}
-
-__byteswap_func
-int LongSwapPDP2LE (int l)
-{
-	union
-	{
-		int	l;
-		short	s[2];
-	} dat1, dat2;
-
-	dat1.l = l;
-	dat2.s[0] = dat1.s[1];
-	dat2.s[1] = dat1.s[0];
-
-	return dat2.l;
-}
-
-__byteswap_func
-float FloatSwapPDP2BE (float f)
-{
-	union
-	{
-		float	f;
-		unsigned char	b[4];
-	} dat1, dat2;
-
-	dat1.f = f;
-	dat2.b[0] = dat1.b[1];
-	dat2.b[1] = dat1.b[0];
-	dat2.b[2] = dat1.b[3];
-	dat2.b[3] = dat1.b[2];
-
-	return dat2.f;
-}
-
-__byteswap_func
-float FloatSwapPDP2LE (float f)
-{
-	union
-	{
-		float	f;
-		short	s[2];
-	} dat1, dat2;
-
-	dat1.f = f;
-	dat2.s[0] = dat1.s[1];
-	dat2.s[1] = dat1.s[0];
-
-	return dat2.f;
-}
-
 #if ENDIAN_RUNTIME_DETECT
 
 __byteswap_func
@@ -242,15 +172,6 @@ void ByteOrder_Init (void)
 		LittleLong = LongNoSwap;
 		BigFloat = FloatSwap;
 		LittleFloat = FloatNoSwap;
-		break;
-
-	case PDP_ENDIAN:
-		BigShort = ShortSwap;
-		LittleShort = ShortNoSwap;
-		BigLong = LongSwapPDP2BE;
-		LittleLong = LongSwapPDP2LE;
-		BigFloat = FloatSwapPDP2BE;
-		LittleFloat = FloatSwapPDP2LE;
 		break;
 
 	default:

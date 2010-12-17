@@ -4,6 +4,10 @@ Development Progress	:
 ---------------------------
 
 2010-12-17 (CVS):
+    * q_endian.h, q_endian.c: Remove PDP stuff which isn't supported.
+    * gl_vidnt.c, gl_vidsdl.c, glquake.h: Likewise.
+
+2010-12-17 (CVS):
     * libs/timidity/timidity.h.in: Deleted unused file.
     * libs/timidity/instrum_dls.c (LoadRIFF, AllocRegions, AllocInstruments,
       AllocWaveList): Replaced all malloc() usage by safe_malloc().

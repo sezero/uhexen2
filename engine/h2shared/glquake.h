@@ -2,7 +2,7 @@
 	glquake.h
 	common glquake header
 
-	$Id: glquake.h,v 1.85 2008-12-23 16:05:57 sezero Exp $
+	$Id$
 */
 
 
@@ -84,15 +84,6 @@ extern unsigned int	SHIFT_a;
 #define	SHIFT_g		8
 #define	SHIFT_b		16
 #define	SHIFT_a		24
-#elif (BYTE_ORDER == PDP_ENDIAN) /* G R A B */
-#define	MASK_r		0x00ff0000
-#define	MASK_g		0xff000000
-#define	MASK_b		0x000000ff
-#define	MASK_a		0x0000ff00
-#define	SHIFT_r		16
-#define	SHIFT_g		24
-#define	SHIFT_b		0
-#define	SHIFT_a		8
 #endif
 
 #define	MASK_rgb	(MASK_r|MASK_g|MASK_b)

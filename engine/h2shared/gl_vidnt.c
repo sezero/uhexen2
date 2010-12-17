@@ -1,6 +1,6 @@
 /*
 	gl_vidnt.c -- NT GL vid component
-	$Id: gl_vidnt.c,v 1.130 2010-10-30 11:33:15 sezero Exp $
+	$Id$
 */
 
 #define	__GL_FUNC_EXTERN
@@ -2136,16 +2136,6 @@ void	VID_Init (unsigned char *palette)
 		SHIFT_g	=	8;
 		SHIFT_b	=	16;
 		SHIFT_a	=	24;
-		break;
-	case PDP_ENDIAN:	/* G R A B */
-		MASK_r	=	0x00ff0000;
-		MASK_g	=	0xff000000;
-		MASK_b	=	0x000000ff;
-		MASK_a	=	0x0000ff00;
-		SHIFT_r	=	16;
-		SHIFT_g	=	24;
-		SHIFT_b	=	0;
-		SHIFT_a	=	8;
 		break;
 	default:
 		break;
