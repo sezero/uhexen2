@@ -4,6 +4,8 @@ Development Progress	:
 ---------------------------
 
 2010-12-17 (CVS):
+    * libs/timidity: Added a Makefile and some cross-build scripts. Changed
+      DEBUG to TIMIDITY_DEBUG.
     * libs/timidity: Imported v0.1.0 sources from the libtimidity project.
 
 2010-12-17 (CVS):
