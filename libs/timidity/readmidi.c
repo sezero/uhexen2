@@ -70,7 +70,7 @@ static int read_meta_data(MidIStream *stream, sint32 len, uint8 type, MidSong *s
   char *s=safe_malloc(len+1);
   MidSongMetaId id;
 #ifdef TIMIDITY_DEBUG
-  static char *label[] = {
+  static const char *label[] = {
     "Text event: ", "Text: ", "Copyright: ", "Track name: ",
     "Instrument: ", "Lyric: ", "Marker: ", "Cue point: "};
 #endif /* TIMIDITY_DEBUG */

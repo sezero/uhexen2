@@ -547,7 +547,7 @@ static void Parse_INFO_INS(MidDLSPatches *data, RIFF_Chunk *chunk, DLS_Instrumen
         uint32 magic = (chunk->magic == FOURCC_LIST) ? chunk->subtype : chunk->magic;
         switch(magic) {
             case FOURCC_INAM: /* Name */
-                instrument->name = chunk->data;
+                instrument->name = (char *) chunk->data;
                 break;
         }
     }
@@ -663,15 +663,15 @@ static void Parse_INFO_DLS(MidDLSPatches *data, RIFF_Chunk *chunk)
             case FOURCC_IARL: /* Archival Location */
                 break;
             case FOURCC_IART: /* Artist */
-                data->artist = chunk->data;
+                data->artist = (char *) chunk->data;
                 break;
             case FOURCC_ICMS: /* Commisioned */
                 break;
             case FOURCC_ICMT: /* Comments */
-                data->comments = chunk->data;
+                data->comments = (char *) chunk->data;
                 break;
             case FOURCC_ICOP: /* Copyright */
-                data->copyright = chunk->data;
+                data->copyright = (char *) chunk->data;
                 break;
             case FOURCC_ICRD: /* Creation Date */
                 break;
@@ -684,7 +684,7 @@ static void Parse_INFO_DLS(MidDLSPatches *data, RIFF_Chunk *chunk)
             case FOURCC_IMED: /* Medium */
                 break;
             case FOURCC_INAM: /* Name */
-                data->name = chunk->data;
+                data->name = (char *) chunk->data;
                 break;
             case FOURCC_IPRD: /* Product */
                 break;

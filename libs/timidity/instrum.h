@@ -38,4 +38,4 @@
 
 extern int load_missing_instruments(MidSong *song);
 extern void free_instruments(MidSong *song);
-extern int set_default_instrument(MidSong *song, char *name);
+extern int set_default_instrument(MidSong *song, const char *name);

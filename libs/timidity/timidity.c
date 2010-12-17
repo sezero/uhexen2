@@ -75,7 +75,7 @@ static char *__fgets(char *s, int size, FILE *fp)
     return (num_read != 0) ? s : NULL;
 }
 
-static int read_config_file(char *name)
+static int read_config_file(const char *name)
 {
   FILE *fp;
   char tmp[1024], *w[MAXWORDS], *cp;
@@ -410,8 +410,9 @@ int mid_init_no_config()
   return 0;
 }
 
-int mid_init(char *config_file)
+int mid_init(const char *config_file)
 {
+  int rc;
   /* !!! FIXME: This may be ugly, but slightly less so than requiring the
    *            default search path to have only one element. I think.
    *
@@ -423,6 +424,8 @@ int mid_init(char *config_file)
   add_to_pathlist("\\TIMIDITY");
 #else
   add_to_pathlist("/usr/local/lib/timidity");
+  add_to_pathlist("/usr/share/timidity");
+  add_to_pathlist("/etc/timidity");
   add_to_pathlist("/etc");
 #endif
 
@@ -431,7 +434,8 @@ int mid_init(char *config_file)
   if (config_file == NULL || *config_file == '\0')
       config_file = CONFIG_FILE;
 
-  return read_config_file(config_file);
+  rc = read_config_file(config_file);
+  return rc;
 }
 
 MidSong *mid_song_load_dls(MidIStream *stream, MidDLSPatches *patches, MidSongOptions *options)

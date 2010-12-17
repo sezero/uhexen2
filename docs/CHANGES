@@ -4,6 +4,9 @@ Development Progress	:
 ---------------------------
 
 2010-12-17 (CVS):
+    * libs/timidity/instrum.c,instrum_dls.c,instrum.h,timidity.c,timidity.h,
+      common.c,common.h: Const correctness on char* pointers. Fixed "pointer
+      targets in assignment differ in signedness" warnings in instrum_dls.c.
     * libs/timidity/timidity.c (mid_exit): Set freed pointers to NULL so that
       a reinitialization of the library doesn't crash.
     * libs/timidity/resample.c (pre_resample): Fixed a memory corruption bug.

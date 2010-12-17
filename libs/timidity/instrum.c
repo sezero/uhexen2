@@ -160,8 +160,9 @@ static void reverse_data(sint16 *sp, sint32 ls, sint32 le)
    undefined.
 
    TODO: do reverse loops right */
-static MidInstrument *load_instrument(MidSong *song, char *name, int percussion,
-				   int panning, int amp, int note_to_use,
+static MidInstrument *load_instrument(MidSong *song, const char *name,
+				   int percussion, int panning,
+				   int amp, int note_to_use,
 				   int strip_loop, int strip_envelope,
 				   int strip_tail)
 {
@@ -170,7 +171,7 @@ static MidInstrument *load_instrument(MidSong *song, char *name, int percussion,
   FILE *fp;
   char tmp[1024];
   int i,j,noluck=0;
-  static char *patch_ext[] = PATCH_EXT_LIST;
+  static const char *patch_ext[] = PATCH_EXT_LIST;
 
   if (!name) return 0;
   
@@ -608,7 +609,7 @@ void free_instruments(MidSong *song)
     }
 }
 
-int set_default_instrument(MidSong *song, char *name)
+int set_default_instrument(MidSong *song, const char *name)
 {
   MidInstrument *ip;
   if (!(ip=load_instrument(song, name, 0, -1, -1, -1, 0, 0, 0)))

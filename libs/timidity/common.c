@@ -41,7 +41,7 @@
 static PathList *pathlist = NULL; /* This is a linked list */
 
 /* This is meant to find and open files for reading */
-FILE *open_file(char *name)
+FILE *open_file(const char *name)
 {
   FILE *fp;
 
@@ -102,7 +102,7 @@ void *safe_malloc(size_t count)
 }
 
 /* This adds a directory to the path list */
-void add_to_pathlist(char *s)
+void add_to_pathlist(const char *s)
 {
   PathList *plp = safe_malloc(sizeof(PathList));
 

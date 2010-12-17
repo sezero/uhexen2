@@ -91,7 +91,7 @@ extern "C"
 /* Initialize the library. If config_file is NULL
  * search for configuratin file in default directories
  */
-  extern int mid_init (char *config_file);
+  extern int mid_init (const char *config_file);
 
 /* Initialize the library without reading any
  * configuratin file
