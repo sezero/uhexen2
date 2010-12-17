@@ -4,6 +4,9 @@ Development Progress	:
 ---------------------------
 
 2010-12-17 (CVS):
+    * libs/timidity: Imported v0.1.0 sources from the libtimidity project.
+
+2010-12-17 (CVS):
     * moved xdelta11 under the libs directory.
 
 2010-12-17 (CVS):

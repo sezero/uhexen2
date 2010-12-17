@@ -1,0 +1,8 @@
+* Tuukka Toivonen <toivonen@clinet.fi>
+  wrote TiMidity and maintained it until version v0.2i.
+
+* Torbjörn Andersson <d91tan@Update.UU.SE>
+  code cleanup and import it to the SDL_sound library as MIDI decoder.
+
+* Konstantin Korikov <lostclus@ua.fm>
+  make a separate library from SDL_sound MIDI decoder.

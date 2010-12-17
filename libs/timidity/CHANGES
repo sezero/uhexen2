@@ -1,0 +1,39 @@
+This version of TiMidity should contain all the fixes from the
+November 15 2004 SDL_sound Subversion snapshot. In addition, I've made some
+changes of my own, e.g.:
+
+* Replacing SDL types and endian-handling with owns.
+
+* File access to the config file and instruments is done through
+  stdio functions. File access to MIDI files is done through abstract
+  input stream. Implemented functions to create input stream from
+  file name, from stdio file pointer, from memory, from callback functions.
+
+* Renamed interface functions
+  Timidity_Init            -> mid_init
+  Timidity_Init_NoConfig   -> mid_init_no_config
+  Timidity_SetVolume       -> mid_song_set_volume
+  Timidity_PlaySome        -> mid_song_read_wave
+  Timidity_LoadDLS         -> mid_dlspatches_load
+  Timidity_FreeDLS         -> mid_dlspatches_free
+  Timidity_LoadDLSSong     -> mid_song_load_dls
+  Timidity_LoadSong        -> mid_song_load
+  Timidity_Start           -> mid_song_start
+  Timidity_Seek            -> mid_song_seek
+  Timidity_GetSongLength   -> mid_song_get_total_time
+  Timidity_FreeSong        -> mid_song_free
+
+* Most structures and macro definition made hidden and placed in
+  timidity_internal.h.
+
+* Results of mid_song_read_wave (Timidity_PlaySome) not
+  depends with internal sample buffer size.
+
+* mid_init can accept timidity config file name.
+
+* Added functions: mid_song_get_time, mid_song_get_meta.
+
+* Added examples/tests midi2raw.c and playmidi.c.
+
+--
+Konstantin Korikov <lostclus@ua.fm>
