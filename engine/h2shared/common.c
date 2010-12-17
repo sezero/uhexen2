@@ -2,7 +2,7 @@
 	common.c
 	misc utility functions used in client and server
 
-	$Id: common.c,v 1.108 2008-02-08 12:00:16 sezero Exp $
+	$Id$
 */
 
 #include "quakedef.h"

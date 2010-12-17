@@ -188,7 +188,7 @@ static void ValidateByteorder (void)
 		break;
 	case PDP_ENDIAN:
 		tmp = endianism[2];
-		host_byteorder = -1;	/* error out */
+		host_byteorder = -1;	/* not supported */
 		break;
 	default:
 		tmp = endianism[3];
