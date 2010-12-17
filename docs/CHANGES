@@ -4,6 +4,9 @@ Development Progress	:
 ---------------------------
 
 2010-12-17 (CVS):
+    * moved xdelta11 under the libs directory.
+
+2010-12-17 (CVS):
     * added libs as a new directory for third party stuff.
 
 2010-12-15 (CVS):

@@ -26,7 +26,7 @@ endif
 
 LINKER:= $(CC)
 
-XDELTA_DIR := $(UHEXEN2_TOP)/xdelta11
+XDELTA_DIR := $(UHEXEN2_TOP)/libs/xdelta11
 XDELTA_FLAGS:=
 XDELTA_LINK:= -L$(XDELTA_DIR)/.libs -lxdelta -L$(XDELTA_DIR)/libedsio/.libs -ledsio
 

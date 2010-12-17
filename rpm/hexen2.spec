@@ -1,5 +1,5 @@
 # RPM spec file for RedHat and Fedora
-# $Id: hexen2.spec,v 1.69 2010-11-26 21:03:08 sezero Exp $
+# $Id$
 
 # build options :
 # --without alsa: build without alsa audio support
@@ -108,10 +108,10 @@ run a HexenWorld server or client, and a master server application.
 # building the launcher, it uses its object files.
 %if %{!?_without_gtk2:1}0
 # Build for GLIB2
-%{__make} -C xdelta11 -f Makefile.xd
+%{__make} -C libs/xdelta11 -f Makefile.xd
 %else
 # Build for GLIB1.2
-%{__make} GLIB1=yes -C xdelta11 -f Makefile.xd
+%{__make} GLIB1=yes -C libs/xdelta11 -f Makefile.xd
 %endif
 
 # Launcher binaries
@@ -202,7 +202,7 @@ utils/bin/hcc -src gamecode-%{gamecode_ver}/hc/hw -oi -on
 %{__install} -D -m644 gamecode-%{gamecode_ver}/pak_v111/patchdata/data1/data1pak1.xd %{buildroot}/%{_prefix}/games/%{name}/patchdata/data1/data1pak1.xd
 
 # Install the update-patcher binaries
-%{__install} -D -m755 xdelta11/xdelta %{buildroot}/%{_prefix}/games/%{name}/xdelta114
+%{__install} -D -m755 libs/xdelta11/xdelta %{buildroot}/%{_prefix}/games/%{name}/xdelta114
 
 # Install the menu icon
 %{__mkdir_p} %{buildroot}/%{_datadir}/pixmaps
@@ -295,6 +295,9 @@ desktop-file-install \
 %{_prefix}/games/%{name}/docs/README.hwmaster
 
 %changelog
+* Fri Dec 17 2010 O.Sezer <sezero@users.sourceforge.net>
+- Moved xdelta under the libs directory.
+
 * Thu Nov 25 2010 O.Sezer <sezero@users.sourceforge.net> 1.4.4-0.11.pre11
 - 1.4.4-pre11
 
