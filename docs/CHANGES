@@ -4,6 +4,11 @@ Development Progress	:
 ---------------------------
 
 2010-12-17 (CVS):
+    * libs/timidity/q_endian.h: Added from the engine directory.
+      timidity_internal.h: Include q_endian.h and use the provided macros.
+      instrum.c, output.h: Adjusted for q_endian.h.
+
+2010-12-17 (CVS):
     * q_endian.h, q_endian.c: Remove PDP stuff which isn't supported.
     * gl_vidnt.c, gl_vidsdl.c, glquake.h: Likewise.
 

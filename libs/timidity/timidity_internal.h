@@ -2,7 +2,7 @@
 #define TIMIDITY_INTERNAL_H
 
 #include "timidity.h"
-
+/*
 #if  defined(__i386__) || defined(__ia64__) || defined(WIN32) || \
     (defined(__alpha__) || defined(__alpha)) || \
      defined(__arm__) || \
@@ -20,6 +20,8 @@
 #endif
 #undef LITTLE_ENDIAN
 #endif
+*/
+#include "q_endian.h"
 
 /* Instrument files are little-endian, MIDI files big-endian, so we
    need to do some conversions. */
@@ -37,7 +39,8 @@
 		      (((x)>>24)&0xFF))
 #endif
 
-#ifdef LITTLE_ENDIAN
+/*#ifdef LITTLE_ENDIAN*/
+#if BYTE_ORDER == LITTLE_ENDIAN
 #define SWAPLE16(x) x
 #define SWAPLE32(x) x
 #define SWAPBE16(x) XCHG_SHORT(x)
