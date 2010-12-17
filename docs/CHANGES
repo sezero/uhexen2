@@ -4,6 +4,8 @@ Development Progress	:
 ---------------------------
 
 2010-12-17 (CVS):
+    * libs/timidity/timidity.c (mid_exit): Set freed pointers to NULL so that
+      a reinitialization of the library doesn't crash.
     * libs/timidity/resample.c (pre_resample): Fixed a memory corruption bug.
       Fix from SDL_sound repository.
     * libs/timidity: Added a Makefile and some cross-build scripts. Changed

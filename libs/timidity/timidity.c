@@ -580,11 +580,16 @@ void mid_exit(void)
         for (j = 0; j < 128; j++)
         {
           if (e[j].name != NULL)
+          {
             free(e[j].name);
+            e[j].name = NULL;
+          }
         }
         free(e);
+        e = NULL;
       }
       free(master_tonebank[i]);
+      master_tonebank[i] = NULL;
     }
     if (master_drumset[i])
     {
@@ -594,11 +599,16 @@ void mid_exit(void)
         for (j = 0; j < 128; j++)
         {
           if (e[j].name != NULL)
+          {
             free(e[j].name);
+            e[j].name = NULL;
+          }
         }
         free(e);
+        e = NULL;
       }
       free(master_drumset[i]);
+      master_drumset[i] = NULL;
     }
   }
 
