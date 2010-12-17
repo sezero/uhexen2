@@ -19,6 +19,8 @@ Development Progress	:
     * libs/timidity/timidity.h.in: Deleted unused file.
     * libs/timidity/instrum_dls.c (LoadRIFF, AllocRegions, AllocInstruments,
       AllocWaveList): Replaced all malloc() usage by safe_malloc().
+    * libs/timidity/timidity.c (mid_init): Added /usr/share/timidity and
+      /etc/timidity to the timidity.cfg search paths.
     * libs/timidity/instrum.c,instrum_dls.c,instrum.h,timidity.c,timidity.h,
       common.c,common.h: Const correctness on char* pointers. Fixed "pointer
       targets in assignment differ in signedness" warnings in instrum_dls.c.
