@@ -148,6 +148,9 @@ ifeq ($(CC),)
 CC := gcc
 endif
 
+AR ?= ar
+RANLIB ?= ranlib
+
 NASM ?= nasm
 WINDRES ?= windres
 

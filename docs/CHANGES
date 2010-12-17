@@ -4,6 +4,9 @@ Development Progress	:
 ---------------------------
 
 2010-12-17 (CVS):
+    * scripts/makefile.inc: Set AR and RANLIB when necessary.
+
+2010-12-17 (CVS):
     * Makefiles: Added LIBS_DIR as a new var defined as (UHEXEN2_TOP)/libs.
 
 2010-12-17 (CVS):
