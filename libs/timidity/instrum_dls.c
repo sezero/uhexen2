@@ -176,7 +176,7 @@ RIFF_Chunk *LoadRIFF(MidIStream *stream)
         FreeRIFFChunk(chunk);
         return NULL;
     }
-    chunk->data = (uint8 *)malloc(chunk->length);
+    chunk->data = (uint8 *)safe_malloc(chunk->length);
     if ( chunk->data == NULL ) {
 	DEBUG_MSG("Out of memory\n");
         FreeRIFFChunk(chunk);
@@ -364,7 +364,7 @@ static void AllocRegions(DLS_Instrument *instrument)
 {
     int datalen = (instrument->header->cRegions * sizeof(DLS_Region));
     FreeRegions(instrument);
-    instrument->regions = (DLS_Region *)malloc(datalen);
+    instrument->regions = (DLS_Region *)safe_malloc(datalen);
     if ( instrument->regions ) {
         memset(instrument->regions, 0, datalen);
     }
@@ -385,7 +385,7 @@ static void AllocInstruments(MidDLSPatches *data)
 {
     int datalen = (data->cInstruments * sizeof(DLS_Instrument));
     FreeInstruments(data);
-    data->instruments = (DLS_Instrument *)malloc(datalen);
+    data->instruments = (DLS_Instrument *)safe_malloc(datalen);
     if ( data->instruments ) {
         memset(data->instruments, 0, datalen);
     }
@@ -402,7 +402,7 @@ static void AllocWaveList(MidDLSPatches *data)
 {
     int datalen = (data->ptbl->cCues * sizeof(DLS_Wave));
     FreeWaveList(data);
-    data->waveList = (DLS_Wave *)malloc(datalen);
+    data->waveList = (DLS_Wave *)safe_malloc(datalen);
     if ( data->waveList ) {
         memset(data->waveList, 0, datalen);
     }
