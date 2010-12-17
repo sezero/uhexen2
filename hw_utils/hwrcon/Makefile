@@ -20,6 +20,7 @@
 # Path settings:
 # main uhexen2 relative path
 UHEXEN2_TOP:=../..
+LIBS_DIR:=$(UHEXEN2_TOP)/libs
 
 USE_WINSOCK2=no
 

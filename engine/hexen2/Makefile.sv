@@ -39,6 +39,7 @@
 # Path settings:
 # main uhexen2 relative path
 UHEXEN2_TOP:=../..
+LIBS_DIR:=$(UHEXEN2_TOP)/libs
 # common sources path:
 COMMONDIR:=../h2shared
 

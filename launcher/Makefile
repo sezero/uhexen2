@@ -12,6 +12,7 @@
 
 # main uhexen2 relative path
 UHEXEN2_TOP:=..
+LIBS_DIR:=$(UHEXEN2_TOP)/libs
 
 # whether we should use the gnu auto-tools support when
 # building xdelta libraries: 0 or 1.
@@ -26,7 +27,7 @@ endif
 
 LINKER:= $(CC)
 
-XDELTA_DIR := $(UHEXEN2_TOP)/libs/xdelta11
+XDELTA_DIR := $(LIBS_DIR)/xdelta11
 XDELTA_FLAGS:=
 XDELTA_LINK:= -L$(XDELTA_DIR)/.libs -lxdelta -L$(XDELTA_DIR)/libedsio/.libs -ledsio
 
