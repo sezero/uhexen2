@@ -2514,13 +2514,11 @@ static void M_Menu_Setup_f (void)
 			Cvar_SetValue ("playerclass", CLASS_PALADIN);
 	}
 #endif	/* OLD_DEMO */
-#if 0 /* this check isn't necessary: hw/pak4.pak has all succubus stuff already */
 	if (playerclass.integer == CLASS_DEMON)
 	{
 		if (!(gameflags & GAME_PORTALS))
 			Cvar_SetValue ("playerclass", CLASS_PALADIN);
 	}
-#endif
 	if (playerclass.integer == CLASS_DWARF)
 	{
 		if (!is_siege)
@@ -2600,7 +2598,6 @@ static void M_Setup_Draw (void)
 
 		if ((i == 0 && !wait) || which_class == 0)
 		{
-#if 0 /* this check isn't necessary: hw/pak4.pak has all succubus stuff already */
 			if (!(gameflags & GAME_PORTALS))
 			{//not succubus
 				if (!is_siege)
@@ -2613,7 +2610,6 @@ static void M_Setup_Draw (void)
 				}
 			}
 			else
-#endif /* #if 0 */
 			{
 				if (!is_siege)
 					which_class = (rand() % CLASS_DEMON) + 1;
@@ -2699,10 +2695,8 @@ static void M_Setup_Key (int k)
 				setup_class = MAX_PLAYER_CLASS;
 			if (!is_siege && setup_class == CLASS_DWARF)
 				setup_class--;
-#if 0 /* this check isn't necessary: hw/pak4.pak has all succubus stuff already */
 			if (!(gameflags & GAME_PORTALS) && setup_class == CLASS_DEMON)
 				setup_class--;
-#endif /* #if 0 */
 		}
 		else if (setup_cursor == 4)
 			setup_top = setup_top - 1;
@@ -2737,10 +2731,8 @@ forward:
 			}
 #endif	/* OLD_DEMO */
 			setup_class++;
-#if 0 /* this check isn't necessary: hw/pak4.pak has all succubus stuff already */
 			if (!(gameflags & GAME_PORTALS) && setup_class == CLASS_DEMON)
 				setup_class++;
-#endif /* #if 0 */
 			if (!is_siege && setup_class == CLASS_DWARF)
 				setup_class++;
 			if (setup_class > MAX_PLAYER_CLASS)

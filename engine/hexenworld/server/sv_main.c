@@ -538,9 +538,7 @@ static void SVC_DirectConnect (void)
 	memset (newcl, 0, sizeof(client_t));
 
 	newcl->userid = userid;
-	/* hw/pak4.pak has all succubus stuff
-	 * already, just record as true here: */
-	newcl->portals = true; /* atoi(Cmd_Argv(1));*/
+	newcl->portals = atoi(Cmd_Argv(1));
 
 	// works properly
 	if (!sv_highchars.integer)
@@ -1510,8 +1508,7 @@ void SV_ExtractFromUserinfo (client_t *cl)
 		i = atoi(val);
 		if (i > CLASS_DEMON && dmMode.integer != DM_SIEGE)
 			i = CLASS_PALADIN;
-		/* portals check not needed, hw/pak4.pak has all succubus stuff already. */
-		if (i < 0 || i > MAX_PLAYER_CLASS /*|| (!cl->portals && i == CLASS_DEMON)*/)
+		if (i < 0 || i > MAX_PLAYER_CLASS || (!cl->portals && i == CLASS_DEMON))
 		{
 			i = 0;
 		}

@@ -3,19 +3,6 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
-2010-12-17 (CVS):
-    * made hexenworld to always allow demoness (succubus) class. hw/pak4.pak
-      has all the succubus stuff already, therefore no need for checking the
-      praevus mission pack.
-    - hexenworld/server/sv_main.c (SVC_DirectConnect): record the cl->portals
-      field always as true.
-      (SV_ExtractFromUserinfo): romove the check for cl->portals in class
-      information extraction.
-    - hexenworld/client/cl_main.c (CL_SendConnectPacket): just send 1 as the
-      have_portals information.
-    - hexenworld/client/menu.c: Comment out all mission pack checks in the
-      class selection menus.
-
 2010-12-15 (CVS):
     * Renamed mstrconv.c to mid2strm.c and midi_win.h to mid2strm.h. Adjusted
       makefiles and visual studio project files.
