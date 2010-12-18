@@ -2,7 +2,7 @@
 	sys_win.c
 	Win32 system interface code
 
-	$Header: /cvsroot/uhexen2/engine/hexenworld/client/win_stuff/sys_win.c,v 1.63 2009-07-14 19:32:56 sezero Exp $
+	$Id$
 */
 
 #include "quakedef.h"
@@ -31,7 +31,7 @@
 cvar_t		sys_nostdout = {"sys_nostdout", "0", CVAR_NONE};
 
 qboolean	ActiveApp, Minimized;
-qboolean	Win95, Win95old, WinNT;
+qboolean	Win95, Win95old, WinNT, WinVista;
 
 /*
 #define	TIME_WRAP_VALUE	LONG_MAX
@@ -184,16 +184,21 @@ static void Sys_Init (void)
 	}
 
 	if (vinfo.dwPlatformId == VER_PLATFORM_WIN32_NT)
-		WinNT = true;
-	else
-		WinNT = false;
-
-	if ((vinfo.dwMajorVersion == 4) && (vinfo.dwMinorVersion == 0))
 	{
-		Win95 = true;
-		/* Win95-gold or Win95A can't switch bpp automatically */
-		if (vinfo.szCSDVersion[1] != 'C' && vinfo.szCSDVersion[1] != 'B')
-			Win95old = true;
+		WinNT = true;
+		if (vinfo.dwMajorVersion >= 6)
+			WinVista = true;
+	}
+	else
+	{
+		WinNT = false; /* Win9x or WinME */
+		if ((vinfo.dwMajorVersion == 4) && (vinfo.dwMinorVersion == 0))
+		{
+			Win95 = true;
+			/* Win95-gold or Win95A can't switch bpp automatically */
+			if (vinfo.szCSDVersion[1] != 'C' && vinfo.szCSDVersion[1] != 'B')
+				Win95old = true;
+		}
 	}
 
 	timeBeginPeriod (1);	/* 1 ms timer precision */

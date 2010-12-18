@@ -2,7 +2,7 @@
 	winquake.h
 	Win32-specific Quake header file
 
-	$Id: winquake.h,v 1.38 2009-02-02 23:47:20 sezero Exp $
+	$Id$
 */
 
 #ifndef __WINQUAKE_H
@@ -44,7 +44,7 @@ extern qboolean			DDActive;
 extern HWND			mainwindow;
 extern qboolean		ActiveApp, Minimized;
 
-extern qboolean		Win95, Win95old, WinNT;
+extern qboolean		Win95, Win95old, WinNT, WinVista;
 
 extern int		window_center_x, window_center_y;
 extern RECT		window_rect;
