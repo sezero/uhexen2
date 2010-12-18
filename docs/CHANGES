@@ -4,6 +4,17 @@ Development Progress	:
 ---------------------------
 
 2010-12-18 (CVS):
+    * midi_win.c:  Ignore midi hardware volume adjustemnt capability
+      under windows vista/7, see this reference why:
+      http://msdn.microsoft.com/en-us/library/dd798480(VS.85).aspx#1
+      "This [midiOutSetVolume] function does not set the MIDI device
+      volume when using a software synthesizer under Windows Vista
+      or Windows 7, but instead alters the application-specific volume
+      level in the system mixer. This means that if your application
+      also outputs digital audio, the volume level of that audio will
+      be reduced or increased by the same amount."
+
+2010-12-18 (CVS):
     * sys_win.c: Detect windows vista/7 and store in global WinVista.
     * winquake.h: Add extern declaration for global boolean WinVista.
 

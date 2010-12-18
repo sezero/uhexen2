@@ -15,6 +15,7 @@
 #include "midstuff.h"
 #include "mid2strm.h"
 #include "quakedef.h"
+#include "winquake.h"
 
 
 static qboolean	bMidiInited, bFileOpen, bPlaying, bBuffersPrepared, bPaused;
@@ -155,10 +156,26 @@ qboolean MIDI_Init(void)
 	// try to see if the MIDI device supports midiOutSetVolume
 	if (midiOutGetDevCaps(uMIDIDeviceID, &midi_caps, sizeof(midi_caps)) == MMSYSERR_NOERROR)
 	{
-		if ((midi_caps.dwSupport & MIDICAPS_VOLUME) && !COM_CheckParm("-nohwmidivol"))
+		if (midi_caps.dwSupport & MIDICAPS_VOLUME)
 		{
-			hw_vol_capable = true;
-			Con_Printf("Hardware MIDI volume adjustment used.\n");
+			if (COM_CheckParm("-nohwmidivol"))
+				Con_Printf("Hardware MIDI volume disabled by user\n");
+			else if (WinVista)
+			/*
+			http://msdn.microsoft.com/en-us/library/dd798480(VS.85).aspx#1
+			"This [midiOutSetVolume] function does not set the MIDI device
+			volume when using a software synthesizer under Windows Vista
+			or Windows 7, but instead alters the application-specific volume
+			level in the system mixer. This means that if your application
+			also outputs digital audio, the volume level of that audio will
+			be reduced or increased by the same amount."
+			*/
+				Con_Printf("Hardware MIDI volume ignored (Vista/7)\n");
+			else
+			{
+				hw_vol_capable = true;
+				Con_Printf("Using hardware MIDI volume adjustment\n");
+			}
 		}
 	}
 
