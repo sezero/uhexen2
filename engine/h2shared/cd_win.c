@@ -2,7 +2,7 @@
 	cd_win.c
 	Win32 cdaudio code
 
-	$Id: cd_win.c,v 1.24 2010-11-05 15:27:53 sezero Exp $
+	$Id$
 
 	Quake is a trademark of Id Software, Inc., (c) 1996 Id Software, Inc. All
 	rights reserved.
@@ -462,7 +462,7 @@ static void CD_FindCDAux(void)
 			if (Caps.wTechnology == AUXCAPS_CDAUDIO)
 			{
 				CD_ID = counter;
-				auxGetVolume(CD_ID,&CD_OrigVolume);
+				auxGetVolume(CD_ID, &CD_OrigVolume);
 				return;
 			}
 		}
@@ -472,7 +472,7 @@ static void CD_FindCDAux(void)
 static void CD_SetVolume(unsigned long Volume)
 {
 	if (CD_ID != -1) 
-		auxSetVolume(CD_ID,(Volume<<16)+Volume);
+		auxSetVolume(CD_ID, (Volume<<16) + Volume);
 }
 #endif	/* USE_AUX_API */
 

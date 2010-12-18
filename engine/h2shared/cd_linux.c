@@ -1,6 +1,6 @@
 /*
 	cd_linux.c
-	$Id: cd_linux.c,v 1.27 2007-11-11 13:17:38 sezero Exp $
+	$Id$
 
 	Copyright (C) 1996-1997  Id Software, Inc.
 
@@ -52,13 +52,13 @@ static byte	playTrack;
 static byte	maxTrack;
 
 static int	cdfile = -1;
-static const char	default_dev[] = _PATH_DEV "cdrom"; // user can always do -cddev
+static const char	default_dev[] = _PATH_DEV "cdrom"; /* user can always do -cddev */
 static const char	*cd_dev = default_dev;
 
 static float	old_cdvolume;
 static qboolean	hw_vol_works = true;
-static struct cdrom_volctrl	orig_vol;	// orig. setting to be restored upon exit
-static struct cdrom_volctrl	drv_vol;	// the volume setting we'll be using
+static struct cdrom_volctrl	orig_vol;	/* original setting to be restored upon exit */
+static struct cdrom_volctrl	drv_vol;	/* the volume setting we'll be using */
 
 
 #define IOCTL_FAILURE(IoctlName)	{					\
@@ -68,18 +68,18 @@ static struct cdrom_volctrl	drv_vol;	// the volume setting we'll be using
 static void CDAudio_Eject(void)
 {
 	if (cdfile == -1 || !enabled)
-		return; // no cd init'd
+		return;
 
-	if ( ioctl(cdfile, CDROMEJECT) == -1 )
+	if (ioctl(cdfile, CDROMEJECT) == -1)
 		IOCTL_FAILURE(CDROMEJECT);
 }
 
 static void CDAudio_CloseDoor(void)
 {
 	if (cdfile == -1 || !enabled)
-		return; // no cd init'd
+		return;
 
-	if ( ioctl(cdfile, CDROMCLOSETRAY) == -1 )
+	if (ioctl(cdfile, CDROMCLOSETRAY) == -1)
 		IOCTL_FAILURE(CDROMCLOSETRAY);
 }
 
@@ -92,7 +92,7 @@ static int CDAudio_GetAudioDiskInfo(void)
 
 	cdValid = false;
 
-	if ( ioctl(cdfile, CDROMREADTOCHDR, &tochdr) == -1 )
+	if (ioctl(cdfile, CDROMREADTOCHDR, &tochdr) == -1)
 	{
 		IOCTL_FAILURE(CDROMREADTOCHDR);
 		return -1;
@@ -133,10 +133,10 @@ void CDAudio_Play(byte track, qboolean looping)
 		return;
 	}
 
-	// don't try to play a non-audio track
+	/* don't try to play a non-audio track */
 	entry.cdte_track = track;
 	entry.cdte_format = CDROM_MSF;
-	if ( ioctl(cdfile, CDROMREADTOCENTRY, &entry) == -1 )
+	if (ioctl(cdfile, CDROMREADTOCENTRY, &entry) == -1)
 	{
 		IOCTL_FAILURE(CDROMREADTOCENTRY);
 		return;
@@ -159,13 +159,13 @@ void CDAudio_Play(byte track, qboolean looping)
 	ti.cdti_ind0 = 1;
 	ti.cdti_ind1 = 99;
 
-	if ( ioctl(cdfile, CDROMPLAYTRKIND, &ti) == -1 )
+	if (ioctl(cdfile, CDROMPLAYTRKIND, &ti) == -1)
 	{
 		IOCTL_FAILURE(CDROMPLAYTRKIND);
 		return;
 	}
 
-	if ( ioctl(cdfile, CDROMRESUME) == -1 )
+	if (ioctl(cdfile, CDROMRESUME) == -1)
 		IOCTL_FAILURE(CDROMRESUME);
 
 	playLooping = looping;
@@ -184,7 +184,7 @@ void CDAudio_Stop(void)
 	if (!playing)
 		return;
 
-	if ( ioctl(cdfile, CDROMSTOP) == -1 )
+	if (ioctl(cdfile, CDROMSTOP) == -1)
 		IOCTL_FAILURE(CDROMSTOP);
 
 	wasPlaying = false;
@@ -199,7 +199,7 @@ void CDAudio_Pause(void)
 	if (!playing)
 		return;
 
-	if ( ioctl(cdfile, CDROMPAUSE) == -1 )
+	if (ioctl(cdfile, CDROMPAUSE) == -1)
 		IOCTL_FAILURE(CDROMPAUSE);
 
 	wasPlaying = playing;
@@ -217,7 +217,7 @@ void CDAudio_Resume(void)
 	if (!wasPlaying)
 		return;
 
-	if ( ioctl(cdfile, CDROMRESUME) == -1 )
+	if (ioctl(cdfile, CDROMRESUME) == -1)
 		IOCTL_FAILURE(CDROMRESUME);
 	playing = true;
 }
@@ -358,7 +358,7 @@ static qboolean CD_GetVolume (struct cdrom_volctrl *vol)
 
 static qboolean CD_SetVolume (struct cdrom_volctrl *vol)
 {
-	if (ioctl(cdfile, CDROMVOLCTRL, vol) == -1 )
+	if (ioctl(cdfile, CDROMVOLCTRL, vol) == -1)
 	{
 		IOCTL_FAILURE(CDROMVOLCTRL);
 		return false;
@@ -379,7 +379,7 @@ static qboolean CDAudio_SetVolume (cvar_t *var)
 	if (hw_vol_works)
 	{
 		drv_vol.channel0 = drv_vol.channel2 =
-		drv_vol.channel1 = drv_vol.channel3 = var->value * 255.0;
+		drv_vol.channel1 = drv_vol.channel3 = var->value * 255.0f;
 		return CD_SetVolume (&drv_vol);
 	}
 	else
@@ -405,9 +405,9 @@ void CDAudio_Update(void)
 
 	if (playing && lastchk < time(NULL))
 	{
-		lastchk = time(NULL) + 2; //two seconds between chks
+		lastchk = time(NULL) + 2; /* two seconds between chks */
 		subchnl.cdsc_format = CDROM_MSF;
-		if (ioctl(cdfile, CDROMSUBCHNL, &subchnl) == -1 )
+		if (ioctl(cdfile, CDROMSUBCHNL, &subchnl) == -1)
 		{
 			IOCTL_FAILURE(CDROMSUBCHNL);
 			playing = false;
@@ -478,5 +478,5 @@ void CDAudio_Shutdown(void)
 	cdfile = -1;
 }
 
-#endif	// __USE_LINUX_CDROM__
+#endif	/* __USE_LINUX_CDROM__ */
 

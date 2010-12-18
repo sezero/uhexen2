@@ -29,10 +29,10 @@ static qboolean	hw_vol_capable = false;
 static HMIDISTRM	hStream;
 static CONVERTINFO	ciStreamBuffers[NUM_STREAM_BUFFERS];
 
-// From mid2strm.c
+/* From mid2strm.c */
 extern INFILESTATE	ifs;
 
-// Private to this module...
+/* Private to this module */
 static HANDLE		hBufferReturnEvent;
 
 
@@ -46,8 +46,8 @@ static void MidiErrorMessageBox (MMRESULT mmr)
 {
 	char temp[1024];
 
-	midiOutGetErrorText(mmr,temp,sizeof(temp));
-	Con_Printf("MIDI: %s\n", temp);
+	midiOutGetErrorText(mmr, temp, sizeof(temp));
+	Con_Printf("MIDI_DRV: %s\n", temp);
 }
 
 static void MIDI_Play_f (void)
@@ -121,19 +121,18 @@ qboolean MIDI_Init(void)
 	MMRESULT mmrRetVal;
 	MIDIOUTCAPS midi_caps;
 
+	if (bMidiInited)
+		return true;
+
 	if (safemode || COM_CheckParm("-nomidi"))
-	{
-		bMidiInited = false;
 		return false;
-	}
 
 	hBufferReturnEvent = CreateEvent(NULL,FALSE,FALSE,"Wait For Buffer Return");
 
 	mmrRetVal = midiStreamOpen(&hStream, &uMIDIDeviceID, (DWORD)1, (DWORD_PTR)MidiProc, (DWORD_PTR)0, CALLBACK_FUNCTION);
-	if (mmrRetVal != MMSYSERR_NOERROR )
+	if (mmrRetVal != MMSYSERR_NOERROR)
 	{
-		bMidiInited = false;
-		MidiErrorMessageBox( mmrRetVal );
+		MidiErrorMessageBox(mmrRetVal);
 		return false;
 	}
 
@@ -151,7 +150,7 @@ qboolean MIDI_Init(void)
 	uCallbackStatus = 0;
 	bMidiInited = true;
 
-	Con_Printf("MIDI music initialized.\n");
+	Con_Printf("midiStream for Windows initialized.\n");
 
 	// try to see if the MIDI device supports midiOutSetVolume
 	if (midiOutGetDevCaps(uMIDIDeviceID, &midi_caps, sizeof(midi_caps)) == MMSYSERR_NOERROR)
@@ -178,7 +177,7 @@ void MIDI_Play(const char *Name)
 
 	if (!Name || !*Name)
 	{
-		Sys_Printf("no midi music to play\n");
+		Con_DPrintf("null music file name\n");
 		return;
 	}
 
@@ -186,27 +185,23 @@ void MIDI_Play(const char *Name)
 
 	if (StreamBufferSetup(Temp))
 	{
-		Con_Printf("Couldn't load midi file %s\n",Temp);
+		Con_Printf ("Couldn't open %s\n", Temp);
+		return;
 	}
-	else
+
+	Con_Printf("Playing midi file %s\n", Temp);
+	bFileOpen = true;
+	uCallbackStatus = 0;
+
+	mmrRetVal = midiStreamRestart(hStream);
+	if (mmrRetVal != MMSYSERR_NOERROR)
 	{
-		bFileOpen = true;
-
-		Con_Printf("Playing midi file %s\n",Temp);
-
-		uCallbackStatus = 0;
-
-		mmrRetVal = midiStreamRestart(hStream);
-
-		if (mmrRetVal != MMSYSERR_NOERROR)
-		{
-			MidiErrorMessageBox(mmrRetVal);
-			return;
-		}
-
-		MIDI_SetVolume (&bgmvolume);
-		bPlaying = true;
+		MidiErrorMessageBox(mmrRetVal);
+		return;
 	}
+
+	MIDI_SetVolume (&bgmvolume);
+	bPlaying = true;
 }
 
 void MIDI_Pause(int mode)
@@ -527,7 +522,7 @@ static void CALLBACK MidiProc(HMIDIIN hMidi, UINT uMsg, DWORD_PTR dwInstance, DW
 			{
 				// Change the status to callback dead
 				uCallbackStatus = STATUS_CALLBACKDEAD;
-				SetEvent( hBufferReturnEvent );
+				SetEvent(hBufferReturnEvent);
 				return;
 			}
 		}
@@ -557,7 +552,7 @@ static void CALLBACK MidiProc(HMIDIIN hMidi, UINT uMsg, DWORD_PTR dwInstance, DW
 				}
 				else
 				{
-					Con_Printf( "MidiProc() conversion pass failed!" );
+					Con_Printf("MidiProc() conversion pass failed!");
 					ConverterCleanup();
 					return;
 				}
@@ -566,13 +561,13 @@ static void CALLBACK MidiProc(HMIDIIN hMidi, UINT uMsg, DWORD_PTR dwInstance, DW
 			ciStreamBuffers[nCurrentBuffer].mhBuffer.dwBytesRecorded = ciStreamBuffers[nCurrentBuffer].dwBytesRecorded;
 
 			mmrRetVal = midiStreamOut(hStream, &ciStreamBuffers[nCurrentBuffer].mhBuffer, sizeof(MIDIHDR));
-			if (mmrRetVal != MMSYSERR_NOERROR )
+			if (mmrRetVal != MMSYSERR_NOERROR)
 			{
-				MidiErrorMessageBox( mmrRetVal );
+				MidiErrorMessageBox(mmrRetVal);
 				ConverterCleanup();
 				return;
 			}
-			nCurrentBuffer = ( nCurrentBuffer + 1 ) % NUM_STREAM_BUFFERS;
+			nCurrentBuffer = (nCurrentBuffer + 1) % NUM_STREAM_BUFFERS;
 			nEmptyBuffers--;
 		}
 		break;
@@ -580,22 +575,22 @@ static void CALLBACK MidiProc(HMIDIIN hMidi, UINT uMsg, DWORD_PTR dwInstance, DW
 	case MOM_POSITIONCB:
 		pmh = (MIDIHDR *)dwParam1;
 		pme = (MIDIEVENT *)(pmh->lpData + pmh->dwOffset);
-		if (MIDIEVENT_TYPE( pme->dwEvent ) == MIDI_CTRLCHANGE)
+		if (MIDIEVENT_TYPE(pme->dwEvent) == MIDI_CTRLCHANGE)
 		{
-			if (MIDIEVENT_DATA1( pme->dwEvent ) == MIDICTRL_VOLUME_LSB)
+			if (MIDIEVENT_DATA1(pme->dwEvent) == MIDICTRL_VOLUME_LSB)
 			{
 				DEBUG_Printf("%s: Got an LSB volume event\n", __thisfunc__);
 				break;
 			}
-			if (MIDIEVENT_DATA1( pme->dwEvent ) != MIDICTRL_VOLUME)
+			if (MIDIEVENT_DATA1(pme->dwEvent) != MIDICTRL_VOLUME)
 				break;
 
 			// Mask off the channel number and cache the volume data byte
-			dwVolCache[ MIDIEVENT_CHANNEL( pme->dwEvent )] = MIDIEVENT_VOLUME( pme->dwEvent );
+			dwVolCache[ MIDIEVENT_CHANNEL(pme->dwEvent)] = MIDIEVENT_VOLUME(pme->dwEvent);
 			// Post a message so that the main program knows to counteract
 			// the effects of the volume event in the stream with its own
 			// generated event which reflects the proper trackbar position.
-		/*	PostMessage( hWndMain, WM_MSTREAM_UPDATEVOLUME,MIDIEVENT_CHANNEL( pme->dwEvent ), 0L );*/
+		/*	PostMessage(hWndMain, WM_MSTREAM_UPDATEVOLUME,MIDIEVENT_CHANNEL(pme->dwEvent), 0L);*/
 
 		}
 		break;
@@ -624,10 +619,10 @@ static void SetAllChannelVolumes(DWORD dwVolumePercent)
 
 	for (idx = 0, dwStatus = MIDI_CTRLCHANGE; idx < NUM_CHANNELS; idx++, dwStatus++)
 	{
-		dwVol = ( dwVolCache[idx] * dwVolumePercent ) / 1000;
+		dwVol = (dwVolCache[idx] * dwVolumePercent) / 1000;
 		dwEvent = dwStatus | ((DWORD)MIDICTRL_VOLUME << 8) | ((DWORD)dwVol << 16);
 		mmrRetVal = midiOutShortMsg((HMIDIOUT)hStream, dwEvent);
-		if (mmrRetVal != MMSYSERR_NOERROR )
+		if (mmrRetVal != MMSYSERR_NOERROR)
 		{
 			MidiErrorMessageBox(mmrRetVal);
 			return;
@@ -642,7 +637,7 @@ static void SetAllChannelVolumes(DWORD dwVolumePercent)
 /* Given a percent in tenths of a percent, sets volume on a specified		*/
 /* channel to reflect the new value.						*/
 /********************************************************************************/
-#if 0	// not used
+#if 0	/* not used */
 static void SetChannelVolume(DWORD dwChannel, DWORD dwVolumePercent)
 {
 	DWORD dwEvent, dwVol;
@@ -655,11 +650,11 @@ static void SetChannelVolume(DWORD dwChannel, DWORD dwVolumePercent)
 	dwEvent = MIDI_CTRLCHANGE | dwChannel | ((DWORD)MIDICTRL_VOLUME << 8) | ((DWORD)dwVol << 16);
 
 	mmrRetVal = midiOutShortMsg((HMIDIOUT)hStream, dwEvent);
-	if (mmrRetVal != MMSYSERR_NOERROR )
+	if (mmrRetVal != MMSYSERR_NOERROR)
 	{
 		MidiErrorMessageBox(mmrRetVal);
 		return;
 	}
 }
-#endif
+#endif	/* #if 0 */
 

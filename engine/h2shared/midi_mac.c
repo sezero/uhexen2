@@ -1,6 +1,6 @@
 /*
 	midi_mac.c
-	$Id: midi_mac.c,v 1.21 2009-01-22 08:06:18 sezero Exp $
+	$Id$
 
 	MIDI module for Mac OS X using QuickTime:
 	Taken from the macglquake project with adjustments to make
@@ -82,7 +82,7 @@ static void MIDI_SetVolume (cvar_t *var)
 	else if (var->value > 1.0)
 		Cvar_SetValue (var->name, 1.0);
 	old_volume = var->value;
-	SetMovieVolume(midiTrack, (short)(var->value * 256.0));
+	SetMovieVolume(midiTrack, (short)(var->value * 256.0f));
 }
 
 //
@@ -91,28 +91,27 @@ static void MIDI_SetVolume (cvar_t *var)
 //
 void MIDI_Update(void)
 {
-	if (midiTrack)
+	if (!midiTrack)
+		return;
+
+	if (old_volume != bgmvolume.value)
+		MIDI_SetVolume (&bgmvolume);
+
+	// Let QuickTime get some time
+	MoviesTask (midiTrack, 0);
+
+	// If this song is looping, restart it
+	if (IsMovieDone (midiTrack))
 	{
-		// pOx - adjust volume if changed
-		if (old_volume != bgmvolume.value)
-			MIDI_SetVolume (&bgmvolume);
-
-		// Let QuickTime get some time
-		MoviesTask (midiTrack, 0);
-
-		// If this song is looping, restart it
-		if (IsMovieDone (midiTrack))
+		if (bLooped)
 		{
-			if (bLooped)
-			{
-				GoToBeginningOfMovie (midiTrack);
-				StartMovie (midiTrack);
-			}
-			else
-			{
-				DisposeMovie (midiTrack);
-				midiTrack = NULL;
-			}
+			GoToBeginningOfMovie (midiTrack);
+			StartMovie (midiTrack);
+		}
+		else
+		{
+			DisposeMovie (midiTrack);
+			midiTrack = NULL;
 		}
 	}
 }
@@ -121,14 +120,11 @@ qboolean MIDI_Init(void)
 {
 	OSErr		theErr;
 
-	bMidiInited = false;
-	Con_Printf("%s: ", __thisfunc__);
+	if (bMidiInited)
+		return true;
 
-	if (safemode || COM_CheckParm("-nomidi") || COM_CheckParm("-nosound") || COM_CheckParm("-s"))
-	{
-		Con_Printf("disabled by commandline\n");
+	if (safemode || COM_CheckParm("-nomidi"))
 		return false;
-	}
 
 	theErr = EnterMovies ();
 	if (theErr != noErr)
@@ -137,7 +133,7 @@ qboolean MIDI_Init(void)
 		return false;
 	}
 
-	Con_Printf("Started QuickTime midi.\n");
+	Con_Printf("QuickTime midi for Mac initialized.\n");
 
 	Cmd_AddCommand ("midi_play", MIDI_Play_f);
 	Cmd_AddCommand ("midi_stop", MIDI_Stop_f);
@@ -152,7 +148,7 @@ qboolean MIDI_Init(void)
 }
 
 
-#define	TEMP_MUSICNAME	"tmpmusic"
+#define	TEMP_MUSICNAME	"tmpmusic.mid"
 
 void MIDI_Play (const char *Name)
 {
@@ -170,28 +166,29 @@ void MIDI_Play (const char *Name)
 
 	if (!Name || !*Name)
 	{
-		Sys_Printf("no midi music to play\n");
+		Con_DPrintf("null music file name\n");
 		return;
 	}
 
-	q_snprintf (tempName, sizeof(tempName), "%s.%s", Name, "mid");
-	FS_OpenFile (va("%s/%s", "midi", tempName), &midiFile, false);
+	q_snprintf (tempName, sizeof(tempName), "%s.mid", Name);
+	FS_OpenFile (va("midi/%s", tempName), &midiFile, false);
 	if (!midiFile)
 	{
-		Con_Printf("music file %s not found\n", tempName);
+		Con_Printf("Couldn't open %s\n", tempName);
 		return;
 	}
 	else
 	{
+		/* FIXME: is there not an api where I can send the
+		 * midi data from memory and avoid this crap???  */
 		if (file_from_pak)
 		{
 			int		ret;
 
 			Con_Printf("Extracting %s from pakfile\n", tempName);
-			q_snprintf (midiName, sizeof(midiName), "%s/%s.%s",
+			q_snprintf (midiName, sizeof(midiName), "%s/%s",
 							host_parms->userdir,
-							TEMP_MUSICNAME,
-							"mid" );
+							TEMP_MUSICNAME);
 			ret = FS_CopyFromFile (midiFile, midiName, fs_filesize);
 			fclose (midiFile);
 			if (ret != 0)
@@ -203,10 +200,8 @@ void MIDI_Play (const char *Name)
 		else	/* use the file directly */
 		{
 			fclose (midiFile);
-			q_snprintf (midiName, sizeof(midiName), "%s/%s/%s",
-							fs_filepath,
-							"midi",
-							tempName );
+			q_snprintf (midiName, sizeof(midiName), "%s/midi/%s",
+							fs_filepath, tempName);
 		}
 	}
 
@@ -215,28 +210,28 @@ void MIDI_Play (const char *Name)
 	err = FSPathMakeRef ((UInt8*)midiName, &midiRef, NULL);
 	if (err != noErr)
 	{
-		Con_Printf ("MIDI: FSPathMakeRef: error while opening %s\n", midiName);
+		Con_Printf ("MIDI_DRV: FSPathMakeRef: error while opening %s\n", midiName);
 		return;
 	}
 
 	err = FSGetCatalogInfo (&midiRef, kFSCatInfoNone, NULL, NULL, &midiSpec, NULL);
 	if (err != noErr)
 	{
-		Con_Printf ("MIDI: FSGetCatalogInfo: error while opening %s\n", midiName);
+		Con_Printf ("MIDI_DRV: FSGetCatalogInfo: error while opening %s\n", midiName);
 		return;
 	}
 
 	err = OpenMovieFile (&midiSpec, &midiRefNum, fsRdPerm);
 	if (err != noErr)
 	{
-		Con_Printf ("MIDI: OpenMovieStream: error opening midi file\n");
+		Con_Printf ("MIDI_DRV: OpenMovieStream: error opening midi file\n");
 		return;
 	}
 
 	err = NewMovieFromFile (&midiTrack, midiRefNum, NULL, NULL, newMovieActive, NULL);
 	if (err != noErr || !midiTrack)
 	{
-		Con_Printf ("MIDI: QuickTime error in creating stream.\n");
+		Con_Printf ("MIDI_DRV: QuickTime error in creating stream.\n");
 		return;
 	}
 
@@ -244,7 +239,7 @@ void MIDI_Play (const char *Name)
 	PrerollMovie (midiTrack, 0, 0);
 
 	// pOx - set initial volume
-	MIDI_SetVolume (&bgmvolume);
+	SetMovieVolume(midiTrack, (short)(bgmvolume.value * 256.0f));
 
 	StartMovie (midiTrack);
 	Con_Printf ("Started midi music %s\n", tempName);
@@ -289,13 +284,13 @@ void MIDI_Stop(void)
 	if (!bMidiInited)	//Just to be safe
 		return;
 
-	if (midiTrack)
-	{
-		StopMovie (midiTrack);
-		DisposeMovie (midiTrack);
-		midiTrack = NULL;
-		bPaused = false;
-	}
+	if (!midiTrack)
+		return;
+
+	StopMovie (midiTrack);
+	DisposeMovie (midiTrack);
+	midiTrack = NULL;
+	bPaused = false;
 }
 
 void MIDI_Cleanup(void)

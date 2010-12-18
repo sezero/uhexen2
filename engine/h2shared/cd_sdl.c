@@ -1,6 +1,6 @@
 /*
 	cd_sdl.c
-	$Id: cd_sdl.c,v 1.22 2010-08-23 23:55:17 sezero Exp $
+	$Id$
 
 	Copyright (C) 1996-1997  Id Software, Inc.
 	Taken from the Twilight project with modifications
@@ -118,9 +118,7 @@ void CDAudio_Play(byte track, qboolean looping)
 
 	if (SDL_CDPlay(cd_handle, cd_handle->track[track-1].offset, cd_handle->track[track-1].length) == -1)
 	{
-		// ok, check for status now
 		int cd_status = SDL_CDStatus(cd_handle);
-
 		if (cd_status > 0)
 			Con_Printf ("%s: Unable to play %d: %s\n", __thisfunc__, track, SDL_GetError ());
 		return;
@@ -501,7 +499,7 @@ int CDAudio_Init(void)
 	}
 
 	if (cd_dev == -1)
-		cd_dev = 0;	// default drive
+		cd_dev = 0;	/* default drive */
 
 	cd_handle = SDL_CDOpen(cd_dev);
 	if (!cd_handle)
@@ -526,8 +524,7 @@ int CDAudio_Init(void)
 
 	Cmd_AddCommand ("cd", CD_f);
 
-// cd hardware volume: no SDL support at present.
-	hw_vol_works = CD_GetVolume (NULL);
+	hw_vol_works = CD_GetVolume (NULL); /* no SDL support at present. */
 	if (hw_vol_works)
 		hw_vol_works = CDAudio_SetVolume (&bgmvolume);
 
@@ -539,9 +536,8 @@ void CDAudio_Shutdown(void)
 	if (!cd_handle)
 		return;
 	CDAudio_Stop();
-// cd hardware volume: no SDL support at present.
-//	if (hw_vol_works)
-//		CD_SetVolume (NULL);
+	if (hw_vol_works)
+		CD_SetVolume (NULL); /* no SDL support at present. */
 	SDL_CDClose(cd_handle);
 	cd_handle = NULL;
 	cd_dev = -1;

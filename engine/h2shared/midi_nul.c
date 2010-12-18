@@ -2,14 +2,14 @@
 	midi_nul.c
 	NULL midi driver
 
-	$Id: midi_nul.c,v 1.4 2007-09-21 11:05:10 sezero Exp $
+	$Id$
 */
 
 #include "quakedef.h"
 
 qboolean MIDI_Init (void)
 {
-	Con_Printf("MIDI: disabled at compile time\n");
+	Con_Printf("MIDI_DRV: disabled at compile time.\n");
 	return false;
 }
 

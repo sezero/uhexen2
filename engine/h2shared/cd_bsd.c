@@ -1,10 +1,10 @@
 /*
 	cd_bsd.c
-	$Id: cd_bsd.c,v 1.21 2007-11-11 13:17:38 sezero Exp $
+	$Id$
 
 	Copyright (C) 1996-1997  Id Software, Inc.
-	A few BSD bits taken from the Dark Places project for Hammer
-	of Thyrion (Linux Hexen II)
+	A few BSD bits taken from the darkplaces project for Hexen II:
+	Hammer of Thyrion (uHexen2)
 
 	This program is free software; you can redistribute it and/or
 	modify it under the terms of the GNU General Public License
@@ -54,7 +54,7 @@ static byte	playTrack;
 static byte	maxTrack;
 
 static int	cdfile = -1;
-// default path to cdrom device. user can always do -cddev
+/* default path to cdrom device. user can always do -cddev */
 #if !defined(__FreeBSD__)
 static const char	default_dev[] = _PATH_DEV "cd0";
 #else
@@ -64,8 +64,8 @@ static const char	*cd_dev = default_dev;
 
 static float	old_cdvolume;
 static qboolean	hw_vol_works = true;
-static struct ioc_vol		orig_vol;	// orig. setting to be restored upon exit
-static struct ioc_vol		drv_vol;	// the volume setting we'll be using
+static struct ioc_vol		orig_vol;	/* original setting to be restored upon exit */
+static struct ioc_vol		drv_vol;	/* the volume setting we'll be using */
 
 
 #define IOCTL_FAILURE(IoctlName)	{					\
@@ -75,20 +75,20 @@ static struct ioc_vol		drv_vol;	// the volume setting we'll be using
 static void CDAudio_Eject(void)
 {
 	if (cdfile == -1 || !enabled)
-		return; // no cd init'd
+		return;
 
 	ioctl(cdfile, CDIOCALLOW);
-	if ( ioctl(cdfile, CDIOCEJECT) == -1 )
+	if (ioctl(cdfile, CDIOCEJECT) == -1)
 		IOCTL_FAILURE(CDIOCEJECT);
 }
 
 static void CDAudio_CloseDoor(void)
 {
 	if (cdfile == -1 || !enabled)
-		return; // no cd init'd
+		return;
 
 	ioctl(cdfile, CDIOCALLOW);
-	if ( ioctl(cdfile, CDIOCCLOSE) == -1 )
+	if (ioctl(cdfile, CDIOCCLOSE) == -1)
 		IOCTL_FAILURE(CDIOCCLOSE);
 }
 
@@ -101,7 +101,7 @@ static int CDAudio_GetAudioDiskInfo(void)
 
 	cdValid = false;
 
-	if ( ioctl(cdfile, CDIOREADTOCHEADER, &tochdr) == -1 )
+	if (ioctl(cdfile, CDIOREADTOCHEADER, &tochdr) == -1)
 	{
 		IOCTL_FAILURE(CDIOREADTOCHEADER);
 		return -1;
@@ -143,14 +143,14 @@ void CDAudio_Play(byte track, qboolean looping)
 		return;
 	}
 
-	// don't try to play a non-audio track
+	/* don't try to play a non-audio track */
 #	define CDROM_DATA_TRACK 4
 	memset((char *)&toc_buffer, 0, sizeof(toc_buffer));
 	entry.data_len = sizeof(toc_buffer);
 	entry.data = &toc_buffer;
 	entry.starting_track = track;
 	entry.address_format = CD_MSF_FORMAT;
-	if ( ioctl(cdfile, CDIOREADTOCENTRYS, &entry) == -1 )
+	if (ioctl(cdfile, CDIOREADTOCENTRYS, &entry) == -1)
 	{
 		IOCTL_FAILURE(CDIOREADTOCENTRYS);
 		return;
@@ -173,13 +173,13 @@ void CDAudio_Play(byte track, qboolean looping)
 	ti.start_index = 1;
 	ti.end_index = 99;
 
-	if ( ioctl(cdfile, CDIOCPLAYTRACKS, &ti) == -1 )
+	if (ioctl(cdfile, CDIOCPLAYTRACKS, &ti) == -1)
 	{
 		IOCTL_FAILURE(CDIOCPLAYTRACKS);
 		return;
 	}
 
-	if ( ioctl(cdfile, CDIOCRESUME) == -1 )
+	if (ioctl(cdfile, CDIOCRESUME) == -1)
 		IOCTL_FAILURE(CDIOCRESUME);
 
 	playLooping = looping;
@@ -198,7 +198,7 @@ void CDAudio_Stop(void)
 	if (!playing)
 		return;
 
-	if ( ioctl(cdfile, CDIOCSTOP) == -1 )
+	if (ioctl(cdfile, CDIOCSTOP) == -1)
 	{
 		IOCTL_FAILURE(CDIOCSTOP);
 		return;
@@ -217,7 +217,7 @@ void CDAudio_Pause(void)
 	if (!playing)
 		return;
 
-	if ( ioctl(cdfile, CDIOCPAUSE) == -1 )
+	if (ioctl(cdfile, CDIOCPAUSE) == -1)
 		IOCTL_FAILURE(CDIOCPAUSE);
 
 	wasPlaying = playing;
@@ -235,7 +235,7 @@ void CDAudio_Resume(void)
 	if (!wasPlaying)
 		return;
 
-	if ( ioctl(cdfile, CDIOCRESUME) == -1 )
+	if (ioctl(cdfile, CDIOCRESUME) == -1)
 		IOCTL_FAILURE(CDIOCRESUME);
 	playing = true;
 }
@@ -397,7 +397,7 @@ static qboolean CDAudio_SetVolume (cvar_t *var)
 	if (hw_vol_works)
 	{
 		drv_vol.vol[0] = drv_vol.vol[2] =
-		drv_vol.vol[1] = drv_vol.vol[3] = var->value * 255.0;
+		drv_vol.vol[1] = drv_vol.vol[3] = var->value * 255.0f;
 		return CD_SetVolume (&drv_vol);
 	}
 	else
@@ -424,7 +424,7 @@ void CDAudio_Update(void)
 
 	if (playing && lastchk < time(NULL))
 	{
-		lastchk = time(NULL) + 2; //two seconds between chks
+		lastchk = time(NULL) + 2; /* two seconds between chks */
 
 		memset (&subchnl, 0, sizeof(subchnl));
 		subchnl.data = &data;
@@ -432,7 +432,7 @@ void CDAudio_Update(void)
 		subchnl.address_format = CD_MSF_FORMAT;
 		subchnl.data_format = CD_CURRENT_POSITION;
 		subchnl.track = playTrack;
-		if (ioctl(cdfile, CDIOCREADSUBCHANNEL, &subchnl) == -1 )
+		if (ioctl(cdfile, CDIOCREADSUBCHANNEL, &subchnl) == -1)
 		{
 			IOCTL_FAILURE(CDIOCREADSUBCHANNEL);
 			playing = false;
@@ -503,5 +503,5 @@ void CDAudio_Shutdown(void)
 	cdfile = -1;
 }
 
-#endif	// __USE_BSD_CDROM__
+#endif	/* __USE_BSD_CDROM__ */
 
