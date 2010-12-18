@@ -49,7 +49,7 @@ static qboolean	wasPlaying = false;
 static qboolean	initialized = false;
 static qboolean	enabled = true;
 static qboolean playLooping = false;
-static byte 	remap[100];
+static byte	remap[100];
 static byte	playTrack;
 static byte	maxTrack;
 
@@ -186,7 +186,7 @@ void CDAudio_Play(byte track, qboolean looping)
 	playTrack = track;
 	playing = true;
 
-	if (!hw_vol_works && bgmvolume.value == 0.0)
+	if (bgmvolume.value == 0) /* don't bother advancing */
 		CDAudio_Pause ();
 }
 
@@ -243,8 +243,7 @@ void CDAudio_Resume(void)
 static void CD_f (void)
 {
 	const char	*command;
-	int		ret;
-	int		n;
+	int		ret, n;
 
 	if (Cmd_Argc() < 2)
 	{
@@ -384,29 +383,27 @@ static qboolean CD_SetVolume (struct ioc_vol *vol)
 	return true;
 }
 
-static qboolean CDAudio_SetVolume (cvar_t *var)
+static qboolean CDAudio_SetVolume (float value)
 {
 	if (cdfile == -1 || !enabled)
 		return false;
 
-	if (var->value < 0.0)
-		Cvar_SetValue (var->name, 0.0);
-	else if (var->value > 1.0)
-		Cvar_SetValue (var->name, 1.0);
-	old_cdvolume = var->value;
-	if (hw_vol_works)
+	old_cdvolume = value;
+
+	if (value == 0.0f)
+		CDAudio_Pause ();
+	else
+		CDAudio_Resume();
+
+	if (!hw_vol_works)
 	{
-		drv_vol.vol[0] = drv_vol.vol[2] =
-		drv_vol.vol[1] = drv_vol.vol[3] = var->value * 255.0f;
-		return CD_SetVolume (&drv_vol);
+		return false;
 	}
 	else
 	{
-		if (old_cdvolume == 0.0)
-			CDAudio_Pause ();
-		else
-			CDAudio_Resume();
-		return false;
+		drv_vol.vol[0] = drv_vol.vol[2] =
+		drv_vol.vol[1] = drv_vol.vol[3] = value * 255.0f;
+		return CD_SetVolume (&drv_vol);
 	}
 }
 
@@ -420,7 +417,13 @@ void CDAudio_Update(void)
 		return;
 
 	if (old_cdvolume != bgmvolume.value)
-		CDAudio_SetVolume (&bgmvolume);
+	{
+		if (bgmvolume.value < 0)
+			Cvar_Set ("bgmvolume", "0.0");
+		else if (bgmvolume.value > 1)
+			Cvar_Set ("bgmvolume", "1.0");
+		CDAudio_SetVolume (bgmvolume.value);
+	}
 
 	if (playing && lastchk < time(NULL))
 	{
@@ -487,7 +490,7 @@ int CDAudio_Init(void)
 
 	hw_vol_works = CD_GetVolume (&orig_vol);
 	if (hw_vol_works)
-		hw_vol_works = CDAudio_SetVolume (&bgmvolume);
+		hw_vol_works = CDAudio_SetVolume (bgmvolume.value);
 
 	return 0;
 }

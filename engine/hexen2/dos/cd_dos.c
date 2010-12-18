@@ -3,7 +3,7 @@
 	dos cdaudio support.
 	from quake1 source with minor adaptations for uhexen2.
 
-	$Id: cd_dos.c,v 1.3 2008-03-31 11:25:22 sezero Exp $
+	$Id$
 
 	Quake is a trademark of Id Software, Inc., (c) 1996 Id Software, Inc.
 	All rights reserved.
@@ -499,20 +499,17 @@ static qboolean CD_SetVolume (byte volume)
 	return true;
 }
 
-static qboolean CDAudio_SetVolume (cvar_t *var)
+static qboolean CDAudio_SetVolume (float value)
 {
 	byte	volume;
 
 	if (!initialized || !enabled)
 		return false;
 
-	if (var->value < 0.0)
-		Cvar_SetValue (var->name, 0.0);
-	else if (var->value > 1.0)
-		Cvar_SetValue (var->name, 1.0);
-	old_cdvolume = var->value;
+	old_cdvolume = value;
 
-	volume = (int)(var->value * 255.0);
+	/* should I pause if value == 0 ? */
+	volume = (int)(value * 255.0f);
 	return CD_SetVolume (volume);
 }
 
@@ -550,7 +547,7 @@ void CDAudio_Play (byte track, qboolean looping)
 		return;
 	}
 
-	CDAudio_SetVolume (&bgmvolume);
+	CDAudio_SetVolume (bgmvolume.value);
 
 	cdRequest->headerLength = 13;
 	cdRequest->unit = 0;
@@ -576,6 +573,8 @@ void CDAudio_Play (byte track, qboolean looping)
 	}
 
 	playing = true;
+
+	/* should I pause if bgmvolume.value == 0 ? */
 }
 
 
@@ -635,8 +634,7 @@ void CDAudio_Resume (void)
 static void CD_f (void)
 {
 	const char	*command;
-	int		ret;
-	int		n;
+	int		ret, n;
 	int		startAddress;
 
 	if (Cmd_Argc() < 2)
@@ -781,7 +779,13 @@ void CDAudio_Update (void)
 	}
 
 	if (old_cdvolume != bgmvolume.value)
-		CDAudio_SetVolume (&bgmvolume);
+	{
+		if (bgmvolume.value < 0)
+			Cvar_Set ("bgmvolume", "0.0");
+		else if (bgmvolume.value > 1)
+			Cvar_Set ("bgmvolume", "1.0");
+		CDAudio_SetVolume (bgmvolume.value);
+	}
 
 	if (playing)
 	{
@@ -820,7 +824,7 @@ int CDAudio_Init (void)
 			"disabled.  Use \"-nocdaudio\" if you\n"
 			"wish to avoid this message in the\n"
 			"future.  See README.TXT for help.\n"
-			);			
+			);
 		return -1;
 	}
 	if (regs.x.bx > 1)
@@ -881,5 +885,6 @@ void CDAudio_Shutdown (void)
 	if (!initialized)
 		return;
 	CDAudio_Stop();
+	CD_SetVolume (255);
 }
 

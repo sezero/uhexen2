@@ -26,7 +26,7 @@ static qboolean	wasPlaying = false;
 static qboolean	initialized = false;
 static qboolean	enabled = false;
 static qboolean playLooping = false;
-static byte 	remap[100];
+static byte	remap[100];
 static byte	playTrack;
 static byte	maxTrack;
 
@@ -171,7 +171,7 @@ void CDAudio_Play(byte track, qboolean looping)
 	playTrack = track;
 	playing = true;
 
-	if (bgmvolume.value == 0.0)
+	if (bgmvolume.value == 0) /* don't bother advancing */
 		CDAudio_Pause ();
 }
 
@@ -259,8 +259,7 @@ void CDAudio_Resume(void)
 static void CD_f (void)
 {
 	const char	*command;
-	int		ret;
-	int		n;
+	int		ret, n;
 
 	if (Cmd_Argc() < 2)
 	{
@@ -416,21 +415,18 @@ LONG CDAudio_MessageHandler(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 }
 
 
-static void CDAudio_SetVolume (cvar_t *var)
+static void CDAudio_SetVolume (float value)
 {
-	if (var->value < 0.0)
-		Cvar_SetValue (var->name, 0.0);
-	else if (var->value > 1.0)
-		Cvar_SetValue (var->name, 1.0);
-	old_cdvolume = var->value;
+	old_cdvolume = value;
 
-#if defined(USE_AUX_API)
-	CD_SetVolume (var->value * 0xffff);
-#endif	/* USE_AUX_API */
-	if (old_cdvolume == 0.0)
+	if (value == 0.0f)
 		CDAudio_Pause ();
 	else
 		CDAudio_Resume();
+
+#if defined(USE_AUX_API)
+	CD_SetVolume (value * 0xffff);
+#endif	/* USE_AUX_API */
 }
 
 void CDAudio_Update(void)
@@ -439,7 +435,13 @@ void CDAudio_Update(void)
 		return;
 
 	if (old_cdvolume != bgmvolume.value)
-		CDAudio_SetVolume (&bgmvolume);
+	{
+		if (bgmvolume.value < 0)
+			Cvar_Set ("bgmvolume", "0.0");
+		else if (bgmvolume.value > 1)
+			Cvar_Set ("bgmvolume", "1.0");
+		CDAudio_SetVolume (bgmvolume.value);
+	}
 }
 
 
@@ -471,7 +473,7 @@ static void CD_FindCDAux(void)
 
 static void CD_SetVolume(unsigned long Volume)
 {
-	if (CD_ID != -1) 
+	if (CD_ID != -1)
 		auxSetVolume(CD_ID, (Volume<<16) + Volume);
 }
 #endif	/* USE_AUX_API */

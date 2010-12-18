@@ -113,7 +113,7 @@ void CDAudio_Play(byte track, qboolean looping)
 	{
 		if (playTrack == track)
 			return;
-		CDAudio_Stop ();
+		CDAudio_Stop();
 	}
 
 	if (SDL_CDPlay(cd_handle, cd_handle->track[track-1].offset, cd_handle->track[track-1].length) == -1)
@@ -140,7 +140,7 @@ void CDAudio_Play(byte track, qboolean looping)
 	endOfTrack += 2.0;
 	pausetime = -1.0;
 
-	if (!hw_vol_works && bgmvolume.value == 0.0)
+	if (bgmvolume.value == 0) /* don't bother advancing */
 		CDAudio_Pause ();
 }
 
@@ -238,12 +238,12 @@ static void CD_f (void)
 
 	if (q_strcasecmp(command, "remap") == 0)
 	{
-		ret = Cmd_Argc () - 2;
+		ret = Cmd_Argc() - 2;
 		if (ret <= 0)
 		{
 			for (n = 1; n < 100; n++)
 				if (remap[n] != n)
-					Con_Printf ("  %u -> %u\n", n, remap[n]);
+					Con_Printf("  %u -> %u\n", n, remap[n]);
 			return;
 		}
 		for (n = 1; n <= ret; n++)
@@ -253,7 +253,7 @@ static void CD_f (void)
 
 	if (!cdValid)
 	{
-		CDAudio_GetAudioDiskInfo ();
+		CDAudio_GetAudioDiskInfo();
 		if (!cdValid)
 		{
 			Con_Printf("No CD in player.\n");
@@ -308,9 +308,9 @@ static void CD_f (void)
 		Con_Printf ("%u tracks\n", cd_handle->numtracks);
 
 		if (playing)
-			Con_Printf ("Currently %s track %u\n", playLooping ? "looping" : "playing", playTrack);
+			Con_Printf("Currently %s track %u\n", playLooping ? "looping" : "playing", playTrack);
 		else if (wasPlaying)
-			Con_Printf ("Paused %s track %u\n", playLooping ? "looping" : "playing", playTrack);
+			Con_Printf("Paused %s track %u\n", playLooping ? "looping" : "playing", playTrack);
 
 		if (playing || wasPlaying)
 		{
@@ -322,7 +322,7 @@ static void CD_f (void)
 						current_min, current_sec, current_frame * 60 / CD_FPS,
 						length_min, length_sec, length_frame * 60 / CD_FPS);
 		}
-		Con_Printf ("Volume is %f\n", bgmvolume.value);
+		Con_Printf("Volume is %f\n", bgmvolume.value);
 
 		return;
 	}
@@ -342,29 +342,27 @@ static qboolean CD_SetVolume (void *unused)
 	return false;
 }
 
-static qboolean CDAudio_SetVolume (cvar_t *var)
+static qboolean CDAudio_SetVolume (float value)
 {
 	if (!cd_handle || !enabled)
 		return false;
 
-	if (var->value < 0.0)
-		Cvar_SetValue (var->name, 0.0);
-	else if (var->value > 1.0)
-		Cvar_SetValue (var->name, 1.0);
-	old_cdvolume = var->value;
-	if (hw_vol_works)
+	old_cdvolume = value;
+
+	if (value == 0.0f)
+		CDAudio_Pause ();
+	else
+		CDAudio_Resume();
+
+	if (!hw_vol_works)
+	{
+		return false;
+	}
+	else
 	{
 /* FIXME: write proper code in here when SDL
    supports cdrom volume control some day. */
 		return CD_SetVolume (NULL);
-	}
-	else
-	{
-		if (old_cdvolume == 0.0)
-			CDAudio_Pause ();
-		else
-			CDAudio_Resume();
-		return false;
 	}
 }
 
@@ -376,7 +374,13 @@ void CDAudio_Update(void)
 		return;
 
 	if (old_cdvolume != bgmvolume.value)
-		CDAudio_SetVolume (&bgmvolume);
+	{
+		if (bgmvolume.value < 0)
+			Cvar_Set ("bgmvolume", "0.0");
+		else if (bgmvolume.value > 1)
+			Cvar_Set ("bgmvolume", "1.0");
+		CDAudio_SetVolume (bgmvolume.value);
+	}
 
 	if (playing && realtime > endOfTrack)
 	{
@@ -526,7 +530,7 @@ int CDAudio_Init(void)
 
 	hw_vol_works = CD_GetVolume (NULL); /* no SDL support at present. */
 	if (hw_vol_works)
-		hw_vol_works = CDAudio_SetVolume (&bgmvolume);
+		hw_vol_works = CDAudio_SetVolume (bgmvolume.value);
 
 	return 0;
 }
