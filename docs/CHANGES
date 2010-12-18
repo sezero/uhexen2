@@ -4,6 +4,7 @@ Development Progress	:
 ---------------------------
 
 2010-12-18 (CVS):
+    * snd_dma.c: Minor cleanups in volume value boundary checking.
     * Reorganized cdaudio volume handling for all drivers. If volume is 0,
       don't bother advancing and pause.
 
