@@ -1,5 +1,5 @@
 
-Hexen II: Hammer of Thyrion 1.4.4 (demo version)
+Hexen II: Hammer of Thyrion 1.5.0 (demo version)
 ------------------------------------------------
 
 
@@ -509,7 +509,8 @@ consult the document README.3dfx.
 	Home page		: http://uhexen2.sourceforge.net/
 	Project page		: http://sourceforge.net/projects/uhexen2/
 	Work-in-progress	: http://uhexen2.sourceforge.net/devel/
-	CVS Repository		: http://uhexen2.cvs.sourceforge.net/uhexen2/
+	SVN Repository		: http://uhexen2.svn.sourceforge.net/
+	CVS Repository (old)	: http://uhexen2.cvs.sourceforge.net/uhexen2/
 	MorphOS port		: http://www.binaryriot.org/users/kiero/
 				  http://aminet.net/package/game/shoot/GLHexen2
 	AmigaOS4 port		: http://os4depot.net/?function=showfile&file=game/roleplaying/uhexen2.lha

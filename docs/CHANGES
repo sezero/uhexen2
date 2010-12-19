@@ -4,6 +4,12 @@ Development Progress	:
 ---------------------------
 
 2010-12-19 (CVS):
+    * Bumped uhexen2 version to 1.5.0-rc1.  Bumped the hexen2 engine version
+      to 1.23 and hexenworld engine version to 0.23.  Added ReleaseNotes-1.5.0
+      as a new document.  Updated the rest of the documents for version number
+      change.
+
+2010-12-19 (CVS):
     * rpm spec file update:
     - Added new build options after the music playback changes.
     - Dropped SDL_mixer dependency which is not used anymore.

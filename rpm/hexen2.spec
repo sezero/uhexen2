@@ -54,17 +54,17 @@
 
 # pre-release version: MAKE SURE to change this
 # to an %undefine for the final realease!!
-%define prerelease	pre11
+%define prerelease	rc1
 
 # package release number for final-release:
 %define pkg_final	1
 # package release number for pre-release:
-%define pkg_prerel	11
+%define pkg_prerel	1
 
 Name:		hexen2
 License:	GPL
 Group:		Amusements/Games
-Version:	1.4.4
+Version:	1.5.0
 Release:	%{?prerelease:0.%{pkg_prerel}.%{prerelease}}%{!?prerelease:%{pkg_final}}
 Summary:	Hexen II: Hammer of Thyrion
 URL:		http://uhexen2.sourceforge.net/
@@ -105,7 +105,7 @@ Requires:	SDL >= 1.2.4
 # these will be picked by rpm already
 #%{!?_without_mp3:Requires: libmad}
 #%{!?_without_ogg:Requires: libvorbis}
-Requires:	hexen2 >= 1.4.3
+Requires:	hexen2 >= 1.5.0
 
 %description -n hexenworld
 Hexen II is a class based shooter game by Raven Software from 1997.
@@ -191,6 +191,7 @@ utils/bin/hcc -src gamecode-%{gamecode_ver}/hc/hw -oi -on
 %{__install} -D -m644 docs/ReleaseNotes-1.4.1 %{buildroot}/%{_prefix}/games/%{name}/docs/ReleaseNotes-1.4.1
 %{__install} -D -m644 docs/ReleaseNotes-1.4.2 %{buildroot}/%{_prefix}/games/%{name}/docs/ReleaseNotes-1.4.2
 %{__install} -D -m644 docs/ReleaseNotes-1.4.3 %{buildroot}/%{_prefix}/games/%{name}/docs/ReleaseNotes-1.4.3
+%{__install} -D -m644 docs/ReleaseNotes-1.4.4 %{buildroot}/%{_prefix}/games/%{name}/docs/ReleaseNotes-1.4.4
 
 # Install the gamedata
 %{__mkdir_p} %{buildroot}/%{_prefix}/games/%{name}/data1/
@@ -297,6 +298,7 @@ desktop-file-install \
 %{_prefix}/games/%{name}/docs/ReleaseNotes-1.4.1
 %{_prefix}/games/%{name}/docs/ReleaseNotes-1.4.2
 %{_prefix}/games/%{name}/docs/ReleaseNotes-1.4.3
+%{_prefix}/games/%{name}/docs/ReleaseNotes-1.4.4
 %{!?_without_freedesktop:%{_datadir}/applications/%{desktop_vendor}-%{name}.desktop}
 %{?_without_freedesktop:%{_sysconfdir}/X11/applnk/Games/%{name}.desktop}
 
@@ -315,7 +317,8 @@ desktop-file-install \
 %{_prefix}/games/%{name}/docs/README.hwmaster
 
 %changelog
-* Sun Dec 19 2010 O.Sezer <sezero@users.sourceforge.net>
+* Sun Dec 19 2010 O.Sezer <sezero@users.sourceforge.net> 1.5.0-0.1.rc1
+- Bumped version to 1.5.0-rc1.
 - Added new build options after the music playback changes.
 - Dropped SDL_mixer dependency which is not used anymore.
 - Added README.music among the installed documents.
