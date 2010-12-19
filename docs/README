@@ -116,10 +116,6 @@ b. Manual install/update of data files:
 			    anti-aliasing support will be auto-
 			    matically disabled.
 
-   SDL_mixer (min.: 1.2.4): Required for midi support (should
-			    be compiled with timidity+ support)
-			    1.2.5 and newer highly recommended.
-
    To compile your own binaries, you'll need a standard unix build
    environment. See the file COMPILE for details.
 
@@ -186,7 +182,7 @@ Important command-line switches:
 				For windows, use a single drive letter, like:
 				glh2 -cddev E
  -nocdaudio		Disable cdrom music
- -nomidi		Disable MIDI music
+ -nomidi		Disable MIDI driver
  -s | -nosound		Run the game without sound
  -nolan			Disable networking (incompatible with -listen)
  -listen  N		Enable multiplayer with maximum N players
@@ -289,19 +285,19 @@ it. Send a bug report on the project page.
 1.4.1 Midi support
 ------------------
 
-On linux / unix, the midi background music requires 1.2.4 or a newer
-version of SDL_mixer, preferably version 1.2.5 or later.  Currently,
-it will not work in combination with the SDL sound option (-sndsdl).
+On linux / unix, midi background music is implemented using timidity,
+so, you will need GUS-compatible patch files and properly configured
+timidity.cfg. For example, you can get a complete set of GUS patches
+from http://www.libsdl.org/projects/mixer/timidity/timidity.tar.gz
 
-If compiling SDL_mixer yourself, the default location for the timidity
-data files (complete set of GUS patches) is "/usr/local/lib/timidity".
-If you already have these files installed elsewhere, you will have
-to symlink to this directory. For example:
+The timidity.cfg file is searched under /etc, /etc/timidity,
+/usr/share/timidity and /usr/local/lib/timidity, in this order.
 
-    ln -s /usr/share/timidity /usr/local/lib/timidity
-
-As an alternative, you can edit "SDL_mixer-1.2.x/timidity/config.h"
-before compiling SDL_mixer, to point to your timidity data files.
+Hammer of Thyrion supports ogg, mp3 and wav external music files to be
+played instead of the original midi files, so you can enjoy the better
+quality of your hexen2 cdrom audio tracks.  Ogg playback requires
+libogg and libvorbis, mp3 playback requires libmad.  See README.music
+for more information.
 
 
 1.5 Networking / Multiplayer
@@ -362,8 +358,7 @@ combination whenever you want.
 
 First, we recommend using high sampling rates. This can be done either
 by a command line argument like "-sndspeed 44100" or "-sndspeed 48000",
-or by using the game launcher. ALSA is the driver of choice - the OSS
-driver may not work with all cards, and with SDL you have no midi.
+or by using the game launcher. ALSA is the driver of choice.
 
 If you have problems making sound to work correctly, using the arts
 sound server may help you:    artsd & ; artsdsp -m glhexen2 -sndoss

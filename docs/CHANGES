@@ -4,6 +4,10 @@ Development Progress	:
 ---------------------------
 
 2010-12-19 (CVS):
+    * Updated documentation after music changes.  Added README.music as a
+      new document.
+
+2010-12-19 (CVS):
     * External music files support using decoder libraries and the new
       raw samples interface:
     - bgmusic.c, bgmusic.h: New BGM interface for background music handling.

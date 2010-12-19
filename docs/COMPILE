@@ -61,19 +61,10 @@ General Unix requirements:
 --------------------------
 
 SDL	:	Simple DirectMedia Layer libraries.
-		Required for compiling hexen2 and hexenworld clients
-		on unix platforms. Minimum version required is 1.2.4.
+		Required for compiling hexen2 and hexenworld clients on
+		most unix platforms. Minimum version required is 1.2.4.
 		As of this writing, the latest version is 1.2.14, which
 		is recommended.
-
-SDL_mixer:	SDL mixer library.
-		Required for midi playback support on unix platforms.
-		Should be compiled with timidity+ support. The minimum
-		version required is 1.2.4. As of this writing, the
-		latest version is 1.2.11, which is recommended.
-		The makefiles present an option for disabling midi
-		support, in that case this library will not be
-		necessary.
 
 Linux requirements	:
 -------------------------
@@ -109,6 +100,14 @@ Xcode, SDKs:	Install the free Xcode suite from developer.apple.com :  It
 		http://www.libsdl.org/release/SDL-1.2.14.dmg
 		Copy the SDL.framework from that package into your
 		/Library/Frameworks  folder.
+
+Additional requirements	:
+-------------------------
+
+libogg, libvorbis:
+		Required if you want to enable Ogg/Vorbis music playback.
+libmad:		Required if you want to enable mp3 music playback.
+
 
 Compiling the software renderer for non-x86:
 ============================================
@@ -233,7 +232,8 @@ I have been using the "release 5, 2008 refresh" version (dated 21 August
 Links:
 ------
 SDL homepage		:	http://www.libsdl.org/
-SDL_mixer homepage	:	http://www.libsdl.org/projects/SDL_mixer/
+Ogg/Vorbis homepage	:	http://xiph.org/
+libmad homepage		:	http://www.underbit.com/products/mad/
 ALSA homepage		:	http://www.alsa-project.org/
 GCC homepage		:	http://gcc.gnu.org/
 Binutils homepage	:	http://sourceware.org/binutils/

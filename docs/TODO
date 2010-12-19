@@ -23,14 +23,6 @@ TODO:
 - Maybe do other ports? (Amiga, etc?)
 - Does Solaris compile / work?
 - Add sequencer (mpu-401) support for midi (alsa / oss)
-- MIDI-background music: re-write with proper decoder library
-  usage (eg. wildmidi/timidity for software-midi, ogg-vorbis
-  for ogg, etc., like in quake3); reserve one of the available
-  channels for this purpose. a lot of work, but that will free
-  us from the SDL_mixer dependancy on linux/unix (and from the
-  quicktime dependancy on OSX): opening the sound device twice
-  is not a good thing. and we won't be needing any crap such as
-  fmod or other habaloo for windows external music.
 - DOS: Implement MIDI music playback.
 - DOS: Implement loading progress bars.
 - Add pthread support to the utilities and revise the current
@@ -39,6 +31,4 @@ TODO:
 - utils/maputils: improvements on the light tool?
 - utils/texutils: add some more texture tools (pcx2wal, etc.)
 - More unification of hexen2 and hexenworld trees
-- Reduce the number of lines in BUGS ;)
-- Re-visit the extra patches, fix and merge (e.g.: fog, etc.)
 

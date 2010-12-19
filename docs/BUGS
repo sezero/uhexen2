@@ -3,9 +3,6 @@ Hexen II: Hammer of Thyrion
 Known Bugs
 ---------------------------
 
-- Linux (Unix): Midi music doesn't work in combination with SDL sound
-  driver due to conflicting SDL and SDL_mixer calls. To be looked into.
-
 - Linux (Unix): OSS sound code does not work for a few people, either
   partially or completely. If you suffer from that problem, use Alsa
   or SDL sound.

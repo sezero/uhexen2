@@ -1,0 +1,105 @@
+Hammer of Thyrion supports ogg, mp3 and wav external music files to be
+played instead of the original midi files, so you can enjoy the better
+quality of your hexen2 cdrom audio tracks.
+
+In the first pass, the original midi filename is searched with a proper
+extension. If nothing is found, then trackXX is searched similarly (XX
+is the cd-track number for the running map if it matches the midiname).
+If it is not found either, then the original midi file is played.
+
+What you should do is simple:
+1. Use your favorite cd-ripper application and rip your hexen2 cdrom
+   audio tracks, convert them to ogg or mp3 so they occupy less space,
+   like track02.ogg, track03.ogg, etc.
+2. Go into your hexen2 installation directory (unix/linux users: you can
+   do this in your $HOME/.hexen2 directory, too.)
+3. Create directory: data1/music (for windows users data1\music). If you
+   have the mission pack, then create another directory portals/music .
+4. Take the ripped music files from step1, place them under data1/music.
+   If you have the mission pack, repeat step1 for the mission pack, too,
+   and place the ripped music files under portals/music.
+5. Make sure that music type is chosen as "midi" in the game's options
+   screen. (the name for the music type "midi" hasn't been changed: the
+   music will be searched automatically already.)
+6. Things should work fine now, but if you want it to go 100% smoothly,
+   then do some file renaming: it is best to rename the trackXX files to
+   the expected midi names. It works 99% without doing this, but this is
+   the guaranteed way.  Here are the corresponding midi names for cdrom
+   audio tracks:
+
+   data1/music :
+   -------------
+   track02  ->  casa1
+   track03  ->  casa2
+   track04  ->  casa3
+   track05  ->  casa4
+   track06  ->  egyp1
+   track07  ->  egyp2
+   track08  ->  egyp3
+   track09  ->  meso1
+   track10  ->  meso2
+   track11  ->  meso3
+   track12  ->  roma1
+   track13  ->  roma2
+   track14  ->  roma3
+   track15  ->  casb1
+   track16  ->  casb2
+   track17  ->  casb3
+
+   portals/music :
+   ---------------
+   track02  ->  tulku7
+   track03  ->  tulku1
+   track04  ->  tulku4
+   track05  ->  tulku2
+   track06  ->  tulku9
+   track07  ->  tulku10
+   track08  ->  tulku6
+   track09  ->  tulku5
+   track10  ->  tulku8
+   track11  ->  tulku3
+   track12  ->  (this won't match to any midi name)
+
+New console commands:
+---------------------
+- music <filename>
+  Start playing the requested music file.
+  Example:  music meso3
+
+  Notice that you don't type the file extension: The requested music
+  will be searched with ogg, mp3, wav and then with a mid extension,
+  automatically.
+
+  If you do specify the file extension, like "music meso3.wav", then
+  it will honor your your wish and try only the given type: this is
+  good for testing/comparing the same music in different formats, and
+  mappers can use this feature and specify the "midi" name in their
+  maps with a specific extension.
+
+- music_stop
+  Stops the playing music.
+
+- music_pause
+  Pauses the playing music
+
+- music_resume
+  Resumes playing the music if it was paused
+
+- music_loop 1
+  Makes the background music to loop (default behavior)
+
+- music_loop 0
+  Makes the background music to play once and then stop
+
+Removed console commands:
+-------------------------
+midi_play, midi_stop, midi_pause and midi_loop commands from the original
+game are removed in favor of the new music commands above.
+
+Music file directories:
+-------------------------
+- The midi music files are always searched under the "midi" directory, as
+  usual, for compatibility.
+- Other kinds of music files, anything other than midi, are always searched
+  under the "music" directory.
+
