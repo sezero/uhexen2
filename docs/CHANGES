@@ -4,6 +4,10 @@ Development Progress	:
 ---------------------------
 
 2010-12-18 (CVS):
+    * added libmad, libogg and libvorbis headers and import libraries
+      for windows builds under w32stuff/codecs.
+
+2010-12-18 (CVS):
     * midi_win.c:  Ignore midi hardware volume adjustemnt capability
       under windows vista/7, see this reference why:
       http://msdn.microsoft.com/en-us/library/dd798480(VS.85).aspx#1
