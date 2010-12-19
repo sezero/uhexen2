@@ -127,7 +127,7 @@ sfxcache_t *S_LoadSound (sfx_t *s)
 	if (info.samples == 0 || len == 0)
 	{
 		Con_Printf("%s has zero samples\n", s->name);
-		return false;
+		return NULL;
 	}
 
 	sc = (sfxcache_t *) Cache_Alloc ( &s->cache, len + sizeof(sfxcache_t), s->name);

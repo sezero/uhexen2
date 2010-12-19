@@ -4,6 +4,10 @@ Development Progress	:
 ---------------------------
 
 2010-12-19 (CVS):
+    * snd_mem.c (S_LoadSound): Return NULL if zero samples are found, not
+      false.
+
+2010-12-19 (CVS):
     * Updated Visual Studio project files after the latest changes.
 
 2010-12-19 (CVS):
