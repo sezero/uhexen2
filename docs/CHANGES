@@ -4,6 +4,14 @@ Development Progress	:
 ---------------------------
 
 2010-12-19 (CVS):
+    * rpm spec file update:
+    - Added new build options after the music playback changes.
+    - Dropped SDL_mixer dependency which is not used anymore.
+    - Added README.music among the installed documents.
+    - Reworked the style we use for passing the build options to the makefiles.
+    - Fixed icon path.
+
+2010-12-19 (CVS):
     * snd_mem.c (S_LoadSound): Return NULL if zero samples are found, not
       false.
 

@@ -3,7 +3,13 @@
 
 # build options :
 # --without alsa: build without alsa audio support
-# --without midi: build without midi support
+# --without midi: build without a midi driver support
+#		 (defunct: there is no linux midi "driver" yet,
+#		  midi playback is by timidity for now.)
+# --without timidity: build without timidity music streaming support
+# --without wavmusic: build without wav music streaming support
+# --without mp3: build without mp3 music streaming support
+# --without ogg: build without ogg/vorbis music streaming support
 # --without asm : do not use x86 assembly even on an intel cpu
 # --without gtk2: do not use glib-2.x / gtk-2.x, and build the launcher against
 #		  gtk-1.2
@@ -18,6 +24,29 @@
 
 %{?el2:%define _without_gtk2 1}
 %{?rh7:%define _without_gtk2 1}
+
+# default build options
+%{!?_without_gtk2:%define gtk1_buildopt GTK2=yes}
+%{!?_without_gtk2:%define glib1_buildopt GLIB2=yes}
+%{!?_without_asm:%define asm_buildopt USE_X86_ASM=yes}
+%{!?_without_alsa:%define alsa_buildopt USE_ALSA=yes}
+%{!?_without_midi:%define midi_buildopt USE_MIDI=yes}
+%{!?_without_timidity:%define timidity_buildopt USE_CODEC_TIMIDITY=yes}
+%{!?_without_wavmusic:%define wavmusic_buildopt USE_CODEC_WAVE=yes}
+%{!?_without_mp3:%define mp3_buildopt USE_CODEC_MP3=yes}
+%{!?_without_ogg:%define ogg_buildopt USE_CODEC_VORBIS=yes}
+# build option overrides
+%{?_without_gtk2:%define gtk1_buildopt GTK1=yes}
+%{?_without_gtk2:%define glib1_buildopt GLIB1=yes}
+%{?_without_asm:%define asm_buildopt USE_X86_ASM=no}
+%{?_without_alsa:%define alsa_buildopt USE_ALSA=no}
+%{?_without_midi:%define midi_buildopt USE_MIDI=no}
+%{?_without_timidity:%define timidity_buildopt USE_CODEC_TIMIDITY=no}
+%{?_without_wavmusic:%define wavmusic_buildopt USE_CODEC_WAVE=no}
+%{?_without_mp3:%define mp3_buildopt USE_CODEC_MP3=no}
+%{?_without_ogg:%define ogg_buildopt USE_CODEC_VORBIS=no}
+# all build options passed to makefile
+%define engine_buildopt	%{asm_buildopt} %{alsa_buildopt} %{midi_buildopt} %{timidity_buildopt} %{wavmusic_buildopt} %{mp3_buildopt} %{ogg_buildopt}
 
 %define desktop_vendor	uhexen2
 
@@ -45,14 +74,19 @@ Source1:	http://download.sourceforge.net/uhexen2/hexen2source-gamecode-%{version
 Source2:	http://download.sourceforge.net/uhexen2/hexenworld-pakfiles-0.15.tgz
 BuildRoot:	%{_tmppath}/%{name}-%{version}-build
 BuildRequires:	SDL-devel >= 1.2.4
-%{!?_without_midi:BuildRequires:  SDL_mixer-devel >= 1.2.4}
+%{!?_without_mp3:BuildRequires:  libmad-devel}
+%{!?_without_ogg:BuildRequires:  libogg-devel libvorbis-devel}
 %{!?_without_asm:BuildRequires:  nasm >= 0.98}
 %{!?_without_freedesktop:BuildRequires: desktop-file-utils}
 %{?_without_gtk2:BuildRequires:  gtk+-devel}
 %{!?_without_gtk2:BuildRequires: gtk2-devel}
 Obsoletes:	hexen2-missionpack
 Requires:	SDL >= 1.2.4
-%{!?_without_midi:Requires: SDL_mixer >= 1.2.4}
+# timidity++-patches requirement is non-fatal
+#%{!?_without_timidity:Requires: timidity++-patches}
+# these will be picked by rpm already
+#%{!?_without_mp3:Requires: libmad}
+#%{!?_without_ogg:Requires: libvorbis}
 
 %description
 Hexen II is a class based shooter game by Raven Software from 1997.
@@ -66,7 +100,11 @@ versions of the game.
 Group:		Amusements/Games
 Summary:	HexenWorld Client and Server
 Requires:	SDL >= 1.2.4
-%{!?_without_midi:Requires: SDL_mixer >= 1.2.4}
+# timidity++-patches requirement is non-fatal
+#%{!?_without_timidity:Requires: timidity++-patches}
+# these will be picked by rpm already
+#%{!?_without_mp3:Requires: libmad}
+#%{!?_without_ogg:Requires: libvorbis}
 Requires:	hexen2 >= 1.4.3
 
 %description -n hexenworld
@@ -78,50 +116,30 @@ run a HexenWorld server or client, and a master server application.
 
 %prep
 %setup -q -n hexen2source-%{version}%{?prerelease:-%{prerelease}} -a1 -a2
-%if %{?_without_asm:1}0
-%__sed -i 's/USE_X86_ASM=yes/USE_X86_ASM=no/' engine/hexen2/Makefile engine/hexenworld/client/Makefile
-%endif
-%if %{?_without_alsa:1}0
-%__sed -i 's/USE_ALSA=yes/USE_ALSA=no/' engine/hexen2/Makefile engine/hexenworld/client/Makefile
-%endif
-%if %{?_without_midi:1}0
-%__sed -i 's/USE_MIDI=yes/USE_MIDI=no/' engine/hexen2/Makefile engine/hexenworld/client/Makefile
-%endif
 
 %build
 # Build the main game binaries
-%{__make} -C engine/hexen2 h2
+%{__make} -C engine/hexen2 %{engine_buildopt} h2
 %{__make} -s -C engine/hexen2 clean
-%{__make} -C engine/hexen2 glh2
+%{__make} -C engine/hexen2 %{engine_buildopt} glh2
 %{__make} -s -C engine/hexen2 clean
 # Build the dedicated server
 %{__make} -C engine/hexen2 -f Makefile.sv
 # HexenWorld binaries
 %{__make} -C engine/hexenworld/server
-%{__make} -C engine/hexenworld/client hw
+%{__make} -C engine/hexenworld/client %{engine_buildopt} hw
 %{__make} -s -C engine/hexenworld/client clean
-%{__make} -C engine/hexenworld/client glhw
+%{__make} -C engine/hexenworld/client %{engine_buildopt} glhw
 # HexenWorld master server
 %{__make} -C hw_utils/hwmaster
 
 # Build xdelta binary and its libraries: do this before
 # building the launcher, it uses its object files.
-%if %{!?_without_gtk2:1}0
-# Build for GLIB2
-%{__make} -C libs/xdelta11 -f Makefile.xd
-%else
-# Build for GLIB1.2
-%{__make} GLIB1=yes -C libs/xdelta11 -f Makefile.xd
-%endif
+%{__make} -C libs/xdelta11 -f Makefile.xd %{glib1_buildopt}
 
 # Launcher binaries
-%if %{!?_without_gtk2:1}0
-# Build for GTK2
-%{__make} -C launcher
-%else
-# Build for GTK1.2
-%{__make} GTK1=yes -C launcher
-%endif
+%{__make} -C launcher %{gtk1_buildopt}
+
 # Build the hcode compilers
 %{__make} -C utils/hcc_old
 %{__make} -C utils/hcc
@@ -157,6 +175,7 @@ utils/bin/hcc -src gamecode-%{gamecode_ver}/hc/hw -oi -on
 %{__install} -D -m644 docs/ABOUT %{buildroot}/%{_prefix}/games/%{name}/docs/ABOUT
 %{__install} -D -m644 docs/Features %{buildroot}/%{_prefix}/games/%{name}/docs/Features
 %{__install} -D -m644 docs/CHANGES %{buildroot}/%{_prefix}/games/%{name}/docs/CHANGES
+%{__install} -D -m644 docs/README.music %{buildroot}/%{_prefix}/games/%{name}/docs/README.music
 %{__install} -D -m644 docs/README.3dfx %{buildroot}/%{_prefix}/games/%{name}/docs/README.3dfx
 %{__install} -D -m644 docs/README.launcher %{buildroot}/%{_prefix}/games/%{name}/docs/README.launcher
 %{__install} -D -m644 docs/README.hwcl %{buildroot}/%{_prefix}/games/%{name}/docs/README.hwcl
@@ -206,7 +225,7 @@ utils/bin/hcc -src gamecode-%{gamecode_ver}/hc/hw -oi -on
 
 # Install the menu icon
 %{__mkdir_p} %{buildroot}/%{_datadir}/pixmaps
-%{__install} -D -m644 engine/hexen2/icons/h2_32x32x4.png %{buildroot}/%{_datadir}/pixmaps/%{name}.png
+%{__install} -D -m644 engine/resource/h2_32x32x4.png %{buildroot}/%{_datadir}/pixmaps/%{name}.png
 
 # Install menu entry
 %{__cat} > %{name}.desktop << EOF
@@ -265,6 +284,7 @@ desktop-file-install \
 %{_prefix}/games/%{name}/docs/ABOUT
 %{_prefix}/games/%{name}/docs/Features
 %{_prefix}/games/%{name}/docs/CHANGES
+%{_prefix}/games/%{name}/docs/README.music
 %{_prefix}/games/%{name}/docs/README.launcher
 %{_prefix}/games/%{name}/docs/README.3dfx
 %{_prefix}/games/%{name}/docs/TODO
@@ -295,6 +315,13 @@ desktop-file-install \
 %{_prefix}/games/%{name}/docs/README.hwmaster
 
 %changelog
+* Sun Dec 19 2010 O.Sezer <sezero@users.sourceforge.net>
+- Added new build options after the music playback changes.
+- Dropped SDL_mixer dependency which is not used anymore.
+- Added README.music among the installed documents.
+- Reworked the style we use for passing the build options to the makefiles.
+- Fixed icon path.
+
 * Fri Dec 17 2010 O.Sezer <sezero@users.sourceforge.net>
 - Moved xdelta under the libs directory.
 
