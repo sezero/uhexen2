@@ -1,3 +1,0 @@
-EXPORTS
-	DirectDrawCreate@12
-	DirectDrawEnumerateA@8

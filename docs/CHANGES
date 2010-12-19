@@ -4,6 +4,7 @@ Development Progress	:
 ---------------------------
 
 2010-12-18 (CVS):
+    * reorganized scitech and dxsdk directories under w32stuff.
     * added libmad, libogg and libvorbis headers and import libraries
       for windows builds under w32stuff/codecs.
 

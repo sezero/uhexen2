@@ -308,7 +308,7 @@ LIBWINSOCK=-lwsock32
 endif
 
 CFLAGS  := $(CFLAGS) -DWIN32_LEAN_AND_MEAN
-INCLUDES:= -I$(W32STUFF) -I$(W32STUFF)/dxsdk/inc -I. -I$(COMMON_HW) -I$(COMMONDIR)
+INCLUDES:= -I$(W32STUFF) -I$(W32STUFF)/dxsdk/include -I. -I$(COMMON_HW) -I$(COMMONDIR)
 LDFLAGS := $(LIBWINSOCK) -lwinmm -mwindows
 
 ifneq ($(USE_MGL),yes)
@@ -320,7 +320,7 @@ endif
 ifeq ($(LINK_DIRECTX),no)
 EXT_FLAGS+= -DDX_DLSYM
 else
-LDFLAGS += -L$(W32STUFF)/dxsdk/lib -ldsound -ldinput -ldxguid
+LDFLAGS += -L$(W32STUFF)/dxsdk/x86 -ldsound -ldinput -ldxguid
 endif
 
 ifeq ($(WITH_SPLASHES),no)
@@ -358,13 +358,13 @@ LIBWINSOCK=-lwsock32
 endif
 
 CFLAGS  := $(CFLAGS) -DWIN32_LEAN_AND_MEAN
-INCLUDES:= -I$(W32STUFF) -I$(W32STUFF)/dxsdk_new/inc -I. -I$(COMMON_HW) -I$(COMMONDIR)
+INCLUDES:= -I$(W32STUFF) -I$(W32STUFF)/dxsdk_new/include -I. -I$(COMMON_HW) -I$(COMMONDIR)
 LDFLAGS := $(LIBWINSOCK) -lwinmm -mwindows
 
 ifeq ($(LINK_DIRECTX),no)
 EXT_FLAGS+= -DDX_DLSYM
 else
-LDFLAGS += -ldsound -ldinput -ldxguid
+LDFLAGS += -L$(W32STUFF)/dxsdk/x64 -ldsound -ldinput -ldxguid
 endif
 
 ifeq ($(WITH_SPLASHES),no)

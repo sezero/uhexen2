@@ -238,8 +238,8 @@ endif
 
 ifeq ($(TARGET_OS),win32)
 MGL_FLAG:= -DMGL_DLL
-MGL_INCL:= -I$(W32STUFF)/scitech
-MGL_LINK:= -L$(W32STUFF)/scitech -lmglfx
+MGL_INCL:= -I$(W32STUFF)/scitech/include
+MGL_LINK:= -L$(W32STUFF)/scitech/x86 -lmglfx
 else
 MGL_FLAG:=
 MGL_INCL:=
