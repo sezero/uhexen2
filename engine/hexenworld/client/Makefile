@@ -55,10 +55,8 @@
 #		NOTE :	SDL dropped support for cd audio in version 1.3.0 and
 #			later!
 #
-# USE_MIDI :	yes  =	Include MIDI music support (default).
-#		no   =	Don't include MIDI music support.
-#		On Unix, MIDI needs SDL_mixer (built with Timidity support)
-#		and Timidity patches.
+# USE_MIDI :	yes  =	Include target's MIDI driver if available (default).
+#		no   =	Don't include MIDI driver.
 #
 # WITH_SPLASHES	yes  =	(default) enable startup splash screens
 # (for Win32)	no   =	disable startup splash screens
@@ -143,6 +141,13 @@ LINK_GL_LIBS=no
 USE_3DFXGAMMA=no
 USE_X86_ASM=yes
 COMPILE_32BITS=no
+# Enable/disable codecs for streaming music support:
+USE_CODEC_WAVE=yes
+USE_CODEC_MP3=yes
+USE_CODEC_VORBIS=yes
+USE_CODEC_TIMIDITY=yes
+# wildmidi is not supported
+USE_CODEC_WILDMIDI=no
 
 # include the common dirty stuff
 include $(UHEXEN2_TOP)/scripts/makefile.inc
@@ -300,6 +305,11 @@ endif
 #############################################################
 ifeq ($(TARGET_OS),win32)
 
+# timidity not needed, we have a midi driver. if you want it,
+# comment out the following
+USE_CODEC_TIMIDITY=no
+USE_CODEC_WILDMIDI=no
+
 ifeq ($(USE_WINSOCK2),yes)
 EXT_FLAGS+= -D_USE_WINSOCK2
 LIBWINSOCK=-lws2_32
@@ -332,6 +342,17 @@ else
 #GLFLAGS+=-lcomctl32
 endif
 
+ifeq ($(USE_CODEC_VORBIS),yes)
+CODEC_INC := -I$(W32STUFF)/codecs/include
+CODEC_LINK:= -L$(W32STUFF)/codecs/x86
+endif
+ifeq ($(USE_CODEC_MP3),yes)
+CODEC_INC := -I$(W32STUFF)/codecs/include
+CODEC_LINK:= -L$(W32STUFF)/codecs/x86
+endif
+INCLUDES += $(CODEC_INC)
+LDFLAGS += $(CODEC_LINK)
+
 endif
 # End of Win32 settings
 #############################################################
@@ -341,6 +362,11 @@ endif
 # Win64 extra flags/settings
 #############################################################
 ifeq ($(TARGET_OS),win64)
+
+# timidity not needed, we have a midi driver. if you want it,
+# comment out the following
+USE_CODEC_TIMIDITY=no
+USE_CODEC_WILDMIDI=no
 
 # cant use MGL for Win64
 USE_MGL=no
@@ -376,8 +402,55 @@ else
 #GLFLAGS+=-lcomctl32
 endif
 
+ifeq ($(USE_CODEC_VORBIS),yes)
+CODEC_INC := -I$(W32STUFF)/codecs/include
+CODEC_LINK:= -L$(W32STUFF)/codecs/x64
+endif
+ifeq ($(USE_CODEC_MP3),yes)
+CODEC_INC := -I$(W32STUFF)/codecs/include
+CODEC_LINK:= -L$(W32STUFF)/codecs/x64
+endif
+INCLUDES += $(CODEC_INC)
+LDFLAGS += $(CODEC_LINK)
+
 endif
 # End of Win64 settings
+#############################################################
+
+
+#############################################################
+# Streaming music settings
+#############################################################
+ifneq ($(USE_SOUND),yes)
+# if no sound, disable them:
+USE_CODEC_WAVE=no
+USE_CODEC_TIMIDITY=no
+USE_CODEC_WILDMIDI=no
+USE_CODEC_MP3=no
+USE_CODEC_VORBIS=no
+endif
+
+ifeq ($(USE_CODEC_WAVE),yes)
+EXT_FLAGS+= -DUSE_CODEC_WAVE
+endif
+ifeq ($(USE_CODEC_VORBIS),yes)
+EXT_FLAGS+= -DUSE_CODEC_VORBIS
+LDFLAGS+= -lvorbis -lvorbisfile -logg
+endif
+ifeq ($(USE_CODEC_MP3),yes)
+EXT_FLAGS+= -DUSE_CODEC_MP3
+LDFLAGS+= -lmad
+endif
+ifeq ($(USE_CODEC_TIMIDITY),yes)
+EXT_FLAGS+= -DUSE_CODEC_TIMIDITY
+LDFLAGS+= -L$(LIBS_DIR)/timidity -ltimidity
+endif
+ifeq ($(USE_CODEC_WILDMIDI),yes)
+EXT_FLAGS+= -DUSE_CODEC_WILDMIDI
+LDFLAGS+= -lWildMidi
+endif
+
+# End of streaming music settings
 #############################################################
 
 
@@ -456,12 +529,20 @@ endif
 
 # Sound objects
 ifneq ($(USE_SOUND),yes)
+MUSIC_OBJS:= bgmnull.o
 SOUND_ASM :=
 EXT_FLAGS += -D_NO_SOUND
 SYSOBJ_SND :=
-COMOBJ_SND := snd_null.o
+COMOBJ_SND := snd_null.o $(MUSIC_OBJS)
 else
-COMOBJ_SND := snd_sys.o snd_dma.o snd_mix.o $(SOUND_ASM) snd_mem.o
+MUSIC_OBJS:= bgmusic.o \
+	snd_codec.o \
+	snd_wave.o \
+	snd_vorbis.o \
+	snd_mp3.o \
+	snd_timidity.o \
+	snd_wildmidi.o
+COMOBJ_SND := snd_sys.o snd_dma.o snd_mix.o $(SOUND_ASM) snd_mem.o $(MUSIC_OBJS)
 ifeq ($(TARGET_OS),win32)
 SYSOBJ_SND := snd_win.o
 endif
@@ -489,9 +570,8 @@ ifeq ($(TARGET_OS),unix)
 ifeq ($(HOST_OS),darwin)
 SYSOBJ_MIDI:= midi_mac.o
 else
-SYSOBJ_MIDI:= midi_sdl.o
-SDLLINK+= -lSDL_mixer
-EXT_FLAGS += -D_MIDI_SDLMIXER
+SYSOBJ_MIDI:= midi_nul.o
+EXT_FLAGS += -D_NO_MIDIDRV
 endif
 endif
 # end of MIDI objects
@@ -652,6 +732,12 @@ help:
 
 hwcl: hw
 glhwcl: glhw
+
+# extra rule for snd_timidity.c because of timidity/timidity.h and libtimidity.a
+snd_timidity.o: $(COMMONDIR)/snd_timidity.c $(LIBS_DIR)/timidity/libtimidity.a
+	$(CC) -c $(CFLAGS) $(EXT_FLAGS) $(SDLFLAGS) $(INCLUDES) -I$(LIBS_DIR) -o $@ $<
+$(LIBS_DIR)/timidity/libtimidity.a:
+	$(MAKE) -C $(LIBS_DIR)/timidity CC="$(CC)" AR="$(AR)" RANLIB="$(RANLIB)"
 
 hw: EXT_FLAGS+=$(MGL_FLAG)
 hw: INCLUDES+=$(MGL_INCL)

@@ -6,34 +6,17 @@
 */
 
 #include "quakedef.h"
+#include "bgmusic.h"
+#include "midi_drv.h"
 
 qboolean MIDI_Init (void)
 {
+	/* don't bother doing BGM_RegisterMidiDRV() */
 	Con_Printf("MIDI_DRV: disabled at compile time.\n");
 	return false;
 }
 
-void MIDI_Play(const char *Name)
-{
-}
-
-void MIDI_Pause(int mode)
-{
-}
-
-void MIDI_Loop(int mode)
-{
-}
-
-void MIDI_Stop(void)
-{
-}
-
 void MIDI_Cleanup(void)
-{
-}
-
-void MIDI_Update(void)
 {
 }
 

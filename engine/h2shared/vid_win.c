@@ -9,7 +9,7 @@
 	- TODO: Add DDRAW (see Quake2)
 	- TODO: Better video mode management? Early config reading?
 
-	$Id: vid_win.c,v 1.68 2010-08-28 10:05:24 sezero Exp $
+	$Id$
 
 	Copyright (C) 1996-1997  Id Software, Inc.
 
@@ -33,6 +33,7 @@
 */
 
 #include "quakedef.h"
+#include "bgmusic.h"
 #include "winquake.h"
 #include <mmsystem.h>
 #include "d_local.h"

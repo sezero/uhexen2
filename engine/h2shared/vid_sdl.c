@@ -3,7 +3,7 @@
 	SDL video driver
 	Select window size and mode and init SDL in SOFTWARE mode.
 
-	$Id: vid_sdl.c,v 1.89 2010-03-23 18:00:08 sezero Exp $
+	$Id$
 
 	Changed by S.A. 7/11/04, 27/12/04
 	Options are now: -fullscreen | -window, -height , -width
@@ -17,6 +17,7 @@
 #include "quakedef.h"
 #include "d_local.h"
 #include "cfgfile.h"
+#include "bgmusic.h"
 #include "sdl_inc.h"
 
 #define MIN_WIDTH		320
@@ -542,7 +543,7 @@ static void VID_ChangeVideoMode (int newmode)
 	temp = scr_disabled_for_loading;
 	scr_disabled_for_loading = true;
 	CDAudio_Pause ();
-	MIDI_Pause (MIDI_ALWAYS_PAUSE);
+	BGM_Pause ();
 	S_ClearBuffer ();
 
 	stat = VID_SetMode (newmode, vid_curpal);
@@ -560,7 +561,7 @@ static void VID_ChangeVideoMode (int newmode)
 	}
 
 	CDAudio_Resume (); 
-	MIDI_Pause (MIDI_ALWAYS_RESUME);
+	BGM_Resume ();
 	scr_disabled_for_loading = temp;
 }
 

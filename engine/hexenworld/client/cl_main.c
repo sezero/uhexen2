@@ -16,6 +16,7 @@
 #include "huffman.h"
 #include "cfgfile.h"
 #include "debuglog.h"
+#include "bgmusic.h"
 
 static	cvar_t	rcon_password = {"rcon_password", "", CVAR_NONE};
 static	cvar_t	rcon_address = {"rcon_address", "", CVAR_NONE};
@@ -361,7 +362,7 @@ void CL_Disconnect (void)
 	cl_siege = false;
 // stop sounds (especially looping!)
 	S_StopAllSounds (true);
-	MIDI_Stop();
+	BGM_Stop();
 	CDAudio_Stop();
 
 // if running a local server, shut it down
@@ -1329,6 +1330,7 @@ void Host_Frame (float time)
 		time2 = Sys_DoubleTime ();
 
 	// update audio
+	BGM_Update();	// adds music raw samples and/or advances midi driver
 	if (cls.state == ca_active)
 	{
 		S_Update (r_origin, vpn, vright, vup);
@@ -1340,7 +1342,6 @@ void Host_Frame (float time)
 	}
 
 	CDAudio_Update();
-	MIDI_Update();
 
 	if (host_speeds.integer)
 	{
@@ -1414,6 +1415,7 @@ void Host_Init (void)
 	S_Init ();
 	CDAudio_Init ();
 	MIDI_Init ();
+	BGM_Init ();
 
 	CL_Init ();
 	IN_Init ();
@@ -1468,6 +1470,7 @@ void Host_Shutdown(void)
 
 	Host_WriteConfiguration ("config.cfg"); 
 
+	BGM_Shutdown ();
 	CDAudio_Shutdown ();
 	MIDI_Cleanup ();
 	NET_Shutdown ();

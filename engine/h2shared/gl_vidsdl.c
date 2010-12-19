@@ -18,6 +18,7 @@
 
 #include "quakedef.h"
 #include "cfgfile.h"
+#include "bgmusic.h"
 #include "sdl_inc.h"
 #include <unistd.h>
 
@@ -1147,7 +1148,7 @@ static void VID_ChangeVideoMode (int newmode)
 	// restore gamma, reset gamma function pointers
 	VID_ShutdownGamma();
 	CDAudio_Pause ();
-	MIDI_Pause (MIDI_ALWAYS_PAUSE);
+	BGM_Pause ();
 	S_ClearBuffer ();
 
 	// Unload all textures and reset texture counts
@@ -1207,7 +1208,7 @@ static void VID_ChangeVideoMode (int newmode)
 	IN_ReInit ();
 	ClearAllStates ();
 	CDAudio_Resume ();
-	MIDI_Pause (MIDI_ALWAYS_RESUME);
+	BGM_Resume ();
 
 	// Reload model textures and player skins
 	Mod_ReloadTextures();

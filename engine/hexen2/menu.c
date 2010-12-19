@@ -1,7 +1,7 @@
 /*
 	menu.c
 
-	$Header: /cvsroot/uhexen2/engine/hexen2/menu.c,v 1.111 2010-10-30 08:55:22 sezero Exp $
+	$Id$
 */
 
 #include "q_stdinc.h"
@@ -9,6 +9,7 @@
 #include "net_sys.h"	/* FIXME */
 #include "quakedef.h"
 #include "net_defs.h"	/* FIXME */
+#include "bgmusic.h"
 #include "r_shared.h"
 
 void (*vid_menudrawfn)(void);
@@ -5125,17 +5126,17 @@ static void BGM_RestartMusic (void)
 	if (q_strcasecmp(bgmtype.string,"midi") == 0)
 	{
 		CDAudio_Stop();
-		MIDI_Play(cl.midi_name);
+		BGM_Play(cl.midi_name);
 	}
 	else if (q_strcasecmp(bgmtype.string,"cd") == 0)
 	{
-		MIDI_Stop();
+		BGM_Stop();
 		CDAudio_Play ((byte)cl.cdtrack, true);
 	}
 	else
 	{
 		CDAudio_Stop();
-		MIDI_Stop();
+		BGM_Stop();
 	}
 }
 

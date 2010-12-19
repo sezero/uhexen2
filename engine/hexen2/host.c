@@ -2,12 +2,13 @@
 	host.c
 	coordinates spawning and killing of local servers
 
-	$Header: /cvsroot/uhexen2/engine/hexen2/host.c,v 1.99 2010-11-14 08:21:23 sezero Exp $
+	$Id$
 */
 
 #include "quakedef.h"
 #include "cfgfile.h"
 #include "debuglog.h"
+#include "bgmusic.h"
 #include <setjmp.h>
 #include <ctype.h>
 
@@ -944,6 +945,7 @@ static void _Host_Frame (float time)
 		time2 = Sys_DoubleTime ();
 
 // update audio
+	BGM_Update();	// adds music raw samples and/or advances midi driver
 	if (cls.signon == SIGNONS)
 	{
 		S_Update (r_origin, vpn, vright, vup);
@@ -953,7 +955,6 @@ static void _Host_Frame (float time)
 		S_Update (vec3_origin, vec3_origin, vec3_origin, vec3_origin);
 
 	CDAudio_Update();
-	MIDI_Update();
 
 	if (host_speeds.integer)
 	{
@@ -1061,6 +1062,7 @@ void Host_Init (void)
 		S_Init ();
 		CDAudio_Init();
 		MIDI_Init();
+		BGM_Init();
 
 		CL_Init();
 		IN_Init();
@@ -1136,6 +1138,7 @@ void Host_Shutdown(void)
 
 	if (cls.state != ca_dedicated)
 	{
+		BGM_Shutdown();
 		CDAudio_Shutdown ();
 		MIDI_Cleanup();
 		S_Shutdown();

@@ -5,6 +5,7 @@
 */
 
 #include "quakedef.h"
+#include "bgmusic.h"
 #include "r_shared.h"
 
 void (*vid_menudrawfn)(void);
@@ -2986,17 +2987,17 @@ static void BGM_RestartMusic (void)
 	if (q_strcasecmp(bgmtype.string,"midi") == 0)
 	{
 		CDAudio_Stop();
-		MIDI_Play(cl.midi_name);
+		BGM_Play(cl.midi_name);
 	}
 	else if (q_strcasecmp(bgmtype.string,"cd") == 0)
 	{
-		MIDI_Stop();
+		BGM_Stop();
 		CDAudio_Play ((byte)cl.cdtrack, true);
 	}
 	else
 	{
 		CDAudio_Stop();
-		MIDI_Stop();
+		BGM_Stop();
 	}
 }
 

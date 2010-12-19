@@ -2,10 +2,11 @@
 	cl_parse.c
 	parse a message received from the server
 
-	$Header: /cvsroot/uhexen2/engine/hexenworld/client/cl_parse.c,v 1.55 2010-03-01 18:15:16 sezero Exp $
+	$Id$
 */
 
 #include "quakedef.h"
+#include "bgmusic.h"
 #include "r_shared.h"
 
 static const char *svc_strings[] =
@@ -1393,9 +1394,9 @@ void CL_ParseServerMessage (void)
 		case svc_midi_name:
 			q_strlcpy (cl.midi_name, MSG_ReadString(), sizeof(cl.midi_name));
 			if (q_strcasecmp(bgmtype.string,"midi") == 0)
-				MIDI_Play(cl.midi_name);
+				BGM_Play(cl.midi_name);
 			else
-				MIDI_Stop();
+				BGM_Stop();
 			break;
 
 		case svc_intermission:

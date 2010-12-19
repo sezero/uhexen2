@@ -16,6 +16,7 @@
 #include "mid2strm.h"
 #include "midstuff.h"
 #include "quakedef.h"
+#include "bgmusic.h"
 
 // Global stuff which is defined in the main module
 //
@@ -36,7 +37,6 @@ static DWORD	dwMallocBlocks = 0;
 
 extern DWORD	dwBufferTickLength, dwTempoMultiplier, dwCurrentTempo;
 extern DWORD	dwProgressBytes, dwVolumePercent;
-extern qboolean	bLooped;
 
 // Messages
 //
@@ -414,7 +414,7 @@ int ConvertToBuffer (DWORD dwFlags, LPCONVERTINFO lpciInfo)
 	// If we were already done, then return with a warning...
 	if (dwStatus & CONVERTF_STATUS_DONE)
 	{
-		if (bLooped)
+		if (bgmloop)
 		{
 			RewindConverter();
 			dwProgressBytes = 0;

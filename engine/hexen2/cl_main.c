@@ -1,11 +1,12 @@
 /*
 	cl_main.c
-	client main loop
+	hexen2 client main loop
 
-	$Header: /cvsroot/uhexen2/engine/hexen2/cl_main.c,v 1.44 2008-05-14 08:37:20 sezero Exp $
+	$Id$
 */
 
 #include "quakedef.h"
+#include "bgmusic.h"
 
 // we need to declare some mouse variables here, because the menu system
 // references them even when on a unix system.
@@ -98,7 +99,7 @@ void CL_Disconnect (void)
 {
 	R_ClearParticles ();	//jfm: need to clear parts because some now check world
 	S_StopAllSounds (true);	// stop sounds (especially looping!)
-	MIDI_Stop();
+	BGM_Stop();
 	CDAudio_Stop();
 	loading_stage = 0;
 

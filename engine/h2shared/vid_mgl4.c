@@ -2,11 +2,12 @@
 	vid_mgl4.c
 	Win32 video driver using SciTech MGL-4.05
 
-	$Id: vid_mgl4.c,v 1.2 2010-08-28 10:05:24 sezero Exp $
+	$Id$
 */
 
 #include "quakedef.h"
 #include "winquake.h"
+#include "bgmusic.h"
 #include <mmsystem.h>
 #include "d_local.h"
 #include "resource.h"
@@ -386,7 +387,7 @@ static int VID_Suspend (MGLDC *dc, int flags)
 	{
 		IN_RestoreOriginalMouseState ();
 		CDAudio_Pause ();
-		MIDI_Pause (MIDI_ALWAYS_PAUSE);
+		BGM_Pause ();
 
 		// keep WM_PAINT from trying to redraw
 		in_mode_set = true;
@@ -398,7 +399,7 @@ static int VID_Suspend (MGLDC *dc, int flags)
 		// fix the leftover Alt from any Alt-Tab or the like that switched us away
 		ClearAllStates ();
 		CDAudio_Resume ();
-		MIDI_Pause (MIDI_ALWAYS_RESUME);
+		BGM_Resume ();
 		in_mode_set = false;
 
 		block_drawing = false;

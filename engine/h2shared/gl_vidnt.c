@@ -9,6 +9,7 @@
 #include "winquake.h"
 #include <mmsystem.h>
 #include "cfgfile.h"
+#include "bgmusic.h"
 #include "resource.h"
 #include "wgl_func.h"
 #if !USE_HEXEN2_PALTEX_CODE && !defined(NO_SPLASHES)
@@ -1884,7 +1885,7 @@ static void VID_ChangeVideoMode (int newmode)
 	if (maindc && gammaworks && SetDeviceGammaRamp_f)
 		SetDeviceGammaRamp_f(maindc, orig_ramps);
 	CDAudio_Pause ();
-	MIDI_Pause (MIDI_ALWAYS_PAUSE);
+	BGM_Pause ();
 	S_ClearBuffer ();
 
 	// Unload all textures and reset texture counts
@@ -1972,7 +1973,7 @@ static void VID_ChangeVideoMode (int newmode)
 
 	IN_ReInit ();
 	CDAudio_Resume ();
-	MIDI_Pause (MIDI_ALWAYS_RESUME);
+	BGM_Resume ();
 
 	// Reload model textures and player skins
 	Mod_ReloadTextures();

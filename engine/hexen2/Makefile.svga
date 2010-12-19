@@ -30,9 +30,8 @@
 # USE_CDAUDIO :	yes  =	Include CDAudio support (default).
 #		no   =	Don't include CDAudio support.
 #
-# USE_MIDI :	yes  =	Include MIDI music support.
-#		no   =	Don't include MIDI music support (default).
-#		Midi support isn't implemented yet.
+# USE_MIDI :	yes  =	Include target's MIDI driver if available (default).
+#		no   =	Don't include MIDI driver.
 #
 # OPT_EXTRA	yes  =  Some extra optimization flags will be added (default)
 #		no   =	No extra optimizations will be made
@@ -74,6 +73,13 @@ USE_OSS=yes
 USE_MIDI=no
 USE_CDAUDIO=yes
 OPT_EXTRA=yes
+# Enable/disable codecs for streaming music support:
+USE_CODEC_WAVE=yes
+USE_CODEC_MP3=yes
+USE_CODEC_VORBIS=yes
+USE_CODEC_TIMIDITY=yes
+# wildmidi is not supported
+USE_CODEC_WILDMIDI=no
 
 # include the common dirty stuff
 include $(UHEXEN2_TOP)/scripts/makefile.inc
@@ -179,6 +185,42 @@ endif
 
 
 #############################################################
+# Streaming music settings
+#############################################################
+ifneq ($(USE_SOUND),yes)
+# if no sound, disable them:
+USE_CODEC_WAVE=no
+USE_CODEC_TIMIDITY=no
+USE_CODEC_WILDMIDI=no
+USE_CODEC_MP3=no
+USE_CODEC_VORBIS=no
+endif
+
+ifeq ($(USE_CODEC_WAVE),yes)
+EXT_FLAGS+= -DUSE_CODEC_WAVE
+endif
+ifeq ($(USE_CODEC_VORBIS),yes)
+EXT_FLAGS+= -DUSE_CODEC_VORBIS
+LDFLAGS+= -lvorbis -lvorbisfile -logg
+endif
+ifeq ($(USE_CODEC_MP3),yes)
+EXT_FLAGS+= -DUSE_CODEC_MP3
+LDFLAGS+= -lmad
+endif
+ifeq ($(USE_CODEC_TIMIDITY),yes)
+EXT_FLAGS+= -DUSE_CODEC_TIMIDITY
+LDFLAGS+= -L$(LIBS_DIR)/timidity -ltimidity
+endif
+ifeq ($(USE_CODEC_WILDMIDI),yes)
+EXT_FLAGS+= -DUSE_CODEC_WILDMIDI
+LDFLAGS+= -lWildMidi
+endif
+
+# End of streaming music settings
+#############################################################
+
+
+#############################################################
 # any other settings/flags
 #############################################################
 ifeq ($(COMPILE_32BITS),yes)
@@ -235,12 +277,20 @@ WORLD_ASM = worlda.o
 
 # Sound objects
 ifneq ($(USE_SOUND),yes)
+MUSIC_OBJS:= bgmnull.o
 SOUND_ASM :=
 EXT_FLAGS += -D_NO_SOUND
 SYSOBJ_SND :=
-COMOBJ_SND := snd_null.o
+COMOBJ_SND := snd_null.o $(MUSIC_OBJS)
 else
-COMOBJ_SND := snd_sys.o snd_dma.o snd_mix.o $(SOUND_ASM) snd_mem.o
+MUSIC_OBJS:= bgmusic.o \
+	snd_codec.o \
+	snd_wave.o \
+	snd_vorbis.o \
+	snd_mp3.o \
+	snd_timidity.o \
+	snd_wildmidi.o
+COMOBJ_SND := snd_sys.o snd_dma.o snd_mix.o $(SOUND_ASM) snd_mem.o $(MUSIC_OBJS)
 SYSOBJ_SND := snd_oss.o snd_alsa.o
 # end of Sound objects
 endif
@@ -364,6 +414,12 @@ default: h2
 all: default
 
 hexen2: h2
+
+# extra rule for snd_timidity.c because of timidity/timidity.h and libtimidity.a
+snd_timidity.o: $(COMMONDIR)/snd_timidity.c $(LIBS_DIR)/timidity/libtimidity.a
+	$(CC) -c $(CFLAGS) $(EXT_FLAGS) $(SDLFLAGS) $(INCLUDES) -I$(LIBS_DIR) -o $@ $<
+$(LIBS_DIR)/timidity/libtimidity.a:
+	$(MAKE) -C $(LIBS_DIR)/timidity CC="$(CC)" AR="$(AR)" RANLIB="$(RANLIB)"
 
 h2: $(SOFT_ASM) $(SOFTOBJS) $(COMMON_ASM) $(COMMONOBJS)
 	$(LINKER) -o $(H2_BINARY) $(SOFT_ASM) $(SOFTOBJS) $(COMMON_ASM) $(COMMONOBJS) $(LDFLAGS)

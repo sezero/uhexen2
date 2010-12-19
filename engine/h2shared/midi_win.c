@@ -16,14 +16,39 @@
 #include "mid2strm.h"
 #include "quakedef.h"
 #include "winquake.h"
+#include "bgmusic.h"
+#include "midi_drv.h"
 
 
-static qboolean	bMidiInited, bFileOpen, bPlaying, bBuffersPrepared, bPaused;
-qboolean	bLooped;
+/* prototypes of functions exported to BGM: */
+static void *MIDI_Play (const char *Name);
+static void MIDI_Update (void **handle);
+static void MIDI_Rewind (void **handle);
+static void MIDI_Stop (void **handle);
+static void MIDI_Pause (void **handle);
+static void MIDI_Resume (void **handle);
+static void MIDI_SetVolume (void **handle, float value);
+
+static midi_driver_t midi_win_ms =
+{
+	false, /* init success */
+	"midiStream for Windows",
+	MIDI_Init,
+	MIDI_Cleanup,
+	MIDI_Play,
+	MIDI_Update,
+	MIDI_Rewind,
+	MIDI_Stop,
+	MIDI_Pause,
+	MIDI_Resume,
+	MIDI_SetVolume,
+	NULL
+};
+
+static qboolean	bFileOpen, bPlaying, bBuffersPrepared, bPaused;
 static UINT	uMIDIDeviceID = MIDI_MAPPER, uCallbackStatus;
 static int	nCurrentBuffer, nEmptyBuffers;
 DWORD		dwBufferTickLength, dwTempoMultiplier, dwCurrentTempo, dwProgressBytes;
-static float	old_volume = -1.0f;
 static DWORD	dwVolCache[NUM_CHANNELS];
 static qboolean	hw_vol_capable = false;
 
@@ -51,70 +76,48 @@ static void MidiErrorMessageBox (MMRESULT mmr)
 	Con_Printf("MIDI_DRV: %s\n", temp);
 }
 
-static void MIDI_Play_f (void)
-{
-	if (Cmd_Argc () == 2)
-	{
-		MIDI_Play(Cmd_Argv(1));
-	}
-}
-
-static void MIDI_Stop_f (void)
-{
-	MIDI_Stop();
-}
-
-static void MIDI_Pause_f (void)
-{
-	MIDI_Pause (MIDI_TOGGLE_PAUSE);
-}
-
-static void MIDI_Loop_f (void)
-{
-	if (Cmd_Argc () == 2)
-	{
-		if (q_strcasecmp(Cmd_Argv(1),"on") == 0 || q_strcasecmp(Cmd_Argv(1),"1") == 0)
-			MIDI_Loop(MIDI_ENABLE_LOOP);
-		else if (q_strcasecmp(Cmd_Argv(1),"off") == 0 || q_strcasecmp(Cmd_Argv(1),"0") == 0)
-			MIDI_Loop(MIDI_DISABLE_LOOP);
-		else if (q_strcasecmp(Cmd_Argv(1),"toggle") == 0)
-			MIDI_Loop(MIDI_TOGGLE_LOOP);
-	}
-
-	if (bLooped)
-		Con_Printf("MIDI music will be looped\n");
-	else
-		Con_Printf("MIDI music will not be looped\n");
-}
-
-static void MIDI_SetVolume (cvar_t *var)
+static void MIDI_SetVolume (void **handle, float value)
 {
 	int volume_int;
 
-	if (!bMidiInited)
+	if (!midi_win_ms.available)
+	{
+		if (handle)
+			*handle = NULL;
 		return;
+	}
 
-	if (var->value < 0.0)
-		Cvar_SetValue (var->name, 0.0);
-	else if (var->value > 1.0)
-		Cvar_SetValue (var->name, 1.0);
-	old_volume = var->value;
 	if (hw_vol_capable)
 	{
-		volume_int = (int)(var->value * 65535.0f);
+		volume_int = (int)(value * 65535.0f);
 		midiOutSetVolume((HMIDIOUT)hStream, (volume_int << 16) + volume_int);
 	}
 	else
 	{
-		volume_int = (int)(var->value * 1000.0f);
+		volume_int = (int)(value * 1000.0f);
 		SetAllChannelVolumes(volume_int);
 	}
 }
 
-void MIDI_Update(void)
+static void MIDI_Rewind (void **handle)
 {
-	if (old_volume != bgmvolume.value)
-		MIDI_SetVolume (&bgmvolume);
+	/* handled by converter module */
+	if (!midi_win_ms.available)
+	{
+		if (handle)
+			*handle = NULL;
+		return;
+	}
+}
+
+static void MIDI_Update (void **handle)
+{
+	/* handled by callback */
+	if (!midi_win_ms.available)
+	{
+		if (handle)
+			*handle = NULL;
+	}
 }
 
 qboolean MIDI_Init(void)
@@ -122,8 +125,10 @@ qboolean MIDI_Init(void)
 	MMRESULT mmrRetVal;
 	MIDIOUTCAPS midi_caps;
 
-	if (bMidiInited)
+	if (midi_win_ms.available)
 		return true;
+
+	BGM_RegisterMidiDRV(&midi_win_ms);
 
 	if (safemode || COM_CheckParm("-nomidi"))
 		return false;
@@ -137,21 +142,15 @@ qboolean MIDI_Init(void)
 		return false;
 	}
 
-	Cmd_AddCommand ("midi_play", MIDI_Play_f);
-	Cmd_AddCommand ("midi_stop", MIDI_Stop_f);
-	Cmd_AddCommand ("midi_pause", MIDI_Pause_f);
-	Cmd_AddCommand ("midi_loop", MIDI_Loop_f);
-
 	dwTempoMultiplier = 100;
 	bFileOpen = false;
 	bPlaying = false;
-	bLooped = true;
 	bPaused = false;
 	bBuffersPrepared = false;
 	uCallbackStatus = 0;
-	bMidiInited = true;
+	midi_win_ms.available = true;
 
-	Con_Printf("midiStream for Windows initialized.\n");
+	Con_Printf("%s initialized.\n", midi_win_ms.desc);
 
 	// try to see if the MIDI device supports midiOutSetVolume
 	if (midiOutGetDevCaps(uMIDIDeviceID, &midi_caps, sizeof(midi_caps)) == MMSYSERR_NOERROR)
@@ -182,31 +181,26 @@ qboolean MIDI_Init(void)
 	return true;
 }
 
-void MIDI_Play(const char *Name)
+static void *MIDI_Play (const char *Name)
 {
 	MMRESULT mmrRetVal;
-	char Temp[MAX_OSPATH];
 
-	if (!bMidiInited)	//don't try to play if there is no midi
-		return;
-
-	MIDI_Stop();
+	if (!midi_win_ms.available)
+		return NULL;
 
 	if (!Name || !*Name)
 	{
 		Con_DPrintf("null music file name\n");
-		return;
+		return NULL;
 	}
 
-	q_snprintf (Temp, sizeof(Temp), "midi/%s.mid", Name);
-
-	if (StreamBufferSetup(Temp))
+	if (StreamBufferSetup(Name))
 	{
-		Con_Printf ("Couldn't open %s\n", Temp);
-		return;
+		Con_DPrintf("Couldn't open %s\n", Name);
+		return NULL;
 	}
 
-	Con_Printf("Playing midi file %s\n", Temp);
+	Con_Printf("Playing midi file %s\n", Name);
 	bFileOpen = true;
 	uCallbackStatus = 0;
 
@@ -214,53 +208,57 @@ void MIDI_Play(const char *Name)
 	if (mmrRetVal != MMSYSERR_NOERROR)
 	{
 		MidiErrorMessageBox(mmrRetVal);
-		return;
+		return NULL;
 	}
 
-	MIDI_SetVolume (&bgmvolume);
+	MIDI_SetVolume ((void **) &hStream, bgmvolume.value);
 	bPlaying = true;
+
+	return hStream;
 }
 
-void MIDI_Pause(int mode)
+static void MIDI_Pause (void **handle)
 {
 	if (!bPlaying)
-		return;
-
-	if ((mode == MIDI_TOGGLE_PAUSE && bPaused) || mode == MIDI_ALWAYS_RESUME)
 	{
-		midiStreamRestart(hStream);
-		bPaused = false;
+		if (handle)
+			*handle = NULL;
+		return;
 	}
-	else
+
+	if (!bPaused)
 	{
 		midiStreamPause(hStream);
 		bPaused = true;
 	}
 }
 
-void MIDI_Loop(int mode)
+static void MIDI_Resume (void **handle)
 {
-	switch (mode)
+	if (!bPlaying)
 	{
-	case MIDI_TOGGLE_LOOP:
-		bLooped = !bLooped;
-		break;
-	case MIDI_DISABLE_LOOP:
-		bLooped = false;
-		break;
-	case MIDI_ENABLE_LOOP:
-	default:
-		bLooped = true;
-		break;
+		if (handle)
+			*handle = NULL;
+		return;
+	}
+
+	if (bPaused)
+	{
+		midiStreamRestart(hStream);
+		bPaused = false;
 	}
 }
 
-void MIDI_Stop(void)
+static void MIDI_Stop (void **handle)
 {
 	MMRESULT mmrRetVal;
 
-	if (!bMidiInited)	//Just to be safe
+	if (!midi_win_ms.available)	//Just to be safe
+	{
+		if (handle)
+			*handle = NULL;
 		return;
+	}
 
 	if (bFileOpen || bPlaying)// || uCallbackStatus != STATUS_CALLBACKDEAD)
 	{
@@ -315,10 +313,10 @@ void MIDI_Cleanup(void)
 {
 	MMRESULT mmrRetVal;
 
-	if (!bMidiInited)
+	if (!midi_win_ms.available)
 		return;
 
-	MIDI_Stop();
+	midi_win_ms.available = false;
 
 	CloseHandle(hBufferReturnEvent);
 
@@ -519,7 +517,7 @@ static void CALLBACK MidiProc(HMIDIIN hMidi, UINT uMsg, DWORD_PTR dwInstance, DW
 			else
 			{
 				uCallbackStatus = STATUS_CALLBACKDEAD;
-				MIDI_Stop();
+				MIDI_Stop((void **)NULL);
 				SetEvent(hBufferReturnEvent);
 				return;
 			}

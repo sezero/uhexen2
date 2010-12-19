@@ -29,73 +29,77 @@
 */
 
 #include "quakedef.h"
+#include "bgmusic.h"
+#include "midi_drv.h"
 #include <Sound.h>
 #include <QuickTime/Movies.h>
 
 static Movie	midiTrack = NULL;
-static qboolean	bMidiInited, bPaused, bLooped;
-static float	old_volume = -1.0f;
+static qboolean	bMidiInited, bPaused;
 
-static void MIDI_Play_f (void)
+/* prototypes of functions exported to BGM: */
+static void *MIDI_Play (const char *Name);
+static void MIDI_Update (void **handle);
+static void MIDI_Rewind (void **handle);
+static void MIDI_Stop (void **handle);
+static void MIDI_Pause (void **handle);
+static void MIDI_Resume (void **handle);
+static void MIDI_SetVolume (void **handle, float value);
+
+static midi_driver_t midi_mac_qt =
 {
-	if (Cmd_Argc () == 2)
+	false, /* init success */
+	"QuickTime midi for Mac",
+	MIDI_Init,
+	MIDI_Cleanup,
+	MIDI_Play,
+	MIDI_Update,
+	MIDI_Rewind,
+	MIDI_Stop,
+	MIDI_Pause,
+	MIDI_Resume,
+	MIDI_SetVolume,
+	NULL
+};
+
+
+static void MIDI_SetVolume (void **handle, float value)
+{
+	if (!midiTrack)
 	{
-		MIDI_Play(Cmd_Argv(1));
-	}
-}
-
-static void MIDI_Stop_f (void)
-{
-	MIDI_Stop();
-}
-
-static void MIDI_Pause_f (void)
-{
-	MIDI_Pause (MIDI_TOGGLE_PAUSE);
-}
-
-static void MIDI_Loop_f (void)
-{
-	if (Cmd_Argc () == 2)
-	{
-		if (q_strcasecmp(Cmd_Argv(1),"on") == 0 || q_strcasecmp(Cmd_Argv(1),"1") == 0)
-			MIDI_Loop(MIDI_ENABLE_LOOP);
-		else if (q_strcasecmp(Cmd_Argv(1),"off") == 0 || q_strcasecmp(Cmd_Argv(1),"0") == 0)
-			MIDI_Loop(MIDI_DISABLE_LOOP);
-		else if (q_strcasecmp(Cmd_Argv(1),"toggle") == 0)
-			MIDI_Loop(MIDI_TOGGLE_LOOP);
-	}
-
-	if (bLooped)
-		Con_Printf("MIDI music will be looped\n");
-	else
-		Con_Printf("MIDI music will not be looped\n");
-}
-
-static void MIDI_SetVolume (cvar_t *var)
-{
-	if (!bMidiInited || !midiTrack)
+		if (handle)
+			*handle = NULL;
 		return;
+	}
 
-	if (var->value < 0.0)
-		Cvar_SetValue (var->name, 0.0);
-	else if (var->value > 1.0)
-		Cvar_SetValue (var->name, 1.0);
-	old_volume = var->value;
-	SetMovieVolume(midiTrack, (short)(var->value * 256.0f));
+	SetMovieVolume(midiTrack, (short)(value * 256.0f));
+}
+
+static void MIDI_Rewind (void **handle)
+{
+	if (!midiTrack)
+	{
+		if (handle)
+			*handle = NULL;
+		return;
+	}
+
+	GoToBeginningOfMovie (midiTrack);
+	StartMovie (midiTrack);
 }
 
 //
 // MusicEvents
 // Called in the event loop to keep track of MIDI music
 //
-void MIDI_Update(void)
+static void MIDI_Update (void **handle)
 {
 	if (!midiTrack)
+	{
+		if (handle)
+			*handle = NULL;
 		return;
-
-	if (old_volume != bgmvolume.value)
-		MIDI_SetVolume (&bgmvolume);
+	}
 
 	// Let QuickTime get some time
 	MoviesTask (midiTrack, 0);
@@ -103,15 +107,16 @@ void MIDI_Update(void)
 	// If this song is looping, restart it
 	if (IsMovieDone (midiTrack))
 	{
-		if (bLooped)
+		if (bgmloop)
 		{
-			GoToBeginningOfMovie (midiTrack);
-			StartMovie (midiTrack);
+			MIDI_Rewind ((void **) &midiTrack);
 		}
 		else
 		{
 			DisposeMovie (midiTrack);
 			midiTrack = NULL;
+			if (handle)
+				*handle = NULL;
 		}
 	}
 }
@@ -120,8 +125,10 @@ qboolean MIDI_Init(void)
 {
 	OSErr		theErr;
 
-	if (bMidiInited)
+	if (midi_mac_qt.available)
 		return true;
+
+	BGM_RegisterMidiDRV(&midi_mac_qt);
 
 	if (safemode || COM_CheckParm("-nomidi"))
 		return false;
@@ -133,16 +140,10 @@ qboolean MIDI_Init(void)
 		return false;
 	}
 
-	Con_Printf("QuickTime midi for Mac initialized.\n");
+	Con_Printf("%s initialized.\n", midi_mac_qt.desc);
 
-	Cmd_AddCommand ("midi_play", MIDI_Play_f);
-	Cmd_AddCommand ("midi_stop", MIDI_Stop_f);
-	Cmd_AddCommand ("midi_pause", MIDI_Pause_f);
-	Cmd_AddCommand ("midi_loop", MIDI_Loop_f);
-
-	bLooped = true;
 	bPaused = false;
-	bMidiInited = true;
+	midi_mac_qt.available = true;
 
 	return true;
 }
@@ -150,32 +151,29 @@ qboolean MIDI_Init(void)
 
 #define	TEMP_MUSICNAME	"tmpmusic.mid"
 
-void MIDI_Play (const char *Name)
+static void *MIDI_Play (const char *Name)
 {
 	FILE		*midiFile;
-	char	midiName[MAX_OSPATH], tempName[MAX_QPATH];
+	char	midiName[MAX_OSPATH];
 	OSErr	err;
 	FSSpec	midiSpec;
 	FSRef	midiRef;
 	short	midiRefNum;
 
-	if (!bMidiInited)	//don't try to play if there is no midi
-		return;
-
-	MIDI_Stop();
+	if (!midi_mac_qt.available)
+		return NULL;
 
 	if (!Name || !*Name)
 	{
 		Con_DPrintf("null music file name\n");
-		return;
+		return NULL;
 	}
 
-	q_snprintf (tempName, sizeof(tempName), "%s.mid", Name);
-	FS_OpenFile (va("midi/%s", tempName), &midiFile, false);
+	FS_OpenFile (Name, &midiFile, false);
 	if (!midiFile)
 	{
-		Con_Printf("Couldn't open %s\n", tempName);
-		return;
+		Con_DPrintf("Couldn't open %s\n", Name);
+		return NULL;
 	}
 	else
 	{
@@ -185,7 +183,7 @@ void MIDI_Play (const char *Name)
 		{
 			int		ret;
 
-			Con_Printf("Extracting %s from pakfile\n", tempName);
+			Con_Printf("Extracting %s from pakfile\n", Name);
 			q_snprintf (midiName, sizeof(midiName), "%s/%s",
 							host_parms->userdir,
 							TEMP_MUSICNAME);
@@ -194,14 +192,14 @@ void MIDI_Play (const char *Name)
 			if (ret != 0)
 			{
 				Con_Printf("Error while extracting from pak\n");
-				return;
+				return NULL;
 			}
 		}
 		else	/* use the file directly */
 		{
 			fclose (midiFile);
-			q_snprintf (midiName, sizeof(midiName), "%s/midi/%s",
-							fs_filepath, tempName);
+			q_snprintf (midiName, sizeof(midiName), "%s/%s",
+							fs_filepath, Name);
 		}
 	}
 
@@ -211,28 +209,28 @@ void MIDI_Play (const char *Name)
 	if (err != noErr)
 	{
 		Con_Printf ("MIDI_DRV: FSPathMakeRef: error while opening %s\n", midiName);
-		return;
+		return NULL;
 	}
 
 	err = FSGetCatalogInfo (&midiRef, kFSCatInfoNone, NULL, NULL, &midiSpec, NULL);
 	if (err != noErr)
 	{
 		Con_Printf ("MIDI_DRV: FSGetCatalogInfo: error while opening %s\n", midiName);
-		return;
+		return NULL;
 	}
 
 	err = OpenMovieFile (&midiSpec, &midiRefNum, fsRdPerm);
 	if (err != noErr)
 	{
 		Con_Printf ("MIDI_DRV: OpenMovieStream: error opening midi file\n");
-		return;
+		return NULL;
 	}
 
 	err = NewMovieFromFile (&midiTrack, midiRefNum, NULL, NULL, newMovieActive, NULL);
 	if (err != noErr || !midiTrack)
 	{
 		Con_Printf ("MIDI_DRV: QuickTime error in creating stream.\n");
-		return;
+		return NULL;
 	}
 
 	GoToBeginningOfMovie (midiTrack);
@@ -242,50 +240,51 @@ void MIDI_Play (const char *Name)
 	SetMovieVolume(midiTrack, (short)(bgmvolume.value * 256.0f));
 
 	StartMovie (midiTrack);
-	Con_Printf ("Started midi music %s\n", tempName);
+	Con_Printf ("Started midi music %s\n", Name);
+
+	return midiTrack;
 }
 
-void MIDI_Pause(int mode)
+static void MIDI_Pause (void **handle)
 {
 	if (!midiTrack)
-		return;
-
-	if ((mode == MIDI_TOGGLE_PAUSE && bPaused) || mode == MIDI_ALWAYS_RESUME)
 	{
-		StartMovie (midiTrack);
-		bPaused = false;
+		if (handle)
+			*handle = NULL;
+		return;
 	}
-	else
+
+	if (!bPaused)
 	{
 		StopMovie (midiTrack);
 		bPaused = true;
 	}
 }
 
-void MIDI_Loop(int mode)
+static void MIDI_Resume (void **handle)
 {
-	switch (mode)
+	if (!midiTrack)
 	{
-	case MIDI_TOGGLE_LOOP:
-		bLooped = !bLooped;
-		break;
-	case MIDI_DISABLE_LOOP:
-		bLooped = false;
-		break;
-	case MIDI_ENABLE_LOOP:
-	default:
-		bLooped = true;
-		break;
+		if (handle)
+			*handle = NULL;
+		return;
+	}
+
+	if (bPaused)
+	{
+		StartMovie (midiTrack);
+		bPaused = false;
 	}
 }
 
-void MIDI_Stop(void)
+static void MIDI_Stop (void **handle)
 {
-	if (!bMidiInited)	//Just to be safe
-		return;
-
 	if (!midiTrack)
+	{
+		if (handle)
+			*handle = NULL;
 		return;
+	}
 
 	StopMovie (midiTrack);
 	DisposeMovie (midiTrack);
@@ -295,10 +294,9 @@ void MIDI_Stop(void)
 
 void MIDI_Cleanup(void)
 {
-	if (bMidiInited)
+	if (midi_mac_qt.available)
 	{
-		MIDI_Stop();
-		bMidiInited = false;
+		midi_mac_qt.available = false;
 		Con_Printf("%s: closing QuickTime.\n", __thisfunc__);
 		ExitMovies ();
 	}

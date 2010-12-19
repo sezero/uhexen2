@@ -2,10 +2,11 @@
 	cl_parse.c
 	parse a message received from the server
 
-	$Header: /cvsroot/uhexen2/engine/hexen2/cl_parse.c,v 1.68 2010-11-06 21:20:45 sezero Exp $
+	$Id$
 */
 
 #include "quakedef.h"
+#include "bgmusic.h"
 #include "r_shared.h"
 
 static const char *svc_strings[] =
@@ -1479,13 +1480,13 @@ void CL_ParseServerMessage (void)
 			if (cl.paused)
 			{
 				CDAudio_Pause ();
-				MIDI_Pause (MIDI_ALWAYS_PAUSE);
+				BGM_Pause ();
 				VID_HandlePause (true);
 			}
 			else
 			{
 				CDAudio_Resume ();
-				MIDI_Pause (MIDI_ALWAYS_RESUME);
+				BGM_Resume ();
 				VID_HandlePause (false);
 			}
 			break;
@@ -1534,9 +1535,9 @@ void CL_ParseServerMessage (void)
 		case svc_midi_name:
 			q_strlcpy (cl.midi_name, MSG_ReadString(), sizeof(cl.midi_name));
 			if (q_strcasecmp(bgmtype.string,"midi") == 0)
-				MIDI_Play(cl.midi_name);
+				BGM_Play(cl.midi_name);
 			else
-				MIDI_Stop();
+				BGM_Stop();
 			break;
 
 		case svc_toggle_statbar:

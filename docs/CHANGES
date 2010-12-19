@@ -3,6 +3,67 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2010-12-19 (CVS):
+    * External music files support using decoder libraries and the new
+      raw samples interface:
+    - bgmusic.c, bgmusic.h: New BGM interface for background music handling.
+      Handles streaming music as raw sound samples and runs the midi driver.
+      Source documented and is pretty much obvious, end user documents will
+      follow.
+    - cd_bsd.c, cd_linux.c, cd_win.c, cd_dos.c, cd_sdl.c: Moved bgmvolume
+      boundary checking to bgmusic.c upon value changes.
+    - gl_vidnt.c, gl_vidsdl.c, vid_mgl4.c, vid_sdl.c, vid_win.c: Include
+      bgmusic.h. Replace MIDI_Pause() calls by BGM_Pause() and BGM_Resume().
+    - cl_main.c, cl_parse.c, host.c, menu: Include bgmusic.h. Replace all
+      MIDI_Play(), MIDI_Stop(), MIDI_Pause() calls by BGM_Play(), BGM_Stop(),
+      BGM_Pause() and BGM_Resume().
+    - host.c, cl_main.c: Remove MIDI_Update() calls from the main loop and
+      replace by BGM_Update(). BGM_Update() is called before S_Update() and
+      CDAudio_Update(). In Host_Init(), call BGM_Init() after other audio
+      init calls. In Host_Shutdown(), call BGM_Shutdown() before all other
+      audio shutdown calls.
+    - snd_dma.c: Include snd_codec.h and bgmusic.h. Call S_CodecInit() from
+      S_Init(). Call S_CodecShutdown() from S_Shutdown().
+    - midi_sdl.c: Removed in favor of the new snd_timidity.c. Also removed
+      the associated extra patches.
+    - sdl_inc.h: Removed all SDL_mixer dependencies. SDL_mixer is so dead..
+    - mididef.h: Removed prototypes for MIDI_Play, MIDI_Stop, MIDI_Pause,
+      MIDI_Loop, MIDI_Update which are either not public anymore or removed.
+      Removed macros which obsoleted now.
+    - midi_mac.c, midi_win.c, midi_nul.c, mid2strm.c: Integration into the
+      new BGM interface: Music loop is now checked by BGM by the new global
+      bgmloop. Moved bgmvolume boundary checking to bgmusic.c upon value
+      changes. Removed the midi_play, midi_stop, midi_pause and midi_loop
+      console commands in favor of the newly added music, music_stop,
+      music_loop, music_pause and music_resume commands from bgmusic.c.
+      The MIDI_Play() procedures no longer mess with the file path, it is
+      handled by bgm.  All midi drivers now export a midi_driver_t structure
+      to BGM.  Functions adjusted for the interface changes.
+    - midi_drv.h: New header for midi driver and bgm cooperation.
+    - bgmusic.c, bgmusic.h: New sources for BGM interface.
+    - bgmnull.c, bgmnull_midi.c, bgmnull_none.c: BGM source for cases where
+      the engine is configured for no sound.
+    - snd_codec.c, snd_codec.h: New public codec interface for streaming
+      music as raw samples. Adapted from quake2 and ioquake3 with changes.
+      Individual codecs are responsible for handling any necessary byte swap
+      operations.
+    - snd_codeci.h: New header for snd_codec internals.
+    - snd_timidity.c, snd_timidity.h: New sources for midi playback through
+      codec/raw samples interface. Useful when there is no driver for midi.
+      Default for unix targets.
+    - snd_wildmidi.c, snd_wildmidi.h: Alternative solution using WildMidi as
+      opposed to timidity. Works OK, but not supported for now.
+    - snd_wave.c, snd_wave.h: Codec for WAV format streaming music. Adapted
+      from ioquake3.
+    - snd_vorbis.c, snd_vorbis.h: Codec for Ogg/Vorbis format streaming music.
+    - snd_mp3.c, snd_mp3.h: Codec for MP3 format streaming music using libmad.
+      Adapted from the SoX project with changes.
+    - Makefiles: Adjusted for the new sources. Added switches USE_CODEC_WAVE,
+      USE_CODEC_MP3, USE_CODEC_VORBIS, USE_CODEC_TIMIDITY, USE_CODEC_WILDMIDI
+      for enabling and disabling individual codecs. Wildmidi is disabled for
+      all targets. For DOS, all codecs are disabled. For windows, Timidity is
+      disabled because there is a working midi driver.
+
 2010-12-18 (CVS):
     * reorganized scitech and dxsdk directories under w32stuff.
     * added libmad, libogg and libvorbis headers and import libraries

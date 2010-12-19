@@ -28,6 +28,8 @@
 #include "quakedef.h"
 #include "cfgfile.h"
 #include "snd_sys.h"
+#include "snd_codec.h"
+#include "bgmusic.h"
 
 static snd_driver_t	*qsnd_driver;
 
@@ -275,6 +277,8 @@ void S_Init (void)
 	ambient_sfx[AMBIENT_WATER] = S_PrecacheSound ("ambience/water1.wav");
 	ambient_sfx[AMBIENT_SKY] = S_PrecacheSound ("ambience/wind2.wav");
 
+	S_CodecInit ();
+
 	S_StopAllSounds (true);
 }
 
@@ -289,6 +293,8 @@ void S_Shutdown (void)
 
 	sound_started = 0;
 	snd_blocked = 0;
+
+	S_CodecShutdown();
 
 	qsnd_driver->Shutdown();
 	shm = NULL;
@@ -965,6 +971,9 @@ void S_Update (vec3_t origin, vec3_t forward, vec3_t right, vec3_t up)
 
 		Con_Printf ("----(%i)----\n", total);
 	}
+
+// add raw data from streamed samples
+//	BGM_Update();	// moved to the main loop just before S_Update ()
 
 // mix some sound
 	S_Update_();
