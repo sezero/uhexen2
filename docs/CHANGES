@@ -4,6 +4,8 @@ Development Progress	:
 ---------------------------
 
 2010-12-20 (SVN):
+    * timidity.c (mid_exit): Remove unnecessary NULL assignment to members
+      when freeing the parents.
     * Make timidity to compile using cplusplus compilers: add missing type
       casts, avoid `new' as variable name, assign pointers to NULL instead
       of 0. Change type of next from void* to a pointer of structure's own
