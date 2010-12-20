@@ -3,16 +3,19 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
-2010-12-20 (CVS):
+2010-12-20 (SVN):
+    * h2shared/snd_wave.c (WAV_FindRIFFChunk): Constified the chunk argument.
+
+2010-12-20 (SVN):
     * gtk launcher: fix the demo-only build.
 
-2010-12-19 (CVS):
+2010-12-19 (SVN):
     * Bumped uhexen2 version to 1.5.0-rc1.  Bumped the hexen2 engine version
       to 1.23 and hexenworld engine version to 0.23.  Added ReleaseNotes-1.5.0
       as a new document.  Updated the rest of the documents for version number
       change.
 
-2010-12-19 (CVS):
+2010-12-19 (SVN):
     * rpm spec file update:
     - Added new build options after the music playback changes.
     - Dropped SDL_mixer dependency which is not used anymore.
@@ -20,18 +23,18 @@ Development Progress	:
     - Reworked the style we use for passing the build options to the makefiles.
     - Fixed icon path.
 
-2010-12-19 (CVS):
+2010-12-19 (SVN):
     * snd_mem.c (S_LoadSound): Return NULL if zero samples are found, not
       false.
 
-2010-12-19 (CVS):
+2010-12-19 (SVN):
     * Updated Visual Studio project files after the latest changes.
 
-2010-12-19 (CVS):
+2010-12-19 (SVN):
     * Updated documentation after music changes.  Added README.music as a
       new document.
 
-2010-12-19 (CVS):
+2010-12-19 (SVN):
     * External music files support using decoder libraries and the new
       raw samples interface:
     - bgmusic.c, bgmusic.h: New BGM interface for background music handling.
@@ -92,12 +95,12 @@ Development Progress	:
       all targets. For DOS, all codecs are disabled. For windows, Timidity is
       disabled because there is a working midi driver.
 
-2010-12-18 (CVS):
+2010-12-18 (SVN):
     * reorganized scitech and dxsdk directories under w32stuff.
     * added libmad, libogg and libvorbis headers and import libraries
       for windows builds under w32stuff/codecs.
 
-2010-12-18 (CVS):
+2010-12-18 (SVN):
     * midi_win.c:  Ignore midi hardware volume adjustemnt capability
       under windows vista/7, see this reference why:
       http://msdn.microsoft.com/en-us/library/dd798480(VS.85).aspx#1
@@ -108,34 +111,34 @@ Development Progress	:
       also outputs digital audio, the volume level of that audio will
       be reduced or increased by the same amount."
 
-2010-12-18 (CVS):
+2010-12-18 (SVN):
     * sys_win.c: Detect windows vista/7 and store in global WinVista.
     * winquake.h: Add extern declaration for global boolean WinVista.
 
-2010-12-18 (CVS):
+2010-12-18 (SVN):
     * snd_dma.c: Minor cleanups in volume value boundary checking.
     * Reorganized cdaudio volume handling for all drivers. If volume is 0,
       don't bother advancing and pause.
 
-2010-12-17 (CVS):
+2010-12-17 (SVN):
     * small cleanups, mostly whitespace.
 
-2010-12-17 (CVS):
+2010-12-17 (SVN):
     * scripts/makefile.inc: Set AR and RANLIB when necessary.
 
-2010-12-17 (CVS):
+2010-12-17 (SVN):
     * Makefiles: Added LIBS_DIR as a new var defined as (UHEXEN2_TOP)/libs.
 
-2010-12-17 (CVS):
+2010-12-17 (SVN):
     * libs/timidity/q_endian.h: Added from the engine directory.
       timidity_internal.h: Include q_endian.h and use the provided macros.
       instrum.c, output.h: Adjusted for q_endian.h.
 
-2010-12-17 (CVS):
+2010-12-17 (SVN):
     * q_endian.h, q_endian.c: Remove PDP stuff which isn't supported.
     * gl_vidnt.c, gl_vidsdl.c, glquake.h: Likewise.
 
-2010-12-17 (CVS):
+2010-12-17 (SVN):
     * libs/timidity/timidity.h.in: Deleted unused file.
     * libs/timidity/instrum_dls.c (LoadRIFF, AllocRegions, AllocInstruments,
       AllocWaveList): Replaced all malloc() usage by safe_malloc().
@@ -152,20 +155,20 @@ Development Progress	:
       DEBUG to TIMIDITY_DEBUG.
     * libs/timidity: Imported v0.1.0 sources from the libtimidity project.
 
-2010-12-17 (CVS):
+2010-12-17 (SVN):
     * moved xdelta11 under the libs directory.
 
-2010-12-17 (CVS):
+2010-12-17 (SVN):
     * added libs as a new directory for third party stuff.
 
-2010-12-15 (CVS):
+2010-12-15 (SVN):
     * Renamed mstrconv.c to mid2strm.c and midi_win.h to mid2strm.h. Adjusted
       makefiles and visual studio project files.
 
-2010-12-14 (CVS):
+2010-12-14 (SVN):
     * hexen2 and hexenworld Makefiles: Minor adjustments.
 
-2010-12-13 (CVS):
+2010-12-13 (SVN):
     * hexen2 and hexenworld Makefiles: Reorganized.
 
     * quakefs.c: Always include errno.h, because the FS_* stdio functions
@@ -175,7 +178,7 @@ Development Progress	:
       sound file's extension including the dot, or NULL.
     * q_sound.h (S_FileExtension): Add prototype for the new function.
 
-2010-12-11 (CVS):
+2010-12-11 (SVN):
     * cross defs: Add ranlib among the target tools.
 
     * Preparing for streaming music through S_RawSamples, part #2:
@@ -192,7 +195,7 @@ Development Progress	:
 
     * set svn:keywords Id on the files that had changes since the cvs times.
 
-2010-12-10 (CVS):
+2010-12-10 (SVN):
     * Preparing for streaming music through soon-to-be-added S_RawSamples:
     - snd_mix.c: snd_vol is static now. it is calculated in S_PaintChannels and
       only used in SND_PaintChannelFrom16. all its other uses are removed from

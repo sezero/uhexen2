@@ -91,7 +91,7 @@ WAV_FindRIFFChunk
 Returns the length of the data in the chunk, or -1 if not found
 =================
 */
-static int WAV_FindRIFFChunk(FILE *f, char *chunk)
+static int WAV_FindRIFFChunk(FILE *f, const char *chunk)
 {
 	char	name[5];
 	int		len;
