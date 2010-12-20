@@ -27,45 +27,44 @@ BINARY:=jsh2colour$(exe_ext)
 
 # Compiler flags
 
-CPUFLAGS:=
 # Overrides for the default CPUFLAGS
 ifeq ($(MACH_TYPE),x86)
-CPUFLAGS:=-march=i586
+CPU_X86=-march=i586
 endif
+CPUFLAGS=$(CPU_X86)
 
 # Overrides for the default ARCHFLAGS
-#ARCHFLAGS:=
+#ARCHFLAGS=
 
 ifdef DEBUG
-CFLAGS := -g -Wall
+CFLAGS += -g -Wall
 else
-CFLAGS := $(CPUFLAGS) -O2 -Wall -DNDEBUG -ffast-math -fexpensive-optimizations
+CFLAGS += $(CPUFLAGS) -O2 -Wall -DNDEBUG -ffast-math -fexpensive-optimizations
 endif
 
-CFLAGS := $(CFLAGS) $(ARCHFLAGS)
-CFLAGS := $(CFLAGS) -DDOUBLEVEC_T
+CFLAGS += $(ARCHFLAGS)
+CFLAGS += -DDOUBLEVEC_T
 
+LDFLAGS =
+LDLIBS  =
+INCLUDES= -I. -I$(COMMONDIR)
 
 # Other build flags
 
 ifeq ($(TARGET_OS),win32)
-CFLAGS  := $(CFLAGS) -DWIN32_LEAN_AND_MEAN
-INCLUDES:= -I$(W32STUFF) -I$(COMMONDIR)
+CFLAGS  += -DWIN32_LEAN_AND_MEAN
+INCLUDES+= -I$(W32STUFF)
 # default 2 MB stack is not enough
-LDFLAGS := -mconsole -Wl,--stack,4194304
-LDLIBS  :=
+LDFLAGS += -mconsole -Wl,--stack,4194304
 endif
 ifeq ($(TARGET_OS),win64)
-CFLAGS  := $(CFLAGS) -DWIN32_LEAN_AND_MEAN
-INCLUDES:= -I$(W32STUFF) -I$(COMMONDIR)
+CFLAGS  += -DWIN32_LEAN_AND_MEAN
+INCLUDES+= -I$(W32STUFF)
 # default 2 MB stack is not enough
-LDFLAGS := -mconsole -Wl,--stack,4194304
-LDLIBS  :=
+LDFLAGS += -mconsole -Wl,--stack,4194304
 endif
 ifeq ($(TARGET_OS),unix)
-INCLUDES:= -I$(COMMONDIR)
-LDFLAGS :=
-LDLIBS  := -lm
+LDLIBS  += -lm
 endif
 
 # Targets
@@ -74,21 +73,18 @@ all : $(BINARY)
 # Rules for turning source files into .o files
 %.o: %.c
 	$(CC) -c $(CFLAGS) $(INCLUDES) -o $@ $<
-# special rule for mathlib because of DOUBLEVEC_T
-mathlib.o: $(COMMONDIR)/mathlib.c
-	$(CC) -c $(CFLAGS) $(INCLUDES) -o $@ $<
-bspfile.o: $(COMMONDIR)/bspfile.c
+%.o: $(COMMONDIR)/%.c
 	$(CC) -c $(CFLAGS) $(INCLUDES) -o $@ $<
 
 # Objects
-JS_OBJS= $(COMMONDIR)/cmdlib.o \
-	$(COMMONDIR)/strlcat.o \
-	$(COMMONDIR)/strlcpy.o \
-	$(COMMONDIR)/q_endian.o \
-	$(COMMONDIR)/byteordr.o \
-	$(COMMONDIR)/util_io.o \
-	$(COMMONDIR)/pathutil.o \
-	$(COMMONDIR)/threads.o \
+JS_OBJS= cmdlib.o \
+	strlcat.o \
+	strlcpy.o \
+	q_endian.o \
+	byteordr.o \
+	util_io.o \
+	pathutil.o \
+	threads.o \
 	mathlib.o \
 	bspfile.o \
 	litfile.o \
@@ -103,5 +99,5 @@ $(BINARY) : $(JS_OBJS)
 	$(LINKER) -o $(DESTDIR)/$(BINARY) $(JS_OBJS) $(LDFLAGS) $(LDLIBS)
 
 clean : 
-	rm -f *.o $(COMMONDIR)/*.o core
+	rm -f *.o core
 

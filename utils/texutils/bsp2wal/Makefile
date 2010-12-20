@@ -27,42 +27,41 @@ BINARY:=bsp2wal$(exe_ext)
 
 # Compiler flags
 
-CPUFLAGS:=
 # Overrides for the default CPUFLAGS
 ifeq ($(MACH_TYPE),x86)
-CPUFLAGS:=-march=i586
+CPU_X86=-march=i586
 endif
+CPUFLAGS=$(CPU_X86)
 
 # Overrides for the default ARCHFLAGS
-#ARCHFLAGS:=
+#ARCHFLAGS=
 
 ifdef DEBUG
-CFLAGS := -g -Wall
+CFLAGS += -g -Wall
 else
-CFLAGS = $(CPUFLAGS) -O2 -Wall -DNDEBUG
+CFLAGS += $(CPUFLAGS) -O2 -Wall -DNDEBUG
 endif
 
-CFLAGS := $(CFLAGS) $(ARCHFLAGS)
+CFLAGS += $(ARCHFLAGS)
 
+LDFLAGS =
+LDLIBS  =
+INCLUDES= -I. -I$(COMMONDIR)
 
 # Other build flags
 
 ifeq ($(TARGET_OS),win32)
-CFLAGS  := $(CFLAGS) -DWIN32_LEAN_AND_MEAN
-INCLUDES:= -I$(W32STUFF) -I$(COMMONDIR)
-LDFLAGS := -mconsole
-LDLIBS  :=
+CFLAGS  += -DWIN32_LEAN_AND_MEAN
+INCLUDES+= -I$(W32STUFF)
+LDFLAGS += -mconsole
 endif
 ifeq ($(TARGET_OS),win64)
-CFLAGS  := $(CFLAGS) -DWIN32_LEAN_AND_MEAN
-INCLUDES:= -I$(W32STUFF) -I$(COMMONDIR)
-LDFLAGS := -mconsole
-LDLIBS  :=
+CFLAGS  += -DWIN32_LEAN_AND_MEAN
+INCLUDES+= -I$(W32STUFF)
+LDFLAGS += -mconsole
 endif
 ifeq ($(TARGET_OS),unix)
-INCLUDES:= -I$(COMMONDIR)
-LDFLAGS :=
-LDLIBS  :=
+# nothing else needed
 endif
 
 # Targets
@@ -71,17 +70,17 @@ all : $(BINARY)
 # Rules for turning source files into .o files
 %.o: %.c
 	$(CC) -c $(CFLAGS) $(INCLUDES) -o $@ $<
-bspfile.o: $(COMMONDIR)/bspfile.c
+%.o: $(COMMONDIR)/%.c
 	$(CC) -c $(CFLAGS) $(INCLUDES) -o $@ $<
 
 # Objects
-BSP2WALOBJS= $(COMMONDIR)/cmdlib.o \
-	$(COMMONDIR)/strlcat.o \
-	$(COMMONDIR)/strlcpy.o \
-	$(COMMONDIR)/q_endian.o \
-	$(COMMONDIR)/byteordr.o \
-	$(COMMONDIR)/util_io.o \
-	$(COMMONDIR)/pathutil.o \
+BSP2WALOBJS= cmdlib.o \
+	strlcat.o \
+	strlcpy.o \
+	q_endian.o \
+	byteordr.o \
+	util_io.o \
+	pathutil.o \
 	bspfile.o \
 	bsp2wal.o
 
@@ -89,5 +88,5 @@ $(BINARY) : $(BSP2WALOBJS)
 	$(LINKER) -o $(DESTDIR)/$(BINARY) $(BSP2WALOBJS) $(LDFLAGS) $(LDLIBS)
 
 clean : 
-	rm -f *.o $(COMMONDIR)/*.o core
+	rm -f *.o core
 

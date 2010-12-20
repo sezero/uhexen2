@@ -27,42 +27,41 @@ BINARY:=lmp2pcx$(exe_ext)
 
 # Compiler flags
 
-CPUFLAGS:=
 # Overrides for the default CPUFLAGS
 ifeq ($(MACH_TYPE),x86)
-CPUFLAGS:=-march=i586
+CPU_X86=-march=i586
 endif
+CPUFLAGS=$(CPU_X86)
 
 # Overrides for the default ARCHFLAGS
-#ARCHFLAGS:=
+#ARCHFLAGS=
 
 ifdef DEBUG
-CFLAGS := -g -Wall
+CFLAGS += -g -Wall
 else
-CFLAGS = $(CPUFLAGS) -O2 -Wall -DNDEBUG
+CFLAGS += $(CPUFLAGS) -O2 -Wall -DNDEBUG
 endif
 
-CFLAGS := $(CFLAGS) $(ARCHFLAGS)
+CFLAGS += $(ARCHFLAGS)
 
+LDFLAGS =
+LDLIBS  =
+INCLUDES= -I. -I$(COMMONDIR)
 
 # Other build flags
 
 ifeq ($(TARGET_OS),win32)
-CFLAGS  := $(CFLAGS) -DWIN32_LEAN_AND_MEAN
-INCLUDES:= -I$(W32STUFF) -I$(COMMONDIR)
-LDFLAGS := -mconsole
-LDLIBS  :=
+CFLAGS  += -DWIN32_LEAN_AND_MEAN
+INCLUDES+= -I$(W32STUFF)
+LDFLAGS += -mconsole
 endif
 ifeq ($(TARGET_OS),win64)
-CFLAGS  := $(CFLAGS) -DWIN32_LEAN_AND_MEAN
-INCLUDES:= -I$(W32STUFF) -I$(COMMONDIR)
-LDFLAGS := -mconsole
-LDLIBS  :=
+CFLAGS  += -DWIN32_LEAN_AND_MEAN
+INCLUDES+= -I$(W32STUFF)
+LDFLAGS += -mconsole
 endif
 ifeq ($(TARGET_OS),unix)
-INCLUDES:= -I$(COMMONDIR)
-LDFLAGS :=
-LDLIBS  :=
+# nothing else needed
 endif
 
 # Targets
@@ -71,20 +70,22 @@ all : $(BINARY)
 # Rules for turning source files into .o files
 %.o: %.c
 	$(CC) -c $(CFLAGS) $(INCLUDES) -o $@ $<
+%.o: $(COMMONDIR)/%.c
+	$(CC) -c $(CFLAGS) $(INCLUDES) -o $@ $<
 
 # Objects
-LMP2PCXOBJS= $(COMMONDIR)/cmdlib.o \
-	$(COMMONDIR)/strlcat.o \
-	$(COMMONDIR)/strlcpy.o \
-	$(COMMONDIR)/util_io.o \
-	$(COMMONDIR)/pathutil.o \
-	$(COMMONDIR)/q_endian.o \
-	$(COMMONDIR)/byteordr.o \
+LMP2PCXOBJS= cmdlib.o \
+	strlcat.o \
+	strlcpy.o \
+	util_io.o \
+	pathutil.o \
+	q_endian.o \
+	byteordr.o \
 	lmp2pcx.o
 
 $(BINARY) : $(LMP2PCXOBJS)
 	$(LINKER) -o $(DESTDIR)/$(BINARY) $(LMP2PCXOBJS) $(LDFLAGS) $(LDLIBS)
 
 clean : 
-	rm -f *.o $(COMMONDIR)/*.o core
+	rm -f *.o core
 

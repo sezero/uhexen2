@@ -63,24 +63,24 @@ BINARY:=h2ded$(exe_ext)
 # Compiler flags
 #############################################################
 
-CPUFLAGS:=
-# Overrides for the default CPUFLAGS
 ifeq ($(MACH_TYPE),x86)
-CPUFLAGS:=-march=i586
+CPU_X86=-march=i586
 endif
+# Overrides for the default CPUFLAGS
+CPUFLAGS=$(CPU_X86)
 
 # Overrides for the default ARCHFLAGS
-#ARCHFLAGS:=
+#ARCHFLAGS=
 
 ifdef DEBUG
 # Debug type flags
 
-CFLAGS := -g -Wall
+CFLAGS += -g -Wall
 
 else
 # Release type flags
 
-CFLAGS := $(CPUFLAGS) -O2 -Wall -DNDEBUG -ffast-math -fexpensive-optimizations
+CFLAGS += $(CPUFLAGS) -O2 -Wall -DNDEBUG -ffast-math -fexpensive-optimizations
 
 ifeq ($(OPT_EXTRA),yes)
 ifeq ($(MACH_TYPE),x86)
@@ -88,7 +88,7 @@ ALIGN_OPT:= $(call check_gcc,-falign-loops=2 -falign-jumps=2 -falign-functions=2
 ifeq ($(ALIGN_OPT),)
 ALIGN_OPT:= $(call check_gcc,-malign-loops=2 -malign-jumps=2 -malign-functions=2,)
 endif
-CFLAGS := $(CFLAGS) $(ALIGN_OPT)
+CFLAGS += $(ALIGN_OPT)
 endif
 
 ifeq ($(MACH_TYPE),x86_64)
@@ -96,19 +96,27 @@ ALIGN_OPT:= $(call check_gcc,-falign-loops=2 -falign-jumps=2 -falign-functions=2
 ifeq ($(ALIGN_OPT),)
 ALIGN_OPT:= $(call check_gcc,-malign-loops=2 -malign-jumps=2 -malign-functions=2,)
 endif
-CFLAGS := $(CFLAGS) $(ALIGN_OPT)
+CFLAGS += $(ALIGN_OPT)
 endif
 
-CFLAGS := $(CFLAGS) -fomit-frame-pointer
+CFLAGS += -fomit-frame-pointer
 endif
 #
 endif
 
+CFLAGS += $(ARCHFLAGS)
+
+CPPFLAGS=
+LDFLAGS =
+
+# compiler includes
+INCLUDES= -I./server -I. -I$(COMMONDIR)
+
 ifeq ($(COMPILE_32BITS),yes)
-CFLAGS := $(CFLAGS) -m32
+CFLAGS += -m32
+LDFLAGS+= -m32
 endif
 
-CFLAGS := $(CFLAGS) $(ARCHFLAGS)
 # end of compiler flags
 #############################################################
 
@@ -116,16 +124,15 @@ CFLAGS := $(CFLAGS) $(ARCHFLAGS)
 #############################################################
 # Other build flags
 #############################################################
-EXT_FLAGS:= -DSERVERONLY
-INCLUDES:= -I./server -I. -I$(COMMONDIR)
+CPPFLAGS+= -DSERVERONLY
 
 ifdef DEMO
-EXT_FLAGS+= -DDEMOBUILD
+CPPFLAGS+= -DDEMOBUILD
 endif
 
 ifdef DEBUG
 # This activates some extra code in hexen2/hexenworld C source
-EXT_FLAGS+= -DDEBUG=1 -DDEBUG_BUILD=1
+CPPFLAGS+= -DDEBUG=1 -DDEBUG_BUILD=1
 endif
 
 
@@ -134,17 +141,17 @@ endif
 #############################################################
 ifeq ($(TARGET_OS),win32)
 
-CFLAGS  := $(CFLAGS) -DWIN32_LEAN_AND_MEAN
+CFLAGS += -DWIN32_LEAN_AND_MEAN
 
 ifeq ($(USE_WINSOCK2),yes)
-EXT_FLAGS+= -D_USE_WINSOCK2
+CPPFLAGS+= -D_USE_WINSOCK2
 LIBWINSOCK=-lws2_32
 else
 LIBWINSOCK=-lwsock32
 endif
 
-INCLUDES:= -I$(W32STUFF) $(INCLUDES)
-LDFLAGS := $(LIBWINSOCK) -lwinmm -mconsole
+INCLUDES+= -I$(W32STUFF)
+LDFLAGS += $(LIBWINSOCK) -lwinmm -mconsole
 
 endif
 # End of Win32 settings
@@ -156,17 +163,17 @@ endif
 #############################################################
 ifeq ($(TARGET_OS),win64)
 
-CFLAGS  := $(CFLAGS) -DWIN32_LEAN_AND_MEAN
+CFLAGS += -DWIN32_LEAN_AND_MEAN
 
 ifeq ($(USE_WINSOCK2),yes)
-EXT_FLAGS+= -D_USE_WINSOCK2
+CPPFLAGS+= -D_USE_WINSOCK2
 LIBWINSOCK=-lws2_32
 else
 LIBWINSOCK=-lwsock32
 endif
 
-INCLUDES:= -I$(W32STUFF) $(INCLUDES)
-LDFLAGS := $(LIBWINSOCK) -lwinmm -mconsole
+INCLUDES+= -I$(W32STUFF)
+LDFLAGS += $(LIBWINSOCK) -lwinmm -mconsole
 
 endif
 # End of Win64 settings
@@ -177,31 +184,20 @@ endif
 # Unix flags/settings
 #############################################################
 ifeq ($(TARGET_OS),unix)
-LDFLAGS := $(LIBSOCKET) -lm
+LDFLAGS += $(LIBSOCKET) -lm
 
 endif
 # End of Unix settings
 #############################################################
 
 
-#############################################################
-# any other settings/flags
-#############################################################
-ifeq ($(COMPILE_32BITS),yes)
-LDFLAGS := $(LDFLAGS) -m32
-endif
-
-# End of other settings/flags
-#############################################################
-
-
 # Rules for turning source files into .o files
 %.o: server/%.c
-	$(CC) -c $(CFLAGS) $(EXT_FLAGS) $(INCLUDES) -o $@ $<
+	$(CC) -c $(CFLAGS) $(CPPFLAGS) $(INCLUDES) -o $@ $<
 %.o: %.c
-	$(CC) -c $(CFLAGS) $(EXT_FLAGS) $(INCLUDES) -o $@ $<
+	$(CC) -c $(CFLAGS) $(CPPFLAGS) $(INCLUDES) -o $@ $<
 %.o: $(COMMONDIR)/%.c
-	$(CC) -c $(CFLAGS) $(EXT_FLAGS) $(INCLUDES) -o $@ $<
+	$(CC) -c $(CFLAGS) $(CPPFLAGS) $(INCLUDES) -o $@ $<
 
 # Objects
 
@@ -220,7 +216,7 @@ SYSOBJ_SYS := sys_unix.o
 endif
 
 # Final list of objects
-H2DED_OBJS = \
+SV_OBJS = \
 	q_endian.o \
 	link_ops.o \
 	sizebuf.o \
@@ -260,8 +256,8 @@ H2DED_OBJS = \
 default: $(BINARY)
 all: default
 
-$(BINARY): $(H2DED_OBJS)
-	$(LINKER) -o $(BINARY) $(H2DED_OBJS) $(LDFLAGS)
+$(BINARY): $(SV_OBJS)
+	$(LINKER) -o $(BINARY) $(SV_OBJS) $(LDFLAGS)
 
 clean:
 	rm -f *.o *.res core

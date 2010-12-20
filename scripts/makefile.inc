@@ -7,7 +7,7 @@
 # detection, setting the "sdl-config" command.
 
 # We also define some common flags in here:
-# Possible ARCH flags, flags for NASM, SDL and MGL, flags for opengl linkage.
+# Possible ARCH flags, flags for NASM and SDL, flags for opengl linkage.
 # See them near the bottom of this file.
 
 # Unless overriden, these settings will be used in any includer makefile
@@ -154,7 +154,7 @@ RANLIB ?= ranlib
 NASM ?= nasm
 WINDRES ?= windres
 
-LINKER := $(CC)
+LINKER = $(CC)
 
 
 ################################
@@ -168,11 +168,11 @@ check_gcc = $(shell if echo | $(CC) $(1) -S -o /dev/null -xc - > /dev/null 2>&1;
 # Determine common build flags:
 
 # Possible ARCH flags
-ARCHFLAGS:=
+ARCHFLAGS=
 
 ifeq ($(CROSS_COMPILE),n)
 ifeq ($(HOST_OS),morphos)
-ARCHFLAGS:=-noixemul
+ARCHFLAGS=-noixemul
 endif
 endif
 
@@ -184,19 +184,19 @@ endif
 # shall not be prefixed by '_'
 
 ifeq ($(TARGET_OS),win32)
-NASMFLAGS:= -f win32
+NASMFLAGS=-f win32
 endif
 ifeq ($(TARGET_OS),win64)
-NASMFLAGS:= -f win64 -d_NO_PREFIX
+NASMFLAGS=-f win64 -d_NO_PREFIX
 endif
 ifeq ($(TARGET_OS),dos)
-NASMFLAGS:= -f coff
+NASMFLAGS=-f coff
 endif
 ifeq ($(TARGET_OS),unix)
 ifeq ($(HOST_OS),darwin)
-NASMFLAGS:= -f macho
+NASMFLAGS=-f macho
 else
-NASMFLAGS:= -f elf -d_NO_PREFIX
+NASMFLAGS=-f elf -d_NO_PREFIX
 endif
 endif
 
@@ -221,29 +221,14 @@ endif
 ################################
 # -lsocket is needed on some arches
 
-LIBSOCKET:=
+LIBSOCKET=
 ifeq ($(CROSS_COMPILE),n)
 ifeq ($(HOST_OS),qnx)
-LIBSOCKET:=-lsocket
+LIBSOCKET=-lsocket
 endif
 ifeq ($(HOST_OS),sunos)
-LIBSOCKET:=-lsocket -lnsl
+LIBSOCKET=-lsocket -lnsl
 endif
-endif
-
-
-################################
-# MGL flags:
-# Required for hexen2/hexenworld win32-software renderer.
-
-ifeq ($(TARGET_OS),win32)
-MGL_FLAG:= -DMGL_DLL
-MGL_INCL:= -I$(W32STUFF)/scitech/include
-MGL_LINK:= -L$(W32STUFF)/scitech/x86 -lmglfx
-else
-MGL_FLAG:=
-MGL_INCL:=
-MGL_LINK:=
 endif
 
 
@@ -251,13 +236,17 @@ endif
 # GL Linkage flags:
 # These flags will be used for linking to opengl library
 ifeq ($(TARGET_OS),win32)
-GL_LINK := -lopengl32
+GL_LINK=-lopengl32
 else
 ifeq ($(TARGET_OS),win64)
-GL_LINK := -lopengl32
+GL_LINK=-lopengl32
 else
 # general X11/unix
-GL_LINK := -L$(X11BASE)/lib -lGL
+ifneq ($(X11BASE),)
+GL_LINK=-L$(X11BASE)/lib -lGL
+else
+GL_LINK=-lGL
+endif
 endif
 endif
 

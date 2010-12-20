@@ -14,10 +14,6 @@
 UHEXEN2_TOP:=..
 LIBS_DIR:=$(UHEXEN2_TOP)/libs
 
-# whether we should use the gnu auto-tools support when
-# building xdelta libraries: 0 or 1.
-AUTOTOOLS ?= 0
-
 HOST_OS:=$(shell uname|sed -e s/_.*//|tr '[:upper:]' '[:lower:]')
 
 CC ?= gcc
@@ -25,11 +21,14 @@ ifeq ($(CC),)
 CC := gcc
 endif
 
-LINKER:= $(CC)
+AR ?= ar
+RANLIB ?= ranlib
+
+LINKER= $(CC)
 
 XDELTA_DIR := $(LIBS_DIR)/xdelta11
 XDELTA_FLAGS:=
-XDELTA_LINK:= -L$(XDELTA_DIR)/.libs -lxdelta -L$(XDELTA_DIR)/libedsio/.libs -ledsio
+XDELTA_LINK:= -L$(XDELTA_DIR) -lxdelta
 
 BINARY:= h2launcher
 
@@ -44,61 +43,25 @@ endif
 
 # pthread flags: do note that these change accross
 # different platforms!!!
-PTHREAD_CFLAGS:=-D_REENTRANT
-PTHREAD_LIBS:=-lpthread
+PTHREAD_CFLAGS=-D_REENTRANT
+PTHREAD_LIBS=-lpthread
 
 ifdef DEBUG
-CFLAGS := -Wall -g -DDEBUG=1 -DDEBUG_BUILD=1
+CFLAGS += -Wall -g -DDEBUG=1 -DDEBUG_BUILD=1
 else
-CFLAGS := -Wall -O2 -DNDEBUG
+CFLAGS += -Wall -O2 -DNDEBUG
 endif
 
-CFLAGS := $(CFLAGS) $(GTK_CFLAGS)
+CFLAGS += $(GTK_CFLAGS) $(PTHREAD_CFLAGS) -I.
+LDFLAGS+= $(GTK_LIBS) $(PTHREAD_LIBS)
 
 ifdef DEMO
-CFLAGS := $(CFLAGS) -DDEMOBUILD
+XDDEPS :=
+CFLAGS += -DDEMOBUILD
 else
-CFLAGS := $(CFLAGS) $(PTHREAD_CFLAGS) $(XDELTA_FLAGS) -I$(XDELTA_DIR) -I$(XDELTA_DIR)/libedsio -I. -I./xpatch
-endif
-
-LDFLAGS:=$(GTK_LIBS)
-ifndef DEMO
-LDFLAGS:= $(LDFLAGS) -lz $(PTHREAD_LIBS)
-ifeq ($(AUTOTOOLS),1)
-LDFLAGS:=-Wl,-Bstatic $(XDELTA_LINK) -Wl,-Bdynamic $(LDFLAGS)
-endif
-endif
-
-ifdef DEMO
-XPATCH_OBJS   :=
-LIBXDELTA_OBJS:=
-LIBEDSIO_OBJS :=
-
-else
-ifeq ($(AUTOTOOLS),0)
-LIBEDSIO_OBJS :=$(XDELTA_DIR)/libedsio/library.o \
-		$(XDELTA_DIR)/libedsio/simple.o \
-		$(XDELTA_DIR)/libedsio/edsio.o \
-		$(XDELTA_DIR)/libedsio/edsio_edsio.o \
-		$(XDELTA_DIR)/libedsio/md5c.o \
-		$(XDELTA_DIR)/libedsio/fh.o \
-		$(XDELTA_DIR)/libedsio/generic.o \
-		$(XDELTA_DIR)/libedsio/default.o \
-		$(XDELTA_DIR)/libedsio/base64.o \
-		$(XDELTA_DIR)/libedsio/maketime.o \
-		$(XDELTA_DIR)/libedsio/partime.o
-# SHA is unused in present code, removed it.
-#		$(XDELTA_DIR)/libedsio/sha.o \
-
-LIBXDELTA_OBJS:=$(XDELTA_DIR)/xdelta.o \
-		$(XDELTA_DIR)/xdapply.o \
-		$(XDELTA_DIR)/xd_edsio.o
-else
-LIBXDELTA_OBJS:=
-LIBEDSIO_OBJS :=
-endif
-
-XPATCH_OBJS   :=xpatch/md5.o xpatch/loki_xdelta.o xpatch/apply_patch.o
+XDDEPS := $(XDELTA_DIR)/libxdelta.a
+CFLAGS += $(XDELTA_FLAGS) -I$(XDELTA_DIR) -I$(XDELTA_DIR)/libedsio -I./xpatch
+LDFLAGS+= $(XDELTA_LINK) -lz
 endif
 
 # Targets
@@ -114,12 +77,16 @@ all: $(BINARY)
 GUI_OBJS     := gtk_ui.o $(SUPPORT_OBJS)
 LAUNCHER_OBJS:= crc.o q_endian.o games.o config_file.o launch_bin.o
 LAUNCHER_MAIN:= main.o
-ALL_OBJECTS  := $(LAUNCHER_OBJS) $(GUI_OBJS) $(XPATCH_OBJS) \
-	$(LIBXDELTA_OBJS) $(LIBEDSIO_OBJS) $(LAUNCHER_MAIN)
+ifndef DEMO
+XPATCH_OBJS  :=xpatch/md5.o xpatch/loki_xdelta.o xpatch/apply_patch.o
+endif
+ALL_OBJECTS  := $(LAUNCHER_OBJS) $(LAUNCHER_MAIN) $(GUI_OBJS) $(XPATCH_OBJS)
 
-$(BINARY): $(LAUNCHER_OBJS) $(LAUNCHER_MAIN) $(GUI_OBJS) $(XPATCH_OBJS)
-	@rm -f $(BINARY)
+$(BINARY): $(ALL_OBJECTS) $(XDDEPS)
 	$(LINKER) -o $(BINARY) $(ALL_OBJECTS) $(LDFLAGS)
+
+$(XDELTA_DIR)/libxdelta.a:
+	$(MAKE) -C $(XDELTA_DIR) -f Makefile.xd CC="$(CC)" AR="$(AR)" RANLIB="$(RANLIB)" libxdelta.a
 
 clean:
 	-rm -f *.o xpatch/*.o core

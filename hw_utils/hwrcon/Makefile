@@ -43,23 +43,28 @@ USE_HUFFMAN ?=0
 
 # Compiler flags
 
-CPUFLAGS:=
-# Overrides for the default CPUFLAGS
 ifeq ($(MACH_TYPE),x86)
-CPUFLAGS:=-march=i386
+CPU_X86=-march=i386
 endif
+# Overrides for the default CPUFLAGS
+CPUFLAGS=$(CPU_X86)
 
 # Overrides for the default ARCHFLAGS
-#ARCHFLAGS:=
+#ARCHFLAGS=
 
 ifdef DEBUG
-CFLAGS := -g -Wall
+CFLAGS += -g -Wall
 else
-CFLAGS := $(CPUFLAGS) -O2 -Wall -DNDEBUG
+CFLAGS += $(CPUFLAGS) -O2 -Wall -DNDEBUG
 endif
 
-CFLAGS := $(CFLAGS) $(ARCHFLAGS)
+CFLAGS += $(ARCHFLAGS)
 
+CPPFLAGS=
+LDFLAGS =
+
+# compiler includes
+INCLUDES= -I.
 
 ifeq ($(USE_WINSOCK2),yes)
 LIBWINSOCK=-lws2_32
@@ -68,33 +73,31 @@ LIBWINSOCK=-lwsock32
 endif
 
 # Other build flags
-EXT_FLAGS:=
 
 ifeq ($(TARGET_OS),win32)
-CFLAGS  := $(CFLAGS) -DWIN32_LEAN_AND_MEAN
+CFLAGS  += -DWIN32_LEAN_AND_MEAN
 ifeq ($(USE_WINSOCK2),yes)
-EXT_FLAGS+= -D_USE_WINSOCK2
+CPPFLAGS+= -D_USE_WINSOCK2
 endif
-INCLUDES := -I$(W32STUFF) -I.
-LDFLAGS  := $(LIBWINSOCK) -mconsole
+INCLUDES+= -I$(W32STUFF)
+LDFLAGS += $(LIBWINSOCK) -mconsole
 endif
 ifeq ($(TARGET_OS),win64)
-CFLAGS  := $(CFLAGS) -DWIN32_LEAN_AND_MEAN
+CFLAGS  += -DWIN32_LEAN_AND_MEAN
 ifeq ($(USE_WINSOCK2),yes)
-EXT_FLAGS+= -D_USE_WINSOCK2
+CPPFLAGS+= -D_USE_WINSOCK2
 endif
-INCLUDES := -I$(W32STUFF) -I.
-LDFLAGS  := $(LIBWINSOCK) -mconsole
+INCLUDES+= -I$(W32STUFF)
+LDFLAGS += $(LIBWINSOCK) -mconsole
 endif
 ifeq ($(TARGET_OS),unix)
-INCLUDES := -I.
-LDFLAGS  := $(LIBSOCKET)
+LDFLAGS += $(LIBSOCKET)
 endif
 
 
 # Rules for turning source files into .o files
 %.o: %.c
-	$(CC) -c $(CFLAGS) $(EXT_FLAGS) $(INCLUDES) -o $@ $<
+	$(CC) -c $(CFLAGS) $(CPPFLAGS) $(INCLUDES) -o $@ $<
 
 # Objects
 COMMONOBJ = qsnprint.o
@@ -103,12 +106,12 @@ RCON_OBJS = hwrcon.o
 TERM_OBJS = hwterm.o
 
 ifeq ($(USE_HUFFMAN),yes)
-RCON_OBJS:= $(HUFF_OBJS) $(RCON_OBJS)
-EXT_FLAGS:= $(EXT_FLAGS) -DUSE_HUFFMAN
+RCON_OBJS+= $(HUFF_OBJS)
+CPPFLAGS+= -DUSE_HUFFMAN
 else
 ifeq ($(USE_HUFFMAN),1)
-RCON_OBJS:= $(HUFF_OBJS) $(RCON_OBJS)
-EXT_FLAGS:= $(EXT_FLAGS) -DUSE_HUFFMAN
+RCON_OBJS+= $(HUFF_OBJS)
+CPPFLAGS+= -DUSE_HUFFMAN
 endif
 endif
 

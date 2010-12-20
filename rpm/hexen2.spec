@@ -133,8 +133,7 @@ run a HexenWorld server or client, and a master server application.
 # HexenWorld master server
 %{__make} -C hw_utils/hwmaster
 
-# Build xdelta binary and its libraries: do this before
-# building the launcher, it uses its object files.
+# Build xdelta
 %{__make} -C libs/xdelta11 -f Makefile.xd %{glib1_buildopt}
 
 # Launcher binaries

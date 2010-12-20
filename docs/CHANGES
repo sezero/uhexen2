@@ -4,6 +4,9 @@ Development Progress	:
 ---------------------------
 
 2010-12-20 (SVN):
+    * A lot of Makefile reorganization at all places.
+
+2010-12-20 (SVN):
     * h2shared/snd_mp3.c: Use the enumerated value MAD_ERROR_NONE instead of
       0 when clearing error.
       (S_MP3_CodecReadStream): Add missing byte* cast to the buffer argument.

@@ -27,77 +27,67 @@ BINARY:=dhcc$(exe_ext)
 
 # Compiler flags
 
-CPUFLAGS:=
 # Overrides for the default CPUFLAGS
 # NOTE: the i586 cpuflag is causing a ~two-fold~ slowdown!
-#CPUFLAGS:=
+CPUFLAGS=
 
 # Overrides for the default ARCHFLAGS
-#ARCHFLAGS:=
+#ARCHFLAGS=
 
 ifdef DEBUG
-CFLAGS := -g -Wall
+CFLAGS += -g -Wall
 else
-CFLAGS := $(CPUFLAGS) -O2 -Wall -DNDEBUG
+CFLAGS += $(CPUFLAGS) -O2 -Wall -DNDEBUG
 endif
 
-CFLAGS := $(CFLAGS) $(ARCHFLAGS)
+CFLAGS += $(ARCHFLAGS)
 
+LDFLAGS =
+LDLIBS  =
+INCLUDES= -I. -I$(COMMONDIR)
 
 # Other build flags
 
 ifeq ($(TARGET_OS),win32)
-CFLAGS  := $(CFLAGS) -DWIN32_LEAN_AND_MEAN
-INCLUDES:= -I$(W32STUFF) -I$(COMMONDIR)
-LDFLAGS := -mconsole
-LDLIBS  :=
+CFLAGS  += -DWIN32_LEAN_AND_MEAN
+INCLUDES+= -I$(W32STUFF)
+LDFLAGS += -mconsole
 endif
 ifeq ($(TARGET_OS),win64)
-CFLAGS  := $(CFLAGS) -DWIN32_LEAN_AND_MEAN
-INCLUDES:= -I$(W32STUFF) -I$(COMMONDIR)
-LDFLAGS := -mconsole
-LDLIBS  :=
+CFLAGS  += -DWIN32_LEAN_AND_MEAN
+INCLUDES+= -I$(W32STUFF)
+LDFLAGS += -mconsole
 endif
 ifeq ($(TARGET_OS),unix)
-INCLUDES:= -I$(COMMONDIR)
-LDFLAGS :=
-LDLIBS  :=
+# nothing else needed
 endif
 
 # Targets
 all : $(BINARY)
 
-# directory for common objects (our flags may differ
-# from the flags that common objects were compiled.
-COMLIB_DIR:=cmnlibs
-
 # Rules for turning source files into .o files
 %.o: %.c
 	$(CC) -c $(CFLAGS) $(INCLUDES) -o $@ $<
-$(COMLIB_DIR)/%.o: $(COMMONDIR)/%.c
+%.o: $(COMMONDIR)/%.c
 	$(CC) -c $(CFLAGS) $(INCLUDES) -o $@ $<
 
 # Objects
-COMMONOBJ= $(COMLIB_DIR)/cmdlib.o \
-	$(COMLIB_DIR)/strlcat.o \
-	$(COMLIB_DIR)/strlcpy.o \
-	$(COMLIB_DIR)/util_io.o \
-	$(COMLIB_DIR)/q_endian.o \
-	$(COMLIB_DIR)/byteordr.o \
-	$(COMLIB_DIR)/crc.o
+COMMONOBJ= cmdlib.o \
+	strlcat.o \
+	strlcpy.o \
+	util_io.o \
+	q_endian.o \
+	byteordr.o \
+	crc.o
 DHCCOBJS= dcc.o \
 	hcc.o \
 	pr_comp.o \
 	pr_lex.o \
 	pr_parse.o
 
-$(COMLIB_DIR):
-	@test -d $@ || mkdir -p $@
-
-$(BINARY) : $(COMLIB_DIR) $(COMMONOBJ) $(DHCCOBJS)
+$(BINARY): $(COMMONOBJ) $(DHCCOBJS)
 	$(LINKER) -o $(DESTDIR)/$(BINARY) $(COMMONOBJ) $(DHCCOBJS) $(LDFLAGS) $(LDLIBS)
 
 clean : 
-	rm -f *.o $(COMLIB_DIR)/*.o core
-	rm -rf $(COMLIB_DIR)
+	rm -f *.o core
 

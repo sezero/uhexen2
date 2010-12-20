@@ -158,43 +158,43 @@ include $(UHEXEN2_TOP)/scripts/makefile.inc
 
 # Names of the binaries
 ifeq ($(TARGET_OS),win32)
-H2_BINARY:=h2.exe
-GLH2_BINARY:=glh2.exe
+SW_BINARY:=h2$(exe_ext)
+GL_BINARY:=glh2$(exe_ext)
 endif
 ifeq ($(TARGET_OS),win64)
-H2_BINARY:=h2.exe
-GLH2_BINARY:=glh2.exe
+SW_BINARY:=h2$(exe_ext)
+GL_BINARY:=glh2$(exe_ext)
 endif
 ifeq ($(TARGET_OS),dos)
-H2_BINARY:=h2dos.exe
+SW_BINARY:=h2dos$(exe_ext)
 endif
 ifeq ($(TARGET_OS),unix)
-H2_BINARY:=hexen2$(exe_ext)
-GLH2_BINARY:=glhexen2$(exe_ext)
+SW_BINARY:=hexen2$(exe_ext)
+GL_BINARY:=glhexen2$(exe_ext)
 endif
 
 #############################################################
 # Compiler flags
 #############################################################
 
-CPUFLAGS:=
-# Overrides for the default CPUFLAGS
 ifeq ($(MACH_TYPE),x86)
-CPUFLAGS:=-march=i586
+CPU_X86=-march=i586
 endif
+# Overrides for the default CPUFLAGS
+CPUFLAGS=$(CPU_X86)
 
 # Overrides for the default ARCHFLAGS
-#ARCHFLAGS:=
+#ARCHFLAGS=
 
 ifdef DEBUG
 # Debug type flags
 
-CFLAGS := -g -Wall
+CFLAGS += -g -Wall
 
 else
 # Release type flags
 
-CFLAGS := $(CPUFLAGS) -O2 -Wall -DNDEBUG -ffast-math -fexpensive-optimizations
+CFLAGS += $(CPUFLAGS) -O2 -Wall -DNDEBUG -ffast-math -fexpensive-optimizations
 
 ifeq ($(OPT_EXTRA),yes)
 ifeq ($(MACH_TYPE),x86)
@@ -202,7 +202,7 @@ ALIGN_OPT:= $(call check_gcc,-falign-loops=2 -falign-jumps=2 -falign-functions=2
 ifeq ($(ALIGN_OPT),)
 ALIGN_OPT:= $(call check_gcc,-malign-loops=2 -malign-jumps=2 -malign-functions=2,)
 endif
-CFLAGS := $(CFLAGS) $(ALIGN_OPT)
+CFLAGS += $(ALIGN_OPT)
 endif
 
 ifeq ($(MACH_TYPE),x86_64)
@@ -210,19 +210,31 @@ ALIGN_OPT:= $(call check_gcc,-falign-loops=2 -falign-jumps=2 -falign-functions=2
 ifeq ($(ALIGN_OPT),)
 ALIGN_OPT:= $(call check_gcc,-malign-loops=2 -malign-jumps=2 -malign-functions=2,)
 endif
-CFLAGS := $(CFLAGS) $(ALIGN_OPT)
+CFLAGS += $(ALIGN_OPT)
 endif
 
-CFLAGS := $(CFLAGS) -fomit-frame-pointer
+CFLAGS += -fomit-frame-pointer
 endif
 #
 endif
 
+CFLAGS += $(ARCHFLAGS)
+
+CPPFLAGS=
+LDFLAGS =
+
+# compiler includes
+INCLUDES= -I. -I$(COMMONDIR)
+# nasm includes: the trailing directory separator matters
+NASM_INC= -I./ -I$(COMMONDIR)/
+# windows resource compiler includes
+RES_INC = -I. -I$(COMMONDIR)
+
 ifeq ($(COMPILE_32BITS),yes)
-CFLAGS := $(CFLAGS) -m32
+CFLAGS += -m32
+LDFLAGS+= -m32
 endif
 
-CFLAGS := $(CFLAGS) $(ARCHFLAGS)
 # end of compiler flags
 #############################################################
 
@@ -230,7 +242,6 @@ CFLAGS := $(CFLAGS) $(ARCHFLAGS)
 #############################################################
 # Other build flags
 #############################################################
-EXT_FLAGS:=
 
 # disable x86 assembly if it is not an x86.
 ifneq ($(MACH_TYPE),x86)
@@ -252,24 +263,24 @@ endif
 
 # whether to use x86 assembly
 ifeq ($(USE_X86_ASM),yes)
-EXT_FLAGS:= $(EXT_FLAGS) -DUSE_INTEL_ASM
+CPPFLAGS+= -DUSE_INTEL_ASM
 endif
 
 ifdef DEMO
-EXT_FLAGS+= -DDEMOBUILD
+CPPFLAGS+= -DDEMOBUILD
 endif
 
 ifdef DEBUG
 # This activates some extra code in hexen2/hexenworld C source
-EXT_FLAGS+= -DDEBUG=1 -DDEBUG_BUILD=1
+CPPFLAGS+= -DDEBUG=1 -DDEBUG_BUILD=1
 endif
 
 
 #############################################################
 # OpenGL settings
 #############################################################
-GL_DEFS := -DGLQUAKE
-GLFLAGS :=
+GL_DEFS = -DGLQUAKE
+GLFLAGS =
 ifeq ($(USE_3DFXGAMMA),yes)
 # linux 3dfx gamma hack
 GL_DEFS+= -DUSE_3DFXGAMMA
@@ -280,40 +291,53 @@ else
 GLFLAGS+= $(GL_LINK)
 endif
 
+#############################################################
+# no streaming music if no sound
+#############################################################
+ifneq ($(USE_SOUND),yes)
+USE_CODEC_WAVE=no
+USE_CODEC_TIMIDITY=no
+USE_CODEC_WILDMIDI=no
+USE_CODEC_MP3=no
+USE_CODEC_VORBIS=no
+endif
+
 
 #############################################################
 # Unix flags/settings
 #############################################################
 ifeq ($(TARGET_OS),unix)
 
-INCLUDES:= -I$(X11BASE)/include -I. -I$(COMMONDIR)
-LDFLAGS := $(LIBSOCKET) -lm
+ifneq ($(X11BASE),)
+INCLUDES+= -I$(X11BASE)/include
+endif
+LDFLAGS += $(LIBSOCKET) -lm
 
 # We rely on SDL:  SDLQUAKE must be defined for all SDL using
 # platforms / targets.
-EXT_FLAGS+= -DSDLQUAKE
+CPPFLAGS+= -DSDLQUAKE
 
 ifeq ($(USE_SOUND),yes)
 ifeq ($(USE_ALSA),no)
-EXT_FLAGS+= -DNO_ALSA_AUDIO
+CPPFLAGS+= -DNO_ALSA_AUDIO
 else
 # snd_alsa uses dlopen() & co.
 LDFLAGS += -ldl
 endif
 ifeq ($(USE_OSS),no)
-EXT_FLAGS+= -DNO_OSS_AUDIO
+CPPFLAGS+= -DNO_OSS_AUDIO
 endif
 ifeq ($(USE_SUNAUDIO),no)
-EXT_FLAGS+= -DNO_SUN_AUDIO
+CPPFLAGS+= -DNO_SUN_AUDIO
 endif
 ifeq ($(USE_SDLAUDIO),no)
-EXT_FLAGS+= -DNO_SDL_AUDIO
+CPPFLAGS+= -DNO_SDL_AUDIO
 endif
 endif
 
 ifeq ($(USE_CDAUDIO),yes)
 ifeq ($(USE_SDLCD),yes)
-EXT_FLAGS+= -DWITH_SDLCD
+CPPFLAGS+= -DWITH_SDLCD
 endif
 endif
 
@@ -334,10 +358,9 @@ USE_CODEC_WILDMIDI=no
 USE_CODEC_MP3=no
 USE_CODEC_VORBIS=no
 
-INCLUDES:= -I. -I$(COMMONDIR)
-LDFLAGS := -lc -lgcc -lm
+LDFLAGS += -lc -lgcc -lm
 ifndef DEBUG
-LDFLAGS := $(LDFLAGS) -s
+LDFLAGS += -s
 endif
 
 endif
@@ -356,30 +379,24 @@ USE_CODEC_TIMIDITY=no
 USE_CODEC_WILDMIDI=no
 
 ifeq ($(USE_WINSOCK2),yes)
-EXT_FLAGS+= -D_USE_WINSOCK2
+CPPFLAGS+= -D_USE_WINSOCK2
 LIBWINSOCK=-lws2_32
 else
 LIBWINSOCK=-lwsock32
 endif
 
-CFLAGS  := $(CFLAGS) -DWIN32_LEAN_AND_MEAN
-INCLUDES:= -I$(W32STUFF) -I$(W32STUFF)/dxsdk/include -I. -I$(COMMONDIR)
-LDFLAGS := $(LIBWINSOCK) -lwinmm -mwindows
-
-ifneq ($(USE_MGL),yes)
-MGL_FLAG:=
-MGL_INCL:=
-MGL_LINK:=
-endif
+CFLAGS  += -DWIN32_LEAN_AND_MEAN
+INCLUDES+= -I$(W32STUFF) -I$(W32STUFF)/dxsdk/include
+LDFLAGS += $(LIBWINSOCK) -lwinmm -mwindows
 
 ifeq ($(LINK_DIRECTX),no)
-EXT_FLAGS+= -DDX_DLSYM
+CPPFLAGS+= -DDX_DLSYM
 else
 LDFLAGS += -L$(W32STUFF)/dxsdk/x86 -ldsound -ldinput -ldxguid
 endif
 
 ifeq ($(WITH_SPLASHES),no)
-EXT_FLAGS+= -DNO_SPLASHES
+CPPFLAGS+= -DNO_SPLASHES
 else
 # gl version needs linking to comctl32.dll because of that progress
 # bar thingy. it is necessary for the InitCommonControls call, only
@@ -388,12 +405,12 @@ else
 endif
 
 ifeq ($(USE_CODEC_VORBIS),yes)
-CODEC_INC := -I$(W32STUFF)/codecs/include
-CODEC_LINK:= -L$(W32STUFF)/codecs/x86
+CODEC_INC = -I$(W32STUFF)/codecs/include
+CODEC_LINK= -L$(W32STUFF)/codecs/x86
 endif
 ifeq ($(USE_CODEC_MP3),yes)
-CODEC_INC := -I$(W32STUFF)/codecs/include
-CODEC_LINK:= -L$(W32STUFF)/codecs/x86
+CODEC_INC = -I$(W32STUFF)/codecs/include
+CODEC_LINK= -L$(W32STUFF)/codecs/x86
 endif
 INCLUDES += $(CODEC_INC)
 LDFLAGS += $(CODEC_LINK)
@@ -415,31 +432,28 @@ USE_CODEC_WILDMIDI=no
 
 # cant use MGL for Win64
 USE_MGL=no
-MGL_FLAG:=
-MGL_INCL:=
-MGL_LINK:=
 # use winsock2 for win64
 USE_WINSOCK2=yes
 
 ifeq ($(USE_WINSOCK2),yes)
-EXT_FLAGS+= -D_USE_WINSOCK2
+CPPFLAGS+= -D_USE_WINSOCK2
 LIBWINSOCK=-lws2_32
 else
 LIBWINSOCK=-lwsock32
 endif
 
-CFLAGS  := $(CFLAGS) -DWIN32_LEAN_AND_MEAN
-INCLUDES:= -I$(W32STUFF) -I$(W32STUFF)/dxsdk/include -I. -I$(COMMONDIR)
-LDFLAGS := $(LIBWINSOCK) -lwinmm -mwindows
+CFLAGS  += -DWIN32_LEAN_AND_MEAN
+INCLUDES+= -I$(W32STUFF) -I$(W32STUFF)/dxsdk/include
+LDFLAGS += $(LIBWINSOCK) -lwinmm -mwindows
 
 ifeq ($(LINK_DIRECTX),no)
-EXT_FLAGS+= -DDX_DLSYM
+CPPFLAGS+= -DDX_DLSYM
 else
 LDFLAGS += -L$(W32STUFF)/dxsdk/x64 -ldsound -ldinput -ldxguid
 endif
 
 ifeq ($(WITH_SPLASHES),no)
-EXT_FLAGS+= -DNO_SPLASHES
+CPPFLAGS+= -DNO_SPLASHES
 else
 # gl version needs linking to comctl32.dll because of that progress
 # bar thingy. it is necessary for the InitCommonControls call, only
@@ -448,12 +462,12 @@ else
 endif
 
 ifeq ($(USE_CODEC_VORBIS),yes)
-CODEC_INC := -I$(W32STUFF)/codecs/include
-CODEC_LINK:= -L$(W32STUFF)/codecs/x64
+CODEC_INC = -I$(W32STUFF)/codecs/include
+CODEC_LINK= -L$(W32STUFF)/codecs/x64
 endif
 ifeq ($(USE_CODEC_MP3),yes)
-CODEC_INC := -I$(W32STUFF)/codecs/include
-CODEC_LINK:= -L$(W32STUFF)/codecs/x64
+CODEC_INC = -I$(W32STUFF)/codecs/include
+CODEC_LINK= -L$(W32STUFF)/codecs/x64
 endif
 INCLUDES += $(CODEC_INC)
 LDFLAGS += $(CODEC_LINK)
@@ -466,32 +480,26 @@ endif
 #############################################################
 # Streaming music settings
 #############################################################
-ifneq ($(USE_SOUND),yes)
-# if no sound, disable them:
-USE_CODEC_WAVE=no
-USE_CODEC_TIMIDITY=no
-USE_CODEC_WILDMIDI=no
-USE_CODEC_MP3=no
-USE_CODEC_VORBIS=no
-endif
-
 ifeq ($(USE_CODEC_WAVE),yes)
-EXT_FLAGS+= -DUSE_CODEC_WAVE
+CPPFLAGS+= -DUSE_CODEC_WAVE
 endif
 ifeq ($(USE_CODEC_VORBIS),yes)
-EXT_FLAGS+= -DUSE_CODEC_VORBIS
+CPPFLAGS+= -DUSE_CODEC_VORBIS
 LDFLAGS+= -lvorbis -lvorbisfile -logg
 endif
 ifeq ($(USE_CODEC_MP3),yes)
-EXT_FLAGS+= -DUSE_CODEC_MP3
+CPPFLAGS+= -DUSE_CODEC_MP3
 LDFLAGS+= -lmad
 endif
 ifeq ($(USE_CODEC_TIMIDITY),yes)
-EXT_FLAGS+= -DUSE_CODEC_TIMIDITY
+CPPFLAGS+= -DUSE_CODEC_TIMIDITY
 LDFLAGS+= -L$(LIBS_DIR)/timidity -ltimidity
+TIMIDEPS=$(LIBS_DIR)/timidity/libtimidity.a
+else
+TIMIDEPS=
 endif
 ifeq ($(USE_CODEC_WILDMIDI),yes)
-EXT_FLAGS+= -DUSE_CODEC_WILDMIDI
+CPPFLAGS+= -DUSE_CODEC_WILDMIDI
 LDFLAGS+= -lWildMidi
 endif
 
@@ -499,30 +507,19 @@ endif
 #############################################################
 
 
-#############################################################
-# any other settings/flags
-#############################################################
-ifeq ($(COMPILE_32BITS),yes)
-LDFLAGS:= $(LDFLAGS) -m32
-endif
-
-# End of other settings/flags
-#############################################################
-
-
 # Rules for turning source files into .o files
 %.o: %.c
-	$(CC) -c $(CFLAGS) $(EXT_FLAGS) $(SDLFLAGS) $(INCLUDES) -o $@ $<
+	$(CC) -c $(CFLAGS) $(CPPFLAGS) $(SDLFLAGS) $(INCLUDES) -o $@ $<
 %.o: $(COMMONDIR)/%.c
-	$(CC) -c $(CFLAGS) $(EXT_FLAGS) $(SDLFLAGS) $(INCLUDES) -o $@ $<
+	$(CC) -c $(CFLAGS) $(CPPFLAGS) $(SDLFLAGS) $(INCLUDES) -o $@ $<
 %.o: %.asm
-	$(NASM) $(NASMFLAGS) -I./ -I$(COMMONDIR)/ -o $@ $<
+	$(NASM) $(NASMFLAGS) $(NASM_INC) -o $@ $<
 %.o: $(COMMONDIR)/%.asm
-	$(NASM) $(NASMFLAGS) -I./ -I$(COMMONDIR)/ -o $@ $<
+	$(NASM) $(NASMFLAGS) $(NASM_INC) -o $@ $<
 %.res: %.rc
-	$(WINDRES) -DWIN32_LEAN_AND_MEAN $(EXT_FLAGS) -I. -I$(COMMONDIR) --output-format=coff -o $@ $<
+	$(WINDRES) -DWIN32_LEAN_AND_MEAN $(CPPFLAGS) $(RES_INC) --output-format=coff -o $@ $<
 %.res: $(COMMONDIR)/%.rc
-	$(WINDRES) -DWIN32_LEAN_AND_MEAN $(EXT_FLAGS) -I. -I$(COMMONDIR) --output-format=coff -o $@ $<
+	$(WINDRES) -DWIN32_LEAN_AND_MEAN $(CPPFLAGS) $(RES_INC) --output-format=coff -o $@ $<
 
 # Objects
 
@@ -572,7 +569,7 @@ endif
 ifneq ($(USE_SOUND),yes)
 MUSIC_OBJS:= bgmnull.o
 SOUND_ASM :=
-EXT_FLAGS += -D_NO_SOUND
+CPPFLAGS += -D_NO_SOUND
 SYSOBJ_SND :=
 COMOBJ_SND := snd_null.o $(MUSIC_OBJS)
 else
@@ -602,7 +599,7 @@ endif
 # MIDI objects
 ifneq ($(USE_MIDI),yes)
 SYSOBJ_MIDI:= midi_nul.o
-EXT_FLAGS += -D_NO_MIDIDRV
+CPPFLAGS += -D_NO_MIDIDRV
 else
 ifeq ($(TARGET_OS),win32)
 SYSOBJ_MIDI:= midi_win.o mid2strm.o
@@ -612,14 +609,14 @@ SYSOBJ_MIDI:= midi_win.o mid2strm.o
 endif
 ifeq ($(TARGET_OS),dos)
 SYSOBJ_MIDI:= midi_nul.o
-EXT_FLAGS += -D_NO_MIDIDRV
+CPPFLAGS += -D_NO_MIDIDRV
 endif
 ifeq ($(TARGET_OS),unix)
 ifeq ($(HOST_OS),darwin)
 SYSOBJ_MIDI:= midi_mac.o
 else
 SYSOBJ_MIDI:= midi_nul.o
-EXT_FLAGS += -D_NO_MIDIDRV
+CPPFLAGS += -D_NO_MIDIDRV
 endif
 endif
 # end of MIDI objects
@@ -628,7 +625,7 @@ endif
 # CDAudio objects
 ifneq ($(USE_CDAUDIO),yes)
 SYSOBJ_CDA:= cd_null.o
-EXT_FLAGS += -D_NO_CDAUDIO
+CPPFLAGS += -D_NO_CDAUDIO
 else
 ifeq ($(TARGET_OS),win32)
 SYSOBJ_CDA := cd_win.o
@@ -798,29 +795,38 @@ help:
 	@echo "* $(MAKE) glh2        : hexen2 binary, opengl renderer"
 	@echo
 
-hexen2: h2
-glhexen2: glh2
+hexen2: $(SW_BINARY)
+h2: $(SW_BINARY)
+glhexen2: $(GL_BINARY)
+glh2: $(GL_BINARY)
+
+ifeq ($(TARGET_OS),win32)
+ifeq ($(USE_MGL),yes)
+$(SW_BINARY): CPPFLAGS+= -DMGL_DLL
+$(SW_BINARY): INCLUDES+= -I$(W32STUFF)/scitech/include
+$(SW_BINARY): LDFLAGS += -L$(W32STUFF)/scitech/x86 -lmglfx
+endif
+endif
+$(GL_BINARY): CPPFLAGS+= $(GL_DEFS)
 
 # extra rule for snd_timidity.c because of timidity/timidity.h and libtimidity.a
-snd_timidity.o: $(COMMONDIR)/snd_timidity.c $(LIBS_DIR)/timidity/libtimidity.a
-	$(CC) -c $(CFLAGS) $(EXT_FLAGS) $(SDLFLAGS) $(INCLUDES) -I$(LIBS_DIR) -o $@ $<
+snd_timidity.o: $(COMMONDIR)/snd_timidity.c
+	$(CC) -c $(CFLAGS) $(CPPFLAGS) $(SDLFLAGS) $(INCLUDES) -I$(LIBS_DIR) -o $@ $(COMMONDIR)/snd_timidity.c
+
 $(LIBS_DIR)/timidity/libtimidity.a:
 	$(MAKE) -C $(LIBS_DIR)/timidity CC="$(CC)" AR="$(AR)" RANLIB="$(RANLIB)"
 
-h2: EXT_FLAGS+=$(MGL_FLAG)
-h2: INCLUDES+=$(MGL_INCL)
-h2: $(SOFT_ASM) $(SOFTOBJS) $(COMMON_ASM) $(COMMONOBJS)
-	$(LINKER) -o $(H2_BINARY) $(SOFT_ASM) $(SOFTOBJS) $(COMMON_ASM) $(COMMONOBJS) $(LDFLAGS) $(SDLLINK) $(MGL_LINK)
+$(SW_BINARY): $(SOFT_ASM) $(SOFTOBJS) $(COMMON_ASM) $(COMMONOBJS) $(TIMIDEPS)
+	$(LINKER) -o $(SW_BINARY) $(SOFT_ASM) $(SOFTOBJS) $(COMMON_ASM) $(COMMONOBJS) $(LDFLAGS) $(SDLLINK)
 
-glh2: EXT_FLAGS+= $(GL_DEFS)
-glh2: $(GLOBJS) $(COMMON_ASM) $(COMMONOBJS)
-	$(LINKER) -o $(GLH2_BINARY) $(GLOBJS) $(COMMON_ASM) $(COMMONOBJS) $(LDFLAGS) $(GLFLAGS) $(SDLLINK)
+$(GL_BINARY): $(GLOBJS) $(COMMON_ASM) $(COMMONOBJS) $(TIMIDEPS)
+	$(LINKER) -o $(GL_BINARY) $(GLOBJS) $(COMMON_ASM) $(COMMONOBJS) $(LDFLAGS) $(GLFLAGS) $(SDLLINK)
 
 clean:
-	rm -f *.o *.res dos/*.o sv_objs/*.o core
+	rm -f *.o *.res dos/*.o core
 
 cleaner: clean
-	rm -f $(H2_BINARY) $(GLH2_BINARY)
+	rm -f $(SW_BINARY) $(GL_BINARY)
 
 report:
 	@echo "Host OS  :" $(HOST_OS)

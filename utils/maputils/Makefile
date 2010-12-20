@@ -30,43 +30,42 @@ BSPINFO:=bspinfo$(exe_ext)
 
 # Compiler flags
 
-CPUFLAGS:=
 # Overrides for the default CPUFLAGS
 ifeq ($(MACH_TYPE),x86)
-CPUFLAGS:=-march=i586
+CPU_X86=-march=i586
 endif
+CPUFLAGS=$(CPU_X86)
 
 # Overrides for the default ARCHFLAGS
-#ARCHFLAGS:=
+#ARCHFLAGS=
 
 ifdef DEBUG
-CFLAGS := -g -Wall
+CFLAGS += -g -Wall
 else
-CFLAGS := $(CPUFLAGS) -O2 -Wall -DNDEBUG -ffast-math -fexpensive-optimizations
+CFLAGS += $(CPUFLAGS) -O2 -Wall -DNDEBUG -ffast-math -fexpensive-optimizations
 endif
 
-CFLAGS := $(CFLAGS) $(ARCHFLAGS)
-CFLAGS := $(CFLAGS) -DDOUBLEVEC_T
+CFLAGS += $(ARCHFLAGS)
+CFLAGS += -DDOUBLEVEC_T
 
+LDFLAGS =
+LDLIBS  =
+INCLUDES= -I. -I$(COMMONDIR)
 
 # Other build flags
 
 ifeq ($(TARGET_OS),win32)
-CFLAGS  := $(CFLAGS) -DWIN32_LEAN_AND_MEAN
-INCLUDES:= -I$(W32STUFF) -I$(COMMONDIR)
-LDFLAGS := -mconsole
-LDLIBS  :=
+CFLAGS  += -DWIN32_LEAN_AND_MEAN
+INCLUDES+= -I$(W32STUFF)
+LDFLAGS += -mconsole
 endif
 ifeq ($(TARGET_OS),win64)
-CFLAGS  := $(CFLAGS) -DWIN32_LEAN_AND_MEAN
-INCLUDES:= -I$(W32STUFF) -I$(COMMONDIR)
-LDFLAGS := -mconsole
-LDLIBS  :=
+CFLAGS  += -DWIN32_LEAN_AND_MEAN
+INCLUDES+= -I$(W32STUFF)
+LDFLAGS += -mconsole
 endif
 ifeq ($(TARGET_OS),unix)
-INCLUDES:= -I$(COMMONDIR)
-LDFLAGS :=
-LDLIBS  := -lm
+LDLIBS  += -lm
 endif
 
 # Targets
@@ -75,24 +74,21 @@ all : $(LIGHT) $(VIS) $(QBSP) $(BSPINFO)
 # Rules for turning source files into .o files
 %.o: %.c
 	$(CC) -c $(CFLAGS) $(INCLUDES) -o $@ $<
-# special rule for mathlib because of DOUBLEVEC_T
-mathlib.o: $(COMMONDIR)/mathlib.c
-	$(CC) -c $(CFLAGS) $(INCLUDES) -o $@ $<
-bspfile.o: $(COMMONDIR)/bspfile.c
+%.o: $(COMMONDIR)/%.c
 	$(CC) -c $(CFLAGS) $(INCLUDES) -o $@ $<
 
 # Objects
-COMMONOBJS= $(COMMONDIR)/cmdlib.o \
-	$(COMMONDIR)/strlcat.o \
-	$(COMMONDIR)/strlcpy.o \
-	$(COMMONDIR)/q_endian.o \
-	$(COMMONDIR)/byteordr.o \
-	$(COMMONDIR)/util_io.o \
-	$(COMMONDIR)/pathutil.o \
+COMMONOBJS= cmdlib.o \
+	strlcat.o \
+	strlcpy.o \
+	q_endian.o \
+	byteordr.o \
+	util_io.o \
+	pathutil.o \
 	mathlib.o \
 	bspfile.o
 
-LIGHTOBJS= $(COMMONDIR)/threads.o \
+LIGHTOBJS= threads.o \
 	entities.o \
 	light.o \
 	ltface.o \
@@ -116,13 +112,13 @@ QBSPOBJS= brush.o \
 	tjunc.o \
 	writebsp.o
 
-BSPINFOBJS= $(COMMONDIR)/cmdlib.o \
-	$(COMMONDIR)/strlcat.o \
-	$(COMMONDIR)/strlcpy.o \
-	$(COMMONDIR)/q_endian.o \
-	$(COMMONDIR)/byteordr.o \
-	$(COMMONDIR)/util_io.o \
-	$(COMMONDIR)/pathutil.o \
+BSPINFOBJS= cmdlib.o \
+	strlcat.o \
+	strlcpy.o \
+	q_endian.o \
+	byteordr.o \
+	util_io.o \
+	pathutil.o \
 	bspfile.o \
 	bspinfo.o
 
@@ -139,5 +135,5 @@ $(BSPINFO) : $(BSPINFOBJS)
 	$(LINKER) -o $(DESTDIR)/$(BSPINFO) $(BSPINFOBJS) $(LDFLAGS)
 
 clean : 
-	rm -f *.o $(COMMONDIR)/*.o core
+	rm -f *.o core
 
