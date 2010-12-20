@@ -4,6 +4,10 @@ Development Progress	:
 ---------------------------
 
 2010-12-20 (SVN):
+    * Makefiles: dropped circular dependencies for (gl)hexen2 and (gl)hwcl,
+      so that make doesn't complain.
+
+2010-12-20 (SVN):
     * A lot of Makefile reorganization at all places.
 
 2010-12-20 (SVN):

@@ -729,9 +729,7 @@ help:
 	@echo "* $(MAKE) glhw        : hexenworld client, opengl renderer"
 	@echo
 
-hwcl: $(SW_BINARY)
 hw: $(SW_BINARY)
-glhwcl: $(GL_BINARY)
 glhw: $(GL_BINARY)
 
 ifeq ($(TARGET_OS),win32)

@@ -795,9 +795,7 @@ help:
 	@echo "* $(MAKE) glh2        : hexen2 binary, opengl renderer"
 	@echo
 
-hexen2: $(SW_BINARY)
 h2: $(SW_BINARY)
-glhexen2: $(GL_BINARY)
 glh2: $(GL_BINARY)
 
 ifeq ($(TARGET_OS),win32)
