@@ -30,8 +30,8 @@
 #include "gtk_ui.h"
 #include "support.h"
 
-#if !defined(DEMOBUILD)
 #include <pthread.h>
+#if !defined(DEMOBUILD)
 #include "apply_patch.h"
 #endif	/* !DEMOBUILD */
 
@@ -213,7 +213,10 @@ typedef struct LogQueue_s
 	struct LogQueue_s *next;
 } LogQueue_t;
 
-static LogQueue_t *log_queue, *old_queue;
+static LogQueue_t *log_queue;
+#if !defined(DEMOBUILD)
+static LogQueue_t *old_queue;
+#endif
 static pthread_mutex_t logmutex = PTHREAD_MUTEX_INITIALIZER;
 
 void ui_log_queue (const char *fmt, ...)
