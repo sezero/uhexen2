@@ -180,7 +180,7 @@ static int mp3_inputdata(snd_stream_t *stream)
 	}
 
 	mad_stream_buffer(&p->Stream, p->mp3_buffer, bytes_read+remaining);
-	p->Stream.error = 0;
+	p->Stream.error = MAD_ERROR_NONE;
 
 	return 0;
 }
@@ -212,7 +212,7 @@ static int mp3_startread(snd_stream_t *stream)
 	 * that we have a valid MP3 and also skips past ID3v2 tags
 	 * at the beginning of the audio file.
 	 */
-	p->Stream.error = 0;
+	p->Stream.error = MAD_ERROR_NONE;
 	while (mad_frame_decode(&p->Frame,&p->Stream))
 	{
 		/* check whether input buffer needs a refill */
@@ -232,7 +232,7 @@ static int mp3_startread(snd_stream_t *stream)
 		 * frame.  In that case we can abort early without
 		 * scanning the whole file.
 		 */
-		p->Stream.error = 0;
+		p->Stream.error = MAD_ERROR_NONE;
 	}
 
 	if (p->Stream.error)
@@ -431,7 +431,7 @@ static snd_stream_t *S_MP3_CodecOpenStream (const char *filename)
 
 static int S_MP3_CodecReadStream (snd_stream_t *stream, int bytes, void *buffer)
 {
-	int res = mp3_decode(stream, buffer, bytes / stream->info.width);
+	int res = mp3_decode(stream, (byte *)buffer, bytes / stream->info.width);
 	return res * stream->info.width;
 }
 
