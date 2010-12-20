@@ -21,9 +21,9 @@
    common.h
 */
 
-typedef struct {
+typedef struct _PathList {
   char *path;
-  void *next;
+  struct _PathList *next;
 } PathList;
 
 extern FILE *open_file(const char *name);

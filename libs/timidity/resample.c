@@ -562,7 +562,7 @@ void pre_resample(MidSong *song, MidSample *sp)
   a = ((double) (sp->sample_rate) * freq_table[(int) (sp->note_to_use)]) /
     ((double) (sp->root_freq) * song->rate);
   newlen = (sint32)(sp->data_length / a);
-  dest = newdata = safe_malloc(newlen >> (FRACTION_BITS - 1));
+  dest = newdata = (sint16 *) safe_malloc(newlen >> (FRACTION_BITS - 1));
 
   count = (newlen >> FRACTION_BITS) - 1;
   ofs = incr = (sp->data_length - (1 << FRACTION_BITS)) / count;

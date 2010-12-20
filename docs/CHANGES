@@ -4,6 +4,12 @@ Development Progress	:
 ---------------------------
 
 2010-12-20 (SVN):
+    * Make timidity to compile using cplusplus compilers: add missing type
+      casts, avoid `new' as variable name, assign pointers to NULL instead
+      of 0. Change type of next from void* to a pointer of structure's own
+      type in PathList and MidEventList.
+
+2010-12-20 (SVN):
     * Makefiles: dropped circular dependencies for (gl)hexen2 and (gl)hwcl,
       so that make doesn't complain.
 

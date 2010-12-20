@@ -79,7 +79,7 @@ static int read_config_file(const char *name)
 {
   FILE *fp;
   char tmp[1024], *w[MAXWORDS], *cp;
-  MidToneBank *bank=0;
+  MidToneBank *bank = NULL;
   int i, j, k, line=0, words;
   static int rcf_count=0;
 
@@ -250,9 +250,9 @@ static int read_config_file(const char *name)
       }
       if (!master_drumset[i])
       {
-	master_drumset[i] = safe_malloc(sizeof(MidToneBank));
+	master_drumset[i] = (MidToneBank *) safe_malloc(sizeof(MidToneBank));
 	memset(master_drumset[i], 0, sizeof(MidToneBank));
-	master_drumset[i]->tone = safe_malloc(128 * sizeof(MidToneBankElement));
+	master_drumset[i]->tone = (MidToneBankElement *) safe_malloc(128 * sizeof(MidToneBankElement));
 	memset(master_drumset[i]->tone, 0, 128 * sizeof(MidToneBankElement));
       }
       bank=master_drumset[i];
@@ -273,9 +273,9 @@ static int read_config_file(const char *name)
       }
       if (!master_tonebank[i])
       {
-	master_tonebank[i] = safe_malloc(sizeof(MidToneBank));
+	master_tonebank[i] = (MidToneBank *) safe_malloc(sizeof(MidToneBank));
 	memset(master_tonebank[i], 0, sizeof(MidToneBank));
-	master_tonebank[i]->tone = safe_malloc(128 * sizeof(MidToneBankElement));
+	master_tonebank[i]->tone = (MidToneBankElement *) safe_malloc(128 * sizeof(MidToneBankElement));
 	memset(master_tonebank[i]->tone, 0, 128 * sizeof(MidToneBankElement));
       }
       bank=master_tonebank[i];
@@ -302,7 +302,7 @@ static int read_config_file(const char *name)
       }
       if (bank->tone[i].name)
 	free(bank->tone[i].name);
-      strcpy((bank->tone[i].name=safe_malloc(strlen(w[1])+1)),w[1]);
+      strcpy((bank->tone[i].name=(char *) safe_malloc(strlen(w[1])+1)),w[1]);
       bank->tone[i].note=bank->tone[i].amp=bank->tone[i].pan=
       bank->tone[i].strip_loop=bank->tone[i].strip_envelope=
       bank->tone[i].strip_tail=-1;
@@ -397,14 +397,14 @@ static int read_config_file(const char *name)
 int mid_init_no_config()
 {
   /* Allocate memory for the standard tonebank and drumset */
-  master_tonebank[0] = safe_malloc(sizeof(MidToneBank));
+  master_tonebank[0] = (MidToneBank *) safe_malloc(sizeof(MidToneBank));
   memset(master_tonebank[0], 0, sizeof(MidToneBank));
-  master_tonebank[0]->tone = safe_malloc(128 * sizeof(MidToneBankElement));
+  master_tonebank[0]->tone = (MidToneBankElement *) safe_malloc(128 * sizeof(MidToneBankElement));
   memset(master_tonebank[0]->tone, 0, 128 * sizeof(MidToneBankElement));
 
-  master_drumset[0] = safe_malloc(sizeof(MidToneBank));
+  master_drumset[0] = (MidToneBank *) safe_malloc(sizeof(MidToneBank));
   memset(master_drumset[0], 0, sizeof(MidToneBank));
-  master_drumset[0]->tone = safe_malloc(128 * sizeof(MidToneBankElement));
+  master_drumset[0]->tone = (MidToneBankElement *) safe_malloc(128 * sizeof(MidToneBankElement));
   memset(master_drumset[0]->tone, 0, 128 * sizeof(MidToneBankElement));
 
   return 0;
@@ -455,13 +455,13 @@ MidSong *mid_song_load_dls(MidIStream *stream, MidDLSPatches *patches, MidSongOp
   {
     if (master_tonebank[i])
     {
-      song->tonebank[i] = safe_malloc(sizeof(MidToneBank));
+      song->tonebank[i] = (MidToneBank *) safe_malloc(sizeof(MidToneBank));
       memset(song->tonebank[i], 0, sizeof(MidToneBank));
       song->tonebank[i]->tone = master_tonebank[i]->tone;
     }
     if (master_drumset[i])
     {
-      song->drumset[i] = safe_malloc(sizeof(MidToneBank));
+      song->drumset[i] = (MidToneBank *) safe_malloc(sizeof(MidToneBank));
       memset(song->drumset[i], 0, sizeof(MidToneBank));
       song->drumset[i]->tone = master_drumset[i]->tone;
     }
@@ -502,8 +502,8 @@ MidSong *mid_song_load_dls(MidIStream *stream, MidDLSPatches *patches, MidSongOp
   }
 
   song->buffer_size = options->buffer_size;
-  song->resample_buffer = safe_malloc(options->buffer_size * sizeof(sample_t));
-  song->common_buffer = safe_malloc(options->buffer_size * 2 * sizeof(sint32));
+  song->resample_buffer = (sample_t *) safe_malloc(options->buffer_size * sizeof(sample_t));
+  song->common_buffer = (sint32 *) safe_malloc(options->buffer_size * 2 * sizeof(sint32));
 
   song->bytes_per_sample =
         ((song->encoding & PE_MONO) ? 1 : 2)
@@ -527,7 +527,7 @@ MidSong *mid_song_load_dls(MidIStream *stream, MidDLSPatches *patches, MidSongOp
     return(NULL);
   }
 
-  song->default_instrument = 0;
+  song->default_instrument = NULL;
   song->default_program = DEFAULT_PROGRAM;
 
   if (*def_instr_name)
@@ -561,7 +561,7 @@ void mid_song_free(MidSong *song)
   free(song->resample_buffer);
   free(song->events);
 
-  for (i = 0; i < (sizeof(song->meta_data) / sizeof(song->meta_data[0])); i++)
+  for (i = 0; i < (int)(sizeof(song->meta_data) / sizeof(song->meta_data[0])); i++)
   {
     if (song->meta_data[i])
       free(song->meta_data[i]);

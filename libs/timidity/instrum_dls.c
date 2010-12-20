@@ -80,7 +80,7 @@ static int ChunkHasSubType(uint32 magic)
         RIFF, LIST
     };
     int i;
-    for ( i = 0; i < (sizeof(chunk_list) / sizeof(uint32)); ++i ) {
+    for ( i = 0; i < (int)(sizeof(chunk_list) / sizeof(uint32)); ++i ) {
         if ( magic == chunk_list[i] ) {
             return 1;
         }
@@ -94,7 +94,7 @@ static int ChunkHasSubChunks(uint32 magic)
         RIFF, LIST
     };
     int i;
-    for ( i = 0; i < (sizeof(chunk_list) / sizeof(uint32)); ++i ) {
+    for ( i = 0; i < (int)(sizeof(chunk_list) / sizeof(uint32)); ++i ) {
         if ( magic == chunk_list[i] ) {
             return 1;
         }
