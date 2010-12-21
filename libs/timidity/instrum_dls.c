@@ -966,7 +966,7 @@ static void PrintInstrument(DLS_Instrument *instrument, uint32 index)
     if ( instrument->art && instrument->art->cConnections > 0 ) {
         PrintArt("Instrument", instrument->art, instrument->artList);
     }
-};
+}
 
 void PrintDLS(MidDLSPatches *data)
 {
@@ -1059,10 +1059,11 @@ static int load_connection(ULONG cConnections, CONNECTION *artList, USHORT desti
   for (i = 0; i < cConnections; ++i) {
     CONNECTION *conn = &artList[i];
     if(conn->usDestination == destination) {
-      // The formula for the destination is:
-      // usDestination = usDestination + usTransform(usSource * (usControl * lScale))
-      // Since we are only handling source/control of NONE and identity
-      // transform, this simplifies to: usDestination = usDestination + lScale
+      /* The formula for the destination is:
+       * usDestination = usDestination + usTransform(usSource * (usControl * lScale))
+       * Since we are only handling source/control of NONE and identity
+       * transform, this simplifies to: usDestination = usDestination + lScale
+       */
       if (conn->usSource == CONN_SRC_NONE &&
           conn->usControl == CONN_SRC_NONE &&
           conn->usTransform == CONN_TRN_NONE)

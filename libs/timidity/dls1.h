@@ -1,70 +1,64 @@
-/*==========================================================================;
-//
-//  dls1.h
-//
-//
-//  Description:
-//
-//  Interface defines and structures for the Instrument Collection Form
-//  RIFF DLS.
-//
-//
-//  Written by Sonic Foundry 1996.  Released for public use.
-//
-//=========================================================================*/
+/*
+ *  dls1.h
+ *
+ *  Description:
+ *
+ *  Interface defines and structures for the Instrument Collection Form
+ *  RIFF DLS.
+ *
+ *  Written by Sonic Foundry 1996.  Released for public use.
+ *
+ */
 
 #ifndef _INC_DLS1
 #define _INC_DLS1
 
-/*//////////////////////////////////////////////////////////////////////////
-//
-//
-// Layout of an instrument collection:
-//
-//
-// RIFF [] 'DLS ' [dlid,colh,INSTLIST,WAVEPOOL,INFOLIST]
-//
-// INSTLIST
-// LIST [] 'lins'
-//               LIST [] 'ins ' [dlid,insh,RGNLIST,ARTLIST,INFOLIST]
-//               LIST [] 'ins ' [dlid,insh,RGNLIST,ARTLIST,INFOLIST]
-//               LIST [] 'ins ' [dlid,insh,RGNLIST,ARTLIST,INFOLIST]
-//
-// RGNLIST
-// LIST [] 'lrgn' 
-//               LIST [] 'rgn '  [rgnh,wsmp,wlnk,ARTLIST]
-//               LIST [] 'rgn '  [rgnh,wsmp,wlnk,ARTLIST]
-//               LIST [] 'rgn '  [rgnh,wsmp,wlnk,ARTLIST]
-//
-// ARTLIST
-// LIST [] 'lart'
-//         'art1' level 1 Articulation connection graph
-//         'art2' level 2 Articulation connection graph
-//         '3rd1' Possible 3rd party articulation structure 1
-//         '3rd2' Possible 3rd party articulation structure 2 .... and so on
-//
-// WAVEPOOL 
-// ptbl [] [pool table]
-// LIST [] 'wvpl'
-//               [path],
-//               [path],
-//               LIST [] 'wave' [dlid,RIFFWAVE]
-//               LIST [] 'wave' [dlid,RIFFWAVE]
-//               LIST [] 'wave' [dlid,RIFFWAVE]
-//               LIST [] 'wave' [dlid,RIFFWAVE]
-//               LIST [] 'wave' [dlid,RIFFWAVE]
-//
-// INFOLIST
-// LIST [] 'INFO' 
-//               'icmt' 'One of those crazy comments.'
-//               'icop' 'Copyright (C) 1996 Sonic Foundry'
-//
-/////////////////////////////////////////////////////////////////////////*/
+/*
+ * Layout of an instrument collection:
+ *
+ * RIFF [] 'DLS ' [dlid,colh,INSTLIST,WAVEPOOL,INFOLIST]
+ *
+ * INSTLIST
+ * LIST [] 'lins'
+ *               LIST [] 'ins ' [dlid,insh,RGNLIST,ARTLIST,INFOLIST]
+ *               LIST [] 'ins ' [dlid,insh,RGNLIST,ARTLIST,INFOLIST]
+ *               LIST [] 'ins ' [dlid,insh,RGNLIST,ARTLIST,INFOLIST]
+ *
+ * RGNLIST
+ * LIST [] 'lrgn'
+ *               LIST [] 'rgn '  [rgnh,wsmp,wlnk,ARTLIST]
+ *               LIST [] 'rgn '  [rgnh,wsmp,wlnk,ARTLIST]
+ *               LIST [] 'rgn '  [rgnh,wsmp,wlnk,ARTLIST]
+ *
+ * ARTLIST
+ * LIST [] 'lart'
+ *         'art1' level 1 Articulation connection graph
+ *         'art2' level 2 Articulation connection graph
+ *         '3rd1' Possible 3rd party articulation structure 1
+ *         '3rd2' Possible 3rd party articulation structure 2 .... and so on
+ *
+ * WAVEPOOL
+ * ptbl [] [pool table]
+ * LIST [] 'wvpl'
+ *               [path],
+ *               [path],
+ *               LIST [] 'wave' [dlid,RIFFWAVE]
+ *               LIST [] 'wave' [dlid,RIFFWAVE]
+ *               LIST [] 'wave' [dlid,RIFFWAVE]
+ *               LIST [] 'wave' [dlid,RIFFWAVE]
+ *               LIST [] 'wave' [dlid,RIFFWAVE]
+ *
+ * INFOLIST
+ * LIST [] 'INFO'
+ *               'icmt' 'One of those crazy comments.'
+ *               'icop' 'Copyright (C) 1996 Sonic Foundry'
+ *
+ */
 
 
-/*/////////////////////////////////////////////////////////////////////////
-// FOURCC's used in the DLS file
-/////////////////////////////////////////////////////////////////////////*/
+/*
+ * FOURCC's used in the DLS file
+ */
 
 #define FOURCC_DLS   mmioFOURCC('D','L','S',' ')
 #define FOURCC_DLID  mmioFOURCC('d','l','i','d')
@@ -85,9 +79,9 @@
 #define FOURCC_WSMP  mmioFOURCC('w','s','m','p')
 #define FOURCC_VERS  mmioFOURCC('v','e','r','s')
 
-/*/////////////////////////////////////////////////////////////////////////
-// Articulation connection graph definitions 
-/////////////////////////////////////////////////////////////////////////*/
+/*
+ * Articulation connection graph definitions
+ */
 
 /* Generic Sources */
 #define CONN_SRC_NONE              0x0000
@@ -140,7 +134,6 @@ typedef struct _DLSVERSION {
   DWORD    dwVersionMS;
   DWORD    dwVersionLS;
 } DLSVERSION, FAR *LPDLSVERSION;
-                   
 
 typedef struct _CONNECTION {
   USHORT   usSource;
@@ -150,7 +143,6 @@ typedef struct _CONNECTION {
   LONG     lScale;
 } CONNECTION, FAR *LPCONNECTION;
 
-
 /* Level 1 Articulation Data */
 
 typedef struct _CONNECTIONLIST {
@@ -159,10 +151,9 @@ typedef struct _CONNECTIONLIST {
 } CONNECTIONLIST, FAR *LPCONNECTIONLIST;
 
 
-
-/*/////////////////////////////////////////////////////////////////////////
-// Generic type defines for regions and instruments
-/////////////////////////////////////////////////////////////////////////*/
+/*
+ * Generic type defines for regions and instruments
+ */
 
 typedef struct _RGNRANGE {
   USHORT usLow;
@@ -176,10 +167,10 @@ typedef struct _MIDILOCALE {
   ULONG ulInstrument;
 } MIDILOCALE, FAR *LPMIDILOCALE;
 
-/*/////////////////////////////////////////////////////////////////////////
-// Header structures found in an DLS file for collection, instruments, and
-// regions.
-/////////////////////////////////////////////////////////////////////////*/
+/*
+ * Header structures found in an DLS file for collection, instruments, and
+ * regions.
+ */
 
 #define F_RGN_OPTION_SELFNONEXCLUSIVE  0x0001
 
@@ -201,9 +192,9 @@ typedef struct _DLSHEADER {
   ULONG      cInstruments;      /* Count of instruments in the collection */
 } DLSHEADER, FAR *LPDLSHEADER;
 
-/*////////////////////////////////////////////////////////////////////////////
-// definitions for the Wave link structure
-////////////////////////////////////////////////////////////////////////////*/
+/*
+ * definitions for the Wave link structure
+ */
 
 /* ****  For level 1 only WAVELINK_CHANNEL_MONO is valid  **** */
 /* ulChannel allows for up to 32 channels of audio with each bit position */
@@ -223,7 +214,7 @@ typedef struct _WAVELINK { /* any paths or links are stored right after struct *
 
 #define POOL_CUE_NULL  0xffffffffl
 
-typedef struct _POOLCUE { 
+typedef struct _POOLCUE {
   ULONG    ulOffset;       /* Offset to the entry in the list */
 } POOLCUE, FAR *LPPOOLCUE;
 
@@ -232,13 +223,12 @@ typedef struct _POOLTABLE {
   ULONG    cCues;             /* count of cues in the list */
 } POOLTABLE, FAR *LPPOOLTABLE;
 
-/*////////////////////////////////////////////////////////////////////////////
-// Structures for the "wsmp" chunk
-////////////////////////////////////////////////////////////////////////////*/
+/*
+ * Structures for the "wsmp" chunk
+ */
 
 #define F_WSMP_NO_TRUNCATION     0x0001l
 #define F_WSMP_NO_COMPRESSION    0x0002l
-
 
 typedef struct _rwsmp {
   ULONG   cbSize;
