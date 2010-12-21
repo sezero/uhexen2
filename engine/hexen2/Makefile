@@ -811,8 +811,7 @@ $(GL_BINARY): CPPFLAGS+= $(GL_DEFS)
 snd_timidity.o: $(COMMONDIR)/snd_timidity.c
 	$(CC) -c $(CFLAGS) $(CPPFLAGS) $(SDLFLAGS) $(INCLUDES) -I$(LIBS_DIR) -o $@ $(COMMONDIR)/snd_timidity.c
 
-$(LIBS_DIR)/timidity/libtimidity.a:
-	$(MAKE) -C $(LIBS_DIR)/timidity CC="$(CC)" AR="$(AR)" RANLIB="$(RANLIB)"
+include $(LIBS_DIR)/timidity/_timi.mak
 
 $(SW_BINARY): $(SOFT_ASM) $(SOFTOBJS) $(COMMON_ASM) $(COMMONOBJS) $(TIMIDEPS)
 	$(LINKER) -o $(SW_BINARY) $(SOFT_ASM) $(SOFTOBJS) $(COMMON_ASM) $(COMMONOBJS) $(LDFLAGS) $(SDLLINK)

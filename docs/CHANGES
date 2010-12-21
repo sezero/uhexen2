@@ -4,6 +4,13 @@ Development Progress	:
 ---------------------------
 
 2010-12-21 (SVN):
+    * hexen2 & hw clients: Move libtimidity build rule to the new makefile
+      fragment libs/timidity/_timi.mak. Include this fragment in makefiles
+      using libtimidity.a.
+    * libs/timidity/_timi.mak: New makefile fragment for libtimidity build
+      rule, with debug option included.
+
+2010-12-21 (SVN):
     * libs/timidity: Added debug build option to the makefile.
     * timidity/resample.c: Fix builds with -DTIMIDITY_DEBUG.
 
