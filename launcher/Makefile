@@ -8,7 +8,7 @@
 #  make DEMO=yes [other stuff]
 #
 #  if you want debug symbols compiled in ( -g ), run with
-#  make DEBUG=1
+#  make DEBUG=yes
 
 # main uhexen2 relative path
 UHEXEN2_TOP:=..
@@ -17,28 +17,25 @@ LIBS_DIR:=$(UHEXEN2_TOP)/libs
 HOST_OS:=$(shell uname|sed -e s/_.*//|tr '[:upper:]' '[:lower:]')
 
 CC ?= gcc
-ifeq ($(CC),)
-CC := gcc
-endif
-
 AR ?= ar
 RANLIB ?= ranlib
 
 LINKER= $(CC)
 
-XDELTA_DIR := $(LIBS_DIR)/xdelta11
-XDELTA_FLAGS:=
-XDELTA_LINK:= -L$(XDELTA_DIR) -lxdelta
-
 BINARY:= h2launcher
 
-ifdef GTK1
+XDELTA_DIR:= $(LIBS_DIR)/xdelta11
+
+ifeq ($(GTK1),yes)
 GTK_CFLAGS:= $(shell gtk-config --cflags)
 GTK_LIBS:= $(shell gtk-config --libs)
-XDELTA_FLAGS:=-D_XD_USE_GLIB1
+XD_BUILD:= GLIB1=yes
+XD_FLAGS:=-D_XD_USE_GLIB1
 else
 GTK_CFLAGS:= $(shell pkg-config --cflags gtk+-2.0)
 GTK_LIBS:= $(shell pkg-config --libs gtk+-2.0)
+XD_BUILD:= GLIB1=no
+XD_FLAGS:=
 endif
 
 # pthread flags: do note that these change accross
@@ -46,10 +43,13 @@ endif
 PTHREAD_CFLAGS=-D_REENTRANT
 PTHREAD_LIBS=-lpthread
 
+CPUFLAGS=
+
 ifdef DEBUG
-CFLAGS += -Wall -g -DDEBUG=1 -DDEBUG_BUILD=1
+CFLAGS += $(CPUFLAGS) -Wall -g -DDEBUG=1
+XD_BUILD+= DEBUG=yes
 else
-CFLAGS += -Wall -O2 -DNDEBUG
+CFLAGS += $(CPUFLAGS) -Wall -O2 -DNDEBUG
 endif
 
 CFLAGS += $(GTK_CFLAGS) $(PTHREAD_CFLAGS) -I.
@@ -60,8 +60,8 @@ XDDEPS :=
 CFLAGS += -DDEMOBUILD
 else
 XDDEPS := $(XDELTA_DIR)/libxdelta.a
-CFLAGS += $(XDELTA_FLAGS) -I$(XDELTA_DIR) -I$(XDELTA_DIR)/libedsio -I./xpatch
-LDFLAGS+= $(XDELTA_LINK) -lz
+CFLAGS += -I$(XDELTA_DIR) -I$(XDELTA_DIR)/libedsio -I./xpatch $(XD_FLAGS)
+LDFLAGS+= -L$(XDELTA_DIR) -lxdelta -lz
 endif
 
 # Targets
@@ -86,7 +86,7 @@ $(BINARY): $(ALL_OBJECTS) $(XDDEPS)
 	$(LINKER) -o $(BINARY) $(ALL_OBJECTS) $(LDFLAGS)
 
 $(XDELTA_DIR)/libxdelta.a:
-	$(MAKE) -C $(XDELTA_DIR) -f Makefile.xd CC="$(CC)" AR="$(AR)" RANLIB="$(RANLIB)" libxdelta.a
+	$(MAKE) -C $(XDELTA_DIR) -f Makefile.xd CC="$(CC)" AR="$(AR)" RANLIB="$(RANLIB)" $(XD_BUILD) libxdelta.a
 
 clean:
 	-rm -f *.o xpatch/*.o core

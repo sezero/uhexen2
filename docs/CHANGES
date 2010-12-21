@@ -4,6 +4,10 @@ Development Progress	:
 ---------------------------
 
 2010-12-21 (SVN):
+    * launcher: Fix gtk1 builds and enable debug builds against xdelta.
+    * libs/xdelta11: Enable debug builds.
+
+2010-12-21 (SVN):
     * timidity/dls1.h, dls2.h, instrum_dls.c, timidity_internal.h: Fix most
       of the gcc pedantic warnings. Make it compile using very old gcc.
     * timidity/options.h:  Use NULL as terminator in PATCH_EXT_LIST, not 0.
