@@ -548,7 +548,7 @@ void pre_resample(MidSong *song, MidSample *sp)
   sint32 incr, ofs, newlen, count;
   sint16 *newdata, *dest, *src = (sint16 *) sp->data;
   sint16 v1, v2, v3, v4, *vptr;
-#ifdef DEBUG_CHATTER
+#ifdef TIMIDITY_DEBUG
   static const char note_name[12][3] =
   {
     "C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"

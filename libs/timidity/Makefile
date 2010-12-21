@@ -1,13 +1,19 @@
 # Quick GNU Makefile for building a static timidity library using GCC.
 # $Id$
+#
+# if you want debug symbols compiled in (-g), run with make DEBUG=yes
 
 CC ?= gcc
 AR ?= ar
 RANLIB ?= ranlib
 
-INCLUDES = -I.
-CFLAGS = -Wall -O2
+ifdef DEBUG
+CFLAGS += -Wall -g
+else
+CFLAGS += -Wall -O2
+endif
 #CFLAGS+= -DTIMIDITY_DEBUG
+INCLUDES= -I.
 TARGETS:= libtimidity.a
 
 OBJECTS = common.o \

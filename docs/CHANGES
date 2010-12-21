@@ -4,6 +4,10 @@ Development Progress	:
 ---------------------------
 
 2010-12-21 (SVN):
+    * libs/timidity: Added debug build option to the makefile.
+    * timidity/resample.c: Fix builds with -DTIMIDITY_DEBUG.
+
+2010-12-21 (SVN):
     * launcher: Fix gtk1 builds and enable debug builds against xdelta.
     * libs/xdelta11: Enable debug builds.
 
