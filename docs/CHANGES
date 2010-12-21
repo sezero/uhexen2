@@ -8,6 +8,7 @@ Development Progress	:
     * timidity/resample.c: Fix builds with -DTIMIDITY_DEBUG.
 
 2010-12-21 (SVN):
+    * libs/xdelta11: Remove an unnecessary entry from the makefile.
     * launcher: Fix gtk1 builds and enable debug builds against xdelta.
     * libs/xdelta11: Enable debug builds.
 
