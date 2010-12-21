@@ -4,6 +4,7 @@ Development Progress	:
 ---------------------------
 
 2010-12-20 (SVN):
+    * timidity/options.h:  Use NULL as terminator in PATCH_EXT_LIST, not 0.
     * timidity.c (mid_exit): Remove unnecessary NULL assignment to members
       when freeing the parents.
     * Make timidity to compile using cplusplus compilers: add missing type
