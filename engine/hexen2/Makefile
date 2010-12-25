@@ -351,17 +351,24 @@ endif
 #############################################################
 ifeq ($(TARGET_OS),dos)
 
-# disable music stream for now
-USE_CODEC_WAVE=no
+# disable timidity and ogg music streaming.
+# wav and mp3 streaming aren't that practical
+# but not harmful either.
 USE_CODEC_TIMIDITY=no
 USE_CODEC_WILDMIDI=no
-USE_CODEC_MP3=no
 USE_CODEC_VORBIS=no
 
-LDFLAGS += -lc -lgcc -lm
 ifndef DEBUG
 LDFLAGS += -s
 endif
+LDFLAGS += -lc -lgcc -lm
+
+ifeq ($(USE_CODEC_MP3),yes)
+CODEC_INC = -I$(W32STUFF)/codecs/include
+CODEC_LINK= -L$(W32STUFF)/codecs/dos
+endif
+INCLUDES += $(CODEC_INC)
+LDFLAGS += $(CODEC_LINK)
 
 endif
 # End of DOS settings

@@ -4,6 +4,8 @@ Development Progress	:
 ---------------------------
 
 2010-12-25 (SVN):
+    * Enabled wav and mp3 music streaming for dos builds. They are not
+      that practical for dos, but not harmful, either.
     * Added a static dos version of libmad.a under w32stuff/codecs/dos.
 
 2010-12-21 (SVN):
