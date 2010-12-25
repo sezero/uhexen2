@@ -3,6 +3,9 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2010-12-25 (SVN):
+    * Added a static dos version of libmad.a under w32stuff/codecs/dos.
+
 2010-12-21 (SVN):
     * hexen2 & hw clients: Move libtimidity build rule to the new makefile
       fragment libs/timidity/_timi.mak. Include this fragment in makefiles
