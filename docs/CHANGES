@@ -4,6 +4,11 @@ Development Progress	:
 ---------------------------
 
 2010-12-26 (SVN):
+    * timidity/instrum_dls.c (load_instrument_dls): Check if cInstruments
+      is 0 and return NULL in that case.  Avoids a gcc warning that dls_ins
+      might be used uninitialized.
+
+2010-12-26 (SVN):
     * snd_timidity.c: Added note that it is supposed to be compiled against
       the included timidity library.
 

@@ -1161,6 +1161,10 @@ MidInstrument *load_instrument_dls(MidSong *song, int drum, int bank, int instru
 
   if (!song->patches)
    return(NULL);
+  /* avoid a gcc warning that dls_ins
+   * might be used uninitialized: */
+  if (song->patches->cInstruments == 0)
+   return(NULL);
 
   drum = drum ? 0x80000000 : 0;
   for (i = 0; i < song->patches->cInstruments; ++i) {
