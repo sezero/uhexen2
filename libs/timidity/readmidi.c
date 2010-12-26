@@ -132,7 +132,7 @@ static MidEventList *read_midi_event(MidIStream *stream, MidSong *song)
       if (mid_istream_read(stream, &me, 1, 1) != 1)
 	{
 	  DEBUG_MSG("read_midi_event: mid_istream_read() failure\n");
-	  return 0;
+	  return NULL;
 	}
       
       if(me==0xF0 || me == 0xF7) /* SysEx event */
@@ -526,13 +526,13 @@ MidEvent *read_midi_file(MidIStream *stream, MidSong *song, sint32 *count, sint3
   if (mid_istream_read(stream, tmp, 1, 4) != 4 || mid_istream_read(stream, &len, 4, 1) != 1)
     {
       DEBUG_MSG("Not a MIDI file!\n");
-      return 0;
+      return NULL;
     }
   len=SWAPBE32(len);
   if (memcmp(tmp, "MThd", 4) || len < 6)
     {
       DEBUG_MSG("Not a MIDI file!\n");
-      return 0;
+      return NULL;
     }
 
   mid_istream_read(stream, &format, 2, 1);
@@ -558,7 +558,7 @@ MidEvent *read_midi_file(MidIStream *stream, MidSong *song, sint32 *count, sint3
   if (format<0 || format >2)
     {
       DEBUG_MSG("Unknown MIDI file format %d\n", format);
-      return 0;
+      return NULL;
     }
   DEBUG_MSG("Format: %d  Tracks: %d  Divisions: %d\n",
 	  format, tracks, divisions);
@@ -576,7 +576,7 @@ MidEvent *read_midi_file(MidIStream *stream, MidSong *song, sint32 *count, sint3
       if (read_track(stream, song, 0))
 	{
 	  free_midi_list(song);
-	  return 0;
+	  return NULL;
 	}
       break;
 
@@ -585,7 +585,7 @@ MidEvent *read_midi_file(MidIStream *stream, MidSong *song, sint32 *count, sint3
 	if (read_track(stream, song, 0))
 	  {
 	    free_midi_list(song);
-	    return 0;
+	    return NULL;
 	  }
       break;
 
@@ -594,7 +594,7 @@ MidEvent *read_midi_file(MidIStream *stream, MidSong *song, sint32 *count, sint3
 	if (read_track(stream, song, 1))
 	  {
 	    free_midi_list(song);
-	    return 0;
+	    return NULL;
 	  }
       break;
     }

@@ -48,7 +48,7 @@ FILE *open_file(const char *name)
   if (!name || !(*name))
     {
       DEBUG_MSG("Attempted to open nameless file.\n");
-      return 0;
+      return NULL;
     }
 
   /* First try the given name */
@@ -86,7 +86,7 @@ FILE *open_file(const char *name)
   
   /* Nothing could be opened. */
   DEBUG_MSG("Could not open %s\n", name);
-  return 0;
+  return NULL;
 }
 
 /* This'll allocate memory or die. */

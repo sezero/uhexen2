@@ -173,7 +173,7 @@ static MidInstrument *load_instrument(MidSong *song, const char *name,
   int i,j,noluck=0;
   static const char *patch_ext[] = PATCH_EXT_LIST;
 
-  if (!name) return 0;
+  if (!name) return NULL;
   
   /* Open patch file */
   if ((fp=open_file(name)) == NULL)
@@ -198,7 +198,7 @@ static MidInstrument *load_instrument(MidSong *song, const char *name,
   if (noluck)
     {
       DEBUG_MSG("Instrument `%s' can't be found.\n", name);
-      return 0;
+      return NULL;
     }
       
   DEBUG_MSG("Loading instrument %s\n", tmp);
@@ -212,20 +212,20 @@ static MidInstrument *load_instrument(MidSong *song, const char *name,
 						      differences are */
     {
       DEBUG_MSG("%s: not an instrument\n", name);
-      return 0;
+      return NULL;
     }
   
   if (tmp[82] != 1 && tmp[82] != 0) /* instruments. To some patch makers, 
 				       0 means 1 */
     {
       DEBUG_MSG("Can't handle patches with %d instruments\n", tmp[82]);
-      return 0;
+      return NULL;
     }
 
   if (tmp[151] != 1 && tmp[151] != 0) /* layers. What's a layer? */
     {
       DEBUG_MSG("Can't handle instruments with %d layers\n", tmp[151]);
-      return 0;
+      return NULL;
     }
   
   ip = (MidInstrument *) safe_malloc(sizeof(MidInstrument));
@@ -259,7 +259,7 @@ static MidInstrument *load_instrument(MidSong *song, const char *name,
 	    free(ip->sample[j].data);
 	  free(ip->sample);
 	  free(ip);
-	  return 0;
+	  return NULL;
 	}
 
       sp=&(ip->sample[i]);

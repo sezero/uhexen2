@@ -4,6 +4,10 @@ Development Progress	:
 ---------------------------
 
 2010-12-26 (SVN):
+    * timidity/common.c, instrum.c, readmidi.c: Return NULL instead of 0
+      from functions returning a pointer.
+
+2010-12-26 (SVN):
     * midi_mac.c (MIDI_Update): Instead of calling MIDI_Rewind, just call
       the relevant quicktime functions directly.
 
