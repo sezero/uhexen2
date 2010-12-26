@@ -140,7 +140,7 @@ typedef union _dibinfo
 
 static HGDIOBJ previously_selected_GDI_obj = NULL;
 static HBITMAP hDIBSection;
-static unsigned char *pDIBBase = NULL;
+static void *pDIBBase = NULL;
 static HDC hdcDIBSection = NULL;
 static HDC maindc = NULL;
 
@@ -393,7 +393,7 @@ static void VID_CreateDIB (int width, int height, unsigned char *palette)
 
 	// create the DIB section
 	hDIBSection = CreateDIBSection (maindc, pbmiDIB, DIB_RGB_COLORS,
-					  (void **) &pDIBBase, NULL, 0);
+					&pDIBBase, NULL, 0);
 	if (hDIBSection == NULL)
 		Sys_Error ("DIB_Init() - CreateDIBSection failed\n");
 
@@ -401,13 +401,13 @@ static void VID_CreateDIB (int width, int height, unsigned char *palette)
 	if (pbmiDIB->bmiHeader.biHeight > 0)
 	{
 		// bottom up
-		vid.buffer = pDIBBase + (height - 1) * width;
+		vid.buffer = (pixel_t *)pDIBBase + (height - 1) * width;
 		vid.rowbytes = -width;
 	}
 	else
 	{
 		// top down
-		vid.buffer = pDIBBase;
+		vid.buffer = (pixel_t *)pDIBBase;
 		vid.rowbytes = vid.width;
 	}
 

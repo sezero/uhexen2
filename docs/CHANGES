@@ -4,6 +4,11 @@ Development Progress	:
 ---------------------------
 
 2010-12-26 (SVN):
+    * vid_win.c: Changed type of pDIBBase to void* and adjusted the rest
+      of the code accordingly. Fixes dereferencing type-punned pointer and
+      strict-aliasing rules breakage warnings from certain gcc versions.
+
+2010-12-26 (SVN):
     * w32stuff/codecs/dos/libmad.a: Recompiled by replacing calloc() and
       malloc() calls by Z_Malloc() and free() by Z_Free() and eliminating
       decoder.c content which aren't used.
@@ -28,7 +33,7 @@ Development Progress	:
 2010-12-26 (SVN):
     * Fix timidity strict aliasing warnings from certain gcc versions:
     - playmidi.c (mid_song_read_wave): Changed to accept a sint8 pointer
-      instead of void*. Removed the sint8** casts frmo the compute_data()
+      instead of void*. Removed the sint8** casts from the compute_data()
       calls.
     - timidity.h (mid_song_read_wave): Adjusted prototype.
     - snd_timidity.c (midi_buf_t): Changed midi_buffer type from unsigned
