@@ -4,6 +4,12 @@ Development Progress	:
 ---------------------------
 
 2010-12-26 (SVN):
+    * timidity.h (MidSongOptions): Added an uint8 width member just after
+      channels. Not actually used by the library yet, but it will at least
+      serve as a padding. Also added an uint16 padding member just after
+      buffer_size.
+
+2010-12-26 (SVN):
     * Fix timidity strict aliasing warnings from certain gcc versions:
     - playmidi.c (mid_song_read_wave): Changed to accept a sint8 pointer
       instead of void*. Removed the sint8** casts frmo the compute_data()
