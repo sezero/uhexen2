@@ -4,6 +4,8 @@ Development Progress	:
 ---------------------------
 
 2010-12-26 (SVN):
+    * timidity/instrum_dls.c (load_instrument_dls): Revert previous commit
+      and add a cleaner solution for the dls_ins uninitialized warning.
     * timidity/instrum_dls.c (load_instrument_dls): Check if cInstruments
       is 0 and return NULL in that case.  Avoids a gcc warning that dls_ins
       might be used uninitialized.

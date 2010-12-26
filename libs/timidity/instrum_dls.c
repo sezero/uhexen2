@@ -1157,13 +1157,9 @@ MidInstrument *load_instrument_dls(MidSong *song, int drum, int bank, int instru
 {
   MidInstrument *inst;
   uint32 i;
-  DLS_Instrument *dls_ins;
+  DLS_Instrument *dls_ins = NULL;
 
   if (!song->patches)
-   return(NULL);
-  /* avoid a gcc warning that dls_ins
-   * might be used uninitialized: */
-  if (song->patches->cInstruments == 0)
    return(NULL);
 
   drum = drum ? 0x80000000 : 0;
@@ -1182,7 +1178,7 @@ MidInstrument *load_instrument_dls(MidSong *song, int drum, int bank, int instru
         break;
     }
   }
-  if (i == song->patches->cInstruments) {
+  if (i == song->patches->cInstruments || dls_ins == NULL) {
     DEBUG_MSG("Couldn't find %s instrument %d in bank %d\n", drum ? "drum" : "melodic", instrument, bank);
     return(NULL);
   }
