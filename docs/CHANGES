@@ -4,6 +4,10 @@ Development Progress	:
 ---------------------------
 
 2010-12-26 (SVN):
+    * midi_mac.c (MIDI_Update): Instead of calling MIDI_Rewind, just call
+      the relevant quicktime functions directly.
+
+2010-12-26 (SVN):
     * vid_win.c: Changed type of pDIBBase to void* and adjusted the rest
       of the code accordingly. Fixes dereferencing type-punned pointer and
       strict-aliasing rules breakage warnings from certain gcc versions.

@@ -103,13 +103,12 @@ static void MIDI_Update (void **handle)
 
 	// Let QuickTime get some time
 	MoviesTask (midiTrack, 0);
-
-	// If this song is looping, restart it
 	if (IsMovieDone (midiTrack))
 	{
 		if (bgmloop)
 		{
-			MIDI_Rewind ((void **) &midiTrack);
+			GoToBeginningOfMovie (midiTrack);
+			StartMovie (midiTrack);
 		}
 		else
 		{
