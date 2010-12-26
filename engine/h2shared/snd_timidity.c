@@ -1,6 +1,7 @@
 /*
  * MIDI streaming music support using Timidity library.  Compile against
- * timidity imported from the libtimidity project.
+ * the modified timidity library included here.  Standart libtimidity is
+ * not recommended.
  *
  * $Id$
  *
