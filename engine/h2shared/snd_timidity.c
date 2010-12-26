@@ -27,7 +27,6 @@
 #include "snd_codec.h"
 #include "snd_codeci.h"
 #include "snd_timidity.h"
-/* #include <timidity.h"> */
 #include "timidity/timidity.h"
 
 #define CACHEBUFFER_SIZE 4096
@@ -35,7 +34,7 @@
 typedef struct _midi_buf_t
 {
 	MidSong *song;
-	unsigned char midi_buffer[CACHEBUFFER_SIZE];
+	sint8 midi_buffer[CACHEBUFFER_SIZE];
 	int pos, last;
 } midi_buf_t;
 

@@ -178,7 +178,7 @@ extern "C"
 
 /* Read WAVE data
  */
-  extern size_t mid_song_read_wave (MidSong * song, void *ptr, size_t size);
+  extern size_t mid_song_read_wave (MidSong * song, sint8 * ptr, size_t size);
 
 /* Seek song to specified offset in millseconds
  */
