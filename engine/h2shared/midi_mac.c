@@ -168,7 +168,7 @@ static void *MIDI_Play (const char *Name)
 		return NULL;
 	}
 
-	FS_OpenFile (Name, &midiFile, false);
+	FS_OpenFile (Name, &midiFile, NULL, false);
 	if (!midiFile)
 	{
 		Con_DPrintf("Couldn't open %s\n", Name);

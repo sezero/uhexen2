@@ -1,7 +1,7 @@
 /*
 	r_misc.c
 
-	$Id: gl_rmisc.c,v 1.49 2009-01-18 18:43:52 sezero Exp $
+	$Id$
 */
 
 #include "quakedef.h"
@@ -281,7 +281,7 @@ void R_Init (void)
 	for (counter = 0 ; counter < MAX_EXTRA_TEXTURES ; counter++)
 		gl_extra_textures[counter] = GL_UNUSED_TEXTURE;
 
-	playerTranslation = (byte *)FS_LoadHunkFile ("gfx/player.lmp");
+	playerTranslation = (byte *)FS_LoadHunkFile ("gfx/player.lmp", NULL);
 	if (!playerTranslation)
 		Sys_Error ("Couldn't load gfx/player.lmp");
 }

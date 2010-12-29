@@ -2,7 +2,7 @@
 	cmd.c
 	Quake script command processing module
 
-	$Id: cmd.c,v 1.43 2010-10-24 08:10:17 sezero Exp $
+	$Id$
 */
 
 #include "quakedef.h"
@@ -285,7 +285,7 @@ static void Cmd_Exec_f (void)
 
 	// FIXME: is this safe freeing the hunk here???
 	mark = Hunk_LowMark ();
-	f = (char *)FS_LoadHunkFile (Cmd_Argv(1));
+	f = (char *)FS_LoadHunkFile (Cmd_Argv(1), NULL);
 	if (!f)
 	{
 		Con_Printf ("couldn't exec %s\n",Cmd_Argv(1));

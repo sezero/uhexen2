@@ -174,7 +174,7 @@ void R_ReadPointFile_f (void)
 	color = (byte)Cvar_VariableValue("leak_color");
 	sprintf (name,"maps/%s.pts", "demo1"); // rjr - need map name
 
-	FS_OpenFile (name, &f, false);
+	FS_OpenFile (name, &f, NULL, false);
 	if (!f)
 	{
 		Con_Printf ("couldn't open %s\n", name);

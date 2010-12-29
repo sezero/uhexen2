@@ -493,7 +493,7 @@ static void SV_BeginDownload_f(void)
 	for (p = name; *p; p++)
 		*p = (char)tolower(*p);
 
-	host_client->downloadsize = FS_OpenFile (name, &host_client->download, false);
+	host_client->downloadsize = FS_OpenFile (name, &host_client->download, NULL, false);
 	host_client->downloadcount = 0;
 
 	if (!host_client->download

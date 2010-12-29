@@ -2,7 +2,7 @@
 	skin.c
 	skin loading
 
-	$Id: skin.c,v 1.16 2008-02-07 09:27:24 sezero Exp $
+	$Id$
 */
 
 #include "quakedef.h"
@@ -106,12 +106,12 @@ byte	*Skin_Cache (skin_t *skin)
 // load the pic from disk
 //
 	q_snprintf (name, sizeof(name), "skins/%s.pcx", skin->name);
-	raw = FS_LoadTempFile (name);
+	raw = FS_LoadTempFile (name, NULL);
 	if (!raw)
 	{
 		Con_Printf ("Couldn't load skin %s\n", name);
 		q_snprintf (name, sizeof(name), "skins/%s.pcx", baseskin.string);
-		raw = FS_LoadTempFile (name);
+		raw = FS_LoadTempFile (name, NULL);
 		if (!raw)
 		{
 			skin->failedload = true;

@@ -2,7 +2,7 @@
 	gl_draw.c
 	this is the only file outside the refresh that touches the vid buffer
 
-	$Id: gl_draw.c,v 1.133 2008-12-24 19:55:44 sezero Exp $
+	$Id$
 */
 
 #include "quakedef.h"
@@ -114,7 +114,7 @@ qpic_t *Draw_PicFromFile (const char *name)
 	qpic_t	*p;
 	glpic_t	gl;
 
-	p = (qpic_t *)FS_LoadHunkFile (name);
+	p = (qpic_t *)FS_LoadHunkFile (name, NULL);
 	if (!p)
 	{
 		return NULL;
@@ -139,7 +139,7 @@ qpic_t *Draw_PicFileBuf (const char *name, void *p, size_t *size)
 	qpic_t	*_p;
 	glpic_t	gl;
 
-	p = (void *)FS_LoadBufFile(name, p, size);
+	p = (void *)FS_LoadBufFile(name, p, size, NULL);
 	if (!p)
 		return NULL;
 	_p = (qpic_t *)p;
@@ -200,7 +200,7 @@ qpic_t	*Draw_CachePic (const char *path)
 //
 // load the pic from disk
 //
-	dat = (qpic_t *)FS_LoadTempFile (path);
+	dat = (qpic_t *)FS_LoadTempFile (path, NULL);
 	Draw_PicCheckError (dat, path);
 	SwapPic (dat);
 
@@ -331,7 +331,7 @@ void Draw_Init (void)
 	}
 
 	// load the charset: 8*8 graphic characters
-	chars = FS_LoadTempFile ("gfx/menu/conchars.lmp");
+	chars = FS_LoadTempFile ("gfx/menu/conchars.lmp", NULL);
 	Draw_PicCheckError (chars, "gfx/menu/conchars.lmp");
 	for (i = 0; i < 256*128; i++)
 	{
@@ -356,7 +356,7 @@ void Draw_Init (void)
 	// load the big menu font
 	// Note: old version of demo has bigfont.lmp, not bigfont2.lmp
 	// add a GAME_OLD_DEMO flag check ?
-	p = (qpic_t *)FS_LoadTempFile("gfx/menu/bigfont2.lmp");
+	p = (qpic_t *)FS_LoadTempFile("gfx/menu/bigfont2.lmp", NULL);
 	Draw_PicCheckError (p, "gfx/menu/bigfont2.lmp");
 	SwapPic (p);
 	for (i = 0; i < p->width * p->height; i++)	// MUST be 160 * 80
@@ -369,7 +369,7 @@ void Draw_Init (void)
 	glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, gl_filter_max);
 
 	// load the console background
-	p = (qpic_t *)FS_LoadTempFile ("gfx/menu/conback.lmp");
+	p = (qpic_t *)FS_LoadTempFile ("gfx/menu/conback.lmp", NULL);
 	Draw_PicCheckError (p, "gfx/menu/conback.lmp");
 	SwapPic (p);
 	glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, gl_filter_max);
@@ -377,7 +377,7 @@ void Draw_Init (void)
 	conback = GL_LoadTexture ("conback", p->width, p->height, p->data, false, false, 0, false);
 
 	// load the backtile
-	p = (qpic_t *)FS_LoadTempFile ("gfx/menu/backtile.lmp");
+	p = (qpic_t *)FS_LoadTempFile ("gfx/menu/backtile.lmp", NULL);
 	Draw_PicCheckError (p, "gfx/menu/backtile.lmp");
 	SwapPic (p);
 	draw_backtile = GL_LoadPicTexture (p);
@@ -746,7 +746,7 @@ qpic_t *Draw_CachePicNoTrans (const char *path)
 //
 // load the pic from disk
 //
-	dat = (qpic_t *)FS_LoadTempFile (path);
+	dat = (qpic_t *)FS_LoadTempFile (path, NULL);
 	Draw_PicCheckError (dat, path);
 	SwapPic (dat);
 

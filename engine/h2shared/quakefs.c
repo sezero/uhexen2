@@ -35,6 +35,9 @@ typedef struct pack_s
 
 typedef struct searchpath_s
 {
+	unsigned int	path_id;	// identifier assigned to the game directory
+						// Note that <install_dir>/game1 and
+						// <userdir>/game1 have the same id.
 	char	filename[MAX_OSPATH];
 	struct	pack_s	*pack;		// only one of filename / pack will be used
 	struct	searchpath_s *next;
@@ -340,6 +343,7 @@ contain a path information, at least a partial one.
 static void FS_AddGameDirectory (const char *dir, qboolean base_fs)
 {
 	int				i;
+	unsigned int		path_id;
 	searchpath_t		*search;
 	pack_t			*pak;
 	char			pakfile[MAX_OSPATH];
@@ -349,6 +353,13 @@ static void FS_AddGameDirectory (const char *dir, qboolean base_fs)
 	qerr_strlcpy(__thisfunc__, __LINE__, fs_gamedir, dir, sizeof(fs_gamedir));
 	p = strrchr (fs_gamedir, '/');
 	qerr_strlcpy(__thisfunc__, __LINE__, fs_gamedir_nopath, ++p, sizeof(fs_gamedir_nopath));
+
+//
+// assign a path_id to this game directory
+//
+	if (fs_searchpaths)
+		path_id = fs_searchpaths->path_id << 1;
+	else	path_id = 1U;
 
 //
 // add any pak files in the format pak0.pak pak1.pak, ...
@@ -370,6 +381,7 @@ add_pakfile:
 		if (!pak)
 			continue;
 		search = (searchpath_t *) Hunk_AllocName (sizeof(searchpath_t), "searchpath");
+		search->path_id = path_id;
 		search->pack = pak;
 		search->next = fs_searchpaths;
 		fs_searchpaths = search;
@@ -391,6 +403,7 @@ add_pakfile:
 	{
 		qerr_strlcpy(__thisfunc__, __LINE__, search->filename, dir, MAX_OSPATH);
 	}
+	search->path_id = path_id;
 	search->next = fs_searchpaths;
 	fs_searchpaths = search;
 
@@ -425,6 +438,7 @@ void FS_Gamedir (const char *dir)
 {
 	searchpath_t	*search, *next;
 	int				i;
+	unsigned int		path_id;
 	pack_t			*pak;
 	char			pakfile[MAX_OSPATH];
 	qboolean		been_here = false;
@@ -512,6 +526,13 @@ void FS_Gamedir (const char *dir)
 	}
 
 //
+// assign a path_id to this game directory
+//
+	if (fs_searchpaths)
+		path_id = fs_searchpaths->path_id << 1;
+	else	path_id = 1U;
+
+//
 // add any pak files in the format pak0.pak pak1.pak, ...
 //
 #if DO_USERDIRS
@@ -531,6 +552,7 @@ add_pakfiles:
 		if (!pak)
 			continue;
 		search = (searchpath_t *) Z_Malloc (sizeof(searchpath_t), Z_MAINZONE);
+		search->path_id = path_id;
 		search->pack = pak;
 		search->next = fs_searchpaths;
 		fs_searchpaths = search;
@@ -549,6 +571,7 @@ add_pakfiles:
 	{
 		qerr_strlcpy(__thisfunc__, __LINE__, search->filename, fs_gamedir, MAX_OSPATH);
 	}
+	search->path_id = path_id;
 	search->next = fs_searchpaths;
 	fs_searchpaths = search;
 
@@ -809,7 +832,8 @@ FS_OpenFile
 Finds the file in the search path, returns fs_filesize.
 ===========
 */
-size_t FS_OpenFile (const char *filename, FILE **file, qboolean override_pack)
+size_t FS_OpenFile (const char *filename, FILE **file, unsigned int *path_id,
+							qboolean override_pack)
 {
 	searchpath_t	*search;
 	char		netpath[MAX_OSPATH];
@@ -840,6 +864,8 @@ size_t FS_OpenFile (const char *filename, FILE **file, qboolean override_pack)
 					fs_filesize = (size_t) pak->files[i].filelen;
 					file_from_pak = 1;
 					fs_filepath = NULL;
+					if (path_id)
+						*path_id = search->path_id;
 					return fs_filesize;
 				}
 			}
@@ -864,6 +890,8 @@ size_t FS_OpenFile (const char *filename, FILE **file, qboolean override_pack)
 				Sys_Error ("Couldn't reopen %s", netpath);
 			fs_filepath = search->filename;
 			fs_filesize = FS_filelength (*file);
+			if (path_id)
+				*path_id = search->path_id;
 			return fs_filesize;
 		}
 	}
@@ -925,7 +953,7 @@ static int		zone_num;
 #define Draw_EndDisc()
 #endif	/* SERVERONLY */
 
-static byte *FS_LoadFile (const char *path, int usehunk)
+static byte *FS_LoadFile (const char *path, int usehunk, unsigned int *path_id)
 {
 	FILE	*h;
 	byte	*buf;
@@ -935,7 +963,7 @@ static byte *FS_LoadFile (const char *path, int usehunk)
 	buf = NULL;	// quiet compiler warning
 
 // look for it in the filesystem or pack files
-	len = fs_filesize = FS_OpenFile (path, &h, false);
+	len = fs_filesize = FS_OpenFile (path, &h, path_id, false);
 	if (!h)
 		return NULL;
 
@@ -990,38 +1018,38 @@ static byte *FS_LoadFile (const char *path, int usehunk)
 	return buf;
 }
 
-byte *FS_LoadHunkFile (const char *path)
+byte *FS_LoadHunkFile (const char *path, unsigned int *path_id)
 {
-	return FS_LoadFile (path, LOADFILE_HUNK);
+	return FS_LoadFile (path, LOADFILE_HUNK, path_id);
 }
 
-byte *FS_LoadZoneFile (const char *path, int zone_id)
+byte *FS_LoadZoneFile (const char *path, int zone_id, unsigned int *path_id)
 {
 	zone_num = zone_id;
-	return FS_LoadFile (path, LOADFILE_ZONE);
+	return FS_LoadFile (path, LOADFILE_ZONE, path_id);
 }
 
-byte *FS_LoadTempFile (const char *path)
+byte *FS_LoadTempFile (const char *path, unsigned int *path_id)
 {
-	return FS_LoadFile (path, LOADFILE_TEMPHUNK);
+	return FS_LoadFile (path, LOADFILE_TEMPHUNK, path_id);
 }
 
 #if !defined(SERVERONLY)
-void FS_LoadCacheFile (const char *path, struct cache_user_s *cu)
+void FS_LoadCacheFile (const char *path, struct cache_user_s *cu, unsigned int *path_id)
 {
 	loadcache = cu;
-	FS_LoadFile (path, LOADFILE_CACHE);
+	FS_LoadFile (path, LOADFILE_CACHE, path_id);
 }
 #endif	/* SERVERONLY */
 
 // uses temp hunk if larger than bufsize
-byte *FS_LoadStackFile (const char *path, void *buffer, size_t bufsize)
+byte *FS_LoadStackFile (const char *path, void *buffer, size_t bufsize, unsigned int *path_id)
 {
 	byte	*buf;
 
 	loadbuf = (byte *)buffer;
 	loadsize = bufsize;
-	buf = FS_LoadFile (path, LOADFILE_STACK);
+	buf = FS_LoadFile (path, LOADFILE_STACK, path_id);
 
 	return buf;
 }
@@ -1029,13 +1057,13 @@ byte *FS_LoadStackFile (const char *path, void *buffer, size_t bufsize)
 // loads into a previously allocated buffer. if space is insufficient
 // or the buffer is NULL, loads onto the hunk.  bufsize is the actual
 // size (without the +1).
-byte *FS_LoadBufFile (const char *path, void *buffer, size_t *bufsize)
+byte *FS_LoadBufFile (const char *path, void *buffer, size_t *bufsize, unsigned int *path_id)
 {
 	byte	*buf;
 
 	loadbuf = (byte *)buffer;
 	loadsize = (*bufsize) + 1;
-	buf = FS_LoadFile (path, LOADFILE_BUF);
+	buf = FS_LoadFile (path, LOADFILE_BUF, path_id);
 	*bufsize = (buf == NULL) ? 0 : fs_filesize;
 	if (loadbuf && buf && buf != loadbuf)
 		Sys_Printf("%s: insufficient buffer for %s not used.\n", __thisfunc__, path);
@@ -1044,9 +1072,9 @@ byte *FS_LoadBufFile (const char *path, void *buffer, size_t *bufsize)
 }
 
 // returns malloc'd memory
-byte *FS_LoadMallocFile (const char *path)
+byte *FS_LoadMallocFile (const char *path, unsigned int *path_id)
 {
-	return FS_LoadFile (path, LOADFILE_MALLOC);
+	return FS_LoadFile (path, LOADFILE_MALLOC, path_id);
 }
 
 
@@ -1250,7 +1278,7 @@ static int CheckRegistered (void)
 	unsigned short	check[128];
 	int			i;
 
-	FS_OpenFile("gfx/pop.lmp", &h, false);
+	FS_OpenFile("gfx/pop.lmp", &h, NULL, false);
 
 	if (!h)
 		return -1;

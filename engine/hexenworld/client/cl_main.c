@@ -1396,11 +1396,11 @@ void Host_Init (void)
 	Con_Init ();
 	M_Init ();
 
-	host_basepal = (byte *)FS_LoadHunkFile ("gfx/palette.lmp");
+	host_basepal = (byte *)FS_LoadHunkFile ("gfx/palette.lmp", NULL);
 	if (!host_basepal)
 		Sys_Error ("Couldn't load gfx/palette.lmp");
 
-	host_colormap = (byte *)FS_LoadHunkFile ("gfx/colormap.lmp");
+	host_colormap = (byte *)FS_LoadHunkFile ("gfx/colormap.lmp", NULL);
 	if (!host_colormap)
 		Sys_Error ("Couldn't load gfx/colormap.lmp");
 

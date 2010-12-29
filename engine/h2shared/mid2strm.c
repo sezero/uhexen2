@@ -140,7 +140,7 @@ int ConverterInit (const char *szInFile)
 
 	// Attempt to open the input and output files
 	//
-	MidiData = (byte *)FS_LoadHunkFile(szInFile);
+	MidiData = (byte *)FS_LoadHunkFile(szInFile, NULL);
 	if (!MidiData)
 	{
 		goto Init_Cleanup;

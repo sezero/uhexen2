@@ -2,7 +2,7 @@
 	gl_warp.c
 	sky and water polygons
 
-	$Id: gl_warp.c,v 1.31 2008-04-22 13:06:06 sezero Exp $
+	$Id$
 */
 
 #include "quakedef.h"
@@ -719,7 +719,7 @@ void R_LoadSkys (void)
 	for (i = 0; i < 6; i++)
 	{
 		q_snprintf (name, sizeof(name), "gfx/env/bkgtst%s.tga", suf[i]);
-		FS_OpenFile (name, &f, false);
+		FS_OpenFile (name, &f, NULL, false);
 		if (!f)
 		{
 			Con_Printf ("Couldn't load %s\n", name);

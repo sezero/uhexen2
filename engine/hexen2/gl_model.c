@@ -5,7 +5,7 @@
 	models are the only shared resource between a client and server
 	running on the same machine.
 
-	$Id: gl_model.c,v 1.60 2010-06-01 12:11:34 sezero Exp $
+	$Id$
 */
 
 #include "quakedef.h"
@@ -281,7 +281,7 @@ static qmodel_t *Mod_LoadModel (qmodel_t *mod, qboolean crash)
 //
 // load the file
 //
-	buf = FS_LoadStackFile (mod->name, stackbuf, sizeof(stackbuf));
+	buf = FS_LoadStackFile (mod->name, stackbuf, sizeof(stackbuf), NULL);
 	if (!buf)
 	{
 		if (crash)
@@ -399,7 +399,7 @@ static void Mod_LoadTextures (lump_t *l)
 		if (texname[sizeof(WAL_EXT_DIRNAME)] == '*')
 			texname[sizeof(WAL_EXT_DIRNAME)] = WAL_REPLACE_ASTERIX;
 		mark = Hunk_LowMark ();
-		mt_wal = (miptex_wal_t *)FS_LoadHunkFile(texname);
+		mt_wal = (miptex_wal_t *)FS_LoadHunkFile(texname, NULL);
 		if (mt_wal != NULL)
 		{
 			mt_wal->ident = LittleLong (mt_wal->ident);
@@ -659,7 +659,7 @@ static void Mod_LoadLighting (lump_t *l)
 			COM_StripExtension(litfilename, litfilename, sizeof(litfilename));
 			strcat(litfilename, ".lit");
 			Con_DPrintf("trying to load %s\n", litfilename);
-			data = (byte*) FS_LoadHunkFile (litfilename);
+			data = (byte*) FS_LoadHunkFile (litfilename, NULL);
 			if (data)
 			{
 				if (data[0] == 'Q' && data[1] == 'L' && data[2] == 'I' && data[3] == 'T')

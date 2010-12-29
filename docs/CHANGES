@@ -3,6 +3,17 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2010-12-29 (SVN):
+    * quakefs.c (searchpath_t):  Added new member `path_id', an unsigned
+      int identifier assigned to the game directory. Remember that main
+      <install_dir>/game1 and the unix <userdir>/game1 have the same id.
+      The id starts as 1 for the first data1 directory. For every new
+      directory, the value is the left-shifted version of the previous
+      one.  Made FS_OpenFile() to accept a path_id pointer argument and
+      storing the id in it if it isn't NULL. Made all FS_Load* functions
+      to accept a path_id pointer argument similarly. Adjusted callers
+      of FS_OpenFile() and FS_Load*() functions accordingly.
+
 2010-12-26 (SVN):
     * timidity/common.c, instrum.c, readmidi.c: Return NULL instead of 0
       from functions returning a pointer.

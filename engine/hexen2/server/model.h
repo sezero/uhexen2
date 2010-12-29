@@ -5,7 +5,7 @@
 	This version of model.c and model.h are based on a quake dedicated
 	server application, lhnqserver, by LordHavoc.
 
-	$Id: model.h,v 1.7 2008-04-22 13:06:09 sezero Exp $
+	$Id$
 */
 
 #ifndef __HX2_MODEL_H
@@ -154,6 +154,8 @@ typedef enum {mod_brush, mod_sprite, mod_alias} modtype_t;
 typedef struct qmodel_s
 {
 	char		name[MAX_QPATH];
+	unsigned int	path_id;		// path id of the game directory
+							// that this model came from
 	int		needload;		// bmodels and sprites don't cache normally
 
 	modtype_t	type;

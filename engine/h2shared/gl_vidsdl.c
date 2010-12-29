@@ -1080,12 +1080,12 @@ void VID_SetPalette (unsigned char *palette)
 	// Hexenworld replaced it with quake(world)'s code below
 	inverse_pal = (unsigned char *) Hunk_AllocName (INVERSE_PAL_SIZE + 1, INVERSE_PALNAME);
 	palsize = INVERSE_PAL_SIZE;
-	pal = (byte *) FS_LoadBufFile (INVERSE_PALNAME, inverse_pal, &palsize);
+	pal = (byte *) FS_LoadBufFile (INVERSE_PALNAME, inverse_pal, &palsize, NULL);
 	if (pal != inverse_pal || palsize != INVERSE_PAL_SIZE)
 		VID_CreateInversePalette (palette);
 
 #else /* end of HEXEN2_PALTEX_CODE */
-	palsize = FS_OpenFile("glhexen/15to8.pal", &f, true);
+	palsize = FS_OpenFile("glhexen/15to8.pal", &f, NULL, true);
 	if (f && palsize == (1<<15))
 	{
 		fread(d_15to8table, 1<<15, 1, f);

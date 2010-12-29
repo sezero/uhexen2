@@ -416,7 +416,7 @@ void CL_PlayDemo_f (void)
 	}
 	*/
 
-	FS_OpenFile (name, &cls.demofile, false);
+	FS_OpenFile (name, &cls.demofile, NULL, false);
 	if (!cls.demofile)
 	{
 		Con_Printf ("ERROR: couldn't open %s\n", name);

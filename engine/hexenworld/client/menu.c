@@ -343,7 +343,7 @@ static void M_BuildBigCharWidth (void)
 	int	biggestX, adjustment;
 	char	After[20], Before[20];
 
-	p = (qpic_t *)FS_LoadTempFile (BIGCHAR_FONT_FILE);
+	p = (qpic_t *)FS_LoadTempFile (BIGCHAR_FONT_FILE, NULL);
 	if (!p)
 		Sys_Error ("Failed to load %s", BIGCHAR_FONT_FILE);
 	SwapPic(p);
@@ -2801,7 +2801,7 @@ void M_Init (void)
 {
 	char		*ptr;
 
-	ptr = (char *) FS_LoadTempFile (BIGCHAR_WIDTH_FILE);
+	ptr = (char *) FS_LoadTempFile (BIGCHAR_WIDTH_FILE, NULL);
 	if (ptr == NULL)
 		M_BuildBigCharWidth();
 	else

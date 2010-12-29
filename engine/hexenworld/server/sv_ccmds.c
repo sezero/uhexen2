@@ -2,7 +2,7 @@
 	sv_ccmds.c
 	console commands
 
-	$Id: sv_ccmds.c,v 1.28 2010-10-04 07:33:30 sezero Exp $
+	$Id$
 */
 
 #include "quakedef.h"
@@ -324,7 +324,7 @@ static void SV_Map_f (void)
 
 	// check to make sure the level exists
 	q_snprintf (expanded, sizeof(expanded), "maps/%s.bsp", level);
-	FS_OpenFile (expanded, &f, false);
+	FS_OpenFile (expanded, &f, NULL, false);
 	if (!f)
 	{
 		Con_Printf ("Can't find %s\n", expanded);

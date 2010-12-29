@@ -1131,7 +1131,7 @@ static const char *PR_GetProgFilename (void)
 
 	strcpy(finalprogname, def_progname);
 
-	FS_OpenFile ("maplist.txt", &FH, true);
+	FS_OpenFile ("maplist.txt", &FH, NULL, true);
 	if (FH)
 	{
 		char	build[2048], *test;
@@ -1216,7 +1216,7 @@ void PR_LoadProgs (void)
 		gefvCache[i].field[0] = 0;
 
 	progname = PR_GetProgFilename();
-	progs = (dprograms_t *)FS_LoadHunkFile (progname);
+	progs = (dprograms_t *)FS_LoadHunkFile (progname, NULL);
 	if (!progs)
 		SV_Error ("%s: couldn't load %s", __thisfunc__, progname);
 	Con_DPrintf ("Programs occupy %luK.\n", (unsigned long)(fs_filesize/1024));
