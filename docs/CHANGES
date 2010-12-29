@@ -4,6 +4,13 @@ Development Progress	:
 ---------------------------
 
 2010-12-29 (SVN):
+   * model.c, gl_model.c (Mod_LoadEntities): Added support for loading
+     external *.ent files instead of using the embedded data. This can
+     be useful for handling several map quirks. The path_id of the ent
+     file is checked and accepted only if it is coming from the same
+     game directory as for the map itself.
+
+2010-12-29 (SVN):
     * gl_model.c (Mod_LoadLighting): Free the hunk-allocated memory in
       case of broken or unsupported lit file versions. Check the path_id
       of the lit file and accept only if it is coming from the same game
