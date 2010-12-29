@@ -1,7 +1,7 @@
 /*
 	r_main.c
 
-	$Header: /cvsroot/uhexen2/engine/hexenworld/client/r_main.c,v 1.32 2010-08-22 22:11:41 sezero Exp $
+	$Id$
 */
 
 #include "quakedef.h"

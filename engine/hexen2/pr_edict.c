@@ -2,7 +2,7 @@
 	sv_edict.c
 	entity dictionary
 
-	$Header: /cvsroot/uhexen2/engine/hexen2/pr_edict.c,v 1.56 2010-03-09 15:00:26 sezero Exp $
+	$Id$
 */
 
 #include "quakedef.h"

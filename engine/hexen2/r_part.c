@@ -2,7 +2,7 @@
 	r_part.c
 	particles rendering
 
-	$Header: /cvsroot/uhexen2/engine/hexen2/r_part.c,v 1.26 2008-05-14 08:37:20 sezero Exp $
+	$Id$
 */
 
 

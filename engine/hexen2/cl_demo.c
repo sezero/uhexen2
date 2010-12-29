@@ -2,7 +2,7 @@
 	cl_demo.c
 	demo recording and playback
 
-	$Header: /cvsroot/uhexen2/engine/hexen2/cl_demo.c,v 1.26 2009-06-22 12:15:19 sezero Exp $
+	$Id$
 */
 
 #include "quakedef.h"
