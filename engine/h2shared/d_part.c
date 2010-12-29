@@ -2,7 +2,7 @@
 	d_part.c
 	software driver module for drawing particles
 
-	$Id: d_part.c,v 1.10 2008-03-30 12:25:16 sezero Exp $
+	$Id$
 */
 
 #include "quakedef.h"
@@ -44,8 +44,10 @@ void D_DrawParticle (particle_t *pparticle)
 	float	zi;
 	byte	*pdest;
 	short	*pz;
-	unsigned int	Color;
 	int		i, izi, pix, count, u, v;
+	int		Color;	// Crusader's ice particles hitting a wall gives us
+				// -2 as the color, causing a big boom.  therefore,
+				// use signed int here and clamp to 0-511 as needed.
 	qboolean	NoTrans;
 
 // transform point
@@ -83,7 +85,11 @@ void D_DrawParticle (particle_t *pparticle)
 	else if (pix > d_pix_max)
 		pix = d_pix_max;
 
-	Color = (unsigned int)pparticle->color;
+	Color = (int)pparticle->color;
+	if (Color < 0)				// try to keep 0-511, see above
+		Color += 511;
+//	if (Color < 0 || Color > 511)
+//		Sys_Error ("%s: Bad color %d", __thisfunc__, Color);
 	NoTrans = (Color <= 255) ? true : false;
 	if (NoTrans == false)
 		Color = (Color - 256) << 8;	// will use as transTable index

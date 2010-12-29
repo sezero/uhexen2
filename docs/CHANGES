@@ -4,19 +4,26 @@ Development Progress	:
 ---------------------------
 
 2010-12-29 (SVN):
-   * Updated ReleaseNotes file for 1.5.0 after today's changes.
+    * d_part.c (D_DrawParticle): Fixed segmentation fault with Crusader's
+      ice mace in C-only software renderer code seen on x86_64-linux.
+      Crusader's ice particles hitting a wall gives us -2 as the color,
+      causing a big boom. So, we use signed int as the color's type and
+      clamp to 0-511 as needed.
 
 2010-12-29 (SVN):
-   * mapfixes/romeric5.ent: Another entity fix for romeric5.bsp where the
-     plaque erroneously reports the return destination as Hall of Heroes
-     instead of Reflecting Pool.  From Thomas Freundt.
+    * Updated ReleaseNotes file for 1.5.0 after today's changes.
 
 2010-12-29 (SVN):
-   * model.c, gl_model.c (Mod_LoadEntities): Added support for loading
-     external *.ent files instead of using the embedded data. This can
-     be useful for handling several map quirks. The path_id of the ent
-     file is checked and accepted only if it is coming from the same
-     game directory as for the map itself.
+    * mapfixes/romeric5.ent: Another entity fix for romeric5.bsp where the
+      plaque erroneously reports the return destination as Hall of Heroes
+      instead of Reflecting Pool.  From Thomas Freundt.
+
+2010-12-29 (SVN):
+    * model.c, gl_model.c (Mod_LoadEntities): Added support for loading
+      external *.ent files instead of using the embedded data. This can
+      be useful for handling several map quirks. The path_id of the ent
+      file is checked and accepted only if it is coming from the same
+      game directory as for the map itself.
 
 2010-12-29 (SVN):
     * gl_model.c (Mod_LoadLighting): Free the hunk-allocated memory in

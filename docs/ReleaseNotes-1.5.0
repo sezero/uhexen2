@@ -10,6 +10,8 @@ Changes since HoT-1.4.4-pre11:
 * windows midi: ignore midi hardware volume adjustment capability under
   windows vista/7 which fixes music volume control messing with the main
   volume.
+* software renderer (C-only): fixed a segmentation fault with Crusader's
+  ice mace.
 * bumped the hexen2 engine version to 1.23, and hexenworld engine version
   to 0.23.
 * added support for external entity file loading which makes it easy to
