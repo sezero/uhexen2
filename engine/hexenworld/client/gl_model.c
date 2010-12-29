@@ -279,7 +279,7 @@ static qmodel_t *Mod_LoadModel (qmodel_t *mod, qboolean crash)
 //
 // load the file
 //
-	buf = FS_LoadStackFile (mod->name, stackbuf, sizeof(stackbuf), NULL);
+	buf = FS_LoadStackFile (mod->name, stackbuf, sizeof(stackbuf), & mod->path_id);
 	if (!buf)
 	{
 		if (crash)
