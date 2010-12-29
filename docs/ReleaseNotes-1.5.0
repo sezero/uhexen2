@@ -1,5 +1,5 @@
 Hexen II: Hammer of Thyrion (uhexen2), SVN snapshot / pre-release,
-Version 1.5.0-rc1 / Dec. 19, 2010
+Version 1.5.0-rc1 / Dec. 29, 2010
 
 Changes since HoT-1.4.4-pre11:
 
@@ -12,5 +12,10 @@ Changes since HoT-1.4.4-pre11:
   volume.
 * bumped the hexen2 engine version to 1.23, and hexenworld engine version
   to 0.23.
+* added support for external entity file loading which makes it easy to
+  handle map quirks.  ent files are accepted only if they come from the
+  same game directory as the map itself.
+* revised lit file loading. lit files are now accepted only if they come
+  from the same game directory as the map itself.
 * source directory layout reworked, repository moved from cvs to svn.
 

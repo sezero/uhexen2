@@ -4,6 +4,9 @@ Development Progress	:
 ---------------------------
 
 2010-12-29 (SVN):
+   * Updated ReleaseNotes file for 1.5.0 after today's changes.
+
+2010-12-29 (SVN):
    * mapfixes/romeric5.ent: Another entity fix for romeric5.bsp where the
      plaque erroneously reports the return destination as Hall of Heroes
      instead of Reflecting Pool.  From Thomas Freundt.
