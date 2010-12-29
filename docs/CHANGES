@@ -4,6 +4,12 @@ Development Progress	:
 ---------------------------
 
 2010-12-29 (SVN):
+    * gl_model.c (Mod_LoadLighting): Free the hunk-allocated memory in
+      case of broken or unsupported lit file versions. Check the path_id
+      of the lit file and accept only if it is coming from the same game
+      directory as for the map itself.
+
+2010-12-29 (SVN):
     * model.h, gl_model.h (qmodel_t): Added a path_id member to store
       the information about the game directory from where the model is
       loaded.

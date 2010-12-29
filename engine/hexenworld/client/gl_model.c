@@ -638,12 +638,6 @@ Mod_LoadLighting
 */
 static void Mod_LoadLighting (lump_t *l)
 {
-	// LordHavoc: .lit support
-	int	i;
-	byte	*in, *out, *data;
-	byte	d;
-	char	litfilename[MAX_QPATH];
-
 	GL_SetupLightmapFmt(false);	// setup the lightmap format to reflect any
 					// changes via the cvar gl_lightmapfmt
 
@@ -654,6 +648,13 @@ static void Mod_LoadLighting (lump_t *l)
 
 	if (gl_lightmap_format == GL_RGBA)
 	{
+		// LordHavoc: .lit support
+		int	i, mark;
+		byte	*in, *out, *data;
+		byte	d;
+		char	litfilename[MAX_QPATH];
+		unsigned int	path_id;
+
 		loadmodel->lightdata = NULL;
 
 		if (gl_coloredlight.integer)
@@ -662,9 +663,17 @@ static void Mod_LoadLighting (lump_t *l)
 			COM_StripExtension(litfilename, litfilename, sizeof(litfilename));
 			strcat(litfilename, ".lit");
 			Con_DPrintf("trying to load %s\n", litfilename);
-			data = (byte*) FS_LoadHunkFile (litfilename, NULL);
+			mark = Hunk_LowMark();
+			data = (byte*) FS_LoadHunkFile (litfilename, &path_id);
 			if (data)
 			{
+				// use lit file only from the same gamedir as the map itself
+				if (path_id != loadmodel->path_id)
+				{
+					Hunk_FreeToLowMark(mark);
+					Con_DPrintf("%s ignored (not from the same gamedir)\n", litfilename);
+				}
+				else
 				if (data[0] == 'Q' && data[1] == 'L' && data[2] == 'I' && data[3] == 'T')
 				{
 					i = LittleLong(((int *)data)[1]);
@@ -681,7 +690,7 @@ static void Mod_LoadLighting (lump_t *l)
 						{
 							int	min_light = 8;
 							int	k = 0;
-							int	mark, j, r, g, b;
+							int	j, r, g, b;
 							float	l2lc = 0;
 							float	lc = 0;
 							float	li = 0;
@@ -734,10 +743,16 @@ static void Mod_LoadLighting (lump_t *l)
 						}
 					}
 					else
+					{
+						Hunk_FreeToLowMark(mark);
 						Con_Printf("Unknown .lit file version (%d)\n", i);
+					}
 				}
 				else
+				{
+					Hunk_FreeToLowMark(mark);
 					Con_Printf("Corrupt .lit file (old version?), ignoring\n");
+				}
 			}
 		}
 		// no .lit found, expand the white lighting data to color
