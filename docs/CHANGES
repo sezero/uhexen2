@@ -4,6 +4,11 @@ Development Progress	:
 ---------------------------
 
 2010-12-29 (SVN):
+   * mapfixes/romeric5.ent: Another entity fix for romeric5.bsp where the
+     plaque erroneously reports the return destination as Hall of Heroes
+     instead of Reflecting Pool.  From Thomas Freundt.
+
+2010-12-29 (SVN):
    * model.c, gl_model.c (Mod_LoadEntities): Added support for loading
      external *.ent files instead of using the embedded data. This can
      be useful for handling several map quirks. The path_id of the ent
