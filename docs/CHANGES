@@ -3,6 +3,9 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2010-12-30 (SVN):
+    * Minor housekeeping.
+
 2010-12-29 (SVN):
     * d_part.c (D_DrawParticle): Fixed segmentation fault with Crusader's
       ice mace in C-only software renderer code seen on x86_64-linux.

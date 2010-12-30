@@ -44,7 +44,7 @@ void S_StopAllSounds (qboolean clear);
 static void S_StopAllSoundsC (void);
 
 #if defined(H2W)
-// HexenWorld hack...
+/* HexenWorld hack. */
 #define	viewentity	playernum+1
 #endif
 

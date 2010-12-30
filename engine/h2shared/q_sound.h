@@ -41,7 +41,7 @@ typedef struct sfx_s
 	cache_user_t	cache;
 } sfx_t;
 
-/* !!! if this is changed, it much be changed in asm_i386.h too !!! */
+/* !!! if this is changed, it must be changed in asm_i386.h too !!! */
 typedef struct
 {
 	int	length;
@@ -63,10 +63,10 @@ typedef struct
 	unsigned char	*buffer;
 } dma_t;
 
-/* !!! if this is changed, it much be changed in asm_i386.h too !!! */
+/* !!! if this is changed, it must be changed in asm_i386.h too !!! */
 typedef struct
 {
-	sfx_t		*sfx;		/* sfx number					*/
+	sfx_t	*sfx;			/* sfx number					*/
 	int	leftvol;		/* 0-255 volume					*/
 	int	rightvol;		/* 0-255 volume					*/
 	int	end;			/* end time in global paintsamples		*/
@@ -74,8 +74,8 @@ typedef struct
 //	int	looping;		/* where to loop, -1 = no looping		*/
 	int	entnum;			/* to allow overriding a specific sound		*/
 	int	entchannel;
-	vec3_t		origin;		/* origin of sound effect			*/
-	vec_t		dist_mult;	/* distance multiplier (attenuation/clipK)	*/
+	vec3_t	origin;			/* origin of sound effect			*/
+	vec_t	dist_mult;		/* distance multiplier (attenuation/clipK)	*/
 	int	master_vol;		/* 0-255 master volume				*/
 } channel_t;
 
