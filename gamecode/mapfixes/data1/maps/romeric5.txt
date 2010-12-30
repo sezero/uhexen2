@@ -1,0 +1,46 @@
+Map: romeric5.bsp (Hexen II registered version, in the data1/pak1.pak
+pakfile.)
+
+Issue #1:
+One of the prizes (the chaos device in the southeast corner) never shows
+because the trigger_crosslevel_target that is supposed to spawn it is
+missing a spawnflag (128).  In short, the ent that reads in the original
+like:
+
+{
+"target" "t14"
+"classname" "trigger_crosslevel_target"
+"model" "*13"
+}
+
+... should look like:
+
+{
+"target" "t14"
+"spawnflags" "128"
+"classname" "trigger_crosslevel_target"
+"model" "*13"
+}
+
+(See around line 643 of the romeric5.ent file included here. Identified
+and fixed by Keith Rozett.)
+
+Issue #2:
+The plaque (the one on the right when first entered the map) reports the
+return destination as "Hall of Heroes" but it should be "Reflecting Pool".
+In short, the ent that reads in the original like:
+
+{
+ "classname" "plaque"
+ "message" "273"
+ "model" "*66"
+}
+
+... should look like:
+
+{
+ "classname" "plaque"
+ "message" "356"
+ "model" "*66"
+}
+

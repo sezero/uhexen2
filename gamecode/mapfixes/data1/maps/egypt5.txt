@@ -1,0 +1,29 @@
+Map: egypt5.bsp (Hexen II registered version, in the data1/pak1.pak
+pakfile.)
+
+Dark Pharaoh's Scepter used to appear a little stuck in the
+wall.  Fixed by changing its origin from "-2104 304 112" to
+"-2096 304 112", ie. the entity that reads in the original
+like:
+
+{
+"spawnflags" "32768"
+"origin" "-2104 304 112"
+"classname" "puzzle_piece"
+"netname" "Dark Pharaoh's Scepter"
+"puzzle_id" "scept"
+}
+
+... should look like:
+
+{
+"spawnflags" "32768"
+"origin" "-2096 304 112"
+"classname" "puzzle_piece"
+"netname" "Dark Pharaoh's Scepter"
+"puzzle_id" "scept"
+}
+
+(See around line 1567 of the egypt5.ent file included here.  Fix
+by Thomas Freundt.)
+
