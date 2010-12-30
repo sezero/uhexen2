@@ -17,6 +17,7 @@ Development Progress	:
     * Re-diff'ed the StandaloneMods patch after the recent changes.
 
 2010-12-29 (SVN):
+    * rpm spec file: install entity fixes handling map quirks.
     * added copies of *.txt files along with the *.ent files explaining
       what they do.
     * mapfixes/romeric5.ent: Another entity fix for romeric5.bsp where the

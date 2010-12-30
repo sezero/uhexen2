@@ -213,6 +213,13 @@ utils/bin/hcc -src gamecode-%{gamecode_ver}/hc/hw -oi -on
 %{__install} -D -m644 gamecode-%{gamecode_ver}/txt/hw/default.cfg %{buildroot}/%{_prefix}/games/%{name}/hw/default.cfg
 %{__install} -D -m644 hw/pak4.pak %{buildroot}/%{_prefix}/games/%{name}/hw/pak4.pak
 
+# Install ent fixes handling map quirks
+%{__mkdir_p} %{buildroot}/%{_prefix}/games/%{name}/data1/maps/
+%{__install} -D -m644 gamecode-%{gamecode_ver}/mapfixes/data1/maps/egypt5.ent %{buildroot}/%{_prefix}/games/%{name}/data1/maps/egypt5.ent
+%{__install} -D -m644 gamecode-%{gamecode_ver}/mapfixes/data1/maps/egypt5.txt %{buildroot}/%{_prefix}/games/%{name}/data1/maps/egypt5.txt
+%{__install} -D -m644 gamecode-%{gamecode_ver}/mapfixes/data1/maps/romeric5.ent %{buildroot}/%{_prefix}/games/%{name}/data1/maps/romeric5.ent
+%{__install} -D -m644 gamecode-%{gamecode_ver}/mapfixes/data1/maps/romeric5.txt %{buildroot}/%{_prefix}/games/%{name}/data1/maps/romeric5.txt
+
 # Install the xdelta updates
 %{__mkdir_p} %{buildroot}/%{_prefix}/games/%{name}/patchdata/
 %{__mkdir_p} %{buildroot}/%{_prefix}/games/%{name}/patchdata/data1
@@ -268,6 +275,10 @@ desktop-file-install \
 %{_prefix}/games/%{name}/data1/hexen.rc
 %{_prefix}/games/%{name}/data1/strings.txt
 %{_prefix}/games/%{name}/data1/default.cfg
+%{_prefix}/games/%{name}/data1/maps/egypt5.ent
+%{_prefix}/games/%{name}/data1/maps/egypt5.txt
+%{_prefix}/games/%{name}/data1/maps/romeric5.ent
+%{_prefix}/games/%{name}/data1/maps/romeric5.txt
 %{_prefix}/games/%{name}/portals/progs.dat
 %{_prefix}/games/%{name}/portals/hexen.rc
 %{_prefix}/games/%{name}/portals/strings.txt
@@ -316,7 +327,10 @@ desktop-file-install \
 %{_prefix}/games/%{name}/docs/README.hwmaster
 
 %changelog
-* Sun Dec 19 2010 O.Sezer <sezero@users.sourceforge.net> 1.5.0-0.1.rc1
+* Wed Dec 29 2010 O.Sezer <sezero@users.sourceforge.net> 1.5.0-0.1.rc1
+- Install ent fixes handling map quirks.
+
+* Sun Dec 19 2010 O.Sezer <sezero@users.sourceforge.net>
 - Bumped version to 1.5.0-rc1.
 - Added new build options after the music playback changes.
 - Dropped SDL_mixer dependency which is not used anymore.
