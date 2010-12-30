@@ -2,9 +2,9 @@ this patch adds initial support for standalone free contents (mods).
 see the documentation file StandaloneMods.txt for details.
 
 diff -urNp engine/h2shared/quakefs.c.orig engine/h2shared/quakefs.c
---- engine/h2shared/quakefs.c.orig	2009-05-06 09:17:59.000000000 +0300
-+++ engine/h2shared/quakefs.c	2009-05-06 09:20:16.000000000 +0300
-@@ -53,6 +53,8 @@ unsigned int	gameflags;
+--- engine/h2shared/quakefs.c.orig	2010-12-30 00:51:00 +0200
++++ engine/h2shared/quakefs.c	2010-12-30 11:33:00.000000000 +0200
+@@ -56,6 +56,8 @@ unsigned int	gameflags;
  cvar_t	oem = {"oem", "0", CVAR_ROM};
  cvar_t	registered = {"registered", "0", CVAR_ROM};
  
@@ -13,7 +13,7 @@ diff -urNp engine/h2shared/quakefs.c.orig engine/h2shared/quakefs.c
  typedef struct
  {
  	int	numfiles;
-@@ -207,7 +209,7 @@ static pack_t *FS_LoadPackFile (const ch
+@@ -210,7 +212,7 @@ static pack_t *FS_LoadPackFile (const ch
  		CRC_ProcessByte (&crc, ((byte *)info)[i]);
  
  // check for modifications
@@ -22,7 +22,7 @@ diff -urNp engine/h2shared/quakefs.c.orig engine/h2shared/quakefs.c
  	{
  		if (strcmp(fs_gamedir_nopath, pakdata[paknum].dirname) != 0)
  		{
-@@ -471,6 +473,10 @@ void FS_Gamedir (const char *dir)
+@@ -485,6 +487,10 @@ void FS_Gamedir (const char *dir)
  // check for reserved gamedirs
  	if (!q_strcasecmp(dir, "hw"))
  	{
@@ -33,7 +33,7 @@ diff -urNp engine/h2shared/quakefs.c.orig engine/h2shared/quakefs.c
  #if !defined(H2W)
  	// hw is reserved for hexenworld only. hexen2 shouldn't use it
  		Sys_Printf ("WARNING: Gamedir not set to hw :\n"
-@@ -505,6 +511,27 @@ void FS_Gamedir (const char *dir)
+@@ -519,6 +525,27 @@ void FS_Gamedir (const char *dir)
  	// command line argument like -game data1, ignore it.
  		return;
  	}
@@ -61,7 +61,7 @@ diff -urNp engine/h2shared/quakefs.c.orig engine/h2shared/quakefs.c
  	else
  	{
  	// a new gamedir: let's set it here.
-@@ -848,7 +875,7 @@ size_t FS_OpenFile (const char *filename
+@@ -874,7 +901,7 @@ size_t FS_OpenFile (const char *filename
  		{
  	// check a file in the directory tree
  #if !defined(H2W)
@@ -70,7 +70,7 @@ diff -urNp engine/h2shared/quakefs.c.orig engine/h2shared/quakefs.c
  			{	// if not a registered version, don't ever go beyond base
  				if ( strchr (filename, '/') || strchr (filename,'\\'))
  					continue;
-@@ -1275,8 +1302,36 @@ static int CheckRegistered (void)
+@@ -1303,8 +1330,36 @@ static int CheckRegistered (void)
  FS_Init
  ================
  */
@@ -107,7 +107,7 @@ diff -urNp engine/h2shared/quakefs.c.orig engine/h2shared/quakefs.c
  	int		i;
  	char		temp[32];
  	qboolean	check_portals = false;
-@@ -1485,3 +1540,90 @@ void FS_Init (void)
+@@ -1513,6 +1568,93 @@ void FS_Init (void)
  	}
  }
  
@@ -170,7 +170,7 @@ diff -urNp engine/h2shared/quakefs.c.orig engine/h2shared/quakefs.c
 +			FS_Gamedir (com_argv[i+1]);
 +	}
 +
-+	flagstring = (char *)FS_LoadZoneFile ("stdalone.flg", Z_MAINZONE);
++	flagstring = (char *)FS_LoadZoneFile ("stdalone.flg", Z_MAINZONE, NULL);
 +	if (!flagstring)
 +	{
 +		flags = 0;
@@ -198,6 +198,9 @@ diff -urNp engine/h2shared/quakefs.c.orig engine/h2shared/quakefs.c
 +#endif	/* H2W */
 +}
 +
+ /* The following FS_*() stdio replacements are necessary if one is
+  * to perform non-sequential reads on files reopened on pak files
+  * because we need the bookkeeping about file start/end positions.
 diff -urNp engine/h2shared/quakefs.h.orig engine/h2shared/quakefs.h
 --- engine/h2shared/quakefs.h.orig	2008-11-11 09:51:17.000000000 +0200
 +++ engine/h2shared/quakefs.h	2009-04-25 14:15:03.000000000 +0300
