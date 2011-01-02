@@ -119,20 +119,20 @@ static int CDAudio_GetAudioDiskInfo(void)
 }
 
 
-void CDAudio_Play(byte track, qboolean looping)
+int CDAudio_Play(byte track, qboolean looping)
 {
 	DWORD				dwReturn;
 	MCI_PLAY_PARMS		mciPlayParms;
 	MCI_STATUS_PARMS	mciStatusParms;
 
 	if (!enabled)
-		return;
+		return -1;
 	
 	if (!cdValid)
 	{
 		CDAudio_GetAudioDiskInfo();
 		if (!cdValid)
-			return;
+			return -1;
 	}
 
 	track = remap[track];
@@ -140,7 +140,7 @@ void CDAudio_Play(byte track, qboolean looping)
 	if (track < 1 || track > maxTrack)
 	{
 		Con_DPrintf("CDAudio: Bad track number %u.\n", track);
-		return;
+		return -1;
 	}
 
 	// don't try to play a non-audio track
@@ -150,12 +150,12 @@ void CDAudio_Play(byte track, qboolean looping)
 	if (dwReturn)
 	{
 		Con_DPrintf("MCI_STATUS failed (%u)\n", (unsigned int)dwReturn);
-		return;
+		return -1;
 	}
 	if (mciStatusParms.dwReturn != MCI_CDA_TRACK_AUDIO)
 	{
 		Con_Printf("CDAudio: track %i is not audio\n", track);
-		return;
+		return -1;
 	}
 
 	// get the length of the track to be played
@@ -165,13 +165,13 @@ void CDAudio_Play(byte track, qboolean looping)
 	if (dwReturn)
 	{
 		Con_DPrintf("MCI_STATUS failed (%u)\n", (unsigned int)dwReturn);
-		return;
+		return -1;
 	}
 
 	if (playing)
 	{
 		if (playTrack == track)
-			return;
+			return 0;
 		CDAudio_Stop();
 	}
 
@@ -183,7 +183,7 @@ void CDAudio_Play(byte track, qboolean looping)
 	if (dwReturn)
 	{
 		Con_DPrintf("CDAudio: MCI_PLAY failed (%u)\n", (unsigned int)dwReturn);
-		return;
+		return -1;
 	}
 
 	playLooping = looping;
@@ -192,6 +192,8 @@ void CDAudio_Play(byte track, qboolean looping)
 
 	if (bgmvolume.value == 0) /* don't bother advancing */
 		CDAudio_Pause ();
+
+	return 0;
 }
 
 

@@ -110,19 +110,19 @@ static int CDAudio_GetAudioDiskInfo(void)
 	return 0;
 }
 
-void CDAudio_Play(byte track, qboolean looping)
+int CDAudio_Play(byte track, qboolean looping)
 {
 	struct cdrom_tocentry entry;
 	struct cdrom_ti ti;
 
 	if (cdfile == -1 || !enabled)
-		return;
+		return -1;
 
 	if (!cdValid)
 	{
 		CDAudio_GetAudioDiskInfo();
 		if (!cdValid)
-			return;
+			return -1;
 	}
 
 	track = remap[track];
@@ -130,7 +130,7 @@ void CDAudio_Play(byte track, qboolean looping)
 	if (track < 1 || track > maxTrack)
 	{
 		Con_DPrintf("CDAudio: Bad track number %u.\n", track);
-		return;
+		return -1;
 	}
 
 	/* don't try to play a non-audio track */
@@ -139,18 +139,18 @@ void CDAudio_Play(byte track, qboolean looping)
 	if (ioctl(cdfile, CDROMREADTOCENTRY, &entry) == -1)
 	{
 		IOCTL_FAILURE(CDROMREADTOCENTRY);
-		return;
+		return -1;
 	}
 	if (entry.cdte_ctrl == CDROM_DATA_TRACK)
 	{
 		Con_Printf("CDAudio: track %i is not audio\n", track);
-		return;
+		return -1;
 	}
 
 	if (playing)
 	{
 		if (playTrack == track)
-			return;
+			return 0;
 		CDAudio_Stop();
 	}
 
@@ -162,11 +162,14 @@ void CDAudio_Play(byte track, qboolean looping)
 	if (ioctl(cdfile, CDROMPLAYTRKIND, &ti) == -1)
 	{
 		IOCTL_FAILURE(CDROMPLAYTRKIND);
-		return;
+		return -1;
 	}
 
 	if (ioctl(cdfile, CDROMRESUME) == -1)
+	{
 		IOCTL_FAILURE(CDROMRESUME);
+		return -1;
+	}
 
 	playLooping = looping;
 	playTrack = track;
@@ -174,6 +177,8 @@ void CDAudio_Play(byte track, qboolean looping)
 
 	if (bgmvolume.value == 0) /* don't bother advancing */
 		CDAudio_Pause ();
+
+	return 0;
 }
 
 void CDAudio_Stop(void)

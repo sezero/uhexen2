@@ -3,6 +3,11 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2011-01-02 (SVN):
+    * Made CDAudio_Play() to return success (0) or failure (-1) instead
+      of void. In cd_bsd.c and cd_linux.c, added missing return in case
+      of CDROMRESUME ioctl failure in CDAudio_Play().
+
 2010-12-30 (SVN):
     * Minor housekeeping.
 

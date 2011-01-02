@@ -514,20 +514,20 @@ static qboolean CDAudio_SetVolume (float value)
 }
 
 
-void CDAudio_Play (byte track, qboolean looping)
+int CDAudio_Play (byte track, qboolean looping)
 {
 	if (!initialized || !enabled)
-		return;
+		return -1;
 
 	if (!cd.valid)
-		return;
+		return -1;
 
 	track = remap[track];
 
 	if (playing)
 	{
 		if (playTrack == track)
-			return;
+			return 0;
 		CDAudio_Stop();
 	}
 
@@ -536,7 +536,7 @@ void CDAudio_Play (byte track, qboolean looping)
 	if (track < cd.lowTrack || track > cd.highTrack)
 	{
 		Con_DPrintf("%s: Bad track number %u.\n", __thisfunc__, track);
-		return;
+		return -1;
 	}
 
 	playTrack = track;
@@ -544,7 +544,7 @@ void CDAudio_Play (byte track, qboolean looping)
 	if (cd.track[track].isData)
 	{
 		Con_DPrintf("%s: Can not play data.\n", __thisfunc__);
-		return;
+		return -1;
 	}
 
 	CDAudio_SetVolume (bgmvolume.value);
@@ -569,12 +569,14 @@ void CDAudio_Play (byte track, qboolean looping)
 		Con_DPrintf("%s: track %u failed\n", __thisfunc__, track);
 		cd.valid = false;
 		playing = false;
-		return;
+		return -1;
 	}
 
 	playing = true;
 
 	/* should I pause if bgmvolume.value == 0 ? */
+
+	return 0;
 }
 
 

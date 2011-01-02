@@ -81,18 +81,18 @@ static int CDAudio_GetAudioDiskInfo(void)
 	return 0;
 }
 
-void CDAudio_Play(byte track, qboolean looping)
+int CDAudio_Play(byte track, qboolean looping)
 {
 	int	len_m, len_s, len_f;
 
 	if (!cd_handle || !enabled)
-		return;
+		return -1;
 
 	if (!cdValid)
 	{
 		CDAudio_GetAudioDiskInfo();
 		if (!cdValid)
-			return;
+			return -1;
 	}
 
 	track = remap[track];
@@ -100,19 +100,19 @@ void CDAudio_Play(byte track, qboolean looping)
 	if (track < 1 || track > cd_handle->numtracks)
 	{
 		Con_Printf ("%s: Bad track number %d.\n", __thisfunc__, track);
-		return;
+		return -1;
 	}
 
 	if (cd_handle->track[track-1].type == SDL_DATA_TRACK)
 	{
 		Con_Printf ("%s: track %d is not audio\n", __thisfunc__, track);
-		return;
+		return -1;
 	}
 
 	if (playing)
 	{
 		if (playTrack == track)
-			return;
+			return 0;
 		CDAudio_Stop();
 	}
 
@@ -121,7 +121,7 @@ void CDAudio_Play(byte track, qboolean looping)
 		int cd_status = SDL_CDStatus(cd_handle);
 		if (cd_status > 0)
 			Con_Printf ("%s: Unable to play %d: %s\n", __thisfunc__, track, SDL_GetError ());
-		return;
+		return -1;
 	}
 
 	playLooping = looping;
@@ -142,6 +142,8 @@ void CDAudio_Play(byte track, qboolean looping)
 
 	if (bgmvolume.value == 0) /* don't bother advancing */
 		CDAudio_Pause ();
+
+	return 0;
 }
 
 void CDAudio_Stop(void)
