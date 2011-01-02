@@ -95,6 +95,7 @@ static music_handler_t wanted_handlers[] =
 
 static music_handler_t *music_handlers = NULL;
 
+#define ANY_CODECTYPE	0xFFFFFFFF
 #define MIDI_TYPES	(CODECTYPE_MID | MIDIDRIVER_MID)
 #define MIDITYPE(x)	(((x) & MIDI_TYPES) != 0)
 #define CDRIP_TYPES	(CODECTYPE_OGG | CODECTYPE_MP3 | CODECTYPE_WAV)
@@ -345,7 +346,7 @@ static int BGM_Play_mididrv (const char *filename)
 	return -1;
 }
 
-static void BGM_Play_noext (const char *filename)
+static void BGM_Play_noext (const char *filename, unsigned int allowed_types)
 {
 	char tmp[MAX_QPATH];
 	int cdtrack = 0;
@@ -358,6 +359,11 @@ static void BGM_Play_noext (const char *filename)
 
 	while (handler)
 	{
+		if (! (handler->type & allowed_types))
+		{
+			handler = handler->next;
+			continue;
+		}
 		if (MIDITYPE(handler->type))
 		{
 			if (cdtrack == 0)
@@ -433,7 +439,7 @@ void BGM_Play (const char *filename)
 	ext = S_FileExtension(filename);
 	if (!ext)	/* try all things */
 	{
-		BGM_Play_noext(filename);
+		BGM_Play_noext(filename, ANY_CODECTYPE);
 		return;
 	}
 
