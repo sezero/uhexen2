@@ -4,6 +4,14 @@ Game code for Hexen2 / H2MP / HexenWorld
 Changes
 -------
 
+2011-01-05 (1.20):
+===================
+- Bumped version number to 1.20.
+- Fixed trigger_crosslevel() with spawnflag 8, i.e. the clash with
+  SPAWNFLAG_ACTIVATED. We now just set inactive property back to FALSE
+  after calling InitTrigger(). Thanks to Keith Rozett.
+- Added more entity fixes, this time for tibet2 and tibet9 maps of the
+  expansion pack.
 2010-11-27 (1.19b):
 ===================
 - Added a "mapfixes" section. Added entity fixes for romeric5.bsp and

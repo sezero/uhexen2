@@ -1,5 +1,5 @@
 Hexen II: Hammer of Thyrion (uhexen2), SVN snapshot / pre-release,
-Version 1.5.0-rc1 / Dec. 29, 2010
+Version 1.5.0-rc1 / Jan. 05, 2011
 
 Changes since HoT-1.4.4-pre11:
 
@@ -12,8 +12,11 @@ Changes since HoT-1.4.4-pre11:
   volume.
 * software renderer (C-only): fixed a segmentation fault with Crusader's
   ice mace.
+* handled several map quirks thanks to careful works by Thomas Freundt
+  and Keith Rozett.
+* fixed trigger_crosslevel problem with spawnflag 8 (thanks Keith Rozett.)
 * bumped the hexen2 engine version to 1.23, and hexenworld engine version
-  to 0.23.
+  to 0.23. bumped the gamecode version to 1.20.
 * added support for external entity file loading which makes it easy to
   handle map quirks.  ent files are accepted only if they come from the
   same game directory as the map itself.

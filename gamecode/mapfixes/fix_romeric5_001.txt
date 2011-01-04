@@ -48,9 +48,12 @@ In short, the ent that reads in the original like:
 and fixed by Thomas Freundt.)
 
 - go into the hexen2 installation directory
+- place romeric5.ent there so that you have it like data1/maps/romeric5.ent
+- as of Hammer of Thyrion 1.5.0 (at least rc1 from 2010-12-29), the engine
+  will automatically load this ent file. If using an older version, then do
+  the following:
 - copy qbsp into there (from hexen2 utils)
 - copy pakx into there (from hexen2 utils)
-- place romeric5.ent there so that you have it like data1/maps/romeric5.ent
 - run:
   ./pakx -outdir data1 data1/pak1.pak maps/romeric5.bsp
   ./qbsp -onlyents data1/maps/romeric5.ent

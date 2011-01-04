@@ -2,7 +2,7 @@ In order to compile the hcode (the *.hc files)
 into hexen2-usable progs.dat files, you need
 the hcc program (the hcode compiler). You can
 find the sources for this utility either in
-hexen2source-1.4.4, or in the uhexen2 cvs, on
+hexen2source-1.5.0, or in the uhexen2 cvs, on
 the Hammer of Thyrion downloads page.
 
 In order to compile the original hexen2 hcode,

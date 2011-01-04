@@ -6,10 +6,10 @@ if echo `pwd` | grep "\/scripts" > /dev/null 2>&1 ; then
 cd ..
 fi
 # this relies on the name of this script file being "mkrelease.sh"
-test -f scripts/mkrelease.sh || { echo "change into the cvs snapshot directory before running this script"; exit 1; }
+test -f scripts/mkrelease.sh || { echo "change into the svn snapshot directory before running this script"; exit 1; }
 
 # the current gamecode version
-GAMECODE_VER=1.19b
+GAMECODE_VER=1.20
 
 # move the spec file to the root
 mv rpm/hexen2.spec .

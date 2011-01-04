@@ -4,6 +4,9 @@ Development Progress	:
 ---------------------------
 
 2011-01-05 (SVN):
+    * Bumped gamecode version to 1.20. Updated documentation and scripts.
+
+2011-01-05 (SVN):
     * Fixed trigger_crosslevel problem with spawnflag 8 thanks to Keith
       Rozett.  The problem was documented here:
       http://sourceforge.net/projects/uhexen2/forums/forum/425207/topic/3531685
