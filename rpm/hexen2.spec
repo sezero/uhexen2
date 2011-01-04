@@ -221,6 +221,8 @@ utils/bin/hcc -src gamecode-%{gamecode_ver}/hc/hw -oi -on
 %{__install} -D -m644 gamecode-%{gamecode_ver}/mapfixes/data1/maps/romeric5.txt %{buildroot}/%{_prefix}/games/%{name}/data1/maps/romeric5.txt
 %{__install} -D -m644 gamecode-%{gamecode_ver}/mapfixes/portals/maps/tibet2.ent %{buildroot}/%{_prefix}/games/%{name}/portals/maps/tibet2.ent
 %{__install} -D -m644 gamecode-%{gamecode_ver}/mapfixes/portals/maps/tibet2.txt %{buildroot}/%{_prefix}/games/%{name}/portals/maps/tibet2.txt
+%{__install} -D -m644 gamecode-%{gamecode_ver}/mapfixes/portals/maps/tibet9.ent %{buildroot}/%{_prefix}/games/%{name}/portals/maps/tibet9.ent
+%{__install} -D -m644 gamecode-%{gamecode_ver}/mapfixes/portals/maps/tibet9.txt %{buildroot}/%{_prefix}/games/%{name}/portals/maps/tibet9.txt
 
 # Install the xdelta updates
 %{__mkdir_p} %{buildroot}/%{_prefix}/games/%{name}/patchdata/
@@ -330,7 +332,7 @@ desktop-file-install \
 
 %changelog
 * Tue Jan 04 2011 O.Sezer <sezero@users.sourceforge.net> 1.5.0-0.1.rc1
-- Install tibet2.ent fixes for handling map quirks.
+- Install tibet2/tibet9 ent fixes for handling map quirks.
 
 * Wed Dec 29 2010 O.Sezer <sezero@users.sourceforge.net>
 - Install ent fixes handling map quirks.

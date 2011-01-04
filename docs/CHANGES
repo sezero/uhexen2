@@ -4,11 +4,15 @@ Development Progress	:
 ---------------------------
 
 2011-01-04 (SVN):
+    * mapfixes/tibet9.ent: Added an entity fix for tibet9.bsp of the
+      expansion pack where objective #49 was never cleared. See the
+      corresponding txt file for details. Analyzed and fixed by Thomas
+      Freundt.
     * mapfixes/tibet2.ent: Added an entity fix for tibet2.bsp of the
       expansion pack where the trigger_objective for objective #26 used
       to have the NOT_HARD spawnflag not set. See the corresponding txt
       file for details. Analyzed and fixed by Thomas Freundt.
-    * rpm spec file: install the newly added tibet2 entity fix.
+    * rpm spec file: install the newly added tibet2/tibet9 entity fixes.
 
 2011-01-02 (SVN):
     * bgmusic.c (BGM_Play_noext): Made it to accept allowed_types as a

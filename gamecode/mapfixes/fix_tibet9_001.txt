@@ -1,0 +1,29 @@
+Map: tibet9.bsp (Hexen II Mission Pack: Portal of Praevus, in portals/pak3.pak
+pakfile.)
+
+In map tibet9 (Palace Inner Chambers) with easy/medium difficulty, objective
+#49 "To pass the Guardians in the Inner Chambers, ..." was never cleared.
+Fixed by adding a new trigger_objective with spawnflags 0xC002 and targetname
+t29, like in the following:
+
+{
+"classname" "trigger_objective"
+"spawnflags" "49154"
+"frags" "49"
+"targetname" "t29"
+}
+
+(See around line 580 of the tibet9.ent file included here. Analyzed and fixed
+by Thomas Freundt.)
+
+- go into the hexen2 installation directory
+- place tibet9.ent there so that you have it like portals/maps/tibet9.ent
+- as of Hammer of Thyrion 1.5.0 (at least rc1 from 2010-12-29), the engine
+  will automatically load this ent file. If using an older version, then do
+  the following:
+- copy qbsp into there (from hexen2 utils)
+- copy pakx into there (from hexen2 utils)
+- run:
+  ./pakx -outdir portals portals/pak3.pak maps/tibet9.bsp
+  ./qbsp -onlyents portals/maps/tibet9.ent
+

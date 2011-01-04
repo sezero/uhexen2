@@ -1,0 +1,18 @@
+Map: tibet9.bsp (Hexen II Mission Pack: Portal of Praevus, in portals/pak3.pak
+pakfile.)
+
+In map tibet9 (Palace Inner Chambers) with easy/medium difficulty, objective
+#49 "To pass the Guardians in the Inner Chambers, ..." was never cleared.
+Fixed by adding a new trigger_objective with spawnflags 0xC002 and targetname
+t29, like in the following:
+
+{
+"classname" "trigger_objective"
+"spawnflags" "49154"
+"frags" "49"
+"targetname" "t29"
+}
+
+(See around line 580 of the tibet9.ent file included here. Analyzed and fixed
+by Thomas Freundt.)
+
