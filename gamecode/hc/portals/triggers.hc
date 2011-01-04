@@ -1,5 +1,5 @@
 /*
- * $Header: /cvsroot/uhexen2/gamecode/hc/portals/triggers.hc,v 1.4 2007-02-07 16:59:37 sezero Exp $
+ * portals/triggers.hc
  */
 
 void() button_return;
@@ -1770,6 +1770,7 @@ void() trigger_crosslevel =
 		return;
 	}
 	InitTrigger ();
+	self.inactive = FALSE;
 	self.touch = trigger_crosslevel_touch;
 	self.use = trigger_crosslevel_use;
 };

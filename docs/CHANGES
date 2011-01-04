@@ -3,6 +3,21 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2011-01-05 (SVN):
+    * Fixed trigger_crosslevel problem with spawnflag 8 thanks to Keith
+      Rozett.  The problem was documented here:
+      http://sourceforge.net/projects/uhexen2/forums/forum/425207/topic/3531685
+      http://sourceforge.net/tracker/?func=detail&atid=701008&aid=2956045&group_id=124987
+      Hitting the button in romeric2 spawns a Stone of Summoning in the
+      treasure room of the Temple of Mars, however, since the crosslevel
+      trigger using spawnflag 8 which is the same as SPAWNFLAG_ACTIVATED
+      the spawner doesn't work when you enter romeric5. This is because
+      trigger_crosslevel() calls InitTrigger() and InitTrigger() sets
+      the inactive property to TRUE if it detects SPAWNFLAG_ACTIVATE. But
+      that shouldn't happen since crosslevel triggers can't be deactivated
+      anyway. So, the lazy solution here is set the the inactive property
+      back to FALSE after calling InitTrigger() in trigger_crosslevel().
+
 2011-01-04 (SVN):
     * mapfixes/tibet9.ent: Added an entity fix for tibet9.bsp of the
       expansion pack where objective #49 was never cleared. See the

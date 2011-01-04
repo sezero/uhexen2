@@ -1,5 +1,5 @@
 /*
- * $Header: /cvsroot/uhexen2/gamecode/hc/h2/triggers.hc,v 1.5 2007-02-07 16:57:11 sezero Exp $
+ * h2/triggers.hc
  */
 
 void() button_return;
@@ -1529,6 +1529,7 @@ void() trigger_crosslevel =
 		return;
 	}
 	InitTrigger ();
+	self.inactive = FALSE;
 	self.touch = trigger_crosslevel_touch;
 	self.use = trigger_crosslevel_use;
 };
