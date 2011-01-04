@@ -1,0 +1,35 @@
+Map: tibet2.bsp (Hexen II Mission Pack: Portal of Praevus, in portals/pak3.pak
+pakfile.)
+
+In map tibet3 (False Temple) with hard or nightmare difficulty, objective #26
+"Take the Jade Buddha to the offering place in the False Temple" isn't cleared
+when Little Buddha is placed. This is because the trigger_objective entity
+clearing objective #26 is not set for hard and higher difficulty, however the
+entity which sets the objective itself back in tibet2 is missing the NOT_HARD
+(0x4000) flag. This objective is meant for easy and medium difficulty settings
+only, as is evidenced by the appearance of another trigger to clear obj. #26
+later in tibet4, which also has the NOT_HARD flag set.
+
+In short, the entity that reads in the original like:
+
+{
+"origin" "1136 -232 776"
+"frags" "26"
+"targetname" "t357"
+"spawnflags" "32769"
+"classname" "trigger_objective"
+}
+
+... should look like:
+
+{
+"origin" "1136 -232 776"
+"frags" "26"
+"targetname" "t357"
+"spawnflags" "49153"
+"classname" "trigger_objective"
+}
+
+(See around line 2885 of the tibet2.ent file included here. Analyzed and fixed
+by Thomas Freundt.)
+
