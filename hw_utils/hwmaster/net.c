@@ -2,7 +2,7 @@
 	net_udp.c
 	network UDP driver
 
-	$Header: /cvsroot/uhexen2/hw_utils/hwmaster/net.c,v 1.44 2009-04-30 07:06:13 sezero Exp $
+	$Id$
 */
 
 #include "q_stdinc.h"
@@ -151,8 +151,6 @@ int NET_GetPacket (void)
 	fromlen = sizeof(from);
 	ret = recvfrom(net_socket, (char *)net_message_buffer, sizeof(net_message_buffer), 0,
 			(struct sockaddr *)&from, &fromlen);
-	SockadrToNetadr (&from, &net_from);
-
 	if (ret == SOCKET_ERROR)
 	{
 		int err = SOCKETERRNO;
@@ -176,6 +174,8 @@ int NET_GetPacket (void)
 		printf ("%s warning: %s\n", __thisfunc__, socketerror(err));
 		return 0;
 	}
+
+	SockadrToNetadr (&from, &net_from);
 
 	net_message.cursize = ret;
 	if (ret == (int) sizeof(net_message_buffer))

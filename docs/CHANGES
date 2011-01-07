@@ -3,6 +3,10 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2011-01-07 (SVN):
+    * hwmaster/net.c (NET_GetPacket): Don't read the address of the peer
+      until we know we've actually read a packet.
+
 2011-01-05 (SVN):
     * Bumped gamecode version to 1.20. Updated documentation and scripts.
 
