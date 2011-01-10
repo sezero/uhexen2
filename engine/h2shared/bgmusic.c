@@ -87,7 +87,7 @@ static music_handler_t wanted_handlers[] =
 	{ CODECTYPE_MOD,  BGM_STREAMER, -1,  ".it",  MUSIC_DIRNAME, NULL },
 	{ CODECTYPE_MOD,  BGM_STREAMER, -1,  ".s3m", MUSIC_DIRNAME, NULL },
 /* midi must be last before NULL terminator. */
-#define MIDIDRIVER_MID (1 << 31) /* special. */
+#define MIDIDRIVER_MID (1 << 31) /* special, comes before CODECTYPE_MID */
 	{ MIDIDRIVER_MID, BGM_MIDIDRV,  -1,  ".mid", MIDI_DIRNAME,  NULL },
 	{ CODECTYPE_MID,  BGM_STREAMER, -1,  ".mid", MIDI_DIRNAME,  NULL },
 	{ CODECTYPE_NONE, BGM_NONE,     -1,    NULL,         NULL,  NULL }
@@ -428,13 +428,16 @@ void BGM_Play (const char *filename)
 	const char *ext;
 	music_handler_t *handler;
 
+	BGM_Stop();
+
+	if (music_handlers == NULL)
+		return;
+
 	if (!filename || !*filename)
 	{
 		Con_DPrintf("null music file name\n");
 		return;
 	}
-
-	BGM_Stop();
 
 	ext = S_FileExtension(filename);
 	if (!ext)	/* try all things */
@@ -447,8 +450,6 @@ void BGM_Play (const char *filename)
 	handler = music_handlers;
 	while (handler)
 	{
-		/* skip handlers which failed to initialize */
-		/* TODO: implement re-init, make BGM aware of it */
 		if (handler->is_available &&
 		    !q_strcasecmp(ext, handler->ext))
 			break;
@@ -465,7 +466,11 @@ void BGM_Play (const char *filename)
 	case BGM_MIDIDRV:
 		if (BGM_Play_mididrv(tmp) == 0)
 			return;		/* success */
-		break;
+		/* BGM_MIDIDRV is followed by CODECTYPE_MID streamer.
+		 * Even if the midi driver failed, we may still have
+		 * a chance with the streamer if it's available... */
+		if (! (handler->next && handler->next->is_available))
+			break;
 	case BGM_STREAMER:
 		bgmstream = S_CodecOpenStreamType(tmp, handler->type);
 		if (bgmstream)

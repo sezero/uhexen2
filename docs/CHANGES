@@ -3,7 +3,13 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
-2011-01-07 (SVN):
+2011-01-10 (SVN):
+    * bgmusic.c: remove some unnecessary comments.
+      (BGM_Play): call BGM_Stop() before anything else. don't do anything
+      if there are no music handlers. in case of a midi file, if the midi
+      drivers fails, try with the streamer too if it is available.
+
+2011-01-10 (SVN):
     * bgm*: Updated copyright years.
 
 2011-01-07 (SVN):
