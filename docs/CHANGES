@@ -4,6 +4,9 @@ Development Progress	:
 ---------------------------
 
 2011-01-07 (SVN):
+    * bgm*: Updated copyright years.
+
+2011-01-07 (SVN):
     * hwmaster/net.c (NET_GetPacket): Don't read the address of the peer
       until we know we've actually read a packet.
 
