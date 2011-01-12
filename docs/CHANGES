@@ -3,6 +3,10 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2011-01-12 (SVN):
+    * net_sys.h: the new MS SDKs define EWOULDBLOCK and ECONNREFUSED,
+      so we must undefine them before redefining.
+
 2011-01-10 (SVN):
     * bgmusic.c: remove some unnecessary comments.
       (BGM_Play): call BGM_Stop() before anything else. don't do anything

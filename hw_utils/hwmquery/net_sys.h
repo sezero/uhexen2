@@ -4,7 +4,7 @@
 	- depends on arch_def.h
 	- may depend on q_stdinc.h
 
-	$Id: net_sys.h,v 1.19 2010-08-09 14:33:12 sezero Exp $
+	$Id$
 
 	Copyright (C) 2007-2010  O.Sezer <sezero@users.sourceforge.net>
 
@@ -117,7 +117,11 @@ typedef int	socklen_t;
 typedef SOCKET	sys_socket_t;
 
 #define	SOCKETERRNO	WSAGetLastError()
+/* the new MS SDKs define the following two,
+ * so we must undefine them before redefining. */
+#undef	EWOULDBLOCK
 #define	EWOULDBLOCK	WSAEWOULDBLOCK
+#undef	ECONNREFUSED
 #define	ECONNREFUSED	WSAECONNREFUSED
 /* must #include "wsaerror.h" for this : */
 #define	socketerror(x)	__WSAE_StrError((x))
