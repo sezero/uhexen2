@@ -4,6 +4,12 @@ Development Progress	:
 ---------------------------
 
 2011-01-12 (SVN):
+    * Added Visual Studio 2010 project files for hexen2 and hexenworld.
+      Added vsyasm note to COMPILE document for assembler usage under
+      vs2010. Added vsyasm Visual Studio 2010 integration files under
+      w32stuff/yasm/vs2010/.
+
+2011-01-12 (SVN):
     * net_sys.h: revert previous commit undefining EWOULDBLOCK and
       ECONNREFUSED for windows.  define new macros NET_EWOULDBLOCK and
       NET_ECONNREFUSED for both unix and for windows and change the

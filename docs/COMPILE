@@ -167,14 +167,15 @@ Note that "make" may be named "mingw32-make". In that case, you may want
 to try "mingw32-make" if "make" command itself fails to run. Remember to
 do a make clean between each different build.
 
-c. On Windows, using Visual Studio 2005 or 2008:
--------------------------------------------------
-Visual Studio 2005 and Visual Studio 2008 have been tested to compile all
+c. On Windows, using Visual Studio 2005/2008 or 2010:
+-----------------------------------------------------
+Visual Studio 2005, 2008 and 2010 versions have been tested to compile all
 uhexen2 code successfully. The VisualStudio2005.zip and VisualStudio2008.zip
 files contain the *.vcproj project files and *.sln solution files: unzipping
 the correct version and double-clicking on them should start visual studio
-and you will be ready to go.  All projects are adjusted for Win32 (x86) and
-x64 targets.
+and you will be ready to go. VisualStudio2010.zip files are also provided
+for hexen2 and hexenworld projects for your convenience.  All projects are
+adjusted for Win32 (x86) and x64 targets.
 
 Compilation of the software renderer versions h2.exe and hwcl.exe require
 YASM as the x86 assembler (link down below). Versions 0.7.2 or newer are
@@ -182,7 +183,9 @@ recommended.  As an alternative, you can use NASM as the assembler: version
 2.05.01 or newer are recommended.  Both nasm and yasm are very easy to
 integrate into Visual Studio using a rule file: see the w32stuff/yasm and
 w32stuff/nasm directories.  Our project files are currently adjusted for
-using yasm.
+using yasm.  For Visual Studio 2010, you need "vsyasm" which is simply a
+version of yasm tailored for vs2010. Version 1.1.0 of vsyasm is tested to
+function properly. See w32stuff/yasm/vs2010 for details.
 
 
 Compiling for Mac OS X:
