@@ -2,7 +2,7 @@
 	net_wipx.c
 	winsock ipx driver
 
-	$Id: net_wipx.c,v 1.40 2009-04-30 15:32:32 sezero Exp $
+	$Id$
 */
 
 #include "q_stdinc.h"
@@ -253,7 +253,7 @@ int WIPX_Read (sys_socket_t handle, byte *buf, int len, struct qsockaddr *addr)
 	if (ret == SOCKET_ERROR)
 	{
 		int err = SOCKETERRNO;
-		if (err == EWOULDBLOCK || err == ECONNREFUSED)
+		if (err == NET_EWOULDBLOCK || err == NET_ECONNREFUSED)
 			return 0;
 		Con_SafeDPrintf ("%s, recvfrom: %s\n", __thisfunc__, socketerror(err));
 	}
@@ -292,7 +292,7 @@ int WIPX_Write (sys_socket_t handle, byte *buf, int len, struct qsockaddr *addr)
 	if (ret == SOCKET_ERROR)
 	{
 		int err = SOCKETERRNO;
-		if (err == EWOULDBLOCK)
+		if (err == NET_EWOULDBLOCK)
 			return 0;
 		Con_SafeDPrintf ("%s, sendto: %s\n", __thisfunc__, socketerror(err));
 	}

@@ -2,7 +2,7 @@
 	net_udp.c
 	network UDP driver
 
-	$Header: /cvsroot/uhexen2/engine/hexenworld/shared/net_wins.c,v 1.50 2010-02-22 10:50:34 sezero Exp $
+	$Id$
 */
 
 #include "q_stdinc.h"
@@ -163,9 +163,9 @@ int NET_GetPacket (void)
 	if (ret == SOCKET_ERROR)
 	{
 		int err = SOCKETERRNO;
-		if (err == EWOULDBLOCK)
+		if (err == NET_EWOULDBLOCK)
 			return 0;
-		if (err == ECONNREFUSED)
+		if (err == NET_ECONNREFUSED)
 		{
 			Con_Printf ("%s: Connection refused\n", __thisfunc__);
 			return 0;
@@ -227,9 +227,9 @@ void NET_SendPacket (int length, void *data, netadr_t to)
 	if (ret == SOCKET_ERROR)
 	{
 		int err = SOCKETERRNO;
-		if (err == EWOULDBLOCK)
+		if (err == NET_EWOULDBLOCK)
 			return;
-		if (err == ECONNREFUSED)
+		if (err == NET_ECONNREFUSED)
 		{
 			Con_Printf ("%s: Connection refused\n", __thisfunc__);
 			return;

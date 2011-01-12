@@ -1,6 +1,6 @@
 /*
 	hwmquery.c
-	$Id: hwmquery.c,v 1.29 2010-08-09 14:33:12 sezero Exp $
+	$Id$
 
 	HWMQUERY 0.2 HexenWorld Master Server Query
 	Copyright (C) 2006-2010 O. Sezer <sezero@users.sourceforge.net>
@@ -294,7 +294,7 @@ int main (int argc, char **argv)
 		if (size == SOCKET_ERROR)
 		{
 			err = SOCKETERRNO;
-			if (err != EWOULDBLOCK)
+			if (err != NET_EWOULDBLOCK)
 			{
 				printf ("Recv failed: %s\n", socketerror(err));
 				Sys_Quit (1);

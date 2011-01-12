@@ -4,6 +4,14 @@ Development Progress	:
 ---------------------------
 
 2011-01-12 (SVN):
+    * net_sys.h: revert previous commit undefining EWOULDBLOCK and
+      ECONNREFUSED for windows.  define new macros NET_EWOULDBLOCK and
+      NET_ECONNREFUSED for both unix and for windows and change the
+      users accordingly.
+    * net_udp.c, net_wins.c, net_wipx.c, net.c, hwterm.c, hwmquery.c:
+      adjust for the new NET_EWOULDBLOCK and NET_ECONNREFUSED macros.
+
+2011-01-12 (SVN):
     * net_sys.h: the new MS SDKs define EWOULDBLOCK and ECONNREFUSED,
       so we must undefine them before redefining.
 

@@ -1,6 +1,6 @@
 /*
 	hwterm.c
-	$Id: hwterm.c,v 1.31 2010-08-09 14:33:12 sezero Exp $
+	$Id$
 
 	HWTERM 1.2 HexenWorld Remote Console Terminal
 	Idea based on QTerm 1.1 by Michael Dwyer/N0ZAP (18-May-1998).
@@ -330,7 +330,7 @@ int main (int argc, char *argv[])
 			if (size == SOCKET_ERROR)
 			{
 				err = SOCKETERRNO;
-				if (err != EWOULDBLOCK)
+				if (err != NET_EWOULDBLOCK)
 				{
 					printf ("Recv failed: %s\n", socketerror(err));
 					Sys_Quit (1);

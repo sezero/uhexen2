@@ -2,7 +2,7 @@
 	net_wins.c
 	winsock udp driver
 
-	$Id: net_wins.c,v 1.42 2010-03-07 20:21:36 sezero Exp $
+	$Id$
 */
 
 #include "q_stdinc.h"
@@ -366,7 +366,7 @@ int WINS_Read (sys_socket_t socketid, byte *buf, int len, struct qsockaddr *addr
 	if (ret == SOCKET_ERROR)
 	{
 		int err = SOCKETERRNO;
-		if (err == EWOULDBLOCK || err == ECONNREFUSED)
+		if (err == NET_EWOULDBLOCK || err == NET_ECONNREFUSED)
 			return 0;
 		Con_SafeDPrintf ("%s, recvfrom: %s\n", __thisfunc__, socketerror(err));
 	}
@@ -424,7 +424,7 @@ int WINS_Write (sys_socket_t socketid, byte *buf, int len, struct qsockaddr *add
 	if (ret == SOCKET_ERROR)
 	{
 		int err = SOCKETERRNO;
-		if (err == EWOULDBLOCK)
+		if (err == NET_EWOULDBLOCK)
 			return 0;
 		Con_SafeDPrintf ("%s, sendto: %s\n", __thisfunc__, socketerror(err));
 	}

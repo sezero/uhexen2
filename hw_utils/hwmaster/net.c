@@ -154,7 +154,7 @@ int NET_GetPacket (void)
 	if (ret == SOCKET_ERROR)
 	{
 		int err = SOCKETERRNO;
-		if (err == EWOULDBLOCK)
+		if (err == NET_EWOULDBLOCK)
 			return 0;
 # ifdef PLATFORM_WINDOWS
 		if (err == WSAEMSGSIZE)
@@ -203,7 +203,7 @@ void NET_SendPacket (int length, void *data, netadr_t to)
 	if (ret == SOCKET_ERROR)
 	{
 		int err = SOCKETERRNO;
-		if (err == EWOULDBLOCK)
+		if (err == NET_EWOULDBLOCK)
 			return;
 		printf ("%s ERROR: %s\n", __thisfunc__, socketerror(err));
 	}
