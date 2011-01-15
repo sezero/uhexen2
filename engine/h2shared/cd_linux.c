@@ -61,9 +61,11 @@ static struct cdrom_volctrl	orig_vol;	/* original setting to be restored upon ex
 static struct cdrom_volctrl	drv_vol;	/* the volume setting we'll be using */
 
 
-#define IOCTL_FAILURE(IoctlName)	{					\
-	Con_DPrintf("ioctl failed: %s (errno: %d)\n", #IoctlName, errno);	\
-}
+#define IOCTL_FAILURE(__name)	do {							\
+	int __err = errno;								\
+	Con_DPrintf("ioctl %s failed (%d: %s)\n", #__name, __err, strerror(__err));	\
+} while (0)
+
 
 static void CDAudio_Eject(void)
 {
@@ -441,7 +443,9 @@ int CDAudio_Init(void)
 
 	if ((cdfile = open(cd_dev, O_RDONLY | O_NONBLOCK)) == -1)
 	{
-		Con_Printf("%s: open of \"%s\" failed (%i)\n", __thisfunc__, cd_dev, errno);
+		i = errno;
+		Con_Printf("%s: open of \"%s\" failed (%d: %s)\n",
+				__thisfunc__, cd_dev, i, strerror(i));
 		cdfile = -1;
 		return -1;
 	}

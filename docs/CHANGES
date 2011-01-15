@@ -3,6 +3,10 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2011-01-15 (SVN):
+    * cd_bsd.c, cd_linux.c: print strerror() information along with
+      errno for more useful debug messages.
+
 2011-01-12 (SVN):
     * Added Visual Studio 2010 project files for hexen2 and hexenworld.
       Added vsyasm note to COMPILE document for assembler usage under
