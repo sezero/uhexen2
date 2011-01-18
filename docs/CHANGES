@@ -3,6 +3,12 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2011-01-18 (SVN):
+    * snd_mix.c (SND_PaintChannelFrom16): multiplication might cause
+      integer overflow as observed in quakespasm with the warpspasm
+      mod depending on the volume level. so, moved the left shifting
+      to left/right volume before the multiplication.
+
 2011-01-15 (SVN):
     * cd_bsd.c, cd_linux.c: print strerror() information along with
       errno for more useful debug messages.
