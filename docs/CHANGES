@@ -6,7 +6,7 @@ Development Progress	:
 2011-01-18 (SVN):
     * snd_mix.c (SND_PaintChannelFrom16): multiplication might cause
       integer overflow as observed in quakespasm with the warpspasm
-      mod depending on the volume level. so, moved the left shifting
+      mod depending on the volume level. so, moved the right shifting
       to left/right volume before the multiplication.
 
 2011-01-15 (SVN):
