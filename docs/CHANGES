@@ -3,6 +3,9 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2011-01-23 (SVN):
+    * added shell scripts for easy ripping of hexen2 cdaudio tracks
+
 2011-01-18 (SVN):
     * snd_mix.c (SND_PaintChannelFrom16): multiplication might cause
       integer overflow as observed in quakespasm with the warpspasm
