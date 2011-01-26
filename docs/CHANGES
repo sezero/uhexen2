@@ -3,6 +3,10 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2011-01-26 (SVN):
+    * hexen2/keys.c (Key_Event): Removed code making the ctrl-alt-del
+      combination to error out.
+
 2011-01-23 (SVN):
     * added shell scripts for easy ripping of hexen2 cdaudio tracks
 

@@ -2,7 +2,7 @@
 	keys.c
 	key up events are sent even if in console mode
 
-	$Id: keys.c,v 1.45 2010-10-04 07:33:30 sezero Exp $
+	$Id$
 
 	Copyright (C) 1996-1997  Id Software, Inc.
 	Copyright (C) 2006-2007  O.Sezer
@@ -848,9 +848,6 @@ void Key_Event (int key, qboolean down)
 	char	cmd[1024];
 
 	keydown[key] = down;
-
-	if (keydown[K_CTRL] && keydown[K_ALT] && keydown[K_DEL])
-		Sys_Error ("ctrl-alt-del pressed");
 
 	if (!down)
 		key_repeats[key] = 0;
