@@ -1131,7 +1131,7 @@ static const char *PR_GetProgFilename (void)
 
 	strcpy(finalprogname, def_progname);
 
-	FS_OpenFile ("maplist.txt", &FH, NULL, true);
+	FS_OpenFile ("maplist.txt", &FH, NULL);
 	if (FH)
 	{
 		char	build[2048], *test;

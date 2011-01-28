@@ -151,7 +151,7 @@ void CFG_CloseConfig (void)
 int CFG_OpenConfig (const char *cfg_name)
 {
 	CFG_CloseConfig ();
-	FS_OpenFile (cfg_name, &cfg_file, NULL, true);
+	FS_OpenFile (cfg_name, &cfg_file, NULL);
 	if (!cfg_file)
 		return -1;
 	return 0;

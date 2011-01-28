@@ -1130,7 +1130,7 @@ void VID_SetPalette (unsigned char *palette)
 		VID_CreateInversePalette (palette);
 
 #else /* end of HEXEN2_PALTEX_CODE */
-	palsize = FS_OpenFile("glhexen/15to8.pal", &f, NULL, true);
+	palsize = FS_OpenFile("glhexen/15to8.pal", &f, NULL);
 	if (f && palsize == (1<<15))
 	{
 		fread(d_15to8table, 1<<15, 1, f);

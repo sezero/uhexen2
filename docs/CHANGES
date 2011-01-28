@@ -3,6 +3,11 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2011-01-28 (SVN):
+    * quakefs.c, FS_OpenFile: Removed code making it not to go beyond
+      base if not a registered version. Removed override_pak argument.
+      Adjusted all callers of the function accordingly.
+
 2011-01-26 (SVN):
     * hexen2/keys.c (Key_Event): Removed code making the ctrl-alt-del
       combination to error out.

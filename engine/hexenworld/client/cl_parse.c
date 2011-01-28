@@ -143,7 +143,7 @@ qboolean CL_CheckOrDownloadFile (const char *filename)
 		return true;
 	}
 
-	FS_OpenFile (filename, &f, NULL, false);
+	FS_OpenFile (filename, &f, NULL);
 	if (f)
 	{	// it exists, no need to download
 		fclose (f);

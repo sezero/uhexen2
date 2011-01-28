@@ -458,7 +458,7 @@ void CL_PlayDemo_f (void)
 	COM_DefaultExtension (name, ".qwd", sizeof(name));
 
 	Con_Printf ("Playing demo from %s.\n", name);
-	FS_OpenFile (name, &cls.demofile, NULL, false);
+	FS_OpenFile (name, &cls.demofile, NULL);
 	if (!cls.demofile)
 	{
 		Con_Printf ("ERROR: couldn't open %s\n", name);

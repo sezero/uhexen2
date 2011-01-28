@@ -61,16 +61,7 @@ diff -urNp engine/h2shared/quakefs.c.orig engine/h2shared/quakefs.c
  	else
  	{
  	// a new gamedir: let's set it here.
-@@ -874,7 +901,7 @@ size_t FS_OpenFile (const char *filename
- 		{
- 	// check a file in the directory tree
- #if !defined(H2W)
--			if (!(gameflags & (GAME_REGISTERED|GAME_REGISTERED_OLD)) && !override_pack)
-+			if (!(gameflags & (GAME_REGISTERED|GAME_REGISTERED_OLD|GAME_STANDALONE)) && !override_pack)
- 			{	// if not a registered version, don't ever go beyond base
- 				if ( strchr (filename, '/') || strchr (filename,'\\'))
- 					continue;
-@@ -1303,8 +1330,36 @@ static int CheckRegistered (void)
+@@ -1291,8 +1318,36 @@ static int CheckRegistered (void)
  FS_Init
  ================
  */
@@ -107,7 +98,7 @@ diff -urNp engine/h2shared/quakefs.c.orig engine/h2shared/quakefs.c
  	int		i;
  	char		temp[32];
  	qboolean	check_portals = false;
-@@ -1513,6 +1568,93 @@ void FS_Init (void)
+@@ -1501,6 +1556,93 @@ void FS_Init (void)
  	}
  }
  
@@ -217,3 +208,4 @@ diff -urNp engine/h2shared/quakefs.h.orig engine/h2shared/quakefs.h
  extern	const char	*fs_basedir;
  extern	char	fs_gamedir[MAX_OSPATH];
  extern	char	fs_gamedir_nopath[MAX_QPATH];
+

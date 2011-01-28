@@ -832,8 +832,7 @@ FS_OpenFile
 Finds the file in the search path, returns fs_filesize.
 ===========
 */
-size_t FS_OpenFile (const char *filename, FILE **file, unsigned int *path_id,
-							qboolean override_pack)
+size_t FS_OpenFile (const char *filename, FILE **file, unsigned int *path_id)
 {
 	searchpath_t	*search;
 	char		netpath[MAX_OSPATH];
@@ -847,40 +846,29 @@ size_t FS_OpenFile (const char *filename, FILE **file, unsigned int *path_id,
 //
 	for (search = fs_searchpaths ; search ; search = search->next)
 	{
-	// is the element a pak file?
-		if (search->pack)
+		if (search->pack)	/* look through all the pak file elements */
 		{
-		// look through all the pak file elements
 			pak = search->pack;
 			for (i = 0; i < pak->numfiles; i++)
 			{
-				if (!strcmp (pak->files[i].name, filename))
-				{	// found it!
-					// open a new file on the pakfile
-					*file = fopen (pak->filename, "rb");
-					if (!*file)
-						Sys_Error ("Couldn't reopen %s", pak->filename);
-					fseek (*file, pak->files[i].filepos, SEEK_SET);
-					fs_filesize = (size_t) pak->files[i].filelen;
-					file_from_pak = 1;
-					fs_filepath = NULL;
-					if (path_id)
-						*path_id = search->path_id;
-					return fs_filesize;
-				}
+				if (strcmp(pak->files[i].name, filename) != 0)
+					continue;
+				// found it!
+				fs_filesize = (size_t) pak->files[i].filelen;
+				file_from_pak = 1;
+				fs_filepath = NULL;
+				if (path_id)
+					*path_id = search->path_id;
+				// open a new file on the pakfile
+				*file = fopen (pak->filename, "rb");
+				if (!*file)
+					Sys_Error ("Couldn't reopen %s", pak->filename);
+				fseek (*file, pak->files[i].filepos, SEEK_SET);
+				return fs_filesize;
 			}
 		}
-		else
+		else	/* check a file in the directory tree */
 		{
-	// check a file in the directory tree
-#if !defined(H2W)
-			if (!(gameflags & (GAME_REGISTERED|GAME_REGISTERED_OLD)) && !override_pack)
-			{	// if not a registered version, don't ever go beyond base
-				if ( strchr (filename, '/') || strchr (filename,'\\'))
-					continue;
-			}
-#endif	/* ! H2W */
-
 			q_snprintf (netpath, sizeof(netpath), "%s/%s",search->filename, filename);
 			if (access(netpath, R_OK) == -1)
 				continue;
@@ -963,7 +951,7 @@ static byte *FS_LoadFile (const char *path, int usehunk, unsigned int *path_id)
 	buf = NULL;	// quiet compiler warning
 
 // look for it in the filesystem or pack files
-	len = fs_filesize = FS_OpenFile (path, &h, path_id, false);
+	len = fs_filesize = FS_OpenFile (path, &h, path_id);
 	if (!h)
 		return NULL;
 
@@ -1278,7 +1266,7 @@ static int CheckRegistered (void)
 	unsigned short	check[128];
 	int			i;
 
-	FS_OpenFile("gfx/pop.lmp", &h, NULL, false);
+	FS_OpenFile("gfx/pop.lmp", &h, NULL);
 
 	if (!h)
 		return -1;

@@ -324,7 +324,7 @@ static void SV_Map_f (void)
 
 	// check to make sure the level exists
 	q_snprintf (expanded, sizeof(expanded), "maps/%s.bsp", level);
-	FS_OpenFile (expanded, &f, NULL, false);
+	FS_OpenFile (expanded, &f, NULL);
 	if (!f)
 	{
 		Con_Printf ("Can't find %s\n", expanded);
