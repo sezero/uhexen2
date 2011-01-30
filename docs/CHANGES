@@ -3,6 +3,11 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2011-01-30 (SVN):
+    * snd_mp3.c: sync with sox project CVS repo and add mp3_madseek()
+      as a new private function. make S_MP3_CodecRewindStream() to use
+      the new mp3_madseek() function.
+
 2011-01-28 (SVN):
     * quakefs.c, FS_OpenFile: Removed code making it not to go beyond
       base if not a registered version. Removed override_pak argument.
