@@ -3,6 +3,8 @@
  * the modified timidity library included here.  Standart libtimidity is
  * not recommended.
  *
+ * Copyright (C) 2010-2011 O.Sezer <sezero@users.sourceforge.net>
+ *
  * $Id$
  *
  * This program is free software; you can redistribute it and/or modify
