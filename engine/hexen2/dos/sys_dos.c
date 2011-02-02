@@ -40,7 +40,6 @@
 #include <crt0.h>	/* for _crt0_startup_flags */
 #include <sys/nearptr.h>
 #include <conio.h>
-#include <fnmatch.h>
 #include <time.h>
 
 #include "quakedef.h"
