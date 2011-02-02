@@ -6,6 +6,7 @@ Development Progress	:
 2011-02-02 (SVN):
     * sys_dos.c (Sys_CopyFile, Sys_FindFirstFile, Sys_FindNextFile):
       use dos-specific calls instead of unix compatibility functions.
+    * sys_dos.c: includes cleanup.
 
 2011-02-02 (SVN):
     * quakefs: renamed FS_CopyFromFile() to FS_WriteFileFromHandle(),

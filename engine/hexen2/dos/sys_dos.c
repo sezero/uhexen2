@@ -32,17 +32,16 @@
 #include <unistd.h>
 #include <signal.h>
 #include <sys/time.h>
+#include <dos.h>
 #include <dir.h>
 #include <fcntl.h>
 #include <sys/stat.h>
 #include <dpmi.h>
+#include <crt0.h>	/* for _crt0_startup_flags */
 #include <sys/nearptr.h>
 #include <conio.h>
 #include <fnmatch.h>
 #include <time.h>
-#include <utime.h>
-
-#include <crt0.h>	/* for sbrk unix flag below */
 
 #include "quakedef.h"
 #include "dosisms.h"
