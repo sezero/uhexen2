@@ -74,9 +74,8 @@ int FS_CopyFile (const char *frompath, const char *topath);
 // Copies the FROMPATH file as TOPATH file, creating any dirs needed.
 // Used for saving the game. Returns 0 on success, non-zero on error.
 
-int FS_CopyFromFile (FILE *fromfile, const char *topath, size_t size);
-// Similar to FS_CopyFile, but takes an open file as its source, and
-// the size of the source file as its 3rd argument.
+int FS_WriteFileFromHandle (FILE *fromfile, const char *topath, size_t size);
+// takes an open file as its source, writes a new file copying `size' bytes.
 
 int FS_WriteFile (const char *filename, const void *data, size_t len);
 // Prefixes the filename by the current game directory and does an fwrite()

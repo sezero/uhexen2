@@ -663,7 +663,7 @@ int FS_CopyFile (const char *frompath, const char *topath)
 }
 
 #define	COPY_READ_BUFSIZE		8192	/* BUFSIZ */
-int FS_CopyFromFile (FILE *fromfile, const char *topath, size_t size)
+int FS_WriteFileFromHandle (FILE *fromfile, const char *topath, size_t size)
 {
 	char	buf[COPY_READ_BUFSIZE];
 	FILE	*out;

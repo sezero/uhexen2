@@ -186,7 +186,7 @@ static void *MIDI_Play (const char *Name)
 			q_snprintf (midiName, sizeof(midiName), "%s/%s",
 							host_parms->userdir,
 							TEMP_MUSICNAME);
-			ret = FS_CopyFromFile (midiFile, midiName, fs_filesize);
+			ret = FS_WriteFileFromHandle (midiFile, midiName, fs_filesize);
 			fclose (midiFile);
 			if (ret != 0)
 			{

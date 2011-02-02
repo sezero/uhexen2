@@ -3,6 +3,10 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2011-02-02 (SVN):
+    * quakefs: renamed FS_CopyFromFile() to FS_WriteFileFromHandle(),
+      adjusted its callers.
+
 2011-01-30 (SVN):
     * updated copyright years for several sound related sources.
     * snd_mp3.c: removed useless rudimentary info checks.
