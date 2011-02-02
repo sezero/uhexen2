@@ -3,7 +3,7 @@
 	DOS system interface code.
 	from quake1 source with adaptations for uhexen2.
 
-	$Id: sys_dos.c,v 1.13 2010-10-04 07:33:30 sezero Exp $
+	$Id$
 
 	Copyright (C) 1996-1997  Id Software, Inc.
 
@@ -32,8 +32,7 @@
 #include <unistd.h>
 #include <signal.h>
 #include <sys/time.h>
-#include <dirent.h>
-#include <unistd.h>
+#include <dir.h>
 #include <fcntl.h>
 #include <sys/stat.h>
 #include <dpmi.h>
@@ -417,32 +416,31 @@ int Sys_unlink (const char *path)
 int Sys_CopyFile (const char *frompath, const char *topath)
 {
 	char	buf[COPY_READ_BUFSIZE];
-	FILE	*in, *out;
-	struct stat	st;
+	int	in, out;
+	struct ffblk	f;
 	int		err = 0;
-//	off_t		remaining, count;
-	size_t		remaining, count;
+	unsigned long	remaining, count;
 
-	if (stat(frompath, &st) != 0)
+	if (findfirst(frompath, &f, FA_ARCH | FA_RDONLY) != 0)
 	{
-		Con_Printf ("%s: unable to stat %s\n", frompath, __thisfunc__);
+		Con_Printf ("%s: unable to find %s\n", frompath, __thisfunc__);
 		return 1;
 	}
-	in = fopen (frompath, "rb");
-	if (!in)
+	in = open (frompath, O_RDONLY | O_BINARY);
+	if (in < 0)
 	{
 		Con_Printf ("%s: unable to open %s\n", frompath, __thisfunc__);
 		return 1;
 	}
-	out = fopen (topath, "wb");
-	if (!out)
+	out = open (topath, O_CREAT | O_WRONLY | O_TRUNC | O_BINARY, 0666);
+	if (out < 0)
 	{
 		Con_Printf ("%s: unable to create %s\n", topath, __thisfunc__);
-		fclose (in);
+		close (in);
 		return 1;
 	}
 
-	remaining = st.st_size;
+	remaining = f.ff_fsize;
 	memset (buf, 0, sizeof(buf));
 	while (remaining)
 	{
@@ -451,30 +449,39 @@ int Sys_CopyFile (const char *frompath, const char *topath)
 		else
 			count = sizeof(buf);
 
-		fread (buf, 1, count, in);
-		err = ferror (in);
-		if (err)
+		if (read(in, buf, count) < 0)
+		{
+			err = -1;
 			break;
+		}
 
-		fwrite (buf, 1, count, out);
-		err = ferror (out);
-		if (err)
+		if (write(out, buf, count) < 0)
+		{
+			err = -1;
 			break;
+		}
 
 		remaining -= count;
 	}
 
-	fclose (in);
-	fclose (out);
-
 	if (!err)
 	{
 	// restore the file's timestamp
-		struct utimbuf		tm;
-		tm.actime = time (NULL);
-		tm.modtime = st.st_mtime;
-		utime (topath, &tm);
+		__dpmi_regs r;
+		r.h.ah = 0x57;	/* DOS FileTimes call */
+		r.h.al = 0x01;	/* Set date/time request */
+		r.x.bx = out;	/* File handle */
+		r.x.cx = f.ff_ftime;	/* New time */
+		r.x.dx = f.ff_fdate;	/* New date */
+		__dpmi_int(0x21, &r);
+		/*
+		if (r.x.flags & 1)
+			err = EIO;
+		*/
 	}
+
+	close (in);
+	close (out);
 
 	return err;
 }
@@ -483,63 +490,40 @@ int Sys_CopyFile (const char *frompath, const char *topath)
 =================================================
 simplified findfirst/findnext implementation:
 Sys_FindFirstFile and Sys_FindNextFile return
-filenames only, not a dirent struct. this is
-what we presently need in this engine.
+filenames only.
 =================================================
 */
-static DIR		*finddir;
-static struct dirent	*finddata;
-static char		*findpath, *findpattern;
+static struct ffblk	finddata;
+static int		findhandle = -1;
 
 char *Sys_FindFirstFile (const char *path, const char *pattern)
 {
-	if (finddir)
+	if (findhandle == 0)
 		Sys_Error ("Sys_FindFirst without FindClose");
 
-	finddir = opendir (path);
-	if (!finddir)
-		return NULL;
+	memset (&finddata, 0, sizeof(finddata));
 
-	findpattern = Z_Strdup (pattern);
-	findpath = Z_Strdup (path);
+	findhandle = findfirst(va("%s/%s", path, pattern), &finddata, FA_ARCH | FA_RDONLY);
+	if (findhandle == 0)
+		return finddata.ff_name;
 
-	return Sys_FindNextFile();
+	return NULL;
 }
 
 char *Sys_FindNextFile (void)
 {
-	struct stat	test;
-
-	if (!finddir)
+	if (findhandle != 0)
 		return NULL;
 
-	do {
-		finddata = readdir(finddir);
-		if (finddata != NULL)
-		{
-			if (!fnmatch (findpattern, finddata->d_name, FNM_PATHNAME))
-			{
-				if ( (stat(va("%s/%s", findpath, finddata->d_name), &test) == 0)
-							&& S_ISREG(test.st_mode) )
-					return finddata->d_name;
-			}
-		}
-	} while (finddata != NULL);
+	if (findnext(&finddata) == 0)
+		return finddata.ff_name;
 
 	return NULL;
 }
 
 void Sys_FindClose (void)
 {
-	if (finddir != NULL)
-		closedir(finddir);
-	if (findpath != NULL)
-		Z_Free (findpath);
-	if (findpattern != NULL)
-		Z_Free (findpattern);
-	finddir = NULL;
-	findpath = NULL;
-	findpattern = NULL;
+	findhandle = -1;
 }
 
 char *Sys_ConsoleInput (void)
