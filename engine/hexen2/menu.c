@@ -5126,7 +5126,7 @@ static void BGM_RestartMusic (void)
 	if (q_strcasecmp(bgmtype.string,"midi") == 0)
 	{
 		CDAudio_Stop();
-		BGM_Play(cl.midi_name);
+		BGM_PlayMIDIorMusic(cl.midi_name);
 	}
 	else if (q_strcasecmp(bgmtype.string,"cd") == 0)
 	{

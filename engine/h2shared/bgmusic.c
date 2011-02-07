@@ -47,8 +47,8 @@
  * MUSIC FILE DIRECTORIES:
  *
  * Midi music file have always lived under "midi" directory, we are
- * not changing that.  Any other music files, including cd-rips, are
- * expected under the "music" directory.
+ * not changing that.  Any other music files are expected under the
+ * "music" directory.
  */
 
 #define MIDI_DIRNAME	"midi"
@@ -349,14 +349,9 @@ static int BGM_Play_mididrv (const char *filename)
 static void BGM_Play_noext (const char *filename, unsigned int allowed_types)
 {
 	char tmp[MAX_QPATH];
-	int cdtrack = 0;
 	music_handler_t *handler;
 
- search_cdrip:
 	handler = music_handlers;
-	if (cdtrack != 0)
-		Con_Printf ("trying a cd-rip for track %d\n", cdtrack);
-
 	while (handler)
 	{
 		if (! (handler->type & allowed_types))
@@ -364,43 +359,13 @@ static void BGM_Play_noext (const char *filename, unsigned int allowed_types)
 			handler = handler->next;
 			continue;
 		}
-		if (MIDITYPE(handler->type))
-		{
-			if (cdtrack == 0)
-			{
-				cdtrack = map_cdtrack(filename);
-				if (cdtrack != 0)
-					goto search_cdrip;
-			}
-			else
-			{
-				cdtrack = 0;
-			}
-		}
 		if (!handler->is_available)
 		{
-		/* skip handlers which failed to initialize */
-		/* TODO: implement re-init, make BGM aware of it */
 			handler = handler->next;
 			continue;
 		}
-		if (cdtrack != 0)
-		{
-			if (!CDRIPTYPE(handler->type))
-			{
-				handler = handler->next;
-				continue;
-			}
-			q_snprintf(tmp, sizeof(tmp), "%s/track%02d%s",
-				   handler->dir, cdtrack, handler->ext);
-		}
-		else
-		{
-			if (MIDITYPE(handler->type))
-				Con_DPrintf("trying a midi file\n");
-			q_snprintf(tmp, sizeof(tmp), "%s/%s%s",
-				   handler->dir, filename, handler->ext);
-		}
+		q_snprintf(tmp, sizeof(tmp), "%s/%s%s",
+			   handler->dir, filename, handler->ext);
 		switch (handler->player)
 		{
 		case BGM_MIDIDRV:
@@ -446,7 +411,7 @@ void BGM_Play (const char *filename)
 		return;
 	}
 
-	/* use the filename as is, no cdrip searching */
+	/* use the filename as is */
 	handler = music_handlers;
 	while (handler)
 	{
@@ -479,6 +444,108 @@ void BGM_Play (const char *filename)
 	case BGM_NONE:
 	default:
 		break;
+	}
+
+	Con_Printf("Couldn't handle music file %s\n", filename);
+}
+
+void BGM_PlayMIDIorMusic (const char *filename)
+{
+/* TODO: remove support for track<nn> files.
+ *
+ * TODO: add a bgm_extmusic cvar and don't play external formats
+ * other than midi if its value is set to 1.  also add a command
+ * line switch with similar functionality.
+ *
+ * TODO:
+ * instead of searching by the order of music_handlers, do so by
+ * the order of searchpath priority: the file from the searchpath
+ * with the highest path_id is most likely from our own gamedir
+ * itself.  this way, if a mod has egyp1 as a mp3 or a midi, which
+ * is below *.ogg in the music_handler order, the mp3 or midi will
+ * still have priority over egyp1.ogg from, say, data1.
+ */
+	char tmp[MAX_QPATH];
+	const char *ext;
+	music_handler_t *handler;
+	int cdtrack = 0;
+
+	if (music_handlers == NULL)
+		return;
+
+	BGM_Stop();
+
+	if (!filename || !*filename)
+	{
+		Con_DPrintf("null music file name\n");
+		return;
+	}
+
+	ext = S_FileExtension(filename);
+	if (ext != NULL)
+	{
+		BGM_Play(filename);
+		return;
+	}
+
+	handler = music_handlers;
+	while (handler)
+	{
+		if (MIDITYPE(handler->type))
+		{
+			if (cdtrack == 0)
+			{
+				cdtrack = map_cdtrack(filename);
+				if (cdtrack != 0)
+				{
+					handler = music_handlers; /* reset */
+					Con_DPrintf ("searching a cd-rip for track %d\n", cdtrack);
+					continue;
+				}
+			}
+			else
+			{
+				cdtrack = 0; /* we couldn't find a track<nn> file */
+			}
+		}
+		if (!handler->is_available)
+		{
+			handler = handler->next;
+			continue;
+		}
+		if (cdtrack != 0)
+		{
+			if (!CDRIPTYPE(handler->type))
+			{
+				handler = handler->next;
+				continue;
+			}
+			q_snprintf(tmp, sizeof(tmp), "%s/track%02d%s",
+				   handler->dir, cdtrack, handler->ext);
+		}
+		else
+		{
+			if (MIDITYPE(handler->type))
+				Con_DPrintf("trying a midi file\n");
+			q_snprintf(tmp, sizeof(tmp), "%s/%s%s",
+				   handler->dir, filename, handler->ext);
+		}
+		switch (handler->player)
+		{
+		case BGM_MIDIDRV:
+			if (BGM_Play_mididrv(tmp) == 0)
+				return;		/* success */
+			break;
+		case BGM_STREAMER:
+			bgmstream = S_CodecOpenStreamType(tmp, handler->type);
+			if (bgmstream)
+				return;		/* success */
+			break;
+		case BGM_NONE:
+		default:
+			break;
+		}
+		handler = handler->next;
 	}
 
 	Con_Printf("Couldn't handle music file %s\n", filename);

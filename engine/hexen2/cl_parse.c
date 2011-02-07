@@ -1535,7 +1535,7 @@ void CL_ParseServerMessage (void)
 		case svc_midi_name:
 			q_strlcpy (cl.midi_name, MSG_ReadString(), sizeof(cl.midi_name));
 			if (q_strcasecmp(bgmtype.string,"midi") == 0)
-				BGM_Play(cl.midi_name);
+				BGM_PlayMIDIorMusic(cl.midi_name);
 			else
 				BGM_Stop();
 			break;

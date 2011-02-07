@@ -3,6 +3,12 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2011-02-07 (SVN):
+    * bgmusic.c: Added new procedure BGM_PlayMIDIorMusic() to handle
+      map-dictated midi/music playback.  Added several TODO notes.
+    * bgmusic.h: Added prototype for BGM_PlayMIDIorMusic().
+    * cl_parse.c, menu.c: Adjusted for new BGM_PlayMIDIorMusic().
+
 2011-02-02 (SVN):
     * sys_dos.c (Sys_CopyFile, Sys_FindFirstFile, Sys_FindNextFile):
       use dos-specific calls instead of unix compatibility functions.
