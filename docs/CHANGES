@@ -3,6 +3,10 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2011-02-08 (SVN):
+    * bgmusic.c (BGM_Play*): fixes for cases where a midi driver and
+      a midi streamer are both available.
+
 2011-02-07 (SVN):
     * bgmusic.c: Added new procedure BGM_PlayMIDIorMusic() to handle
       map-dictated midi/music playback.  Added several TODO notes.
