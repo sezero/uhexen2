@@ -4,6 +4,9 @@ Development Progress	:
 ---------------------------
 
 2011-02-08 (SVN):
+    * fixed linkage when we are configured for no sound (bgmnull*.c).
+
+2011-02-08 (SVN):
     * common.h: added note that X_OK (0x01) must not be used in windows
       code.
     * quakeinc.h: include sys.h earlier.

@@ -37,7 +37,11 @@ qboolean BGM_Init (void)
 	return false;
 }
 
-void BGM_Play (const char *filename)
+void BGM_Shutdown (void)
+{
+}
+
+void BGM_PlayMIDIorMusic (const char *filename)
 {
 }
 

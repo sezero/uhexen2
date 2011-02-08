@@ -47,7 +47,8 @@ static void BGM_Play_f (void)
 {
 	if (Cmd_Argc() == 2)
 	{
-		BGM_Play (Cmd_Argv(1));
+	/*	BGM_Play (Cmd_Argv(1));*/
+		BGM_PlayMIDIorMusic (Cmd_Argv(1));
 	}
 	else
 	{
@@ -113,7 +114,15 @@ qboolean BGM_Init (void)
 	return true;
 }
 
-void BGM_Play (const char *filename)
+void BGM_Shutdown (void)
+{
+	BGM_Stop();
+/* sever our connections to
+ * midi_drv and snd_codec */
+	midi_drivers = NULL;
+}
+
+void BGM_PlayMIDIorMusic (const char *filename)
 {
 	midi_driver_t *drv;
 	char tmp[MAX_QPATH];
