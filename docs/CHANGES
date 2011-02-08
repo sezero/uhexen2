@@ -4,6 +4,9 @@ Development Progress	:
 ---------------------------
 
 2011-02-08 (SVN):
+    * quakeinc.h: include sys.h earlier.
+
+2011-02-08 (SVN):
     * bgmusic.c: minor cleanup for codec type preferences.
 
 2011-02-08 (SVN):
