@@ -113,6 +113,25 @@ int Sys_unlink (const char *path)
 	return _unlink(path);
 }
 
+long Sys_filesize (const char *path)
+{
+	HANDLE fh;
+	WIN32_FIND_DATA data;
+	long size;
+
+	fh = FindFirstFile(path, &data);
+	if (fh == INVALID_HANDLE_VALUE)
+		return -1;
+	FindClose(fh);
+	if (data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)
+		return -1;
+//	we're not dealing with gigabytes of files.
+//	size should normally smaller than INT_MAX.
+//	size = (data.nFileSizeHigh * (MAXDWORD + 1)) + data.nFileSizeLow;
+	size = (long) data.nFileSizeLow;
+	return size;
+}
+
 #define NO_OVERWRITING	FALSE /* allow overwriting files */
 int Sys_CopyFile (const char *frompath, const char *topath)
 {

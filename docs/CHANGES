@@ -4,6 +4,10 @@ Development Progress	:
 ---------------------------
 
 2011-02-08 (SVN):
+    * sys.h: Added prototype for long Sys_filesize(const char *).
+    * sys_unix.c, sys_win.c, sys_dos.c: Added Sys_filesize().
+
+2011-02-08 (SVN):
     * bgmusic.c (BGM_Play*): fixes for cases where a midi driver and
       a midi streamer are both available.
 

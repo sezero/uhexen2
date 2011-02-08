@@ -410,6 +410,16 @@ int Sys_unlink (const char *path)
 	return unlink(path);
 }
 
+long Sys_filesize (const char *path)
+{
+	struct ffblk	f;
+
+	if (findfirst(path, &f, FA_ARCH | FA_RDONLY) != 0)
+		return -1;
+
+	return (long) f.ff_fsize;
+}
+
 #define	COPY_READ_BUFSIZE		8192	/* BUFSIZ */
 int Sys_CopyFile (const char *frompath, const char *topath)
 {

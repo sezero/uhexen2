@@ -63,6 +63,18 @@ int Sys_unlink (const char *path)
 	return unlink(path);
 }
 
+long Sys_filesize (const char *path)
+{
+	struct stat	st;
+
+	if (stat(path, &st) != 0)
+		return -1;
+	if (! S_ISREG(st.st_mode))
+		return -1;
+
+	return (long) st.st_size;
+}
+
 #define	COPY_READ_BUFSIZE		8192	/* BUFSIZ */
 int Sys_CopyFile (const char *frompath, const char *topath)
 {

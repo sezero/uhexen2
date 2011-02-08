@@ -2,7 +2,7 @@
 	sys.h
 	non-portable functions
 
-	$Header: /cvsroot/uhexen2/engine/h2shared/sys.h,v 1.44 2010-01-11 18:48:17 sezero Exp $
+	$Id$
 */
 
 #ifndef __HX2_SYS_H
@@ -15,6 +15,8 @@ int Sys_mkdir (const char *path, qboolean crash);
 
 int Sys_rmdir (const char *path);
 int Sys_unlink (const char *path);
+
+long Sys_filesize (const char *path);
 
 int Sys_CopyFile (const char *frompath, const char *topath);
 
