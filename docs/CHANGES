@@ -4,6 +4,9 @@ Development Progress	:
 ---------------------------
 
 2011-02-08 (SVN):
+    * quakefs.c (FS_fread): fixed coding style.
+
+2011-02-08 (SVN):
     * fixed linkage when we are configured for no sound (bgmnull*.c).
 
 2011-02-08 (SVN):
