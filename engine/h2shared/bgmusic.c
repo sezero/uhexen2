@@ -81,11 +81,12 @@ static music_handler_t wanted_handlers[] =
 {
 	{ CODECTYPE_OGG,  BGM_STREAMER, -1,  ".ogg", MUSIC_DIRNAME, NULL },
 	{ CODECTYPE_MP3,  BGM_STREAMER, -1,  ".mp3", MUSIC_DIRNAME, NULL },
-	{ CODECTYPE_WAV,  BGM_STREAMER, -1,  ".wav", MUSIC_DIRNAME, NULL },
 	{ CODECTYPE_FLAC, BGM_STREAMER, -1, ".flac", MUSIC_DIRNAME, NULL },
-	{ CODECTYPE_MOD,  BGM_STREAMER, -1,  ".mod", MUSIC_DIRNAME, NULL },
+	{ CODECTYPE_WAV,  BGM_STREAMER, -1,  ".wav", MUSIC_DIRNAME, NULL },
 	{ CODECTYPE_MOD,  BGM_STREAMER, -1,  ".it",  MUSIC_DIRNAME, NULL },
 	{ CODECTYPE_MOD,  BGM_STREAMER, -1,  ".s3m", MUSIC_DIRNAME, NULL },
+	{ CODECTYPE_MOD,  BGM_STREAMER, -1,  ".xm",  MUSIC_DIRNAME, NULL },
+	{ CODECTYPE_MOD,  BGM_STREAMER, -1,  ".mod", MUSIC_DIRNAME, NULL },
 /* midi must be last before NULL terminator. */
 #define MIDIDRIVER_MID (1 << 31) /* special, comes before CODECTYPE_MID */
 	{ MIDIDRIVER_MID, BGM_MIDIDRV,  -1,  ".mid", MIDI_DIRNAME,  NULL },
@@ -98,7 +99,7 @@ static music_handler_t *music_handlers = NULL;
 #define ANY_CODECTYPE	0xFFFFFFFF
 #define MIDI_TYPES	(CODECTYPE_MID | MIDIDRIVER_MID)
 #define MIDITYPE(x)	(((x) & MIDI_TYPES) != 0)
-#define CDRIP_TYPES	(CODECTYPE_OGG | CODECTYPE_MP3 | CODECTYPE_WAV)
+#define CDRIP_TYPES	(CODECTYPE_OGG | CODECTYPE_MP3 | CODECTYPE_FLAC | CODECTYPE_WAV)
 #define CDRIPTYPE(x)	(((x) & CDRIP_TYPES) != 0)
 
 typedef struct midi_handle_s
