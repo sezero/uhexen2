@@ -2,7 +2,7 @@
 	sys_win.c
 	Win32 system interface code
 
-	$Header: /cvsroot/uhexen2/engine/hexenworld/server/sys_win.c,v 1.14 2009-04-29 07:49:28 sezero Exp $
+	$Id$
 */
 
 #include "quakedef.h"

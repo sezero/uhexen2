@@ -2,7 +2,7 @@
 	sys_unix.c
 	Unix system interface code
 
-	$Header: /cvsroot/uhexen2/engine/hexenworld/server/sys_unix.c,v 1.58 2010-10-04 07:33:30 sezero Exp $
+	$Id$
 */
 
 #include "quakedef.h"
