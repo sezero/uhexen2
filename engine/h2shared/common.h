@@ -36,7 +36,8 @@
 #define	q_max(a, b)	(((a) > (b)) ? (a) : (b))
 
 #if defined(PLATFORM_WINDOWS) && !defined(F_OK)
-// values for the mode argument of access(). MS does not define them
+/* constants for access() mode argument. MS does not define them.
+ * Note that X_OK (0x01) must not be used in windows code.  */
 #define	R_OK	4		/* Test for read permission.  */
 #define	W_OK	2		/* Test for write permission.  */
 #define	X_OK	1		/* Test for execute permission.  */
@@ -103,7 +104,7 @@ extern int qerr_snprintf (const char *caller, int linenum, char *str, size_t siz
 extern char *q_strlwr (char *str);
 extern char *q_strupr (char *str);
 
-//============================================================================
+/*============================================================================*/
 
 extern	char		com_token[1024];
 extern	qboolean	com_eof;
@@ -111,10 +112,9 @@ extern	qboolean	com_eof;
 const char *COM_Parse (const char *data);
 
 extern	int		safemode;
-/* safe mode: in true, the engine will behave as if one
-   of these arguments were actually on the command line:
-   -nosound, -nocdaudio, -nomidi, -stdvid, -dibonly,
-   -nomouse, -nojoy, -nolan
+/* safe mode: in true, the engine will behave as if one of these
+   arguments were actually on the command line:
+   -nosound, -nocdaudio, -nomidi, -stdvid, -dibonly, -nomouse, -nojoy, -nolan
  */
 
 void COM_Init (void);
@@ -133,12 +133,12 @@ void COM_FileBase (const char *in, char *out, size_t outsize);
 void COM_DefaultExtension (char *path, const char *extension, size_t len);
 
 char	*va (const char *format, ...) __attribute__((__format__(__printf__,1,2)));
-// does a varargs printf into a temp buffer. cycles between
-// 4 different static buffers. the number of buffers cycled
-// is defined in VA_NUM_BUFFS.
+/* does a varargs printf into a temp buffer. cycles between
+ * 4 different static buffers. the number of buffers cycled
+ * is defined in VA_NUM_BUFFS. */
 
 int COM_StrCompare (const void *arg1, const void *arg2);
-// quick'n'dirty string comparison function for use with qsort
+/* quick'n'dirty string comparison function for use with qsort */
 
 
 #endif	/* __HX2_COMMON_H */
