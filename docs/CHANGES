@@ -3,7 +3,17 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
-2011-02-08 (SVN):
+2011-02-10 (SVN):
+    * quakefs.c (FS_OpenFile): use Sys_filesize() to detect the presence
+      of a file in the directory tree. allow calling of the function with
+      NULL file argument.
+      (FS_FileExists): new procedure, returning whether the file is found
+      in the hexen2 filesystem.
+      (FS_LoadFile): removed redundant assignment to fs_filesize.
+      (FS_filelength): removed static.
+    * quakefs.h (FS_OpenFile): add prototype.
+
+2011-02-10 (SVN):
     * snd_codec.c (S_CodecUtilOpen):  cast for length must be long.
 
 2011-02-08 (SVN):

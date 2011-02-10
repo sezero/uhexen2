@@ -91,6 +91,9 @@ int FS_FileInGamedir (const char *fname);
 // Reports the existance of a file with read perms in fs_gamedir or fs_userdir.
 // Returns -1 on failure. Files in pakfiles are NOT meant for this procedure!
 
+qboolean FS_FileExists (const char *filename, unsigned int *path_id);
+// Returns whether the file is found in the hexen2 filesystem.
+
 size_t FS_OpenFile (const char *filename, FILE **file, unsigned int *path_id);
 // Opens a file (a standalone file or a file in pak) in the hexen2 filesystem,
 // returns fs_filesize on success or (size_t)-1 on failure.  if path_id is not

@@ -618,7 +618,7 @@ int		file_from_pak;	// ZOID: global indicating that file came from a pak
 FS_filelength
 ================
 */
-static size_t FS_filelength (FILE *f)
+size_t FS_filelength (FILE *f)
 {
 	long		pos, end;
 
@@ -859,7 +859,9 @@ size_t FS_OpenFile (const char *filename, FILE **file, unsigned int *path_id)
 				fs_filepath = NULL;
 				if (path_id)
 					*path_id = search->path_id;
-				// open a new file on the pakfile
+				if (!file) /* for FS_FileExists() */
+					return fs_filesize;
+				/* open a new file on the pakfile */
 				*file = fopen (pak->filename, "rb");
 				if (!*file)
 					Sys_Error ("Couldn't reopen %s", pak->filename);
@@ -870,14 +872,15 @@ size_t FS_OpenFile (const char *filename, FILE **file, unsigned int *path_id)
 		else	/* check a file in the directory tree */
 		{
 			q_snprintf (netpath, sizeof(netpath), "%s/%s",search->filename, filename);
-			if (access(netpath, R_OK) == -1)
+			fs_filesize = (size_t) Sys_filesize (netpath);
+			if (fs_filesize == (size_t)-1)
 				continue;
-
+			if (!file) /* for FS_FileExists() */
+				return fs_filesize;
 			*file = fopen (netpath, "rb");
 			if (!*file)
 				Sys_Error ("Couldn't reopen %s", netpath);
 			fs_filepath = search->filename;
-			fs_filesize = FS_filelength (*file);
 			if (path_id)
 				*path_id = search->path_id;
 			return fs_filesize;
@@ -886,10 +889,24 @@ size_t FS_OpenFile (const char *filename, FILE **file, unsigned int *path_id)
 
 	Sys_DPrintf ("%s: can't find %s\n", __thisfunc__, filename);
 
-	*file = NULL;
+	if (file)
+		*file = NULL;
 	fs_filepath = NULL;
 	fs_filesize = (size_t)-1;
 	return fs_filesize;
+}
+
+/*
+===========
+FS_FileExists
+
+Returns whether the file is found in the hexen2 filesystem.
+===========
+*/
+qboolean FS_FileExists (const char *filename, unsigned int *path_id)
+{
+	size_t ret = FS_OpenFile (filename, NULL, path_id);
+	return (ret == (size_t)-1) ? false : true;
 }
 
 /*
@@ -948,15 +965,14 @@ static byte *FS_LoadFile (const char *path, int usehunk, unsigned int *path_id)
 	char	base[32];
 	size_t		len;
 
-	buf = NULL;	// quiet compiler warning
-
 // look for it in the filesystem or pack files
-	len = fs_filesize = FS_OpenFile (path, &h, path_id);
+	len = FS_OpenFile (path, &h, path_id);
 	if (!h)
 		return NULL;
 
-// extract the filename base name for hunk tag
+// extract the file's base name for hunk tag
 	COM_FileBase (path, base, sizeof(base));
+	buf = NULL;	// quiet compiler warning
 
 	switch (usehunk)
 	{
