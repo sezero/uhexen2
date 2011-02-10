@@ -4,6 +4,9 @@ Development Progress	:
 ---------------------------
 
 2011-02-08 (SVN):
+    * snd_codec.c (S_CodecUtilOpen):  cast for length must be long.
+
+2011-02-08 (SVN):
     * quakefs.c (FS_fread): fixed coding style.
 
 2011-02-08 (SVN):

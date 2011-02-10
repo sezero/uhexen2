@@ -253,7 +253,7 @@ snd_stream_t *S_CodecUtilOpen(const char *filename, snd_codec_t *codec)
 	stream->fh.file = handle;
 	stream->fh.start = ftell(handle);
 	stream->fh.pos = 0;
-	stream->fh.length = (int) length;
+	stream->fh.length = (long)length;
 	stream->fh.pak = stream->pak = pak;
 	return stream;
 }
