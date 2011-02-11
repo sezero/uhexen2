@@ -718,7 +718,7 @@ static qboolean GL_OpenLibrary(const char *name)
 		if ( name && !strchr(name, '/') )
 		{
 			q_snprintf (gl_liblocal, MAX_OSPATH, "%s/%s", fs_basedir, name);
-			if (access(gl_liblocal, R_OK) == -1)
+			if (! (Sys_FileType(gl_liblocal) & FS_ENT_FILE))
 				return false;
 
 			Con_SafePrintf ("Failed loading gl library %s\n"

@@ -465,7 +465,7 @@ static void CL_ParseServerData (void)
 		FS_Gamedir(str);
 
 		// ZOID - run autoexec.cfg in the gamedir if it exists
-		if (FS_FileInGamedir("config.cfg") != -1)
+		if (FS_FileInGamedir("config.cfg"))
 		{
 		// remove any weird mod specific key bindings / aliases
 			Cbuf_AddText("unbindall\n");
@@ -474,7 +474,7 @@ static void CL_ParseServerData (void)
 			Cbuf_AddText("exec config.cfg\n");
 		}
 		// gamespy crap
-		if (FS_FileInGamedir("frontend.cfg") != -1)
+		if (FS_FileInGamedir("frontend.cfg"))
 			Cbuf_AddText("exec frontend.cfg\n");
 
 		Cbuf_Execute ();

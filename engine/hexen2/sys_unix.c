@@ -85,6 +85,24 @@ long Sys_filesize (const char *path)
 	return (long) st.st_size;
 }
 
+int Sys_FileType (const char *path)
+{
+	/*
+	if (access(path, R_OK) == -1)
+		return 0;
+	*/
+	struct stat	st;
+
+	if (stat(path, &st) != 0)
+		return FS_ENT_NONE;
+	if (S_ISDIR(st.st_mode))
+		return FS_ENT_DIRECTORY;
+	if (S_ISREG(st.st_mode))
+		return FS_ENT_FILE;
+
+	return FS_ENT_NONE;
+}
+
 #define	COPY_READ_BUFSIZE		8192	/* BUFSIZ */
 int Sys_CopyFile (const char *frompath, const char *topath)
 {

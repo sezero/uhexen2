@@ -132,6 +132,21 @@ long Sys_filesize (const char *path)
 	return size;
 }
 
+#ifndef INVALID_FILE_ATTRIBUTES
+#define INVALID_FILE_ATTRIBUTES	((DWORD)-1)
+#endif
+int Sys_FileType (const char *path)
+{
+	DWORD result = GetFileAttributes(path);
+
+	if (result == INVALID_FILE_ATTRIBUTES)
+		return FS_ENT_NONE;
+	if (result & FILE_ATTRIBUTE_DIRECTORY)
+		return FS_ENT_DIRECTORY;
+
+	return FS_ENT_FILE;
+}
+
 #define NO_OVERWRITING	FALSE /* allow overwriting files */
 int Sys_CopyFile (const char *frompath, const char *topath)
 {

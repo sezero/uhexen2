@@ -2,7 +2,7 @@
 	screen.c
 	master for refresh, status bar, console, chat, notify, etc
 
-	$Header: /cvsroot/uhexen2/engine/hexen2/screen.c,v 1.61 2009-01-24 17:21:42 sezero Exp $
+	$Id$
 */
 
 /*=============================================================================
@@ -811,7 +811,7 @@ static void SCR_ScreenShot_f (void)
 		pcxname[11] = i/10 + '0';
 		pcxname[12] = i%10 + '0';
 		q_snprintf (checkname, sizeof(checkname), "%s/%s", fs_userdir, pcxname);
-		if (access(checkname, F_OK) == -1)
+		if (Sys_FileType(checkname) == FS_ENT_NONE)
 			break;	// file doesn't exist
 	}
 	if (i == 100)

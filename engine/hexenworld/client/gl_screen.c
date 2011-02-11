@@ -2,7 +2,7 @@
 	screen.c
 	master for refresh, status bar, console, chat, notify, etc
 
-	$Id: gl_screen.c,v 1.52 2009-06-22 17:50:28 sezero Exp $
+	$Id$
 */
 
 /*=============================================================================
@@ -593,7 +593,7 @@ static void SCR_ScreenShot_f (void)
 		pcxname[8] = i/10 + '0';
 		pcxname[9] = i%10 + '0';
 		q_snprintf (checkname, sizeof(checkname), "%s/%s", fs_userdir, pcxname);
-		if (access(checkname, F_OK) == -1)
+		if (Sys_FileType(checkname) == FS_ENT_NONE)
 			break;	// file doesn't exist
 	}
 	if (i == 100)

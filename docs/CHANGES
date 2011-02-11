@@ -3,6 +3,23 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2011-02-11 (SVN):
+    * sys_win.c (Sys_FileType): new procedure, using GetFileAttributes().
+    * sys_unix.c (Sys_FileType): new procedure, using stat().
+    * sys_dos.c (Sys_FileType): new procedure, using _chmod().
+    * sys.h (Sys_FileType): add prototype for the new procedure.
+    * quakefs.c (FS_FileInGamedir): change return type to qboolean. use
+      Sys_FileType() instead of access() system call.
+    * quakefs.h: add FS_ENT_NONE, FS_ENT_FILE and FS_ENT_DIRECTORY macros,
+      similar to darkplaces.
+      (FS_FileInGamedir): adjust prototype.
+    * gl_vidsdl.c (GL_OpenLibrary): use Sys_FileType() instead of access()
+      system call.
+    * screen.c, gl_screen.c (SCR_ScreenShot_f): use Sys_FileType() instead
+      of access() system call.
+    * hexenworld/client/cl_parse.c: adjust for FS_FileInGamedir() return
+      type change.
+
 2011-02-10 (SVN):
     * quakefs.c (FS_OpenFile): use Sys_filesize() to detect the presence
       of a file in the directory tree. allow calling of the function with

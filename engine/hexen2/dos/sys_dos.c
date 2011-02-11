@@ -33,6 +33,7 @@
 #include <signal.h>
 #include <sys/time.h>
 #include <dos.h>
+#include <io.h>
 #include <dir.h>
 #include <fcntl.h>
 #include <sys/stat.h>
@@ -418,6 +419,23 @@ long Sys_filesize (const char *path)
 		return -1;
 
 	return (long) f.ff_fsize;
+}
+
+int Sys_FileType (const char *path)
+{
+	int attr = _chmod(path, 0);
+	/* Root directories on some non-local drives
+	   (e.g. CD-ROM) as well as devices may fail
+	   _chmod, but we are not interested in such
+	   cases.  */
+	if (attr == -1)
+		return FS_ENT_NONE;
+	if (attr & _A_SUBDIR)
+		return FS_ENT_DIRECTORY;
+	if (attr & _A_VOLID)	/* we shouldn't hit this! */
+		return FS_ENT_DIRECTORY;
+
+	return FS_ENT_FILE;
 }
 
 #define	COPY_READ_BUFSIZE		8192	/* BUFSIZ */

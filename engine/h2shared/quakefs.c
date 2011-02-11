@@ -914,20 +914,21 @@ qboolean FS_FileExists (const char *filename, unsigned int *path_id)
 FS_FileInGamedir
 
 Reports the existance of a file with read permissions in
-fs_gamedir or fs_userdir. -1 is returned on failure,
-ie. the return value of the access() function Files in
-pakfiles are NOT meant for this procedure!
+fs_gamedir or fs_userdir. *NOT* for files in pakfiles!
 ============
 */
-int FS_FileInGamedir (const char *fname)
+qboolean FS_FileInGamedir (const char *filename)
 {
 	int	ret;
 
-	ret = access (va("%s/%s", fs_userdir, fname), R_OK);
-	if (ret == -1)
-		ret = access (va("%s/%s", fs_gamedir, fname), R_OK);
+	ret = Sys_FileType(va("%s/%s", fs_userdir, filename));
+	if (ret & FS_ENT_FILE)
+		return true;
+	ret = Sys_FileType(va("%s/%s", fs_gamedir, filename));
+	if (ret & FS_ENT_FILE)
+		return true;
 
-	return ret;
+	return false;
 }
 
 /*

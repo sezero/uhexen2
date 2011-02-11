@@ -16,6 +16,10 @@ int Sys_mkdir (const char *path, qboolean crash);
 int Sys_rmdir (const char *path);
 int Sys_unlink (const char *path);
 
+int Sys_FileType (const char *path);
+// returns an FS entity type, i.e. FS_ENT_FILE or FS_ENT_DIRECTORY.
+// returns FS_ENT_NONE (0) if no such file or directory is present.
+
 long Sys_filesize (const char *path);
 
 int Sys_CopyFile (const char *frompath, const char *topath);
