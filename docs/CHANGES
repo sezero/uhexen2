@@ -4,6 +4,10 @@ Development Progress	:
 ---------------------------
 
 2011-02-11 (SVN):
+    * sys_dos.c (Sys_CopyFile): don't use findfirst(). use filelength()
+      and getftime()/setftime().
+
+2011-02-11 (SVN):
     * sys_win.c (Sys_FileType): new procedure, using GetFileAttributes().
     * sys_unix.c (Sys_FileType): new procedure, using stat().
     * sys_dos.c (Sys_FileType): new procedure, using _chmod().

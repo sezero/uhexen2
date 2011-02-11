@@ -443,19 +443,20 @@ int Sys_CopyFile (const char *frompath, const char *topath)
 {
 	char	buf[COPY_READ_BUFSIZE];
 	int	in, out;
-	struct ffblk	f;
 	int		err = 0;
-	unsigned long	remaining, count;
+	long	remaining, count;
 
-	if (findfirst(frompath, &f, FA_ARCH | FA_RDONLY) != 0)
-	{
-		Con_Printf ("%s: unable to find %s\n", frompath, __thisfunc__);
-		return 1;
-	}
 	in = open (frompath, O_RDONLY | O_BINARY);
 	if (in < 0)
 	{
 		Con_Printf ("%s: unable to open %s\n", frompath, __thisfunc__);
+		return 1;
+	}
+	remaining = filelength (in);
+	if (remaining < 0)
+	{
+		Con_Printf ("%s: %s failed filelength()\n", frompath, __thisfunc__);
+		close (in);
 		return 1;
 	}
 	out = open (topath, O_CREAT | O_WRONLY | O_TRUNC | O_BINARY, 0666);
@@ -466,7 +467,6 @@ int Sys_CopyFile (const char *frompath, const char *topath)
 		return 1;
 	}
 
-	remaining = f.ff_fsize;
 	memset (buf, 0, sizeof(buf));
 	while (remaining)
 	{
@@ -493,17 +493,9 @@ int Sys_CopyFile (const char *frompath, const char *topath)
 	if (!err)
 	{
 	// restore the file's timestamp
-		__dpmi_regs r;
-		r.h.ah = 0x57;	/* DOS FileTimes call */
-		r.h.al = 0x01;	/* Set date/time request */
-		r.x.bx = out;	/* File handle */
-		r.x.cx = f.ff_ftime;	/* New time */
-		r.x.dx = f.ff_fdate;	/* New date */
-		__dpmi_int(0x21, &r);
-		/*
-		if (r.x.flags & 1)
-			err = EIO;
-		*/
+		struct ftime	ft;
+		if (getftime(in, &ft) == 0)
+			setftime(out, &ft);
 	}
 
 	close (in);
