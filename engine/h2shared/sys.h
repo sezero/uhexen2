@@ -12,9 +12,9 @@
 // file IO
 //
 int Sys_mkdir (const char *path, qboolean crash);
-
 int Sys_rmdir (const char *path);
 int Sys_unlink (const char *path);
+int Sys_rename (const char *oldp, const char *newp);
 
 int Sys_FileType (const char *path);
 // returns an FS entity type, i.e. FS_ENT_FILE or FS_ENT_DIRECTORY.

@@ -309,7 +309,6 @@ static void CL_ParseDownload (void)
 {
 	int		size, percent;
 	char	name[MAX_OSPATH];
-	int		r;
 
 	// read the data
 	size = MSG_ReadShort ();
@@ -409,8 +408,7 @@ static void CL_ParseDownload (void)
 	// Do I really need to care more about skins like above?..
 		q_snprintf (oldn, sizeof(oldn), "%s/%s", fs_userdir, cls.downloadtempname);
 		q_snprintf (newn, sizeof(newn), "%s/%s", fs_userdir, cls.downloadname);
-		r = rename (oldn, newn);
-		if (r)
+		if (Sys_rename(oldn, newn) != 0)
 			Con_Printf ("failed to rename.\n");
 
 		// get another file if needed

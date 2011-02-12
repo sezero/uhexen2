@@ -64,6 +64,11 @@ int Sys_unlink (const char *path)
 	return _unlink(path);
 }
 
+int Sys_rename (const char *oldp, const char *newp)
+{
+	return rename(oldp, newp);
+}
+
 long Sys_filesize (const char *path)
 {
 	HANDLE fh;

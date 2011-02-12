@@ -3,6 +3,12 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2011-02-12 (SVN):
+    * sys_unix.c, sys_win.c, sys_dos.c: added Sys_rename().
+    * sys.h: added prototype for Sys_rename().
+    * hexenworld/client/cl_parse.c (CL_ParseDownload): use Sys_rename()
+      instead of rename().
+
 2011-02-11 (SVN):
     * sys_dos.c (Sys_CopyFile): don't use findfirst(). use filelength()
       and getftime()/setftime().
