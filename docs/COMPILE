@@ -106,7 +106,8 @@ Additional requirements	:
 
 libogg, libvorbis:
 		Required if you want to enable Ogg/Vorbis music playback.
-libmad:		Required if you want to enable mp3 music playback.
+libmad or libmpg123:
+		Required if you want to enable mp3 music playback.
 
 
 Compiling the software renderer for non-x86:

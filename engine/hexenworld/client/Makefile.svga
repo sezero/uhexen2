@@ -81,6 +81,8 @@ USE_CODEC_VORBIS=yes
 USE_CODEC_TIMIDITY=yes
 # wildmidi is not supported
 USE_CODEC_WILDMIDI=no
+# which library to use for mp3 decoding: mad or mpg123
+MP3LIB=mad
 
 # include the common dirty stuff
 include $(UHEXEN2_TOP)/scripts/makefile.inc
@@ -184,6 +186,17 @@ USE_CODEC_MP3=no
 USE_CODEC_VORBIS=no
 endif
 
+ifeq ($(MP3LIB),mad)
+mp3_obj=snd_mp3.o
+else
+ifeq ($(MP3LIB),mpg123)
+mp3_obj=snd_mpg123.o
+else
+USE_CODEC_MP3=no
+mp3_obj=snd_mp3.o
+endif
+endif
+
 
 #############################################################
 # Unix flags/settings
@@ -220,7 +233,7 @@ LDFLAGS+= -lvorbis -lvorbisfile -logg
 endif
 ifeq ($(USE_CODEC_MP3),yes)
 CPPFLAGS+= -DUSE_CODEC_MP3
-LDFLAGS+= -lmad
+LDFLAGS+= -l$(MP3LIB)
 endif
 ifeq ($(USE_CODEC_TIMIDITY),yes)
 CPPFLAGS+= -DUSE_CODEC_TIMIDITY
@@ -297,7 +310,7 @@ MUSIC_OBJS:= bgmusic.o \
 	snd_codec.o \
 	snd_wave.o \
 	snd_vorbis.o \
-	snd_mp3.o \
+	$(mp3_obj) \
 	snd_timidity.o \
 	snd_wildmidi.o
 COMOBJ_SND := snd_sys.o snd_dma.o snd_mix.o $(SOUND_ASM) snd_mem.o $(MUSIC_OBJS)

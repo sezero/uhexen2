@@ -3,6 +3,11 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2011-02-14 (SVN):
+    * snd_mpg123.c: added new codec for mp3 playback using libmpg123 as
+      an alternative to the existing one using libmad. requires at least
+      mpg123-1.12.0, i.e. api version 25.
+
 2011-02-12 (SVN):
     * sys_unix.c, sys_win.c, sys_dos.c: added Sys_rename().
     * sys.h: added prototype for Sys_rename().
