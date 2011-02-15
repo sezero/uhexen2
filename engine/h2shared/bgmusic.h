@@ -40,6 +40,7 @@ void BGM_Update (void);
 void BGM_Pause (void);
 void BGM_Resume (void);
 
+void BGM_PlayCDtrack (byte track, qboolean looping);
 void BGM_PlayMIDIorMusic (const char *filename);
 
 #endif	/* _BGMUSIC_H_ */

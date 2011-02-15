@@ -3,6 +3,13 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2011-02-15 (SVN):
+    * bgmusic.c: some reorganization without any actual code change.
+      (BGM_PlayCDtrack): added new procedure from the quakespasm version
+      of the file. not actually used in hexen2, at least not yet, only
+      for reference.
+    * bgmusic.h (BGM_PlayCDtrack): added prototype.
+
 2011-02-14 (SVN):
     * snd_mpg123.c: added new codec for mp3 playback using libmpg123 as
       an alternative to the existing one using libmad. requires at least

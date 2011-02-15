@@ -29,28 +29,6 @@
 #include "bgmusic.h"
 #include "midi_drv.h"
 
-/*
- * MUSIC FILE SEARCH METHOD:
- *
- * Unlike quake, hexen2 server sends a svc_midi_name message after
- * svc_cdtrack, therefore we do have a filename for the background
- * music. In quake, snd_codec functionality would have been simply
- * suffice for all purposes. However, in order to honor the music
- * name and to keep the midi functionality, we need this interface.
- *
- * Therefore, we first search for an alternative to midi, like ogg,
- * mp3, wav and so on. If we can't find it, then we try to be clever
- * and map the cdtrack number to the midi name and look for a cdrip
- * like track<nn>.ogg, but that does not always work as expected.
- * When that fails too, we go for plain old midi.
- *
- * MUSIC FILE DIRECTORIES:
- *
- * Midi music file have always lived under "midi" directory, we are
- * not changing that.  Any other music files are expected under the
- * "music" directory.
- */
-
 #define MIDI_DIRNAME	"midi"
 #define MUSIC_DIRNAME	"music"
 
@@ -112,106 +90,6 @@ typedef struct midi_handle_s
  * active, not both. */
 static midi_handle_t midi_handle;
 static snd_stream_t *bgmstream = NULL;
-
-/* These mappings apply only to original Hexen II and its
- * expansion pack Portal of Praevus:  community maps need
- * not, and in many examples do not, follow this table.
- * Even some of the maps from Raven itself are quirky:
- * - tower.bsp of the original game wants "casb2" as midi
- *   but wants cd track 3 instead of 16.
- * - keep5.bsp of the expansion pack wants "casb1" as midi
- *   but wants cd track 6 instead of 15.
- */
-static const char *data1_tracks[] =
-{
-	"", /* track01 is data */
-	"casa1",	/* 02 */
-	"casa2",	/* 03 */
-	"casa3",	/* 04 */
-	"casa4",	/* 05 */
-	"egyp1",	/* 06 */
-	"egyp2",	/* 07 */
-	"egyp3",	/* 08 */
-	"meso1",	/* 09 */
-	"meso2",	/* 10 */
-	"meso3",	/* 11 */
-	"roma1",	/* 12 */
-	"roma2",	/* 13 */
-	"roma3",	/* 14 */
-	"casb1",	/* 15 */
-	"casb2",	/* 16 */
-	"casb3"		/* track 17 is last */
-};
-
-static const char *portals_tracks[] =
-{
-	"", /* track01 is data */
-	"tulku7",	/* 02 */
-	"tulku1",	/* 03 */
-	"tulku4",	/* 04 */
-	"tulku2",	/* 05 */
-	"tulku9",	/* 06 */
-	"tulku10",	/* 07 */
-	"tulku6",	/* 08 */
-	"tulku5",	/* 09 */
-	"tulku8",	/* 10 */
-	"tulku3"	/* 11, last. */
-	/* track12 is last but is not associated
-	 * with a midi/music name. it is only used
-	 * by the menu during credits display.
-	 * therefore, it is not included here. */
-};
-
-#define num_data1_tracks	(sizeof(data1_tracks) / sizeof(data1_tracks[0]))
-#define num_portals_tracks	(sizeof(portals_tracks) / sizeof(portals_tracks[0]))
-
-static int map_cdtrack (const char *midiname) /* crapola: see notes above */
-{
-	if (cls.state <  ca_connected)	/* no have a cd track number yet. */
-		return 0;
-
-#if !defined(H2W)
-	if ((cls.demoplayback || cls.demorecording) && cls.forcetrack != -1)
-	{
-		/*
-		if (cls.forcetrack < 2)
-			return 0;
-		else if (gameflags & GAME_PORTALS &&
-			 cls.forcetrack <= num_portals_tracks)
-			return cls.forcetrack;
-		else if (cls.forcetrack <= num_data1_tracks)
-			return cls.forcetrack;
-		else
-			return 0;
-		*/
-		/* There is forcetrack for cdaudio, but there is
-		 * no corresponding "forcemidi", therefore there
-		 * is no meaning in mapping forcetrack to a name.
-		 * If you really want your forced track, you use
-		 * cdaudio.
-		 */
-		if (cl.cdtrack != cls.forcetrack)
-			return 0;
-	}
-#endif	/* H2W */
-
-	if (cl.cdtrack < 2)
-		return 0;	/* track01 is always data */
-
-	if (cl.cdtrack <= num_portals_tracks &&
-	    q_strcasecmp(midiname, portals_tracks[cl.cdtrack - 1]) == 0)
-	{
-		return cl.cdtrack;
-	}
-
-	if (cl.cdtrack <= num_data1_tracks &&
-	    q_strcasecmp(midiname, data1_tracks[cl.cdtrack - 1]) == 0)
-	{
-		return cl.cdtrack;
-	}
-
-	return 0;
-}
 
 static void BGM_Play_f (void)
 {
@@ -456,22 +334,109 @@ void BGM_Play (const char *filename)
 	Con_Printf("Couldn't handle music file %s\n", filename);
 }
 
+/*
+ * These mappings apply only to original Hexen II and its
+ * expansion pack Portal of Praevus:  community maps need
+ * not, and in many examples do not, follow this table.
+ * Even some of the maps from Raven itself are quirky:
+ * - tower.bsp of the original game wants "casb2" as midi
+ *   but wants cd track 3 instead of 16.
+ * - keep5.bsp of the expansion pack wants "casb1" as midi
+ *   but wants cd track 6 instead of 15.
+ */
+static const char *data1_tracks[] =
+{
+	"", /* track01 is data */
+	"casa1",	/* 02 */
+	"casa2",	/* 03 */
+	"casa3",	/* 04 */
+	"casa4",	/* 05 */
+	"egyp1",	/* 06 */
+	"egyp2",	/* 07 */
+	"egyp3",	/* 08 */
+	"meso1",	/* 09 */
+	"meso2",	/* 10 */
+	"meso3",	/* 11 */
+	"roma1",	/* 12 */
+	"roma2",	/* 13 */
+	"roma3",	/* 14 */
+	"casb1",	/* 15 */
+	"casb2",	/* 16 */
+	"casb3"		/* track 17 is last */
+};
+
+static const char *portals_tracks[] =
+{
+	"", /* track01 is data */
+	"tulku7",	/* 02 */
+	"tulku1",	/* 03 */
+	"tulku4",	/* 04 */
+	"tulku2",	/* 05 */
+	"tulku9",	/* 06 */
+	"tulku10",	/* 07 */
+	"tulku6",	/* 08 */
+	"tulku5",	/* 09 */
+	"tulku8",	/* 10 */
+	"tulku3"	/* 11, last. */
+	/* track12 is last but is not associated
+	 * with a midi/music name. it is only used
+	 * by the menu during credits display.
+	 * therefore, it is not included here. */
+};
+
+#define num_data1_tracks	(sizeof(data1_tracks) / sizeof(data1_tracks[0]))
+#define num_portals_tracks	(sizeof(portals_tracks) / sizeof(portals_tracks[0]))
+
+static int map_cdtrack (const char *midiname) /* crapola: see notes above */
+{
+	if (cls.state <  ca_connected)	/* no have a cd track number yet. */
+		return 0;
+
+#if !defined(H2W)
+	if ((cls.demoplayback || cls.demorecording) && cls.forcetrack != -1)
+	{
+		/*
+		if (cls.forcetrack < 2)
+			return 0;
+		else if (gameflags & GAME_PORTALS &&
+			 cls.forcetrack <= num_portals_tracks)
+			return cls.forcetrack;
+		else if (cls.forcetrack <= num_data1_tracks)
+			return cls.forcetrack;
+		else
+			return 0;
+		*/
+		/* There is forcetrack for cdaudio, but there is
+		 * no corresponding "forcemidi", therefore there
+		 * is no meaning in mapping forcetrack to a name.
+		 * If you really want your forced track, you use
+		 * cdaudio.
+		 */
+		if (cl.cdtrack != cls.forcetrack)
+			return 0;
+	}
+#endif	/* H2W */
+
+	if (cl.cdtrack < 2)
+		return 0;	/* track01 is always data */
+
+	if (cl.cdtrack <= num_portals_tracks &&
+	    q_strcasecmp(midiname, portals_tracks[cl.cdtrack - 1]) == 0)
+	{
+		return cl.cdtrack;
+	}
+
+	if (cl.cdtrack <= num_data1_tracks &&
+	    q_strcasecmp(midiname, data1_tracks[cl.cdtrack - 1]) == 0)
+	{
+		return cl.cdtrack;
+	}
+
+	return 0;
+}
+
 void BGM_PlayMIDIorMusic (const char *filename)
 {
-/* TODO: remove support for track<nn> files.
- *
- * TODO: add a bgm_extmusic cvar and don't play external formats
- * other than midi if its value is set to 1.  also add a command
- * line switch with similar functionality.
- *
- * TODO:
- * instead of searching by the order of music_handlers, do so by
- * the order of searchpath priority: the file from the searchpath
- * with the highest path_id is most likely from our own gamedir
- * itself.  this way, if a mod has egyp1 as a mp3 or a midi, which
- * is below *.ogg in the music_handler order, the mp3 or midi will
- * still have priority over egyp1.ogg from, say, data1.
- */
 	char tmp[MAX_QPATH];
 	const char *ext;
 	music_handler_t *handler;
@@ -522,7 +487,7 @@ void BGM_PlayMIDIorMusic (const char *filename)
 		}
 		if (cdtrack != 0)
 		{
-			if (!CDRIPTYPE(handler->type))
+			if (! CDRIPTYPE(handler->type))
 			{
 				handler = handler->next;
 				continue;
@@ -561,6 +526,67 @@ void BGM_PlayMIDIorMusic (const char *filename)
 	}
 
 	Con_Printf("Couldn't handle music file %s\n", filename);
+}
+
+void BGM_PlayCDtrack (byte track, qboolean looping)
+{
+/* instead of searching by the order of music_handlers, do so by
+ * the order of searchpath priority: the file from the searchpath
+ * with the highest path_id is most likely from our own gamedir
+ * itself. This way, if a mod has track02 as a *.mp3 file, which
+ * is below *.ogg in the music_handler order, the mp3 will still
+ * have priority over track02.ogg from, say, data1.
+ */
+	char tmp[MAX_QPATH];
+	const char *ext;
+	unsigned int path_id, prev_id, type;
+	music_handler_t *handler;
+
+	BGM_Stop();
+	if (CDAudio_Play(track, looping) == 0)
+		return;			/* success */
+
+	if (music_handlers == NULL)
+		return;
+
+	/*
+	if (no_extmusic || !bgm_extmusic.value)
+		return;
+	*/
+
+	prev_id = 0;
+	type = 0;
+	ext  = NULL;
+	handler = music_handlers;
+	while (handler)
+	{
+		if (! handler->is_available)
+			goto _next;
+		if (! CDRIPTYPE(handler->type))
+			goto _next;
+		q_snprintf(tmp, sizeof(tmp), "%s/track%02d%s",
+				MUSIC_DIRNAME, (int)track, handler->ext);
+		if (! FS_FileExists(tmp, &path_id))
+			goto _next;
+		if (path_id > prev_id)
+		{
+			prev_id = path_id;
+			type = handler->type;
+			ext = handler->ext;
+		}
+	_next:
+		handler = handler->next;
+	}
+	if (ext == NULL)
+		Con_Printf("Couldn't find a cdrip for track %d\n", (int)track);
+	else
+	{
+		q_snprintf(tmp, sizeof(tmp), "%s/track%02d%s",
+				MUSIC_DIRNAME, (int)track, ext);
+		bgmstream = S_CodecOpenStreamType(tmp, type);
+		if (! bgmstream)
+			Con_Printf("Couldn't handle music file %s\n", tmp);
+	}
 }
 
 void BGM_Stop (void)
