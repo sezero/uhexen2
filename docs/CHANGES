@@ -4,6 +4,8 @@ Development Progress	:
 ---------------------------
 
 2011-02-16 (SVN):
+    * w32stuff/codecs: add libmpg123 header, import libraries and dlls
+      for windows builds in case they use libmpg123 for mp3 support.
     * w32stuff/dxsdk: update _mingw_dxhelper.h from mingw-w64 svn repo.
 
 2011-02-16 (SVN):
