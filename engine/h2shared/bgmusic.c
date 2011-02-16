@@ -43,8 +43,8 @@ static midi_driver_t *midi_drivers = NULL;
 typedef enum _bgm_player
 {
 	BGM_NONE = -1,
-	BGM_MIDIDRV,
-	BGM_STREAMER,
+	BGM_MIDIDRV = 1,
+	BGM_STREAMER
 } bgm_player_t;
 
 typedef struct music_handler_s
@@ -548,6 +548,7 @@ void BGM_PlayMIDIorMusic (const char *filename)
 	char tmp[MAX_QPATH];
 	const char *ext, *dir;
 	unsigned int path_id, prev_id, type;
+	qboolean try_midi_stream;
 	music_handler_t *handler;
 
 	if (music_handlers == NULL)
@@ -572,6 +573,7 @@ void BGM_PlayMIDIorMusic (const char *filename)
 	type = 0;
 	dir  = NULL;
 	handler = music_handlers;
+	try_midi_stream = false;
 	while (handler)
 	{
 		if (! handler->is_available)
@@ -594,7 +596,12 @@ void BGM_PlayMIDIorMusic (const char *filename)
 			ext = handler->ext;
 			dir = handler->dir;
 			if (handler->type == MIDIDRIVER_MID)
+			{
+				if (handler->next &&
+				    handler->next->is_available)
+					try_midi_stream = true;
 				break;
+			}
 		}
 	_next:
 		handler = handler->next;
@@ -612,14 +619,15 @@ void BGM_PlayMIDIorMusic (const char *filename)
 			/* BGM_MIDIDRV is followed by CODECTYPE_MID streamer.
 			 * Even if the midi driver failed, we may still have
 			 * a chance with the streamer if it's available... */
-			if (S_CodecIsAvailable(CODECTYPE_MID) != 1)
+			if (!try_midi_stream)
 				break;
 			type = CODECTYPE_MID;
 		default:
 			bgmstream = S_CodecOpenStreamType(tmp, type);
-			if (! bgmstream)
-				Con_Printf("Couldn't handle music file %s\n", tmp);
+			if (bgmstream)
+				return;		/* success */
 		}
+		Con_Printf("Couldn't handle music file %s\n", tmp);
 	}
 }
 
