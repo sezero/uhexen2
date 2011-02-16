@@ -33,7 +33,9 @@
 #define MUSIC_DIRNAME	"music"
 
 qboolean	bgmloop;
+cvar_t		bgm_extmusic = {"bgm_extmusic", "1", CVAR_ARCHIVE};
 
+static qboolean	no_extmusic= false;
 static float	old_volume = -1.0f;
 
 static midi_driver_t *midi_drivers = NULL;
@@ -153,11 +155,15 @@ qboolean BGM_Init (void)
 
 	memset (&midi_handle, 0, sizeof(midi_handle_t));
 
+	Cvar_RegisterVariable(&bgm_extmusic);
 	Cmd_AddCommand("music", BGM_Play_f);
 	Cmd_AddCommand("music_pause", BGM_Pause_f);
 	Cmd_AddCommand("music_resume", BGM_Resume_f);
 	Cmd_AddCommand("music_loop", BGM_Loop_f);
 	Cmd_AddCommand("music_stop", BGM_Stop_f);
+
+	if (COM_CheckParm("-noextmusic") != 0)
+		no_extmusic = true;
 
 	bgmloop = true;
 
@@ -334,6 +340,7 @@ void BGM_Play (const char *filename)
 	Con_Printf("Couldn't handle music file %s\n", filename);
 }
 
+#if 0 /* removed support for cdtrack to midiname mapping */
 /*
  * These mappings apply only to original Hexen II and its
  * expansion pack Portal of Praevus:  community maps need
@@ -527,6 +534,94 @@ void BGM_PlayMIDIorMusic (const char *filename)
 
 	Con_Printf("Couldn't handle music file %s\n", filename);
 }
+#endif /* removed support for cdtrack to midiname mapping */
+
+void BGM_PlayMIDIorMusic (const char *filename)
+{
+/* instead of searching by the order of music_handlers, do so by
+ * the order of searchpath priority: the file from the searchpath
+ * with the highest path_id is most likely from our own gamedir
+ * itself.  this way, if a mod has egyp1 as a mp3 or a midi, which
+ * is below *.ogg in the music_handler order, the mp3 or midi will
+ * still have priority over egyp1.ogg from, say, data1.
+ */
+	char tmp[MAX_QPATH];
+	const char *ext, *dir;
+	unsigned int path_id, prev_id, type;
+	music_handler_t *handler;
+
+	if (music_handlers == NULL)
+		return;
+
+	BGM_Stop();
+
+	if (!filename || !*filename)
+	{
+		Con_DPrintf("null music file name\n");
+		return;
+	}
+
+	ext = S_FileExtension(filename);
+	if (ext != NULL)
+	{
+		BGM_Play(filename);
+		return;
+	}
+
+	prev_id = 0;
+	type = 0;
+	dir  = NULL;
+	handler = music_handlers;
+	while (handler)
+	{
+		if (! handler->is_available)
+			goto _next;
+		if (! MIDITYPE(handler->type) &&
+		     (no_extmusic || !bgm_extmusic.value))
+			goto _next;
+		q_snprintf(tmp, sizeof(tmp), "%s/%s%s",
+			   handler->dir, filename, handler->ext);
+		if (! FS_FileExists(tmp, &path_id))
+		{
+			if (handler->type == MIDIDRIVER_MID)
+				break;
+			goto _next;
+		}
+		if (path_id > prev_id)
+		{
+			prev_id = path_id;
+			type = handler->type;
+			ext = handler->ext;
+			dir = handler->dir;
+			if (handler->type == MIDIDRIVER_MID)
+				break;
+		}
+	_next:
+		handler = handler->next;
+	}
+	if (ext == NULL)
+		Con_Printf("Couldn't handle music file %s\n", filename);
+	else
+	{
+		q_snprintf(tmp, sizeof(tmp), "%s/%s%s", dir, filename, ext);
+		switch (type)
+		{
+		case MIDIDRIVER_MID:
+			if (BGM_Play_mididrv(tmp) == 0)
+				return;		/* success */
+			/* BGM_MIDIDRV is followed by CODECTYPE_MID streamer.
+			 * Even if the midi driver failed, we may still have
+			 * a chance with the streamer if it's available... */
+			if (S_CodecIsAvailable(CODECTYPE_MID) != 1)
+				break;
+			type = CODECTYPE_MID;
+		default:
+			bgmstream = S_CodecOpenStreamType(tmp, type);
+			if (! bgmstream)
+				Con_Printf("Couldn't handle music file %s\n", tmp);
+		}
+	}
+}
 
 void BGM_PlayCDtrack (byte track, qboolean looping)
 {
@@ -549,10 +644,8 @@ void BGM_PlayCDtrack (byte track, qboolean looping)
 	if (music_handlers == NULL)
 		return;
 
-	/*
 	if (no_extmusic || !bgm_extmusic.value)
 		return;
-	*/
 
 	prev_id = 0;
 	type = 0;

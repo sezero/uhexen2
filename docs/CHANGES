@@ -4,6 +4,14 @@ Development Progress	:
 ---------------------------
 
 2011-02-16 (SVN):
+    * bgmusic.c: drop support for track<nn> music file search. change the
+      music file search method to prioritize searchpath order as opposed
+      to preferred file format order. add support for -noextmusic command
+      line option and bgm_extmusic cvar from quakespasm.
+    * bgmusic.h: add an extern for bgm_extmusic.
+    * README.music: update the document after these changes.
+
+2011-02-16 (SVN):
     * quakefs.h: minor tidy-up.
 
 2011-02-15 (SVN):

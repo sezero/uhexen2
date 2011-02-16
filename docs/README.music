@@ -1,31 +1,41 @@
 Hammer of Thyrion supports ogg, mp3 and wav external music files to be
-played instead of the original midi files, so you can enjoy the better
-quality of your hexen2 cdrom audio tracks.
+played instead of the original midi files, so you can enjoy the hexen2
+music in better quality as if it is like the hexen2 cdrom audio tracks.
 
-In the first pass, the original midi filename is searched with a proper
-extension. If nothing is found, then trackXX is searched similarly (XX
-is the cd-track number for the running map if it matches the midiname).
-If it is not found either, then the original midi file is played.
+Actually the midi music of hexen2 and its mission pack are the same
+songs as the hexen2 cdaudio, so you can just rip your hexen2 cdaudio
+tracks and rename them properly to match the midi file name.
 
 What you should do is simple:
+
 1. Use your favorite cd-ripper application and rip your hexen2 cdrom
    audio tracks, convert them to ogg or mp3 so they occupy less space,
    like track02.ogg, track03.ogg, etc.
+
 2. Go into your hexen2 installation directory (unix/linux users: you can
    do this in your $HOME/.hexen2 directory, too.)
+
 3. Create directory: data1/music (for windows users data1\music). If you
    have the mission pack, then create another directory portals/music .
+
 4. Take the ripped music files from step1, place them under data1/music.
    If you have the mission pack, repeat step1 for the mission pack, too,
    and place the ripped music files under portals/music.
+
 5. Make sure that music type is chosen as "midi" in the game's options
    screen. (the name for the music type "midi" hasn't been changed: the
    music will be searched automatically already.)
-6. Things should work fine now, but if you want it to go 100% smoothly,
-   then do some file renaming: it is best to rename the trackXX files to
-   the expected midi names. It works 99% without doing this, but this is
-   the guaranteed way.  Here are the corresponding midi names for cdrom
-   audio tracks:
+
+6. Let's do some file renaming: the trackXX files should match the midi
+   names.
+
+   Note to the curious: this file renaming is necessary.  Unlike quake,
+   the hexen2 music does have its own file name which is the midi file
+   name. One may try to be clever and code this cdaudio track->midiname
+   mapping into the game engine, however there are more than one corner
+   cases where such a thing is doomed to fail.
+
+   Here are the corresponding midi names for cdrom audio tracks:
 
    data1/music :
    -------------
@@ -58,7 +68,10 @@ What you should do is simple:
    track09  ->  tulku5
    track10  ->  tulku8
    track11  ->  tulku3
-   track12  ->  (this won't match to any midi name)
+   track12  ->  (this won't match to any midi name, leave as is)
+
+7. All things are ready to go.
+
 
 New console commands:
 ---------------------
@@ -102,4 +115,14 @@ Music file directories:
   usual, for compatibility.
 - Other kinds of music files, anything other than midi, are always searched
   under the "music" directory.
+
+Music file search order:
+-------------------------
+The engine can handle multiple audio formats.  The map-dictated music, i.e.
+the music from the svc_midi_name server message, is always searched by the
+order of searchpath priority: the file from the searchpath with the highest
+priority is chosen, because it is most likely the one from our own game
+directory itself.  This way, if a mod has egyp1 as a mp3 or a midi, which
+is below egyp1.ogg in the music_handler order, the mp3 or midi will still
+have priority over egyp1.ogg from the data1 game directory.
 
