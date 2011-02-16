@@ -3,6 +3,9 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2011-02-16 (SVN):
+    * quakefs.h: minor tidy-up.
+
 2011-02-15 (SVN):
     * bgmusic.c: some reorganization without any actual code change.
       (BGM_PlayCDtrack): added new procedure from the quakespasm version

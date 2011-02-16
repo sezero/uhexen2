@@ -91,13 +91,14 @@ int FS_CreatePath (char *path);
 // be created, it must have the trailing path seperator. Returns 0 on success,
 // non-zero on error.
 
-qboolean FS_FileExists (const char *filename, unsigned int *path_id);
-// Returns whether the file is found in the hexen2 filesystem.
-
 size_t FS_OpenFile (const char *filename, FILE **file, unsigned int *path_id);
 // Opens a file (a standalone file or a file in pak) in the hexen2 filesystem,
 // returns fs_filesize on success or (size_t)-1 on failure.  if path_id is not
-// NULL, it stores the id number of the gamedir in path_id.
+// NULL, the id number of the opened file's gamedir is stored in path_id.
+
+qboolean FS_FileExists (const char *filename, unsigned int *path_id);
+// Returns whether the file is found in the hexen2 filesystem.  if path_id is
+// not NULL, the id number of the found file's gamedir is stored in path_id.
 
 qboolean FS_FileInGamedir (const char *filename);
 // Reports the existance of a file with read permissions in
