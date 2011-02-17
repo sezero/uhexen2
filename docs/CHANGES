@@ -4,6 +4,10 @@ Development Progress	:
 ---------------------------
 
 2011-02-17 (SVN):
+    * README.music: update the document for the -noextmusic command line
+      option and the bgm_extmusic cvar.
+
+2011-02-17 (SVN):
     * model.c, gl_model.c: changed the `ignored' messages from Con_DPrintf
       to Con_Printf for external lit and ent files.
 

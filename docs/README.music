@@ -109,6 +109,16 @@ Removed console commands:
 midi_play, midi_stop, midi_pause and midi_loop commands from the original
 game are removed in favor of the new music commands above.
 
+New cvars:
+-------------------------
+- bgm_extmusic (0 or 1): Disable or enable playback of external music files
+  instead of original midi files. default is 1 (enabled).
+
+New command line options:
+-------------------------
+- -noextmusic: Disables the playback of external music files instead of the
+  original midi files.
+
 Music file directories:
 -------------------------
 - The midi music files are always searched under the "midi" directory, as
