@@ -1,5 +1,5 @@
 Hexen II: Hammer of Thyrion (uhexen2), SVN snapshot / pre-release,
-Version 1.5.0-rc1 / Jan. 05, 2011
+Version 1.5.0-rc1 / Feb. 17, 2011
 
 Changes since HoT-1.4.4-pre11:
 
@@ -22,5 +22,6 @@ Changes since HoT-1.4.4-pre11:
   same game directory as the map itself.
 * revised lit file loading. lit files are now accepted only if they come
   from the same game directory as the map itself.
+* tested compilation using Visual Studio 2010.
 * source directory layout reworked, repository moved from cvs to svn.
 
