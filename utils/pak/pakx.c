@@ -2,7 +2,7 @@
 	pakx.c
 	pack file extraction tool.
 
-	$Id: pakx.c,v 1.2 2010-02-23 12:40:12 sezero Exp $
+	$Id$
 
 	Copyright (C) 1996-2001 Id Software, Inc.
 	Copyright (C) 2010 Ozkan Sezer <sezero@users.sourceforge.net>
@@ -73,7 +73,7 @@ static void ExtractFile (pack_t *pak, const char *filename, const char *destdir)
 			strcpy (dptr, pak->files[i].name);
 			dest[sizeof(dest) - 1] = '\0';
 			printf ("%s --> %s\n", pak->files[i].name, dest);
-			if (Q_CopyFromFile(pak->handle, dest, pak->files[i].filelen) != 0)
+			if (Q_WriteFileFromHandle(pak->handle, dest, pak->files[i].filelen) != 0)
 				Error ("I/O errors during copy.");
 			continue;
 		}
@@ -83,7 +83,7 @@ static void ExtractFile (pack_t *pak, const char *filename, const char *destdir)
 			strcpy (dptr, pak->files[i].name);
 			dest[sizeof(dest) - 1] = '\0';
 			printf ("%s --> %s\n", pak->files[i].name, dest);
-			if (Q_CopyFromFile(pak->handle, dest, pak->files[i].filelen) != 0)
+			if (Q_WriteFileFromHandle(pak->handle, dest, pak->files[i].filelen) != 0)
 				Error ("I/O errors during copy.");
 			break;
 		}

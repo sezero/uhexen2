@@ -2,7 +2,7 @@
 	util_io.c
 	file and directory utilities
 
-	$Id: util_io.c,v 1.21 2010-02-23 10:55:20 sezero Exp $
+	$Id$
 */
 
 
@@ -11,15 +11,21 @@
 #include "q_stdinc.h"
 #include "compiler.h"
 #include "arch_def.h"
-#include <sys/stat.h>
 #include <errno.h>
 #ifdef PLATFORM_WINDOWS
-#include <conio.h>
 #include <io.h>
 #include <direct.h>
 #include <windows.h>
 #include "io_msvc.h"
+#elif defined(PLATFORM_DOS)
+#include <unistd.h>
+#include <sys/stat.h>
+#include <dos.h>
+#include <io.h>
+#include <dir.h>
+#include <fcntl.h>
 #else	/* Unix */
+#include <sys/stat.h>
 #include <unistd.h>
 #include <dirent.h>
 #include <fnmatch.h>
@@ -100,7 +106,166 @@ void Q_FindClose (void)
 	findhandle = NULL;
 }
 
-#else	/* FindFile for Unix */
+void Q_getwd (char *out, size_t size)
+{
+	_getcwd (out, size);
+	qerr_strlcat(__thisfunc__, __LINE__, out, "\\", size);
+}
+
+void Q_mkdir (const char *path)
+{
+	if (_mkdir (path) != -1)
+		return;
+	if (errno != EEXIST)
+		Error ("Unable to create directory %s", path);
+}
+
+int Q_rmdir (const char *path)
+{
+	return _rmdir(path);
+}
+
+int Q_unlink (const char *path)
+{
+	return _unlink(path);
+}
+
+int Q_rename (const char *oldp, const char *newp)
+{
+	return rename(oldp, newp);
+}
+
+long Q_filesize (const char *path)
+{
+	HANDLE fh;
+	WIN32_FIND_DATA data;
+	long size;
+
+	fh = FindFirstFile(path, &data);
+	if (fh == INVALID_HANDLE_VALUE)
+		return -1;
+	FindClose(fh);
+	if (data.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)
+		return -1;
+//	we're not dealing with gigabytes of files.
+//	size should normally smaller than INT_MAX.
+//	size = (data.nFileSizeHigh * (MAXDWORD + 1)) + data.nFileSizeLow;
+	size = (long) data.nFileSizeLow;
+	return size;
+}
+
+#ifndef INVALID_FILE_ATTRIBUTES
+#define INVALID_FILE_ATTRIBUTES	((DWORD)-1)
+#endif
+int Q_FileType (const char *path)
+{
+	DWORD result = GetFileAttributes(path);
+
+	if (result == INVALID_FILE_ATTRIBUTES)
+		return FS_ENT_NONE;
+	if (result & FILE_ATTRIBUTE_DIRECTORY)
+		return FS_ENT_DIRECTORY;
+
+	return FS_ENT_FILE;
+}
+
+
+#elif defined(PLATFORM_DOS)
+
+static struct ffblk	finddata;
+static int		findhandle = -1;
+
+char *Q_FindFirstFile (const char *path, const char *pattern)
+{
+	char	tmp_buf[256];
+
+	if (findhandle == 0)
+		Error ("FindFirst without FindClose");
+
+	q_snprintf (tmp_buf, sizeof(tmp_buf), "%s/%s", path, pattern);
+	memset (&finddata, 0, sizeof(finddata));
+
+	findhandle = findfirst(tmp_buf, &finddata, FA_ARCH | FA_RDONLY);
+	if (findhandle == 0)
+		return finddata.ff_name;
+
+	return NULL;
+}
+
+char *Q_FindNextFile (void)
+{
+	if (findhandle != 0)
+		return NULL;
+
+	if (findnext(&finddata) == 0)
+		return finddata.ff_name;
+
+	return NULL;
+}
+
+void Q_FindClose (void)
+{
+	findhandle = -1;
+}
+
+void Q_getwd (char *out, size_t size)
+{
+	getcwd (out, size);
+	qerr_strlcat(__thisfunc__, __LINE__, out, "/", size);
+}
+
+void Q_mkdir (const char *path)
+{
+	int rc = mkdir (path, 0777);
+	if (rc != 0 && errno == EEXIST)
+		rc = 0;
+	if (rc != 0)
+		Error ("Unable to create directory %s", path);
+}
+
+int Q_rmdir (const char *path)
+{
+	return rmdir(path);
+}
+
+int Q_unlink (const char *path)
+{
+	return unlink(path);
+}
+
+int Q_rename (const char *oldp, const char *newp)
+{
+	return rename(oldp, newp);
+}
+
+long Q_filesize (const char *path)
+{
+	struct ffblk	f;
+
+	if (findfirst(path, &f, FA_ARCH | FA_RDONLY) != 0)
+		return -1;
+
+	return (long) f.ff_fsize;
+}
+
+int Q_FileType (const char *path)
+{
+	int attr = _chmod(path, 0);
+	/* Root directories on some non-local drives
+	   (e.g. CD-ROM) as well as devices may fail
+	   _chmod, but we are not interested in such
+	   cases.  */
+	if (attr == -1)
+		return FS_ENT_NONE;
+	if (attr & _A_SUBDIR)
+		return FS_ENT_DIRECTORY;
+	if (attr & _A_VOLID)	/* we shouldn't hit this! */
+		return FS_ENT_DIRECTORY;
+
+	return FS_ENT_FILE;
+}
+
+#else	/* Unix */
 
 static DIR		*finddir;
 static struct dirent	*finddata;
@@ -181,28 +346,17 @@ char *Q_FindFirstFile (const char *path, const char *pattern)
 
 	return Q_FindNextFile();
 }
-#endif	/* End of FindFile */
 
 void Q_getwd (char *out, size_t size)
 {
-#ifdef PLATFORM_WINDOWS
-	_getcwd (out, size);
-	qerr_strlcat(__thisfunc__, __LINE__, out, "\\", size);
-#else
 	getcwd (out, size);
 	qerr_strlcat(__thisfunc__, __LINE__, out, "/", size);
-#endif
 }
 
 void Q_mkdir (const char *path)
 {
-#ifdef PLATFORM_WINDOWS
-	if (_mkdir (path) != -1)
-		return;
-#else
 	if (mkdir (path, 0777) != -1)
 		return;
-#endif
 	if (errno != EEXIST)
 		Error ("Unable to create directory %s", path);
 }
@@ -216,6 +370,42 @@ int Q_unlink (const char *path)
 {
 	return unlink(path);
 }
+
+int Q_rename (const char *oldp, const char *newp)
+{
+	return rename(oldp, newp);
+}
+
+long Q_filesize (const char *path)
+{
+	struct stat	st;
+
+	if (stat(path, &st) != 0)
+		return -1;
+	if (! S_ISREG(st.st_mode))
+		return -1;
+
+	return (long) st.st_size;
+}
+
+int Q_FileType (const char *path)
+{
+	/*
+	if (access(path, R_OK) == -1)
+		return 0;
+	*/
+	struct stat	st;
+
+	if (stat(path, &st) != 0)
+		return FS_ENT_NONE;
+	if (S_ISDIR(st.st_mode))
+		return FS_ENT_DIRECTORY;
+	if (S_ISREG(st.st_mode))
+		return FS_ENT_FILE;
+
+	return FS_ENT_NONE;
+}
+#endif	/* End of platform-specifics */
 
 /*
 ==============
@@ -432,7 +622,7 @@ int Q_CopyFile (const char *frompath, const char *topath)
 	return err;
 }
 
-int Q_CopyFromFile (FILE *fromfile, const char *topath, size_t size)
+int Q_WriteFileFromHandle (FILE *fromfile, const char *topath, size_t size)
 {
 	char	buf[COPY_READ_BUFSIZE];
 	FILE	*out;

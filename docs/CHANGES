@@ -3,6 +3,12 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2011-02-18 (SVN):
+    * utils/common/util_io.c:  ported several platform-specific file io
+      changes from game engine to the utilities and added a few new procs.
+      added dos-specific procs. updated the callers of modified functions
+      accordingly.
+
 2011-02-17 (SVN):
     * Updated 1.5.0 release notes file. Changed beta version date stamp
       to 2011-02-17.

@@ -1,7 +1,8 @@
 /*
 	lmp2pcx.c
-	$Id: lmp2pcx.c,v 1.13 2010-11-13 10:20:23 sezero Exp $
+	$Id$
 	Copyright (C) 2002-2007 Forest Hale
+	Copyright (C) 2007-2011 O.Sezer
 
 	This program is free software; you can redistribute it and/or
 	modify it under the terms of the GNU General Public License
@@ -717,8 +718,8 @@ int main (int argc, char **argv)
 	if (flags == 0)
 		flags = (CONV_LMP|CONV_MIP|CONV_WAL|CONV_WAD);
 
-	j = access("palette.lmp", R_OK);
-	if (j == -1)
+	j = Q_FileType("palette.lmp");
+	if (j != FS_ENT_FILE)
 	{
 		printf ("Using embedded hexen2 palette.\n");
 		gamepalette = (unsigned char *) gamepal;

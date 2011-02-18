@@ -2,7 +2,7 @@
 	util_io.h
 	file and directory utilities
 
-	$Id: util_io.h,v 1.10 2010-02-22 23:21:33 sezero Exp $
+	$Id$
 */
 
 #ifndef __UTILIO_H
@@ -23,15 +23,22 @@
 #define	F_OK	0		/* Test for existence.  */
 #endif
 
+#define	FS_ENT_NONE		(0)
+#define	FS_ENT_FILE		(1 << 0)
+#define	FS_ENT_DIRECTORY	(1 << 1)
+
 void	Q_mkdir (const char *path);
 int	Q_rmdir (const char *path);
 int	Q_unlink (const char *path);
+int	Q_rename (const char *oldp, const char *newp);
 void	Q_getwd (char *out, size_t size);
-long	Q_filelength (FILE *f);
-
+long	Q_filesize (const char *path);
+int	Q_FileType (const char *path);
 char	*Q_FindFirstFile (const char *path, const char *pattern);
 char	*Q_FindNextFile (void);
 void	Q_FindClose (void);
+
+long	Q_filelength (FILE *f);
 
 FILE	*SafeOpenWrite (const char *filename);
 FILE	*SafeOpenRead (const char *filename);
@@ -44,7 +51,7 @@ void	SaveFile (const char *filename, const void *buffer, int count);
 void	CreatePath (char *path);
 //void	Q_CopyFile (const char *frompath, const char *topath);
 int	Q_CopyFile (const char *frompath, const char *topath);
-int	Q_CopyFromFile (FILE *fromfile, const char *topath, size_t size);
+int	Q_WriteFileFromHandle (FILE *fromfile, const char *topath, size_t size);
 
 #endif	/* __UTILIO_H */
 

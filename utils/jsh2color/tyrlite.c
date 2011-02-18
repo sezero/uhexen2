@@ -19,7 +19,7 @@
 
 /*
 	tyrlite.c
-	$Id: tyrlite.c,v 1.24 2008-12-21 22:26:53 sezero Exp $
+	$Id$
 
 	Modifications by Kevin Shanahan, 1999-2000
 */
@@ -369,7 +369,7 @@ int main (int argc, char **argv)
 		else if (!strcmp (argv[i], "-external") && argc > i)
 		{	// js feature
 			strcpy(extfilename, argv[i+1]);
-			if (access(extfilename, R_OK) == -1)
+			if (Q_FileType(extfilename) != FS_ENT_FILE)
 			{
 				printf ("No such file : %s, Ignoring this option\n", extfilename);
 				extfile_notfound = true;
