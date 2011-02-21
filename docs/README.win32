@@ -3,10 +3,11 @@ Hexen II: Hammer of Thyrion
 Installation Instructions for Windows:
 --------------------------------------
 
-Install Hexen II from your cdrom, first. Apply the official 1.11
-patch of Raven software (you need a file named "ph2v111.exe" or
-"ph2v111.zip":  go to http://www.raven-games.com/, follow the link
-named "Essential Files").
+Install Hexen II from your cdrom, first. Apply the official 1.11 patch
+of Raven software.  You need a file named "ph2v111.exe", see here
+https://activision.custhelp.com/cgi-bin/activision.cfg/php/enduser/std_adp.php?p_faqid=10961
+or here: http://www.gamers.org/pub/idgames2/hexen2/official/patch/
+
 If you want the mission pack and/or hexenworld, install them, too.
 
 NOTE: The Hexen II cdrom installer puts a file named opengl32.dll
