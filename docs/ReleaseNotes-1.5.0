@@ -1,12 +1,15 @@
 Hexen II: Hammer of Thyrion (uhexen2), SVN snapshot / pre-release,
-Version 1.5.0-rc1 / Feb. 17, 2011
+Version 1.5.0-rc1 / Feb. 21, 2011
 
 Changes since HoT-1.4.4-pre11:
 
 * added support for ogg, mp3 and wav external music files to be played
   instead of the original midi files.
 * added interface for music streams to the sound layer, dropped SDL_mixer
-  dependency. many changes in sound and midi layer.
+  dependency. many changes in sound and midi layer.  imported libtimidity
+  into the source tree and applied several fixes.
+* unix midi: reimplemented through the new music streams interface using
+  timidity.
 * windows midi: ignore midi hardware volume adjustment capability under
   windows vista/7 which fixes music volume control messing with the main
   volume.
