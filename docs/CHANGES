@@ -3,6 +3,10 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2011-02-23 (SVN):
+    * w32stuff/codecs: update libmpg123 header, import libraries and dlls
+      to version 1.13.2.
+
 2011-02-21 (SVN):
     * snd_mix.c, minor cleanup: eliminated stupid multiple casting in
       SND_PaintChannelFrom8(), added braces to the inner for loop in
