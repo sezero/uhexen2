@@ -560,14 +560,12 @@ static void Sys_CheckSDL (void)
 
 	sdl_version = SDL_Linked_Version();
 	Sys_Printf("Found SDL version %i.%i.%i\n",sdl_version->major,sdl_version->minor,sdl_version->patch);
-	if (!isDedicated &&
-	    SDL_VERSIONNUM(sdl_version->major,sdl_version->minor,sdl_version->patch) < SDL_REQUIREDVERSION)
+	if (SDL_VERSIONNUM(sdl_version->major,sdl_version->minor,sdl_version->patch) < SDL_REQUIREDVERSION)
 	{	/*reject running under SDL versions older than what is stated in sdl_inc.h */
 		Sys_Error("You need at least v%d.%d.%d of SDL to run this game.", SDL_MIN_X,SDL_MIN_Y,SDL_MIN_Z);
 	}
 # if defined(SDL_NEW_VERSION_REJECT)
-	if (!isDedicated &&
-	    SDL_VERSIONNUM(sdl_version->major,sdl_version->minor,sdl_version->patch) >= SDL_NEW_VERSION_REJECT)
+	if (SDL_VERSIONNUM(sdl_version->major,sdl_version->minor,sdl_version->patch) >= SDL_NEW_VERSION_REJECT)
 	{	/*reject running under SDL versions newer than what is stated in sdl_inc.h */
 		Sys_Error("Your version of SDL library is incompatible with me.\n"
 			  "You need a library version in the line of %d.%d.%d\n", SDL_MIN_X,SDL_MIN_Y,SDL_MIN_Z);
@@ -761,44 +759,47 @@ int main (int argc, char **argv)
 	/* main window message loop */
 	while (1)
 	{
-		if (isDedicated)
-		{
-			newtime = Sys_DoubleTime ();
-			time = newtime - oldtime;
+	    if (isDedicated)
+	    {
+		newtime = Sys_DoubleTime ();
+		time = newtime - oldtime;
 
-			while (time < sys_ticrate.value )
-			{
-				usleep (1000);
-				newtime = Sys_DoubleTime ();
-				time = newtime - oldtime;
-			}
-		}
-		else
+		while (time < sys_ticrate.value )
 		{
-#if defined(SDLQUAKE)
-			appState = SDL_GetAppState();
-			/* If we have no input focus at all, sleep a bit */
-			if ( !(appState & (SDL_APPMOUSEFOCUS | SDL_APPINPUTFOCUS)) || cl.paused)
-			{
-				usleep (16000);
-			}
-			/* If we're minimised, sleep a bit more */
-			if ( !(appState & SDL_APPACTIVE) )
-			{
-				scr_skipupdate = 1;
-				usleep (32000);
-			}
-			else
-			{
-				scr_skipupdate = 0;
-			}
-#endif	/* SDLQUAKE */
+			usleep (1000);
 			newtime = Sys_DoubleTime ();
 			time = newtime - oldtime;
 		}
 
 		Host_Frame (time);
 		oldtime = newtime;
+	    }
+	    else
+	    {
+#if defined(SDLQUAKE)
+		appState = SDL_GetAppState();
+		/* If we have no input focus at all, sleep a bit */
+		if ( !(appState & (SDL_APPMOUSEFOCUS | SDL_APPINPUTFOCUS)) || cl.paused)
+		{
+			usleep (16000);
+		}
+		/* If we're minimised, sleep a bit more */
+		if ( !(appState & SDL_APPACTIVE) )
+		{
+			scr_skipupdate = 1;
+			usleep (32000);
+		}
+		else
+		{
+			scr_skipupdate = 0;
+		}
+#endif	/* SDLQUAKE */
+		newtime = Sys_DoubleTime ();
+		time = newtime - oldtime;
+
+		Host_Frame (time);
+		oldtime = newtime;
+	    }
 	}
 
 	return 0;

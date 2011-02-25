@@ -3,6 +3,10 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2011-02-25 (SVN):
+    * sys_unix.c, sys_win.c:  minor cleanups. made SDL version checks to
+      happen even if the binary is run as a dedicated server.
+
 2011-02-23 (SVN):
     * w32stuff/codecs: update libmpg123 header, import libraries and dlls
       to version 1.13.2.

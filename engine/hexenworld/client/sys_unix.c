@@ -194,8 +194,8 @@ char *Sys_FindFirstFile (const char *path, const char *pattern)
 	if (!finddir)
 		return NULL;
 
-	findpattern = (char *) Z_Strdup (pattern);
-	findpath = (char *) Z_Strdup (path);
+	findpattern = Z_Strdup (pattern);
+	findpath = Z_Strdup (path);
 
 	return Sys_FindNextFile();
 }

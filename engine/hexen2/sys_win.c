@@ -789,38 +789,41 @@ int WINAPI WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 	/* main window message loop */
 	while (1)
 	{
-		if (isDedicated)
-		{
-			newtime = Sys_DoubleTime ();
-			time = newtime - oldtime;
+	    if (isDedicated)
+	    {
+		newtime = Sys_DoubleTime ();
+		time = newtime - oldtime;
 
-			while (time < sys_ticrate.value )
-			{
-				Sleep (1);
-				newtime = Sys_DoubleTime ();
-				time = newtime - oldtime;
-			}
-		}
-		else
+		while (time < sys_ticrate.value )
 		{
-		// yield the CPU for a little while when paused, minimized, or not the focus
-			if ((cl.paused && (!ActiveApp && !DDActive)) || Minimized || block_drawing)
-			{
-				SleepUntilInput (PAUSE_SLEEP);
-				scr_skipupdate = 1;		// no point in bothering to draw
-			}
-			else if (!ActiveApp && !DDActive)
-			{
-				SleepUntilInput (NOT_FOCUS_SLEEP);
-				scr_skipupdate = 1;		// no point in bothering to draw
-			}
-
+			Sleep (1);
 			newtime = Sys_DoubleTime ();
 			time = newtime - oldtime;
 		}
 
 		Host_Frame (time);
 		oldtime = newtime;
+	    }
+	    else
+	    {
+		/* yield the CPU for a little while when paused, minimized or not focused */
+		if ((cl.paused && (!ActiveApp && !DDActive)) || Minimized || block_drawing)
+		{
+			SleepUntilInput (PAUSE_SLEEP);
+			scr_skipupdate = 1;		/* no point in bothering to draw */
+		}
+		else if (!ActiveApp && !DDActive)
+		{
+			SleepUntilInput (NOT_FOCUS_SLEEP);
+			scr_skipupdate = 1;		/* no point in bothering to draw */
+		}
+
+		newtime = Sys_DoubleTime ();
+		time = newtime - oldtime;
+
+		Host_Frame (time);
+		oldtime = newtime;
+	    }
 	}
 
 	return 0;
