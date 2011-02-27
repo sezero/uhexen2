@@ -9,6 +9,7 @@
 # --without timidity: build without timidity music streaming support
 # --without wavmusic: build without wav music streaming support
 # --without mp3: build without mp3 music streaming support
+# --with mpg123: build mp3 music streaming using libmpg123 instead of libmad
 # --without ogg: build without ogg/vorbis music streaming support
 # --without asm : do not use x86 assembly even on an intel cpu
 # --without gtk2: do not use glib-2.x / gtk-2.x, and build the launcher against
@@ -33,6 +34,7 @@
 %{!?_without_midi:%define midi_buildopt USE_MIDI=yes}
 %{!?_without_timidity:%define timidity_buildopt USE_CODEC_TIMIDITY=yes}
 %{!?_without_wavmusic:%define wavmusic_buildopt USE_CODEC_WAVE=yes}
+%{!?_with_mpg123:%define mp3_libraryopt MP3LIB=mad}
 %{!?_without_mp3:%define mp3_buildopt USE_CODEC_MP3=yes}
 %{!?_without_ogg:%define ogg_buildopt USE_CODEC_VORBIS=yes}
 # build option overrides
@@ -43,10 +45,12 @@
 %{?_without_midi:%define midi_buildopt USE_MIDI=no}
 %{?_without_timidity:%define timidity_buildopt USE_CODEC_TIMIDITY=no}
 %{?_without_wavmusic:%define wavmusic_buildopt USE_CODEC_WAVE=no}
+%{?_with_mpg123:%define mp3_libraryopt MP3LIB=mpg123}
 %{?_without_mp3:%define mp3_buildopt USE_CODEC_MP3=no}
+%{?_without_mp3:%define mp3_libraryopt MP3LIB=none}
 %{?_without_ogg:%define ogg_buildopt USE_CODEC_VORBIS=no}
 # all build options passed to makefile
-%define engine_buildopt	%{asm_buildopt} %{alsa_buildopt} %{midi_buildopt} %{timidity_buildopt} %{wavmusic_buildopt} %{mp3_buildopt} %{ogg_buildopt}
+%define engine_buildopt	%{asm_buildopt} %{alsa_buildopt} %{midi_buildopt} %{timidity_buildopt} %{wavmusic_buildopt} %{mp3_buildopt} %{mp3_libraryopt} %{ogg_buildopt}
 
 %define desktop_vendor	uhexen2
 
@@ -74,7 +78,7 @@ Source1:	http://download.sourceforge.net/uhexen2/hexen2source-gamecode-%{version
 Source2:	http://download.sourceforge.net/uhexen2/hexenworld-pakfiles-0.15.tgz
 BuildRoot:	%{_tmppath}/%{name}-%{version}-build
 BuildRequires:	SDL-devel >= 1.2.4
-%{!?_without_mp3:BuildRequires:  libmad-devel}
+%{!?_without_mp3:BuildRequires:  %{!?_with_mpg123:libmad-devel}%{?_with_mpg123:libmpg123-devel >= 1.12.0}}
 %{!?_without_ogg:BuildRequires:  libogg-devel libvorbis-devel}
 %{!?_without_asm:BuildRequires:  nasm >= 0.98}
 %{!?_without_freedesktop:BuildRequires: desktop-file-utils}
@@ -331,7 +335,10 @@ desktop-file-install \
 %{_prefix}/games/%{name}/docs/README.hwmaster
 
 %changelog
-* Tue Jan 04 2011 O.Sezer <sezero@users.sourceforge.net> 1.5.0-0.1.rc1
+* Sun Feb 27 2011 O.Sezer <sezero@users.sourceforge.net> 1.5.0-0.1.rc1
+- add support for building against libmpg123 instead of libmad.
+
+* Tue Jan 04 2011 O.Sezer <sezero@users.sourceforge.net>
 - Install tibet2/tibet9 ent fixes for handling map quirks.
 
 * Wed Dec 29 2010 O.Sezer <sezero@users.sourceforge.net>
