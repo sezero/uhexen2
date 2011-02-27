@@ -29,6 +29,7 @@
 #define NOT_FOCUS_SLEEP		20	/* sleep time when not focus		*/
 
 cvar_t		sys_nostdout = {"sys_nostdout", "0", CVAR_NONE};
+cvar_t		sys_throttle = {"sys_throttle", "0.02", CVAR_ARCHIVE};
 
 qboolean	ActiveApp, Minimized;
 qboolean	Win95, Win95old, WinNT, WinVista;
@@ -587,6 +588,10 @@ int WINAPI WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 		time = newtime - oldtime;
 
 		Host_Frame (time);
+
+		if (time < sys_throttle.value)
+			Sleep (1);
+
 		oldtime = newtime;
 	}
 

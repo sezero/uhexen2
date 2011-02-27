@@ -357,6 +357,7 @@ static void Host_InitLocal (void)
 	}
 
 	Cvar_RegisterVariable (&sys_nostdout);
+	Cvar_RegisterVariable (&sys_throttle);
 
 	Cvar_RegisterVariable (&host_framerate);
 	Cvar_RegisterVariable (&host_speeds);

@@ -82,6 +82,7 @@ static double		oldtime = 0.0;
 
 static qboolean		nostdout = false;
 cvar_t			sys_nostdout = {"sys_nostdout", "0", CVAR_NONE};
+cvar_t			sys_throttle = {"sys_throttle", "0.02", CVAR_ARCHIVE};
 
 qboolean		isDedicated;
 

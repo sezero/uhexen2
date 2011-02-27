@@ -39,6 +39,7 @@
 #define MAX_MEM_ALLOC	0x6000000
 
 cvar_t		sys_nostdout = {"sys_nostdout", "0", CVAR_NONE};
+cvar_t		sys_throttle = {"sys_throttle", "0.02", CVAR_ARCHIVE};
 
 static double		starttime;
 static qboolean		first = true;
@@ -714,6 +715,10 @@ int main (int argc, char **argv)
 		time = newtime - oldtime;
 
 		Host_Frame (time);
+
+		if (time < sys_throttle.value)
+			usleep (1000);
+
 		oldtime = newtime;
 	}
 

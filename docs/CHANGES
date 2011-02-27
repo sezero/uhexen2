@@ -4,6 +4,18 @@ Development Progress	:
 ---------------------------
 
 2011-02-27 (SVN):
+    * sys_unix.c, sys_win.c (sys_throttle): add new cvar, default value 0.02.
+      (main): sleep 1 ms if the time passed since the last Host_Frame() call
+      is less than the value of sys_throttle.
+    * sys_dos.c (sys_throttle): add new cvar to the dos version too, but only
+      for compatibility. dos version shall not throttle.
+    * hexen2/host.c (Host_InitLocal): register the new cvar sys_throttle.
+    * hexenworld/client/cl_main.c (CL_Init): likewise.
+    * hexen2/host.h (sys_throttle): add extern declaration for the new cvar.
+    * hexenworld/client/host.h (sys_throttle): likewise.
+    * docs/ReleaseNotes-1.5.0: documented the new feature.
+
+2011-02-27 (SVN):
     * rpm spec file: add support for building against libmpg123 instead of
       libmad.
 

@@ -1,5 +1,5 @@
 Hexen II: Hammer of Thyrion (uhexen2), SVN snapshot / pre-release,
-Version 1.5.0-rc1 / Feb. 21, 2011
+Version 1.5.0-rc1 / Feb. 27, 2011
 
 Changes since HoT-1.4.4-pre11:
 
@@ -15,6 +15,10 @@ Changes since HoT-1.4.4-pre11:
   volume.
 * software renderer (C-only): fixed a segmentation fault with Crusader's
   ice mace.
+* added new cvar sys_throttle in order to throttle the game loop just a
+  little bit and run cooler on new fast systems. the default sys_throttle
+  value is 0.02, acceptable values are between 0 and 1. changing it to 0
+  disables throttling.
 * handled several map quirks thanks to careful works by Thomas Freundt
   and Keith Rozett.
 * fixed trigger_crosslevel problem with spawnflag 8 (thanks Keith Rozett.)

@@ -1033,6 +1033,7 @@ void CL_Init (void)
 	}
 
 	Cvar_RegisterVariable (&sys_nostdout);
+	Cvar_RegisterVariable (&sys_throttle);
 
 	Cvar_RegisterVariable (&show_fps);
 	Cvar_RegisterVariable (&host_speeds);

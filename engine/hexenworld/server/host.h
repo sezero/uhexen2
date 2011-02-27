@@ -2,7 +2,7 @@
 	host.h
 	public host structures and functions
 
-	$Id: host.h,v 1.11 2010-01-11 18:48:19 sezero Exp $
+	$Id$
 */
 
 #if !defined(SERVERONLY)
