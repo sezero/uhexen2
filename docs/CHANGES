@@ -4,6 +4,10 @@ Development Progress	:
 ---------------------------
 
 2011-02-27 (SVN):
+    * bgmusic.c: fix an oversight which used to cause a segfault when a midi
+      driver is available and the requested music file isn't found.
+
+2011-02-27 (SVN):
     * sys_unix.c, sys_win.c (sys_throttle): add new cvar, default value 0.02.
       (main): sleep 1 ms if the time passed since the last Host_Frame() call
       is less than the value of sys_throttle.

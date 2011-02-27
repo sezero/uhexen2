@@ -259,9 +259,9 @@ static void BGM_Play_noext (const char *filename, unsigned int allowed_types)
 			/* BGM_MIDIDRV is followed by CODECTYPE_MID streamer.
 			 * Even if the midi driver failed, we may still have
 			 * a chance with the streamer if it's available... */
-			handler = handler->next;
-			if (! (handler && handler->is_available))
+			if (! (handler->next && handler->next->is_available))
 				break;
+			handler = handler->next;
 		case BGM_STREAMER:
 			bgmstream = S_CodecOpenStreamType(tmp, handler->type);
 			if (bgmstream)
@@ -324,9 +324,9 @@ void BGM_Play (const char *filename)
 		/* BGM_MIDIDRV is followed by CODECTYPE_MID streamer.
 		 * Even if the midi driver failed, we may still have
 		 * a chance with the streamer if it's available... */
-		handler = handler->next;
-		if (! (handler && handler->is_available))
+		if (! (handler->next && handler->next->is_available))
 			break;
+		handler = handler->next;
 	case BGM_STREAMER:
 		bgmstream = S_CodecOpenStreamType(tmp, handler->type);
 		if (bgmstream)
@@ -517,9 +517,9 @@ void BGM_PlayMIDIorMusic (const char *filename)
 			/* BGM_MIDIDRV is followed by CODECTYPE_MID streamer.
 			 * Even if the midi driver failed, we may still have
 			 * a chance with the streamer if it's available... */
-			handler = handler->next;
-			if (! (handler && handler->is_available))
+			if (! (handler->next && handler->next->is_available))
 				break;
+			handler = handler->next;
 		case BGM_STREAMER:
 			bgmstream = S_CodecOpenStreamType(tmp, handler->type);
 			if (bgmstream)
