@@ -875,14 +875,14 @@ size_t FS_OpenFile (const char *filename, FILE **file, unsigned int *path_id)
 			fs_filesize = (size_t) Sys_filesize (netpath);
 			if (fs_filesize == (size_t)-1)
 				continue;
+			if (path_id)
+				*path_id = search->path_id;
 			if (!file) /* for FS_FileExists() */
 				return fs_filesize;
 			*file = fopen (netpath, "rb");
 			if (!*file)
 				Sys_Error ("Couldn't reopen %s", netpath);
 			fs_filepath = search->filename;
-			if (path_id)
-				*path_id = search->path_id;
 			return fs_filesize;
 		}
 	}
