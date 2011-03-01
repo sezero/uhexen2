@@ -4,6 +4,11 @@ Development Progress	:
 ---------------------------
 
 2011-03-01 (SVN):
+    * model.c, gl_model.c: relaxed searchpath requirements for external ent
+      and lit file loading: they are now allowed from the same game directory
+      as the map itself as well as from a searchpath with a higher priority.
+
+2011-03-01 (SVN):
     * quakefs.c (FS_LoadPackFile): remove the extra '&' before the array
       variable `info' when passing it to fread() as the buffer.
     * Changed beta version date stamp to 2011-03-01.

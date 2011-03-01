@@ -28,7 +28,8 @@ Changes since HoT-1.4.4-pre11:
   handle map quirks.  ent files are accepted only if they come from the
   same game directory as the map itself.
 * revised lit file loading. lit files are now accepted only if they come
-  from the same game directory as the map itself.
+  from the same game directory as the map itself or from a searchpath with
+  a higher priority.
 * tested compilation using Visual Studio 2010.
 * source directory layout reworked, repository moved from cvs to svn.
 
