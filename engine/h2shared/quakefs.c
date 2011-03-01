@@ -202,7 +202,7 @@ static pack_t *FS_LoadPackFile (const char *packfile, int paknum, qboolean base_
 	newfiles = (pakfiles_t *) Z_Malloc (numpackfiles * sizeof(pakfiles_t), Z_MAINZONE);
 
 	fseek (packhandle, header.dirofs, SEEK_SET);
-	fread (&info, 1, header.dirlen, packhandle);
+	fread (info,  1, header.dirlen, packhandle);
 
 // crc the directory
 	CRC_Init (&crc);
