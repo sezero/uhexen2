@@ -4,6 +4,9 @@ Development Progress	:
 ---------------------------
 
 2011-03-03 (SVN):
+    * Changed beta version date stamp to 2011-03-03.
+
+2011-03-03 (SVN):
     * rpm spec file: Nasm version 0.98 can not be supported anymore due to
       its inability to handle -I arguments. Bumped minimum required version
       to 0.98.38.
