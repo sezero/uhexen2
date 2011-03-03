@@ -80,7 +80,7 @@ BuildRoot:	%{_tmppath}/%{name}-%{version}-build
 BuildRequires:	SDL-devel >= 1.2.4
 %{!?_without_mp3:BuildRequires:  %{!?_with_mpg123:libmad-devel}%{?_with_mpg123:libmpg123-devel >= 1.12.0}}
 %{!?_without_ogg:BuildRequires:  libogg-devel libvorbis-devel}
-%{!?_without_asm:BuildRequires:  nasm >= 0.98}
+%{!?_without_asm:BuildRequires:  nasm >= 0.98.38}
 %{!?_without_freedesktop:BuildRequires: desktop-file-utils}
 %{?_without_gtk2:BuildRequires:  gtk+-devel}
 %{!?_without_gtk2:BuildRequires: gtk2-devel}
@@ -335,8 +335,12 @@ desktop-file-install \
 %{_prefix}/games/%{name}/docs/README.hwmaster
 
 %changelog
-* Sun Feb 27 2011 O.Sezer <sezero@users.sourceforge.net> 1.5.0-0.1.rc1
-- add support for building against libmpg123 instead of libmad.
+* Thu Mar 03 2011 O.Sezer <sezero@users.sourceforge.net> 1.5.0-0.1.rc1
+- Nasm version 0.98 can not be supported anymore due to its inability to
+  handle -I arguments. Bumped the minimum required version to 0.98.38.
+
+* Sun Feb 27 2011 O.Sezer <sezero@users.sourceforge.net>
+- Add support for building against libmpg123 instead of libmad.
 
 * Tue Jan 04 2011 O.Sezer <sezero@users.sourceforge.net>
 - Install tibet2/tibet9 ent fixes for handling map quirks.

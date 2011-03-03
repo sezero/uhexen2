@@ -4,6 +4,11 @@ Development Progress	:
 ---------------------------
 
 2011-03-03 (SVN):
+    * rpm spec file: Nasm version 0.98 can not be supported anymore due to
+      its inability to handle -I arguments. Bumped minimum required version
+      to 0.98.38.
+
+2011-03-03 (SVN):
     * created new directory oslibs to hold os-specific headers and libraries
       and moved the contents of w32stuff directory to it. adjusted all the
       makefiles and the project files accordingly.
