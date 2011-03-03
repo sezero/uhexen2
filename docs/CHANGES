@@ -3,6 +3,11 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2011-03-03 (SVN):
+    * created new directory oslibs to hold os-specific headers and libraries
+      and moved the contents of w32stuff directory to it. adjusted all the
+      makefiles and the project files accordingly.
+
 2011-03-01 (SVN):
     * model.c, gl_model.c: relaxed searchpath requirements for external ent
       and lit file loading: they are now allowed from the same game directory

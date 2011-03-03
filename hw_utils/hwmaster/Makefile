@@ -73,7 +73,7 @@ CFLAGS  += -DWIN32_LEAN_AND_MEAN
 ifeq ($(USE_WINSOCK2),yes)
 CPPFLAGS+= -D_USE_WINSOCK2
 endif
-INCLUDES+= -I$(W32STUFF)
+INCLUDES+= -I$(OSLIBS)/windows
 LDFLAGS += $(LIBWINSOCK) -lwinmm -mconsole
 endif
 ifeq ($(TARGET_OS),win64)
@@ -81,7 +81,7 @@ CFLAGS  += -DWIN32_LEAN_AND_MEAN
 ifeq ($(USE_WINSOCK2),yes)
 CPPFLAGS+= -D_USE_WINSOCK2
 endif
-INCLUDES+= -I$(W32STUFF)
+INCLUDES+= -I$(OSLIBS)/windows
 LDFLAGS += $(LIBWINSOCK) -lwinmm -mconsole
 endif
 ifeq ($(TARGET_OS),unix)

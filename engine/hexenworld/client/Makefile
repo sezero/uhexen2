@@ -356,13 +356,13 @@ LIBWINSOCK=-lwsock32
 endif
 
 CFLAGS  += -DWIN32_LEAN_AND_MEAN
-INCLUDES+= -I$(W32STUFF) -I$(W32STUFF)/dxsdk/include
+INCLUDES+= -I$(OSLIBS)/windows -I$(OSLIBS)/windows/dxsdk/include
 LDFLAGS += $(LIBWINSOCK) -lwinmm -mwindows
 
 ifeq ($(LINK_DIRECTX),no)
 CPPFLAGS+= -DDX_DLSYM
 else
-LDFLAGS += -L$(W32STUFF)/dxsdk/x86 -ldsound -ldinput -ldxguid
+LDFLAGS += -L$(OSLIBS)/windows/dxsdk/x86 -ldsound -ldinput -ldxguid
 endif
 
 ifeq ($(WITH_SPLASHES),no)
@@ -375,12 +375,12 @@ else
 endif
 
 ifeq ($(USE_CODEC_VORBIS),yes)
-CODEC_INC = -I$(W32STUFF)/codecs/include
-CODEC_LINK= -L$(W32STUFF)/codecs/x86
+CODEC_INC = -I$(OSLIBS)/windows/codecs/include
+CODEC_LINK= -L$(OSLIBS)/windows/codecs/x86
 endif
 ifeq ($(USE_CODEC_MP3),yes)
-CODEC_INC = -I$(W32STUFF)/codecs/include
-CODEC_LINK= -L$(W32STUFF)/codecs/x86
+CODEC_INC = -I$(OSLIBS)/windows/codecs/include
+CODEC_LINK= -L$(OSLIBS)/windows/codecs/x86
 endif
 INCLUDES += $(CODEC_INC)
 LDFLAGS += $(CODEC_LINK)
@@ -413,13 +413,13 @@ LIBWINSOCK=-lwsock32
 endif
 
 CFLAGS  += -DWIN32_LEAN_AND_MEAN
-INCLUDES+= -I$(W32STUFF) -I$(W32STUFF)/dxsdk/include
+INCLUDES+= -I$(OSLIBS)/windows -I$(OSLIBS)/windows/dxsdk/include
 LDFLAGS += $(LIBWINSOCK) -lwinmm -mwindows
 
 ifeq ($(LINK_DIRECTX),no)
 CPPFLAGS+= -DDX_DLSYM
 else
-LDFLAGS += -L$(W32STUFF)/dxsdk/x64 -ldsound -ldinput -ldxguid
+LDFLAGS += -L$(OSLIBS)/windows/dxsdk/x64 -ldsound -ldinput -ldxguid
 endif
 
 ifeq ($(WITH_SPLASHES),no)
@@ -432,12 +432,12 @@ else
 endif
 
 ifeq ($(USE_CODEC_VORBIS),yes)
-CODEC_INC = -I$(W32STUFF)/codecs/include
-CODEC_LINK= -L$(W32STUFF)/codecs/x64
+CODEC_INC = -I$(OSLIBS)/windows/codecs/include
+CODEC_LINK= -L$(OSLIBS)/windows/codecs/x64
 endif
 ifeq ($(USE_CODEC_MP3),yes)
-CODEC_INC = -I$(W32STUFF)/codecs/include
-CODEC_LINK= -L$(W32STUFF)/codecs/x64
+CODEC_INC = -I$(OSLIBS)/windows/codecs/include
+CODEC_LINK= -L$(OSLIBS)/windows/codecs/x64
 endif
 INCLUDES += $(CODEC_INC)
 LDFLAGS += $(CODEC_LINK)
@@ -748,8 +748,8 @@ glhw: $(GL_BINARY)
 ifeq ($(TARGET_OS),win32)
 ifeq ($(USE_MGL),yes)
 $(SW_BINARY): CPPFLAGS+= -DMGL_DLL
-$(SW_BINARY): INCLUDES+= -I$(W32STUFF)/scitech/include
-$(SW_BINARY): LDFLAGS += -L$(W32STUFF)/scitech/x86 -lmglfx
+$(SW_BINARY): INCLUDES+= -I$(OSLIBS)/windows/scitech/include
+$(SW_BINARY): LDFLAGS += -L$(OSLIBS)/windows/scitech/x86 -lmglfx
 endif
 endif
 $(GL_BINARY): CPPFLAGS+= $(GL_DEFS)

@@ -31,8 +31,8 @@ check_cmd=$(shell if which $(1) > /dev/null 2>&1; then echo "";else echo $(1);fi
 # X directory
 X11BASE ?=/usr/X11R6
 
-# Local w32stuff directory:
-W32STUFF :=$(UHEXEN2_TOP)/w32stuff
+# local directory for os-specific headers and libraries:
+OSLIBS :=$(UHEXEN2_TOP)/oslibs
 
 
 ################################

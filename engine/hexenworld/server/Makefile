@@ -148,7 +148,7 @@ else
 LIBWINSOCK=-lwsock32
 endif
 
-INCLUDES+= -I$(W32STUFF)
+INCLUDES+= -I$(OSLIBS)/windows
 LDFLAGS += $(LIBWINSOCK) -lwinmm -mconsole
 
 endif
@@ -170,7 +170,7 @@ else
 LIBWINSOCK=-lwsock32
 endif
 
-INCLUDES+= -I$(W32STUFF)
+INCLUDES+= -I$(OSLIBS)/windows
 LDFLAGS += $(LIBWINSOCK) -lwinmm -mconsole
 
 endif

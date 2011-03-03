@@ -53,13 +53,13 @@ INCLUDES= -I. -I$(COMMONDIR)
 
 ifeq ($(TARGET_OS),win32)
 CFLAGS  += -DWIN32_LEAN_AND_MEAN
-INCLUDES+= -I$(W32STUFF)
+INCLUDES+= -I$(OSLIBS)/windows
 # default 2 MB stack is not enough
 LDFLAGS += -mconsole -Wl,--stack,4194304
 endif
 ifeq ($(TARGET_OS),win64)
 CFLAGS  += -DWIN32_LEAN_AND_MEAN
-INCLUDES+= -I$(W32STUFF)
+INCLUDES+= -I$(OSLIBS)/windows
 # default 2 MB stack is not enough
 LDFLAGS += -mconsole -Wl,--stack,4194304
 endif
