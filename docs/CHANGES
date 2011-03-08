@@ -3,8 +3,10 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
-2011-03-07 (SVN):
+2011-03-08 (SVN):
     * Minor documentation corrections.
+    * rpm spec file: fix license tag as GPLv2. add missing missing pack map
+      entity fixes to the packaged files list.
 
 2011-03-03 (SVN):
     * Changed beta version date stamp to 2011-03-03.

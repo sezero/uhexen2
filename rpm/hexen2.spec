@@ -66,7 +66,7 @@
 %define pkg_prerel	1
 
 Name:		hexen2
-License:	GPL
+License:	GPLv2
 Group:		Amusements/Games
 Version:	1.5.0
 Release:	%{?prerelease:0.%{pkg_prerel}.%{prerelease}}%{!?prerelease:%{pkg_final}}
@@ -294,6 +294,10 @@ desktop-file-install \
 %{_prefix}/games/%{name}/portals/infolist.txt
 %{_prefix}/games/%{name}/portals/maplist.txt
 %{_prefix}/games/%{name}/portals/default.cfg
+%{_prefix}/games/%{name}/portals/maps/tibet2.ent
+%{_prefix}/games/%{name}/portals/maps/tibet2.txt
+%{_prefix}/games/%{name}/portals/maps/tibet9.ent
+%{_prefix}/games/%{name}/portals/maps/tibet9.txt
 %{_bindir}/hexen2
 %{_datadir}/pixmaps/%{name}.png
 %{_prefix}/games/%{name}/h2launcher
@@ -335,6 +339,10 @@ desktop-file-install \
 %{_prefix}/games/%{name}/docs/README.hwmaster
 
 %changelog
+* Tue Mar 08 2011 O.Sezer <sezero@users.sourceforge.net>
+- Fix license tag as GPLv2.
+- Add missing missing pack map entity fixes to the packaged files list.
+
 * Thu Mar 03 2011 O.Sezer <sezero@users.sourceforge.net> 1.5.0-0.1.rc1
 - Nasm version 0.98 can not be supported anymore due to its inability to
   handle -I arguments. Bumped the minimum required version to 0.98.38.
