@@ -3,6 +3,10 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2011-03-10 (SVN):
+    * snd_timidity.c, snd_wildmidi.c: removed the broken reinit functions.
+      updated some fixme and todo notes.
+
 2011-03-08 (SVN):
     * Minor documentation corrections.
     * rpm spec file: fix license tag as GPLv2. add missing missing pack map

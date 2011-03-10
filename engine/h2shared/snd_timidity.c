@@ -41,8 +41,6 @@ typedef struct _midi_buf_t
 	int pos, last;
 } midi_buf_t;
 
-static void	TIMIDITY_Reinit(void);
-
 
 static size_t timidity_fread (void *ctx, void *ptr, size_t size, size_t nmemb)
 {
@@ -56,12 +54,11 @@ static int timidity_fclose (void *ctx)
 
 static qboolean S_TIMIDITY_CodecInitialize (void)
 {
-	static qboolean first_init = true;
-
 	if (timidity_codec.initialized)
 		return true;
 
-/* TODO: implement a cvar pointing to timidity.cfg full path */
+	/* TODO: implement a cvar pointing to timidity.cfg full path,
+	 * or check the value of TIMIDITY_CFG environment variable? */
 	if (mid_init (NULL) < 0)
 	{
 		Con_Printf ("Could not initialize Timidity\n");
@@ -71,11 +68,6 @@ static qboolean S_TIMIDITY_CodecInitialize (void)
 	Con_Printf ("Timidity initialized\n");
 	timidity_codec.initialized = true;
 
-	if (first_init)
-	{
-		first_init = false;
-		Cmd_AddCommand("timidity_reinit", TIMIDITY_Reinit);
-	}
 	return true;
 }
 
@@ -86,13 +78,6 @@ static void S_TIMIDITY_CodecShutdown (void)
 	timidity_codec.initialized = false;
 	Con_Printf("Shutting down Timidity.\n");
 	mid_exit ();
-}
-
-static void TIMIDITY_Reinit (void)
-{
-/* FIXME: What if we are active? */
-	S_TIMIDITY_CodecShutdown();
-	S_TIMIDITY_CodecInitialize();
 }
 
 static snd_stream_t *S_TIMIDITY_CodecOpenStream (const char *filename)
@@ -168,6 +153,8 @@ static int S_TIMIDITY_CodecReadStream (snd_stream_t *stream, int bytes, void *bu
 		bytes = data->last - data->pos;
 	}
 	memcpy (buffer, & data->midi_buffer[data->pos], bytes);
+	/* Timidity byte swaps according to the format with which
+	 * the stream is opened, therefore no swap needed here. */
 	data->pos += bytes;
 	if (data->pos == data->last)
 		data->pos = 0;

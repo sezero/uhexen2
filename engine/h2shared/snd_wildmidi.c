@@ -33,7 +33,7 @@
 #include "snd_codec.h"
 #include "snd_codeci.h"
 #include "snd_wildmidi.h"
-#include "wildmidi_lib.h"
+#include <wildmidi_lib.h>
 
 #if !defined(WM_MO_ENHANCED_RESAMPLING)
 #error wildmidi version 0.2.3.4 or newer is required.
@@ -47,8 +47,6 @@ typedef struct _midi_buf_t
 	char midi_buffer[CACHEBUFFER_SIZE];
 	int pos, last;
 } midi_buf_t;
-
-static void	WILDMIDI_Reinit(void);
 
 static unsigned short wildmidi_rate;
 static const char *cfgfile[] = {
@@ -65,7 +63,6 @@ static const char *cfgfile[] = {
 
 static qboolean S_WILDMIDI_CodecInitialize (void)
 {
-	static qboolean first_init = true;
 	char path[MAX_OSPATH];
 	int i, res;
 
@@ -80,7 +77,8 @@ static qboolean S_WILDMIDI_CodecInitialize (void)
 	i = 0;
 	res = -1;
 
-/* TODO: implement a cvar pointing to timidity.cfg full path */
+	/* TODO: implement a cvar pointing to timidity.cfg full path,
+	 * or check the value of TIMIDITY_CFG environment variable? */
 	while (res != 0 && cfgfile[i] != NULL)
 	{
 		q_snprintf(path, sizeof(path), "%s/wildmidi.cfg", cfgfile[i]);
@@ -102,11 +100,6 @@ static qboolean S_WILDMIDI_CodecInitialize (void)
 	Con_Printf ("WildMIDI initialized\n");
 	wildmidi_codec.initialized = true;
 
-	if (first_init)
-	{
-		first_init = false;
-		Cmd_AddCommand("wildmidi_reinit", WILDMIDI_Reinit);
-	}
 	return true;
 }
 
@@ -117,13 +110,6 @@ static void S_WILDMIDI_CodecShutdown (void)
 	wildmidi_codec.initialized = false;
 	Con_Printf("Shutting down WildMIDI.\n");
 	WildMidi_Shutdown();
-}
-
-static void WILDMIDI_Reinit (void)
-{
-/* FIXME: What if we are active? */
-	S_WILDMIDI_CodecShutdown();
-	S_WILDMIDI_CodecInitialize();
 }
 
 static snd_stream_t *S_WILDMIDI_CodecOpenStream (const char *filename)
@@ -179,7 +165,7 @@ static int S_WILDMIDI_CodecReadStream (snd_stream_t *stream, int bytes, void *bu
 		bytes = data->last - data->pos;
 	}
 	memcpy (buffer, & data->midi_buffer[data->pos], bytes);
-#warning FIXME: byte order?
+	/* WildMIDI outputs host-endian data, no byte swap needed. */
 	data->pos += bytes;
 	if (data->pos == data->last)
 		data->pos = 0;
