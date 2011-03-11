@@ -75,6 +75,20 @@ What you should do is simple:
 
 7. All things are ready to go.
 
+8. A note for the owners of Hexen II/xplosiv release:
+
+   Xplosiv is (was) a publishing label that did budget or re-releases of
+   quite some games, one of them Hexen II.  Audio tracks on the xplosiv
+   release of Hexen II is the exact opposite of the order on the original
+   release, like so: (information was kindly provided by Sander van Dijk)
+
+   track02  ->  casb3       track08  ->  meso3       track14  ->  casa4
+   track03  ->  casb2       track09  ->  meso2       track15  ->  casa3
+   track04  ->  casb1       track10  ->  meso1       track16  ->  casa2
+   track05  ->  roma3       track11  ->  egyp3       track17  ->  casa1
+   track06  ->  roma2       track12  ->  egyp2
+   track07  ->  roma1       track13  ->  egyp1
+
 
 New console commands:
 ---------------------

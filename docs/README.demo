@@ -234,10 +234,11 @@ The timidity.cfg file is searched under /etc, /etc/timidity,
 /usr/share/timidity and /usr/local/lib/timidity, in this order.
 
 Hammer of Thyrion supports ogg, mp3 and wav external music files to be
-played instead of the original midi files, so you can enjoy the better
-quality of your hexen2 cdrom audio tracks.  Ogg playback requires
-libogg and libvorbis, mp3 playback requires libmad.  See README.music
-for more information.
+played instead of the original midi files, so you can enjoy the hexen2
+music in better quality like they are from the hexen2 cdrom audio tracks.
+Ogg playback requires libogg and libvorbis, mp3 playback requires libmad
+or libmpg123 depending on your compile-time decision (see the Makefile).
+See README.music for more information.
 
 
 1.5 Networking / Multiplayer
