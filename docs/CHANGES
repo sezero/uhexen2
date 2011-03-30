@@ -3,6 +3,9 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2011-03-30 (SVN):
+    * Minor Makefile cleanup.
+
 2011-03-11 (SVN):
     * README.music: Added audio track information for the Hexen II "xplosiv"
       release (thanks to Sander van Dijk.)

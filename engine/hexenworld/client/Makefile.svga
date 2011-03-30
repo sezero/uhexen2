@@ -204,13 +204,13 @@ endif
 LDFLAGS += $(LIBSOCKET) -lm -lvga
 
 ifeq ($(USE_SOUND),yes)
-ifeq ($(USE_ALSA),no)
+ifneq ($(USE_ALSA),yes)
 CPPFLAGS+= -DNO_ALSA_AUDIO
 else
 # snd_alsa uses dlopen() & co.
 LDFLAGS += -ldl
 endif
-ifeq ($(USE_OSS),no)
+ifneq ($(USE_OSS),yes)
 CPPFLAGS+= -DNO_OSS_AUDIO
 endif
 CPPFLAGS+= -DNO_SUN_AUDIO

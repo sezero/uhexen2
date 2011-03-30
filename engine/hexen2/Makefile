@@ -287,7 +287,7 @@ ifeq ($(USE_3DFXGAMMA),yes)
 # linux 3dfx gamma hack
 GL_DEFS+= -DUSE_3DFXGAMMA
 endif
-ifeq ($(LINK_GL_LIBS),no)
+ifneq ($(LINK_GL_LIBS),yes)
 GL_DEFS+= -DGL_DLSYM
 else
 GLFLAGS+= $(GL_LINK)
@@ -331,19 +331,23 @@ LDFLAGS += $(LIBSOCKET) -lm
 CPPFLAGS+= -DSDLQUAKE
 
 ifeq ($(USE_SOUND),yes)
-ifeq ($(USE_ALSA),no)
+ifneq ($(HOST_OS),linux)
+# alsa is only for linux
+USE_ALSA=no
+endif
+ifneq ($(USE_ALSA),yes)
 CPPFLAGS+= -DNO_ALSA_AUDIO
 else
 # snd_alsa uses dlopen() & co.
 LDFLAGS += -ldl
 endif
-ifeq ($(USE_OSS),no)
+ifneq ($(USE_OSS),yes)
 CPPFLAGS+= -DNO_OSS_AUDIO
 endif
-ifeq ($(USE_SUNAUDIO),no)
+ifneq ($(USE_SUNAUDIO),yes)
 CPPFLAGS+= -DNO_SUN_AUDIO
 endif
-ifeq ($(USE_SDLAUDIO),no)
+ifneq ($(USE_SDLAUDIO),yes)
 CPPFLAGS+= -DNO_SDL_AUDIO
 endif
 endif
@@ -409,13 +413,13 @@ CFLAGS  += -DWIN32_LEAN_AND_MEAN
 INCLUDES+= -I$(OSLIBS)/windows -I$(OSLIBS)/windows/dxsdk/include
 LDFLAGS += $(LIBWINSOCK) -lwinmm -mwindows
 
-ifeq ($(LINK_DIRECTX),no)
+ifneq ($(LINK_DIRECTX),yes)
 CPPFLAGS+= -DDX_DLSYM
 else
 LDFLAGS += -L$(OSLIBS)/windows/dxsdk/x86 -ldsound -ldinput -ldxguid
 endif
 
-ifeq ($(WITH_SPLASHES),no)
+ifneq ($(WITH_SPLASHES),yes)
 CPPFLAGS+= -DNO_SPLASHES
 else
 # gl version needs linking to comctl32.dll because of that progress
@@ -466,13 +470,13 @@ CFLAGS  += -DWIN32_LEAN_AND_MEAN
 INCLUDES+= -I$(OSLIBS)/windows -I$(OSLIBS)/windows/dxsdk/include
 LDFLAGS += $(LIBWINSOCK) -lwinmm -mwindows
 
-ifeq ($(LINK_DIRECTX),no)
+ifneq ($(LINK_DIRECTX),yes)
 CPPFLAGS+= -DDX_DLSYM
 else
 LDFLAGS += -L$(OSLIBS)/windows/dxsdk/x64 -ldsound -ldinput -ldxguid
 endif
 
-ifeq ($(WITH_SPLASHES),no)
+ifneq ($(WITH_SPLASHES),yes)
 CPPFLAGS+= -DNO_SPLASHES
 else
 # gl version needs linking to comctl32.dll because of that progress
