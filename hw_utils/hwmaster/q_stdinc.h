@@ -6,7 +6,7 @@
 		for byte order use q_endian.h,
 		for math stuff use mathlib.h.
 
-	$Id: q_stdinc.h,v 1.6 2009-01-28 14:05:10 sezero Exp $
+	$Id$
 
 	Copyright (C) 1996-1997  Id Software, Inc.
 	Copyright (C) 2007-2008  O.Sezer <sezero@users.sourceforge.net>
@@ -52,9 +52,11 @@
    FIXME: Properly replace certain short and int usage
 	  with int16_t and int32_t.
  */
-#if defined(_MSC_VER)
+#if defined(_MSC_VER) && (_MSC_VER < 1600)
+/* MS Visual Studio provides stdint.h only starting with
+ * version 2010.  Even in VS2010, there is no inttypes.h.. */
 #include "msinttypes/stdint.h"
-#else	/* not M$ compiler: */
+#else
 #include <stdint.h>
 #endif
 
