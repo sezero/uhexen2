@@ -12,8 +12,8 @@ work just fine.
 
 By editing the makefiles, you can change some compile time options. Other
 than the makefiles, we have gathered most, if not all, of our compile time
-options in the header file named "h2config.h".  You can edit it, as well,
-but be careful.
+options in the header file named "h2config.h".  You can edit it with care
+if necessary, as well.
 
 Here is the recommended software for building:
 
@@ -31,11 +31,11 @@ binutils:	A GNU collection of binary utilities.
 
 NASM	:	Netwide Assembler. An x86 assembler.
 		Minimum version required is 0.98.38 or 0.98.39 from the
-		old series.  Versions 2.02, 2.03.01, 2.05.01 or 2.09.03
+		old series.  Versions 2.02, 2.03.01, 2.05.01 or 2.09.08
 		from the new 2.x series are recommended.
 		YASM, a re-write of NASM, is also supported:  Versions
-		0.5.0, 0.6.x, 0.7.x and 1.1.0 are tested. Versions 0.7.2
-		or 1.1.0 are highly recommended.
+		0.5.0, 0.6.x, 0.7.x, 0.8.0, 1.0.1 and 1.1.0 are tested.
+		Versions 0.7.2 or 1.1.0 are highly recommended.
 
 		The assemblers nasm or yasm are required for compiling
 		hexen2 and hexenworld clients for 32 bit x86 machines.
@@ -152,11 +152,10 @@ b. On Windows, using win32-native MinGW compiler:
 -------------------------------------------------
 Download a prebuilt MinGW installer and install it to C:\MinGW .  Then
 download MSys and install it to c:\msys , 1.0.11-2004.04.30 is the version
-I use.  As the assembler, download nasm version 0.98.39, put nasmw.exe into
-the C:\MinGW\bin directory and rename it to "nasm.exe".  Adding the mingw
-directory to your PATH may be a good idea, too.  MinGW-3.1.0 comes with
-gcc-3.2.3.  MinGW-5.1.4, on the other hand, comes with gcc-3.4.5 and is
-recommended.
+I use.  As the assembler, download nasm version 2.09.08, put nasm.exe into
+the C:\MinGW\bin directory.  Adding the mingw directory to your PATH may
+be a good idea, too.  MinGW-3.1.0 comes with gcc-3.2.3.  MinGW-5.1.4, on
+the other hand, comes with gcc-3.4.5 and is recommended.
 
 Open a console window, cd into \msys and type "msys sh.exe". You will be
 in a unixish sh environment. The rest is just like doing things in linux:
@@ -178,10 +177,10 @@ and you will be ready to go. VisualStudio2010.zip files are also provided
 for hexen2 and hexenworld projects for your convenience.  All projects are
 adjusted for Win32 (x86) and x64 targets.
 
-Compilation of the software renderer versions h2.exe and hwcl.exe require
-YASM as the x86 assembler (link down below). Versions 0.7.2 or newer are
+Compiling the software renderer versions h2.exe and hwcl.exe require YASM
+as the x86 assembler (link down below). Versions 0.7.2, 1.1.0 or newer are
 recommended.  As an alternative, you can use NASM as the assembler: version
-2.05.01 or newer are recommended.  Both nasm and yasm are very easy to
+2.09.08 or newer are recommended.  Both nasm and yasm are very easy to
 integrate into Visual Studio using a rule file: see oslibs/windows/yasm and
 oslibs/windows/nasm directories.  Our project files are currently adjusted
 for using yasm.  For Visual Studio 2010, you need "vsyasm" which is simply
@@ -218,15 +217,15 @@ because 2.03 and earlier versions doesn't provide a stdint.h and / or
 inttypes.h header, besides, they don't have a vsnprintf implementation.
 Compilers other than djgpp probably won't work at all.  I use gcc-3.3.6
 or 3.4.6 and binutils-2.16.1 and compile the binaries on linux with a
-cross compilation toolchain using 2.04 runtime library from the CVS
+cross compiler toolchain using DJGPP 2.04 runtime library from the CVS
 snapshot from Dec. 25, 2009:  see the tiny script build_cross_dos.sh
 to have an idea of how I do it.  We provide source and binary (x86/linux
 glibc-2.3) packages of cross compiler toolchains on our downloads page
 under the support files section, too.
 
-Compilation on DOS is never tested and is not supported.  However,
-compiling on windows in a command console ~should~ be possible: remember
-adding DOSBUILD=1 to your environment.
+Compiling on DOS is never tested and not supported.  On the other hand,
+compiling on windows in a command console or in an MSYS shell ~should~
+be possible: remember adding DOSBUILD=1 to your environment.
 
 CWSDPMI.EXE is needed at runtime: use the "0.90+ r5" or a newer version.
 I have been using the "release 5, 2008 refresh" version (dated 21 August
@@ -238,6 +237,7 @@ Links:
 SDL homepage		:	http://www.libsdl.org/
 Ogg/Vorbis homepage	:	http://xiph.org/
 libmad homepage		:	http://www.underbit.com/products/mad/
+mpg123 homepage		:	http://mpg123.org/  http://mpg123.de/
 ALSA homepage		:	http://www.alsa-project.org/
 GCC homepage		:	http://gcc.gnu.org/
 Binutils homepage	:	http://sourceware.org/binutils/

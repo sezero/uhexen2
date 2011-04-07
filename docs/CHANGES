@@ -3,6 +3,9 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2011-04-07 (SVN):
+    * updated the COMPILE document for recent software versions.
+
 2011-04-01 (SVN):
     * q_stdinc.h: Visual Studio 2010 provides a stdint.h, so use it for
       VS2010 and later instead the header from the msinttypes project.
