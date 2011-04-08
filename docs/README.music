@@ -136,6 +136,10 @@ New command line options:
 - -noextmusic: Disables the playback of external music files instead of the
   original midi files.
 
+Music files in PAK files:
+-------------------------
+PAK-contained music files are fully supported.
+
 Music file directories:
 -------------------------
 - The midi music files are always searched under the "midi" directory, as
