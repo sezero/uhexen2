@@ -314,7 +314,8 @@ void R_TranslatePlayerSkin (int playernum)
 	int		top, bottom;
 	byte		translate[256];
 	unsigned int	translate32[256];
-	int		i, j, s;
+	int		i, j;
+	int		s;
 	qmodel_t	*model;
 	aliashdr_t	*paliashdr;
 	byte		*original;

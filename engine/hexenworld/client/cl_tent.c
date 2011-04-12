@@ -2,7 +2,7 @@
 	cl_tent.c
 	client side temporary entities
 
-	$Header: /cvsroot/uhexen2/engine/hexenworld/client/cl_tent.c,v 1.30 2008-04-22 13:06:10 sezero Exp $
+	$Id$
 */
 
 
@@ -3299,6 +3299,7 @@ void CL_ParseTEnt (void)
 				ent = MSG_ReadShort();
 
 				state = FindState(ent);
+				(void) state; /* variable set but not used */
 				pos[0] = MSG_ReadCoord();
 				pos[1] = MSG_ReadCoord();
 				pos[2] = MSG_ReadCoord();

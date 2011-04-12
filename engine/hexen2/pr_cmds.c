@@ -2,7 +2,7 @@
 	pr_cmds.c
 	prog commands
 
-	$Header: /cvsroot/uhexen2/engine/hexen2/pr_cmds.c,v 1.55 2010-06-01 12:11:35 sezero Exp $
+	$Id$
 */
 
 #include "quakedef.h"
@@ -2205,6 +2205,7 @@ static void PF_aim (void)
 	ent = G_EDICT(OFS_PARM0);
 	shot_org = G_VECTOR(OFS_PARM1);
 	speed = G_FLOAT(OFS_PARM2);
+	(void) speed; /* variable set but not used */
 
 //	VectorCopy (ent->v.origin, start);
 	VectorCopy (shot_org, start);

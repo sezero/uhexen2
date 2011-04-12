@@ -2,7 +2,7 @@
 	cl_tent.c
 	Client side temporary entity effects.
 
-	$Header: /cvsroot/uhexen2/engine/hexen2/cl_tent.c,v 1.20 2010-03-23 18:58:21 sezero Exp $
+	$Id$
 */
 
 

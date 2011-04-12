@@ -2,7 +2,7 @@
 	sv_phys.c
 	sv physics
 
-	$Header: /cvsroot/uhexen2/engine/hexenworld/server/sv_phys.c,v 1.19 2008-12-21 18:25:09 sezero Exp $
+	$Id$
 */
 
 #include "quakedef.h"
@@ -443,10 +443,11 @@ Does not change the entities velocity at all
 trace_t SV_PushEntity (edict_t *ent, vec3_t push)
 {
 	trace_t	trace;
-	vec3_t	start,end, impact;
+	vec3_t	start, end, impact;
 	edict_t *impact_e;
 
 	VectorCopy (ent->v.origin, start);
+	(void) start; /* variable set but not used */
 	VectorAdd (ent->v.origin, push, end);
 //	if ((int)ent->v.flags & FL_CLIENT)
 //		Con_Printf("Player exec pushent\n");

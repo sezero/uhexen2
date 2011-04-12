@@ -2,7 +2,7 @@
 	sv_effect.c
 	Client side effects.
 
-	$Header: /cvsroot/uhexen2/engine/hexenworld/server/sv_effect.c,v 1.17 2009-01-10 22:08:51 sezero Exp $
+	$Id$
 */
 
 // HEADER FILES ------------------------------------------------------------
@@ -42,7 +42,7 @@ void SV_SendEffect (sizebuf_t *sb, int idx)
 {
 	qboolean	DoTest;
 	vec3_t		TestO1;
-	int		TestDistance;
+//	int		TestDistance; /* not used. (cf. hexen2 version of the function.) */
 	int		i;
 
 	if (sv_ce_scale.value > 0)
@@ -57,12 +57,12 @@ void SV_SendEffect (sizebuf_t *sb, int idx)
 	case CE_HWSHEEPINATOR:
 	case CE_HWXBOWSHOOT:
 		VectorCopy(sv.Effects[idx].ef.Xbow.origin[5], TestO1);
-		TestDistance = 900;
+	//	TestDistance = 900;
 		break;
 
 	case CE_SCARABCHAIN:
 		VectorCopy(sv.Effects[idx].ef.Chain.origin, TestO1);
-		TestDistance = 900;
+	//	TestDistance = 900;
 		break;
 
 	case CE_TRIPMINE:
@@ -73,23 +73,23 @@ void SV_SendEffect (sizebuf_t *sb, int idx)
 	//ACHTUNG!!!!!!! setting DoTest to false here does not insure
 	//		 that effect will be sent to everyone!
 	case CE_TRIPMINESTILL:
-		TestDistance = 10000;
+	//	TestDistance = 10000;
 		DoTest = false;
 		break;
 
 	case CE_RAIN:
-		TestDistance = 10000;
+	//	TestDistance = 10000;
 		DoTest = false;
 		break;
 
 	case CE_FOUNTAIN:
-		TestDistance = 10000;
+	//	TestDistance = 10000;
 		DoTest = false;
 		break;
 
 	case CE_QUAKE:
 		VectorCopy(sv.Effects[idx].ef.Quake.origin, TestO1);
-		TestDistance = 700;
+	//	TestDistance = 700;
 		break;
 
 	case CE_WHITE_SMOKE:
@@ -108,7 +108,7 @@ void SV_SendEffect (sizebuf_t *sb, int idx)
 	case CE_ONFIRE:
 	case CE_RIPPLE:
 		VectorCopy(sv.Effects[idx].ef.Smoke.origin, TestO1);
-		TestDistance = 250;
+	//	TestDistance = 250;
 		break;
 
 	case CE_SM_WHITE_FLASH:
@@ -146,7 +146,7 @@ void SV_SendEffect (sizebuf_t *sb, int idx)
 	case CE_BOMB:
 	case CE_FLOOR_EXPLOSION3:
 		VectorCopy(sv.Effects[idx].ef.Smoke.origin, TestO1);
-		TestDistance = 250;
+	//	TestDistance = 250;
 		break;
 
 	case CE_WHITE_FLASH:
@@ -155,7 +155,7 @@ void SV_SendEffect (sizebuf_t *sb, int idx)
 	case CE_HWSPLITFLASH:
 	case CE_RED_FLASH:
 		VectorCopy(sv.Effects[idx].ef.Smoke.origin, TestO1);
-		TestDistance = 250;
+	//	TestDistance = 250;
 		break;
 
 	case CE_RIDER_DEATH:
@@ -164,12 +164,12 @@ void SV_SendEffect (sizebuf_t *sb, int idx)
 
 	case CE_TELEPORTERPUFFS:
 		VectorCopy(sv.Effects[idx].ef.Teleporter.origin, TestO1);
-		TestDistance = 350;
+	//	TestDistance = 350;
 		break;
 
 	case CE_TELEPORTERBODY:
 		VectorCopy(sv.Effects[idx].ef.Teleporter.origin, TestO1);
-		TestDistance = 350;
+	//	TestDistance = 350;
 		break;
 
 	case CE_DEATHBUBBLES:
@@ -178,7 +178,7 @@ void SV_SendEffect (sizebuf_t *sb, int idx)
 			return;
 		}
 		VectorCopy(PROG_TO_EDICT(sv.Effects[idx].ef.Bubble.owner)->v.origin, TestO1);
-		TestDistance = 400;
+	//	TestDistance = 400;
 		break;
 
 	case CE_HWDRILLA:
@@ -188,13 +188,13 @@ void SV_SendEffect (sizebuf_t *sb, int idx)
 	case CE_HWRAVENSTAFF:
 	case CE_HWRAVENPOWER:
 		VectorCopy(sv.Effects[idx].ef.Missile.origin, TestO1);
-		TestDistance = 900;
+	//	TestDistance = 900;
 		break;
 
 	case CE_HWMISSILESTAR:
 	case CE_HWEIDOLONSTAR:
 		VectorCopy(sv.Effects[idx].ef.Missile.origin, TestO1);
-		TestDistance = 600;
+	//	TestDistance = 600;
 		break;
 
 	default:

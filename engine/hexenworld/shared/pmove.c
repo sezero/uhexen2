@@ -2,7 +2,7 @@
 	pmove.c
 	player movement
 
-	$Id: pmove.c,v 1.9 2007-03-14 21:03:35 sezero Exp $
+	$Id$
 */
 
 #include "quakedef.h"
@@ -243,6 +243,7 @@ static void PM_GroundMove (void)
 
 	// first try moving directly to the next spot
 	VectorCopy (dest, start);
+	(void) start; /* variable set but not used */
 	trace = PM_PlayerMove (pmove.origin, dest);
 	if (trace.fraction == 1)
 	{

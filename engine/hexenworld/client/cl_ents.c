@@ -2,7 +2,7 @@
 	cl_ents.c
 	entity parsing and management
 
-	$Id: cl_ents.c,v 1.20 2008-05-14 08:37:20 sezero Exp $
+	$Id$
 */
 
 #include "quakedef.h"
@@ -1242,7 +1242,7 @@ extern double parsecounttime;
 void CL_SavePlayer (void)
 {
 	int			num;
-	player_info_t	*info;
+//	player_info_t	*info; /* variable set but not used */
 	player_state_t	*state;
 
 	num = MSG_ReadByte ();
@@ -1250,7 +1250,7 @@ void CL_SavePlayer (void)
 	if (num > MAX_CLIENTS)
 		Sys_Error ("%s: bad num", __thisfunc__);
 
-	info = &cl.players[num];
+//	info = &cl.players[num];
 	state = &cl.frames[parsecountmod].playerstate[num];
 
 	state->messagenum = cl.parsecount;

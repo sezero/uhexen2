@@ -516,7 +516,7 @@ void S_StartSound (int entnum, int entchannel, sfx_t *sfx, vec3_t origin, float 
 	sfxcache_t	*sc;
 	int		ch_idx;
 	int		skip;
-	qboolean	skip_dist_check = false;
+//	qboolean	skip_dist_check = false;
 
 	if (!sound_started)
 		return;
@@ -534,7 +534,7 @@ void S_StartSound (int entnum, int entchannel, sfx_t *sfx, vec3_t origin, float 
 
 	if (attenuation == 4)	// Looping sound- always play
 	{
-		skip_dist_check = true;
+	//	skip_dist_check = true;
 		attenuation = 1;	// was 3 - static
 	}
 

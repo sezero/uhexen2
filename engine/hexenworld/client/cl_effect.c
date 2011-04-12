@@ -2,7 +2,7 @@
 	cl_effect.c
 	Client side effects.
 
-	$Header: /cvsroot/uhexen2/engine/hexenworld/client/cl_effect.c,v 1.17 2009-01-10 22:08:51 sezero Exp $
+	$Id$
 */
 
 // HEADER FILES ------------------------------------------------------------
@@ -1620,6 +1620,7 @@ static void UpdateMissilePath (vec3_t oldorg, vec3_t neworg, vec3_t newvel, floa
 	delta = cl.time - time;
 
 	VectorMA(neworg, delta, newvel, endpos);
+	(void) endpos; /* set but not used?.. */
 	VectorCopy(neworg, oldorg);	/* set orig, maybe vel too */
 }
 

@@ -2,7 +2,7 @@
 	sv_effect.c
 	Client side effects.
 
-	$Header: /cvsroot/uhexen2/engine/hexen2/sv_effect.c,v 1.12 2009-09-21 08:14:51 sezero Exp $
+	$Id$
 */
 
 // HEADER FILES ------------------------------------------------------------

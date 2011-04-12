@@ -3,6 +3,9 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2011-04-12 (SVN):
+    * fixed several gcc-4.6 -Wunused-but-set-variable warnings.
+
 2011-04-07 (SVN):
     * updated the COMPILE document for recent software versions.
 
