@@ -3,6 +3,10 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2011-04-22 (SVN):
+    * oslibs/codecs:  updated libmpg123 windows libraries to the latest
+      stable 1.13.3 version.
+
 2011-04-12 (SVN):
     * fixed several gcc-4.6 -Wunused-but-set-variable warnings.
 
