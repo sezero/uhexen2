@@ -4,9 +4,12 @@ Game code for Hexen2 / H2MP / HexenWorld
 Changes
 -------
 
-2011-01-05 (1.20):
+2011-04-23 (1.20):
 ===================
 - Bumped version number to 1.20.
+- Fixed a bug which used to prevent the finale screen to trigger if
+  Praevus were killed too quickly in buddha_die() and buddha_run().
+  Analyzed and fixed by Thomas Freundt.
 - Fixed trigger_crosslevel() with spawnflag 8, i.e. the clash with
   SPAWNFLAG_ACTIVATED. We now just set inactive property back to FALSE
   after calling InitTrigger(). Thanks to Keith Rozett.

@@ -3,6 +3,12 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2011-04-23 (SVN):
+    * gamecode, portals/buddha.hc: Fixed a bug which used to prevent the
+      finale screen to trigger if Praevus were killed too quickly in
+      buddha_die() and buddha_run(). Analyzed and fixed by Thomas Freundt.
+      While we were there, did some cleanup in buddha_die() as well.
+
 2011-04-22 (SVN):
     * oslibs/codecs:  updated libmpg123 windows libraries to the latest
       stable 1.13.3 version.
