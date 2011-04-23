@@ -1,5 +1,5 @@
 Hexen II: Hammer of Thyrion (uhexen2), release candidate,
-Version 1.5.0-rc1 / Mar. 03, 2011
+Version 1.5.0-rc1 / Apr. 23, 2011
 
 Changes since HoT-1.4.4-pre11:
 
@@ -19,6 +19,8 @@ Changes since HoT-1.4.4-pre11:
   little bit and run cooler on new fast systems. the default sys_throttle
   value is 0.02, acceptable values are between 0 and 1. changing it to 0
   disables throttling.
+* fixed a mission pack HexenC bug which used to prevent the finale screen
+  to trigger if Praevus were killed too quickly. thanks Thomas Freundt.
 * handled several map quirks thanks to careful works by Thomas Freundt
   and Keith Rozett.
 * fixed trigger_crosslevel problem with spawnflag 8 (thanks Keith Rozett.)
