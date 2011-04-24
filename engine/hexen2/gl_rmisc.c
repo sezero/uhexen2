@@ -1,7 +1,7 @@
 /*
 	r_misc.c
 
-	$Id: gl_rmisc.c 3942 2011-04-24 07:56:29Z sezero $
+	$Id$
 */
 
 #include "quakedef.h"

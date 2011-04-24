@@ -2,7 +2,7 @@
 	glquake.h
 	common glquake header
 
-	$Id: glquake.h 3942 2011-04-24 07:56:29Z sezero $
+	$Id$
 */
 
 
