@@ -2,7 +2,7 @@
 	r_surf.c
 	surface-related refresh code
 
-	$Id: gl_rsurf.c,v 1.40 2008-04-22 13:06:10 sezero Exp $
+	$Id$
 */
 
 #include "quakedef.h"
@@ -10,7 +10,7 @@
 int		gl_lightmap_format = GL_RGBA;
 cvar_t		gl_lightmapfmt = {"gl_lightmapfmt", "GL_RGBA", CVAR_ARCHIVE};
 int		lightmap_bytes = 4;		// 1, 2, or 4. default is 4 for GL_RGBA
-GLuint		lightmap_textures;
+GLuint		lightmap_textures[MAX_LIGHTMAPS];
 
 static unsigned int	blocklights[18*18];
 static unsigned int	blocklightscolor[18*18*3];	// colored light support. *3 for RGB to the definitions at the top
@@ -567,13 +567,12 @@ static void R_BlendLightmaps (qboolean Translucent)
 		glEnable_fp (GL_BLEND);
 	}
 
-	if (!lightmap_textures)
+	if (! lightmap_textures[0])
 	{
 		// if lightmaps were hosed in a video mode change, make
 		// sure we allocate new slots for lightmaps, otherwise
 		// we'll probably overwrite some other existing textures.
-		lightmap_textures = texture_extension_number;
-		texture_extension_number += MAX_LIGHTMAPS;
+		glGenTextures_fp(MAX_LIGHTMAPS, lightmap_textures);
 	}
 
 	for (i = 0; i < MAX_LIGHTMAPS; i++)
@@ -582,7 +581,7 @@ static void R_BlendLightmaps (qboolean Translucent)
 		if (!p)
 			continue;	// skip if no lightmap
 
-		GL_Bind(lightmap_textures+i);
+		GL_Bind(lightmap_textures[i]);
 
 		if (lightmap_modified[i])
 		{
@@ -659,13 +658,12 @@ static void R_UpdateLightmaps (qboolean Translucent)
 
 	glActiveTextureARB_fp (GL_TEXTURE1_ARB);
 
-	if (!lightmap_textures)
+	if (! lightmap_textures[0])
 	{
 		// if lightmaps were hosed in a video mode change, make
 		// sure we allocate new slots for lightmaps, otherwise
 		// we'll probably overwrite some other existing textures.
-		lightmap_textures = texture_extension_number;
-		texture_extension_number += MAX_LIGHTMAPS;
+		glGenTextures_fp(MAX_LIGHTMAPS, lightmap_textures);
 	}
 
 	for (i = 0; i < MAX_LIGHTMAPS; i++)
@@ -674,7 +672,7 @@ static void R_UpdateLightmaps (qboolean Translucent)
 		if (!p)
 			continue;	// skip if no lightmap
 
-		GL_Bind(lightmap_textures+i);
+		GL_Bind(lightmap_textures[i]);
 
 		if (lightmap_modified[i])
 		{
@@ -791,7 +789,7 @@ void R_RenderBrushPoly (msurface_t *fa, qboolean override)
 				glTexEnvf_fp(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 
 			glEnable_fp(GL_TEXTURE_2D);
-			GL_Bind (lightmap_textures + fa->lightmaptexturenum);
+			GL_Bind (lightmap_textures[fa->lightmaptexturenum]);
 			//glEnable_fp (GL_BLEND);
 
 			if ( ( (r_viewleaf->contents == CONTENTS_EMPTY && (fa->flags & SURF_UNDERWATER)) ||
@@ -948,7 +946,7 @@ void R_RenderBrushPolyMTex (msurface_t *fa, qboolean override)
 		else
 		{
 			glActiveTextureARB_fp(GL_TEXTURE1_ARB);
-			GL_Bind (lightmap_textures + fa->lightmaptexturenum);
+			GL_Bind (lightmap_textures[fa->lightmaptexturenum]);
 
 			if ( ( (r_viewleaf->contents == CONTENTS_EMPTY && (fa->flags & SURF_UNDERWATER)) ||
 					(r_viewleaf->contents != CONTENTS_EMPTY && !(fa->flags & SURF_UNDERWATER)) )
@@ -1635,10 +1633,9 @@ void GL_BuildLightmaps (void)
 
 	r_framecount = 1;		// no dlightcache
 
-	if (!lightmap_textures)
+	if (! lightmap_textures[0])
 	{
-		lightmap_textures = texture_extension_number;
-		texture_extension_number += MAX_LIGHTMAPS;
+		glGenTextures_fp(MAX_LIGHTMAPS, lightmap_textures);
 	}
 
 	for (j = 1; j < MAX_MODELS; j++)
@@ -1681,7 +1678,7 @@ void GL_BuildLightmaps (void)
 		lightmap_rectchange[i].t = BLOCK_HEIGHT;
 		lightmap_rectchange[i].w = 0;
 		lightmap_rectchange[i].h = 0;
-		GL_Bind(lightmap_textures + (GLuint)i);
+		GL_Bind(lightmap_textures[i]);
 		glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, gl_filter_max);
 		glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, gl_filter_max);
 		glTexImage2D_fp (GL_TEXTURE_2D, 0, lightmap_bytes, BLOCK_WIDTH,

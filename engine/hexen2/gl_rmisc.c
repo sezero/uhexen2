@@ -1,7 +1,7 @@
 /*
 	r_misc.c
 
-	$Id$
+	$Id: gl_rmisc.c 3942 2011-04-24 07:56:29Z sezero $
 */
 
 #include "quakedef.h"
@@ -132,12 +132,8 @@ void R_InitExtraTextures (void)
 	for (i = 0; i < MAX_EXTRA_TEXTURES; i++)
 		gl_extra_textures[i] = GL_UNUSED_TEXTURE;
 
-	for (i = 0; i < MAX_CLIENTS; i++)
-	{
 	// see R_TranslatePlayerSkin() below
-		playertextures[i] = texture_extension_number;
-		texture_extension_number++;
-	}
+	glGenTextures_fp(MAX_CLIENTS, playertextures);
 }
 
 /*

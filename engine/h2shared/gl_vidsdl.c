@@ -2,7 +2,7 @@
 	gl_vidsdl.c -- SDL GL vid component
 	Select window size and mode and init SDL in GL mode.
 
-	$Id$
+	$Id: gl_vidsdl.c 3942 2011-04-24 07:56:29Z sezero $
 
 	Changed 7/11/04 by S.A.
 	- Fixed fullscreen opengl mode, window sizes
@@ -177,7 +177,6 @@ qboolean	is_3dfx = false;
 
 GLint		gl_max_size = 256;
 float		gldepthmin, gldepthmax;
-GLuint		texture_extension_number = 1U;
 
 // palettized textures
 typedef void	(APIENTRY *glColorTableEXT_f)(int, int, int, int, int, const void*);
@@ -1175,8 +1174,7 @@ static void VID_ChangeVideoMode (int newmode)
 
 	// Unload all textures and reset texture counts
 	D_ClearOpenGLTextures(0);
-	texture_extension_number = 1U;
-	lightmap_textures = 0U;
+	memset (lightmap_textures, 0, sizeof(lightmap_textures));
 	for (j = 0; j < MAX_LIGHTMAPS; j++)
 		lightmap_modified[j] = true;
 

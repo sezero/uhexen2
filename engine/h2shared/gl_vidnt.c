@@ -1,6 +1,6 @@
 /*
 	gl_vidnt.c -- NT GL vid component
-	$Id$
+	$Id: gl_vidnt.c 3942 2011-04-24 07:56:29Z sezero $
 */
 
 #define	__GL_FUNC_EXTERN
@@ -181,7 +181,6 @@ qboolean	is_3dfx = false;
 
 GLint		gl_max_size = 256;
 float		gldepthmin, gldepthmax;
-GLuint		texture_extension_number = 1U;
 
 // palettized textures
 typedef void	(APIENTRY *glColorTableEXT_f)(int, int, int, int, int, const void*);
@@ -1890,8 +1889,7 @@ static void VID_ChangeVideoMode (int newmode)
 
 	// Unload all textures and reset texture counts
 	D_ClearOpenGLTextures(0);
-	texture_extension_number = 1U;
-	lightmap_textures = 0U;
+	memset (lightmap_textures, 0, sizeof(lightmap_textures));
 	for (j = 0; j < MAX_LIGHTMAPS; j++)
 		lightmap_modified[j] = true;
 

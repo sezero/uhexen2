@@ -406,8 +406,7 @@ void Draw_ReInit (void)
 	draw_reinit = true;
 
 	D_ClearOpenGLTextures(0);
-	texture_extension_number = 1U;
-	lightmap_textures = 0U;
+	memset (lightmap_textures, 0, sizeof(lightmap_textures));
 	for (j = 0; j < MAX_LIGHTMAPS; j++)
 		lightmap_modified[j] = true;
 	// make sure all of alias models are cleared
@@ -1864,12 +1863,12 @@ GLuint GL_LoadTexture (const char *identifier, int width, int height, byte *data
 					mipmap != glt->mipmap )
 				{	// not the same, delete and rebind to new image
 					Con_DPrintf ("Texture cache mismatch: %lu, %s, reloading\n", (unsigned long)glt->texnum, identifier);
-					glDeleteTextures_fp (1, &(glt->texnum));
+					glDeleteTextures_fp (1, &glt->texnum);
 					goto gl_rebind;
 				}
 				else
 				{	// No need to rebind
-					return gltextures[i].texnum;
+					return glt->texnum;
 				}
 			}
 		}
@@ -1881,10 +1880,9 @@ GLuint GL_LoadTexture (const char *identifier, int width, int height, byte *data
 	glt = &gltextures[numgltextures];
 	numgltextures++;
 	q_strlcpy (glt->identifier, identifier, MAX_QPATH);
-	glt->texnum = texture_extension_number;
-	texture_extension_number++;
 
 gl_rebind:
+	glGenTextures_fp(1, &glt->texnum);
 	glt->width = width;
 	glt->height = height;
 	glt->mipmap = mipmap;

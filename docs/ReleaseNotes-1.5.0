@@ -21,6 +21,7 @@ Changes since HoT-1.4.4-pre11:
   disables throttling.
 * opengl: fixed an issue in net games where joining players appeared
   untextured on the opengl server application (bug #3288081).
+* opengl: updated code to use glGenTextures().
 * fixed a mission pack HexenC bug which used to prevent the finale screen
   to trigger if Praevus were killed too quickly. thanks Thomas Freundt.
 * handled several map quirks thanks to careful works by Thomas Freundt

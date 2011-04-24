@@ -3,7 +3,7 @@
 	opengl function pointers
 	make sure NOT to protect this file against multiple inclusions!
 
-	$Id: gl_func.h,v 1.14 2007-02-13 16:55:57 sezero Exp $
+	$Id$
 */
 
 // whether to dlsym gl function calls
@@ -24,6 +24,7 @@ __GL_FUNC_EXTERN func##_f func##_fp;
 
 GL_FUNCTION(void, glBindTexture, (GLenum,GLuint))
 GL_FUNCTION(void, glDeleteTextures, (GLsizei,const GLuint *))
+GL_FUNCTION(void, glGenTextures, (GLsizei,GLuint *))
 GL_FUNCTION(void, glTexParameterf, (GLenum,GLenum,GLfloat))
 GL_FUNCTION(void, glTexEnvf, (GLenum,GLenum,GLfloat))
 GL_FUNCTION(void, glScalef, (GLfloat,GLfloat,GLfloat))
@@ -96,6 +97,7 @@ GL_FUNCTION(void, glClearStencil, (GLint))
 
 #define glBindTexture_fp	glBindTexture
 #define glDeleteTextures_fp	glDeleteTextures
+#define glGenTextures_fp	glGenTextures
 #define glTexParameterf_fp	glTexParameterf
 #define glTexEnvf_fp		glTexEnvf
 #define glScalef_fp		glScalef

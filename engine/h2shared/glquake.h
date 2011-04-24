@@ -2,7 +2,7 @@
 	glquake.h
 	common glquake header
 
-	$Id$
+	$Id: glquake.h 3942 2011-04-24 07:56:29Z sezero $
 */
 
 
@@ -135,10 +135,9 @@ typedef struct
    ================================================================== */
 
 /* gl texture objects */
-extern	GLuint		texture_extension_number;
 extern	GLuint		currenttexture;
 extern	GLuint		particletexture;
-extern	GLuint		lightmap_textures;
+extern	GLuint		lightmap_textures[MAX_LIGHTMAPS];
 extern	GLuint		playertextures[MAX_CLIENTS];
 extern	GLuint		plyrtex[MAX_PLAYER_CLASS][16][16];	// player textures in multiplayer config screens
 extern	GLuint		gl_extra_textures[MAX_EXTRA_TEXTURES];	// generic textures for models

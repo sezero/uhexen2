@@ -2,7 +2,7 @@
 	gl_ngraph.c
 	net graph drawing
 
-	$Id: gl_ngraph.c,v 1.10 2007-12-14 16:41:11 sezero Exp $
+	$Id$
 */
 
 #include "quakedef.h"
@@ -150,7 +150,6 @@ void R_NetGraph (void)
 
 void R_InitNetgraphTexture (void)
 {
-	netgraphtexture = texture_extension_number;
-	texture_extension_number++;
+	glGenTextures_fp(1, &netgraphtexture);
 }
 
