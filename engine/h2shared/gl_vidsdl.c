@@ -1221,6 +1221,7 @@ static void VID_ChangeVideoMode (int newmode)
 	SCR_Init();
 	// R_Init() stuff:
 	R_InitParticleTexture();
+	R_InitExtraTextures ();
 #if defined(H2W)
 	R_InitNetgraphTexture();
 #endif	/* H2W */

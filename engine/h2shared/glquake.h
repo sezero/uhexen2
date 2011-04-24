@@ -321,6 +321,7 @@ void GL_SetupLightmapFmt (qboolean check_cmdline);
 void GL_MakeAliasModelDisplayLists (qmodel_t *m, aliashdr_t *hdr);
 
 void R_InitParticleTexture (void);
+void R_InitExtraTextures (void);
 #if defined(H2W)
 void R_NetGraph (void);
 void R_InitNetgraphTexture (void);

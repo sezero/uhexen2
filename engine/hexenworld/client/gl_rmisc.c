@@ -104,6 +104,21 @@ void R_InitParticleTexture (void)
 	glTexEnvf_fp(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 }
 
+void R_InitExtraTextures (void)
+{
+	int	i;
+
+	for (i = 0; i < MAX_EXTRA_TEXTURES; i++)
+		gl_extra_textures[i] = GL_UNUSED_TEXTURE;
+
+	for (i = 0; i < MAX_CLIENTS; i++)
+	{
+	// see R_TranslatePlayerSkin() below
+		playertextures[i] = texture_extension_number;
+		texture_extension_number++;
+	}
+}
+
 /*
 ===============
 R_Envmap_f
@@ -218,8 +233,6 @@ R_Init
 */
 void R_Init (void)
 {
-	int	counter;
-
 	Cmd_AddCommand ("timerefresh", R_TimeRefresh_f);
 	Cmd_AddCommand ("envmap", R_Envmap_f);
 	Cmd_AddCommand ("pointfile", R_ReadPointFile_f);
@@ -274,12 +287,10 @@ void R_Init (void)
 
 	R_InitParticles ();
 	R_InitParticleTexture ();
+	R_InitExtraTextures ();
 
 	R_InitNetgraphTexture ();
 	flush_textures = true;
-
-	for (counter = 0 ; counter < MAX_EXTRA_TEXTURES ; counter++)
-		gl_extra_textures[counter] = GL_UNUSED_TEXTURE;
 
 	playerTranslation = (byte *)FS_LoadHunkFile ("gfx/player.lmp", NULL);
 	if (!playerTranslation)
@@ -302,7 +313,6 @@ void R_TranslatePlayerSkin (int playernum)
 	byte		translate[256];
 	unsigned int	translate32[256];
 	int		i, j;
-//	int		s;
 	qmodel_t	*model;
 	aliashdr_t	*paliashdr;
 	byte		*original;
@@ -313,7 +323,8 @@ void R_TranslatePlayerSkin (int playernum)
 	unsigned int	frac, fracstep;
 	byte		*sourceA, *sourceB, *colorA, *colorB;
 	player_info_t	*player;
-	char		texname[20];
+//	int		s;
+//	char		texname[20];
 
 	for (i = 0; i < 256; i++)
 		translate[i] = i;
@@ -399,8 +410,16 @@ void R_TranslatePlayerSkin (int playernum)
 			frac += fracstep;
 		}
 	}
-	q_snprintf(texname, 19, "player%i", playernum);
-	playertextures[playernum] = GL_LoadTexture(texname, scaled_width, scaled_height, (byte *)pixels, false, false, 0, true);
+
+// playertextures doesn't like GL_LoadTexture() and its associated glDeleteTextures()
+// call, not sure why for now, so I have to do this the old way until I figure it out.
+//	q_snprintf(texname, 19, "player%i", playernum);
+//	playertextures[playernum] = GL_LoadTexture(texname, scaled_width, scaled_height, (byte *)pixels, false, false, 0, true);
+	GL_Bind(playertextures[playernum]);
+	glTexImage2D_fp(GL_TEXTURE_2D, 0, gl_solid_format, scaled_width, scaled_height, 0, GL_RGBA, GL_UNSIGNED_BYTE, pixels);
+	glTexEnvf_fp(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+	glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 }
 
 /*

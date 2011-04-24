@@ -3,6 +3,22 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2011-04-24 (SVN):
+    * gl_rmisc.c (R_InitExtraTextures): New procedure. Assign values to
+      playertextures array here.
+      (R_Init): Move resetting of gl_extra_textures to R_InitExtraTextures().
+      Call R_InitExtraTextures().
+      (R_TranslatePlayerSkin): Reloading of playertextures doesn't like
+      GL_LoadTexture() and its associated glDeleteTextures() call, not sure
+      why for now, so I have to do this the old way by overwriting them
+      without deleting the old texture until I figure it out. Fixes bug
+      3288081.
+    * glquake.h (R_InitExtraTextures): Add prototype for the new procedure.
+    * gl_vidnt.c, gl_vidsdl.c (VID_ChangeVideoMode): Call the new
+      R_InitExtraTextures() procedure to reassign names to playertextures
+      and to reset gl_extra_textures arrays.
+    * Bumped version to 1.5.0-rc2.
+
 2011-04-23 (SVN):
     * gamecode, portals/buddha.hc: Fixed a bug which used to prevent the
       finale screen to trigger if Praevus were killed too quickly in

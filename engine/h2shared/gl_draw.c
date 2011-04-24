@@ -423,6 +423,7 @@ void Draw_ReInit (void)
 	Sbar_Init();
 	// Reload the particle texture
 	R_InitParticleTexture();
+	R_InitExtraTextures ();
 #if defined(H2W)
 	R_InitNetgraphTexture();
 #endif	/* H2W */
