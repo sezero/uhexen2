@@ -1,4 +1,4 @@
-# RPM spec file for RedHat and Fedora
+# RPM spec file for RedHat and Fedora.
 # $Id$
 
 # build options :
@@ -58,12 +58,12 @@
 
 # pre-release version: MAKE SURE to change this
 # to an %undefine for the final realease!!
-%define prerelease	rc1
+%define prerelease	rc2
 
 # package release number for final-release:
 %define pkg_final	1
 # package release number for pre-release:
-%define pkg_prerel	1
+%define pkg_prerel	2
 
 Name:		hexen2
 License:	GPLv2
@@ -339,6 +339,9 @@ desktop-file-install \
 %{_prefix}/games/%{name}/docs/README.hwmaster
 
 %changelog
+* Sun Apr 24 2011 O.Sezer <sezero@users.sourceforge.net> 1.5.0-0.2.rc2
+- Bumped version to 1.5.0-rc2.
+
 * Tue Mar 08 2011 O.Sezer <sezero@users.sourceforge.net>
 - Fix license tag as GPLv2.
 - Add missing missing pack map entity fixes to the packaged files list.

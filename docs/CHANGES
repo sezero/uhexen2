@@ -4,6 +4,9 @@ Development Progress	:
 ---------------------------
 
 2011-04-24 (SVN):
+    * updated rpm spec file and other docs for 1.5.0-rc2.
+
+2011-04-24 (SVN):
     * glquake.h, gl_func.h, gl_draw.c, gl_vidnt.c, gl_vidsdl.c, gl_rmisc.c,
       gl_rsurf.c, gl_ngraph.c: abandoned texture_extension_number, switched
       to glGenTextures() which is an opengl 1.1 requirement.
