@@ -219,6 +219,10 @@ utils/bin/hcc -src gamecode-%{gamecode_ver}/hc/hw -oi -on
 
 # Install ent fixes handling map quirks
 %{__mkdir_p} %{buildroot}/%{_prefix}/games/%{name}/data1/maps/
+%{__install} -D -m644 gamecode-%{gamecode_ver}/mapfixes/data1/maps/demo2.ent %{buildroot}/%{_prefix}/games/%{name}/data1/maps/demo2.ent
+%{__install} -D -m644 gamecode-%{gamecode_ver}/mapfixes/data1/maps/demo2.txt %{buildroot}/%{_prefix}/games/%{name}/data1/maps/demo2.txt
+%{__install} -D -m644 gamecode-%{gamecode_ver}/mapfixes/data1/maps/egypt4.ent %{buildroot}/%{_prefix}/games/%{name}/data1/maps/egypt4.ent
+%{__install} -D -m644 gamecode-%{gamecode_ver}/mapfixes/data1/maps/egypt4.txt %{buildroot}/%{_prefix}/games/%{name}/data1/maps/egypt4.txt
 %{__install} -D -m644 gamecode-%{gamecode_ver}/mapfixes/data1/maps/egypt5.ent %{buildroot}/%{_prefix}/games/%{name}/data1/maps/egypt5.ent
 %{__install} -D -m644 gamecode-%{gamecode_ver}/mapfixes/data1/maps/egypt5.txt %{buildroot}/%{_prefix}/games/%{name}/data1/maps/egypt5.txt
 %{__install} -D -m644 gamecode-%{gamecode_ver}/mapfixes/data1/maps/romeric5.ent %{buildroot}/%{_prefix}/games/%{name}/data1/maps/romeric5.ent
@@ -283,6 +287,10 @@ desktop-file-install \
 %{_prefix}/games/%{name}/data1/hexen.rc
 %{_prefix}/games/%{name}/data1/strings.txt
 %{_prefix}/games/%{name}/data1/default.cfg
+%{_prefix}/games/%{name}/data1/maps/demo2.ent
+%{_prefix}/games/%{name}/data1/maps/demo2.txt
+%{_prefix}/games/%{name}/data1/maps/egypt4.ent
+%{_prefix}/games/%{name}/data1/maps/egypt4.txt
 %{_prefix}/games/%{name}/data1/maps/egypt5.ent
 %{_prefix}/games/%{name}/data1/maps/egypt5.txt
 %{_prefix}/games/%{name}/data1/maps/romeric5.ent
@@ -339,6 +347,9 @@ desktop-file-install \
 %{_prefix}/games/%{name}/docs/README.hwmaster
 
 %changelog
+* Wed May 04 2011 O.Sezer <sezero@users.sourceforge.net>
+- Install demo2 and egypt4 entity fixes for handling map quirks.
+
 * Sun Apr 24 2011 O.Sezer <sezero@users.sourceforge.net> 1.5.0-0.2.rc2
 - Bumped version to 1.5.0-rc2.
 

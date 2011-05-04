@@ -1,0 +1,9 @@
+Map: egypt4.bsp (Hexen II registered version, in the data1/pak1.pak
+pakfile.)
+
+Of the two golems in the throne room (skill >= 2), the one closer to
+the throne is not on ground.  Fixed by changing their origins from
+"1888 368 184" to "1888 368 160" and "2240 416 184" to "2240 416 160"
+in the entities.  See around lines 1679 and 1685 of the egypt4.ent
+file included here.  (Fixed by Thomas Freundt.)
+

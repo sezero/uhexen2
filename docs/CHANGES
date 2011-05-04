@@ -4,6 +4,10 @@ Development Progress	:
 ---------------------------
 
 2011-05-04 (SVN):
+    * mapfixes, demo2.ent and egypt4.ent: Added minor entity fixes for demo2
+      and egypt4 maps from Thomas Freundt. Updated the rpm spec file.
+
+2011-05-04 (SVN):
     * gamecode, eidolon.hc: fixed a bug which might prevent Eidolon to land.
       fixed more Eidolon bugs which might prevent the finale screen to trigger.
       Analyzed and fixed by Thomas Freundt.

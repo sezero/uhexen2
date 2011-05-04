@@ -1,0 +1,12 @@
+Map: demo2.bsp (Hexen II all versions, in the data1/pak0.pak
+pakfile.)
+
+When you teleport through the Old Tower in demo2 you materialize with
+momentum which has you pick up the Tome of Power and the Mill Key
+(skill > 0) before even noticing them properly.  The Mill Key is also
+partially clipped while rotating.  Fixed by changing the relevant
+origins from "-888 -616 344" to "-888 -668 344", "-888 -480 344" to
+"-888 -456 368" and "-888 -520 380" to "-888 -496 380".  See around
+lines 3731, 3737 and 3785 of the demo2.ent file included here.  (Fixed
+by Thomas Freundt.)
+
