@@ -402,6 +402,118 @@ void check_use_model (string whichmodel)
 	self.hull=HULL_POINT;
 }
 
+/*
+From: "Thomas Freundt" <thf_ebay@yahoo.de>
+To: "Ozkan Sezer" <sezeroz@gmail.com>
+Subject: Re: eidobug
+Date: Mon, 2 May 2011 14:43:39 +0200
+
+[...] When a player or monster gets hurt, 'T_Damage' is called and after that
+another function, the reference to which is stored in self.th_pain, which in
+our case is 'eidolon_check_fake'.
+
+In the first part of the showdown this function restores Eidolon's health to
+3000 and keeps track of the inflicted damage through the separate variable
+self.dmg:
+
+	self.dmg+=self.max_health-self.health;
+	self.health=self.max_health;
+
+When self.dmg is >= 2000 Eidolon has to be struck once more after at least
+3+skill seconds:
+
+	self.pain_finished=time+3+skill;
+
+Then, 'eidolon_check_fake' deactivates itself (temporarily) by the statement
+
+	self.th_pain=SUB_Null;
+
+and invokes the chain
+
+	'eidolon_fake_die' ->
+	'eidolon_darken_sky' ->
+	'eidolon_ready_grow' ->
+	'eidolon_grow' ->
+	'eidolon_ready_roar' ->
+	'eidolon_roar'
+
+Until 'eidolon_ready_roar' is called, deactivation of 'eidolon_check_fake' is
+compensated by self.health=self.max_health;
+
+assignments every animation frame. Even with four players, there is no way of
+inflicting so much damage as to kill Eidolon during one think interval (0.1s) .
+In 'T_Damage', however, there is an if clause that only applies to damage
+inflicted by monsters; so when an Imp Lord supports the player and hits Eidolon
+the following chain is triggered:
+
+	'T_Damage' ->
+	'monster_pissed' ->
+	'FoundTarget' ->
+	'HuntTarget' ->
+	self.think = self.th_run;
+
+Hence, an Imp Lord can break the chain beginning with 'eidolon_fake_die' in any
+one of the functions involved by replacing it with self.th_run which is either
+'eidolon_run' or 'eidolon_guarding'. As 'eidolon_check_fake' is only restored
+in 'eidolon_roar', Eidolon can take damage by either an Imp Lord or a player
+while he isn't supposed to and eventually dies:
+
+	'eidolon_die' ->
+	'eidolon_shake' ->
+	'eidolon_explode' ->
+	'rider_die' ->
+	'rider_eol' ->
+	WriteByte (MSG_ALL, 6);
+
+In 'eidobug.dem' you can hear the sound "eidolon/fakedie.wav" which is the
+moment when Eidolon starts to loose health. Once 'eidolon_die' is initiated
+'T_Damage' returns before 'monster_pissed' might be called because health is
+<= 0. Hurting the orb, however, invokes the chain
+
+	'orb_pain' ->
+	'eidolon_orb_pain' (self.owner.think) ->
+	'eidolon_run'
+
+thereby interrupting 'rider_die' and as such effectively inhibiting completion
+of the game. As an entity, Eidolon isn't removed, only his model gets replaced
+with "models/null.spr"; therefore, his bounding box can still be hurt and in
+developer mode debug print spits out messages like "R_GetSpriteFrame: no such
+frame 201".
+
+There are at least two more bugs in the eidolon map. Eidolon starts off with
+MOVETYPE_STEP (4) which is typical of monsters and required for his initial
+jump to work; after that, movetype is set to MOVETYPE_NONE (0). During
+'eidolon_darken_sky' movetype is set to MOVETYPE_NOCLIP (8). The first
+condition checked in 'eidolon_check_attack' is
+
+	if(self.movetype)
+	 return FALSE;
+
+If an Imp Lord hits Eidolon before the first roaring sequence initiated by
+self.th_jump is completed, detection of any attacker whatsoever is inhibited
+because only when the last animation frame of 'eidolon_roar' is reached
+movetype is set to MOVETYPE_NONE.
+
+The third quirk is caused by the game's assumption that Eidolon always lands
+on the arena's ground after his initial jump and assigns the FL_ONGROUND flag
+to this z-level; if an Imp Lord attacks Eidolon in a way that the latter's
+jump is either blocked or makes him land on the Imp Lord, Eidolon keeps
+walking in mid air. For both bugs see attachment "eidobug2+3.dem".
+
+As far as I can tell, the only way to safely prevent interruption of chained
+sequences by an Imp without fiddling with "damage.hc" is to set the DAMAGE_NO
+flag during the vulnerable phases - the downside to this is Eidolon being
+immune to damage during the first roaring sequence (and during 'eidolon_grow',
+but then his health is restored anyhow).
+
+[...]
+
+What I forgot: while the DAMAGE_NO flag is set, hitting Eidolon sounds like
+hitting stone. Using FL_GODMODE instead not only makes hitting Eidolon sound
+like flesh again [...]
+
+*/
+
 float eidolon_riderpath_move(float move_speed)
 {
 entity next_path;
@@ -452,7 +564,12 @@ vector displace;
 	self.ideal_yaw = vectoyaw(self.path_current.origin - self.origin);
 	ChangeYaw();
 
-	self.flags(+)FL_ONGROUND;
+	// not really elegant, but short and effective
+	if (checkbottom(self))
+		self.flags(+)FL_ONGROUND;
+	else
+		droptofloor();
+
 	if(!walkmove(self.angles_y, move_speed, TRUE))
 	{
 	float cant_move;
@@ -576,6 +693,7 @@ void eidolon_roar () [++ $howl1 .. $howl60]
 	if(self.frame==$howl60)
 	{
 		self.movetype = MOVETYPE_NONE;
+		self.flags(-)FL_GODMODE;
 		self.th_pain = eidolon_check_fake;
 		self.attack_finished=time+3;
 		self.think=eidolon_guarding;
@@ -720,7 +838,11 @@ void eidolon_fake_die () [++ $death1 .. $death30]
 			self.think=eidolon_darken_sky;
 		}
 		else
+		{
+			self.flags(-)FL_GODMODE;
+			self.th_pain=eidolon_check_fake;
 			self.think=eidolon_run;
+		}
 }
 
 void eidolon_orb_pain () [++ $painB1 .. $painB20]
@@ -796,6 +918,7 @@ float pain_chance;
 
 	if(self.dmg>=2000&&self.scale<1)
 	{
+		self.flags(+)FL_GODMODE;
 		self.th_pain=SUB_Null;
 		if(attacker.classname=="player")
 			AwardExperience(attacker,self,self.experience_value);
@@ -1301,7 +1424,7 @@ void monster_eidolon(void)
 	self.movetype = MOVETYPE_STEP;
 	self.takedamage=DAMAGE_YES;
 	self.monsterclass=CLASS_FINAL_BOSS;
-	self.flags(+)FL_MONSTER;
+	self.flags(+)FL_MONSTER|FL_GODMODE;
 	self.flags2(+)FL_ALIVE|FL_SMALL;
 	self.thingtype=THINGTYPE_FLESH;
 

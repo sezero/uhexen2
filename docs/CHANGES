@@ -3,6 +3,11 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2011-05-04 (SVN):
+    * gamecode, eidolon.hc: fixed a bug which might prevent Eidolon to land.
+      fixed more Eidolon bugs which might prevent the finale screen to trigger.
+      Analyzed and fixed by Thomas Freundt.
+
 2011-04-24 (SVN):
     * updated rpm spec file and other docs for 1.5.0-rc2.
 
