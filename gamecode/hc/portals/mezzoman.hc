@@ -1,5 +1,5 @@
 /*
- * $Header: /cvsroot/uhexen2/gamecode/hc/portals/mezzoman.hc,v 1.4 2007-02-07 16:59:34 sezero Exp $
+ * $Id$
  */
 
 /*
@@ -604,7 +604,7 @@ vector punchdir;
 
 	self.ltime+=1;
 	other.safe_time=time+1.25;//So can't kill them instantly if they're moving against him or pinned on a wall
-	if(self.think!=mezzo_charge_stop)
+	if(self.think!=mezzo_charge_stop && self.flags2&FL_ALIVE)
 	{
 		thinktime self : 0;
 		self.think=mezzo_charge_stop;

@@ -3,6 +3,10 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2011-05-05 (SVN):
+    * gamecode, mezzoman.hc: Fixed a bug where werepathers become "undead"
+      when an assassin kills it by her bombs. Fix by Thomas Freundt.
+
 2011-05-04 (SVN):
     * mapfixes, demo2.ent and egypt4.ent: Added minor entity fixes for demo2
       and egypt4 maps from Thomas Freundt. Updated the rpm spec file.

@@ -4,9 +4,11 @@ Game code for Hexen2 / H2MP / HexenWorld
 Changes
 -------
 
-2011-05-04 (1.20):
+2011-05-05 (1.20):
 ===================
 - Bumped version number to 1.20.
+- Fixed a bug where werepathers become "undead" when an assassin kills
+  it by her bombs. Fix by Thomas Freundt.
 - Fixed a bug which might prevent Eidolon to land. Fixed more Eidolon
   bugs which might prevent the finale screen to trigger. Analyzed and
   fixed by Thomas Freundt.
