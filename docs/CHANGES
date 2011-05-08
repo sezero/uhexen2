@@ -4,6 +4,9 @@ Development Progress	:
 ---------------------------
 
 2011-05-08 (SVN):
+    * Updated 1.5.0 release notes file.
+
+2011-05-08 (SVN):
     * opengl: always use GL_LINEAR as lightmap filter. made gl_texturemode
       command not affect lightmaps.
 
