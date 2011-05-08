@@ -3,6 +3,10 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2011-05-08 (SVN):
+    * opengl: always use GL_LINEAR as lightmap filter. made gl_texturemode
+      command not affect lightmaps.
+
 2011-05-05 (SVN):
     * gamecode, mezzoman.hc: Fixed a bug where werepathers become "undead"
       when an assassin kills it by her bombs. Fix by Thomas Freundt.

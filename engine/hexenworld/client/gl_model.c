@@ -596,10 +596,6 @@ void Mod_ReloadTextures (void)
 		}
 	}
 
-	// Force update of all lightmaps
-	//for (j = 0; j < MAX_LIGHTMAPS; j++)
-	//	lightmap_modified[j] = true;
-
 	// Reload alias models and sprites
 	for (j = 0; j < mod_numknown; j++)
 	{

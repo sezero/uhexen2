@@ -302,10 +302,6 @@ static void Draw_TextureMode_f (void)
 			glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, gl_filter_max);
 		}
 	}
-
-	// Pa3PyX: force update of all lightmaps
-	for (i = 0; i < MAX_LIGHTMAPS; i++)
-		lightmap_modified[i] = true;
 }
 
 /*
@@ -398,7 +394,7 @@ just after changing the game directory.
 */
 void Draw_ReInit (void)
 {
-	int	j, temp, temp2;
+	int	temp, temp2;
 
 	temp = scr_disabled_for_loading;
 	scr_disabled_for_loading = true;
@@ -407,8 +403,6 @@ void Draw_ReInit (void)
 
 	D_ClearOpenGLTextures(0);
 	memset (lightmap_textures, 0, sizeof(lightmap_textures));
-	for (j = 0; j < MAX_LIGHTMAPS; j++)
-		lightmap_modified[j] = true;
 	// make sure all of alias models are cleared
 	flush_textures = true;
 	temp2 = gl_purge_maptex.integer;

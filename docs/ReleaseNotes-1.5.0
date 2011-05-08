@@ -19,6 +19,8 @@ Changes since HoT-1.4.4-pre11:
   little bit and run cooler on new fast systems. the default sys_throttle
   value is 0.02, acceptable values are between 0 and 1. changing it to 0
   disables throttling.
+* opengl: always use GL_LINEAR as lightmap filter. made gl_texturemode
+  command not affect lightmaps.
 * opengl: fixed an issue in net games where joining players appeared
   untextured on the opengl server application (bug #3288081).
 * opengl: updated code to use glGenTextures().

@@ -19,7 +19,7 @@ static unsigned int	blocklightscolor[18*18*3];	// colored light support. *3 for 
 #define	BLOCK_HEIGHT	128
 
 static glpoly_t	*lightmap_polys[MAX_LIGHTMAPS];
-qboolean	lightmap_modified[MAX_LIGHTMAPS];
+static qboolean	lightmap_modified[MAX_LIGHTMAPS];
 
 static int	allocated[MAX_LIGHTMAPS][BLOCK_WIDTH];
 
@@ -582,10 +582,6 @@ static void R_BlendLightmaps (qboolean Translucent)
 			// if current lightmap was changed reload it
 			// and mark as not changed.
 			lightmap_modified[i] = false;
-			// make sure filtering modes are correct on display
-			// mode changes and gl_texturemode commands.
-			glTexParameterf_fp (GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, gl_filter_max);
-			glTexParameterf_fp (GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, gl_filter_max);
 			glTexImage2D_fp (GL_TEXTURE_2D, 0, lightmap_bytes, BLOCK_WIDTH,
 					BLOCK_HEIGHT, 0, gl_lightmap_format, GL_UNSIGNED_BYTE,
 					lightmaps + i*BLOCK_WIDTH*BLOCK_HEIGHT*lightmap_bytes);
@@ -664,10 +660,6 @@ static void R_UpdateLightmaps (qboolean Translucent)
 			// if current lightmap was changed reload it
 			// and mark as not changed.
 			lightmap_modified[i] = false;
-			// make sure filtering modes are correct on display
-			// mode changes and gl_texturemode commands.
-			glTexParameterf_fp (GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, gl_filter_max);
-			glTexParameterf_fp (GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, gl_filter_max);
 			glTexImage2D_fp (GL_TEXTURE_2D, 0, lightmap_bytes, BLOCK_WIDTH,
 					BLOCK_HEIGHT, 0, gl_lightmap_format, GL_UNSIGNED_BYTE,
 					lightmaps + i*BLOCK_WIDTH*BLOCK_HEIGHT*lightmap_bytes);
@@ -1612,8 +1604,8 @@ void GL_BuildLightmaps (void)
 			break;		// no more used
 		lightmap_modified[i] = false;
 		GL_Bind(lightmap_textures[i]);
-		glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, gl_filter_max);
-		glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, gl_filter_max);
+		glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 		glTexImage2D_fp (GL_TEXTURE_2D, 0, lightmap_bytes, BLOCK_WIDTH,
 				BLOCK_HEIGHT, 0, gl_lightmap_format, GL_UNSIGNED_BYTE,
 				lightmaps + i*BLOCK_WIDTH*BLOCK_HEIGHT*lightmap_bytes);

@@ -1871,7 +1871,6 @@ intended only as a callback for VID_Restart_f
 */
 static void VID_ChangeVideoMode (int newmode)
 {
-	unsigned int	j;
 	int	temp, temp2;
 
 	// Avoid window updates and alt+tab handling (which sets modes back)
@@ -1890,8 +1889,6 @@ static void VID_ChangeVideoMode (int newmode)
 	// Unload all textures and reset texture counts
 	D_ClearOpenGLTextures(0);
 	memset (lightmap_textures, 0, sizeof(lightmap_textures));
-	for (j = 0; j < MAX_LIGHTMAPS; j++)
-		lightmap_modified[j] = true;
 
 	// reset all opengl function pointers
 	GL_ResetFunctions();

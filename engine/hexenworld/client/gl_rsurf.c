@@ -23,7 +23,7 @@ typedef struct glRect_s {
 } glRect_t;
 
 static glpoly_t	*lightmap_polys[MAX_LIGHTMAPS];
-qboolean	lightmap_modified[MAX_LIGHTMAPS];
+static qboolean	lightmap_modified[MAX_LIGHTMAPS];
 static glRect_t	lightmap_rectchange[MAX_LIGHTMAPS];
 
 static int	allocated[MAX_LIGHTMAPS][BLOCK_WIDTH];
@@ -589,10 +589,6 @@ static void R_BlendLightmaps (qboolean Translucent)
 			// and mark as not changed.
 			lightmap_modified[i] = false;
 			theRect = &lightmap_rectchange[i];
-			// make sure filtering modes are correct on display
-			// mode changes and gl_texturemode commands.
-			glTexParameterf_fp (GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, gl_filter_max);
-			glTexParameterf_fp (GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, gl_filter_max);
 			glTexSubImage2D_fp(GL_TEXTURE_2D, 0, 0, theRect->t, BLOCK_WIDTH,
 					theRect->h, gl_lightmap_format, GL_UNSIGNED_BYTE,
 					lightmaps + (i* BLOCK_HEIGHT + theRect->t)*BLOCK_WIDTH*lightmap_bytes);
@@ -680,10 +676,6 @@ static void R_UpdateLightmaps (qboolean Translucent)
 			// and mark as not changed.
 			lightmap_modified[i] = false;
 			theRect = &lightmap_rectchange[i];
-			// make sure filtering modes are correct on display
-			// mode changes and gl_texturemode commands.
-			glTexParameterf_fp (GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, gl_filter_max);
-			glTexParameterf_fp (GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, gl_filter_max);
 			glTexSubImage2D_fp(GL_TEXTURE_2D, 0, 0, theRect->t, BLOCK_WIDTH,
 					theRect->h, gl_lightmap_format, GL_UNSIGNED_BYTE,
 					lightmaps + (i* BLOCK_HEIGHT + theRect->t)*BLOCK_WIDTH*lightmap_bytes);
@@ -1679,8 +1671,8 @@ void GL_BuildLightmaps (void)
 		lightmap_rectchange[i].w = 0;
 		lightmap_rectchange[i].h = 0;
 		GL_Bind(lightmap_textures[i]);
-		glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, gl_filter_max);
-		glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, gl_filter_max);
+		glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 		glTexImage2D_fp (GL_TEXTURE_2D, 0, lightmap_bytes, BLOCK_WIDTH,
 				BLOCK_HEIGHT, 0, gl_lightmap_format, GL_UNSIGNED_BYTE,
 				lightmaps + i*BLOCK_WIDTH*BLOCK_HEIGHT*lightmap_bytes);

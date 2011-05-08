@@ -255,7 +255,6 @@ extern	cvar_t	gl_lightmapfmt;
 /* other globals */
 extern	int		gl_coloredstatic;	/* value of gl_coloredlight stored at level start */
 extern	int		gl_lightmap_format;	/* value of gl_lightmapfmt stored at level start */
-extern	qboolean	lightmap_modified[MAX_LIGHTMAPS];
 
 extern	vec3_t		lightcolor;
 extern	vec3_t		lightspot;
