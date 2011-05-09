@@ -1,5 +1,5 @@
 /*
- * $Header: /cvsroot/uhexen2/gamecode/hc/portals/damage.hc,v 1.3 2007-02-07 16:59:31 sezero Exp $
+ * $Id$
  */
 
 void() T_MissileTouch;
@@ -909,7 +909,9 @@ entity holdent,lastleader,newking;
 	if(targ.flags&FL_MONSTER&&inflictor.flags2&FL2_ADJUST_MON_DAM)
 		damage*=2;//Special- more damage against monsters
 
-	if (attacker.super_damage)
+	// check for attacker being a player here is necessary
+	// see the "Trigger field" dest2 bug in the union in entity.hc
+	if (attacker.flags&FL_CLIENT && attacker.super_damage)
 		damage += attacker.super_damage * damage;
 
 	// Calculating Damage to a player

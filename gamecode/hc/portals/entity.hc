@@ -3,7 +3,7 @@
 //**
 //** entity.hc
 //**
-//** $Header: /cvsroot/uhexen2/gamecode/hc/portals/entity.hc,v 1.2 2007-02-07 16:24:59 sezero Exp $
+//** $Id$
 //**
 //**************************************************************************
 
@@ -493,6 +493,10 @@ void end_sys_fields;
 	struct
 	{	// Trigger field
 		float failchance;   // percentage (chance) that trigger will not fire
+		// this is a design flaw by Raven: setting dest2 here overwrites
+		// super_damage in the "player" struct which used to lead T_Damage()
+		// making a pentacle monster in tibet1.bsp invulnerable, because of
+		// super_damage becoming negative..
 		vector dest, dest1, dest2;	//9 spots unioned
 	};
 };

@@ -1,5 +1,5 @@
 Hexen II: Hammer of Thyrion (uhexen2), release candidate,
-Version 1.5.0-rc2 / Apr. 24, 2011
+Version 1.5.0-rc3 / May. 09, 2011
 
 Changes since HoT-1.4.4-pre11:
 
@@ -24,6 +24,8 @@ Changes since HoT-1.4.4-pre11:
 * opengl: fixed an issue in net games where joining players appeared
   untextured on the opengl server application (bug #3288081).
 * opengl: updated code to use glGenTextures().
+* fixed a mission pack HexenC bug where a pentacle monster in the tibet1
+  map became invulnerable when it got crushed by a door.
 * fixed a HexenC bug where werepathers become "undead" when an assassin
   kills it by her bombs. fix by Thomas Freundt.
 * fixed a mission pack HexenC bug which used to prevent the finale screen
