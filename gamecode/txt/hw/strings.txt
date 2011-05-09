@@ -42,7 +42,7 @@ You need the Staff of Nefertum
 Prophecy of Set: When RA rides his chariot highest in the heavens at the Palace of the Pharaoh shall the Staff of Nefertum be set free from this chamber of the Sun
 Prophecy of Amun: Setting the wheel@of ages to alignment with each equinox@shall Upper and Lower Egypt unite
 RamsessesII fortells of the wheel of ages@being aligned on both equinoxes at@the same, yet different times
-You have rotated the wheel of ages@30 degrees.  It now points to a jackal
+You have rotated the wheel of ages@360 degrees.  It now points to a jackal
 The constellation of Atum
 The constellation of Cancer
 A constellation of a Hippopotamus

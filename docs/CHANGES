@@ -4,6 +4,8 @@ Development Progress	:
 ---------------------------
 
 2011-05-09 (SVN):
+    * strings.txt: fixed egypt2 wheel of ages message to report 360 degrees
+      instead of 30 when it "points to a jackal". patch from Sander van Dijk.
     * gamecode: fixed a mission pack HexenC bug where a pentacle monster
       in the tibet1 map became invulnerable when it got crushed by a door.
       documented the design flaw in the entity union which was responsible.
