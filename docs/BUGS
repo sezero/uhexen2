@@ -3,10 +3,6 @@ Hexen II: Hammer of Thyrion
 Known Bugs
 ---------------------------
 
-- Linux (Unix): OSS sound code does not work for a few people, either
-  partially or completely. If you suffer from that problem, use Alsa
-  or SDL sound.
-
 - BUG # 2176023: Can't move backwards after dying:
   http://sourceforge.net/tracker/?func=detail&aid=2176023&group_id=124987&atid=701006
   Die, auto-reload and can't move backwards; probably can't use some
@@ -31,8 +27,8 @@ Known Bugs
   wrong with their C-implementation.
 
 - Hexen II dedicated server: The swords on the weapon racks in village1
-  and demo2 levels are placed incorrectly.  (NOTE: Can't reproduce since
-  at least version 1.4.4-pre10.)  To be looked into.
+  and demo2 levels are placed incorrectly on the client side.
+  (NOTE: CAN'T reproduce since at least version 1.4.4-pre10.)
 
 - HexenWorld: Spectator mode (chasecam) isn't as it should be, compare
   with the quakeworld code and fix.

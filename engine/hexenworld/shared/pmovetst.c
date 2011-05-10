@@ -2,7 +2,7 @@
 	pmovetst.c
 	player movement testing
 
-	$Id: pmovetst.c,v 1.12 2007-06-02 05:36:25 sezero Exp $
+	$Id$
 */
 
 #include "quakedef.h"
@@ -154,9 +154,6 @@ LINE TESTING IN HULLS
 
 ===============================================================================
 */
-
-// 1/32 epsilon to keep floating point happy
-#define	DIST_EPSILON	(0.03125)
 
 /*
 ==================

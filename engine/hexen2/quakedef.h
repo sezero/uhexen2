@@ -14,9 +14,9 @@
 #define	HOT_VERSION_MAJ		1
 #define	HOT_VERSION_MID		5
 #define	HOT_VERSION_MIN		0
-#define	HOT_VERSION_REL_DATE	"2011-04-24"
+#define	HOT_VERSION_REL_DATE	"2011-05-10"
 #define	HOT_VERSION_BETA	1
-#define	HOT_VERSION_BETA_STR	"rc2"
+#define	HOT_VERSION_BETA_STR	"rc3"
 #define	HOT_VERSION_STR		STRINGIFY(HOT_VERSION_MAJ) "." STRINGIFY(HOT_VERSION_MID) "." STRINGIFY(HOT_VERSION_MIN)
 #define	GLQUAKE_VERSION		1.00
 #define	ENGINE_VERSION		1.23
@@ -61,6 +61,8 @@
 
 
 #define	ON_EPSILON	0.1		// point on plane side epsilon
+
+#define	DIST_EPSILON	(0.03125)	// 1/32 epsilon to keep floating point happy (moved from world.h)
 
 //#define	MAX_MSGLEN	8000		// max length of a reliable message
 //#define	MAX_MSGLEN	16000		// max length of a reliable message

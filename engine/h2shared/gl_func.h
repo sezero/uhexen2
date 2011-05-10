@@ -6,8 +6,8 @@
 	$Id$
 */
 
-// whether to dlsym gl function calls
-// the define GL_DLSYM is decided in the Makefile
+/* whether to dlsym gl function calls:
+ * the define GL_DLSYM is decided in the Makefile */
 
 #ifndef __GL_FUNC_EXTERN
 #define __GL_FUNC_EXTERN extern
@@ -79,6 +79,7 @@ GL_FUNCTION(void, glPopMatrix, (void))
 GL_FUNCTION(void, glLoadIdentity, (void))
 GL_FUNCTION(void, glMatrixMode, (GLenum))
 GL_FUNCTION(void, glLoadMatrixf, (const GLfloat *))
+GL_FUNCTION(void, glPolygonOffset, (GLfloat,GLfloat))
 
 GL_FUNCTION(const GLubyte*, glGetString, (GLenum))
 GL_FUNCTION(void, glGetFloatv, (GLenum,GLfloat *))
@@ -151,6 +152,7 @@ GL_FUNCTION(void, glClearStencil, (GLint))
 #define glLoadIdentity_fp	glLoadIdentity
 #define glMatrixMode_fp		glMatrixMode
 #define glLoadMatrixf_fp	glLoadMatrixf
+#define glPolygonOffset_fp	glPolygonOffset
 
 #define glGetString_fp		glGetString
 #define glGetFloatv_fp		glGetFloatv

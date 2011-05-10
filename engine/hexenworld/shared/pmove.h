@@ -2,7 +2,7 @@
 	pmove.h
 	player movement
 
-	$Id: pmove.h,v 1.6 2008-04-22 13:06:10 sezero Exp $
+	$Id$
 */
 
 #ifndef __PLAYERMOVE_H

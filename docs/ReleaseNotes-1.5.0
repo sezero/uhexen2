@@ -1,5 +1,5 @@
 Hexen II: Hammer of Thyrion (uhexen2), release candidate,
-Version 1.5.0-rc3 / May. 09, 2011
+Version 1.5.0-rc3 / May. 10, 2011
 
 Changes since HoT-1.4.4-pre11:
 
@@ -19,6 +19,8 @@ Changes since HoT-1.4.4-pre11:
   little bit and run cooler on new fast systems. the default sys_throttle
   value is 0.02, acceptable values are between 0 and 1. changing it to 0
   disables throttling.
+* opengl: fixed overlapping flickering textures, i.e. the infamous brush
+  model Z-fighting.
 * opengl: always use GL_LINEAR as lightmap filter. made gl_texturemode
   command not affect lightmaps.
 * opengl: fixed an issue in net games where joining players appeared

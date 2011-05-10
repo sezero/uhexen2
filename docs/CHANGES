@@ -3,6 +3,15 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2011-05-10 (SVN):
+    * opengl: Implemented the glPolygonOffset solution to fix the infamous
+      brush model z-fighting.  Added an alternative solution in commented
+      out form.  The flickering overlapping textures problem should be
+      largely fixed now.
+    * Updated the list of known bugs.
+    * Updated 1.5.0 release notes file.
+    * Changed beta version stamp to 1.5.0-rc3/2011-05-10.
+
 2011-05-09 (SVN):
     * strings.txt: fixed egypt2 wheel of ages message to report 360 degrees
       instead of 30 when it "points to a jackal". patch from Sander van Dijk.

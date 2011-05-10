@@ -2,7 +2,7 @@
 	world.c
 	world query functions
 
-	$Header: /cvsroot/uhexen2/engine/hexenworld/server/world.c,v 1.17 2008-04-22 13:06:11 sezero Exp $
+	$Id$
 
 	entities never clip against themselves, or their owner
 	line of sight checks trace->crosscontent, but bullets don't
@@ -573,9 +573,6 @@ LINE TESTING IN HULLS
 
 ===============================================================================
 */
-
-// 1/32 epsilon to keep floating point happy
-#define	DIST_EPSILON	(0.03125)
 
 /*
 ==================

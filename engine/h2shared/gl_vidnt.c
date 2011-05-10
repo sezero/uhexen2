@@ -838,6 +838,12 @@ static void GL_Init (void)
 	glEnable_fp(GL_ALPHA_TEST);
 	glAlphaFunc_fp(GL_GREATER, 0.632); // 1 - e^-1 : replaced 0.666 to avoid clipping of smaller fonts/graphics
 
+	/* Get rid of Z-fighting for textures by offsetting the
+	 * drawing of entity models compared to normal polygons.
+	 * (See: R_DrawBrushModel.)
+	 * (Only works if gl_ztrick is turned off) */
+	glPolygonOffset_fp(0.05f, 25.0f);
+
 	glPolygonMode_fp (GL_FRONT_AND_BACK, GL_FILL);
 	glShadeModel_fp (GL_FLAT);
 
