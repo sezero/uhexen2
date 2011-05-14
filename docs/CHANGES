@@ -3,6 +3,14 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2011-05-14 (SVN):
+    * opengl: Commented out the glPolygonOffset solution for z-fighting
+      and enabled the alternative solution of MH. glPolygonOffset caused
+      unacceptable side effects, at least in 16 bpp mode, and there is no
+      guarantee that there won't be any side effects with other hardware
+      and/or other conditions.
+    * Changed beta version stamp to 2011-05-14.
+
 2011-05-10 (SVN):
     * opengl: Implemented the glPolygonOffset solution to fix the infamous
       brush model z-fighting.  Added an alternative solution in commented
