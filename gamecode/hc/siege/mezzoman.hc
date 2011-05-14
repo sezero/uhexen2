@@ -940,7 +940,8 @@ void mezzo_missile ()
 void mezzo_die () [++ $death1 .. $death16]
 {
 	if(self.shield)
-		remove(self.shield);
+		if(self.shield.classname=="mezzo_reflect" && self.shield.owner==self)
+			remove(self.shield);
 	if (self.health < -40)
 	{
 		chunk_death();
@@ -977,7 +978,8 @@ void mezzo_pain (entity attacker, float damage)
 	self.monster_awake=TRUE;
 
 	if(self.shield)
-		remove(self.shield);
+		if(self.shield.classname=="mezzo_reflect" && self.shield.owner==self)
+			remove(self.shield);
 
 	if(self.health<=100)
 	{
@@ -1155,7 +1157,8 @@ void mezzo_block_return () [-- $block6 .. $block1]
 	{
 	float r;
 		if(self.shield)
-			remove(self.shield);
+			if(self.shield.classname=="mezzo_reflect" && self.shield.owner==self)
+				remove(self.shield);
 		r=vlen(self.enemy.origin-self.origin);
 		if(infront(self.enemy)&&r<100)
 		{
@@ -1204,16 +1207,22 @@ void mezzo_block_wait ()
 			self.think=mezzo_roll_forward;
 		thinktime self : 0;
 	}
-	self.shield.oldthink=self.shield.think;
-	self.shield.think=SUB_Remove;
-	thinktime self.shield : 0.2;
+	if(self.shield)
+		if(self.shield.classname=="mezzo_reflect" && self.shield.owner==self)
+		{
+			self.shield.oldthink=self.shield.think;
+			self.shield.think=SUB_Remove;
+			thinktime self.shield : 0.2;
+		}
 //	dprint("checking defense from block\n");
 	mezzo_check_defense();
 	if(self.think==mezzo_block_wait)
-	{
-		self.shield.think=self.shield.oldthink;
-		thinktime self.shield : 0;
-	}
+		if(self.shield)
+			if(self.shield.classname=="mezzo_reflect" && self.shield.owner==self)
+			{
+				self.shield.think=self.shield.oldthink;
+				thinktime self.shield : 0;
+			}
 //	else
 //		dprint("wigging!\n");
 }

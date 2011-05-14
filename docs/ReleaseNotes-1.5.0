@@ -1,5 +1,5 @@
 Hexen II: Hammer of Thyrion (uhexen2), release candidate,
-Version 1.5.0-rc3 / May. 14, 2011
+Version 1.5.0-rc3 / May 14, 2011.
 
 Changes since HoT-1.4.4-pre11:
 
@@ -26,6 +26,9 @@ Changes since HoT-1.4.4-pre11:
 * opengl: fixed an issue in net games where joining players appeared
   untextured on the opengl server application (bug #3288081).
 * opengl: updated code to use glGenTextures().
+* fixed a HexenC bug which would prevent a yakman from appearing during
+  the 'Trial of Strength' in the 'Temple of Phurbu' (tibet7) level of the
+  mission pack, rendering the level not completable (bug #1112533).
 * fixed a mission pack HexenC bug where a pentacle monster in the tibet1
   map became invulnerable when it got crushed by a door.
 * fixed a HexenC bug where werepathers become "undead" when an assassin
