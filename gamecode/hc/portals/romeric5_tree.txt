@@ -1,0 +1,1623 @@
+
+_top= "|t10" "|t11" "|t12" "|t13" "|t14" "|t15" "|t17" "|t18" "|t19" "|t2" "|t26" "|t43" "|t45" "|t46" "|t47" "|t51" "|t6" "|t7" "|t8" "|t9" "romeric7|"
+
+ found 116 entities with "target" a/o "targetname" property
+
+ ----------------------------
+{ #6
+"classname" "trigger_crosslevel_target"
+"target" "t10"
+"spawnflags" "8"
+"model" "*15"
+}
+	{ #36
+	"classname" "item_spawner"
+	"targetname" "t10"
+	"cnt_summon" "1"
+	"origin" "1152 -808 -36"
+	}
+
+ ----------------------------
+{ #7
+"classname" "trigger_crosslevel_target"
+"target" "t11"
+"spawnflags" "16"
+"model" "*11"
+}
+	{ #37
+	"classname" "item_spawner"
+	"targetname" "t11"
+	"cnt_tome" "1"
+	"origin" "1344 -472 -36"
+	}
+
+ ----------------------------
+{ #8
+"classname" "trigger_crosslevel_target"
+"target" "t12"
+"spawnflags" "32"
+"model" "*14"
+}
+	{ #38
+	"classname" "item_spawner"
+	"targetname" "t12"
+	"cnt_polymorph" "1"
+	"origin" "1344 -808 -36"
+	}
+
+ ----------------------------
+{ #9
+"classname" "trigger_crosslevel_target"
+"target" "t13"
+"spawnflags" "64"
+"model" "*12"
+}
+	{ #39
+	"classname" "item_spawner"
+	"targetname" "t13"
+	"origin" "1536 -472 -36"
+	"cnt_cubeofforce" "1"
+	}
+
+ ----------------------------
+{ #10
+"classname" "trigger_crosslevel_target"
+"target" "t14"
+"model" "*13"
+}
+	{ #40
+	"classname" "item_spawner"
+	"targetname" "t14"
+	"cnt_teleport" "1"
+	"origin" "1536 -808 -36"
+	}
+
+ ----------------------------
+{ #11
+"classname" "trigger_interval"
+"target" "t15"
+"wait" ".6"
+"origin" "320 1024 72"
+}
+	{ #41
+	"classname" "func_door_rotating"
+	"targetname" "t15"
+	"dmg" "1000"
+	"flags" "60"
+	"spawnflags" "160"
+	"wait" "0"
+	"flags2" "1"
+	"abslight" ".25"
+	"soundtype" "9"
+	"origin" "0 1440 216"
+	"model" "*18"
+	}
+	{ #42
+	"classname" "func_door_rotating"
+	"targetname" "t15"
+	"dmg" "1000"
+	"flags" "60"
+	"spawnflags" "162"
+	"wait" "0"
+	"flags2" "1"
+	"abslight" ".25"
+	"soundtype" "9"
+	"origin" "0 1312 216"
+	"model" "*25"
+	}
+	{ #43
+	"classname" "func_door_rotating"
+	"targetname" "t15"
+	"dmg" "1000"
+	"spawnflags" "160"
+	"flags" "60"
+	"wait" "0"
+	"flags2" "1"
+	"abslight" ".25"
+	"soundtype" "9"
+	"origin" "0 1216 216"
+	"model" "*24"
+	}
+	{ #44
+	"classname" "func_door_rotating"
+	"targetname" "t15"
+	"dmg" "1000"
+	"spawnflags" "162"
+	"flags" "60"
+	"wait" "0"
+	"flags2" "1"
+	"abslight" ".25"
+	"soundtype" "9"
+	"origin" "0 1088 216"
+	"model" "*19"
+	}
+
+ ----------------------------
+{ #12
+"classname" "func_button"
+"target" "t17"
+"abslight" ".1"
+"wait" "2"
+"angle" "-2"
+"model" "*22"
+}
+	{ #46
+	"classname" "func_door"
+	"targetname" "t17"
+	"angle" "-2"
+	"soundtype" "2"
+	"model" "*21"
+	}
+
+ ----------------------------
+{ #13
+"classname" "func_button"
+"target" "t18"
+"abslight" ".2"
+"killtarget" "t26"
+"wait" "-1"
+"lip" "16"
+"angle" "0"
+"model" "*23"
+}
+	{ #47
+	"classname" "breakable_brush"
+	"targetname" "t18"
+	"abslight" ".1"
+	"thingtype" "3"
+	"spawnflags" "64"
+	"model" "*31"
+	}
+	{ #48
+	"classname" "breakable_brush"
+	"targetname" "t18"
+	"abslight" ".5"
+	"model" "*37"
+	}
+	{ #49
+	"classname" "weather_lightning_start"
+	"target" "t16"
+	"targetname" "t18"
+	"lifespan" "1.5"
+	"wait" "-1"
+	"origin" "-1056 128 232"
+	}
+	|        { #45
+	|        "classname" "weather_lightning_end"
+	|        "targetname" "t16"
+	|        "origin" "-1056 128 -208"
+	|        }
+	{ #50
+	"classname" "weather_lightning_start"
+	"target" "t49"
+	"targetname" "t18"
+	"lifespan" "1.5"
+	"wait" "-1"
+	"origin" "-1152 32 -192"
+	}
+	|        { #106
+	|        "classname" "weather_lightning_end"
+	|        "targetname" "t49"
+	|        "origin" "-960 224 -192"
+	|        }
+	{ #51
+	"classname" "weather_lightning_start"
+	"target" "t50"
+	"targetname" "t18"
+	"lifespan" "1.5"
+	"wait" "-1"
+	"origin" "-1152 224 -192"
+	}
+	|        { #108
+	|        "classname" "weather_lightning_end"
+	|        "targetname" "t50"
+	|        "origin" "-960 32 -192"
+	|        }
+
+ ----------------------------
+{ #14
+"classname" "func_button"
+"target" "t19"
+"abslight" ".25"
+"angle" "270"
+"wait" "-1"
+"lip" "16"
+"model" "*29"
+}
+{ #15
+"classname" "func_button"
+"target" "t19"
+"abslight" ".25"
+"lip" "16"
+"wait" "-1"
+"angle" "270"
+"model" "*28"
+}
+	{ #52
+	"classname" "trigger_counter"
+	"target" "t20"
+	"targetname" "t19"
+	"model" "*30"
+	}
+	|        { #54
+	|        "classname" "func_door"
+	|        "targetname" "t20"
+	|        "angle" "180"
+	|        "lip" "64"
+	|        "speed" "25"
+	|        "wait" "-1"
+	|        "soundtype" "2"
+	|        "model" "*27"
+	|        }
+	|        { #55
+	|        "classname" "func_door"
+	|        "targetname" "t20"
+	|        "wait" "-1"
+	|        "speed" "25"
+	|        "lip" "64"
+	|        "angle" "0"
+	|        "soundtype" "2"
+	|        "model" "*26"
+	|        }
+
+ ----------------------------
+{ #16
+"classname" "trigger_once"
+"target" "t2"
+"model" "*4"
+}
+	{ #53
+	"classname" "trigger_relay"
+	"target" "t3"
+	"targetname" "t2"
+	"origin" "32 -736 168"
+	"delay" ".5"
+	}
+	|        { #68
+	|        "classname" "func_door_rotating"
+	|        "targetname" "t3"
+	|        "soundtype" "1"
+	|        "spawnflags" "2"
+	|        "wait" "-1"
+	|        "flags" "180"
+	|        "abslight" ".25"
+	|        "origin" "76 -884 112"
+	|        "model" "*3"
+	|        }
+	|        { #69
+	|        "classname" "trigger_relay"
+	|        "target" "t4"
+	|        "targetname" "t3"
+	|        "origin" "0 -736 168"
+	|        "delay" ".5"
+	|        }
+	|        |        { #80
+	|        |        "classname" "func_door_rotating"
+	|        |        "targetname" "t4"
+	|        |        "soundtype" "1"
+	|        |        "wait" "-1"
+	|        |        "flags" "180"
+	|        |        "abslight" ".25"
+	|        |        "origin" "-76 -884 72"
+	|        |        "model" "*2"
+	|        |        }
+	|        |        { #81
+	|        |        "classname" "trigger_relay"
+	|        |        "target" "t5"
+	|        |        "targetname" "t4"
+	|        |        "origin" "-32 -736 168"
+	|        |        "delay" ".5"
+	|        |        }
+	|        |        |        { #107
+	|        |        |        "classname" "func_door_rotating"
+	|        |        |        "targetname" "t5"
+	|        |        |        "soundtype" "1"
+	|        |        |        "wait" "-1"
+	|        |        |        "spawnflags" "2"
+	|        |        |        "flags" "180"
+	|        |        |        "abslight" ".25"
+	|        |        |        "origin" "76 -884 32"
+	|        |        |        "model" "*1"
+	|        |        |        }
+
+ ----------------------------
+{ #17
+"classname" "trigger_interval"
+"target" "t26"
+"wait" "1"
+"origin" "-1056 -112 -24"
+}
+	{ #64
+	"classname" "trigger_multiple"
+	"target" "t25"
+	"targetname" "t26"
+	"origin" "-1056 -96 -32"
+	"model" "*32"
+	}
+	|        { #60
+	|        "classname" "weather_lightning_start"
+	|        "target" "t21"
+	|        "targetname" "t25"
+	|        "lifespan" ".5"
+	|        "wait" "-1"
+	|        "origin" "-936 32 -192"
+	|        }
+	|        |        { #56
+	|        |        "classname" "weather_lightning_end"
+	|        |        "targetname" "t21"
+	|        |        "origin" "-936 224 -192"
+	|        |        }
+	|        { #61
+	|        "classname" "weather_lightning_start"
+	|        "target" "t22"
+	|        "targetname" "t25"
+	|        "lifespan" ".5"
+	|        "wait" "-1"
+	|        "origin" "-960 248 -192"
+	|        }
+	|        |        { #57
+	|        |        "classname" "weather_lightning_end"
+	|        |        "targetname" "t22"
+	|        |        "origin" "-1152 248 -192"
+	|        |        }
+	|        { #62
+	|        "classname" "weather_lightning_start"
+	|        "target" "t23"
+	|        "targetname" "t25"
+	|        "lifespan" ".5"
+	|        "wait" "-1"
+	|        "origin" "-1176 224 -192"
+	|        }
+	|        |        { #58
+	|        |        "classname" "weather_lightning_end"
+	|        |        "targetname" "t23"
+	|        |        "origin" "-1176 32 -192"
+	|        |        }
+	|        { #63
+	|        "classname" "weather_lightning_start"
+	|        "target" "t24"
+	|        "targetname" "t25"
+	|        "lifespan" ".5"
+	|        "wait" "-1"
+	|        "origin" "-1152 8 -192"
+	|        }
+	|        |        { #59
+	|        |        "classname" "weather_lightning_end"
+	|        |        "targetname" "t24"
+	|        |        "origin" "-960 8 -192"
+	|        |        }
+
+ ----------------------------
+{ #18
+"classname" "worldspawn"
+"target" "t43"
+"CD" "13"
+"wad" "gfx/roman.wad"
+"message" "289"
+"MIDI" "roma2"
+}
+	{ #85
+	"classname" "light"
+	"targetname" "t43"
+	"style" "32"
+	"spawnflags" "1"
+	"light" "400"
+	"origin" "0 3456 -392"
+	}
+	{ #86
+	"classname" "func_train"
+	"target" "t27"
+	"targetname" "t43"
+	"soundtype" "2"
+	"speed" "25"
+	"model" "*39"
+	}
+	|        { #65
+	|        "classname" "path_corner"
+	|        "target" "t28"
+	|        "targetname" "t27"
+	|        "origin" "-64 3360 -376"
+	|        }
+	|        |        { #66
+	|        |        "classname" "path_corner"
+	|        |        "target" "t27"
+	|        |        "targetname" "t28"
+	|        |        "wait" "-1"
+	|        |        "origin" "-96 3296 -376"
+	|        |        }
+	|        |        
+	|        |        loop:  target "t27" is parent
+	{ #87
+	"classname" "func_train"
+	"target" "t29"
+	"targetname" "t43"
+	"soundtype" "2"
+	"speed" "25"
+	"model" "*38"
+	}
+	|        { #67
+	|        "classname" "path_corner"
+	|        "target" "t30"
+	|        "targetname" "t29"
+	|        "origin" "0 3360 -376"
+	|        }
+	|        |        { #70
+	|        |        "classname" "path_corner"
+	|        |        "target" "t29"
+	|        |        "targetname" "t30"
+	|        |        "wait" "-1"
+	|        |        "origin" "32 3296 -376"
+	|        |        }
+	|        |        
+	|        |        loop:  target "t29" is parent
+	{ #88
+	"classname" "func_train"
+	"target" "t31"
+	"targetname" "t43"
+	"soundtype" "2"
+	"speed" "25"
+	"model" "*45"
+	}
+	|        { #71
+	|        "classname" "path_corner"
+	|        "target" "t32"
+	|        "targetname" "t31"
+	|        "origin" "0 3392 -376"
+	|        }
+	|        |        { #72
+	|        |        "classname" "path_corner"
+	|        |        "target" "t31"
+	|        |        "targetname" "t32"
+	|        |        "wait" "-1"
+	|        |        "origin" "64 3360 -376"
+	|        |        }
+	|        |        
+	|        |        loop:  target "t31" is parent
+	{ #89
+	"classname" "func_train"
+	"target" "t33"
+	"targetname" "t43"
+	"soundtype" "2"
+	"speed" "25"
+	"model" "*44"
+	}
+	|        { #73
+	|        "classname" "path_corner"
+	|        "target" "t34"
+	|        "targetname" "t33"
+	|        "origin" "0 3456 -376"
+	|        }
+	|        |        { #74
+	|        |        "classname" "path_corner"
+	|        |        "target" "t33"
+	|        |        "targetname" "t34"
+	|        |        "wait" "-1"
+	|        |        "origin" "64 3488 -376"
+	|        |        }
+	|        |        
+	|        |        loop:  target "t33" is parent
+	{ #90
+	"classname" "func_train"
+	"target" "t35"
+	"targetname" "t43"
+	"soundtype" "2"
+	"speed" "25"
+	"model" "*43"
+	}
+	|        { #75
+	|        "classname" "path_corner"
+	|        "target" "t36"
+	|        "targetname" "t35"
+	|        "origin" "0 3456 -376"
+	|        }
+	|        |        { #76
+	|        |        "classname" "path_corner"
+	|        |        "target" "t35"
+	|        |        "targetname" "t36"
+	|        |        "wait" "-1"
+	|        |        "origin" "32 3520 -376"
+	|        |        }
+	|        |        
+	|        |        loop:  target "t35" is parent
+	{ #91
+	"classname" "func_train"
+	"target" "t37"
+	"targetname" "t43"
+	"soundtype" "2"
+	"speed" "25"
+	"model" "*40"
+	}
+	|        { #77
+	|        "classname" "path_corner"
+	|        "target" "t38"
+	|        "targetname" "t37"
+	|        "origin" "-96 3392 -376"
+	|        }
+	|        |        { #78
+	|        |        "classname" "path_corner"
+	|        |        "target" "t37"
+	|        |        "targetname" "t38"
+	|        |        "wait" "-1"
+	|        |        "origin" "-160 3360 -376"
+	|        |        }
+	|        |        
+	|        |        loop:  target "t37" is parent
+	{ #92
+	"classname" "func_train"
+	"target" "t39"
+	"targetname" "t43"
+	"soundtype" "2"
+	"speed" "25"
+	"model" "*41"
+	}
+	|        { #79
+	|        "classname" "path_corner"
+	|        "target" "t40"
+	|        "targetname" "t39"
+	|        "origin" "-96 3456 -376"
+	|        }
+	|        |        { #82
+	|        |        "classname" "path_corner"
+	|        |        "target" "t39"
+	|        |        "targetname" "t40"
+	|        |        "wait" "-1"
+	|        |        "origin" "-160 3488 -376"
+	|        |        }
+	|        |        
+	|        |        loop:  target "t39" is parent
+	{ #93
+	"classname" "func_train"
+	"target" "t41"
+	"targetname" "t43"
+	"soundtype" "2"
+	"speed" "25"
+	"model" "*42"
+	}
+	|        { #83
+	|        "classname" "path_corner"
+	|        "target" "t42"
+	|        "targetname" "t41"
+	|        "origin" "-64 3456 -376"
+	|        }
+	|        |        { #84
+	|        |        "classname" "path_corner"
+	|        |        "target" "t41"
+	|        |        "targetname" "t42"
+	|        |        "wait" "-1"
+	|        |        "origin" "-96 3520 -376"
+	|        |        }
+	|        |        
+	|        |        loop:  target "t41" is parent
+
+ ----------------------------
+{ #19
+"classname" "trigger_once"
+"target" "t45"
+"no_puzzle_msg" "291"
+"puzzle_piece_1" "r6"
+"spawnflags" "16"
+"model" "*51"
+}
+	{ #95
+	"classname" "puzzle_static_piece"
+	"targetname" "t45"
+	"angle" "180"
+	"puzzle_id" "r6"
+	"origin" "192 3456 -312"
+	}
+	{ #96
+	"classname" "trigger_relay"
+	"target" "t44"
+	"targetname" "t45"
+	"origin" "368 3456 0"
+	}
+	|        { #94
+	|        "classname" "trigger_counter"
+	|        "target" "t48"
+	|        "targetname" "t44"
+	|        "count" "3"
+	|        "model" "*46"
+	|        }
+	|        |        { #101
+	|        |        "classname" "func_door_rotating"
+	|        |        "targetname" "t48"
+	|        |        "flags" "90"
+	|        |        "wait" "-1"
+	|        |        "speed" "25"
+	|        |        "spawnflags" "130"
+	|        |        "soundtype" "2"
+	|        |        "abslight" ".2"
+	|        |        "origin" "-384 3456 -128"
+	|        |        "model" "*48"
+	|        |        }
+	|        |        { #102
+	|        |        "classname" "func_door_rotating"
+	|        |        "targetname" "t48"
+	|        |        "soundtype" "2"
+	|        |        "flags" "90"
+	|        |        "spawnflags" "64"
+	|        |        "speed" "25"
+	|        |        "wait" "-1"
+	|        |        "abslight" ".2"
+	|        |        "origin" "0 3072 -128"
+	|        |        "model" "*47"
+	|        |        }
+	|        |        { #103
+	|        |        "classname" "func_door_rotating"
+	|        |        "targetname" "t48"
+	|        |        "soundtype" "2"
+	|        |        "flags" "90"
+	|        |        "spawnflags" "66"
+	|        |        "speed" "25"
+	|        |        "wait" "-1"
+	|        |        "abslight" ".2"
+	|        |        "origin" "0 3840 -128"
+	|        |        "model" "*49"
+	|        |        }
+	|        |        { #104
+	|        |        "classname" "func_door_rotating"
+	|        |        "targetname" "t48"
+	|        |        "soundtype" "2"
+	|        |        "flags" "90"
+	|        |        "wait" "-1"
+	|        |        "speed" "25"
+	|        |        "spawnflags" "128"
+	|        |        "abslight" ".2"
+	|        |        "origin" "384 3456 -128"
+	|        |        "model" "*50"
+	|        |        }
+	|        |        { #105
+	|        |        "classname" "trigger_relay"
+	|        |        "target" "t43"
+	|        |        "targetname" "t48"
+	|        |        "origin" "16 3456 -232"
+	|        |        }
+	|        |        |        { #85 (2)
+	|        |        |        "classname" "light"
+	|        |        |        "targetname" "t43"
+	|        |        |        "style" "32"
+	|        |        |        "spawnflags" "1"
+	|        |        |        "light" "400"
+	|        |        |        "origin" "0 3456 -392"
+	|        |        |        }
+	|        |        |        { #86 (2)
+	|        |        |        "classname" "func_train"
+	|        |        |        "target" "t27"
+	|        |        |        "targetname" "t43"
+	|        |        |        "soundtype" "2"
+	|        |        |        "speed" "25"
+	|        |        |        "model" "*39"
+	|        |        |        }
+	|        |        |        |        { #65 (2)
+	|        |        |        |        "classname" "path_corner"
+	|        |        |        |        "target" "t28"
+	|        |        |        |        "targetname" "t27"
+	|        |        |        |        "origin" "-64 3360 -376"
+	|        |        |        |        }
+	|        |        |        |        |        { #66 (2)
+	|        |        |        |        |        "classname" "path_corner"
+	|        |        |        |        |        "target" "t27"
+	|        |        |        |        |        "targetname" "t28"
+	|        |        |        |        |        "wait" "-1"
+	|        |        |        |        |        "origin" "-96 3296 -376"
+	|        |        |        |        |        }
+	|        |        |        |        |        
+	|        |        |        |        |        loop:  target "t27" is parent
+	|        |        |        { #87 (2)
+	|        |        |        "classname" "func_train"
+	|        |        |        "target" "t29"
+	|        |        |        "targetname" "t43"
+	|        |        |        "soundtype" "2"
+	|        |        |        "speed" "25"
+	|        |        |        "model" "*38"
+	|        |        |        }
+	|        |        |        |        { #67 (2)
+	|        |        |        |        "classname" "path_corner"
+	|        |        |        |        "target" "t30"
+	|        |        |        |        "targetname" "t29"
+	|        |        |        |        "origin" "0 3360 -376"
+	|        |        |        |        }
+	|        |        |        |        |        { #70 (2)
+	|        |        |        |        |        "classname" "path_corner"
+	|        |        |        |        |        "target" "t29"
+	|        |        |        |        |        "targetname" "t30"
+	|        |        |        |        |        "wait" "-1"
+	|        |        |        |        |        "origin" "32 3296 -376"
+	|        |        |        |        |        }
+	|        |        |        |        |        
+	|        |        |        |        |        loop:  target "t29" is parent
+	|        |        |        { #88 (2)
+	|        |        |        "classname" "func_train"
+	|        |        |        "target" "t31"
+	|        |        |        "targetname" "t43"
+	|        |        |        "soundtype" "2"
+	|        |        |        "speed" "25"
+	|        |        |        "model" "*45"
+	|        |        |        }
+	|        |        |        |        { #71 (2)
+	|        |        |        |        "classname" "path_corner"
+	|        |        |        |        "target" "t32"
+	|        |        |        |        "targetname" "t31"
+	|        |        |        |        "origin" "0 3392 -376"
+	|        |        |        |        }
+	|        |        |        |        |        { #72 (2)
+	|        |        |        |        |        "classname" "path_corner"
+	|        |        |        |        |        "target" "t31"
+	|        |        |        |        |        "targetname" "t32"
+	|        |        |        |        |        "wait" "-1"
+	|        |        |        |        |        "origin" "64 3360 -376"
+	|        |        |        |        |        }
+	|        |        |        |        |        
+	|        |        |        |        |        loop:  target "t31" is parent
+	|        |        |        { #89 (2)
+	|        |        |        "classname" "func_train"
+	|        |        |        "target" "t33"
+	|        |        |        "targetname" "t43"
+	|        |        |        "soundtype" "2"
+	|        |        |        "speed" "25"
+	|        |        |        "model" "*44"
+	|        |        |        }
+	|        |        |        |        { #73 (2)
+	|        |        |        |        "classname" "path_corner"
+	|        |        |        |        "target" "t34"
+	|        |        |        |        "targetname" "t33"
+	|        |        |        |        "origin" "0 3456 -376"
+	|        |        |        |        }
+	|        |        |        |        |        { #74 (2)
+	|        |        |        |        |        "classname" "path_corner"
+	|        |        |        |        |        "target" "t33"
+	|        |        |        |        |        "targetname" "t34"
+	|        |        |        |        |        "wait" "-1"
+	|        |        |        |        |        "origin" "64 3488 -376"
+	|        |        |        |        |        }
+	|        |        |        |        |        
+	|        |        |        |        |        loop:  target "t33" is parent
+	|        |        |        { #90 (2)
+	|        |        |        "classname" "func_train"
+	|        |        |        "target" "t35"
+	|        |        |        "targetname" "t43"
+	|        |        |        "soundtype" "2"
+	|        |        |        "speed" "25"
+	|        |        |        "model" "*43"
+	|        |        |        }
+	|        |        |        |        { #75 (2)
+	|        |        |        |        "classname" "path_corner"
+	|        |        |        |        "target" "t36"
+	|        |        |        |        "targetname" "t35"
+	|        |        |        |        "origin" "0 3456 -376"
+	|        |        |        |        }
+	|        |        |        |        |        { #76 (2)
+	|        |        |        |        |        "classname" "path_corner"
+	|        |        |        |        |        "target" "t35"
+	|        |        |        |        |        "targetname" "t36"
+	|        |        |        |        |        "wait" "-1"
+	|        |        |        |        |        "origin" "32 3520 -376"
+	|        |        |        |        |        }
+	|        |        |        |        |        
+	|        |        |        |        |        loop:  target "t35" is parent
+	|        |        |        { #91 (2)
+	|        |        |        "classname" "func_train"
+	|        |        |        "target" "t37"
+	|        |        |        "targetname" "t43"
+	|        |        |        "soundtype" "2"
+	|        |        |        "speed" "25"
+	|        |        |        "model" "*40"
+	|        |        |        }
+	|        |        |        |        { #77 (2)
+	|        |        |        |        "classname" "path_corner"
+	|        |        |        |        "target" "t38"
+	|        |        |        |        "targetname" "t37"
+	|        |        |        |        "origin" "-96 3392 -376"
+	|        |        |        |        }
+	|        |        |        |        |        { #78 (2)
+	|        |        |        |        |        "classname" "path_corner"
+	|        |        |        |        |        "target" "t37"
+	|        |        |        |        |        "targetname" "t38"
+	|        |        |        |        |        "wait" "-1"
+	|        |        |        |        |        "origin" "-160 3360 -376"
+	|        |        |        |        |        }
+	|        |        |        |        |        
+	|        |        |        |        |        loop:  target "t37" is parent
+	|        |        |        { #92 (2)
+	|        |        |        "classname" "func_train"
+	|        |        |        "target" "t39"
+	|        |        |        "targetname" "t43"
+	|        |        |        "soundtype" "2"
+	|        |        |        "speed" "25"
+	|        |        |        "model" "*41"
+	|        |        |        }
+	|        |        |        |        { #79 (2)
+	|        |        |        |        "classname" "path_corner"
+	|        |        |        |        "target" "t40"
+	|        |        |        |        "targetname" "t39"
+	|        |        |        |        "origin" "-96 3456 -376"
+	|        |        |        |        }
+	|        |        |        |        |        { #82 (2)
+	|        |        |        |        |        "classname" "path_corner"
+	|        |        |        |        |        "target" "t39"
+	|        |        |        |        |        "targetname" "t40"
+	|        |        |        |        |        "wait" "-1"
+	|        |        |        |        |        "origin" "-160 3488 -376"
+	|        |        |        |        |        }
+	|        |        |        |        |        
+	|        |        |        |        |        loop:  target "t39" is parent
+	|        |        |        { #93 (2)
+	|        |        |        "classname" "func_train"
+	|        |        |        "target" "t41"
+	|        |        |        "targetname" "t43"
+	|        |        |        "soundtype" "2"
+	|        |        |        "speed" "25"
+	|        |        |        "model" "*42"
+	|        |        |        }
+	|        |        |        |        { #83 (2)
+	|        |        |        |        "classname" "path_corner"
+	|        |        |        |        "target" "t42"
+	|        |        |        |        "targetname" "t41"
+	|        |        |        |        "origin" "-64 3456 -376"
+	|        |        |        |        }
+	|        |        |        |        |        { #84 (2)
+	|        |        |        |        |        "classname" "path_corner"
+	|        |        |        |        |        "target" "t41"
+	|        |        |        |        |        "targetname" "t42"
+	|        |        |        |        |        "wait" "-1"
+	|        |        |        |        |        "origin" "-96 3520 -376"
+	|        |        |        |        |        }
+	|        |        |        |        |        
+	|        |        |        |        |        loop:  target "t41" is parent
+
+ ----------------------------
+{ #20
+"classname" "trigger_once"
+"target" "t46"
+"no_puzzle_msg" "292"
+"puzzle_piece_1" "r7"
+"spawnflags" "16"
+"model" "*52"
+}
+	{ #97
+	"classname" "puzzle_static_piece"
+	"targetname" "t46"
+	"angle" "270"
+	"puzzle_id" "r7"
+	"origin" "0 3648 -312"
+	}
+	{ #98
+	"classname" "trigger_relay"
+	"target" "t44"
+	"targetname" "t46"
+	"origin" "0 3824 0"
+	}
+	|        { #94 (2)
+	|        "classname" "trigger_counter"
+	|        "target" "t48"
+	|        "targetname" "t44"
+	|        "count" "3"
+	|        "model" "*46"
+	|        }
+	|        |        { #101 (2)
+	|        |        "classname" "func_door_rotating"
+	|        |        "targetname" "t48"
+	|        |        "flags" "90"
+	|        |        "wait" "-1"
+	|        |        "speed" "25"
+	|        |        "spawnflags" "130"
+	|        |        "soundtype" "2"
+	|        |        "abslight" ".2"
+	|        |        "origin" "-384 3456 -128"
+	|        |        "model" "*48"
+	|        |        }
+	|        |        { #102 (2)
+	|        |        "classname" "func_door_rotating"
+	|        |        "targetname" "t48"
+	|        |        "soundtype" "2"
+	|        |        "flags" "90"
+	|        |        "spawnflags" "64"
+	|        |        "speed" "25"
+	|        |        "wait" "-1"
+	|        |        "abslight" ".2"
+	|        |        "origin" "0 3072 -128"
+	|        |        "model" "*47"
+	|        |        }
+	|        |        { #103 (2)
+	|        |        "classname" "func_door_rotating"
+	|        |        "targetname" "t48"
+	|        |        "soundtype" "2"
+	|        |        "flags" "90"
+	|        |        "spawnflags" "66"
+	|        |        "speed" "25"
+	|        |        "wait" "-1"
+	|        |        "abslight" ".2"
+	|        |        "origin" "0 3840 -128"
+	|        |        "model" "*49"
+	|        |        }
+	|        |        { #104 (2)
+	|        |        "classname" "func_door_rotating"
+	|        |        "targetname" "t48"
+	|        |        "soundtype" "2"
+	|        |        "flags" "90"
+	|        |        "wait" "-1"
+	|        |        "speed" "25"
+	|        |        "spawnflags" "128"
+	|        |        "abslight" ".2"
+	|        |        "origin" "384 3456 -128"
+	|        |        "model" "*50"
+	|        |        }
+	|        |        { #105 (2)
+	|        |        "classname" "trigger_relay"
+	|        |        "target" "t43"
+	|        |        "targetname" "t48"
+	|        |        "origin" "16 3456 -232"
+	|        |        }
+	|        |        |        { #85 (3)
+	|        |        |        "classname" "light"
+	|        |        |        "targetname" "t43"
+	|        |        |        "style" "32"
+	|        |        |        "spawnflags" "1"
+	|        |        |        "light" "400"
+	|        |        |        "origin" "0 3456 -392"
+	|        |        |        }
+	|        |        |        { #86 (3)
+	|        |        |        "classname" "func_train"
+	|        |        |        "target" "t27"
+	|        |        |        "targetname" "t43"
+	|        |        |        "soundtype" "2"
+	|        |        |        "speed" "25"
+	|        |        |        "model" "*39"
+	|        |        |        }
+	|        |        |        |        { #65 (3)
+	|        |        |        |        "classname" "path_corner"
+	|        |        |        |        "target" "t28"
+	|        |        |        |        "targetname" "t27"
+	|        |        |        |        "origin" "-64 3360 -376"
+	|        |        |        |        }
+	|        |        |        |        |        { #66 (3)
+	|        |        |        |        |        "classname" "path_corner"
+	|        |        |        |        |        "target" "t27"
+	|        |        |        |        |        "targetname" "t28"
+	|        |        |        |        |        "wait" "-1"
+	|        |        |        |        |        "origin" "-96 3296 -376"
+	|        |        |        |        |        }
+	|        |        |        |        |        
+	|        |        |        |        |        loop:  target "t27" is parent
+	|        |        |        { #87 (3)
+	|        |        |        "classname" "func_train"
+	|        |        |        "target" "t29"
+	|        |        |        "targetname" "t43"
+	|        |        |        "soundtype" "2"
+	|        |        |        "speed" "25"
+	|        |        |        "model" "*38"
+	|        |        |        }
+	|        |        |        |        { #67 (3)
+	|        |        |        |        "classname" "path_corner"
+	|        |        |        |        "target" "t30"
+	|        |        |        |        "targetname" "t29"
+	|        |        |        |        "origin" "0 3360 -376"
+	|        |        |        |        }
+	|        |        |        |        |        { #70 (3)
+	|        |        |        |        |        "classname" "path_corner"
+	|        |        |        |        |        "target" "t29"
+	|        |        |        |        |        "targetname" "t30"
+	|        |        |        |        |        "wait" "-1"
+	|        |        |        |        |        "origin" "32 3296 -376"
+	|        |        |        |        |        }
+	|        |        |        |        |        
+	|        |        |        |        |        loop:  target "t29" is parent
+	|        |        |        { #88 (3)
+	|        |        |        "classname" "func_train"
+	|        |        |        "target" "t31"
+	|        |        |        "targetname" "t43"
+	|        |        |        "soundtype" "2"
+	|        |        |        "speed" "25"
+	|        |        |        "model" "*45"
+	|        |        |        }
+	|        |        |        |        { #71 (3)
+	|        |        |        |        "classname" "path_corner"
+	|        |        |        |        "target" "t32"
+	|        |        |        |        "targetname" "t31"
+	|        |        |        |        "origin" "0 3392 -376"
+	|        |        |        |        }
+	|        |        |        |        |        { #72 (3)
+	|        |        |        |        |        "classname" "path_corner"
+	|        |        |        |        |        "target" "t31"
+	|        |        |        |        |        "targetname" "t32"
+	|        |        |        |        |        "wait" "-1"
+	|        |        |        |        |        "origin" "64 3360 -376"
+	|        |        |        |        |        }
+	|        |        |        |        |        
+	|        |        |        |        |        loop:  target "t31" is parent
+	|        |        |        { #89 (3)
+	|        |        |        "classname" "func_train"
+	|        |        |        "target" "t33"
+	|        |        |        "targetname" "t43"
+	|        |        |        "soundtype" "2"
+	|        |        |        "speed" "25"
+	|        |        |        "model" "*44"
+	|        |        |        }
+	|        |        |        |        { #73 (3)
+	|        |        |        |        "classname" "path_corner"
+	|        |        |        |        "target" "t34"
+	|        |        |        |        "targetname" "t33"
+	|        |        |        |        "origin" "0 3456 -376"
+	|        |        |        |        }
+	|        |        |        |        |        { #74 (3)
+	|        |        |        |        |        "classname" "path_corner"
+	|        |        |        |        |        "target" "t33"
+	|        |        |        |        |        "targetname" "t34"
+	|        |        |        |        |        "wait" "-1"
+	|        |        |        |        |        "origin" "64 3488 -376"
+	|        |        |        |        |        }
+	|        |        |        |        |        
+	|        |        |        |        |        loop:  target "t33" is parent
+	|        |        |        { #90 (3)
+	|        |        |        "classname" "func_train"
+	|        |        |        "target" "t35"
+	|        |        |        "targetname" "t43"
+	|        |        |        "soundtype" "2"
+	|        |        |        "speed" "25"
+	|        |        |        "model" "*43"
+	|        |        |        }
+	|        |        |        |        { #75 (3)
+	|        |        |        |        "classname" "path_corner"
+	|        |        |        |        "target" "t36"
+	|        |        |        |        "targetname" "t35"
+	|        |        |        |        "origin" "0 3456 -376"
+	|        |        |        |        }
+	|        |        |        |        |        { #76 (3)
+	|        |        |        |        |        "classname" "path_corner"
+	|        |        |        |        |        "target" "t35"
+	|        |        |        |        |        "targetname" "t36"
+	|        |        |        |        |        "wait" "-1"
+	|        |        |        |        |        "origin" "32 3520 -376"
+	|        |        |        |        |        }
+	|        |        |        |        |        
+	|        |        |        |        |        loop:  target "t35" is parent
+	|        |        |        { #91 (3)
+	|        |        |        "classname" "func_train"
+	|        |        |        "target" "t37"
+	|        |        |        "targetname" "t43"
+	|        |        |        "soundtype" "2"
+	|        |        |        "speed" "25"
+	|        |        |        "model" "*40"
+	|        |        |        }
+	|        |        |        |        { #77 (3)
+	|        |        |        |        "classname" "path_corner"
+	|        |        |        |        "target" "t38"
+	|        |        |        |        "targetname" "t37"
+	|        |        |        |        "origin" "-96 3392 -376"
+	|        |        |        |        }
+	|        |        |        |        |        { #78 (3)
+	|        |        |        |        |        "classname" "path_corner"
+	|        |        |        |        |        "target" "t37"
+	|        |        |        |        |        "targetname" "t38"
+	|        |        |        |        |        "wait" "-1"
+	|        |        |        |        |        "origin" "-160 3360 -376"
+	|        |        |        |        |        }
+	|        |        |        |        |        
+	|        |        |        |        |        loop:  target "t37" is parent
+	|        |        |        { #92 (3)
+	|        |        |        "classname" "func_train"
+	|        |        |        "target" "t39"
+	|        |        |        "targetname" "t43"
+	|        |        |        "soundtype" "2"
+	|        |        |        "speed" "25"
+	|        |        |        "model" "*41"
+	|        |        |        }
+	|        |        |        |        { #79 (3)
+	|        |        |        |        "classname" "path_corner"
+	|        |        |        |        "target" "t40"
+	|        |        |        |        "targetname" "t39"
+	|        |        |        |        "origin" "-96 3456 -376"
+	|        |        |        |        }
+	|        |        |        |        |        { #82 (3)
+	|        |        |        |        |        "classname" "path_corner"
+	|        |        |        |        |        "target" "t39"
+	|        |        |        |        |        "targetname" "t40"
+	|        |        |        |        |        "wait" "-1"
+	|        |        |        |        |        "origin" "-160 3488 -376"
+	|        |        |        |        |        }
+	|        |        |        |        |        
+	|        |        |        |        |        loop:  target "t39" is parent
+	|        |        |        { #93 (3)
+	|        |        |        "classname" "func_train"
+	|        |        |        "target" "t41"
+	|        |        |        "targetname" "t43"
+	|        |        |        "soundtype" "2"
+	|        |        |        "speed" "25"
+	|        |        |        "model" "*42"
+	|        |        |        }
+	|        |        |        |        { #83 (3)
+	|        |        |        |        "classname" "path_corner"
+	|        |        |        |        "target" "t42"
+	|        |        |        |        "targetname" "t41"
+	|        |        |        |        "origin" "-64 3456 -376"
+	|        |        |        |        }
+	|        |        |        |        |        { #84 (3)
+	|        |        |        |        |        "classname" "path_corner"
+	|        |        |        |        |        "target" "t41"
+	|        |        |        |        |        "targetname" "t42"
+	|        |        |        |        |        "wait" "-1"
+	|        |        |        |        |        "origin" "-96 3520 -376"
+	|        |        |        |        |        }
+	|        |        |        |        |        
+	|        |        |        |        |        loop:  target "t41" is parent
+
+ ----------------------------
+{ #21
+"classname" "trigger_once"
+"target" "t47"
+"no_puzzle_msg" "293"
+"puzzle_piece_1" "r8"
+"spawnflags" "16"
+"model" "*53"
+}
+	{ #99
+	"classname" "puzzle_static_piece"
+	"targetname" "t47"
+	"angle" "0"
+	"puzzle_id" "r8"
+	"origin" "-192 3456 -312"
+	}
+	{ #100
+	"classname" "trigger_relay"
+	"target" "t44"
+	"targetname" "t47"
+	"origin" "-368 3456 0"
+	}
+	|        { #94 (3)
+	|        "classname" "trigger_counter"
+	|        "target" "t48"
+	|        "targetname" "t44"
+	|        "count" "3"
+	|        "model" "*46"
+	|        }
+	|        |        { #101 (3)
+	|        |        "classname" "func_door_rotating"
+	|        |        "targetname" "t48"
+	|        |        "flags" "90"
+	|        |        "wait" "-1"
+	|        |        "speed" "25"
+	|        |        "spawnflags" "130"
+	|        |        "soundtype" "2"
+	|        |        "abslight" ".2"
+	|        |        "origin" "-384 3456 -128"
+	|        |        "model" "*48"
+	|        |        }
+	|        |        { #102 (3)
+	|        |        "classname" "func_door_rotating"
+	|        |        "targetname" "t48"
+	|        |        "soundtype" "2"
+	|        |        "flags" "90"
+	|        |        "spawnflags" "64"
+	|        |        "speed" "25"
+	|        |        "wait" "-1"
+	|        |        "abslight" ".2"
+	|        |        "origin" "0 3072 -128"
+	|        |        "model" "*47"
+	|        |        }
+	|        |        { #103 (3)
+	|        |        "classname" "func_door_rotating"
+	|        |        "targetname" "t48"
+	|        |        "soundtype" "2"
+	|        |        "flags" "90"
+	|        |        "spawnflags" "66"
+	|        |        "speed" "25"
+	|        |        "wait" "-1"
+	|        |        "abslight" ".2"
+	|        |        "origin" "0 3840 -128"
+	|        |        "model" "*49"
+	|        |        }
+	|        |        { #104 (3)
+	|        |        "classname" "func_door_rotating"
+	|        |        "targetname" "t48"
+	|        |        "soundtype" "2"
+	|        |        "flags" "90"
+	|        |        "wait" "-1"
+	|        |        "speed" "25"
+	|        |        "spawnflags" "128"
+	|        |        "abslight" ".2"
+	|        |        "origin" "384 3456 -128"
+	|        |        "model" "*50"
+	|        |        }
+	|        |        { #105 (3)
+	|        |        "classname" "trigger_relay"
+	|        |        "target" "t43"
+	|        |        "targetname" "t48"
+	|        |        "origin" "16 3456 -232"
+	|        |        }
+	|        |        |        { #85 (4)
+	|        |        |        "classname" "light"
+	|        |        |        "targetname" "t43"
+	|        |        |        "style" "32"
+	|        |        |        "spawnflags" "1"
+	|        |        |        "light" "400"
+	|        |        |        "origin" "0 3456 -392"
+	|        |        |        }
+	|        |        |        { #86 (4)
+	|        |        |        "classname" "func_train"
+	|        |        |        "target" "t27"
+	|        |        |        "targetname" "t43"
+	|        |        |        "soundtype" "2"
+	|        |        |        "speed" "25"
+	|        |        |        "model" "*39"
+	|        |        |        }
+	|        |        |        |        { #65 (4)
+	|        |        |        |        "classname" "path_corner"
+	|        |        |        |        "target" "t28"
+	|        |        |        |        "targetname" "t27"
+	|        |        |        |        "origin" "-64 3360 -376"
+	|        |        |        |        }
+	|        |        |        |        |        { #66 (4)
+	|        |        |        |        |        "classname" "path_corner"
+	|        |        |        |        |        "target" "t27"
+	|        |        |        |        |        "targetname" "t28"
+	|        |        |        |        |        "wait" "-1"
+	|        |        |        |        |        "origin" "-96 3296 -376"
+	|        |        |        |        |        }
+	|        |        |        |        |        
+	|        |        |        |        |        loop:  target "t27" is parent
+	|        |        |        { #87 (4)
+	|        |        |        "classname" "func_train"
+	|        |        |        "target" "t29"
+	|        |        |        "targetname" "t43"
+	|        |        |        "soundtype" "2"
+	|        |        |        "speed" "25"
+	|        |        |        "model" "*38"
+	|        |        |        }
+	|        |        |        |        { #67 (4)
+	|        |        |        |        "classname" "path_corner"
+	|        |        |        |        "target" "t30"
+	|        |        |        |        "targetname" "t29"
+	|        |        |        |        "origin" "0 3360 -376"
+	|        |        |        |        }
+	|        |        |        |        |        { #70 (4)
+	|        |        |        |        |        "classname" "path_corner"
+	|        |        |        |        |        "target" "t29"
+	|        |        |        |        |        "targetname" "t30"
+	|        |        |        |        |        "wait" "-1"
+	|        |        |        |        |        "origin" "32 3296 -376"
+	|        |        |        |        |        }
+	|        |        |        |        |        
+	|        |        |        |        |        loop:  target "t29" is parent
+	|        |        |        { #88 (4)
+	|        |        |        "classname" "func_train"
+	|        |        |        "target" "t31"
+	|        |        |        "targetname" "t43"
+	|        |        |        "soundtype" "2"
+	|        |        |        "speed" "25"
+	|        |        |        "model" "*45"
+	|        |        |        }
+	|        |        |        |        { #71 (4)
+	|        |        |        |        "classname" "path_corner"
+	|        |        |        |        "target" "t32"
+	|        |        |        |        "targetname" "t31"
+	|        |        |        |        "origin" "0 3392 -376"
+	|        |        |        |        }
+	|        |        |        |        |        { #72 (4)
+	|        |        |        |        |        "classname" "path_corner"
+	|        |        |        |        |        "target" "t31"
+	|        |        |        |        |        "targetname" "t32"
+	|        |        |        |        |        "wait" "-1"
+	|        |        |        |        |        "origin" "64 3360 -376"
+	|        |        |        |        |        }
+	|        |        |        |        |        
+	|        |        |        |        |        loop:  target "t31" is parent
+	|        |        |        { #89 (4)
+	|        |        |        "classname" "func_train"
+	|        |        |        "target" "t33"
+	|        |        |        "targetname" "t43"
+	|        |        |        "soundtype" "2"
+	|        |        |        "speed" "25"
+	|        |        |        "model" "*44"
+	|        |        |        }
+	|        |        |        |        { #73 (4)
+	|        |        |        |        "classname" "path_corner"
+	|        |        |        |        "target" "t34"
+	|        |        |        |        "targetname" "t33"
+	|        |        |        |        "origin" "0 3456 -376"
+	|        |        |        |        }
+	|        |        |        |        |        { #74 (4)
+	|        |        |        |        |        "classname" "path_corner"
+	|        |        |        |        |        "target" "t33"
+	|        |        |        |        |        "targetname" "t34"
+	|        |        |        |        |        "wait" "-1"
+	|        |        |        |        |        "origin" "64 3488 -376"
+	|        |        |        |        |        }
+	|        |        |        |        |        
+	|        |        |        |        |        loop:  target "t33" is parent
+	|        |        |        { #90 (4)
+	|        |        |        "classname" "func_train"
+	|        |        |        "target" "t35"
+	|        |        |        "targetname" "t43"
+	|        |        |        "soundtype" "2"
+	|        |        |        "speed" "25"
+	|        |        |        "model" "*43"
+	|        |        |        }
+	|        |        |        |        { #75 (4)
+	|        |        |        |        "classname" "path_corner"
+	|        |        |        |        "target" "t36"
+	|        |        |        |        "targetname" "t35"
+	|        |        |        |        "origin" "0 3456 -376"
+	|        |        |        |        }
+	|        |        |        |        |        { #76 (4)
+	|        |        |        |        |        "classname" "path_corner"
+	|        |        |        |        |        "target" "t35"
+	|        |        |        |        |        "targetname" "t36"
+	|        |        |        |        |        "wait" "-1"
+	|        |        |        |        |        "origin" "32 3520 -376"
+	|        |        |        |        |        }
+	|        |        |        |        |        
+	|        |        |        |        |        loop:  target "t35" is parent
+	|        |        |        { #91 (4)
+	|        |        |        "classname" "func_train"
+	|        |        |        "target" "t37"
+	|        |        |        "targetname" "t43"
+	|        |        |        "soundtype" "2"
+	|        |        |        "speed" "25"
+	|        |        |        "model" "*40"
+	|        |        |        }
+	|        |        |        |        { #77 (4)
+	|        |        |        |        "classname" "path_corner"
+	|        |        |        |        "target" "t38"
+	|        |        |        |        "targetname" "t37"
+	|        |        |        |        "origin" "-96 3392 -376"
+	|        |        |        |        }
+	|        |        |        |        |        { #78 (4)
+	|        |        |        |        |        "classname" "path_corner"
+	|        |        |        |        |        "target" "t37"
+	|        |        |        |        |        "targetname" "t38"
+	|        |        |        |        |        "wait" "-1"
+	|        |        |        |        |        "origin" "-160 3360 -376"
+	|        |        |        |        |        }
+	|        |        |        |        |        
+	|        |        |        |        |        loop:  target "t37" is parent
+	|        |        |        { #92 (4)
+	|        |        |        "classname" "func_train"
+	|        |        |        "target" "t39"
+	|        |        |        "targetname" "t43"
+	|        |        |        "soundtype" "2"
+	|        |        |        "speed" "25"
+	|        |        |        "model" "*41"
+	|        |        |        }
+	|        |        |        |        { #79 (4)
+	|        |        |        |        "classname" "path_corner"
+	|        |        |        |        "target" "t40"
+	|        |        |        |        "targetname" "t39"
+	|        |        |        |        "origin" "-96 3456 -376"
+	|        |        |        |        }
+	|        |        |        |        |        { #82 (4)
+	|        |        |        |        |        "classname" "path_corner"
+	|        |        |        |        |        "target" "t39"
+	|        |        |        |        |        "targetname" "t40"
+	|        |        |        |        |        "wait" "-1"
+	|        |        |        |        |        "origin" "-160 3488 -376"
+	|        |        |        |        |        }
+	|        |        |        |        |        
+	|        |        |        |        |        loop:  target "t39" is parent
+	|        |        |        { #93 (4)
+	|        |        |        "classname" "func_train"
+	|        |        |        "target" "t41"
+	|        |        |        "targetname" "t43"
+	|        |        |        "soundtype" "2"
+	|        |        |        "speed" "25"
+	|        |        |        "model" "*42"
+	|        |        |        }
+	|        |        |        |        { #83 (4)
+	|        |        |        |        "classname" "path_corner"
+	|        |        |        |        "target" "t42"
+	|        |        |        |        "targetname" "t41"
+	|        |        |        |        "origin" "-64 3456 -376"
+	|        |        |        |        }
+	|        |        |        |        |        { #84 (4)
+	|        |        |        |        |        "classname" "path_corner"
+	|        |        |        |        |        "target" "t41"
+	|        |        |        |        |        "targetname" "t42"
+	|        |        |        |        |        "wait" "-1"
+	|        |        |        |        |        "origin" "-96 3520 -376"
+	|        |        |        |        |        }
+	|        |        |        |        |        
+	|        |        |        |        |        loop:  target "t41" is parent
+
+ ----------------------------
+{ #22
+"classname" "trigger_once"
+"target" "t51"
+"spawnflags" "196608"
+"model" "*67"
+}
+	{ #109
+	"classname" "trigger_relay"
+	"target" "t19"
+	"targetname" "t51"
+	"origin" "-56 1696 -48"
+	}
+	|        { #52 (2)
+	|        "classname" "trigger_counter"
+	|        "target" "t20"
+	|        "targetname" "t19"
+	|        "model" "*30"
+	|        }
+	|        |        { #54 (2)
+	|        |        "classname" "func_door"
+	|        |        "targetname" "t20"
+	|        |        "angle" "180"
+	|        |        "lip" "64"
+	|        |        "speed" "25"
+	|        |        "wait" "-1"
+	|        |        "soundtype" "2"
+	|        |        "model" "*27"
+	|        |        }
+	|        |        { #55 (2)
+	|        |        "classname" "func_door"
+	|        |        "targetname" "t20"
+	|        |        "wait" "-1"
+	|        |        "speed" "25"
+	|        |        "lip" "64"
+	|        |        "angle" "0"
+	|        |        "soundtype" "2"
+	|        |        "model" "*26"
+	|        |        }
+	{ #110
+	"classname" "trigger_relay"
+	"target" "t19"
+	"targetname" "t51"
+	"origin" "56 1696 -48"
+	}
+	|        { #52 (3)
+	|        "classname" "trigger_counter"
+	|        "target" "t20"
+	|        "targetname" "t19"
+	|        "model" "*30"
+	|        }
+	|        |        { #54 (3)
+	|        |        "classname" "func_door"
+	|        |        "targetname" "t20"
+	|        |        "angle" "180"
+	|        |        "lip" "64"
+	|        |        "speed" "25"
+	|        |        "wait" "-1"
+	|        |        "soundtype" "2"
+	|        |        "model" "*27"
+	|        |        }
+	|        |        { #55 (3)
+	|        |        "classname" "func_door"
+	|        |        "targetname" "t20"
+	|        |        "wait" "-1"
+	|        |        "speed" "25"
+	|        |        "lip" "64"
+	|        |        "angle" "0"
+	|        |        "soundtype" "2"
+	|        |        "model" "*26"
+	|        |        }
+
+ ----------------------------
+{ #23
+"classname" "func_button"
+"target" "t6"
+"abslight" ".25"
+"wait" "-1"
+"lip" "16"
+"angle" "0"
+"model" "*6"
+}
+	{ #111
+	"classname" "func_door"
+	"targetname" "t6"
+	"angle" "-1"
+	"wait" "-1"
+	"soundtype" "2"
+	"model" "*64"
+	}
+	{ #112
+	"classname" "func_door"
+	"targetname" "t6"
+	"wait" "-1"
+	"angle" "-1"
+	"soundtype" "2"
+	"model" "*5"
+	}
+	{ #113
+	"classname" "func_door"
+	"targetname" "t6"
+	"wait" "-1"
+	"angle" "-1"
+	"soundtype" "2"
+	"model" "*63"
+	}
+
+ ----------------------------
+{ #24
+"classname" "trigger_crosslevel_target"
+"target" "t7"
+"spawnflags" "1"
+"model" "*9"
+}
+	{ #114
+	"classname" "item_spawner"
+	"targetname" "t7"
+	"cnt_mana_boost" "1"
+	"origin" "960 -472 -36"
+	}
+
+ ----------------------------
+{ #25
+"classname" "trigger_crosslevel_target"
+"target" "t8"
+"spawnflags" "2"
+"model" "*16"
+}
+	{ #115
+	"classname" "item_spawner"
+	"targetname" "t8"
+	"cnt_sh_boost" "1"
+	"origin" "960 -808 -36"
+	}
+
+ ----------------------------
+{ #26
+"classname" "trigger_crosslevel_target"
+"target" "t9"
+"spawnflags" "4"
+"model" "*10"
+}
+	{ #116
+	"classname" "item_spawner"
+	"targetname" "t9"
+	"cnt_haste" "1"
+	"origin" "1152 -472 -36"
+	}
+
+ ----------------------------
+{ #27
+"classname" "info_player_coop"
+"targetname" "romeric7"
+"angle" "0"
+"origin" "-400 -736 88"
+}
+{ #28
+"classname" "info_player_coop"
+"targetname" "romeric7"
+"angle" "180"
+"origin" "400 -640 88"
+}
+{ #29
+"classname" "info_player_coop"
+"targetname" "romeric7"
+"angle" "180"
+"origin" "400 -832 88"
+}
+{ #30
+"classname" "info_player_coop"
+"targetname" "romeric7"
+"angle" "90"
+"origin" "-80 -752 24"
+}
+{ #31
+"classname" "info_player_coop"
+"targetname" "romeric7"
+"origin" "-400 -640 88"
+"angle" "0"
+}
+{ #32
+"classname" "info_player_coop"
+"targetname" "romeric7"
+"origin" "-400 -832 88"
+"angle" "0"
+}
+{ #33
+"classname" "info_player_coop"
+"targetname" "romeric7"
+"origin" "400 -736 88"
+"angle" "180"
+}
+{ #34
+"classname" "info_player_coop"
+"targetname" "romeric7"
+"origin" "80 -752 24"
+"angle" "90"
+}
+{ #35
+"classname" "info_player_start"
+"targetname" "romeric7"
+"origin" "0 -688 24"
+"angle" "90"
+}

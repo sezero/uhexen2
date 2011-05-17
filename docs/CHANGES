@@ -3,6 +3,14 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2011-05-17 (SVN):
+    * gamecode, triggers.hc (trigger_interval): Fixed issue which used to
+      crash HexenWorld server if one attempted to run romeric5 (Temple of
+      Mars) map. Fix was effected by slightly relaxing the initialization
+      time of the four pendula in the level. Since the fix affects only
+      the initialization, change was applied to all triggers.hc versions.
+      Documented the issue is in the source. Fix by Thomas Freundt.
+
 2011-05-14 (SVN):
     * gamecode, mezzoman.hc: Fixed a HexenC bug which would prevent a
       yakman from appearing during the 'Trial of Strength' in the 'Temple
