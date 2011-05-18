@@ -33,8 +33,12 @@ Changes since HoT-1.4.4-pre11:
   mission pack, rendering the level not completable (bug #1112533).
 * fixed a mission pack HexenC bug where a pentacle monster in the tibet1
   map became invulnerable when it got crushed by a door.
-* fixed a HexenC bug where werepathers become "undead" when an assassin
-  kills it by her bombs. fix by Thomas Freundt.
+* fixed a wheel of ages message to report 360 degrees instead of 30 in the
+  egypt2 map. (patch from Sander van Dijk.)
+* fixed a HexenC bug which might prevent Eidolon to land. fixed an Eidolon
+  bug which might prevent the finale screen to trigger.
+* fixed a HexenC bug where werepathers became "undead" when an assassin
+  killed them by her bombs. fix by Thomas Freundt.
 * fixed a mission pack HexenC bug which used to prevent the finale screen
   to trigger if Praevus were killed too quickly. thanks Thomas Freundt.
 * handled several map quirks thanks to careful works by Thomas Freundt

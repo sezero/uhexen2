@@ -16,8 +16,8 @@ Changes
   became invulnerable when it got crushed by a door.
 - strings.txt: Fixed egypt2 wheel of ages message to report 360 degrees
   instead of 30 when it "points to a jackal". Patch from Sander van Dijk.
-- Fixed a bug where werepathers become "undead" when an assassin kills
-  it by her bombs. Fix by Thomas Freundt.
+- Fixed a bug where werepathers became "undead" when an assassin killed
+  them by her bombs. Fix by Thomas Freundt.
 - Fixed a bug which might prevent Eidolon to land. Fixed more Eidolon
   bugs which might prevent the finale screen to trigger. Analyzed and
   fixed by Thomas Freundt.

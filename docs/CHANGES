@@ -9,7 +9,7 @@ Development Progress	:
       Mars) map. Fix was effected by slightly relaxing the initialization
       time of the four pendula in the level. Since the fix affects only
       the initialization, change was applied to all triggers.hc versions.
-      Documented the issue is in the source. Fix by Thomas Freundt.
+      Documented the issue in the source. Fix by Thomas Freundt.
 
 2011-05-14 (SVN):
     * gamecode, mezzoman.hc: Fixed a HexenC bug which would prevent a
@@ -93,8 +93,8 @@ Development Progress	:
       command not affect lightmaps.
 
 2011-05-05 (SVN):
-    * gamecode, mezzoman.hc: Fixed a bug where werepathers become "undead"
-      when an assassin kills it by her bombs. Fix by Thomas Freundt.
+    * gamecode, mezzoman.hc: Fixed a bug where werepathers became "undead"
+      when an assassin killed them by her bombs. Fix by Thomas Freundt.
 
 2011-05-04 (SVN):
     * mapfixes, demo2.ent and egypt4.ent: Added minor entity fixes for demo2
