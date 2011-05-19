@@ -7,8 +7,8 @@ Changes
 2011-05-17 (1.20):
 ===================
 - Bumped version number to 1.20.
-- Fixed HexenC issue which used to crash HexenWorld servers upon running
-  the romeric5 (Temple of Mars) map: the level now loads fine in hwsv.
+- Worked around HexenC issue which used to crash HexenWorld servers upon
+  running the romeric5 (Temple of Mars) map.
 - Fixed a HexenC bug which would prevent a yakman from appearing during
   the 'Trial of Strength' in the Temple of Phurbu (tibet7) level of the
   mission pack, rendering the level not completable (bug #1112533).
@@ -16,7 +16,7 @@ Changes
   became invulnerable when it got crushed by a door.
 - strings.txt: Fixed egypt2 wheel of ages message to report 360 degrees
   instead of 30 when it "points to a jackal". Patch from Sander van Dijk.
-- Fixed a bug where werepathers became "undead" when an assassin killed
+- Fixed a bug where werepanthers became "undead" when an assassin killed
   them by her bombs. Fix by Thomas Freundt.
 - Fixed a bug which might prevent Eidolon to land. Fixed more Eidolon
   bugs which might prevent the finale screen to trigger. Analyzed and

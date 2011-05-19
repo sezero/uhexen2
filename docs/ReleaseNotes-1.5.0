@@ -26,8 +26,8 @@ Changes since HoT-1.4.4-pre11:
 * opengl: fixed an issue in net games where joining players appeared
   untextured on the opengl server application (bug #3288081).
 * opengl: updated code to use glGenTextures().
-* fixed a HexenC issue which used to crash HexenWorld servers upon running
-  the romeric5 (Temple of Mars) map: the level now loads fine in hwsv.
+* worked around a HexenC issue which used to crash HexenWorld servers upon
+  running the romeric5 (Temple of Mars) map.
 * fixed a HexenC bug which would prevent a yakman from appearing during
   the 'Trial of Strength' in the 'Temple of Phurbu' (tibet7) level of the
   mission pack, rendering the level not completable (bug #1112533).
@@ -37,7 +37,7 @@ Changes since HoT-1.4.4-pre11:
   egypt2 map. (patch from Sander van Dijk.)
 * fixed a HexenC bug which might prevent Eidolon to land. fixed an Eidolon
   bug which might prevent the finale screen to trigger.
-* fixed a HexenC bug where werepathers became "undead" when an assassin
+* fixed a HexenC bug where werepanthers became "undead" when an assassin
   killed them by her bombs. fix by Thomas Freundt.
 * fixed a mission pack HexenC bug which used to prevent the finale screen
   to trigger if Praevus were killed too quickly. thanks Thomas Freundt.

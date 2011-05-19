@@ -3,6 +3,14 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2011-05-19 (SVN):
+    * gamecode, triggers.hc (trigger_interval): Reverted nexttink value
+      to 0.1 for the hexen2 and the expansion pack versions.  Increased
+      it further to 2.0 for hexenworld and siege versions, because 0.3
+      was seen to be not enough on two old pentium3-500 and 650 machines.
+      Changed documentation because this obviously not a proper fix but
+      a work around.  Further work on this may (or may not) follow.
+
 2011-05-17 (SVN):
     * gamecode, triggers.hc (trigger_interval): Fixed issue which used to
       crash HexenWorld server if one attempted to run romeric5 (Temple of
@@ -93,7 +101,7 @@ Development Progress	:
       command not affect lightmaps.
 
 2011-05-05 (SVN):
-    * gamecode, mezzoman.hc: Fixed a bug where werepathers became "undead"
+    * gamecode, mezzoman.hc: Fixed a bug where werepanthers became "undead"
       when an assassin killed them by her bombs. Fix by Thomas Freundt.
 
 2011-05-04 (SVN):
