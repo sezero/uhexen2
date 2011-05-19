@@ -4,6 +4,12 @@ Development Progress	:
 ---------------------------
 
 2011-05-19 (SVN):
+    * strings.txt: Removed explicit line breaks from the cathedral holy
+      poom room message at line 92: they were leadinng to poor alignment
+      and this is in parallel to the cathedral entrance message at line
+      137, too.  Patch from Sander van Dijk.
+
+2011-05-19 (SVN):
     * gamecode, triggers.hc (trigger_interval): Reverted nexttink value
       to 0.1 for the hexen2 and the expansion pack versions.  Increased
       it further to 2.0 for hexenworld and siege versions, because 0.3

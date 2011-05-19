@@ -89,7 +89,7 @@ You need the Serpent's Eye Gem
 You have restored the@Blessing
 You see a font of@Holy Water before you
 The Altar has been desecrated!
-They have desecrated this@Holy Place.  For that I will never@forgive them.  Eidolon must be@behind this!  Only his foulness could@penetrate this far into our@realm.  He will pay!
+They have desecrated this Holy Place.  For that I will never forgive them.  Eidolon must be behind this!  Only his foulness could penetrate this far into our realm.  He will pay!
 You destroyed the old tower!
 You have been given the power to destroy the Crystal Golem!
 Welcome to the Temple of@Horus, God of the Sky and@Protector of the Pharaoh
@@ -134,7 +134,7 @@ I am leaving messages in case I fail to destroy Eidolon. I begin in Castle Black
 Our defenses have fallen! The key to our magic is in the hands of the Evil. Death has captured the Four Elements and spread them throughout the realm. Defended by were-jaguars and scorpions, the Elements must be reclaimed to extend the Bridge of Stars. Only when the Elements have been returned will the Well of Souls be opened. I have heard legends hinting at the Test of the Elements, and I can only hope that I will be able to pass all four. -Tyranith
 The fiends! Two of Thysis' greatest treasures have been stolen. For the sake of honor, both Crowns must be returned to their resting place! First, I must find the Four Canopic Jars and enter the Afterworld, a place I hoped to never see. I happened upon a gravely wounded scribe who told me to use the Staff of Nefertum to advance the Wheel of Ages. I have put this down as the delirium of a dying man, let us hope that this is the case. -Tyranith
 Again, the foul creatures have stolen items of great power from the people of Thyrion. In order to return these items of import, I will first need to gain entrance to the reflecting pool. Unfortunately, I carry no items for donation. Let us hope that the temple priests have left enough behind to pay the tithe. -Tyranith
-Curse Eidolon, for all that I have done has been for naught! Even now I hear the dreadful stomp of Eidolon's Golems spelling my doom. The Chaos Sphere, Eidolon's power source, has resurrected the Dark Generals who have already reclaimed what was taken from them. Alas, I have no warning of lies ahead for I can only see my death. As I ready my weapons for one final assault, I pray that my death was not in vain. Someone must destroy Eidolon. -Tyranith
+Curse Eidolon, for all that I have done has been for naught! Even now I hear the dreadful stomp of Eidolon's Golems spelling my doom. The Chaos Sphere, Eidolon's power source, has resurrected the Dark Generals who have already reclaimed what was taken from them. Alas, I have no warning of what lies ahead for I can only see my death. As I ready my weapons for one final assault, I pray that my death was not in vain. Someone must destroy Eidolon. -Tyranith
 You've found Tyranith's body!  
 
 
