@@ -5,7 +5,7 @@ Development Progress	:
 
 2011-05-19 (SVN):
     * strings.txt: Removed explicit line breaks from the cathedral holy
-      poom room message at line 92: they were leadinng to poor alignment
+      pool room message at line 92: they were leading to poor alignment
       and this is in parallel to the cathedral entrance message at line
       137, too.  Patch from Sander van Dijk.
 
