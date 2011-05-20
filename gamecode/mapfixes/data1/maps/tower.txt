@@ -1,0 +1,32 @@
+Map: tower.bsp (Hexen II registered version, in the data1/pak1.pak
+pakfile.)
+
+The bronze golem in the elevator used to get stuck and die immediately.
+Fixed by repositioning him from "-2296 -1048 -56" to "-2296 -1056 -80",
+i.e. the entity that reads in the original like:
+
+{
+"angle" "0"
+"health" "600"
+"target" "golemdoor"
+"origin" "-2296 -1048 -56"
+"classname" "monster_golem_bronze"
+}
+
+... should look like :
+
+{
+"angle" "0"
+"health" "600"
+"target" "golemdoor"
+"origin" "-2296 -1056 -80"
+"classname" "monster_golem_bronze"
+}
+
+(See around line 861 of the tower.ent file included here.  Fix
+by Thomas Freundt.)
+
+You would still get a debug message:
+		walkmonster in wall at: '-2296.0 -1056.0 -79.0'
+... but at least he can break free now.
+

@@ -4,6 +4,11 @@ Development Progress	:
 ---------------------------
 
 2011-05-20 (SVN):
+    * mapfixes, tower.ent: Repositioned the bronze golem in the elevator
+      so that it doesn't die immediately because of getting stuck. From
+      Thomas. Updated the rpm spec file to install the new ent file.
+
+2011-05-20 (SVN):
     * made COM_ExtractExtension to call COM_FileGetExtension.
 
 2011-05-20 (SVN):

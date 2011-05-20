@@ -227,6 +227,8 @@ utils/bin/hcc -src gamecode-%{gamecode_ver}/hc/hw -oi -on
 %{__install} -D -m644 gamecode-%{gamecode_ver}/mapfixes/data1/maps/egypt5.txt %{buildroot}/%{_prefix}/games/%{name}/data1/maps/egypt5.txt
 %{__install} -D -m644 gamecode-%{gamecode_ver}/mapfixes/data1/maps/romeric5.ent %{buildroot}/%{_prefix}/games/%{name}/data1/maps/romeric5.ent
 %{__install} -D -m644 gamecode-%{gamecode_ver}/mapfixes/data1/maps/romeric5.txt %{buildroot}/%{_prefix}/games/%{name}/data1/maps/romeric5.txt
+%{__install} -D -m644 gamecode-%{gamecode_ver}/mapfixes/data1/maps/tower.ent %{buildroot}/%{_prefix}/games/%{name}/data1/maps/tower.ent
+%{__install} -D -m644 gamecode-%{gamecode_ver}/mapfixes/data1/maps/tower.txt %{buildroot}/%{_prefix}/games/%{name}/data1/maps/tower.txt
 %{__install} -D -m644 gamecode-%{gamecode_ver}/mapfixes/portals/maps/tibet2.ent %{buildroot}/%{_prefix}/games/%{name}/portals/maps/tibet2.ent
 %{__install} -D -m644 gamecode-%{gamecode_ver}/mapfixes/portals/maps/tibet2.txt %{buildroot}/%{_prefix}/games/%{name}/portals/maps/tibet2.txt
 %{__install} -D -m644 gamecode-%{gamecode_ver}/mapfixes/portals/maps/tibet9.ent %{buildroot}/%{_prefix}/games/%{name}/portals/maps/tibet9.ent
@@ -295,6 +297,8 @@ desktop-file-install \
 %{_prefix}/games/%{name}/data1/maps/egypt5.txt
 %{_prefix}/games/%{name}/data1/maps/romeric5.ent
 %{_prefix}/games/%{name}/data1/maps/romeric5.txt
+%{_prefix}/games/%{name}/data1/maps/tower.ent
+%{_prefix}/games/%{name}/data1/maps/tower.txt
 %{_prefix}/games/%{name}/portals/progs.dat
 %{_prefix}/games/%{name}/portals/hexen.rc
 %{_prefix}/games/%{name}/portals/strings.txt
@@ -347,6 +351,9 @@ desktop-file-install \
 %{_prefix}/games/%{name}/docs/README.hwmaster
 
 %changelog
+* Sat May 20 2011 O.Sezer <sezero@users.sourceforge.net>
+- Install fixed entities for the tower map to handle the map's quirks.
+
 * Wed May 04 2011 O.Sezer <sezero@users.sourceforge.net>
 - Install demo2 and egypt4 entity fixes for handling map quirks.
 
