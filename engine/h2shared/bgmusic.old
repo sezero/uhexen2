@@ -1,0 +1,216 @@
+/*
+ * $Id$
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or (at
+ * your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ *
+ * See the GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License along
+ * with this program; if not, write to the Free Software Foundation, Inc.,
+ * 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ *
+ */
+
+#if 0 /* removed support for cdtrack to midiname mapping */
+/*
+ * These mappings apply only to original Hexen II and its
+ * expansion pack Portal of Praevus:  community maps need
+ * not, and in many examples do not, follow this table.
+ * Even some of the maps from Raven itself are quirky:
+ * - tower.bsp of the original game wants "casb2" as midi
+ *   but wants cd track 3 instead of 16.
+ * - keep5.bsp of the expansion pack wants "casb1" as midi
+ *   but wants cd track 6 instead of 15.
+ */
+static const char *data1_tracks[] =
+{
+	"", /* track01 is data */
+	"casa1",	/* 02 */
+	"casa2",	/* 03 */
+	"casa3",	/* 04 */
+	"casa4",	/* 05 */
+	"egyp1",	/* 06 */
+	"egyp2",	/* 07 */
+	"egyp3",	/* 08 */
+	"meso1",	/* 09 */
+	"meso2",	/* 10 */
+	"meso3",	/* 11 */
+	"roma1",	/* 12 */
+	"roma2",	/* 13 */
+	"roma3",	/* 14 */
+	"casb1",	/* 15 */
+	"casb2",	/* 16 */
+	"casb3"		/* track 17 is last */
+};
+
+static const char *portals_tracks[] =
+{
+	"", /* track01 is data */
+	"tulku7",	/* 02 */
+	"tulku1",	/* 03 */
+	"tulku4",	/* 04 */
+	"tulku2",	/* 05 */
+	"tulku9",	/* 06 */
+	"tulku10",	/* 07 */
+	"tulku6",	/* 08 */
+	"tulku5",	/* 09 */
+	"tulku8",	/* 10 */
+	"tulku3"	/* 11, last. */
+	/* track12 is last but is not associated
+	 * with a midi/music name. it is only used
+	 * by the menu during credits display.
+	 * therefore, it is not included here. */
+};
+
+#define num_data1_tracks	(sizeof(data1_tracks) / sizeof(data1_tracks[0]))
+#define num_portals_tracks	(sizeof(portals_tracks) / sizeof(portals_tracks[0]))
+
+static int map_cdtrack (const char *midiname) /* crapola: see notes above */
+{
+	if (cls.state <  ca_connected)	/* no have a cd track number yet. */
+		return 0;
+
+#if !defined(H2W)
+	if ((cls.demoplayback || cls.demorecording) && cls.forcetrack != -1)
+	{
+		/*
+		if (cls.forcetrack < 2)
+			return 0;
+		else if (gameflags & GAME_PORTALS &&
+			 cls.forcetrack <= num_portals_tracks)
+			return cls.forcetrack;
+		else if (cls.forcetrack <= num_data1_tracks)
+			return cls.forcetrack;
+		else
+			return 0;
+		*/
+		/* There is forcetrack for cdaudio, but there is
+		 * no corresponding "forcemidi", therefore there
+		 * is no meaning in mapping forcetrack to a name.
+		 * If you really want your forced track, you use
+		 * cdaudio.
+		 */
+		if (cl.cdtrack != cls.forcetrack)
+			return 0;
+	}
+#endif	/* H2W */
+
+	if (cl.cdtrack < 2)
+		return 0;	/* track01 is always data */
+
+	if (cl.cdtrack <= num_portals_tracks &&
+	    q_strcasecmp(midiname, portals_tracks[cl.cdtrack - 1]) == 0)
+	{
+		return cl.cdtrack;
+	}
+
+	if (cl.cdtrack <= num_data1_tracks &&
+	    q_strcasecmp(midiname, data1_tracks[cl.cdtrack - 1]) == 0)
+	{
+		return cl.cdtrack;
+	}
+
+	return 0;
+}
+
+void BGM_PlayMIDIorMusic (const char *filename)
+{
+	char tmp[MAX_QPATH];
+	const char *ext;
+	music_handler_t *handler;
+	int cdtrack = 0;
+
+	if (music_handlers == NULL)
+		return;
+
+	BGM_Stop();
+
+	if (!filename || !*filename)
+	{
+		Con_DPrintf("null music file name\n");
+		return;
+	}
+
+	ext = S_FileExtension(filename);
+	if (ext != NULL)
+	{
+		BGM_Play(filename);
+		return;
+	}
+
+	handler = music_handlers;
+	while (handler)
+	{
+		if (MIDITYPE(handler->type))
+		{
+			if (cdtrack == 0)
+			{
+				cdtrack = map_cdtrack(filename);
+				if (cdtrack != 0)
+				{
+					handler = music_handlers; /* reset */
+					Con_DPrintf ("searching a cd-rip for track %d\n", cdtrack);
+					continue;
+				}
+			}
+			else
+			{
+				cdtrack = 0; /* we couldn't find a track<nn> file */
+			}
+		}
+		if (!handler->is_available)
+		{
+			handler = handler->next;
+			continue;
+		}
+		if (cdtrack != 0)
+		{
+			if (! CDRIPTYPE(handler->type))
+			{
+				handler = handler->next;
+				continue;
+			}
+			q_snprintf(tmp, sizeof(tmp), "%s/track%02d%s",
+				   handler->dir, cdtrack, handler->ext);
+		}
+		else
+		{
+			if (MIDITYPE(handler->type))
+				Con_DPrintf("trying a midi file\n");
+			q_snprintf(tmp, sizeof(tmp), "%s/%s%s",
+				   handler->dir, filename, handler->ext);
+		}
+		switch (handler->player)
+		{
+		case BGM_MIDIDRV:
+			if (BGM_Play_mididrv(tmp) == 0)
+				return;		/* success */
+			/* BGM_MIDIDRV is followed by CODECTYPE_MID streamer.
+			 * Even if the midi driver failed, we may still have
+			 * a chance with the streamer if it's available... */
+			if (! (handler->next && handler->next->is_available))
+				break;
+			handler = handler->next;
+		case BGM_STREAMER:
+			bgmstream = S_CodecOpenStreamType(tmp, handler->type);
+			if (bgmstream)
+				return;		/* success */
+			break;
+		case BGM_NONE:
+		default:
+			break;
+		}
+		handler = handler->next;
+	}
+
+	Con_Printf("Couldn't handle music file %s\n", filename);
+}
+#endif /* removed support for cdtrack to midiname mapping */
+
