@@ -143,35 +143,6 @@ void ExtractFileBase (const char *in, char *out, size_t outsize)
 	*out = '\0';
 }
 
-void ExtractFileExtension (const char *in, char *out, size_t outsize)
-{
-	const char	*src;
-	size_t		len;
-
-	len = strlen(in);
-	if (len < 2)	/* nothing meaningful */
-	{
-		*out = '\0';
-		return;
-	}
-
-	src = in + len - 1;
-	while (src != in && src[-1] != '.')
-		src--;
-	if (src == in || strchr(src, '/') != NULL || strchr(src, '\\') != NULL)
-	{			/* no extension, at not least in the file itself. */
-		*out = '\0';
-		return;
-	}
-
-	q_strlcpy (out, src, outsize);
-}
-
-/*
-============
-FileGetExtension - doesn't return NULL
-============
-*/
 const char *FileGetExtension (const char *in)
 {
 	const char	*src;
@@ -185,8 +156,17 @@ const char *FileGetExtension (const char *in)
 	while (src != in && src[-1] != '.')
 		src--;
 	if (src == in || strchr(src, '/') != NULL || strchr(src, '\\') != NULL)
-		return "";	/* no extension, at not least in the file itself. */
+		return "";	/* no extension, or parent directory has a dot */
 
 	return src;
+}
+
+void ExtractFileExtension (const char *in, char *out, size_t outsize)
+{
+	const char *ext = FileGetExtension (in);
+	if (! *ext)
+		*out = '\0';
+	else
+		q_strlcpy (out, ext, outsize);
 }
 

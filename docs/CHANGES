@@ -4,6 +4,9 @@ Development Progress	:
 ---------------------------
 
 2011-05-20 (SVN):
+    * made COM_ExtractExtension to call COM_FileGetExtension.
+
+2011-05-20 (SVN):
     * Removed S_FileExtension, replaced its use by COM_FileGetExtension.
       Adjusted all users because COM_FileGetExtension doesn't include
       the leading dot for the extension, nor does it ever return NULL.

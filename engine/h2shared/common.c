@@ -243,7 +243,7 @@ const char *COM_FileGetExtension (const char *in)
 	while (src != in && src[-1] != '.')
 		src--;
 	if (src == in || strchr(src, '/') != NULL || strchr(src, '\\') != NULL)
-		return "";	/* no extension, at not least in the file itself. */
+		return "";	/* no extension, or parent directory has a dot */
 
 	return src;
 }
@@ -255,26 +255,11 @@ COM_ExtractExtension
 */
 void COM_ExtractExtension (const char *in, char *out, size_t outsize)
 {
-	const char	*src;
-	size_t		len;
-
-	len = strlen(in);
-	if (len < 2)	/* nothing meaningful */
-	{
+	const char *ext = COM_FileGetExtension (in);
+	if (! *ext)
 		*out = '\0';
-		return;
-	}
-
-	src = in + len - 1;
-	while (src != in && src[-1] != '.')
-		src--;
-	if (src == in || strchr(src, '/') != NULL || strchr(src, '\\') != NULL)
-	{			/* no extension, at not least in the file itself. */
-		*out = '\0';
-		return;
-	}
-
-	q_strlcpy (out, src, outsize);
+	else
+		q_strlcpy (out, ext, outsize);
 }
 
 /*
