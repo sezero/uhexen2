@@ -189,7 +189,7 @@ snd_codec_t wildmidi_codec =
 {
 	CODECTYPE_MIDI,
 	false,
-	".mid",
+	"mid",
 	S_WILDMIDI_CodecInitialize,
 	S_WILDMIDI_CodecShutdown,
 	S_WILDMIDI_CodecOpenStream,

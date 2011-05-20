@@ -178,7 +178,7 @@ snd_codec_t timidity_codec =
 {
 	CODECTYPE_MIDI,
 	false,
-	".mid",
+	"mid",
 	S_TIMIDITY_CodecInitialize,
 	S_TIMIDITY_CodecShutdown,
 	S_TIMIDITY_CodecOpenStream,

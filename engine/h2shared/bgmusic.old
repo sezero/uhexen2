@@ -138,8 +138,8 @@ void BGM_PlayMIDIorMusic (const char *filename)
 		return;
 	}
 
-	ext = S_FileExtension(filename);
-	if (ext != NULL)
+	ext = COM_FileGetExtension(filename);
+	if (*ext != '\0')
 	{
 		BGM_Play(filename);
 		return;
@@ -177,14 +177,14 @@ void BGM_PlayMIDIorMusic (const char *filename)
 				handler = handler->next;
 				continue;
 			}
-			q_snprintf(tmp, sizeof(tmp), "%s/track%02d%s",
+			q_snprintf(tmp, sizeof(tmp), "%s/track%02d.%s",
 				   handler->dir, cdtrack, handler->ext);
 		}
 		else
 		{
 			if (MIDITYPE(handler->type))
 				Con_DPrintf("trying a midi file\n");
-			q_snprintf(tmp, sizeof(tmp), "%s/%s%s",
+			q_snprintf(tmp, sizeof(tmp), "%s/%s.%s",
 				   handler->dir, filename, handler->ext);
 		}
 		switch (handler->player)

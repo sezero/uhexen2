@@ -4,6 +4,11 @@ Development Progress	:
 ---------------------------
 
 2011-05-20 (SVN):
+    * Removed S_FileExtension, replaced its use by COM_FileGetExtension.
+      Adjusted all users because COM_FileGetExtension doesn't include
+      the leading dot for the extension, nor does it ever return NULL.
+
+2011-05-20 (SVN):
     * bgmusic.c: moved the commented out code to bgmusic.old so that the
       file's contents can be followed more easily.
 

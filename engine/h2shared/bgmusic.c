@@ -59,19 +59,19 @@ typedef struct music_handler_s
 
 static music_handler_t wanted_handlers[] =
 {
-	{ CODECTYPE_OGG,  BGM_STREAMER, -1,  ".ogg", MUSIC_DIRNAME, NULL },
-	{ CODECTYPE_MP3,  BGM_STREAMER, -1,  ".mp3", MUSIC_DIRNAME, NULL },
-	{ CODECTYPE_FLAC, BGM_STREAMER, -1, ".flac", MUSIC_DIRNAME, NULL },
-	{ CODECTYPE_WAV,  BGM_STREAMER, -1,  ".wav", MUSIC_DIRNAME, NULL },
-	{ CODECTYPE_MOD,  BGM_STREAMER, -1,  ".it",  MUSIC_DIRNAME, NULL },
-	{ CODECTYPE_MOD,  BGM_STREAMER, -1,  ".s3m", MUSIC_DIRNAME, NULL },
-	{ CODECTYPE_MOD,  BGM_STREAMER, -1,  ".xm",  MUSIC_DIRNAME, NULL },
-	{ CODECTYPE_MOD,  BGM_STREAMER, -1,  ".mod", MUSIC_DIRNAME, NULL },
+	{ CODECTYPE_OGG,  BGM_STREAMER, -1,  "ogg", MUSIC_DIRNAME, NULL },
+	{ CODECTYPE_MP3,  BGM_STREAMER, -1,  "mp3", MUSIC_DIRNAME, NULL },
+	{ CODECTYPE_FLAC, BGM_STREAMER, -1, "flac", MUSIC_DIRNAME, NULL },
+	{ CODECTYPE_WAV,  BGM_STREAMER, -1,  "wav", MUSIC_DIRNAME, NULL },
+	{ CODECTYPE_MOD,  BGM_STREAMER, -1,  "it",  MUSIC_DIRNAME, NULL },
+	{ CODECTYPE_MOD,  BGM_STREAMER, -1,  "s3m", MUSIC_DIRNAME, NULL },
+	{ CODECTYPE_MOD,  BGM_STREAMER, -1,  "xm",  MUSIC_DIRNAME, NULL },
+	{ CODECTYPE_MOD,  BGM_STREAMER, -1,  "mod", MUSIC_DIRNAME, NULL },
 /* midi must be last before NULL terminator. */
 #define MIDIDRIVER_MID (1 << 31) /* special, comes before CODECTYPE_MID */
-	{ MIDIDRIVER_MID, BGM_MIDIDRV,  -1,  ".mid", MIDI_DIRNAME,  NULL },
-	{ CODECTYPE_MID,  BGM_STREAMER, -1,  ".mid", MIDI_DIRNAME,  NULL },
-	{ CODECTYPE_NONE, BGM_NONE,     -1,    NULL,         NULL,  NULL }
+	{ MIDIDRIVER_MID, BGM_MIDIDRV,  -1,  "mid", MIDI_DIRNAME,  NULL },
+	{ CODECTYPE_MID,  BGM_STREAMER, -1,  "mid", MIDI_DIRNAME,  NULL },
+	{ CODECTYPE_NONE, BGM_NONE,     -1,   NULL,         NULL,  NULL }
 };
 
 static music_handler_t *music_handlers = NULL;
@@ -249,7 +249,7 @@ static void BGM_Play_noext (const char *filename, unsigned int allowed_types)
 			handler = handler->next;
 			continue;
 		}
-		q_snprintf(tmp, sizeof(tmp), "%s/%s%s",
+		q_snprintf(tmp, sizeof(tmp), "%s/%s.%s",
 			   handler->dir, filename, handler->ext);
 		switch (handler->player)
 		{
@@ -294,8 +294,8 @@ void BGM_Play (const char *filename)
 		return;
 	}
 
-	ext = S_FileExtension(filename);
-	if (!ext)	/* try all things */
+	ext = COM_FileGetExtension(filename);
+	if (! *ext)	/* try all things */
 	{
 		BGM_Play_noext(filename, ANY_CODECTYPE);
 		return;
@@ -366,8 +366,8 @@ void BGM_PlayMIDIorMusic (const char *filename)
 		return;
 	}
 
-	ext = S_FileExtension(filename);
-	if (ext != NULL)
+	ext = COM_FileGetExtension(filename);
+	if (*ext != '\0')
 	{
 		BGM_Play(filename);
 		return;
@@ -375,7 +375,7 @@ void BGM_PlayMIDIorMusic (const char *filename)
 
 	prev_id = 0;
 	type = 0;
-	dir  = NULL;
+	dir = ext = NULL;
 	handler = music_handlers;
 	try_midi_stream = false;
 	while (handler)
@@ -385,7 +385,7 @@ void BGM_PlayMIDIorMusic (const char *filename)
 		if (! MIDITYPE(handler->type) &&
 		     (no_extmusic || !bgm_extmusic.value))
 			goto _next;
-		q_snprintf(tmp, sizeof(tmp), "%s/%s%s",
+		q_snprintf(tmp, sizeof(tmp), "%s/%s.%s",
 			   handler->dir, filename, handler->ext);
 		if (! FS_FileExists(tmp, &path_id))
 		{
@@ -414,7 +414,7 @@ void BGM_PlayMIDIorMusic (const char *filename)
 		Con_Printf("Couldn't handle music file %s\n", filename);
 	else
 	{
-		q_snprintf(tmp, sizeof(tmp), "%s/%s%s", dir, filename, ext);
+		q_snprintf(tmp, sizeof(tmp), "%s/%s.%s", dir, filename, ext);
 		switch (type)
 		{
 		case MIDIDRIVER_MID:
@@ -469,7 +469,7 @@ void BGM_PlayCDtrack (byte track, qboolean looping)
 			goto _next;
 		if (! CDRIPTYPE(handler->type))
 			goto _next;
-		q_snprintf(tmp, sizeof(tmp), "%s/track%02d%s",
+		q_snprintf(tmp, sizeof(tmp), "%s/track%02d.%s",
 				MUSIC_DIRNAME, (int)track, handler->ext);
 		if (! FS_FileExists(tmp, &path_id))
 			goto _next;
@@ -486,7 +486,7 @@ void BGM_PlayCDtrack (byte track, qboolean looping)
 		Con_Printf("Couldn't find a cdrip for track %d\n", (int)track);
 	else
 	{
-		q_snprintf(tmp, sizeof(tmp), "%s/track%02d%s",
+		q_snprintf(tmp, sizeof(tmp), "%s/track%02d.%s",
 				MUSIC_DIRNAME, (int)track, ext);
 		bgmstream = S_CodecOpenStreamType(tmp, type);
 		if (! bgmstream)

@@ -270,7 +270,7 @@ snd_codec_t wav_codec =
 {
 	CODECTYPE_WAVE,
 	true,	/* always available. */
-	".wav",
+	"wav",
 	S_WAV_CodecInitialize,
 	S_WAV_CodecShutdown,
 	S_WAV_CodecOpenStream,

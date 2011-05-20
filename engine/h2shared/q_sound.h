@@ -123,9 +123,6 @@ void SND_Spatialize (channel_t *ch);
 /* music stream support */
 void S_RawSamples(int samples, int rate, int width, int channels, byte * data, float volume);
 
-/* returns file's extension including the dot, or NULL */
-const char *S_FileExtension (const char *name);
-
 /* ====================================================================
  * User-setable variables
  * ====================================================================

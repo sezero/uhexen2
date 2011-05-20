@@ -131,7 +131,7 @@ void BGM_PlayMIDIorMusic (const char *filename)
 		return;
 
 	drv = midi_drivers;
-	q_snprintf(tmp, sizeof(tmp), "%s/%s%s", MIDI_DIRNAME, filename, ".mid");
+	q_snprintf(tmp, sizeof(tmp), "%s/%s.%s", MIDI_DIRNAME, filename, "mid");
 	while (drv)
 	{
 		if (drv->available)
