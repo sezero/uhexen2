@@ -2,7 +2,7 @@
 	pathutil.c
 	filename handling utilities
 
-	$Id: pathutil.h,v 1.3 2010-02-23 00:07:50 sezero Exp $
+	$Id$
 */
 
 #ifndef __PATHUTIL_H
@@ -24,6 +24,8 @@ void	StripExtension (char *path);
 void	ExtractFilePath (const char *in, char *out, size_t outsize);
 void	ExtractFileBase (const char *in, char *out, size_t outsize);
 void	ExtractFileExtension (const char *in, char *out, size_t outsize);
+
+const char *FileGetExtension (const char *in); /* doesn't return NULL */
 
 #endif	/* __PATHUTIL_H */
 

@@ -128,7 +128,8 @@ void COM_ValidateByteorder (void);
 
 const char *COM_SkipPath (const char *pathname);
 void COM_StripExtension (const char *in, char *out, size_t outsize);
-void COM_FileExtension (const char *in, char *out, size_t outsize);
+const char *COM_FileGetExtension (const char *in); /* doesn't return NULL */
+void COM_ExtractExtension (const char *in, char *out, size_t outsize);
 void COM_FileBase (const char *in, char *out, size_t outsize);
 void COM_DefaultExtension (char *path, const char *extension, size_t len);
 

@@ -3,6 +3,11 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2011-05-20 (SVN):
+    * added COM_FileGetExtension to return a file's extension or empty
+      string if there is none. renamed the existing COM_FileExtension
+      to COM_ExtractExtension and tidied it a bit.
+
 2011-05-19 (SVN):
     * strings.txt: Removed explicit line breaks from the cathedral holy
       pool room message at line 92: they were leading to poor alignment

@@ -2,7 +2,7 @@
 	pathutil.c
 	filename handling utilities
 
-	$Id: pathutil.c,v 1.7 2010-02-23 00:10:43 sezero Exp $
+	$Id$
 */
 
 
@@ -151,16 +151,42 @@ void ExtractFileExtension (const char *in, char *out, size_t outsize)
 	len = strlen(in);
 	if (len < 2)	/* nothing meaningful */
 	{
-	_noext:
 		*out = '\0';
 		return;
 	}
+
 	src = in + len - 1;
 	while (src != in && src[-1] != '.')
 		src--;
 	if (src == in || strchr(src, '/') != NULL || strchr(src, '\\') != NULL)
-		goto _noext;	/* no extension, at not least in the file itself. */
+	{			/* no extension, at not least in the file itself. */
+		*out = '\0';
+		return;
+	}
 
 	q_strlcpy (out, src, outsize);
+}
+
+/*
+============
+FileGetExtension - doesn't return NULL
+============
+*/
+const char *FileGetExtension (const char *in)
+{
+	const char	*src;
+	size_t		len;
+
+	len = strlen(in);
+	if (len < 2)	/* nothing meaningful */
+		return "";
+
+	src = in + len - 1;
+	while (src != in && src[-1] != '.')
+		src--;
+	if (src == in || strchr(src, '/') != NULL || strchr(src, '\\') != NULL)
+		return "";	/* no extension, at not least in the file itself. */
+
+	return src;
 }
 

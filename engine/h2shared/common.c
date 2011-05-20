@@ -227,10 +227,33 @@ void COM_StripExtension (const char *in, char *out, size_t outsize)
 
 /*
 ============
-COM_FileExtension
+COM_FileGetExtension - doesn't return NULL
 ============
 */
-void COM_FileExtension (const char *in, char *out, size_t outsize)
+const char *COM_FileGetExtension (const char *in)
+{
+	const char	*src;
+	size_t		len;
+
+	len = strlen(in);
+	if (len < 2)	/* nothing meaningful */
+		return "";
+
+	src = in + len - 1;
+	while (src != in && src[-1] != '.')
+		src--;
+	if (src == in || strchr(src, '/') != NULL || strchr(src, '\\') != NULL)
+		return "";	/* no extension, at not least in the file itself. */
+
+	return src;
+}
+
+/*
+============
+COM_ExtractExtension
+============
+*/
+void COM_ExtractExtension (const char *in, char *out, size_t outsize)
 {
 	const char	*src;
 	size_t		len;
@@ -238,15 +261,18 @@ void COM_FileExtension (const char *in, char *out, size_t outsize)
 	len = strlen(in);
 	if (len < 2)	/* nothing meaningful */
 	{
-	_noext:
 		*out = '\0';
 		return;
 	}
+
 	src = in + len - 1;
 	while (src != in && src[-1] != '.')
 		src--;
 	if (src == in || strchr(src, '/') != NULL || strchr(src, '\\') != NULL)
-		goto _noext;	/* no extension, at not least in the file itself. */
+	{			/* no extension, at not least in the file itself. */
+		*out = '\0';
+		return;
+	}
 
 	q_strlcpy (out, src, outsize);
 }
