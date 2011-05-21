@@ -4,6 +4,10 @@ Development Progress	:
 ---------------------------
 
 2011-05-20 (SVN):
+    * cvar.c, cvar.h: Added Cvar_SetROM() and Cvar_SetValueROM() to set
+      a CVAR_ROM variable from within the engine.
+
+2011-05-20 (SVN):
     * mapfixes, tower.ent: Repositioned the bronze golem in the elevator
       so that it doesn't die immediately because of getting stuck. From
       Thomas. Updated the rpm spec file to install the new ent file.
