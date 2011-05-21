@@ -3,7 +3,11 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
-2011-05-20 (SVN):
+2011-05-21 (SVN):
+    * quakefs.c (FS_Init): Use the new Cvar_SetROM() to set the oem and
+      registered cvars.
+
+2011-05-21 (SVN):
     * cvar.c, cvar.h: Added Cvar_SetROM() and Cvar_SetValueROM() to set
       a CVAR_ROM variable from within the engine.
 

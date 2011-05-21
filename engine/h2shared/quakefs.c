@@ -1380,17 +1380,15 @@ void FS_Init (void)
 #endif	/* OLD_RETAIL */
 
 	// finish the base filesystem setup
-	oem.flags &= ~CVAR_ROM;
-	registered.flags &= ~CVAR_ROM;
 	if (gameflags & (GAME_REGISTERED|GAME_REGISTERED_OLD))
 	{
 		q_snprintf (temp, sizeof(temp), "registered");
-		Cvar_SetValue ("registered", 1);
+		Cvar_SetROM ("registered", "1");
 	}
 	else if (gameflags & GAME_OEM)
 	{
 		q_snprintf (temp, sizeof(temp), "oem");
-		Cvar_SetValue ("oem", 1);
+		Cvar_SetROM ("oem", "1");
 	}
 	else if (gameflags & (GAME_DEMO|GAME_OLD_DEMO))
 	{
@@ -1401,8 +1399,6 @@ void FS_Init (void)
 	// no proper Raven data: it's best to error out here
 		Sys_Error ("Unable to find a proper Hexen II installation");
 	}
-	oem.flags |= CVAR_ROM;
-	registered.flags |= CVAR_ROM;
 	Sys_Printf ("Playing %s version.\n", temp);
 	if (gameflags & (GAME_OLD_DEMO|GAME_REGISTERED_OLD|GAME_OLD_OEM))
 		Sys_Printf ("Using old/unsupported, pre-1.11 version pak files.\n");
