@@ -3,6 +3,9 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2011-05-22 (SVN):
+    * oslibs, dxsdk: Updated dx headers from mingw-w64 svn repo rev.4173.
+
 2011-05-21 (SVN):
     * quakefs.c (FS_Init): Use the new Cvar_SetROM() to set the oem and
       registered cvars.
