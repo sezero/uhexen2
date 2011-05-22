@@ -28,7 +28,8 @@ Changes
   SPAWNFLAG_ACTIVATED. We now just set inactive property back to FALSE
   after calling InitTrigger(). Thanks to Keith Rozett.
 - Added more entity fixes, this time for tibet2 and tibet9 maps of the
-  expansion pack.
+  expansion pack and for demo2, egypt4 and tower maps of the original
+  game.
 2010-11-27 (1.19b):
 ===================
 - Added a "mapfixes" section. Added entity fixes for romeric5.bsp and
