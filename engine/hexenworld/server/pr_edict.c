@@ -58,6 +58,7 @@ static gefv_cache	gefvCache[GEFV_CACHESIZE] =
 };
 
 cvar_t	max_temp_edicts = {"max_temp_edicts", "30", CVAR_ARCHIVE};
+cvar_t	ents_not_loaded = {"ents_not_loaded", "1", CVAR_ROM};
 
 func_t SpectatorConnect;
 func_t SpectatorThink;
@@ -1107,6 +1108,8 @@ void ED_LoadFromFile (const char *data)
 		SV_FlushSignon();
 	}
 
+	Cvar_SetROM ("ents_not_loaded", "0");
+
 	Con_DPrintf ("%i entities inhibited\n", inhibit);
 }
 
@@ -1211,6 +1214,7 @@ void PR_LoadProgs (void)
 	char		num[32];
 	dfunction_t	*f;
 
+	Cvar_SetROM ("ents_not_loaded", "1");
 	// flush the non-C variable lookup cache
 	for (i = 0; i < GEFV_CACHESIZE; i++)
 		gefvCache[i].field[0] = 0;
@@ -1326,6 +1330,7 @@ void PR_Init (void)
 	Cmd_AddCommand ("profile", PR_Profile_f);
 
 	Cvar_RegisterVariable (&max_temp_edicts);
+	Cvar_RegisterVariable (&ents_not_loaded);
 }
 
 //===========================================================================

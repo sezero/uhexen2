@@ -4,6 +4,14 @@ Development Progress	:
 ---------------------------
 
 2011-05-22 (SVN):
+    * pr_edict.c:  Added ents_not_loaded as a new cvar holding knowlegde
+      that the loading of entities is not complete.  It is set to 1 upon
+      entering PR_LoadProgs() and 0 just before leaving ED_LoadFromFile().
+      This cvar will be used by the hexenworld progs to overcome timing
+      problems associated with func_door_rotating, i.e. the well-known
+      crash with the romeric5 map due to the four swinging blades.
+
+2011-05-22 (SVN):
     * mapfixes: Added README file to explain what they are.  Added note
       that the fixed entities of the data1 maps must be used with v1.11
       of hexen2 maps. Updated the rpm spec file to install the new README

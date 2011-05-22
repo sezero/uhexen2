@@ -62,6 +62,7 @@ static gefv_cache	gefvCache[GEFV_CACHESIZE] =
 };
 
 cvar_t	max_temp_edicts = {"max_temp_edicts", "30", CVAR_ARCHIVE};
+cvar_t	ents_not_loaded = {"ents_not_loaded", "1", CVAR_ROM};
 
 // these actually are not used in hexen2, but mods may use them.
 cvar_t	nomonsters = {"nomonsters", "0", CVAR_NONE};
@@ -1171,6 +1172,8 @@ void ED_LoadFromFile (const char *data)
 		PR_ExecuteProgram (func - pr_functions);
 	}
 
+	Cvar_SetROM ("ents_not_loaded", "0");
+
 	Con_DPrintf ("%i entities inhibited\n", inhibit);
 }
 
@@ -1273,6 +1276,7 @@ void PR_LoadProgs (void)
 	unsigned int		i;
 	const char	*progname;
 
+	Cvar_SetROM ("ents_not_loaded", "1");
 	// flush the non-C variable lookup cache
 	for (i = 0; i < GEFV_CACHESIZE; i++)
 		gefvCache[i].field[0] = 0;
@@ -1397,6 +1401,7 @@ void PR_Init (void)
 	Cmd_AddCommand ("profile", PR_Profile_f);
 
 	Cvar_RegisterVariable (&max_temp_edicts);
+	Cvar_RegisterVariable (&ents_not_loaded);
 
 	Cvar_RegisterVariable (&nomonsters);
 	Cvar_RegisterVariable (&gamecfg);
