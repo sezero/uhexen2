@@ -4,6 +4,12 @@ Development Progress	:
 ---------------------------
 
 2011-05-22 (SVN):
+    * mapfixes: Added README file to explain what they are.  Added note
+      that the fixed entities of the data1 maps must be used with v1.11
+      of hexen2 maps. Updated the rpm spec file to install the new README
+      files.
+
+2011-05-22 (SVN):
     * oslibs, dxsdk: Updated dx headers from mingw-w64 svn repo rev.4173.
 
 2011-05-21 (SVN):

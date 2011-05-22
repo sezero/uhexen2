@@ -219,6 +219,7 @@ utils/bin/hcc -src gamecode-%{gamecode_ver}/hc/hw -oi -on
 
 # Install ent fixes handling map quirks
 %{__mkdir_p} %{buildroot}/%{_prefix}/games/%{name}/data1/maps/
+%{__install} -D -m644 gamecode-%{gamecode_ver}/mapfixes/data1/maps/README.txt %{buildroot}/%{_prefix}/games/%{name}/data1/maps/README.txt
 %{__install} -D -m644 gamecode-%{gamecode_ver}/mapfixes/data1/maps/demo2.ent %{buildroot}/%{_prefix}/games/%{name}/data1/maps/demo2.ent
 %{__install} -D -m644 gamecode-%{gamecode_ver}/mapfixes/data1/maps/demo2.txt %{buildroot}/%{_prefix}/games/%{name}/data1/maps/demo2.txt
 %{__install} -D -m644 gamecode-%{gamecode_ver}/mapfixes/data1/maps/egypt4.ent %{buildroot}/%{_prefix}/games/%{name}/data1/maps/egypt4.ent
@@ -229,6 +230,7 @@ utils/bin/hcc -src gamecode-%{gamecode_ver}/hc/hw -oi -on
 %{__install} -D -m644 gamecode-%{gamecode_ver}/mapfixes/data1/maps/romeric5.txt %{buildroot}/%{_prefix}/games/%{name}/data1/maps/romeric5.txt
 %{__install} -D -m644 gamecode-%{gamecode_ver}/mapfixes/data1/maps/tower.ent %{buildroot}/%{_prefix}/games/%{name}/data1/maps/tower.ent
 %{__install} -D -m644 gamecode-%{gamecode_ver}/mapfixes/data1/maps/tower.txt %{buildroot}/%{_prefix}/games/%{name}/data1/maps/tower.txt
+%{__install} -D -m644 gamecode-%{gamecode_ver}/mapfixes/portals/maps/README.txt %{buildroot}/%{_prefix}/games/%{name}/portals/maps/README.txt
 %{__install} -D -m644 gamecode-%{gamecode_ver}/mapfixes/portals/maps/tibet2.ent %{buildroot}/%{_prefix}/games/%{name}/portals/maps/tibet2.ent
 %{__install} -D -m644 gamecode-%{gamecode_ver}/mapfixes/portals/maps/tibet2.txt %{buildroot}/%{_prefix}/games/%{name}/portals/maps/tibet2.txt
 %{__install} -D -m644 gamecode-%{gamecode_ver}/mapfixes/portals/maps/tibet9.ent %{buildroot}/%{_prefix}/games/%{name}/portals/maps/tibet9.ent
@@ -289,6 +291,7 @@ desktop-file-install \
 %{_prefix}/games/%{name}/data1/hexen.rc
 %{_prefix}/games/%{name}/data1/strings.txt
 %{_prefix}/games/%{name}/data1/default.cfg
+%{_prefix}/games/%{name}/data1/maps/README.txt
 %{_prefix}/games/%{name}/data1/maps/demo2.ent
 %{_prefix}/games/%{name}/data1/maps/demo2.txt
 %{_prefix}/games/%{name}/data1/maps/egypt4.ent
@@ -306,6 +309,7 @@ desktop-file-install \
 %{_prefix}/games/%{name}/portals/infolist.txt
 %{_prefix}/games/%{name}/portals/maplist.txt
 %{_prefix}/games/%{name}/portals/default.cfg
+%{_prefix}/games/%{name}/portals/maps/README.txt
 %{_prefix}/games/%{name}/portals/maps/tibet2.ent
 %{_prefix}/games/%{name}/portals/maps/tibet2.txt
 %{_prefix}/games/%{name}/portals/maps/tibet9.ent
