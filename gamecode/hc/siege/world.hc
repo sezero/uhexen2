@@ -477,6 +477,7 @@ void UpdateHunter(void)
 
 void() StartFrame =
 {
+	EntInitDone = !cvar("ents_not_loaded");
 	teamplay = cvar("teamplay");
 	skill = cvar("skill");
 	damageScale = cvar("damagescale");

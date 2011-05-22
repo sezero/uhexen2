@@ -4,6 +4,21 @@ Development Progress	:
 ---------------------------
 
 2011-05-22 (SVN):
+    * hexenworld gamecode: Really fixed the HexenWorld server crash upon
+      running the romeric5 (Temple of Mars) map which loads fine now on
+      all machines we tested.  The problem was that timing-dependent
+      hackings associated with func_door_rotating not working as expected
+      under hexenworld, so such hacks are eliminated.  The solution also
+      includes making sure that all doors have been initialized before
+      LinkDoors() is called the first time. See new func_linkdoors_cnt()
+      procedure and the linkdoors_cnt and EntInitDone globals and the
+      places they are used in doors.hc, triggers.hc and world.hc.  The
+      solution is applied to hexeneworld, as well as to siege HexenC code.
+      The old work around of increasing the nexthink value to 2s in
+      trigger_interval() is reverted.
+    * Changed beta version stamp to 2011-05-22.
+
+2011-05-22 (SVN):
     * pr_edict.c:  Added ents_not_loaded as a new cvar holding knowlegde
       that the loading of entities is not complete.  It is set to 1 upon
       entering PR_LoadProgs() and 0 just before leaving ED_LoadFromFile().

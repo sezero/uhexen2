@@ -4,11 +4,18 @@ Game code for Hexen2 / H2MP / HexenWorld
 Changes
 -------
 
-2011-05-17 (1.20):
+2011-05-22 (1.20):
 ===================
 - Bumped version number to 1.20.
-- Worked around HexenC issue which used to crash HexenWorld servers upon
-  running the romeric5 (Temple of Mars) map.
+- Fixed HexenC issue which used to crash HexenWorld servers upon running
+  the romeric5 (Temple of Mars) map which loads fine now.  The problem
+  was that timing-dependent hackings associated with func_door_rotating
+  not working as expected under hexenworld, so such hacks are eliminated.
+  The solution also includes making sure all doors have been initialized
+  before LinkDoors is called the first time. See new func_linkdoors_cnt()
+  procedure and the linkdoors_cnt and EntInitDone globals and the places
+  they are used in doors.hc, triggers.hc and world.hc.  The solution is
+  applied to hexeneworld, as well as to siege HexenC code.
 - Fixed a HexenC bug which would prevent a yakman from appearing during
   the 'Trial of Strength' in the Temple of Phurbu (tibet7) level of the
   mission pack, rendering the level not completable (bug #1112533).

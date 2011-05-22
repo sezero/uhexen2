@@ -413,6 +413,19 @@ void() trigger_deactivate =
 
 void () interval_use =
 {
+//	dprint("interval_use  target \"");
+//	dprint(self.target);
+//	dprintf("\"  time = %s  ", time);
+//	dprintf("EntInitDone = %s  ", EntInitDone);
+	if(!EntInitDone || linkdoors_cnt)
+	{
+//		dprintf("linkdoors_cnt = %s  ***  return\n", linkdoors_cnt);
+		thinktime self : 0.1;
+		self.think = interval_use;
+		return;
+	}
+//	dprintf("linkdoors_cnt = %s\n", linkdoors_cnt);
+
 	SUB_UseTargets();
 //	dprint("interval used\n");
 
@@ -420,59 +433,6 @@ void () interval_use =
 	thinktime self : self.wait;
 };
 
-/* trigger_interval is only used in the romeric5 (Temple of Mars)
- * map for the four swinging pendula and used to crash the hexenworld
- * server, however the hexen2 or mission pack server run just fine.
- * Analysis from Thomas Freundt:
- * -----------
- * The four pendula in romeric5 are initiated by 'func_door_rotating'
- * and made swinging back and forth by 'trigger_interval' with target
- * "t15". 'func_door_rotating' chains itself to 'LinkDoors'; a comment
- * in the code reads
- *	void func_door_rotating()
- *	{
- *	...
- *	// LinkDoors can't be done until all of the doors have been spawned, so
- *	// the sizes can be detected properly.
- *
- *	   self.think = LinkDoors;
- *	   self.nextthink = self.ltime + 0.1;
- *	...
- *	}
- * In order to achieve this, a delay of 0.1s is interposed between both
- * functions. Only after _all_ calls to 'LinkDoors' have returned should
- * 'trigger_interval' start calling 'door_use' via 'interval_use' to
- * initiate the swinging of the pendula
- *	void() trigger_interval =
- *	{
- *	...
- *	  self.think = interval_use;
- *	  if (!self.targetname)
- *	    thinktime self : 0.1;
- *	};
- * but this delay (also 0.1s) is too short and not all 'LinkDoors' have
- * been executed yet, which leaves self.enemy and self.owner assigned to
- * world in 'func_door_rotating' with model '*24' and '*19' respectively
- * and thereby triggers the infamous "assignment to world entity" runtime
- * error in 'door_use'.
- * By slightly relaxing the initial delay in 'trigger_interval' like
- *	thinktime self : 2.0;
- * the level loads normally. It really only affects the delay with which
- * trigger_interval finishes initialization, the actual periodic time in
- * which the trigger alternates is set in self.wait and amounts to 0.6s
- * with the pendula (see romeric5.ent); when it is not set explicitly
- * it defaults to 5s. When you set the initial think time to, let's say,
- * 30s, you can watch how the pendula start moving the first time, but
- * after that, 'interval_use' takes over and sets think time according
- * to self.wait. As connecting to a level requires it to be fully loaded
- * by the server we have plenty of time left so we're on the safe side
- * with 2.0s without risking anything.
- * -----------
- * So, the initial delay is changed to 2.0 to the hexenworld and siege
- * versions triggers.hc; the hexen2 and the expansion pack versions were
- * kept intact. Why hexenworld server used to fail while a hexen2 server
- * is fine is not perfectly clear for the time being.
- */
 /*QUAKED trigger_interval (.5 .5 .5) (-8 -8 -8) (8 8 8)
 */
 void() trigger_interval =
@@ -486,7 +446,7 @@ void() trigger_interval =
 
 	self.think = interval_use;
 	if (!self.targetname)
-		thinktime self : 2.0; /* was 0.1, see above */
+		thinktime self : 0.1;
 };
 
 /*QUAKED trigger_relay (.5 .5 .5) (-8 -8 -8) (8 8 8)

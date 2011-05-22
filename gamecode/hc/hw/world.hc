@@ -481,6 +481,7 @@ void() StartFrame =
 	entity		temp;
 
 	olddmmode = dmMode;
+	EntInitDone = !cvar("ents_not_loaded");
 	teamplay = cvar("teamplay");
 	skill = cvar("skill");
 	damageScale = cvar("damagescale");

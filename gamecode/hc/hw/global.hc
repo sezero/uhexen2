@@ -173,3 +173,5 @@ string g_keymdl;
 float gamestarted;
 float newsiege;
 
+float linkdoors_cnt;
+float EntInitDone;

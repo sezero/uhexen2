@@ -420,11 +420,6 @@ void () interval_use =
 	thinktime self : self.wait;
 };
 
-/* trigger_interval is only used in the romeric5 (Temple of Mars)
- * map for the four swinging pendula and used to crash the hexenworld
- * server, however the hexen2 or mission pack server run just fine.
- * See hw/ and siege/ version of triggers.hc for the details and a
- * workaround. */
 /*QUAKED trigger_interval (.5 .5 .5) (-8 -8 -8) (8 8 8)
 */
 void() trigger_interval =
