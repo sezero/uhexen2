@@ -3,6 +3,9 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2011-05-23 (SVN):
+    * added Thomas' egypt1 ankh_platform stuff as an optional patch.
+
 2011-05-22 (SVN):
     * hexenworld gamecode: Really fixed the HexenWorld server crash upon
       running the romeric5 (Temple of Mars) map which loads fine now on
