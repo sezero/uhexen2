@@ -3,6 +3,9 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2011-05-25 (SVN):
+    * Reverted ents_not_loaded addition from 2011-05-22, rev. 3970.
+
 2011-05-23 (SVN):
     * added Thomas' egypt1 ankh_platform stuff as an optional patch.
 
