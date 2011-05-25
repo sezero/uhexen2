@@ -4,6 +4,14 @@ Development Progress	:
 ---------------------------
 
 2011-05-25 (SVN):
+    * hexenworld/server/sv_init.c (SV_SpawnServer):  Increment realtime
+      merely by a fraction before each SV_Physics() call, otherwise
+      SV_Physics() actually returns immediately without doing anything.
+      This was the reason for the long- and well-known hexenworld server
+      crash for the romeric5 map.  Patch from Thomas Freundt.
+    * Changed beta version stamp to 2011-05-25.
+
+2011-05-25 (SVN):
     * Reverted HexenC LinkDoors() changes from 2011-05-22, rev. 3972,
       engine fix for the romeric5 crash will follow.
     * Reverted ents_not_loaded addition from 2011-05-22, rev. 3970.

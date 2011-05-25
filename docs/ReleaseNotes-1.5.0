@@ -1,5 +1,5 @@
 Hexen II: Hammer of Thyrion (uhexen2), release candidate,
-Version 1.5.0-rc3 / May 22, 2011.
+Version 1.5.0-rc3 / May 25, 2011.
 
 Changes since HoT-1.4.4-pre11:
 
@@ -26,8 +26,8 @@ Changes since HoT-1.4.4-pre11:
 * opengl: fixed an issue in net games where joining players appeared
   untextured on the opengl server application (bug #3288081).
 * opengl: updated code to use glGenTextures().
-* fixed a HexenC issue which used to crash HexenWorld servers upon running
-  the romeric5 (Temple of Mars) map which now loads fine.
+* fixed a hexenworld server timing issue which used to crash servers upon
+  running the romeric5 (Temple of Mars) map which now loads fine.
 * fixed a HexenC bug which would prevent a yakman from appearing during
   the 'Trial of Strength' in the 'Temple of Phurbu' (tibet7) level of the
   mission pack, rendering the level not completable (bug #1112533).

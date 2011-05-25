@@ -2,7 +2,7 @@
 	sv_init.c
 	server spawning
 
-	$Id: sv_init.c,v 1.19 2010-03-09 15:00:28 sezero Exp $
+	$Id$
 */
 
 #include "quakedef.h"
@@ -404,7 +404,14 @@ void SV_SpawnServer (const char *server, const char *startspot)
 
 	// run two frames to allow everything to settle
 	host_frametime = HX_FRAME_TIME;
+	// increment realtime merely by a fraction, otherwise the two
+	// SV_Physics() calls actually return immediately without doing
+	// anything and that used to result in the long- and well-known
+	// server crash for the romeric5 map. -- Thomas.
+	// FIXME: revisit the dozens of time variables some day. -- O.S.
+	realtime += HX_FRAME_TIME;
 	SV_Physics ();
+	realtime += HX_FRAME_TIME;
 	SV_Physics ();
 
 	// save movement vars
