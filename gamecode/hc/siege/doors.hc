@@ -795,24 +795,6 @@ void LinkDoors()
 entity	t, starte;
 vector	cmins, cmaxs;
 
-//	dprint("LinkDoors  targetname \"");
-//	dprint(self.targetname);
-//	dprint("\"  model \"");
-//	dprint(self.model);
-//	dprintf("\"  time = %s  ", time);
-//	dprintf("EntInitDone = %s  ", EntInitDone);
-	if (EntInitDone)
-	{
-		linkdoors_cnt -= 1;
-//		dprintf("--linkdoors_cnt = %s\n", linkdoors_cnt);
-	}
-	else
-	{
-//		dprintf("linkdoors_cnt = %s  ***  return\n", linkdoors_cnt);
-		self.nextthink = self.ltime + 0.1;
-		return;
-	}
-
 	if (self.enemy)
 		return;		// already linked by another door
 
@@ -1032,33 +1014,6 @@ vector newvect;
 	SUB_CalcAngleMove(self.angles + newvect, self.speed, door_rotate_incr_done);
 };
 
-void func_linkdoors_cnt()
-{
-	entity	e;
-
-	e = find(world, classname, "door_rotating");
-	if(e!=world)
-	{
-		if(e.think==LinkDoors)
-		{
-			linkdoors_cnt += 1;
-			return;
-		}
-	}
-	e = find(world, classname, "door");
-	while(e!=world)
-	{
-		if(e.think==LinkDoors)	// secret doors don't use LinkDoors() and are skipped
-		{
-			linkdoors_cnt += 1;
-			return;
-		}
-		e = find(e, classname, "door");
-	}
-	linkdoors_cnt = 1;	// a disconnect during level load might render
-					// this global variable invalid, so it must be reset
-}
-
 /*QUAKED func_door (0 .5 .8) ? START_OPEN REVERSE DOOR_DONT_LINK TOGGLE SLIDE NORMAL_MOVE remove_pp no_pp
 NOTE: Doors can now be activated and deactivated with the appropriate triggers.
 "inactive" set to 1 to start the door deactivated.
@@ -1115,16 +1070,6 @@ Puzzle Pieces (use the puzzle_id value from the pieces)
 void func_door()
 {
 float movedist, num_axes;
-
-	func_linkdoors_cnt();
-//	dprint("func_door           targetname \"");
-//	dprint(self.targetname);
-//	dprint("\"  model \"");
-//	dprint(self.model);
-//	dprintf("\"  time = %s  ", time);
-//	dprintf("EntInitDone = %s  ", EntInitDone);
-//	dprintf("linkdoors_cnt = %s\n", linkdoors_cnt);
-
 	door_sounds();
 
 	SetMovedir ();
@@ -1331,15 +1276,6 @@ Puzzle Pieces (use the puzzle_id value from the pieces)
 --------------------------------------------------------
 void func_door_smashing()
 {
-	func_linkdoors_cnt();
-//	dprint("func_door_smashing  targetname \"");
-//	dprint(self.targetname);
-//	dprint("\"  model \"");
-//	dprint(self.model);
-//	dprintf("\"  time = %s  ", time);
-//	dprintf("EntInitDone = %s  ", EntInitDone);
-//	dprintf("linkdoors_cnt = %s\n", linkdoors_cnt);
-
 	door_sounds();
 
 	SetMovedir ();
@@ -1745,15 +1681,6 @@ vector	vec;
 		self.wait = -1;
 		self.dmg=10000;
 	}
-
-	func_linkdoors_cnt();
-//	dprint("func_door_rotating  targetname \"");
-//	dprint(self.targetname);
-//	dprint("\"  model \"");
-//	dprint(self.model);
-//	dprintf("\"  time = %s  ", time);
-//	dprintf("EntInitDone = %s  ", EntInitDone);
-//	dprintf("linkdoors_cnt = %s\n", linkdoors_cnt);
 
 	self.dflags=self.flags;//don't ask
 	self.flags=0;

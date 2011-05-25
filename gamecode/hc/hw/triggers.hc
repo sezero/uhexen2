@@ -413,19 +413,6 @@ void() trigger_deactivate =
 
 void () interval_use =
 {
-//	dprint("interval_use  target \"");
-//	dprint(self.target);
-//	dprintf("\"  time = %s  ", time);
-//	dprintf("EntInitDone = %s  ", EntInitDone);
-	if(!EntInitDone || linkdoors_cnt)
-	{
-//		dprintf("linkdoors_cnt = %s  ***  return\n", linkdoors_cnt);
-		thinktime self : 0.1;
-		self.think = interval_use;
-		return;
-	}
-//	dprintf("linkdoors_cnt = %s\n", linkdoors_cnt);
-
 	SUB_UseTargets();
 //	dprint("interval used\n");
 
