@@ -4,6 +4,10 @@ Development Progress	:
 ---------------------------
 
 2011-05-25 (SVN):
+    * libs/xdelta11 (Makefile.xd): Removed XDELTA_OBJS objects from the
+      libxdelta.a target. Changed the xdelta target to use libxdelta.a.
+
+2011-05-25 (SVN):
     * hexenworld/server/sv_init.c (SV_SpawnServer):  Increment realtime
       merely by a fraction before each SV_Physics() call, otherwise
       SV_Physics() actually returns immediately without doing anything.
