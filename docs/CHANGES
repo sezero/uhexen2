@@ -4,6 +4,9 @@ Development Progress	:
 ---------------------------
 
 2011-06-01 (SVN):
+    * launcher: Bumped version to 1.0.5.
+
+2011-06-01 (SVN):
     * gamecode/patch111: Added xdelta3-generated pak patch files.
 
 2011-06-01 (SVN):
