@@ -92,6 +92,8 @@ endif
 # Rules for turning source files into .o files
 %.o: %.c
 	$(CC) -c $(CFLAGS) $(CPPFLAGS) $(INCLUDES) -o $@ $<
+%.o: $(LIBS_DIR)/common/%.c
+	$(CC) -c $(CFLAGS) $(CPPFLAGS) $(INCLUDES) -o $@ $<
 
 # Objects
 MASTEROBJS = sizebuf.o msg_io.o cmds.o common.o net.o master.o sys_main.o

@@ -488,6 +488,8 @@ endif
 	$(CC) -c $(CFLAGS) $(CPPFLAGS) $(SDLFLAGS) $(INCLUDES) -o $@ $<
 %.o: $(COMMONDIR)/%.c
 	$(CC) -c $(CFLAGS) $(CPPFLAGS) $(SDLFLAGS) $(INCLUDES) -o $@ $<
+%.o: $(LIBS_DIR)/common/%.c
+	$(CC) -c $(CFLAGS) $(CPPFLAGS) $(SDLFLAGS) $(INCLUDES) -o $@ $<
 %.o: %.asm
 	$(NASM) $(NASMFLAGS) $(NASM_INC) -o $@ $<
 %.o: $(COMMON_HW)/%.asm

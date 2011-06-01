@@ -45,14 +45,16 @@ XD3DEPS:= xdelta3-decode.h xdelta3-list.h xdelta3-main.h xdelta3-blkcache.h \
 	xdelta3.c xdelta3.h
 XD3DEPS:= $(patsubst %,$(XDELTA_DIR)/%,$(XD3DEPS))
 
+# Rules for turning source files into .o files
+%.o: %.c
+	$(CC) -c $(CFLAGS) -o $@ $<
+%.o: $(LIBS_DIR)/common/%.c
+	$(CC) -c $(CFLAGS) -o $@ $<
+
 xdelta3.o: $(XD3DEPS)
 	$(CC) $(XDFLAGS) -c $(XDELTA_DIR)/xdelta3.c -o xdelta3.o
 md5.o: $(MD5DEPS)
 	$(CC) $(MD5FLAGS) -c $(MD5DIR)/md5.c -o md5.o
-qsnprint.o: qsnprint.c qsnprint.h
-	$(CC) $(CFLAGS) -c qsnprint.c -o qsnprint.o
-h2patch3.o: h2patch3.c qsnprint.h
-	$(CC) $(CFLAGS) -c h2patch3.c -o h2patch3.o
 
 h2patch: $(OBJECTS)
 	$(LINKER) $(OBJECTS) -o h2patch $(LDFLAGS)

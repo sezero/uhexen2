@@ -75,6 +75,8 @@ all: $(BINARY)
 # Rules for turning source files into .o files
 %.o: %.c
 	$(CC) -c $(CFLAGS) -o $@ $<
+%.o: $(LIBS_DIR)/common/%.c
+	$(CC) -c $(CFLAGS) -o $@ $<
 
 # Objects
 # activate the line below if you add pixmap support, etc

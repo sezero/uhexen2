@@ -3,6 +3,9 @@
 #
 # if you want debug symbols compiled in (-g), run with make DEBUG=yes
 
+UHEXEN2_TOP:=../..
+LIBS_DIR:=$(UHEXEN2_TOP)/libs
+
 CC ?= gcc
 AR ?= ar
 RANLIB ?= ranlib
@@ -13,7 +16,7 @@ else
 CFLAGS += -Wall -O2
 endif
 #CFLAGS+= -DTIMIDITY_DEBUG
-INCLUDES= -I. -I../common
+INCLUDES= -I. -I$(LIBS_DIR)/common
 TARGETS:= libtimidity.a
 
 OBJECTS = common.o \
@@ -33,6 +36,8 @@ all: $(TARGETS)
 # Rules for turning source files into .o files
 %.o: %.c
 	$(CC) -c $(CFLAGS) $(INCLUDES) -o $@ $<
+#%.o: $(LIBS_DIR)/common/%.c
+#	$(CC) -c $(CFLAGS) $(INCLUDES) -o $@ $<
 
 libtimidity.a: $(OBJECTS)
 	$(AR) cru libtimidity.a $(OBJECTS)

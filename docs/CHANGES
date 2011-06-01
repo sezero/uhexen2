@@ -4,6 +4,10 @@ Development Progress	:
 ---------------------------
 
 2011-06-01 (SVN):
+    * Makefiles: Added build rules for $(LIBS_DIR)/common/%.c so that I
+      can move some commonly used sources under libs/common/ .
+
+2011-06-01 (SVN):
     * Changed beta version stamp to 2011-06-01.
     * rpm/hexen2.spec: Updated after the h2patch/xdelta3 changes.
 
