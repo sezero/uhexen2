@@ -1,0 +1,17 @@
+This directory contains binary patches to update the 1.03 cdrom versions
+of hexen2 pak files to the latest 1.11 version.  This update is actually
+the same as Raven's 1.11 update.
+
+The delta files were generated using xdelta3-3.0.0 with the following
+commands:
+xdelta3 -W 2097152 -0 -s cdrom/pak0.pak pak0.pak data1pk0.xd3
+xdelta3 -W 4194304 -0 -s cdrom/pak1.pak pak1.pak data1pk1.xd3
+As seen from the command lines, 2 MB and 4MB input sizes were used.
+
+In order to apply you need either 1.0.5 or a later version of our launcher
+program, or our h2patch program, or xdelta-3.0.0 itself.
+
+If you want to apply the patches using xdelta3 itself, do something like:
+xdelta3 -f -d -s cdrom/pak0.pak patchdat/data1/data1pk0.xd3 data1/pak0.pak
+xdelta3 -f -d -s cdrom/pak1.pak patchdat/data1/data1pk1.xd3 data1/pak1.pak
+(You can get xdelta3 from http://xdelta.org/)
