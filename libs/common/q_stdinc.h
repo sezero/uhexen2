@@ -9,7 +9,7 @@
 	$Id$
 
 	Copyright (C) 1996-1997  Id Software, Inc.
-	Copyright (C) 2007-2008  O.Sezer <sezero@users.sourceforge.net>
+	Copyright (C) 2007-2011  O.Sezer <sezero@users.sourceforge.net>
 
 	This program is free software; you can redistribute it and/or
 	modify it under the terms of the GNU General Public License
@@ -64,7 +64,7 @@
 #include <stdlib.h>
 #include <stdarg.h>
 #include <string.h>
-#if !(defined(_WIN32) || defined(_WIN64))
+#if !defined(_WIN32)
 #include <strings.h>	/* strcasecmp and strncasecmp	*/
 #endif	/* ! PLATFORM_WINDOWS */
 
@@ -162,12 +162,10 @@ typedef int	ssize_t;
 #endif	/* _MSC_VER */
 
 /* compatibility with M$ types */
-#if !(defined(_WIN32) || defined(_WIN64))
-
+#if !defined(_WIN32)
 #define	PASCAL
 #define	FAR
 #define	APIENTRY
-
 #endif	/* ! WINDOWS */
 
 /*==========================================================================*/

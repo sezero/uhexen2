@@ -5,7 +5,7 @@
 	$Id$
 
 	Copyright (C) 1996-1997  Id Software, Inc.
-	Copyright (C) 2007-2008  O.Sezer <sezero@users.sourceforge.net>
+	Copyright (C) 2007-2011  O.Sezer <sezero@users.sourceforge.net>
 
 	This program is free software; you can redistribute it and/or
 	modify it under the terms of the GNU General Public License
@@ -77,7 +77,7 @@
 #else
 #define	PDP_ENDIAN	3412
 #endif
-#endif	/* the NUXI endian, not supported actually.. */
+#endif	/* NUXI endian (not supported) */
 
 #if defined(__LITTLE_ENDIAN) && !defined(LITTLE_ENDIAN)
 #define	LITTLE_ENDIAN	__LITTLE_ENDIAN

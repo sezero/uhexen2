@@ -7,9 +7,9 @@
 	- shouldn't depend on arch_def.h, q_stdinc.h, or
 	  any other headers
 
-	$Id: compiler.h,v 1.15 2010-01-11 18:48:17 sezero Exp $
+	$Id$
 
-	Copyright (C) 2007  O.Sezer <sezero@users.sourceforge.net>
+	Copyright (C) 2007-2011  O.Sezer <sezero@users.sourceforge.net>
 
 	This program is free software; you can redistribute it and/or
 	modify it under the terms of the GNU General Public License
