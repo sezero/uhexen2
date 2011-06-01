@@ -3,6 +3,9 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2011-06-01 (SVN):
+    * gamecode/pak_v111, libs/xdelta11: Removed (moved to /old).
+
 2011-05-25 (SVN):
     * libs/xdelta11 (Makefile.xd): Removed XDELTA_OBJS objects from the
       libxdelta.a target. Changed the xdelta target to use libxdelta.a.
