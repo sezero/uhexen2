@@ -4,6 +4,9 @@ Development Progress	:
 ---------------------------
 
 2011-06-01 (SVN):
+    * gamecode/patch111: Added xdelta3-generated pak patch files.
+
+2011-06-01 (SVN):
     * libs/common: Added new directory. Moved arch_def.h, compiler.h,
       net_sys.h, q_endian.h and q_stdinc.h, which are commonly used
       headers in almost all uhexen2 tree, to under libs/common.  More
