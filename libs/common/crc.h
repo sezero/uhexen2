@@ -2,7 +2,7 @@
 	crc.h
 	crc functions
 
-	$Id: crc.h,v 1.2 2007-12-14 16:46:25 sezero Exp $
+	$Id$
 	Copyright (C) 1996-1997  Id Software, Inc.
 
 	This program is free software; you can redistribute it and/or

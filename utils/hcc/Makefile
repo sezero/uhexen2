@@ -84,7 +84,7 @@ HCCOBJS= cmdlib.o \
 	util_io.o \
 	q_endian.o \
 	byteordr.o \
-	crc.o \
+	crchash.o \
 	expr.o \
 	hcc.o \
 	pr_comp.o \

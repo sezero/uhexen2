@@ -11,7 +11,7 @@
 #include "compiler.h"
 #include "arch_def.h"
 #include "cmdlib.h"
-#include "crc.h"
+#include "crchash.h"
 #include "hcc.h"
 
 // MACROS ------------------------------------------------------------------

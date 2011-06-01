@@ -2,7 +2,7 @@
 	crc.c
 	crc functions
 
-	$Id: crc.c,v 1.7 2007-12-14 16:41:10 sezero Exp $
+	$Id$
 	Copyright (C) 1996-1997  Id Software, Inc.
 
 	This program is free software; you can redistribute it and/or
@@ -75,12 +75,12 @@ void CRC_Init(unsigned short *crcvalue)
 	*crcvalue = CRC_INIT_VALUE;
 }
 
-void CRC_ProcessByte(unsigned short *crcvalue, byte data)
+void CRC_ProcessByte(unsigned short *crcvalue, unsigned char data)
 {
 	*crcvalue = (*crcvalue << 8) ^ crctable[(*crcvalue >> 8) ^ data];
 }
 
-void CRC_ProcessBlock (byte *start, unsigned short *crcvalue, int count)
+void CRC_ProcessBlock (unsigned char *start, unsigned short *crcvalue, int count)
 {
 	unsigned short crc = *crcvalue;
 	while (count--)
@@ -93,7 +93,7 @@ unsigned short CRC_Value(unsigned short crcvalue)
 	return crcvalue ^ CRC_XOR_VALUE;
 }
 
-unsigned short CRC_Block (byte *start, int count)
+unsigned short CRC_Block (unsigned char *start, int count)
 {
 	unsigned short	crc;
 

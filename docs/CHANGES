@@ -4,6 +4,9 @@ Development Progress	:
 ---------------------------
 
 2011-06-01 (SVN):
+    * Moved crc.c and crc.h under libs/common/. Removed utils/common/crc.[ch]
+      and added utils/hcc[_old]/crchash.[ch]. Those hash functions are only
+      for progs the compiler and include crc.[ch].
     * Moved hwal.h, pakfile.h, q_endian.c, qsnprint.c, qsnprint.h, strl_fn.h,
       strlcpy.c and strlcat.c to under libs/common/ .
 
