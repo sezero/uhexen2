@@ -25,13 +25,13 @@ LINKER= $(CC)
 BINARY:= h2launcher
 
 MD5DIR:= $(LIBS_DIR)/md5
-MD5FLAGS:= -I$(MD5DIR)
+MD5FLAGS:= -I$(MD5DIR) -I$(LIBS_DIR)/common
 
 XDELTA_DIR:= $(LIBS_DIR)/xdelta3
 XDFLAGS:= -fno-builtin \
 	  -DXD3_DEBUG=0 -DNDEBUG=1 \
 	  -DXD3_STDIO=1
-XDFLAGS+= -I$(XDELTA_DIR)
+XDFLAGS+= -I$(XDELTA_DIR) -I$(LIBS_DIR)/common
 # when XD3_USE_LARGEFILE64 is not defined, xdelta3 defaults
 # to 64 bit xoff_t.
 # define XD3_USE_LARGEFILE64 as 0 or 1.
@@ -57,8 +57,8 @@ CFLAGS += $(CPUFLAGS) -Wall -g -DDEBUG=1
 else
 CFLAGS += $(CPUFLAGS) -Wall -O2 -DNDEBUG
 endif
-MD5FLAGS+=-I$(CFLAGS) -I$(LIBS_DIR)/common
-XDFLAGS+= -I$(CFLAGS) -I$(LIBS_DIR)/common
+MD5FLAGS+=$(CFLAGS)
+XDFLAGS +=$(CFLAGS)
 
 CFLAGS += $(GTK_CFLAGS) $(PTHREAD_CFLAGS) -I. -I$(LIBS_DIR)/common
 LDFLAGS+= $(GTK_LIBS) $(PTHREAD_LIBS)

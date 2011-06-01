@@ -4,6 +4,9 @@ Development Progress	:
 ---------------------------
 
 2011-06-01 (SVN):
+    * launcher/Makefile: Fix flags.
+
+2011-06-01 (SVN):
     * gamecode/patch111: README.txt update.
     * launcher: Bumped version to 1.0.5.
 
