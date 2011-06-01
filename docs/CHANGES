@@ -4,6 +4,10 @@ Development Progress	:
 ---------------------------
 
 2011-06-01 (SVN):
+    * launcher: Changed the patch facility to use new xdelta3 library.
+      Addition of patch data will follow shortly.
+
+2011-06-01 (SVN):
     * libs/xdelta3: Removed large amount of code not needed by our use.
       Added progress bar stuff. Added djgpp support. Improved mingw
       support. Fixed compiler warnings. Some other cleanups.

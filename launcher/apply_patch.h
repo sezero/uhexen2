@@ -2,7 +2,7 @@
 	apply_patch.h
 	hexen2 launcher: binary patch starter
 
-	$Id: apply_patch.h,v 1.7 2007-12-08 09:16:52 sezero Exp $
+	$Id$
 
 	This program is free software; you can redistribute it and/or
 	modify it under the terms of the GNU General Public License
@@ -35,7 +35,8 @@ extern void *apply_patches (void *workdir);
 extern int		thread_alive;
 
 /* gui progress bar support: */
-extern size_t		outsize, written_size;
+#include "xdelta3-mainopt.h"
+extern xd3_progress_t	h2patch_progress;
 
 #endif	/* _APPLY_PATCH_H */
 

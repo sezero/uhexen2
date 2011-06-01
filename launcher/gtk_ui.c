@@ -2,7 +2,7 @@
 	gtk_ui.c
 	hexen2 launcher gtk+ interface
 
-	$Id: gtk_ui.c,v 1.12 2009-07-06 11:02:23 sezero Exp $
+	$Id$
 
 	This program is free software; you can redistribute it and/or
 	modify it under the terms of the GNU General Public License
@@ -307,7 +307,7 @@ static void report_status (GtkObject *Unused, PatchWindow_t *PatchWindow)
 }
 
 #if !defined(DEMOBUILD)
-static size_t	lastsize;
+static unsigned long	last_written;
 static gfloat	percentage;
 
 static gboolean block_window_close (GtkWidget* widget, GdkEvent* event, gpointer user_data)
@@ -372,11 +372,11 @@ static void patch_gui_loop (PatchWindow_t *PatchWindow)
 {
 	while (thread_alive)
 	{
-		if (lastsize != written_size)
+		if (last_written != h2patch_progress.current_written)
 		{
 			/* update progress bar: */
-			percentage = (gfloat)written_size / (gfloat)outsize;
-			lastsize = written_size;
+			percentage = (gfloat)h2patch_progress.current_written / (gfloat)h2patch_progress.total_bytes;
+			last_written = h2patch_progress.current_written;
 			gtk_progress_bar_set_fraction(GTK_PROGRESS_BAR(PatchWindow->progbar), percentage);
 		}
 		flush_log_queue ();
@@ -408,7 +408,7 @@ static void start_xpatch (GtkObject *Unused, PatchWindow_t *PatchWindow)
 		gtk_signal_connect(GTK_OBJECT(PatchWindow->mywindow), "delete-event", GTK_SIGNAL_FUNC(block_window_close), NULL);
 	ui_LogInit (PatchWindow->LOGVIEW);
 
-	written_size = lastsize = 0;
+	last_written = 0;
 	thread_alive = 1;
 	if (pthread_create(&thr, NULL, apply_patches, wd) != 0)
 	{

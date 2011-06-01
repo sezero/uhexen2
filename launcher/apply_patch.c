@@ -2,7 +2,7 @@
 	apply_patch.c
 	hexen2 launcher: binary patch starter
 
-	$Id: apply_patch.c,v 1.16 2010-01-24 00:40:33 sezero Exp $
+	$Id$
 
 	This program is free software; you can redistribute it and/or
 	modify it under the terms of the GNU General Public License
@@ -24,10 +24,9 @@
 */
 
 #include "common.h"
-#include <time.h>
+#include <sys/time.h>
 
 #include "md5.h"
-#include "loki_xdelta.h"
 #include "apply_patch.h"
 #include "launcher_ui.h"
 
@@ -40,27 +39,45 @@ static const struct
 	const char	*deltaname;	/* delta file to use	*/
 	const char	*old_md5;	/* unpatched md5sum	*/
 	const char	*new_md5;	/* md5sum after patch	*/
-	size_t	old_size, new_size;
+	long	old_size, new_size;
 } patch_data[NUM_PATCHES] =
 {
 	{  "data1", "pak0.pak",
-	   "data1pak0.xd",
+	   "data1pk0.xd3",
 	   "b53c9391d16134cb3baddc1085f18683",
 	   "c9675191e75dd25a3b9ed81ee7e05eff",
 	   21714275, 22704056
 	},
 	{  "data1", "pak1.pak",
-	   "data1pak1.xd",
+	   "data1pk1.xd3",
 	   "9a2010aafb9c0fe71c37d01292030270",
 	   "c2ac5b0640773eed9ebe1cda2eca2ad0",
 	   76958474, 75601170
 	}
 };
 
+#define	H2PATCH_SRCWINSZ	(1<<23)	/* 8 MB is enough */
+
+static xd3_options_t h2patch_options =
+{
+	XD3_DEFAULT_IOPT_SIZE,	/* iopt_size */
+	XD3_DEFAULT_WINSIZE,	/* winsize */
+	H2PATCH_SRCWINSZ,	/* srcwinsz */
+	XD3_DEFAULT_SPREVSZ,	/* sprevsz */
+
+	1,			/* force overwrite */ /* was 0. */
+	0,			/* verbose */
+	1,			/* use_checksum */
+
+	&h2patch_progress,	/* progress_data */
+	ui_log_queue,		/* debug_print() */
+	NULL			/* progress_log() */
+};
+
 int			thread_alive;
 
 /* gui progress bar support: */
-size_t		outsize, written_size;
+xd3_progress_t		h2patch_progress;
 
 static	unsigned long		rc;
 static	char	dst[MAX_OSPATH],
@@ -68,52 +85,75 @@ static	char	dst[MAX_OSPATH],
 		out[MAX_OSPATH];
 static	char	csum[CHECKSUM_SIZE+1];
 
-#define DELTA_DIR	"patchdata"
+#define DELTA_DIR	"patchdat"
+#define cdrom_path	"install/hexen2/data1"
 #define patch_tmpname	"uh2patch.tmp"
 
-#define NEEDED_MODES	(S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH)
 static int stat_and_fix_perms (const char *name, struct stat *s)
 {
+	chmod (name, S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH);
 	if (stat(name, s) != 0)
-	{
-		ui_log_queue ("... unable to stat file!\n");
 		return -1;
-	}
 	if (!S_ISREG(s->st_mode))
-	{
-		ui_log_queue ("... not a regular file!\n");
 		return 1;
-	}
-	chmod (name, NEEDED_MODES);
 	return 0;
+}
+
+static long get_millisecs (void)
+{
+	struct timeval tv;
+
+	gettimeofday (&tv, NULL);
+
+	return (tv.tv_sec) * 1000L + (tv.tv_usec) / 1000;
+}
+
+static long starttime;
+
+static void start_file_progress (long bytes)
+{
+	h2patch_progress.current_file_written = 0;
+	h2patch_progress.current_file_total = bytes;
+	starttime = get_millisecs ();
+}
+
+static void finish_file_progress (void)
+{
+	if (h2patch_progress.current_file_written != 0)
+	{
+		long elapsed = get_millisecs () - starttime;
+		if (elapsed < 10000)
+		{
+			ui_log_queue ("... elapsed time %.2fs\n",
+						elapsed / 1000.0);
+		}
+		else
+		{
+			elapsed /= 1000;
+			ui_log_queue ("... elapsed time %lum:%02lus\n",
+					elapsed / 60, elapsed % 60);
+		}
+	}
 }
 
 void *apply_patches (void *workdir)
 {
-	int	i;
+	int	i, ret;
 	struct stat	stbuf;
-	time_t	starttime, temptime;
-	unsigned long	elapsed;
 
 	rc = XPATCH_NONE;
-
-	time (&starttime);
-	outsize = written_size = 0;
-	for (i = 0; i < NUM_PATCHES; i++)
-		outsize += patch_data[i].new_size;
+	memset (&h2patch_progress, 0, sizeof(xd3_progress_t));
 
 	ui_log_queue ("Workdir: %s\n", (char *)workdir);
 
-	/* delete our temp files from possible previous runs */
 	for (i = 0; i < NUM_PATCHES; i++)
 	{
+		h2patch_progress.total_bytes += patch_data[i].new_size;
+		/* delete our temp files from possible previous runs */
 		snprintf (out, sizeof(out), "%s/%s/%s", (char *)workdir,
 						patch_data[i].dir_name,
 							 patch_tmpname);
-		if (access(out, F_OK) == 0)
-		{
-			remove (out);
-		}
+		remove (out);
 	}
 
 	for (i = 0; i < NUM_PATCHES; i++)
@@ -128,9 +168,11 @@ void *apply_patches (void *workdir)
 		 * if the files were copied from the cdrom, some perms
 		 * may be missing and access() would fail the R_OK|W_OK
 		 * check. */
-		if (stat_and_fix_perms(dst, &stbuf) != 0)
+		ret = stat_and_fix_perms(dst, &stbuf);
+		if (ret != 0)
 		{
 			rc |= XPATCH_FAIL;
+			ui_log_queue ("... cannot find!\n");
 			thread_alive = 0;
 			return &rc;
 		}
@@ -156,7 +198,7 @@ void *apply_patches (void *workdir)
 		md5_compute(dst, csum);
 		if (strcmp(csum, patch_data[i].new_md5) == 0)
 		{
-			written_size += patch_data[i].new_size;
+			h2patch_progress.current_written += patch_data[i].new_size;
 			ui_log_queue ("... already patched.\n");
 			continue;
 		}
@@ -183,21 +225,17 @@ void *apply_patches (void *workdir)
 						patch_data[i].dir_name,
 							 patch_tmpname);
 		ui_log_queue ("... applying patch...\n");
-		time (&temptime);
-		if (loki_xpatch(pat, dst, out) < 0)
+		start_file_progress (patch_data[i].new_size);
+		ret = xd3_main_patcher(&h2patch_options, dst, pat, out);
+		finish_file_progress ();
+		if (ret != 0)
 		{
 			rc |= XPATCH_FAIL;
-			if (access(out, F_OK) == 0)
-			{
-				remove (out);
-			}
+			remove (out);
 			ui_log_queue ("... patch failed!\n");
 			thread_alive = 0;
 			return &rc;
 		}
-		elapsed = time (NULL) - temptime;
-		ui_log_queue ("... elapsed time %lum:%lus\n",
-						elapsed / 60, elapsed % 60);
 
 		ui_log_queue ("... verifying checksum...\n");
 		memset (csum, 0, sizeof(csum));
@@ -227,9 +265,7 @@ void *apply_patches (void *workdir)
 
 	if (rc & XPATCH_APPLIED)
 	{
-		elapsed = time (NULL) - starttime;
-		ui_log_queue ("All patches successful in %lum:%lus.\n",
-						elapsed / 60, elapsed % 60);
+		ui_log_queue ("All patches successful.\n");
 	}
 
 	thread_alive = 0;

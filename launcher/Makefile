@@ -24,18 +24,25 @@ LINKER= $(CC)
 
 BINARY:= h2launcher
 
-XDELTA_DIR:= $(LIBS_DIR)/xdelta11
+MD5DIR:= $(LIBS_DIR)/md5
+MD5FLAGS:= -I$(MD5DIR)
+
+XDELTA_DIR:= $(LIBS_DIR)/xdelta3
+XDFLAGS:= -fno-builtin \
+	  -DXD3_DEBUG=0 -DNDEBUG=1 \
+	  -DXD3_STDIO=1
+XDFLAGS+= -I$(XDELTA_DIR)
+# when XD3_USE_LARGEFILE64 is not defined, xdelta3 defaults
+# to 64 bit xoff_t.
+# define XD3_USE_LARGEFILE64 as 0 or 1.
+XDFLAGS+= -DXD3_USE_LARGEFILE64=1
 
 ifeq ($(GTK1),yes)
 GTK_CFLAGS:= $(shell gtk-config --cflags)
 GTK_LIBS:= $(shell gtk-config --libs)
-XD_BUILD:= GLIB1=yes
-XD_FLAGS:=-D_XD_USE_GLIB1
 else
 GTK_CFLAGS:= $(shell pkg-config --cflags gtk+-2.0)
 GTK_LIBS:= $(shell pkg-config --libs gtk+-2.0)
-XD_BUILD:= GLIB1=no
-XD_FLAGS:=
 endif
 
 # pthread flags: do note that these change accross
@@ -47,21 +54,19 @@ CPUFLAGS=
 
 ifdef DEBUG
 CFLAGS += $(CPUFLAGS) -Wall -g -DDEBUG=1
-XD_BUILD+= DEBUG=yes
 else
 CFLAGS += $(CPUFLAGS) -Wall -O2 -DNDEBUG
 endif
+MD5FLAGS+=-I$(CFLAGS)
+XDFLAGS+= -I$(CFLAGS)
 
 CFLAGS += $(GTK_CFLAGS) $(PTHREAD_CFLAGS) -I.
 LDFLAGS+= $(GTK_LIBS) $(PTHREAD_LIBS)
 
 ifdef DEMO
-XDDEPS :=
 CFLAGS += -DDEMOBUILD
 else
-XDDEPS := $(XDELTA_DIR)/libxdelta.a
-CFLAGS += -I$(XDELTA_DIR) -I$(XDELTA_DIR)/libedsio -I./xpatch $(XD_FLAGS)
-LDFLAGS+= -L$(XDELTA_DIR) -lxdelta -lz
+CFLAGS += -I$(XDELTA_DIR) -I$(MD5DIR)
 endif
 
 # Targets
@@ -78,19 +83,29 @@ GUI_OBJS     := gtk_ui.o $(SUPPORT_OBJS)
 LAUNCHER_OBJS:= crc.o q_endian.o games.o config_file.o launch_bin.o
 LAUNCHER_MAIN:= main.o
 ifndef DEMO
-XPATCH_OBJS  :=xpatch/md5.o xpatch/loki_xdelta.o xpatch/apply_patch.o
+XPATCH_OBJS  := apply_patch.o md5.o xdelta3.o
 endif
 ALL_OBJECTS  := $(LAUNCHER_OBJS) $(LAUNCHER_MAIN) $(GUI_OBJS) $(XPATCH_OBJS)
 
-$(BINARY): $(ALL_OBJECTS) $(XDDEPS)
+$(BINARY): $(ALL_OBJECTS)
 	$(LINKER) -o $(BINARY) $(ALL_OBJECTS) $(LDFLAGS)
 
-$(XDELTA_DIR)/libxdelta.a:
-	$(MAKE) -C $(XDELTA_DIR) -f Makefile.xd CC="$(CC)" AR="$(AR)" RANLIB="$(RANLIB)" $(XD_BUILD) libxdelta.a
+MD5DEPS:= md5.c md5.h
+MD5DEPS:= $(patsubst %,$(MD5DIR)/%,$(MD5DEPS))
+
+XD3DEPS:= xdelta3-decode.h xdelta3-list.h xdelta3-main.h xdelta3-blkcache.h \
+	xdelta3.c xdelta3.h
+XD3DEPS:= $(patsubst %,$(XDELTA_DIR)/%,$(XD3DEPS))
+
+md5.o: $(MD5DEPS)
+	$(CC) $(MD5FLAGS) -c $(MD5DIR)/md5.c -o md5.o
+
+xdelta3.o: $(XD3DEPS)
+	$(CC) $(XDFLAGS) -c $(XDELTA_DIR)/xdelta3.c -o xdelta3.o
 
 clean:
-	-rm -f *.o xpatch/*.o core
+	-rm -f *.o *.o core
 
 cleaner:
-	-rm -f *.o xpatch/*.o core $(BINARY)
+	-rm -f *.o *.o core $(BINARY)
 
