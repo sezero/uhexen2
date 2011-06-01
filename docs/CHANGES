@@ -4,6 +4,8 @@ Development Progress	:
 ---------------------------
 
 2011-06-01 (SVN):
+    * libs/xdelta3: Added Joshua P. MacDonald's xdelta3 library and some
+      of its main() extras.
     * libs/md5: Created new libs directory. Moved md5.* from launcher to
       the new place.
     * launcher: removed loki_xdelta.* and moved apply_patch.* out of the
