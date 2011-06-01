@@ -4,6 +4,9 @@ Development Progress	:
 ---------------------------
 
 2011-06-01 (SVN):
+    * rpm/hexen2.spec: Updated after the h2patch/xdelta3 changes.
+
+2011-06-01 (SVN):
     * docs/README: Updated after the h2patch/xdelta3 changes.
 
 2011-06-01 (SVN):

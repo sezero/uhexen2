@@ -28,7 +28,6 @@
 
 # default build options
 %{!?_without_gtk2:%define gtk1_buildopt GTK2=yes}
-%{!?_without_gtk2:%define glib1_buildopt GLIB2=yes}
 %{!?_without_asm:%define asm_buildopt USE_X86_ASM=yes}
 %{!?_without_alsa:%define alsa_buildopt USE_ALSA=yes}
 %{!?_without_midi:%define midi_buildopt USE_MIDI=yes}
@@ -39,7 +38,6 @@
 %{!?_without_ogg:%define ogg_buildopt USE_CODEC_VORBIS=yes}
 # build option overrides
 %{?_without_gtk2:%define gtk1_buildopt GTK1=yes}
-%{?_without_gtk2:%define glib1_buildopt GLIB1=yes}
 %{?_without_asm:%define asm_buildopt USE_X86_ASM=no}
 %{?_without_alsa:%define alsa_buildopt USE_ALSA=no}
 %{?_without_midi:%define midi_buildopt USE_MIDI=no}
@@ -137,8 +135,8 @@ run a HexenWorld server or client, and a master server application.
 # HexenWorld master server
 %{__make} -C hw_utils/hwmaster
 
-# Build xdelta
-%{__make} -C libs/xdelta11 -f Makefile.xd %{glib1_buildopt}
+# Build h2patch
+%{__make} -C h2patch
 
 # Launcher binaries
 %{__make} -C launcher %{gtk1_buildopt}
@@ -165,6 +163,7 @@ utils/bin/hcc -src gamecode-%{gamecode_ver}/hc/hw -oi -on
 %{__install} -D -m755 engine/hexenworld/client/glhwcl %{buildroot}/%{_prefix}/games/%{name}/glhwcl
 %{__install} -D -m755 engine/hexenworld/server/hwsv %{buildroot}/%{_prefix}/games/%{name}/hwsv
 %{__install} -D -m755 hw_utils/hwmaster/hwmaster %{buildroot}/%{_prefix}/games/%{name}/hwmaster
+%{__install} -D -m755 h2patch/h2patch %{buildroot}/%{_prefix}/games/%{name}/h2patch
 %{__install} -D -m755 launcher/h2launcher %{buildroot}/%{_prefix}/games/%{name}/h2launcher
 # Make a symlink of the game-launcher
 %{__mkdir_p} %{buildroot}/%{_bindir}
@@ -236,15 +235,12 @@ utils/bin/hcc -src gamecode-%{gamecode_ver}/hc/hw -oi -on
 %{__install} -D -m644 gamecode-%{gamecode_ver}/mapfixes/portals/maps/tibet9.ent %{buildroot}/%{_prefix}/games/%{name}/portals/maps/tibet9.ent
 %{__install} -D -m644 gamecode-%{gamecode_ver}/mapfixes/portals/maps/tibet9.txt %{buildroot}/%{_prefix}/games/%{name}/portals/maps/tibet9.txt
 
-# Install the xdelta updates
-%{__mkdir_p} %{buildroot}/%{_prefix}/games/%{name}/patchdata/
-%{__mkdir_p} %{buildroot}/%{_prefix}/games/%{name}/patchdata/data1
-%{__install} -D -m755 gamecode-%{gamecode_ver}/pak_v111/update_xdelta.sh %{buildroot}/%{_prefix}/games/%{name}/update_xdelta.sh
-%{__install} -D -m644 gamecode-%{gamecode_ver}/pak_v111/patchdata/data1/data1pak0.xd %{buildroot}/%{_prefix}/games/%{name}/patchdata/data1/data1pak0.xd
-%{__install} -D -m644 gamecode-%{gamecode_ver}/pak_v111/patchdata/data1/data1pak1.xd %{buildroot}/%{_prefix}/games/%{name}/patchdata/data1/data1pak1.xd
-
-# Install the update-patcher binaries
-%{__install} -D -m755 libs/xdelta11/xdelta %{buildroot}/%{_prefix}/games/%{name}/xdelta114
+# Install the pak deltas
+%{__mkdir_p} %{buildroot}/%{_prefix}/games/%{name}/patchdat/
+%{__mkdir_p} %{buildroot}/%{_prefix}/games/%{name}/patchdat/data1
+%{__install} -D -m644 gamecode-%{gamecode_ver}/patch111/patchdat/data1/data1pk0.xd3 %{buildroot}/%{_prefix}/games/%{name}/patchdat/data1/data1pk0.xd3
+%{__install} -D -m644 gamecode-%{gamecode_ver}/patch111/patchdat/data1/data1pk1.xd3 %{buildroot}/%{_prefix}/games/%{name}/patchdat/data1/data1pk1.xd3
+%{__install} -D -m644 gamecode-%{gamecode_ver}/patch111/patchdat.txt %{buildroot}/%{_prefix}/games/%{name}/patchdat.txt
 
 # Install the menu icon
 %{__mkdir_p} %{buildroot}/%{_datadir}/pixmaps
@@ -282,10 +278,10 @@ desktop-file-install \
 %{_prefix}/games/%{name}/h2ded
 %{_prefix}/games/%{name}/hexen2
 %{_prefix}/games/%{name}/glhexen2
-%{_prefix}/games/%{name}/xdelta114
-%{_prefix}/games/%{name}/update_xdelta.sh
-%{_prefix}/games/%{name}/patchdata/data1/data1pak0.xd
-%{_prefix}/games/%{name}/patchdata/data1/data1pak1.xd
+%{_prefix}/games/%{name}/h2patch
+%{_prefix}/games/%{name}/patchdat/data1/data1pk0.xd3
+%{_prefix}/games/%{name}/patchdat/data1/data1pk1.xd3
+%{_prefix}/games/%{name}/patchdat.txt
 %{_prefix}/games/%{name}/data1/progs.dat
 %{_prefix}/games/%{name}/data1/progs2.dat
 %{_prefix}/games/%{name}/data1/hexen.rc
@@ -355,6 +351,9 @@ desktop-file-install \
 %{_prefix}/games/%{name}/docs/README.hwmaster
 
 %changelog
+* Wed Jun 01 2011 O.Sezer <sezero@users.sourceforge.net>
+- Update spec file after the xdelta3/h2patch changes.
+
 * Sat May 20 2011 O.Sezer <sezero@users.sourceforge.net>
 - Install fixed entities for the tower map to handle the map's quirks.
 
