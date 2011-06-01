@@ -4,6 +4,7 @@ Development Progress	:
 ---------------------------
 
 2011-06-01 (SVN):
+    * Changed beta version stamp to 2011-06-01.
     * rpm/hexen2.spec: Updated after the h2patch/xdelta3 changes.
 
 2011-06-01 (SVN):

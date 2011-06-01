@@ -1,5 +1,5 @@
 Hexen II for DOS
-Version 1.5.0 (May 22, 2011.)
+Version 1.5.0 (June 01, 2011)
 
 DOS port of Hexen II, using the Hammer of Thyrion
 (uHexen2) engine, http://uhexen2.sourceforge.net/
@@ -40,9 +40,8 @@ NOTES:
   mission pack, copy the file named pak3.pak from the cdrom into the
   portals directory.  Alternatively, you can copy over the pak files
   them from an existing windows intallation.  In any case, the pak
-  files must be patched to the Raven's latest 1.11 version.  In order
-  to do that, run the included program named h2patch and it will be
-  done.
+  files must be patched to the Raven's latest 1.11 version:  Just run
+  the included H2PATCH program and it will be done.
 
 * MEMORY:  The default amount of required memory is 32 MB.  You need
   at least 16 MB.  If you want to specify the amount of memory to use,
