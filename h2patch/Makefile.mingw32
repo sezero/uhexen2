@@ -1,0 +1,72 @@
+
+UHEXEN2_TOP:=..
+LIBS_DIR:=$(UHEXEN2_TOP)/libs
+
+CC ?= gcc
+WINDRES ?= windres
+LINKER := $(CC)
+
+#CPUFLAGS= -march=i486
+CPUFLAGS= -march=i586
+CFLAGS  = $(CPUFLAGS) -O3 -Wall -Wshadow -DWIN32_LEAN_AND_MEAN
+LDFLAGS = -mconsole
+
+XDELTA_DIR:= $(LIBS_DIR)/xdelta3
+XDFLAGS:= -fno-builtin \
+	  -DXD3_DEBUG=0 -DNDEBUG=1 \
+	  -DXD3_STDIO=0 -DXD3_POSIX=0 -DXD3_WIN32=1
+# when XD3_USE_LARGEFILE64 is not defined, xdelta3 defaults
+# to 64 bit xoff_t.
+# using 32 bit xoff_t is necessary for compatibility
+# with old windows versions (Win9x, WinNT4)
+XDFLAGS+= -DXD3_USE_LARGEFILE64=0
+XDFLAGS+= -I$(XDELTA_DIR) -I$(LIBS_DIR)/common
+XDFLAGS+= $(CFLAGS)
+
+MD5DIR:= $(LIBS_DIR)/md5
+MD5FLAGS:= -I$(MD5DIR) -I$(LIBS_DIR)/common
+MD5FLAGS+= $(CFLAGS)
+
+CFLAGS  += -I. -I$(XDELTA_DIR) -I$(MD5DIR) -I$(LIBS_DIR)/common
+
+TARGETS:= h2patch.exe
+
+all: $(TARGETS)
+
+MD5DEPS:= md5.h q_endian.h
+XD3DEPS:= xdelta3-blkcache.h xdelta3-decode.h xdelta3.h \
+	xdelta3-list.h xdelta3-main.h
+
+OBJECTS:= md5.o xdelta3.o qsnprint.o h2patch3.o h2patch3.res
+
+MD5DEPS:= md5.c md5.h
+MD5DEPS:= $(patsubst %,$(MD5DIR)/%,$(MD5DEPS))
+
+XD3DEPS:= xdelta3-decode.h xdelta3-list.h xdelta3-main.h xdelta3-blkcache.h \
+	xdelta3.c xdelta3.h
+XD3DEPS:= $(patsubst %,$(XDELTA_DIR)/%,$(XD3DEPS))
+
+xdelta3.o: $(XD3DEPS)
+	$(CC) $(XDFLAGS) -c $(XDELTA_DIR)/xdelta3.c -o xdelta3.o
+md5.o: $(MD5DEPS)
+	$(CC) $(MD5FLAGS) -c $(MD5DIR)/md5.c -o md5.o
+qsnprint.o: qsnprint.c qsnprint.h
+	$(CC) $(CFLAGS) -c qsnprint.c -o qsnprint.o
+h2patch3.o: h2patch3.c qsnprint.h
+	$(CC) $(CFLAGS) -c h2patch3.c -o h2patch3.o
+# the program name is h2patch.exe and "patch" keyword is red-flagged
+# by Windows Vista and newer to trigger UAC for X86 applications.
+# So we need a manifest to set requestedExecutionLevel as "asInvoker"
+# and uiAccess as "false".  Not needed for AMD64, but doesn't hurt,
+# either.
+h2patch3.res: h2patch3.rc h2patch.exe.manifest
+	$(WINDRES) -DWIN32_LEAN_AND_MEAN --output-format=coff -o $@ $<
+
+h2patch.exe: $(OBJECTS)
+	$(LINKER) $(OBJECTS) -o h2patch.exe $(LDFLAGS)
+
+clean:
+	rm -f *.o *.res
+cleaner: clean
+	rm -f $(TARGETS)
+

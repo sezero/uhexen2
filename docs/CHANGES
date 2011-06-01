@@ -4,6 +4,10 @@ Development Progress	:
 ---------------------------
 
 2011-06-01 (SVN):
+    * h2patch: Added a standalone pak patch application built upon the
+      xdelta3 library.
+
+2011-06-01 (SVN):
     * launcher/Makefile: Fix flags.
 
 2011-06-01 (SVN):
