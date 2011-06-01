@@ -50,7 +50,7 @@ CFLAGS += -DDOUBLEVEC_T
 
 LDFLAGS =
 LDLIBS  =
-INCLUDES= -I. -I$(COMMONDIR)
+INCLUDES= -I. -I$(COMMONDIR) -I$(LIBS_DIR)/common
 
 # Other build flags
 

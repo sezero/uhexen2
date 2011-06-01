@@ -209,7 +209,7 @@ CPPFLAGS=
 LDFLAGS =
 
 # compiler includes
-INCLUDES= -I. -I$(COMMON_HW) -I$(COMMONDIR)
+INCLUDES= -I. -I$(COMMON_HW) -I$(COMMONDIR) -I$(LIBS_DIR)/common
 # nasm includes: the trailing directory separator matters
 NASM_INC= -I./ -I$(COMMON_HW)/ -I$(COMMONDIR)/
 # windows resource compiler includes

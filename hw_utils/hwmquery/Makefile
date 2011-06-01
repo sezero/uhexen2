@@ -58,7 +58,7 @@ CPPFLAGS=
 LDFLAGS =
 
 # compiler includes
-INCLUDES= -I.
+INCLUDES= -I. -I$(LIBS_DIR)/common
 
 ifeq ($(USE_WINSOCK2),yes)
 LIBWINSOCK=-lws2_32

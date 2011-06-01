@@ -13,7 +13,7 @@ else
 CFLAGS += -Wall -O2
 endif
 #CFLAGS+= -DTIMIDITY_DEBUG
-INCLUDES= -I.
+INCLUDES= -I. -I../common
 TARGETS:= libtimidity.a
 
 OBJECTS = common.o \

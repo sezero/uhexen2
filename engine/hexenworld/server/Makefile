@@ -108,7 +108,7 @@ CPPFLAGS=
 LDFLAGS =
 
 # compiler includes
-INCLUDES= -I. -I$(COMMON_HW) -I$(COMMONDIR)
+INCLUDES= -I. -I$(COMMON_HW) -I$(COMMONDIR) -I$(LIBS_DIR)/common
 
 ifeq ($(COMPILE_32BITS),yes)
 CFLAGS += -m32
