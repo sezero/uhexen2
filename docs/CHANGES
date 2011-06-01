@@ -4,6 +4,8 @@ Development Progress	:
 ---------------------------
 
 2011-06-01 (SVN):
+    * libs/md5: Created new libs directory. Moved md5.* from launcher to
+      the new place.
     * launcher: removed loki_xdelta.* and moved apply_patch.* out of the
       xpatch directory.
     * gamecode/pak_v111, libs/xdelta11: Removed (moved to /old).
