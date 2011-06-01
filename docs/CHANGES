@@ -4,6 +4,9 @@ Development Progress	:
 ---------------------------
 
 2011-06-01 (SVN):
+    * docs/README: Updated after the h2patch/xdelta3 changes.
+
+2011-06-01 (SVN):
     * gamecode/patch111: Renamed README.txt file to patchdat.txt.
 
 2011-06-01 (SVN):

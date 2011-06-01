@@ -79,11 +79,11 @@ b. Manual install/update of data files:
    Download the base binary tarball (e.g., hexen2-1.5.0.i586.tgz)
    and extract it. Copy the two files pak0.pak and pak1.pak from
    your cdrom into the "data1" directory in your own installation.
-   Run the command " chmod 644 data1/pak* "  to fix their permis-
-   sions. The pak filenames should be lower-cased, if not already.
-   To patch the data files, type ./update_xdelta.sh (this update
-   script and its requirements are included in the binary package).
-   Confirm the result by checking with the following md5sums:
+   The pak filenames should be lower-cased, if not already.
+   To patch the pak files, type  ./h2patch  (this update program
+   is included in the binary package).  The h2patch program will
+   confirm the result and report its success by checking with the
+   following md5sums:
 
    c9675191e75dd25a3b9ed81ee7e05eff  data1/pak0.pak
    c2ac5b0640773eed9ebe1cda2eca2ad0  data1/pak1.pak
