@@ -4,6 +4,9 @@ Development Progress	:
 ---------------------------
 
 2011-06-01 (SVN):
+    * libs/xdelta3: Removed large amount of code not needed by our use.
+      Added progress bar stuff. Added djgpp support. Improved mingw
+      support. Fixed compiler warnings. Some other cleanups.
     * libs/xdelta3: Added Joshua P. MacDonald's xdelta3 library and some
       of its main() extras.
     * libs/md5: Created new libs directory. Moved md5.* from launcher to
