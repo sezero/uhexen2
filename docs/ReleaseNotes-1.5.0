@@ -1,5 +1,5 @@
 Hexen II: Hammer of Thyrion (uhexen2), release candidate,
-Version 1.5.0-rc3 / May 25, 2011.
+Version 1.5.0-rc3 / June 01, 2011
 
 Changes since HoT-1.4.4-pre11:
 
@@ -53,6 +53,9 @@ Changes since HoT-1.4.4-pre11:
 * revised lit file loading. lit files are now accepted only if they come
   from the same game directory as the map itself or from a searchpath with
   a higher priority.
+* added new h2patch tool, an easy to use xdelta3-based standalone pak patch
+  tool for purposes of updating to hexen2 v1.11 data files. updated the
+  gtk-launcher's patch facility to use the same backend.
 * tested compilation using Visual Studio 2010.
 * source directory layout reworked, repository moved from cvs to svn.
 
