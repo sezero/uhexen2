@@ -1,6 +1,6 @@
 /*
-	qsnprint.c
-	$Id: qsnprint.c,v 1.2 2007-09-23 18:45:09 sezero Exp $
+	qsnprint.h
+	$Id$
 
 	(v)snprintf wrappers
 	Copyright (C) 2007 O. Sezer <sezero@users.sourceforge.net>
@@ -24,38 +24,23 @@
 		Boston, MA  02110-1301, USA
 */
 
-#include <sys/types.h>
-#include <stdio.h>
-#include <string.h>
-#include <stdarg.h>
-#include "arch_def.h"
-#include "compiler.h"
-#include "qsnprint.h"
+#ifndef __Q_SNPRINF_H
+#define __Q_SNPRINF_H
 
-int q_vsnprintf(char *str, size_t size, const char *format, va_list args)
-{
-	int		ret;
+/* snprintf, vsnprintf : always use our versions. */
+/* platform dependant (v)snprintf function names: */
+#if defined(PLATFORM_WINDOWS)
+#define	snprintf_func		_snprintf
+#define	vsnprintf_func		_vsnprintf
+#else
+#define	snprintf_func		snprintf
+#define	vsnprintf_func		vsnprintf
+#endif
 
-	ret = vsnprintf_func (str, size, format, args);
+extern int q_snprintf (char *str, size_t size, const char *format, ...) __attribute__((__format__(__printf__,3,4)));
+extern int q_vsnprintf(char *str, size_t size, const char *format, va_list args)
+									__attribute__((__format__(__printf__,3,0)));
 
-	if (ret < 0)
-		ret = (int)size;
 
-	if ((size_t)ret >= size)
-		str[size - 1] = '\0';
-
-	return ret;
-}
-
-int q_snprintf (char *str, size_t size, const char *format, ...)
-{
-	int		ret;
-	va_list		argptr;
-
-	va_start (argptr, format);
-	ret = q_vsnprintf (str, size, format, argptr);
-	va_end (argptr);
-
-	return ret;
-}
+#endif	/* __Q_SNPRINF_H */
 

@@ -1,6 +1,6 @@
 /*
 	qsnprint.c
-	$Id: qsnprint.c,v 1.2 2007-09-23 18:45:09 sezero Exp $
+	$Id$
 
 	(v)snprintf wrappers
 	Copyright (C) 2007 O. Sezer <sezero@users.sourceforge.net>

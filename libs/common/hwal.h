@@ -2,7 +2,7 @@
 	hwal.h
 	Hexen II, .WAL texture file format
 
-	$Id: hwal.h,v 1.3 2007-09-14 14:10:01 sezero Exp $
+	$Id$
 */
 
 #ifndef __HWAL_H

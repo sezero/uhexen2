@@ -2,7 +2,7 @@
 	strl_fn.h
 	header file for BSD strlcat and strlcpy
 
-	$Id: strl_fn.h,v 1.4 2007-09-22 16:11:06 sezero Exp $
+	$Id$
 */
 
 #ifndef __STRLFUNCS_H

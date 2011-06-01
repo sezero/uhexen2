@@ -4,6 +4,10 @@ Development Progress	:
 ---------------------------
 
 2011-06-01 (SVN):
+    * Moved hwal.h, pakfile.h, q_endian.c, qsnprint.c, qsnprint.h, strl_fn.h,
+      strlcpy.c and strlcat.c to under libs/common/ .
+
+2011-06-01 (SVN):
     * Makefiles: Added build rules for $(LIBS_DIR)/common/%.c so that I
       can move some commonly used sources under libs/common/ .
 

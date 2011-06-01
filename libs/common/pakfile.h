@@ -2,7 +2,7 @@
 	pakfile.h
 	on-disk pak file structures
 
-	$Id: pakfile.h,v 1.2 2007-04-19 09:36:45 sezero Exp $
+	$Id$
 */
 
 #ifndef __PAKFILE_H
