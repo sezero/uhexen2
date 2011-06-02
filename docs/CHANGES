@@ -3,6 +3,9 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2011-06-02 (SVN):
+    * Recompiled all windows x64 libraries using the latest mingw-w64 tools.
+
 2011-06-01 (SVN):
     * Moved crc.c and crc.h under libs/common/. Removed utils/common/crc.[ch]
       and added utils/hcc[_old]/crchash.[ch]. Those hash functions are only
