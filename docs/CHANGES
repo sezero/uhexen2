@@ -4,6 +4,10 @@ Development Progress	:
 ---------------------------
 
 2011-06-02 (SVN):
+    * Removed Visual Studio 2008 project files, because the VS2005 versions
+      perfectly import into VS2008.
+
+2011-06-02 (SVN):
     * Recompiled all windows x64 libraries using the latest mingw-w64 tools.
 
 2011-06-01 (SVN):

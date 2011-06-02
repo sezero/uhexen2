@@ -170,12 +170,13 @@ do a make clean between each different build.
 c. On Windows, using Visual Studio 2005/2008 or 2010:
 -----------------------------------------------------
 Visual Studio 2005, 2008 and 2010 versions have been tested to compile all
-uhexen2 code successfully. The VisualStudio2005.zip and VisualStudio2008.zip
-files contain the *.vcproj project files and *.sln solution files: unzipping
-the correct version and double-clicking on them should start visual studio
-and you will be ready to go. VisualStudio2010.zip files are also provided
-for hexen2 and hexenworld projects for your convenience.  All projects are
-adjusted for Win32 (x86) and x64 targets.
+uhexen2 code successfully.  The VisualStudio2005.zip files contain the
+*.vcproj project files and *.sln solution files: unzipping them and double-
+clicking on them should start visual studio and you will be ready to go.
+The VS2005 project files are imported perfectly into VS2008, so the VS2008
+owners can use the VS2005 project files.  VisualStudio2010.zip files are
+also provided for hexen2 and hexenworld projects for your convenience.  All
+projects are adjusted for Win32 (x86) and x64 targets.
 
 Compiling the software renderer versions h2.exe and hwcl.exe require YASM
 as the x86 assembler (link down below). Versions 0.7.2, 1.1.0 or newer are
