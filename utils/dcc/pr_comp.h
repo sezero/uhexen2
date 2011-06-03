@@ -1,8 +1,8 @@
 /*
 	pr_comp.h
-	PROGS structures: This file is shared by Quake and QCC
+	PROGS structures: This file is shared by Hexen II and HCC
 
-	$Id: pr_comp.h,v 1.7 2007-07-08 17:01:14 sezero Exp $
+	$Id$
 */
 
 #ifndef __PR_COMP_H
@@ -36,7 +36,7 @@ typedef enum
 #define	OFS_PARM7		25
 #define	RESERVED_OFS	28
 
-#define	IMMEDIATE_VALUE	"I+"
+#define	IMMEDIATE_NAME	"I+"		/* was "IMMEDIATE" in qcc */
 
 enum
 {
@@ -114,7 +114,57 @@ enum
 	OP_OR,
 
 	OP_BITAND,
-	OP_BITOR
+	OP_BITOR,
+
+	OP_MULSTORE_F,
+	OP_MULSTORE_V,
+	OP_MULSTOREP_F,
+	OP_MULSTOREP_V,
+
+	OP_DIVSTORE_F,
+	OP_DIVSTOREP_F,
+
+	OP_ADDSTORE_F,
+	OP_ADDSTORE_V,
+	OP_ADDSTOREP_F,
+	OP_ADDSTOREP_V,
+
+	OP_SUBSTORE_F,
+	OP_SUBSTORE_V,
+	OP_SUBSTOREP_F,
+	OP_SUBSTOREP_V,
+
+	OP_FETCH_GBL_F,
+	OP_FETCH_GBL_V,
+	OP_FETCH_GBL_S,
+	OP_FETCH_GBL_E,
+	OP_FETCH_GBL_FNC,
+
+	OP_CSTATE,
+	OP_CWSTATE,
+
+	OP_THINKTIME,
+
+	OP_BITSET,
+	OP_BITSETP,
+	OP_BITCLR,
+	OP_BITCLRP,
+
+	OP_RAND0,
+	OP_RAND1,
+	OP_RAND2,
+	OP_RANDV0,
+	OP_RANDV1,
+	OP_RANDV2,
+
+	OP_SWITCH_F,
+	OP_SWITCH_V,
+	OP_SWITCH_S,
+	OP_SWITCH_E,
+	OP_SWITCH_FNC,
+
+	OP_CASE,
+	OP_CASERANGE
 };
 
 typedef struct statement_s

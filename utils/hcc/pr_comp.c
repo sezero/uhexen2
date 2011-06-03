@@ -1,7 +1,7 @@
 /*
 	comp.c
 
-	$Header: /cvsroot/uhexen2/utils/hcc/pr_comp.c,v 1.7 2007-12-14 16:41:17 sezero Exp $
+	$Id$
 */
 
 
@@ -513,8 +513,7 @@ def_t *CO_ParseImmediate (void)
 	HashTable[idx] = cell;
 
 	cn->type = pr_immediate_type;
-	//cn->name = "IMMEDIATE";
-	cn->name = "I+";
+	cn->name = IMMEDIATE_NAME;
 	cn->initialized = 1;
 	cn->scope = NULL; // Always share immediates
 

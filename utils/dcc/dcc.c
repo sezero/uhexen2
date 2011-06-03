@@ -119,7 +119,7 @@ static const char *PR_PrintStringAtOfs (gofs_t ofs, def_t* typ)
 		return Make_Immediate(ofs, NULL, 2);
 	}
 
-	if ( !strcmp(strings + def->s_name, IMMEDIATE_VALUE) )
+	if (!strcmp(strings + def->s_name, IMMEDIATE_NAME))
 		return DCC_ValueString ((etype_t)def->type, &pr_globals[ofs]);
 
 	if (typ)
@@ -155,7 +155,7 @@ static const char *PR_PrintGlobal (gofs_t ofs, def_t* typ)
 		return NULL;
 	}
 
-	if ( !strcmp(strings + def->s_name, IMMEDIATE_VALUE) )
+	if (!strcmp(strings + def->s_name, IMMEDIATE_NAME))
 		return DCC_ValueString ((etype_t)def->type, &pr_globals[ofs]);
 
 	if (typ)
@@ -850,7 +850,7 @@ static void PR_Locals (dfunction_t *df)
 				continue;
 			}
 
-			if (!strcmp("I+", strings + par->s_name))
+			if (!strcmp(IMMEDIATE_NAME, strings + par->s_name))
 				continue;
 
 			PR_Print("local ");
@@ -1138,7 +1138,7 @@ static unsigned short GetReturnType (int func)
 	return rtype[0];
 }
 
-#if 0	// this is unused
+#if 0	/* this is unused */
 static unsigned short OP_StoreValue (dstatement_t *ds)
 {
 	switch (ds->op)
@@ -1228,7 +1228,7 @@ static unsigned short OP_StoreValue (dstatement_t *ds)
 
 	return ev_void;
 }
-#endif	// end of unused function
+#endif	/* end of unused */
 
 static ddef_t *PR_GetField (const char *name, ddef_t *dd)
 {
@@ -1324,7 +1324,7 @@ static int CalcArraySize (int j, int end)
 	for (j++ ; j < end; j++)
 	{
 		par = DEC_GetParameter (j);
-		if (par && strcmp(strings + par->s_name, IMMEDIATE_VALUE))
+		if (par && strcmp(strings + par->s_name, IMMEDIATE_NAME))
 		{
 		//	printf("next is %s at %d\n", strings + par->s_name, par->ofs);
 			return par->ofs;
@@ -1414,7 +1414,7 @@ static void PR_LocalGlobals (void)
 		if (!par)
 			cnt++;
 
-		if (par/* && strcmp(strings + par->s_name, IMMEDIATE_VALUE)*/)
+		if (par/* && strcmp(strings + par->s_name, IMMEDIATE_NAME)*/)
 		{
 		//	printf("cnt is %d\n", cnt);
 			cnt = 0;
@@ -1430,9 +1430,9 @@ static void PR_LocalGlobals (void)
 
 			if (par->type == ev_function)
 			{
-				if ( strcmp(strings + par->s_name, IMMEDIATE_VALUE) )
+				if (strcmp(strings + par->s_name, IMMEDIATE_NAME))
 				{
-					if ( strcmp(strings + par->s_name, strings + cfunc->s_name) )
+					if (strcmp(strings + par->s_name, strings + cfunc->s_name))
 					{
 						i = DEC_GetFunctionIdxByName(strings + par->s_name);
 						PR_FunctionHeader(functions + i);
@@ -1444,7 +1444,7 @@ static void PR_LocalGlobals (void)
 			{
 				if (par->type != ev_pointer)
 				{
-					if ( strcmp(strings + par->s_name, IMMEDIATE_VALUE) )
+					if (strcmp(strings + par->s_name, IMMEDIATE_NAME))
 					{
 						if (par->type == ev_field)
 						{
@@ -2094,7 +2094,7 @@ static int DEC_GetFunctionIdxByName (const char *name)
 
 	for (i = 1 ; i < numfunctions ; i++)
 	{
-		if (!strcmp (name, strings + functions[i].s_name) )
+		if (!strcmp (name, strings + functions[i].s_name))
 			break;
 	}
 
@@ -2133,7 +2133,7 @@ static int DEC_AlreadySeen (const char *fname)
 
 	for (i = 0 ; i < DEC_FileCtr ; i++)
 	{
-		if ( !strcmp(fname, DEC_FilesSeen[i] ) )
+		if (!strcmp(fname, DEC_FilesSeen[i]))
 			return 1;
 	}
 
@@ -2152,7 +2152,7 @@ static int DEC_AlreadySeen (const char *fname)
 }
 
 
-#if 0	//not used
+#if 0	/* not used */
 static void FixFunctionNames (void)
 {
 	int		i, j;
@@ -2171,7 +2171,7 @@ static void FixFunctionNames (void)
 		sprintf (c, "%s", s);
 	}
 }
-#endif
+#endif	/* end of unused */
 
 
 static const char *DCC_ValueString (etype_t type, void *val)

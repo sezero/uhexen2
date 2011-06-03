@@ -1,7 +1,7 @@
 /*
 	comp.c
 
-	$Header: /cvsroot/uhexen2/utils/dcc/pr_comp.c,v 1.22 2007-12-14 16:41:17 sezero Exp $
+	$Id$
 */
 
 
@@ -266,7 +266,7 @@ static def_t *PR_ParseImmediate (void)
 	pr.search = cn;
 
 	cn->type = pr_immediate_type;
-	cn->name = IMMEDIATE_VALUE;
+	cn->name = IMMEDIATE_NAME;
 	cn->initialized = 1;
 	cn->scope = NULL;		// always share immediates
 

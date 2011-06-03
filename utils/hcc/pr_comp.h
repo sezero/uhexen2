@@ -2,7 +2,7 @@
 	pr_comp.h
 	PROGS structures: This file is shared by Hexen II and HCC
 
-	$Id: pr_comp.h,v 1.4 2007-07-08 17:01:15 sezero Exp $
+	$Id$
 */
 
 #ifndef __PR_COMP_H
@@ -35,6 +35,8 @@ typedef enum
 #define	OFS_PARM6		22
 #define	OFS_PARM7		25
 #define	RESERVED_OFS	28
+
+#define	IMMEDIATE_NAME	"I+"		/* was "IMMEDIATE" in qcc */
 
 enum
 {

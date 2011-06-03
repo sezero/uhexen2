@@ -4,6 +4,10 @@ Development Progress	:
 ---------------------------
 
 2011-06-03 (SVN):
+    * utils, hcc, dcc: Macroized the "I+" string as IMMEDIATE_NAME and
+      used it. Synced all hcc, dcc and engine versions of pr_comp.h.
+
+2011-06-03 (SVN):
     * utils/dcc/pr_comp.h: Changed the types of a, b and c members of the
       dstatement_t structure from unsigned short to signed short which is
       the normal case for qcc and hcc. This prepares dcc to use a global
