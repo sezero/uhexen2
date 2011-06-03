@@ -2,7 +2,7 @@
 	genmodel.h
 	model structures
 
-	$Id: genmodel.h,v 1.4 2007-03-14 21:04:32 sezero Exp $
+	$Id$
 
 	This file must be identical in the genmodel project and in the H3
 	project.

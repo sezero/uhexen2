@@ -4,6 +4,9 @@ Development Progress	:
 ---------------------------
 
 2011-06-03 (SVN):
+    * Moved spritegn.h and genmodel.h under the libs/common/ directory.
+
+2011-06-03 (SVN):
     * utils, hcc, dcc: Macroized the "I+" string as IMMEDIATE_NAME and
       used it. Synced all hcc, dcc and engine versions of pr_comp.h.
 
