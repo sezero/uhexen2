@@ -4,6 +4,7 @@ Development Progress	:
 ---------------------------
 
 2011-06-03 (SVN):
+    * Moved adivtab.h and anorms.h under the libs/common/ directory.
     * Moved pr_comp.h under the libs/common/ directory.
     * Moved spritegn.h and genmodel.h under the libs/common/ directory.
 
