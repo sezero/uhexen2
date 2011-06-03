@@ -4,6 +4,21 @@ Development Progress	:
 ---------------------------
 
 2011-06-03 (SVN):
+    * utils/dcc/pr_comp.h: Changed the types of a, b and c members of the
+      dstatement_t structure from unsigned short to signed short which is
+      the normal case for qcc and hcc. This prepares dcc to use a global
+      pr_comp.h.
+    * utils/dcc/dcc.c: Since dstatement_t->a, b and c are change to signed
+      short, adjusted the decompiler code to operate correctly:  When a
+      dstatement_t->a, b or c (signed short) value is passed to a function
+      taking a gofs_t argument and the function compares that value to a
+      ddef_t->ofs value (unsigned short), then the dstatement_t->a, b or c
+      value must be explicitly cast to unsigned short in the function call.
+      BackBuildReturnType() is an exception, because it compares its gofs_t
+      argument to dstatement_t->a, b or c values, therefore there must not
+      be a casting for that case.
+
+2011-06-03 (SVN):
     * utils/dcc: Minor cleanup: Moved the static vsline, dsline and funcname
       arrays back into their functions.  Made the temp_val, func_headers and
       PR_FILE variables static to dcc.c, added a global Init_Dcc() function
