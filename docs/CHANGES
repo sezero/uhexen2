@@ -3,6 +3,15 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2011-06-03 (SVN):
+    * utils/dcc/dcc.c (DccStatement): Statement pointer k in a for loop was
+      being initialized using an unsigned statement->a value and this used
+      to result in a mistake of emitting while instead of if.  The current
+      hw hcode is an example: see the if (map_next == "map_sequence_start")
+      check in while(1) loop in world.hc::GetNextMap(). The code is changed
+      to use statement->a explicitly cast to signed short, just like in the
+      similar case found in AddProgramFlowInfo().
+
 2011-06-02 (SVN):
     * Removed Visual Studio 2008 project files, because the VS2005 versions
       perfectly import into VS2008.

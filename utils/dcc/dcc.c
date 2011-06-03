@@ -2,7 +2,7 @@
 	dcc.c
 	An hcode compiler/decompiler for Hexen II by Eric Hobbs
 
-	$Id: dcc.c,v 1.49 2010-02-22 23:23:17 sezero Exp $
+	$Id$
 */
 
 
@@ -494,7 +494,7 @@ static void DccStatement (dstatement_t *s)
 				}
 				else
 				{
-					if ( (signed short)(t->a + s->b) > 1 )
+					if ((signed short)t->a + (signed short)s->b > 1)
 					{
 					// pure if
 						PR_Indent();
@@ -504,7 +504,7 @@ static void DccStatement (dstatement_t *s)
 					else
 					{
 						int		dum = 1;
-						for ( k = t+(t->a) ; k < s ; k++)
+						for (k = t + (signed short)t->a; k < s; k++)
 						{
 							tom = k->op % 100;
 							if (tom == OP_GOTO || tom == OP_IF || tom == OP_IFNOT)
