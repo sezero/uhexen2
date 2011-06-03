@@ -4,6 +4,7 @@ Development Progress	:
 ---------------------------
 
 2011-06-03 (SVN):
+    * Moved pr_comp.h under the libs/common/ directory.
     * Moved spritegn.h and genmodel.h under the libs/common/ directory.
 
 2011-06-03 (SVN):
