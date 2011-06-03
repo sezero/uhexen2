@@ -14,6 +14,7 @@
 #include "cmdlib.h"
 #include "util_io.h"
 #include "qcc.h"
+#include "dcc.h"
 #include "q_endian.h"
 
 // MACROS ------------------------------------------------------------------
@@ -26,14 +27,6 @@
 
 extern const char *PR_String (const char *string);
 extern def_t	*PR_DefForFieldOfs (gofs_t ofs);
-
-// PUBLIC FUNCTION PROTOTYPES ----------------------------------------------
-
-void		DEC_ReadData (const char *srcfile);
-void		Dcc_Functions (void);
-void		FindBuiltinParameters (int func);
-void		DccFunctionOP (unsigned short op);
-void		PR_PrintFunction (const char *name);
 
 // PRIVATE FUNCTION PROTOTYPES ---------------------------------------------
 
@@ -67,10 +60,7 @@ extern int			numfielddefs;
 
 // PUBLIC DATA DEFINITIONS -------------------------------------------------
 
-FILE		*PR_FILE;
 int		FILE_NUM_FOR_NAME = 0;
-char		*temp_val[MAX_REGS];
-char		*func_headers[MAX_FUNCTIONS];
 
 // PRIVATE DATA DEFINITIONS ------------------------------------------------
 
@@ -86,7 +76,9 @@ static const char *type_names[8] =
 	"ev_pointer"
 };
 
-static char	vsline[256], dsline[2048], funcname[512];
+static FILE	*PR_FILE;
+static char	*temp_val[MAX_REGS];
+static char	*func_headers[MAX_FUNCTIONS];
 
 static int	regs_used = 0;
 static int	lindent;
@@ -171,6 +163,7 @@ static const char *PR_PrintGlobal (gofs_t ofs, def_t* typ)
 
 static void DccStatement (dstatement_t *s)
 {
+	static char	dsline[2048], funcname[512];
 	const char	*arg1, *arg2, *arg3;
 	char		a1[1024], a2[1024], a3[1024];
 	int		nargs, i, j;
@@ -2081,6 +2074,14 @@ void DEC_ReadData (const char *srcfile)
 }
 
 
+void Init_Dcc (void)
+{
+	PR_FILE = stdout;
+	memset(func_headers, 0, MAX_FUNCTIONS * sizeof(char *));
+	memset(temp_val, 0, MAX_REGS * sizeof(char *));
+}
+
+
 static int DEC_GetFunctionIdxByName (const char *name)
 {
 	int	i;
@@ -2169,6 +2170,7 @@ static void FixFunctionNames (void)
 
 static const char *DCC_ValueString (etype_t type, void *val)
 {
+	static char	vsline[256];
 	def_t		*def;
 	dfunction_t	*f;
 

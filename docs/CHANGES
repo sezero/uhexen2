@@ -4,6 +4,14 @@ Development Progress	:
 ---------------------------
 
 2011-06-03 (SVN):
+    * utils/dcc: Minor cleanup: Moved the static vsline, dsline and funcname
+      arrays back into their functions.  Made the temp_val, func_headers and
+      PR_FILE variables static to dcc.c, added a global Init_Dcc() function
+      to initialize them.  Moved global variable and function deiclarations
+      to a new dcc.h, made dcc.c and hcc.c to include dcc.h. Made hcc.c to
+      call Init_Dcc() just after calling InitData().
+
+2011-06-03 (SVN):
     * utils/dcc/dcc.c (DccStatement): Statement pointer k in a for loop was
       being initialized using an unsigned statement->a value and this used
       to result in a mistake of emitting while instead of if.  The current

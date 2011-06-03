@@ -2,7 +2,7 @@
 	hcc.c
 	HCode compiler based on qcc, modifed by Eric Hobbs to work with DCC
 
-	$Header: /cvsroot/uhexen2/utils/dcc/hcc.c,v 1.32 2009-06-15 09:12:20 sezero Exp $
+	$Id$
 */
 
 #include "q_stdinc.h"
@@ -11,6 +11,7 @@
 #include "cmdlib.h"
 #include "util_io.h"
 #include "qcc.h"
+#include "dcc.h"
 #include "crc.h"
 #include "q_endian.h"
 #include "byteordr.h"
@@ -49,18 +50,6 @@ int			nummodels;
 char		precache_files[MAX_FILES][MAX_DATA_PATH];
 int			precache_files_block[MAX_SOUNDS];
 int			numfiles;
-
-//ADDED BY EMAN
-extern FILE	*PR_FILE;
-extern char	*temp_val[MAX_REGS];
-extern char	*func_headers[MAX_FUNCTIONS];
-extern void Dcc_Functions (void);
-extern void FindBuiltinParameters(int func);
-extern void DccFunctionOP(unsigned short op);
-extern void DEC_ReadData (const char *srcfile);
-extern void PR_PrintFunction (const char *name);
-
-extern int	FILE_NUM_FOR_NAME;
 
 
 /*
@@ -796,8 +785,7 @@ int main (int argc, char **argv)
 	}
 
 	InitData ();
-
-	PR_FILE = stdout;
+	Init_Dcc ();
 
 	p = CheckParm("-dump");
 	if (p)
@@ -825,9 +813,6 @@ int main (int argc, char **argv)
 		p = CheckParm ("-fix");
 		if (p)
 			FILE_NUM_FOR_NAME = 1;
-
-		memset(func_headers, 0, MAX_FUNCTIONS * sizeof(char *));
-		memset(temp_val, 0, MAX_REGS * sizeof(char *));
 
 		p = CheckParm("-bbb");
 		if (p)
