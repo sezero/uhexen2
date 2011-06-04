@@ -1,9 +1,26 @@
 
-progs.dat compiler/decompiler for Hexen2 by Eric Hobbs.
-Read the author's dcc.txt file for usage/details.
+progs.dat compiler/decompiler for Hexen2 by Eric Hobbs.  Read the author's
+dcc.txt file for usage/details.
 
-Probably only interesting due to its decompiler facility.
-Oh, and there may be a few mods out there which can only
-be compiled by dhcc, such as the HexenC code of Project
-Peanut.  I put this here mostly for reference.
+Probably only interesting due to its decompiler facility.  There may be a
+few very old and rare mods out there which can only be compiled by dhcc,
+too, such as the HexenC code of "Project Peanut".
+
+I put this here mostly for reference, but it is really useful due to its
+decompiler facility.
+
+If you ever intend to use dhcc to actually compile hcode, know that it was
+created at a time when the official hcc had not been released, therefore it
+has its own issues.  Here are its differences from official hcc:
+
+- doesn't know about switch statements (can't decompile them, either)
+- doesn't use/understand unions, uses its own "alias" instead
+- uses random instead of randomv
+- uses AdvanceThinktime(entity,float) instead of thinktime entity:float
+- uses "|=" instead of "(+)"
+- uses "^=" instead of "(-)"
+- uses "x->y" instead of "x[y]" for array elements
+
+(This isn't a complete and accurate list, but a list of things that just
+came to my mind...)
 
