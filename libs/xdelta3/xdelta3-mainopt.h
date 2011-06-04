@@ -24,7 +24,13 @@
 /* basic interfacing with xdelta3 / xdelta3-main */
 
 #include "xdelta3-sizedefs.h"
+#if defined(_MSC_VER) && (_MSC_VER < 1600)
+/* MS Visual Studio provides stdint.h only starting with
+ * version 2010.  Even in VS2010, there is no inttypes.h.. */
+#include "msinttypes/stdint.h"
+#else
 #include <stdint.h>
+#endif
 
 #if defined(__GNUC__) && (__GNUC__ > 3 || (__GNUC__ == 3 && __GNUC_MINOR__ > 0))
 #define __fp_printf_like(_one, _two)	__attribute__((__format__ (__printf__,_one,_two)))

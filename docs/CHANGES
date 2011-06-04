@@ -4,6 +4,7 @@ Development Progress	:
 ---------------------------
 
 2011-06-04 (SVN):
+    * h2patch, libs/xdelta3: Fixed Visual Studio compilation (stdint.h).
     * Updated Visual Studio project files after the libs/common changes.
 
 2011-06-03 (SVN):
