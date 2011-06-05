@@ -4,6 +4,9 @@ Development Progress	:
 ---------------------------
 
 2011-06-05 (SVN):
+    * rpm spec file: bumped version to 1.5.0-rc3.
+
+2011-06-05 (SVN):
     * Dropped support for the old version of hcc tool.  Adjusted all
       build scripts, updated documents.  Added a diff file in the hcc
       directory showing the differences between the old and new versions

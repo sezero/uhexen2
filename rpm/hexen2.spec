@@ -56,12 +56,12 @@
 
 # pre-release version: MAKE SURE to change this
 # to an %undefine for the final realease!!
-%define prerelease	rc2
+%define prerelease	rc3
 
 # package release number for final-release:
 %define pkg_final	1
 # package release number for pre-release:
-%define pkg_prerel	2
+%define pkg_prerel	3
 
 Name:		hexen2
 License:	GPLv2
@@ -350,6 +350,9 @@ desktop-file-install \
 %{_prefix}/games/%{name}/docs/README.hwmaster
 
 %changelog
+* Sun Jun 05 2011 O.Sezer <sezero@users.sourceforge.net> 1.5.0-0.3.rc3
+- Bumped version to 1.5.0-rc3.
+
 * Sun Jun 05 2011 O.Sezer <sezero@users.sourceforge.net>
 - Build the main game progs using the new hcc tool.
 
