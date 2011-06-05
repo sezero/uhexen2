@@ -1,22 +1,17 @@
-In order to compile the hcode (the *.hc files)
-into hexen2-usable progs.dat files, you need
-the hcc program (the hcode compiler). You can
-find the sources for this utility either in
-hexen2source-1.5.0, or in the uhexen2 cvs, on
-the Hammer of Thyrion downloads page.
+In order to compile the hcode (the HexenC *.hc files) into the progs.dat
+files, you need the hcc program (the hcode compiler). You can find the
+sources for this utility either in hexen2source-1.5.0, or in the uhexen2
+svn, on the Hammer of Thyrion downloads page.
 
-In order to compile the original hexen2 hcode,
-use the old version of the hcc program (found
-in "hcc_old" in the utils.) The newer version
-works, too, but try not to use its -oi and -on
-command line switches. Do:
+In order to compile the original hexen2 hcode, don't use the -oi and -on
+command line switches of hcc for compatibility with old saved games.  If
+you use the -oi and -on optimizations, loading old saves make the engine
+to emit warnings at runtime. They are actually harmless, but annoying...
 
-# hcc -name progs.src
-# hcc -name progs2.src
+$  hcc				# this compiles progs.dat
+$  hcc -name progs2.src		# this compiles progs2.dat
 
-In order to compile the missionpack, hexenworld
-or siege hcode, use the new version of the hcc
-program. Do:
+In order to compile the mission pack, hexenworld or siege hcode, do:
 
-# hcc -oi -on -name progs.src
+$  hcc -oi -on
 

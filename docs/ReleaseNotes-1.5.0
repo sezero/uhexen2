@@ -58,6 +58,7 @@ Changes since HoT-1.4.4-pre11:
   gtk-launcher's patch facility to use the same backend.
 * utils, dcc: fixed a wrong decompilation of an "if" opcode into a "while";
   some source code revisision.
+* utils, hcc: dropped support for the old version of hcc tool.
 * tested compilation using Visual Studio 2010.
 * source directory layout reworked, repository moved from cvs to svn.
 

@@ -7,8 +7,7 @@ if test "$1" = "strip"; then
 	if env | grep -i windir > /dev/null; then
 		exe_ext=".exe"
 	fi
-	strip hcc_old/hcc$exe_ext	\
-		$BIN_DIR/hcc$exe_ext	\
+	strip $BIN_DIR/hcc$exe_ext	\
 		$BIN_DIR/dhcc$exe_ext	\
 		$BIN_DIR/vis$exe_ext $BIN_DIR/light$exe_ext	\
 		$BIN_DIR/qbsp$exe_ext $BIN_DIR/bspinfo$exe_ext	\
@@ -42,7 +41,6 @@ if test "$1" = "clean"; then
 	$MAKE_CMD -s -C pak clean
 	$MAKE_CMD -s -C dcc clean
 	$MAKE_CMD -s -C jsh2color clean
-	$MAKE_CMD -s -C hcc_old clean
 	$MAKE_CMD -s -C texutils/bsp2wal clean
 	$MAKE_CMD -s -C texutils/lmp2pcx clean
 	exit 0
@@ -50,8 +48,6 @@ fi
 
 echo "Building hcc, the HexenC compiler.."
 $MAKE_CMD -C hcc || exit 1
-echo "" && echo "Now building hcc, old version"
-$MAKE_CMD -C hcc_old || exit 1
 echo "" && echo "Now building qfiles.."
 $MAKE_CMD -C qfiles || exit 1
 echo "" && echo "Now building pak tools.."

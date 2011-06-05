@@ -141,12 +141,11 @@ run a HexenWorld server or client, and a master server application.
 # Launcher binaries
 %{__make} -C launcher %{gtk1_buildopt}
 
-# Build the hcode compilers
-%{__make} -C utils/hcc_old
+# Build the hcode compiler
 %{__make} -C utils/hcc
 # Build the game-code
-utils/hcc_old/hcc -src gamecode-%{gamecode_ver}/hc/h2
-utils/hcc_old/hcc -src gamecode-%{gamecode_ver}/hc/h2 -name progs2.src
+utils/bin/hcc -src gamecode-%{gamecode_ver}/hc/h2
+utils/bin/hcc -src gamecode-%{gamecode_ver}/hc/h2 -name progs2.src
 utils/bin/hcc -src gamecode-%{gamecode_ver}/hc/portals -oi -on
 utils/bin/hcc -src gamecode-%{gamecode_ver}/hc/hw -oi -on
 #utils/bin/hcc -src gamecode-%{gamecode_ver}/hc/siege -oi -on
@@ -351,6 +350,9 @@ desktop-file-install \
 %{_prefix}/games/%{name}/docs/README.hwmaster
 
 %changelog
+* Sun Jun 05 2011 O.Sezer <sezero@users.sourceforge.net>
+- Build the main game progs using the new hcc tool.
+
 * Wed Jun 01 2011 O.Sezer <sezero@users.sourceforge.net>
 - Update spec file after the xdelta3/h2patch changes.
 

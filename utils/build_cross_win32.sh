@@ -7,8 +7,7 @@ BIN_DIR=bin
 
 if test "$1" = "strip"; then
 	echo "Stripping all hexen2util win32 binaries"
-	$STRIPPER hcc_old/hcc.exe	\
-		$BIN_DIR/hcc.exe	\
+	$STRIPPER $BIN_DIR/hcc.exe	\
 		$BIN_DIR/dhcc.exe	\
 		$BIN_DIR/vis.exe $BIN_DIR/light.exe	\
 		$BIN_DIR/qbsp.exe $BIN_DIR/bspinfo.exe	\
@@ -42,7 +41,6 @@ if test "$1" = "clean"; then
 	$MAKE_CMD -s -C pak clean
 	$MAKE_CMD -s -C dcc clean
 	$MAKE_CMD -s -C jsh2color clean
-	$MAKE_CMD -s -C hcc_old clean
 	$MAKE_CMD -s -C texutils/bsp2wal clean
 	$MAKE_CMD -s -C texutils/lmp2pcx clean
 	exit 0
@@ -50,9 +48,6 @@ fi
 
 echo "Building hcc, the HexenC compiler.."
 $MAKE_CMD -C hcc || exit 1
-
-echo "" && echo "Now building hcc, old version"
-$MAKE_CMD -C hcc_old || exit 1
 
 echo "" && echo "Now building qfiles.."
 $MAKE_CMD -C qfiles || exit 1
