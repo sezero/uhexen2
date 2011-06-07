@@ -1,0 +1,112 @@
+mezzoman.hc: fixed HexenC bug which would prevent a yakman from appearing
+during the 'Trial of Strength' in the 'Temple of Phurbu' (tibet7) level
+of the mission pack, rendering the level not completable.  Fix by Thomas
+Freundt; quoting his analysis:
+
+"The problem originates in the Werepanther's shield.  [...] behavioral
+function mezzoman.hc::spawn_reflect() 'Picks up enemy missile as shield!'.
+The pointer to the missile entity is stored in monster_mezzoman's .shield
+property and is initiated as usual with 0 being the equivalent to entity
+world.  There are 3 functions in mezzoman.hc that deactivate the missile
+by
+
+	if(self.shield)
+	  remove(self.shield);
+
+... and a think function SUB_Remove().  When another function of the above
+mentioned ones already has removed the entity, the pointer is freed, so no
+problems arise with freeing the entity again, although I regard this as
+sloppy programming.  It starts to get out of hand when another entity has
+been allocated to the slot: it's removed and that's it.  Yakman may meet
+the same fate, although this case is more likely to happen than random
+because the last entity removed may be a reflected missile.  The mezzoman
+chain acts like this:
+
+	T_Damage
+	  Killed
+	    SUB_UseTargets
+	      func_monsterspawner_mp
+	    mezzo_die
+
+... Yakman is spawned before mezzo_die() is called and in latter function
+it is removed before being properly initiated by monster_yakman, so it
+stays invisible during its short existence.  The design flaw also explains
+why sometimes missiles disappear for no apparent reason.  Eventually, any
+temporary entity might be the victim.  There are many, many debug messages
+commented out and I think this is not coincidental.  The best way to go,
+of course, were to reset the .shield pointer to 0 after the entity is
+removed:
+
+	self.shield = world;
+
+... but during runtime an error is issued: "assignment to world entity".
+So not only do we have to check whether the entity to be removed is indeed
+of classname 'mezzo_reflect' but also if it is owned by self, our dying
+monster_mezzoman."
+
+--- mezzoman.hc.orig
++++ mezzoman.hc
+@@ -856,7 +856,8 @@
+ void mezzo_die () [++ $death1 .. $death16]
+ {
+ 	if(self.shield)
+-		remove(self.shield);
++		if(self.shield.classname=="mezzo_reflect" && self.shield.owner==self)
++			remove(self.shield);
+ 	if (self.health < -40)
+ 	{
+ 		chunk_death();
+@@ -893,7 +894,8 @@
+ 	self.monster_awake=TRUE;
+ 
+ 	if(self.shield)
+-		remove(self.shield);
++		if(self.shield.classname=="mezzo_reflect" && self.shield.owner==self)
++			remove(self.shield);
+ 
+ 	if(self.health<=100)
+ 	{
+@@ -1071,7 +1073,8 @@
+ 	{
+ 	float r;
+ 		if(self.shield)
+-			remove(self.shield);
++			if(self.shield.classname=="mezzo_reflect" && self.shield.owner==self)
++				remove(self.shield);
+ 		r=vlen(self.enemy.origin-self.origin);
+ 		if(infront(self.enemy)&&r<100)
+ 		{
+@@ -1120,16 +1123,22 @@
+ 			self.think=mezzo_roll_forward;
+ 		thinktime self : 0;
+ 	}
+-	self.shield.oldthink=self.shield.think;
+-	self.shield.think=SUB_Remove;
+-	thinktime self.shield : 0.2;
++	if(self.shield)
++		if(self.shield.classname=="mezzo_reflect" && self.shield.owner==self)
++		{
++			self.shield.oldthink=self.shield.think;
++			self.shield.think=SUB_Remove;
++			thinktime self.shield : 0.2;
++		}
+ //	dprint("checking defense from block\n");
+ 	mezzo_check_defense();
+ 	if(self.think==mezzo_block_wait)
+-	{
+-		self.shield.think=self.shield.oldthink;
+-		thinktime self.shield : 0;
+-	}
++		if(self.shield)
++			if(self.shield.classname=="mezzo_reflect" && self.shield.owner==self)
++			{
++				self.shield.think=self.shield.oldthink;
++				thinktime self.shield : 0;
++			}
+ //	else
+ //		dprint("wigging!\n");
+ }
+
+This fix properly closes our more that six year old bug #1112533, see
+http://sourceforge.net/tracker/?func=detail&aid=1112533&group_id=124987&atid=701006
+

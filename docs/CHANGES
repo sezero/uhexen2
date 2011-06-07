@@ -4,6 +4,11 @@ Development Progress	:
 ---------------------------
 
 2011-06-07 (SVN):
+    * gamecode, hc: Created new devel directory. Moved excessively long
+      analysis details from buddha.hc, eidolon.hc and mezzoman.hc to the
+      corresponding text files under the new directory.
+
+2011-06-07 (SVN):
     * utils, hcc: Fixed broken switch statement compilation when there is
       an implicit break in the last case.  Hcc emits an additional break op
       when it hits an implicit break, but it used to forget incrementing
@@ -255,51 +260,7 @@ Development Progress	:
     * gamecode, mezzoman.hc: Fixed a HexenC bug which would prevent a
       yakman from appearing during the 'Trial of Strength' in the 'Temple
       of Phurbu' (tibet7) level of the mission pack, rendering the level
-      not completable. Fix by Thomas Freundt; quoting his analysis:
-
-      "The problem originates in the Werepanther's shield.  [...]
-      behavioral function mezzoman.hc::spawn_reflect() 'Picks up enemy
-      missile as shield!'.  The pointer to the missile entity is stored
-      in monster_mezzoman's .shield property and is initiated as usual
-      with 0 being the equivalent to entity world.  There are 3 functions
-      in mezzoman.hc that deactivate the missile by
-
-	if(self.shield)
-	  remove(self.shield);
-
-      ... and a think function SUB_Remove().  When another function of the
-      above mentioned ones already has removed the entity, the pointer is
-      freed, so no problems arise with freeing the entity again, although
-      I regard this as sloppy programming.  It starts to get out of hand
-      when another entity has been allocated to the slot: it's removed and
-      that's it.  Yakman may meet the same fate, although this case is more
-      likely to happen than random because the last entity removed may be a
-      reflected missile.  The mezzoman chain acts like this:
-
-	T_Damage
-	  Killed
-	    SUB_UseTargets
-	      func_monsterspawner_mp
-	    mezzo_die
-
-      ... Yakman is spawned before mezzo_die() is called and in latter func-
-      tion it is removed before being properly initiated by monster_yakman,
-      so it stays invisible during its short existence.  The design flaw
-      also explains why sometimes missiles disappear for no apparent reason.
-      Eventually, any temporary entity might be the victim.  There are many,
-      many debug messages commented out and I think this is not coincidental.
-      The best way to go, of course, were to reset the .shield pointer to 0
-      after the entity is removed
-
-	self.shield = world;
-
-      ... but during runtime an error is issued: "assignment to world entity".
-      So not only do we have to check whether the entity to be removed is
-      indeed of classname 'mezzo_reflect' but also if it is owned by self,
-      our dying monster_mezzoman."
-
-      This fix properly closes our more that six year old bug #1112533, see
-      http://sourceforge.net/tracker/?func=detail&aid=1112533&group_id=124987&atid=701006
+      not completable. Fix by Thomas Freundt.
 
 2011-05-14 (SVN):
     * opengl: Commented out the glPolygonOffset solution for z-fighting
