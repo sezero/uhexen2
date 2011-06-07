@@ -3,6 +3,15 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2011-06-07 (SVN):
+    * Updated hexen2 macosx xcode project file: fixed file paths after the
+      libs/common/ directory addition and added bgmusic.c and snd_codec.c
+      among the sources, added ../../h2shared and ../../../libs/common to
+      all HEADER_SEARCH_PATHS definitions.  Possibly and hopefully, these
+      would make hexen2 and glhexen2 to build for osx again, but requires
+      Levent's love and care.  No ogg or mp3 codecs are added to build and
+      those require Levent, too.
+
 2011-06-05 (SVN):
     * rpm spec file: bumped version to 1.5.0-rc3.
 

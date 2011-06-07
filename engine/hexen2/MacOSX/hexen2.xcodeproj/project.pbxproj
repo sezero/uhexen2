@@ -43,6 +43,7 @@
 		70158C170AAF3C8800F6437C /* r_surf.c in Sources */ = {isa = PBXBuildFile; fileRef = 70158B900AAF3B3600F6437C /* r_surf.c */; };
 		70158C180AAF3C8800F6437C /* r_vars.c in Sources */ = {isa = PBXBuildFile; fileRef = 70158B910AAF3B3600F6437C /* r_vars.c */; };
 		70158C190AAF3C8800F6437C /* screen.c in Sources */ = {isa = PBXBuildFile; fileRef = 70158B930AAF3B3600F6437C /* screen.c */; };
+		70158C280AAF3C8800F6437C /* bgmusic.c in Sources */ = {isa = PBXBuildFile; fileRef = 707D57930AA9F6EE00313A9F /* bgmusic.c */; };
 		70158C1A0AAF3C8800F6437C /* cd_sdl.c in Sources */ = {isa = PBXBuildFile; fileRef = 707D577C0AA9F6EE00313A9F /* cd_sdl.c */; };
 		70158C1B0AAF3C8800F6437C /* chase.c in Sources */ = {isa = PBXBuildFile; fileRef = 707D577F0AA9F6EE00313A9F /* chase.c */; };
 		70158C1C0AAF3C8800F6437C /* cl_cmd.c in Sources */ = {isa = PBXBuildFile; fileRef = 707D57800AA9F6EE00313A9F /* cl_cmd.c */; };
@@ -57,7 +58,6 @@
 		70158C250AAF3C8800F6437C /* console.c in Sources */ = {isa = PBXBuildFile; fileRef = 707D578D0AA9F6EE00313A9F /* console.c */; };
 		70158C260AAF3C8800F6437C /* crc.c in Sources */ = {isa = PBXBuildFile; fileRef = 707D578F0AA9F6EE00313A9F /* crc.c */; };
 		70158C270AAF3C8800F6437C /* cvar.c in Sources */ = {isa = PBXBuildFile; fileRef = 707D57910AA9F6EE00313A9F /* cvar.c */; };
-		70158C280AAF3C8800F6437C /* fx_gamma.c in Sources */ = {isa = PBXBuildFile; fileRef = 707D57930AA9F6EE00313A9F /* fx_gamma.c */; };
 		70158C290AAF3C8800F6437C /* host.c in Sources */ = {isa = PBXBuildFile; fileRef = 707D57A70AA9F6EE00313A9F /* host.c */; };
 		70158C2A0AAF3C8800F6437C /* host_cmd.c in Sources */ = {isa = PBXBuildFile; fileRef = 707D57A60AA9F6EE00313A9F /* host_cmd.c */; };
 		70158C2B0AAF3C8800F6437C /* in_sdl.c in Sources */ = {isa = PBXBuildFile; fileRef = 707D57A80AA9F6EE00313A9F /* in_sdl.c */; };
@@ -77,6 +77,7 @@
 		70158C3B0AAF3C8800F6437C /* r_part.c in Sources */ = {isa = PBXBuildFile; fileRef = 707D57C80AA9F6EE00313A9F /* r_part.c */; };
 		70158C3C0AAF3C8800F6437C /* sbar.c in Sources */ = {isa = PBXBuildFile; fileRef = 707D57C90AA9F6EE00313A9F /* sbar.c */; };
 		70158C3D0AAF3C8800F6437C /* SDLMain.m in Sources */ = {isa = PBXBuildFile; fileRef = 707D59040AAA019300313A9F /* SDLMain.m */; };
+		70158C360AAF3C8800F6437C /* snd_codec.c in Sources */ = {isa = PBXBuildFile; fileRef = 707D57BD0AA9F6EE00313A9F /* snd_codec.c */; };
 		70158C3E0AAF3C8800F6437C /* snd_dma.c in Sources */ = {isa = PBXBuildFile; fileRef = 707D57CD0AA9F6EE00313A9F /* snd_dma.c */; };
 		70158C3F0AAF3C8800F6437C /* snd_mem.c in Sources */ = {isa = PBXBuildFile; fileRef = 707D57CE0AA9F6EE00313A9F /* snd_mem.c */; };
 		70158C400AAF3C8800F6437C /* snd_mix.c in Sources */ = {isa = PBXBuildFile; fileRef = 707D57CF0AA9F6EE00313A9F /* snd_mix.c */; };
@@ -171,6 +172,7 @@
 		707D58A00AA9FBB700313A9F /* wad.h in Headers */ = {isa = PBXBuildFile; fileRef = 707D57E00AA9F6EE00313A9F /* wad.h */; };
 		707D58A20AA9FBB700313A9F /* world.h in Headers */ = {isa = PBXBuildFile; fileRef = 707D57E30AA9F6EE00313A9F /* world.h */; };
 		707D58A30AA9FBB700313A9F /* zone.h in Headers */ = {isa = PBXBuildFile; fileRef = 707D57E50AA9F6EE00313A9F /* zone.h */; };
+		707D58B40AA9FBB700313A9F /* bgmusic.c in Sources */ = {isa = PBXBuildFile; fileRef = 707D57930AA9F6EE00313A9F /* bgmusic.c */; };
 		707D58A60AA9FBB700313A9F /* cd_sdl.c in Sources */ = {isa = PBXBuildFile; fileRef = 707D577C0AA9F6EE00313A9F /* cd_sdl.c */; };
 		707D58A70AA9FBB700313A9F /* chase.c in Sources */ = {isa = PBXBuildFile; fileRef = 707D577F0AA9F6EE00313A9F /* chase.c */; };
 		707D58A80AA9FBB700313A9F /* cl_cmd.c in Sources */ = {isa = PBXBuildFile; fileRef = 707D57800AA9F6EE00313A9F /* cl_cmd.c */; };
@@ -185,7 +187,6 @@
 		707D58B10AA9FBB700313A9F /* console.c in Sources */ = {isa = PBXBuildFile; fileRef = 707D578D0AA9F6EE00313A9F /* console.c */; };
 		707D58B20AA9FBB700313A9F /* crc.c in Sources */ = {isa = PBXBuildFile; fileRef = 707D578F0AA9F6EE00313A9F /* crc.c */; };
 		707D58B30AA9FBB700313A9F /* cvar.c in Sources */ = {isa = PBXBuildFile; fileRef = 707D57910AA9F6EE00313A9F /* cvar.c */; };
-		707D58B40AA9FBB700313A9F /* fx_gamma.c in Sources */ = {isa = PBXBuildFile; fileRef = 707D57930AA9F6EE00313A9F /* fx_gamma.c */; };
 		707D58B50AA9FBB700313A9F /* gl_draw.c in Sources */ = {isa = PBXBuildFile; fileRef = 707D57950AA9F6EE00313A9F /* gl_draw.c */; };
 		707D58B60AA9FBB700313A9F /* gl_mesh.c in Sources */ = {isa = PBXBuildFile; fileRef = 707D57970AA9F6EE00313A9F /* gl_mesh.c */; };
 		707D58B70AA9FBB700313A9F /* gl_model.c in Sources */ = {isa = PBXBuildFile; fileRef = 707D57980AA9F6EE00313A9F /* gl_model.c */; };
@@ -215,6 +216,7 @@
 		707D58D20AA9FBB700313A9F /* pr_strng.c in Sources */ = {isa = PBXBuildFile; fileRef = 707D57C20AA9F6EE00313A9F /* pr_strng.c */; };
 		707D58D30AA9FBB700313A9F /* r_part.c in Sources */ = {isa = PBXBuildFile; fileRef = 707D57C80AA9F6EE00313A9F /* r_part.c */; };
 		707D58D40AA9FBB700313A9F /* sbar.c in Sources */ = {isa = PBXBuildFile; fileRef = 707D57C90AA9F6EE00313A9F /* sbar.c */; };
+		707D58CE0AA9FBB700313A9F /* snd_codec.c in Sources */ = {isa = PBXBuildFile; fileRef = 707D57BD0AA9F6EE00313A9F /* snd_codec.c */; };
 		707D58D50AA9FBB700313A9F /* snd_dma.c in Sources */ = {isa = PBXBuildFile; fileRef = 707D57CD0AA9F6EE00313A9F /* snd_dma.c */; };
 		707D58D60AA9FBB700313A9F /* snd_mem.c in Sources */ = {isa = PBXBuildFile; fileRef = 707D57CE0AA9F6EE00313A9F /* snd_mem.c */; };
 		707D58D70AA9FBB700313A9F /* snd_mix.c in Sources */ = {isa = PBXBuildFile; fileRef = 707D57CF0AA9F6EE00313A9F /* snd_mix.c */; };
@@ -288,8 +290,8 @@
 		70158F0A0AAF427F00F6437C /* vid_sdl.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = vid_sdl.c; path = ../../h2shared/vid_sdl.c; sourceTree = SOURCE_ROOT; };
 		70310B240BFDE84D00CA35D3 /* msg_io.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = msg_io.c; path = ../../h2shared/msg_io.c; sourceTree = SOURCE_ROOT; };
 		70310B250BFDE84D00CA35D3 /* msg_io.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = msg_io.h; path = ../../h2shared/msg_io.h; sourceTree = SOURCE_ROOT; };
-		70310B2A0BFDE89200CA35D3 /* q_endian.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = q_endian.c; path = ../../h2shared/q_endian.c; sourceTree = SOURCE_ROOT; };
-		70310B2B0BFDE89200CA35D3 /* q_endian.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = q_endian.h; path = ../../h2shared/q_endian.h; sourceTree = SOURCE_ROOT; };
+		70310B2A0BFDE89200CA35D3 /* q_endian.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = q_endian.c; path = ../../../libs/common/q_endian.c; sourceTree = SOURCE_ROOT; };
+		70310B2B0BFDE89200CA35D3 /* q_endian.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = q_endian.h; path = ../../../libs/common/q_endian.h; sourceTree = SOURCE_ROOT; };
 		70310B320BFDE90900CA35D3 /* debuglog.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = debuglog.c; path = ../../h2shared/debuglog.c; sourceTree = SOURCE_ROOT; };
 		70310B330BFDE90900CA35D3 /* debuglog.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = debuglog.h; path = ../../h2shared/debuglog.h; sourceTree = SOURCE_ROOT; };
 		70310B370BFDE94700CA35D3 /* link_ops.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = link_ops.c; path = ../../h2shared/link_ops.c; sourceTree = SOURCE_ROOT; };
@@ -300,11 +302,12 @@
 		70310B430BFDE9D900CA35D3 /* quakefs.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = quakefs.h; path = ../../h2shared/quakefs.h; sourceTree = SOURCE_ROOT; };
 		70310B490BFDEA0F00CA35D3 /* cfgfile.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = cfgfile.c; path = ../../h2shared/cfgfile.c; sourceTree = SOURCE_ROOT; };
 		70310B4A0BFDEA0F00CA35D3 /* cfgfile.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = cfgfile.h; path = ../../h2shared/cfgfile.h; sourceTree = SOURCE_ROOT; };
-		707D57770AA9F6EE00313A9F /* adivtab.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = adivtab.h; path = ../../h2shared/adivtab.h; sourceTree = SOURCE_ROOT; };
+		707D57770AA9F6EE00313A9F /* adivtab.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = adivtab.h; path = ../../../libs/common/adivtab.h; sourceTree = SOURCE_ROOT; };
 		707D57780AA9F6EE00313A9F /* alsa_funcs.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = alsa_funcs.h; path = ../../h2shared/alsa_funcs.h; sourceTree = SOURCE_ROOT; };
 		707D57790AA9F6EE00313A9F /* anorm_dots.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = anorm_dots.h; path = ../../h2shared/anorm_dots.h; sourceTree = SOURCE_ROOT; };
-		707D577A0AA9F6EE00313A9F /* anorms.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = anorms.h; path = ../../h2shared/anorms.h; sourceTree = SOURCE_ROOT; };
+		707D577A0AA9F6EE00313A9F /* anorms.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = anorms.h; path = ../../../libs/common/anorms.h; sourceTree = SOURCE_ROOT; };
 		707D577B0AA9F6EE00313A9F /* bspfile.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = bspfile.h; path = ../bspfile.h; sourceTree = SOURCE_ROOT; };
+		707D57930AA9F6EE00313A9F /* bgmusic.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = bgmusic.c; path = ../../h2shared/bgmusic.c; sourceTree = SOURCE_ROOT; };
 		707D577C0AA9F6EE00313A9F /* cd_sdl.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = cd_sdl.c; path = ../../h2shared/cd_sdl.c; sourceTree = SOURCE_ROOT; };
 		707D577D0AA9F6EE00313A9F /* cd_unix.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = cd_unix.h; path = ../../h2shared/cd_unix.h; sourceTree = SOURCE_ROOT; };
 		707D577E0AA9F6EE00313A9F /* cdaudio.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = cdaudio.h; path = ../../h2shared/cdaudio.h; sourceTree = SOURCE_ROOT; };
@@ -324,12 +327,11 @@
 		707D578C0AA9F6EE00313A9F /* common.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = common.h; path = ../../h2shared/common.h; sourceTree = SOURCE_ROOT; };
 		707D578D0AA9F6EE00313A9F /* console.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = console.c; path = ../console.c; sourceTree = SOURCE_ROOT; };
 		707D578E0AA9F6EE00313A9F /* console.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = console.h; path = ../../h2shared/console.h; sourceTree = SOURCE_ROOT; };
-		707D578F0AA9F6EE00313A9F /* crc.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = crc.c; path = ../../h2shared/crc.c; sourceTree = SOURCE_ROOT; };
-		707D57900AA9F6EE00313A9F /* crc.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = crc.h; path = ../../h2shared/crc.h; sourceTree = SOURCE_ROOT; };
+		707D578F0AA9F6EE00313A9F /* crc.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = crc.c; path = ../../../libs/common/crc.c; sourceTree = SOURCE_ROOT; };
+		707D57900AA9F6EE00313A9F /* crc.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = crc.h; path = ../../../libs/common/crc.h; sourceTree = SOURCE_ROOT; };
 		707D57910AA9F6EE00313A9F /* cvar.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = cvar.c; path = ../../h2shared/cvar.c; sourceTree = SOURCE_ROOT; };
 		707D57920AA9F6EE00313A9F /* cvar.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = cvar.h; path = ../../h2shared/cvar.h; sourceTree = SOURCE_ROOT; };
-		707D57930AA9F6EE00313A9F /* fx_gamma.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = fx_gamma.c; path = ../../h2shared/fx_gamma.c; sourceTree = SOURCE_ROOT; };
-		707D57940AA9F6EE00313A9F /* genmodel.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = genmodel.h; path = ../../h2shared/genmodel.h; sourceTree = SOURCE_ROOT; };
+		707D57940AA9F6EE00313A9F /* genmodel.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = genmodel.h; path = ../../../libs/common/genmodel.h; sourceTree = SOURCE_ROOT; };
 		707D57950AA9F6EE00313A9F /* gl_draw.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = gl_draw.c; path = ../../h2shared/gl_draw.c; sourceTree = SOURCE_ROOT; };
 		707D57960AA9F6EE00313A9F /* gl_func.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = gl_func.h; path = ../../h2shared/gl_func.h; sourceTree = SOURCE_ROOT; };
 		707D57970AA9F6EE00313A9F /* gl_mesh.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = gl_mesh.c; path = ../../h2shared/gl_mesh.c; sourceTree = SOURCE_ROOT; };
@@ -367,7 +369,7 @@
 		707D57B90AA9F6EE00313A9F /* net_udp.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = net_udp.c; path = ../net_udp.c; sourceTree = SOURCE_ROOT; };
 		707D57BA0AA9F6EE00313A9F /* net_udp.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = net_udp.h; path = ../net_udp.h; sourceTree = SOURCE_ROOT; };
 		707D57BE0AA9F6EE00313A9F /* pr_cmds.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = pr_cmds.c; path = ../pr_cmds.c; sourceTree = SOURCE_ROOT; };
-		707D57BF0AA9F6EE00313A9F /* pr_comp.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = pr_comp.h; path = ../pr_comp.h; sourceTree = SOURCE_ROOT; };
+		707D57BF0AA9F6EE00313A9F /* pr_comp.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = pr_comp.h; path = ../../../libs/common/pr_comp.h; sourceTree = SOURCE_ROOT; };
 		707D57C00AA9F6EE00313A9F /* pr_edict.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = pr_edict.c; path = ../pr_edict.c; sourceTree = SOURCE_ROOT; };
 		707D57C10AA9F6EE00313A9F /* pr_exec.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = pr_exec.c; path = ../pr_exec.c; sourceTree = SOURCE_ROOT; };
 		707D57C20AA9F6EE00313A9F /* pr_strng.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = pr_strng.c; path = ../../h2shared/pr_strng.c; sourceTree = SOURCE_ROOT; };
@@ -381,6 +383,7 @@
 		707D57CA0AA9F6EE00313A9F /* sbar.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = sbar.h; path = ../sbar.h; sourceTree = SOURCE_ROOT; };
 		707D57CB0AA9F6EE00313A9F /* sdl_inc.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = sdl_inc.h; path = ../../h2shared/sdl_inc.h; sourceTree = SOURCE_ROOT; };
 		707D57CC0AA9F6EE00313A9F /* server.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = server.h; path = ../server.h; sourceTree = SOURCE_ROOT; };
+		707D57BD0AA9F6EE00313A9F /* snd_codec.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = snd_codec.c; path = ../../h2shared/snd_codec.c; sourceTree = SOURCE_ROOT; };
 		707D57CD0AA9F6EE00313A9F /* snd_dma.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = snd_dma.c; path = ../../h2shared/snd_dma.c; sourceTree = SOURCE_ROOT; };
 		707D57CE0AA9F6EE00313A9F /* snd_mem.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = snd_mem.c; path = ../../h2shared/snd_mem.c; sourceTree = SOURCE_ROOT; };
 		707D57CF0AA9F6EE00313A9F /* snd_mix.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = snd_mix.c; path = ../../h2shared/snd_mix.c; sourceTree = SOURCE_ROOT; };
@@ -388,7 +391,7 @@
 		707D57D10AA9F6EE00313A9F /* snd_sys.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = snd_sys.c; path = ../../h2shared/snd_sys.c; sourceTree = SOURCE_ROOT; };
 		707D57D20AA9F6EE00313A9F /* snd_sys.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = snd_sys.h; path = ../../h2shared/snd_sys.h; sourceTree = SOURCE_ROOT; };
 		707D57D30AA9F6EE00313A9F /* q_sound.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = q_sound.h; path = ../../h2shared/q_sound.h; sourceTree = SOURCE_ROOT; };
-		707D57D40AA9F6EE00313A9F /* spritegn.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = spritegn.h; path = ../../h2shared/spritegn.h; sourceTree = SOURCE_ROOT; };
+		707D57D40AA9F6EE00313A9F /* spritegn.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = spritegn.h; path = ../../../libs/common/spritegn.h; sourceTree = SOURCE_ROOT; };
 		707D57D50AA9F6EE00313A9F /* sv_effect.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = sv_effect.c; path = ../sv_effect.c; sourceTree = SOURCE_ROOT; };
 		707D57D60AA9F6EE00313A9F /* sv_main.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = sv_main.c; path = ../sv_main.c; sourceTree = SOURCE_ROOT; };
 		707D57D70AA9F6EE00313A9F /* sv_move.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = sv_move.c; path = ../sv_move.c; sourceTree = SOURCE_ROOT; };
@@ -527,6 +530,7 @@
 				707D57790AA9F6EE00313A9F /* anorm_dots.h */,
 				707D577A0AA9F6EE00313A9F /* anorms.h */,
 				707D577B0AA9F6EE00313A9F /* bspfile.h */,
+				707D57930AA9F6EE00313A9F /* bgmusic.c */,
 				707D577C0AA9F6EE00313A9F /* cd_sdl.c */,
 				707D577D0AA9F6EE00313A9F /* cd_unix.h */,
 				707D577E0AA9F6EE00313A9F /* cdaudio.h */,
@@ -550,7 +554,6 @@
 				707D57900AA9F6EE00313A9F /* crc.h */,
 				707D57910AA9F6EE00313A9F /* cvar.c */,
 				707D57920AA9F6EE00313A9F /* cvar.h */,
-				707D57930AA9F6EE00313A9F /* fx_gamma.c */,
 				707D57940AA9F6EE00313A9F /* genmodel.h */,
 				707D57950AA9F6EE00313A9F /* gl_draw.c */,
 				707D57960AA9F6EE00313A9F /* gl_func.h */,
@@ -603,6 +606,7 @@
 				707D57CA0AA9F6EE00313A9F /* sbar.h */,
 				707D57CB0AA9F6EE00313A9F /* sdl_inc.h */,
 				707D57CC0AA9F6EE00313A9F /* server.h */,
+				707D57BD0AA9F6EE00313A9F /* snd_codec.c */,
 				707D57CD0AA9F6EE00313A9F /* snd_dma.c */,
 				707D57CE0AA9F6EE00313A9F /* snd_mem.c */,
 				707D57CF0AA9F6EE00313A9F /* snd_mix.c */,
@@ -853,6 +857,7 @@
 				70158C170AAF3C8800F6437C /* r_surf.c in Sources */,
 				70158C180AAF3C8800F6437C /* r_vars.c in Sources */,
 				70158C190AAF3C8800F6437C /* screen.c in Sources */,
+				70158C280AAF3C8800F6437C /* bgmusic.c in Sources */,
 				70158C1A0AAF3C8800F6437C /* cd_sdl.c in Sources */,
 				70158C1B0AAF3C8800F6437C /* chase.c in Sources */,
 				70158C1C0AAF3C8800F6437C /* cl_cmd.c in Sources */,
@@ -867,7 +872,6 @@
 				70158C250AAF3C8800F6437C /* console.c in Sources */,
 				70158C260AAF3C8800F6437C /* crc.c in Sources */,
 				70158C270AAF3C8800F6437C /* cvar.c in Sources */,
-				70158C280AAF3C8800F6437C /* fx_gamma.c in Sources */,
 				70158C290AAF3C8800F6437C /* host.c in Sources */,
 				70158C2A0AAF3C8800F6437C /* host_cmd.c in Sources */,
 				70158C2B0AAF3C8800F6437C /* in_sdl.c in Sources */,
@@ -887,6 +891,7 @@
 				70158C3B0AAF3C8800F6437C /* r_part.c in Sources */,
 				70158C3C0AAF3C8800F6437C /* sbar.c in Sources */,
 				70158C3D0AAF3C8800F6437C /* SDLMain.m in Sources */,
+				70158C360AAF3C8800F6437C /* snd_codec.c in Sources */,
 				70158C3E0AAF3C8800F6437C /* snd_dma.c in Sources */,
 				70158C3F0AAF3C8800F6437C /* snd_mem.c in Sources */,
 				70158C400AAF3C8800F6437C /* snd_mix.c in Sources */,
@@ -917,6 +922,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				707D58B40AA9FBB700313A9F /* bgmusic.c in Sources */,
 				707D58A60AA9FBB700313A9F /* cd_sdl.c in Sources */,
 				707D58A70AA9FBB700313A9F /* chase.c in Sources */,
 				707D58A80AA9FBB700313A9F /* cl_cmd.c in Sources */,
@@ -931,7 +937,6 @@
 				707D58B10AA9FBB700313A9F /* console.c in Sources */,
 				707D58B20AA9FBB700313A9F /* crc.c in Sources */,
 				707D58B30AA9FBB700313A9F /* cvar.c in Sources */,
-				707D58B40AA9FBB700313A9F /* fx_gamma.c in Sources */,
 				707D58B50AA9FBB700313A9F /* gl_draw.c in Sources */,
 				707D58B60AA9FBB700313A9F /* gl_mesh.c in Sources */,
 				707D58B70AA9FBB700313A9F /* gl_model.c in Sources */,
@@ -961,6 +966,7 @@
 				707D58D20AA9FBB700313A9F /* pr_strng.c in Sources */,
 				707D58D30AA9FBB700313A9F /* r_part.c in Sources */,
 				707D58D40AA9FBB700313A9F /* sbar.c in Sources */,
+				707D58CE0AA9FBB700313A9F /* snd_codec.c in Sources */,
 				707D58D50AA9FBB700313A9F /* snd_dma.c in Sources */,
 				707D58D60AA9FBB700313A9F /* snd_mem.c in Sources */,
 				707D58D70AA9FBB700313A9F /* snd_mix.c in Sources */,
@@ -1012,6 +1018,8 @@
 				HEADER_SEARCH_PATHS = (
 					/Library/Frameworks/SDL.framework/Headers,
 					/Developer/SDKs/MacOSX10.4u.sdk/Developer/Headers/FlatCarbon,
+					../../h2shared,
+					../../../libs/common,
 				);
 				INFOPLIST_FILE = hexen2.plist;
 				OTHER_CFLAGS = "";
@@ -1052,6 +1060,8 @@
 				HEADER_SEARCH_PATHS = (
 					/Library/Frameworks/SDL.framework/Headers,
 					/Developer/SDKs/MacOSX10.4u.sdk/Developer/Headers/FlatCarbon,
+					../../h2shared,
+					../../../libs/common,
 				);
 				INFOPLIST_FILE = hexen2.plist;
 				OTHER_CFLAGS = "";
@@ -1088,6 +1098,8 @@
 				HEADER_SEARCH_PATHS = (
 					/System/Library/Frameworks/SDL.framework/Headers,
 					.,
+					../../h2shared,
+					../../../libs/common,
 					/usr/include/SDL,
 				);
 				OTHER_LDFLAGS = "";
@@ -1112,6 +1124,8 @@
 				HEADER_SEARCH_PATHS = (
 					/System/Library/Frameworks/SDL.framework/Headers,
 					.,
+					../../h2shared,
+					../../../libs/common,
 					/usr/include/SDL,
 				);
 				OTHER_LDFLAGS = "";
@@ -1142,6 +1156,8 @@
 				);
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
 				HEADER_SEARCH_PATHS = (
+					../../h2shared,
+					../../../libs/common,
 					/Library/Frameworks/SDL.framework/Headers,
 					/Developer/SDKs/MacOSX10.4u.sdk/Developer/Headers/FlatCarbon,
 				);
@@ -1189,6 +1205,8 @@
 				HEADER_SEARCH_PATHS = (
 					/Library/Frameworks/SDL.framework/Headers,
 					/Developer/SDKs/MacOSX10.4u.sdk/Developer/Headers/FlatCarbon,
+					../../h2shared,
+					../../../libs/common,
 				);
 				INFOPLIST_FILE = glhexen2.plist;
 				MACOSX_DEPLOYMENT_TARGET = "";
