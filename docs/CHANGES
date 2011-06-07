@@ -4,6 +4,14 @@ Development Progress	:
 ---------------------------
 
 2011-06-07 (SVN):
+    * utils, hcc: Fixed broken switch statement compilation when there is
+      an implicit break in the last case.  Hcc emits an additional break op
+      when it hits an implicit break, but it used to forget incrementing
+      the switch statement's b value accordingly, which resulted in broken
+      progs.  Has been broken since Raven's h2_utils and h2mputil releases.
+      Works properly now.
+
+2011-06-07 (SVN):
     * Updated hexen2 macosx xcode project file: fixed file paths after the
       libs/common/ directory addition and added bgmusic.c and snd_codec.c
       among the sources, added ../../h2shared and ../../../libs/common to

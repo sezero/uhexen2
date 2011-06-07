@@ -1,5 +1,5 @@
 Hexen II: Hammer of Thyrion (uhexen2), release candidate,
-Version 1.5.0-rc3 / June 04, 2011
+Version 1.5.0-rc3 / June 07, 2011
 
 Changes since HoT-1.4.4-pre11:
 
@@ -56,6 +56,8 @@ Changes since HoT-1.4.4-pre11:
 * added new h2patch tool, an easy to use xdelta3-based standalone pak patch
   tool for purposes of updating to hexen2 v1.11 data files. updated the
   gtk-launcher's patch facility to use the same backend.
+* utils, hcc: fixed broken switch statement compilation when there is an
+  implicit break in the last case.
 * utils, dcc: fixed a wrong decompilation of an "if" opcode into a "while";
   some source code revisision.
 * utils, hcc: dropped support for the old version of hcc tool.

@@ -1,7 +1,7 @@
 /*
 	stmt.c
 
-	$Header: /cvsroot/uhexen2/utils/hcc/stmt.c,v 1.3 2007-12-14 16:41:17 sezero Exp $
+	$Id$
 */
 
 
@@ -543,6 +543,7 @@ static void ParseSwitch (void)
 
 	if (statements[numstatements-1].op != OP_GOTO)
 	{ // Implicit break
+		patch->b++; /* because we are generating an additional op */
 		patch = &statements[numstatements];
 		CO_GenCode(&pr_opcodes[OP_GOTO], NULL, NULL);
 	}
