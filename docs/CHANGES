@@ -3,6 +3,10 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2011-06-11 (SVN):
+    * q_stdinc.h: Updated notes about qboolean and C++ bool types, added
+      compile time asserts.
+
 2011-06-07 (SVN):
     * gamecode, hc: Created new devel directory. Moved excessively long
       analysis details from buddha.hc, eidolon.hc and mezzoman.hc to the

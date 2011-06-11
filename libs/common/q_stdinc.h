@@ -124,17 +124,21 @@ typedef unsigned char		byte;
 #undef true
 #undef false
 #if defined(__cplusplus)
-/* do NOT use the bool of C++ because some structures have boolean and they
- * expect it to be 4 bytes long. as a hack, typedef it as int. */
-/* DO HOPE that the compiler built-ins for true and false are 1 and 0 ... */
+/* some structures have qboolean members and the x86 asm code expect
+ * those members to be 4 bytes long. therefore, qboolean must be 32
+ * bits and it can NOT be binary compatible with the 8 bit C++ bool.  */
 typedef int	qboolean;
+COMPILE_TIME_ASSERT(falsehood, (0 == false));
+COMPILE_TIME_ASSERT(truth, (1  == true));
 #else
 typedef enum {
 	false = 0,
 	true  = 1
 } qboolean;
+COMPILE_TIME_ASSERT(falsehood, ((1 != 1) == false));
+COMPILE_TIME_ASSERT(truth, ((1 == 1) == true));
 #endif
-
+COMPILE_TIME_ASSERT(qboolean, sizeof(qboolean) == 4);
 
 /*==========================================================================*/
 
