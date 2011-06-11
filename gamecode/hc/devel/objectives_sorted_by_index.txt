@@ -1,0 +1,999 @@
+
+ "keep1.txt"
+
+{
+"origin" "1312 1448 -200"
+"model" "*74"
+"targetname" "t49"
+"frags" "8"
+"spawnflags" "32769"
+"classname" "trigger_objective"
+"model" "*81"
+"targetname" "t11"
+"wait" "-1"
+"origin" "-826 384 -40"
+}
+{
+"frags" "9"
+"origin" "648 224 280"
+"targetname" "t50"
+"spawnflags" "49153"
+"classname" "trigger_objective"
+}
+{
+"origin" "2264 -1440 232"
+"targetname" "t23"
+"spawnflags" "49154"
+"frags" "9"
+"classname" "trigger_objective"
+}
+{
+"origin" "-2488 104 248"
+"targetname" "t52"
+"spawnflags" "32770"
+"frags" "8"
+"classname" "trigger_objective"
+}
+{
+"origin" "672 224 280"
+"targetname" "t50"
+"frags" "10"
+"spawnflags" "49154"
+"classname" "trigger_objective"
+"movedir" "1 1 2"
+}
+{
+"origin" "2248 -1464 232"
+"targetname" "t53"
+"frags" "10"
+"spawnflags" "49153"
+"classname" "trigger_objective"
+}
+{
+"classname" "trigger_objective"
+"spawnflags" "49153"
+"frags" "11"
+"targetname" "t52"
+"origin" "-2496 40 248"
+"abslight" ".4"
+}
+
+ "keep2.txt"
+
+{
+"targetname" "t208"
+"origin" "-48 1336 312"
+"frags" "11"
+"spawnflags" "32770"
+"classname" "trigger_objective"
+"model" "*31"
+}
+{
+"targetname" "t211"
+"origin" "-328 448 312"
+"frags" "11"
+"spawnflags" "32770"
+"classname" "trigger_objective"
+}
+{
+"targetname" "t205"
+"model" "*41"
+"classname" "trigger_objective"
+"spawnflags" "32770"
+"frags" "11"
+"origin" "-624 1824 312"
+"soundtype" "5"
+"abslight" ".3"
+"angle" "270"
+"classname" "func_door"
+}
+{
+"classname" "trigger_objective"
+"spawnflags" "49153"
+"frags" "18"
+"targetname" "t177"
+"origin" "-936 1808 312"
+"model" "*50"
+"scale" ".2"
+}
+{
+"origin" "-520 1632 144"
+"targetname" "t198"
+"classname" "trigger_objective"
+"frags" "2"
+"spawnflags" "49153"
+}
+{
+"origin" "-552 1584 312"
+"targetname" "t197"
+"spawnflags" "49153"
+"frags" "2"
+"classname" "trigger_objective"
+}
+{
+"origin" "680 216 -136"
+"targetname" "t196"
+"frags" "2"
+"spawnflags" "49154"
+"classname" "trigger_objective"
+}
+{
+"origin" "648 208 -152"
+"targetname" "t196"
+"frags" "12"
+"spawnflags" "49153"
+"classname" "trigger_objective"
+}
+{
+"origin" "2272 -208 -312"
+"spawnflags" "32769"
+"targetname" "t195"
+"frags" "11"
+"classname" "trigger_objective"
+}
+{
+"classname" "trigger_objective"
+"model" "*76"
+"model" "*68"
+"targetname" "t178"
+"spawnflags" "32770"
+"origin" "-536 2760 488"
+"frags" "3"
+"angle" "-1"
+"classname" "func_door"
+"spawnflags" "32768"
+"speed" "50"
+}
+{
+"classname" "trigger_objective"
+"targetname" "t177"
+"spawnflags" "49154"
+"origin" "-968 1808 312"
+"frags" "4"
+}
+{
+"classname" "trigger_objective"
+"targetname" "t176"
+"spawnflags" "32769"
+"origin" "3104 1880 280"
+"frags" "3"
+}
+{
+"targetname" "t184"
+"frags" "12"
+"spawnflags" "49154"
+"classname" "trigger_objective"
+"origin" "-576 1584 312"
+}
+{
+"classname" "trigger_objective"
+"spawnflags" "49154"
+"targetname" "t175"
+"frags" "12"
+"origin" "-648 1616 152"
+}
+
+ "keep3.txt"
+
+{
+"origin" "-1032 -56 120"
+"targetname" "t379"
+"frags" "16"
+"spawnflags" "57346"
+"classname" "trigger_objective"
+"model" "*9"
+"CD" "4"
+}
+{
+"origin" "-1032 -40 120"
+"targetname" "t379"
+"frags" "15"
+"spawnflags" "53250"
+"classname" "trigger_objective"
+}
+{
+"origin" "-1032 -72 120"
+"targetname" "t379"
+"frags" "17"
+"spawnflags" "49153"
+"classname" "trigger_objective"
+}
+{
+"origin" "-464 112 120"
+"targetname" "t205"
+"frags" "17"
+"spawnflags" "49154"
+"classname" "trigger_objective"
+}
+{
+"origin" "-440 112 120"
+"targetname" "t377"
+"classname" "trigger_objective"
+"spawnflags" "53249"
+"frags" "15"
+}
+{
+"origin" "-416 112 120"
+"targetname" "t377"
+"frags" "16"
+"spawnflags" "57345"
+"classname" "trigger_objective"
+}
+{
+"origin" "1416 1088 16"
+"targetname" "t208"
+"spawnflags" "49154"
+"frags" "14"
+"classname" "trigger_objective"
+}
+{
+"origin" "1384 1008 16"
+"targetname" "t375"
+"spawnflags" "49153"
+"frags" "13"
+"classname" "trigger_objective"
+}
+{
+"origin" "-392 112 128"
+"targetname" "t374"
+"frags" "14"
+"spawnflags" "49153"
+"classname" "trigger_objective"
+}
+{
+"origin" "-392 96 128"
+"targetname" "t374"
+"frags" "13"
+"spawnflags" "49154"
+"classname" "trigger_objective"
+}
+{
+"classname" "trigger_objective"
+"spawnflags" "49154"
+"frags" "18"
+"targetname" "t237"
+"origin" "-952 136 288"
+"classname" "func_monsterspawner"
+}
+{
+"origin" "3392 1520 -136"
+"targetname" "t368"
+"frags" "5"
+"spawnflags" "32770"
+"classname" "trigger_objective"
+}
+{
+"origin" "-48 -1904 104"
+"frags" "5"
+"targetname" "t367"
+"spawnflags" "32769"
+"classname" "trigger_objective"
+}
+{
+"classname" "trigger_objective"
+"spawnflags" "49153"
+"frags" "4"
+"targetname" "t365"
+"origin" "-904 120 288"
+}
+
+ "keep4.txt"
+
+{
+"frags" "19"
+"origin" "-1128 408 48"
+"targetname" "t50"
+"spawnflags" "49154"
+"classname" "trigger_objective"
+"CD" "5"
+}
+{
+"origin" "1336 352 -192"
+"targetname" "t96"
+"frags" "19"
+"spawnflags" "49153"
+"classname" "trigger_objective"
+}
+{
+"origin" "1376 360 -216"
+"targetname" "t96"
+"frags" "1"
+"spawnflags" "49154"
+"classname" "trigger_objective"
+}
+{
+"spawnflags" "32770"
+"origin" "-144 -592 -384"
+"targetname" "t90"
+"frags" "0"
+"classname" "trigger_objective"
+}
+{
+"spawnflags" "49153"
+"classname" "trigger_objective"
+"frags" "1"
+"targetname" "t89"
+"origin" "-1104 408 32"
+}
+{
+"classname" "trigger_objective"
+"frags" "1"
+"spawnflags" "49153"
+"targetname" "t87"
+"origin" "752 -296 -24"
+}
+{
+"classname" "trigger_objective"
+"frags" "0"
+"targetname" "t86"
+"origin" "224 1584 -88"
+"spawnflags" "32769"
+}
+
+ "keep5.txt"
+
+{
+"origin" "168 -1872 120"
+"model" "*27"
+"targetname" "t78"
+"spawnflags" "32769"
+"frags" "7"
+"classname" "trigger_objective"
+"classname" "func_door_rotating"
+"origin" "265 -2224 64"
+"model" "*56"
+"model" "*52"
+}
+{
+"origin" "544 -576 -200"
+"targetname" "spock"
+"frags" "7"
+"spawnflags" "32770"
+"classname" "trigger_objective"
+}
+{
+"frags" "6"
+"origin" "-2208 -232 8"
+"targetname" "t80"
+"spawnflags" "49154"
+"classname" "trigger_objective"
+}
+{
+"origin" "960 -1008 160"
+"targetname" "t81"
+"frags" "6"
+"spawnflags" "49153"
+"classname" "trigger_objective"
+}
+{
+"origin" "976 -1240 8"
+"targetname" "t75"
+"frags" "20"
+"spawnflags" "49154"
+"classname" "trigger_objective"
+}
+{
+"origin" "-2208 -208 8"
+"targetname" "t80"
+"frags" "20"
+"spawnflags" "49153"
+"classname" "trigger_objective"
+}
+
+ "tibet1.txt"
+
+{
+"classname" "trigger_objective"
+"spawnflags" "32770"
+"frags" "59"
+"targetname" "t81"
+"origin" "-1008 -56 88"
+"MIDI" "tulku10"
+}
+{
+"classname" "trigger_objective"
+"spawnflags" "32769"
+"frags" "59"
+"targetname" "t80"
+"origin" "-88 -368 -8"
+}
+{
+"origin" "1248 -1768 -32"
+"wait" "-1"
+"model" "*7"
+"target" "t75"
+"targetname" "t74"
+"spawnflags" "49154"
+"frags" "22"
+"classname" "trigger_objective"
+"speed" "50"
+"t_length" "120"
+"t_width" "8"
+}
+{
+"origin" "2432 1760 -248"
+"targetname" "t73"
+"frags" "22"
+"spawnflags" "49153"
+"classname" "trigger_objective"
+}
+{
+"origin" "152 -240 16"
+"targetname" "t70"
+"frags" "23"
+"spawnflags" "49153"
+"classname" "trigger_objective"
+}
+{
+"origin" "104 -240 16"
+"targetname" "t1"
+"frags" "24"
+"spawnflags" "49154"
+"classname" "trigger_objective"
+}
+
+ "tibet10.txt"
+
+
+ "tibet2.txt"
+
+{
+"origin" "1072 -2280 840"
+"model" "*84"
+"targetname" "t356"
+"frags" "23"
+"spawnflags" "49154"
+"classname" "trigger_objective"
+"targetname" "t355"
+"model" "*87"
+"wait" "-1"
+"spawnflags" "32"
+}
+{
+"origin" "1072 -2256 840"
+"targetname" "t356"
+"frags" "24"
+"classname" "trigger_objective"
+"spawnflags" "49153"
+}
+{
+"origin" "1136 -232 776"
+"frags" "26"
+"targetname" "t357"
+"spawnflags" "32769"
+"classname" "trigger_objective"
+}
+{
+"origin" "1136 -256 776"
+"targetname" "t357"
+"frags" "25"
+"spawnflags" "32770"
+"classname" "trigger_objective"
+}
+{
+"origin" "-112 -776 24"
+"targetname" "t7"
+"frags" "28"
+"spawnflags" "49154"
+"classname" "trigger_objective"
+}
+{
+"origin" "-80 -808 8"
+"targetname" "t358"
+"frags" "27"
+"spawnflags" "49153"
+"classname" "trigger_objective"
+}
+{
+"origin" "-2904 -1208 712"
+"targetname" "t359"
+"frags" "28"
+"spawnflags" "49153"
+"classname" "trigger_objective"
+}
+{
+"origin" "-2928 -1208 712"
+"targetname" "t359"
+"frags" "27"
+"spawnflags" "49154"
+"classname" "trigger_objective"
+}
+{
+"origin" "-64 -2144 856"
+"targetname" "t367"
+"spawnflags" "49154"
+"frags" "30"
+"classname" "trigger_objective"
+}
+{
+"origin" "112 -2144 856"
+"targetname" "t361"
+"classname" "trigger_objective"
+"frags" "29"
+"spawnflags" "49153"
+}
+{
+"origin" "1288 -3560 680"
+"targetname" "t362"
+"spawnflags" "49154"
+"frags" "29"
+"classname" "trigger_objective"
+}
+{
+"origin" "1312 -3560 680"
+"targetname" "t362"
+"frags" "30"
+"spawnflags" "49153"
+"classname" "trigger_objective"
+}
+{
+"origin" "-1632 -2696 792"
+"targetname" "t364"
+"frags" "29"
+"spawnflags" "49153"
+"classname" "trigger_objective"
+}
+{
+"classname" "trigger_objective"
+"spawnflags" "32769"
+"frags" "51"
+"targetname" "t370"
+"origin" "-1656 -2464 800"
+"model" "*105"
+}
+{
+"classname" "trigger_objective"
+"spawnflags" "32770"
+"frags" "51"
+"targetname" "t371"
+"origin" "-1736 -3288 648"
+}
+
+ "tibet3.txt"
+
+{
+"classname" "trigger_objective"
+"spawnflags" "32770"
+"frags" "52"
+"targetname" "t54"
+"origin" "612 52 128"
+"delay" "2"
+}
+{
+"classname" "trigger_objective"
+"spawnflags" "32769"
+"frags" "52"
+"targetname" "t53"
+"origin" "-1560 -1352 56"
+}
+{
+"classname" "trigger_objective"
+"spawnflags" "49153"
+"frags" "25"
+"targetname" "t50"
+"origin" "-496 88 288"
+}
+{
+"classname" "trigger_objective"
+"spawnflags" "49154"
+"frags" "26"
+"targetname" "openbuddha"
+"origin" "-496 104 288"
+}
+{
+"targetname" "t55"
+"origin" "-704 232 488"
+"frags" "32"
+"spawnflags" "49154"
+"classname" "trigger_objective"
+}
+{
+"targetname" "t48"
+"frags" "31"
+"origin" "-696 432 496"
+"spawnflags" "49153"
+"classname" "trigger_objective"
+}
+{
+"origin" "-480 24 152"
+"frags" "31"
+"spawnflags" "49154"
+"targetname" "t47"
+"classname" "trigger_objective"
+}
+{
+"origin" "-480 8 152"
+"frags" "32"
+"spawnflags" "49153"
+"targetname" "t47"
+"classname" "trigger_objective"
+}
+
+ "tibet4.txt"
+
+{
+"origin" "1616 -1168 -312"
+"targetname" "t168"
+"spawnflags" "49154"
+"frags" "26"
+"classname" "trigger_objective"
+"message" "473"
+}
+{
+"origin" "1568 352 8"
+"targetname" "t165"
+"frags" "33"
+"spawnflags" "49153"
+"classname" "trigger_objective"
+"health" "999999999999"
+"model" "*91"
+"soundtype" "2"
+"model" "*59"
+}
+{
+"origin" "1888 136 8"
+"targetname" "t73"
+"frags" "34"
+"spawnflags" "49154"
+"classname" "trigger_objective"
+}
+{
+"origin" "-328 2712 72"
+"targetname" "t166"
+"frags" "34"
+"spawnflags" "49153"
+"classname" "trigger_objective"
+}
+{
+"origin" "-312 2712 72"
+"targetname" "t166"
+"frags" "33"
+"spawnflags" "49154"
+"classname" "trigger_objective"
+}
+{
+"origin" "1600 -1168 -312"
+"targetname" "t168"
+"frags" "53"
+"spawnflags" "32769"
+"classname" "trigger_objective"
+}
+{
+"origin" "2592 320 -56"
+"targetname" "t169"
+"frags" "53"
+"spawnflags" "32770"
+"classname" "trigger_objective"
+}
+
+ "tibet5.txt"
+
+{
+"frags" "41"
+"spawnflags" "49154"
+"classname" "trigger_objective"
+"targetname" "t25"
+"origin" "-64 1064 56"
+"abslight" ".6"
+"speed" "50"
+"origin" "1676 520 -92"
+"model" "*17"
+}
+{
+"classname" "trigger_objective"
+"spawnflags" "49153"
+"frags" "41"
+"targetname" "t52"
+"origin" "-64 1048 56"
+}
+{
+"spawnflags" "49153"
+"classname" "trigger_objective"
+"frags" "48"
+"targetname" "t51"
+"origin" "-256 872 64"
+}
+{
+"classname" "trigger_objective"
+"spawnflags" "49154"
+"frags" "48"
+"targetname" "t26"
+"origin" "-272 872 64"
+}
+{
+"spawnflags" "49153"
+"classname" "trigger_objective"
+"frags" "35"
+"targetname" "t49"
+"origin" "-576 1048 56"
+}
+{
+"classname" "trigger_objective"
+"spawnflags" "49153"
+"frags" "36"
+"targetname" "t49"
+"origin" "-576 1032 56"
+}
+{
+"classname" "trigger_objective"
+"frags" "36"
+"spawnflags" "49154"
+"targetname" "t24"
+"origin" "-576 1072 56"
+}
+{
+"classname" "trigger_objective"
+"spawnflags" "49154"
+"targetname" "t48"
+"frags" "35"
+"origin" "1712 568 -80"
+}
+{
+"classname" "trigger_objective"
+"spawnflags" "49153"
+"targetname" "t48"
+"frags" "36"
+"origin" "1736 568 -80"
+}
+{
+"frags" "54"
+"classname" "trigger_objective"
+"spawnflags" "32770"
+"targetname" "t47"
+"origin" "-816 984 128"
+}
+{
+"classname" "trigger_objective"
+"spawnflags" "32769"
+"frags" "54"
+"targetname" "t46"
+"origin" "208 -472 -184"
+}
+
+ "tibet6.txt"
+
+{
+"origin" "-1208 -1160 8"
+"targetname" "t66"
+"spawnflags" "49154"
+"frags" "40"
+"classname" "trigger_objective"
+"lip" "8"
+"level" "96"
+"spawnflags" "196608"
+"model" "*6"
+}
+{
+"origin" "1008 1128 328"
+"targetname" "t65"
+"frags" "40"
+"spawnflags" "49153"
+"classname" "trigger_objective"
+}
+{
+"origin" "992 1128 328"
+"targetname" "t65"
+"frags" "39"
+"spawnflags" "49154"
+"classname" "trigger_objective"
+}
+{
+"origin" "-1192 -1144 8"
+"targetname" "t63"
+"frags" "39"
+"spawnflags" "49153"
+"classname" "trigger_objective"
+}
+{
+"origin" "872 320 248"
+"targetname" "t61"
+"frags" "37"
+"spawnflags" "49154"
+"classname" "trigger_objective"
+}
+{
+"origin" "856 320 248"
+"targetname" "t61"
+"frags" "38"
+"spawnflags" "49153"
+"classname" "trigger_objective"
+}
+{
+"targetname" "t67"
+"origin" "-952 -1128 8"
+"frags" "38"
+"spawnflags" "49154"
+"classname" "trigger_objective"
+}
+{
+"origin" "-936 -1144 8"
+"targetname" "t60"
+"frags" "37"
+"spawnflags" "49153"
+"classname" "trigger_objective"
+}
+
+ "tibet7.txt"
+
+{
+"origin" "2072 -2400 32"
+"targetname" "t43"
+"frags" "44"
+"spawnflags" "49153"
+"classname" "trigger_objective"
+"classname" "worldspawn"
+}
+{
+"origin" "2320 -2408 32"
+"targetname" "t5"
+"frags" "45"
+"spawnflags" "49154"
+"classname" "trigger_objective"
+}
+{
+"origin" "392 280 224"
+"frags" "44"
+"targetname" "t42"
+"spawnflags" "49154"
+"classname" "trigger_objective"
+}
+{
+"origin" "392 296 224"
+"targetname" "t42"
+"frags" "45"
+"spawnflags" "49153"
+"classname" "trigger_objective"
+}
+{
+"origin" "1944 728 240"
+"targetname" "t7"
+"frags" "43"
+"spawnflags" "49154"
+"classname" "trigger_objective"
+}
+{
+"origin" "1904 712 240"
+"targetname" "t40"
+"frags" "42"
+"spawnflags" "49153"
+"classname" "trigger_objective"
+}
+{
+"origin" "2392 -1352 16"
+"targetname" "t39"
+"frags" "43"
+"spawnflags" "49153"
+"classname" "trigger_objective"
+}
+{
+"origin" "2392 -1336 16"
+"targetname" "t39"
+"frags" "42"
+"spawnflags" "49154"
+"classname" "trigger_objective"
+}
+{
+"origin" "-2960 -2064 -288"
+"targetname" "t38"
+"frags" "46"
+"spawnflags" "32769"
+"classname" "trigger_objective"
+}
+{
+"origin" "-2792 3176 96"
+"targetname" "t27"
+"frags" "48"
+"spawnflags" "49153"
+"classname" "trigger_objective"
+}
+{
+"origin" "-2784 2840 16"
+"targetname" "t37"
+"classname" "trigger_objective"
+"spawnflags" "32770"
+"frags" "47"
+}
+{
+"origin" "-2808 2840 16"
+"targetname" "t37"
+"frags" "46"
+"spawnflags" "32770"
+"classname" "trigger_objective"
+}
+{
+"origin" "616 -1888 8"
+"targetname" "t36"
+"frags" "47"
+"spawnflags" "32769"
+"classname" "trigger_objective"
+}
+
+ "tibet8.txt"
+
+{
+"classname" "trigger_objective"
+"spawnflags" "49154"
+"frags" "57"
+"targetname" "t43"
+"origin" "-1264 -784 56"
+"spawnflags" "1"
+}
+{
+"spawnflags" "49153"
+"classname" "trigger_objective"
+"frags" "56"
+"targetname" "t45"
+"origin" "-96 424 24"
+}
+{
+"classname" "trigger_objective"
+"spawnflags" "49154"
+"frags" "55"
+"targetname" "t45"
+"origin" "-96 408 24"
+}
+{
+"frags" "56"
+"classname" "trigger_objective"
+"spawnflags" "49154"
+"targetname" "t37"
+"origin" "-312 -1376 8"
+}
+{
+"classname" "trigger_objective"
+"spawnflags" "49153"
+"frags" "55"
+"targetname" "t44"
+"origin" "-336 -1360 8"
+}
+{
+"classname" "trigger_objective"
+"spawnflags" "49153"
+"frags" "49"
+"targetname" "t43"
+"origin" "-1248 -784 56"
+}
+{
+"classname" "trigger_objective"
+"spawnflags" "32769"
+"frags" "50"
+"targetname" "t42"
+"origin" "584 -1048 -184"
+}
+
+ "tibet9.txt"
+
+{
+"classname" "trigger_objective"
+"model" "*79"
+"model" "*59"
+"spawnflags" "32770"
+"frags" "50"
+"targetname" "t56"
+"origin" "-80 776 -40"
+"classname" "func_button"
+"model" "*80"
+"spawnflags" "196649"
+"classname" "func_door"
+}
+{
+"classname" "trigger_objective"
+"spawnflags" "49153"
+"frags" "58"
+"targetname" "t57"
+"origin" "176 -152 -40"
+}
+{
+"classname" "trigger_objective"
+"spawnflags" "49154"
+"frags" "58"
+"targetname" "t58"
+"origin" "384 872 -328"
+}
+{
+"classname" "trigger_objective"
+"spawnflags" "49153"
+"targetname" "t60"
+"frags" "57"
+"origin" "-168 -48 -40"
+}

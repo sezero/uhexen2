@@ -1,0 +1,141 @@
+
+   keep1.txt   8  32769  0x8001  [ON]                   Find the spring that leads to the village well
+   keep1.txt   8  32770  0x8002  [OFF]                  Find the spring that leads to the village well
+   keep1.txt   9  49153  0xC001  [ON,  !HARD]           Take the Sphere of Order to the Thaumaturgical Conveyance
+   keep1.txt   9  49154  0xC002  [OFF, !HARD]           Take the Sphere of Order to the Thaumaturgical Conveyance
+   keep1.txt  10  49153  0xC001  [ON,  !HARD]           Get the Sphere of Order from Eidolon's Throne Room
+   keep1.txt  10  49154  0xC002  [OFF, !HARD]           Get the Sphere of Order from Eidolon's Throne Room
+   keep1.txt  11  49153  0xC001  [ON,  !HARD]           Find Razumen's House. He should be there
+
+   keep2.txt   2  49153  0xC001  [ON,  !HARD]           Get Mage's Key from the Tavern
+   keep2.txt   2  49153  0xC001  [ON,  !HARD]           Get Mage's Key from the Tavern
+   keep2.txt   2  49154  0xC002  [OFF, !HARD]           Get Mage's Key from the Tavern
+   keep2.txt   3  32769  0x8001  [ON]                   Go to the Duke's Keep
+   keep2.txt   3  32770  0x8002  [OFF]                  Go to the Duke's Keep
+   keep2.txt   4  49154  0xC002  [OFF, !HARD]           Get Dragon's Tongue from Razumen's Lab in town
+   keep2.txt  11  32769  0x8001  [ON]                   Find Razumen's House. He should be there
+   keep2.txt  11  32770  0x8002  [OFF]                  Find Razumen's House. He should be there
+   keep2.txt  11  32770  0x8002  [OFF]                  Find Razumen's House. He should be there
+   keep2.txt  11  32770  0x8002  [OFF]                  Find Razumen's House. He should be there
+   keep2.txt  12  49153  0xC001  [ON,  !HARD]           Take the Mage's Key to Razumen's Lab
+   keep2.txt  12  49154  0xC002  [OFF, !HARD]           Take the Mage's Key to Razumen's Lab
+   keep2.txt  12  49154  0xC002  [OFF, !HARD]           Take the Mage's Key to Razumen's Lab
+   keep2.txt  18  49153  0xC001  [ON,  !HARD]           Take Dragon's Tongue to Razumen's Castle Quarters
+
+   keep3.txt   4  49153  0xC001  [ON,  !HARD]           Get Dragon's Tongue from Razumen's Lab in town
+   keep3.txt   5  32769  0x8001  [ON]                   Gain entrance to the Catacombs
+   keep3.txt   5  32770  0x8002  [OFF]                  Gain entrance to the Catacombs
+   keep3.txt  13  49153  0xC001  [ON,  !HARD]           Get the Scroll of Enchantment from Razumen's Castle Quarters
+   keep3.txt  13  49154  0xC002  [OFF, !HARD]           Get the Scroll of Enchantment from Razumen's Castle Quarters
+   keep3.txt  14  49153  0xC001  [ON,  !HARD]           Take the Scroll of Enchantment to the Ballista near the magic field
+   keep3.txt  14  49154  0xC002  [OFF, !HARD]           Take the Scroll of Enchantment to the Ballista near the magic field
+   keep3.txt  15  53249  0xD001  [ON,  !HARD, !EASY]    Get the Duke's Seal by completing the potion
+   keep3.txt  15  53250  0xD002  [OFF, !HARD, !EASY]    Get the Duke's Seal by completing the potion
+   keep3.txt  16  57345  0xE001  [ON,  !HARD, !MEDIUM]  Get the Duke's Seal by completing the potion in the next room
+   keep3.txt  16  57346  0xE002  [OFF, !HARD, !MEDIUM]  Get the Duke's Seal by completing the potion in the next room
+   keep3.txt  17  49153  0xC001  [ON,  !HARD]           Take the Duke's Seal to the locked cabinet
+   keep3.txt  17  49154  0xC002  [OFF, !HARD]           Take the Duke's Seal to the locked cabinet
+   keep3.txt  18  49154  0xC002  [OFF, !HARD]           Take Dragon's Tongue to Razumen's Castle Quarters
+
+   keep4.txt   0  32769  0x8001  [ON]                   Find the Hall of the Dead
+   keep4.txt   0  32770  0x8002  [OFF]                  Find the Hall of the Dead
+   keep4.txt   1  49153  0xC001  [ON,  !HARD]           Find the Chalice of St. Eric
+   keep4.txt   1  49153  0xC001  [ON,  !HARD]           Find the Chalice of St. Eric
+   keep4.txt   1  49154  0xC002  [OFF, !HARD]           Find the Chalice of St. Eric
+   keep4.txt  19  49153  0xC001  [ON,  !HARD]           Take the Chalice of St. Eric to the Altar of the Four Kings
+   keep4.txt  19  49154  0xC002  [OFF, !HARD]           Take the Chalice of St. Eric to the Altar of the Four Kings
+
+   keep5.txt   6  49153  0xC001  [ON,  !HARD]           Find the Cross Key in the Warrior's Tomb
+   keep5.txt   6  49154  0xC002  [OFF, !HARD]           Find the Cross Key in the Warrior's Tomb
+   keep5.txt   7  32769  0x8001  [ON]                   Investigate the King's Tomb
+   keep5.txt   7  32770  0x8002  [OFF]                  Investigate the King's Tomb
+   keep5.txt  20  49153  0xC001  [ON,  !HARD]           Take the Cross Key to the Cross Lock
+   keep5.txt  20  49154  0xC002  [OFF, !HARD]           Take the Cross Key to the Cross Lock
+
+  tibet1.txt  22  49153  0xC001  [ON,  !HARD]           Use the Orb of Dakini at the temple to break the ice on the frozen lake
+  tibet1.txt  22  49154  0xC002  [OFF, !HARD]           Use the Orb of Dakini at the temple to break the ice on the frozen lake
+  tibet1.txt  23  49153  0xC001  [ON,  !HARD]           Get the Ajanti Dagger from the meeting room in the Ice Caverns
+  tibet1.txt  24  49154  0xC002  [OFF, !HARD]           Take the Ajanti Dagger to the Gates of Tulku
+  tibet1.txt  59  32769  0x8001  [ON]                   To start your journey towards Praevus, you must gain entrance to the False Temple
+  tibet1.txt  59  32770  0x8002  [OFF]                  To start your journey towards Praevus, you must gain entrance to the False Temple
+
+  tibet2.txt  23  49154  0xC002  [OFF, !HARD]           Get the Ajanti Dagger from the meeting room in the Ice Caverns
+  tibet2.txt  24  49153  0xC001  [ON,  !HARD]           Take the Ajanti Dagger to the Gates of Tulku
+  tibet2.txt  25  32770  0x8002  [OFF]                  Get the Jade Buddha from the Ice Caverns
+  tibet2.txt  26  32769  0x8001  [ON]                   Take the Jade Buddha to the offering place in the False Temple
+  tibet2.txt  27  49153  0xC001  [ON,  !HARD]           You need the Stone of Seldoot that is locked in the Storage Room
+  tibet2.txt  27  49154  0xC002  [OFF, !HARD]           You need the Stone of Seldoot that is locked in the Storage Room
+  tibet2.txt  28  49153  0xC001  [ON,  !HARD]           Take the Stone of Seldoot to the Cauldron room
+  tibet2.txt  28  49154  0xC002  [OFF, !HARD]           Take the Stone of Seldoot to the Cauldron room
+  tibet2.txt  29  49153  0xC001  [ON,  !HARD]           You need to find Tien's key
+  tibet2.txt  29  49153  0xC001  [ON,  !HARD]           You need to find Tien's key
+  tibet2.txt  29  49154  0xC002  [OFF, !HARD]           You need to find Tien's key
+  tibet2.txt  30  49153  0xC001  [ON,  !HARD]           Tien's key has multiple uses
+  tibet2.txt  30  49154  0xC002  [OFF, !HARD]           Tien's key has multiple uses
+  tibet2.txt  51  32769  0x8001  [ON]                   Find a way to return to the Gates of Tulku
+  tibet2.txt  51  32770  0x8002  [OFF]                  Find a way to return to the Gates of Tulku
+
+  tibet3.txt  25  49153  0xC001  [ON,  !HARD]           Get the Jade Buddha from the Ice Caverns
+  tibet3.txt  26  49154  0xC002  [OFF, !HARD]           Take the Jade Buddha to the offering place in the False Temple
+  tibet3.txt  31  49153  0xC001  [ON,  !HARD]           Get the staff of Emperor Lo Pan from the offering room
+  tibet3.txt  31  49154  0xC002  [OFF, !HARD]           Get the staff of Emperor Lo Pan from the offering room
+  tibet3.txt  32  49153  0xC001  [ON,  !HARD]           Take the staff of Emperor Lo Pan to the Arcane Sacrarium
+  tibet3.txt  32  49154  0xC002  [OFF, !HARD]           Take the staff of Emperor Lo Pan to the Arcane Sacrarium
+  tibet3.txt  52  32769  0x8001  [ON]                   The exit to the False Temple lies behind the Great Buddha
+  tibet3.txt  52  32770  0x8002  [OFF]                  The exit to the False Temple lies behind the Great Buddha
+
+  tibet4.txt  26  49154  0xC002  [OFF, !HARD]           Take the Jade Buddha to the offering place in the False Temple
+  tibet4.txt  33  49153  0xC001  [ON,  !HARD]           Get the sixth Prayer Wheel from the Symbolic Room of Kalachakra
+  tibet4.txt  33  49154  0xC002  [OFF, !HARD]           Get the sixth Prayer Wheel from the Symbolic Room of Kalachakra
+  tibet4.txt  34  49153  0xC001  [ON,  !HARD]           Take the sixth Prayer Wheel to the Way of the Wheels
+  tibet4.txt  34  49154  0xC002  [OFF, !HARD]           Take the sixth Prayer Wheel to the Way of the Wheels
+  tibet4.txt  53  32769  0x8001  [ON]                   Avoid unseen pitfalls as you make your way to the Main Temple
+  tibet4.txt  53  32770  0x8002  [OFF]                  Avoid unseen pitfalls as you make your way to the Main Temple
+
+  tibet5.txt  35  49153  0xC001  [ON,  !HARD]           Get the Jewel of Buddha by stopping the Wheel of Time
+  tibet5.txt  35  49154  0xC002  [OFF, !HARD]           Get the Jewel of Buddha by stopping the Wheel of Time
+  tibet5.txt  36  49153  0xC001  [ON,  !HARD]           Offer the Jewel of Buddha to Shiva
+  tibet5.txt  36  49153  0xC001  [ON,  !HARD]           Offer the Jewel of Buddha to Shiva
+  tibet5.txt  36  49154  0xC002  [OFF, !HARD]           Offer the Jewel of Buddha to Shiva
+  tibet5.txt  41  49153  0xC001  [ON,  !HARD]           Offer the Sangha Gem to Shiva
+  tibet5.txt  41  49154  0xC002  [OFF, !HARD]           Offer the Sangha Gem to Shiva
+  tibet5.txt  48  49153  0xC001  [ON,  !HARD]           Offer the Dharma Jewel to Shiva
+  tibet5.txt  48  49154  0xC002  [OFF, !HARD]           Offer the Dharma Jewel to Shiva
+  tibet5.txt  54  32769  0x8001  [ON]                   Complete the three trials to continue on your journey towards Praevus
+  tibet5.txt  54  32770  0x8002  [OFF]                  Complete the three trials to continue on your journey towards Praevus
+
+  tibet6.txt  37  49153  0xC001  [ON,  !HARD]           Get the Eyes of Buddha by following the unseen path
+  tibet6.txt  37  49154  0xC002  [OFF, !HARD]           Get the Eyes of Buddha by following the unseen path
+  tibet6.txt  38  49153  0xC001  [ON,  !HARD]           Use the Eyes of Buddha to see the guardian of the portal
+  tibet6.txt  38  49154  0xC002  [OFF, !HARD]           Use the Eyes of Buddha to see the guardian of the portal
+  tibet6.txt  39  49153  0xC001  [ON,  !HARD]           Get the Sangha Gem from its resting place
+  tibet6.txt  39  49154  0xC002  [OFF, !HARD]           Get the Sangha Gem from its resting place
+  tibet6.txt  40  49153  0xC001  [ON,  !HARD]           Bring the Sangha Gem to the guardian of the portal
+  tibet6.txt  40  49154  0xC002  [OFF, !HARD]           Bring the Sangha Gem to the guardian of the portal
+
+  tibet7.txt  42  49153  0xC001  [ON,  !HARD]           Get the Oil of Annointment from the Invocation Chambers
+  tibet7.txt  42  49154  0xC002  [OFF, !HARD]           Get the Oil of Annointment from the Invocation Chambers
+  tibet7.txt  43  49153  0xC001  [ON,  !HARD]           Take the Oil of Annointment to the Pool of Cleansing
+  tibet7.txt  43  49154  0xC002  [OFF, !HARD]           Take the Oil of Annointment to the Pool of Cleansing
+  tibet7.txt  44  49153  0xC001  [ON,  !HARD]           Get the Incense of Enlightenment from Hidden Supplication Chamber
+  tibet7.txt  44  49154  0xC002  [OFF, !HARD]           Get the Incense of Enlightenment from Hidden Supplication Chamber
+  tibet7.txt  45  49153  0xC001  [ON,  !HARD]           Use the Incense of Enlightenment in the Invocation Chambers
+  tibet7.txt  45  49154  0xC002  [OFF, !HARD]           Use the Incense of Enlightenment in the Invocation Chambers
+  tibet7.txt  46  32769  0x8001  [ON]                   Enter the Pillar of Fire
+  tibet7.txt  46  32770  0x8002  [OFF]                  Enter the Pillar of Fire
+  tibet7.txt  47  32769  0x8001  [ON]                   Ready your body for the journey through death and rebirth
+  tibet7.txt  47  32770  0x8002  [OFF]                  Ready your body for the journey through death and rebirth
+  tibet7.txt  48  49153  0xC001  [ON,  !HARD]           Offer the Dharma Jewel to Shiva
+
+  tibet8.txt  49  49153  0xC001  [ON,  !HARD]           To pass the Guardians in the Inner Chambers, you must use the Vajra Scepter and the Bell of Ghanta
+  tibet8.txt  50  32769  0x8001  [ON]                   Gain entrance to the Inner Sanctum of Praevus
+  tibet8.txt  55  49153  0xC001  [ON,  !HARD]           To search the rest of the Palace, you must first acquire the Emperor's Key
+  tibet8.txt  55  49154  0xC002  [OFF, !HARD]           To search the rest of the Palace, you must first acquire the Emperor's Key
+  tibet8.txt  56  49153  0xC001  [ON,  !HARD]           The Emperor's Key will let you pass the Portal of Nobility
+  tibet8.txt  56  49154  0xC002  [OFF, !HARD]           The Emperor's Key will let you pass the Portal of Nobility
+  tibet8.txt  57  49154  0xC002  [OFF, !HARD]           Find the Vajra Scepter in an earlier portion of the Palace
+
+  tibet9.txt  50  32770  0x8002  [OFF]                  Gain entrance to the Inner Sanctum of Praevus
+  tibet9.txt  57  49153  0xC001  [ON,  !HARD]           Find the Vajra Scepter in an earlier portion of the Palace
+  tibet9.txt  58  49153  0xC001  [ON,  !HARD]           The Bell of Ghanta is nearby...
+  tibet9.txt  58  49154  0xC002  [OFF, !HARD]           The Bell of Ghanta is nearby...
