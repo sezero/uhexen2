@@ -297,7 +297,14 @@ static int mp3_decode(snd_stream_t *stream, byte *buf, int len)
 					sample = 0x7FFF;
 				else
 					sample >>= (MAD_F_FRACBITS + 1 - 16);
-				if (host_byteorder == BIG_ENDIAN)
+#if (BYTE_ORDER == BIG_ENDIAN)
+				*buf++ = (sample >> 8) & 0xFF;
+				*buf++ = sample & 0xFF;
+#elif (BYTE_ORDER == LITTLE_ENDIAN)
+				*buf++ = sample & 0xFF;
+				*buf++ = (sample >> 8) & 0xFF;
+#elif ENDIAN_RUNTIME_DETECT
+				if (host_bigendian) /*(host_byteorder == BIG_ENDIAN)*/
 				{
 					*buf++ = (sample >> 8) & 0xFF;
 					*buf++ = sample & 0xFF;
@@ -307,6 +314,9 @@ static int mp3_decode(snd_stream_t *stream, byte *buf, int len)
 					*buf++ = sample & 0xFF;
 					*buf++ = (sample >> 8) & 0xFF;
 				}
+#else
+#error "Unsupported endianness."
+#endif	/* BYTE_ORDER */
 				i++;
 			}
 			p->cursamp++;

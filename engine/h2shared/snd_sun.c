@@ -59,17 +59,15 @@
 #include <paths.h>
 
 #define	FORMAT_U8	AUDIO_ENCODING_LINEAR8
-#if ENDIAN_RUNTIME_DETECT
-static int		FORMAT_S16;
-#else
 #if (BYTE_ORDER == BIG_ENDIAN)
 #define	FORMAT_S16	AUDIO_ENCODING_SLINEAR_BE
 #elif (BYTE_ORDER == LITTLE_ENDIAN)
 #define	FORMAT_S16	AUDIO_ENCODING_SLINEAR_LE
+#elif ENDIAN_RUNTIME_DETECT
+static int		FORMAT_S16;
 #else
 #error "Unsupported endianness."
-#endif
-#endif	/* ENDIAN_RUNTIME_DETECT */
+#endif	/* BYTE_ORDER */
 
 #endif	/* _SUNAUDIO_BSD */
 

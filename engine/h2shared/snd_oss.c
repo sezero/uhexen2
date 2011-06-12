@@ -40,19 +40,17 @@
 #include <sys/soundcard.h>
 #include <errno.h>
 
-#if ENDIAN_RUNTIME_DETECT
-static int		FORMAT_S16;
-#else
 #if defined(AFMT_S16_NE)
 #define	FORMAT_S16	AFMT_S16_NE
 #elif (BYTE_ORDER == BIG_ENDIAN)
 #define	FORMAT_S16	AFMT_S16_BE
 #elif (BYTE_ORDER == LITTLE_ENDIAN)
 #define	FORMAT_S16	AFMT_S16_LE
+#elif ENDIAN_RUNTIME_DETECT
+static int		FORMAT_S16;
 #else
 #error "Unsupported endianness."
-#endif
-#endif	/* ENDIAN_RUNTIME_DETECT */
+#endif	/* BYTE_ORDER */
 
 /* all of these functions must be properly
    assigned in LinkFuncs() below	*/

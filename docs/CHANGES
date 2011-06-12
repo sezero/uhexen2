@@ -4,6 +4,8 @@ Development Progress	:
 ---------------------------
 
 2011-06-12 (SVN):
+    * Tidy ups various places for endian ifdefs. Use new host_bigendian
+      where needed.
     * q_endian.c, q_endian.h: Changed host_bigendian to be an int so that
       sources not having qboolean can still include q_endian.h.
     * q_endian.c: Added host_bigendian as a new global.

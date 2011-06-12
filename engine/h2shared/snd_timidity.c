@@ -100,10 +100,10 @@ static snd_stream_t *S_TIMIDITY_CodecOpenStream (const char *filename)
 	options.channels = shm->channels;
 	if (width == 1)
 		options.format = MID_AUDIO_U8;
-	else if (host_byteorder == LITTLE_ENDIAN)
-		options.format = MID_AUDIO_S16LSB;
-	else
+	else if (host_byteorder == BIG_ENDIAN)
 		options.format = MID_AUDIO_S16MSB;
+	else /* assumed LITTLE_ENDIAN. */
+		options.format = MID_AUDIO_S16LSB;
 	options.buffer_size = CACHEBUFFER_SIZE / (width * options.channels);
 
 	midistream = mid_istream_open_callbacks (timidity_fread, timidity_fclose,
