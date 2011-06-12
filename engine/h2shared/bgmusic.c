@@ -68,7 +68,7 @@ static music_handler_t wanted_handlers[] =
 	{ CODECTYPE_MOD,  BGM_STREAMER, -1,  "xm",  MUSIC_DIRNAME, NULL },
 	{ CODECTYPE_MOD,  BGM_STREAMER, -1,  "mod", MUSIC_DIRNAME, NULL },
 /* midi must be last before NULL terminator. */
-#define MIDIDRIVER_MID (1 << 31) /* special, comes before CODECTYPE_MID */
+#define MIDIDRIVER_MID (1 << 30) /* special, comes before CODECTYPE_MID */
 	{ MIDIDRIVER_MID, BGM_MIDIDRV,  -1,  "mid", MIDI_DIRNAME,  NULL },
 	{ CODECTYPE_MID,  BGM_STREAMER, -1,  "mid", MIDI_DIRNAME,  NULL },
 	{ CODECTYPE_NONE, BGM_NONE,     -1,   NULL,         NULL,  NULL }

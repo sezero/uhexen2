@@ -4,6 +4,9 @@ Development Progress	:
 ---------------------------
 
 2011-06-12 (SVN):
+    * bgmusic.c: Changed MIDIDRIVER_MID definition from 1<<31 to 1<<30.
+
+2011-06-12 (SVN):
     * Fixed compilation when ENDIAN_RUNTIME_DETECT is defined as 1 (bug
       was introduced in previous commit at rev.4028.)
     * Tidy ups various places for endian ifdefs. Use new host_bigendian
