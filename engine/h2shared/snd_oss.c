@@ -1,6 +1,6 @@
 /*
 	snd_oss.c
-	$Id: snd_oss.c,v 1.38 2010-01-23 12:01:23 sezero Exp $
+	$Id$
 
 	Copyright (C) 1996-1997  Id Software, Inc.
 
@@ -35,19 +35,20 @@
 #include <sys/mman.h>
 #include <sys/shm.h>
 #include <sys/wait.h>
-// FIXME: <sys/soundcard.h> is "by the book" but we should take care of
-// <soundcard.h>, <linux/soundcard.h> and <machine/soundcard.h> someday.
+/* FIXME:  <sys/soundcard.h> is by the book, but we might
+ * have to take care of <soundcard.h>, <linux/soundcard.h>
+ * and <machine/soundcard.h> someday.  */
 #include <sys/soundcard.h>
 #include <errno.h>
 
-#if defined(AFMT_S16_NE)
+#if ENDIAN_RUNTIME_DETECT
+static int		FORMAT_S16;
+#elif defined(AFMT_S16_NE)
 #define	FORMAT_S16	AFMT_S16_NE
 #elif (BYTE_ORDER == BIG_ENDIAN)
 #define	FORMAT_S16	AFMT_S16_BE
 #elif (BYTE_ORDER == LITTLE_ENDIAN)
 #define	FORMAT_S16	AFMT_S16_LE
-#elif ENDIAN_RUNTIME_DETECT
-static int		FORMAT_S16;
 #else
 #error "Unsupported endianness."
 #endif	/* BYTE_ORDER */

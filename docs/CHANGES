@@ -4,6 +4,8 @@ Development Progress	:
 ---------------------------
 
 2011-06-12 (SVN):
+    * Fixed compilation when ENDIAN_RUNTIME_DETECT is defined as 1 (bug
+      was introduced in previous commit at rev.4028.)
     * Tidy ups various places for endian ifdefs. Use new host_bigendian
       where needed.
     * q_endian.c, q_endian.h: Changed host_bigendian to be an int so that

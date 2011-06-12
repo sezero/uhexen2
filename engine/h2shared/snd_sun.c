@@ -1,6 +1,6 @@
 /*
 	snd_sun.c
-	$Id: snd_sun.c,v 1.18 2010-01-23 12:01:23 sezero Exp $
+	$Id$
 
 	SUN Audio driver for BSD and SunOS
 
@@ -59,12 +59,12 @@
 #include <paths.h>
 
 #define	FORMAT_U8	AUDIO_ENCODING_LINEAR8
-#if (BYTE_ORDER == BIG_ENDIAN)
+#if ENDIAN_RUNTIME_DETECT
+static int		FORMAT_S16;
+#elif (BYTE_ORDER == BIG_ENDIAN)
 #define	FORMAT_S16	AUDIO_ENCODING_SLINEAR_BE
 #elif (BYTE_ORDER == LITTLE_ENDIAN)
 #define	FORMAT_S16	AUDIO_ENCODING_SLINEAR_LE
-#elif ENDIAN_RUNTIME_DETECT
-static int		FORMAT_S16;
 #else
 #error "Unsupported endianness."
 #endif	/* BYTE_ORDER */
