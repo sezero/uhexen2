@@ -52,7 +52,7 @@
 
 
 int		host_byteorder;
-qboolean	host_bigendian;
+int		host_bigendian;		/* qboolean */
 
 int DetectByteorder (void)
 {

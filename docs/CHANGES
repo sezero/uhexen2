@@ -3,7 +3,9 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
-2011-06-11 (SVN):
+2011-06-12 (SVN):
+    * q_endian.c, q_endian.h: Changed host_bigendian to be an int so that
+      sources not having qboolean can still include q_endian.h.
     * q_endian.c: Added host_bigendian as a new global.
 
 2011-06-11 (SVN):

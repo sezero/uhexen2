@@ -163,7 +163,7 @@
 
 
 extern int	host_byteorder;
-extern qboolean	host_bigendian;
+extern int	host_bigendian;		/* bool */
 extern int DetectByteorder (void);
 extern void ByteOrder_Init (void);
 
