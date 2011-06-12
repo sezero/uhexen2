@@ -162,7 +162,8 @@
 #endif	/* fallback. */
 
 
-extern int host_byteorder;
+extern int	host_byteorder;
+extern qboolean	host_bigendian;
 extern int DetectByteorder (void);
 extern void ByteOrder_Init (void);
 

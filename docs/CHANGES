@@ -4,6 +4,9 @@ Development Progress	:
 ---------------------------
 
 2011-06-11 (SVN):
+    * q_endian.c: Added host_bigendian as a new global.
+
+2011-06-11 (SVN):
     * q_stdinc.h: Updated notes about qboolean and C++ bool types, added
       compile time asserts.
 

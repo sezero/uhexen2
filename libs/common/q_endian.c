@@ -51,7 +51,8 @@
 #endif	/* ENDIAN_ASSUMED_UNSAFE */
 
 
-int host_byteorder;
+int		host_byteorder;
+qboolean	host_bigendian;
 
 int DetectByteorder (void)
 {
@@ -152,6 +153,7 @@ float	(*LittleFloat) (float);
 void ByteOrder_Init (void)
 {
 	host_byteorder = DetectByteorder ();
+	host_bigendian = (host_byteorder == BIG_ENDIAN);
 
 #if ENDIAN_RUNTIME_DETECT
 	switch (host_byteorder)
