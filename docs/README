@@ -227,10 +227,10 @@ that option in the Makefile when compiling).
 1.4 Sound and Midi
 ------------------
 
-Hexen II has some great sound effects, with the option of CD or
-Midi background music. Unfortunately it didn't originally support
-all sound cards. To fix this, it now includes a choice of three
-sound drivers:
+Hammer of Thyrion (uHexen2) includes a choice of three sound drivers for
+linux/unix users: OSS, ALSA and SDL. The engine tries them and uses the
+first one which successfully initializes. You can make the engine to use
+only a specific driver by command line arguments, too.
 
 a. OSS sound code
 -----------------
@@ -239,8 +239,8 @@ This is the default sound driver for Linux and FreeBSD. It uses OSS
 the Linux distributions but it is known not to work for a few people.
 If you use the game launcher, select the OSS option from the sound
 menu. If you use command line, "-sndoss" tells the game engine to use
-OSS, but it isn't necessary (it is the default). If OSS doesn't work
-for you, then please try the other options below.
+OSS:  ./glhexen2 -sndoss -sndspeed 44100
+If OSS doesn't work for you, then please try the other options below.
 
 
 b. ALSA sound code

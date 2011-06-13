@@ -56,12 +56,12 @@
 
 # pre-release version: MAKE SURE to change this
 # to an %undefine for the final realease!!
-%define prerelease	rc3
+%define prerelease	rc4
 
 # package release number for final-release:
 %define pkg_final	1
 # package release number for pre-release:
-%define pkg_prerel	3
+%define pkg_prerel	4
 
 Name:		hexen2
 License:	GPLv2
@@ -350,6 +350,9 @@ desktop-file-install \
 %{_prefix}/games/%{name}/docs/README.hwmaster
 
 %changelog
+* Sun Jun 13 2011 O.Sezer <sezero@users.sourceforge.net> 1.5.0-0.4.rc4
+- Bumped version to 1.5.0-rc4.
+
 * Sun Jun 05 2011 O.Sezer <sezero@users.sourceforge.net> 1.5.0-0.3.rc3
 - Bumped version to 1.5.0-rc3.
 
