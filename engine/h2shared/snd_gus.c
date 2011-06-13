@@ -4,7 +4,7 @@
 	Author(s): Jayeson Lee-Steere
 	from quake1 source with minor adaptations for uhexen2.
 
-	$Id: snd_gus.c,v 1.3 2007-12-22 12:20:42 sezero Exp $
+	$Id$
 
 	Copyright (C) 1996-1997  Id Software, Inc.
 

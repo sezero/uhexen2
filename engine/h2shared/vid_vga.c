@@ -4,7 +4,7 @@
 	TODO: proper handling of page-swap failure
 	from quake1 source with minor adaptations for uhexen2.
 
-	$Id: vid_vga.c,v 1.2 2007-10-30 17:09:58 sezero Exp $
+	$Id$
 
 	Copyright (C) 1996-1997  Id Software, Inc.
 

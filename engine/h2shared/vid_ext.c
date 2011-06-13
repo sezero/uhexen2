@@ -4,7 +4,7 @@
 	TODO: make dependencies on vid_vga.c explicit or eliminate them
 	from quake1 source with minor adaptations for uhexen2.
 
-	$Id: vid_ext.c,v 1.2 2007-10-30 17:09:58 sezero Exp $
+	$Id$
 
 	Copyright (C) 1996-1997  Id Software, Inc.
 

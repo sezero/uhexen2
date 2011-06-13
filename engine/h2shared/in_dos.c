@@ -3,7 +3,7 @@
 	dos mouse (input devices) code.
 	from quake1 source with minor adaptations for uhexen2.
 
-	$Id: in_dos.c,v 1.4 2008-06-06 14:27:22 sezero Exp $
+	$Id$
 
 	Copyright (C) 1996-1997  Id Software, Inc.
 

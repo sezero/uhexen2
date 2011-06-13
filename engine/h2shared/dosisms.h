@@ -3,7 +3,7 @@
 	DOS / DJGPP system header.
 	From quake1 source with minor adaptations for uhexen2.
 
-	$Id: dosisms.h,v 1.2 2007-12-19 09:36:19 sezero Exp $
+	$Id$
 
 	Copyright (C) 1996-1997  Id Software, Inc.
 

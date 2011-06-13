@@ -3,7 +3,7 @@
 	header file for DOS-specific video stuff.
 	from quake1 source with minor adaptations for uhexen2.
 
-	$Id: vid_dos.h,v 1.3 2008-03-07 08:10:57 sezero Exp $
+	$Id$
 
 	Copyright (C) 1996-1997  Id Software, Inc.
 

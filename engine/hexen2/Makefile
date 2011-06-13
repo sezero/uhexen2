@@ -614,7 +614,7 @@ ifeq ($(TARGET_OS),win64)
 SYSOBJ_SND := snd_win.o
 endif
 ifeq ($(TARGET_OS),dos)
-SYSOBJ_SND := dos/snd_dos.o dos/snd_gus.o
+SYSOBJ_SND := dos/snd_sb.o dos/snd_gus.o
 endif
 ifeq ($(TARGET_OS),unix)
 SYSOBJ_SND := snd_oss.o snd_alsa.o snd_sun.o snd_sdl.o

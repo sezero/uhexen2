@@ -3,7 +3,7 @@
 	header file for video register-setting interpreter.
 	from quake1 source with minor adaptations for uhexen2.
 
-	$Id: vregset.h,v 1.1 2007-10-22 18:07:53 sezero Exp $
+	$Id$
 
 	Copyright (C) 1996-1997  Id Software, Inc.
 

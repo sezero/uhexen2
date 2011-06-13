@@ -3,7 +3,7 @@
 	DOS / DJGPP system interface.
 	from quake1 source with minor adaptations for uhexen2.
 
-	$Id: dos_v2.c,v 1.1 2007-10-22 18:07:51 sezero Exp $
+	$Id$
 
 	Copyright (C) 1996-1997  Id Software, Inc.
 

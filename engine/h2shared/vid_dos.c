@@ -3,7 +3,7 @@
 	DOS-specific video routines.
 	from quake1 source with minor adaptations for uhexen2.
 
-	$Id: vid_dos.c,v 1.9 2008-04-02 19:10:34 sezero Exp $
+	$Id$
 
 	Copyright (C) 1996-1997  Id Software, Inc.
 
