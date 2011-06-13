@@ -3,6 +3,10 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2011-06-13 (SVN):
+    * bgmusic.c, snd_codec.h, snd_codeci.h: Changed MIDIDRIVER_MID back
+      to 1U<<31. Changed other music types as shifts of 1U instead of 1.
+
 2011-06-12 (SVN):
     * bgmusic.c: Changed MIDIDRIVER_MID definition from 1<<31 to 1<<30.
 

@@ -49,7 +49,7 @@ typedef enum _bgm_player
 
 typedef struct music_handler_s
 {
-	unsigned int	type;	/* power of two (snd_codec.h)	*/
+	unsigned int	type;	/* 1U << n (see snd_codec.h)	*/
 	bgm_player_t	player;	/* Enumerated bgm player type	*/
 	int	is_available;	/* -1 means not present		*/
 	const char	*ext;	/* Expected file extension	*/
@@ -68,7 +68,7 @@ static music_handler_t wanted_handlers[] =
 	{ CODECTYPE_MOD,  BGM_STREAMER, -1,  "xm",  MUSIC_DIRNAME, NULL },
 	{ CODECTYPE_MOD,  BGM_STREAMER, -1,  "mod", MUSIC_DIRNAME, NULL },
 /* midi must be last before NULL terminator. */
-#define MIDIDRIVER_MID (1 << 30) /* special, comes before CODECTYPE_MID */
+#define MIDIDRIVER_MID (1U << 31) /* special, comes before CODECTYPE_MID */
 	{ MIDIDRIVER_MID, BGM_MIDIDRV,  -1,  "mid", MIDI_DIRNAME,  NULL },
 	{ CODECTYPE_MID,  BGM_STREAMER, -1,  "mid", MIDI_DIRNAME,  NULL },
 	{ CODECTYPE_NONE, BGM_NONE,     -1,   NULL,         NULL,  NULL }
