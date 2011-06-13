@@ -614,7 +614,7 @@ ifeq ($(TARGET_OS),win64)
 SYSOBJ_SND := snd_win.o snd_dsound.o
 endif
 ifeq ($(TARGET_OS),dos)
-SYSOBJ_SND := dos/snd_sb.o dos/snd_gus.o
+SYSOBJ_SND := snd_sb.o snd_gus.o
 endif
 ifeq ($(TARGET_OS),unix)
 SYSOBJ_SND := snd_oss.o snd_alsa.o snd_sun.o snd_sdl.o
@@ -660,7 +660,7 @@ ifeq ($(TARGET_OS),win64)
 SYSOBJ_CDA := cd_win.o
 endif
 ifeq ($(TARGET_OS),dos)
-SYSOBJ_CDA := dos/cd_dos.o
+SYSOBJ_CDA := cd_dos.o
 endif
 ifeq ($(TARGET_OS),unix)
 SYSOBJ_CDA := cd_sdl.o cd_bsd.o cd_linux.o
@@ -688,11 +688,11 @@ SYSOBJ_NET := net_win.o net_wins.o net_wipx.o
 SYSOBJ_SYS := conproc.o sys_win.o win32res.res
 endif
 ifeq ($(TARGET_OS),dos)
-SYSOBJ_INPUT := dos/in_dos.o
-SYSOBJ_SOFT_VID:= dos/vid_vga.o dos/vid_ext.o d_copy.o dos/vid_dos.o dos/vregset.o
+SYSOBJ_INPUT := in_dos.o
+SYSOBJ_SOFT_VID:= vid_vga.o vid_ext.o d_copy.o vid_dos.o vregset.o
 SYSOBJ_NET := dos/net_dos.o dos/net_ser.o dos/net_bw.o dos/dos_inet.o dos/inet_addr.o \
 	dos/net_ipx.o dos/net_mp.o dos/mplib.o dos/mplpc.o
-SYSOBJ_SYS := dos/dos_v2.o dos/sys_dos.o
+SYSOBJ_SYS := dos_v2.o sys_dos.o
 #	dosasm.o
 endif
 ifeq ($(TARGET_OS),unix)

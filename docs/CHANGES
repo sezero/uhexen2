@@ -4,6 +4,10 @@ Development Progress	:
 ---------------------------
 
 2011-06-13 (SVN):
+    * Moved sys_dos.c out of the dos subdirectory, fixed the Makefile for
+      dos targets.
+
+2011-06-13 (SVN):
     * Changed sound driver interface so that snd_sys.c sends a linked
       list of drivers to snd_dma.c and snd_dma.c tries all of them until
       one of them successfully initializes.  If the user specifies a
