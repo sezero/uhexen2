@@ -29,35 +29,11 @@
 
 #include "quakedef.h"
 #include "snd_sys.h"
+
+#if HAVE_DOS_SB_SOUND
+
+#include "snd_sb.h"
 #include "dosisms.h"
-
-
-/* all of these functions must be properly
-   assigned in LinkFuncs() below	*/
-static qboolean S_DOS_Init (dma_t *dma);
-static int S_DOS_GetDMAPos (void);
-static void S_DOS_Shutdown (void);
-static void S_DOS_LockBuffer (void);
-static void S_DOS_Submit (void);
-static void S_DOS_BlockSound (void);
-static void S_DOS_UnblockSound (void);
-static const char *S_DOS_DrvName (void);
-
-static char s_sb_driver[] = "Blaster";
-static char s_gus_driver[] = "GUS";
-
-
-/*
-===============================================================================
-
-GUS SUPPORT (snd_gus.c)
-
-===============================================================================
-*/
-
-qboolean GUS_Init (dma_t *dma);
-int GUS_GetDMAPos (void);
-void GUS_Shutdown (void);
 
 
 /*
@@ -68,7 +44,9 @@ BLASTER SUPPORT
 ===============================================================================
 */
 
-static int BLASTER_GetDMAPos (void);
+static char s_sb_driver[] = "SoundBlaster";
+
+static int S_BLASTER_GetDMAPos (void);
 
 short	*dma_buffer = NULL;
 static	int	dma_size;
@@ -85,19 +63,6 @@ static	int	dsp_version;
 static	int	dsp_minor_version;
 
 static	int	timeconstant = -1;
-
-
-void S_DOS_LinkFuncs (snd_driver_t *p)
-{
-	p->Init		= S_DOS_Init;
-	p->Shutdown	= S_DOS_Shutdown;
-	p->GetDMAPos	= S_DOS_GetDMAPos;
-	p->LockBuffer	= S_DOS_LockBuffer;
-	p->Submit	= S_DOS_Submit;
-	p->BlockSound	= S_DOS_BlockSound;
-	p->UnblockSound	= S_DOS_UnblockSound;
-	p->DrvName	= S_DOS_DrvName;
-}
 
 
 #if 0
@@ -121,7 +86,7 @@ static void SB_Info_f (void)
 	Con_Printf("dma=%d\n", dma);
 	if (timeconstant != -1)
 		Con_Printf("timeconstant=%d\n", timeconstant);
-	Con_Printf("dma position: %i\n", BLASTER_GetDMAPos ());
+	Con_Printf("dma position: %i\n", S_BLASTER_GetDMAPos ());
 }
 
 // =======================================================================
@@ -396,7 +361,7 @@ BLASTER_Init
 Returns false if nothing is found.
 ==================
 */
-static qboolean BLASTER_Init (dma_t *dma)
+static qboolean S_BLASTER_Init (dma_t *dma)
 {
 	int	size;
 	int	realaddr;
@@ -519,9 +484,12 @@ inside the recirculating dma buffer, so the mixing code will know
 how many sample are required to fill it up.
 ===============
 */
-static int BLASTER_GetDMAPos (void)
+static int S_BLASTER_GetDMAPos (void)
 {
 	int	count;
+
+	if (! dma_buffer)	/* not initialized */
+		return 0;
 
 // this function is called often. acknowledge the transfer completions
 // all the time so that it loops
@@ -564,8 +532,11 @@ BLASTER_Shutdown
 Reset the sound device for exiting
 ===============
 */
-static void BLASTER_Shutdown(void)
+static void S_BLASTER_Shutdown(void)
 {
+	if (! dma_buffer)	/* not initialized */
+		return;
+
 	if (dsp_version >= 4)
 	{
 	}
@@ -584,101 +555,6 @@ static void BLASTER_Shutdown(void)
 	dos_outportb(disable_reg, dma|4);	// disable dma channel
 }
 
-
-/*
-===============================================================================
-
-INTERFACE
-
-===============================================================================
-*/
-
-typedef enum
-{
-	dma_none,
-	dma_blaster,
-	dma_gus
-} dmacard_t;
-
-static	dmacard_t	dmacard;
-
-/*
-==================
-SNDDMA_Init
-
-Try to find a sound device to mix for.
-Returns false if nothing is found.
-Returns true and fills in the "shm" structure with information for the mixer.
-==================
-*/
-static qboolean S_DOS_Init (dma_t *dma)
-{
-	if (GUS_Init (dma))
-	{
-		dmacard = dma_gus;
-		return true;
-	}
-	if (BLASTER_Init (dma))
-	{
-		dmacard = dma_blaster;
-		return true;
-	}
-
-	dmacard = dma_none;
-	return false;
-}
-
-
-/*
-==============
-SNDDMA_GetDMAPos
-
-return the current sample position (in mono samples, not stereo)
-inside the recirculating dma buffer, so the mixing code will know
-how many sample are required to fill it up.
-===============
-*/
-static int S_DOS_GetDMAPos (void)
-{
-	switch (dmacard)
-	{
-	case dma_blaster:
-		return BLASTER_GetDMAPos ();
-	case dma_gus:
-		return GUS_GetDMAPos ();
-	case dma_none:
-	default:
-		break;
-	}
-
-	return 0;
-}
-
-/*
-==============
-SNDDMA_Shutdown
-
-Reset the sound device for exiting
-===============
-*/
-static void S_DOS_Shutdown (void)
-{
-	switch (dmacard)
-	{
-	case dma_blaster:
-		BLASTER_Shutdown ();
-		break;
-	case dma_gus:
-		GUS_Shutdown ();
-		break;
-	case dma_none:
-		break;
-	}
-
-	dmacard = dma_none;
-	return;
-}
-
 /*
 ==============
 SNDDMA_LockBuffer
@@ -686,7 +562,7 @@ SNDDMA_LockBuffer
 Makes sure dma buffer is valid
 ===============
 */
-static void S_DOS_LockBuffer (void)
+static void S_BLASTER_LockBuffer (void)
 {
 	/* nothing to do here */
 }
@@ -699,32 +575,33 @@ Unlock the dma buffer /
 Send sound to the device
 ===============
 */
-static void S_DOS_Submit (void)
+static void S_BLASTER_Submit (void)
 {
 	/* nothing to do here */
 }
 
-static void S_DOS_BlockSound (void)
+static void S_BLASTER_BlockSound (void)
 {
 }
 
-static void S_DOS_UnblockSound (void)
+static void S_BLASTER_UnblockSound (void)
 {
 }
 
-static const char *S_DOS_DrvName (void)
+snd_driver_t snddrv_blaster =
 {
-	switch (dmacard)
-	{
-	case dma_blaster:
-		return s_sb_driver;
-		break;
-	case dma_gus:
-		return s_gus_driver;
-		break;
-	case dma_none:
-	default:
-		return "";
-	}
-}
+	S_BLASTER_Init,
+	S_BLASTER_Shutdown,
+	S_BLASTER_GetDMAPos,
+	S_BLASTER_LockBuffer,
+	S_BLASTER_Submit,
+	S_BLASTER_BlockSound,
+	S_BLASTER_UnblockSound,
+	s_sb_driver,
+	SNDDRV_ID_SB_DOS,
+	false,
+	NULL
+};
+
+#endif	/* HAVE_DOS_SB_SOUND */
 

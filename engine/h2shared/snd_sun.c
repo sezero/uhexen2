@@ -32,6 +32,8 @@
 
 #if HAVE_SUN_SOUND
 
+#include "snd_sun.h"
+
 #undef	_SUNAUDIO_BSD
 #undef	_SUNAUDIO_SUNOS
 #if defined(__sun) || defined(sun)
@@ -71,17 +73,6 @@ static int		FORMAT_S16;
 
 #endif	/* _SUNAUDIO_BSD */
 
-/* all of these functions must be properly
-   assigned in LinkFuncs() below	*/
-static qboolean S_SUN_Init (dma_t *dma);
-static int S_SUN_GetDMAPos (void);
-static void S_SUN_Shutdown (void);
-static void S_SUN_LockBuffer (void);
-static void S_SUN_Submit (void);
-static void S_SUN_BlockSound (void);
-static void S_SUN_UnblockSound (void);
-static const char *S_SUN_DrvName (void);
-
 static char s_sun_driver[] = "SunAudio";
 
 static int	audio_fd = -1;
@@ -90,19 +81,6 @@ static int	audio_fd = -1;
 static unsigned char	dma_buffer [SND_BUFF_SIZE];
 static unsigned char	writebuf [1024];
 static int	wbufp;
-
-
-void S_SUN_LinkFuncs (snd_driver_t *p)
-{
-	p->Init		= S_SUN_Init;
-	p->Shutdown	= S_SUN_Shutdown;
-	p->GetDMAPos	= S_SUN_GetDMAPos;
-	p->LockBuffer	= S_SUN_LockBuffer;
-	p->Submit	= S_SUN_Submit;
-	p->BlockSound	= S_SUN_BlockSound;
-	p->UnblockSound	= S_SUN_UnblockSound;
-	p->DrvName	= S_SUN_DrvName;
-}
 
 
 static qboolean S_SUN_Init (dma_t *dma)
@@ -274,10 +252,20 @@ static void S_SUN_UnblockSound (void)
 {
 }
 
-static const char *S_SUN_DrvName (void)
+snd_driver_t snddrv_sunaudio =
 {
-	return s_sun_driver;
-}
+	S_SUN_Init,
+	S_SUN_Shutdown,
+	S_SUN_GetDMAPos,
+	S_SUN_LockBuffer,
+	S_SUN_Submit,
+	S_SUN_BlockSound,
+	S_SUN_UnblockSound,
+	s_sun_driver,
+	SNDDRV_ID_SUN,
+	false,
+	NULL
+};
 
 #endif	/* HAVE_SUN_SOUND */
 

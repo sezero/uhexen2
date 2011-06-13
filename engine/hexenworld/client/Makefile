@@ -562,10 +562,10 @@ MUSIC_OBJS:= bgmusic.o \
 	snd_wildmidi.o
 COMOBJ_SND := snd_sys.o snd_dma.o snd_mix.o $(SOUND_ASM) snd_mem.o $(MUSIC_OBJS)
 ifeq ($(TARGET_OS),win32)
-SYSOBJ_SND := snd_win.o
+SYSOBJ_SND := snd_win.o snd_dsound.o
 endif
 ifeq ($(TARGET_OS),win64)
-SYSOBJ_SND := snd_win.o
+SYSOBJ_SND := snd_win.o snd_dsound.o
 endif
 ifeq ($(TARGET_OS),unix)
 SYSOBJ_SND := snd_oss.o snd_alsa.o snd_sun.o snd_sdl.o

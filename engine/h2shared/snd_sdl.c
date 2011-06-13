@@ -33,39 +33,15 @@
 
 #if HAVE_SDL_SOUND
 
+#include "snd_sdl.h"
 #include "sdl_inc.h"
 
-// whether to use hunk for allocating dma
-// buffer memory. either 1, or 0.
+/* whether to use hunk for dma buffer memory, either 1 or 0  */
 #define USE_HUNK_ALLOC		0
-
-/* all of these functions must be properly
-   assigned in LinkFuncs() below	*/
-static qboolean S_SDL_Init (dma_t *dma);
-static int S_SDL_GetDMAPos (void);
-static void S_SDL_Shutdown (void);
-static void S_SDL_LockBuffer (void);
-static void S_SDL_Submit (void);
-static void S_SDL_BlockSound (void);
-static void S_SDL_UnblockSound (void);
-static const char *S_SDL_DrvName (void);
 
 static char s_sdl_driver[] = "SDLAudio";
 
 static int	buffersize;
-
-
-void S_SDL_LinkFuncs (snd_driver_t *p)
-{
-	p->Init		= S_SDL_Init;
-	p->Shutdown	= S_SDL_Shutdown;
-	p->GetDMAPos	= S_SDL_GetDMAPos;
-	p->LockBuffer	= S_SDL_LockBuffer;
-	p->Submit	= S_SDL_Submit;
-	p->BlockSound	= S_SDL_BlockSound;
-	p->UnblockSound	= S_SDL_UnblockSound;
-	p->DrvName	= S_SDL_DrvName;
-}
 
 
 static void paint_audio (void *unused, Uint8 *stream, int len)
@@ -249,10 +225,20 @@ static void S_SDL_UnblockSound (void)
 	SDL_PauseAudio(0);
 }
 
-static const char *S_SDL_DrvName (void)
+snd_driver_t snddrv_sdl =
 {
-	return s_sdl_driver;
-}
+	S_SDL_Init,
+	S_SDL_Shutdown,
+	S_SDL_GetDMAPos,
+	S_SDL_LockBuffer,
+	S_SDL_Submit,
+	S_SDL_BlockSound,
+	S_SDL_UnblockSound,
+	s_sdl_driver,
+	SNDDRV_ID_SDL,
+	false,
+	NULL
+};
 
 #endif	/* HAVE_SDL_SOUND */
 

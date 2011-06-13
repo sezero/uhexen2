@@ -1,10 +1,11 @@
 /*
 	snd_alsa.c
-	$Id: snd_alsa.c,v 1.45 2010-11-13 07:51:15 sezero Exp $
+	$Id$
 
-	ALSA 1.0 sound driver for Linux Hexen II
+	ALSA 1.0 sound driver for Hexen II: Hammer of Thyrion (uHexen2)
 
 	Copyright (C) 1999,2004  contributors of the QuakeForge project
+	Copyright (C) 2005-2011  O.Sezer <sezero@users.sourceforge.net>
 
 	This program is free software; you can redistribute it and/or
 	modify it under the terms of the GNU General Public License
@@ -31,26 +32,17 @@
 
 #if HAVE_ALSA_SOUND
 
+#include "snd_alsa.h"
 #include <dlfcn.h>
 #include <alsa/asoundlib.h>
 
 #define NB_PERIODS 4
 
-/* all of these functions must be properly
-   assigned in LinkFuncs() below	*/
-static qboolean S_ALSA_Init (dma_t *dma);
-static int S_ALSA_GetDMAPos (void);
-static void S_ALSA_Shutdown (void);
-static void S_ALSA_LockBuffer (void);
-static void S_ALSA_Submit (void);
-static void S_ALSA_BlockSound (void);
-static void S_ALSA_UnblockSound (void);
-static const char *S_ALSA_DrvName (void);
-
 static char s_alsa_driver[] = "ALSA";
 
 static void *alsa_handle = NULL;
 //static const char alsa_default[] = "hw:0,0";
+//static const char alsa_default[] = "plughw:0";
 static const char alsa_default[] = "default";
 static const char *pcmname = alsa_default;
 static snd_pcm_t *pcm = NULL;
@@ -60,19 +52,6 @@ static snd_pcm_uframes_t buffer_size;
 static ret (*hx2##func) params;
 #include "alsa_funcs.h"
 #undef ALSA_FUNC
-
-
-void S_ALSA_LinkFuncs (snd_driver_t *p)
-{
-	p->Init		= S_ALSA_Init;
-	p->Shutdown	= S_ALSA_Shutdown;
-	p->GetDMAPos	= S_ALSA_GetDMAPos;
-	p->LockBuffer	= S_ALSA_LockBuffer;
-	p->Submit	= S_ALSA_Submit;
-	p->BlockSound	= S_ALSA_BlockSound;
-	p->UnblockSound	= S_ALSA_UnblockSound;
-	p->DrvName	= S_ALSA_DrvName;
-}
 
 
 static qboolean load_libasound (void)
@@ -120,6 +99,8 @@ static qboolean load_libasound (void)
 	}						\
     } while (0)
 #endif
+
+static int S_ALSA_GetDMAPos (void);
 
 static qboolean S_ALSA_Init (dma_t *dma)
 {
@@ -397,10 +378,20 @@ static void S_ALSA_UnblockSound (void)
 	hx2snd_pcm_pause (pcm, 0);
 }
 
-static const char *S_ALSA_DrvName (void)
+snd_driver_t snddrv_alsa =
 {
-	return s_alsa_driver;
-}
+	S_ALSA_Init,
+	S_ALSA_Shutdown,
+	S_ALSA_GetDMAPos,
+	S_ALSA_LockBuffer,
+	S_ALSA_Submit,
+	S_ALSA_BlockSound,
+	S_ALSA_UnblockSound,
+	s_alsa_driver,
+	SNDDRV_ID_ALSA,
+	false,
+	NULL
+};
 
 #endif	/* HAVE_ALSA_SOUND */
 

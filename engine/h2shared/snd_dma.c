@@ -118,7 +118,7 @@ static void S_SoundInfo_f (void)
 		return;
 	}
 
-	Con_Printf("Driver: %s\n", qsnd_driver->DrvName());
+	Con_Printf("Driver: %s\n", qsnd_driver->snddrv_name);
 	Con_Printf("%d bit, %s, %d Hz\n", shm->samplebits,
 			(shm->channels == 2) ? "stereo" : "mono", shm->speed);
 	Con_Printf("%5d samples\n", shm->samples);
@@ -129,24 +129,16 @@ static void S_SoundInfo_f (void)
 }
 
 
-/*
-================
-S_Startup
-================
-*/
-void S_Startup (void)
+static void S_ProcessCmdline (void)
 {
 	int		i, tmp;
-
-	if (!snd_initialized)
-		return;
 
 	tmp = COM_CheckParm("-sndspeed");
 	if (tmp != 0 && tmp < com_argc - 1)
 	{
+	/* I won't rely on users' precision in typing or their needs
+	   here. If you know what you're doing, then change this. */
 		tmp = atoi(com_argv[tmp + 1]);
-		/* I won't rely on users' precision in typing or their needs
-		   here. If you know what you're doing, then change this. */
 		for (i = 0; i < MAX_TRYRATES; i++)
 		{
 			if (tmp == tryrates[i])
@@ -161,27 +153,67 @@ void S_Startup (void)
 	if (tmp != 0 && tmp < com_argc - 1)
 	{
 		tmp = atoi(com_argv[tmp + 1]);
-		if ((tmp == 16) || (tmp == 8))
+		if (tmp == 16 || tmp == 8)
 			desired_bits = tmp;
 	}
 
 	tmp = COM_CheckParm("-sndmono");
 	if (tmp != 0)
 		desired_channels = 1;
+}
 
-	sound_started = qsnd_driver->Init(&sn);
+
+/*
+================
+S_Startup
+================
+*/
+void S_Startup (void)
+{
+	snd_driver_t	*driver;
+
+	if (!snd_initialized)
+		return;
+
+	S_GetDriverList(&qsnd_driver);
+
+	driver = qsnd_driver;
+	while (driver)
+	{
+		if (driver->userpreferred)
+		{
+			qsnd_driver = driver;	/* don't try other available drivers upon failure */
+			break;
+		}
+		driver = driver->next;
+	}
+
+	driver = qsnd_driver;
+	while (driver)
+	{
+		sound_started = driver->Init(&sn);
+		if (sound_started)
+			break;
+		if (driver->userpreferred)
+			break;
+		if (driver->snddrv_id == SNDDRV_ID_NULL)		/* ->next is NULL already */
+			break;
+		driver = driver->next;
+	}
 
 	if (!sound_started)
 	{
-		if (snd_system != S_SYS_NULL)
+		if (!driver || driver->snddrv_id != SNDDRV_ID_NULL)
 			Con_Printf("Failed initializing sound\n");
+		S_GetNullDriver(&qsnd_driver);	/* just in case. */
 	}
 	else
 	{
+		qsnd_driver = driver;	/* set the active driver */
 		Con_Printf("Audio: %d bit, %s, %d Hz, using %s\n",
 				shm->samplebits,
 				(shm->channels == 2) ? "stereo" : "mono",
-				shm->speed, qsnd_driver->DrvName());
+				shm->speed, qsnd_driver->snddrv_name);
 	}
 }
 
@@ -191,12 +223,15 @@ void S_Startup (void)
 S_Init
 ================
 */
+static const char *read_vars[] =
+{
+	"bgmvolume",
+	"volume"
+};
+#define num_readvars	(int)(sizeof(read_vars) / sizeof(read_vars[0]))
+
 void S_Init (void)
 {
-	const char	*read_vars[] = {
-				"bgmvolume",
-				"volume" };
-#define num_readvars	( sizeof(read_vars)/sizeof(read_vars[0]) )
 	int		i;
 
 	if (snd_initialized)
@@ -205,8 +240,8 @@ void S_Init (void)
 		return;
 	}
 
-// point to correct platform versions of driver functions
-	S_InitDrivers(&qsnd_driver);
+	S_DriversInit();
+	S_GetNullDriver(&qsnd_driver);
 
 	Cvar_RegisterVariable(&precache);
 	Cvar_RegisterVariable(&bgmtype);
@@ -257,7 +292,7 @@ void S_Init (void)
 		Cvar_Set("bgmvolume", "1");
 
 	// lock the early-read cvars until Host_Init is finished
-	for (i = 0; i < (int)num_readvars; i++)
+	for (i = 0; i < num_readvars; i++)
 		Cvar_LockVar (read_vars[i]);
 
 	SND_InitScaletable ();
@@ -267,7 +302,9 @@ void S_Init (void)
 
 	snd_initialized = true;
 
+	S_ProcessCmdline ();
 	S_Startup ();
+
 	if (sound_started == 0)
 		return;
 

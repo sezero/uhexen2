@@ -4,6 +4,19 @@ Development Progress	:
 ---------------------------
 
 2011-06-13 (SVN):
+    * Changed sound driver interface so that snd_sys.c sends a linked
+      list of drivers to snd_dma.c and snd_dma.c tries all of them until
+      one of them successfully initializes.  If the user specifies a
+      specific driver on the command line such as by -sndalsa, then the
+      specified driver is tried only.  This mimics the windows snd_win.c
+      behavior where dsound and wave drivers were tried.  This helps
+      linux/unix users where we have three drivers to start the engine
+      with sound working.  While we were there, separated dsound out of
+      snd_win.c into its own snd_dsound.c, so that the two sources are
+      independent.  Also severed the connections between snd_gus.c and
+      snd_sb.c.
+
+2011-06-13 (SVN):
     * Moved several dos driver sources under h2shared.
 
 2011-06-13 (SVN):

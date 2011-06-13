@@ -2,9 +2,9 @@
 	snd_sys.c
 	pre-Init platform specific sound stuff
 
-	$Id: snd_sys.c,v 1.16 2007-12-22 18:56:07 sezero Exp $
+	$Id$
 
-	Copyright (C) 2007  O.Sezer
+	Copyright (C) 2007-2011 O.Sezer <sezero@users.sourceforge.net>
 
 	This program is free software; you can redistribute it and/or
 	modify it under the terms of the GNU General Public License
@@ -26,15 +26,19 @@
 */
 
 
-#define _SND_LIST_DRIVERS
-
 #include "quakedef.h"
 #include "snd_sys.h"
+/* drivers' headers: */
+#include "snd_alsa.h"
+#include "snd_oss.h"
+#include "snd_sdl.h"
+#include "snd_sun.h"
+#include "snd_win.h"
+#include "snd_dsound.h"
+#include "snd_sb.h"
+#include "snd_gus.h"
 
-unsigned int	snd_system = S_SYS_NULL;
 static qboolean	snd_sys_inited = false;
-
-static snd_driver_t	snd_driver;
 
 
 /* dummy SNDDMA functions, just in case */
@@ -56,11 +60,6 @@ static int S_NULL_GetDMAPos (void)
 	return 0;
 }
 
-static const char *S_NULL_DrvName (void)
-{
-	return s_null_driver;
-}
-
 #define S_NULL_Shutdown		NULL_void_func
 #define S_NULL_LockBuffer	NULL_void_func
 #define S_NULL_Submit		NULL_void_func
@@ -70,92 +69,87 @@ static void NULL_void_func (void)
 {
 }
 
-static void S_NULL_LinkFuncs (snd_driver_t *p)
+static snd_driver_t snddrv_null =
 {
-	p->Init		= S_NULL_Init;
-	p->Shutdown	= S_NULL_Shutdown;
-	p->GetDMAPos	= S_NULL_GetDMAPos;
-	p->LockBuffer	= S_NULL_LockBuffer;
-	p->Submit	= S_NULL_Submit;
-	p->BlockSound	= S_NULL_BlockSound;
-	p->UnblockSound	= S_NULL_UnblockSound;
-	p->DrvName	= S_NULL_DrvName;
-}
-
-
-static struct
-{
-	void (*LinkFunc)(snd_driver_t *);
-} snd_linkfunc[S_SYS_MAX] =
-{
-	{ S_NULL_LinkFuncs },
-	{ S_OSS_LinkFuncs  },
-	{ S_SDL_LinkFuncs  },
-	{ S_ALSA_LinkFuncs },
-	{ S_SUN_LinkFuncs  },
-	{ S_WIN_LinkFuncs  },
-	{ S_DOS_LinkFuncs  },
+/* do register this first so that it
+ * stays last in the linked list.  */
+	S_NULL_Init,
+	S_NULL_Shutdown,
+	S_NULL_GetDMAPos,
+	S_NULL_LockBuffer,
+	S_NULL_Submit,
+	S_NULL_BlockSound,
+	S_NULL_UnblockSound,
+	s_null_driver,
+	SNDDRV_ID_NULL,
+	false,
+	NULL
 };
 
-static void S_InitSys (void)
+static snd_driver_t	*snd_drivers = &snddrv_null;
+
+
+static void S_RegisterDriver(snd_driver_t *driver)
 {
+	driver->next = snd_drivers;
+	snd_drivers = driver;
+}
+
+void S_DriversInit (void)
+{
+	if (snd_sys_inited)
+		return;
+	snd_sys_inited = true;
+
+	snd_drivers = NULL;
+
+	S_RegisterDriver(&snddrv_null);
 	if (safemode || COM_CheckParm("-nosound") || COM_CheckParm("-s"))
-		snd_system = S_SYS_NULL;
-
+		snd_drivers->userpreferred = true;
 #if HAVE_SDL_SOUND
-	else if (COM_CheckParm ("-sndsdl"))
-		snd_system = S_SYS_SDL;
+	S_RegisterDriver(&snddrv_sdl);
+	if (COM_CheckParm ("-sndsdl"))
+		snd_drivers->userpreferred = true;
 #endif
-
 #if HAVE_ALSA_SOUND
-	else if (COM_CheckParm ("-sndalsa"))
-		snd_system = S_SYS_ALSA;
+	S_RegisterDriver(&snddrv_alsa);
+	if (COM_CheckParm ("-sndalsa"))
+		snd_drivers->userpreferred = true;
 #endif
-
 #if HAVE_OSS_SOUND
-	else if (COM_CheckParm ("-sndoss"))
-		snd_system = S_SYS_OSS;
+	S_RegisterDriver(&snddrv_oss);
+	if (COM_CheckParm ("-sndoss"))
+		snd_drivers->userpreferred = true;
 #endif
 
 #if HAVE_SUN_SOUND
-	else if (COM_CheckParm ("-sndsun") || COM_CheckParm ("-sndbsd"))
-		snd_system = S_SYS_SUN;
+	S_RegisterDriver(&snddrv_sunaudio);
+	if (COM_CheckParm ("-sndsun") || COM_CheckParm ("-sndbsd"))
+		snd_drivers->userpreferred = true;
 #endif
-
-	else
 #if HAVE_WIN_SOUND
-		snd_system = S_SYS_WIN;
-#elif HAVE_DOS_SOUND
-		snd_system = S_SYS_DOS;
-#elif HAVE_OSS_SOUND
-		snd_system = S_SYS_OSS;
-#elif HAVE_SUN_SOUND
-		snd_system = S_SYS_SUN;
-#elif HAVE_ALSA_SOUND
-		snd_system = S_SYS_ALSA;
-#elif HAVE_SDL_SOUND
-		snd_system = S_SYS_SDL;
-#else
-		snd_system = S_SYS_NULL;
+	S_RegisterDriver(&snddrv_win);
+	if (COM_CheckParm ("-wavonly"))
+		snd_drivers->userpreferred = true;
+#endif
+#if HAVE_WIN_DX_SOUND
+	S_RegisterDriver(&snddrv_dsound);
+#endif
+#if HAVE_DOS_SB_SOUND
+	S_RegisterDriver(&snddrv_blaster);
+#endif
+#if HAVE_DOS_GUS_SOUND
+	S_RegisterDriver(&snddrv_gus);
 #endif
 }
 
-
-void S_InitDrivers (snd_driver_t **p)
+void S_GetDriverList (snd_driver_t **p)
 {
-	if (!snd_sys_inited)
-	{
-		S_InitSys();
-		snd_sys_inited = true;
-	}
+	*p = snd_drivers;
+}
 
-	if (snd_system < 0 || snd_system >= S_SYS_MAX)
-		Sys_Error ("%s: Bad index %d", __thisfunc__, snd_system);
-	if (snd_linkfunc[snd_system].LinkFunc == NULL)
-		Sys_Error ("%s: NULL function pointer for %d", __thisfunc__, snd_system);
-
-	memset ((void *) &snd_driver, 0, sizeof(snd_driver_t));
-	snd_linkfunc[snd_system].LinkFunc(&snd_driver);
-	*p = &snd_driver;
+void S_GetNullDriver (snd_driver_t **p)
+{
+	*p = &snddrv_null;
 }
 

@@ -1,6 +1,6 @@
 /*
 	alsa_funcs.h
-	$Id: alsa_funcs.h,v 1.14 2010-11-13 08:02:46 sezero Exp $
+	$Id$
 
 	ALSA function list
 	make sure NOT to protect this file against multiple inclusions!

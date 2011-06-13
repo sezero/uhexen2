@@ -29,8 +29,21 @@
 */
 
 #include "quakedef.h"
+#include "snd_sys.h"
+
+#if HAVE_DOS_GUS_SOUND
+
+#include "snd_gus.h"
 #include "dosisms.h"
 
+
+/*
+===============================================================================
+
+GUS SUPPORT (snd_gus.c)
+
+===============================================================================
+*/
 
 #define	INI_STRING_SIZE		0x100
 
@@ -555,13 +568,12 @@ struct Gf1RateStruct
 };
 
 //=============================================================================
-// Reference variables in SND_DOS.C
-//=============================================================================
-extern short *dma_buffer;
-
-//=============================================================================
 // GUS-only variables
 //=============================================================================
+static short *dma_buffer;
+
+static char s_gus_driver[] = "GUS";
+
 static BYTE HaveCodec = 0;
 
 static WORD CodecRegisterSelect;
@@ -1106,7 +1118,7 @@ static void GUS_StartGf1 (int count, BYTE Voices)
 //=============================================================================
 // Figures out what kind of UltraSound we have, if any, and starts it playing
 //=============================================================================
-qboolean GUS_Init (dma_t *dma)
+static qboolean S_GUS_Init (dma_t *dma)
 {
 	int		rc;
 	int		RealAddr;
@@ -1246,9 +1258,12 @@ qboolean GUS_Init (dma_t *dma)
 //=============================================================================
 // Returns the current playback position
 //=============================================================================
-int GUS_GetDMAPos (void)
+static int S_GUS_GetDMAPos (void)
 {
 	int	count;
+
+	if (! dma_buffer)	/* not initialized */
+		return 0;
 
 	if (HaveCodec)
 	{
@@ -1298,8 +1313,11 @@ int GUS_GetDMAPos (void)
 //=============================================================================
 // Stops the UltraSound playback
 //=============================================================================
-void GUS_Shutdown (void)
+static void S_GUS_Shutdown (void)
 {
+	if (! dma_buffer)	/* not initialized */
+		return;
+
 	if (HaveCodec)
 	{
 		// Stop CODEC
@@ -1327,4 +1345,54 @@ void GUS_Shutdown (void)
 	dos_outportb(DisableReg, DmaChannel | 4);	// disable dma channel
 	shm = NULL;
 }
+
+/*
+==============
+SNDDMA_LockBuffer
+
+Makes sure dma buffer is valid
+===============
+*/
+static void S_GUS_LockBuffer (void)
+{
+	/* nothing to do here */
+}
+
+/*
+==============
+SNDDMA_Submit
+
+Unlock the dma buffer /
+Send sound to the device
+===============
+*/
+static void S_GUS_Submit (void)
+{
+	/* nothing to do here */
+}
+
+static void S_GUS_BlockSound (void)
+{
+}
+
+static void S_GUS_UnblockSound (void)
+{
+}
+
+snd_driver_t snddrv_gus =
+{
+	S_GUS_Init,
+	S_GUS_Shutdown,
+	S_GUS_GetDMAPos,
+	S_GUS_LockBuffer,
+	S_GUS_Submit,
+	S_GUS_BlockSound,
+	S_GUS_UnblockSound,
+	s_gus_driver,
+	SNDDRV_ID_GUS_DOS,
+	false,
+	NULL
+};
+
+#endif	/* HAVE_DOS_GUS_SOUND */
 

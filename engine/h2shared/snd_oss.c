@@ -3,6 +3,7 @@
 	$Id$
 
 	Copyright (C) 1996-1997  Id Software, Inc.
+	Copyright (C) 2005-2011  O.Sezer <sezero@users.sourceforge.net>
 
 	This program is free software; you can redistribute it and/or
 	modify it under the terms of the GNU General Public License
@@ -29,6 +30,7 @@
 
 #if HAVE_OSS_SOUND
 
+#include "snd_oss.h"
 #include <unistd.h>
 #include <fcntl.h>
 #include <sys/ioctl.h>
@@ -53,36 +55,12 @@ static int		FORMAT_S16;
 #error "Unsupported endianness."
 #endif	/* BYTE_ORDER */
 
-/* all of these functions must be properly
-   assigned in LinkFuncs() below	*/
-static qboolean S_OSS_Init (dma_t *dma);
-static int S_OSS_GetDMAPos (void);
-static void S_OSS_Shutdown (void);
-static void S_OSS_LockBuffer (void);
-static void S_OSS_Submit (void);
-static void S_OSS_BlockSound (void);
-static void S_OSS_UnblockSound (void);
-static const char *S_OSS_DrvName (void);
-
 static char s_oss_driver[] = "OSS";
 
 static int audio_fd = -1;
 static const char oss_default[] = "/dev/dsp";
 static const char *ossdev = oss_default;
 static unsigned long mmaplen;
-
-
-void S_OSS_LinkFuncs (snd_driver_t *p)
-{
-	p->Init		= S_OSS_Init;
-	p->Shutdown	= S_OSS_Shutdown;
-	p->GetDMAPos	= S_OSS_GetDMAPos;
-	p->LockBuffer	= S_OSS_LockBuffer;
-	p->Submit	= S_OSS_Submit;
-	p->BlockSound	= S_OSS_BlockSound;
-	p->UnblockSound	= S_OSS_UnblockSound;
-	p->DrvName	= S_OSS_DrvName;
-}
 
 
 static qboolean S_OSS_Init (dma_t *dma)
@@ -361,10 +339,20 @@ static void S_OSS_UnblockSound (void)
 {
 }
 
-static const char *S_OSS_DrvName (void)
+snd_driver_t snddrv_oss =
 {
-	return s_oss_driver;
-}
+	S_OSS_Init,
+	S_OSS_Shutdown,
+	S_OSS_GetDMAPos,
+	S_OSS_LockBuffer,
+	S_OSS_Submit,
+	S_OSS_BlockSound,
+	S_OSS_UnblockSound,
+	s_oss_driver,
+	SNDDRV_ID_OSS,
+	false,
+	NULL
+};
 
 #endif	/* HAVE_OSS_SOUND */
 

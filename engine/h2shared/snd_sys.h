@@ -2,7 +2,7 @@
 	snd_sys.h
 	Platform specific macros and prototypes for sound
 
-	$Id: snd_sys.h,v 1.22 2008-04-02 20:37:36 sezero Exp $
+	$Id$
 
 	Copyright (C) 2007  O.Sezer
 
@@ -32,8 +32,10 @@
 #undef HAVE_OSS_SOUND
 #undef HAVE_SUN_SOUND
 #undef HAVE_ALSA_SOUND
-#undef HAVE_DOS_SOUND
+#undef HAVE_DOS_GUS_SOUND
+#undef HAVE_DOS_SB_SOUND
 #undef HAVE_WIN_SOUND
+#undef HAVE_WIN_DX_SOUND
 
 #undef SOUND_NUMDRIVERS
 
@@ -58,7 +60,6 @@
 #if defined(NO_ALSA_AUDIO)
 #define HAVE_ALSA_SOUND	0
 #elif defined(__linux) || defined(__linux__)
-/* add more systems with ALSA here */
 #define HAVE_ALSA_SOUND	1
 #else
 #define HAVE_ALSA_SOUND	0
@@ -74,30 +75,35 @@
 
 #if defined(PLATFORM_WINDOWS)
 #define HAVE_WIN_SOUND		1
+#define HAVE_WIN_DX_SOUND	1
 #else
 #define HAVE_WIN_SOUND		0
+#define HAVE_WIN_DX_SOUND	0
 #endif
 
 #if defined(PLATFORM_DOS)
-#define HAVE_DOS_SOUND		1
+#define HAVE_DOS_GUS_SOUND	1
+#define HAVE_DOS_SB_SOUND	1
 #else
-#define HAVE_DOS_SOUND		0
+#define HAVE_DOS_GUS_SOUND	0
+#define HAVE_DOS_SB_SOUND	0
 #endif
 
-#define SOUND_NUMDRIVERS	(HAVE_SDL_SOUND + HAVE_OSS_SOUND + HAVE_SUN_SOUND + HAVE_ALSA_SOUND + HAVE_WIN_SOUND + HAVE_DOS_SOUND)
+#define SOUND_NUMDRIVERS	(HAVE_SDL_SOUND + HAVE_OSS_SOUND + HAVE_SUN_SOUND + HAVE_ALSA_SOUND + HAVE_WIN_SOUND + HAVE_WIN_DX_SOUND + HAVE_DOS_SB_SOUND + HAVE_DOS_GUS_SOUND)
 
-/* Sound system definitions */
-#define	S_SYS_NULL	0
-#define	S_SYS_OSS	1
-#define	S_SYS_SDL	2
-#define	S_SYS_ALSA	3
-#define	S_SYS_SUN	4
-#define	S_SYS_WIN	5
-#define	S_SYS_DOS	6
-#define	S_SYS_MAX	7
-
-
-extern unsigned int	snd_system;
+enum snddrv_id_t
+{
+	SNDDRV_ID_NULL	= 0,
+	SNDDRV_ID_OSS,
+	SNDDRV_ID_ALSA,
+	SNDDRV_ID_SDL,
+	SNDDRV_ID_SUN,
+	SNDDRV_ID_WIN,
+	SNDDRV_ID_DSOUND,
+	SNDDRV_ID_GUS_DOS,
+	SNDDRV_ID_SB_DOS,
+	SNDDRV_ID_MAX
+};
 
 typedef struct snd_driver_s
 {
@@ -108,50 +114,17 @@ typedef struct snd_driver_s
 	void (*Submit)(void);		/* unlocks the dma buffer / sends sound to the device */
 	void (*BlockSound)(void);	/* blocks sound output upon window focus loss */
 	void (*UnblockSound)(void);	/* unblocks the output upon window focus gain */
-	const char *(*DrvName)(void);	/* returns the active driver's name */
+
+	const char *snddrv_name;	/* active driver's name */
+	enum snddrv_id_t snddrv_id;	/* enumerated ID number */
+	qboolean userpreferred;		/* preferred by command line arguments */
+
+	struct snd_driver_s *next;	/* next to try if previous failed */
 } snd_driver_t;
 
-extern void S_InitDrivers(snd_driver_t **sdrv);	/* initializes sound driver function pointers */
-
-#ifdef _SND_LIST_DRIVERS
-
-#if HAVE_WIN_SOUND
-extern void S_WIN_LinkFuncs(snd_driver_t *);
-#else
-#define	S_WIN_LinkFuncs		NULL
-#endif
-
-#if HAVE_DOS_SOUND
-extern void S_DOS_LinkFuncs(snd_driver_t *);
-#else
-#define	S_DOS_LinkFuncs		NULL
-#endif
-
-#if HAVE_OSS_SOUND
-extern void S_OSS_LinkFuncs(snd_driver_t *);
-#else
-#define	S_OSS_LinkFuncs		NULL
-#endif	/* HAVE_OSS_SOUND */
-
-#if HAVE_SUN_SOUND
-extern void S_SUN_LinkFuncs(snd_driver_t *);
-#else
-#define	S_SUN_LinkFuncs		NULL
-#endif	/* HAVE_SUN_SOUND */
-
-#if HAVE_ALSA_SOUND
-extern void S_ALSA_LinkFuncs(snd_driver_t *);
-#else
-#define	S_ALSA_LinkFuncs	NULL
-#endif	/* HAVE_ALSA_SOUND */
-
-#if HAVE_SDL_SOUND
-extern void S_SDL_LinkFuncs(snd_driver_t *);
-#else
-#define	S_SDL_LinkFuncs		NULL
-#endif	/* HAVE_SDL_SOUND */
-
-#endif	/* _SND_LIST_DRIVERS */
+extern void S_DriversInit (void);
+extern void S_GetDriverList (snd_driver_t **);
+extern void S_GetNullDriver (snd_driver_t **);
 
 #endif	/* __HX2_SND_SYS__ */
 
