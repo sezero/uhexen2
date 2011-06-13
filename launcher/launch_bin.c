@@ -2,7 +2,7 @@
 	launch_bin.c
 	hexen2 launcher: binary launching
 
-	$Id: launch_bin.c,v 1.50 2008-12-20 08:10:04 sezero Exp $
+	$Id$
 
 	This program is free software; you can redistribute it and/or
 	modify it under the terms of the GNU General Public License
@@ -36,19 +36,21 @@
 #define STRING_BUFSIZE	(BINNAME_CHARS + AASAMPLES_CHARS + HEAPSIZE_CHARS + ZONESIZE_CHARS + MAX_EXTARGS)
 static char string_buf[STRING_BUFSIZE];	/* holds the binary name to exec, first */
 
-char *snddrv_names[MAX_SOUND][2] =
+launcher_snddrv_t snd_drivers[] =
 {
-	{ "-nosound", "No Sound"},
+	{ SNDDRV_DEFAULT, ""/*none*/, "Default"	},
+	{ SNDDRV_ID_NULL, "-nosound", "No Sound"},
+	{ SNDDRV_ID_SDL,  "-sndsdl" , "SDL"	},
 #if HAVE_OSS_SOUND
-	{ "-sndoss" , "OSS"	},
+	{ SNDDRV_ID_OSS,  "-sndoss" , "OSS"	},
 #endif
 #if HAVE_SUN_SOUND
-	{ "-sndoss" , "SUN"	},
+	{ SNDDRV_ID_SUN,  "-sndsun" , "SunAudio"},
 #endif
-	{ "-sndsdl" , "SDL"	},
 #if HAVE_ALSA_SOUND
-	{ "-sndalsa", "ALSA"	},
+	{ SNDDRV_ID_ALSA, "-sndalsa", "ALSA"	},
 #endif
+	{ INT_MIN, NULL, NULL			}
 };
 
 char *snd_rates[MAX_RATES] =
@@ -79,12 +81,13 @@ static char *resolution_args[RES_MAX][2] =
 void launch_hexen2_bin (void)
 {
 	char	*args[MAX_ARGS], *ptr;
-	size_t			i = 0;
+	size_t			i, k;
 
 	memset (string_buf, 0, STRING_BUFSIZE);
 	ptr = &string_buf[0];
 
 /* add the binary name first: */
+	i = 0;
 	if (opengl_support)
 		strcpy (string_buf, BIN_OGL_PREFIX);
 	if (destiny == DEST_HW)
@@ -120,9 +123,16 @@ void launch_hexen2_bin (void)
 		args[++i] = resolution_args[conwidth][0];
 	}
 
-	args[++i] = snddrv_names[sound][0];
+	for (k = 1; snd_drivers[k].id != INT_MIN; k++)
+	{
+		if (sound == snd_drivers[k].id)
+		{
+			args[++i] = snd_drivers[k].cmd;
+			break;
+		}
+	}
 
-	if (sound != 0)
+	if (sound != SNDDRV_ID_NULL)
 	{
 		if (sndrate != 0)
 		{

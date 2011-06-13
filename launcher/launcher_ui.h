@@ -2,7 +2,7 @@
 	launcher_ui.h
 	hexen2 launcher, global ui functions
 
-	$Id: launcher_ui.h,v 1.7 2010-01-11 18:48:20 sezero Exp $
+	$Id$
 
 	This program is free software; you can redistribute it and/or
 	modify it under the terms of the GNU General Public License

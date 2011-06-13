@@ -2,7 +2,7 @@
 	common.h
 	common header for hexen2 launcher
 
-	$Id: common.h,v 1.9 2007-10-13 07:05:29 sezero Exp $
+	$Id$
 
 	This program is free software; you can redistribute it and/or
 	modify it under the terms of the GNU General Public License
@@ -27,6 +27,8 @@
 #define	LAUNCHER_COMMON_INC_H
 
 #include <sys/types.h>
+#include <stddef.h>
+#include <limits.h>
 #include <sys/stat.h>
 #include <stdlib.h>
 #include <stdio.h>

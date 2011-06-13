@@ -2,7 +2,7 @@
 	config_file.c
 	hexen2 launcher config file handling
 
-	$Id: config_file.c,v 1.48 2008-01-12 12:00:12 sezero Exp $
+	$Id$
 
 	This program is free software; you can redistribute it and/or
 	modify it under the terms of the GNU General Public License
@@ -45,7 +45,7 @@ int vsync		= 0;
 int use_lm1		= 0;
 int gl_nonstd		= 0;
 char gllibrary[MAX_OSPATH]	= "libGL.so.1";
-int sound		= 1;
+int sound		= SNDDRV_DEFAULT;
 int sndrate		= 0;
 int sndbits		= 1;
 int midi		= 1;
@@ -208,6 +208,7 @@ int read_config_file (void)
 {
 	FILE	*cfg_file;
 	char	buff[1024], *tmp;
+	int		i;
 
 	cfg_file = open_config_file("r");
 	if (cfg_file == NULL)
@@ -360,8 +361,13 @@ int read_config_file (void)
 				else if (strstr(buff, "sound=") == buff)
 				{
 					sound = atoi(buff + 6);
-					if (sound < 0 || sound >= MAX_SOUND)
-						sound = 1;
+					for (i = 0; snd_drivers[i].id != INT_MIN; i++)
+					{
+						if (snd_drivers[i].id == sound)
+							break;
+					}
+					if (snd_drivers[i].id == INT_MIN)
+						sound = SNDDRV_DEFAULT;
 				}
 				else if (strstr(buff, "sndrate=") == buff)
 				{

@@ -81,8 +81,21 @@
 #define	HAVE_SUN_SOUND	0
 #endif
 
-#define	MAX_SOUND	(2 + HAVE_ALSA_SOUND + HAVE_OSS_SOUND + HAVE_SUN_SOUND)
-				/* max entries in the snddrv_names table */
+/* sound driver ID nums */
+#define	SNDDRV_DEFAULT	-1	/* no cmdline option */
+#define	SNDDRV_ID_NULL	0		/* must be 0 */
+#define	SNDDRV_ID_OSS	1
+#define	SNDDRV_ID_ALSA	2
+#define	SNDDRV_ID_SDL	3
+#define	SNDDRV_ID_SUN	4
+
+typedef struct _launcher_snddrv_t
+{
+	int		id;	/* as above. */
+	/*const*/ char	*cmd;	/* cmdline switch */
+	/*const*/ char	*name;
+} launcher_snddrv_t;
+extern launcher_snddrv_t snd_drivers[];
 
 #define	MAX_RATES	8	/* max entries in the snd_rates table */
 

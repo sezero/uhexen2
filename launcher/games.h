@@ -2,7 +2,7 @@
 	games.h
 	hexen2 launcher, game installation scanning
 
-	$Id: games.h,v 1.7 2008-12-20 08:10:04 sezero Exp $
+	$Id$
 
 	This program is free software; you can redistribute it and/or
 	modify it under the terms of the GNU General Public License

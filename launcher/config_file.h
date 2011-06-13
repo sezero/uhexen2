@@ -2,7 +2,7 @@
 	config_file.h
 	hexen2 launcher config file handling
 
-	$Id: config_file.h,v 1.15 2007-08-09 06:08:22 sezero Exp $
+	$Id$
 
 	This program is free software; you can redistribute it and/or
 	modify it under the terms of the GNU General Public License

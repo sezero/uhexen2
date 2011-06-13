@@ -51,7 +51,6 @@
 // Extern data:
 
 // from launch_bin.c
-extern char	*snddrv_names[MAX_SOUND][2];
 extern char	*snd_rates[MAX_RATES];
 
 /*********************************************************************/
@@ -456,12 +455,12 @@ static void on_SND (GtkEditable *editable, gpointer user_data)
 	int	i;
 	gchar *tmp = gtk_editable_get_chars (editable, 0, -1);
 
-	for (i = 0; i < MAX_SOUND; i++)
+	for (i = 0; snd_drivers[i].id != INT_MIN; i++)
 	{
-		if (strcmp(tmp, snddrv_names[i][1]) == 0)
+		if (strcmp(tmp, snd_drivers[i].name) == 0)
 		{
 			g_free(tmp);
-			sound = i;
+			sound = snd_drivers[i].id;
 			gtk_widget_set_sensitive (WGT_MIDI, sound);
 			gtk_widget_set_sensitive (WGT_CDAUDIO, sound);
 			gtk_widget_set_sensitive (WGT_SRATE, sound);
@@ -1209,15 +1208,22 @@ static void create_window1 (void)
 	gtk_combo_set_use_arrows (GTK_COMBO(WGT_SOUND), FALSE);
 	gtk_widget_set_size_request (WGT_SOUND, 110, 24);
 	TmpList = NULL;
-	for (i = 0; i < MAX_SOUND; i++)
-		TmpList = g_list_append (TmpList, snddrv_names[i][1]);
+	for (i = 0; snd_drivers[i].id != INT_MIN; i++)
+		TmpList = g_list_append (TmpList, snd_drivers[i].name);
 	gtk_combo_set_popdown_strings (GTK_COMBO(WGT_SOUND), TmpList);
 	g_list_free (TmpList);
 	gtk_fixed_put (GTK_FIXED(BASIC_TAB), WGT_SOUND, 102, 208);
 	gtk_widget_show (WGT_SOUND);
 	SND_Entry = GTK_COMBO(WGT_SOUND)->entry;
 	gtk_widget_ref (SND_Entry);
-	gtk_entry_set_text (GTK_ENTRY(SND_Entry), snddrv_names[sound][1]);
+	for (i = 0; snd_drivers[i].id != INT_MIN; i++)
+	{
+		if (sound == snd_drivers[i].id)
+		{
+			gtk_entry_set_text (GTK_ENTRY(SND_Entry), snd_drivers[i].name);
+			break;
+		}
+	}
 	gtk_entry_set_editable (GTK_ENTRY(SND_Entry), FALSE);
 //	gtk_entry_set_alignment (GTK_ENTRY(SND_Entry), 1);
 	gtk_widget_show (SND_Entry);

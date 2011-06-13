@@ -4,6 +4,13 @@ Development Progress	:
 ---------------------------
 
 2011-06-13 (SVN):
+    * gtk launcher: Changed so that there is now a "default" option for
+      sound driver. If sound is selected as default, no driver option
+      will be passed to the command line. Fixed the command line switch
+      for the sunaudio option. Ensured that the sound setting stays the
+      same across launcher binaries compiled for different environments.
+
+2011-06-13 (SVN):
     * Updated Visual Studio project files.
     * Bumped beta version and date to 1.5.0-rc4/2011-06-13.  Updated
       documentation.

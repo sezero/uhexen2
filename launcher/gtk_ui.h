@@ -2,7 +2,7 @@
 	gtk_ui.h
 	gtk ui, main header
 
-	$Id: gtk_ui.h,v 1.6 2008-12-19 17:55:05 sezero Exp $
+	$Id$
 
 	This program is free software; you can redistribute it and/or
 	modify it under the terms of the GNU General Public License
