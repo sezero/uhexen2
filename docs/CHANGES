@@ -4,6 +4,10 @@ Development Progress	:
 ---------------------------
 
 2011-06-15 (SVN):
+    * libs/timidity/timidity.c (read_config_file): honor the return code
+      from recursive read_config_file() call for the "source" directive.
+      from timidity-0.2i bugfix patch found at
+      http://www.onicos.com/staff/iz/timidity/
     * libs/timidity/instrum.c (load_instrument): Fix shadowing warnings
       due to reuse of variables i and tmp.
     * libs/timidity/instrum_dls.c: Fix gcc's shadowing warnings due to

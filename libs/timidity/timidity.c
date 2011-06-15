@@ -218,9 +218,14 @@ static int read_config_file(const char *name)
       }
       for (i=1; i<words; i++)
       {
+	int status;
 	rcf_count++;
-	read_config_file(w[i]);
+	status = read_config_file(w[i]);
 	rcf_count--;
+	if (status != 0) {
+	  fclose(fp);
+	  return status;
+	}
       }
     }
     else if (!strcmp(w[0], "default"))
