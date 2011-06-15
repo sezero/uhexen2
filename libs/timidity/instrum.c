@@ -399,12 +399,12 @@ static MidInstrument *load_instrument(MidSong *song, const char *name,
       
       if (!(sp->modes & MODES_16BIT)) /* convert to 16-bit data */
 	{
-	  sint32 i=sp->data_length;
+	  sint32 k=sp->data_length;
 	  uint8 *cp=(uint8 *)(sp->data);
-	  uint16 *tmp,*new16;
-	  tmp = new16 = (uint16 *) safe_malloc(sp->data_length*2);
-	  while (i--)
-	    *tmp++ = (uint16)(*cp++) << 8;
+	  uint16 *tmp16,*new16;
+	  tmp16 = new16 = (uint16 *) safe_malloc(sp->data_length*2);
+	  while (k--)
+	    *tmp16++ = (uint16)(*cp++) << 8;
 	  cp=(uint8 *)(sp->data);
 	  sp->data = (sample_t *)new16;
 	  free(cp);
@@ -417,22 +417,22 @@ static MidInstrument *load_instrument(MidSong *song, const char *name,
       else
 	/* convert to machine byte order */
 	{
-	  sint32 i=sp->data_length/2;
-	  sint16 *tmp=(sint16 *)sp->data,s;
-	  while (i--)
-	    { 
-	      s=SWAPLE16(*tmp);
-	      *tmp++=s;
+	  sint32 k=sp->data_length/2;
+	  sint16 *tmp16=(sint16 *)sp->data,s;
+	  while (k--)
+	    {
+	      s=SWAPLE16(*tmp16);
+	      *tmp16++=s;
 	    }
 	}
 #endif
       
       if (sp->modes & MODES_UNSIGNED) /* convert to signed data */
 	{
-	  sint32 i=sp->data_length/2;
-	  sint16 *tmp=(sint16 *)sp->data;
-	  while (i--)
-	    *tmp++ ^= 0x8000;
+	  sint32 k=sp->data_length/2;
+	  sint16 *tmp16=(sint16 *)sp->data;
+	  while (k--)
+	    *tmp16++ ^= 0x8000;
 	}
 
       /* Reverse reverse loops and pass them off as normal loops */
@@ -461,12 +461,12 @@ static MidInstrument *load_instrument(MidSong *song, const char *name,
 	  /* Try to determine a volume scaling factor for the sample.
 	     This is a very crude adjustment, but things sound more
 	     balanced with it. Still, this should be a runtime option. */
-	  sint32 i=sp->data_length/2;
+	  sint32 k=sp->data_length/2;
 	  sint16 maxamp=0,a;
-	  sint16 *tmp=(sint16 *)sp->data;
-	  while (i--)
+	  sint16 *tmp16=(sint16 *)sp->data;
+	  while (k--)
 	    {
-	      a=*tmp++;
+	      a=*tmp16++;
 	      if (a<0) a=-a;
 	      if (a>maxamp)
 		maxamp=a;
