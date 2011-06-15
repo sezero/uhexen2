@@ -28,8 +28,9 @@ Host_Quit_f
 
 void Host_Quit_f (void)
 {
-	if (key_dest != key_console && cls.state != ca_dedicated && cls.state
- != ca_disconnected)
+	if (key_dest != key_console && 
+	    /* quit without asking if we aren't connected  -- Steve */
+	    /* cls.state != ca_dedicated */ cls.state == ca_connected)
 	{
 		M_Menu_Quit_f ();
 		return;
