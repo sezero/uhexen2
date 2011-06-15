@@ -28,7 +28,8 @@ Host_Quit_f
 
 void Host_Quit_f (void)
 {
-	if (key_dest != key_console && cls.state != ca_dedicated)
+	if (key_dest != key_console && cls.state != ca_dedicated && cls.state
+ != ca_disconnected)
 	{
 		M_Menu_Quit_f ();
 		return;
