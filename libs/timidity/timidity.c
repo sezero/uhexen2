@@ -95,13 +95,18 @@ static int read_config_file(const char *name)
   while (__fgets(tmp, sizeof(tmp), fp))
   {
     line++;
-    w[words=0]=strtok(tmp, " \t\240");
+    words=0;
+    w[0]=strtok(tmp, " \t\240");
     if (!w[0]) continue;
 
         /* Originally the TiMidity++ extensions were prefixed like this */
     if (strcmp(w[0], "#extension") == 0)
-        words = -1;
-    else if (*w[0] == '#')
+    {
+        w[0]=strtok(0, " \t\240");
+        if (!w[0]) continue;
+    }
+
+    if (*w[0] == '#')
         continue;
 
     while (w[words] && *w[words] != '#' && (words < MAXWORDS))

@@ -4,6 +4,10 @@ Development Progress	:
 ---------------------------
 
 2011-06-15 (SVN):
+    * libs/timidity/timidity.c (read_config_file): Don't underflow array
+      when parsing timidity config file. (From SDL_sound mercurial repo.)
+
+2011-06-15 (SVN):
     * host_cmd.c (Host_Quit_f): Shorten the no-confirm quit condition:
       (cls.state!=ca_dedicated && cls.state!=ca_disconnected) condenses
       to cls.state==ca_connected.
