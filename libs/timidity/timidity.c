@@ -204,7 +204,7 @@ static int read_config_file(const char *name)
       if (words < 2)
       {
 	DEBUG_MSG("%s: line %d: No directory given\n", name, line);
-	return -2;
+	goto fail;
       }
       for (i=1; i<words; i++)
 	add_to_pathlist(w[i]);
@@ -214,7 +214,7 @@ static int read_config_file(const char *name)
       if (words < 2)
       {
 	DEBUG_MSG("%s: line %d: No file name given\n", name, line);
-	return -2;
+	goto fail;
       }
       for (i=1; i<words; i++)
       {
@@ -229,7 +229,7 @@ static int read_config_file(const char *name)
       {
 	DEBUG_MSG("%s: line %d: Must specify exactly one patch name\n",
 		name, line);
-	return -2;
+	goto fail;
       }
       strncpy(def_instr_name, w[1], 255);
       def_instr_name[255]='\0';
@@ -239,14 +239,14 @@ static int read_config_file(const char *name)
       if (words < 2)
       {
 	DEBUG_MSG("%s: line %d: No drum set number given\n", name, line);
-	return -2;
+	goto fail;
       }
       i=atoi(w[1]);
       if (i<0 || i>127)
       {
 	DEBUG_MSG("%s: line %d: Drum set must be between 0 and 127\n",
 		name, line);
-	return -2;
+	goto fail;
       }
       if (!master_drumset[i])
       {
@@ -262,14 +262,14 @@ static int read_config_file(const char *name)
       if (words < 2)
       {
 	DEBUG_MSG("%s: line %d: No bank number given\n", name, line);
-	return -2;
+	goto fail;
       }
       i=atoi(w[1]);
       if (i<0 || i>127)
       {
 	DEBUG_MSG("%s: line %d: Tone bank must be between 0 and 127\n",
 		name, line);
-	return -2;
+	goto fail;
       }
       if (!master_tonebank[i])
       {
@@ -285,20 +285,20 @@ static int read_config_file(const char *name)
       if ((words < 2) || (*w[0] < '0' || *w[0] > '9'))
       {
 	DEBUG_MSG("%s: line %d: syntax error\n", name, line);
-	return -2;
+	goto fail;
       }
       i=atoi(w[0]);
       if (i<0 || i>127)
       {
 	DEBUG_MSG("%s: line %d: Program must be between 0 and 127\n",
 		name, line);
-	return -2;
+	goto fail;
       }
       if (!bank)
       {
 	DEBUG_MSG("%s: line %d: Must specify tone bank or drum set before assignment\n",
 		name, line);
-	return -2;
+	goto fail;
       }
       if (bank->tone[i].name)
 	free(bank->tone[i].name);
@@ -312,7 +312,7 @@ static int read_config_file(const char *name)
 	if (!(cp=strchr(w[j], '=')))
 	{
 	  DEBUG_MSG("%s: line %d: bad patch option %s\n", name, line, w[j]);
-	  return -2;
+	  goto fail;
 	}
 	*cp++=0;
 	if (!strcmp(w[j], "amp"))
@@ -322,7 +322,7 @@ static int read_config_file(const char *name)
 	  {
 	    DEBUG_MSG("%s: line %d: amplification must be between 0 and %d\n",
 		    name, line, MAX_AMPLIFICATION);
-	    return -2;
+	    goto fail;
 	  }
 	  bank->tone[i].amp=k;
 	}
@@ -333,7 +333,7 @@ static int read_config_file(const char *name)
 	  {
 	    DEBUG_MSG("%s: line %d: note must be between 0 and 127\n",
 		    name, line);
-	    return -2;
+	    goto fail;
 	  }
 	  bank->tone[i].note=k;
 	}
@@ -351,7 +351,7 @@ static int read_config_file(const char *name)
 	  {
 	    DEBUG_MSG("%s: line %d: panning must be left, right, center, or between -100 and 100\n",
 		    name, line);
-	    return -2;
+	    goto fail;
 	  }
 	  bank->tone[i].pan=k;
 	}
@@ -364,7 +364,7 @@ static int read_config_file(const char *name)
 	  else
 	  {
 	    DEBUG_MSG("%s: line %d: keep must be env or loop\n", name, line);
-	    return -2;
+	    goto fail;
 	  }
 	}
 	else if (!strcmp(w[j], "strip"))
@@ -379,19 +379,22 @@ static int read_config_file(const char *name)
 	  {
 	    DEBUG_MSG("%s: line %d: strip must be env, loop, or tail\n",
 		    name, line);
-	    return -2;
+	    goto fail;
 	  }
 	}
 	else
 	{
 	  DEBUG_MSG("%s: line %d: bad patch option %s\n", name, line, w[j]);
-	  return -2;
+	  goto fail;
 	}
       }
     }
   }
   fclose(fp);
   return 0;
+fail:
+  fclose(fp);
+  return -2;
 }
 
 int mid_init_no_config()

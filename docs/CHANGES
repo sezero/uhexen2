@@ -3,6 +3,10 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2011-06-15 (SVN):
+    * libs/timidity/timidity.c (read_config_file): close the file before
+      returning in error cases.
+
 2011-06-13 (SVN):
     * gtk launcher: Changed so that there is now a "default" option for
       sound driver. If sound is selected as default, no driver option
