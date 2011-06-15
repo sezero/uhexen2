@@ -892,11 +892,11 @@ static void PrintArt(const char *type, CONNECTIONLIST *art, CONNECTION *artList)
     }
 }
 
-static void PrintWave(DLS_Wave *wave, uint32 index)
+static void PrintWave(DLS_Wave *wave, uint32 idx)
 {
     WaveFMT *format = wave->format;
     if ( format ) {
-        printf("  Wave %u: Format: %hu, %hu channels, %u Hz, %hu bits (length = %u)\n", index, format->wFormatTag, format->wChannels, format->dwSamplesPerSec, format->wBitsPerSample, wave->length);
+        printf("  Wave %u: Format: %hu, %hu channels, %u Hz, %hu bits (length = %u)\n", idx, format->wFormatTag, format->wChannels, format->dwSamplesPerSec, format->wBitsPerSample, wave->length);
     }
     if ( wave->wsmp ) {
         uint32 i;
@@ -914,9 +914,9 @@ static void PrintWave(DLS_Wave *wave, uint32 index)
     }
 }
 
-static void PrintRegion(DLS_Region *region, uint32 index)
+static void PrintRegion(DLS_Region *region, uint32 idx)
 {
-    printf("  Region %u:\n", index);
+    printf("  Region %u:\n", idx);
     if ( region->header ) {
         printf("    RangeKey = { %hu - %hu }\n", region->header->RangeKey.usLow, region->header->RangeKey.usHigh);
         printf("    RangeVelocity = { %hu - %hu }\n", region->header->RangeVelocity.usLow, region->header->RangeVelocity.usHigh);
@@ -948,9 +948,9 @@ static void PrintRegion(DLS_Region *region, uint32 index)
     }
 }
 
-static void PrintInstrument(DLS_Instrument *instrument, uint32 index)
+static void PrintInstrument(DLS_Instrument *instrument, uint32 idx)
 {
-    printf("Instrument %u:\n", index);
+    printf("Instrument %u:\n", idx);
     if ( instrument->name ) {
         printf("  Name: %s\n", instrument->name);
     }
@@ -1073,9 +1073,9 @@ static int load_connection(ULONG cConnections, CONNECTION *artList, USHORT desti
   return value;
 }
 
-static void load_region_dls(MidSong *song, MidSample *sample, DLS_Instrument *ins, uint32 index)
+static void load_region_dls(MidSong *song, MidSample *sample, DLS_Instrument *ins, uint32 idx)
 {
-  DLS_Region *rgn = &ins->regions[index];
+  DLS_Region *rgn = &ins->regions[idx];
   DLS_Wave *wave = &song->patches->waveList[rgn->wlnk->ulTableIndex];
 
   sample->low_freq = freq_table[rgn->header->RangeKey.usLow];
@@ -1124,7 +1124,7 @@ static void load_region_dls(MidSong *song, MidSample *sample, DLS_Instrument *in
     sample->panning = (int)((0.5 + to_normalized_percent(value)) * 127.0);
 
 /*
-printf("%d, Rate=%d LV=%d HV=%d Low=%d Hi=%d Root=%d Pan=%d Attack=%f Hold=%f Sustain=%d Decay=%f Release=%f\n", index, sample->sample_rate, rgn->header->RangeVelocity.usLow, rgn->header->RangeVelocity.usHigh, sample->low_freq, sample->high_freq, sample->root_freq, sample->panning, attack, hold, sustain, decay, release);
+printf("%d, Rate=%d LV=%d HV=%d Low=%d Hi=%d Root=%d Pan=%d Attack=%f Hold=%f Sustain=%d Decay=%f Release=%f\n", idx, sample->sample_rate, rgn->header->RangeVelocity.usLow, rgn->header->RangeVelocity.usHigh, sample->low_freq, sample->high_freq, sample->root_freq, sample->panning, attack, hold, sustain, decay, release);
 */
 
     sample->envelope_offset[0] = to_offset(255);

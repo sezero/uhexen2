@@ -4,6 +4,8 @@ Development Progress	:
 ---------------------------
 
 2011-06-15 (SVN):
+    * libs/timidity/instrum_dls.c: Fix gcc's shadowing warnings due to
+      the stupid name clash with index().
     * libs/timidity/timidity.c (read_config_file): close the file before
       returning in error cases.
 
