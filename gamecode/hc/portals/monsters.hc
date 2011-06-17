@@ -226,7 +226,10 @@ void() walkmonster_start_go =
 		if (!walkmove(0,0, FALSE))
 		{
 			if(self.flags2&FL_SUMMONED)
+			{
 				remove(self);
+				return; /* THOMAS: return  was missing here */
+			}
 			else
 			{
 				dprint ("walkmonster in wall at: ");
