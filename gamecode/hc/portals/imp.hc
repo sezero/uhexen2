@@ -188,6 +188,7 @@ void summoned_imp_die () [-- $impup23 .. $impup1]
 	{
 		sound (self, CHAN_BODY, "items/itmspawn.wav", 1, ATTN_NORM);
 		CreateRedFlash(self.origin);
+		self.flags2(-)FL_ALIVE; /* THOMAS: otherwise Eidolon gets confused. */
 		remove(self);
 	}
 }
