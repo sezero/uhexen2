@@ -4,6 +4,8 @@ Development Progress	:
 ---------------------------
 
 2011-06-17 (SVN):
+    * gamecode, imp.hc (summoned_imp_die): Clear the FL_ALIVE flag for the
+      gib case, too.
     * gamecode, imp.hc (summoned_imp_die): Clear the FL_ALIVE flag before
       removing, otherwise eidolon might get confused.
 
