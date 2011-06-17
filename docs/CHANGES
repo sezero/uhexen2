@@ -4,6 +4,11 @@ Development Progress	:
 ---------------------------
 
 2011-06-17 (SVN):
+    * hexen2/progdefs.h: Removed incorrect comments about v1.09 progs.dat
+      (was misled by dhcc).  Documented the globals structure differences
+      better, added a globals structure for the v1.03 progs for reference.
+
+2011-06-17 (SVN):
     * gamecode, eidolon.hc: Fixed eidolon_guarding() and eidolon_run() to
       check whether self.oldenemy (player) is still alive.
 
