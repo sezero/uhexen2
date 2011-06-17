@@ -41,10 +41,13 @@ void RemoveWaypoint()
 void()ResetWaypoints=
 {
 //        dprint("Waypoint deleted\n");
-        self.controller.goalentity=self.controller.enemy;
+	if (self.controller)
+	{
+		self.controller.goalentity=self.controller.enemy;
 		if(self.controller.classname=="monster_hydra")
 			self.controller.search_time=time+5;
-        remove(self);
+	}
+	remove(self);
 };
 
 void()TransferWaypoint=

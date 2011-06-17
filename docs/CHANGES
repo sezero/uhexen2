@@ -4,6 +4,10 @@ Development Progress	:
 ---------------------------
 
 2011-06-17 (SVN):
+    * gamecode, waypoint.hc (ResetWaypoints): Play with self.controller's
+      fields only if self.controller is not 0.
+
+2011-06-17 (SVN):
     * gamecode, monsters.hc (walkmonster_start_go): Added missing return
       statement after removing a stuck summoned monster.
 
