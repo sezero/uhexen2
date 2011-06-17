@@ -1194,40 +1194,42 @@ void eidolon_walk () [++ $walk1 .. $walk24]
 	ai_walk(self.speed*self.scale);
 }
 
+void eidolon_enemy ()
+{
+	if (self.enemy == world)
+	{
+		if (self.oldenemy != world && self.oldenemy.flags2 & FL_ALIVE)
+		{
+			self.enemy = self.oldenemy;
+			self.goalentity = self.enemy;
+		}
+		else
+			self.think = eidolon_wait;
+	}
+	else if (!self.enemy.flags2 & FL_ALIVE)
+	{
+		self.think = eidolon_ready_roar;
+		self.enemy = world;
+	}
+	else
+		ai_run(self.speed * self.scale);
+}
+
 void eidolon_run () [++ $walk1 .. $walk24]
 {
 //	dprint("Chasing\n");
 //	check_use_model("models/boss/smaleido.mdl");
-
 	if(self.scale>1&&(self.frame==$walk2 ||self.frame==$walk14))
 		sound(self,CHAN_BODY,"eidolon/stomp.wav",1,ATTN_NONE);
-
-	if(self.enemy!=world&&!self.enemy.flags2&FL_ALIVE)
-	{
-		self.think=eidolon_ready_roar;
-		self.enemy=world;
-	}
-	else if(self.enemy==world)
-		self.think=eidolon_wait;
-	else
-		ai_run(self.speed*self.scale);
+	eidolon_enemy();
 }
 
 void eidolon_guarding () [++ $wait1 .. $wait16]
 {
 //	check_use_model("models/boss/smaleido.mdl");
-
 //	dprint("Guarding\n");
 	ai_face();
-	if(self.enemy!=world&&!self.enemy.flags2&FL_ALIVE)
-	{
-		self.think=eidolon_ready_roar;
-		self.enemy=world;
-	}
-	else if(self.enemy==world)
-		self.think=eidolon_wait;
-	else
-		ai_run(self.speed*self.scale);
+	eidolon_enemy();
 }
 
 void eidolon_wait () [++ $wait1 .. $wait16]
