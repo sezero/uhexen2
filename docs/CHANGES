@@ -3,6 +3,11 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2011-06-17 (SVN):
+    * gamecode, h2/imp.hc: Remove the flapping sound if a summoned imp is
+      gibbed. (fix was in other hcode trees, only original h2 was missing
+      it.)
+
 2011-06-15 (SVN):
     * libs/timidity/timidity.c (read_config_file): Don't underflow array
       when parsing timidity config file. (From SDL_sound mercurial repo.)

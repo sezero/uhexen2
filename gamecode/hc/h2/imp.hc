@@ -155,6 +155,7 @@ void summoned_imp_die () [-- $impup23 .. $impup1]
 {
 	if(self.health<-40)
 	{
+		sound (self, CHAN_BODY, "misc/null.wav", 1, ATTN_NONE);
 		chunk_death();
 		return;
 	}
