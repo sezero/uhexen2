@@ -3,6 +3,12 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2011-06-18 (SVN):
+    * hexen2/server/host_cmd.c (Host_Say_f, Host_Tell_f): Remove trailing
+      quote only if it is present. Adjustments, mostly inspired from the
+      darkplaces engine. (Change from 2010-08-31 rev. 3729 missed hitting
+      this file.)
+
 2011-06-17 (SVN):
     * hexen2/progdefs.h: Removed incorrect comments about v1.09 progs.dat
       (was misled by dhcc).  Documented the globals structure differences
