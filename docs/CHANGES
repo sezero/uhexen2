@@ -4,6 +4,7 @@ Development Progress	:
 ---------------------------
 
 2011-06-18 (SVN):
+    * Bumped beta date to 2011-06-18. Updated the 1.5.0 release notes.
     * host_cmd.c (LoadGamestate): When loading a saved game, restore the
       extra edicts that were created during game play. The generated
       edicts are not available during the map parsing by ED_LoadFromFile

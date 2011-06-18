@@ -1,5 +1,5 @@
 Hexen II: Hammer of Thyrion (uhexen2), release candidate,
-Version 1.5.0-rc4 / June 13, 2011
+Version 1.5.0-rc4 / June 18, 2011
 
 Changes since HoT-1.4.4-pre11:
 
@@ -15,6 +15,14 @@ Changes since HoT-1.4.4-pre11:
 * windows midi: ignore midi hardware volume adjustment capability under
   windows vista/7 which fixes music volume control messing with the main
   volume.
+* fixed an old load bug where items dropped by monsters not being visible
+  or getting lost upon saving and loading the game.
+* fixed an old load bug where prize artifacts in the Temple of Mars not
+  being visible or getting lost upon saving and loading the game or by
+  changing and reentering the level.
+* fixed an old load bug where killed monsters didn't respawn in nightmare
+  difficulty in the mission pack upon saving and loading the game or by
+  changing and reentering the level.
 * software renderer (C-only): fixed a segmentation fault with Crusader's
   ice mace.
 * added new cvar sys_throttle in order to throttle the game loop just a
@@ -61,7 +69,7 @@ Changes since HoT-1.4.4-pre11:
 * utils, hcc: fixed broken switch statement compilation when there is an
   implicit break in the last case.
 * utils, dcc: fixed a wrong decompilation of an "if" opcode into a "while";
-  some source code revisision.
+  some source code revision.
 * utils, hcc: dropped support for the old version of hcc tool.
 * tested compilation using Visual Studio 2010.
 * source directory layout reworked, repository moved from cvs to svn.
