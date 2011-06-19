@@ -8,6 +8,7 @@ Development Progress	:
       attack sound doesn't persist when medusa is dead.
 
 2011-06-19 (SVN):
+    * moved the gamecode/devel directory out of hc.
     * reorganized the reference sources directory.
 
 2011-06-18 (SVN):
