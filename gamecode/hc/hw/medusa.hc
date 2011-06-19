@@ -377,7 +377,6 @@ void MedusaGaze (vector org, vector destiny, entity loser) [++ $medusa1 .. $medu
 	{
 		self.aflag=FALSE;
 		stopSound(self,CHAN_WEAPON);
-		//sound (self,CHAN_WEAPON,"misc/null.wav",1,ATTN_NORM);
 		self.attack_finished=time+2;
 		self.think=self.th_run;
 		thinktime self : 0;
@@ -616,6 +615,7 @@ void medusa_decap_loop ()[++ $adecap1..$adecap88]
 void medusa_decap_init ()
 {
 float throwdist;
+	stopSound(self,CHAN_WEAPON);
 	throwdist=self.health;
 	ThrowGib("models/medsnake.mdl",throwdist);
 	ThrowGib("models/medsnake.mdl",throwdist);
@@ -633,6 +633,7 @@ void medusa_die (void) [++ $death01..$death20]
 		medusa_decap_init();
 	else if(self.health<=-80)
 	{
+		stopSound(self,CHAN_WEAPON);
 		MedusaThrowHead();
 		chunk_death();
 	}
@@ -641,7 +642,10 @@ void medusa_die (void) [++ $death01..$death20]
 		if(self.frame==$death20)
 			MakeSolidCorpse();
 		else if(self.frame==$death01)
+		{
+			stopSound(self,CHAN_WEAPON);
 			sound(self,CHAN_VOICE,"medusa/death.wav",1,ATTN_NORM);
+		}
 	}
 }
 

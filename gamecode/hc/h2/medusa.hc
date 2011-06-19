@@ -615,6 +615,7 @@ void medusa_decap_loop ()[++ $adecap1..$adecap88]
 void medusa_decap_init ()
 {
 float throwdist;
+	sound(self,CHAN_WEAPON,"misc/null.wav",1,ATTN_NORM);
 	throwdist=self.health;
 	ThrowGib("models/medsnake.mdl",throwdist);
 	ThrowGib("models/medsnake.mdl",throwdist);
@@ -632,6 +633,7 @@ void medusa_die (void) [++ $death01..$death20]
 		medusa_decap_init();
 	else if(self.health<=-80)
 	{
+		sound(self,CHAN_WEAPON,"misc/null.wav",1,ATTN_NORM);
 		MedusaThrowHead();
 		chunk_death();
 	}
@@ -640,7 +642,10 @@ void medusa_die (void) [++ $death01..$death20]
 		if(self.frame==$death20)
 			MakeSolidCorpse();
 		else if(self.frame==$death01)
+		{
+			sound(self,CHAN_WEAPON,"misc/null.wav",1,ATTN_NORM);
 			sound(self,CHAN_VOICE,"medusa/death.wav",1,ATTN_NORM);
+		}
 	}
 }
 
