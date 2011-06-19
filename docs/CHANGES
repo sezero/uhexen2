@@ -4,6 +4,16 @@ Development Progress	:
 ---------------------------
 
 2011-06-19 (SVN):
+    * host_cmd.c (LoadGamestate): Before calling ED_ParseEdict(), default
+      to active edict because ED_ParseEdict() will set it to free if it
+      really is. Fixes a game load bug where a freed entity slot within
+      the map's original num_edicts range is reused for a dropped a soul
+      sphere and the game then re-saved: see bug entry #3287803.  Noticed
+      by Thomas.  No need to clear the edict from within LoadGamestate(),
+      either, because ED_ParseEdict() will already do it for us, since
+      SaveGamestate() doesn't write entnum 0.
+
+2011-06-19 (SVN):
     * removed my old ugly hack of reducing teleport push speed to 225 in
       order to overcome the problem of reaching the Cathedral's balcony
       and the holy cross (triggers.hc::teleport_touch), and added Thomas'

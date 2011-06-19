@@ -1017,8 +1017,11 @@ static int LoadGamestate (const char *level, const char *startspot, int ClientsM
 		else
 		{
 			ent = EDICT_NUM(entnum);
-			memset (&ent->v, 0, progs->entityfields * 4);
-			//ent->free = false;
+			/* default to active edict: ED_ParseEdict() set it
+			 * to free if it really is free.  cf. ED_Write()  */
+			ent->free = false;
+			/* ED_ParseEdict() will always memset ent->v to 0,
+			 * because SaveGamestate() doesn't write entnum 0 */
 			ED_ParseEdict (start, ent);
 
 			if (ClientsMode == 1 || ClientsMode == 2 || ClientsMode == 3)
@@ -1073,7 +1076,6 @@ static int LoadGamestate (const char *level, const char *startspot, int ClientsM
 
 	fclose (f);
 
-//	sv.num_edicts = entnum;
 	if (ClientsMode == 0)
 	{
 		sv.time = playtime;
