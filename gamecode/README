@@ -4,9 +4,12 @@ Game code for Hexen2 / H2MP / HexenWorld
 Changes
 -------
 
-2011-05-19 (1.20):
+2011-06-19 (1.20):
 ===================
 - Bumped version number to 1.20.
+- Now that we added a modified ent file for the Cathedral level, removed
+  the ugly hack of reducing the teleport push speed to 225 for this level
+  from triggers.hc::teleport_touch.
 - Made sure that gaze attack sound doesn't persist when medusa is dead.
 - When an imp lord dies, clear the ALIVE flag before removing, otherwise
   eidolon might get confused.
@@ -27,7 +30,7 @@ Changes
 - Fixed trigger_crosslevel() with spawnflag 8, i.e. the clash with
   SPAWNFLAG_ACTIVATED. We now just set inactive property back to FALSE
   after calling InitTrigger(). Thanks to Keith Rozett.
-- Added a "mapfixes" section. Added entity fixes for demo2, egypt4,
+- Added a "mapfixes" section. Added entity fixes for cath, demo2, egypt4,
   egypt5, romeric5 and tower maps of the original game and tibet2 and
   tibet9 maps of the expansion pack among the mapfixes.
 - strings.txt: Fixed egypt2 wheel of ages message to report 360 degrees

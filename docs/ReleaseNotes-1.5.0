@@ -3,6 +3,8 @@ Version 1.5.0-rc4 / June 18, 2011
 
 Changes since HoT-1.4.4-pre11:
 
+* bumped the hexen2 engine version to 1.23, and hexenworld engine version
+  to 0.23. bumped the gamecode version to 1.20.
 * added support for ogg, mp3 and wav external music files to be played
   instead of the original midi files.
 * added interface for music streams to the sound layer, dropped SDL_mixer
@@ -54,8 +56,9 @@ Changes since HoT-1.4.4-pre11:
 * handled several map quirks thanks to careful works by Thomas Freundt
   and Keith Rozett.
 * fixed trigger_crosslevel problem with spawnflag 8 (thanks Keith Rozett.)
-* bumped the hexen2 engine version to 1.23, and hexenworld engine version
-  to 0.23. bumped the gamecode version to 1.20.
+* removed the ugly hack of reducing teleport push speed to 225 in order
+  to overcome the problem of reaching the Cathedral's balcony and the holy
+  cross, and added a modified entities file for the Cathedral map instead.
 * added support for external entity file loading which makes it easy to
   handle map quirks.  ent files are accepted only if they come from the
   same game directory as the map itself or from a searchpath with a higher

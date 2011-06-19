@@ -4,6 +4,14 @@ Development Progress	:
 ---------------------------
 
 2011-06-19 (SVN):
+    * removed my old ugly hack of reducing teleport push speed to 225 in
+      order to overcome the problem of reaching the Cathedral's balcony
+      and the holy cross (triggers.hc::teleport_touch), and added Thomas'
+      modified entities file for the Cathedral map instead. The modified
+      ent file moves the teleport destination to the left side of the
+      balcony as the solution.
+
+2011-06-19 (SVN):
     * subs.hc (SUB_Remove): Added a note in the portals version that it
       calling stopSound() is cutting off many sounds, for instance when
       harvesting soul spheres. Only the portals version of SUB_Remove()

@@ -218,6 +218,8 @@ utils/bin/hcc -src gamecode-%{gamecode_ver}/hc/hw -oi -on
 # Install ent fixes handling map quirks
 %{__mkdir_p} %{buildroot}/%{_prefix}/games/%{name}/data1/maps/
 %{__install} -D -m644 gamecode-%{gamecode_ver}/mapfixes/data1/maps/README.txt %{buildroot}/%{_prefix}/games/%{name}/data1/maps/README.txt
+%{__install} -D -m644 gamecode-%{gamecode_ver}/mapfixes/data1/maps/cath.ent %{buildroot}/%{_prefix}/games/%{name}/data1/maps/cath.ent
+%{__install} -D -m644 gamecode-%{gamecode_ver}/mapfixes/data1/maps/cath.txt %{buildroot}/%{_prefix}/games/%{name}/data1/maps/cath.txt
 %{__install} -D -m644 gamecode-%{gamecode_ver}/mapfixes/data1/maps/demo2.ent %{buildroot}/%{_prefix}/games/%{name}/data1/maps/demo2.ent
 %{__install} -D -m644 gamecode-%{gamecode_ver}/mapfixes/data1/maps/demo2.txt %{buildroot}/%{_prefix}/games/%{name}/data1/maps/demo2.txt
 %{__install} -D -m644 gamecode-%{gamecode_ver}/mapfixes/data1/maps/egypt4.ent %{buildroot}/%{_prefix}/games/%{name}/data1/maps/egypt4.ent
@@ -287,6 +289,8 @@ desktop-file-install \
 %{_prefix}/games/%{name}/data1/strings.txt
 %{_prefix}/games/%{name}/data1/default.cfg
 %{_prefix}/games/%{name}/data1/maps/README.txt
+%{_prefix}/games/%{name}/data1/maps/cath.ent
+%{_prefix}/games/%{name}/data1/maps/cath.txt
 %{_prefix}/games/%{name}/data1/maps/demo2.ent
 %{_prefix}/games/%{name}/data1/maps/demo2.txt
 %{_prefix}/games/%{name}/data1/maps/egypt4.ent
@@ -350,7 +354,11 @@ desktop-file-install \
 %{_prefix}/games/%{name}/docs/README.hwmaster
 
 %changelog
-* Sun Jun 13 2011 O.Sezer <sezero@users.sourceforge.net> 1.5.0-0.4.rc4
+* Sun Jun 19 2011 O.Sezer <sezero@users.sourceforge.net> 1.5.0-0.4.rc4
+- Install modified entities for the cathedral map to handle the map's
+  quirks.
+
+* Mon Jun 13 2011 O.Sezer <sezero@users.sourceforge.net> 1.5.0-0.4.rc4
 - Bumped version to 1.5.0-rc4.
 
 * Sun Jun 05 2011 O.Sezer <sezero@users.sourceforge.net> 1.5.0-0.3.rc3

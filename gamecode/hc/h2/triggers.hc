@@ -1085,8 +1085,12 @@ float poof_speed;
 		other.fixangle = 1;		// turn this way immediately
 		if(other.classname!="player"&&other.velocity!='0 0 0')
 			poof_speed = vlen(other.velocity);
+		/* commented out my old ugly hack and using Thomas'
+		 * modified entities file for the Cathedral level, instead */
+		/*
 		else if(mapname=="cath" && !deathmatch)
 			poof_speed = 225; // otherwise cant reach the balcony
+		*/
 		else
 			poof_speed = 300;
 		other.velocity = v_forward * poof_speed;

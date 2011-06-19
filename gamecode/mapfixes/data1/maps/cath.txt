@@ -1,0 +1,28 @@
+Map: cath.bsp (Hexen II registered version, in the data1/pak1.pak
+pakfile.)
+
+Teleporting to the Cathedral balcony where the holy cross resides
+pushes the player a little too fast and results in dropping to the
+floor.  The solution in this modified entities file is moving the
+teleport destination to the left side of the balcony instead, i.e.:
+
+--- cath.ent.orig
++++ cath.ent
+@@ -532,8 +532,7 @@
+ }
+ {
+ "classname" "info_teleport_destination"
+-"origin" "-480 748 286"
+-"angle" "90"
++"origin" "-680 744 296"
+ "targetname" "t16"
+ }
+ {
+
+
+In the past, we had been changing the teleport poff speed from 300
+to 225 in triggers.hc::teleport_touch() but it was an ugly hack and
+this seems like a better solution.
+
+Modified entities file is provided by Thomas Freundt.
+
