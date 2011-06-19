@@ -4,6 +4,9 @@ Development Progress	:
 ---------------------------
 
 2011-06-19 (SVN):
+    * updated gamecode README file.
+
+2011-06-19 (SVN):
     * medusa.hc (medusa_decap_init, medusa_die): Make sure that the gaze
       attack sound doesn't persist when medusa is dead.
 

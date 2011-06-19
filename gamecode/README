@@ -4,16 +4,18 @@ Game code for Hexen2 / H2MP / HexenWorld
 Changes
 -------
 
-2011-05-25 (1.20):
+2011-05-19 (1.20):
 ===================
 - Bumped version number to 1.20.
-- Fixed a HexenC bug which would prevent a yakman from appearing during
+- Made sure that gaze attack sound doesn't persist when medusa is dead.
+- When an imp lord dies, clear the ALIVE flag before removing, otherwise
+  eidolon might get confused.
+- Fixed mezzoman.hc bug which would prevent yakman from appearing during
   the 'Trial of Strength' in the Temple of Phurbu (tibet7) level of the
   mission pack, rendering the level not completable (bug #1112533).
-- Fixed a mission pack HexenC bug where a pentacle monster in tibet1
-  became invulnerable when it got crushed by a door.
-- strings.txt: Fixed egypt2 wheel of ages message to report 360 degrees
-  instead of 30 when it "points to a jackal". Patch from Sander van Dijk.
+- Fixed a mission pack T_Damage() bug where a pentacle monster in tibet1
+  became invulnerable when it got crushed by a door. The design flaw in
+  the union in entity.hc is documented.
 - Fixed a bug where werepanthers became "undead" when an assassin killed
   them by her bombs. Fix by Thomas Freundt.
 - Fixed a bug which might prevent Eidolon to land. Fixed more Eidolon
@@ -25,13 +27,12 @@ Changes
 - Fixed trigger_crosslevel() with spawnflag 8, i.e. the clash with
   SPAWNFLAG_ACTIVATED. We now just set inactive property back to FALSE
   after calling InitTrigger(). Thanks to Keith Rozett.
-- Added more entity fixes, this time for tibet2 and tibet9 maps of the
-  expansion pack and for demo2, egypt4 and tower maps of the original
-  game.
-2010-11-27 (1.19b):
-===================
-- Added a "mapfixes" section. Added entity fixes for romeric5.bsp and
-  egypt5.bsp among the mapfixes.
+- Added a "mapfixes" section. Added entity fixes for demo2, egypt4,
+  egypt5, romeric5 and tower maps of the original game and tibet2 and
+  tibet9 maps of the expansion pack among the mapfixes.
+- strings.txt: Fixed egypt2 wheel of ages message to report 360 degrees
+  instead of 30 when it "points to a jackal". Patch from Sander van Dijk.
+
 2008-01-01 (1.19a):
 ===================
 - Updated the patch shell scripts for much better compatibility with BSD
@@ -43,6 +44,7 @@ Changes
   the worst when he was looking up (and down). You won't be shooting your
   back when standing just in front of a wall and fire your tomed purifier
   to the sky, from now on ;)
+
 2006-12-01 (1.16a):
 ===================
 - Fixed an obscure bug where the assasin with her 4th weapon uses the tome
@@ -51,6 +53,7 @@ Changes
   have been introduced in gamecode-1.12g when a patch from Pa3PyX's sources
   was merged. Pa3PyX's own progs as part of his 1.15 package also has the
   same bug.)
+
 2006-10-30 (1.16) :
 ===================
 - Fixed the dreaded mezzoman bug causing the following error:
@@ -88,6 +91,7 @@ Changes
   it also has necessary stuff for running the hexenworld dm maps, added
   demo3 and the hw dm maps to FindDMLevel(). Similarly changed the hexen2
   and the mission pack versions.
+
 2006-03-20 (1.15) :
 ===================
 - hw: fixed the server crash when the server is spawned with dmmode 1.
@@ -104,6 +108,7 @@ Changes
 - fixed those double semicolons.
 - hw: killed the irritating Poisong_die dprint
 - fixed those famous spelling errors.
+
 2005-08-09 (1.14) :
 ===================
 - Disallowed cycling to a weapon without proper mana (S.A)
@@ -120,7 +125,7 @@ Changes
   original value (300) is used.
 2005-05-08	  :
 ===================
-- added Pa3PyX' fire delay bits for paladin's setstaff
+- added Pa3PyX' fire delay bits for paladin's purifier staff
 
 2005-03-17 (1.12h):
 ===================
@@ -164,8 +169,8 @@ Merged a bunch of fixes/adjustments from Pa3PyX' sources:
 - Applied map cycling patch for Siege (similar to the one below)
 - Added the hcode for Siege.
 - Applied map cycling for HexenWorld (by Kor Skarn):  Server side mod,
-so only the server needs to have the new hwprogs.dat and strings.txt.
-The new strings.txt can then be edited for the required mapnames.
+  so only the server needs to have the new hwprogs.dat and strings.txt.
+  The new strings.txt can then be edited for the required mapnames.
 * map names must stay between map_sequence_start and map_sequence_end
 * only the first occurence of a mapname is used to determine next map
 * if server is running a map that is not in the list the same map will
@@ -181,10 +186,12 @@ The new strings.txt can then be edited for the required mapnames.
 1.12d	Reduce the speed of the teleporting process' pushing you
 	forward. Fixes the unreachable Cathedral balcony issue for
 	me (for both Hexen2 and H2MP) (2005-01-06).
+
 1.12c   fix eidolon loses his hostility upon destruction of the orb.
 	(2005-01-05, adaptation of eidolon.hc from H2MP)
 1.12b	fix eidolon not jumping off the ledge (hc/h2/triggers.hc)
 	(2004-12-09)
 
 1.12a   Raven's original 1.12a hcode for the mission pack (initial)
+
 1.11    Raven's original 1.11 hcode for original Hexen2 (initial)
