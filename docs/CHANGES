@@ -4,6 +4,10 @@ Development Progress	:
 ---------------------------
 
 2011-06-19 (SVN):
+    * subs.hc (SUB_Remove): Added a note in the portals version that it
+      calling stopSound() is cutting off many sounds, for instance when
+      harvesting soul spheres. Only the portals version of SUB_Remove()
+      calls stopSound(self,0).
     * updated gamecode README file.
 
 2011-06-19 (SVN):

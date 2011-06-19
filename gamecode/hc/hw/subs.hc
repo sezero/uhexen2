@@ -1,13 +1,16 @@
 /*
  * $Header: /cvsroot/uhexen2/gamecode/hc/hw/subs.hc,v 1.2 2007-02-07 16:58:07 sezero Exp $
  */
-float SPAWNFLAG_ACTIVATED	= 8;
 
+float SPAWNFLAG_ACTIVATED	= 8;
 
 
 void SUB_Null() {}
 
-void SUB_Remove() { remove(self); }
+void SUB_Remove()
+{
+	remove(self);
+}
 
 /*
 void spawntestmarker(vector org, float life, float skincolor)

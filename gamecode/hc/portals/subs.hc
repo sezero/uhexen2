@@ -1,13 +1,19 @@
 /*
  * $Header: /cvsroot/uhexen2/gamecode/hc/portals/subs.hc,v 1.2 2007-02-07 16:59:37 sezero Exp $
  */
-float SPAWNFLAG_ACTIVATED	= 8;
 
+float SPAWNFLAG_ACTIVATED	= 8;
 
 
 void SUB_Null() {}
 
-void SUB_Remove() {stopSound(self,0); remove(self); }
+void SUB_Remove()
+{
+	stopSound(self,0);	/* FIXME: this stopSound here cuts off many sounds,
+				 * for instance when harvesting soul spheres. only
+				 * the portals hcode has it here !..  -- THOMAS  */
+	remove(self);
+}
 
 void obj_barrel_explode (void);	//ref from barrel.hc
 
