@@ -7,6 +7,9 @@ Development Progress	:
     * medusa.hc (medusa_decap_init, medusa_die): Make sure that the gaze
       attack sound doesn't persist when medusa is dead.
 
+2011-06-19 (SVN):
+    * reorganized the reference sources directory.
+
 2011-06-18 (SVN):
     * Bumped beta date to 2011-06-18. Updated the 1.5.0 release notes.
     * host_cmd.c (LoadGamestate): When loading a saved game, restore the
