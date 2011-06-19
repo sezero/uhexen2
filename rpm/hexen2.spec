@@ -355,11 +355,9 @@ desktop-file-install \
 
 %changelog
 * Sun Jun 19 2011 O.Sezer <sezero@users.sourceforge.net> 1.5.0-0.4.rc4
+- Bumped version to 1.5.0-rc4.
 - Install modified entities for the cathedral map to handle the map's
   quirks.
-
-* Mon Jun 13 2011 O.Sezer <sezero@users.sourceforge.net> 1.5.0-0.4.rc4
-- Bumped version to 1.5.0-rc4.
 
 * Sun Jun 05 2011 O.Sezer <sezero@users.sourceforge.net> 1.5.0-0.3.rc3
 - Bumped version to 1.5.0-rc3.

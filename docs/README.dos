@@ -1,5 +1,5 @@
 Hexen II for DOS
-Version 1.5.0 (June 18, 2011)
+Version 1.5.0 (June 19, 2011)
 
 DOS port of Hexen II, using the Hammer of Thyrion
 (uHexen2) engine, http://uhexen2.sourceforge.net/
@@ -30,7 +30,8 @@ Things not tested, but should work:
 
 Things that just work:
 
-* All other functionality in uhexen2 just works under DOS.
+* All other functionality in uhexen2 just works under DOS, including
+  mp3 music playback.
 
 
 NOTES:
