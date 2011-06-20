@@ -1,5 +1,5 @@
 Hexen II: Hammer of Thyrion (uhexen2), release candidate,
-Version 1.5.0-rc4 / June 19, 2011
+Version 1.5.0-rc4 / June 19, 2011.
 
 Changes since HoT-1.4.4-pre11:
 
@@ -22,10 +22,10 @@ Changes since HoT-1.4.4-pre11:
   or getting lost upon saving and loading the game.
 * fixed an old load bug where prize artifacts in the Temple of Mars not
   being visible or getting lost upon saving and loading the game or by
-  changing and reentering the level.
+  changing the level and reentering.
 * fixed an old load bug where killed monsters didn't respawn in nightmare
   difficulty in the mission pack upon saving and loading the game or by
-  changing and reentering the level.
+  changing the level and reentering.
 * software renderer (C-only): fixed a segmentation fault with Crusader's
   ice mace.
 * added new cvar sys_throttle in order to throttle the game loop just a
