@@ -4,9 +4,9 @@ TODO:
 ---------------------------
 
 - Add a pak-patch application for Mac OS X.
-- Revise the launcher GUI.
+- Revise the gtk launcher GUI.
 - Add joystick support through sdl
-- Re-visit the mouse grab code and clean it up.
+- Re-visit the messy mouse grab code and clean it up.
 - Do a clean-up of the opengl system
 - Add multisampling support to win32
 - Make the fov command actually work in opengl.
@@ -25,6 +25,8 @@ TODO:
 - Add sequencer (mpu-401) support for midi (alsa / oss)
 - DOS: Implement MIDI music playback.
 - DOS: Implement loading progress bars.
+- SVGALib: Use svgalib write functions, remove the d_copy.asm
+  dependency and make it possible to compile for non-x86.
 - Add pthread support to the utilities and revise the current
   windows threads mess there. threads need't be for alpha only.
 - utils/jsh2colour: clean-up the huge mess and improve a bit.

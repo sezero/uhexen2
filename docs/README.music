@@ -27,7 +27,8 @@ What you should do is simple:
    music will be searched automatically already.)
 
 6. Let's do some file renaming: the trackXX files should match the midi
-   names.
+   names.  Linux/unix users can do these easily using our cdrip_hexen2.sh
+   and cdrip_missionpack.sh shell scripts.
 
    Note to the curious: this file renaming is necessary.  Unlike quake,
    the hexen2 music does have its own file name which is the midi file
