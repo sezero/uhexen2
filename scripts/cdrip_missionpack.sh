@@ -9,9 +9,7 @@ cd portals/music
 # rip all tracks beginning with second one (the first track is data)
 cdparanoia -B "2-"
 
-# encode the trackXX.cdda.wav files with proper renaming.
-# cd track to midi name mappings from 'plusminus', see at
-# http://sourceforge.net/forum/message.php?msg_id=5443576
+# encode the trackXX.cdda.wav files with proper renaming
 oggenc -q 6 -o tulku7.ogg track02.cdda.wav
 oggenc -q 6 -o tulku1.ogg track03.cdda.wav
 oggenc -q 6 -o tulku4.ogg track04.cdda.wav

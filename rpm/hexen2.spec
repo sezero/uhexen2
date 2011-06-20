@@ -168,6 +168,10 @@ utils/bin/hcc -src gamecode-%{gamecode_ver}/hc/hw -oi -on
 %{__mkdir_p} %{buildroot}/%{_bindir}
 %{__ln_s} %{_prefix}/games/hexen2/h2launcher %{buildroot}/%{_bindir}/hexen2
 
+# Install the cd-rip scripts
+%{__install} -D -m755 scripts/cdrip_hexen2.sh %{buildroot}/%{_prefix}/games/%{name}/cdrip_hexen2.sh
+%{__install} -D -m755 scripts/cdrip_missionpack.sh %{buildroot}/%{_prefix}/games/%{name}/cdrip_missionpack.sh
+
 # Install the docs
 %{__install} -D -m644 docs/README %{buildroot}/%{_prefix}/games/%{name}/docs/README
 %{__install} -D -m644 docs/COPYING %{buildroot}/%{_prefix}/games/%{name}/docs/COPYING
@@ -316,6 +320,8 @@ desktop-file-install \
 %{_bindir}/hexen2
 %{_datadir}/pixmaps/%{name}.png
 %{_prefix}/games/%{name}/h2launcher
+%{_prefix}/games/%{name}/cdrip_hexen2.sh
+%{_prefix}/games/%{name}/cdrip_missionpack.sh
 %{_prefix}/games/%{name}/docs/README
 %{_prefix}/games/%{name}/docs/COPYING
 %{_prefix}/games/%{name}/docs/BUGS
@@ -354,7 +360,10 @@ desktop-file-install \
 %{_prefix}/games/%{name}/docs/README.hwmaster
 
 %changelog
-* Sun Jun 19 2011 O.Sezer <sezero@users.sourceforge.net> 1.5.0-0.4.rc4
+* Mon Jun 20 2011 O.Sezer <sezero@users.sourceforge.net> 1.5.0-0.4.rc4
+- Install the cd-rip scripts.
+
+* Sun Jun 19 2011 O.Sezer <sezero@users.sourceforge.net>
 - Bumped version to 1.5.0-rc4.
 - Install modified entities for the cathedral map to handle the map's
   quirks.
