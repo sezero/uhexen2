@@ -445,14 +445,14 @@ Fills in s->texturemins[] and s->extents[]
 */
 static void CalcSurfaceExtents (msurface_t *s, int firstedge, int numedges)
 {
-	float	mins_local[2], maxs_local[2], val;
+	float	mins[2], maxs[2], val;
 	int		i, j, e;
 	mvertex_t	*v;
 	mtexinfo_t	*tex;
 	int		bmins[2], bmaxs[2];
 
-	mins_local[0] = mins_local[1] = 999999;
-	maxs_local[0] = maxs_local[1] = -99999;
+	mins[0] = mins[1] = 999999;
+	maxs[0] = maxs[1] = -99999;
 
 	tex = s->texinfo;
 
@@ -470,17 +470,17 @@ static void CalcSurfaceExtents (msurface_t *s, int firstedge, int numedges)
 				v->position[1] * tex->vecs[j][1] +
 				v->position[2] * tex->vecs[j][2] +
 				tex->vecs[j][3];
-			if (val < mins_local[j])
-				mins_local[j] = val;
-			if (val > maxs_local[j])
-				maxs_local[j] = val;
+			if (val < mins[j])
+				mins[j] = val;
+			if (val > maxs[j])
+				maxs[j] = val;
 		}
 	}
 
 	for (i = 0; i < 2; i++)
 	{
-		bmins[i] = (int) floor(mins_local[i]/16);
-		bmaxs[i] = (int) ceil(maxs_local[i]/16);
+		bmins[i] = (int) floor(mins[i]/16);
+		bmaxs[i] = (int) ceil(maxs[i]/16);
 
 		s->texturemins[i] = bmins[i] * 16;
 		s->extents[i] = (bmaxs[i] - bmins[i]) * 16;

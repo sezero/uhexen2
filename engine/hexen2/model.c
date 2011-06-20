@@ -30,7 +30,7 @@ static byte	mod_novis[MAX_MAP_LEAFS/8];
 static qmodel_t	mod_known[MAX_MOD_KNOWN];
 static int	mod_numknown;
 
-static vec3_t	mins, maxs;
+static vec3_t	aliasmins, aliasmaxs;
 
 int		entity_file_size;
 
@@ -353,7 +353,7 @@ Mod_LoadTextures
 */
 static void Mod_LoadTextures (lump_t *l)
 {
-	int		i, j, pixels, num, max, altmax;
+	int		i, j, pixels, num, maxanim, altmax;
 	miptex_t	*mt;
 	texture_t	*tx, *tx2;
 	texture_t	*anims[10];
@@ -472,21 +472,21 @@ bsp_tex_internal:
 		memset (anims, 0, sizeof(anims));
 		memset (altanims, 0, sizeof(altanims));
 
-		max = tx->name[1];
+		maxanim = tx->name[1];
 		altmax = 0;
-		if (max >= 'a' && max <= 'z')
-			max -= 'a' - 'A';
-		if (max >= '0' && max <= '9')
+		if (maxanim >= 'a' && maxanim <= 'z')
+			maxanim -= 'a' - 'A';
+		if (maxanim >= '0' && maxanim <= '9')
 		{
-			max -= '0';
+			maxanim -= '0';
 			altmax = 0;
-			anims[max] = tx;
-			max++;
+			anims[maxanim] = tx;
+			maxanim++;
 		}
-		else if (max >= 'A' && max <= 'J')
+		else if (maxanim >= 'A' && maxanim <= 'J')
 		{
-			altmax = max - 'A';
-			max = 0;
+			altmax = maxanim - 'A';
+			maxanim = 0;
 			altanims[altmax] = tx;
 			altmax++;
 		}
@@ -508,8 +508,8 @@ bsp_tex_internal:
 			{
 				num -= '0';
 				anims[num] = tx2;
-				if (num+1 > max)
-					max = num + 1;
+				if (num+1 > maxanim)
+					maxanim = num + 1;
 			}
 			else if (num >= 'A' && num <= 'J')
 			{
@@ -524,15 +524,15 @@ bsp_tex_internal:
 
 #define	ANIM_CYCLE	2
 	// link them all together
-		for (j = 0; j < max; j++)
+		for (j = 0; j < maxanim; j++)
 		{
 			tx2 = anims[j];
 			if (!tx2)
 				Sys_Error ("Missing frame %i of %s",j, tx->name);
-			tx2->anim_total = max * ANIM_CYCLE;
+			tx2->anim_total = maxanim * ANIM_CYCLE;
 			tx2->anim_min = j * ANIM_CYCLE;
 			tx2->anim_max = (j+1) * ANIM_CYCLE;
-			tx2->anim_next = anims[ (j+1)%max ];
+			tx2->anim_next = anims[ (j+1)%maxanim ];
 			if (altmax)
 				tx2->alternate_anims = altanims[0];
 		}
@@ -545,7 +545,7 @@ bsp_tex_internal:
 			tx2->anim_min = j * ANIM_CYCLE;
 			tx2->anim_max = (j+1) * ANIM_CYCLE;
 			tx2->anim_next = altanims[ (j+1)%altmax ];
-			if (max)
+			if (maxanim)
 				tx2->alternate_anims = anims[0];
 		}
 	}
@@ -798,14 +798,14 @@ Fills in s->texturemins[] and s->extents[]
 */
 static void CalcSurfaceExtents (msurface_t *s)
 {
-	float	mins_local[2], maxs_local[2], val;
+	float	mins[2], maxs[2], val;
 	int		i, j, e;
 	mvertex_t	*v;
 	mtexinfo_t	*tex;
 	int		bmins[2], bmaxs[2];
 
-	mins_local[0] = mins_local[1] = 999999;
-	maxs_local[0] = maxs_local[1] = -99999;
+	mins[0] = mins[1] = 999999;
+	maxs[0] = maxs[1] = -99999;
 
 	tex = s->texinfo;
 
@@ -823,17 +823,17 @@ static void CalcSurfaceExtents (msurface_t *s)
 				v->position[1] * tex->vecs[j][1] +
 				v->position[2] * tex->vecs[j][2] +
 				tex->vecs[j][3];
-			if (val < mins_local[j])
-				mins_local[j] = val;
-			if (val > maxs_local[j])
-				maxs_local[j] = val;
+			if (val < mins[j])
+				mins[j] = val;
+			if (val > maxs[j])
+				maxs[j] = val;
 		}
 	}
 
 	for (i = 0; i < 2; i++)
 	{
-		bmins[i] = (int) floor(mins_local[i]/16);
-		bmaxs[i] = (int) ceil(maxs_local[i]/16);
+		bmins[i] = (int) floor(mins[i]/16);
+		bmaxs[i] = (int) ceil(maxs[i]/16);
 
 		s->texturemins[i] = bmins[i] * 16;
 		s->extents[i] = (bmaxs[i] - bmins[i]) * 16;
@@ -1280,14 +1280,14 @@ static void Mod_LoadPlanes (lump_t *l)
 RadiusFromBounds
 =================
 */
-static float RadiusFromBounds (vec3_t arg_mins, vec3_t arg_maxs)
+static float RadiusFromBounds (vec3_t mins, vec3_t maxs)
 {
 	int		i;
 	vec3_t	corner;
 
 	for (i = 0; i < 3; i++)
 	{
-		corner[i] = fabs(arg_mins[i]) > fabs(arg_maxs[i]) ? fabs(arg_mins[i]) : fabs(arg_maxs[i]);
+		corner[i] = fabs(mins[i]) > fabs(maxs[i]) ? fabs(mins[i]) : fabs(maxs[i]);
 	}
 
 	return VectorLength (corner);
@@ -1454,10 +1454,10 @@ static void *Mod_LoadAliasFrame (void *pin, int *pframeindex, int numv,
 		{
 			pframe[j].v[k] = pinframe[j].v[k];
 
-			if (mins[k] > out[k])
-				mins[k] = out[k];
-			if (maxs[k] < out[k])
-				maxs[k] = out[k];
+			if (aliasmins[k] > out[k])
+				aliasmins[k] = out[k];
+			if (aliasmaxs[k] < out[k])
+				aliasmaxs[k] = out[k];
 		}
 	}
 
@@ -1803,8 +1803,8 @@ static void Mod_LoadAliasModelNew (qmodel_t *mod, void *buffer)
 
 	pframetype = (daliasframetype_t *)&pintriangles[pmodel->numtris];
 
-	mins[0] = mins[1] = mins[2] = 32768;
-	maxs[0] = maxs[1] = maxs[2] = -32768;
+	aliasmins[0] = aliasmins[1] = aliasmins[2] = 32768;
+	aliasmaxs[0] = aliasmaxs[1] = aliasmaxs[2] = -32768;
 
 	for (i = 0; i < numframes; i++)
 	{
@@ -1842,12 +1842,12 @@ static void Mod_LoadAliasModelNew (qmodel_t *mod, void *buffer)
 // FIXME: do this right
 //	mod->mins[0] = mod->mins[1] = mod->mins[2] = -16;
 //	mod->maxs[0] = mod->maxs[1] = mod->maxs[2] = 16;
-	mod->mins[0] = mins[0];
-	mod->mins[1] = mins[1];
-	mod->mins[2] = mins[2];
-	mod->maxs[0] = maxs[0];
-	mod->maxs[1] = maxs[1];
-	mod->maxs[2] = maxs[2];
+	mod->mins[0] = aliasmins[0];
+	mod->mins[1] = aliasmins[1];
+	mod->mins[2] = aliasmins[2];
+	mod->maxs[0] = aliasmaxs[0];
+	mod->maxs[1] = aliasmaxs[1];
+	mod->maxs[2] = aliasmaxs[2];
 //
 // move the complete, relocatable alias model to the cache
 //
@@ -2045,8 +2045,8 @@ static void Mod_LoadAliasModel (qmodel_t *mod, void *buffer)
 
 	pframetype = (daliasframetype_t *)&pintriangles[pmodel->numtris];
 
-	mins[0] = mins[1] = mins[2] = 32768;
-	maxs[0] = maxs[1] = maxs[2] = -32768;
+	aliasmins[0] = aliasmins[1] = aliasmins[2] = 32768;
+	aliasmaxs[0] = aliasmaxs[1] = aliasmaxs[2] = -32768;
 
 	for (i = 0; i < numframes; i++)
 	{
@@ -2084,12 +2084,12 @@ static void Mod_LoadAliasModel (qmodel_t *mod, void *buffer)
 // FIXME: do this right
 //	mod->mins[0] = mod->mins[1] = mod->mins[2] = -16;
 //	mod->maxs[0] = mod->maxs[1] = mod->maxs[2] = 16;
-	mod->mins[0] = mins[0];
-	mod->mins[1] = mins[1];
-	mod->mins[2] = mins[2];
-	mod->maxs[0] = maxs[0];
-	mod->maxs[1] = maxs[1];
-	mod->maxs[2] = maxs[2];
+	mod->mins[0] = aliasmins[0];
+	mod->mins[1] = aliasmins[1];
+	mod->mins[2] = aliasmins[2];
+	mod->maxs[0] = aliasmaxs[0];
+	mod->maxs[1] = aliasmaxs[1];
+	mod->maxs[2] = aliasmaxs[2];
 //
 // move the complete, relocatable alias model to the cache
 //

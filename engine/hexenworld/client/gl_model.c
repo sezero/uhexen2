@@ -30,7 +30,7 @@ static byte	mod_novis[MAX_MAP_LEAFS/8];
 static qmodel_t	mod_known[MAX_MOD_KNOWN];
 static int	mod_numknown;
 
-static vec3_t	mins, maxs;
+static vec3_t	aliasmins, aliasmaxs;
 
 static qboolean	spr_reload_only = false;
 
@@ -1010,14 +1010,14 @@ Fills in s->texturemins[] and s->extents[]
 */
 static void CalcSurfaceExtents (msurface_t *s)
 {
-	float	mins_local[2], maxs_local[2], val;
+	float	mins[2], maxs[2], val;
 	int		i, j, e;
 	mvertex_t	*v;
 	mtexinfo_t	*tex;
 	int		bmins[2], bmaxs[2];
 
-	mins_local[0] = mins_local[1] = 999999;
-	maxs_local[0] = maxs_local[1] = -99999;
+	mins[0] = mins[1] = 999999;
+	maxs[0] = maxs[1] = -99999;
 
 	tex = s->texinfo;
 
@@ -1035,17 +1035,17 @@ static void CalcSurfaceExtents (msurface_t *s)
 				v->position[1] * tex->vecs[j][1] +
 				v->position[2] * tex->vecs[j][2] +
 				tex->vecs[j][3];
-			if (val < mins_local[j])
-				mins_local[j] = val;
-			if (val > maxs_local[j])
-				maxs_local[j] = val;
+			if (val < mins[j])
+				mins[j] = val;
+			if (val > maxs[j])
+				maxs[j] = val;
 		}
 	}
 
 	for (i = 0; i < 2; i++)
 	{
-		bmins[i] = (int) floor(mins_local[i]/16);
-		bmaxs[i] = (int) ceil(maxs_local[i]/16);
+		bmins[i] = (int) floor(mins[i]/16);
+		bmaxs[i] = (int) ceil(maxs[i]/16);
 
 		s->texturemins[i] = bmins[i] * 16;
 		s->extents[i] = (bmaxs[i] - bmins[i]) * 16;
@@ -1461,7 +1461,7 @@ static void Mod_LoadSurfedges (lump_t *l)
 	if (l->filelen % sizeof(*in))
 		Sys_Error ("%s: funny lump size in %s", __thisfunc__, loadmodel->name);
 	count = l->filelen / sizeof(*in);
-	out = (int *) Hunk_AllocName ( count*sizeof(*out), "surfedges");
+	out = (int *) Hunk_AllocName (count * sizeof(*out), "surfedges");
 
 	loadmodel->surfedges = out;
 	loadmodel->numsurfedges = count;
@@ -1514,14 +1514,14 @@ static void Mod_LoadPlanes (lump_t *l)
 RadiusFromBounds
 =================
 */
-static float RadiusFromBounds (vec3_t arg_mins, vec3_t arg_maxs)
+static float RadiusFromBounds (vec3_t mins, vec3_t maxs)
 {
 	int		i;
 	vec3_t	corner;
 
 	for (i = 0; i < 3; i++)
 	{
-		corner[i] = fabs(arg_mins[i]) > fabs(arg_maxs[i]) ? fabs(arg_mins[i]) : fabs(arg_maxs[i]);
+		corner[i] = fabs(mins[i]) > fabs(maxs[i]) ? fabs(mins[i]) : fabs(maxs[i]);
 	}
 
 	return VectorLength (corner);
@@ -1668,7 +1668,7 @@ static void *Mod_LoadAliasFrame (void *pin, maliasframedesc_t *frame)
 
 	pinframe = (trivertx_t *)(pdaliasframe + 1);
 
-	if (mins[0] == 32768)
+	if (aliasmins[0] == 32768)
 	{
 		aliastransform[0][0] = pheader->scale[0];
 		aliastransform[1][1] = pheader->scale[1];
@@ -1685,10 +1685,10 @@ static void *Mod_LoadAliasFrame (void *pin, maliasframedesc_t *frame)
 			R_AliasTransformVector(in, out);
 			for (i = 0; i < 3; i++)
 			{
-				if (mins[i] > out[i])
-					mins[i] = out[i];
-				if (maxs[i] < out[i])
-					maxs[i] = out[i];
+				if (aliasmins[i] > out[i])
+					aliasmins[i] = out[i];
+				if (aliasmaxs[i] < out[i])
+					aliasmaxs[i] = out[i];
 			}
 		}
 	}
@@ -1747,7 +1747,7 @@ static void *Mod_LoadAliasGroup (void *pin,  maliasframedesc_t *frame)
 	{
 		poseverts[posenum] = (trivertx_t *)((daliasframe_t *)ptemp + 1);
 
-		if (mins[0] == 32768)
+		if (aliasmins[0] == 32768)
 		{
 			for (j = 0; j < pheader->numverts; j++)
 			{
@@ -1757,10 +1757,10 @@ static void *Mod_LoadAliasGroup (void *pin,  maliasframedesc_t *frame)
 				R_AliasTransformVector(in, out);
 				for (k = 0; k < 3; k++)
 				{
-					if (mins[k] > out[k])
-						mins[k] = out[k];
-					if (maxs[k] < out[k])
-						maxs[k] = out[k];
+					if (aliasmins[k] > out[k])
+						aliasmins[k] = out[k];
+					if (aliasmaxs[k] < out[k])
+						aliasmaxs[k] = out[k];
 				}
 			}
 		}
@@ -2338,8 +2338,8 @@ static void Mod_LoadAliasModelNew (qmodel_t *mod, void *buffer)
 	posenum = 0;
 	pframetype = (daliasframetype_t *)&pintriangles[pheader->numtris];
 
-	mins[0] = mins[1] = mins[2] = 32768;
-	maxs[0] = maxs[1] = maxs[2] = -32768;
+	aliasmins[0] = aliasmins[1] = aliasmins[2] = 32768;
+	aliasmaxs[0] = aliasmaxs[1] = aliasmaxs[2] = -32768;
 
 	for (i = 0; i < numframes; i++)
 	{
@@ -2360,8 +2360,8 @@ static void Mod_LoadAliasModelNew (qmodel_t *mod, void *buffer)
 	}
 
 	//Con_Printf("Model is %s\n",mod->name);
-	//Con_Printf("   Mins is %5.2f, %5.2f, %5.2f\n",mins[0],mins[1],mins[2]);
-	//Con_Printf("   Maxs is %5.2f, %5.2f, %5.2f\n",maxs[0],maxs[1],maxs[2]);
+	//Con_Printf("   Mins is %5.2f, %5.2f, %5.2f\n",aliasmins[0],aliasmins[1],aliasmins[2]);
+	//Con_Printf("   Maxs is %5.2f, %5.2f, %5.2f\n",aliasmaxs[0],aliasmaxs[1],aliasmaxs[2]);
 
 	pheader->numposes = posenum;
 
@@ -2370,12 +2370,12 @@ static void Mod_LoadAliasModelNew (qmodel_t *mod, void *buffer)
 // FIXME: do this right
 //	mod->mins[0] = mod->mins[1] = mod->mins[2] = -16;
 //	mod->maxs[0] = mod->maxs[1] = mod->maxs[2] = 16;
-	mod->mins[0] = mins[0] - 10;
-	mod->mins[1] = mins[1] - 10;
-	mod->mins[2] = mins[2] - 10;
-	mod->maxs[0] = maxs[0] + 10;
-	mod->maxs[1] = maxs[1] + 10;
-	mod->maxs[2] = maxs[2] + 10;
+	mod->mins[0] = aliasmins[0] - 10;
+	mod->mins[1] = aliasmins[1] - 10;
+	mod->mins[2] = aliasmins[2] - 10;
+	mod->maxs[0] = aliasmaxs[0] + 10;
+	mod->maxs[1] = aliasmaxs[1] + 10;
+	mod->maxs[2] = aliasmaxs[2] + 10;
 
 //
 // build the draw lists
@@ -2516,8 +2516,8 @@ static void Mod_LoadAliasModel (qmodel_t *mod, void *buffer)
 	posenum = 0;
 	pframetype = (daliasframetype_t *)&pintriangles[pheader->numtris];
 
-	mins[0] = mins[1] = mins[2] = 32768;
-	maxs[0] = maxs[1] = maxs[2] = -32768;
+	aliasmins[0] = aliasmins[1] = aliasmins[2] = 32768;
+	aliasmaxs[0] = aliasmaxs[1] = aliasmaxs[2] = -32768;
 
 	for (i = 0; i < numframes; i++)
 	{
@@ -2545,12 +2545,12 @@ static void Mod_LoadAliasModel (qmodel_t *mod, void *buffer)
 //	mod->mins[0] = mod->mins[1] = mod->mins[2] = -16;
 //	mod->maxs[0] = mod->maxs[1] = mod->maxs[2] = 16;
 
-	mod->mins[0] = mins[0] - 10;
-	mod->mins[1] = mins[1] - 10;
-	mod->mins[2] = mins[2] - 10;
-	mod->maxs[0] = maxs[0] + 10;
-	mod->maxs[1] = maxs[1] + 10;
-	mod->maxs[2] = maxs[2] + 10;
+	mod->mins[0] = aliasmins[0] - 10;
+	mod->mins[1] = aliasmins[1] - 10;
+	mod->mins[2] = aliasmins[2] - 10;
+	mod->maxs[0] = aliasmaxs[0] + 10;
+	mod->maxs[1] = aliasmaxs[1] + 10;
+	mod->maxs[2] = aliasmaxs[2] + 10;
 
 //
 // build the draw lists

@@ -251,7 +251,7 @@ Mod_LoadTextures
 */
 static void Mod_LoadTextures (lump_t *l)
 {
-	int		i, j, pixels, num, max, altmax;
+	int		i, j, pixels, num, maxanim, altmax;
 	miptex_t	*mt;
 	texture_t	*tx, *tx2;
 	texture_t	*anims[10];
@@ -311,21 +311,21 @@ static void Mod_LoadTextures (lump_t *l)
 		memset (anims, 0, sizeof(anims));
 		memset (altanims, 0, sizeof(altanims));
 
-		max = tx->name[1];
+		maxanim = tx->name[1];
 		altmax = 0;
-		if (max >= 'a' && max <= 'z')
-			max -= 'a' - 'A';
-		if (max >= '0' && max <= '9')
+		if (maxanim >= 'a' && maxanim <= 'z')
+			maxanim -= 'a' - 'A';
+		if (maxanim >= '0' && maxanim <= '9')
 		{
-			max -= '0';
+			maxanim -= '0';
 			altmax = 0;
-			anims[max] = tx;
-			max++;
+			anims[maxanim] = tx;
+			maxanim++;
 		}
-		else if (max >= 'A' && max <= 'J')
+		else if (maxanim >= 'A' && maxanim <= 'J')
 		{
-			altmax = max - 'A';
-			max = 0;
+			altmax = maxanim - 'A';
+			maxanim = 0;
 			altanims[altmax] = tx;
 			altmax++;
 		}
@@ -347,8 +347,8 @@ static void Mod_LoadTextures (lump_t *l)
 			{
 				num -= '0';
 				anims[num] = tx2;
-				if (num+1 > max)
-					max = num + 1;
+				if (num+1 > maxanim)
+					maxanim = num + 1;
 			}
 			else if (num >= 'A' && num <= 'J')
 			{
@@ -363,15 +363,15 @@ static void Mod_LoadTextures (lump_t *l)
 
 #define	ANIM_CYCLE	2
 	// link them all together
-		for (j = 0; j < max; j++)
+		for (j = 0; j < maxanim; j++)
 		{
 			tx2 = anims[j];
 			if (!tx2)
 				SV_Error ("Missing frame %i of %s",j, tx->name);
-			tx2->anim_total = max * ANIM_CYCLE;
+			tx2->anim_total = maxanim * ANIM_CYCLE;
 			tx2->anim_min = j * ANIM_CYCLE;
 			tx2->anim_max = (j+1) * ANIM_CYCLE;
-			tx2->anim_next = anims[ (j+1)%max ];
+			tx2->anim_next = anims[ (j+1)%maxanim ];
 			if (altmax)
 				tx2->alternate_anims = altanims[0];
 		}
@@ -384,7 +384,7 @@ static void Mod_LoadTextures (lump_t *l)
 			tx2->anim_min = j * ANIM_CYCLE;
 			tx2->anim_max = (j+1) * ANIM_CYCLE;
 			tx2->anim_next = altanims[ (j+1)%altmax ];
-			if (max)
+			if (maxanim)
 				tx2->alternate_anims = anims[0];
 		}
 	}
@@ -624,14 +624,14 @@ Fills in s->texturemins[] and s->extents[]
 */
 static void CalcSurfaceExtents (msurface_t *s)
 {
-	float	mins_local[2], maxs_local[2], val;
+	float	mins[2], maxs[2], val;
 	int		i, j, e;
 	mvertex_t	*v;
 	mtexinfo_t	*tex;
 	int		bmins[2], bmaxs[2];
 
-	mins_local[0] = mins_local[1] = 999999;
-	maxs_local[0] = maxs_local[1] = -99999;
+	mins[0] = mins[1] = 999999;
+	maxs[0] = maxs[1] = -99999;
 
 	tex = s->texinfo;
 
@@ -649,17 +649,17 @@ static void CalcSurfaceExtents (msurface_t *s)
 				v->position[1] * tex->vecs[j][1] +
 				v->position[2] * tex->vecs[j][2] +
 				tex->vecs[j][3];
-			if (val < mins_local[j])
-				mins_local[j] = val;
-			if (val > maxs_local[j])
-				maxs_local[j] = val;
+			if (val < mins[j])
+				mins[j] = val;
+			if (val > maxs[j])
+				maxs[j] = val;
 		}
 	}
 
 	for (i = 0; i < 2; i++)
 	{
-		bmins[i] = (int) floor(mins_local[i]/16);
-		bmaxs[i] = (int) ceil(maxs_local[i]/16);
+		bmins[i] = (int) floor(mins[i]/16);
+		bmaxs[i] = (int) ceil(maxs[i]/16);
 
 		s->texturemins[i] = bmins[i] * 16;
 		s->extents[i] = (bmaxs[i] - bmins[i]) * 16;

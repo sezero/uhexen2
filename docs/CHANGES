@@ -3,6 +3,9 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2011-06-20 (SVN):
+    * model.c, gl_model.c: Cleanup for local/global mins/maxs variables.
+
 2011-06-19 (SVN):
     * Bumped beta date to 2011-06-19. Updated the 1.5.0 release notes.
     * host_cmd.c (LoadGamestate): Before calling ED_ParseEdict(), default
