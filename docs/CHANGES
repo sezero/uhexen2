@@ -4,6 +4,7 @@ Development Progress	:
 ---------------------------
 
 2011-06-20 (SVN):
+    * Moved Host_Version_f from host_cmd.c to host.c.
     * model.c, gl_model.c: Cleanup for local/global mins/maxs variables.
 
 2011-06-19 (SVN):

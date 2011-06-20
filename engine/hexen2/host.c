@@ -337,6 +337,60 @@ static void Host_SaveConfig_f (void)
 	Host_WriteConfiguration (Cmd_Argv(1));
 }
 
+#if 0
+/* just an easy place to do some profile testing */
+static void Host_Version_f (void)
+{
+	int		i;
+	int		repcount = 10000;
+	float	time1, time2, r1, r2;
+
+	if (Cmd_Argc() == 2)
+	{
+		repcount = atof(Cmd_Argv(1));
+		if (repcount < 0)
+			repcount =0;
+	}
+	Con_Printf ("looping %d times.\n", repcount);
+
+	time1 = Sys_DoubleTime();
+	for (i = repcount; i; i--)
+	{
+		char buf[2048];
+		memset (buf, i, 2048);
+	}
+	time2 = Sys_DoubleTime();
+	r1 = time2 - time1;
+	Con_Printf ("loop 1 = %f\n", r1);
+
+	time1 = Sys_DoubleTime();
+	for (i = repcount; i; i--)
+	{
+		char buf[2048];
+		memset (buf, i, 2048);
+	}
+	time2 = Sys_DoubleTime();
+	r2 = time2 - time1;
+	Con_Printf ("loop 2 = %f\n", r2);
+
+	if (r2 < r1)
+	{
+		Con_Printf ("loop 2 is faster by %f\n", r1-r2);
+	}
+	else
+	{
+		Con_Printf ("loop 1 is faster by %f\n", r2-r1);
+	}
+	Con_Printf ("Version %4.2f\n", ENGINE_VERSION);
+	Con_Printf ("Exe: "__TIME__" "__DATE__"\n");
+}
+#else
+static void Host_Version_f (void)
+{
+	Con_Printf ("Version %4.2f\n", ENGINE_VERSION);
+	Con_Printf ("Exe: "__TIME__" "__DATE__"\n");
+}
+#endif
 
 /*
 =======================
@@ -346,6 +400,7 @@ Host_InitLocal
 static void Host_InitLocal (void)
 {
 	Cmd_AddCommand ("saveconfig", Host_SaveConfig_f);
+	Cmd_AddCommand ("version", Host_Version_f);
 
 	Host_InitCommands ();
 

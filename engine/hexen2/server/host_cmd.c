@@ -1227,61 +1227,6 @@ static void Host_Class_f (void)
 	MSG_WriteByte (&sv.reliable_datagram, (byte)newClass);
 }
 
-//just an easy place to do some profile testing
-#if 0
-static void Host_Version_f (void)
-{
-	int		i;
-	int		repcount = 10000;
-	float	time1, time2, r1, r2;
-
-	if (Cmd_Argc() == 2)
-	{
-		repcount = atof(Cmd_Argv(1));
-		if (repcount < 0)
-			repcount =0;
-	}
-	Con_Printf ("looping %d times.\n", repcount);
-
-	time1 = Sys_DoubleTime();
-	for (i = repcount; i; i--)
-	{
-		char buf[2048];
-		memset (buf, i, 2048);
-	}
-	time2 = Sys_DoubleTime();
-	r1 = time2 - time1;
-	Con_Printf ("loop 1 = %f\n", r1);
-
-	time1 = Sys_DoubleTime();
-	for (i = repcount; i; i--)
-	{
-		char buf[2048];
-		memset (buf, i, 2048);
-	}
-	time2 = Sys_DoubleTime();
-	r2 = time2 - time1;
-	Con_Printf ("loop 2 = %f\n", r2);
-
-	if (r2 < r1)
-	{
-		Con_Printf ("loop 2 is faster by %f\n", r1-r2);
-	}
-	else
-	{
-		Con_Printf ("loop 1 is faster by %f\n", r2-r1);
-	}
-	Con_Printf ("Version %4.2f\n", ENGINE_VERSION);
-	Con_Printf ("Exe: "__TIME__" "__DATE__"\n");
-}
-#else
-static void Host_Version_f (void)
-{
-	Con_Printf ("Version %4.2f\n", ENGINE_VERSION);
-	Con_Printf ("Exe: "__TIME__" "__DATE__"\n");
-}
-#endif
-
 static void Host_Say (qboolean teamonly)
 {
 	int		j;
@@ -1882,7 +1827,6 @@ void Host_InitCommands (void)
 	Cmd_AddCommand ("name", Host_Name_f);
 	Cmd_AddCommand ("playerclass", Host_Class_f);
 	Cmd_AddCommand ("noclip", Host_Noclip_f);
-	Cmd_AddCommand ("version", Host_Version_f);
 	Cmd_AddCommand ("say", Host_Say_f);
 	Cmd_AddCommand ("say_team", Host_Say_Team_f);
 	Cmd_AddCommand ("tell", Host_Tell_f);
