@@ -1277,16 +1277,13 @@ void PR_LoadProgs (void)
 	for (i = 0; i < GEFV_CACHESIZE; i++)
 		gefvCache[i].field[0] = 0;
 
-	CRC_Init (&pr_crc);
-
 	progname = PR_GetProgFilename();
 	progs = (dprograms_t *)FS_LoadHunkFile (progname, NULL);
 	if (!progs)
 		Sys_Error ("%s: couldn't load %s", __thisfunc__, progname);
 	Con_DPrintf ("Programs occupy %luK.\n", (unsigned long)(fs_filesize/1024));
 
-	for (i = 0; i < fs_filesize; i++)
-		CRC_ProcessByte (&pr_crc, ((byte *)progs)[i]);
+	pr_crc = CRC_Block ((byte *)progs, fs_filesize);
 
 	// byte swap the header
 	for (i = 0; i < sizeof(*progs)/4; i++)

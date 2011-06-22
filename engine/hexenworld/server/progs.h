@@ -142,6 +142,8 @@ extern	qboolean	pr_trace;
 extern	dfunction_t	*pr_xfunction;
 extern	int		pr_xstatement;
 
+extern	unsigned short		pr_crc;
+
 extern func_t SpectatorConnect;
 extern func_t SpectatorThink;
 extern func_t SpectatorDisconnect;

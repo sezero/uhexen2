@@ -26,6 +26,8 @@ int		pr_edict_size;		// in bytes
 
 qboolean	ignore_precache = false;
 
+unsigned short	pr_crc;
+
 int		type_size[8] = {
 	1,					// ev_void
 	1,	// sizeof(string_t) / 4		// ev_string
@@ -1222,7 +1224,8 @@ void PR_LoadProgs (void)
 	Con_DPrintf ("Programs occupy %luK.\n", (unsigned long)(fs_filesize/1024));
 
 	// add prog crc to the serverinfo
-	sprintf (num, "%u", CRC_Block ((byte *)progs, fs_filesize));
+	pr_crc = CRC_Block ((byte *)progs, fs_filesize);
+	sprintf (num, "%u", pr_crc);
 	Info_SetValueForStarKey (svs.info, "*progs", num, MAX_SERVERINFO_STRING);
 
 	// byte swap the header
