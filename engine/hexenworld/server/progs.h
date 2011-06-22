@@ -146,7 +146,7 @@ extern func_t SpectatorConnect;
 extern func_t SpectatorThink;
 extern func_t SpectatorDisconnect;
 
-void PR_RunError (const char *error, ...) __attribute__((__format__(__printf__,1,2)));
+void PR_RunError (const char *error, ...) __attribute__((__format__(__printf__,1,2), __noreturn__));
 
 void ED_PrintEdicts (void);
 void ED_PrintNum (int ent);

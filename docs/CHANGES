@@ -3,6 +3,11 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2011-06-22 (SVN):
+    * progs.h: Mark PR_RunError() as a noreturn function: it doesn't
+      return because it calls Host_Error() whics is also a noreturn
+      function.
+
 2011-06-20 (SVN):
     * scripts/cdrip_hexen2.sh, cdrip_missionpack.sh: Minor tidy up.
     * rpm/hexen2.spec: Install the cd-rip scripts.
