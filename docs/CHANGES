@@ -4,6 +4,10 @@ Development Progress	:
 ---------------------------
 
 2011-06-22 (SVN):
+    * pr_cmds.c: Multiple clean ups. Added notes to some bound checks.
+      Removed the union from PF_updateInfoPlaque() and made it to do
+      the bit test and bit set using unsigned varibles. Also made it
+      to PR_RunError if the objective index is greater than 63.
     * client.h (client_state_t), server.h (client_t): Change info_mask
       and info_mask2 from signed int to unsigned int.
     * host_cmd.c: Remove some dead and commented out code.

@@ -376,7 +376,7 @@ static void PF_sprint (void)
 {
 	char		*s;
 	client_t	*client;
-	int			entnum;
+	int	entnum;
 
 	entnum = G_EDICTNUM(OFS_PARM0);
 	s = PF_VarString(1);
@@ -407,7 +407,7 @@ static void PF_centerprint (void)
 {
 	char		*s;
 	client_t	*client;
-	int			entnum;
+	int	entnum;
 
 	entnum = G_EDICTNUM(OFS_PARM0);
 	s = PF_VarString(1);
@@ -684,8 +684,8 @@ static void PF_ambientsound (void)
 	const char	*samp, **check;
 	float		*pos;
 	float		vol, attenuation;
-	int			i, soundnum;
-	int		SOUNDS_MAX; // just to be on the safe side..
+	int		i, soundnum;
+	int		SOUNDS_MAX; /* just to be on the safe side */
 
 	pos = G_VECTOR (OFS_PARM0);
 	samp = G_STRING(OFS_PARM1);
@@ -729,7 +729,7 @@ stop ent's sound on this chan
 */
 static void PF_StopSound(void)
 {
-	int			channel;
+	int		channel;
 	edict_t		*entity;
 
 	entity = G_EDICT(OFS_PARM0);
@@ -749,7 +749,7 @@ sends cur pos to client to update this ent/chan pair
 */
 static void PF_UpdateSoundPos(void)
 {
-	int			channel;
+	int		channel;
 	edict_t		*entity;
 
 	entity = G_EDICT(OFS_PARM0);
@@ -779,7 +779,7 @@ Larger attenuations will drop off.
 static void PF_sound (void)
 {
 	const char	*sample;
-	int			channel;
+	int		channel;
 	edict_t		*entity;
 	int		volume;
 	float	attenuation;
@@ -811,11 +811,11 @@ break()
 */
 static void PF_break (void)
 {
-	static qboolean DidIt = false;
+	static qboolean done = false;
 
-	if (!DidIt)
+	if (!done)
 	{
-		DidIt = true;
+		done = true;
 
 		Con_Printf ("break statement\n");
 #if defined(PLATFORM_WINDOWS)
@@ -878,7 +878,7 @@ static void PF_traceline (void)
 {
 	float	*v1, *v2;
 	trace_t	trace;
-	int		nomonsters;
+	int	nomonsters;
 	edict_t	*ent;
 	float	save_hull;
 
@@ -929,7 +929,7 @@ static void PF_tracearea (void)
 {
 	float	*v1, *v2, *mins, *maxs;
 	trace_t	trace;
-	int		nomonsters;
+	int	nomonsters;
 	edict_t	*ent;
 	float	save_hull;
 
@@ -1244,7 +1244,7 @@ static void FindPath (float *StartV, float *EndV, float *Mins, float *Maxs, int 
 static void PF_FindPath(void)
 {
 	float	*v1, *v2, *mins, *maxs;
-	int		nomonsters;
+	int	nomonsters;
 	edict_t	*ent;
 	double b;
 
@@ -1484,7 +1484,7 @@ static void PF_findradius (void)
 	float	rad;
 	float	*org;
 	vec3_t	eorg;
-	int		i, j;
+	int	i, j;
 
 	chain = (edict_t *)sv.edicts;
 
@@ -1755,7 +1755,7 @@ static void PF_precache_file (void)
 static void PF_precache_sound (void)
 {
 	const char	*s;
-	int		SOUNDS_MAX; // just to be on the safe side..
+	int		SOUNDS_MAX; /* just to be on the safe side */
 	int		i;
 
 	if (sv.state != ss_loading && !ignore_precache)
@@ -1826,10 +1826,7 @@ static void PF_precache_model (void)
 			return;
 		}
 		if (!strcmp(sv.model_precache[i], s))
-		{
-//			Con_DPrintf("duplicate precache: %s!\n",s);
-			return;
-		}
+			return;	/* duplicate precache */
 	}
 	PR_RunError ("%s: overflow", __thisfunc__);
 }
@@ -2000,7 +1997,7 @@ static void PF_lightstyle (void)
 	int		style;
 	const char	*val;
 	client_t	*client;
-	int			j;
+	int	j;
 
 	style = G_FLOAT(OFS_PARM0);
 	val = G_STRING(OFS_PARM1);
@@ -2701,20 +2698,19 @@ static void PF_Fixme (void)
 
 static void PF_plaque_draw (void)
 {
-	int Index;
-
+	int idx = (int) G_FLOAT(OFS_PARM1);
 //	plaquemessage = G_STRING(OFS_PARM0);
 
-	Index = ((int)G_FLOAT(OFS_PARM1));
-
-	if (Index < 0)
-		PR_RunError ("%s: index(%d) < 1", __thisfunc__, Index);
-
-	if (Index > pr_string_count)
-		PR_RunError ("%s: index(%d) >= pr_string_count(%d)", __thisfunc__, Index, pr_string_count);
+	/* 0 means "clear the plaquemessage", hence
+	 * the check for idx < 0 and NOT for idx < 1 */
+	if (idx < 0 || idx > pr_string_count)
+	{
+		PR_RunError ("%s: unexpected index %d (pr_string_count: %d)",
+					__thisfunc__, idx, pr_string_count);
+	}
 
 	MSG_WriteByte (WriteDest(), svc_plaque);
-	MSG_WriteShort (WriteDest(), Index);
+	MSG_WriteShort (WriteDest(), idx);
 }
 
 static void PF_rain_go (void)
@@ -2825,64 +2821,64 @@ static void PF_Sin (void)
 
 static void PF_AdvanceFrame (void)
 {
-	edict_t *Ent;
-	float Start, End, Result;
+	edict_t *ent;
+	float start, end, result;
 
-	Ent = PROG_TO_EDICT(PR_GLOBAL_STRUCT(self));
-	Start = G_FLOAT(OFS_PARM0);
-	End = G_FLOAT(OFS_PARM1);
+	ent = PROG_TO_EDICT(PR_GLOBAL_STRUCT(self));
+	start = G_FLOAT(OFS_PARM0);
+	end = G_FLOAT(OFS_PARM1);
 
-	if (Ent->v.frame < Start || Ent->v.frame > End)
+	if (ent->v.frame < start || ent->v.frame > end)
 	{ // Didn't start in the range
-		Ent->v.frame = Start;
-		Result = 0;
+		ent->v.frame = start;
+		result = 0;
 	}
-	else if (Ent->v.frame == End)
+	else if (ent->v.frame == end)
 	{  // Wrapping
-		Ent->v.frame = Start;
-		Result = 1;
+		ent->v.frame = start;
+		result = 1;
 	}
 	else
 	{  // Regular Advance
-		Ent->v.frame++;
-		if (Ent->v.frame == End)
-			Result = 2;
+		ent->v.frame++;
+		if (ent->v.frame == end)
+			result = 2;
 		else
-			Result = 0;
+			result = 0;
 	}
 
-	G_FLOAT(OFS_RETURN) = Result;
+	G_FLOAT(OFS_RETURN) = result;
 }
 
 static void PF_RewindFrame (void)
 {
-	edict_t *Ent;
-	float Start, End, Result;
+	edict_t *ent;
+	float start, end, result;
 
-	Ent = PROG_TO_EDICT(PR_GLOBAL_STRUCT(self));
-	Start = G_FLOAT(OFS_PARM0);
-	End = G_FLOAT(OFS_PARM1);
+	ent = PROG_TO_EDICT(PR_GLOBAL_STRUCT(self));
+	start = G_FLOAT(OFS_PARM0);
+	end = G_FLOAT(OFS_PARM1);
 
-	if (Ent->v.frame > Start || Ent->v.frame < End)
+	if (ent->v.frame > start || ent->v.frame < end)
 	{ // Didn't start in the range
-		Ent->v.frame = Start;
-		Result = 0;
+		ent->v.frame = start;
+		result = 0;
 	}
-	else if (Ent->v.frame == End)
+	else if (ent->v.frame == end)
 	{  // Wrapping
-		Ent->v.frame = Start;
-		Result = 1;
+		ent->v.frame = start;
+		result = 1;
 	}
 	else
 	{  // Regular Advance
-		Ent->v.frame--;
-		if (Ent->v.frame == End)
-			Result = 2;
+		ent->v.frame--;
+		if (ent->v.frame == end)
+			result = 2;
 		else
-			Result = 0;
+			result = 0;
 	}
 
-	G_FLOAT(OFS_RETURN) = Result;
+	G_FLOAT(OFS_RETURN) = result;
 }
 
 #define WF_NORMAL_ADVANCE	0
@@ -2929,14 +2925,14 @@ static void PF_advanceweaponframe (void)
 
 static void PF_setclass (void)
 {
-	float		NewClass;
+	float		newclass;
 	int			entnum;
 	edict_t	*e;
 	client_t	*client, *old;
 
 	entnum = G_EDICTNUM(OFS_PARM0);
 	e = G_EDICT(OFS_PARM0);
-	NewClass = G_FLOAT(OFS_PARM1);
+	newclass = G_FLOAT(OFS_PARM1);
 
 	if (entnum < 1 || entnum > svs.maxclients)
 	{
@@ -2948,13 +2944,13 @@ static void PF_setclass (void)
 
 	old = host_client;
 	host_client = client;
-	Host_ClientCommands ("playerclass %i\n", (int)NewClass);
+	Host_ClientCommands ("playerclass %i\n", (int)newclass);
 	host_client = old;
 
 	// These will get set again after the message has filtered its way
 	// but it wouldn't take affect right away
-	e->v.playerclass = NewClass;
-	client->playerclass = NewClass;
+	e->v.playerclass = newclass;
+	client->playerclass = newclass;
 }
 
 static void PF_starteffect (void)
@@ -3072,17 +3068,15 @@ static void PF_concatv(void)
 
 static void PF_GetString(void)
 {
-	int Index;
+	int idx = (int) G_FLOAT(OFS_PARM0);
 
-	Index = (int)G_FLOAT(OFS_PARM0) - 1;
+	if (idx < 1 || idx > pr_string_count)
+	{
+		PR_RunError ("%s: unexpected index %d (pr_string_count: %d)",
+					__thisfunc__, idx, pr_string_count);
+	}
 
-	if (Index < 0)
-		PR_RunError ("%s: index(%d) < 1", __thisfunc__, Index+1);
-
-	if (Index >= pr_string_count)
-		PR_RunError ("%s: index(%d) >= pr_string_count(%d)", __thisfunc__, Index, pr_string_count);
-
-	G_INT(OFS_RETURN) = PR_SetEngineString(&pr_global_strings[pr_string_index[Index]]);
+	G_INT(OFS_RETURN) = PR_SetEngineString(&pr_global_strings[pr_string_index[idx - 1]]);
 }
 
 
@@ -3177,46 +3171,45 @@ static void PF_matchAngleToSlope(void)
 
 static void PF_updateInfoPlaque (void)
 {
-//update the objectives in the mission pack
+/* update the objectives in the mission pack :
+ * see trigger_objective() and objective_use()  */
 	unsigned int check;
 	unsigned int idx, mode;
-	int  ofs = 0;
-	union
-	{
-		unsigned int	*tmp;
-	//	long	*use;
-		int	*use;
-	} u;
+	unsigned int *use;
 
 	idx = G_FLOAT(OFS_PARM0);
 	mode = G_FLOAT(OFS_PARM1);
 
-	if (idx > 31)
+	/* index to infolist.txt must be >= 0 && < 64 */
+	if (idx < 32)
 	{
-		u.tmp = &info_mask2;
-		ofs = 32;
+		use = &info_mask;
+		check = 1U << idx;
+	}
+	else if (idx < 64)
+	{
+		use = &info_mask2;
+		idx -= 32U;
+		check = 1U << idx;
 	}
 	else
 	{
-		u.tmp = &info_mask;
+		PR_RunError ("%s: bad objective index %u", __thisfunc__, idx);
 	}
 
-//	check = (long) (1 << (idx - ofs));
-	check = (int) (1 << (idx - ofs));
-
-	if (((mode & 1) && ((*u.use) & check)) || ((mode & 2) && !((*u.use) & check)))
+	if ( ((mode & 1 /* FORCE_ON */) &&  (*use & check)) ||
+	     ((mode & 2 /* FORCE_OFF */) && !(*use & check)) )
 		;
 	else
 	{
-		(*u.use) ^= check;
+		*use ^= check;
 	}
 }
 
 static void PF_doWhiteFlash(void)
 {
-// this thing is a mission pack crap (called from buddha_die()
-// function of buddha.hc upon death of Praevus) and it used to
-// do a V_WhiteFlash_f() here, affecting the local client only.
+/* called from mission pack's buddha.hc::buddha_die().  original code
+ * used to do V_WhiteFlash_f() here affecting the local client only. */
 	MSG_WriteByte (&sv.reliable_datagram, svc_stufftext);
 	MSG_WriteString (&sv.reliable_datagram, "wf\n");
 }

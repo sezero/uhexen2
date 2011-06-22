@@ -361,7 +361,7 @@ bprint(value)
 static void PF_bprint (void)
 {
 	char		*s;
-	int			level;
+	int	level;
 
 	level = G_FLOAT(OFS_PARM0);
 
@@ -386,8 +386,8 @@ static void PF_sprint (void)
 {
 	char		*s;
 	client_t	*client;
-	int			entnum;
-	int			level;
+	int	entnum;
+	int	level;
 
 	entnum = G_EDICTNUM(OFS_PARM0);
 	level = G_FLOAT(OFS_PARM1);
@@ -419,54 +419,50 @@ name_print(to, level, who)
 */
 static void PF_name_print (void)
 {
-	int Index, Style;
+	int idx, style;
 
 //	plaquemessage = G_STRING(OFS_PARM0);
+	idx = (int) G_EDICTNUM(OFS_PARM2);
+	style = (int) G_FLOAT(OFS_PARM1);
 
-	Index = ((int)G_EDICTNUM(OFS_PARM2));
-	Style = ((int)G_FLOAT(OFS_PARM1));
-
-	if (spartanPrint.integer && Style < 2)
+	if (spartanPrint.integer && style < 2)
 		return;
 
-	if (Index <= 0)
-		PR_RunError ("%s: index(%d) <= 0", __thisfunc__, Index);
-
-	if (Index > MAX_CLIENTS)
-		PR_RunError ("%s: index(%d) > MAX_CLIENTS", __thisfunc__, Index);
+	if (idx < 1 || idx > MAX_CLIENTS)
+		PR_RunError ("%s: unexpected index %d", __thisfunc__, idx);
 
 	if ((int)G_FLOAT(OFS_PARM0) == MSG_BROADCAST)
-	{//broadcast message--send like bprint, print it out on server too.
+	{/* broadcast message--send like bprint, print it out on server too. */
 		client_t	*cl;
 		int			i;
 
-		Sys_Printf("%s", (char *)&svs.clients[Index-1].name);
+		Sys_Printf("%s", (char *)&svs.clients[idx - 1].name);
 
 		for (i = 0, cl = svs.clients; i < MAX_CLIENTS; i++, cl++)
 		{
-			if (Style < cl->messagelevel)
+			if (style < cl->messagelevel)
 				continue;
 			if (cl->state != cs_spawned)
 			{//should i be checking cs_connected too?
 				if (cl->state)
 				{//not fully in so won't know name yet, explicitly say the name
 					MSG_WriteByte (&cl->netchan.message, svc_print);
-					MSG_WriteByte (&cl->netchan.message, Style);
-					MSG_WriteString (&cl->netchan.message, (char *)&svs.clients[Index-1].name);
+					MSG_WriteByte (&cl->netchan.message, style);
+					MSG_WriteString (&cl->netchan.message, (char *)&svs.clients[idx - 1].name);
 				}
 				continue;
 			}
 			MSG_WriteByte (&cl->netchan.message, svc_name_print);
-			MSG_WriteByte (&cl->netchan.message, Style);
+			MSG_WriteByte (&cl->netchan.message, style);
 			//knows the name, send the index.
-			MSG_WriteByte (&cl->netchan.message, Index-1);
+			MSG_WriteByte (&cl->netchan.message, idx - 1);
 		}
 		return;
 	}
 
 	MSG_WriteByte (WriteDest(), svc_name_print);
-	MSG_WriteByte (WriteDest(), Style);
-	MSG_WriteByte (WriteDest(), Index-1);//heh, don't need a short here.
+	MSG_WriteByte (WriteDest(), style);
+	MSG_WriteByte (WriteDest(), idx - 1);//heh, don't need a short here.
 }
 
 
@@ -481,45 +477,44 @@ print_indexed(to, level, index)
 */
 static void PF_print_indexed (void)
 {
-	int Index, Style;
+	int idx, style;
 
 //	plaquemessage = G_STRING(OFS_PARM0);
+	idx = (int) G_FLOAT(OFS_PARM2);
+	style = (int) G_FLOAT(OFS_PARM1);
 
-	Index = ((int)G_FLOAT(OFS_PARM2));
-	Style = ((int)G_FLOAT(OFS_PARM1));
-
-	if (spartanPrint.integer && Style < 2)
+	if (spartanPrint.integer && style < 2)
 		return;
 
-	if (Index <= 0)
-		PR_RunError ("%s: index(%d) < 1", __thisfunc__, Index);
-
-	if (Index > pr_string_count)
-		PR_RunError ("%s: index(%d) >= pr_string_count(%d)", __thisfunc__, Index, pr_string_count);
+	if (idx < 1 || idx > pr_string_count)
+	{
+		PR_RunError ("%s: unexpected index %d (pr_string_count: %d)",
+					__thisfunc__, idx, pr_string_count);
+	}
 
 	if ((int)G_FLOAT(OFS_PARM0) == MSG_BROADCAST)
-	{//broadcast message--send like bprint, print it out on server too.
+	{/* broadcast message--send like bprint, print it out on server too. */
 		client_t	*cl;
 		int			i;
 
-		Sys_Printf("%s", &pr_global_strings[pr_string_index[Index-1]]);
+		Sys_Printf("%s", &pr_global_strings[pr_string_index[idx - 1]]);
 
 		for (i = 0, cl = svs.clients; i < MAX_CLIENTS; i++, cl++)
 		{
-			if (Style < cl->messagelevel)
+			if (style < cl->messagelevel)
 				continue;
 			if (!cl->state)
 				continue;
 			MSG_WriteByte (&cl->netchan.message, svc_indexed_print);
-			MSG_WriteByte (&cl->netchan.message, Style);
-			MSG_WriteShort (&cl->netchan.message, Index);
+			MSG_WriteByte (&cl->netchan.message, style);
+			MSG_WriteShort (&cl->netchan.message, idx);
 		}
 		return;
 	}
 
 	MSG_WriteByte (WriteDest(), svc_indexed_print);
-	MSG_WriteByte (WriteDest(), Style);
-	MSG_WriteShort (WriteDest(), Index);
+	MSG_WriteByte (WriteDest(), style);
+	MSG_WriteShort (WriteDest(), idx);
 }
 
 
@@ -536,7 +531,7 @@ static void PF_centerprint (void)
 {
 	char		*s;
 	client_t	*client;
-	int			entnum;
+	int	entnum;
 
 	entnum = G_EDICTNUM(OFS_PARM0);
 	s = PF_VarString(1);
@@ -567,7 +562,7 @@ static void PF_bcenterprint2 (void)
 {
 	char		*s;
 	client_t	*cl;
-	int			i;
+	int	i;
 
 	s = PF_VarString(0);
 
@@ -593,7 +588,7 @@ static void PF_centerprint2 (void)
 {
 	char		*s;
 	client_t	*client;
-	int			entnum;
+	int	entnum;
 
 	entnum = G_EDICTNUM(OFS_PARM0);
 	s = PF_VarString(1);
@@ -869,7 +864,7 @@ static void PF_ambientsound (void)
 	const char	*samp, **check;
 	float		*pos;
 	float		vol, attenuation;
-	int			i, soundnum;
+	int		i, soundnum;
 
 	pos = G_VECTOR (OFS_PARM0);
 	samp = G_STRING(OFS_PARM1);
@@ -909,7 +904,7 @@ stop ent's sound on this chan
 */
 static void PF_StopSound(void)
 {
-	int			channel;
+	int		channel;
 	edict_t		*entity;
 
 	entity = G_EDICT(OFS_PARM0);
@@ -929,7 +924,7 @@ sends cur pos to client to update this ent/chan pair
 */
 static void PF_UpdateSoundPos(void)
 {
-	int			channel;
+	int		channel;
 	edict_t		*entity;
 
 	entity = G_EDICT(OFS_PARM0);
@@ -959,7 +954,7 @@ Larger attenuations will drop off.
 static void PF_sound (void)
 {
 	const char	*sample;
-	int			channel;
+	int		channel;
 	edict_t		*entity;
 	int		volume;
 	float	attenuation;
@@ -982,11 +977,11 @@ break()
 */
 static void PF_break (void)
 {
-	static qboolean DidIt = false;
+	static qboolean done = false;
 
-	if (!DidIt)
+	if (!done)
 	{
-		DidIt = true;
+		done = true;
 
 		Con_Printf ("break statement\n");
 #if defined(PLATFORM_WINDOWS)
@@ -1031,7 +1026,7 @@ static void PF_traceline (void)
 {
 	float	*v1, *v2;
 	trace_t	trace;
-	int		nomonsters;
+	int	nomonsters;
 	edict_t	*ent;
 	float	save_hull;
 
@@ -1082,7 +1077,7 @@ static void PF_tracearea (void)
 {
 	float	*v1, *v2, *mins, *maxs;
 	trace_t	trace;
-	int		nomonsters;
+	int	nomonsters;
 	edict_t	*ent;
 	float	save_hull;
 
@@ -1324,7 +1319,7 @@ static void PF_findradius (void)
 	float	rad;
 	float	*org;
 	vec3_t	eorg;
-	int		i, j;
+	int	i, j;
 
 	chain = (edict_t *)sv.edicts;
 
@@ -1656,7 +1651,7 @@ static void PF_precache_model (void)
 			return;
 		}
 		if (!strcmp(sv.model_precache[i], s))
-			return;
+			return;	/* duplicate precache */
 	}
 	PR_RunError ("%s: overflow", __thisfunc__);
 }
@@ -1817,7 +1812,7 @@ static void PF_lightstyle (void)
 	int		style;
 	const char	*val;
 	client_t	*client;
-	int			j;
+	int	j;
 
 	style = G_FLOAT(OFS_PARM0);
 	val = G_STRING(OFS_PARM1);
@@ -2468,20 +2463,19 @@ static void PF_Fixme (void)
 
 static void PF_plaque_draw (void)
 {
-	int Index;
-
+	int idx = (int) G_FLOAT(OFS_PARM1);
 //	plaquemessage = G_STRING(OFS_PARM0);
 
-	Index = ((int)G_FLOAT(OFS_PARM1));
-
-	if (Index < 0)
-		PR_RunError ("%s: index(%d) < 1", __thisfunc__, Index);
-
-	if (Index > pr_string_count)
-		PR_RunError ("%s: index(%d) >= pr_string_count(%d)", __thisfunc__, Index, pr_string_count);
+	/* 0 means "clear the plaquemessage", hence
+	 * the check for idx < 0 and NOT for idx < 1 */
+	if (idx < 0 || idx > pr_string_count)
+	{
+		PR_RunError ("%s: unexpected index %d (pr_string_count: %d)",
+					__thisfunc__, idx, pr_string_count);
+	}
 
 	MSG_WriteByte (WriteDest(), svc_plaque);
-	MSG_WriteShort (WriteDest(), Index);
+	MSG_WriteShort (WriteDest(), idx);
 }
 
 static void PF_rain_go (void)
@@ -2582,78 +2576,78 @@ static void PF_Sin (void)
 
 static void PF_AdvanceFrame (void)
 {
-	edict_t *Ent;
-	float Start, End, Result;
+	edict_t *ent;
+	float start, end, result;
 
-	Ent = PROG_TO_EDICT(PR_GLOBAL_STRUCT(self));
-	Start = G_FLOAT(OFS_PARM0);
-	End = G_FLOAT(OFS_PARM1);
+	ent = PROG_TO_EDICT(PR_GLOBAL_STRUCT(self));
+	start = G_FLOAT(OFS_PARM0);
+	end = G_FLOAT(OFS_PARM1);
 
-	if ( (Start < End && (Ent->v.frame < Start || Ent->v.frame > End)) ||
-		(Start > End && (Ent->v.frame > Start || Ent->v.frame < End)) )
+	if ( (start < end && (ent->v.frame < start || ent->v.frame > end)) ||
+		(start > end && (ent->v.frame > start || ent->v.frame < end)) )
 	{ // Didn't start in the range
-		Ent->v.frame = Start;
-		Result = 0;
+		ent->v.frame = start;
+		result = 0;
 	}
-	else if (Ent->v.frame == End)
+	else if (ent->v.frame == end)
 	{  // Wrapping
-		Ent->v.frame = Start;
-		Result = 1;
+		ent->v.frame = start;
+		result = 1;
 	}
-	else if (End > Start)
+	else if (end > start)
 	{  // Regular Advance
-		Ent->v.frame++;
-		if (Ent->v.frame == End)
-			Result = 2;
+		ent->v.frame++;
+		if (ent->v.frame == end)
+			result = 2;
 		else
-			Result = 0;
+			result = 0;
 	}
-	else if (End < Start)
+	else if (end < start)
 	{  // Reverse Advance
-		Ent->v.frame--;
-		if (Ent->v.frame == End)
-			Result = 2;
+		ent->v.frame--;
+		if (ent->v.frame == end)
+			result = 2;
 		else
-			Result = 0;
+			result = 0;
 	}
 	else
 	{
-		Ent->v.frame=End;
-		Result = 1;
+		ent->v.frame = end;
+		result = 1;
 	}
 
-	G_FLOAT(OFS_RETURN) = Result;
+	G_FLOAT(OFS_RETURN) = result;
 }
 
 static void PF_RewindFrame (void)
 {
-	edict_t *Ent;
-	float Start, End, Result;
+	edict_t *ent;
+	float start, end, result;
 
-	Ent = PROG_TO_EDICT(PR_GLOBAL_STRUCT(self));
-	Start = G_FLOAT(OFS_PARM0);
-	End = G_FLOAT(OFS_PARM1);
+	ent = PROG_TO_EDICT(PR_GLOBAL_STRUCT(self));
+	start = G_FLOAT(OFS_PARM0);
+	end = G_FLOAT(OFS_PARM1);
 
-	if (Ent->v.frame > Start || Ent->v.frame < End)
+	if (ent->v.frame > start || ent->v.frame < end)
 	{ // Didn't start in the range
-		Ent->v.frame = Start;
-		Result = 0;
+		ent->v.frame = start;
+		result = 0;
 	}
-	else if (Ent->v.frame == End)
+	else if (ent->v.frame == end)
 	{  // Wrapping
-		Ent->v.frame = Start;
-		Result = 1;
+		ent->v.frame = start;
+		result = 1;
 	}
 	else
 	{  // Regular Advance
-		Ent->v.frame--;
-		if (Ent->v.frame == End)
-			Result = 2;
+		ent->v.frame--;
+		if (ent->v.frame == end)
+			result = 2;
 		else
-			Result = 0;
+			result = 0;
 	}
 
-	G_FLOAT(OFS_RETURN) = Result;
+	G_FLOAT(OFS_RETURN) = result;
 }
 
 #define WF_NORMAL_ADVANCE	0
@@ -2700,7 +2694,7 @@ static void PF_advanceweaponframe (void)
 
 static void PF_setclass (void)
 {
-	float		NewClass;
+	float		newclass;
 	int			entnum;
 	edict_t	*e;
 	client_t	*client, *old;
@@ -2708,7 +2702,7 @@ static void PF_setclass (void)
 
 	entnum = G_EDICTNUM(OFS_PARM0);
 	e = G_EDICT(OFS_PARM0);
-	NewClass = G_FLOAT(OFS_PARM1);
+	newclass = G_FLOAT(OFS_PARM1);
 
 	if (entnum < 1 || entnum > MAX_CLIENTS)
 	{
@@ -2721,13 +2715,13 @@ static void PF_setclass (void)
 	old = host_client;
 	host_client = client;
 
-	if (NewClass > CLASS_DEMON && dmMode.integer != DM_SIEGE)
-		NewClass = CLASS_PALADIN;
+	if (newclass > CLASS_DEMON && dmMode.integer != DM_SIEGE)
+		newclass = CLASS_PALADIN;
 
-	e->v.playerclass = NewClass;
-	host_client->playerclass = NewClass;
+	e->v.playerclass = newclass;
+	host_client->playerclass = newclass;
 
-	sprintf(temp,"%d",(int)NewClass);
+	sprintf(temp,"%d",(int)newclass);
 	Info_SetValueForKey (host_client->userinfo, "playerclass", temp, MAX_INFO_STRING);
 	q_strlcpy (host_client->name, Info_ValueForKey(host_client->userinfo, "name"), sizeof(host_client->name));
 	host_client->sendinfo = true;
@@ -2744,15 +2738,15 @@ static void PF_setclass (void)
 
 static void PF_setsiegeteam (void)
 {
-	float		NewTeam;
-	int			entnum;
+	float		newteam;
+	int		entnum;
 	edict_t		*e;
 	client_t	*client,*old;
 //	char		temp[1024];
 
 	entnum = G_EDICTNUM(OFS_PARM0);
 	e = G_EDICT(OFS_PARM0);
-	NewTeam = G_FLOAT(OFS_PARM1);
+	newteam = G_FLOAT(OFS_PARM1);
 
 	if (entnum < 1 || entnum > MAX_CLIENTS)
 	{
@@ -2765,11 +2759,11 @@ static void PF_setsiegeteam (void)
 	old = host_client;
 	host_client = client;
 
-	e->v.siege_team = NewTeam;
-	host_client->siege_team = NewTeam;
+	e->v.siege_team = newteam;
+	host_client->siege_team = newteam;
 
 //???
-//	sprintf(temp,"%d",(int)NewTeam);
+//	sprintf(temp,"%d",(int)newteam);
 //	Info_SetValueForKey (host_client->userinfo, "playerclass", temp, MAX_INFO_STRING);
 //	q_strlcpy (host_client->name, Info_ValueForKey(host_client->userinfo, "name"), sizeof(host_client->name));
 //	host_client->sendinfo = true;
@@ -3025,17 +3019,15 @@ static void PF_concatv(void)
 
 static void PF_GetString(void)
 {
-	int Index;
+	int idx = (int) G_FLOAT(OFS_PARM0);
 
-	Index = (int)G_FLOAT(OFS_PARM0) - 1;
+	if (idx < 1 || idx > pr_string_count)
+	{
+		PR_RunError ("%s: unexpected index %d (pr_string_count: %d)",
+					__thisfunc__, idx, pr_string_count);
+	}
 
-	if (Index < 0)
-		PR_RunError ("%s: index(%d) < 1", __thisfunc__, Index+1);
-
-	if (Index >= pr_string_count)
-		PR_RunError ("%s: index(%d) >= pr_string_count(%d)", __thisfunc__, Index, pr_string_count);
-
-	G_INT(OFS_RETURN) = PR_SetEngineString(&pr_global_strings[pr_string_index[Index]]);
+	G_INT(OFS_RETURN) = PR_SetEngineString(&pr_global_strings[pr_string_index[idx - 1]]);
 }
 
 
