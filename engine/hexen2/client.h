@@ -222,7 +222,7 @@ typedef struct
 	short		RemoveList[MAX_CLIENT_STATES], NumToRemove;
 
 // mission pack, objectives strings
-	int		info_mask, info_mask2;
+	unsigned int	info_mask, info_mask2;
 } client_state_t;
 
 

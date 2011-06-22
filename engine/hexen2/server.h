@@ -113,7 +113,7 @@ typedef struct client_s
 	byte		current_sequence, last_sequence;
 
 // mission pack, objectives strings
-	int		info_mask, info_mask2;
+	unsigned int	info_mask, info_mask2;
 } client_t;
 
 

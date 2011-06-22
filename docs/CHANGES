@@ -4,6 +4,8 @@ Development Progress	:
 ---------------------------
 
 2011-06-22 (SVN):
+    * client.h (client_state_t), server.h (client_t): Change info_mask
+      and info_mask2 from signed int to unsigned int.
     * host_cmd.c: Remove some dead and commented out code.
     * progs.h: Mark PR_RunError() as a noreturn function: it doesn't
       return because it calls Host_Error() whics is also a noreturn
