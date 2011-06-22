@@ -530,8 +530,7 @@ static void Host_Savegame_f (void)
 	fprintf (f, "%f\n", coop.value);
 	fprintf (f, "%f\n", teamplay.value);
 	fprintf (f, "%f\n", randomclass.value);
-	//fprintf (f, "%f\n", cl_playerclass.value);
-	fprintf (f, "%f\n", 1.0);	// dummy playerclass value
+	fprintf (f, "%f\n", 1.0);	// dummy cl_playerclass.value
 	// mission pack, objectives strings
 	fprintf (f, "%u\n", info_mask);
 	fprintf (f, "%u\n", info_mask2);
@@ -687,8 +686,7 @@ static void Host_Loadgame_f (void)
 
 	tempf = -1;
 	fscanf (f, "%f\n", &tempf);
-	//if (tempf >= 0)
-	//	Cvar_SetValue ("_cl_playerclass", tempf);
+		// nothing to do with this tempf (cl_playerclass.value)
 
 	// mission pack, objectives strings
 	fscanf (f, "%u\n", &info_mask);
@@ -712,8 +710,6 @@ static void Host_Loadgame_f (void)
 	SV_SaveSpawnparms ();
 
 	ent = EDICT_NUM(1);
-
-	//Cvar_SetValue ("_cl_playerclass", ent->v.playerclass);//this better be the same as above...
 
 	// this may be rudundant with the setting in PR_LoadProgs, but not sure so its here too
 	if (progs->crc == PROGS_V112_CRC)
@@ -777,12 +773,7 @@ int SaveGamestate (qboolean ClientsOnly)
 		fprintf (f, "%s\n", sv.name);
 		fprintf (f, "%f\n", sv.time);
 
-// mission pack, objectives strings
-//		fprintf (f, "%u\n", info_mask);
-//		fprintf (f, "%u\n", info_mask2);
-
 	// write the light styles
-
 		for (i = 0; i < MAX_LIGHTSTYLES; i++)
 		{
 			if (sv.lightstyles[i])
@@ -794,17 +785,10 @@ int SaveGamestate (qboolean ClientsOnly)
 		fprintf (f, "-1\n");
 		ED_WriteGlobals (f);
 	}
-	else
-	{
-// mission pack, objectives strings
-//		fprintf(f, "%u\n", info_mask);
-//		fprintf(f, "%u\n", info_mask2);
-	}
 
 	host_client = svs.clients;
 
-//	for (i = svs.maxclients+1; i < sv.num_edicts; i++)
-//  to save the client states
+// save the client states
 	for (i = start; i < end; i++)
 	{
 		ent = EDICT_NUM(i);
@@ -964,10 +948,6 @@ static int LoadGamestate (const char *level, const char *startspot, int ClientsM
 			return -1;
 		}
 
-// mission pack, objectives strings
-//		fscanf (f, "%u\n", &info_mask);
-//		fscanf (f, "%u\n", &info_mask2);
-
 	// load the light styles
 		for (i = 0; i < MAX_LIGHTSTYLES; i++)
 		{
@@ -1004,7 +984,6 @@ static int LoadGamestate (const char *level, const char *startspot, int ClientsM
 			Host_Error ("%s: First token isn't a brace", __thisfunc__);
 
 		// parse an edict
-
 		if (entnum == -1)
 		{
 			ED_ParseGlobals (start);
@@ -1152,7 +1131,6 @@ static void Host_Name_f (void)
 	host_client->edict->v.netname = PR_SetEngineString(host_client->name);
 
 // send notification to all clients
-
 	MSG_WriteByte (&sv.reliable_datagram, svc_updatename);
 	MSG_WriteByte (&sv.reliable_datagram, host_client - svs.clients);
 	MSG_WriteString (&sv.reliable_datagram, host_client->name);
@@ -1221,7 +1199,6 @@ static void Host_Class_f (void)
 	}
 
 // send notification to all clients
-
 	MSG_WriteByte (&sv.reliable_datagram, svc_updateclass);
 	MSG_WriteByte (&sv.reliable_datagram, host_client - svs.clients);
 	MSG_WriteByte (&sv.reliable_datagram, (byte)newClass);
