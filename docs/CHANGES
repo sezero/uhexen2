@@ -4,6 +4,7 @@ Development Progress	:
 ---------------------------
 
 2011-06-22 (SVN):
+    * progs.h: Sync h2 and hw versions and move to h2shared directory.
     * pr_edict.c (PR_LoadProgs): Sync h2 and hw progs crc calculation.
     * pr_cmds.c: Multiple clean ups. Added notes to some bound checks.
       Removed the union from PF_updateInfoPlaque() and made it to do
