@@ -1065,7 +1065,7 @@ static void PF_TraceToss (void)
 
 	PR_SetTrace (trace);
 }
-#endif
+#endif	/* QUAKE2 */
 
 /*
 =================
@@ -1548,7 +1548,7 @@ static void PF_Find (void)
 
 	RETURN_EDICT(sv.edicts);
 }
-#endif
+#endif	/* QUAKE2 */
 
 #if 0
 static void PF_FindFloat (void)
@@ -1579,7 +1579,7 @@ static void PF_FindFloat (void)
 
 	RETURN_EDICT(sv.edicts);
 }
-#endif
+#endif	/* #if 0 */
 
 static void PR_CheckEmptyString (const char *s)
 {
@@ -2187,7 +2187,7 @@ static void PF_changepitch (void)
 
 	ent->v.angles[0] = anglemod (current + move);
 }
-#endif
+#endif	/* QUAKE2 */
 
 /*
 ===============================================================================
@@ -2938,7 +2938,7 @@ static void PF_updateeffect (void)
 	SV_MulticastSpecific (sv.Effects[idx].client_list, true);
 }
 
-#if 0	// not used
+#if 0	/* not used */
 static void PF_randomrange(void)
 {
 	float num, minv, maxv;
@@ -2996,7 +2996,7 @@ static void PF_randomvvalue(void)
 
 	VectorCopy (result, G_VECTOR(OFS_RETURN));
 }
-#endif
+#endif	/* not used */
 
 static void PF_concatv(void)
 {

@@ -1,7 +1,7 @@
 /*
-	server.h
+	hexen2/server.h
 
-	$Header: /cvsroot/uhexen2/engine/hexen2/server.h,v 1.28 2010-03-09 15:00:26 sezero Exp $
+	$Id$
 */
 
 #ifndef __HX2_SERVER_H

@@ -2,7 +2,7 @@
 	progs.h
 	PROGS structures, public functions and vars
 
-	$Header: /cvsroot/uhexen2/engine/hexenworld/server/progs.h,v 1.17 2010-01-11 18:48:19 sezero Exp $
+	$Id$
 */
 
 #ifndef __HX2_PROGS_H
