@@ -60,10 +60,11 @@ void Host_LoadStrings (void)
 			host_strings[i] = 0;
 		}
 #if defined(H2W)
-		/* Hexenworld only: for indexed prints, translate '^' to a newline */
+		/* Hexenworld: translate '^' to
+		 * a newline for indexed prints */
 		else if (host_strings[i] == '^')
 		{
-			sprintf(host_strings + i, "\n%s", host_strings + i + 1);
+			host_strings[i] = '\n';
 		}
 #endif	/* H2W */
 	}

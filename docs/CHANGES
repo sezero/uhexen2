@@ -4,6 +4,11 @@ Development Progress	:
 ---------------------------
 
 2011-06-23 (SVN):
+    * host_string.c (Host_LoadStrings): Remove the sprintf() call from
+      the hexenworld '^' to '\n' translation and just store '\n' at the
+      position where '^' is found.
+
+2011-06-23 (SVN):
     * hexen2/cl_string.c: Copied from pr_strng.c, now holds only the
       strings for the client-side puzzle piece and objectives displays.
       Removed misleading pr_ prefix from the info_strings variables.
