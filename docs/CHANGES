@@ -4,6 +4,16 @@ Development Progress	:
 ---------------------------
 
 2011-06-23 (SVN):
+    * gamecode, soul.hc: Made the soul sphere in sync with the skull or
+      the cross. Changed the model lighting style to fullbright so now
+      the skull and the cross are well discernible in dark places. The
+      soul sphere can now gain momentum during spawning and fly around
+      instead of hovering over the dead body and sometimes got stuck.
+      Scaled down the soul at the end of its lifetime. Added the demoness
+      among the list of bad people in the portals version in parallel to
+      the hw version. Corrected some inconsistencies and minor errors.
+
+2011-06-23 (SVN):
     * host_string.c (Host_LoadStrings): Remove the sprintf() call from
       the hexenworld '^' to '\n' translation and just store '\n' at the
       position where '^' is found.

@@ -1,8 +1,6 @@
 /*
- * $Header: /cvsroot/uhexen2/gamecode/hc/siege/soul.hc,v 1.2 2007-02-07 17:01:24 sezero Exp $
+ * siege/soul.hc
  */
-
-// Possible improvement: Make model shrink before disappearing
 
 void () crusader_soul_touch =
 {
@@ -26,10 +24,10 @@ void () crusader_soul_touch =
 		sprint (other, PRINT_MEDIUM, "You now have Holy Strength!\n");
 	}
 	// Bad people are hurt by this
-	else if ((other.classname == "player") && 
-		((other.playerclass==CLASS_NECROMANCER) || 
-		 (other.playerclass==CLASS_SUCCUBUS) ||
-		 (other.playerclass==CLASS_ASSASSIN)))
+	else if ((other.classname == "player") &&
+			((other.playerclass==CLASS_NECROMANCER) ||
+			 (other.playerclass==CLASS_SUCCUBUS) ||
+			 (other.playerclass==CLASS_ASSASSIN)))
 	{
 		if (self.pain_finished < time)
 			T_Damage (other, self, self, 5);
@@ -68,8 +66,9 @@ void () necro_soul_touch =
 
 	}
 	// Good people are hurt by this
-	else if ((other.classname == "player") && 
-		((other.playerclass==CLASS_PALADIN) || (other.playerclass==CLASS_CRUSADER)))
+	else if ((other.classname == "player") &&
+			((other.playerclass==CLASS_PALADIN) ||
+			 (other.playerclass==CLASS_CRUSADER)))
 	{
 		if (self.pain_finished < time)
 			T_Damage (other, self, self, 5);
@@ -85,42 +84,54 @@ void () soul_move =
 
 	self.velocity_z += self.hoverz;
 	if (self.velocity_z > 16)
-		self.hoverz = -1;		
+		self.hoverz = -1;
 	else if (self.velocity_z < -16 )
 		self.hoverz = 1;
 
-	if (self.classname == "soulskull") 
+	self.enemy.velocity_z = self.velocity_z;	// keep in sync
+	self.enemy.hoverz = self.hoverz;
+
+	if (self.classname == "soulskull")
 	{
 		p_color = 144;
 		vel = randomv('-1.44 -1.44 -65', '1.44 1.44 -35');
 		particle2(self.origin - '0 0 20',vel,vel,p_color,PARTICLETYPE_C_EXPLODE,self.health/4);
+		setorigin (self.enemy, self.origin + '0 0 1');
 	}
-
 	else if (self.classname == "soulcross")
-	{	
+	{
 		p_color = 176;
 		vel = randomv('-1.44 -1.44 65', '1.44 1.44 35');
 		particle2(self.origin +'0 0 25',vel,vel,p_color,PARTICLETYPE_C_EXPLODE,self.health/4);
+		setorigin (self.enemy, self.origin);
 	}
 
-	setorigin (self.enemy, self.origin);	// Move the ball with it
-
 	self.health -= 0.1;
-	
+
 	self.think = soul_move;
 	thinktime self : 0.1;
 	if (self.sound_time < time)
 	{
 		self.sound_time = time + 4;
 		sound (self, CHAN_VOICE, "raven/soul.wav", 1, ATTN_NORM);
-	}	
+	}
 
 	if (self.health <= 0)
 	{
 		stopSound(self,CHAN_VOICE);
-		//sound (self, CHAN_VOICE, "misc/null.wav", 1, ATTN_NORM);
+		CreateLittleWhiteFlash(self.origin);
 		remove(self);
 		remove(self.enemy);
+		return;
+	}
+
+	if (self.health < 4)
+	{
+		if (self.scale > 0.2)
+		{
+			self.scale -= 0.02;
+			self.enemy.scale -= 0.02;
+		}
 	}
 };
 
@@ -138,42 +149,47 @@ void necromancer_sphere (entity ent)
 		return;
 
 	new2 = spawn();
-
 	new2.owner = new;
 	new2.solid = SOLID_TRIGGER;
-	new2.movetype = MOVETYPE_FLY;
-
+	new2.movetype = MOVETYPE_NONE;
 	droptofloor();
-	setorigin (new2, self.origin + '0  0 32');
+	new2.movetype = MOVETYPE_NOCLIP;
+	setorigin (new2, self.origin + '0 0 32');
 	setmodel (new2, "models/soulskul.mdl");
-	new2.classname = "soulskull";
 	setsize (new2, new2.mins , new2.maxs);
+	new2.classname = "soulskull";
+	new2.touch = necro_soul_touch;
 	new2.think = soul_move;
 	thinktime new2 : 0.1;
 	new2.hoverz=1;
-	new2.velocity_z=new.hoverz;
-	new2.touch = necro_soul_touch;
+	new2.velocity_x = 0;
+	new2.velocity_y = 0;
+	new2.velocity_z = new2.hoverz;
 	new2.flags=0;
+	new2.drawflags(+)MLS_FULLBRIGHT;
 	new2.lifespan = 15;  // Alive for 15 seconds
 	new2.health = new2.lifespan * 2;
-
 	new2.avelocity_y = 200;
+	new2.scale = 1;
 	sound (new, CHAN_VOICE,"raven/soul.wav", 1, ATTN_NORM);
-
 
 	new = spawn();
 	new.owner = new;
-	new.solid = SOLID_TRIGGER;
-	new.movetype = MOVETYPE_FLY;
-
+	new.solid = SOLID_NOT;
+	new.movetype = MOVETYPE_NOCLIP;
+	setorigin (new, new2.origin + '0 0 1'); // correct slight excentricity, otherwise conspicuous when scaling down
 	setmodel (new, "models/soulball.mdl");
-
 	setsize (new, new.mins , new.maxs);
+	new.hoverz=1;
+	new.velocity_x = 0;
+	new.velocity_y = 0;
+	new.velocity_z = new.hoverz;
 	new.flags=0;
-	setorigin (new, new2.origin);
+	new.drawflags(+)MLS_FULLBRIGHT;
+	new.sound_time = 2;
+	new.scale = 1;
 
 	new2.enemy = new;
-
 }
 
 void crusader_sphere (entity ent)
@@ -189,48 +205,45 @@ void crusader_sphere (entity ent)
 		return;
 
 	new2 = spawn();
-
 	new2.owner = new2;
 	new2.solid = SOLID_TRIGGER;
-	new2.movetype = MOVETYPE_FLY;
-
+	new2.movetype = MOVETYPE_NONE;
 	droptofloor();
-	setorigin (new2, self.origin + '0  0 32');
+	new2.movetype = MOVETYPE_NOCLIP;
+	setorigin (new2, self.origin + '0 0 32');
 	setmodel (new2, "models/cross.mdl");
-
-	setsize (new2, new2.mins , new2.maxs);
+	setsize (new2, new2.mins, new2.maxs);
 	new2.classname = "soulcross";
 	new2.touch = crusader_soul_touch;
 	new2.think = soul_move;
 	thinktime new2 : 0.1;
-	new2.hoverz=1;
-	new2.velocity_z=new.hoverz;
+	new2.hoverz = 1;
+	new2.velocity_x = 0;
+	new2.velocity_y = 0;
+	new2.velocity_z = new2.hoverz;
 	new2.flags=0;
+	new2.drawflags(+)MLS_FULLBRIGHT;
 	new2.lifespan = 15;  // Alive for 15 seconds
 	new2.health = new2.lifespan * 2;
-
 	new2.avelocity_y = 200;
+	new2.scale = 1;
 	sound (new, CHAN_VOICE, "raven/soul.wav", 1, ATTN_NORM);
 
-
 	new = spawn();
-
 	new.owner = new;
-	new.solid = SOLID_TRIGGER;
-	new.movetype = MOVETYPE_FLY;
-
+	new.solid = SOLID_NOT;
+	new.movetype = MOVETYPE_NOCLIP;
 	setorigin (new, new2.origin);
 	setmodel (new, "models/goodsphr.mdl");
-
-	new.drawflags (+) MLS_ABSLIGHT;
-
-	setsize (new, new.mins , new.maxs);
-	new.hoverz=1;
-	new.velocity_z=new.hoverz;
+	setsize (new, new.mins, new.maxs);
+	new.hoverz = 1;
+	new.velocity_x = 0;
+	new.velocity_y = 0;
+	new.velocity_z = new.hoverz;
 	new.flags=0;
-	new.lifespan = 15;  // Alive for 15 seconds
-	new.health = new.lifespan * 2;
+	new.drawflags(+)MLS_ABSLIGHT;
 	new.sound_time = 2;
+	new.scale = 1;
 
 	new2.enemy = new;
 }

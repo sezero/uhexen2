@@ -4,9 +4,17 @@ Game code for Hexen2 / H2MP / HexenWorld
 Changes
 -------
 
-2011-06-19 (1.20):
+2011-06-23 (1.20):
 ===================
 - Bumped version number to 1.20.
+- Soul spheres: Made the soul sphere in sync with the skull or the cross.
+  Changed the model lighting style to fullbright so now the skull and the
+  cross are well discernible in dark places. The soul sphere can now gain
+  momentum during spawning and fly around instead of hovering over the
+  dead body and sometimes got stuck. Scaled down the soul at the end of
+  its lifetime. Added the demoness among the list of bad people in the
+  portals version in parallel to the hw version. Corrected minor errors
+  and some inconsistencies.
 - Now that we added a modified ent file for the Cathedral level, removed
   the ugly hack of reducing the teleport push speed to 225 for this level
   from triggers.hc::teleport_touch.
