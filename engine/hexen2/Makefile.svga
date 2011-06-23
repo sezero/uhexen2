@@ -389,6 +389,7 @@ COMMONOBJS = \
 	cl_input.o \
 	cl_main.o \
 	cl_parse.o \
+	cl_string.o \
 	cl_tent.o \
 	cl_cmd.o \
 	console.o \
@@ -412,7 +413,7 @@ COMMONOBJS = \
 	cfgfile.o \
 	host.o \
 	host_cmd.o \
-	pr_strng.o \
+	host_string.o \
 	mathlib.o \
 	pr_cmds.o \
 	pr_edict.o \
@@ -447,5 +448,5 @@ $(SW_BINARY): $(SOFT_ASM) $(SOFTOBJS) $(COMMON_ASM) $(COMMONOBJS) $(TIMIDEPS)
 	$(LINKER) -o $(SW_BINARY) $(SOFT_ASM) $(SOFTOBJS) $(COMMON_ASM) $(COMMONOBJS) $(LDFLAGS)
 
 clean:
-	rm -f *.o *.res dos/*.o sv_objs/*.o core
+	rm -f *.o *.res dos/*.o core
 

@@ -139,7 +139,7 @@ static void UpdateInfoMessage (void)
 
 	strcpy(infomessage, "Objectives:");
 
-	if (!pr_info_string_count || !pr_global_info_strings)
+	if (!info_string_count || !info_strings)
 		return;
 
 	for (i = 0; i < 32; i++)
@@ -148,7 +148,7 @@ static void UpdateInfoMessage (void)
 		
 		if (cl.info_mask & check)
 		{
-			newmessage = &pr_global_info_strings[pr_info_string_index[i]];
+			newmessage = &info_strings[info_string_index[i]];
 			strcat(infomessage, "@@");
 			strcat(infomessage, newmessage);
 		}
@@ -160,7 +160,7 @@ static void UpdateInfoMessage (void)
 		
 		if (cl.info_mask2 & check)
 		{
-			newmessage = &pr_global_info_strings[pr_info_string_index[i+32]];
+			newmessage = &info_strings[info_string_index[i + 32]];
 			strcat(infomessage, "@@");
 			strcat(infomessage, newmessage);
 		}
@@ -853,7 +853,7 @@ static void Info_Plaque_Draw (const char *message)
 	if (scr_con_current == vid.height)
 		return;		// console is full screen
 
-	if (!pr_info_string_count || !*message)
+	if (!info_string_count || !*message)
 		return;
 
 	FindTextBreaks(message, PLAQUE_WIDTH+4);
@@ -1021,21 +1021,21 @@ static void SB_IntermissionOverlay (void)
 		elapsed = (cl.time - cl.completed_time) * 20;
 	}
 
-	if (cl.intermission <= 4 && cl.intermission + 394 <= pr_string_count)
-		message = &pr_global_strings[pr_string_index[cl.intermission + 394]];
+	if (cl.intermission <= 4 && cl.intermission + 394 <= host_string_count)
+		message = &host_strings[host_string_index[cl.intermission + 394]];
 	else if (cl.intermission == 5)	// finale for the demo
-		message = &pr_global_strings[pr_string_index[DEMO_MSG_INDEX]];
-	else if (cl.intermission >= 6 && cl.intermission <= 8 && cl.intermission + 386 <= pr_string_count)
-		message = &pr_global_strings[pr_string_index[cl.intermission + 386]];
+		message = &host_strings[host_string_index[DEMO_MSG_INDEX]];
+	else if (cl.intermission >= 6 && cl.intermission <= 8 && cl.intermission + 386 <= host_string_count)
+		message = &host_strings[host_string_index[cl.intermission + 386]];
 	else if (cl.intermission == 9)	// finale for the bundle (oem) version
-		message = &pr_global_strings[pr_string_index[391]];
+		message = &host_strings[host_string_index[391]];
 	// mission pack
 	else if (cl.intermission == 10)
-		message = &pr_global_strings[pr_string_index[538]];
+		message = &host_strings[host_string_index[538]];
 	else if (cl.intermission == 11)
-		message = &pr_global_strings[pr_string_index[545]];
+		message = &host_strings[host_string_index[545]];
 	else if (cl.intermission == 12)
-		message = &pr_global_strings[pr_string_index[561]];
+		message = &host_strings[host_string_index[561]];
 	else
 		message = "";
 

@@ -536,15 +536,15 @@ static void DrawLowerBar(void)
 	// Abilities
 	Sbar_DrawSmallString(11, 79, "abilities");
 	i = ABILITIES_STR_INDEX + (playerClass - 1)*2;
-	if (i + 1 < pr_string_count)
+	if (i + 1 < host_string_count)
 	{
 		if (((int)cl.v.flags) & FL_SPECIAL_ABILITY1)
 		{
-			Sbar_DrawSmallString(8, 89, &pr_global_strings[pr_string_index[i]]);
+			Sbar_DrawSmallString(8, 89, &host_strings[host_string_index[i]]);
 		}
 		if (((int)cl.v.flags) & FL_SPECIAL_ABILITY2)
 		{
-			Sbar_DrawSmallString(8, 96, &pr_global_strings[pr_string_index[i+1]]);
+			Sbar_DrawSmallString(8, 96, &host_strings[host_string_index[i + 1]]);
 		}
 	}
 

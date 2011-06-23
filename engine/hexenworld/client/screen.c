@@ -979,14 +979,14 @@ static void SB_IntermissionOverlay (void)
 		elapsed = (cl.time - cl.completed_time) * 20;
 	}
 
-	if (cl.intermission <= 4 && cl.intermission + 394 <= pr_string_count)
-		message = &pr_global_strings[pr_string_index[cl.intermission + 394]];
+	if (cl.intermission <= 4 && cl.intermission + 394 <= host_string_count)
+		message = &host_strings[host_string_index[cl.intermission + 394]];
 	else if (cl.intermission == 5)	// finale for the demo
-		message = &pr_global_strings[pr_string_index[DEMO_MSG_INDEX]];
-	else if (cl.intermission >= 6 && cl.intermission <= 8 && cl.intermission + 386 <= pr_string_count)
-		message = &pr_global_strings[pr_string_index[cl.intermission + 386]];
+		message = &host_strings[host_string_index[DEMO_MSG_INDEX]];
+	else if (cl.intermission >= 6 && cl.intermission <= 8 && cl.intermission + 386 <= host_string_count)
+		message = &host_strings[host_string_index[cl.intermission + 386]];
 	else if (cl.intermission == 9)	// finale for the bundle (oem) version
-		message = &pr_global_strings[pr_string_index[391]];
+		message = &host_strings[host_string_index[391]];
 	else
 		message = "";
 

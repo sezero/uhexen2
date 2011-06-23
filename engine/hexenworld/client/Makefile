@@ -724,7 +724,7 @@ COMMONOBJS = \
 	crc.o \
 	cvar.o \
 	cfgfile.o \
-	pr_strng.o \
+	host_string.o \
 	mathlib.o \
 	pmove.o \
 	pmovetst.o \

@@ -836,8 +836,8 @@ static void M_NewMissionPackGame (void)
    is triggered by Key_Event() when the user hits a key.
  */
 	key_dest = key_game;
-	if (!pr_string_count || !pr_global_strings || !pr_string_index)
-		PR_LoadStrings ();
+	if (!host_string_count || !host_strings || !host_string_index)
+		Host_LoadStrings ();
 	cl.intermission = 12;
 	cl.completed_time = realtime;
 	cls.demonum = m_save_demonum;

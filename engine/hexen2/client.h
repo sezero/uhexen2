@@ -338,6 +338,22 @@ extern	int		num_intro_msg;	// for the mission pack intro
 					/* skip_start and num_intro_msg are not used at present - O.S */
 
 //
+// cl_string.c
+//
+extern	char	*puzzle_strings;
+extern	int	*puzzle_string_index;
+extern	int	puzzle_string_count;
+
+void CL_LoadPuzzleStrings (void);
+
+/* mission pack objectives strings */
+extern	char	*info_strings;
+extern	int	*info_string_index;
+extern	int	info_string_count;
+
+void CL_LoadInfoStrings (void);
+
+//
 // cl_parse.c
 //
 void CL_ParseServerMessage (void);

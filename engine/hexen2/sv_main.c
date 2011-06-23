@@ -443,9 +443,10 @@ static void SV_SendServerinfo (client_t *client)
 	else
 		MSG_WriteByte (&client->message, GAME_COOP);
 
-	if (sv.edicts->v.message > 0 && sv.edicts->v.message <= pr_string_count)
+	if (sv.edicts->v.message > 0 && sv.edicts->v.message <= host_string_count)
 	{
-		MSG_WriteString (&client->message,&pr_global_strings[pr_string_index[(int)sv.edicts->v.message-1]]);
+		MSG_WriteString (&client->message,
+				 &host_strings[host_string_index[(int)sv.edicts->v.message - 1]]);
 	}
 	else
 	{
@@ -1991,7 +1992,7 @@ void SV_SpawnServer (const char *server, const char *startspot)
 	current_loading_size += 10;
 	D_ShowLoadingSize();
 #endif
-	PR_LoadStrings();
+	Host_LoadStrings();
 #if !defined(SERVERONLY)
 	current_loading_size += 5;
 	D_ShowLoadingSize();

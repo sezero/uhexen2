@@ -53,6 +53,7 @@
 		70158C200AAF3C8800F6437C /* cl_main.c in Sources */ = {isa = PBXBuildFile; fileRef = 707D57850AA9F6EE00313A9F /* cl_main.c */; };
 		70158C210AAF3C8800F6437C /* cl_parse.c in Sources */ = {isa = PBXBuildFile; fileRef = 707D57860AA9F6EE00313A9F /* cl_parse.c */; };
 		70158C220AAF3C8800F6437C /* cl_tent.c in Sources */ = {isa = PBXBuildFile; fileRef = 707D57870AA9F6EE00313A9F /* cl_tent.c */; };
+		70158C3A0AAF3C8800F6437C /* cl_string.c in Sources */ = {isa = PBXBuildFile; fileRef = 707D57C20AA9F6EE00313A9F /* cl_string.c */; };
 		70158C230AAF3C8800F6437C /* cmd.c in Sources */ = {isa = PBXBuildFile; fileRef = 707D57890AA9F6EE00313A9F /* cmd.c */; };
 		70158C240AAF3C8800F6437C /* common.c in Sources */ = {isa = PBXBuildFile; fileRef = 707D578B0AA9F6EE00313A9F /* common.c */; };
 		70158C250AAF3C8800F6437C /* console.c in Sources */ = {isa = PBXBuildFile; fileRef = 707D578D0AA9F6EE00313A9F /* console.c */; };
@@ -60,6 +61,7 @@
 		70158C270AAF3C8800F6437C /* cvar.c in Sources */ = {isa = PBXBuildFile; fileRef = 707D57910AA9F6EE00313A9F /* cvar.c */; };
 		70158C290AAF3C8800F6437C /* host.c in Sources */ = {isa = PBXBuildFile; fileRef = 707D57A70AA9F6EE00313A9F /* host.c */; };
 		70158C2A0AAF3C8800F6437C /* host_cmd.c in Sources */ = {isa = PBXBuildFile; fileRef = 707D57A60AA9F6EE00313A9F /* host_cmd.c */; };
+		707D58920AA9FBB700313A9F /* host_string.c in Sources */ = {isa = PBXBuildFile; fileRef = 707D57C30AA9F6EE00313A9F /* host_string.c */; };
 		70158C2B0AAF3C8800F6437C /* in_sdl.c in Sources */ = {isa = PBXBuildFile; fileRef = 707D57A80AA9F6EE00313A9F /* in_sdl.c */; };
 		70158C2C0AAF3C8800F6437C /* keys.c in Sources */ = {isa = PBXBuildFile; fileRef = 707D57AA0AA9F6EE00313A9F /* keys.c */; };
 		70158C2D0AAF3C8800F6437C /* mathlib.c in Sources */ = {isa = PBXBuildFile; fileRef = 707D57AD0AA9F6EE00313A9F /* mathlib.c */; };
@@ -73,7 +75,6 @@
 		70158C370AAF3C8800F6437C /* pr_cmds.c in Sources */ = {isa = PBXBuildFile; fileRef = 707D57BE0AA9F6EE00313A9F /* pr_cmds.c */; };
 		70158C380AAF3C8800F6437C /* pr_edict.c in Sources */ = {isa = PBXBuildFile; fileRef = 707D57C00AA9F6EE00313A9F /* pr_edict.c */; };
 		70158C390AAF3C8800F6437C /* pr_exec.c in Sources */ = {isa = PBXBuildFile; fileRef = 707D57C10AA9F6EE00313A9F /* pr_exec.c */; };
-		70158C3A0AAF3C8800F6437C /* pr_strng.c in Sources */ = {isa = PBXBuildFile; fileRef = 707D57C20AA9F6EE00313A9F /* pr_strng.c */; };
 		70158C3B0AAF3C8800F6437C /* r_part.c in Sources */ = {isa = PBXBuildFile; fileRef = 707D57C80AA9F6EE00313A9F /* r_part.c */; };
 		70158C3C0AAF3C8800F6437C /* sbar.c in Sources */ = {isa = PBXBuildFile; fileRef = 707D57C90AA9F6EE00313A9F /* sbar.c */; };
 		70158C3D0AAF3C8800F6437C /* SDLMain.m in Sources */ = {isa = PBXBuildFile; fileRef = 707D59040AAA019300313A9F /* SDLMain.m */; };
@@ -128,7 +129,6 @@
 		70310B4D0BFDEA0F00CA35D3 /* cfgfile.c in Sources */ = {isa = PBXBuildFile; fileRef = 70310B490BFDEA0F00CA35D3 /* cfgfile.c */; };
 		70310B4E0BFDEA0F00CA35D3 /* cfgfile.h in Headers */ = {isa = PBXBuildFile; fileRef = 70310B4A0BFDEA0F00CA35D3 /* cfgfile.h */; };
 		707D58730AA9FBB700313A9F /* adivtab.h in Headers */ = {isa = PBXBuildFile; fileRef = 707D57770AA9F6EE00313A9F /* adivtab.h */; };
-		707D58740AA9FBB700313A9F /* alsa_funcs.h in Headers */ = {isa = PBXBuildFile; fileRef = 707D57780AA9F6EE00313A9F /* alsa_funcs.h */; };
 		707D58750AA9FBB700313A9F /* anorm_dots.h in Headers */ = {isa = PBXBuildFile; fileRef = 707D57790AA9F6EE00313A9F /* anorm_dots.h */; };
 		707D58760AA9FBB700313A9F /* anorms.h in Headers */ = {isa = PBXBuildFile; fileRef = 707D577A0AA9F6EE00313A9F /* anorms.h */; };
 		707D58770AA9FBB700313A9F /* bspfile.h in Headers */ = {isa = PBXBuildFile; fileRef = 707D577B0AA9F6EE00313A9F /* bspfile.h */; };
@@ -155,7 +155,6 @@
 		707D588E0AA9FBB700313A9F /* net_loop.h in Headers */ = {isa = PBXBuildFile; fileRef = 707D57B70AA9F6EE00313A9F /* net_loop.h */; };
 		707D588F0AA9FBB700313A9F /* net_udp.h in Headers */ = {isa = PBXBuildFile; fileRef = 707D57BA0AA9F6EE00313A9F /* net_udp.h */; };
 		707D58910AA9FBB700313A9F /* pr_comp.h in Headers */ = {isa = PBXBuildFile; fileRef = 707D57BF0AA9F6EE00313A9F /* pr_comp.h */; };
-		707D58920AA9FBB700313A9F /* pr_strng.h in Headers */ = {isa = PBXBuildFile; fileRef = 707D57C30AA9F6EE00313A9F /* pr_strng.h */; };
 		707D58930AA9FBB700313A9F /* progdefs.h in Headers */ = {isa = PBXBuildFile; fileRef = 707D57C40AA9F6EE00313A9F /* progdefs.h */; };
 		707D58940AA9FBB700313A9F /* progs.h in Headers */ = {isa = PBXBuildFile; fileRef = 707D57C50AA9F6EE00313A9F /* progs.h */; };
 		707D58950AA9FBB700313A9F /* protocol.h in Headers */ = {isa = PBXBuildFile; fileRef = 707D57C60AA9F6EE00313A9F /* protocol.h */; };
@@ -181,6 +180,7 @@
 		707D58AB0AA9FBB700313A9F /* cl_input.c in Sources */ = {isa = PBXBuildFile; fileRef = 707D57840AA9F6EE00313A9F /* cl_input.c */; };
 		707D58AC0AA9FBB700313A9F /* cl_main.c in Sources */ = {isa = PBXBuildFile; fileRef = 707D57850AA9F6EE00313A9F /* cl_main.c */; };
 		707D58AD0AA9FBB700313A9F /* cl_parse.c in Sources */ = {isa = PBXBuildFile; fileRef = 707D57860AA9F6EE00313A9F /* cl_parse.c */; };
+		707D58D20AA9FBB700313A9F /* cl_string.c in Sources */ = {isa = PBXBuildFile; fileRef = 707D57C20AA9F6EE00313A9F /* cl_string.c */; };
 		707D58AE0AA9FBB700313A9F /* cl_tent.c in Sources */ = {isa = PBXBuildFile; fileRef = 707D57870AA9F6EE00313A9F /* cl_tent.c */; };
 		707D58AF0AA9FBB700313A9F /* cmd.c in Sources */ = {isa = PBXBuildFile; fileRef = 707D57890AA9F6EE00313A9F /* cmd.c */; };
 		707D58B00AA9FBB700313A9F /* common.c in Sources */ = {isa = PBXBuildFile; fileRef = 707D578B0AA9F6EE00313A9F /* common.c */; };
@@ -199,6 +199,7 @@
 		707D58BF0AA9FBB700313A9F /* gl_vidsdl.c in Sources */ = {isa = PBXBuildFile; fileRef = 707D57A20AA9F6EE00313A9F /* gl_vidsdl.c */; };
 		707D58C00AA9FBB700313A9F /* gl_warp.c in Sources */ = {isa = PBXBuildFile; fileRef = 707D57A40AA9F6EE00313A9F /* gl_warp.c */; };
 		707D58C10AA9FBB700313A9F /* host_cmd.c in Sources */ = {isa = PBXBuildFile; fileRef = 707D57A60AA9F6EE00313A9F /* host_cmd.c */; };
+		707D58740AA9FBB700313A9F /* host_string.c in Sources */ = {isa = PBXBuildFile; fileRef = 707D57C30AA9F6EE00313A9F /* host_string.c */; };
 		707D58C20AA9FBB700313A9F /* host.c in Sources */ = {isa = PBXBuildFile; fileRef = 707D57A70AA9F6EE00313A9F /* host.c */; };
 		707D58C30AA9FBB700313A9F /* in_sdl.c in Sources */ = {isa = PBXBuildFile; fileRef = 707D57A80AA9F6EE00313A9F /* in_sdl.c */; };
 		707D58C40AA9FBB700313A9F /* keys.c in Sources */ = {isa = PBXBuildFile; fileRef = 707D57AA0AA9F6EE00313A9F /* keys.c */; };
@@ -213,7 +214,6 @@
 		707D58CF0AA9FBB700313A9F /* pr_cmds.c in Sources */ = {isa = PBXBuildFile; fileRef = 707D57BE0AA9F6EE00313A9F /* pr_cmds.c */; };
 		707D58D00AA9FBB700313A9F /* pr_edict.c in Sources */ = {isa = PBXBuildFile; fileRef = 707D57C00AA9F6EE00313A9F /* pr_edict.c */; };
 		707D58D10AA9FBB700313A9F /* pr_exec.c in Sources */ = {isa = PBXBuildFile; fileRef = 707D57C10AA9F6EE00313A9F /* pr_exec.c */; };
-		707D58D20AA9FBB700313A9F /* pr_strng.c in Sources */ = {isa = PBXBuildFile; fileRef = 707D57C20AA9F6EE00313A9F /* pr_strng.c */; };
 		707D58D30AA9FBB700313A9F /* r_part.c in Sources */ = {isa = PBXBuildFile; fileRef = 707D57C80AA9F6EE00313A9F /* r_part.c */; };
 		707D58D40AA9FBB700313A9F /* sbar.c in Sources */ = {isa = PBXBuildFile; fileRef = 707D57C90AA9F6EE00313A9F /* sbar.c */; };
 		707D58CE0AA9FBB700313A9F /* snd_codec.c in Sources */ = {isa = PBXBuildFile; fileRef = 707D57BD0AA9F6EE00313A9F /* snd_codec.c */; };
@@ -303,7 +303,6 @@
 		70310B490BFDEA0F00CA35D3 /* cfgfile.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = cfgfile.c; path = ../../h2shared/cfgfile.c; sourceTree = SOURCE_ROOT; };
 		70310B4A0BFDEA0F00CA35D3 /* cfgfile.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = cfgfile.h; path = ../../h2shared/cfgfile.h; sourceTree = SOURCE_ROOT; };
 		707D57770AA9F6EE00313A9F /* adivtab.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = adivtab.h; path = ../../../libs/common/adivtab.h; sourceTree = SOURCE_ROOT; };
-		707D57780AA9F6EE00313A9F /* alsa_funcs.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = alsa_funcs.h; path = ../../h2shared/alsa_funcs.h; sourceTree = SOURCE_ROOT; };
 		707D57790AA9F6EE00313A9F /* anorm_dots.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = anorm_dots.h; path = ../../h2shared/anorm_dots.h; sourceTree = SOURCE_ROOT; };
 		707D577A0AA9F6EE00313A9F /* anorms.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = anorms.h; path = ../../../libs/common/anorms.h; sourceTree = SOURCE_ROOT; };
 		707D577B0AA9F6EE00313A9F /* bspfile.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = bspfile.h; path = ../bspfile.h; sourceTree = SOURCE_ROOT; };
@@ -319,6 +318,7 @@
 		707D57840AA9F6EE00313A9F /* cl_input.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = cl_input.c; path = ../cl_input.c; sourceTree = SOURCE_ROOT; };
 		707D57850AA9F6EE00313A9F /* cl_main.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = cl_main.c; path = ../cl_main.c; sourceTree = SOURCE_ROOT; };
 		707D57860AA9F6EE00313A9F /* cl_parse.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = cl_parse.c; path = ../cl_parse.c; sourceTree = SOURCE_ROOT; };
+		707D57C20AA9F6EE00313A9F /* cl_string.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = cl_string.c; path = ../cl_string.c; sourceTree = SOURCE_ROOT; };
 		707D57870AA9F6EE00313A9F /* cl_tent.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = cl_tent.c; path = ../cl_tent.c; sourceTree = SOURCE_ROOT; };
 		707D57880AA9F6EE00313A9F /* client.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = client.h; path = ../client.h; sourceTree = SOURCE_ROOT; };
 		707D57890AA9F6EE00313A9F /* cmd.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = cmd.c; path = ../../h2shared/cmd.c; sourceTree = SOURCE_ROOT; };
@@ -349,6 +349,7 @@
 		707D57A40AA9F6EE00313A9F /* gl_warp.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = gl_warp.c; path = ../../h2shared/gl_warp.c; sourceTree = SOURCE_ROOT; };
 		707D57A50AA9F6EE00313A9F /* glquake.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = glquake.h; path = ../../h2shared/glquake.h; sourceTree = SOURCE_ROOT; };
 		707D57A60AA9F6EE00313A9F /* host_cmd.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = host_cmd.c; path = ../host_cmd.c; sourceTree = SOURCE_ROOT; };
+		707D57C30AA9F6EE00313A9F /* host_string.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = host_string.c; path = ../../h2shared/host_string.c; sourceTree = SOURCE_ROOT; };
 		707D57A70AA9F6EE00313A9F /* host.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = host.c; path = ../host.c; sourceTree = SOURCE_ROOT; };
 		707D57A80AA9F6EE00313A9F /* in_sdl.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = in_sdl.c; path = ../../h2shared/in_sdl.c; sourceTree = SOURCE_ROOT; };
 		707D57A90AA9F6EE00313A9F /* input.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = input.h; path = ../../h2shared/input.h; sourceTree = SOURCE_ROOT; };
@@ -372,10 +373,8 @@
 		707D57BF0AA9F6EE00313A9F /* pr_comp.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = pr_comp.h; path = ../../../libs/common/pr_comp.h; sourceTree = SOURCE_ROOT; };
 		707D57C00AA9F6EE00313A9F /* pr_edict.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = pr_edict.c; path = ../pr_edict.c; sourceTree = SOURCE_ROOT; };
 		707D57C10AA9F6EE00313A9F /* pr_exec.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = pr_exec.c; path = ../pr_exec.c; sourceTree = SOURCE_ROOT; };
-		707D57C20AA9F6EE00313A9F /* pr_strng.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = pr_strng.c; path = ../../h2shared/pr_strng.c; sourceTree = SOURCE_ROOT; };
-		707D57C30AA9F6EE00313A9F /* pr_strng.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = pr_strng.h; path = ../../h2shared/pr_strng.h; sourceTree = SOURCE_ROOT; };
 		707D57C40AA9F6EE00313A9F /* progdefs.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = progdefs.h; path = ../progdefs.h; sourceTree = SOURCE_ROOT; };
-		707D57C50AA9F6EE00313A9F /* progs.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = progs.h; path = ../progs.h; sourceTree = SOURCE_ROOT; };
+		707D57C50AA9F6EE00313A9F /* progs.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = progs.h; path = ../../h2shared/progs.h; sourceTree = SOURCE_ROOT; };
 		707D57C60AA9F6EE00313A9F /* protocol.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = protocol.h; path = ../protocol.h; sourceTree = SOURCE_ROOT; };
 		707D57C70AA9F6EE00313A9F /* quakedef.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = quakedef.h; path = ../quakedef.h; sourceTree = SOURCE_ROOT; };
 		707D57C80AA9F6EE00313A9F /* r_part.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = r_part.c; path = ../r_part.c; sourceTree = SOURCE_ROOT; };
@@ -526,7 +525,6 @@
 				707D59030AAA019300313A9F /* SDLMain.h */,
 				707D59040AAA019300313A9F /* SDLMain.m */,
 				707D57770AA9F6EE00313A9F /* adivtab.h */,
-				707D57780AA9F6EE00313A9F /* alsa_funcs.h */,
 				707D57790AA9F6EE00313A9F /* anorm_dots.h */,
 				707D577A0AA9F6EE00313A9F /* anorms.h */,
 				707D577B0AA9F6EE00313A9F /* bspfile.h */,
@@ -542,6 +540,7 @@
 				707D57840AA9F6EE00313A9F /* cl_input.c */,
 				707D57850AA9F6EE00313A9F /* cl_main.c */,
 				707D57860AA9F6EE00313A9F /* cl_parse.c */,
+				707D57C20AA9F6EE00313A9F /* cl_string.c */,
 				707D57870AA9F6EE00313A9F /* cl_tent.c */,
 				707D57880AA9F6EE00313A9F /* client.h */,
 				707D57890AA9F6EE00313A9F /* cmd.c */,
@@ -572,6 +571,7 @@
 				707D57A40AA9F6EE00313A9F /* gl_warp.c */,
 				707D57A50AA9F6EE00313A9F /* glquake.h */,
 				707D57A60AA9F6EE00313A9F /* host_cmd.c */,
+				707D57C30AA9F6EE00313A9F /* host_string.c */,
 				707D57A70AA9F6EE00313A9F /* host.c */,
 				707D57A80AA9F6EE00313A9F /* in_sdl.c */,
 				707D57A90AA9F6EE00313A9F /* input.h */,
@@ -595,8 +595,6 @@
 				707D57BF0AA9F6EE00313A9F /* pr_comp.h */,
 				707D57C00AA9F6EE00313A9F /* pr_edict.c */,
 				707D57C10AA9F6EE00313A9F /* pr_exec.c */,
-				707D57C20AA9F6EE00313A9F /* pr_strng.c */,
-				707D57C30AA9F6EE00313A9F /* pr_strng.h */,
 				707D57C40AA9F6EE00313A9F /* progdefs.h */,
 				707D57C50AA9F6EE00313A9F /* progs.h */,
 				707D57C60AA9F6EE00313A9F /* protocol.h */,
@@ -672,7 +670,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				707D58730AA9FBB700313A9F /* adivtab.h in Headers */,
-				707D58740AA9FBB700313A9F /* alsa_funcs.h in Headers */,
 				707D58750AA9FBB700313A9F /* anorm_dots.h in Headers */,
 				707D58760AA9FBB700313A9F /* anorms.h in Headers */,
 				707D58770AA9FBB700313A9F /* bspfile.h in Headers */,
@@ -699,7 +696,6 @@
 				707D588E0AA9FBB700313A9F /* net_loop.h in Headers */,
 				707D588F0AA9FBB700313A9F /* net_udp.h in Headers */,
 				707D58910AA9FBB700313A9F /* pr_comp.h in Headers */,
-				707D58920AA9FBB700313A9F /* pr_strng.h in Headers */,
 				707D58930AA9FBB700313A9F /* progdefs.h in Headers */,
 				707D58940AA9FBB700313A9F /* progs.h in Headers */,
 				707D58950AA9FBB700313A9F /* protocol.h in Headers */,
@@ -866,6 +862,7 @@
 				70158C1F0AAF3C8800F6437C /* cl_input.c in Sources */,
 				70158C200AAF3C8800F6437C /* cl_main.c in Sources */,
 				70158C210AAF3C8800F6437C /* cl_parse.c in Sources */,
+				70158C3A0AAF3C8800F6437C /* cl_string.c in Sources */,
 				70158C220AAF3C8800F6437C /* cl_tent.c in Sources */,
 				70158C230AAF3C8800F6437C /* cmd.c in Sources */,
 				70158C240AAF3C8800F6437C /* common.c in Sources */,
@@ -874,6 +871,7 @@
 				70158C270AAF3C8800F6437C /* cvar.c in Sources */,
 				70158C290AAF3C8800F6437C /* host.c in Sources */,
 				70158C2A0AAF3C8800F6437C /* host_cmd.c in Sources */,
+				707D58920AA9FBB700313A9F /* host_string.c in Sources */,
 				70158C2B0AAF3C8800F6437C /* in_sdl.c in Sources */,
 				70158C2C0AAF3C8800F6437C /* keys.c in Sources */,
 				70158C2D0AAF3C8800F6437C /* mathlib.c in Sources */,
@@ -887,7 +885,6 @@
 				70158C370AAF3C8800F6437C /* pr_cmds.c in Sources */,
 				70158C380AAF3C8800F6437C /* pr_edict.c in Sources */,
 				70158C390AAF3C8800F6437C /* pr_exec.c in Sources */,
-				70158C3A0AAF3C8800F6437C /* pr_strng.c in Sources */,
 				70158C3B0AAF3C8800F6437C /* r_part.c in Sources */,
 				70158C3C0AAF3C8800F6437C /* sbar.c in Sources */,
 				70158C3D0AAF3C8800F6437C /* SDLMain.m in Sources */,
@@ -931,6 +928,7 @@
 				707D58AB0AA9FBB700313A9F /* cl_input.c in Sources */,
 				707D58AC0AA9FBB700313A9F /* cl_main.c in Sources */,
 				707D58AD0AA9FBB700313A9F /* cl_parse.c in Sources */,
+				707D58D20AA9FBB700313A9F /* cl_string.c in Sources */,
 				707D58AE0AA9FBB700313A9F /* cl_tent.c in Sources */,
 				707D58AF0AA9FBB700313A9F /* cmd.c in Sources */,
 				707D58B00AA9FBB700313A9F /* common.c in Sources */,
@@ -949,6 +947,7 @@
 				707D58BF0AA9FBB700313A9F /* gl_vidsdl.c in Sources */,
 				707D58C00AA9FBB700313A9F /* gl_warp.c in Sources */,
 				707D58C10AA9FBB700313A9F /* host_cmd.c in Sources */,
+				707D58740AA9FBB700313A9F /* host_string.c in Sources */,
 				707D58C20AA9FBB700313A9F /* host.c in Sources */,
 				707D58C30AA9FBB700313A9F /* in_sdl.c in Sources */,
 				707D58C40AA9FBB700313A9F /* keys.c in Sources */,
@@ -963,7 +962,6 @@
 				707D58CF0AA9FBB700313A9F /* pr_cmds.c in Sources */,
 				707D58D00AA9FBB700313A9F /* pr_edict.c in Sources */,
 				707D58D10AA9FBB700313A9F /* pr_exec.c in Sources */,
-				707D58D20AA9FBB700313A9F /* pr_strng.c in Sources */,
 				707D58D30AA9FBB700313A9F /* r_part.c in Sources */,
 				707D58D40AA9FBB700313A9F /* sbar.c in Sources */,
 				707D58CE0AA9FBB700313A9F /* snd_codec.c in Sources */,

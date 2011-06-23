@@ -766,6 +766,7 @@ COMMONOBJS = \
 	cl_input.o \
 	cl_main.o \
 	cl_parse.o \
+	cl_string.o \
 	cl_tent.o \
 	cl_cmd.o \
 	console.o \
@@ -789,7 +790,7 @@ COMMONOBJS = \
 	cfgfile.o \
 	host.o \
 	host_cmd.o \
-	pr_strng.o \
+	host_string.o \
 	mathlib.o \
 	pr_cmds.o \
 	pr_edict.o \

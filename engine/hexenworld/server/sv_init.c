@@ -301,7 +301,7 @@ void SV_SpawnServer (const char *server, const char *startspot)
 	// load progs to get entity field count
 	// which determines how big each edict is
 	PR_LoadProgs ();
-	PR_LoadStrings();
+	Host_LoadStrings();
 
 	// allocate edicts
 	sv.edicts = (edict_t *) Hunk_AllocName (MAX_EDICTS*pr_edict_size, "edicts");

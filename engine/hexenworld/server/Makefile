@@ -226,7 +226,7 @@ SV_OBJS = \
 	cmd.o \
 	crc.o \
 	cvar.o \
-	pr_strng.o \
+	host_string.o \
 	mathlib.o \
 	zone.o \
 	huffman.o \

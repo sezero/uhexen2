@@ -225,8 +225,7 @@ static void Model_NextDownload (void)
 	cl.worldmodel = cl.model_precache[1];
 	R_NewMap ();
 
-	PR_LoadStrings();
-	PR_LoadPuzzleStrings();
+	Host_LoadStrings();
 
 	Hunk_Check ();		// make sure nothing is hurt
 
@@ -979,8 +978,8 @@ static void CL_Plaque(void)
 
 	idx = MSG_ReadShort ();
 
-	if (idx > 0 && idx <= pr_string_count)
-		plaquemessage = &pr_global_strings[pr_string_index[idx-1]];
+	if (idx > 0 && idx <= host_string_count)
+		plaquemessage = &host_strings[host_string_index[idx - 1]];
 	else
 		plaquemessage = "";
 }
@@ -998,9 +997,9 @@ static void CL_IndexedPrint(void)
 
 	idx = MSG_ReadShort ();
 
-	if (idx > 0 && idx <= pr_string_count)
+	if (idx > 0 && idx <= host_string_count)
 	{
-		Con_Printf ("%s",&pr_global_strings[pr_string_index[idx-1]]);
+		Con_Printf ("%s", &host_strings[host_string_index[idx - 1]]);
 	}
 //	else
 //	{

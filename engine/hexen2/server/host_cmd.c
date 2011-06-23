@@ -383,12 +383,12 @@ static void Host_SavegameComment (char *text)
 	}
 
 // see SAVEGAME_COMMENT_LENGTH definition in quakedef.h !
-	if (sv.edicts->v.message > 0 && sv.edicts->v.message <= pr_string_count)
+	if (sv.edicts->v.message > 0 && sv.edicts->v.message <= host_string_count)
 	{
-		i = strlen(&pr_global_strings[pr_string_index[(int)sv.edicts->v.message-1]]);
+		i = strlen(&host_strings[host_string_index[(int)sv.edicts->v.message - 1]]);
 		if (i > 20)
 			i = 20;
-		memcpy (text, &pr_global_strings[pr_string_index[(int)sv.edicts->v.message-1]], i);
+		memcpy (text, &host_strings[host_string_index[(int)sv.edicts->v.message - 1]], i);
 	}
 	else
 	{

@@ -44,6 +44,7 @@
 #include "crc.h"
 
 #include "host.h"
+#include "host_string.h"
 
 #if !defined(SERVERONLY)
 #include "console.h"
@@ -60,7 +61,6 @@
 #endif	/* !SERVERONLY */
 
 #include "progs.h"
-#include "pr_strng.h"
 #include "effects.h"
 
 #if !defined(SERVERONLY)

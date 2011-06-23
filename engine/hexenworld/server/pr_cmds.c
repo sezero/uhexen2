@@ -486,10 +486,10 @@ static void PF_print_indexed (void)
 	if (spartanPrint.integer && style < 2)
 		return;
 
-	if (idx < 1 || idx > pr_string_count)
+	if (idx < 1 || idx > host_string_count)
 	{
-		PR_RunError ("%s: unexpected index %d (pr_string_count: %d)",
-					__thisfunc__, idx, pr_string_count);
+		PR_RunError ("%s: unexpected index %d (host_string_count: %d)",
+					__thisfunc__, idx, host_string_count);
 	}
 
 	if ((int)G_FLOAT(OFS_PARM0) == MSG_BROADCAST)
@@ -497,7 +497,7 @@ static void PF_print_indexed (void)
 		client_t	*cl;
 		int			i;
 
-		Sys_Printf("%s", &pr_global_strings[pr_string_index[idx - 1]]);
+		Sys_Printf("%s", &host_strings[host_string_index[idx - 1]]);
 
 		for (i = 0, cl = svs.clients; i < MAX_CLIENTS; i++, cl++)
 		{
@@ -2468,10 +2468,10 @@ static void PF_plaque_draw (void)
 
 	/* 0 means "clear the plaquemessage", hence
 	 * the check for idx < 0 and NOT for idx < 1 */
-	if (idx < 0 || idx > pr_string_count)
+	if (idx < 0 || idx > host_string_count)
 	{
-		PR_RunError ("%s: unexpected index %d (pr_string_count: %d)",
-					__thisfunc__, idx, pr_string_count);
+		PR_RunError ("%s: unexpected index %d (host_string_count: %d)",
+					__thisfunc__, idx, host_string_count);
 	}
 
 	MSG_WriteByte (WriteDest(), svc_plaque);
@@ -3021,13 +3021,13 @@ static void PF_GetString(void)
 {
 	int idx = (int) G_FLOAT(OFS_PARM0);
 
-	if (idx < 1 || idx > pr_string_count)
+	if (idx < 1 || idx > host_string_count)
 	{
-		PR_RunError ("%s: unexpected index %d (pr_string_count: %d)",
-					__thisfunc__, idx, pr_string_count);
+		PR_RunError ("%s: unexpected index %d (host_string_count: %d)",
+					__thisfunc__, idx, host_string_count);
 	}
 
-	G_INT(OFS_RETURN) = PR_SetEngineString(&pr_global_strings[pr_string_index[idx - 1]]);
+	G_INT(OFS_RETURN) = PR_SetEngineString(&host_strings[host_string_index[idx - 1]]);
 }
 
 

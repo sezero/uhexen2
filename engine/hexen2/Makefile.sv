@@ -242,7 +242,7 @@ SV_OBJS = \
 	pr_cmds.o \
 	pr_edict.o \
 	pr_exec.o \
-	pr_strng.o \
+	host_string.o \
 	sv_effect.o \
 	sv_main.o \
 	sv_move.o \

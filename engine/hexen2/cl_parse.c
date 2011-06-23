@@ -397,12 +397,12 @@ static void CL_ParseServerInfo (void)
 
 	if (!sv.active)
 	{
-		PR_LoadStrings();
+		Host_LoadStrings();
 	}
-	PR_LoadPuzzleStrings();
+	CL_LoadPuzzleStrings();
 	// mission pack, objectives strings
 	if (gameflags & GAME_PORTALS)
-		PR_LoadInfoStrings();
+		CL_LoadInfoStrings();
 
 	Hunk_Check ();		// make sure nothing is hurt
 
@@ -1087,8 +1087,8 @@ static void CL_Plaque(void)
 
 	idx = MSG_ReadShort ();
 
-	if (idx > 0 && idx <= pr_string_count)
-		plaquemessage = &pr_global_strings[pr_string_index[idx-1]];
+	if (idx > 0 && idx <= host_string_count)
+		plaquemessage = &host_strings[host_string_index[idx - 1]];
 	else
 		plaquemessage = "";
 }

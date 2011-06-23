@@ -76,9 +76,10 @@ static void SV_New_f (void)
 	MSG_WriteByte (&host_client->netchan.message, playernum);
 
 	// send full levelname
-	if (sv.edicts->v.message > 0 && sv.edicts->v.message <= pr_string_count)
+	if (sv.edicts->v.message > 0 && sv.edicts->v.message <= host_string_count)
 	{
-		MSG_WriteString (&host_client->netchan.message,&pr_global_strings[pr_string_index[(int)sv.edicts->v.message-1]]);
+		MSG_WriteString (&host_client->netchan.message,
+				 &host_strings[host_string_index[(int)sv.edicts->v.message - 1]]);
 	}
 	else 
 	{

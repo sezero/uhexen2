@@ -3,6 +3,20 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2011-06-23 (SVN):
+    * hexen2/cl_string.c: Copied from pr_strng.c, now holds only the
+      strings for the client-side puzzle piece and objectives displays.
+      Removed misleading pr_ prefix from the info_strings variables.
+      Accordingly, renamed PR_LoadPuzzleStrings and PR_LoadInfoStrings
+      to CL_LoadPuzzleStrings and CL_LoadInfoStrings.
+    * h2shared/host_string.c, host_string.h: Renamed from pr_strng.c
+      and pr_strng.h, now holds only the string resource shared between
+      client and server. Renamed the global variables from misleading
+      pr_ prefixed form to host_ prefixed form. Renamed PR_LoadStrings
+      to Host_LoadStrings, accordingly.
+    * Makefiles: Updated after the cl_string.c and host_string.c changes.
+    * Xcode and Visual Studio project files: Updated likewise.
+
 2011-06-22 (SVN):
     * progs.h: Sync h2 and hw versions and move to h2shared directory.
     * pr_edict.c (PR_LoadProgs): Sync h2 and hw progs crc calculation.

@@ -45,9 +45,9 @@
 #include "crc.h"
 
 #include "host.h"
+#include "host_string.h"
 
 #include "progs.h"
-#include "pr_strng.h"
 #include "effects.h"
 #include "model.h"
 
