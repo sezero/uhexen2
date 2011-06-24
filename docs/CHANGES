@@ -3,6 +3,13 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2011-06-24 (SVN):
+    * Makefiles: Always keep the debug symbols in and use strip if they
+      are not required. Always add the default CPUFLAGS to CFLAGS along
+      with the ARGCHFLAGS. Make debug- builds possible for the h2patch
+      application. Remove the -fno-builtin option from the xdelta3 build
+      flags. Change -O3 to -O2 in the xdelta3 optimized build flags.
+
 2011-06-23 (SVN):
     * gamecode, soul.hc: Made the soul sphere in sync with the skull or
       the cross. Changed the model lighting style to fullbright so now

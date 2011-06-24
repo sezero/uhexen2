@@ -1,7 +1,7 @@
 # Quick GNU Makefile for building a static timidity library using GCC.
 # $Id$
 #
-# if you want debug symbols compiled in (-g), run with make DEBUG=yes
+# if building a debug version:  make DEBUG=yes
 
 UHEXEN2_TOP:=../..
 LIBS_DIR:=$(UHEXEN2_TOP)/libs
@@ -10,10 +10,9 @@ CC ?= gcc
 AR ?= ar
 RANLIB ?= ranlib
 
-ifdef DEBUG
-CFLAGS += -Wall -g
-else
-CFLAGS += -Wall -O2
+CFLAGS += -g -Wall
+ifndef DEBUG
+CFLAGS += -O2 -DNDEBUG=1
 endif
 #CFLAGS+= -DTIMIDITY_DEBUG
 INCLUDES= -I. -I$(LIBS_DIR)/common

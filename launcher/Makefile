@@ -7,8 +7,8 @@
 #  if building for the demo version, run with
 #  make DEMO=yes [other stuff]
 #
-#  if you want debug symbols compiled in ( -g ), run with
-#  make DEBUG=yes
+#  if building a debug version:  make DEBUG=yes
+#
 
 # main uhexen2 relative path
 UHEXEN2_TOP:=..
@@ -28,14 +28,14 @@ MD5DIR:= $(LIBS_DIR)/md5
 MD5FLAGS:= -I$(MD5DIR) -I$(LIBS_DIR)/common
 
 XDELTA_DIR:= $(LIBS_DIR)/xdelta3
-XDFLAGS:= -fno-builtin \
-	  -DXD3_DEBUG=0 -DNDEBUG=1 \
-	  -DXD3_STDIO=1
+XDFLAGS:= -DXD3_DEBUG=0
 XDFLAGS+= -I$(XDELTA_DIR) -I$(LIBS_DIR)/common
 # when XD3_USE_LARGEFILE64 is not defined, xdelta3 defaults
 # to 64 bit xoff_t.
 # define XD3_USE_LARGEFILE64 as 0 or 1.
 XDFLAGS+= -DXD3_USE_LARGEFILE64=1
+# make xdelta3 to use stdio for file i/o:
+XDFLAGS+= -DXD3_STDIO=1
 
 ifeq ($(GTK1),yes)
 GTK_CFLAGS:= $(shell gtk-config --cflags)
@@ -45,17 +45,19 @@ GTK_CFLAGS:= $(shell pkg-config --cflags gtk+-2.0)
 GTK_LIBS:= $(shell pkg-config --libs gtk+-2.0)
 endif
 
-# pthread flags: do note that these change accross
+# pthread flags: do note that these are different across
 # different platforms!!!
 PTHREAD_CFLAGS=-D_REENTRANT
 PTHREAD_LIBS=-lpthread
 
 CPUFLAGS=
 
+CFLAGS += -g -Wall
+CFLAGS += $(CPUFLAGS)
 ifdef DEBUG
-CFLAGS += $(CPUFLAGS) -Wall -g -DDEBUG=1
+CFLAGS += -DDEBUG=1
 else
-CFLAGS += $(CPUFLAGS) -Wall -O2 -DNDEBUG
+CFLAGS += -O2 -DNDEBUG=1
 endif
 MD5FLAGS+=$(CFLAGS)
 XDFLAGS +=$(CFLAGS)

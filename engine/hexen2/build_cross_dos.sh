@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# used for building h2dos.exe with djgpp cross toolchain
+# build h2dos.exe with djgpp cross toolchain
 
 TARGET=i586-pc-msdosdjgpp
 PREFIX=/usr/local/cross-djgpp
@@ -16,6 +16,12 @@ RANLIB="$TARGET-ranlib"
 AR="$TARGET-ar"
 
 export CC AS RANLIB AR DOSBUILD
+
+STRIPPER="$TARGET-strip"
+if test "$1" = "strip"; then
+	$STRIPPER h2dos.exe
+	exit 0
+fi
 
 HOST_OS=`uname|sed -e s/_.*//|tr '[:upper:]' '[:lower:]'`
 

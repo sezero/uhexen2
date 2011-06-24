@@ -1,3 +1,5 @@
+#  if building a debug version:  make DEBUG=yes
+#
 
 UHEXEN2_TOP:=..
 LIBS_DIR:=$(UHEXEN2_TOP)/libs
@@ -8,17 +10,21 @@ LINKER := $(CC)
 #CPUFLAGS= -march=i486
 #CPUFLAGS= -march=i586
 CPUFLAGS=
-CFLAGS  = $(CPUFLAGS) -O3 -Wall -Wshadow
+CFLAGS  = -g -Wall
+CFLAGS += $(CPUFLAGS)
+ifndef DEBUG
+CFLAGS += -O2 -DNDEBUG=1
+endif
 LDFLAGS =
 
 XDELTA_DIR:= $(LIBS_DIR)/xdelta3
-XDFLAGS:= -fno-builtin \
-	  -DXD3_DEBUG=0 -DNDEBUG=1 \
-	  -DXD3_STDIO=1
+XDFLAGS:= -DXD3_DEBUG=0
 # when XD3_USE_LARGEFILE64 is not defined, xdelta3 defaults
 # to 64 bit xoff_t.
 # define XD3_USE_LARGEFILE64 as 0 or 1.
 XDFLAGS+= -DXD3_USE_LARGEFILE64=1
+# make xdelta3 to use stdio:
+XDFLAGS+= -DXD3_STDIO=1
 XDFLAGS+= -I$(XDELTA_DIR) -I$(LIBS_DIR)/common
 XDFLAGS+= $(CFLAGS)
 

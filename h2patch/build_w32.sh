@@ -21,11 +21,9 @@ WINDRES="$TARGET-windres"
 export CC AS RANLIB AR WINDRES
 
 STRIPPER="$TARGET-strip"
-
-if [ "$1" = "strip" ]
-then
-$STRIPPER h2patch.exe
-exit 0
+if [ "$1" = "strip" ]; then
+	$STRIPPER h2patch.exe
+	exit 0
 fi
 
 HOST_OS=`uname|sed -e s/_.*//|tr '[:upper:]' '[:lower:]'`

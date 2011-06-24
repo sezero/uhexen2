@@ -34,13 +34,11 @@ CPUFLAGS=
 # Overrides for the default ARCHFLAGS
 #ARCHFLAGS=
 
-ifdef DEBUG
 CFLAGS += -g -Wall
-else
-CFLAGS += $(CPUFLAGS) -O2 -Wall -DNDEBUG
+CFLAGS += $(CPUFLAGS) $(ARCHFLAGS)
+ifndef DEBUG
+CFLAGS += -O2 -DNDEBUG=1
 endif
-
-CFLAGS += $(ARCHFLAGS)
 
 LDFLAGS =
 LDLIBS  =

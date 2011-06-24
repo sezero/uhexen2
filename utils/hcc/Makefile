@@ -36,15 +36,13 @@ CPUFLAGS=$(CPU_X86)
 # Overrides for the default ARCHFLAGS
 #ARCHFLAGS=
 
-ifdef DEBUG
 CFLAGS += -g -Wall
-else
-CFLAGS += $(CPUFLAGS) -O2 -Wall -DNDEBUG
+CFLAGS += $(CPUFLAGS) $(ARCHFLAGS)
+ifndef DEBUG
+CFLAGS += -O2 -DNDEBUG=1
 endif
 # avoid the compiler warnings in pr_lex.c for now
 CFLAGS += -Wno-char-subscripts
-
-CFLAGS += $(ARCHFLAGS)
 
 LDFLAGS =
 LDLIBS  =

@@ -36,13 +36,11 @@ CPUFLAGS=$(CPU_X86)
 # Overrides for the default ARCHFLAGS
 #ARCHFLAGS=
 
-ifdef DEBUG
 CFLAGS += -g -Wall
-else
-CFLAGS += $(CPUFLAGS) -O2 -Wall -DNDEBUG -ffast-math -fexpensive-optimizations
+CFLAGS += $(CPUFLAGS) $(ARCHFLAGS)
+ifndef DEBUG
+CFLAGS += -O2 -DNDEBUG=1 -ffast-math -fexpensive-optimizations
 endif
-
-CFLAGS += $(ARCHFLAGS)
 
 LDFLAGS =
 LDLIBS  =

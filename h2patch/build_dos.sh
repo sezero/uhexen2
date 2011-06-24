@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# used for building with djgpp cross toolchain
+# build h2patch.exe with djgpp cross toolchain
 
 TARGET=i586-pc-msdosdjgpp
 PREFIX=/usr/local/cross-djgpp
@@ -15,6 +15,12 @@ AS="$TARGET-as"
 RANLIB="$TARGET-ranlib"
 AR="$TARGET-ar"
 export CC AS RANLIB AR
+
+STRIPPER="$TARGET-strip"
+if [ "$1" = "strip" ]; then
+	$STRIPPER h2patch.exe
+	exit 0
+fi
 
 HOST_OS=`uname|sed -e s/_.*//|tr '[:upper:]' '[:lower:]'`
 

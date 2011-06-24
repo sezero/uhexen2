@@ -188,15 +188,12 @@ CPUFLAGS=$(CPU_X86)
 # Overrides for the default ARCHFLAGS
 #ARCHFLAGS=
 
-ifdef DEBUG
-# Debug type flags
-
 CFLAGS += -g -Wall
+CFLAGS += $(CPUFLAGS) $(ARCHFLAGS)
 
-else
-# Release type flags
-
-CFLAGS += $(CPUFLAGS) -O2 -Wall -DNDEBUG -ffast-math -fexpensive-optimizations
+ifndef DEBUG
+# optimization flags
+CFLAGS += -O2 -DNDEBUG=1 -ffast-math -fexpensive-optimizations
 
 ifeq ($(OPT_EXTRA),yes)
 ifeq ($(MACH_TYPE),x86)
@@ -219,8 +216,6 @@ CFLAGS += -fomit-frame-pointer
 endif
 #
 endif
-
-CFLAGS += $(ARCHFLAGS)
 
 CPPFLAGS=
 LDFLAGS =
@@ -375,9 +370,6 @@ USE_CODEC_TIMIDITY=no
 USE_CODEC_WILDMIDI=no
 USE_CODEC_VORBIS=no
 
-ifndef DEBUG
-LDFLAGS += -s
-endif
 LDFLAGS += -lc -lgcc -lm
 
 ifeq ($(USE_CODEC_MP3),yes)
