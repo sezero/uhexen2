@@ -4,6 +4,12 @@ Development Progress	:
 ---------------------------
 
 2011-06-24 (SVN):
+    * snd_sys.c (S_DriversInit): Register the untested sunaudio driver
+      the first in order to make it the last choice.  If sdl audio is
+      compiled for any supported platform, then register sdl audio the
+      last to make it the default choice.
+
+2011-06-24 (SVN):
     * Makefiles: Always keep the debug symbols in and use strip if they
       are not required. Always add the default CPUFLAGS to CFLAGS along
       with the ARGCHFLAGS. Make debug- builds possible for the h2patch

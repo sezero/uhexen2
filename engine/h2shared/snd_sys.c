@@ -106,9 +106,9 @@ void S_DriversInit (void)
 	S_RegisterDriver(&snddrv_null);
 	if (safemode || COM_CheckParm("-nosound") || COM_CheckParm("-s"))
 		snd_drivers->userpreferred = true;
-#if HAVE_SDL_SOUND
-	S_RegisterDriver(&snddrv_sdl);
-	if (COM_CheckParm ("-sndsdl"))
+#if HAVE_SUN_SOUND
+	S_RegisterDriver(&snddrv_sunaudio);
+	if (COM_CheckParm ("-sndsun") || COM_CheckParm ("-sndbsd"))
 		snd_drivers->userpreferred = true;
 #endif
 #if HAVE_ALSA_SOUND
@@ -119,12 +119,6 @@ void S_DriversInit (void)
 #if HAVE_OSS_SOUND
 	S_RegisterDriver(&snddrv_oss);
 	if (COM_CheckParm ("-sndoss"))
-		snd_drivers->userpreferred = true;
-#endif
-
-#if HAVE_SUN_SOUND
-	S_RegisterDriver(&snddrv_sunaudio);
-	if (COM_CheckParm ("-sndsun") || COM_CheckParm ("-sndbsd"))
 		snd_drivers->userpreferred = true;
 #endif
 #if HAVE_WIN_SOUND
@@ -140,6 +134,13 @@ void S_DriversInit (void)
 #endif
 #if HAVE_DOS_GUS_SOUND
 	S_RegisterDriver(&snddrv_gus);
+#endif
+/* if sdl audio is compiled for any supported platform, then
+ * register sdl audio the last to make it the default choice. */
+#if HAVE_SDL_SOUND
+	S_RegisterDriver(&snddrv_sdl);
+	if (COM_CheckParm ("-sndsdl"))
+		snd_drivers->userpreferred = true;
 #endif
 }
 
