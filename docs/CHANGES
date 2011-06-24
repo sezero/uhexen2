@@ -4,6 +4,7 @@ Development Progress	:
 ---------------------------
 
 2011-06-24 (SVN):
+    * Updated the documentation after the default audio driver changes.
     * snd_sys.c (S_DriversInit): Register the untested sunaudio driver
       the first in order to make it the last choice.  If sdl audio is
       compiled for any supported platform, then register sdl audio the

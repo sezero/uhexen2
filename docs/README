@@ -228,27 +228,41 @@ that option in the Makefile when compiling).
 ------------------
 
 Hammer of Thyrion (uHexen2) includes a choice of three sound drivers for
-linux/unix users: OSS, ALSA and SDL. The engine tries them and uses the
+linux/unix users: SDL, OSS and ALSA. The engine tries them and uses the
 first one which successfully initializes. You can make the engine to use
 only a specific driver by command line arguments, too.
 
-a. OSS sound code
+a. SDL sound code
 -----------------
-This is the default sound driver for Linux and FreeBSD. It uses OSS
-(Open Sound System) kernel modules. It is compatible with most of
-the Linux distributions but it is known not to work for a few people.
-If you use the game launcher, select the OSS option from the sound
-menu. If you use command line, "-sndoss" tells the game engine to use
-OSS:  ./glhexen2 -sndoss -sndspeed 44100
-If OSS doesn't work for you, then please try the other options below.
+SDL audio isolates you from many compatibility issues and is usable on
+most Linux distributions.  If you use command line, "-sndsdl" argument
+tells the game engine to use SDL audio, but it isn't necessary because
+SDL audio is the default.
+
+  ./glhexen2 -sndsdl [other possible arguments]
+
+If you want to force SDL to use a different driver backend than its
+default setting, you can export SDL_AUDIODRIVER=drv where "drv" may be
+alsa, dsp, pulse, esd or something similar depending on your own setup.
+(Note that SDL_AUDIODRIVER=esd can be laggy in my own experience.)
 
 
-b. ALSA sound code
+b. OSS sound code
+-----------------
+The OSS (Open Sound System) code is compatible with most of the Linux
+distributions and FreeBSD, but it is known not to work for a few people.
+If you use the gtk launcher, select the OSS option from the sound menu.
+If you use command line, the "-sndoss" argument tells the game engine to
+use OSS:
+
+  ./glhexen2 -sndoss -sndspeed 44100
+
+
+c. ALSA sound code
 ------------------
-This driver is for Linux and is based on the new ALSA 1.0.x libraries.
-It works best with higher sampling rates. If you use the game launcher,
-select the ALSA option from the sound menu. If you use command line,
-then start the game with "-sndalsa" option. For example:
+The ALSA driver is for Linux and is based on the ALSA 1.0.x libraries.
+If you use the gtk launcher, select the ALSA option from the sound menu.
+If you use command line, then start the game with "-sndalsa" option:
 
   ./glhexen2 -sndalsa -sndspeed 44100
 
@@ -259,24 +273,12 @@ default device. Example:
   ./glhexen2 -sndalsa -alsadev plughw:0 -sndspeed 44100
 
 
-c. SDL sound code
------------------
-This third option isolates you from many compatibility issues and
-should be usable on most Linux distributions.  If you use the
-launcher, select the SDL option from the sound menu.  If you use
-command line, then start the game with "-sndsdl" argument.
-
-  ./glhexen2 -sndsdl [other possible arguments]
-
-
 d. BSD/SUN sound code
 ---------------------
-The sunaudio driver is the default sound driver for our experimental
-OpenBSD and NetBSD support. If you use the game launcher, select the
-BSD option from the sound menu. If you use command line, "-sndbsd"
-tells the game engine to use sunaudio, but it isn't necessary (it is
-the default). If sunaudio doesn't work for you, then please try the
-SDL driver.
+The sunaudio driver can be used in combination with our experimental
+OpenBSD and NetBSD support.  If you use the gtk launcher, select the
+"SunAudio" option from the sound menu.  If you use command line, the
+"-sndbsd" argument tells the game engine to use sunaudio.
 
 If you can't get sound working, the "-nosound" option will disable
 it. Send a bug report on the project page.
