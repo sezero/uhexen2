@@ -4,7 +4,7 @@ Development Progress	:
 ---------------------------
 
 2011-06-25 (SVN):
-    * Minor tidy up in dos networking sources.
+    * Minor tidy up in DOS networking sources.
 
 2011-06-25 (SVN):
     * net_udp.c (udp_scan_iface):  Cast the char array to caddr_t when

@@ -192,7 +192,10 @@ static int ProcessInQueue (SerialLine *p)
 						p->sock->receiveMessageLength += p->lengthFound;
 					}
 					else
-						Con_DPrintf("Serial: reliable out of order; got %u wanted %u\n", p->sequence, p->sock->receiveSequence);
+					{
+						Con_DPrintf("Serial: reliable out of order; got %u wanted %u\n",
+									p->sequence, p->sock->receiveSequence);
+					}
 					break;
 
 				case MTYPE_UNRELIABLE:
@@ -208,7 +211,10 @@ static int ProcessInQueue (SerialLine *p)
 						p->sock->canSend = true;
 					}
 					else
-						Con_DPrintf("Serial: ack out of order; got %u wanted %u\n",p->sequence, p->sock->sendSequence);
+					{
+						Con_DPrintf("Serial: ack out of order; got %u wanted %u\n",
+									p->sequence, p->sock->sendSequence);
+					}
 					break;
 
 				case MTYPE_CONTROL:
@@ -237,12 +243,14 @@ static int ProcessInQueue (SerialLine *p)
 /* DEBUG */
 		if (p->sock->receiveMessageLength + p->lengthFound > NET_MAXMESSAGE)
 		{
-			Con_DPrintf("Serial blew out receive buffer: %u\n", p->sock->receiveMessageLength + p->lengthFound);
+			Con_DPrintf("Serial blew out receive buffer: %u\n",
+					p->sock->receiveMessageLength + p->lengthFound);
 			p->currState = STATE_ABORT;
 		}
 		if (p->sock->receiveMessageLength + p->lengthFound == NET_MAXMESSAGE)
 		{
-			Con_DPrintf("Serial hit receive buffer limit: %u\n", p->sock->receiveMessageLength + p->lengthFound);
+			Con_DPrintf("Serial hit receive buffer limit: %u\n",
+					p->sock->receiveMessageLength + p->lengthFound);
 			p->currState = STATE_ABORT;
 		}
 /* end DEBUG */
@@ -700,7 +708,11 @@ static int _Serial_GetMessage (SerialLine *p)
 	p->sock->receiveMessageLength -= length;
 
 	if (p->sock->receiveMessageLength + p->lengthFound)
-		memcpy(p->sock->receiveMessage, &p->sock->receiveMessage[length], p->sock->receiveMessageLength + p->lengthFound);
+	{
+		memcpy(p->sock->receiveMessage,
+				&p->sock->receiveMessage[length],
+				p->sock->receiveMessageLength + p->lengthFound);
+	}
 
 	return ret;
 }
