@@ -32,6 +32,7 @@
 
 #if HAVE_DOS_SB_SOUND
 
+#include <dos.h>
 #include "snd_sb.h"
 #include "dosisms.h"
 

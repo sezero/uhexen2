@@ -33,28 +33,21 @@
 
 #if HAVE_DOS_GUS_SOUND
 
+#include <dos.h>
 #include "snd_gus.h"
 #include "dosisms.h"
 
 
-/*
-===============================================================================
-
-GUS SUPPORT (snd_gus.c)
-
-===============================================================================
-*/
+//=============================================================================
+// Routines for reading from .INI files
+// The read routines are fairly efficient
+//=============================================================================
 
 #define	INI_STRING_SIZE		0x100
 
 static FILE *ini_fopen (const char *filename, const char *modes);
 static int ini_fclose (FILE *f);
 static void ini_fgets (FILE *f, const char *section, const char *field, char *s);
-
-// Routines for reading from .INI files
-// The read routines are fairly efficient.
-//
-// Author(s): Jayeson Lee-Steere
 
 #define	MAX_SECTION_WIDTH	20
 #define	MAX_FIELD_WIDTH		20
@@ -84,15 +77,12 @@ static int	current_field_buffer = 0;
 static struct section_buffer	section_buffers[NUM_SECTION_BUFFERS];
 static struct field_buffer	field_buffers[NUM_FIELD_BUFFERS];
 
-//***************************************************************************
-// Internal routines
-//***************************************************************************
 
 static char my_toupper (char c)
 {
 	if (c >= 'a' && c <= 'z')
 		c -= ('a' - 'A');
-	return (c);
+	return c;
 }
 
 static void reset_buffer (FILE *f)
@@ -123,7 +113,7 @@ static int is_section (char *s, const char *name)
 		s++;
 	// Look for leading "["
 	if (s[0] != '[')
-		return (0);
+		return 0;
 	s++;
 	// Make sure name matches
 	while (s[0] != ']' && s[0] != 13 && s[0] != 10 && s[0] != 0 && name[0] != 0)
@@ -131,7 +121,7 @@ static int is_section (char *s, const char *name)
 		if (!wild)
 		{
 			if (my_toupper(s[0]) != my_toupper(name[0]))
-				return (0);
+				return 0;
 		}
 		s++;
 		if (!wild)
@@ -140,16 +130,16 @@ static int is_section (char *s, const char *name)
 	if (!wild)
 	{
 		if (name[0] != 0)
-			return (0);
+			return 0;
 	}
 	// Skip trailing spaces
 	while (s[0] == ' ')
 		s++;
 	// Make sure we have trailing "]"
 	if (s[0] != ']')
-		return (0);
+		return 0;
 
-	return (1);
+	return 1;
 }
 
 // Sees if the current string is field "name" (i.e. "name"=...).
@@ -173,7 +163,7 @@ static int is_field (char *s, const char *name)
 		if (!wild)
 		{
 			if (my_toupper(s[0]) != my_toupper(name[0]))
-				return(0);
+				return 0;
 		}
 		s++;
 		if (!wild)
@@ -182,16 +172,16 @@ static int is_field (char *s, const char *name)
 	if (!wild)
 	{
 		if (name[0] != 0)
-			return (0);
+			return 0;
 	}
 	// Skip trailing spaces
 	while (s[0] == ' ')
 		s++;
 	// Make sure we have an "="
 	if (s[0] != '=')
-		return (0);
+		return 0;
 
-	return(1);
+	return 1;
 }
 
 // Extracts the section name from a section heading
@@ -304,7 +294,7 @@ static int add_section (char *instring, long offset)
 	for (i = 0; i < NUM_SECTION_BUFFERS; i++)
 	{
 		if (stricmp(section, section_buffers[i].name) == 0)
-			return (i);
+			return i;
 	}
 	// Increment current_section_buffer
 	current_section_buffer++;
@@ -319,7 +309,7 @@ static int add_section (char *instring, long offset)
 	// Set buffer information
 	strcpy(section_buffers[current_section_buffer].name, section);
 	section_buffers[current_section_buffer].offset = offset;
-	return (current_section_buffer);
+	return current_section_buffer;
 }
 
 // Adds a field to the buffer
@@ -356,23 +346,19 @@ static char *stripped_fgets (char *s, int n, FILE *f)
 	int	i = 0;
 
 	if (fgets(s, n, f) == NULL)
-		return (NULL);
+		return NULL;
 
 	while (s[i] != ';' && s[i] != 13 && s[i] != 10 && s[i] != 0)
 		i++;
 	s[i] = 0;
 
-	return (s);
+	return s;
 }
-
-//***************************************************************************
-// Externally accessable routines
-//***************************************************************************
 
 // Opens an .INI file. Works like fopen
 static FILE *ini_fopen (const char *filename, const char *modes)
 {
-	return (fopen(filename, modes));
+	return fopen(filename, modes);
 }
 
 // Closes a .INI file. Works like fclose
@@ -380,7 +366,7 @@ static int ini_fclose (FILE *f)
 {
 	if (f == current_file)
 		reset_buffer (NULL);
-	return(fclose(f));
+	return fclose(f);
 }
 
 // Puts "field" from "section" from .ini file "f" into "s".
@@ -455,8 +441,8 @@ static void ini_fgets (FILE *f, const char *section, const char *field, char *s)
 		stripped_fgets(ts, INI_STRING_SIZE * 2, f);
 		get_field_string(s, ts);
 	}
-	else
 	// else search through section for field.
+	else
 	{
 		// Make sure we do not start at eof or this will cause problems.
 		if (feof(f))
@@ -484,6 +470,8 @@ static void ini_fgets (FILE *f, const char *section, const char *field, char *s)
 	}
 }
 
+//=============================================================================
+// GUS support
 //=============================================================================
 
 #define	BYTE		unsigned char
@@ -567,9 +555,6 @@ struct Gf1RateStruct
 	BYTE	Voices;
 };
 
-//=============================================================================
-// GUS-only variables
-//=============================================================================
 static short *dma_buffer;
 
 static char s_gus_driver[] = "GUS";
@@ -707,12 +692,12 @@ static qboolean GUS_GetIWData (void)
 
 	Interwave = getenv("INTERWAVE");
 	if (Interwave == NULL)
-		return (false);
+		return false;
 
 	// Open IW.INI
 	IwFile = ini_fopen(Interwave, "rt");
 	if (IwFile == NULL)
-		return (false);
+		return false;
 
 	// Read codec base and codec DMA
 	ini_fgets(IwFile, "setup 0", "CodecBase", s);
@@ -724,7 +709,7 @@ static qboolean GUS_GetIWData (void)
 
 	// Make sure numbers OK
 	if (CodecBase == 0 || CodecDma == 0)
-		return (false);
+		return false;
 
 	CodecRegisterSelect = CodecBase;
 	CodecData = CodecBase + 1;
@@ -744,18 +729,18 @@ static qboolean GUS_GetIWData (void)
 			break;
 	}
 	if (i == 0xFFFF)
-		return (false);
+		return false;
 
 	// Get chip revision - can not be zero
 	dos_outportb(CodecRegisterSelect, CODEC_MODE_AND_ID);
 	if ((dos_inportb(CodecRegisterSelect) & 0x7F) != CODEC_MODE_AND_ID)
-		return (false);
+		return false;
 	if ((dos_inportb(CodecData) & 0x0F) == 0)
-		return (false);
+		return false;
 
 	HaveCodec = 1;
 	Con_Printf("Sound Card is UltraSound PnP\n");
-	return (true);
+	return true;
 }
 
 //=============================================================================
@@ -772,7 +757,7 @@ static qboolean GUS_GetMAXData (void)
 	Ultrasnd = getenv("ULTRASND");
 	Ultra16 = getenv("ULTRA16");
 	if (Ultrasnd == NULL || Ultra16 == NULL)
-		return (false);
+		return false;
 
 	sscanf(Ultrasnd, "%x,%i,%i,%i,%i", &GusBase, &Dma1, &Dma2, &Irq1, &Irq2);
 	sscanf(Ultra16, "%x,%i,%i,%i", &CodecBase, &CodecDma, &CodecIrq, &CodecType);
@@ -785,10 +770,10 @@ static qboolean GUS_GetMAXData (void)
 	// Make sure there is a GUS at GUS base
 	dos_outportb(GusBase + 0x08, 0x55);
 	if (dos_inportb(GusBase + 0x0A) != 0x55)
-		return (false);
+		return false;
 	dos_outportb(GusBase + 0x08, 0xAA);
 	if (dos_inportb(GusBase + 0x0A) != 0xAA)
-		return (false);
+		return false;
 
 	// Program CODEC control register
 	MaxVal = ((CodecBase & 0xF0) >> 4) | 0x40;
@@ -815,18 +800,18 @@ static qboolean GUS_GetMAXData (void)
 			break;
 	}
 	if (i == 0xFFFF)
-		return (false);
+		return false;
 
 	// Get chip revision - can not be zero
 	dos_outportb(CodecRegisterSelect, CODEC_MODE_AND_ID);
 	if ((dos_inportb(CodecRegisterSelect) & 0x7F) != CODEC_MODE_AND_ID)
-		return (false);
+		return false;
 	if ((dos_inportb(CodecData) & 0x0F) == 0)
-		return (false);
+		return false;
 
 	HaveCodec = 1;
 	Con_Printf("Sound Card is UltraSound MAX\n");
-	return (true);
+	return true;
 }
 
 //=============================================================================
@@ -839,7 +824,7 @@ static qboolean GUS_GetGUSData (void)
 
 	Ultrasnd = getenv("ULTRASND");
 	if (Ultrasnd == NULL)
-		return (false);
+		return false;
 
 	sscanf(Ultrasnd, "%x,%i,%i,%i,%i", &GusBase, &Dma1, &Dma2, &Irq1, &Irq2);
 
@@ -848,10 +833,10 @@ static qboolean GUS_GetGUSData (void)
 	// Make sure there is a GUS at GUS base
 	dos_outportb(GusBase + 0x08, 0x55);
 	if (dos_inportb(GusBase + 0x0A) != 0x55)
-		return (false);
+		return false;
 	dos_outportb(GusBase + 0x08, 0xAA);
 	if (dos_inportb(GusBase + 0x0A) != 0xAA)
-		return (false);
+		return false;
 
 	Gf1TimerControl	  = GusBase + 0x008;
 	Gf1PageRegister	  = GusBase + 0x102;
@@ -905,7 +890,7 @@ static qboolean GUS_GetGUSData (void)
 
 	HaveCodec = 0;
 	Con_Printf("Sound Card is UltraSound\n");
-	return (true);
+	return true;
 }
 
 
@@ -1132,7 +1117,7 @@ static qboolean S_GUS_Init (dma_t *dma)
 		if (GUS_GetMAXData() == false)
 		{
 			if (GUS_GetGUSData() == false)
-				return (false);
+				return false;
 		}
 	}
 
@@ -1198,7 +1183,7 @@ static qboolean S_GUS_Init (dma_t *dma)
 		// do 19khz sampling rate unless command line parameter wants different
 		shm->speed = 19293;
 		Voices = 32;
-		rc = COM_CheckParm("-sspeed");
+		rc = COM_CheckParm("-sndspeed");
 		if (rc && rc < com_argc - 1)
 		{
 			shm->speed = atoi(com_argv[rc+1]);
@@ -1252,7 +1237,7 @@ static qboolean S_GUS_Init (dma_t *dma)
 			SetGf18(DMA_CONTROL, 0x45);
 		GUS_StartGf1(BUFFER_SIZE, Voices);
 	}
-	return (true);
+	return true;
 }
 
 //=============================================================================
@@ -1307,7 +1292,7 @@ static int S_GUS_GetDMAPos (void)
 	}
 
 	shm->samplepos = count & (shm->samples - 1);
-	return (shm->samplepos);
+	return shm->samplepos;
 }
 
 //=============================================================================

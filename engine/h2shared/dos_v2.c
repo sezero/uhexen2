@@ -39,15 +39,10 @@
 
 #include "dosisms.h"
 
-_go32_dpmi_registers	hmm;
-
 // globals
 regs_t			regs;
-void (*dos_error_func)(const char *msg, ...);
 
 static unsigned int	conventional_memory = -1;
-
-__dpmi_regs		callback_regs;
 
 void map_in_conventional_memory (void)
 {

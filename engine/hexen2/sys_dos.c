@@ -1019,7 +1019,6 @@ static void PrintVersion (void)
 main
 ================
 */
-extern void (*dos_error_func)(const char *, ...);
 static char	cwd[MAX_OSPATH];
 
 int main (int argc, char **argv)
@@ -1038,8 +1037,6 @@ int main (int argc, char **argv)
 
 	if (fptest_temp >= 0.0)
 		fptest_temp += 0.1;
-
-	dos_error_func = Sys_Error;
 
 	memset (cwd, 0, sizeof(cwd));
 	if (Sys_GetBasedir(argv[0], cwd, sizeof(cwd)) != 0)
