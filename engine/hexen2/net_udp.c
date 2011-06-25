@@ -65,8 +65,8 @@ static int udp_scan_iface (sys_socket_t socketfd)
 	if (COM_CheckParm("-noifscan"))
 		return -1;
 
-	ifc.ifc_len = sizeof(buf);
-	ifc.ifc_buf = buf;
+	ifc.ifc_len = (int) sizeof(buf);
+	ifc.ifc_buf = (caddr_t) buf;
 
 	if (ioctl(socketfd, SIOCGIFCONF, &ifc) == -1)
 	{
