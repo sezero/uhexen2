@@ -47,6 +47,9 @@
 #if defined(PLATFORM_WINDOWS)
 #define q_strncasecmp	_strnicmp
 #define q_strcasecmp	_stricmp
+#elif defined(PLATFORM_DOS)
+#define q_strncasecmp	strnicmp
+#define q_strcasecmp	stricmp
 #else
 #define q_strncasecmp	strncasecmp
 #define q_strcasecmp	strcasecmp

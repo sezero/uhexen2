@@ -4,6 +4,10 @@ Development Progress	:
 ---------------------------
 
 2011-06-25 (SVN):
+    * common.h: For dos, define q_str[n]casecmp as str[n]cmpi to avoid
+      the actual redirection to them in djgpp libc.
+
+2011-06-25 (SVN):
     * net_udp.c (udp_scan_iface):  Cast the char array to caddr_t when
       assigning it to the ifc_buf member of struct ifconf.
 
