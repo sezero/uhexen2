@@ -3,7 +3,7 @@
 	Beame & Whiteside TCP/IP for dosquake.
 	from quake1 source with minor adaptations for uhexen2.
 
-	$Id: net_bw.c,v 1.6 2009-04-28 14:00:34 sezero Exp $
+	$Id$
 
 	Copyright (C) 1996-1997  Id Software, Inc.
 
@@ -31,7 +31,7 @@
 #include <stdlib.h>
 #include <dpmi.h>
 
-#include <netinet/in.h>
+#include <netinet/in.h>		/* for htonl & co. */
 
 #include "quakedef.h"
 #include "dosisms.h"
@@ -39,8 +39,9 @@
 #include "net_defs.h"
 
 
-// this section is general Unix stuff that we need
+/* this section is general Unix stuff that we need */
 
+#undef	EIO	/* don't clash with djgpp's errno.h. */
 #define	EIO			5	/* I/O error */
 #define	EBADS			9
 #define	EWOULDBLOCK		35	/* function would block */
@@ -147,7 +148,7 @@ struct	hostent {
 char *inet_ntoa (struct in_addr in);
 
 
-// this section is B&W specific constants & structures
+/* this section is B&W specific constants & structures */
 
 #define	BW_IOCTL_BIND			0
 #define	BW_IOCTL_CLEAROPTIONS		5
@@ -172,10 +173,10 @@ char *inet_ntoa (struct in_addr in);
 
 typedef struct
 {
-	char			state;		// always 1
+	char			state;		/* always 1 */
 	short			localPort;
 	struct in_addr	localAddr;
-	char			reason;		// always 0
+	char			reason;		/* always 0 */
 	char			options;
 	short			dataAvailable;
 } BW_UDPinfo_t;
@@ -194,7 +195,7 @@ typedef struct
 	char			reserved1 [2];
 	unsigned short	dataLenPlus8;
 	char			reserved2 [2];
-	char			data[1];	// actual size is <dataLenPlus8> - 8		
+	char			data[1];	// actual size is <dataLenPlus8> - 8
 } BW_UDPreadInfo2_t;
 
 typedef struct
@@ -204,7 +205,7 @@ typedef struct
 	unsigned short	dataLen;
 	struct in_addr	remoteAddr;
 	char			reserved2 [42];
-	char			data[1];	// actual size is <datalen>
+	char			data[1];	/* actual size is <datalen> */
 } BW_writeInfo_t;
 
 typedef struct
@@ -242,7 +243,7 @@ static BW_ethdevinfo_t	ethdevinfo;
 static int		netmask;
 static struct in_addr	bcastaddr;
 
-static int		net_acceptsocket = -1;	// socket for fielding new connections
+static int		net_acceptsocket = -1;	/* socket for fielding new connections */
 static int		net_controlsocket = 0;
 
 #include "net_bw.h"
@@ -410,7 +411,7 @@ int BW_OpenSocket (int port)
 	static char	bind_msg[3] = {BW_IOCTL_BIND, 0, 0};
 	static char	nonblock_msg[2] = {BW_IOCTL_CLEAROPTIONS, BW_OPTION_BLOCKING};
 
-	// allocate a UDP socket
+	/* allocate a UDP socket */
 	strcpy((char *)lowmem_buffer, "UDP-IP10");
 	regs.x.ax = 0x3d42;
 	regs.x.ds = lowmem_bufseg;
@@ -422,7 +423,7 @@ int BW_OpenSocket (int port)
 	}
 	s = regs.x.ax;
 
-	// set file descriptor to raw mode
+	/* set file descriptor to raw mode */
 	regs.x.ax = 0x4401;
 	regs.x.bx = s;
 	regs.x.dx = 0x60;
@@ -440,7 +441,7 @@ int BW_OpenSocket (int port)
 		return -1;
 	}
 
-	// if a socket was specified, bind to it and return
+	/* if a socket was specified, bind to it and return */
 	if (port)
 	{
 		bind_msg[1] = (((short)port) & 0x00ff);
@@ -453,7 +454,7 @@ int BW_OpenSocket (int port)
 		return s;
 	}
 
-	// B&W does NOT do dynamic allocation, so if port == 0 we must fake it
+	/* B&W does NOT do dynamic allocation, so if port == 0 we must fake it */
 	do
 	{
 		port = dynamic++;
@@ -498,7 +499,7 @@ int BW_CheckNewConnections (void)
 	if (net_acceptsocket == 0)
 		return -1;
 
-	// see if there's anything waiting
+	/* see if there's anything waiting */
 	regs.x.ax = 0x4406;
 	regs.x.bx = net_acceptsocket;
 	dos_int86(0x21);
@@ -514,14 +515,14 @@ int BW_Read (int s, byte *buf, int len, struct qsockaddr *from)
 	BW_UDPreadInfo1_t	*info1;
 	BW_UDPreadInfo2_t	*info2;
 
-	// ask if there's anything waiting
+	/* ask if there's anything waiting */
 	regs.x.ax = 0x4406;
 	regs.x.bx = s;
 	dos_int86(0x21);
 	if (regs.x.ax == 0)
 		return 0;
 
-	// there was, so let's get it
+	/* there was, so let's get it */
 	regs.h.ah = 0x3f;
 	regs.x.cx = /* len + 53 */ LOWMEM_SIZE;
 	regs.x.es = regs.x.ds = lowmem_bufseg;
@@ -560,14 +561,14 @@ int BW_Broadcast (int s, byte *msg, int len)
 {
 	BW_writeInfo_t	*writeInfo;
 
-	// ask if we're clear to send
+	/* ask if we're clear to send */
 	regs.x.ax = 0x4407;
 	regs.x.bx = s;
 	dos_int86(0x21);
 	if (regs.x.ax == 0)
 		return 0;
 
-	// yes, let's do it
+	/* yes, let's do it */
 	writeInfo = (BW_writeInfo_t *)lowmem_buffer;
 	writeInfo->remoteAddr = bcastaddr;
 	writeInfo->remotePort = net_hostport;
@@ -596,14 +597,14 @@ int BW_Write (int s, byte *msg, int len, struct qsockaddr *to)
 {
 	BW_writeInfo_t	*writeInfo;
 
-	// ask if we're clear to send
+	/* ask if we're clear to send */
 	regs.x.ax = 0x4407;
 	regs.x.bx = s;
 	dos_int86(0x21);
 	if (regs.x.ax == 0)
 		return 0;
 
-	// yes, let's do it
+	/* yes, let's do it */
 	writeInfo = (BW_writeInfo_t *)lowmem_buffer;
 	writeInfo->remoteAddr = ((struct sockaddr_in *)to)->sin_addr;
 	writeInfo->remotePort = ntohs(((struct sockaddr_in *)to)->sin_port);
@@ -682,7 +683,7 @@ int BW_GetNameFromAddr (struct qsockaddr *addr, char *name)
 	return 0;
 }
 
-///=============================================================================
+//=============================================================================
 
 int BW_GetAddrFromName (const char *name, struct qsockaddr *hostaddr)
 {

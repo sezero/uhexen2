@@ -2,7 +2,7 @@
 	dos_inet.c
 	from quake1 source with minor adaptations for uhexen2.
 
-	$Id: dos_inet.c,v 1.3 2007-12-14 16:41:11 sezero Exp $
+	$Id$
 
 	Copyright (C) 1996-1997  Id Software, Inc.
 

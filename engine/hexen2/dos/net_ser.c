@@ -3,7 +3,7 @@
 	dosquake serial network driver.
 	from quake1 source with minor adaptations for uhexen2.
 
-	$Id: net_ser.c,v 1.5 2009-04-28 14:00:34 sezero Exp $
+	$Id$
 
 	Copyright (C) 1996-1997  Id Software, Inc.
 
@@ -36,36 +36,41 @@
 #include "net_ser.h"
 #include "net_comx.c"
 
-// serial protocol
+/* SERIAL PROTOCOL */
 
 #define	SERIAL_PROTOCOL_VERSION		3
 
-// The serial protocol is message oriented.  The high level message format is
-// a one byte message type (MTYPE_xxx), data, and a 16-bit checksum.  All
-// multi-byte fields are sent in network byte order.  There are currently 4
-// MTYPEs defined.  Their formats are as follows:
-//
-// MTYPE_RELIABLE     sequence      data_length   data       checksum   eom
-// MTYPE_UNRELIABLE   sequence      data_length   data       checksum   eom
-// MTYPE_ACK          sequence      checksum      eom
-// MTYPE_CONTROL      data_length   data          checksum   eom
-//
-// sequence is an 8-bit unsigned value starting from 0
-// data_length is a 16-bit unsigned value; it is the length of the data only
-// the checksum is a 16-bit value.  the CRC formula used is defined in crc.h.
-//              the checksum covers the entire messages, excluding itself
-// eom is a special 2 byte sequence used to mark the End Of Message.  This is
-//              needed for error recovery.
-//
-// A lot of behavior is based on knowledge of the upper level Quake network
-// layer.  For example, only one reliable message can be outstanding (pending
-// reception of an MTYPE_ACK) at a time.
-//
-// The low level routines used to communicate with the modem are not part of
-// this protocol.
-//
-// The CONTROL messages are only used for session establishment.  They are
-// not reliable or sequenced.
+/*
+ * The serial protocol is message oriented.  The high level message format is
+ * a one byte message type (MTYPE_xxx), data, and a 16-bit checksum.  All
+ * multi-byte fields are sent in network byte order.  There are currently 4
+ * MTYPEs defined.  Their formats are as follows:
+ *
+ * MTYPE_RELIABLE     sequence      data_length   data       checksum   eom
+ * MTYPE_UNRELIABLE   sequence      data_length   data       checksum   eom
+ * MTYPE_ACK          sequence      checksum      eom
+ * MTYPE_CONTROL      data_length   data          checksum   eom
+ *
+ * sequence is an 8-bit unsigned value starting from 0
+ *
+ * data_length is a 16-bit unsigned value; it is the length of the data only
+ *
+ * the checksum is a 16-bit value.  the CRC formula used is defined in crc.h.
+ *             the checksum covers the entire messages, excluding itself
+ *
+ * eom is a special 2 byte sequence used to mark the End Of Message.  This is
+ *             needed for error recovery.
+ *
+ * A lot of behavior is based on knowledge of the upper level Quake network
+ * layer.  For example, only one reliable message can be outstanding (pending
+ * reception of an MTYPE_ACK) at a time.
+ *
+ * The low level routines used to communicate with the modem are not part of
+ * this protocol.
+ *
+ * The CONTROL messages are only used for session establishment.  They are
+ * not reliable or sequenced.
+ */
 
 #define	MTYPE_RELIABLE			0x01
 #define	MTYPE_UNRELIABLE		0x02
@@ -223,13 +228,13 @@ static int ProcessInQueue (SerialLine *p)
 				continue;
 			}
 
-			// b == ESCAPE_COMMAND
+			/* b == ESCAPE_COMMAND */
 			p->currState = p->prevState;
 		}
 
 		p->prevState = p->currState;
 
-//DEBUG
+/* DEBUG */
 		if (p->sock->receiveMessageLength + p->lengthFound > NET_MAXMESSAGE)
 		{
 			Con_DPrintf("Serial blew out receive buffer: %u\n", p->sock->receiveMessageLength + p->lengthFound);
@@ -240,7 +245,7 @@ static int ProcessInQueue (SerialLine *p)
 			Con_DPrintf("Serial hit receive buffer limit: %u\n", p->sock->receiveMessageLength + p->lengthFound);
 			p->currState = STATE_ABORT;
 		}
-//end DEBUG
+/* end DEBUG */
 
 		switch (p->currState)
 		{
@@ -360,7 +365,7 @@ int Serial_Init (void)
 {
 	int	n;
 
-// LATER do Win32 serial support
+/* LATER do Win32 serial support */
 #ifdef	_WIN32
 	return -1;
 #endif
@@ -430,21 +435,21 @@ int Serial_SendMessage (qsocket_t *sock, sizebuf_t *message)
 	p = (SerialLine *)sock->driverdata;
 	CRC_Init (&crc);
 
-	// message type
+	/* message type */
 	b = MTYPE_RELIABLE;
 	if (p->client)
 		b |= MTYPE_CLIENT;
 	TTY_WriteByte(p->tty, b);
 	CRC_ProcessByte (&crc, b);
 
-	// sequence
+	/* sequence */
 	b = p->sock->sendSequence;
 	TTY_WriteByte(p->tty, b);
 	if (b == ESCAPE_COMMAND)
 		TTY_WriteByte(p->tty, b);
 	CRC_ProcessByte (&crc, b);
 
-	// data length
+	/* data length */
 	b = message->cursize >> 8;
 	TTY_WriteByte(p->tty, b);
 	if (b == ESCAPE_COMMAND)
@@ -456,7 +461,7 @@ int Serial_SendMessage (qsocket_t *sock, sizebuf_t *message)
 		TTY_WriteByte(p->tty, b);
 	CRC_ProcessByte (&crc, b);
 
-	// data
+	/* data */
 	for (n = 0; n < message->cursize; n++)
 	{
 		b = message->data[n];
@@ -466,7 +471,7 @@ int Serial_SendMessage (qsocket_t *sock, sizebuf_t *message)
 		CRC_ProcessByte (&crc, b);
 	}
 
-	// checksum
+	/* checksum */
 	b = CRC_Value (crc) >> 8;
 	TTY_WriteByte(p->tty, b);
 	if (b == ESCAPE_COMMAND)
@@ -476,13 +481,13 @@ int Serial_SendMessage (qsocket_t *sock, sizebuf_t *message)
 	if (b == ESCAPE_COMMAND)
 		TTY_WriteByte(p->tty, b);
 
-	// end of message
+	/* end of message */
 	TTY_WriteByte(p->tty, ESCAPE_COMMAND);
 	TTY_WriteByte(p->tty, ESCAPE_EOM);
 
 	TTY_Flush(p->tty);
 
-	// mark sock as busy and save the message for possible retransmit
+	/* mark sock as busy and save the message for possible retransmit */
 	sock->canSend = false;
 	memcpy(sock->sendMessage, message->data, message->cursize);
 	sock->sendMessageLength = message->cursize;
@@ -521,14 +526,14 @@ int Serial_SendUnreliableMessage (qsocket_t *sock, sizebuf_t *message)
 
 	CRC_Init (&crc);
 
-	// message type
+	/* message type */
 	b = MTYPE_UNRELIABLE;
 	if (p->client)
 		b |= MTYPE_CLIENT;
 	TTY_WriteByte(p->tty, b);
 	CRC_ProcessByte (&crc, b);
 
-	// sequence
+	/* sequence */
 	b = p->sock->unreliableSendSequence;
 	p->sock->unreliableSendSequence = (b + 1) & 0xff;
 	TTY_WriteByte(p->tty, b);
@@ -536,7 +541,7 @@ int Serial_SendUnreliableMessage (qsocket_t *sock, sizebuf_t *message)
 		TTY_WriteByte(p->tty, b);
 	CRC_ProcessByte (&crc, b);
 
-	// data length
+	/* data length */
 	b = message->cursize >> 8;
 	TTY_WriteByte(p->tty, b);
 	if (b == ESCAPE_COMMAND)
@@ -548,7 +553,7 @@ int Serial_SendUnreliableMessage (qsocket_t *sock, sizebuf_t *message)
 		TTY_WriteByte(p->tty, b);
 	CRC_ProcessByte (&crc, b);
 
-	// data
+	/* data */
 	for (n = 0; n < message->cursize; n++)
 	{
 		b = message->data[n];
@@ -558,7 +563,7 @@ int Serial_SendUnreliableMessage (qsocket_t *sock, sizebuf_t *message)
 		CRC_ProcessByte (&crc, b);
 	}
 
-	// checksum
+	/* checksum */
 	b = CRC_Value (crc) >> 8;
 	TTY_WriteByte(p->tty, b);
 	if (b == ESCAPE_COMMAND)
@@ -568,7 +573,7 @@ int Serial_SendUnreliableMessage (qsocket_t *sock, sizebuf_t *message)
 	if (b == ESCAPE_COMMAND)
 		TTY_WriteByte(p->tty, b);
 
-	// end of message
+	/* end of message */
 	TTY_WriteByte(p->tty, ESCAPE_COMMAND);
 	TTY_WriteByte(p->tty, ESCAPE_EOM);
 
@@ -585,21 +590,21 @@ static void Serial_SendACK (SerialLine *p, byte sequence)
 
 	CRC_Init (&crc);
 
-	// message type
+	/* message type */
 	b = MTYPE_ACK;
 	if (p->client)
 		b |= MTYPE_CLIENT;
 	TTY_WriteByte(p->tty, b);
 	CRC_ProcessByte (&crc, b);
 
-	// sequence
+	/* sequence */
 	b = sequence;
 	TTY_WriteByte(p->tty, b);
 	if (b == ESCAPE_COMMAND)
 		TTY_WriteByte(p->tty, b);
 	CRC_ProcessByte (&crc, b);
 
-	// checksum
+	/* checksum */
 	b = CRC_Value (crc) >> 8;
 	TTY_WriteByte(p->tty, b);
 	if (b == ESCAPE_COMMAND)
@@ -609,7 +614,7 @@ static void Serial_SendACK (SerialLine *p, byte sequence)
 	if (b == ESCAPE_COMMAND)
 		TTY_WriteByte(p->tty, b);
 
-	// end of message
+	/* end of message */
 	TTY_WriteByte(p->tty, ESCAPE_COMMAND);
 	TTY_WriteByte(p->tty, ESCAPE_EOM);
 
@@ -625,14 +630,14 @@ static void Serial_SendControlMessage (SerialLine *p, sizebuf_t *message)
 
 	CRC_Init (&crc);
 
-	// message type
+	/* message type */
 	b = MTYPE_CONTROL;
 	if (p->client)
 		b |= MTYPE_CLIENT;
 	TTY_WriteByte(p->tty, b);
 	CRC_ProcessByte (&crc, b);
 
-	// data length
+	/* data length */
 	b = message->cursize >> 8;
 	TTY_WriteByte(p->tty, b);
 	if (b == ESCAPE_COMMAND)
@@ -644,7 +649,7 @@ static void Serial_SendControlMessage (SerialLine *p, sizebuf_t *message)
 		TTY_WriteByte(p->tty, b);
 	CRC_ProcessByte (&crc, b);
 
-	// data
+	/* data */
 	for (n = 0; n < message->cursize; n++)
 	{
 		b = message->data[n];
@@ -654,7 +659,7 @@ static void Serial_SendControlMessage (SerialLine *p, sizebuf_t *message)
 		CRC_ProcessByte (&crc, b);
 	}
 
-	// checksum
+	/* checksum */
 	b = CRC_Value (crc) >> 8;
 	TTY_WriteByte(p->tty, b);
 	if (b == ESCAPE_COMMAND)
@@ -664,7 +669,7 @@ static void Serial_SendControlMessage (SerialLine *p, sizebuf_t *message)
 	if (b == ESCAPE_COMMAND)
 		TTY_WriteByte(p->tty, b);
 
-	// end of message
+	/* end of message */
 	TTY_WriteByte(p->tty, ESCAPE_COMMAND);
 	TTY_WriteByte(p->tty, ESCAPE_EOM);
 
@@ -749,7 +754,7 @@ void Serial_SearchForHosts (qboolean xmit)
 	if (hostCacheCount == HOSTCACHESIZE)
 		return;
 
-	// see if we've already answered
+	/* see if we've already answered */
 	for (n = 0; n < hostCacheCount; n++)
 	{
 		if (strcmp (hostcache[n].cname, "#") == 0)
@@ -799,7 +804,7 @@ static qsocket_t *_Serial_Connect (const char *host, SerialLine *p)
 	}
 	p->sock->driverdata = p;
 
-	// send the connection request
+	/* send the connection request */
 	start_time = SetNetTime();
 	last_time = 0.0;
 
@@ -861,7 +866,7 @@ qsocket_t *Serial_Connect (const char *host)
 	int			n;
 	qsocket_t	*ret = NULL;
 
-	// see if this looks like a phone number
+	/* see if this looks like a phone number */
 	if (*host == '#')
 		host++;
 	for (n = 0; n < strlen(host); n++)
@@ -949,7 +954,7 @@ static qsocket_t *_Serial_CheckNewConnections (SerialLine *p)
 	if (strcmp(MSG_ReadString(), NET_NAME_ID) != 0)
 		return NULL;
 
-	// send him back the info about the server connection he has been allocated
+	/* send him back the info about the server connection he has been allocated */
 	SZ_Clear(&net_message);
 	MSG_WriteByte(&net_message, CCREP_ACCEPT);
 	Serial_SendControlMessage (p, &net_message);

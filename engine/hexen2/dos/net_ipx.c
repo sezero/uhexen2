@@ -3,7 +3,7 @@
 	IPX network driver for dosquake.
 	from quake1 source with minor adaptations for uhexen2.
 
-	$Id: net_ipx.c,v 1.5 2009-04-28 14:00:34 sezero Exp $
+	$Id$
 
 	Copyright (C) 1996-1997  Id Software, Inc.
 
@@ -31,7 +31,7 @@
 #include <stdlib.h>
 #include <dpmi.h>
 
-#include <netinet/in.h>
+#include <netinet/in.h>		/* for htonl & co. */
 
 #include "quakedef.h"
 #include "dosisms.h"
@@ -39,6 +39,7 @@
 #include "net_defs.h"
 #include "net_ipx.h"
 
+#undef	EIO	/* don't clash with djgpp's errno.h. */
 #define	EIO			5	/* I/O error */
 
 #define	AF_NETWARE		64

@@ -3,7 +3,7 @@
 	net definitions for dos.
 	from quake1 source with minor adaptations for uhexen2.
 
-	$Id: dos_inet.h,v 1.5 2009-04-28 12:02:34 sezero Exp $
+	$Id$
 
 	Copyright (C) 1996-1997  Id Software, Inc.
 
@@ -88,7 +88,7 @@ in_addr_t inet_addr(const char *cp);
 }
 #endif
 
-#include <netinet/in.h>		/* djgpp have this header */
+#include <netinet/in.h>		/* for htonl & co. djgpp has this header. */
 
 /* other missing stuff : */
 

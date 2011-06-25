@@ -3,7 +3,7 @@
 	TTY backend for the dosquake serial network driver.
 	from quake1 source with minor adaptations for uhexen2.
 
-	$Id: net_comx.c,v 1.6 2010-04-24 17:56:54 sezero Exp $
+	$Id$
 
 	Copyright (C) 1996-1997  Id Software, Inc.
 
@@ -63,7 +63,7 @@ extern cvar_t	config_modem_hangup;
 extern qboolean	m_return_onerror;
 extern char	m_return_reason[32];
 
-// 8250, 16550 definitions
+/* 8250, 16550 definitions */
 #define TRANSMIT_HOLDING_REGISTER		0x00
 #define RECEIVE_BUFFER_REGISTER			0x00
 #define INTERRUPT_ENABLE_REGISTER		0x01
@@ -296,7 +296,7 @@ static void ISR_16550 (ComPort *p)
 		source = inportb (p->uart + INTERRUPT_ID_REGISTER) & 0x07;
 	}
 
-	// check for lost IIR_TX_HOLDING_REGISTER_INTERRUPT on 16550a!
+	/* check for lost IIR_TX_HOLDING_REGISTER_INTERRUPT on 16550a ! */
 	if (inportb (p->uart + LINE_STATUS_REGISTER ) & LSR_TRANSMITTER_EMPTY)
 	{
 		count = 16;
@@ -424,18 +424,18 @@ static void ComPort_Enable (ComPort *p)
 		return;
 	}
 
-	// disable all UART interrupts
+	/* disable all UART interrupts */
 	outportb (p->uart + INTERRUPT_ENABLE_REGISTER, 0);
 
-	// clear out any buffered uncoming data
+	/* clear out any buffered uncoming data */
 	while ((inportb (p->uart + LINE_STATUS_REGISTER)) & LSR_DATA_READY)
 		inportb (p->uart + RECEIVE_BUFFER_REGISTER);
 
-	// get the current line and modem status
+	/* get the current line and modem status */
 	p->modemStatus = (inportb (p->uart + MODEM_STATUS_REGISTER) & MODEM_STATUS_MASK) | p->modemStatusIgnore;
 	p->lineStatus = inportb (p->uart + LINE_STATUS_REGISTER);
 
-	// clear any UART interrupts
+	/* clear any UART interrupts */
 	do
 	{
 		n = inportb (p->uart + INTERRUPT_ID_REGISTER) & 7;
@@ -453,7 +453,7 @@ static void ComPort_Enable (ComPort *p)
 			p->uartType = UART_8250;
 	}
 
-	// save the old interrupt handler
+	/* save the old interrupt handler */
 	_go32_dpmi_get_protected_mode_interrupt_vector(p->irq + 8, &p->protectedModeSaveInfo);
 
 	if (p->uartType == UART_8250)
@@ -482,31 +482,31 @@ static void ComPort_Enable (ComPort *p)
 		return;
 	}
 
-	// disable interrupts at the processor
+	/* disable interrupts at the processor */
 	disable();
 
-	// install our interrupt handlers now
+	/* install our interrupt handlers now */
 	_go32_dpmi_set_protected_mode_interrupt_vector(p->irq + 8, &p->protectedModeInfo);
 
-	// enable our interrupt at the PIC
+	/* enable our interrupt at the PIC */
 	outportb (0x21, inportb (0x21) & ~(1<<p->irq));
 
-	// enable interrupts at the processor
+	/* enable interrupts at the processor */
 	enable();
 
-	// enable interrupts at the PIC
+	/* enable interrupts at the PIC */
 	outportb (0x20, 0xc2);
 
-	// set baud rate & line control
+	/* set baud rate & line control */
 	outportb (p->uart + LINE_CONTROL_REGISTER, LCR_DLAB | p->lineControl);
 	outportb (p->uart, p->baudBits);
 	outportb (p->uart + 1, 0);
 	outportb (p->uart + LINE_CONTROL_REGISTER, p->lineControl);
 
-	// set modem control register & enable uart interrupt generation
+	/* set modem control register & enable uart interrupt generation */
 	outportb(p->uart + MODEM_CONTROL_REGISTER, MCR_OUT2 | MCR_RTS | MCR_DTR);
 
-	// enable the individual interrupts at the uart
+	/* enable the individual interrupts at the uart */
 	outportb (p->uart + INTERRUPT_ENABLE_REGISTER, IER_RX_DATA_READY | IER_TX_HOLDING_REGISTER_EMPTY | IER_LINE_STATUS | IER_MODEM_STATUS);
 
 	p->enabled = true;
@@ -521,20 +521,20 @@ static void ComPort_Disable (ComPort *p)
 		return;
 	}
 
-	// disable interrupts at the uart
+	/* disable interrupts at the uart */
 	outportb (p->uart + INTERRUPT_ENABLE_REGISTER, 0);
 
-	// disable our interrupt at the PIC
+	/* disable our interrupt at the PIC */
 	outportb (0x21, inportb (0x21) | (1<<p->irq));
 
-	// disable interrupts at the processor
+	/* disable interrupts at the processor */
 	disable();
 
-	// restore the old interrupt handler
+	/* restore the old interrupt handler */
 	_go32_dpmi_set_protected_mode_interrupt_vector(p->irq + 8, &p->protectedModeSaveInfo);
 	_go32_dpmi_free_iret_wrapper(&p->protectedModeInfo);
 
-	// enable interrupts at the processor
+	/* enable interrupts at the processor */
 	enable();
 
 	p->enabled = false;
@@ -585,8 +585,8 @@ static void Modem_Init (ComPort *p)
 
 	Con_Printf ("Initializing modem...\n");
 
-	// write 0 to MCR, wait 1/2 sec, then write the real value back again
-	// I got this from the guys at head-to-head who say it's necessary.
+	/* write 0 to MCR, wait 1/2 sec, then write the real value back again
+	 * I got this from the guys at head-to-head who say it's necessary. */
 	outportb(p->uart + MODEM_CONTROL_REGISTER, 0);
 	start = Sys_DoubleTime();
 	while ((Sys_DoubleTime() - start) < 0.5)
@@ -774,7 +774,7 @@ int TTY_Connect (int handle, const char *host)
 		return -1;
 	}
 
-	// discard any scraps in the input buffer
+	/* discard any scraps in the input buffer */
 	while (! EMPTY (p->inputQueue))
 		DEQUEUE (p->inputQueue, b);
 
@@ -927,7 +927,7 @@ qboolean TTY_CheckForConnection (int handle)
 		return true;
 	}
 
-	// direct connect case
+	/* direct connect case */
 	if (EMPTY (p->inputQueue))
 		return false;
 	return true;
@@ -959,7 +959,7 @@ void Com_f (void)
 	int		i;
 	int		n;
 
-	// first, determine which port they're messing with
+	/* first, determine which port they're messing with */
 	portNumber = atoi(Cmd_Argv (0) + 3) - 1;
 	if (portNumber > 1)
 		return;
@@ -1208,7 +1208,7 @@ static int Modem_Command (ComPort *p, const char *commandString)
 		ENQUEUE (p->outputQueue, *commandString++);
 	ENQUEUE (p->outputQueue, '\r');
 
-	// get the transmit rolling
+	/* get the transmit rolling */
 	DEQUEUE (p->outputQueue, b);
 	outportb(p->uart, b);
 
