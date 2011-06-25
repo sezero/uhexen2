@@ -123,8 +123,7 @@ typedef struct
 #define	IPXSOCKBUFFERS		5
 #define	IPXSOCKETS		(IPXBUFFERS / IPXSOCKBUFFERS)
 
-// each socket's socketbuffer 0 is used for sending, the others for listening
-
+/* each socket's socketbuffer 0 is used for sending, the others for listening */
 typedef struct
 {
 	char				reserved[LOWMEMSAVE];
@@ -251,7 +250,7 @@ int IPX_Init (void)
 	if (COM_CheckParm ("-noipx"))
 		return -1;
 
-	// find the IPX far call entry point
+	/* find the IPX far call entry point */
 	regs.x.ax = 0x7a00;
 	__dpmi_simulate_real_mode_interrupt (0x2f, (__dpmi_regs *)&regs);
 	if (regs.h.al != 0xff)
@@ -262,7 +261,7 @@ int IPX_Init (void)
 	ipx_cs = regs.x.es;
 	ipx_ip = regs.x.di;
 
-	// grab a chunk of memory down in DOS land
+	/* grab a chunk of memory down in DOS land */
 	lowmem_buffer = (char *) dos_getmemory(LOWMEMSIZE);
 	if (!lowmem_buffer)
 	{
@@ -272,7 +271,7 @@ int IPX_Init (void)
 	lowmem_bufoff = ptr2real(lowmem_buffer) & 0xf;
 	lowmem_bufseg = ptr2real(lowmem_buffer) >> 4;
 
-	// init socket handles & buffers
+	/* init socket handles & buffers */
 	handlesInUse = 0;
 	lma = (ipx_lowmem_area_t *)lowmem_buffer;
 	for (s = 0; s < IPXSOCKETS; s++)
@@ -354,7 +353,7 @@ int IPX_OpenSocket (int port)
 	if (handlesInUse == IPXSOCKETS)
 		return -1;
 
-	// open the IPX socket
+	/* open the IPX socket */
 	regs.x.cs = ipx_cs;
 	regs.x.ip = ipx_ip;
 	regs.x.bx = IPX_OPEN;
@@ -378,7 +377,7 @@ int IPX_OpenSocket (int port)
 	}
 	newsocket = regs.x.dx;
 
-// grab a handle; fill in the ECBs, and get them listening
+	/* grab a handle; fill in the ECBs, and get them listening */
 	for (handle = 0; handle < IPXSOCKETS; handle++)
 	{
 		if (ipxsocket[handle] == 0)
@@ -398,7 +397,7 @@ int IPX_OpenSocket (int port)
 		}
 	}
 
-	// "this will NEVER happen"
+	/* "this will NEVER happen" */
 	Sys_Error("IPX_OpenSocket: handle allocation failed\n");
 	return -1;
 }
@@ -407,11 +406,11 @@ int IPX_OpenSocket (int port)
 
 int IPX_CloseSocket (int handle)
 {
-	// if there's a send in progress, give it one last chance
+	/* if there's a send in progress, give it one last chance */
 	if (lma->socketbuffer[handle][0].ecb.inUse != 0)
 		IPX_RelinquishControl();
 
-	// close the socket (all pending sends/received are cancelled)
+	/* close the socket (all pending sends/received are cancelled) */
 	regs.x.cs = ipx_cs;
 	regs.x.ip = ipx_ip;
 	regs.x.bx = IPX_CLOSE;
@@ -482,13 +481,13 @@ tryagain:
 
 	rcvbuf = (ipx_lowmem_buffer_t *)ecb;
 
-	// copy the data up to the buffer
+	/* copy the data up to the buffer */
 	copylen = ntohs(rcvbuf->header.length) - (sizeof(int) + sizeof(IPXheader));
 	if (len < copylen)
 		Sys_Error("IPX_Read: buffer too small (%d vs %d)\n", len, copylen);
 	memcpy(buf, rcvbuf->data, copylen);
 
-	// fill in the addr if they want it
+	/* fill in the addr if they want it */
 	if (addr)
 	{
 		((struct sockaddr_ipx *)addr)->sipx_family = AF_NETWARE;
@@ -497,10 +496,10 @@ tryagain:
 		((struct sockaddr_ipx *)addr)->sipx_zero[1] = 0;
 	}
 
-	// update the send ecb's immediate address
+	/* update the send ecb's immediate address */
 	memcpy(lma->socketbuffer[handle][0].ecb.immediateAddress, rcvbuf->ecb.immediateAddress, 6);
 
-	// get this ecb listening again
+	/* get this ecb listening again */
 	rcvbuf->ecb.fragSize = sizeof(IPXheader) + sizeof(int) + NET_DATAGRAMSIZE;
 	IPX_ListenForPacket(&rcvbuf->ecb);
 	return copylen;
@@ -525,30 +524,30 @@ int IPX_Broadcast (int handle, byte *buf, int len)
 
 int IPX_Write (int handle, byte *buf, int len, struct qsockaddr *addr)
 {
-	// has the previous send completed?
+	/* has the previous send completed? */
 	while (lma->socketbuffer[handle][0].ecb.inUse != 0)
 		IPX_RelinquishControl();
 
 	switch (lma->socketbuffer[handle][0].ecb.completionCode)
 	{
-	case 0x00:	// success
-	case 0xfc:	// request cancelled
+	case 0x00:	/* success */
+	case 0xfc:	/* request cancelled */
 		break;
 
-	case 0xfd:	// malformed packet
+	case 0xfd:	/* malformed packet */
 	default:
 		Con_Printf("IPX driver send failure: %02x\n", lma->socketbuffer[handle][0].ecb.completionCode);
 		break;
 
-	case 0xfe:	// packet undeliverable
-	case 0xff:	// unable to send packet
+	case 0xfe:	/* packet undeliverable */
+	case 0xff:	/* unable to send packet */
 		Con_Printf("IPX lost route, trying to re-establish\n");
 
-		// look for a new route
+		/* look for a new route */
 		if (IPX_GetLocalTarget (&lma->socketbuffer[handle][0].header.destination, lma->socketbuffer[handle][0].ecb.immediateAddress) != 0)
 			return -1;
 
-		// re-send the one that failed
+		/* re-send the one that failed */
 		regs.x.cs = ipx_cs;
 		regs.x.ip = ipx_ip;
 		regs.x.bx = IPX_SEND;
@@ -556,24 +555,24 @@ int IPX_Write (int handle, byte *buf, int len, struct qsockaddr *addr)
 		regs.x.si = ptr2real(&lma->socketbuffer[handle][0].ecb) & 0xf;
 		__dpmi_simulate_real_mode_procedure_retf((__dpmi_regs *)&regs);
 
-		// report that we did not send the current one
+		/* report that we did not send the current one */
 		return 0;
 	}
 
-	// ecb : length
+	/* ecb : length */
 	lma->socketbuffer[handle][0].ecb.fragSize = sizeof(IPXheader) + sizeof(int) + len;
 
-	// ipx header : type
+	/* ipx header : type */
 	lma->socketbuffer[handle][0].header.type = PTYPE_IPX;
 
-	// ipx header : destination
+	/* ipx header : destination */
 	memcpy(&lma->socketbuffer[handle][0].header.destination, &((struct sockaddr_ipx *)addr)->sipx_addr, sizeof(IPXaddr));
 
-	// sequence number
+	/* sequence number */
 	lma->socketbuffer[handle][0].sequence = sequence[handle];
 	sequence[handle]++;
 
-	// copy down the data
+	/* copy down the data */
 	memcpy(lma->socketbuffer[handle][0].data, buf, len);
 
 	regs.x.cs = ipx_cs;
