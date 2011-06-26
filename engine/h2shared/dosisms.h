@@ -32,8 +32,10 @@
 
 #include <dpmi.h>
 
-int dos_lockmem (void *addr, int size);
-int dos_unlockmem (void *addr, int size);
+#if defined(DEBUG) &&		\
+   !defined(DJGPP_NO_INLINES)
+#define DJGPP_NO_INLINES	1
+#endif
 
 #if 0	/* same as __dpmi_regs */
 typedef union {
@@ -79,15 +81,35 @@ typedef union {
 } regs_t;
 #endif	/* #if 0 */
 
+int dos_lockmem (void *addr, int size);
+int dos_unlockmem (void *addr, int size);
+
+void *dos_getmemory (int size);
+void dos_freememory (void *ptr);
+
+#define dos_getheapsize _go32_dpmi_remaining_physical_memory
+
 unsigned int ptr2real (void *ptr);
 void *real2ptr (unsigned int real);
 void *far2ptr (unsigned int farptr);
 unsigned int ptr2far (void *ptr);
 
+#if !defined(DJGPP_NO_INLINES)
+/* shortcuts for when we aren't debugging */
+#include <dos.h>
+
+#define dos_inportb		inportb
+#define dos_inportw		inportw
+#define dos_outportb		outportb
+#define dos_outportw		outportw
+
+#else	/* DJGPP_NO_INLINES */
+
 int dos_inportb (int port);
 int dos_inportw (int port);
 void dos_outportb (int port, int val);
 void dos_outportw (int port, int val);
+#endif	/* DJGPP_NO_INLINES */
 
 void dos_irqenable (void);
 void dos_irqdisable (void);
@@ -97,13 +119,7 @@ void dos_restoreintr (int intr);
 int dos_int86 (int vec);
 int dos_int386 (int vec, __dpmi_regs *inregs, __dpmi_regs *outregs);
 
-void *dos_getmemory (int size);
-void dos_freememory (void *ptr);
-
-void dos_usleep (unsigned int usecs);
-
-int dos_getheapsize (void);
-
+/* global variables: */
 extern __dpmi_regs	regs;
 
 #endif	/* _DOSISMS_H_ */

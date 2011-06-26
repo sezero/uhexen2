@@ -4,6 +4,15 @@ Development Progress	:
 ---------------------------
 
 2011-06-26 (SVN):
+    * dosisms.h: Removed dos_usleep(), made the only caller in sys_dos.c
+      to call usleep directly. Removed unused dos_getheapsize function,
+      made it a macro expanding to _go32_dpmi_remaining_physical_memory.
+      Added new macro DJGPP_NO_INLINES which is not defined by default
+      except for debug builds. When DJGPP_NO_INLINES is not defined, use
+      djgpp inline versions of inportb, inportw, outportb and outportw
+      directly.
+
+2011-06-26 (SVN):
     * dosisms.h: Commented out regs_t which is the same as __dmpi_regs.
       Included dpmi.h.
     * dos_v2.c: Adjusted for regs_t to __dpmi_regs change. Minor cleanup.

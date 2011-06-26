@@ -36,10 +36,15 @@
 #include <crt0.h>
 #include <bios.h>
 #include <string.h>
+
+#ifndef DJGPP_NO_INLINES
+#define DJGPP_NO_INLINES 1
+#endif
 #include "dosisms.h"
 
-// globals
+/* global variables: */
 __dpmi_regs		regs;
+
 
 static unsigned int	conventional_memory = (unsigned int)-1;
 
@@ -221,16 +226,6 @@ void dos_restoreintr (int intr)
 			break;
 		}
 	}
-}
-
-void dos_usleep (unsigned int usecs)
-{
-	usleep (usecs);
-}
-
-int dos_getheapsize (void)
-{
-	return _go32_dpmi_remaining_physical_memory();
 }
 
 int dos_lockmem (void *addr, int size)
