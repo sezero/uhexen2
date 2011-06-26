@@ -683,7 +683,7 @@ ifeq ($(TARGET_OS),dos)
 SYSOBJ_INPUT := in_dos.o
 SYSOBJ_SOFT_VID:= vid_vga.o vid_ext.o d_copy.o vid_dos.o vregset.o
 SYSOBJ_NET := dos/net_dos.o dos/net_ser.o dos/net_bw.o dos/dos_inet.o dos/inet_addr.o \
-	dos/net_ipx.o dos/net_mp.o dos/mplib.o dos/mplpc.o
+	dos/net_ipx.o dos/net_mp.o dos/mplpc.o
 SYSOBJ_SYS := dos_v2.o sys_dos.o
 #	dosasm.o
 endif
@@ -825,6 +825,10 @@ $(SW_BINARY): LDFLAGS += -L$(OSLIBS)/windows/scitech/x86 -lmglfx
 endif
 endif
 $(GL_BINARY): CPPFLAGS+= $(GL_DEFS)
+
+# deps for *.c including another *.c
+dos/mplpc.o: dos/mplib.c
+dos/net_ser.o: dos/net_comx.c
 
 # extra rule for snd_timidity.c because of timidity/timidity.h and libtimidity.a
 snd_timidity.o: $(COMMONDIR)/snd_timidity.c

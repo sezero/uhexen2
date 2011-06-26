@@ -30,8 +30,7 @@ typedef unsigned long   u_long;
  */
 typedef u_int           SOCKET;
 
-// FIXME
-#if 0
+#if 0 /* FIXME: select(), fd_set & co. clash with djgpp stuff! */
 /*
  * Select uses arrays of SOCKETs.  These macros manipulate such
  * arrays.  FD_SETSIZE may be defined by the user before including
@@ -102,11 +101,10 @@ struct timeval {
         ((tvp)->tv_sec cmp (uvp)->tv_sec || \
          (tvp)->tv_sec == (uvp)->tv_sec && (tvp)->tv_usec cmp (uvp)->tv_usec)
 #define timerclear(tvp)         (tvp)->tv_sec = (tvp)->tv_usec = 0
-#endif
+#endif /* #if 0 / FIXME */
 
 /*
  * Commands for ioctlsocket(),  taken from the BSD file fcntl.h.
- *
  *
  * Ioctl's have the command encoded in the lower word,
  * and the size of any in or out parameters in the upper
@@ -718,10 +716,10 @@ int PASCAL FAR recv (SOCKET s, char FAR * buf, int len, int flags);
 int PASCAL FAR recvfrom (SOCKET s, char FAR * buf, int len, int flags,
                          struct sockaddr FAR *from, int FAR * fromlen);
 
-#if 0
+#if 0 /* FIXME: select(), fd_set & co. clash with djgpp stuff! */
 int PASCAL FAR select (int nfds, fd_set FAR *readfds, fd_set FAR *writefds,
                        fd_set FAR *exceptfds, const struct timeval FAR *timeout);
-#endif
+#endif /* #if 0 / FIXME */
 
 int PASCAL FAR send (SOCKET s, const char FAR * buf, int len, int flags);
 

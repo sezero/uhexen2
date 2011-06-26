@@ -4,6 +4,11 @@ Development Progress	:
 ---------------------------
 
 2011-06-26 (SVN):
+    * dos/mplib.c: Clean up, make all functions static,
+    * dos/mplpc.c: Clean up, include mplib.c.
+    * hexen2/Makefile: Adjust for the mplib.c change.
+
+2011-06-26 (SVN):
     * dosisms.h: Removed dos_usleep(), made the only caller in sys_dos.c
       to call usleep directly. Removed unused dos_getheapsize function,
       made it a macro expanding to _go32_dpmi_remaining_physical_memory.
