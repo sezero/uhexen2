@@ -34,7 +34,7 @@
 #include "d_local.h"
 #include "dosisms.h"
 #include "vid_dos.h"
-#include <dpmi.h>
+
 
 int		VGA_width, VGA_height, VGA_rowbytes, VGA_bufferrowbytes;
 byte		*VGA_pagebase;

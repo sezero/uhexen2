@@ -35,7 +35,7 @@
 #include "d_local.h"
 #include "dosisms.h"
 #include "vid_dos.h"
-#include <dpmi.h>
+
 
 #define	MODE_SUPPORTED_IN_HW		0x0001
 #define	COLOR_MODE			0x0008

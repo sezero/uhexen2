@@ -4,6 +4,13 @@ Development Progress	:
 ---------------------------
 
 2011-06-26 (SVN):
+    * dosisms.h: Commented out regs_t which is the same as __dmpi_regs.
+      Included dpmi.h.
+    * dos_v2.c: Adjusted for regs_t to __dpmi_regs change. Minor cleanup.
+    * vid_ext.c, vid_vga.c: No need for dpmi.h include now that dosisms.h
+      already includes it.
+
+2011-06-26 (SVN):
     * hexenworld/server/model.c (Mod_LoadFaces): Remove the strncmp call
       for just one "*" character and test for the '*' character instead.
 

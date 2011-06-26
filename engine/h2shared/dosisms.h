@@ -30,9 +30,12 @@
 #ifndef _DOSISMS_H_
 #define _DOSISMS_H_
 
+#include <dpmi.h>
+
 int dos_lockmem (void *addr, int size);
 int dos_unlockmem (void *addr, int size);
 
+#if 0	/* same as __dpmi_regs */
 typedef union {
 	struct {
 		unsigned long edi;
@@ -74,6 +77,7 @@ typedef union {
 		unsigned char al, ah, eax_b2, eax_b3;
 	} h;
 } regs_t;
+#endif	/* #if 0 */
 
 unsigned int ptr2real (void *ptr);
 void *real2ptr (unsigned int real);
@@ -91,6 +95,7 @@ void dos_registerintr (int intr, void (*handler)(void));
 void dos_restoreintr (int intr);
 
 int dos_int86 (int vec);
+int dos_int386 (int vec, __dpmi_regs *inregs, __dpmi_regs *outregs);
 
 void *dos_getmemory (int size);
 void dos_freememory (void *ptr);
@@ -99,7 +104,7 @@ void dos_usleep (unsigned int usecs);
 
 int dos_getheapsize (void);
 
-extern regs_t		regs;
+extern __dpmi_regs	regs;
 
 #endif	/* _DOSISMS_H_ */
 

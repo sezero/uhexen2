@@ -32,21 +32,21 @@
 #include <unistd.h>
 #include <sys/nearptr.h>
 #include <dos.h>
-#include <string.h>
 #include <dpmi.h>
-// #include <osfcn.h>
+#include <crt0.h>
 #include <bios.h>
-
+#include <string.h>
 #include "dosisms.h"
 
 // globals
-regs_t			regs;
+__dpmi_regs		regs;
 
-static unsigned int	conventional_memory = -1;
+static unsigned int	conventional_memory = (unsigned int)-1;
 
-void map_in_conventional_memory (void)
+static void map_in_conventional_memory (void)
 {
-	if (conventional_memory == -1)
+//	if (! (_crt0_startup_flags & _CRT0_FLAG_NEARPTR))
+	if (conventional_memory == (unsigned int)-1)
 	{
 		if (__djgpp_nearptr_enable())
 		{
@@ -114,16 +114,16 @@ int dos_int86 (int vec)
 {
 	int		rc;
 	regs.x.ss = regs.x.sp = 0;
-	rc = _go32_dpmi_simulate_int(vec, (_go32_dpmi_registers *) &regs);
+	rc = _go32_dpmi_simulate_int(vec, &regs);
 	return rc || (regs.x.flags & 1);
 }
 
-int dos_int386 (int vec, regs_t *inregs, regs_t *outregs)
+int dos_int386 (int vec, __dpmi_regs *inregs, __dpmi_regs *outregs)
 {
 	int		rc;
-	memcpy(outregs, inregs, sizeof(regs_t));
+	memcpy(outregs, inregs, sizeof(__dpmi_regs));
 	outregs->x.ss = outregs->x.sp = 0;
-	rc = _go32_dpmi_simulate_int(vec, (_go32_dpmi_registers *) outregs);
+	rc = _go32_dpmi_simulate_int(vec, outregs);
 	return rc || (outregs->x.flags & 1);
 }
 
@@ -142,8 +142,8 @@ void *dos_getmemory (int size)
 
 	if (firsttime)
 	{
-		memset(seginfo, 0, sizeof(seginfo));
 		firsttime = 0;
+		memset(seginfo, 0, sizeof(seginfo));
 	}
 
 	info.size = (size + 15) / 16;
