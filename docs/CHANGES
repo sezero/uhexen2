@@ -3,6 +3,10 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2011-06-26 (SVN):
+    * hexenworld/server/model.c (Mod_LoadFaces): Remove the strncmp call
+      for just one "*" character and test for the '*' character instead.
+
 2011-06-25 (SVN):
     * dos_v2.c, in_dos.c, snd_gus.c, snd_sb.c, sys_dos.c: Minor clean up
       for unused globals, missing dos.h includes, etc.

@@ -729,7 +729,7 @@ static void Mod_LoadFaces (lump_t *l)
 			continue;
 		}
 
-		if (!strncmp(out->texinfo->texture->name, "*", 1))	// turbulent
+		if (out->texinfo->texture->name[0] == '*')	// turbulent
 		{
 			out->flags |= (SURF_DRAWTURB | SURF_DRAWTILED);
 			for (i = 0; i < 2; i++)
