@@ -3,6 +3,9 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2011-06-27 (SVN):
+    * oslibs/codecs/dos/libmad.a: Recompiled and documented the changes.
+
 2011-06-26 (SVN):
     * dos/mplib.c: Clean up, make all functions static,
     * dos/mplpc.c: Clean up, include mplib.c.

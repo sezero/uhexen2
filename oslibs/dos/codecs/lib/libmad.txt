@@ -1,0 +1,158 @@
+# libmad-0.15.1b compiled for djgpp port of Hammer of Thyrion (uhexen2):
+# commented out code not needed in uhexen2 (see diffs below for details)
+# replaced malloc, calloc and free calls by Z_Malloc and ZFree (below)
+# configured like:
+./configure --host=i586-pc-msdosdjgpp --prefix=/djgpp --disable-debugging
+To the CFLAGS added -falign-loops=2 -falign-jumps=2 -falign-functions=2
+and replaced -O by -O2 in the generated Makefile.  The final CFLAGS were:
+ -DHAVE_CONFIG_H -I. -DFPM_INTEL -DASO_ZEROCHECK -Wall -march=i486 -O2
+ -fforce-addr -fthread-jumps -fcse-follow-jumps -fcse-skip-blocks
+ -fexpensive-optimizations -fregmove -fschedule-insns2 -fstrength-reduce
+ -fomit-frame-pointer -falign-loops=2 -falign-jumps=2 -falign-functions=2
+# compiled as usual.  compiler and assembler versions:
+$ i586-pc-msdosdjgpp-djgcc -v
+Reading specs from /usr/local/cross-djgpp-gcc33/bin/../lib/gcc-lib/i586-pc-msdosdjgpp/3.3.6/specs
+Configured with: ../gcc-3.36/configure --prefix=/usr/local/cross-djgpp --target=i586-pc-msdosdjgpp --with-headers=/usr/local/cross-djgpp/i586-pc-msdosdjgpp/include --enable-languages=c,c++ --disable-libgcj --disable-libada --disable-nls
+Thread model: single
+gcc version 3.3.6
+$ i586-pc-msdosdjgpp-as -v
+GNU assembler version 2.16.1 (i586-pc-msdosdjgpp) using BFD version 2.16.1
+^C
+# djgpp header/libary version: 2.04 (CVS/2011-06-24.)
+
+--- frame.c.orig
++++ frame.c
+@@ -33,7 +33,7 @@
+ # include "timer.h"
+ # include "layer12.h"
+ # include "layer3.h"
+-
++#include "zone.h"
+ static
+ unsigned long const bitrate_table[5][15] = {
+   /* MPEG-1 */
+@@ -107,7 +107,7 @@ void mad_frame_finish(struct mad_frame *
+   mad_header_finish(&frame->header);
+ 
+   if (frame->overlap) {
+-    free(frame->overlap);
++    Z_Free(frame->overlap);
+     frame->overlap = 0;
+   }
+ }
+--- layer3.c.orig
++++ layer3.c
+@@ -44,7 +44,7 @@
+ # include "frame.h"
+ # include "huffman.h"
+ # include "layer3.h"
+-
++#include "zone.h"
+ /* --- Layer III ----------------------------------------------------------- */
+ 
+ enum {
+@@ -2527,7 +2527,7 @@ int mad_layer_III(struct mad_stream *str
+   /* allocate Layer III dynamic structures */
+ 
+   if (stream->main_data == 0) {
+-    stream->main_data = malloc(MAD_BUFFER_MDLEN);
++    stream->main_data = Z_Malloc(MAD_BUFFER_MDLEN, Z_MAINZONE);
+     if (stream->main_data == 0) {
+       stream->error = MAD_ERROR_NOMEM;
+       return -1;
+@@ -2535,7 +2535,7 @@ int mad_layer_III(struct mad_stream *str
+   }
+ 
+   if (frame->overlap == 0) {
+-    frame->overlap = calloc(2 * 32 * 18, sizeof(mad_fixed_t));
++    frame->overlap = Z_Malloc(2 * 32 * 18 * sizeof(mad_fixed_t), Z_MAINZONE);
+     if (frame->overlap == 0) {
+       stream->error = MAD_ERROR_NOMEM;
+       return -1;
+--- stream.c.orig
++++ stream.c
+@@ -29,7 +29,7 @@
+ 
+ # include "bit.h"
+ # include "stream.h"
+-
++# include "zone.h"
+ /*
+  * NAME:	stream->init()
+  * DESCRIPTION:	initialize stream struct
+@@ -64,7 +64,7 @@ void mad_stream_init(struct mad_stream *
+ void mad_stream_finish(struct mad_stream *stream)
+ {
+   if (stream->main_data) {
+-    free(stream->main_data);
++    Z_Free(stream->main_data);
+     stream->main_data = 0;
+   }
+ 
+--- timer.c.orig
++++ timer.c
+@@ -342,6 +342,7 @@ unsigned long mad_timer_fraction(mad_tim
+  * NAME:	timer->string()
+  * DESCRIPTION:	write a string representation of a timer using a template
+  */
++#if 0 /* NOT NEEDED in uHexen2 */
+ void mad_timer_string(mad_timer_t timer,
+ 		      char *dest, char const *format, enum mad_units units,
+ 		      enum mad_units fracunits, unsigned long subparts)
+@@ -483,3 +484,5 @@ void mad_timer_string(mad_timer_t timer,
+     break;
+   }
+ }
++#endif /* NOT NEEDED in uHexen2 */
++
+--- /dev/null
++++ zone.h
+@@ -0,0 +1,13 @@
++#ifndef __ZZONE_H
++#define __ZZONE_H
++
++#define	Z_MAINZONE	(1 << 0)
++#define	Z_SECZONE	(1 << 1)
++
++void Z_Free (void *ptr);
++void *Z_Malloc (int size, int zone_id);
++void *Z_Realloc (void *ptr, int size, int zone_id);
++char *Z_Strdup (const char *s);
++
++#endif	/* __ZZONE_H */
++
+--- decoder.c.orig
++++ decoder.c
+@@ -23,6 +23,7 @@
+ #  include "config.h"
+ # endif
+ 
++#if 0 /* NOT NEEDED in uHexen2 */
+ # include "global.h"
+ 
+ # ifdef HAVE_SYS_TYPES_H
+@@ -580,3 +581,5 @@ int mad_decoder_message(struct mad_decod
+   return -1;
+ # endif
+ }
++#endif /* NOT NEEDED in uHexen2 */
++
+--- minimad.c.orig
++++ minimad.c
+@@ -19,6 +19,9 @@
+  * $Id: minimad.c,v 1.4 2004/01/23 09:41:32 rob Exp $
+  */
+ 
++#if 1 /* NOT NEEDED in uHexen2 */
++int main() { return 0; }
++#else /* NOT NEEDED in uHexen2 */
+ # include <stdio.h>
+ # include <unistd.h>
+ # include <sys/stat.h>
+@@ -220,3 +223,5 @@ int decode(unsigned char const *start, u
+ 
+   return result;
+ }
++#endif /* NOT NEEDED in uHexen2 */
++
+
