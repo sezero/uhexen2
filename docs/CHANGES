@@ -3,6 +3,13 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2011-06-28 (SVN):
+    * gl_vidsdl.c (VID_PrepareModes): Call qsort() only if we have more
+      than one elements to sort.
+    * gl_vidnt.c (VID_SortModes): Likewise.
+    * vid_sdl.c (VID_PrepareModes): Likewise.
+    * quakefs.c (FS_Maplist_f): Likewise.
+
 2011-06-27 (SVN):
     * oslibs/codecs/dos/libmad.a: Recompiled and documented the changes.
 

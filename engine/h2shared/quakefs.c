@@ -1200,8 +1200,6 @@ static void FS_Maplist_f (void)
 		prefix = NULL;
 	}
 
-	// search through the path, one element at a time
-	// either "search->filename" or "search->pak" is defined
 	for (search = fs_searchpaths; search; search = search->next)
 	{
 		if (search->pack)
@@ -1217,7 +1215,7 @@ static void FS_Maplist_f (void)
 			}
 		}
 		else
-		{	// element is a filename
+		{
 			char		*findname;
 
 			findname = Sys_FindFirstFile (va("%s/maps",search->filename), "*.bsp");
@@ -1246,7 +1244,8 @@ done:
 	}
 
 	// sort the list
-	qsort (maplist, map_count, sizeof(char *), COM_StrCompare);
+	if (map_count > 1)
+		qsort (maplist, map_count, sizeof(char *), COM_StrCompare);
 	Con_ShowList (map_count, (const char**)maplist);
 	Con_Printf ("\n");
 

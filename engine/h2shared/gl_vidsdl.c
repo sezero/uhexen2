@@ -1381,7 +1381,8 @@ no_fmodes:
 	modelist = fmodelist;
 
 	// SDL versions older than 1.2.8 have sorting problems
-	qsort(fmodelist, num_fmodes, sizeof fmodelist[0], sort_modes);
+	if (num_fmodes > 1)
+		qsort(fmodelist, num_fmodes, sizeof fmodelist[0], sort_modes);
 
 	vid_maxwidth = fmodelist[num_fmodes-1].width;
 	vid_maxheight = fmodelist[num_fmodes-1].height;

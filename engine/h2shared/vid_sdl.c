@@ -364,7 +364,6 @@ no_fmodes:
 	}
 	Con_SafePrintf ("Total %d entries\n", j);
 #endif
-
 	// count the entries
 	j = 0;
 	while ( sdl_modes[j] )
@@ -372,7 +371,8 @@ no_fmodes:
 
 	// sort the original list from low-res to high-res
 	// so that the low resolutions take priority
-	qsort(sdl_modes, j, sizeof *sdl_modes, sort_modes);
+	if (j > 1)
+		qsort(sdl_modes, j, sizeof *sdl_modes, sort_modes);
 
 	for (i = 0; sdl_modes[i] && num_fmodes < MAX_MODE_LIST; ++i)
 	{

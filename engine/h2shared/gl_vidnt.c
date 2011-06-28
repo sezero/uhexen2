@@ -2036,7 +2036,8 @@ static void VID_SortModes (void)
 		return;
 
 	// sort the fullscreen modes list
-	qsort(fmodelist, num_fmodes, sizeof fmodelist[0], sort_modes);
+	if (num_fmodes > 1)
+		qsort(fmodelist, num_fmodes, sizeof fmodelist[0], sort_modes);
 	// find which bpp values are reported to us
 	for (i = 0; i < MAX_NUMBPP; i++)
 	{
