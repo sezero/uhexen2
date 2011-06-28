@@ -14,7 +14,7 @@
 server_t	sv;
 server_static_t	svs;
 
-static char	localmodels[MAX_MODELS][5];	// inline model names for precache
+static char	localmodels[MAX_MODELS][8];	// inline model names for precache
 
 static	cvar_t	sv_sound_distance	= {"sv_sound_distance", "800", CVAR_NONE};
 						// doesn't seem functional, but the hcode calls it
@@ -475,10 +475,10 @@ static void SV_SendServerinfo (client_t *client)
 	if (sv_protocol >= PROTOCOL_UQE_113)
 	{
 		MSG_WriteByte (&client->message, svc_mod_name);
-		MSG_WriteString (&client->message, "");	// UQE sends sv.mod_name
+		MSG_WriteString (&client->message, "");	// UQE-Hexen2 sends sv.mod_name
 
 		MSG_WriteByte (&client->message, svc_skybox);
-		MSG_WriteString (&client->message, "");	// UQE sends sv.skybox
+		MSG_WriteString (&client->message, "");	// UQE-Hexen2 sends sv.skybox
 	}
 
 // set view

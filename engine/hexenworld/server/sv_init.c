@@ -10,7 +10,7 @@
 server_static_t	svs;			// persistant server info
 server_t		sv;		// local server
 
-char	localmodels[MAX_MODELS][5];	// inline model names for precache
+char	localmodels[MAX_MODELS][8];	// inline model names for precache
 
 char	localinfo[MAX_LOCALINFO_STRING+1]; // local game info
 

@@ -4,6 +4,10 @@ Development Progress	:
 ---------------------------
 
 2011-06-28 (SVN):
+    * Increased localmodels array size to 8 (better alignment and safer
+      against any possible future changes to the MAX_MODELS macro.)
+
+2011-06-28 (SVN):
     * gl_vidsdl.c (VID_PrepareModes): Call qsort() only if we have more
       than one elements to sort.
     * gl_vidnt.c (VID_SortModes): Likewise.

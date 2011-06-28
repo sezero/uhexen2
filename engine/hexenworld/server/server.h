@@ -1,7 +1,7 @@
 /*
-	server.h
+	hwsv/server.h
 
-	$Header: /cvsroot/uhexen2/engine/hexenworld/server/server.h,v 1.22 2010-03-09 15:00:28 sezero Exp $
+	$Id$
 */
 
 #ifndef __H2W_SERVER_H
@@ -359,7 +359,7 @@ extern	client_t	*host_client;
 
 extern	edict_t		*sv_player;
 
-extern	char		localmodels[MAX_MODELS][5];	// inline model names for precache
+extern	char		localmodels[MAX_MODELS][8];	// inline model names for precache
 
 extern	char		localinfo[MAX_LOCALINFO_STRING+1];
 
