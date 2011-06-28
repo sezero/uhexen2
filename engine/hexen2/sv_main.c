@@ -2,7 +2,7 @@
 	sv_main.c
 	server main program
 
-	$Header: /cvsroot/uhexen2/engine/hexen2/sv_main.c,v 1.70 2010-03-09 15:00:26 sezero Exp $
+	$Id$
 */
 
 #include "q_stdinc.h"
@@ -17,7 +17,7 @@ server_static_t	svs;
 static char	localmodels[MAX_MODELS][8];	// inline model names for precache
 
 static	cvar_t	sv_sound_distance	= {"sv_sound_distance", "800", CVAR_NONE};
-						// doesn't seem functional, but the hcode calls it
+						/* doesn't seem functional, but the hcode calls it */
 
 static	cvar_t	sv_update_player	= {"sv_update_player", "1", CVAR_ARCHIVE};
 static	cvar_t	sv_update_monsters	= {"sv_update_monsters", "1", CVAR_ARCHIVE};
@@ -42,9 +42,9 @@ extern	cvar_t	sv_walkpitch;
 extern	cvar_t	sv_flypitch;
 
 int		current_skill;
-int		sv_protocol = PROTOCOL_VERSION;	// protocol version to use
-int		sv_kingofhill;		// mission pack, king of the hill.
-unsigned int	info_mask, info_mask2;	// mission pack, objectives
+int		sv_protocol = PROTOCOL_VERSION;	/* protocol version to use */
+int		sv_kingofhill;		/* mission pack, king of the hill. */
+unsigned int	info_mask, info_mask2;	/* mission pack, objectives */
 
 extern float	scr_centertime_off;
 
