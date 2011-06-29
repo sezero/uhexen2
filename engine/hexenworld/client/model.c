@@ -2099,8 +2099,6 @@ static void *Mod_LoadSpriteFrame (void *pin, mspriteframe_t **ppframe)
 	size = width * height;
 
 	pspriteframe = (mspriteframe_t *) Hunk_AllocName (sizeof(mspriteframe_t) + size*r_pixbytes, loadname);
-
-	memset (pspriteframe, 0, sizeof(mspriteframe_t) + size);
 	*ppframe = pspriteframe;
 
 	pspriteframe->width = width;

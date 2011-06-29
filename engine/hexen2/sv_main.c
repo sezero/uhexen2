@@ -1972,8 +1972,8 @@ void SV_SpawnServer (const char *server, const char *startspot)
 //
 // set up the new server
 //
-	Host_ClearMemory ();
 	//memset (&sv, 0, sizeof(sv));
+	Host_ClearMemory ();
 
 	strcpy (sv.name, server);
 
@@ -1999,11 +1999,8 @@ void SV_SpawnServer (const char *server, const char *startspot)
 #endif
 
 // allocate server memory
-	memset(sv.Effects,0,sizeof(sv.Effects));
-
+	/* Host_ClearMemory() called above already cleared the whole sv structure */
 	sv.states = (client_state2_t *) Hunk_AllocName (svs.maxclients * sizeof(client_state2_t), "states");
-	memset(sv.states,0,svs.maxclients * sizeof(client_state2_t));
-
 	sv.edicts = (edict_t *) Hunk_AllocName (MAX_EDICTS*pr_edict_size, "edicts");
 
 	SZ_Init (&sv.datagram, sv.datagram_buf, sizeof(sv.datagram_buf));

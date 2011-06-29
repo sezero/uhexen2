@@ -3,6 +3,13 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2011-06-29 (SVN):
+    * gl_model.c (Mod_LoadSpriteFrame): Removed some useless memset calls
+      onto newly hunk allocated memory. Hunk_Alloc() already clears the
+      memory before returning it.
+    * model.c (Mod_LoadSpriteFrame): Likewise.
+    * sv_main.c (SV_SpawnServer): Likewise.
+
 2011-06-28 (SVN):
     * Increased localmodels array size to 8 (better alignment and safer
       against any possible future changes to the MAX_MODELS macro.)
