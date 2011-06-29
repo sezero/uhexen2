@@ -311,8 +311,8 @@ void CL_ClearState (void)
 	Con_DPrintf ("Clearing memory\n");
 	D_FlushCaches ();
 	Mod_ClearAll ();
-	if (host_hunklevel)	// FIXME: check this...
-		Hunk_FreeToLowMark (host_hunklevel);
+/* host_hunklevel MUST be set at this point */
+	Hunk_FreeToLowMark (host_hunklevel);
 
 	CL_ClearTEnts ();
 	CL_ClearEffects();

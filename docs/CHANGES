@@ -4,6 +4,13 @@ Development Progress	:
 ---------------------------
 
 2011-06-29 (SVN):
+    * hexen2/host.c (Host_ClearMemory): Do not check if host_hunklevel is
+      set before freeing the hunk allocations.  The order in Host_Init()
+      is clear and Host_ClearMemory must not be hit before host_hunklevel
+      is set. (otherwise, there _will_ be much trouble...)
+    * hexenworld/cl_main.c (Host_ClearMemory): Likewise.
+
+2011-06-29 (SVN):
     * gl_model.c (Mod_LoadSpriteFrame): Removed some useless memset calls
       onto newly hunk allocated memory. Hunk_Alloc() already clears the
       memory before returning it.
