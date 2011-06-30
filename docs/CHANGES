@@ -3,6 +3,11 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2011-06-30 (SVN):
+    * snake.hc (wake_effect): Set FL_ALIVE flag before calling snake_wake().
+      Fixes bug #3314810 where the summoned imp didn't pick the Egypt snake
+      boss as an enemy.
+
 2011-06-29 (SVN):
     * docs/BUGS: Updated the list of known bugs.
 

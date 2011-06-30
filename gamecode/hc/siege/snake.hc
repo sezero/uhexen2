@@ -113,7 +113,6 @@ void snake_deflect (void)
 
 	if (DidDeflect)
 		sound (self, CHAN_WEAPON, "fangel/deflect.wav", 1, ATTN_NORM);
-
 }
 
 void snake_checkdeflect(void)
@@ -174,7 +173,6 @@ void spit_touch(void)
 	CreateRedSpark (self.origin); 
 
 	remove(self);
-
 }
 
 void snake_missile_think (void)
@@ -201,9 +199,9 @@ void snake_missile_shoot(vector spot1)
 	newmis.owner = self;
 	newmis.movetype = MOVETYPE_FLYMISSILE;
 	newmis.solid = SOLID_BBOX;
-		
-    setmodel (newmis, "models/goop.mdl");
-	setsize (newmis, '0 0 0', '0 0 0');		
+
+	setmodel (newmis, "models/goop.mdl");
+	setsize (newmis, '0 0 0', '0 0 0');
 	setorigin (newmis, spot1);
 
 	newmis.angles = self.angles;
@@ -318,7 +316,6 @@ void snake_dance (void)
 {
 	self.attack_cnt = 0;
 
-
 	if (random() < .5)
 		snake_dancetail();
 	else
@@ -393,7 +390,7 @@ void snake_think (void)
 	if (snake_look())
 	{
 		enemy_range = vlen (self.origin - self.enemy.origin);
-        enemy_range -= 80;
+		enemy_range -= 80;
 
 		if (enemy_range < 200)
 			chance = 0.90;
@@ -454,6 +451,7 @@ void wake_effect (void)
 		self.colormap = float_null;
 		self.takedamage = DAMAGE_YES;
 		self.drawflags (+) MLS_ABSLIGHT;
+		self.flags2 (+) FL_ALIVE;
 		snake_wake();
 	}
 	else
