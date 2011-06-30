@@ -551,7 +551,7 @@ void() trigger_relay_use =
 
 	if(!self.delay)
 		self.check_ok=TRUE;
-	if(world.spawnflags&1)
+	if(world.spawnflags & 1) /* MISSIONPACK */
 		self.enemy = activator;
 	SUB_UseTargets();
 	if(self.wait)
