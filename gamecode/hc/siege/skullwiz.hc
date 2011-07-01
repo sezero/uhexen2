@@ -1,5 +1,5 @@
 /*
- * $Header: /cvsroot/uhexen2/gamecode/hc/siege/skullwiz.hc,v 1.2 2007-02-07 17:01:23 sezero Exp $
+ * siege/skullwiz.hc
  */
 
 //
@@ -703,6 +703,15 @@ void skullwiz_ininit (void)
 {
 vector spot1,spot2,spot3,newangle,enemy_dir;
 float loop_cnt,forward,dot;
+
+	if (self.enemy != world)
+	{
+		if (!self.enemy.flags2 & FL_ALIVE)
+		{
+			self.enemy = world;
+			self.goalentity = world;
+		}
+	}
 
 	trace_fraction =0;
 	loop_cnt = 0;

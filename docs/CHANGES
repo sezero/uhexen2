@@ -4,6 +4,11 @@ Development Progress	:
 ---------------------------
 
 2011-07-01 (SVN):
+    * skullwiz.hc (skullwiz_ininit): Reset .enemy and .goalentity to world.
+      Fixes bug #3314808 where a blinked away wizard wouldn't reappear if
+      there was a summoned imp even after it went away.
+
+2011-07-01 (SVN):
     * soul.hc: In case of rider bosses, don't spawn a soul sphere, because
       it will be inaccessible anyways and will confuse the player. Removed
       the temporary MOVETYPE_NONE assignment before droptofloor() call, as
