@@ -3,6 +3,12 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2011-07-01 (SVN):
+    * soul.hc: In case of rider bosses, don't spawn a soul sphere, because
+      it will be inaccessible anyways and will confuse the player. Removed
+      the temporary MOVETYPE_NONE assignment before droptofloor() call, as
+      it's actually unnecessary.
+
 2011-06-30 (SVN):
     * snake.hc (wake_effect): Set FL_ALIVE flag before calling snake_wake().
       Fixes bug #3314810 where the summoned imp didn't pick the Egypt snake

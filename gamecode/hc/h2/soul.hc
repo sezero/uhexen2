@@ -194,12 +194,14 @@ void necromancer_sphere (entity ent)
 
 	if (random() > chance)
 		return;
+	if (self.classname == "rider_death")
+		return; /* won't be accessible anyway */
+
+	droptofloor();
 
 	new2 = spawn();
 	new2.owner = new;
 	new2.solid = SOLID_TRIGGER;
-	new2.movetype = MOVETYPE_NONE;
-	droptofloor();
 	new2.movetype = MOVETYPE_NOCLIP;
 	setorigin (new2, self.origin + '0 0 32');
 	setmodel (new2, "models/soulskul.mdl");
@@ -253,12 +255,14 @@ void crusader_sphere (entity ent)
 
 	if (random() > chance)
 		return;
+	if (self.classname == "rider_death")
+		return; /* won't be accessible anyway */
+
+	droptofloor();
 
 	new2 = spawn();
 	new2.owner = new2;
 	new2.solid = SOLID_TRIGGER;
-	new2.movetype = MOVETYPE_NONE;
-	droptofloor();
 	new2.movetype = MOVETYPE_NOCLIP;
 	setorigin (new2, self.origin + '0 0 32');
 	setmodel (new2, "models/cross.mdl");
