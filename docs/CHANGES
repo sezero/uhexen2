@@ -3,6 +3,9 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2011-07-02 (SVN):
+    * Updated gamecode README file and 1.5.0 release notes file.
+
 2011-07-01 (SVN):
     * skullwiz.hc (skullwiz_ininit): Reset .enemy and .goalentity to world.
       Fixes bug #3314808 where a blinked away wizard wouldn't reappear if

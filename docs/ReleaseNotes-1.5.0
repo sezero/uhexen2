@@ -1,5 +1,5 @@
 Hexen II: Hammer of Thyrion (uhexen2), release candidate,
-Version 1.5.0-rc4 / June 19, 2011.
+Version 1.5.0-rc5 / July 02, 2011.
 
 Changes since HoT-1.4.4-pre11:
 
@@ -39,24 +39,34 @@ Changes since HoT-1.4.4-pre11:
 * opengl: fixed an issue in net games where joining players appeared
   untextured on the opengl server application (bug #3288081).
 * opengl: updated code to use glGenTextures().
-* fixed a hexenworld server timing issue which used to crash servers upon
-  running the romeric5 (Temple of Mars) map which now loads fine.
+* fixed hexenworld server issue which used to crash servers upon running
+  the romeric5 (Temple of Mars) map, which now loads fine.
+* fixed HexenC bug where, if there were a summoned imp around, a blinked
+  away wizard wouldn't reappear even after imp went away (bug #3314808).
+* fixed a HexenC bug where the summoned imp didn't pick the Egypt snake
+  boss as an enemy (bug #3314810).
+* improved soul spheres' HexenC code.
+* fixed a HexenC where medusa's gaze attack sound would persist when she
+  is dead.
+* fixed an Eidolon/imp HexenC bug which used to render Eidolon idle.
 * fixed a HexenC bug which would prevent a yakman from appearing during
   the 'Trial of Strength' in the 'Temple of Phurbu' (tibet7) level of the
   mission pack, rendering the level not completable (bug #1112533).
 * fixed a mission pack HexenC bug where a pentacle monster in the tibet1
   map became invulnerable when it got crushed by a door.
 * fixed a wheel of ages message to report 360 degrees instead of 30 in the
-  egypt2 map. (patch from Sander van Dijk.)
-* fixed a HexenC bug which might prevent Eidolon to land. fixed an Eidolon
-  bug which might prevent the finale screen to trigger.
+  egypt2 map.
+* fixed a HexenC bug which might prevent Eidolon to land.
+* fixed an Eidolon HexenC bug which might prevent the finale screen to
+  trigger.
 * fixed a HexenC bug where werepanthers became "undead" when an assassin
-  killed them by her bombs. fix by Thomas Freundt.
+  killed them by her bombs.
 * fixed a mission pack HexenC bug which used to prevent the finale screen
-  to trigger if Praevus were killed too quickly. thanks Thomas Freundt.
+  to trigger if Praevus were killed too quickly.
 * handled several map quirks thanks to careful works by Thomas Freundt
   and Keith Rozett.
-* fixed trigger_crosslevel problem with spawnflag 8 (thanks Keith Rozett.)
+* fixed trigger_crosslevel problem with spawnflag 8 which used to prevent
+  one of the prizes in Temple of Mars to appear.
 * removed the ugly hack of reducing teleport push speed to 225 in order
   to overcome the problem of reaching the Cathedral's balcony and the holy
   cross, and added a modified entities file for the Cathedral map instead.

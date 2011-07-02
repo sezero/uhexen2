@@ -4,11 +4,14 @@ Game code for Hexen2 / H2MP / HexenWorld
 Changes
 -------
 
-2011-06-30 (1.20):
+2011-07-02 (1.20):
 ===================
 - Bumped version number to 1.20.
+- Reset skull wizard's .enemy and .goalentity fields to world. Fixes bug
+  #3314808 where, if there were a summoned imp around, a blinked away
+  wizard wouldn't reappear even after imp went away. From Thomas Freundt.
 - Fixed bug where the summoned imp didn't pick the Egypt snake boss as an
-  enemy.
+  enemy. (Set the snake's ALIVE flag. From Thomas Freundt.)
 - Soul spheres: Made the soul sphere in sync with the skull or the cross.
   Changed the model lighting style to fullbright so now the skull and the
   cross are well discernible in dark places. The soul sphere can now gain
@@ -16,35 +19,39 @@ Changes
   dead body and sometimes got stuck. Scaled down the soul at the end of
   its lifetime. Added the demoness among the list of bad people in the
   portals version in parallel to the hw version. Corrected minor errors
-  and some inconsistencies.
+  and some inconsistencies.  From Thomas Freundt.  Also, in case of rider
+  bosses, don't spawn a soul sphere because it won't be accessible anyway
+  and may confuse the player.
 - Now that we added a modified ent file for the Cathedral level, removed
   the ugly hack of reducing the teleport push speed to 225 for this level
   from triggers.hc::teleport_touch.
 - Made sure that gaze attack sound doesn't persist when medusa is dead.
 - When an imp lord dies, clear the ALIVE flag before removing, otherwise
-  eidolon might get confused.
+  eidolon might get confused and rendered idle. From Thomas Freundt.
 - Fixed mezzoman.hc bug which would prevent yakman from appearing during
   the 'Trial of Strength' in the Temple of Phurbu (tibet7) level of the
-  mission pack, rendering the level not completable (bug #1112533).
+  mission pack, rendering the level not completable (bug #1112533). From
+  Thomas Freundt.
 - Fixed a mission pack T_Damage() bug where a pentacle monster in tibet1
   became invulnerable when it got crushed by a door. The design flaw in
   the union in entity.hc is documented.
 - Fixed a bug where werepanthers became "undead" when an assassin killed
-  them by her bombs. Fix by Thomas Freundt.
-- Fixed a bug which might prevent Eidolon to land. Fixed more Eidolon
-  bugs which might prevent the finale screen to trigger. Analyzed and
-  fixed by Thomas Freundt.
+  them by her bombs. From Thomas Freundt.
+- Fixed a bug which might prevent Eidolon to land. From Thomas Freundt.
+- Fixed Eidolon bugs which might prevent the finale screen to trigger.
+  From Thomas Freundt.
 - Fixed a bug which used to prevent the finale screen to trigger if
   Praevus were killed too quickly in buddha_die() and buddha_run().
-  Analyzed and fixed by Thomas Freundt.
+  From Thomas Freundt.
 - Fixed trigger_crosslevel() with spawnflag 8, i.e. the clash with
-  SPAWNFLAG_ACTIVATED. We now just set inactive property back to FALSE
-  after calling InitTrigger(). Thanks to Keith Rozett.
+  SPAWNFLAG_ACTIVATED, which used to prevent one of the prizes in Temple
+  of Mars to appear. We now just set inactive property back to FALSE
+  after calling InitTrigger(). From Keith Rozett.
 - Added a "mapfixes" section. Added entity fixes for cath, demo2, egypt4,
   egypt5, romeric5 and tower maps of the original game and tibet2 and
   tibet9 maps of the expansion pack among the mapfixes.
 - strings.txt: Fixed egypt2 wheel of ages message to report 360 degrees
-  instead of 30 when it "points to a jackal". Patch from Sander van Dijk.
+  instead of 30 when it "points to a jackal". From Sander van Dijk.
 
 2008-01-01 (1.19a):
 ===================
