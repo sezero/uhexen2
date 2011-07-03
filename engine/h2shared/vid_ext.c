@@ -215,12 +215,9 @@ static void VID_SetVESAPalette (viddef_t *lvid, vmode_t *pcurrentmode, unsigned 
 VID_ExtraFarToLinear
 ================
 */
-static void *VID_ExtraFarToLinear (void *ptr)
+static void *VID_ExtraFarToLinear (unsigned long addr)
 {
-	int		temp;
-
-	temp = (int)ptr;
-	return real2ptr(((temp & 0xFFFF0000) >> 12) + (temp & 0xFFFF));
+	return real2ptr(((addr & 0xFFFF0000) >> 12) + (addr & 0xFFFF));
 }
 
 
@@ -298,11 +295,15 @@ void VID_InitExtra (void)
 	int		nummodes;
 	short		*pmodenums;
 	vbeinfoblock_t	*pinfoblock;
+	unsigned long	addr;
 	__dpmi_meminfo	phys_mem_info;
 
 	pinfoblock = (vbeinfoblock_t *) dos_getmemory(sizeof(vbeinfoblock_t));
 
-	*(long *)pinfoblock->VbeSignature = 'V' + ('B'<<8) + ('E'<<16) + ('2'<<24);
+	pinfoblock->VbeSignature[0] = 'V';
+	pinfoblock->VbeSignature[1] = 'B';
+	pinfoblock->VbeSignature[2] = 'E';
+	pinfoblock->VbeSignature[3] = '2';
 
 // see if VESA support is available
 	regs.x.ax = 0x4f00;
@@ -316,12 +317,22 @@ void VID_InitExtra (void)
 	if (pinfoblock->VbeVersion[1] < 0x02)
 		return;		// not VESA 2.0 or greater
 
+	addr = ( (pinfoblock->OemStringPtr[0]      ) |
+		 (pinfoblock->OemStringPtr[1] <<  8) |
+		 (pinfoblock->OemStringPtr[2] << 16) |
+		 (pinfoblock->OemStringPtr[3] << 24));
 	Con_Printf ("VESA 2.0 compliant adapter:\n%s\n",
-			(char *) VID_ExtraFarToLinear (*(byte **)&pinfoblock->OemStringPtr[0]));
+			(char *) VID_ExtraFarToLinear(addr));
 
-	totalvidmem = *(unsigned short *)&pinfoblock->TotalMemory[0] << 16;
+	totalvidmem  = ( (pinfoblock->TotalMemory[0]     ) |
+			 (pinfoblock->TotalMemory[1] << 8) ) << 16;
+//	Con_Printf ("%dk video memory\n", totalvidmem >> 10);
 
-	pmodenums = (short *) VID_ExtraFarToLinear (*(byte **)&pinfoblock->VideoModePtr[0]);
+	addr = ( (pinfoblock->VideoModePtr[0]      ) |
+		 (pinfoblock->VideoModePtr[1] <<  8) |
+		 (pinfoblock->VideoModePtr[2] << 16) |
+		 (pinfoblock->VideoModePtr[3] << 24));
+	pmodenums = (short *) VID_ExtraFarToLinear(addr);
 
 // find 8 bit modes until we either run out of space or run out of modes
 	nummodes = 0;

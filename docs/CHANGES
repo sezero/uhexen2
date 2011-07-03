@@ -3,6 +3,9 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2011-07-03 (SVN):
+    * net_ser.c, vid_ext.c: Fix strict aliasing violations in dos port.
+
 2011-07-02 (SVN):
     * Updated gamecode README file and 1.5.0 release notes file.
 

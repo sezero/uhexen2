@@ -324,7 +324,10 @@ static int ProcessInQueue (SerialLine *p)
 				p->currState = STATE_DATA;
 				if (p->mtype < MTYPE_ACK)
 				{
-					*(short *)&p->sock->receiveMessage [p->sock->receiveMessageLength + 1] = p->lengthStated;
+					p->sock->receiveMessage [p->sock->receiveMessageLength + 1] =
+									 (((short) p->lengthStated) & 0x00ff);
+					p->sock->receiveMessage [p->sock->receiveMessageLength + 2] =
+									 (((short) p->lengthStated) & 0xff00) >> 8;
 					p->lengthFound += 2;
 				}
 			}
@@ -697,7 +700,7 @@ static int _Serial_GetMessage (SerialLine *p)
 		return 0;
 
 	ret = p->sock->receiveMessage[0];
-	length = *(short *)&p->sock->receiveMessage[1];
+	length = p->sock->receiveMessage[1] | (p->sock->receiveMessage[2] << 8);
 	if (ret == MTYPE_CONTROL)
 		ret = 1;
 
