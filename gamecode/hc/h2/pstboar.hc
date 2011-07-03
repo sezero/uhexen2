@@ -761,7 +761,7 @@ void hive_touch(void)
 	chunk_death();
 }
 
-
+/*
 void create_swarm (void)
 {
 entity newmis;
@@ -787,7 +787,7 @@ vector diff;
 	newmis.enemy = self;
 	newmis.touch = hive_touch;
 }
-
+*/
 /*QUAKED rider_pestilence (1 0 0)  (-55 -55 -24) (55 55 100) TRIGGER_WAIT
 Pestilence rider monster.  You must place rider_path entites
 on the map.  The rider will first proceed to the 

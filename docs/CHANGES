@@ -4,6 +4,10 @@ Development Progress	:
 ---------------------------
 
 2011-07-03 (SVN):
+    * gamecode/hc/h2/pstboar.hc: commented out unreferenced create_swarm()
+      function which is already disabled or removed in all other versions.
+
+2011-07-03 (SVN):
     * net_ser.c, vid_ext.c: Fix strict aliasing violations in dos port.
 
 2011-07-02 (SVN):
