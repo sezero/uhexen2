@@ -3,6 +3,11 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2011-07-05 (SVN):
+    * oslibs/dos/djlib/vsnprntf.c: Added vsnprintf() from djgpp v2.04 for
+      use with older djgpp versions.
+    * oslibs/dos/djlib: Added new djlib directory.
+
 2011-07-03 (SVN):
     * gamecode/hc/h2/pstboar.hc: commented out unreferenced create_swarm()
       function which is already disabled or removed in all other versions.
