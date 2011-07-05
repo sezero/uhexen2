@@ -4,6 +4,9 @@ Development Progress	:
 ---------------------------
 
 2011-07-05 (SVN):
+    * oslibs/dos/djlib/vsnprntf.c: Added compatibility macro for _IONTERM.
+
+2011-07-05 (SVN):
     * docs: Updated compilation instructions and recommened software.
 
 2011-07-05 (SVN):
