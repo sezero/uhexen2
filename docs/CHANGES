@@ -4,6 +4,11 @@ Development Progress	:
 ---------------------------
 
 2011-07-05 (SVN):
+    * oslibs/dos/djstdint/stdint.h, inttypes.h: Added from djgpp v2.04 for
+      use with older djgpp versions.
+    * oslibs/dos/djstdint: Added new djstdint directory.
+
+2011-07-05 (SVN):
     * oslibs/dos/djlib/vsnprntf.c: Added vsnprintf() from djgpp v2.04 for
       use with older djgpp versions.
     * oslibs/dos/djlib: Added new djlib directory.
