@@ -12,14 +12,8 @@
 #include "compiler.h"
 #include "arch_def.h"
 #include "cmdlib.h"
-//#include <sys/time.h>
 #include <time.h>
 #include <ctype.h>
-/*
-#ifdef PLATFORM_UNIX
-#include <sys/ioctl.h>
-#endif
-*/
 
 // MACROS ------------------------------------------------------------------
 
@@ -46,25 +40,6 @@ qboolean	com_eof;
 // PRIVATE DATA DEFINITIONS ------------------------------------------------
 
 // REPLACEMENTS FOR LIBRARY FUNCTIONS --------------------------------------
-
-/*
-==============
-Sys_kbhit
-
-a simple _kbhit() equivalent for unix
-==============
-*/
-/*
-#ifdef PLATFORM_UNIX
-int Sys_kbhit (void)
-{
-	int	n;
-
-	ioctl (0, FIONREAD, &n);
-	return n;
-}
-#endif
-*/
 
 /*
 ==============
@@ -102,6 +77,11 @@ q_snprintf and q_vsnprintf
 
 ==============
 */
+#if defined(__DJGPP__) && (__DJGPP_MINOR__ < 4)
+/* DJGPP < v2.04 doesn't have [v]snprintf().  */
+#include "djlib/vsnprntf.c"
+#endif	/* __DJGPP_MINOR__ < 4 */
+
 int q_vsnprintf(char *str, size_t size, const char *format, va_list args)
 {
 	int		ret;

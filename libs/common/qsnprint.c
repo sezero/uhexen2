@@ -32,6 +32,11 @@
 #include "compiler.h"
 #include "qsnprint.h"
 
+#if defined(__DJGPP__) && (__DJGPP_MINOR__ < 4)
+/* DJGPP < v2.04 doesn't have [v]snprintf().  */
+#include "djlib/vsnprntf.c"
+#endif	/* __DJGPP_MINOR__ < 4 */
+
 int q_vsnprintf(char *str, size_t size, const char *format, va_list args)
 {
 	int		ret;
