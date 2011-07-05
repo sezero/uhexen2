@@ -22,13 +22,7 @@
 #include <string.h>
 #include <stdarg.h>
 #include <limits.h>
-#if defined(_MSC_VER) && (_MSC_VER < 1600)
-/* MS Visual Studio provides stdint.h only starting with
- * version 2010.  Even in VS2010, there is no inttypes.h.. */
-#include "msinttypes/stdint.h"
-#else
-#include <stdint.h>
-#endif
+#include "q_stdint.h"
 
 #if defined(_WIN32)
 #include <windows.h>

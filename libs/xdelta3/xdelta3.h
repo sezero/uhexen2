@@ -66,30 +66,13 @@
  */
 #include "xdelta3-sizedefs.h"
 
-#ifndef _WIN32
-#include <stdint.h>
-#else
+#if defined(_WIN32)
 #include <windows.h>
 #ifdef _MSC_VER
 #define inline  /* __inline */
-/*
-typedef unsigned char  uint8_t;
-typedef unsigned short uint16_t;
-typedef unsigned int   uint32_t;
-typedef ULONGLONG      uint64_t;
-*/
-#if (_MSC_VER < 1600)
-/* MS Visual Studio provides stdint.h only starting with
- * version 2010.  Even in VS2010, there is no inttypes.h.. */
-#include "msinttypes/stdint.h"
-#else
-#include <stdint.h>
 #endif
-#else
-/* mingw32, lcc and watcom provide a proper header */
-#include <stdint.h>
-#endif
-#endif
+#endif /* WIN32 */
+#include "q_stdint.h"
 
 /* TODO: note that SIZEOF_USIZE_T is never set to 8, although it should be for
  * a 64bit platform.  OTOH, may be that using 32bits is appropriate even on a
