@@ -45,13 +45,12 @@ NASM	:	Netwide Assembler. An x86 assembler.
 GCC	:	GNU C Compiler.
 
 		Minimum version required is GCC 2.95.  GCC versions in
-		the 2.95/2.96, 3.x and 4.x series up to 4.4.5 and 4.5.1
-		are tested and work fine.  Versions 3.2.2, 3.3.6, 3.4.6
-		or newer are recommended.
+		the 2.95/2.96, 3.x and 4.x series up to 4.6.1 are tested
+		and work fine.  Versions 3.2.2, 3.3.6, 3.4.6 or newer
+		are recommended.
 
-		Of the old versions, gcc-2.91.66 (aka. egcs-1.1.2) still
-		seems to work.  Even 2.7.2 is reported to compile fine
-		(said to not like the -march option, though.)
+		Of the really old versions, gcc-2.91.66 (aka. egcs-1.1.2)
+		still works.  Even 2.7.2 is reported to compile fine.
 
 
 Libraries needed for various platforms:
@@ -127,39 +126,35 @@ Compiling for Windows:
 
 a. On Linux, using MinGW cross compiler:
 ----------------------------------------
-See the MinGW FAQ on the MinGW homepage, and read the icculus.org cross
-compiling tips (link down below). The icculus.org page provides prebuilt
-cross compiler tools: Either download and install them, or prepare your
-own cross compiler.  You can then run the "build_cross_win32.sh" scripts
-residing in all directories. Read the scripts and edit them as necessary.
-The main settings for them are in the scripts/cross_defs file. Edit it
-to meet your needs, if necessary. I usually compile all of the Hammer of
-Thyrion windows binaries on linux using a snapshot of MinGW from Jan. 12,
-2009.  We provide source and binary (x86/linux glibc-2.3) packages of
-cross compiler toolchains on our downloads page under the support files
-section, too.
-
-To compile for Win64 (X64), mingw-w64 (also known as mingw64) can be used
-as a cross compiler under linux (link down below). We provide win64 cross
-compiler toolchains on our downloads page under the support files section,
-too.  To compile, use the "build_cross_win64.sh" scripts residing in all
-directories.  Read the scripts and edit them as necessary. The main settings
-for them are in the scripts/cross_defs_w64 file. Edit it to meet your needs,
+To compile for Win32 (x86) mingw cross compilers can be used under linux.
+We provide mingw cross compilers on our downloads page, too: see under
+the support files section if you need one.  Run the  build_cross_win32.sh
+scripts residing in all directories in order to compile. Read the scripts
+and edit them as necessary. Settings for the build_cross_win32.sh scripts
+are in the  scripts/cross_defs  file: edit it to meet your needs/setup,
 if necessary.
+
+To compile for Win64 (X64), mingw-w64 cross compilers can be used under
+linux.  We provide mingw-w64 cross compilers on our downloads page, too:
+see under the support files section if you need one. To compile, use the
+"build_cross_win64.sh" scripts residing in all the directories.  Read the
+scripts and edit them as necessary.  Settings for build_cross_win64.sh
+scripts are in the  scripts/cross_defs_w64  file:  edit it to meet your
+needs, if necessary.
 
 
 b. On Windows, using win32-native MinGW compiler:
 -------------------------------------------------
 Download a prebuilt MinGW installer and install it to C:\MinGW .  Then
-download MSys and install it to c:\msys , 1.0.11-2004.04.30 is the version
-I use.  As the assembler, download nasm version 2.09.08, put nasm.exe into
-the C:\MinGW\bin directory.  Adding the mingw directory to your PATH may
-be a good idea, too.  MinGW-3.1.0 comes with gcc-3.2.3.  MinGW-5.1.4, on
-the other hand, comes with gcc-3.4.5 and is recommended.
+download MSys and install it to c:\msys (1.0.11-2004.04.30 is the version
+I use.)  As x86 assembler, download nasm version 2.09.08, put nasm.exe
+into the C:\MinGW\bin directory. Adding the mingw directory to your PATH
+may be a good idea, too.  MinGW-3.1.0 comes with gcc-3.2.3.  MinGW-5.1.4,
+on the other hand, comes with gcc-3.4.5 and is recommended.
 
 Open a console window, cd into \msys and type "msys sh.exe". You will be
 in a unixish sh environment. The rest is just like doing things in linux:
-cd into your fake "home directory", extract the HoT tarball, then change
+cd into your fake "home directory", extract uhexen2 tarball, then change
 into into each subdirectory you want to build and normally use the make
 commands to compile.
 
@@ -173,9 +168,9 @@ Visual Studio 2005, 2008 and 2010 versions have been tested to compile all
 uhexen2 code successfully.  The VisualStudio2005.zip files contain the
 *.vcproj project files and *.sln solution files: unzipping them and double-
 clicking on them should start visual studio and you will be ready to go.
-The VS2005 project files are imported perfectly into VS2008, so the VS2008
-owners can use the VS2005 project files.  VisualStudio2010.zip files are
-also provided for hexen2 and hexenworld projects for your convenience.  All
+The VS2005 project files are imported perfectly into VS2008, therefore
+VS2008 owners can use the VS2005 project files.  VS2010 project files are
+also provided for hexen2 and hexenworld projects for your convenience. All
 projects are adjusted for Win32 (x86) and x64 targets.
 
 Compiling the software renderer versions h2.exe and hwcl.exe require YASM
@@ -213,24 +208,22 @@ delete "/Developer/SDKs/MacOSX10.4u.sdk" from there, build as usual.
 Compiling for DOS:
 ========================================
 
-You need DJGPP. At present, the development version 2.04 is required,
-because 2.03 and earlier versions doesn't provide a stdint.h and / or
-inttypes.h header, besides, they don't have a vsnprintf implementation.
-Compilers other than djgpp probably won't work at all.  I use gcc-3.3.6
-or 3.4.6 and binutils-2.16.1 and compile the binaries on linux with a
-cross compiler toolchain using DJGPP 2.04 runtime library from the CVS
-snapshot from Dec. 25, 2009:  see the tiny script build_cross_dos.sh
-to have an idea of how I do it.  We provide source and binary (x86/linux
-glibc-2.3) packages of cross compiler toolchains on our downloads page
-under the support files section, too.
+You need DJGPP. Tested compilation and functionality using djgpp v2.03
+and v2.04 using gcc-3.3.6, 3.4.6 and 4.4.7.  I compile on linux using
+cross toolchains: see the tiny build_cross_dos.sh script to understand
+how I do it.  We provide djgpp cross compilers on our downloads page,
+too: see under the support files section if you need one.
 
 Compiling on DOS is never tested and not supported.  On the other hand,
 compiling on windows in a command console or in an MSYS shell ~should~
 be possible: remember adding DOSBUILD=1 to your environment.
 
+Compilers other than djgpp, such as OpenWatcom, most probably won't work
+and would need adjustments.
+
 CWSDPMI.EXE is needed at runtime: use the "0.90+ r5" or a newer version.
-I have been using the "release 5, 2008 refresh" version (dated 21 August
-2008) for quite some time with success.
+I have been successfully using the  "release 5, 2008 refresh"  version
+(dated 21 August 2008) for quite some time.
 
 
 Links:
@@ -243,7 +236,6 @@ ALSA homepage		:	http://www.alsa-project.org/
 GCC homepage		:	http://gcc.gnu.org/
 Binutils homepage	:	http://sourceware.org/binutils/
 NASM homepage		:	http://www.nasm.us/
-				http://sourceforge.net/projects/nasm/
 YASM homepage		:	http://www.tortall.net/projects/yasm/
 DJGPP homepage		:	http://www.delorie.com/djgpp/
 MinGW/MSYS homepage	:	http://www.mingw.org/

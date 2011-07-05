@@ -4,6 +4,9 @@ Development Progress	:
 ---------------------------
 
 2011-07-05 (SVN):
+    * docs: Updated compilation instructions and recommened software.
+
+2011-07-05 (SVN):
     * Updated makefiles with dos targets to add $(OSLIBS)/dos to includes
       path.
 
