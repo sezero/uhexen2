@@ -4,6 +4,10 @@ Development Progress	:
 ---------------------------
 
 2011-07-05 (SVN):
+    * libs/common/q_stdint.h: Added new shared header to include a proper
+      stdint.h.  Included this new header in other places.
+
+2011-07-05 (SVN):
     * oslibs/dos/djstdint/stdint.h, inttypes.h: Added from djgpp v2.04 for
       use with older djgpp versions.
     * oslibs/dos/djstdint: Added new djstdint directory.
