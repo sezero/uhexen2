@@ -15,6 +15,7 @@ ifndef DEBUG
 CFLAGS += -O2 -DNDEBUG=1
 endif
 LDFLAGS = -lc
+CFLAGS += -I$(UHEXEN2_TOP)/oslibs/dos
 
 XDELTA_DIR:= $(LIBS_DIR)/xdelta3
 XDFLAGS:= -DXD3_DEBUG=0

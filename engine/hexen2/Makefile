@@ -370,6 +370,7 @@ USE_CODEC_TIMIDITY=no
 USE_CODEC_WILDMIDI=no
 USE_CODEC_VORBIS=no
 
+INCLUDES += -I$(OSLIBS)/dos
 LDFLAGS += -lc -lgcc -lm
 
 ifeq ($(USE_CODEC_MP3),yes)

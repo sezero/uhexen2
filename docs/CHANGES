@@ -4,6 +4,10 @@ Development Progress	:
 ---------------------------
 
 2011-07-05 (SVN):
+    * Updated makefiles with dos targets to add $(OSLIBS)/dos to includes
+      path.
+
+2011-07-05 (SVN):
     * libs/common/q_stdint.h: Added new shared header to include a proper
       stdint.h.  Included this new header in other places.
 
