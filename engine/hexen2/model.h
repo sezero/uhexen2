@@ -70,7 +70,7 @@ typedef struct texture_s
 #define SURF_DRAWTURB		0x10
 #define SURF_DRAWTILED		0x20
 #define SURF_DRAWBACKGROUND	0x40
-#define SURF_TRANSLUCENT	0x80
+#define SURF_TRANSLUCENT	0x80	/* r_edge.asm checks this */
 #define SURF_DRAWBLACK		0x200
 
 // !!! if this is changed, it must be changed in asm_draw.h too !!!
@@ -100,7 +100,7 @@ typedef struct msurface_s
 
 	int		firstedge;	// look up in model->surfedges[], negative numbers
 	int		numedges;	// are backwards edges
-	
+
 // surface generation data
 	struct surfcache_s	*cachespots[MIPLEVELS];
 
@@ -108,7 +108,7 @@ typedef struct msurface_s
 	short		extents[2];
 
 	mtexinfo_t	*texinfo;
-	
+
 // lighting info
 	byte		styles[MAXLIGHTMAPS];
 	byte		*samples;		// [numstyles*surfsize]
@@ -119,7 +119,7 @@ typedef struct mnode_s
 // common with leaf
 	int		contents;		// 0, to differentiate from leafs
 	int		visframe;		// node needs to be traversed if current
-	
+
 	short		minmaxs[6];		// for bounding box culling
 
 	struct mnode_s	*parent;
@@ -131,7 +131,6 @@ typedef struct mnode_s
 	unsigned short	firstsurface;
 	unsigned short	numsurfaces;
 } mnode_t;
-
 
 
 typedef struct mleaf_s
@@ -146,7 +145,7 @@ typedef struct mleaf_s
 
 // leaf specific
 	byte		*compressed_vis;
-	efrag_t		*efrags;
+	struct efrag_s	*efrags;
 
 	msurface_t	**firstmarksurface;
 	int		nummarksurfaces;
@@ -332,7 +331,7 @@ typedef struct qmodel_s
 	modtype_t	type;
 	int		numframes;
 	synctype_t	synctype;
-	
+
 	int		flags;
 
 //
@@ -392,7 +391,6 @@ typedef struct qmodel_s
 // additional model data
 //
 	cache_user_t	cache;		// only access through Mod_Extradata
-
 } qmodel_t;
 
 // values for qmodel_t->needload

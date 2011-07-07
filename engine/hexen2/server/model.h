@@ -60,7 +60,7 @@ typedef struct mplane_s
 #define SURF_DRAWTURB		0x10
 #define SURF_DRAWTILED		0x20
 #define SURF_DRAWBACKGROUND	0x40
-#define SURF_TRANSLUCENT	0x80
+#define SURF_TRANSLUCENT	0x80	/* r_edge.asm checks this */
 #define SURF_DRAWBLACK		0x200
 
 typedef struct
@@ -103,7 +103,6 @@ typedef struct mnode_s
 	unsigned short	firstsurface;
 	unsigned short	numsurfaces;
 } mnode_t;
-
 
 
 typedef struct mleaf_s

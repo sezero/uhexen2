@@ -4,6 +4,14 @@ Development Progress	:
 ---------------------------
 
 2011-07-07 (SVN):
+    * model.h, gl_model.h (SURF_DRAWBLACK,SURF_TRANSLUCENT,SURF_DONTWARP,
+      SURF_UNDERWATER): Eliminated opengl/software and hexen2/hexenworld
+      versions' differences.  These surface draw flags are client-side
+      only, therefore the changes do not cause any compatibility issues
+      at all.  So, SURF_TRANSLUCENT is 0x80, SURF_UNDERWATER is 0x100,
+      SURF_DRAWBLACK is 0x200 and SURF_DONTWARP is 0x400 everywhere now.
+
+2011-07-07 (SVN):
     * Bump beta version/date to 1.5.0-rc5/2011-07-07, update documents.
 
 2011-07-07 (SVN):
