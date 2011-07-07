@@ -4,6 +4,9 @@ Development Progress	:
 ---------------------------
 
 2011-07-07 (SVN):
+    * Bump beta version/date to 1.5.0-rc5/2011-07-07, update documents.
+
+2011-07-07 (SVN):
     * pr_exec.c (PR_ExecuteProgram):  Implemented some of LordHavoc's
       optimizations mostly by removing the temoprary eval_t a*,*b and *c
       variables and replacing them by OPA, OPB and OPC macros. Removed
