@@ -4,6 +4,14 @@ Development Progress	:
 ---------------------------
 
 2011-07-07 (SVN):
+    * bspfile.h: Made the hexen2 and hw versions of MAX_MAP_CLIPNODES,
+      MAX_MAP_PLANES and MAX_MAP_ENTSTRING values to mirror the ones
+      defined in the mapping utilities, which are 16384, 65535 and 81920
+      respectively. These changes doesn't affect anything at the game
+      engine side. I still need to decide on what to do with differences
+      in MAX_MAP_LEAFS values between all three of the files.
+
+2011-07-07 (SVN):
     * model.h, gl_model.h (SURF_DRAWBLACK,SURF_TRANSLUCENT,SURF_DONTWARP,
       SURF_UNDERWATER): Eliminated opengl/software and hexen2/hexenworld
       versions' differences.  These surface draw flags are client-side

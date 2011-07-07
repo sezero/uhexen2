@@ -15,6 +15,7 @@
 #define	MAX_MAP_MODELS		256
 #define	MAX_MAP_BRUSHES		4096
 #define	MAX_MAP_ENTITIES	1024
+// #define	MAX_MAP_ENTSTRING	65536
 #define	MAX_MAP_ENTSTRING	81920
 
 #define	MAX_MAP_PLANES		16384
@@ -68,21 +69,21 @@ typedef struct
 {
 	float		mins[3], maxs[3];
 	float		origin[3];
-	int			headnode[MAX_MAP_HULLS];
-	int			visleafs;		// not including the solid leaf 0
-	int			firstface, numfaces;
+	int		headnode[MAX_MAP_HULLS];
+	int		visleafs;		// not including the solid leaf 0
+	int		firstface, numfaces;
 } dmodel_t;
 
 typedef struct
 {
-	int			version;
+	int		version;
 	lump_t		lumps[HEADER_LUMPS];
 } dheader_t;
 
 typedef struct
 {
-	int			nummiptex;
-	int			dataofs[4];		// [nummiptex]
+	int		nummiptex;
+	int		dataofs[4];		// [nummiptex]
 } dmiptexlump_t;
 
 #define	MIPLEVELS	4
@@ -96,7 +97,7 @@ typedef struct miptex_s
 
 typedef struct
 {
-	float	point[3];
+	float		point[3];
 } dvertex_t;
 
 
@@ -112,8 +113,8 @@ typedef struct
 
 typedef struct
 {
-	float	normal[3];
-	float	dist;
+	float		normal[3];
+	float		dist;
 	int		type;	// PLANE_X - PLANE_ANYZ ?remove? trivial to regenerate
 } dplane_t;
 
@@ -137,7 +138,7 @@ typedef struct
 // !!! if this is changed, it must be changed in asm_i386.h too !!!
 typedef struct
 {
-	int			planenum;
+	int		planenum;
 	short		children[2];	// negative numbers are -(leafs+1), not nodes
 	short		mins[3];	// for sphere culling
 	short		maxs[3];
@@ -147,7 +148,7 @@ typedef struct
 
 typedef struct
 {
-	int			planenum;
+	int		planenum;
 	short		children[2];	// negative numbers are contents
 } dclipnode_t;
 
@@ -155,8 +156,8 @@ typedef struct
 typedef struct texinfo_s
 {
 	float		vecs[2][4];	// [s/t][xyz offset]
-	int			miptex;
-	int			flags;
+	int		miptex;
+	int		flags;
 } texinfo_t;
 #define	TEX_SPECIAL		1	// sky or slime, no lightmap or 256 subdivision
 
@@ -173,15 +174,14 @@ typedef struct
 	short		planenum;
 	short		side;
 
-	int			firstedge;	// we must support > 64k edges
+	int		firstedge;	// we must support > 64k edges
 	short		numedges;
 	short		texinfo;
 
 // lighting info
 	byte		styles[MAXLIGHTMAPS];
-	int			lightofs;	// start of [numstyles*surfsize] samples
+	int		lightofs;	// start of [numstyles*surfsize] samples
 } dface_t;
-
 
 
 #define	AMBIENT_WATER		0
@@ -195,17 +195,18 @@ typedef struct
 // all other leafs need visibility info
 typedef struct
 {
-	int			contents;
-	int			visofs;		// -1 = no visibility info
+	int		contents;
+	int		visofs;		// -1 = no visibility info
 
 	short		mins[3];		// for frustum culling
 	short		maxs[3];
 
-	unsigned short		firstmarksurface;
-	unsigned short		nummarksurfaces;
+	unsigned short	firstmarksurface;
+	unsigned short	nummarksurfaces;
 
 	byte		ambient_level[NUM_AMBIENTS];
 } dleaf_t;
+
 
 //============================================================================
 
