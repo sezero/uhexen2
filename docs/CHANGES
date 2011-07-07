@@ -3,6 +3,21 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2011-07-07 (SVN):
+    * pr_exec.c (PR_ExecuteProgram):  Implemented some of LordHavoc's
+      optimizations mostly by removing the temoprary eval_t a*,*b and *c
+      variables and replacing them by OPA, OPB and OPC macros. Removed
+      the statement index s and used the statement pointer instead,
+      updating the pr_xstatement global whenever necessary. Moved the i,
+      startFrame, endFrame and val variables from toplevel context to
+      case context.  Removed Raven's pentium-specific timesnap code.
+      Updated profiling code.  These changes, specifically the temporary
+      eval_t pointers' removal, cures a miscompilation by ancient gcc
+      versions <= 2.95.x:  With PR_RunError() marked with the noreturn
+      attribute, compiling with the -fomit-frame-pointer switch resulted
+      in bad code which segfaulted. Now those old compiler are just OK
+      with this combination, too.
+
 2011-07-05 (SVN):
     * oslibs/dos/djlib/vsnprntf.c: Added compatibility macro for _IONTERM.
 
