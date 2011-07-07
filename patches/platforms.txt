@@ -1,0 +1,26 @@
+An update of platforms HexenC code from Thomas Freundt.  Originally, the
+intention was finding a way of making the elevator in egypt1 leading to
+the boss-level exit to behave:  that "ankh platform" isn't user friendly
+because you have to make a timely jump to go past it.  The code was then
+improved for compatibility into the current form.
+
+Quoting Thomas:
+
+ "As I wanted to have the improved functionality with the remaining
+  platforms as well, I looked at all other platforms that are
+  initialized by func_plat.  Their mode of operation appears more
+  reasonable with deathmatch (ravdm5) than in levels mainly designed
+  for single player.  Only the ankh platform has self.wait defined, but
+  the original code ignores this field.
+  Therefore, I wanted my amendments to meet the following requirements:
+  - full savegame compatibility (new progs with old savegame
+    && old progs with new savegame)
+  - no modifications to entity files
+  - special treatment of the ankh platform
+  - similar more user friendly behaviour of the other platforms
+  - close to original behaviour during deathmatch / teamplay
+  I have commented the important parts; as usual.  ..."
+
+
+May need some more testing before including mainstream.
+
