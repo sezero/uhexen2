@@ -360,7 +360,7 @@ desktop-file-install \
 %{_prefix}/games/%{name}/docs/README.hwmaster
 
 %changelog
-* Thu Jul 19 2011 O.Sezer <sezero@users.sourceforge.net> 1.5.0-0.5.rc5
+* Thu Jul 07 2011 O.Sezer <sezero@users.sourceforge.net> 1.5.0-0.5.rc5
 - Bumped version to 1.5.0-rc5.
 
 * Mon Jun 20 2011 O.Sezer <sezero@users.sourceforge.net> 1.5.0-0.4.rc4
