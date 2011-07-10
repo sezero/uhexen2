@@ -4,6 +4,10 @@ Development Progress	:
 ---------------------------
 
 2011-07-10 (SVN):
+    * quakefs.c: Fixed a 'set but not used' warning in FS_Init(). Coding
+      style cleanup.
+
+2011-07-10 (SVN):
     * menu.c, net_comx.c: Did missing string constifications.
 
 2011-07-10 (SVN):
