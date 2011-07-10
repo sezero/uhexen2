@@ -28,20 +28,21 @@ static int receivedDuplicateCount = 0;
 static int shortPacketCount = 0;
 static int droppedDatagrams;
 
-static int myDriverLevel;
-
 static struct
 {
 	unsigned int	length;
 	unsigned int	sequence;
-	byte			data[MAX_DATAGRAM];
+	byte	data[MAX_DATAGRAM];
 } packetBuffer;
+
+#if !defined(SERVERONLY)
+static int myDriverLevel;
 
 extern qboolean m_return_onerror;
 extern char m_return_reason[32];
+#endif	/* SERVERONLY */
 
 
-#ifdef DEBUG_BUILD
 static char *StrAddr (struct qsockaddr *addr)
 {
 	static char buf[34];
@@ -52,7 +53,6 @@ static char *StrAddr (struct qsockaddr *addr)
 		sprintf (buf + n * 2, "%02x", *p++);
 	return buf;
 }
-#endif
 
 
 #ifdef BAN_TEST
@@ -71,7 +71,11 @@ static void NET_Ban_f (void)
 	{
 		if (!sv.active)
 		{
+#if !defined(SERVERONLY)
 			Cmd_ForwardToServer ();
+#else
+			Con_Printf("Server not active\n");
+#endif	/* SERVERONLY */
 			return;
 		}
 		print_fn = CON_Printf;
@@ -302,11 +306,9 @@ int	Datagram_GetMessage (qsocket_t *sock)
 
 		if (sfunc.AddrCompare(&readaddr, &sock->addr) != 0)
 		{
-#ifdef DEBUG_BUILD
 			Con_Printf("Forged packet received\n");
 			Con_Printf("Expected: %s\n", StrAddr (&sock->addr));
 			Con_Printf("Received: %s\n", StrAddr (&readaddr));
-#endif
 			continue;
 		}
 
@@ -479,6 +481,7 @@ static void NET_Stats_f (void)
 }
 
 
+#if !defined(SERVERONLY)
 static qboolean testInProgress = false;
 static int		testPollCount;
 static int		testDriver;
@@ -736,6 +739,7 @@ JustDoIt:
 	SZ_Clear(&net_message);
 	SchedulePollProcedure(&test2PollProcedure, 0.05);
 }
+#endif	/* SERVERONLY */
 
 
 int Datagram_Init (void)
@@ -747,7 +751,10 @@ int Datagram_Init (void)
 	banAddr.s_addr = INADDR_ANY;
 	banMask.s_addr = INADDR_NONE;
 #endif
+#if !defined(SERVERONLY)
 	myDriverLevel = net_driverlevel;
+#endif	/* SERVERONLY */
+
 	Cmd_AddCommand ("net_stats", NET_Stats_f);
 
 	if (safemode || COM_CheckParm("-nolan"))
@@ -770,8 +777,10 @@ int Datagram_Init (void)
 #ifdef BAN_TEST
 	Cmd_AddCommand ("ban", NET_Ban_f);
 #endif
+#if !defined(SERVERONLY)
 	Cmd_AddCommand ("test", Test_f);
 	Cmd_AddCommand ("test2", Test2_f);
+#endif	/* SERVERONLY */
 
 	return 0;
 }
@@ -1057,6 +1066,7 @@ qsocket_t *Datagram_CheckNewConnections (void)
 }
 
 
+#if !defined(SERVERONLY)
 static void _Datagram_SearchForHosts (qboolean xmit)
 {
 	int		ret;
@@ -1226,12 +1236,10 @@ static qsocket_t *_Datagram_Connect (const char *host)
 				// is it from the right place?
 				if (sfunc.AddrCompare(&readaddr, &sendaddr) != 0)
 				{
-#ifdef DEBUG_BUILD
 					Con_Printf("wrong reply address\n");
 					Con_Printf("Expected: %s\n", StrAddr (&sendaddr));
 					Con_Printf("Received: %s\n", StrAddr (&readaddr));
 					SCR_UpdateScreen ();
-#endif
 					ret = 0;
 					continue;
 				}
@@ -1356,4 +1364,5 @@ qsocket_t *Datagram_Connect (const char *host)
 	}
 	return ret;
 }
+#endif	/* SERVERONLY */
 

@@ -25,6 +25,9 @@ int		DEFAULTnet_hostport = 26900;
 char		my_ipx_address[NET_NAMELEN];
 char		my_tcpip_address[NET_NAMELEN];
 
+#if defined(SERVERONLY)
+#define	listening	true	/* h2ded is always listening */
+#else
 static qboolean	listening = false;
 
 qboolean	slistInProgress = false;
@@ -37,6 +40,7 @@ static void Slist_Send (void *);
 static void Slist_Poll (void *);
 static PollProcedure	slistSendProcedure = {NULL, 0.0, Slist_Send};
 static PollProcedure	slistPollProcedure = {NULL, 0.0, Slist_Poll};
+#endif	/* SERVERONLY */
 
 sizebuf_t	net_message;
 //static byte	net_message_buffer[NET_MAXMESSAGE];
@@ -162,6 +166,7 @@ void NET_FreeQSocket(qsocket_t *sock)
 }
 
 
+#if !defined(SERVERONLY)
 static void NET_Listen_f (void)
 {
 	if (Cmd_Argc () != 2)
@@ -440,6 +445,7 @@ JustDoIt:
 
 	return NULL;
 }
+#endif	/* SERVERONLY */
 
 
 /*
@@ -722,11 +728,13 @@ void NET_Init (void)
 	}
 	net_hostport = DEFAULTnet_hostport;
 
-	if (COM_CheckParm("-listen") || cls.state == ca_dedicated)
-		listening = true;
 	net_numsockets = svs.maxclientslimit;
+#if !defined(SERVERONLY)
 	if (cls.state != ca_dedicated)
 		net_numsockets++;
+	if (COM_CheckParm("-listen") || cls.state == ca_dedicated)
+		listening = true;
+#endif	/* SERVERONLY */
 
 	SetNetTime();
 
@@ -756,10 +764,12 @@ void NET_Init (void)
 	Cvar_RegisterVariable (&config_modem_hangup);
 #endif	/* NET_USE_SERIAL */
 
+#if !defined(SERVERONLY)
 	Cmd_AddCommand ("slist", NET_Slist_f);
 	Cmd_AddCommand ("listen", NET_Listen_f);
 	Cmd_AddCommand ("maxplayers", MaxPlayers_f);
 	Cmd_AddCommand ("port", NET_Port_f);
+#endif	/* SERVERONLY */
 
 	// initialize all the drivers
 	for (i = net_driverlevel = 0; net_driverlevel < net_numdrivers; net_driverlevel++)
@@ -774,13 +784,23 @@ void NET_Init (void)
 
 	/* Loop_Init() returns -1 for dedicated server case,
 	 * therefore the i == 0 check is correct */
-	if (i == 0 && cls.state == ca_dedicated)
+	if (i == 0
+#if !defined(SERVERONLY)
+			&& cls.state == ca_dedicated
+#endif	/* SERVERONLY */
+	   )
+	{
 		Sys_Error("Network not available!");
+	}
 
 	if (*my_ipx_address)
+	{
 		Con_DPrintf("IPX address %s\n", my_ipx_address);
+	}
 	if (*my_tcpip_address)
+	{
 		Con_DPrintf("TCP/IP address %s\n", my_tcpip_address);
+	}
 }
 
 /*
@@ -847,6 +867,7 @@ void NET_Poll(void)
 }
 
 
+#if !defined(SERVERONLY)
 void SchedulePollProcedure(PollProcedure *proc, double timeOffset)
 {
 	PollProcedure *pp, *prev;
@@ -869,4 +890,5 @@ void SchedulePollProcedure(PollProcedure *proc, double timeOffset)
 	proc->next = pp;
 	prev->next = proc;
 }
+#endif	/* SERVERONLY */
 
