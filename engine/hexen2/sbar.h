@@ -2,7 +2,7 @@
 	sbar.h
 	HUD / status bar
 
-	$Id: sbar.h,v 1.9 2007-07-29 07:58:08 sezero Exp $
+	$Id$
 */
 
 #ifndef __HX2_SBAR_H

@@ -253,7 +253,7 @@ void Draw_Character (int x, int y, unsigned int num)
 	if (y <= -8)
 		return;			// totally off screen
 
-	if (y > vid.height - 8 || x < 0 || x > vid.width - 8)
+	if (y > (int)vid.height - 8 || x < 0 || x > (int)vid.width - 8)
 		return;
 
 	row = num >> 5;
@@ -474,7 +474,7 @@ void Draw_SmallCharacter (int x, int y, int num)
 		num -= 32;
 	}
 
-	if (y >= vid.height)
+	if (y >= (int)vid.height)
 	{ // Totally off screen
 		return;
 	}
@@ -486,7 +486,7 @@ void Draw_SmallCharacter (int x, int y, int num)
 	}
 #endif
 
-	if (y + 5 > vid.height)
+	if (y + 5 > (int)vid.height)
 	{
 		height = vid.height - y;
 	}
@@ -654,9 +654,9 @@ void Draw_Pic (int x, int y, qpic_t *pic)
 	int		v, u;
 
 	if ((x < 0) ||
-		(x + pic->width > vid.width) ||
+		(x + pic->width > (int)vid.width) ||
 		(y < 0) ||
-		(y + pic->height > vid.height))
+		(y + pic->height > (int)vid.height))
 	{
 		Sys_Error ("%s: bad coordinates", __thisfunc__);
 	}
@@ -707,7 +707,7 @@ void Draw_PicCropped (int x, int y, qpic_t *pic)
 	unsigned short	*pusdest;
 	int		v, u, height;
 
-	if ((x < 0) || (x+pic->width > vid.width))
+	if ((x < 0) || (x+pic->width > (int)vid.width))
 	{
 		Sys_Error("%s: bad coordinates", __thisfunc__);
 	}
@@ -717,7 +717,7 @@ void Draw_PicCropped (int x, int y, qpic_t *pic)
 		return;
 	}
 
-	if (y+pic->height > vid.height)
+	if (y+pic->height > (int)vid.height)
 	{
 		height = vid.height-y;
 	}
@@ -891,7 +891,7 @@ void Draw_SubPicCropped (int x, int y, int h, qpic_t *pic)
 	unsigned short	*pusdest;
 	int		v, u, height;
 
-	if ((x < 0) || (x+pic->width > vid.width))
+	if ((x < 0) || (x+pic->width > (int)vid.width))
 	{
 		Sys_Error("%s: bad coordinates", __thisfunc__);
 	}
@@ -901,7 +901,7 @@ void Draw_SubPicCropped (int x, int y, int h, qpic_t *pic)
 		return;
 	}
 
-	if (y+pic->height > vid.height)
+	if (y+pic->height > (int)vid.height)
 	{
 		height = vid.height-y;
 	}
@@ -991,7 +991,7 @@ void Draw_TransPicCropped (int x, int y, qpic_t *pic)
 	unsigned short	*pusdest;
 	int		v, u, height;
 
-	if ((x < 0) || (x+pic->width > vid.width))
+	if ((x < 0) || (x+pic->width > (int)vid.width))
 	{
 		Sys_Error("%s: bad coordinates", __thisfunc__);
 	}
@@ -1001,7 +1001,7 @@ void Draw_TransPicCropped (int x, int y, qpic_t *pic)
 		return;
 	}
 
-	if (y+pic->height > vid.height)
+	if (y+pic->height > (int)vid.height)
 	{
 		height = vid.height-y;
 	}
@@ -1173,9 +1173,9 @@ void Draw_SubPic (int x, int y, qpic_t *pic, int srcx, int srcy, int width, int 
 	int		v, u;
 
 	if ((x < 0) ||
-		(x + width > vid.width) ||
+		(x + width > (int)vid.width) ||
 		(y < 0) ||
-		(y + height > vid.height))
+		(y + height > (int)vid.height))
 	{
 		Sys_Error ("%s: bad coordinates", __thisfunc__);
 	}
@@ -1360,7 +1360,7 @@ void Draw_ConsoleBackground (int lines)
 			{
 				f = 0;
 				fstep = 320*0x10000/vid.conwidth;
-				for (x = 0; x < vid.conwidth; x += 4)
+				for (x = 0; x < (int)vid.conwidth; x += 4)
 				{
 					dest[x] = src[f>>16];
 					f += fstep;
@@ -1386,7 +1386,7 @@ void Draw_ConsoleBackground (int lines)
 			src = conback->data + v*320;
 			f = 0;
 			fstep = 320*0x10000/vid.conwidth;
-			for (x = 0; x < vid.conwidth; x += 4)
+			for (x = 0; x < (int)vid.conwidth; x += 4)
 			{
 				pusdest[x] = d_8to16table[src[f>>16]];
 				f += fstep;
@@ -1607,11 +1607,10 @@ void Draw_Fill (int x, int y, int w, int h, int c)
 	unsigned int		uc;
 	int			u, v;
 
-	if (x < 0 || x + w > vid.width ||
-		y < 0 || y + h > vid.height)
+	if (x < 0 || x + w > (int)vid.width ||
+		y < 0 || y + h > (int)vid.height)
 	{
-		Con_Printf("Bad Draw_Fill(%d, %d, %d, %d, %c)\n",
-			x, y, w, h, c);
+		Con_Printf("Bad Draw_Fill(%d, %d, %d, %d, %c)\n", x, y, w, h, c);
 		return;
 	}
 
@@ -1683,7 +1682,7 @@ void Draw_FadeScreen (void)
 	for (x = 0; x < 2048; x++)
 		temp[x] = (164 + rand() % 6) * 256;
 
-	for (y = 0; y < vid.height; y++)
+	for (y = 0; y < (int)vid.height; y++)
 	{
 		pbuf = (byte *)(vid.buffer + vid.rowbytes*y);
 		pos = &temp[rand() % 256];
@@ -1695,7 +1694,7 @@ void Draw_FadeScreen (void)
 			VID_LockBuffer ();
 		}
 
-		for (x = 0; x < vid.width; x++, pbuf++)
+		for (x = 0; x < (int)vid.width; x++, pbuf++)
 		{
 //			if ((x & 3) != t)
 //				pbuf[x] = 0;

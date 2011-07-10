@@ -1208,7 +1208,7 @@ PR_LoadProgs
 */
 void PR_LoadProgs (void)
 {
-	unsigned int		i;
+	int			i;
 	const char	*progname;
 	char		num[32];
 	dfunction_t	*f;
@@ -1229,7 +1229,7 @@ void PR_LoadProgs (void)
 	Info_SetValueForStarKey (svs.info, "*progs", num, MAX_SERVERINFO_STRING);
 
 	// byte swap the header
-	for (i = 0; i < sizeof(*progs)/4; i++)
+	for (i = 0; i < (int) sizeof(*progs) / 4; i++)
 		((int *)progs)[i] = LittleLong ( ((int *)progs)[i] );
 
 	if (progs->version != PROG_VERSION)

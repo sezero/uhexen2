@@ -342,7 +342,7 @@ static void CL_ParseDownload (void)
 		else
 			q_snprintf (name, sizeof(name), "hw/%s", cls.downloadtempname);
 #endif
-	// Do I really need to care more about skins like above?..
+	/* Do I really need to care more about skins like above?.. */
 		q_snprintf (name, sizeof(name), "%s/%s", fs_userdir, cls.downloadtempname);
 		if ( FS_CreatePath(name) )
 		{
@@ -404,7 +404,7 @@ static void CL_ParseDownload (void)
 			q_snprintf (newn, sizeof(newn), "hw/%s", cls.downloadname);
 		}
 #endif
-	// Do I really need to care more about skins like above?..
+	/* Do I really need to care more about skins like above?.. */
 		q_snprintf (oldn, sizeof(oldn), "%s/%s", fs_userdir, cls.downloadtempname);
 		q_snprintf (newn, sizeof(newn), "%s/%s", fs_userdir, cls.downloadname);
 		if (Sys_rename(oldn, newn) != 0)
@@ -897,11 +897,12 @@ static void CL_UpdateUserinfo (void)
 		Skin_Find (player);
 
 	player->playerclass = atoi(Info_ValueForKey (player->userinfo, "playerclass"));
-/*	if (cl.playernum == slot && player->playerclass != playerclass.integer)
+	/*
+	if (cl.playernum == slot && player->playerclass != playerclass.integer)
 	{
 		Cvar_SetValue ("playerclass",player->playerclass);
 	}
-*/
+	*/
 	Sbar_Changed ();
 	player->Translated = false;
 	CL_NewTranslation (slot);
@@ -1147,7 +1148,7 @@ void CL_ParseServerMessage (void)
 			break;
 		}
 
-		if (cmd < NUM_SVC_STRINGS)	// else, it'll hit the illegible message below
+		if (cmd < (int)NUM_SVC_STRINGS)	// else, it'll hit the illegible message below
 		{
 			SHOWNET(svc_strings[cmd]);
 		}
@@ -1161,7 +1162,7 @@ void CL_ParseServerMessage (void)
 			break;
 
 		case svc_nop:
-//			Con_Printf ("svc_nop\n");
+		//	Con_Printf ("svc_nop\n");
 			break;
 
 		case svc_disconnect:
@@ -1216,7 +1217,7 @@ void CL_ParseServerMessage (void)
 		case svc_setangle:
 			for (i = 0; i < 3; i++)
 				cl.viewangles[i] = MSG_ReadAngle ();
-//			cl.viewangles[PITCH] = cl.viewangles[ROLL] = 0;
+		//	cl.viewangles[PITCH] = cl.viewangles[ROLL] = 0;
 			break;
 
 		case svc_lightstyle:
@@ -1232,11 +1233,11 @@ void CL_ParseServerMessage (void)
 			break;
 
 		case svc_sound_update_pos:
-		{//FIXME: put a field on the entity that lists the channels
-			//it should update when it moves- if a certain flag
-			//is on the ent, this update_channels field could
-			//be set automatically by each sound and stopSound
-			//called for this ent?
+		  {	// FIXME: put a field on the entity that lists the channels
+			// it should update when it moves- if a certain flag
+			// is on the ent, this update_channels field could
+			// be set automatically by each sound and stopSound
+			// called for this ent?
 			int	channel, ent_num;
 
 			channel = MSG_ReadShort ();
@@ -1251,8 +1252,7 @@ void CL_ParseServerMessage (void)
 				pos[i] = MSG_ReadCoord ();
 
 			S_UpdateSoundPos (ent_num, channel, pos);
-		}
-			break;
+		  }	break;
 
 		case svc_stopsound:
 			i = MSG_ReadShort();
@@ -1397,15 +1397,16 @@ void CL_ParseServerMessage (void)
 			break;
 
 		case svc_intermission:
-//			if (cl_siege)
-//			{//MG
+		//	if (cl_siege)
+		//	{//MG
 				cl.intermission = MSG_ReadByte();
 				cl.completed_time = realtime;
 				vid.recalc_refdef = true;	// go to full screen
 				break;
-/*			}
+			/*
+			}
 			else
-			{//Old Quake way- won't work
+			{ // Old Quake way- won't work
 				cl.intermission = 1;
 				cl.completed_time = realtime;
 				vid.recalc_refdef = true;	// go to full screen
@@ -1416,7 +1417,7 @@ void CL_ParseServerMessage (void)
 				VectorClear (cl.simvel);
 				break;
 			}
-*/
+			*/
 		case svc_finale:
 			cl.intermission = 2;
 			cl.completed_time = realtime;
@@ -1563,11 +1564,11 @@ void CL_ParseServerMessage (void)
 				cl.v.strength = MSG_ReadByte();
 			if (sc1 & SC1_DEXTERITY)
 				cl.v.dexterity = MSG_ReadByte();
-//			if (sc1 & SC1_WEAPON)
-//				cl.v.weapon = MSG_ReadByte();
+		//	if (sc1 & SC1_WEAPON)
+		//		cl.v.weapon = MSG_ReadByte();
 			if (sc1 & SC1_TELEPORT_TIME)
 			{
-//				Con_Printf("Teleport_time>time, got bit\n");
+		//		Con_Printf("Teleport_time>time, got bit\n");
 				cl.v.teleport_time = realtime + 2;//can't airmove for 2 seconds
 			}
 
@@ -1640,10 +1641,10 @@ void CL_ParseServerMessage (void)
 				cl.v.ring_turning = MSG_ReadByte();
 			if (sc2 & SC2_REGEN_T)
 				cl.v.ring_regeneration = MSG_ReadByte();
-//			if (sc2 & SC2_HASTE_T)
-//				cl.v.haste_time = MSG_ReadFloat();
-//			if (sc2 & SC2_TOME_T)
-//				cl.v.tome_time = MSG_ReadFloat();
+		//	if (sc2 & SC2_HASTE_T)
+		//		cl.v.haste_time = MSG_ReadFloat();
+		//	if (sc2 & SC2_TOME_T)
+		//		cl.v.tome_time = MSG_ReadFloat();
 			if (sc2 & SC2_PUZZLE1)
 				q_snprintf(cl.puzzle_pieces[0], sizeof(cl.puzzle_pieces[0]), "%.9s", MSG_ReadString());
 			if (sc2 & SC2_PUZZLE2)

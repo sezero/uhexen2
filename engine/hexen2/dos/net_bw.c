@@ -545,7 +545,7 @@ int BW_Read (int s, byte *buf, int len, struct qsockaddr *from)
 	}
 
 	len = info2->dataLenPlus8 - 8;
-	if (len > NET_DATAGRAMSIZE)
+	if (len > (int)NET_DATAGRAMSIZE)
 	{
 		Con_Printf("BW UDP read packet too large: %u\n", len);
 		return -1;
@@ -573,7 +573,7 @@ int BW_Broadcast (int s, byte *msg, int len)
 	writeInfo->remoteAddr = bcastaddr;
 	writeInfo->remotePort = net_hostport;
 	writeInfo->dataLen = len;
-	if (len > NET_DATAGRAMSIZE)
+	if (len > (int)NET_DATAGRAMSIZE)
 		Sys_Error("BW UDP write packet too large: %u\n", len);
 	memcpy(writeInfo->data, msg, len);
 	writeInfo->data[len] = 0;
@@ -609,7 +609,7 @@ int BW_Write (int s, byte *msg, int len, struct qsockaddr *to)
 	writeInfo->remoteAddr = ((struct sockaddr_in *)to)->sin_addr;
 	writeInfo->remotePort = ntohs(((struct sockaddr_in *)to)->sin_port);
 	writeInfo->dataLen = len;
-	if (len > NET_DATAGRAMSIZE)
+	if (len > (int)NET_DATAGRAMSIZE)
 		Sys_Error("BW UDP write packet too large: %u\n", len);
 	memcpy(writeInfo->data, msg, len);
 	writeInfo->data[len] = 0;

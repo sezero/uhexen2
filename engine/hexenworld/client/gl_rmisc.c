@@ -308,7 +308,7 @@ void R_TranslatePlayerSkin (int playernum)
 	int		top, bottom;
 	byte		translate[256];
 	unsigned int	translate32[256];
-	int		i, j;
+	unsigned int	i, j;
 	qmodel_t	*model;
 	aliashdr_t	*paliashdr;
 	byte		*original;
@@ -363,17 +363,17 @@ void R_TranslatePlayerSkin (int playernum)
 	model = player_models[cl.players[playernum].playerclass-1];
 	if (!model)
 		return;		// player doesn't have a model yet
-	paliashdr = (aliashdr_t *)Mod_Extradata (model);
-//	s = paliashdr->skinwidth * paliashdr->skinheight;
 
-	if (cl.players[playernum].playerclass >= 1 && cl.players[playernum].playerclass <= MAX_PLAYER_CLASS)
+	if (cl.players[playernum].playerclass >= 1 &&
+	    cl.players[playernum].playerclass <= MAX_PLAYER_CLASS)
 	{
 		original = player_8bit_texels[(int)cl.players[playernum].playerclass-1];
 		cl.players[playernum].Translated = true;
 	}
-	else
-		original = player_8bit_texels[0];
+	else	original = player_8bit_texels[0];
 
+	paliashdr = (aliashdr_t *)Mod_Extradata (model);
+//	s = paliashdr->skinwidth * paliashdr->skinheight;
 //	if (s & 3)
 //		Sys_Error ("%s: s&3", __thisfunc__);
 

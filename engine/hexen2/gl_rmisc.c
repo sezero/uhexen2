@@ -321,7 +321,7 @@ void R_TranslatePlayerSkin (int playernum)
 	int		top, bottom;
 	byte		translate[256];
 	unsigned int	translate32[256];
-	int		i, j;
+	unsigned int	i, j;
 	qmodel_t	*model;
 	aliashdr_t	*paliashdr;
 	byte		*original;
@@ -368,16 +368,15 @@ void R_TranslatePlayerSkin (int playernum)
 	model = currententity->model;
 	if (!model)
 		return;		// player doesn't have a model yet
-	paliashdr = (aliashdr_t *)Mod_Extradata (model);
-	s = paliashdr->skinwidth * paliashdr->skinheight;
 
 	// class limit is mission pack dependant
-	i = (gameflags & GAME_PORTALS) ? MAX_PLAYER_CLASS : MAX_PLAYER_CLASS - PORTALS_EXTRA_CLASSES;
-	if (playerclass >= 1 && playerclass <= i)
+	s = (gameflags & GAME_PORTALS) ? MAX_PLAYER_CLASS : MAX_PLAYER_CLASS - PORTALS_EXTRA_CLASSES;
+	if (playerclass >= 1 && playerclass <= s)
 		original = player_8bit_texels[playerclass-1];
-	else
-		original = player_8bit_texels[0];
+	else	original = player_8bit_texels[0];
 
+	paliashdr = (aliashdr_t *)Mod_Extradata (model);
+	s = paliashdr->skinwidth * paliashdr->skinheight;
 	if (s & 3)
 		Sys_Error ("%s: s&3", __thisfunc__);
 

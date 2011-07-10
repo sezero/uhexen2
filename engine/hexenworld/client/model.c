@@ -1308,7 +1308,7 @@ static void Mod_LoadBrushModel (qmodel_t *mod, void *buffer)
 // swap all the lumps
 	mod_base = (byte *)header;
 
-	for (i = 0; i < sizeof(dheader_t)/4; i++)
+	for (i = 0; i < (int) sizeof(dheader_t) / 4; i++)
 		((int *)header)[i] = LittleLong ( ((int *)header)[i]);
 
 // load into heap

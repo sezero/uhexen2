@@ -884,7 +884,7 @@ qsocket_t *Serial_Connect (const char *host)
 	/* see if this looks like a phone number */
 	if (*host == '#')
 		host++;
-	for (n = 0; n < strlen(host); n++)
+	for (n = 0; n < (int) strlen(host); n++)
 	{
 		if (host[n] == '.' || host[n] == ':')
 			return NULL;

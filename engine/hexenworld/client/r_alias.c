@@ -652,7 +652,7 @@ void R_AliasPrepareUnclippedPoints (void)
 	stvert_t	*pstverts;
 	finalvert_t	*fv;
 	mtriangle_t	*ptri;
-	unsigned int	i;
+	int	i;
 
 	pstverts = (stvert_t *)((byte *)paliashdr + paliashdr->stverts);
 	r_anumverts = pmdl->numverts;

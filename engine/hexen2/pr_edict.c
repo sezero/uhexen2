@@ -1270,7 +1270,7 @@ PR_LoadProgs
 */
 void PR_LoadProgs (void)
 {
-	unsigned int		i;
+	int			i;
 	const char	*progname;
 
 	// flush the non-C variable lookup cache
@@ -1286,7 +1286,7 @@ void PR_LoadProgs (void)
 	pr_crc = CRC_Block ((byte *)progs, fs_filesize);
 
 	// byte swap the header
-	for (i = 0; i < sizeof(*progs)/4; i++)
+	for (i = 0; i < (int) sizeof(*progs) / 4; i++)
 		((int *)progs)[i] = LittleLong ( ((int *)progs)[i] );
 
 	if (progs->version != PROG_VERSION)

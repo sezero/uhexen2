@@ -2,7 +2,7 @@
 	sbar.c
 	Hexen II status bar
 
-	$Header: /cvsroot/uhexen2/engine/hexenworld/client/sbar.c,v 1.46 2008-05-14 08:37:20 sezero Exp $
+	$Id$
 */
 
 #include "quakedef.h"
@@ -1146,7 +1146,7 @@ void Sbar_DeathmatchOverlay(void)
 
 	for (i = 0; i < l; i++)
 	{
-		if (y+10 >= vid.height)
+		if (y+10 >= (int)vid.height)
 			break;
 
 		k = fragsort[i];
@@ -1345,7 +1345,7 @@ static void Sbar_PuzzlePieceOverlay(void)
 		piece++;
 	}
 }
-#endif
+#endif	/* end of unused */
 
 //==========================================================================
 //
@@ -2144,7 +2144,6 @@ static void Sbar_DrawTransPic(int x, int y, qpic_t *pic)
 }
 
 #if 0	/* all uses are commented out */
-
 //==========================================================================
 //
 // Sbar_DrawCharacter

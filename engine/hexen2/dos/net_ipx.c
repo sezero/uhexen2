@@ -274,7 +274,7 @@ int IPX_Init (void)
 	/* init socket handles & buffers */
 	handlesInUse = 0;
 	lma = (ipx_lowmem_area_t *)lowmem_buffer;
-	for (s = 0; s < IPXSOCKETS; s++)
+	for (s = 0; s < (int)IPXSOCKETS; s++)
 	{
 		ipxsocket[s] = 0;
 		for (n = 0; n < IPXSOCKBUFFERS; n++)
@@ -378,7 +378,7 @@ int IPX_OpenSocket (int port)
 	newsocket = regs.x.dx;
 
 	/* grab a handle; fill in the ECBs, and get them listening */
-	for (handle = 0; handle < IPXSOCKETS; handle++)
+	for (handle = 0; handle < (int)IPXSOCKETS; handle++)
 	{
 		if (ipxsocket[handle] == 0)
 		{

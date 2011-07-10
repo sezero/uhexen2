@@ -174,7 +174,7 @@ static qboolean S_ALSA_Init (dma_t *dma)
 			}
 			else
 			{
-				if (rate != tryrates[i])
+				if (rate != (unsigned int) tryrates[i])
 				{
 					Con_Printf ("Warning: Rate set (%u) didn't match requested rate (%d)!\n", rate, tryrates[i]);
 				//	goto error;
@@ -190,7 +190,7 @@ static qboolean S_ALSA_Init (dma_t *dma)
 	}
 	else
 	{
-		if (rate != desired_speed)
+		if (rate != (unsigned int)desired_speed)
 		{
 			Con_Printf ("Warning: Rate set (%u) didn't match requested rate (%d)!\n", rate, desired_speed);
 		//	goto error;

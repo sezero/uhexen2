@@ -1,6 +1,6 @@
 /*
 	in_win.c
-	$Id: in_win.c,v 1.35 2010-08-28 10:05:24 sezero Exp $
+	$Id$
 
 	windows 95 mouse and joystick code
 
@@ -609,7 +609,7 @@ void IN_MouseEvent (int mstate)
 	if (mouseactive && !dinput_init)
 	{
 	// perform button actions
-		for (i = 0; i < NUM_MOUSEBUTTONS; i++)
+		for (i = 0; i < (int)NUM_MOUSEBUTTONS; i++)
 		{
 			if ((mstate ^ mouse_oldbuttonstate) & (1<<i))
 				Key_Event (buttonremap[i], (mstate & (1<<i)) != 0);
@@ -663,15 +663,15 @@ static void IN_MouseMove (usercmd_t *cmd)
 			}
 
 			/* Look at the element to see what happened */
-			if (od.dwOfs == DIMOFS_X)
+			if ((LONG)od.dwOfs == DIMOFS_X)
 			{
 				mx += (LONG) od.dwData;
 			}
-			else if (od.dwOfs == DIMOFS_Y)
+			else if ((LONG)od.dwOfs == DIMOFS_Y)
 			{
 				my += (LONG) od.dwData;
 			}
-			else if (od.dwOfs == DIMOFS_Z)
+			else if ((LONG)od.dwOfs == DIMOFS_Z)
 			{
 				if ((LONG) od.dwData < 0)
 				{
@@ -684,28 +684,28 @@ static void IN_MouseMove (usercmd_t *cmd)
 					Key_Event (K_MWHEELUP, false);
 				}
 			}
-			else if (od.dwOfs == DIMOFS_BUTTON0)
+			else if ((LONG)od.dwOfs == DIMOFS_BUTTON0)
 			{
 				if (od.dwData & 0x80)
 					mstate_di |= 1;
 				else
 					mstate_di &= ~1;
 			}
-			else if (od.dwOfs == DIMOFS_BUTTON1)
+			else if ((LONG)od.dwOfs == DIMOFS_BUTTON1)
 			{
 				if (od.dwData & 0x80)
 					mstate_di |= (1<<1);
 				else
 					mstate_di &= ~(1<<1);
 			}
-			else if (od.dwOfs == DIMOFS_BUTTON2)
+			else if ((LONG)od.dwOfs == DIMOFS_BUTTON2)
 			{
 				if (od.dwData & 0x80)
 					mstate_di |= (1<<2);
 				else
 					mstate_di &= ~(1<<2);
 			}
-			else if (od.dwOfs == DIMOFS_BUTTON3)
+			else if ((LONG)od.dwOfs == DIMOFS_BUTTON3)
 			{
 				if (od.dwData & 0x80)
 					mstate_di |= (1<<3);
@@ -715,7 +715,7 @@ static void IN_MouseMove (usercmd_t *cmd)
 		}
 
 	// perform button actions
-		for (i = 0; i < NUM_MOUSEBUTTONS; i++)
+		for (i = 0; i < (int)NUM_MOUSEBUTTONS; i++)
 		{
 			if ((mstate_di ^ mouse_oldbuttonstate) & (1<<i))
 				Key_Event (buttonremap[i], (mstate_di & (1<<i)) != 0);
@@ -1091,7 +1091,7 @@ void IN_Commands (void)
 	// loop through the joystick buttons
 	// key a joystick event or auxillary event for higher number buttons for each state change
 	buttonstate = ji.dwButtons;
-	for (i = 0; i < joy_numbuttons; i++)
+	for (i = 0; i < (int)joy_numbuttons; i++)
 	{
 		if ( (buttonstate & (1<<i)) && !(joy_oldbuttonstate & (1<<i)) )
 		{

@@ -1,7 +1,7 @@
 /*
 	zone.h
 
-	$Id: zone.h,v 1.12 2010-03-09 12:50:31 sezero Exp $
+	$Id$
 */
 
 #ifndef __ZZONE_H

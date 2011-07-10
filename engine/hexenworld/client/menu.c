@@ -1062,7 +1062,7 @@ static void M_OpenGL_Draw (void)
 	M_DrawCheckbox (232, 90 + 8*OGL_GLOW3, gl_other_glows.integer);
 
 	M_Print (32 + (6 * 8), 90 + 8*OGL_LIGHTMAPFMT,	"Lightmap Format:");
-	for (i = 0; i < MAX_LMFORMATS; i++)
+	for (i = 0; i < (int)MAX_LMFORMATS; i++)
 	{
 		if (!q_strcasecmp(gl_lightmapfmt.string, lm_formats[i].name))
 			break;
@@ -1117,7 +1117,7 @@ static void M_OpenGL_Draw (void)
 	if (opengl_cursor == OGL_LIGHTMAPFMT && gl_lightmap_format != lm_formats[lm_format].glenum)
 	{
 		int	x = (320-25*8)/2;
-		for (i = 0; i < MAX_LMFORMATS-1; i++)
+		for (i = 0; i < (int)MAX_LMFORMATS-1; i++)
 		{
 			if (gl_lightmap_format == lm_formats[i].glenum)
 				break;
@@ -1208,8 +1208,8 @@ static void M_OpenGL_Key (int k)
 			{
 			case K_RIGHTARROW:
 				lm_format++;
-				if (lm_format >= MAX_LMFORMATS-1)
-					lm_format = MAX_LMFORMATS-2;
+				if (lm_format >= (int)MAX_LMFORMATS - 1)
+					lm_format = MAX_LMFORMATS - 2;
 				Cvar_Set ("gl_lightmapfmt", lm_formats[lm_format].name);
 				break;
 			case K_LEFTARROW:
@@ -1430,7 +1430,7 @@ static void M_Keys_Draw (void)
 
 	if (keys_top)
 		M_DrawCharacter (6, 80, 128);
-	if (keys_top + KEYS_SIZE < NUMCOMMANDS)
+	if (keys_top + KEYS_SIZE < (int)NUMCOMMANDS)
 		M_DrawCharacter (6, 80 + ((KEYS_SIZE-1)*8), 129);
 
 // search for known bindings
@@ -1506,7 +1506,7 @@ static void M_Keys_Key (int k)
 	case K_RIGHTARROW:
 		S_LocalSound ("raven/menu1.wav");
 		keys_cursor++;
-		if (keys_cursor >= NUMCOMMANDS)
+		if (keys_cursor >= (int)NUMCOMMANDS)
 			keys_cursor = 0;
 		break;
 

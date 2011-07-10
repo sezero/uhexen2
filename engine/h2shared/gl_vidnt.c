@@ -1703,7 +1703,7 @@ static void VID_InitDIB (HINSTANCE hInstance)
 	// initialize standart windowed modes list
 	num_wmodes = 0;
 
-	for (i = 0, num_wmodes = 0; i < MAX_STDMODES; i++)
+	for (i = 0, num_wmodes = 0; i < (int)MAX_STDMODES; i++)
 	{
 		if (std_modes[i].width <= vid_deskwidth && std_modes[i].height <= vid_deskheight)
 		{

@@ -4,6 +4,10 @@ Development Progress	:
 ---------------------------
 
 2011-07-10 (SVN):
+    * Fixed many of the "comparison between signed and unsigned integer
+      expressions" warnings.
+
+2011-07-10 (SVN):
     * draw.c, gl_draw.c (Draw_ConsoleBackground): Cleaned and simplified
       the function: no need making a copy of the engine signature string.
 

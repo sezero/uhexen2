@@ -279,7 +279,7 @@ static void VID_SetIcon (void)
 	SDL_SetColors(icon, &color, 1, 1);
 
 	ptr = (Uint8 *)icon->pixels;
-	for (i = 0; i < sizeof(HOT_ICON_bits); i++)
+	for (i = 0; i < (int) sizeof(HOT_ICON_bits); i++)
 	{
 		for (mask = 1; mask != 0x100; mask <<= 1)
 		{
@@ -1283,14 +1283,15 @@ static void VID_PrepareModes (SDL_Rect **sdl_modes)
 	// Add the standart 4:3 modes to the windowed modes list
 	// In an unlikely case that we receive no fullscreen modes,
 	// this will be our modes list (kind of...)
-	for (i = 0; i < MAX_STDMODES; i++)
+	for (i = 0; i < (int)MAX_STDMODES; i++)
 	{
 		wmodelist[num_wmodes].width = std_modes[i].width;
 		wmodelist[num_wmodes].height = std_modes[i].height;
 		wmodelist[num_wmodes].halfscreen = 0;
 		wmodelist[num_wmodes].fullscreen = 0;
 		wmodelist[num_wmodes].bpp = 16;
-		q_snprintf (wmodelist[num_wmodes].modedesc, MAX_DESC, "%d x %d", std_modes[i].width, std_modes[i].height);
+		q_snprintf (wmodelist[num_wmodes].modedesc, MAX_DESC,
+				"%d x %d", std_modes[i].width, std_modes[i].height);
 		num_wmodes++;
 	}
 

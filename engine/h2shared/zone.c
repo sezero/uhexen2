@@ -2,7 +2,7 @@
 	zone.c
 	Memory management
 
-	$Id: zone.c,v 1.56 2010-11-05 16:11:39 sezero Exp $
+	$Id$
 */
 
 #include "quakedef.h"
@@ -305,7 +305,7 @@ void Hunk_Check (void)
 	{
 		if (h->sentinal != HUNK_SENTINAL)
 			Sys_Error ("%s: trashed sentinal", __thisfunc__);
-		if (h->size < sizeof(hunk_t) || h->size + (byte *)h - hunk_base > hunk_size)
+		if (h->size < (int) sizeof(hunk_t) || h->size + (byte *)h - hunk_base > hunk_size)
 			Sys_Error ("%s: bad size", __thisfunc__);
 		h = (hunk_t *)((byte *)h + h->size);
 	}

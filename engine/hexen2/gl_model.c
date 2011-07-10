@@ -1537,7 +1537,7 @@ static void Mod_LoadBrushModel (qmodel_t *mod, void *buffer)
 // swap all the lumps
 	mod_base = (byte *)header;
 
-	for (i = 0; i < sizeof(dheader_t)/4; i++)
+	for (i = 0; i < (int) sizeof(dheader_t) / 4; i++)
 		((int *)header)[i] = LittleLong ( ((int *)header)[i]);
 
 // load into heap
@@ -1882,31 +1882,31 @@ static void *Mod_LoadAllSkins (int numskins, daliasskintype_t *pskintype, int md
 		// save 8 bit texels for the player model to remap
 		if (!strcmp(loadmodel->name,"models/paladin.mdl"))
 		{
-			if (s > sizeof(player_8bit_texels[0]))
+			if (s > (int) sizeof(player_8bit_texels[0]))
 				goto skin_too_large;
 			memcpy (player_8bit_texels[0], (byte *)(pskintype + 1), s);
 		}
 		else if (!strcmp(loadmodel->name,"models/crusader.mdl"))
 		{
-			if (s > sizeof(player_8bit_texels[1]))
+			if (s > (int) sizeof(player_8bit_texels[1]))
 				goto skin_too_large;
 			memcpy (player_8bit_texels[1], (byte *)(pskintype + 1), s);
 		}
 		else if (!strcmp(loadmodel->name,"models/necro.mdl"))
 		{
-			if (s > sizeof(player_8bit_texels[2]))
+			if (s > (int) sizeof(player_8bit_texels[2]))
 				goto skin_too_large;
 			memcpy (player_8bit_texels[2], (byte *)(pskintype + 1), s);
 		}
 		else if (!strcmp(loadmodel->name,"models/assassin.mdl"))
 		{
-			if (s > sizeof(player_8bit_texels[3]))
+			if (s > (int) sizeof(player_8bit_texels[3]))
 				goto skin_too_large;
 			memcpy (player_8bit_texels[3], (byte *)(pskintype + 1), s);
 		}
 		else if (!strcmp(loadmodel->name,"models/succubus.mdl"))
 		{
-			if (s > sizeof(player_8bit_texels[4]))
+			if (s > (int) sizeof(player_8bit_texels[4]))
 				goto skin_too_large;
 			memcpy (player_8bit_texels[4], (byte *)(pskintype + 1), s);
 		}

@@ -1244,7 +1244,7 @@ void CL_ParseServerMessage (void)
 			continue;
 		}
 
-		if (cmd < NUM_SVC_STRINGS)	// else, it'll hit the illegible message below
+		if (cmd < (int)NUM_SVC_STRINGS)	// else, it'll hit the illegible message below
 		{
 			SHOWNET(svc_strings[cmd]);
 		}
@@ -1258,7 +1258,7 @@ void CL_ParseServerMessage (void)
 			break;
 
 		case svc_nop:
-//			Con_Printf ("svc_nop\n");
+		//	Con_Printf ("svc_nop\n");
 			break;
 
 		case svc_time:
@@ -1378,16 +1378,15 @@ void CL_ParseServerMessage (void)
 			break;
 
 		case svc_sound_update_pos:
-		{//FIXME: put a field on the entity that lists the channels
-			//it should update when it moves- if a certain flag
-			//is on the ent, this update_channels field could
-			//be set automatically by each sound and stopSound
-			//called for this ent?
+		  {	// FIXME: put a field on the entity that lists the channels
+			// it should update when it moves- if a certain flag
+			// is on the ent, this update_channels field could
+			// be set automatically by each sound and stopSound
+			// called for this ent?
 			vec3_t	pos;
 			int	channel, ent_num;
 
 			channel = MSG_ReadShort ();
-
 			ent_num = channel >> 3;
 			channel &= 7;
 
@@ -1398,8 +1397,7 @@ void CL_ParseServerMessage (void)
 				pos[i] = MSG_ReadCoord ();
 
 			S_UpdateSoundPos (ent_num, channel, pos);
-		}
-			break;
+		  }	break;
 
 		case svc_stopsound:
 			i = MSG_ReadShort();
@@ -1577,7 +1575,8 @@ void CL_ParseServerMessage (void)
 			vid.recalc_refdef = true;	// go to full screen
 			break;
 
-/*		case svc_finale:
+		/*
+		case svc_finale:
 			cl.intermission = 2;
 			cl.completed_time = cl.time;
 			vid.recalc_refdef = true;	// go to full screen
@@ -1594,7 +1593,7 @@ void CL_ParseServerMessage (void)
 		case svc_sellscreen:
 			Cmd_ExecuteString ("help", src_command);
 			break;
-*/
+		*/
 		case svc_set_view_flags:
 			cl.viewent.drawflags |= MSG_ReadByte();
 			break;
@@ -1631,14 +1630,16 @@ void CL_ParseServerMessage (void)
 			cl.current_sequence = MSG_ReadByte();
 			if (cl.need_build == 2)
 			{
-//				Con_Printf("CL: NB2 CL(%d,%d) R(%d)\n", cl.current_sequence, cl.current_frame,cl.reference_frame);
+			//	Con_Printf("CL: NB2 CL(%d,%d) R(%d)\n",
+			//			cl.current_sequence, cl.current_frame,cl.reference_frame);
 				cl.frames[0].count = cl.frames[1].count = cl.frames[2].count = 0;
 				cl.need_build = 1;
 				cl.reference_frame = cl.current_frame;
 			}
 			else if (cl.last_sequence != cl.current_sequence)
 			{
-//				Con_Printf("CL: Sequence CL(%d,%d) R(%d)\n", cl.current_sequence, cl.current_frame,cl.reference_frame);
+			//	Con_Printf("CL: Sequence CL(%d,%d) R(%d)\n",
+			//			cl.current_sequence, cl.current_frame,cl.reference_frame);
 				if (cl.reference_frame >= 1 && cl.reference_frame <= MAX_FRAMES)
 				{
 					RemovePlace = OrigPlace = NewPlace = AddedIndex = 0;
@@ -1677,7 +1678,8 @@ void CL_ParseServerMessage (void)
 			}
 			else
 			{
-//				Con_Printf("CL: Normal CL(%d,%d) R(%d)\n", cl.current_sequence, cl.current_frame,cl.reference_frame);
+			//	Con_Printf("CL: Normal CL(%d,%d) R(%d)\n",
+			//			cl.current_sequence, cl.current_frame,cl.reference_frame);
 				cl.need_build = 0;
 			}
 
@@ -1841,9 +1843,9 @@ void CL_ParseServerMessage (void)
 			if (sc2 & SC2_FLAGS)
 				cl.v.flags = MSG_ReadFloat();
 
-			// SC2_OBJ, SC2_OBJ2: mission pack objectives
-			// With protocol 18 (PROTOCOL_RAVEN_111), these
-			// bits get set somehow (?!): let's avoid them.
+			/* SC2_OBJ, SC2_OBJ2: mission pack objectives
+			 * With protocol 18 (PROTOCOL_RAVEN_111), these
+			 * bits get set somehow (?!): let's avoid them. */
 			if (cl_protocol > PROTOCOL_RAVEN_111)
 			{
 				if (sc2 & SC2_OBJ)
