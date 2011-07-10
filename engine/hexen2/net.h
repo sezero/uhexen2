@@ -4,7 +4,7 @@
 	network functions and data, common to the
 	whole engine
 
-	$Header: /cvsroot/uhexen2/engine/hexen2/net.h,v 1.25 2009-04-28 14:00:32 sezero Exp $
+	$Id$
 */
 
 #ifndef __HX2_NET_H
@@ -89,6 +89,13 @@ extern	char		my_tcpip_address[NET_NAMELEN];
 #undef	NET_USE_SERIAL
 #define	NET_USE_SERIAL	1
 #endif	/* allow serial */
+
+#undef	NO_LOOP_DRIVER
+#if defined(SERVERONLY)
+/* The dedicated server application (h2ded)
+ * does not need the Loopback driver */
+#define	NO_LOOP_DRIVER	1
+#endif	/* SERVERONLY */
 
 #if NET_USE_SERIAL
 extern	void (*GetComPortConfig) (int portNumber, int *port, int *irq, int *baud, qboolean *useModem);

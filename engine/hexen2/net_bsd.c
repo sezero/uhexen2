@@ -1,6 +1,6 @@
 /*
 	net_bsd.c
-	$Id: net_bsd.c,v 1.10 2009-04-28 14:00:32 sezero Exp $
+	$Id$
 
 	Copyright (C) 1996-1997  Id Software, Inc.
 
@@ -31,20 +31,19 @@
 #include "net_defs.h"
 
 #include "net_dgrm.h"
-#if !defined(SERVERONLY)
 #include "net_loop.h"
-#endif	/* SERVERONLY */
 
 net_driver_t net_drivers[] =
 {
-#if !defined(SERVERONLY)
-	{
-		"Loopback",
+#if !defined(NO_LOOP_DRIVER)
+	{	"Loopback",
 		false,
 		Loop_Init,
 		Loop_Listen,
+#if !defined(SERVERONLY)
 		Loop_SearchForHosts,
 		Loop_Connect,
+#endif	/* SERVERONLY */
 		Loop_CheckNewConnections,
 		Loop_GetMessage,
 		Loop_SendMessage,
@@ -54,10 +53,9 @@ net_driver_t net_drivers[] =
 		Loop_Close,
 		Loop_Shutdown
 	},
-#endif	/* SERVERONLY */
+#endif	/* NO_LOOP_DRIVER */
 
-	{
-		"Datagram",
+	{	"Datagram",
 		false,
 		Datagram_Init,
 		Datagram_Listen,
@@ -82,8 +80,7 @@ const int net_numdrivers = (sizeof(net_drivers) / sizeof(net_drivers[0]));
 
 net_landriver_t	net_landrivers[] =
 {
-	{
-		"UDP",
+	{	"UDP",
 		false,
 		0,
 		UDP_Init,

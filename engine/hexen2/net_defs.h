@@ -5,7 +5,7 @@
 	net_sys.h and its dependencies must be included
 	before net_defs.h.
 
-	$Header: /cvsroot/uhexen2/engine/hexen2/net_defs.h,v 1.3 2010-08-09 14:33:12 sezero Exp $
+	$Id$
 */
 
 #ifndef __NET_DEFS_H
@@ -201,7 +201,15 @@ typedef struct
 extern net_driver_t	net_drivers[];
 extern const int	net_numdrivers;
 
+/* Loop driver must always be registered the first */
+#if defined(NO_LOOP_DRIVER)
+#define IS_LOOP_DRIVER(p)	0
+#else
+#define IS_LOOP_DRIVER(p)	((p) == 0)
+#endif	/* NO_LOOP_DRIVER */
+
 extern int		net_driverlevel;
+
 extern cvar_t		net_allowmultiple;
 
 extern int		messagesSent;

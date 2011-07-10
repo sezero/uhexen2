@@ -4,6 +4,10 @@ Development Progress	:
 ---------------------------
 
 2011-07-10 (SVN):
+    * hexen2 net: Added NO_LOOP_DRIVER and IS_LOOP_DRIVER macros and made
+      the confusing loop driver checks more readable and flexible.
+
+2011-07-10 (SVN):
     * hexen2/sv_main.c, hexenworld/server/sv_init.c: Refactored the code
       returning the full level name into new SV_GetLevelname() procedure.
     * server.h: Added prototype for SV_GetLevelname().
