@@ -3,6 +3,9 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2011-07-10 (SVN):
+    * README: updated web links.
+
 2011-07-07 (SVN):
     * bspfile.h: Made the hexen2 and hw versions of MAX_MAP_CLIPNODES,
       MAX_MAP_PLANES and MAX_MAP_ENTSTRING values to mirror the ones

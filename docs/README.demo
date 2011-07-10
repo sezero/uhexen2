@@ -527,23 +527,22 @@ consult the document README.3dfx.
 	FreshPorts for FreeBSD	:
 		main package	: http://www.freshports.org/games/uhexen2/
 		extra package	: http://www.freshports.org/games/uhexen2-extras/
-	SuSE RPM packages	: http://packman.links2linux.de/package/hexen2/
-	Arch Linux packages	: http://aur.archlinux.org/packages.php?do_Details=1&ID=12618
+	Arch Linux packages	: http://aur.archlinux.org/packages.php?ID=12618
 	Gentoo ebuilds		:
 		the main ebuild	: http://bugs.gentoo.org/show_bug.cgi?id=105780
 		for demo data	: http://bugs.gentoo.org/show_bug.cgi?id=139262
 		for extra data	: http://bugs.gentoo.org/show_bug.cgi?id=139278
-	Gentoo Sunrise overlay	: http://overlays.gentoo.org/svn/proj/sunrise/reviewed/games-fps/
+	Gentoo Sunrise overlay	: http://overlays.gentoo.org/proj/sunrise/browser/sunrise/games-fps
 	Nokia N770/800/810 build: http://www.internettablettalk.com/forums/showthread.php?p=134552
 	QNX builds		: http://sourceforge.net/projects/openqnx/files/
 
     Other Hexen II ports
+	JLQuake, a Quake1/2/3 and Hexen2/HexenWorld
+			engine	: http://sourceforge.net/projects/vquake/
+	FTE QW, a Quake/QuakeWorld engine with Hexen II
+			support	: http://www.fteqw.com/
 	Hexen II PSP port	: http://jurajstyk.host.sk/
 	Korax's UQE Hexen II	: http://www.quake-engine.com/
-	vQuake, a Quake1/2/3 and
-	Hexen2/HexenWorld engine: http://sourceforge.net/projects/vquake/
-	FTE QW, a Quake/QuakeWorld engine
-	with Hexen II support	: http://www.fteqw.com/
 
     Older, currently inactive Hexen II ports
 	Anvil of Thyrion	: http://aot.linuxgames.com/
@@ -551,9 +550,8 @@ consult the document README.3dfx.
 	Hexen II Dreamcast	: http://dcquake.sourceforge.net/
 	JSHexen II		: http://jurajstyk.host.sk/
 	Pa3PyX's Hexen II	: http://pa3pyx.dnsalias.org/
-	NewHexen		: http://newhexen.raven-games.com/
 
-    Other web links
+    Other links:
 	Official Hexen II FAQ	: http://www.raven-games.com/hex2faq/
 	Hexen2-Linux Game Tome	: http://happypenguin.org/show?Hammer%20of%20Thyrion
 	Hexen2-Linux Gamer Guide: http://linux.strangegamer.com/index.php?title=HeXen_II
