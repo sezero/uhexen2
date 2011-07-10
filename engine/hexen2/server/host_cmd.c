@@ -204,9 +204,10 @@ static void Host_Map_f (void)
 	{
 		Con_Printf ("map <levelname>: start a new server\n");
 		if (sv.active)
-			Con_Printf ("Currently on: %s\n",sv.name);
-		else
-			Con_Printf ("Server not active\n");
+		{
+			Con_Printf ("Current level: %s [ %s ]\n",
+					SV_GetLevelname(), sv.name);
+		}
 		return;
 	}
 
@@ -374,32 +375,24 @@ static void Host_SavegameComment (char *text)
 {
 	size_t		i;
 	char		temp[20];
+	const char	*levelname;
 	struct tm	*tblock;
-	time_t		TempTime;
+	time_t		temptime;
 
 	for (i = 0; i < SAVEGAME_COMMENT_LENGTH; i++)
 	{
 		text[i] = ' ';
 	}
 
-// see SAVEGAME_COMMENT_LENGTH definition in quakedef.h !
-	if (sv.edicts->v.message > 0 && sv.edicts->v.message <= host_string_count)
-	{
-		i = strlen(&host_strings[host_string_index[(int)sv.edicts->v.message - 1]]);
-		if (i > 20)
-			i = 20;
-		memcpy (text, &host_strings[host_string_index[(int)sv.edicts->v.message - 1]], i);
-	}
-	else
-	{
-		i = strlen(PR_GetString(sv.edicts->v.netname));
-		if (i > 20)
-			i = 20;
-		memcpy (text, PR_GetString(sv.edicts->v.netname), i);
-	}
+/* see SAVEGAME_COMMENT_LENGTH definition in quakedef.h */
+	levelname = SV_GetLevelname ();
+	i = strlen(levelname);
+	if (i > 20)
+		i = 20;
+	memcpy (text, levelname, i);
 
-	TempTime = time(NULL);
-	tblock = localtime(&TempTime);
+	temptime = time(NULL);
+	tblock = localtime(&temptime);
 	strftime (temp, sizeof(temp), "%m/%d/%Y %H:%M", tblock);
 	i = strlen(temp);
 	if (i >= SAVEGAME_COMMENT_LENGTH-21)

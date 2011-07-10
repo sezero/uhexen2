@@ -443,16 +443,8 @@ static void SV_SendServerinfo (client_t *client)
 	else
 		MSG_WriteByte (&client->message, GAME_COOP);
 
-	if (sv.edicts->v.message > 0 && sv.edicts->v.message <= host_string_count)
-	{
-		MSG_WriteString (&client->message,
-				 &host_strings[host_string_index[(int)sv.edicts->v.message - 1]]);
-	}
-	else
-	{
-	//	MSG_WriteString(&client->message,"");
-		MSG_WriteString(&client->message, PR_GetString(sv.edicts->v.netname));
-	}
+// send full levelname
+	MSG_WriteString(&client->message, SV_GetLevelname ());
 
 	for (i = 1, s = sv.model_precache + 1; i < MAX_MODELS && *s; s++)
 		MSG_WriteString (&client->message, *s);
@@ -464,8 +456,6 @@ static void SV_SendServerinfo (client_t *client)
 
 // send music
 	MSG_WriteByte (&client->message, svc_cdtrack);
-//	MSG_WriteByte (&client->message, sv.edicts->v.soundtype);
-//	MSG_WriteByte (&client->message, sv.edicts->v.soundtype);
 	MSG_WriteByte (&client->message, sv.cd_track);
 	MSG_WriteByte (&client->message, sv.cd_track);
 
@@ -475,10 +465,9 @@ static void SV_SendServerinfo (client_t *client)
 	if (sv_protocol >= PROTOCOL_UQE_113)
 	{
 		MSG_WriteByte (&client->message, svc_mod_name);
-		MSG_WriteString (&client->message, "");	// UQE-Hexen2 sends sv.mod_name
-
+		MSG_WriteString (&client->message, "");	/* uqe-hexen2 sends sv.mod_name */
 		MSG_WriteByte (&client->message, svc_skybox);
-		MSG_WriteString (&client->message, "");	// UQE-Hexen2 sends sv.skybox
+		MSG_WriteString (&client->message, "");	/* uqe-hexen2 sends "sv.skybox" */
 	}
 
 // set view
@@ -1873,6 +1862,24 @@ static void SV_SendReconnect (void)
 		Cmd_ExecuteString ("reconnect\n", src_command);
 #endif
 #endif	/* ! SERVERONLY */
+}
+
+
+/*
+================
+SV_GetLevelname
+
+Return the full levelname
+================
+*/
+const char *SV_GetLevelname (void)
+{
+	if (sv.edicts->v.message > 0 && sv.edicts->v.message <= host_string_count)
+		return &host_strings[host_string_index[(int)sv.edicts->v.message - 1]];
+
+/*	return "";*/
+/* Use netname on map if there is one, so they don't have to edit strings.txt */
+	return PR_GetString(sv.edicts->v.netname);
 }
 
 

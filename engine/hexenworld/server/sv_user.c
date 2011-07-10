@@ -75,20 +75,10 @@ static void SV_New_f (void)
 		playernum |= 128;
 	MSG_WriteByte (&host_client->netchan.message, playernum);
 
-	// send full levelname
-	if (sv.edicts->v.message > 0 && sv.edicts->v.message <= host_string_count)
-	{
-		MSG_WriteString (&host_client->netchan.message,
-				 &host_strings[host_string_index[(int)sv.edicts->v.message - 1]]);
-	}
-	else 
-	{
-	// Use netname on map if there is one, so they don't have to edit strings.txt
-	//	MSG_WriteString(&host_client->netchan.message,"");
-		MSG_WriteString(&host_client->netchan.message, PR_GetString(sv.edicts->v.netname));
-	}
+// send full levelname
+	MSG_WriteString(&host_client->netchan.message, SV_GetLevelname ());
 
-	// send the movevars
+// send the movevars
 	MSG_WriteFloat(&host_client->netchan.message, movevars.gravity);
 	MSG_WriteFloat(&host_client->netchan.message, movevars.stopspeed);
 	MSG_WriteFloat(&host_client->netchan.message, movevars.maxspeed);
@@ -100,15 +90,14 @@ static void SV_New_f (void)
 	MSG_WriteFloat(&host_client->netchan.message, movevars.waterfriction);
 	MSG_WriteFloat(&host_client->netchan.message, movevars.entgravity);
 
-	// send music
+// send music
 	MSG_WriteByte (&host_client->netchan.message, svc_cdtrack);
-//	MSG_WriteByte (&host_client->netchan.message, sv.edicts->v.soundtype);
 	MSG_WriteByte (&host_client->netchan.message, sv.cd_track);
 
 	MSG_WriteByte (&host_client->netchan.message, svc_midi_name);
 	MSG_WriteString (&host_client->netchan.message, sv.midi_name);
 
-	// send server info string
+// send server info string
 	MSG_WriteByte (&host_client->netchan.message, svc_stufftext);
 	MSG_WriteString (&host_client->netchan.message, va("fullserverinfo \"%s\"\n", svs.info) );
 }

@@ -405,7 +405,7 @@ static void CL_Map_f (void)
 	if (Cmd_Argc() > 1)
 		Con_Printf ("only a server can start or change a map\n");
 	else if (cls.state == ca_active)
-		Con_Printf ("Current map: %s ( %s )\n", cl.levelname, cl.mapname);
+		Con_Printf ("Current level: %s [ %s ]\n", cl.levelname, cl.mapname);
 	else
 		Con_Printf ("Not connected to a server\n");
 }
@@ -541,9 +541,6 @@ static void CL_FullServerinfo_f (void)
 				Con_Printf("Version %1.2f Server\n", v);
 			server_version = v;
 #if 0
-	// this is a bit overkill today
-	// if someone did a newer version, they should
-	// have bumped the PROTOCOL_VERSION
 			if ((int)(server_version*100) > (int)(ENGINE_VERSION*100))
 			{
 				Con_Printf("The server is running v%4.2f, you have v%4.2f, please go to www.hexenworld.com and update your client to join\n",server_version,ENGINE_VERSION);

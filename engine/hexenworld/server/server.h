@@ -412,6 +412,8 @@ void Master_Packet (void);
 void SV_SpawnServer (const char *server, const char *startspot);
 void SV_FlushSignon (void);
 
+const char *SV_GetLevelname (void);
+
 //
 // sv_phys.c
 //

@@ -284,6 +284,8 @@ void SV_RunClients (void);
 void SV_SaveSpawnparms (void);
 void SV_SpawnServer (const char *server, const char *startspot);
 
+const char *SV_GetLevelname (void);
+
 void SV_ParseEffect (sizebuf_t *sb);
 void SV_UpdateEffects (sizebuf_t *sb);
 void SV_SaveEffects (FILE *FH);

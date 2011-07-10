@@ -299,8 +299,11 @@ static void SV_Map_f (void)
 	if (Cmd_Argc() < 2)
 	{
 		Con_Printf ("map <levelname> : continue game on a new level\n");
-		if (sv.name[0])
-			Con_Printf ("Currently on: %s\n",sv.name);
+		if (sv.state == ss_active)
+		{
+			Con_Printf ("Current level: %s [ %s ]\n",
+					SV_GetLevelname(), sv.name);
+		}
 		return;
 	}
 	q_strlcpy (level, Cmd_Argv(1), sizeof(level));
@@ -313,14 +316,6 @@ static void SV_Map_f (void)
 		q_strlcpy (_startspot, Cmd_Argv(2), sizeof(_startspot));
 		startspot = _startspot;
 	}
-
-#if 0
-	if (!strcmp (level, "e1m8"))
-	{	// QuakeWorld can't go to e1m8
-		SV_BroadcastPrintf (PRINT_HIGH, "can't go to low grav level in HexenWorld...\n");
-		strcpy (level, "e1m5");
-	}
-#endif
 
 	// check to make sure the level exists
 	q_snprintf (expanded, sizeof(expanded), "maps/%s.bsp", level);
