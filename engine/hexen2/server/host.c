@@ -706,14 +706,14 @@ void Host_Init (void)
 	Hunk_AllocName (0, "-HOST_HUNKLEVEL-");
 	host_hunklevel = Hunk_LowMark ();
 
-	Cbuf_InsertText ("exec server.cfg\n");
-	Cbuf_Execute ();
+	host_initialized = true;
+	Con_Printf("\n===== Hexen II dedicated server initialized ======\n\n");
+
 	// unlock the early-set cvars after init
 	Cvar_UnlockAll ();
 
-	Con_Printf("\n===== Hexen II dedicated server initialized ======\n\n");
-
-	host_initialized = true;
+	Cbuf_InsertText ("exec server.cfg\n");
+	Cbuf_Execute ();
 
 	// process command line arguments
 	Cmd_StuffCmds_f ();

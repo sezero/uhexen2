@@ -4,6 +4,11 @@ Development Progress	:
 ---------------------------
 
 2011-07-10 (SVN):
+    * hexen2/server/host.c (Host_Init): Execute server.cfg after setting
+      host_initialized as true and unlocking the early-read cvars.
+    * hexenworld/server/sv_main.c (SV_Init): Likewise.
+
+2011-07-10 (SVN):
     * Fixed many of the "comparison between signed and unsigned integer
       expressions" warnings.
 

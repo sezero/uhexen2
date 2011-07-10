@@ -1585,16 +1585,16 @@ void SV_Init (void)
 	Hunk_AllocName (0, "-HOST_HUNKLEVEL-");
 	host_hunklevel = Hunk_LowMark ();
 
-	Cbuf_InsertText ("exec server.cfg\n");
-	Cbuf_Execute ();
-	// unlock the early-set cvars after init
-	Cvar_UnlockAll ();
-
 	host_initialized = true;
-
 	Con_Printf ("Exe: "__TIME__" "__DATE__"\n");
 	Con_Printf ("%4.1f megabyte heap\n", host_parms->memsize/(1024*1024.0));
 	Con_Printf ("======== HexenWorld Initialized ========\n");
+
+	// unlock the early-set cvars after init
+	Cvar_UnlockAll ();
+
+	Cbuf_InsertText ("exec server.cfg\n");
+	Cbuf_Execute ();
 
 	// process command line arguments
 	Cmd_StuffCmds_f ();
