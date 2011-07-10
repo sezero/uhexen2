@@ -19,7 +19,7 @@ Development Progress	:
 2011-07-07 (SVN):
     * bspfile.h: Made the hexen2 and hw versions of MAX_MAP_CLIPNODES,
       MAX_MAP_PLANES and MAX_MAP_ENTSTRING values to mirror the ones
-      defined in the mapping utilities, which are 16384, 65535 and 81920
+      defined in the mapping utilities, which are 65535, 16384 and 81920
       respectively. These changes doesn't affect anything at the game
       engine side. I still need to decide on what to do with differences
       in MAX_MAP_LEAFS values between all three of the files.
@@ -47,7 +47,7 @@ Development Progress	:
       eval_t pointers' removal, cures a miscompilation by ancient gcc
       versions <= 2.95.x:  With PR_RunError() marked with the noreturn
       attribute, compiling with the -fomit-frame-pointer switch resulted
-      in bad code which segfaulted. Now those old compiler are just OK
+      in bad code which segfaulted. Now those old compilers are just OK
       with this combination, too.
 
 2011-07-05 (SVN):
