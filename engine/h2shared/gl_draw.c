@@ -1056,8 +1056,8 @@ static void Draw_ConsolePic (int lines, float ofs, GLuint num, float alpha)
 
 void Draw_ConsoleBackground (int lines)
 {
-	char	ver[80];
-	int	i, x, y;
+	const char	*ver, *ptr;
+	int	x, y;
 	float	ofs, alpha;
 
 	y = (vid.height * 3) >> 2;
@@ -1070,20 +1070,20 @@ void Draw_ConsoleBackground (int lines)
 	if (lines > y)
 		alpha = 1.0f;
 	else
-		alpha = (float) 1.1 * lines / y;
+		alpha = 1.1f * lines / y;
 
 	Draw_ConsolePic (lines, ofs, conback, alpha);
 
-	// print the version number and platform
-//	y = lines-186;
-	y = lines-14;
-	q_strlcpy (ver, ENGINE_WATERMARK, sizeof(ver));
-	x = vid.conwidth - (strlen(ver)*8 + 11);
 #if defined(H2W)
-	if (!cls.download)
+	if (cls.download)
+		return;
 #endif
-		for (i = 0; i < strlen(ver); i++)
-			Draw_Character (x + i * 8, y, ver[i] | 0x100);
+// print the version number and platform
+	ver = ENGINE_WATERMARK;
+	x = vid.conwidth - (strlen(ver) * 8 + 11);
+	y = lines - 14;
+	for (ptr = ver; *ptr; ++ptr)
+		Draw_Character (x + (int)(ptr - ver) * 8, y, *ptr | 0x100);
 }
 
 

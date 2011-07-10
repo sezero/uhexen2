@@ -4,6 +4,10 @@ Development Progress	:
 ---------------------------
 
 2011-07-10 (SVN):
+    * draw.c, gl_draw.c (Draw_ConsoleBackground): Cleaned and simplified
+      the function: no need making a copy of the engine signature string.
+
+2011-07-10 (SVN):
     * re-diff'ed the optional standalone games patch after quakefs.c
       changes.
     * quakefs.c: Fixed a 'set but not used' warning in FS_Init(). Coding

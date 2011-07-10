@@ -1336,32 +1336,14 @@ Draw_ConsoleBackground
 */
 void Draw_ConsoleBackground (int lines)
 {
-	int			x, y, v;
+	int		x, y, v;
 	byte		*src, *dest;
 	unsigned short	*pusdest;
-	int			f, fstep;
+	int		f, fstep;
 	qpic_t		*conback;
-	char		ver[100];
-#if defined(H2W)
-	//static		char saveback[320*8];
-
-	if (cls.download)
-		q_strlcpy (ver, STRINGIFY(ENGINE_VERSION), sizeof(ver));
-	else
-#endif
-		q_strlcpy (ver, ENGINE_WATERMARK, sizeof(ver));
+	const char	*ver, *ptr;
 
 	conback = Draw_CachePic ("gfx/menu/conback.lmp");
-
-/*
-	// hack the version number directly into the pic
-	dest = conback->data + 320 + 320*186 - 11 - 8*strlen(ver);
-#ifdef H2W
-	memcpy(saveback, conback->data + 320*186, 320*8);
-#endif
-	for (x = 0; x < strlen(ver); x++)
-		Draw_CharToConback (ver[x], dest+(x<<3));
-*/
 
 // draw the pic
 	if (r_pixbytes == 1)
@@ -1418,17 +1400,16 @@ void Draw_ConsoleBackground (int lines)
 		}
 	}
 
-/*
-#ifdef H2W
-	// put it back
-	memcpy(conback->data + 320*186, saveback, 320*8);
+#if defined(H2W)
+	if (cls.download)
+		return;
 #endif
-*/
-
 // print the version number and platform
-	y = vid.conwidth - (strlen(ver)*8 + 11);
-	for (x = 0; x < strlen(ver); x++)
-		Draw_Character (y + x * 8, lines - 14, ver[x] | 0x100);
+	ver = ENGINE_WATERMARK;
+	x = vid.conwidth - (strlen(ver) * 8 + 11);
+	y = lines - 14;
+	for (ptr = ver; *ptr; ++ptr)
+		Draw_Character (x + (int)(ptr - ver) * 8, y, *ptr | 0x100);
 }
 
 
