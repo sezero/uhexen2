@@ -3479,8 +3479,8 @@ static void M_SerialConfig_Draw (void)
 {
 	qpic_t	*p;
 	int		basex;
-	char	*startJoin;
-	char	*directModem;
+	const char	*startJoin;
+	const char	*directModem;
 
 	p = Draw_CachePic ("gfx/menu/title4.lmp");
 	basex = (320 - p->width) / 2;

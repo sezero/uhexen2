@@ -4,6 +4,9 @@ Development Progress	:
 ---------------------------
 
 2011-07-10 (SVN):
+    * menu.c, net_comx.c: Did missing string constifications.
+
+2011-07-10 (SVN):
     * net_main.c, net_dgrm.c: Added proper SERVERONLY ifdefs and removed
       the h2ded-specific extra copies. Removed the DEBUG build conditions
       around the unexpected reply address prints.

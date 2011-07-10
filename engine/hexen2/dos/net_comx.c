@@ -173,7 +173,7 @@ static ComPort	*portList = NULL;
 static ComPort	*handleToPort [NUM_COM_PORTS];
 
 static int Modem_Command (ComPort *p, const char *commandString);
-static char *Modem_Response (ComPort *p);
+static const char *Modem_Response (ComPort *p);
 static void Modem_Hangup (void *p);
 
 int TTY_Init (void);
@@ -581,7 +581,7 @@ static int CheckStatus (ComPort *p)
 static void Modem_Init (ComPort *p)
 {
 	double	start;
-	char	*response;
+	const char	*response;
 
 	Con_Printf ("Initializing modem...\n");
 
@@ -608,7 +608,7 @@ static void Modem_Init (ComPort *p)
 				p->enabled = false;
 				goto failed;
 			}
-			response = Modem_Response(p);
+			response = Modem_Response (p);
 			if (!response)
 				continue;
 			if (strncmp(response, "OK", 2) == 0)
@@ -633,7 +633,7 @@ static void Modem_Init (ComPort *p)
 				p->enabled = false;
 				goto failed;
 			}
-			response = Modem_Response(p);
+			response = Modem_Response (p);
 			if (!response)
 				continue;
 			if (strncmp(response, "OK", 2) == 0)
@@ -754,7 +754,7 @@ int TTY_Connect (int handle, const char *host)
 {
 	double	start;
 	ComPort	*p;
-	char	*response = NULL;
+	const char	*response = NULL;
 	keydest_t	save_key_dest;
 	char	dialstring[64];
 	byte	b;
@@ -822,7 +822,7 @@ int TTY_Connect (int handle, const char *host)
 				break;
 			}
 
-			response = Modem_Response(p);
+			response = Modem_Response (p);
 			if (!response)
 				continue;
 			if (strncmp(response, "CONNECT", 7) == 0)
@@ -1216,7 +1216,7 @@ static int Modem_Command (ComPort *p, const char *commandString)
 }
 
 
-static char *Modem_Response (ComPort *p)
+static const char *Modem_Response (ComPort *p)
 {
 	byte	b;
 
