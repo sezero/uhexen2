@@ -4,6 +4,8 @@ Development Progress	:
 ---------------------------
 
 2011-07-10 (SVN):
+    * re-diff'ed the optional standalone games patch after quakefs.c
+      changes.
     * quakefs.c: Fixed a 'set but not used' warning in FS_Init(). Coding
       style cleanup.
 

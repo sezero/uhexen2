@@ -1,58 +1,59 @@
 this patch adds initial support for standalone free contents (mods).
 see the documentation file StandaloneMods.txt for details.
 
-diff -urNp engine/h2shared/quakefs.c.orig engine/h2shared/quakefs.c
---- engine/h2shared/quakefs.c.orig	2010-12-30 00:51:00 +0200
-+++ engine/h2shared/quakefs.c	2010-12-30 11:33:00.000000000 +0200
+Index: engine/h2shared/quakefs.c
+===================================================================
+--- engine/h2shared/quakefs.c	(revision 4129)
++++ engine/h2shared/quakefs.c	(working copy)
 @@ -56,6 +56,8 @@ unsigned int	gameflags;
  cvar_t	oem = {"oem", "0", CVAR_ROM};
  cvar_t	registered = {"registered", "0", CVAR_ROM};
  
-+static char	fs_dirstdalone[MAX_QPATH];	// game dir for standalone games
++static char	fs_dirstdalone[MAX_QPATH];	/* game dir for standalone games */
 +
  typedef struct
  {
  	int	numfiles;
-@@ -210,7 +212,7 @@ static pack_t *FS_LoadPackFile (const ch
+@@ -206,7 +208,7 @@ static pack_t *FS_LoadPackFile (const ch
  		CRC_ProcessByte (&crc, ((byte *)info)[i]);
  
- // check for modifications
+ 	/* check for modifications */
 -	if (base_fs && paknum < (int)MAX_PAKDATA)
 +	if (!(gameflags & GAME_STANDALONE) && base_fs && paknum < (int)MAX_PAKDATA)
  	{
  		if (strcmp(fs_gamedir_nopath, pakdata[paknum].dirname) != 0)
  		{
-@@ -485,6 +487,10 @@ void FS_Gamedir (const char *dir)
- // check for reserved gamedirs
+@@ -477,6 +479,10 @@ void FS_Gamedir (const char *dir)
+ /* check for reserved gamedirs */
  	if (!q_strcasecmp(dir, "hw"))
  	{
-+	// standalone games don't touch Raven directories and they
-+	// don't have an additional directory for hexenworld, either.
++	/* standalone games don't touch Raven directories and they
++	 * don't have an additional directory for hexenworld, either. */
 +		if (gameflags & GAME_STANDALONE)
-+			return;	// don't even bother for a message.
++			return;	/* don't even bother for a message. */
  #if !defined(H2W)
- 	// hw is reserved for hexenworld only. hexen2 shouldn't use it
+ 	/* hw is reserved for hexenworld only. hexen2 shouldn't use it */
  		Sys_Printf ("WARNING: Gamedir not set to hw :\n"
-@@ -519,6 +525,27 @@ void FS_Gamedir (const char *dir)
- 	// command line argument like -game data1, ignore it.
+@@ -513,6 +519,27 @@ void FS_Gamedir (const char *dir)
+ 	 * command line argument like -game data1, ignore it. */
  		return;
  	}
 +	else if (gameflags & GAME_STANDALONE && !q_strcasecmp(dir, fs_dirstdalone))
 +	{
 +#if !defined(H2W)
-+	// same as the data1 above, but for standalone mods.
++	/* same as the data1 above, but for standalone mods. */
 +		return;
 +#else
-+	// Standalone mods don't have an additional directory for hw.
-+	// that we reached here means the hw server decided to abandon
-+	// whatever the previous mod it was running and went back to
-+	// pure hw. weird.. do as he wishes anyway and adjust our variables.
++	/* Standalone mods don't have an additional directory for hw.
++	 * that we reached here means the hw server decided to abandon
++	 * whatever the previous mod it was running and went back to
++	 * pure hw. weird.. do as he wishes anyway and adjust our variables. */
 +		qerr_snprintf(__thisfunc__, __LINE__, fs_gamedir, sizeof(fs_gamedir),
 +						"%s/%s", fs_basedir, fs_dirstdalone);
 +		qerr_snprintf(__thisfunc__, __LINE__, fs_userdir, sizeof(fs_userdir),
 +						"%s/%s", host_parms->userdir, fs_dirstdalone);
 +#    if defined(SERVERONLY)
-+	// change the *gamedir serverinfo properly
++	/* change the *gamedir serverinfo properly */
 +		Info_SetValueForStarKey (svs.info, "*gamedir", fs_dirstdalone, MAX_SERVERINFO_STRING);
 +#    endif
 +		return;
@@ -60,8 +61,8 @@ diff -urNp engine/h2shared/quakefs.c.orig engine/h2shared/quakefs.c
 +	}
  	else
  	{
- 	// a new gamedir: let's set it here.
-@@ -1291,8 +1318,36 @@ static int CheckRegistered (void)
+ 	/* a new gamedir: let's set it here. */
+@@ -1294,8 +1321,36 @@ static int CheckRegistered (void)
  FS_Init
  ================
  */
@@ -84,7 +85,7 @@ diff -urNp engine/h2shared/quakefs.c.orig engine/h2shared/quakefs.c
 +		if (i >= com_argc - 1)
 +			Sys_Error ("-basegame requires a valid game directory name as argument");
 +		qerr_strlcpy (__thisfunc__, __LINE__, fs_dirstdalone, com_argv[i + 1], sizeof(fs_dirstdalone));
-+		// check for reserved directory names:
++		/* check for reserved directory names: */
 +		if (!q_strcasecmp(fs_dirstdalone, "data1") ||
 +		    !q_strcasecmp(fs_dirstdalone, "portals") ||
 +		    !q_strcasecmp(fs_dirstdalone, "hw"))
@@ -98,7 +99,7 @@ diff -urNp engine/h2shared/quakefs.c.orig engine/h2shared/quakefs.c
  	int		i;
  	char		temp[32];
  	qboolean	check_portals = false;
-@@ -1501,6 +1556,93 @@ void FS_Init (void)
+@@ -1492,6 +1547,94 @@ void FS_Init (void)
  	}
  }
  
@@ -132,31 +133,32 @@ diff -urNp engine/h2shared/quakefs.c.orig engine/h2shared/quakefs.c
 +		fs_basedir = host_parms->basedir;
 +	}
 +
-+	qerr_snprintf(__thisfunc__, __LINE__, fs_userdir, sizeof(fs_userdir), "%s/%s", host_parms->userdir, fs_dirstdalone);
++	qerr_snprintf(__thisfunc__, __LINE__, fs_userdir, sizeof(fs_userdir),
++					"%s/%s", host_parms->userdir, fs_dirstdalone);
 +#if DO_USERDIRS
 +	if (strcmp(fs_gamedir, fs_userdir))
 +		Sys_mkdir (fs_userdir, true);
 +#endif
 +	FS_AddGameDirectory (va("%s/%s", fs_basedir, fs_dirstdalone), true);
 +
-+	// force-add the registered flags:
++	/* force-add the registered flags: */
 +	registered.flags &= ~CVAR_ROM;
 +	Cvar_SetValue ("registered", 1);
 +	registered.flags |= CVAR_ROM;
 +	gameflags |= GAME_REGISTERED;
 +	Sys_Printf ("Playing standalone/mod version.\n");
 +
-+// this is the end of our base searchpath:
-+// any set gamedirs, such as those from -game commandline
-+// arguments, from exec'ed configs or the ones dictated by
-+// the server, will be freed up to here upon a new gamedir
-+// command
++/* this is the end of our base searchpath:
++ * any set gamedirs, such as those from -game commandline
++ * arguments, from exec'ed configs or the ones dictated by
++ * the server, will be freed up to here upon a new gamedir
++ * command */
 +	fs_base_searchpaths = fs_searchpaths;
 +
 +	i = COM_CheckParm ("-game");
 +	if (i != 0)
 +	{
-+		// add basedir/gamedir as an override game
++		/* add basedir/gamedir as an override game */
 +		if (i < com_argc - 1)
 +			FS_Gamedir (com_argv[i+1]);
 +	}
@@ -169,7 +171,7 @@ diff -urNp engine/h2shared/quakefs.c.orig engine/h2shared/quakefs.c
 +	}
 +	else
 +	{
-+		// see which game modes it requires :
++		/* see which game modes it requires: */
 +		flags = (unsigned int) atoi(flagstring);
 +		if (flags & GAME_WANT_PORTALS)
 +		{
@@ -192,10 +194,11 @@ diff -urNp engine/h2shared/quakefs.c.orig engine/h2shared/quakefs.c
  /* The following FS_*() stdio replacements are necessary if one is
   * to perform non-sequential reads on files reopened on pak files
   * because we need the bookkeeping about file start/end positions.
-diff -urNp engine/h2shared/quakefs.h.orig engine/h2shared/quakefs.h
---- engine/h2shared/quakefs.h.orig	2008-11-11 09:51:17.000000000 +0200
-+++ engine/h2shared/quakefs.h	2009-04-25 14:15:03.000000000 +0300
-@@ -33,6 +33,12 @@
+Index: engine/h2shared/quakefs.h
+===================================================================
+--- engine/h2shared/quakefs.h	(revision 4129)
++++ engine/h2shared/quakefs.h	(working copy)
+@@ -31,6 +31,12 @@
  
  #define	GAME_MODIFIED		(1 << 16)
  
