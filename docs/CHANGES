@@ -3,6 +3,10 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2011-07-11 (SVN):
+    * Added support for libtremor (libvorbisidec) as the integer-only
+      libvorbisfile alternative for ogg decoding.
+
 2011-07-10 (SVN):
     * hexen2/server/host.c (Host_Init): Execute server.cfg after setting
       host_initialized as true and unlocking the early-read cvars.

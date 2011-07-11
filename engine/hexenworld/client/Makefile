@@ -150,6 +150,8 @@ USE_CODEC_TIMIDITY=yes
 USE_CODEC_WILDMIDI=no
 # which library to use for mp3 decoding: mad or mpg123
 MP3LIB=mad
+# which library to use for ogg decoding: vorbis or tremor
+VORBISLIB=vorbis
 
 # include the common dirty stuff
 include $(UHEXEN2_TOP)/scripts/makefile.inc
@@ -267,6 +269,21 @@ else
 GLFLAGS+= $(GL_LINK)
 endif
 
+ifeq ($(MP3LIB),mad)
+lib_mp3dec=-lmad
+endif
+ifeq ($(MP3LIB),mpg123)
+lib_mp3dec=-lmpg123
+endif
+ifeq ($(VORBISLIB),vorbis)
+cpp_vorbisdec=
+lib_vorbisdec=-lvorbis -lvorbisfile -logg
+endif
+ifeq ($(VORBISLIB),tremor)
+cpp_vorbisdec=-DVORBIS_USE_TREMOR
+lib_vorbisdec=-lvorbisidec -logg
+endif
+
 #############################################################
 # no streaming music if no sound
 #############################################################
@@ -276,6 +293,12 @@ USE_CODEC_TIMIDITY=no
 USE_CODEC_WILDMIDI=no
 USE_CODEC_MP3=no
 USE_CODEC_VORBIS=no
+endif
+
+ifneq ($(VORBISLIB),vorbis)
+ifneq ($(VORBISLIB),tremor)
+USE_CODEC_VORBIS=no
+endif
 endif
 
 ifeq ($(MP3LIB),mad)
@@ -453,12 +476,12 @@ ifeq ($(USE_CODEC_WAVE),yes)
 CPPFLAGS+= -DUSE_CODEC_WAVE
 endif
 ifeq ($(USE_CODEC_VORBIS),yes)
-CPPFLAGS+= -DUSE_CODEC_VORBIS
-LDFLAGS+= -lvorbis -lvorbisfile -logg
+CPPFLAGS+= -DUSE_CODEC_VORBIS $(cpp_vorbisdec)
+LDFLAGS+= $(lib_vorbisdec)
 endif
 ifeq ($(USE_CODEC_MP3),yes)
 CPPFLAGS+= -DUSE_CODEC_MP3
-LDFLAGS+= -l$(MP3LIB)
+LDFLAGS+= $(lib_mp3dec)
 endif
 ifeq ($(USE_CODEC_TIMIDITY),yes)
 CPPFLAGS+= -DUSE_CODEC_TIMIDITY
