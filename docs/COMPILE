@@ -103,7 +103,7 @@ Xcode, SDKs:	Install the free Xcode suite from developer.apple.com :  It
 Additional requirements	:
 -------------------------
 
-libogg, libvorbis:
+libogg and either of libvorbis or libtremor:
 		Required if you want to enable Ogg/Vorbis music playback.
 libmad or libmpg123:
 		Required if you want to enable mp3 music playback.

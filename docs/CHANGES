@@ -6,6 +6,7 @@ Development Progress	:
 2011-07-11 (SVN):
     * Added support for libtremor (libvorbisidec) as the integer-only
       libvorbisfile alternative for ogg decoding.
+    * Updated compilation instructions document after libtremor support.
 
 2011-07-10 (SVN):
     * hexen2/server/host.c (Host_Init): Execute server.cfg after setting
