@@ -3,6 +3,10 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2011-07-12 (SVN):
+    * libs/timidity/instrum_dls.c: Fixed "comparison between signed and
+      unsigned integer expressions" warnings.
+
 2011-07-11 (SVN):
     * Added support for libtremor (libvorbisidec) as the integer-only
       libvorbisfile alternative for ogg decoding.

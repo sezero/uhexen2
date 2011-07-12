@@ -1019,7 +1019,7 @@ void PrintDLS(MidDLSPatches *data)
 /* convert timecents to sec */
 static double to_msec(int timecent)
 {
-  if (timecent == 0x80000000 || timecent == 0)
+  if (timecent == (sint32)0x80000000 || timecent == 0)
     return 0.0;
   return 1000.0 * pow(2.0, (double)(timecent / 65536) / 1200.0);
 }
@@ -1123,9 +1123,9 @@ static void load_region_dls(MidSong *song, MidSample *sample, DLS_Instrument *in
     value = load_connection(art->cConnections, artList, CONN_DST_PAN);
     sample->panning = (int)((0.5 + to_normalized_percent(value)) * 127.0);
 
-/*
-printf("%d, Rate=%d LV=%d HV=%d Low=%d Hi=%d Root=%d Pan=%d Attack=%f Hold=%f Sustain=%d Decay=%f Release=%f\n", idx, sample->sample_rate, rgn->header->RangeVelocity.usLow, rgn->header->RangeVelocity.usHigh, sample->low_freq, sample->high_freq, sample->root_freq, sample->panning, attack, hold, sustain, decay, release);
-*/
+    /*
+    printf("%d, Rate=%d LV=%d HV=%d Low=%d Hi=%d Root=%d Pan=%d Attack=%f Hold=%f Sustain=%d Decay=%f Release=%f\n", idx, sample->sample_rate, rgn->header->RangeVelocity.usLow, rgn->header->RangeVelocity.usHigh, sample->low_freq, sample->high_freq, sample->root_freq, sample->panning, attack, hold, sustain, decay, release);
+    */
 
     sample->envelope_offset[0] = to_offset(255);
     sample->envelope_rate[0] = calc_rate(song, 255, sample->sample_rate, attack);
@@ -1160,38 +1160,38 @@ MidInstrument *load_instrument_dls(MidSong *song, int drum, int bank, int instru
   DLS_Instrument *dls_ins = NULL;
 
   if (!song->patches)
-   return(NULL);
+    return NULL;
 
   drum = drum ? 0x80000000 : 0;
   for (i = 0; i < song->patches->cInstruments; ++i) {
     dls_ins = &song->patches->instruments[i];
-    if ((dls_ins->header->Locale.ulBank & 0x80000000) == drum &&
-        ((dls_ins->header->Locale.ulBank >> 8) & 0xFF) == bank &&
-        dls_ins->header->Locale.ulInstrument == instrument)
+    if ((dls_ins->header->Locale.ulBank & 0x80000000) == (uint32)drum &&
+        ((dls_ins->header->Locale.ulBank >> 8) & 0xFF) == (uint32)bank &&
+         dls_ins->header->Locale.ulInstrument == (uint32)instrument)
       break;
   }
   if (i == song->patches->cInstruments && !bank) {
     for (i = 0; i < song->patches->cInstruments; ++i) {
       dls_ins = &song->patches->instruments[i];
-      if ((dls_ins->header->Locale.ulBank & 0x80000000) == drum &&
-          dls_ins->header->Locale.ulInstrument == instrument)
+      if ((dls_ins->header->Locale.ulBank & 0x80000000) == (uint32)drum &&
+          dls_ins->header->Locale.ulInstrument == (uint32)instrument)
         break;
     }
   }
   if (i == song->patches->cInstruments || dls_ins == NULL) {
     DEBUG_MSG("Couldn't find %s instrument %d in bank %d\n", drum ? "drum" : "melodic", instrument, bank);
-    return(NULL);
+    return NULL;
   }
 
   inst = (MidInstrument *)safe_malloc(sizeof(*inst));
   inst->samples = dls_ins->header->cRegions;
   inst->sample = (MidSample *)safe_malloc(inst->samples * sizeof(*inst->sample));
   memset(inst->sample, 0, inst->samples * sizeof(*inst->sample));
-/*
-printf("Found %s instrument %d in bank %d named %s with %d regions\n", drum ? "drum" : "melodic", instrument, bank, dls_ins->name, inst->samples);
-*/
+  /*
+  printf("Found %s instrument %d in bank %d named %s with %d regions\n", drum ? "drum" : "melodic", instrument, bank, dls_ins->name, inst->samples);
+  */
   for (i = 0; i < dls_ins->header->cRegions; ++i) {
     load_region_dls(song, &inst->sample[i], dls_ins, i);
   }
-  return(inst);
+  return inst;
 }
