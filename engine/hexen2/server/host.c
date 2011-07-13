@@ -626,7 +626,14 @@ static void _Host_Frame (float time)
 	if (host_framerate.value > 0)
 		host_frametime = host_framerate.value;
 	else
+	{
 		host_frametime = time;
+	// don't allow really long or short frames
+		if (host_frametime > 0.05)
+			host_frametime = 0.05;
+		else if (host_frametime < 0.001)
+			host_frametime = 0.001;
+	}
 
 // process console commands
 	Cbuf_Execute ();

@@ -3,6 +3,14 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2011-07-13 (SVN):
+    * h2ded, host.c (_Host_Frame): Don't allow very long or short frames
+      analogous to the client-server application's Host_FilterTime().
+      This fixes the sword rack anomalies in the demo2 and village1 maps
+      as detailed in bug #3344613:
+      http://sourceforge.net/tracker/?func=detail&aid=3344613&group_id=124987&atid=701006
+    * Bump beta version/date to 1.5.0-rc6/2011-07-13, update documents.
+
 2011-07-12 (SVN):
     * libs/timidity/instrum_dls.c: Fixed "comparison between signed and
       unsigned integer expressions" warnings.

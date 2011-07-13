@@ -26,11 +26,6 @@ Known Bugs
   D_Polyset???T5 functions (EF_SPECIAL_TRANS) and we are doing something
   wrong with their C-implementation.
 
-- BUG # 3344613:  Hexen II dedicated server:  The swords on the weapon
-  racks in the demo2 and the village1 levels may be placed incorrectly.
-  http://sourceforge.net/tracker/?func=detail&aid=3344613&group_id=124987&atid=701006
-  Their origin_z values are messed up somehow. To be analyzed.
-
 - HexenWorld: Spectator mode (chasecam) isn't as it should be, compare
   with the quakeworld code and fix.
 

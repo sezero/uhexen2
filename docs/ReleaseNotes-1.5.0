@@ -1,5 +1,5 @@
 Hexen II: Hammer of Thyrion (uhexen2), release candidate,
-Version 1.5.0-rc5 / July 07, 2011.
+Version 1.5.0-rc6 / July 13, 2011.
 
 Changes since HoT-1.4.4-pre11:
 
@@ -36,11 +36,14 @@ Changes since HoT-1.4.4-pre11:
   model Z-fighting.
 * opengl: always use GL_LINEAR as lightmap filter. made gl_texturemode
   command not affect lightmaps.
-* opengl: fixed an issue in net games where joining players appeared
-  untextured on the opengl server application (bug #3288081).
+* opengl: fixed an issue in net games where joining players would appear
+  untextured (bug #3288081).
 * opengl: updated code to use glGenTextures().
 * fixed hexenworld server issue which used to crash servers upon running
   the romeric5 (Temple of Mars) map, which now loads fine.
+* fixed h2ded (hexen2 dedicated server) bug that the swords on the weapon
+  racks in the demo2 and the village1 levels would be placed incorrectly
+  (bug #3344613).
 * fixed HexenC bug where, if there were a summoned imp around, a blinked
   away wizard wouldn't reappear even after imp went away (bug #3314808).
 * fixed a HexenC bug where the summoned imp didn't pick the Egypt snake
