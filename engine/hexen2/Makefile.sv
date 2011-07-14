@@ -11,6 +11,10 @@
 # To cross-compile for Win64 on Unix, you must pass the W64BUILD=1
 # argument to make. Also see build_cross_win64.sh for details.
 #
+# To (cross-)compile for DOS, you must pass the DOSBUILD=1 argument
+# to make. You need djgpp compiler set. See the build_cross_dos.sh
+# script for cross compilation on linux / unix.
+#
 # Build Options:
 #
 # OPT_EXTRA	yes  =  Some extra optimization flags will be added (default)
@@ -132,6 +136,19 @@ endif
 
 
 #############################################################
+# DOS flags/settings
+#############################################################
+ifeq ($(TARGET_OS),dos)
+
+INCLUDES += -I$(OSLIBS)/dos
+LDFLAGS += -lc -lgcc -lm
+
+endif
+# End of DOS settings
+#############################################################
+
+
+#############################################################
 # Win32 flags/settings
 #############################################################
 ifeq ($(TARGET_OS),win32)
@@ -207,6 +224,11 @@ ifeq ($(TARGET_OS),win64)
 SYSOBJ_NET := net_win.o net_wins.o net_wipx.o
 SYSOBJ_SYS := sys_win.o
 endif
+ifeq ($(TARGET_OS),dos)
+SYSOBJ_NET := dos/net_dos.o dos/net_ser.o dos/net_bw.o dos/dos_inet.o dos/inet_addr.o \
+	dos/net_ipx.o dos/net_mp.o dos/mplpc.o
+SYSOBJ_SYS := dos_v2.o sys_dos.o
+endif
 ifeq ($(TARGET_OS),unix)
 SYSOBJ_NET := net_bsd.o net_udp.o
 SYSOBJ_SYS := sys_unix.o
@@ -255,6 +277,10 @@ all: default
 
 $(BINARY): $(SV_OBJS)
 	$(LINKER) -o $(BINARY) $(SV_OBJS) $(LDFLAGS)
+
+# deps for *.c including another *.c
+dos/mplpc.o: dos/mplib.c
+dos/net_ser.o: dos/net_comx.c
 
 clean:
 	rm -f *.o *.res core

@@ -4,6 +4,7 @@ Development Progress	:
 ---------------------------
 
 2011-07-14 (SVN):
+    * enabled dos builds of h2ded.
     * netcomx.c, net_ser.c: Added proper SERVERONLY ifdefs so that they
       compile for h2ded. (Pretty much useless for a server-only build,
       but for completeness only.)

@@ -19,7 +19,7 @@ export CC AS RANLIB AR DOSBUILD
 
 STRIPPER="$TARGET-strip"
 if test "$1" = "strip"; then
-	$STRIPPER h2dos.exe
+	$STRIPPER h2dos.exe h2ded.exe
 	exit 0
 fi
 
@@ -37,5 +37,18 @@ linux)
 	;;
 esac
 
-$MAKE_CMD $2 $3 $4 $5 $6 h2  || exit 1
+if test "$1" = "h2ded"; then
+	$MAKE_CMD -f Makefile.sv $2 $3 $4 $5 $6 || exit 1
+	exit 0
+fi
+if test "$1" = "all"; then
+	$MAKE_CMD clean
+	$MAKE_CMD $2 $3 $4 $5 $6 h2  || exit 1
+	$MAKE_CMD clean
+	$MAKE_CMD -f Makefile.sv $2 $3 $4 $5 $6 || exit 1
+	$MAKE_CMD clean
+	exit 0
+fi
+
+exec $MAKE_CMD $*
 
