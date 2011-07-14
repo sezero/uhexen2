@@ -867,7 +867,6 @@ void NET_Poll(void)
 }
 
 
-#if !defined(SERVERONLY)
 void SchedulePollProcedure(PollProcedure *proc, double timeOffset)
 {
 	PollProcedure *pp, *prev;
@@ -890,5 +889,4 @@ void SchedulePollProcedure(PollProcedure *proc, double timeOffset)
 	proc->next = pp;
 	prev->next = proc;
 }
-#endif	/* SERVERONLY */
 

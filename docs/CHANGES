@@ -3,6 +3,10 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2011-07-14 (SVN):
+    * net_main.c: SchedulePollProcedure() may be needed in server-only
+      builds too (i.e. dos), so romeved the SERVERONLY ifdef around it.
+
 2011-07-13 (SVN):
     * h2ded, host.c (_Host_Frame): Don't allow very long or short frames
       analogous to the client-server application's Host_FilterTime().
