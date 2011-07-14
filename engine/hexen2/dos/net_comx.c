@@ -60,8 +60,13 @@ extern cvar_t	config_modem_clear;
 extern cvar_t	config_modem_init;
 extern cvar_t	config_modem_hangup;
 
+#ifdef SERVERONLY
+#define SCR_UpdateScreen()	do {} while (0)
+#endif
+#ifndef SERVERONLY
 extern qboolean	m_return_onerror;
 extern char	m_return_reason[32];
+#endif
 
 /* 8250, 16550 definitions */
 #define TRANSMIT_HOLDING_REGISTER		0x00
@@ -183,7 +188,9 @@ void TTY_Close (int handle);
 int TTY_ReadByte (int handle);
 int TTY_WriteByte (int handle, byte data);
 void TTY_Flush (int handle);
+#ifndef SERVERONLY
 int TTY_Connect (int handle, const char *host);
+#endif
 void TTY_Disconnect (int handle);
 qboolean TTY_CheckForConnection (int handle);
 qboolean TTY_IsEnabled (int serialPortNumber);
@@ -650,6 +657,7 @@ static void Modem_Init (ComPort *p)
 	return;
 
 failed:
+#if !defined(SERVERONLY)
 	if (m_return_onerror)
 	{
 		key_dest = key_menu;
@@ -657,6 +665,7 @@ failed:
 		m_return_onerror = false;
 		strcpy(m_return_reason, "Initialization Failed");
 	}
+#endif	/* SERVERONLY */
 	return;
 }
 
@@ -750,6 +759,7 @@ void TTY_Flush (int handle)
 }
 
 
+#if !defined(SERVERONLY)
 int TTY_Connect (int handle, const char *host)
 {
 	double	start;
@@ -865,6 +875,7 @@ int TTY_Connect (int handle, const char *host)
 	m_return_onerror = false;
 	return 0;
 }
+#endif	/* SERVERONLY */
 
 
 void TTY_Disconnect (int handle)

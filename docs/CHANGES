@@ -4,6 +4,11 @@ Development Progress	:
 ---------------------------
 
 2011-07-14 (SVN):
+    * netcomx.c, net_ser.c: Added proper SERVERONLY ifdefs so that they
+      compile for h2ded. (Pretty much useless for a server-only build,
+      but for completeness only.)
+
+2011-07-14 (SVN):
     * net_main.c: SchedulePollProcedure() may be needed in server-only
       builds too (i.e. dos), so romeved the SERVERONLY ifdef around it.
 

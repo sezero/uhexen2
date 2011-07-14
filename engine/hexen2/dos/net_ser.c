@@ -758,6 +758,7 @@ const char *com_types[] = {"direct", "modem"};
 unsigned com_bauds [] = {9600, 14400, 19200, 28800, 57600};
 #endif
 
+#if !defined(SERVERONLY)
 void Serial_SearchForHosts (qboolean xmit)
 {
 	int		n;
@@ -900,6 +901,7 @@ qsocket_t *Serial_Connect (const char *host)
 	}
 	return ret;
 }
+#endif	/* SERVERONLY */
 
 
 static qsocket_t *_Serial_CheckNewConnections (SerialLine *p)
