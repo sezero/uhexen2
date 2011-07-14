@@ -55,6 +55,9 @@
  */
 int	_crt0_startup_flags = _CRT0_FLAG_UNIX_SBRK;
 
+#define	LEAVE_FOR_CACHE		(512*1024)	/* FIXME: tune */
+#define	LOCKED_FOR_MALLOC	(128*1024)	/* FIXME: tune */
+
 int		end_of_memory;
 static qboolean	lockmem, lockunlockmem, unlockmem;
 static int	win95;
@@ -69,6 +72,7 @@ static int		sys_checksum;
  */
 #define	USE_UCLOCK_TIME		1
 
+static void Sys_InitTime (void);
 #if !USE_UCLOCK_TIME
 static double		curtime = 0.0;
 static double		lastcurtime = 0.0;
@@ -120,11 +124,6 @@ void Sys_StackCheck (void)
 #endif
 
 //=============================================================================
-
-static void Sys_InitTime (void);
-
-#define	LEAVE_FOR_CACHE		(512*1024)	// FIXME: tune
-#define	LOCKED_FOR_MALLOC	(128*1024)	// FIXME: tune
 
 
 static void Sys_DetectWin95 (void)
