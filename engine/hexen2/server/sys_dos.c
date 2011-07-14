@@ -901,8 +901,6 @@ int main (int argc, char **argv)
 
 	atexit (Sys_AtExit);	// in case we crash
 
-	isDedicated = (COM_CheckParm ("-dedicated") != 0);
-
 	Sys_Init ();
 
 //	Sys_InitStackCheck ();
