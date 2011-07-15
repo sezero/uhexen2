@@ -4,6 +4,8 @@ Development Progress	:
 ---------------------------
 
 2011-07-15 (SVN):
+    * sys_dos.c: Use remove() for Sys_unlink(), because djgpp already
+      redirects unlink() to remove().
     * sys_unix.c, sys_win.c: Clean up Sys_FindFirstFile/Sys_FindNextFile
       routines.
 

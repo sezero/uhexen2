@@ -405,7 +405,7 @@ int Sys_rmdir (const char *path)
 
 int Sys_unlink (const char *path)
 {
-	return unlink(path);
+	return remove(path);
 }
 
 int Sys_rename (const char *oldp, const char *newp)

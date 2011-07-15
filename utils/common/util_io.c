@@ -217,7 +217,7 @@ int Q_rmdir (const char *path)
 
 int Q_unlink (const char *path)
 {
-	return unlink(path);
+	return remove(path);
 }
 
 int Q_rename (const char *oldp, const char *newp)
