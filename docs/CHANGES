@@ -3,6 +3,10 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2011-07-15 (SVN):
+    * sys_unix.c, sys_win.c: Clean up Sys_FindFirstFile/Sys_FindNextFile
+      routines.
+
 2011-07-14 (SVN):
     * sys_dos.c: Removed some useless prototypes and tidied it a bit.
 

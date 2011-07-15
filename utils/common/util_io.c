@@ -53,57 +53,44 @@
 
 #ifdef PLATFORM_WINDOWS
 
-static HANDLE  findhandle;
+static HANDLE findhandle = INVALID_HANDLE_VALUE;
 static WIN32_FIND_DATA finddata;
-
-char *Q_FindNextFile (void)
-{
-	BOOL	retval;
-
-	if (!findhandle || findhandle == INVALID_HANDLE_VALUE)
-		return NULL;
-
-	retval = FindNextFile(findhandle,&finddata);
-	while (retval)
-	{
-		if (finddata.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)
-		{
-			retval = FindNextFile(findhandle,&finddata);
-			continue;
-		}
-
-		return finddata.cFileName;
-	}
-
-	return NULL;
-}
 
 char *Q_FindFirstFile (const char *path, const char *pattern)
 {
 	char	tmp_buf[256];
 
-	if (findhandle)
+	if (findhandle != INVALID_HANDLE_VALUE)
 		Error ("FindFirst without FindClose");
-
 	q_snprintf (tmp_buf, sizeof(tmp_buf), "%s/%s", path, pattern);
 	findhandle = FindFirstFile(tmp_buf, &finddata);
+	if (findhandle == INVALID_HANDLE_VALUE)
+		return NULL;
+	if (finddata.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)
+		return Q_FindNextFile();
+	return finddata.cFileName;
+}
 
-	if (findhandle != INVALID_HANDLE_VALUE)
+char *Q_FindNextFile (void)
+{
+	if (findhandle == INVALID_HANDLE_VALUE)
+		return NULL;
+	while (FindNextFile(findhandle, &finddata) != 0)
 	{
 		if (finddata.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)
-			return Q_FindNextFile();
-		else
-			return finddata.cFileName;
+			continue;
+		return finddata.cFileName;
 	}
-
 	return NULL;
 }
 
 void Q_FindClose (void)
 {
 	if (findhandle != INVALID_HANDLE_VALUE)
+	{
 		FindClose(findhandle);
-	findhandle = NULL;
+		findhandle = INVALID_HANDLE_VALUE;
+	}
 }
 
 void Q_getwd (char *out, size_t size)
@@ -272,17 +259,38 @@ static struct dirent	*finddata;
 static char		*findpath, *findpattern;
 static char		matchpath[256];
 
-void Q_FindClose (void)
+char *Q_FindFirstFile (const char *path, const char *pattern)
 {
-	if (finddir != NULL)
-		closedir(finddir);
-	if (findpath != NULL)
-		free (findpath);
-	if (findpattern != NULL)
-		free (findpattern);
-	finddir = NULL;
-	findpath = NULL;
-	findpattern = NULL;
+	if (finddir)
+		Error ("FindFirst without FindClose");
+
+	finddir = opendir (path);
+	if (!finddir)
+		return NULL;
+
+	findpattern = strdup (pattern);
+	if (!findpattern)
+	{
+		Q_FindClose();
+		return NULL;
+	}
+
+	findpath = strdup (path);
+	if (!findpath)
+	{
+		Q_FindClose();
+		return NULL;
+	}
+
+	if (*findpath != '\0')
+	{
+	/* searching under "/" won't be a good idea, for example.. */
+		size_t siz = strlen(findpath) - 1;
+		if (findpath[siz] == '/' || findpath[siz] == '\\')
+			findpath[siz] = '\0';
+	}
+
+	return Q_FindNextFile();
 }
 
 char *Q_FindNextFile (void)
@@ -292,59 +300,37 @@ char *Q_FindNextFile (void)
 	if (!finddir)
 		return NULL;
 
-	do {
-		finddata = readdir(finddir);
-		if (finddata != NULL)
+	while ((finddata = readdir(finddir)) != NULL)
+	{
+		if (!fnmatch (findpattern, finddata->d_name, FNM_PATHNAME))
 		{
-			if (!fnmatch (findpattern, finddata->d_name, FNM_PATHNAME))
-			{
-				q_snprintf(matchpath, sizeof(matchpath), "%s/%s", findpath, finddata->d_name);
-				if ( (stat(matchpath, &test) == 0)
-							&& S_ISREG(test.st_mode) )
-					return finddata->d_name;
-			}
+			q_snprintf(matchpath, sizeof(matchpath), "%s/%s", findpath, finddata->d_name);
+			if ( (stat(matchpath, &test) == 0)
+						&& S_ISREG(test.st_mode))
+				return finddata->d_name;
 		}
-	} while (finddata != NULL);
+	}
 
 	return NULL;
 }
 
-char *Q_FindFirstFile (const char *path, const char *pattern)
+void Q_FindClose (void)
 {
-	size_t	tmp_len;
-
-	if (finddir)
-		Error ("FindFirst without FindClose");
-
-	finddir = opendir (path);
-	if (!finddir)
-		return NULL;
-
-	tmp_len = strlen (pattern);
-	findpattern = (char *) calloc (tmp_len + 1, sizeof(char));
-	if (!findpattern)
+	if (finddir != NULL)
 	{
-		Q_FindClose();
-		return NULL;
+		closedir(finddir);
+		finddir = NULL;
 	}
-	strcpy (findpattern, pattern);
-	tmp_len = strlen (path);
-	findpath = (char *) calloc (tmp_len + 1, sizeof(char));
-	if (!findpath)
+	if (findpath != NULL)
 	{
-		Q_FindClose();
-		return NULL;
+		free (findpath);
+		findpath = NULL;
 	}
-	strcpy (findpath, path);
-	if (tmp_len)
+	if (findpattern != NULL)
 	{
-		--tmp_len;
-		/* searching / won't be a good idea, for example.. */
-		if (findpath[tmp_len] == '/' || findpath[tmp_len] == '\\')
-			findpath[tmp_len] = '\0';
+		free (findpattern);
+		findpattern = NULL;
 	}
-
-	return Q_FindNextFile();
 }
 
 void Q_getwd (char *out, size_t size)

@@ -202,18 +202,15 @@ char *Sys_FindNextFile (void)
 	if (!finddir)
 		return NULL;
 
-	do {
-		finddata = readdir(finddir);
-		if (finddata != NULL)
+	while ((finddata = readdir(finddir)) != NULL)
+	{
+		if (!fnmatch (findpattern, finddata->d_name, FNM_PATHNAME))
 		{
-			if (!fnmatch (findpattern, finddata->d_name, FNM_PATHNAME))
-			{
-				if ( (stat(va("%s/%s", findpath, finddata->d_name), &test) == 0)
-							&& S_ISREG(test.st_mode) )
-					return finddata->d_name;
-			}
+			if ( (stat(va("%s/%s", findpath, finddata->d_name), &test) == 0)
+						&& S_ISREG(test.st_mode))
+				return finddata->d_name;
 		}
-	} while (finddata != NULL);
+	}
 
 	return NULL;
 }
@@ -221,14 +218,20 @@ char *Sys_FindNextFile (void)
 void Sys_FindClose (void)
 {
 	if (finddir != NULL)
+	{
 		closedir(finddir);
+		finddir = NULL;
+	}
 	if (findpath != NULL)
+	{
 		Z_Free (findpath);
+		findpath = NULL;
+	}
 	if (findpattern != NULL)
+	{
 		Z_Free (findpattern);
-	finddir = NULL;
-	findpath = NULL;
-	findpattern = NULL;
+		findpattern = NULL;
+	}
 }
 
 /*

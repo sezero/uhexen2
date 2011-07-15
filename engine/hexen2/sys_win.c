@@ -153,14 +153,13 @@ int Sys_FileType (const char *path)
 	return FS_ENT_FILE;
 }
 
-#define NO_OVERWRITING	FALSE /* allow overwriting files */
 int Sys_CopyFile (const char *frompath, const char *topath)
 {
-	int	err;
-	err = ! CopyFile (frompath, topath, NO_OVERWRITING);
-	return err;
+/* 3rd param: whether to fail if 'topath' already exists */
+	if (CopyFile(frompath, topath, FALSE) != 0)
+		return 0;
+	return -1;
 }
-#undef  NO_OVERWRITING
 
 /*
 =================================================
@@ -170,54 +169,41 @@ filenames only, not a dirent struct. this is
 what we presently need in this engine.
 =================================================
 */
-static HANDLE  findhandle;
+static HANDLE findhandle = INVALID_HANDLE_VALUE;
 static WIN32_FIND_DATA finddata;
 
 char *Sys_FindFirstFile (const char *path, const char *pattern)
 {
-	if (findhandle)
-		Sys_Error ("Sys_FindFirst without FindClose");
-
-	findhandle = FindFirstFile(va("%s/%s", path, pattern), &finddata);
-
 	if (findhandle != INVALID_HANDLE_VALUE)
-	{
-		if (finddata.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)
-			return Sys_FindNextFile();
-		else
-			return finddata.cFileName;
-	}
-
-	return NULL;
+		Sys_Error ("Sys_FindFirst without FindClose");
+	findhandle = FindFirstFile(va("%s/%s", path, pattern), &finddata);
+	if (findhandle == INVALID_HANDLE_VALUE)
+		return NULL;
+	if (finddata.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)
+		return Sys_FindNextFile();
+	return finddata.cFileName;
 }
 
 char *Sys_FindNextFile (void)
 {
-	BOOL	retval;
-
-	if (!findhandle || findhandle == INVALID_HANDLE_VALUE)
+	if (findhandle == INVALID_HANDLE_VALUE)
 		return NULL;
-
-	retval = FindNextFile(findhandle,&finddata);
-	while (retval)
+	while (FindNextFile(findhandle, &finddata) != 0)
 	{
 		if (finddata.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)
-		{
-			retval = FindNextFile(findhandle,&finddata);
 			continue;
-		}
-
 		return finddata.cFileName;
 	}
-
 	return NULL;
 }
 
 void Sys_FindClose (void)
 {
 	if (findhandle != INVALID_HANDLE_VALUE)
+	{
 		FindClose(findhandle);
-	findhandle = NULL;
+		findhandle = INVALID_HANDLE_VALUE;
+	}
 }
 
 
