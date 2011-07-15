@@ -79,7 +79,6 @@ static double		lastcurtime = 0.0;
 static double		oldtime = 0.0;
 #endif	/* ! USE_UCLOCK_TIME */
 
-static qboolean		nostdout = false;
 cvar_t			sys_nostdout = {"sys_nostdout", "0", CVAR_NONE};
 
 qboolean		isDedicated = true;	/* compatibility */
@@ -571,8 +570,7 @@ void Sys_PrintTerm (const char *msgtxt)
 {
 	unsigned char		*p;
 
-//	if (sys_nostdout.integer)
-	if (nostdout)
+	if (sys_nostdout.integer)
 		return;
 
 	for (p = (unsigned char *) msgtxt; *p; p++)

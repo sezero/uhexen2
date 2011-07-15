@@ -54,13 +54,6 @@ void Sys_Error (const char *error, ...) __attribute__((__format__(__printf__,1,2
 void Sys_PrintTerm (const char *msgtxt);
 // prints the given string to the terminal
 
-#if defined(PLATFORM_DOS)
-// under DOS, we stop the terminal output when we
-// will init the graphics
-void Sys_EnableTerm (void);
-void Sys_DisableTerm (void);
-#endif	/* PLATFORM_DOS */
-
 void Sys_Quit (void) __attribute__((__noreturn__));
 
 double Sys_DoubleTime (void);

@@ -84,7 +84,6 @@ static double		lastcurtime = 0.0;
 static double		oldtime = 0.0;
 #endif	/* ! USE_UCLOCK_TIME */
 
-static qboolean		nostdout = false;
 cvar_t			sys_nostdout = {"sys_nostdout", "0", CVAR_NONE};
 cvar_t			sys_throttle = {"sys_throttle", "0.02", CVAR_ARCHIVE};
 
@@ -697,24 +696,11 @@ char *Sys_GetClipboardData (void)
 // General routines
 // =======================================================================
 
-void Sys_DisableTerm (void)
-{
-//	Cvar_Set ("sys_nostdout", "1");
-	nostdout = true;
-}
-
-void Sys_EnableTerm (void)
-{
-//	Cvar_Set ("sys_nostdout", "0");
-	nostdout = false;
-}
-
 void Sys_PrintTerm (const char *msgtxt)
 {
 	unsigned char		*p;
 
-//	if (sys_nostdout.integer)
-	if (nostdout)
+	if (sys_nostdout.integer)
 		return;
 
 	for (p = (unsigned char *) msgtxt; *p; p++)
@@ -732,7 +718,7 @@ static void Sys_AtExit (void)
 
 void Sys_Quit (void)
 {
-	Sys_EnableTerm();
+	Cvar_SetROM ("sys_nostdout", "0");	// enable printing to terminal
 	Host_Shutdown ();
 
 	exit (0);
@@ -755,7 +741,7 @@ void Sys_Error (const char *error, ...)
 		LOG_Print ("\n\n");
 	}
 
-	Sys_EnableTerm();
+	Cvar_SetROM ("sys_nostdout", "0");	// enable printing to terminal
 	Host_Shutdown ();
 
 	fprintf(stderr, ERROR_PREFIX "%s\n\n", text);

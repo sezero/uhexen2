@@ -4,6 +4,8 @@ Development Progress	:
 ---------------------------
 
 2011-07-15 (SVN):
+    * sys_dos.c, vid_dos.c: Remove Sys_DisableTerm() and Sys_EnableTerm()
+      and use the sys_nostdout cvar set in a read-only way, instead.
     * sys_dos.c: Use remove() for Sys_unlink(), because djgpp already
       redirects unlink() to remove().
     * sys_unix.c, sys_win.c: Clean up Sys_FindFirstFile/Sys_FindNextFile

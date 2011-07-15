@@ -127,10 +127,9 @@ void    VID_Init (unsigned char *palette)
 	VGA_Init ();
 
 	vid_testingmode = 0;
-
 	vid_modenum = vid_mode.integer;
 
-	Sys_DisableTerm ();
+	Cvar_SetROM ("sys_nostdout", "1");	// disable printing to terminal
 	VID_SetMode (vid_modenum, palette);
 
 	vid_realmode = vid_modenum;
