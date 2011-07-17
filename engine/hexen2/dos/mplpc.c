@@ -625,7 +625,7 @@ SOCKET socket (int af, int type, int protocol)
 	LPCData		*p;
 	LPCReturn	*r;
 	SocketArgs	*args;
-	int		retVal;
+	SOCKET		retVal;
 
 	_farsetsel(flat_selector);
 	SocketError = 0;
