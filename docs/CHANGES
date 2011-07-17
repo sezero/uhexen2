@@ -4,6 +4,10 @@ Development Progress	:
 ---------------------------
 
 2011-07-17 (SVN):
+    * hexenworld/shared/model.h (qmodel_t): Disabled the cache_user_t
+      member for server-only builds.
+
+2011-07-17 (SVN):
     * zone.c (Z_Realloc): If expanding size, zero-fill the expanded part
       of the memory before returning, which is Z_Malloc() behavior.
 

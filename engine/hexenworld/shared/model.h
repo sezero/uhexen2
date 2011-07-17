@@ -411,10 +411,12 @@ typedef struct qmodel_s
 	byte		*lightdata;
 	char		*entities;
 
+#if !defined(SERVERONLY)
 //
 // additional model data
 //
 	cache_user_t	cache;		// only access through Mod_Extradata
+#endif	/* SERVERONLY */
 } qmodel_t;
 
 // values for qmodel_t->needload
