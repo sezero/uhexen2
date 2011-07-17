@@ -811,7 +811,7 @@ CONSOLE COMMANDS
 
 #if Z_DEBUG_COMMANDS
 
-#if defined(__GNUC__)  \
+#if defined(__GNUC__) && \
   !(defined(__STDC_VERSION__) && __STDC_VERSION__ >= 199901L)
 #define MEM_Printf(FH, fmt, args...)		\
     do {					\
