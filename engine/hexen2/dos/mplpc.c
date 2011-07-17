@@ -646,7 +646,7 @@ SOCKET socket (int af, int type, int protocol)
 	r = (LPCReturn *) FARPKL(&n->rtqDatum);
 
 	if (FARPKS(&r->error) != LPC_NOERROR)
-		return -1;
+		return INVALID_SOCKET;
 
 	retVal = FARPKL(r->Data);
 

@@ -3,7 +3,10 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
-2011-07-15 (SVN):
+2011-07-17 (SVN):
+    * dos/mplpc.c (socket): Return INVALID_SOCKET instead of -1 for error.
+
+2011-07-17 (SVN):
     * zone.c, zone.h: Mark Z_??? functions as EXTERN_C. Coding style tidy
       up.
     * zone.c (MEM_Printf): Added missing '&&' in the macro.
