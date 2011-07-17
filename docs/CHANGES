@@ -4,6 +4,8 @@ Development Progress	:
 ---------------------------
 
 2011-07-15 (SVN):
+    * zone.c, zone.h: Mark Z_??? functions as EXTERN_C. Coding style tidy
+      up.
     * zone.c (MEM_Printf): Added missing '&&' in the macro.
 
 2011-07-15 (SVN):

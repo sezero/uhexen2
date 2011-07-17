@@ -4,8 +4,8 @@
 	$Id$
 */
 
-#ifndef __ZZONE_H
-#define __ZZONE_H
+#ifndef ZZONE_H
+#define ZZONE_H
 
 /*	Memory allocation
 
@@ -75,26 +75,33 @@ Zone block
 
 void Memory_Init (void *buf, int size);
 
+#ifdef __cplusplus
+extern "C" {
+#endif
 void Z_Free (void *ptr);
-void *Z_Malloc (int size, int zone_id);		// returns 0 filled memory
+void *Z_Malloc (int size, int zone_id);	/* returns 0 filled memory */
 void *Z_Realloc (void *ptr, int size, int zone_id);
 char *Z_Strdup (const char *s);
+#ifdef __cplusplus
+}
+#endif
 
-void *Hunk_Alloc (int size);		// returns 0 filled memory
+void *Hunk_Alloc (int size);		/* returns 0 filled memory */
 void *Hunk_AllocName (int size, const char *name);
 void *Hunk_HighAllocName (int size, const char *name);
 char *Hunk_Strdup (const char *s, const char *name);
 
-int	Hunk_LowMark (void);
+int Hunk_LowMark (void);
 void Hunk_FreeToLowMark (int mark);
 
-int	Hunk_HighMark (void);
+int Hunk_HighMark (void);
 void Hunk_FreeToHighMark (int mark);
 
 void *Hunk_TempAlloc (int size);
 
 void Hunk_Check (void);
 
+#if !defined(SERVERONLY)
 typedef struct cache_user_s
 {
 	void	*data;
@@ -103,16 +110,17 @@ typedef struct cache_user_s
 void Cache_Flush (void);
 
 void *Cache_Check (cache_user_t *c);
-// returns the cached data, and moves to the head of the LRU list
-// if present, otherwise returns NULL
+/* returns the cached data, and moves to the head of the LRU list
+ * if present, otherwise returns NULL */
 
 void Cache_Free (cache_user_t *c);
 
 void *Cache_Alloc (cache_user_t *c, int size, const char *name);
-// Returns NULL if all purgable data was tossed and there still
-// wasn't enough room.
+/* Returns NULL if all purgable data was tossed and there still
+ * wasn't enough room */
 
 void Cache_Report (void);
+#endif	/* SERVERONLY */
 
-#endif	/* __ZZONE_H */
+#endif	/* ZZONE_H */
 
