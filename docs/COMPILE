@@ -31,7 +31,7 @@ binutils:	A GNU collection of binary utilities.
 
 NASM	:	Netwide Assembler. An x86 assembler.
 		Minimum version required is 0.98.38 or 0.98.39 from the
-		old series.  Versions 2.02, 2.03.01, 2.05.01 or 2.09.08
+		old series.  Versions 2.02, 2.03.01, 2.05.01 or 2.09.10
 		from the new 2.x series are recommended.
 		YASM, a re-write of NASM, is also supported:  Versions
 		0.5.0, 0.6.x, 0.7.x, 0.8.0, 1.0.1 and 1.1.0 are tested.
@@ -147,7 +147,7 @@ b. On Windows, using win32-native MinGW compiler:
 -------------------------------------------------
 Download a prebuilt MinGW installer and install it to C:\MinGW .  Then
 download MSys and install it to c:\msys (1.0.11-2004.04.30 is the version
-I use.)  As x86 assembler, download nasm version 2.09.08, put nasm.exe
+I use.)  As x86 assembler, download nasm version 2.09.10, put nasm.exe
 into the C:\MinGW\bin directory. Adding the mingw directory to your PATH
 may be a good idea, too.  MinGW-3.1.0 comes with gcc-3.2.3.  MinGW-5.1.4,
 on the other hand, comes with gcc-3.4.5 and is recommended.
@@ -176,7 +176,7 @@ projects are adjusted for Win32 (x86) and x64 targets.
 Compiling the software renderer versions h2.exe and hwcl.exe require YASM
 as the x86 assembler (link down below). Versions 0.7.2, 1.1.0 or newer are
 recommended.  As an alternative, you can use NASM as the assembler: version
-2.09.08 or newer are recommended.  Both nasm and yasm are very easy to
+2.09.10 or newer are recommended.  Both nasm and yasm are very easy to
 integrate into Visual Studio using a rule file: see oslibs/windows/yasm and
 oslibs/windows/nasm directories.  Our project files are currently adjusted
 for using yasm.  For Visual Studio 2010, you need "vsyasm" which is simply
