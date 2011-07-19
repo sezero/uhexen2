@@ -160,7 +160,7 @@ static void *Z_TagMalloc (int zone_id, int size, int tag)
 		newblock->size = extra;
 		newblock->tag = 0;			/* free block */
 		newblock->prev = base;
-		newblock->id = ZONEID;
+		newblock->id = (zone_id == Z_MAINZONE) ? ZONEID : ZONEID2;
 		newblock->next = base->next;
 		newblock->next->prev = newblock;
 		base->next = newblock;
