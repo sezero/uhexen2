@@ -3,6 +3,12 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2011-07-19 (SVN):
+    * zone.c (Z_TagMalloc): Fixed id assignment oversight for Z_SECZONE
+      which would seriously mess up zone-allocated pointers in Z_Free().
+      The bug had been there since the introduction of secondary zone 4
+      years ago...
+
 2011-07-17 (SVN):
     * hexenworld/shared/model.h (qmodel_t): Disabled the cache_user_t
       member for server-only builds.

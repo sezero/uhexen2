@@ -171,7 +171,7 @@ static void *Z_TagMalloc (int zone_id, int size, int tag)
 
 	zone->rover = base->next;	/* next allocation will start looking here */
 
-	base->id = ZONEID;
+	base->id = (zone_id == Z_MAINZONE) ? ZONEID : ZONEID2;
 
 /* marker for memory trash testing */
 	*(int *)((byte *)base + base->size - 4) = (zone_id == Z_MAINZONE) ? ZONEID : ZONEID2;
