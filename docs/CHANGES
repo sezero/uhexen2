@@ -4,6 +4,12 @@ Development Progress	:
 ---------------------------
 
 2011-07-19 (SVN):
+    * zone.c: Revised multiple zones management. Keep a linked list of
+      initialized zones and search properly. More foolproof against
+      zoneid assignment screw-ups, too (see svn revisions 4152 and 4153
+      from today.)
+
+2011-07-19 (SVN):
     * zone.c (Z_TagMalloc): Fixed id assignment oversight for Z_SECZONE
       which would seriously mess up zone-allocated pointers in Z_Free().
       The bug had been there since the introduction of secondary zone 4
