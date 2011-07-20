@@ -4,6 +4,8 @@ Development Progress	:
 ---------------------------
 
 2011-07-20 (SVN):
+    * oslibs/dos/codecs: Recompiled libmad to use Z_SECZONE. Added ogg
+      and vorbis import libraries and headers.
     * oslibs/windows/codecs/include/vorbis/vorbisenc.h: Deleted unused
       header.
     * snd_mp3.c: Unless CODECS_USE_ZONE is defined, leave Z_ alone and

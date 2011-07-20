@@ -18,7 +18,7 @@ gcc version 3.3.6
 $ i586-pc-msdosdjgpp-as -v
 GNU assembler version 2.16.1 (i586-pc-msdosdjgpp) using BFD version 2.16.1
 ^C
-# djgpp header/libary version: 2.04 (CVS/2011-06-24.)
+# djgpp header/libary version: 2.04 (CVS/2011-07-10.)
 
 --- frame.c.orig
 +++ frame.c
@@ -56,7 +56,7 @@ GNU assembler version 2.16.1 (i586-pc-msdosdjgpp) using BFD version 2.16.1
  
    if (stream->main_data == 0) {
 -    stream->main_data = malloc(MAD_BUFFER_MDLEN);
-+    stream->main_data = Z_Malloc(MAD_BUFFER_MDLEN, Z_MAINZONE);
++    stream->main_data = Z_Malloc(MAD_BUFFER_MDLEN, Z_SECZONE);
      if (stream->main_data == 0) {
        stream->error = MAD_ERROR_NOMEM;
        return -1;
@@ -65,7 +65,7 @@ GNU assembler version 2.16.1 (i586-pc-msdosdjgpp) using BFD version 2.16.1
  
    if (frame->overlap == 0) {
 -    frame->overlap = calloc(2 * 32 * 18, sizeof(mad_fixed_t));
-+    frame->overlap = Z_Malloc(2 * 32 * 18 * sizeof(mad_fixed_t), Z_MAINZONE);
++    frame->overlap = Z_Malloc(2 * 32 * 18 * sizeof(mad_fixed_t), Z_SECZONE);
      if (frame->overlap == 0) {
        stream->error = MAD_ERROR_NOMEM;
        return -1;
@@ -107,19 +107,26 @@ GNU assembler version 2.16.1 (i586-pc-msdosdjgpp) using BFD version 2.16.1
 +
 --- /dev/null
 +++ zone.h
-@@ -0,0 +1,13 @@
-+#ifndef __ZZONE_H
-+#define __ZZONE_H
+@@ -0,0 +1,20 @@
++#ifndef ZZONE_H
++#define ZZONE_H
 +
++/* valid values zone_idx arg: */
 +#define	Z_MAINZONE	(1 << 0)
 +#define	Z_SECZONE	(1 << 1)
 +
++#ifdef __cplusplus
++extern "C" {
++#endif
 +void Z_Free (void *ptr);
-+void *Z_Malloc (int size, int zone_id);
-+void *Z_Realloc (void *ptr, int size, int zone_id);
++void *Z_Malloc (int size, int zone_idx);	/* returns 0 filled memory */
++void *Z_Realloc (void *ptr, int size, int zone_idx);
 +char *Z_Strdup (const char *s);
++#ifdef __cplusplus
++}
++#endif
 +
-+#endif	/* __ZZONE_H */
++#endif	/* ZZONE_H */
 +
 --- decoder.c.orig
 +++ decoder.c
