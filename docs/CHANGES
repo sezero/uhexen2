@@ -3,6 +3,10 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2011-07-20 (SVN):
+    * h2config.h: Added memory requirements for mp3 and vorbis decoders
+      in preparation for CODECS_USE_ZONE feature.
+
 2011-07-19 (SVN):
     * zone.c: Revised multiple zones management. Keep a linked list of
       initialized zones and search properly. More foolproof against

@@ -2,7 +2,7 @@
 	h2config.h
 	Compile time options for Hexen II: Hammer of Thyrion
 
-	$Id: h2config.h,v 1.1 2010-10-30 11:33:15 sezero Exp $
+	$Id$
 
 	Read the explanations for each option and edit the
 	relevant option accordingly.  Most probably, you will
@@ -165,6 +165,24 @@
    should require bumping the protocol version.  Disabled by default.
    ================================================================== */
 #undef	MGNET
+
+
+/* ====================================================================
+   ========================  CODECS SETUP:  ===========================
+   ================================================================== */
+
+/* ====================================================================
+   If CODECS_USE_ZONE is defined (see the Makefile), then mp3 (libmad)
+   and ogg/vorbis codecs will allocate on the zone instead of system
+   memory.  Remember that this requires recompiling the decoder library
+   with proper memory allocator changes to it.  DOS builds are example
+   for this case.  The memory requirements for individual decoders are
+   defined below.
+   Affects:	zone.c.
+   ================================================================== */
+
+#define	LIBMAD_NEEDMEM	0x10000	/* 64K is fairly enough for libmad */
+#define	VORBIS_NEEDMEM	0x60000	/* 400K enough for vorbis most times */
 
 
 /* ====================================================================
