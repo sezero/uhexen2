@@ -611,10 +611,7 @@ void ED_PrintEdicts (void)
 
 	Con_Printf ("%i entities\n", sv.num_edicts);
 	for (i = 0; i < sv.num_edicts; i++)
-	{
-		Con_Printf ("\nEDICT %i:\n", i);
 		ED_PrintNum (i);
-	}
 }
 
 /*
@@ -634,7 +631,6 @@ static void ED_PrintEdict_f (void)
 		Con_Printf("Bad edict number\n");
 		return;
 	}
-	Con_Printf ("\n EDICT %i:\n", i);
 	ED_PrintNum (i);
 }
 
@@ -1355,16 +1351,14 @@ int NUM_FOR_EDICT(edict_t *e)
 			Con_DPrintf ("%s: bad pointer, Class: %s Field: %s, Index %d, Total %d\n",
 					__thisfunc__, class_name, field_name, b, sv.num_edicts);
 		}
-		else
-			b = 0;
+		return 0;
 	}
 	if (e->free && RemoveBadReferences)
 	{
 	//	Con_DPrintf ("%s: freed edict, Class: %s Field: %s, Index %d, Total %d\n",
 	//			__thisfunc__, class_name, field_name, b, sv.num_edicts);
-		b = 0;
+		return 0;
 	}
-
 	return b;
 }
 

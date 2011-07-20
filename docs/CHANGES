@@ -4,6 +4,11 @@ Development Progress	:
 ---------------------------
 
 2011-07-20 (SVN):
+    * hexenworld/server/pr_edict.c: Fixed segmentation fault in case of
+      bad pointer in NUM_FOR_EDICT().  Removed extra title prints from
+      ED_PrintEdict_f() and ED_PrintEdicts().
+
+2011-07-20 (SVN):
     * Bumped beta version date to 2011-07-20 .
     * hexen2/Makefile: Allowed ogg/vorbis for dos builds. For now I am
       using tremor for dos, but it also builds and runs perfectly fine
