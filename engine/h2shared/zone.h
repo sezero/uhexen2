@@ -70,10 +70,12 @@ Zone block
 */
 
 
+void Memory_Init (void *buf, int size);
+
+
+/* valid values zone_idx arg: */
 #define	Z_MAINZONE	(1 << 0)
 #define	Z_SECZONE	(1 << 1)
-
-void Memory_Init (void *buf, int size);
 
 #ifdef __cplusplus
 extern "C" {

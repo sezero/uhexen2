@@ -27,6 +27,29 @@
 #define	HUNK_SENTINAL	0x1df001ed
 #define	MINFRAGMENT	64
 
+/* setup size for secondary zone: */
+#define	MEM_STATIC_TEX	0x40000
+#define	MEM_CODEC_MEM	0
+#if defined(CODECS_USE_ZONE)
+/* this setup assumes only one codec
+ * would be active at a time. */
+#if defined(USE_CODEC_MP3)
+#if (MEM_CODEC_MEM < LIBMAD_NEEDMEM)
+#undef	MEM_CODEC_MEM
+#define	MEM_CODEC_MEM	LIBMAD_NEEDMEM
+#endif
+#endif	/* LIBMAD */
+#if defined(USE_CODEC_VORBIS)
+#if (MEM_CODEC_MEM < VORBIS_NEEDMEM)
+#undef	MEM_CODEC_MEM
+#define	MEM_CODEC_MEM	VORBIS_NEEDMEM
+#endif
+#endif	/* VORBIS */
+#endif	/* CODECS_USE_ZONE */
+
+#define	SECZONE_SIZE			\
+	(MEM_STATIC_TEX + MEM_CODEC_MEM)
+
 typedef struct memblock_s
 {
 	int	size;		/* including the header and possibly tiny fragments */
@@ -1280,7 +1303,7 @@ void Memory_Init (void *buf, int size)
 #if !defined(SERVERONLY)
 /* initialize a 256 KB secondary zone for static textures */
 	if (!isDedicated)
-		Memory_InitZone (sec_zone, Z_SECZONE, ZONEID2, ZONE_MINSIZE);
+		Memory_InitZone (sec_zone, Z_SECZONE, ZONEID2, SECZONE_SIZE);
 
 	Cmd_AddCommand ("flush", Cache_Flush);
 #endif	/* SERVERONLY */
