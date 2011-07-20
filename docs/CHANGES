@@ -21,6 +21,7 @@ Development Progress	:
     * zone.c: Added setup for secondary zone size for CODECS_USE_ZONE.
     * h2config.h: Added memory requirements for mp3 and vorbis decoders
       in preparation for CODECS_USE_ZONE feature.
+    * updated documents.
 
 2011-07-19 (SVN):
     * zone.c: Revised multiple zones management. Keep a linked list of

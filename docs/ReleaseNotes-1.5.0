@@ -1,5 +1,5 @@
 Hexen II: Hammer of Thyrion (uhexen2), release candidate,
-Version 1.5.0-rc6 / July 13, 2011.
+Version 1.5.0-rc6 / July 20, 2011.
 
 Changes since HoT-1.4.4-pre11:
 
@@ -17,6 +17,8 @@ Changes since HoT-1.4.4-pre11:
 * windows midi: ignore midi hardware volume adjustment capability under
   windows vista/7 which fixes music volume control messing with the main
   volume.
+* fixed a bug in multiple zones management (which wasn't easy to hit but
+  was lethal when it was hit.)
 * fixed an old obscure game load/save corruption bug.
 * fixed an old load bug where items dropped by monsters not being visible
   or getting lost upon saving and loading the game.
