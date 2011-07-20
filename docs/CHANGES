@@ -4,6 +4,8 @@ Development Progress	:
 ---------------------------
 
 2011-07-20 (SVN):
+    * snd_mp3.c: Unless CODECS_USE_ZONE is defined, leave Z_ alone and
+      allocate libmad decoding buffers (ca. 64kb) on the system memory.
     * zone.c: Added setup for secondary zone size for CODECS_USE_ZONE.
     * h2config.h: Added memory requirements for mp3 and vorbis decoders
       in preparation for CODECS_USE_ZONE feature.
