@@ -4,6 +4,10 @@ Development Progress	:
 ---------------------------
 
 2011-07-20 (SVN):
+    * Makefiles: Added the CODECS_USE_ZONE compile time option. If set
+      to yes, codecs will allocate on the zone instead of system memory
+      which may be useful for ports to memory-tight platforms. Cleaned
+      up the makefiles a bit.
     * oslibs/dos/codecs: Recompiled libmad to use Z_SECZONE. Added ogg
       and vorbis import libraries and headers.
     * oslibs/windows/codecs/include/vorbis/vorbisenc.h: Deleted unused

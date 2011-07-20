@@ -45,7 +45,6 @@
 %{?_without_wavmusic:%define wavmusic_buildopt USE_CODEC_WAVE=no}
 %{?_with_mpg123:%define mp3_libraryopt MP3LIB=mpg123}
 %{?_without_mp3:%define mp3_buildopt USE_CODEC_MP3=no}
-%{?_without_mp3:%define mp3_libraryopt MP3LIB=none}
 %{?_without_ogg:%define ogg_buildopt USE_CODEC_VORBIS=no}
 # all build options passed to makefile
 %define engine_buildopt	%{asm_buildopt} %{alsa_buildopt} %{midi_buildopt} %{timidity_buildopt} %{wavmusic_buildopt} %{mp3_buildopt} %{mp3_libraryopt} %{ogg_buildopt}

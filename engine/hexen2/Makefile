@@ -156,6 +156,9 @@ USE_CODEC_WILDMIDI=no
 MP3LIB=mad
 # which library to use for ogg decoding: vorbis or tremor
 VORBISLIB=vorbis
+# whether the codecs allocate on the zone instead of
+# system memory (set to yes for DOS builds, for example)
+CODECS_USE_ZONE=no
 
 # include the common dirty stuff
 include $(UHEXEN2_TOP)/scripts/makefile.inc
@@ -255,16 +258,6 @@ USE_X86_ASM=no
 endif
 endif
 
-ifeq ($(TARGET_OS),dos)
-# x86 assembly if is needed for dos
-USE_X86_ASM=yes
-endif
-
-# whether to use x86 assembly
-ifeq ($(USE_X86_ASM),yes)
-CPPFLAGS+= -DUSE_INTEL_ASM
-endif
-
 ifdef DEMO
 CPPFLAGS+= -DDEMOBUILD
 endif
@@ -280,33 +273,9 @@ endif
 #############################################################
 GL_DEFS = -DGLQUAKE
 GLFLAGS =
-ifeq ($(USE_3DFXGAMMA),yes)
-# linux 3dfx gamma hack
-GL_DEFS+= -DUSE_3DFXGAMMA
-endif
-ifneq ($(LINK_GL_LIBS),yes)
-GL_DEFS+= -DGL_DLSYM
-else
-GLFLAGS+= $(GL_LINK)
-endif
-
-ifeq ($(MP3LIB),mad)
-lib_mp3dec=-lmad
-endif
-ifeq ($(MP3LIB),mpg123)
-lib_mp3dec=-lmpg123
-endif
-ifeq ($(VORBISLIB),vorbis)
-cpp_vorbisdec=
-lib_vorbisdec=-lvorbis -lvorbisfile -logg
-endif
-ifeq ($(VORBISLIB),tremor)
-cpp_vorbisdec=-DVORBIS_USE_TREMOR
-lib_vorbisdec=-lvorbisidec -logg
-endif
 
 #############################################################
-# no streaming music if no sound
+# streaming music initial setup
 #############################################################
 ifneq ($(USE_SOUND),yes)
 USE_CODEC_WAVE=no
@@ -315,38 +284,44 @@ USE_CODEC_WILDMIDI=no
 USE_CODEC_MP3=no
 USE_CODEC_VORBIS=no
 endif
-
+# sanity checking for decoder library options
 ifneq ($(VORBISLIB),vorbis)
 ifneq ($(VORBISLIB),tremor)
-USE_CODEC_VORBIS=no
+$(error Invalid VORBISLIB setting)
 endif
 endif
-
-ifeq ($(MP3LIB),mad)
-mp3_obj=snd_mp3.o
-else
-ifeq ($(MP3LIB),mpg123)
-mp3_obj=snd_mpg123.o
-else
-USE_CODEC_MP3=no
-mp3_obj=snd_mp3.o
+ifneq ($(MP3LIB),mpg123)
+ifneq ($(MP3LIB),mad)
+$(error Invalid MP3LIB setting)
 endif
 endif
 
 
 #############################################################
-# Unix flags/settings
+# Unix flags/settings and overrides:
 #############################################################
 ifeq ($(TARGET_OS),unix)
+
+ifeq ($(HOST_OS),darwin)
+NASMFLAGS=-f macho
+else
+NASMFLAGS=-f elf -d_NO_PREFIX
+endif
 
 ifneq ($(X11BASE),)
 INCLUDES+= -I$(X11BASE)/include
 endif
 LDFLAGS += $(LIBSOCKET) -lm
 
-# We rely on SDL:  SDLQUAKE must be defined for all SDL using
-# platforms / targets.
+# Unix builds rely on SDL:
+# SDLQUAKE must be defined for all SDL using platforms/targets
 CPPFLAGS+= -DSDLQUAKE
+
+ifneq ($(X11BASE),)
+GL_LINK=-L$(X11BASE)/lib -lGL
+else
+GL_LINK=-lGL
+endif
 
 ifeq ($(USE_SOUND),yes)
 ifneq ($(HOST_OS),linux)
@@ -382,20 +357,30 @@ endif
 
 
 #############################################################
-# DOS flags/settings
+# DOS flags/settings and overrides:
 #############################################################
 ifeq ($(TARGET_OS),dos)
 
-# disable timidity and ogg music streaming.
-# wav and mp3 streaming aren't that practical
-# but not harmful either.
+NASMFLAGS=-f coff
+# Use x86 assembly for DOS
+USE_X86_ASM=yes
+
 USE_CODEC_TIMIDITY=no
 USE_CODEC_WILDMIDI=no
 USE_CODEC_VORBIS=no
 
+# use Tremor as Ogg/Vorbis decoder for DOS
+VORBISLIB=tremor
+# DOS decoders must allocate on the zone
+CODECS_USE_ZONE=yes
+
 INCLUDES += -I$(OSLIBS)/dos
 LDFLAGS += -lc -lgcc -lm
 
+ifeq ($(USE_CODEC_VORBIS),yes)
+CODEC_INC = -I$(OSLIBS)/dos/codecs/include
+CODEC_LINK= -L$(OSLIBS)/dos/codecs/lib
+endif
 ifeq ($(USE_CODEC_MP3),yes)
 CODEC_INC = -I$(OSLIBS)/dos/codecs/include
 CODEC_LINK= -L$(OSLIBS)/dos/codecs/lib
@@ -409,9 +394,12 @@ endif
 
 
 #############################################################
-# Win32 flags/settings
+# Win32 flags/settings and overrides:
 #############################################################
 ifeq ($(TARGET_OS),win32)
+
+NASMFLAGS=-f win32
+GL_LINK=-lopengl32
 
 # timidity not needed, we have a midi driver. if you want it,
 # comment out the following
@@ -461,9 +449,12 @@ endif
 
 
 #############################################################
-# Win64 extra flags/settings
+# Win64 flags/settings and overrides:
 #############################################################
 ifeq ($(TARGET_OS),win64)
+
+NASMFLAGS=-f win64 -d_NO_PREFIX
+GL_LINK=-lopengl32
 
 # timidity not needed, we have a midi driver. if you want it,
 # comment out the following
@@ -520,6 +511,23 @@ endif
 #############################################################
 # Streaming music settings
 #############################################################
+ifeq ($(MP3LIB),mad)
+mp3_obj=snd_mp3.o
+lib_mp3dec=-lmad
+endif
+ifeq ($(MP3LIB),mpg123)
+mp3_obj=snd_mpg123.o
+lib_mp3dec=-lmpg123
+endif
+ifeq ($(VORBISLIB),vorbis)
+cpp_vorbisdec=
+lib_vorbisdec=-lvorbisfile -lvorbis -logg
+endif
+ifeq ($(VORBISLIB),tremor)
+cpp_vorbisdec=-DVORBIS_USE_TREMOR
+lib_vorbisdec=-lvorbisidec -logg
+endif
+
 ifeq ($(USE_CODEC_WAVE),yes)
 CPPFLAGS+= -DUSE_CODEC_WAVE
 endif
@@ -543,7 +551,31 @@ CPPFLAGS+= -DUSE_CODEC_WILDMIDI
 LDFLAGS+= -lWildMidi
 endif
 
+ifeq ($(CODECS_USE_ZONE),yes)
+CPPFLAGS+=-DCODECS_USE_ZONE
+endif
+
 # End of streaming music settings
+#############################################################
+
+#############################################################
+# Finalize things after the system specific overrides:
+#############################################################
+
+ifeq ($(USE_X86_ASM),yes)
+CPPFLAGS+= -DUSE_INTEL_ASM
+endif
+
+ifeq ($(USE_3DFXGAMMA),yes)
+# linux 3dfx gamma hack
+GL_DEFS+= -DUSE_3DFXGAMMA
+endif
+ifneq ($(LINK_GL_LIBS),yes)
+GL_DEFS+= -DGL_DLSYM
+else
+GLFLAGS+= $(GL_LINK)
+endif
+#
 #############################################################
 
 

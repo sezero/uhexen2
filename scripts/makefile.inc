@@ -178,30 +178,6 @@ endif
 
 
 ################################
-# NASM flags:
-# These are required for IA32 assembly for hexen2/hexenworld clients
-# Note: for ELF targets, add the -D_NO_PREFIX flag so that the symbols
-# shall not be prefixed by '_'
-
-ifeq ($(TARGET_OS),win32)
-NASMFLAGS=-f win32
-endif
-ifeq ($(TARGET_OS),win64)
-NASMFLAGS=-f win64 -d_NO_PREFIX
-endif
-ifeq ($(TARGET_OS),dos)
-NASMFLAGS=-f coff
-endif
-ifeq ($(TARGET_OS),unix)
-ifeq ($(HOST_OS),darwin)
-NASMFLAGS=-f macho
-else
-NASMFLAGS=-f elf -d_NO_PREFIX
-endif
-endif
-
-
-################################
 # the "sdl-config" command
 
 SDL_CONFIG ?=sdl-config
@@ -231,22 +207,4 @@ LIBSOCKET=-lsocket -lnsl
 endif
 endif
 
-
-################################
-# GL Linkage flags:
-# These flags will be used for linking to opengl library
-ifeq ($(TARGET_OS),win32)
-GL_LINK=-lopengl32
-else
-ifeq ($(TARGET_OS),win64)
-GL_LINK=-lopengl32
-else
-# general X11/unix
-ifneq ($(X11BASE),)
-GL_LINK=-L$(X11BASE)/lib -lGL
-else
-GL_LINK=-lGL
-endif
-endif
-endif
 
