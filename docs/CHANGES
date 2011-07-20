@@ -4,6 +4,8 @@ Development Progress	:
 ---------------------------
 
 2011-07-20 (SVN):
+    * oslibs/windows/codecs/include/vorbis/vorbisenc.h: Deleted unused
+      header.
     * snd_mp3.c: Unless CODECS_USE_ZONE is defined, leave Z_ alone and
       allocate libmad decoding buffers (ca. 64kb) on the system memory.
     * zone.c: Added setup for secondary zone size for CODECS_USE_ZONE.
