@@ -367,9 +367,7 @@ USE_X86_ASM=yes
 
 USE_CODEC_TIMIDITY=no
 USE_CODEC_WILDMIDI=no
-USE_CODEC_VORBIS=no
-
-# use Tremor as Ogg/Vorbis decoder for DOS
+# use Tremor as Vorbis decoder for DOS?
 VORBISLIB=tremor
 # DOS decoders must allocate on the zone
 CODECS_USE_ZONE=yes

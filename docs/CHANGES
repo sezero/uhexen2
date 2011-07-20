@@ -4,6 +4,10 @@ Development Progress	:
 ---------------------------
 
 2011-07-20 (SVN):
+    * hexen2/Makefile: Allowed ogg/vorbis for dos builds. For now I am
+      using tremor for dos, but it also builds and runs perfectly fine
+      with libvorbis too. The DOS build define CODECS_USE_ZONE which is
+      essential.
     * Makefiles: Added the CODECS_USE_ZONE compile time option. If set
       to yes, codecs will allocate on the zone instead of system memory
       which may be useful for ports to memory-tight platforms. Cleaned
