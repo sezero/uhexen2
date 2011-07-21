@@ -46,6 +46,8 @@ Changes since HoT-1.4.4-pre11:
 * fixed h2ded (hexen2 dedicated server) bug that the swords on the weapon
   racks in the demo2 and the village1 levels would be placed incorrectly
   (bug #3344613).
+* hexenworld server: fixed segmentation fault in case of bad pointers in
+  NUM_FOR_EDICT()
 * fixed HexenC bug where, if there were a summoned imp around, a blinked
   away wizard wouldn't reappear even after imp went away (bug #3314808).
 * fixed a HexenC bug where the summoned imp didn't pick the Egypt snake
