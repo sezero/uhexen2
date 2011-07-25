@@ -38,9 +38,6 @@ qboolean	Win95, Win95old, WinNT, WinVista;
 
 qboolean		isDedicated;
 
-/*
-#define	TIME_WRAP_VALUE	LONG_MAX
-*/
 #define	TIME_WRAP_VALUE	(~(DWORD)0)
 static DWORD		starttime;
 static qboolean		sc_return_on_enter = false;

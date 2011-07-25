@@ -34,9 +34,6 @@ cvar_t		sys_throttle = {"sys_throttle", "0.02", CVAR_ARCHIVE};
 qboolean	ActiveApp, Minimized;
 qboolean	Win95, Win95old, WinNT, WinVista;
 
-/*
-#define	TIME_WRAP_VALUE	LONG_MAX
-*/
 #define	TIME_WRAP_VALUE	(~(DWORD)0)
 static DWORD		starttime;
 

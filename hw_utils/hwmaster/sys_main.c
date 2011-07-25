@@ -30,9 +30,6 @@
 #endif	/* WINDOWS */
 
 #if defined(PLATFORM_WINDOWS)
-/*
-#define	TIME_WRAP_VALUE	LONG_MAX
-*/
 #define	TIME_WRAP_VALUE	(~(DWORD)0)
 static DWORD		starttime;
 #endif	/* PLATFORM_WINDOWS */

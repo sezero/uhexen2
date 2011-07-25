@@ -29,9 +29,6 @@ cvar_t		sys_nostdout = {"sys_nostdout", "0", CVAR_NONE};
 
 qboolean		isDedicated = true;	/* compatibility */
 
-/*
-#define	TIME_WRAP_VALUE	LONG_MAX
-*/
 #define	TIME_WRAP_VALUE	(~(DWORD)0)
 static DWORD		starttime;
 

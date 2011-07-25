@@ -27,9 +27,6 @@
 cvar_t		sys_nostdout = {"sys_nostdout", "0", CVAR_NONE};
 int		devlog;	/* log the Con_DPrintf and Sys_DPrintf content when !developer.integer */
 
-/*
-#define	TIME_WRAP_VALUE	LONG_MAX
-*/
 #define	TIME_WRAP_VALUE	(~(DWORD)0)
 static DWORD		starttime;
 
