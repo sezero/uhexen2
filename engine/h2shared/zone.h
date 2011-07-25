@@ -81,25 +81,24 @@ void Memory_Init (void *buf, int size);
 extern "C" {
 #endif
 void Z_Free (void *ptr);
-void *Z_Malloc (int size, int zone_idx);	/* returns 0 filled memory */
-void *Z_Realloc (void *ptr, int size, int zone_idx);
+void *Z_Malloc (int size, int zone_id);	/* returns 0 filled memory */
+void *Z_Realloc (void *ptr, int size, int zone_id);
 char *Z_Strdup (const char *s);
 #ifdef __cplusplus
 }
 #endif
 
-void *Hunk_Alloc (int size);			/* returns 0 filled memory */
+void *Hunk_Alloc (int size);		/* returns 0 filled memory */
 void *Hunk_AllocName (int size, const char *name);
 void *Hunk_HighAllocName (int size, const char *name);
 char *Hunk_Strdup (const char *s, const char *name);
 
+void *Hunk_TempAlloc (int size);
+
 int Hunk_LowMark (void);
 void Hunk_FreeToLowMark (int mark);
-
 int Hunk_HighMark (void);
 void Hunk_FreeToHighMark (int mark);
-
-void *Hunk_TempAlloc (int size);
 
 void Hunk_Check (void);
 

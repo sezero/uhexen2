@@ -7,12 +7,12 @@
 
 #include "quakedef.h"
 
-/* whether Z_Malloc should check zone integrity before
- * every allocation.		*/
+/* whether Z_Malloc should check zone
+ * integrity before every allocation	*/
 #define	Z_CHECKHEAP		0
 
-/* whether we compile the debug report commands. see in
- * Memory_Init()		*/
+/* whether we compile the debug report
+ * commands. see in Memory_Init()	*/
 #define	Z_DEBUG_COMMANDS	0
 
 #define	ZONE_MINSIZE	0x40000
@@ -22,8 +22,8 @@
 #else
 #define	ZONE_DEFSIZE	0x60000
 #endif	/* SERVERONLY */
-#define	ZONEID		0x1d4a11
-#define	ZONEID2		0xf382da
+#define	ZMAGIC		0x1d4a11
+#define	ZMAGIC2		0xf382da
 #define	HUNK_SENTINAL	0x1df001ed
 #define	MINFRAGMENT	64
 
@@ -54,7 +54,7 @@ typedef struct memblock_s
 {
 	int	size;		/* including the header and possibly tiny fragments */
 	int	tag;		/* a tag of 0 is a free block */
-	int	id;		/* should be ZONEID */
+	int	magic;		/* should be ZMAGIC */
 	struct	memblock_s	*next, *prev;
 	int	pad;		/* pad to 64 bit boundary */
 } memblock_t;
@@ -68,7 +68,7 @@ typedef struct memzone_s
 
 typedef struct zonelist_s
 {
-	int		idx,  zone_id;
+	int		id, magic;
 	const char		*name;
 	memzone_t		*zone;
 	struct zonelist_s	*next;
@@ -125,12 +125,12 @@ void Z_Free (void *ptr)
 	z = zonelist;
 	while (z != NULL)
 	{
-		if (z->zone_id == block->id)
+		if (z->magic == block->magic)
 			break;
 		z = z->next;
 	}
 	if (z == NULL)
-		Sys_Error ("%s: freed a pointer without ZONEID", __thisfunc__);
+		Sys_Error ("%s: freed a pointer without ZMAGIC", __thisfunc__);
 
 	block->tag = 0;		/* mark as free */
 
@@ -191,9 +191,9 @@ static void *Z_TagMalloc (zonelist_t *z, int size, int tag)
 	{	/* there will be a free fragment after the allocated block */
 		newblock = (memblock_t *) ((byte *)base + size);
 		newblock->size = extra;
-		newblock->tag = 0;			/* free block */
+		newblock->tag = 0;	/* free block */
 		newblock->prev = base;
-		newblock->id = z->zone_id;
+		newblock->magic = z->magic;
 		newblock->next = base->next;
 		newblock->next->prev = newblock;
 		base->next = newblock;
@@ -204,10 +204,10 @@ static void *Z_TagMalloc (zonelist_t *z, int size, int tag)
 
 	z->zone->rover = base->next;	/* next allocation will start looking here */
 
-	base->id = z->zone_id;
+	base->magic = z->magic;
 
 /* marker for memory trash testing */
-	*(int *)((byte *)base + base->size - 4) = z->zone_id;
+	*(int *)((byte *)base + base->size - 4) = z->magic;
 
 	return (void *) ((byte *)base + sizeof(memblock_t));
 }
@@ -225,7 +225,7 @@ static void Z_CheckHeap (memzone_t *zone)
 	for (block = zone->blocklist.next ; ; block = block->next)
 	{
 		if (block->next == &zone->blocklist)
-			break;			/* all blocks have been hit */
+			break;	/* all blocks have been hit */
 		if ( (byte *)block + block->size != (byte *)block->next)
 			Sys_Error ("%s: block size does not touch the next block", __thisfunc__);
 		if ( block->next->prev != block)
@@ -241,7 +241,7 @@ static void Z_CheckHeap (memzone_t *zone)
 Z_Malloc
 ========================
 */
-void *Z_Malloc (int size, int zone_idx)
+void *Z_Malloc (int size, int zone_id)
 {
 	void	*buf;
 	zonelist_t*	z;
@@ -249,12 +249,12 @@ void *Z_Malloc (int size, int zone_idx)
 	z = zonelist;
 	while (z != NULL)
 	{
-		if (z->idx & zone_idx)
+		if (z->id & zone_id)
 			break;
 		z = z->next;
 	}
 	if (z == NULL)
-		Sys_Error ("%s: Bad zone index %i", __thisfunc__, zone_idx);
+		Sys_Error ("%s: Bad zone id %i", __thisfunc__, zone_id);
 
 #if Z_CHECKHEAP
 	Z_CheckHeap (z->zone);	/* DEBUG */
@@ -267,7 +267,7 @@ void *Z_Malloc (int size, int zone_idx)
 	return buf;
 }
 
-void *Z_Realloc (void *ptr, int size, int zone_idx)
+void *Z_Realloc (void *ptr, int size, int zone_id)
 {
 	int		old_size;
 	void		*old_ptr;
@@ -275,7 +275,7 @@ void *Z_Realloc (void *ptr, int size, int zone_idx)
 	memblock_t	*block;
 
 	if (!ptr)
-		return Z_Malloc (size, zone_idx);
+		return Z_Malloc (size, zone_id);
 
 	block = (memblock_t *) ((byte *) ptr - sizeof (memblock_t));
 	if (block->tag == 0)
@@ -284,12 +284,12 @@ void *Z_Realloc (void *ptr, int size, int zone_idx)
 	z = zonelist;
 	while (z != NULL)
 	{
-		if (z->zone_id == block->id)
+		if (z->magic == block->magic)
 			break;
 		z = z->next;
 	}
 	if (z == NULL)
-		Sys_Error ("%s: realloced a pointer without ZONEID", __thisfunc__);
+		Sys_Error ("%s: realloced a pointer without ZMAGIC", __thisfunc__);
 
 	old_size = block->size;
 	old_size -= (4 + (int)sizeof(memblock_t));	/* see Z_TagMalloc() */
@@ -299,12 +299,12 @@ void *Z_Realloc (void *ptr, int size, int zone_idx)
 	z = zonelist;
 	while (z != NULL)
 	{
-		if (z->idx & zone_idx)
+		if (z->id & zone_id)
 			break;
 		z = z->next;
 	}
 	if (z == NULL)
-		Sys_Error ("%s: Bad zone index %i", __thisfunc__, zone_idx);
+		Sys_Error ("%s: Bad zone id %i", __thisfunc__, zone_id);
 
 	ptr = Z_TagMalloc (z, size, 1);
 	if (!ptr)
@@ -540,7 +540,7 @@ CACHE MEMORY
 #define CACHENAME_LEN	32
 typedef struct cache_system_s
 {
-	int				size;		/* including this header */
+	int			size;		/* including this header */
 	cache_user_t		*user;
 	char			name[CACHENAME_LEN];
 	struct cache_system_s	*prev, *next;
@@ -726,7 +726,7 @@ static cache_system_t *Cache_TryAlloc (int size, qboolean nobottom)
 		return new_cs;
 	}
 
-	return NULL;		/* couldn't allocate */
+	return NULL;	/* couldn't allocate */
 }
 
 /*
@@ -1076,7 +1076,7 @@ static void Z_Print (memzone_t *zone, FILE *f)
 				block, block->size, block->tag);
 
 		if (block->next == &zone->blocklist)
-			break;			/* all blocks have been hit */
+			break;	/* all blocks have been hit */
 		if ( (byte *)block + block->size != (byte *)block->next)
 		{
 			MEM_Printf (f, "ERROR: block size does not touch the next block\n");
@@ -1236,14 +1236,14 @@ static void Memory_Stats_f(void)
 Memory_Init
 ========================
 */
-static void Memory_InitZone (const char *name, int idx, int zone_id, int size)
+static void Memory_InitZone (const char *name, int id, int magic, int size)
 {
 	zonelist_t	*z;
 	memblock_t	*block;
 
 	z = (zonelist_t *) Hunk_AllocName (sizeof(zonelist_t), name);
-	z->idx = idx;
-	z->zone_id = zone_id;
+	z->id = id;
+	z->magic = magic;
 	z->name = name;
 	z->zone = (memzone_t *) Hunk_AllocName (size, name);
 
@@ -1251,13 +1251,13 @@ static void Memory_InitZone (const char *name, int idx, int zone_id, int size)
 	z->zone->blocklist.next = z->zone->blocklist.prev = block =
 		(memblock_t *)( (byte *)z->zone + sizeof(memzone_t) );
 	z->zone->blocklist.tag = 1;	/* in use block */
-	z->zone->blocklist.id = 0;
+	z->zone->blocklist.magic = 0;
 	z->zone->blocklist.size = 0;
 	z->zone->rover = block;
 
 	block->prev = block->next = &z->zone->blocklist;
 	block->tag = 0;			/* free block */
-	block->id = zone_id;
+	block->magic = magic;
 	block->size = size - sizeof(memzone_t);
 
 /* add to linked list */
@@ -1298,12 +1298,12 @@ void Memory_Init (void *buf, int size)
 			zonesize = ZONE_MAXSIZE;
 		}
 	}
-	Memory_InitZone (mainzone, Z_MAINZONE, ZONEID, zonesize);
+	Memory_InitZone (mainzone, Z_MAINZONE, ZMAGIC, zonesize);
 
 #if !defined(SERVERONLY)
 /* initialize a 256 KB secondary zone for static textures */
 	if (!isDedicated)
-		Memory_InitZone (sec_zone, Z_SECZONE, ZONEID2, SECZONE_SIZE);
+		Memory_InitZone (sec_zone, Z_SECZONE, ZMAGIC2, SECZONE_SIZE);
 
 	Cmd_AddCommand ("flush", Cache_Flush);
 #endif	/* SERVERONLY */
