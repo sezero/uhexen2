@@ -11,11 +11,6 @@
 #include <limits.h>
 #include <windows.h>
 #include <mmsystem.h>
-#include <errno.h>
-#include <io.h>
-#include <direct.h>
-#include <conio.h>
-#include "io_msvc.h"
 
 
 // heapsize: minimum 8 mb, standart 16 mb, max is 32 mb.
@@ -31,6 +26,7 @@ qboolean		isDedicated = true;	/* compatibility */
 
 #define	TIME_WRAP_VALUE	(~(DWORD)0)
 static DWORD		starttime;
+static HANDLE		hinput, houtput;
 
 
 /*
@@ -43,27 +39,34 @@ FILE IO
 
 int Sys_mkdir (const char *path, qboolean crash)
 {
-	int rc = _mkdir (path);
-	if (rc != 0 && errno == EEXIST)
-		rc = 0;
-	if (rc != 0 && crash)
+	if (CreateDirectory(path, NULL) != 0)
+		return 0;
+	if (GetLastError() == ERROR_ALREADY_EXISTS)
+		return 0;
+	if (crash)
 		Sys_Error("Unable to create directory %s", path);
-	return rc;
+	return -1;
 }
 
 int Sys_rmdir (const char *path)
 {
-	return _rmdir(path);
+	if (RemoveDirectory(path) != 0)
+		return 0;
+	return -1;
 }
 
 int Sys_unlink (const char *path)
 {
-	return _unlink(path);
+	if (DeleteFile(path) != 0)
+		return 0;
+	return -1;
 }
 
 int Sys_rename (const char *oldp, const char *newp)
 {
-	return rename(oldp, newp);
+	if (MoveFile(oldp, newp) != 0)
+		return 0;
+	return -1;
 }
 
 long Sys_filesize (const char *path)
@@ -167,6 +170,9 @@ void Sys_Error (const char *error, ...)
 {
 	va_list		argptr;
 	char		text[MAX_PRINTMSG];
+	const char	text2[] = ERROR_PREFIX;
+	const char	text3[] = "\n";
+	DWORD		dummy;
 
 	va_start (argptr, error);
 	q_vsnprintf (text, sizeof(text), error, argptr);
@@ -181,24 +187,21 @@ void Sys_Error (const char *error, ...)
 
 	Host_Shutdown ();
 
-	printf (ERROR_PREFIX "%s\n\n", text);
-
-#ifdef DEBUG_BUILD
-	_getch();
-#endif
+	WriteFile(houtput, text2, strlen(text2), &dummy, NULL);
+	WriteFile(houtput, text,  strlen(text),  &dummy, NULL);
+	WriteFile(houtput, text3, strlen(text3), &dummy, NULL);
 
 	exit (1);
 }
 
 void Sys_PrintTerm (const char *msgtxt)
 {
-	unsigned char		*p;
+	DWORD		dummy;
 
 	if (sys_nostdout.integer)
 		return;
 
-	for (p = (unsigned char *) msgtxt; *p; p++)
-		putc (*p, stdout);
+	WriteFile(houtput, msgtxt, strlen(msgtxt), &dummy, NULL);
 }
 
 void Sys_Quit (void)
@@ -236,43 +239,62 @@ double Sys_DoubleTime (void)
 char *Sys_ConsoleInput (void)
 {
 	static char	con_text[256];
-	static int		textlen;
-	int		c;
+	static int	textlen;
+	INPUT_RECORD	recs[1024];
+	int		ch;
+	DWORD		dummy, numread, numevents;
 
-	// read a line out
-	while (_kbhit())
+	for ( ;; )
 	{
-		c = _getch();
-		_putch (c);
-		if (c == '\r')
-		{
-			con_text[textlen] = '\0';
-			_putch ('\n');
-			textlen = 0;
-			return con_text;
-		}
-		if (c == 8)
-		{
-			if (textlen)
-			{
-				_putch (' ');
-				_putch (c);
-				textlen--;
-				con_text[textlen] = '\0';
-			}
-			continue;
-		}
-		con_text[textlen] = c;
-		textlen++;
-		if (textlen < (int) sizeof(con_text))
-			con_text[textlen] = '\0';
-		else
-		{
-		// buffer is full
-			textlen = 0;
-			con_text[0] = '\0';
-			Sys_PrintTerm("\nConsole input too long!\n");
+		if (GetNumberOfConsoleInputEvents(hinput, &numevents) == 0)
+			Sys_Error ("Error getting # of console events");
+
+		if (numevents <= 0)
 			break;
+
+		if (ReadConsoleInput(hinput, recs, 1, &numread) == 0)
+			Sys_Error ("Error reading console input");
+
+		if (numread != 1)
+			Sys_Error ("Couldn't read console input");
+
+		if (recs[0].EventType == KEY_EVENT)
+		{
+		    if (recs[0].Event.KeyEvent.bKeyDown == FALSE)
+		    {
+			ch = recs[0].Event.KeyEvent.uChar.AsciiChar;
+
+			switch (ch)
+			{
+			case '\r':
+				WriteFile(houtput, "\r\n", 2, &dummy, NULL);
+				if (textlen != 0)
+				{
+					con_text[textlen] = 0;
+					textlen = 0;
+					return con_text;
+				}
+
+				break;
+
+			case '\b':
+				WriteFile(houtput, "\b \b", 3, &dummy, NULL);
+				if (textlen != 0)
+					textlen--;
+
+				break;
+
+			default:
+				if (ch >= ' ')
+				{
+					WriteFile(houtput, &ch, 1, &dummy, NULL);
+					con_text[textlen] = ch;
+					textlen = (textlen + 1) & 0xff;
+				}
+
+				break;
+			}
+		    }
 		}
 	}
 
@@ -294,7 +316,7 @@ static int Sys_GetBasedir (char *argv0, char *dst, size_t dstsize)
 {
 	char		*tmp;
 
-	if (_getcwd(dst, dstsize - 1) == NULL)
+	if (GetCurrentDirectory(dstsize, dst) == 0)
 		return -1;
 
 	tmp = dst;
@@ -362,6 +384,9 @@ int main (int argc, char **argv)
 {
 	int			i;
 	double		time, oldtime;
+
+	hinput = GetStdHandle (STD_INPUT_HANDLE);
+	houtput = GetStdHandle (STD_OUTPUT_HANDLE);
 
 	PrintVersion();
 

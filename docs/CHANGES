@@ -4,6 +4,11 @@ Development Progress	:
 ---------------------------
 
 2011-07-25 (SVN):
+    * hexen2/server/sys_win.c, hexenworld/server/sys_win.c: Replaced most
+      of the crt calls, including conio code, by windows api calls. Clean
+      up and tidy up.
+
+2011-07-25 (SVN):
     * utils/common/cmdlib.c, util_io.c: Removed commented out code.
 
 2011-07-25 (SVN):
