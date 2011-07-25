@@ -1,7 +1,7 @@
 /*
 	cmdlib.h
 
-	$Id: cmdlib.h,v 1.28 2010-08-31 13:32:08 sezero Exp $
+	$Id$
 */
 
 #ifndef __CMDLIB_H__
@@ -68,7 +68,8 @@ extern int qerr_snprintf (const char *caller, int linenum, char *str, size_t siz
 
 // PUBLIC DATA DECLARATIONS ------------------------------------------------
 
-/* set these before calling CheckParm() */
+/* set myargc and myargv properly
+ * before calling CheckParm()  */
 extern int		myargc;
 extern char		**myargv;
 

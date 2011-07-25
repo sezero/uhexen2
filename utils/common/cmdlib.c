@@ -2,7 +2,7 @@
 	cmdlib.c
 	functions common to all of the utilities
 
-	$Id: cmdlib.c,v 1.18 2010-02-22 22:22:42 sezero Exp $
+	$Id$
 */
 
 
@@ -12,7 +12,16 @@
 #include "compiler.h"
 #include "arch_def.h"
 #include "cmdlib.h"
+#ifdef PLATFORM_WINDOWS
+#include <windows.h>
+#endif
+#ifdef PLATFORM_DOS
 #include <time.h>
+#endif
+#ifdef PLATFORM_UNIX
+#include <sys/time.h>
+#include <time.h>
+#endif
 #include <ctype.h>
 
 // MACROS ------------------------------------------------------------------
@@ -151,29 +160,50 @@ GetTime
 
 ==============
 */
+#if 0
 double GetTime (void)
 {
 	time_t	t;
-
 	time(&t);
-
 	return t;
-#if 0
-// more precise, less portable
-	struct timeval	tp;
-	static int		secbase;
-
-	gettimeofday (&tp, NULL);
-
-	if (!secbase)
-	{
-		secbase = tp.tv_sec;
-		return tp.tv_usec/1000000.0;
-	}
-
-	return (tp.tv_sec - secbase) + tp.tv_usec/1000000.0;
-#endif
 }
+#endif
+
+#ifdef PLATFORM_WINDOWS
+double GetTime (void)
+{
+/* http://www.codeproject.com/KB/datetime/winapi_datetime_ops.aspx
+ * It doesn't matter that the offset is Jan 1, 1601, result
+ * is the number of 100 nanosecond units, 100ns * 10,000 = 1ms. */
+	SYSTEMTIME st;
+	FILETIME ft;
+	ULARGE_INTEGER ul1;
+
+	GetLocalTime(&st);
+	SystemTimeToFileTime(&st, &ft);
+	ul1.HighPart = ft.dwHighDateTime;
+	ul1.LowPart = ft.dwLowDateTime;
+
+	return (double)ul1.QuadPart / 10000000.0;
+}
+#endif
+
+#ifdef PLATFORM_DOS
+double GetTime (void)
+{
+/* See  DJGPP uclock() man page for its limitations */
+	return (double) uclock() / (double) UCLOCKS_PER_SEC;
+}
+#endif
+
+#ifdef PLATFORM_UNIX
+double GetTime (void)
+{
+	struct timeval tv;
+	gettimeofday (&tv, NULL);
+	return tv.tv_sec + tv.tv_usec / 1000000.0;
+}
+#endif
 
 /*
 ==============
