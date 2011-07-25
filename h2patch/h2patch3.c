@@ -205,6 +205,14 @@ static int check_access (const char *name)
 	return ACCESS_FILEOK;
 }
 
+static long get_millisecs (void)
+{
+/* first call to uclock() returns 0 and we won't
+ * be running for hours, therefore multiplication
+ * by 1000 cannot overflow. */
+	return uclock() * 1000 / UCLOCKS_PER_SEC;
+}
+
 #elif defined(_WIN32)
 
 static int Sys_unlink (const char *path)
@@ -263,6 +271,23 @@ static int check_access (const char *name)
 	return ACCESS_FILEOK;
 }
 
+static long get_millisecs (void)
+{
+/* http://www.codeproject.com/KB/datetime/winapi_datetime_ops.aspx
+ * It doesn't matter that the offset is Jan 1, 1601, result
+ * is the number of 100 nanosecond units, 100ns * 10,000 = 1ms. */
+	SYSTEMTIME st;
+	FILETIME ft;
+	ULARGE_INTEGER ul1;
+
+	GetLocalTime(&st);
+	SystemTimeToFileTime(&st, &ft);
+	ul1.HighPart = ft.dwHighDateTime;
+	ul1.LowPart = ft.dwLowDateTime;
+
+	return (long)(ul1.QuadPart / 10000);
+}
+
 #else /* POSIX */
 
 static int Sys_unlink (const char *path)
@@ -317,6 +342,15 @@ static int check_access (const char *name)
 	return ACCESS_FILEOK;
 }
 
+static long get_millisecs (void)
+{
+	struct timeval tv;
+
+	gettimeofday (&tv, NULL);
+
+	return (tv.tv_sec) * 1000L + (tv.tv_usec) / 1000;
+}
+
 #endif
 
 static void print_version (void)
@@ -334,32 +368,6 @@ static void print_help (void)
 	fprintf (stdout, "  -verbose     be verbose\n");
 }
 
-
-static long get_millisecs (void)
-{
-#ifdef _WIN32
-/* http://www.codeproject.com/KB/datetime/winapi_datetime_ops.aspx
- * It doesn't matter that the offset is Jan 1, 1601, result
- * is the number of 100 nanosecond units, 100ns * 10,000 = 1ms. */
-	SYSTEMTIME st;
-	FILETIME ft;
-	ULARGE_INTEGER ul1;
-
-	GetLocalTime(&st);
-	SystemTimeToFileTime(&st, &ft);
-	ul1.HighPart = ft.dwHighDateTime;
-	ul1.LowPart = ft.dwLowDateTime;
-
-	return (long)(ul1.QuadPart / 10000);
-#else
-/* POSIX. also OK with DJGPP. */
-	struct timeval tv;
-
-	gettimeofday (&tv, NULL);
-
-	return (tv.tv_sec) * 1000L + (tv.tv_usec) / 1000;
-#endif
-}
 
 /*  LOG PRINTING:  */
 

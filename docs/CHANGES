@@ -4,6 +4,9 @@ Development Progress	:
 ---------------------------
 
 2011-07-25 (SVN):
+    * h2patch/h2patch3.c: For DOS, replace gettimeofday() by uclock().
+
+2011-07-25 (SVN):
     * sys_dos.c: Added information about uclock() extracted from DJGPP
       manual pages.
 
