@@ -11,7 +11,6 @@
 #include "quakedef.h"
 #include "net_defs.h"	/* for struct qsocket_s details */
 #include <ctype.h>
-#include <time.h>
 
 static	double	old_time;
 
@@ -376,8 +375,6 @@ static void Host_SavegameComment (char *text)
 	size_t		i;
 	char		temp[20];
 	const char	*levelname;
-	struct tm	*tblock;
-	time_t		temptime;
 
 	for (i = 0; i < SAVEGAME_COMMENT_LENGTH; i++)
 	{
@@ -391,12 +388,9 @@ static void Host_SavegameComment (char *text)
 		i = 20;
 	memcpy (text, levelname, i);
 
-	temptime = time(NULL);
-	tblock = localtime(&temptime);
-	strftime (temp, sizeof(temp), "%m/%d/%Y %H:%M", tblock);
+	Sys_DateTimeString (temp);
+	temp[16] = '\0'; // eliminate seconds
 	i = strlen(temp);
-	if (i >= SAVEGAME_COMMENT_LENGTH-21)
-		i = SAVEGAME_COMMENT_LENGTH-22;
 	memcpy (text+21, temp, i);
 
 // convert space to _ to make stdio happy

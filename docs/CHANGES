@@ -4,6 +4,13 @@ Development Progress	:
 ---------------------------
 
 2011-07-25 (SVN):
+    * sys_unix.c, sys_win.c, sys_dos.c: Added Sys_DateTimeString() as a
+      new helper procedure to get date/time in the "MM/DD/YYYY HH:MM:SS"
+      format.
+    * debuglog.c, host_cmd.c: Replaced the time() and strftime() calls by
+      Sys_DateTimeString().
+
+2011-07-25 (SVN):
     * hexen2/server/sys_win.c, hexenworld/server/sys_win.c: Replaced most
       of the crt calls, including conio code, by windows api calls. Clean
       up and tidy up.

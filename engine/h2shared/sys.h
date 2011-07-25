@@ -58,6 +58,11 @@ void Sys_Quit (void) __attribute__((__noreturn__));
 
 double Sys_DoubleTime (void);
 
+char *Sys_DateTimeString (char *buf);
+// returns date + time string equivalent to the combination
+// of following calls:	char buf[20]; t = time(NULL);
+// strftime (buf, sizeof(buf), "%m/%d/%Y %H:%M:%S", localtime(&t));
+
 char *Sys_ConsoleInput (void);
 
 void Sys_Sleep (unsigned long msecs);

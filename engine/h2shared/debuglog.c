@@ -28,7 +28,6 @@
 
 #include "quakedef.h"
 #include "debuglog.h"
-#include <time.h>
 #include <sys/stat.h>
 #include <fcntl.h>
 #ifdef PLATFORM_WINDOWS
@@ -88,12 +87,10 @@ static void LOG_PrintVersion (void)
 
 void LOG_Init (quakeparms_t *parms)
 {
-	time_t		inittime;
 	int			i, j;
 	char		session[24];
 
-	inittime = time (NULL);
-	strftime (session, sizeof(session), "%m/%d/%Y %H:%M:%S", localtime(&inittime));
+	Sys_DateTimeString (session);
 	q_snprintf (logfilename, sizeof(logfilename), "%s/%s", parms->userdir, DEBUGLOG_FILENAME);
 
 	if ( COM_CheckParm("-condebug") || COM_CheckParm("-debuglog") )

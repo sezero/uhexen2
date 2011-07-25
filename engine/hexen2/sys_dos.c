@@ -889,6 +889,52 @@ static void Sys_InitTime (void)
 #endif	/* ! USE_UCLOCK_TIME */
 }
 
+char *Sys_DateTimeString (char *buf)
+{
+	static char strbuf[24];
+	struct _dosdate_t d;
+	struct _dostime_t t;
+	unsigned int val;
+
+	if (!buf) buf = strbuf;
+
+	_dos_getdate(&d);
+	_dos_gettime(&t);
+
+	val = d.month;
+	buf[0] = val / 10 + '0';
+	buf[1] = val % 10 + '0';
+	buf[2] = '/';
+	val = d.day;
+	buf[3] = val / 10 + '0';
+	buf[4] = val % 10 + '0';
+	buf[5] = '/';
+	val = d.year / 100;
+	buf[6] = val / 10 + '0';
+	buf[7] = val % 10 + '0';
+	val = d.year % 100;
+	buf[8] = val / 10 + '0';
+	buf[9] = val % 10 + '0';
+
+	buf[10] = ' ';
+
+	val = t.hour;
+	buf[11] = val / 10 + '0';
+	buf[12] = val % 10 + '0';
+	buf[13] = ':';
+	val = t.minute;
+	buf[14] = val / 10 + '0';
+	buf[15] = val % 10 + '0';
+	buf[16] = ':';
+	val = t.second;
+	buf[17] = val / 10 + '0';
+	buf[18] = val % 10 + '0';
+
+	buf[19] = '\0';
+
+	return buf;
+}
+
 
 /*
 ================

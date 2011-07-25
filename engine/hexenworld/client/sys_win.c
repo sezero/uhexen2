@@ -322,6 +322,50 @@ double Sys_DoubleTime (void)
 	return (passed == 0) ? 0.0 : (passed / 1000.0);
 }
 
+char *Sys_DateTimeString (char *buf)
+{
+	static char strbuf[24];
+	SYSTEMTIME st;
+	int val;
+
+	if (!buf) buf = strbuf;
+
+	GetLocalTime(&st);
+
+	val = st.wMonth;
+	buf[0] = val / 10 + '0';
+	buf[1] = val % 10 + '0';
+	buf[2] = '/';
+	val = st.wDay;
+	buf[3] = val / 10 + '0';
+	buf[4] = val % 10 + '0';
+	buf[5] = '/';
+	val = st.wYear / 100;
+	buf[6] = val / 10 + '0';
+	buf[7] = val % 10 + '0';
+	val = st.wYear % 100;
+	buf[8] = val / 10 + '0';
+	buf[9] = val % 10 + '0';
+
+	buf[10] = ' ';
+
+	val = st.wHour;
+	buf[11] = val / 10 + '0';
+	buf[12] = val % 10 + '0';
+	buf[13] = ':';
+	val = st.wMinute;
+	buf[14] = val / 10 + '0';
+	buf[15] = val % 10 + '0';
+	buf[16] = ':';
+	val = st.wSecond;
+	buf[17] = val / 10 + '0';
+	buf[18] = val % 10 + '0';
+
+	buf[19] = '\0';
+
+	return buf;
+}
+
 
 void Sys_Sleep (unsigned long msecs)
 {

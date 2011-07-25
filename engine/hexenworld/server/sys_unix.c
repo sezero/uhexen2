@@ -300,6 +300,52 @@ double Sys_DoubleTime (void)
 	return now - starttime;
 }
 
+char *Sys_DateTimeString (char *buf)
+{
+	static char strbuf[24];
+	time_t t;
+	struct tm *l;
+	int val;
+
+	if (!buf) buf = strbuf;
+
+	t = time(NULL);
+	l = localtime(&t);
+
+	val = l->tm_mon + 1;	/* tm_mon: months since January [0,11] */
+	buf[0] = val / 10 + '0';
+	buf[1] = val % 10 + '0';
+	buf[2] = '/';
+	val = l->tm_mday;
+	buf[3] = val / 10 + '0';
+	buf[4] = val % 10 + '0';
+	buf[5] = '/';
+	val = l->tm_year / 100 + 19;	/* tm_year: #years since 1900. */
+	buf[6] = val / 10 + '0';
+	buf[7] = val % 10 + '0';
+	val = l->tm_year % 100;
+	buf[8] = val / 10 + '0';
+	buf[9] = val % 10 + '0';
+
+	buf[10] = ' ';
+
+	val = l->tm_hour;
+	buf[11] = val / 10 + '0';
+	buf[12] = val % 10 + '0';
+	buf[13] = ':';
+	val = l->tm_min;
+	buf[14] = val / 10 + '0';
+	buf[15] = val % 10 + '0';
+	buf[16] = ':';
+	val = l->tm_sec;
+	buf[17] = val / 10 + '0';
+	buf[18] = val % 10 + '0';
+
+	buf[19] = '\0';
+
+	return buf;
+}
+
 
 /*
 ================
