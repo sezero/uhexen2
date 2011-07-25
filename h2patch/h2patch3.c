@@ -162,7 +162,7 @@ static void ask_user_abort (const char *msg)
 
 static int Sys_unlink (const char *path)
 {
-	return unlink(path);
+	return remove(path);
 }
 
 static int Sys_rename (const char *oldp, const char *newp)
@@ -209,16 +209,16 @@ static int check_access (const char *name)
 
 static int Sys_unlink (const char *path)
 {
-	int	err;
-	err = ! DeleteFile(path);
-	return err;
+	if (DeleteFile(path) != 0)
+		return 0;
+	return -1;
 }
 
 static int Sys_rename (const char *oldp, const char *newp)
 {
-	int	err;
-	err = ! MoveFile(oldp, newp);
-	return err;
+	if (MoveFile(oldp, newp) != 0)
+		return 0;
+	return -1;
 }
 
 static long Sys_filesize (const char *path)

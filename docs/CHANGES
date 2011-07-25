@@ -4,6 +4,9 @@ Development Progress	:
 ---------------------------
 
 2011-07-25 (SVN):
+    * h2patch/h2patch3.c: Minor cleanup for Sys_unlink() and Sys_rename().
+
+2011-07-25 (SVN):
     * zone.c: Renamed the memblock_t and zonelist_t id members to magic
       for better readability. Renamed zonelist_t idx member to id.
 
