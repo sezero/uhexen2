@@ -37,6 +37,8 @@
 #include <stddef.h>
 #include <limits.h>
 
+#include <stdio.h>
+
 /* NOTES on TYPE SIZES:
    Quake/Hexen II engine relied on 32 bit int type size
    with ILP32 (not LP32) model in mind.  We now support
@@ -54,7 +56,6 @@
  */
 #include "q_stdint.h"
 
-#include <stdio.h>
 #include <stdlib.h>
 #include <stdarg.h>
 #include <string.h>

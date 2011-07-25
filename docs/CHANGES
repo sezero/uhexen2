@@ -4,6 +4,9 @@ Development Progress	:
 ---------------------------
 
 2011-07-25 (SVN):
+    * libs/common/q_stdinc.h: Moved stdio.h include before q_stdint.h.
+
+2011-07-25 (SVN):
     * utils, cmdlib.c (GetTime): Replaced time() by platform specific
       code.
 
