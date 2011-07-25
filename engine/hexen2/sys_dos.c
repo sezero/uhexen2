@@ -70,10 +70,10 @@ static int	keybuf_tail = 0;
 static quakeparms_t	quakeparms;
 static int		sys_checksum;
 
-/* 2000-07-28, DOSQuake time running too fast fix
- * by Norberto Alfredo Bensa. set USE_UCLOCK_TIME
+/* 2000-07-28, DOSQuake "time running too fast" fix
+ * by Norberto Alfredo Bensa. Set USE_UCLOCK_TIME
  * to 0 if you want to use the old original code.
- * FIXME: uclock() isn't an ANSI C function..
+ * See Sys_DoubleTime() for information on uclock()
  */
 #define	USE_UCLOCK_TIME		1
 
@@ -608,7 +608,7 @@ static void Sys_Init (void)
 
 #if !USE_UCLOCK_TIME
 	dos_outportb(0x43, 0x34);	// set system timer to mode 2
-	dos_outportb(0x40, 0);		// for the Sys_DoubleTime() function
+	dos_outportb(0x40, 0);			// for Sys_DoubleTime()
 	dos_outportb(0x40, 0);
 #endif	/* ! USE_UCLOCK_TIME */
 
@@ -769,17 +769,49 @@ Sys_DoubleTime
 double Sys_DoubleTime (void)
 {
 #if USE_UCLOCK_TIME
+/*
+From DJGPP uclock() man page :
+
+uclock() returns the number of uclock ticks since an arbitrary time,
+actually, since the first call to uclock(), which itself returns zero.
+The number of tics per second is UCLOCKS_PER_SEC (declared in time.h
+as 1193180.)
+
+uclock() is provided for very high-resulution timing.  uclock_t is a
+64-bit integer.  It is currently accurate to better than 1 microsecond
+(actually about 840 nanoseconds).  You cannot time across two midnights
+with this implementation, giving a maximum useful period of 48 hours
+and an effective limit of 24 hours.  Casting to a 32-bit integer limits
+its usefulness to about an hour before 32 bits will wrap.
+
+Also note that uclock reprograms the interval timer in your PC to act
+as a rate generator rather than a square wave generator.  I've had no
+problems running in this mode all the time, but if you notice strange
+things happening with the clock (losing time) after using uclock, check
+to see if this is the cause of the problem.
+
+Windows 3.X doesn't allow to reprogram the timer so the values returned
+by uclock() there are incorrect.  DOS and Windows 9X don't have this
+problem.  
+Windows NT, 2000 and XP attempt to use the rdtsc feature of newer CPUs
+instead of the interval timer because the timer tick and interval timer
+are not coordinated.  During calibration the SIGILL signal handler is
+replaced to protect against systems which do not support or allow rdtsc.
+If rdtsc is available, uclock will keep the upper bits of the returned
+value consistent with the bios tick counter by re-calibration if needed.
+If rdtsc is not available, these systems fall back to interval timer
+usage, which may show an absolute error of 65536 uclock ticks in the
+values and not be monotonically increasing.
+*/
 	return (double) uclock() / (double) UCLOCKS_PER_SEC;
 
 #else
-	int				r;
-	unsigned		t, tick;
-	double			ft, time;
-	static int		sametimecount;
+	int		r;
+	unsigned	t, tick;
+	double		ft, time;
+	static int	sametimecount;
 
 	Sys_PushFPCW_SetHigh ();
-
-//{static float t = 0; t=t+0.05; return t;}	// DEBUG
 
 	t = *(unsigned short*)real2ptr(0x46c) * 65536;
 
@@ -845,7 +877,6 @@ static void Sys_InitTime (void)
 	oldtime = curtime;
 
 	j = COM_CheckParm("-starttime");
-
 	if (j && j < com_argc - 1)
 	{
 		curtime = (double) (atof(com_argv[j+1]));

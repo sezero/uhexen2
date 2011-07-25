@@ -4,6 +4,10 @@ Development Progress	:
 ---------------------------
 
 2011-07-25 (SVN):
+    * sys_dos.c: Added information about uclock() extracted from DJGPP
+      manual pages.
+
+2011-07-25 (SVN):
     * hexen2/sys_win.c, hexenworld/client/sys_win.c: Replaced most of the
       crt calls by windows api calls. Clean up and tidy up.
 
