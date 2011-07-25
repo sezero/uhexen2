@@ -9,13 +9,7 @@
 #include "debuglog.h"
 #include "winquake.h"
 #include <mmsystem.h>
-#include <limits.h>
-#include <errno.h>
 #include "resource.h"
-#include <io.h>
-#include <direct.h>
-#include <fcntl.h>
-#include "io_msvc.h"
 
 
 // heapsize: minimum 16mb, standart 32 mb, max is 96 mb.
@@ -50,27 +44,34 @@ FILE IO
 
 int Sys_mkdir (const char *path, qboolean crash)
 {
-	int rc = _mkdir (path);
-	if (rc != 0 && errno == EEXIST)
-		rc = 0;
-	if (rc != 0 && crash)
+	if (CreateDirectory(path, NULL) != 0)
+		return 0;
+	if (GetLastError() == ERROR_ALREADY_EXISTS)
+		return 0;
+	if (crash)
 		Sys_Error("Unable to create directory %s", path);
-	return rc;
+	return -1;
 }
 
 int Sys_rmdir (const char *path)
 {
-	return _rmdir(path);
+	if (RemoveDirectory(path) != 0)
+		return 0;
+	return -1;
 }
 
 int Sys_unlink (const char *path)
 {
-	return _unlink(path);
+	if (DeleteFile(path) != 0)
+		return 0;
+	return -1;
 }
 
 int Sys_rename (const char *oldp, const char *newp)
 {
-	return rename(oldp, newp);
+	if (MoveFile(oldp, newp) != 0)
+		return 0;
+	return -1;
 }
 
 long Sys_filesize (const char *path)
@@ -365,11 +366,10 @@ char *Sys_GetClipboardData (void)
 			if (cliptext != NULL)
 			{
 				size_t size = GlobalSize(hClipboardData) + 1;
-				/* this is intended for simple small text
-				 * copies, such as ip addresses, etc:
-				 * do chop the size here, otherwise we may
-				 * experience Z_Malloc failures, or integer
-				 * overflow crashes for worse. */
+			/* this is intended for simple small text copies
+			 * such as an ip address, etc:  do chop the size
+			 * here, otherwise we may experience Z_Malloc()
+			 * failures and all other not-oh-so-fun stuff. */
 				size = q_min(MAX_CLIPBOARDTXT, size);
 				data = (char *) Z_Malloc(size, Z_MAINZONE);
 				q_strlcpy (data, cliptext, size);

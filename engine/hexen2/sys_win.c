@@ -8,15 +8,9 @@
 #include "quakedef.h"
 #include "winquake.h"
 #include <mmsystem.h>
-#include <limits.h>
-#include <errno.h>
 #include "resource.h"
-#include <io.h>
-#include <direct.h>
-#include <fcntl.h>
 #include "conproc.h"
 #include "debuglog.h"
-#include "io_msvc.h"
 
 
 // heapsize: minimum 16mb, standart 32 mb, max is 96 mb.
@@ -93,27 +87,34 @@ FILE IO
 
 int Sys_mkdir (const char *path, qboolean crash)
 {
-	int rc = _mkdir (path);
-	if (rc != 0 && errno == EEXIST)
-		rc = 0;
-	if (rc != 0 && crash)
+	if (CreateDirectory(path, NULL) != 0)
+		return 0;
+	if (GetLastError() == ERROR_ALREADY_EXISTS)
+		return 0;
+	if (crash)
 		Sys_Error("Unable to create directory %s", path);
-	return rc;
+	return -1;
 }
 
 int Sys_rmdir (const char *path)
 {
-	return _rmdir(path);
+	if (RemoveDirectory(path) != 0)
+		return 0;
+	return -1;
 }
 
 int Sys_unlink (const char *path)
 {
-	return _unlink(path);
+	if (DeleteFile(path) != 0)
+		return 0;
+	return -1;
 }
 
 int Sys_rename (const char *oldp, const char *newp)
 {
-	return rename(oldp, newp);
+	if (MoveFile(oldp, newp) != 0)
+		return 0;
+	return -1;
 }
 
 long Sys_filesize (const char *path)
@@ -280,10 +281,10 @@ static void Sys_Init (void)
 void Sys_Error (const char *error, ...)
 {
 	va_list		argptr;
-	char		text[MAX_PRINTMSG], text2[MAX_PRINTMSG];
-	const char	text3[] = "Press Enter to exit\n";
-	const char	text4[] = "***********************************\n";
-	const char	text5[] = "\n";
+	char		text[MAX_PRINTMSG];
+	const char	text2[] = ERROR_PREFIX;
+	const char	text3[] = "\n";
+	const char	text4[] = "\nPress Enter to exit\n";
 	DWORD		dummy;
 	double		err_begin;
 
@@ -302,17 +303,13 @@ void Sys_Error (const char *error, ...)
 
 	if (isDedicated)
 	{
-		q_snprintf (text2, sizeof (text2), "ERROR: %s\n", text);
-		if (text2[sizeof(text2)-2] != '\0')
-			text2[sizeof(text2)-2] = '\n';
-		WriteFile (houtput, text5, strlen (text5), &dummy, NULL);
-		WriteFile (houtput, text4, strlen (text4), &dummy, NULL);
-		WriteFile (houtput, text2, strlen (text2), &dummy, NULL);
-		WriteFile (houtput, text3, strlen (text3), &dummy, NULL);
-		WriteFile (houtput, text4, strlen (text4), &dummy, NULL);
+		WriteFile (houtput, text2, strlen(text2), &dummy, NULL);
+		WriteFile (houtput, text,  strlen(text),  &dummy, NULL);
+		WriteFile (houtput, text3, strlen(text3), &dummy, NULL);
+		WriteFile (houtput, text4, strlen(text4), &dummy, NULL);
 
 		err_begin = Sys_DoubleTime ();
-		sc_return_on_enter = true;	// so Enter will get us out of here
+		sc_return_on_enter = true; /* so Enter will get us out of here */
 		while (!Sys_ConsoleInput () &&
 			((Sys_DoubleTime () - err_begin) < CONSOLE_ERROR_TIMEOUT))
 		{
@@ -386,7 +383,7 @@ double Sys_DoubleTime (void)
 char *Sys_ConsoleInput (void)
 {
 	static char	con_text[256];
-	static int		textlen;
+	static int	textlen;
 	INPUT_RECORD	recs[1024];
 	int		ch;
 	DWORD		dummy, numread, numevents;
@@ -396,13 +393,13 @@ char *Sys_ConsoleInput (void)
 
 	for ( ;; )
 	{
-		if (!GetNumberOfConsoleInputEvents (hinput, &numevents))
+		if (GetNumberOfConsoleInputEvents(hinput, &numevents) == 0)
 			Sys_Error ("Error getting # of console events");
 
 		if (numevents <= 0)
 			break;
 
-		if (!ReadConsoleInput(hinput, recs, 1, &numread))
+		if (ReadConsoleInput(hinput, recs, 1, &numread) == 0)
 			Sys_Error ("Error reading console input");
 
 		if (numread != 1)
@@ -410,50 +407,49 @@ char *Sys_ConsoleInput (void)
 
 		if (recs[0].EventType == KEY_EVENT)
 		{
-			if (!recs[0].Event.KeyEvent.bKeyDown)
+		    if (recs[0].Event.KeyEvent.bKeyDown == FALSE)
+		    {
+			ch = recs[0].Event.KeyEvent.uChar.AsciiChar;
+
+			switch (ch)
 			{
-				ch = recs[0].Event.KeyEvent.uChar.AsciiChar;
-
-				switch (ch)
+			case '\r':
+				WriteFile(houtput, "\r\n", 2, &dummy, NULL);
+				if (textlen != 0)
 				{
-				case '\r':
-					WriteFile(houtput, "\r\n", 2, &dummy, NULL);
-
-					if (textlen)
-					{
-						con_text[textlen] = 0;
-						textlen = 0;
-						return con_text;
-					}
-					else if (sc_return_on_enter)
-					{
-					// special case to allow exiting from the error handler on Enter
-						con_text[0] = '\r';
-						textlen = 0;
-						return con_text;
-					}
-
-					break;
-
-				case '\b':
-					WriteFile(houtput, "\b \b", 3, &dummy, NULL);
-					if (textlen)
-					{
-						textlen--;
-					}
-					break;
-
-				default:
-					if (ch >= ' ')
-					{
-						WriteFile(houtput, &ch, 1, &dummy, NULL);
-						con_text[textlen] = ch;
-						textlen = (textlen + 1) & 0xff;
-					}
-
-					break;
+					con_text[textlen] = 0;
+					textlen = 0;
+					return con_text;
 				}
+				else if (sc_return_on_enter)
+				{
+				/* special case to allow exiting
+				from the error handler on Enter */
+					con_text[0] = '\r';
+					textlen = 0;
+					return con_text;
+				}
+
+				break;
+
+			case '\b':
+				WriteFile(houtput, "\b \b", 3, &dummy, NULL);
+				if (textlen != 0)
+					textlen--;
+
+				break;
+
+			default:
+				if (ch >= ' ')
+				{
+					WriteFile(houtput, &ch, 1, &dummy, NULL);
+					con_text[textlen] = ch;
+					textlen = (textlen + 1) & 0xff;
+				}
+
+				break;
 			}
+		    }
 		}
 	}
 
@@ -503,11 +499,10 @@ char *Sys_GetClipboardData (void)
 			if (cliptext != NULL)
 			{
 				size_t size = GlobalSize(hClipboardData) + 1;
-				/* this is intended for simple small text
-				 * copies, such as ip addresses, etc:
-				 * do chop the size here, otherwise we may
-				 * experience Z_Malloc failures, or integer
-				 * overflow crashes for worse. */
+			/* this is intended for simple small text copies
+			 * such as an ip address, etc:  do chop the size
+			 * here, otherwise we may experience Z_Malloc()
+			 * failures and all other not-oh-so-fun stuff. */
 				size = q_min(MAX_CLIPBOARDTXT, size);
 				data = (char *) Z_Malloc(size, Z_MAINZONE);
 				q_strlcpy (data, cliptext, size);
