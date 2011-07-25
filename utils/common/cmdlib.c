@@ -194,32 +194,6 @@ const char *COM_Parse (const char *data)
 	if (!data)
 		return NULL;
 
-#if 0
-/*	This is the original COM_Parse. It
-	doesn't parse/skip C style comments.
-*/
-skipwhite:
-	// skip whitespace
-	while ( (c = *data) <= ' ')
-	{
-		if (c == 0)	// end of file
-		{
-			com_eof = true;
-			return NULL;
-		}
-		data++;
-	}
-	// skip C++ style comments
-	if (c == '/' && data[1] == '/')
-	{
-		while (*data && *data != '\n')
-			data++;
-		goto skipwhite;
-	}
-#else
-/*	This is the new version by Raven found in
-	HCC. It does parse/skip C style comments.
-*/
 	do
 	{
 	// skip whitespace
@@ -262,7 +236,6 @@ skipwhite:
 			done = true;
 		}
 	} while (done == false);
-#endif
 
 	// handle quoted strings specially
 	if (c == '\"')

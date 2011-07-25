@@ -541,25 +541,6 @@ Q_CopyFile
 Used to archive source files
 ============
 */
-#if 0
-void Q_CopyFile (const char *from, const char *to)
-{
-	char	temp[1024];
-	void	*buffer;
-	int	length;
-
-	if (!from || !*from)
-		Error ("%s: null source", __thisfunc__);
-	if (!to || !*to)
-		Error ("%s: null destination", __thisfunc__);
-	length = LoadFile (from, &buffer);
-	q_strlcpy (temp, to, sizeof(temp));
-	CreatePath (temp);
-	SaveFile (to, buffer, length);
-	free (buffer);
-}
-#endif
-
 #define	COPY_READ_BUFSIZE		8192	/* BUFSIZ */
 int Q_CopyFile (const char *frompath, const char *topath)
 {
