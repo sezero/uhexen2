@@ -13,9 +13,6 @@
 
 // MACROS ------------------------------------------------------------------
 
-/* the dec offsetof macro doesn't work very well... */
-#define myoffsetof(type,identifier) ((size_t)&((type *)0)->identifier)
-
 #undef	min
 #undef	max
 #define	q_min(a, b)	(((a) < (b)) ? (a) : (b))
@@ -24,6 +21,9 @@
 #if defined(PLATFORM_WINDOWS)
 #define q_strncasecmp	_strnicmp
 #define q_strcasecmp	_stricmp
+#elif defined(PLATFORM_DOS)
+#define q_strncasecmp	strnicmp
+#define q_strcasecmp	stricmp
 #else
 #define q_strncasecmp	strncasecmp
 #define q_strcasecmp	strcasecmp
@@ -68,7 +68,7 @@ extern int qerr_snprintf (const char *caller, int linenum, char *str, size_t siz
 
 // PUBLIC DATA DECLARATIONS ------------------------------------------------
 
-// set these before calling CheckParm
+/* set these before calling CheckParm() */
 extern int		myargc;
 extern char		**myargv;
 
@@ -80,12 +80,6 @@ extern qboolean		com_eof;
 
 char	*q_strlwr (char *str);
 char	*q_strupr (char *str);
-
-/*
-#ifdef PLATFORM_UNIX
-int	Sys_kbhit(void);
-#endif
-*/
 
 double	GetTime (void);
 

@@ -16,7 +16,8 @@
 #endif
 
 #if defined(PLATFORM_WINDOWS) && !defined(F_OK)
-// values for the second argument to access(). MS does not define them
+/* constants for access() mode argument. MS does not define them.
+ * Note that X_OK (0x01) must not be used in windows code.  */
 #define	R_OK	4		/* Test for read permission.  */
 #define	W_OK	2		/* Test for write permission.  */
 #define	X_OK	1		/* Test for execute permission.  */
@@ -49,7 +50,6 @@ int	LoadFile (const char *filename, void **bufferptr);
 void	SaveFile (const char *filename, const void *buffer, int count);
 
 void	CreatePath (char *path);
-//void	Q_CopyFile (const char *frompath, const char *topath);
 int	Q_CopyFile (const char *frompath, const char *topath);
 int	Q_WriteFileFromHandle (FILE *fromfile, const char *topath, size_t size);
 
