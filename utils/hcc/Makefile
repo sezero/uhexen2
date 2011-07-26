@@ -50,6 +50,10 @@ INCLUDES= -I. -I$(COMMONDIR) -I$(LIBS_DIR)/common
 
 # Other build flags
 
+ifeq ($(TARGET_OS),dos)
+INCLUDES+= -I$(OSLIBS)/dos
+LDFLAGS += -lc
+endif
 ifeq ($(TARGET_OS),win32)
 CFLAGS  += -DWIN32_LEAN_AND_MEAN
 INCLUDES+= -I$(OSLIBS)/windows

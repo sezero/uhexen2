@@ -4,6 +4,9 @@ Development Progress	:
 ---------------------------
 
 2011-07-26 (SVN):
+    * utils: updated the makefiles.
+
+2011-07-26 (SVN):
     * Fixes for djgpp version check.
 
 2011-07-25 (SVN):
