@@ -32,8 +32,12 @@
 #include "compiler.h"
 #include "qsnprint.h"
 
-#if defined(__DJGPP__) && (__DJGPP_MINOR__ < 4)
+#if defined(__DJGPP__) &&	\
+  (!defined(__DJGPP_MINOR__) || __DJGPP_MINOR__ < 4)
 /* DJGPP < v2.04 doesn't have [v]snprintf().  */
+/* to ensure a proper version check, include stdio.h
+ * or go32.h which includes sys/version.h since djgpp
+ * versions >= 2.02 and defines __DJGPP_MINOR__ */
 #include "djlib/vsnprntf.c"
 #endif	/* __DJGPP_MINOR__ < 4 */
 

@@ -8,8 +8,12 @@
  * version 2010.  Even in VS2010, there is no inttypes.h.. */
 #include "msinttypes/stdint.h"
 
-#elif defined(__DJGPP__) && (__DJGPP_MINOR__ < 4)
+#elif defined(__DJGPP__) &&	\
+    (!defined(__DJGPP_MINOR__) || __DJGPP_MINOR__ < 4)
 /* DJGPP < v2.04 doesn't have stdint.h and inttypes.h. */
+/* to ensure a proper version check, include stdio.h
+ * or go32.h which includes sys/version.h since djgpp
+ * versions >= 2.02 and defines __DJGPP_MINOR__ */
 #include "djstdint/stdint.h"
 
 #else	/* assume presence of a stdint.h from the SDK. */

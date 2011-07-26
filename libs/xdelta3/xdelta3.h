@@ -72,6 +72,11 @@
 #define inline  /* __inline */
 #endif
 #endif /* WIN32 */
+
+#if defined(__DJGPP__) && !defined(__DJGPP_MINOR__)
+#include <stdio.h>
+#endif /* __DJGPP__ */
+
 #include "q_stdint.h"
 
 /* TODO: note that SIZEOF_USIZE_T is never set to 8, although it should be for

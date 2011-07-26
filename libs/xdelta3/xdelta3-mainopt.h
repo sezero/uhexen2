@@ -25,8 +25,6 @@
 
 #include "xdelta3-sizedefs.h"
 
-#include "q_stdint.h"
-
 #if defined(__GNUC__) && (__GNUC__ > 3 || (__GNUC__ == 3 && __GNUC_MINOR__ > 0))
 #define __fp_printf_like(_one, _two)	__attribute__((__format__ (__printf__,_one,_two)))
 #else

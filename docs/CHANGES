@@ -3,6 +3,9 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2011-07-26 (SVN):
+    * Fixes for djgpp version check.
+
 2011-07-25 (SVN):
     * libs/common/q_stdinc.h: Moved stdio.h include before q_stdint.h.
 

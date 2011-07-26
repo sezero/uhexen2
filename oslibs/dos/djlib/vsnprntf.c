@@ -9,9 +9,9 @@
 #include <errno.h>
 #include <libc/file.h>
 
-#if (__DJGPP_MINOR < 3) && !defined(_IONTERM)
+#if !defined(_IONTERM)
 #define _IONTERM 0 /* dummy value */
-#endif /* djgpp < 2.03 && !defined(_IONTERM) */
+#endif /*  _IONTERM */
 
 static __inline__ void __stropenw(FILE *p, char *str, int len)
 {
