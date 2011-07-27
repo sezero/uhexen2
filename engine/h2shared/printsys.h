@@ -53,7 +53,7 @@ void CON_Printf (unsigned int flags, const char *fmt, ...) __attribute__((__form
 #if defined (__GNUC__) && !(defined(__STDC_VERSION__) && __STDC_VERSION__ >= 199901L)
 #define DEBUG_Printf(fmt, args...)	do {} while (0)
 #else
-#define DEBUG_Printf(fmt, ...)		do {} while (0)
+#define DEBUG_Printf(...)		do {} while (0)
 #endif
 #endif
 

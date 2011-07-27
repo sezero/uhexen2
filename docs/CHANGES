@@ -3,6 +3,10 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2011-07-27 (SVN):
+    * printsys.h (DEBUG_Printf): Fixed a harmless copy and paste error
+      in the C99 case of the macro.
+
 2011-07-26 (SVN):
     * utils: updated the makefiles.
 
