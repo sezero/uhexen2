@@ -698,12 +698,12 @@ char *Sys_GetClipboardData (void)
 
 void Sys_PrintTerm (const char *msgtxt)
 {
-	unsigned char		*p;
+	const unsigned char	*p;
 
 	if (sys_nostdout.integer)
 		return;
 
-	for (p = (unsigned char *) msgtxt; *p; p++)
+	for (p = (const unsigned char *) msgtxt; *p; p++)
 		putc (*p, stdout);
 }
 
@@ -744,7 +744,9 @@ void Sys_Error (const char *error, ...)
 	Cvar_SetROM ("sys_nostdout", "0");	// enable printing to terminal
 	Host_Shutdown ();
 
-	fprintf(stderr, ERROR_PREFIX "%s\n\n", text);
+	fputs (ERROR_PREFIX, stderr);
+	fputs (text, stderr);
+	fputs ("\n\n", stderr);
 
 // Sys_AtExit is called by exit to shutdown the system
 	exit (1);
@@ -956,7 +958,7 @@ static void Sys_GetMemory (void)
 		quakeparms.membase = dos_getmaxlockedmem (&quakeparms.memsize);
 	}
 
-	fprintf(stderr, "malloc'd: %d\n", quakeparms.memsize);
+	printf("malloc'd: %d\n", quakeparms.memsize);
 
 	j = COM_CheckParm ("-heapsize");
 	if (j && j < com_argc - 1)
@@ -1026,8 +1028,9 @@ Sys_NoFPUExceptionHandler
 */
 static void Sys_NoFPUExceptionHandler (int whatever)
 {
-	printf ("\nError: Quake requires a floating-point processor\n");
-	exit (0);
+	fputs ("\nError: Quake requires a floating-point processor\n", stderr);
+
+	exit (1);
 }
 
 

@@ -302,6 +302,8 @@ void Sys_Error (const char *error, ...)
 {
 	va_list		argptr;
 	char		text[MAX_PRINTMSG];
+	const char	text2[] = ERROR_PREFIX;
+	const unsigned char	*p;
 
 	va_start (argptr, error);
 	q_vsnprintf (text, sizeof(text), error, argptr);
@@ -316,7 +318,12 @@ void Sys_Error (const char *error, ...)
 
 	Host_Shutdown ();
 
-	fprintf(stderr, ERROR_PREFIX "%s\n\n", text);
+	for (p = (const unsigned char *) text2; *p; p++)
+		putc (*p, stderr);
+	for (p = (const unsigned char *) text ; *p; p++)
+		putc (*p, stderr);
+	putc ('\n', stderr);
+	putc ('\n', stderr);
 	if (!isDedicated)
 		Sys_ErrorMessage (text);
 
@@ -325,12 +332,12 @@ void Sys_Error (const char *error, ...)
 
 void Sys_PrintTerm (const char *msgtxt)
 {
-	unsigned char		*p;
+	const unsigned char	*p;
 
 	if (sys_nostdout.integer)
 		return;
 
-	for (p = (unsigned char *) msgtxt; *p; p++)
+	for (p = (const unsigned char *) msgtxt; *p; p++)
 		putc (*p, stdout);
 }
 
@@ -627,12 +634,12 @@ static void Sys_CheckSDL (void)
 static void PrintVersion (void)
 {
 #if HOT_VERSION_BETA
-	printf ("Hammer of Thyrion, %s-%s (%s) pre-release\n", HOT_VERSION_STR, HOT_VERSION_BETA_STR, HOT_VERSION_REL_DATE);
+	Sys_Printf ("Hammer of Thyrion, %s-%s (%s) pre-release\n", HOT_VERSION_STR, HOT_VERSION_BETA_STR, HOT_VERSION_REL_DATE);
 #else
-	printf ("Hammer of Thyrion, release %s (%s)\n", HOT_VERSION_STR, HOT_VERSION_REL_DATE);
+	Sys_Printf ("Hammer of Thyrion, release %s (%s)\n", HOT_VERSION_STR, HOT_VERSION_REL_DATE);
 #endif
-	printf ("running on %s engine %4.2f (%s)\n", ENGINE_NAME, ENGINE_VERSION, PLATFORM_STRING);
-	printf ("More info / sending bug reports:  http://uhexen2.sourceforge.net\n");
+	Sys_Printf ("running on %s engine %4.2f (%s)\n", ENGINE_NAME, ENGINE_VERSION, PLATFORM_STRING);
+	Sys_Printf ("More info / sending bug reports:  http://uhexen2.sourceforge.net\n");
 }
 
 #include "snd_sys.h"
@@ -687,14 +694,14 @@ static void PrintHelp (const char *name)
 {
 	int i = 0;
 
-	printf ("Usage: %s [options]\n", name);
+	Sys_Printf ("Usage: %s [options]\n", name);
 	while (help_strings[i])
 	{
-		printf (help_strings[i]);
-		printf ("\n");
+		Sys_PrintTerm (help_strings[i]);
+		Sys_PrintTerm ("\n");
 		i++;
 	}
-	printf ("\n");
+	Sys_PrintTerm ("\n");
 }
 
 /*

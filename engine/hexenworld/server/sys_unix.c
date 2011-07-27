@@ -243,6 +243,8 @@ void Sys_Error (const char *error, ...)
 {
 	va_list		argptr;
 	char		text[MAX_PRINTMSG];
+	const char	text2[] = ERROR_PREFIX;
+	const unsigned char	*p;
 
 	va_start (argptr, error);
 	q_vsnprintf (text, sizeof(text), error, argptr);
@@ -254,19 +256,24 @@ void Sys_Error (const char *error, ...)
 		fflush (sv_logfile);
 	}
 
-	fprintf(stderr, ERROR_PREFIX "%s\n\n", text);
+	for (p = (const unsigned char *) text2; *p; p++)
+		putc (*p, stderr);
+	for (p = (const unsigned char *) text ; *p; p++)
+		putc (*p, stderr);
+	putc ('\n', stderr);
+	putc ('\n', stderr);
 
 	exit (1);
 }
 
 void Sys_PrintTerm (const char *msgtxt)
 {
-	unsigned char		*p;
+	const unsigned char	*p;
 
 	if (sys_nostdout.integer)
 		return;
 
-	for (p = (unsigned char *) msgtxt; *p; p++)
+	for (p = (const unsigned char *) msgtxt; *p; p++)
 		putc (*p, stdout);
 }
 
@@ -453,11 +460,11 @@ static int Sys_GetUserdir (char *dst, size_t dstsize)
 
 static void PrintVersion (void)
 {
-	printf ("HexenWorld server %4.2f (%s)\n", ENGINE_VERSION, PLATFORM_STRING);
+	Sys_Printf ("HexenWorld server %4.2f (%s)\n", ENGINE_VERSION, PLATFORM_STRING);
 #if HOT_VERSION_BETA
-	printf ("Hammer of Thyrion, %s-%s (%s) pre-release\n", HOT_VERSION_STR, HOT_VERSION_BETA_STR, HOT_VERSION_REL_DATE);
+	Sys_Printf ("Hammer of Thyrion, %s-%s (%s) pre-release\n", HOT_VERSION_STR, HOT_VERSION_BETA_STR, HOT_VERSION_REL_DATE);
 #else
-	printf ("Hammer of Thyrion, release %s (%s)\n", HOT_VERSION_STR, HOT_VERSION_REL_DATE);
+	Sys_Printf ("Hammer of Thyrion, release %s (%s)\n", HOT_VERSION_STR, HOT_VERSION_REL_DATE);
 #endif
 }
 
@@ -493,7 +500,7 @@ int main (int argc, char **argv)
 			else if ( !(strcmp(argv[i], "-h")) || !(strcmp(argv[i], "-help" )) ||
 				  !(strcmp(argv[i], "-?")) || !(strcmp(argv[i], "--help")) )
 			{
-				printf ("See the documentation for details\n");
+				Sys_PrintTerm ("See the documentation for details\n");
 				exit (0);
 			}
 		}

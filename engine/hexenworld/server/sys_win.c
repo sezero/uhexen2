@@ -362,11 +362,11 @@ static int Sys_GetBasedir (char *argv0, char *dst, size_t dstsize)
 
 static void PrintVersion (void)
 {
-	printf ("HexenWorld server %4.2f (%s)\n", ENGINE_VERSION, PLATFORM_STRING);
+	Sys_Printf ("HexenWorld server %4.2f (%s)\n", ENGINE_VERSION, PLATFORM_STRING);
 #if HOT_VERSION_BETA
-	printf ("Hammer of Thyrion, %s-%s (%s) pre-release\n", HOT_VERSION_STR, HOT_VERSION_BETA_STR, HOT_VERSION_REL_DATE);
+	Sys_Printf ("Hammer of Thyrion, %s-%s (%s) pre-release\n", HOT_VERSION_STR, HOT_VERSION_BETA_STR, HOT_VERSION_REL_DATE);
 #else
-	printf ("Hammer of Thyrion, release %s (%s)\n", HOT_VERSION_STR, HOT_VERSION_REL_DATE);
+	Sys_Printf ("Hammer of Thyrion, release %s (%s)\n", HOT_VERSION_STR, HOT_VERSION_REL_DATE);
 #endif
 }
 
@@ -402,7 +402,7 @@ int main (int argc, char **argv)
 			else if ( !(strcmp(argv[i], "-h")) || !(strcmp(argv[i], "-help" )) ||
 				  !(strcmp(argv[i], "--help")) || !(strcmp(argv[i], "-?")) )
 			{
-				printf ("See the documentation for details\n");
+				Sys_PrintTerm ("See the documentation for details\n");
 				exit (0);
 			}
 		}

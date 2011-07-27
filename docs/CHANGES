@@ -4,6 +4,9 @@ Development Progress	:
 ---------------------------
 
 2011-07-27 (SVN):
+    * sys_unix.c, sys_win.c, sys_dos.c: Made console prints consistent.
+
+2011-07-27 (SVN):
     * debuglog.c: Removed the O_APPEND flag when opening the log file. It
       was a legacy from Quake who used to open and close the log file on
       every write. Commented out the Sys_unlink() call and added O_TRUNC
