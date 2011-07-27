@@ -4,6 +4,9 @@ Development Progress	:
 ---------------------------
 
 2011-07-27 (SVN):
+    * sys_dos.c: More console print adjustments.
+
+2011-07-27 (SVN):
     * sys_unix.c, sys_win.c, sys_dos.c: Made console prints consistent.
 
 2011-07-27 (SVN):

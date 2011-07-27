@@ -598,6 +598,8 @@ void Sys_Error (const char *error, ...)
 {
 	va_list		argptr;
 	char		text[MAX_PRINTMSG];
+	const char	text2[] = ERROR_PREFIX;
+	const unsigned char	*p;
 
 	va_start (argptr, error);
 	q_vsnprintf (text, sizeof(text), error, argptr);
@@ -612,9 +614,12 @@ void Sys_Error (const char *error, ...)
 
 	Host_Shutdown ();
 
-	fputs (ERROR_PREFIX, stderr);
-	fputs (text, stderr);
-	fputs ("\n\n", stderr);
+	for (p = (const unsigned char *) text2; *p; p++)
+		putc (*p, stderr);
+	for (p = (const unsigned char *) text ; *p; p++)
+		putc (*p, stderr);
+	putc ('\n', stderr);
+	putc ('\n', stderr);
 
 // Sys_AtExit is called by exit to shutdown the system
 	exit (1);
@@ -885,7 +890,11 @@ Sys_NoFPUExceptionHandler
 */
 static void Sys_NoFPUExceptionHandler (int whatever)
 {
-	fputs ("\nError: Quake requires a floating-point processor\n", stderr);
+	const char	err[] = "\nError: Hexen II requires a floating-point processor\n";
+	const unsigned char	*p;
+
+	for (p = (const unsigned char *) err; *p; p++)
+		putc (*p, stderr);
 
 	exit (1);
 }
