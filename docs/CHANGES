@@ -4,6 +4,14 @@ Development Progress	:
 ---------------------------
 
 2011-07-27 (SVN):
+    * hexen2/sys_win.c, hexenworld/client/sys_win.c (WinMain): Instead
+      of using an empty string, use GetModuleFileName() to get the app's
+      name. Remove the useless S_BlockSound() call. Detect early whether
+      we are a dedicated server and allocate a console as the first job.
+      Check for console allocation error cases. Separate the init splash
+      window creation into a Sys_CreateInitSplash() helper procedure.
+
+2011-07-27 (SVN):
     * printsys.h (DEBUG_Printf): Fixed a harmless copy and paste error
       in the C99 case of the macro.
 

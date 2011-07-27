@@ -621,18 +621,41 @@ int			global_nCmdShow;
 HWND		hwnd_dialog;
 #endif	/* NO_SPLASHES */
 static char	*argv[MAX_NUM_ARGVS];
-static char	empty_string[] = "";
 static char	cwd[1024];
+static char	prog[MAX_PATH];
 static quakeparms_t	parms;
+
+static void Sys_CreateInitSplash (HINSTANCE hInstance)
+{
+#if !defined(NO_SPLASHES)
+	RECT		rect;
+
+	hwnd_dialog = CreateDialog(hInstance, MAKEINTRESOURCE(IDD_DIALOG1), NULL, NULL);
+	if (!hwnd_dialog)
+		return;
+
+	if (GetWindowRect (hwnd_dialog, &rect))
+	{
+		if (rect.left > (rect.top * 2))
+		{
+			SetWindowPos (hwnd_dialog, 0,
+					(rect.left / 2) - ((rect.right - rect.left) / 2),
+					rect.top, 0, 0,
+					SWP_NOZORDER | SWP_NOSIZE);
+		}
+	}
+
+	ShowWindow (hwnd_dialog, SW_SHOWDEFAULT);
+	UpdateWindow (hwnd_dialog);
+	SetForegroundWindow (hwnd_dialog);
+#endif	/* NO_SPLASHES */
+}
 
 int WINAPI WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
 {
 	int		i;
 	double		time, oldtime, newtime;
 	MEMORYSTATUS	lpBuffer;
-#if !defined(NO_SPLASHES)
-	RECT		rect;
-#endif	/* NO_SPLASHES */
 
 	/* previous instances do not exist in Win32 */
 	if (hPrevInstance)
@@ -658,7 +681,10 @@ int WINAPI WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 	parms.userdir = cwd;	/* no userdir on win32 */
 
 	parms.argc = 1;
-	argv[0] = empty_string;
+	argv[0] = prog;
+	if (GetModuleFileName(NULL, prog, sizeof(prog)) == 0)
+		prog[0] = '\0';
+	else	prog[MAX_PATH - 1] = '\0';
 
 	while (*lpCmdLine && (parms.argc < MAX_NUM_ARGVS))
 	{
@@ -684,6 +710,27 @@ int WINAPI WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 	parms.argv = argv;
 	host_parms = &parms;	/* initialize the host params */
 
+	isDedicated = (COM_CheckParm ("-dedicated") != 0);
+	if (isDedicated)
+	{
+		if (!AllocConsole ())
+		{
+			isDedicated = false;	/* so that we have a graphical error dialog */
+			Sys_Error ("Couldn't create dedicated server console");
+		}
+		hinput = GetStdHandle (STD_INPUT_HANDLE);
+		houtput = GetStdHandle (STD_OUTPUT_HANDLE);
+		if (hinput  == INVALID_HANDLE_VALUE ||
+		    houtput == INVALID_HANDLE_VALUE ||
+		    hinput  == NULL || houtput == NULL)
+		{
+			isDedicated = false;	/* so that we have a graphical error dialog */
+			Sys_Error ("Couldn't retrieve server console handles");
+		}
+
+		PrintVersion();
+	}
+
 	LOG_Init (&parms);
 
 	Sys_Printf("basedir is: %s\n", parms.basedir);
@@ -691,32 +738,8 @@ int WINAPI WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 
 	COM_ValidateByteorder ();
 
-	isDedicated = (COM_CheckParm ("-dedicated") != 0);
-
-#if !defined(NO_SPLASHES)
 	if (!isDedicated)
-	{
-		hwnd_dialog = CreateDialog(hInstance, MAKEINTRESOURCE(IDD_DIALOG1), NULL, NULL);
-
-		if (hwnd_dialog)
-		{
-			if (GetWindowRect (hwnd_dialog, &rect))
-			{
-				if (rect.left > (rect.top * 2))
-				{
-					SetWindowPos (hwnd_dialog, 0,
-						(rect.left / 2) - ((rect.right - rect.left) / 2),
-						rect.top, 0, 0,
-						SWP_NOZORDER | SWP_NOSIZE);
-				}
-			}
-
-			ShowWindow (hwnd_dialog, SW_SHOWDEFAULT);
-			UpdateWindow (hwnd_dialog);
-			SetForegroundWindow (hwnd_dialog);
-		}
-	}
-#endif	/* NO_SPLASHES */
+		Sys_CreateInitSplash (global_hInstance);
 
 // take the greater of all the available memory or half the total memory,
 // but at least 16 Mb and no more than 32 Mb, unless they explicitly
@@ -763,20 +786,12 @@ int WINAPI WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 
 	if (isDedicated)
 	{
-		if (!AllocConsole ())
-		{
-			Sys_Error ("Couldn't create dedicated server console");
-		}
-
-		hinput = GetStdHandle (STD_INPUT_HANDLE);
-		houtput = GetStdHandle (STD_OUTPUT_HANDLE);
-
-#if !defined(_WIN64)
-# define a_to_intptr						 atoi
-#else
-# define a_to_intptr						_atoi64
-#endif	/* _WIN64 */
-	// give QHOST a chance to hook into the console
+	/* give QHOST a chance to hook into the console */
+#		if !defined(_WIN64)
+#		 define a_to_intptr	 atoi
+#		else
+#		 define a_to_intptr	_atoi64
+#		endif	/* _WIN64 */
 		i = COM_CheckParm ("-HFILE");
 		if (i && i < com_argc-1)
 		{
@@ -796,14 +811,9 @@ int WINAPI WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 		}
 
 		InitConProc (hFile, heventParent, heventChild);
-
-		PrintVersion();
 	}
 
 	Sys_Init ();
-
-// because sound is off until we become active
-	S_BlockSound ();
 
 	Host_Init();
 
