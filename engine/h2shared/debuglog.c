@@ -90,29 +90,29 @@ void LOG_Init (quakeparms_t *parms)
 	int			i, j;
 	char		session[24];
 
-	Sys_DateTimeString (session);
-	q_snprintf (logfilename, sizeof(logfilename), "%s/%s", parms->userdir, DEBUGLOG_FILENAME);
-
-	if ( COM_CheckParm("-condebug") || COM_CheckParm("-debuglog") )
+	if (COM_CheckParm("-condebug") || COM_CheckParm("-debuglog"))
 	{
 		con_debuglog |= LOG_NORMAL;
 	}
-	if ( COM_CheckParm("-devlog") )
+	if (COM_CheckParm("-devlog"))	/* always log Con_DPrintf and Sys_DPrintf */
 	{
-	/* log the Con_DPrintf and Sys_DPrintf content when !developer.integer */
 		con_debuglog |= LOG_DEVEL;
 	}
 
 	if (con_debuglog == LOG_NONE)
 		return;
 
-	Sys_unlink (logfilename);
+	q_snprintf (logfilename, sizeof(logfilename), "%s/%s", parms->userdir, DEBUGLOG_FILENAME);
+	Sys_DateTimeString (session);
 
-	log_fd = open (logfilename, O_WRONLY | O_CREAT | O_APPEND, 0666);
+	/*
+	Sys_unlink (logfilename);
+	*/
+	log_fd = open (logfilename, O_WRONLY | O_CREAT | O_TRUNC, 0666);
 	if (log_fd == -1)
 	{
 		con_debuglog = LOG_NONE;
-		fprintf (stderr, "Error: Unable to create log file\n");
+		Sys_PrintTerm ("Error: Unable to create log file\n");
 		return;
 	}
 
