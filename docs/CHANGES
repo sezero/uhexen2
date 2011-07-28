@@ -4,6 +4,10 @@ Development Progress	:
 ---------------------------
 
 2011-07-28 (SVN):
+    * h2patch (get_millisecs): For DOS, don't do the 64bit multiplication
+      and live with a minor precision loss.
+
+2011-07-28 (SVN):
     * vid_mgl4.c: Even though this driver is only for x86-win32, replaced
       GWL_WNDPROC usage by GWLP_WNDPROC for sake of self-consistency.
 

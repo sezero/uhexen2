@@ -207,10 +207,10 @@ static int check_access (const char *name)
 
 static long get_millisecs (void)
 {
-/* first call to uclock() returns 0 and we won't
- * be running for hours, therefore multiplication
- * by 1000 cannot overflow. */
-	return uclock() * 1000 / UCLOCKS_PER_SEC;
+/* UCLOCKS_PER_SEC is defined as 1193180 therefore
+ * dividing it by 1000 causes minor precision loss
+ * which we don't care much about. */
+	return uclock() / (UCLOCKS_PER_SEC / 1000);
 }
 
 #elif defined(_WIN32)
