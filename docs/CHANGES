@@ -3,6 +3,10 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2011-07-28 (SVN):
+    * vid_mgl4.c: Even though this driver is only for x86-win32, replaced
+      GWL_WNDPROC usage by GWLP_WNDPROC for sake of self-consistency.
+
 2011-07-27 (SVN):
     * sys_dos.c: More console print adjustments.
 

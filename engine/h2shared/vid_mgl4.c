@@ -1,6 +1,7 @@
 /*
 	vid_mgl4.c
 	Win32 video driver using SciTech MGL-4.05
+	This is X86-WIN32 only: No WIN64 because no 64 bit MGL.
 
 	$Id$
 */
@@ -1506,8 +1507,8 @@ static qboolean VID_SetFullscreenMode (int modenum)
 	DirectDraw modes (WM_SYSKEYDOWN and WM_SYSKEYUP are not forwarded
 	to the user eventproc).
 */
-	mgl_wnd_proc = (LONG_PTR)GetWindowLongPtr(mainwindow, GWL_WNDPROC);
-	SetWindowLongPtr(mainwindow, GWL_WNDPROC, (LONG_PTR)MainWndProc);
+	mgl_wnd_proc = (LONG_PTR)GetWindowLongPtr(mainwindow, GWLP_WNDPROC);
+	SetWindowLongPtr(mainwindow, GWLP_WNDPROC, (LONG_PTR)MainWndProc);
 
 	return true;
 }
@@ -2233,7 +2234,7 @@ void	VID_Shutdown (void)
 		   and closing windows */
 		if (modestate == MS_FULLSCREEN && mainwindow && mgl_wnd_proc)
 		{
-			SetWindowLongPtr(mainwindow, GWL_WNDPROC, mgl_wnd_proc);
+			SetWindowLongPtr(mainwindow, GWLP_WNDPROC, mgl_wnd_proc);
 		}
 
 		PostMessage (HWND_BROADCAST, WM_PALETTECHANGED, (WPARAM)mainwindow, (LPARAM)0);
