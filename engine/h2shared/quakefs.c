@@ -935,8 +935,7 @@ Allways appends a 0 byte to the loaded data.
 #define	LOADFILE_TEMPHUNK	2
 #define	LOADFILE_CACHE		3
 #define	LOADFILE_STACK		4
-#define	LOADFILE_BUF		5
-#define	LOADFILE_MALLOC		6
+#define	LOADFILE_MALLOC		5
 
 static byte	*loadbuf;
 #if !defined(SERVERONLY)
@@ -955,7 +954,7 @@ static byte *FS_LoadFile (const char *path, int usehunk, unsigned int *path_id)
 	FILE	*h;
 	byte	*buf;
 	char	base[32];
-	size_t		len;
+	size_t	len;
 
 /* look for it in the filesystem or pack files */
 	len = FS_OpenFile (path, &h, path_id);
@@ -987,12 +986,6 @@ static byte *FS_LoadFile (const char *path, int usehunk, unsigned int *path_id)
 			buf = loadbuf;
 		else
 			buf = (byte *) Hunk_TempAlloc (len+1);
-		break;
-	case LOADFILE_BUF:
-		if (len < loadsize && loadbuf != NULL)
-			buf = loadbuf;
-		else
-			buf = (byte *) Hunk_AllocName(len + 1, path);
 		break;
 	case LOADFILE_MALLOC:
 		buf = (byte *) malloc (len+1);
@@ -1046,23 +1039,6 @@ byte *FS_LoadStackFile (const char *path, void *buffer, size_t bufsize, unsigned
 	loadbuf = (byte *)buffer;
 	loadsize = bufsize;
 	buf = FS_LoadFile (path, LOADFILE_STACK, path_id);
-
-	return buf;
-}
-
-/* loads into a previously allocated buffer. if space is insufficient
- * or the buffer is NULL, loads onto the hunk.  bufsize is the actual
- * size (without the +1). */
-byte *FS_LoadBufFile (const char *path, void *buffer, size_t *bufsize, unsigned int *path_id)
-{
-	byte	*buf;
-
-	loadbuf = (byte *)buffer;
-	loadsize = (*bufsize) + 1;
-	buf = FS_LoadFile (path, LOADFILE_BUF, path_id);
-	*bufsize = (buf == NULL) ? 0 : fs_filesize;
-	if (loadbuf && buf && buf != loadbuf)
-		Sys_Printf("%s: insufficient buffer for %s not used.\n", __thisfunc__, path);
 
 	return buf;
 }

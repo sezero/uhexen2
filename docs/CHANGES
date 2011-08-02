@@ -4,6 +4,9 @@ Development Progress	:
 ---------------------------
 
 2011-08-02 (SVN):
+    * quakefs.c, quakefs.h: Removed the FS_LoadBufFile() method.
+
+2011-08-02 (SVN):
     * draw.h, gl_draw.c: Removed Draw_PicFileBuf() which is not needed
       for a long time now.
 

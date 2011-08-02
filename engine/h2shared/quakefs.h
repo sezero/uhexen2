@@ -116,12 +116,6 @@ byte *FS_LoadStackFile (const char *path, void *buffer, size_t bufsize,
 	/* uses the specified stack stack buffer with the specified size
 	 * of bufsize. if bufsize is too short, uses temp hunk. the bufsize
 	 * must include the +1  */
-byte *FS_LoadBufFile (const char *path, void *buffer, size_t *bufsize,
-							unsigned int *path_id);
-	/* uses the specified pre-allocated buffer with bufsize + 1 size.
-	 * bufsize is the actual expected size (without the + 1).  if the
-	 * space is too short or the buffer is NULL, loads onto the hunk.
-	 * sets bufsize to fs_filesize for success, or to 0 for failure. */
 
 struct cache_user_s;
 void  FS_LoadCacheFile (const char *path, struct cache_user_s *cu,
