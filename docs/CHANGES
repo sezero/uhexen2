@@ -4,6 +4,13 @@ Development Progress	:
 ---------------------------
 
 2011-08-02 (SVN):
+    * hexen2/cl_input.c (CL_BaseMove): Simplify the decisiodn of making
+      the "speed" key to act as "slow" key XOR'ing (in_speed.state & 1)
+      and (cl_forwardspeed.value>200).
+    * hexenworld/client/cl_input.c (CL_BaseMove): Ported the "speed key
+      to act as slow key" behaviour from hexen2 to hexenworld.
+
+2011-08-02 (SVN):
     * quakefs.c, quakefs.h: Removed the FS_LoadBufFile() method.
 
 2011-08-02 (SVN):
