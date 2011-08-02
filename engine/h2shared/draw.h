@@ -18,7 +18,6 @@ void Draw_ReInit (void);
 
 qpic_t *Draw_PicFromWad (const char *name);
 qpic_t *Draw_PicFromFile (const char *name);
-qpic_t *Draw_PicFileBuf (const char *name, void *p, size_t *size);
 
 qpic_t *Draw_CachePic (const char *path);
 

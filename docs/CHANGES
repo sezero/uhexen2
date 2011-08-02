@@ -4,6 +4,10 @@ Development Progress	:
 ---------------------------
 
 2011-08-02 (SVN):
+    * draw.h, gl_draw.c: Removed Draw_PicFileBuf() which is not needed
+      for a long time now.
+
+2011-08-02 (SVN):
     * gl_vidnt.c, gl_vidsdl.c: Changed VID_SetPalette() to not use the
       FS_LoadBufFile() method.
 

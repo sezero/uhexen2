@@ -132,30 +132,6 @@ qpic_t *Draw_PicFromFile (const char *name)
 	return p;
 }
 
-// Pa3PyX: Like Draw_PicFromFile, except loads pic into
-// a specified buffer if there is room
-qpic_t *Draw_PicFileBuf (const char *name, void *p, size_t *size)
-{
-	qpic_t	*_p;
-	glpic_t	gl;
-
-	p = (void *)FS_LoadBufFile(name, p, size, NULL);
-	if (!p)
-		return NULL;
-	_p = (qpic_t *)p;
-
-	SwapPic (_p);
-
-	gl.texnum = GL_LoadPicTexture(_p);
-	gl.sl = 0;
-	gl.sh = 1;
-	gl.tl = 0;
-	gl.th = 1;
-	memcpy (_p->data, &gl, sizeof(glpic_t));
-
-	return _p;
-}
-
 qpic_t *Draw_PicFromWad (const char *name)
 {
 	qpic_t	*p;
