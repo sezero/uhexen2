@@ -196,11 +196,8 @@ extern	int		c_brush_polys, c_alias_polys;
 extern	int		ColorIndex[16];
 extern	unsigned int	ColorPercent[16];
 extern	float		RTint[256], GTint[256], BTint[256];
-#if USE_HEXEN2_PALTEX_CODE
 extern	unsigned char	*inverse_pal;
-#else
 extern	unsigned char	d_15to8table[65536];
-#endif
 
 /* global cvars */
 extern	cvar_t	r_norefresh;

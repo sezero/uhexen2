@@ -213,36 +213,5 @@
    ================================================================== */
 
 
-/* ====================================================================
-   USE_HEXEN2_PALTEX_CODE
-   Value  :	0 or 1
-   Affects:	gl_draw.c, gl_vidsdl.c, gl_vidnt.c, win32res.rc
-
-   To use hexenworld (quake)'s palettized texture code instead of the
-   original hexen2 code, change the definition below to 0.  That will
-   result in lower quality. see gl_draw.c (and gl_vidXXX.c) for more
-   details.
-   NOTE: If you set this to 0 and you are compiling for windows with
-   the splash screens enabled, make sure to enable the comctl32 linkage
-   in the Makefile.
-   ================================================================== */
-#define	USE_HEXEN2_PALTEX_CODE		1
-
-
-/* ====================================================================
-   USE_HEXEN2_RESAMPLER_CODE
-   Value  :	0 or 1
-   Affects:	gl_draw.c
-
-   To use hexenworld (quake)'s texture resampler code instead of the
-   original hexen2 code, change the definition below to 0. That will
-   result in slightly sharper but "jaggier" textures here and there.
-   See in gl_draw.c. bad results especially detectable on help screens
-   when using old cards with small (256k) texture size support (read:
-   old voodoo boards.)
-   ================================================================== */
-#define	USE_HEXEN2_RESAMPLER_CODE	1
-
-
 #endif	/* __HEXEN2_OPTIONS_H		*/
 

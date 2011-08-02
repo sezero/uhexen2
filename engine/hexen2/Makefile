@@ -423,11 +423,6 @@ endif
 
 ifneq ($(WITH_SPLASHES),yes)
 CPPFLAGS+= -DNO_SPLASHES
-else
-# gl version needs linking to comctl32.dll because of that progress
-# bar thingy. it is necessary for the InitCommonControls call, only
-# when USE_HEXEN2_PALTEX_CODE is defined as 0 in h2config.h
-#GLFLAGS+=-lcomctl32
 endif
 
 ifeq ($(USE_CODEC_VORBIS),yes)
@@ -483,11 +478,6 @@ endif
 
 ifneq ($(WITH_SPLASHES),yes)
 CPPFLAGS+= -DNO_SPLASHES
-else
-# gl version needs linking to comctl32.dll because of that progress
-# bar thingy. it is necessary for the InitCommonControls call, only
-# when USE_HEXEN2_PALTEX_CODE is defined as 0 in h2config.h
-#GLFLAGS+=-lcomctl32
 endif
 
 ifeq ($(USE_CODEC_VORBIS),yes)

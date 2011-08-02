@@ -156,11 +156,7 @@ float		RTint[256], GTint[256], BTint[256];
 unsigned short	d_8to16table[256];
 unsigned int	d_8to24table[256];
 unsigned int	d_8to24TranslucentTable[256];
-#if USE_HEXEN2_PALTEX_CODE
 unsigned char	*inverse_pal;
-#else
-unsigned char	d_15to8table[65536];
-#endif
 
 // gl stuff
 static void GL_Init (void);
@@ -499,11 +495,9 @@ static void VID_Init8bitPalette (void)
 	{
 		glColorTableEXT_fp = (glColorTableEXT_f)SDL_GL_GetProcAddress("glColorTableEXT");
 		if (glColorTableEXT_fp == NULL)
-		{
 			return;
-		}
-		have8bit = true;
 
+		have8bit = true;
 		if (!vid_config_gl8bit.integer)
 			return;
 
@@ -912,10 +906,6 @@ unsigned int ColorPercent[16] =
 	25, 51, 76, 102, 114, 127, 140, 153, 165, 178, 191, 204, 216, 229, 237, 247
 };
 
-#if USE_HEXEN2_PALTEX_CODE
-// these two procedures should have been used by Raven to
-// generate the gfx/invpal.lmp file which resides in pak0
-
 #define	INVERSE_PALNAME	"gfx/invpal.lmp"
 static int ConvertTrueColorToPal (unsigned char *true_color, unsigned char *palette)
 {
@@ -977,72 +967,6 @@ static void VID_CreateInversePalette (unsigned char *palette)
 	FS_CreatePath(va("%s/%s", fs_userdir, INVERSE_PALNAME));
 	FS_WriteFile (INVERSE_PALNAME, inverse_pal, INVERSE_PAL_SIZE);
 }
-#else	/* USE_HEXEN2_PALTEX_CODE */
-static void VID_Create8bitPalette (void)
-{
-	byte	*pal;
-	unsigned short	r, g, b;
-	int		v;
-	unsigned short	i;
-	int		r1, g1, b1;
-	int		j, k, l, m;
-	FILE	*f;
-	char	s[MAX_OSPATH];
-
-	Con_SafePrintf ("Creating 15to8.pal ..");
-
-	// FIXME: Endianness ???
-
-	// JACK: 3D distance calcs:
-	// k is last closest, l is the distance
-	for (i = 0, m = 0; i < (1<<15); i++, m++)
-	{
-		/* Maps
-		000000000000000
-		000000000011111 = Red  = 0x1F
-		000001111100000 = Blue = 0x03E0
-		111110000000000 = Grn  = 0x7C00
-		*/
-		r = ((i & 0x1F) << 3) + 4;
-		g = ((i & 0x03E0) >> 2) + 4;
-		b = ((i & 0x7C00) >> 7) + 4;
-#   if 0
-		r = (i << 11);
-		g = (i << 6);
-		b = (i << 1);
-		r >>= 11;
-		g >>= 11;
-		b >>= 11;
-#   endif
-		pal = (unsigned char *)d_8to24table;
-		for (v = 0, k = 0, l = 10000; v < 256; v++, pal += 4)
-		{
-			r1 = r - pal[0];
-			g1 = g - pal[1];
-			b1 = b - pal[2];
-			j = sqrt( (r1*r1) + (g1*g1) + (b1*b1) );
-			if (j < l)
-			{
-				k = v;
-				l = j;
-			}
-		}
-		d_15to8table[i] = k;
-		if (m >= 1000)
-			m = 0;
-	}
-	q_snprintf(s, sizeof(s), "%s/glhexen", fs_userdir);
-	Sys_mkdir (s, false);
-	q_snprintf(s, sizeof(s), "%s/glhexen/15to8.pal", fs_userdir);
-	f = fopen(s, "wb");
-	if (f)
-	{
-		fwrite(d_15to8table, 1<<15, 1, f);
-		fclose(f);
-	}
-	Con_SafePrintf(". done\n");
-}
-#endif	/* USE_HEXEN2_PALTEX_CODE */
 
 
 void VID_SetPalette (unsigned char *palette)
@@ -1052,9 +976,6 @@ void VID_SetPalette (unsigned char *palette)
 	unsigned short	i, p, c;
 	unsigned int	v, *table;
 	size_t		palsize;
-#if !USE_HEXEN2_PALTEX_CODE
-	FILE	*f;
-#endif
 	static qboolean	been_here = false;
 
 //
@@ -1102,29 +1023,11 @@ void VID_SetPalette (unsigned char *palette)
 		return;
 	been_here = true;
 
-#if USE_HEXEN2_PALTEX_CODE
-	// This is original hexen2 code for palettized textures
-	// Hexenworld replaced it with quake(world)'s code below
 	inverse_pal = (unsigned char *) Hunk_AllocName (INVERSE_PAL_SIZE + 1, INVERSE_PALNAME);
 	palsize = INVERSE_PAL_SIZE;
 	pal = (byte *) FS_LoadBufFile (INVERSE_PALNAME, inverse_pal, &palsize, NULL);
 	if (pal != inverse_pal || palsize != INVERSE_PAL_SIZE)
 		VID_CreateInversePalette (palette);
-
-#else /* end of HEXEN2_PALTEX_CODE */
-	palsize = FS_OpenFile("glhexen/15to8.pal", &f, NULL);
-	if (f && palsize == (1<<15))
-	{
-		fread(d_15to8table, 1<<15, 1, f);
-		fclose(f);
-	}
-	else
-	{
-		if (f)
-			fclose(f);
-		VID_Create8bitPalette ();
-	}
-#endif	/* end of hexenworld 8_BIT_PALETTE_CODE */
 }
 
 

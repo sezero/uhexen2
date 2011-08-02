@@ -4,6 +4,10 @@ Development Progress	:
 ---------------------------
 
 2011-08-02 (SVN):
+    * Removed Quake texture resampler and 8bit texture extensions code,
+      kept the Hexen II versions instead.
+
+2011-08-02 (SVN):
     * gl_draw.c (GL_Upload8): Tidy up and clean up the confusing alpha
       loops.
 
