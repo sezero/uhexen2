@@ -1711,34 +1711,44 @@ static void GL_Upload8 (byte *data, int width, int height, qboolean mipmap, qboo
 	unsigned int		*trans;
 	int			mark;
 	int			i, p, s;
+	qboolean		noalpha;
 
 	s = width*height;
 	mark = Hunk_LowMark();
 	trans = (unsigned int *) Hunk_AllocName(s * sizeof(unsigned int), "texbuf_upload8");
 
-	if ((alpha || mode != 0))
+	switch (mode)
+	{
+	case 0:	/* need not have alpha */
+		break;
+	case 1:	/* EF_TRANSPARENT */
+	case 2:	/* EF_HOLEY */
+	case 3:	/* EF_SPECIAL_TRANS */
+		alpha = true;
+		break;
+	default:
+		Sys_Error ("%s: Bad texture mode %i", __thisfunc__, mode);
+	}
+
+	if (alpha)
 	{
 		// if there are no transparent pixels, make it a 3 component
 		// texture even if it was specified as otherwise
-		// FIXME: should we not do this for mode == 0 only??  - O.S.
-		i = 0;
-		while (i < s)
-		{
-			if (data[i] == 255)
-				break;
-			i++;
-		}
-		if (i == s)
-			alpha = false;
-
+		noalpha = (mode == 0);
 		for (i = 0; i < s; i++)
 		{
 			p = data[i];
 			trans[i] = d_8to24table[p];
 
-			if (alpha && p == 255)
-			{	// transparent, so scan around for another color
-				// to avoid alpha fringes
+			if (p == 255)
+			{
+				if (noalpha)
+					noalpha = false;
+
+				/* transparent, so scan around for another color
+				 * to avoid alpha fringes */
+				/* this is a replacement from Quake II for Raven's
+				 * "neighboring colors" code */
 				if (i > width && data[i-width] != 255)
 					p = data[i-width];
 				else if (i < s-width && data[i+width] != 255)
@@ -1749,52 +1759,48 @@ static void GL_Upload8 (byte *data, int width, int height, qboolean mipmap, qboo
 					p = data[i+1];
 				else
 					p = 0;
-				// copy rgb components
+				/* copy rgb components */
 				((byte *)&trans[i])[0] = ((byte *)&d_8to24table[p])[0];
 				((byte *)&trans[i])[1] = ((byte *)&d_8to24table[p])[1];
 				((byte *)&trans[i])[2] = ((byte *)&d_8to24table[p])[2];
 			}
-		}
 
-		switch (mode)
-		{
-		case 1:	/* EF_TRANSPARENT */
-			alpha = true;
-			for (i = 0; i < s; i++)
+			switch (mode)
 			{
+			case 1:	/* EF_TRANSPARENT */
 				p = data[i];
 				if (p == 0)
-					trans[i] &= MASK_rgb;
-				else if ( p & 1 )
 				{
 					trans[i] &= MASK_rgb;
-					trans[i] |= ( ( int )( 255 * r_wateralpha.value ) & 0xff) << SHIFT_a;
+				}
+				else if (p & 1)
+				{
+					p = (int)(255 * r_wateralpha.value) & 0xff;
+					trans[i] &= MASK_rgb;
+					trans[i] |= p << SHIFT_a;
 				}
 				else
 				{
 					trans[i] |= MASK_a;
 				}
-			}
-			break;
-		case 2:	/* EF_HOLEY */
-			alpha = true;
-			for (i = 0; i < s; i++)
-			{
+				break;
+
+			case 2:	/* EF_HOLEY */
 				p = data[i];
 				if (p == 0)
 					trans[i] &= MASK_rgb;
-			}
-			break;
-		case 3:	/* EF_SPECIAL_TRANS */
-			alpha = true;
-			for (i = 0; i < s; i++)
-			{
+				break;
+
+			case 3:	/* EF_SPECIAL_TRANS */
 				p = data[i];
 				trans[i] = d_8to24table[ColorIndex[p>>4]] & MASK_rgb;
 				trans[i] |= (( int )ColorPercent[p&15] & 0xff) << SHIFT_a;
+				break;
 			}
-			break;
 		}
+
+		if (mode == 0 && noalpha)
+			alpha = false;
 	}
 	else
 	{

@@ -3,6 +3,10 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2011-08-02 (SVN):
+    * gl_draw.c (GL_Upload8): Tidy up and clean up the confusing alpha
+      loops.
+
 2011-07-28 (SVN):
     * h2patch (get_millisecs): For DOS, don't do the 64bit multiplication
       and live with a minor precision loss.
