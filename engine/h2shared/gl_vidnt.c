@@ -977,7 +977,7 @@ void VID_SetPalette (unsigned char *palette)
 	unsigned short	r, g, b;
 	unsigned short	i, p, c;
 	unsigned int	v, *table;
-	size_t		palsize;
+	int		mark;
 	static qboolean	been_here = false;
 
 //
@@ -1025,11 +1025,18 @@ void VID_SetPalette (unsigned char *palette)
 		return;
 	been_here = true;
 
-	inverse_pal = (unsigned char *) Hunk_AllocName (INVERSE_PAL_SIZE + 1, INVERSE_PALNAME);
-	palsize = INVERSE_PAL_SIZE;
-	pal = (byte *) FS_LoadBufFile (INVERSE_PALNAME, inverse_pal, &palsize, NULL);
-	if (pal != inverse_pal || palsize != INVERSE_PAL_SIZE)
+	mark = Hunk_LowMark ();
+	inverse_pal = (unsigned char *) FS_LoadHunkFile (INVERSE_PALNAME, NULL);
+	if (inverse_pal != NULL && fs_filesize != INVERSE_PAL_SIZE)
+	{
+		Hunk_FreeToLowMark (mark);
+		inverse_pal = NULL;
+	}
+	if (inverse_pal == NULL)
+	{
+		inverse_pal = (unsigned char *) Hunk_AllocName (INVERSE_PAL_SIZE + 1, INVERSE_PALNAME);
 		VID_CreateInversePalette (palette);
+	}
 }
 
 //==========================================================================
