@@ -3,10 +3,14 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2011-08-03 (SVN):
+    * in_win.c: As per feature request #3383989, added support for the
+      6th joystick axis for up movement controlled by joyupthreshold
+      and joyupsensitivity. Ported from the quake2 source.
+
 2011-08-02 (SVN):
-    * hexen2/cl_input.c (CL_BaseMove): Simplify the decisiodn of making
-      the "speed" key to act as "slow" key XOR'ing (in_speed.state & 1)
-      and (cl_forwardspeed.value>200).
+    * hexen2/cl_input.c (CL_BaseMove): Simplified the "speed key or slow
+      key" decision by using an xor in the if condition.
     * hexenworld/client/cl_input.c (CL_BaseMove): Ported the "speed key
       to act as slow key" behaviour from hexen2 to hexenworld.
 

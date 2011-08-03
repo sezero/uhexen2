@@ -116,7 +116,7 @@ static HRESULT (WINAPI *pDirectInputCreate)(HINSTANCE hinst, DWORD dwVersion, LP
 
 enum _ControlList
 {
-	AxisNada = 0, AxisForward, AxisLook, AxisSide, AxisTurn
+	AxisNada = 0, AxisForward, AxisLook, AxisSide, AxisTurn, AxisUp
 };
 
 static DWORD	dwAxisFlags[JOY_MAX_AXES] =
@@ -144,10 +144,12 @@ static	cvar_t	joy_advaxisu = {"joyadvaxisu", "0", CVAR_NONE};
 static	cvar_t	joy_advaxisv = {"joyadvaxisv", "0", CVAR_NONE};
 static	cvar_t	joy_forwardthreshold = {"joyforwardthreshold", "0.15", CVAR_NONE};
 static	cvar_t	joy_sidethreshold = {"joysidethreshold", "0.15", CVAR_NONE};
+static	cvar_t	joy_upthreshold = {"joyupthreshold", "0.15", CVAR_NONE};
 static	cvar_t	joy_pitchthreshold = {"joypitchthreshold", "0.15", CVAR_NONE};
 static	cvar_t	joy_yawthreshold = {"joyyawthreshold", "0.15", CVAR_NONE};
 static	cvar_t	joy_forwardsensitivity = {"joyforwardsensitivity", "-1.0", CVAR_NONE};
 static	cvar_t	joy_sidesensitivity = {"joysidesensitivity", "-1.0", CVAR_NONE};
+static	cvar_t	joy_upsensitivity = {"joyupsensitivity", "-1.0", CVAR_NONE};
 static	cvar_t	joy_pitchsensitivity = {"joypitchsensitivity", "1.0", CVAR_NONE};
 static	cvar_t	joy_yawsensitivity = {"joyyawsensitivity", "-1.0", CVAR_NONE};
 static	cvar_t	joy_wwhack1 = {"joywwhack1", "0.0", CVAR_NONE};
@@ -524,10 +526,12 @@ void IN_Init (void)
 	Cvar_RegisterVariable (&joy_advaxisv);
 	Cvar_RegisterVariable (&joy_forwardthreshold);
 	Cvar_RegisterVariable (&joy_sidethreshold);
+	Cvar_RegisterVariable (&joy_upthreshold);
 	Cvar_RegisterVariable (&joy_pitchthreshold);
 	Cvar_RegisterVariable (&joy_yawthreshold);
 	Cvar_RegisterVariable (&joy_forwardsensitivity);
 	Cvar_RegisterVariable (&joy_sidesensitivity);
+	Cvar_RegisterVariable (&joy_upsensitivity);
 	Cvar_RegisterVariable (&joy_pitchsensitivity);
 	Cvar_RegisterVariable (&joy_yawsensitivity);
 	Cvar_RegisterVariable (&joy_wwhack1);
@@ -1243,6 +1247,14 @@ static void IN_JoyMove (usercmd_t *cmd)
 			{
 			//	cmd->sidemove += (fAxisValue * joy_sidesensitivity.value) * speed * cl_sidespeed.value;
 				cmd->sidemove += (fAxisValue * joy_sidesensitivity.value) * speed * 225;
+			}
+			break;
+
+		case AxisUp:
+			if (fabs(fAxisValue) > joy_upthreshold.value)
+			{
+			//	cmd->upmove += (fAxisValue * joy_upsensitivity.value) * speed * cl_upspeed->value;
+				cmd->upmove += (fAxisValue * joy_upsensitivity.value) * speed * 200;
 			}
 			break;
 

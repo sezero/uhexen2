@@ -1,5 +1,5 @@
 Hexen II: Hammer of Thyrion (uhexen2), release candidate,
-Version 1.5.0-rc6 / July 20, 2011.
+Version 1.5.0-rc6 / Aug. 03, 2011.
 
 Changes since HoT-1.4.4-pre11:
 
@@ -17,8 +17,8 @@ Changes since HoT-1.4.4-pre11:
 * windows midi: ignore midi hardware volume adjustment capability under
   windows vista/7 which fixes music volume control messing with the main
   volume.
-* fixed a bug in multiple zones management (which wasn't easy to hit but
-  was lethal when it was hit.)
+* fixed a bug in multiple zones management, which wasn't easy to hit but
+  was deadly when it was hit.
 * fixed an old obscure game load/save corruption bug.
 * fixed an old load bug where items dropped by monsters not being visible
   or getting lost upon saving and loading the game.
@@ -41,6 +41,8 @@ Changes since HoT-1.4.4-pre11:
 * opengl: fixed an issue in net games where joining players would appear
   untextured (bug #3288081).
 * opengl: updated code to use glGenTextures().
+* joystick windows: added support for sixth joystick axis for up movement
+  controlled by joyupthreshold and joyupsensitivity.
 * fixed hexenworld server issue which used to crash servers upon running
   the romeric5 (Temple of Mars) map, which now loads fine.
 * fixed h2ded (hexen2 dedicated server) bug that the swords on the weapon
