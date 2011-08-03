@@ -1253,7 +1253,7 @@ static void IN_JoyMove (usercmd_t *cmd)
 		case AxisUp:
 			if (fabs(fAxisValue) > joy_upthreshold.value)
 			{
-			//	cmd->upmove += (fAxisValue * joy_upsensitivity.value) * speed * cl_upspeed->value;
+			//	cmd->upmove += (fAxisValue * joy_upsensitivity.value) * speed * cl_upspeed.value;
 				cmd->upmove += (fAxisValue * joy_upsensitivity.value) * speed * 200;
 			}
 			break;
