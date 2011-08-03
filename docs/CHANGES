@@ -4,6 +4,10 @@ Development Progress	:
 ---------------------------
 
 2011-08-03 (SVN):
+    * gl_draw.c (GL_Upload32): Removed an unnecessary duplicated block
+      of code for the no-mipmap+no-resample case.
+
+2011-08-03 (SVN):
     * in_win.c: As per feature request #3383989, added support for the
       6th joystick axis for up movement controlled by joyupthreshold
       and joyupsensitivity. Ported from the quake2 source.

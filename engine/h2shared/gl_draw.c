@@ -1312,8 +1312,10 @@ If you are on a 3Dfx card and your texture has no alpha,
 then download it as a palettized texture to save memory.
 
 fxpal_buf is a pointer to hunk allocated temporary buffer.
-callers of fxPalTexImage2D must allocate and then free it
-properly.
+The callers of fxPalTexImage2D() are responsible for the
+allocation and freeing of fxpal_buf. According to Pa3PyX,
+fxpal_buf must remain static until all mipmap reductions
+are uploaded, otherwise garbage results with 3dfx.
 ================
 */
 static unsigned char	*fxpal_buf;
@@ -1395,22 +1397,6 @@ static void GL_Upload32 (unsigned int *data, int width, int height, qboolean mip
 	if (scaled_width == width && scaled_height == height)
 	{
 		scaled = data;
-		if (!mipmap)
-		{
-			if (is8bit && !alpha)
-			{
-				mark = Hunk_LowMark();
-				fxpal_buf = (unsigned char *) Hunk_AllocName(scaled_width * scaled_height, "texbuf_upload8pal");
-				fxPalTexImage2D (GL_TEXTURE_2D, 0, samples, scaled_width, scaled_height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
-				Hunk_FreeToLowMark(mark);
-				mark = 0;
-			}
-			else
-			{
-				glTexImage2D_fp (GL_TEXTURE_2D, 0, samples, scaled_width, scaled_height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
-			}
-			goto done;
-		}
 	}
 	else
 	{
@@ -1451,11 +1437,7 @@ static void GL_Upload32 (unsigned int *data, int width, int height, qboolean mip
 			else
 				glTexImage2D_fp (GL_TEXTURE_2D, miplevel, samples, scaled_width, scaled_height, 0, GL_RGBA, GL_UNSIGNED_BYTE, scaled);
 		}
-	}
 
-done:
-	if (mipmap)
-	{
 		glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, gl_filter_min);
 		glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, gl_filter_max);
 	}
