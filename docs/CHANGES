@@ -3,6 +3,9 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2011-08-04 (SVN):
+    * snd_gus.c: Did missing string constifications.
+
 2011-08-03 (SVN):
     * gl_draw.c (GL_Upload32): Removed an unnecessary duplicated block
       of code for the no-mipmap+no-resample case.

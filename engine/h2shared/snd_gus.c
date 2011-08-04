@@ -100,7 +100,7 @@ static void reset_buffer (FILE *f)
 // Sees if the current string is section "name" (i.e. ["name"]).
 // If "name"=="*", sees if the current string is any section
 // (i.e. [....]). Returns 1 if true else 0 if false.
-static int is_section (char *s, const char *name)
+static int is_section (const char *s, const char *name)
 {
 	int	wild = 0;
 
@@ -145,7 +145,7 @@ static int is_section (char *s, const char *name)
 // Sees if the current string is field "name" (i.e. "name"=...).
 // If "name"=="*", sees if the current string is any field
 // (i.e. ...=...). Returns 1 if true else 0 if false.
-static int is_field (char *s, const char *name)
+static int is_field (const char *s, const char *name)
 {
 	int	wild = 0;
 
