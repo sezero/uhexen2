@@ -1,15 +1,19 @@
-Hexen II for DOS
-Version 1.5.0 (Aug. 03, 2011)
+Hexen II for DOS, version 1.5.0
 
-DOS port of Hexen II, using the Hammer of Thyrion
-(uHexen2) engine, http://uhexen2.sourceforge.net/
+DOS port of Hexen II, using the Hammer of Thyrion (uHexen2) engine
+http://uhexen2.sourceforge.net/
+http://sourceforge.net/projects/uhexen2/
+
+  h2dos.exe:	Hexen II main game program.
+  h2patch.exe:	Patch program to upgrade Hexen II game pak files to the
+		latest 1.11 version of Raven Software.
+  h2ded.exe:	Hexen II dedicated server application.
 
 
 Things that don't work:
 
 * MIDI music:  Not implemented yet.
 * Loading progress bars:  Not implemented yet.
-
 
 Things not tested, but should work:
 
@@ -26,7 +30,6 @@ Things not tested, but should work:
 * JOYSTICK:  The code is the same as quake joystick code, therefore
   it should work the same way it does with dos-quake. Note: In order
   to disable joystick, use the command line argument -nojoy.
-
 
 Things that just work:
 

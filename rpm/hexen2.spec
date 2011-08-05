@@ -195,7 +195,6 @@ utils/bin/hcc -src gamecode-%{gamecode_ver}/hc/hw -oi -on
 %{__install} -D -m644 docs/ReleaseNotes-1.4.1 %{buildroot}/%{_prefix}/games/%{name}/docs/ReleaseNotes-1.4.1
 %{__install} -D -m644 docs/ReleaseNotes-1.4.2 %{buildroot}/%{_prefix}/games/%{name}/docs/ReleaseNotes-1.4.2
 %{__install} -D -m644 docs/ReleaseNotes-1.4.3 %{buildroot}/%{_prefix}/games/%{name}/docs/ReleaseNotes-1.4.3
-%{__install} -D -m644 docs/ReleaseNotes-1.4.4 %{buildroot}/%{_prefix}/games/%{name}/docs/ReleaseNotes-1.4.4
 
 # Install the gamedata
 %{__mkdir_p} %{buildroot}/%{_prefix}/games/%{name}/data1/
@@ -340,7 +339,6 @@ desktop-file-install \
 %{_prefix}/games/%{name}/docs/ReleaseNotes-1.4.1
 %{_prefix}/games/%{name}/docs/ReleaseNotes-1.4.2
 %{_prefix}/games/%{name}/docs/ReleaseNotes-1.4.3
-%{_prefix}/games/%{name}/docs/ReleaseNotes-1.4.4
 %{!?_without_freedesktop:%{_datadir}/applications/%{desktop_vendor}-%{name}.desktop}
 %{?_without_freedesktop:%{_sysconfdir}/X11/applnk/Games/%{name}.desktop}
 
@@ -359,6 +357,9 @@ desktop-file-install \
 %{_prefix}/games/%{name}/docs/README.hwmaster
 
 %changelog
+* Fri Aug 05 2011 O.Sezer <sezero@users.sourceforge.net>
+- docs/ReleaseNotes-1.4.4 is no more.
+
 * Wed Jul 13 2011 O.Sezer <sezero@users.sourceforge.net> 1.5.0-0.5.rc6
 - Bumped version to 1.5.0-rc6.
 

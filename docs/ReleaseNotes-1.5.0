@@ -1,7 +1,8 @@
-Hexen II: Hammer of Thyrion (uhexen2), release candidate,
-Version 1.5.0-rc6 / Aug. 03, 2011.
+Hexen II: Hammer of Thyrion (uhexen2)
+Release Notes for version 1.5.0 (Aug. 05, 2011.)
+================================================
 
-Changes since HoT-1.4.4-pre11:
+Changes since the uhexen2-1.4.3 release:
 
 * bumped the hexen2 engine version to 1.23, and hexenworld engine version
   to 0.23. bumped the gamecode version to 1.20.
@@ -96,4 +97,79 @@ Changes since HoT-1.4.4-pre11:
 * utils, hcc: dropped support for the old version of hcc tool.
 * tested compilation using Visual Studio 2010.
 * source directory layout reworked, repository moved from cvs to svn.
+
+
+Changes since uhexen2-1.4.3 mostly during the unreleased 1.4.4-beta cycle:
+
+* fixed the broken software renderer binaries from C++ compilers with x86
+  assembly enabled (do not use the bool keyword of C++).
+* compilations using the new gcc-4.4, 4.5 and 4.6 versions are tested and
+  supported.
+* added support for 64 bit windows versions (x64).
+* added support for mingw-w64 compilers.
+* added support for Microsoft Visual Studio 2005 and Visual Studio 2008.
+* filesystem: fixed an oversight with builds without user directories, where
+  the "-basedir" command line argument failed to change the internal userdir
+  variables.
+* fixed stuffcmds so that arguments to commands can have '-' or '+' within
+  their names.  A command like "hexen2 +map mymap-01" works properly now.
+* increased default zone memory size to 384kb.
+* fixed a rare segmentation fault with certain command line arguments (bug
+  was introduced sometime between version 1.3.0 and 1.4.0).
+* fixed a problem in sound effects code where some teleportation sounds might
+  have got lost.
+* alsa audio: added workarouds for better behavior on some linux setups.
+* hexen2 client: pause/resume midi (background music) along with cdaudio upon
+  pause message.
+* windows cdaudio: added -cddev as a new command line option for choosing the
+  cdrom drive to use.  syntax: -cddev E
+* windows cdaudio: fixed MCI errors when resuming the last track of a cdrom.
+* net: made the socket api usage compatible with windows especially with
+  relation to 64 bit windows.
+* net (hexen2): fixed BSD and Mac OS X socket api usage.
+* opengl: reworked text and HUD scaling menu option.
+* opengl: fixed an issue that changing resolution from within the game might
+  crash on Windows Vista.
+* software renderer: fixed a long standing stack corruption bug which used
+  to cause alias models not to be drawn at all.
+* stricter checking on the values pulled out of .wav file chunk headers.
+* fixed a rare game crash when battling bosses with assassin class, using
+  the tome of power and launching at the enemy a lot of projectiles.
+* renamed model_t to qmodel_t in order to avoid conflicts on solaris.
+* fixed the "mirrored prints" problem of hexen2 console at high resolutions.
+* fixed the colored prints of hexenworld console.
+* fixed 'array going out-of-bounds' (utils/map.c) and bogus 'maybe used
+  uninitialized' warnings (sbar.c) from gcc-4.3.
+* fixes to the SVGALib driver. it is functional now, both for hexen2 and for
+  hexenworld clients.
+* fixed bug #2176384: in windowed mode, when you save using the menus, the
+  game used to quit the menu without grabbing the mouse properly.
+* windows mouse: fixed behavior upon minimize/restore in windowed mode.
+* slightly increased the buffersize for sdl audio. made it to print a little
+  more detailed info at startup.
+* fixed hexenworld client message parser so that midi and cdaudio don't play
+  at the same time.
+* launcher, patching: rewritten the inter-threads log printing and fixed the
+  erratic crashes on smp systems. launcher version is 1.0.5 now.
+* hexenworld master server: unknown packets are properly output as hexdump.
+  hwmaster version is 1.2.6 now.
+* other minor fixes.
+* 3dfx gamma hacks are disabled by default at compile time (see the Makefile).
+* killed compatibility with user directories from HoT-1.4.0 and earlier which
+  didn't operate with a data1 subdirectory. they are ancient history now.
+* added initial support for standalone free contents (mods) as an extra patch.
+* utils, jsh2color: worked around a stack corruption resulting in crashes due
+  to the code's way of dealing with TEX_SPECIAL cases.
+* utils, lmp2pcx: Tweaked and documented palette file usage, allowed the
+  embedded palette again.
+* utils, qbsp: accept more than one wad file specified in the value of the
+  "wad" key. the wad file names must be separated by a semicolon. spaces are
+  allowed in the file names. quoted paths aren't allowed.
+* utils, qbsp: the absolute paths in wad values are not touched, ie. the paths
+  beginning with a '/' on unix or with a drive specifying string like
+  "C:\foo\bar.wad" on windows. all other values with no path information or
+  relative path information are prefixed with the project path. this fixes the
+  issues reported for qbsp usage from within worldcraft.
+* added back some unused code for future reference.  removed some truly dead
+  code.
 
