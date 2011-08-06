@@ -1,4 +1,4 @@
-/* $Id: systest.c,v 1.3 2008-01-10 16:00:20 sezero Exp $
+/*
  * stupid test tool that reports the type sizes and
  * their alignment offsets in structures, and the byte
  * order as detected at runtime and compile time.
@@ -13,20 +13,11 @@
 #undef ENDIAN_GUESSED_SAFE
 #undef ENDIAN_ASSUMED_UNSAFE
 
-
 #include <sys/types.h>
 
 #include <stddef.h>
 #include <limits.h>
-
-#ifndef _MSC_VER
-#include <stdint.h>
-#endif
-
 #include <stdio.h>
-#include <stdlib.h>
-#include <stdarg.h>
-#include <string.h>
 
 /* include more if it didn't work: */
 #if !defined(BYTE_ORDER)
@@ -58,7 +49,7 @@
 #else
 #define	PDP_ENDIAN	3412
 #endif
-#endif	/* the NUXI endian, not supported actually.. */
+#endif	/* NUXI endian (not supported) */
 
 #if defined(__LITTLE_ENDIAN) && !defined(LITTLE_ENDIAN)
 #define	LITTLE_ENDIAN	__LITTLE_ENDIAN
@@ -185,62 +176,31 @@ int DetectByteorder (void)
 	return -1;
 }
 
-struct align_test_char
-{
-	char dummy; char test;
-};
-
-struct align_test_short
-{
-	char dummy; short test;
-};
-
-struct align_test_int
-{
-	char dummy; int test;
-};
-
-struct align_test_long
-{
-	char dummy; long test;
-};
-
-struct align_test_float
-{
-	char dummy; float test;
-};
-
-struct align_test_double
-{
-	char dummy; double test;
-};
-
-struct align_test_longdouble
-{
-	char dummy; long double test;
-};
-
-struct align_test_voidptr
-{
-	char dummy; void *test;
-};
+struct align_test_char		{ char dummy; char test; };
+struct align_test_short		{ char dummy; short test; };
+struct align_test_int		{ char dummy; int test; };
+struct align_test_long		{ char dummy; long test; };
+struct align_test_longlong	{ char dummy; long long test; };
+struct align_test_float		{ char dummy; float test; };
+struct align_test_double	{ char dummy; double test; };
+struct align_test_longdouble	{ char dummy; long double test;};
+struct align_test_voidptr	{ char dummy; void *test; };
 
 int main (void)
 {
-	int		tmp;
+	int	tmp = ((char) -1);
 
+	printf ("char is signed type : %s - char is %s\n", (tmp < 0) ? "yes" : "no", (tmp < 0) ? "SIGNED" : "UNSIGNED");
 	printf ("Type sizes and alignment within structures:\n");
-
-	tmp = ((char) -1);
-	printf ("char is signed type : %s\n", (tmp < 0) ? "yes" : "no");
-	printf ("char  : %d, packing offset: %d\n", (int)sizeof(char), (int)(sizeof(struct align_test_char) - sizeof(char)));
-	printf ("short : %d, packing offset: %d\n", (int)sizeof(short), (int)(sizeof(struct align_test_short) - sizeof(short)));
-	printf ("int   : %d, packing offset: %d\n", (int)sizeof(int), (int)(sizeof(struct align_test_int) - sizeof(int)));
-	printf ("long  : %d, packing offset: %d\n", (int)sizeof(long), (int)(sizeof(struct align_test_long) - sizeof(long)));
-	printf ("float : %d, packing offset: %d\n", (int)sizeof(float), (int)(sizeof(struct align_test_float) - sizeof(float)));
-	printf ("double: %d, packing offset: %d\n", (int)sizeof(double), (int)(sizeof(struct align_test_double) - sizeof(double)));
-	printf ("long double: %d, packing offset: %d\n", (int)sizeof(long double), (int)(sizeof(struct align_test_longdouble) - sizeof(long double)));
-	printf ("PTR (void*): %d, packing offset: %d\n", (int)sizeof(void *), (int)(sizeof(struct align_test_voidptr) - sizeof(void *)));
+	printf ("char       : %d, packing offset: %d\n", (int) sizeof(char),	 (int) ((size_t) &((struct align_test_char *)0)->test));
+	printf ("short      : %d, packing offset: %d\n", (int) sizeof(short),	 (int) ((size_t) &((struct align_test_short *)0)->test));
+	printf ("int        : %d, packing offset: %d\n", (int) sizeof(int),	 (int) ((size_t) &((struct align_test_int *)0)->test));
+	printf ("long       : %d, packing offset: %d\n", (int) sizeof(long),	 (int) ((size_t) &((struct align_test_long *)0)->test));
+	printf ("long long  : %d, packing offset: %d\n", (int) sizeof(long long),(int) ((size_t) &((struct align_test_longlong *)0)->test));
+	printf ("void *ptr  : %d, packing offset: %d\n", (int) sizeof(void *),	 (int) ((size_t) &((struct align_test_voidptr *)0)->test));
+	printf ("float      : %d, packing offset: %d\n", (int) sizeof(float),	 (int) ((size_t) &((struct align_test_float *)0)->test));
+	printf ("double     : %d, packing offset: %d\n", (int) sizeof(double),	 (int) ((size_t) &((struct align_test_double *)0)->test));
+	printf ("long double: %d, packing offset: %d\n", (int) sizeof(long double),(int)((size_t)&((struct align_test_longdouble *)0)->test));
 
 	printf ("ENDIANNESS (BYTE ORDER):\n");
 
