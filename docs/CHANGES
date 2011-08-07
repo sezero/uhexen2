@@ -4,6 +4,10 @@ Development Progress	:
 ---------------------------
 
 2011-08-05 (SVN):
+    * menu.c: Adjusted music type menu so that midi-only or all-codecs
+      can be selected.
+
+2011-08-05 (SVN):
     * Document updates: Deleted ReleaseNotes-1.4.4, merged its content
       into ReleaseNotes-1.5.0.  Updated README.dos.  Updated the GPLv2
       document from the gnu ftp repo.  Updated rpm spec file.  Changed

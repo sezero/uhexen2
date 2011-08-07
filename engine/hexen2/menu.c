@@ -2022,24 +2022,44 @@ static void M_AdjustSliders (int dir)
 	case OPT_MUSICTYPE:	// bgm type
 		if (q_strcasecmp(bgmtype.string,"midi") == 0)
 		{
-			if (dir < 0)
-				Cvar_Set("bgmtype","none");
-			else
+			if (bgm_extmusic.integer)
+			{
+			    if (dir < 0)
+				Cvar_Set("bgm_extmusic","0");
+			    else
 				Cvar_Set("bgmtype","cd");
+			}
+			else
+			{
+			    if (dir < 0)
+				Cvar_Set("bgmtype","none");
+			    else
+				Cvar_Set("bgm_extmusic","1");
+			}
 		}
 		else if (q_strcasecmp(bgmtype.string,"cd") == 0)
 		{
 			if (dir < 0)
+			{
 				Cvar_Set("bgmtype","midi");
+				Cvar_Set("bgm_extmusic","1");
+			}
 			else
+			{
 				Cvar_Set("bgmtype","none");
+			}
 		}
 		else
 		{
 			if (dir < 0)
+			{
 				Cvar_Set("bgmtype","cd");
+			}
 			else
+			{
+				Cvar_Set("bgm_extmusic","0");
 				Cvar_Set("bgmtype","midi");
+			}
 		}
 		break;
 	case OPT_MUSICVOL:	// music volume
@@ -2159,7 +2179,12 @@ static void M_Options_Draw (void)
 
 	M_Print (16 + (12 * 8), 60 + 8*OPT_MUSICTYPE,	"Music Type");
 	if (q_strcasecmp(bgmtype.string, "midi") == 0)
-		M_Print (220, 60 + 8*OPT_MUSICTYPE, "MIDI");
+	{
+	    if (bgm_extmusic.integer)
+		M_Print (220, 60 + 8*OPT_MUSICTYPE, "ALL CODECS");
+	    else
+		M_Print (220, 60 + 8*OPT_MUSICTYPE, "MIDI ONLY");
+	}
 	else if (q_strcasecmp(bgmtype.string, "cd") == 0)
 		M_Print (220, 60 + 8*OPT_MUSICTYPE, "CD");
 	else
