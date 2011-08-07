@@ -466,7 +466,7 @@ bsp_tex_internal:
 		if (!strncmp(mt->name,"sky",3))
 			R_InitSky (tx);
 		else
-			tx->gl_texturenum = GL_LoadTexture (mt->name, tx->width, tx->height, (byte *)(tx+1), true, false, 0, false);
+			tx->gl_texturenum = GL_LoadTexture (mt->name, (byte *)(tx+1), tx->width, tx->height, TEX_MIPMAP);
 	}
 
 //
@@ -592,7 +592,7 @@ void Mod_ReloadTextures (void)
 				if (!strncmp(tx->name, "sky", 3))
 					R_InitSky(tx);
 				else
-					tx->gl_texturenum = GL_LoadTexture (tx->name, tx->width, tx->height, (byte *)(tx+1), true, false, 0, false);
+					tx->gl_texturenum = GL_LoadTexture (tx->name, (byte *)(tx+1), tx->width, tx->height, TEX_MIPMAP);
 			}
 		}
 	}
@@ -1866,14 +1866,13 @@ static void *Mod_LoadAllSkins (int numskins, daliasskintype_t *pskintype, int md
 
 	s = pheader->skinwidth * pheader->skinheight;
 
-	if (mdl_flags & EF_HOLEY)
-		tex_mode = 2;
-	else if (mdl_flags & EF_TRANSPARENT)
-		tex_mode = 1;
+	tex_mode = TEX_DEFAULT | TEX_MIPMAP;
+	if (mdl_flags & EF_TRANSPARENT)
+		tex_mode |= TEX_TRANSPARENT;
+	else if (mdl_flags & EF_HOLEY)
+		tex_mode |= TEX_HOLEY;
 	else if (mdl_flags & EF_SPECIAL_TRANS)
-		tex_mode = 3;
-	else
-		tex_mode = 0;
+		tex_mode |= TEX_SPECIAL_TRANS;
 
 	for (i = 0; i < numskins; i++)
 	{
@@ -1912,10 +1911,8 @@ static void *Mod_LoadAllSkins (int numskins, daliasskintype_t *pskintype, int md
 		}
 
 		q_snprintf (name, sizeof(name), "%s_%i", loadmodel->name, i);
-
-		pheader->gl_texturenum[i] =
-					GL_LoadTexture (name, pheader->skinwidth, 
-						pheader->skinheight, (byte *)(pskintype + 1), true, false, tex_mode, false);
+		pheader->gl_texturenum[i] = GL_LoadTexture (name, (byte *)(pskintype + 1),
+						pheader->skinwidth, pheader->skinheight, tex_mode);
 		pskintype = (daliasskintype_t *)((byte *)(pskintype+1) + s);
 	}
 
@@ -2561,7 +2558,7 @@ static void *Mod_LoadSpriteFrame (void *pin, mspriteframe_t **ppframe, int frame
 	pspriteframe->right = width + origin[0];
 
 	q_snprintf (name, sizeof(name), "%s_%i", loadmodel->name, framenum);
-	pspriteframe->gl_texturenum = GL_LoadTexture (name, width, height, (byte *)(pinframe + 1), true, true, 0, false);
+	pspriteframe->gl_texturenum = GL_LoadTexture (name, (byte *)(pinframe + 1), width, height, TEX_MIPMAP | TEX_ALPHA);
 
 	return (void *)((byte *)pinframe + sizeof (dspriteframe_t) + size);
 }

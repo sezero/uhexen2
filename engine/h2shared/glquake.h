@@ -114,7 +114,7 @@ typedef struct
 	GLuint		texnum;
 	char	identifier[MAX_QPATH];
 	int		width, height;
-	qboolean	mipmap;
+	int		mipmap;
 	unsigned short	crc;
 } gltexture_t;
 
@@ -280,11 +280,18 @@ void GL_EndRendering (void);
 
 void GL_Set2D (void);
 
-GLuint GL_LoadTexture (const char *identifier,
-			int width, int height,
-			byte *data,
-			qboolean mipmap, qboolean alpha,
-			int mode, qboolean rgba);
+GLuint GL_LoadTexture (const char *identifier, byte *data,
+			int width, int height, int flags);
+/* LoadTexture Flags */
+#define	TEX_DEFAULT		0
+#define	TEX_MIPMAP		(1 << 1)
+#define	TEX_ALPHA		(1 << 2)
+#define	TEX_RGBA		(1 << 5)	/* texture is 32 bit RGBA, not 8 bit */
+/* duplicated EF_ values from gl_model.h: */
+#define	TEX_TRANSPARENT		(1 << 12)	/* Transparent sprite				*/
+#define	TEX_HOLEY		(1 << 14)	/* Solid model with color 0			*/
+#define	TEX_SPECIAL_TRANS	(1 << 15)	/* Translucency through the particle table	*/
+
 GLuint GL_LoadPicTexture (qpic_t *pic);
 void D_ClearOpenGLTextures (int last_tex);
 

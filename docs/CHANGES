@@ -4,6 +4,9 @@ Development Progress	:
 ---------------------------
 
 2011-08-07 (SVN):
+    * Changed GL_LoadTexture() to use texture flags, adjusted callers.
+
+2011-08-07 (SVN):
     * docs/README.music: Adjusted for the menu entry changes.
 
 2011-08-07 (SVN):

@@ -100,7 +100,7 @@ void R_InitParticleTexture (void)
 		}
 	}
 
-	particletexture = GL_LoadTexture("", TEXSIZE, TEXSIZE, (byte *)data, false, true, 0, true);
+	particletexture = GL_LoadTexture("", (byte *)data, TEXSIZE, TEXSIZE, TEX_ALPHA | TEX_RGBA);
 	glTexEnvf_fp(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 }
 
@@ -410,7 +410,7 @@ void R_TranslatePlayerSkin (int playernum)
 // playertextures doesn't like GL_LoadTexture() and its associated glDeleteTextures()
 // call, not sure why for now, so I have to do this the old way until I figure it out.
 //	q_snprintf(texname, 19, "player%i", playernum);
-//	playertextures[playernum] = GL_LoadTexture(texname, scaled_width, scaled_height, (byte *)pixels, false, false, 0, true);
+//	playertextures[playernum] = GL_LoadTexture(texname, (byte *)pixels, scaled_width, scaled_height, TEX_RGBA);
 	GL_Bind(playertextures[playernum]);
 	glTexImage2D_fp(GL_TEXTURE_2D, 0, gl_solid_format, scaled_width, scaled_height, 0, GL_RGBA, GL_UNSIGNED_BYTE, pixels);
 	glTexEnvf_fp(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);

@@ -731,7 +731,7 @@ void R_LoadSkys (void)
 	//	LoadPCX (f);
 
 		q_snprintf(texname, sizeof(texname), "skybox%i", i);
-		sky_tex[i] = GL_LoadTexture(texname, 256, 256, targa_rgba, false, false, 0, true);
+		sky_tex[i] = GL_LoadTexture(texname, targa_rgba, 256, 256, TEX_RGBA);
 		Hunk_FreeToLowMark(mark);
 
 		glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, gl_filter_max);
@@ -1134,7 +1134,7 @@ void R_InitSky (texture_t *mt)
 	((byte *)&transpix)[2] = b / (128*128);
 	((byte *)&transpix)[3] = 0;
 
-	solidskytexture = GL_LoadTexture("upsky", 128, 128, (byte *)trans, false, false, 0, true);
+	solidskytexture = GL_LoadTexture("upsky", (byte *)trans, 128, 128, TEX_RGBA);
 
 	for (i = 0; i < 128; i++)
 	{
@@ -1148,6 +1148,6 @@ void R_InitSky (texture_t *mt)
 		}
 	}
 
-	alphaskytexture = GL_LoadTexture("lowsky", 128, 128, (byte *)trans, false, true, 0, true);
+	alphaskytexture = GL_LoadTexture("lowsky", (byte *)trans, 128, 128, TEX_ALPHA | TEX_RGBA);
 }
 
