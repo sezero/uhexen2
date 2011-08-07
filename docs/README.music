@@ -22,9 +22,9 @@ What you should do is simple:
    If you have the mission pack, repeat step1 for the mission pack, too,
    and place the ripped music files under portals/music.
 
-5. Make sure that music type is chosen as "midi" in the game's options
-   screen. (the name for the music type "midi" hasn't been changed: the
-   music will be searched automatically already.)
+5. Make sure that the music type is chosen as "all codecs" in the game's
+   options menu. (For the curious+techies: this internally sets bgm_type
+   as "midi" and bgm_extmusic as 1.)
 
 6. Let's do some file renaming: the trackXX files should match the midi
    names.  Linux/unix users can do these easily using our cdrip_hexen2.sh

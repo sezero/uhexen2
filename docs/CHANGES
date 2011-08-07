@@ -4,6 +4,9 @@ Development Progress	:
 ---------------------------
 
 2011-08-07 (SVN):
+    * docs/README.music: Adjusted for the menu entry changes.
+
+2011-08-07 (SVN):
     * pr_exec.c (PR_Profile_f): Replaced two obvious tolower() calls by
       explicit ascii characters.
 
