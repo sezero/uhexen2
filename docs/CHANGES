@@ -3,7 +3,11 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
-2011-08-05 (SVN):
+2011-08-07 (SVN):
+    * pr_exec.c (PR_Profile_f): Replaced two obvious tolower() calls by
+      explicit ascii characters.
+
+2011-08-07 (SVN):
     * menu.c: Adjusted music type menu so that midi-only or all-codecs
       can be selected.
 

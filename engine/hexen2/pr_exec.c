@@ -999,11 +999,11 @@ void PR_Profile_f (void)
 	for (i = 1; i < Cmd_Argc(); i++)
 	{
 		s = Cmd_Argv(i);
-		if (tolower(*s) == 'h')
+		if (*s == 'h' || *s == 'H')
 		{ // Sort by HC source file
 			byHC = true;
 		}
-		else if (tolower(*s) == 's')
+		else if (*s == 's' || *s == 'S')
 		{ // Save to file
 			if (i + 1 < Cmd_Argc() && !isdigit(*Cmd_Argv(i + 1)))
 			{
