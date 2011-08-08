@@ -3,6 +3,12 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2011-08-08 (SVN):
+    *  Added dependencies to all timidity objects in timidity/Makefile.
+       In the engine makefiles, added $(TIMIDEPS) to the .PHONY list so
+       that make will always make the timidity/Makefile ensuring up-to-
+       date timidity/libtimidity.a.
+
 2011-08-07 (SVN):
     * Changed GL_LoadTexture() to use texture flags, adjusted callers.
 

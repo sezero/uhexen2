@@ -768,7 +768,7 @@ COMMONOBJS = \
 
 
 # Targets
-.PHONY: help clean cleaner report
+.PHONY: help clean cleaner report $(TIMIDEPS)
 
 #default: glhw
 #all: default

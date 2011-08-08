@@ -464,7 +464,7 @@ COMMONOBJS = \
 
 
 # Targets
-.PHONY: clean
+.PHONY: clean $(TIMIDEPS)
 
 default: $(SW_BINARY)
 all: default
