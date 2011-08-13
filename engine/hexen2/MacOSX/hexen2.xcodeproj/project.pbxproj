@@ -257,7 +257,7 @@
 		70158B750AAF3B3600F6437C /* d_local.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = d_local.h; path = ../../h2shared/d_local.h; sourceTree = SOURCE_ROOT; };
 		70158B760AAF3B3600F6437C /* d_modech.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = d_modech.c; path = ../../h2shared/d_modech.c; sourceTree = SOURCE_ROOT; };
 		70158B770AAF3B3600F6437C /* d_part.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = d_part.c; path = ../../h2shared/d_part.c; sourceTree = SOURCE_ROOT; };
-		70158B780AAF3B3600F6437C /* d_polyse.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = d_polyse.c; path = ../d_polyse.c; sourceTree = SOURCE_ROOT; };
+		70158B780AAF3B3600F6437C /* d_polyse.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = d_polyse.c; path = ../../h2shared/d_polyse.c; sourceTree = SOURCE_ROOT; };
 		70158B790AAF3B3600F6437C /* d_scan.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = d_scan.c; path = ../../h2shared/d_scan.c; sourceTree = SOURCE_ROOT; };
 		70158B7A0AAF3B3600F6437C /* d_sky.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = d_sky.c; path = ../../h2shared/d_sky.c; sourceTree = SOURCE_ROOT; };
 		70158B7B0AAF3B3600F6437C /* d_sprite.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = d_sprite.c; path = ../../h2shared/d_sprite.c; sourceTree = SOURCE_ROOT; };
