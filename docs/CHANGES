@@ -4,6 +4,11 @@ Development Progress	:
 ---------------------------
 
 2011-08-13 (SVN):
+    * d_polyse.c: Moved to h2shared directory. Used the hexen2 version
+      which had special treatments for initialleftheight==1 and height==1
+      in D_RasterizeAliasPolySmooth().
+
+2011-08-13 (SVN):
     * d_scan.c, r_draw.c: Moved to h2shared directory.
 
 2011-08-13 (SVN):
