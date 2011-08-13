@@ -278,7 +278,7 @@
 		70158B8A0AAF3B3600F6437C /* r_local.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = r_local.h; path = ../../h2shared/r_local.h; sourceTree = SOURCE_ROOT; };
 		70158B8B0AAF3B3600F6437C /* r_main.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = r_main.c; path = ../r_main.c; sourceTree = SOURCE_ROOT; };
 		70158B8C0AAF3B3600F6437C /* r_misc.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = r_misc.c; path = ../r_misc.c; sourceTree = SOURCE_ROOT; };
-		70158B8D0AAF3B3600F6437C /* r_shared.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = r_shared.h; path = ../r_shared.h; sourceTree = SOURCE_ROOT; };
+		70158B8D0AAF3B3600F6437C /* r_shared.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = r_shared.h; path = ../../h2shared/r_shared.h; sourceTree = SOURCE_ROOT; };
 		70158B8E0AAF3B3600F6437C /* r_sky.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = r_sky.c; path = ../../h2shared/r_sky.c; sourceTree = SOURCE_ROOT; };
 		70158B8F0AAF3B3600F6437C /* r_sprite.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = r_sprite.c; path = ../r_sprite.c; sourceTree = SOURCE_ROOT; };
 		70158B900AAF3B3600F6437C /* r_surf.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = r_surf.c; path = ../../h2shared/r_surf.c; sourceTree = SOURCE_ROOT; };
