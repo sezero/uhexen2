@@ -4,6 +4,14 @@ Development Progress	:
 ---------------------------
 
 2011-08-13 (SVN):
+    * hexenworld: Fix the software renderer segmentation fault at max
+      resolution (1280x1024) with r_waterwarp:
+    * r_draw.c, r_main.c, r_shared.h (sintable, intsintable): Matched
+      the array sizes to those of their hexen2 counterparts.
+    * d_scan.c (D_WarpScreen): Matched the rowptr and column array sizes
+      to those of their hexen2 counterparts.
+
+2011-08-13 (SVN):
     * hexenworld (R_DrawName): Did missing string constification.
 
 2011-08-08 (SVN):

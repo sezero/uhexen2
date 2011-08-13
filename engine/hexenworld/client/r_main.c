@@ -220,7 +220,7 @@ static void R_InitTurb (void)
 {
 	int		i;
 
-	for (i = 0 ; i < 1280 ; i++)
+	for (i = 0 ; i < (SIN_BUFFER_SIZE) ; i++)
 	{
 		sintable[i]	= AMP  + sin(i * 3.14159 * 2 / CYCLE) * AMP;
 		intsintable[i]	= AMP2 + sin(i * 3.14159 * 2 / CYCLE) * AMP2;

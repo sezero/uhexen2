@@ -21,6 +21,9 @@
 // !!! if this is changed, it must be changed in d_ifacea.h too !!!
 #define	MAXHEIGHT	1024
 #define	MAXWIDTH	1280
+#define	MAXDIMENSION	((MAXHEIGHT > MAXWIDTH) ? MAXHEIGHT : MAXWIDTH)
+
+#define	SIN_BUFFER_SIZE	(MAXDIMENSION+CYCLE)
 
 #define	INFINITE_DISTANCE	0x10000
 				// distance that's always guaranteed to be
@@ -42,8 +45,8 @@ extern	int	r_drawnpolycount;
 
 extern	cvar_t	r_clearcolor;
 
-extern	int	sintable[1280];
-extern	int	intsintable[1280];
+extern	int	sintable[SIN_BUFFER_SIZE];
+extern	int	intsintable[SIN_BUFFER_SIZE];
 
 extern	vec3_t	vup, base_vup;
 extern	vec3_t	vpn, base_vpn;
