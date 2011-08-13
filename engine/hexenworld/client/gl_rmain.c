@@ -1961,7 +1961,7 @@ static void R_PrintTimes (void)
 R_DrawName
 =============
 */
-void R_DrawName (vec3_t origin, char *Name, int Red)
+void R_DrawName (vec3_t origin, const char *Name, int Red)
 {
 	float	zi;
 	int		u, v;

@@ -1215,7 +1215,7 @@ static void R_EdgeDrawing (qboolean Translucent)
 }
 
 
-void R_DrawName (vec3_t origin, char *Name, int Red)
+void R_DrawName (vec3_t origin, const char *Name, int Red)
 {
 	vec3_t	local, transformed;
 	float	zi;
