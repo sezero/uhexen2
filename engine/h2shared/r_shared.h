@@ -3,7 +3,7 @@
 	general refresh-related stuff shared between the refresh
 	and the driver
 
-	$Header: /cvsroot/uhexen2/engine/hexen2/r_shared.h,v 1.12 2008-03-21 14:45:11 sezero Exp $
+	$Id$
 */
 
 #ifndef __R_SHARED_H
@@ -57,7 +57,7 @@ extern	entity_t	*currententity;
 #define NUMSTACKEDGES		2400
 #define	MINEDGES		NUMSTACKEDGES
 
-#define NUMSTACKSURFACES	800
+#define NUMSTACKSURFACES	1000	/* 800 */
 #define MINSURFACES		NUMSTACKSURFACES
 
 #define	MAXSPANS		3000

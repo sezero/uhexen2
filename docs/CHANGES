@@ -4,8 +4,12 @@ Development Progress	:
 ---------------------------
 
 2011-08-13 (SVN):
+    * r_shared.h: Moved to h2shared directory.  Used the hw version which
+      defined NUMSTACKSURFACES as 1000 instead of 800.
+
+2011-08-13 (SVN):
     * d_polyse.c: Moved to h2shared directory. Used the hexen2 version
-      which had special treatments for initialleftheight==1 and height==1
+      which has special treatments for initialleftheight==1 and height==1
       in D_RasterizeAliasPolySmooth().
 
 2011-08-13 (SVN):
