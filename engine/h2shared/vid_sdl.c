@@ -299,7 +299,7 @@ static int sort_modes (const void *arg1, const void *arg2)
 static void VID_PrepareModes (SDL_Rect **sdl_modes)
 {
 	int	i, j;
-	qboolean	have_mem, not_multiple;
+	qboolean	have_mem, is_multiple;
 
 	num_fmodes = 0;
 	num_wmodes = 0;
@@ -378,33 +378,39 @@ no_fmodes:
 	for (i = 0; sdl_modes[i] && num_fmodes < MAX_MODE_LIST; ++i)
 	{
 		// avoid multiple listings of the same dimension
-		not_multiple = true;
+		is_multiple = false;
 		for (j = 0; j < num_fmodes; ++j)
 		{
 			if (fmodelist[j].width == sdl_modes[i]->w && fmodelist[j].height == sdl_modes[i]->h)
 			{
-				not_multiple = false;
+				is_multiple = true;
 				break;
 			}
 		}
-
+		if (is_multiple)
+			continue;
+		// avoid resolutions < 320x240
+		if (sdl_modes[i]->w < MIN_WIDTH || sdl_modes[i]->h < MIN_HEIGHT)
+			continue;
+		// avoid very high resolutions otherwise waterwarp will segfault
+		// (see r_shared.h)
+		if (sdl_modes[i]->w > MAXWIDTH || sdl_modes[i]->h > MAXHEIGHT)
+			continue;
 		// automatically strip-off resolutions that we
 		// don't have enough memory for
 		have_mem = VID_CheckAdequateMem(sdl_modes[i]->w, sdl_modes[i]->h);
+		if (!have_mem)
+			continue;
 
-		// avoid resolutions < 320x240
-		if (not_multiple && have_mem && sdl_modes[i]->w >= MIN_WIDTH && sdl_modes[i]->h >= MIN_HEIGHT)
-		{
-			fmodelist[num_fmodes].width = sdl_modes[i]->w;
-			fmodelist[num_fmodes].height = sdl_modes[i]->h;
-			// FIXME: look at vid_win.c and learn how to
-			// really functionalize the halfscreen field.
-			fmodelist[num_fmodes].halfscreen = 0;
-			fmodelist[num_fmodes].fullscreen = 1;
-			fmodelist[num_fmodes].bpp = 8;
-			q_snprintf (fmodelist[num_fmodes].modedesc, MAX_DESC, "%d x %d", sdl_modes[i]->w, sdl_modes[i]->h);
-			num_fmodes++;
-		}
+		fmodelist[num_fmodes].width = sdl_modes[i]->w;
+		fmodelist[num_fmodes].height = sdl_modes[i]->h;
+		// FIXME: look at vid_win.c and learn how to
+		// really functionalize the halfscreen field.
+		fmodelist[num_fmodes].halfscreen = 0;
+		fmodelist[num_fmodes].fullscreen = 1;
+		fmodelist[num_fmodes].bpp = 8;
+		q_snprintf (fmodelist[num_fmodes].modedesc, MAX_DESC, "%d x %d", sdl_modes[i]->w, sdl_modes[i]->h);
+		num_fmodes++;
 	}
 
 	if (!num_fmodes)

@@ -4,6 +4,10 @@ Development Progress	:
 ---------------------------
 
 2011-08-13 (SVN):
+    * vid_sdl.c (VID_PrepareModes): Avoid resolutions>=MAXWIDTH*MAXHEIGHT
+      otherwise the software renderer segfaults with r_waterwarp
+
+2011-08-13 (SVN):
     * hexenworld: Fix the software renderer segmentation fault at max
       resolution (1280x1024) with r_waterwarp:
     * r_draw.c, r_main.c, r_shared.h (sintable, intsintable): Matched
