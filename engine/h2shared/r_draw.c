@@ -1,7 +1,7 @@
 /*
 	r_draw.c
 
-	$Id: r_draw.c,v 1.9 2008-04-22 13:06:10 sezero Exp $
+	$Id$
 */
 
 #include "quakedef.h"

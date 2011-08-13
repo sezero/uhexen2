@@ -258,7 +258,7 @@
 		70158B760AAF3B3600F6437C /* d_modech.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = d_modech.c; path = ../../h2shared/d_modech.c; sourceTree = SOURCE_ROOT; };
 		70158B770AAF3B3600F6437C /* d_part.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = d_part.c; path = ../../h2shared/d_part.c; sourceTree = SOURCE_ROOT; };
 		70158B780AAF3B3600F6437C /* d_polyse.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = d_polyse.c; path = ../d_polyse.c; sourceTree = SOURCE_ROOT; };
-		70158B790AAF3B3600F6437C /* d_scan.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = d_scan.c; path = ../d_scan.c; sourceTree = SOURCE_ROOT; };
+		70158B790AAF3B3600F6437C /* d_scan.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = d_scan.c; path = ../../h2shared/d_scan.c; sourceTree = SOURCE_ROOT; };
 		70158B7A0AAF3B3600F6437C /* d_sky.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = d_sky.c; path = ../../h2shared/d_sky.c; sourceTree = SOURCE_ROOT; };
 		70158B7B0AAF3B3600F6437C /* d_sprite.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = d_sprite.c; path = ../../h2shared/d_sprite.c; sourceTree = SOURCE_ROOT; };
 		70158B7C0AAF3B3600F6437C /* d_surf.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = d_surf.c; path = ../../h2shared/d_surf.c; sourceTree = SOURCE_ROOT; };
@@ -271,7 +271,7 @@
 		70158B830AAF3B3600F6437C /* r_aclip.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = r_aclip.c; path = ../../h2shared/r_aclip.c; sourceTree = SOURCE_ROOT; };
 		70158B840AAF3B3600F6437C /* r_alias.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = r_alias.c; path = ../r_alias.c; sourceTree = SOURCE_ROOT; };
 		70158B850AAF3B3600F6437C /* r_bsp.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = r_bsp.c; path = ../../h2shared/r_bsp.c; sourceTree = SOURCE_ROOT; };
-		70158B860AAF3B3600F6437C /* r_draw.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = r_draw.c; path = ../r_draw.c; sourceTree = SOURCE_ROOT; };
+		70158B860AAF3B3600F6437C /* r_draw.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = r_draw.c; path = ../../h2shared/r_draw.c; sourceTree = SOURCE_ROOT; };
 		70158B870AAF3B3600F6437C /* r_edge.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = r_edge.c; path = ../../h2shared/r_edge.c; sourceTree = SOURCE_ROOT; };
 		70158B880AAF3B3600F6437C /* r_efrag.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = r_efrag.c; path = ../../h2shared/r_efrag.c; sourceTree = SOURCE_ROOT; };
 		70158B890AAF3B3600F6437C /* r_light.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = r_light.c; path = ../../h2shared/r_light.c; sourceTree = SOURCE_ROOT; };

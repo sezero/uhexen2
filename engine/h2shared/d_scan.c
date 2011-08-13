@@ -2,7 +2,7 @@
 	d_scan.c
 	Portable C scan-level rasterization code, all pixel depths.
 
-	$Id: d_scan.c,v 1.14 2008-03-21 15:55:03 sezero Exp $
+	$Id$
 */
 
 #include "quakedef.h"

@@ -4,6 +4,9 @@ Development Progress	:
 ---------------------------
 
 2011-08-13 (SVN):
+    * d_scan.c, r_draw.c: Moved to h2shared directory.
+
+2011-08-13 (SVN):
     * vid_sdl.c (VID_PrepareModes): Avoid resolutions>=MAXWIDTH*MAXHEIGHT
       otherwise the software renderer segfaults with r_waterwarp
 
