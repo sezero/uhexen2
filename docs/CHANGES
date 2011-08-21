@@ -3,6 +3,10 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2011-08-21 (SVN):
+    * snd_mp3.c (S_MP3_CodecOpenStream): Don't Z_Free() stream's private
+      data when not allocating on the zone.
+
 2011-08-13 (SVN):
     * r_shared.h: Moved to h2shared directory.  Used the hw version which
       defined NUMSTACKSURFACES as 1000 instead of 800.
