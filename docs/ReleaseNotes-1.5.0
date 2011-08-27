@@ -1,5 +1,5 @@
 Hexen II: Hammer of Thyrion (uhexen2)
-Release Notes for version 1.5.0 (Aug. 05, 2011.)
+Release Notes for version 1.5.0 (Aug. 27, 2011.)
 ================================================
 
 Changes since the uhexen2-1.4.3 release:
@@ -31,6 +31,8 @@ Changes since the uhexen2-1.4.3 release:
   changing the level and reentering.
 * software renderer (C-only): fixed a segmentation fault with Crusader's
   ice mace.
+* software renderer: fixed crashes at high resolutions with r_waterwarp
+  enabled.
 * added new cvar sys_throttle in order to throttle the game loop just a
   little bit and run cooler on new fast systems. the default sys_throttle
   value is 0.02, acceptable values are between 0 and 1. changing it to 0
