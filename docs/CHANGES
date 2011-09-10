@@ -4,6 +4,9 @@ Development Progress	:
 ---------------------------
 
 2011-09-10 (SVN):
+    * Bumped beta version date to 2011-09-10.
+
+2011-09-10 (SVN):
     * host_string.c (Host_LoadStrings): Changed some console prints to
       developer mode only. Changed magic numbers 13 and 10 to '\r' and
       '\n'.
