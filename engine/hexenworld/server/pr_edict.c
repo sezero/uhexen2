@@ -742,7 +742,7 @@ void ED_ParseGlobals (const char *data)
 		key = ED_FindGlobal (keyname);
 		if (!key)
 		{
-			Con_Printf ("%s is not a global\n", keyname);
+			Con_Printf ("'%s' is not a global\n", keyname);
 			continue;
 		}
 
@@ -945,7 +945,7 @@ const char *ED_ParseEdict (const char *data, edict_t *ent)
 		key = ED_FindField (keyname);
 		if (!key)
 		{
-			Con_Printf ("%s is not a field\n", keyname);
+			Con_Printf ("'%s' is not a field\n", keyname);
 			continue;
 		}
 
@@ -1237,18 +1237,21 @@ void PR_LoadProgs (void)
 	pr_strings = (char *)progs + progs->ofs_strings;
 	if (progs->ofs_strings + progs->numstrings >= (int)fs_filesize)
 		SV_Error ("%s: strings go past end of file\n", progname);
+
+	// initialize the strings
 	pr_numknownstrings = 0;
 	pr_maxknownstrings = 0;
 	pr_stringssize = progs->numstrings;
 	if (pr_knownstrings)
 		Z_Free ((void *)pr_knownstrings);
 	pr_knownstrings = NULL;
-	PR_SetEngineString(pr_null_string);	// initialize the strings
+	PR_SetEngineString(pr_null_string);
+
 	pr_globaldefs = (ddef_t *)((byte *)progs + progs->ofs_globaldefs);
 	pr_fielddefs = (ddef_t *)((byte *)progs + progs->ofs_fielddefs);
 	pr_statements = (dstatement_t *)((byte *)progs + progs->ofs_statements);
 
-	Con_Printf ("Loaded %s, v%d, %d crc, %s structures\n",
+	Con_DPrintf ("Loaded %s, v%d, %d crc, %s structures\n",
 			progname, progs->version, progs->crc,
 			(progs->crc == PROGS_V015_CRC) ? "HW/v0.15" : "Unknown");
 

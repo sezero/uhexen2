@@ -677,7 +677,7 @@ static void Mod_LoadLighting (lump_t *l)
 					if (i == 1)
 					{
 						Con_DPrintf("%s loaded\n", litfilename);
-						Con_Printf("Loaded colored light (32-bit)\n");
+						Con_DPrintf("Loaded colored light (32-bit)\n");
 						if ( gl_coloredlight.integer == 1 )
 						{
 							loadmodel->lightdata = data + 8;
@@ -698,7 +698,7 @@ static void Mod_LoadLighting (lump_t *l)
 								Con_Printf("No white light data. Using colored only\n");
 								return;
 							}
-							Con_Printf("Loaded white light.\n");
+							Con_DPrintf("Loaded white light.\n");
 
 							// allocate memory and load light data from .bsp
 							mark = Hunk_LowMark();
@@ -735,7 +735,7 @@ static void Mod_LoadLighting (lump_t *l)
 							Hunk_FreeToLowMark(mark);
 
 							loadmodel->lightdata = data + 8;
-							Con_Printf("Blended lightmaps.\n");
+							Con_DPrintf("Blended lightmaps.\n");
 							return;
 						}
 					}
@@ -766,7 +766,7 @@ static void Mod_LoadLighting (lump_t *l)
 			*out++ = d;
 			*out++ = d;
 		}
-		Con_Printf("Loaded white light (32-bit)\n");
+		Con_DPrintf("Loaded white light (32-bit)\n");
 	}
 	else
 	{
@@ -777,7 +777,7 @@ static void Mod_LoadLighting (lump_t *l)
 		}
 		loadmodel->lightdata = (byte *) Hunk_AllocName ( l->filelen, "light");
 		memcpy (loadmodel->lightdata, mod_base + l->fileofs, l->filelen);
-		Con_Printf("Loaded white light (8-bit)\n");
+		Con_DPrintf("Loaded white light (8-bit)\n");
 	}
 }
 

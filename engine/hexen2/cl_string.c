@@ -143,7 +143,7 @@ forward:
 		++i;
 	}
 
-	Con_Printf("Read in %d puzzle piece names\n", count);
+	Con_DPrintf("Read in %d puzzle piece names\n", count);
 }
 
 
@@ -160,7 +160,7 @@ void CL_LoadInfoStrings (void)
 
 	for (i = count = 0; info_strings[i] != 0; i++)
 	{
-		if (info_strings[i] == 13 || info_strings[i] == 10)
+		if (info_strings[i] == '\r' || info_strings[i] == '\n')
 		{
 			if (newline_char == info_strings[i] || newline_char == -1)
 			{
@@ -179,7 +179,7 @@ void CL_LoadInfoStrings (void)
 
 	for (i = count = start = 0; info_strings[i] != 0; i++)
 	{
-		if (info_strings[i] == 13 || info_strings[i] == 10)
+		if (info_strings[i] == '\r' || info_strings[i] == '\n')
 		{
 			if (newline_char == info_strings[i])
 			{
@@ -197,6 +197,6 @@ void CL_LoadInfoStrings (void)
 	}
 
 	info_string_count = count;
-	Con_Printf("Read in %d objectives\n", count);
+	Con_DPrintf("Read in %d objectives\n", count);
 }
 

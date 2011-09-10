@@ -25,7 +25,7 @@ void Host_LoadStrings (void)
 
 	for (i = count = 0; host_strings[i] != 0; i++)
 	{
-		if (host_strings[i] == 13 || host_strings[i] == 10)
+		if (host_strings[i] == '\r' || host_strings[i] == '\n')
 		{
 			if (newline_char == host_strings[i] || newline_char == -1)
 			{
@@ -44,7 +44,7 @@ void Host_LoadStrings (void)
 
 	for (i = count = start = 0; host_strings[i] != 0; i++)
 	{
-		if (host_strings[i] == 13 || host_strings[i] == 10)
+		if (host_strings[i] == '\r' || host_strings[i] == '\n')
 		{
 			if (newline_char == host_strings[i])
 			{
@@ -70,6 +70,6 @@ void Host_LoadStrings (void)
 	}
 
 	host_string_count = count;
-	Con_Printf("Read in %d string lines\n", count);
+	Con_DPrintf("Read in %d string lines\n", count);
 }
 

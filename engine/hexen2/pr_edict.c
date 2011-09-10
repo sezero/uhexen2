@@ -1298,18 +1298,21 @@ void PR_LoadProgs (void)
 	pr_strings = (char *)progs + progs->ofs_strings;
 	if (progs->ofs_strings + progs->numstrings >= (int)fs_filesize)
 		Host_Error ("%s: strings go past end of file\n", progname);
+
+	// initialize the strings
 	pr_numknownstrings = 0;
 	pr_maxknownstrings = 0;
 	pr_stringssize = progs->numstrings;
 	if (pr_knownstrings)
 		Z_Free ((void *)pr_knownstrings);
 	pr_knownstrings = NULL;
-	PR_SetEngineString(pr_null_string);	// initialize the strings
+	PR_SetEngineString(pr_null_string);
+
 	pr_globaldefs = (ddef_t *)((byte *)progs + progs->ofs_globaldefs);
 	pr_fielddefs = (ddef_t *)((byte *)progs + progs->ofs_fielddefs);
 	pr_statements = (dstatement_t *)((byte *)progs + progs->ofs_statements);
 
-	Con_Printf ("Loaded %s, v%d, %d crc, %s structures\n",
+	Con_DPrintf ("Loaded %s, v%d, %d crc, %s structures\n",
 			progname, progs->version, progs->crc,
 			(progs->crc == PROGS_V111_CRC) ? "H2/v1.11" : "H2MP/v1.12");
 

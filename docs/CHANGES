@@ -4,6 +4,20 @@ Development Progress	:
 ---------------------------
 
 2011-09-10 (SVN):
+    * host_string.c (Host_LoadStrings): Changed some console prints to
+      developer mode only. Changed magic numbers 13 and 10 to '\r' and
+      '\n'.
+    * cl_parse.c (CL_ParseServerInfo): Changed server protocol console
+      print to developer mode only.
+    * cl_string.c (CL_LoadInfoStrings, CL_LoadPuzzleStrings):  Changed
+      some console prints to developer mode only. Changed magic numbers
+      13 and 10 to '\r' and '\n'.
+    * gl_model.c (Mod_LoadLighting): Changed colored or white light load
+      console prints to developer mode only.
+    * pr_edict.c (PR_LoadProgs): Changed progs name and crc console print
+      to developer mode only.
+
+2011-09-10 (SVN):
     * Minor updates to COMPILE and TODO documents.
 
 2011-08-21 (SVN):
