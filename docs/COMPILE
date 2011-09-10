@@ -235,9 +235,9 @@ ALSA homepage		:	http://www.alsa-project.org/
 GCC homepage		:	http://gcc.gnu.org/
 Binutils homepage	:	http://sourceware.org/binutils/
 NASM homepage		:	http://www.nasm.us/
-YASM homepage		:	http://www.tortall.net/projects/yasm/
+YASM homepage		:	http://yasm.tortall.net/
 DJGPP homepage		:	http://www.delorie.com/djgpp/
-MinGW/MSYS homepage	:	http://www.mingw.org/
+MinGW/MSYS homepage	:	http://mingw.org/
 				http://sourceforge.net/projects/mingw/
 MinGW-w64 homepage	:	http://mingw-w64.sourceforge.net/
 				http://sourceforge.net/projects/mingw-w64/

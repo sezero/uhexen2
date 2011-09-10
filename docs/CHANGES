@@ -3,6 +3,9 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2011-09-10 (SVN):
+    * Minor updates to COMPILE and TODO documents.
+
 2011-08-21 (SVN):
     * snd_mp3.c (S_MP3_CodecOpenStream): Don't Z_Free() stream's private
       data when not allocating on the zone.

@@ -16,6 +16,7 @@ TODO:
   and even 4 for 32 bit)? The current code is largely missing
   translucency pieces and the d_8to16 and d_8to24 translation
   tables.
+- Net: Find some way to workaround the infamous router troubles
 - HexenWorld: Spectator mode (chasecam) isn't as it should be,
   compare with the quakeworld code and fix.
 - MorphOS: the port isn't touched since 1.4.0-prerelease times,
@@ -27,10 +28,10 @@ TODO:
 - DOS: Implement loading progress bars.
 - SVGALib: Use svgalib write functions, remove the d_copy.asm
   dependency and make it possible to compile for non-x86.
-- Add pthread support to the utilities and revise the current
-  windows threads mess there. threads need't be for alpha only.
+- Utilities: Add pthread support and revise the current windows
+  threads mess. Threads need't be for alpha-only.
 - utils/jsh2colour: clean-up the huge mess and improve a bit.
 - utils/maputils: improvements on the light tool?
-- utils/texutils: add some more texture tools (pcx2wal, etc.)
+- utils/texutils: add some more texture tools (pcx2wal, etc.) ?
 - More unification of hexen2 and hexenworld trees
 
