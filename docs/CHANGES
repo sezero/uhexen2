@@ -4,6 +4,10 @@ Development Progress	:
 ---------------------------
 
 2011-09-15 (SVN):
+    * Bumped version date to 2011-09-15. Removed the beta status and
+      marked as final.
+
+2011-09-15 (SVN):
     * model.c, gl_model.c: Added new external_ents cvar in parallel to
       the old QIP code.
 

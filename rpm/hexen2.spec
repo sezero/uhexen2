@@ -55,7 +55,7 @@
 
 # pre-release version: MAKE SURE to change this
 # to an %undefine for the final realease!!
-%define prerelease	rc6
+%undefine prerelease
 
 # package release number for final-release:
 %define pkg_final	1
@@ -357,6 +357,9 @@ desktop-file-install \
 %{_prefix}/games/%{name}/docs/README.hwmaster
 
 %changelog
+* Thu Sep 15 2011 O.Sezer <sezero@users.sourceforge.net> 1.5.0-1
+- 1.5.0-final.
+
 * Fri Aug 05 2011 O.Sezer <sezero@users.sourceforge.net>
 - docs/ReleaseNotes-1.4.4 is no more.
 
