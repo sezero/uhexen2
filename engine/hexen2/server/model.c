@@ -19,6 +19,8 @@ static char	loadname[MAX_QPATH];	// for hunk tags
 static void Mod_LoadBrushModel (qmodel_t *mod, void *buffer);
 static qmodel_t *Mod_LoadModel (qmodel_t *mod, qboolean crash);
 
+static cvar_t	external_ents = {"external_ents", "1", CVAR_ARCHIVE};
+
 static byte	mod_novis[MAX_MAP_LEAFS/8];
 static int	*surfedges;
 static medge_t	*edges;
@@ -35,6 +37,8 @@ Mod_Init
 */
 void Mod_Init (void)
 {
+	Cvar_RegisterVariable (&external_ents);
+
 	memset (mod_novis, 0xff, sizeof(mod_novis));
 }
 
@@ -280,6 +284,9 @@ static void Mod_LoadEntities (lump_t *l)
 	int		mark;
 	unsigned int	path_id;
 
+	if (! external_ents.integer)
+		goto _load_embedded;
+
 	strcpy(entfilename, loadmodel->name);
 	COM_StripExtension(entfilename, entfilename, sizeof(entfilename));
 	strcat(entfilename, ".ent");
@@ -303,6 +310,7 @@ static void Mod_LoadEntities (lump_t *l)
 		}
 	}
 
+_load_embedded:
 	if (!l->filelen)
 	{
 		loadmodel->entities = NULL;

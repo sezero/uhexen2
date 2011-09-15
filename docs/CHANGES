@@ -4,6 +4,10 @@ Development Progress	:
 ---------------------------
 
 2011-09-15 (SVN):
+    * model.c, gl_model.c: Added new external_ents cvar in parallel to
+      the old QIP code.
+
+2011-09-15 (SVN):
     * gl_model.c (Mod_LoadLighting): Tidied up lit file loading code.
 
 2011-09-15 (SVN):

@@ -87,7 +87,8 @@ Changes since the uhexen2-1.4.3 release:
 * added support for external entity file loading which makes it easy to
   handle map quirks.  ent files are accepted only if they come from the
   same game directory as the map itself or from a searchpath with a higher
-  priority.
+  priority. external entities loading is controlled by external_ents cvar:
+  default value is 1 (enabled). setting to 0 disables external entities.
 * revised lit file loading. lit files are now accepted only if they come
   from the same game directory as the map itself or from a searchpath with
   a higher priority.

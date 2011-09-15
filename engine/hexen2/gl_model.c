@@ -25,6 +25,8 @@ static qmodel_t *Mod_LoadModel (qmodel_t *mod, qboolean crash);
 
 static byte	mod_novis[MAX_MAP_LEAFS/8];
 
+static cvar_t	external_ents = {"external_ents", "1", CVAR_ARCHIVE};
+
 // 650 should be enough with model handle recycling, but.. (Pa3PyX)
 #define	MAX_MOD_KNOWN	2048
 static qmodel_t	mod_known[MAX_MOD_KNOWN];
@@ -44,6 +46,7 @@ Mod_Init
 */
 void Mod_Init (void)
 {
+	Cvar_RegisterVariable (&external_ents);
 	Cmd_AddCommand ("mcache", Mod_Print);
 
 	memset (mod_novis, 0xff, sizeof(mod_novis));
@@ -802,6 +805,9 @@ static void Mod_LoadEntities (lump_t *l)
 	int		mark;
 	unsigned int	path_id;
 
+	if (! external_ents.integer)
+		goto _load_embedded;
+
 	strcpy(entfilename, loadmodel->name);
 	COM_StripExtension(entfilename, entfilename, sizeof(entfilename));
 	strcat(entfilename, ".ent");
@@ -826,6 +832,7 @@ static void Mod_LoadEntities (lump_t *l)
 		}
 	}
 
+_load_embedded:
 	if (!l->filelen)
 	{
 		loadmodel->entities = NULL;
