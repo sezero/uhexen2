@@ -1131,7 +1131,7 @@ void R_DrawBrushModel (entity_t *e, qboolean Translucent)
 	/* Get rid of Z-fighting for textures by offsetting the
 	 * drawing of entity models compared to normal polygons.
 	 * (Only works if gl_ztrick is turned off) */
-	if (!gl_ztrick.integer)
+	if (gl_zfix.integer && !gl_ztrick.integer)
 	{
 		glEnable_fp(GL_POLYGON_OFFSET_FILL);
 		glEnable_fp(GL_POLYGON_OFFSET_LINE);
@@ -1175,16 +1175,20 @@ void R_DrawBrushModel (entity_t *e, qboolean Translucent)
 	e->angles[2] = -e->angles[2];	// stupid quake bug
 	/* hack the origin to prevent bmodel z-fighting
 	 * http://forums.inside3d.com/viewtopic.php?t=1350 */
-	/* FIXME: add a gl_zfix cvar later? */
-	e->origin[0] -= DIST_EPSILON;
-	e->origin[1] -= DIST_EPSILON;
-	e->origin[2] -= DIST_EPSILON;
+	if (gl_zfix.integer)
+	{
+		e->origin[0] -= DIST_EPSILON;
+		e->origin[1] -= DIST_EPSILON;
+		e->origin[2] -= DIST_EPSILON;
+	}
 	R_RotateForEntity (e);
 	/* un-hack the origin */
-	/* FIXME: add a gl_zfix cvar later? */
-	e->origin[0] += DIST_EPSILON;
-	e->origin[1] += DIST_EPSILON;
-	e->origin[2] += DIST_EPSILON;
+	if (gl_zfix.integer)
+	{
+		e->origin[0] += DIST_EPSILON;
+		e->origin[1] += DIST_EPSILON;
+		e->origin[2] += DIST_EPSILON;
+	}
 	e->angles[0] = -e->angles[0];	// stupid quake bug
 	e->angles[2] = -e->angles[2];	// stupid quake bug
 

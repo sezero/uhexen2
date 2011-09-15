@@ -1,5 +1,5 @@
 Hexen II: Hammer of Thyrion (uhexen2)
-Release Notes for version 1.5.0 (Aug. 27, 2011.)
+Release Notes for version 1.5.0 (Sep. 15, 2011.)
 ================================================
 
 Changes since the uhexen2-1.4.3 release:
@@ -38,7 +38,9 @@ Changes since the uhexen2-1.4.3 release:
   value is 0.02, acceptable values are between 0 and 1. changing it to 0
   disables throttling.
 * opengl: fixed overlapping flickering textures, i.e. the infamous brush
-  model Z-fighting.
+  model Z-fighting. the fix is controlled by gl_zfix: default value is 1
+  (enabled). setting it to 0 disables the fix and brings back the old
+  behaviour.
 * opengl: always use GL_LINEAR as lightmap filter. made gl_texturemode
   command not affect lightmaps.
 * opengl: fixed an issue in net games where joining players would appear

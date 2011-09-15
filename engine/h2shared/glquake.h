@@ -229,6 +229,7 @@ extern	cvar_t	gl_clear;
 extern	cvar_t	gl_cull;
 extern	cvar_t	gl_poly;
 extern	cvar_t	gl_ztrick;
+extern	cvar_t	gl_zfix;
 extern	cvar_t	gl_multitexture;
 extern	cvar_t	gl_purge_maptex;
 extern	cvar_t	gl_smoothmodels;

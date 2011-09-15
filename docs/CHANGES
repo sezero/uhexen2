@@ -3,6 +3,10 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2011-09-15 (SVN):
+    * Added gl_zfix as a new cvar to enable/disable the z-fighting fix
+      on the fly. From Sander van Dijk.
+
 2011-09-10 (SVN):
     * Bumped beta version date to 2011-09-10.
 

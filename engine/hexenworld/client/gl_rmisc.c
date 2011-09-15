@@ -264,6 +264,7 @@ void R_Init (void)
 	Cvar_RegisterVariable (&gl_waterripple);
 
 	Cvar_RegisterVariable (&gl_ztrick);
+	Cvar_RegisterVariable (&gl_zfix);
 	Cvar_RegisterVariable (&gl_purge_maptex);
 
 	Cvar_RegisterVariable (&gl_keeptjunctions);

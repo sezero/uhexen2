@@ -1,7 +1,7 @@
 /*
 	gl_main.c
 
-	$Id: gl_rmain.c,v 1.71 2008-05-14 08:37:20 sezero Exp $
+	$Id$
 */
 
 
@@ -80,6 +80,7 @@ cvar_t	r_texture_external = {"r_texture_external", "0", CVAR_ARCHIVE};
 cvar_t	gl_clear = {"gl_clear", "0", CVAR_NONE};
 cvar_t	gl_cull = {"gl_cull", "1", CVAR_NONE};
 cvar_t	gl_ztrick = {"gl_ztrick", "0", CVAR_ARCHIVE};
+cvar_t	gl_zfix = {"gl_zfix", "1", CVAR_ARCHIVE};
 cvar_t	gl_multitexture = {"gl_multitexture", "0", CVAR_ARCHIVE};
 cvar_t	gl_smoothmodels = {"gl_smoothmodels", "1", CVAR_NONE};
 cvar_t	gl_affinemodels = {"gl_affinemodels", "0", CVAR_NONE};
