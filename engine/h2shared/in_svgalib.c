@@ -211,20 +211,23 @@ static void IN_InitMouse (void)
 	int	mtype;
 	char	*mousedev;
 	int	mouserate;
+	int	i;
 
 	mtype = vga_getmousetype();
 	Sys_Printf("SVGALib reports MTYPE: %d\n", mtype);
 	mousedev = default_mouse;
 	if (getenv("MOUSEDEV"))
 		mousedev = getenv("MOUSEDEV");
-	if (COM_CheckParm("-mdev"))
-		mousedev = com_argv[COM_CheckParm("-mdev")+1];
+	i = COM_CheckParm("-mdev");
+	if (i && i < com_argc - 1)
+		mousedev = com_argv[i+1];
 
 	mouserate = 1200;
 	if (getenv("MOUSERATE"))
 		mouserate = atoi(getenv("MOUSERATE"));
-	if (COM_CheckParm("-mrate"))
-		mouserate = atoi(com_argv[COM_CheckParm("-mrate")+1]);
+	i = COM_CheckParm("-mrate");
+	if (i && i < com_argc - 1)
+		mouserate = atoi(com_argv[i+1]);
 
 /* vga_init() opens the mouse automoatically, closing it to ensure it
  * is opened the way we want it (from quakeforge.)

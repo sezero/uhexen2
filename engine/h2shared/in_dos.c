@@ -188,7 +188,7 @@ void IN_Init (void)
 	IN_StartupJoystick ();
 
 	i = COM_CheckParm ("-control");
-	if (i && !safemode)
+	if (i && i < com_argc - 1 && !safemode)
 	{
 	/* this needs the controller address as the argument, yes?? - O.S. */
 		extern_control = (externControl_t *) real2ptr(atoi (com_argv[i+1]));

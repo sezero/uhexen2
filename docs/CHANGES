@@ -3,6 +3,11 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2011-09-17 (SVN):
+    * in_dos.c (IN_Init): Make sure the command line switch actually has
+      an argument. From Sander van Dijk.
+    * in_svgalib.c (IN_InitMouse): Likewise.
+
 2011-09-15 (SVN):
     * Bumped version date to 2011-09-15. Removed the beta status and
       marked as final.
