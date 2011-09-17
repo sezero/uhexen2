@@ -81,7 +81,7 @@ Index: engine/h2shared/quakefs.c
 +
 +		i = COM_CheckParm ("-basegame");
 +		if (i == 0)
-+			Sys_Error ("standalone games require a valid -bagegame argument");
++			Sys_Error ("standalone games require a valid -basegame argument");
 +		if (i >= com_argc - 1)
 +			Sys_Error ("-basegame requires a valid game directory name as argument");
 +		qerr_strlcpy (__thisfunc__, __LINE__, fs_dirstdalone, com_argv[i + 1], sizeof(fs_dirstdalone));
