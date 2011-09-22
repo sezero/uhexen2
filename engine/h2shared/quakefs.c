@@ -10,13 +10,6 @@
 #include <errno.h>
 #ifdef PLATFORM_WINDOWS
 #include <io.h>
-#include "io_msvc.h"
-#endif
-#ifdef PLATFORM_DOS
-#include <unistd.h>
-#endif
-#ifdef PLATFORM_UNIX
-#include <unistd.h>
 #endif
 
 typedef struct

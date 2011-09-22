@@ -51,11 +51,6 @@
 #include "quakedef.h"
 #ifdef PLATFORM_WINDOWS
 #include "winquake.h"
-#include <io.h>
-#include "io_msvc.h"
-#endif
-#ifdef PLATFORM_UNIX
-#include <unistd.h>
 #endif
 
 

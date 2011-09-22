@@ -52,14 +52,6 @@
 //#include "r_local.h"
 #ifdef PLATFORM_WINDOWS
 #include "winquake.h"
-#include <io.h>
-#include "io_msvc.h"
-#endif
-#ifdef PLATFORM_UNIX
-#include <unistd.h>
-#endif
-#ifdef PLATFORM_DOS
-#include <unistd.h>
 #endif
 
 
