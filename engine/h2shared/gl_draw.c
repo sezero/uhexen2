@@ -1032,36 +1032,33 @@ static void Draw_ConsolePic (int lines, float ofs, GLuint num, float alpha)
 	glDisable_fp (GL_BLEND);
 }
 
+static void Draw_ConsoleVersionInfo (int lines)
+{
+	static const char ver[] = ENGINE_WATERMARK;
+	const char *ptr = ver;
+	int x = vid.conwidth - (strlen(ver) * 8 + 11);
+	int y = lines - 14;
+	for (; *ptr; ++ptr)
+		Draw_Character (x + (int)(ptr - ver) * 8, y, *ptr | 0x100);
+}
+
 void Draw_ConsoleBackground (int lines)
 {
-	const char	*ver, *ptr;
-	int	x, y;
+	int	y;
 	float	ofs, alpha;
 
 	y = (vid.height * 3) >> 2;
-
-	if (gl_constretch.integer)
-		ofs = 0.0f;
-	else
-		ofs = (vid.conheight - lines) / (float) vid.conheight;
-
-	if (lines > y)
-		alpha = 1.0f;
-	else
-		alpha = 1.1f * lines / y;
+	ofs = (gl_constretch.integer) ? 0.0f : (vid.conheight - lines) / (float) vid.conheight;
+	alpha = (lines > y) ? 1.0f : 1.1f * lines / y;
 
 	Draw_ConsolePic (lines, ofs, conback, alpha);
 
 #if defined(H2W)
 	if (cls.download)
 		return;
-#endif
-// print the version number and platform
-	ver = ENGINE_WATERMARK;
-	x = vid.conwidth - (strlen(ver) * 8 + 11);
-	y = lines - 14;
-	for (ptr = ver; *ptr; ++ptr)
-		Draw_Character (x + (int)(ptr - ver) * 8, y, *ptr | 0x100);
+#endif	/* H2W */
+
+	Draw_ConsoleVersionInfo (lines);
 }
 
 

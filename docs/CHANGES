@@ -4,6 +4,10 @@ Development Progress	:
 ---------------------------
 
 2011-09-22 (SVN):
+    * draw.c, gl_draw.c (Draw_ConsoleBackground): Some more tidy-up for
+      version information printing.
+
+2011-09-22 (SVN):
     * Xcode project file for Mac OS X: Updated from Steven. Deleted the
       unnecessary user files.
 

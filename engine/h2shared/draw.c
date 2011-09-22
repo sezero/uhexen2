@@ -1334,21 +1334,28 @@ Draw_ConsoleBackground
 
 ================
 */
+static void Draw_ConsoleVersionInfo (int lines)
+{
+	static const char ver[] = ENGINE_WATERMARK;
+	const char *ptr = ver;
+	int x = vid.conwidth - (strlen(ver) * 8 + 11);
+	int y = lines - 14;
+	for (; *ptr; ++ptr)
+		Draw_Character (x + (int)(ptr - ver) * 8, y, *ptr | 0x100);
+}
+
 void Draw_ConsoleBackground (int lines)
 {
 	int		x, y, v;
-	byte		*src, *dest;
-	unsigned short	*pusdest;
+	byte		*src;
 	int		f, fstep;
 	qpic_t		*conback;
-	const char	*ver, *ptr;
 
 	conback = Draw_CachePic ("gfx/menu/conback.lmp");
 
-// draw the pic
 	if (r_pixbytes == 1)
 	{
-		dest = vid.conbuffer;
+		byte *dest = vid.conbuffer;
 
 		for (y = 0; y < lines; y++, dest += vid.conrowbytes)
 		{
@@ -1376,7 +1383,7 @@ void Draw_ConsoleBackground (int lines)
 	}
 	else
 	{
-		pusdest = (unsigned short *)vid.conbuffer;
+		unsigned short *pusdest = (unsigned short *)vid.conbuffer;
 
 		for (y = 0; y < lines; y++, pusdest += (vid.conrowbytes >> 1))
 		{
@@ -1403,13 +1410,9 @@ void Draw_ConsoleBackground (int lines)
 #if defined(H2W)
 	if (cls.download)
 		return;
-#endif
-// print the version number and platform
-	ver = ENGINE_WATERMARK;
-	x = vid.conwidth - (strlen(ver) * 8 + 11);
-	y = lines - 14;
-	for (ptr = ver; *ptr; ++ptr)
-		Draw_Character (x + (int)(ptr - ver) * 8, y, *ptr | 0x100);
+#endif	/* H2W */
+
+	Draw_ConsoleVersionInfo (lines);
 }
 
 
