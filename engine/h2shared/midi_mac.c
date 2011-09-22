@@ -35,7 +35,7 @@
 #include <QuickTime/Movies.h>
 
 static Movie	midiTrack = NULL;
-static qboolean	bMidiInited, bPaused;
+static qboolean	midi_paused;
 
 /* prototypes of functions exported to BGM: */
 static void *MIDI_Play (const char *Name);
@@ -141,7 +141,7 @@ qboolean MIDI_Init(void)
 
 	Con_Printf("%s initialized.\n", midi_mac_qt.desc);
 
-	bPaused = false;
+	midi_paused = false;
 	midi_mac_qt.available = true;
 
 	return true;
@@ -253,10 +253,10 @@ static void MIDI_Pause (void **handle)
 		return;
 	}
 
-	if (!bPaused)
+	if (!midi_paused)
 	{
 		StopMovie (midiTrack);
-		bPaused = true;
+		midi_paused = true;
 	}
 }
 
@@ -269,10 +269,10 @@ static void MIDI_Resume (void **handle)
 		return;
 	}
 
-	if (bPaused)
+	if (midi_paused)
 	{
 		StartMovie (midiTrack);
-		bPaused = false;
+		midi_paused = false;
 	}
 }
 
@@ -288,7 +288,7 @@ static void MIDI_Stop (void **handle)
 	StopMovie (midiTrack);
 	DisposeMovie (midiTrack);
 	midiTrack = NULL;
-	bPaused = false;
+	midi_paused = false;
 }
 
 void MIDI_Cleanup(void)
