@@ -4,6 +4,9 @@ Development Progress	:
 ---------------------------
 
 2011-09-22 (SVN):
+    * common.h: Fixed a typo in a comment.
+
+2011-09-22 (SVN):
     * quakedef.h: Bumped version to 1.5.1 in the development tree.
     * docs: Changed version to read 1.5.1.
 

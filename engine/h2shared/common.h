@@ -115,7 +115,7 @@ extern	qboolean	com_eof;
 const char *COM_Parse (const char *data);
 
 extern	int		safemode;
-/* safe mode: in true, the engine will behave as if one of these
+/* safe mode: if true, the engine will behave as if one of these
    arguments were actually on the command line:
    -nosound, -nocdaudio, -nomidi, -stdvid, -dibonly, -nomouse, -nojoy, -nolan
  */
