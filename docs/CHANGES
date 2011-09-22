@@ -4,6 +4,10 @@ Development Progress	:
 ---------------------------
 
 2011-09-22 (SVN):
+    * glquake.h: Removed extern declaration for d_15to8table[] which is
+      non-existant since v1.5.0.
+
+2011-09-22 (SVN):
     * common.h: Fixed a typo in a comment.
 
 2011-09-22 (SVN):

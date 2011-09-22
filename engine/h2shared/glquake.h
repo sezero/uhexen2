@@ -197,7 +197,6 @@ extern	int		ColorIndex[16];
 extern	unsigned int	ColorPercent[16];
 extern	float		RTint[256], GTint[256], BTint[256];
 extern	unsigned char	*inverse_pal;
-extern	unsigned char	d_15to8table[65536];
 
 /* global cvars */
 extern	cvar_t	r_norefresh;
