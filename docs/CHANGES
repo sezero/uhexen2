@@ -4,6 +4,10 @@ Development Progress	:
 ---------------------------
 
 2011-09-22 (SVN):
+    * gl_rsurf.c (R_DrawBrushModel): Add missing gl_zfix.value check to
+      the commented out code (for completeness and for future reference.)
+
+2011-09-22 (SVN):
     * midi_mac.c: Removed unused variable bMidiInited. Renamed bPaused
       to midi_paused.
 

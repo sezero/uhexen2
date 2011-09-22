@@ -1218,7 +1218,7 @@ void R_DrawBrushModel (entity_t *e, qboolean Translucent)
 	}
 	glPopMatrix_fp ();
 #if 0 /* see above... */
-	if (!gl_ztrick.integer)
+	if (gl_zfix.integer && !gl_ztrick.integer)
 	{
 		glDisable_fp(GL_POLYGON_OFFSET_FILL);
 		glDisable_fp(GL_POLYGON_OFFSET_LINE);
