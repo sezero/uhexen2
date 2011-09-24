@@ -205,7 +205,10 @@ int Sys_mkdir (const char *path, qboolean crash)
 	if (rc != 0 && errno == EEXIST)
 		rc = 0;
 	if (rc != 0 && crash)
-		Sys_Error("Unable to create directory %s", path);
+	{
+		rc = errno;
+		Sys_Error("Unable to create directory %s: %s", path, strerror(rc));
+	}
 	return rc;
 }
 
@@ -230,7 +233,8 @@ static int Sys_GetUserdir (char *dst, size_t dstsize)
 		return 1;
 
 	q_snprintf (dst, dstsize, "%s/%s", home_dir, HWM_USERDIR);
-	return Sys_mkdir(dst, false);
+	Sys_mkdir(dst, true);
+	return 0;
 }
 #endif
 

@@ -3,6 +3,10 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2011-09-24 (SVN):
+    * Print strerror(errno) in case of failure in Sys_mkdir(). In
+      Sys_GetUserdir(), call Sys_mkdir() with the crash flag set.
+
 2011-09-22 (SVN):
     * gl_rsurf.c (R_DrawBrushModel): Add missing gl_zfix.value check to
       the commented out code (for completeness and for future reference.)

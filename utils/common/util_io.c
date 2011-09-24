@@ -207,7 +207,10 @@ void Q_mkdir (const char *path)
 	if (rc != 0 && errno == EEXIST)
 		rc = 0;
 	if (rc != 0)
-		Error ("Unable to create directory %s", path);
+	{
+		rc = errno;
+		Error ("Unable to create directory %s: %s", path, strerror(rc));
+	}
 }
 
 int Q_rmdir (const char *path)
@@ -341,10 +344,14 @@ void Q_getwd (char *out, size_t size)
 
 void Q_mkdir (const char *path)
 {
-	if (mkdir (path, 0777) != -1)
-		return;
-	if (errno != EEXIST)
-		Error ("Unable to create directory %s", path);
+	int rc = mkdir (path, 0777);
+	if (rc != 0 && errno == EEXIST)
+		rc = 0;
+	if (rc != 0)
+	{
+		rc = errno;
+		Error ("Unable to create directory %s: %s", path, strerror(rc));
+	}
 }
 
 int Q_rmdir (const char *path)
