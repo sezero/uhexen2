@@ -2,24 +2,31 @@
 	userdir.h
 	arch specific user directory definitions
 
-	$Id: userdir.h,v 1.1 2007-03-18 10:19:56 sezero Exp $
+	$Id$
 */
 
 #ifndef __USERDIR_H
 #define __USERDIR_H
 
-#if defined(__MACOSX__)
-#define	SYS_USERDIR		"Library/Application Support/Hexen2"
-#define	SYS_DEMODIR		"Library/Application Support/Hexen2 Demo"
-#else
-#define	SYS_USERDIR		".hexen2"
-#define	SYS_DEMODIR		".hexen2demo"
+#if defined(DEMOBUILD)
+/* user a different user directory for the demo version
+ * so that the demo and retail versions can co-exist on
+ * the same machine peacefully */
+#define	SYS_USERDIR_OSX		"Library/Application Support/Hexen2 Demo"
+#define	SYS_USERDIR_UNIX	".hexen2demo"
+
+#else	/* for retail version: */
+
+#define	SYS_USERDIR_OSX		"Library/Application Support/Hexen2"
+#define	SYS_USERDIR_UNIX	".hexen2"
+
 #endif
 
-#if defined(DEMOBUILD)
-#define	AOT_USERDIR		SYS_DEMODIR
-#else
-#define	AOT_USERDIR		SYS_USERDIR
+
+#if defined(__MACOSX__)
+#define	AOT_USERDIR		SYS_USERDIR_OSX
+#else	/* unix: */
+#define	AOT_USERDIR		SYS_USERDIR_UNIX
 #endif
 
 #endif	/* __USERDIR_H */

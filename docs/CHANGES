@@ -4,6 +4,10 @@ Development Progress	:
 ---------------------------
 
 2011-09-24 (SVN):
+    * userdir.h: Define user directory name macros based on the target
+      platform.
+
+2011-09-24 (SVN):
     * Print strerror(errno) in case of failure in Sys_mkdir(). In
       Sys_GetUserdir(), call Sys_mkdir() with the crash flag set.
 
