@@ -327,10 +327,7 @@ int Sys_mkdir (const char *path, qboolean crash)
 	if (rc != 0 && errno == EEXIST)
 		rc = 0;
 	if (rc != 0 && crash)
-	{
-		rc = errno;
-		Sys_Error("Unable to create directory %s: %s", path, strerror(rc));
-	}
+		Sys_Error("Unable to create directory %s", path);
 	return rc;
 }
 

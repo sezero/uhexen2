@@ -4,6 +4,11 @@ Development Progress	:
 ---------------------------
 
 2011-09-24 (SVN):
+    * Sys_mkdir: Reverted the strerror() output from DOS versions. Not
+      really necessary for that platform, so they stay in for the unix
+      versions for now.
+
+2011-09-24 (SVN):
     * userdir.h: Define user directory name macros based on the target
       platform.
 
