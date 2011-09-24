@@ -752,7 +752,7 @@ int main (int argc, char **argv)
 #if DO_USERDIRS
 	memset (userdir, 0, sizeof(userdir));
 	if (Sys_GetUserdir(userdir, sizeof(userdir)) != 0)
-		Sys_Error ("Couldn't determine userspace directory %s", userdir);
+		Sys_Error ("Couldn't determine userspace directory");
 #endif
 
 	/* initialize the host params */
