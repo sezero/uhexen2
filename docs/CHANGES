@@ -4,6 +4,7 @@ Development Progress	:
 ---------------------------
 
 2011-10-08 (SVN):
+    * hexenworld, R_DrawName: Fixed a typo in a comment.
     * hexenworld: documented what cl_doc global is.
 
 2011-10-07 (SVN):

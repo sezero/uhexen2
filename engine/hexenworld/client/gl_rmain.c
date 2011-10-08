@@ -2006,8 +2006,10 @@ void R_DrawName (vec3_t origin, const char *Name, int Red)
 			Draw_Character (u, v, 144);	//sword
 			Draw_String (u+8, v, Name);
 		}
-		else
+		else	//neither att nor def
+		{
 			Draw_String (u+8, v, Name);
+		}
 	}
 	else
 	{
