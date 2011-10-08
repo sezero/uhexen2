@@ -3,6 +3,9 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2011-10-08 (SVN):
+    * hexenworld: documented what cl_doc global is.
+
 2011-10-07 (SVN):
     * q_endian.h: Updates to endianism detection macro checks.
 

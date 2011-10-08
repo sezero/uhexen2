@@ -2,7 +2,7 @@
 	client.h
 	client main header
 
-	$Header: /cvsroot/uhexen2/engine/hexenworld/client/client.h,v 1.22 2009-01-10 22:08:51 sezero Exp $
+	$Id$
 */
 
 #ifndef __H2W_CLIENT_H
@@ -575,7 +575,7 @@ extern	float		cl_server_time_offset;
 extern	unsigned int	defLosses;	// Defender losses
 extern	unsigned int	attLosses;	// Attacker losses
 extern	int		cl_keyholder;
-extern	int		cl_doc;
+extern	int		cl_doc;		// Defender of Crown (Excalibur)
 
 
 #endif	/* __H2W_CLIENT_H */

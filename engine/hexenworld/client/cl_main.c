@@ -110,7 +110,7 @@ byte		cl_fraglimit;
 float		cl_timelimit;
 float		cl_server_time_offset;
 int		cl_keyholder = -1;
-int		cl_doc = -1;
+int		cl_doc = -1;	// Defender of Crown (Excalibur)
 unsigned int	defLosses;	// Defender losses
 unsigned int	attLosses;	// Attacker losses
 
