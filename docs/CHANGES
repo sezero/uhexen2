@@ -4,6 +4,10 @@ Development Progress	:
 ---------------------------
 
 2011-10-08 (SVN):
+    * r_main.c (R_EdgeDrawing): Better documentation of what is going
+      on with the pointers going out of scope. Tidy up.
+
+2011-10-08 (SVN):
     * hexenworld, R_DrawName: Fixed a typo in a comment.
     * hexenworld: documented what cl_doc global is.
 

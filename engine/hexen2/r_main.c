@@ -118,18 +118,6 @@ int		d_lightstylevalue[256];	// 8.8 fraction of base light value
 float		dp_time1, dp_time2, db_time1, db_time2, rw_time1, rw_time2;
 float		se_time1, se_time2, de_time1, de_time2, dv_time1, dv_time2;
 
-#if !id386
-/* R_EdgeDrawing() is called twice by R_RenderView_(), first with Translucent
- * as false where the three pointers r_edges, surfaces and surf_max are set
- * to the automatic array, then with Translucent as true where R_EdgeDrawing()
- * does not actually set the pointers and the code assumed them to be still
- * valid, but they pointed to variables which went out of scope by that time.
- * Apparently the x86 assembler code has magic to look for these on the stack,
- * therefore they have to stay as local to R_EdgeDrawing() when compiling with
- * x86 asm enabled. For normal cases, however, these must stay static.  */
-static edge_t	ledges[NUMSTACKEDGES + ((CACHE_SIZE - 1) / sizeof(edge_t)) + 1];
-static surf_t	lsurfs[NUMSTACKSURFACES + ((CACHE_SIZE - 1) / sizeof(surf_t)) + 1];
-#endif
 static edge_t	*SaveEdges;
 static surf_t	*SaveSurfaces;
 static int	SaveEdgesCount, SaveSurfacesCount, SaveEdgesSize, SaveSurfacesSize;
@@ -1088,10 +1076,27 @@ R_EdgeDrawing
 static void R_EdgeDrawing (qboolean Translucent)
 {
 #if id386
-/* See the top of the file to understand the problem about these array vars. */
-	edge_t	ledges[NUMSTACKEDGES + ((CACHE_SIZE - 1) / sizeof(edge_t)) + 1];
-	surf_t	lsurfs[NUMSTACKSURFACES + ((CACHE_SIZE - 1) / sizeof(surf_t)) + 1];
+# define static_in_C_ /* nothing */
+#else
+# define static_in_C_ static
 #endif
+/* R_EdgeDrawing() is called twice by R_RenderView_():
+ * First with Translucent as false, where the three pointers r_edges,
+ * surfaces and surf_max are set to the ledges[] and lsurfs[] arrays,
+ * and then with Translucent as true in which case R_EdgeDrawing()
+ * does *not* set the pointers and the code assumes them to be still
+ * valid, but they pointed to variables which went out of scope by
+ * that time.
+ * The x86 assembler code actually handles that (R_SurfacePatch() ->
+ * R_SurfacePatchT(), I think) and if you make those arrays static,
+ * then you may as well get a segmentation fault.
+ * For C-only code, however, the ledges[] and lsurfs[] arrays *must*
+ * be static in order to keep r_edges, surfaces and surf_max pointers
+ * valid during the second call of R_EdgeDrawing(true).  */
+	static_in_C_ edge_t
+		ledges[NUMSTACKEDGES + ((CACHE_SIZE - 1) / sizeof(edge_t)) + 1];
+	static_in_C_ surf_t
+		lsurfs[NUMSTACKSURFACES + ((CACHE_SIZE - 1) / sizeof(surf_t)) + 1];
 	int	EdgesSize, SurfacesSize;
 
 	if (!Translucent)
