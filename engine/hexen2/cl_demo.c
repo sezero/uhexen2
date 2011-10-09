@@ -75,9 +75,6 @@ static void CL_WriteDemoMessage (void)
 	int	i;
 	float	f;
 
-	if (!cls.demorecording)
-		return;
-
 	len = LittleLong (net_message.cursize);
 	fwrite (&len, 4, 1, cls.demofile);
 //	fwrite (&len, 4, 1, cls.introdemofile);

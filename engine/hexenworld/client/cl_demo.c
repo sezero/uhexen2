@@ -102,9 +102,6 @@ static void CL_WriteDemoMessage (sizebuf_t *msg)
 	float	f;
 	byte	c;
 
-	if (!cls.demorecording)
-		return;
-
 //	Con_Printf("write: %ld bytes, %4.4f\n", msg->cursize, realtime);
 
 	f = LittleFloat((float)realtime);
