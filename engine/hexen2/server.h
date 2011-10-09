@@ -166,7 +166,6 @@ typedef struct client_s
 //
 #define	FL_FLY			1
 #define	FL_SWIM			2
-//#define	FL_GLIMPSE		4
 #define	FL_CONVEYOR		4
 #define	FL_CLIENT		8
 #define	FL_INWATER		16
@@ -182,15 +181,16 @@ typedef struct client_s
 #define	FL_ARCHIVE_OVERRIDE	1048576
 #define	FL_ARTIFACTUSED		16384
 #define	FL_MOVECHAIN_ANGLE	32768	// when in a move chain, will update the angle
+/* the following three are for monster_pentacles of the mission pack */
 #define	FL_HUNTFACE		65536	// Makes monster go for enemy view_ofs thwn moving
 #define	FL_NOZ			131072	// Monster will not automove on Z if flying or swimming
 #define	FL_SET_TRACE		262144	// Trace will always be set for this monster (pentacles)
+
 #define	FL_CLASS_DEPENDENT	2097152	// model will appear different to each player
 #define	FL_SPECIAL_ABILITY1	4194304	// has 1st special ability
 #define	FL_SPECIAL_ABILITY2	8388608	// has 2nd special ability
 
 #define	FL2_CROUCHED		4096
-
 
 //
 // Built-in Spawn Flags
@@ -205,6 +205,8 @@ typedef struct client_s
 #define	SPAWNFLAG_NOT_DEATHMATCH	0x00008000
 #define	SPAWNFLAG_NOT_COOP		0x00010000
 #define	SPAWNFLAG_NOT_SINGLE		0x00020000
+/* SPAWNFLAG_NOT_DEMON is NOT used: ED_LoadFromFile
+ * checks SPAWNFLAG_NOT_NECROMANCER for CLASS_DEMON !! */
 #define	SPAWNFLAG_NOT_DEMON		0x00040000
 
 //

@@ -258,7 +258,6 @@ typedef struct
 
 #define	DAMAGE_NO		0		// Cannot be damaged
 #define	DAMAGE_YES		1		// Can be damaged
-#define	DAMAGE_AIM		2
 
 //
 // edict->flags
@@ -280,6 +279,7 @@ typedef struct
 #define	FL_ARCHIVE_OVERRIDE	1048576
 #define	FL_ARTIFACTUSED		16384
 #define	FL_MOVECHAIN_ANGLE	32768	// when in a move chain, will update the angle
+
 #define	FL_CLASS_DEPENDENT	2097152	// model will appear different to each player
 #define	FL_SPECIAL_ABILITY1	4194304	// has 1st special ability
 #define	FL_SPECIAL_ABILITY2	8388608	// has 2nd special ability

@@ -161,14 +161,16 @@ static hull_t *SV_HullForEntity (edict_t *ent, vec3_t mins, vec3_t maxs, vec3_t 
 				hull = &model->hulls[5];
 		}
 
-		// calculate an offset value to center the origin
+	// calculate an offset value to center the origin:
 		VectorSubtract (hull->clip_mins, mins, offset);
 		if ((int)move_ent->v.flags & FL_MONSTER)
 		{
-			if (offset[0] !=0 || offset[1] != 0)
+			if (offset[0] != 0 || offset[1] != 0)
 			{
-			//	Con_DPrintf("ERROR: Non-zero offset (%f,%f,%f)!!!\n",offset[0],offset[1],offset[2]);
-			//	if ((int)move_ent->v.flags2 & 524288)
+			//	Con_DPrintf("ERROR: Non-zero offset (%f,%f,%f)!!!\n",
+			//			offset[0], offset[1], offset[2]);
+			// 524288 (FL_MISMATCHEDBOUNDS ?) is an abandoned H2MP flag?
+			// if ((int)move_ent->v.flags2 & 524288)
 				offset[0] = 0;
 				offset[1] = 0;
 			}
@@ -177,7 +179,6 @@ static hull_t *SV_HullForEntity (edict_t *ent, vec3_t mins, vec3_t maxs, vec3_t 
 	}
 	else
 	{	// create a temp hull from bounding box sizes
-
 		VectorSubtract (ent->v.mins, maxs, hullmins);
 		VectorSubtract (ent->v.maxs, mins, hullmaxs);
 		hull = SV_HullForBox (hullmins, hullmaxs);

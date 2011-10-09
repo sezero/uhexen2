@@ -148,16 +148,14 @@ static hull_t *SV_HullForEntity (edict_t *ent, vec3_t mins, vec3_t maxs, vec3_t 
 				hull = &model->hulls[5];
 		}
 
-		// calculate an offset value to center the origin
-	//	if (!move_ent->v.flags & 262144)//FL_IGNORESIZEOFS
-	//	{
-			VectorSubtract (hull->clip_mins, mins, offset);
-			VectorAdd (offset, ent->v.origin, offset);
-	//	} //otherwise, just make it use it's specified hull
+	// calculate an offset value to center the origin:
+	// FL_IGNORESIZEOFS (262144) is an abandoned Siege flag
+	// if (!((int)move_ent->v.flags & FL_IGNORESIZEOFS))
+		VectorSubtract (hull->clip_mins, mins, offset);
+		VectorAdd (offset, ent->v.origin, offset);
 	}
 	else
 	{	// create a temp hull from bounding box sizes
-
 		VectorSubtract (ent->v.mins, maxs, hullmins);
 		VectorSubtract (ent->v.maxs, mins, hullmaxs);
 		hull = SV_HullForBox (hullmins, hullmaxs);

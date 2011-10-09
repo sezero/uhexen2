@@ -306,7 +306,6 @@ typedef struct
 //
 #define	FL_FLY			1
 #define	FL_SWIM			2
-//#define	FL_GLIMPSE		4
 #define	FL_CONVEYOR		4
 #define	FL_CLIENT		8
 #define	FL_INWATER		16
