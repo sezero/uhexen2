@@ -4,6 +4,9 @@ Development Progress	:
 ---------------------------
 
 2011-10-09 (SVN):
+    * quakedef.h: updated beta datestamp to 2011-10-09.
+
+2011-10-09 (SVN):
     * server.h, world.c: Removed definition of DAMAGE_AIM which has never
       been used. Added comments about some other spawn and entity flags.
 
