@@ -379,7 +379,7 @@ Games based on the Quake engine have an in game console - toggled by
 the '~' key or by the Shift-Escape key combination - from which
 variables can be changed.  Some of these affect performance, others
 enable features. A brief list follows but for more info see:
-http://www.planetquake.com/console/
+http://www.quakewiki.net/archives/console/commands/quake.html
 
 variable	valid values
 --------	------------
@@ -542,7 +542,7 @@ consult the document README.3dfx.
 	FTE QW, a Quake/QuakeWorld engine with Hexen II
 			support	: http://www.fteqw.com/
 	Hexen II PSP port	: http://jurajstyk.host.sk/
-	Korax's UQE Hexen II	: http://www.quake-engine.com/
+	Korax's UQE Hexen II	: http://www.korvinkorax.com/category/games/ultimate-quake-engine/
 
     Older, currently inactive Hexen II ports
 	Anvil of Thyrion	: http://aot.linuxgames.com/
