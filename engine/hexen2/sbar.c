@@ -1688,9 +1688,9 @@ void SB_InvChanged(void)
 			cl.inv_selected = 0;
 		ForceUpdate = true;
 	}
-	if (cl.inv_startpos >= cl.inv_count)
+	if (cl.inv_count && cl.inv_startpos >= cl.inv_count)
 	{
-		cl.inv_startpos = (cl.inv_count == 0) ? 0 : cl.inv_count-1;
+		cl.inv_startpos = cl.inv_count-1;
 		cl.inv_selected = cl.inv_startpos;
 		ForceUpdate = true;
 	}

@@ -4,6 +4,10 @@ Development Progress	:
 ---------------------------
 
 2011-10-13 (SVN):
+    * sbar.c (SB_InvChanged): Fixed a nit from previous patch when there
+      are no items in the inventory.
+
+2011-10-13 (SVN):
     * sbar.c (SB_InvChanged): Commented out original code which used to
       break start position of the scrolling inventory and made sure that
       the start position is set correctly upon an inventory change.
