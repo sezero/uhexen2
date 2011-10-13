@@ -4,6 +4,11 @@ Development Progress	:
 ---------------------------
 
 2011-10-13 (SVN):
+    * sbar.c (SB_InvChanged): Commented out original code which used to
+      break start position of the scrolling inventory and made sure that
+      the start position is set correctly upon an inventory change.
+
+2011-10-13 (SVN):
     * Applied the engine-side mkdir and getuserdir changes to the gtk-
       launcher code.
 

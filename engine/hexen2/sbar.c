@@ -1425,14 +1425,15 @@ static void DrawArtifactInventory(void)
 		DrawBarArtifactIcon(x, y, cl.inv_order[(cl.inv_startpos + i) % cl.inv_count]);
 	}
 
-/*	//Inv_DrawArrows (x, y);
+	/*
+	//Inv_DrawArrows (x, y);
 	// Left arrow showing there are icons to the left
 	if (cl.inv_startpos)
 		Draw_Fill ( x , y - 5, 3, 1, 30);
 	// Right arrow showing there are icons to the right
 	if (cl.inv_startpos + INV_MAX_ICON < cl.inv_count)
 		Draw_Fill ( x + 200, y - 5 , 3, 1, 30);
-*/
+	*/
 }
 
 //==========================================================================
@@ -1559,11 +1560,10 @@ static void InvRight_f(void)
 	if (inv_flg)
 	{
 
-		if (cl.inv_count >= INV_MAX_ICON) 
+		if (cl.inv_count >= INV_MAX_ICON)
 			right_icon = (cl.inv_startpos + INV_MAX_ICON - 1) % cl.inv_count;
 		else
 			right_icon = (cl.inv_startpos + cl.inv_count - 1) % cl.inv_count;
-
 		// scroll inventory icons if we're at the right most already
 		if (cl.inv_selected == right_icon)
 			cl.inv_startpos = (cl.inv_startpos + 1) % cl.inv_count;
@@ -1671,11 +1671,27 @@ void SB_InvChanged(void)
 	if (cl.inv_selected >= cl.inv_count)
 	{
 		cl.inv_selected = cl.inv_count-1;
+		cl.inv_startpos = cl.inv_selected;
 		ForceUpdate = true;
 	}
 	if (cl.inv_count && cl.inv_selected < 0)
 	{
 		cl.inv_selected = 0;
+		cl.inv_startpos = 0;
+		ForceUpdate = true;
+	}
+	/* make sure that startpos isn't borked, just in case */
+	if (cl.inv_startpos < 0)
+	{
+		cl.inv_startpos = 0;
+		if (cl.inv_count)
+			cl.inv_selected = 0;
+		ForceUpdate = true;
+	}
+	if (cl.inv_startpos >= cl.inv_count)
+	{
+		cl.inv_startpos = (cl.inv_count == 0) ? 0 : cl.inv_count-1;
+		cl.inv_selected = cl.inv_startpos;
 		ForceUpdate = true;
 	}
 	if (ForceUpdate)
@@ -1683,12 +1699,15 @@ void SB_InvChanged(void)
 		Inv_Update(true);
 	}
 
+	/* the following breaks startpos for scrolling inv. */
+	/*
 	if (cl.inv_startpos+INV_MAX_ICON > cl.inv_count)
 	{
 		cl.inv_startpos = cl.inv_count - INV_MAX_ICON;
 		if (cl.inv_startpos < 0)
 			cl.inv_startpos = 0;
 	}
+	*/
 }
 
 //==========================================================================
