@@ -4,6 +4,10 @@ Development Progress	:
 ---------------------------
 
 2011-10-13 (SVN):
+    * Applied the engine-side mkdir and getuserdir changes to the gtk-
+      launcher code.
+
+2011-10-13 (SVN):
     * Updated some of the web links in the documents.
 
 2011-10-09 (SVN):

@@ -137,15 +137,16 @@ static void Sys_FindBinDir (char *filename, char *out)
 		*out++ = *cmd++;
 }
 
-static int Sys_mkdir (char *path)
+static void Sys_mkdir (const char *path)
 {
-	int	rc;
-
-	rc = mkdir (path, 0777);
+	int rc = mkdir (path, 0777);
 	if (rc != 0 && errno == EEXIST)
 		rc = 0;
-
-	return rc;
+	if (rc != 0)
+	{
+		rc = errno;
+		Sys_Error (1, "Unable to create directory %s: %s", path, strerror(rc));
+	}
 }
 
 static int Sys_GetUserdir (char *dst, size_t dstsize)
@@ -169,7 +170,8 @@ static int Sys_GetUserdir (char *dst, size_t dstsize)
 		return 1;
 
 	snprintf (dst, dstsize, "%s/%s", home_dir, AOT_USERDIR);
-	return Sys_mkdir(dst);
+	Sys_mkdir(dst);
+	return 0;
 }
 
 static void ValidateByteorder (void)
