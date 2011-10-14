@@ -129,6 +129,6 @@ $(HWTERM) : $(COMMONOBJ) $(HUFF_OBJS) $(TERM_OBJS)
 
 clean:
 	rm -f *.o core
-clean: clean
+distclean: clean
 	rm -f $(HWRCON) $(HWTERM)
 
