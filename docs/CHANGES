@@ -4,6 +4,9 @@ Development Progress	:
 ---------------------------
 
 2011-10-14 (SVN):
+    * quakedef.h: updated beta datestamp to 2011-10-14.
+
+2011-10-14 (SVN):
     * sbar.c (SB_InvChanged): Further cleanup for startpos adjustments.
 
 2011-10-13 (SVN):
