@@ -3,10 +3,8 @@
 UHEXEN2_TOP=../..
 . $UHEXEN2_TOP/scripts/cross_defs_w64
 
-BIN_DIR=../bin
-
 if test "$1" = "strip"; then
-	$STRIPPER $BIN_DIR/pakx.exe $BIN_DIR/paklist.exe
+	$STRIPPER pakx.exe paklist.exe
 	exit 0
 fi
 

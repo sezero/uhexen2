@@ -16,8 +16,6 @@ UHEXEN2_TOP:=../..
 LIBS_DIR:=$(UHEXEN2_TOP)/libs
 # where the common sources/objects are
 COMMONDIR:=../common
-# where to put the binaries
-DESTDIR  :=../bin
 
 # include the common dirty stuff
 include $(UHEXEN2_TOP)/scripts/makefile.inc
@@ -127,17 +125,19 @@ BSPINFOBJS= cmdlib.o \
 	bspinfo.o
 
 $(LIGHT) : $(COMMONOBJS) $(LIGHTOBJS)
-	$(LINKER) -o $(DESTDIR)/$(LIGHT) $(COMMONOBJS) $(LIGHTOBJS) $(LDFLAGS) $(LDLIBS)
+	$(LINKER) -o $(LIGHT) $(COMMONOBJS) $(LIGHTOBJS) $(LDFLAGS) $(LDLIBS)
 
 $(VIS) : $(COMMONOBJS) $(VISOBJS)
-	$(LINKER) -o $(DESTDIR)/$(VIS) $(COMMONOBJS) $(VISOBJS) $(LDFLAGS) $(LDLIBS)
+	$(LINKER) -o $(VIS) $(COMMONOBJS) $(VISOBJS) $(LDFLAGS) $(LDLIBS)
 
 $(QBSP) : $(COMMONOBJS) $(QBSPOBJS)
-	$(LINKER) -o $(DESTDIR)/$(QBSP) $(COMMONOBJS) $(QBSPOBJS) $(LDFLAGS) $(LDLIBS)
+	$(LINKER) -o $(QBSP) $(COMMONOBJS) $(QBSPOBJS) $(LDFLAGS) $(LDLIBS)
 
 $(BSPINFO) : $(BSPINFOBJS)
-	$(LINKER) -o $(DESTDIR)/$(BSPINFO) $(BSPINFOBJS) $(LDFLAGS)
+	$(LINKER) -o $(BSPINFO) $(BSPINFOBJS) $(LDFLAGS)
 
-clean : 
+clean:
 	rm -f *.o core
+distclean: clean
+	rm -f $(LIGHT) $(VIS) $(QBSP) $(BSPINFO)
 

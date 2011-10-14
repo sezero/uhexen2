@@ -3,10 +3,8 @@
 UHEXEN2_TOP=../..
 . $UHEXEN2_TOP/scripts/cross_defs
 
-BIN_DIR=../bin
-
 if test "$1" = "strip"; then
-	$STRIPPER $BIN_DIR/hcc.exe
+	$STRIPPER hcc.exe
 	exit 0
 fi
 

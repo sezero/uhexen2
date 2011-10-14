@@ -3,10 +3,8 @@
 UHEXEN2_TOP=../..
 . $UHEXEN2_TOP/scripts/cross_defs
 
-BIN_DIR=../bin
-
 if test "$1" = "strip"; then
-	$STRIPPER $BIN_DIR/jsh2colour.exe
+	$STRIPPER jsh2colour.exe
 	exit 0
 fi
 

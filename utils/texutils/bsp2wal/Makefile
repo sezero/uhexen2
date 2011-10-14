@@ -16,8 +16,6 @@ UHEXEN2_TOP:=../../..
 LIBS_DIR:=$(UHEXEN2_TOP)/libs
 # where the common sources/objects are
 COMMONDIR:=../../common
-# where to put the binaries
-DESTDIR  :=../../bin
 
 # include the common dirty stuff
 include $(UHEXEN2_TOP)/scripts/makefile.inc
@@ -89,8 +87,10 @@ BSP2WALOBJS= cmdlib.o \
 	bsp2wal.o
 
 $(BINARY) : $(BSP2WALOBJS)
-	$(LINKER) -o $(DESTDIR)/$(BINARY) $(BSP2WALOBJS) $(LDFLAGS) $(LDLIBS)
+	$(LINKER) -o $(BINARY) $(BSP2WALOBJS) $(LDFLAGS) $(LDLIBS)
 
-clean : 
+clean:
 	rm -f *.o core
+distclean: clean
+	rm -f $(BINARY)
 

@@ -65,7 +65,7 @@
 Name:		hexen2
 License:	GPLv2
 Group:		Amusements/Games
-Version:	1.5.0
+Version:	1.5.1
 Release:	%{?prerelease:0.%{pkg_prerel}.%{prerelease}}%{!?prerelease:%{pkg_final}}
 Summary:	Hexen II: Hammer of Thyrion
 URL:		http://uhexen2.sourceforge.net/
@@ -121,15 +121,16 @@ run a HexenWorld server or client, and a master server application.
 %build
 # Build the main game binaries
 %{__make} -C engine/hexen2 %{engine_buildopt} h2
-%{__make} -s -C engine/hexen2 clean
+# use localclean instead of clean to avoid building timidity every time
+%{__make} -s -C engine/hexen2 localclean
 %{__make} -C engine/hexen2 %{engine_buildopt} glh2
-%{__make} -s -C engine/hexen2 clean
+%{__make} -s -C engine/hexen2 localclean
 # Build the dedicated server
 %{__make} -C engine/hexen2 -f Makefile.sv
 # HexenWorld binaries
 %{__make} -C engine/hexenworld/server
 %{__make} -C engine/hexenworld/client %{engine_buildopt} hw
-%{__make} -s -C engine/hexenworld/client clean
+%{__make} -s -C engine/hexenworld/client localclean
 %{__make} -C engine/hexenworld/client %{engine_buildopt} glhw
 # HexenWorld master server
 %{__make} -C hw_utils/hwmaster
@@ -143,11 +144,11 @@ run a HexenWorld server or client, and a master server application.
 # Build the hcode compiler
 %{__make} -C utils/hcc
 # Build the game-code
-utils/bin/hcc -src gamecode-%{gamecode_ver}/hc/h2
-utils/bin/hcc -src gamecode-%{gamecode_ver}/hc/h2 -name progs2.src
-utils/bin/hcc -src gamecode-%{gamecode_ver}/hc/portals -oi -on
-utils/bin/hcc -src gamecode-%{gamecode_ver}/hc/hw -oi -on
-#utils/bin/hcc -src gamecode-%{gamecode_ver}/hc/siege -oi -on
+utils/hcc/hcc -src gamecode-%{gamecode_ver}/hc/h2
+utils/hcc/hcc -src gamecode-%{gamecode_ver}/hc/h2 -name progs2.src
+utils/hcc/hcc -src gamecode-%{gamecode_ver}/hc/portals -oi -on
+utils/hcc/hcc -src gamecode-%{gamecode_ver}/hc/hw -oi -on
+#utils/hcc/hcc -src gamecode-%{gamecode_ver}/hc/siege -oi -on
 
 # Done building
 
@@ -195,6 +196,7 @@ utils/bin/hcc -src gamecode-%{gamecode_ver}/hc/hw -oi -on
 %{__install} -D -m644 docs/ReleaseNotes-1.4.1 %{buildroot}/%{_prefix}/games/%{name}/docs/ReleaseNotes-1.4.1
 %{__install} -D -m644 docs/ReleaseNotes-1.4.2 %{buildroot}/%{_prefix}/games/%{name}/docs/ReleaseNotes-1.4.2
 %{__install} -D -m644 docs/ReleaseNotes-1.4.3 %{buildroot}/%{_prefix}/games/%{name}/docs/ReleaseNotes-1.4.3
+%{__install} -D -m644 docs/ReleaseNotes-1.4.3 %{buildroot}/%{_prefix}/games/%{name}/docs/ReleaseNotes-1.5.0
 
 # Install the gamedata
 %{__mkdir_p} %{buildroot}/%{_prefix}/games/%{name}/data1/
@@ -339,6 +341,7 @@ desktop-file-install \
 %{_prefix}/games/%{name}/docs/ReleaseNotes-1.4.1
 %{_prefix}/games/%{name}/docs/ReleaseNotes-1.4.2
 %{_prefix}/games/%{name}/docs/ReleaseNotes-1.4.3
+%{_prefix}/games/%{name}/docs/ReleaseNotes-1.5.0
 %{!?_without_freedesktop:%{_datadir}/applications/%{desktop_vendor}-%{name}.desktop}
 %{?_without_freedesktop:%{_sysconfdir}/X11/applnk/Games/%{name}.desktop}
 
@@ -357,6 +360,10 @@ desktop-file-install \
 %{_prefix}/games/%{name}/docs/README.hwmaster
 
 %changelog
+* Fri Oct 14 2011 O.Sezer <sezero@users.sourceforge.net> 1.5.1-1
+- Bumped version to 1.5.1
+- Adjusted for build system changes
+
 * Thu Sep 15 2011 O.Sezer <sezero@users.sourceforge.net> 1.5.0-1
 - 1.5.0-final.
 

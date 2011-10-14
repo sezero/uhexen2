@@ -16,8 +16,6 @@ UHEXEN2_TOP:=../../..
 LIBS_DIR:=$(UHEXEN2_TOP)/libs
 # where the common sources/objects are
 COMMONDIR:=../../common
-# where to put the binaries
-DESTDIR  :=../../bin
 
 # include the common dirty stuff
 include $(UHEXEN2_TOP)/scripts/makefile.inc
@@ -88,8 +86,10 @@ LMP2PCXOBJS= cmdlib.o \
 	lmp2pcx.o
 
 $(BINARY) : $(LMP2PCXOBJS)
-	$(LINKER) -o $(DESTDIR)/$(BINARY) $(LMP2PCXOBJS) $(LDFLAGS) $(LDLIBS)
+	$(LINKER) -o $(BINARY) $(LMP2PCXOBJS) $(LDFLAGS) $(LDLIBS)
 
-clean : 
+clean:
 	rm -f *.o core
+distclean: clean
+	rm -f $(BINARY)
 

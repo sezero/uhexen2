@@ -16,8 +16,6 @@ UHEXEN2_TOP:=../..
 LIBS_DIR:=$(UHEXEN2_TOP)/libs
 # where the common sources/objects are
 COMMONDIR:=../common
-# where to put the binaries
-DESTDIR  :=../bin
 
 # include the common dirty stuff
 include $(UHEXEN2_TOP)/scripts/makefile.inc
@@ -100,8 +98,10 @@ JS_OBJS= cmdlib.o \
 	tyrlite.o
 
 $(BINARY) : $(JS_OBJS)
-	$(LINKER) -o $(DESTDIR)/$(BINARY) $(JS_OBJS) $(LDFLAGS) $(LDLIBS)
+	$(LINKER) -o $(BINARY) $(JS_OBJS) $(LDFLAGS) $(LDLIBS)
 
-clean : 
+clean:
 	rm -f *.o core
+distclean: clean
+	rm -f $(BINARY)
 

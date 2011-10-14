@@ -4,6 +4,14 @@ Development Progress	:
 ---------------------------
 
 2011-10-14 (SVN):
+    * utils Makefiles: Removed the extra "bin" directory, removed the
+      DESTDIR from the makefiles and BIN_DIR from the scripts. Added
+      distclean target to all makefiles. Adjusted the rpm spec file
+      for the build system changes.
+    * Added new ReleaseNotes-1.5.1 document. Only two entries for now,
+      will grow as we move on.
+
+2011-10-14 (SVN):
     * libs/timidity/Makefile: Made clean to remove libtimidity.a too.
     * Makefiles: Renamed all "cleaner" targets to "distclean". Added
       distclean to most Makefiles who were lacking it.

@@ -16,8 +16,6 @@ UHEXEN2_TOP:=../..
 LIBS_DIR:=$(UHEXEN2_TOP)/libs
 # where the common sources/objects are
 COMMONDIR:=../common
-# where to put the binaries
-DESTDIR  :=../bin
 
 # include the common dirty stuff
 include $(UHEXEN2_TOP)/scripts/makefile.inc
@@ -91,11 +89,13 @@ PAKXOBJS= pakx.o
 PAKLISTOBJS= paklist.o
 
 $(PAKX): $(COMMONOBJS) $(PAKXOBJS)
-	$(LINKER) -o $(DESTDIR)/$(PAKX) $(COMMONOBJS) $(PAKXOBJS) $(LDFLAGS) $(LDLIBS)
+	$(LINKER) -o $(PAKX) $(COMMONOBJS) $(PAKXOBJS) $(LDFLAGS) $(LDLIBS)
 
 $(PAKLIST): $(COMMONOBJS) $(PAKLISTOBJS)
-	$(LINKER) -o $(DESTDIR)/$(PAKLIST) $(COMMONOBJS) $(PAKLISTOBJS) $(LDFLAGS) $(LDLIBS)
+	$(LINKER) -o $(PAKLIST) $(COMMONOBJS) $(PAKLISTOBJS) $(LDFLAGS) $(LDLIBS)
 
-clean : 
+clean:
 	rm -f *.o core
+distclean: clean
+	rm -f $(PAKX) $(PAKLIST)
 

@@ -3,19 +3,21 @@
 UHEXEN2_TOP=..
 . $UHEXEN2_TOP/scripts/cross_defs_w64
 
-BIN_DIR=bin
-
 if test "$1" = "strip"; then
 	echo "Stripping all hexen2util win64 binaries"
-	$STRIPPER $BIN_DIR/hcc.exe	\
-		$BIN_DIR/dhcc.exe	\
-		$BIN_DIR/vis.exe $BIN_DIR/light.exe	\
-		$BIN_DIR/qbsp.exe $BIN_DIR/bspinfo.exe	\
-		$BIN_DIR/qfiles.exe	\
-		$BIN_DIR/pakx.exe $BIN_DIR/paklist.exe	\
-		$BIN_DIR/genmodel.exe	\
-		$BIN_DIR/jsh2colour.exe	\
-		$BIN_DIR/bsp2wal.exe $BIN_DIR/lmp2pcx.exe
+	$STRIPPER hcc/hcc.exe			\
+		dcc/dhcc.exe			\
+		maputils/vis.exe		\
+		maputils/light.exe		\
+		maputils/qbsp.exe		\
+		maputils/bspinfo.exe		\
+		qfiles/qfiles.exe		\
+		pak/pakx.exe			\
+		pak/paklist.exe			\
+		genmodel/genmodel.exe		\
+		jsh2color/jsh2colour.exe	\
+		texutils/bsp2wal/bsp2wal.exe	\
+		texutils/lmp2pcx/lmp2pcx.exe
 exit 0
 fi
 

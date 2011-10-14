@@ -16,8 +16,6 @@ UHEXEN2_TOP:=../..
 LIBS_DIR:=$(UHEXEN2_TOP)/libs
 # where the common sources/objects are
 COMMONDIR:=../common
-# where to put the binaries
-DESTDIR  :=../bin
 
 # include the common dirty stuff
 include $(UHEXEN2_TOP)/scripts/makefile.inc
@@ -89,8 +87,10 @@ QFILESOBJS= cmdlib.o \
 	qfiles.o
 
 $(BINARY) : $(QFILESOBJS)
-	$(LINKER) -o $(DESTDIR)/$(BINARY) $(QFILESOBJS) $(LDFLAGS) $(LDLIBS)
+	$(LINKER) -o $(BINARY) $(QFILESOBJS) $(LDFLAGS) $(LDLIBS)
 
-clean : 
+clean:
 	rm -f *.o core
+distclean: clean
+	rm -f $(BINARY)
 

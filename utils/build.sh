@@ -1,21 +1,23 @@
 #!/bin/sh
 
-BIN_DIR=bin
-
 if test "$1" = "strip"; then
 	exe_ext=
 	if env | grep -i windir > /dev/null; then
 		exe_ext=".exe"
 	fi
-	strip $BIN_DIR/hcc$exe_ext	\
-		$BIN_DIR/dhcc$exe_ext	\
-		$BIN_DIR/vis$exe_ext $BIN_DIR/light$exe_ext	\
-		$BIN_DIR/qbsp$exe_ext $BIN_DIR/bspinfo$exe_ext	\
-		$BIN_DIR/qfiles$exe_ext	\
-		$BIN_DIR/pakx$exe_ext $BIN_DIR/paklist$exe_ext	\
-		$BIN_DIR/genmodel$exe_ext	\
-		$BIN_DIR/jsh2colour$exe_ext	\
-		$BIN_DIR/bsp2wal$exe_ext $BIN_DIR/lmp2pcx$exe_ext
+	strip hcc/hcc$exe_ext			\
+		dcc/dhcc$exe_ext		\
+		maputils/vis$exe_ext		\
+		maputils/light$exe_ext		\
+		maputils/qbsp$exe_ext		\
+		maputils/bspinfo$exe_ext	\
+		qfiles/qfiles$exe_ext		\
+		pak/pakx$exe_ext		\
+		pak/paklist$exe_ext		\
+		genmodel/genmodel$exe_ext	\
+		jsh2color/jsh2colour$exe_ext	\
+		texutils/bsp2wal/bsp2wal$exe_ext	\
+		texutils/lmp2pcx/lmp2pcx$exe_ext
 	exit 0
 fi
 
