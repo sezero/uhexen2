@@ -36,6 +36,9 @@ CFLAGS  += -I. -I$(XDELTA_DIR) -I$(MD5DIR) -I$(LIBS_DIR)/common
 
 TARGETS:= h2patch
 
+# Targets
+.PHONY: clean distclean
+
 all: $(TARGETS)
 
 MD5DEPS:= md5.h q_endian.h
@@ -67,6 +70,6 @@ h2patch: $(OBJECTS)
 
 clean:
 	rm -f *.o *.res
-cleaner: clean
+distclean: clean
 	rm -f $(TARGETS)
 

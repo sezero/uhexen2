@@ -460,7 +460,7 @@ COMMONOBJS = \
 
 
 # Targets
-.PHONY: clean $(TIMIDEPS)
+.PHONY: clean distclean localclean $(TIMIDEPS)
 
 default: $(SW_BINARY)
 all: default
@@ -477,6 +477,9 @@ include $(LIBS_DIR)/timidity/_timi.mak
 $(SW_BINARY): $(SOFT_ASM) $(SOFTOBJS) $(COMMON_ASM) $(COMMONOBJS) $(TIMIDEPS)
 	$(LINKER) -o $(SW_BINARY) $(SOFT_ASM) $(SOFTOBJS) $(COMMON_ASM) $(COMMONOBJS) $(LDFLAGS)
 
-clean:
+localclean:
 	rm -f *.o *.res core
+clean: localclean timi_clean
+distclean: clean
+	rm -f $(SW_BINARY)
 

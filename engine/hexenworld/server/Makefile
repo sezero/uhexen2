@@ -247,7 +247,7 @@ SV_OBJS = \
 
 
 # Targets
-.PHONY: clean cleaner report
+.PHONY: clean distclean report
 
 default: $(BINARY)
 all: default
@@ -257,6 +257,8 @@ $(BINARY): $(SV_OBJS)
 
 clean:
 	rm -f *.o core
+distclean: clean
+	rm -f $(BINARY)
 
 report:
 	@echo "Host OS  :" $(HOST_OS)

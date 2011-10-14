@@ -4,6 +4,14 @@ Development Progress	:
 ---------------------------
 
 2011-10-14 (SVN):
+    * libs/timidity/Makefile: Made clean to remove libtimidity.a too.
+    * Makefiles: Renamed all "cleaner" targets to "distclean". Added
+      distclean to most Makefiles who were lacking it.
+    * engine Makefiles: Added new localclean target to clean only in the
+      working directory. Made the clean targets to clean libs/timidity
+      too. Adjusted quick-build scripts to use localclean as necessary.
+
+2011-10-14 (SVN):
     * quakedef.h: updated beta datestamp to 2011-10-14.
 
 2011-10-14 (SVN):

@@ -30,6 +30,9 @@ OBJECTS = common.o \
 	tables.o \
 	timidity.o
 
+# Targets
+.PHONY: clean distclean
+
 all: $(TARGETS)
 
 # Rules for turning source files into .o files
@@ -57,8 +60,7 @@ libtimidity.a: $(OBJECTS)
 	$(RANLIB) libtimidity.a
 
 clean:
-	rm -f *.o
+	rm -f *.o libtimidity.a
 
-cleaner:
-	rm -f *.o $(TARGETS)
+distclean: clean
 

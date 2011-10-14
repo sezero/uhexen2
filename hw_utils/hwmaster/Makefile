@@ -97,6 +97,8 @@ endif
 MASTEROBJS = sizebuf.o msg_io.o cmds.o common.o net.o master.o sys_main.o
 
 # Targets
+.PHONY: clean distclean
+
 default: $(BINARY)
 all: default
 
@@ -105,4 +107,6 @@ $(BINARY) : $(MASTEROBJS)
 
 clean:
 	rm -f *.o core
+distclean: clean
+	rm -f $(BINARY)
 

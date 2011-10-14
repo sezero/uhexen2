@@ -91,6 +91,9 @@ XPATCH_OBJS  := apply_patch.o md5.o xdelta3.o
 endif
 ALL_OBJECTS  := $(LAUNCHER_OBJS) $(LAUNCHER_MAIN) $(GUI_OBJS) $(XPATCH_OBJS)
 
+# Targets
+.PHONY: clean distclean
+
 $(BINARY): $(ALL_OBJECTS)
 	$(LINKER) -o $(BINARY) $(ALL_OBJECTS) $(LDFLAGS)
 
@@ -109,7 +112,6 @@ xdelta3.o: $(XD3DEPS)
 
 clean:
 	-rm -f *.o *.o core
-
-cleaner:
-	-rm -f *.o *.o core $(BINARY)
+distclean: clean
+	-rm -f $(BINARY)
 

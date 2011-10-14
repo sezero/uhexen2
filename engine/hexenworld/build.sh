@@ -38,6 +38,6 @@ echo "" && echo "Building hexenworld client (software renderer)"
 $MAKE_CMD -C client hw || exit 1
 
 echo "" && echo "Building hexenworld client (opengl renderer)"
-$MAKE_CMD -s -C client clean
+$MAKE_CMD -s -C client localclean
 $MAKE_CMD -C client glhw || exit 1
 

@@ -97,6 +97,8 @@ endif
 HWMQUERY_OBJS = qsnprint.o hwmquery.o
 
 # Targets
+.PHONY: clean distclean
+
 all: $(HWMQUERY)
 default: all
 
@@ -105,4 +107,6 @@ $(HWMQUERY) : $(HWMQUERY_OBJS)
 
 clean:
 	rm -f *.o core
+distclean: clean
+	rm -f $(HWMQUERY)
 

@@ -768,12 +768,12 @@ COMMONOBJS = \
 
 
 # Targets
-.PHONY: help clean cleaner report $(TIMIDEPS)
+.PHONY: help clean distclean localclean report $(TIMIDEPS)
 
 #default: glhw
 #all: default
 
-help:
+help: report
 	@echo
 	@echo "Valid targets: (read/edit the makefile for several options)"
 	@echo
@@ -807,10 +807,10 @@ $(SW_BINARY): $(SOFT_ASM) $(SOFTOBJS) $(COMMON_ASM) $(COMMONOBJS) $(TIMIDEPS)
 $(GL_BINARY): $(GLOBJS) $(COMMON_ASM) $(COMMONOBJS) $(TIMIDEPS)
 	$(LINKER) -o $(GL_BINARY) $(GLOBJS) $(COMMON_ASM) $(COMMONOBJS) $(LDFLAGS) $(GLFLAGS) $(SDLLINK)
 
-clean:
+localclean:
 	rm -f *.o *.res core
-
-cleaner: clean
+clean: localclean timi_clean
+distclean: clean
 	rm -f $(SW_BINARY) $(GL_BINARY)
 
 report:

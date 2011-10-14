@@ -116,6 +116,8 @@ endif
 endif
 
 # Targets
+.PHONY: clean distclean
+
 all: $(HWRCON) $(HWTERM)
 default: all
 
@@ -127,4 +129,6 @@ $(HWTERM) : $(COMMONOBJ) $(HUFF_OBJS) $(TERM_OBJS)
 
 clean:
 	rm -f *.o core
+clean: clean
+	rm -f $(HWRCON) $(HWTERM)
 

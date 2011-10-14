@@ -7,3 +7,6 @@ endif
 $(LIBS_DIR)/timidity/libtimidity.a:
 	$(MAKE) -C $(LIBS_DIR)/timidity $(TIMIDITY_BUILD) CC="$(CC)" AR="$(AR)" RANLIB="$(RANLIB)"
 
+timi_clean:
+	$(MAKE) -C $(LIBS_DIR)/timidity clean
+

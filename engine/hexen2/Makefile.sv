@@ -270,7 +270,7 @@ SV_OBJS = \
 
 
 # Targets
-.PHONY: clean cleaner report
+.PHONY: clean distclean report
 
 default: $(BINARY)
 all: default
@@ -284,8 +284,7 @@ dos/net_ser.o: dos/net_comx.c
 
 clean:
 	rm -f *.o *.res core
-
-cleaner: clean
+distclean: clean
 	rm -f $(BINARY)
 
 report:
