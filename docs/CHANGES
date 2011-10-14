@@ -3,6 +3,9 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2011-10-14 (SVN):
+    * sbar.c (SB_InvChanged): Further cleanup for startpos adjustments.
+
 2011-10-13 (SVN):
     * sbar.c (SB_InvChanged): Fixed a nit from previous patch when there
       are no items in the inventory.

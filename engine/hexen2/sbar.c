@@ -1671,43 +1671,30 @@ void SB_InvChanged(void)
 	if (cl.inv_selected >= cl.inv_count)
 	{
 		cl.inv_selected = cl.inv_count-1;
-		cl.inv_startpos = cl.inv_selected;
 		ForceUpdate = true;
 	}
 	if (cl.inv_count && cl.inv_selected < 0)
 	{
 		cl.inv_selected = 0;
-		cl.inv_startpos = 0;
-		ForceUpdate = true;
-	}
-	/* make sure that startpos isn't borked, just in case */
-	if (cl.inv_startpos < 0)
-	{
-		cl.inv_startpos = 0;
-		if (cl.inv_count)
-			cl.inv_selected = 0;
-		ForceUpdate = true;
-	}
-	if (cl.inv_count && cl.inv_startpos >= cl.inv_count)
-	{
-		cl.inv_startpos = cl.inv_count-1;
-		cl.inv_selected = cl.inv_startpos;
 		ForceUpdate = true;
 	}
 	if (ForceUpdate)
 	{
 		Inv_Update(true);
 	}
-
-	/* the following breaks startpos for scrolling inv. */
-	/*
-	if (cl.inv_startpos+INV_MAX_ICON > cl.inv_count)
+	/* make sure that startpos isn't borked */
+	if (cl.inv_count <= 1)
+		cl.inv_startpos = 0;
+	else if (cl.inv_startpos >= cl.inv_count)
+		cl.inv_startpos = cl.inv_selected;
+	else
 	{
-		cl.inv_startpos = cl.inv_count - INV_MAX_ICON;
-		if (cl.inv_startpos < 0)
-			cl.inv_startpos = 0;
+		position = cl.inv_selected - cl.inv_startpos;
+		if (position < 0)
+			position += cl.inv_count;
+		if (position >= INV_MAX_ICON/* || position < 0*/)
+			cl.inv_startpos = cl.inv_selected;
 	}
-	*/
 }
 
 //==========================================================================
