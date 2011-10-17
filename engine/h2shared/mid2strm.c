@@ -7,14 +7,12 @@
 */
 
 #include <windows.h>
-#include <windowsx.h>
-
 #include <mmsystem.h>
 #include <assert.h>
 #include <stdio.h>
 
 #include "mid2strm.h"
-#include "midstuff.h"
+#include "midifile.h"
 #include "quakedef.h"
 #include "bgmusic.h"
 
@@ -63,7 +61,10 @@ static int GetTrackVDWord (PINTRACKSTATE ptsTrack, LPDWORD lpdw);
 static int RefillTrackBuffer (PINTRACKSTATE ptsTrack);
 static int RewindConverter (void);
 
-#ifdef DEBUG_BUILD
+#ifndef DEBUG_BUILD
+#define TRACKERR(p,msg)
+#else
+#define TRACKERR(p,msg)	ShowTrackError(p,msg)
 static void ShowTrackError (PINTRACKSTATE ptsTrack, const char *szErr)
 {
 	Con_Printf ("MIDI: %s\n", szErr);
@@ -127,7 +128,7 @@ int ConverterInit (const char *szInFile)
 	int	err = 1;
 	DWORD	cbRead, dwTag, cbHeader, dwToRead;
 	UINT	idx;
-	MIDIFILEHDR	Header;
+	midihdr_t	Header;
 	PINTRACKSTATE	ptsTrack;
 
 	tkCurrentTime = 0;
@@ -156,9 +157,9 @@ int ConverterInit (const char *szInFile)
 // - file header itself
 //
 	if ( GetInFileData(&dwTag, sizeof(DWORD)) ||
-			(dwTag != MThd) ||
+			((dwTag = (DWORD)BigLong(dwTag)) != MIDI_MAGIC_MTHD) ||
 			GetInFileData(&cbHeader, sizeof(DWORD)) ||
-			((cbHeader = DWORDSWAP(cbHeader)) < sizeof(MIDIFILEHDR)) ||
+			((cbHeader = (DWORD)BigLong(cbHeader)) < sizeof(midihdr_t)) ||
 			GetInFileData(&Header, cbHeader) )
 	{
 		Con_Printf("MIDI: %s\n", szInitErrInFile);
@@ -168,9 +169,9 @@ int ConverterInit (const char *szInFile)
 // File header is stored in hi-lo order. Swap this into Intel order and save
 // parameters in our native int size (32 bits)
 //
-	ifs.dwFormat = (DWORD)WORDSWAP(Header.wFormat);
-	ifs.dwTrackCount = (DWORD)WORDSWAP(Header.wTrackCount);
-	ifs.dwTimeDivision = (DWORD)WORDSWAP(Header.wTimeDivision);
+	ifs.dwFormat		= (DWORD) BigShort(Header.format);
+	ifs.dwTrackCount	= (DWORD) BigShort(Header.numtracks);
+	ifs.dwTimeDivision	= (DWORD) BigShort(Header.timediv);
 
 // We know how many tracks there are; allocate the structures for them and parse
 // them. The parse merely looks at the MTrk signature and track chunk length
@@ -182,14 +183,15 @@ int ConverterInit (const char *szInFile)
 	{
 		ptsTrack->pTrackStart = (LPBYTE) Z_Malloc(TRACK_BUFFER_SIZE, Z_MAINZONE);
 
-		if ( GetInFileData(&dwTag, sizeof(dwTag)) || (dwTag != MTrk)
+		if ( GetInFileData(&dwTag, sizeof(dwTag))
+				|| ((dwTag = (DWORD)BigLong(dwTag)) != MIDI_MAGIC_MTRK)
 				|| GetInFileData(&cbHeader, sizeof(cbHeader)) )
 		{
 			Con_Printf("MIDI: %s\n", szInitErrInFile);
 			goto Init_Cleanup;
 		}
 
-		cbHeader = DWORDSWAP(cbHeader);
+		cbHeader = (DWORD)BigLong(cbHeader);
 		ptsTrack->dwTrackLength = cbHeader; // Total track length
 
 // Here we need to determine if all track data will fit into a single one of
@@ -444,7 +446,8 @@ int ConvertToBuffer (DWORD dwFlags, LPCONVERTINFO lpciInfo)
 
 	// Don't add end of track event 'til we're done
 	//
-		if (teTemp.byShortData[0] == MIDI_META && teTemp.byShortData[1] == MIDI_META_EOT)
+		if (teTemp.byShortData[0] == MIDI_META_EVENT &&
+		    teTemp.byShortData[1] == MIDI_META_EOT)
 		{
 			if (dwMallocBlocks)
 			{
@@ -516,7 +519,8 @@ int ConvertToBuffer (DWORD dwFlags, LPCONVERTINFO lpciInfo)
 
 		// Don't add end of track event 'til we're done
 		//
-		if (teTemp.byShortData[0] == MIDI_META && teTemp.byShortData[1] == MIDI_META_EOT)
+		if (teTemp.byShortData[0] == MIDI_META_EVENT &&
+		    teTemp.byShortData[1] == MIDI_META_EOT)
 		{
 			if (dwMallocBlocks)
 			{
@@ -603,9 +607,9 @@ static int GetTrackVDWord (PINTRACKSTATE ptsTrack, LPDWORD lpdw)
 /*										*/
 /* pteTemp->tkEvent will contain the absolute tick time of the event		*/
 /* pteTemp->byShortData[0] will contain						*/
-/*  MIDI_META if the event is a meta event;					*/
+/*  MIDI_META_EVENT if the event is a meta event;				*/
 /*   in this case pteTemp->byShortData[1] will contain the meta class		*/
-/*  MIDI_SYSEX or MIDI_SYSEXEND if the event is a SysEx event			*/
+/*  MIDICMD_SYSEX or MIDICMD_SYSEX_END if the event is a SysEx event		*/
 /*  Otherwise, the event is a channel message and pteTemp->byShortData[1]	*/
 /*   and pteTemp->byShortData[2] will contain the rest of the event.		*/
 /*										*/
@@ -669,7 +673,7 @@ static int GetTrackEvent (INTRACKSTATE *ptsTrack, PTEMPEVENT pteTemp)
 		// Only program change and channel pressure events are 2 bytes long;
 		// the rest are 3 and need another byte
 		//
-		if ( (byByte != MIDI_PRGMCHANGE) && (byByte != MIDI_CHANPRESS) )
+		if (byByte != MIDICMD_PGM_CHANGE && byByte != MIDICMD_CHANNEL_PRESSURE)
 		{
 			if (!ptsTrack->dwLeftInBuffer && !ptsTrack->dwLeftOnDisk)
 			{
@@ -683,7 +687,7 @@ static int GetTrackEvent (INTRACKSTATE *ptsTrack, PTEMPEVENT pteTemp)
 			++pteTemp->dwEventLength;
 		}
 	}
-	else if ((byByte & 0xF0) != MIDI_SYSEX)
+	else if ((byByte & 0xF0) != MIDICMD_SYSEX)
 	{
 		// Not running status, not in SysEx range - must be
 		// normal channel message (0x80-0xEF)
@@ -695,7 +699,7 @@ static int GetTrackEvent (INTRACKSTATE *ptsTrack, PTEMPEVENT pteTemp)
 		//
 		byByte &= 0xF0;
 
-		dwEventLength = (byByte == MIDI_PRGMCHANGE || byByte == MIDI_CHANPRESS) ? 1 : 2;
+		dwEventLength = (byByte == MIDICMD_PGM_CHANGE || byByte == MIDICMD_CHANNEL_PRESSURE) ? 1 : 2;
 		pteTemp->dwEventLength = dwEventLength + 1;
 
 		if ((ptsTrack->dwLeftInBuffer + ptsTrack->dwLeftOnDisk) < dwEventLength)
@@ -714,7 +718,7 @@ static int GetTrackEvent (INTRACKSTATE *ptsTrack, PTEMPEVENT pteTemp)
 				return 1;
 		}
 	}
-	else if ((byByte == MIDI_SYSEX) || (byByte == MIDI_SYSEXEND))
+	else if (byByte == MIDICMD_SYSEX || byByte == MIDICMD_SYSEX_END)
 	{
 		// One of the SysEx types. (They are the same as far as we're concerned;
 		// there is only a semantic difference in how the data would actually
@@ -722,7 +726,7 @@ static int GetTrackEvent (INTRACKSTATE *ptsTrack, PTEMPEVENT pteTemp)
 		// event type back on the output track, however.)
 		//
 		// Parse the general format of:
-		//  BYTE    bEvent (MIDI_SYSEX or MIDI_SYSEXEND)
+		//  BYTE    bEvent (MIDICMD_SYSEX or MIDICMD_SYSEX_END)
 		//  VDWORD  cbParms
 		//  BYTE    abParms[cbParms]
 		//
@@ -756,10 +760,10 @@ static int GetTrackEvent (INTRACKSTATE *ptsTrack, PTEMPEVENT pteTemp)
 		// block would normally be freed
 		dwMallocBlocks++;
 	}
-	else if (byByte == MIDI_META)
+	else if (byByte == MIDI_META_EVENT)
 	{
 		// It's a meta event. Parse the general form:
-		//  BYTE    bEvent  (MIDI_META)
+		//  BYTE    bEvent  (MIDI_META_EVENT)
 		//  BYTE    bClass
 		//  VDWORD  cbParms
 		//  BYTE    abParms[cbParms]
@@ -981,7 +985,7 @@ static int AddEventToStreamBuffer (PTEMPEVENT pteTemp, CONVERTINFO *lpciInfo)
 		}
 	}
 
-	if (pteTemp->byShortData[0] < MIDI_SYSEX)
+	if (pteTemp->byShortData[0] < MIDICMD_SYSEX)
 	{
 		// Channel message. We know how long it is, just copy it.
 		// Need 3 DWORD's: delta-t, stream-ID, event
@@ -998,8 +1002,8 @@ static int AddEventToStreamBuffer (PTEMPEVENT pteTemp, CONVERTINFO *lpciInfo)
 					| ( ((DWORD)pteTemp->byShortData[2] ) << 16 )
 					| MEVT_F_SHORT;
 
-		if ( ((pteTemp->byShortData[0] & 0xF0) == MIDI_CTRLCHANGE)
-			&& (pteTemp->byShortData[1] == MIDICTRL_VOLUME) )
+		if ((pteTemp->byShortData[0] & 0xF0) == MIDICMD_CONTROL &&
+		    pteTemp->byShortData[1] == MIDICTL_MSB_MAIN_VOLUME)
 		{
 			// If this is a volume change, generate a callback so we can grab
 			// the new volume for our cache
@@ -1007,7 +1011,8 @@ static int AddEventToStreamBuffer (PTEMPEVENT pteTemp, CONVERTINFO *lpciInfo)
 		}
 		lpciInfo->dwBytesRecorded += 3 *sizeof(DWORD);
 	}
-	else if (pteTemp->byShortData[0] == MIDI_SYSEX || pteTemp->byShortData[0] == MIDI_SYSEXEND)
+	else if (pteTemp->byShortData[0] == MIDICMD_SYSEX ||
+		 pteTemp->byShortData[0] == MIDICMD_SYSEX_END)
 	{
 		DEBUG_Printf("%s: Ignoring SysEx event.\n", __thisfunc__);
 		if (dwMallocBlocks)
@@ -1024,7 +1029,7 @@ static int AddEventToStreamBuffer (PTEMPEVENT pteTemp, CONVERTINFO *lpciInfo)
 		//  VDWORD  dwEventLength
 		//  BYTE    pLongEventData[dwEventLength]
 		//
-		assert(pteTemp->byShortData[0] == MIDI_META);
+		assert(pteTemp->byShortData[0] == MIDI_META_EVENT);
 
 		// The only meta-event we care about is change tempo
 		//

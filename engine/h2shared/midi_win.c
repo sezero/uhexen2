@@ -6,13 +6,12 @@
 */
 
 #include <windows.h>
-#include <windowsx.h>
 #include <commctrl.h>
 #include <memory.h>
-//#include <mmreg.h>
+/*#include <mmreg.h>*/
 #include <mmsystem.h>
 
-#include "midstuff.h"
+#include "midifile.h"
 #include "mid2strm.h"
 #include "quakedef.h"
 #include "winquake.h"
@@ -45,20 +44,22 @@ static midi_driver_t midi_win_ms =
 	NULL
 };
 
+/* macros to be used with windows MIDIEVENT structure -> dwEvent */
+#define MIDIEVENT_CHANNEL(x)	(x & 0x0000000F)
+#define MIDIEVENT_TYPE(x)	(x & 0x000000F0)
+#define MIDIEVENT_DATA1(x)	((x & 0x0000FF00) >> 8)
+#define MIDIEVENT_VOLUME(x)	((x & 0x007F0000) >> 16)
+
 static qboolean	bFileOpen, bPlaying, bBuffersPrepared, bPaused;
 static UINT	uMIDIDeviceID = MIDI_MAPPER, uCallbackStatus;
 static int	nCurrentBuffer, nEmptyBuffers;
 DWORD		dwBufferTickLength, dwTempoMultiplier, dwCurrentTempo, dwProgressBytes;
-static DWORD	dwVolCache[NUM_CHANNELS];
+static DWORD	dwVolCache[MIDI_CHANNELS];
 static qboolean	hw_vol_capable = false;
 
 static HMIDISTRM	hStream;
 static CONVERTINFO	ciStreamBuffers[NUM_STREAM_BUFFERS];
 
-/* From mid2strm.c */
-extern INFILESTATE	ifs;
-
-/* Private to this module */
 static HANDLE		hBufferReturnEvent;
 
 
@@ -411,7 +412,7 @@ static int StreamBufferSetup(const char *Name)
 		return 1;
 
 	// Initialize the volume cache array to some pre-defined value
-	for (idx = 0; idx < NUM_CHANNELS; idx++)
+	for (idx = 0; idx < MIDI_CHANNELS; idx++)
 		dwVolCache[idx] = VOL_CACHE_INIT;
 
 	mptd.cbStruct = sizeof(mptd);
@@ -590,14 +591,14 @@ static void CALLBACK MidiProc(HMIDIIN hMidi, UINT uMsg, DWORD_PTR dwInstance, DW
 	case MOM_POSITIONCB:
 		pmh = (MIDIHDR *)dwParam1;
 		pme = (MIDIEVENT *)(pmh->lpData + pmh->dwOffset);
-		if (MIDIEVENT_TYPE(pme->dwEvent) == MIDI_CTRLCHANGE)
+		if (MIDIEVENT_TYPE(pme->dwEvent) == MIDICMD_CONTROL)
 		{
-			if (MIDIEVENT_DATA1(pme->dwEvent) == MIDICTRL_VOLUME_LSB)
+			if (MIDIEVENT_DATA1(pme->dwEvent) == MIDICTL_LSB_MAIN_VOLUME)
 			{
 				DEBUG_Printf("%s: Got an LSB volume event\n", __thisfunc__);
 				break;
 			}
-			if (MIDIEVENT_DATA1(pme->dwEvent) != MIDICTRL_VOLUME)
+			if (MIDIEVENT_DATA1(pme->dwEvent) != MIDICTL_MSB_MAIN_VOLUME)
 				break;
 
 			// Mask off the channel number and cache the volume data byte
@@ -632,10 +633,10 @@ static void SetAllChannelVolumes(DWORD dwVolumePercent)
 	if ( !(bPlaying || bPaused))
 		return;	/* otherwise we get MMSYSTEM errors after a MIDI_Stop() */
 
-	for (idx = 0, dwStatus = MIDI_CTRLCHANGE; idx < NUM_CHANNELS; idx++, dwStatus++)
+	for (idx = 0, dwStatus = MIDICMD_CONTROL; idx < MIDI_CHANNELS; idx++, dwStatus++)
 	{
 		dwVol = (dwVolCache[idx] * dwVolumePercent) / 1000;
-		dwEvent = dwStatus | ((DWORD)MIDICTRL_VOLUME << 8) | ((DWORD)dwVol << 16);
+		dwEvent = dwStatus | ((DWORD)MIDICTL_MSB_MAIN_VOLUME << 8) | ((DWORD)dwVol << 16);
 		mmrRetVal = midiOutShortMsg((HMIDIOUT)hStream, dwEvent);
 		if (mmrRetVal != MMSYSERR_NOERROR)
 		{
@@ -662,7 +663,7 @@ static void SetChannelVolume(DWORD dwChannel, DWORD dwVolumePercent)
 		return;
 
 	dwVol = (dwVolCache[dwChannel] * dwVolumePercent) / 1000;
-	dwEvent = MIDI_CTRLCHANGE | dwChannel | ((DWORD)MIDICTRL_VOLUME << 8) | ((DWORD)dwVol << 16);
+	dwEvent = MIDICMD_CONTROL | dwChannel | ((DWORD)MIDICTL_MSB_MAIN_VOLUME << 8) | ((DWORD)dwVol << 16);
 
 	mmrRetVal = midiOutShortMsg((HMIDIOUT)hStream, dwEvent);
 	if (mmrRetVal != MMSYSERR_NOERROR)

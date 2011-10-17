@@ -47,6 +47,50 @@
 #define VOL_CACHE_INIT		100
 
 
+/* Temporary event structure which stores event data
+ * until we're ready to dump it into a stream buffer */
+typedef struct
+{
+	DWORD	tkEvent;	/* absolute time of event */
+	BYTE	byShortData[4];	/* event type and parameters if channel msg */
+	DWORD	dwEventLength;	/* length of data which follows if meta or sysex */
+	LPBYTE	pLongData;	/* -> event data if applicable */
+} TEMPEVENT, *PTEMPEVENT;
+
+
+/* state of a track open for read */
+#define FILEOFF		DWORD
+typedef struct
+{
+	DWORD	fdwTrack;	/* track status */
+	DWORD	dwTrackLength;	/* total bytes in track */
+	DWORD	dwLeftInBuffer;	/* bytes left unread in track buffer */
+	LPBYTE	pTrackStart;	/* -> start of track data buffer */
+	LPBYTE	pTrackCurrent;	/* -> next byte to read in buffer */
+	DWORD	tkNextEventDue;	/* absolute time of next event in track */
+	BYTE	byRunningStatus;/* running status from last channel msg */
+
+	FILEOFF	foTrackStart;	/* start of track. for walking the file */
+	FILEOFF	foNextReadStart;/* file offset of next read from disk */
+	DWORD	dwLeftOnDisk;	/* bytes left unread on disk */
+} INTRACKSTATE, *PINTRACKSTATE;
+
+#define ITS_F_ENDOFTRK	0x00000001
+
+
+/* state of the input MIDI file */
+typedef struct
+{
+	DWORD	cbFileLength;		/* total bytes in file */
+	DWORD	dwTimeDivision;		/* original time division */
+	DWORD	dwFormat;		/* original format */
+	DWORD	dwTrackCount;		/* track count (specifies pitsTracks size) */
+	INTRACKSTATE	*pitsTracks;	/* -> array of tracks in this file */
+} INFILESTATE, *PINFILESTATE;
+
+extern INFILESTATE	ifs;
+
+
 /*
  * This structure is used to pass information to the ConvertToBuffer()
  * system and then internally by that function to send information about the
