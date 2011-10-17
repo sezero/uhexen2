@@ -4,6 +4,21 @@ Development Progress	:
 ---------------------------
 
 2011-10-17 (SVN):
+    * windows midi: Fixed several broken error checks. Removed irrelevant
+      or dead code at several places. Renamed a lot of variables, as well
+      as structure members from brain-dead winblows style to our own, so
+      that I can read more easily. Changed midi-to-stream converter to use
+      FS_fread() and friends, keeping the midi file open during playback:
+      The old code used to load the whole midi file into hunk memory, but
+      there were no 100% guarantee that the data wouldn't be overwritten
+      during a level change. Therefore this is much safer. OTOH, multiple
+      disk reads shouldn't be a problem even for ancient computers because
+      the files are small. Changed the structures so that headers prepared
+      boolean is not a single global variable any longer but is per-buffer
+      now. Added missing origin and copyright headers. Possibly some other
+      cleanups I forgot. More might follow later.
+
+2011-10-17 (SVN):
     * Deleted midstuff.h. Made mid2strm.c and midi_win.c to use the new
       midifile.h header.
 
