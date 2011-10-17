@@ -3,6 +3,11 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2011-10-17 (SVN):
+    * libs/common: Added new midifile.h header for common MIDI constants
+      and structures. Information is compiled from widely available open
+      sources.
+
 2011-10-14 (SVN):
     * utils Makefiles: Removed the extra "bin" directory, removed the
       DESTDIR from the makefiles and BIN_DIR from the scripts. Added
