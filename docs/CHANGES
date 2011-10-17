@@ -4,6 +4,9 @@ Development Progress	:
 ---------------------------
 
 2011-10-17 (SVN):
+    * quakedef.h: updated beta datestamp to 2011-10-17.
+
+2011-10-17 (SVN):
     * windows midi: Fixed several broken error checks. Removed irrelevant
       or dead code at several places. Renamed a lot of variables, as well
       as structure members from brain-dead winblows style to our own, so
