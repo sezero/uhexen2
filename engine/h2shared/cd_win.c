@@ -28,6 +28,7 @@
 */
 
 #include "quakedef.h"
+#include "cdaudio.h"
 #include "winquake.h"
 #include <mmsystem.h>
 

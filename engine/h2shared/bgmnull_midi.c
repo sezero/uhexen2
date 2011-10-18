@@ -26,6 +26,7 @@
 
 #include "quakedef.h"
 #include "bgmusic.h"
+#include "cdaudio.h"
 #include "midi_drv.h"
 
 #define MIDI_DIRNAME	"midi"

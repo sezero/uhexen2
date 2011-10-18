@@ -10,6 +10,7 @@
 #include "quakedef.h"
 #include "net_defs.h"	/* FIXME */
 #include "bgmusic.h"
+#include "cdaudio.h"
 #include "r_shared.h"
 
 void (*vid_menudrawfn)(void);

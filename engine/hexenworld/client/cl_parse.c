@@ -7,6 +7,7 @@
 
 #include "quakedef.h"
 #include "bgmusic.h"
+#include "cdaudio.h"
 #include "r_shared.h"
 
 static const char *svc_strings[] =
@@ -112,7 +113,6 @@ static const char *svc_strings[] =
 };
 #define	NUM_SVC_STRINGS	( sizeof(svc_strings)/sizeof(svc_strings[0]) )
 
-//static int	oldparsecountmod;
 int		parsecountmod;
 double		parsecounttime;
 
@@ -781,7 +781,6 @@ static void CL_ParseClientdata (void)
 	frame_t		*frame;
 
 // calculate simulated time of message
-//	oldparsecountmod = parsecountmod;
 
 	i = cls.netchan.incoming_acknowledged;
 	cl.parsecount = i;

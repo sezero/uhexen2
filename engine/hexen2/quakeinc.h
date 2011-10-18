@@ -56,8 +56,6 @@
 #include "screen.h"
 #include "sbar.h"
 #include "q_sound.h"
-#include "cdaudio.h"
-#include "mididef.h"
 #endif	/* !SERVERONLY */
 
 #include "progs.h"

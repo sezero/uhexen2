@@ -32,6 +32,7 @@
 #ifdef	__USE_BSD_CDROM__
 
 #include "quakedef.h"
+#include "cdaudio.h"
 
 #include <unistd.h>
 #include <sys/ioctl.h>
@@ -39,7 +40,6 @@
 #include <fcntl.h>
 #include <time.h>
 #include <errno.h>
-
 #include <sys/cdio.h>
 #include <paths.h>
 

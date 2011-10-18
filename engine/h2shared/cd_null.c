@@ -24,6 +24,7 @@
 
 
 #include "quakedef.h"
+#include "cdaudio.h"
 
 int CDAudio_Play(byte track, qboolean looping)
 {

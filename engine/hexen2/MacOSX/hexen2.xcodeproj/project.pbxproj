@@ -150,7 +150,6 @@
 		707D58880AA9FBB700313A9F /* keys.h in Headers */ = {isa = PBXBuildFile; fileRef = 707D57AB0AA9F6EE00313A9F /* keys.h */; };
 		707D588A0AA9FBB700313A9F /* mathlib.h in Headers */ = {isa = PBXBuildFile; fileRef = 707D57AE0AA9F6EE00313A9F /* mathlib.h */; };
 		707D588B0AA9FBB700313A9F /* menu.h in Headers */ = {isa = PBXBuildFile; fileRef = 707D57B00AA9F6EE00313A9F /* menu.h */; };
-		707D588C0AA9FBB700313A9F /* mididef.h in Headers */ = {isa = PBXBuildFile; fileRef = 707D57B20AA9F6EE00313A9F /* mididef.h */; };
 		707D588D0AA9FBB700313A9F /* net_dgrm.h in Headers */ = {isa = PBXBuildFile; fileRef = 707D57B50AA9F6EE00313A9F /* net_dgrm.h */; };
 		707D588E0AA9FBB700313A9F /* net_loop.h in Headers */ = {isa = PBXBuildFile; fileRef = 707D57B70AA9F6EE00313A9F /* net_loop.h */; };
 		707D588F0AA9FBB700313A9F /* net_udp.h in Headers */ = {isa = PBXBuildFile; fileRef = 707D57BA0AA9F6EE00313A9F /* net_udp.h */; };
@@ -358,7 +357,6 @@
 		707D57AF0AA9F6EE00313A9F /* menu.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = menu.c; path = ../menu.c; sourceTree = SOURCE_ROOT; };
 		707D57B00AA9F6EE00313A9F /* menu.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = menu.h; path = ../menu.h; sourceTree = SOURCE_ROOT; };
 		707D57B10AA9F6EE00313A9F /* midi_mac.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = midi_mac.c; path = ../../h2shared/midi_mac.c; sourceTree = SOURCE_ROOT; };
-		707D57B20AA9F6EE00313A9F /* mididef.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = mididef.h; path = ../../h2shared/mididef.h; sourceTree = SOURCE_ROOT; };
 		707D57B30AA9F6EE00313A9F /* net_bsd.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = net_bsd.c; path = ../net_bsd.c; sourceTree = SOURCE_ROOT; };
 		707D57B40AA9F6EE00313A9F /* net_dgrm.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = net_dgrm.c; path = ../net_dgrm.c; sourceTree = SOURCE_ROOT; };
 		707D57B50AA9F6EE00313A9F /* net_dgrm.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = net_dgrm.h; path = ../net_dgrm.h; sourceTree = SOURCE_ROOT; };
@@ -582,7 +580,6 @@
 				707D57AF0AA9F6EE00313A9F /* menu.c */,
 				707D57B00AA9F6EE00313A9F /* menu.h */,
 				707D57B10AA9F6EE00313A9F /* midi_mac.c */,
-				707D57B20AA9F6EE00313A9F /* mididef.h */,
 				707D57B30AA9F6EE00313A9F /* net_bsd.c */,
 				707D57B40AA9F6EE00313A9F /* net_dgrm.c */,
 				707D57B50AA9F6EE00313A9F /* net_dgrm.h */,
@@ -691,7 +688,6 @@
 				707D58880AA9FBB700313A9F /* keys.h in Headers */,
 				707D588A0AA9FBB700313A9F /* mathlib.h in Headers */,
 				707D588B0AA9FBB700313A9F /* menu.h in Headers */,
-				707D588C0AA9FBB700313A9F /* mididef.h in Headers */,
 				707D588D0AA9FBB700313A9F /* net_dgrm.h in Headers */,
 				707D588E0AA9FBB700313A9F /* net_loop.h in Headers */,
 				707D588F0AA9FBB700313A9F /* net_udp.h in Headers */,

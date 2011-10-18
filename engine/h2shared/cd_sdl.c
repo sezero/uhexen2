@@ -42,6 +42,7 @@
 #else	/* SDL_INIT_CDROM */
 
 #include "quakedef.h"
+#include "cdaudio.h"
 
 static qboolean cdValid = false;
 static qboolean	playing = false;

@@ -34,6 +34,7 @@
 
 #include "quakedef.h"
 #include "bgmusic.h"
+#include "cdaudio.h"
 #include "winquake.h"
 #include <mmsystem.h>
 #include "d_local.h"

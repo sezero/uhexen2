@@ -32,6 +32,7 @@
 
 #include <dpmi.h>
 #include "quakedef.h"
+#include "cdaudio.h"
 #include "dosisms.h"
 
 #define ADDRESS_MODE_HSG		0
@@ -139,7 +140,7 @@ struct cd_request
 	union
 	{
 		struct	playAudioRequest	playAudio;
-		struct	readRequest			read;
+		struct	readRequest		read;
 		struct	writeRequest		write;
 	} x;
 };
@@ -161,7 +162,7 @@ struct audioChannelInfo_s
 struct deviceStatus_s
 {
 	char	code;
-	int		status;
+	int	status;
 };
 
 struct mediaChange_s
@@ -175,14 +176,14 @@ struct audioDiskInfo_s
 	char	code;
 	char	lowTrack;
 	char	highTrack;
-	int		leadOutStart;
+	int	leadOutStart;
 };
 
 struct audioTrackInfo_s
 {
 	char	code;
 	char	track;
-	int		start;
+	int	start;
 	char	control;
 };
 
@@ -190,8 +191,8 @@ struct audioStatus_s
 {
 	char	code;
 	short	status;
-	int		PRstartLocation;
-	int		PRendLocation;
+	int	PRstartLocation;
+	int	PRendLocation;
 };
 
 struct reset_s
@@ -207,7 +208,7 @@ union readInfo_u
 	struct audioDiskInfo_s		audioDiskInfo;
 	struct audioTrackInfo_s		audioTrackInfo;
 	struct audioStatus_s		audioStatus;
-	struct reset_s				reset;
+	struct reset_s			reset;
 };
 
 #pragma pack()
@@ -232,7 +233,7 @@ typedef struct
 
 static struct cd_request	*cdRequest;
 static union readInfo_u		*readInfo;
-static cd_info				cd;
+static cd_info			cd;
 
 static qboolean	playing = false;
 static qboolean	wasPlaying = false;

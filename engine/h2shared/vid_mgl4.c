@@ -9,6 +9,7 @@
 #include "quakedef.h"
 #include "winquake.h"
 #include "bgmusic.h"
+#include "cdaudio.h"
 #include <mmsystem.h>
 #include "d_local.h"
 #include "resource.h"

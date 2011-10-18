@@ -41,6 +41,7 @@
 #include "quakedef.h"
 #include "cfgfile.h"
 #include "bgmusic.h"
+#include "cdaudio.h"
 #include "sdl_inc.h"
 #include <unistd.h>
 

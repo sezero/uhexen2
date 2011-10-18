@@ -17,6 +17,7 @@
 #include "cfgfile.h"
 #include "debuglog.h"
 #include "bgmusic.h"
+#include "cdaudio.h"
 
 static	cvar_t	rcon_password = {"rcon_password", "", CVAR_NONE};
 static	cvar_t	rcon_address = {"rcon_address", "", CVAR_NONE};

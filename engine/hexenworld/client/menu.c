@@ -6,6 +6,7 @@
 
 #include "quakedef.h"
 #include "bgmusic.h"
+#include "cdaudio.h"
 #include "r_shared.h"
 
 void (*vid_menudrawfn)(void);

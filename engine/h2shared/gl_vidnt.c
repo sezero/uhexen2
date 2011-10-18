@@ -10,6 +10,7 @@
 #include <mmsystem.h>
 #include "cfgfile.h"
 #include "bgmusic.h"
+#include "cdaudio.h"
 #include "resource.h"
 #include "wgl_func.h"
 

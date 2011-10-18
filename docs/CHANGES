@@ -4,6 +4,11 @@ Development Progress	:
 ---------------------------
 
 2011-10-18 (SVN):
+    * Removed mididef.h and moved midi driver init and shutdown procedure
+      prototypes to bgmusic.h. Removed common include of cdaudio.h from
+      quakedef.h, included it in places where necessary.
+
+2011-10-18 (SVN):
     * Split docs/CHANGES, moved logs up to 1.4.3-release into CHANGES.old
     * Updated 1.5.1 release notes file.
     * quakedef.h: updated beta datestamp to 2011-10-18.

@@ -40,6 +40,7 @@
 #include "d_local.h"
 #include "cfgfile.h"
 #include "bgmusic.h"
+#include "cdaudio.h"
 #include "sdl_inc.h"
 
 #define MIN_WIDTH		320

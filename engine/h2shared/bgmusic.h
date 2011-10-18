@@ -44,5 +44,9 @@ void BGM_Resume (void);
 void BGM_PlayCDtrack (byte track, qboolean looping);
 void BGM_PlayMIDIorMusic (const char *filename);
 
+/* init and shutdown procedures for midi driver: */
+qboolean MIDI_Init (void);
+void MIDI_Cleanup (void);
+
 #endif	/* _BGMUSIC_H_ */
 

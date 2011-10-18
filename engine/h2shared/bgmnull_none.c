@@ -27,6 +27,7 @@
 
 #include "quakedef.h"
 #include "bgmusic.h"
+#include "cdaudio.h"
 
 qboolean	bgmloop = true;
 

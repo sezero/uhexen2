@@ -9,6 +9,7 @@
 #include "cfgfile.h"
 #include "debuglog.h"
 #include "bgmusic.h"
+#include "cdaudio.h"
 #include <setjmp.h>
 #include <ctype.h>
 
