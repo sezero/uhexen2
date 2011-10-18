@@ -74,9 +74,10 @@ all : $(BINARY)
 	$(CC) -c $(CFLAGS) $(INCLUDES) -o $@ $<
 
 # Objects
-COMMONOBJ= cmdlib.o \
+COMMONOBJ= qsnprint.o \
 	strlcat.o \
 	strlcpy.o \
+	cmdlib.o \
 	util_io.o \
 	q_endian.o \
 	byteordr.o \

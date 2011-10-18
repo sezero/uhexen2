@@ -26,6 +26,7 @@
 
 #include "q_endian.h"
 #include "sys.h"
+#include "qsnprint.h"
 #include "link_ops.h"
 #include "sizebuf.h"
 #include "msg_io.h"

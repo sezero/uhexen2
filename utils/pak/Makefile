@@ -77,9 +77,10 @@ all : $(PAKX) $(PAKLIST)
 	$(CC) -c $(CFLAGS) $(INCLUDES) -o $@ $<
 
 # Objects
-COMMONOBJS= cmdlib.o \
+COMMONOBJS= qsnprint.o \
 	strlcat.o \
 	strlcpy.o \
+	cmdlib.o \
 	util_io.o \
 	crc.o \
 	q_endian.o \

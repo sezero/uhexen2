@@ -94,7 +94,7 @@ endif
 	$(CC) -c $(CFLAGS) $(CPPFLAGS) $(INCLUDES) -o $@ $<
 
 # Objects
-MASTEROBJS = sizebuf.o msg_io.o cmds.o common.o net.o master.o sys_main.o
+MASTEROBJS = qsnprint.o sizebuf.o msg_io.o cmds.o common.o net.o master.o sys_main.o
 
 # Targets
 .PHONY: clean distclean

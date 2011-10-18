@@ -79,9 +79,10 @@ all : $(BINARY)
 	$(CC) -c $(CFLAGS) $(INCLUDES) -o $@ $<
 
 # Objects
-JS_OBJS= cmdlib.o \
+JS_OBJS= qsnprint.o \
 	strlcat.o \
 	strlcpy.o \
+	cmdlib.o \
 	q_endian.o \
 	byteordr.o \
 	util_io.o \

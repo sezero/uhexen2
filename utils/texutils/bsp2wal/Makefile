@@ -76,9 +76,10 @@ all : $(BINARY)
 	$(CC) -c $(CFLAGS) $(INCLUDES) -o $@ $<
 
 # Objects
-BSP2WALOBJS= cmdlib.o \
+BSP2WALOBJS= qsnprint.o \
 	strlcat.o \
 	strlcpy.o \
+	cmdlib.o \
 	q_endian.o \
 	byteordr.o \
 	util_io.o \

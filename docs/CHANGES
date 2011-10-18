@@ -4,6 +4,9 @@ Development Progress	:
 ---------------------------
 
 2011-10-18 (SVN):
+    * Made all projects to use q_(v)snprintf from libs/common.
+
+2011-10-18 (SVN):
     * Removed mididef.h and moved midi driver init and shutdown procedure
       prototypes to bgmusic.h. Removed common include of cdaudio.h from
       quakedef.h, included it in places where necessary.

@@ -76,9 +76,10 @@ all : $(BINARY)
 	$(CC) -c $(CFLAGS) $(INCLUDES) -o $@ $<
 
 # Objects
-QFILESOBJS= cmdlib.o \
+QFILESOBJS= qsnprint.o \
 	strlcat.o \
 	strlcpy.o \
+	cmdlib.o \
 	util_io.o \
 	qdir.o \
 	crc.o \

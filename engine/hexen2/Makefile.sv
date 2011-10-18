@@ -241,6 +241,7 @@ SV_OBJS = \
 	sizebuf.o \
 	strlcat.o \
 	strlcpy.o \
+	qsnprint.o \
 	msg_io.o \
 	common.o \
 	debuglog.o \

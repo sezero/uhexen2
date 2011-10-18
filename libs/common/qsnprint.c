@@ -32,6 +32,15 @@
 #include "compiler.h"
 #include "qsnprint.h"
 
+/* platform dependant (v)snprintf function names: */
+#if defined(PLATFORM_WINDOWS)
+#define	snprintf_func		_snprintf
+#define	vsnprintf_func		_vsnprintf
+#else
+#define	snprintf_func		snprintf
+#define	vsnprintf_func		vsnprintf
+#endif
+
 #if defined(__DJGPP__) &&	\
   (!defined(__DJGPP_MINOR__) || __DJGPP_MINOR__ < 4)
 /* DJGPP < v2.04 doesn't have [v]snprintf().  */

@@ -76,9 +76,10 @@ all : $(BINARY)
 	$(CC) -c $(CFLAGS) $(INCLUDES) -o $@ $<
 
 # Objects
-LMP2PCXOBJS= cmdlib.o \
+LMP2PCXOBJS= qsnprint.o \
 	strlcat.o \
 	strlcpy.o \
+	cmdlib.o \
 	util_io.o \
 	pathutil.o \
 	q_endian.o \

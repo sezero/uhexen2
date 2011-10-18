@@ -13,42 +13,6 @@
 /*
 ============================================================================
 
-REPLACEMENT FUNCTIONS
-
-============================================================================
-*/
-
-int q_vsnprintf(char *str, size_t size, const char *format, va_list args)
-{
-	int		ret;
-
-	ret = vsnprintf_func (str, size, format, args);
-
-	if (ret < 0)
-		ret = (int)size;
-
-	if ((size_t)ret >= size)
-		str[size - 1] = '\0';
-
-	return ret;
-}
-
-int q_snprintf (char *str, size_t size, const char *format, ...)
-{
-	int		ret;
-	va_list		argptr;
-
-	va_start (argptr, format);
-	ret = q_vsnprintf (str, size, format, argptr);
-	va_end (argptr);
-
-	return ret;
-}
-
-
-/*
-============================================================================
-
 COMMAND LINE PROCESSING FUNCTIONS
 
 ============================================================================

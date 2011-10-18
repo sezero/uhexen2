@@ -29,6 +29,8 @@
 #define q_strcasecmp	strcasecmp
 #endif
 
+#include "qsnprint.h"		/* easier to include here */
+
 /* strlcpy and strlcat : */
 #include "strl_fn.h"
 
@@ -41,20 +43,6 @@
 extern size_t q_strlcpy (char *dst, const char *src, size_t size);
 extern size_t q_strlcat (char *dst, const char *src, size_t size);
 #endif
-
-/* snprintf, vsnprintf : always use our versions. */
-/* platform dependant (v)snprintf function names: */
-#if defined(PLATFORM_WINDOWS)
-#define	snprintf_func		_snprintf
-#define	vsnprintf_func		_vsnprintf
-#else
-#define	snprintf_func		snprintf
-#define	vsnprintf_func		vsnprintf
-#endif
-
-extern int q_snprintf (char *str, size_t size, const char *format, ...) __attribute__((__format__(__printf__,3,4)));
-extern int q_vsnprintf(char *str, size_t size, const char *format, va_list args)
-									__attribute__((__format__(__printf__,3,0)));
 
 /* these qerr_ versions of functions error out if they detect, well, an error.
  * their first two arguments must the name of the caller function (see compiler.h

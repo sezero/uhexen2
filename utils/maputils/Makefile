@@ -80,9 +80,10 @@ all : $(LIGHT) $(VIS) $(QBSP) $(BSPINFO)
 	$(CC) -c $(CFLAGS) $(INCLUDES) -o $@ $<
 
 # Objects
-COMMONOBJS= cmdlib.o \
+COMMONOBJS= qsnprint.o \
 	strlcat.o \
 	strlcpy.o \
+	cmdlib.o \
 	q_endian.o \
 	byteordr.o \
 	util_io.o \
@@ -114,9 +115,10 @@ QBSPOBJS= brush.o \
 	tjunc.o \
 	writebsp.o
 
-BSPINFOBJS= cmdlib.o \
+BSPINFOBJS= qsnprint.o \
 	strlcat.o \
 	strlcpy.o \
+	cmdlib.o \
 	q_endian.o \
 	byteordr.o \
 	util_io.o \

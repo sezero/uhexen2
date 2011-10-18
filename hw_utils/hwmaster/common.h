@@ -13,20 +13,6 @@
 #define	q_min(a, b)	(((a) < (b)) ? (a) : (b))
 #define	q_max(a, b)	(((a) > (b)) ? (a) : (b))
 
-/* snprintf, vsnprintf : always use our versions. */
-/* platform dependant (v)snprintf function names: */
-#if defined(PLATFORM_WINDOWS)
-#define	snprintf_func		_snprintf
-#define	vsnprintf_func		_vsnprintf
-#else
-#define	snprintf_func		snprintf
-#define	vsnprintf_func		vsnprintf
-#endif
-
-extern int q_snprintf (char *str, size_t size, const char *format, ...) __attribute__((__format__(__printf__,3,4)));
-extern int q_vsnprintf(char *str, size_t size, const char *format, va_list args)
-									__attribute__((__format__(__printf__,3,0)));
-
 
 extern	char		com_token[1024];
 

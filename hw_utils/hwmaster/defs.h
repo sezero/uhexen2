@@ -45,6 +45,7 @@
 #include "sizebuf.h"
 #include "msg_io.h"
 #include "protocol.h"
+#include "qsnprint.h"
 #include "common.h"
 #include "cmd.h"
 #include "net.h"
