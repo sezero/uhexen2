@@ -4,6 +4,7 @@ Development Progress	:
 ---------------------------
 
 2011-10-18 (SVN):
+    * Updated the Visual Studio project files.
     * Made all projects to always use our own q_strlcpy and q_strlcat.
     * Made all projects to use q_(v)snprintf from libs/common.
 
