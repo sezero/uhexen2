@@ -3,6 +3,9 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2011-10-18 (SVN):
+    * midi_mac.c: Tidied up.
+
 2011-10-17 (SVN):
     * quakedef.h: updated beta datestamp to 2011-10-17.
 

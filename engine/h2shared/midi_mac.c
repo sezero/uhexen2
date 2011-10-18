@@ -3,11 +3,12 @@
 	$Id$
 
 	MIDI module for Mac OS X using QuickTime:
-	Taken from the macglquake project with adjustments to make
+	Based the macglquake project with adjustments to make
 	it work with Mac OS X and Hexen II: Hammer of Thyrion.
 
 	Copyright (C) 2002  contributors of the macglquake project
 	Copyright (C) 2006  Levent Yavas
+	Copyright (C) 2006-2011  O.Sezer
 
 	This program is free software; you can redistribute it and/or
 	modify it under the terms of the GNU General Public License
@@ -63,45 +64,36 @@ static midi_driver_t midi_mac_qt =
 };
 
 
+#define CHECK_MIDI_ALIVE()		\
+do {					\
+	if (!midiTrack)			\
+	{				\
+		if (handle)		\
+			*handle = NULL;	\
+		return;			\
+	}				\
+while (0)
+
 static void MIDI_SetVolume (void **handle, float value)
 {
-	if (!midiTrack)
-	{
-		if (handle)
-			*handle = NULL;
-		return;
-	}
+	CHECK_MIDI_ALIVE();
 
 	SetMovieVolume(midiTrack, (short)(value * 256.0f));
 }
 
 static void MIDI_Rewind (void **handle)
 {
-	if (!midiTrack)
-	{
-		if (handle)
-			*handle = NULL;
-		return;
-	}
+	CHECK_MIDI_ALIVE();
 
 	GoToBeginningOfMovie (midiTrack);
 	StartMovie (midiTrack);
 }
 
-//
-// MusicEvents
-// Called in the event loop to keep track of MIDI music
-//
 static void MIDI_Update (void **handle)
 {
-	if (!midiTrack)
-	{
-		if (handle)
-			*handle = NULL;
-		return;
-	}
+	CHECK_MIDI_ALIVE();
 
-	// Let QuickTime get some time
+	/* let QuickTime get some time */
 	MoviesTask (midiTrack, 0);
 	if (IsMovieDone (midiTrack))
 	{
@@ -147,13 +139,11 @@ qboolean MIDI_Init(void)
 	return true;
 }
 
-
-#define	TEMP_MUSICNAME	"tmpmusic.mid"
-
-static void *MIDI_Play (const char *Name)
+static void *MIDI_Play (const char *filename)
 {
-	FILE		*midiFile;
-	char	midiName[MAX_OSPATH];
+#define	TEMP_MUSICNAME	"tmpmusic.mid"
+	FILE		*f;
+	char	midipath[MAX_OSPATH];
 	OSErr	err;
 	FSSpec	midiSpec;
 	FSRef	midiRef;
@@ -168,26 +158,26 @@ static void *MIDI_Play (const char *Name)
 		return NULL;
 	}
 
-	FS_OpenFile (Name, &midiFile, NULL);
-	if (!midiFile)
+	FS_OpenFile (filename, &f, NULL);
+	if (!f)
 	{
-		Con_DPrintf("Couldn't open %s\n", Name);
+		Con_DPrintf("Couldn't open %s\n", filename);
 		return NULL;
 	}
 	else
 	{
 		/* FIXME: is there not an api where I can send the
-		 * midi data from memory and avoid this crap???  */
+		 * midi data from memory and avoid this utter crap? */
 		if (file_from_pak)
 		{
 			int		ret;
 
-			Con_Printf("Extracting %s from pakfile\n", Name);
-			q_snprintf (midiName, sizeof(midiName), "%s/%s",
+			Con_Printf("Extracting %s from pakfile\n", filename);
+			q_snprintf (midipath, sizeof(midipath), "%s/%s",
 							host_parms->userdir,
 							TEMP_MUSICNAME);
-			ret = FS_WriteFileFromHandle (midiFile, midiName, fs_filesize);
-			fclose (midiFile);
+			ret = FS_WriteFileFromHandle (f, midipath, fs_filesize);
+			fclose (f);
 			if (ret != 0)
 			{
 				Con_Printf("Error while extracting from pak\n");
@@ -196,32 +186,32 @@ static void *MIDI_Play (const char *Name)
 		}
 		else	/* use the file directly */
 		{
-			fclose (midiFile);
-			q_snprintf (midiName, sizeof(midiName), "%s/%s",
-							fs_filepath, Name);
+			fclose (f);
+			q_snprintf (midipath, sizeof(midipath), "%s/%s",
+							fs_filepath, filename);
 		}
 	}
 
-	// converting path to FSSpec. found in CarbonCocoaIntegration.pdf:
-	// page 27, Obtaining an FSSpec Structure
-	err = FSPathMakeRef ((UInt8*)midiName, &midiRef, NULL);
+	/* converting path to FSSpec. found in CarbonCocoaIntegration.pdf:
+	 * page 27, Obtaining an FSSpec Structure */
+	err = FSPathMakeRef ((UInt8 *)midipath, &midiRef, NULL);
 	if (err != noErr)
 	{
-		Con_Printf ("MIDI_DRV: FSPathMakeRef: error while opening %s\n", midiName);
+		Con_Printf ("MIDI_DRV: FSPathMakeRef error while opening %s\n", midipath);
 		return NULL;
 	}
 
 	err = FSGetCatalogInfo (&midiRef, kFSCatInfoNone, NULL, NULL, &midiSpec, NULL);
 	if (err != noErr)
 	{
-		Con_Printf ("MIDI_DRV: FSGetCatalogInfo: error while opening %s\n", midiName);
+		Con_Printf ("MIDI_DRV: FSGetCatalogInfo error while opening %s\n", midipath);
 		return NULL;
 	}
 
 	err = OpenMovieFile (&midiSpec, &midiRefNum, fsRdPerm);
 	if (err != noErr)
 	{
-		Con_Printf ("MIDI_DRV: OpenMovieStream: error opening midi file\n");
+		Con_Printf ("MIDI_DRV: OpenMovieStream error opening midi file\n");
 		return NULL;
 	}
 
@@ -235,23 +225,17 @@ static void *MIDI_Play (const char *Name)
 	GoToBeginningOfMovie (midiTrack);
 	PrerollMovie (midiTrack, 0, 0);
 
-	// pOx - set initial volume
 	SetMovieVolume(midiTrack, (short)(bgmvolume.value * 256.0f));
 
 	StartMovie (midiTrack);
-	Con_Printf ("Started midi music %s\n", Name);
+	Con_Printf ("Started midi music %s\n", filename);
 
 	return midiTrack;
 }
 
 static void MIDI_Pause (void **handle)
 {
-	if (!midiTrack)
-	{
-		if (handle)
-			*handle = NULL;
-		return;
-	}
+	CHECK_MIDI_ALIVE();
 
 	if (!midi_paused)
 	{
@@ -262,12 +246,7 @@ static void MIDI_Pause (void **handle)
 
 static void MIDI_Resume (void **handle)
 {
-	if (!midiTrack)
-	{
-		if (handle)
-			*handle = NULL;
-		return;
-	}
+	CHECK_MIDI_ALIVE();
 
 	if (midi_paused)
 	{
@@ -278,12 +257,7 @@ static void MIDI_Resume (void **handle)
 
 static void MIDI_Stop (void **handle)
 {
-	if (!midiTrack)
-	{
-		if (handle)
-			*handle = NULL;
-		return;
-	}
+	CHECK_MIDI_ALIVE();
 
 	StopMovie (midiTrack);
 	DisposeMovie (midiTrack);
