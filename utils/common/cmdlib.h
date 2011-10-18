@@ -29,20 +29,9 @@
 #define q_strcasecmp	strcasecmp
 #endif
 
-#include "qsnprint.h"		/* easier to include here */
-
-/* strlcpy and strlcat : */
+/* easier to include these here */
 #include "strl_fn.h"
-
-#if HAVE_STRLCAT && HAVE_STRLCPY
-/* use native library functions */
-#define q_strlcpy	strlcpy
-#define q_strlcat	strlcat
-#else
-/* use our own copies of strlcpy and strlcat taken from OpenBSD */
-extern size_t q_strlcpy (char *dst, const char *src, size_t size);
-extern size_t q_strlcat (char *dst, const char *src, size_t size);
-#endif
+#include "qsnprint.h"
 
 /* these qerr_ versions of functions error out if they detect, well, an error.
  * their first two arguments must the name of the caller function (see compiler.h
