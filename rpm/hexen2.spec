@@ -180,6 +180,7 @@ utils/hcc/hcc -src gamecode-%{gamecode_ver}/hc/hw -oi -on
 %{__install} -D -m644 docs/ABOUT %{buildroot}/%{_prefix}/games/%{name}/docs/ABOUT
 %{__install} -D -m644 docs/Features %{buildroot}/%{_prefix}/games/%{name}/docs/Features
 %{__install} -D -m644 docs/CHANGES %{buildroot}/%{_prefix}/games/%{name}/docs/CHANGES
+%{__install} -D -m644 docs/CHANGES.old %{buildroot}/%{_prefix}/games/%{name}/docs/CHANGES.old
 %{__install} -D -m644 docs/README.music %{buildroot}/%{_prefix}/games/%{name}/docs/README.music
 %{__install} -D -m644 docs/README.3dfx %{buildroot}/%{_prefix}/games/%{name}/docs/README.3dfx
 %{__install} -D -m644 docs/README.launcher %{buildroot}/%{_prefix}/games/%{name}/docs/README.launcher
@@ -328,6 +329,7 @@ desktop-file-install \
 %{_prefix}/games/%{name}/docs/ABOUT
 %{_prefix}/games/%{name}/docs/Features
 %{_prefix}/games/%{name}/docs/CHANGES
+%{_prefix}/games/%{name}/docs/CHANGES.old
 %{_prefix}/games/%{name}/docs/README.music
 %{_prefix}/games/%{name}/docs/README.launcher
 %{_prefix}/games/%{name}/docs/README.3dfx
@@ -360,7 +362,10 @@ desktop-file-install \
 %{_prefix}/games/%{name}/docs/README.hwmaster
 
 %changelog
-* Fri Oct 14 2011 O.Sezer <sezero@users.sourceforge.net> 1.5.1-1
+* Tue Oct 18 2011 O.Sezer <sezero@users.sourceforge.net> 1.5.1-1
+- Install the CHANGES.old document.
+
+* Fri Oct 14 2011 O.Sezer <sezero@users.sourceforge.net>
 - Bumped version to 1.5.1
 - Adjusted for build system changes
 
