@@ -5,6 +5,7 @@ Development Progress	:
 
 2011-10-18 (SVN):
     * Split docs/CHANGES, moved logs up to 1.4.3-release into CHANGES.old
+    * Updated 1.5.1 release notes file.
 
 2011-10-18 (SVN):
     * midi_mac.c: Tidied up.
