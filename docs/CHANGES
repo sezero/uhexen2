@@ -4,6 +4,8 @@ Development Progress	:
 ---------------------------
 
 2011-10-19 (SVN):
+    * Updated README.dos document with relation to the CWSDPMI version
+      included in the binary package.
     * quakedef.h: updated beta datestamp to 2011-10-19.
 
 2011-10-19 (SVN):

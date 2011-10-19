@@ -56,6 +56,11 @@ NOTES:
   Note: Higher video resolutions will be disabled in case of insuffi-
   cient memory.
 
+* CWSDPMI: Packaged with h2dos is CWSDPMI r7, which is the latest as
+  of this writing. If you ever have problems with it, try switching
+  to CWSDPMI r5/2008 refresh (see under the DPMI subdirectory in the
+  hexen2dos package.)
+
 * MOUSE: The driver that came with your mouse must be running.  In
   order to disable mouse, use the command line argument -nomouse.
   "CuteMouse" is recommended as a DOS mouse driver. CuteMouse official
