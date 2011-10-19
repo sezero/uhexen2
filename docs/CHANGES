@@ -4,6 +4,17 @@ Development Progress	:
 ---------------------------
 
 2011-10-19 (SVN):
+    * Fixed the dos version's failure on computers with more than 2GB of
+      memory. Works best with CWSDPMI r7. The issue was reported here:
+      http://www.delorie.com/djgpp/mail-archives/browse.cgi?p=djgpp/2011/09/20/21:15:20
+      Thanks go to Rugxulo for reporting the issue and testing the fix.
+      Quoting him further: "With CWSDPMI r5 by default, it can't load the
+      page tables (not enough low memory), but that's an old quirk due to
+      him putting it all in low (conventional) memory because 4 kb pages
+      for "big RAM" (greater than 512+ MB machines, IIRC) takes a lot of
+      space."
+
+2011-10-19 (SVN):
     * Fixed compilation with sound disabled.
 
 2011-10-19 (SVN):

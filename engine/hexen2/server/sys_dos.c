@@ -161,10 +161,10 @@ static void *dos_getmaxlockedmem (int *size)
 	int		working_size;
 	void		*working_memory;
 	int		last_locked;
-	int		extra, 	i, j, allocsize;
+	int		i, j, extra, allocsize;
 	static const char msg[] = "Locking data...";
-	int		m, n;
 	byte		*x;
+	unsigned long	ul;
  
 // first lock all the current executing image so the locked count will
 // be accurate.  It doesn't hurt to lock the memory multiple times
@@ -185,13 +185,16 @@ static void *dos_getmaxlockedmem (int *size)
 
 	if (!win95)	/* Not windows or earlier than Win95 */
 	{
-		working_size = meminfo.maximum_locked_page_allocation_in_pages * 4096;
+		ul = meminfo.maximum_locked_page_allocation_in_pages * 4096;
 	}
 	else
 	{
-		working_size = meminfo.largest_available_free_block_in_bytes - LEAVE_FOR_CACHE;
+		ul = meminfo.largest_available_free_block_in_bytes - LEAVE_FOR_CACHE;
 	}
 
+	if (ul > 0x7fffffff)
+		ul = 0x7fffffff;	/* limit to 2GB */
+	working_size = (int) ul;
 	working_size &= ~0xffff;	/* Round down to 64K */
 	working_size += 0x10000;
 
@@ -303,12 +306,12 @@ UpdateSbrk:
 // doing that, of course, but there's no reason we shouldn't)
 	x = (byte *)working_memory;
 
-	for (n = 0; n < 4; n++)
+	for (j = 0; j < 4; j++)
 	{
-		for (m = 0; m < (working_size - 16 * 0x1000); m += 4)
+		for (i = 0; i < (working_size - 16 * 0x1000); i += 4)
 		{
-			sys_checksum += *(int *)&x[m];
-			sys_checksum += *(int *)&x[m + 16 * 0x1000];
+			sys_checksum += *(int *)&x[i];
+			sys_checksum += *(int *)&x[i + 16 * 0x1000];
 		}
 	}
 
