@@ -30,11 +30,14 @@
 #include "cdaudio.h"
 
 qboolean	bgmloop = true;
+cvar_t		bgm_extmusic = {"bgm_extmusic", "0", CVAR_ARCHIVE};
 
 static float	old_volume = -1.0f;
 
 qboolean BGM_Init (void)
 {
+	Cvar_RegisterVariable(&bgm_extmusic);
+
 	return false;
 }
 

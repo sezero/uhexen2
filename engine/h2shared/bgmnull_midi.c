@@ -32,6 +32,7 @@
 #define MIDI_DIRNAME	"midi"
 
 qboolean	bgmloop;
+cvar_t		bgm_extmusic = {"bgm_extmusic", "0", CVAR_ARCHIVE};
 
 static float	old_volume = -1.0f;
 
@@ -104,6 +105,7 @@ qboolean BGM_Init (void)
 {
 	memset (&midi_handle, 0, sizeof(midi_handle_t));
 
+	Cvar_RegisterVariable(&bgm_extmusic);
 	Cmd_AddCommand("music", BGM_Play_f);
 	Cmd_AddCommand("music_pause", BGM_Pause_f);
 	Cmd_AddCommand("music_resume", BGM_Resume_f);

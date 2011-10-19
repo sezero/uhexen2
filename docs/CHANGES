@@ -4,6 +4,9 @@ Development Progress	:
 ---------------------------
 
 2011-10-19 (SVN):
+    * Fixed compilation with sound disabled.
+
+2011-10-19 (SVN):
     * Xcode project file for Mac OS X: Updated from Steven.
 
 2011-10-18 (SVN):
