@@ -4,6 +4,9 @@ Development Progress	:
 ---------------------------
 
 2011-10-19 (SVN):
+    * quakedef.h: updated beta datestamp to 2011-10-19.
+
+2011-10-19 (SVN):
     * Fixed the dos version's failure on computers with more than 2GB of
       memory. Works best with CWSDPMI r7. The issue was reported here:
       http://www.delorie.com/djgpp/mail-archives/browse.cgi?p=djgpp/2011/09/20/21:15:20
