@@ -3,6 +3,9 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2011-10-19 (SVN):
+    * Xcode project file for Mac OS X: Updated from Steven.
+
 2011-10-18 (SVN):
     * Updated the Visual Studio project files.
     * Made all projects to always use our own q_strlcpy and q_strlcat.
