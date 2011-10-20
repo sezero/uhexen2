@@ -3,6 +3,10 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2011-10-20 (SVN):
+    * Added Steve's syntax checking patch, dating back from early 2009,
+      among the optional patches.  I'd like get back to it some day..
+
 2011-10-19 (SVN):
     * launcher: updated uhexen2 version to report 1.5.1
     * Updated README.dos document with relation to the CWSDPMI version

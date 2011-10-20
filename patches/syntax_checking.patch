@@ -1,0 +1,343 @@
+This is a hack to unix-ify the Hammer of Thyrion (Hexen2) command line.
+Its purpose is to catch mis-spelt options such as "-fullscrren" and also
+to print a comprehensive help message when desired.  It has two parts:
+
+1. option_t data structure, which attempts to bring all the command line
+args parsed by COM_CheckParm() into one place for validation upon
+program startup.
+
+2. C code which parses the command line, attempting to identify faulty
+options, but also allowing for "+map e1m1" type args.
+
+stevenaaus@yahoo.com
+
+Index: engine/hexen2/sys_unix.c
+===================================================================
+--- engine/hexen2/sys_unix.c	(revision 4276)
++++ engine/hexen2/sys_unix.c	(working copy)
+@@ -647,65 +647,269 @@ static void PrintVersion (void)
+ }
+ 
+ #include "snd_sys.h"
+-static const char *help_strings[] = {
+-	"     [-v | --version]        Display version information",
++
++/* Summarise command line options and inspect for correctness.
++ * No attempt is made to validate arg type is integer or whatever.
++ * Note: dos, windows options are not handled here.
++ * S.A. 22 Jan 2009  */
++typedef struct
++{
++	const char	*option;
++	const char	*alias1;
++	const char	*alias2;
++	int		num_args; /* only 0, 1 (and -1:one optional arg) are currently implemented */
++	const char	*descrip; /* if option = "" , descrip is an help section title */
++} option_t;
++
++static option_t options[] =
++{
++/* GENERAL */
++	{"","","",0,"General"},
+ #ifndef DEMOBUILD
+ #   if defined(H2MP)
+-	"     [-noportals]            Disable the mission pack support",
++	{"-noportals",	"",		"",	0, "Disable the mission pack support"},
+ #   else
+-	"     [-portals | -h2mp ]     Run the Portal of Praevus mission pack",
++	{"-portals",	"-h2mp",	"",	0, "Play Portal of Praevus mission pack"},
+ #   endif
+ #endif
++	{"-game",	"",		"",	1, "Play this mod"},
++	{"-basedir",	"",		"",	1, "Use this directory as base"},
++	{"-nomouse",	"",		"",	0, "Disable mouse"},
++	{"-heapsize",	"",		"",	1, "Kilobytes memory for heap"},
++	{"-v",		"--version",	"",	0, "Display version information"},
++	{"-h",		"--help",	"-?",	0, "Show help"},
++/* VIDEO */
++	{"","","",0,"Video"},
+ #ifndef SVGAQUAKE
+-	"     [-w | -window ]         Run the game windowed",
+-	"     [-f | -fullscreen]      Run the game fullscreen",
++	{"-f",		"-fullscreen",	"",	0, "Run fullscreen"},
++	{"-w",		"-window",	"",	0, "Run as a window"},
+ #endif
+-	"     [-width X [-height Y]]  Select screen size",
++	{"-width",	"",		"",	1, "Set screen width"},
++	{"-height",	"",		"",	1, "Set screen height"},
++	{"-conwidth",	"",		"",	1, "Set console width (in pixels)"},
+ #ifdef GLQUAKE
+-	"     [-bpp]                  Depth for GL fullscreen mode",
+-	"     [-vsync]                Enable sync with monitor refresh",
+-	"     [-g | -gllibrary]       Select 3D rendering library",
+-	"     [-fsaa N]               Enable N sample antialiasing",
+-	"     [-paltex]               Enable 8-bit textures",
+-	"     [-nomtex]               Disable multitexture detection/usage",
++	{"-bpp",	"",		"",	1, "Depth for GL fullscreen mode"},
++	{"-sync",	"-vsync",	"",	0, "Enable sync with monitor refresh"},
++	{"-g",		"-gllibrary",	"",	1, "Select 3D rendering library"},
++	{"-fsaa",	"",		"",	1, "Enable N sample antialiasing"},
++	{"-paltex",	"",		"",	0, "Enable 8-bit textures"},
++	{"-nomtex",	"",		"",	0, "Disable multitexture detection/usage"},
+ #endif
++/* SOUND */
++	{"","","",0,"Sound"},
++
+ #if !defined(_NO_SOUND)
+ #if SOUND_NUMDRIVERS
+-	"     [-s | -nosound]         Run the game without sound",
++	{"-s",		"-nosound",	"",	0, "Disable sound"},
+ #endif
+ #if (SOUND_NUMDRIVERS > 1)
+ #if HAVE_OSS_SOUND
+-	"     [-sndoss]               Use OSS sound",
++	{"-sndoss",	"",		"",	0, "Use OSS sound"},
+ #endif
+ #if HAVE_ALSA_SOUND
+-	"     [-sndalsa]              Use ALSA sound (alsa > 1.0.1)",
++	{"-sndalsa",	"",		"",	0, "Use ALSA sound (alsa > 1.0.1)"},
+ #endif
+ #if HAVE_SUN_SOUND
+-	"     [-sndsun | -sndbsd]     Use SUN / BSD sound",
++	{"-sndsun",	"-sndbsd",	"",	0, "Use SUN/BSD sound"},
+ #endif
+ #if HAVE_SDL_SOUND
+-	"     [-sndsdl]               Use SDL sound",
++	{"-sndsdl",	"",		"",	0, "Use SDL sound"},
+ #endif
+ #endif	/*  SOUND_NUMDRIVERS */
+ #endif	/* _NO_SOUND */
+-	"     [-nomouse]              Disable mouse usage",
+-	"     [-listen N]             Enable multiplayer with max N players",
+-	"     [-heapsize Bytes]       Heapsize (memory to allocate)",
+-	NULL
++	{"-sndspeed",	"",		"",	1, "Sound sampling rate"},
++	{"-sndbits",	"",		"",	1, "Sound sampling bits"},
++	{"-alsadev",	"",		"",	1, "Alsa device name"},
++	{"-ossdev",	"",		"",	1, "OSS device name"},
++	{"-sndmono",	"",		"",	0, "Set mono playback"},
++/* MUSIC */
++	{"","","",0,"Music"},
++
++	{"-nomidi",	"",		"",	0, "Disable midi"}, 
++	{"-nocdaudio",	"",		"",	0, "Disable CD playback"},
++	{"-cddev",	"",		"",	1, "Use this CD device"},
++/* NETWORK */
++	{"","","",0,"Network"},
++
++	{"-listen",	"",		"",	-1, "Enable multiplayer with max N players"},
++	{"-dedicated",	"",		"",	-1, "Enable dedicated server with max N players"},
++	{"-nolan",	"",		"",	0, "Disable local area network"},
++	{"-noudp",	"",		"",	0, "Disable udp"},
++	{"-noifscan",	"",		"",	0, "Disable if scan"},
++	{"-ip",		"-bindip",	"",	1, "Use this IP address"},
++	{"-localip",	"",		"",	1, "Use this local IP address"},
++	{"-port",	"",		"",	1, "Use this port"},
++	{"-udpport",	"",		"",	1, "Use this udp port"},
++	{"-ipxport",	"",		"",	1, "Use this ipx port"},
++/* DEBUG */
++	{"","","",0,"Debugging"},
++
++	{"-condebug",	"-debuglog",	"",	0, "Do extra debug logging"},
++	{"-developer",	"",		"",	0, "Set developer cvar"},
++	{"-devlog",	"",		"",	0, "Log some dev events when !developer"},
++	{"-safemode",	"",		"",	0, "Disable some hardware features"},
++/* extra OPENGL */
++#ifdef GLQUAKE
++	{"","","",0,"Extra OpenGL"},
++
++	{"-lm_1",	"",		"",	0, "use GL_LUMINANCE light format"},
++	{"-lm_4",	"",		"",	0, "use GL_RGBA      light format"},
++	{"-lm_2",	"",		"",	0, "use GL_RGBA4     light format"},
++	{"-lm_a",	"",		"",	0, "use GL_ALPHA     light format"},
++	{"-lm_i",	"",		"",	0, "use GL_INTENSITY light format"},
++	{"-3dfxgamma",	"",		"",	0, "enable 3dfx gamma support"},
++#endif
++/* SVGA */
++#ifdef SVGAQUAKE
++	{"","","",0,"SVGA"},
++	{"-mode",	"",		"",	1, "SVGA mode"},
++	{"-mdev",	"",		"",	1, "Use this mouse device"},
++	{"-mrate",	"",		"",	1, "Mouse sampling rate"},
++	{"-nokbd",	"",		"",	0, "Disable keyboard"},
++#endif
++/* MISCELLANEOUS */
++	{"","","",0,"Miscellaneous"},
++	{"-forcemem",	"",		"",	0, "Force memory option"},
++	{"-surfcachesize","",		"",	1, "Surface cache size"},
++	{"-protocol",	"",		"",	1, "Request different game version"},
++	{"-particles",	"",		"",	1, "Set number of particles"},
++	{"-fullsbar",	"",		"",	0, "Enable full status bar (unused)"},
++	{"-force",	"",		"",	0, "Skip some sanity checks"},
++	{"-nojoy",	"",		"",	0, "Disable joystick"},
++	{"-zone",	"",		"",	1, "Zone memory size"},
++/* end used to terminate options */
++	{"end","","",0,""}
+ };
+ 
+-static void PrintHelp (const char *name)
++static void CheckArgs (int argc, char **argv)
+ {
+-	int i = 0;
++	/* Check each argv[] against the options registered above -
++	 * If it's not a valid option, exit with error message.
++	 * Else, skip checking the next option.num_arg argv[].
++	 * (num_args=-1 means a single argv[] is optional).
++	 * Also allow for game commands like "+r_shadow 1"  */
++	int	i, j, valid, skip;
++	int	num_avail_options;
++	char	string[40];
++
++	/* find how many options are registered */
++	for (i = 1; ; i++)
++	{
++		if (options[i].option[0] == 0)
++			continue;
++		if (strcmp(options[i].option, "end") == 0)
++			break;
++	}
++	num_avail_options = i;
+ 
+-	Sys_Printf ("Usage: %s [options]\n", name);
+-	while (help_strings[i])
++	if (argc <= 1)
++		return;
++
++	skip = 0;
++
++	for (i = 1; i < argc; i++)
+ 	{
+-		Sys_PrintTerm (help_strings[i]);
+-		Sys_PrintTerm ("\n");
+-		i++;
++		if (skip == 1) {
++			/* one arg only */
++			skip = 0;
++			continue;
++		}
++		if (skip == -1) {
++			/* optional single arg */
++			skip = 0;
++			if (argv[i][0] != '-')
++				continue;
++		}
++		if (skip == -2) {
++			/* parsing +game_command */
++			/* +game command found... skip till we find an "-option" */
++			if (argv[i][0] != '-')
++				continue;
++			else
++				skip = 0;
++		}
++
++		if ( !strcmp(argv[i], "-v") || !strcmp(argv[i], "-version" ) ||
++			!strcmp(argv[i], "--version"))
++		{
++			exit(0);
++		}
++		if ( !strcmp(argv[i], "-h") || !strcmp(argv[i], "-help" ) ||
++			!strcmp(argv[i], "-?") || !strcmp(argv[i], "--help"))
++		{
++			Sys_Printf ("\nUsage: %s [options] [+gamecommands]\n", argv[0]);
++			for (j = 0; j < num_avail_options; j++)
++			{
++				if (options[j].option[0]) {
++				    sprintf (string, "     %s", options[j].option);
++				    if (options[j].alias1[0]) {
++					    strcat (string, " | ");
++					    strcat (string, options[j].alias1);
++				    }
++				    if (options[j].num_args == 1)
++					    strcat (string, " ARG");
++				    if (options[j].num_args == -1)
++					    strcat (string, " [ARG]");
++				    Sys_Printf  ("%-30s%s\n", string, options[j].descrip);
++				} else {
++				    /* print header */
++				    Sys_Printf  ("\n%s Options:\n", options[j].descrip);
++				}
++			}
++			exit (0);
++		}
++
++		valid = 0; /* check this arg is valid */
++
++		for (j = 0; j < num_avail_options; j++)
++		{
++			if (!options[j].option[0]) 
++				continue;
++
++			valid = (strcmp(options[j].option, argv[i]) == 0) |
++				(strcmp(options[j].alias1, argv[i]) == 0) |
++				(strcmp(options[j].alias2, argv[i]) == 0);
++			if (valid)
++				break;
++		}
++
++		if (valid) {
++			switch (options[j].num_args) {
++			case 1:
++				/* ensure there is one, and skip checking next arg */
++				if (i == argc-1) {
++					Sys_Printf ("\n%s: missing arg for option \"%s\"\n",argv[0],argv[i]);
++					exit(1);
++				}
++				/* this assumes that strings beginning with "-" and "+" will
++				 * never be valid values for an option */
++				if (argv[i+1][0] == '-' || argv[i+1][0] == '+') {
++					Sys_Printf ("\n%s: Missing arg for option \"%s\"\n",argv[0],argv[i]);
++					exit(1);
++				}
++				skip = 1;
++				break;
++			case -1:
++				skip = -1;
++				break;
++#if 0
++			case 0:
++				/* doesn't accept args: make sure there aren't any. */
++				if (argv[i+1][0] != '-' && argv[i+1][0] != '+') {
++					Sys_Printf ("\n%s: Unwanted arg for option \"%s\"\n",argv[0],argv[i]);
++					exit(1);
++				}
++#endif
++			}
++		} else {
++			if (argv[i][0] == '+') {
++				skip = -2;
++			} else {
++				Sys_Printf ("\n%s: illegal arg \"%s\"\n", argv[0], argv[i]);
++				exit (1);
++			}
++		}
+ 	}
+-	Sys_PrintTerm ("\n");
+ }
+ 
+ /*
+@@ -731,23 +935,7 @@ int main (int argc, char **argv)
+ 
+ 	PrintVersion();
+ 
+-	if (argc > 1)
+-	{
+-		for (i = 1; i < argc; i++)
+-		{
+-			if ( !(strcmp(argv[i], "-v")) || !(strcmp(argv[i], "-version" )) ||
+-				!(strcmp(argv[i], "--version")) )
+-			{
+-				exit(0);
+-			}
+-			else if ( !(strcmp(argv[i], "-h")) || !(strcmp(argv[i], "-help" )) ||
+-				  !(strcmp(argv[i], "-?")) || !(strcmp(argv[i], "--help")) )
+-			{
+-				PrintHelp(argv[0]);
+-				exit (0);
+-			}
+-		}
+-	}
++	CheckArgs(argc, argv);
+ 
+ 	memset (cwd, 0, sizeof(cwd));
+ 	if (Sys_GetBasedir(argv[0], cwd, sizeof(cwd)) != 0)
+
