@@ -1873,20 +1873,20 @@ HEADER:
 mgraph.h
 
 MEMBERS:
-fopen   - Standard C fopen function replacement
-fclose  - Standard C fclose function replacement
-fseek   - Standard C fseek function replacement
-ftell   - Standard C ftell function replacement
-fread   - Standard C fread function replacement
-fwrite  - Standard C fwrite function replacement
+fopen_func   - Standard C fopen function replacement
+fclose_func  - Standard C fclose function replacement
+fseek_func   - Standard C fseek function replacement
+ftell_func   - Standard C ftell function replacement
+fread_func   - Standard C fread function replacement
+fwrite_func  - Standard C fwrite function replacement
 ****************************************************************************/
 typedef struct {
-	FILE *	(*fopen)(const char *filename,const char *mode);
-	int 	(*fclose)(FILE *f);
-	int 	(*fseek)(FILE *f,long offset,int whence);
-	long 	(*ftell)(FILE *f);
-	size_t	(*fread)(void *ptr,size_t size,size_t n,FILE *f);
-	size_t	(*fwrite)(const void *ptr,size_t size,size_t n,FILE *f);
+	FILE *	(*fopen_func)(const char *filename,const char *mode);
+	int 	(*fclose_func)(FILE *f);
+	int 	(*fseek_func)(FILE *f,long offset,int whence);
+	long 	(*ftell_func)(FILE *f);
+	size_t	(*fread_func)(void *ptr,size_t size,size_t n,FILE *f);
+	size_t	(*fwrite_func)(const void *ptr,size_t size,size_t n,FILE *f);
 	} fileio_t;
 
 /****************************************************************************
@@ -2450,12 +2450,14 @@ void 	MGLAPI MGL_lineRelCoord(int dx,int dy);
 int 	MGLAPI MGL_getX(void);
 int 	MGLAPI MGL_getY(void);
 void	MGLAPI MGL_getCP(point_t* CP);
-void 	MGLAPI MGL_lineCoord(int xx1,int yy1,int xx2,int yy2);
-void 	MGLAPI MGL_lineCoordFX(fix32_t xx1,fix32_t yy1,fix32_t xx2,fix32_t yy2);
-void    MGLAPI MGL_lineEngine(fix32_t xx1,fix32_t yy1,fix32_t xx2,fix32_t yy2,void (ASMAPI *plotPoint)(int x,int y));
-ibool	MGLAPI MGL_clipLineFX(fix32_t *xx1,fix32_t *yy1,fix32_t *xx2,fix32_t *yy2,fix32_t left,fix32_t top,fix32_t right,fix32_t bottom);
+void 	MGLAPI MGL_lineCoord(int /*x1*/, int /*y1*/,int /*x2*/, int /*y2*/);
+void 	MGLAPI MGL_lineCoordFX(fix32_t /*x1*/, fix32_t /*y1*/, fix32_t /*x2*/, fix32_t /*y2*/);
+void 	MGLAPI MGL_lineEngine(fix32_t /*x1*/, fix32_t /*y1*/, fix32_t /*x2*/, fix32_t /*y2*/,
+						void (ASMAPI *plotPoint)(int /*x*/,int /*y*/));
+ibool	MGLAPI MGL_clipLineFX(fix32_t* /*x1*/,fix32_t* /*y1*/,fix32_t* /*x2*/,fix32_t* /*y2*/,
+			fix32_t /*left*/,fix32_t /*top*/,fix32_t /*right*/,fix32_t /*bottom*/);
 #ifndef	MGL_LITE
-void 	ASMAPI MGL_scanLine(int y,int xx1,int xx2);
+void 	ASMAPI MGL_scanLine(int /*y*/, int /*x1*/, int /*x2*/);
 #endif
 
 /* Routines to perform bank switching for banked framebuffers for custom
@@ -2522,8 +2524,8 @@ int		ASMAPI MGL_scanLeftWhileColor(int x,int y,color_t color);
 
 #ifndef	MGL_LITE
 void	MGLAPI MGL_drawBorderCoord(int left,int top,int right,int bottom,int style,int thickness);
-void 	MGLAPI MGL_drawHDivider(int y,int xx1,int xx2);
-void 	MGLAPI MGL_drawVDivider(int x,int yy1,int yy2);
+void 	MGLAPI MGL_drawHDivider(int /*y*/, int /*x1*/, int /*x2*/);
+void 	MGLAPI MGL_drawVDivider(int /*x*/, int /*y1*/, int /*y2*/);
 #endif
 
 /* Ellipse drawing */
@@ -2622,8 +2624,8 @@ void 	MGLAPI MGL_drawRegion(int x,int y,const region_t *r);
 /* Region generation primitives */
 
 #ifndef	MGL_LITE
-region_t * MGLAPI MGL_rgnLineCoord(int xx1,int yy1,int xx2,int yy2,const region_t *pen);
-region_t * MGLAPI MGL_rgnLineCoordFX(fix32_t xx1,fix32_t yy1,fix32_t xx2,fix32_t yy2,const region_t *pen);
+region_t * MGLAPI MGL_rgnLineCoord(int /*x1*/, int /*y1*/, int /*x2*/, int /*y2*/, const region_t* /*pen*/);
+region_t * MGLAPI MGL_rgnLineCoordFX(fix32_t /*x1*/, fix32_t /*y1*/, fix32_t /*x2*/, fix32_t /*y2*/, const region_t* /*pen*/);
 /*region_t * MGLAPI MGL_rgnPolygon(int count,point_t *vArray);*/
 /*region_t * MGLAPI MGL_rgnPolygonCnvx(int count,point_t *vArray);*/
 region_t * MGLAPI MGL_rgnSolidRectCoord(int left,int top,int right,int bottom);
@@ -3038,7 +3040,7 @@ extern int _VARAPI PACKED32_driver[];
 #endif
 
 void MGL_availableMemory(ulong *physical,ulong *total);
-void MGL_useLocalMalloc(void _MGL_HUGE * (*my_malloc)(long size),void (*my_free)(void _MGL_HUGE *p));
+void MGL_useLocalMalloc(void _MGL_HUGE * (*malloc_func)(long size),void (*free_func)(void _MGL_HUGE *p));
 void * MGLAPI MGL_malloc(long size);
 void * MGLAPI MGL_calloc(long size,long n);
 void MGLAPI MGL_free(void _MGL_HUGE *p);
@@ -3227,13 +3229,13 @@ void	MGLAPI MGL_setACCELDriver(void *driver);
 #ifdef	__cplusplus
 }						/* End of "C" linkage for C++	*/
 
-#include "mglrect.hpp"	/* Include C++ point/rectangle classes			*/
+/* Include C++ point/rectangle classes */
+/*#include "mglrect.hpp"*/	/* not needed in uhexen2 */
 
 #endif	/* __cplusplus */
 
 /* Include soon to be obsolete 3D functions definitions */
-// this is not not needed in Hexen2
-//#include "mgl3d.h"
+/*#include "mgl3d.h"*/		/* not needed in uhexen2 */
 
 /* Include appropriate platform specific bindings */
 

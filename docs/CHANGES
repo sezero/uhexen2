@@ -4,6 +4,11 @@ Development Progress	:
 ---------------------------
 
 2011-10-20 (SVN):
+    * oslibs/windows/scitech/include/mgraph.h: Commented out unnecessary
+      includes of some C++ headers and removed the now unused mglrect.hpp
+      and mglpoint.hpp.
+
+2011-10-20 (SVN):
     * Added Steve's syntax checking patch, dating back from early 2009,
       among the optional patches.  I'd like get back to it some day..
 
