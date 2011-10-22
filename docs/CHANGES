@@ -3,6 +3,11 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2011-10-22 (SVN):
+    * cd_dos.c: Added support for -cddev command line switch. Added code
+      to retrieve all available CD-ROM drive letters.
+    * quakedef.h: updated beta datestamp to 2011-10-22.
+
 2011-10-20 (SVN):
     * oslibs/windows/scitech/include/mgraph.h: Commented out unnecessary
       includes of some C++ headers and removed the now unused mglrect.hpp

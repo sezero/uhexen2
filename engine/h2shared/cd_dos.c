@@ -31,6 +31,7 @@
 */
 
 #include <dpmi.h>
+#include <go32.h>
 #include "quakedef.h"
 #include "cdaudio.h"
 #include "dosisms.h"
@@ -247,6 +248,8 @@ static short	readInfoSegment;
 static short	readInfoOffset;
 static byte	remap[256];
 static byte	cdrom;
+static byte	firstcdrom, numcdroms;
+static byte	cdroms_list[32];
 static byte	playTrack;
 static float	old_cdvolume;
 
@@ -797,6 +800,63 @@ void CDAudio_Update (void)
 }
 
 
+static byte get_cddev_arg (const char *arg)
+{
+/* arg should be like "D", "D:" or "D:\", make
+ * sure it is so. Also check if this is really
+ * a CDROM drive. */
+	byte drivenum;
+	__dpmi_regs r;
+
+	if (!arg || ! *arg)
+		return 0xff;
+	if (arg[1] != '\0')
+	{
+		if (arg[1] != ':')
+			return 0xff;
+		if (arg[2] != '\0')
+		{
+			if (arg[2] != '\\' &&
+			    arg[2] != '/')
+				return 0xff;
+			if (arg[3] != '\0')
+				return 0xff;
+		}
+	}
+
+	drivenum = *arg;
+	if (drivenum >= 'A' && drivenum <= 'Z')
+		drivenum -= 'A';
+	else if (drivenum >= 'a' && drivenum <= 'z')
+		drivenum -= 'a';
+	else
+		return 0xff;
+
+	r.x.ax = 0x150b;
+	r.x.cx = drivenum;	/* 0 = A: */
+	__dpmi_int(0x2f, &r);
+	if (r.x.ax != 0 /*&& r.x.bx == 0xadad*/)
+		return drivenum;
+
+	Con_Printf("%c: is not a CDROM drive\n", drivenum + 'A');
+	return 0xff;
+}
+
+static const byte *get_cdroms_list (void)
+{
+	__dpmi_regs r;
+
+	memset (cdroms_list, 0, sizeof(cdroms_list));
+	r.x.ax = 0x150d;
+	r.x.bx = __tb & 0x0f;
+	r.x.es = (__tb >> 4) & 0xffff;
+	if (__dpmi_int(0x2f, &r) != 0)
+		return NULL;
+
+	dosmemget(__tb, numcdroms, cdroms_list);
+	return cdroms_list;
+}
+
 int CDAudio_Init (void)
 {
 	char	*memory;
@@ -817,16 +877,17 @@ int CDAudio_Init (void)
 	if (regs.x.bx == 0)
 	{
 		Con_NotifyBox (
-			"MSCDEX not loaded, music is\n"
+			"MSCDEX not loaded, CD Audio is\n"
 			"disabled.  Use \"-nocdaudio\" if you\n"
 			"wish to avoid this message in the\n"
 			"future.  See README.TXT for help.\n"
 			);
 		return -1;
 	}
-	if (regs.x.bx > 1)
-		Con_DPrintf("%s: First CD-ROM drive will be used\n", __thisfunc__);
-	cdrom = regs.x.cx;
+
+	numcdroms = regs.x.bx;
+	firstcdrom = regs.x.cx;
+	cdrom = firstcdrom;
 
 	regs.x.ax = 0x150c;
 	regs.x.bx = 0;
@@ -835,12 +896,34 @@ int CDAudio_Init (void)
 	{
 		Con_NotifyBox (
 			"MSCDEX version 2.00 or later\n"
-			"required for music. See README.TXT\n"
-			"for help.\n"
+			"required for CD Audio.\n"
+			"See README.TXT for help.\n"
 			);
 		Con_DPrintf("%s: MSCDEX version 2.00 or later required.\n", __thisfunc__);
 		return -1;
 	}
+
+	if (!get_cdroms_list ())
+	{
+		cdroms_list[0] = firstcdrom;
+		Con_Printf("%s: Couldn't get available CD drive letters\n", __thisfunc__);
+	}
+
+	Con_DPrintf("%s: %u CD-ROM drive(s) available:", __thisfunc__, numcdroms);
+	for (n = 0; n < numcdroms && cdroms_list[n]; n++)
+		Con_DPrintf (" %c", cdroms_list[n] + 'A');
+	Con_DPrintf(".\n");
+
+	if ((n = COM_CheckParm("-cddev")) != 0 && n < com_argc - 1)
+	{
+		cdrom = get_cddev_arg(com_argv[n + 1]);
+		if (cdrom == 0xff)
+		{
+			Con_Printf("Invalid argument to -cddev\n");
+			return -1;
+		}
+	}
+	Con_Printf("%s: Using CD-ROM drive %c:\n", __thisfunc__, cdrom + 'A');
 
 	memory = (char *) dos_getmemory(sizeof(struct cd_request) + sizeof(union readInfo_u));
 	if (memory == NULL)
