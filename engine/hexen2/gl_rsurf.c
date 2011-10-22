@@ -129,12 +129,6 @@ void GL_SetupLightmapFmt (qboolean check_cmdline)
 		gl_lightmap_format = GL_LUMINANCE;
 	else if (!q_strcasecmp(gl_lightmapfmt.string, "GL_RGBA"))
 		gl_lightmap_format = GL_RGBA;
-#if 0
-	else if (!q_strcasecmp(gl_lightmapfmt.string, "GL_ALPHA"))
-		gl_lightmap_format = GL_ALPHA;
-	else if (!q_strcasecmp(gl_lightmapfmt.string, "GL_INTENSITY"))
-		gl_lightmap_format = GL_INTENSITY;
-#endif
 	else
 	{
 		gl_lightmap_format = GL_RGBA;
@@ -154,23 +148,6 @@ void GL_SetupLightmapFmt (qboolean check_cmdline)
 			gl_lightmap_format = GL_RGBA;
 			Cvar_Set ("gl_lightmapfmt", "GL_RGBA");
 		}
-#if 0
-//		else if (COM_CheckParm ("-lm_2"))
-//		{
-//			gl_lightmap_format = GL_RGBA4;
-//			Cvar_Set ("gl_lightmapfmt", "GL_RGBA4");
-//		}
-		else if (COM_CheckParm ("-lm_a"))
-		{
-			gl_lightmap_format = GL_ALPHA;
-			Cvar_Set ("gl_lightmapfmt", "GL_ALPHA");
-		}
-		else if (COM_CheckParm ("-lm_i"))
-		{
-			gl_lightmap_format = GL_INTENSITY;
-			Cvar_Set ("gl_lightmapfmt", "GL_INTENSITY");
-		}
-#endif
 	}
 
 	switch (gl_lightmap_format)
@@ -178,12 +155,7 @@ void GL_SetupLightmapFmt (qboolean check_cmdline)
 	case GL_RGBA:
 		lightmap_bytes = 4;
 		break;
-//	case GL_RGBA4:
-//		lightmap_bytes = 2;
-//		break;
 	case GL_LUMINANCE:
-	case GL_INTENSITY:
-	case GL_ALPHA:
 		lightmap_bytes = 1;
 		break;
 	}
@@ -328,9 +300,8 @@ store:
 			}
 		}
 		break;
-	case GL_ALPHA:
+
 	case GL_LUMINANCE:
-	case GL_INTENSITY:
 		bl = blocklights;
 		for (i = 0; i < tmax; i++, dest += stride)
 		{
@@ -540,20 +511,15 @@ static void R_BlendLightmaps (qboolean Translucent)
 	if (!Translucent)
 		glDepthMask_fp (0);	// don't bother writing Z
 
-	if (gl_lightmap_format == GL_LUMINANCE)
-	{
-		glBlendFunc_fp (GL_ZERO, GL_ONE_MINUS_SRC_COLOR);
-	}
-	else if (gl_lightmap_format == GL_INTENSITY)
-	{
-		glTexEnvf_fp(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
-		glColor4f_fp (0.0f,0.0f,0.0f,1.0f);
-	}
-	else if (gl_lightmap_format == GL_RGBA)
+	if (gl_lightmap_format == GL_RGBA)
 	{
 		glTexEnvf_fp(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 		glColor4f_fp (1.0f,1.0f,1.0f, 1.0f);
 		glBlendFunc_fp (GL_ZERO, GL_SRC_COLOR);
+	}
+	else if (gl_lightmap_format == GL_LUMINANCE)
+	{
+		glBlendFunc_fp (GL_ZERO, GL_ONE_MINUS_SRC_COLOR);
 	}
 
 	if (!r_lightmap.integer)
@@ -610,19 +576,14 @@ static void R_BlendLightmaps (qboolean Translucent)
 		glDisable_fp (GL_BLEND);
 	}
 
-	if (gl_lightmap_format == GL_LUMINANCE)
-	{
-		glBlendFunc_fp (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	}
-	else if (gl_lightmap_format == GL_INTENSITY)
-	{
-		glTexEnvf_fp(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
-		glColor4f_fp (1.0f,1.0f,1.0f,1.0f);
-	}
-	else if (gl_lightmap_format == GL_RGBA)
+	if (gl_lightmap_format == GL_RGBA)
 	{
 		glBlendFunc_fp (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 		glTexEnvf_fp(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
+	}
+	else if (gl_lightmap_format == GL_LUMINANCE)
+	{
+		glBlendFunc_fp (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	}
 
 	if (!Translucent)

@@ -4,6 +4,10 @@ Development Progress	:
 ---------------------------
 
 2011-10-22 (SVN):
+    * Removed all references to the unsupported GL_INTENSITY, GL_ALPHA
+      and GL_RGBA4 lightmap formats.
+
+2011-10-22 (SVN):
     * cd_dos.c: Added support for -cddev command line switch. Added code
       to retrieve all available CD-ROM drive letters.
     * quakedef.h: updated beta datestamp to 2011-10-22.

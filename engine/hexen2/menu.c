@@ -2342,11 +2342,6 @@ static const struct
 } lm_formats[] =
 {
 	{ "gl_luminance",	"gl_luminance (8 bit)",	GL_LUMINANCE	},
-#if 0
-	{ "gl_intensity",	"gl_intensity",		GL_INTENSITY	},
-	{ "gl_alpha",		"gl_alpha",		GL_ALPHA	},
-//	{ "gl_rgba4",		"gl_rgba4",		GL_RGBA4	},
-#endif
 	{ "gl_rgba",		"gl_rgba (32 bit)",	GL_RGBA		},
 	{ " ",			"Unknown value (?)",	0		}
 };

@@ -1,21 +1,22 @@
-This is a hack to unix-ify the Hammer of Thyrion (Hexen2) command line.
+This is a hack to unix-ify the Hammer of Thyrion (uHexen2) command line.
 Its purpose is to catch mis-spelt options such as "-fullscrren" and also
 to print a comprehensive help message when desired.  It has two parts:
 
 1. option_t data structure, which attempts to bring all the command line
-args parsed by COM_CheckParm() into one place for validation upon
-program startup.
+args parsed by COM_CheckParm() into one place for validation upon program
+startup.
 
 2. C code which parses the command line, attempting to identify faulty
 options, but also allowing for "+map e1m1" type args.
 
 stevenaaus@yahoo.com
 
+
 Index: engine/hexen2/sys_unix.c
 ===================================================================
 --- engine/hexen2/sys_unix.c	(revision 4276)
 +++ engine/hexen2/sys_unix.c	(working copy)
-@@ -647,65 +647,269 @@ static void PrintVersion (void)
+@@ -647,65 +647,266 @@ static void PrintVersion (void)
  }
  
  #include "snd_sys.h"
@@ -148,9 +149,6 @@ Index: engine/hexen2/sys_unix.c
 +
 +	{"-lm_1",	"",		"",	0, "use GL_LUMINANCE light format"},
 +	{"-lm_4",	"",		"",	0, "use GL_RGBA      light format"},
-+	{"-lm_2",	"",		"",	0, "use GL_RGBA4     light format"},
-+	{"-lm_a",	"",		"",	0, "use GL_ALPHA     light format"},
-+	{"-lm_i",	"",		"",	0, "use GL_INTENSITY light format"},
 +	{"-3dfxgamma",	"",		"",	0, "enable 3dfx gamma support"},
 +#endif
 +/* SVGA */
@@ -315,7 +313,7 @@ Index: engine/hexen2/sys_unix.c
  }
  
  /*
-@@ -731,23 +935,7 @@ int main (int argc, char **argv)
+@@ -731,23 +932,7 @@ int main (int argc, char **argv)
  
  	PrintVersion();
  
