@@ -3,6 +3,9 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2011-10-24 (SVN):
+    * quakedef.h: updated beta datestamp to 2011-10-24.
+
 2011-10-22 (SVN):
     * Removed all references to the unsupported GL_INTENSITY, GL_ALPHA
       and GL_RGBA4 lightmap formats.
