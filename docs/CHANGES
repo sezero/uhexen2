@@ -4,6 +4,15 @@ Development Progress	:
 ---------------------------
 
 2011-10-24 (SVN):
+    * launcher/main.c (Sys_SearchCommand): Changed the size of the arrays
+      used with realpath() from MAX_OSPATH to PATH_MAX.  This "fixes" the
+      umm, "crash" when launcher is compiled against new glibc, because
+      glibc refuses to work further when it detects that the destination
+      size is smaller than PATH_MAX. This is a workaround for now. Better
+      fix would be defining MAX_OSPATH as PATH_MAX when that is available,
+      but that would bump the stack space usage. Will work on this more.
+
+2011-10-24 (SVN):
     * launcher/main.c (Sys_SearchCommand): Did missing constification.
     * quakedef.h: updated beta datestamp to 2011-10-24.
 
