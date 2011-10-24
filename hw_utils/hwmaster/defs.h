@@ -2,7 +2,7 @@
 	mst_defs.h
 	common definitions for hexenworld master server
 
-	$Id: defs.h,v 1.37 2008-12-28 12:10:04 sezero Exp $
+	$Id$
 */
 
 #ifndef __HWMASTER_DEFS
@@ -16,7 +16,7 @@
 
 #define VER_HWMASTER_MAJ	1
 #define VER_HWMASTER_MID	2
-#define VER_HWMASTER_MIN	6
+#define VER_HWMASTER_MIN	7
 #define VER_HWMASTER_STR	STRINGIFY(VER_HWMASTER_MAJ) "." STRINGIFY(VER_HWMASTER_MID) "." STRINGIFY(VER_HWMASTER_MIN)
 
 #define HWM_USERDIR	".hwmaster"	/* user directory for unix	*/
@@ -24,6 +24,8 @@
 #define	MAX_OSPATH	256		/* max length of a filesystem pathname	*/
 
 #define MAX_NUM_ARGVS	50
+
+#define FILTERS_FILE	"filters.ini"
 
 #define	MAX_MSGLEN		1450	// max length of a reliable message
 #define	MAX_DATAGRAM		1450	// max length of unreliable message

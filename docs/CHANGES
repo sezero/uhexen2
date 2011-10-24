@@ -4,6 +4,14 @@ Development Progress	:
 ---------------------------
 
 2011-10-24 (SVN):
+    * engine, sys_unix.c (Sys_GetUserdir): Adjustments to failure messages.
+      Moved Sys_mkdir() call to the caller main(). Made the local home_dir
+      pointer const.
+    * hw_utils, hwmaster/sys_main.c: Likewise.
+    * bumped versions for the hexen2 engine to 1.24, hexenworld to 0.24 and
+      hwmaster to 1.2.7.
+
+2011-10-24 (SVN):
     * launcher/main.c (Sys_Error): Removed exitcode argument and made it
       to always use EXIT_FAILURE. Adjusted callers.
       (Sys_SearchCommand): Adjustments to failure messages. Added some

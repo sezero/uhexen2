@@ -2,7 +2,7 @@
 	hwmaster.c
 	main master server program
 
-	$Id: master.c,v 1.10 2009-04-29 07:49:28 sezero Exp $
+	$Id$
 */
 
 #include "q_stdinc.h"
@@ -12,7 +12,7 @@
 #include "defs.h"
 
 #if defined(PLATFORM_WINDOWS) || defined(PLATFORM_DOS)
-#define	filters_file	"filters.ini"
+#define	filters_file	FILTERS_FILE
 #else
 char	filters_file[MAX_OSPATH];
 #endif

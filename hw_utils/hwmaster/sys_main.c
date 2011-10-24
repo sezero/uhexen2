@@ -2,7 +2,7 @@
 	sys_main.c
 	main loop and system interface
 
-	$Id: sys_main.c,v 1.50 2009-04-29 07:49:28 sezero Exp $
+	$Id$
 */
 
 #include "q_stdinc.h"
@@ -214,7 +214,8 @@ int Sys_mkdir (const char *path, qboolean crash)
 
 static int Sys_GetUserdir (char *dst, size_t dstsize)
 {
-	char		*home_dir = NULL;
+	size_t		n;
+	const char	*home_dir = NULL;
 #if USE_PASSWORD_FILE
 	struct passwd	*pwent;
 
@@ -229,11 +230,13 @@ static int Sys_GetUserdir (char *dst, size_t dstsize)
 	if (home_dir == NULL)
 		return 1;
 
-	if (strlen(home_dir) + strlen(HWM_USERDIR) + 12 > dstsize)
-		return 1;
-
+	n = strlen(home_dir) + strlen(HWM_USERDIR) + strlen(FILTERS_FILE) + 2;
+	if (n >= dstsize)
+	{
+		Sys_Error ("%s: Insufficient bufsize %d. Need at least %d.",
+					__thisfunc__, (int)dstsize, (int)n);
+	}
 	q_snprintf (dst, dstsize, "%s/%s", home_dir, HWM_USERDIR);
-	Sys_mkdir(dst, true);
 	return 0;
 }
 #endif
@@ -273,8 +276,8 @@ int main (int argc, char **argv)
 	if (Sys_GetUserdir(userdir, sizeof(userdir)) != 0)
 		Sys_Error ("Couldn't determine userspace directory");
 	printf ("Userdir: %s\n", userdir);
-	if (q_snprintf(filters_file, sizeof(filters_file), "%s/filters.ini", userdir) >= (int)sizeof(filters_file))
-		Sys_Error ("Insufficient string buffer size");
+	Sys_mkdir(userdir, true);
+	q_snprintf(filters_file, sizeof(filters_file), "%s/filters.ini", userdir);
 #endif
 
 #ifdef PLATFORM_WINDOWS

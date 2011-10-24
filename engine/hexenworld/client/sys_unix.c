@@ -531,7 +531,8 @@ static int Sys_GetBasedir (char *argv0, char *dst, size_t dstsize)
 #if DO_USERDIRS
 static int Sys_GetUserdir (char *dst, size_t dstsize)
 {
-	char		*home_dir = NULL;
+	size_t		n;
+	const char	*home_dir = NULL;
 #if USE_PASSWORD_FILE
 	struct passwd	*pwent;
 
@@ -548,13 +549,16 @@ static int Sys_GetUserdir (char *dst, size_t dstsize)
 
 /* what would be a maximum path for a file in the user's directory...
  * $HOME/AOT_USERDIR/game_dir/dirname1/dirname2/dirname3/filename.ext
- * still fits in the MAX_OSPATH == 256 definition, but just in case :
+ * still fits in the MAX_OSPATH == 256 definition, but just in case.
  */
-	if (strlen(home_dir) + strlen(AOT_USERDIR) + 50 > dstsize)
-		return 1;
+	n = strlen(home_dir) + strlen(AOT_USERDIR) + 50;
+	if (n >= dstsize)
+	{
+		Sys_Error ("%s: Insufficient bufsize %d. Need at least %d.",
+					__thisfunc__, (int)dstsize, (int)n);
+	}
 
 	q_snprintf (dst, dstsize, "%s/%s", home_dir, AOT_USERDIR);
-	Sys_mkdir(dst, true);
 	return 0;
 }
 #endif	/* DO_USERDIRS */
@@ -695,6 +699,7 @@ int main (int argc, char **argv)
 	memset (userdir, 0, sizeof(userdir));
 	if (Sys_GetUserdir(userdir, sizeof(userdir)) != 0)
 		Sys_Error ("Couldn't determine userspace directory");
+	Sys_mkdir(userdir, true);
 #endif
 
 	/* initialize the host params */
