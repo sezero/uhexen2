@@ -4,6 +4,21 @@ Development Progress	:
 ---------------------------
 
 2011-10-24 (SVN):
+    * launcher/main.c (Sys_Error): Removed exitcode argument and made it
+      to always use EXIT_FAILURE. Adjusted callers.
+      (Sys_SearchCommand): Adjustments to failure messages. Added some
+      paranoid checks against buffer size deficiencies.
+      (Sys_FindBinDir): Constified the filename argument. Adjustments to
+      failure messages. Added some paranoid checks against buffer size
+      deficiencies. Handled some unlikely corner cases.
+      (Sys_GetUserdir): Adjustments to failure messages. Moved Sys_mkdir
+      call to the caller (main()). Made the local home_dir pointer const.
+      (main): Removed zeroing the basedir array; not necessary anymore.
+      Adjusted Sys_FindBinDir() call after the above mentioned changes.
+      Moved Sys_mkdir() call for userdir from Sys_GetUserdir() to here.
+    * launcher_defs.h: Incremented the version to 1.0.6.
+
+2011-10-24 (SVN):
     * launcher/main.c (Sys_SearchCommand): Changed the size of the arrays
       used with realpath() from MAX_OSPATH to PATH_MAX.  This "fixes" the
       umm, "crash" when launcher is compiled against new glibc, because

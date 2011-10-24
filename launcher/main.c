@@ -40,8 +40,8 @@ char		basedir[MAX_OSPATH];
 char		userdir[MAX_OSPATH];
 
 static void
-   __attribute__((__format__(__printf__,2,3), __noreturn__))
-Sys_Error (int exitcode, const char *error, ...)
+__attribute__ ((__format__(__printf__,1,2), __noreturn__))
+Sys_Error (const char *error, ...)
 {
 	va_list		argptr;
 	char		text[4096];
@@ -54,7 +54,7 @@ Sys_Error (int exitcode, const char *error, ...)
 	ui_error (text);
 	ui_quit ();	/* shouldn't be necessary.. */
 
-	exit (exitcode);
+	exit (EXIT_FAILURE);
 }
 
 static char *Sys_SearchCommand (const char *filename)
@@ -62,15 +62,16 @@ static char *Sys_SearchCommand (const char *filename)
 	static char	pathname[PATH_MAX];
 	char	buff[PATH_MAX];
 	char	*path;
-	size_t		m, n;
+	size_t	l, m, n;
 
 	memset (pathname, 0, sizeof(pathname));
+	l = strlen(filename);
 
 	if (filename[0] == '/' || filename[0] == '.' || strchr(filename, '/') != NULL)
 	{
 		if ( realpath(filename, pathname) == NULL )
 		{
-			printf ("Unable to resolve pathname %s\n", filename);
+			perror("realpath");
 			return NULL;
 		}
 		return pathname;
@@ -89,22 +90,28 @@ static char *Sys_SearchCommand (const char *filename)
 		}
 
 		if (n >= sizeof(buff))
-			return NULL;
+		{
+			Sys_Error ("%s (%d): too small bufsize %d. needed %d.",
+					__FILE__, __LINE__, (int)sizeof(buff), (int)n);
+		}
 		strncpy(buff, path, n);
 
 		if (n && buff[n - 1] != '/')
-		{
 			buff[n++] = '/';
+		if (l + n >= sizeof(buff))
+		{
+			Sys_Error ("%s (%d): too small bufsize %d. needed %d.",
+					__FILE__, __LINE__, (int)sizeof(buff), (int)(l + n));
 		}
-
-		if (strlen(filename) >= sizeof(buff) - n)
-			return NULL;
-		strcpy(buff + n, filename);
+		strcpy(&buff[n], filename);
 
 		if (!access(buff, F_OK))
 		{
 			if ( realpath(buff, pathname) == NULL )
+			{
+				perror("realpath");
 				return NULL;
+			}
 			return pathname;
 		}
 	}
@@ -112,13 +119,14 @@ static char *Sys_SearchCommand (const char *filename)
 	return NULL;
 }
 
-static void Sys_FindBinDir (char *filename, char *out)
+static void Sys_FindBinDir (const char *filename, char *out, size_t outsize)
 {
 	char	*cmd, *last, *tmp;
+	size_t	n;
 
 	cmd = Sys_SearchCommand (filename);
 	if (cmd == NULL)
-		Sys_Error (1, "Unable to determine realpath for %s", filename);
+		Sys_Error ("Unable to determine realpath for %s", filename);
 
 	last = cmd;
 	tmp = cmd;
@@ -131,10 +139,22 @@ static void Sys_FindBinDir (char *filename, char *out)
 	}
 
 	printf("Launcher : %s\n", last);
-	if (last > cmd && last - 1 != cmd)
+
+	if (last == cmd)	/* shouldn't actually happen */
+	{
+		out[0] = '.';
+		out[1] = '\0';
+		return;
+	}
+	if (last - 1 != cmd)
 		last--;		/* exclude the trailing slash */
-	while (cmd < last)
-		*out++ = *cmd++;
+	n = last - cmd;
+	if (n >= outsize)
+	{
+		Sys_Error ("%s (%d): too small bufsize %d. needed %d.",
+				__FILE__, __LINE__, (int)outsize, (int)n);
+	}
+	strncpy (out, cmd, n);
 }
 
 static void Sys_mkdir (const char *path)
@@ -145,13 +165,14 @@ static void Sys_mkdir (const char *path)
 	if (rc != 0)
 	{
 		rc = errno;
-		Sys_Error (1, "Unable to create directory %s: %s", path, strerror(rc));
+		Sys_Error ("Unable to create directory %s: %s", path, strerror(rc));
 	}
 }
 
 static int Sys_GetUserdir (char *dst, size_t dstsize)
 {
-	char		*home_dir = NULL;
+	size_t		n;
+	const char	*home_dir = NULL;
 #if USE_PASSWORD_FILE
 	struct passwd	*pwent;
 
@@ -166,11 +187,14 @@ static int Sys_GetUserdir (char *dst, size_t dstsize)
 	if (home_dir == NULL)
 		return 1;
 
-	if (strlen(home_dir) + strlen(AOT_USERDIR) + strlen(LAUNCHER_CONFIG_FILE) + 2 >= dstsize)
-		return 1;
+	n = strlen(home_dir) + strlen(AOT_USERDIR) + strlen(LAUNCHER_CONFIG_FILE) + 2;
+	if (n >= dstsize)
+	{
+		Sys_Error ("%s (%d): too small bufsize %d. needed %d.",
+				__FILE__, __LINE__, (int)dstsize, (int)n);
+	}
 
 	snprintf (dst, dstsize, "%s/%s", home_dir, AOT_USERDIR);
-	Sys_mkdir(dst);
 	return 0;
 }
 
@@ -197,7 +221,7 @@ static void ValidateByteorder (void)
 		break;
 	}
 	if (host_byteorder < 0)
-		Sys_Error (1, "Unsupported byte order [%s]", tmp);
+		Sys_Error ("Unsupported byte order [%s]", tmp);
 	printf("Detected byte order: %s\n", tmp);
 #if !ENDIAN_RUNTIME_DETECT
 	if (host_byteorder != BYTE_ORDER)
@@ -218,7 +242,7 @@ static void ValidateByteorder (void)
 			tmp2 = endianism[3];
 			break;
 		}
-		Sys_Error (1, "Detected byte order %s doesn't match compiled %s order!", tmp, tmp2);
+		Sys_Error ("Detected byte order %s doesn't match compiled %s order!", tmp, tmp2);
 	}
 #endif	/* ENDIAN_RUNTIME_DETECT */
 }
@@ -243,12 +267,12 @@ int main (int argc, char **argv)
 
 	ret = Sys_GetUserdir(userdir, sizeof(userdir));
 	if (ret != 0)
-		Sys_Error (ret, "Couldn't determine userspace directory");
+		Sys_Error ("Couldn't determine userspace directory");
 
-	memset(basedir, 0, sizeof(basedir));
-	Sys_FindBinDir (argv[0], basedir);
+	Sys_FindBinDir (argv[0], basedir, sizeof(basedir));
 	printf ("Basedir  : %s\n", basedir);
 	printf ("Userdir  : %s\n", userdir);
+	Sys_mkdir(userdir);
 
 /* go into the binary's directory */
 	chdir (basedir);
