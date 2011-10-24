@@ -57,7 +57,7 @@ Sys_Error (int exitcode, const char *error, ...)
 	exit (exitcode);
 }
 
-static char *Sys_SearchCommand (char *filename)
+static char *Sys_SearchCommand (const char *filename)
 {
 	static char	pathname[MAX_OSPATH];
 	char	buff[MAX_OSPATH];
