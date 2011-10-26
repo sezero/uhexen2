@@ -4,6 +4,9 @@ Development Progress	:
 ---------------------------
 
 2011-10-24 (SVN):
+    * recompiled all windows x64 dlls using a new, gcc-4.5-based toolchain.
+
+2011-10-24 (SVN):
     * engine, sys_unix.c (Sys_GetUserdir): Adjustments to failure messages.
       Moved Sys_mkdir() call to the caller main(). Made the local home_dir
       pointer const.
