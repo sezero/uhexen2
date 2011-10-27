@@ -3,7 +3,12 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
-2011-10-24 (SVN):
+2011-10-27 (SVN):
+    * cd_sdl.c: Simplified, making it similar to cd_linux.c or cd_bsd.c by
+      performing checks every two seconds in CDAudio_Update() and caching
+      the last check time.
+
+2011-10-26 (SVN):
     * recompiled all windows x64 dlls using a new, gcc-4.5-based toolchain.
 
 2011-10-24 (SVN):
