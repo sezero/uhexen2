@@ -3,9 +3,9 @@ see the documentation file StandaloneMods.txt for details.
 
 Index: engine/h2shared/quakefs.c
 ===================================================================
---- engine/h2shared/quakefs.c	(revision 4129)
+--- engine/h2shared/quakefs.c	(revision 4232)
 +++ engine/h2shared/quakefs.c	(working copy)
-@@ -56,6 +56,8 @@ unsigned int	gameflags;
+@@ -49,6 +49,8 @@ unsigned int	gameflags;
  cvar_t	oem = {"oem", "0", CVAR_ROM};
  cvar_t	registered = {"registered", "0", CVAR_ROM};
  
@@ -14,7 +14,7 @@ Index: engine/h2shared/quakefs.c
  typedef struct
  {
  	int	numfiles;
-@@ -206,7 +208,7 @@ static pack_t *FS_LoadPackFile (const ch
+@@ -199,7 +201,7 @@ static pack_t *FS_LoadPackFile (const ch
  		CRC_ProcessByte (&crc, ((byte *)info)[i]);
  
  	/* check for modifications */
@@ -23,7 +23,7 @@ Index: engine/h2shared/quakefs.c
  	{
  		if (strcmp(fs_gamedir_nopath, pakdata[paknum].dirname) != 0)
  		{
-@@ -477,6 +479,10 @@ void FS_Gamedir (const char *dir)
+@@ -470,6 +472,10 @@ void FS_Gamedir (const char *dir)
  /* check for reserved gamedirs */
  	if (!q_strcasecmp(dir, "hw"))
  	{
@@ -34,7 +34,7 @@ Index: engine/h2shared/quakefs.c
  #if !defined(H2W)
  	/* hw is reserved for hexenworld only. hexen2 shouldn't use it */
  		Sys_Printf ("WARNING: Gamedir not set to hw :\n"
-@@ -513,6 +519,27 @@ void FS_Gamedir (const char *dir)
+@@ -506,6 +512,27 @@ void FS_Gamedir (const char *dir)
  	 * command line argument like -game data1, ignore it. */
  		return;
  	}
@@ -62,7 +62,7 @@ Index: engine/h2shared/quakefs.c
  	else
  	{
  	/* a new gamedir: let's set it here. */
-@@ -1294,8 +1321,36 @@ static int CheckRegistered (void)
+@@ -1263,8 +1290,36 @@ static int CheckRegistered (void)
  FS_Init
  ================
  */
@@ -99,7 +99,7 @@ Index: engine/h2shared/quakefs.c
  	int		i;
  	char		temp[32];
  	qboolean	check_portals = false;
-@@ -1492,6 +1547,94 @@ void FS_Init (void)
+@@ -1461,6 +1516,94 @@ void FS_Init (void)
  	}
  }
  
@@ -196,7 +196,7 @@ Index: engine/h2shared/quakefs.c
   * because we need the bookkeeping about file start/end positions.
 Index: engine/h2shared/quakefs.h
 ===================================================================
---- engine/h2shared/quakefs.h	(revision 4129)
+--- engine/h2shared/quakefs.h	(revision 4194)
 +++ engine/h2shared/quakefs.h	(working copy)
 @@ -31,6 +31,12 @@
  
