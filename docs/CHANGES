@@ -7,7 +7,7 @@ Development Progress	:
     * cd_sdl.c: Reverted the CDAudio_Update() change from 27 Oct: it does
       not make things better.  Removed the SDL_CDStatus() check before the
       error message in case of SDL_CDPlay() failures: I don't really know
-      the significance to it and witnessed that it caused the error report
+      the significance to it and witnessed that it masked the error report
       once, so I don't see any merit in its presence.
 
 2011-10-30 (SVN):
