@@ -3,6 +3,9 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2011-10-30 (SVN):
+    * oslibs, windows codecs: Recompiled mpg123 from latest 1.13.4 release.
+
 2011-10-27 (SVN):
     * cd_sdl.c: Simplified, making it similar to cd_linux.c or cd_bsd.c by
       performing checks every two seconds in CDAudio_Update() and caching
