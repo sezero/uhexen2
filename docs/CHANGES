@@ -3,6 +3,15 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2011-11-02 (SVN):
+    * vid_ext.c: Fixed stack corruption in dos_getmemory()/seginfo due to
+      the missing balancing dos_freememory() calls in VID_InitExtra() and
+      VID_ExtraGetModeInfo() for failures and unwanted cases. The bug was
+      discovered when h2dos.exe was compiled using gcc-4.5.4.
+    * dos_v2.c: Add Sys_Error() calls to dos_getmemory() against reaching
+      MAX_SEGINFO and dos_freememory() against uncached seginfo.
+    * quakedef.h: updated beta date stamp to 2011-11-02.
+
 2011-10-30 (SVN):
     * cd_sdl.c: Reverted the CDAudio_Update() change from 27 Oct: it does
       not make things better.  Removed the SDL_CDStatus() check before the

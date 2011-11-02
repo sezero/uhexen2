@@ -42,6 +42,11 @@
 #endif
 #include "dosisms.h"
 
+#include "q_stdinc.h"
+#include "h2config.h"
+#include "compiler.h"
+#include "sys.h"
+
 /* global variables: */
 __dpmi_regs		regs;
 
@@ -136,7 +141,8 @@ int dos_int386 (int vec, __dpmi_regs *inregs, __dpmi_regs *outregs)
 // Because of a quirk in dj's alloc-dos-memory wrapper, you need to keep
 // the seginfo structure around for when you free the mem.
 //
-static _go32_dpmi_seginfo seginfo[10];
+#define MAX_SEGINFO 10
+static _go32_dpmi_seginfo seginfo[MAX_SEGINFO];
 
 void *dos_getmemory (int size)
 {
@@ -154,15 +160,18 @@ void *dos_getmemory (int size)
 	info.size = (size + 15) / 16;
 	rc = _go32_dpmi_allocate_dos_memory(&info);
 	if (rc)
-		return 0;
+		return NULL;
 
-	for (i = 0; i < 10; i++)
+	for (i = 0; i < MAX_SEGINFO; i++)
 	{
 		if (!seginfo[i].rm_segment)
-			break;
+		{
+			seginfo[i] = info;
+			return real2ptr((int) info.rm_segment << 4);
+		}
 	}
-	seginfo[i] = info;
-	return real2ptr((int) info.rm_segment << 4);
+
+	Sys_Error("%s: Reached MAX_SEGINFO", __thisfunc__);
 }
 
 void dos_freememory (void *ptr)
@@ -171,15 +180,17 @@ void dos_freememory (void *ptr)
 	int		segment;
 
 	segment = ptr2real(ptr) >> 4;
-	for (i = 0; i < 10; i++)
+	for (i = 0; i < MAX_SEGINFO; i++)
 	{
 		if (seginfo[i].rm_segment == segment)
 		{
 			_go32_dpmi_free_dos_memory(&seginfo[i]);
 			seginfo[i].rm_segment = 0;
-			break;
+			return;
 		}
 	}
+
+	Sys_Error("%s: Unknown seginfo", __thisfunc__);
 }
 
 static struct handlerhistory_s

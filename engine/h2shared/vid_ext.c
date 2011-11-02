@@ -312,10 +312,16 @@ void VID_InitExtra (void)
 	dos_int86(0x10);
 
 	if (regs.x.ax != 0x4f)
+	{
+		dos_freememory(pinfoblock);
 		return;		// no VESA support
+	}
 
 	if (pinfoblock->VbeVersion[1] < 0x02)
+	{
+		dos_freememory(pinfoblock);
 		return;		// not VESA 2.0 or greater
+	}
 
 	addr = ( (pinfoblock->OemStringPtr[0]      ) |
 		 (pinfoblock->OemStringPtr[1] <<  8) |
@@ -462,6 +468,7 @@ static qboolean VID_ExtraGetModeInfo (int modenum)
 	dos_int86(0x10);
 	if (regs.x.ax != 0x4f)
 	{
+		dos_freememory(infobuf);
 		return false;
 	}
 	else
@@ -476,6 +483,7 @@ static qboolean VID_ExtraGetModeInfo (int modenum)
 		if ((modeinfo.bits_per_pixel != 8) || (modeinfo.bytes_per_pixel != 1) ||
 			(modeinfo.width > MAXWIDTH) || (modeinfo.height > MAXHEIGHT))
 		{
+			dos_freememory(infobuf);
 			return false;
 		}
 
@@ -485,6 +493,7 @@ static qboolean VID_ExtraGetModeInfo (int modenum)
 		if ((modeinfo.mode_attributes & (MODE_SUPPORTED_IN_HW | COLOR_MODE | GRAPHICS_MODE)) !=
 						(MODE_SUPPORTED_IN_HW | COLOR_MODE | GRAPHICS_MODE))
 		{
+			dos_freememory(infobuf);
 			return false;
 		}
 
@@ -493,7 +502,10 @@ static qboolean VID_ExtraGetModeInfo (int modenum)
 		if (!(modeinfo.mode_attributes & LINEAR_FRAME_BUFFER))
 		{
 			if ((modeinfo.width != 320) || (modeinfo.height != 200))
+			{
+				dos_freememory(infobuf);
 				return false;
+			}
 		}
 
 		modeinfo.bytes_per_scanline = *(short*)(infobuf + 16);
@@ -501,7 +513,10 @@ static qboolean VID_ExtraGetModeInfo (int modenum)
 		modeinfo.pagesize = modeinfo.bytes_per_scanline * modeinfo.height;
 
 		if (modeinfo.pagesize > totalvidmem)
+		{
+			dos_freememory(infobuf);
 			return false;
+		}
 
 	// force to one page if the adapter reports it doesn't support more pages
 	// than that, no matter how much memory it has--it may not have hardware
@@ -549,28 +564,28 @@ static qboolean VID_ExtraGetModeInfo (int modenum)
 		modeinfo.pptr = *(long *)(infobuf + 40);
 
 #if 0
-		printf("VID: (VESA) info for mode 0x%x\n", modeinfo.modenum);
-		printf("  mode attrib = 0x%0x\n", modeinfo.mode_attributes);
-		printf("  win a attrib = 0x%0x\n", *(unsigned char*)(infobuf + 2));
-		printf("  win b attrib = 0x%0x\n", *(unsigned char*)(infobuf + 3));
-		printf("  win a seg 0x%0x\n", (int) modeinfo.winasegment);
-		printf("  win b seg 0x%0x\n", (int) modeinfo.winbsegment);
-		printf("  bytes per scanline = %d\n", modeinfo.bytes_per_scanline);
-		printf("  width = %d, height = %d\n", modeinfo.width, modeinfo.height);
-		printf("  win = %c\n", 'A' + modeinfo.win);
-		printf("  win granularity = %d\n", modeinfo.granularity);
-		printf("  win size = %d\n", modeinfo.win_size);
-		printf("  bits per pixel = %d\n", modeinfo.bits_per_pixel);
-		printf("  bytes per pixel = %d\n", modeinfo.bytes_per_pixel);
-		printf("  memory model = 0x%x\n", modeinfo.memory_model);
-		printf("  num pages = %d\n", modeinfo.num_pages);
-		printf("  red width = %d\n", modeinfo.red_width);
-		printf("  red pos = %d\n", modeinfo.red_pos);
-		printf("  green width = %d\n", modeinfo.green_width);
-		printf("  green pos = %d\n", modeinfo.green_pos);
-		printf("  blue width = %d\n", modeinfo.blue_width);
-		printf("  blue pos = %d\n", modeinfo.blue_pos);
-		printf("  phys mem = %x\n", modeinfo.pptr);
+		Sys_Printf("VID: (VESA) info for mode 0x%x\n", modeinfo.modenum);
+		Sys_Printf("  mode attrib = 0x%0x\n", modeinfo.mode_attributes);
+		Sys_Printf("  win a attrib = 0x%0x\n", *(unsigned char*)(infobuf + 2));
+		Sys_Printf("  win b attrib = 0x%0x\n", *(unsigned char*)(infobuf + 3));
+		Sys_Printf("  win a seg 0x%0x\n", (int) modeinfo.winasegment);
+		Sys_Printf("  win b seg 0x%0x\n", (int) modeinfo.winbsegment);
+		Sys_Printf("  bytes per scanline = %d\n", modeinfo.bytes_per_scanline);
+		Sys_Printf("  width = %d, height = %d\n", modeinfo.width, modeinfo.height);
+		Sys_Printf("  win = %c\n", 'A' + modeinfo.win);
+		Sys_Printf("  win granularity = %d\n", modeinfo.granularity);
+		Sys_Printf("  win size = %d\n", modeinfo.win_size);
+		Sys_Printf("  bits per pixel = %d\n", modeinfo.bits_per_pixel);
+		Sys_Printf("  bytes per pixel = %d\n", modeinfo.bytes_per_pixel);
+		Sys_Printf("  memory model = 0x%x\n", modeinfo.memory_model);
+		Sys_Printf("  num pages = %d\n", modeinfo.num_pages);
+		Sys_Printf("  red width = %d\n", modeinfo.red_width);
+		Sys_Printf("  red pos = %d\n", modeinfo.red_pos);
+		Sys_Printf("  green width = %d\n", modeinfo.green_width);
+		Sys_Printf("  green pos = %d\n", modeinfo.green_pos);
+		Sys_Printf("  blue width = %d\n", modeinfo.blue_width);
+		Sys_Printf("  blue pos = %d\n", modeinfo.blue_pos);
+		Sys_Printf("  phys mem = %x\n", modeinfo.pptr);
 #endif
 	}
 
