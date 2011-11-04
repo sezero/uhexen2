@@ -79,18 +79,18 @@ extern	unsigned int		gameflags;
 #if !defined(DEMOBUILD)
 typedef struct
 {
-	char	*dirname;
-	char	*name;		// user-friendly name
-	char	*checkfile;	// filename for extra check
+	const char	*dirname;
+	const char	*name;		// user-friendly name
+	const char	*checkfile;	// filename for extra check
 	int	is_botmatch;
 	int	available;
 } h2game_t;
 
 typedef struct
 {
-	char	*dirname;
-	char	*name;		// user-friendly name
-	char	*checkfile;	// filename for extra check
+	const char	*dirname;
+	const char	*name;		// user-friendly name
+	const char	*checkfile;	// filename for extra check
 	int	available;
 } hwgame_t;
 

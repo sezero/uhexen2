@@ -3,6 +3,10 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2011-11-04 (SVN):
+    * gtk-launcher: Did missing constifications, made it to compile using
+      g++.
+
 2011-11-02 (SVN):
     * vid_ext.c: Fixed stack corruption in dos_getmemory()/seginfo due to
       the missing balancing dos_freememory() calls in VID_InitExtra() and

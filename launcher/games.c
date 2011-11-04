@@ -38,7 +38,7 @@ typedef struct
 {
 	int	numfiles;
 	int	crc;
-	char	*dirname;
+	const char	*dirname;
 } pakdata_t;
 
 static pakdata_t pakdata[] =
@@ -49,7 +49,7 @@ static pakdata_t pakdata[] =
 	{ 245,	1478 , "portals"},	/* pak3.pak, portals	*/
 	{ 102,	41062, "hw"	}	/* pak4.pak, hexenworld	*/
 };
-#define	MAX_PAKDATA	(sizeof(pakdata) / sizeof(pakdata[0]))
+#define	MAX_PAKDATA	(int)(sizeof(pakdata) / sizeof(pakdata[0]))
 
 static pakdata_t demo_pakdata[] =
 {
@@ -204,7 +204,8 @@ static size_t	string_size;
 
 static void FindMaxStringSize (void)
 {
-	size_t	i, len;
+	int	i;
+	size_t	len;
 
 	string_size = 0;
 
@@ -286,7 +287,7 @@ static void scan_binaries (void)
 void scan_game_installation (void)
 {
 	int		i;
-	char			pakfile[MAX_OSPATH];
+	char	pakfile[MAX_OSPATH];
 
 	gameflags = 0;
 	if (basedir_nonstd && game_basedir[0])

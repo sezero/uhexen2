@@ -92,8 +92,8 @@
 typedef struct _launcher_snddrv_t
 {
 	int		id;	/* as above. */
-	/*const*/ char	*cmd;	/* cmdline switch */
-	/*const*/ char	*name;
+	const char	*cmd;	/* cmdline switch */
+	const char	*name;
 } launcher_snddrv_t;
 extern launcher_snddrv_t snd_drivers[];
 

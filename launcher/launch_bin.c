@@ -53,7 +53,7 @@ launcher_snddrv_t snd_drivers[] =
 	{ INT_MIN, NULL, NULL			}
 };
 
-char *snd_rates[MAX_RATES] =
+const char *snd_rates[MAX_RATES] =
 {
 	"Default",
 	"11025",
@@ -65,7 +65,7 @@ char *snd_rates[MAX_RATES] =
 	 "8000"
 };
 
-static char *resolution_args[RES_MAX][2] =
+static const char *resolution_args[RES_MAX][2] =
 {
 	{ "320",  "240" },
 	{ "400",  "300" },
@@ -80,8 +80,9 @@ static char *resolution_args[RES_MAX][2] =
 
 void launch_hexen2_bin (void)
 {
-	char	*args[MAX_ARGS], *ptr;
-	size_t			i, k;
+	const char	*args[MAX_ARGS];
+	char		*ptr;
+	size_t		i, k;
 
 	memset (string_buf, 0, STRING_BUFSIZE);
 	ptr = &string_buf[0];
@@ -252,7 +253,7 @@ void launch_hexen2_bin (void)
 		}
 	}
 
-/* finish the list of args */
+/* terminate the list of args */
 	args[++i] = NULL;
 
 	write_config_file ();
@@ -268,7 +269,7 @@ void launch_hexen2_bin (void)
 	}
 	printf ("\n\n");
 
-	execv (&string_buf[0], args);
+	execv (&string_buf[0], (char * const *) args);
 
 	exit (0);
 }

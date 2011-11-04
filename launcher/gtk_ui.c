@@ -51,7 +51,7 @@
 // Extern data:
 
 // from launch_bin.c
-extern char	*snd_rates[MAX_RATES];
+extern const char	*snd_rates[MAX_RATES];
 
 /*********************************************************************/
 // Public data:
@@ -70,7 +70,7 @@ static MainWindow_t	main_win;
 static PatchWindow_t	patch_win;
 static int	bmore = 0, lock = 0;
 
-static char *res_names[RES_MAX] =
+static const char *res_names[RES_MAX] =
 {
 	"320 x 240",
 	"400 x 300",
@@ -82,7 +82,7 @@ static char *res_names[RES_MAX] =
 	"1600 x 1200"
 };
 
-static char *launch_status[] =
+static const char *launch_status[] =
 {
 	"  Ready to run the game",
 	"  Binary missing or not executable",
@@ -125,7 +125,7 @@ static void UpdateStats (void)
 }
 
 #if !defined(DEMOBUILD)
-static char *patch_status[] =
+static const char *patch_status[] =
 {
 	"  Patch in progress.....",
 	"  Patch process finished",
@@ -494,6 +494,11 @@ static void on_SBITS (GtkButton *button, int *opt)
 	gtk_button_set_label(button, (*opt) ? "16 bit" : " 8 bit");
 }
 
+static void g_free_func (gpointer data, gpointer unused)
+{
+	g_free (data);
+}
+
 static void Make_ResMenu (void)
 {
 	int	i, up;
@@ -501,8 +506,9 @@ static void Make_ResMenu (void)
 
 	up = (opengl_support) ? RES_MAX-1 : RES_640;
 	for (i = 2*opengl_support; i <= up; i++)
-		ResList = g_list_append (ResList, res_names[i]);
+		ResList = g_list_append (ResList, g_strdup(res_names[i]));
 	gtk_combo_set_popdown_strings (GTK_COMBO(WGT_RESCOMBO), ResList);
+	g_list_foreach(ResList, g_free_func, NULL);
 	g_list_free (ResList);
 	gtk_entry_set_text (GTK_ENTRY(WGT_RESLIST), res_names[resolution]);
 }
@@ -513,8 +519,9 @@ static void Make_ConWidthMenu (void)
 	GList *ResList = NULL;
 
 	for (i = 0; i <= resolution; i++)
-		ResList = g_list_append (ResList, res_names[i]);
+		ResList = g_list_append (ResList, g_strdup(res_names[i]));
 	gtk_combo_set_popdown_strings (GTK_COMBO(WGT_CONWCOMBO), ResList);
+	g_list_foreach(ResList, g_free_func, NULL);
 	g_list_free (ResList);
 	gtk_entry_set_text (GTK_ENTRY(WGT_CONWLIST), res_names[conwidth]);
 }
@@ -737,17 +744,19 @@ static void basedir_Change (GtkButton *unused, gpointer user_data)
 	for (i = 0; i < MAX_H2GAMES; i++)
 	{
 		if (h2game_names[i].available)
-			TmpList = g_list_append (TmpList, h2game_names[i].name);
+			TmpList = g_list_append (TmpList, g_strdup(h2game_names[i].name));
 	}
 	gtk_combo_set_popdown_strings (GTK_COMBO(WGT_H2GAME), TmpList);
+	g_list_foreach(TmpList, g_free_func, NULL);
 	g_list_free (TmpList);
 	TmpList = NULL;
 	for (i = 0; i < MAX_HWGAMES; i++)
 	{
 		if (hwgame_names[i].available)
-			TmpList = g_list_append (TmpList, hwgame_names[i].name);
+			TmpList = g_list_append (TmpList, g_strdup(hwgame_names[i].name));
 	}
 	gtk_combo_set_popdown_strings (GTK_COMBO(WGT_HWGAME), TmpList);
+	g_list_foreach(TmpList, g_free_func, NULL);
 	g_list_free (TmpList);
 	gtk_entry_set_text (GTK_ENTRY(H2G_Entry), h2game_names[0].name);
 	gtk_entry_set_text (GTK_ENTRY(HWG_Entry), hwgame_names[0].name);
@@ -1209,8 +1218,9 @@ static void create_window1 (void)
 	gtk_widget_set_size_request (WGT_SOUND, 110, 24);
 	TmpList = NULL;
 	for (i = 0; snd_drivers[i].id != INT_MIN; i++)
-		TmpList = g_list_append (TmpList, snd_drivers[i].name);
+		TmpList = g_list_append (TmpList, g_strdup(snd_drivers[i].name));
 	gtk_combo_set_popdown_strings (GTK_COMBO(WGT_SOUND), TmpList);
+	g_list_foreach(TmpList, g_free_func, NULL);
 	g_list_free (TmpList);
 	gtk_fixed_put (GTK_FIXED(BASIC_TAB), WGT_SOUND, 102, 208);
 	gtk_widget_show (WGT_SOUND);
@@ -1241,8 +1251,9 @@ static void create_window1 (void)
 	gtk_widget_set_size_request (WGT_SRATE, 110, 24);
 	TmpList = NULL;
 	for (i = 0; i < MAX_RATES; i++)
-		TmpList = g_list_append (TmpList, snd_rates[i]);
+		TmpList = g_list_append (TmpList, g_strdup(snd_rates[i]));
 	gtk_combo_set_popdown_strings (GTK_COMBO(WGT_SRATE), TmpList);
+	g_list_foreach(TmpList, g_free_func, NULL);
 	g_list_free (TmpList);
 	gtk_fixed_put (GTK_FIXED(BASIC_TAB), WGT_SRATE, 102, 238);
 	gtk_widget_show (WGT_SRATE);
@@ -1281,9 +1292,10 @@ static void create_window1 (void)
 	for (i = 0; i < MAX_H2GAMES; i++)
 	{
 		if (h2game_names[i].available)
-			TmpList = g_list_append (TmpList, h2game_names[i].name);
+			TmpList = g_list_append (TmpList, g_strdup(h2game_names[i].name));
 	}
 	gtk_combo_set_popdown_strings (GTK_COMBO(WGT_H2GAME), TmpList);
+	g_list_foreach(TmpList, g_free_func, NULL);
 	g_list_free (TmpList);
 #endif	/* DEMOBUILD */
 	gtk_fixed_put (GTK_FIXED(ADDON_TAB2), WGT_H2GAME, 36, 36);
@@ -1316,9 +1328,10 @@ static void create_window1 (void)
 	for (i = 0; i < MAX_HWGAMES; i++)
 	{
 		if (hwgame_names[i].available)
-			TmpList = g_list_append (TmpList, hwgame_names[i].name);
+			TmpList = g_list_append (TmpList, g_strdup(hwgame_names[i].name));
 	}
 	gtk_combo_set_popdown_strings (GTK_COMBO(WGT_HWGAME), TmpList);
+	g_list_foreach(TmpList, g_free_func, NULL);
 	g_list_free (TmpList);
 //	gtk_fixed_put (GTK_FIXED(ADDON_TAB2), WGT_HWGAME, 68, 66);
 	gtk_fixed_put (GTK_FIXED(ADDON_TAB2), WGT_HWGAME, 36, 36);
