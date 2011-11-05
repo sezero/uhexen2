@@ -4,6 +4,9 @@ Development Progress	:
 ---------------------------
 
 2011-11-05 (SVN):
+    * gtk-launcher: Removed evil code trying to understand the selection
+      in a combo box, properly used gtk_list_child_position() everywhere,
+      instead.
     * gtk-launcher: Removed the evil "lock" variable and properly used
       gtk_signal_handler_block() and gtk_signal_handler_unblock() where
       necessary.

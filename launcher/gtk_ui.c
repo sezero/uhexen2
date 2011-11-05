@@ -451,42 +451,20 @@ finish:
 }
 #endif	/* ! DEMOBUILD */
 
-static void on_SND (GtkEditable *editable, gpointer user_data)
+static void on_SND (GtkEditable *unused, GtkList *l)
 {
-	int	i;
-	gchar *tmp = gtk_editable_get_chars (editable, 0, -1);
+	int i = gtk_list_child_position(l, (GtkWidget *) l->selection->data);
 
-	for (i = 0; snd_drivers[i].id != INT_MIN; i++)
-	{
-		if (strcmp(tmp, snd_drivers[i].name) == 0)
-		{
-			g_free(tmp);
-			sound = snd_drivers[i].id;
-			gtk_widget_set_sensitive (WGT_MIDI, sound);
-			gtk_widget_set_sensitive (WGT_CDAUDIO, sound);
-			gtk_widget_set_sensitive (WGT_SRATE, sound);
-			gtk_widget_set_sensitive (WGT_SBITS, sound);
-			return;
-		}
-// Normally, we should be all set within this loop, thus no "else"
-	}
+	sound = snd_drivers[i].id;
+	gtk_widget_set_sensitive (WGT_MIDI, sound);
+	gtk_widget_set_sensitive (WGT_CDAUDIO, sound);
+	gtk_widget_set_sensitive (WGT_SRATE, sound);
+	gtk_widget_set_sensitive (WGT_SBITS, sound);
 }
 
-static void on_SRATE (GtkEditable *editable, gpointer user_data)
+static void on_SRATE (GtkEditable *unused, GtkList *l)
 {
-	int	i;
-	gchar *tmp = gtk_editable_get_chars (editable, 0, -1);
-
-	for (i = 0; i < MAX_RATES; i++)
-	{
-		if (strcmp(tmp, snd_rates[i]) == 0)
-		{
-			g_free(tmp);
-			sndrate = i;
-			return;
-		}
-// Normally, we should be all set within this loop, thus no "else"
-	}
+	sndrate = gtk_list_child_position(l, (GtkWidget *) l->selection->data);
 }
 
 static void on_SBITS (GtkButton *button, int *opt)
@@ -563,23 +541,13 @@ static void on_OGL (GtkToggleButton *button, gpointer user_data)
 	gtk_signal_handler_unblock (GTK_OBJECT(WGT_CONWLIST), conwlist_handler);
 }
 
-static void res_Change (GtkEditable *editable, gpointer user_data)
+static void res_Change (GtkEditable *unused, GtkList *l)
 {
-	int	i;
-	gchar	*tmp;
-
 	gtk_signal_handler_block (GTK_OBJECT(WGT_CONWLIST), conwlist_handler);
 
-	tmp = gtk_editable_get_chars (editable, 0, -1);
-	for (i = 0; i < RES_MAX; i++)
-	{
-		if (strcmp(tmp, res_names[i]) == 0)
-		{
-			resolution = i;
-			break;
-		}
-	}
-	g_free(tmp);
+	resolution = gtk_list_child_position(l, (GtkWidget *) l->selection->data);
+	if (opengl_support)
+		resolution += RES_MINGL;
 	if (opengl_support)
 	{
 		if (conwidth > resolution)
@@ -590,22 +558,9 @@ static void res_Change (GtkEditable *editable, gpointer user_data)
 	gtk_signal_handler_unblock (GTK_OBJECT(WGT_CONWLIST), conwlist_handler);
 }
 
-static void con_Change (GtkEditable *editable, gpointer user_data)
+static void con_Change (GtkEditable *unused, GtkList *l)
 {
-	int	i;
-	gchar	*tmp;
-
-	tmp = gtk_editable_get_chars (editable, 0, -1);
-	for (i = 0; i < RES_MAX; i++)
-	{
-		if (strcmp(tmp, res_names[i]) == 0)
-		{
-			g_free(tmp);
-			conwidth = i;
-			return;
-		}
-// Normally, we should be all set within this loop, thus no "else"
-	}
+	conwidth = gtk_list_child_position(l, (GtkWidget *) l->selection->data);
 }
 
 static void libgl_Change (GtkEditable *editable, gpointer user_data)
@@ -663,37 +618,15 @@ static void on_H2W (GtkButton *button, gpointer user_data)
 }
 
 #if !defined(DEMOBUILD)
-static void H2GameChange (GtkEditable *editable, gpointer user_data)
+static void H2GameChange (GtkEditable *unused, GtkList *l)
 {
-	int	i;
-	gchar *tmp = gtk_editable_get_chars (editable, 0, -1);
-	for (i = 0; i < MAX_H2GAMES; i++)
-	{
-		if (strcmp(tmp, h2game_names[i].name) == 0)
-		{
-			g_free(tmp);
-			h2game = i;
-			gtk_widget_set_sensitive (WGT_LANBUTTON, !h2game_names[i].is_botmatch);
-			return;
-		}
-// Normally, we should be all set within this loop, thus no "else"
-	}
+	h2game = gtk_list_child_position(l, (GtkWidget *) l->selection->data);
+	gtk_widget_set_sensitive (WGT_LANBUTTON, !h2game_names[h2game].is_botmatch);
 }
 
-static void HWGameChange (GtkEditable *editable, gpointer user_data)
+static void HWGameChange (GtkEditable *unused, GtkList *l)
 {
-	int	i;
-	gchar *tmp = gtk_editable_get_chars (editable, 0, -1);
-	for (i = 0; i < MAX_HWGAMES; i++)
-	{
-		if (strcmp(tmp, hwgame_names[i].name) == 0)
-		{
-			g_free(tmp);
-			hwgame = i;
-			return;
-		}
-// Normally, we should be all set within this loop, thus no "else"
-	}
+	hwgame = gtk_list_child_position(l, (GtkWidget *) l->selection->data);
 }
 #endif	/* ! DEMOBUILD */
 
@@ -1750,16 +1683,20 @@ static void create_window1 (void)
 	gtk_signal_connect (GTK_OBJECT(WGT_LAUNCH), "clicked", GTK_SIGNAL_FUNC(launch_hexen2_bin), NULL);
 	gtk_signal_connect (GTK_OBJECT(bQUIT), "clicked", GTK_SIGNAL_FUNC(ui_quit), NULL);
 #ifndef DEMOBUILD
-	gtk_signal_connect (GTK_OBJECT(H2G_Entry), "changed", GTK_SIGNAL_FUNC(H2GameChange), NULL);
-	gtk_signal_connect (GTK_OBJECT(HWG_Entry), "changed", GTK_SIGNAL_FUNC(HWGameChange), NULL);
+	gtk_signal_connect (GTK_OBJECT(H2G_Entry), "changed", GTK_SIGNAL_FUNC(H2GameChange),
+								GTK_LIST((GTK_COMBO(WGT_H2GAME))->list));
+	gtk_signal_connect (GTK_OBJECT(HWG_Entry), "changed", GTK_SIGNAL_FUNC(HWGameChange),
+								GTK_LIST((GTK_COMBO(WGT_HWGAME))->list));
 	gtk_signal_connect (GTK_OBJECT(WGT_PORTALS), "toggled", GTK_SIGNAL_FUNC(BoolRevert), &mp_support);
 #endif	/* DEMOBUILD */
 	gtk_signal_connect (GTK_OBJECT(bPATCH), "clicked", GTK_SIGNAL_FUNC(create_window2), NULL);
 	gtk_signal_connect (GTK_OBJECT(WGT_HEXEN2), "clicked", GTK_SIGNAL_FUNC(on_HEXEN2), NULL);
 	gtk_signal_connect (GTK_OBJECT(WGT_H2WORLD), "clicked", GTK_SIGNAL_FUNC(on_H2W), NULL);
 	gtk_signal_connect (GTK_OBJECT(WGT_OPENGL), "toggled", GTK_SIGNAL_FUNC(on_OGL), NULL);
-	gtk_signal_connect (GTK_OBJECT(SND_Entry), "changed", GTK_SIGNAL_FUNC(on_SND), NULL);
-	gtk_signal_connect (GTK_OBJECT(SRATE_Entry), "changed", GTK_SIGNAL_FUNC(on_SRATE), NULL);
+	gtk_signal_connect (GTK_OBJECT(SND_Entry), "changed", GTK_SIGNAL_FUNC(on_SND),
+								GTK_LIST((GTK_COMBO(WGT_SOUND))->list));
+	gtk_signal_connect (GTK_OBJECT(SRATE_Entry), "changed", GTK_SIGNAL_FUNC(on_SRATE),
+								GTK_LIST((GTK_COMBO(WGT_SRATE))->list));
 	gtk_signal_connect (GTK_OBJECT(WGT_SBITS), "toggled", GTK_SIGNAL_FUNC(on_SBITS), &sndbits);
 	gtk_signal_connect (GTK_OBJECT(WGT_MIDI), "toggled", GTK_SIGNAL_FUNC(BoolRevert), &midi);
 	gtk_signal_connect (GTK_OBJECT(WGT_CDAUDIO), "toggled", GTK_SIGNAL_FUNC(BoolRevert), &cdaudio);
@@ -1778,8 +1715,10 @@ static void create_window1 (void)
 	gtk_signal_connect (GTK_OBJECT(WGT_MEMHEAP), "toggled", GTK_SIGNAL_FUNC(BoolRevert), &use_heap);
 	gtk_signal_connect (GTK_OBJECT(WGT_MEMZONE), "toggled", GTK_SIGNAL_FUNC(BoolRevert), &use_zone);
 	gtk_signal_connect (GTK_OBJECT(WGT_EXTBTN), "toggled", GTK_SIGNAL_FUNC(BoolRevert), &use_extra);
-	reslist_handler = gtk_signal_connect (GTK_OBJECT(WGT_RESLIST), "changed", GTK_SIGNAL_FUNC(res_Change), NULL);
-	conwlist_handler = gtk_signal_connect (GTK_OBJECT(WGT_CONWLIST), "changed", GTK_SIGNAL_FUNC(con_Change), NULL);
+	reslist_handler = gtk_signal_connect (GTK_OBJECT(WGT_RESLIST), "changed", GTK_SIGNAL_FUNC(res_Change),
+									GTK_LIST((GTK_COMBO(WGT_RESCOMBO))->list));
+	conwlist_handler = gtk_signal_connect (GTK_OBJECT(WGT_CONWLIST), "changed", GTK_SIGNAL_FUNC(con_Change),
+									GTK_LIST((GTK_COMBO(WGT_CONWCOMBO))->list));
 	gtk_signal_connect (GTK_OBJECT(WGT_GLPATH), "changed", GTK_SIGNAL_FUNC(libgl_Change), NULL);
 	gtk_signal_connect (GTK_OBJECT(WGT_EXTARGS), "changed", GTK_SIGNAL_FUNC(extargs_Change), NULL);
 	gtk_signal_connect (GTK_OBJECT(WGT_HEAPADJ), "value_changed", GTK_SIGNAL_FUNC(adj_Change), &heapsize);
