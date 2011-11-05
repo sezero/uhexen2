@@ -68,7 +68,8 @@ static GtkWidget	*HWG_Entry;	// Hexenworld games listing
 static options_widget_t	Options;
 static MainWindow_t	main_win;
 static PatchWindow_t	patch_win;
-static int	bmore = 0, lock = 0;
+static int		bmore = 0;
+static guint	reslist_handler, conwlist_handler;
 
 static const char *res_names[RES_MAX] =
 {
@@ -529,9 +530,8 @@ static void Make_ConWidthMenu (void)
 
 static void on_OGL (GtkToggleButton *button, gpointer user_data)
 {
-//	Make_ResMenu() triggers "changed" signal
-//	for RES_LIST, therefore prevent the fight
-	lock = 1;
+	gtk_signal_handler_block (GTK_OBJECT(WGT_RESLIST), reslist_handler);
+	gtk_signal_handler_block (GTK_OBJECT(WGT_CONWLIST), conwlist_handler);
 
 	opengl_support ^= 1;
 	if (opengl_support)
@@ -558,7 +558,9 @@ static void on_OGL (GtkToggleButton *button, gpointer user_data)
 	if (opengl_support)
 		Make_ConWidthMenu();
 	UpdateStats ();
-	lock = 0;
+
+	gtk_signal_handler_unblock (GTK_OBJECT(WGT_RESLIST), reslist_handler);
+	gtk_signal_handler_unblock (GTK_OBJECT(WGT_CONWLIST), conwlist_handler);
 }
 
 static void res_Change (GtkEditable *editable, gpointer user_data)
@@ -566,15 +568,16 @@ static void res_Change (GtkEditable *editable, gpointer user_data)
 	int	i;
 	gchar	*tmp;
 
-	if (lock)
-		return;
+	gtk_signal_handler_block (GTK_OBJECT(WGT_CONWLIST), conwlist_handler);
 
-	lock = 1;
 	tmp = gtk_editable_get_chars (editable, 0, -1);
 	for (i = 0; i < RES_MAX; i++)
 	{
 		if (strcmp(tmp, res_names[i]) == 0)
+		{
 			resolution = i;
+			break;
+		}
 	}
 	g_free(tmp);
 	if (opengl_support)
@@ -583,16 +586,14 @@ static void res_Change (GtkEditable *editable, gpointer user_data)
 			conwidth = resolution;
 		Make_ConWidthMenu ();
 	}
-	lock = 0;
+
+	gtk_signal_handler_unblock (GTK_OBJECT(WGT_CONWLIST), conwlist_handler);
 }
 
 static void con_Change (GtkEditable *editable, gpointer user_data)
 {
 	int	i;
 	gchar	*tmp;
-
-	if (lock)
-		return;
 
 	tmp = gtk_editable_get_chars (editable, 0, -1);
 	for (i = 0; i < RES_MAX; i++)
@@ -720,15 +721,16 @@ static void on_MORE (GtkButton *button, gpointer user_data)
 
 static void basedir_Change (GtkButton *unused, gpointer user_data)
 {
+	static gboolean	in_progress = FALSE;	/* do I need this? */
 #if !defined(DEMOBUILD)
 	int		i;
 	GList *TmpList = NULL;
 #endif	/* ! DEMOBUILD */
 
-	if (lock)
+	if (in_progress)
 		return;
+	in_progress = TRUE;
 
-	lock = 1;
 	basedir_nonstd ^= 1;
 	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON(patch_win.bBASEDIR), basedir_nonstd);
 	scan_game_installation();
@@ -776,7 +778,7 @@ static void basedir_Change (GtkButton *unused, gpointer user_data)
 	}
 #endif	/* ! DEMOBUILD */
 
-	lock = 0;
+	in_progress = FALSE;
 }
 
 static void basedir_ChangePath (GtkEditable *editable, gpointer user_data)
@@ -1776,8 +1778,8 @@ static void create_window1 (void)
 	gtk_signal_connect (GTK_OBJECT(WGT_MEMHEAP), "toggled", GTK_SIGNAL_FUNC(BoolRevert), &use_heap);
 	gtk_signal_connect (GTK_OBJECT(WGT_MEMZONE), "toggled", GTK_SIGNAL_FUNC(BoolRevert), &use_zone);
 	gtk_signal_connect (GTK_OBJECT(WGT_EXTBTN), "toggled", GTK_SIGNAL_FUNC(BoolRevert), &use_extra);
-	gtk_signal_connect (GTK_OBJECT(WGT_RESLIST), "changed", GTK_SIGNAL_FUNC(res_Change), NULL);
-	gtk_signal_connect (GTK_OBJECT(WGT_CONWLIST), "changed", GTK_SIGNAL_FUNC(con_Change), NULL);
+	reslist_handler = gtk_signal_connect (GTK_OBJECT(WGT_RESLIST), "changed", GTK_SIGNAL_FUNC(res_Change), NULL);
+	conwlist_handler = gtk_signal_connect (GTK_OBJECT(WGT_CONWLIST), "changed", GTK_SIGNAL_FUNC(con_Change), NULL);
 	gtk_signal_connect (GTK_OBJECT(WGT_GLPATH), "changed", GTK_SIGNAL_FUNC(libgl_Change), NULL);
 	gtk_signal_connect (GTK_OBJECT(WGT_EXTARGS), "changed", GTK_SIGNAL_FUNC(extargs_Change), NULL);
 	gtk_signal_connect (GTK_OBJECT(WGT_HEAPADJ), "value_changed", GTK_SIGNAL_FUNC(adj_Change), &heapsize);

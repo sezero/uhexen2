@@ -4,6 +4,9 @@ Development Progress	:
 ---------------------------
 
 2011-11-05 (SVN):
+    * gtk-launcher: Removed the evil "lock" variable and properly used
+      gtk_signal_handler_block() and gtk_signal_handler_unblock() where
+      necessary.
     * gtk-launcher: Added RES_MINGL macro, used it in Make_ResMenu() to
       clean up the confusing resolution list start offset.
 
