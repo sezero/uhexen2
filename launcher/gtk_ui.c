@@ -740,7 +740,6 @@ static void create_window2 (GtkWidget *unused1, gpointer user_data)
 #if !defined(_H2L_USE_GTK1)
 	GtkTextBuffer	*buf;
 	GtkTextIter	start;
-	GtkTextMark	*mark;
 #endif	/* _H2L_USE_GTK1 */
 
 	PATCH_WINDOW = gtk_window_new (GTK_WINDOW_TOPLEVEL);
@@ -830,7 +829,7 @@ static void create_window2 (GtkWidget *unused1, gpointer user_data)
 	gtk_text_view_set_right_margin (GTK_TEXT_VIEW(patch_win.LOGVIEW), 2);
 	buf = gtk_text_view_get_buffer (GTK_TEXT_VIEW(patch_win.LOGVIEW));
 	gtk_text_buffer_get_start_iter (buf, &start);
-	mark = gtk_text_buffer_create_mark (buf, "ins_mark", &start, 0);
+	gtk_text_buffer_create_mark (buf, "ins_mark", &start, 0);
 #endif	/* _H2L_USE_GTK2 */
 
 // Close button

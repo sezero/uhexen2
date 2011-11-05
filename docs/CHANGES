@@ -4,6 +4,7 @@ Development Progress	:
 ---------------------------
 
 2011-11-05 (SVN):
+    * gtk-launcher: Removed an unused variable from create_window2().
     * gtk-launcher: Replaced gtk_editable_get_chars() usage by the more
       convenient gtk_entry_get_text().
     * gtk-launcher: Removed evil code trying to understand the selection
