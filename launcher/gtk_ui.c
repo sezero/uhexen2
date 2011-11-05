@@ -505,7 +505,8 @@ static void Make_ResMenu (void)
 	GList *ResList = NULL;
 
 	up = (opengl_support) ? RES_MAX-1 : RES_640;
-	for (i = 2*opengl_support; i <= up; i++)
+	i  = (opengl_support) ? RES_MINGL : 0;
+	for ( ; i <= up; i++)
 		ResList = g_list_append (ResList, g_strdup(res_names[i]));
 	gtk_combo_set_popdown_strings (GTK_COMBO(WGT_RESCOMBO), ResList);
 	g_list_foreach(ResList, g_free_func, NULL);

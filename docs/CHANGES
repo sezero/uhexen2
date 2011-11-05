@@ -3,6 +3,10 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2011-11-05 (SVN):
+    * gtk-launcher: Added RES_MINGL macro, used it in Make_ResMenu() to
+      clean up the confusing resolution list start offset.
+
 2011-11-04 (SVN):
     * gtk-launcher: Did missing constifications, made it to compile using
       g++.

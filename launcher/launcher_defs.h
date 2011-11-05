@@ -63,6 +63,7 @@
 #define	RES_1280	6
 #define	RES_1600	7
 #define	RES_MAX		8
+#define	RES_MINGL	RES_512		/* minimum resolution for OpenGL */
 
 /* which sound drivers are available: */
 #if defined(__linux) || defined(__linux__)
