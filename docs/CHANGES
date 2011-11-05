@@ -4,6 +4,8 @@ Development Progress	:
 ---------------------------
 
 2011-11-05 (SVN):
+    * gtk-launcher: Replaced gtk_editable_get_chars() usage by the more
+      convenient gtk_entry_get_text().
     * gtk-launcher: Removed evil code trying to understand the selection
       in a combo box, properly used gtk_list_child_position() everywhere,
       instead.

@@ -451,7 +451,7 @@ finish:
 }
 #endif	/* ! DEMOBUILD */
 
-static void on_SND (GtkEditable *unused, GtkList *l)
+static void on_SND (GtkEntry *unused, GtkList *l)
 {
 	int i = gtk_list_child_position(l, (GtkWidget *) l->selection->data);
 
@@ -462,7 +462,7 @@ static void on_SND (GtkEditable *unused, GtkList *l)
 	gtk_widget_set_sensitive (WGT_SBITS, sound);
 }
 
-static void on_SRATE (GtkEditable *unused, GtkList *l)
+static void on_SRATE (GtkEntry *unused, GtkList *l)
 {
 	sndrate = gtk_list_child_position(l, (GtkWidget *) l->selection->data);
 }
@@ -541,7 +541,7 @@ static void on_OGL (GtkToggleButton *button, gpointer user_data)
 	gtk_signal_handler_unblock (GTK_OBJECT(WGT_CONWLIST), conwlist_handler);
 }
 
-static void res_Change (GtkEditable *unused, GtkList *l)
+static void res_Change (GtkEntry *unused, GtkList *l)
 {
 	gtk_signal_handler_block (GTK_OBJECT(WGT_CONWLIST), conwlist_handler);
 
@@ -558,34 +558,30 @@ static void res_Change (GtkEditable *unused, GtkList *l)
 	gtk_signal_handler_unblock (GTK_OBJECT(WGT_CONWLIST), conwlist_handler);
 }
 
-static void con_Change (GtkEditable *unused, GtkList *l)
+static void con_Change (GtkEntry *unused, GtkList *l)
 {
 	conwidth = gtk_list_child_position(l, (GtkWidget *) l->selection->data);
 }
 
-static void libgl_Change (GtkEditable *editable, gpointer user_data)
+static void libgl_Change (GtkEntry *entry, gpointer user_data)
 {
-	size_t len;
-	gchar *tmp = gtk_editable_get_chars (editable, 0, -1);
-	len = strlen(tmp);
+	const gchar *tmp = gtk_entry_get_text (entry);
+	size_t len = strlen(tmp);
 	if (len > sizeof(gllibrary)-1)
 		len = sizeof(gllibrary)-1;
 	if (len)
 		memcpy (gllibrary, tmp, len);
-	g_free (tmp);
 	gllibrary[len] = 0;
 }
 
-static void extargs_Change (GtkEditable *editable, gpointer user_data)
+static void extargs_Change (GtkEntry *entry, gpointer user_data)
 {
-	size_t len;
-	gchar *tmp = gtk_editable_get_chars (editable, 0, -1);
-	len = strlen(tmp);
+	const gchar *tmp = gtk_entry_get_text (entry);
+	size_t len = strlen(tmp);
 	if (len > sizeof(ext_args)-1)
 		len = sizeof(ext_args)-1;
 	if (len)
 		memcpy (ext_args, tmp, len);
-	g_free (tmp);
 	ext_args[len] = 0;
 }
 
@@ -618,13 +614,13 @@ static void on_H2W (GtkButton *button, gpointer user_data)
 }
 
 #if !defined(DEMOBUILD)
-static void H2GameChange (GtkEditable *unused, GtkList *l)
+static void H2GameChange (GtkEntry *unused, GtkList *l)
 {
 	h2game = gtk_list_child_position(l, (GtkWidget *) l->selection->data);
 	gtk_widget_set_sensitive (WGT_LANBUTTON, !h2game_names[h2game].is_botmatch);
 }
 
-static void HWGameChange (GtkEditable *unused, GtkList *l)
+static void HWGameChange (GtkEntry *unused, GtkList *l)
 {
 	hwgame = gtk_list_child_position(l, (GtkWidget *) l->selection->data);
 }
@@ -714,17 +710,15 @@ static void basedir_Change (GtkButton *unused, gpointer user_data)
 	in_progress = FALSE;
 }
 
-static void basedir_ChangePath (GtkEditable *editable, gpointer user_data)
+static void basedir_ChangePath (GtkEntry *entry, gpointer user_data)
 {
-	size_t len;
-	gchar *tmp = gtk_editable_get_chars (editable, 0, -1);
-	len = strlen(tmp);
+	const gchar *tmp = gtk_entry_get_text (entry);
+	size_t len = strlen(tmp);
 	if (len > sizeof(game_basedir)-1)
 		len = sizeof(game_basedir)-1;
 	if (len)
 		memcpy (game_basedir, tmp, len);
 	game_basedir[len] = 0;
-	g_free (tmp);
 
 	if (basedir_nonstd)	/* FIXME: any better way? */
 		basedir_Change (NULL, NULL);
