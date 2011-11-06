@@ -60,10 +60,6 @@ extern const char	*snd_rates[MAX_RATES];
 // Private data:
 
 static GtkTooltips	*tooltips;
-static GtkWidget	*H2G_Entry;	// Hexen2 games listing
-#ifndef DEMOBUILD
-static GtkWidget	*HWG_Entry;	// Hexenworld games listing
-#endif	/* DEMOBUILD */
 
 static options_widget_t	Options;
 static MainWindow_t	main_win;
@@ -490,7 +486,7 @@ static void Make_ResMenu (void)
 	gtk_combo_set_popdown_strings (GTK_COMBO(WGT_RESCOMBO), ResList);
 	g_list_foreach(ResList, g_free_func, NULL);
 	g_list_free (ResList);
-	gtk_entry_set_text (GTK_ENTRY(WGT_RESLIST), res_names[resolution]);
+	gtk_entry_set_text (GTK_ENTRY(GTK_COMBO(WGT_RESCOMBO)->entry), res_names[resolution]);
 }
 
 static void Make_ConWidthMenu (void)
@@ -503,13 +499,13 @@ static void Make_ConWidthMenu (void)
 	gtk_combo_set_popdown_strings (GTK_COMBO(WGT_CONWCOMBO), ResList);
 	g_list_foreach(ResList, g_free_func, NULL);
 	g_list_free (ResList);
-	gtk_entry_set_text (GTK_ENTRY(WGT_CONWLIST), res_names[conwidth]);
+	gtk_entry_set_text (GTK_ENTRY(GTK_COMBO(WGT_CONWCOMBO)->entry), res_names[conwidth]);
 }
 
 static void on_OGL (GtkToggleButton *button, gpointer user_data)
 {
-	gtk_signal_handler_block (GTK_OBJECT(WGT_RESLIST), reslist_handler);
-	gtk_signal_handler_block (GTK_OBJECT(WGT_CONWLIST), conwlist_handler);
+	gtk_signal_handler_block (GTK_OBJECT(GTK_COMBO(WGT_RESCOMBO)->entry), reslist_handler);
+	gtk_signal_handler_block (GTK_OBJECT(GTK_COMBO(WGT_CONWCOMBO)->entry), conwlist_handler);
 
 	opengl_support ^= 1;
 	if (opengl_support)
@@ -537,13 +533,13 @@ static void on_OGL (GtkToggleButton *button, gpointer user_data)
 		Make_ConWidthMenu();
 	UpdateStats ();
 
-	gtk_signal_handler_unblock (GTK_OBJECT(WGT_RESLIST), reslist_handler);
-	gtk_signal_handler_unblock (GTK_OBJECT(WGT_CONWLIST), conwlist_handler);
+	gtk_signal_handler_unblock (GTK_OBJECT(GTK_COMBO(WGT_RESCOMBO)->entry), reslist_handler);
+	gtk_signal_handler_unblock (GTK_OBJECT(GTK_COMBO(WGT_CONWCOMBO)->entry), conwlist_handler);
 }
 
 static void res_Change (GtkEntry *unused, GtkList *l)
 {
-	gtk_signal_handler_block (GTK_OBJECT(WGT_CONWLIST), conwlist_handler);
+	gtk_signal_handler_block (GTK_OBJECT(GTK_COMBO(WGT_CONWCOMBO)->entry), conwlist_handler);
 
 	resolution = gtk_list_child_position(l, (GtkWidget *) l->selection->data);
 	if (opengl_support)
@@ -555,7 +551,7 @@ static void res_Change (GtkEntry *unused, GtkList *l)
 		Make_ConWidthMenu ();
 	}
 
-	gtk_signal_handler_unblock (GTK_OBJECT(WGT_CONWLIST), conwlist_handler);
+	gtk_signal_handler_unblock (GTK_OBJECT(GTK_COMBO(WGT_CONWCOMBO)->entry), conwlist_handler);
 }
 
 static void con_Change (GtkEntry *unused, GtkList *l)
@@ -690,8 +686,8 @@ static void basedir_Change (GtkButton *unused, gpointer user_data)
 	gtk_combo_set_popdown_strings (GTK_COMBO(WGT_HWGAME), TmpList);
 	g_list_foreach(TmpList, g_free_func, NULL);
 	g_list_free (TmpList);
-	gtk_entry_set_text (GTK_ENTRY(H2G_Entry), h2game_names[0].name);
-	gtk_entry_set_text (GTK_ENTRY(HWG_Entry), hwgame_names[0].name);
+	gtk_entry_set_text (GTK_ENTRY(GTK_COMBO(WGT_H2GAME)->entry), h2game_names[0].name);
+	gtk_entry_set_text (GTK_ENTRY(GTK_COMBO(WGT_HWGAME)->entry), hwgame_names[0].name);
 	if (gameflags & (GAME_REGISTERED|GAME_REGISTERED_OLD))
 	{
 		gtk_widget_set_sensitive (WGT_H2GAME, TRUE);
@@ -895,7 +891,6 @@ static void create_window1 (void)
 	GtkWidget *TxtResol;	// Resolution
 	GtkWidget *TxtSound;	// Sound driver combo
 // Widgets for basics which needn't be in a relevant struct
-	GtkWidget *SND_Entry;	// Sound driver listing
 	GtkWidget *bQUIT;	// Quit button
 
 // Labels for additionals
@@ -909,7 +904,6 @@ static void create_window1 (void)
 	GtkWidget *TxtGameT;	// GameType Label
 // Widgets for additionals which needn't be in a relevant struct
 	GtkWidget *bPATCH;	// PATCH button
-	GtkWidget *SRATE_Entry;	// Sampling rate listing
 
 // Separators
 	GtkWidget *hseparator0;
@@ -1123,14 +1117,11 @@ static void create_window1 (void)
 	gtk_widget_set_size_request (WGT_RESCOMBO, 110, 24);
 	gtk_fixed_put (GTK_FIXED(BASIC_TAB), WGT_RESCOMBO, 102, 176);
 // resolution display
-	WGT_RESLIST = GTK_COMBO(WGT_RESCOMBO)->entry;
-	gtk_widget_ref (WGT_RESLIST);
-//	gtk_entry_set_alignment (GTK_ENTRY(WGT_RESLIST), 1);
-	gtk_entry_set_editable (GTK_ENTRY(WGT_RESLIST), FALSE);
+//	gtk_entry_set_alignment (GTK_ENTRY(GTK_COMBO(WGT_RESCOMBO)->entry), 1);
+	gtk_entry_set_editable (GTK_ENTRY(GTK_COMBO(WGT_RESCOMBO)->entry), FALSE);
 	// menu listing for resolution come from a callback
 	Make_ResMenu ();
 	gtk_widget_show (WGT_RESCOMBO);
-	gtk_widget_show (WGT_RESLIST);
 
 /*********************************************************************/
 
@@ -1153,19 +1144,16 @@ static void create_window1 (void)
 	g_list_free (TmpList);
 	gtk_fixed_put (GTK_FIXED(BASIC_TAB), WGT_SOUND, 102, 208);
 	gtk_widget_show (WGT_SOUND);
-	SND_Entry = GTK_COMBO(WGT_SOUND)->entry;
-	gtk_widget_ref (SND_Entry);
 	for (i = 0; snd_drivers[i].id != INT_MIN; i++)
 	{
 		if (sound == snd_drivers[i].id)
 		{
-			gtk_entry_set_text (GTK_ENTRY(SND_Entry), snd_drivers[i].name);
+			gtk_entry_set_text (GTK_ENTRY(GTK_COMBO(WGT_SOUND)->entry), snd_drivers[i].name);
 			break;
 		}
 	}
-	gtk_entry_set_editable (GTK_ENTRY(SND_Entry), FALSE);
-//	gtk_entry_set_alignment (GTK_ENTRY(SND_Entry), 1);
-	gtk_widget_show (SND_Entry);
+	gtk_entry_set_editable (GTK_ENTRY(GTK_COMBO(WGT_SOUND)->entry), FALSE);
+//	gtk_entry_set_alignment (GTK_ENTRY(GTK_COMBO(WGT_SOUND)->entry), 1);
 
 // Sampling rate selection
 	TxtSound2 = gtk_label_new (_("Sample Rate:"));
@@ -1186,11 +1174,8 @@ static void create_window1 (void)
 	g_list_free (TmpList);
 	gtk_fixed_put (GTK_FIXED(BASIC_TAB), WGT_SRATE, 102, 238);
 	gtk_widget_show (WGT_SRATE);
-	SRATE_Entry = GTK_COMBO(WGT_SRATE)->entry;
-	gtk_widget_ref (SRATE_Entry);
-	gtk_entry_set_text (GTK_ENTRY(SRATE_Entry), snd_rates[sndrate]);
-	gtk_entry_set_editable (GTK_ENTRY(SRATE_Entry), FALSE);
-	gtk_widget_show (SRATE_Entry);
+	gtk_entry_set_text (GTK_ENTRY(GTK_COMBO(WGT_SRATE)->entry), snd_rates[sndrate]);
+	gtk_entry_set_editable (GTK_ENTRY(GTK_COMBO(WGT_SRATE)->entry), FALSE);
 
 /********************************************************************
  TAB - 2:		ADDITIONAL OPTIONS
@@ -1228,22 +1213,16 @@ static void create_window1 (void)
 	g_list_free (TmpList);
 #endif	/* DEMOBUILD */
 	gtk_fixed_put (GTK_FIXED(ADDON_TAB2), WGT_H2GAME, 36, 36);
-	H2G_Entry = GTK_COMBO(WGT_H2GAME)->entry;
-	gtk_widget_ref (H2G_Entry);
 #ifndef DEMOBUILD
-	gtk_entry_set_editable (GTK_ENTRY(H2G_Entry), FALSE);
-	gtk_entry_set_text (GTK_ENTRY(H2G_Entry), h2game_names[h2game].name);
+	gtk_entry_set_editable (GTK_ENTRY(GTK_COMBO(WGT_H2GAME)->entry), FALSE);
+	gtk_entry_set_text (GTK_ENTRY(GTK_COMBO(WGT_H2GAME)->entry), h2game_names[h2game].name);
 	if (!(gameflags & (GAME_REGISTERED|GAME_REGISTERED_OLD)))
 		gtk_widget_set_sensitive (WGT_H2GAME, FALSE);
 	if (destiny == DEST_H2)
-	{
 		gtk_widget_show (WGT_H2GAME);
-		gtk_widget_show (H2G_Entry);
-	}
 #else
 	gtk_widget_show (WGT_H2GAME);
-	gtk_widget_show (H2G_Entry);
-	gtk_entry_set_text (GTK_ENTRY(H2G_Entry), "(  None  )");
+	gtk_entry_set_text (GTK_ENTRY(GTK_COMBO(WGT_H2GAME)->entry), "(  None  )");
 	gtk_widget_set_sensitive (WGT_H2GAME, FALSE);
 #endif
 
@@ -1264,17 +1243,12 @@ static void create_window1 (void)
 	g_list_free (TmpList);
 //	gtk_fixed_put (GTK_FIXED(ADDON_TAB2), WGT_HWGAME, 68, 66);
 	gtk_fixed_put (GTK_FIXED(ADDON_TAB2), WGT_HWGAME, 36, 36);
-	HWG_Entry = GTK_COMBO(WGT_HWGAME)->entry;
-	gtk_widget_ref (HWG_Entry);
-	gtk_entry_set_editable (GTK_ENTRY(HWG_Entry), FALSE);
-	gtk_entry_set_text (GTK_ENTRY(HWG_Entry), hwgame_names[hwgame].name);
+	gtk_entry_set_editable (GTK_ENTRY(GTK_COMBO(WGT_HWGAME)->entry), FALSE);
+	gtk_entry_set_text (GTK_ENTRY(GTK_COMBO(WGT_HWGAME)->entry), hwgame_names[hwgame].name);
 	if (!(gameflags & (GAME_REGISTERED|GAME_REGISTERED_OLD)))
 		gtk_widget_set_sensitive (WGT_HWGAME, FALSE);
 	if (destiny == DEST_HW)
-	{
 		gtk_widget_show (WGT_HWGAME);
-		gtk_widget_show (HWG_Entry);
-	}
 //	if (!(gameflags & GAME_HEXENWORLD))
 //		gtk_widget_set_sensitive (WGT_HWGAME, FALSE);
 #endif	/* DEMOBUILD */
@@ -1349,14 +1323,11 @@ static void create_window1 (void)
 	gtk_fixed_put (GTK_FIXED(ADDON_TAB2), WGT_CONWCOMBO, 100, 182);
 	gtk_widget_set_sensitive (WGT_CONWCOMBO, opengl_support);
 // conwidth display
-	WGT_CONWLIST = GTK_COMBO(WGT_CONWCOMBO)->entry;
-	gtk_widget_ref (WGT_CONWLIST);
-//	gtk_entry_set_alignment (GTK_ENTRY(WGT_CONWLIST), 1);
-	gtk_entry_set_editable (GTK_ENTRY(WGT_CONWLIST), FALSE);
+//	gtk_entry_set_alignment (GTK_ENTRY(GTK_COMBO(WGT_CONWCOMBO)->entry), 1);
+	gtk_entry_set_editable (GTK_ENTRY(GTK_COMBO(WGT_CONWCOMBO)->entry), FALSE);
 	// menu listing for conwidth come from a callback
 	Make_ConWidthMenu();
 	gtk_widget_show (WGT_CONWCOMBO);
-	gtk_widget_show (WGT_CONWLIST);
 
 // Enable VSync
 	WGT_VSYNC = gtk_check_button_new_with_label (_("Enable VSync"));
@@ -1621,18 +1592,14 @@ static void create_window1 (void)
 	gtk_object_set_data_full (GTK_OBJECT(MAIN_WINDOW), "bFULS", WGT_FULLSCR, GTK_DESTROYNOTIFY(gtk_widget_unref));
 	gtk_object_set_data_full (GTK_OBJECT(MAIN_WINDOW), "TxtResol", TxtResol, GTK_DESTROYNOTIFY(gtk_widget_unref));
 	gtk_object_set_data_full (GTK_OBJECT(MAIN_WINDOW), "cRES", WGT_RESCOMBO, GTK_DESTROYNOTIFY(gtk_widget_unref));
-	gtk_object_set_data_full (GTK_OBJECT(MAIN_WINDOW), "eRES", WGT_RESLIST, GTK_DESTROYNOTIFY(gtk_widget_unref));
 	gtk_object_set_data_full (GTK_OBJECT(MAIN_WINDOW), "bCONW", WGT_CONWBUTTON, GTK_DESTROYNOTIFY(gtk_widget_unref));
 	gtk_object_set_data_full (GTK_OBJECT(MAIN_WINDOW), "cCONW", WGT_CONWCOMBO, GTK_DESTROYNOTIFY(gtk_widget_unref));
-	gtk_object_set_data_full (GTK_OBJECT(MAIN_WINDOW), "eCONW", WGT_CONWLIST, GTK_DESTROYNOTIFY(gtk_widget_unref));
 	gtk_object_set_data_full (GTK_OBJECT(MAIN_WINDOW), "TxtSound", TxtSound, GTK_DESTROYNOTIFY(gtk_widget_unref));
 	gtk_object_set_data_full (GTK_OBJECT(MAIN_WINDOW), "cSND", WGT_SOUND, GTK_DESTROYNOTIFY(gtk_widget_unref));
-	gtk_object_set_data_full (GTK_OBJECT(MAIN_WINDOW), "SND_Entry", SND_Entry, GTK_DESTROYNOTIFY(gtk_widget_unref));
 	gtk_object_set_data_full (GTK_OBJECT(MAIN_WINDOW), "bMORE", MORE_LESS, GTK_DESTROYNOTIFY(gtk_widget_unref));
 	gtk_object_set_data_full (GTK_OBJECT(MAIN_WINDOW), "TxtSndExt", TxtSndExt, GTK_DESTROYNOTIFY(gtk_widget_unref));
 	gtk_object_set_data_full (GTK_OBJECT(MAIN_WINDOW), "TxtSound2", TxtSound2, GTK_DESTROYNOTIFY(gtk_widget_unref));
 	gtk_object_set_data_full (GTK_OBJECT(MAIN_WINDOW), "cSRATE", WGT_SRATE, GTK_DESTROYNOTIFY(gtk_widget_unref));
-	gtk_object_set_data_full (GTK_OBJECT(MAIN_WINDOW), "SRATE_Entry", SRATE_Entry, GTK_DESTROYNOTIFY(gtk_widget_unref));
 	gtk_object_set_data_full (GTK_OBJECT(MAIN_WINDOW), "TxtSound3", TxtSound3, GTK_DESTROYNOTIFY(gtk_widget_unref));
 	gtk_object_set_data_full (GTK_OBJECT(MAIN_WINDOW), "bSBITS", WGT_SBITS, GTK_DESTROYNOTIFY(gtk_widget_unref));
 	gtk_object_set_data_full (GTK_OBJECT(MAIN_WINDOW), "bCDA", WGT_CDAUDIO, GTK_DESTROYNOTIFY(gtk_widget_unref));
@@ -1650,7 +1617,6 @@ static void create_window1 (void)
 	gtk_object_set_data_full (GTK_OBJECT(MAIN_WINDOW), "bPATCH", bPATCH, GTK_DESTROYNOTIFY(gtk_widget_unref));
 	gtk_object_set_data_full (GTK_OBJECT(MAIN_WINDOW), "TxtGameT", TxtGameT, GTK_DESTROYNOTIFY(gtk_widget_unref));
 	gtk_object_set_data_full (GTK_OBJECT(MAIN_WINDOW), "SelH2", WGT_H2GAME, GTK_DESTROYNOTIFY(gtk_widget_unref));
-	gtk_object_set_data_full (GTK_OBJECT(MAIN_WINDOW), "H2G_Entry", H2G_Entry, GTK_DESTROYNOTIFY(gtk_widget_unref));
 	gtk_object_set_data_full (GTK_OBJECT(MAIN_WINDOW), "hseparator1", hseparator1, GTK_DESTROYNOTIFY(gtk_widget_unref));
 	gtk_object_set_data_full (GTK_OBJECT(MAIN_WINDOW), "TxtNet", TxtNet, GTK_DESTROYNOTIFY(gtk_widget_unref));
 	gtk_object_set_data_full (GTK_OBJECT(MAIN_WINDOW), "bLAN", WGT_LANBUTTON, GTK_DESTROYNOTIFY(gtk_widget_unref));
@@ -1668,7 +1634,6 @@ static void create_window1 (void)
 #ifndef DEMOBUILD
 	gtk_object_set_data_full (GTK_OBJECT(MAIN_WINDOW), "bH2MP", WGT_PORTALS, GTK_DESTROYNOTIFY(gtk_widget_unref));
 	gtk_object_set_data_full (GTK_OBJECT(MAIN_WINDOW), "SelHW", WGT_HWGAME, GTK_DESTROYNOTIFY(gtk_widget_unref));
-	gtk_object_set_data_full (GTK_OBJECT(MAIN_WINDOW), "HWG_Entry", HWG_Entry, GTK_DESTROYNOTIFY(gtk_widget_unref));
 #endif	/* DEMOBUILD */
 
 // callback functions setup
@@ -1676,9 +1641,9 @@ static void create_window1 (void)
 	gtk_signal_connect (GTK_OBJECT(WGT_LAUNCH), "clicked", GTK_SIGNAL_FUNC(launch_hexen2_bin), NULL);
 	gtk_signal_connect (GTK_OBJECT(bQUIT), "clicked", GTK_SIGNAL_FUNC(ui_quit), NULL);
 #ifndef DEMOBUILD
-	gtk_signal_connect (GTK_OBJECT(H2G_Entry), "changed", GTK_SIGNAL_FUNC(H2GameChange),
+	gtk_signal_connect (GTK_OBJECT(GTK_COMBO(WGT_H2GAME)->entry), "changed", GTK_SIGNAL_FUNC(H2GameChange),
 								GTK_LIST((GTK_COMBO(WGT_H2GAME))->list));
-	gtk_signal_connect (GTK_OBJECT(HWG_Entry), "changed", GTK_SIGNAL_FUNC(HWGameChange),
+	gtk_signal_connect (GTK_OBJECT(GTK_COMBO(WGT_HWGAME)->entry), "changed", GTK_SIGNAL_FUNC(HWGameChange),
 								GTK_LIST((GTK_COMBO(WGT_HWGAME))->list));
 	gtk_signal_connect (GTK_OBJECT(WGT_PORTALS), "toggled", GTK_SIGNAL_FUNC(BoolRevert), &mp_support);
 #endif	/* DEMOBUILD */
@@ -1686,9 +1651,9 @@ static void create_window1 (void)
 	gtk_signal_connect (GTK_OBJECT(WGT_HEXEN2), "clicked", GTK_SIGNAL_FUNC(on_HEXEN2), NULL);
 	gtk_signal_connect (GTK_OBJECT(WGT_H2WORLD), "clicked", GTK_SIGNAL_FUNC(on_H2W), NULL);
 	gtk_signal_connect (GTK_OBJECT(WGT_OPENGL), "toggled", GTK_SIGNAL_FUNC(on_OGL), NULL);
-	gtk_signal_connect (GTK_OBJECT(SND_Entry), "changed", GTK_SIGNAL_FUNC(on_SND),
+	gtk_signal_connect (GTK_OBJECT(GTK_COMBO(WGT_SOUND)->entry), "changed", GTK_SIGNAL_FUNC(on_SND),
 								GTK_LIST((GTK_COMBO(WGT_SOUND))->list));
-	gtk_signal_connect (GTK_OBJECT(SRATE_Entry), "changed", GTK_SIGNAL_FUNC(on_SRATE),
+	gtk_signal_connect (GTK_OBJECT(GTK_COMBO(WGT_SRATE)->entry), "changed", GTK_SIGNAL_FUNC(on_SRATE),
 								GTK_LIST((GTK_COMBO(WGT_SRATE))->list));
 	gtk_signal_connect (GTK_OBJECT(WGT_SBITS), "toggled", GTK_SIGNAL_FUNC(on_SBITS), &sndbits);
 	gtk_signal_connect (GTK_OBJECT(WGT_MIDI), "toggled", GTK_SIGNAL_FUNC(BoolRevert), &midi);
@@ -1708,9 +1673,9 @@ static void create_window1 (void)
 	gtk_signal_connect (GTK_OBJECT(WGT_MEMHEAP), "toggled", GTK_SIGNAL_FUNC(BoolRevert), &use_heap);
 	gtk_signal_connect (GTK_OBJECT(WGT_MEMZONE), "toggled", GTK_SIGNAL_FUNC(BoolRevert), &use_zone);
 	gtk_signal_connect (GTK_OBJECT(WGT_EXTBTN), "toggled", GTK_SIGNAL_FUNC(BoolRevert), &use_extra);
-	reslist_handler = gtk_signal_connect (GTK_OBJECT(WGT_RESLIST), "changed", GTK_SIGNAL_FUNC(res_Change),
+	reslist_handler = gtk_signal_connect (GTK_OBJECT(GTK_COMBO(WGT_RESCOMBO)->entry), "changed", GTK_SIGNAL_FUNC(res_Change),
 									GTK_LIST((GTK_COMBO(WGT_RESCOMBO))->list));
-	conwlist_handler = gtk_signal_connect (GTK_OBJECT(WGT_CONWLIST), "changed", GTK_SIGNAL_FUNC(con_Change),
+	conwlist_handler = gtk_signal_connect (GTK_OBJECT(GTK_COMBO(WGT_CONWCOMBO)->entry), "changed", GTK_SIGNAL_FUNC(con_Change),
 									GTK_LIST((GTK_COMBO(WGT_CONWCOMBO))->list));
 	gtk_signal_connect (GTK_OBJECT(WGT_GLPATH), "changed", GTK_SIGNAL_FUNC(libgl_Change), NULL);
 	gtk_signal_connect (GTK_OBJECT(WGT_EXTARGS), "changed", GTK_SIGNAL_FUNC(extargs_Change), NULL);

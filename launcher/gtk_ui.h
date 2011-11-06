@@ -110,10 +110,8 @@ struct Video_s
 {
 	GtkWidget *bOGL;	// OpenGL / Software
 	GtkWidget *cRES;	// Resolution combo
-	GtkWidget *eRES;	// Resolution combo listing
 	GtkWidget *bCONW;	// Allow conwidth toggle
 	GtkWidget *cCONW;	// Conwidth combo
-	GtkWidget *eCONW;	// Conwidth combo listing
 	GtkWidget *bFULS;	// Fullscreen / windowed
 	GtkWidget *b3DFX;	// 3dfx specific Gamma
 	GtkWidget *b8BIT;	// 8-bit texture extensions
@@ -198,10 +196,8 @@ typedef struct
 
 #define	WGT_OPENGL	_VIDEO.bOGL
 #define	WGT_RESCOMBO	_VIDEO.cRES
-#define	WGT_RESLIST	_VIDEO.eRES
 #define	WGT_CONWBUTTON	_VIDEO.bCONW
 #define	WGT_CONWCOMBO	_VIDEO.cCONW
-#define	WGT_CONWLIST	_VIDEO.eCONW
 #define	WGT_FULLSCR	_VIDEO.bFULS
 #define	WGT_3DFX	_VIDEO.b3DFX
 #define	WGT_GL8BIT	_VIDEO.b8BIT

@@ -3,6 +3,12 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2011-11-06 (SVN):
+    * gtk-launcher: Removed needless gtk_widget_ref() and gtk_widget_show()
+      calls for GtkEntry widgets which are already part of GtkCombo widgets.
+      Seems like copy/paste errors.  Also removed unnecessary vars pointing
+      to such widgets.
+
 2011-11-05 (SVN):
     * gtk-launcher: Removed an unused variable from create_window2().
     * gtk-launcher: Replaced gtk_editable_get_chars() usage by the more
