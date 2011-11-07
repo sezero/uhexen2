@@ -64,7 +64,7 @@ static pakdata_t pakdata[] =
 	{ 245,	1478 , "portals"},	/* pak3.pak, portals	*/
 	{ 102,	41062, "hw"	}	/* pak4.pak, hexenworld	*/
 };
-#define	MAX_PAKDATA	(sizeof(pakdata) / sizeof(pakdata[0]))
+#define	MAX_PAKDATA	(int)(sizeof(pakdata) / sizeof(pakdata[0]))
 
 static pakdata_t demo_pakdata[] =
 {
@@ -199,7 +199,7 @@ static pack_t *FS_LoadPackFile (const char *packfile, int paknum, qboolean base_
 		CRC_ProcessByte (&crc, ((byte *)info)[i]);
 
 	/* check for modifications */
-	if (base_fs && paknum < (int)MAX_PAKDATA)
+	if (base_fs && paknum < MAX_PAKDATA)
 	{
 		if (strcmp(fs_gamedir_nopath, pakdata[paknum].dirname) != 0)
 		{
