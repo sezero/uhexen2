@@ -3,6 +3,12 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2011-11-07 (SVN):
+    * gtk-launcher: Removed the extra '&' before the array variable `info'
+      when passing it to fread() as the buffer in scan_pak_files(). Allowed
+      the "scanning for mods" console prints only for DEBUG builds. Several
+      minor cleanups.
+
 2011-11-06 (SVN):
     * gtk-launcher: Removed needless gtk_widget_ref() and gtk_widget_show()
       calls for GtkEntry widgets which are already part of GtkCombo widgets.

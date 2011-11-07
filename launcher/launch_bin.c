@@ -30,9 +30,9 @@
 #include "launcher_ui.h"
 #include <ctype.h>
 
-#define AASAMPLES_CHARS	4U	/* max digits for the aasamples value + 1 (nul) */
-#define HEAPSIZE_CHARS	8U	/* max digits for the heapsize value  + 1 (nul) */
-#define ZONESIZE_CHARS	8U	/* max digits for the zonesize value  + 1 (nul) */
+#define AASAMPLES_CHARS	(4)	/* max digits for the aasamples value + 1 (nul) */
+#define HEAPSIZE_CHARS	(8)	/* max digits for the heapsize value  + 1 (nul) */
+#define ZONESIZE_CHARS	(8)	/* max digits for the zonesize value  + 1 (nul) */
 #define STRING_BUFSIZE	(BINNAME_CHARS + AASAMPLES_CHARS + HEAPSIZE_CHARS + ZONESIZE_CHARS + MAX_EXTARGS)
 static char string_buf[STRING_BUFSIZE];	/* holds the binary name to exec, first */
 
@@ -95,7 +95,7 @@ void launch_hexen2_bin (void)
 		strcat (string_buf, HW_BINARY_NAME);
 	else
 		strcat (string_buf, H2_BINARY_NAME);
-	string_buf[BINNAME_CHARS-1] = '\0';
+	string_buf[BINNAME_CHARS - 1] = '\0';
 	args[i] = ptr;
 	while (*ptr)
 		ptr++;
@@ -235,12 +235,12 @@ void launch_hexen2_bin (void)
 /* parse the extra user arguments */
 	if (use_extra && ext_args[0])
 	{
-		memcpy (++ptr, ext_args, MAX_EXTARGS-1);
-		string_buf[STRING_BUFSIZE-1] = '\0';
+		memcpy (++ptr, ext_args, MAX_EXTARGS - 1);
+		string_buf[STRING_BUFSIZE - 1] = '\0';
 
 		while (1)
 		{
-			if (!*ptr || (i+2 >= MAX_ARGS))
+			if (!*ptr || (i + 2 >= MAX_ARGS))
 				break;
 			while (*ptr && isspace(*ptr))
 				*ptr++ = '\0';

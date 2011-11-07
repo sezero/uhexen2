@@ -69,5 +69,5 @@ int write_config_file (void);
 int read_config_file (void);
 int cfg_read_basedir (void);
 
-#endif	// CONFIG_FILE_H
+#endif	/* CONFIG_FILE_H */
 

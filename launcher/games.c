@@ -66,13 +66,11 @@ static pakdata_t old_pakdata[] =
 	{ 697,	53062, "data1"	},	/* pak0.pak, original cdrom (1.03) version	*/
 	{ 525,	47762, "data1"	},	/* pak1.pak, original cdrom (1.03) version	*/
 	{ 701,	20870, "data1"	},	/* pak0.pak, Raven's first version of the demo	*/
-			//	The old (28.8.1997, v0.42? 1.07?) demo is not supported:
-			//	pak0.pak::progs.dat : 19267 crc, progheader crc : 14046.
-/*
- * FIXME: add the pak0 and pak2 data for
- * the oem (Matrox m3D bundle) original
- * version here...
- */
+					/* The old (28.8.1997, v0.42? 1.07?) demo is not supported:
+					 * pak0.pak::progs.dat : 19267 crc, progheader crc: 14046 */
+/* FIXME: add pak0 and pak2 data for the
+ * oem (Matrox m3D bundle) 1.08 original
+ * version here.  */
 };
 
 static void scan_pak_files (const char *packfile, int paknum)
@@ -101,9 +99,9 @@ static void scan_pak_files (const char *packfile, int paknum)
 		goto finish;
 
 	fseek (packhandle, header.dirofs, SEEK_SET);
-	fread (&info, 1, header.dirlen, packhandle);
+	fread (info, 1, header.dirlen, packhandle);
 
-// crc the directory
+	/* crc the directory */
 	CRC_Init (&crc);
 	for (i = 0; i < header.dirlen; i++)
 		CRC_ProcessByte (&crc, ((unsigned char *)info)[i]);
@@ -112,25 +110,25 @@ static void scan_pak_files (const char *packfile, int paknum)
 	{
 		if (paknum == 0)
 		{
-			// demo ??
+			/* demo ?? */
 			if (crc == demo_pakdata[0].crc &&
 			    numpackfiles == demo_pakdata[0].numfiles)
 			{
 				gameflags |= GAME_DEMO;
 			}
-			// oem ??
+			/* oem ?? */
 			else if (crc == oem0_pakdata[0].crc &&
 				 numpackfiles == oem0_pakdata[0].numfiles)
 			{
 				gameflags |= GAME_OEM0;
 			}
-			// old version of demo ??
+			/* old version of demo ?? */
 			else if (crc == old_pakdata[2].crc &&
 				 numpackfiles == old_pakdata[2].numfiles)
 			{
 				gameflags |= GAME_OLD_DEMO;
 			}
-			// old, un-patched cdrom version ??
+			/* old, un-patched cdrom version ?? */
 			else if (crc == old_pakdata[0].crc &&
 				 numpackfiles == old_pakdata[0].numfiles)
 			{
@@ -143,7 +141,7 @@ static void scan_pak_files (const char *packfile, int paknum)
 		}
 		else if (paknum == 1)
 		{
-			// old, un-patched cdrom version ??
+			/* old, un-patched cdrom version ?? */
 			if (crc == old_pakdata[1].crc &&
 			    numpackfiles == old_pakdata[1].numfiles)
 			{
@@ -155,19 +153,19 @@ static void scan_pak_files (const char *packfile, int paknum)
 	{
 		switch (paknum)
 		{
-		case 0:	// pak0 of full version 1.11
+		case 0:	/* pak0 of full version 1.11 */
 			gameflags |= GAME_REGISTERED0;
 			break;
-		case 1:	// pak1 of full version 1.11
+		case 1:	/* pak1 of full version 1.11 */
 			gameflags |= GAME_REGISTERED1;
 			break;
-		case 2:	// bundle version
+		case 2:	/* bundle version */
 			gameflags |= GAME_OEM2;
 			break;
-		case 3:	// mission pack
+		case 3:	/* mission pack */
 			gameflags |= GAME_PORTALS;
 			break;
-		case 4:	// hexenworld
+		case 4:	/* hexenworld */
 			gameflags |= GAME_HEXENWORLD;
 			break;
 		}
@@ -218,7 +216,7 @@ static void FindMaxStringSize (void)
 
 	for (i = 1; i < MAX_HWGAMES; i++)
 	{
-		len = strlen(hwgame_names[i].dirname) + 11;	// strlen("hwprogs.dat") == 11
+		len = strlen(hwgame_names[i].dirname) + 11;	/* strlen("hwprogs.dat") == 11 */
 		if (string_size < len)
 			string_size = len;
 		len = len + strlen(hwgame_names[i].checkfile) - 11;
@@ -226,7 +224,7 @@ static void FindMaxStringSize (void)
 			string_size = len;
 	}
 
-	string_size = string_size + strlen(scan_dir) + 3;	// 2 for two "/" + 1 for null termination
+	string_size = string_size + strlen(scan_dir) + 3;	/* 2 for two "/" + 1 for null termination */
 }
 
 static void scan_h2_mods (void)
@@ -234,7 +232,9 @@ static void scan_h2_mods (void)
 	int	i;
 	char	*path;
 
+#ifdef DEBUG
 	printf ("Scanning for known hexen2 mods\n");
+#endif
 	path = (char *)malloc(string_size);
 	for (i = 1; i < MAX_H2GAMES; i++)
 	{
@@ -250,7 +250,9 @@ static void scan_hw_mods (void)
 	int	i, j;
 	char	*path;
 
+#ifdef DEBUG
 	printf ("Scanning for known hexenworld mods\n");
+#endif
 	path = (char *)malloc(string_size);
 	for (i = 1; i < MAX_HWGAMES; i++)
 	{
@@ -295,7 +297,9 @@ void scan_game_installation (void)
 	else
 		scan_dir = basedir;
 
+#ifdef DEBUG
 	printf ("Scanning base hexen2 installation\n");
+#endif
 	for (i = 0; i < MAX_PAKDATA; i++)
 	{
 		snprintf (pakfile, sizeof(pakfile), "%s/%s/pak%d.pak", scan_dir, pakdata[i].dirname, i);

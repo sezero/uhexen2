@@ -26,18 +26,18 @@
 #ifndef	LAUNCHER_COMMONDEFS_H
 #define	LAUNCHER_COMMONDEFS_H
 
-// definitions common to all of the launcher source files.
+/* definitions common to all of the launcher source files. */
 
 #define	__STRINGIFY(x) #x
 #define	STRINGIFY(x) __STRINGIFY(x)
 
-// Hammer of Thyrion version num.
+/* Hammer of Thyrion version num. */
 #define HOT_VERSION_MAJ		1
 #define HOT_VERSION_MID		5
 #define HOT_VERSION_MIN		1
 #define HOT_VERSION_STR		STRINGIFY(HOT_VERSION_MAJ) "." STRINGIFY(HOT_VERSION_MID) "." STRINGIFY(HOT_VERSION_MIN)
 
-// Launcher version num.
+/* Launcher version num. */
 #define LAUNCHER_VERSION_MAJ	1
 #define LAUNCHER_VERSION_MID	0
 #define LAUNCHER_VERSION_MIN	6
@@ -96,9 +96,10 @@ typedef struct _launcher_snddrv_t
 	const char	*cmd;	/* cmdline switch */
 	const char	*name;
 } launcher_snddrv_t;
-extern launcher_snddrv_t snd_drivers[];
+extern launcher_snddrv_t snd_drivers[];		/* in launch_bin.c */
 
-#define	MAX_RATES	8	/* max entries in the snd_rates table */
+#define	MAX_RATES	8
+extern const char	*snd_rates[MAX_RATES];	/* in launch_bin.c */
 
 #define HEAP_MINSIZE	16384	/* minimum heap memory size in KB */
 #define HEAP_DEFAULT	32768	/* default heap memory size in KB */
@@ -107,9 +108,9 @@ extern launcher_snddrv_t snd_drivers[];
 #define ZONE_DEFAULT	256	/* default zone memory size in KB */
 #define ZONE_MAXSIZE	1024	/* maximum zone memory size in KB */
 
-#define MAX_EXTARGS	80U	/* max array size for extra user args */
+#define MAX_EXTARGS	80	/* max array size for extra user args */
 
-#define MAX_ARGS	40U	/* max number of arguments for exec() */
+#define MAX_ARGS	40	/* max number of arguments for exec() */
 
 #endif	/* LAUNCHER_COMMONDEFS_H */
 

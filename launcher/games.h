@@ -29,7 +29,7 @@
 /* either keep binary names <= 16 chars including
    the gl prefix and the nul terminator, or change
    the definition below accordingly.		*/
-#define BINNAME_CHARS	16U
+#define BINNAME_CHARS	(16)
 #define	BIN_OGL_PREFIX	"gl"
 #define	H2_BINARY_NAME	"hexen2"
 #define	HW_BINARY_NAME	"hwcl"
@@ -46,8 +46,8 @@
 #define	GAME_PORTALS		(1 << 7)
 #define	GAME_HEXENWORLD		(1 << 8)
 
-/* FIXME: more detailed data are needed for the
-   oem (Matrox m3D bundle) original version.	*/
+/* FIXME: more detailed data needed for the oem
+ * (Matrox m3D bundle) original 1.08 version.  */
 #define	GAME_OLD_CDROM0		(1 << 9)
 #define	GAME_OLD_CDROM1		(1 << 10)
 #define	GAME_OLD_DEMO		(1 << 11)
@@ -80,8 +80,8 @@ extern	unsigned int		gameflags;
 typedef struct
 {
 	const char	*dirname;
-	const char	*name;		// user-friendly name
-	const char	*checkfile;	// filename for extra check
+	const char	*name;		/* user-friendly name */
+	const char	*checkfile;	/* filename for extra check */
 	int	is_botmatch;
 	int	available;
 } h2game_t;
@@ -89,8 +89,8 @@ typedef struct
 typedef struct
 {
 	const char	*dirname;
-	const char	*name;		// user-friendly name
-	const char	*checkfile;	// filename for extra check
+	const char	*name;		/* user-friendly name */
+	const char	*checkfile;	/* filename for extra check */
 	int	available;
 } hwgame_t;
 

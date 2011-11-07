@@ -54,5 +54,5 @@ extern char	userdir[MAX_OSPATH];
 /* from launch_bin.c */
 void launch_hexen2_bin (void);
 
-#endif	// LAUNCHER_COMMON_INC_H
+#endif	/* LAUNCHER_COMMON_INC_H */
 
