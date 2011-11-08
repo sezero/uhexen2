@@ -18,8 +18,8 @@ Index: engine/h2shared/quakefs.c
  		CRC_ProcessByte (&crc, ((byte *)info)[i]);
  
  	/* check for modifications */
--	if (base_fs && paknum < (int)MAX_PAKDATA)
-+	if (!(gameflags & GAME_STANDALONE) && base_fs && paknum < (int)MAX_PAKDATA)
+-	if (base_fs && paknum < MAX_PAKDATA)
++	if (!(gameflags & GAME_STANDALONE) && base_fs && paknum < MAX_PAKDATA)
  	{
  		if (strcmp(fs_gamedir_nopath, pakdata[paknum].dirname) != 0)
  		{
