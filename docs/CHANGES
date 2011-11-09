@@ -3,6 +3,19 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2011-11-09 (SVN):
+    * hw_utils/hwmaster: Removed the unnecessary registered server counting
+      code from Mst_SendList(). In protocol.h, renamed M2C_MASTER_REPLY to
+      M2C_SERVERLST, added A2S_ECHO from the engine side header to be in
+      sync with it, removed the unused A2A_ECHO, A2M_LIST and M2A_SENDLIST
+      macros.
+    * hw_utils/hwmquery: Cleaned up. Fixed broken logic that would prevent
+      all the servers received from hwmaster being displayed. Renamed the
+      M2C_MASTER_REPLY macro to M2C_SERVERLST to be in sync with hwmaster.
+      Incremented the version number to 0.2.3.
+    * hwutils/hwrcon: Removed USE_HUFFMAN ifdefs which haven't been used to
+      this day.
+
 2011-11-07 (SVN):
     * gtk-launcher: Removed the extra '&' before the array variable `info'
       when passing it to fread() as the buffer in scan_pak_files(). Allowed

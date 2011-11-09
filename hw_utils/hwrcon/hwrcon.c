@@ -43,9 +43,6 @@
 
 #include "net_sys.h"
 #include "qsnprint.h"
-#if defined(USE_HUFFMAN)
-#include "huffman.h"
-#endif
 
 
 //=============================================================================
@@ -181,22 +178,13 @@ static void NET_Shutdown (void)
 #define	PORT_SERVER		26950
 #define	MAX_RCON_PACKET		256
 
-#ifdef USE_HUFFMAN
-static unsigned char huffbuff[65536];
-// number of 255s to put on the header
-#define	HEADER_SIZE	4
-#else
-// if we won't use HeffEncode, we need to put an additional 255
+// we need not use HuffEncode, therefore we need to put an additional 0xff
 // at the beginning for our message to be read by server
 #define	HEADER_SIZE	5
-#endif
 
 int main (int argc, char *argv[])
 {
 	int		len, size;
-#ifdef USE_HUFFMAN
-	int		hufflen;
-#endif
 	int		i, j, k;
 	unsigned char	packet[MAX_RCON_PACKET];
 	netadr_t		ipaddress;
@@ -267,20 +255,10 @@ int main (int argc, char *argv[])
 	}
 
 // Send the packet
-#ifdef USE_HUFFMAN
-// Init Huffman
-	HuffInit ();
-	HuffEncode (packet, huffbuff, len, &hufflen);
-	size = sendto(socketfd, (char *)huffbuff, hufflen, 0,
-#else
 	size = sendto(socketfd, (char *)packet, len, 0,
-#endif
 			(struct sockaddr *)&hostaddress, sizeof(hostaddress));
 
 // See if it worked
-#ifdef USE_HUFFMAN
-	len = hufflen;
-#endif
 	if (size != len)
 	{
 		err = SOCKETERRNO;

@@ -413,33 +413,25 @@ static void Mst_SendList (void)
 	byte		buf[MAX_DATAGRAM];
 	sizebuf_t	msg;
 	server_t	*sv;
-	int		sv_num = 0;
 
 	SZ_Init (&msg, buf, sizeof(buf));
 	msg.allowoverflow = true;
 
-	//number of servers:
-	for (sv = sv_list ; sv ; sv = sv->next)
-		sv_num++;
-
 	MSG_WriteByte(&msg,255);
 	MSG_WriteByte(&msg,255);
 	MSG_WriteByte(&msg,255);
 	MSG_WriteByte(&msg,255);
 	MSG_WriteByte(&msg,255);
-	MSG_WriteByte(&msg,M2C_MASTER_REPLY);
+	MSG_WriteByte(&msg,M2C_SERVERLST);
 	MSG_WriteByte(&msg,'\n');
 
-	if (sv_num > 0)
+	for (sv = sv_list ; sv ; sv = sv->next)
 	{
-		for (sv = sv_list ; sv ; sv = sv->next)
-		{
-			MSG_WriteByte(&msg,sv->ip.ip[0]);
-			MSG_WriteByte(&msg,sv->ip.ip[1]);
-			MSG_WriteByte(&msg,sv->ip.ip[2]);
-			MSG_WriteByte(&msg,sv->ip.ip[3]);
-			MSG_WriteShort(&msg,sv->ip.port);
-		}
+		MSG_WriteByte(&msg,sv->ip.ip[0]);
+		MSG_WriteByte(&msg,sv->ip.ip[1]);
+		MSG_WriteByte(&msg,sv->ip.ip[2]);
+		MSG_WriteByte(&msg,sv->ip.ip[3]);
+		MSG_WriteShort(&msg,sv->ip.port);
 	}
 
 	NET_SendPacket(msg.cursize,msg.data,net_from);

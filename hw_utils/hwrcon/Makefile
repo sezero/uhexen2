@@ -36,11 +36,6 @@ endif
 HWRCON:=hwrcon$(exe_ext)
 HWTERM:=hwterm$(exe_ext)
 
-# Whether to use Huffman encoding with the simple hwrcon tool
-# Note: The hwterm tool already uses Huffman in order to read
-# and correctly echo the server response.
-USE_HUFFMAN ?=0
-
 # Compiler flags
 
 ifeq ($(MACH_TYPE),x86)
@@ -104,16 +99,6 @@ COMMONOBJ = qsnprint.o
 HUFF_OBJS = huffman.o
 RCON_OBJS = hwrcon.o
 TERM_OBJS = hwterm.o
-
-ifeq ($(USE_HUFFMAN),yes)
-RCON_OBJS+= $(HUFF_OBJS)
-CPPFLAGS+= -DUSE_HUFFMAN
-else
-ifeq ($(USE_HUFFMAN),1)
-RCON_OBJS+= $(HUFF_OBJS)
-CPPFLAGS+= -DUSE_HUFFMAN
-endif
-endif
 
 # Targets
 .PHONY: clean distclean

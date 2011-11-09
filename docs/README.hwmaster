@@ -1,6 +1,6 @@
 Hammer of Thyrion,
 HexenWorld Master Server
-Version 1.2.6
+Version 1.2.7
 ------------------------
 
 This is a small, commandline-only program. It doesn't need any Hexen II
@@ -26,5 +26,10 @@ filter clear						removes all filters
 
 
 The source is based on previous works by Marc Allaire (aka. Kor Skarn) and
-QuakeForge authors, and is subject to the General Public Licence v2.
+QuakeForge authors.
+
+HWMASTER is free software;  you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by the
+Free  Software  Foundation; either version 2, or (at your option) any
+later version.
 

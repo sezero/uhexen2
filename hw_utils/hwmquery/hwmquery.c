@@ -3,7 +3,7 @@
 	$Id$
 
 	HWMQUERY 0.2 HexenWorld Master Server Query
-	Copyright (C) 2006-2010 O. Sezer <sezero@users.sourceforge.net>
+	Copyright (C) 2006-2011 O. Sezer <sezero@users.sourceforge.net>
 
 	This program is free software; you can redistribute it and/or
 	modify it under the terms of the GNU General Public License
@@ -201,25 +201,25 @@ static void Sys_Quit (int error_state)
 
 #define	VER_HWMQUERY_MAJ	0
 #define	VER_HWMQUERY_MID	2
-#define	VER_HWMQUERY_MIN	2
+#define	VER_HWMQUERY_MIN	3
 
 #define	PORT_MASTER		26900
 #define	PORT_SERVER		26950
 #define	MAX_PACKET		2048
-// number of 255s to put on the header
-// qwmaster uses 4, but hwmaster uses 5
-#define	HEADER_SIZE	5
 
 #define	S2C_CHALLENGE		'c'
-#define	M2C_MASTER_REPLY	'd'
+#define	M2C_SERVERLST		'd'
 
 static const unsigned char query_msg[] =
 		{ 255, S2C_CHALLENGE, '\0' };
 
+static const unsigned char reply_hdr[] =
+		{ 255, 255, 255, 255,
+		  255, M2C_SERVERLST, '\n' };
+
 int main (int argc, char **argv)
 {
 	ssize_t		size;
-	size_t		pos;
 	socklen_t	fromlen;
 	unsigned char	response[MAX_PACKET];
 	netadr_t		ipaddress;
@@ -286,55 +286,49 @@ int main (int argc, char **argv)
 		printf ("*** timeout waiting for reply\n");
 		Sys_Quit (2);
 	}
-	else
-	while (NET_WaitReadTimeout(socketfd, 0, 50000) > 0)
+
+	size = recvfrom(socketfd, (char *)response, sizeof(response), 0,
+			(struct sockaddr *)&hostaddress, &fromlen);
+	if (size == SOCKET_ERROR)
 	{
-		size = recvfrom(socketfd, (char *)response, sizeof(response), 0,
-				(struct sockaddr *)&hostaddress, &fromlen);
-		if (size == SOCKET_ERROR)
+		err = SOCKETERRNO;
+		if (err != NET_EWOULDBLOCK)
 		{
-			err = SOCKETERRNO;
-			if (err != NET_EWOULDBLOCK)
-			{
-				printf ("Recv failed: %s\n", socketerror(err));
-				Sys_Quit (1);
-			}
-		}
-		else if (size == sizeof(response))
-		{
-			printf ("Received oversized packet!\n");
+			printf ("Recv failed: %s\n", socketerror(err));
 			Sys_Quit (1);
 		}
-		else if (response[0] != 255 || response[1] != 255 ||
-			 response[2] != 255 || response[3] != 255 ||
-#if (HEADER_SIZE == 5)
-			 response[4] != 255 ||
-#endif
-			 response[HEADER_SIZE] != M2C_MASTER_REPLY ||
-			 response[HEADER_SIZE+1] != '\n')
-		{
-			printf ("Invalid response received\n");
-			Sys_Quit (1);
-		}
+	}
+	else if (size == sizeof(response))
+	{
+		printf ("Received oversized packet!\n");
+		Sys_Quit (1);
+	}
+	else if (memcmp(response, reply_hdr, 7) != 0)
+	{
+		printf ("Invalid response received\n");
+		Sys_Quit (1);
+	}
+	else
+	{
+		unsigned char	*tmp;
+		unsigned short	port;
+
+		printf ("H2W Servers registered at %s:", NET_AdrToString(ipaddress));
+
+		tmp = &response[7];
+		size -= 7;
+		if (!size)
+			printf (" NONE\n");
 		else
 		{
-			char	*tmp = (char *)(response + HEADER_SIZE + 2);
-
-			printf ("H2W Servers registered at %s:", NET_AdrToString(ipaddress));
-
-			if (!*tmp)
-				printf ("  NONE\n");
-			else
+			printf (" %d entries\n", size / 6);
+			if (size % 6 != 0)
+				printf ("Warning: not counting truncated last entry\n");
+			// each address is 4 bytes (ip) + 2 bytes (port) == 6 bytes
+			for (; size >= 6; size -= 6, tmp += 6)
 			{
-				struct in_addr	*addr;
-
-				printf ("\n");
-				// each address is 4 bytes (ip) + 2 bytes (port) == 6 bytes
-				for (pos = 0; pos < strlen(tmp); pos = pos + 6)
-				{
-					addr = (struct in_addr*)(tmp + pos);
-					printf ("%s:%u\n", inet_ntoa(*addr), htons( *((unsigned short *)(tmp + pos + 4)) ) );
-				}
+				port = ntohs (tmp[4] + (tmp[5] << 8));
+				printf ("%u.%u.%u.%u:%u\n", tmp[0], tmp[1], tmp[2], tmp[3], port);
 			}
 		}
 	}
