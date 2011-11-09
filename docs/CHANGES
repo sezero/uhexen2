@@ -4,6 +4,7 @@ Development Progress	:
 ---------------------------
 
 2011-11-09 (SVN):
+    * quakedef.h: updated beta date stamp to 2011-11-09.
     * hw_utils/hwmaster: Removed the unnecessary registered server counting
       code from Mst_SendList(). In protocol.h, renamed M2C_MASTER_REPLY to
       M2C_SERVERLST, added A2S_ECHO from the engine side header to be in
