@@ -5,10 +5,9 @@
 	HWTERM 1.2 HexenWorld Remote Console Terminal
 	Idea based on QTerm 1.1 by Michael Dwyer/N0ZAP (18-May-1998).
 	Made to work with HexenWorld using code from the HexenWorld
-	engine (C) Raven Software and ID Software. Socket timeout code
-	taken from the XQF project.
+	engine (C) Raven Software and ID Software.
 	Copyright (C) 1998 Michael Dwyer <mdwyer@holly.colostate.edu>
-	Copyright (C) 2006-2010 O. Sezer <sezero@users.sourceforge.net>
+	Copyright (C) 2006-2011 O. Sezer <sezero@users.sourceforge.net>
 
 	This program is free software; you can redistribute it and/or
 	modify it under the terms of the GNU General Public License
@@ -30,9 +29,6 @@
 */
 
 
-#undef	USE_HUFFMAN
-#define	USE_HUFFMAN	1
-
 #include <sys/types.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -50,12 +46,10 @@
 #if defined(PLATFORM_UNIX)
 #include <sys/time.h>
 #endif
-#if defined(USE_HUFFMAN)
+
 #include "huffman.h"
-#endif
 
-
-//=============================================================================
+/*****************************************************************************/
 
 typedef struct
 {
@@ -64,35 +58,15 @@ typedef struct
 	unsigned short	pad;
 } netadr_t;
 
-//=============================================================================
-
 #if defined(PLATFORM_WINDOWS)
 #include "wsaerror.h"
 static WSADATA		winsockdata;
 #endif
-
 static sys_socket_t	socketfd = INVALID_SOCKET;
 
 void Sys_Error (const char *error, ...) __attribute__((__format__(__printf__,1,2), __noreturn__));
-static void Sys_Quit (int error_state) __attribute__((__noreturn__));
 
-//=============================================================================
-
-void Sys_Error (const char *error, ...)
-{
-	va_list		argptr;
-	char		text[1024];
-
-	va_start (argptr,error);
-	q_vsnprintf (text, sizeof (text), error,argptr);
-	va_end (argptr);
-
-	printf ("\nERROR: %s\n\n", text);
-
-	exit (1);
-}
-
-//=============================================================================
+/*****************************************************************************/
 
 static void NetadrToSockadr (netadr_t *a, struct sockaddr_in *s)
 {
@@ -132,8 +106,8 @@ static int NET_StringToAdr (const char *s, netadr_t *a)
 
 	strncpy (copy, s, sizeof(copy) - 1);
 	copy[sizeof(copy) - 1] = '\0';
-	// strip off a trailing :port if present
-	for (colon = copy ; *colon ; colon++)
+	/* strip off a trailing :port if present */
+	for (colon = copy; *colon; colon++)
 	{
 		if (*colon == ':')
 		{
@@ -194,32 +168,51 @@ static void NET_Shutdown (void)
 #endif
 }
 
-static void Sys_Quit (int error_state)
+/*****************************************************************************/
+
+void Sys_Error (const char *error, ...)
 {
+	va_list		argptr;
+	char		text[1024];
+
+	va_start (argptr,error);
+	q_vsnprintf (text, sizeof (text), error,argptr);
+	va_end (argptr);
+
 	NET_Shutdown ();
-	exit (error_state);
+
+	printf ("\nERROR: %s\n\n", text);
+
+	exit (1);
 }
 
-//=============================================================================
+/*****************************************************************************/
 
 #define	VER_HWTERM_MAJ		1
 #define	VER_HWTERM_MID		2
-#define	VER_HWTERM_MIN		6
+#define	VER_HWTERM_MIN		7
 
 #define	PORT_SERVER		26950
-#define	MAX_RCON_PACKET		256
-// number of 255s to put on the header
-#define	HEADER_SIZE	4
 
-static unsigned char huffbuff[65536];
+#define	A2C_PRINT		'n'
+
+#define	MAX_RCON_PACKET		256
+
+static const unsigned char rcon_hdr[10] =
+	{ 255, 255, 255, 255,
+	  'r', 'c', 'o', 'n', ' ', '\0' };
+static const unsigned char rcon_rep[5] =
+	{ 255, 255, 255, 255, A2C_PRINT };
+
+static unsigned char	packet[MAX_RCON_PACKET];
+static unsigned char	response[MAX_RCON_PACKET * 10];
+static unsigned char	huffbuff[65536];
 
 int main (int argc, char *argv[])
 {
-	int		len, hufflen, size;
-	int		i, k;
+	int		len, size;
+	int		hufflen;
 	socklen_t	fromlen;
-	unsigned char	packet[MAX_RCON_PACKET];
-	unsigned char	response[MAX_RCON_PACKET*10];
 	netadr_t		ipaddress;
 	struct sockaddr_in	hostaddress;
 #if defined(PLATFORM_WINDOWS)
@@ -228,102 +221,93 @@ int main (int argc, char *argv[])
 	int	_true = 1;
 #endif
 	int		err;
+	unsigned char	*p;
 
 	printf ("HWTERM %d.%d.%d\n", VER_HWTERM_MAJ, VER_HWTERM_MID, VER_HWTERM_MIN);
 
-// Command Line Sanity Checking
+/* command line sanity checking */
 	if (argc < 3)
 	{
 		printf ("Usage: %s <address>[:port] <password>\n", argv[0]);
 		exit (1);
 	}
 
-// Init OS-specific network stuff
+/* init OS-specific network stuff */
 	NET_Init ();
 
-// Decode the address and port
+/* decode the address and port */
 	if (!NET_StringToAdr(argv[1], &ipaddress))
-	{
-		NET_Shutdown ();
 		Sys_Error ("Unable to resolve address %s", argv[1]);
-	}
 	if (ipaddress.port == 0)
 		ipaddress.port = htons(PORT_SERVER);
 	NetadrToSockadr(&ipaddress, &hostaddress);
 	printf ("Using address %s\n", NET_AdrToString(ipaddress));
 
-// Open the Socket
+/* prepare the header: \377\377\377\377rcon<space> */
+	p = &packet[0];
+
+	memcpy (p, rcon_hdr, sizeof(rcon_hdr));
+	p += sizeof(rcon_hdr) - 1;
+
+/* put the password on the packet */
+	len = strlen(argv[2]);
+	memcpy (p, argv[2], len);
+	p += len;
+
+/* add a space */
+	*p++ = ' ';
+	*p = '\0';
+
+/* open the socket */
 	socketfd = socket(PF_INET, SOCK_DGRAM, IPPROTO_UDP);
 	if (socketfd == INVALID_SOCKET)
 	{
 		err = SOCKETERRNO;
-		NET_Shutdown ();
 		Sys_Error ("Couldn't open socket: %s", socketerror(err));
 	}
-// Set the socket to non-blocking mode
+/* set the socket to non-blocking mode */
 	if (ioctlsocket (socketfd, FIONBIO, &_true) == SOCKET_ERROR)
 	{
 		err = SOCKETERRNO;
-		NET_Shutdown ();
 		Sys_Error ("ioctl FIONBIO: %s", socketerror(err));
 	}
 
-	printf ("Use CTRL-C to exit\n");
-
-/* For these next blocks, k denotes the end
-   of string for the packet. DO NOT RESET IT.
-   j denotes the beginning of the command
-   portion. DO NOT RESET IT EITHER.	*/
-
-// Prepare the header: \377\377\377\377rcon<space>
-	for (k = 0 ; k < HEADER_SIZE ; k++)
-	{
-		packet[k] = 255;
-	}
-	packet[k]	= 'r';
-	packet[++k]	= 'c';
-	packet[++k]	= 'o';
-	packet[++k]	= 'n';
-	packet[++k]	= ' ';
-	packet[++k]	= 0;
-// Put the password on the packet
-	for (i = 0 ; i < strlen(argv[2]) ; i++)
-	{
-		packet[k] = argv[2][i];
-		k++;
-	}
-// Add a space
-	packet[k] = 0x20;
-	packet[++k] = 0;
-
-// Init Huffman
+/* init Huffman */
 	HuffInit ();
 
-// Loop for user input
+/* user input loop */
+	printf ("Use CTRL-C to exit\n");
 	while (1)
 	{
 		printf ("RCON> ");
-		fgets ((char *)(packet+k), sizeof(packet)-k, stdin);
-		len = strlen((char *)packet) + 1;
 
-	// Send the packet
+		fgets ((char *)p, p - &packet[0], stdin);
+		len = strlen((char *)p);
+		if (p[len - 1] == '\n')
+			p[--len]= '\0';
+		if (len == 0)
+			continue;
+
+		len += p - &packet[0] + 1;
+
+	/* send the packet */
 		HuffEncode (packet, huffbuff, len, &hufflen);
 		size = sendto(socketfd, (char *)huffbuff, hufflen, 0,
 			(struct sockaddr *)&hostaddress, sizeof(hostaddress));
 
-	// See if it worked
+	/* see if it worked */
 		if (size != hufflen)
 		{
 			err = SOCKETERRNO;
-			printf ("Sendto failed: %s\n", socketerror(err));
-			Sys_Quit (1);
+			Sys_Error ("Sendto failed: %s", socketerror(err));
 		}
 
-	// Read the response
+	/* read the response */
 		memset (response, 0, sizeof(response));
 		fromlen = sizeof(hostaddress);
 		if (NET_WaitReadTimeout (socketfd, 5, 0) <= 0)
 		{
+		/*	Sys_Error ("*** timeout waiting for reply");*/
 			printf ("*** timeout waiting for reply\n");
 		}
 		else
@@ -335,38 +319,27 @@ int main (int argc, char *argv[])
 			{
 				err = SOCKETERRNO;
 				if (err != NET_EWOULDBLOCK)
-				{
-					printf ("Recv failed: %s\n", socketerror(err));
-					Sys_Quit (1);
-				}
+					Sys_Error ("Recv failed: %s", socketerror(err));
 			}
 			else if (size == sizeof(response))
 			{
-				printf ("Received oversized packet!\n");
-				Sys_Quit (1);
+				Sys_Error ("Received oversized packet!");
 			}
 			else
 			{
 				HuffDecode(huffbuff, response, size, &size, sizeof(response));
-				if (size > sizeof(response))
-				{
-					printf ("Received oversized compressed data!\n");
-					Sys_Quit (1);
-				}
-				for (i = 0 ; i < HEADER_SIZE ; i++)
-				{
-					if (response[i] != 255)
-					{
-						printf ("Invalid response received\n");
-						Sys_Quit (1);
-					}
-				}
 
-				printf ("%s\n", (char *)(response+HEADER_SIZE+1));
+				if (size > sizeof(response))
+					Sys_Error ("Received oversized compressed data!");
+				if (memcmp(response, rcon_rep, 5) != 0)
+					Sys_Error ("Invalid response received");
+
+				printf ("%s\n", (char *) &response[5]);
 			}
 		}
 	}
 
+/* never reached */
 	NET_Shutdown ();
 	exit (0);
 }

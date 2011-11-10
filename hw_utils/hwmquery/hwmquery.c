@@ -43,8 +43,7 @@
 #include <sys/time.h>
 #endif
 
-
-//=============================================================================
+/*****************************************************************************/
 
 typedef struct
 {
@@ -52,8 +51,6 @@ typedef struct
 	unsigned short	port;
 	unsigned short	pad;
 } netadr_t;
-
-//=============================================================================
 
 #if defined(_MSC_VER)
 #if defined(_WIN64)
@@ -67,35 +64,11 @@ typedef int	ssize_t;
 #include "wsaerror.h"
 static WSADATA		winsockdata;
 #endif
-
 static sys_socket_t	socketfd = INVALID_SOCKET;
 
 void Sys_Error (const char *error, ...) __attribute__((__format__(__printf__,1,2), __noreturn__));
-static void Sys_Quit (int error_state) __attribute__((__noreturn__));
 
-//=============================================================================
-
-void Sys_Error (const char *error, ...)
-{
-	va_list		argptr;
-	char		text[1024];
-
-	va_start (argptr,error);
-	q_vsnprintf (text, sizeof (text), error,argptr);
-	va_end (argptr);
-
-	printf ("\nERROR: %s\n\n", text);
-
-	exit (1);
-}
-
-//=============================================================================
-
-static void SockadrToNetadr (struct sockaddr_in *s, netadr_t *a)
-{
-	memcpy (a->ip, &s->sin_addr, 4);
-	a->port = s->sin_port;
-}
+/*****************************************************************************/
 
 static void NetadrToSockadr (netadr_t *a, struct sockaddr_in *s)
 {
@@ -104,6 +77,12 @@ static void NetadrToSockadr (netadr_t *a, struct sockaddr_in *s)
 
 	memcpy (&s->sin_addr, a->ip, 4);
 	s->sin_port = a->port;
+}
+
+static void SockadrToNetadr (struct sockaddr_in *s, netadr_t *a)
+{
+	memcpy (a->ip, &s->sin_addr, 4);
+	a->port = s->sin_port;
 }
 
 const char *NET_AdrToString (netadr_t a)
@@ -129,8 +108,8 @@ static int NET_StringToAdr (const char *s, netadr_t *a)
 
 	strncpy (copy, s, sizeof(copy) - 1);
 	copy[sizeof(copy) - 1] = '\0';
-	// strip off a trailing :port if present
-	for (colon = copy ; *colon ; colon++)
+	/* strip off a trailing :port if present */
+	for (colon = copy; *colon; colon++)
 	{
 		if (*colon == ':')
 		{
@@ -191,13 +170,25 @@ static void NET_Shutdown (void)
 #endif
 }
 
-static void Sys_Quit (int error_state)
+/*****************************************************************************/
+
+void Sys_Error (const char *error, ...)
 {
+	va_list		argptr;
+	char		text[1024];
+
+	va_start (argptr,error);
+	q_vsnprintf (text, sizeof (text), error,argptr);
+	va_end (argptr);
+
 	NET_Shutdown ();
-	exit (error_state);
+
+	printf ("\nERROR: %s\n\n", text);
+
+	exit (1);
 }
 
-//=============================================================================
+/*****************************************************************************/
 
 #define	VER_HWMQUERY_MAJ	0
 #define	VER_HWMQUERY_MID	2
@@ -205,10 +196,11 @@ static void Sys_Quit (int error_state)
 
 #define	PORT_MASTER		26900
 #define	PORT_SERVER		26950
-#define	MAX_PACKET		2048
 
 #define	S2C_CHALLENGE		'c'
 #define	M2C_SERVERLST		'd'
+
+#define	MAX_PACKET		2048
 
 static const unsigned char query_msg[] =
 		{ 255, S2C_CHALLENGE, '\0' };
@@ -217,11 +209,12 @@ static const unsigned char reply_hdr[] =
 		{ 255, 255, 255, 255,
 		  255, M2C_SERVERLST, '\n' };
 
+static unsigned char	response[MAX_PACKET];
+
 int main (int argc, char **argv)
 {
 	ssize_t		size;
 	socklen_t	fromlen;
-	unsigned char	response[MAX_PACKET];
 	netadr_t		ipaddress;
 	struct sockaddr_in	hostaddress;
 #if defined(PLATFORM_WINDOWS)
@@ -233,63 +226,54 @@ int main (int argc, char **argv)
 
 	printf ("HWMASTER QUERY %d.%d.%d\n", VER_HWMQUERY_MAJ, VER_HWMQUERY_MID, VER_HWMQUERY_MIN);
 
-// Command Line Sanity Checking
+/* command line sanity checking */
 	if (argc < 2)
 	{
 		printf ("Usage: %s <address>[:port]\n", argv[0]);
 		exit (1);
 	}
 
-// Init OS-specific network stuff
+/* init OS-specific network stuff */
 	NET_Init ();
 
-// Decode the address and port
+/* decode the address and port */
 	if (!NET_StringToAdr(argv[1], &ipaddress))
-	{
-		NET_Shutdown ();
 		Sys_Error ("Unable to resolve address %s", argv[1]);
-	}
 	if (ipaddress.port == 0)
 		ipaddress.port = htons(PORT_MASTER);
 	NetadrToSockadr(&ipaddress, &hostaddress);
 
-// Open the Socket
+/* open the socket */
 	socketfd = socket(PF_INET, SOCK_DGRAM, IPPROTO_UDP);
 	if (socketfd == INVALID_SOCKET)
 	{
 		err = SOCKETERRNO;
-		NET_Shutdown ();
 		Sys_Error ("Couldn't open socket: %s", socketerror(err));
 	}
-// Set the socket to non-blocking mode
+/* set the socket to non-blocking mode */
 	if (ioctlsocket (socketfd, FIONBIO, &_true) == SOCKET_ERROR)
 	{
 		err = SOCKETERRNO;
-		NET_Shutdown ();
 		Sys_Error ("ioctl FIONBIO: %s", socketerror(err));
 	}
 
-	// Send the query packet
+/* send the query packet */
 	printf ("Querying master server at %s\n", NET_AdrToString(ipaddress));
 	size = sendto(socketfd, (const char *)query_msg, sizeof(query_msg), 0,
 			(struct sockaddr *)&hostaddress, sizeof(hostaddress));
 
-	// See if it worked
+/* see if it worked */
 	if (size != sizeof(query_msg))
 	{
 		err = SOCKETERRNO;
-		printf ("Sendto failed: %s\n", socketerror(err));
-		Sys_Quit (1);
+		Sys_Error ("Sendto failed: %s", socketerror(err));
 	}
 
-	// Read the response
+/* read the response */
 	memset (response, 0, sizeof(response));
 	fromlen = sizeof(hostaddress);
 	if (NET_WaitReadTimeout (socketfd, 5, 0) <= 0)
-	{
-		printf ("*** timeout waiting for reply\n");
-		Sys_Quit (2);
-	}
+		Sys_Error ("*** timeout waiting for reply");
 
 	size = recvfrom(socketfd, (char *)response, sizeof(response), 0,
 			(struct sockaddr *)&hostaddress, &fromlen);
@@ -297,20 +281,15 @@ int main (int argc, char **argv)
 	{
 		err = SOCKETERRNO;
 		if (err != NET_EWOULDBLOCK)
-		{
-			printf ("Recv failed: %s\n", socketerror(err));
-			Sys_Quit (1);
-		}
+			Sys_Error ("Recv failed: %s", socketerror(err));
 	}
 	else if (size == sizeof(response))
 	{
-		printf ("Received oversized packet!\n");
-		Sys_Quit (1);
+		Sys_Error ("Received oversized packet!");
 	}
 	else if (memcmp(response, reply_hdr, 7) != 0)
 	{
-		printf ("Invalid response received\n");
-		Sys_Quit (1);
+		Sys_Error ("Invalid response received");
 	}
 	else
 	{
@@ -328,7 +307,7 @@ int main (int argc, char **argv)
 			printf (" %d entries\n", (int)size / 6);
 			if (size % 6 != 0)
 				printf ("Warning: not counting truncated last entry\n");
-			// each address is 4 bytes (ip) + 2 bytes (port) == 6 bytes
+			/* each address is 4 bytes (ip) + 2 bytes (port) == 6 bytes */
 			for (; size >= 6; size -= 6, tmp += 6)
 			{
 				port = ntohs (tmp[4] + (tmp[5] << 8));

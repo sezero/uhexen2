@@ -1,5 +1,3 @@
-HWRCON(n)							HWRCON(n)
-
 NAME
 	hwrcon -- HexenWorld Remote CONsole
 
@@ -39,20 +37,21 @@ NOTES
 
 AUTHOR
 	O.Sezer <sezero@users.sourceforge.net>, based on RCon v1.1 by
-	Michael Dwyer/N0ZAP <mdwyer@holly.colostate.edu>
+	Michael Dwyer/N0ZAP <mdwyer@holly.colostate.edu>. See
+	http://www.ibiblio.org/pub/Linux/games/quake/ for the original
+	RCon tool for quake2.
 
 BUGS
 	None. Please report, if you find any.
 
 COPYRIGHT
 	Copyright (C) 1998 Michael Dwyer
-	Copyright (C) 2006-2010 O. Sezer
+	Copyright (C) 2006-2011 O. Sezer
 
 	HWRcon is free software;  you can redistribute it and/or modify
 	it under the terms of the GNU General Public License as published
-	by the Free  Software  Foundation; either version 2, or (at your
+	by the Free Software Foundation; either version 2, or (at your
 	option) any later version.
 
-hwrcon Version 1.2.6		27-April-2009			1
+hwrcon Version 1.2.7		10-November-2011
 
-HWRCON(n)							HWRCON(n)

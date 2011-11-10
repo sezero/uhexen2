@@ -7,7 +7,7 @@
 	Made to work with HexenWorld using code from the HexenWorld
 	engine (C) Raven Software and ID Software.
 	Copyright (C) 1998 Michael Dwyer <mdwyer@holly.colostate.edu>
-	Copyright (C) 2006-2010 O. Sezer <sezero@users.sourceforge.net>
+	Copyright (C) 2006-2011 O. Sezer <sezero@users.sourceforge.net>
 
 	This program is free software; you can redistribute it and/or
 	modify it under the terms of the GNU General Public License
@@ -44,8 +44,7 @@
 #include "net_sys.h"
 #include "qsnprint.h"
 
-
-//=============================================================================
+/*****************************************************************************/
 
 typedef struct
 {
@@ -54,34 +53,15 @@ typedef struct
 	unsigned short	pad;
 } netadr_t;
 
-//=============================================================================
-
 #if defined(PLATFORM_WINDOWS)
 #include "wsaerror.h"
 static WSADATA		winsockdata;
 #endif
-
 static sys_socket_t	socketfd = INVALID_SOCKET;
 
 void Sys_Error (const char *error, ...) __attribute__((__format__(__printf__,1,2), __noreturn__));
 
-//=============================================================================
-
-void Sys_Error (const char *error, ...)
-{
-	va_list		argptr;
-	char		text[1024];
-
-	va_start (argptr,error);
-	q_vsnprintf (text, sizeof (text), error,argptr);
-	va_end (argptr);
-
-	printf ("\nERROR: %s\n\n", text);
-
-	exit (1);
-}
-
-//=============================================================================
+/*****************************************************************************/
 
 static void NetadrToSockadr (netadr_t *a, struct sockaddr_in *s)
 {
@@ -121,8 +101,8 @@ static int NET_StringToAdr (const char *s, netadr_t *a)
 
 	strncpy (copy, s, sizeof(copy) - 1);
 	copy[sizeof(copy) - 1] = '\0';
-	// strip off a trailing :port if present
-	for (colon = copy ; *colon ; colon++)
+	/* strip off a trailing :port if present */
+	for (colon = copy; *colon; colon++)
 	{
 		if (*colon == ':')
 		{
@@ -169,105 +149,114 @@ static void NET_Shutdown (void)
 #endif
 }
 
-//=============================================================================
+/*****************************************************************************/
+
+void Sys_Error (const char *error, ...)
+{
+	va_list		argptr;
+	char		text[1024];
+
+	va_start (argptr,error);
+	q_vsnprintf (text, sizeof (text), error,argptr);
+	va_end (argptr);
+
+	NET_Shutdown ();
+
+	printf ("\nERROR: %s\n\n", text);
+
+	exit (1);
+}
+
+/*****************************************************************************/
 
 #define	VER_HWRCON_MAJ		1
 #define	VER_HWRCON_MID		2
-#define	VER_HWRCON_MIN		6
+#define	VER_HWRCON_MIN		7
 
 #define	PORT_SERVER		26950
+
 #define	MAX_RCON_PACKET		256
 
-// we need not use HuffEncode, therefore we need to put an additional 0xff
-// at the beginning for our message to be read by server
-#define	HEADER_SIZE	5
+static const unsigned char rcon_hdr[10] =
+	{ 255, 255, 255, 255,
+	  'r', 'c', 'o', 'n', ' ', '\0' };
+
+static unsigned char	packet[MAX_RCON_PACKET];
 
 int main (int argc, char *argv[])
 {
+	int		i;
 	int		len, size;
-	int		i, j, k;
-	unsigned char	packet[MAX_RCON_PACKET];
 	netadr_t		ipaddress;
 	struct sockaddr_in	hostaddress;
 	int		err;
+	unsigned char	*p;
 
 	printf ("HWRCON %d.%d.%d\n", VER_HWRCON_MAJ, VER_HWRCON_MID, VER_HWRCON_MIN);
 
-// Command Line Sanity Checking
+/* command line sanity checking */
 	if (argc < 3)
 	{
 		printf ("Usage: %s <address>[:port] <password> commands ...\n", argv[0]);
 		exit (1);
 	}
 
-// Init OS-specific network stuff
+/* init OS-specific network stuff */
 	NET_Init ();
 
-// Decode the address and port
+/* decode the address and port */
 	if (!NET_StringToAdr(argv[1], &ipaddress))
-	{
-		NET_Shutdown ();
 		Sys_Error ("Unable to resolve address %s", argv[1]);
-	}
 	if (ipaddress.port == 0)
 		ipaddress.port = htons(PORT_SERVER);
 	NetadrToSockadr(&ipaddress, &hostaddress);
 	printf ("Using address %s\n", NET_AdrToString(ipaddress));
 
-// Prepare the header: \377\377\377\377rcon<space>
-	for (k = 0 ; k < HEADER_SIZE ; k++)
-	{
-		packet[k] = 255;
-	}
-	packet[k]	= 'r';
-	packet[++k]	= 'c';
-	packet[++k]	= 'o';
-	packet[++k]	= 'n';
-	packet[++k]	= ' ';
-	packet[++k]	= 0;
-// Concat all the excess command line stuff into a single string
-	for (i = 2 ; i < argc ; i++) 
-	{
-		for (j = 0 ; j < strlen(argv[i]) ; j++)
-		{
-			packet[k] = argv[i][j];
-			if (++k > sizeof(packet) - 1)
-				Sys_Error ("Command too long");
-		}
-		if (i != argc - 1)
-		{
-			packet[k] = 0x20;	// add a space
-			if (++k > sizeof(packet) - 1)
-				Sys_Error ("Command too long");
-		}
-	}
+/* prepare the header: \377\377\377\377rcon<space> */
+	p = &packet[0];
 
-	packet[k] = '\0';
-	len = k + 1;
+/* we need not use HuffEncode, therefore we must put an additional
+ * 0xff at the beginning for our message to be read by server.  */
+	*p++ = 0xff;
 
-// Open the Socket
+	memcpy (p, rcon_hdr, sizeof(rcon_hdr));
+	p += sizeof(rcon_hdr) - 1;
+
+/* concat all the excess command line stuff into a single string */
+	for (i = 2; i < argc; i++)
+	{
+		len = strlen(argv[i]);
+		if (p - &packet[0] + len + 1 > MAX_RCON_PACKET - 1)
+			Sys_Error ("Command too long");
+		memcpy (p, argv[i], len);
+		p += len;
+		*p++ = ' ';
+	}
+/* kill the trailing space */
+	p[-1] = '\0';
+
+	len = p - &packet[0];
+
+/* open the socket */
 	socketfd = socket(PF_INET, SOCK_DGRAM, IPPROTO_UDP);
 	if (socketfd == INVALID_SOCKET)
 	{
 		err = SOCKETERRNO;
-		NET_Shutdown ();
 		Sys_Error ("Couldn't open socket: %s", socketerror(err));
 	}
 
-// Send the packet
+/* send the packet */
 	size = sendto(socketfd, (char *)packet, len, 0,
 			(struct sockaddr *)&hostaddress, sizeof(hostaddress));
 
-// See if it worked
+/* see if it worked */
 	if (size != len)
 	{
 		err = SOCKETERRNO;
-		printf ("Sendto failed: %s\n", socketerror(err));
-		NET_Shutdown ();
-		exit (1);
+		Sys_Error ("Sendto failed: %s", socketerror(err));
 	}
 
-// Clean Up
+/* clean up */
 	NET_Shutdown ();
 	exit (0);
 }
