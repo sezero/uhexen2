@@ -36,7 +36,6 @@ typedef struct filter_s
 
 static filter_t	*filter_list = NULL;
 
-//=============================================================================
 
 static void FL_Remove (filter_t *filter)
 {
@@ -63,7 +62,6 @@ static void FL_Clear (void)
 			filter_t *next = filter->next;
 			FL_Remove(filter);
 			free(filter);
-			filter = NULL;
 			filter = next;
 		}
 	}
@@ -104,7 +102,6 @@ static filter_t *FL_Find (netadr_t adr)
 	return NULL;
 }
 
-//=============================================================================
 
 static int argv_index_add;
 
@@ -189,7 +186,6 @@ static void FL_FilterClear (void)
 	FL_Clear();
 }
 
-//=============================================================================
 
 static void FL_Filter_f (void)
 {
@@ -223,8 +219,6 @@ static void FL_Filter_f (void)
 	}
 }
 
-//=============================================================================
-
 static void SV_WriteFilterList (void)
 {
 	FILE	*filters;
@@ -247,8 +241,6 @@ static void SV_WriteFilterList (void)
 	}
 }
 
-//=============================================================================
-
 static void SV_Filter (void)
 {
 	filter_t	*filter;
@@ -270,7 +262,7 @@ static void SV_Filter (void)
 		return;
 	}
 
-	//if no compare with filter list
+	/* if no compare with filter list */
 	if ( (filter = FL_Find(net_from)) )
 	{
 		memcpy(&net_from, &filter->to, sizeof(netadr_t));
@@ -297,7 +289,6 @@ typedef struct server_s
 
 server_t *sv_list = NULL;
 
-//=============================================================================
 
 static void SVL_Remove (server_t *sv)
 {
@@ -324,7 +315,6 @@ static void SVL_Clear (void)
 			server_t *next = sv->next;
 			SVL_Remove(sv);
 			free(sv);
-			sv = NULL;
 			sv = next;
 		}
 	}
@@ -537,15 +527,14 @@ static void SV_GetConsoleCommands (void)
 
 static void SV_TimeOut(void)
 {
-	//Remove listed severs that havent sent a heartbeat for some time
 	double t = Sys_DoubleTime();
-
 	server_t *sv;
 	server_t *next;
 
 	if (sv_list == NULL)
 		return;
 
+	/* remove servers that haven't sent a heartbeat for some time */
 	for (sv = sv_list ; sv ; )
 	{
 		if (sv->timeout + SV_TIMEOUT < t)
@@ -588,16 +577,14 @@ INIT and SHUTDOWN
 static void SV_Shutdown (void)
 {
 	NET_Shutdown ();
-
-	//write filter list
 	SV_WriteFilterList();
 }
 
 static void SV_Quit_f (void)
 {
 	printf ("Shutting down.\n");
-	SV_Shutdown ();
 
+	SV_Shutdown ();
 	Sys_Quit();
 }
 
@@ -618,7 +605,7 @@ void SV_InitNet (void)
 	}
 	NET_Init (port);
 
-	//Add filters
+	/* Add filters */
 	if ( (filters = fopen(filters_file,"rt")) )
 	{
 		while (fgets(str, sizeof(str), filters))
