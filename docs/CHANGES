@@ -4,6 +4,9 @@ Development Progress	:
 ---------------------------
 
 2011-11-10 (SVN):
+    * quakedef.h: updated beta date stamp to 2011-11-10.
+
+2011-11-10 (SVN):
     * hw_utils/hwmquery, hw_utils/hwrcon: Many clean-ups. Bumped versions.
 
 2011-11-10 (SVN):
