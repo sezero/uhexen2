@@ -321,7 +321,7 @@ int main (int argc, char **argv)
 			printf (" NONE\n");
 		else
 		{
-			printf (" %d entries\n", size / 6);
+			printf (" %d entries\n", (int)size / 6);
 			if (size % 6 != 0)
 				printf ("Warning: not counting truncated last entry\n");
 			// each address is 4 bytes (ip) + 2 bytes (port) == 6 bytes
