@@ -262,10 +262,14 @@ int NET_CheckSockets (void)
 
 static sys_socket_t UDP_OpenSocket (int port)
 {
-	int			i;
+	int		i;
 	sys_socket_t	newsocket;
 	struct sockaddr_in	address;
-	unsigned long _true = 1;
+#if defined(PLATFORM_WINDOWS)
+	u_long	_true = 1;
+#else
+	int	_true = 1;
+#endif
 	int		err;
 
 	newsocket = socket (PF_INET, SOCK_DGRAM, IPPROTO_UDP);

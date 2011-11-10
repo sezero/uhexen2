@@ -224,7 +224,11 @@ int main (int argc, char **argv)
 	unsigned char	response[MAX_PACKET];
 	netadr_t		ipaddress;
 	struct sockaddr_in	hostaddress;
-	unsigned long	_true = 1;
+#if defined(PLATFORM_WINDOWS)
+	u_long	_true = 1;
+#else
+	int	_true = 1;
+#endif
 	int		err;
 
 	printf ("HWMASTER QUERY %d.%d.%d\n", VER_HWMQUERY_MAJ, VER_HWMQUERY_MID, VER_HWMQUERY_MIN);

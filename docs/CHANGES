@@ -4,6 +4,11 @@ Development Progress	:
 ---------------------------
 
 2011-11-10 (SVN):
+    * net: ioctl_list(2) says FIONBIO takes const int * argument: Changed
+      all to do so for unix platforms. Kept the windows versions to take a
+      u_long argument.
+
+2011-11-10 (SVN):
     * hw_utils/hwmaster: Removed two unnecessary NULL assignments after
       freeing a pointer.
     * hw_utils/hwmquery: Fixed a compiler warning in 64 bit due to ssize_t.

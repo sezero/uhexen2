@@ -222,7 +222,11 @@ int main (int argc, char *argv[])
 	unsigned char	response[MAX_RCON_PACKET*10];
 	netadr_t		ipaddress;
 	struct sockaddr_in	hostaddress;
-	unsigned long	_true = 1;
+#if defined(PLATFORM_WINDOWS)
+	u_long	_true = 1;
+#else
+	int	_true = 1;
+#endif
 	int		err;
 
 	printf ("HWTERM %d.%d.%d\n", VER_HWTERM_MAJ, VER_HWTERM_MID, VER_HWTERM_MIN);
