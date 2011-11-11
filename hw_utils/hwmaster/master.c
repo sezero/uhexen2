@@ -560,7 +560,7 @@ void SV_Frame (void)
 
 	SV_TimeOut();
 
-	NET_CheckSockets ();	/* FIXME: check return code ? */
+	NET_CheckReadTimeout (0, 10000);	/* FIXME: check return code ? */
 
 	SV_ReadPackets();
 }

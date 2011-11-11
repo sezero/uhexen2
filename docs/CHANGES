@@ -3,6 +3,12 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2011-11-11 (SVN):
+    * net: Tidied NET_CheckSockets() and NET_WaitReadTimeout() procedures
+      which are actually the same. Renamed them to NET_CheckReadTimeout()
+      and made them to look the same.
+    * quakedef.h: updated beta date stamp to 2011-11-11.
+
 2011-11-10 (SVN):
     * quakedef.h: updated beta date stamp to 2011-11-10.
 

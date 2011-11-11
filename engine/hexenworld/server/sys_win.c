@@ -471,7 +471,7 @@ int main (int argc, char **argv)
 	oldtime = Sys_DoubleTime () - HX_FRAME_TIME;
 	while (1)
 	{
-		if (NET_CheckSockets() == -1)
+		if (NET_CheckReadTimeout(0, 10000) == -1)
 			continue;
 
 	// find time passed since last cycle

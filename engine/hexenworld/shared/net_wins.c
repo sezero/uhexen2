@@ -241,21 +241,17 @@ void NET_SendPacket (int length, void *data, netadr_t to)
 
 //=============================================================================
 
-int NET_CheckSockets (void)
+int NET_CheckReadTimeout (long sec, long usec)
 {
-	fd_set		fdset;
+	fd_set		readfds;
 	struct timeval	timeout;
-	int	ret;
 
-	FD_ZERO (&fdset);
-	FD_SET (net_socket, &fdset);
-	timeout.tv_sec = 0;
-	timeout.tv_usec = 10000;
+	FD_ZERO (&readfds);
+	FD_SET (net_socket, &readfds);
+	timeout.tv_sec = sec;
+	timeout.tv_usec = usec;
 
-	ret = select (net_socket + 1, &fdset, NULL, NULL, &timeout);
-	if (ret == SOCKET_ERROR)
-		return -1;
-	return ret;
+	return select(net_socket + 1, &readfds, NULL, NULL, &timeout);
 }
 
 //=============================================================================

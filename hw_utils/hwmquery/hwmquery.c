@@ -135,18 +135,17 @@ static int NET_StringToAdr (const char *s, netadr_t *a)
 	return 1;
 }
 
-static int NET_WaitReadTimeout (sys_socket_t fd, long sec, long usec)
+static int NET_CheckReadTimeout (long sec, long usec)
 {
-	fd_set rfds;
-	struct timeval tv;
+	fd_set		readfds;
+	struct timeval	timeout;
 
-	FD_ZERO(&rfds);
-	FD_SET(fd, &rfds);
+	FD_ZERO (&readfds);
+	FD_SET (socketfd, &readfds);
+	timeout.tv_sec = sec;
+	timeout.tv_usec = usec;
 
-	tv.tv_sec = sec;
-	tv.tv_usec = usec;
-
-	return select(fd+1, &rfds, NULL, NULL, &tv);
+	return select(socketfd + 1, &readfds, NULL, NULL, &timeout);
 }
 
 static void NET_Init (void)
@@ -272,7 +271,7 @@ int main (int argc, char **argv)
 /* read the response */
 	memset (response, 0, sizeof(response));
 	fromlen = sizeof(hostaddress);
-	if (NET_WaitReadTimeout (socketfd, 5, 0) <= 0)
+	if (NET_CheckReadTimeout(5, 0) <= 0)
 		Sys_Error ("*** timeout waiting for reply");
 
 	size = recvfrom(socketfd, (char *)response, sizeof(response), 0,
@@ -304,14 +303,16 @@ int main (int argc, char **argv)
 			printf (" NONE\n");
 		else
 		{
+			/* each address is 4 bytes (ip) + 2 bytes (port) == 6 bytes */
 			printf (" %d entries\n", (int)size / 6);
 			if (size % 6 != 0)
 				printf ("Warning: not counting truncated last entry\n");
-			/* each address is 4 bytes (ip) + 2 bytes (port) == 6 bytes */
-			for (; size >= 6; size -= 6, tmp += 6)
+			while (size >= 6)
 			{
 				port = ntohs (tmp[4] + (tmp[5] << 8));
 				printf ("%u.%u.%u.%u:%u\n", tmp[0], tmp[1], tmp[2], tmp[3], port);
+				tmp += 6;
+				size -= 6;
 			}
 		}
 	}

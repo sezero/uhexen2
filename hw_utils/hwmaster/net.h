@@ -26,10 +26,10 @@ void		NET_Init (int port);
 void		NET_Shutdown (void);
 int		NET_GetPacket (void);
 void		NET_SendPacket (int length, void *data, netadr_t to);
-int		NET_CheckSockets (void);
+int		NET_CheckReadTimeout (long sec, long usec);
 
 qboolean	NET_CompareAdr (netadr_t a, netadr_t b);
-qboolean	NET_CompareBaseAdr (netadr_t a, netadr_t b);	// without port.
+qboolean	NET_CompareBaseAdr (netadr_t a, netadr_t b);	// without port
 const char	*NET_AdrToString (netadr_t a);
 const char	*NET_BaseAdrToString (netadr_t a);
 qboolean	NET_StringToAdr (const char *s, netadr_t *a);
