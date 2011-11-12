@@ -364,7 +364,7 @@ sys_socket_t UDP_CheckNewConnections (void)
 		return net_acceptsocket;
 	}
 #else
-	unsigned long	available;
+	int		available;
 	struct sockaddr_in	from;
 	socklen_t	fromlen;
 	char		buff[1];
