@@ -4,6 +4,7 @@ Development Progress	:
 ---------------------------
 
 2011-11-12 (SVN):
+    * quakedef.h: updated beta date stamp to 2011-11-12.
     * net_udp.c: Fixed FIONREAD ioctl to take an int* argument instead of
       an unsigned long*.
 
