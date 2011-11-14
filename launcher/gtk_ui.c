@@ -40,13 +40,8 @@
 
 /*********************************************************************/
 
-#undef	GTK_DESTROYNOTIFY
 #define	GTK_DESTROYNOTIFY(f)	(GtkDestroyNotify)f
 
-#undef	GTK_INIT_FUNC
-#define	GTK_INIT_FUNC(f)	(GtkFunction)f
-
-/*********************************************************************/
 
 static GtkTooltips	*tooltips;
 

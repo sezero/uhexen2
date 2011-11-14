@@ -3,6 +3,9 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2011-11-14 (SVN):
+    * gtk-launcher: Removed an obsoleted macro.
+
 2011-11-12 (SVN):
     * quakedef.h: updated beta date stamp to 2011-11-12.
     * net_udp.c: Fixed FIONREAD ioctl to take an int* argument instead of
