@@ -4,6 +4,7 @@ Development Progress	:
 ---------------------------
 
 2011-11-14 (SVN):
+    * gtk-launcher: Cleaned up the Makefile.
     * gtk-launcher: Removed an obsoleted macro.
 
 2011-11-12 (SVN):

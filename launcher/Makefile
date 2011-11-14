@@ -62,8 +62,9 @@ endif
 MD5FLAGS+=$(CFLAGS)
 XDFLAGS +=$(CFLAGS)
 
-CFLAGS += $(GTK_CFLAGS) $(PTHREAD_CFLAGS) -I. -I$(LIBS_DIR)/common
-LDFLAGS+= $(GTK_LIBS) $(PTHREAD_LIBS)
+CFLAGS += -I. -I$(LIBS_DIR)/common
+CFLAGS += $(PTHREAD_CFLAGS)
+LDFLAGS+= $(PTHREAD_LIBS)
 
 ifdef DEMO
 CFLAGS += -DDEMOBUILD
@@ -89,13 +90,13 @@ LAUNCHER_MAIN:= main.o
 ifndef DEMO
 XPATCH_OBJS  := apply_patch.o md5.o xdelta3.o
 endif
-ALL_OBJECTS  := $(LAUNCHER_OBJS) $(LAUNCHER_MAIN) $(GUI_OBJS) $(XPATCH_OBJS)
+ALL_OBJECTS  := $(LAUNCHER_OBJS) $(LAUNCHER_MAIN) $(XPATCH_OBJS) $(GUI_OBJS)
 
 # Targets
 .PHONY: clean distclean
 
 $(BINARY): $(ALL_OBJECTS)
-	$(LINKER) -o $(BINARY) $(ALL_OBJECTS) $(LDFLAGS)
+	$(LINKER) -o $(BINARY) $(ALL_OBJECTS) $(GTK_LIBS) $(LDFLAGS)
 
 MD5DEPS:= md5.c md5.h
 MD5DEPS:= $(patsubst %,$(MD5DIR)/%,$(MD5DEPS))
@@ -109,6 +110,9 @@ md5.o: $(MD5DEPS)
 
 xdelta3.o: $(XD3DEPS)
 	$(CC) $(XDFLAGS) -c $(XDELTA_DIR)/xdelta3.c -o xdelta3.o
+
+gtk_ui.o: gtk_ui.c gtk_ui.h launcher_defs.h launcher_ui.h
+	$(CC) $(CFLAGS) $(GTK_CFLAGS) -c gtk_ui.c -o gtk_ui.o
 
 clean:
 	-rm -f *.o *.o core
