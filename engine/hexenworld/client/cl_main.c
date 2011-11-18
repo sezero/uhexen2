@@ -6,7 +6,6 @@
 */
 
 #include "q_stdinc.h"
-#include <ctype.h>
 #include <setjmp.h>
 #include "arch_def.h"
 #if defined(PLATFORM_WINDOWS)
@@ -1227,7 +1226,7 @@ static void Host_SaveConfig_f (void)
 	if (Cmd_Argc() != 2)
 	{
 		Con_Printf ("saveconfig <savename> : save a config file\n");
-			return;
+		return;
 	}
 
 	p = Cmd_Argv(1);
@@ -1236,18 +1235,8 @@ static void Host_SaveConfig_f (void)
 		Con_Printf ("Invalid config name.\n");
 		return;
 	}
-	while (*p)
-	{
-		if (*p == '.' || isalnum(*p))
-		{
-			p++;
-			continue;
-		}
-		Con_Printf ("Invalid config name.\n");
-		return;
-	}
 
-	Host_WriteConfiguration (Cmd_Argv(1));
+	Host_WriteConfiguration (p);
 }
 
 //============================================================================

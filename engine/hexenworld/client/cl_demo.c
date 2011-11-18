@@ -6,7 +6,6 @@
 */
 
 #include "quakedef.h"
-#include <ctype.h>
 
 static void CL_FinishTimeDemo (void);
 
@@ -318,18 +317,8 @@ void CL_Record_f (void)
 		Con_Printf ("Invalid demo name.\n");
 		return;
 	}
-	while (*p)
-	{
-		if (*p == '.' || isalnum(*p))
-		{
-			p++;
-			continue;
-		}
-		Con_Printf ("Invalid demo name.\n");
-		return;
-	}
 
-	q_snprintf (name, sizeof(name), "%s/%s", fs_userdir, Cmd_Argv(1));
+	q_snprintf (name, sizeof(name), "%s/%s", fs_userdir, p);
 
 //
 // open the demo file
@@ -384,16 +373,6 @@ void CL_ReRecord_f (void)
 		Con_Printf ("Invalid demo name.\n");
 		return;
 	}
-	while (*p)
-	{
-		if (*p == '.' || isalnum(*p))
-		{
-			p++;
-			continue;
-		}
-		Con_Printf ("Invalid demo name.\n");
-		return;
-	}
 
 	if (!*cls.servername)
 	{
@@ -401,7 +380,7 @@ void CL_ReRecord_f (void)
 		return;
 	}
 
-	q_snprintf (name, sizeof(name), "%s/%s", fs_userdir, Cmd_Argv(1));
+	q_snprintf (name, sizeof(name), "%s/%s", fs_userdir, p);
 
 //
 // open the demo file

@@ -3,6 +3,11 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2011-11-18 (SVN):
+    * Removed the alphanumeric-only limitation on the config file and game
+      save directory names. Doesn't seem necessary.
+    * quakedef.h: updated beta date stamp to 2011-11-18.
+
 2011-11-14 (SVN):
     * gtk-launcher: Cleaned up the Makefile.
     * gtk-launcher: Removed an obsoleted macro.

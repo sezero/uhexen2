@@ -6,7 +6,6 @@
 */
 
 #include "quakedef.h"
-#include <ctype.h>
 
 int		stufftext_frame;
 
@@ -297,16 +296,6 @@ void CL_Record_f (void)
 		Con_Printf ("Invalid demo name.\n");
 		return;
 	}
-	while (*p)
-	{
-		if (*p == '.' || isalnum(*p))
-		{
-			p++;
-			continue;
-		}
-		Con_Printf ("Invalid demo name.\n");
-		return;
-	}
 
 	if (c == 2 && cls.state == ca_connected)
 	{
@@ -325,7 +314,7 @@ void CL_Record_f (void)
 		track = -1;
 	}
 
-	q_snprintf (name, sizeof(name), "%s/%s", fs_userdir, Cmd_Argv(1));
+	q_snprintf (name, sizeof(name), "%s/%s", fs_userdir, p);
 
 //
 // start the map up

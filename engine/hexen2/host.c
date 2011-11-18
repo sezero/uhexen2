@@ -11,7 +11,6 @@
 #include "bgmusic.h"
 #include "cdaudio.h"
 #include <setjmp.h>
-#include <ctype.h>
 
 /*
 
@@ -93,7 +92,6 @@ void Host_RemoveGIPFiles (const char *path)
 	len = sizeof(tempdir) - len;
 
 	name = Sys_FindFirstFile (tempdir, "*.gip");
-
 	while (name)
 	{
 		q_snprintf (p, len, "/%s", name);
@@ -324,18 +322,8 @@ static void Host_SaveConfig_f (void)
 		Con_Printf ("Invalid config name.\n");
 		return;
 	}
-	while (*p)
-	{
-		if (*p == '.' || isalnum(*p))
-		{
-			p++;
-			continue;
-		}
-		Con_Printf ("Invalid config name.\n");
-		return;
-	}
 
-	Host_WriteConfiguration (Cmd_Argv(1));
+	Host_WriteConfiguration (p);
 }
 
 #if 0

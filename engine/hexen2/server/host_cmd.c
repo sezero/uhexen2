@@ -158,7 +158,7 @@ Host_Ping_f
 static void Host_Ping_f (void)
 {
 	int		i, j;
-	float	total;
+	float		total;
 	client_t	*client;
 
 	if (cmd_source == src_command)
@@ -439,20 +439,12 @@ static void Host_Savegame_f (void)
 		return;
 	}
 
-	i = 0;
 	p = Cmd_Argv(1);
-	while (*p)
+	if (*p == '.' || strstr(p, ".."))
 	{
-		if (isalnum(*p))
-		{
-			p++;
-			i++;
-			continue;
-		}
 		Con_Printf ("Invalid save name.\n");
 		return;
 	}
-	p -= i;
 
 	for (i = 0; i < svs.maxclients; i++)
 	{
@@ -538,7 +530,6 @@ Host_DeleteSave_f
 */
 static void Host_DeleteSave_f (void)
 {
-	int		i;
 	const char	*p;
 
 	if (cmd_source != src_command)
@@ -550,20 +541,12 @@ static void Host_DeleteSave_f (void)
 		return;
 	}
 
-	i = 0;
 	p = Cmd_Argv(1);
-	while (*p)
+	if (*p == '.' || strstr(p, ".."))
 	{
-		if (isalnum(*p))
-		{
-			p++;
-			i++;
-			continue;
-		}
 		Con_Printf ("Invalid save name.\n");
 		return;
 	}
-	p -= i;
 
 	if (q_snprintf(savename, sizeof(savename), "%s/%s", fs_userdir, p) >= (int)sizeof(savename))
 		return;
