@@ -113,9 +113,17 @@ static void R_RenderDlight (dlight_t *light)
 	glBegin_fp (GL_TRIANGLE_FAN);
 
 	if (light->color[0] || light->color[1] || light->color[2])
+	{
 		glColor4fv_fp (light->color);
+	}
 	else
+	{
+#ifndef H2W
 		glColor3f_fp (0.2,0.1,0.0);
+#else
+		glColor3f_fp (0.2,0.1,0.05); // changed dimlight effect
+#endif
+	}
 
 	for (i = 0; i < 3; i++)
 		v[i] = light->origin[i] - vpn[i]*rad;
@@ -186,7 +194,7 @@ DYNAMIC LIGHTS
 R_MarkLights
 =============
 */
-#if 0	// This is the original ID version
+#if 0	/* the original version from ID */
 void R_MarkLights (dlight_t *light, int bit, mnode_t *node)
 {
 	mplane_t	*splitplane;
@@ -226,7 +234,7 @@ void R_MarkLights (dlight_t *light, int bit, mnode_t *node)
 	R_MarkLights (light, bit, node->children[0]);
 	R_MarkLights (light, bit, node->children[1]);
 }
-#else	// This is the major speedup version by Lord Havoc
+#else	/* the major speedup version by Lord Havoc */
 void R_MarkLights (dlight_t *light, int bit, mnode_t *node)
 {
 	mplane_t	*splitplane;
@@ -300,7 +308,7 @@ loc0:
 	if (node->children[1]->contents >= 0)
 		R_MarkLights (light, bit, node->children[1]);
 }
-#endif	// end of 2 R_MarkLights versions
+#endif	/* end of 2 R_MarkLights versions */
 
 
 /*

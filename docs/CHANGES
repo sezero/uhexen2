@@ -4,6 +4,7 @@ Development Progress	:
 ---------------------------
 
 2011-11-20 (SVN):
+    * gl_rlight.c: Moved under h2shared. Used the hexen2 version.
     * r_misc.c (R_LineGraph2): Made the function static.
     * r_sprite.c: Moved under h2shared. Used the hexen2 version whose only
       difference from the hexenworld version was a developer mode print.
