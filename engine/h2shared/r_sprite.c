@@ -1,7 +1,7 @@
 /*
 	r_sprite.c
 
-	$Id: r_sprite.c,v 1.7 2007-07-08 11:55:38 sezero Exp $
+	$Id$
 */
 
 #include "quakedef.h"
@@ -228,7 +228,7 @@ static mspriteframe_t *R_GetSpriteframe (msprite_t *psprite)
 
 	if ((frame >= psprite->numframes) || (frame < 0))
 	{
-		Con_DPrintf ("%s: no such frame %d %s\n", __thisfunc__, frame, currententity->model->name);
+		Con_DPrintf ("%s: no such frame %d\n", __thisfunc__, frame);
 		frame = 0;
 	}
 

@@ -2,7 +2,7 @@
 	d_sprite.c:
 	software top-level rasterization driver module for drawing sprites
 
-	$Header: /cvsroot/uhexen2/engine/h2shared/d_sprite.c,v 1.6 2007-06-16 07:33:22 sezero Exp $
+	$Id$
 */
 
 #include "quakedef.h"

@@ -2,7 +2,7 @@
 	r_surf.c
 	surface-related refresh code
 
-	$Header: /cvsroot/uhexen2/engine/h2shared/r_surf.c,v 1.15 2008-03-07 08:10:38 sezero Exp $
+	$Id$
 */
 
 #include "quakedef.h"

@@ -4,6 +4,8 @@ Development Progress	:
 ---------------------------
 
 2011-11-20 (SVN):
+    * r_sprite.c: Moved under h2shared. Used the hexen2 version whose only
+      difference from the hexenworld version was a developer mode print.
     * gl_rmain.c, r_sprite.c (R_GetSpriteframe): Made the "no such frame"
       a developer mode print.
     * quakedef.h: updated beta date stamp to 2011-11-20.
