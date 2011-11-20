@@ -351,7 +351,7 @@
 		707D57990AA9F6EE00313A9F /* gl_model.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = gl_model.h; path = ../gl_model.h; sourceTree = SOURCE_ROOT; };
 		707D579A0AA9F6EE00313A9F /* h2config.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = h2config.h; path = ../../h2shared/h2config.h; sourceTree = SOURCE_ROOT; };
 		707D579B0AA9F6EE00313A9F /* gl_refrag.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = gl_refrag.c; path = ../../h2shared/gl_refrag.c; sourceTree = SOURCE_ROOT; };
-		707D579C0AA9F6EE00313A9F /* gl_rlight.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = gl_rlight.c; path = ../gl_rlight.c; sourceTree = SOURCE_ROOT; };
+		707D579C0AA9F6EE00313A9F /* gl_rlight.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = gl_rlight.c; path = ../../h2shared/gl_rlight.c; sourceTree = SOURCE_ROOT; };
 		707D579D0AA9F6EE00313A9F /* gl_rmain.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = gl_rmain.c; path = ../gl_rmain.c; sourceTree = SOURCE_ROOT; };
 		707D579E0AA9F6EE00313A9F /* gl_rmisc.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = gl_rmisc.c; path = ../gl_rmisc.c; sourceTree = SOURCE_ROOT; };
 		707D579F0AA9F6EE00313A9F /* gl_rsurf.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = gl_rsurf.c; path = ../gl_rsurf.c; sourceTree = SOURCE_ROOT; };
