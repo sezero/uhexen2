@@ -3,6 +3,11 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2011-11-20 (SVN):
+    * gl_rmain.c, r_sprite.c (R_GetSpriteframe): Made the "no such frame"
+      a developer mode print.
+    * quakedef.h: updated beta date stamp to 2011-11-20.
+
 2011-11-18 (SVN):
     * Removed the alphanumeric-only limitation on the config file and game
       save directory names. Doesn't seem necessary.

@@ -228,7 +228,7 @@ static mspriteframe_t *R_GetSpriteframe (msprite_t *psprite)
 
 	if ((frame >= psprite->numframes) || (frame < 0))
 	{
-		Con_Printf ("%s: no such frame %d %s\n", __thisfunc__, frame, currententity->model->name);
+		Con_DPrintf ("%s: no such frame %d %s\n", __thisfunc__, frame, currententity->model->name);
 		frame = 0;
 	}
 
