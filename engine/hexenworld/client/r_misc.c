@@ -126,7 +126,7 @@ static void R_LineGraph (int x, int y, int h)
 R_LineGraph
 ================
 */
-void R_LineGraph2 (int x, int y, int h, int h2, int drawType, int marker)
+static void R_LineGraph2 (int x, int y, int h, int h2, int drawType, int marker)
 {
 	int		i;
 	byte	*dest;

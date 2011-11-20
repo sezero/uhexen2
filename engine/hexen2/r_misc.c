@@ -171,14 +171,15 @@ void R_TimeGraph (void)
 	if (graphType == 1)
 	{ // Frame times
 		a = (Sys_DoubleTime() - r_time1) / 0.01;
+		r_timings[timex] = a;
 	}
 	else
 	{ // Packet sizes
 		a = LastServerMessageSize/10;
 		LastServerMessageSize = 0;
+		r_timings[timex] = a;
 	}
 
-	r_timings[timex] = a;
 	a = timex;
 
 	if (r_refdef.vrect.width <= MAX_TIMINGS)
