@@ -10,6 +10,7 @@ Development Progress	:
       and newer. This fixes the bug where, with resolutions lower than
       the desktop, the image wasn't being stretched to fill the screen
       as reported by Sander van Dijk.
+    * h2patch: updated uhexen2 version to report 1.5.1.
     * quakedef.h: updated beta date stamp to 2011-11-21.
 
 2011-11-20 (SVN):
