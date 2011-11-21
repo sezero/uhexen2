@@ -301,6 +301,7 @@ static void VID_PrepareModes (SDL_Rect **sdl_modes)
 {
 	int	i, j;
 	qboolean	have_mem, is_multiple;
+	SDL_Rect	**cpy_modes;
 
 	num_fmodes = 0;
 	num_wmodes = 0;
@@ -366,13 +367,19 @@ no_fmodes:
 	}
 	Con_SafePrintf ("Total %d entries\n", j);
 #endif
-	// count the entries
-	j = 0;
-	while ( sdl_modes[j] )
-		j++;
 
 	// sort the original list from low-res to high-res
 	// so that the low resolutions take priority
+	// but do so using a copy so that the original order
+	// doesn't change, otherwise weird things may happen
+	// with at least SDL >= 1.2.14.
+	for (j = 0; sdl_modes[j]; ++j)
+		;
+	cpy_modes = (SDL_Rect **) Z_Malloc ((j + 1) * sizeof(SDL_Rect *), Z_MAINZONE);
+	for (i = 0; sdl_modes[i]; ++i)
+		cpy_modes[i] = sdl_modes[i];
+	cpy_modes[j] = NULL;
+	sdl_modes = cpy_modes;
 	if (j > 1)
 		qsort(sdl_modes, j, sizeof *sdl_modes, sort_modes);
 
@@ -413,6 +420,8 @@ no_fmodes:
 		q_snprintf (fmodelist[num_fmodes].modedesc, MAX_DESC, "%d x %d", sdl_modes[i]->w, sdl_modes[i]->h);
 		num_fmodes++;
 	}
+
+	Z_Free (cpy_modes);
 
 	if (!num_fmodes)
 		goto no_fmodes;

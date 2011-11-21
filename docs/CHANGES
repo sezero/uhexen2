@@ -3,6 +3,15 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2011-11-21 (SVN):
+    * vid_sdl.c (VID_PrepareModes): Sort the list of modes using a copy
+      instead of modifying the order of original list from SDL_ListModes,
+      otherwise weird things might just happen at least with SDL 1.2.14
+      and newer. This fixes the bug where, with resolutions lower than
+      the desktop, the image wasn't being stretched to fill the screen
+      as reported by Sander van Dijk.
+    * quakedef.h: updated beta date stamp to 2011-11-21.
+
 2011-11-20 (SVN):
     * Updated Visual Studio project files after the moved sources.
     * gl_rlight.c: Moved under h2shared. Used the hexen2 version.
