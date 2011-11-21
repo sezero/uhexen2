@@ -1,8 +1,8 @@
-# GNU Makefile for hexen2 gtk-launcher app using GCC.
+# GNU Makefile for uhexen2 gtk-launcher app using GCC.
 # $Id$
 #
-#  gtk2 will be used default.
-#  to compile for gtk-1.2 type:  make GTK1=yes
+#  gtk-2.x will be used default.
+#  to compile against gtk-1.2:   make GTK1=yes
 #
 #  if building for the demo version, run with
 #  make DEMO=yes [other stuff]
@@ -113,6 +113,8 @@ xdelta3.o: $(XD3DEPS)
 
 gtk_ui.o: gtk_ui.c gtk_ui.h launcher_defs.h launcher_ui.h
 	$(CC) $(CFLAGS) $(GTK_CFLAGS) -c gtk_ui.c -o gtk_ui.o
+support.o: support.c support.h
+	$(CC) $(CFLAGS) $(GTK_CFLAGS) -c support.c -o support.o
 
 clean:
 	-rm -f *.o *.o core

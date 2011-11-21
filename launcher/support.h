@@ -30,7 +30,6 @@
 #  define N_(String)				(String)
 #endif
 
-
 /*
  * Public Functions.
  */
