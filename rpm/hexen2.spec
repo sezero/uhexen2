@@ -170,6 +170,8 @@ utils/hcc/hcc -src gamecode-%{gamecode_ver}/hc/hw -oi -on
 
 # Install the cd-rip scripts
 %{__install} -D -m755 scripts/cdrip_hexen2.sh %{buildroot}/%{_prefix}/games/%{name}/cdrip_hexen2.sh
+%{__install} -D -m755 scripts/cdrip_hexen2_xplosiv.sh %{buildroot}/%{_prefix}/games/%{name}/cdrip_hexen2_xplosiv.sh
+%{__install} -D -m755 scripts/cdrip_hexen2_matroxm3d.sh %{buildroot}/%{_prefix}/games/%{name}/cdrip_hexen2_matroxm3d.sh
 %{__install} -D -m755 scripts/cdrip_missionpack.sh %{buildroot}/%{_prefix}/games/%{name}/cdrip_missionpack.sh
 
 # Install the docs
@@ -322,6 +324,8 @@ desktop-file-install \
 %{_datadir}/pixmaps/%{name}.png
 %{_prefix}/games/%{name}/h2launcher
 %{_prefix}/games/%{name}/cdrip_hexen2.sh
+%{_prefix}/games/%{name}/cdrip_hexen2_xplosiv.sh
+%{_prefix}/games/%{name}/cdrip_hexen2_matroxm3d.sh
 %{_prefix}/games/%{name}/cdrip_missionpack.sh
 %{_prefix}/games/%{name}/docs/README
 %{_prefix}/games/%{name}/docs/COPYING
@@ -362,7 +366,10 @@ desktop-file-install \
 %{_prefix}/games/%{name}/docs/README.hwmaster
 
 %changelog
-* Tue Oct 18 2011 O.Sezer <sezero@users.sourceforge.net> 1.5.1-1
+* Mon Nov 21 2011 O.Sezer <sezero@users.sourceforge.net> 1.5.1-1
+- Install the cd-rip scripts for the less common game media, too.
+
+* Tue Oct 18 2011 O.Sezer <sezero@users.sourceforge.net>
 - Fixed some typoes
 - Install the CHANGES.old document.
 

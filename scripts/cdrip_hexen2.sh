@@ -2,6 +2,9 @@
 # Simple script that rips Hexen II cdrom audio tracks to a
 # format useable by Hammer of Thyrion (uHexen2). Needs cdparanoia and oggenc.
 
+# This particular script is to be used with the retail Hexen II cdrom,
+# i.e. the original disc distributed by Activision.
+
 # create directory
 mkdir -p data1/music
 cd data1/music
@@ -30,4 +33,5 @@ oggenc -q 6 -o casb3.ogg track17.cdda.wav
 # remove .wav files
 rm *.wav
 
-echo -e "\n Ripping done, move data1/music/ directory to /your/path/to/hexen2/data1/music/"
+echo "Ripping done. Move all data1/music/*.ogg files"
+echo "to /your/path/to/hexen2/data1/music/ directory"

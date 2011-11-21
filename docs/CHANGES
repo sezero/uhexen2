@@ -4,6 +4,12 @@ Development Progress	:
 ---------------------------
 
 2011-11-21 (SVN):
+    * Provided cd-rip scripts for less common game media, i.e. the Xplosiv
+      re-release and the Matrox m3D oem versions of Hexen II.  Reformatted
+      README.music file and added m3d tracks information.  Updated the rpm
+      spec file.
+
+2011-11-21 (SVN):
     * vid_sdl.c (VID_PrepareModes): Sort the list of modes using a copy
       instead of modifying the order of original list from SDL_ListModes,
       otherwise weird things might just happen at least with SDL 1.2.14

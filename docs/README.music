@@ -11,6 +11,8 @@ What you should do is simple:
 1. Use your favorite cd-ripper application and rip your hexen2 cdrom
    audio tracks, convert them to ogg or mp3 so they occupy less space,
    like track02.ogg, track03.ogg, etc.
+  (Notice that there is no such thing as track01:  The first tracks of
+   both Hexen II and Portal of Praevus cdroms are always "data" tracks)
 
 2. Go into your hexen2 installation directory (unix/linux users: you can
    do this in your $HOME/.hexen2 directory, too.)
@@ -40,46 +42,33 @@ What you should do is simple:
 
    data1/music :
    -------------
-   track02  ->  casa1
-   track03  ->  casa2
-   track04  ->  casa3
-   track05  ->  casa4
-   track06  ->  egyp1
-   track07  ->  egyp2
-   track08  ->  egyp3
-   track09  ->  meso1
-   track10  ->  meso2
-   track11  ->  meso3
-   track12  ->  roma1
-   track13  ->  roma2
-   track14  ->  roma3
-   track15  ->  casb1
-   track16  ->  casb2
-   track17  ->  casb3
+   track02  ->  casa1       track08  ->  egyp3       track14  ->  roma3
+   track03  ->  casa2       track09  ->  meso1       track15  ->  casb1
+   track04  ->  casa3       track10  ->  meso2       track16  ->  casb2
+   track05  ->  casa4       track11  ->  meso3       track17  ->  casb3
+   track06  ->  egyp1       track12  ->  roma1
+   track07  ->  egyp2       track13  ->  roma2
 
    portals/music :
    ---------------
-   track02  ->  tulku7
-   track03  ->  tulku1
-   track04  ->  tulku4
-   track05  ->  tulku2
-   track06  ->  tulku9
-   track07  ->  tulku10
-   track08  ->  tulku6
-   track09  ->  tulku5
-   track10  ->  tulku8
-   track11  ->  tulku3
-   track12  ->  (this won't match to any midi name, leave as is)
+   track02  ->  tulku7      track06  ->  tulku9      track09  ->  tulku5
+   track03  ->  tulku1      track07  ->  tulku10     track10  ->  tulku8
+   track04  ->  tulku4      track08  ->  tulku6      track11  ->  tulku3
+   track05  ->  tulku2     (track12 won't match to anything, leave as is)
 
    Notice that there is no such thing as track01:  The first tracks of
    both Hexen II and Portal of Praevus cdroms are always "data" tracks.
 
 7. All things are ready to go.
 
+
+Notes on less common Hexen II cdrom media:
+------------------------------------------
+
 8. A note for the owners of Hexen II/xplosiv release:
 
    Xplosiv is (was) a publishing label that did budget or re-releases of
-   quite some games, one of them Hexen II.  Audio tracks on the xplosiv
+   quite some games, one of them Hexen II.  Audio tracks on the Xplosiv
    release of Hexen II is the exact opposite of the order on the original
    release, like so: (information was kindly provided by Sander van Dijk)
 
@@ -89,6 +78,19 @@ What you should do is simple:
    track05  ->  roma3       track11  ->  egyp3       track17  ->  casa1
    track06  ->  roma2       track12  ->  egyp2
    track07  ->  roma1       track13  ->  egyp1
+
+   (You can use the cdrip_hexen2_xplosiv.sh script with it, if you are
+   on linux.)
+
+9. Yet another note for the owners of Hexen II Matrox m3D bundled version,
+   also known as "Continent of Blackmarsh":  That disc has tracks 2 and 4
+   in reversed order, like so: (noted on "M3D_2" disc with Hexen II v1.10)
+
+   track02  ->  casa3       track03  ->  casa2       track04  ->  casa1
+   track05  ->  casa4
+
+   (You can use the cdrip_hexen2_matroxm3d.sh script with it, if you are
+   on linux.)
 
 
 New console commands:
