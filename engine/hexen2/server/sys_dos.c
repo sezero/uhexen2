@@ -488,9 +488,6 @@ char *Sys_ConsoleInput (void)
 	static int	textlen = 0;
 	char		ch;
 
-	if (!isDedicated)
-		return NULL;
-
 	if (! kbhit())
 		return NULL;
 

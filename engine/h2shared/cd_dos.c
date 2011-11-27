@@ -862,9 +862,6 @@ int CDAudio_Init (void)
 	char	*memory;
 	int		n;
 
-	if (cls.state == ca_dedicated)
-		return -1;
-
 	if (safemode || COM_CheckParm("-nocdaudio"))
 		return -1;
 

@@ -4,6 +4,12 @@ Development Progress	:
 ---------------------------
 
 2011-11-27 (SVN):
+    * cd_dos.c (CDAudio_Init): Removed check for ca_dedicated: We never
+      call CDAudio_Init() if we are running as a dedicated server.
+    * hexen2, server/sys_dos.c (Sys_ConsoleInput): Removed the pointless
+      isDedicated check.
+
+2011-11-27 (SVN):
     * dos port: Made the MPATH winsock driver a compile time option.
 
 2011-11-27 (SVN):
