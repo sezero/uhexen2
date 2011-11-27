@@ -145,6 +145,8 @@ LINK_GL_LIBS=no
 USE_3DFXGAMMA=no
 USE_X86_ASM=yes
 COMPILE_32BITS=no
+# whether to use MPATH for DOS UDP networking under Win9x
+USE_MPATH=yes
 # Enable/disable codecs for streaming music support:
 USE_CODEC_WAVE=yes
 USE_CODEC_MP3=yes
@@ -373,6 +375,9 @@ VORBISLIB=tremor
 CODECS_USE_ZONE=yes
 
 INCLUDES += -I$(OSLIBS)/dos
+ifeq ($(USE_MPATH),yes)
+CPPFLAGS+= -DUSE_MPATH
+endif
 LDFLAGS += -lc -lgcc -lm
 
 ifeq ($(USE_CODEC_VORBIS),yes)
@@ -726,8 +731,12 @@ endif
 ifeq ($(TARGET_OS),dos)
 SYSOBJ_INPUT := in_dos.o
 SYSOBJ_SOFT_VID:= vid_vga.o vid_ext.o d_copy.o vid_dos.o vregset.o
-SYSOBJ_NET := dos/net_dos.o dos/net_ser.o dos/net_bw.o dos/dos_inet.o dos/inet_addr.o \
-	dos/net_ipx.o dos/net_mp.o dos/mplpc.o
+DOSTCP := dos/net_bw.o
+ifeq ($(USE_MPATH),yes)
+DOSTCP += dos/net_mp.o dos/mplpc.o
+endif
+DOSTCP += dos/dos_inet.o dos/inet_addr.o
+SYSOBJ_NET := dos/net_dos.o dos/net_ser.o $(DOSTCP) dos/net_ipx.o
 SYSOBJ_SYS := dos_v2.o sys_dos.o
 #	dosasm.o
 endif

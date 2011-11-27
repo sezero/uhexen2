@@ -4,6 +4,9 @@ Development Progress	:
 ---------------------------
 
 2011-11-27 (SVN):
+    * dos port: Made the MPATH winsock driver a compile time option.
+
+2011-11-27 (SVN):
     * hexen2, net_udp.c: Replaced explicit ioctl calls by ioctlsocket.
 
 2011-11-27 (SVN):

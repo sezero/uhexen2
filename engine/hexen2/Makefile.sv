@@ -51,6 +51,8 @@ COMMONDIR:=../h2shared
 OPT_EXTRA=yes
 COMPILE_32BITS=no
 USE_WINSOCK2=no
+# whether to use MPATH for DOS UDP networking under Win9x
+USE_MPATH=yes
 
 # include the common dirty stuff
 include $(UHEXEN2_TOP)/scripts/makefile.inc
@@ -141,6 +143,9 @@ endif
 ifeq ($(TARGET_OS),dos)
 
 INCLUDES += -I$(OSLIBS)/dos
+ifeq ($(USE_MPATH),yes)
+CPPFLAGS+= -DUSE_MPATH
+endif
 LDFLAGS += -lc -lgcc -lm
 
 endif
@@ -225,8 +230,12 @@ SYSOBJ_NET := net_win.o net_wins.o net_wipx.o
 SYSOBJ_SYS := sys_win.o
 endif
 ifeq ($(TARGET_OS),dos)
-SYSOBJ_NET := dos/net_dos.o dos/net_ser.o dos/net_bw.o dos/dos_inet.o dos/inet_addr.o \
-	dos/net_ipx.o dos/net_mp.o dos/mplpc.o
+DOSTCP := dos/net_bw.o
+ifeq ($(USE_MPATH),yes)
+DOSTCP += dos/net_mp.o dos/mplpc.o
+endif
+DOSTCP += dos/dos_inet.o dos/inet_addr.o
+SYSOBJ_NET := dos/net_dos.o dos/net_ser.o $(DOSTCP) dos/net_ipx.o
 SYSOBJ_SYS := dos_v2.o sys_dos.o
 endif
 ifeq ($(TARGET_OS),unix)

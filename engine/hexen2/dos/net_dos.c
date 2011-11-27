@@ -98,7 +98,9 @@ const int net_numdrivers = (sizeof(net_drivers) / sizeof(net_drivers[0]));
 
 #include "net_bw.h"
 #include "net_ipx.h"
+#ifdef USE_MPATH
 #include "net_mp.h"
+#endif
 
 net_landriver_t	net_landrivers[] =
 {
@@ -148,6 +150,7 @@ net_landriver_t	net_landrivers[] =
 		IPX_SetSocketPort
 	},
 
+#ifdef USE_MPATH
 	{	"Win95 TCP/IP",
 		false,
 		0,
@@ -171,6 +174,7 @@ net_landriver_t	net_landrivers[] =
 		MPATH_SetSocketPort
 	}
 };
+#endif /* USE_MPATH */
 
 const int net_numlandrivers = (sizeof(net_landrivers) / sizeof(net_landrivers[0]));
 
