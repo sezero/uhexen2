@@ -3,6 +3,9 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2011-11-27 (SVN):
+    * Bumped version to 1.5.2 in the development tree.
+
 2011-11-21 (SVN):
     * Provided cd-rip scripts for less common game media, i.e. the Xplosiv
       re-release and the Matrox m3D oem versions of Hexen II.  Reformatted
