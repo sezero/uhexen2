@@ -68,7 +68,7 @@ static int udp_scan_iface (sys_socket_t socketfd)
 	ifc.ifc_len = (int) sizeof(buf);
 	ifc.ifc_buf = (caddr_t) buf;
 
-	if (ioctl(socketfd, SIOCGIFCONF, &ifc) == -1)
+	if (ioctlsocket(socketfd, SIOCGIFCONF, &ifc) == -1)
 	{
 		Con_SafePrintf("%s: SIOCGIFCONF failed (%s)\n",
 				__thisfunc__, strerror(errno));
@@ -80,9 +80,9 @@ static int udp_scan_iface (sys_socket_t socketfd)
 
 	for (i = 0; i < n; i++)
 	{
-		if (ioctl(socketfd, SIOCGIFADDR, &ifr[i]) == -1)
+		if (ioctlsocket(socketfd, SIOCGIFADDR, &ifr[i]) == -1)
 			continue;
-		iaddr = (struct sockaddr_in *)&ifr[i].ifr_addr;
+		iaddr = (struct sockaddr_in *) &ifr[i].ifr_addr;
 		Con_SafeDPrintf("%s: %s\n", ifr[i].ifr_name, inet_ntoa(iaddr->sin_addr));
 		addr.s_addr = iaddr->sin_addr.s_addr;
 		if (addr.s_addr != htonl(INADDR_LOOPBACK))
@@ -372,7 +372,7 @@ sys_socket_t UDP_CheckNewConnections (void)
 	if (net_acceptsocket == INVALID_SOCKET)
 		return INVALID_SOCKET;
 
-	if (ioctl (net_acceptsocket, FIONREAD, &available) == -1)
+	if (ioctlsocket (net_acceptsocket, FIONREAD, &available) == -1)
 	{
 		int err = SOCKETERRNO;
 		Sys_Error ("UDP: ioctlsocket (FIONREAD) failed (%s)", socketerror(err));
