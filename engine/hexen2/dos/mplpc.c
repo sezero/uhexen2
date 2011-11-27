@@ -211,23 +211,23 @@ extern short	flat_selector;
 #define	FARPOKL(x, y)	(_farnspokel((unsigned long) (x), (unsigned long) (y)))
 #define	FARPOKB(x, y)	(_farnspokeb((unsigned long) (x), (unsigned char) (y)))
 
-int	Qsizes[] = { 64, 128, 256, 512, 1024, 2048 };
+static int	Qsizes[] = { 64, 128, 256, 512, 1024, 2048 };
 
-int	SocketError = 0;
+static int	SocketError = 0;
 
-SocketMap	*SockMap;
+static SocketMap	*SockMap;
 
 #define	HOSTENT_ALIAS_LIMIT	5
 #define	HOSTENT_STRLEN_LIMIT	50
 #define	HOSTENT_ADDR_LIST_LIMIT	5
 
-struct hostent	HostEnt;
+static struct hostent	HostEnt;
 
-char	HostEnt_hname[HOSTENT_STRLEN_LIMIT];
-char	*HostEnt_h_aliases[HOSTENT_ALIAS_LIMIT];
-char	HostEnt_names[HOSTENT_ALIAS_LIMIT][HOSTENT_STRLEN_LIMIT];
-struct in_addr	*HostEnt_addr_list[HOSTENT_ADDR_LIST_LIMIT];
-struct in_addr	HostEnt_addrs[HOSTENT_ADDR_LIST_LIMIT];
+static char	HostEnt_hname[HOSTENT_STRLEN_LIMIT];
+static char	*HostEnt_h_aliases[HOSTENT_ALIAS_LIMIT];
+static char	HostEnt_names[HOSTENT_ALIAS_LIMIT][HOSTENT_STRLEN_LIMIT];
+static struct in_addr	*HostEnt_addr_list[HOSTENT_ADDR_LIST_LIMIT];
+static struct in_addr	HostEnt_addrs[HOSTENT_ADDR_LIST_LIMIT];
 
 static void fmemcpyto (void *to, const void *from, int length)
 {
@@ -335,7 +335,7 @@ static void SetLPCData (LPCData *lpc)
 	FARPOKL(&(lpc->service), 0);
 }
 
-int bind (SOCKET s, const struct sockaddr *name, int namelen)
+int WSLIB_bind (SOCKET s, const struct sockaddr *name, int namelen)
 {
 	RTQ_NODE	*n = MGenGetNode(IDLE_QUEUE);
 	LPCData		*p;
@@ -373,7 +373,7 @@ int bind (SOCKET s, const struct sockaddr *name, int namelen)
 	return retVal;
 }
 
-int closesocket (SOCKET s)
+int WSLIB_closesocket (SOCKET s)
 {
 	RTQ_NODE	*n = MGenGetNode(IDLE_QUEUE);
 	LPCData		*p;
@@ -449,7 +449,7 @@ static void ReconstructHostEnt (struct hostent *s, void *flattened)
 	s->h_addr_list[i] = 0;
 }
 
-int getsockname (SOCKET s, struct sockaddr *name, int *namelen)
+int WSLIB_getsockname (SOCKET s, struct sockaddr *name, int *namelen)
 {
 	RTQ_NODE	*n = MGenGetNode(IDLE_QUEUE);
 	LPCData		*p;
@@ -486,7 +486,7 @@ int getsockname (SOCKET s, struct sockaddr *name, int *namelen)
 	return retVal;
 }
 
-int gethostname (char *name, int namelen)
+int WSLIB_gethostname (char *name, int namelen)
 {
 	RTQ_NODE	*n;
 	LPCData		*p;
@@ -535,7 +535,7 @@ int gethostname (char *name, int namelen)
 	return retVal;
 }
 
-struct hostent *gethostbyname (const char *name)
+struct hostent *WSLIB_gethostbyname (const char *name)
 {
 	RTQ_NODE	*n = MGenGetNode(IDLE_QUEUE);
 	LPCData		*p;
@@ -575,7 +575,7 @@ struct hostent *gethostbyname (const char *name)
 	return retVal;
 }
 
-struct hostent *gethostbyaddr (const char *addr, int len, int type)
+struct hostent *WSLIB_gethostbyaddr (const char *addr, int len, int type)
 {
 	RTQ_NODE	*n = MGenGetNode(IDLE_QUEUE);
 	LPCData		*p;
@@ -619,7 +619,7 @@ struct hostent *gethostbyaddr (const char *addr, int len, int type)
 	return retVal;
 }
 
-SOCKET socket (int af, int type, int protocol)
+SOCKET WSLIB_socket (int af, int type, int protocol)
 {
 	RTQ_NODE	*n = MGenGetNode(IDLE_QUEUE);
 	LPCData		*p;
@@ -656,7 +656,7 @@ SOCKET socket (int af, int type, int protocol)
 	return retVal;
 }
 
-void sockets_flush (void)
+void WSLIB_sockets_flush (void)
 {
 	RTQ_NODE	*n = MGenGetNode(IDLE_QUEUE);
 	LPCData		*p;
@@ -675,7 +675,7 @@ void sockets_flush (void)
 	MGenMoveTo(REC_QUEUE, IDLE_QUEUE);
 }
 
-int recvfrom (SOCKET s, char *buf, int len, int flags, struct sockaddr *from, int *fromlen)
+int WSLIB_recvfrom (SOCKET s, char *buf, int len, int flags, struct sockaddr *from, int *fromlen)
 {
 	int		i;
 	RTQ_NODE	*n;
@@ -727,7 +727,7 @@ int recvfrom (SOCKET s, char *buf, int len, int flags, struct sockaddr *from, in
 	return bytesRead;
 }
 
-int sendto (SOCKET s, const char *buf, int len, int flags, const struct sockaddr *to, int tolen)
+int WSLIB_sendto (SOCKET s, const char *buf, int len, int flags, const struct sockaddr *to, int tolen)
 {
 	int		i;
 	int		outQ;
@@ -787,7 +787,7 @@ int sendto (SOCKET s, const char *buf, int len, int flags, const struct sockaddr
 	return len;
 }
 
-int ioctlsocket (SOCKET s, long cmd, unsigned long *argp)
+int WSLIB_ioctlsocket (SOCKET s, long cmd, unsigned long *argp)
 {
 	RTQ_NODE	*n = MGenGetNode(IDLE_QUEUE);
 	LPCData		*p;
@@ -829,7 +829,7 @@ int ioctlsocket (SOCKET s, long cmd, unsigned long *argp)
 	return retVal;
 }
 
-int setsockopt (SOCKET s, int level, int optname, const char *optval, int optlen)
+int WSLIB_setsockopt (SOCKET s, int level, int optname, const char *optval, int optlen)
 {
 	RTQ_NODE	*n = MGenGetNode(IDLE_QUEUE);
 	LPCData		*p;
@@ -865,7 +865,7 @@ int setsockopt (SOCKET s, int level, int optname, const char *optval, int optlen
 	return retVal;
 }
 
-int WSAGetLastError (void)
+int WSLIB_WSAGetLastError (void)
 {
 	RTQ_NODE	*n = MGenGetNode(IDLE_QUEUE);
 	LPCData		*p;
@@ -902,7 +902,7 @@ int WSAGetLastError (void)
 }
 
 #if 0	/* implemented in dos_inet.c */
-unsigned long inet_addr (const char *cp)
+unsigned long WSLIB_inet_addr (const char *cp)
 {
 	RTQ_NODE	*n = MGenGetNode(IDLE_QUEUE);
 	LPCData		*p;
@@ -936,7 +936,7 @@ unsigned long inet_addr (const char *cp)
 	return retVal;
 }
 
-char *inet_ntoa (struct in_addr in)
+char *WSLIB_inet_ntoa (struct in_addr in)
 {
 	static char buf[32];
 

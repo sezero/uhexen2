@@ -30,15 +30,25 @@
 
 #include <dpmi.h>
 #include "quakedef.h"
+
+/* these we get from djgpp: */
+#define WSLIB_ntohl	ntohl
+#define WSLIB_ntohs	ntohs
+#define WSLIB_htonl	htonl
+#define WSLIB_htons	htons
+/* these we have implemented locally: */
+#define WSLIB_inet_ntoa	inet_ntoa
+#define WSLIB_inet_addr	inet_addr
 #include "mpdosock.h"
 
 #define sys_socket_t int	/* messy... */
+
 #include "net_defs.h"
 
 short	flat_selector;
 
-int WSAGetLastError (void);
-void sockets_flush (void);
+int WSLIB_WSAGetLastError (void);
+void WSLIB_sockets_flush (void);
 
 #define MAXHOSTNAMELEN		256
 
@@ -83,15 +93,15 @@ int MPATH_Init (void)
 	}
 
 	// determine my name & address
-	myAddr.s_addr = htonl(INADDR_LOOPBACK);
-	if (gethostname(buff, MAXHOSTNAMELEN) != 0)
+	myAddr.s_addr = WSLIB_htonl(INADDR_LOOPBACK);
+	if (WSLIB_gethostname(buff, MAXHOSTNAMELEN) != 0)
 	{
 		Con_Printf("MPATH_Init: WARNING: gethostname failed.\n");
 	}
 	else
 	{
 		buff[MAXHOSTNAMELEN - 1] = 0;
-		local = gethostbyname(buff);
+		local = WSLIB_gethostbyname(buff);
 		if (local == NULL)
 		{
 			Con_Printf("MPATH_Init: WARNING: gethostbyname failed.\n");
@@ -105,14 +115,14 @@ int MPATH_Init (void)
 			myAddr = *(struct in_addr *)local->h_addr_list[0];
 		}
 	}
-	Con_Printf("UDP, Local address: %s\n", inet_ntoa(myAddr));
+	Con_Printf("UDP, Local address: %s\n", WSLIB_inet_ntoa(myAddr));
 
 	if ((net_controlsocket = MPATH_OpenSocket(0)) == -1)
 		Sys_Error("MPATH_Init: Unable to open control socket\n");
 
 	broadcastaddr.sin_family = AF_INET;
 	broadcastaddr.sin_addr.s_addr = INADDR_BROADCAST;
-	broadcastaddr.sin_port = htons((unsigned short)net_hostport);
+	broadcastaddr.sin_port = WSLIB_htons((unsigned short)net_hostport);
 
 	MPATH_GetSocketAddr (net_controlsocket, &addr);
 	strcpy(my_tcpip_address,  MPATH_AddrToString (&addr));
@@ -163,23 +173,23 @@ int MPATH_OpenSocket (int port)
 	struct sockaddr_in address;
 	u_long _true = 1;
 
-	if ((newsocket = socket (PF_INET, SOCK_DGRAM, IPPROTO_UDP)) == -1)
+	if ((newsocket = WSLIB_socket (PF_INET, SOCK_DGRAM, IPPROTO_UDP)) == -1)
 		return -1;
 
-	if (ioctlsocket (newsocket, FIONBIO, &_true) == -1)
+	if (WSLIB_ioctlsocket (newsocket, FIONBIO, &_true) == -1)
 		goto ErrorReturn;
 
 	memset(&address, 0, sizeof(struct sockaddr_in));
 	address.sin_family = AF_INET;
 	address.sin_addr.s_addr = INADDR_ANY;
-	address.sin_port = htons((unsigned short)port);
-	if ( bind (newsocket, (struct sockaddr *)&address, sizeof(address)) == -1)
+	address.sin_port = WSLIB_htons((unsigned short)port);
+	if ( WSLIB_bind (newsocket, (struct sockaddr *)&address, sizeof(address)) == -1)
 		goto ErrorReturn;
 
 	return newsocket;
 
 ErrorReturn:
-	closesocket (newsocket);
+	WSLIB_closesocket (newsocket);
 	return -1;
 }
 
@@ -189,7 +199,7 @@ int MPATH_CloseSocket (int socketid)
 {
 	if (socketid == net_broadcastsocket)
 		net_broadcastsocket = 0;
-	return closesocket (socketid);
+	return WSLIB_closesocket (socketid);
 }
 
 //=============================================================================
@@ -241,8 +251,8 @@ static int PartialIPAddress (const char *in, struct qsockaddr *hostaddr)
 		port = net_hostport;
 
 	hostaddr->qsa_family = AF_INET;
-	((struct sockaddr_in *)hostaddr)->sin_port = htons((unsigned short)port);
-	((struct sockaddr_in *)hostaddr)->sin_addr.s_addr = (myAddr.s_addr & htonl(mask)) | htonl(addr);
+	((struct sockaddr_in *)hostaddr)->sin_port = WSLIB_htons((unsigned short)port);
+	((struct sockaddr_in *)hostaddr)->sin_addr.s_addr = (myAddr.s_addr & WSLIB_htonl(mask)) | WSLIB_htonl(addr);
 
 	return 0;
 }
@@ -263,7 +273,7 @@ int MPATH_CheckNewConnections (void)
 	if (net_acceptsocket == -1)
 		return -1;
 
-	if (recvfrom (net_acceptsocket, buf, 4, MSG_PEEK, NULL, NULL) >= 0)
+	if (WSLIB_recvfrom (net_acceptsocket, buf, 4, MSG_PEEK, NULL, NULL) >= 0)
 		return net_acceptsocket;
 	return -1;
 }
@@ -275,10 +285,10 @@ int MPATH_Read (int socketid, byte *buf, int len, struct qsockaddr *addr)
 	int addrlen = sizeof(struct qsockaddr);
 	int ret;
 
-	ret = recvfrom (socketid, (char *)buf, len, 0, (struct sockaddr *)addr, &addrlen);
+	ret = WSLIB_recvfrom (socketid, (char *)buf, len, 0, (struct sockaddr *)addr, &addrlen);
 	if (ret == -1)
 	{
-		int err = WSAGetLastError();
+		int err = WSLIB_WSAGetLastError();
 
 		if (err == WSAEWOULDBLOCK || err == WSAECONNREFUSED)
 			return 0;
@@ -293,7 +303,7 @@ int MPATH_MakeSocketBroadcastCapable (int socketid)
 	int	i = 1;
 
 	// make this socket broadcast capable
-	if (setsockopt(socketid, SOL_SOCKET, SO_BROADCAST, (char *)&i, sizeof(i)) < 0)
+	if (WSLIB_setsockopt(socketid, SOL_SOCKET, SO_BROADCAST, (char *)&i, sizeof(i)) < 0)
 		return -1;
 	net_broadcastsocket = socketid;
 
@@ -327,14 +337,14 @@ int MPATH_Write (int socketid, byte *buf, int len, struct qsockaddr *addr)
 {
 	int	ret;
 
-	ret = sendto (socketid, (char *)buf, len, 0, (struct sockaddr *)addr, sizeof(struct qsockaddr));
+	ret = WSLIB_sendto (socketid, (char *)buf, len, 0, (struct sockaddr *)addr, sizeof(struct qsockaddr));
 	if (ret == -1)
 	{
-		if (WSAGetLastError() == WSAEWOULDBLOCK)
+		if (WSLIB_WSAGetLastError() == WSAEWOULDBLOCK)
 			return 0;
 	}
 
-	sockets_flush();
+	WSLIB_sockets_flush();
 
 	return ret;
 }
@@ -346,10 +356,10 @@ const char *MPATH_AddrToString (struct qsockaddr *addr)
 	static char buffer[22];
 	int		haddr;
 
-	haddr = ntohl(((struct sockaddr_in *)addr)->sin_addr.s_addr);
+	haddr = WSLIB_ntohl(((struct sockaddr_in *)addr)->sin_addr.s_addr);
 	q_snprintf (buffer, sizeof(buffer), "%d.%d.%d.%d:%d", (haddr >> 24) & 0xff,
 			  (haddr >> 16) & 0xff, (haddr >> 8) & 0xff, haddr & 0xff,
-			  ntohs(((struct sockaddr_in *)addr)->sin_port));
+			  WSLIB_ntohs(((struct sockaddr_in *)addr)->sin_port));
 	return buffer;
 }
 
@@ -363,8 +373,8 @@ int MPATH_StringToAddr (const char *string, struct qsockaddr *addr)
 	ipaddr = (ha1 << 24) | (ha2 << 16) | (ha3 << 8) | ha4;
 
 	addr->qsa_family = AF_INET;
-	((struct sockaddr_in *)addr)->sin_addr.s_addr = htonl(ipaddr);
-	((struct sockaddr_in *)addr)->sin_port = htons((unsigned short)hp);
+	((struct sockaddr_in *)addr)->sin_addr.s_addr = WSLIB_htonl(ipaddr);
+	((struct sockaddr_in *)addr)->sin_port = WSLIB_htons((unsigned short)hp);
 	return 0;
 }
 
@@ -377,9 +387,9 @@ int MPATH_GetSocketAddr (int socketid, struct qsockaddr *addr)
 	struct in_addr	a;
 
 	memset(addr, 0, sizeof(struct qsockaddr));
-	getsockname(socketid, (struct sockaddr *)addr, &addrlen);
+	WSLIB_getsockname(socketid, (struct sockaddr *)addr, &addrlen);
 	a = address->sin_addr;
-	if (a.s_addr == 0 || a.s_addr == htonl(INADDR_LOOPBACK))
+	if (a.s_addr == 0 || a.s_addr == WSLIB_htonl(INADDR_LOOPBACK))
 		address->sin_addr.s_addr = myAddr.s_addr;
 
 	return 0;
@@ -391,7 +401,7 @@ int MPATH_GetNameFromAddr (struct qsockaddr *addr, char *name)
 {
 	struct hostent *hostentry;
 
-	hostentry = gethostbyaddr ((char *)&((struct sockaddr_in *)addr)->sin_addr, sizeof(struct in_addr), AF_INET);
+	hostentry = WSLIB_gethostbyaddr ((char *)&((struct sockaddr_in *)addr)->sin_addr, sizeof(struct in_addr), AF_INET);
 	if (hostentry)
 	{
 		strncpy (name, (char *)hostentry->h_name, NET_NAMELEN - 1);
@@ -411,12 +421,12 @@ int MPATH_GetAddrFromName (const char *name, struct qsockaddr *addr)
 	if (name[0] >= '0' && name[0] <= '9')
 		return PartialIPAddress (name, addr);
 
-	hostentry = gethostbyname (name);
+	hostentry = WSLIB_gethostbyname (name);
 	if (!hostentry)
 		return -1;
 
 	addr->qsa_family = AF_INET;
-	((struct sockaddr_in *)addr)->sin_port = htons((unsigned short)net_hostport);
+	((struct sockaddr_in *)addr)->sin_port = WSLIB_htons((unsigned short)net_hostport);
 	((struct sockaddr_in *)addr)->sin_addr.s_addr = *(u_long *)hostentry->h_addr_list[0];
 
 	return 0;
@@ -442,13 +452,13 @@ int MPATH_AddrCompare (struct qsockaddr *addr1, struct qsockaddr *addr2)
 
 int MPATH_GetSocketPort (struct qsockaddr *addr)
 {
-	return ntohs(((struct sockaddr_in *)addr)->sin_port);
+	return WSLIB_ntohs(((struct sockaddr_in *)addr)->sin_port);
 }
 
 
 int MPATH_SetSocketPort (struct qsockaddr *addr, int port)
 {
-	((struct sockaddr_in *)addr)->sin_port = htons((unsigned short)port);
+	((struct sockaddr_in *)addr)->sin_port = WSLIB_htons((unsigned short)port);
 	return 0;
 }
 

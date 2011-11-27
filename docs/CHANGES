@@ -4,6 +4,10 @@ Development Progress	:
 ---------------------------
 
 2011-11-27 (SVN):
+    * dos port: mpdosock.h, mplpc.c, net_mp.c: Prefixed all of the public
+      functions by WSLIB_ which would help me with using WatTCP later on.
+
+2011-11-27 (SVN):
     * Bumped version to 1.5.2 in the development tree.
 
 2011-11-21 (SVN):

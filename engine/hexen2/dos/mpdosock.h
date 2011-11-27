@@ -52,7 +52,7 @@ typedef struct fd_set {
 extern "C" {
 #endif
 
-extern int PASCAL FAR __WSAFDIsSet(SOCKET, fd_set FAR *);
+extern int PASCAL FAR WSLIB__WSAFDIsSet(SOCKET, fd_set FAR *);
 
 #ifdef __cplusplus
 }
@@ -604,7 +604,7 @@ struct  linger {
  * compatibility purposes.
  */
 
-#define h_errno         WSAGetLastError()
+#define h_errno         WSLIB_WSAGetLastError()
 
 /* Authoritative Answer: Host not found */
 #define WSAHOST_NOT_FOUND       (WSABASEERR+1001)
@@ -677,79 +677,79 @@ struct  linger {
 extern "C" {
 #endif
 
-SOCKET PASCAL FAR accept (SOCKET s, struct sockaddr FAR *addr,
+SOCKET PASCAL FAR WSLIB_accept (SOCKET s, struct sockaddr FAR *addr,
                           int FAR *addrlen);
 
-int PASCAL FAR bind (SOCKET s, const struct sockaddr FAR *addr, int namelen);
+int PASCAL FAR WSLIB_bind (SOCKET s, const struct sockaddr FAR *addr, int namelen);
 
-int PASCAL FAR closesocket (SOCKET s);
+int PASCAL FAR WSLIB_closesocket (SOCKET s);
 
-int PASCAL FAR connect (SOCKET s, const struct sockaddr FAR *name, int namelen);
+int PASCAL FAR WSLIB_connect (SOCKET s, const struct sockaddr FAR *name, int namelen);
 
-int PASCAL FAR ioctlsocket (SOCKET s, long cmd, u_long FAR *argp);
+int PASCAL FAR WSLIB_ioctlsocket (SOCKET s, long cmd, u_long FAR *argp);
 
-int PASCAL FAR getpeername (SOCKET s, struct sockaddr FAR *name,
+int PASCAL FAR WSLIB_getpeername (SOCKET s, struct sockaddr FAR *name,
                             int FAR * namelen);
 
-int PASCAL FAR getsockname (SOCKET s, struct sockaddr FAR *name,
+int PASCAL FAR WSLIB_getsockname (SOCKET s, struct sockaddr FAR *name,
                             int FAR * namelen);
 
-int PASCAL FAR getsockopt (SOCKET s, int level, int optname,
+int PASCAL FAR WSLIB_getsockopt (SOCKET s, int level, int optname,
                            char FAR * optval, int FAR *optlen);
 
-u_long PASCAL FAR htonl (u_long hostlong);
+u_long PASCAL FAR WSLIB_htonl (u_long hostlong);
 
-u_short PASCAL FAR htons (u_short hostshort);
+u_short PASCAL FAR WSLIB_htons (u_short hostshort);
 
-unsigned long PASCAL FAR inet_addr (const char FAR * cp);
+unsigned long PASCAL FAR WSLIB_inet_addr (const char FAR * cp);
 
-char FAR * PASCAL FAR inet_ntoa (struct in_addr in);
+char FAR * PASCAL FAR WSLIB_inet_ntoa (struct in_addr in);
 
-int PASCAL FAR listen (SOCKET s, int backlog);
+int PASCAL FAR WSLIB_listen (SOCKET s, int backlog);
 
-u_long PASCAL FAR ntohl (u_long netlong);
+u_long PASCAL FAR WSLIB_ntohl (u_long netlong);
 
-u_short PASCAL FAR ntohs (u_short netshort);
+u_short PASCAL FAR WSLIB_ntohs (u_short netshort);
 
-int PASCAL FAR recv (SOCKET s, char FAR * buf, int len, int flags);
+int PASCAL FAR WSLIB_recv (SOCKET s, char FAR * buf, int len, int flags);
 
-int PASCAL FAR recvfrom (SOCKET s, char FAR * buf, int len, int flags,
+int PASCAL FAR WSLIB_recvfrom (SOCKET s, char FAR * buf, int len, int flags,
                          struct sockaddr FAR *from, int FAR * fromlen);
 
 #if 0 /* FIXME: select(), fd_set & co. clash with djgpp stuff! */
-int PASCAL FAR select (int nfds, fd_set FAR *readfds, fd_set FAR *writefds,
+int PASCAL FAR WSLIB_select (int nfds, fd_set FAR *readfds, fd_set FAR *writefds,
                        fd_set FAR *exceptfds, const struct timeval FAR *timeout);
 #endif /* #if 0 / FIXME */
 
-int PASCAL FAR send (SOCKET s, const char FAR * buf, int len, int flags);
+int PASCAL FAR WSLIB_send (SOCKET s, const char FAR * buf, int len, int flags);
 
-int PASCAL FAR sendto (SOCKET s, const char FAR * buf, int len, int flags,
+int PASCAL FAR WSLIB_sendto (SOCKET s, const char FAR * buf, int len, int flags,
                        const struct sockaddr FAR *to, int tolen);
 
-int PASCAL FAR setsockopt (SOCKET s, int level, int optname,
+int PASCAL FAR WSLIB_setsockopt (SOCKET s, int level, int optname,
                            const char FAR * optval, int optlen);
 
-int PASCAL FAR shutdown (SOCKET s, int how);
+int PASCAL FAR WSLIB_shutdown (SOCKET s, int how);
 
-SOCKET PASCAL FAR socket (int af, int type, int protocol);
+SOCKET PASCAL FAR WSLIB_socket (int af, int type, int protocol);
 
 /* Database function prototypes */
 
-struct hostent FAR * PASCAL FAR gethostbyaddr(const char FAR * addr,
+struct hostent FAR * PASCAL FAR WSLIB_gethostbyaddr(const char FAR * addr,
                                               int len, int type);
 
-struct hostent FAR * PASCAL FAR gethostbyname(const char FAR * name);
+struct hostent FAR * PASCAL FAR WSLIB_gethostbyname(const char FAR * name);
 
-int PASCAL FAR gethostname (char FAR * name, int namelen);
+int PASCAL FAR WSLIB_gethostname (char FAR * name, int namelen);
 
-struct servent FAR * PASCAL FAR getservbyport(int port, const char FAR * proto);
+struct servent FAR * PASCAL FAR WSLIB_getservbyport(int port, const char FAR * proto);
 
-struct servent FAR * PASCAL FAR getservbyname(const char FAR * name,
+struct servent FAR * PASCAL FAR WSLIB_getservbyname(const char FAR * name,
                                               const char FAR * proto);
 
-struct protoent FAR * PASCAL FAR getprotobynumber(int proto);
+struct protoent FAR * PASCAL FAR WSLIB_getprotobynumber(int proto);
 
-struct protoent FAR * PASCAL FAR getprotobyname(const char FAR * name);
+struct protoent FAR * PASCAL FAR WSLIB_getprotobyname(const char FAR * name);
 
 #ifdef __cplusplus
 }
