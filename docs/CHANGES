@@ -8,6 +8,7 @@ Development Progress	:
 
 2011-11-27 (SVN):
     * hexen2, net_udp.c: Replaced explicit ioctl calls by ioctlsocket.
+      Replaced explicit strerror(errno) by a socketerror(SOCKETERRNO).
 
 2011-11-27 (SVN):
     * dos port: mpdosock.h, mplpc.c, net_mp.c: Prefixed all of the public

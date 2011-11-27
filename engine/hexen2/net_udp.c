@@ -70,8 +70,9 @@ static int udp_scan_iface (sys_socket_t socketfd)
 
 	if (ioctlsocket(socketfd, SIOCGIFCONF, &ifc) == -1)
 	{
+		n = SOCKETERRNO;
 		Con_SafePrintf("%s: SIOCGIFCONF failed (%s)\n",
-				__thisfunc__, strerror(errno));
+				 __thisfunc__, socketerror(n));
 		return -1;
 	}
 
