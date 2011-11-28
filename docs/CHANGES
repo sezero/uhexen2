@@ -3,6 +3,10 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2011-11-28 (SVN):
+    * hexenworld, cl_main.c: Moved the registration of cvar sys_nostdout
+      from CL_Init() to an early stage in Host_Init().
+
 2011-11-27 (SVN):
     * cd_dos.c (CDAudio_Init): Removed check for ca_dedicated: We never
       call CDAudio_Init() if we are running as a dedicated server.

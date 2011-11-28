@@ -1029,7 +1029,6 @@ void CL_Init (void)
 		Cvar_LockVar ("developer");
 	}
 
-	Cvar_RegisterVariable (&sys_nostdout);
 	Cvar_RegisterVariable (&sys_throttle);
 
 	Cvar_RegisterVariable (&show_fps);
@@ -1362,6 +1361,7 @@ void Host_Init (void)
 	Cbuf_Init ();
 	Cmd_Init ();
 
+	Cvar_RegisterVariable (&sys_nostdout);
 	COM_Init ();
 	FS_Init ();
 	CL_Cmd_Init ();
