@@ -31,7 +31,13 @@
 #include <stdlib.h>
 #include <dpmi.h>
 
+#ifdef USE_WATT32
+#undef USE_WATT32 /* no need for extra stuff from WatTCP */
+#define __NETINET_IN_H /* don't want WatTCP netinet/in.h */
+#include <sys/swap.h>		/* for htonl & co. */
+#else
 #include <netinet/in.h>		/* for htonl & co. */
+#endif
 
 #include "quakedef.h"
 #include "dosisms.h"

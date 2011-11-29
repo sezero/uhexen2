@@ -51,6 +51,10 @@ COMMONDIR:=../h2shared
 OPT_EXTRA=yes
 COMPILE_32BITS=no
 USE_WINSOCK2=no
+# whether to use Beame & Whiteside for DOS networking
+USE_BWTCP=yes
+# whether to use WatTCP for DOS UDP networking
+USE_WATT32=yes
 # whether to use MPATH for DOS UDP networking under Win9x
 USE_MPATH=yes
 
@@ -143,8 +147,16 @@ endif
 ifeq ($(TARGET_OS),dos)
 
 INCLUDES += -I$(OSLIBS)/dos
+ifeq ($(USE_BWTCP),yes)
+CPPFLAGS+= -DUSE_BWTCP
+endif
 ifeq ($(USE_MPATH),yes)
 CPPFLAGS+= -DUSE_MPATH
+endif
+ifeq ($(USE_WATT32),yes)
+CPPFLAGS+= -DUSE_WATT32
+INCLUDES+= -I$(OSLIBS)/dos/watt32/inc
+LDFLAGS += -L$(OSLIBS)/dos/watt32/lib -lwatt
 endif
 LDFLAGS += -lc -lgcc -lm
 
@@ -230,11 +242,20 @@ SYSOBJ_NET := net_win.o net_wins.o net_wipx.o
 SYSOBJ_SYS := sys_win.o
 endif
 ifeq ($(TARGET_OS),dos)
-DOSTCP := dos/net_bw.o
+DOSTCP :=
+ifeq ($(USE_BWTCP),yes)
+DOSTCP += dos/net_bw.o
+endif
 ifeq ($(USE_MPATH),yes)
 DOSTCP += dos/net_mp.o dos/mplpc.o
 endif
+ifeq ($(USE_WATT32),yes)
+DOSTCP += net_udp.o
+else
+# get inet_addr() and inet_ntoa() either from Watt-32
+# or from our local implementation
 DOSTCP += dos/dos_inet.o dos/inet_addr.o
+endif
 SYSOBJ_NET := dos/net_dos.o dos/net_ser.o $(DOSTCP) dos/net_ipx.o
 SYSOBJ_SYS := dos_v2.o sys_dos.o
 endif

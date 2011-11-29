@@ -261,7 +261,7 @@ static sys_socket_t UDP_OpenSocket (int port)
 	int		i;
 	sys_socket_t	newsocket;
 	struct sockaddr_in	address;
-#if defined(PLATFORM_WINDOWS)
+#if defined(PLATFORM_WINDOWS) || defined(PLATFORM_DOS)
 	u_long	_true = 1;
 #else
 	int	_true = 1;
@@ -275,7 +275,7 @@ static sys_socket_t UDP_OpenSocket (int port)
 		Sys_Error ("%s: socket: %s", __thisfunc__, socketerror(err));
 	}
 
-	if (ioctlsocket (newsocket, FIONBIO, &_true) == SOCKET_ERROR)
+	if (ioctlsocket (newsocket, FIONBIO, IOCTLARG_P(&_true)) == SOCKET_ERROR)
 	{
 		err = SOCKETERRNO;
 		Sys_Error ("%s: ioctl FIONBIO: %s", __thisfunc__, socketerror(err));

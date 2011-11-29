@@ -3,6 +3,11 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2011-11-29 (SVN):
+    * Added Watt-32 (WatTCP) support for the DOS port: Tested and reported
+      to work by Frank Sapone. Added the option to build hwcl and hwsv for
+      DOS too, but it has connection problems at the moment.
+
 2011-11-28 (SVN):
     * hexenworld, cl_main.c: Moved the registration of cvar sys_nostdout
       from CL_Init() to an early stage in Host_Init().

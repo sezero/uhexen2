@@ -85,6 +85,7 @@ typedef int	socklen_t;
 #define	ioctlsocket	ioctl
 #define	closesocket	close
 #endif
+#define	IOCTLARG_P(x)	/* (char *) */ x
 
 #define	NET_EWOULDBLOCK		EWOULDBLOCK
 #define	NET_ECONNREFUSED	ECONNREFUSED
@@ -119,6 +120,8 @@ typedef int	socklen_t;
 
 typedef SOCKET	sys_socket_t;
 
+#define	IOCTLARG_P(x)	/* (u_long *) */ x
+
 #define	SOCKETERRNO	WSAGetLastError()
 #define	NET_EWOULDBLOCK		WSAEWOULDBLOCK
 #define	NET_ECONNREFUSED	WSAECONNREFUSED
@@ -134,9 +137,41 @@ COMPILE_TIME_ASSERT(sockaddr, offsetof(struct sockaddr, sa_family) == SA_FAM_OFF
 /* dos includes and compatibility macros */
 #if defined(PLATFORM_DOS)
 
+#if !defined(USE_WATT32)
 /* our local headers : */
 #include "dos/dos_inet.h"
 #include "dos/dos_sock.h"
+#else	/* USE_WATT32 */
+/* Waterloo TCP defines INVALID_SOCKET and SOCKET_ERROR.
+ * It uses ioctlsocket and closesocket, similar to WinSock.
+ * Unlike WinSock, ioctl argument is char*, NOT u_long*.
+ * Unlike WinSock, SOCKET type is signed, NOT unsigned.
+ * It still doesn't define socklen_t or in_addr_t types. */
+#include <sys/param.h>
+#include <sys/ioctl.h>
+#include <unistd.h>
+#include <sys/socket.h>
+#include <netinet/in.h>
+#include <arpa/inet.h>
+#include <netdb.h>
+
+#define	IOCTLARG_P(x)	(char *)x
+
+#define	SOCKETERRNO	errno
+#define	socketerror(x)	strerror((x))
+
+#define	NET_EWOULDBLOCK		EWOULDBLOCK
+#define	NET_ECONNREFUSED	ECONNREFUSED
+
+typedef int	socklen_t;
+typedef u_long	in_addr_t;
+
+typedef int	sys_socket_t;
+
+/* Verify that we defined HAVE_SA_LEN correctly: */
+COMPILE_TIME_ASSERT(sockaddr, offsetof(struct sockaddr, sa_family) == SA_FAM_OFFSET);
+
+#endif	/* USE_WATT32 */
 
 #endif	/* end of dos stuff. */
 

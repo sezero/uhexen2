@@ -341,6 +341,45 @@ endif
 
 
 #############################################################
+# DOS flags/settings and overrides:
+#############################################################
+ifeq ($(TARGET_OS),dos)
+
+NASMFLAGS=-f coff
+# Use x86 assembly for DOS
+USE_X86_ASM=yes
+
+USE_CODEC_TIMIDITY=no
+USE_CODEC_WILDMIDI=no
+# use Tremor as Vorbis decoder for DOS?
+VORBISLIB=tremor
+# DOS decoders must allocate on the zone
+CODECS_USE_ZONE=yes
+
+INCLUDES += -I$(OSLIBS)/dos
+# WATT-32 is needed for DOS
+CPPFLAGS+= -DUSE_WATT32
+INCLUDES+= -I$(OSLIBS)/dos/watt32/inc
+LDFLAGS += -L$(OSLIBS)/dos/watt32/lib -lwatt
+LDFLAGS += -lc -lgcc -lm
+
+ifeq ($(USE_CODEC_VORBIS),yes)
+CODEC_INC = -I$(OSLIBS)/dos/codecs/include
+CODEC_LINK= -L$(OSLIBS)/dos/codecs/lib
+endif
+ifeq ($(USE_CODEC_MP3),yes)
+CODEC_INC = -I$(OSLIBS)/dos/codecs/include
+CODEC_LINK= -L$(OSLIBS)/dos/codecs/lib
+endif
+INCLUDES += $(CODEC_INC)
+LDFLAGS += $(CODEC_LINK)
+
+endif
+# End of DOS settings
+#############################################################
+
+
+#############################################################
 # Win32 flags/settings and overrides:
 #############################################################
 ifeq ($(TARGET_OS),win32)
@@ -602,6 +641,9 @@ endif
 ifeq ($(TARGET_OS),win64)
 SYSOBJ_SND := snd_win.o snd_dsound.o
 endif
+ifeq ($(TARGET_OS),dos)
+SYSOBJ_SND := snd_sb.o snd_gus.o
+endif
 ifeq ($(TARGET_OS),unix)
 SYSOBJ_SND := snd_oss.o snd_alsa.o snd_sun.o snd_sdl.o
 endif
@@ -618,6 +660,10 @@ SYSOBJ_MIDI:= midi_win.o mid2strm.o
 endif
 ifeq ($(TARGET_OS),win64)
 SYSOBJ_MIDI:= midi_win.o mid2strm.o
+endif
+ifeq ($(TARGET_OS),dos)
+SYSOBJ_MIDI:= midi_nul.o
+CPPFLAGS += -D_NO_MIDIDRV
 endif
 ifeq ($(TARGET_OS),unix)
 ifeq ($(HOST_OS),darwin)
@@ -641,6 +687,9 @@ endif
 ifeq ($(TARGET_OS),win64)
 SYSOBJ_CDA := cd_win.o
 endif
+ifeq ($(TARGET_OS),dos)
+SYSOBJ_CDA := cd_dos.o
+endif
 ifeq ($(TARGET_OS),unix)
 SYSOBJ_CDA := cd_sdl.o cd_bsd.o cd_linux.o
 endif
@@ -663,6 +712,12 @@ SYSOBJ_INPUT := in_win.o
 SYSOBJ_GL_VID:= gl_vidnt.o
 SYSOBJ_SOFT_VID:= vid_win.o
 SYSOBJ_SYS := sys_win.o win32res.res
+endif
+ifeq ($(TARGET_OS),dos)
+SYSOBJ_INPUT := in_dos.o
+SYSOBJ_SOFT_VID:= vid_vga.o vid_ext.o d_copy.o vid_dos.o vregset.o
+SYSOBJ_SYS := dos_v2.o sys_dos.o
+#	dosasm.o
 endif
 ifeq ($(TARGET_OS),unix)
 SYSOBJ_INPUT := in_sdl.o

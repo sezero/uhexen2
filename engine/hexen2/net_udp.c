@@ -68,7 +68,7 @@ static int udp_scan_iface (sys_socket_t socketfd)
 	ifc.ifc_len = (int) sizeof(buf);
 	ifc.ifc_buf = (caddr_t) buf;
 
-	if (ioctlsocket(socketfd, SIOCGIFCONF, &ifc) == -1)
+	if (ioctlsocket(socketfd, SIOCGIFCONF, IOCTLARG_P(&ifc)) == -1)
 	{
 		n = SOCKETERRNO;
 		Con_SafePrintf("%s: SIOCGIFCONF failed (%s)\n",
@@ -81,7 +81,7 @@ static int udp_scan_iface (sys_socket_t socketfd)
 
 	for (i = 0; i < n; i++)
 	{
-		if (ioctlsocket(socketfd, SIOCGIFADDR, &ifr[i]) == -1)
+		if (ioctlsocket(socketfd, SIOCGIFADDR, IOCTLARG_P(&ifr[i])) == -1)
 			continue;
 		iaddr = (struct sockaddr_in *) &ifr[i].ifr_addr;
 		Con_SafeDPrintf("%s: %s\n", ifr[i].ifr_name, inet_ntoa(iaddr->sin_addr));
@@ -107,6 +107,11 @@ sys_socket_t UDP_Init (void)
 
 	if (COM_CheckParm ("-noudp"))
 		return INVALID_SOCKET;
+#if defined(USE_BWTCP)
+	/* if Beame & Whiteside TCP/IP is initialized, do nothing. */
+	if (tcpipAvailable)
+		return INVALID_SOCKET;
+#endif
 
 	// determine my name & address
 	myAddr.s_addr = htonl(INADDR_LOOPBACK);
@@ -247,7 +252,11 @@ sys_socket_t UDP_OpenSocket (int port)
 {
 	sys_socket_t newsocket;
 	struct sockaddr_in address;
+#if defined(PLATFORM_WINDOWS) || defined(PLATFORM_DOS)
+	u_long _true = 1;
+#else
 	int _true = 1;
+#endif
 	int err;
 
 	if ((newsocket = socket (PF_INET, SOCK_DGRAM, IPPROTO_UDP)) == INVALID_SOCKET)
@@ -257,7 +266,7 @@ sys_socket_t UDP_OpenSocket (int port)
 		return INVALID_SOCKET;
 	}
 
-	if (ioctlsocket (newsocket, FIONBIO, &_true) == SOCKET_ERROR)
+	if (ioctlsocket (newsocket, FIONBIO, IOCTLARG_P(&_true)) == SOCKET_ERROR)
 		goto ErrorReturn;
 
 	memset(&address, 0, sizeof(struct sockaddr_in));
@@ -365,7 +374,11 @@ sys_socket_t UDP_CheckNewConnections (void)
 		return net_acceptsocket;
 	}
 #else
+#if defined(PLATFORM_WINDOWS) || defined(PLATFORM_DOS)
+	u_long		available;
+#else
 	int		available;
+#endif
 	struct sockaddr_in	from;
 	socklen_t	fromlen;
 	char		buff[1];
@@ -373,7 +386,7 @@ sys_socket_t UDP_CheckNewConnections (void)
 	if (net_acceptsocket == INVALID_SOCKET)
 		return INVALID_SOCKET;
 
-	if (ioctlsocket (net_acceptsocket, FIONREAD, &available) == -1)
+	if (ioctlsocket (net_acceptsocket, FIONREAD, IOCTLARG_P(&available)) == -1)
 	{
 		int err = SOCKETERRNO;
 		Sys_Error ("UDP: ioctlsocket (FIONREAD) failed (%s)", socketerror(err));

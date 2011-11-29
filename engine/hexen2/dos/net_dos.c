@@ -96,7 +96,12 @@ net_driver_t net_drivers[] =
 const int net_numdrivers = (sizeof(net_drivers) / sizeof(net_drivers[0]));
 
 
+#ifdef USE_WATT32
+#include "net_udp.h"
+#endif
+#ifdef USE_BWTCP
 #include "net_bw.h"
+#endif
 #include "net_ipx.h"
 #ifdef USE_MPATH
 #include "net_mp.h"
@@ -104,6 +109,7 @@ const int net_numdrivers = (sizeof(net_drivers) / sizeof(net_drivers[0]));
 
 net_landriver_t	net_landrivers[] =
 {
+#ifdef USE_BWTCP
 	{	"Beame & Whiteside TCP/IP",
 		false,
 		0,
@@ -126,6 +132,32 @@ net_landriver_t	net_landrivers[] =
 		BW_GetSocketPort,
 		BW_SetSocketPort
 	},
+#endif /* USE_BWTCP */
+
+#ifdef USE_WATT32
+	{	"Waterloo TCP",
+		false,
+		0,
+		UDP_Init,
+		UDP_Shutdown,
+		UDP_Listen,
+		UDP_OpenSocket,
+		UDP_CloseSocket,
+		UDP_Connect,
+		UDP_CheckNewConnections,
+		UDP_Read,
+		UDP_Write,
+		UDP_Broadcast,
+		UDP_AddrToString,
+		UDP_StringToAddr,
+		UDP_GetSocketAddr,
+		UDP_GetNameFromAddr,
+		UDP_GetAddrFromName,
+		UDP_AddrCompare,
+		UDP_GetSocketPort,
+		UDP_SetSocketPort
+	},
+#endif /* USE_WATT32 */
 
 	{	"IPX",
 		false,

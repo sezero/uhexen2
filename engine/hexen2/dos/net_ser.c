@@ -31,6 +31,7 @@
 #include "dosisms.h"
 #include "crc.h"
 
+#undef USE_WATT32 /* no need for extra stuff from WatTCP */
 #include "dos_sock.h"
 #include "net_defs.h"
 #include "net_ser.h"

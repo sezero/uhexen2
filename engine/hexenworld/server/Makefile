@@ -130,6 +130,23 @@ endif
 
 
 #############################################################
+# DOS flags/settings
+#############################################################
+ifeq ($(TARGET_OS),dos)
+
+INCLUDES += -I$(OSLIBS)/dos
+# WATT-32 is needed for DOS
+CPPFLAGS+= -DUSE_WATT32
+INCLUDES+= -I$(OSLIBS)/dos/watt32/inc
+LDFLAGS += -L$(OSLIBS)/dos/watt32/lib -lwatt
+LDFLAGS += -lc -lgcc -lm
+
+endif
+# End of DOS settings
+#############################################################
+
+
+#############################################################
 # Win32 flags/settings
 #############################################################
 ifeq ($(TARGET_OS),win32)
@@ -202,6 +219,9 @@ SYSOBJ_SYS = sys_win.o
 endif
 ifeq ($(TARGET_OS),win64)
 SYSOBJ_SYS = sys_win.o
+endif
+ifeq ($(TARGET_OS),dos)
+SYSOBJ_SYS := dos_v2.o sys_dos.o
 endif
 ifeq ($(TARGET_OS),unix)
 SYSOBJ_SYS = sys_unix.o
