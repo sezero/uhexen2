@@ -2,7 +2,7 @@
 	net_chan.c
 	net channel
 
-	$Id: net_chan.c,v 1.14 2007-09-22 15:27:19 sezero Exp $
+	$Id$
 */
 
 #include "quakedef.h"
@@ -124,6 +124,7 @@ void Netchan_Setup (netchan_t *chan, netadr_t adr)
 
 	chan->remote_address = adr;
 	chan->last_received = realtime;
+	chan->incoming_sequence = -1;
 
 	SZ_Init (&chan->message, chan->message_buf, sizeof(chan->message_buf));
 	chan->message.allowoverflow = true;
@@ -179,7 +180,7 @@ void Netchan_Transmit (netchan_t *chan, int length, byte *data)
 	byte		send_buf[MAX_MSGLEN + PACKET_HEADER];
 	qboolean	send_reliable;
 	unsigned int	w1, w2;
-	int			i;
+	int		i;
 
 // check for message overflow
 	if (chan->message.overflowed)
@@ -271,7 +272,7 @@ qboolean Netchan_Process (netchan_t *chan)
 
 	if (
 #ifndef SERVERONLY
-		!cls.demoplayback && 
+		!cls.demoplayback &&
 #endif
 		!NET_CompareAdr (net_from, chan->remote_address))
 	{
@@ -303,8 +304,8 @@ qboolean Netchan_Process (netchan_t *chan)
 #if 0
 	if (chan->outgoing_sequence - sequence_ack < MAX_LATENT)
 	{
-		int				i;
-		double			time, rate;
+		int	i;
+		double	time, rate;
 
 		i = sequence_ack & (MAX_LATENT - 1);
 		time = realtime - chan->outgoing_time[i];
@@ -332,7 +333,7 @@ qboolean Netchan_Process (netchan_t *chan)
 //
 // discard stale or duplicated packets
 //
-	if (sequence <= chan->incoming_sequence)
+	if (sequence < (unsigned int) chan->incoming_sequence + 1)
 	{
 		if (showdrop.integer)
 		{
@@ -356,7 +357,7 @@ qboolean Netchan_Process (netchan_t *chan)
 		{
 			Con_Printf ("%s:Dropped %u packets at %u\n",
 					NET_AdrToString (chan->remote_address),
-					sequence-(unsigned int)(chan->incoming_sequence + 1),
+					sequence - (unsigned int)(chan->incoming_sequence + 1),
 					sequence);
 		}
 	}

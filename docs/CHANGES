@@ -3,6 +3,14 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2011-12-01 (SVN):
+    * engine/hexenworld/shared/net_chan.c (Netchan_Setup): pre-initialize
+      chan->incoming_sequence to -1 so a packet with an incoming sequence
+      of 0 will work. Patch found in old quakeforge cvs commits.
+      (Netchan_Process): Adjusted sequence comparison accordingly. Also
+      cast chan->incoming_sequence to unsigned to match the type of the
+      sequence varible.
+
 2011-11-29 (SVN):
     * Added Watt-32 (WatTCP) support for the DOS port: Tested and reported
       to work by Frank Sapone. Added the option to build hwcl and hwsv for
