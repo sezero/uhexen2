@@ -4,6 +4,12 @@ Development Progress	:
 ---------------------------
 
 2011-12-01 (SVN):
+    * vid_sdl.c (VID_PrepareModes): No need using a different loop counter
+      for copying the resolutions list. No need explicitly assigning NULL
+      to the last member of the copy (Z_Malloc already sends a zero-filled
+      memory to us)
+
+2011-12-01 (SVN):
     * engine/hexen2/dos/net_dos.c: Fixed a misplaced endif directive.
     * engine/hexenworld/shared/net_chan.c: Added NOT_DEMOPLAYBACK as a
       new macro to clean up several SERVERONLY ifdefs.

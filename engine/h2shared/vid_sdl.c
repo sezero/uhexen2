@@ -376,9 +376,8 @@ no_fmodes:
 	for (j = 0; sdl_modes[j]; ++j)
 		;
 	cpy_modes = (SDL_Rect **) Z_Malloc ((j + 1) * sizeof(SDL_Rect *), Z_MAINZONE);
-	for (i = 0; sdl_modes[i]; ++i)
-		cpy_modes[i] = sdl_modes[i];
-	cpy_modes[j] = NULL;
+	for (j = 0; sdl_modes[j]; ++j)
+		cpy_modes[j] = sdl_modes[j];
 	sdl_modes = cpy_modes;
 	if (j > 1)
 		qsort(sdl_modes, j, sizeof *sdl_modes, sort_modes);
