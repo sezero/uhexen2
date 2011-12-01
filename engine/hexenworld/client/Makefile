@@ -781,7 +781,7 @@ COMMONOBJS = \
 	$(SYSOBJ_CDA) \
 	$(SYSOBJ_MIDI) \
 	huffman.o \
-	net_wins.o \
+	net_udp.o \
 	net_chan.o \
 	cl_cam.o \
 	cl_demo.o \

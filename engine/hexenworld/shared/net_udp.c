@@ -99,11 +99,6 @@ const char *NET_BaseAdrToString (netadr_t a)
 /*
 =============
 NET_StringToAdr
-
-idnewt
-idnewt:28000
-192.246.40.70
-192.246.40.70:28000
 =============
 */
 qboolean NET_StringToAdr (const char *s, netadr_t *a)
@@ -196,7 +191,7 @@ int NET_GetPacket (void)
 		return 0;
 	}
 
-	LastCompMessageSize += ret;	// debug: bytes actually received
+	LastCompMessageSize += ret;	/* debug: bytes actually received */
 
 	HuffDecode(huffbuff, net_message_buffer, ret, &ret,
 				sizeof(net_message_buffer));

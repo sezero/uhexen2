@@ -246,7 +246,7 @@ SV_OBJS = \
 	mathlib.o \
 	zone.o \
 	huffman.o \
-	net_wins.o \
+	net_udp.o \
 	net_chan.o \
 	pmove.o \
 	pmovetst.o \
