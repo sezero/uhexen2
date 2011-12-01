@@ -53,6 +53,12 @@ int		net_drop;
 static	cvar_t	showpackets = {"showpackets", "0", CVAR_NONE};
 static	cvar_t	showdrop = {"showdrop", "0", CVAR_NONE};
 
+#ifdef SERVERONLY
+#define NOT_DEMOPLAYBACK	true
+#else
+#define NOT_DEMOPLAYBACK	(!cls.demoplayback)
+#endif
+
 /*
 ===============
 Netchan_Init
@@ -84,10 +90,7 @@ void Netchan_OutOfBand (netadr_t adr, int length, byte *data)
 	SZ_Write (&senddata, data, length);
 
 // send the datagram
-	//zoid, no input in demo playback mode
-#ifndef SERVERONLY
-	if (!cls.demoplayback)
-#endif
+	if (NOT_DEMOPLAYBACK)	// zoid, no input in demo playback mode
 		NET_SendPacket (senddata.cursize, senddata.data, adr);
 }
 
@@ -234,10 +237,7 @@ void Netchan_Transmit (netchan_t *chan, int length, byte *data)
 	chan->outgoing_size[i] = senddata.cursize;
 	chan->outgoing_time[i] = realtime;
 
-	//zoid, no input in demo playback mode
-#ifndef SERVERONLY
-	if (!cls.demoplayback)
-#endif
+	if (NOT_DEMOPLAYBACK)	// zoid, no input in demo playback mode
 		NET_SendPacket (senddata.cursize, senddata.data, chan->remote_address);
 
 	if (chan->cleartime < realtime)
@@ -270,11 +270,7 @@ qboolean Netchan_Process (netchan_t *chan)
 	unsigned int	sequence, sequence_ack;
 	unsigned int	reliable_ack, reliable_message;
 
-	if (
-#ifndef SERVERONLY
-		!cls.demoplayback &&
-#endif
-		!NET_CompareAdr (net_from, chan->remote_address))
+	if (NOT_DEMOPLAYBACK && !NET_CompareAdr (net_from, chan->remote_address))
 	{
 		return false;
 	}
@@ -333,7 +329,7 @@ qboolean Netchan_Process (netchan_t *chan)
 //
 // discard stale or duplicated packets
 //
-	if (sequence < (unsigned int) chan->incoming_sequence + 1)
+	if (sequence < (unsigned int)(chan->incoming_sequence + 1))
 	{
 		if (showdrop.integer)
 		{

@@ -4,6 +4,10 @@ Development Progress	:
 ---------------------------
 
 2011-12-01 (SVN):
+    * engine/hexenworld/shared/net_chan.c: Added NOT_DEMOPLAYBACK as a
+      new macro to clean up several SERVERONLY ifdefs.
+      (Netchan_Process): Applied the unsigned cast to the sum value, not
+      just to chan->incoming_sequence.
     * engine/hexenworld/shared/net_wins.c: Renamed to net_udp.c.
     * engine/hexenworld/shared/net_chan.c (Netchan_Setup): pre-initialize
       chan->incoming_sequence to -1 so a packet with an incoming sequence
