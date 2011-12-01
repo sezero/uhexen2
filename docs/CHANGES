@@ -4,6 +4,7 @@ Development Progress	:
 ---------------------------
 
 2011-12-01 (SVN):
+    * engine/hexen2/dos/net_dos.c: Fixed a misplaced endif directive.
     * engine/hexenworld/shared/net_chan.c: Added NOT_DEMOPLAYBACK as a
       new macro to clean up several SERVERONLY ifdefs.
       (Netchan_Process): Applied the unsigned cast to the sum value, not

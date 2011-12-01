@@ -205,8 +205,8 @@ net_landriver_t	net_landrivers[] =
 		MPATH_GetSocketPort,
 		MPATH_SetSocketPort
 	}
-};
 #endif /* USE_MPATH */
+};
 
 const int net_numlandrivers = (sizeof(net_landrivers) / sizeof(net_landrivers[0]));
 
