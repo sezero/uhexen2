@@ -44,6 +44,7 @@ COMMON_HW:=../shared
 # General options (see explanations at the top)
 OPT_EXTRA=yes
 COMPILE_32BITS=no
+
 USE_WINSOCK2=no
 
 # include the common dirty stuff

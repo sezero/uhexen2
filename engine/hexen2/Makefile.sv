@@ -50,11 +50,13 @@ COMMONDIR:=../h2shared
 # General options (see explanations at the top)
 OPT_EXTRA=yes
 COMPILE_32BITS=no
+
 USE_WINSOCK2=no
-# whether to use Beame & Whiteside for DOS networking
-USE_BWTCP=yes
+
 # whether to use WatTCP for DOS UDP networking
 USE_WATT32=yes
+# whether to use Beame & Whiteside for DOS networking
+USE_BWTCP=yes
 # whether to use MPATH for DOS UDP networking under Win9x
 USE_MPATH=yes
 

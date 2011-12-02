@@ -128,6 +128,13 @@ LIBS_DIR:=$(UHEXEN2_TOP)/libs
 COMMONDIR:=../h2shared
 
 # General options (see explanations at the top)
+OPT_EXTRA=yes
+COMPILE_32BITS=no
+USE_X86_ASM=yes
+
+LINK_GL_LIBS=no
+USE_3DFXGAMMA=no
+
 USE_SOUND=yes
 USE_ALSA=yes
 USE_OSS=yes
@@ -136,21 +143,19 @@ USE_SDLAUDIO=yes
 USE_MIDI=yes
 USE_CDAUDIO=yes
 USE_SDLCD=no
+
+LINK_DIRECTX=no
 WITH_SPLASHES=yes
 USE_MGL=yes
 USE_WINSOCK2=no
-LINK_DIRECTX=no
-OPT_EXTRA=yes
-LINK_GL_LIBS=no
-USE_3DFXGAMMA=no
-USE_X86_ASM=yes
-COMPILE_32BITS=no
-# whether to use Beame & Whiteside for DOS networking
-USE_BWTCP=yes
+
 # whether to use WatTCP for DOS UDP networking
 USE_WATT32=yes
+# whether to use Beame & Whiteside for DOS networking
+USE_BWTCP=yes
 # whether to use MPATH for DOS UDP networking under Win9x
 USE_MPATH=yes
+
 # Enable/disable codecs for streaming music support:
 USE_CODEC_WAVE=yes
 USE_CODEC_MP3=yes

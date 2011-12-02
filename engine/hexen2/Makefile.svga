@@ -67,12 +67,14 @@ LIBS_DIR:=$(UHEXEN2_TOP)/libs
 COMMONDIR:=../h2shared
 
 # General options (see explanations at the top)
+OPT_EXTRA=yes
+
 USE_SOUND=yes
 USE_ALSA=yes
 USE_OSS=yes
 USE_MIDI=no
 USE_CDAUDIO=yes
-OPT_EXTRA=yes
+
 # Enable/disable codecs for streaming music support:
 USE_CODEC_WAVE=yes
 USE_CODEC_MP3=yes
