@@ -1111,6 +1111,9 @@ static qboolean S_GUS_Init (dma_t *dma)
 	struct CodecRateStruct	*CodecRate;
 	struct Gf1RateStruct	*Gf1Rate;
 
+	if (COM_CheckParm("-nogus"))
+		return false;
+
 	// See what kind of UltraSound we have, if any
 	if (GUS_GetIWData() == false)
 	{

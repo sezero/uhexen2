@@ -3,6 +3,12 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2011-12-03 (SVN):
+    * snd_gus.c (S_GUS_Init): Added support for "-nogus" command line
+      option to skip Gravis UltraSound initialization and return false.
+      Patch suggested by Frank Sapone.
+    * quakedef.h: updated beta date stamp to 2011-12-03.
+
 2011-12-02 (SVN):
     * Updated the COMPILE document regarding DOS builds:  Frank Sapone
       confirmed successful compilation in native DOS/DJGPP environment.
