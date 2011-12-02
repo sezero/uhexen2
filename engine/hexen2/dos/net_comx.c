@@ -328,7 +328,7 @@ static void COM2_ISR_16550 (void)
 }
 
 
-void TTY_GetComPortConfig (int portNumber, int *port, int *irq, int *baud, qboolean *useModem)
+static void TTY_GetComPortConfig (int portNumber, int *port, int *irq, int *baud, qboolean *useModem)
 {
 	ComPort	*p;
 
@@ -339,7 +339,7 @@ void TTY_GetComPortConfig (int portNumber, int *port, int *irq, int *baud, qbool
 	*useModem = p->useModem;
 }
 
-void TTY_SetComPortConfig (int portNumber, int port, int irq, int baud, qboolean useModem)
+static void TTY_SetComPortConfig (int portNumber, int port, int irq, int baud, qboolean useModem)
 {
 	ComPort	*p;
 	float	temp;
@@ -369,7 +369,7 @@ void TTY_SetComPortConfig (int portNumber, int port, int irq, int baud, qboolean
 	Cvar_SetValue ("_config_com_modem", temp);
 }
 
-void TTY_GetModemConfig (int portNumber, char *dialType, char *clear, char *init, char *hangup)
+static void TTY_GetModemConfig (int portNumber, char *dialType, char *clear, char *init, char *hangup)
 {
 	ComPort	*p;
 
@@ -380,7 +380,7 @@ void TTY_GetModemConfig (int portNumber, char *dialType, char *clear, char *init
 	strcpy(hangup, p->shutdown);
 }
 
-void TTY_SetModemConfig (int portNumber, const char *dialType, const char *clear, const char *init, const char *hangup)
+static void TTY_SetModemConfig (int portNumber, const char *dialType, const char *clear, const char *init, const char *hangup)
 {
 	ComPort	*p;
 
