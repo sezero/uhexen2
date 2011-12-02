@@ -3597,8 +3597,7 @@ static void M_SerialConfig_Key (int key)
 				serialConfig_comport = 4;
 			serialConfig_irq = ISA_IRQs[serialConfig_comport-1];
 		}
-
-		if (serialConfig_cursor == 1)
+		else if (serialConfig_cursor == 1)
 		{
 			serialConfig_irq--;
 			if (serialConfig_irq == 6)
@@ -3606,8 +3605,7 @@ static void M_SerialConfig_Key (int key)
 			if (serialConfig_irq == 1)
 				serialConfig_irq = 7;
 		}
-
-		if (serialConfig_cursor == 2)
+		else if (serialConfig_cursor == 2)
 		{
 			serialConfig_baud--;
 			if (serialConfig_baud < 0)
@@ -3629,8 +3627,7 @@ forward:
 				serialConfig_comport = 1;
 			serialConfig_irq = ISA_IRQs[serialConfig_comport-1];
 		}
-
-		if (serialConfig_cursor == 1)
+		else if (serialConfig_cursor == 1)
 		{
 			serialConfig_irq++;
 			if (serialConfig_irq == 6)
@@ -3638,8 +3635,7 @@ forward:
 			if (serialConfig_irq == 8)
 				serialConfig_irq = 2;
 		}
-
-		if (serialConfig_cursor == 2)
+		else if (serialConfig_cursor == 2)
 		{
 			serialConfig_baud++;
 			if (serialConfig_baud > 5)
@@ -3754,10 +3750,9 @@ static void M_ModemConfig_Draw (void)
 	int		basex;
 
 	p = Draw_CachePic ("gfx/menu/title4.lmp");
-	// our p->width == 185: if we don't do the -8 here,
-	// drawing of the init string textbox with 30 chars
-	// width will fail with a 'bad coordinates' message
-	// from Draw_TransPic() at 320x200 resolution.
+	/* our p->width == 185: if we don't do the -8 here, drawing of
+	 * the init string textbox with 30 chars width shall fail with
+	 * a 'bad coordinates' message in Draw_TransPic() at 320x200.  */
 	basex = (320 - p->width) / 2 - 8;
 	ScrollTitle("gfx/menu/title4.lmp");
 
@@ -3835,8 +3830,7 @@ static void M_ModemConfig_Key (int key)
 				modemConfig_dialing = 'P';
 			m_entersound = true;
 		}
-
-		if (modemConfig_cursor == 4)
+		else if (modemConfig_cursor == 4)
 		{
 			(*SetModemConfig) (0, va ("%c", modemConfig_dialing), modemConfig_clear, modemConfig_init, modemConfig_hangup);
 			m_entersound = true;
@@ -3847,20 +3841,21 @@ static void M_ModemConfig_Key (int key)
 	case K_BACKSPACE:
 		if (modemConfig_cursor == 1)
 		{
-			if (strlen(modemConfig_clear))
-				modemConfig_clear[strlen(modemConfig_clear)-1] = 0;
+			l = strlen(modemConfig_clear);
+			if (l)
+				modemConfig_clear[l-1] = 0;
 		}
-
-		if (modemConfig_cursor == 2)
+		else if (modemConfig_cursor == 2)
 		{
-			if (strlen(modemConfig_init))
-				modemConfig_init[strlen(modemConfig_init)-1] = 0;
+			l = strlen(modemConfig_init);
+			if (l)
+				modemConfig_init[l-1] = 0;
 		}
-
-		if (modemConfig_cursor == 3)
+		else if (modemConfig_cursor == 3)
 		{
-			if (strlen(modemConfig_hangup))
-				modemConfig_hangup[strlen(modemConfig_hangup)-1] = 0;
+			l = strlen(modemConfig_hangup);
+			if (l)
+				modemConfig_hangup[l-1] = 0;
 		}
 		break;
 
@@ -3877,8 +3872,7 @@ static void M_ModemConfig_Key (int key)
 				modemConfig_clear[l] = key;
 			}
 		}
-
-		if (modemConfig_cursor == 2)
+		else if (modemConfig_cursor == 2)
 		{
 			l = strlen(modemConfig_init);
 			if (l < 29)
@@ -3887,8 +3881,7 @@ static void M_ModemConfig_Key (int key)
 				modemConfig_init[l] = key;
 			}
 		}
-
-		if (modemConfig_cursor == 3)
+		else if (modemConfig_cursor == 3)
 		{
 			l = strlen(modemConfig_hangup);
 			if (l < 15)
@@ -3899,10 +3892,10 @@ static void M_ModemConfig_Key (int key)
 		}
 	}
 }
-
 #endif	/* NET_USE_SERIAL */
 
 //=============================================================================
+
 /* LAN CONFIG MENU */
 
 static int	lanConfig_cursor = -1;
@@ -4047,7 +4040,7 @@ static void M_LanConfig_Key (int key)
 
 	case K_ENTER:
 		if ((JoiningGame && lanConfig_cursor <= 1) ||
-				(!JoiningGame && lanConfig_cursor == 0))
+		    (!JoiningGame && lanConfig_cursor == 0))
 			break;
 
 		m_entersound = true;
@@ -4057,7 +4050,7 @@ static void M_LanConfig_Key (int key)
 		M_ConfigureNetSubsystem ();
 
 		if ((JoiningGame && lanConfig_cursor == 2) ||
-			(!JoiningGame && lanConfig_cursor == 1))
+		    (!JoiningGame && lanConfig_cursor == 1))
 		{
 			if (StartingGame)
 			{
@@ -4083,14 +4076,15 @@ static void M_LanConfig_Key (int key)
 	case K_BACKSPACE:
 		if (lanConfig_cursor == 0)
 		{
-			if (strlen(lanConfig_portname))
-				lanConfig_portname[strlen(lanConfig_portname)-1] = 0;
+			l = strlen(lanConfig_portname);
+			if (l)
+				lanConfig_portname[l-1] = 0;
 		}
-
-		if (lanConfig_cursor == 3)
+		else if (lanConfig_cursor == 3)
 		{
-			if (strlen(lanConfig_joinname))
-				lanConfig_joinname[strlen(lanConfig_joinname)-1] = 0;
+			l = strlen(lanConfig_joinname);
+			if (l)
+				lanConfig_joinname[l-1] = 0;
 		}
 		break;
 
