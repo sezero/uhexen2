@@ -4,8 +4,8 @@ Development Progress	:
 ---------------------------
 
 2011-12-02 (SVN):
-    * engine/hexen2/dos/menu.c: Changed some of the obvious if conditions
-      to else if. Used the values returned by strlen() as cached in a var
+    * engine/hexen2/menu.c: Changed some of the obvious if conditions to
+      else if. Used the values returned by strlen() as cached in a variable
       when possible.
 
 2011-12-02 (SVN):
