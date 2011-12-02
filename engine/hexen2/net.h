@@ -84,20 +84,21 @@ extern	qboolean	tcpipAvailable;
 extern	char		my_ipx_address[NET_NAMELEN];
 extern	char		my_tcpip_address[NET_NAMELEN];
 
-#define	NET_USE_SERIAL	0
-#if defined(PLATFORM_DOS)
 #undef	NET_USE_SERIAL
+/* allow the serial driver only for DOS builds
+ * and only when USE_SERIAL is defined: */
+#if defined(PLATFORM_DOS) && defined(USE_SERIAL)
 #define	NET_USE_SERIAL	1
-#endif	/* allow serial */
+#endif
 
 #undef	NO_LOOP_DRIVER
-#if defined(SERVERONLY)
 /* The dedicated server application (h2ded)
- * does not need the Loopback driver */
+ * does not need the Loopback driver: */
+#if defined(SERVERONLY)
 #define	NO_LOOP_DRIVER	1
 #endif	/* SERVERONLY */
 
-#if NET_USE_SERIAL
+#if defined(NET_USE_SERIAL)
 extern	void (*GetComPortConfig) (int portNumber, int *port, int *irq, int *baud, qboolean *useModem);
 extern	void (*SetComPortConfig) (int portNumber, int port, int irq, int baud, qboolean useModem);
 extern	void (*GetModemConfig) (int portNumber, char *dialType, char *clear, char *init, char *hangup);

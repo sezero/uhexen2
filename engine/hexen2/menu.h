@@ -36,7 +36,7 @@ enum m_state_e
 	m_quit,
 /* need net.h included before menu.h
 to see this definition's existance */
-#if NET_USE_SERIAL
+#if defined(NET_USE_SERIAL)
 	m_serialconfig,
 	m_modemconfig,
 #endif

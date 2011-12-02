@@ -56,7 +56,7 @@ cvar_t	hostname = {"hostname", "UNNAMED", CVAR_NONE};
 
 cvar_t	net_allowmultiple = {"net_allowmultiple", "0", CVAR_ARCHIVE};
 
-#if NET_USE_SERIAL
+#if defined(NET_USE_SERIAL)
 static qboolean	configRestored = false;
 
 void (*GetComPortConfig) (int portNumber, int *port, int *irq, int *baud, qboolean *useModem);
@@ -753,7 +753,7 @@ void NET_Init (void)
 	Cvar_RegisterVariable (&net_messagetimeout);
 	Cvar_RegisterVariable (&hostname);
 	Cvar_RegisterVariable (&net_allowmultiple);
-#if NET_USE_SERIAL
+#if defined(NET_USE_SERIAL)
 	Cvar_RegisterVariable (&config_com_port);
 	Cvar_RegisterVariable (&config_com_irq);
 	Cvar_RegisterVariable (&config_com_baud);
@@ -838,7 +838,7 @@ void NET_Poll(void)
 {
 	PollProcedure *pp;
 
-#if NET_USE_SERIAL
+#if defined(NET_USE_SERIAL)
 	if (!configRestored)
 	{
 		if (serialAvailable)

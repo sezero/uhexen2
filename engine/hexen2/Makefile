@@ -149,6 +149,8 @@ WITH_SPLASHES=yes
 USE_MGL=yes
 USE_WINSOCK2=no
 
+# whether to use Serial driver for DOS networking
+USE_SERIAL=yes
 # whether to use WatTCP for DOS UDP networking
 USE_WATT32=yes
 # whether to use Beame & Whiteside for DOS networking
@@ -384,6 +386,9 @@ VORBISLIB=tremor
 CODECS_USE_ZONE=yes
 
 INCLUDES += -I$(OSLIBS)/dos
+ifeq ($(USE_SERIAL),yes)
+CPPFLAGS+= -DUSE_SERIAL
+endif
 ifeq ($(USE_BWTCP),yes)
 CPPFLAGS+= -DUSE_BWTCP
 endif
@@ -762,7 +767,10 @@ else
 # or from our local implementation
 DOSTCP += dos/dos_inet.o dos/inet_addr.o
 endif
-SYSOBJ_NET := dos/net_dos.o dos/net_ser.o $(DOSTCP) dos/net_ipx.o
+SYSOBJ_NET := dos/net_dos.o dos/net_ipx.o $(DOSTCP)
+ifeq ($(USE_SERIAL),yes)
+SYSOBJ_NET += dos/net_ser.o
+endif
 SYSOBJ_SYS := dos_v2.o sys_dos.o
 #	dosasm.o
 endif

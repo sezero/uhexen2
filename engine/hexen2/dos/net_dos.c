@@ -74,6 +74,7 @@ net_driver_t net_drivers[] =
 		Datagram_Shutdown
 	},
 
+#if defined(NET_USE_SERIAL)
 	{	"Serial",
 		false,
 		Serial_Init,
@@ -91,6 +92,7 @@ net_driver_t net_drivers[] =
 		Serial_Close,
 		Serial_Shutdown
 	}
+#endif	/* NET_USE_SERIAL */
 };
 
 const int net_numdrivers = (sizeof(net_drivers) / sizeof(net_drivers[0]));

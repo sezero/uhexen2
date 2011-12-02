@@ -4,6 +4,10 @@ Development Progress	:
 ---------------------------
 
 2011-12-02 (SVN):
+    * hexen2 dos port: Made the serial network driver a compile time option.
+      Adjusted the use of the NET_USE_SERIAL macro.
+
+2011-12-02 (SVN):
     * Small tidy-up in hexen2 and hexenworld Makefiles.
 
 2011-12-02 (SVN):

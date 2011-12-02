@@ -69,7 +69,7 @@ static void M_GameOptions_Key (int key);
 static void M_Search_Key (int key);
 static void M_ServerList_Key (int key);
 
-#if NET_USE_SERIAL
+#if defined(NET_USE_SERIAL)
 static void M_Menu_SerialConfig_f (void);
 static void M_Menu_ModemConfig_f (void);
 static void M_SerialConfig_Draw (void);
@@ -104,7 +104,7 @@ static void M_ConfigureNetSubsystem(void);
 #define StartingGame	(m_multiplayer_cursor == 1)
 #define JoiningGame		(m_multiplayer_cursor == 0)
 
-#if !NET_USE_SERIAL
+#if !defined(NET_USE_SERIAL)
 #define	_nums_serial		0
 #define	_ser_draw_offset	8		/* incr. the Y offset this much pixels */
 #else
@@ -1803,7 +1803,7 @@ static int	m_net_cursor = 0;
 static const char *net_helpMessage[] =
 {
 /* .........1.........2.... */
-#if NET_USE_SERIAL
+#if defined(NET_USE_SERIAL)
   "                        ",
   " Two computers connected",
   "   through two modems.  ",
@@ -1845,7 +1845,7 @@ static void M_Net_Draw (void)
 
 	ScrollTitle("gfx/menu/title4.lmp");
 
-#if NET_USE_SERIAL
+#if defined(NET_USE_SERIAL)
 	M_DrawBigString (72, (64 + _ser_draw_offset) + (_item_net_ser * 20), "MODEM");
 	M_DrawBigString (72, (64 + _ser_draw_offset) + (_item_net_dc  * 20), "DIRECT CONNECT");
 #endif
@@ -1890,7 +1890,7 @@ again:
 		m_entersound = true;
 		switch (m_net_cursor)
 		{
-#if NET_USE_SERIAL
+#if defined(NET_USE_SERIAL)
 		case _item_net_ser:
 			M_Menu_SerialConfig_f ();
 			break;
@@ -1911,7 +1911,7 @@ again:
 		break;
 	}
 
-#if NET_USE_SERIAL
+#if defined(NET_USE_SERIAL)
 	if (SerialConfig && !serialAvailable)
 		goto again;
 	if (DirectConfig && !serialAvailable)
@@ -3437,7 +3437,7 @@ static void M_Quit_Draw (void)
 
 /* SERIAL CONFIG MENU */
 
-#if NET_USE_SERIAL
+#if defined(NET_USE_SERIAL)
 
 static int	serialConfig_cursor;
 static int	serialConfig_cursor_table[] = { 80, 96, 112, 128, 144, 164 };	// { 48, 64, 80, 96, 112, 132 }
@@ -4971,7 +4971,7 @@ void M_Draw (void)
 		M_Quit_Draw ();
 		break;
 
-#if NET_USE_SERIAL
+#if defined(NET_USE_SERIAL)
 	case m_serialconfig:
 		M_SerialConfig_Draw ();
 		break;
@@ -5087,7 +5087,7 @@ void M_Keydown (int key)
 		M_Quit_Key (key);
 		return;
 
-#if NET_USE_SERIAL
+#if defined(NET_USE_SERIAL)
 	case m_serialconfig:
 		M_SerialConfig_Key (key);
 		return;
@@ -5122,7 +5122,7 @@ static void M_ConfigureNetSubsystem(void)
 
 	Cbuf_AddText ("stopdemo\n");
 
-#if NET_USE_SERIAL
+#if defined(NET_USE_SERIAL)
 	if (SerialConfig || DirectConfig)
 	{
 		Cbuf_AddText ("com1 enable\n");
