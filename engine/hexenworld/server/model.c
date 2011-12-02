@@ -143,7 +143,7 @@ qmodel_t *Mod_FindName (const char *name)
 	qmodel_t	*mod;
 
 	if (!name[0])
-		SV_Error ("%s: NULL name", __thisfunc__);
+		Host_Error ("%s: NULL name", __thisfunc__);
 
 //
 // search the currently loaded models
@@ -157,7 +157,7 @@ qmodel_t *Mod_FindName (const char *name)
 	if (i == mod_numknown)
 	{
 		if (mod_numknown == MAX_MOD_KNOWN)
-			SV_Error ("mod_numknown == MAX_MOD_KNOWN");
+			Host_Error ("mod_numknown == MAX_MOD_KNOWN");
 		q_strlcpy (mod->name, name, MAX_QPATH);
 		mod->needload = NL_NEEDS_LOADED;
 		mod_numknown++;
@@ -187,7 +187,7 @@ static qmodel_t *Mod_LoadModel (qmodel_t *mod, qboolean crash)
 	if (!buf)
 	{
 		if (crash)
-			SV_Error ("%s: %s not found", __thisfunc__, mod->name);
+			Host_Error ("%s: %s not found", __thisfunc__, mod->name);
 		return NULL;
 	}
 
@@ -334,7 +334,7 @@ static void Mod_LoadVertexes (lump_t *l)
 
 	in = (dvertex_t *)(mod_base + l->fileofs);
 	if (l->filelen % sizeof(*in))
-		SV_Error ("%s: funny lump size in %s", __thisfunc__, loadmodel->name);
+		Host_Error ("%s: funny lump size in %s", __thisfunc__, loadmodel->name);
 	count = l->filelen / sizeof(*in);
 	out = (mvertex_t *) Hunk_AllocName (count * sizeof(*out), "vertexes");
 
@@ -362,7 +362,7 @@ static void Mod_LoadSubmodels (lump_t *l)
 
 	in = (dmodel_t *)(mod_base + l->fileofs);
 	if (l->filelen % sizeof(*in))
-		SV_Error ("%s: funny lump size in %s", __thisfunc__, loadmodel->name);
+		Host_Error ("%s: funny lump size in %s", __thisfunc__, loadmodel->name);
 	count = l->filelen / sizeof(*in);
 	out = (dmodel_t *) Hunk_AllocName (count * sizeof(*out), "submodels");
 
@@ -398,7 +398,7 @@ static void Mod_LoadEdges (lump_t *l)
 
 	in = (dedge_t *)(mod_base + l->fileofs);
 	if (l->filelen % sizeof(*in))
-		SV_Error ("%s: funny lump size in %s", __thisfunc__, loadmodel->name);
+		Host_Error ("%s: funny lump size in %s", __thisfunc__, loadmodel->name);
 	count = l->filelen / sizeof(*in);
 	out = (medge_t *) Hunk_AllocName ((count + 1) * sizeof(*out), "edges");
 
@@ -426,7 +426,7 @@ static void Mod_LoadTexinfo (lump_t *l)
 
 	in = (texinfo_t *)(mod_base + l->fileofs);
 	if (l->filelen % sizeof(*in))
-		SV_Error ("%s: funny lump size in %s", __thisfunc__, loadmodel->name);
+		Host_Error ("%s: funny lump size in %s", __thisfunc__, loadmodel->name);
 	count = l->filelen / sizeof(*in);
 	out = (mtexinfo_t *) Hunk_AllocName (count * sizeof(*out), "texture");
 
@@ -493,7 +493,7 @@ static void CalcSurfaceExtents (msurface_t *s, int firstedge, int numedges)
 		s->texturemins[i] = bmins[i] * 16;
 		s->extents[i] = (bmaxs[i] - bmins[i]) * 16;
 		if ( !(tex->flags & TEX_SPECIAL) && s->extents[i] > 256)
-			SV_Error ("Bad surface extents");
+			Host_Error ("Bad surface extents");
 	}
 }
 
@@ -513,7 +513,7 @@ static void Mod_LoadFaces (lump_t *l)
 
 	in = (dface_t *)(mod_base + l->fileofs);
 	if (l->filelen % sizeof(*in))
-		SV_Error ("%s: funny lump size in %s", __thisfunc__, loadmodel->name);
+		Host_Error ("%s: funny lump size in %s", __thisfunc__, loadmodel->name);
 	count = l->filelen / sizeof(*in);
 	out = (msurface_t *) Hunk_AllocName (count * sizeof(*out), "faces");
 
@@ -581,7 +581,7 @@ static void Mod_LoadNodes (lump_t *l)
 
 	in = (dnode_t *)(mod_base + l->fileofs);
 	if (l->filelen % sizeof(*in))
-		SV_Error ("%s: funny lump size in %s", __thisfunc__, loadmodel->name);
+		Host_Error ("%s: funny lump size in %s", __thisfunc__, loadmodel->name);
 	count = l->filelen / sizeof(*in);
 	out = (mnode_t *) Hunk_AllocName (count * sizeof(*out), "nodes");
 
@@ -622,7 +622,7 @@ static void Mod_LoadLeafs (lump_t *l)
 
 	in = (dleaf_t *)(mod_base + l->fileofs);
 	if (l->filelen % sizeof(*in))
-		SV_Error ("%s: funny lump size in %s", __thisfunc__, loadmodel->name);
+		Host_Error ("%s: funny lump size in %s", __thisfunc__, loadmodel->name);
 	count = l->filelen / sizeof(*in);
 	out = (mleaf_t *) Hunk_AllocName (count * sizeof(*out), "leafs");
 
@@ -655,7 +655,7 @@ static void Mod_LoadClipnodes (lump_t *l)
 
 	in = (dclipnode_t *)(mod_base + l->fileofs);
 	if (l->filelen % sizeof(*in))
-		SV_Error ("%s: funny lump size in %s", __thisfunc__, loadmodel->name);
+		Host_Error ("%s: funny lump size in %s", __thisfunc__, loadmodel->name);
 	count = l->filelen / sizeof(*in);
 	out = (dclipnode_t *) Hunk_AllocName (count * sizeof(*out), "clipnodes");
 
@@ -733,7 +733,7 @@ static void Mod_LoadClipnodes (lump_t *l)
 		out->children[0] = LittleShort(in->children[0]);
 		out->children[1] = LittleShort(in->children[1]);
 		if (out->children[0] >= count || out->children[1] >= count)
-			SV_Error("Corrupt clipping hull (out of range child)\n");
+			Host_Error("Corrupt clipping hull (out of range child)\n");
 	}
 }
 
@@ -788,7 +788,7 @@ static void Mod_LoadSurfedges (lump_t *l)
 
 	in = (int *)(mod_base + l->fileofs);
 	if (l->filelen % sizeof(*in))
-		SV_Error ("%s: funny lump size in %s", __thisfunc__, loadmodel->name);
+		Host_Error ("%s: funny lump size in %s", __thisfunc__, loadmodel->name);
 	count = l->filelen / sizeof(*in);
 	out = (int *) Hunk_AllocName (count * sizeof(*out), "surfedges");
 
@@ -816,7 +816,7 @@ static void Mod_LoadPlanes (lump_t *l)
 
 	in = (dplane_t *)(mod_base + l->fileofs);
 	if (l->filelen % sizeof(*in))
-		SV_Error ("%s: funny lump size in %s", __thisfunc__, loadmodel->name);
+		Host_Error ("%s: funny lump size in %s", __thisfunc__, loadmodel->name);
 	count = l->filelen / sizeof(*in);
 	out = (mplane_t *) Hunk_AllocName (count * 2 * sizeof(*out), "planes");
 
@@ -856,7 +856,7 @@ static void Mod_LoadBrushModel (qmodel_t *mod, void *buffer)
 
 	i = LittleLong (header->version);
 	if (i != BSPVERSION)
-		SV_Error ("%s: %s has wrong version number (%i should be %i)", __thisfunc__, mod->name, i, BSPVERSION);
+		Host_Error ("%s: %s has wrong version number (%i should be %i)", __thisfunc__, mod->name, i, BSPVERSION);
 
 // swap all the lumps
 	mod_base = (byte *)header;

@@ -4,6 +4,11 @@ Development Progress	:
 ---------------------------
 
 2011-12-02 (SVN):
+    * engine/hexenworld/server, model.c: Replaced SV_Error by Host_Error:
+      we already have a macro defining Host_Error as SV_Error and this
+      reduces the diff size between h2ded and hwsv versions of model.c.
+
+2011-12-02 (SVN):
     * bumped versions for hexen2 engine to 1.25 and hexenworld to 0.25.
     * engine/hexenworld/server: model.c, model.h: Ported dedicated server
       model loader optimizations and cleanups from h2ded to hwsv.
