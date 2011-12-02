@@ -2,6 +2,9 @@
 	sv_model.h
 	header for model loading and caching
 
+	This version of model.c and model.h are based on a quake dedicated
+	server application, lhnqserver, by LordHavoc.
+
 	$Id$
 */
 
@@ -42,7 +45,6 @@ typedef struct
 
 
 // plane_t structure
-// !!! if this is changed, it must be changed in asm_i386.h too !!!
 typedef struct mplane_s
 {
 	vec3_t	normal;
@@ -51,18 +53,6 @@ typedef struct mplane_s
 	byte	signbits;		// signx + signy<<1 + signz<<1
 	byte	pad[2];
 } mplane_t;
-
-typedef struct texture_s
-{
-	char		name[16];
-	unsigned int	width, height;
-	int		anim_total;		// total tenths in sequence ( 0 = no)
-	int		anim_min, anim_max;	// time for this frame min <=time< max
-	struct texture_s *anim_next;		// in the animation sequence
-	struct texture_s *alternate_anims;	// bmodels in frmae 1 use these
-	unsigned int	offsets[MIPLEVELS];	// four mip maps stored
-} texture_t;
-
 
 #define	SURF_PLANEBACK		2
 #define	SURF_DRAWSKY		4
@@ -73,36 +63,21 @@ typedef struct texture_s
 #define SURF_TRANSLUCENT	0x80	/* r_edge.asm checks this */
 #define SURF_DRAWBLACK		0x200
 
-// !!! if this is changed, it must be changed in asm_draw.h too !!!
 typedef struct
 {
 	unsigned short	v[2];
-	unsigned int	cachededgeoffset;
 } medge_t;
 
 typedef struct
 {
 	float		vecs[2][4];
-	float		mipadjust;
-	texture_t	*texture;
 	int		flags;
 } mtexinfo_t;
 
 typedef struct msurface_s
 {
-	int		visframe;	// should be drawn when node is crossed
-
-	int		dlightframe;
-	int		dlightbits;
-
 	mplane_t	*plane;
 	int		flags;
-
-	int		firstedge;	// look up in model->surfedges[], negative numbers
-	int		numedges;	// are backwards edges
-
-// surface generation data
-	struct surfcache_s	*cachespots[MIPLEVELS];
 
 	short		texturemins[2];
 	short		extents[2];
@@ -118,9 +93,6 @@ typedef struct mnode_s
 {
 // common with leaf
 	int		contents;		// 0, to differentiate from leafs
-	int		visframe;		// node needs to be traversed if current
-
-	short		minmaxs[6];		// for bounding box culling
 
 	struct mnode_s	*parent;
 
@@ -137,20 +109,11 @@ typedef struct mleaf_s
 {
 // common with node
 	int		contents;		// wil be a negative contents number
-	int		visframe;		// node needs to be traversed if current
-
-	short		minmaxs[6];		// for bounding box culling
 
 	struct mnode_s	*parent;
 
 // leaf specific
 	byte		*compressed_vis;
-	struct efrag_s	*efrags;
-
-	msurface_t	**firstmarksurface;
-	int		nummarksurfaces;
-	int		key;			// BSP sequence number for leaf's contents
-	byte		ambient_sound_level[NUM_AMBIENTS];
 } mleaf_t;
 
 // !!! if this is changed, it must be changed in asm_i386.h too !!!
@@ -218,10 +181,8 @@ typedef struct qmodel_s
 	int		needload;		// bmodels and sprites don't cache normally
 
 	modtype_t	type;
-	int		numframes;
-	synctype_t	synctype;
-
 	int		flags;
+	int		numframes;
 
 //
 // volume occupied by the model graphics
@@ -246,9 +207,6 @@ typedef struct qmodel_s
 	int		numvertexes;
 	mvertex_t	*vertexes;
 
-	int		numedges;
-	medge_t		*edges;
-
 	int		numnodes;
 	mnode_t		*nodes;
 
@@ -258,19 +216,10 @@ typedef struct qmodel_s
 	int		numsurfaces;
 	msurface_t	*surfaces;
 
-	int		numsurfedges;
-	int		*surfedges;
-
 	int		numclipnodes;
 	dclipnode_t	*clipnodes;
 
-	int		nummarksurfaces;
-	msurface_t	**marksurfaces;
-
 	hull_t		hulls[MAX_MAP_HULLS];
-
-	int		numtextures;
-	texture_t	**textures;
 
 	byte		*visdata;
 	byte		*lightdata;

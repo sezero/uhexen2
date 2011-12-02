@@ -4,6 +4,10 @@ Development Progress	:
 ---------------------------
 
 2011-12-02 (SVN):
+    * engine/hexenworld/server: model.c, model.h: Ported dedicated server
+      model loader optimizations and cleanups from h2ded to hwsv.
+
+2011-12-02 (SVN):
     * hexenworld: Moved shared/model.h under client and server separately
       so that the two can use customized versions of the header.  Edited
       the server version to remove structures and macros which have never
