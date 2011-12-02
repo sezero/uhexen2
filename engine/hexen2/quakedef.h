@@ -19,7 +19,7 @@
 #define	HOT_VERSION_BETA_STR	"final"
 #define	HOT_VERSION_STR		STRINGIFY(HOT_VERSION_MAJ) "." STRINGIFY(HOT_VERSION_MID) "." STRINGIFY(HOT_VERSION_MIN)
 #define	GLQUAKE_VERSION		1.00
-#define	ENGINE_VERSION		1.24
+#define	ENGINE_VERSION		1.25
 #define	ENGINE_NAME		"Hexen2"
 
 #define	MAX_QPATH	64	// max length of a quake game pathname

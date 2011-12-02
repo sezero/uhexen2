@@ -4,6 +4,7 @@ Development Progress	:
 ---------------------------
 
 2011-12-02 (SVN):
+    * bumped versions for hexen2 engine to 1.25 and hexenworld to 0.25.
     * engine/hexenworld/server: model.c, model.h: Ported dedicated server
       model loader optimizations and cleanups from h2ded to hwsv.
 
