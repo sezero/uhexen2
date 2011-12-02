@@ -4,6 +4,8 @@ Development Progress	:
 ---------------------------
 
 2011-12-02 (SVN):
+    * Updated the COMPILE document regarding DOS builds:  Frank Sapone
+      confirmed successful compilation in native DOS/DJGPP environment.
     * Added new ReleaseNotes-1.5.2 document. Only a few entries for now,
       will grow as we move on.  Updated the rpm spec file.
 

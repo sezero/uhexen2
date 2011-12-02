@@ -213,9 +213,14 @@ cross toolchains: see the tiny build_cross_dos.sh script to understand
 how I do it.  We provide djgpp cross compilers on our downloads page,
 too: see under the support files section if you need one.
 
-Compiling on DOS is never tested and not supported.  On the other hand,
-compiling on windows in a command console or in an MSYS shell ~should~
-be possible: remember adding DOSBUILD=1 to your environment.
+Compiling in a native DOS/DJGPP environment is possible if you have long
+file names (LFN) support. Remember adding DOSBUILD=1 to your environment.
+For example, in order to compile the dos version of hexen2 on native dos:
+make DOSBUILD=1 h2
+
+Cross-compiling for DOS on Windows in a command console or under MSYS
+should be possible too: remember adding DOSBUILD=1 to your environment,
+like above.
 
 Compilers other than djgpp, such as OpenWatcom, most probably won't work
 and would need adjustments.
@@ -237,6 +242,7 @@ Binutils homepage	:	http://sourceware.org/binutils/
 NASM homepage		:	http://www.nasm.us/
 YASM homepage		:	http://yasm.tortall.net/
 DJGPP homepage		:	http://www.delorie.com/djgpp/
+WATT-32 homepage		http://home.broadpark.no/~gvanem/
 MinGW/MSYS homepage	:	http://mingw.org/
 				http://sourceforge.net/projects/mingw/
 MinGW-w64 homepage	:	http://mingw-w64.sourceforge.net/
