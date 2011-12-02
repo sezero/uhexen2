@@ -4,6 +4,12 @@ Development Progress	:
 ---------------------------
 
 2011-12-02 (SVN):
+    * hexenworld: Moved shared/model.h under client and server separately
+      so that the two can use customized versions of the header.  Edited
+      the server version to remove structures and macros which have never
+      been used.
+
+2011-12-02 (SVN):
     * quakedef.h: updated beta date stamp to 2011-12-02.
 
 2011-12-02 (SVN):
