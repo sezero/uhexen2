@@ -4,6 +4,10 @@ Development Progress	:
 ---------------------------
 
 2011-12-02 (SVN):
+    * Added new ReleaseNotes-1.5.2 document. Only a few entries for now,
+      will grow as we move on.  Updated the rpm spec file.
+
+2011-12-02 (SVN):
     * engine/hexenworld/server, model.c: Replaced SV_Error by Host_Error:
       we already have a macro defining Host_Error as SV_Error and this
       reduces the diff size between h2ded and hwsv versions of model.c.

@@ -65,7 +65,7 @@
 Name:		hexen2
 License:	GPLv2
 Group:		Amusements/Games
-Version:	1.5.1
+Version:	1.5.2
 Release:	%{?prerelease:0.%{pkg_prerel}.%{prerelease}}%{!?prerelease:%{pkg_final}}
 Summary:	Hexen II: Hammer of Thyrion
 URL:		http://uhexen2.sourceforge.net/
@@ -200,6 +200,7 @@ utils/hcc/hcc -src gamecode-%{gamecode_ver}/hc/hw -oi -on
 %{__install} -D -m644 docs/ReleaseNotes-1.4.2 %{buildroot}/%{_prefix}/games/%{name}/docs/ReleaseNotes-1.4.2
 %{__install} -D -m644 docs/ReleaseNotes-1.4.3 %{buildroot}/%{_prefix}/games/%{name}/docs/ReleaseNotes-1.4.3
 %{__install} -D -m644 docs/ReleaseNotes-1.5.0 %{buildroot}/%{_prefix}/games/%{name}/docs/ReleaseNotes-1.5.0
+%{__install} -D -m644 docs/ReleaseNotes-1.5.1 %{buildroot}/%{_prefix}/games/%{name}/docs/ReleaseNotes-1.5.1
 
 # Install the gamedata
 %{__mkdir_p} %{buildroot}/%{_prefix}/games/%{name}/data1/
@@ -348,6 +349,7 @@ desktop-file-install \
 %{_prefix}/games/%{name}/docs/ReleaseNotes-1.4.2
 %{_prefix}/games/%{name}/docs/ReleaseNotes-1.4.3
 %{_prefix}/games/%{name}/docs/ReleaseNotes-1.5.0
+%{_prefix}/games/%{name}/docs/ReleaseNotes-1.5.1
 %{!?_without_freedesktop:%{_datadir}/applications/%{desktop_vendor}-%{name}.desktop}
 %{?_without_freedesktop:%{_sysconfdir}/X11/applnk/Games/%{name}.desktop}
 
@@ -366,6 +368,9 @@ desktop-file-install \
 %{_prefix}/games/%{name}/docs/README.hwmaster
 
 %changelog
+* Fri Dec 02 2011 O.Sezer <sezero@users.sourceforge.net> 1.5.2-1
+- Bumped version to 1.5.2
+
 * Mon Nov 21 2011 O.Sezer <sezero@users.sourceforge.net> 1.5.1-1
 - Install the cd-rip scripts for the less common game media, too.
 
