@@ -216,7 +216,8 @@ too: see under the support files section if you need one.
 Compiling in a native DOS/DJGPP environment is possible if you have long
 file names (LFN) support. Remember adding DOSBUILD=1 to your environment.
 For example, in order to compile the dos version of hexen2 on native dos:
-make DOSBUILD=1 h2
+	set DOSBUILD=1
+	make h2
 
 Cross-compiling for DOS on Windows in a command console or under MSYS
 should be possible too: remember adding DOSBUILD=1 to your environment,

@@ -4,6 +4,9 @@ Development Progress	:
 ---------------------------
 
 2011-12-03 (SVN):
+    * Minor correction to the COMPILE document regarding DOS builds.
+
+2011-12-03 (SVN):
     * snd_gus.c (S_GUS_Init): Added support for "-nogus" command line
       option to skip Gravis UltraSound initialization and return false.
       Patch suggested by Frank Sapone.
