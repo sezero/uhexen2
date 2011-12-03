@@ -5,6 +5,7 @@ Development Progress	:
 
 2011-12-03 (SVN):
     * Minor correction to the COMPILE document regarding DOS builds.
+    * Updates to the 1.5.2 release notes file.
 
 2011-12-03 (SVN):
     * snd_gus.c (S_GUS_Init): Added support for "-nogus" command line
