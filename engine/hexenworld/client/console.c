@@ -18,6 +18,7 @@ static int	con_vislines;
 int		con_notifylines;	// scan lines to clear for notify lines
 int		con_totallines;		// total lines in console scrollback
 static float	con_cursorspeed = 4;
+qboolean 	con_forcedup;		// because no entities to refresh
 int		con_ormask;
 
 static	cvar_t	con_notifytime = {"con_notifytime", "3", CVAR_NONE};	//seconds
@@ -453,8 +454,8 @@ static void Con_DrawInput (void)
 	size_t		pos;
 	char	editlinecopy[MAXCMDLINE], *text;
 
-	if (key_dest != key_console && cls.state == ca_active)
-		return;		// don't draw anything (always draw if not active)
+	if (key_dest != key_console && !con_forcedup)
+		return;		// don't draw anything
 
 	pos = q_strlcpy(editlinecopy, key_lines[edit_line], sizeof(editlinecopy));
 	text = editlinecopy;

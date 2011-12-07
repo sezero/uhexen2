@@ -918,7 +918,7 @@ void Key_Event (int key, qboolean down)
 			if (key_dest == key_message)
 				goto autorep0;
 			// hack to allow autorepeat in forcedup console:
-			if (cls.state != ca_active && m_state == m_none)
+			if (con_forcedup && m_state == m_none)
 				goto autorep0;
 			return;
 		}
@@ -998,7 +998,7 @@ autorep0:
 //
 	if ( (key_dest == key_menu && menubound[key])
 		|| (key_dest == key_console && !consolekeys[key])
-		|| (key_dest == key_game && ( cls.state == ca_active || !consolekeys[key] )) )
+		|| (key_dest == key_game && ( !con_forcedup || !consolekeys[key] )) )
 	{
 		kb = keybindings[key];
 		if (kb)

@@ -3,6 +3,10 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2011-12-07 (SVN):
+    * hexenworld: Added the global variable con_forcedup for better
+      compatibility with hexen2 code.
+
 2011-12-03 (SVN):
     * Minor correction to the COMPILE document regarding DOS builds.
     * Updates to the 1.5.2 release notes file.
