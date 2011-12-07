@@ -72,7 +72,7 @@ do {					\
 			*handle = NULL;	\
 		return;			\
 	}				\
-while (0)
+} while (0)
 
 static void MIDI_SetVolume (void **handle, float value)
 {
@@ -114,7 +114,7 @@ static void MIDI_Update (void **handle)
 
 qboolean MIDI_Init(void)
 {
-	OSErr		theErr;
+	OSErr	theErr;
 
 	if (midi_mac_qt.available)
 		return true;
@@ -142,7 +142,7 @@ qboolean MIDI_Init(void)
 static void *MIDI_Play (const char *filename)
 {
 #define	TEMP_MUSICNAME	"tmpmusic.mid"
-	FILE		*f;
+	FILE	*f;
 	char	midipath[MAX_OSPATH];
 	OSErr	err;
 	FSSpec	midiSpec;

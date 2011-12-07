@@ -4,6 +4,10 @@ Development Progress	:
 ---------------------------
 
 2011-12-07 (SVN):
+    * midi_mac.c: Added missing brace in the CHECK_MIDI_ALIVE macro, should
+      compile fine now.
+
+2011-12-07 (SVN):
     * engine/hexenworld/shared/net_chan.c (Netchan_Setup, Netchan_Process):
       Reverted the chan->incoming_sequence pre-initialization to -1 change
       from Dec. 01 (rev. 4339), because it caused connection failures with
