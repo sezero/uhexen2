@@ -425,6 +425,9 @@ sbtrans		0, 1, 2	: HUD (status bar) transparency. 0: none (solid),
 dmtrans		0, 1, 2	: Same as the sbtrans above, but used for the
 			  small deathmatch overlay in multiplayer.
 
+contrans	0, 1, 2	: Same as the sbtrans above, but used for the
+			  console background transparency.
+
 
 3.2.2 Other OpenGL options
 -------------------------------

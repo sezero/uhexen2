@@ -4,6 +4,17 @@ Development Progress	:
 ---------------------------
 
 2011-12-07 (SVN):
+    * draw.c (Draw_ConsoleBackground): Add support for transparent console
+      background in the software renderer.  This is actually an extension
+      of the two already known transparency features: (1) sbtrans, which
+      is status bar transparency, and (2) dmtrans, which is the deathmatch
+      status overlay counterpart for sbtrans.  In parallel to sbtrans, the
+      console background transparency is controlled by a new cvar contrans.
+      The valid values for contrans are 0 (solid), 1 (transparent) and 2
+      (very transparent).
+    * quakedef.h: updated beta date stamp to 2011-12-07.
+
+2011-12-07 (SVN):
     * sbar.h, screen.h: Moved to h2shared.
     * sbar.c: Moved in_impulse extern declaration to client.h. Moved the
       trans_level global to screen.c, its extern declaration to screen.h.

@@ -77,6 +77,7 @@ int		trans_level = 0;
 
 cvar_t		scr_viewsize = {"viewsize", "110", CVAR_ARCHIVE};
 cvar_t		scr_fov = {"fov", "90", CVAR_NONE};	// 10 - 170
+cvar_t		scr_contrans = {"contrans", "0", CVAR_ARCHIVE};
 static	cvar_t	scr_conspeed = {"scr_conspeed", "300", CVAR_NONE};
 static	cvar_t	scr_centertime = {"scr_centertime", "4", CVAR_NONE};
 static	cvar_t	scr_showram = {"showram", "1", CVAR_NONE};
@@ -322,6 +323,7 @@ void SCR_Init (void)
 	{
 		Cvar_RegisterVariable (&scr_fov);
 		Cvar_RegisterVariable (&scr_viewsize);
+		Cvar_RegisterVariable (&scr_contrans);
 		Cvar_RegisterVariable (&scr_conspeed);
 		Cvar_RegisterVariable (&scr_showram);
 		Cvar_RegisterVariable (&scr_showturtle);

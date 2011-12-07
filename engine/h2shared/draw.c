@@ -1340,6 +1340,16 @@ void Draw_ConsoleBackground (int lines)
 
 	conback = Draw_CachePic ("gfx/menu/conback.lmp");
 
+	/* Since the status bar or deahmatch overlay will never be drawn
+	 * at the same as the console background we can freely play with
+	 * trans_level here. */
+	if (!con_forcedup)
+	{
+		trans_level = scr_contrans.integer;
+		if (trans_level < 0 || trans_level > 2)
+			trans_level = 0;
+	}
+
 	if (r_pixbytes == 1)
 	{
 		byte *dest = vid.conbuffer;
@@ -1349,11 +1359,15 @@ void Draw_ConsoleBackground (int lines)
 		{
 			v = (vid.conheight - lines + y)*200/vid.conheight;
 			src = conback->data + v*320;
-			if (vid.conwidth == 320)
-				memcpy (dest, src, vid.conwidth);
-			else
+			if (vid.conwidth == 320 && trans_level == 0)
 			{
-				f = 0;
+				memcpy (dest, src, vid.conwidth);
+				continue;
+			}
+			f = 0;
+			switch (trans_level)
+			{
+			case 0:
 				for (x = 0; x < (int)vid.conwidth; x += 4)
 				{
 					dest[x] = src[f>>16];
@@ -1365,6 +1379,33 @@ void Draw_ConsoleBackground (int lines)
 					dest[x+3] = src[f>>16];
 					f += fstep;
 				}
+				break;
+			case 1:
+				for (x = 0; x < (int)vid.conwidth; x += 4)
+				{
+					dest[x] = mainTransTable[(((unsigned int)dest[x])<<8) + src[f>>16]];
+					f += fstep;
+					dest[x+1] = mainTransTable[(((unsigned int)dest[x+1])<<8) + src[f>>16]];
+					f += fstep;
+					dest[x+2] = mainTransTable[(((unsigned int)dest[x+2])<<8) + src[f>>16]];
+					f += fstep;
+					dest[x+3] = mainTransTable[(((unsigned int)dest[x+3])<<8) + src[f>>16]];
+					f += fstep;
+				}
+				break;
+			case 2:
+				for (x = 0; x < (int)vid.conwidth; x += 4)
+				{
+					dest[x] = mainTransTable[(((unsigned int)src[f>>16])<<8) + dest[x]];
+					f += fstep;
+					dest[x+1] = mainTransTable[(((unsigned int)src[f>>16])<<8) + dest[x+1]];
+					f += fstep;
+					dest[x+2] = mainTransTable[(((unsigned int)src[f>>16])<<8) + dest[x+2]];
+					f += fstep;
+					dest[x+3] = mainTransTable[(((unsigned int)src[f>>16])<<8) + dest[x+3]];
+					f += fstep;
+				}
+				break;
 			}
 		}
 	}
@@ -1394,6 +1435,8 @@ void Draw_ConsoleBackground (int lines)
 			}
 		}
 	}
+
+	trans_level = 0;
 
 #if defined(H2W)
 	if (cls.download)
