@@ -127,7 +127,6 @@ void Netchan_Setup (netchan_t *chan, netadr_t adr)
 
 	chan->remote_address = adr;
 	chan->last_received = realtime;
-	chan->incoming_sequence = -1;
 
 	SZ_Init (&chan->message, chan->message_buf, sizeof(chan->message_buf));
 	chan->message.allowoverflow = true;
@@ -329,7 +328,7 @@ qboolean Netchan_Process (netchan_t *chan)
 //
 // discard stale or duplicated packets
 //
-	if (sequence < (unsigned int)(chan->incoming_sequence + 1))
+	if (sequence <= (unsigned int) chan->incoming_sequence)
 	{
 		if (showdrop.integer)
 		{
