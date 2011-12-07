@@ -4,6 +4,10 @@ Development Progress	:
 ---------------------------
 
 2011-12-07 (SVN):
+    * draw.c: Tidied up and added fixme notes for r_pixbytes. Renamed all
+      pusdest variables to dest (was so windowsian, jeezz...)
+
+2011-12-07 (SVN):
     * hexenworld: Added the global variable con_forcedup for better
       compatibility with hexen2 code.
 

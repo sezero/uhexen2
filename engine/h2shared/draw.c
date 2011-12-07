@@ -242,9 +242,7 @@ smoothly scrolled off.
 */
 void Draw_Character (int x, int y, unsigned int num)
 {
-	byte		*dest;
 	byte		*source;
-	unsigned short	*pusdest;
 	int		drawline;
 	int		row, col;
 
@@ -271,8 +269,7 @@ void Draw_Character (int x, int y, unsigned int num)
 
 	if (r_pixbytes == 1)
 	{
-		dest = vid.conbuffer + y*vid.conrowbytes + x;
-
+		byte *dest = vid.conbuffer + y*vid.conrowbytes + x;
 		while (drawline--)
 		{
 			switch (trans_level)
@@ -337,33 +334,33 @@ void Draw_Character (int x, int y, unsigned int num)
 			dest += vid.conrowbytes;
 		}
 	}
-	else
+	else /* r_pixbytes == 2 */
 	{
-	// FIXME: pre-expand to native format?
-		pusdest = (unsigned short *)
+		// FIXME: pre-expand to native format?
+		unsigned short *dest = (unsigned short *)
 				((byte *)vid.conbuffer + y*vid.conrowbytes + (x<<1));
-
+		// FIXME: transparency bits are missing
 		while (drawline--)
 		{
 			if (source[0])
-				pusdest[0] = d_8to16table[source[0]];
+				dest[0] = d_8to16table[source[0]];
 			if (source[1])
-				pusdest[1] = d_8to16table[source[1]];
+				dest[1] = d_8to16table[source[1]];
 			if (source[2])
-				pusdest[2] = d_8to16table[source[2]];
+				dest[2] = d_8to16table[source[2]];
 			if (source[3])
-				pusdest[3] = d_8to16table[source[3]];
+				dest[3] = d_8to16table[source[3]];
 			if (source[4])
-				pusdest[4] = d_8to16table[source[4]];
+				dest[4] = d_8to16table[source[4]];
 			if (source[5])
-				pusdest[5] = d_8to16table[source[5]];
+				dest[5] = d_8to16table[source[5]];
 			if (source[6])
-				pusdest[6] = d_8to16table[source[6]];
+				dest[6] = d_8to16table[source[6]];
 			if (source[7])
-				pusdest[7] = d_8to16table[source[7]];
+				dest[7] = d_8to16table[source[7]];
 
 			source += 256;
-			pusdest += (vid.conrowbytes >> 1);
+			dest += (vid.conrowbytes >> 1);
 		}
 	}
 }
@@ -395,20 +392,17 @@ void Draw_RedString (int x, int y, const char *str)
 
 static void Draw_Pixel (int x, int y, const byte color)
 {
-	byte			*dest;
-	unsigned short	*pusdest;
-
 	if (r_pixbytes == 1)
 	{
-		dest = vid.conbuffer + y*vid.conrowbytes + x;
+		byte *dest = vid.conbuffer + y*vid.conrowbytes + x;
 		*dest = color;
 	}
-	else
+	else /* r_pixbytes == 2 */
 	{
-	// FIXME: pre-expand to native format?
-		pusdest = (unsigned short *)
+		// FIXME: pre-expand to native format?
+		unsigned short *dest = (unsigned short *)
 				((byte *)vid.conbuffer + y*vid.conrowbytes + (x<<1));
-		*pusdest = d_8to16table[color];
+		*dest = d_8to16table[color];
 	}
 }
 
@@ -453,8 +447,7 @@ void Draw_Crosshair (void)
 
 void Draw_SmallCharacter (int x, int y, int num)
 {
-	byte		*dest, *source;
-	unsigned short	*pusdest;
+	byte		*source;
 	int		height, row, col;
 
 	if (num < 32)
@@ -501,7 +494,7 @@ void Draw_SmallCharacter (int x, int y, int num)
 
 	if (r_pixbytes == 1)
 	{
-		dest = vid.buffer + y*vid.rowbytes + x;
+		byte *dest = vid.buffer + y*vid.rowbytes + x;
 		while (height--)
 		{
 			switch (trans_level)
@@ -566,30 +559,32 @@ void Draw_SmallCharacter (int x, int y, int num)
 			dest += vid.conrowbytes;
 		}
 	}
-	else
-	{ // FIXME: pre-expand to native format?
-		pusdest = (unsigned short *)
+	else /* r_pixbytes == 2 */
+	{
+		// FIXME: pre-expand to native format?
+		unsigned short *dest = (unsigned short *)
 				((byte *)vid.buffer + y*vid.rowbytes + (x<<1));
+		// FIXME: transparency bits are missing
 		while (height--)
 		{
 			if (source[0])
-				pusdest[0] = d_8to16table[source[0]];
+				dest[0] = d_8to16table[source[0]];
 			if (source[1])
-				pusdest[1] = d_8to16table[source[1]];
+				dest[1] = d_8to16table[source[1]];
 			if (source[2])
-				pusdest[2] = d_8to16table[source[2]];
+				dest[2] = d_8to16table[source[2]];
 			if (source[3])
-				pusdest[3] = d_8to16table[source[3]];
+				dest[3] = d_8to16table[source[3]];
 			if (source[4])
-				pusdest[4] = d_8to16table[source[4]];
+				dest[4] = d_8to16table[source[4]];
 			if (source[5])
-				pusdest[5] = d_8to16table[source[5]];
+				dest[5] = d_8to16table[source[5]];
 			if (source[6])
-				pusdest[6] = d_8to16table[source[6]];
+				dest[6] = d_8to16table[source[6]];
 			if (source[7])
-				pusdest[7] = d_8to16table[source[7]];
+				dest[7] = d_8to16table[source[7]];
 			source += 128;
-			pusdest += (vid.conrowbytes>>1);
+			dest += (vid.conrowbytes>>1);
 		}
 	}
 }
@@ -627,6 +622,7 @@ void Draw_BigCharacter (int x, int y, int num)
 	p = Draw_CachePic ("gfx/menu/bigfont.lmp");
 	source = p->data + ((num % 8) * 20) + (num / 8 * p->width * 20);
 
+// FIXME: only for r_pixbytes == 1
 	for (ypos = 0; ypos < 19; ypos++)
 	{
 		dest = vid.buffer + (y + ypos) * vid.rowbytes + x;
@@ -649,8 +645,7 @@ Draw_Pic
 */
 void Draw_Pic (int x, int y, qpic_t *pic)
 {
-	byte		*dest, *source;
-	unsigned short	*pusdest;
+	byte		*source;
 	int		v, u;
 
 	if ((x < 0) ||
@@ -665,8 +660,7 @@ void Draw_Pic (int x, int y, qpic_t *pic)
 
 	if (r_pixbytes == 1)
 	{
-		dest = vid.buffer + y * vid.rowbytes + x;
-
+		byte *dest = vid.buffer + y * vid.rowbytes + x;
 		for (v = 0; v < pic->height; v++)
 		{
 			memcpy (dest, source, pic->width);
@@ -674,19 +668,19 @@ void Draw_Pic (int x, int y, qpic_t *pic)
 			source += pic->width;
 		}
 	}
-	else
+	else /* r_pixbytes == 2 */
 	{
-	// FIXME: pretranslate at load time?
-		pusdest = (unsigned short *)vid.buffer + y * (vid.rowbytes >> 1) + x;
-
+		// FIXME: pretranslate at load time?
+		unsigned short *dest = (unsigned short *)vid.buffer + y * (vid.rowbytes>>1) + x;
+		// FIXME: transparency bits are missing
 		for (v = 0; v < pic->height; v++)
 		{
 			for (u = 0; u < pic->width; u++)
 			{
-				pusdest[u] = d_8to16table[source[u]];
+				dest[u] = d_8to16table[source[u]];
 			}
 
-			pusdest += vid.rowbytes >> 1;
+			dest += vid.rowbytes >> 1;
 			source += pic->width;
 		}
 	}
@@ -703,8 +697,7 @@ void Draw_Pic (int x, int y, qpic_t *pic)
 
 void Draw_PicCropped (int x, int y, qpic_t *pic)
 {
-	byte		*dest, *source;
-	unsigned short	*pusdest;
+	byte		*source;
 	int		v, u, height;
 
 	if ((x < 0) || (x+pic->width > (int)vid.width))
@@ -739,8 +732,7 @@ void Draw_PicCropped (int x, int y, qpic_t *pic)
 
 	if (r_pixbytes == 1)
 	{
-		dest = vid.buffer+y*vid.rowbytes+x;
-
+		byte *dest = vid.buffer + y*vid.rowbytes + x;
 		switch (trans_level)
 		{
 		case 0:
@@ -773,16 +765,18 @@ void Draw_PicCropped (int x, int y, qpic_t *pic)
 			break;
 		}
 	}
-	else
-	{ // FIXME: pretranslate at load time?
-		pusdest = (unsigned short *)vid.buffer+y*(vid.rowbytes>>1)+x;
+	else /* r_pixbytes == 2 */
+	{
+		// FIXME: pretranslate at load time?
+		unsigned short *dest = (unsigned short *)vid.buffer + y * (vid.rowbytes>>1) + x;
+		// FIXME: transparency bits are missing
 		for (v = 0; v < height; v++)
 		{
 			for (u = 0; u < pic->width; u++)
 			{
-				pusdest[u] = d_8to16table[source[u]];
+				dest[u] = d_8to16table[source[u]];
 			}
-			pusdest += vid.rowbytes>>1;
+			dest += vid.rowbytes>>1;
 			source += pic->width;
 		}
 	}
@@ -795,8 +789,7 @@ Draw_TransPic
 */
 void Draw_TransPic (int x, int y, qpic_t *pic)
 {
-	byte		*dest, *source, tbyte;
-	unsigned short	*pusdest;
+	byte		*source, tbyte;
 	int		v, u;
 
 	if (x < 0 || (unsigned int)(x + pic->width) > vid.width || y < 0 ||
@@ -809,8 +802,7 @@ void Draw_TransPic (int x, int y, qpic_t *pic)
 
 	if (r_pixbytes == 1)
 	{
-		dest = vid.buffer + y * vid.rowbytes + x;
-
+		byte *dest = vid.buffer + y * vid.rowbytes + x;
 		if (pic->width & 7)
 		{	// general
 			for (v = 0; v < pic->height; v++)
@@ -853,11 +845,11 @@ void Draw_TransPic (int x, int y, qpic_t *pic)
 			}
 		}
 	}
-	else
+	else /* r_pixbytes == 2 */
 	{
-	// FIXME: pretranslate at load time?
-		pusdest = (unsigned short *)vid.buffer + y * (vid.rowbytes >> 1) + x;
-
+		// FIXME: pretranslate at load time?
+		unsigned short *dest = (unsigned short *)vid.buffer + y * (vid.rowbytes>>1) + x;
+		// FIXME: transparency bits are missing
 		for (v = 0; v < pic->height; v++)
 		{
 			for (u = 0; u < pic->width; u++)
@@ -866,11 +858,11 @@ void Draw_TransPic (int x, int y, qpic_t *pic)
 
 				if (tbyte != TRANSPARENT_COLOR)
 				{
-					pusdest[u] = d_8to16table[tbyte];
+					dest[u] = d_8to16table[tbyte];
 				}
 			}
 
-			pusdest += vid.rowbytes >> 1;
+			dest += vid.rowbytes >> 1;
 			source += pic->width;
 		}
 	}
@@ -887,8 +879,7 @@ void Draw_TransPic (int x, int y, qpic_t *pic)
 
 void Draw_SubPicCropped (int x, int y, int h, qpic_t *pic)
 {
-	byte		*dest, *source;
-	unsigned short	*pusdest;
+	byte		*source;
 	int		v, u, height;
 
 	if ((x < 0) || (x+pic->width > (int)vid.width))
@@ -928,8 +919,7 @@ void Draw_SubPicCropped (int x, int y, int h, qpic_t *pic)
 
 	if (r_pixbytes == 1)
 	{
-		dest = vid.buffer+y*vid.rowbytes+x;
-
+		byte *dest = vid.buffer + y * vid.rowbytes + x;
 		switch (trans_level)
 		{
 		case 0:
@@ -962,16 +952,18 @@ void Draw_SubPicCropped (int x, int y, int h, qpic_t *pic)
 			break;
 		}
 	}
-	else
-	{ // FIXME: pretranslate at load time?
-		pusdest = (unsigned short *)vid.buffer+y*(vid.rowbytes>>1)+x;
+	else /* r_pixbytes == 2 */
+	{
+		// FIXME: pretranslate at load time?
+		unsigned short *dest = (unsigned short *)vid.buffer + y * (vid.rowbytes>>1) + x;
+		// FIXME: transparency bits are missing
 		for (v = 0; v < height; v++)
 		{
 			for (u = 0; u < pic->width; u++)
 			{
-				pusdest[u] = d_8to16table[source[u]];
+				dest[u] = d_8to16table[source[u]];
 			}
-			pusdest += vid.rowbytes>>1;
+			dest += vid.rowbytes>>1;
 			source += pic->width;
 		}
 	}
@@ -987,8 +979,7 @@ void Draw_SubPicCropped (int x, int y, int h, qpic_t *pic)
 
 void Draw_TransPicCropped (int x, int y, qpic_t *pic)
 {
-	byte		*dest, *source, tbyte;
-	unsigned short	*pusdest;
+	byte		*source, tbyte;
 	int		v, u, height;
 
 	if ((x < 0) || (x+pic->width > (int)vid.width))
@@ -1023,7 +1014,7 @@ void Draw_TransPicCropped (int x, int y, qpic_t *pic)
 
 	if (r_pixbytes == 1)
 	{
-		dest = vid.buffer+y*vid.rowbytes+x;
+		byte *dest = vid.buffer + y * vid.rowbytes + x;
 		if (pic->width & 7)
 		{ // General
 			switch (trans_level)
@@ -1141,9 +1132,11 @@ void Draw_TransPicCropped (int x, int y, qpic_t *pic)
 			}
 		}
 	}
-	else
-	{ // FIXME: pretranslate at load time?
-		pusdest = (unsigned short *)vid.buffer+y*(vid.rowbytes>>1)+x;
+	else /* r_pixbytes == 2 */
+	{
+		// FIXME: pretranslate at load time?
+		unsigned short *dest = (unsigned short *)vid.buffer + y * (vid.rowbytes>>1) + x;
+		// FIXME: transparency bits are missing
 		for (v = 0; v < height; v++)
 		{
 			for (u = 0; u < pic->width; u++)
@@ -1151,10 +1144,10 @@ void Draw_TransPicCropped (int x, int y, qpic_t *pic)
 				tbyte = source[u];
 				if (tbyte != TRANSPARENT_COLOR)
 				{
-					pusdest[u] = d_8to16table[tbyte];
+					dest[u] = d_8to16table[tbyte];
 				}
 			}
-			pusdest += vid.rowbytes>>1;
+			dest += vid.rowbytes>>1;
 			source += pic->width;
 		}
 	}
@@ -1168,8 +1161,7 @@ Draw_SubPic
 */
 void Draw_SubPic (int x, int y, qpic_t *pic, int srcx, int srcy, int width, int height)
 {
-	byte		*dest, *source;
-	unsigned short	*pusdest;
+	byte		*source;
 	int		v, u;
 
 	if ((x < 0) ||
@@ -1184,8 +1176,7 @@ void Draw_SubPic (int x, int y, qpic_t *pic, int srcx, int srcy, int width, int 
 
 	if (r_pixbytes == 1)
 	{
-		dest = vid.buffer + y * vid.rowbytes + x;
-
+		byte *dest = vid.buffer + y * vid.rowbytes + x;
 		for (v = 0; v < height; v++)
 		{
 			memcpy (dest, source, width);
@@ -1193,19 +1184,18 @@ void Draw_SubPic (int x, int y, qpic_t *pic, int srcx, int srcy, int width, int 
 			source += pic->width;
 		}
 	}
-	else
+	else /* r_pixbytes == 2 */
 	{
-	// FIXME: pretranslate at load time?
-		pusdest = (unsigned short *)vid.buffer + y * (vid.rowbytes >> 1) + x;
-
+		// FIXME: pretranslate at load time?
+		unsigned short *dest = (unsigned short *)vid.buffer + y * (vid.rowbytes >> 1) + x;
 		for (v = 0; v < height; v++)
 		{
 			for (u = srcx; u < (srcx+width); u++)
 			{
-				pusdest[u] = d_8to16table[source[u]];
+				dest[u] = d_8to16table[source[u]];
 			}
 
-			pusdest += vid.rowbytes >> 1;
+			dest += vid.rowbytes >> 1;
 			source += pic->width;
 		}
 	}
@@ -1218,8 +1208,7 @@ Draw_TransPicTranslate
 */
 void Draw_TransPicTranslate (int x, int y, qpic_t *pic, byte *translation)
 {
-	byte		*dest, *source, tbyte;
-	unsigned short	*pusdest;
+	byte		*source, tbyte;
 	int		v, u;
 
 	if (x < 0 || (unsigned int)(x + pic->width) > vid.width || y < 0 ||
@@ -1232,8 +1221,7 @@ void Draw_TransPicTranslate (int x, int y, qpic_t *pic, byte *translation)
 
 	if (r_pixbytes == 1)
 	{
-		dest = vid.buffer + y * vid.rowbytes + x;
-
+		byte *dest = vid.buffer + y * vid.rowbytes + x;
 		if (pic->width & 7)
 		{	// general
 			for (v = 0; v < pic->height; v++)
@@ -1276,11 +1264,11 @@ void Draw_TransPicTranslate (int x, int y, qpic_t *pic, byte *translation)
 			}
 		}
 	}
-	else
+	else /* r_pixbytes == 2 */
 	{
-	// FIXME: pretranslate at load time?
-		pusdest = (unsigned short *)vid.buffer + y * (vid.rowbytes >> 1) + x;
-
+		// FIXME: pretranslate at load time?
+		unsigned short *dest = (unsigned short *)vid.buffer + y * (vid.rowbytes>>1) + x;
+		// FIXME: transparency bits are missing
 		for (v = 0; v < pic->height; v++)
 		{
 			for (u = 0; u < pic->width; u++)
@@ -1289,16 +1277,15 @@ void Draw_TransPicTranslate (int x, int y, qpic_t *pic, byte *translation)
 
 				if (tbyte != TRANSPARENT_COLOR)
 				{
-					pusdest[u] = d_8to16table[tbyte];
+					dest[u] = d_8to16table[tbyte];
 				}
 			}
 
-			pusdest += vid.rowbytes >> 1;
+			dest += vid.rowbytes >> 1;
 			source += pic->width;
 		}
 	}
 }
-
 
 #if 0
 static void Draw_CharToConback (int num, byte *dest)
@@ -1356,6 +1343,7 @@ void Draw_ConsoleBackground (int lines)
 	if (r_pixbytes == 1)
 	{
 		byte *dest = vid.conbuffer;
+		fstep = 320 * 0x10000 / vid.conwidth;
 
 		for (y = 0; y < lines; y++, dest += vid.conrowbytes)
 		{
@@ -1366,7 +1354,6 @@ void Draw_ConsoleBackground (int lines)
 			else
 			{
 				f = 0;
-				fstep = 320*0x10000/vid.conwidth;
 				for (x = 0; x < (int)vid.conwidth; x += 4)
 				{
 					dest[x] = src[f>>16];
@@ -1381,27 +1368,28 @@ void Draw_ConsoleBackground (int lines)
 			}
 		}
 	}
-	else
+	else /* r_pixbytes == 2 */
 	{
-		unsigned short *pusdest = (unsigned short *)vid.conbuffer;
+		unsigned short *dest = (unsigned short *)vid.conbuffer;
+		fstep = 320 * 0x10000 / vid.conwidth;
 
-		for (y = 0; y < lines; y++, pusdest += (vid.conrowbytes >> 1))
+		for (y = 0; y < lines; y++, dest += (vid.conrowbytes >> 1))
 		{
 		// FIXME: pre-expand to native format?
 		// FIXME: does the endian switching go away in production?
 			v = (vid.conheight - lines + y)*200/vid.conheight;
 			src = conback->data + v*320;
 			f = 0;
-			fstep = 320*0x10000/vid.conwidth;
+		// FIXME: transparency bits are missing
 			for (x = 0; x < (int)vid.conwidth; x += 4)
 			{
-				pusdest[x] = d_8to16table[src[f>>16]];
+				dest[x] = d_8to16table[src[f>>16]];
 				f += fstep;
-				pusdest[x+1] = d_8to16table[src[f>>16]];
+				dest[x+1] = d_8to16table[src[f>>16]];
 				f += fstep;
-				pusdest[x+2] = d_8to16table[src[f>>16]];
+				dest[x+2] = d_8to16table[src[f>>16]];
 				f += fstep;
-				pusdest[x+3] = d_8to16table[src[f>>16]];
+				dest[x+3] = d_8to16table[src[f>>16]];
 				f += fstep;
 			}
 		}
@@ -1533,9 +1521,9 @@ refresh window.
 */
 void Draw_TileClear (int x, int y, int w, int h)
 {
-	int				width, height, tileoffsetx, tileoffsety;
-	byte			*psrc;
-	vrect_t			vr;
+	int	width, height, tileoffsetx, tileoffsety;
+	byte	*psrc;
+	vrect_t	vr;
 
 	r_rectdesc.rect.x = x;
 	r_rectdesc.rect.y = y;
@@ -1605,10 +1593,7 @@ Fills a box of pixels with a single color
 */
 void Draw_Fill (int x, int y, int w, int h, int c)
 {
-	byte			*dest;
-	unsigned short	*pusdest;
-	unsigned int		uc;
-	int			u, v;
+	int		u, v;
 
 	if (x < 0 || x + w > (int)vid.width ||
 		y < 0 || y + h > (int)vid.height)
@@ -1619,7 +1604,7 @@ void Draw_Fill (int x, int y, int w, int h, int c)
 
 	if (r_pixbytes == 1)
 	{
-		dest = vid.buffer + y*vid.rowbytes + x;
+		byte *dest = vid.buffer + y*vid.rowbytes + x;
 		switch (trans_level)
 		{
 		case 0:
@@ -1651,15 +1636,15 @@ void Draw_Fill (int x, int y, int w, int h, int c)
 			break;
 		}
 	}
-	else
+	else /* r_pixbytes == 2 */
 	{
-		uc = d_8to16table[c];
-
-		pusdest = (unsigned short *)vid.buffer + y * (vid.rowbytes >> 1) + x;
-		for (v = 0; v < h; v++, pusdest += (vid.rowbytes >> 1))
+		unsigned short *dest = (unsigned short *)vid.buffer + y * (vid.rowbytes>>1) + x;
+		unsigned int uc = d_8to16table[c];
+		// FIXME: transparency bits are missing
+		for (v = 0; v < h; v++, dest += (vid.rowbytes >> 1))
 		{
 			for (u = 0; u < w; u++)
-				pusdest[u] = uc;
+				dest[u] = uc;
 		}
 	}
 }
