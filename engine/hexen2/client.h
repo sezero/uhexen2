@@ -316,6 +316,9 @@ extern	kbutton_t	in_mlook, in_klook;
 extern	kbutton_t	in_strafe;
 extern	kbutton_t	in_speed;
 
+extern	int		in_impulse;
+extern	qboolean	info_up;
+
 void CL_InitInput (void);
 void CL_SendCmd (void);
 void CL_BaseMove (usercmd_t *cmd);
@@ -332,9 +335,9 @@ void CL_Record_f (void);
 void CL_PlayDemo_f (void);
 void CL_TimeDemo_f (void);
 
-extern	qboolean	intro_playing;	// whether the mission pack intro is playing
-extern	qboolean	skip_start;	// for the mission pack intro
-extern	int		num_intro_msg;	// for the mission pack intro
+extern	qboolean	intro_playing;	/* whether the mission pack intro is playing */
+extern	qboolean	skip_start;	/* for the mission pack intro */
+extern	int		num_intro_msg;	/* for the mission pack intro */
 					/* skip_start and num_intro_msg are not used at present - O.S */
 
 //

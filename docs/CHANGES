@@ -4,6 +4,12 @@ Development Progress	:
 ---------------------------
 
 2011-12-07 (SVN):
+    * sbar.h, screen.h: Moved to h2shared.
+    * sbar.c: Moved in_impulse extern declaration to client.h. Moved the
+      trans_level global to screen.c, its extern declaration to screen.h.
+    * screen.c: Moved info_up extern declaration to client.h.
+
+2011-12-07 (SVN):
     * draw.c: Tidied up and added fixme notes for r_pixbytes. Renamed all
       pusdest variables to dest (was so windowsian, jeezz...)
 

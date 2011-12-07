@@ -73,6 +73,7 @@ float		scr_con_current;
 float		scr_conlines;		// lines of console to display
 
 int		oldscreensize, oldfov;
+int		trans_level = 0;
 
 cvar_t		scr_viewsize = {"viewsize", "110", CVAR_ARCHIVE};
 cvar_t		scr_fov = {"fov", "90", CVAR_NONE};	// 10 - 170
@@ -124,7 +125,6 @@ static int	StartC[MAXLINES], EndC[MAXLINES];
 // Objectives thing of the mission pack
 #define	MAX_INFO	1024
 static char	infomessage[MAX_INFO];
-extern qboolean	info_up;
 
 static void UpdateInfoMessage (void)
 {

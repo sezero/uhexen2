@@ -77,14 +77,9 @@ static void InvOff_f(void);
 
 static void DrawArtifactInventory(void);
 
-// EXTERNAL DATA DECLARATIONS ----------------------------------------------
-
-extern int in_impulse;
-
 // PUBLIC DATA DEFINITIONS -------------------------------------------------
 
 int	sb_lines;	// scan lines to draw
-int	trans_level = 0;
 
 // PRIVATE DATA DEFINITIONS ------------------------------------------------
 

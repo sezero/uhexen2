@@ -298,7 +298,7 @@
 		70158B910AAF3B3600F6437C /* r_vars.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = r_vars.c; path = ../../h2shared/r_vars.c; sourceTree = SOURCE_ROOT; };
 		70158B920AAF3B3600F6437C /* render.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = render.h; path = ../render.h; sourceTree = SOURCE_ROOT; };
 		70158B930AAF3B3600F6437C /* screen.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = screen.c; path = ../screen.c; sourceTree = SOURCE_ROOT; };
-		70158B940AAF3B3600F6437C /* screen.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = screen.h; path = ../screen.h; sourceTree = SOURCE_ROOT; };
+		70158B940AAF3B3600F6437C /* screen.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = screen.h; path = ../../h2shared/screen.h; sourceTree = SOURCE_ROOT; };
 		70158C530AAF3C8800F6437C /* Hexen II.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Hexen II.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		70158F0A0AAF427F00F6437C /* vid_sdl.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = vid_sdl.c; path = ../../h2shared/vid_sdl.c; sourceTree = SOURCE_ROOT; };
 		70310B240BFDE84D00CA35D3 /* msg_io.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = msg_io.c; path = ../../h2shared/msg_io.c; sourceTree = SOURCE_ROOT; };
@@ -392,7 +392,7 @@
 		707D57C70AA9F6EE00313A9F /* quakedef.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = quakedef.h; path = ../quakedef.h; sourceTree = SOURCE_ROOT; };
 		707D57C80AA9F6EE00313A9F /* r_part.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = r_part.c; path = ../r_part.c; sourceTree = SOURCE_ROOT; };
 		707D57C90AA9F6EE00313A9F /* sbar.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = sbar.c; path = ../sbar.c; sourceTree = SOURCE_ROOT; };
-		707D57CA0AA9F6EE00313A9F /* sbar.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = sbar.h; path = ../sbar.h; sourceTree = SOURCE_ROOT; };
+		707D57CA0AA9F6EE00313A9F /* sbar.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = sbar.h; path = ../../h2shared/sbar.h; sourceTree = SOURCE_ROOT; };
 		707D57CB0AA9F6EE00313A9F /* sdl_inc.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = sdl_inc.h; path = ../../h2shared/sdl_inc.h; sourceTree = SOURCE_ROOT; };
 		707D57CC0AA9F6EE00313A9F /* server.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = server.h; path = ../server.h; sourceTree = SOURCE_ROOT; };
 		707D57CD0AA9F6EE00313A9F /* snd_dma.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = snd_dma.c; path = ../../h2shared/snd_dma.c; sourceTree = SOURCE_ROOT; };

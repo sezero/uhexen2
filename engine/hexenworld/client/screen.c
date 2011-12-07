@@ -76,6 +76,7 @@ float		scr_con_current;
 float		scr_conlines;		// lines of console to display
 
 int		oldscreensize, oldfov;
+int		trans_level = 0;
 
 cvar_t		scr_viewsize = {"viewsize", "110", CVAR_ARCHIVE};
 cvar_t		scr_fov = {"fov", "90", CVAR_NONE};	// 10 - 170

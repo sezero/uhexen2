@@ -27,7 +27,6 @@ void Sbar_DeathmatchOverlay(void);
 // PUBLIC DATA DECLARATIONS ------------------------------------------------
 
 extern int sb_lines; // scan lines to draw
-extern int trans_level;
 
 
 #endif	/* __HX2_SBAR_H */

@@ -1,7 +1,7 @@
 /*
 	screen.h
 
-	$Id: screen.h,v 1.9 2007-11-11 13:17:44 sezero Exp $
+	$Id$
 */
 
 #ifndef __HX2_SCREEN_H
@@ -43,6 +43,8 @@ extern	qboolean	scr_skipupdate;
 extern	qboolean	block_drawing;
 
 extern	cvar_t		scr_viewsize;
+
+extern	int		trans_level;
 
 // only the refresh window will be updated unless these variables are flagged 
 extern	int			scr_copytop;

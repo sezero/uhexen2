@@ -436,6 +436,8 @@ extern	kbutton_t	in_mlook, in_klook;
 extern	kbutton_t	in_strafe;
 extern	kbutton_t	in_speed;
 
+extern	int		in_impulse;
+
 void CL_InitInput (void);
 void CL_SendCmd (void);
 void CL_SendMove (usercmd_t *cmd);
