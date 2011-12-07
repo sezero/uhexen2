@@ -4,6 +4,7 @@ Development Progress	:
 ---------------------------
 
 2011-12-07 (SVN):
+    * midi_mac.c (MIDI_Play): Fixed another typo.  Really compiles fine now.
     * midi_mac.c: Added missing brace in the CHECK_MIDI_ALIVE macro, should
       compile fine now.
 

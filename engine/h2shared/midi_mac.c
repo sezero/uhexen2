@@ -152,7 +152,7 @@ static void *MIDI_Play (const char *filename)
 	if (!midi_mac_qt.available)
 		return NULL;
 
-	if (!Name || !*Name)
+	if (!filename || !*filename)
 	{
 		Con_DPrintf("null music file name\n");
 		return NULL;
