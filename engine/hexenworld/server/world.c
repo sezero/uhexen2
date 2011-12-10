@@ -388,23 +388,23 @@ void SV_LinkEdict (edict_t *ent, qboolean touch_triggers)
 	if (ent->v.solid == SOLID_BSP && 
 		(ent->v.angles[0] || ent->v.angles[1] || ent->v.angles[2]) )
 	{	// expand for rotation
-		float		max, v;
+		float		v, maxv;
 		int			i;
 
-		max = 0;
+		maxv = 0;
 		for (i = 0; i < 3; i++)
 		{
 			v = fabs(ent->v.mins[i]);
-			if (v > max)
-				max = v;
+			if (v > maxv)
+				maxv = v;
 			v = fabs(ent->v.maxs[i]);
-			if (v > max)
-				max = v;
+			if (v > maxv)
+				maxv = v;
 		}
 		for (i = 0; i < 3; i++)
 		{
-			ent->v.absmin[i] = ent->v.origin[i] - max;
-			ent->v.absmax[i] = ent->v.origin[i] + max;
+			ent->v.absmin[i] = ent->v.origin[i] - maxv;
+			ent->v.absmax[i] = ent->v.origin[i] + maxv;
 		}
 	}
 	else
@@ -513,7 +513,7 @@ static int SV_HullPointContents (hull_t *hull, int num, vec3_t p)
 	return num;
 }
 
-#endif	// !id386
+#endif	/* !id386 */
 
 
 /*
@@ -973,7 +973,7 @@ trace_t SV_Move (vec3_t start, vec3_t mins, vec3_t maxs, vec3_t end, int type, e
 SV_TestPlayerPosition
 ============
 */
-#if 0	// no users...
+#if 0	/* no callers */
 edict_t	*SV_TestPlayerPosition (edict_t *ent, vec3_t origin)
 {
 	hull_t		*hull;

@@ -218,7 +218,7 @@ static void *MIDI_Play (const char *filename)
 		return NULL;
 	}
 
-	Con_Printf("Playing midi file %s\n", filename);
+	Con_Printf("Started midi music %s\n", filename);
 	midi_file_open = true;
 	callback_status = 0;
 

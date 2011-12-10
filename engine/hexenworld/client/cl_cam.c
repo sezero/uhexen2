@@ -161,7 +161,7 @@ static qboolean Cam_IsVisible(player_state_t *player, vec3_t vec)
 
 static qboolean InitFlyby(player_state_t *self, player_state_t *player, int checkvis)
 {
-	float	f, max;
+	float	f, maxlen;
 	vec3_t	vec, vec2;
 	vec3_t	forward, right, up;
 
@@ -171,111 +171,111 @@ static qboolean InitFlyby(player_state_t *self, player_state_t *player, int chec
 //	for (i = 0; i < 3; i++)
 //		forward[i] *= 3;
 
-	max = 1000;
+	maxlen = 1000;
 	VectorAdd(forward, up, vec2);
 	VectorAdd(vec2, right, vec2);
 
-	if ((f = Cam_TryFlyby(self, player, vec2, checkvis)) < max)
+	if ((f = Cam_TryFlyby(self, player, vec2, checkvis)) < maxlen)
 	{
-		max = f;
+		maxlen = f;
 		VectorCopy(vec2, vec);
 	}
 
 	VectorAdd(forward, up, vec2);
 	VectorSubtract(vec2, right, vec2);
 
-	if ((f = Cam_TryFlyby(self, player, vec2, checkvis)) < max)
+	if ((f = Cam_TryFlyby(self, player, vec2, checkvis)) < maxlen)
 	{
-		max = f;
+		maxlen = f;
 		VectorCopy(vec2, vec);
 	}
 
 	VectorAdd(forward, right, vec2);
 
-	if ((f = Cam_TryFlyby(self, player, vec2, checkvis)) < max)
+	if ((f = Cam_TryFlyby(self, player, vec2, checkvis)) < maxlen)
 	{
-		max = f;
+		maxlen = f;
 		VectorCopy(vec2, vec);
 	}
 
 	VectorSubtract(forward, right, vec2);
 
-	if ((f = Cam_TryFlyby(self, player, vec2, checkvis)) < max)
+	if ((f = Cam_TryFlyby(self, player, vec2, checkvis)) < maxlen)
 	{
-		max = f;
+		maxlen = f;
 		VectorCopy(vec2, vec);
 	}
 
 	VectorAdd(forward, up, vec2);
 
-	if ((f = Cam_TryFlyby(self, player, vec2, checkvis)) < max)
+	if ((f = Cam_TryFlyby(self, player, vec2, checkvis)) < maxlen)
 	{
-		max = f;
+		maxlen = f;
 		VectorCopy(vec2, vec);
 	}
 
 	VectorSubtract(forward, up, vec2);
 
-	if ((f = Cam_TryFlyby(self, player, vec2, checkvis)) < max)
+	if ((f = Cam_TryFlyby(self, player, vec2, checkvis)) < maxlen)
 	{
-		max = f;
+		maxlen = f;
 		VectorCopy(vec2, vec);
 	}
 
 	VectorAdd(up, right, vec2);
 	VectorSubtract(vec2, forward, vec2);
 
-	if ((f = Cam_TryFlyby(self, player, vec2, checkvis)) < max)
+	if ((f = Cam_TryFlyby(self, player, vec2, checkvis)) < maxlen)
 	{
-		max = f;
+		maxlen = f;
 		VectorCopy(vec2, vec);
 	}
 
 	VectorSubtract(up, right, vec2);
 	VectorSubtract(vec2, forward, vec2);
 
-	if ((f = Cam_TryFlyby(self, player, vec2, checkvis)) < max)
+	if ((f = Cam_TryFlyby(self, player, vec2, checkvis)) < maxlen)
 	{
-		max = f;
+		maxlen = f;
 		VectorCopy(vec2, vec);
 	}
 
 	// invert
 	VectorNegate(forward, vec2);
 
-	if ((f = Cam_TryFlyby(self, player, vec2, checkvis)) < max)
+	if ((f = Cam_TryFlyby(self, player, vec2, checkvis)) < maxlen)
 	{
-		max = f;
+		maxlen = f;
 		VectorCopy(vec2, vec);
 	}
 
 	VectorCopy(forward, vec2);
 
-	if ((f = Cam_TryFlyby(self, player, vec2, checkvis)) < max)
+	if ((f = Cam_TryFlyby(self, player, vec2, checkvis)) < maxlen)
 	{
-		max = f;
+		maxlen = f;
 		VectorCopy(vec2, vec);
 	}
 
 	// invert
 	VectorNegate(right, vec2);
 
-	if ((f = Cam_TryFlyby(self, player, vec2, checkvis)) < max)
+	if ((f = Cam_TryFlyby(self, player, vec2, checkvis)) < maxlen)
 	{
-		max = f;
+		maxlen = f;
 		VectorCopy(vec2, vec);
 	}
 
 	VectorCopy(right, vec2);
 
-	if ((f = Cam_TryFlyby(self, player, vec2, checkvis)) < max)
+	if ((f = Cam_TryFlyby(self, player, vec2, checkvis)) < maxlen)
 	{
-		max = f;
+		maxlen = f;
 		VectorCopy(vec2, vec);
 	}
 
 	// ack, can't find him
-	if (max >= 1000)
+	if (maxlen >= 1000)
 	{
 	//	Cam_Unlock();
 		return false;
@@ -288,16 +288,16 @@ static qboolean InitFlyby(player_state_t *self, player_state_t *player, int chec
 
 static void Cam_CheckHighTarget(void)
 {
-	int	i, j, max;
+	int	i, j, maxfrags;
 	player_info_t	*s;
 
 	j = -1;
-	for (i = 0, max = -9999; i < MAX_CLIENTS; i++)
+	for (i = 0, maxfrags = -9999; i < MAX_CLIENTS; i++)
 	{
 		s = &cl.players[i];
-		if (s->name[0] && !s->spectator && s->frags > max)
+		if (s->name[0] && !s->spectator && s->frags > maxfrags)
 		{
-			max = s->frags;
+			maxfrags = s->frags;
 			j = i;
 		}
 	}

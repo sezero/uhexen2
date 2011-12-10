@@ -39,7 +39,7 @@ static Movie	midiTrack = NULL;
 static qboolean	midi_paused;
 
 /* prototypes of functions exported to BGM: */
-static void *MIDI_Play (const char *Name);
+static void *MIDI_Play (const char *filename);
 static void MIDI_Update (void **handle);
 static void MIDI_Rewind (void **handle);
 static void MIDI_Stop (void **handle);
@@ -78,7 +78,7 @@ static void MIDI_SetVolume (void **handle, float value)
 {
 	CHECK_MIDI_ALIVE();
 
-	SetMovieVolume(midiTrack, (short)(value * 256.0f));
+	SetMovieVolume (midiTrack, (short)(value * 256.0f));
 }
 
 static void MIDI_Rewind (void **handle)
@@ -141,7 +141,7 @@ qboolean MIDI_Init(void)
 
 static void *MIDI_Play (const char *filename)
 {
-#define	TEMP_MUSICNAME	"tmpmusic.mid"
+#define	TEMP_MIDINAME	"tmpmusic.mid"
 	FILE	*f;
 	char	midipath[MAX_OSPATH];
 	OSErr	err;
@@ -164,32 +164,29 @@ static void *MIDI_Play (const char *filename)
 		Con_DPrintf("Couldn't open %s\n", filename);
 		return NULL;
 	}
-	else
-	{
-		/* FIXME: is there not an api where I can send the
-		 * midi data from memory and avoid this utter crap? */
-		if (file_from_pak)
-		{
-			int		ret;
 
-			Con_Printf("Extracting %s from pakfile\n", filename);
-			q_snprintf (midipath, sizeof(midipath), "%s/%s",
-							host_parms->userdir,
-							TEMP_MUSICNAME);
-			ret = FS_WriteFileFromHandle (f, midipath, fs_filesize);
-			fclose (f);
-			if (ret != 0)
-			{
-				Con_Printf("Error while extracting from pak\n");
-				return NULL;
-			}
-		}
-		else	/* use the file directly */
+	/* FIXME: is there not an api with which I can send the
+	 * midi data from memory and avoid this utter crap?? */
+	if (file_from_pak)
+	{
+		int		ret;
+
+		Con_DPrintf("Extracting %s from pakfile\n", filename);
+		q_snprintf (midipath, sizeof(midipath), "%s/%s",
+			    host_parms->userdir, TEMP_MIDINAME);
+		ret = FS_WriteFileFromHandle (f, midipath, fs_filesize);
+		fclose (f);
+		if (ret != 0)
 		{
-			fclose (f);
-			q_snprintf (midipath, sizeof(midipath), "%s/%s",
-							fs_filepath, filename);
+			Con_Printf("Error while extracting from pak\n");
+			return NULL;
 		}
+	}
+	else	/* use the file directly */
+	{
+		fclose (f);
+		q_snprintf (midipath, sizeof(midipath), "%s/%s",
+			    fs_filepath, filename);
 	}
 
 	/* converting path to FSSpec. found in CarbonCocoaIntegration.pdf:
@@ -225,7 +222,7 @@ static void *MIDI_Play (const char *filename)
 	GoToBeginningOfMovie (midiTrack);
 	PrerollMovie (midiTrack, 0, 0);
 
-	SetMovieVolume(midiTrack, (short)(bgmvolume.value * 256.0f));
+	SetMovieVolume (midiTrack, (short)(bgmvolume.value * 256.0f));
 
 	StartMovie (midiTrack);
 	Con_Printf ("Started midi music %s\n", filename);
