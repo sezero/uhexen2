@@ -322,7 +322,7 @@ extern	qboolean	info_up;
 void CL_InitInput (void);
 void CL_SendCmd (void);
 void CL_BaseMove (usercmd_t *cmd);
-void CL_SendMove (usercmd_t *cmd);
+void CL_SendMove (const usercmd_t *cmd);
 
 //
 // cl_demo.c

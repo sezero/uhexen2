@@ -53,15 +53,14 @@ CL_WriteDemoCmd
 Writes the current user cmd
 ====================
 */
-void CL_WriteDemoCmd (usercmd_t *pcmd)
+void CL_WriteDemoCmd (const usercmd_t *pcmd)
 {
 	int	i;
 	float	f;
 	byte	c;
 	usercmd_t cmd;
 
-	//Con_Printf("write: %ld bytes, %4.4f\n", msg->cursize, realtime);
-
+//	Con_Printf("write: %ld bytes, %4.4f\n", msg->cursize, realtime);
 	f = LittleFloat((float)realtime);
 	fwrite (&f, 4, 1, cls.demofile);
 

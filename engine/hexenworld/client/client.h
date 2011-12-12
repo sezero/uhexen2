@@ -440,7 +440,6 @@ extern	int		in_impulse;
 
 void CL_InitInput (void);
 void CL_SendCmd (void);
-void CL_SendMove (usercmd_t *cmd);
 void CL_BaseMove (usercmd_t *cmd);
 
 //
@@ -455,7 +454,7 @@ void CL_ReRecord_f (void);
 void CL_PlayDemo_f (void);
 void CL_TimeDemo_f (void);
 
-void CL_WriteDemoCmd (usercmd_t *pcmd);
+void CL_WriteDemoCmd (const usercmd_t *pcmd);
 
 //
 // cl_parse.c
