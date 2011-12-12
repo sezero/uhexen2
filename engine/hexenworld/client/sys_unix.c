@@ -423,11 +423,6 @@ char *Sys_DateTimeString (char *buf)
 
 void Sys_Sleep (unsigned long msecs)
 {
-	if (!msecs)
-		return;
-	else if (msecs > 1000)
-		msecs = 1000;
-
 	usleep (msecs * 1000);
 }
 

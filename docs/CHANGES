@@ -4,6 +4,9 @@ Development Progress	:
 ---------------------------
 
 2011-12-12 (SVN):
+    * Removed argument clamping from Sys_Sleep().
+
+2011-12-12 (SVN):
     * Made the cmd argument of CL_SendMove() and CL_WriteDemoCmd() const.
     * Made the cmd argument of MSG_WriteUsercmd() const.
     * Made Sys_ConsoleInput() to return const.

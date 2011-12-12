@@ -66,9 +66,7 @@ char *Sys_DateTimeString (char *buf);
 const char *Sys_ConsoleInput (void);
 
 void Sys_Sleep (unsigned long msecs);
-// called to yield for a little bit so as
-// not to hog cpu when paused or debugging
-// 1000 milliseconds most.
+// yield for about 'msecs' milliseconds.
 
 void Sys_SendKeyEvents (void);
 // Perform Key_Event () callbacks until the input que is empty
