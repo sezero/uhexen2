@@ -548,7 +548,7 @@ void Sys_FindClose (void)
 	findhandle = -1;
 }
 
-char *Sys_ConsoleInput (void)
+const char *Sys_ConsoleInput (void)
 {
 	static char	con_text[256];
 	static int	textlen = 0;

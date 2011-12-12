@@ -63,7 +63,7 @@ char *Sys_DateTimeString (char *buf);
 // of following calls:	char buf[20]; t = time(NULL);
 // strftime (buf, sizeof(buf), "%m/%d/%Y %H:%M:%S", localtime(&t));
 
-char *Sys_ConsoleInput (void);
+const char *Sys_ConsoleInput (void);
 
 void Sys_Sleep (unsigned long msecs);
 // called to yield for a little bit so as

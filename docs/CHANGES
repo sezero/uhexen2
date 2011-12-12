@@ -3,6 +3,10 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2011-12-12 (SVN):
+    * Made Sys_ConsoleInput() to return const.
+    * quakedef.h: updated beta date stamp to 2011-12-12.
+
 2011-12-10 (SVN):
     * Several minor cleanups.
 

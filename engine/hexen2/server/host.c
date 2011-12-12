@@ -565,7 +565,7 @@ Add them exactly as if they had been typed at the console
 */
 static void Host_GetConsoleCommands (void)
 {
-	char	*cmd;
+	const char	*cmd;
 
 	while (1)
 	{

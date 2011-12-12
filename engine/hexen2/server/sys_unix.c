@@ -371,7 +371,7 @@ char *Sys_DateTimeString (char *buf)
 Sys_ConsoleInput
 ================
 */
-char *Sys_ConsoleInput (void)
+const char *Sys_ConsoleInput (void)
 {
 	static char	con_text[256];
 	static int	textlen;
