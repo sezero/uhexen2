@@ -2,7 +2,7 @@
 	msg_io.h
 	Message IO functions
 
-	$Id: msg_io.h,v 1.2 2007-11-14 07:27:34 sezero Exp $
+	$Id$
 */
 
 #ifndef __MSGIO_H
@@ -19,7 +19,7 @@ void MSG_WriteAngle (sizebuf_t *sb, float f);
 #if defined(H2W)
 struct usercmd_s;
 void MSG_WriteAngle16 (sizebuf_t *sb, float f);
-void MSG_WriteUsercmd (sizebuf_t *sb, struct usercmd_s *cmd, qboolean long_msg);
+void MSG_WriteUsercmd (sizebuf_t *sb, const struct usercmd_s *cmd, qboolean long_msg);
 #endif	/* H2W */
 
 void MSG_BeginReading (void);
@@ -41,7 +41,7 @@ void MSG_ReadUsercmd (struct usercmd_s *cmd, qboolean long_msg);
 #endif	/* H2W*/
 
 extern	int		msg_readcount;
-extern	qboolean	msg_badread;	// set if a read goes beyond end of message
+extern	qboolean	msg_badread;	/* set if a read goes beyond end of message */
 
 #endif	/* __MSGIO_H */
 

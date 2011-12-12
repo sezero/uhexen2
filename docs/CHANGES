@@ -4,6 +4,7 @@ Development Progress	:
 ---------------------------
 
 2011-12-12 (SVN):
+    * Made the cmd argument of MSG_WriteUsercmd() const.
     * Made Sys_ConsoleInput() to return const.
     * quakedef.h: updated beta date stamp to 2011-12-12.
 

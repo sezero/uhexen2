@@ -3,7 +3,7 @@
 	Message IO functions
 	Handles byte ordering and avoids alignment errors
 
-	$Id: msg_io.c,v 1.11 2010-10-30 11:33:15 sezero Exp $
+	$Id$
 */
 
 #include "q_stdinc.h"
@@ -127,7 +127,7 @@ void MSG_WriteAngle16 (sizebuf_t *sb, float f)
 		MSG_WriteShort (sb, (int)(f*(65536.0f/360.0f) - 0.5f) & 65535);
 }
 
-void MSG_WriteUsercmd (sizebuf_t *buf, usercmd_t *cmd, qboolean long_msg)
+void MSG_WriteUsercmd (sizebuf_t *buf, const usercmd_t *cmd, qboolean long_msg)
 {
 	int		bits;
 
@@ -273,10 +273,10 @@ float MSG_ReadFloat (void)
 		int	l;
 	} dat;
 
-	dat.b[0] =	net_message.data[msg_readcount];
-	dat.b[1] =	net_message.data[msg_readcount+1];
-	dat.b[2] =	net_message.data[msg_readcount+2];
-	dat.b[3] =	net_message.data[msg_readcount+3];
+	dat.b[0] = net_message.data[msg_readcount];
+	dat.b[1] = net_message.data[msg_readcount+1];
+	dat.b[2] = net_message.data[msg_readcount+2];
+	dat.b[3] = net_message.data[msg_readcount+3];
 	msg_readcount += 4;
 
 	dat.l = LittleLong (dat.l);
@@ -298,7 +298,7 @@ const char *MSG_ReadString (void)
 			break;
 		string[l] = c;
 		l++;
-	} while (l < sizeof(string)-1);
+	} while (l < sizeof(string) - 1);
 
 	string[l] = 0;
 
