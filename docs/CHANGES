@@ -4,6 +4,10 @@ Development Progress	:
 ---------------------------
 
 2011-12-15 (SVN):
+    * sys_win.c, sys_dos.c (Sys_ConsoleInput): Removed isDedicated check.
+      Host_GetConsoleCommands() already does that as it should.
+
+2011-12-15 (SVN):
     * host_cmd.c (LoadGamestate): Close the file before signalling an error
       (noticed this in recent RMQ sources.)
     * quakedef.h: updated beta date stamp to 2011-12-15.
