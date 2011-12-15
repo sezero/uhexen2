@@ -944,14 +944,20 @@ static int LoadGamestate (const char *level, const char *startspot, int ClientsM
 			}
 		}
 		if (i == (int) sizeof(str) - 1)
+		{
+			fclose (f);
 			Host_Error ("%s: Loadgame buffer overflow", __thisfunc__);
+		}
 		str[i] = 0;
 		start = str;
 		start = COM_Parse(str);
 		if (!com_token[0])
 			break;		// end of file
 		if (strcmp(com_token,"{"))
+		{
+			fclose (f);
 			Host_Error ("%s: First token isn't a brace", __thisfunc__);
+		}
 
 		// parse an edict
 		if (entnum == -1)

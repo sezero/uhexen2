@@ -3,6 +3,11 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2011-12-15 (SVN):
+    * host_cmd.c (LoadGamestate): Close the file before signalling an error
+      (noticed this in recent RMQ sources.)
+    * quakedef.h: updated beta date stamp to 2011-12-15.
+
 2011-12-12 (SVN):
     * Removed argument clamping from Sys_Sleep().
 
