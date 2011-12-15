@@ -867,7 +867,6 @@ void Key_Event (int key, qboolean down)
 		 */
 		if (key != K_PAUSE)
 			key_repeats[key]++;
-
 		/*
 		if (key != K_BACKSPACE 
 			&& key_repeats[key] > 1)
@@ -875,16 +874,12 @@ void Key_Event (int key, qboolean down)
 			return;	// ignore most autorepeats
 		}
 		*/
-
 		if (key_repeats[key] > 1)
 		{
 			// ignore autorepeats unless chatting or in console
 			if (key_dest == key_console)
 				goto autorep0;
 			if (key_dest == key_message)
-				goto autorep0;
-			// hack to allow autorepeat in forcedup console:
-			if (con_forcedup && m_state == m_none)
 				goto autorep0;
 			return;
 		}

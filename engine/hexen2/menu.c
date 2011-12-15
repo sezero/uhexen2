@@ -456,7 +456,7 @@ void M_ToggleMenu_f (void)
 			M_Menu_Main_f ();
 			return;
 		}
-		key_dest = key_game;
+		key_dest = (cls.state == ca_connected) ? key_game : key_console;
 		m_state = m_none;
 		return;
 	}
@@ -735,8 +735,7 @@ static void M_Main_Key (int key)
 		if (old_bgmtype[0] != 0 && strcmp(old_bgmtype,bgmtype.string) != 0)
 			BGM_RestartMusic ();
 		old_bgmtype[0] = 0;
-
-		key_dest = key_game;
+		key_dest = (cls.state == ca_connected) ? key_game : key_console;
 		m_state = m_none;
 		cls.demonum = m_save_demonum;
 		if (cls.demonum != -1 && !cls.demoplayback && cls.state != ca_connected)

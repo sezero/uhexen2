@@ -4,6 +4,15 @@ Development Progress	:
 ---------------------------
 
 2011-12-15 (SVN):
+    * menu.c (M_ToggleMenu_f): Set key_dest to key_game only if the client
+      is connected. Set it to key_console, otherwise. This allows dead keys
+      to work properly under fullscreen console mode. Patch from and thanks
+      to Sander van Dijk.
+      (M_Main_Key): Likewise.
+    * keys.c (Key_Event): Now that menu.c sets key_dest properly, remove an
+      old hack that used to allow autorepeat in forcedup console.
+
+2011-12-15 (SVN):
     * sys_win.c, sys_dos.c (Sys_ConsoleInput): Removed isDedicated check.
       Host_GetConsoleCommands() already does that as it should.
 
