@@ -3,6 +3,12 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2011-12-16 (SVN):
+    * in_sdl.c (IN_ActivateMouse): Nuke events from when mouse was disabled
+      by calling SDL_PumpEvents() and SDL_GetRelativeMouseState().
+    * Updated the release notes file for v1.5.2.
+    * quakedef.h: updated beta date stamp to 2011-12-16.
+
 2011-12-15 (SVN):
     * menu.c (M_ToggleMenu_f): Set key_dest to key_game only if the client
       is connected. Set it to key_console, otherwise. This allows dead keys

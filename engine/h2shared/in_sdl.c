@@ -146,6 +146,10 @@ void IN_ActivateMouse (void)
 			mouseactive = true;
 			SDL_WM_GrabInput (SDL_GRAB_ON);
 		}
+
+	/* nuke events from when mouse was disabled: */
+	SDL_PumpEvents ();
+	SDL_GetRelativeMouseState (NULL, NULL);
 }
 
 /*
