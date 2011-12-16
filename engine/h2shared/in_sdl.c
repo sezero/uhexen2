@@ -2,10 +2,10 @@
 	in_sdl.c
 	SDL game input code
 
-	$Id: in_sdl.c,v 1.52 2007-12-22 19:01:26 sezero Exp $
+	$Id$
 
 	Copyright (C) 2001  contributors of the Anvil of Thyrion project
-	Copyright (C) 2005-2007  Steven Atkinson, O.Sezer
+	Copyright (C) 2005-2011  Steven Atkinson, O.Sezer
 
 	This program is free software; you can redistribute it and/or
 	modify it under the terms of the GNU General Public License
@@ -30,7 +30,7 @@
 #include "quakedef.h"
 
 
-// mouse variables
+/* mouse variables */
 static cvar_t	m_filter = {"m_filter", "0", CVAR_NONE};
 
 static int	mouse_x, mouse_y, old_mouse_x, old_mouse_y;
@@ -51,16 +51,15 @@ static int buttonremap[] =
 	K_MOUSE5
 };
 
-#define	USE_JOYSTICK	0	/* disabled until we finish joystick support */
-
+#define	USE_JOYSTICK	0 /* disabled until we finish joystick support */
 #if USE_JOYSTICK
 static	cvar_t	in_joystick = {"joystick", "1", CVAR_ARCHIVE};
 
-#define	MAX_JOYSTICKS		8
+#define	MAX_JOYSTICKS	8
 static	SDL_Joystick	*joy_id[MAX_JOYSTICKS];
 static	int		joy_available;
 
-// forward-referenced functions
+/* forward-referenced functions */
 static void IN_StartupJoystick (void);
 static void IN_JoyMove (usercmd_t *cmd);
 #endif	/* USE_JOYSTICK */
@@ -83,7 +82,7 @@ IN_ShowMouse
 */
 void IN_ShowMouse (void)
 {
-	// no need to check mouseinitialized here
+/* no need to check mouseinitialized here */
 	if (!mouseshowtoggle)
 	{
 		SDL_ShowCursor(1);
@@ -99,7 +98,7 @@ IN_HideMouse
 */
 void IN_HideMouse (void)
 {
-	// no need to check mouseinitialized here
+/* no need to check mouseinitialized here */
 	if (mouseshowtoggle)
 	{
 		SDL_ShowCursor (0);
@@ -136,7 +135,7 @@ void IN_ActivateMouse (void)
 		return;
 
 	if (!mouseactivatetoggle)
-#if 0	// change to 1 if dont want to disable mouse in fullscreen
+#if 0	/* change to 1 if dont want to disable mouse in fullscreen */
 		if ((modestate != MS_WINDOWED) || _enable_mouse.integer)
 #else
 		if (_enable_mouse.integer)
@@ -176,7 +175,7 @@ IN_StartupMouse
 */
 static void IN_StartupMouse (void)
 {
-	//IN_HideMouse ();
+/*	IN_HideMouse ();*/
 	if (safemode || COM_CheckParm ("-nomouse"))
 	{
 		SDL_WM_GrabInput (SDL_GRAB_OFF);
@@ -185,8 +184,8 @@ static void IN_StartupMouse (void)
 
 	mouseinitialized = true;
 
-	//if (mouseactivatetoggle)
-#if 0	// change to 1 if dont want to disable mouse in fullscreen
+	/*if (mouseactivatetoggle)*/
+#if 0	/* change to 1 if dont want to disable mouse in fullscreen */
 	if ((modestate != MS_WINDOWED) || _enable_mouse.integer)
 #else
 	if (_enable_mouse.integer)
@@ -202,10 +201,10 @@ IN_Init
 */
 void IN_Init (void)
 {
-	// mouse variables
+	/* mouse variables */
 	Cvar_RegisterVariable (&m_filter);
 #if USE_JOYSTICK
-	// joystick variables
+	/* joystick variables */
 	Cvar_RegisterVariable (&in_joystick);
 #endif	/* USE_JOYSTICK */
 
@@ -276,7 +275,7 @@ static void IN_MouseMove (usercmd_t *cmd)
 	mouse_x *= sensitivity.value;
 	mouse_y *= sensitivity.value;
 
-// add mouse X/Y movement to cmd
+/* add mouse X/Y movement to cmd */
 	if ( (in_strafe.state & 1) || (lookstrafe.integer && (in_mlook.state & 1) ))
 		cmd->sidemove += m_side.value * mouse_x;
 	else
@@ -304,7 +303,7 @@ static void IN_MouseMove (usercmd_t *cmd)
 			cmd->forwardmove -= m_forward.value * mouse_y;
 	}
 
-	if (cl.idealroll == 0) // Did keyboard set it already??
+	if (cl.idealroll == 0) /* Did keyboard set it already?? */
 	{
 		if (cl.v.movetype == MOVETYPE_FLY)
 		{
@@ -324,24 +323,17 @@ IN_Move
 */
 void IN_Move (usercmd_t *cmd)
 {
-#if USE_JOYSTICK
-	Uint8	appState = SDL_GetAppState();	// make the one in sys_unix
-							// global and use??
-#endif	/* USE_JOYSTICK */
-
-	if (cl.v.cameramode)	// Stuck in a different camera so don't move
+	if (cl.v.cameramode)	/* Stuck in a different camera so don't move */
 	{
 		memset (cmd, 0, sizeof(*cmd));
 		return;
 	}
 
 	if (mouseactive)
-	{
 		IN_MouseMove (cmd);
-	}
 
 #if USE_JOYSTICK
-	if (appState & SDL_APPACTIVE)
+	if (SDL_GetAppState() & SDL_APPACTIVE)
 		IN_JoyMove (cmd);
 #endif	/* USE_JOYSTICK */
 }
@@ -482,12 +474,12 @@ void IN_SendKeyEvents (void)
 			{
 				if (event.active.gain)
 				{
-				//	Sys_Printf("FOCUS GAIN\n");
+				/*	Sys_Printf("FOCUS GAIN\n");*/
 					S_UnblockSound();
 				}
 				else
 				{
-				//	Sys_Printf("FOCUS LOSS\n");
+				/*	Sys_Printf("FOCUS LOSS\n");*/
 					S_BlockSound();
 				}
 			}
@@ -537,13 +529,13 @@ void IN_SendKeyEvents (void)
 				{
 #if defined(__QNX__)
 					if ((sym == SDLK_BACKSPACE) || (sym == SDLK_RETURN))
-						break;	// S.A: fixes QNX weirdness
+						break;	/* S.A: fixes QNX weirdness */
 #endif	/* __QNX__ */
 					if ((event.key.keysym.unicode & 0xFF80) == 0)
 						sym = event.key.keysym.unicode & 0x7F;
 					/* else: it's an international character */
 				}
-			//	printf("You pressed %s (%d) (%c)\n", SDL_GetKeyName(sym), sym, sym);
+			/*	printf("You pressed %s (%d) (%c)\n", SDL_GetKeyName(sym), sym, sym);*/
 				break;
 			default:
 				break;
@@ -721,8 +713,8 @@ void IN_SendKeyEvents (void)
 				sym = '~';
 				break;
 			}
-			// If we're not directly handled and still
-			// above 255, just force it to 0
+			/* If we're not directly handled and still
+			 * above 255, just force it to 0 */
 			if (sym > 255)
 				sym = 0;
 			Key_Event (sym, state);
@@ -743,7 +735,7 @@ void IN_SendKeyEvents (void)
 			break;
 
 		case SDL_MOUSEMOTION:
-		//	SDL_GetMouseState (NULL, NULL);
+		/*	SDL_GetMouseState (NULL, NULL);*/
 			break;
 
 #if USE_JOYSTICK
