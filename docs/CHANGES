@@ -4,6 +4,13 @@ Development Progress	:
 ---------------------------
 
 2011-12-16 (SVN):
+    * in_sdl.c: Explicitly disable SDL's unicode translation support during
+      initialization and enable it only for text input during frame updates.
+      This allows for the use of dead keys on the console or in chat, while
+      the in-game key bindings are not stuck just because of them. Based on
+      a patch from, and thanks to Sander van Dijk.
+
+2011-12-16 (SVN):
     * in_sdl.c (IN_ActivateMouse): Nuke events from when mouse was disabled
       by calling SDL_PumpEvents() and SDL_GetRelativeMouseState().
     * Updated the release notes file for v1.5.2.
