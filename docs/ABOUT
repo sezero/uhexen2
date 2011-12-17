@@ -1,6 +1,5 @@
 
-Hexen II: Hammer of Thyrion
-Version 1.5.2
+Hexen II: Hammer of Thyrion, version 1.5.2
 
 http://uhexen2.sourceforge.net/
 http://sourceforge.net/projects/uhexen2/
@@ -8,8 +7,7 @@ http://sourceforge.net/projects/uhexen2/
 Hammer of Thyrion is a cross-platform port of Raven Software's
 Hexen II source to support Linux, FreeBSD, OpenBSD, QNX, other
 unices, Mac OS X and Windows. It is based on the initial linux
-port Anvil of Thyrion by Dan Olson and Clément Bourdarias, and
-is hacked by Steven Atkinson, O. Sezer and Levent Yavas.
+port Anvil of Thyrion.
 
 Hexen II was created by Raven Software Corp.,  published by Id
 Software Inc and distributed by Activision, Inc.  Hexen II and

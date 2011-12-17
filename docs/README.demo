@@ -26,7 +26,6 @@ Hexen II: Hammer of Thyrion 1.5.2 (demo version)
   3.3 Hardware Acceleration
   3.4 Links
   3.5 Thanks
-  3.6 Contact
 
 4. Appendix
 
@@ -577,20 +576,11 @@ consult the document README.3dfx.
 3.5 Thanks
 ----------
 
-Thanks to ID Software, Raven Games and Activision for a great
-game and for supporting open source software. Also thanks to
-Dan Olson and Clément Bourdarias for the initial Linux port
-(AoT) and to Sourceforge.net for hosting HoT.
-Mega thanks to all the unheralded Doom/Quake/Hexen modders.
-
-
-3.6 Contact
------------
-
-Ozkan Sezer      <sezero@users.sourceforge.net>
-Steven Atkinson  <stevenaaus@users.sourceforge.net>
-Levent Yavas     <leventy@users.sourceforge.net>
-
+Thanks to ID Software, Raven Games and Activision for a great game
+and for supporting open source software, to Dan Olson and Clément
+Bourdarias for the initial Linux port, and to sourceforge.net for
+hosting us.  Many thanks to all of our contributors: see the AUTHORS
+file for a complete list them.
 
 
 ---------------------------------

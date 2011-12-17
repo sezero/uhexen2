@@ -3,6 +3,11 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2011-12-17 (SVN):
+    * Added AUTHORS file among the documents listing all of our contributors
+      to the best of my knowledge.  Edited the ABOUT and README documents a
+      little.
+
 2011-12-16 (SVN):
     * in_sdl.c: Explicitly disable SDL's unicode translation support during
       initialization and enable it only for text input during frame updates.
