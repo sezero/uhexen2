@@ -54,7 +54,7 @@ net_driver_t net_drivers[] =
 		Loop_Close,
 		Loop_Shutdown
 	},
-#endif	/* SERVERONLY */
+#endif	/* NO_LOOP_DRIVER */
 
 	{	"Datagram",
 		false,
