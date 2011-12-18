@@ -4,6 +4,7 @@ Development Progress	:
 ---------------------------
 
 2011-12-18 (SVN):
+    * quakeinc.h, qwsvinc.h: Tweaked order of engine header includes.
     * net_win.c, net_dos.c: Fixed a typo in #endif comments.
     * quakedef.h: updated beta date stamp to 2011-12-18.
 

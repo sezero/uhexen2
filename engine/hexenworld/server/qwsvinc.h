@@ -51,9 +51,9 @@
 
 #include "progs.h"
 #include "effects.h"
-#include "model.h"
-
 #include "server.h"
+
+#include "model.h"
 #include "world.h"
 #include "pmove.h"
 
