@@ -2,7 +2,7 @@
 	in_svgalib.c:	Linux SVGALIB specific input driver.
 	from quake1 source with minor adaptations for uhexen2.
 
-	$Id: in_svgalib.c,v 1.6 2008-06-29 11:25:31 sezero Exp $
+	$Id$
 
 	Copyright (C) 1996-1997  Id Software, Inc.
 
@@ -376,10 +376,27 @@ static void IN_MouseMove (usercmd_t *cmd)
 		else
 			cmd->forwardmove -= m_forward.value * mouse_y;
 	}
+
+	if (cl.idealroll == 0) /* Did keyboard set it already?? */
+	{
+		if (cl.v.movetype == MOVETYPE_FLY)
+		{
+			if (mouse_x < 0)
+				cl.idealroll = -10;
+			else if (mouse_x > 0)
+				cl.idealroll = 10;
+		}
+	}
 }
 
 void IN_Move (usercmd_t *cmd)
 {
+	if (cl.v.cameramode)	/* Stuck in a different camera so don't move */
+	{
+		memset (cmd, 0, sizeof(*cmd));
+		return;
+	}
+
 	IN_MouseMove(cmd);
 }
 
