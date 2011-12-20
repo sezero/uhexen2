@@ -4,6 +4,11 @@ Development Progress	:
 ---------------------------
 
 2011-12-20 (SVN):
+    * screen.c, gl_screen.c (SCR_DrawCenterString, Bottom_Plaque_Draw,
+      Info_Plaque_Draw, Plaque_Draw): Store the (EndC[i]-StartC[i]) result
+      in an extra variable.
+
+2011-12-20 (SVN):
     * screen.c, gl_screen.c (UpdateInfoMessage): Changed newmessage to be
       const. Replaced strcat by q_strlcpy to be on the safe side.
 

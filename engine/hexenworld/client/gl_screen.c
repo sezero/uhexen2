@@ -177,7 +177,7 @@ void SCR_CenterPrint (const char *str)
 
 static void SCR_DrawCenterString (void)
 {
-	int	i;
+	int	i, cnt;
 	int	bx, by;
 	char	temp[80];
 
@@ -187,8 +187,9 @@ static void SCR_DrawCenterString (void)
 
 	for (i = 0; i < lines; i++, by += 8)
 	{
-		strncpy (temp, &scr_centerstring[StartC[i]], EndC[i] - StartC[i]);
-		temp[EndC[i] - StartC[i]] = 0;
+		cnt = EndC[i] - StartC[i];
+		strncpy (temp, &scr_centerstring[StartC[i]], cnt);
+		temp[cnt] = 0;
 		bx = (40-strlen(temp)) * 8 / 2;
 		M_Print2 (bx, by, temp);
 	}
@@ -702,7 +703,7 @@ void SCR_BringDownConsole (void)
 
 static void Plaque_Draw (const char *message, qboolean AlwaysDraw)
 {
-	int	i;
+	int	i, cnt;
 	int	bx, by;
 	char	temp[80];
 
@@ -719,8 +720,9 @@ static void Plaque_Draw (const char *message, qboolean AlwaysDraw)
 
 	for (i = 0; i < lines; i++, by += 8)
 	{
-		strncpy (temp, &message[StartC[i]], EndC[i] - StartC[i]);
-		temp[EndC[i] - StartC[i]] = 0;
+		cnt = EndC[i] - StartC[i];
+		strncpy (temp, &message[StartC[i]], cnt);
+		temp[cnt] = 0;
 		bx = (40-strlen(temp)) * 8 / 2;
 		M_Print2 (bx, by, temp);
 	}
