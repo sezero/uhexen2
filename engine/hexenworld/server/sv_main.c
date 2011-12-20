@@ -453,8 +453,8 @@ static void SVC_Log (void)
 
 	Con_DPrintf ("sending log %i to %s\n", svs.logsequence-1, NET_AdrToString(net_from));
 
-	sprintf (data, "stdlog %i\n", svs.logsequence-1);
-	strcat (data, (char *)svs.log_buf[((svs.logsequence-1)&1)]);
+	q_snprintf(data, sizeof(data), "stdlog %i\n", svs.logsequence-1);
+	q_strlcat (data, (char *)svs.log_buf[((svs.logsequence-1)&1)], sizeof(data));
 
 	NET_SendPacket (strlen(data)+1, data, net_from);
 }
@@ -700,8 +700,8 @@ static void SVC_RemoteCommand (void)
 
 		for (i = 2; i < Cmd_Argc(); i++)
 		{
-			strcat (remaining, Cmd_Argv(i) );
-			strcat (remaining, " ");
+			q_strlcat (remaining, Cmd_Argv(i), sizeof(remaining));
+			q_strlcat (remaining, " ", sizeof(remaining));
 		}
 
 		Cmd_ExecuteString (remaining, src_command);
@@ -909,7 +909,7 @@ SV_RemoveIP_f
 static void SV_RemoveIP_f (void)
 {
 	ipfilter_t	f;
-	int			i, j;
+	int		i, j;
 
 	if (!StringToFilter (Cmd_Argv(1), &f))
 		return;
@@ -989,14 +989,10 @@ SV_SendBan
 */
 static void SV_SendBan (void)
 {
-	char		data[128];
+	static char data[] = { 0xff, 0xff, 0xff, 0xff, A2C_PRINT,
+		'\n', 'b', 'a', 'n', 'n', 'e', 'd', '.', '\n', '\0' };
 
-	data[0] = data[1] = data[2] = data[3] = 0xff;
-	data[4] = A2C_PRINT;
-	data[5] = 0;
-	strcat (data, "\nbanned.\n");
-
-	NET_SendPacket (strlen(data), data, net_from);
+	NET_SendPacket (15, data, net_from);
 }
 
 
@@ -1346,9 +1342,8 @@ let it know we are alive, and log information
 #define	HEARTBEAT_SECONDS	300
 void Master_Heartbeat (void)
 {
-	char		text[2048];
-	int			active;
-	int			i;
+	char	text[32];
+	int	i, active;
 
 	if (realtime - svs.last_heartbeat < HEARTBEAT_SECONDS)
 		return;		// not time to send yet
@@ -1366,7 +1361,7 @@ void Master_Heartbeat (void)
 	}
 
 	svs.heartbeat_sequence++;
-	sprintf (text, "%c\n%i\n%i\n", S2M_HEARTBEAT,
+	q_snprintf (text, sizeof(text), "%c\n%i\n%i\n", S2M_HEARTBEAT,
 			svs.heartbeat_sequence, active);
 
 	// send to group master
@@ -1390,10 +1385,8 @@ Informs all masters that this server is going down
 */
 static void Master_Shutdown (void)
 {
-	char		text[2048];
+	static char	text[] = { S2M_SHUTDOWN, '\n', '\0', '\0' };
 	int			i;
-
-	sprintf (text, "%c\n", S2M_SHUTDOWN);
 
 	// send to group master
 	for (i = 0; i < MAX_MASTERS; i++)
@@ -1401,7 +1394,7 @@ static void Master_Shutdown (void)
 		if (master_adr[i].port)
 		{
 			Con_Printf ("Sending heartbeat to %s\n", NET_AdrToString (master_adr[i]));
-			NET_SendPacket (strlen(text), text, master_adr[i]);
+			NET_SendPacket (3, text, master_adr[i]);
 		}
 	}
 }

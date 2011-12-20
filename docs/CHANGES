@@ -4,6 +4,16 @@ Development Progress	:
 ---------------------------
 
 2011-12-20 (SVN):
+    * Miscellaneous hexenworld server code cleanups:
+    * sv_send.c (SV_FlushRedirect): Adjusted pointer.
+    * sv_send.c (CON_Printf): Replaced strcat by q_strlcat.
+    * sv_main.c (SVC_Log, SVC_RemoteCommand): Replaced strcat by q_strlcat.
+    * sv_main.c (SV_SendBan, Master_Shutdown): Removed assignments and
+      strcpy and made the data preinitialized and static.
+    * sv_main.c (Master_Heartbeat): Reduced text buffer size from 2048 to
+      32 which is more than enough. Replaced sprintf by q_snprintf.
+
+2011-12-20 (SVN):
     * screen.c, gl_screen.c (SCR_DrawCenterString, Bottom_Plaque_Draw,
       Info_Plaque_Draw, Plaque_Draw): Adjusted the y coordinate by adding
       ((vid.height-200)>>1) and replaced all occurences of M_Print2() by

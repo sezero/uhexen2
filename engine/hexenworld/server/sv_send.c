@@ -51,7 +51,7 @@ static void SV_FlushRedirect (void)
 		senddata[2] = 0xff;
 		senddata[3] = 0xff;
 		senddata[4] = A2C_PRINT;
-		memcpy (senddata+5, outputbuf, strlen(outputbuf)+1);
+		memcpy (&senddata[5], outputbuf, strlen(outputbuf)+1);
 
 		NET_SendPacket (strlen(senddata)+1, senddata, net_from);
 	}
@@ -123,7 +123,7 @@ void CON_Printf (unsigned int flags, const char *fmt, ...)
 	{
 		if (strlen(msg) + strlen(outputbuf) > sizeof(outputbuf) - 1)
 			SV_FlushRedirect ();
-		strcat (outputbuf, msg);
+		q_strlcat (outputbuf, msg, sizeof(outputbuf));
 		return;
 	}
 
