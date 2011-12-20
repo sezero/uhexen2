@@ -4,6 +4,10 @@ Development Progress	:
 ---------------------------
 
 2011-12-20 (SVN):
+    * hexenworld, cl_main.c (CL_Rcon_f): No need for strlen() to detect an
+      empty string.
+
+2011-12-20 (SVN):
     * hexenworld, sv_main.c (SV_CheckVars): Changed to use the CVAR_CHANGED
       flags because the old pointer equality checks were never guaranteed
       to signal a change.

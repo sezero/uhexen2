@@ -277,7 +277,7 @@ static void CL_Rcon_f (void)
 	}
 	else
 	{
-		if (!strlen(rcon_address.string))
+		if (rcon_address.string[0] == '\0')
 		{
 			Con_Printf ("You must either be connected,\n"
 					"or set the 'rcon_address' cvar\n"
