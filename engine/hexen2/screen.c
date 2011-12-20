@@ -55,21 +55,20 @@
 #endif
 
 
-static qboolean		scr_initialized;	// ready to draw
+static qboolean	scr_initialized;	// ready to draw
 
-vrect_t			scr_vrect;
+vrect_t		scr_vrect;
 //vrect_t		*pconupdate;
 
-// these are only functional in the software
-// renderer.
-int			scr_copytop;		// only the refresh window will be updated
-int			scr_copyeverything;	// unless these variables are flagged
-int			scr_topupdate;
-int			scr_fullupdate;
-static qboolean		scr_needfull = false;
+/* these are only functional in the software renderer */
+int		scr_copytop;		// only the refresh window will be updated
+int		scr_copyeverything;	// unless these variables are flagged
+int		scr_topupdate;
+int		scr_fullupdate;
+static qboolean	scr_needfull = false;
 
-static int		clearconsole;
-int			clearnotify;
+static int	clearconsole;
+int		clearnotify;
 
 float		scr_con_current;
 float		scr_conlines;		// lines of console to display
@@ -103,7 +102,7 @@ static void SCR_ScreenShot_f (void);
 const char	*plaquemessage = NULL;	// pointer to current plaque message
 
 static void Plaque_Draw (const char *message, qboolean AlwaysDraw);
-// procedures for the mission pack intro messages
+/* procedures for the mission pack intro messages and objectives */
 static void Info_Plaque_Draw (const char *message);
 static void Bottom_Plaque_Draw (const char *message);
 
@@ -126,14 +125,13 @@ static int	scr_erase_lines;
 static int	lines;
 static int	StartC[MAXLINES], EndC[MAXLINES];
 
-// Objectives thing of the mission pack
+/* mission pack objectives: */
 #define	MAX_INFO	1024
 static char	infomessage[MAX_INFO];
 
 static void UpdateInfoMessage (void)
 {
-	unsigned int i;
-	unsigned int check;
+	unsigned int i, check;
 	char *newmessage;
 
 	strcpy(infomessage, "Objectives:");
@@ -144,7 +142,7 @@ static void UpdateInfoMessage (void)
 	for (i = 0; i < 32; i++)
 	{
 		check = (1 << i);
-		
+
 		if (cl.info_mask & check)
 		{
 			newmessage = &info_strings[info_string_index[i]];
@@ -156,7 +154,7 @@ static void UpdateInfoMessage (void)
 	for (i = 0; i < 32; i++)
 	{
 		check = (1 << i);
-		
+
 		if (cl.info_mask2 & check)
 		{
 			newmessage = &info_strings[info_string_index[i + 32]];
@@ -233,7 +231,7 @@ static void SCR_EraseCenterString (void)
 		return;
 	}
 
-	y = ((25-lines) * 8) / 2;
+	y = (25-lines) * 8 / 2;
 
 	scr_copytop = 1;
 	height = q_min(8 * scr_erase_lines, (int)vid.height - y - 1);
@@ -243,22 +241,22 @@ static void SCR_EraseCenterString (void)
 
 static void SCR_DrawCenterString (void)
 {
-	int		i;
-	int		bx, by;
+	int	i;
+	int	bx, by;
 	char	temp[80];
 
 //	scr_erase_center = 0;
 
 	FindTextBreaks(scr_centerstring, 38);
 
-	by = ((25-lines) * 8) / 2;
+	by = (25-lines) * 8 / 2;
 
 	for (i = 0; i < lines; i++, by += 8)
 	{
 		strncpy (temp, &scr_centerstring[StartC[i]], EndC[i] - StartC[i]);
 		temp[EndC[i] - StartC[i]] = 0;
-		bx = ((40-strlen(temp)) * 8) / 2;
-	  	M_Print2 (bx, by, temp);
+		bx = (40-strlen(temp)) * 8 / 2;
+		M_Print2 (bx, by, temp);
 	}
 }
 
@@ -269,7 +267,7 @@ static qboolean SCR_CheckDrawCenterString2 (void)
 		scr_erase_lines = scr_center_lines;
 
 	scr_centertime_off -= host_frametime;
-	
+
 	if (scr_centertime_off <= 0 && !cl.intermission)
 		return false;
 	if (key_dest != key_game)
@@ -444,7 +442,7 @@ SCR_DrawTurtle
 static void SCR_DrawTurtle (void)
 {
 	static int	count;
-	
+
 	if (!scr_showturtle.integer)
 		return;
 
@@ -483,11 +481,11 @@ DrawPause
 */
 static void SCR_DrawPause (void)
 {
+	static qboolean	newdraw = false;
+	static float	LogoPercent, LogoTargetPercent;
 	qpic_t	*pic;
-	float delta;
-	static qboolean newdraw = false;
-	int finaly;
-	static float LogoPercent, LogoTargetPercent;
+	int	finaly;
+	float	delta;
 
 	if (!scr_showpause.integer)	// turn off for screenshots
 		return;
@@ -534,7 +532,7 @@ SCR_DrawLoading
 */
 void SCR_DrawLoading (void)
 {
-	int		size, count;
+	int	size, count;
 	qpic_t	*pic;
 
 	if (!scr_drawloading && loading_stage == 0)
@@ -626,7 +624,7 @@ SCR_SetUpToDrawConsole
 static void SCR_SetUpToDrawConsole (void)
 {
 	Con_CheckResize ();
-	
+
 	if (scr_drawloading)
 		return;		// never a console with loading plaque
 
@@ -648,7 +646,6 @@ static void SCR_SetUpToDrawConsole (void)
 		scr_con_current -= scr_conspeed.value * host_frametime;
 		if (scr_conlines > scr_con_current)
 			scr_con_current = scr_conlines;
-
 	}
 	else if (scr_conlines > scr_con_current)
 	{
@@ -671,7 +668,7 @@ static void SCR_SetUpToDrawConsole (void)
 	else
 		con_notifylines = 0;
 }
-	
+
 /*
 ==================
 SCR_DrawConsole
@@ -725,10 +722,10 @@ WritePCXfile
 */
 static void WritePCXfile (const char *filename, byte *data, int width, int height, int rowbytes, byte *palette)
 {
-	int		i, j;
-	size_t		length;
+	int	i, j;
+	size_t	length;
 	pcx_t	*pcx;
-	byte		*pack;
+	byte	*pack;
 
 	pcx = (pcx_t *) Hunk_TempAlloc (width*height*2+1000);
 	if (pcx == NULL)
@@ -747,11 +744,11 @@ static void WritePCXfile (const char *filename, byte *data, int width, int heigh
 	pcx->ymax = LittleShort((short)(height-1));
 	pcx->hres = LittleShort((short)width);
 	pcx->vres = LittleShort((short)height);
-	memset (pcx->palette,0,sizeof(pcx->palette));
+	memset (pcx->palette, 0, sizeof(pcx->palette));
 	pcx->color_planes = 1;		// chunky image
 	pcx->bytes_per_line = LittleShort((short)width);
 	pcx->palette_type = LittleShort(2);	// not a grey scale
-	memset (pcx->filler,0,sizeof(pcx->filler));
+	memset (pcx->filler, 0, sizeof(pcx->filler));
 
 // pack the image
 	pack = &pcx->data;
@@ -789,9 +786,9 @@ SCR_ScreenShot_f
 */
 static void SCR_ScreenShot_f (void)
 {
+	char	pcxname[80];
+	char	checkname[MAX_OSPATH];
 	int	i;
-	char		pcxname[80];
-	char		checkname[MAX_OSPATH];
 
 	q_snprintf (checkname, sizeof(checkname), "%s/shots", fs_userdir);
 	Sys_mkdir (checkname, false);
@@ -884,10 +881,10 @@ SCR_BringDownConsole
 Brings the console down and fades the palettes back to normal
 ================
 */
-#if 0	// all uses are commented out
+#if 0	/* all uses are commented out */
 void SCR_BringDownConsole (void)
 {
-	int		i;
+	int	i;
 
 	scr_centertime_off = 0;
 
@@ -928,11 +925,11 @@ static void Plaque_Draw (void)
 	i2 = 0;
 
 	hold2 = plaquemessage;
-	for (i1 = 0 ; i1 < length ; )
+	for (i1 = 0; i1 < length; )
 	{
 		holdmessage = hold2;
 
-		if ((i1+28) >= length)	// Past end of line
+		if ((i1 + 28) >= length)	// Past end of line
 		{
 			strcpy (line, hold2);
 			M_Print (col, row, line);
@@ -941,9 +938,9 @@ static void Plaque_Draw (void)
 		else
 		{
 			// looking for a space to break line at
-			for (i2 = 28 ; i2 > 0 ; --i2)
+			for (i2 = 28; i2 > 0; --i2)
 			{
-				if (*(holdmessage+i2) == ' ')
+				if (*(holdmessage + i2) == ' ')
 				{
 					memcpy (line, hold2, i2);
 					line[i2] = '\0';
@@ -963,8 +960,8 @@ static void Plaque_Draw (void)
 static void Plaque_Draw (const char *message, qboolean AlwaysDraw)
 {
 	int	i;
-	char	temp[80];
 	int	bx, by;
+	char	temp[80];
 
 	if (scr_con_current == vid.height && !AlwaysDraw)
 		return;		// console is full screen
@@ -976,23 +973,23 @@ static void Plaque_Draw (const char *message, qboolean AlwaysDraw)
 
 	FindTextBreaks(message, PLAQUE_WIDTH);
 
-	by = ((25-lines) * 8) / 2;
-	M_DrawTextBox2 (32, by-16, PLAQUE_WIDTH+4, lines+2, false);
+	by = (25-lines) * 8 / 2;
+	M_DrawTextBox2 (32, by - 16, PLAQUE_WIDTH + 4, lines + 2, false);
 
 	for (i = 0; i < lines; i++, by += 8)
 	{
 		strncpy (temp, &message[StartC[i]], EndC[i] - StartC[i]);
 		temp[EndC[i] - StartC[i]] = 0;
-		bx = ((40-strlen(temp)) * 8) / 2;
+		bx = (40-strlen(temp)) * 8 / 2;
 		M_Print2 (bx, by, temp);
 	}
 }
 
 static void Info_Plaque_Draw (const char *message)
 {
-	int i;
-	char temp[80];
-	int bx,by;
+	int	i;
+	int	bx, by;
+	char	temp[80];
 
 	if (scr_con_current == vid.height)
 		return;		// console is full screen
@@ -1004,29 +1001,29 @@ static void Info_Plaque_Draw (const char *message)
 
 	FindTextBreaks(message, PLAQUE_WIDTH+4);
 
-	if (lines == MAXLINES) 
+	if (lines == MAXLINES)
 	{
 		Con_DPrintf("Info_Plaque_Draw: line overflow error\n");
 		lines = MAXLINES-1;
 	}
 
-	by = ((25-lines) * 8) / 2;
-	M_DrawTextBox2 (15, by-16, PLAQUE_WIDTH+4+4, lines+2, false);
+	by = (25-lines) * 8 / 2;
+	M_DrawTextBox2 (15, by - 16, PLAQUE_WIDTH + 4 + 4, lines + 2, false);
 
 	for (i = 0; i < lines; i++, by += 8)
 	{
 		strncpy (temp, &message[StartC[i]], EndC[i] - StartC[i]);
 		temp[EndC[i] - StartC[i]] = 0;
-		bx = ((40-strlen(temp)) * 8) / 2;
-	  	M_Print2 (bx, by, temp);
+		bx = (40-strlen(temp)) * 8 / 2;
+		M_Print2 (bx, by, temp);
 	}
 }
 
 static void Bottom_Plaque_Draw (const char *message)
 {
-	int i;
-	char temp[80];
-	int bx,by;
+	int	i;
+	int	bx, by;
+	char	temp[80];
 
 	if (!*message)
 		return;
@@ -1036,15 +1033,14 @@ static void Bottom_Plaque_Draw (const char *message)
 	FindTextBreaks(message, PLAQUE_WIDTH);
 
 	by = (((vid.height) / 8) - lines - 2) * 8;
-
-	M_DrawTextBox2 (32, by-16, PLAQUE_WIDTH+4, lines+2, true);
+	M_DrawTextBox2 (32, by - 16, PLAQUE_WIDTH + 4, lines + 2, true);
 
 	for (i = 0; i < lines; i++, by += 8)
 	{
 		strncpy (temp, &message[StartC[i]], EndC[i] - StartC[i]);
 		temp[EndC[i] - StartC[i]] = 0;
-		bx = ((40-strlen(temp)) * 8) / 2;
-	  	M_Print(bx, by, temp);
+		bx = (40-strlen(temp)) * 8 / 2;
+		M_Print(bx, by, temp);
 	}
 }
 
@@ -1053,14 +1049,14 @@ static void Bottom_Plaque_Draw (const char *message)
 
 static void I_DrawCharacter (int cx, int line, int num)
 {
-	Draw_Character ( cx + ((vid.width - 320)>>1), line + ((vid.height - 200)>>1), num);
+	Draw_Character (cx + ((vid.width - 320)>>1), line + ((vid.height - 200)>>1), num);
 }
 
 static void I_Print (int cx, int cy, char *str)
 {
 	while (*str)
 	{
-		I_DrawCharacter (cx, cy, ((unsigned char)(*str))+256);
+		I_DrawCharacter (cx, cy, ((unsigned char)(*str)) + 256);
 		str++;
 		cx += 8;
 	}
@@ -1088,7 +1084,7 @@ SB_IntermissionOverlay
 static void SB_IntermissionOverlay (void)
 {
 	qpic_t	*pic = NULL;
-	int		elapsed, size, bx, by, i;
+	int	elapsed, size, bx, by, i;
 	char		temp[80];
 	const char	*message;
 
@@ -1200,7 +1196,7 @@ static void SB_IntermissionOverlay (void)
 		// mission pack: tibet10. num == 10
 		by = 33;
 	else
-		by = ((25-lines) * 8) / 2;
+		by = (25-lines) * 8 / 2;
 
 	for (i = 0; i < lines; i++, by += 8)
 	{
@@ -1211,7 +1207,7 @@ static void SB_IntermissionOverlay (void)
 			size = elapsed;
 		temp[size] = 0;
 
-		bx = ((40-strlen(temp)) * 8) / 2;
+		bx = (40-strlen(temp)) * 8 / 2;
 		if (cl.intermission < 6 || cl.intermission > 9)
 			I_Print (bx, by, temp);
 		else
@@ -1234,7 +1230,7 @@ static void SB_IntermissionOverlay (void)
 SB_FinaleOverlay
 ===============
 */
-#if 0	// not used in Hexen II
+#if 0	/* not used in Hexen II */
 static void SB_FinaleOverlay(void)
 {
 	qpic_t	*pic;

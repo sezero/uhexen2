@@ -4,6 +4,10 @@ Development Progress	:
 ---------------------------
 
 2011-12-20 (SVN):
+    * screen.c, gl_screen.c: Whitespace tidy up. Removed extra parentheses
+      from a few places where they aren't necessary at all.
+
+2011-12-20 (SVN):
     * cmd.c (Cmd_Alias_f): Replaced a strcat by q_strlcat (was a typo.)
     * hexenworld, CL_Disconnect(): Adjusted buffer pointer.
     * quakedef.h: updated beta date stamp to 2011-12-20.
