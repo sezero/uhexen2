@@ -129,9 +129,9 @@ static char	infomessage[MAX_INFO];
 static void UpdateInfoMessage (void)
 {
 	unsigned int i, check;
-	char *newmessage;
+	const char *newmessage;
 
-	strcpy(infomessage, "Objectives:");
+	q_strlcpy(infomessage, "Objectives:", sizeof(infomessage));
 
 	if (!info_string_count || !info_strings)
 		return;
@@ -139,24 +139,24 @@ static void UpdateInfoMessage (void)
 	for (i = 0; i < 32; i++)
 	{
 		check = (1 << i);
-		
+
 		if (cl.info_mask & check)
 		{
 			newmessage = &info_strings[info_string_index[i]];
-			strcat(infomessage, "@@");
-			strcat(infomessage, newmessage);
+			q_strlcat(infomessage, "@@", sizeof(infomessage));
+			q_strlcat(infomessage, newmessage, sizeof(infomessage));
 		}
 	}
 
 	for (i = 0; i < 32; i++)
 	{
 		check = (1 << i);
-		
+
 		if (cl.info_mask2 & check)
 		{
 			newmessage = &info_strings[info_string_index[i + 32]];
-			strcat(infomessage, "@@");
-			strcat(infomessage, newmessage);
+			q_strlcat(infomessage, "@@", sizeof(infomessage));
+			q_strlcat(infomessage, newmessage, sizeof(infomessage));
 		}
 	}
 }
