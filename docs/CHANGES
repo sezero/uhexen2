@@ -4,6 +4,11 @@ Development Progress	:
 ---------------------------
 
 2011-12-20 (SVN):
+    * gl_screen.c (SCR_ScreenShot_f): Calculate the buffer size only once.
+    * screen.c (WritePCXfile): Changed to return int, -1 on error and 0 on
+      success. Made SCR_ScreenShot_f to print its message only on success.
+
+2011-12-20 (SVN):
     * screen.c, gl_screen.c (SCR_DrawCenterString, Bottom_Plaque_Draw,
       Info_Plaque_Draw, Plaque_Draw): Store the (EndC[i]-StartC[i]) result
       in an extra variable.

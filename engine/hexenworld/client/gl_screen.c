@@ -576,7 +576,7 @@ static void SCR_ScreenShot_f (void)
 {
 	char	pcxname[80];
 	char	checkname[MAX_OSPATH];
-	int	i, c, temp;
+	int	i, size, temp;
 	int	mark;
 	byte	*buffer;
 
@@ -601,8 +601,9 @@ static void SCR_ScreenShot_f (void)
 		return;
 	}
 
+	size = glwidth * glheight * 3 + 18;
 	mark = Hunk_LowMark();
-	buffer = (byte *) Hunk_AllocName(glwidth * glheight * 3 + 18, "buffer_sshot");
+	buffer = (byte *) Hunk_AllocName(size, "buffer_sshot");
 	memset (buffer, 0, 18);
 	buffer[2] = 2;		// uncompressed type
 	buffer[12] = glwidth & 255;
@@ -614,15 +615,14 @@ static void SCR_ScreenShot_f (void)
 	glReadPixels_fp (glx, gly, glwidth, glheight, GL_RGB, GL_UNSIGNED_BYTE, buffer+18);
 
 	// swap rgb to bgr
-	c = 18 + glwidth*glheight*3;
-	for (i = 18; i < c; i += 3)
+	for (i = 18; i < size; i += 3)
 	{
 		temp = buffer[i];
 		buffer[i] = buffer[i+2];
 		buffer[i+2] = temp;
 	}
 
-	i = FS_WriteFile (pcxname, buffer, glwidth*glheight*3 + 18);
+	i = FS_WriteFile (pcxname, buffer, size);
 
 	Hunk_FreeToLowMark(mark);
 

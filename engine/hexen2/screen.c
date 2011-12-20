@@ -721,7 +721,7 @@ typedef struct
 WritePCXfile
 ==============
 */
-static void WritePCXfile (const char *filename, byte *data, int width, int height, int rowbytes, byte *palette)
+static int WritePCXfile (const char *filename, byte *data, int width, int height, int rowbytes, byte *palette)
 {
 	int	i, j;
 	size_t	length;
@@ -732,7 +732,7 @@ static void WritePCXfile (const char *filename, byte *data, int width, int heigh
 	if (pcx == NULL)
 	{
 		Con_Printf("%s: not enough memory\n", __thisfunc__);
-		return;
+		return -1;
 	}
 
 	pcx->manufacturer = 0x0a;	// PCX id
@@ -777,7 +777,7 @@ static void WritePCXfile (const char *filename, byte *data, int width, int heigh
 
 // write output file 
 	length = pack - (byte *)pcx;
-	FS_WriteFile (filename, pcx, length);
+	return FS_WriteFile(filename, pcx, length);
 }
 
 /*
@@ -818,12 +818,13 @@ static void SCR_ScreenShot_f (void)
 	D_EnableBackBufferAccess ();	// enable direct drawing of console
 					// to back buffer
 
-	WritePCXfile (pcxname, vid.buffer, vid.width, vid.height, vid.rowbytes, host_basepal);
+	i = WritePCXfile (pcxname, vid.buffer, vid.width, vid.height, vid.rowbytes, host_basepal);
 
 	D_DisableBackBufferAccess ();	// for adapters that can't stay mapped
 					// in for linear writes all the time
 
-	Con_Printf ("Wrote %s\n", pcxname);
+	if (i == 0)
+		Con_Printf ("Wrote %s\n", pcxname);
 }
 
 //=============================================================================
