@@ -4,6 +4,7 @@ Development Progress	:
 ---------------------------
 
 2011-12-20 (SVN):
+    * cmd.c (Cmd_Alias_f): Replaced a strcat by q_strlcat (was a typo.)
     * hexenworld, CL_Disconnect(): Adjusted buffer pointer.
     * quakedef.h: updated beta date stamp to 2011-12-20.
 

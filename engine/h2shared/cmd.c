@@ -403,7 +403,7 @@ static void Cmd_Alias_f (void)
 	{
 		q_strlcat (cmd, Cmd_Argv(i), sizeof(cmd));
 		if (i != c - 1)
-			strcat (cmd, " ");
+			q_strlcat (cmd, " ", sizeof(cmd));
 	}
 	if (q_strlcat(cmd, "\n", sizeof(cmd)) >= sizeof(cmd))
 	{
