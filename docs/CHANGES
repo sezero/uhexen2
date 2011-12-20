@@ -4,6 +4,11 @@ Development Progress	:
 ---------------------------
 
 2011-12-20 (SVN):
+    * hexenworld, sv_main.c (SV_CheckVars): Changed to use the CVAR_CHANGED
+      flags because the old pointer equality checks were never guaranteed
+      to signal a change.
+
+2011-12-20 (SVN):
     * cvar.h: Changed the cvar flags to bit shifts for easier maintaining.
       Added CVAR_CHANGED as a new flag.
     * cvar.c (Cvar_Set): Set the CVAR_CHANGED flag when changing a value,

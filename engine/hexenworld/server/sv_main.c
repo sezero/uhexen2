@@ -31,8 +31,9 @@ static	cvar_t	zombietime = {"zombietime", "2", CVAR_NONE};	// seconds to sink me
 								// after disconnect
 
 static	cvar_t	rcon_password = {"rcon_password", "", CVAR_NONE};	// password for remote server commands
-static	cvar_t	password = {"password", "", CVAR_NONE};		// password for entering the game
-static	cvar_t	spectator_password = {"spectator_password", "", CVAR_NONE};	// password for entering as a sepctator
+static	cvar_t	password = {"password", "", CVAR_CHANGED};			// password for entering the game
+static	cvar_t	spectator_password = {"spectator_password", "", CVAR_CHANGED};	// password for entering as a spectator
+		/* marked password and spectator_password as CVAR_CHANGED for first run of SV_CheckVars() */
 
 cvar_t	sv_highchars = {"sv_highchars", "1", CVAR_NONE};
 
@@ -660,7 +661,7 @@ static void SVC_DirectConnect (void)
 
 static int Rcon_Validate (void)
 {
-	if (!strlen (rcon_password.string))
+	if (rcon_password.string[0] == '\0')
 		return 0;
 
 	if (strcmp (Cmd_Argv(1), rcon_password.string) )
@@ -1137,18 +1138,18 @@ SV_CheckVars
 */
 static void SV_CheckVars (void)
 {
-	static const char	*pw, *spw;
-	int			v;
+	int	v;
 
-	if (password.string == pw && spectator_password.string == spw)
+	if (! ((password.flags | spectator_password.flags) & CVAR_CHANGED))
 		return;
-	pw = password.string;
-	spw = spectator_password.string;
+
+	password.flags &= ~CVAR_CHANGED;
+	spectator_password.flags &= ~CVAR_CHANGED;
 
 	v = 0;
-	if (pw && pw[0] && strcmp(pw, "none"))
+	if (password.string[0] && strcmp(password.string, "none"))
 		v |= 1;
-	if (spw && spw[0] && strcmp(spw, "none"))
+	if (spectator_password.string[0] && strcmp(spectator_password.string, "none"))
 		v |= 2;
 
 	Con_Printf ("Updated needpass.\n");
