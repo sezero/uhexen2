@@ -158,13 +158,14 @@ void Cvar_Set (const char *var_name, const char *value)
 		return;
 	}
 
-	if ( var->flags & (CVAR_ROM|CVAR_LOCKED) )
+	if (var->flags & (CVAR_ROM|CVAR_LOCKED))
 		return;	// cvar is marked read-only or locked temporarily
 
 	if (var->flags & CVAR_REGISTERED)
 	{
-		if ( !strcmp(var->string, value) )
+		if (!strcmp(var->string, value))
 			return;	// no change
+		var->flags |= CVAR_CHANGED;
 	}
 	else
 	{
@@ -215,12 +216,12 @@ void Cvar_Set (const char *var_name, const char *value)
 
 // don't allow deathmatch and coop at the same time
 #if !defined(H2W) || defined(SERVERONLY)
-	if ( !strcmp(var->name, deathmatch.name) )
+	if (!strcmp(var->name, deathmatch.name))
 	{
 		if (var->integer != 0)
 			Cvar_Set("coop", "0");
 	}
-	else if ( !strcmp(var->name, coop.name) )
+	else if (!strcmp(var->name, coop.name))
 	{
 		if (var->integer != 0)
 			Cvar_Set("deathmatch", "0");

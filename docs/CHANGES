@@ -4,6 +4,12 @@ Development Progress	:
 ---------------------------
 
 2011-12-20 (SVN):
+    * cvar.h: Changed the cvar flags to bit shifts for easier maintaining.
+      Added CVAR_CHANGED as a new flag.
+    * cvar.c (Cvar_Set): Set the CVAR_CHANGED flag when changing a value,
+      code elsewhere may make a use of it.
+
+2011-12-20 (SVN):
     * Miscellaneous hexenworld server code cleanups:
     * sv_send.c (SV_FlushRedirect): Adjusted pointer.
     * sv_send.c (CON_Printf): Replaced strcat by q_strlcat.
