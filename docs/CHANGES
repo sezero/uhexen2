@@ -4,6 +4,15 @@ Development Progress	:
 ---------------------------
 
 2011-12-20 (SVN):
+    * screen.c, gl_screen.c (SCR_DrawCenterString, Bottom_Plaque_Draw,
+      Info_Plaque_Draw, Plaque_Draw): Adjusted the y coordinate by adding
+      ((vid.height-200)>>1) and replaced all occurences of M_Print2() by
+      M_Print() and M_DrawTextBox2() by M_DrawTextBox().
+    * menu.c: Removed M_DrawTextBox2, M_Print2 and M_DrawCharacter2().
+    * menu.h: Removed prototypes for M_DrawTextBox2() and M_Print2().
+      Removed m_activenet, MNET_IPX and MNET_TCP which had never existed.
+
+2011-12-20 (SVN):
     * gl_screen.c (SCR_ScreenShot_f): Calculate the buffer size only once.
     * screen.c (WritePCXfile): Changed to return int, -1 on error and 0 on
       success. Made SCR_ScreenShot_f to print its message only on success.

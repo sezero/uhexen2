@@ -249,7 +249,7 @@ static void SCR_DrawCenterString (void)
 
 	FindTextBreaks(scr_centerstring, 38);
 
-	by = (25-lines) * 8 / 2;
+	by = (25-lines) * 8 / 2 + ((vid.height - 200)>>1);
 
 	for (i = 0; i < lines; i++, by += 8)
 	{
@@ -257,7 +257,7 @@ static void SCR_DrawCenterString (void)
 		strncpy (temp, &scr_centerstring[StartC[i]], cnt);
 		temp[cnt] = 0;
 		bx = (40-strlen(temp)) * 8 / 2;
-		M_Print2 (bx, by, temp);
+		M_Print (bx, by, temp);
 	}
 }
 
@@ -975,8 +975,8 @@ static void Plaque_Draw (const char *message, qboolean AlwaysDraw)
 
 	FindTextBreaks(message, PLAQUE_WIDTH);
 
-	by = (25-lines) * 8 / 2;
-	M_DrawTextBox2 (32, by - 16, PLAQUE_WIDTH + 4, lines + 2, false);
+	by = (25-lines) * 8 / 2 + ((vid.height - 200)>>1);
+	M_DrawTextBox (32, by - 16, PLAQUE_WIDTH + 4, lines + 2);
 
 	for (i = 0; i < lines; i++, by += 8)
 	{
@@ -984,7 +984,7 @@ static void Plaque_Draw (const char *message, qboolean AlwaysDraw)
 		strncpy (temp, &message[StartC[i]], cnt);
 		temp[cnt] = 0;
 		bx = (40-strlen(temp)) * 8 / 2;
-		M_Print2 (bx, by, temp);
+		M_Print (bx, by, temp);
 	}
 }
 
@@ -1006,12 +1006,12 @@ static void Info_Plaque_Draw (const char *message)
 
 	if (lines == MAXLINES)
 	{
-		Con_DPrintf("Info_Plaque_Draw: line overflow error\n");
+		Con_DPrintf("%s: line overflow error\n", __thisfunc__);
 		lines = MAXLINES-1;
 	}
 
-	by = (25-lines) * 8 / 2;
-	M_DrawTextBox2 (15, by - 16, PLAQUE_WIDTH + 4 + 4, lines + 2, false);
+	by = (25-lines) * 8 / 2 + ((vid.height - 200)>>1);
+	M_DrawTextBox (15, by - 16, PLAQUE_WIDTH + 4 + 4, lines + 2);
 
 	for (i = 0; i < lines; i++, by += 8)
 	{
@@ -1019,7 +1019,7 @@ static void Info_Plaque_Draw (const char *message)
 		strncpy (temp, &message[StartC[i]], cnt);
 		temp[cnt] = 0;
 		bx = (40-strlen(temp)) * 8 / 2;
-		M_Print2 (bx, by, temp);
+		M_Print (bx, by, temp);
 	}
 }
 
@@ -1037,7 +1037,7 @@ static void Bottom_Plaque_Draw (const char *message)
 	FindTextBreaks(message, PLAQUE_WIDTH);
 
 	by = (((vid.height) / 8) - lines - 2) * 8;
-	M_DrawTextBox2 (32, by - 16, PLAQUE_WIDTH + 4, lines + 2, true);
+	M_DrawTextBox (32, by - 16, PLAQUE_WIDTH + 4, lines + 2);
 
 	for (i = 0; i < lines; i++, by += 8)
 	{
@@ -1045,7 +1045,7 @@ static void Bottom_Plaque_Draw (const char *message)
 		strncpy (temp, &message[StartC[i]], cnt);
 		temp[cnt] = 0;
 		bx = (40-strlen(temp)) * 8 / 2;
-		M_Print(bx, by, temp);
+		M_Print (bx, by, temp);
 	}
 }
 

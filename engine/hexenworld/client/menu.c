@@ -93,28 +93,6 @@ void M_Print (int cx, int cy, const char *str)
 	}
 }
 
-/*
-================
-M_DrawCharacter2
-
-Draws one solid graphics character, centered H and V
-================
-*/
-static void M_DrawCharacter2 (int cx, int line, int num)
-{
-	Draw_Character ( cx + ((vid.width - 320)>>1), line + ((vid.height - 200)>>1), num);
-}
-
-void M_Print2 (int cx, int cy, const char *str)
-{
-	while (*str)
-	{
-		M_DrawCharacter2 (cx, cy, ((unsigned char)(*str))+256);
-		str++;
-		cx += 8;
-	}
-}
-
 void M_PrintWhite (int cx, int cy, const char *str)
 {
 	while (*str)
@@ -128,11 +106,6 @@ void M_PrintWhite (int cx, int cy, const char *str)
 void M_DrawTransPic (int x, int y, qpic_t *pic)
 {
 	Draw_TransPic (x + ((vid.width - 320)>>1), y, pic);
-}
-
-static void M_DrawTransPic2 (int x, int y, qpic_t *pic)
-{
-	Draw_TransPic (x + ((vid.width - 320)>>1), y + ((vid.height - 200)>>1), pic);
 }
 
 void M_DrawPic (int x, int y, qpic_t *pic)
@@ -234,61 +207,6 @@ void M_DrawTextBox (int x, int y, int width, int lines)
 	}
 	p = Draw_CachePic ("gfx/box_br.lmp");
 	M_DrawTransPic (cx, cy+8, p);
-}
-
-void M_DrawTextBox2 (int x, int y, int width, int lines)
-{
-	qpic_t	*p;
-	int		cx, cy;
-	int		n;
-
-	// draw left side
-	cx = x;
-	cy = y;
-	p = Draw_CachePic ("gfx/box_tl.lmp");
-	M_DrawTransPic2 (cx, cy, p);
-	p = Draw_CachePic ("gfx/box_ml.lmp");
-	for (n = 0; n < lines; n++)
-	{
-		cy += 8;
-		M_DrawTransPic2 (cx, cy, p);
-	}
-	p = Draw_CachePic ("gfx/box_bl.lmp");
-	M_DrawTransPic2 (cx, cy+8, p);
-
-	// draw middle
-	cx += 8;
-	while (width > 0)
-	{
-		cy = y;
-		p = Draw_CachePic ("gfx/box_tm.lmp");
-		M_DrawTransPic2 (cx, cy, p);
-		p = Draw_CachePic ("gfx/box_mm.lmp");
-		for (n = 0; n < lines; n++)
-		{
-			cy += 8;
-			if (n == 1)
-				p = Draw_CachePic ("gfx/box_mm2.lmp");
-			M_DrawTransPic2 (cx, cy, p);
-		}
-		p = Draw_CachePic ("gfx/box_bm.lmp");
-		M_DrawTransPic2 (cx, cy+8, p);
-		width -= 2;
-		cx += 16;
-	}
-
-	// draw right side
-	cy = y;
-	p = Draw_CachePic ("gfx/box_tr.lmp");
-	M_DrawTransPic2 (cx, cy, p);
-	p = Draw_CachePic ("gfx/box_mr.lmp");
-	for (n = 0; n < lines; n++)
-	{
-		cy += 8;
-		M_DrawTransPic2 (cx, cy, p);
-	}
-	p = Draw_CachePic ("gfx/box_br.lmp");
-	M_DrawTransPic2 (cx, cy+8, p);
 }
 
 //=============================================================================
