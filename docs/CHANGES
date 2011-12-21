@@ -3,6 +3,11 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2011-12-21 (SVN):
+    * hexenworld, sv_main.c: Reverted a part of yesterdays password cvars
+      patch (what was I thinking..)
+    * quakedef.h: updated beta date stamp to 2011-12-21.
+
 2011-12-20 (SVN):
     * hexenworld, cl_main.c (CL_Rcon_f): No need for strlen() to detect an
       empty string.

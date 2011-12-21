@@ -31,9 +31,8 @@ static	cvar_t	zombietime = {"zombietime", "2", CVAR_NONE};	// seconds to sink me
 								// after disconnect
 
 static	cvar_t	rcon_password = {"rcon_password", "", CVAR_NONE};	// password for remote server commands
-static	cvar_t	password = {"password", "", CVAR_CHANGED};			// password for entering the game
-static	cvar_t	spectator_password = {"spectator_password", "", CVAR_CHANGED};	// password for entering as a spectator
-		/* marked password and spectator_password as CVAR_CHANGED for first run of SV_CheckVars() */
+static	cvar_t	password = {"password", "", CVAR_NONE};		// password for entering the game
+static	cvar_t	spectator_password = {"spectator_password", "", CVAR_NONE};	// password for entering as a sepctator
 
 cvar_t	sv_highchars = {"sv_highchars", "1", CVAR_NONE};
 
