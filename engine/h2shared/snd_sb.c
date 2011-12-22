@@ -406,7 +406,7 @@ static qboolean S_BLASTER_Init (dma_t *dma)
 	rc = COM_CheckParm ("-dsp");
 	if (rc && rc < com_argc - 1)
 	{
-		p = atoi (com_argv[rc+1]);
+		rc = atoi(com_argv[rc+1]);
 		if (rc < 2 || rc > 4)
 			Con_Printf ("-dsp parameter can only be 2, 3, or 4\n");
 		else if (rc > dsp_version)
