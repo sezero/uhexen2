@@ -107,11 +107,27 @@ sys_socket_t UDP_Init (void)
 
 	if (COM_CheckParm ("-noudp"))
 		return INVALID_SOCKET;
-#if defined(USE_BWTCP)
-	/* if Beame & Whiteside TCP/IP is initialized, do nothing. */
-	if (tcpipAvailable)
-		return INVALID_SOCKET;
+#if defined(PLATFORM_DOS)
+#if defined(USE_MPATH)
+	if (COM_CheckParm ("-mpath"))
+	{
+		Con_Printf("Skipping WATTCP due to -mpath\n");
+		return  INVALID_SOCKET;
+	}
 #endif
+#if defined(USE_BWTCP)
+	if (tcpipAvailable)
+	{
+		Con_Printf("Skipping WATTCP (BWTCP present)\n");
+		return INVALID_SOCKET;
+	}
+#endif
+	if (ipxAvailable) /* IPX + PktDrvr don't get along */
+	{
+		Con_Printf("Skipping WATTCP (IPX present)\n");
+		return  INVALID_SOCKET;
+	}
+#endif	/* PLATFORM_DOS */
 
 	// determine my name & address
 	myAddr.s_addr = htonl(INADDR_LOOPBACK);

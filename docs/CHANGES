@@ -4,6 +4,14 @@ Development Progress	:
 ---------------------------
 
 2011-12-22 (SVN):
+    * net_dos.c: Changed to order of lan drivers to IPX, BWTCP, WATTCP
+      and MPATH.
+    * net_bw.c: Skip initialization if -mpath is specified.
+    * net_udp.c: Skip initialization if -mpath is specified. Also skip
+      initialization if IPX already initialized because IPX+PktDrvr don't
+      get along.
+
+2011-12-22 (SVN):
     * cvar.h: Define the flags using 1U (unsigned), instead of simply 1.
     * cvar.c (Cvar_Set): Simplified coop and deathmatch cvars detection
       by replacing the name comparison by variable pointers' comparison.

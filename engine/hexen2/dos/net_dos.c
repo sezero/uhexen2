@@ -98,19 +98,43 @@ net_driver_t net_drivers[] =
 const int net_numdrivers = (sizeof(net_drivers) / sizeof(net_drivers[0]));
 
 
-#ifdef USE_WATT32
-#include "net_udp.h"
-#endif
+#include "net_ipx.h"
 #ifdef USE_BWTCP
 #include "net_bw.h"
 #endif
-#include "net_ipx.h"
+#ifdef USE_WATT32
+#include "net_udp.h"
+#endif
 #ifdef USE_MPATH
 #include "net_mp.h"
 #endif
 
+/* be careful about the order of drivers */
 net_landriver_t	net_landrivers[] =
 {
+	{	"IPX",
+		false,
+		0,
+		IPX_Init,
+		IPX_Shutdown,
+		IPX_Listen,
+		IPX_OpenSocket,
+		IPX_CloseSocket,
+		IPX_Connect,
+		IPX_CheckNewConnections,
+		IPX_Read,
+		IPX_Write,
+		IPX_Broadcast,
+		IPX_AddrToString,
+		IPX_StringToAddr,
+		IPX_GetSocketAddr,
+		IPX_GetNameFromAddr,
+		IPX_GetAddrFromName,
+		IPX_AddrCompare,
+		IPX_GetSocketPort,
+		IPX_SetSocketPort
+	},
+
 #ifdef USE_BWTCP
 	{	"Beame & Whiteside TCP/IP",
 		false,
@@ -160,29 +184,6 @@ net_landriver_t	net_landrivers[] =
 		UDP_SetSocketPort
 	},
 #endif /* USE_WATT32 */
-
-	{	"IPX",
-		false,
-		0,
-		IPX_Init,
-		IPX_Shutdown,
-		IPX_Listen,
-		IPX_OpenSocket,
-		IPX_CloseSocket,
-		IPX_Connect,
-		IPX_CheckNewConnections,
-		IPX_Read,
-		IPX_Write,
-		IPX_Broadcast,
-		IPX_AddrToString,
-		IPX_StringToAddr,
-		IPX_GetSocketAddr,
-		IPX_GetNameFromAddr,
-		IPX_GetAddrFromName,
-		IPX_AddrCompare,
-		IPX_GetSocketPort,
-		IPX_SetSocketPort
-	},
 
 #ifdef USE_MPATH
 	{	"Win95 TCP/IP",

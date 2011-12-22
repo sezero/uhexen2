@@ -117,7 +117,6 @@
 #define	SO_ERROR		0x1007		/* get error status and clear */
 #define	SO_TYPE			0x1008		/* get socket type */
 
-
 struct in_addr
 {
 	union
@@ -142,7 +141,8 @@ struct sockaddr_in
 	char		sin_zero[8];
 };
 
-struct	hostent {
+struct hostent
+{
 	char	*h_name;	/* official name of host */
 	char	**h_aliases;	/* alias list */
 	int	h_addrtype;	/* host address type */
@@ -151,7 +151,7 @@ struct	hostent {
 #define	h_addr	h_addr_list[0]	/* address, for backward compatiblity */
 };
 
-char *inet_ntoa (struct in_addr in);
+extern char *inet_ntoa (struct in_addr in);
 
 
 /* this section is B&W specific constants & structures */
@@ -333,6 +333,13 @@ int BW_Init (void)
 
 	if (COM_CheckParm ("-noudp"))
 		return -1;
+#if defined(USE_MPATH)
+	if (COM_CheckParm ("-mpath"))
+	{
+		Con_Printf("Skipping BWTCP due to -mpath\n");
+		return -1;
+	}
+#endif
 
 	lowmem_buffer = (unsigned char *) dos_getmemory(LOWMEM_SIZE);
 	if (!lowmem_buffer)
@@ -342,7 +349,7 @@ int BW_Init (void)
 
 	if (GetEthdevinfo())
 	{
-		Con_DPrintf("Beame & Whiteside TCP/IP not detected\n");
+		Con_Printf("Beame & Whiteside TCP/IP not detected\n");
 		dos_freememory(lowmem_buffer);
 		return -1;
 	}
