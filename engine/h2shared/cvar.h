@@ -71,14 +71,14 @@ interface from being ambiguous.
 */
 
 #define	CVAR_NONE		0
-#define	CVAR_ARCHIVE		(1 << 0)	// if set, causes it to be saved to config
-#define	CVAR_NOTIFY		(1 << 1)	// changes will be broadcasted to all players (H2)
-#define	CVAR_SERVERINFO		(1 << 2)	// added to serverinfo will be sent to clients (H2/net_dgrm.c and H2W)
-#define	CVAR_USERINFO		(1 << 3)	// added to userinfo, will be sent to server (H2W)
-#define	CVAR_CHANGED		(1 << 4)
-#define	CVAR_ROM		(1 << 6)
-#define	CVAR_LOCKED		(1 << 8)	// locked temporarily
-#define	CVAR_REGISTERED		(1 << 10)	// the var is added to the list of variables
+#define	CVAR_ARCHIVE		(1U << 0)	// if set, causes it to be saved to config
+#define	CVAR_NOTIFY		(1U << 1)	// changes will be broadcasted to all players (H2)
+#define	CVAR_SERVERINFO		(1U << 2)	// added to serverinfo will be sent to clients (H2/net_dgrm.c and H2W)
+#define	CVAR_USERINFO		(1U << 3)	// added to userinfo, will be sent to server (H2W)
+#define	CVAR_CHANGED		(1U << 4)
+#define	CVAR_ROM		(1U << 6)
+#define	CVAR_LOCKED		(1U << 8)	// locked temporarily
+#define	CVAR_REGISTERED		(1U << 10)	// the var is added to the list of variables
 
 
 typedef struct cvar_s
