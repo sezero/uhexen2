@@ -120,7 +120,7 @@ qboolean Cvar_Command (void);
 
 void	Cvar_WriteVariables (FILE *f);
 // Writes lines containing "set variable value" for all variables
-// with the archive flag set to true.
+// with the CVAR_ARCHIVE flag set
 
 cvar_t	*Cvar_FindVar (const char *var_name);
 cvar_t	*Cvar_FindVarAfter (const char *prev_name, unsigned int with_flags);

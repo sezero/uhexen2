@@ -3,6 +3,11 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2011-12-22 (SVN):
+    * cvar.c (Cvar_Set): Simplified coop and deathmatch cvars detection
+      by replacing the name comparison by variable pointers' comparison.
+    * quakedef.h: updated beta date stamp to 2011-12-22.
+
 2011-12-21 (SVN):
     * hexenworld, sv_main.c: Reverted a part of yesterdays password cvars
       patch (what was I thinking..)
