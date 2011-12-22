@@ -45,11 +45,12 @@ BLASTER SUPPORT
 ===============================================================================
 */
 
-static char s_sb_driver[] = "SoundBlaster";
+static char s_sb_driver[] = "BLASTER";
 
 static int S_BLASTER_GetDMAPos (void);
 
-short	*dma_buffer = NULL;
+static	void	*dma_dosadr = NULL;	/* as received from dos_getmemory() */
+static	short	*dma_buffer = NULL;
 static	int	dma_size;
 static	int	dma;
 
@@ -367,10 +368,8 @@ static qboolean S_BLASTER_Init (dma_t *dma)
 	int	size;
 	int	realaddr;
 	int	rc;
-	int	p;
 
 	shm = NULL;
-	rc = 0;
 
 //
 // must have a blaster variable set
@@ -379,8 +378,7 @@ static qboolean S_BLASTER_Init (dma_t *dma)
 	{
 		Con_NotifyBox ("The BLASTER environment variable\n"
 				"is not set, sound effects are\n"
-				"disabled.  See README.TXT for help.\n"
-			      );
+				"disabled.  See README.TXT for help.\n");
 		return false;
 	}
 
@@ -405,16 +403,16 @@ static qboolean S_BLASTER_Init (dma_t *dma)
 	}
 
 // allow command line parm to set quality down
-	p = COM_CheckParm ("-dsp");
-	if (p && p < com_argc - 1)
+	rc = COM_CheckParm ("-dsp");
+	if (rc && rc < com_argc - 1)
 	{
-		p = atoi (com_argv[p+1]);
-		if (p < 2 || p > 4)
+		p = atoi (com_argv[rc+1]);
+		if (rc < 2 || rc > 4)
 			Con_Printf ("-dsp parameter can only be 2, 3, or 4\n");
-		else if (p > dsp_version)
-			Con_Printf ("Can't -dsp %i on v%i hardware\n", p, dsp_version);
+		else if (rc > dsp_version)
+			Con_Printf ("Can't -dsp %i on v%i hardware\n", rc, dsp_version);
 		else
-			dsp_version = p;
+			dsp_version = rc;
 	}
 
 // everyone does 11khz sampling rate unless told otherwise
@@ -448,15 +446,15 @@ static qboolean S_BLASTER_Init (dma_t *dma)
 
 // allocate 8k and get a 4k-aligned buffer from it
 	size = 4096;
-	dma_buffer = (short *) dos_getmemory(size * 2);
-	if (!dma_buffer)
+	dma_dosadr = dos_getmemory(size * 2);
+	if (!dma_dosadr)
 	{
 		shm = NULL;
 		Con_Printf("Couldn't allocate sound dma buffer");
 		return false;
 	}
 
-	realaddr = ptr2real(dma_buffer);
+	realaddr = ptr2real(dma_dosadr);
 	realaddr = (realaddr + size) & ~(size - 1);
 	dma_buffer = (short *) real2ptr(realaddr);
 	dma_size = size;
@@ -554,6 +552,9 @@ static void S_BLASTER_Shutdown(void)
 	ResetDSP ();
 
 	dos_outportb(disable_reg, dma|4);	// disable dma channel
+
+	dos_freememory(dma_dosadr);
+	dma_dosadr = NULL;
 }
 
 /*

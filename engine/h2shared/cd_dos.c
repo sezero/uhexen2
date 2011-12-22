@@ -891,11 +891,9 @@ int CDAudio_Init (void)
 	dos_int86 (0x2f);
 	if (regs.x.bx == 0)
 	{
-		Con_NotifyBox (
-			"MSCDEX version 2.00 or later\n"
-			"required for CD Audio.\n"
-			"See README.TXT for help.\n"
-			);
+		Con_NotifyBox ("MSCDEX version 2.00 or later\n"
+				"required for CD Audio.\n"
+				"See README.TXT for help.\n");
 		Con_DPrintf("%s: MSCDEX version 2.00 or later required.\n", __thisfunc__);
 		return -1;
 	}

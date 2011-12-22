@@ -555,7 +555,8 @@ struct Gf1RateStruct
 	BYTE	Voices;
 };
 
-static short *dma_buffer;
+static void  *dma_dosadr = NULL;	/* as received from dos_getmemory() */
+static short *dma_buffer = NULL;
 
 static char s_gus_driver[] = "GUS";
 
@@ -1158,15 +1159,15 @@ static qboolean S_GUS_Init (dma_t *dma)
 		shm->samplebits = 16;
 
 		// allocate buffer twice the size we need so we can get aligned buffer
-		dma_buffer = (short *) dos_getmemory(BUFFER_SIZE * 2);
-		if (dma_buffer == NULL)
+		dma_dosadr = dos_getmemory(BUFFER_SIZE * 2);
+		if (dma_dosadr == NULL)
 		{
 			shm = NULL;
 			Con_Printf("Couldn't allocate sound dma buffer");
 			return false;
 		}
 
-		RealAddr = ptr2real(dma_buffer);
+		RealAddr = ptr2real(dma_dosadr);
 		RealAddr = (RealAddr + BUFFER_SIZE) & ~(BUFFER_SIZE - 1);
 		dma_buffer = (short *) real2ptr(RealAddr);
 
@@ -1212,15 +1213,15 @@ static qboolean S_GUS_Init (dma_t *dma)
 		shm->samplebits = 16;
 
 		// allocate buffer twice the size we need so we can get aligned buffer
-		dma_buffer = (short *) dos_getmemory(BUFFER_SIZE * 2);
-		if (dma_buffer == NULL)
+		dma_dosadr = dos_getmemory(BUFFER_SIZE * 2);
+		if (dma_dosadr == NULL)
 		{
 			shm = NULL;
 			Con_Printf("Couldn't allocate sound dma buffer");
 			return false;
 		}
 
-		RealAddr = ptr2real(dma_buffer);
+		RealAddr = ptr2real(dma_dosadr);
 		RealAddr = (RealAddr + BUFFER_SIZE) & ~(BUFFER_SIZE - 1);
 		dma_buffer = (short *) real2ptr(RealAddr);
 
@@ -1332,6 +1333,9 @@ static void S_GUS_Shutdown (void)
 
 	dos_outportb(DisableReg, DmaChannel | 4);	// disable dma channel
 	shm = NULL;
+
+	dos_freememory(dma_dosadr);
+	dma_dosadr = NULL;
 }
 
 /*

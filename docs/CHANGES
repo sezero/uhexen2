@@ -4,6 +4,13 @@ Development Progress	:
 ---------------------------
 
 2011-12-22 (SVN):
+    * snd_gus.c: Store the dma address received from dos_getmemory() in
+      a different pointer variable so we can free it during shutdown.
+      This, in case if I ever implement a snd_restart like mechanism.
+    * snd_sb.c: Likewise in snd_gus.c. Also made dma_buffer variable
+      static to snd_sb.c.
+
+2011-12-22 (SVN):
     * net_dos.c: Changed to order of lan drivers to IPX, BWTCP, WATTCP
       and MPATH.
     * net_bw.c: Skip initialization if -mpath is specified.
