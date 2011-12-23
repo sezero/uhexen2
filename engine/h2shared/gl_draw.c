@@ -382,7 +382,7 @@ void Draw_ReInit (void)
 	// make sure all of alias models are cleared
 	flush_textures = true;
 	temp2 = gl_purge_maptex.integer;
-	Cvar_SetValue ("gl_purge_maptex", 1);
+	Cvar_Set ("gl_purge_maptex", "1");
 	Mod_ClearAll ();
 
 	// Reload pre-map pics, fonts, console, etc

@@ -192,7 +192,7 @@ static void Host_FindMaxClients (void)
 		svs.maxclientslimit = 4;
 	svs.clients = (client_t *) Hunk_AllocName (svs.maxclientslimit*sizeof(client_t), "clients");
 
-	Cvar_SetValue ("deathmatch", 1.0);
+	Cvar_Set ("deathmatch", "1");
 }
 
 #if 0
@@ -264,7 +264,7 @@ static void Host_InitLocal (void)
 	Cvar_RegisterVariable (&developer);
 	if (COM_CheckParm("-developer"))
 	{
-		Cvar_SetValue("developer", 1);
+		Cvar_Set ("developer", "1");
 		Cvar_LockVar ("developer");
 	}
 

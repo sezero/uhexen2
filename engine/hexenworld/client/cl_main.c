@@ -1025,7 +1025,7 @@ void CL_Init (void)
 	Cvar_RegisterVariable (&developer);
 	if (COM_CheckParm("-developer"))
 	{
-		Cvar_SetValue("developer", 1);
+		Cvar_Set ("developer", "1");
 		Cvar_LockVar ("developer");
 	}
 

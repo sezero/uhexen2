@@ -337,7 +337,7 @@ void    VID_Update (vrect_t *rects)
 	if (firstupdate && _vid_default_mode.integer)
 	{
 		if(_vid_default_mode.integer >= numvidmodes)
-			Cvar_SetValue ("_vid_default_mode", 0);
+			Cvar_Set ("_vid_default_mode", "0");
 
 		firstupdate = 0;
 		Cvar_SetValue ("vid_mode", _vid_default_mode.integer);

@@ -621,10 +621,10 @@ static void Host_Loadgame_f (void)
 	current_skill = (int)(tempf + 0.1);
 	Cvar_SetValue ("skill", current_skill);
 
-	Cvar_SetValue ("deathmatch", 0);
-	Cvar_SetValue ("coop", 0);
-	Cvar_SetValue ("teamplay", 0);
-	Cvar_SetValue ("randomclass", 0);
+	Cvar_Set ("deathmatch", "0");
+	Cvar_Set ("coop", "0");
+	Cvar_Set ("teamplay", "0");
+	Cvar_Set ("randomclass", "0");
 
 	fscanf (f, "%s\n", mapname);
 	fscanf (f, "%f\n", &playtime);

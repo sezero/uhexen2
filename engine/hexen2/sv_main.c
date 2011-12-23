@@ -1966,7 +1966,7 @@ void SV_SpawnServer (const char *server, const char *startspot)
 // make cvars consistant
 //
 	if (coop.integer)
-		Cvar_SetValue ("deathmatch", 0);
+		Cvar_Set ("deathmatch", "0");
 
 	current_skill = skill.integer;
 	if (current_skill < 0)

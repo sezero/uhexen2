@@ -682,7 +682,6 @@ static void M_AdjustSliders (int dir)
 		break;
 	case OPT_MUSICVOL:	// music volume
 		bgmvolume.value += dir * 0.1;
-
 		if (bgmvolume.value < 0)
 			bgmvolume.value = 0;
 		else if (bgmvolume.value > 1)
@@ -701,13 +700,13 @@ static void M_AdjustSliders (int dir)
 	case OPT_ALWAYRUN:	// always run
 		if (cl_forwardspeed.value > 200)
 		{
-			Cvar_SetValue ("cl_forwardspeed", 200);
-			Cvar_SetValue ("cl_backspeed", 200);
+			Cvar_Set ("cl_forwardspeed", "200");
+			Cvar_Set ("cl_backspeed", "200");
 		}
 		else
 		{
-			Cvar_SetValue ("cl_forwardspeed", 400);
-			Cvar_SetValue ("cl_backspeed", 400);
+			Cvar_Set ("cl_forwardspeed", "400");
+			Cvar_Set ("cl_backspeed", "400");
 		}
 		break;
 
@@ -723,11 +722,11 @@ static void M_AdjustSliders (int dir)
 		break;
 
 	case OPT_CROSSHAIR:
-		Cvar_SetValue ("crosshair", !crosshair.integer);
+		Cvar_Set ("crosshair", crosshair.integer ? "0" : "1");
 		break;
 
 	case OPT_USEMOUSE:	// _enable_mouse
-		Cvar_SetValue ("_enable_mouse", !_enable_mouse.integer);
+		Cvar_Set ("_enable_mouse", _enable_mouse.integer ? "0" : "1");
 		break;
 
 	default:
@@ -1014,7 +1013,7 @@ static void M_OpenGL_Draw (void)
 	M_Print (32 + (10 * 8), 90 + 8*OGL_COLOREDEXTRA, "extra lights");
 	// bound the gl_coloredlight value
 	if (gl_coloredlight.integer < 0)
-		Cvar_SetValue ("gl_coloredlight", 0);
+		Cvar_Set ("gl_coloredlight", "0");
 	switch (gl_coloredlight.integer)
 	{
 	case 0:
@@ -1122,23 +1121,23 @@ static void M_OpenGL_Key (int k)
 		switch (opengl_cursor)
 		{
 		case OGL_MULTITEX:	// multitexturing
-			Cvar_SetValue ("gl_multitexture", !gl_multitexture.integer);
+			Cvar_Set ("gl_multitexture", gl_multitexture.integer ? "0" : "1");
 			break;
 
 		case OGL_PURGETEX:	// purge gl textures on map change
-			Cvar_SetValue ("gl_purge_maptex", !gl_purge_maptex.integer);
+			Cvar_Set ("gl_purge_maptex", gl_purge_maptex.integer ? "0" : "1");
 			break;
 
 		case OGL_GLOW1:	// glow effects, main: torches
-			Cvar_SetValue ("gl_glows", !gl_glows.integer);
+			Cvar_Set ("gl_glows", gl_glows.integer ? "0" : "1");
 			break;
 
 		case OGL_GLOW2:	// glow effects, missiles
-			Cvar_SetValue ("gl_missile_glows", !gl_missile_glows.integer);
+			Cvar_Set ("gl_missile_glows", gl_missile_glows.integer ? "0" : "1");
 			break;
 
 		case OGL_GLOW3:	// glow effects, other: mana, etc.
-			Cvar_SetValue ("gl_other_glows", !gl_other_glows.integer);
+			Cvar_Set ("gl_other_glows", gl_other_glows.integer ? "0" : "1");
 			break;
 
 		case OGL_LIGHTMAPFMT:	// lightmap format
@@ -1165,16 +1164,10 @@ static void M_OpenGL_Key (int k)
 			switch (k)
 			{
 			case K_RIGHTARROW:
-				if (gl_coloredlight.integer >= 1)
-					Cvar_SetValue ("gl_coloredlight", 2);
-				else
-					Cvar_SetValue ("gl_coloredlight", 1);
+				Cvar_Set ("gl_coloredlight", (gl_coloredlight.integer >= 1) ? "2" : "1");
 				break;
 			case K_LEFTARROW:
-				if (gl_coloredlight.integer <= 1)
-					Cvar_SetValue ("gl_coloredlight", 0);
-				else
-					Cvar_SetValue ("gl_coloredlight", 1);
+				Cvar_Set ("gl_coloredlight", (gl_coloredlight.integer <= 1) ? "0": "1");
 				break;
 			default:
 				break;
@@ -1182,11 +1175,11 @@ static void M_OpenGL_Key (int k)
 			break;
 
 		case OGL_COLOREDDYNAMIC:	// dynamic colored lights
-			Cvar_SetValue ("gl_colored_dynamic_lights", !gl_colored_dynamic_lights.integer);
+			Cvar_Set ("gl_colored_dynamic_lights", gl_colored_dynamic_lights.integer ? "0" : "1");
 			break;
 
 		case OGL_COLOREDEXTRA:	// extra dynamic colored lights
-			Cvar_SetValue ("gl_extra_dynamic_lights", !gl_extra_dynamic_lights.integer);
+			Cvar_Set ("gl_extra_dynamic_lights", gl_extra_dynamic_lights.integer ? "0" : "1");
 			break;
 
 		case OGL_TEXFILTER:	// texture filter
@@ -1213,12 +1206,12 @@ static void M_OpenGL_Key (int k)
 			break;
 
 		case OGL_SHADOWS:	// shadows
-			Cvar_SetValue ("r_shadows", !r_shadows.integer);
+			Cvar_Set ("r_shadows", r_shadows.integer ? "0" : "1");
 			break;
 
 		case OGL_STENCIL:	// stencil buffered shadows
 			if (have_stencil)
-				Cvar_SetValue ("gl_stencilshadow", !gl_stencilshadow.integer);
+				Cvar_Set ("gl_stencilshadow", gl_stencilshadow.integer ? "0" : "1");
 			break;
 
 		default:

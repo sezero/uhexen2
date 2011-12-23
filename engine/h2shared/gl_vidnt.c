@@ -371,7 +371,7 @@ static qboolean VID_SetWindowedMode (int modenum)
 				 WindowRect.bottom - WindowRect.top, false);
 
 	modestate = MS_WINDOWED;
-	Cvar_SetValue ("vid_config_fscr", 0);
+	Cvar_Set ("vid_config_fscr", "0");
 
 	return true;
 }
@@ -420,7 +420,7 @@ static qboolean VID_SetFullDIBMode (int modenum)
 		Sys_Error ("Couldn't create DIB window");
 
 	modestate = MS_FULLDIB;
-	Cvar_SetValue ("vid_config_fscr", 1);
+	Cvar_Set ("vid_config_fscr", "1");
 
 // needed because we're not getting WM_MOVE messages fullscreen on NT
 	window_x = 0;
@@ -2070,11 +2070,11 @@ void	VID_Init (unsigned char *palette)
 
 	if (COM_CheckParm("-window") || COM_CheckParm("-w"))
 	{
-		Cvar_SetValue("vid_config_fscr", 0);
+		Cvar_Set ("vid_config_fscr", "0");
 	}
 	else if (COM_CheckParm("-fullscreen") || COM_CheckParm("-f"))
 	{
-		Cvar_SetValue("vid_config_fscr", 1);
+		Cvar_Set ("vid_config_fscr", "1");
 	}
 
 	if (vid_config_consize.integer != width)
@@ -2326,7 +2326,7 @@ void	VID_Init (unsigned char *palette)
 #endif
 
 	if (COM_CheckParm("-paltex"))
-		Cvar_SetValue ("vid_config_gl8bit", 1);
+		Cvar_Set ("vid_config_gl8bit", "1");
 
 	j = scr_disabled_for_loading;
 	scr_disabled_for_loading = true;

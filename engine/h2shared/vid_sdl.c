@@ -742,11 +742,11 @@ void VID_Init (unsigned char *palette)
 	// see if the user wants fullscreen
 	if (COM_CheckParm("-fullscreen") || COM_CheckParm("-f"))
 	{
-		Cvar_SetValue("vid_config_fscr", 1);
+		Cvar_Set ("vid_config_fscr", "1");
 	}
 	else if (COM_CheckParm("-window") || COM_CheckParm("-w"))
 	{
-		Cvar_SetValue("vid_config_fscr", 0);
+		Cvar_Set ("vid_config_fscr", "0");
 	}
 
 	if (vid_config_fscr.integer && !num_fmodes) // FIXME: see below, as well
@@ -817,7 +817,7 @@ void VID_Init (unsigned char *palette)
 		// just one more try before dying
 		Con_SafePrintf ("Couldn't set video mode %d\n"
 				"Trying the default mode\n", vid_mode.integer);
-		//Cvar_SetValue("vid_config_fscr", 0);
+		//Cvar_Set ("vid_config_fscr", "0");
 		Cvar_SetValue ("vid_mode", vid_default);
 		i = VID_SetMode(vid_default, palette);
 		if ( !i )

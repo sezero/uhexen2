@@ -232,15 +232,15 @@ static void SCR_CalcRefdef (void)
 
 // bound viewsize
 	if (scr_viewsize.integer < 30)
-		Cvar_SetValue ("viewsize", 30);
+		Cvar_Set ("viewsize", "30");
 	else if (scr_viewsize.integer > 120)
-		Cvar_SetValue ("viewsize", 120);
+		Cvar_Set ("viewsize", "120");
 
 // bound field of view
 	if (scr_fov.integer < 10)
-		Cvar_SetValue ("fov", 10);
+		Cvar_Set ("fov", "10");
 	else if (scr_fov.integer > 170)
-		Cvar_SetValue ("fov", 170);
+		Cvar_Set ("fov", "170");
 
 	oldfov = scr_fov.integer;
 	oldscreensize = scr_viewsize.integer;

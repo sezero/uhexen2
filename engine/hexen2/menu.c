@@ -896,7 +896,7 @@ static void M_Menu_SinglePlayer_f (void)
 	key_dest = key_menu;
 	m_state = m_singleplayer;
 	m_entersound = true;
-	Cvar_SetValue ("timelimit", 0);		//put this here to help play single after dm
+	Cvar_Set ("timelimit", "0");		//put this here to help play single after dm
 }
 
 static void M_SinglePlayer_Draw (void)
@@ -1954,7 +1954,6 @@ static void M_AdjustSliders (int dir)
 		break;
 	case OPT_MUSICVOL:	// music volume
 		bgmvolume.value += dir * 0.1;
-
 		if (bgmvolume.value < 0)
 			bgmvolume.value = 0;
 		else if (bgmvolume.value > 1)
@@ -1973,13 +1972,13 @@ static void M_AdjustSliders (int dir)
 	case OPT_ALWAYRUN:	// always run
 		if (cl_forwardspeed.value > 200)
 		{
-			Cvar_SetValue ("cl_forwardspeed", 200);
-			Cvar_SetValue ("cl_backspeed", 200);
+			Cvar_Set ("cl_forwardspeed", "200");
+			Cvar_Set ("cl_backspeed", "200");
 		}
 		else
 		{
-			Cvar_SetValue ("cl_forwardspeed", 400);
-			Cvar_SetValue ("cl_backspeed", 400);
+			Cvar_Set ("cl_forwardspeed", "400");
+			Cvar_Set ("cl_backspeed", "400");
 		}
 		break;
 
@@ -1995,15 +1994,15 @@ static void M_AdjustSliders (int dir)
 		break;
 
 	case OPT_CROSSHAIR:
-		Cvar_SetValue ("crosshair", !crosshair.integer);
+		Cvar_Set ("crosshair", crosshair.integer ? "0" : "1");
 		break;
 
 	case OPT_CHASE_ACTIVE:	// chase_active
-		Cvar_SetValue ("chase_active", !chase_active.integer);
+		Cvar_Set ("chase_active", chase_active.integer ? "0" : "1");
 		break;
 
 	case OPT_USEMOUSE:	// _enable_mouse
-		Cvar_SetValue ("_enable_mouse", !_enable_mouse.integer);
+		Cvar_Set ("_enable_mouse", _enable_mouse.integer ? "0" : "1");
 		break;
 
 	default:
@@ -2292,7 +2291,7 @@ static void M_OpenGL_Draw (void)
 	M_Print (32 + (10 * 8), 90 + 8*OGL_COLOREDEXTRA, "extra lights");
 	// bound the gl_coloredlight value
 	if (gl_coloredlight.integer < 0)
-		Cvar_SetValue ("gl_coloredlight", 0);
+		Cvar_Set ("gl_coloredlight", "0");
 	switch (gl_coloredlight.integer)
 	{
 	case 0:
@@ -2400,23 +2399,23 @@ static void M_OpenGL_Key (int k)
 		switch (opengl_cursor)
 		{
 		case OGL_MULTITEX:	// multitexturing
-			Cvar_SetValue ("gl_multitexture", !gl_multitexture.integer);
+			Cvar_Set ("gl_multitexture", gl_multitexture.integer ? "0" : "1");
 			break;
 
 		case OGL_PURGETEX:	// purge gl textures on map change
-			Cvar_SetValue ("gl_purge_maptex", !gl_purge_maptex.integer);
+			Cvar_Set ("gl_purge_maptex", gl_purge_maptex.integer ? "0" : "1");
 			break;
 
 		case OGL_GLOW1:	// glow effects, main: torches
-			Cvar_SetValue ("gl_glows", !gl_glows.integer);
+			Cvar_Set ("gl_glows", gl_glows.integer ? "0" : "1");
 			break;
 
 		case OGL_GLOW2:	// glow effects, missiles
-			Cvar_SetValue ("gl_missile_glows", !gl_missile_glows.integer);
+			Cvar_Set ("gl_missile_glows", gl_missile_glows.integer ? "0" : "1");
 			break;
 
 		case OGL_GLOW3:	// glow effects, other: mana, etc.
-			Cvar_SetValue ("gl_other_glows", !gl_other_glows.integer);
+			Cvar_Set ("gl_other_glows", gl_other_glows.integer ? "0" : "1");
 			break;
 
 		case OGL_LIGHTMAPFMT:	// lightmap format
@@ -2443,16 +2442,10 @@ static void M_OpenGL_Key (int k)
 			switch (k)
 			{
 			case K_RIGHTARROW:
-				if (gl_coloredlight.integer >= 1)
-					Cvar_SetValue ("gl_coloredlight", 2);
-				else
-					Cvar_SetValue ("gl_coloredlight", 1);
+				Cvar_Set ("gl_coloredlight", (gl_coloredlight.integer >= 1) ? "2" : "1");
 				break;
 			case K_LEFTARROW:
-				if (gl_coloredlight.integer <= 1)
-					Cvar_SetValue ("gl_coloredlight", 0);
-				else
-					Cvar_SetValue ("gl_coloredlight", 1);
+				Cvar_Set ("gl_coloredlight", (gl_coloredlight.integer <= 1) ? "0" : "1");
 				break;
 			default:
 				break;
@@ -2460,11 +2453,11 @@ static void M_OpenGL_Key (int k)
 			break;
 
 		case OGL_COLOREDDYNAMIC:	// dynamic colored lights
-			Cvar_SetValue ("gl_colored_dynamic_lights", !gl_colored_dynamic_lights.integer);
+			Cvar_Set ("gl_colored_dynamic_lights", gl_colored_dynamic_lights.integer ? "0" : "1");
 			break;
 
 		case OGL_COLOREDEXTRA:	// extra dynamic colored lights
-			Cvar_SetValue ("gl_extra_dynamic_lights", !gl_extra_dynamic_lights.integer);
+			Cvar_Set ("gl_extra_dynamic_lights", gl_extra_dynamic_lights.integer ? "0" : "1");
 			break;
 
 		case OGL_TEXFILTER:	// texture filter
@@ -2491,12 +2484,12 @@ static void M_OpenGL_Key (int k)
 			break;
 
 		case OGL_SHADOWS:	// shadows
-			Cvar_SetValue ("r_shadows", !r_shadows.integer);
+			Cvar_Set ("r_shadows", r_shadows.integer ? "0" : "1");
 			break;
 
 		case OGL_STENCIL:	// stencil buffered shadows
 			if (have_stencil)
-				Cvar_SetValue ("gl_stencilshadow", !gl_stencilshadow.integer);
+				Cvar_Set ("gl_stencilshadow", gl_stencilshadow.integer ? "0" : "1");
 			break;
 
 		default:
@@ -4348,6 +4341,7 @@ static void M_GameOptions_Draw (void)
 
 static void M_NetStart_Change (int dir)
 {
+	int	val;
 	switch (gameoptions_cursor)
 	{
 	case 1:
@@ -4363,25 +4357,28 @@ static void M_NetStart_Change (int dir)
 		break;
 
 	case 2:
-		Cvar_SetValue ("coop", coop.integer ? 0 : 1);
 		if (coop.integer)
 		{
-			startlevel = 0;
-			if (startepisode == 1)
-				startepisode = 0;
-			else if (startepisode == DM_START)
-				startepisode = REG_START;
-			else if (startepisode == OEM_START+1)
-				startepisode = OEM_START;
+			Cvar_Set ("coop", "0");
+			break;
 		}
+		Cvar_Set ("coop", "1");
+		startlevel = 0;
+		if (startepisode == 1)
+			startepisode = 0;
+		else if (startepisode == DM_START)
+			startepisode = REG_START;
+		else if (startepisode == OEM_START+1)
+			startepisode = OEM_START;
 		break;
 
 	case 3:
-		Cvar_SetValue ("teamplay", teamplay.integer + dir);
-		if (teamplay.integer > 2)
-			Cvar_SetValue ("teamplay", 0);
-		else if (teamplay.integer < 0)
-			Cvar_SetValue ("teamplay", 2);
+		val = teamplay.integer + dir;
+		if (val > 2)
+			val = 0;
+		else if (val < 0)
+			val = 2;
+		Cvar_SetValue ("teamplay", val);
 		break;
 
 	case 4:
@@ -4405,34 +4402,37 @@ static void M_NetStart_Change (int dir)
 		break;
 
 	case 5:
-		Cvar_SetValue ("skill", skill.integer + dir);
-		if (skill.integer > 3)
-			Cvar_SetValue ("skill", 0);
-		else if (skill.integer < 0)
-			Cvar_SetValue ("skill", 3);
+		val = skill.integer + dir;
+		if (val > 3)
+			val = 0;
+		else if (val < 0)
+			val = 3;
+		Cvar_SetValue ("skill", val);
 		break;
 
 	case 6:
-		Cvar_SetValue ("fraglimit", fraglimit.integer + dir*10);
-		if (fraglimit.integer > 100)
-			Cvar_SetValue ("fraglimit", 0);
-		else if (fraglimit.integer < 0)
-			Cvar_SetValue ("fraglimit", 100);
+		val = fraglimit.integer + dir*10;
+		if (val > 100)
+			val = 0;
+		else if (val < 0)
+			val = 100;
+		Cvar_SetValue ("fraglimit", val);
 		break;
 
 	case 7:
-		Cvar_SetValue ("timelimit", timelimit.integer + dir*5);
-		if (timelimit.integer > 60)
-			Cvar_SetValue ("timelimit", 0);
-		else if (timelimit.integer < 0)
-			Cvar_SetValue ("timelimit", 60);
+		val = timelimit.integer + dir*5;
+		if (val > 60)
+			val = 0;
+		else if (val < 0)
+			val = 60;
+		Cvar_SetValue ("timelimit", val);
 		break;
 
 	case 8:
 		if (randomclass.integer)
-			Cvar_SetValue ("randomclass", 0);
+			Cvar_Set ("randomclass", "0");
 		else
-			Cvar_SetValue ("randomclass", 1);
+			Cvar_Set ("randomclass", "1");
 		break;
 
 	case 9:

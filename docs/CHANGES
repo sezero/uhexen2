@@ -3,6 +3,11 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2011-12-23 (SVN):
+    * When the value is a numeric constant (excluding any macros), use
+      Cvar_Set() instead of Cvar_SetValue().
+    * quakedef.h: updated beta date stamp to 2011-12-23.
+
 2011-12-22 (SVN):
     * snd_gus.c: Store the dma address received from dos_getmemory() in
       a different pointer variable so we can free it during shutdown.

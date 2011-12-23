@@ -230,8 +230,8 @@ static void VID_CheckWindowXY (void)
 		(vid_window_x.integer < 0)					||
 		(vid_window_y.integer < 0))
 	{
-		Cvar_SetValue ("vid_window_x", 0.0);
-		Cvar_SetValue ("vid_window_y", 0.0 );
+		Cvar_Set ("vid_window_x", "0");
+		Cvar_Set ("vid_window_y", "0");
 	}
 }
 
@@ -1313,8 +1313,8 @@ static qboolean VID_SetWindowedMode (int modenum)
 	{
 		if (COM_CheckParm ("-resetwinpos"))
 		{
-			Cvar_SetValue ("vid_window_x", 0.0);
-			Cvar_SetValue ("vid_window_y", 0.0);
+			Cvar_Set ("vid_window_x", "0");
+			Cvar_Set ("vid_window_y", "0");
 		}
 
 		windowed_mode_set = true;
@@ -2397,8 +2397,8 @@ void VID_Update (vrect_t *rects)
 			{
 				if (COM_CheckParm ("-resetwinpos"))
 				{
-					Cvar_SetValue ("vid_window_x", 0.0);
-					Cvar_SetValue ("vid_window_y", 0.0);
+					Cvar_Set ("vid_window_x", "0");
+					Cvar_Set ("vid_window_y", "0");
 				}
 
 				VID_CheckWindowXY ();
@@ -2417,8 +2417,8 @@ void VID_Update (vrect_t *rects)
 
 			if (COM_CheckParm ("-resetwinpos"))
 			{
-				Cvar_SetValue ("vid_window_x", 0.0);
-				Cvar_SetValue ("vid_window_y", 0.0);
+				Cvar_Set ("vid_window_x", "0");
+				Cvar_Set ("vid_window_y", "0");
 			}
 
 			if (_vid_default_mode_win.integer < 0 || _vid_default_mode_win.integer >= nummodes)

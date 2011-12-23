@@ -2,7 +2,7 @@
 	view.c
 	player eye positioning
 
-	$Header: /cvsroot/uhexen2/engine/hexen2/view.c,v 1.29 2009-06-22 17:50:27 sezero Exp $
+	$Id$
 
 	The view is allowed to move slightly from it's true position
 	for bobbing, but if it exceeds 8 pixels linear distance
@@ -316,7 +316,7 @@ static qboolean V_CheckGamma (void)
 		return false;
 
 	if (v_gamma.value > 1.0 || v_gamma.value < (1.0 / GAMMA_MAX))
-		Cvar_SetValue ("gamma", 1.0);
+		Cvar_Set ("gamma", "1");
 	oldgammavalue = v_gamma.value;
 
 	BuildGammaTable (v_gamma.value);

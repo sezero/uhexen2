@@ -372,7 +372,7 @@ void SV_SpawnServer (const char *server, const char *startspot)
 	ent->v.movetype = MOVETYPE_PUSH;
 
 	if (coop.integer)
-		Cvar_SetValue ("deathmatch", 0);
+		Cvar_Set ("deathmatch", "0");
 
 	pr_global_struct->coop = coop.value;
 	pr_global_struct->deathmatch = deathmatch.value;

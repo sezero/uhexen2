@@ -220,15 +220,15 @@ static void MaxPlayers_f (void)
 	svs.maxclients = n;
 	if (n == 1)
 	{
-		Cvar_SetValue ("deathmatch", 0);
-		Cvar_SetValue ("coop", 0);
+		Cvar_Set ("deathmatch", "0");
+		Cvar_Set ("coop", "0");
 	}
 	else
 	{
 		if (coop.integer)
-			Cvar_SetValue ("deathmatch", 0);
+			Cvar_Set ("deathmatch", "0");
 		else
-			Cvar_SetValue ("deathmatch", 1);
+			Cvar_Set ("deathmatch", "1");
 	}
 }
 

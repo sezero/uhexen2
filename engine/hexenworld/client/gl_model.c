@@ -642,7 +642,7 @@ static void Mod_LoadLighting (lump_t *l)
 
 	// bound the gl_coloredlight value
 	if (gl_coloredlight.integer < 0)
-		Cvar_SetValue ("gl_coloredlight", 0);
+		Cvar_Set ("gl_coloredlight", "0");
 	gl_coloredstatic = gl_coloredlight.integer;
 
 	if (gl_lightmap_format == GL_RGBA)

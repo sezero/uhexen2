@@ -1506,11 +1506,11 @@ void	VID_Init (unsigned char *palette)
 	// see if the user wants fullscreen
 	if (COM_CheckParm("-fullscreen") || COM_CheckParm("-f"))
 	{
-		Cvar_SetValue("vid_config_fscr", 1);
+		Cvar_Set ("vid_config_fscr", "1");
 	}
 	else if (COM_CheckParm("-window") || COM_CheckParm("-w"))
 	{
-		Cvar_SetValue("vid_config_fscr", 0);
+		Cvar_Set ("vid_config_fscr", "0");
 	}
 
 	if (vid_config_fscr.integer && !num_fmodes) // FIXME: see below, as well
@@ -1589,7 +1589,7 @@ void	VID_Init (unsigned char *palette)
 		multisample = atoi(com_argv[i+1]);
 
 	if (COM_CheckParm("-paltex"))
-		Cvar_SetValue ("vid_config_gl8bit", 1);
+		Cvar_Set ("vid_config_gl8bit", "1");
 
 	vid.maxwarpwidth = WARP_WIDTH;
 	vid.maxwarpheight = WARP_HEIGHT;
@@ -1672,7 +1672,7 @@ void VID_ToggleFullscreen (void)
 		{
 #if 0	// change to 1 if dont want to disable mouse in fullscreen
 			if (!_enable_mouse.integer)
-				Cvar_SetValue ("_enable_mouse", 1);
+				Cvar_Set ("_enable_mouse", "1");
 #endif
 			// activate mouse in fullscreen mode
 			// in_sdl.c handles other non-moused cases
