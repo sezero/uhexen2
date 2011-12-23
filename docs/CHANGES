@@ -4,6 +4,11 @@ Development Progress	:
 ---------------------------
 
 2011-12-23 (SVN):
+    * Added new CVAR_CALLBACK flag.  Made Cvar_SetCallback() to adjust
+      the CVAR_CALLBACK flag.  Made Cvar_RegisterVariable() to set the
+      callback to NULL if CVAR_CALLBACK is not present, just in case..
+
+2011-12-23 (SVN):
     * Moved notification handling from Cvar_Set() to callback functions.
 
 2011-12-23 (SVN):

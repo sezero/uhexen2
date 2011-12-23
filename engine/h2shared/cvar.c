@@ -284,6 +284,9 @@ void Cvar_RegisterVariable (cvar_t *variable)
 	q_strlcpy (value, variable->string, sizeof(value));
 	variable->string = NULL;
 
+	if (!(variable->flags & CVAR_CALLBACK))
+		variable->callback = NULL;
+
 // set it through the function to be consistant
 	set_rom = (variable->flags & CVAR_ROM);
 	variable->flags &= ~CVAR_ROM;
@@ -302,6 +305,9 @@ Set a callback function to the var
 void Cvar_SetCallback (cvar_t *var, cvarcallback_t func)
 {
 	var->callback = func;
+	if (func)
+		var->flags |= CVAR_CALLBACK;
+	else	var->flags &= ~CVAR_CALLBACK;
 }
 
 /*
