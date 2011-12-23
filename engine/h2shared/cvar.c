@@ -189,33 +189,6 @@ void Cvar_Set (const char *var_name, const char *value)
 
 	if (var->callback)
 		var->callback (var);
-
-// handle notifications
-#if defined (H2W)
-#   if defined(SERVERONLY)
-	if (var->flags & CVAR_SERVERINFO)
-	{
-		Info_SetValueForKey (svs.info, var_name, value, MAX_SERVERINFO_STRING);
-		SV_BroadcastCommand ("fullserverinfo \"%s\"\n", svs.info);
-	}
-#   else /* HWCL */
-	if (var->flags & CVAR_USERINFO)
-	{
-		Info_SetValueForKey (cls.userinfo, var_name, value, MAX_INFO_STRING);
-		if (cls.state >= ca_connected)
-		{
-			MSG_WriteByte (&cls.netchan.message, clc_stringcmd);
-			SZ_Print (&cls.netchan.message, va("setinfo \"%s\" \"%s\"\n", var_name, value));
-		}
-	}
-#   endif
-#else	/* ! H2W */
-	if (var->flags & CVAR_NOTIFY)
-	{
-		if (sv.active)
-			SV_BroadcastPrintf ("\"%s\" changed to \"%s\"\n", var_name, value);
-	}
-#endif	/* H2W	*/
 }
 
 /*
@@ -232,7 +205,7 @@ void Cvar_SetValue (const char *var_name, const float value)
 	else
 	{
 		q_snprintf (val, sizeof(val), "%f", value);
-		// no trailing zeroes
+		// kill trailing zeroes
 		while (*ptr)
 			ptr++;
 		while (--ptr > val && *ptr == '0' && ptr[-1] != '.')

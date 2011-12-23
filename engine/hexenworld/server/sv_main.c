@@ -1222,14 +1222,22 @@ void SV_Frame (float time)
 
 
 /* cvar callback functions : */
+static void SV_Callback_Serverinfo (cvar_t *var)
+{
+	Info_SetValueForKey (svs.info, var->name, var->string, MAX_SERVERINFO_STRING);
+	SV_BroadcastCommand ("fullserverinfo \"%s\"\n", svs.info);
+}
+
 static void Callback_Deathmatch (cvar_t *var)
 {
+	SV_Callback_Serverinfo (var);
 	if (var->integer)
 		Cvar_Set ("coop", "0");
 }
 
 static void Callback_Coop (cvar_t *var)
 {
+	SV_Callback_Serverinfo (var);
 	if (var->integer)
 		Cvar_Set ("deathmatch", "0");
 }
@@ -1262,6 +1270,35 @@ static void SV_InitLocal (void)
 	Cvar_RegisterVariable (&sv_mintic);
 	Cvar_RegisterVariable (&sv_maxtic);
 
+	Cvar_SetCallback (&coop, Callback_Coop);
+	Cvar_SetCallback (&deathmatch, Callback_Deathmatch);
+
+	Cvar_SetCallback (&fraglimit, SV_Callback_Serverinfo);
+	Cvar_SetCallback (&timelimit, SV_Callback_Serverinfo);
+	Cvar_SetCallback (&teamplay, SV_Callback_Serverinfo);
+	Cvar_SetCallback (&samelevel, SV_Callback_Serverinfo);
+	Cvar_SetCallback (&maxclients, SV_Callback_Serverinfo);
+	Cvar_SetCallback (&maxspectators, SV_Callback_Serverinfo);
+	Cvar_SetCallback (&randomclass, SV_Callback_Serverinfo);
+	Cvar_SetCallback (&damageScale, SV_Callback_Serverinfo);
+	Cvar_SetCallback (&shyRespawn, SV_Callback_Serverinfo);
+	Cvar_SetCallback (&spartanPrint, SV_Callback_Serverinfo);
+	Cvar_SetCallback (&meleeDamScale, SV_Callback_Serverinfo);
+	Cvar_SetCallback (&manaScale, SV_Callback_Serverinfo);
+	Cvar_SetCallback (&tomeMode, SV_Callback_Serverinfo);
+	Cvar_SetCallback (&tomeRespawn, SV_Callback_Serverinfo);
+	Cvar_SetCallback (&w2Respawn, SV_Callback_Serverinfo);
+	Cvar_SetCallback (&altRespawn, SV_Callback_Serverinfo);
+	Cvar_SetCallback (&fixedLevel, SV_Callback_Serverinfo);
+	Cvar_SetCallback (&autoItems, SV_Callback_Serverinfo);
+	Cvar_SetCallback (&dmMode, SV_Callback_Serverinfo);
+	Cvar_SetCallback (&easyFourth, SV_Callback_Serverinfo);
+	Cvar_SetCallback (&patternRunner, SV_Callback_Serverinfo);
+	Cvar_SetCallback (&spawn, SV_Callback_Serverinfo);
+	Cvar_SetCallback (&hostname, SV_Callback_Serverinfo);
+	Cvar_SetCallback (&noexit, SV_Callback_Serverinfo);
+	Cvar_SetCallback (&sv_maxspeed, SV_Callback_Serverinfo);
+
 	Cvar_RegisterVariable (&fraglimit);
 	Cvar_RegisterVariable (&timelimit);
 	Cvar_RegisterVariable (&teamplay);
@@ -1272,8 +1309,6 @@ static void SV_InitLocal (void)
 	Cvar_RegisterVariable (&skill);
 	Cvar_RegisterVariable (&coop);
 	Cvar_RegisterVariable (&deathmatch);
-	Cvar_SetCallback (&coop, Callback_Coop);
-	Cvar_SetCallback (&deathmatch, Callback_Deathmatch);
 	Cvar_RegisterVariable (&randomclass);
 	Cvar_RegisterVariable (&damageScale);
 	Cvar_RegisterVariable (&meleeDamScale);

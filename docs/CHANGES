@@ -4,6 +4,9 @@ Development Progress	:
 ---------------------------
 
 2011-12-23 (SVN):
+    * Moved notification handling from Cvar_Set() to callback functions.
+
+2011-12-23 (SVN):
     * Moved coop and deathmatch value clash handling from Cvar_Set() to
       callback functions.
 

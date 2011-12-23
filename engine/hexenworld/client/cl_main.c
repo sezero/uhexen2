@@ -115,6 +115,16 @@ unsigned int	defLosses;	// Defender losses
 unsigned int	attLosses;	// Attacker losses
 
 
+static void CL_Callback_Userinfo (cvar_t *var)
+{
+	Info_SetValueForKey (cls.userinfo, var->name, var->string, MAX_INFO_STRING);
+	if (cls.state >= ca_connected)
+	{
+		MSG_WriteByte (&cls.netchan.message, clc_stringcmd);
+		SZ_Print (&cls.netchan.message, va("setinfo \"%s\" \"%s\"\n", var->name, var->string));
+	}
+}
+
 /*
 ==================
 CL_Quit_f
@@ -1068,6 +1078,17 @@ void CL_Init (void)
 	//
 	// info mirrors
 	//
+	Cvar_SetCallback (&name, CL_Callback_Userinfo);
+	Cvar_SetCallback (&playerclass, CL_Callback_Userinfo);
+	Cvar_SetCallback (&password, CL_Callback_Userinfo);
+	Cvar_SetCallback (&spectator, CL_Callback_Userinfo);
+	Cvar_SetCallback (&skin, CL_Callback_Userinfo);
+	Cvar_SetCallback (&team, CL_Callback_Userinfo);
+	Cvar_SetCallback (&topcolor, CL_Callback_Userinfo);
+	Cvar_SetCallback (&bottomcolor, CL_Callback_Userinfo);
+	Cvar_SetCallback (&rate, CL_Callback_Userinfo);
+	Cvar_SetCallback (&msg, CL_Callback_Userinfo);
+	Cvar_SetCallback (&noaim, CL_Callback_Userinfo);
 	Cvar_RegisterVariable (&name);
 	Cvar_RegisterVariable (&playerclass);
 	Cvar_RegisterVariable (&password);

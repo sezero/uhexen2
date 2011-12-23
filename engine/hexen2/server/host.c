@@ -251,6 +251,12 @@ static void Host_Version_f (void)
 #endif
 
 /* cvar callback functions : */
+void Host_Callback_Notify (cvar_t *var)
+{
+	if (sv.active)
+		SV_BroadcastPrintf ("\"%s\" changed to \"%s\"\n", var->name, var->string);
+}
+
 static void Callback_Deathmatch (cvar_t *var)
 {
 	if (var->integer)
@@ -283,16 +289,21 @@ static void Host_InitLocal (void)
 
 	Cvar_RegisterVariable (&sys_nostdout);
 
+	Cvar_RegisterVariable (&sys_ticrate);
+
 	Cvar_RegisterVariable (&host_framerate);
 
-	Cvar_RegisterVariable (&sys_ticrate);
 	Cvar_RegisterVariable (&serverprofile);
 
 	Cvar_RegisterVariable (&fraglimit);
 	Cvar_RegisterVariable (&timelimit);
 	Cvar_RegisterVariable (&teamplay);
+	Cvar_SetCallback (&fraglimit, Host_Callback_Notify);
+	Cvar_SetCallback (&timelimit, Host_Callback_Notify);
+	Cvar_SetCallback (&teamplay, Host_Callback_Notify);
 	Cvar_RegisterVariable (&samelevel);
 	Cvar_RegisterVariable (&noexit);
+	Cvar_SetCallback (&noexit, Host_Callback_Notify);
 	Cvar_RegisterVariable (&skill);
 	Cvar_RegisterVariable (&coop);
 	Cvar_RegisterVariable (&deathmatch);
