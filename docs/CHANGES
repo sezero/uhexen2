@@ -4,6 +4,9 @@ Development Progress	:
 ---------------------------
 
 2011-12-23 (SVN):
+    * Added a callback mechanism to the cvar layer.
+
+2011-12-23 (SVN):
     * When the value is a numeric constant (excluding any macros), use
       Cvar_Set() instead of Cvar_SetValue().
     * quakedef.h: updated beta date stamp to 2011-12-23.

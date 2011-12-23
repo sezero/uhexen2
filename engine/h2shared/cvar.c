@@ -187,6 +187,9 @@ void Cvar_Set (const char *var_name, const char *value)
 	var->value = atof (var->string);
 	var->integer = (int) var->value;
 
+	if (var->callback)
+		var->callback (var);
+
 // handle notifications
 #if defined (H2W)
 #   if defined(SERVERONLY)
@@ -328,6 +331,18 @@ void Cvar_RegisterVariable (cvar_t *variable)
 	Cvar_Set (variable->name, value);
 	if (set_rom)
 		variable->flags |= CVAR_ROM;
+}
+
+/*
+============
+Cvar_SetCallback
+
+Set a callback function to the var
+============
+*/
+void Cvar_SetCallback (cvar_t *var, cvarcallback_t func)
+{
+	var->callback = func;
 }
 
 /*
