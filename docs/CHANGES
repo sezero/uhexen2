@@ -4,6 +4,10 @@ Development Progress	:
 ---------------------------
 
 2011-12-23 (SVN):
+    * Moved coop and deathmatch value clash handling from Cvar_Set() to
+      callback functions.
+
+2011-12-23 (SVN):
     * Added a callback mechanism to the cvar layer.
 
 2011-12-23 (SVN):
@@ -19,7 +23,7 @@ Development Progress	:
       static to snd_sb.c.
 
 2011-12-22 (SVN):
-    * net_dos.c: Changed to order of lan drivers to IPX, BWTCP, WATTCP
+    * net_dos.c: Changed the order of lan drivers to IPX, BWTCP, WATTCP
       and MPATH.
     * net_bw.c: Skip initialization if -mpath is specified.
     * net_udp.c: Skip initialization if -mpath is specified. Also skip

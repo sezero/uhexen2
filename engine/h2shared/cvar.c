@@ -216,20 +216,6 @@ void Cvar_Set (const char *var_name, const char *value)
 			SV_BroadcastPrintf ("\"%s\" changed to \"%s\"\n", var_name, value);
 	}
 #endif	/* H2W	*/
-
-// don't allow deathmatch and coop at the same time
-#if !defined(H2W) || defined(SERVERONLY)
-	if (var == &deathmatch)
-	{
-		if (var->integer != 0)
-			Cvar_Set("coop", "0");
-	}
-	else if (var == &coop)
-	{
-		if (var->integer != 0)
-			Cvar_Set("deathmatch", "0");
-	}
-#endif	/* coop && deathmatch */
 }
 
 /*
