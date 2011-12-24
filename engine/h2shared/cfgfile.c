@@ -54,13 +54,12 @@ void CFG_ReadCvars (const char **vars, int num_vars)
 	do {
 		i = 0;
 		memset (buff, 0, sizeof(buff));
+		// we expect a line in the format that Cvar_WriteVariables
+		// writes to the config file. although I'm trying to be as
+		// much cautious as possible, if the user screws it up by
+		// editing it, it's his fault.
 		if (FS_fgets(buff, sizeof(buff), cfg_file))
 		{
-			// we expect a line in the format that Cvar_WriteVariables
-			// writes to the config file. although I'm trying to be as
-			// much cautious as possible, if the user screws it up by
-			// editing it, it's his fault.
-
 			// remove end-of-line characters
 			while (buff[i])
 			{
@@ -101,7 +100,7 @@ void CFG_ReadCvars (const char **vars, int num_vars)
 				tmp = strchr(buff, '\"');
 				if (tmp)
 				{
-					Cvar_Set (vars[i], tmp+1);
+					Cvar_Set (vars[i], tmp + 1);
 					j++;
 					break;
 				}
@@ -116,6 +115,15 @@ void CFG_ReadCvars (const char **vars, int num_vars)
 	FS_fseek (cfg_file, 0, SEEK_SET);
 }
 
+/*
+===================
+CFG_ReadCvarOverrides
+
+convenience function, reading the "+" command line override
+values of cvars in the given list. doesn't do anything with
+the config file.
+===================
+*/
 void CFG_ReadCvarOverrides (const char **vars, int num_vars)
 {
 	char	buff[64];
@@ -150,20 +158,20 @@ void CFG_CloseConfig (void)
 
 int CFG_OpenConfig (const char *cfg_name)
 {
-	FILE *file;
-	size_t length;
-	qboolean pak;
+	FILE	*f;
+	size_t		length;
+	qboolean	pak;
 
 	CFG_CloseConfig ();
 
-	length = FS_OpenFile (cfg_name, &file, NULL);
+	length = FS_OpenFile (cfg_name, &f, NULL);
 	pak = file_from_pak;
 	if (length == (size_t)-1)
 		return -1;
 
 	cfg_file = (fshandle_t *) Z_Malloc(sizeof(fshandle_t), Z_MAINZONE);
-	cfg_file->file = file;
-	cfg_file->start = ftell(file);
+	cfg_file->file = f;
+	cfg_file->start = ftell(f);
 	cfg_file->pos = 0;
 	cfg_file->length = (long)length;
 	cfg_file->pak = pak;
