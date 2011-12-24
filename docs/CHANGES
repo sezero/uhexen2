@@ -4,6 +4,10 @@ Development Progress	:
 ---------------------------
 
 2011-12-24 (SVN):
+    * cfgfile: changed to use FS_ functions, patch from Sander van Dijk.
+      updated copyright years.
+
+2011-12-24 (SVN):
     * quakefs: added FS_fgets(), patch from Sander van Dijk.
     * quakedef.h: updated beta date stamp to 2011-12-24.
 
