@@ -3,6 +3,10 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2011-12-24 (SVN):
+    * quakefs: added FS_fgets(), patch from Sander van Dijk.
+    * quakedef.h: updated beta date stamp to 2011-12-24.
+
 2011-12-23 (SVN):
     * Added new CVAR_CALLBACK flag.  Made Cvar_SetCallback() to adjust
       the CVAR_CALLBACK flag.  Made Cvar_RegisterVariable() to set the
