@@ -4,6 +4,9 @@ Development Progress	:
 ---------------------------
 
 2011-12-25 (SVN):
+    * view.c (V_UpdatePalette): Make use of CVAR_CHANGED flag of v_gamma.
+
+2011-12-25 (SVN):
     * snd_dma.c: Use a callback with sfxvolume and drop the CVAR_CHANGED
       checks.
 

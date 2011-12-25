@@ -280,7 +280,6 @@ cvar_t		v_gamma = {"gamma", "1", CVAR_ARCHIVE};
 
 byte		gammatable[256];	// palette is sent through this
 
-
 static void BuildGammaTable (float g)
 {
 	int		i, inf;
@@ -301,28 +300,6 @@ static void BuildGammaTable (float g)
 			inf = 255;
 		gammatable[i] = inf;
 	}
-}
-
-/*
-=================
-V_CheckGamma
-=================
-*/
-static qboolean V_CheckGamma (void)
-{
-	static float oldgammavalue;
-
-	if (v_gamma.value == oldgammavalue)
-		return false;
-
-	if (v_gamma.value > 1.0 || v_gamma.value < (1.0 / GAMMA_MAX))
-		Cvar_Set ("gamma", "1");
-	oldgammavalue = v_gamma.value;
-
-	BuildGammaTable (v_gamma.value);
-	vid.recalc_refdef = 1;		// force a surface cache flush
-
-	return true;
 }
 
 
@@ -580,7 +557,7 @@ void V_CalcBlend (void)
 	else if (v_blend[3] < 0)
 		v_blend[3] = 0;
 }
-#endif
+#endif	/* GLQUAKE */
 
 /*
 =============
@@ -594,7 +571,6 @@ unsigned short	ramps[3][256];
 void V_UpdatePalette (void)
 {
 	int		i, j;
-	qboolean	force;
 	unsigned long	obr_buf;
 
 	V_CalcPowerupCshift ();
@@ -621,10 +597,15 @@ void V_UpdatePalette (void)
 	if (cl.cshifts[CSHIFT_BONUS].percent <= 0)
 		cl.cshifts[CSHIFT_BONUS].percent = 0;
 
-	force = V_CheckGamma ();
-	// calc hardware gamma
-	if (force)
+	if (v_gamma.flags & CVAR_CHANGED)
 	{
+		if (v_gamma.value > 1.0 || v_gamma.value < (1.0 / GAMMA_MAX))
+			Cvar_Set ("gamma", "1");
+		v_gamma.flags &= ~CVAR_CHANGED;
+		BuildGammaTable (v_gamma.value);
+		vid.recalc_refdef = 1;		// force a surface cache flush
+
+		// calc hardware gamma
 		for (i = 0; i < 256; i++)
 		{
 			obr_buf = gammatable[i] << 8;
@@ -637,12 +618,11 @@ void V_UpdatePalette (void)
 	}
 }
 
-#else	// !GLQUAKE
+#else	/* !GLQUAKE */
 
 void V_UpdatePalette (void)
 {
 	int		i, j;
-	qboolean	force;
 	qboolean	is_new;
 	byte	*basepal, *newpal;
 	byte	pal[768];
@@ -679,8 +659,18 @@ void V_UpdatePalette (void)
 	if (cl.cshifts[CSHIFT_BONUS].percent <= 0)
 		cl.cshifts[CSHIFT_BONUS].percent = 0;
 
-	force = V_CheckGamma ();
-	if (!is_new && !force)
+	if (v_gamma.flags & CVAR_CHANGED)
+	{
+		if (v_gamma.value > 1.0 || v_gamma.value < (1.0 / GAMMA_MAX))
+			Cvar_Set ("gamma", "1");
+		v_gamma.flags &= ~CVAR_CHANGED;
+		BuildGammaTable (v_gamma.value);
+		vid.recalc_refdef = 1;		// force a surface cache flush
+
+		is_new = true;
+	}
+
+	if (!is_new)
 		return;
 
 	basepal = host_basepal;
@@ -715,7 +705,7 @@ void V_UpdatePalette (void)
 
 	VID_ShiftPalette (pal);
 }
-#endif	// !GLQUAKE
+#endif	/* !GLQUAKE */
 
 
 /*
