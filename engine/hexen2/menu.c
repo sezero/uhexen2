@@ -1892,7 +1892,7 @@ static void M_AdjustSliders (int dir)
 		break;
 #endif
 	case OPT_SCRSIZE:	// screen size
-		Cvar_SetValue ("viewsize", (scr_viewsize.integer + dir * 10));
+		Cvar_SetValue ("viewsize", scr_viewsize.integer + dir * 10);
 		break;
 	case OPT_GAMMA:		// gamma
 		f = v_gamma.value - dir * 0.05;

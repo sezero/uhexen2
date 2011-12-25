@@ -71,7 +71,6 @@ int		clearnotify;
 float		scr_con_current;
 float		scr_conlines;		// lines of console to display
 
-int		oldscreensize, oldfov;
 int		trans_level = 0;
 
 cvar_t		scr_viewsize = {"viewsize", "110", CVAR_ARCHIVE};
@@ -289,9 +288,6 @@ static void SCR_CalcRefdef (void)
 	else if (scr_fov.integer > 170)
 		Cvar_Set ("fov", "170");
 
-	oldfov = scr_fov.integer;
-	oldscreensize = scr_viewsize.integer;
-
 // force the status bar to redraw
 	SB_ViewSizeChanged ();
 	Sbar_Changed();
@@ -340,7 +336,6 @@ Keybinding command
 static void SCR_SizeUp_f (void)
 {
 	Cvar_SetValue ("viewsize", scr_viewsize.integer + 10);
-	vid.recalc_refdef = 1;
 }
 
 /*
@@ -353,7 +348,6 @@ Keybinding command
 static void SCR_SizeDown_f (void)
 {
 	Cvar_SetValue ("viewsize", scr_viewsize.integer - 10);
-	vid.recalc_refdef = 1;
 }
 
 //=============================================================================
@@ -1173,9 +1167,12 @@ void SCR_UpdateScreen (void)
 //
 // check for vid changes
 //
-	if (oldfov != scr_fov.integer ||
-	    oldscreensize != scr_viewsize.integer)
+	if ((scr_fov.flags | scr_viewsize.flags) & CVAR_CHANGED)
+	{
+		scr_fov.flags &= ~CVAR_CHANGED;
+		scr_viewsize.flags &= ~CVAR_CHANGED;
 		vid.recalc_refdef = true;
+	}
 
 	if (vid.recalc_refdef)
 	{
