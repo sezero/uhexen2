@@ -3,6 +3,11 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2011-12-25 (SVN):
+    * menu.c: Don't directly manipulate cvars' values, use automatic
+      variables instead.
+    * quakedef.h: updated beta date stamp to 2011-12-25.
+
 2011-12-24 (SVN):
     * cfgfile: changed to use FS_ functions, patch from Sander van Dijk.
       updated copyright years.

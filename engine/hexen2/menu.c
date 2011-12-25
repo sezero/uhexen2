@@ -1880,6 +1880,8 @@ void M_Menu_Options_f (void)
 
 static void M_AdjustSliders (int dir)
 {
+	float	f;
+
 	S_LocalSound ("raven/menu3.wav");
 
 	switch (options_cursor)
@@ -1890,24 +1892,19 @@ static void M_AdjustSliders (int dir)
 		break;
 #endif
 	case OPT_SCRSIZE:	// screen size
-		scr_viewsize.integer += dir * 10;
-		Cvar_SetValue ("viewsize", scr_viewsize.integer);
+		Cvar_SetValue ("viewsize", (scr_viewsize.integer + dir * 10));
 		break;
 	case OPT_GAMMA:		// gamma
-		v_gamma.value -= dir * 0.05;
-		if (v_gamma.value < 0.5)
-			v_gamma.value = 0.5;
-		else if (v_gamma.value > 1)
-			v_gamma.value = 1;
-		Cvar_SetValue ("gamma", v_gamma.value);
+		f = v_gamma.value - dir * 0.05;
+		if (f < 0.5)	f = 0.5;
+		else if (f > 1)	f = 1;
+		Cvar_SetValue ("gamma", f);
 		break;
 	case OPT_MOUSESPEED:	// mouse speed
-		sensitivity.value += dir * 0.5;
-		if (sensitivity.value < 1)
-			sensitivity.value = 1;
-		else if (sensitivity.value > 11)
-			sensitivity.value = 11;
-		Cvar_SetValue ("sensitivity", sensitivity.value);
+		f = sensitivity.value + dir * 0.5;
+		if (f > 11)	f = 11;
+		else if (f < 1)	f = 1;
+		Cvar_SetValue ("sensitivity", f);
 		break;
 	case OPT_MUSICTYPE:	// bgm type
 		if (q_strcasecmp(bgmtype.string,"midi") == 0)
@@ -1953,20 +1950,16 @@ static void M_AdjustSliders (int dir)
 		}
 		break;
 	case OPT_MUSICVOL:	// music volume
-		bgmvolume.value += dir * 0.1;
-		if (bgmvolume.value < 0)
-			bgmvolume.value = 0;
-		else if (bgmvolume.value > 1)
-			bgmvolume.value = 1;
-		Cvar_SetValue ("bgmvolume", bgmvolume.value);
+		f = bgmvolume.value + dir * 0.1;
+		if (f < 0)	f = 0;
+		else if (f > 1)	f = 1;
+		Cvar_SetValue ("bgmvolume", f);
 		break;
 	case OPT_SNDVOL:	// sfx volume
-		sfxvolume.value += dir * 0.1;
-		if (sfxvolume.value < 0)
-			sfxvolume.value = 0;
-		else if (sfxvolume.value > 1)
-			sfxvolume.value = 1;
-		Cvar_SetValue ("volume", sfxvolume.value);
+		f = sfxvolume.value + dir * 0.1;
+		if (f < 0)	f = 0;
+		else if (f > 1)	f = 1;
+		Cvar_SetValue ("volume", f);
 		break;
 
 	case OPT_ALWAYRUN:	// always run
@@ -4429,10 +4422,7 @@ static void M_NetStart_Change (int dir)
 		break;
 
 	case 8:
-		if (randomclass.integer)
-			Cvar_Set ("randomclass", "0");
-		else
-			Cvar_Set ("randomclass", "1");
+		Cvar_Set ("randomclass", randomclass.integer ? "0" : "1");
 		break;
 
 	case 9:
