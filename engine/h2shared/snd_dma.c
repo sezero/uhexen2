@@ -161,6 +161,12 @@ static void S_ProcessCmdline (void)
 }
 
 
+static void SND_Callback_sfxvolume (cvar_t *var)
+{
+	SND_InitScaletable ();
+}
+
+
 /*
 ================
 S_Startup
@@ -288,6 +294,8 @@ void S_Init (void)
 		Cvar_Set("bgmvolume", "0");
 	else if (bgmvolume.value > 1)
 		Cvar_Set("bgmvolume", "1");
+
+	Cvar_SetCallback(&sfxvolume, SND_Callback_sfxvolume);
 
 	// lock the early-read cvars until Host_Init is finished
 	for (i = 0; i < num_readvars; i++)
@@ -901,12 +909,6 @@ void S_Update (vec3_t origin, vec3_t forward, vec3_t right, vec3_t up)
 
 	if (!sound_started || (snd_blocked > 0))
 		return;
-
-	if (sfxvolume.flags & CVAR_CHANGED)
-	{
-		sfxvolume.flags &= ~CVAR_CHANGED;
-		SND_InitScaletable ();
-	}
 
 	VectorCopy(origin, listener_origin);
 	VectorCopy(forward, listener_forward);
