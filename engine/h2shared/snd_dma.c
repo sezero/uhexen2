@@ -97,8 +97,6 @@ cvar_t		sfxvolume = {"volume", "0.7", CVAR_ARCHIVE};
 cvar_t		precache = {"precache", "1", CVAR_NONE};
 cvar_t		loadas8bit = {"loadas8bit", "0", CVAR_NONE};
 
-static	float	oldvolume = -1.0;
-
 static	cvar_t	sfx_mutedvol = {"sfx_mutedvol", "0", CVAR_ARCHIVE};
 static	cvar_t	bgm_mutedvol = {"bgm_mutedvol", "0", CVAR_ARCHIVE};
 
@@ -904,9 +902,9 @@ void S_Update (vec3_t origin, vec3_t forward, vec3_t right, vec3_t up)
 	if (!sound_started || (snd_blocked > 0))
 		return;
 
-	if (sfxvolume.value != oldvolume)
+	if (sfxvolume.flags & CVAR_CHANGED)
 	{
-		oldvolume = sfxvolume.value;
+		sfxvolume.flags &= ~CVAR_CHANGED;
 		SND_InitScaletable ();
 	}
 
