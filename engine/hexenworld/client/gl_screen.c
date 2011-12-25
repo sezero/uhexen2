@@ -227,21 +227,20 @@ static void SCR_CalcRefdef (void)
 	int	h;
 
 	scr_fullupdate = 0;		// force a background redraw
-	vid.recalc_refdef = 0;
 
 // bound viewsize
 	if (scr_viewsize.integer < 30)
 		Cvar_Set ("viewsize", "30");
 	else if (scr_viewsize.integer > 120)
 		Cvar_Set ("viewsize", "120");
-	scr_viewsize.flags &= ~CVAR_CHANGED;
 
 // bound field of view
 	if (scr_fov.integer < 10)
 		Cvar_Set ("fov", "10");
 	else if (scr_fov.integer > 170)
 		Cvar_Set ("fov", "170");
-	scr_fov.flags &= ~CVAR_CHANGED;
+
+	vid.recalc_refdef = 0;
 
 // force the status bar to redraw
 	SB_ViewSizeChanged ();
@@ -305,6 +304,11 @@ static void SCR_SizeDown_f (void)
 	Cvar_SetValue ("viewsize", scr_viewsize.integer - 10);
 }
 
+static void SCR_Callback_refdef (cvar_t *var)
+{
+	vid.recalc_refdef = 1;
+}
+
 //=============================================================================
 
 
@@ -315,27 +319,28 @@ SCR_Init
 */
 void SCR_Init (void)
 {
-	if (!draw_reinit)
-	{
-		Cvar_RegisterVariable (&scr_fov);
-		Cvar_RegisterVariable (&scr_viewsize);
-		Cvar_RegisterVariable (&scr_contrans);
-		Cvar_RegisterVariable (&scr_conspeed);
-		Cvar_RegisterVariable (&scr_showram);
-		Cvar_RegisterVariable (&scr_showturtle);
-		Cvar_RegisterVariable (&scr_showpause);
-		Cvar_RegisterVariable (&scr_centertime);
-		Cvar_RegisterVariable (&gl_triplebuffer);
-
-		// register our commands
-		Cmd_AddCommand ("screenshot",SCR_ScreenShot_f);
-		Cmd_AddCommand ("sizeup",SCR_SizeUp_f);
-		Cmd_AddCommand ("sizedown",SCR_SizeDown_f);
-	}
-
 	scr_ram = Draw_PicFromWad ("ram");
 	scr_net = Draw_PicFromWad ("net");
 	scr_turtle = Draw_PicFromWad ("turtle");
+
+	if (draw_reinit)
+		return;
+
+	Cvar_SetCallback (&scr_fov, SCR_Callback_refdef);
+	Cvar_SetCallback (&scr_viewsize, SCR_Callback_refdef);
+	Cvar_RegisterVariable (&scr_fov);
+	Cvar_RegisterVariable (&scr_viewsize);
+	Cvar_RegisterVariable (&scr_contrans);
+	Cvar_RegisterVariable (&scr_conspeed);
+	Cvar_RegisterVariable (&scr_showram);
+	Cvar_RegisterVariable (&scr_showturtle);
+	Cvar_RegisterVariable (&scr_showpause);
+	Cvar_RegisterVariable (&scr_centertime);
+	Cvar_RegisterVariable (&gl_triplebuffer);
+
+	Cmd_AddCommand ("screenshot",SCR_ScreenShot_f);
+	Cmd_AddCommand ("sizeup",SCR_SizeUp_f);
+	Cmd_AddCommand ("sizedown",SCR_SizeDown_f);
 
 	scr_initialized = true;
 }
@@ -1003,11 +1008,6 @@ void SCR_UpdateScreen (void)
 //
 // check for vid changes
 //
-	if ((scr_fov.flags | scr_viewsize.flags) & CVAR_CHANGED)
-	{
-		vid.recalc_refdef = true;
-	}
-
 	if (vid.recalc_refdef)
 	{
 		// something changed, so reorder the screen

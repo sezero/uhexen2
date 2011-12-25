@@ -4,6 +4,10 @@ Development Progress	:
 ---------------------------
 
 2011-12-25 (SVN):
+    * screen.c, gl_screen.c: Use a callback with scr_fov and scr_viewsize
+      and drop CVAR_CHANGED checks.
+
+2011-12-25 (SVN):
     * screen.c, gl_screen.c: Moved clearing of CVAR_CHANGED flag from
       scr_fov and scr_viewsize to SCR_CalcRefdef().
 
