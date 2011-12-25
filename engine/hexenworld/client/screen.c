@@ -267,12 +267,14 @@ static void SCR_CalcRefdef (void)
 		Cvar_Set ("viewsize", "30");
 	else if (scr_viewsize.integer > 120)
 		Cvar_Set ("viewsize", "120");
+	scr_viewsize.flags &= ~CVAR_CHANGED;
 
 // bound field of view
 	if (scr_fov.integer < 10)
 		Cvar_Set ("fov", "10");
 	else if (scr_fov.integer > 110)
 		Cvar_Set ("fov", "110");
+	scr_fov.flags &= ~CVAR_CHANGED;
 
 // force the status bar to redraw
 	SB_ViewSizeChanged ();
@@ -1083,8 +1085,6 @@ void SCR_UpdateScreen (void)
 //
 	if ((scr_fov.flags | scr_viewsize.flags) & CVAR_CHANGED)
 	{
-		scr_fov.flags &= ~CVAR_CHANGED;
-		scr_viewsize.flags &= ~CVAR_CHANGED;
 		vid.recalc_refdef = true;
 	}
 

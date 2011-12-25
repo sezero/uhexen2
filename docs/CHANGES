@@ -4,16 +4,20 @@ Development Progress	:
 ---------------------------
 
 2011-12-25 (SVN):
+    * screen.c, gl_screen.c: Moved clearing of CVAR_CHANGED flag from
+      scr_fov and scr_viewsize to SCR_CalcRefdef().
+
+2011-12-25 (SVN):
     * snd_dma.c: Removed oldvolume global. Relying on CVAR_CHANGED flag
       of sfxvolume now.
 
 2011-12-25 (SVN):
     * screen.c, gl_screen.c: Removed oldfov and oldscreensize globals.
-      SCR_SizeUp_f and SCR_SizeDown_f no longer set >vid.recalc_refdef.
+      SCR_SizeUp_f and SCR_SizeDown_f no longer set vid.recalc_refdef.
       Relying on CVAR_CHANGED flags of scr_fov and scr_viewsize now.
 
 2011-12-25 (SVN):
-    * menu.c: Don't directly manipulate cvars' values, use automatic
+    * menu.c: Do not directly manipulate cvars' values, use automatic
       variables instead.
     * quakedef.h: updated beta date stamp to 2011-12-25.
 
