@@ -19,7 +19,6 @@
 #include <sys/types.h>
 #include <string.h>
 
-#include "arch_def.h"
 #include "strl_fn.h"
 
 /*

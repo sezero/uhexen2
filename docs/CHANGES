@@ -4,6 +4,9 @@ Development Progress	:
 ---------------------------
 
 2011-12-27 (SVN):
+    * strlcat.c, strlcpy.c: Removed the arch_def.h includes.
+
+2011-12-27 (SVN):
     * Makefiles update: passing the libraries to linker before passing
       the object list is a bad idea.
 
