@@ -4,6 +4,12 @@ Development Progress	:
 ---------------------------
 
 2011-12-25 (SVN):
+    * Removed old QIP code that prevented coop and deathmatch to be set
+      at the same time.  I was notified that it may actually cause some
+      compatibility issues.  Just made sure that coop and deathmatch are
+      cleared when starting a game from the menu system.
+
+2011-12-25 (SVN):
     * common.c (COM_StripExtension): If the input is empty, just write a
       0 to the output and return.
     * quakedef.h: updated beta date stamp to 2011-12-27.

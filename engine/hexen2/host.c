@@ -388,18 +388,6 @@ void Host_Callback_Notify (cvar_t *var)
 		SV_BroadcastPrintf ("\"%s\" changed to \"%s\"\n", var->name, var->string);
 }
 
-static void Callback_Deathmatch (cvar_t *var)
-{
-	if (var->integer)
-		Cvar_Set ("coop", "0");
-}
-
-static void Callback_Coop (cvar_t *var)
-{
-	if (var->integer)
-		Cvar_Set ("deathmatch", "0");
-}
-
 /*
 =======================
 Host_InitLocal
@@ -442,8 +430,6 @@ static void Host_InitLocal (void)
 	Cvar_RegisterVariable (&skill);
 	Cvar_RegisterVariable (&coop);
 	Cvar_RegisterVariable (&deathmatch);
-	Cvar_SetCallback (&coop, Callback_Coop);
-	Cvar_SetCallback (&deathmatch, Callback_Deathmatch);
 	Cvar_RegisterVariable (&randomclass);
 
 	Cvar_RegisterVariable (&pausable);

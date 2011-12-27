@@ -972,6 +972,8 @@ static void M_SinglePlayer_Key (int key)
 				Cbuf_AddText ("disconnect\n");
 			Host_RemoveGIPFiles(NULL);
 			Cbuf_AddText ("maxplayers 1\n");
+			Cbuf_AddText ("coop 0\n");
+			Cbuf_AddText ("deathmatch 0\n");
 			M_Menu_Class_f ();
 			break;
 

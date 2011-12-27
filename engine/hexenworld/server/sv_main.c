@@ -1228,20 +1228,6 @@ static void SV_Callback_Serverinfo (cvar_t *var)
 	SV_BroadcastCommand ("fullserverinfo \"%s\"\n", svs.info);
 }
 
-static void Callback_Deathmatch (cvar_t *var)
-{
-	SV_Callback_Serverinfo (var);
-	if (var->integer)
-		Cvar_Set ("coop", "0");
-}
-
-static void Callback_Coop (cvar_t *var)
-{
-	SV_Callback_Serverinfo (var);
-	if (var->integer)
-		Cvar_Set ("deathmatch", "0");
-}
-
 /*
 ===============
 SV_InitLocal
@@ -1270,9 +1256,8 @@ static void SV_InitLocal (void)
 	Cvar_RegisterVariable (&sv_mintic);
 	Cvar_RegisterVariable (&sv_maxtic);
 
-	Cvar_SetCallback (&coop, Callback_Coop);
-	Cvar_SetCallback (&deathmatch, Callback_Deathmatch);
-
+	Cvar_SetCallback (&deathmatch, SV_Callback_Serverinfo);
+	Cvar_SetCallback (&coop, SV_Callback_Serverinfo);
 	Cvar_SetCallback (&fraglimit, SV_Callback_Serverinfo);
 	Cvar_SetCallback (&timelimit, SV_Callback_Serverinfo);
 	Cvar_SetCallback (&teamplay, SV_Callback_Serverinfo);

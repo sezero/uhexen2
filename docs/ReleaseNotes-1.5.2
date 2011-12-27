@@ -1,5 +1,5 @@
 Hexen II: Hammer of Thyrion (uhexen2)
-Release Notes for version 1.5.2 (Dec. 25, 2011.)
+Release Notes for version 1.5.2 (Dec. 27, 2011.)
 ================================================
 
 Changes since the uhexen2-1.5.1 release:
@@ -15,6 +15,9 @@ Changes since the uhexen2-1.5.1 release:
 * SDL / Unix: SDL mouse input updates to prevent unintended
   view coordinate changes.
 * SDL / Unix: Revised SDL unicode and dead keys support.
+* All platforms: Removed code that prevented deathmatch and
+  coop cvars to be set at the same time, which was reported
+  that might cause compatibility issues with mods.
 * Mac OS X: Fixed compilation failure due to a typo in MIDI
   code introduced in v1.5.1.
 * Linux / SVGAlib mouse: Fixed missing camera mode and ideal
