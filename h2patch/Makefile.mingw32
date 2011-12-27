@@ -75,7 +75,7 @@ h2patch3.res: h2patch3.rc h2patch.exe.manifest
 	$(WINDRES) -DWIN32_LEAN_AND_MEAN --output-format=coff -o $@ $<
 
 h2patch.exe: $(OBJECTS)
-	$(LINKER) $(OBJECTS) -o h2patch.exe $(LDFLAGS)
+	$(LINKER) $(OBJECTS) $(LDFLAGS) -o $@
 
 clean:
 	rm -f *.o *.res

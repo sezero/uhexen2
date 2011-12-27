@@ -78,7 +78,7 @@ all : $(BINARY)
 	$(CC) -c $(CFLAGS) $(INCLUDES) -o $@ $<
 
 # Objects
-HCCOBJS= qsnprint.o \
+OBJECTS= qsnprint.o \
 	strlcat.o \
 	strlcpy.o \
 	cmdlib.o \
@@ -93,8 +93,8 @@ HCCOBJS= qsnprint.o \
 	pr_parse.o \
 	stmt.o
 
-$(BINARY) : $(HCCOBJS)
-	$(LINKER) -o $(BINARY) $(HCCOBJS) $(LDFLAGS) $(LDLIBS)
+$(BINARY) : $(OBJECTS)
+	$(LINKER) $(OBJECTS) $(LDFLAGS) $(LDLIBS) -o $@
 
 clean:
 	rm -f *.o core

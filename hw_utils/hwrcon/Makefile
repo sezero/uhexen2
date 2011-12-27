@@ -95,7 +95,7 @@ endif
 	$(CC) -c $(CFLAGS) $(CPPFLAGS) $(INCLUDES) -o $@ $<
 
 # Objects
-COMMONOBJ = qsnprint.o
+COMMONOBJ =qsnprint.o
 HUFF_OBJS = huffman.o
 RCON_OBJS = hwrcon.o
 TERM_OBJS = hwterm.o
@@ -107,10 +107,10 @@ all: $(HWRCON) $(HWTERM)
 default: all
 
 $(HWRCON) : $(COMMONOBJ) $(RCON_OBJS)
-	$(LINKER) -o $(HWRCON) $(COMMONOBJ) $(RCON_OBJS) $(LDFLAGS)
+	$(LINKER) $(COMMONOBJ) $(RCON_OBJS) $(LDFLAGS) -o $@
 
 $(HWTERM) : $(COMMONOBJ) $(HUFF_OBJS) $(TERM_OBJS)
-	$(LINKER) -o $(HWTERM) $(COMMONOBJ) $(HUFF_OBJS) $(TERM_OBJS) $(LDFLAGS)
+	$(LINKER) $(COMMONOBJ) $(HUFF_OBJS) $(TERM_OBJS) $(LDFLAGS) -o $@
 
 clean:
 	rm -f *.o core

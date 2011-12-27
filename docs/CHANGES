@@ -4,6 +4,10 @@ Development Progress	:
 ---------------------------
 
 2011-12-27 (SVN):
+    * Makefiles update: passing the libraries to linker before passing
+      the object list is a bad idea.
+
+2011-12-27 (SVN):
     * pr_edict.c (ED_LoadFromFile): Remove error when neither coop nor
       deathmatch was set in h2ded builds, rely on server admin's skills.
 

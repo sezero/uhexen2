@@ -79,7 +79,7 @@ all : $(BINARY)
 	$(CC) -c $(CFLAGS) $(INCLUDES) -o $@ $<
 
 # Objects
-JS_OBJS= qsnprint.o \
+OBJECTS= qsnprint.o \
 	strlcat.o \
 	strlcpy.o \
 	cmdlib.o \
@@ -98,8 +98,8 @@ JS_OBJS= qsnprint.o \
 	tex.o \
 	tyrlite.o
 
-$(BINARY) : $(JS_OBJS)
-	$(LINKER) -o $(BINARY) $(JS_OBJS) $(LDFLAGS) $(LDLIBS)
+$(BINARY) : $(OBJECTS)
+	$(LINKER) $(OBJECTS) $(LDFLAGS) $(LDLIBS) -o $@
 
 clean:
 	rm -f *.o core

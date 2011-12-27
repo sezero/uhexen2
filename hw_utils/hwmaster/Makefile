@@ -94,7 +94,7 @@ endif
 	$(CC) -c $(CFLAGS) $(CPPFLAGS) $(INCLUDES) -o $@ $<
 
 # Objects
-MASTEROBJS = qsnprint.o sizebuf.o msg_io.o cmds.o common.o net.o master.o sys_main.o
+OBJECTS = qsnprint.o sizebuf.o msg_io.o cmds.o common.o net.o master.o sys_main.o
 
 # Targets
 .PHONY: clean distclean
@@ -102,8 +102,8 @@ MASTEROBJS = qsnprint.o sizebuf.o msg_io.o cmds.o common.o net.o master.o sys_ma
 default: $(BINARY)
 all: default
 
-$(BINARY) : $(MASTEROBJS)
-	$(LINKER) -o $(BINARY) $(MASTEROBJS) $(LDFLAGS)
+$(BINARY) : $(OBJECTS)
+	$(LINKER) $(OBJECTS) $(LDFLAGS) -o $@
 
 clean:
 	rm -f *.o core

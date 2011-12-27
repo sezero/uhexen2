@@ -275,7 +275,7 @@ SYSOBJ_SYS := sys_unix.o
 endif
 
 # Final list of objects
-SV_OBJS = \
+OBJECTS = \
 	q_endian.o \
 	link_ops.o \
 	sizebuf.o \
@@ -316,8 +316,8 @@ SV_OBJS = \
 default: $(BINARY)
 all: default
 
-$(BINARY): $(SV_OBJS)
-	$(LINKER) -o $(BINARY) $(SV_OBJS) $(LDFLAGS)
+$(BINARY): $(OBJECTS)
+	$(LINKER) $(OBJECTS) $(LDFLAGS) -o $@
 
 # deps for *.c including another *.c
 dos/mplpc.o: dos/mplib.c

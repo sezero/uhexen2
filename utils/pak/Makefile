@@ -77,7 +77,7 @@ all : $(PAKX) $(PAKLIST)
 	$(CC) -c $(CFLAGS) $(INCLUDES) -o $@ $<
 
 # Objects
-COMMONOBJS= qsnprint.o \
+OBJ_COMMON= qsnprint.o \
 	strlcat.o \
 	strlcpy.o \
 	cmdlib.o \
@@ -86,14 +86,14 @@ COMMONOBJS= qsnprint.o \
 	q_endian.o \
 	byteordr.o \
 	pakfile.o
-PAKXOBJS= pakx.o
-PAKLISTOBJS= paklist.o
+OBJ_PAKX= pakx.o
+OBJ_PAKL= paklist.o
 
-$(PAKX): $(COMMONOBJS) $(PAKXOBJS)
-	$(LINKER) -o $(PAKX) $(COMMONOBJS) $(PAKXOBJS) $(LDFLAGS) $(LDLIBS)
+$(PAKX): $(OBJ_COMMON) $(OBJ_PAKX)
+	$(LINKER) $(OBJ_COMMON) $(OBJ_PAKX) $(LDFLAGS) $(LDLIBS) -o $@
 
-$(PAKLIST): $(COMMONOBJS) $(PAKLISTOBJS)
-	$(LINKER) -o $(PAKLIST) $(COMMONOBJS) $(PAKLISTOBJS) $(LDFLAGS) $(LDLIBS)
+$(PAKLIST): $(OBJ_COMMON) $(OBJ_PAKL)
+	$(LINKER) $(OBJ_COMMON) $(OBJ_PAKL) $(LDFLAGS) $(LDLIBS) -o $@
 
 clean:
 	rm -f *.o core

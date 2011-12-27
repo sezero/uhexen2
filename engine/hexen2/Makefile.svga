@@ -482,7 +482,7 @@ snd_timidity.o: $(COMMONDIR)/snd_timidity.c
 include $(LIBS_DIR)/timidity/_timi.mak
 
 $(SW_BINARY): $(SOFT_ASM) $(SOFTOBJS) $(COMMON_ASM) $(COMMONOBJS) $(TIMIDEPS)
-	$(LINKER) -o $(SW_BINARY) $(SOFT_ASM) $(SOFTOBJS) $(COMMON_ASM) $(COMMONOBJS) $(LDFLAGS)
+	$(LINKER) $(SOFT_ASM) $(SOFTOBJS) $(COMMON_ASM) $(COMMONOBJS) $(LDFLAGS) -o $@
 
 localclean:
 	rm -f *.o *.res dos/*.o core

@@ -76,7 +76,7 @@ all : $(BINARY)
 	$(CC) -c $(CFLAGS) $(INCLUDES) -o $@ $<
 
 # Objects
-QFILESOBJS= qsnprint.o \
+OBJECTS= qsnprint.o \
 	strlcat.o \
 	strlcpy.o \
 	cmdlib.o \
@@ -87,8 +87,8 @@ QFILESOBJS= qsnprint.o \
 	byteordr.o \
 	qfiles.o
 
-$(BINARY) : $(QFILESOBJS)
-	$(LINKER) -o $(BINARY) $(QFILESOBJS) $(LDFLAGS) $(LDLIBS)
+$(BINARY) : $(OBJECTS)
+	$(LINKER) $(OBJECTS) $(LDFLAGS) $(LDLIBS) -o $@
 
 clean:
 	rm -f *.o core

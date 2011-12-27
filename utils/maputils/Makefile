@@ -80,7 +80,7 @@ all : $(LIGHT) $(VIS) $(QBSP) $(BSPINFO)
 	$(CC) -c $(CFLAGS) $(INCLUDES) -o $@ $<
 
 # Objects
-COMMONOBJS= qsnprint.o \
+OBJ_COMMON= qsnprint.o \
 	strlcat.o \
 	strlcpy.o \
 	cmdlib.o \
@@ -91,17 +91,17 @@ COMMONOBJS= qsnprint.o \
 	mathlib.o \
 	bspfile.o
 
-LIGHTOBJS= threads.o \
+OBJ_LIGHT= threads.o \
 	entities.o \
 	light.o \
 	ltface.o \
 	trace.o
 
-VISOBJS= flow.o \
+OBJ_VIS= flow.o \
 	soundpvs.o \
 	vis.o
 
-QBSPOBJS= brush.o \
+OBJ_QBSP= brush.o \
 	csg4.o \
 	map.o \
 	merge.o \
@@ -115,7 +115,7 @@ QBSPOBJS= brush.o \
 	tjunc.o \
 	writebsp.o
 
-BSPINFOBJS= qsnprint.o \
+OBJ_BSPINFO= qsnprint.o \
 	strlcat.o \
 	strlcpy.o \
 	cmdlib.o \
@@ -126,17 +126,17 @@ BSPINFOBJS= qsnprint.o \
 	bspfile.o \
 	bspinfo.o
 
-$(LIGHT) : $(COMMONOBJS) $(LIGHTOBJS)
-	$(LINKER) -o $(LIGHT) $(COMMONOBJS) $(LIGHTOBJS) $(LDFLAGS) $(LDLIBS)
+$(LIGHT) : $(OBJ_COMMON) $(OBJ_LIGHT)
+	$(LINKER) $(OBJ_COMMON) $(OBJ_LIGHT) $(LDFLAGS) $(LDLIBS) -o $@
 
-$(VIS) : $(COMMONOBJS) $(VISOBJS)
-	$(LINKER) -o $(VIS) $(COMMONOBJS) $(VISOBJS) $(LDFLAGS) $(LDLIBS)
+$(VIS) : $(OBJ_COMMON) $(OBJ_VIS)
+	$(LINKER) $(OBJ_COMMON) $(OBJ_VIS) $(LDFLAGS) $(LDLIBS) -o $@
 
-$(QBSP) : $(COMMONOBJS) $(QBSPOBJS)
-	$(LINKER) -o $(QBSP) $(COMMONOBJS) $(QBSPOBJS) $(LDFLAGS) $(LDLIBS)
+$(QBSP) : $(OBJ_COMMON) $(OBJ_QBSP)
+	$(LINKER) $(OBJ_COMMON) $(OBJ_QBSP) $(LDFLAGS) $(LDLIBS) -o $@
 
-$(BSPINFO) : $(BSPINFOBJS)
-	$(LINKER) -o $(BSPINFO) $(BSPINFOBJS) $(LDFLAGS)
+$(BSPINFO) : $(OBJ_BSPINFO)
+	$(LINKER) $(OBJ_BSPINFO) $(LDFLAGS) -o $@
 
 clean:
 	rm -f *.o core

@@ -74,22 +74,22 @@ all : $(BINARY)
 	$(CC) -c $(CFLAGS) $(INCLUDES) -o $@ $<
 
 # Objects
-COMMONOBJ= qsnprint.o \
+OBJECTS= qsnprint.o \
 	strlcat.o \
 	strlcpy.o \
 	cmdlib.o \
 	util_io.o \
 	q_endian.o \
 	byteordr.o \
-	crc.o
-DHCCOBJS= dcc.o \
+	crc.o \
+	dcc.o \
 	hcc.o \
 	pr_comp.o \
 	pr_lex.o \
 	pr_parse.o
 
-$(BINARY): $(COMMONOBJ) $(DHCCOBJS)
-	$(LINKER) -o $(BINARY) $(COMMONOBJ) $(DHCCOBJS) $(LDFLAGS) $(LDLIBS)
+$(BINARY): $(OBJECTS)
+	$(LINKER) $(OBJECTS) $(LDFLAGS) $(LDLIBS) -o $@
 
 clean:
 	rm -f *.o core

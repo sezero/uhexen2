@@ -76,7 +76,7 @@ all : $(BINARY)
 	$(CC) -c $(CFLAGS) $(INCLUDES) -o $@ $<
 
 # Objects
-LMP2PCXOBJS= qsnprint.o \
+OBJECTS= qsnprint.o \
 	strlcat.o \
 	strlcpy.o \
 	cmdlib.o \
@@ -86,8 +86,8 @@ LMP2PCXOBJS= qsnprint.o \
 	byteordr.o \
 	lmp2pcx.o
 
-$(BINARY) : $(LMP2PCXOBJS)
-	$(LINKER) -o $(BINARY) $(LMP2PCXOBJS) $(LDFLAGS) $(LDLIBS)
+$(BINARY) : $(OBJECTS)
+	$(LINKER) $(OBJECTS) $(LDFLAGS) $(LDLIBS) -o $(BINARY)
 
 clean:
 	rm -f *.o core

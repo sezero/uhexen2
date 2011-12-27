@@ -66,7 +66,7 @@ md5.o: $(MD5DEPS)
 	$(CC) $(MD5FLAGS) -c $(MD5DIR)/md5.c -o md5.o
 
 h2patch: $(OBJECTS)
-	$(LINKER) $(OBJECTS) -o h2patch $(LDFLAGS)
+	$(LINKER) $(OBJECTS) $(LDFLAGS) -o $@
 
 clean:
 	rm -f *.o *.res

@@ -94,7 +94,7 @@ endif
 	$(CC) -c $(CFLAGS) $(CPPFLAGS) $(INCLUDES) -o $@ $<
 
 # Objects
-HWMQUERY_OBJS = qsnprint.o hwmquery.o
+OBJECTS = qsnprint.o hwmquery.o
 
 # Targets
 .PHONY: clean distclean
@@ -102,8 +102,8 @@ HWMQUERY_OBJS = qsnprint.o hwmquery.o
 all: $(HWMQUERY)
 default: all
 
-$(HWMQUERY) : $(HWMQUERY_OBJS)
-	$(LINKER) -o $(HWMQUERY) $(HWMQUERY_OBJS) $(LDFLAGS)
+$(HWMQUERY) : $(OBJECTS)
+	$(LINKER) $(OBJECTS) $(LDFLAGS) -o $@
 
 clean:
 	rm -f *.o core

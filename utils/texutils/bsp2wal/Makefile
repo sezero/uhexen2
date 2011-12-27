@@ -76,7 +76,7 @@ all : $(BINARY)
 	$(CC) -c $(CFLAGS) $(INCLUDES) -o $@ $<
 
 # Objects
-BSP2WALOBJS= qsnprint.o \
+OBJECTS= qsnprint.o \
 	strlcat.o \
 	strlcpy.o \
 	cmdlib.o \
@@ -87,8 +87,8 @@ BSP2WALOBJS= qsnprint.o \
 	bspfile.o \
 	bsp2wal.o
 
-$(BINARY) : $(BSP2WALOBJS)
-	$(LINKER) -o $(BINARY) $(BSP2WALOBJS) $(LDFLAGS) $(LDLIBS)
+$(BINARY) : $(OBJECTS)
+	$(LINKER) $(OBJECTS) $(LDFLAGS) $(LDLIBS) -o $@
 
 clean:
 	rm -f *.o core

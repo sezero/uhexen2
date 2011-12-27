@@ -76,7 +76,7 @@ all : $(BINARY)
 	$(CC) -c $(CFLAGS) $(INCLUDES) -o $@ $<
 
 # Objects
-GENMODELOBJS= qsnprint.o \
+OBJECTS= qsnprint.o \
 	strlcat.o \
 	strlcpy.o \
 	cmdlib.o \
@@ -91,8 +91,8 @@ GENMODELOBJS= qsnprint.o \
 	token.o \
 	genmodel.o
 
-$(BINARY) : $(GENMODELOBJS)
-	$(LINKER) -o $(BINARY) $(GENMODELOBJS) $(LDFLAGS) $(LDLIBS)
+$(BINARY) : $(OBJECTS)
+	$(LINKER) $(OBJECTS) $(LDFLAGS) $(LDLIBS) -o $@
 
 clean:
 	rm -f *.o core
