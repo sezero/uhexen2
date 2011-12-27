@@ -4,6 +4,10 @@ Development Progress	:
 ---------------------------
 
 2011-12-27 (SVN):
+    * cfgfile.c (CFG_ReadCvars): Also check for ferror(). Use FS_rewind()
+      instead of FS_fseek(). From Sander van Dijk.
+
+2011-12-27 (SVN):
     * model.c, gl_model.c (Mod_LoadEntities, Mod_LoadLighting): Consistent
       use of q_strlcpy and q_strlcat.
     * sv_main.c (SV_SpawnServer): Consistent use of q_strlcpy.

@@ -110,9 +110,9 @@ void CFG_ReadCvars (const char **vars, int num_vars)
 		if (j == num_vars)
 			break;
 
-	} while (!FS_feof(cfg_file));
+	} while (!FS_feof(cfg_file) && !FS_ferror(cfg_file));
 
-	FS_fseek (cfg_file, 0, SEEK_SET);
+	FS_rewind (cfg_file);
 }
 
 /*
