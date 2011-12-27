@@ -3,13 +3,17 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
-2011-12-25 (SVN):
+2011-12-27 (SVN):
+    * pr_edict.c (ED_LoadFromFile): Remove error when neither coop nor
+      deathmatch was set in h2ded builds, rely on server admin's skills.
+
+2011-12-27 (SVN):
     * Removed old QIP code that prevented coop and deathmatch to be set
       at the same time.  I was notified that it may actually cause some
       compatibility issues.  Just made sure that coop and deathmatch are
       cleared when starting a game from the menu system.
 
-2011-12-25 (SVN):
+2011-12-27 (SVN):
     * common.c (COM_StripExtension): If the input is empty, just write a
       0 to the output and return.
     * quakedef.h: updated beta date stamp to 2011-12-27.

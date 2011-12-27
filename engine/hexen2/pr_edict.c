@@ -1078,9 +1078,6 @@ void ED_LoadFromFile (const char *data)
 		}
 		else
 		{ // Gotta be single player
-#if defined(SERVERONLY)
-			Host_Error ("%s: Neither deathmatch nor coop is set!", __thisfunc__);
-#else
 			int		skip;
 
 			if (((int)ent->v.spawnflags & SPAWNFLAG_NOT_SINGLE))
@@ -1092,6 +1089,7 @@ void ED_LoadFromFile (const char *data)
 
 			skip = 0;
 
+#if !defined(SERVERONLY)
 			switch (cl_playerclass.integer)
 			{
 			case CLASS_PALADIN:
@@ -1123,6 +1121,7 @@ void ED_LoadFromFile (const char *data)
 				}
 				break;
 			}
+#endif	/* !SERVERONLY */
 
 			if (skip)
 			{
@@ -1130,7 +1129,6 @@ void ED_LoadFromFile (const char *data)
 				inhibit++;
 				continue;
 			}
-#endif	/* SERVERONLY */
 		}
 
 		if ((current_skill == 0 && ((int)ent->v.spawnflags & SPAWNFLAG_NOT_EASY))
