@@ -58,7 +58,8 @@ int q_vsnprintf(char *str, size_t size, const char *format, va_list args)
 
 	if (ret < 0)
 		ret = (int)size;
-
+	if (size == 0)	/* no buffer */
+		return ret;
 	if ((size_t)ret >= size)
 		str[size - 1] = '\0';
 
