@@ -656,9 +656,9 @@ static void Mod_LoadLighting (lump_t *l)
 			char	litfilename[MAX_QPATH];
 			unsigned int	path_id;
 
-			strcpy(litfilename, loadmodel->name);
+			q_strlcpy(litfilename, loadmodel->name, sizeof(litfilename));
 			COM_StripExtension(litfilename, litfilename, sizeof(litfilename));
-			strcat(litfilename, ".lit");
+			q_strlcat(litfilename, ".lit", sizeof(litfilename));
 			Con_DPrintf("trying to load %s\n", litfilename);
 			mark = Hunk_LowMark();
 			data = (byte*) FS_LoadHunkFile (litfilename, &path_id);
@@ -808,9 +808,9 @@ static void Mod_LoadEntities (lump_t *l)
 	if (! external_ents.integer)
 		goto _load_embedded;
 
-	strcpy(entfilename, loadmodel->name);
+	q_strlcpy(entfilename, loadmodel->name, sizeof(entfilename));
 	COM_StripExtension(entfilename, entfilename, sizeof(entfilename));
-	strcat(entfilename, ".ent");
+	q_strlcat(entfilename, ".ent", sizeof(entfilename));
 	Con_DPrintf("trying to load %s\n", entfilename);
 	mark = Hunk_LowMark();
 	ents = (char *) FS_LoadHunkFile (entfilename, &path_id);

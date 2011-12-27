@@ -598,9 +598,9 @@ static void Mod_LoadEntities (lump_t *l)
 	if (! external_ents.integer)
 		goto _load_embedded;
 
-	strcpy(entfilename, loadmodel->name);
+	q_strlcpy(entfilename, loadmodel->name, sizeof(entfilename));
 	COM_StripExtension(entfilename, entfilename, sizeof(entfilename));
-	strcat(entfilename, ".ent");
+	q_strlcat(entfilename, ".ent", sizeof(entfilename));
 	Con_DPrintf("trying to load %s\n", entfilename);
 	mark = Hunk_LowMark();
 	ents = (char *) FS_LoadHunkFile (entfilename, &path_id);

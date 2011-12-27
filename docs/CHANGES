@@ -4,7 +4,9 @@ Development Progress	:
 ---------------------------
 
 2011-12-27 (SVN):
-    * sv_main.c (SV_SpawnServer): Consistent use of strlcpy.
+    * model.c, gl_model.c (Mod_LoadEntities, Mod_LoadLighting): Consistent
+      use of q_strlcpy and q_strlcat.
+    * sv_main.c (SV_SpawnServer): Consistent use of q_strlcpy.
 
 2011-12-27 (SVN):
     * strlcat.c, strlcpy.c: Removed the arch_def.h includes.
