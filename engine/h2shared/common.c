@@ -182,8 +182,13 @@ COM_StripExtension
 */
 void COM_StripExtension (const char *in, char *out, size_t outsize)
 {
-	int		length;
+	int	length;
 
+	if (!*in)
+	{
+		*out = '\0';
+		return;
+	}
 	if (in != out)	/* copy when not in-place editing */
 		q_strlcpy (out, in, outsize);
 	length = (int)strlen(out) - 1;
