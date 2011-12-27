@@ -310,11 +310,9 @@ void SV_SpawnServer (const char *server, const char *startspot)
 	SZ_Init (&sv.signon, sv.signon_buffers[0], sizeof(sv.signon_buffers[0]));
 	sv.num_signon_buffers = 1;
 
-	strcpy (sv.name, server);
+	q_strlcpy (sv.name, server, sizeof(sv.name));
 	if (startspot)
-	{
-		strcpy(sv.startspot, startspot);
-	}
+		q_strlcpy(sv.startspot, startspot, sizeof(sv.startspot));
 
 	// load progs to get entity field count
 	// which determines how big each edict is

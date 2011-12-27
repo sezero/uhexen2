@@ -4,6 +4,9 @@ Development Progress	:
 ---------------------------
 
 2011-12-27 (SVN):
+    * sv_main.c (SV_SpawnServer): Consistent use of strlcpy.
+
+2011-12-27 (SVN):
     * strlcat.c, strlcpy.c: Removed the arch_def.h includes.
 
 2011-12-27 (SVN):

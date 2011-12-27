@@ -1986,10 +1986,9 @@ void SV_SpawnServer (const char *server, const char *startspot)
 	//memset (&sv, 0, sizeof(sv));
 	Host_ClearMemory ();
 
-	strcpy (sv.name, server);
-
+	q_strlcpy (sv.name, server, sizeof(sv.name));
 	if (startspot)
-		strcpy(sv.startspot, startspot);
+		q_strlcpy(sv.startspot, startspot, sizeof(sv.startspot));
 
 // load progs to get entity field count
 #if !defined(SERVERONLY)
