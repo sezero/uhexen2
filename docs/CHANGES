@@ -4,6 +4,10 @@ Development Progress	:
 ---------------------------
 
 2011-12-28 (SVN):
+    * Removed AoT from web links in the README files. The address is not
+      related to Anvil of Thyrion anymore.
+
+2011-12-28 (SVN):
     * cvar.c: Added Cvar_SetQuick() and Cvar_SetValueQuick() which accept
       a cvar pointer instead of a var name but are otherwise identical to
       the non-Quick versions. Cvar_Set, Cvar_SetROM, Cvar_SetValueROM and
