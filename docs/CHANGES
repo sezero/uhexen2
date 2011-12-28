@@ -4,6 +4,10 @@ Development Progress	:
 ---------------------------
 
 2011-12-28 (SVN):
+    * cvar.c (Cvar_SetQuick): Put back the tweak of reusing the string
+      buffer when the old and new sizes are the same.
+
+2011-12-28 (SVN):
     * Removed AoT from web links in the README files. The address is not
       related to Anvil of Thyrion anymore.
 

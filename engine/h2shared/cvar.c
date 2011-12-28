@@ -148,16 +148,25 @@ void Cvar_SetQuick (cvar_t *var, const char *value)
 	if (!(var->flags & CVAR_REGISTERED))
 		return;
 
-	if (var->string)
+	if (!var->string)
+		var->string = Z_Strdup (value);
+	else
 	{
+		size_t	len;
+
 		if (!strcmp(var->string, value))
 			return;	// no change
 
 		var->flags |= CVAR_CHANGED;
-		Z_Free ((void *)var->string);
+		len = strlen (value);
+		if (len != strlen(var->string))
+		{
+			Z_Free ((void *)var->string);
+			var->string = (char *) Z_Malloc (len + 1, Z_MAINZONE);
+		}
+		memcpy ((char *)var->string, value, len + 1);
 	}
 
-	var->string = Z_Strdup (value);
 	var->value = atof (var->string);
 	var->integer = (int) var->value;
 
@@ -300,7 +309,7 @@ void Cvar_RegisterVariable (cvar_t *variable)
 	if (!(variable->flags & CVAR_CALLBACK))
 		variable->callback = NULL;
 
-// set it through the function to be consistant
+// set it through the function to be consistent
 	set_rom = (variable->flags & CVAR_ROM);
 	variable->flags &= ~CVAR_ROM;
 	Cvar_SetQuick (variable, value);
