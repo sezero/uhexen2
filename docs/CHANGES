@@ -4,6 +4,13 @@ Development Progress	:
 ---------------------------
 
 2011-12-28 (SVN):
+    * cvar.c: Added Cvar_SetQuick() and Cvar_SetValueQuick() which accept
+      a cvar pointer instead of a var name but are otherwise identical to
+      the non-Quick versions. Cvar_Set, Cvar_SetROM, Cvar_SetValueROM and
+      and Cvar_RegisterVariable now call these Quick versions in order to
+      skip repeated name search.
+
+2011-12-28 (SVN):
     * cvar.c (Cvar_Set): Simplified.
     * quakedef.h: updated beta date stamp to 2011-12-28.
 

@@ -141,6 +141,49 @@ const char *Cvar_VariableString (const char *var_name)
 }
 
 
+void Cvar_SetQuick (cvar_t *var, const char *value)
+{
+	if (var->flags & (CVAR_ROM|CVAR_LOCKED))
+		return;
+	if (!(var->flags & CVAR_REGISTERED))
+		return;
+
+	if (var->string)
+	{
+		if (!strcmp(var->string, value))
+			return;	// no change
+
+		var->flags |= CVAR_CHANGED;
+		Z_Free ((void *)var->string);
+	}
+
+	var->string = Z_Strdup (value);
+	var->value = atof (var->string);
+	var->integer = (int) var->value;
+
+	if (var->callback)
+		var->callback (var);
+}
+
+void Cvar_SetValueQuick (cvar_t *var, const float value)
+{
+	char	val[32], *ptr = val;
+
+	if (value == (float)((int)value))
+		q_snprintf (val, sizeof(val), "%i", (int)value);
+	else
+	{
+		q_snprintf (val, sizeof(val), "%f", value);
+		// kill trailing zeroes
+		while (*ptr)
+			ptr++;
+		while (--ptr > val && *ptr == '0' && ptr[-1] != '.')
+			*ptr = '\0';
+	}
+
+	Cvar_SetQuick (var, val);
+}
+
 /*
 ============
 Cvar_Set
@@ -157,28 +200,7 @@ void Cvar_Set (const char *var_name, const char *value)
 		return;
 	}
 
-	if (var->flags & (CVAR_ROM|CVAR_LOCKED))
-		return;
-
-	if (var->flags & CVAR_REGISTERED)
-	{
-		if (!strcmp(var->string, value))
-			return;	// no change
-		var->flags |= CVAR_CHANGED;
-	}
-	else
-	{
-		var->flags |= CVAR_REGISTERED;
-	}
-
-	if (var->string)
-		Z_Free ((void *)var->string);
-	var->string = Z_Strdup (value);
-	var->value = atof (var->string);
-	var->integer = (int) var->value;
-
-	if (var->callback)
-		var->callback (var);
+	Cvar_SetQuick (var, value);
 }
 
 /*
@@ -217,7 +239,7 @@ void Cvar_SetROM (const char *var_name, const char *value)
 	if (var)
 	{
 		var->flags &= ~CVAR_ROM;
-		Cvar_Set (var_name, value);
+		Cvar_SetQuick (var, value);
 		var->flags |= CVAR_ROM;
 	}
 }
@@ -234,7 +256,7 @@ void Cvar_SetValueROM (const char *var_name, const float value)
 	if (var)
 	{
 		var->flags &= ~CVAR_ROM;
-		Cvar_SetValue (var_name, value);
+		Cvar_SetValueQuick (var, value);
 		var->flags |= CVAR_ROM;
 	}
 }
@@ -269,6 +291,7 @@ void Cvar_RegisterVariable (cvar_t *variable)
 // link the variable in
 	variable->next = cvar_vars;
 	cvar_vars = variable;
+	variable->flags |= CVAR_REGISTERED;
 
 // copy the value off, because future sets will Z_Free it
 	q_strlcpy (value, variable->string, sizeof(value));
@@ -280,7 +303,7 @@ void Cvar_RegisterVariable (cvar_t *variable)
 // set it through the function to be consistant
 	set_rom = (variable->flags & CVAR_ROM);
 	variable->flags &= ~CVAR_ROM;
-	Cvar_Set (variable->name, value);
+	Cvar_SetQuick (variable, value);
 	if (set_rom)
 		variable->flags |= CVAR_ROM;
 }
