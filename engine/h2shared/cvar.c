@@ -149,7 +149,6 @@ Cvar_Set
 void Cvar_Set (const char *var_name, const char *value)
 {
 	cvar_t		*var;
-	size_t		varlen;
 
 	var = Cvar_FindVar (var_name);
 	if (!var)
@@ -159,7 +158,7 @@ void Cvar_Set (const char *var_name, const char *value)
 	}
 
 	if (var->flags & (CVAR_ROM|CVAR_LOCKED))
-		return;	// cvar is marked read-only or locked temporarily
+		return;
 
 	if (var->flags & CVAR_REGISTERED)
 	{
@@ -172,18 +171,9 @@ void Cvar_Set (const char *var_name, const char *value)
 		var->flags |= CVAR_REGISTERED;
 	}
 
-	varlen = strlen(value);
-	if (var->string == NULL)
-	{
-		var->string = (char *) Z_Malloc (varlen + 1, Z_MAINZONE);
-	}
-	else if (strlen(var->string) != varlen)
-	{
-		Z_Free ((void *)var->string);	// free the old value string
-		var->string = (char *) Z_Malloc (varlen + 1, Z_MAINZONE);
-	}
-
-	memcpy ((char *)var->string, value, varlen + 1);
+	if (var->string)
+		Z_Free ((void *)var->string);
+	var->string = Z_Strdup (value);
 	var->value = atof (var->string);
 	var->integer = (int) var->value;
 
