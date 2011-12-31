@@ -3,7 +3,7 @@ see the documentation file StandaloneMods.txt for details.
 
 Index: engine/h2shared/quakefs.c
 ===================================================================
---- engine/h2shared/quakefs.c	(revision 4232)
+--- engine/h2shared/quakefs.c	(revision 4404)
 +++ engine/h2shared/quakefs.c	(working copy)
 @@ -49,6 +49,8 @@ unsigned int	gameflags;
  cvar_t	oem = {"oem", "0", CVAR_ROM};
@@ -99,7 +99,7 @@ Index: engine/h2shared/quakefs.c
  	int		i;
  	char		temp[32];
  	qboolean	check_portals = false;
-@@ -1461,6 +1516,94 @@ void FS_Init (void)
+@@ -1461,6 +1516,92 @@ void FS_Init (void)
  	}
  }
  
@@ -142,9 +142,7 @@ Index: engine/h2shared/quakefs.c
 +	FS_AddGameDirectory (va("%s/%s", fs_basedir, fs_dirstdalone), true);
 +
 +	/* force-add the registered flags: */
-+	registered.flags &= ~CVAR_ROM;
-+	Cvar_SetValue ("registered", 1);
-+	registered.flags |= CVAR_ROM;
++	Cvar_SetROM ("registered", "1");
 +	gameflags |= GAME_REGISTERED;
 +	Sys_Printf ("Playing standalone/mod version.\n");
 +
@@ -196,7 +194,7 @@ Index: engine/h2shared/quakefs.c
   * because we need the bookkeeping about file start/end positions.
 Index: engine/h2shared/quakefs.h
 ===================================================================
---- engine/h2shared/quakefs.h	(revision 4194)
+--- engine/h2shared/quakefs.h	(revision 4404)
 +++ engine/h2shared/quakefs.h	(working copy)
 @@ -31,6 +31,12 @@
  
