@@ -516,9 +516,9 @@ static void CL_Color_f (void)
 		bottom = 13;
 
 	q_snprintf (num, sizeof(num), "%i", top);
-	Cvar_Set ("topcolor", num);
+	Cvar_SetQuick (&topcolor, num);
 	q_snprintf (num, sizeof(num), "%i", bottom);
-	Cvar_Set ("bottomcolor", num);
+	Cvar_SetQuick (&bottomcolor, num);
 }
 
 /*
@@ -992,14 +992,13 @@ static void CL_Sensitivity_save_f (void)
 		Con_Printf ("sensitivity_save <save/restore>\n");
 		return;
 	}
-
 	if (q_strcasecmp(Cmd_Argv(1),"save") == 0)
 	{
 		save_sensitivity = sensitivity.value;
 	}
 	else if (q_strcasecmp(Cmd_Argv(1),"restore") == 0)
 	{
-		Cvar_SetValue ("sensitivity", save_sensitivity);
+		Cvar_SetValueQuick (&sensitivity, save_sensitivity);
 	}
 }
 

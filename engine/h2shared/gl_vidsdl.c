@@ -295,7 +295,7 @@ static void VID_ConWidth (int modenum)
 
 	if (!vid_conscale)
 	{
-		Cvar_SetValue ("vid_config_consize", modelist[modenum].width);
+		Cvar_SetValueQuick (&vid_config_consize, modelist[modenum].width);
 		return;
 	}
 
@@ -312,7 +312,7 @@ static void VID_ConWidth (int modenum)
 //	if (h < MIN_HEIGHT
 	if (h < 200 || h > modelist[modenum].height || w > modelist[modenum].width)
 	{
-		Cvar_SetValue ("vid_config_consize", modelist[modenum].width);
+		Cvar_SetValueQuick (&vid_config_consize, modelist[modenum].width);
 		vid_conscale = false;
 		return;
 	}
@@ -358,7 +358,7 @@ set_size:
 		return;
 	vid.width = vid.conwidth = w;
 	vid.height = vid.conheight = h;
-	Cvar_SetValue ("vid_config_consize", vid.conwidth);
+	Cvar_SetValueQuick (&vid_config_consize, vid.conwidth);
 	vid.recalc_refdef = 1;
 	if (vid.conwidth != modelist[vid_modenum].width)
 		vid_conscale = true;
@@ -438,9 +438,9 @@ static int VID_SetMode (int modenum)
 	vid_modenum = modenum;
 	is_fullscreen = (screen->flags & SDL_FULLSCREEN) ? 1 : 0;
 	modestate = (is_fullscreen) ? MS_FULLDIB : MS_WINDOWED;
-	Cvar_SetValue ("vid_config_glx", modelist[vid_modenum].width);
-	Cvar_SetValue ("vid_config_gly", modelist[vid_modenum].height);
-	Cvar_SetValue ("vid_config_fscr", is_fullscreen);
+	Cvar_SetValueQuick (&vid_config_glx, modelist[vid_modenum].width);
+	Cvar_SetValueQuick (&vid_config_gly, modelist[vid_modenum].height);
+	Cvar_SetValueQuick (&vid_config_fscr, is_fullscreen);
 	WRWidth = vid.width = vid.conwidth = modelist[modenum].width;
 	WRHeight = vid.height = vid.conheight = modelist[modenum].height;
 
@@ -454,7 +454,7 @@ static int VID_SetMode (int modenum)
 		SDL_GL_GetAttribute(SDL_GL_MULTISAMPLESAMPLES, &multisample);
 		Con_SafePrintf ("multisample buffer with %i samples\n", multisample);
 	}
-	Cvar_SetValue ("vid_config_fsaa", multisample);
+	Cvar_SetValueQuick (&vid_config_fsaa, multisample);
 
 	// collect the actual attributes
 	memset (&vid_attribs, 0, sizeof(attributes_t));
@@ -1161,7 +1161,7 @@ static void VID_Restart_f (void)
 	if (vid_mode.integer < 0 || vid_mode.integer >= *nummodes)
 	{
 		Con_Printf ("Bad video mode %d\n", vid_mode.integer);
-		Cvar_SetValue ("vid_mode", vid_modenum);
+		Cvar_SetValueQuick (&vid_mode, vid_modenum);
 		return;
 	}
 
@@ -1217,8 +1217,8 @@ no_fmodes:
 		modelist = wmodelist;
 		nummodes = &num_wmodes;
 		vid_default = RES_640X480;
-		Cvar_SetValue ("vid_config_glx", modelist[vid_default].width);
-		Cvar_SetValue ("vid_config_gly", modelist[vid_default].height);
+		Cvar_SetValueQuick (&vid_config_glx, modelist[vid_default].width);
+		Cvar_SetValueQuick (&vid_config_gly, modelist[vid_default].height);
 		return;
 	}
 
@@ -1235,8 +1235,8 @@ no_fmodes:
 		nummodes = &num_wmodes;
 		modelist = wmodelist;
 		vid_default = RES_640X480;
-		Cvar_SetValue ("vid_config_glx", modelist[vid_default].width);
-		Cvar_SetValue ("vid_config_gly", modelist[vid_default].height);
+		Cvar_SetValueQuick (&vid_config_glx, modelist[vid_default].width);
+		Cvar_SetValueQuick (&vid_config_gly, modelist[vid_default].height);
 		return;
 	}
 
@@ -1329,8 +1329,8 @@ no_fmodes:
 	if (i < num_wmodes)
 		num_wmodes = i;
 
-	Cvar_SetValue ("vid_config_glx", modelist[vid_default].width);
-	Cvar_SetValue ("vid_config_gly", modelist[vid_default].height);
+	Cvar_SetValueQuick (&vid_config_glx, modelist[vid_default].width);
+	Cvar_SetValueQuick (&vid_config_gly, modelist[vid_default].height);
 }
 
 static void VID_ListModes_f (void)
@@ -1497,7 +1497,7 @@ void	VID_Init (unsigned char *palette)
 	VID_PrepareModes(enumlist);
 
 	// set vid_mode to our safe default first
-	Cvar_SetValue ("vid_mode", vid_default);
+	Cvar_SetValueQuick (&vid_mode, vid_default);
 
 	// perform an early read of config.cfg
 	CFG_ReadCvars (read_vars, num_readvars);
@@ -1506,11 +1506,11 @@ void	VID_Init (unsigned char *palette)
 	// see if the user wants fullscreen
 	if (COM_CheckParm("-fullscreen") || COM_CheckParm("-f"))
 	{
-		Cvar_Set ("vid_config_fscr", "1");
+		Cvar_SetQuick (&vid_config_fscr, "1");
 	}
 	else if (COM_CheckParm("-window") || COM_CheckParm("-w"))
 	{
-		Cvar_Set ("vid_config_fscr", "0");
+		Cvar_SetQuick (&vid_config_fscr, "0");
 	}
 
 	if (vid_config_fscr.integer && !num_fmodes) // FIXME: see below, as well
@@ -1550,7 +1550,7 @@ void	VID_Init (unsigned char *palette)
 	}
 	if (i < *nummodes)
 	{
-		Cvar_SetValue ("vid_mode", i);
+		Cvar_SetValueQuick (&vid_mode, i);
 	}
 	else if ( (width <= vid_maxwidth && width >= MIN_WIDTH &&
 		   height <= vid_maxheight && height >= MIN_HEIGHT) ||
@@ -1562,7 +1562,7 @@ void	VID_Init (unsigned char *palette)
 		modelist[*nummodes].fullscreen = 1;
 		modelist[*nummodes].bpp = 16;
 		q_snprintf (modelist[*nummodes].modedesc, MAX_DESC, "%d x %d (user mode)", width, height);
-		Cvar_SetValue ("vid_mode", *nummodes);
+		Cvar_SetValueQuick (&vid_mode, *nummodes);
 		(*nummodes)++;
 	}
 	else
@@ -1571,14 +1571,14 @@ void	VID_Init (unsigned char *palette)
 	}
 
 	if (!vid_conscale)
-		Cvar_SetValue ("vid_config_consize", width);
+		Cvar_SetValueQuick (&vid_config_consize, width);
 
 	// This will display a bigger hud and readable fonts at high
 	// resolutions. The fonts will be somewhat distorted, though
 	i = COM_CheckParm("-conwidth");
 	if (i != 0 && i < com_argc-1)
 	{
-		Cvar_SetValue("vid_config_consize", atoi(com_argv[i+1]));
+		Cvar_SetValueQuick(&vid_config_consize, atoi(com_argv[i+1]));
 		if (vid_config_consize.integer != width)
 			vid_conscale = true;
 	}
@@ -1589,7 +1589,7 @@ void	VID_Init (unsigned char *palette)
 		multisample = atoi(com_argv[i+1]);
 
 	if (COM_CheckParm("-paltex"))
-		Cvar_Set ("vid_config_gl8bit", "1");
+		Cvar_SetQuick (&vid_config_gl8bit, "1");
 
 	vid.maxwarpwidth = WARP_WIDTH;
 	vid.maxwarpheight = WARP_HEIGHT;
@@ -1666,13 +1666,13 @@ void VID_ToggleFullscreen (void)
 	if ( SDL_WM_ToggleFullScreen(screen) == 1 )
 	{
 		is_fullscreen = (screen->flags & SDL_FULLSCREEN) ? 1 : 0;
-		Cvar_SetValue("vid_config_fscr", is_fullscreen);
+		Cvar_SetValueQuick(&vid_config_fscr, is_fullscreen);
 		modestate = (is_fullscreen) ? MS_FULLDIB : MS_WINDOWED;
 		if (is_fullscreen)
 		{
 #if 0	// change to 1 if dont want to disable mouse in fullscreen
 			if (!_enable_mouse.integer)
-				Cvar_Set ("_enable_mouse", "1");
+				Cvar_SetQuick (&_enable_mouse, "1");
 #endif
 			// activate mouse in fullscreen mode
 			// in_sdl.c handles other non-moused cases
@@ -1866,14 +1866,14 @@ static void VID_MenuKey (int key)
 			vid_menu_fs = (modestate != MS_WINDOWED);
 			vid_menunum = vid_modenum;
 			multisample = vid_config_fsaa.integer;
-			Cvar_SetValue ("vid_config_gl8bit", is8bit);
+			Cvar_SetValueQuick (&vid_config_gl8bit, is8bit);
 			vid_cursor = (num_fmodes) ? 0 : VID_RESOLUTION;
 			break;
 		case VID_APPLY:
 			if (need_apply)
 			{
-				Cvar_SetValue("vid_mode", vid_menunum);
-				Cvar_SetValue("vid_config_fscr", vid_menu_fs);
+				Cvar_SetValueQuick(&vid_mode, vid_menunum);
+				Cvar_SetValueQuick(&vid_config_fscr, vid_menu_fs);
 				VID_Restart_f();
 			}
 			vid_cursor = (num_fmodes) ? 0 : VID_RESOLUTION;
@@ -1907,7 +1907,7 @@ static void VID_MenuKey (int key)
 			break;
 		case VID_PALTEX:
 			if (have8bit)
-				Cvar_SetValue ("vid_config_gl8bit", !vid_config_gl8bit.integer);
+				Cvar_SetValueQuick (&vid_config_gl8bit, !vid_config_gl8bit.integer);
 			break;
 		}
 		return;
@@ -1938,7 +1938,7 @@ static void VID_MenuKey (int key)
 			break;
 		case VID_PALTEX:
 			if (have8bit)
-				Cvar_SetValue ("vid_config_gl8bit", !vid_config_gl8bit.integer);
+				Cvar_SetValueQuick (&vid_config_gl8bit, !vid_config_gl8bit.integer);
 			break;
 		}
 		return;

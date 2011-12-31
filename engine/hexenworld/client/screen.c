@@ -263,15 +263,15 @@ static void SCR_CalcRefdef (void)
 
 // bound viewsize
 	if (scr_viewsize.integer < 30)
-		Cvar_Set ("viewsize", "30");
+		Cvar_SetQuick (&scr_viewsize, "30");
 	else if (scr_viewsize.integer > 120)
-		Cvar_Set ("viewsize", "120");
+		Cvar_SetQuick (&scr_viewsize, "120");
 
 // bound field of view
 	if (scr_fov.integer < 10)
-		Cvar_Set ("fov", "10");
+		Cvar_SetQuick (&scr_fov, "10");
 	else if (scr_fov.integer > 110)
-		Cvar_Set ("fov", "110");
+		Cvar_SetQuick (&scr_fov, "110");
 
 	vid.recalc_refdef = 0;
 
@@ -315,7 +315,7 @@ Keybinding command
 */
 static void SCR_SizeUp_f (void)
 {
-	Cvar_SetValue ("viewsize", scr_viewsize.integer + 10);
+	Cvar_SetValueQuick (&scr_viewsize, scr_viewsize.integer + 10);
 }
 
 /*
@@ -327,7 +327,7 @@ Keybinding command
 */
 static void SCR_SizeDown_f (void)
 {
-	Cvar_SetValue ("viewsize", scr_viewsize.integer - 10);
+	Cvar_SetValueQuick (&scr_viewsize, scr_viewsize.integer - 10);
 }
 
 static void SCR_Callback_refdef (cvar_t *var)

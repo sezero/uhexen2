@@ -280,9 +280,9 @@ static void Host_FindMaxClients (void)
 	svs.clients = (client_t *) Hunk_AllocName (svs.maxclientslimit*sizeof(client_t), "clients");
 
 	if (svs.maxclients > 1)
-		Cvar_Set ("deathmatch", "1");
+		Cvar_SetQuick (&deathmatch, "1");
 	else
-		Cvar_Set ("deathmatch", "0");
+		Cvar_SetQuick (&deathmatch, "0");
 }
 
 /*

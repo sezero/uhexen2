@@ -648,7 +648,7 @@ static int VID_ExtraInitMode (viddef_t *lvid, vmode_t *pcurrentmode)
 	if (!pextra->vga_incompatible  &&
 		(lvid->numpages == 3) && de_exists && (_vid_wait_override.integer == 0))
 	{
-		Cvar_SetValue ("vid_wait", (float)VID_WAIT_DISPLAY_ENABLE);
+		Cvar_SetValueQuick (&vid_wait, (float)VID_WAIT_DISPLAY_ENABLE);
 
 		VID_displayedpage = 0;
 		VID_currentpage = 1;
@@ -657,12 +657,12 @@ static int VID_ExtraInitMode (viddef_t *lvid, vmode_t *pcurrentmode)
 	{
 		if ((lvid->numpages == 1) && (_vid_wait_override.integer == 0))
 		{
-			Cvar_SetValue ("vid_wait", (float)VID_WAIT_NONE);
+			Cvar_SetValueQuick (&vid_wait, (float)VID_WAIT_NONE);
 			VID_displayedpage = VID_currentpage = 0;
 		}
 		else
 		{
-			Cvar_SetValue ("vid_wait", (float)VID_WAIT_VSYNC);
+			Cvar_SetValueQuick (&vid_wait, (float)VID_WAIT_VSYNC);
 
 			VID_displayedpage = 0;
 

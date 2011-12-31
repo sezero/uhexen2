@@ -585,11 +585,11 @@ static void SVC_DirectConnect (void)
 
 	// if at server limits, refuse connection
 	if (maxclients.integer > MAX_CLIENTS)
-		Cvar_SetValue ("maxclients", MAX_CLIENTS);
+		Cvar_SetValueQuick (&maxclients, MAX_CLIENTS);
 	if (maxspectators.integer > MAX_CLIENTS)
-		Cvar_SetValue ("maxspectators", MAX_CLIENTS);
+		Cvar_SetValueQuick (&maxspectators, MAX_CLIENTS);
 	if (maxspectators.integer + maxclients.integer > MAX_CLIENTS)
-		Cvar_SetValue ("maxspectators", MAX_CLIENTS - maxspectators.integer + maxclients.integer);
+		Cvar_SetValueQuick (&maxspectators, MAX_CLIENTS - maxspectators.integer + maxclients.integer);
 	if ( (spectator && spectators >= maxspectators.integer)
 		|| (!spectator && clients >= maxclients.integer) )
 	{

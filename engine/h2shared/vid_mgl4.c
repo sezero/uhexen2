@@ -210,8 +210,8 @@ static void VID_RememberWindowPos (void)
 			(rect.right > 0)			     &&
 			(rect.bottom > 0))
 		{
-			Cvar_SetValue ("vid_window_x", (float)rect.left);
-			Cvar_SetValue ("vid_window_y", (float)rect.top);
+			Cvar_SetValueQuick (&vid_window_x, (float)rect.left);
+			Cvar_SetValueQuick (&vid_window_y, (float)rect.top);
 		}
 	}
 }
@@ -230,8 +230,8 @@ static void VID_CheckWindowXY (void)
 		(vid_window_x.integer < 0)					||
 		(vid_window_y.integer < 0))
 	{
-		Cvar_Set ("vid_window_x", "0");
-		Cvar_Set ("vid_window_y", "0");
+		Cvar_SetQuick (&vid_window_x, "0");
+		Cvar_SetQuick (&vid_window_y, "0");
 	}
 }
 
@@ -1313,8 +1313,8 @@ static qboolean VID_SetWindowedMode (int modenum)
 	{
 		if (COM_CheckParm ("-resetwinpos"))
 		{
-			Cvar_Set ("vid_window_x", "0");
-			Cvar_Set ("vid_window_y", "0");
+			Cvar_SetQuick (&vid_window_x, "0");
+			Cvar_SetQuick (&vid_window_y, "0");
 		}
 
 		windowed_mode_set = true;
@@ -1664,11 +1664,11 @@ static int VID_SetMode (int modenum, unsigned char *palette)
 				modenum = vid_default;
 			}
 
-			Cvar_SetValue ("vid_mode", (float)modenum);
+			Cvar_SetValueQuick (&vid_mode, (float)modenum);
 		}
 		else
 		{
-			Cvar_SetValue ("vid_mode", (float)vid_modenum);
+			Cvar_SetValueQuick (&vid_mode, (float)vid_modenum);
 			return 0;
 		}
 	}
@@ -1755,7 +1755,7 @@ static int VID_SetMode (int modenum, unsigned char *palette)
 	ReleaseDC(NULL,hdc);
 
 	vid_modenum = modenum;
-	Cvar_SetValue ("vid_mode", (float)vid_modenum);
+	Cvar_SetValueQuick (&vid_mode, (float)vid_modenum);
 
 	if (!VID_AllocBuffers (vid.width, vid.height))
 	{
@@ -2397,8 +2397,8 @@ void VID_Update (vrect_t *rects)
 			{
 				if (COM_CheckParm ("-resetwinpos"))
 				{
-					Cvar_Set ("vid_window_x", "0");
-					Cvar_Set ("vid_window_y", "0");
+					Cvar_SetQuick (&vid_window_x, "0");
+					Cvar_SetQuick (&vid_window_y, "0");
 				}
 
 				VID_CheckWindowXY ();
@@ -2417,16 +2417,16 @@ void VID_Update (vrect_t *rects)
 
 			if (COM_CheckParm ("-resetwinpos"))
 			{
-				Cvar_Set ("vid_window_x", "0");
-				Cvar_Set ("vid_window_y", "0");
+				Cvar_SetQuick (&vid_window_x, "0");
+				Cvar_SetQuick (&vid_window_y, "0");
 			}
 
 			if (_vid_default_mode_win.integer < 0 || _vid_default_mode_win.integer >= nummodes)
 			{
-				Cvar_SetValue ("_vid_default_mode_win", windowed_default);
+				Cvar_SetValueQuick (&_vid_default_mode_win, windowed_default);
 			}
 
-			Cvar_SetValue ("vid_mode", _vid_default_mode_win.integer);
+			Cvar_SetValueQuick (&vid_mode, _vid_default_mode_win.integer);
 		}
 	}
 
@@ -2446,7 +2446,7 @@ void VID_Update (vrect_t *rects)
 		if (vid_mode.integer != vid_realmode)
 		{
 			VID_SetMode (vid_mode.integer, vid_curpal);
-			Cvar_SetValue ("vid_mode", vid_modenum);
+			Cvar_SetValueQuick (&vid_mode, vid_modenum);
 								// so if mode set fails, we don't keep on
 								//  trying to set that mode
 			vid_realmode = vid_modenum;
@@ -3541,7 +3541,7 @@ static void VID_MenuKey (int key)
 	case 'd':
 		S_LocalSound ("raven/menu1.wav");
 		firstupdate = false;
-		Cvar_SetValue ("_vid_default_mode_win", vid_modenum);
+		Cvar_SetValueQuick (&_vid_default_mode_win, vid_modenum);
 		break;
 
 	default:

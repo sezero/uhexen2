@@ -630,7 +630,7 @@ void V_UpdatePalette (void)
 	if (v_gamma.flags & CVAR_CHANGED)
 	{
 		if (v_gamma.value > 1.0 || v_gamma.value < (1.0 / GAMMA_MAX))
-			Cvar_Set ("gamma", "1");
+			Cvar_SetQuick (&v_gamma, "1");
 		v_gamma.flags &= ~CVAR_CHANGED;
 		BuildGammaTable (v_gamma.value);
 		vid.recalc_refdef = 1;		// force a surface cache flush
@@ -692,7 +692,7 @@ void V_UpdatePalette (void)
 	if (v_gamma.flags & CVAR_CHANGED)
 	{
 		if (v_gamma.value > 1.0 || v_gamma.value < (1.0 / GAMMA_MAX))
-			Cvar_Set ("gamma", "1");
+			Cvar_SetQuick (&v_gamma, "1");
 		v_gamma.flags &= ~CVAR_CHANGED;
 		BuildGammaTable (v_gamma.value);
 		vid.recalc_refdef = 1;		// force a surface cache flush

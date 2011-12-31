@@ -277,7 +277,7 @@ void S_Init (void)
 
 	if (host_parms->memsize < 0x800000)
 	{
-		Cvar_Set ("loadas8bit", "1");
+		Cvar_SetQuick (&loadas8bit, "1");
 		Con_Printf ("loading all sounds as 8bit\n");
 	}
 
@@ -287,13 +287,13 @@ void S_Init (void)
 	CFG_ReadCvarOverrides (read_vars, num_readvars);
 
 	if (sfxvolume.value < 0)
-		Cvar_Set("volume", "0");
+		Cvar_SetQuick(&sfxvolume, "0");
 	else if (sfxvolume.value > 1)
-		Cvar_Set("volume", "1");
+		Cvar_SetQuick(&sfxvolume, "1");
 	if (bgmvolume.value < 0)
-		Cvar_Set("bgmvolume", "0");
+		Cvar_SetQuick(&bgmvolume, "0");
 	else if (bgmvolume.value > 1)
-		Cvar_Set("bgmvolume", "1");
+		Cvar_SetQuick(&bgmvolume, "1");
 
 	Cvar_SetCallback(&sfxvolume, SND_Callback_sfxvolume);
 
@@ -1101,19 +1101,19 @@ static void S_ToggleMute (void)
 {
 	if (sfx_mutedvol.value || bgm_mutedvol.value)
 	{
-		Cvar_SetValue("volume", sfx_mutedvol.value);
-		Cvar_SetValue("bgmvolume", bgm_mutedvol.value);
-		Cvar_Set("sfx_mutedvol", "0");
-		Cvar_Set("bgm_mutedvol", "0");
+		Cvar_SetValueQuick(&sfxvolume, sfx_mutedvol.value);
+		Cvar_SetValueQuick(&bgmvolume, bgm_mutedvol.value);
+		Cvar_SetQuick(&sfx_mutedvol, "0");
+		Cvar_SetQuick(&bgm_mutedvol, "0");
 		if (sfxvolume.value || bgmvolume.value)
 			Con_Printf ("Unmuted\n");
 	}
 	else
 	{
-		Cvar_SetValue("sfx_mutedvol", sfxvolume.value);
-		Cvar_SetValue("bgm_mutedvol", bgmvolume.value);
-		Cvar_Set("volume", "0");
-		Cvar_Set("bgmvolume", "0");
+		Cvar_SetValueQuick(&sfx_mutedvol, sfxvolume.value);
+		Cvar_SetValueQuick(&bgm_mutedvol, bgmvolume.value);
+		Cvar_SetQuick(&sfxvolume, "0");
+		Cvar_SetQuick(&bgmvolume, "0");
 		if (sfx_mutedvol.value || bgm_mutedvol.value)
 			Con_Printf ("Muted\n");
 	}
@@ -1122,18 +1122,18 @@ static void S_ToggleMute (void)
 static void S_VolumeDown (void)
 {
 	if (sfxvolume.value >= 0.1)
-		Cvar_SetValue("volume", sfxvolume.value - 0.1);
+		Cvar_SetValueQuick(&sfxvolume, sfxvolume.value - 0.1);
 	if (bgmvolume.value >= 0.1)
-		Cvar_SetValue("bgmvolume", bgmvolume.value - 0.1);
+		Cvar_SetValueQuick(&bgmvolume, bgmvolume.value - 0.1);
 	Con_Printf ("Volume is %3.1f\n", sfxvolume.value);
 }
 
 static void S_VolumeUp (void)
 {
 	if (sfxvolume.value <= 0.9)
-		Cvar_SetValue("volume", sfxvolume.value + 0.1);
+		Cvar_SetValueQuick(&sfxvolume, sfxvolume.value + 0.1);
 	if (bgmvolume.value <= 0.9)
-		Cvar_SetValue("bgmvolume", bgmvolume.value + 0.1);
+		Cvar_SetValueQuick(&bgmvolume, bgmvolume.value + 0.1);
 	Con_Printf ("Volume is %3.1f\n", sfxvolume.value);
 }
 

@@ -115,7 +115,7 @@ void CL_PredictMove (void)
 	int			oldphysent;
 
 	if (cl_pushlatency.value > 0)
-		Cvar_Set ("pushlatency", "0");
+		Cvar_SetQuick (&cl_pushlatency, "0");
 
 	cl.time = realtime - cls.latency - cl_pushlatency.value*0.001;
 	if (cl.time > realtime)

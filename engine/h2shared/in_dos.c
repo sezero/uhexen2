@@ -120,10 +120,7 @@ static qboolean IN_ReadJoystick (void);
 
 static void Toggle_AuxLook_f (void)
 {
-	if (aux_look.integer)
-		Cvar_Set ("auxlook","0");
-	else
-		Cvar_Set ("auxlook","1");
+	Cvar_SetQuick (&aux_look, (aux_look.integer) ? "0" : "1");
 }
 
 

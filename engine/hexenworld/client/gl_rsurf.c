@@ -137,7 +137,7 @@ void GL_SetupLightmapFmt (qboolean check_cmdline)
 	else
 	{
 		gl_lightmap_format = GL_RGBA;
-		Cvar_Set ("gl_lightmapfmt", "GL_RGBA");
+		Cvar_SetQuick (&gl_lightmapfmt, "GL_RGBA");
 	}
 
 	// check for commandline overrides
@@ -146,12 +146,12 @@ void GL_SetupLightmapFmt (qboolean check_cmdline)
 		if (COM_CheckParm ("-lm_1"))
 		{
 			gl_lightmap_format = GL_LUMINANCE;
-			Cvar_Set ("gl_lightmapfmt", "GL_LUMINANCE");
+			Cvar_SetQuick (&gl_lightmapfmt, "GL_LUMINANCE");
 		}
 		else if (COM_CheckParm ("-lm_4"))
 		{
 			gl_lightmap_format = GL_RGBA;
-			Cvar_Set ("gl_lightmapfmt", "GL_RGBA");
+			Cvar_SetQuick (&gl_lightmapfmt, "GL_RGBA");
 		}
 	}
 

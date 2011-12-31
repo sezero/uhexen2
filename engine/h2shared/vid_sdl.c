@@ -336,8 +336,8 @@ no_fmodes:
 		modelist = wmodelist;
 		nummodes = &num_wmodes;
 		vid_default = 0;
-		Cvar_SetValue ("vid_config_swx", modelist[vid_default].width);
-		Cvar_SetValue ("vid_config_swy", modelist[vid_default].height);
+		Cvar_SetValueQuick (&vid_config_swx, modelist[vid_default].width);
+		Cvar_SetValueQuick (&vid_config_swy, modelist[vid_default].height);
 		return;
 	}
 
@@ -354,8 +354,8 @@ no_fmodes:
 		nummodes = &num_wmodes;
 		modelist = wmodelist;
 		vid_default = 0;
-		Cvar_SetValue ("vid_config_swx", modelist[vid_default].width);
-		Cvar_SetValue ("vid_config_swy", modelist[vid_default].height);
+		Cvar_SetValueQuick (&vid_config_swx, modelist[vid_default].width);
+		Cvar_SetValueQuick (&vid_config_swy, modelist[vid_default].height);
 		return;
 	}
 
@@ -466,8 +466,8 @@ no_fmodes:
 	if (i < num_wmodes)
 		num_wmodes = i;
 
-	Cvar_SetValue ("vid_config_swx", modelist[vid_default].width);
-	Cvar_SetValue ("vid_config_swy", modelist[vid_default].height);
+	Cvar_SetValueQuick (&vid_config_swx, modelist[vid_default].width);
+	Cvar_SetValueQuick (&vid_config_swy, modelist[vid_default].height);
 }
 
 static void VID_ListModes_f (void)
@@ -545,9 +545,9 @@ static int VID_SetMode (int modenum, unsigned char *palette)
 	vid_modenum = modenum;
 	is_fullscreen = (screen->flags & SDL_FULLSCREEN) ? 1 : 0;
 	modestate = (is_fullscreen) ? MS_FULLDIB : MS_WINDOWED;
-	Cvar_SetValue ("vid_config_swx", modelist[vid_modenum].width);
-	Cvar_SetValue ("vid_config_swy", modelist[vid_modenum].height);
-	Cvar_SetValue ("vid_config_fscr", is_fullscreen);
+	Cvar_SetValueQuick (&vid_config_swx, modelist[vid_modenum].width);
+	Cvar_SetValueQuick (&vid_config_swy, modelist[vid_modenum].height);
+	Cvar_SetValueQuick (&vid_config_fscr, is_fullscreen);
 
 	IN_HideMouse ();
 
@@ -592,7 +592,7 @@ static void VID_ChangeVideoMode (int newmode)
 
 		// failed setting mode, probably due to insufficient
 		// memory. go back to previous mode.
-		Cvar_SetValue ("vid_mode", vid_modenum);
+		Cvar_SetValueQuick (&vid_mode, vid_modenum);
 		stat = VID_SetMode (vid_modenum, vid_curpal);
 		if (!stat)
 			Sys_Error ("Couldn't set video mode: %s", SDL_GetError());
@@ -608,7 +608,7 @@ static void VID_Restart_f (void)
 	if (vid_mode.integer < 0 || vid_mode.integer >= *nummodes)
 	{
 		Con_Printf ("Bad video mode %d\n", vid_mode.integer);
-		Cvar_SetValue ("vid_mode", vid_modenum);
+		Cvar_SetValueQuick (&vid_mode, vid_modenum);
 		return;
 	}
 
@@ -733,7 +733,7 @@ void VID_Init (unsigned char *palette)
 	VID_PrepareModes(enumlist);
 
 	// set vid_mode to our safe default first
-	Cvar_SetValue ("vid_mode", vid_default);
+	Cvar_SetValueQuick (&vid_mode, vid_default);
 
 	// perform an early read of config.cfg
 	CFG_ReadCvars (read_vars, num_readvars);
@@ -742,11 +742,11 @@ void VID_Init (unsigned char *palette)
 	// see if the user wants fullscreen
 	if (COM_CheckParm("-fullscreen") || COM_CheckParm("-f"))
 	{
-		Cvar_Set ("vid_config_fscr", "1");
+		Cvar_SetQuick (&vid_config_fscr, "1");
 	}
 	else if (COM_CheckParm("-window") || COM_CheckParm("-w"))
 	{
-		Cvar_Set ("vid_config_fscr", "0");
+		Cvar_SetQuick (&vid_config_fscr, "0");
 	}
 
 	if (vid_config_fscr.integer && !num_fmodes) // FIXME: see below, as well
@@ -783,7 +783,7 @@ void VID_Init (unsigned char *palette)
 	}
 	if (i < *nummodes)
 	{
-		Cvar_SetValue ("vid_mode", i);
+		Cvar_SetValueQuick (&vid_mode, i);
 	}
 	else if ( (width <= vid_maxwidth && width >= MIN_WIDTH &&
 		   height <= vid_maxheight && height >= MIN_HEIGHT) ||
@@ -795,7 +795,7 @@ void VID_Init (unsigned char *palette)
 		modelist[*nummodes].fullscreen = 1;
 		modelist[*nummodes].bpp = 8;
 		q_snprintf (modelist[*nummodes].modedesc, MAX_DESC, "%d x %d (user mode)", width, height);
-		Cvar_SetValue ("vid_mode", *nummodes);
+		Cvar_SetValueQuick (&vid_mode, *nummodes);
 		(*nummodes)++;
 	}
 	else
@@ -817,8 +817,8 @@ void VID_Init (unsigned char *palette)
 		// just one more try before dying
 		Con_SafePrintf ("Couldn't set video mode %d\n"
 				"Trying the default mode\n", vid_mode.integer);
-		//Cvar_Set ("vid_config_fscr", "0");
-		Cvar_SetValue ("vid_mode", vid_default);
+		//Cvar_SetQuick (&vid_config_fscr, "0");
+		Cvar_SetValueQuick (&vid_mode, vid_default);
 		i = VID_SetMode(vid_default, palette);
 		if ( !i )
 			Sys_Error ("Couldn't set video mode: %s", SDL_GetError());
@@ -1061,7 +1061,7 @@ void VID_ToggleFullscreen (void)
 	if ( SDL_WM_ToggleFullScreen(screen) == 1 )
 	{
 		is_fullscreen = (screen->flags & SDL_FULLSCREEN) ? 1 : 0;
-		Cvar_SetValue("vid_config_fscr", is_fullscreen);
+		Cvar_SetValueQuick(&vid_config_fscr, is_fullscreen);
 		modestate = (is_fullscreen) ? MS_FULLDIB : MS_WINDOWED;
 		if (is_fullscreen)
 		{
@@ -1187,8 +1187,8 @@ static void VID_MenuKey (int key)
 		case VID_APPLY:
 			if (need_apply)
 			{
-				Cvar_SetValue("vid_mode", vid_menunum);
-				Cvar_SetValue("vid_config_fscr", vid_menu_fs);
+				Cvar_SetValueQuick(&vid_mode, vid_menunum);
+				Cvar_SetValueQuick(&vid_config_fscr, vid_menu_fs);
 				VID_Restart_f();
 			}
 			vid_cursor = (num_fmodes) ? 0 : VID_RESOLUTION;

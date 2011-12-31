@@ -3,6 +3,11 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2011-12-31 (SVN):
+    * changed some of the Cvar_Set[Value] calls to their *Quick variants
+      in the source files where the vars are defined.
+    * quakedef.h: updated beta date stamp to 2011-12-31.
+
 2011-12-28 (SVN):
     * cvar.c (Cvar_SetQuick): Put back the tweak of reusing the string
       buffer when the old and new sizes are the same.

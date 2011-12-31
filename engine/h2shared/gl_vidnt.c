@@ -257,7 +257,7 @@ static void VID_ConWidth (int modenum)
 
 	if (!vid_conscale)
 	{
-		Cvar_SetValue ("vid_config_consize", modelist[modenum].width);
+		Cvar_SetValueQuick (&vid_config_consize, modelist[modenum].width);
 		return;
 	}
 
@@ -274,7 +274,7 @@ static void VID_ConWidth (int modenum)
 //	if (h < MIN_HEIGHT
 	if (h < 200 || h > modelist[modenum].height || w > modelist[modenum].width)
 	{
-		Cvar_SetValue ("vid_config_consize", modelist[modenum].width);
+		Cvar_SetValueQuick (&vid_config_consize, modelist[modenum].width);
 		vid_conscale = false;
 		return;
 	}
@@ -320,7 +320,7 @@ set_size:
 		return;
 	vid.width = vid.conwidth = w;
 	vid.height = vid.conheight = h;
-	Cvar_SetValue ("vid_config_consize", vid.conwidth);
+	Cvar_SetValueQuick (&vid_config_consize, vid.conwidth);
 	vid.recalc_refdef = 1;
 	if (vid.conwidth != modelist[vid_modenum].width)
 		vid_conscale = true;
@@ -371,7 +371,7 @@ static qboolean VID_SetWindowedMode (int modenum)
 				 WindowRect.bottom - WindowRect.top, false);
 
 	modestate = MS_WINDOWED;
-	Cvar_Set ("vid_config_fscr", "0");
+	Cvar_SetQuick (&vid_config_fscr, "0");
 
 	return true;
 }
@@ -420,7 +420,7 @@ static qboolean VID_SetFullDIBMode (int modenum)
 		Sys_Error ("Couldn't create DIB window");
 
 	modestate = MS_FULLDIB;
-	Cvar_Set ("vid_config_fscr", "1");
+	Cvar_SetQuick (&vid_config_fscr, "1");
 
 // needed because we're not getting WM_MOVE messages fullscreen on NT
 	window_x = 0;
@@ -506,10 +506,10 @@ static int VID_SetMode (int modenum, unsigned char *palette)
 	SetForegroundWindow (mainwindow);
 	//VID_SetPalette (palette);
 	vid_modenum = modenum;
-	Cvar_SetValue ("vid_config_glx", modelist[vid_modenum].width);
-	Cvar_SetValue ("vid_config_gly", modelist[vid_modenum].height);
+	Cvar_SetValueQuick (&vid_config_glx, modelist[vid_modenum].width);
+	Cvar_SetValueQuick (&vid_config_gly, modelist[vid_modenum].height);
 	if (modestate != MS_WINDOWED)
-		Cvar_SetValue ("vid_config_bpp", modelist[vid_modenum].bpp);
+		Cvar_SetValueQuick (&vid_config_bpp, modelist[vid_modenum].bpp);
 
 	while (PeekMessage (&msg, NULL, 0, 0, PM_REMOVE))
 	{
@@ -1884,7 +1884,7 @@ static void VID_Restart_f (void)
 	if (vid_mode.integer < 0 || vid_mode.integer >= *nummodes)
 	{
 		Con_Printf ("Bad video mode %d\n", vid_mode.integer);
-		Cvar_SetValue ("vid_mode", vid_modenum);
+		Cvar_SetValueQuick (&vid_mode, vid_modenum);
 		return;
 	}
 
@@ -2070,11 +2070,11 @@ void	VID_Init (unsigned char *palette)
 
 	if (COM_CheckParm("-window") || COM_CheckParm("-w"))
 	{
-		Cvar_Set ("vid_config_fscr", "0");
+		Cvar_SetQuick (&vid_config_fscr, "0");
 	}
 	else if (COM_CheckParm("-fullscreen") || COM_CheckParm("-f"))
 	{
-		Cvar_Set ("vid_config_fscr", "1");
+		Cvar_SetQuick (&vid_config_fscr, "1");
 	}
 
 	if (vid_config_consize.integer != width)
@@ -2302,14 +2302,14 @@ void	VID_Init (unsigned char *palette)
 	}	// end of fullscreen parsing
 
 	if (!vid_conscale)
-		Cvar_SetValue ("vid_config_consize", width);
+		Cvar_SetValueQuick (&vid_config_consize, width);
 
 	// This will display a bigger hud and readable fonts at high
 	// resolutions. The fonts will be somewhat distorted, though
 	i = COM_CheckParm("-conwidth");
 	if (i != 0 && i < com_argc-1)
 	{
-		Cvar_SetValue("vid_config_consize", atoi(com_argv[i+1]));
+		Cvar_SetValueQuick(&vid_config_consize, atoi(com_argv[i+1]));
 		if (vid_config_consize.integer != width)
 			vid_conscale = true;
 	}
@@ -2326,12 +2326,12 @@ void	VID_Init (unsigned char *palette)
 #endif
 
 	if (COM_CheckParm("-paltex"))
-		Cvar_Set ("vid_config_gl8bit", "1");
+		Cvar_SetQuick (&vid_config_gl8bit, "1");
 
 	j = scr_disabled_for_loading;
 	scr_disabled_for_loading = true;
 
-	Cvar_SetValue ("vid_mode", vid_default);
+	Cvar_SetValueQuick (&vid_mode, vid_default);
 	VID_SetMode (vid_default, palette);
 
 	maindc = GetDC(mainwindow);
@@ -2679,13 +2679,13 @@ static void VID_MenuKey (int key)
 			vid_menubpp = modelist[vid_modenum].bpp;
 			vid_menu_fs = (modestate != MS_WINDOWED);
 			vid_menulist = (modestate == MS_WINDOWED) ? wmodelist : fmodelist;
-			Cvar_SetValue ("vid_config_gl8bit", is8bit);
+			Cvar_SetValueQuick (&vid_config_gl8bit, is8bit);
 			vid_cursor = (num_fmodes) ? 0 : VID_RESOLUTION;
 			break;
 		case VID_APPLY:
 			if (need_apply)
 			{
-				Cvar_SetValue("vid_mode", vid_menunum);
+				Cvar_SetValueQuick(&vid_mode, vid_menunum);
 				modelist = (vid_menu_fs) ? fmodelist : wmodelist;
 				nummodes = (vid_menu_fs) ? &num_fmodes : &num_wmodes;
 				VID_Restart_f();
@@ -2722,7 +2722,7 @@ static void VID_MenuKey (int key)
 			break;
 		case VID_PALTEX:
 			if (have8bit)
-				Cvar_SetValue ("vid_config_gl8bit", !vid_config_gl8bit.integer);
+				Cvar_SetValueQuick (&vid_config_gl8bit, !vid_config_gl8bit.integer);
 			break;
 		}
 		return;
@@ -2755,7 +2755,7 @@ static void VID_MenuKey (int key)
 			break;
 		case VID_PALTEX:
 			if (have8bit)
-				Cvar_SetValue ("vid_config_gl8bit", !vid_config_gl8bit.integer);
+				Cvar_SetValueQuick (&vid_config_gl8bit, !vid_config_gl8bit.integer);
 			break;
 		}
 		return;

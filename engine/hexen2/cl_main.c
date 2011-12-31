@@ -905,11 +905,10 @@ static void CL_Sensitivity_save_f (void)
 		Con_Printf ("sensitivity_save <save/restore>\n");
 		return;
 	}
-
 	if (q_strcasecmp(Cmd_Argv(1),"save") == 0)
 		save_sensitivity = sensitivity.value;
 	else if (q_strcasecmp(Cmd_Argv(1),"restore") == 0)
-		Cvar_SetValue ("sensitivity", save_sensitivity);
+		Cvar_SetValueQuick (&sensitivity, save_sensitivity);
 }
 
 /*

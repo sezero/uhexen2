@@ -212,7 +212,7 @@ static int VID_SetMode (int modenum, unsigned char *palette)
 
 	if ((modenum >= numvidmodes) || (modenum < 0))
 	{
-		Cvar_SetValue ("vid_mode", (float)vid_modenum);
+		Cvar_SetValueQuick (&vid_mode, (float)vid_modenum);
 
 		nomodecheck = true;
 		Con_Printf ("No such video mode: %d\n", modenum);
@@ -275,7 +275,7 @@ static int VID_SetMode (int modenum, unsigned char *palette)
 	(*pcurrentmode->setpalette) (&vid, pcurrentmode, palette);
 
 	vid_modenum = modenum;
-	Cvar_SetValue ("vid_mode", (float)vid_modenum);
+	Cvar_SetValueQuick (&vid_mode, (float)vid_modenum);
 
 	nomodecheck = true;
 	Con_Printf ("%s\n", VID_ModeInfo (vid_modenum, NULL));
@@ -337,10 +337,10 @@ void    VID_Update (vrect_t *rects)
 	if (firstupdate && _vid_default_mode.integer)
 	{
 		if(_vid_default_mode.integer >= numvidmodes)
-			Cvar_Set ("_vid_default_mode", "0");
+			Cvar_SetQuick (&_vid_default_mode, "0");
 
 		firstupdate = 0;
-		Cvar_SetValue ("vid_mode", _vid_default_mode.integer);
+		Cvar_SetValueQuick (&vid_mode, _vid_default_mode.integer);
 	}
 
 	(*pcurrentmode->swapbuffers)(&vid, pcurrentmode, rects);
@@ -360,7 +360,7 @@ void    VID_Update (vrect_t *rects)
 			if (vid_mode.integer != vid_realmode)
 			{
 				VID_SetMode (vid_mode.integer, vid_current_palette);
-				Cvar_SetValue ("vid_mode", (float)vid_modenum);
+				Cvar_SetValueQuick (&vid_mode, (float)vid_modenum);
 									// so if mode set fails, we don't keep on
 									//  trying to set that mode
 				vid_realmode = vid_modenum;
@@ -769,7 +769,7 @@ static void VID_MenuKey (int key)
 	case 'd':
 		S_LocalSound ("raven/menu1.wav");
 		firstupdate = 0;
-		Cvar_SetValue ("_vid_default_mode", vid_modenum);
+		Cvar_SetValueQuick (&_vid_default_mode, vid_modenum);
 		break;
 
 	default:

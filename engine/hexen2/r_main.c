@@ -253,8 +253,8 @@ void R_Init (void)
 	Cvar_RegisterVariable (&r_transwater);
 	Cvar_RegisterVariable (&r_texture_external);
 
-	Cvar_SetValue ("r_maxedges", (float)NUMSTACKEDGES);
-	Cvar_SetValue ("r_maxsurfs", (float)NUMSTACKSURFACES);
+	Cvar_SetValueQuick (&r_maxedges, (float)NUMSTACKEDGES);
+	Cvar_SetValueQuick (&r_maxsurfs, (float)NUMSTACKSURFACES);
 
 	view_clipplanes[0].leftedge = true;
 	view_clipplanes[1].rightedge = true;

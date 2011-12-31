@@ -179,9 +179,9 @@ void BGM_Update (void)
 	if (old_volume != bgmvolume.value)
 	{
 		if (bgmvolume.value < 0)
-			Cvar_Set ("bgmvolume", "0");
+			Cvar_SetQuick (&bgmvolume, "0");
 		else if (bgmvolume.value > 1)
-			Cvar_Set ("bgmvolume", "1");
+			Cvar_SetQuick (&bgmvolume, "1");
 		old_volume = bgmvolume.value;
 		if (midi_handle.handle)
 		{

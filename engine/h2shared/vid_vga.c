@@ -401,11 +401,11 @@ static int VGA_InitMode (viddef_t *lvid, vmode_t *pcurrentmode)
 
 	if (_vid_wait_override.integer)
 	{
-		Cvar_SetValue ("vid_wait", (float)VID_WAIT_VSYNC);
+		Cvar_SetValueQuick (&vid_wait, (float)VID_WAIT_VSYNC);
 	}
 	else
 	{
-		Cvar_SetValue ("vid_wait", (float)VID_WAIT_NONE);
+		Cvar_SetValueQuick (&vid_wait, (float)VID_WAIT_NONE);
 	}
 
 	D_InitCaches (vid_surfcache, vid_surfcachesize);
