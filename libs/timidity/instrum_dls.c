@@ -1,25 +1,23 @@
 /*
-
-    TiMidity -- Experimental MIDI to WAVE converter
-    Copyright (C) 1995 Tuukka Toivonen <toivonen@clinet.fi>
-
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 2 of the License, or
-    (at your option) any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, write to the Free Software
-    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
-
-   instrum.h
-
-   */
+ * TiMidity -- Experimental MIDI to WAVE converter
+ * Copyright (C) 1995 Tuukka Toivonen <toivonen@clinet.fi>
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ *
+ * instrum.h
+ */
 
 #include <stdlib.h>
 #include <string.h>
@@ -44,9 +42,11 @@ typedef struct _RIFF_Chunk {
     struct _RIFF_Chunk *next;
 } RIFF_Chunk;
 
-extern RIFF_Chunk* LoadRIFF(MidIStream *stream);
-extern void FreeRIFF(RIFF_Chunk *chunk);
-extern void PrintRIFF(RIFF_Chunk *chunk, int level);
+static RIFF_Chunk* LoadRIFF(MidIStream *stream);
+static void FreeRIFF(RIFF_Chunk *chunk);
+#if 0
+static void PrintRIFF(RIFF_Chunk *chunk, int level);
+#endif
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
 /*-------------------------------------------------------------------------*/
@@ -118,7 +118,7 @@ static void LoadSubChunks(RIFF_Chunk *chunk, uint8 *data, uint32 left)
         } else {
             chunk->child = child;
         }
-            
+
         child->magic = (data[0] <<  0) |
                        (data[1] <<  8) |
                        (data[2] << 16) |
@@ -156,7 +156,7 @@ static void LoadSubChunks(RIFF_Chunk *chunk, uint8 *data, uint32 left)
     }
 }
 
-RIFF_Chunk *LoadRIFF(MidIStream *stream)
+static RIFF_Chunk *LoadRIFF(MidIStream *stream)
 {
     RIFF_Chunk *chunk;
     uint8 *subchunkData;
@@ -203,13 +203,14 @@ RIFF_Chunk *LoadRIFF(MidIStream *stream)
     return chunk;
 }
 
-void FreeRIFF(RIFF_Chunk *chunk)
+static void FreeRIFF(RIFF_Chunk *chunk)
 {
     free(chunk->data);
     FreeRIFFChunk(chunk);
 }
 
-void PrintRIFF(RIFF_Chunk *chunk, int level)
+#if 0
+static void PrintRIFF(RIFF_Chunk *chunk, int level)
 {
     static char prefix[128];
 
@@ -246,6 +247,7 @@ void PrintRIFF(RIFF_Chunk *chunk, int level)
         prefix[(level-1)*2] = '\0';
     }
 }
+#endif /* #if 0 */
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
@@ -748,6 +750,7 @@ void mid_dlspatches_free(MidDLSPatches *data)
     free(data);
 }
 
+#if 0
 static const char *SourceToString(USHORT usSource)
 {
     switch(usSource) {
@@ -1009,6 +1012,7 @@ void PrintDLS(MidDLSPatches *data)
         printf("Comments: %s\n", data->comments);
     }
 }
+#endif /* #if 0 */
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 

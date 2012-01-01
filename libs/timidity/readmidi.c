@@ -1,23 +1,21 @@
 /*
-
-    TiMidity -- Experimental MIDI to WAVE converter
-    Copyright (C) 1995 Tuukka Toivonen <toivonen@clinet.fi>
-
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 2 of the License, or
-    (at your option) any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, write to the Free Software
-    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
-
-*/
+ * TiMidity -- Experimental MIDI to WAVE converter
+ * Copyright (C) 1995 Tuukka Toivonen <toivonen@clinet.fi>
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
 
 #if HAVE_CONFIG_H
 #  include <config.h>
@@ -134,7 +132,7 @@ static MidEventList *read_midi_event(MidIStream *stream, MidSong *song)
 	  DEBUG_MSG("read_midi_event: mid_istream_read() failure\n");
 	  return NULL;
 	}
-      
+
       if(me==0xF0 || me == 0xF7) /* SysEx event */
 	{
 	  len=getvl(stream);
@@ -208,12 +206,12 @@ static MidEventList *read_midi_event(MidIStream *stream, MidSong *song)
 		  case 121: control=ME_RESET_CONTROLLERS; break;
 		  case 123: control=ME_ALL_NOTES_OFF; break;
 
-		    /* These should be the SCC-1 tone bank switch
-		       commands. I don't know why there are two, or
-		       why the latter only allows switching to bank 0.
-		       Also, some MIDI files use 0 as some sort of
-		       continuous controller. This will cause lots of
-		       warnings about undefined tone banks. */
+		  /* These should be the SCC-1 tone bank switch
+		     commands. I don't know why there are two, or
+		     why the latter only allows switching to bank 0.
+		     Also, some MIDI files use 0 as some sort of
+		     continuous controller. This will cause lots of
+		     warnings about undefined tone banks. */
 		  case 0: control=ME_TONE_BANK; break;
 		  case 32: 
 		    if (b!=0)
@@ -226,7 +224,7 @@ static MidEventList *read_midi_event(MidIStream *stream, MidSong *song)
 		  case 101: nrpn=0; rpn_lsb[lastchan]=b; break;
 		  case 99: nrpn=1; rpn_msb[lastchan]=b; break;
 		  case 98: nrpn=1; rpn_lsb[lastchan]=b; break;
-		    
+
 		  case 6:
 		    if (nrpn)
 		      {
@@ -234,7 +232,7 @@ static MidEventList *read_midi_event(MidIStream *stream, MidSong *song)
 				rpn_msb[lastchan], rpn_lsb[lastchan], b);
 			break;
 		      }
-		    
+
 		    switch((rpn_msb[lastchan]<<8) | rpn_lsb[lastchan])
 		      {
 		      case 0x0000: /* Pitch bend sensitivity */
@@ -251,7 +249,7 @@ static MidEventList *read_midi_event(MidIStream *stream, MidSong *song)
 			break;
 		      }
 		    break;
-		    
+
 		  default:
 		    DEBUG_MSG("(Control %d: %d)\n", a, b);
 		    break;
@@ -275,14 +273,14 @@ static MidEventList *read_midi_event(MidIStream *stream, MidSong *song)
 	      b &= 0x7F;
 	      MIDIEVENT(song->at, ME_PITCHWHEEL, lastchan, a, b);
 
-	    default: 
+	    default:
 	      DEBUG_MSG("*** Can't happen: status 0x%02X, channel 0x%02X\n",
 		      laststatus, lastchan);
 	      break;
 	    }
 	}
     }
-  
+
   return newlist;
 }
 
@@ -309,7 +307,6 @@ static int read_track(MidIStream *stream, MidSong *song, int append)
     song->at=0;
 
   /* Check the formalities */
-  
   if (mid_istream_read(stream, tmp, 1, 4) != 4 || mid_istream_read(stream, &len, 4, 1) != 1)
     {
       DEBUG_MSG("Can't read track header.\n");
@@ -338,7 +335,7 @@ static int read_track(MidIStream *stream, MidSong *song, int append)
 	  meep=next;
 	  next=meep->next;
 	}
-	  
+
       newlist->next=next;
       meep->next=newlist;
 
@@ -373,7 +370,7 @@ static MidEvent *groom_list(MidSong *song, sint32 divisions,sint32 *eventsp,
   sint32 i, our_event_count, tempo, skip_this_event, new_value;
   sint32 sample_cum, samples_to_do, at, st, dt, counting_time;
 
-  int current_bank[16], current_set[16], current_program[16]; 
+  int current_bank[16], current_set[16], current_program[16];
   /* Or should each bank have its own current program? */
 
   for (i=0; i<16; i++)
@@ -419,7 +416,7 @@ static MidEvent *groom_list(MidSong *song, sint32 divisions,sint32 *eventsp,
 		}
 	      if (current_set[meep->event.channel] != new_value)
 		current_set[meep->event.channel]=new_value;
-	      else 
+	      else
 		skip_this_event=1;
 	    }
 	  else
@@ -465,7 +462,7 @@ static MidEvent *groom_list(MidSong *song, sint32 divisions,sint32 *eventsp,
 	    }
 	  if (song->tonebank[meep->event.a]) /* Is this a defined tone bank? */
 	    new_value=meep->event.a;
-	  else 
+	  else
 	    {
 	      DEBUG_MSG("Tone bank %d is undefined\n", meep->event.a);
 	      new_value=meep->event.a=0;
@@ -598,5 +595,6 @@ MidEvent *read_midi_file(MidIStream *stream, MidSong *song, sint32 *count, sint3
 	  }
       break;
     }
+
   return groom_list(song, divisions, count, sp);
 }

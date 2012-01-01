@@ -1,27 +1,25 @@
 /*
-
-    TiMidity -- Experimental MIDI to WAVE converter
-    Copyright (C) 1995 Tuukka Toivonen <toivonen@clinet.fi>
-
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 2 of the License, or
-    (at your option) any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, write to the Free Software
-    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
-
-   instrum.c 
-   
-   Code to load and unload GUS-compatible instrument patches.
-
-*/
+ * TiMidity -- Experimental MIDI to WAVE converter
+ * Copyright (C) 1995 Tuukka Toivonen <toivonen@clinet.fi>
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ *
+ * instrum.c
+ *
+ * Code to load and unload GUS-compatible instrument patches.
+ */
 
 #if HAVE_CONFIG_H
 #  include <config.h>
@@ -71,7 +69,7 @@ static void free_bank(MidSong *song, int dr, int b)
 static sint32 convert_envelope_rate(MidSong *song, uint8 rate)
 {
   sint32 r;
-  
+
   r = 3 - ((rate >> 6) & 0x3);
   r *= 3;
   r = (sint32) (rate & 0x3f) << r; /* 6.9 fixed point */
@@ -150,12 +148,12 @@ static void reverse_data(sint16 *sp, sint32 ls, sint32 le)
     }
 }
 
-/* 
+/*
    If panning or note_to_use != -1, it will be used for all samples,
    instead of the sample-specific values in the instrument file. 
 
    For note_to_use, any value <0 or >127 will be forced to 0.
- 
+
    For other parameters, 1 means yes, 0 means no, other values are
    undefined.
 
@@ -174,7 +172,7 @@ static MidInstrument *load_instrument(MidSong *song, const char *name,
   static const char *patch_ext[] = PATCH_EXT_LIST;
 
   if (!name) return NULL;
-  
+
   /* Open patch file */
   if ((fp=open_file(name)) == NULL)
     {
@@ -200,9 +198,9 @@ static MidInstrument *load_instrument(MidSong *song, const char *name,
       DEBUG_MSG("Instrument `%s' can't be found.\n", name);
       return NULL;
     }
-      
+
   DEBUG_MSG("Loading instrument %s\n", tmp);
-  
+
   /* Read some headers and do cursory sanity checks. There are loads
      of magic offsets. This could be rewritten... */
 
@@ -214,7 +212,7 @@ static MidInstrument *load_instrument(MidSong *song, const char *name,
       DEBUG_MSG("%s: not an instrument\n", name);
       return NULL;
     }
-  
+
   if (tmp[82] != 1 && tmp[82] != 0) /* instruments. To some patch makers, 
 				       0 means 1 */
     {
@@ -227,7 +225,7 @@ static MidInstrument *load_instrument(MidSong *song, const char *name,
       DEBUG_MSG("Can't handle instruments with %d layers\n", tmp[151]);
       return NULL;
     }
-  
+
   ip = (MidInstrument *) safe_malloc(sizeof(MidInstrument));
   ip->samples = tmp[198];
   ip->sample = (MidSample *) safe_malloc(sizeof(MidSample) * ip->samples);
@@ -263,7 +261,7 @@ static MidInstrument *load_instrument(MidSong *song, const char *name,
 	}
 
       sp=&(ip->sample[i]);
-      
+
       READ_LONG(sp->data_length);
       READ_LONG(sp->loop_start);
       READ_LONG(sp->loop_end);
@@ -275,7 +273,7 @@ static MidInstrument *load_instrument(MidSong *song, const char *name,
       sp->high_vel = 127;
       fseek(fp, 2, SEEK_CUR); /* Why have a "root frequency" and then
 				    * "tuning"?? */
-      
+
       READ_CHAR(tmp[0]);
 
       if (panning==-1)
@@ -284,7 +282,7 @@ static MidInstrument *load_instrument(MidSong *song, const char *name,
 	sp->panning=(uint8)(panning & 0x7F);
 
       /* envelope, tremolo, and vibrato */
-      if (18 != fread(tmp, 1, 18, fp)) goto fail; 
+      if (18 != fread(tmp, 1, 18, fp)) goto fail;
 
       if (!tmp[13] || !tmp[14])
 	{
@@ -331,12 +329,11 @@ static MidInstrument *load_instrument(MidSong *song, const char *name,
 	sp->note_to_use=(uint8)(note_to_use);
       else
 	sp->note_to_use=0;
-      
+
       /* seashore.pat in the Midia patch set has no Sustain. I don't
          understand why, and fixing it by adding the Sustain flag to
          all looped patches probably breaks something else. We do it
          anyway. */
-	 
       if (sp->modes & MODES_LOOPING) 
 	sp->modes |= MODES_SUSTAIN;
 
@@ -396,7 +393,7 @@ static MidInstrument *load_instrument(MidSong *song, const char *name,
       sp->data = (sample_t *) safe_malloc(sp->data_length);
       if (1 != fread(sp->data, sp->data_length, 1, fp))
 	goto fail;
-      
+
       if (!(sp->modes & MODES_16BIT)) /* convert to 16-bit data */
 	{
 	  sint32 k=sp->data_length;
@@ -426,7 +423,7 @@ static MidInstrument *load_instrument(MidSong *song, const char *name,
 	    }
 	}
 #endif
-      
+
       if (sp->modes & MODES_UNSIGNED) /* convert to signed data */
 	{
 	  sint32 k=sp->data_length/2;
@@ -528,11 +525,11 @@ static int fill_bank(MidSong *song, int dr, int b)
     {
       if (bank->instrument[i]==MAGIC_LOAD_INSTRUMENT)
 	{
-          bank->instrument[i]=load_instrument_dls(song, dr, b, i);
-          if (bank->instrument[i])
-            {
-              continue;
-            }
+	  bank->instrument[i]=load_instrument_dls(song, dr, b, i);
+	  if (bank->instrument[i])
+	    {
+	      continue;
+	    }
 	  if (!(bank->tone[i].name))
 	    {
 	      DEBUG_MSG("No instrument mapped to %s %d, program %d%s\n",

@@ -1,25 +1,25 @@
 /*
-
-    TiMidity -- Experimental MIDI to WAVE converter
-    Copyright (C) 1995 Tuukka Toivonen <toivonen@clinet.fi>
-
-    Suddenly, you realize that this program is free software; you get
-    an overwhelming urge to redistribute it and/or modify it under the
-    terms of the GNU General Public License as published by the Free
-    Software Foundation; either version 2 of the License, or (at your
-    option) any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received another copy of the GNU General Public
-    License along with this program; if not, write to the Free
-    Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
-    I bet they'll be amazed.
-
-    mix.c */
+ * TiMidity -- Experimental MIDI to WAVE converter
+ * Copyright (C) 1995 Tuukka Toivonen <toivonen@clinet.fi>
+ *
+ * Suddenly, you realize that this program is free software; you get
+ * an overwhelming urge to redistribute it and/or modify it under the
+ * terms of the GNU General Public License as published by the Free
+ * Software Foundation; either version 2 of the License, or (at your
+ * option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received another copy of the GNU General Public
+ * License along with this program; if not, write to the Free
+ * Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * I bet they'll be amazed.
+ *
+ * mix.c
+ */
 
 #if HAVE_CONFIG_H
 #  include <config.h>
@@ -102,7 +102,7 @@ void apply_envelope_to_amp(MidSong *song, int v)
       ra = (sint32)FSCALE(ramp,AMP_BITS);
       if (ra>MAX_AMP_VALUE)
 	ra=MAX_AMP_VALUE;
-      
+
       song->voice[v].left_mix = la;
       song->voice[v].right_mix = ra;
     }
@@ -145,7 +145,6 @@ static void update_tremolo(MidSong *song, int v)
   if (song->voice[v].tremolo_sweep)
     {
       /* Update sweep position */
-
       song->voice[v].tremolo_sweep_position += song->voice[v].tremolo_sweep;
       if (song->voice[v].tremolo_sweep_position >= (1 << SWEEP_SHIFT))
 	song->voice[v].tremolo_sweep=0; /* Swept to max amplitude */
@@ -204,7 +203,7 @@ static void mix_mystery_signal(MidSong *song, sample_t *sp, sint32 *lp, int v,
       left = vp->left_mix;
       right = vp->right_mix;
     }
-  
+
   while (count)
     if (cc < count)
       {
@@ -287,7 +286,7 @@ static void mix_single_signal(MidSong *song, sample_t *sp, sint32 *lp, int v,
     left=vp->left_mix;
   int cc;
   sample_t s;
-  
+
   if (!(cc = vp->control_counter))
     {
       cc = song->control_ratio;
@@ -295,7 +294,7 @@ static void mix_single_signal(MidSong *song, sample_t *sp, sint32 *lp, int v,
 	return;	/* Envelope ran out */
       left = vp->left_mix;
     }
-  
+
   while (count)
     if (cc < count)
       {
@@ -332,7 +331,7 @@ static void mix_mono_signal(MidSong *song, sample_t *sp, sint32 *lp, int v,
     left=vp->left_mix;
   int cc;
   sample_t s;
-  
+
   if (!(cc = vp->control_counter))
     {
       cc = song->control_ratio;
@@ -340,7 +339,7 @@ static void mix_mono_signal(MidSong *song, sample_t *sp, sint32 *lp, int v,
 	return;	/* Envelope ran out */
       left = vp->left_mix;
     }
-  
+
   while (count)
     if (cc < count)
       {
@@ -373,7 +372,7 @@ static void mix_mystery(MidSong *song, sample_t *sp, sint32 *lp, int v, int coun
     left = song->voice[v].left_mix, 
     right = song->voice[v].right_mix;
   sample_t s;
-  
+
   while (count--)
     {
       s = *sp++;
@@ -401,7 +400,7 @@ static void mix_single(MidSong *song, sample_t *sp, sint32 *lp, int v, int count
   final_volume_t 
     left = song->voice[v].left_mix;
   sample_t s;
-  
+
   while (count--)
     {
       s = *sp++;
@@ -415,7 +414,7 @@ static void mix_mono(MidSong *song, sample_t *sp, sint32 *lp, int v, int count)
   final_volume_t 
     left = song->voice[v].left_mix;
   sample_t s;
-  
+
   while (count--)
     {
       s = *sp++;
@@ -426,7 +425,6 @@ static void mix_mono(MidSong *song, sample_t *sp, sint32 *lp, int v, int count)
 /* Ramp a note out in c samples */
 static void ramp_out(MidSong *song, sample_t *sp, sint32 *lp, int v, sint32 c)
 {
-
   /* should be final_volume_t, but uint8 gives trouble. */
   sint32 left, right, li, ri;
 
@@ -434,7 +432,7 @@ static void ramp_out(MidSong *song, sample_t *sp, sint32 *lp, int v, sint32 c)
 
   /* Fix by James Caldwell */
   if ( c == 0 ) c = 1;
-  
+
   left=song->voice[v].left_mix;
   li=-(left/c);
   if (!li) li=-1;

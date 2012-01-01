@@ -1,23 +1,21 @@
 /*
-
-    TiMidity -- Experimental MIDI to WAVE converter
-    Copyright (C) 1995 Tuukka Toivonen <toivonen@clinet.fi>
-
-	 This program is free software; you can redistribute it and/or modify
-	 it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 2 of the License, or
-	 (at your option) any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-	 GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, write to the Free Software
-    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
-
-*/
+ * TiMidity -- Experimental MIDI to WAVE converter
+ * Copyright (C) 1995 Tuukka Toivonen <toivonen@clinet.fi>
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
 
 #if HAVE_CONFIG_H
 #  include <config.h>
@@ -39,7 +37,7 @@
 
 #include "tables.h"
 
-MidToneBank *master_tonebank[128], *master_drumset[128];
+static MidToneBank *master_tonebank[128], *master_drumset[128];
 
 static char def_instr_name[256] = "";
 
@@ -71,7 +69,7 @@ static char *__fgets(char *s, int size, FILE *fp)
     }
 
     s[num_read] = '\0';
-    
+
     return (num_read != 0) ? s : NULL;
 }
 
@@ -99,111 +97,114 @@ static int read_config_file(const char *name)
     w[0]=strtok(tmp, " \t\240");
     if (!w[0]) continue;
 
-        /* Originally the TiMidity++ extensions were prefixed like this */
+    /* Originally the TiMidity++ extensions were prefixed like this */
     if (strcmp(w[0], "#extension") == 0)
     {
-        w[0]=strtok(0, " \t\240");
-        if (!w[0]) continue;
+      w[0]=strtok(0, " \t\240");
+      if (!w[0]) continue;
     }
 
     if (*w[0] == '#')
-        continue;
+      continue;
 
     while (w[words] && *w[words] != '#' && (words < MAXWORDS))
       w[++words]=strtok(0," \t\240");
 
-        /*
-         * TiMidity++ adds a number of extensions to the config file format.
-         * Many of them are completely irrelevant to SDL_sound, but at least
-         * we shouldn't choke on them.
-         *
-         * Unfortunately the documentation for these extensions is often quite
-         * vague, gramatically strange or completely absent.
-         */
-    if (
-           !strcmp(w[0], "comm")      /* "comm" program second        */
-        || !strcmp(w[0], "HTTPproxy") /* "HTTPproxy" hostname:port    */
-        || !strcmp(w[0], "FTPproxy")  /* "FTPproxy" hostname:port     */
-        || !strcmp(w[0], "mailaddr")  /* "mailaddr" your-mail-address */
-        || !strcmp(w[0], "opt")       /* "opt" timidity-options       */
-       )
+    /*
+     * TiMidity++ adds a number of extensions to the config file format.
+     * Many of them are completely irrelevant to SDL_sound, but at least
+     * we shouldn't choke on them.
+     *
+     * Unfortunately the documentation for these extensions is often quite
+     * vague, gramatically strange or completely absent.
+     */
+    if (!strcmp(w[0], "comm")      /* "comm" program second        */ ||
+        !strcmp(w[0], "HTTPproxy") /* "HTTPproxy" hostname:port    */ ||
+        !strcmp(w[0], "FTPproxy")  /* "FTPproxy" hostname:port     */ ||
+        !strcmp(w[0], "mailaddr")  /* "mailaddr" your-mail-address */ ||
+        !strcmp(w[0], "opt")       /* "opt" timidity-options       */  )
     {
-            /*
-             * + "comm" sets some kind of comment -- the documentation is too
-             *   vague for me to understand at this time.
-             * + "HTTPproxy", "FTPproxy" and "mailaddr" are for reading data
-             *   over a network, rather than from the file system.
-             * + "opt" specifies default options for TiMidity++.
-             *
-             * These are all quite useless for our version of TiMidity, so
-             * they can safely remain no-ops.
-             */
-    } else if (!strcmp(w[0], "timeout")) /* "timeout" program second */
-    {
-            /*
-             * Specifies a timeout value of the program. A number of seconds
-             * before TiMidity kills the note. This may be useful to implement
-             * later, but I don't see any urgent need for it.
-             */
-        DEBUG_MSG("FIXME: Implement \"timeout\" in TiMidity config.\n");
-    } else if (!strcmp(w[0], "copydrumset")  /* "copydrumset" drumset */
-               || !strcmp(w[0], "copybank")) /* "copybank" bank       */
-    {
-            /*
-             * Copies all the settings of the specified drumset or bank to
-             * the current drumset or bank. May be useful later, but not a
-             * high priority.
-             */
-        DEBUG_MSG("FIXME: Implement \"%s\" in TiMidity config.\n", w[0]);
-    } else if (!strcmp(w[0], "undef")) /* "undef" progno */
-    {
-            /*
-             * Undefines the tone "progno" of the current tone bank (or
-             * drum set?). Not a high priority.
-             */
-        DEBUG_MSG("FIXME: Implement \"undef\" in TiMidity config.\n");
-    } else if (!strcmp(w[0], "altassign")) /* "altassign" prog1 prog2 ... */
-    {
-            /*
-             * Sets the alternate assign for drum set. Whatever that's
-             * supposed to mean.
-             */
-        DEBUG_MSG("FIXME: Implement \"altassign\" in TiMidity config.\n");
-    } else if (!strcmp(w[0], "soundfont")
-               || !strcmp(w[0], "font"))
-    {
-            /*
-             * I can't find any documentation for these, but I guess they're
-             * an alternative way of loading/unloading instruments.
-             * 
-             * "soundfont" sf_file "remove"
-             * "soundfont" sf_file ["order=" order] ["cutoff=" cutoff]
-             *                     ["reso=" reso] ["amp=" amp]
-             * "font" "exclude" bank preset keynote
-             * "font" "order" order bank preset keynote
-             */
-        DEBUG_MSG("FIXME: Implmement \"%s\" in TiMidity config.\n", w[0]);
-    } else if (!strcmp(w[0], "progbase"))
-    {
-            /*
-             * The documentation for this makes absolutely no sense to me, but
-             * apparently it sets some sort of base offset for tone numbers.
-             * Why anyone would want to do this is beyond me.
-             */
-        DEBUG_MSG("FIXME: Implement \"progbase\" in TiMidity config.\n");
-    } else if (!strcmp(w[0], "map")) /* "map" name set1 elem1 set2 elem2 */
-    {
-            /*
-             * This extension is the one we will need to implement, as it is
-             * used by the "eawpats". Unfortunately I cannot find any
-             * documentation whatsoever for it, but it looks like it's used
-             * for remapping one instrument to another somehow.
-             */
-        DEBUG_MSG("FIXME: Implement \"map\" in TiMidity config.\n");
+      /*
+       * + "comm" sets some kind of comment -- the documentation is too
+       *   vague for me to understand at this time.
+       * + "HTTPproxy", "FTPproxy" and "mailaddr" are for reading data
+       *   over a network, rather than from the file system.
+       * + "opt" specifies default options for TiMidity++.
+       *
+       * These are all quite useless for our version of TiMidity, so
+       * they can safely remain no-ops.
+       */
     }
-
-        /* Standard TiMidity config */
-    
+    else if (!strcmp(w[0], "timeout")) /* "timeout" program second */
+    {
+      /*
+       * Specifies a timeout value of the program. A number of seconds
+       * before TiMidity kills the note. This may be useful to implement
+       * later, but I don't see any urgent need for it.
+       */
+      DEBUG_MSG("FIXME: Implement \"timeout\" in TiMidity config.\n");
+    }
+    else if (!strcmp(w[0], "copydrumset")  /* "copydrumset" drumset */ ||
+	     !strcmp(w[0], "copybank")) /* "copybank" bank       */
+    {
+      /*
+       * Copies all the settings of the specified drumset or bank to
+       * the current drumset or bank. May be useful later, but not a
+       * high priority.
+       */
+       DEBUG_MSG("FIXME: Implement \"%s\" in TiMidity config.\n", w[0]);
+    }
+    else if (!strcmp(w[0], "undef")) /* "undef" progno */
+    {
+      /*
+       * Undefines the tone "progno" of the current tone bank (or
+       * drum set?). Not a high priority.
+       */
+      DEBUG_MSG("FIXME: Implement \"undef\" in TiMidity config.\n");
+    }
+    else if (!strcmp(w[0], "altassign")) /* "altassign" prog1 prog2 ... */
+    {
+      /*
+       * Sets the alternate assign for drum set. Whatever that's
+       * supposed to mean.
+       */
+      DEBUG_MSG("FIXME: Implement \"altassign\" in TiMidity config.\n");
+    }
+    else if (!strcmp(w[0], "soundfont") ||
+	     !strcmp(w[0], "font"))
+    {
+      /*
+       * I can't find any documentation for these, but I guess they're
+       * an alternative way of loading/unloading instruments.
+       *
+       * "soundfont" sf_file "remove"
+       * "soundfont" sf_file ["order=" order] ["cutoff=" cutoff]
+       *                     ["reso=" reso] ["amp=" amp]
+       * "font" "exclude" bank preset keynote
+       * "font" "order" order bank preset keynote
+       */
+      DEBUG_MSG("FIXME: Implmement \"%s\" in TiMidity config.\n", w[0]);
+    }
+    else if (!strcmp(w[0], "progbase"))
+    {
+      /*
+       * The documentation for this makes absolutely no sense to me, but
+       * apparently it sets some sort of base offset for tone numbers.
+       * Why anyone would want to do this is beyond me.
+       */
+      DEBUG_MSG("FIXME: Implement \"progbase\" in TiMidity config.\n");
+    }
+    else if (!strcmp(w[0], "map")) /* "map" name set1 elem1 set2 elem2 */
+    {
+      /*
+       * This extension is the one we will need to implement, as it is
+       * used by the "eawpats". Unfortunately I cannot find any
+       * documentation whatsoever for it, but it looks like it's used
+       * for remapping one instrument to another somehow.
+       */
+      DEBUG_MSG("FIXME: Implement \"map\" in TiMidity config.\n");
+    }
+    /* Standard TiMidity config */
     else if (!strcmp(w[0], "dir"))
     {
       if (words < 2)
@@ -407,7 +408,7 @@ fail:
   return -2;
 }
 
-int mid_init_no_config()
+int mid_init_no_config(void)
 {
   /* Allocate memory for the standard tonebank and drumset */
   master_tonebank[0] = (MidToneBank *) safe_malloc(sizeof(MidToneBank));
@@ -458,7 +459,7 @@ MidSong *mid_song_load_dls(MidIStream *stream, MidDLSPatches *patches, MidSongOp
 
   if (stream == NULL)
       return NULL;
-  
+
   /* Allocate memory for the song */
   song = (MidSong *)safe_malloc(sizeof(*song));
   memset(song, 0, sizeof(*song));
@@ -519,9 +520,9 @@ MidSong *mid_song_load_dls(MidIStream *stream, MidDLSPatches *patches, MidSongOp
   song->common_buffer = (sint32 *) safe_malloc(options->buffer_size * 2 * sizeof(sint32));
 
   song->bytes_per_sample =
-        ((song->encoding & PE_MONO) ? 1 : 2)
-      * ((song->encoding & PE_16BIT) ? 2 : 1);
-  
+	((song->encoding & PE_MONO) ? 1 : 2) *
+	((song->encoding & PE_16BIT) ? 2 : 1);
+
   song->control_ratio = options->rate / CONTROLS_PER_SECOND;
   if (song->control_ratio < 1)
       song->control_ratio = 1;
@@ -532,7 +533,7 @@ MidSong *mid_song_load_dls(MidIStream *stream, MidDLSPatches *patches, MidSongOp
   song->cut_notes = 0;
 
   song->events = read_midi_file(stream, song, &(song->groomed_event_count),
-      &song->samples);
+				&song->samples);
 
   /* Make sure everything is okay */
   if (!song->events) {
@@ -569,7 +570,7 @@ void mid_song_free(MidSong *song)
     if (song->drumset[i])
       free(song->drumset[i]);
   }
-  
+
   free(song->common_buffer);
   free(song->resample_buffer);
   free(song->events);
@@ -579,7 +580,7 @@ void mid_song_free(MidSong *song)
     if (song->meta_data[i])
       free(song->meta_data[i]);
   }
-  
+
   free(song);
 }
 
@@ -594,12 +595,12 @@ void mid_exit(void)
       MidToneBankElement *e = master_tonebank[i]->tone;
       if (e != NULL)
       {
-        for (j = 0; j < 128; j++)
-        {
-          if (e[j].name != NULL)
-            free(e[j].name);
-        }
-        free(e);
+	for (j = 0; j < 128; j++)
+	{
+	  if (e[j].name != NULL)
+	    free(e[j].name);
+	}
+	free(e);
       }
       free(master_tonebank[i]);
       master_tonebank[i] = NULL;
@@ -611,10 +612,10 @@ void mid_exit(void)
       {
         for (j = 0; j < 128; j++)
         {
-          if (e[j].name != NULL)
-            free(e[j].name);
-        }
-        free(e);
+	  if (e[j].name != NULL)
+	    free(e[j].name);
+	}
+	free(e);
       }
       free(master_drumset[i]);
       master_drumset[i] = NULL;

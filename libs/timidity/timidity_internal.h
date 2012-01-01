@@ -25,7 +25,6 @@
 
 /* Instrument files are little-endian, MIDI files big-endian, so we
    need to do some conversions. */
-
 #define XCHG_SHORT(x) ((((x)&0xFF)<<8) | (((x)>>8)&0xFF))
 #ifdef __i486__
 # define XCHG_LONG(x) \
@@ -123,7 +122,6 @@ struct _MidVoice
   int
     vibrato_phase, vibrato_control_ratio, vibrato_control_counter,
     envelope_stage, control_counter, panning, panned;
-
 };
 
 typedef struct _MidInstrument MidInstrument;

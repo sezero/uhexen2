@@ -1,24 +1,22 @@
 /*
-
-    libTiMidity -- MIDI to WAVE converter library
-    Copyright (C) 1995 Tuukka Toivonen <toivonen@clinet.fi>
-    Copyright (C) 2004 Konstantin Korikov <lostclus@ua.fm>
-
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 2 of the License, or
-    (at your option) any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, write to the Free Software
-    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
-
-*/
+ * libTiMidity -- MIDI to WAVE converter library
+ * Copyright (C) 1995 Tuukka Toivonen <toivonen@clinet.fi>
+ * Copyright (C) 2004 Konstantin Korikov <lostclus@ua.fm>
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
 
 #ifndef TIMIDITY_H
 #define TIMIDITY_H
@@ -27,29 +25,28 @@
 #include <stdlib.h>
 
 #ifdef __cplusplus
-extern "C"
-{
+extern "C" {
 #endif
 
 #define LIBTIMIDITY_VERSION_MAJOR 0L
 #define LIBTIMIDITY_VERSION_MINOR 1L
 #define LIBTIMIDITY_PATCHLEVEL    0L
 
-#define LIBTIMIDITY_VERSION \
-        ((LIBTIMIDITY_VERSION_MAJOR<<16)| \
-         (LIBTIMIDITY_VERSION_MINOR<< 8)| \
-         (LIBTIMIDITY_PATCHLEVEL))
+#define LIBTIMIDITY_VERSION		  \
+	((LIBTIMIDITY_VERSION_MAJOR<<16)| \
+	 (LIBTIMIDITY_VERSION_MINOR<< 8)| \
+	 (LIBTIMIDITY_PATCHLEVEL))
 
 /* Audio format flags (defaults to LSB byte order)
  */
-#define MID_AUDIO_U8        0x0008	/* Unsigned 8-bit samples */
-#define MID_AUDIO_S8        0x8008	/* Signed 8-bit samples */
-#define MID_AUDIO_U16LSB    0x0010	/* Unsigned 16-bit samples */
-#define MID_AUDIO_S16LSB    0x8010	/* Signed 16-bit samples */
-#define MID_AUDIO_U16MSB    0x1010	/* As above, but big-endian byte order */
-#define MID_AUDIO_S16MSB    0x9010	/* As above, but big-endian byte order */
-#define MID_AUDIO_U16       MID_AUDIO_U16LSB
-#define MID_AUDIO_S16       MID_AUDIO_S16LSB
+#define MID_AUDIO_U8		0x0008	/* Unsigned 8-bit samples */
+#define MID_AUDIO_S8		0x8008	/* Signed 8-bit samples */
+#define MID_AUDIO_U16LSB	0x0010	/* Unsigned 16-bit samples */
+#define MID_AUDIO_S16LSB	0x8010	/* Signed 16-bit samples */
+#define MID_AUDIO_U16MSB	0x1010	/* As above, but big-endian byte order */
+#define MID_AUDIO_S16MSB	0x9010	/* As above, but big-endian byte order */
+#define MID_AUDIO_U16		MID_AUDIO_U16LSB
+#define MID_AUDIO_S16		MID_AUDIO_S16LSB
 
 /* Core Library Types
  */
@@ -71,11 +68,11 @@ extern "C"
   typedef struct _MidSongOptions MidSongOptions;
   struct _MidSongOptions
   {
-    sint32 rate;	  /* DSP frequency -- samples per second */
-    uint16 format;	  /* Audio data format */
-    uint8 channels;	  /* Number of channels: 1 mono, 2 stereo */
-    uint8 width;	  /* Sample width: 1 for 8 bit, 2 for 16 bit */
-    uint16 buffer_size;	  /* Sample buffer size in samples */
+    sint32 rate;	/* DSP frequency -- samples per second */
+    uint16 format;	/* Audio data format */
+    uint8 channels;	/* Number of channels: 1 mono, 2 stereo */
+    uint8 width;	/* Sample width: 1 for 8 bit, 2 for 16 bit */
+    uint16 buffer_size;	/* Sample buffer size in samples */
     uint16 padding;
   };
 
@@ -205,4 +202,5 @@ extern "C"
 #ifdef __cplusplus
 }
 #endif
-#endif				/* TIMIDITY_H */
+
+#endif	/* TIMIDITY_H */

@@ -1,23 +1,21 @@
 /*
-
-    TiMidity -- Experimental MIDI to WAVE converter
-    Copyright (C) 1995 Tuukka Toivonen <toivonen@clinet.fi>
-
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 2 of the License, or
-    (at your option) any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, write to the Free Software
-    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
-
-*/
+ * TiMidity -- Experimental MIDI to WAVE converter
+ * Copyright (C) 1995 Tuukka Toivonen <toivonen@clinet.fi>
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
 
 #if HAVE_CONFIG_H
 #  include <config.h>
@@ -31,12 +29,12 @@
 const sint32 freq_table[128]=
 {
  8176, 8662, 9177, 9723, 
- 10301, 10913, 11562, 12250, 
+ 10301, 10913, 11562, 12250,
  12978, 13750, 14568, 15434,
- 
+
  16352, 17324, 18354, 19445,
- 20602, 21827, 23125, 24500, 
- 25957, 27500, 29135, 30868, 
+ 20602, 21827, 23125, 24500,
+ 25957, 27500, 29135, 30868,
 
  32703, 34648, 36708, 38891,
  41203, 43654, 46249, 48999,
@@ -75,7 +73,7 @@ const sint32 freq_table[128]=
 };
 
 /* v=2.^((x/127-1) * 6) */
-const double vol_table[128] = 
+const double vol_table[128] =
 {
  0.015625, 0.016145143728351113, 0.016682602624583379, 0.017237953096759438,
  0.017811790741104401, 0.01840473098076444, 0.019017409725829021, 0.019650484055324921,

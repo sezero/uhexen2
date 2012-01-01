@@ -21,13 +21,13 @@ typedef struct StdIOContext
   int autoclose;
 } StdIOContext;
 
-size_t
+static size_t
 stdio_istream_read (void *ctx, void *ptr, size_t size, size_t nmemb)
 {
   return fread (ptr, size, nmemb, ((StdIOContext *) ctx)->fp);
 }
 
-int
+static int
 stdio_istream_close (void *ctx)
 {
   int ret = 0;
@@ -45,7 +45,7 @@ typedef struct MemContext
   int autofree;
 } MemContext;
 
-size_t
+static size_t
 mem_istream_read (void *ctx, void *ptr, size_t size, size_t nmemb)
 {
   MemContext *c;
@@ -63,7 +63,7 @@ mem_istream_read (void *ctx, void *ptr, size_t size, size_t nmemb)
   return count;
 }
 
-int
+static int
 mem_istream_close (void *ctx)
 {
   if (((MemContext *) ctx)->autofree)

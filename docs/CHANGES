@@ -4,6 +4,11 @@ Development Progress	:
 ---------------------------
 
 2012-01-01 (SVN):
+    * libs/timidity: Made some functions and variables static. Commented
+      out unused PrintRIFF and PrintDLS functions. Consistent whitespace
+      usage.
+
+2012-01-01 (SVN):
     * hexen2 menu.c: Use the original credits strings and don't play the
       easter egg cd track 12 when the expansion pack is not active.
 
