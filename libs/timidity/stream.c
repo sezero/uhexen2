@@ -236,19 +236,7 @@ mid_istream_tell (MidIStream * stream)
 void
 mid_istream_skip (MidIStream * stream, size_t len)
 {
-  size_t c;
-  char tmp[1024];
-  while (len > 0)
-    {
-      c = len;
-      if (c > 1024)
-	c = 1024;
-      len -= c;
-      if (c != mid_istream_read (stream, tmp, 1, c))
-	{
-	  DEBUG_MSG ("mid_istream_skip error\n");
-	}
-    }
+  stream->seek (stream->ctx, (long) len, SEEK_CUR);
 }
 
 int

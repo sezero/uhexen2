@@ -4,6 +4,10 @@ Development Progress	:
 ---------------------------
 
 2012-01-01 (SVN):
+    * timidity: Made mid_istream_skip() to use the stream's associated
+      seek function.
+
+2012-01-01 (SVN):
     * timidity: Added /usr/local/share/timidity to the list of default
       paths.
 
