@@ -3180,10 +3180,10 @@ static const char *Credit2Text[MAX_LINES2] =
    "   B.B.V.D., Daisy The Lovin' Lamb,",
    "  'You Killed' Kenny,",
    "   and Baby Biessman.",
-   "",
+   ""
 };
 
-#define QUIT_SIZE 16	// was 18. reduced two lines for two HoT strings
+#define QUIT_SIZE 16	/* was 18. stole 2 for the two uHexen2 lines. */
 
 void M_Menu_Quit_f (void)
 {

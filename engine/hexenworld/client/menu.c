@@ -1801,7 +1801,7 @@ static const char *Credit2Text[MAX_LINES2] =
 {
    "HexenWorld",
    "",
-   "Superior Groucher:"
+   "Superior Groucher:",
    "   Rick 'Grrr' Johnson",
    "",
    "Bug Creators:",
@@ -1983,10 +1983,10 @@ static const char *Credit2Text[MAX_LINES2] =
    "See the next movie in the long",
    "awaited sequel, starring",
    "Bobby Love in,",
-   "   Out of Traction, Back in Action!",
+   "   Out of Traction, Back in Action!"
 };
 
-#define QUIT_SIZE 16	// was 18. reduced two lines for two HoT strings
+#define QUIT_SIZE 16	/* was 18. stole 2 for the two uHexen2 lines. */
 
 void M_Menu_Quit_f (void)
 {

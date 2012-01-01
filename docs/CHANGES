@@ -3,6 +3,14 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2012-01-01 (SVN):
+    * hexenworld menu.c: One of the string lines in the Credits2Text was
+      missing a comma therefore it was concatanated with the next one
+      and making the array one less in size than expected. If one waited
+      long enough for the full credits to be printed, that used to cause
+      a segmentation fault. Fixed.
+    * quakedef.h: updated beta date stamp to 2012-01-01.
+
 2011-12-31 (SVN):
     * changed some of the Cvar_Set[Value] calls to their *Quick variants
       in the source files where the vars are defined.
