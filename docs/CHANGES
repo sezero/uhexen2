@@ -4,6 +4,9 @@ Development Progress	:
 ---------------------------
 
 2012-01-01 (SVN):
+    * timidity: Added mid_istream_seek and mid_istream_tell to the api.
+
+2012-01-01 (SVN):
     * timidity: Added seek and tell functions to the _MidIStream struct.
     * snd_timidity.c: Adjusted for the new api change made in timidity.
 

@@ -134,6 +134,14 @@ extern "C" {
   extern size_t mid_istream_read (MidIStream * stream, void *ptr, size_t size,
 				  size_t nmemb);
 
+/* Seek to a position in the input stream
+ */
+  extern int  mid_istream_seek (MidIStream * stream, long offset, int whence);
+
+/* Tell the position of input stream
+ */
+  extern long mid_istream_tell (MidIStream * stream);
+
 /* Skip data from input stream
  */
   extern void mid_istream_skip (MidIStream * stream, size_t len);

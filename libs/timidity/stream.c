@@ -221,6 +221,18 @@ mid_istream_read (MidIStream * stream, void *ptr, size_t size, size_t nmemb)
   return stream->read (stream->ctx, ptr, size, nmemb);
 }
 
+int
+mid_istream_seek (MidIStream * stream, long offset, int whence)
+{
+  return stream->seek (stream->ctx, offset, whence);
+}
+
+long
+mid_istream_tell (MidIStream * stream)
+{
+  return stream->tell (stream->ctx);
+}
+
 void
 mid_istream_skip (MidIStream * stream, size_t len)
 {
