@@ -438,6 +438,7 @@ int mid_init(const char *config_file)
   add_to_pathlist("\\TIMIDITY");
 #else
   add_to_pathlist("/usr/local/lib/timidity");
+  add_to_pathlist("/usr/local/share/timidity");
   add_to_pathlist("/usr/share/timidity");
   add_to_pathlist("/etc/timidity");
   add_to_pathlist("/etc");

@@ -4,6 +4,10 @@ Development Progress	:
 ---------------------------
 
 2012-01-01 (SVN):
+    * timidity: Added /usr/local/share/timidity to the list of default
+      paths.
+
+2012-01-01 (SVN):
     * timidity, readmidi.c: Fixed parsing of certain MIDI files with
       extra data at the end of the tracks. Fix from SDL_mixer mercurial
       repository, changeset 7a8f0018e23d. The problem was described in
