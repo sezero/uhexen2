@@ -4,6 +4,12 @@ Development Progress	:
 ---------------------------
 
 2012-01-01 (SVN):
+    * timidity, options.h (DEFAULT_DRUMCHANNELS): Do not mark 16 as a
+      drum channel. Noticed this in SDL_mixer bug #1352, fixed in their
+      mercurial repo as of changeset 61a1516bc06a. Timidity++ does the
+      same thing too.
+
+2012-01-01 (SVN):
     * timidity: Made mid_istream_skip() to use the stream's associated
       seek function.
 

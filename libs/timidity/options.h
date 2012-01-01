@@ -26,11 +26,12 @@
 #define DEFAULT_PROGRAM 0
 
 /* 9 here is MIDI channel 10, which is the standard percussion channel.
-   Some files (notably C:\WINDOWS\CANYON.MID) think that 16 is one too. 
+   Some files (notably C:\WINDOWS\CANYON.MID) think that 16 is one too.
    On the other hand, some files know that 16 is not a drum channel and
    try to play music on it. This is now a runtime option, so this isn't
    a critical choice anymore. */
-#define DEFAULT_DRUMCHANNELS ((1<<9) | (1<<15))
+#define DEFAULT_DRUMCHANNELS (1<<9)
+/* #define DEFAULT_DRUMCHANNELS ((1<<9) | (1<<15)) */
 
 /* In percent. */
 #define DEFAULT_AMPLIFICATION	70
