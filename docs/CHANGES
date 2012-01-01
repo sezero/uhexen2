@@ -4,6 +4,12 @@ Development Progress	:
 ---------------------------
 
 2012-01-01 (SVN):
+    * timidity, readmidi.c: Fixed parsing of certain MIDI files with
+      extra data at the end of the tracks. Fix from SDL_mixer mercurial
+      repository, changeset 7a8f0018e23d. The problem was described in
+      libsdl bugzilla, http://bugzilla.libsdl.org/show_bug.cgi?id=1299
+
+2012-01-01 (SVN):
     * timidity: Added mid_istream_seek and mid_istream_tell to the api.
 
 2012-01-01 (SVN):
