@@ -59,6 +59,8 @@ extern "C" {
 
   typedef size_t (*MidIStreamReadFunc) (void *ctx, void *ptr, size_t size,
 					size_t nmemb);
+  typedef int  (*MidIStreamSeekFunc) (void *ctx, long offset, int whence);
+  typedef long (*MidIStreamTellFunc) (void *ctx);
   typedef int (*MidIStreamCloseFunc) (void *ctx);
 
   typedef struct _MidIStream MidIStream;
@@ -122,6 +124,8 @@ extern "C" {
 /* Create custom input stream
  */
   extern MidIStream *mid_istream_open_callbacks (MidIStreamReadFunc read,
+						 MidIStreamSeekFunc seek,
+						 MidIStreamTellFunc tell,
 						 MidIStreamCloseFunc close,
 						 void *context);
 

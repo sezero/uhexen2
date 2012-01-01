@@ -4,6 +4,10 @@ Development Progress	:
 ---------------------------
 
 2012-01-01 (SVN):
+    * timidity: Added seek and tell functions to the _MidIStream struct.
+    * snd_timidity.c: Adjusted for the new api change made in timidity.
+
+2012-01-01 (SVN):
     * libs/timidity: Made some functions and variables static. Commented
       out unused PrintRIFF and PrintDLS functions. Consistent whitespace
       usage.

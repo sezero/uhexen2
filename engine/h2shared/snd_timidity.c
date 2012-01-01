@@ -47,6 +47,16 @@ static size_t timidity_fread (void *ctx, void *ptr, size_t size, size_t nmemb)
 	return FS_fread (ptr, size, nmemb, (fshandle_t *) ctx);
 }
 
+static int timidity_fseek (void *ctx, long offset, int whence)
+{
+	return FS_fseek ((fshandle_t *) ctx, offset, whence);
+}
+
+static long timidity_ftell (void *ctx)
+{
+	return FS_ftell ((fshandle_t *) ctx);
+}
+
 static int timidity_fclose (void *ctx)
 {
 	return 0;		/* we fclose() elsewhere. */
@@ -106,7 +116,8 @@ static snd_stream_t *S_TIMIDITY_CodecOpenStream (const char *filename)
 		options.format = MID_AUDIO_S16LSB;
 	options.buffer_size = CACHEBUFFER_SIZE / (width * options.channels);
 
-	midistream = mid_istream_open_callbacks (timidity_fread, timidity_fclose,
+	midistream = mid_istream_open_callbacks (timidity_fread, timidity_fseek,
+						 timidity_ftell, timidity_fclose,
 						 & stream->fh);
 	if (!midistream)
 	{

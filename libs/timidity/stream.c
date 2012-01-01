@@ -11,6 +11,8 @@
 struct _MidIStream
 {
   MidIStreamReadFunc read;
+  MidIStreamSeekFunc seek;
+  MidIStreamTellFunc tell;
   MidIStreamCloseFunc close;
   void *ctx;
 };
@@ -25,6 +27,18 @@ static size_t
 stdio_istream_read (void *ctx, void *ptr, size_t size, size_t nmemb)
 {
   return fread (ptr, size, nmemb, ((StdIOContext *) ctx)->fp);
+}
+
+static int
+stdio_istream_seek (void *ctx, long offset, int whence)
+{
+  return fseek (((StdIOContext *) ctx)->fp, offset, whence);
+}
+
+static long
+stdio_istream_tell (void *ctx)
+{
+  return ftell (((StdIOContext *) ctx)->fp);
 }
 
 static int
@@ -57,10 +71,48 @@ mem_istream_read (void *ctx, void *ptr, size_t size, size_t nmemb)
   if (c->current + count * size > c->end)
     count = (c->end - c->current) / size;
 
+  if (count == 0)
+    return 0;
+
   memcpy (ptr, c->current, count * size);
   c->current += count * size;
 
   return count;
+}
+
+static int
+mem_istream_seek(void *ctx, long offset, int whence)
+{
+  MemContext *c = (MemContext *) ctx;
+
+  switch (whence) {
+  case SEEK_SET:
+    break;
+  case SEEK_CUR:
+    offset += (c->current - c->base);
+    break;
+  case SEEK_END:
+    offset += (c->end - c->base);
+    break;
+  default:
+   return -1;
+  }
+
+  if (offset < 0)
+    return -1;
+
+  if (offset > c->end - c->base)	/* just seek to end */
+    offset = c->end - c->base;
+
+  c->current = c->base + offset;
+  return 0;
+}
+
+static long
+mem_istream_tell(void *ctx)
+{
+  MemContext *c = (MemContext *) ctx;
+  return  (c->current - c->base);
 }
 
 static int
@@ -93,6 +145,8 @@ mid_istream_open_fp (FILE * fp, int autoclose)
 
   stream->ctx = ctx;
   stream->read = stdio_istream_read;
+  stream->seek = stdio_istream_seek;
+  stream->tell = stdio_istream_tell;
   stream->close = stdio_istream_close;
 
   return stream;
@@ -133,6 +187,8 @@ mid_istream_open_mem (void *mem, size_t size, int autofree)
 
   stream->ctx = ctx;
   stream->read = mem_istream_read;
+  stream->seek = mem_istream_seek;
+  stream->tell = mem_istream_tell;
   stream->close = mem_istream_close;
 
   return stream;
@@ -140,6 +196,8 @@ mid_istream_open_mem (void *mem, size_t size, int autofree)
 
 MidIStream *
 mid_istream_open_callbacks (MidIStreamReadFunc read,
+			    MidIStreamSeekFunc seek,
+			    MidIStreamTellFunc tell,
 			    MidIStreamCloseFunc close, void *context)
 {
   MidIStream *stream;
@@ -150,6 +208,8 @@ mid_istream_open_callbacks (MidIStreamReadFunc read,
 
   stream->ctx = context;
   stream->read = read;
+  stream->seek = seek;
+  stream->tell = tell;
   stream->close = close;
 
   return stream;
