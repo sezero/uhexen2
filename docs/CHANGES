@@ -4,6 +4,10 @@ Development Progress	:
 ---------------------------
 
 2012-01-01 (SVN):
+    * hexen2 menu.c: Use the original credits strings and don't play the
+      easter egg cd track 12 when the expansion pack is not active.
+
+2012-01-01 (SVN):
     * hexenworld menu.c: One of the string lines in the Credits2Text was
       missing a comma therefore it was concatanated with the next one
       and making the array one less in size than expected. If one waited

@@ -2879,12 +2879,332 @@ static float LinePos;
 static int LineTimes;
 static int MaxLines;
 static const char **LineText;
+static qboolean LineTxt2;
 static qboolean SoundPlayed;
 
 
-#define	MAX_LINES	138
+#define	MAX_LINES	145
 
 static const char *CreditText[MAX_LINES] =
+{
+   "Project Director: Brian Raffel",
+   "",
+   "Lead Programmer: Rick Johnson",
+   "",
+   "Programming:",
+   "   Ben Gokey",
+   "   Bob Love",
+   "   Mike Gummelt",
+   "",
+   "Additional Programming:",
+   "   Josh Weier",
+   "",
+   "Lead Design: Eric Biessman",
+   "",
+   "Design:",
+   "   Brian Raffel",
+   "   Brian Frank",
+   "   Tom Odell",
+   "",
+   "Art Director: Brian Pelletier",
+   "",
+   "Art:",
+   "   Shane Gurno",
+   "   Jim Sumwalt",
+   "   Mark Morgan",
+   "   Kim Lathrop",
+   "   Ted Halsted",
+   "   Rebecca Rettenmund",
+   "   Les Dorscheid",
+   "",
+   "Animation:",
+   "   Chaos (Mike Werckle)",
+   "   Brian Shubat",
+   "",
+   "Cinematics:",
+   "   Jeff Dewitt",
+   "   Jeffrey P. Lampo",
+   "",
+   "Music:",
+   "   Kevin Schilder",
+   "",
+   "Sound:",
+   "   Kevin Schilder",
+   "   Chia Chin Lee",
+   "",
+   "",
+   "Activision",
+   "",
+   "Producer:",
+   "   Steve Stringer",
+   "",
+   "Localization Producer:",
+   "   Sandi Isaacs",
+   "",
+   "Marketing Product Manager:",
+   "   Henk Hartong",
+   "",
+   "European Marketing",
+   "Product Director:",
+   "   Janine Johnson",
+   "",
+   "Marketing Associate:",
+   "   Kevin Kraff",
+   "",
+   "Senior Quality",
+   "Assurance Lead:",
+   "   Tim Vanlaw",
+   "",
+   "Quality Assurance Lead:",
+   "   John Tam",
+   "",
+   "Quality Assurance Team:",
+   "   Steve Rosenthal, Mike Spann,",
+   "   Steve Elwell, Kelly Wand,",
+   "   Kip Stolberg, Igor Krinitskiy,",
+   "   Ian Stevens, Marilena Wahmann,",
+   "   David Baker, Winnie Lee",
+   "",
+   "Documentation:",
+   "   Mike Rivera, Sylvia Orzel,",
+   "   Belinda Vansickle",
+   "",
+   "Chronicle of Deeds written by:",
+   "   Joe Grant Bell",
+   "",
+   "Localization:",
+   "   Nathalie Dove, Lucy Morgan,",
+   "   Alex Wylde, Nicky Kerth",
+   "",
+   "Installer by:",
+   "   Steve Stringer, Adam Goldberg,",
+   "   Tanya Martino, Eric Schmidt,",
+   "   Ronnie Lane",
+   "",
+   "Art Assistance by:",
+   "   Carey Chico and Franz Boehm",
+   "",
+   "BizDev Babe:",
+   "   Jamie Bafus",
+   "",
+   "And...",
+   "",
+   "Deal Guru:",
+   "   Mitch Lasky",
+   "",
+   "",
+   "Thanks to Id software:",
+   "   John Carmack",
+   "   Adrian Carmack",
+   "   Kevin Cloud",
+   "   Barrett 'Bear'  Alexander",
+   "   American McGee",
+   "",
+   "",
+   "Published by Id Software, Inc.",
+   "Distributed by Activision, Inc.",
+   "",
+   "The Id Software Technology used",
+   "under license in Hexen II (tm)",
+   "(c) 1996, 1997 Id Software, Inc.",
+   "All Rights Reserved.",
+   "",
+   "Hexen(r) is a registered trademark",
+   "of Raven Software Corp.",
+   "Hexen II (tm) and the Raven logo",
+   "are trademarks of Raven Software",
+   "Corp.  The Id Software name and",
+   "id logo are trademarks of",
+   "Id Software, Inc.  Activision(r)",
+   "is a registered trademark of",
+   "Activision, Inc. All other",
+   "trademarks are the property of",
+   "their respective owners.",
+   "",
+   "",
+   "",
+   "Send bug descriptions to:",
+   "   h2bugs@mail.ravensoft.com",
+   "",
+   "Special thanks to Gary McTaggart",
+   "at 3dfx for his help with",
+   "the gl version!",
+   "",
+   "No snails were harmed in the",
+#ifdef DEMOBUILD
+   "making of this demo!"
+#else
+   "making of this game!"
+#endif
+};
+
+#define	MAX_LINES2	158
+
+static const char *Credit2Text[MAX_LINES2] =
+{
+   "Map Master: ",
+   "   'Caffeine Buzz' Raffel",
+   "",
+   "Code Warrior:",
+   "   Rick 'Superfly' Johnson",
+   "",
+   "Grunt Boys:",
+   "   'Judah' Ben Gokey",
+   "   Bob 'Back In Action' Love",
+   "   Mike 'Jethro' Gummelt",
+   "",
+   "Additional Grunting:",
+   "   Josh 'Intern' Weier",
+   "",
+   "Whippin' Boy:",
+   "   Eric 'Baby' Biessman",
+   "",
+   "Crazy Levelers:",
+   "   'Big Daddy' Brian Raffel",
+   "   Brian 'Red' Frank",
+   "   Tom 'Texture Alignment' Odell",
+   "",
+   "Art Lord:",
+   "   Brian 'Mr. Calm' Pelletier",
+   "",
+   "Pixel Pushers:",
+   "   Shane 'Duh' Gurno",
+   "   'Slim' Jim Sumwalt",
+   "   Mark 'Dad Gummit' Morgan",
+   "   Kim 'Toy Master' Lathrop",
+   "   'Drop Dead' Ted Halsted",
+   "   Rebecca 'Zombie' Rettenmund",
+   "   Les 'Be Friends' Dorscheid",
+   "",
+   "Salad Shooters:",
+   "   Mike 'Chaos' Werckle",
+   "   Brian 'Mutton Chops' Shubat",
+   "",
+   "Last Minute Addition:",
+   "   Jeff 'Spanky' Dewitt",
+   "   Jeffrey 'Misspalld' Lampo",
+   "",
+   "Random Notes:",
+   "   Kevin 'I Already Paid' Schilder",
+   "",
+   "Grunts, Groans, and Moans:",
+   "   Kevin 'I Already Paid' Schilder",
+   "   Chia 'Pet' Chin Lee",
+   "",
+   "",
+   "Activision",
+   "",
+   "Producer:",
+   "   Steve 'Ferris' Stringer",
+   "",
+   "Localization Producer:",
+   "   Sandi 'Boneduster' Isaacs",
+   "",
+   "Marketing Product Manager:",
+   "   Henk 'A-10' Hartong",
+   "",
+   "European Marketing",
+   "Product Director:",
+   "   Janine Johnson",
+   "",
+   "Marketing Associate:",
+   "   Kevin 'Savage' Kraff",
+   "",
+   "Senior Quality",
+   "Assurance Lead:",
+   "   Tim 'Outlaw' Vanlaw",
+   "",
+   "Quality Assurance Lead:",
+   "   John 'Armadillo' Tam",
+   "",
+   "Quality Assurance Team:",
+   "   Steve 'Rhinochoadicus'",
+   "      Rosenthal,",
+   "   Mike 'Dragonhawk' Spann,",
+   "   Steve 'Zendog' Elwell,",
+   "   Kelly 'Li'l Bastard' Wand,",
+   "   Kip 'Angus' Stolberg,",
+   "   Igor 'Russo' Krinitskiy,",
+   "   Ian 'Cracker' Stevens,",
+   "   Marilena 'Raveness-X' Wahmann,",
+   "   David 'Spicegirl' Baker,",
+   "   Winnie 'Mew' Lee",
+   "",
+   "Documentation:",
+   "   Mike Rivera, Sylvia Orzel,",
+   "   Belinda Vansickle",
+   "",
+   "Chronicle of Deeds written by:",
+   "   Joe Grant Bell",
+   "",
+   "Localization:",
+   "   Nathalie Dove, Lucy Morgan,",
+   "   Alex Wylde, Nicky Kerth",
+   "",
+   "Installer by:",
+   "   Steve 'Bahh' Stringer,",
+   "   Adam Goldberg, Tanya Martino,",
+   "   Eric Schmidt, Ronnie Lane",
+   "",
+   "Art Assistance by:",
+   "   Carey 'Damien' Chico and",
+   "   Franz Boehm",
+   "",
+   "BizDev Babe:",
+   "   Jamie Bafus",
+   "",
+   "And...",
+   "",
+   "Deal Guru:",
+   "   Mitch Lasky",
+   "",
+   "",
+   "Thanks to Id software:",
+   "   John Carmack",
+   "   Adrian Carmack",
+   "   Kevin Cloud",
+   "   Barrett 'Bear'  Alexander",
+   "   American McGee",
+   "",
+   "",
+   "Published by Id Software, Inc.",
+   "Distributed by Activision, Inc.",
+   "",
+   "The Id Software Technology used",
+   "under license in Hexen II (tm)",
+   "(c) 1996, 1997 Id Software, Inc.",
+   "All Rights Reserved.",
+   "",
+   "Hexen(r) is a registered trademark",
+   "of Raven Software Corp.",
+   "Hexen II (tm) and the Raven logo",
+   "are trademarks of Raven Software",
+   "Corp.  The Id Software name and",
+   "id logo are trademarks of",
+   "Id Software, Inc.  Activision(r)",
+   "is a registered trademark of",
+   "Activision, Inc. All other",
+   "trademarks are the property of",
+   "their respective owners.",
+   "",
+   "",
+   "",
+   "Send bug descriptions to:",
+   "   h2bugs@mail.ravensoft.com",
+   "",
+   "Special thanks to Bob for",
+   "remembering 'P' is for Polymorph",
+   "",
+   "",
+   "See the next movie in the long",
+   "awaited sequel, starring",
+   "Bobby Love in,",
+   "   Out of Traction, Back in Action!"
+};
+
+#define	MAX_LINES_MP	138
+
+static const char *CreditTextMP[MAX_LINES_MP] =
 {
    "Project Director: James Monroe",
    "Creative Director: Brian Raffel",
@@ -3026,9 +3346,9 @@ static const char *CreditText[MAX_LINES] =
    "making of this game!"
 };
 
-#define	MAX_LINES2	150
+#define	MAX_LINES2_MP	150
 
-static const char *Credit2Text[MAX_LINES2] =
+static const char *Credit2TextMP[MAX_LINES2_MP] =
 {
    "PowerTrip: James (emorog) Monroe",
    "Cartoons: Brian Raffel",
@@ -3198,8 +3518,17 @@ void M_Menu_Quit_f (void)
 
 	LinePos = 0;
 	LineTimes = 0;
-	LineText = CreditText;
-	MaxLines = MAX_LINES;
+	if (gameflags & GAME_PORTALS)
+	{
+		LineText = CreditTextMP;
+		MaxLines = MAX_LINES_MP;
+	}
+	else
+	{
+		LineText = CreditText;
+		MaxLines = MAX_LINES;
+	}
+	LineTxt2 = false;
 	SoundPlayed = false;
 }
 
@@ -3255,9 +3584,18 @@ static void M_Quit_Draw (void)
 		LineTimes++;
 		if (LineTimes >= 2)
 		{
-			MaxLines = MAX_LINES2;
-			LineText = Credit2Text;
-			CDAudio_Play (12, false);
+			if (gameflags & GAME_PORTALS)
+			{
+				MaxLines = MAX_LINES2_MP;
+				LineText = Credit2TextMP;
+				CDAudio_Play (12, false);
+			}
+			else
+			{
+				MaxLines = MAX_LINES2;
+				LineText = Credit2Text;
+			}
+			LineTxt2 = true;
 		}
 	}
 
@@ -3276,7 +3614,7 @@ static void M_Quit_Draw (void)
 	M_PrintWhite (16 +(13 * 8), y + 24,	"Source Port");
 	y += 40;
 
-	if (LinePos > 55 && !SoundPlayed && LineText == Credit2Text)
+	if (LinePos > 55 && !SoundPlayed && LineTxt2)
 	{
 		S_LocalSound ("rj/steve.wav");
 		SoundPlayed = true;

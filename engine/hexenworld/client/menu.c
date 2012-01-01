@@ -1612,6 +1612,7 @@ static float LinePos;
 static int LineTimes;
 static int MaxLines;
 static const char **LineText;
+static qboolean LineTxt2;
 static qboolean SoundPlayed;
 
 
@@ -2003,6 +2004,7 @@ void M_Menu_Quit_f (void)
 	LineTimes = 0;
 	LineText = CreditText;
 	MaxLines = MAX_LINES;
+	LineTxt2 = false;
 	SoundPlayed = false;
 }
 
@@ -2061,6 +2063,7 @@ static void M_Quit_Draw (void)
 		{
 			MaxLines = MAX_LINES2;
 			LineText = Credit2Text;
+			LineTxt2 = true;
 		}
 	}
 
@@ -2079,7 +2082,7 @@ static void M_Quit_Draw (void)
 	M_PrintWhite (16 +(13 * 8), y + 24,	"Source Port");
 	y += 40;
 
-	if (LinePos > 55 && !SoundPlayed && LineText == Credit2Text)
+	if (LinePos > 55 && !SoundPlayed && LineTxt2)
 	{
 		S_LocalSound ("rj/steve.wav");
 		SoundPlayed = true;
