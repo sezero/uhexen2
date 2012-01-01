@@ -327,6 +327,8 @@ static int read_track(MidIStream *stream, MidSong *song, int append)
 
       if (newlist==MAGIC_EOT) /* End-of-track Hack. */
 	{
+	/* If the track ends before the size of the
+	 * track data, skip any junk at the end.  */
 	  pos = mid_istream_tell(stream);
 	  if (pos < next_pos)
 	    mid_istream_seek(stream, next_pos - pos, SEEK_CUR);
