@@ -20,6 +20,11 @@
  * mix.h
  */
 
+#ifndef TIMIDITY_MIX_H
+#define TIMIDITY_MIX_H
+
 extern void mix_voice(MidSong *song, sint32 *buf, int v, sint32 c);
 extern int recompute_envelope(MidSong *song, int v);
 extern void apply_envelope_to_amp(MidSong *song, int v);
+
+#endif /* TIMIDITY_MIX_H */

@@ -19,5 +19,10 @@
  * resample.h
  */
 
+#ifndef TIMIDITY_RESAMPLE_H
+#define TIMIDITY_RESAMPLE_H
+
 extern sample_t *resample_voice(MidSong *song, int v, sint32 *countptr);
 extern void pre_resample(MidSong *song, MidSample *sp);
+
+#endif /* TIMIDITY_RESAMPLE_H */

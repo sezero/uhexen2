@@ -19,6 +19,9 @@
  * output.h
  */
 
+#ifndef TIMIDITY_OUTPUT_H
+#define TIMIDITY_OUTPUT_H
+
 /* Data format encoding bits */
 
 #define PE_MONO 	0x01  /* versus stereo */
@@ -53,3 +56,5 @@ extern void s32tou16x(void *dp, sint32 *lp, sint32 c);
 #define s32tos16l s32tos16x
 #define s32tos16b s32tos16
 #endif
+
+#endif /* TIMIDITY_OUTPUT_H */

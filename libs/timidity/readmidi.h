@@ -19,4 +19,9 @@
  *readmidi.h
  */
 
+#ifndef TIMIDITY_READMIDI_H
+#define TIMIDITY_READMIDI_H
+
 extern MidEvent *read_midi_file(MidIStream *stream, MidSong *song, sint32 *count, sint32 *sp);
+
+#endif /* TIMIDITY_READMIDI_H */

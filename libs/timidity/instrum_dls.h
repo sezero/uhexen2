@@ -19,4 +19,9 @@
  * instrum.h
  */
 
+#ifndef TIMIDITY_INSTRUM_DLS_H
+#define TIMIDITY_INSTRUM_DLS_H
+
 extern MidInstrument *load_instrument_dls(MidSong *song, int drum, int bank, int instrument);
+
+#endif /* TIMIDITY_INSTRUM_DLS_H */

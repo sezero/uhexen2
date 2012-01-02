@@ -3,6 +3,10 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2012-01-02 (SVN):
+    * timidity: added include guards to all of the timidity headers.
+    * quakedef.h: updated beta date stamp to 2012-01-02.
+
 2012-01-01 (SVN):
     * timidity, options.h (DEFAULT_DRUMCHANNELS): Do not mark 16 as a
       drum channel. Noticed this in SDL_mixer bug #1352, fixed in their

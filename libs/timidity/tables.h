@@ -19,7 +19,11 @@
  * tables.h
  */
 
+#ifndef TIMIDITY_TABLES_H
+#define TIMIDITY_TABLES_H
+
 #include <math.h>
+
 #define sine(x) (sin((2*PI/1024.0) * (x)))
 
 #define SINE_CYCLE_LENGTH 1024
@@ -27,3 +31,5 @@ extern const sint32 freq_table[];
 extern const double vol_table[];
 extern const double bend_fine[];
 extern const double bend_coarse[];
+
+#endif /* TIMIDITY_TABLES_H */
