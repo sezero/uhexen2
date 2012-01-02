@@ -4,6 +4,18 @@ Development Progress	:
 ---------------------------
 
 2012-01-02 (SVN):
+    * timidity.h (struct _MidSongOptions): Added discard_meta member
+      (actually changed the padding member) so that I can choose not to
+      allocate and parse the metadata.
+    * timidity_internal.h (struct _MidSong): Added discard_meta member.
+    * timidity.c (mid_song_load): Set the song's discard_meta member.
+    * readmidi.c (read_midi_event): Made to call mid_istream_skip()
+      instead of read_meta_data() when the song's discard_meta option is
+      set.
+    * snd_timidity.c: Pass 1 to mid_song_load() as discard_meta option
+      because we don't need the metadata.
+
+2012-01-02 (SVN):
     * timidity: added include guards to all of the timidity headers.
     * quakedef.h: updated beta date stamp to 2012-01-02.
 

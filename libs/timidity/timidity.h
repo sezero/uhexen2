@@ -75,7 +75,7 @@ extern "C" {
     uint8 channels;	/* Number of channels: 1 mono, 2 stereo */
     uint8 width;	/* Sample width: 1 for 8 bit, 2 for 16 bit */
     uint16 buffer_size;	/* Sample buffer size in samples */
-    uint16 padding;
+    sint16 discard_meta;/* do or don't allocate and parse metadata */
   };
 
   typedef enum

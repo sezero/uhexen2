@@ -65,13 +65,13 @@ static sint32 getvl(MidIStream *stream)
    or unprintable characters will be converted to periods. */
 static int read_meta_data(MidIStream *stream, sint32 len, uint8 type, MidSong *song)
 {
-  char *s = (char *)safe_malloc(len+1);
-  MidSongMetaId id;
 #ifdef TIMIDITY_DEBUG
   static const char *label[] = {
     "Text event: ", "Text: ", "Copyright: ", "Track name: ",
     "Instrument: ", "Lyric: ", "Marker: ", "Cue point: "};
 #endif /* TIMIDITY_DEBUG */
+  MidSongMetaId id;
+  char *s = (char *)safe_malloc(len+1);
 
   if (len != (sint32) mid_istream_read(stream, s, 1, len))
     {
@@ -98,7 +98,7 @@ static int read_meta_data(MidIStream *stream, sint32 len, uint8 type, MidSong *s
 	free(song->meta_data[id]);
       song->meta_data[id] = s;
     }
-	
+
   return 0;
 }
 
@@ -144,7 +144,10 @@ static MidEventList *read_midi_event(MidIStream *stream, MidSong *song)
 	  len=getvl(stream);
 	  if (type>0 && type<16)
 	    {
-	      read_meta_data(stream, len, type, song);
+	      if (song->discard_meta)
+		mid_istream_skip(stream, len);
+	      else
+		read_meta_data(stream, len, type, song);
 	    }
 	  else
 	    switch(type)
@@ -157,7 +160,7 @@ static MidEventList *read_midi_event(MidIStream *stream, MidSong *song)
 		mid_istream_read(stream, &b, 1, 1);
 		mid_istream_read(stream, &c, 1, 1);
 		MIDIEVENT(song->at, ME_TEMPO, c, a, b);
-		
+
 	      default:
 		DEBUG_MSG("(Meta event type 0x%02x, length %d)\n", type, len);
 		mid_istream_skip(stream, len);

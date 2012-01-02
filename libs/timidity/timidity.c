@@ -516,6 +516,7 @@ MidSong *mid_song_load_dls(MidIStream *stream, MidDLSPatches *patches, MidSongOp
 	  break;
   }
 
+  song->discard_meta = options->discard_meta;
   song->buffer_size = options->buffer_size;
   song->resample_buffer = (sample_t *) safe_malloc(options->buffer_size * sizeof(sample_t));
   song->common_buffer = (sint32 *) safe_malloc(options->buffer_size * 2 * sizeof(sint32));
