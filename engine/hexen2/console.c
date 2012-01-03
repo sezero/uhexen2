@@ -245,6 +245,7 @@ static void Con_Print (const char *txt)
 	int		c, l;
 	static int	cr;
 	int		mask;
+	qboolean	boundary;
 
 	if (txt[0] == 1)
 	{
@@ -261,16 +262,27 @@ static void Con_Print (const char *txt)
 	else
 		mask = 0;
 
+	boundary = true;
+
 	while ( (c = (byte)*txt) )
 	{
-	// count word length
-		for (l = 0; l < con_linewidth; l++)
-			if ( txt[l] <= ' ')
-				break;
+		if (c <= ' ')
+		{
+			boundary = true;
+		}
+		else if (boundary)
+		{
+			// count word length
+			for (l = 0; l < con_linewidth; l++)
+				if (txt[l] <= ' ')
+					break;
 
-	// word wrap
-		if (l != con_linewidth && (con->x + l > con_linewidth) )
-			con->x = 0;
+			// word wrap
+			if (l != con_linewidth && (con->x + l > con_linewidth))
+				con->x = 0;
+
+			boundary = false;
+		}
 
 		txt++;
 
