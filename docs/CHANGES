@@ -3,6 +3,10 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2012-01-03 (SVN):
+    * console.c: Console word wrap fix: only check and wrap at word
+      boundaries, not in the middle of a word.
+
 2012-01-02 (SVN):
     * timidity.h (struct _MidSongOptions): Added discard_meta member
       (actually changed the padding member) so that I can choose not to
