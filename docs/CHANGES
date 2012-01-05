@@ -3,6 +3,10 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2012-01-05 (SVN):
+    * Recompiled all win64 dlls and import libraries.
+    * quakedef.h: updated beta date stamp to 2012-01-05.
+
 2012-01-03 (SVN):
     * console.c: Console word wrap fix: only check and wrap at word
       boundaries, not in the middle of a word.
