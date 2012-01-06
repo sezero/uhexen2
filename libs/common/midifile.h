@@ -263,8 +263,8 @@ This document may be freely distributed in its original form.
 #define	MIDI_MAGIC_MTRK			0x4d54726b	/* Track header magic "MTrk" */
 /* Non-standard MIDI file formats */
 #define	MIDI_MAGIC_CTMF			0x43544d46	/* Creative Music File (CMF) */
-#define	MIDI_MAGIC_RMID			0x524d4944	/* RMI (Microsoft, "RMID") */
-#define	MIDI_MAGIC_RIFF			0x52494646	/* Microsoft "RIFF" (for RMID) */
+#define	MIDI_MAGIC_RMID			0x524d4944	/* "RMID" (Microsoft's RMI) */
+#define	MIDI_MAGIC_RIFF			0x52494646	/* "RIFF", for Microsoft RMID */
 
 /* Constants for MIDI v1.0. (from asoundef.h) */
 #define	MIDI_CHANNELS			16	/* Number of channels per port/cable. */
