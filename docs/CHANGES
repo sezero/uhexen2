@@ -4,6 +4,9 @@ Development Progress	:
 ---------------------------
 
 2012-01-06 (SVN):
+    * midifile.h: Added magic constant for Microsoft RMID (*.rmi) files.
+
+2012-01-06 (SVN):
     * timidity, load_instrument(): Close the file before returning in
       error cases.
     * updated beta date stamp to 2012-01-06.
