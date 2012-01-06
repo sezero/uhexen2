@@ -192,7 +192,7 @@ static MidInstrument *load_instrument(MidSong *song, const char *name,
 	    }
 	}
     }
-  
+
   if (noluck)
     {
       DEBUG_MSG("Instrument `%s' can't be found.\n", name);
@@ -210,19 +210,22 @@ static MidInstrument *load_instrument(MidSong *song, const char *name,
 						      differences are */
     {
       DEBUG_MSG("%s: not an instrument\n", name);
+      fclose(fp);
       return NULL;
     }
 
-  if (tmp[82] != 1 && tmp[82] != 0) /* instruments. To some patch makers, 
-				       0 means 1 */
+  if (tmp[82] != 1 && tmp[82] != 0)  /* instruments. To some patch makers,
+					0 means 1 */
     {
       DEBUG_MSG("Can't handle patches with %d instruments\n", tmp[82]);
+      fclose(fp);
       return NULL;
     }
 
   if (tmp[151] != 1 && tmp[151] != 0) /* layers. What's a layer? */
     {
       DEBUG_MSG("Can't handle instruments with %d layers\n", tmp[151]);
+      fclose(fp);
       return NULL;
     }
 
@@ -231,20 +234,19 @@ static MidInstrument *load_instrument(MidSong *song, const char *name,
   ip->sample = (MidSample *) safe_malloc(sizeof(MidSample) * ip->samples);
   for (i=0; i<ip->samples; i++)
     {
-
       uint8 fractions;
       sint32 tmplong;
       uint16 tmpshort;
       uint8 tmpchar;
 
-#define READ_CHAR(thing) \
-      if (1 != fread(&tmpchar, 1, 1, fp)) goto fail; \
+#define READ_CHAR(thing)				\
+      if (1 != fread(&tmpchar, 1, 1, fp)) goto fail;	\
       thing = tmpchar;
-#define READ_SHORT(thing) \
-      if (1 != fread(&tmpshort, 2, 1, fp)) goto fail; \
+#define READ_SHORT(thing)				\
+      if (1 != fread(&tmpshort, 2, 1, fp)) goto fail;	\
       thing = SWAPLE16(tmpshort);
-#define READ_LONG(thing) \
-      if (1 != fread(&tmplong, 4, 1, fp)) goto fail; \
+#define READ_LONG(thing)				\
+      if (1 != fread(&tmplong, 4, 1, fp)) goto fail;	\
       thing = SWAPLE32(tmplong);
 
       fseek(fp, 7, SEEK_CUR); /* Skip the wave name */
@@ -257,6 +259,7 @@ static MidInstrument *load_instrument(MidSong *song, const char *name,
 	    free(ip->sample[j].data);
 	  free(ip->sample);
 	  free(ip);
+	  fclose(fp);
 	  return NULL;
 	}
 
@@ -279,7 +282,7 @@ static MidInstrument *load_instrument(MidSong *song, const char *name,
       if (panning==-1)
 	sp->panning = (tmp[0] * 8 + 4) & 0x7f;
       else
-	sp->panning=(uint8)(panning & 0x7F);
+	sp->panning = (uint8)(panning & 0x7F);
 
       /* envelope, tremolo, and vibrato */
       if (18 != fread(tmp, 1, 18, fp)) goto fail;
@@ -315,7 +318,6 @@ static MidInstrument *load_instrument(MidSong *song, const char *name,
 	  DEBUG_MSG(" * vibrato: sweep %d, ctl %d, depth %d\n",
 	       sp->vibrato_sweep_increment, sp->vibrato_control_ratio,
 	       sp->vibrato_depth);
-
 	}
 
       READ_CHAR(sp->modes);
