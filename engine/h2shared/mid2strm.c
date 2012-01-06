@@ -970,6 +970,7 @@ static int AddEventToStreamBuffer (temp_event_t *te, convert_buf_t *buf)
 		buffer_tick_len = (mfs.timediv * 1000 * BUFFER_TIME_LENGTH)
 					/ me->dwEvent /* == current tempo */;
 		DEBUG_Printf("%s: buffer tick length: %lu\n", __thisfunc__, buffer_tick_len);
+		me->dwEvent |= (((DWORD)MEVT_TEMPO) << 24) | MEVT_F_SHORT;
 
 		if (te->longdata)
 		{
