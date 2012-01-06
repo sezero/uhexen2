@@ -6,6 +6,7 @@ Development Progress	:
 2012-01-06 (SVN):
     * mid2strm.c (ConverterInit): Add support for Microsoft RMID format.
     * timidity/readmidi.c (read_midi_file): Likewise.
+    * Updated the v1.5.2 release notes file.
 
 2012-01-06 (SVN):
     * midifile.h: Added magic constant for Microsoft RMID (*.rmi) files.
