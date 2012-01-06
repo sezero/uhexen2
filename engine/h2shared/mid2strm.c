@@ -149,7 +149,22 @@ int ConverterInit (const char *filename)
  * and the file header itself.  */
 	if (GetInFileData(&magic, sizeof(DWORD)))
 		goto Init_Cleanup;
-	if ((magic = (DWORD)BigLong(magic)) != MIDI_MAGIC_MTHD)
+	magic = (DWORD)BigLong(magic);
+	if (magic == MIDI_MAGIC_RIFF) /* RMID ?? */
+	{
+		if (GetInFileData(&bytes, sizeof(DWORD)) != 0 || /* size */
+		    GetInFileData(&magic, sizeof(DWORD)) != 0 ||
+		    MIDI_MAGIC_RMID != (DWORD)BigLong(magic)  ||
+		    GetInFileData(&magic, sizeof(DWORD)) != 0 ||
+	/* "data" */0x64617461 != (DWORD)BigLong(magic) ||
+		    GetInFileData(&bytes, sizeof(DWORD)) != 0 || /* size */
+		    /* SMF must begin from here onwards: */
+		    GetInFileData(&magic, sizeof(DWORD)) != 0) {
+			goto Init_Cleanup;
+		}
+		magic = (DWORD)BigLong(magic);
+	}
+	if (magic != MIDI_MAGIC_MTHD)
 		goto Init_Cleanup;
 	if (GetInFileData(&bytes, sizeof(DWORD)))
 		goto Init_Cleanup;

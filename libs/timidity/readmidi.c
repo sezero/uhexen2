@@ -529,11 +529,26 @@ MidEvent *read_midi_file(MidIStream *stream, MidSong *song, sint32 *count, sint3
   song->at=0;
   song->evlist = NULL;
 
-  if (mid_istream_read(stream, tmp, 1, 4) != 4 || mid_istream_read(stream, &len, 4, 1) != 1)
+  if (mid_istream_read(stream, tmp, 1, 4) != 4 ||
+      mid_istream_read(stream, &len, 4, 1) != 1)
     {
       DEBUG_MSG("Not a MIDI file!\n");
       return NULL;
     }
+  if (memcmp(tmp, "RIFF", 4) == 0) { /* RMID ?? */
+    if (mid_istream_read(stream, tmp, 1, 4) != 4 ||
+		     memcmp(tmp, "RMID", 4) != 0 ||
+	mid_istream_read(stream, tmp, 1, 4) != 4 ||
+		     memcmp(tmp, "data", 4) != 0 ||
+	mid_istream_read(stream, tmp, 1, 4) != 4 ||
+	/* SMF must begin from here onwards: */
+	mid_istream_read(stream, tmp, 1, 4) != 4 ||
+	mid_istream_read(stream, &len, 4, 1) != 1)
+      {
+	DEBUG_MSG("Not an RMID file!\n");
+	return NULL;
+      }
+  }
   len=SWAPBE32(len);
   if (memcmp(tmp, "MThd", 4) || len < 6)
     {
