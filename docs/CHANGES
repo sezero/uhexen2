@@ -6,7 +6,10 @@ Development Progress	:
 2012-01-06 (SVN):
     * mid2strm.c (AddEventToStreamBuffer): Fixed broken tempo in windows
       midi with certain midi files. Bug was introduced in v1.5.1 (r4260)
-      by an unintended deletion of just one line. sigh...
+      by an accidental deletion of just one line. sigh...
+
+2012-01-06 (SVN):
+    * Updated the README.dos file for WatTCP support.
 
 2012-01-06 (SVN):
     * mid2strm.c (ConverterInit): Add support for Microsoft RMID format.

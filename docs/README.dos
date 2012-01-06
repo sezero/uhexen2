@@ -15,11 +15,22 @@ Things that don't work:
 * MIDI music:  Not implemented yet.
 * Loading progress bars:  Not implemented yet.
 
+Things that just work:
+
+* All other functionality in uhexen2 just works under DOS, including
+  Ogg/Vorbis and MP3 music playback.
+
 Things not tested, but should work:
 
 * NETWORKING:  Neither of ipx, tcp or modem/direct connect is tested.
   The code is almost exactly the same as the quake dos network code,
   therefore they should work the same way they do with dos-quake.
+
+  In addition, uHexen2 includes WatTCP (WATT-32) support for internet
+  play, which has been reported to work without issues.  See WatTCP
+  documentation (http://home.broadpark.no/~gvanem/) to setup WatTCP.
+  Note: WatTCP won't initialize if IPX is running.
+
   In case you want to disable some or all network functionality, here
   are the related command line switches:
   -noupd : disables UDP (TCP/IP)
@@ -30,11 +41,6 @@ Things not tested, but should work:
 * JOYSTICK:  The code is the same as quake joystick code, therefore
   it should work the same way it does with dos-quake. Note: In order
   to disable joystick, use the command line argument -nojoy.
-
-Things that just work:
-
-* All other functionality in uhexen2 just works under DOS, including
-  Ogg/Vorbis and MP3 music playback.
 
 
 NOTES:
