@@ -22,9 +22,10 @@ Things that just work:
 
 Things not tested, but should work:
 
-* NETWORKING:  Neither of ipx, tcp or modem/direct connect is tested.
+* NETWORKING:  Neither of BWTCP, modem or direct connection is tested.
   The code is almost exactly the same as the quake dos network code,
-  therefore they should work the same way they do with dos-quake.
+  therefore they should work the same way they do with dos-quake.  On
+  the other hand, IPX has been reported to work fine.
 
   In addition, uHexen2 includes WatTCP (WATT-32) support for internet
   play, which has been reported to work without issues.  See WatTCP
