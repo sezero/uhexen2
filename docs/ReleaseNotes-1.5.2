@@ -1,5 +1,5 @@
 Hexen II: Hammer of Thyrion (uhexen2)
-Release Notes for version 1.5.2 (Jan. 06, 2012.)
+Release Notes for version 1.5.2 (Jan. 09, 2012.)
 ================================================
 
 Changes since the uhexen2-1.5.1 release:
@@ -12,9 +12,13 @@ Changes since the uhexen2-1.5.1 release:
   the software renderer, controlled by new cvar "contrans".
   Valid values for contrans are 0 (solid), 1 (transparent)
   and 2 (very transparent).
+* All platforms, input: Discard mouse/joystick motion when
+  in cameramode.
 * SDL / Unix: SDL mouse input updates to prevent unintended
   view coordinate changes.
 * SDL / Unix: Revised SDL unicode and dead keys support.
+* Linux / SVGAlib mouse: Fixed missing camera mode and ideal
+  roll handling.
 * Unix, MIDI: Several updates to the Timidity backend.
 * Timidity, Windows MIDI: Support for Microsoft RMID format.
 * Windows MIDI: Fixed broken tempo with certain midi files
@@ -29,8 +33,6 @@ Changes since the uhexen2-1.5.1 release:
   text to be printed.
 * Mac OS X: Fixed compilation failure due to a typo in MIDI
   code introduced in v1.5.1.
-* Linux / SVGAlib mouse: Fixed missing camera mode and ideal
-  roll handling.
 * DOS: Added WatTCP (WATT-32) networking support for hexen2
   internet play.
 * DOS: Added experimental DOS support for hexenworld using

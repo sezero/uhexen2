@@ -115,7 +115,7 @@ static void IN_StartupExternal (void);
 static void IN_ExternalMove (usercmd_t *cmd);
 
 static void IN_StartupJoystick (void);
-static qboolean IN_ReadJoystick (void);
+static qboolean IN_ReadJoystick (int *x, int *y);
 
 
 static void Toggle_AuxLook_f (void)
@@ -200,7 +200,6 @@ IN_Shutdown
 */
 void IN_Shutdown (void)
 {
-
 }
 
 
@@ -293,6 +292,14 @@ void IN_Commands (void)
 IN_Move
 ===========
 */
+static void IN_ReadMouseMove (int *x, int *y)
+{
+	regs.x.ax = 11;	/* read move */
+	dos_int86(0x33);
+	if (x)	*x = (short) regs.x.cx;
+	if (y)	*y = (short) regs.x.dx;
+}
+
 static void IN_MouseMove (usercmd_t *cmd)
 {
 	int		mx, my;
@@ -300,10 +307,7 @@ static void IN_MouseMove (usercmd_t *cmd)
 	if (!mouse_avail)
 		return;
 
-	regs.x.ax = 11;		// read move
-	dos_int86(0x33);
-	mx = (short)regs.x.cx;
-	my = (short)regs.x.dx;
+	IN_ReadMouseMove (&mx, &my);
 
 	if (m_filter.integer)
 	{
@@ -370,7 +374,10 @@ static void IN_JoyMove (usercmd_t *cmd)
 	if (!joy_avail || !in_joystick.integer)
 		return;
 
-	IN_ReadJoystick ();
+	joystickx = 0;
+	joysticky = 0;
+
+	IN_ReadJoystick (&joystickx, &joysticky);
 	if (joysticky > joyyh * 2 || joystickx > joyxh * 2)
 		return;		// assume something jumped in and messed up the joystick
 					// reading time (win 95)
@@ -428,6 +435,23 @@ static void IN_JoyMove (usercmd_t *cmd)
 	}
 }
 
+static void IN_DiscardMove (void)
+{
+	if (mouse_avail)
+	{
+		old_mouse_x = old_mouse_y = 0;
+		IN_ReadMouseMove (NULL, NULL);
+	}
+	if (joy_avail && in_joystick.integer)
+	{
+		IN_ReadJoystick (NULL, NULL);
+	}
+	if (extern_avail)
+	{
+		dos_int86(extern_control->interruptVector);
+	}
+}
+
 /*
 ===========
 IN_Move
@@ -435,9 +459,12 @@ IN_Move
 */
 void IN_Move (usercmd_t *cmd)
 {
-	if (cl.v.cameramode)	// Stuck in a different camera so don't move
+	if (cl.v.cameramode)
 	{
+	/* stuck in a different camera so don't move */
 		memset (cmd, 0, sizeof(*cmd));
+	/* ignore any mouse movements in camera mode */
+		IN_DiscardMove ();
 		return;
 	}
 
@@ -454,13 +481,10 @@ void IN_Move (usercmd_t *cmd)
 ============================================================================
 */
 
-static qboolean IN_ReadJoystick (void)
+static qboolean IN_ReadJoystick (int *x, int *y)
 {
 	int		b;
 	int		count;
-
-	joystickx = 0;
-	joysticky = 0;
 
 	count = 0;
 
@@ -472,8 +496,8 @@ static qboolean IN_ReadJoystick (void)
 	{
 		b = dos_inportb(0x201);
 
-		joystickx += b&1;
-		joysticky += (b&2)>>1;
+		if (x)	*x +=  b&1;
+		if (y)	*y += (b&2)>>1;
 		if ( !(b&3) )
 			return true;
 	}
@@ -551,7 +575,7 @@ static void IN_StartupJoystick (void)
 	if (safemode || COM_CheckParm ("-nojoy"))
 		return;
 
-	if (!IN_ReadJoystick ())
+	if (!IN_ReadJoystick (NULL, NULL))
 	{
 		joy_avail = false;
 		Con_Printf ("joystick not found\n");
@@ -563,21 +587,21 @@ static void IN_StartupJoystick (void)
 	Con_Printf ("CENTER the joystick\nand press button 1 (ESC to skip):\n");
 	if (!WaitJoyButton ())
 		return;
-	IN_ReadJoystick ();
+	IN_ReadJoystick (&joystickx, &joysticky);
 	centerx = joystickx;
 	centery = joysticky;
 
 	Con_Printf ("Push the joystick to the UPPER LEFT\nand press button 1 (ESC to skip):\n");
 	if (!WaitJoyButton ())
 		return;
-	IN_ReadJoystick ();
+	IN_ReadJoystick (&joystickx, &joysticky);
 	joyxl = (centerx + joystickx) / 2;
 	joyyl = (centerx + joysticky) / 2;
 
 	Con_Printf ("Push the joystick to the LOWER RIGHT\nand press button 1 (ESC to skip):\n");
 	if (!WaitJoyButton ())
 		return;
-	IN_ReadJoystick ();
+	IN_ReadJoystick (&joystickx, &joysticky);
 	joyxh = (centerx + joystickx) / 2;
 	joyyh = (centery + joysticky) / 2;
 
@@ -602,7 +626,7 @@ IN_StartupExternal
 ===============
 */
 static void IN_StartupExternal (void)
-{ 
+{
 	if (extern_control->numButtons > 32)
 		extern_control->numButtons = 32;
 

@@ -71,6 +71,12 @@ static void keyhandler (int scancode, int state)
 static void mousehandler (int buttonstate, int dx, int dy, int dz,
 					int drx, int dry, int drz)
 {
+	if (cl.v.cameramode)
+	{
+	/* ignore any mouse movements in camera mode */
+		return;
+	}
+
 	mouse_buttonstate = buttonstate;
 	mx += dx;
 	my += dy;
@@ -391,8 +397,9 @@ static void IN_MouseMove (usercmd_t *cmd)
 
 void IN_Move (usercmd_t *cmd)
 {
-	if (cl.v.cameramode)	/* Stuck in a different camera so don't move */
+	if (cl.v.cameramode)
 	{
+	/* stuck in a different camera so don't move */
 		memset (cmd, 0, sizeof(*cmd));
 		return;
 	}

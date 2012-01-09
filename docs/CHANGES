@@ -3,6 +3,28 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2012-01-09 (SVN):
+    * When the server puts the client in cameramode, the movements have
+      always been discarded but the same has not been true for viewangle
+      changes by way of the mouse (or the joystick). Fixing this now:
+    * in_sdl.c: Added new IN_DiscardMove() helper which sets old_mouse_x
+      and old_mouse_y to 0 and calls SDL_GetRelativeMouseState() with nul
+      parameters therefore SDL resets its last called state. Called this
+      new helper from IN_Move() when we are in cameramode.
+    * in_dos.c: Added new IN_ReadMouseMove() helper accepting x and y int
+      pointer parameters which may be null. Changed IN_MouseMove() to call
+      this new helper. Changed IN_ReadJoystick() to accept x and y pointer
+      parameters which may be null, and adjusted its callers accordingly.
+      Added new IN_DiscardMove() helper which sets old_mouse_x/old_mouse_y
+      to 0 and calls IN_ReadMouseMove() and IN_ReadJoystick() with null
+      parameters to discard motion. Called this new helper from IN_Move()
+      when we are in cameramode.
+    * in_svgalib.c: Made the mousehandler() callback function to return
+      without doing anything when we are in cameramode.
+    * in_win.c: Direct input mode seems friendly with cameramode, however
+      winmouse mode will need love'n'care, but later.
+    * quakedef.h: updated beta date stamp to 2012-01-09.
+
 2012-01-06 (SVN):
     * mid2strm.c (AddEventToStreamBuffer): Fixed broken tempo in windows
       midi with certain midi files. Bug was introduced in v1.5.1 (r4260)
