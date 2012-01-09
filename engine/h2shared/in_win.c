@@ -803,6 +803,17 @@ static void IN_MouseMove (usercmd_t *cmd)
 }
 
 
+static void IN_DiscardMove (void)
+{
+	if (mouseactive && !dinput_init)
+	{
+	/* nuke data collected by IN_Accumulate(): */
+		old_mouse_x = old_mouse_y =
+		mx_accum = my_accum =	0;
+	}
+	/* need I mess with the joystick here too? */
+}
+
 /*
 ===========
 IN_Move
@@ -810,9 +821,12 @@ IN_Move
 */
 void IN_Move (usercmd_t *cmd)
 {
-	if (cl.v.cameramode)	// Stuck in a different camera so don't move
+	if (cl.v.cameramode)
 	{
+	/* stuck in a different camera so don't move */
 		memset (cmd, 0, sizeof(*cmd));
+	/* ignore any mouse movements in camera mode */
+		IN_DiscardMove ();
 		return;
 	}
 

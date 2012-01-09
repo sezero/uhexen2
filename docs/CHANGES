@@ -4,6 +4,13 @@ Development Progress	:
 ---------------------------
 
 2012-01-09 (SVN):
+    * in_win.c: Added new IN_DiscardMove() helper which nukes the winmouse
+      data collected by IN_Accumulate() by zeroing the mx_accum, my_accum,
+      old_mouse_x and old_mouse_y. Direct input mode seems friendly with
+      cameramode already. Called the new helper from IN_Move() when we are
+      in cameramode in order to discard mouse motion.
+
+2012-01-09 (SVN):
     * input.h: Removed stub macros of IN_ActivateMouse, IN_DeactivateMouse,
       IN_ShowMouse and IN_HideMouse for non-windowed targets, i.e. dos and
       svgalib, and made them into functions. Same for IN_ClearStates which
@@ -41,8 +48,6 @@ Development Progress	:
       when we are in cameramode.
     * in_svgalib.c: Made the mousehandler() callback function to return
       without doing anything when we are in cameramode.
-    * in_win.c: Direct input mode seems friendly with cameramode, however
-      winmouse mode will need love'n'care, but later.
     * quakedef.h: updated beta date stamp to 2012-01-09.
 
 2012-01-06 (SVN):
