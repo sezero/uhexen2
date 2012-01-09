@@ -93,6 +93,8 @@ static	int		mouse_wheelcounter;
 static	float	mouse_x, mouse_y;
 static	float	old_mouse_x, old_mouse_y;
 
+static void IN_ReadMouseMove (int *, int *);
+
 // joystick defines and variables
 static	cvar_t	in_joystick = {"joystick", "1", CVAR_ARCHIVE};
 static	cvar_t	joy_numbuttons = {"joybuttons", "4", CVAR_ARCHIVE};
@@ -163,6 +165,31 @@ static void IN_StartupMouse (void)
 		mouse_wheel = true;
 		Con_Printf("mouse wheel support available\n");
 	}
+}
+
+void IN_ActivateMouse (void)
+{
+	if (mouse_avail)
+	{
+		old_mouse_x = old_mouse_y = 0;
+		IN_ReadMouseMove (NULL, NULL);
+	}
+}
+
+void IN_DeactivateMouse (void)
+{
+}
+
+void IN_ShowMouse (void)
+{
+}
+
+void IN_HideMouse (void)
+{
+}
+
+void IN_ClearStates (void)
+{
 }
 
 /*

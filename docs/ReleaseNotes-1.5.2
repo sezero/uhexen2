@@ -13,9 +13,9 @@ Changes since the uhexen2-1.5.1 release:
   Valid values for contrans are 0 (solid), 1 (transparent)
   and 2 (very transparent).
 * All platforms, input: Discard mouse/joystick motion when
-  in cameramode.
-* SDL / Unix: SDL mouse input updates to prevent unintended
-  view coordinate changes.
+  in cameramode. Discard the accumulated mouse motion when
+  starting a game or when loading a saved game to prevent
+  any unintended viewangle changes.
 * SDL / Unix: Revised SDL unicode and dead keys support.
 * Linux / SVGAlib mouse: Fixed missing camera mode and ideal
   roll handling.

@@ -197,6 +197,15 @@ static void IN_StartupMouse (void)
 
 
 /*
+===================
+IN_ClearStates
+===================
+*/
+void IN_ClearStates (void)
+{
+}
+
+/*
 ===========
 IN_Init
 ===========

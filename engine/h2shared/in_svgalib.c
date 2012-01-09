@@ -251,6 +251,37 @@ static void IN_InitMouse (void)
 	}
 }
 
+void IN_ActivateMouse (void)
+{
+	if (mouse_initialized)
+	{
+		old_mouse_x = old_mouse_y = 0;
+		mx = my = 0;
+		mouse_buttonstate = mouse_oldbuttonstate = 0;
+		mouse_seteventhandler((void *) mousehandler);
+	}
+}
+
+void IN_DeactivateMouse (void)
+{
+	if (mouse_initialized)
+	{
+		mouse_setdefaulteventhandler();
+	}
+}
+
+void IN_ShowMouse (void)
+{
+}
+
+void IN_HideMouse (void)
+{
+}
+
+void IN_ClearStates (void)
+{
+}
+
 void IN_Init (void)
 {
 	Cmd_AddCommand ("force_centerview", Force_CenterView_f);

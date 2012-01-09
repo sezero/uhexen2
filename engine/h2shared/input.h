@@ -2,7 +2,7 @@
 	input.h
 	external (non-keyboard) input devices
 
-	$Id: input.h,v 1.11 2010-08-28 10:05:24 sezero Exp $
+	$Id$
 */
 
 #ifndef __HX2_INPUT_H
@@ -14,43 +14,31 @@ void IN_ReInit (void);
 void IN_Shutdown (void);
 
 void IN_Commands (void);
-// oportunity for devices to stick commands on the script buffer
+/* for devices to add button commands on the script buffer */
 
 void IN_Move (usercmd_t *cmd);
-// add additional movement on top of the keyboard move cmd
-
+/* add additional movement on top of the keyboard move cmd */
 
 void IN_SendKeyEvents (void);
-// used as a callback for Sys_SendKeyEvents() by some drivers
+/* used as a callback for Sys_SendKeyEvents() by some drivers */
 
-/* these are for windowed environments */
-#if defined(PLATFORM_DOS) || defined(SVGAQUAKE)
-#define IN_ShowMouse()
-#define IN_DeactivateMouse()
-#define IN_HideMouse()
-#define IN_ActivateMouse()
-#else
-void IN_ShowMouse (void);
-void IN_DeactivateMouse (void);
-void IN_HideMouse (void);
+void IN_ClearStates (void);
+
+#define IN_Accumulate()		do {} while (0)
+
 void IN_ActivateMouse (void);
-#endif
+void IN_DeactivateMouse (void);
+void IN_ShowMouse (void);
+void IN_HideMouse (void);
 
 #if defined(PLATFORM_WINDOWS)
-void IN_MouseEvent (int mstate);
-void IN_ClearStates (void);
-void IN_Accumulate (void);
-void IN_SetQuakeMouseState (void);
-void IN_RestoreOriginalMouseState (void);
-void IN_RestoreMouse (void); // S.A. Don't reactivate mouse if windowed && !direct input
-void IN_UpdateClipCursor (void);
-#else	/* not used by other drivers */
-#define IN_MouseEvent(E)
-#define IN_ClearStates()
-#define IN_Accumulate()
-#define IN_SetQuakeMouseState()
-#define IN_RestoreOriginalMouseState()
-#define IN_UpdateClipCursor()
+#undef IN_Accumulate
+void IN_Accumulate (void);	/* accumulate winmouse movements during frame updates */
+void IN_RestoreMouse (void);	/* S.A.: don't reactivate mouse if windowed && !dinput */
+void IN_UpdateClipCursor (void);	/* clip the mouse cursor to the window rectangle */
+void IN_MouseEvent (int mstate);		/* called from the window procedure */
+void IN_SetQuakeMouseState (void);		/* used by Scitech MGL video driver */
+void IN_RestoreOriginalMouseState (void);	/* used by Scitech MGL video driver */
 #endif	/* PLATFORM_WINDOWS */
 
 #endif	/* __HX2_INPUT_H */

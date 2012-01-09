@@ -4,6 +4,26 @@ Development Progress	:
 ---------------------------
 
 2012-01-09 (SVN):
+    * input.h: Removed stub macros of IN_ActivateMouse, IN_DeactivateMouse,
+      IN_ShowMouse and IN_HideMouse for non-windowed targets, i.e. dos and
+      svgalib, and made them into functions. Same for IN_ClearStates which
+      is used for windows. IN_ActivateMouse and IN_DeactivateMouse are
+      useful for discarding any unnecessary mouse motion when starting a
+      game or when loading a saved game and prevent unintended viewangle
+      changes:
+    * in_sdl.c: Added IN_ClearStates() as an empty function.
+    * in_svgalib.c: Added IN_ClearStates, IN_ShowMouse and IN_HideMouse as
+      empty functions. Added IN_DeactivateMouse which removes the custom
+      mousehandler. Added new IN_ActivateMouse which adds back our custom
+      mousehandler and zeroes the file's old_mouse_x, old_mouse_y, mx, my,
+      mouse_buttonstate and mouse_oldbuttonstate variables.
+    * in_dos.c: Added IN_ClearStates, IN_ShowMouse and IN_HideMouse as
+      empty functions. Added IN_DeactivateMouse as an empty function. Added
+      IN_ActivateMouse which zeroes the file's old_mouse_x and old_mouse_y
+      variables and calls IN_ReadMouseMove() with null arguments so that
+      any mouse motion from when the mouse disabled are discarded.
+
+2012-01-09 (SVN):
     * When the server puts the client in cameramode, the movements have
       always been discarded but the same has not been true for viewangle
       changes by way of the mouse (or the joystick). Fixing this now:
