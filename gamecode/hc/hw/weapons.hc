@@ -1,8 +1,7 @@
 /*
- * $Header: /cvsroot/uhexen2/gamecode/hc/hw/weapons.hc,v 1.4 2007-02-07 16:58:09 sezero Exp $
+ * hw/weapons.hc
  */
-/*
-*/
+
 void (entity targ, entity inflictor, entity attacker, float damage) T_Damage;
 void(entity bomb, entity attacker, float rad, entity ignore) T_RadiusDamage;
 void(vector org, vector vel, float damage,entity victim) SpawnPuff;

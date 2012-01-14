@@ -1,8 +1,7 @@
 /*
- * $Header: /cvsroot/uhexen2/gamecode/hc/siege/weapons.hc,v 1.3 2007-02-07 17:01:26 sezero Exp $
+ * siege/weapons.hc
  */
-/*
-*/
+
 void (entity targ, entity inflictor, entity attacker, float damage) T_Damage;
 void(entity bomb, entity attacker, float rad, entity ignore) T_RadiusDamage;
 void(vector org, vector vel, float damage,entity victim) SpawnPuff;

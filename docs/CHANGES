@@ -3,6 +3,11 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2012-01-14 (SVN):
+    * h2/weapons.hc: Fixed occasional crashes in the original hexen2 game
+      with the Paladin's axe.
+    * Bumped the gamecode version number to 1.25.
+
 2012-01-09 (SVN):
     * in_win.c: Added new IN_DiscardMove() helper which nukes the winmouse
       data collected by IN_Accumulate() by zeroing the mx_accum, my_accum,

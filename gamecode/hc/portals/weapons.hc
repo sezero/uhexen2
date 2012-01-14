@@ -1,8 +1,7 @@
 /*
- * $Header: /cvsroot/uhexen2/gamecode/hc/portals/weapons.hc,v 1.5 2007-02-07 16:59:38 sezero Exp $
+ * portals/weapons.hc
  */
-/*
-*/
+
 void (entity targ, entity inflictor, entity attacker, float damage) T_Damage;
 void(entity bomb, entity attacker, float rad, entity ignore) T_RadiusDamage;
 void(vector org, vector vel, float damage,entity victim) SpawnPuff;
@@ -103,26 +102,22 @@ void() T_PhaseMissileTouch =
 	{
 		self.cnt +=1;
 		self.velocity = self.velocity * 0.75;
-
 		self.angles = vectoangles(self.velocity);
-
 		sound (self, CHAN_WEAPON, "paladin/axric1.wav", 1, ATTN_NORM);
-			
 		if (self.goalentity)
+		{
 			if (self.goalentity.classname=="ax_tail")
 			{
 				self.goalentity.think = axetail_run;
 				self.goalentity.nextthink = time + HX_FRAME_TIME;
 			}
+		}
 	}
 
 	if (pointcontents(self.origin) == CONTENT_SKY)
 	{
 		stopSound(self,CHAN_VOICE);
 		stopSound(self,CHAN_WEAPON);
-		//sound (self, CHAN_VOICE, "misc/null.wav", 1, ATTN_NORM);
-		//sound (self, CHAN_WEAPON, "misc/null.wav", 1, ATTN_NORM);
-
 		if ((self.classname == "axeblade") || (self.classname == "powerupaxeblade"))
 			remove(self.goalentity); // Remove tail
 		remove(self);
@@ -172,7 +167,6 @@ void() T_PhaseMissileTouch =
 			remove(self.goalentity); // Remove tail
 
 		stopSound(self,CHAN_VOICE);
-		//sound (self, CHAN_VOICE, "misc/null.wav", 1, ATTN_NORM);
 		remove(self);
 	}
 };

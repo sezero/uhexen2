@@ -51,7 +51,7 @@
 
 %define desktop_vendor	uhexen2
 
-%define gamecode_ver	1.20
+%define gamecode_ver	1.25
 
 # pre-release version: MAKE SURE to change this
 # to an %undefine for the final realease!!
@@ -370,7 +370,10 @@ desktop-file-install \
 %{_prefix}/games/%{name}/docs/README.hwmaster
 
 %changelog
-* Sat Dec 17 2011 O.Sezer <sezero@users.sourceforge.net> 1.5.2-1
+* Sat Jan 14 2012 O.Sezer <sezero@users.sourceforge.net> 1.5.2-1
+- gamecode version 1.25
+
+* Sat Dec 17 2011 O.Sezer <sezero@users.sourceforge.net>
 - Install the AUTHORS file
 
 * Fri Dec 02 2011 O.Sezer <sezero@users.sourceforge.net>
