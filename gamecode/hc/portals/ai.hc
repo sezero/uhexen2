@@ -837,7 +837,7 @@ void(float dist) ai_run =
 	}
 
 	if(random()<0.5&&(!self.flags&FL_SWIM)&&(!self.flags&FL_FLY)&&(self.spawnflags&JUMP))
-		CheckJump(FALSE);
+		CheckJump();
 
 // look for other coop players
 	if (coop && self.search_time < time)

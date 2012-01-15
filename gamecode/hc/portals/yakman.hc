@@ -841,7 +841,7 @@ float enemy_dist;
 	{
 		if(trace_ent.takedamage)
 			yakman_slam(trace_ent);
-		else if(CheckJump(TRUE))
+		else if(CheckJump())
 			return;//??
 		else //if(trace_ent.solid==SOLID_BSP)
 			movetogoal(7);

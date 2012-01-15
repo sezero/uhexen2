@@ -33,8 +33,6 @@ NOTE: This only works on players since light_level info
 	is taken from player's weaponmodel lighting (0-255)
 =============
 */
-
-
 void get_visibility (entity targ , float range_mod)
 {
 //NOTE: incorporate distance?
@@ -133,7 +131,7 @@ float okay;
 		self.enemy=self.controller.enemy;
 		return TRUE;
 	}
-	
+
 	okay=FALSE;
 	found=findradius(self.origin,1000);
 	while(found!=world)
@@ -179,199 +177,182 @@ a clear jump arc to the enemy and the monster will not land in
 water or lava, the monster will attempt to jump the distance.
 ==================================================================
 */
-float CheckJump (float print_err)
+float CheckJump ()
 {
 local vector spot1, spot2, jumpdir;
 float jump_height, jumpup, ignore_height;
 
-		print_err=FALSE;
-		makevectors(self.angles);
-		jumpdir=normalize(self.goalentity.origin-self.origin);
-		jumpdir_z=0;
-		jump_height=jumpdir*v_forward;
-		if(jump_height<0.3)
+	makevectors(self.angles);
+	jumpdir=normalize(self.goalentity.origin-self.origin);
+	jumpdir_z=0;
+	jump_height=jumpdir*v_forward;
+	if(jump_height<0.3)
+	{
+//		dprint("jump direction more than 60 degrees off of forward\n");
+		return FALSE;
+	}
+
+	spot1=self.origin;
+	spot2=self.enemy.origin;
+
+	spot1_z=0;
+	spot2_z=0;
+	if(self.model=="models/yakman.mdl")
+	{
+		if(vlen(spot2-spot1)>384)//Yakman can't jump too far
 		{
-			if(print_err)
-				dprint("jump direction more than 60 degrees off of forward\n");
+//			dprint("too far for yakman to jump\n");
 			return FALSE;
 		}
+		jump_height=12;
+	}
+	else
+		jump_height=16;
 
-        spot1=self.origin;
-        spot2=self.enemy.origin;
+	if(pointcontents(spot1+v_forward*24-'0 0 10')!=CONTENT_SOLID)
+		ignore_height=TRUE;
 
-        spot1_z=0;
-        spot2_z=0;
-		if(self.model=="models/yakman.mdl")
-		{
-			if(vlen(spot2-spot1)>384)//Yakman can't jump too far
-			{
-				if(print_err)
-					dprint("too far for yakman to jump\n");
-				return FALSE;
-			}
-			jump_height=12;
-		}
-		else
-			jump_height=16;
-
-		if(pointcontents(spot1+v_forward*24-'0 0 10')!=CONTENT_SOLID)
-			ignore_height=TRUE;
-
-		if(self.classname!="monster_mezzoman"&&!self.spiderType&&self.model!="models/yakman.mdl")
-			if(vlen(spot1-spot2)>256)
-				ignore_height=FALSE;
-
+	if(self.classname!="monster_mezzoman"&&!self.spiderType&&self.model!="models/yakman.mdl")
+		if(vlen(spot1-spot2)>256)
+			ignore_height=FALSE;
 
 //also check to make sure you can't walkmove forward
-                if(self.jump_flag>time)            //Don't jump too many times in a row
-				{
-						if(print_err)
-							dprint("just jumped\n");
-                        return FALSE;
-				}
-                else if(pointcontents(self.goalentity.origin)!=CONTENT_EMPTY)
-				{
-						if(print_err)
-							dprint("goalentity in water or lava\n");
-                        return FALSE;
-				}
-                else if(!visible(self.goalentity))
-				{
-						if(print_err)
-							dprint("can't see goalentity\n");
-                        return FALSE;
-				}
-                else if(!ignore_height&&self.goalentity.absmin_z+36>=self.absmin_z&&self.think!=SpiderJumpBegin&&self.classname!="monster_mezzoman"&&self.model!="models/yakman.mdl")
-				{
-						if(print_err)
-							dprint("not above goalentity, and not spider\n");
-	                    return FALSE;
-				}
-                else if(!self.flags&FL_ONGROUND)
-				{
-						if(print_err)
-							dprint("not on ground\n");
-                        return FALSE;
-				}
-                else if(!self.goalentity.flags&FL_ONGROUND&&self.goalentity.classname!="waypoint")
-				{
-						if(print_err)
-							dprint("goalentity in air\n");
-                        return FALSE;
-				}
-                else if(!infront(self.goalentity))
-				{
-						if(print_err)
-							dprint("goalentity not in front\n");
-                        return FALSE;
-				}
-                else if(vlen(spot1-spot2)>777&&!ignore_height)
-				{
-						if(print_err)
-							dprint("too far away\n");
-                        return FALSE;
-				}
-                else if(vlen(spot1-spot2)<=100)//&&self.think!=SpiderMeleeBegin)
-				{
-						if(print_err)
-							dprint("too close & not spider\n");
-                        return FALSE;
-				}
+	if(self.jump_flag>time)		//Don't jump too many times in a row
+	{
+//		dprint("just jumped\n");
+		return FALSE;
+	}
+	else if(pointcontents(self.goalentity.origin)!=CONTENT_EMPTY)
+	{
+//		dprint("goalentity in water or lava\n");
+		return FALSE;
+	}
+	else if(!visible(self.goalentity))
+	{
+//		dprint("can't see goalentity\n");
+		return FALSE;
+	}
+	else if(!ignore_height&&self.goalentity.absmin_z+36>=self.absmin_z&&self.think!=SpiderJumpBegin&&self.classname!="monster_mezzoman"&&self.model!="models/yakman.mdl")
+	{
+//		dprint("not above goalentity, and not spider\n");
+		return FALSE;
+	}
+	else if(!self.flags&FL_ONGROUND)
+	{
+//		dprint("not on ground\n");
+		return FALSE;
+	}
+	else if(!self.goalentity.flags&FL_ONGROUND&&self.goalentity.classname!="waypoint")
+	{
+//		dprint("goalentity in air\n");
+		return FALSE;
+	}
+	else if(!infront(self.goalentity))
+	{
+//		dprint("goalentity not in front\n");
+		return FALSE;
+	}
+	else if(vlen(spot1-spot2)>777&&!ignore_height)
+	{
+//		dprint("too far away\n");
+		return FALSE;
+	}
+	else if(vlen(spot1-spot2)<=100)//&&self.think!=SpiderMeleeBegin)
+	{
+//		dprint("too close & not spider\n");
+		return FALSE;
+	}
 
-		if(self.think==SpiderJumpBegin)
-			jump_height=vlen((self.goalentity.absmax+self.goalentity.absmin)*0.5-self.origin)/13;
-		else if(self.classname=="monster_mezzoman"||self.model=="models/yakman.mdl")
-			if(self.goalentity.absmin_z>=self.absmin_z+36)
-			{
-				jump_height=vlen((self.goalentity.absmax+self.goalentity.absmin)*0.5-self.origin)/13;
-				jumpup=TRUE;
-			}
-			else if(self.goalentity.absmin_z>self.absmin_z - 36)
-			{
-				if(ignore_height)
-					jump_height=vlen((self.goalentity.absmax+self.goalentity.absmin)*0.5-self.origin)/13;
-				else
-				{
-					if(print_err)
-						dprint("Mez/Yak: Goal not above and not below\n");
-					return FALSE;
-				}
-			}
-
-        spot1=self.origin;
-        spot1_z=self.absmax_z;
-		spot2=spot1;
-		spot2_z+=36;
-
-        traceline(spot1, spot2,FALSE,self);
-
-        if(trace_fraction<1)
+	if(self.think==SpiderJumpBegin)
+		jump_height=vlen((self.goalentity.absmax+self.goalentity.absmin)*0.5-self.origin)/13;
+	else if(self.classname=="monster_mezzoman"||self.model=="models/yakman.mdl")
+		if(self.goalentity.absmin_z>=self.absmin_z+36)
 		{
-			if(print_err)
-				dprint("not enough room above\n");
+			jump_height=vlen((self.goalentity.absmax+self.goalentity.absmin)*0.5-self.origin)/13;
+			jumpup=TRUE;
+		}
+		else if(self.goalentity.absmin_z>self.absmin_z - 36)
+		{
+			if(ignore_height)
+				jump_height=vlen((self.goalentity.absmax+self.goalentity.absmin)*0.5-self.origin)/13;
+			else
+			{
+//				dprint("Mez/Yak: Goal not above and not below\n");
+				return FALSE;
+			}
+		}
+
+	spot1=self.origin;
+	spot1_z=self.absmax_z;
+	spot2=spot1;
+	spot2_z+=36;
+
+	traceline(spot1, spot2,FALSE,self);
+
+	if(trace_fraction<1)
+	{
+//		dprint("not enough room above\n");
+		return FALSE;
+	}
+
+	if(!jumpup)
+	{
+//		spot1+=normalize(v_forward)*((self.maxs_x+self.maxs_y)*0.5);
+		spot1+=jumpdir*((self.maxs_x+self.maxs_y)*0.5);
+
+		traceline(self.origin, spot1 + '0 0 36',FALSE,self);
+
+		if(trace_fraction<1)
+		{
+//			dprint("not enough room in front\n");
 			return FALSE;
 		}
 
+//		traceline(spot1,spot1+jumpdir*64 - '0 0 500',FALSE,self);
+		tracearea(spot1,spot1+jumpdir*64 - '0 0 500','-8 -8 0','8 8 4',FALSE,self);
+
+		if(pointcontents(trace_endpos)==CONTENT_WATER||pointcontents(trace_endpos)==CONTENT_SLIME||pointcontents(trace_endpos)==CONTENT_LAVA)
+		{
+//			dprint("won't jump in water\n");
+			return FALSE;
+		}
+	}
+
+	ai_face();
+//	self.ideal_yaw=jumpdir_y;
+//	ChangeYaw();
+	if(self.think!=SpiderJumpBegin)
+	{
+		self.jump_flag=time + 7;	//Only try to jump once every 7 seconds
+		SightSound();
 		if(!jumpup)
 		{
-//	        spot1+=normalize(v_forward)*((self.maxs_x+self.maxs_y)*0.5);
-	        spot1+=jumpdir*((self.maxs_x+self.maxs_y)*0.5);
-
-		    traceline(self.origin, spot1 + '0 0 36',FALSE,self);
-
-	        if(trace_fraction<1)
-			{
-				if(print_err)
-					dprint("not enough room in front\n");
-				return FALSE;
-			}
-
-	        tracearea(spot1,spot1+jumpdir*64 - '0 0 500','-8 -8 0','8 8 4',FALSE,self);
-//	        traceline(spot1,spot1+jumpdir*64 - '0 0 500',FALSE,self);
-
-		    if(pointcontents(trace_endpos)==CONTENT_WATER||pointcontents(trace_endpos)==CONTENT_SLIME||pointcontents(trace_endpos)==CONTENT_LAVA)
-			{
-				if(print_err)
-					dprint("won't jump in water\n");
-				return FALSE;
-			}
-		}
-
-		ai_face();
-//		self.ideal_yaw=jumpdir_y;
-//		ChangeYaw();
-		if(self.think!=SpiderJumpBegin)
-	    {
-		    self.jump_flag=time + 7;        //Only try to jump once every 7 seconds
-			SightSound();
-			if(!jumpup)
-			{
-			    self.velocity=jumpdir*jump_height*18*self.scale;//was 18
-			    self.velocity_z = jump_height*14*self.scale;//was 12
-			}
-			else
-			{
-			    self.velocity=jumpdir*jump_height*14*self.scale;//was 10
-			    self.velocity_z = jump_height*17*self.scale;//was 14
-			}
-			if(self.model!="models/yakman.mdl")
-				self.flags(-)FL_ONGROUND;
-			else
-				self.level=TRUE;
-
-			if(self.th_jump)
-			{
-				self.think=self.th_jump;
-				thinktime self : 0;
-			}
-			else
-				thinktime self : 0.3;
+			self.velocity=jumpdir*jump_height*18*self.scale;//was 17
+			self.velocity_z = jump_height*14*self.scale;//was 12
 		}
 		else
 		{
-			self.level=jump_height;
-			return TRUE;
+			self.velocity=jumpdir*jump_height*14*self.scale;//was 10
+			self.velocity_z = jump_height*17*self.scale;//was 14
 		}
+		if(self.model!="models/yakman.mdl")
+			self.flags(-)FL_ONGROUND;
+		else
+			self.level=TRUE;
+
+		if(self.th_jump)
+		{
+			self.think=self.th_jump;
+			thinktime self : 0;
+		}
+		else
+			thinktime self : 0.3;
+	}
+	else
+	{
+		self.level=jump_height;
+		return TRUE;
+	}
 }
 
 /*
@@ -452,6 +433,7 @@ void pitch_roll_for_slope (vector slope, entity forwhom)
 {
 //vector new_angles,new_angles2,old_forward,old_right;
 //float dot,mod;
+
 	if(slope=='0 0 0')
 	{
 		traceline(forwhom.origin,forwhom.origin-'0 0 300',TRUE,forwhom);
@@ -486,6 +468,7 @@ void pitch_roll_for_slope (vector slope, entity forwhom)
 	forwhom.angles_z=(1-fabs(dot))*new_angles_x*mod;
 */
 }
+
 /*
 ==============================================
 
@@ -637,7 +620,7 @@ void check_pos_enemy ()
 		if(self.model=="models/imp.mdl")
 			self.search_time=time+5;	//If lose sight, keep searching for 5 secs
 		self.goalentity=self.enemy;
-	    self.wallspot=(self.enemy.absmin+self.enemy.absmax)*0.5;
+		self.wallspot=(self.enemy.absmin+self.enemy.absmax)*0.5;
 	}
 }
 
@@ -944,7 +927,7 @@ float next,num_points,position,bestdist,lastdist;
 	}
 	if (!best_path)
 		return world;
-	return best_path;			
+	return best_path;
 }
 
 /*
@@ -1055,7 +1038,7 @@ float check_heading_left_or_right (entity object)
 {
 vector	spot1, spot2, vec;
 float dot, rng, reverse;
-	
+
 	makevectors (self.angles);
 	spot1 = self.origin + self.view_ofs;
 	spot2 = object.origin;
@@ -1186,7 +1169,7 @@ vector p2,p3,targ_dir,vec1,vec2;
 	targ_dir=targ.velocity;				//target velocity
 	tspeed=vlen(targ_dir);				//target speed
 	targ_dir=normalize(targ_dir);		//target direction
-	
+
 	eta1=dist1/pspeed;					//Estimated time of arrival of projectile to p2
 
 	p3=p2 + targ_dir * tspeed * eta1;	//Extrapolated postion of targ at time + eta1
@@ -1196,13 +1179,13 @@ vector p2,p3,targ_dir,vec1,vec2;
 	eta_delta=eta2-eta1;				//change in ETA's
 
 	p3+=targ_dir*tspeed*eta_delta*random();//Add any diff in ETA to p3's location,random a little in case they slow down
-	
+
 	traceline(p1,p3,FALSE,self);
 	if(trace_fraction<1)
 	{
 		if(trace_ent.thingtype>=THINGTYPE_WEBS)
 			traceline (trace_endpos, p3, FALSE, trace_ent);
-		if(trace_fraction<1)	
+		if(trace_fraction<1)
 			if(trace_ent.health>25||!trace_ent.takedamage||(trace_ent.flags&FL_MONSTER&&trace_ent.classname!="player_sheep"))
 			{//Don't have a clear shot, and don't want to shoot obstruction
 	//			dprint("No clear shot\n");
@@ -1223,7 +1206,7 @@ vector p2,p3,targ_dir,vec1,vec2;
 		p3='0 0 0';
 //	else
 //		dprint("Successful extrapolation\n");
-			
+
 /*Was using this to show blue for failed extrap, red for succ.
 	WriteByte (MSG_BROADCAST, SVC_TEMPENTITY);
 	WriteByte (MSG_BROADCAST, TE_STREAM_COLORBEAM);	//beam type
@@ -1238,7 +1221,7 @@ vector p2,p3,targ_dir,vec1,vec2;
 
 	WriteCoord (MSG_BROADCAST, p3_x);
 	WriteCoord (MSG_BROADCAST, p3_y);
-	WriteCoord (MSG_BROADCAST, p3_z);		
+	WriteCoord (MSG_BROADCAST, p3_z);
 */
 	return p3;
 }
@@ -1247,7 +1230,7 @@ vector p2,p3,targ_dir,vec1,vec2;
 =============================================================
 vector aim_adjust (entity targ)
 MG
-Will return a normalized offset vector based on the targ's 
+Will return a normalized offset vector based on the targ's
 light level, used for monster aiming at shadow-hiding players.
 =============================================================
 */

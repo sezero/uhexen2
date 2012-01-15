@@ -3,6 +3,13 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2012-01-15 (SVN):
+    * MG_AI.hc: Sanitized whitespace style. In the mission pack version,
+      changed CheckJump() call to take no arguments and commented out the
+      dprints, just like in h2: the function already used to set its own
+      print_err parameter to false so it only used to lead to bloating.
+      Adjusted all callers of CheckJump().
+
 2012-01-14 (SVN):
     * h2/weapons.hc: Fixed occasional crashes in the original hexen2 game
       with the Paladin's axe.

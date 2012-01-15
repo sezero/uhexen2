@@ -456,7 +456,7 @@ void SpiderJumpBegin(void) [++ $sjump1..$sjump11]
 {
 	if(self.frame==$sjump1)
 	{
-		if(!CheckJump(FALSE)||self.level<20)
+		if(!CheckJump()||self.level<20)
 		{
 			self.think=SpiderRun;
 			self.nextthink=time;

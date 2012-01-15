@@ -41,7 +41,7 @@ void()DarkExplosion;
 float()FindMonsterTarget;
 void()MonsterCheckContents;
 float visibility_good (entity targ,float chance_mod);
-float CheckJump (float print_err);
+float()CheckJump;
 void()W_SetCurrentWeapon;
 void(float explodetype)BecomeExplosion; 
 void()player_frames;
