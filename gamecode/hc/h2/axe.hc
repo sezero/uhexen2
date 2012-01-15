@@ -56,12 +56,16 @@ void axeblade_run (void) [ ++ 0 .. 5]
 
 void axetail_run (void)
 {
-	self.origin = self.owner.origin;
-	self.velocity = self.owner.velocity;
-	self.owner.angles = vectoangles(self.velocity);
-	self.angles = self.owner.angles;
-	self.origin = self.owner.origin;
-
+	if(!self.owner)
+		remove(self);
+	else
+	{
+		self.origin = self.owner.origin;
+		self.velocity = self.owner.velocity;
+		self.owner.angles = vectoangles(self.velocity);
+		self.angles = self.owner.angles;
+		self.origin = self.owner.origin;
+	}
 }
 
 

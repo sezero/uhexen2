@@ -6,8 +6,11 @@ Changes
 
 2012-01-14 (1.25):
 ===================
+- h2/axe.hc (axetail_run): if no owner, remove self and return (just
+  in case. merged from the mission pack.)
 - h2/weapons.hc: Fixed occasional crashes with Paladin's axe (H2MP 1.12a
   patch to the rescue...)
+- some minor clean up
 - Bumped version number to 1.25.
 
 2011-07-03 (1.20):
