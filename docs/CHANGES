@@ -4,6 +4,8 @@ Development Progress	:
 ---------------------------
 
 2012-01-15 (SVN):
+    * portals/allplay.hc (PlayerSpeed_Calc): removed duplicated assignment
+      to self.hasted for CLASS_ASSASSIN and CLASS_SUCCUBUS cases.
     * h2/doors.hc (door_sounds): removed duplicated precache_sound() call
       for misc/null.wav
     * MG_AI.hc: Sanitized whitespace style. In the mission pack version,

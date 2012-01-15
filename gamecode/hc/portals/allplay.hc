@@ -10,7 +10,6 @@ void PlayerSpeed_Calc (void)
 	case CLASS_ASSASSIN:
 	case CLASS_SUCCUBUS:
 		self.hasted=1;
-		self.hasted=1;
 	break;
 	case CLASS_PALADIN:
 		self.hasted=.96;
