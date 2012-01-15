@@ -712,7 +712,6 @@ void door_sounds(void)
 	if (self.soundtype == 0)			// No sound
 	{
 		precache_sound ("misc/null.wav");
-		precache_sound ("misc/null.wav");
 		self.noise1 = "misc/null.wav";
 		self.noise2 = "misc/null.wav";
 		self.noise4 = "misc/null.wav";

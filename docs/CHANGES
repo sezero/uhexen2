@@ -4,6 +4,8 @@ Development Progress	:
 ---------------------------
 
 2012-01-15 (SVN):
+    * h2/doors.hc (door_sounds): removed duplicated precache_sound() call
+      for misc/null.wav
     * MG_AI.hc: Sanitized whitespace style. In the mission pack version,
       changed CheckJump() call to take no arguments and commented out the
       dprints, just like in h2: the function already used to set its own
