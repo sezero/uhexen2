@@ -4,7 +4,7 @@ Game code for Hexen2 / H2MP / HexenWorld
 Changes
 -------
 
-2012-01-14 (1.25):
+2012-01-15 (1.25):
 ===================
 - h2/axe.hc (axetail_run): if no owner, remove self and return (just
   in case. merged from the mission pack.)
