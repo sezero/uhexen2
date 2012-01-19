@@ -1254,7 +1254,7 @@ static void AppActivate (BOOL fActive, BOOL minimize)
 
 
 static int	MWheelAccumulator;
-static UINT	uMSG_MOUSEWHEEL;
+static UINT	uMSG_MOUSEWHEEL = 0;
 extern cvar_t	mwheelthreshold;
 
 /* main window procedure */
@@ -1263,11 +1263,12 @@ static LONG WINAPI MainWndProc (HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPar
 	LONG	lRet = 0;
 	int	fActive, fMinimized, temp;
 
-	if (Win95 && mwheelthreshold.integer >= 1)
+	if (uMSG_MOUSEWHEEL && uMsg == uMSG_MOUSEWHEEL)
 	{
-		if (uMSG_MOUSEWHEEL && uMsg == uMSG_MOUSEWHEEL)
-		{	/* http://msdn2.microsoft.com/en-us/library/ms645617.aspx
-			   Win95 and WinNT-3.51 code using MSH_MOUSEWHEEL.	*/
+		/* Win95/WinNT-3.51 code using MSH_MOUSEWHEEL, see:
+		 * http://msdn.microsoft.com/en-us/library/ms645617.aspx */
+		if (mwheelthreshold.integer >= 1)
+		{
 			MWheelAccumulator += (int) wParam;
 			while (MWheelAccumulator >= mwheelthreshold.integer)
 			{
@@ -1281,8 +1282,8 @@ static LONG WINAPI MainWndProc (HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPar
 				Key_Event(K_MWHEELDOWN, false);
 				MWheelAccumulator += mwheelthreshold.integer;
 			}
-			return DefWindowProc (hWnd, uMsg, wParam, lParam);
 		}
+		return DefWindowProc (hWnd, uMsg, wParam, lParam);
 	}
 
 	switch (uMsg)
