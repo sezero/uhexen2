@@ -4,6 +4,10 @@ Development Progress	:
 ---------------------------
 
 2012-01-19 (SVN):
+    * hexenworld cl_main.c: Changed default rate value form 2500 to 5760
+      i.e. 72 fps.
+
+2012-01-19 (SVN):
     * hexenworld screen.c, gl_screen.c (SCR_UpdateScreen): SCR_DrawFPS()
       must be called after Sbar_Draw() so that it is actually visible on
       the screen.
