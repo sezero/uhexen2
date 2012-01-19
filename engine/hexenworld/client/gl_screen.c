@@ -1065,14 +1065,14 @@ void SCR_UpdateScreen (void)
 			Draw_Crosshair();
 
 		SCR_DrawRam();
-		SCR_DrawFPS();
+		SCR_DrawNet();
 		SCR_DrawTurtle();
 		SCR_DrawPause();
 		SCR_CheckDrawCenterString();
 		Sbar_Draw();
+		SCR_DrawFPS();
 
 		Plaque_Draw(plaquemessage, false);
-		SCR_DrawNet ();
 		SCR_DrawConsole();
 		M_Draw();
 	}

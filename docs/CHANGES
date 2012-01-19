@@ -4,6 +4,11 @@ Development Progress	:
 ---------------------------
 
 2012-01-19 (SVN):
+    * hexenworld screen.c, gl_screen.c (SCR_UpdateScreen): SCR_DrawFPS()
+      must be called after Sbar_Draw() so that it is actually visible on
+      the screen.
+
+2012-01-19 (SVN):
     * cd_win.c, gl_vidnt.c, vid_mgl4.c, vid_win.c: The window procedure
       must return not LONG but LRESULT which really is a LONG for win32
       but a LONG_PTR for win64.

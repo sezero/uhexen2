@@ -1161,11 +1161,11 @@ void SCR_UpdateScreen (void)
 	{
 		SCR_DrawRam();
 		SCR_DrawNet();
-		SCR_DrawFPS();
 		SCR_DrawTurtle();
 		SCR_DrawPause();
 		SCR_CheckDrawCenterString();
 		Sbar_Draw();
+		SCR_DrawFPS();
 
 		Plaque_Draw(plaquemessage, false);
 		SCR_DrawConsole();
