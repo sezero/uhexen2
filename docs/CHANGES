@@ -4,6 +4,9 @@ Development Progress	:
 ---------------------------
 
 2012-01-19 (SVN):
+    * hexenworld: Moved fps display variables from clmain.c to screen.c.
+
+2012-01-19 (SVN):
     * hexenworld cl_main.c: Changed default rate value form 2500 to 5760
       i.e. 72 fps.
 

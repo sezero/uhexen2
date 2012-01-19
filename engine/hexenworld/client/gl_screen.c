@@ -81,7 +81,10 @@ static	cvar_t	scr_centertime = {"scr_centertime", "4", CVAR_NONE};
 static	cvar_t	scr_showram = {"showram", "1", CVAR_NONE};
 static	cvar_t	scr_showturtle = {"showturtle", "0", CVAR_NONE};
 static	cvar_t	scr_showpause = {"showpause", "1", CVAR_NONE};
+static	cvar_t	scr_showfps = {"showfps", "0", CVAR_NONE};
 static	cvar_t	gl_triplebuffer = {"gl_triplebuffer", "0", CVAR_ARCHIVE};
+
+int		fps_count;
 
 qboolean	scr_disabled_for_loading;
 qboolean	scr_skipupdate;
@@ -90,9 +93,6 @@ qboolean	block_drawing;
 static qpic_t	*scr_ram;
 static qpic_t	*scr_net;
 static qpic_t	*scr_turtle;
-
-extern	cvar_t	show_fps;
-extern	int	fps_count;
 
 static void SCR_ScreenShot_f (void);
 
@@ -335,6 +335,7 @@ void SCR_Init (void)
 	Cvar_RegisterVariable (&scr_showram);
 	Cvar_RegisterVariable (&scr_showturtle);
 	Cvar_RegisterVariable (&scr_showpause);
+	Cvar_RegisterVariable (&scr_showfps);
 	Cvar_RegisterVariable (&scr_centertime);
 	Cvar_RegisterVariable (&gl_triplebuffer);
 
@@ -412,7 +413,7 @@ static void SCR_DrawFPS (void)
 	int	x, y;
 	char	st[80];
 
-	if (!show_fps.integer)
+	if (!scr_showfps.integer)
 		return;
 
 	t = Sys_DoubleTime();

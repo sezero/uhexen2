@@ -95,10 +95,7 @@ byte		*host_colormap;
 netadr_t	master_adr;			// address of the master server
 
 static	cvar_t	host_speeds = {"host_speeds", "0", CVAR_NONE};	// set for running times
-cvar_t	show_fps = {"show_fps", "0", CVAR_NONE};	// set for running times
 cvar_t	developer = {"developer", "0", CVAR_NONE};
-
-int		fps_count;
 
 float	server_version = 0;	// version of server we connected to
 
@@ -1040,7 +1037,6 @@ void CL_Init (void)
 
 	Cvar_RegisterVariable (&sys_throttle);
 
-	Cvar_RegisterVariable (&show_fps);
 	Cvar_RegisterVariable (&host_speeds);
 
 	Cvar_RegisterVariable (&cl_upspeed);
@@ -1273,7 +1269,8 @@ void Host_Frame (float time)
 	static double		time2 = 0;
 	static double		time3 = 0;
 	int			pass1, pass2, pass3;
-	float fps;
+	float			fps;
+	extern int	fps_count;
 
 	if (setjmp (host_abort) )
 		return;	// something bad happened, or the server disconnected
