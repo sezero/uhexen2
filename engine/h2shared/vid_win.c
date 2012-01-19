@@ -150,7 +150,7 @@ static void VID_MenuKey (int key);
 
 static int VID_SetMode (int modenum, unsigned char *palette);
 static void AppActivate(BOOL fActive, BOOL minimize);
-static LONG WINAPI MainWndProc (HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
+static LRESULT WINAPI MainWndProc (HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 
 
 /*
@@ -433,7 +433,7 @@ static void VID_RegisterWndClass (HINSTANCE hInstance)
 	WNDCLASS	wc;
 
 	wc.style		= CS_OWNDC;
-	wc.lpfnWndProc		= (WNDPROC)MainWndProc;
+	wc.lpfnWndProc		= MainWndProc;
 	wc.cbClsExtra		= 0;
 	wc.cbWndExtra		= 0;
 	wc.hInstance		= hInstance;
@@ -1935,9 +1935,9 @@ static UINT	uMSG_MOUSEWHEEL = 0;
 extern cvar_t	mwheelthreshold;
 
 /* main window procedure */
-static LONG WINAPI MainWndProc (HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
+static LRESULT WINAPI MainWndProc (HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
-	LONG	lRet = 0;
+	LRESULT	ret = 0;
 	int	fActive, fMinimized, temp;
 	HDC		hdc;
 	PAINTSTRUCT	ps;
@@ -2004,7 +2004,7 @@ static LONG WINAPI MainWndProc (HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPar
 		default:
 			if (!in_mode_set)
 				S_BlockSound ();
-			lRet = DefWindowProc (hWnd, uMsg, wParam, lParam);
+			ret = DefWindowProc (hWnd, uMsg, wParam, lParam);
 			if (!in_mode_set)
 				S_UnblockSound ();
 		}
@@ -2138,18 +2138,18 @@ static LONG WINAPI MainWndProc (HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPar
 
 	case MM_MCINOTIFY:
 #if !defined(_NO_CDAUDIO)
-		lRet = CDAudio_MessageHandler (hWnd, uMsg, wParam, lParam);
+		ret = CDAudio_MessageHandler (hWnd, uMsg, wParam, lParam);
 #endif	/* ! _NO_CDAUDIO */
 		break;
 
 	default:
 		/* pass all unhandled messages to DefWindowProc */
-		lRet = DefWindowProc (hWnd, uMsg, wParam, lParam);
+		ret = DefWindowProc (hWnd, uMsg, wParam, lParam);
 		break;
 	}
 
 	/* return 1 if handled message, 0 if not */
-	return lRet;
+	return ret;
 }
 
 

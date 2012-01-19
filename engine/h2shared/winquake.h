@@ -53,7 +53,7 @@ extern RECT		window_rect;
 extern HWND		hwnd_dialog;
 #endif
 
-LONG CDAudio_MessageHandler (HWND, UINT, WPARAM, LPARAM);
+LRESULT CDAudio_MessageHandler (HWND, UINT, WPARAM, LPARAM);
 
 #endif	/* __WINQUAKE_H */
 

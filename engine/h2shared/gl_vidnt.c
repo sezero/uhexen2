@@ -115,7 +115,7 @@ static PIXELFORMATDESCRIPTOR pfd =
 };
 
 // main vid functions
-static LONG WINAPI MainWndProc (HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
+static LRESULT WINAPI MainWndProc (HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 static void AppActivate(BOOL fActive, BOOL minimize);
 static void VID_UpdateWindowStatus (void);
 static const char *VID_GetModeDescription (int mode);
@@ -1258,9 +1258,9 @@ static UINT	uMSG_MOUSEWHEEL = 0;
 extern cvar_t	mwheelthreshold;
 
 /* main window procedure */
-static LONG WINAPI MainWndProc (HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
+static LRESULT WINAPI MainWndProc (HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
-	LONG	lRet = 0;
+	LRESULT	ret = 0;
 	int	fActive, fMinimized, temp;
 
 	if (uMSG_MOUSEWHEEL && uMsg == uMSG_MOUSEWHEEL)
@@ -1399,18 +1399,18 @@ static LONG WINAPI MainWndProc (HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPar
 
 	case MM_MCINOTIFY:
 #if !defined(_NO_CDAUDIO)
-		lRet = CDAudio_MessageHandler (hWnd, uMsg, wParam, lParam);
+		ret = CDAudio_MessageHandler (hWnd, uMsg, wParam, lParam);
 #endif	/* ! _NO_CDAUDIO */
 		break;
 
 	default:
 		/* pass all unhandled messages to DefWindowProc */
-		lRet = DefWindowProc (hWnd, uMsg, wParam, lParam);
+		ret = DefWindowProc (hWnd, uMsg, wParam, lParam);
 		break;
 	}
 
 	/* return 1 if handled message, 0 if not */
-	return lRet;
+	return ret;
 }
 
 
@@ -1552,7 +1552,7 @@ static void VID_RegisterWndClass (HINSTANCE hInstance)
 	WNDCLASS	wc;
 
 	wc.style		= 0;
-	wc.lpfnWndProc		= (WNDPROC)MainWndProc;
+	wc.lpfnWndProc		= MainWndProc;
 	wc.cbClsExtra		= 0;
 	wc.cbWndExtra		= 0;
 	wc.hInstance		= hInstance;
