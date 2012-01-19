@@ -991,7 +991,7 @@ void SCR_UpdateScreen (void)
 	if (block_drawing)
 		return;
 
-	vid.numpages = 2 + gl_triplebuffer.integer;
+	vid.numpages = (gl_triplebuffer.integer) ? 3 : 2;
 
 	scr_copytop = 0;
 	scr_copyeverything = 0;

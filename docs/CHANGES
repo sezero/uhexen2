@@ -4,6 +4,8 @@ Development Progress	:
 ---------------------------
 
 2012-01-19 (SVN):
+    * hexenworld, gl_screen.c (SCR_UpdateScreen): Make sure vid.numpages
+      is set correctly.
     * hexenworld: Moved fps display variables from clmain.c to screen.c.
 
 2012-01-19 (SVN):
