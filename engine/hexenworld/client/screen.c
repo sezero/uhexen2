@@ -455,7 +455,7 @@ static void SCR_DrawFPS (void)
 
 	if (scr_showfps.integer)
 	{
-		char	st[32];
+		char	st[16];
 		int	x, y;
 		sprintf(st, "%4.0f FPS", lastfps);
 		x = vid.width - strlen(st) * 8 - 8;
