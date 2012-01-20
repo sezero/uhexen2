@@ -3,6 +3,11 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2012-01-20 (SVN):
+    * hexenworld cl_main.c: Reverted rev. 4471 and made the default rate
+      value form 2500 again for now.
+    * updated beta date stamp to 2012-01-20.
+
 2012-01-19 (SVN):
     * hexenworld, gl_screen.c (SCR_UpdateScreen): Make sure vid.numpages
       is set correctly.
