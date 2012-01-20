@@ -4,6 +4,10 @@ Development Progress	:
 ---------------------------
 
 2012-01-20 (SVN):
+    * r_main.c (R_DrawViewModel): Enable drawing of the view model when
+      fov is greater than 90, i.e. disabled r_fov_greater_than_90 check.
+
+2012-01-20 (SVN):
     * screen.c, gl_screen.c, r_main.c, gl_rmain.c, render.h, mathlib.c,
       mathlib.h: Implemented fov in opengl hexen2, useful for widescreen
       resolutions. Revised the implementations in hexenworld, as well as

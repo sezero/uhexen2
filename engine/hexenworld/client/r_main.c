@@ -840,8 +840,8 @@ static void R_DrawViewModel (void)
 
 	if ((cl.v.health <= 0)		 ||
 //rjr	    (cl.items & IT_INVISIBILITY) ||
-	    (!r_drawviewmodel.integer)	 ||
-	    (r_fov_greater_than_90))
+//O.S.	    (r_fov_greater_than_90)	 ||
+	    (!r_drawviewmodel.integer))
 	{
 		return;
 	}
