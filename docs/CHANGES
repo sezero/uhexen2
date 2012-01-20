@@ -4,6 +4,10 @@ Development Progress	:
 ---------------------------
 
 2012-01-20 (SVN):
+    * screen.c, gl_screen.c: Updated hw showfps code from quakespasm and
+      copied over to hexen2, too.
+
+2012-01-20 (SVN):
     * hexenworld cl_main.c: Reverted rev. 4471 and made the default rate
       value form 2500 again for now.
     * updated beta date stamp to 2012-01-20.

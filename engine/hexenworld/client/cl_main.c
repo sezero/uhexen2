@@ -1270,7 +1270,6 @@ void Host_Frame (float time)
 	static double		time3 = 0;
 	int			pass1, pass2, pass3;
 	float			fps;
-	extern int	fps_count;
 
 	if (setjmp (host_abort) )
 		return;	// something bad happened, or the server disconnected
@@ -1358,7 +1357,6 @@ void Host_Frame (float time)
 	}
 
 	host_framecount++;
-	fps_count++;
 }
 
 

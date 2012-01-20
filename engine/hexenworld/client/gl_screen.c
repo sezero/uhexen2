@@ -84,8 +84,6 @@ static	cvar_t	scr_showpause = {"showpause", "1", CVAR_NONE};
 static	cvar_t	scr_showfps = {"showfps", "0", CVAR_NONE};
 static	cvar_t	gl_triplebuffer = {"gl_triplebuffer", "0", CVAR_ARCHIVE};
 
-int		fps_count;
-
 qboolean	scr_disabled_for_loading;
 qboolean	scr_skipupdate;
 qboolean	block_drawing;
@@ -407,28 +405,39 @@ static void SCR_DrawNet (void)
 
 static void SCR_DrawFPS (void)
 {
-	static double	lastframetime;
-	static int	lastfps;
-	double	t;
-	int	x, y;
-	char	st[80];
+	static double	oldtime = 0;
+	static double	lastfps = 0;
+	static int	oldframecount = 0;
+	double	elapsed_time;
+	int	frames;
 
-	if (!scr_showfps.integer)
-		return;
+	elapsed_time = realtime - oldtime;
+	frames = r_framecount - oldframecount;
 
-	t = Sys_DoubleTime();
-	if ((t - lastframetime) >= 1.0)
+	if (elapsed_time < 0 || frames < 0)
 	{
-		lastfps = fps_count;
-		fps_count = 0;
-		lastframetime = t;
+		oldtime = realtime;
+		oldframecount = r_framecount;
+		return;
+	}
+	// update value every 3/4 second
+	if (elapsed_time > 0.75)
+	{
+		lastfps = frames / elapsed_time;
+		oldtime = realtime;
+		oldframecount = r_framecount;
 	}
 
-	sprintf(st, "%3d FPS", lastfps);
-	x = vid.width - strlen(st) * 8 - 8;
-	y = vid.height - sb_lines - 8;
-//	Draw_TileClear(x, y, strlen(st) * 8, 8);
-	Draw_String(x, y, st);
+	if (scr_showfps.integer)
+	{
+		char	st[32];
+		int	x, y;
+		sprintf(st, "%4.0f FPS", lastfps);
+		x = vid.width - strlen(st) * 8 - 8;
+		y = vid.height - sb_lines - 8;
+	//	Draw_TileClear(x, y, strlen(st) * 8, 8);
+		Draw_String(x, y, st);
+	}
 }
 
 /*

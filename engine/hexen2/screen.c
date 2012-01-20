@@ -83,6 +83,7 @@ static	cvar_t	scr_centertime = {"scr_centertime", "4", CVAR_NONE};
 static	cvar_t	scr_showram = {"showram", "1", CVAR_NONE};
 static	cvar_t	scr_showturtle = {"showturtle", "0", CVAR_NONE};
 static	cvar_t	scr_showpause = {"showpause", "1", CVAR_NONE};
+static	cvar_t	scr_showfps = {"showfps", "0", CVAR_NONE};
 
 static qboolean	scr_drawloading;
 static int	ls_offset;
@@ -406,6 +407,7 @@ void SCR_Init (void)
 	Cvar_RegisterVariable (&scr_showram);
 	Cvar_RegisterVariable (&scr_showturtle);
 	Cvar_RegisterVariable (&scr_showpause);
+	Cvar_RegisterVariable (&scr_showfps);
 	Cvar_RegisterVariable (&scr_centertime);
 
 	Cmd_AddCommand ("screenshot",SCR_ScreenShot_f);
@@ -472,6 +474,43 @@ static void SCR_DrawNet (void)
 		return;
 
 	Draw_Pic (scr_vrect.x+64, scr_vrect.y, scr_net);
+}
+
+static void SCR_DrawFPS (void)
+{
+	static double	oldtime = 0;
+	static double	lastfps = 0;
+	static int	oldframecount = 0;
+	double	elapsed_time;
+	int	frames;
+
+	elapsed_time = realtime - oldtime;
+	frames = r_framecount - oldframecount;
+
+	if (elapsed_time < 0 || frames < 0)
+	{
+		oldtime = realtime;
+		oldframecount = r_framecount;
+		return;
+	}
+	// update value every 3/4 second
+	if (elapsed_time > 0.75)
+	{
+		lastfps = frames / elapsed_time;
+		oldtime = realtime;
+		oldframecount = r_framecount;
+	}
+
+	if (scr_showfps.integer)
+	{
+		char	st[32];
+		int	x, y;
+		sprintf(st, "%4.0f FPS", lastfps);
+		x = vid.width - strlen(st) * 8 - 8;
+		y = vid.height - sb_lines - 8;
+	//	Draw_TileClear(x, y, strlen(st) * 8, 8);
+		Draw_String(x, y, st);
+	}
 }
 
 /*
@@ -1389,6 +1428,7 @@ void SCR_UpdateScreen (void)
 		SCR_DrawPause();
 		SCR_CheckDrawCenterString();
 		Sbar_Draw();
+		SCR_DrawFPS();
 
 		Plaque_Draw(plaquemessage, false);
 		SCR_DrawConsole();
