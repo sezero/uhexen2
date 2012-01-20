@@ -105,6 +105,8 @@ typedef struct
 	vec3_t		vieworg;
 	vec3_t		viewangles;
 
+	float		fov_x, fov_y;
+
 	int		ambientlight;
 } refdef_t;
 

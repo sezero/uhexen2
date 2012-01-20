@@ -4,6 +4,12 @@ Development Progress	:
 ---------------------------
 
 2012-01-20 (SVN):
+    * screen.c, gl_screen.c, r_main.c, gl_rmain.c, render.h, mathlib.c,
+      mathlib.h: Implemented fov in opengl hexen2, useful for widescreen
+      resolutions. Revised the implementations in hexenworld, as well as
+      the software renderer.
+
+2012-01-20 (SVN):
     * vid_win.c, vid_mgl4.c: Restore saved video mode on startup. Not
       exactly beautiful, but at least it works now...
 

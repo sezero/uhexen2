@@ -262,6 +262,24 @@ static void SCR_CheckDrawCenterString (void)
 
 
 /*
+====================
+CalcFovy
+====================
+*/
+static float CalcFovy (float fov_x, float width, float height)
+{
+	float	a, x;
+
+	if (fov_x < 1 || fov_x > 179)
+		Sys_Error ("Bad fov: %f", fov_x);
+
+	x = width / tan(fov_x / 360 * M_PI);
+	a = atan(height / x);
+	a = a * 360 / M_PI;
+	return a;
+}
+
+/*
 =================
 SCR_CalcRefdef
 
@@ -321,6 +339,9 @@ static void SCR_CalcRefdef (void)
 
 	r_refdef.vrect.x = (vid.width - r_refdef.vrect.width)/2;
 	r_refdef.vrect.y = (h - r_refdef.vrect.height)/2;
+
+	r_refdef.fov_x = scr_fov.value;
+	r_refdef.fov_y = CalcFovy (r_refdef.fov_x, r_refdef.vrect.width, r_refdef.vrect.height);
 
 	scr_vrect = r_refdef.vrect;
 }

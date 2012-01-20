@@ -81,8 +81,6 @@ cvar_t	r_entdistance = {"r_entdistance", "0", CVAR_ARCHIVE};
 cvar_t	r_netgraph = {"r_netgraph", "0", CVAR_NONE};
 cvar_t	r_teamcolor = {"r_teamcolor", "187", CVAR_ARCHIVE};
 
-extern	cvar_t	scr_fov;
-
 cvar_t	gl_clear = {"gl_clear", "0", CVAR_NONE};
 cvar_t	gl_cull = {"gl_cull", "1", CVAR_NONE};
 cvar_t	gl_ztrick = {"gl_ztrick", "0", CVAR_ARCHIVE};
@@ -1570,13 +1568,26 @@ static void R_SetFrustum (void)
 {
 	int		i;
 
-	// front side is visible
+	if (r_refdef.fov_x == 90)
+	{
+		// front side is visible
+		VectorAdd (vpn, vright, frustum[0].normal);
+		VectorSubtract (vpn, vright, frustum[1].normal);
 
-	VectorAdd (vpn, vright, frustum[0].normal);
-	VectorSubtract (vpn, vright, frustum[1].normal);
-
-	VectorAdd (vpn, vup, frustum[2].normal);
-	VectorSubtract (vpn, vup, frustum[3].normal);
+		VectorAdd (vpn, vup, frustum[2].normal);
+		VectorSubtract (vpn, vup, frustum[3].normal);
+	}
+	else
+	{
+		// rotate VPN right by FOV_X/2 degrees
+		RotatePointAroundVector(frustum[0].normal, vup,    vpn, -(90 - r_refdef.fov_x / 2));
+		// rotate VPN left by FOV_X/2 degrees
+		RotatePointAroundVector(frustum[1].normal, vup,    vpn,   90 - r_refdef.fov_x / 2);
+		// rotate VPN up by FOV_X/2 degrees
+		RotatePointAroundVector(frustum[2].normal, vright, vpn,   90 - r_refdef.fov_y / 2);
+		// rotate VPN down by FOV_X/2 degrees
+		RotatePointAroundVector(frustum[3].normal, vright, vpn, -(90 - r_refdef.fov_y / 2));
+	}
 
 	for (i = 0; i < 4; i++)
 	{
@@ -1686,7 +1697,6 @@ R_SetupGL
 static void R_SetupGL (void)
 {
 	float	screenaspect;
-	float	yfov;
 	int	x, x2, y2, y, w, h;
 
 	//
@@ -1721,10 +1731,7 @@ static void R_SetupGL (void)
 
 	glViewport_fp (glx + x, gly + y2, w, h);
 	screenaspect = (float)r_refdef.vrect.width/r_refdef.vrect.height;
-//	yfov = 2*atan((float)r_refdef.vrect.height/r_refdef.vrect.width)*180/M_PI;
-//	yfov = (2.0 * tan (scr_fov.value/360*M_PI)) / screenaspect;
-	yfov = 2*atan((float)r_refdef.vrect.height/r_refdef.vrect.width)*(scr_fov.value*2)/M_PI;
-	MYgluPerspective (yfov, screenaspect, 4, 4096);
+	MYgluPerspective (r_refdef.fov_y, screenaspect, 4, 4096);
 
 	if (mirror)
 	{

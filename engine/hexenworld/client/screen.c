@@ -246,6 +246,24 @@ static void SCR_CheckDrawCenterString (void)
 
 
 /*
+====================
+CalcFovy
+====================
+*/
+static float CalcFovy (float fov_x, float width, float height)
+{
+	float	a, x;
+
+	if (fov_x < 1 || fov_x > 179)
+		Sys_Error ("Bad fov: %f", fov_x);
+
+	x = width / tan(fov_x / 360 * M_PI);
+	a = atan(height / x);
+	a = a * 360 / M_PI;
+	return a;
+}
+
+/*
 =================
 SCR_CalcRefdef
 
@@ -272,6 +290,9 @@ static void SCR_CalcRefdef (void)
 		Cvar_SetQuick (&scr_fov, "110");
 
 	vid.recalc_refdef = 0;
+
+	r_refdef.fov_x = scr_fov.value;
+	r_refdef.fov_y = CalcFovy (r_refdef.fov_x, r_refdef.vrect.width, r_refdef.vrect.height);
 
 // force the status bar to redraw
 	SB_ViewSizeChanged ();
