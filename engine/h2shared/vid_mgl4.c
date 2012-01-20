@@ -9,6 +9,7 @@
 #include "quakedef.h"
 #include "winquake.h"
 #include "bgmusic.h"
+#include "cfgfile.h"
 #include "cdaudio.h"
 #include <mmsystem.h>
 #include "d_local.h"
@@ -2098,6 +2099,10 @@ void	VID_Init (unsigned char *palette)
 	int		basenummodes;
 	byte		*ptmp;
 
+	const char  *read_vars[] = {
+				"_vid_default_mode_win" };
+#define num_readvars	( sizeof(read_vars)/sizeof(read_vars[0]) )
+
 	Cvar_RegisterVariable (&vid_mode);
 	Cvar_RegisterVariable (&vid_wait);
 	Cvar_RegisterVariable (&vid_nopageflip);
@@ -2126,6 +2131,9 @@ void	VID_Init (unsigned char *palette)
 	Cmd_AddCommand ("vid_windowed", VID_Windowed_f);
 	Cmd_AddCommand ("vid_fullscreen", VID_Fullscreen_f);
 	Cmd_AddCommand ("vid_minimize", VID_Minimize_f);
+
+	// perform an early read of config.cfg
+	CFG_ReadCvars (read_vars, num_readvars);
 
 	if (safemode || COM_CheckParm ("-dibonly"))
 		dibonly = true;

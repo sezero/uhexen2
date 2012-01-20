@@ -34,6 +34,7 @@
 
 #include "quakedef.h"
 #include "bgmusic.h"
+#include "cfgfile.h"
 #include "cdaudio.h"
 #include "winquake.h"
 #include <mmsystem.h>
@@ -84,8 +85,8 @@ qboolean	in_mode_set;
 static	cvar_t	vid_mode = {"vid_mode", "0", CVAR_NONE};
 // Note that 0 is MODE_WINDOWED
 static	cvar_t	_vid_default_mode = {"_vid_default_mode", "0", CVAR_ARCHIVE};
-// Note that 3 is MODE_FULLSCREEN_DEFAULT
-static	cvar_t	_vid_default_mode_win = {"_vid_default_mode_win", "3", CVAR_ARCHIVE};
+// Note that 0 is MODE_WINDOWED
+static	cvar_t	_vid_default_mode_win = {"_vid_default_mode_win", "0", CVAR_ARCHIVE};
 static	cvar_t	vid_config_x = {"vid_config_x", "800", CVAR_ARCHIVE};
 static	cvar_t	vid_config_y = {"vid_config_y", "600", CVAR_ARCHIVE};
 static	cvar_t	vid_fullscreen_mode = {"vid_fullscreen_mode", "3", CVAR_ARCHIVE};
@@ -1283,6 +1284,10 @@ void	VID_Init (unsigned char *palette)
 	int		basenummodes;
 	byte		*ptmp;
 
+	const char	*read_vars[] = {
+				"_vid_default_mode_win" };
+#define num_readvars	( sizeof(read_vars)/sizeof(read_vars[0]) )
+
 	Cvar_RegisterVariable (&vid_mode);
 	Cvar_RegisterVariable (&_vid_default_mode);
 	Cvar_RegisterVariable (&_vid_default_mode_win);
@@ -1303,6 +1308,9 @@ void	VID_Init (unsigned char *palette)
 	Cmd_AddCommand ("vid_windowed", VID_Windowed_f);
 	Cmd_AddCommand ("vid_fullscreen", VID_Fullscreen_f);
 	Cmd_AddCommand ("vid_minimize", VID_Minimize_f);
+
+	// perform an early read of config.cfg
+	CFG_ReadCvars (read_vars, num_readvars);
 
 	VID_InitModes (global_hInstance);
 
@@ -1345,7 +1353,7 @@ void	VID_Init (unsigned char *palette)
 			*ptmp = bestmatch;
 	}
 
-//	if (COM_CheckParm("-startwindowed") || COM_CheckParm("-window") || COM_CheckParm("-w"))
+	if (COM_CheckParm("-startwindowed") || COM_CheckParm("-window") || COM_CheckParm("-w"))
 	{
 		startwindowed = true;
 		vid_default = windowed_default;
