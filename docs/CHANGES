@@ -3,6 +3,14 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2012-01-21 (SVN):
+    * Removed RotatePointAroundVector and its two helpers from mathlib.
+      Added TurnVector() helper from fitzquake and made R_SetFrustum()
+      of gl_rmain.c to use that instead of RotatePointAroundVector().
+      Changed MYgluPerspective() to calculate xmax using r_refdef.fov_x
+      instead of the aspect ratio.
+    * updated beta date stamp to 2012-01-21.
+
 2012-01-20 (SVN):
     * r_main.c (R_DrawViewModel): Enable drawing of the view model when
       fov is greater than 90, i.e. disabled r_fov_greater_than_90 check.
