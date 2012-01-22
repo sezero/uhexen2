@@ -4,6 +4,8 @@ Development Progress	:
 ---------------------------
 
 2012-01-22 (SVN):
+    * gl_vidnt.c, vid_mgl4.c, vid_win.c (CenterWindow): Removed unused
+      lefttopjustify parameter.
     * vid_mgl4.c, vid_win.c: Now that we early-read _vid_default_mode_win
       from the config, removed extra checks from the firstupdate code.
       Dropped support for remembering the window position and -resetwin.

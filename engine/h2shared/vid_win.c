@@ -697,16 +697,18 @@ static void VID_DestroyWindow (void)
 }
 
 
-static void CenterWindow (HWND hWndCenter, int width, int height, BOOL lefttopjustify)
+static void CenterWindow (HWND hWndCenter, int width, int height)
 {
 	int	CenterX, CenterY;
 
 	CenterX = (GetSystemMetrics(SM_CXSCREEN) - width) / 2;
 	CenterY = (GetSystemMetrics(SM_CYSCREEN) - height) / 2;
-	if (CenterX > CenterY*2)
-		CenterX >>= 1;	// dual screens
-	CenterX = (CenterX < 0) ? 0: CenterX;
-	CenterY = (CenterY < 0) ? 0: CenterY;
+	if (CenterX > 2*CenterY)
+		CenterX >>= 1;	// dual screen?
+	if (CenterX < 0)
+		CenterX = 0;
+	if (CenterY < 0)
+		CenterY = 0;
 	SetWindowPos (hWndCenter, NULL, CenterX, CenterY, 0, 0,
 			SWP_NOSIZE | SWP_NOZORDER | SWP_SHOWWINDOW | SWP_DRAWFRAME);
 }
@@ -777,7 +779,7 @@ static qboolean VID_SetWindowedMode (int modenum)
 
 // position and show the DIB window
 	CenterWindow(mainwindow, WindowRect.right - WindowRect.left,
-				 WindowRect.bottom - WindowRect.top, false);
+				 WindowRect.bottom - WindowRect.top);
 
 	if (force_minimized)
 		ShowWindow (mainwindow, SW_MINIMIZE);
