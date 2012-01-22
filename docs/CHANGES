@@ -12,6 +12,7 @@ Development Progress	:
       Position the window centered upon creation using the CenterWindow()
       procedure taken from gl_vidnt.c. Removed vid_window_x, vid_window_y
       compatibility vars from vid_dos.c.
+    * updated the TODO list.
     * updated beta date stamp to 2012-01-22.
 
 2012-01-21 (SVN):

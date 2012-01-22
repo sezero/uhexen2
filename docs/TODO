@@ -9,7 +9,6 @@ TODO:
 - Re-visit the messy mouse grab code and clean it up.
 - Do a clean-up of the opengl system
 - Add multisampling support to win32
-- Make the fov command actually work in opengl.
 - Maybe add support for several image formats (jpeg, png, etc)
 - Maybe add model interpolation stuff?
 - Software renderer: maybe add 16 bit support (r_pixbytes = 2,
