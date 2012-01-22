@@ -69,7 +69,7 @@ int		window_center_x, window_center_y, window_x, window_y, window_width, window_
 RECT		window_rect;
 
 static DEVMODE	gdevmode;
-static qboolean	startwindowed = false, windowed_mode_set = false;
+static qboolean	startwindowed = false;
 static qboolean	firstupdate = true;
 static qboolean	vid_initialized = false, vid_palettized;
 static int	vid_fulldib_on_focus_mode;
@@ -81,19 +81,16 @@ static HICON	hIcon;
 viddef_t	vid;		// global video state
 qboolean	in_mode_set;
 
-// Note that 0 is MODE_WINDOWED
+// 0 is MODE_WINDOWED, 3 is MODE_FULLSCREEN_DEFAULT
 static	cvar_t	vid_mode = {"vid_mode", "0", CVAR_NONE};
-// Note that 0 is MODE_WINDOWED
-static	cvar_t	_vid_default_mode = {"_vid_default_mode", "0", CVAR_ARCHIVE};
-// Note that 0 is MODE_WINDOWED
 static	cvar_t	_vid_default_mode_win = {"_vid_default_mode_win", "0", CVAR_ARCHIVE};
+// compatibility with dos version:
+static	cvar_t	_vid_default_mode = {"_vid_default_mode", "0", CVAR_ARCHIVE};
+
 static	cvar_t	vid_config_x = {"vid_config_x", "800", CVAR_ARCHIVE};
 static	cvar_t	vid_config_y = {"vid_config_y", "600", CVAR_ARCHIVE};
 static	cvar_t	vid_fullscreen_mode = {"vid_fullscreen_mode", "3", CVAR_ARCHIVE};
 static	cvar_t	vid_windowed_mode = {"vid_windowed_mode", "0", CVAR_ARCHIVE};
-static	cvar_t	block_switch = {"block_switch", "0", CVAR_ARCHIVE};
-static	cvar_t	vid_window_x = {"vid_window_x", "0", CVAR_ARCHIVE};
-static	cvar_t	vid_window_y = {"vid_window_y", "0", CVAR_ARCHIVE};
 
 cvar_t		_enable_mouse = {"_enable_mouse", "0", CVAR_ARCHIVE};
 
@@ -152,47 +149,6 @@ static void VID_MenuKey (int key);
 static int VID_SetMode (int modenum, unsigned char *palette);
 static void AppActivate(BOOL fActive, BOOL minimize);
 static LRESULT WINAPI MainWndProc (HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
-
-
-/*
-================
-VID_RememberWindowPos
-================
-*/
-static void VID_RememberWindowPos (void)
-{
-	RECT		rect;
-
-	if (GetWindowRect (mainwindow, &rect))
-	{
-		if ((rect.left < GetSystemMetrics (SM_CXSCREEN)) &&
-			(rect.top < GetSystemMetrics (SM_CYSCREEN))  &&
-			(rect.right > 0)			     &&
-			(rect.bottom > 0))
-		{
-			Cvar_SetValueQuick (&vid_window_x, (float)rect.left);
-			Cvar_SetValueQuick (&vid_window_y, (float)rect.top);
-		}
-	}
-}
-
-
-/*
-================
-VID_CheckWindowXY
-================
-*/
-static void VID_CheckWindowXY (void)
-{
-	if ( (vid_window_x.integer > (GetSystemMetrics (SM_CXSCREEN) - 160)) ||
-		(vid_window_y.integer > (GetSystemMetrics (SM_CYSCREEN) - 120)) ||
-		(vid_window_x.integer < 0)					||
-		(vid_window_y.integer < 0))
-	{
-		Cvar_SetQuick (&vid_window_x, "0");
-		Cvar_SetQuick (&vid_window_y, "0");
-	}
-}
 
 
 /*
@@ -741,20 +697,23 @@ static void VID_DestroyWindow (void)
 }
 
 
+static void CenterWindow (HWND hWndCenter, int width, int height, BOOL lefttopjustify)
+{
+	int	CenterX, CenterY;
+
+	CenterX = (GetSystemMetrics(SM_CXSCREEN) - width) / 2;
+	CenterY = (GetSystemMetrics(SM_CYSCREEN) - height) / 2;
+	if (CenterX > CenterY*2)
+		CenterX >>= 1;	// dual screens
+	CenterX = (CenterX < 0) ? 0: CenterX;
+	CenterY = (CenterY < 0) ? 0: CenterY;
+	SetWindowPos (hWndCenter, NULL, CenterX, CenterY, 0, 0,
+			SWP_NOSIZE | SWP_NOZORDER | SWP_SHOWWINDOW | SWP_DRAWFRAME);
+}
+
 static qboolean VID_SetWindowedMode (int modenum)
 {
 	int		lastmodestate;
-
-	if (!windowed_mode_set)
-	{
-		if (COM_CheckParm ("-resetwinpos"))
-		{
-			Cvar_SetQuick (&vid_window_x, "0");
-			Cvar_SetQuick (&vid_window_y, "0");
-		}
-
-		windowed_mode_set = true;
-	}
 
 	VID_CheckModedescFixup (modenum);
 
@@ -817,10 +776,8 @@ static qboolean VID_SetWindowedMode (int modenum)
 		return true;
 
 // position and show the DIB window
-	VID_CheckWindowXY ();
-	SetWindowPos (mainwindow, NULL, vid_window_x.integer,
-				  vid_window_y.integer, 0, 0,
-				  SWP_NOSIZE | SWP_NOZORDER | SWP_SHOWWINDOW | SWP_DRAWFRAME);
+	CenterWindow(mainwindow, WindowRect.right - WindowRect.left,
+				 WindowRect.bottom - WindowRect.top, false);
 
 	if (force_minimized)
 		ShowWindow (mainwindow, SW_MINIMIZE);
@@ -1283,7 +1240,6 @@ void	VID_Init (unsigned char *palette)
 	int		i, bestmatch, bestmatchmetric, t, dr, dg, db;
 	int		basenummodes;
 	byte		*ptmp;
-
 	const char	*read_vars[] = {
 				"_vid_default_mode_win" };
 #define num_readvars	( sizeof(read_vars)/sizeof(read_vars[0]) )
@@ -1296,9 +1252,7 @@ void	VID_Init (unsigned char *palette)
 	Cvar_RegisterVariable (&_enable_mouse);
 	Cvar_RegisterVariable (&vid_fullscreen_mode);
 	Cvar_RegisterVariable (&vid_windowed_mode);
-	Cvar_RegisterVariable (&block_switch);
-	Cvar_RegisterVariable (&vid_window_x);
-	Cvar_RegisterVariable (&vid_window_y);
+
 	Cmd_AddCommand ("vid_testmode", VID_TestMode_f);
 	Cmd_AddCommand ("vid_nummodes", VID_NumModes_f);
 	Cmd_AddCommand ("vid_describecurrentmode", VID_DescribeCurrentMode_f);
@@ -1309,7 +1263,7 @@ void	VID_Init (unsigned char *palette)
 	Cmd_AddCommand ("vid_fullscreen", VID_Fullscreen_f);
 	Cmd_AddCommand ("vid_minimize", VID_Minimize_f);
 
-	// perform an early read of config.cfg
+// perform an early read of config.cfg
 	CFG_ReadCvars (read_vars, num_readvars);
 
 	VID_InitModes (global_hInstance);
@@ -1436,12 +1390,12 @@ static void FlipScreen (vrect_t *rects)
 		while (rects)
 		{
 			BitBlt (maindc,
-					rects->x, rects->y,
-					rects->x + rects->width,
-					rects->y + rects->height,
-					hdcDIBSection,
-					rects->x, rects->y,
-					SRCCOPY);
+				rects->x, rects->y,
+				rects->x + rects->width,
+				rects->y + rects->height,
+				hdcDIBSection,
+				rects->x, rects->y,
+				SRCCOPY);
 
 			numrects++;
 			rects = rects->pnext;
@@ -1453,7 +1407,6 @@ static void FlipScreen (vrect_t *rects)
 void VID_Update (vrect_t *rects)
 {
 	vrect_t		rect;
-	RECT		trect;
 
 	if (!vid_palettized && palette_changed)
 	{
@@ -1466,47 +1419,13 @@ void VID_Update (vrect_t *rects)
 		rects = &rect;
 	}
 
-	if (firstupdate && host_initialized)
+	if (firstupdate)
 	{
-		if (modestate == MS_WINDOWED)
-		{
-			GetWindowRect (mainwindow, &trect);
+		firstupdate = false;
 
-			if (trect.left != vid_window_x.integer || trect.top != vid_window_y.integer)
-			{
-				if (COM_CheckParm ("-resetwinpos"))
-				{
-					Cvar_SetQuick (&vid_window_x, "0");
-					Cvar_SetQuick (&vid_window_y, "0");
-				}
-
-				VID_CheckWindowXY ();
-				SetWindowPos (mainwindow, NULL, vid_window_x.integer,
-								vid_window_y.integer, 0, 0,
-								SWP_NOSIZE | SWP_NOZORDER | SWP_SHOWWINDOW | SWP_DRAWFRAME);
-			}
-		}
-
-		/* Pa3PyX: Since VID_Init() will not switch modes back and
-		   forth now, video mode from configs has to be set even if
-		   it is the same as hardcoded default */
-		if (!startwindowed || _vid_default_mode_win.integer < MODE_FULLSCREEN_DEFAULT)
-		{
-			firstupdate = false;
-
-			if (COM_CheckParm ("-resetwinpos"))
-			{
-				Cvar_SetQuick (&vid_window_x, "0");
-				Cvar_SetQuick (&vid_window_y, "0");
-			}
-
-			if (_vid_default_mode_win.integer < 0 || _vid_default_mode_win.integer >= nummodes)
-			{
-				Cvar_SetValueQuick (&_vid_default_mode_win, windowed_default);
-			}
-
-			Cvar_SetValueQuick (&vid_mode, _vid_default_mode_win.integer);
-		}
+		if (_vid_default_mode_win.integer < 0 || _vid_default_mode_win.integer >= nummodes)
+			Cvar_SetValueQuick (&_vid_default_mode_win, windowed_default);
+		Cvar_SetValueQuick (&vid_mode, _vid_default_mode_win.integer);
 	}
 
 	// We've drawn the frame; copy it to the screen
@@ -1526,8 +1445,8 @@ void VID_Update (vrect_t *rects)
 		{
 			VID_SetMode (vid_mode.integer, vid_curpal);
 			Cvar_SetValueQuick (&vid_mode, vid_modenum);
-								// so if mode set fails, we don't keep on
-								//  trying to set that mode
+							// so if mode set fails, we don't keep on
+							//  trying to set that mode
 			vid_realmode = vid_modenum;
 		}
 	}
@@ -2022,8 +1941,6 @@ static LRESULT WINAPI MainWndProc (HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM l
 		window_x = (int) LOWORD(lParam);
 		window_y = (int) HIWORD(lParam);
 		VID_UpdateWindowStatus ();
-		if ((modestate == MS_WINDOWED) && !in_mode_set && !Minimized)
-			VID_RememberWindowPos ();
 		break;
 
 	case WM_SIZE:

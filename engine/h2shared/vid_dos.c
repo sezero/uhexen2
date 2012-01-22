@@ -51,6 +51,7 @@ cvar_t		vid_wait = {"vid_wait", "0", CVAR_NONE};
 cvar_t		vid_nopageflip = {"vid_nopageflip", "0", CVAR_ARCHIVE};
 cvar_t		_vid_wait_override = {"_vid_wait_override", "0", CVAR_ARCHIVE};
 static cvar_t	_vid_default_mode = {"_vid_default_mode", "0", CVAR_ARCHIVE};
+// compatibility with windows version:
 static cvar_t	_vid_default_mode_win = {"_vid_default_mode_win", "1", CVAR_ARCHIVE};
 static cvar_t	vid_config_x = {"vid_config_x", "800", CVAR_ARCHIVE};
 static cvar_t	vid_config_y = {"vid_config_y", "600", CVAR_ARCHIVE};
@@ -58,9 +59,6 @@ static cvar_t	vid_stretch_by_2 = {"vid_stretch_by_2", "1", CVAR_ARCHIVE};
 cvar_t		_enable_mouse = {"_enable_mouse", "0", CVAR_ARCHIVE};
 static cvar_t	vid_fullscreen_mode = {"vid_fullscreen_mode", "3", CVAR_ARCHIVE};
 static cvar_t	vid_windowed_mode = {"vid_windowed_mode", "0", CVAR_ARCHIVE};
-static cvar_t	block_switch = {"block_switch", "0", CVAR_ARCHIVE};
-static cvar_t	vid_window_x = {"vid_window_x", "0", CVAR_ARCHIVE};
-static cvar_t	vid_window_y = {"vid_window_y", "0", CVAR_ARCHIVE};
 
 viddef_t	vid;		/* global video state	*/
 int		numvidmodes;
@@ -109,9 +107,6 @@ void    VID_Init (unsigned char *palette)
 	Cvar_RegisterVariable (&_enable_mouse);
 	Cvar_RegisterVariable (&vid_fullscreen_mode);
 	Cvar_RegisterVariable (&vid_windowed_mode);
-	Cvar_RegisterVariable (&block_switch);
-	Cvar_RegisterVariable (&vid_window_x);
-	Cvar_RegisterVariable (&vid_window_y);
 
 	Cmd_AddCommand ("vid_testmode", VID_TestMode_f);
 	Cmd_AddCommand ("vid_nummodes", VID_NumModes_f);
@@ -332,39 +327,39 @@ void VID_Shutdown (void)
 VID_Update
 ================
 */
-void    VID_Update (vrect_t *rects)
+void VID_Update (vrect_t *rects)
 {
 	if (firstupdate && _vid_default_mode.integer)
 	{
-		if(_vid_default_mode.integer >= numvidmodes)
-			Cvar_SetQuick (&_vid_default_mode, "0");
-
 		firstupdate = 0;
+
+		if (_vid_default_mode.integer < 0 || _vid_default_mode.integer >= numvidmodes)
+			Cvar_SetQuick (&_vid_default_mode, "0");
 		Cvar_SetValueQuick (&vid_mode, _vid_default_mode.integer);
 	}
 
 	(*pcurrentmode->swapbuffers)(&vid, pcurrentmode, rects);
 
-	if (!nomodecheck)
+	if (nomodecheck)
+		return;
+
+	if (vid_testingmode)
 	{
-		if (vid_testingmode)
+		if (realtime >= vid_testendtime)
 		{
-			if (realtime >= vid_testendtime)
-			{
-				VID_SetMode (vid_realmode, vid_current_palette);
-				vid_testingmode = 0;
-			}
+			VID_SetMode (vid_realmode, vid_current_palette);
+			vid_testingmode = 0;
 		}
-		else
+	}
+	else
+	{
+		if (vid_mode.integer != vid_realmode)
 		{
-			if (vid_mode.integer != vid_realmode)
-			{
-				VID_SetMode (vid_mode.integer, vid_current_palette);
-				Cvar_SetValueQuick (&vid_mode, (float)vid_modenum);
-									// so if mode set fails, we don't keep on
-									//  trying to set that mode
-				vid_realmode = vid_modenum;
-			}
+			VID_SetMode (vid_mode.integer, vid_current_palette);
+			Cvar_SetValueQuick (&vid_mode, (float)vid_modenum);
+							// so if mode set fails, we don't keep on
+							//  trying to set that mode
+			vid_realmode = vid_modenum;
 		}
 	}
 }
