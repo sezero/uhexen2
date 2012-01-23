@@ -4,6 +4,21 @@ Development Progress	:
 ---------------------------
 
 2012-01-23 (SVN):
+    * vid_mgl4.c, vid_win.c: In VID_Update(), check host_initilazied as
+      well as firstupdate, because there are a few Con_Printf() calls
+      during the init phase which call SCR_UpdateScreen() which in turn
+      call VID_Update(). In VID_InitFullDIB() and VID_GetDisplayModes(),
+      set _vid_default_mode_win to vid_default if no fullscreen modes
+      are found. In VID_Init(), set _vid_default_mode_win to windowed
+      default mode if -startwindowed or an equivalent is specified on
+      the command line. Move bounds checking for _vid_default_mode_win
+      from VID_Update()/firstupdate to VID_Init() and lock the cvar, so
+      that the final execution of config.cfg doesn't mess it up. Several
+      minor cleanups.
+    * vid_dos.c: Early-read _vid_default_mode in VID_Init(). Do similar
+      changes as in vid_win.c and vid_mgl4.c above.
+
+2012-01-23 (SVN):
     * gl_main.c: Now that it deviated from the actual gluPerspective(),
       renamed MYgluPerspective to GL_SetFrustum and changed it to accept
       only the fovx and fovy parameters. Defined new macros NEARCLIP (4)

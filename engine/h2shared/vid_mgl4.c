@@ -9,8 +9,8 @@
 #include "quakedef.h"
 #include "winquake.h"
 #include "bgmusic.h"
-#include "cfgfile.h"
 #include "cdaudio.h"
+#include "cfgfile.h"
 #include <mmsystem.h>
 #include "d_local.h"
 #include "resource.h"
@@ -63,7 +63,7 @@ static int	lockcount;
 static int	vid_fulldib_on_focus_mode;
 static qboolean	force_minimized, is_mode0x13, force_mode_set;
 static int	vid_stretched, enable_mouse;
-static qboolean	palette_changed, syscolchg, vid_mode_set, hide_window, pal_is_nostatic;
+static qboolean	palette_changed, syscolchg, vid_mode_set, pal_is_nostatic;
 static HICON	hIcon;
 
 viddef_t	vid;		// global video state
@@ -112,7 +112,7 @@ typedef struct {
 	int		height;
 } lmode_t;
 
-lmode_t	lowresmodes[] = {
+static lmode_t lowresmodes[] = {
 	{320, 200},
 	{320, 240},
 	{400, 300},
@@ -1036,7 +1036,10 @@ static void VID_InitFullDIB (HINSTANCE hInstance)
 	if (nummodes != originalnummodes)
 		vid_default = MODE_FULLSCREEN_DEFAULT;
 	else
+	{
+		Cvar_SetValueQuick (&_vid_default_mode_win, vid_default);
 		Con_SafePrintf ("No fullscreen DIB modes found\n");
+	}
 }
 
 
@@ -1360,9 +1363,6 @@ static qboolean VID_SetWindowedMode (int modenum)
 	{
 		Sys_Error ("Couldn't resize DIB window");
 	}
-
-	if (hide_window)
-		return true;
 
 // position and show the DIB window
 	CenterWindow(mainwindow, WindowRect.right - WindowRect.left,
@@ -1690,9 +1690,6 @@ static int VID_SetMode (int modenum, unsigned char *palette)
 		VID_RestoreOldMode (original_mode);
 		return false;
 	}
-
-	if (hide_window)
-		return true;
 
 // now we try to make sure we get the focus on the mode switch, because
 // sometimes in some systems we don't.  We grab the foreground, then
@@ -2147,8 +2144,13 @@ void	VID_Init (unsigned char *palette)
 	if (COM_CheckParm("-startwindowed") || COM_CheckParm("-window") || COM_CheckParm("-w"))
 	{
 		startwindowed = true;
+		Cvar_SetValueQuick (&_vid_default_mode_win, windowed_default);
 		vid_default = windowed_default;
 	}
+
+	if (_vid_default_mode_win.integer < 0 || _vid_default_mode_win.integer >= nummodes)
+		Cvar_SetValueQuick (&_vid_default_mode_win, windowed_default);
+	Cvar_LockVar ("_vid_default_mode_win");	/* so that config.cfg doesn't break -window */
 
 #if !defined(NO_SPLASHES)
 	if (hwnd_dialog)
@@ -2158,14 +2160,8 @@ void	VID_Init (unsigned char *palette)
 	}
 #endif	/* ! NO_SPLASHES */
 
-/*	Pa3PyX: will now avoid setting default fullscreen mode
-	unless absolutely necessary (windowed default failed).
-	Reason: no need to rape the monitor by switching video
-	modes 3 times on initialization, in addition there may
-	be problems switching from fullscreen VGA to VESA, for
-	instance. The game will switch to the right mode, when
-	it has parsed its configs. */
-	hide_window = false;
+	/* set default fullscreen mode only if
+	 * setting the windowed default fails: */
 	if (!VID_SetMode(MODE_WINDOWED, palette))
 	{
 		force_mode_set = true;
@@ -2348,12 +2344,9 @@ void VID_Update (vrect_t *rects)
 		rects = &rect;
 	}
 
-	if (firstupdate)
+	if (firstupdate && host_initialized)
 	{
 		firstupdate = false;
-
-		if (_vid_default_mode_win.integer < 0 || _vid_default_mode_win.integer >= nummodes)
-			Cvar_SetValueQuick (&_vid_default_mode_win, windowed_default);
 		Cvar_SetValueQuick (&vid_mode, _vid_default_mode_win.integer);
 	}
 

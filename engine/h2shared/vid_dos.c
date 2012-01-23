@@ -39,6 +39,7 @@
 #include "d_local.h"
 #include "dosisms.h"
 #include "vid_dos.h"
+#include "cfgfile.h"
 
 modestate_t	modestate = MS_UNINIT;
 static int	vid_modenum;
@@ -95,6 +96,10 @@ VID_Init
 */
 void    VID_Init (unsigned char *palette)
 {
+	const char	*read_vars[] = {
+				"_vid_default_mode" };
+#define num_readvars	( sizeof(read_vars)/sizeof(read_vars[0]) )
+
 	Cvar_RegisterVariable (&vid_mode);
 	Cvar_RegisterVariable (&vid_wait);
 	Cvar_RegisterVariable (&vid_nopageflip);
@@ -114,6 +119,9 @@ void    VID_Init (unsigned char *palette)
 	Cmd_AddCommand ("vid_describemode", VID_DescribeMode_f);
 	Cmd_AddCommand ("vid_describemodes", VID_DescribeModes_f);
 
+// perform an early read of config.cfg
+	CFG_ReadCvars (read_vars, num_readvars);
+
 // set up the mode list; note that later inits link in their modes ahead of
 // earlier ones, so the standard VGA modes are always first in the list. This
 // is important because mode 0 must always be VGA mode 0x13
@@ -123,6 +131,10 @@ void    VID_Init (unsigned char *palette)
 
 	vid_testingmode = 0;
 	vid_modenum = vid_mode.integer;
+
+	if (_vid_default_mode.integer < 0 || _vid_default_mode.integer >= numvidmodes)
+		Cvar_SetQuick (&_vid_default_mode, "0");
+	Cvar_LockVar ("_vid_default_mode");
 
 	Cvar_SetROM ("sys_nostdout", "1");	// disable printing to terminal
 	VID_SetMode (vid_modenum, palette);
@@ -329,12 +341,9 @@ VID_Update
 */
 void VID_Update (vrect_t *rects)
 {
-	if (firstupdate && _vid_default_mode.integer)
+	if (firstupdate && host_initialized)
 	{
 		firstupdate = 0;
-
-		if (_vid_default_mode.integer < 0 || _vid_default_mode.integer >= numvidmodes)
-			Cvar_SetQuick (&_vid_default_mode, "0");
 		Cvar_SetValueQuick (&vid_mode, _vid_default_mode.integer);
 	}
 
