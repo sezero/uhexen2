@@ -3,6 +3,11 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2012-01-23 (SVN):
+    * vid_dos.c (VID_Init): Added missing safemode check alongside the
+      -stdvid command line argument check.
+    * updated beta date stamp to 2012-01-23.
+
 2012-01-22 (SVN):
     * gl_vidnt.c, vid_mgl4.c, vid_win.c (CenterWindow): Removed unused
       lefttopjustify parameter.

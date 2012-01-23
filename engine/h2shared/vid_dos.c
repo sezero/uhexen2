@@ -117,7 +117,7 @@ void    VID_Init (unsigned char *palette)
 // set up the mode list; note that later inits link in their modes ahead of
 // earlier ones, so the standard VGA modes are always first in the list. This
 // is important because mode 0 must always be VGA mode 0x13
-	if (!COM_CheckParm ("-stdvid"))
+	if (!safemode && !COM_CheckParm("-stdvid"))
 		VID_InitExtra ();
 	VGA_Init ();
 
