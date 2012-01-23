@@ -1647,14 +1647,15 @@ static void R_SetupFrame (void)
 	c_alias_polys = 0;
 }
 
-static void MYgluPerspective (GLdouble fovx, GLdouble fovy, GLdouble zNear, GLdouble zFar)
+
+#define NEARCLIP	4
+#define FARCLIP		4096
+static void GL_SetFrustum (GLdouble fovx, GLdouble fovy)
 {
 	GLdouble	xmax, ymax;
-
-	xmax = zNear * tan(fovx * M_PI / 360.0);
-	ymax = zNear * tan(fovy * M_PI / 360.0);
-
-	glFrustum_fp (-xmax, xmax, -ymax, ymax, zNear, zFar);
+	xmax = NEARCLIP * tan(fovx * M_PI / 360.0);
+	ymax = NEARCLIP * tan(fovy * M_PI / 360.0);
+	glFrustum_fp (-xmax, xmax, -ymax, ymax, NEARCLIP, FARCLIP);
 }
 
 typedef struct _MATRIX {
@@ -1743,7 +1744,7 @@ static void R_SetupGL (void)
 	}
 
 	glViewport_fp (glx + x, gly + y2, w, h);
-	MYgluPerspective (r_refdef.fov_x, r_refdef.fov_y, 4, 4096);
+	GL_SetFrustum (r_refdef.fov_x, r_refdef.fov_y);
 
 	if (mirror)
 	{
