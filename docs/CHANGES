@@ -3,6 +3,27 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2012-01-26 (SVN):
+    * update directx headers from mingw-w64 svn repo r4773:
+    - ddraw.h: (DDSCAPS2_VOLUME): New constant from the Wine git repo.
+      (DDLOCK_OKTOSWAP): Likewise.
+      (DDLOCK_DONOTWAIT): Likewise.
+      (DDLOCK_HASVOLUMETEXTUREBOXRECT): Likewise.
+      (DDLOCK_NODIRTYUPDATE): Likewise.
+    - dinput.h (DIEDFL_ATTACHEDONLY): Fix constant as 0x01.
+      (DI_SETTINGSNOTSAVED): New constant from the Wine git repo.
+    - dsound.h (DSBFREQUENCY_MAX): Define as 200000 only for version 9 and
+      newer, but as 100000 for anything older.
+      (DSBUFFERDESC): The guid3DAlgorithm member is available only with v7
+      and newer.
+      (DSCBUFFERDESC): The dwFXCount and lpDSCFXDesc members are available
+      only with v8 and newer.
+      (DSSPEAKER_DIRECTOUT): Add missing constant (0)
+      (DSSPEAKER_5POINT1_BACK): Add missing constant (6)
+      (DSSPEAKER_7POINT1_WIDE): Add missing constant (7)
+      (DSSPEAKER_7POINT1_SURROUND): Add missing constant (8)
+      (DSSPEAKER_5POINT1_SURROUND): Add missing constant (9)
+
 2012-01-23 (SVN):
     * vid_mgl4.c, vid_win.c: In VID_Update(), check host_initilazied as
       well as firstupdate, because there are a few Con_Printf() calls
