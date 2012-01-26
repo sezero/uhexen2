@@ -4,6 +4,7 @@ Development Progress	:
 ---------------------------
 
 2012-01-26 (SVN):
+    * recompile directx mingw-w64 import libraries
     * update directx headers from mingw-w64 svn repo r4773:
     - ddraw.h: (DDSCAPS2_VOLUME): New constant from the Wine git repo.
       (DDLOCK_OKTOSWAP): Likewise.
