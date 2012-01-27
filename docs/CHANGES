@@ -3,6 +3,11 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2012-01-27 (SVN):
+    * update directx headers from mingw-w64 svn repo r4776:
+    - ddraw.h: don't use __extension__ keyword directly
+    - dinput.h: add missing __extension__ to two anonymous unions
+
 2012-01-26 (SVN):
     * recompile directx mingw-w64 import libraries
     * update directx headers from mingw-w64 svn repo r4773:
