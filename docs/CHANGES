@@ -3,6 +3,14 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2012-01-28 (SVN):
+    * Majorly revised the support mechanism for different versions of
+      progs: removed pr_global_struct, added sv_globals holding proper
+      offsets and globals' addresses. New sv_globals code is inspired
+      from quakeforge. Added old v1.03 progs support to hexen2 and old
+      v0.11 and v0.14 progs support to hw, realized by new sv_globals.
+    * updated beta date stamp to 2012-01-28.
+
 2012-01-27 (SVN):
     * update directx headers from mingw-w64 svn repo r4776:
     - ddraw.h: don't use __extension__ keyword directly

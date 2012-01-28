@@ -2,7 +2,7 @@
 	sv_send.c
 	server communication module
 
-	$Id: sv_send.c,v 1.23 2010-03-09 15:00:28 sezero Exp $
+	$Id$
 */
 
 #include "quakedef.h"
@@ -774,7 +774,7 @@ static void SV_UpdateClientStats (client_t *client)
 	if (!client->spectator)
 		stats[STAT_ACTIVEWEAPON] = 0;	//ent->v.weapon;
 	// stuff the sigil bits into the high bits of items for sbar
-	stats[STAT_ITEMS] = 0;	//(int)ent->v.items | ((int)pr_global_struct->serverflags << 28);
+	stats[STAT_ITEMS] = 0;	//(int)ent->v.items | ((int)*sv_globals.serverflags << 28);
 
 	for (i = 0; i < MAX_CL_STATS; i++)
 	{
@@ -951,11 +951,11 @@ static void SV_UpdateToReliableMessages (void)
 				MSG_WriteShort (&client->netchan.message, host_client->edict->v.frags);
 				MSG_WriteByte (&client->netchan.message, (host_client->playerclass<<5)|((int)host_client->edict->v.level&31));
 
-				if (dmMode.integer == DM_SIEGE)
+				if (dmMode.integer == DM_SIEGE && SV_PROGS_HAVE_SIEGE)
 				{
 					MSG_WriteByte (&client->netchan.message, svc_updatesiegelosses);
-					MSG_WriteByte (&client->netchan.message, PR_GLOBAL_STRUCT(defLosses));
-					MSG_WriteByte (&client->netchan.message, PR_GLOBAL_STRUCT(attLosses));
+					MSG_WriteByte (&client->netchan.message, *sv_globals.defLosses);
+					MSG_WriteByte (&client->netchan.message, *sv_globals.attLosses);
 				}
 			}
 

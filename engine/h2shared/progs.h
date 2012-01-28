@@ -46,33 +46,25 @@ typedef struct edict_s
 extern	dprograms_t	*progs;
 extern	dfunction_t	*pr_functions;
 extern	dstatement_t	*pr_statements;
-extern	globalvars_t	*pr_global_struct;
-#if !defined(H2W)
-extern	qboolean	is_progdefs111;	/* whether we have a Hexen2-v1.11 globals struct */
-extern	globalvars_v111_t	*pr_global_struct_v111;
-#define	PR_GLOBAL_STRUCT(parm)	(is_progdefs111 ? (pr_global_struct_v111->parm) : (pr_global_struct->parm))
-#else	/* H2W */
-#define	PR_GLOBAL_STRUCT(parm)	(pr_global_struct->parm)
-#endif	/* H2W */
-extern	float		*pr_globals;	/* same as pr_global_struct */
+extern	sv_globals_t	sv_globals;
+extern	float		*pr_globals;	/* same as sv_globals */
 
 extern	int		pr_edict_size;	/* in bytes */
 
 
-/*	If USE_MULTIPLE_PROGS is defined as 1, the hexen2 binary will look for
-	a file named "maplist.txt" in its searchpath and using the info in it,
-	it will load a map-specific prog file. Without this, the rider bosses
-	shall not appear in the original Hexen2. The mission pack & HexenWorld
-	uses a single prog file, so they don't need this.
-	2006-03-31: We now use a single binary for both original hexen2 and
-	for the mission pack. So we enable it even for the mission pack, but
-	we place a maplist.txt file with a 0 in it in the portals directory.
-	If you wish to compile progs.dat and progs2.dat together into a single
-	progs.dat for original Hexen2, then keep the definition below intact,
-	but put a maplist.txt file with only a 0 in it in the data1 directory.
-	This way, if you find an old mod which uses multiple progs.dat files,
-	it will continue to work properly.
-*/
+/* If USE_MULTIPLE_PROGS is defined as 1, the hexen2 binary will look for
+ * a file named "maplist.txt" in its searchpath and using the info in it,
+ * it will load a map-specific prog file. Without this, the rider bosses
+ * shall not appear in the original Hexen2. The mission pack & HexenWorld
+ * uses a single prog file, so they don't need this.
+ * 2006-03-31: We now use a single binary for both original hexen2 and
+ * for the mission pack. So we enable it even for the mission pack, but
+ * we place a maplist.txt file with a 0 in it in the portals directory.
+ * If you wish to compile progs.dat and progs2.dat together into a single
+ * progs.dat for original Hexen2, then keep the definition below intact,
+ * but put a maplist.txt file with only a 0 in it in the data1 directory.
+ * This way, if you find an old mod which uses multiple progs.dat files,
+ * it will continue to work properly. */
 #define	USE_MULTIPLE_PROGS	1
 
 /* USE_MULTIPLE_PROGS is only for original hexen2 */

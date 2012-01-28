@@ -210,26 +210,26 @@ void SV_DropClient (client_t *drop)
 		{
 			// call the prog function for removing a client
 			// this will set the body to a dead frame, among other things
-			pr_global_struct->self = EDICT_TO_PROG(drop->edict);
-			PR_ExecuteProgram (pr_global_struct->ClientDisconnect);
+			*sv_globals.self = EDICT_TO_PROG(drop->edict);
+			PR_ExecuteProgram (*sv_globals.ClientDisconnect);
 		}
 		else if (SpectatorDisconnect)
 		{
 			// call the prog function for removing a client
 			// this will set the body to a dead frame, among other things
-			pr_global_struct->self = EDICT_TO_PROG(drop->edict);
+			*sv_globals.self = EDICT_TO_PROG(drop->edict);
 			PR_ExecuteProgram (SpectatorDisconnect);
 		}
 	}
-	else if (dmMode.integer == DM_SIEGE)
+	else if (dmMode.integer == DM_SIEGE && SV_PROGS_HAVE_SIEGE)
 	{
 		if (*PR_GetString(drop->edict->v.puzzle_inv1) != '\0')
 		{
 			// this guy has a puzzle piece, call this function anyway
 			// to make sure he leaves it behind
 			Con_Printf("Client in unspawned state had puzzle piece, forcing drop\n");
-			pr_global_struct->self = EDICT_TO_PROG(drop->edict);
-			PR_ExecuteProgram (pr_global_struct->ClientDisconnect);
+			*sv_globals.self = EDICT_TO_PROG(drop->edict);
+			PR_ExecuteProgram (*sv_globals.ClientDisconnect);
 		}
 	}
 
@@ -315,7 +315,7 @@ void SV_FullClientUpdate (client_t *client, sizebuf_t *buf)
 	MSG_WriteShort (buf, client->old_frags);
 	MSG_WriteByte (buf, (client->playerclass<<5)|((int)client->edict->v.level&31));
 
-	if (dmMode.integer == DM_SIEGE)
+	if (dmMode.integer == DM_SIEGE && SV_PROGS_HAVE_SIEGE)
 	{
 		MSG_WriteByte (buf, svc_updatesiegeinfo);
 		MSG_WriteByte (buf, (int)ceil(timelimit.value));
@@ -326,8 +326,8 @@ void SV_FullClientUpdate (client_t *client, sizebuf_t *buf)
 		MSG_WriteByte (buf, client->siege_team);
 
 		MSG_WriteByte (buf, svc_updatesiegelosses);
-		MSG_WriteByte (buf, PR_GLOBAL_STRUCT(defLosses));
-		MSG_WriteByte (buf, PR_GLOBAL_STRUCT(attLosses));
+		MSG_WriteByte (buf, *sv_globals.defLosses);
+		MSG_WriteByte (buf, *sv_globals.attLosses);
 
 		MSG_WriteByte (buf, svc_time);//send server time upon connection
 		MSG_WriteFloat (buf, sv.time);
@@ -647,9 +647,9 @@ static void SVC_DirectConnect (void)
 	newcl->lockedtill = 0;
 
 	// call the progs to get default spawn parms for the new client
-	PR_ExecuteProgram (pr_global_struct->SetNewParms);
+	PR_ExecuteProgram (*sv_globals.SetNewParms);
 	for (i = 0; i < NUM_SPAWN_PARMS; i++)
-		newcl->spawn_parms[i] = (&pr_global_struct->parm1)[i];
+		newcl->spawn_parms[i] = sv_globals.parm[i];
 
 	if (newcl->spectator)
 		Con_Printf ("Spectator %s connected\n", newcl->name);
@@ -1534,7 +1534,7 @@ void SV_ExtractFromUserinfo (client_t *cl)
 	if (*val)
 	{
 		i = atoi(val);
-		if (i > CLASS_DEMON && dmMode.integer != DM_SIEGE)
+		if (i > CLASS_DEMON && (dmMode.integer != DM_SIEGE || !SV_PROGS_HAVE_SIEGE))
 			i = CLASS_PALADIN;
 		if (i < 0 || i > MAX_PLAYER_CLASS || (!cl->portals && i == CLASS_DEMON))
 		{

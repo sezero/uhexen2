@@ -82,7 +82,7 @@ static void NET_Ban_f (void)
 	}
 	else
 	{
-		if (PR_GLOBAL_STRUCT(deathmatch))
+		if (*sv_globals.deathmatch)
 			return;
 		print_fn = SV_ClientPrintf;
 	}

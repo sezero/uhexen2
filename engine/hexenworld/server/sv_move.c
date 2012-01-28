@@ -2,7 +2,7 @@
 	sv_move.c
 	monster movement
 
-	$Header: /cvsroot/uhexen2/engine/hexenworld/server/sv_move.c,v 1.8 2007-04-30 17:04:33 sezero Exp $
+	$Id$
 */
 
 #include "quakedef.h"
@@ -89,18 +89,18 @@ realcheck:	// check it for real...
 
 static void set_move_trace(trace_t *trace)
 {
-	pr_global_struct->trace_allsolid = trace->allsolid;
-	pr_global_struct->trace_startsolid = trace->startsolid;
-	pr_global_struct->trace_fraction = trace->fraction;
-	pr_global_struct->trace_inwater = trace->inwater;
-	pr_global_struct->trace_inopen = trace->inopen;
-	VectorCopy (trace->endpos, pr_global_struct->trace_endpos);
-	VectorCopy (trace->plane.normal, pr_global_struct->trace_plane_normal);
-	pr_global_struct->trace_plane_dist =  trace->plane.dist;
+	*sv_globals.trace_allsolid = trace->allsolid;
+	*sv_globals.trace_startsolid = trace->startsolid;
+	*sv_globals.trace_fraction = trace->fraction;
+	*sv_globals.trace_inwater = trace->inwater;
+	*sv_globals.trace_inopen = trace->inopen;
+	VectorCopy (trace->endpos, *sv_globals.trace_endpos);
+	VectorCopy (trace->plane.normal, *sv_globals.trace_plane_normal);
+	*sv_globals.trace_plane_dist =  trace->plane.dist;
 	if (trace->ent)
-		pr_global_struct->trace_ent = EDICT_TO_PROG(trace->ent);
+		*sv_globals.trace_ent = EDICT_TO_PROG(trace->ent);
 	else
-		pr_global_struct->trace_ent = EDICT_TO_PROG(sv.edicts);
+		*sv_globals.trace_ent = EDICT_TO_PROG(sv.edicts);
 }
 
 
@@ -111,7 +111,7 @@ SV_movestep
 Called by monster program code.
 The move will be adjusted for slopes and stairs, but if the move isn't
 possible, no move is done, false is returned, and
-pr_global_struct->trace_normal is set to the normal of the blocking wall
+*sv_globals.trace_normal is set to the normal of the blocking wall
 =============
 */
 qboolean SV_movestep (edict_t *ent, vec3_t move, qboolean relink, qboolean noenemy, qboolean set_trace)
@@ -430,7 +430,7 @@ void SV_MoveToGoal (void)
 	edict_t		*ent, *goal;
 	float		dist;
 
-	ent = PROG_TO_EDICT(PR_GLOBAL_STRUCT(self));
+	ent = PROG_TO_EDICT(*sv_globals.self);
 	goal = PROG_TO_EDICT(ent->v.goalentity);
 	dist = G_FLOAT(OFS_PARM0);
 

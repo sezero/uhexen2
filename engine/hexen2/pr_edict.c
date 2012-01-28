@@ -20,10 +20,8 @@ static	ddef_t		*pr_fielddefs;
 static	ddef_t		*pr_globaldefs;
 
 dstatement_t	*pr_statements;
-globalvars_t	*pr_global_struct;
-globalvars_v111_t	*pr_global_struct_v111;
-qboolean	is_progdefs111;	// whether we have a Hexen2-v1.11 globals struct
-float		*pr_globals;		// same as pr_global_struct
+sv_globals_t	sv_globals;
+float		*pr_globals;		// same as sv_globals
 int		pr_edict_size;		// in bytes
 
 qboolean	ignore_precache = false;
@@ -39,6 +37,184 @@ int		type_size[8] = {
 	1,					// ev_field
 	1,	// sizeof(func_t) / 4		// ev_function
 	1	// sizeof(void *) / 4		// ev_pointer
+};
+
+typedef struct sv_def_s
+{
+	etype_t		type;
+	int		offset;
+	void		*field;
+} sv_def_t;
+
+#define OFS_V103(m)	(int)offsetof(globalvars_v103_t,m)/4
+#define OFS_V111(m)	(int)offsetof(globalvars_v111_t,m)/4
+#define OFS_V112(m)	(int)offsetof(globalvars_t,m)/4
+
+static sv_def_t globals_v103[] = {
+	{ev_entity,	OFS_V103(self),			&sv_globals.self},
+	{ev_entity,	OFS_V103(other),		&sv_globals.other},
+	{ev_entity,	OFS_V103(world),		&sv_globals.world},
+	{ev_float,	OFS_V103(time),			&sv_globals.time},
+	{ev_float,	OFS_V103(frametime),		&sv_globals.frametime},
+	{ev_float,	OFS_V103(force_retouch),	&sv_globals.force_retouch},
+	{ev_string,	OFS_V103(mapname),		&sv_globals.mapname},
+	{ev_string,	OFS_V103(startspot),		&sv_globals.startspot},
+	{ev_float,	OFS_V103(deathmatch),		&sv_globals.deathmatch},
+	{ev_float,	OFS_V103(coop),			&sv_globals.coop},
+	{ev_float,	OFS_V103(teamplay),		&sv_globals.teamplay},
+	{ev_float,	OFS_V103(serverflags),		&sv_globals.serverflags},
+	{ev_float,	OFS_V103(total_secrets),	&sv_globals.total_secrets},
+	{ev_float,	OFS_V103(total_monsters),	&sv_globals.total_monsters},
+	{ev_float,	OFS_V103(found_secrets),	&sv_globals.found_secrets},
+	{ev_float,	OFS_V103(killed_monsters),	&sv_globals.killed_monsters},
+	{ev_float,	OFS_V103(chunk_cnt),		&sv_globals.chunk_cnt},
+	{ev_float,	OFS_V103(done_precache),	&sv_globals.done_precache},
+	{ev_float,	OFS_V103(parm1),		&sv_globals.parm},
+	{ev_vector,	OFS_V103(v_forward),		&sv_globals.v_forward},
+	{ev_vector,	OFS_V103(v_up),			&sv_globals.v_up},
+	{ev_vector,	OFS_V103(v_right),		&sv_globals.v_right},
+	{ev_float,	OFS_V103(trace_allsolid),	&sv_globals.trace_allsolid},
+	{ev_float,	OFS_V103(trace_startsolid),	&sv_globals.trace_startsolid},
+	{ev_float,	OFS_V103(trace_fraction),	&sv_globals.trace_fraction},
+	{ev_vector,	OFS_V103(trace_endpos),		&sv_globals.trace_endpos},
+	{ev_vector,	OFS_V103(trace_plane_normal),	&sv_globals.trace_plane_normal},
+	{ev_float,	OFS_V103(trace_plane_dist),	&sv_globals.trace_plane_dist},
+	{ev_entity,	OFS_V103(trace_ent),		&sv_globals.trace_ent},
+	{ev_float,	OFS_V103(trace_inopen),		&sv_globals.trace_inopen},
+	{ev_float,	OFS_V103(trace_inwater),	&sv_globals.trace_inwater},
+	{ev_entity,	OFS_V103(msg_entity),		&sv_globals.msg_entity},
+	{ev_float,	OFS_V103(cycle_wrapped),	&sv_globals.cycle_wrapped},
+	{ev_float,	OFS_V103(crouch_cnt),		&sv_globals.crouch_cnt},
+	{ev_float,	OFS_V103(modelindex_assassin),	&sv_globals.modelindex_assassin},
+	{ev_float,	OFS_V103(modelindex_crusader),	&sv_globals.modelindex_crusader},
+	{ev_float,	OFS_V103(modelindex_paladin),	&sv_globals.modelindex_paladin},
+	{ev_float,	OFS_V103(modelindex_necromancer),&sv_globals.modelindex_necromancer},
+	{ev_float,	OFS_V103(modelindex_sheep),	&sv_globals.modelindex_sheep},
+	{ev_float,	OFS_V103(num_players),		&sv_globals.num_players},
+	{ev_float,	OFS_V103(exp_mult),		&sv_globals.exp_mult},
+
+	{ev_function,	OFS_V103(main),			&sv_globals.main},
+	{ev_function,	OFS_V103(StartFrame),		&sv_globals.StartFrame},
+	{ev_function,	OFS_V103(PlayerPreThink),	&sv_globals.PlayerPreThink},
+	{ev_function,	OFS_V103(PlayerPostThink),	&sv_globals.PlayerPostThink},
+	{ev_function,	OFS_V103(ClientKill),		&sv_globals.ClientKill},
+	{ev_function,	OFS_V103(ClientConnect),	&sv_globals.ClientConnect},
+	{ev_function,	OFS_V103(PutClientInServer),	&sv_globals.PutClientInServer},
+	{ev_function,	OFS_V103(ClientReEnter),	&sv_globals.ClientReEnter},
+	{ev_function,	OFS_V103(ClientDisconnect),	&sv_globals.ClientDisconnect},
+	{ev_function,	OFS_V103(ClassChangeWeapon),	&sv_globals.ClassChangeWeapon},
+	{ev_void,	0,				NULL }
+};
+
+static sv_def_t globals_v111[] = {
+	{ev_entity,	OFS_V111(self),			&sv_globals.self},
+	{ev_entity,	OFS_V111(other),		&sv_globals.other},
+	{ev_entity,	OFS_V111(world),		&sv_globals.world},
+	{ev_float,	OFS_V111(time),			&sv_globals.time},
+	{ev_float,	OFS_V111(frametime),		&sv_globals.frametime},
+	{ev_float,	OFS_V111(force_retouch),	&sv_globals.force_retouch},
+	{ev_string,	OFS_V111(mapname),		&sv_globals.mapname},
+	{ev_string,	OFS_V111(startspot),		&sv_globals.startspot},
+	{ev_float,	OFS_V111(deathmatch),		&sv_globals.deathmatch},
+	{ev_float,	OFS_V111(randomclass),		&sv_globals.randomclass},
+	{ev_float,	OFS_V111(coop),			&sv_globals.coop},
+	{ev_float,	OFS_V111(teamplay),		&sv_globals.teamplay},
+	{ev_float,	OFS_V111(serverflags),		&sv_globals.serverflags},
+	{ev_float,	OFS_V111(total_secrets),	&sv_globals.total_secrets},
+	{ev_float,	OFS_V111(total_monsters),	&sv_globals.total_monsters},
+	{ev_float,	OFS_V111(found_secrets),	&sv_globals.found_secrets},
+	{ev_float,	OFS_V111(killed_monsters),	&sv_globals.killed_monsters},
+	{ev_float,	OFS_V111(chunk_cnt),		&sv_globals.chunk_cnt},
+	{ev_float,	OFS_V111(done_precache),	&sv_globals.done_precache},
+	{ev_float,	OFS_V111(parm1),		&sv_globals.parm},
+	{ev_vector,	OFS_V111(v_forward),		&sv_globals.v_forward},
+	{ev_vector,	OFS_V111(v_up),			&sv_globals.v_up},
+	{ev_vector,	OFS_V111(v_right),		&sv_globals.v_right},
+	{ev_float,	OFS_V111(trace_allsolid),	&sv_globals.trace_allsolid},
+	{ev_float,	OFS_V111(trace_startsolid),	&sv_globals.trace_startsolid},
+	{ev_float,	OFS_V111(trace_fraction),	&sv_globals.trace_fraction},
+	{ev_vector,	OFS_V111(trace_endpos),		&sv_globals.trace_endpos},
+	{ev_vector,	OFS_V111(trace_plane_normal),	&sv_globals.trace_plane_normal},
+	{ev_float,	OFS_V111(trace_plane_dist),	&sv_globals.trace_plane_dist},
+	{ev_entity,	OFS_V111(trace_ent),		&sv_globals.trace_ent},
+	{ev_float,	OFS_V111(trace_inopen),		&sv_globals.trace_inopen},
+	{ev_float,	OFS_V111(trace_inwater),	&sv_globals.trace_inwater},
+	{ev_entity,	OFS_V111(msg_entity),		&sv_globals.msg_entity},
+	{ev_float,	OFS_V111(cycle_wrapped),	&sv_globals.cycle_wrapped},
+	{ev_float,	OFS_V111(crouch_cnt),		&sv_globals.crouch_cnt},
+	{ev_float,	OFS_V111(modelindex_assassin),	&sv_globals.modelindex_assassin},
+	{ev_float,	OFS_V111(modelindex_crusader),	&sv_globals.modelindex_crusader},
+	{ev_float,	OFS_V111(modelindex_paladin),	&sv_globals.modelindex_paladin},
+	{ev_float,	OFS_V111(modelindex_necromancer),&sv_globals.modelindex_necromancer},
+	{ev_float,	OFS_V111(modelindex_sheep),	&sv_globals.modelindex_sheep},
+	{ev_float,	OFS_V111(num_players),		&sv_globals.num_players},
+	{ev_float,	OFS_V111(exp_mult),		&sv_globals.exp_mult},
+
+	{ev_function,	OFS_V111(main),			&sv_globals.main},
+	{ev_function,	OFS_V111(StartFrame),		&sv_globals.StartFrame},
+	{ev_function,	OFS_V111(PlayerPreThink),	&sv_globals.PlayerPreThink},
+	{ev_function,	OFS_V111(PlayerPostThink),	&sv_globals.PlayerPostThink},
+	{ev_function,	OFS_V111(ClientKill),		&sv_globals.ClientKill},
+	{ev_function,	OFS_V111(ClientConnect),	&sv_globals.ClientConnect},
+	{ev_function,	OFS_V111(PutClientInServer),	&sv_globals.PutClientInServer},
+	{ev_function,	OFS_V111(ClientReEnter),	&sv_globals.ClientReEnter},
+	{ev_function,	OFS_V111(ClientDisconnect),	&sv_globals.ClientDisconnect},
+	{ev_function,	OFS_V111(ClassChangeWeapon),	&sv_globals.ClassChangeWeapon},
+	{ev_void,	0,				NULL }
+};
+
+static sv_def_t globals_v112[] = {
+	{ev_entity,	OFS_V112(self),			&sv_globals.self},
+	{ev_entity,	OFS_V112(other),		&sv_globals.other},
+	{ev_entity,	OFS_V112(world),		&sv_globals.world},
+	{ev_float,	OFS_V112(time),			&sv_globals.time},
+	{ev_float,	OFS_V112(frametime),		&sv_globals.frametime},
+	{ev_float,	OFS_V112(force_retouch),	&sv_globals.force_retouch},
+	{ev_string,	OFS_V112(mapname),		&sv_globals.mapname},
+	{ev_string,	OFS_V112(startspot),		&sv_globals.startspot},
+	{ev_float,	OFS_V112(deathmatch),		&sv_globals.deathmatch},
+	{ev_float,	OFS_V112(randomclass),		&sv_globals.randomclass},
+	{ev_float,	OFS_V112(coop),			&sv_globals.coop},
+	{ev_float,	OFS_V112(teamplay),		&sv_globals.teamplay},
+	{ev_float,	OFS_V112(cl_playerclass),	&sv_globals.cl_playerclass},
+	{ev_float,	OFS_V112(serverflags),		&sv_globals.serverflags},
+	{ev_float,	OFS_V112(total_secrets),	&sv_globals.total_secrets},
+	{ev_float,	OFS_V112(total_monsters),	&sv_globals.total_monsters},
+	{ev_float,	OFS_V112(found_secrets),	&sv_globals.found_secrets},
+	{ev_float,	OFS_V112(killed_monsters),	&sv_globals.killed_monsters},
+	{ev_float,	OFS_V112(chunk_cnt),		&sv_globals.chunk_cnt},
+	{ev_float,	OFS_V112(done_precache),	&sv_globals.done_precache},
+	{ev_float,	OFS_V112(parm1),		&sv_globals.parm},
+	{ev_vector,	OFS_V112(v_forward),		&sv_globals.v_forward},
+	{ev_vector,	OFS_V112(v_up),			&sv_globals.v_up},
+	{ev_vector,	OFS_V112(v_right),		&sv_globals.v_right},
+	{ev_float,	OFS_V112(trace_allsolid),	&sv_globals.trace_allsolid},
+	{ev_float,	OFS_V112(trace_startsolid),	&sv_globals.trace_startsolid},
+	{ev_float,	OFS_V112(trace_fraction),	&sv_globals.trace_fraction},
+	{ev_vector,	OFS_V112(trace_endpos),		&sv_globals.trace_endpos},
+	{ev_vector,	OFS_V112(trace_plane_normal),	&sv_globals.trace_plane_normal},
+	{ev_float,	OFS_V112(trace_plane_dist),	&sv_globals.trace_plane_dist},
+	{ev_entity,	OFS_V112(trace_ent),		&sv_globals.trace_ent},
+	{ev_float,	OFS_V112(trace_inopen),		&sv_globals.trace_inopen},
+	{ev_float,	OFS_V112(trace_inwater),	&sv_globals.trace_inwater},
+	{ev_entity,	OFS_V112(msg_entity),		&sv_globals.msg_entity},
+	{ev_float,	OFS_V112(cycle_wrapped),	&sv_globals.cycle_wrapped},
+	{ev_float,	OFS_V112(crouch_cnt),		&sv_globals.crouch_cnt},
+	{ev_float,	OFS_V112(modelindex_sheep),	&sv_globals.modelindex_sheep},
+	{ev_float,	OFS_V112(num_players),		&sv_globals.num_players},
+	{ev_float,	OFS_V112(exp_mult),		&sv_globals.exp_mult},
+
+	{ev_function,	OFS_V112(main),			&sv_globals.main},
+	{ev_function,	OFS_V112(StartFrame),		&sv_globals.StartFrame},
+	{ev_function,	OFS_V112(PlayerPreThink),	&sv_globals.PlayerPreThink},
+	{ev_function,	OFS_V112(PlayerPostThink),	&sv_globals.PlayerPostThink},
+	{ev_function,	OFS_V112(ClientKill),		&sv_globals.ClientKill},
+	{ev_function,	OFS_V112(ClientConnect),	&sv_globals.ClientConnect},
+	{ev_function,	OFS_V112(PutClientInServer),	&sv_globals.PutClientInServer},
+	{ev_function,	OFS_V112(ClientReEnter),	&sv_globals.ClientReEnter},
+	{ev_function,	OFS_V112(ClientDisconnect),	&sv_globals.ClientDisconnect},
+	{ev_function,	OFS_V112(ClassChangeWeapon),	&sv_globals.ClassChangeWeapon},
+	{ev_void,	0,				NULL }
 };
 
 static ddef_t	*ED_FieldAtOfs (int ofs);
@@ -1018,10 +1194,7 @@ void ED_LoadFromFile (const char *data)
 	const char	*orig = data;
 #endif	/* SERVERONLY */
 
-	if (is_progdefs111)
-		pr_global_struct_v111->time = sv.time;
-	else
-		pr_global_struct->time = sv.time;
+	*sv_globals.time = sv.time;
 
 	// parse ents
 	while (1)
@@ -1162,10 +1335,7 @@ void ED_LoadFromFile (const char *data)
 			continue;
 		}
 
-		if (is_progdefs111)
-			pr_global_struct_v111->self = EDICT_TO_PROG(ent);
-		else
-			pr_global_struct->self = EDICT_TO_PROG(ent);
+		*sv_globals.self = EDICT_TO_PROG(ent);
 		PR_ExecuteProgram (func - pr_functions);
 	}
 
@@ -1261,6 +1431,26 @@ static const char *PR_GetProgFilename (void)
 #endif	/* end of USE_MULTIPLE_PROGS */
 }
 
+static void set_address (sv_def_t *def, void *address)
+{
+	switch (def->type) {
+		case ev_void:
+		case ev_bad:
+			break;
+		case ev_float:
+		case ev_vector:
+			*(float **)def->field = (float *) address;
+			break;
+		case ev_string:
+		case ev_entity:
+		case ev_field:
+		case ev_function:
+		case ev_pointer:
+			*(int **)def->field = (int *) address;
+			break;
+	}
+}
+
 /*
 ===============
 PR_LoadProgs
@@ -1270,6 +1460,8 @@ void PR_LoadProgs (void)
 {
 	int			i;
 	const char	*progname;
+	const char	*progvstr;
+	sv_def_t	*def;
 
 	// flush the non-C variable lookup cache
 	for (i = 0; i < GEFV_CACHESIZE; i++)
@@ -1289,8 +1481,27 @@ void PR_LoadProgs (void)
 
 	if (progs->version != PROG_VERSION)
 		Sys_Error ("%s is of unsupported version (%d, should be %d)", progname, progs->version, PROG_VERSION);
-	if (progs->crc != PROGS_V111_CRC && progs->crc != PROGS_V112_CRC)
+	switch (progs->crc)
+	{
+	case PROGS_V103_CRC:
+		def = globals_v103;
+		progvstr = "H2/v1.03";
+		break;
+	case PROGS_V111_CRC:
+		def = globals_v111;
+		progvstr = "H2/v1.11";
+		break;
+	case PROGS_V112_CRC:
+		def = globals_v112;
+		progvstr = "H2MP/v1.12";
+		break;
+	default:
 		Sys_Error ("Unexpected crc ( %d ) for %s", progs->crc, progname);
+		/* silence compiler */
+		def = globals_v112;
+		progvstr = "Unknown";
+		break;
+	}
 
 	pr_functions = (dfunction_t *)((byte *)progs + progs->ofs_functions);
 	pr_strings = (char *)progs + progs->ofs_strings;
@@ -1311,23 +1522,12 @@ void PR_LoadProgs (void)
 	pr_statements = (dstatement_t *)((byte *)progs + progs->ofs_statements);
 
 	Con_DPrintf ("Loaded %s, v%d, %d crc, %s structures\n",
-			progname, progs->version, progs->crc,
-			(progs->crc == PROGS_V111_CRC) ? "H2/v1.11" : "H2MP/v1.12");
+			progname, progs->version, progs->crc, progvstr);
 
-	if (progs->crc == PROGS_V111_CRC)
-	{
-		is_progdefs111 = true;
-		pr_global_struct_v111 = (globalvars_v111_t *)((byte *)progs + progs->ofs_globals);
-		pr_globals = (float *)pr_global_struct_v111;
-		pr_global_struct = NULL;
-	}
-	else
-	{
-		is_progdefs111 = false;
-		pr_global_struct = (globalvars_t *)((byte *)progs + progs->ofs_globals);
-		pr_globals = (float *)pr_global_struct;
-		pr_global_struct_v111 = NULL;
-	}
+	memset (&sv_globals, 0, sizeof(sv_globals));
+	pr_globals = (float *)((byte *)progs + progs->ofs_globals);
+	for (; def->field; def++)
+		set_address (def, &G_FLOAT(def->offset));
 
 	// byte swap the lumps
 	for (i = 0; i < progs->numstatements; i++)
@@ -1375,9 +1575,9 @@ void PR_LoadProgs (void)
 	pr_edict_size &= ~(sizeof(void *) - 1);
 
 #if !defined(SERVERONLY)
-	// set the cl_playerclass value after pr_global_struct has been created
-	if (progs->crc == PROGS_V112_CRC)
-		pr_global_struct->cl_playerclass = cl_playerclass.value;
+	// set the cl_playerclass value after sv_globals has been created
+	if (sv_globals.cl_playerclass)
+		*sv_globals.cl_playerclass = cl_playerclass.value;
 #endif
 }
 

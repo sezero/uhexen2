@@ -2,7 +2,7 @@
 	sv_move.c
 	monster movement
 
-	$Header: /cvsroot/uhexen2/engine/hexen2/sv_move.c,v 1.18 2008-04-22 13:06:07 sezero Exp $
+	$Id$
 */
 
 #include "quakedef.h"
@@ -186,36 +186,18 @@ realcheck:	// check it for real...
 
 static void set_move_trace(trace_t *trace)
 {
-	if (is_progdefs111)
-	{
-		pr_global_struct_v111->trace_allsolid = trace->allsolid;
-		pr_global_struct_v111->trace_startsolid = trace->startsolid;
-		pr_global_struct_v111->trace_fraction = trace->fraction;
-		pr_global_struct_v111->trace_inwater = trace->inwater;
-		pr_global_struct_v111->trace_inopen = trace->inopen;
-		VectorCopy (trace->endpos, pr_global_struct_v111->trace_endpos);
-		VectorCopy (trace->plane.normal, pr_global_struct_v111->trace_plane_normal);
-		pr_global_struct_v111->trace_plane_dist =  trace->plane.dist;
-		if (trace->ent)
-			pr_global_struct_v111->trace_ent = EDICT_TO_PROG(trace->ent);
-		else
-			pr_global_struct_v111->trace_ent = EDICT_TO_PROG(sv.edicts);
-
-		return;
-	}
-
-	pr_global_struct->trace_allsolid = trace->allsolid;
-	pr_global_struct->trace_startsolid = trace->startsolid;
-	pr_global_struct->trace_fraction = trace->fraction;
-	pr_global_struct->trace_inwater = trace->inwater;
-	pr_global_struct->trace_inopen = trace->inopen;
-	VectorCopy (trace->endpos, pr_global_struct->trace_endpos);
-	VectorCopy (trace->plane.normal, pr_global_struct->trace_plane_normal);
-	pr_global_struct->trace_plane_dist =  trace->plane.dist;
+	*sv_globals.trace_allsolid = trace->allsolid;
+	*sv_globals.trace_startsolid = trace->startsolid;
+	*sv_globals.trace_fraction = trace->fraction;
+	*sv_globals.trace_inwater = trace->inwater;
+	*sv_globals.trace_inopen = trace->inopen;
+	VectorCopy (trace->endpos, *sv_globals.trace_endpos);
+	VectorCopy (trace->plane.normal, *sv_globals.trace_plane_normal);
+	*sv_globals.trace_plane_dist =  trace->plane.dist;
 	if (trace->ent)
-		pr_global_struct->trace_ent = EDICT_TO_PROG(trace->ent);
+		*sv_globals.trace_ent = EDICT_TO_PROG(trace->ent);
 	else
-		pr_global_struct->trace_ent = EDICT_TO_PROG(sv.edicts);
+		*sv_globals.trace_ent = EDICT_TO_PROG(sv.edicts);
 }
 
 
@@ -226,7 +208,7 @@ SV_movestep
 Called by monster program code.
 The move will be adjusted for slopes and stairs, but if the move isn't
 possible, no move is done, false is returned, and
-pr_global_struct->trace_normal is set to the normal of the blocking wall
+*sv_globals.trace_normal is set to the normal of the blocking wall
 =============
 */
 qboolean SV_movestep (edict_t *ent, vec3_t move, qboolean relink, qboolean noenemy, qboolean set_trace)
@@ -580,12 +562,12 @@ void SV_MoveToGoal (void)
 	edict_t		*enemy;
 #endif
 
-	ent = PROG_TO_EDICT(PR_GLOBAL_STRUCT(self));	// Entity moving
+	ent = PROG_TO_EDICT(*sv_globals.self);		// Entity moving
 	goal = PROG_TO_EDICT(ent->v.goalentity);	// its goalentity
 	dist = G_FLOAT(OFS_PARM0);			// how far to move
 
 	// Reset trace_plane_normal
-	VectorClear(PR_GLOBAL_STRUCT(trace_plane_normal));
+	VectorClear(*sv_globals.trace_plane_normal);
 
 	// If not onground, flying, or swimming, return 0
 	if ( !( (int)ent->v.flags & (FL_ONGROUND|FL_FLY|FL_SWIM) ) )

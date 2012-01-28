@@ -369,6 +369,7 @@ extern	FILE		*sv_fraglogfile;
 
 extern	unsigned int	defLosses;	// Defenders losses in Siege
 extern	unsigned int	attLosses;	// Attackers Losses in Siege
+#define	SV_PROGS_HAVE_SIEGE	(sv_globals.defLosses)	/* progs have siege fields: >= v0.14 */
 
 //===========================================================
 

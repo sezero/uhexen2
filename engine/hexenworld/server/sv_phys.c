@@ -143,9 +143,9 @@ qboolean SV_RunThink (edict_t *ent)
 					// it is possible to start that way
 					// by a trigger with a local time.
 	ent->v.nextthink = 0;
-	pr_global_struct->time = thinktime;
-	pr_global_struct->self = EDICT_TO_PROG(ent);
-	pr_global_struct->other = EDICT_TO_PROG(sv.edicts);
+	*sv_globals.time = thinktime;
+	*sv_globals.self = EDICT_TO_PROG(ent);
+	*sv_globals.other = EDICT_TO_PROG(sv.edicts);
 	PR_ExecuteProgram (ent->v.think);
 
 	if (ent->free)
@@ -168,26 +168,26 @@ void SV_Impact (edict_t *e1, edict_t *e2)
 {
 	int		old_self, old_other;
 
-	old_self = pr_global_struct->self;
-	old_other = pr_global_struct->other;
+	old_self = *sv_globals.self;
+	old_other = *sv_globals.other;
 
-	pr_global_struct->time = sv.time;
+	*sv_globals.time = sv.time;
 	if (e1->v.touch && e1->v.solid != SOLID_NOT)
 	{
-		pr_global_struct->self = EDICT_TO_PROG(e1);
-		pr_global_struct->other = EDICT_TO_PROG(e2);
+		*sv_globals.self = EDICT_TO_PROG(e1);
+		*sv_globals.other = EDICT_TO_PROG(e2);
 		PR_ExecuteProgram (e1->v.touch);
 	}
 
 	if (e2->v.touch && e2->v.solid != SOLID_NOT)
 	{
-		pr_global_struct->self = EDICT_TO_PROG(e2);
-		pr_global_struct->other = EDICT_TO_PROG(e1);
+		*sv_globals.self = EDICT_TO_PROG(e2);
+		*sv_globals.other = EDICT_TO_PROG(e1);
 		PR_ExecuteProgram (e2->v.touch);
 	}
 
-	pr_global_struct->self = old_self;
-	pr_global_struct->other = old_other;
+	*sv_globals.self = old_self;
+	*sv_globals.other = old_other;
 }
 
 
@@ -617,8 +617,8 @@ static qboolean SV_Push (edict_t *pusher, vec3_t move)
 		// otherwise, just stay in place until the obstacle is gone
 		if (pusher->v.blocked)
 		{
-			pr_global_struct->self = EDICT_TO_PROG(pusher);
-			pr_global_struct->other = EDICT_TO_PROG(check);
+			*sv_globals.self = EDICT_TO_PROG(pusher);
+			*sv_globals.other = EDICT_TO_PROG(check);
 			PR_ExecuteProgram (pusher->v.blocked);
 		}
 
@@ -868,8 +868,8 @@ static void SV_PushRotate (edict_t *pusher, float movetime)
 			// otherwise, just stay in place until the obstacle is gone
 			if (pusher->v.blocked)
 			{
-				pr_global_struct->self = EDICT_TO_PROG(pusher);
-				pr_global_struct->other = EDICT_TO_PROG(check);
+				*sv_globals.self = EDICT_TO_PROG(pusher);
+				*sv_globals.other = EDICT_TO_PROG(check);
 				PR_ExecuteProgram (pusher->v.blocked);
 			}
 
@@ -1239,8 +1239,8 @@ static void SV_PushRotate (edict_t *pusher, float movetime)
 				// otherwise, just stay in place until the obstacle is gone
 				if (pusher->v.blocked)
 				{
-					pr_global_struct->self = EDICT_TO_PROG(pusher);
-					pr_global_struct->other = EDICT_TO_PROG(check);
+					*sv_globals.self = EDICT_TO_PROG(pusher);
+					*sv_globals.other = EDICT_TO_PROG(check);
 					PR_ExecuteProgram (pusher->v.blocked);
 				}
 
@@ -1317,9 +1317,9 @@ static void SV_Physics_Pusher (edict_t *ent)
 		VectorCopy (ent->v.origin, oldorg);
 
 		ent->v.nextthink = 0;
-		pr_global_struct->time = sv.time;
-		pr_global_struct->self = EDICT_TO_PROG(ent);
-		pr_global_struct->other = EDICT_TO_PROG(sv.edicts);
+		*sv_globals.time = sv.time;
+		*sv_globals.self = EDICT_TO_PROG(ent);
+		*sv_globals.other = EDICT_TO_PROG(sv.edicts);
 		PR_ExecuteProgram (ent->v.think);
 		if (ent->free)
 			return;
@@ -1701,9 +1701,9 @@ void SV_Physics_Client (edict_t *ent, int num)
 //
 // call standard client pre-think
 //
-	pr_global_struct->time = sv.time;
-	pr_global_struct->self = EDICT_TO_PROG(ent);
-	PR_ExecuteProgram (pr_global_struct->PlayerPreThink);
+	*sv_globals.time = sv.time;
+	*sv_globals.self = EDICT_TO_PROG(ent);
+	PR_ExecuteProgram (*sv_globals.PlayerPreThink);
 
 //
 // do a move
@@ -1765,9 +1765,9 @@ void SV_Physics_Client (edict_t *ent, int num)
 //
 	SV_LinkEdict (ent, true);
 
-	pr_global_struct->time = sv.time;
-	pr_global_struct->self = EDICT_TO_PROG(ent);
-	PR_ExecuteProgram (pr_global_struct->PlayerPostThink);
+	*sv_globals.time = sv.time;
+	*sv_globals.self = EDICT_TO_PROG(ent);
+	PR_ExecuteProgram (*sv_globals.PlayerPostThink);
 }
 #else
 void SV_Physics_Client (edict_t	*ent)
@@ -2019,10 +2019,10 @@ static void SV_Physics_Step (edict_t *ent)
 void SV_ProgStartFrame (void)
 {
 // let the progs know that a new frame has started
-	pr_global_struct->self = EDICT_TO_PROG(sv.edicts);
-	pr_global_struct->other = EDICT_TO_PROG(sv.edicts);
-	pr_global_struct->time = sv.time;
-	PR_ExecuteProgram (pr_global_struct->StartFrame);
+	*sv_globals.self = EDICT_TO_PROG(sv.edicts);
+	*sv_globals.other = EDICT_TO_PROG(sv.edicts);
+	*sv_globals.time = sv.time;
+	PR_ExecuteProgram (*sv_globals.StartFrame);
 }
 
 
@@ -2107,8 +2107,8 @@ static void SV_RunEntity (edict_t *ent)
 
 				if (originMoved && ent2->v.chainmoved)
 				{	// callback function
-					pr_global_struct->self = EDICT_TO_PROG(ent2);
-					pr_global_struct->other = EDICT_TO_PROG(ent);
+					*sv_globals.self = EDICT_TO_PROG(ent2);
+					*sv_globals.other = EDICT_TO_PROG(ent);
 					PR_ExecuteProgram(ent2->v.chainmoved);
 				}
 
@@ -2131,11 +2131,11 @@ void SV_RunNewmis (void)
 {
 	edict_t	*ent;
 
-	if (!pr_global_struct->newmis)
+	if (! *sv_globals.newmis)
 		return;
-	ent = PROG_TO_EDICT(pr_global_struct->newmis);
+	ent = PROG_TO_EDICT(*sv_globals.newmis);
 	host_frametime = 0.05;
-	pr_global_struct->newmis = 0;
+	*sv_globals.newmis = 0;
 
 	SV_RunEntity (ent);
 }
@@ -2161,7 +2161,7 @@ void SV_Physics (void)
 		host_frametime = sv_maxtic.value;
 	old_time = realtime;
 
-	pr_global_struct->frametime = host_frametime;
+	*sv_globals.frametime = host_frametime;
 
 	SV_ProgStartFrame ();
 
@@ -2175,7 +2175,7 @@ void SV_Physics (void)
 		if (ent->free)
 			continue;
 
-		if (PR_GLOBAL_STRUCT(force_retouch))
+		if (*sv_globals.force_retouch)
 			SV_LinkEdict (ent, true);	// force retouch even for stationary
 
 		if (i > 0 && i <= MAX_CLIENTS)
@@ -2190,8 +2190,8 @@ void SV_Physics (void)
 		SV_RunNewmis ();
 	}
 
-	if (pr_global_struct->force_retouch)
-		pr_global_struct->force_retouch--;
+	if (*sv_globals.force_retouch)
+		(*sv_globals.force_retouch)--;
 }
 
 

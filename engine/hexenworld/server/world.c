@@ -296,16 +296,16 @@ static void SV_TouchLinks (edict_t *ent, areanode_t *node)
 				|| ent->v.absmax[2] < touch->v.absmin[2] )
 			continue;
 
-		old_self = pr_global_struct->self;
-		old_other = pr_global_struct->other;
+		old_self = *sv_globals.self;
+		old_other = *sv_globals.other;
 
-		pr_global_struct->self = EDICT_TO_PROG(touch);
-		pr_global_struct->other = EDICT_TO_PROG(ent);
-		pr_global_struct->time = sv.time;
+		*sv_globals.self = EDICT_TO_PROG(touch);
+		*sv_globals.other = EDICT_TO_PROG(ent);
+		*sv_globals.time = sv.time;
 		PR_ExecuteProgram (touch->v.touch);
 
-		pr_global_struct->self = old_self;
-		pr_global_struct->other = old_other;
+		*sv_globals.self = old_self;
+		*sv_globals.other = old_other;
 	}
 
 	sv_link_next = NULL;

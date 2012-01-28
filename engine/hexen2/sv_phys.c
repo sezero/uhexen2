@@ -133,18 +133,9 @@ static qboolean SV_RunThink (edict_t *ent)
 					// it is possible to start that way
 					// by a trigger with a local time.
 	ent->v.nextthink = 0;
-	if (is_progdefs111)
-	{
-		pr_global_struct_v111->time = thinktime;
-		pr_global_struct_v111->self = EDICT_TO_PROG(ent);
-		pr_global_struct_v111->other = EDICT_TO_PROG(sv.edicts);
-	}
-	else
-	{
-		pr_global_struct->time = thinktime;
-		pr_global_struct->self = EDICT_TO_PROG(ent);
-		pr_global_struct->other = EDICT_TO_PROG(sv.edicts);
-	}
+	*sv_globals.time = thinktime;
+	*sv_globals.self = EDICT_TO_PROG(ent);
+	*sv_globals.other = EDICT_TO_PROG(sv.edicts);
 	PR_ExecuteProgram (ent->v.think);
 
 	return !ent->free;
@@ -162,52 +153,26 @@ static void SV_Impact (edict_t *e1, edict_t *e2)
 {
 	int		old_self, old_other;
 
-	if (is_progdefs111)
-	{
-		old_self = pr_global_struct_v111->self;
-		old_other = pr_global_struct_v111->other;
+	old_self = *sv_globals.self;
+	old_other = *sv_globals.other;
 
-		pr_global_struct_v111->time = sv.time;
-		if (e1->v.touch && e1->v.solid != SOLID_NOT)
-		{
-			pr_global_struct_v111->self = EDICT_TO_PROG(e1);
-			pr_global_struct_v111->other = EDICT_TO_PROG(e2);
-			PR_ExecuteProgram (e1->v.touch);
-		}
-
-		if (e2->v.touch && e2->v.solid != SOLID_NOT)
-		{
-			pr_global_struct_v111->self = EDICT_TO_PROG(e2);
-			pr_global_struct_v111->other = EDICT_TO_PROG(e1);
-			PR_ExecuteProgram (e2->v.touch);
-		}
-
-		pr_global_struct_v111->self = old_self;
-		pr_global_struct_v111->other = old_other;
-
-		return;
-	}
-
-	old_self = pr_global_struct->self;
-	old_other = pr_global_struct->other;
-
-	pr_global_struct->time = sv.time;
+	*sv_globals.time = sv.time;
 	if (e1->v.touch && e1->v.solid != SOLID_NOT)
 	{
-		pr_global_struct->self = EDICT_TO_PROG(e1);
-		pr_global_struct->other = EDICT_TO_PROG(e2);
+		*sv_globals.self = EDICT_TO_PROG(e1);
+		*sv_globals.other = EDICT_TO_PROG(e2);
 		PR_ExecuteProgram (e1->v.touch);
 	}
 
 	if (e2->v.touch && e2->v.solid != SOLID_NOT)
 	{
-		pr_global_struct->self = EDICT_TO_PROG(e2);
-		pr_global_struct->other = EDICT_TO_PROG(e1);
+		*sv_globals.self = EDICT_TO_PROG(e2);
+		*sv_globals.other = EDICT_TO_PROG(e1);
 		PR_ExecuteProgram (e2->v.touch);
 	}
 
-	pr_global_struct->self = old_self;
-	pr_global_struct->other = old_other;
+	*sv_globals.self = old_self;
+	*sv_globals.other = old_other;
 }
 
 
@@ -663,16 +628,8 @@ static void SV_PushMove (edict_t *pusher, float movetime, qboolean update_time)
 			// otherwise, just stay in place until the obstacle is gone
 			if (pusher->v.blocked)
 			{
-				if (is_progdefs111)
-				{
-					pr_global_struct_v111->self = EDICT_TO_PROG(pusher);
-					pr_global_struct_v111->other = EDICT_TO_PROG(check);
-				}
-				else
-				{
-					pr_global_struct->self = EDICT_TO_PROG(pusher);
-					pr_global_struct->other = EDICT_TO_PROG(check);
-				}
+				*sv_globals.self = EDICT_TO_PROG(pusher);
+				*sv_globals.other = EDICT_TO_PROG(check);
 				PR_ExecuteProgram (pusher->v.blocked);
 			}
 
@@ -888,16 +845,8 @@ static void SV_PushRotate (edict_t *pusher, float movetime)
 			// otherwise, just stay in place until the obstacle is gone
 			if (pusher->v.blocked)
 			{
-				if (is_progdefs111)
-				{
-					pr_global_struct_v111->self = EDICT_TO_PROG(pusher);
-					pr_global_struct_v111->other = EDICT_TO_PROG(check);
-				}
-				else
-				{
-					pr_global_struct->self = EDICT_TO_PROG(pusher);
-					pr_global_struct->other = EDICT_TO_PROG(check);
-				}
+				*sv_globals.self = EDICT_TO_PROG(pusher);
+				*sv_globals.other = EDICT_TO_PROG(check);
 				PR_ExecuteProgram (pusher->v.blocked);
 			}
 
@@ -1267,16 +1216,8 @@ static void SV_PushRotate (edict_t *pusher, float movetime)
 				// otherwise, just stay in place until the obstacle is gone
 				if (pusher->v.blocked)
 				{
-					if (is_progdefs111)
-					{
-						pr_global_struct_v111->self = EDICT_TO_PROG(pusher);
-						pr_global_struct_v111->other = EDICT_TO_PROG(check);
-					}
-					else
-					{
-						pr_global_struct->self = EDICT_TO_PROG(pusher);
-						pr_global_struct->other = EDICT_TO_PROG(check);
-					}
+					*sv_globals.self = EDICT_TO_PROG(pusher);
+					*sv_globals.other = EDICT_TO_PROG(check);
 					PR_ExecuteProgram (pusher->v.blocked);
 				}
 
@@ -1349,18 +1290,9 @@ static void SV_Physics_Pusher (edict_t *ent)
 	if (thinktime > oldltime && thinktime <= ent->v.ltime)
 	{
 		ent->v.nextthink = 0;
-		if (is_progdefs111)
-		{
-			pr_global_struct_v111->time = sv.time;
-			pr_global_struct_v111->self = EDICT_TO_PROG(ent);
-			pr_global_struct_v111->other = EDICT_TO_PROG(sv.edicts);
-		}
-		else
-		{
-			pr_global_struct->time = sv.time;
-			pr_global_struct->self = EDICT_TO_PROG(ent);
-			pr_global_struct->other = EDICT_TO_PROG(sv.edicts);
-		}
+		*sv_globals.time = sv.time;
+		*sv_globals.self = EDICT_TO_PROG(ent);
+		*sv_globals.other = EDICT_TO_PROG(sv.edicts);
 		PR_ExecuteProgram (ent->v.think);
 		if (ent->free)
 			return;
@@ -1721,18 +1653,9 @@ static void SV_Physics_Client (edict_t *ent, int num)
 //
 // call standard client pre-think
 //
-	if (is_progdefs111)
-	{
-		pr_global_struct_v111->time = sv.time;
-		pr_global_struct_v111->self = EDICT_TO_PROG(ent);
-		PR_ExecuteProgram (pr_global_struct_v111->PlayerPreThink);
-	}
-	else
-	{
-		pr_global_struct->time = sv.time;
-		pr_global_struct->self = EDICT_TO_PROG(ent);
-		PR_ExecuteProgram (pr_global_struct->PlayerPreThink);
-	}
+	*sv_globals.time = sv.time;
+	*sv_globals.self = EDICT_TO_PROG(ent);
+	PR_ExecuteProgram (*sv_globals.PlayerPreThink);
 
 //
 // do a move
@@ -1794,18 +1717,9 @@ static void SV_Physics_Client (edict_t *ent, int num)
 //
 	SV_LinkEdict (ent, true);
 
-	if (is_progdefs111)
-	{
-		pr_global_struct_v111->time = sv.time;
-		pr_global_struct_v111->self = EDICT_TO_PROG(ent);
-		PR_ExecuteProgram (pr_global_struct_v111->PlayerPostThink);
-	}
-	else
-	{
-		pr_global_struct->time = sv.time;
-		pr_global_struct->self = EDICT_TO_PROG(ent);
-		PR_ExecuteProgram (pr_global_struct->PlayerPostThink);
-	}
+	*sv_globals.time = sv.time;
+	*sv_globals.self = EDICT_TO_PROG(ent);
+	PR_ExecuteProgram (*sv_globals.PlayerPostThink);
 }
 
 
@@ -2069,16 +1983,8 @@ static void SV_Physics_Step (edict_t *ent)
 	else
 		VectorCopy(vec_origin, ent->v.basevelocity);
 //@@
-	if (is_progdefs111)
-	{
-		pr_global_struct_v111->time = sv.time;
-		pr_global_struct_v111->self = EDICT_TO_PROG(ent);
-	}
-	else
-	{
-		pr_global_struct->time = sv.time;
-		pr_global_struct->self = EDICT_TO_PROG(ent);
-	}
+	*sv_globals.time = sv.time;
+	*sv_globals.self = EDICT_TO_PROG(ent);
 	PF_WaterMove();
 
 	SV_CheckVelocity (ent);
@@ -2223,20 +2129,10 @@ void SV_Physics (void)
 	vec3_t	oldOrigin, oldAngle;
 
 // let the progs know that a new frame has started
-	if (is_progdefs111)
-	{
-		pr_global_struct_v111->self = EDICT_TO_PROG(sv.edicts);
-		pr_global_struct_v111->other = EDICT_TO_PROG(sv.edicts);
-		pr_global_struct_v111->time = sv.time;
-		PR_ExecuteProgram (pr_global_struct_v111->StartFrame);
-	}
-	else
-	{
-		pr_global_struct->self = EDICT_TO_PROG(sv.edicts);
-		pr_global_struct->other = EDICT_TO_PROG(sv.edicts);
-		pr_global_struct->time = sv.time;
-		PR_ExecuteProgram (pr_global_struct->StartFrame);
-	}
+	*sv_globals.self = EDICT_TO_PROG(sv.edicts);
+	*sv_globals.other = EDICT_TO_PROG(sv.edicts);
+	*sv_globals.time = sv.time;
+	PR_ExecuteProgram (*sv_globals.StartFrame);
 
 	//SV_CheckAllEnts ();
 
@@ -2258,7 +2154,7 @@ void SV_Physics (void)
 			VectorCopy(ent->v.angles,oldAngle);
 		}
 
-		if (PR_GLOBAL_STRUCT(force_retouch))
+		if (*sv_globals.force_retouch)
 		{
 			SV_LinkEdict (ent, true);	// force retouch even for stationary
 		}
@@ -2311,16 +2207,8 @@ void SV_Physics (void)
 
 					if (originMoved && ent2->v.chainmoved)
 					{	// callback function
-						if (is_progdefs111)
-						{
-							pr_global_struct_v111->self = EDICT_TO_PROG(ent2);
-							pr_global_struct_v111->other = EDICT_TO_PROG(ent);
-						}
-						else
-						{
-							pr_global_struct->self = EDICT_TO_PROG(ent2);
-							pr_global_struct->other = EDICT_TO_PROG(ent);
-						}
+						*sv_globals.self = EDICT_TO_PROG(ent2);
+						*sv_globals.other = EDICT_TO_PROG(ent);
 						PR_ExecuteProgram(ent2->v.chainmoved);
 					}
 
@@ -2332,16 +2220,8 @@ void SV_Physics (void)
 		}
 	}
 
-	if (is_progdefs111)
-	{
-		if (pr_global_struct_v111->force_retouch)
-			pr_global_struct_v111->force_retouch--;
-	}
-	else
-	{
-		if (pr_global_struct->force_retouch)
-			pr_global_struct->force_retouch--;
-	}
+	if (*sv_globals.force_retouch)
+		(*sv_globals.force_retouch)--;
 
 	sv.time += host_frametime;
 }

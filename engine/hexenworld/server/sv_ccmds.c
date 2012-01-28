@@ -363,9 +363,9 @@ static void SV_Kick_f (void)
 			SV_ClientPrintf (cl, PRINT_HIGH, "You were kicked from the game\n");
 			SV_DropClient (cl);
 
-			pr_global_struct->time = sv.time;
-			pr_global_struct->self = EDICT_TO_PROG(sv_player);
-			PR_ExecuteProgram (pr_global_struct->ClientKill);
+			*sv_globals.time = sv.time;
+			*sv_globals.self = EDICT_TO_PROG(sv_player);
+			PR_ExecuteProgram (*sv_globals.ClientKill);
 			return;
 		}
 	}
@@ -386,6 +386,9 @@ static void SV_Smite_f (void)
 	int			uid;
 	int		old_self;
 
+	if (!sv_globals.SmitePlayer)	/* needs in HW v0.15 */
+		return;
+
 	uid = atoi(Cmd_Argv(1));
 
 	for (i = 0, cl = svs.clients; i < MAX_CLIENTS; i++, cl++)
@@ -402,15 +405,15 @@ static void SV_Smite_f (void)
 			SV_BroadcastPrintf (PRINT_HIGH, "%s was Smitten by GOD!\n", cl->name);
 
 			//save this state
-			old_self = pr_global_struct->self;
+			old_self = *sv_globals.self;
 
 			//call the hc SmitePlayer function
-			pr_global_struct->time = sv.time;
-			pr_global_struct->self = EDICT_TO_PROG(cl->edict);
-			PR_ExecuteProgram (pr_global_struct->SmitePlayer);
+			*sv_globals.time = sv.time;
+			*sv_globals.self = EDICT_TO_PROG(cl->edict);
+			PR_ExecuteProgram (*sv_globals.SmitePlayer);
 
 			//restore current state
-			pr_global_struct->self = old_self;
+			*sv_globals.self = old_self;
 			return;
 		}
 	}
@@ -444,7 +447,7 @@ static void SV_Status_f (void)
 	Con_Printf ("packets/frame    : %5.2f\n", pak);
 	t_limit = Cvar_VariableValue("timelimit");
 	f_limit = Cvar_VariableValue("fraglimit");
-	if (dmMode.integer == DM_SIEGE)
+	if (dmMode.integer == DM_SIEGE && SV_PROGS_HAVE_SIEGE)
 	{
 		num_min = floor((t_limit*60)-sv.time);
 		num_sec = (int)(t_limit - num_min)%60;
@@ -452,8 +455,8 @@ static void SV_Status_f (void)
 		num_min = floor((num_min - num_sec)/60);
 		Con_Printf ("timeleft         : %i:", num_min);
 		Con_Printf ("%2i\n", num_sec);
-		Con_Printf ("deflosses        : %3i/%3i\n", (int)floor(PR_GLOBAL_STRUCT(defLosses)), (int)floor(f_limit));
-		Con_Printf ("attlosses        : %3i/%3i\n", (int)floor(PR_GLOBAL_STRUCT(attLosses)), (int)floor(f_limit*2));
+		Con_Printf ("deflosses        : %3i/%3i\n", (int)floor(*sv_globals.defLosses), (int)floor(f_limit));
+		Con_Printf ("attlosses        : %3i/%3i\n", (int)floor(*sv_globals.attLosses), (int)floor(f_limit*2));
 	}
 	else
 	{
@@ -608,7 +611,7 @@ static void SV_ConSay_f(void)
 	if (Cmd_Argc () < 2)
 		return;
 
-	if (dmMode.integer == DM_SIEGE)
+	if (dmMode.integer == DM_SIEGE && SV_PROGS_HAVE_SIEGE)
 		q_strlcpy (text, "GOD SAYS: ", sizeof(text));
 	else
 		q_strlcpy (text, "ServerAdmin: ", sizeof(text));

@@ -20,8 +20,8 @@ static	ddef_t		*pr_fielddefs;
 static	ddef_t		*pr_globaldefs;
 
 dstatement_t	*pr_statements;
-globalvars_t	*pr_global_struct;
-float		*pr_globals;		// same as pr_global_struct
+sv_globals_t	sv_globals;
+float		*pr_globals;		// same as sv_globals
 int		pr_edict_size;		// in bytes
 
 qboolean	ignore_precache = false;
@@ -37,6 +37,245 @@ int		type_size[8] = {
 	1,					// ev_field
 	1,	// sizeof(func_t) / 4		// ev_function
 	1	// sizeof(void *) / 4		// ev_pointer
+};
+
+typedef struct sv_def_s
+{
+	etype_t		type;
+	int		offset;
+	void		*field;
+} sv_def_t;
+
+#define OFS_V011(m)	(int)offsetof(globalvars_v011_t,m)/4
+#define OFS_V014(m)	(int)offsetof(globalvars_v014_t,m)/4
+#define OFS_V015(m)	(int)offsetof(globalvars_t,m)/4
+
+static sv_def_t globals_v011[] = {
+	{ev_entity,	OFS_V011(self),			&sv_globals.self},
+	{ev_entity,	OFS_V011(other),		&sv_globals.other},
+	{ev_entity,	OFS_V011(world),		&sv_globals.world},
+	{ev_float,	OFS_V011(time),			&sv_globals.time},
+	{ev_float,	OFS_V011(frametime),		&sv_globals.frametime},
+	{ev_entity,	OFS_V011(newmis),		&sv_globals.newmis},
+	{ev_float,	OFS_V011(force_retouch),	&sv_globals.force_retouch},
+	{ev_string,	OFS_V011(mapname),		&sv_globals.mapname},
+	{ev_string,	OFS_V011(startspot),		&sv_globals.startspot},
+	{ev_float,	OFS_V011(deathmatch),		&sv_globals.deathmatch},
+	{ev_float,	OFS_V011(randomclass),		&sv_globals.randomclass},
+	{ev_float,	OFS_V011(damageScale),		&sv_globals.damageScale},
+	{ev_float,	OFS_V011(meleeDamScale),	&sv_globals.meleeDamScale},
+	{ev_float,	OFS_V011(shyRespawn),		&sv_globals.shyRespawn},
+	{ev_float,	OFS_V011(manaScale),		&sv_globals.manaScale},
+	{ev_float,	OFS_V011(tomeMode),		&sv_globals.tomeMode},
+	{ev_float,	OFS_V011(tomeRespawn),		&sv_globals.tomeRespawn},
+	{ev_float,	OFS_V011(w2Respawn),		&sv_globals.w2Respawn},
+	{ev_float,	OFS_V011(altRespawn),		&sv_globals.altRespawn},
+	{ev_float,	OFS_V011(fixedLevel),		&sv_globals.fixedLevel},
+	{ev_float,	OFS_V011(autoItems),		&sv_globals.autoItems},
+	{ev_float,	OFS_V011(dmMode),		&sv_globals.dmMode},
+	{ev_float,	OFS_V011(easyFourth),		&sv_globals.easyFourth},
+	{ev_float,	OFS_V011(patternRunner),	&sv_globals.patternRunner},
+	{ev_float,	OFS_V011(coop),			&sv_globals.coop},
+	{ev_float,	OFS_V011(teamplay),		&sv_globals.teamplay},
+	{ev_float,	OFS_V011(serverflags),		&sv_globals.serverflags},
+	{ev_float,	OFS_V011(total_secrets),	&sv_globals.total_secrets},
+	{ev_float,	OFS_V011(total_monsters),	&sv_globals.total_monsters},
+	{ev_float,	OFS_V011(found_secrets),	&sv_globals.found_secrets},
+	{ev_float,	OFS_V011(killed_monsters),	&sv_globals.killed_monsters},
+	{ev_float,	OFS_V011(chunk_cnt),		&sv_globals.chunk_cnt},
+	{ev_float,	OFS_V011(done_precache),	&sv_globals.done_precache},
+	{ev_float,	OFS_V011(parm1),		&sv_globals.parm},
+	{ev_vector,	OFS_V011(v_forward),		&sv_globals.v_forward},
+	{ev_vector,	OFS_V011(v_up),			&sv_globals.v_up},
+	{ev_vector,	OFS_V011(v_right),		&sv_globals.v_right},
+	{ev_float,	OFS_V011(trace_allsolid),	&sv_globals.trace_allsolid},
+	{ev_float,	OFS_V011(trace_startsolid),	&sv_globals.trace_startsolid},
+	{ev_float,	OFS_V011(trace_fraction),	&sv_globals.trace_fraction},
+	{ev_vector,	OFS_V011(trace_endpos),		&sv_globals.trace_endpos},
+	{ev_vector,	OFS_V011(trace_plane_normal),	&sv_globals.trace_plane_normal},
+	{ev_float,	OFS_V011(trace_plane_dist),	&sv_globals.trace_plane_dist},
+	{ev_entity,	OFS_V011(trace_ent),		&sv_globals.trace_ent},
+	{ev_float,	OFS_V011(trace_inopen),		&sv_globals.trace_inopen},
+	{ev_float,	OFS_V011(trace_inwater),	&sv_globals.trace_inwater},
+	{ev_entity,	OFS_V011(msg_entity),		&sv_globals.msg_entity},
+	{ev_float,	OFS_V011(cycle_wrapped),	&sv_globals.cycle_wrapped},
+	{ev_float,	OFS_V011(crouch_cnt),		&sv_globals.crouch_cnt},
+	{ev_float,	OFS_V011(modelindex_assassin),	&sv_globals.modelindex_assassin},
+	{ev_float,	OFS_V011(modelindex_crusader),	&sv_globals.modelindex_crusader},
+	{ev_float,	OFS_V011(modelindex_paladin),	&sv_globals.modelindex_paladin},
+	{ev_float,	OFS_V011(modelindex_necromancer),&sv_globals.modelindex_necromancer},
+	{ev_float,	OFS_V011(modelindex_sheep),	&sv_globals.modelindex_sheep},
+	{ev_float,	OFS_V011(num_players),		&sv_globals.num_players},
+	{ev_float,	OFS_V011(exp_mult),		&sv_globals.exp_mult},
+
+	{ev_function,	OFS_V011(main),			&sv_globals.main},
+	{ev_function,	OFS_V011(StartFrame),		&sv_globals.StartFrame},
+	{ev_function,	OFS_V011(PlayerPreThink),	&sv_globals.PlayerPreThink},
+	{ev_function,	OFS_V011(PlayerPostThink),	&sv_globals.PlayerPostThink},
+	{ev_function,	OFS_V011(ClientKill),		&sv_globals.ClientKill},
+	{ev_function,	OFS_V011(ClientConnect),	&sv_globals.ClientConnect},
+	{ev_function,	OFS_V011(PutClientInServer),	&sv_globals.PutClientInServer},
+	{ev_function,	OFS_V011(ClientReEnter),	&sv_globals.ClientReEnter},
+	{ev_function,	OFS_V011(ClientDisconnect),	&sv_globals.ClientDisconnect},
+	{ev_function,	OFS_V011(ClassChangeWeapon),	&sv_globals.ClassChangeWeapon},
+	{ev_function,	OFS_V011(SetNewParms),		&sv_globals.SetNewParms},
+	{ev_function,	OFS_V011(SetChangeParms),	&sv_globals.SetChangeParms},
+	{ev_void,	0,				NULL }
+};
+
+static sv_def_t globals_v014[] = {
+	{ev_entity,	OFS_V014(self),			&sv_globals.self},
+	{ev_entity,	OFS_V014(other),		&sv_globals.other},
+	{ev_entity,	OFS_V014(world),		&sv_globals.world},
+	{ev_float,	OFS_V014(time),			&sv_globals.time},
+	{ev_float,	OFS_V014(frametime),		&sv_globals.frametime},
+	{ev_entity,	OFS_V014(newmis),		&sv_globals.newmis},
+	{ev_float,	OFS_V014(force_retouch),	&sv_globals.force_retouch},
+	{ev_string,	OFS_V014(mapname),		&sv_globals.mapname},
+	{ev_string,	OFS_V014(startspot),		&sv_globals.startspot},
+	{ev_float,	OFS_V014(deathmatch),		&sv_globals.deathmatch},
+	{ev_float,	OFS_V014(randomclass),		&sv_globals.randomclass},
+	{ev_float,	OFS_V014(damageScale),		&sv_globals.damageScale},
+	{ev_float,	OFS_V014(meleeDamScale),	&sv_globals.meleeDamScale},
+	{ev_float,	OFS_V014(shyRespawn),		&sv_globals.shyRespawn},
+	{ev_float,	OFS_V014(spartanPrint),		&sv_globals.spartanPrint},
+	{ev_float,	OFS_V014(manaScale),		&sv_globals.manaScale},
+	{ev_float,	OFS_V014(tomeMode),		&sv_globals.tomeMode},
+	{ev_float,	OFS_V014(tomeRespawn),		&sv_globals.tomeRespawn},
+	{ev_float,	OFS_V014(w2Respawn),		&sv_globals.w2Respawn},
+	{ev_float,	OFS_V014(altRespawn),		&sv_globals.altRespawn},
+	{ev_float,	OFS_V014(fixedLevel),		&sv_globals.fixedLevel},
+	{ev_float,	OFS_V014(autoItems),		&sv_globals.autoItems},
+	{ev_float,	OFS_V014(dmMode),		&sv_globals.dmMode},
+	{ev_float,	OFS_V014(easyFourth),		&sv_globals.easyFourth},
+	{ev_float,	OFS_V014(patternRunner),	&sv_globals.patternRunner},
+	{ev_float,	OFS_V014(coop),			&sv_globals.coop},
+	{ev_float,	OFS_V014(teamplay),		&sv_globals.teamplay},
+	{ev_float,	OFS_V014(serverflags),		&sv_globals.serverflags},
+	{ev_float,	OFS_V014(total_secrets),	&sv_globals.total_secrets},
+	{ev_float,	OFS_V014(total_monsters),	&sv_globals.total_monsters},
+	{ev_float,	OFS_V014(found_secrets),	&sv_globals.found_secrets},
+	{ev_float,	OFS_V014(killed_monsters),	&sv_globals.killed_monsters},
+	{ev_float,	OFS_V014(chunk_cnt),		&sv_globals.chunk_cnt},
+	{ev_float,	OFS_V014(done_precache),	&sv_globals.done_precache},
+	{ev_float,	OFS_V014(parm1),		&sv_globals.parm},
+	{ev_vector,	OFS_V014(v_forward),		&sv_globals.v_forward},
+	{ev_vector,	OFS_V014(v_up),			&sv_globals.v_up},
+	{ev_vector,	OFS_V014(v_right),		&sv_globals.v_right},
+	{ev_float,	OFS_V014(trace_allsolid),	&sv_globals.trace_allsolid},
+	{ev_float,	OFS_V014(trace_startsolid),	&sv_globals.trace_startsolid},
+	{ev_float,	OFS_V014(trace_fraction),	&sv_globals.trace_fraction},
+	{ev_vector,	OFS_V014(trace_endpos),		&sv_globals.trace_endpos},
+	{ev_vector,	OFS_V014(trace_plane_normal),	&sv_globals.trace_plane_normal},
+	{ev_float,	OFS_V014(trace_plane_dist),	&sv_globals.trace_plane_dist},
+	{ev_entity,	OFS_V014(trace_ent),		&sv_globals.trace_ent},
+	{ev_float,	OFS_V014(trace_inopen),		&sv_globals.trace_inopen},
+	{ev_float,	OFS_V014(trace_inwater),	&sv_globals.trace_inwater},
+	{ev_entity,	OFS_V014(msg_entity),		&sv_globals.msg_entity},
+	{ev_float,	OFS_V014(cycle_wrapped),	&sv_globals.cycle_wrapped},
+	{ev_float,	OFS_V014(crouch_cnt),		&sv_globals.crouch_cnt},
+	{ev_float,	OFS_V014(modelindex_assassin),	&sv_globals.modelindex_assassin},
+	{ev_float,	OFS_V014(modelindex_crusader),	&sv_globals.modelindex_crusader},
+	{ev_float,	OFS_V014(modelindex_paladin),	&sv_globals.modelindex_paladin},
+	{ev_float,	OFS_V014(modelindex_necromancer),&sv_globals.modelindex_necromancer},
+	{ev_float,	OFS_V014(modelindex_sheep),	&sv_globals.modelindex_sheep},
+	{ev_float,	OFS_V014(num_players),		&sv_globals.num_players},
+	{ev_float,	OFS_V014(exp_mult),		&sv_globals.exp_mult},
+	{ev_float,	OFS_V014(max_players),		&sv_globals.max_players},
+	{ev_float,	OFS_V014(defLosses),		&sv_globals.defLosses},
+	{ev_float,	OFS_V014(attLosses),		&sv_globals.attLosses},
+
+	{ev_function,	OFS_V014(main),			&sv_globals.main},
+	{ev_function,	OFS_V014(StartFrame),		&sv_globals.StartFrame},
+	{ev_function,	OFS_V014(PlayerPreThink),	&sv_globals.PlayerPreThink},
+	{ev_function,	OFS_V014(PlayerPostThink),	&sv_globals.PlayerPostThink},
+	{ev_function,	OFS_V014(ClientKill),		&sv_globals.ClientKill},
+	{ev_function,	OFS_V014(ClientConnect),	&sv_globals.ClientConnect},
+	{ev_function,	OFS_V014(PutClientInServer),	&sv_globals.PutClientInServer},
+	{ev_function,	OFS_V014(ClientReEnter),	&sv_globals.ClientReEnter},
+	{ev_function,	OFS_V014(ClientDisconnect),	&sv_globals.ClientDisconnect},
+	{ev_function,	OFS_V014(ClassChangeWeapon),	&sv_globals.ClassChangeWeapon},
+	{ev_function,	OFS_V014(SetNewParms),		&sv_globals.SetNewParms},
+	{ev_function,	OFS_V014(SetChangeParms),	&sv_globals.SetChangeParms},
+	{ev_void,	0,				NULL }
+};
+
+static sv_def_t globals_v015[] = {
+	{ev_entity,	OFS_V015(self),			&sv_globals.self},
+	{ev_entity,	OFS_V015(other),		&sv_globals.other},
+	{ev_entity,	OFS_V015(world),		&sv_globals.world},
+	{ev_float,	OFS_V015(time),			&sv_globals.time},
+	{ev_float,	OFS_V015(frametime),		&sv_globals.frametime},
+	{ev_entity,	OFS_V015(newmis),		&sv_globals.newmis},
+	{ev_float,	OFS_V015(force_retouch),	&sv_globals.force_retouch},
+	{ev_string,	OFS_V015(mapname),		&sv_globals.mapname},
+	{ev_string,	OFS_V015(startspot),		&sv_globals.startspot},
+	{ev_float,	OFS_V015(deathmatch),		&sv_globals.deathmatch},
+	{ev_float,	OFS_V015(randomclass),		&sv_globals.randomclass},
+	{ev_float,	OFS_V015(damageScale),		&sv_globals.damageScale},
+	{ev_float,	OFS_V015(meleeDamScale),	&sv_globals.meleeDamScale},
+	{ev_float,	OFS_V015(shyRespawn),		&sv_globals.shyRespawn},
+	{ev_float,	OFS_V015(spartanPrint),		&sv_globals.spartanPrint},
+	{ev_float,	OFS_V015(manaScale),		&sv_globals.manaScale},
+	{ev_float,	OFS_V015(tomeMode),		&sv_globals.tomeMode},
+	{ev_float,	OFS_V015(tomeRespawn),		&sv_globals.tomeRespawn},
+	{ev_float,	OFS_V015(w2Respawn),		&sv_globals.w2Respawn},
+	{ev_float,	OFS_V015(altRespawn),		&sv_globals.altRespawn},
+	{ev_float,	OFS_V015(fixedLevel),		&sv_globals.fixedLevel},
+	{ev_float,	OFS_V015(autoItems),		&sv_globals.autoItems},
+	{ev_float,	OFS_V015(dmMode),		&sv_globals.dmMode},
+	{ev_float,	OFS_V015(easyFourth),		&sv_globals.easyFourth},
+	{ev_float,	OFS_V015(patternRunner),	&sv_globals.patternRunner},
+	{ev_float,	OFS_V015(coop),			&sv_globals.coop},
+	{ev_float,	OFS_V015(teamplay),		&sv_globals.teamplay},
+	{ev_float,	OFS_V015(serverflags),		&sv_globals.serverflags},
+	{ev_float,	OFS_V015(total_secrets),	&sv_globals.total_secrets},
+	{ev_float,	OFS_V015(total_monsters),	&sv_globals.total_monsters},
+	{ev_float,	OFS_V015(found_secrets),	&sv_globals.found_secrets},
+	{ev_float,	OFS_V015(killed_monsters),	&sv_globals.killed_monsters},
+	{ev_float,	OFS_V015(chunk_cnt),		&sv_globals.chunk_cnt},
+	{ev_float,	OFS_V015(done_precache),	&sv_globals.done_precache},
+	{ev_float,	OFS_V015(parm1),		&sv_globals.parm},
+	{ev_vector,	OFS_V015(v_forward),		&sv_globals.v_forward},
+	{ev_vector,	OFS_V015(v_up),			&sv_globals.v_up},
+	{ev_vector,	OFS_V015(v_right),		&sv_globals.v_right},
+	{ev_float,	OFS_V015(trace_allsolid),	&sv_globals.trace_allsolid},
+	{ev_float,	OFS_V015(trace_startsolid),	&sv_globals.trace_startsolid},
+	{ev_float,	OFS_V015(trace_fraction),	&sv_globals.trace_fraction},
+	{ev_vector,	OFS_V015(trace_endpos),		&sv_globals.trace_endpos},
+	{ev_vector,	OFS_V015(trace_plane_normal),	&sv_globals.trace_plane_normal},
+	{ev_float,	OFS_V015(trace_plane_dist),	&sv_globals.trace_plane_dist},
+	{ev_entity,	OFS_V015(trace_ent),		&sv_globals.trace_ent},
+	{ev_float,	OFS_V015(trace_inopen),		&sv_globals.trace_inopen},
+	{ev_float,	OFS_V015(trace_inwater),	&sv_globals.trace_inwater},
+	{ev_entity,	OFS_V015(msg_entity),		&sv_globals.msg_entity},
+	{ev_float,	OFS_V015(cycle_wrapped),	&sv_globals.cycle_wrapped},
+	{ev_float,	OFS_V015(crouch_cnt),		&sv_globals.crouch_cnt},
+	{ev_float,	OFS_V015(modelindex_assassin),	&sv_globals.modelindex_assassin},
+	{ev_float,	OFS_V015(modelindex_crusader),	&sv_globals.modelindex_crusader},
+	{ev_float,	OFS_V015(modelindex_paladin),	&sv_globals.modelindex_paladin},
+	{ev_float,	OFS_V015(modelindex_necromancer),&sv_globals.modelindex_necromancer},
+	{ev_float,	OFS_V015(modelindex_sheep),	&sv_globals.modelindex_sheep},
+	{ev_float,	OFS_V015(num_players),		&sv_globals.num_players},
+	{ev_float,	OFS_V015(exp_mult),		&sv_globals.exp_mult},
+	{ev_float,	OFS_V015(max_players),		&sv_globals.max_players},
+	{ev_float,	OFS_V015(defLosses),		&sv_globals.defLosses},
+	{ev_float,	OFS_V015(attLosses),		&sv_globals.attLosses},
+
+	{ev_function,	OFS_V015(main),			&sv_globals.main},
+	{ev_function,	OFS_V015(StartFrame),		&sv_globals.StartFrame},
+	{ev_function,	OFS_V015(PlayerPreThink),	&sv_globals.PlayerPreThink},
+	{ev_function,	OFS_V015(PlayerPostThink),	&sv_globals.PlayerPostThink},
+	{ev_function,	OFS_V015(ClientKill),		&sv_globals.ClientKill},
+	{ev_function,	OFS_V015(ClientConnect),	&sv_globals.ClientConnect},
+	{ev_function,	OFS_V015(PutClientInServer),	&sv_globals.PutClientInServer},
+	{ev_function,	OFS_V015(ClientReEnter),	&sv_globals.ClientReEnter},
+	{ev_function,	OFS_V015(ClientDisconnect),	&sv_globals.ClientDisconnect},
+	{ev_function,	OFS_V015(ClassChangeWeapon),	&sv_globals.ClassChangeWeapon},
+	{ev_function,	OFS_V015(SetNewParms),		&sv_globals.SetNewParms},
+	{ev_function,	OFS_V015(SetChangeParms),	&sv_globals.SetChangeParms},
+	{ev_function,	OFS_V015(SmitePlayer),		&sv_globals.SmitePlayer},
+	{ev_void,	0,				NULL }
 };
 
 static ddef_t	*ED_FieldAtOfs (int ofs);
@@ -988,7 +1227,7 @@ void ED_LoadFromFile (const char *data)
 	edict_t		*ent = NULL;
 	int		inhibit = 0;
 
-	pr_global_struct->time = sv.time;
+	*sv_globals.time = sv.time;
 
 	// parse ents
 	while (1)
@@ -1100,7 +1339,7 @@ void ED_LoadFromFile (const char *data)
 			continue;
 		}
 
-		pr_global_struct->self = EDICT_TO_PROG(ent);
+		*sv_globals.self = EDICT_TO_PROG(ent);
 		PR_ExecuteProgram (func - pr_functions);
 		SV_FlushSignon();
 	}
@@ -1197,6 +1436,26 @@ static const char *PR_GetProgFilename (void)
 #endif	/* end of USE_MULTIPLE_PROGS */
 }
 
+static void set_address (sv_def_t *def, void *address)
+{
+	switch (def->type) {
+		case ev_void:
+		case ev_bad:
+			break;
+		case ev_float:
+		case ev_vector:
+			*(float **)def->field = (float *) address;
+			break;
+		case ev_string:
+		case ev_entity:
+		case ev_field:
+		case ev_function:
+		case ev_pointer:
+			*(int **)def->field = (int *) address;
+			break;
+	}
+}
+
 /*
 ===============
 PR_LoadProgs
@@ -1206,6 +1465,8 @@ void PR_LoadProgs (void)
 {
 	int			i;
 	const char	*progname;
+	const char	*progvstr;
+	sv_def_t	*def;
 	char		num[32];
 	dfunction_t	*f;
 
@@ -1230,8 +1491,27 @@ void PR_LoadProgs (void)
 
 	if (progs->version != PROG_VERSION)
 		SV_Error ("%s is of unsupported version (%d, should be %d)", progname, progs->version, PROG_VERSION);
-	if (progs->crc != PROGHEADER_CRC)
+	switch (progs->crc)
+	{
+	case PROGS_V011_CRC:
+		def = globals_v011;
+		progvstr = "HW/v0.11";
+		break;
+	case PROGS_V014_CRC:
+		def = globals_v014;
+		progvstr = "HW/v0.14";
+		break;
+	case PROGS_V015_CRC:
+		def = globals_v015;
+		progvstr = "HW/v0.15";
+		break;
+	default:
 		SV_Error ("Unexpected crc ( %d ) for %s", progs->crc, progname);
+		/* silence compiler */
+		def = globals_v015;
+		progvstr = "Unknown";
+		break;
+	}
 
 	pr_functions = (dfunction_t *)((byte *)progs + progs->ofs_functions);
 	pr_strings = (char *)progs + progs->ofs_strings;
@@ -1252,11 +1532,12 @@ void PR_LoadProgs (void)
 	pr_statements = (dstatement_t *)((byte *)progs + progs->ofs_statements);
 
 	Con_DPrintf ("Loaded %s, v%d, %d crc, %s structures\n",
-			progname, progs->version, progs->crc,
-			(progs->crc == PROGS_V015_CRC) ? "HW/v0.15" : "Unknown");
+			progname, progs->version, progs->crc, progvstr);
 
-	pr_global_struct = (globalvars_t *)((byte *)progs + progs->ofs_globals);
-	pr_globals = (float *)pr_global_struct;
+	memset (&sv_globals, 0, sizeof(sv_globals));
+	pr_globals = (float *)((byte *)progs + progs->ofs_globals);
+	for (; def->field; def++)
+		set_address (def, &G_FLOAT(def->offset));
 
 	// byte swap the lumps
 	for (i = 0; i < progs->numstatements; i++)

@@ -237,7 +237,7 @@ static void SV_Spawn_f (void)
 
 	memset (&ent->v, 0, progs->entityfields * 4);
 	ent->v.colormap = NUM_FOR_EDICT(ent);
-	if (dmMode.integer == DM_SIEGE)
+	if (dmMode.integer == DM_SIEGE && SV_PROGS_HAVE_SIEGE)
 		ent->v.team = ent->v.siege_team;	// FIXME
 	else
 		ent->v.team = 0;	// FIXME
@@ -279,19 +279,19 @@ static void SV_Spawn_f (void)
 
 	MSG_WriteByte (&host_client->netchan.message, svc_updatestatlong);
 	MSG_WriteByte (&host_client->netchan.message, STAT_TOTALSECRETS);
-	MSG_WriteLong (&host_client->netchan.message, PR_GLOBAL_STRUCT(total_secrets));
+	MSG_WriteLong (&host_client->netchan.message, *sv_globals.total_secrets);
 
 	MSG_WriteByte (&host_client->netchan.message, svc_updatestatlong);
 	MSG_WriteByte (&host_client->netchan.message, STAT_TOTALMONSTERS);
-	MSG_WriteLong (&host_client->netchan.message, PR_GLOBAL_STRUCT(total_monsters));
+	MSG_WriteLong (&host_client->netchan.message, *sv_globals.total_monsters);
 
 	MSG_WriteByte (&host_client->netchan.message, svc_updatestatlong);
 	MSG_WriteByte (&host_client->netchan.message, STAT_SECRETS);
-	MSG_WriteLong (&host_client->netchan.message, PR_GLOBAL_STRUCT(found_secrets));
+	MSG_WriteLong (&host_client->netchan.message, *sv_globals.found_secrets);
 
 	MSG_WriteByte (&host_client->netchan.message, svc_updatestatlong);
 	MSG_WriteByte (&host_client->netchan.message, STAT_MONSTERS);
-	MSG_WriteLong (&host_client->netchan.message, PR_GLOBAL_STRUCT(killed_monsters));
+	MSG_WriteLong (&host_client->netchan.message, *sv_globals.killed_monsters);
 
 	// get the client to check and download skins
 	// when that is completed, a begin command will be issued
@@ -352,11 +352,11 @@ static void SV_Begin_f (void)
 		{
 			// copy spawn parms out of the client_t
 			for (i = 0; i < NUM_SPAWN_PARMS; i++)
-				(&pr_global_struct->parm1)[i] = host_client->spawn_parms[i];
+				sv_globals.parm[i] = host_client->spawn_parms[i];
 
 			// call the spawn function
-			pr_global_struct->time = sv.time;
-			pr_global_struct->self = EDICT_TO_PROG(sv_player);
+			*sv_globals.time = sv.time;
+			*sv_globals.self = EDICT_TO_PROG(sv_player);
 			PR_ExecuteProgram (SpectatorConnect);
 		}
 	}
@@ -364,19 +364,19 @@ static void SV_Begin_f (void)
 	{
 		// copy spawn parms out of the client_t
 		for (i = 0; i < NUM_SPAWN_PARMS; i++)
-			(&pr_global_struct->parm1)[i] = host_client->spawn_parms[i];
+			sv_globals.parm[i] = host_client->spawn_parms[i];
 
 		host_client->send_all_v = true;
 
 		// call the spawn function
-		pr_global_struct->time = sv.time;
-		pr_global_struct->self = EDICT_TO_PROG(sv_player);
-		PR_ExecuteProgram (pr_global_struct->ClientConnect);
+		*sv_globals.time = sv.time;
+		*sv_globals.self = EDICT_TO_PROG(sv_player);
+		PR_ExecuteProgram (*sv_globals.ClientConnect);
 
 		// actually spawn the player
-		pr_global_struct->time = sv.time;
-		pr_global_struct->self = EDICT_TO_PROG(sv_player);
-		PR_ExecuteProgram (pr_global_struct->PutClientInServer);
+		*sv_globals.time = sv.time;
+		*sv_globals.self = EDICT_TO_PROG(sv_player);
+		PR_ExecuteProgram (*sv_globals.PutClientInServer);
 	}
 
 	// clear the net statistics, because connecting gives a bogus picture
@@ -621,7 +621,7 @@ static void SV_Say (qboolean team)
 			else
 			{
 				t2 = Info_ValueForKey (client->userinfo, "team");
-				if (dmMode.integer == DM_SIEGE)
+				if (dmMode.integer == DM_SIEGE && SV_PROGS_HAVE_SIEGE)
 				{
 					if ( (host_client->edict->v.skin == 102 && client->edict->v.skin != 102) ||
 							(client->edict->v.skin == 102 && host_client->edict->v.skin != 102))
@@ -639,7 +639,7 @@ static void SV_Say (qboolean team)
 		}
 		if (speaknum == -1)
 		{
-			if (dmMode.integer == DM_SIEGE && host_client->siege_team != client->siege_team)
+			if (dmMode.integer == DM_SIEGE && SV_PROGS_HAVE_SIEGE && host_client->siege_team != client->siege_team)
 				//other team speaking
 				SV_ClientPrintf(client, PRINT_CHAT, "%s", text); // FIXME: print siege
 			else
@@ -712,9 +712,9 @@ static void SV_Kill_f (void)
 		return;
 	}
 
-	pr_global_struct->time = sv.time;
-	pr_global_struct->self = EDICT_TO_PROG(sv_player);
-	PR_ExecuteProgram (pr_global_struct->ClientKill);
+	*sv_globals.time = sv.time;
+	*sv_globals.self = EDICT_TO_PROG(sv_player);
+	PR_ExecuteProgram (*sv_globals.ClientKill);
 }
 
 /*
@@ -1175,11 +1175,11 @@ static void SV_RunCmd (usercmd_t *ucmd)
 
 	if (!host_client->spectator)
 	{
-		pr_global_struct->frametime = host_frametime;
+		*sv_globals.frametime = host_frametime;
 
-		pr_global_struct->time = sv.time;
-		pr_global_struct->self = EDICT_TO_PROG(sv_player);
-		PR_ExecuteProgram (pr_global_struct->PlayerPreThink);
+		*sv_globals.time = sv.time;
+		*sv_globals.self = EDICT_TO_PROG(sv_player);
+		PR_ExecuteProgram (*sv_globals.PlayerPreThink);
 
 		SV_RunThink (sv_player);
 	}
@@ -1273,14 +1273,14 @@ static void SV_RunCmd (usercmd_t *ucmd)
 
 			if (sv_player->v.touch)
 			{
-				pr_global_struct->self = EDICT_TO_PROG(sv_player);
-				pr_global_struct->other = EDICT_TO_PROG(ent);
+				*sv_globals.self = EDICT_TO_PROG(sv_player);
+				*sv_globals.other = EDICT_TO_PROG(ent);
 				PR_ExecuteProgram (sv_player->v.touch);
 			}
 			if (!ent->v.touch || (playertouch[n/8]&(1<<(n%8))))
 				continue;
-			pr_global_struct->self = EDICT_TO_PROG(ent);
-			pr_global_struct->other = EDICT_TO_PROG(sv_player);
+			*sv_globals.self = EDICT_TO_PROG(ent);
+			*sv_globals.other = EDICT_TO_PROG(sv_player);
 			PR_ExecuteProgram (ent->v.touch);
 			playertouch[n/8] |= 1 << (n%8);
 		}
@@ -1299,15 +1299,15 @@ static void SV_PostRunCmd(void)
 
 	if (!host_client->spectator)
 	{
-		pr_global_struct->time = sv.time;
-		pr_global_struct->self = EDICT_TO_PROG(sv_player);
-		PR_ExecuteProgram (pr_global_struct->PlayerPostThink);
+		*sv_globals.time = sv.time;
+		*sv_globals.self = EDICT_TO_PROG(sv_player);
+		PR_ExecuteProgram (*sv_globals.PlayerPostThink);
 		SV_RunNewmis ();
 	}
 	else if (SpectatorThink)
 	{
-		pr_global_struct->time = sv.time;
-		pr_global_struct->self = EDICT_TO_PROG(sv_player);
+		*sv_globals.time = sv.time;
+		*sv_globals.self = EDICT_TO_PROG(sv_player);
 		PR_ExecuteProgram (SpectatorThink);
 	}
 }

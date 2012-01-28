@@ -2,7 +2,7 @@
 	sv_user.c
 	server code for moving users
 
-	$Header: /cvsroot/uhexen2/engine/hexen2/sv_user.c,v 1.23 2007-11-14 07:27:35 sezero Exp $
+	$Id$
 */
 
 #include "quakedef.h"
@@ -155,9 +155,8 @@ static void SV_UserFriction (void)
 // in that case several unpatched mods would be left broken. Note: Compared
 // to the AoT solution, the USE_AOT_FRICTION 0  option makes pure hexen2 to
 // feel slightly more slippery.
-
 #if USE_AOT_FRICTION
-	if (progs->crc == PROGS_V111_CRC)
+	if (progs->crc != PROGS_V112_CRC)
 		friction = 6;
 	else
 	{
@@ -166,8 +165,8 @@ static void SV_UserFriction (void)
 		else
 			friction = sv_friction.value*sv_player->v.friction;
 	}
-#else	// not using AoT friction
-	if (progs->crc == PROGS_V111_CRC)
+#else	/* not using AoT friction */
+	if (progs->crc != PROGS_V112_CRC)
 		sv_player->v.friction = 1.0f;
 
 	if (trace.fraction == 1.0)

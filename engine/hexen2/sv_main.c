@@ -534,14 +534,9 @@ static void SV_ConnectClient (int clientnum)
 //	else
 //	{
 	// call the progs to get default spawn parms for the new client
-	//	PR_ExecuteProgram (PR_GLOBAL_STRUCT(SetNewParms));
+	//	PR_ExecuteProgram (*sv_globals.SetNewParms);
 	//	for (i = 0; i < NUM_SPAWN_PARMS; i++)
-	//	{
-	//	    if (is_progdefs111)
-	//		client->spawn_parms[i] = (&pr_global_struct_v111->parm1)[i];
-	//	    else
-	//		client->spawn_parms[i] = (&pr_global_struct->parm1)[i];
-	//	}
+	//		client->spawn_parms[i] = sv_globals.parm[i];
 //	}
 
 	SV_SendServerinfo (client);
@@ -1899,7 +1894,7 @@ void SV_SaveSpawnparms (void)
 	int		i;
 //	int		j;
 
-	svs.serverflags = PR_GLOBAL_STRUCT(serverflags);
+	svs.serverflags = *sv_globals.serverflags;
 
 	for (i = 0, host_client = svs.clients; i < svs.maxclients; i++, host_client++)
 	{
@@ -1907,20 +1902,10 @@ void SV_SaveSpawnparms (void)
 			continue;
 
 	// call the progs to get default spawn parms for the new client
-//		if (is_progdefs111)
-//		{
-//			pr_global_struct_v111->self = EDICT_TO_PROG(host_client->edict);
-//			PR_ExecuteProgram (pr_global_struct_v111->SetChangeParms);
-//			for (j = 0; j < NUM_SPAWN_PARMS; j++)
-//				host_client->spawn_parms[j] = (&pr_global_struct_v111->parm1)[j];
-//		}
-//		else
-//		{
-//			pr_global_struct->self = EDICT_TO_PROG(host_client->edict);
-//			PR_ExecuteProgram (pr_global_struct->SetChangeParms);
-//			for (j = 0; j < NUM_SPAWN_PARMS; j++)
-//				host_client->spawn_parms[j] = (&pr_global_struct->parm1)[j];
-//		}
+//		*sv_globals.self = EDICT_TO_PROG(host_client->edict);
+//		PR_ExecuteProgram (*sv_globals.SetChangeParms);
+//		for (j = 0; j < NUM_SPAWN_PARMS; j++)
+//			host_client->spawn_parms[j] = sv_globals.parm[j];
 	}
 }
 
@@ -2080,32 +2065,16 @@ void SV_SpawnServer (const char *server, const char *startspot)
 	ent->v.solid = SOLID_BSP;
 	ent->v.movetype = MOVETYPE_PUSH;
 
-	if (is_progdefs111)
-	{
-		if (coop.integer)
-			pr_global_struct_v111->coop = coop.value;
-		else
-			pr_global_struct_v111->deathmatch = deathmatch.value;
-
-		pr_global_struct_v111->randomclass = randomclass.value;
-		pr_global_struct_v111->mapname = PR_SetEngineString(sv.name);
-		pr_global_struct_v111->startspot = PR_SetEngineString(sv.startspot);
-		// serverflags are for cross level information (sigils)
-		pr_global_struct_v111->serverflags = svs.serverflags;
-	}
+	if (coop.integer)
+		*sv_globals.coop = coop.value;
 	else
-	{
-		if (coop.integer)
-			pr_global_struct->coop = coop.value;
-		else
-			pr_global_struct->deathmatch = deathmatch.value;
-
-		pr_global_struct->randomclass = randomclass.value;
-		pr_global_struct->mapname = PR_SetEngineString(sv.name);
-		pr_global_struct->startspot = PR_SetEngineString(sv.startspot);
-		// serverflags are for cross level information (sigils)
-		pr_global_struct->serverflags = svs.serverflags;
-	}
+		*sv_globals.deathmatch = deathmatch.value;
+	if (sv_globals.randomclass)
+		*sv_globals.randomclass = randomclass.value;
+	*sv_globals.mapname = PR_SetEngineString(sv.name);
+	*sv_globals.startspot = PR_SetEngineString(sv.startspot);
+	// serverflags are for cross level information (sigils)
+	*sv_globals.serverflags = svs.serverflags;
 
 #if !defined(SERVERONLY)
 	current_loading_size += 5;
