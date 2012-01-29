@@ -1137,7 +1137,9 @@ void LX_ErrorRecovery (void)
 			}
 			if (TK_CHECK(TK_RBRACE))
 			{
-				TK_CHECK(TK_SEMICOLON);
+			//	TK_CHECK(TK_SEMICOLON);
+				if (pr_tokenclass == TK_SEMICOLON)
+					LX_Fetch();
 				return;
 			}
 		}

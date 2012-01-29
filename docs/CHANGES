@@ -4,6 +4,9 @@ Development Progress	:
 ---------------------------
 
 2012-01-29 (SVN):
+    * utils/hcc/pr_lex.c (LX_ErrorRecovery): Fixed unused value warning
+      from clang: expand the TK_CHECK(TK_SEMICOLON) macro and explicitly
+      call LX_Fetch() if pr_tokenclass is really TK_SEMICOLON.
     * hexen2, sv_user.c (SV_WaterMove): Fixed a -Wself-assign warning
       from clang (removed the last else case of wishspeed assignment.)
     * console.c (Con_NotifyBox): Use proper format string when passing
