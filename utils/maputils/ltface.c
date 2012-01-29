@@ -491,7 +491,7 @@ void LightFace (int surfnum)
 	int		lightmapwidth, lightmapsize;
 	byte	*out;
 	double	*light;
-	int		w, h;
+	int	w;//,h
 
 	f = dfaces + surfnum;
 
@@ -562,7 +562,7 @@ void LightFace (int surfnum)
 	f->lightofs = out - filebase;
 
 // extra filtering
-	h = (l.texsize[1] + 1) * 2;
+//	h = (l.texsize[1] + 1) * 2;
 	w = (l.texsize[0] + 1) * 2;
 
 	for (i = 0 ; i < l.numlightstyles ; i++)

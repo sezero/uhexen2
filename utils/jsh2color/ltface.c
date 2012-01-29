@@ -748,7 +748,8 @@ void LightFace (int surfnum, qboolean nolight, vec3_t faceoffset)
 	int		lightmapwidth, lightmapsize;
 	byte	*out;
 	//double	*light;
-	vec_t		*light;
+	vec_t	*light;
+	int	w;//,h
 	/* TYR - temp vars */
 	vec_t		max;
 	int		x1, x2, x3, x4;
@@ -756,7 +757,6 @@ void LightFace (int surfnum, qboolean nolight, vec3_t faceoffset)
 	vec3_t		*lightcolor;
 	vec3_t		totalcolors;
 
-	int		w, h;
 	vec3_t		point;
 
 
@@ -832,17 +832,14 @@ void LightFace (int surfnum, qboolean nolight, vec3_t faceoffset)
 	for (i = 0 ; i < MAXLIGHTMAPS ; i++)
 		f->styles[i] = l.lightstyles[i];
 
-	if (colored)
-		// extra room for RGBA lightmaps
-		lightmapsize = size*l.numlightstyles*4;
-	else
-		lightmapsize = size*l.numlightstyles;
+	lightmapsize = size*l.numlightstyles;
+	if (colored)	lightmapsize *= 4;	// extra room for RGBA lightmaps
 
 	out = GetFileSpace (lightmapsize);
 	f->lightofs = out - filebase;
 
 // extra filtering
-	h = (l.texsize[1] + 1) * 2;
+//	h = (l.texsize[1] + 1) * 2;
 	w = (l.texsize[0] + 1) * 2;
 
 	for (i = 0 ; i < l.numlightstyles ; i++)
@@ -936,17 +933,15 @@ void LightFaceLIT (int surfnum, qboolean nolight, vec3_t faceoffset)
 	int		s, t;
 	int		i, j, c;
 	int		size;
-	int		lightmapwidth, lightmapsize;
+	int		lightmapwidth;
 	byte	*out;
-	vec_t		*light;
+	int	w;//,h
 	/* TYR - temp vars */
 	vec_t		max;
 	int		x1, x2, x3, x4;
 	/* TYR - colored lights */
 	vec3_t		*lightcolor;
 	vec3_t		totalcolors;
-
-	int		w, h;
 	vec3_t		point;
 
 
@@ -1021,16 +1016,12 @@ void LightFaceLIT (int surfnum, qboolean nolight, vec3_t faceoffset)
 	for (i = 0 ; i < MAXLIGHTMAPS ; i++)
 		f->styles[i] = l.lightstyles[i];
 
-	// extra room for RGBA lightmaps 
-	lightmapsize = size*l.numlightstyles*3;
-
 	// we have to store the new light data at
 	// the same offset as the old stuff...
-	out = &newdlightdata[faces_ltoffset[surfnum]]; // GetFileSpace (lightmapsize);
-	//f->lightofs = out - filebase;
+	out = &newdlightdata[faces_ltoffset[surfnum]];
 
 // extra filtering
-	h = (l.texsize[1]+1)*2;
+//	h = (l.texsize[1]+1)*2;
 	w = (l.texsize[0]+1)*2;
 
 	for (i = 0 ; i < l.numlightstyles ; i++)
@@ -1038,7 +1029,6 @@ void LightFaceLIT (int surfnum, qboolean nolight, vec3_t faceoffset)
 		if (l.lightstyles[i] == 0xff)
 			Error ("Wrote empty lightmap");
 
-		light = l.lightmaps[i];
 		lightcolor = l.lightmapcolors[i];
 		c = 0;
 

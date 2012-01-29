@@ -4,6 +4,8 @@ Development Progress	:
 ---------------------------
 
 2012-01-28 (SVN):
+    * utils, ltface.c (LightFace, LightFaceLIT): Fixed "variable set but
+      not used" warnings from gcc-4.6.
     * utils, entities.c (LoadEntities): Fixed wrong sizeof in memset as
       found by clang.
 
