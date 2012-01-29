@@ -4,6 +4,9 @@ Development Progress	:
 ---------------------------
 
 2012-01-29 (SVN):
+    * snd_mp3.c (mp3_madseek): clang, -Wtautological-compare: fixed the
+      "comparison of unsigned expression >= 0 is always true" warning for
+      to_skip_samples.
     * updated version date stamp to 2012-01-29
     * utils/hcc/pr_lex.c (LX_ErrorRecovery): Fixed unused value warning
       from clang: expand the TK_CHECK(TK_SEMICOLON) macro and explicitly
