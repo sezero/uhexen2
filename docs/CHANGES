@@ -4,6 +4,8 @@ Development Progress	:
 ---------------------------
 
 2012-01-29 (SVN):
+    * hexen2, sv_user.c (SV_WaterMove): Fixed a -Wself-assign warning
+      from clang (removed the last else case of wishspeed assignment.)
     * console.c (Con_NotifyBox): Use proper format string when passing
       the text to Con_Printf(). Found by clang.
     * hexenworld, cl_main.c (CL_ConnectionlessPacket): Use proper format

@@ -400,8 +400,6 @@ static void SV_WaterMove (void)
 		wishspeed *= 0.90;
 	else if ((sv_player->v.level == 7) || (sv_player->v.level == 8))
 		wishspeed *= 0.95;
-	else
-		wishspeed = wishspeed;
 
 //
 // water friction
