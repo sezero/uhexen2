@@ -51,6 +51,9 @@ GCC	:	GNU C Compiler.
 		Of the really old versions, gcc-2.91.66 (aka. egcs-1.1.2)
 		still works.  Even 2.7.2 is reported to compile fine.
 
+		CLANG: As an alternative to gcc, clang (version 3.0) is
+		tested to compile all uhexen2 sources correctly.
+
 
 Libraries needed for various platforms:
 ========================================
@@ -240,6 +243,7 @@ mpg123 homepage		:	http://mpg123.org/  http://mpg123.de/
 ALSA homepage		:	http://www.alsa-project.org/
 GCC homepage		:	http://gcc.gnu.org/
 Binutils homepage	:	http://sourceware.org/binutils/
+clang homepage		:	http://clang.llvm.org/
 NASM homepage		:	http://www.nasm.us/
 YASM homepage		:	http://yasm.tortall.net/
 DJGPP homepage		:	http://www.delorie.com/djgpp/

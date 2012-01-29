@@ -4,6 +4,9 @@ Development Progress	:
 ---------------------------
 
 2012-01-29 (SVN):
+    * Updated documentation regarding clang as the compiler.
+
+2012-01-29 (SVN):
     * snd_mp3.c (mp3_madseek): clang, -Wtautological-compare: fixed the
       "comparison of unsigned expression >= 0 is always true" warning for
       to_skip_samples.
