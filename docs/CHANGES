@@ -4,6 +4,10 @@ Development Progress	:
 ---------------------------
 
 2012-01-28 (SVN):
+    * utils, entities.c (LoadEntities): Fixed wrong sizeof in memset as
+      found by clang.
+
+2012-01-28 (SVN):
     * Majorly revised the support mechanism for different versions of
       progs: removed pr_global_struct, added sv_globals holding proper
       offsets and globals' addresses. New sv_globals code is inspired

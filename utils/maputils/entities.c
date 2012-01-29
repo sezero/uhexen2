@@ -140,7 +140,7 @@ void LoadEntities (void)
 				Error ("%s: closing brace without data", __thisfunc__);
 
 			epair = (epair_t *) malloc (sizeof(epair_t));
-			memset (epair, 0, sizeof(epair));
+			memset (epair, 0, sizeof(epair_t));
 			strcpy (epair->key, key);
 			strcpy (epair->value, com_token);
 			epair->next = entity->epairs;
