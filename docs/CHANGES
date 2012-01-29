@@ -3,7 +3,10 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
-2012-01-28 (SVN):
+2012-01-29 (SVN):
+    * hexenworld, cl_main.c (CL_ConnectionlessPacket): Use proper format
+      string when passing the text to Con_Printf() for A2C_PRINT. Found
+      by clang.
     * utils, ltface.c (LightFace, LightFaceLIT): Fixed "variable set but
       not used" warnings from gcc-4.6.
     * utils, entities.c (LoadEntities): Fixed wrong sizeof in memset as

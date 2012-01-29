@@ -823,7 +823,7 @@ static void CL_ConnectionlessPacket (void)
 	if (c == A2C_PRINT)
 	{
 		s = MSG_ReadString ();
-		Con_Printf (s);
+		Con_Printf ("%s", s);
 		return;
 	}
 
