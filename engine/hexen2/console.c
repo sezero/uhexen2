@@ -623,7 +623,7 @@ void Con_NotifyBox (const char *text)
 // during startup for sound / cd warnings
 	Con_Printf("\n\n\35\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\37\n");
 
-	Con_Printf (text);
+	Con_Printf ("%s", text);
 
 	Con_Printf ("Press a key.\n");
 	Con_Printf("\35\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\37\n");

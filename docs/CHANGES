@@ -4,6 +4,8 @@ Development Progress	:
 ---------------------------
 
 2012-01-29 (SVN):
+    * console.c (Con_NotifyBox): Use proper format string when passing
+      the text to Con_Printf(). Found by clang.
     * hexenworld, cl_main.c (CL_ConnectionlessPacket): Use proper format
       string when passing the text to Con_Printf() for A2C_PRINT. Found
       by clang.
