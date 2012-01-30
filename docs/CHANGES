@@ -4,6 +4,10 @@ Development Progress	:
 ---------------------------
 
 2012-01-30 (SVN):
+    * net_sys.h: Add __FreeBSD_kernel__ to the HAVE_SA_LEN list. Debian
+      bug entry: http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=657793
+
+2012-01-30 (SVN):
     * r_edge.c (R_ScanEdges): In the "make sure nothing sorts past this"
       code, edge_sentinel.u was assigned 2000<<24 for which clang emitted
       -Wshift-overflow warning "signed shift result (0x7D0000000) requires
