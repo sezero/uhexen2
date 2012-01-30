@@ -4,6 +4,9 @@ Development Progress	:
 ---------------------------
 
 2012-01-30 (SVN):
+	* Make "gl_texturemode" a persistent cvar with callback.
+
+2012-01-30 (SVN):
     * net_sys.h: Add __FreeBSD_kernel__ to the HAVE_SA_LEN list. Debian
       bug entry: http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=657793
 

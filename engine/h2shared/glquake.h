@@ -157,8 +157,7 @@ extern	int		numgltextures;
 extern	qboolean	flush_textures;
 extern	gltexture_t	gltextures[MAX_GLTEXTURES];
 
-extern	int		gl_filter_min;
-extern	int		gl_filter_max;
+extern	int		gl_filter_idx;
 extern	float		gldepthmin, gldepthmax;
 extern	int		glx, gly, glwidth, glheight;
 

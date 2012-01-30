@@ -24,6 +24,7 @@ qboolean	draw_reinit = false;
 
 static cvar_t	gl_picmip = {"gl_picmip", "0", CVAR_NONE};
 static cvar_t	gl_constretch = {"gl_constretch", "0", CVAR_ARCHIVE};
+static cvar_t	gl_texturemode = {"gl_texturemode", "", CVAR_ARCHIVE};
 
 GLuint			plyrtex[MAX_PLAYER_CLASS][16][16];	// player textures in multiplayer config screens
 static GLuint		draw_backtile;
@@ -74,8 +75,7 @@ static const char	*cs_data = {
 	"................................"
 };
 
-int		gl_filter_min = GL_LINEAR_MIPMAP_NEAREST;
-int		gl_filter_max = GL_LINEAR;
+int		gl_filter_idx = 4; /* Bilinear */
 
 gltexture_t	gltextures[MAX_GLTEXTURES];
 int			numgltextures;
@@ -230,54 +230,45 @@ glmode_t gl_texmodes[NUM_GL_FILTERS] =
 Draw_TextureMode_f
 ===============
 */
-static void Draw_TextureMode_f (void)
+static void Draw_TextureMode_f (cvar_t *var)
 {
-	unsigned int		i;
+	unsigned int	i;
 	gltexture_t	*glt;
 
-	if (Cmd_Argc() == 1)
+	for (i = 0; i < NUM_GL_FILTERS; i++)
 	{
-		for (i = 0; i < NUM_GL_FILTERS; i++)
+		if (!strcmp (gl_texmodes[i].name, gl_texturemode.string))
 		{
-			if (gl_filter_min == gl_texmodes[i].minimize)
+			if (gl_filter_idx != i)
 			{
-				Con_Printf ("%s\n", gl_texmodes[i].name);
-				return;
+				gl_filter_idx = i;
+				// change all the existing mipmap texture objects
+				for (i = 0, glt = gltextures; i < numgltextures; i++, glt++)
+				{
+					GL_Bind (glt->texnum);
+					glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, gl_texmodes[gl_filter_idx].maximize);
+					if (glt->mipmap)
+						glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, gl_texmodes[gl_filter_idx].minimize);
+					else
+						glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, gl_texmodes[gl_filter_idx].maximize);
+		
+				}
 			}
+			return;
 		}
-		Con_Printf ("current filter is unknown???\n");
-		return;
 	}
 
 	for (i = 0; i < NUM_GL_FILTERS; i++)
 	{
-		if (!q_strcasecmp (gl_texmodes[i].name, Cmd_Argv(1) ) )
-			break;
-	}
-	if (i == NUM_GL_FILTERS)
-	{
-		Con_Printf ("bad filter name\n");
-		return;
-	}
-
-	gl_filter_min = gl_texmodes[i].minimize;
-	gl_filter_max = gl_texmodes[i].maximize;
-
-	// change all the existing mipmap texture objects
-	for (i = 0, glt = gltextures; i < numgltextures; i++, glt++)
-	{
-		GL_Bind (glt->texnum);
-		glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, gl_filter_max);
-
-		if (glt->mipmap)
+		if (!q_strcasecmp (gl_texmodes[i].name, gl_texturemode.string))
 		{
-			glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, gl_filter_min);
-		}
-		else
-		{
-			glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, gl_filter_max);
+			Cvar_SetQuick (&gl_texturemode, gl_texmodes[i].name);
+			return;
 		}
 	}
+
+	Con_Printf ("bad filter name\n");
+	Cvar_SetQuick (&gl_texturemode, gl_texmodes[gl_filter_idx].name);
 }
 
 /*
@@ -295,8 +286,9 @@ void Draw_Init (void)
 	{
 		Cvar_RegisterVariable (&gl_picmip);
 		Cvar_RegisterVariable (&gl_constretch);
-
-		Cmd_AddCommand ("gl_texturemode", Draw_TextureMode_f);
+		gl_texturemode.string = gl_texmodes[gl_filter_idx].name;
+		Cvar_RegisterVariable (&gl_texturemode);
+		Cvar_SetCallback (&gl_texturemode, Draw_TextureMode_f);
 
 	// initialize the player texnums array for multiplayer config screens
 		memset(plyrtex, 0, MAX_PLAYER_CLASS * 16 * 16 * sizeof(GLuint));
@@ -311,8 +303,8 @@ void Draw_Init (void)
 			chars[i] = 255;	// proper transparent color
 	}
 	char_texture = GL_LoadTexture ("charset", chars, 256, 128, TEX_ALPHA);
-	glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, gl_filter_max);
-	glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, gl_filter_max);
+	glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, gl_texmodes[gl_filter_idx].maximize);
+	glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, gl_texmodes[gl_filter_idx].maximize);
 
 	// load the small characters for status bar
 	chars = (byte *) W_GetLumpName("tinyfont");
@@ -322,8 +314,8 @@ void Draw_Init (void)
 			chars[i] = 255;	// proper transparent color
 	}
 	char_smalltexture = GL_LoadTexture ("smallcharset", chars, 128, 32, TEX_ALPHA);
-	glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, gl_filter_max);
-	glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, gl_filter_max);
+	glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, gl_texmodes[gl_filter_idx].maximize);
+	glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, gl_texmodes[gl_filter_idx].maximize);
 
 	// load the big menu font
 	// Note: old version of demo has bigfont.lmp, not bigfont2.lmp
@@ -337,15 +329,15 @@ void Draw_Init (void)
 			p->data[i] = 255;	// proper transparent color
 	}
 	char_menufonttexture = GL_LoadTexture ("menufont", p->data, p->width, p->height, TEX_ALPHA);
-	glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, gl_filter_max);
-	glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, gl_filter_max);
+	glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, gl_texmodes[gl_filter_idx].maximize);
+	glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, gl_texmodes[gl_filter_idx].maximize);
 
 	// load the console background
 	p = (qpic_t *)FS_LoadTempFile ("gfx/menu/conback.lmp", NULL);
 	Draw_PicCheckError (p, "gfx/menu/conback.lmp");
 	SwapPic (p);
-	glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, gl_filter_max);
-	glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, gl_filter_max);
+	glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, gl_texmodes[gl_filter_idx].maximize);
+	glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, gl_texmodes[gl_filter_idx].maximize);
 	conback = GL_LoadTexture ("conback", p->data, p->width, p->height, TEX_DEFAULT);
 
 	// load the backtile
@@ -1437,13 +1429,13 @@ static void GL_Upload32 (unsigned int *data, int width, int height, int flags)
 				glTexImage2D_fp (GL_TEXTURE_2D, miplevel, samples, scaled_width, scaled_height, 0, GL_RGBA, GL_UNSIGNED_BYTE, scaled);
 		}
 
-		glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, gl_filter_min);
-		glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, gl_filter_max);
+		glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, gl_texmodes[gl_filter_idx].minimize);
+		glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, gl_texmodes[gl_filter_idx].maximize);
 	}
 	else
 	{
-		glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, gl_filter_max);
-		glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, gl_filter_max);
+		glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, gl_texmodes[gl_filter_idx].maximize);
+		glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, gl_texmodes[gl_filter_idx].maximize);
 	}
 
 	if (mark)

@@ -2303,15 +2303,7 @@ static void M_OpenGL_Draw (void)
 	M_DrawCheckbox (232, 90 + 8*OGL_COLOREDEXTRA, gl_extra_dynamic_lights.integer);
 
 	M_Print (32 + (5 * 8), 90 + 8*OGL_TEXFILTER,	"Texture filtering");
-	for (i = 0; i < NUM_GL_FILTERS; i++)
-	{
-		if (gl_texmodes[i].minimize == gl_filter_min)
-		{
-			tex_mode = i;
-			M_Print (232, 90 + 8*OGL_TEXFILTER, gl_texmodes[i].name);
-			break;
-		}
-	}
+	M_Print (232, 90 + 8*OGL_TEXFILTER, gl_texmodes[gl_filter_idx].name);
 
 	M_Print (32 + (15 * 8), 90 + 8*OGL_SHADOWS,	"Shadows");
 	M_DrawCheckbox (232, 90 + 8*OGL_SHADOWS, r_shadows.integer);
@@ -2456,6 +2448,7 @@ static void M_OpenGL_Key (int k)
 			break;
 
 		case OGL_TEXFILTER:	// texture filter
+			tex_mode = gl_filter_idx;
 			switch (k)
 			{
 			case K_LEFTARROW:
@@ -2471,11 +2464,8 @@ static void M_OpenGL_Key (int k)
 			default:
 				return;
 			}
-			if (gl_texmodes[tex_mode].minimize != gl_filter_min)
-			{
-				Cbuf_AddText(va("gl_texturemode %s\n", gl_texmodes[tex_mode].name));
-				Cbuf_Execute();
-			}
+			if (tex_mode != gl_filter_idx)
+				Cvar_Set ("gl_texturemode", gl_texmodes[tex_mode].name);
 			break;
 
 		case OGL_SHADOWS:	// shadows
