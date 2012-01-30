@@ -1,7 +1,7 @@
 /*
 	r_edge.c
 
-	$Id: r_edge.c,v 1.15 2008-03-28 08:01:56 sezero Exp $
+	$Id$
 */
 
 #include "quakedef.h"
@@ -977,7 +977,7 @@ void R_ScanEdges (qboolean Translucent)
 	edge_aftertail.prev = &edge_tail;
 
 // FIXME: do we need this now that we clamp x in r_draw.c?
-	edge_sentinel.u = 2000 << 24;		// make sure nothing sorts past this
+	edge_sentinel.u = 32767 << 16;		// make sure nothing sorts past this
 	edge_sentinel.prev = &edge_aftertail;
 
 //

@@ -3,6 +3,24 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2012-01-30 (SVN):
+    * r_edge.c (R_ScanEdges): In the "make sure nothing sorts past this"
+      code, edge_sentinel.u was assigned 2000<<24 for which clang emitted
+      -Wshift-overflow warning "signed shift result (0x7D0000000) requires
+      36 bits to represent, but 'int' only has 32". Comments from Bill
+      Currie (of the quakeforge project): "... going by the goals of the
+      code, getting the largest number representable (or something close)
+      is desired. 0xD0000000 is actually quite broken as it's negative.
+      2000<<20 would work (and be close), but considering the format of
+      edge_sentinel.u (fixed16_t), I think 32767<<16 would be best: it is
+      even closer to the largest (missing just factional bits) and it's
+      clearer in that it conforms to the 16.16 format of the field.
+      However, it's also possible the goal wasn't the largest possible
+      number, but rather the largest expected X coordinate, and the coder
+      forgot that the fixed format is 16.16 rather than 8.24 (still a bit
+      of a goof, though). That said, the code works with 32767<<16."
+      Hence, changed it to 32767<<16.
+
 2012-01-29 (SVN):
     * Updated documentation regarding clang as the compiler.
 
