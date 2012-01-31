@@ -719,7 +719,10 @@ SYSOBJ_SYS := sys_win.o win32res.res
 endif
 ifeq ($(TARGET_OS),dos)
 SYSOBJ_INPUT := in_dos.o
-SYSOBJ_SOFT_VID:= vid_vga.o vid_ext.o d_copy.o vid_dos.o vregset.o
+SYSOBJ_SOFT_VID:= vid_vga.o vid_ext.o vid_dos.o vregset.o
+ifeq ($(USE_X86_ASM),yes)
+SYSOBJ_SOFT_VID+= d_copy.o
+endif
 SYSOBJ_SYS := dos_v2.o sys_dos.o
 #	dosasm.o
 endif

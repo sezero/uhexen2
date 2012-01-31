@@ -752,7 +752,10 @@ SYSOBJ_SYS := conproc.o sys_win.o win32res.res
 endif
 ifeq ($(TARGET_OS),dos)
 SYSOBJ_INPUT := in_dos.o
-SYSOBJ_SOFT_VID:= vid_vga.o vid_ext.o d_copy.o vid_dos.o vregset.o
+SYSOBJ_SOFT_VID:= vid_vga.o vid_ext.o vid_dos.o vregset.o
+ifeq ($(USE_X86_ASM),yes)
+SYSOBJ_SOFT_VID+= d_copy.o
+endif
 DOSTCP :=
 ifeq ($(USE_BWTCP),yes)
 DOSTCP += dos/net_bw.o

@@ -4,6 +4,14 @@ Development Progress	:
 ---------------------------
 
 2012-01-31 (SVN):
+    * vid_vga.c: Added a C-only implementation of VGA_UpdatePlanarScreen
+      based on vga_copytoplanar256 of SVGAlib. Added a C-only version of
+      VGA_UpdateLinearScreen simply by using memcpy.
+    * Makefiles: Made it possible to compile the dos version without x86
+      assembly.
+    * d_copy.asm: Added a few comments from the original d_copy.S.
+
+2012-01-31 (SVN):
     * gl_draw.c, glquake.h: Stored the flags passed to GL_LoadTexture in
       the gltexture_t structure. Adjusted GL_Upload8() and GL_Upload32()
       accordingly to accept a gltexture_t parameter.

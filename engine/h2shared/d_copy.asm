@@ -66,6 +66,7 @@ SEGMENT .data
 
 SEGMENT .text
 
+; void VGA_UpdatePlanarScreen(void *bufptr);
 global VGA_UpdatePlanarScreen
 VGA_UpdatePlanarScreen:
 	push	ebp			; preserve caller's stack frame
@@ -85,7 +86,7 @@ VGA_UpdatePlanarScreen:
 	out	dx,al			; point the SC to the Map Mask
 	inc	edx
 
-	mov	esi, [esp+4+16]
+	mov	esi, [esp+4+16]		; bufptr
 	mov	edi, [VGA_pagebase]
 	mov	ebp, [VGA_height]
 	shr	ebp,1
@@ -150,6 +151,10 @@ LColumnLoop:
 
 	ret
 
+
+; void VGA_UpdateLinearScreen(	void *srcptr, void *destptr,
+;				int width, int height,
+;				int srcrowbytes, int destrowbytes);
 global VGA_UpdateLinearScreen
 VGA_UpdateLinearScreen:
 	push	ebp			; preserve caller's stack frame
@@ -158,15 +163,15 @@ VGA_UpdateLinearScreen:
 	push	ebx
 
 	cld
-	mov	esi, [esp+4+16]
-	mov	edi, [esp+8+16]
-	mov	ebx, [esp+12+16]
-	mov	eax, [esp+20+16]
+	mov	esi, [esp+4+16]		; srcptr
+	mov	edi, [esp+8+16]		; destptr
+	mov	ebx, [esp+12+16]	; width
+	mov	eax, [esp+20+16]	; srcrowbytes
 	sub	eax,ebx
-	mov	edx, [esp+24+16]
+	mov	edx, [esp+24+16]	; destrowbytes
 	sub	edx,ebx
 	shr	ebx,2
-	mov	ebp, [esp+16+16]
+	mov	ebp, [esp+16+16]	; height
 LLRowLoop:
 	mov	ecx,ebx
 	rep	movsd	; rep/movsl (%esi),(%edi)
