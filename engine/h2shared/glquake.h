@@ -114,7 +114,7 @@ typedef struct
 	GLuint		texnum;
 	char	identifier[MAX_QPATH];
 	int		width, height;
-	int		mipmap;
+	int		flags;
 	unsigned short	crc;
 } gltexture_t;
 

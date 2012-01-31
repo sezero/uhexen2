@@ -3,8 +3,14 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2012-01-31 (SVN):
+    * gl_draw.c, glquake.h: Stored the flags passed to GL_LoadTexture in
+      the gltexture_t structure. Adjusted GL_Upload8() and GL_Upload32()
+      accordingly to accept a gltexture_t parameter.
+    * updated version date stamp to 2012-01-31.
+
 2012-01-30 (SVN):
-	* Make "gl_texturemode" a persistent cvar with callback.
+    * Make "gl_texturemode" a persistent cvar with callback.
 
 2012-01-30 (SVN):
     * net_sys.h: Add __FreeBSD_kernel__ to the HAVE_SA_LEN list. Debian

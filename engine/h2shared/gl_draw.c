@@ -81,8 +81,8 @@ gltexture_t	gltextures[MAX_GLTEXTURES];
 int			numgltextures;
 
 static GLuint GL_LoadPixmap (const char *name, const char *data);
-static void GL_Upload32 (unsigned int *data, int width, int height, int flags);
-static void GL_Upload8 (byte *data, int width, int height, int flags);
+static void GL_Upload32 (unsigned int *data, gltexture_t *glt);
+static void GL_Upload8 (byte *data, gltexture_t *glt);
 
 
 //=============================================================================
@@ -247,11 +247,10 @@ static void Draw_TextureMode_f (cvar_t *var)
 				{
 					GL_Bind (glt->texnum);
 					glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, gl_texmodes[gl_filter_idx].maximize);
-					if (glt->mipmap)
+					if (glt->flags & TEX_MIPMAP)
 						glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, gl_texmodes[gl_filter_idx].minimize);
 					else
 						glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, gl_texmodes[gl_filter_idx].maximize);
-		
 				}
 			}
 			return;
@@ -1340,7 +1339,7 @@ static void fxPalTexImage2D (GLenum target, GLint level, GLint internalformat, G
 GL_Upload32
 ===============
 */
-static void GL_Upload32 (unsigned int *data, int width, int height, int flags)
+static void GL_Upload32 (unsigned int *data, gltexture_t *glt)
 {
 	int		samples;
 	unsigned int	*scaled;
@@ -1348,10 +1347,10 @@ static void GL_Upload32 (unsigned int *data, int width, int height, int flags)
 	int		scaled_width, scaled_height;
 
 	// Snap the height and width to a power of 2.
-	for (scaled_width = 1 ; scaled_width < width ; scaled_width<<=1)
+	for (scaled_width = 1 ; scaled_width < glt->width ; scaled_width<<=1)
 		;
 
-	for (scaled_height = 1 ; scaled_height < height ; scaled_height<<=1)
+	for (scaled_height = 1 ; scaled_height < glt->height ; scaled_height<<=1)
 		;
 
 	scaled_width >>= gl_picmip.integer;
@@ -1383,9 +1382,9 @@ static void GL_Upload32 (unsigned int *data, int width, int height, int flags)
 		}
 	}
 
-	samples = (flags & TEX_ALPHA) ? gl_alpha_format : gl_solid_format;
+	samples = (glt->flags & TEX_ALPHA) ? gl_alpha_format : gl_solid_format;
 
-	if (scaled_width == width && scaled_height == height)
+	if (scaled_width == glt->width && scaled_height == glt->height)
 	{
 		scaled = data;
 	}
@@ -1393,10 +1392,10 @@ static void GL_Upload32 (unsigned int *data, int width, int height, int flags)
 	{
 		mark = Hunk_LowMark();
 		scaled = (unsigned int *) Hunk_AllocName(scaled_width * scaled_height * sizeof(unsigned int), "texbuf_upload32");
-		GL_ResampleTexture (data, width, height, scaled, scaled_width, scaled_height);
+		GL_ResampleTexture (data, glt->width, glt->height, scaled, scaled_width, scaled_height);
 	}
 
-	if (is8bit && !(flags & TEX_ALPHA))
+	if (is8bit && !(glt->flags & TEX_ALPHA))
 	{
 		if (!mark)
 			mark = Hunk_LowMark();
@@ -1408,7 +1407,7 @@ static void GL_Upload32 (unsigned int *data, int width, int height, int flags)
 		glTexImage2D_fp (GL_TEXTURE_2D, 0, samples, scaled_width, scaled_height, 0, GL_RGBA, GL_UNSIGNED_BYTE, scaled);
 	}
 
-	if (flags & TEX_MIPMAP)
+	if (glt->flags & TEX_MIPMAP)
 	{
 		int		miplevel;
 
@@ -1423,7 +1422,7 @@ static void GL_Upload32 (unsigned int *data, int width, int height, int flags)
 			if (scaled_height < 1)
 				scaled_height = 1;
 			miplevel++;
-			if (is8bit && !(flags & TEX_ALPHA))
+			if (is8bit && !(glt->flags & TEX_ALPHA))
 				fxPalTexImage2D (GL_TEXTURE_2D, miplevel, samples, scaled_width, scaled_height, 0, GL_RGBA, GL_UNSIGNED_BYTE, scaled);
 			else
 				glTexImage2D_fp (GL_TEXTURE_2D, miplevel, samples, scaled_width, scaled_height, 0, GL_RGBA, GL_UNSIGNED_BYTE, scaled);
@@ -1453,21 +1452,21 @@ modes:
 3 - special (particle translucency table)
 ===============
 */
-static void GL_Upload8 (byte *data, int width, int height, int flags)
+static void GL_Upload8 (byte *data, gltexture_t *glt)
 {
 	unsigned int		*trans;
 	int			mark;
 	int			i, p, s;
 
-	s = width*height;
+	s = glt->width * glt->height;
 	mark = Hunk_LowMark();
 	trans = (unsigned int *) Hunk_AllocName(s * sizeof(unsigned int), "texbuf_upload8");
 
-	if (flags & (TEX_ALPHA|TEX_TRANSPARENT|TEX_HOLEY|TEX_SPECIAL_TRANS))
+	if (glt->flags & (TEX_ALPHA|TEX_TRANSPARENT|TEX_HOLEY|TEX_SPECIAL_TRANS))
 	{
 		// if there are no transparent pixels, make it a 3 component
 		// texture even if it was flagged as TEX_ALPHA.
-		qboolean noalpha = !(flags & (TEX_TRANSPARENT|TEX_HOLEY|TEX_SPECIAL_TRANS));
+		qboolean noalpha = !(glt->flags & (TEX_TRANSPARENT|TEX_HOLEY|TEX_SPECIAL_TRANS));
 
 		for (i = 0; i < s; i++)
 		{
@@ -1483,10 +1482,10 @@ static void GL_Upload8 (byte *data, int width, int height, int flags)
 				 * to avoid alpha fringes */
 				/* this is a replacement from Quake II for Raven's
 				 * "neighboring colors" code */
-				if (i > width && data[i-width] != 255)
-					p = data[i-width];
-				else if (i < s-width && data[i+width] != 255)
-					p = data[i+width];
+				if (i > glt->width && data[i-glt->width] != 255)
+					p = data[i-glt->width];
+				else if (i < s-glt->width && data[i+glt->width] != 255)
+					p = data[i+glt->width];
 				else if (i > 0 && data[i-1] != 255)
 					p = data[i-1];
 				else if (i < s-1 && data[i+1] != 255)
@@ -1499,7 +1498,7 @@ static void GL_Upload8 (byte *data, int width, int height, int flags)
 				((byte *)&trans[i])[2] = ((byte *)&d_8to24table[p])[2];
 			}
 
-			if (flags & TEX_TRANSPARENT)
+			if (glt->flags & TEX_TRANSPARENT)
 			{
 				p = data[i];
 				if (p == 0)
@@ -1517,13 +1516,13 @@ static void GL_Upload8 (byte *data, int width, int height, int flags)
 					trans[i] |= MASK_a;
 				}
 			}
-			else if (flags & TEX_HOLEY)
+			else if (glt->flags & TEX_HOLEY)
 			{
 				p = data[i];
 				if (p == 0)
 					trans[i] &= MASK_rgb;
 			}
-			else if (flags & TEX_SPECIAL_TRANS)
+			else if (glt->flags & TEX_SPECIAL_TRANS)
 			{
 				p = data[i];
 				trans[i] = d_8to24table[ColorIndex[p>>4]] & MASK_rgb;
@@ -1532,9 +1531,9 @@ static void GL_Upload8 (byte *data, int width, int height, int flags)
 		}
 
 		if (noalpha)
-			flags &= ~TEX_ALPHA;
-		if (flags & (TEX_TRANSPARENT|TEX_HOLEY|TEX_SPECIAL_TRANS))
-			flags |= TEX_ALPHA;
+			glt->flags &= ~TEX_ALPHA;
+		if (glt->flags & (TEX_TRANSPARENT|TEX_HOLEY|TEX_SPECIAL_TRANS))
+			glt->flags |= TEX_ALPHA;
 	}
 	else
 	{
@@ -1549,7 +1548,7 @@ static void GL_Upload8 (byte *data, int width, int height, int flags)
 		}
 	}
 
-	GL_Upload32 (trans, width, height, flags);
+	GL_Upload32 (trans, glt);
 	Hunk_FreeToLowMark(mark);
 }
 
@@ -1583,19 +1582,15 @@ GLuint GL_LoadTexture (const char *identifier, byte *data, int width, int height
 			if (!strcmp (identifier, glt->identifier))
 			{
 				if (crc != glt->crc ||
-				    glt->mipmap != (flags & TEX_MIPMAP) ||
-				    width  != glt->width ||
-				    height != glt->height)
+				    (glt->flags & TEX_MIPMAP) != (flags & TEX_MIPMAP) ||
+				    width  != glt->width || height != glt->height)
 				{ /* not the same, delete and rebind to new image */
 					Con_DPrintf ("Texture cache mismatch: %lu, %s, reloading\n",
 							    (unsigned long)glt->texnum, identifier);
 					glDeleteTextures_fp (1, &glt->texnum);
 					goto gl_rebind;
 				}
-				else
-				{ /* No need to rebind */
-					return glt->texnum;
-				}
+				else	return glt->texnum;	/* the same is present. */
 			}
 		}
 	}
@@ -1611,14 +1606,14 @@ gl_rebind:
 	glGenTextures_fp(1, &glt->texnum);
 	glt->width = width;
 	glt->height = height;
-	glt->mipmap = flags & TEX_MIPMAP;
+	glt->flags = flags;
 	glt->crc = crc;
 
 	GL_Bind (glt->texnum);
 	if (flags & TEX_RGBA)
-		GL_Upload32 ((unsigned int *)data, width, height, flags);
+		GL_Upload32 ((unsigned int *)data, glt);
 	else
-		GL_Upload8 (data, width, height, flags);
+		GL_Upload8 (data, glt);
 
 	return glt->texnum;
 }
