@@ -4,6 +4,9 @@ Development Progress	:
 ---------------------------
 
 2012-01-31 (SVN):
+	* gl_draw.c: Change the order of gl_texmodes.
+
+2012-01-31 (SVN):
     * vid_vga.c: Added a C-only implementation of VGA_UpdatePlanarScreen
       based on vga_copytoplanar256 of SVGAlib. Added a C-only version of
       VGA_UpdateLinearScreen simply by using memcpy.
