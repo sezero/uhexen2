@@ -3,8 +3,14 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2012-02-02 (SVN):
+    * vid_svgalib.c: Fixed planar (modex) modes when using svgalib-1.9.x
+      and the svgalib_helper kernel module. Removed the necessity of x86
+      assembly for compilation. Removed linux-only limitation (other OSs
+      such as FreeBSD aren't tested though.)
+
 2012-01-31 (SVN):
-	* gl_draw.c: Change the order of gl_texmodes.
+    * gl_draw.c: Change the order of gl_texmodes.
 
 2012-01-31 (SVN):
     * vid_vga.c: Added a C-only implementation of VGA_UpdatePlanarScreen

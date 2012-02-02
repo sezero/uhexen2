@@ -25,8 +25,6 @@ TODO:
 - Add sequencer (mpu-401) support for midi (alsa / oss)
 - DOS: Implement MIDI music playback.
 - DOS: Implement loading progress bars.
-- SVGALib: Use svgalib write functions, remove the d_copy.asm
-  dependency and make it possible to compile for non-x86.
 - Utilities: Add pthread support and revise the current windows
   threads mess. Threads need't be for alpha-only.
 - utils/jsh2colour: clean-up the huge mess and improve a bit.

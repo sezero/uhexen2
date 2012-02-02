@@ -28,8 +28,11 @@ Changes since the uhexen2-1.5.1 release:
   starting a game or when loading a saved game to prevent
   any unintended viewangle changes.
 * SDL / Unix: Revised SDL unicode and dead keys support.
-* Linux / SVGAlib mouse: Fixed missing camera mode and ideal
+* Unix / SVGAlib mouse: Fixed missing camera mode and ideal
   roll handling.
+* Unix / SVGAlib video: Fixed planar modes when using the
+  svgalib_helper kernel module. Removed the need for x86
+  assembly for compilation and the linux-only limitation.
 * Unix, MIDI: Several updates to the Timidity backend.
 * Timidity, Windows MIDI: Support for Microsoft RMID format.
 * Windows MIDI: Fixed broken tempo with certain midi files

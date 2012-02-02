@@ -38,8 +38,7 @@
 #endif
 
 #include "q_stdinc.h"
-//#include <asm/io.h>	/* outb */
-#include <sys/io.h>	/* outb */
+/*#include <sys/io.h>*/	/* outb()*/
 
 #include "vga.h"
 
@@ -369,8 +368,8 @@ static int VID_SetMode (int modenum, unsigned char *palette)
 
 	/* get goin' */
 	vga_setmode(current_mode);
-	VID_SetPalette(palette);
 
+	VID_SetPalette(palette);
 	VGA_pagebase = vid.direct = framebuffer_ptr = (byte *) vga_getgraphmem();
 	/*
 	if (vga_setlinearaddressing() > 0)
@@ -501,7 +500,11 @@ void VID_Update (vrect_t *rects)
 
 	if (VGA_planar)
 	{
-		VGA_UpdatePlanarScreen (vid.buffer);
+	/* VGA_UpdatePlanarScreen() of d_copy.asm only works with
+	 * /dev/mem, i.e. without the svgalib_helper kernel module
+	 * introduced in svgalib-1.9.x.  must use an appropriate
+	 * svgalib api function, such as vga_copytoplanar256() */
+		vga_copytoplanar256(vid.buffer, VGA_bufferrowbytes, 0, VGA_rowbytes, VGA_width, VGA_height);
 	}
 	else if (vid_redrawfull.integer)
 	{
@@ -586,6 +589,13 @@ void D_BeginDirectRect (int x, int y, byte *pbitmap, int width, int height)
 
 	if (VGA_planar)
 	{
+#if 0
+	/* with svgalib-1.9.x, we can't use outb() directly because
+	 * it only works for /dev/mem, i.e. without svgalib_helper
+	 * kernel module.  the equivalent __svgalib_port_out () is
+	 * an internal helper function of svgalib (libvga.h) and is
+	 * not officially exported.  therefore disabling this part
+	 * which isn't an important functionality at all. */
 		for (plane = 0; plane < 4; plane++)
 		{
 		/* select the correct plane for reading and writing */
@@ -610,6 +620,7 @@ void D_BeginDirectRect (int x, int y, byte *pbitmap, int width, int height)
 				}
 			}
 		}
+#endif
 	}
 	else
 	{
@@ -668,6 +679,7 @@ void D_EndDirectRect (int x, int y, int width, int height)
 
 	if (VGA_planar)
 	{
+#if 0	/* see in D_BeginDirectRect() */
 		for (plane = 0; plane < 4; plane++)
 		{
 		/* select the correct plane for writing */
@@ -688,6 +700,7 @@ void D_EndDirectRect (int x, int y, int width, int height)
 				}
 			}
 		}
+#endif
 	}
 	else
 	{

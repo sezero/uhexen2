@@ -1,11 +1,6 @@
 # GNU Makefile for hexen2 svgalib-client using GCC.
 # $Id$
 #
-# This makefile builds SVGALib dependant software renderer client
-# for linux-x86 only. This makefile is a butchered version of the
-# main makefile for SDL clients.  The svgalib-client isn't tested
-# and isn't supported for x86_64 and/or FreeBSD.
-#
 # It is ESSENTIAL that you run make clean between different
 # types of builds or different types of targets.
 #
@@ -38,7 +33,7 @@
 #
 # USE_X86_ASM	yes  =  Use x86 assembly on ia32 machines which is faster.
 #			Automatically disabled for any other cpu.
-#		!!! IMPORTANT: SVGA-Hexen II requires x86-ASM !!!
+#		no   =	Do not use intel assembly even on ix86.
 #
 # COMPILE_32BITS yes =  Compile as a 32 bit binary. If you are on a 64 bit
 #			platform and having problems with 64 bit compiled
@@ -68,6 +63,8 @@ COMMONDIR:=../h2shared
 
 # General options (see explanations at the top)
 OPT_EXTRA=yes
+COMPILE_32BITS=no
+USE_X86_ASM=yes
 
 USE_SOUND=yes
 USE_ALSA=yes
@@ -93,21 +90,6 @@ CODECS_USE_ZONE=no
 # include the common dirty stuff
 include $(UHEXEN2_TOP)/scripts/makefile.inc
 
-ifeq ($(MACH_TYPE),x86)
-COMPILE_32BITS=no
-else
-ifeq ($(MACH_TYPE),x86_64)
-# compile as a 32 bit binary (-m32) ?..
-COMPILE_32BITS=yes
-else
-$(error Shall not compile SVGA Client on non-x86.)
-endif
-endif
-
-ifneq ($(HOST_OS),linux)
-$(error Shall not compile SVGA Client for non-Linux.)
-endif
-
 # Names of the binaries
 SW_BINARY:=hexen2.svga
 
@@ -132,11 +114,22 @@ ifndef DEBUG
 CFLAGS += -O2 -DNDEBUG=1 -ffast-math -fexpensive-optimizations
 
 ifeq ($(OPT_EXTRA),yes)
+ifeq ($(MACH_TYPE),x86)
 ALIGN_OPT:= $(call check_gcc,-falign-loops=2 -falign-jumps=2 -falign-functions=2,)
 ifeq ($(ALIGN_OPT),)
 ALIGN_OPT:= $(call check_gcc,-malign-loops=2 -malign-jumps=2 -malign-functions=2,)
 endif
 CFLAGS += $(ALIGN_OPT)
+endif
+
+ifeq ($(MACH_TYPE),x86_64)
+ALIGN_OPT:= $(call check_gcc,-falign-loops=2 -falign-jumps=2 -falign-functions=2,)
+ifeq ($(ALIGN_OPT),)
+ALIGN_OPT:= $(call check_gcc,-malign-loops=2 -malign-jumps=2 -malign-functions=2,)
+endif
+CFLAGS += $(ALIGN_OPT)
+endif
+
 CFLAGS += -fomit-frame-pointer
 endif
 #
@@ -162,6 +155,19 @@ endif
 #############################################################
 # Other build flags
 #############################################################
+
+# disable x86 assembly if it is not an x86.
+ifneq ($(MACH_TYPE),x86)
+ifeq ($(MACH_TYPE),x86_64)
+#  but keep the ia32 assembly on x86_64 if
+#  compiling as 32 bits for the s/w renderer
+ifneq ($(COMPILE_32BITS),yes)
+USE_X86_ASM=no
+endif
+else
+USE_X86_ASM=no
+endif
+endif
 
 ifdef DEMO
 CPPFLAGS+= -DDEMOBUILD
@@ -199,14 +205,16 @@ endif
 # Unix flags/settings and overrides:
 #############################################################
 NASMFLAGS=-f elf -d_NO_PREFIX
-# use x86 assembly
-USE_X86_ASM=yes
 
 LDFLAGS += $(LIBSOCKET) -lm -lvga
 
 CPPFLAGS+= -DSVGAQUAKE
 
 ifeq ($(USE_SOUND),yes)
+ifneq ($(HOST_OS),linux)
+# alsa is only for linux
+USE_ALSA=no
+endif
 ifneq ($(USE_ALSA),yes)
 CPPFLAGS+= -DNO_ALSA_AUDIO
 else
@@ -301,6 +309,7 @@ endif
 # Objects
 
 # Intel asm objects
+ifeq ($(USE_X86_ASM),yes)
 COMMON_ASM= math.o \
 	sys_ia32.o
 
@@ -331,6 +340,15 @@ SOFT_ASM = \
 
 SOUND_ASM = snd_mixa.o
 WORLD_ASM = worlda.o
+
+else
+
+SOFT_ASM =
+COMMON_ASM =
+SOUND_ASM =
+WORLD_ASM =
+
+endif
 
 # Sound objects
 ifneq ($(USE_SOUND),yes)
@@ -366,13 +384,14 @@ ifneq ($(USE_CDAUDIO),yes)
 SYSOBJ_CDA:= cd_null.o
 CPPFLAGS += -D_NO_CDAUDIO
 else
-SYSOBJ_CDA := cd_linux.o
+SYSOBJ_CDA := cd_bsd.o cd_linux.o
 # end of CDAudio objects
 endif
 
 # Other platform specific object settings
 SYSOBJ_INPUT := in_svgalib.o
-SYSOBJ_SOFT_VID:= d_copy.o vid_svgalib.o
+SYSOBJ_SOFT_VID:= vid_svgalib.o
+# d_copy.o not needed anymore
 SYSOBJ_NET := net_bsd.o net_udp.o
 SYSOBJ_SYS := sys_unix.o
 
@@ -489,4 +508,9 @@ localclean:
 clean: localclean timi_clean
 distclean: clean
 	rm -f $(SW_BINARY)
+
+report:
+	@echo "Host OS  :" $(HOST_OS)
+	@echo "Target OS:" $(TARGET_OS)
+	@echo "Machine  :" $(MACH_TYPE)
 
