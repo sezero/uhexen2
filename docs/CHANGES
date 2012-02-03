@@ -3,6 +3,11 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2012-02-03 (SVN):
+    * vid_svgalib.c: In VID_SetMode, check return code from vga_setmode.
+      Call VID_SetPalette after we get the framebuffer ptr. In VID_Init,
+      make sure that we have at least one supported mode.
+
 2012-02-02 (SVN):
     * vid_svgalib.c: Fixed planar (modex) modes when using svgalib-1.9.x
       and the svgalib_helper kernel module. Removed the necessity of x86

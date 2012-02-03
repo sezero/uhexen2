@@ -367,22 +367,22 @@ static int VID_SetMode (int modenum, unsigned char *palette)
 	D_InitCaches (vid_surfcache, tsize);
 
 	/* get goin' */
-	vga_setmode(current_mode);
+	if (vga_setmode(current_mode) != 0)
+		Sys_Error("Unable to set mode %d", current_mode);
 
-	VID_SetPalette(palette);
 	VGA_pagebase = vid.direct = framebuffer_ptr = (byte *) vga_getgraphmem();
 	/*
 	if (vga_setlinearaddressing() > 0)
 		framebuffer_ptr = (char *) vga_getgraphmem();
 	*/
 	if (!framebuffer_ptr)
-		Sys_Error("This mode isn't hapnin'\n");
+		Sys_Error("Unable to get framebuffer ptr for mode %d", current_mode);
+
+	VID_SetPalette(palette);
+	vid.recalc_refdef = 1;	/* force a surface cache flush */
 
 	vga_setpage(0);
-
 	svgalib_inited = 1;
-
-	vid.recalc_refdef = 1;	/* force a surface cache flush */
 
 	return 0;
 }
@@ -423,6 +423,8 @@ void VID_Init (unsigned char *palette)
 	}
 
 	VID_InitModes();
+	if (!VID_NumModes())
+		Sys_Error ("No supported modes reported by SVGAlib");
 
 //	Cvar_RegisterVariable (&_enable_mouse);
 	Cvar_RegisterVariable (&vid_mode);
@@ -566,7 +568,7 @@ D_BeginDirectRect
 */
 void D_BeginDirectRect (int x, int y, byte *pbitmap, int width, int height)
 {
-	int	i, j, k, plane, reps, repshift, offset, vidpage, off;
+	int	i, j, reps, repshift, offset, vidpage, off;
 
 	if (!svgalib_inited || !vid.direct || !vga_oktowrite())
 		return;
@@ -596,6 +598,7 @@ void D_BeginDirectRect (int x, int y, byte *pbitmap, int width, int height)
 	 * an internal helper function of svgalib (libvga.h) and is
 	 * not officially exported.  therefore disabling this part
 	 * which isn't an important functionality at all. */
+		int			k, plane;
 		for (plane = 0; plane < 4; plane++)
 		{
 		/* select the correct plane for reading and writing */
@@ -656,7 +659,7 @@ D_EndDirectRect
 */
 void D_EndDirectRect (int x, int y, int width, int height)
 {
-	int	i, j, k, plane, reps, repshift, offset, vidpage, off;
+	int	i, j, reps, repshift, offset, vidpage, off;
 
 	if (!svgalib_inited || !vid.direct || !vga_oktowrite())
 		return;
@@ -680,6 +683,7 @@ void D_EndDirectRect (int x, int y, int width, int height)
 	if (VGA_planar)
 	{
 #if 0	/* see in D_BeginDirectRect() */
+		int			k, plane;
 		for (plane = 0; plane < 4; plane++)
 		{
 		/* select the correct plane for writing */
