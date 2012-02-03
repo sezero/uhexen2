@@ -4,6 +4,15 @@ Development Progress	:
 ---------------------------
 
 2012-02-03 (SVN):
+    * vid_svgalib.c: Fixed broken command line resolution matching code.
+      Fixed crashes when a bad mode name is passed to -mode argument or
+      set as the GSVGAMODE environment variable. If no resolutions match
+      the one requested by the command line or the GSVGAMODE environment
+      variable, make sure that the one picked from the existing modes
+      actually exists. Set the palette after coming back from a terminal
+      switching (fixes messed up colors.)
+
+2012-02-03 (SVN):
     * vid_svgalib.c: In VID_SetMode, check return code from vga_setmode.
       Call VID_SetPalette after we get the framebuffer ptr. In VID_Init,
       make sure that we have at least one supported mode.

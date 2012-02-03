@@ -228,36 +228,41 @@ static void VID_InitModes (void)
 static int get_mode (char *name, int width, int height, int depth)
 {
 	int	i;
-	int	ok, match;
-
-	match = (!!width) + (!!height)*2 + (!!depth)*4;
 
 	if (name)
 	{
 		i = vga_getmodenumber(name);
-		if (!modes[i].width)
+		if (i < 0 || !modes[i].width)
 		{
 			Sys_Printf("Mode [%s] not supported\n", name);
-			i = G320x200x256;
+			i = -1;
 		}
 	}
 	else
 	{
+		int	need, match;
+		need = (!!width) | ((!!height) << 1) | ((!!depth) << 2);
+
 		for (i = 0; i < num_modes; i++)
 		{
-			if (modes[i].width)
-			{
-				ok = (modes[i].width == width)
-					+ (modes[i].height == height)*2
-					+ (modes[i].bytesperpixel == depth/8)*4;
-				if ((ok & match) == ok)
-					break;
-			}
+			if (!modes[i].width)
+				continue;
+			if (width && modes[i].width != width)
+				continue;
+			if (height && modes[i].height != height)
+				continue;
+			if (depth && modes[i].bytesperpixel != depth/8)
+				continue;
+			match =	((modes[i].width == width)	<< 0)	|
+				((modes[i].height == height)	<< 1)	|
+				((modes[i].bytesperpixel == depth/8) << 2);
+			if (match & need)
+				break;	/* got a match */
 		}
 		if (i == num_modes)
 		{
 			Sys_Printf("Mode %dx%d (%d bits) not supported\n", width, height, depth);
-			i = G320x200x256;
+			i = -1;
 		}
 	}
 
@@ -311,7 +316,7 @@ static int VID_SetMode (int modenum, unsigned char *palette)
 	{
 		Cvar_SetValueQuick (&vid_mode, (float)current_mode);
 		Con_Printf("No such video mode: %d\n",modenum);
-		return 0;
+		return -1;
 	}
 
 	Cvar_SetValueQuick (&vid_mode, (float)modenum);
@@ -396,6 +401,7 @@ static void goto_background (void)
 static void comefrom_background (void)
 {
 	svgalib_backgrounded = 0;
+	VID_SetPalette(vid_current_palette);
 }
 
 void VID_Init (unsigned char *palette)
@@ -480,10 +486,33 @@ void VID_Init (unsigned char *palette)
 			current_mode = get_mode(NULL, w, h, d);
 	}
 	if (current_mode == -1)
-		current_mode = G320x200x256;
+	{
+		if (vga_hasmode(G320x200x256))
+			current_mode = G320x200x256;
+		else
+		{
+			Sys_Printf ("Mode 13h not supported\n");
+#if defined(G320x200x256V) /* svgalib-1.9 may do this */
+			if (vga_hasmode(G320x200x256V))
+				current_mode = G320x200x256V;
+			else
+#endif
+			/* try the first available */
+			for (i = 0; i < num_modes; i++)
+			{
+				if (modes[i].width != 0)
+				{
+					current_mode = i;
+					break;
+				}
+			}
+			Sys_Printf ("Will try setting mode %d\n", current_mode);
+		}
+	}
 
 /* set vid parameters */
-	VID_SetMode(current_mode, palette);
+	if (VID_SetMode(current_mode, palette) != 0)
+		Sys_Error ("Unable to set a video mode");
 
 	VID_SetPalette(palette);
 }
