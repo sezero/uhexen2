@@ -3,6 +3,10 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2012-02-04 (SVN):
+    * oslibs, dos/windows codecs: Upgrade to the latest versions of ogg-
+      vorbis decoders.
+
 2012-02-03 (SVN):
     * vid_svgalib.c: Fixed broken command line resolution matching code.
       Fixed crashes when a bad mode name is passed to -mode argument or
