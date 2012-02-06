@@ -66,7 +66,8 @@
 /* further compatibility macros */
 #define	GTKUI_DISABLE_FOCUS(widget)	GTK_WIDGET_UNSET_FLAGS((widget),GTK_CAN_FOCUS)
 
-#if defined(_H2L_USE_GTK1)		/* "gtk-1.2 doesnt have it" wrappers */
+#if defined(_H2L_USE_GTK1)	/* gtk-1.2 */
+#define	GTK_SIGHANDLER_T	guint
 #define	GTKUI_SIGNAL_CONNECT(object, name, func, func_data)		\
 	gtk_signal_connect(GTK_OBJECT((object)),(name),GTK_SIGNAL_FUNC((func)),(func_data))
 #define	GTKUI_SIGNAL_CONNECT_OBJECT(object, name, func, slot_object)	\
@@ -77,7 +78,8 @@
 	gtk_signal_handler_block (GTK_OBJECT((object)), (handler))
 #define	GTKUI_SIGNAL_HANDLER_UNBLOCK(object, handler)			\
 	gtk_signal_handler_unblock (GTK_OBJECT((object)), (handler))
-#else
+#else	/* gtk-2 / gtk-3 */
+#define	GTK_SIGHANDLER_T	gulong
 #define	GTKUI_SIGNAL_CONNECT(object, name, func, func_data)		\
 	g_signal_connect ((gpointer)(object),(name),G_CALLBACK((func)),(gpointer)(func_data))
 #define	GTKUI_SIGNAL_CONNECT_OBJECT(object, name, func, slot_object)	\

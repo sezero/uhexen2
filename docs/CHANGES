@@ -4,6 +4,10 @@ Development Progress	:
 ---------------------------
 
 2012-02-06 (SVN):
+    * launcher: Added compatibility macro GTK_SIGHANDLER_T, defined as
+      guint for gtk1 and as gulong for newer gtk versions.
+
+2012-02-06 (SVN):
     * launcher: Rename WGT_RESCOMBO and WGT_CONWCOMBO to WGT_RESMENU and
       WGT_CONWMENU, which are actually menus after all.
     * launcher: Remove hwgames_t structure whose only difference from

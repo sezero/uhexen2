@@ -48,7 +48,7 @@ static options_widget_t	Options;
 static MainWindow_t	main_win;
 static PatchWindow_t	patch_win;
 static int		bmore = 0;
-static guint	reslist_handler, conwlist_handler;
+static GTK_SIGHANDLER_T	reslist_handler, conwlist_handler;
 
 static const char *res_names[RES_MAX] =
 {
