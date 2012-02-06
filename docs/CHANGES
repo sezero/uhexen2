@@ -4,6 +4,8 @@ Development Progress	:
 ---------------------------
 
 2012-02-06 (SVN):
+    * launcher: Rename WGT_RESCOMBO and WGT_CONWCOMBO to WGT_RESMENU and
+      WGT_CONWMENU, which are actually menus after all.
     * launcher: Remove hwgames_t structure whose only difference from
       h2games_t was the absence of the is_botmatch field.
 

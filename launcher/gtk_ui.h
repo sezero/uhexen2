@@ -170,9 +170,9 @@ struct Launch_s
 struct Video_s
 {
 	GtkWidget *bOGL;	/* OpenGL / Software */
-	GtkWidget *cRES;	/* Resolution combo */
+	GtkWidget *mRES;	/* Resolution menu */
 	GtkWidget *bCONW;	/* Allow conwidth toggle */
-	GtkWidget *cCONW;	/* Conwidth combo */
+	GtkWidget *mCONW;	/* Conwidth menu */
 	GtkWidget *bFULS;	/* Fullscreen / windowed */
 	GtkWidget *b3DFX;	/* 3dfx specific Gamma */
 	GtkWidget *b8BIT;	/* 8-bit texture extensions */
@@ -250,9 +250,9 @@ typedef struct
 #define	WGT_PORTALS	Options.bH2MP
 
 #define	WGT_OPENGL	Options.Video.bOGL
-#define	WGT_RESCOMBO	Options.Video.cRES
+#define	WGT_RESMENU	Options.Video.mRES
 #define	WGT_CONWBUTTON	Options.Video.bCONW
-#define	WGT_CONWCOMBO	Options.Video.cCONW
+#define	WGT_CONWMENU	Options.Video.mCONW
 #define	WGT_FULLSCR	Options.Video.bFULS
 #define	WGT_3DFX	Options.Video.b3DFX
 #define	WGT_GL8BIT	Options.Video.b8BIT

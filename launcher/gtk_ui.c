@@ -462,10 +462,10 @@ static void Make_ResMenu (void)
 	i  = (opengl_support) ? RES_MINGL : 0;
 	for ( ; i <= up; i++)
 		ResList = g_list_append (ResList, g_strdup(res_names[i]));
-	gtk_combo_set_popdown_strings (GTK_COMBO(WGT_RESCOMBO), ResList);
+	gtk_combo_set_popdown_strings (GTK_COMBO(WGT_RESMENU), ResList);
 	g_list_foreach(ResList, g_free_func, NULL);
 	g_list_free (ResList);
-	gtk_entry_set_text (GTK_ENTRY(GTK_COMBO(WGT_RESCOMBO)->entry), res_names[resolution]);
+	gtk_entry_set_text (GTK_ENTRY(GTK_COMBO(WGT_RESMENU)->entry), res_names[resolution]);
 }
 
 static void Make_ConWidthMenu (void)
@@ -475,16 +475,16 @@ static void Make_ConWidthMenu (void)
 
 	for (i = 0; i <= resolution; i++)
 		ResList = g_list_append (ResList, g_strdup(res_names[i]));
-	gtk_combo_set_popdown_strings (GTK_COMBO(WGT_CONWCOMBO), ResList);
+	gtk_combo_set_popdown_strings (GTK_COMBO(WGT_CONWMENU), ResList);
 	g_list_foreach(ResList, g_free_func, NULL);
 	g_list_free (ResList);
-	gtk_entry_set_text (GTK_ENTRY(GTK_COMBO(WGT_CONWCOMBO)->entry), res_names[conwidth]);
+	gtk_entry_set_text (GTK_ENTRY(GTK_COMBO(WGT_CONWMENU)->entry), res_names[conwidth]);
 }
 
 static void on_OGL (GtkToggleButton *button, gpointer user_data)
 {
-	GTKUI_SIGNAL_HANDLER_BLOCK (GTK_COMBO(WGT_RESCOMBO)->entry, reslist_handler);
-	GTKUI_SIGNAL_HANDLER_BLOCK (GTK_COMBO(WGT_CONWCOMBO)->entry, conwlist_handler);
+	GTKUI_SIGNAL_HANDLER_BLOCK (GTK_COMBO(WGT_RESMENU)->entry, reslist_handler);
+	GTKUI_SIGNAL_HANDLER_BLOCK (GTK_COMBO(WGT_CONWMENU)->entry, conwlist_handler);
 
 	opengl_support ^= 1;
 	if (opengl_support)
@@ -506,19 +506,19 @@ static void on_OGL (GtkToggleButton *button, gpointer user_data)
 	gtk_widget_set_sensitive (WGT_FSAA, opengl_support);
 	gtk_widget_set_sensitive (WGT_LIBGL, opengl_support);
 	gtk_widget_set_sensitive (WGT_CONWBUTTON, opengl_support);
-	gtk_widget_set_sensitive (WGT_CONWCOMBO, opengl_support);
+	gtk_widget_set_sensitive (WGT_CONWMENU, opengl_support);
 	Make_ResMenu ();
 	if (opengl_support)
 		Make_ConWidthMenu();
 	UpdateStats ();
 
-	GTKUI_SIGNAL_HANDLER_UNBLOCK (GTK_COMBO(WGT_RESCOMBO)->entry, reslist_handler);
-	GTKUI_SIGNAL_HANDLER_UNBLOCK (GTK_COMBO(WGT_CONWCOMBO)->entry, conwlist_handler);
+	GTKUI_SIGNAL_HANDLER_UNBLOCK (GTK_COMBO(WGT_RESMENU)->entry, reslist_handler);
+	GTKUI_SIGNAL_HANDLER_UNBLOCK (GTK_COMBO(WGT_CONWMENU)->entry, conwlist_handler);
 }
 
 static void res_Change (GtkEntry *unused, GtkList *l)
 {
-	GTKUI_SIGNAL_HANDLER_BLOCK (GTK_COMBO(WGT_CONWCOMBO)->entry, conwlist_handler);
+	GTKUI_SIGNAL_HANDLER_BLOCK (GTK_COMBO(WGT_CONWMENU)->entry, conwlist_handler);
 
 	resolution = gtk_list_child_position(l, (GtkWidget *) l->selection->data);
 	if (opengl_support)
@@ -530,7 +530,7 @@ static void res_Change (GtkEntry *unused, GtkList *l)
 		Make_ConWidthMenu ();
 	}
 
-	GTKUI_SIGNAL_HANDLER_UNBLOCK (GTK_COMBO(WGT_CONWCOMBO)->entry, conwlist_handler);
+	GTKUI_SIGNAL_HANDLER_UNBLOCK (GTK_COMBO(WGT_CONWMENU)->entry, conwlist_handler);
 }
 
 static void con_Change (GtkEntry *unused, GtkList *l)
@@ -1077,17 +1077,17 @@ static void create_window1 (void)
 	gtk_fixed_put (GTK_FIXED(BASIC_TAB), TxtResol, 14, 180);
 	gtk_label_set_justify (GTK_LABEL(TxtResol), GTK_JUSTIFY_LEFT);
 
-/* resolution combo */
-	WGT_RESCOMBO = gtk_combo_new ();
-	gtk_combo_set_use_arrows (GTK_COMBO(WGT_RESCOMBO), FALSE);
-	gtk_widget_set_size_request (WGT_RESCOMBO, 110, 24);
-	gtk_fixed_put (GTK_FIXED(BASIC_TAB), WGT_RESCOMBO, 102, 176);
+/* resolution menu */
+	WGT_RESMENU = gtk_combo_new ();
+	gtk_combo_set_use_arrows (GTK_COMBO(WGT_RESMENU), FALSE);
+	gtk_widget_set_size_request (WGT_RESMENU, 110, 24);
+	gtk_fixed_put (GTK_FIXED(BASIC_TAB), WGT_RESMENU, 102, 176);
 /* resolution display */
-/*	gtk_entry_set_alignment (GTK_ENTRY(GTK_COMBO(WGT_RESCOMBO)->entry), 1);*/
-	gtk_editable_set_editable (GTK_EDITABLE(GTK_COMBO(WGT_RESCOMBO)->entry), FALSE);
+/*	gtk_entry_set_alignment (GTK_ENTRY(GTK_COMBO(WGT_RESMENU)->entry), 1);*/
+	gtk_editable_set_editable (GTK_EDITABLE(GTK_COMBO(WGT_RESMENU)->entry), FALSE);
 	/* menu listing for resolution come from a callback */
 	Make_ResMenu ();
-	gtk_widget_show (WGT_RESCOMBO);
+	gtk_widget_show (WGT_RESMENU);
 
 /*********************************************************************/
 
@@ -1284,18 +1284,18 @@ static void create_window1 (void)
 	gtk_tooltips_set_tip (tooltips, WGT_CONWBUTTON, _("Allow bigger/readable text and HUD in high resolutions. Smaller the number, bigger the text. 640 is recommended"), NULL);
 	gtk_widget_set_sensitive (WGT_CONWBUTTON, opengl_support);
 
-/* conwidth combo */
-	WGT_CONWCOMBO = gtk_combo_new ();
-	gtk_combo_set_use_arrows (GTK_COMBO(WGT_CONWCOMBO), FALSE);
-	gtk_widget_set_size_request (WGT_CONWCOMBO, 108, 24);
-	gtk_fixed_put (GTK_FIXED(ADDON_TAB2), WGT_CONWCOMBO, 100, 182);
-	gtk_widget_set_sensitive (WGT_CONWCOMBO, opengl_support);
+/* conwidth menu */
+	WGT_CONWMENU = gtk_combo_new ();
+	gtk_combo_set_use_arrows (GTK_COMBO(WGT_CONWMENU), FALSE);
+	gtk_widget_set_size_request (WGT_CONWMENU, 108, 24);
+	gtk_fixed_put (GTK_FIXED(ADDON_TAB2), WGT_CONWMENU, 100, 182);
+	gtk_widget_set_sensitive (WGT_CONWMENU, opengl_support);
 /* conwidth display */
-/*	gtk_entry_set_alignment (GTK_ENTRY(GTK_COMBO(WGT_CONWCOMBO)->entry), 1);*/
-	gtk_editable_set_editable (GTK_EDITABLE(GTK_COMBO(WGT_CONWCOMBO)->entry), FALSE);
+/*	gtk_entry_set_alignment (GTK_ENTRY(GTK_COMBO(WGT_CONWMENU)->entry), 1);*/
+	gtk_editable_set_editable (GTK_EDITABLE(GTK_COMBO(WGT_CONWMENU)->entry), FALSE);
 	/* menu listing for conwidth come from a callback */
 	Make_ConWidthMenu();
-	gtk_widget_show (WGT_CONWCOMBO);
+	gtk_widget_show (WGT_CONWMENU);
 
 /* Enable VSync */
 	WGT_VSYNC = gtk_check_button_new_with_label (_("Enable VSync"));
@@ -1550,10 +1550,10 @@ static void create_window1 (void)
 	GTKUI_SIGNAL_CONNECT (WGT_MEMHEAP, "toggled", BoolRevert, &use_heap);
 	GTKUI_SIGNAL_CONNECT (WGT_MEMZONE, "toggled", BoolRevert, &use_zone);
 	GTKUI_SIGNAL_CONNECT (WGT_EXTBTN, "toggled", BoolRevert, &use_extra);
-	reslist_handler = GTKUI_SIGNAL_CONNECT (GTK_COMBO(WGT_RESCOMBO)->entry, "changed", res_Change,
-									GTK_LIST((GTK_COMBO(WGT_RESCOMBO))->list));
-	conwlist_handler = GTKUI_SIGNAL_CONNECT (GTK_COMBO(WGT_CONWCOMBO)->entry, "changed", con_Change,
-									GTK_LIST((GTK_COMBO(WGT_CONWCOMBO))->list));
+	reslist_handler = GTKUI_SIGNAL_CONNECT (GTK_COMBO(WGT_RESMENU)->entry, "changed", res_Change,
+									GTK_LIST((GTK_COMBO(WGT_RESMENU))->list));
+	conwlist_handler = GTKUI_SIGNAL_CONNECT (GTK_COMBO(WGT_CONWMENU)->entry, "changed", con_Change,
+									GTK_LIST((GTK_COMBO(WGT_CONWMENU))->list));
 	GTKUI_SIGNAL_CONNECT (WGT_GLPATH, "changed", libgl_Change, NULL);
 	GTKUI_SIGNAL_CONNECT (WGT_EXTARGS, "changed", extargs_Change, NULL);
 	GTKUI_SIGNAL_CONNECT (WGT_HEAPADJ, "value_changed", adj_Change, &heapsize);
