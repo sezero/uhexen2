@@ -54,12 +54,52 @@
 #define	gtk_window_set_resizable(x, y)	gtk_window_set_policy((x), (y), (y), (y))
 #define	gtk_button_set_label(x, y)	gtk_label_set_text (GTK_LABEL(GTK_BIN((x))->child), (y))
 #define	gtk_progress_bar_set_fraction	gtk_progress_bar_update
+#define	gtk_adjustment_get_value(a)	(a)->value
+#define	gtk_radio_button_get_group	gtk_radio_button_group
 
 #endif	/* _H2L_USE_GTK1 */
 
 #if (GLIB_MAJOR_VERSION < 2)
 #define g_usleep			usleep
 #endif	/* glib-1.2.x */
+
+/* further compatibility macros */
+#define	GTKUI_DISABLE_FOCUS(widget)	GTK_WIDGET_UNSET_FLAGS((widget),GTK_CAN_FOCUS)
+
+#if defined(_H2L_USE_GTK1)		/* "gtk-1.2 doesnt have it" wrappers */
+#define	GTKUI_SIGNAL_CONNECT(object, name, func, func_data)		\
+	gtk_signal_connect(GTK_OBJECT((object)),(name),GTK_SIGNAL_FUNC((func)),(func_data))
+#define	GTKUI_SIGNAL_CONNECT_OBJECT(object, name, func, slot_object)	\
+	gtk_signal_connect_object(GTK_OBJECT((object)),(name),GTK_SIGNAL_FUNC((func)),GTK_OBJECT((slot_object)))
+#define	GTKUI_SIGNAL_DISCONNECT(object, handler)			\
+	gtk_signal_disconnect(GTK_OBJECT((object)), (handler))
+#define	GTKUI_SIGNAL_HANDLER_BLOCK(object, handler)			\
+	gtk_signal_handler_block (GTK_OBJECT((object)), (handler))
+#define	GTKUI_SIGNAL_HANDLER_UNBLOCK(object, handler)			\
+	gtk_signal_handler_unblock (GTK_OBJECT((object)), (handler))
+#else
+#define	GTKUI_SIGNAL_CONNECT(object, name, func, func_data)		\
+	g_signal_connect ((gpointer)(object),(name),G_CALLBACK((func)),(gpointer)(func_data))
+#define	GTKUI_SIGNAL_CONNECT_OBJECT(object, name, func, slot_object)	\
+	g_signal_connect_object((gpointer)(object)),(name),G_CALLBACK((func)),(gpointer)(slot_object),(GConnectFlags)0)
+#define	GTKUI_SIGNAL_DISCONNECT(object, handler)			\
+	g_signal_handler_disconnect((gpointer)(object), (handler))
+#define	GTKUI_SIGNAL_HANDLER_BLOCK(object, handler)			\
+	g_signal_handler_block ((gpointer)(object), (handler))
+#define	GTKUI_SIGNAL_HANDLER_UNBLOCK(object, handler)			\
+	g_signal_handler_unblock ((gpointer)(object), (handler))
+#endif	/* _H2L_USE_GTK1 */
+
+#if (GTK_MAJOR_VERSION > 2)
+#undef	gtk_tooltips_set_tip
+#define	gtk_tooltips_set_tip(t, widget, tiptext, private)		\
+	gtk_widget_set_tooltip_text ((widget), (tiptext))
+
+#undef	GTKUI_DISABLE_FOCUS
+#define	GTKUI_DISABLE_FOCUS(widget)	gtk_widget_set_can_focus((widget),FALSE)
+
+#define	gtk_statusbar_set_has_resize_grip(x, y)
+#endif	/*  */
 
 /*
  * Standard gettext macros.
@@ -137,7 +177,7 @@ struct Video_s
 	GtkWidget *b3DFX;	/* 3dfx specific Gamma */
 	GtkWidget *b8BIT;	/* 8-bit texture extensions */
 	GtkWidget *bFSAA;	/* Multisampling check button */
-	GtkObject *adjFSAA;	/* Multisampling adjustment */
+	GtkAdjustment *adjFSAA;	/* Multisampling adjustment */
 	GtkWidget *spnFSAA;	/* Multisampling entry */
 	GtkWidget *bVSYNC;	/* Enable vertical sync */
 	GtkWidget *bLM_BYTES;	/* Whether to use GL_LUMINANCE lightmaps */
@@ -161,10 +201,10 @@ struct Misc_s
 	GtkWidget *bDBG;	/* Log Debuginfo button */
 	GtkWidget *bDBG2;	/* Full Log Debuginfo */
 	GtkWidget *bMEMHEAP;	/* Heapsize check button */
-	GtkObject *adjHEAP;	/* Heapsize adjustment */
+	GtkAdjustment *adjHEAP;	/* Heapsize adjustment */
 	GtkWidget *spnHEAP;	/* Heapsize entry */
 	GtkWidget *bMEMZONE;	/* Zonesize check button */
-	GtkObject *adjZONE;	/* Zonesize adjustment */
+	GtkAdjustment *adjZONE;	/* Zonesize adjustment */
 	GtkWidget *spnZONE;	/* Zonesize entry */
 	GtkWidget *bEXTBTN;	/* Custom arguments toggle */
 	GtkWidget *EXT_Entry;	/* Custom arguments string */

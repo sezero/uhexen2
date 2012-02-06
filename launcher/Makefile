@@ -41,8 +41,13 @@ ifeq ($(GTK1),yes)
 GTK_CFLAGS:= $(shell gtk-config --cflags)
 GTK_LIBS:= $(shell gtk-config --libs)
 else
+ifeq ($(GTK3),yes)
+GTK_CFLAGS:= $(shell pkg-config --cflags gtk+-3.0)
+GTK_LIBS:= $(shell pkg-config --libs gtk+-3.0)
+else
 GTK_CFLAGS:= $(shell pkg-config --cflags gtk+-2.0)
 GTK_LIBS:= $(shell pkg-config --libs gtk+-2.0)
+endif
 endif
 
 # pthread flags: do note that these are different across

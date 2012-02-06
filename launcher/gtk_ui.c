@@ -40,7 +40,9 @@
 /*********************************************************************/
 
 
+#if (GTK_MAJOR_VERSION <= 2)
 static GtkTooltips	*tooltips;
+#endif
 
 static options_widget_t	Options;
 static MainWindow_t	main_win;
@@ -225,7 +227,7 @@ void ui_log_queue (const char *fmt, ...)
 	pthread_mutex_unlock (&logmutex);
 }
 
-static void report_status (GtkObject *Unused, PatchWindow_t *PatchWindow)
+static void report_status (gpointer *unused, PatchWindow_t *PatchWindow)
 {
 	int	end_log = 0;
 
@@ -361,7 +363,7 @@ static void patch_gui_loop (PatchWindow_t *PatchWindow)
 	flush_log_queue ();
 }
 
-static void start_xpatch (GtkObject *Unused, PatchWindow_t *PatchWindow)
+static void start_xpatch (gpointer *unused, PatchWindow_t *PatchWindow)
 {
 	pthread_t		thr;
 	char		*wd;
@@ -378,7 +380,7 @@ static void start_xpatch (GtkObject *Unused, PatchWindow_t *PatchWindow)
 	gtk_widget_set_sensitive (PatchWindow->dir_Entry, FALSE);
 	create_progressbar (PatchWindow);
 	delete_handler =
-		gtk_signal_connect(GTK_OBJECT(PatchWindow->mywindow), "delete-event", GTK_SIGNAL_FUNC(block_window_close), NULL);
+		GTKUI_SIGNAL_CONNECT(PatchWindow->mywindow, "delete-event", block_window_close, NULL);
 	ui_LogInit (PatchWindow->LOGVIEW);
 
 	last_written = 0;
@@ -415,7 +417,7 @@ static void start_xpatch (GtkObject *Unused, PatchWindow_t *PatchWindow)
 		}
 	}
 finish:
-	gtk_signal_disconnect (GTK_OBJECT(PatchWindow->mywindow), delete_handler);
+	GTKUI_SIGNAL_DISCONNECT (PatchWindow->mywindow, delete_handler);
 	gtk_widget_set_sensitive (PatchWindow->bBASEDIR, TRUE);
 	gtk_widget_set_sensitive (PatchWindow->dir_Entry, TRUE);
 	destroy_progressbar (PatchWindow);
@@ -481,8 +483,8 @@ static void Make_ConWidthMenu (void)
 
 static void on_OGL (GtkToggleButton *button, gpointer user_data)
 {
-	gtk_signal_handler_block (GTK_OBJECT(GTK_COMBO(WGT_RESCOMBO)->entry), reslist_handler);
-	gtk_signal_handler_block (GTK_OBJECT(GTK_COMBO(WGT_CONWCOMBO)->entry), conwlist_handler);
+	GTKUI_SIGNAL_HANDLER_BLOCK (GTK_COMBO(WGT_RESCOMBO)->entry, reslist_handler);
+	GTKUI_SIGNAL_HANDLER_BLOCK (GTK_COMBO(WGT_CONWCOMBO)->entry, conwlist_handler);
 
 	opengl_support ^= 1;
 	if (opengl_support)
@@ -510,13 +512,13 @@ static void on_OGL (GtkToggleButton *button, gpointer user_data)
 		Make_ConWidthMenu();
 	UpdateStats ();
 
-	gtk_signal_handler_unblock (GTK_OBJECT(GTK_COMBO(WGT_RESCOMBO)->entry), reslist_handler);
-	gtk_signal_handler_unblock (GTK_OBJECT(GTK_COMBO(WGT_CONWCOMBO)->entry), conwlist_handler);
+	GTKUI_SIGNAL_HANDLER_UNBLOCK (GTK_COMBO(WGT_RESCOMBO)->entry, reslist_handler);
+	GTKUI_SIGNAL_HANDLER_UNBLOCK (GTK_COMBO(WGT_CONWCOMBO)->entry, conwlist_handler);
 }
 
 static void res_Change (GtkEntry *unused, GtkList *l)
 {
-	gtk_signal_handler_block (GTK_OBJECT(GTK_COMBO(WGT_CONWCOMBO)->entry), conwlist_handler);
+	GTKUI_SIGNAL_HANDLER_BLOCK (GTK_COMBO(WGT_CONWCOMBO)->entry, conwlist_handler);
 
 	resolution = gtk_list_child_position(l, (GtkWidget *) l->selection->data);
 	if (opengl_support)
@@ -528,7 +530,7 @@ static void res_Change (GtkEntry *unused, GtkList *l)
 		Make_ConWidthMenu ();
 	}
 
-	gtk_signal_handler_unblock (GTK_OBJECT(GTK_COMBO(WGT_CONWCOMBO)->entry), conwlist_handler);
+	GTKUI_SIGNAL_HANDLER_UNBLOCK (GTK_COMBO(WGT_CONWCOMBO)->entry, conwlist_handler);
 }
 
 static void con_Change (GtkEntry *unused, GtkList *l)
@@ -599,14 +601,14 @@ static void HWGameChange (GtkEntry *unused, GtkList *l)
 }
 #endif	/* ! DEMOBUILD */
 
-static void BoolRevert (GtkObject *Unused, int *opt)
+static void BoolRevert (gpointer *unused, int *opt)
 {
 	*opt ^= 1;
 }
 
 static void adj_Change (GtkAdjustment *adj, int *opt)
 {
-	*opt = (int)(adj->value);
+	*opt = (int) gtk_adjustment_get_value(adj);
 }
 
 static void on_MORE (GtkButton *button, gpointer user_data)
@@ -736,7 +738,7 @@ static void create_window2 (GtkWidget *unused1, gpointer user_data)
 	gtk_widget_set_size_request (patch_win.bBASEDIR, 128, 24);
 	gtk_widget_set_sensitive (patch_win.bBASEDIR, TRUE);
 	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON(patch_win.bBASEDIR), basedir_nonstd);
-	GTK_WIDGET_UNSET_FLAGS (patch_win.bBASEDIR, GTK_CAN_FOCUS);
+	GTKUI_DISABLE_FOCUS (patch_win.bBASEDIR);
 	gtk_tooltips_set_tip (tooltips, patch_win.bBASEDIR, _("Mark this in order to use a different game installation directory"), NULL);
 
 	patch_win.dir_Entry = gtk_entry_new();
@@ -779,7 +781,7 @@ static void create_window2 (GtkWidget *unused1, gpointer user_data)
 	gtk_widget_set_size_request (patch_win.LOGVIEW, 324, 146);
 	gtk_container_add (GTK_CONTAINER (TxtWindow), patch_win.LOGVIEW);
 	gtk_widget_show (patch_win.LOGVIEW);
-	GTK_WIDGET_UNSET_FLAGS (patch_win.LOGVIEW, GTK_CAN_FOCUS);
+	GTKUI_DISABLE_FOCUS (patch_win.LOGVIEW);
 /*	gtk_widget_set_sensitive (patch_win.LOGVIEW, FALSE);*/
 #if defined(_H2L_USE_GTK1)
 /*	gtk_text_set_line_wrap(GTK_TEXT(patch_win.LOGVIEW), FALSE);*/
@@ -810,13 +812,13 @@ static void create_window2 (GtkWidget *unused1, gpointer user_data)
 	patch_win.statbar_id = gtk_statusbar_get_context_id (GTK_STATUSBAR(PATCH_STATBAR), "PatchStatus");
 	gtk_statusbar_push (GTK_STATUSBAR(PATCH_STATBAR), patch_win.statbar_id, _("  Ready..."));
 
-	gtk_signal_connect (GTK_OBJECT(PATCH_WINDOW), "destroy", GTK_SIGNAL_FUNC(destroy_window2), NULL);
-	gtk_signal_connect (GTK_OBJECT(patch_win.bCLOSE), "clicked", GTK_SIGNAL_FUNC(destroy_window2), NULL);
-	gtk_signal_connect (GTK_OBJECT(patch_win.bBASEDIR), "toggled", GTK_SIGNAL_FUNC(basedir_Change), NULL);
-	gtk_signal_connect (GTK_OBJECT(patch_win.dir_Entry), "changed", GTK_SIGNAL_FUNC(basedir_ChangePath), NULL);
+	GTKUI_SIGNAL_CONNECT (PATCH_WINDOW, "destroy", destroy_window2, NULL);
+	GTKUI_SIGNAL_CONNECT (patch_win.bCLOSE, "clicked", destroy_window2, NULL);
+	GTKUI_SIGNAL_CONNECT (patch_win.bBASEDIR, "toggled", basedir_Change, NULL);
+	GTKUI_SIGNAL_CONNECT (patch_win.dir_Entry, "changed", basedir_ChangePath, NULL);
 #if !defined(DEMOBUILD)
-	gtk_signal_connect (GTK_OBJECT(patch_win.bAPPLY), "clicked", GTK_SIGNAL_FUNC(start_xpatch), &patch_win);
-	gtk_signal_connect (GTK_OBJECT(patch_win.bREPORT), "clicked", GTK_SIGNAL_FUNC(report_status), &patch_win);
+	GTKUI_SIGNAL_CONNECT (patch_win.bAPPLY, "clicked", start_xpatch, &patch_win);
+	GTKUI_SIGNAL_CONNECT (patch_win.bREPORT, "clicked", report_status, &patch_win);
 #endif	/* !DEMOBUILD */
 
 #if defined(DEMOBUILD)
@@ -863,10 +865,11 @@ static void create_window1 (void)
 	GtkWidget *hseparator1;
 
 /* Other stuff */
-	GList *TmpList = NULL;
-	GSList *Destinies = NULL;
-
+	GList *TmpList;
+	GSList *Destinies;
+#if (GTK_MAJOR_VERSION <= 2)
 	tooltips = gtk_tooltips_new ();
+#endif
 
 /* Create the main window */
 	MAIN_WINDOW = gtk_window_new (GTK_WINDOW_TOPLEVEL);
@@ -964,12 +967,12 @@ static void create_window1 (void)
 
 /* Destiny: Hexen2 */
 #ifdef DEMOBUILD
-	WGT_HEXEN2 = gtk_radio_button_new_with_label (Destinies, "Hexen II demo");
+	WGT_HEXEN2 = gtk_radio_button_new_with_label (NULL, "Hexen II demo");
 #else
-	WGT_HEXEN2 = gtk_radio_button_new_with_label (Destinies, "Hexen II");
+	WGT_HEXEN2 = gtk_radio_button_new_with_label (NULL, "Hexen II");
 #endif
-	Destinies = gtk_radio_button_group (GTK_RADIO_BUTTON(WGT_HEXEN2));
-	GTK_WIDGET_UNSET_FLAGS (WGT_HEXEN2, GTK_CAN_FOCUS);
+	Destinies = gtk_radio_button_get_group (GTK_RADIO_BUTTON(WGT_HEXEN2));
+	GTKUI_DISABLE_FOCUS (WGT_HEXEN2);
 	gtk_widget_show (WGT_HEXEN2);
 	gtk_fixed_put (GTK_FIXED(BASIC_TAB), WGT_HEXEN2, 24, 60);
 #ifndef DEMOBUILD
@@ -980,8 +983,7 @@ static void create_window1 (void)
 
 /* Destiny: HexenWorld */
 	WGT_H2WORLD = gtk_radio_button_new_with_label (Destinies, "HexenWorld Multiplayer");
-	Destinies = gtk_radio_button_group (GTK_RADIO_BUTTON(WGT_H2WORLD));
-	GTK_WIDGET_UNSET_FLAGS (WGT_H2WORLD, GTK_CAN_FOCUS);
+	GTKUI_DISABLE_FOCUS (WGT_H2WORLD);
 	gtk_widget_show (WGT_H2WORLD);
 	gtk_fixed_put (GTK_FIXED(BASIC_TAB), WGT_H2WORLD, 24, 86);
 	gtk_widget_set_size_request (WGT_H2WORLD, 180, 24);
@@ -999,7 +1001,7 @@ static void create_window1 (void)
 	gtk_fixed_put (GTK_FIXED(BASIC_TAB), WGT_PORTALS, 112, 60);
 	gtk_widget_show (WGT_PORTALS);
 	gtk_tooltips_set_tip (tooltips, WGT_PORTALS, _("play Hexen II with Mission Pack"), NULL);
-	GTK_WIDGET_UNSET_FLAGS (WGT_PORTALS, GTK_CAN_FOCUS);
+	GTKUI_DISABLE_FOCUS (WGT_PORTALS);
 	gtk_widget_set_size_request (WGT_PORTALS, 80, 24);
 	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON(WGT_PORTALS), mp_support);
 	if (destiny != DEST_H2 || !(gameflags & GAME_PORTALS && gameflags & (GAME_REGISTERED|GAME_REGISTERED_OLD)))
@@ -1016,7 +1018,7 @@ static void create_window1 (void)
 
 /* opengl/software toggle */
 	WGT_OPENGL = gtk_check_button_new_with_label ("OpenGL");
-	GTK_WIDGET_UNSET_FLAGS (WGT_OPENGL, GTK_CAN_FOCUS);
+	GTKUI_DISABLE_FOCUS (WGT_OPENGL);
 	gtk_widget_show (WGT_OPENGL);
 	gtk_fixed_put (GTK_FIXED(BASIC_TAB), WGT_OPENGL, 102, 124);
 	gtk_widget_set_size_request (WGT_OPENGL, 110, 24);
@@ -1024,7 +1026,7 @@ static void create_window1 (void)
 
 /* fullscreen/windowed toggle */
 	WGT_FULLSCR = gtk_check_button_new_with_label (_("Fullscreen"));
-	GTK_WIDGET_UNSET_FLAGS (WGT_FULLSCR, GTK_CAN_FOCUS);
+	GTKUI_DISABLE_FOCUS (WGT_FULLSCR);
 	gtk_widget_show (WGT_FULLSCR);
 	gtk_fixed_put (GTK_FIXED(BASIC_TAB), WGT_FULLSCR, 102, 148);
 	gtk_widget_set_size_request (WGT_FULLSCR, 110, 24);
@@ -1043,7 +1045,7 @@ static void create_window1 (void)
 	gtk_fixed_put (GTK_FIXED(BASIC_TAB), WGT_RESCOMBO, 102, 176);
 /* resolution display */
 /*	gtk_entry_set_alignment (GTK_ENTRY(GTK_COMBO(WGT_RESCOMBO)->entry), 1);*/
-	gtk_entry_set_editable (GTK_ENTRY(GTK_COMBO(WGT_RESCOMBO)->entry), FALSE);
+	gtk_editable_set_editable (GTK_EDITABLE(GTK_COMBO(WGT_RESCOMBO)->entry), FALSE);
 	/* menu listing for resolution come from a callback */
 	Make_ResMenu ();
 	gtk_widget_show (WGT_RESCOMBO);
@@ -1075,7 +1077,7 @@ static void create_window1 (void)
 			break;
 		}
 	}
-	gtk_entry_set_editable (GTK_ENTRY(GTK_COMBO(WGT_SOUND)->entry), FALSE);
+	gtk_editable_set_editable (GTK_EDITABLE(GTK_COMBO(WGT_SOUND)->entry), FALSE);
 /*	gtk_entry_set_alignment (GTK_ENTRY(GTK_COMBO(WGT_SOUND)->entry), 1);*/
 
 /* Sampling rate selection */
@@ -1096,7 +1098,7 @@ static void create_window1 (void)
 	gtk_fixed_put (GTK_FIXED(BASIC_TAB), WGT_SRATE, 102, 238);
 	gtk_widget_show (WGT_SRATE);
 	gtk_entry_set_text (GTK_ENTRY(GTK_COMBO(WGT_SRATE)->entry), snd_rates[sndrate]);
-	gtk_entry_set_editable (GTK_ENTRY(GTK_COMBO(WGT_SRATE)->entry), FALSE);
+	gtk_editable_set_editable (GTK_EDITABLE(GTK_COMBO(WGT_SRATE)->entry), FALSE);
 
 /********************************************************************
  TAB - 2:		ADDITIONAL OPTIONS
@@ -1132,7 +1134,7 @@ static void create_window1 (void)
 #endif	/* DEMOBUILD */
 	gtk_fixed_put (GTK_FIXED(ADDON_TAB2), WGT_H2GAME, 36, 36);
 #ifndef DEMOBUILD
-	gtk_entry_set_editable (GTK_ENTRY(GTK_COMBO(WGT_H2GAME)->entry), FALSE);
+	gtk_editable_set_editable (GTK_EDITABLE(GTK_COMBO(WGT_H2GAME)->entry), FALSE);
 	gtk_entry_set_text (GTK_ENTRY(GTK_COMBO(WGT_H2GAME)->entry), h2game_names[h2game].name);
 	if (!(gameflags & (GAME_REGISTERED|GAME_REGISTERED_OLD)))
 		gtk_widget_set_sensitive (WGT_H2GAME, FALSE);
@@ -1160,7 +1162,7 @@ static void create_window1 (void)
 	g_list_free (TmpList);
 /*	gtk_fixed_put (GTK_FIXED(ADDON_TAB2), WGT_HWGAME, 68, 66);*/
 	gtk_fixed_put (GTK_FIXED(ADDON_TAB2), WGT_HWGAME, 36, 36);
-	gtk_entry_set_editable (GTK_ENTRY(GTK_COMBO(WGT_HWGAME)->entry), FALSE);
+	gtk_editable_set_editable (GTK_EDITABLE(GTK_COMBO(WGT_HWGAME)->entry), FALSE);
 	gtk_entry_set_text (GTK_ENTRY(GTK_COMBO(WGT_HWGAME)->entry), hwgame_names[hwgame].name);
 	if (!(gameflags & (GAME_REGISTERED|GAME_REGISTERED_OLD)))
 		gtk_widget_set_sensitive (WGT_HWGAME, FALSE);
@@ -1194,7 +1196,7 @@ static void create_window1 (void)
 	gtk_widget_set_size_request (WGT_3DFX, 160, 24);
 	gtk_widget_set_sensitive (WGT_3DFX, opengl_support);
 	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON(WGT_3DFX), fxgamma);
-	GTK_WIDGET_UNSET_FLAGS (WGT_3DFX, GTK_CAN_FOCUS);
+	GTKUI_DISABLE_FOCUS (WGT_3DFX);
 	gtk_tooltips_set_tip (tooltips, WGT_3DFX, _("Special brightness support for old Voodoo1/2 boards"), NULL);
 
 /* Whether to use GL_LUMINANCE lightmap format (the -lm_1 and -lm_4 switches) */
@@ -1203,7 +1205,7 @@ static void create_window1 (void)
 	gtk_fixed_put (GTK_FIXED(ADDON_TAB2), WGT_LM_BYTES, 14, 134);
 	gtk_widget_set_size_request (WGT_LM_BYTES, 180, 24);
 	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON(WGT_LM_BYTES), use_lm1);
-	GTK_WIDGET_UNSET_FLAGS (WGT_LM_BYTES, GTK_CAN_FOCUS);
+	GTKUI_DISABLE_FOCUS (WGT_LM_BYTES);
 	gtk_tooltips_set_tip (tooltips, WGT_LM_BYTES, _("GL_RGBA is default. Mark to use the old GL_LUMINANCE format"), NULL);
 	gtk_widget_set_sensitive (WGT_LM_BYTES, opengl_support);
 
@@ -1214,7 +1216,7 @@ static void create_window1 (void)
 	gtk_widget_set_size_request (WGT_GL8BIT, 160, 24);
 	gtk_widget_set_sensitive (WGT_GL8BIT, opengl_support);
 	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON(WGT_GL8BIT), is8bit);
-	GTK_WIDGET_UNSET_FLAGS (WGT_GL8BIT, GTK_CAN_FOCUS);
+	GTKUI_DISABLE_FOCUS (WGT_GL8BIT);
 	gtk_tooltips_set_tip (tooltips, WGT_GL8BIT, _("Enable 8-bit OpenGL texture extensions"), NULL);
 
 /* conwidth toggle button */
@@ -1223,7 +1225,7 @@ static void create_window1 (void)
 	gtk_fixed_put (GTK_FIXED(ADDON_TAB2), WGT_CONWBUTTON, 14, 182);
 	gtk_widget_set_size_request (WGT_CONWBUTTON, 84, 24);
 	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON(WGT_CONWBUTTON), use_con);
-	GTK_WIDGET_UNSET_FLAGS (WGT_CONWBUTTON, GTK_CAN_FOCUS);
+	GTKUI_DISABLE_FOCUS (WGT_CONWBUTTON);
 	gtk_tooltips_set_tip (tooltips, WGT_CONWBUTTON, _("Allow bigger/readable text and HUD in high resolutions. Smaller the number, bigger the text. 640 is recommended"), NULL);
 	gtk_widget_set_sensitive (WGT_CONWBUTTON, opengl_support);
 
@@ -1235,7 +1237,7 @@ static void create_window1 (void)
 	gtk_widget_set_sensitive (WGT_CONWCOMBO, opengl_support);
 /* conwidth display */
 /*	gtk_entry_set_alignment (GTK_ENTRY(GTK_COMBO(WGT_CONWCOMBO)->entry), 1);*/
-	gtk_entry_set_editable (GTK_ENTRY(GTK_COMBO(WGT_CONWCOMBO)->entry), FALSE);
+	gtk_editable_set_editable (GTK_EDITABLE(GTK_COMBO(WGT_CONWCOMBO)->entry), FALSE);
 	/* menu listing for conwidth come from a callback */
 	Make_ConWidthMenu();
 	gtk_widget_show (WGT_CONWCOMBO);
@@ -1246,7 +1248,7 @@ static void create_window1 (void)
 	gtk_fixed_put (GTK_FIXED(ADDON_TAB2), WGT_VSYNC, 14, 206);
 	gtk_widget_set_size_request (WGT_VSYNC, 160, 24);
 	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON(WGT_VSYNC), vsync);
-	GTK_WIDGET_UNSET_FLAGS (WGT_VSYNC, GTK_CAN_FOCUS);
+	GTKUI_DISABLE_FOCUS (WGT_VSYNC);
 	gtk_tooltips_set_tip (tooltips, WGT_VSYNC, _("Synchronize with Monitor Refresh"), NULL);
 	gtk_widget_set_sensitive (WGT_VSYNC, opengl_support);
 
@@ -1256,13 +1258,13 @@ static void create_window1 (void)
 	gtk_fixed_put (GTK_FIXED(ADDON_TAB2), WGT_FSAA, 14, 230);
 	gtk_widget_set_size_request (WGT_FSAA, 148, 24);
 	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON(WGT_FSAA), use_fsaa);
-	GTK_WIDGET_UNSET_FLAGS (WGT_FSAA, GTK_CAN_FOCUS);
+	GTKUI_DISABLE_FOCUS (WGT_FSAA);
 	gtk_tooltips_set_tip (tooltips, WGT_FSAA, _("Enable Antialiasing"), NULL);
 	gtk_widget_set_sensitive (WGT_FSAA, opengl_support);
 
-	WGT_ADJFSAA =  gtk_adjustment_new (aasamples, 0, 4, 2, 10, 0);
+	WGT_ADJFSAA = (GtkAdjustment *) gtk_adjustment_new (aasamples, 0, 4, 2, 10, 0);
 	WGT_AASAMPLES = gtk_spin_button_new (GTK_ADJUSTMENT (WGT_ADJFSAA), 2, 0);
-	gtk_entry_set_editable (GTK_ENTRY(WGT_AASAMPLES), FALSE);
+	gtk_editable_set_editable (GTK_EDITABLE(WGT_AASAMPLES), FALSE);
 	gtk_widget_show (WGT_AASAMPLES);
 	gtk_fixed_put (GTK_FIXED(ADDON_TAB2), WGT_AASAMPLES, 166, 230);
 	gtk_widget_set_size_request (WGT_AASAMPLES, 40, 24);
@@ -1274,7 +1276,7 @@ static void create_window1 (void)
 	gtk_widget_set_size_request (WGT_LIBGL, 180, 24);
 	gtk_widget_set_sensitive (WGT_LIBGL, opengl_support);
 	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON(WGT_LIBGL), gl_nonstd);
-	GTK_WIDGET_UNSET_FLAGS (WGT_LIBGL, GTK_CAN_FOCUS);
+	GTKUI_DISABLE_FOCUS (WGT_LIBGL);
 	gtk_tooltips_set_tip (tooltips, WGT_LIBGL, _("Type the full path of the OpenGL library"), NULL);
 
 	WGT_GLPATH = gtk_entry_new ();
@@ -1310,7 +1312,7 @@ static void create_window1 (void)
 	gtk_widget_set_size_request (WGT_SBITS, 76, 24);
 	gtk_widget_set_sensitive (WGT_SBITS, sound);
 	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON(WGT_SBITS), sndbits);
-	GTK_WIDGET_UNSET_FLAGS (WGT_SBITS, GTK_CAN_FOCUS);
+	GTKUI_DISABLE_FOCUS (WGT_SBITS);
 
 /*********************************************************************/
 
@@ -1323,7 +1325,7 @@ static void create_window1 (void)
 	gtk_widget_set_size_request (WGT_CDAUDIO, 96, 24);
 	gtk_widget_set_sensitive (WGT_CDAUDIO, sound);
 	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON(WGT_CDAUDIO), !cdaudio);
-	GTK_WIDGET_UNSET_FLAGS (WGT_CDAUDIO, GTK_CAN_FOCUS);
+	GTKUI_DISABLE_FOCUS (WGT_CDAUDIO);
 	gtk_tooltips_set_tip (tooltips, WGT_CDAUDIO, _("Mark to Disable CDAudio"), NULL);
 
 /* disabling midi */
@@ -1333,7 +1335,7 @@ static void create_window1 (void)
 	gtk_widget_set_size_request (WGT_MIDI, 76, 24);
 	gtk_widget_set_sensitive (WGT_MIDI, sound);
 	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON(WGT_MIDI), !midi);
-	GTK_WIDGET_UNSET_FLAGS (WGT_MIDI, GTK_CAN_FOCUS);
+	GTKUI_DISABLE_FOCUS (WGT_MIDI);
 	gtk_tooltips_set_tip (tooltips, WGT_MIDI, _("Mark to Disable Midi"), NULL);
 
 /*********************************************************************/
@@ -1349,7 +1351,7 @@ static void create_window1 (void)
 	gtk_fixed_put (GTK_FIXED(ADDON_TAB1), WGT_LANBUTTON, 112, 98);
 	gtk_widget_set_size_request (WGT_LANBUTTON, 108, 24);
 	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON(WGT_LANBUTTON), !lan);
-	GTK_WIDGET_UNSET_FLAGS (WGT_LANBUTTON, GTK_CAN_FOCUS);
+	GTKUI_DISABLE_FOCUS (WGT_LANBUTTON);
 	gtk_tooltips_set_tip (tooltips, WGT_LANBUTTON, _("Mark to Disable Net"), NULL);
 	if (destiny == DEST_HW
 #if !defined(DEMOBUILD)
@@ -1371,7 +1373,7 @@ static void create_window1 (void)
 	gtk_fixed_put (GTK_FIXED(ADDON_TAB1), WGT_MOUSEBUTTON, 112, 118);
 	gtk_widget_set_size_request (WGT_MOUSEBUTTON, 112, 24);
 	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON(WGT_MOUSEBUTTON), !mouse);
-	GTK_WIDGET_UNSET_FLAGS (WGT_MOUSEBUTTON, GTK_CAN_FOCUS);
+	GTKUI_DISABLE_FOCUS (WGT_MOUSEBUTTON);
 	gtk_tooltips_set_tip (tooltips, WGT_MOUSEBUTTON, _("Mark to Disable Mouse"), NULL);
 
 /*********************************************************************/
@@ -1395,12 +1397,12 @@ static void create_window1 (void)
 	gtk_fixed_put (GTK_FIXED(ADDON_TAB1), WGT_MEMHEAP, 14, 182);
 	gtk_widget_set_size_request (WGT_MEMHEAP, 116, 24);
 	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON(WGT_MEMHEAP), use_heap);
-	GTK_WIDGET_UNSET_FLAGS (WGT_MEMHEAP, GTK_CAN_FOCUS);
+	GTKUI_DISABLE_FOCUS (WGT_MEMHEAP);
 	gtk_tooltips_set_tip (tooltips, WGT_MEMHEAP, _("The main memory to allocate in KB"), NULL);
 
-	WGT_HEAPADJ =  gtk_adjustment_new (heapsize, HEAP_MINSIZE, HEAP_MAXSIZE, 1024, 10, 0);
+	WGT_HEAPADJ = (GtkAdjustment *) gtk_adjustment_new (heapsize, HEAP_MINSIZE, HEAP_MAXSIZE, 1024, 10, 0);
 	WGT_HEAPSIZE = gtk_spin_button_new (GTK_ADJUSTMENT (WGT_HEAPADJ), 1024, 0);
-	gtk_entry_set_editable (GTK_ENTRY(WGT_HEAPSIZE), FALSE);
+	gtk_editable_set_editable (GTK_EDITABLE(WGT_HEAPSIZE), FALSE);
 	gtk_widget_show (WGT_HEAPSIZE);
 	gtk_fixed_put (GTK_FIXED(ADDON_TAB1), WGT_HEAPSIZE, 134, 182);
 	gtk_widget_set_size_request (WGT_HEAPSIZE, 64, 24);
@@ -1411,12 +1413,12 @@ static void create_window1 (void)
 	gtk_fixed_put (GTK_FIXED(ADDON_TAB1), WGT_MEMZONE, 14, 208);
 	gtk_widget_set_size_request (WGT_MEMZONE, 116, 24);
 	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON(WGT_MEMZONE), use_zone);
-	GTK_WIDGET_UNSET_FLAGS (WGT_MEMZONE, GTK_CAN_FOCUS);
+	GTKUI_DISABLE_FOCUS (WGT_MEMZONE);
 	gtk_tooltips_set_tip (tooltips, WGT_MEMZONE, _("Dynamic zone memory to allocate in KB"), NULL);
 
-	WGT_ZONEADJ =  gtk_adjustment_new (zonesize, ZONE_MINSIZE, ZONE_MAXSIZE, 1, 10, 0);
+	WGT_ZONEADJ = (GtkAdjustment *) gtk_adjustment_new (zonesize, ZONE_MINSIZE, ZONE_MAXSIZE, 1, 10, 0);
 	WGT_ZONESIZE = gtk_spin_button_new (GTK_ADJUSTMENT (WGT_ZONEADJ), 1, 0);
-	gtk_entry_set_editable (GTK_ENTRY(WGT_ZONESIZE), FALSE);
+	gtk_editable_set_editable (GTK_EDITABLE(WGT_ZONESIZE), FALSE);
 	gtk_widget_show (WGT_ZONESIZE);
 	gtk_fixed_put (GTK_FIXED(ADDON_TAB1), WGT_ZONESIZE, 134, 208);
 	gtk_widget_set_size_request (WGT_ZONESIZE, 64, 24);
@@ -1427,7 +1429,7 @@ static void create_window1 (void)
 	gtk_fixed_put (GTK_FIXED(ADDON_TAB1), WGT_DBGLOG, 14, 232);
 	gtk_widget_set_size_request (WGT_DBGLOG, 116, 24);
 	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON(WGT_DBGLOG), debug);
-	GTK_WIDGET_UNSET_FLAGS (WGT_DBGLOG, GTK_CAN_FOCUS);
+	GTKUI_DISABLE_FOCUS (WGT_DBGLOG);
 	gtk_tooltips_set_tip (tooltips, WGT_DBGLOG, _("Write console output to a log file"), NULL);
 
 	WGT_DBGLOG2 = gtk_check_button_new_with_label (_("Full log"));
@@ -1435,7 +1437,7 @@ static void create_window1 (void)
 	gtk_fixed_put (GTK_FIXED(ADDON_TAB1), WGT_DBGLOG2, 134, 232);
 	gtk_widget_set_size_request (WGT_DBGLOG2, 72, 24);
 	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON(WGT_DBGLOG2), debug2);
-	GTK_WIDGET_UNSET_FLAGS (WGT_DBGLOG2, GTK_CAN_FOCUS);
+	GTKUI_DISABLE_FOCUS (WGT_DBGLOG2);
 	gtk_tooltips_set_tip (tooltips, WGT_DBGLOG2, _("Full developer mode logging"), NULL);
 
 /* Extra User Arguments: */
@@ -1444,7 +1446,7 @@ static void create_window1 (void)
 	gtk_fixed_put (GTK_FIXED(ADDON_TAB1), WGT_EXTBTN, 14, 256);
 	gtk_widget_set_size_request (WGT_EXTBTN, 180, 24);
 	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON(WGT_EXTBTN), use_extra);
-	GTK_WIDGET_UNSET_FLAGS (WGT_EXTBTN, GTK_CAN_FOCUS);
+	GTKUI_DISABLE_FOCUS (WGT_EXTBTN);
 	gtk_tooltips_set_tip (tooltips, WGT_EXTBTN, _("Type the extra arguments you want to pass to the command line"), NULL);
 
 	WGT_EXTARGS = gtk_entry_new ();
@@ -1457,51 +1459,51 @@ static void create_window1 (void)
 /***	END OF OPTION WIDGETS	***/
 
 /* callback functions setup */
-	gtk_signal_connect (GTK_OBJECT(MAIN_WINDOW), "destroy", GTK_SIGNAL_FUNC(ui_quit), NULL);
-	gtk_signal_connect (GTK_OBJECT(WGT_LAUNCH), "clicked", GTK_SIGNAL_FUNC(launch_hexen2_bin), NULL);
-	gtk_signal_connect (GTK_OBJECT(bQUIT), "clicked", GTK_SIGNAL_FUNC(ui_quit), NULL);
+	GTKUI_SIGNAL_CONNECT (MAIN_WINDOW, "destroy", ui_quit, NULL);
+	GTKUI_SIGNAL_CONNECT (WGT_LAUNCH, "clicked", launch_hexen2_bin, NULL);
+	GTKUI_SIGNAL_CONNECT (bQUIT, "clicked", ui_quit, NULL);
 #ifndef DEMOBUILD
-	gtk_signal_connect (GTK_OBJECT(GTK_COMBO(WGT_H2GAME)->entry), "changed", GTK_SIGNAL_FUNC(H2GameChange),
+	GTKUI_SIGNAL_CONNECT (GTK_COMBO(WGT_H2GAME)->entry, "changed", H2GameChange,
 								GTK_LIST((GTK_COMBO(WGT_H2GAME))->list));
-	gtk_signal_connect (GTK_OBJECT(GTK_COMBO(WGT_HWGAME)->entry), "changed", GTK_SIGNAL_FUNC(HWGameChange),
+	GTKUI_SIGNAL_CONNECT (GTK_COMBO(WGT_HWGAME)->entry, "changed", HWGameChange,
 								GTK_LIST((GTK_COMBO(WGT_HWGAME))->list));
-	gtk_signal_connect (GTK_OBJECT(WGT_PORTALS), "toggled", GTK_SIGNAL_FUNC(BoolRevert), &mp_support);
+	GTKUI_SIGNAL_CONNECT (WGT_PORTALS, "toggled", BoolRevert, &mp_support);
 #endif	/* DEMOBUILD */
-	gtk_signal_connect (GTK_OBJECT(bPATCH), "clicked", GTK_SIGNAL_FUNC(create_window2), NULL);
-	gtk_signal_connect (GTK_OBJECT(WGT_HEXEN2), "clicked", GTK_SIGNAL_FUNC(on_HEXEN2), NULL);
-	gtk_signal_connect (GTK_OBJECT(WGT_H2WORLD), "clicked", GTK_SIGNAL_FUNC(on_H2W), NULL);
-	gtk_signal_connect (GTK_OBJECT(WGT_OPENGL), "toggled", GTK_SIGNAL_FUNC(on_OGL), NULL);
-	gtk_signal_connect (GTK_OBJECT(GTK_COMBO(WGT_SOUND)->entry), "changed", GTK_SIGNAL_FUNC(on_SND),
+	GTKUI_SIGNAL_CONNECT (bPATCH, "clicked", create_window2, NULL);
+	GTKUI_SIGNAL_CONNECT (WGT_HEXEN2, "clicked", on_HEXEN2, NULL);
+	GTKUI_SIGNAL_CONNECT (WGT_H2WORLD, "clicked", on_H2W, NULL);
+	GTKUI_SIGNAL_CONNECT (WGT_OPENGL, "toggled", on_OGL, NULL);
+	GTKUI_SIGNAL_CONNECT (GTK_COMBO(WGT_SOUND)->entry, "changed", on_SND,
 								GTK_LIST((GTK_COMBO(WGT_SOUND))->list));
-	gtk_signal_connect (GTK_OBJECT(GTK_COMBO(WGT_SRATE)->entry), "changed", GTK_SIGNAL_FUNC(on_SRATE),
+	GTKUI_SIGNAL_CONNECT (GTK_COMBO(WGT_SRATE)->entry, "changed", on_SRATE,
 								GTK_LIST((GTK_COMBO(WGT_SRATE))->list));
-	gtk_signal_connect (GTK_OBJECT(WGT_SBITS), "toggled", GTK_SIGNAL_FUNC(on_SBITS), &sndbits);
-	gtk_signal_connect (GTK_OBJECT(WGT_MIDI), "toggled", GTK_SIGNAL_FUNC(BoolRevert), &midi);
-	gtk_signal_connect (GTK_OBJECT(WGT_CDAUDIO), "toggled", GTK_SIGNAL_FUNC(BoolRevert), &cdaudio);
-	gtk_signal_connect (GTK_OBJECT(WGT_LANBUTTON), "toggled", GTK_SIGNAL_FUNC(BoolRevert), &lan);
-	gtk_signal_connect (GTK_OBJECT(WGT_FULLSCR), "toggled", GTK_SIGNAL_FUNC(BoolRevert), &fullscreen);
-	gtk_signal_connect (GTK_OBJECT(WGT_CONWBUTTON), "toggled", GTK_SIGNAL_FUNC(BoolRevert), &use_con);
-	gtk_signal_connect (GTK_OBJECT(WGT_3DFX), "toggled", GTK_SIGNAL_FUNC(BoolRevert), &fxgamma);
-	gtk_signal_connect (GTK_OBJECT(WGT_GL8BIT), "toggled", GTK_SIGNAL_FUNC(BoolRevert), &is8bit);
-	gtk_signal_connect (GTK_OBJECT(WGT_LM_BYTES), "toggled", GTK_SIGNAL_FUNC(BoolRevert), &use_lm1);
-	gtk_signal_connect (GTK_OBJECT(WGT_VSYNC), "toggled", GTK_SIGNAL_FUNC(BoolRevert), &vsync);
-	gtk_signal_connect (GTK_OBJECT(WGT_FSAA), "toggled", GTK_SIGNAL_FUNC(BoolRevert), &use_fsaa);
-	gtk_signal_connect (GTK_OBJECT(WGT_ADJFSAA), "value_changed", GTK_SIGNAL_FUNC(adj_Change), &aasamples);
-	gtk_signal_connect (GTK_OBJECT(WGT_LIBGL), "toggled", GTK_SIGNAL_FUNC(BoolRevert), &gl_nonstd);
-	gtk_signal_connect (GTK_OBJECT(WGT_DBGLOG), "toggled", GTK_SIGNAL_FUNC(BoolRevert), &debug);
-	gtk_signal_connect (GTK_OBJECT(WGT_DBGLOG2), "toggled", GTK_SIGNAL_FUNC(BoolRevert), &debug2);
-	gtk_signal_connect (GTK_OBJECT(WGT_MEMHEAP), "toggled", GTK_SIGNAL_FUNC(BoolRevert), &use_heap);
-	gtk_signal_connect (GTK_OBJECT(WGT_MEMZONE), "toggled", GTK_SIGNAL_FUNC(BoolRevert), &use_zone);
-	gtk_signal_connect (GTK_OBJECT(WGT_EXTBTN), "toggled", GTK_SIGNAL_FUNC(BoolRevert), &use_extra);
-	reslist_handler = gtk_signal_connect (GTK_OBJECT(GTK_COMBO(WGT_RESCOMBO)->entry), "changed", GTK_SIGNAL_FUNC(res_Change),
+	GTKUI_SIGNAL_CONNECT (WGT_SBITS, "toggled", on_SBITS, &sndbits);
+	GTKUI_SIGNAL_CONNECT (WGT_MIDI, "toggled", BoolRevert, &midi);
+	GTKUI_SIGNAL_CONNECT (WGT_CDAUDIO, "toggled", BoolRevert, &cdaudio);
+	GTKUI_SIGNAL_CONNECT (WGT_LANBUTTON, "toggled", BoolRevert, &lan);
+	GTKUI_SIGNAL_CONNECT (WGT_FULLSCR, "toggled", BoolRevert, &fullscreen);
+	GTKUI_SIGNAL_CONNECT (WGT_CONWBUTTON, "toggled", BoolRevert, &use_con);
+	GTKUI_SIGNAL_CONNECT (WGT_3DFX, "toggled", BoolRevert, &fxgamma);
+	GTKUI_SIGNAL_CONNECT (WGT_GL8BIT, "toggled", BoolRevert, &is8bit);
+	GTKUI_SIGNAL_CONNECT (WGT_LM_BYTES, "toggled", BoolRevert, &use_lm1);
+	GTKUI_SIGNAL_CONNECT (WGT_VSYNC, "toggled", BoolRevert, &vsync);
+	GTKUI_SIGNAL_CONNECT (WGT_FSAA, "toggled", BoolRevert, &use_fsaa);
+	GTKUI_SIGNAL_CONNECT (WGT_ADJFSAA, "value_changed", adj_Change, &aasamples);
+	GTKUI_SIGNAL_CONNECT (WGT_LIBGL, "toggled", BoolRevert, &gl_nonstd);
+	GTKUI_SIGNAL_CONNECT (WGT_DBGLOG, "toggled", BoolRevert, &debug);
+	GTKUI_SIGNAL_CONNECT (WGT_DBGLOG2, "toggled", BoolRevert, &debug2);
+	GTKUI_SIGNAL_CONNECT (WGT_MEMHEAP, "toggled", BoolRevert, &use_heap);
+	GTKUI_SIGNAL_CONNECT (WGT_MEMZONE, "toggled", BoolRevert, &use_zone);
+	GTKUI_SIGNAL_CONNECT (WGT_EXTBTN, "toggled", BoolRevert, &use_extra);
+	reslist_handler = GTKUI_SIGNAL_CONNECT (GTK_COMBO(WGT_RESCOMBO)->entry, "changed", res_Change,
 									GTK_LIST((GTK_COMBO(WGT_RESCOMBO))->list));
-	conwlist_handler = gtk_signal_connect (GTK_OBJECT(GTK_COMBO(WGT_CONWCOMBO)->entry), "changed", GTK_SIGNAL_FUNC(con_Change),
+	conwlist_handler = GTKUI_SIGNAL_CONNECT (GTK_COMBO(WGT_CONWCOMBO)->entry, "changed", con_Change,
 									GTK_LIST((GTK_COMBO(WGT_CONWCOMBO))->list));
-	gtk_signal_connect (GTK_OBJECT(WGT_GLPATH), "changed", GTK_SIGNAL_FUNC(libgl_Change), NULL);
-	gtk_signal_connect (GTK_OBJECT(WGT_EXTARGS), "changed", GTK_SIGNAL_FUNC(extargs_Change), NULL);
-	gtk_signal_connect (GTK_OBJECT(WGT_HEAPADJ), "value_changed", GTK_SIGNAL_FUNC(adj_Change), &heapsize);
-	gtk_signal_connect (GTK_OBJECT(WGT_ZONEADJ), "value_changed", GTK_SIGNAL_FUNC(adj_Change), &zonesize);
-	gtk_signal_connect (GTK_OBJECT(MORE_LESS), "clicked", GTK_SIGNAL_FUNC(on_MORE), NULL);
+	GTKUI_SIGNAL_CONNECT (WGT_GLPATH, "changed", libgl_Change, NULL);
+	GTKUI_SIGNAL_CONNECT (WGT_EXTARGS, "changed", extargs_Change, NULL);
+	GTKUI_SIGNAL_CONNECT (WGT_HEAPADJ, "value_changed", adj_Change, &heapsize);
+	GTKUI_SIGNAL_CONNECT (WGT_ZONEADJ, "value_changed", adj_Change, &zonesize);
+	GTKUI_SIGNAL_CONNECT (MORE_LESS, "clicked", on_MORE, NULL);
 
 /* show the window */
 	gtk_widget_show (MAIN_WINDOW);
@@ -1603,8 +1605,8 @@ void ui_error (const char *msg)
 	ok_button = gtk_button_new_with_label("Close");
 
 	/* Ensure that the dialog box is destroyed when the user clicks ok. */
-	gtk_signal_connect_object (GTK_OBJECT(ok_button), "clicked", GTK_SIGNAL_FUNC(prompt_button_slot), GTK_OBJECT(dialog));
-	gtk_signal_connect_object (GTK_OBJECT(dialog), "delete-event", GTK_SIGNAL_FUNC(prompt_button_slot), GTK_OBJECT(dialog));
+	GTKUI_SIGNAL_CONNECT_OBJECT (ok_button, "clicked", prompt_button_slot, dialog);
+	GTKUI_SIGNAL_CONNECT_OBJECT (dialog, "delete-event", prompt_button_slot, dialog);
 	gtk_container_add (GTK_CONTAINER (GTK_DIALOG(dialog)->action_area), ok_button);
 
 	/* Add the label, and show everything we've added to the dialog. */

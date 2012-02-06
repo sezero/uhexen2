@@ -4,6 +4,19 @@ Development Progress	:
 ---------------------------
 
 2012-02-06 (SVN):
+    * launcher: preparing for gtk3 support #1: Removed all references to
+      GtkObject type. Created GTKUI_SIGNAL_DISCONNECT and similar macros
+      for signals support across different gtk versions. Used the gtk2+
+      function gtk_adjustment_get_value(), added a compatibility macro
+      for gtk1. Added GTKUI_DISABLE_FOCUS macro and removed direct uses
+      of GTK_WIDGET_UNSET_FLAGS. Limitied GtkTooltips to gtk2 and older,
+      added gtk_tooltips_set_tip as a macro for gtk3 and newer. Added
+      gtk_radio_button_get_group as a compatibility macro for gtk1.
+      Replaced gtk_entry_set_editable calls by gtk_editable_set_editable.
+      Changed adjustment widgets' types to GtkAdjustment. More to follow
+      later.
+
+2012-02-06 (SVN):
     * launcher: bumped version to 1.0.7
 
 2012-02-06 (SVN):
