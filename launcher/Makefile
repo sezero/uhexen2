@@ -82,9 +82,7 @@ all: $(BINARY)
 	$(CC) -c $(CFLAGS) -o $@ $<
 
 # Objects
-# activate the line below if you add pixmap support, etc
-#SUPPORT_OBJS := support.o
-GUI_OBJS     := gtk_ui.o $(SUPPORT_OBJS)
+GUI_OBJS     := gtk_ui.o
 LAUNCHER_OBJS:= crc.o q_endian.o games.o config_file.o launch_bin.o
 LAUNCHER_MAIN:= main.o
 ifndef DEMO

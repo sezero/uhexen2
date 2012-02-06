@@ -3,6 +3,11 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2012-02-06 (SVN):
+    * launcher: Removed support.c and support.h. Removed calls playing
+      with the widgets' refcounts for lookup_widget() of support.c which
+      I never used.
+
 2012-02-04 (SVN):
     * oslibs, dos/windows codecs: Upgrade to the latest versions of ogg-
       vorbis decoders.
