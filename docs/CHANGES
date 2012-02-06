@@ -4,6 +4,9 @@ Development Progress	:
 ---------------------------
 
 2012-02-06 (SVN):
+    * launcher: bumped version to 1.0.7
+
+2012-02-06 (SVN):
     * launcher: Removed support.c and support.h. Removed calls playing
       with the widgets' refcounts for lookup_widget() of support.c which
       I never used.
