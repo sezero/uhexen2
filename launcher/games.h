@@ -84,6 +84,7 @@ typedef struct
 	const char	*checkfile;	/* filename for extra check */
 	int	is_botmatch;
 	int	available;
+	int	menu_index;
 } h2game_t;
 
 typedef struct
@@ -92,6 +93,7 @@ typedef struct
 	const char	*name;		/* user-friendly name */
 	const char	*checkfile;	/* filename for extra check */
 	int	available;
+	int	menu_index;
 } hwgame_t;
 
 extern	h2game_t	h2game_names[];

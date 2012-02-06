@@ -4,6 +4,10 @@ Development Progress	:
 ---------------------------
 
 2012-02-06 (SVN):
+    * launcher: Fixed game selection callback functions assigning a bad
+      selection. Bug was introduced in launcher-v1.0.6/uhexen2-v1.5.1.
+
+2012-02-06 (SVN):
     * launcher: preparing for gtk3 support #1: Removed all references to
       GtkObject type. Created GTKUI_SIGNAL_DISCONNECT and similar macros
       for signals support across different gtk versions. Used the gtk2+

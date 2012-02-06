@@ -177,23 +177,23 @@ finish:
 #if !defined(DEMOBUILD)
 h2game_t h2game_names[] =	/* first entry is always available */
 {
-	{  NULL    , "(  None  )"	,   NULL,		0, 1 },
-	{ "hcbots" , "BotMatch: HC bots",   "progs.dat",	1, 0 },
-	{ "apocbot", "BotMatch: ApocBot",   "progs.dat",	1, 0 },
-	{ "fo4d"   , "Fortress of 4 Doors", "maps/u_world.bsp",	0, 0 },
-	{ "peanut" , "Project Peanut"	,   "progs.dat",	0, 0 },
+	{  NULL    , "(  None  )"	,   NULL,		0, 1, -1 },
+	{ "hcbots" , "BotMatch: HC bots",   "progs.dat",	1, 0, -1 },
+	{ "apocbot", "BotMatch: ApocBot",   "progs.dat",	1, 0, -1 },
+	{ "fo4d"   , "Fortress of 4 Doors", "maps/u_world.bsp",	0, 0, -1 },
+	{ "peanut" , "Project Peanut"	,   "progs.dat",	0, 0, -1 },
 };
 
 const int MAX_H2GAMES = sizeof(h2game_names) / sizeof(h2game_names[0]);
 
 hwgame_t hwgame_names[] =	/* first entry is always available */
 {
-	{  NULL     , "Plain DeathMatch", NULL,			 1  },
-	{ "hexarena", "HexArena"	, "sound/ha/fight.wav",  0  },
-	{ "hwctf"   , "Capture the Flag", "models/ctf_flag.mdl", 0  },
-	{ "siege"   , "Siege"		, "models/h_hank.mdl",   0  },
-	{ "db"      , "Dungeon Break"	, "sound/donewell.wav",  0  },
-	{ "rk"      , "Rival Kingdoms"	, "troll/h_troll.mdl",   0  },
+	{  NULL     , "Plain DeathMatch", NULL,			   1, -1 },
+	{ "hexarena", "HexArena"	, "sound/ha/fight.wav",    0, -1 },
+	{ "hwctf"   , "Capture the Flag", "models/ctf_flag.mdl",   0, -1 },
+	{ "siege"   , "Siege"		, "models/h_hank.mdl",     0, -1 },
+	{ "db"      , "Dungeon Break"	, "sound/donewell.wav",    0, -1 },
+	{ "rk"      , "Rival Kingdoms"	, "troll/h_troll.mdl",     0, -1 },
 };
 
 const int	MAX_HWGAMES = sizeof(hwgame_names) / sizeof(hwgame_names[0]);

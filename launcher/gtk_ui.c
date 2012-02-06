@@ -591,13 +591,35 @@ static void on_H2W (GtkButton *button, gpointer user_data)
 #if !defined(DEMOBUILD)
 static void H2GameChange (GtkEntry *unused, GtkList *l)
 {
-	h2game = gtk_list_child_position(l, (GtkWidget *) l->selection->data);
+	int i;
+	int menu_index = gtk_list_child_position(l, (GtkWidget *) l->selection->data);
+
+	h2game = 0;
+	for (i = 0; i < MAX_H2GAMES; i++)
+	{
+		if (h2game_names[i].menu_index == menu_index)
+		{
+			h2game = i;
+			break;
+		}
+	}
 	gtk_widget_set_sensitive (WGT_LANBUTTON, !h2game_names[h2game].is_botmatch);
 }
 
 static void HWGameChange (GtkEntry *unused, GtkList *l)
 {
-	hwgame = gtk_list_child_position(l, (GtkWidget *) l->selection->data);
+	int i;
+	int menu_index = gtk_list_child_position(l, (GtkWidget *) l->selection->data);
+
+	hwgame = 0;
+	for (i = 0; i < MAX_HWGAMES; i++)
+	{
+		if (hwgame_names[i].menu_index == menu_index)
+		{
+			hwgame = i;
+			break;
+		}
+	}
 }
 #endif	/* ! DEMOBUILD */
 
@@ -626,7 +648,7 @@ static void basedir_Change (GtkButton *unused, gpointer user_data)
 {
 	static gboolean	in_progress = FALSE;	/* do I need this? */
 #if !defined(DEMOBUILD)
-	int		i;
+	int		i, menu_index;
 	GList *TmpList = NULL;
 #endif	/* ! DEMOBUILD */
 
@@ -647,23 +669,37 @@ static void basedir_Change (GtkButton *unused, gpointer user_data)
 	if (mp_support)
 		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON(WGT_PORTALS), FALSE);
 	h2game = hwgame = mp_support = 0;
+	menu_index = 0;
 	for (i = 0; i < MAX_H2GAMES; i++)
 	{
 		if (h2game_names[i].available)
+		{
 			TmpList = g_list_append (TmpList, g_strdup(h2game_names[i].name));
+			h2game_names[i].menu_index = menu_index;
+			menu_index++;
+		}
+		else	h2game_names[i].menu_index = -1;
 	}
 	gtk_combo_set_popdown_strings (GTK_COMBO(WGT_H2GAME), TmpList);
 	g_list_foreach(TmpList, g_free_func, NULL);
 	g_list_free (TmpList);
+
 	TmpList = NULL;
+	menu_index = 0;
 	for (i = 0; i < MAX_HWGAMES; i++)
 	{
 		if (hwgame_names[i].available)
+		{
 			TmpList = g_list_append (TmpList, g_strdup(hwgame_names[i].name));
+			hwgame_names[i].menu_index = menu_index;
+			menu_index++;
+		}
+		else	hwgame_names[i].menu_index = -1;
 	}
 	gtk_combo_set_popdown_strings (GTK_COMBO(WGT_HWGAME), TmpList);
 	g_list_foreach(TmpList, g_free_func, NULL);
 	g_list_free (TmpList);
+
 	gtk_entry_set_text (GTK_ENTRY(GTK_COMBO(WGT_H2GAME)->entry), h2game_names[0].name);
 	gtk_entry_set_text (GTK_ENTRY(GTK_COMBO(WGT_HWGAME)->entry), hwgame_names[0].name);
 	if (gameflags & (GAME_REGISTERED|GAME_REGISTERED_OLD))
@@ -867,6 +903,9 @@ static void create_window1 (void)
 /* Other stuff */
 	GList *TmpList;
 	GSList *Destinies;
+#if !defined(DEMOBUILD)
+	int	game_index, menu_index;
+#endif
 #if (GTK_MAJOR_VERSION <= 2)
 	tooltips = gtk_tooltips_new ();
 #endif
@@ -1121,12 +1160,20 @@ static void create_window1 (void)
 	WGT_H2GAME = gtk_combo_new ();
 	gtk_widget_set_size_request (WGT_H2GAME, 172, 32);
 #ifndef DEMOBUILD
+	game_index = menu_index = 0;
 	TmpList = NULL;
 	gtk_combo_set_use_arrows (GTK_COMBO(WGT_H2GAME), FALSE);
 	for (i = 0; i < MAX_H2GAMES; i++)
 	{
 		if (h2game_names[i].available)
+		{
 			TmpList = g_list_append (TmpList, g_strdup(h2game_names[i].name));
+			h2game_names[i].menu_index = menu_index;
+			if (i == h2game)
+				game_index = menu_index;
+			menu_index++;
+		}
+		else	h2game_names[i].menu_index = -1;
 	}
 	gtk_combo_set_popdown_strings (GTK_COMBO(WGT_H2GAME), TmpList);
 	g_list_foreach(TmpList, g_free_func, NULL);
@@ -1150,12 +1197,20 @@ static void create_window1 (void)
 /* game types menu for hexenworld */
 	WGT_HWGAME = gtk_combo_new ();
 	gtk_widget_set_size_request (WGT_HWGAME, 172, 32);
+	game_index = menu_index = 0;
 	TmpList = NULL;
 	gtk_combo_set_use_arrows (GTK_COMBO(WGT_HWGAME), FALSE);
 	for (i = 0; i < MAX_HWGAMES; i++)
 	{
 		if (hwgame_names[i].available)
+		{
 			TmpList = g_list_append (TmpList, g_strdup(hwgame_names[i].name));
+			hwgame_names[i].menu_index = menu_index;
+			if (i == hwgame)
+				game_index = menu_index;
+			menu_index++;
+		}
+		else	hwgame_names[i].menu_index = -1;
 	}
 	gtk_combo_set_popdown_strings (GTK_COMBO(WGT_HWGAME), TmpList);
 	g_list_foreach(TmpList, g_free_func, NULL);
