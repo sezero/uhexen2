@@ -49,6 +49,9 @@ static MainWindow_t	main_win;
 static PatchWindow_t	patch_win;
 static int		bmore = 0;
 static GTK_SIGHANDLER_T	reslist_handler, conwlist_handler;
+#ifndef DEMOBUILD
+static GTK_SIGHANDLER_T	h2game_handler, hwgame_handler;
+#endif
 
 static const char *res_names[RES_MAX] =
 {
@@ -74,6 +77,84 @@ static const char *launch_status[] =
 #endif	/* DEMOBUILD */
 };
 
+
+/*********************************************************************
+ Option menu crap'o'la....
+ *********************************************************************/
+
+#if (GTK_MAJOR_VERSION < 2)
+#define	OPTMENU_CALLBACK_PARMS	GtkMenuShell *ms, GtkOptionMenu *optmenu
+#define	GTKUI_OPTMENU_T		GtkOptionMenu
+#define	GTKUI_OPTMENU_CAST(_m)	GTK_OPTION_MENU((_m))
+#define	GTKUI_GET_OPTMENU_IDX	gtk_option_menu_get_history
+#define	GTKUI_SET_OPTMENU_IDX	gtk_option_menu_set_history
+#define	GTKUI_OPTMENU_VARS	GtkWidget *menu, *menu_item;
+#define	GTKUI_OPTMENU_NEW()		gtk_option_menu_new()
+#define	GTKUI_OPTMENUS_BEGIN(_m)	menu = gtk_menu_new()
+#define	GTKUI_OPTMENUS_FRESHEN(_m)	gtk_option_menu_remove_menu(GTK_OPTION_MENU((_m)));	\
+					GTKUI_OPTMENUS_BEGIN((_m))
+#define	GTKUI_OPTMENUS_ADD(_m,_i)	menu_item = gtk_menu_item_new_with_label((_i));		\
+					gtk_menu_shell_append(GTK_MENU_SHELL(menu),menu_item);	\
+					gtk_widget_show(menu_item)
+#define	GTKUI_OPTMENUS_FINISH(_m)	gtk_option_menu_set_menu(GTK_OPTION_MENU((_m)),menu)
+#elif (GTK_MAJOR_VERSION < 3)
+#define	OPTMENU_CALLBACK_PARMS	GtkOptionMenu *optmenu, gpointer user_data
+#define	GTKUI_OPTMENU_T		GtkOptionMenu
+#define	GTKUI_OPTMENU_CAST(_m)	GTK_OPTION_MENU((_m))
+#define	GTKUI_GET_OPTMENU_IDX	gtk_option_menu_get_history
+#define	GTKUI_SET_OPTMENU_IDX	gtk_option_menu_set_history
+#define	GTKUI_OPTMENU_VARS	GtkWidget *menu, *menu_item;
+#define	GTKUI_OPTMENU_NEW()		gtk_option_menu_new()
+#define	GTKUI_OPTMENUS_BEGIN(_m)	menu = gtk_menu_new()
+#define	GTKUI_OPTMENUS_FRESHEN(_m)	gtk_option_menu_remove_menu(GTK_OPTION_MENU((_m)));	\
+					GTKUI_OPTMENUS_BEGIN((_m))
+#define	GTKUI_OPTMENUS_ADD(_m,_i)	menu_item = gtk_menu_item_new_with_label((_i));		\
+					gtk_menu_shell_append(GTK_MENU_SHELL(menu),menu_item);	\
+					gtk_widget_show(menu_item)
+#define	GTKUI_OPTMENUS_FINISH(_m)	gtk_option_menu_set_menu(GTK_OPTION_MENU((_m)),menu)
+#else /* gtk3+ : */
+#define	OPTMENU_CALLBACK_PARMS	GtkComboBox *optmenu, gpointer user_data
+#define	GTKUI_OPTMENU_T		GtkComboBox
+#define	GTKUI_OPTMENU_CAST(_m)	GTK_COMBO_BOX((_m))
+#define	GTKUI_GET_OPTMENU_IDX	gtk_combo_box_get_active
+#define	GTKUI_SET_OPTMENU_IDX	gtk_combo_box_set_active
+#define	GTKUI_OPTMENU_VARS	/* none */
+#define	GTKUI_OPTMENU_NEW()		gtk_combo_box_text_new()
+#define	GTKUI_OPTMENUS_BEGIN(_m)	/* none */
+#define	GTKUI_OPTMENUS_FRESHEN(_m)	gtk_combo_box_text_remove_all(GTK_COMBO_BOX_TEXT((_m)))
+#define	GTKUI_OPTMENUS_ADD(_m,_i)	gtk_combo_box_text_append_text(GTK_COMBO_BOX_TEXT((_m)),(_i))
+#define	GTKUI_OPTMENUS_FINISH(_m)	/* none */
+#endif
+
+static GTK_SIGHANDLER_T gtkui_set_optmenu_handler (GTKUI_OPTMENU_T *optmenu,
+						   GTKUI_SIGNALFUNC_T handler)
+{
+#if (GTK_MAJOR_VERSION < 2)
+/* GtkOptionMenu class doesn't have "changed"
+ * signal in gtk1, so doing it indirectly: */
+	return GTKUI_SIGNAL_CONNECT (GTK_MENU_SHELL(optmenu->menu),
+					"selection-done", handler, optmenu);
+#elif (GTK_MAJOR_VERSION < 3)
+/* better way with gtk2: */
+	return GTKUI_SIGNAL_CONNECT (optmenu, "changed", handler, NULL);
+#else
+/* gtk3 (or gtk2 >= 2.24) */
+	return GTKUI_SIGNAL_CONNECT (optmenu, "changed", handler, NULL);
+#endif
+}
+
+static void gtkui_kill_optmenu_handler (GTKUI_OPTMENU_T *optmenu,
+					GTK_SIGHANDLER_T *handler)
+{
+#if (GTK_MAJOR_VERSION < 2)
+	GTKUI_SIGNAL_DISCONNECT (GTK_MENU_SHELL(optmenu->menu), *handler);
+#elif (GTK_MAJOR_VERSION < 3) /* gtk2: */
+	GTKUI_SIGNAL_DISCONNECT (optmenu, *handler);
+#else /* gtk3 (or gtk2 >= 2.24) */
+	GTKUI_SIGNAL_DISCONNECT (optmenu, *handler);
+#endif
+	*handler = 0;
+}
 
 /*********************************************************************
  CALLBACK FUNCTIONS
@@ -113,7 +194,7 @@ static const char *patch_status[] =
 };
 #endif	/* !DEMOBUILD */
 
-#if defined(_H2L_USE_GTK1)
+#if (GTK_MAJOR_VERSION < 2)
 static GtkText *LogEntry = NULL;
 
 static void ui_LogInit (GtkWidget *wgt)
@@ -426,9 +507,9 @@ finish:
 }
 #endif	/* ! DEMOBUILD */
 
-static void on_SND (GtkEntry *unused, GtkList *l)
+static void on_SND (OPTMENU_CALLBACK_PARMS)
 {
-	int i = gtk_list_child_position(l, (GtkWidget *) l->selection->data);
+	int i = GTKUI_GET_OPTMENU_IDX(optmenu);
 
 	sound = snd_drivers[i].id;
 	gtk_widget_set_sensitive (WGT_MIDI, sound);
@@ -437,9 +518,9 @@ static void on_SND (GtkEntry *unused, GtkList *l)
 	gtk_widget_set_sensitive (WGT_SBITS, sound);
 }
 
-static void on_SRATE (GtkEntry *unused, GtkList *l)
+static void on_SRATE (OPTMENU_CALLBACK_PARMS)
 {
-	sndrate = gtk_list_child_position(l, (GtkWidget *) l->selection->data);
+	sndrate = GTKUI_GET_OPTMENU_IDX(optmenu);
 }
 
 static void on_SBITS (GtkButton *button, int *opt)
@@ -448,43 +529,80 @@ static void on_SBITS (GtkButton *button, int *opt)
 	gtk_button_set_label(button, (*opt) ? "16 bit" : " 8 bit");
 }
 
-static void g_free_func (gpointer data, gpointer unused)
-{
-	g_free (data);
-}
-
+static void res_Change (OPTMENU_CALLBACK_PARMS);
 static void Make_ResMenu (void)
 {
 	int	i, up;
-	GList *ResList = NULL;
+	int	new_handler;
+	GTKUI_OPTMENU_VARS
 
+	new_handler = 0;
 	up = (opengl_support) ? RES_MAX-1 : RES_640;
 	i  = (opengl_support) ? RES_MINGL : 0;
+
+	if (reslist_handler)
+	{
+		gtkui_kill_optmenu_handler(GTKUI_OPTMENU_CAST(WGT_RESMENU), &reslist_handler);
+		new_handler = 1;
+	}
+
+	GTKUI_OPTMENUS_FRESHEN(WGT_RESMENU);
 	for ( ; i <= up; i++)
-		ResList = g_list_append (ResList, g_strdup(res_names[i]));
-	gtk_combo_set_popdown_strings (GTK_COMBO(WGT_RESMENU), ResList);
-	g_list_foreach(ResList, g_free_func, NULL);
-	g_list_free (ResList);
-	gtk_entry_set_text (GTK_ENTRY(GTK_COMBO(WGT_RESMENU)->entry), res_names[resolution]);
+	{
+		GTKUI_OPTMENUS_ADD(WGT_RESMENU,res_names[i]);
+	}
+	GTKUI_OPTMENUS_FINISH(WGT_RESMENU);
+
+	i  = resolution;
+	if (opengl_support)
+		i -= RES_MINGL;
+	GTKUI_SET_OPTMENU_IDX (GTKUI_OPTMENU_CAST(WGT_RESMENU), i);
+	/* if there was a signal handler, install a new one: */
+	if (new_handler)
+		reslist_handler = gtkui_set_optmenu_handler(GTKUI_OPTMENU_CAST(WGT_RESMENU), GTKUI_SIGNALFUNC(res_Change));
 }
 
+static void con_Change (OPTMENU_CALLBACK_PARMS);
 static void Make_ConWidthMenu (void)
 {
 	int	i;
-	GList *ResList = NULL;
+	int	new_handler;
+	GTKUI_OPTMENU_VARS
 
+	new_handler = 0;
+	if (conwlist_handler)
+	{
+		gtkui_kill_optmenu_handler(GTKUI_OPTMENU_CAST(WGT_CONWMENU), &conwlist_handler);
+		new_handler = 1;
+	}
+
+	GTKUI_OPTMENUS_FRESHEN(WGT_CONWMENU);
 	for (i = 0; i <= resolution; i++)
-		ResList = g_list_append (ResList, g_strdup(res_names[i]));
-	gtk_combo_set_popdown_strings (GTK_COMBO(WGT_CONWMENU), ResList);
-	g_list_foreach(ResList, g_free_func, NULL);
-	g_list_free (ResList);
-	gtk_entry_set_text (GTK_ENTRY(GTK_COMBO(WGT_CONWMENU)->entry), res_names[conwidth]);
+	{
+		GTKUI_OPTMENUS_ADD(WGT_CONWMENU, res_names[i]);
+	}
+	GTKUI_OPTMENUS_FINISH(WGT_CONWMENU);
+
+	GTKUI_SET_OPTMENU_IDX (GTKUI_OPTMENU_CAST(WGT_CONWMENU), conwidth);
+	/* if there was a signal handler, install a new one: */
+	if (new_handler)
+		conwlist_handler = gtkui_set_optmenu_handler(GTKUI_OPTMENU_CAST(WGT_CONWMENU), GTKUI_SIGNALFUNC(con_Change));
 }
 
 static void on_OGL (GtkToggleButton *button, gpointer user_data)
 {
-	GTKUI_SIGNAL_HANDLER_BLOCK (GTK_COMBO(WGT_RESMENU)->entry, reslist_handler);
-	GTKUI_SIGNAL_HANDLER_BLOCK (GTK_COMBO(WGT_CONWMENU)->entry, conwlist_handler);
+	int	new_handler = 0;
+
+	if (reslist_handler)
+	{
+		gtkui_kill_optmenu_handler(GTKUI_OPTMENU_CAST(WGT_RESMENU), &reslist_handler);
+		new_handler |= 1;
+	}
+	if (conwlist_handler)
+	{
+		gtkui_kill_optmenu_handler(GTKUI_OPTMENU_CAST(WGT_CONWMENU), &conwlist_handler);
+		new_handler |= 2;
+	}
 
 	opengl_support ^= 1;
 	if (opengl_support)
@@ -512,15 +630,23 @@ static void on_OGL (GtkToggleButton *button, gpointer user_data)
 		Make_ConWidthMenu();
 	UpdateStats ();
 
-	GTKUI_SIGNAL_HANDLER_UNBLOCK (GTK_COMBO(WGT_RESMENU)->entry, reslist_handler);
-	GTKUI_SIGNAL_HANDLER_UNBLOCK (GTK_COMBO(WGT_CONWMENU)->entry, conwlist_handler);
+	if (new_handler & 1)
+		reslist_handler = gtkui_set_optmenu_handler(GTKUI_OPTMENU_CAST(WGT_RESMENU), GTKUI_SIGNALFUNC(res_Change));
+	if (new_handler & 2)
+		conwlist_handler = gtkui_set_optmenu_handler(GTKUI_OPTMENU_CAST(WGT_CONWMENU), GTKUI_SIGNALFUNC(con_Change));
 }
 
-static void res_Change (GtkEntry *unused, GtkList *l)
+static void res_Change (OPTMENU_CALLBACK_PARMS)
 {
-	GTKUI_SIGNAL_HANDLER_BLOCK (GTK_COMBO(WGT_CONWMENU)->entry, conwlist_handler);
+	int	new_handler = 0;
 
-	resolution = gtk_list_child_position(l, (GtkWidget *) l->selection->data);
+	if (conwlist_handler)
+	{
+		gtkui_kill_optmenu_handler(GTKUI_OPTMENU_CAST(WGT_CONWMENU), &conwlist_handler);
+		new_handler = 1;
+	}
+
+	resolution = GTKUI_GET_OPTMENU_IDX(optmenu);
 	if (opengl_support)
 		resolution += RES_MINGL;
 	if (opengl_support)
@@ -530,12 +656,13 @@ static void res_Change (GtkEntry *unused, GtkList *l)
 		Make_ConWidthMenu ();
 	}
 
-	GTKUI_SIGNAL_HANDLER_UNBLOCK (GTK_COMBO(WGT_CONWMENU)->entry, conwlist_handler);
+	if (new_handler)
+		conwlist_handler = gtkui_set_optmenu_handler(GTKUI_OPTMENU_CAST(WGT_CONWMENU), GTKUI_SIGNALFUNC(con_Change));
 }
 
-static void con_Change (GtkEntry *unused, GtkList *l)
+static void con_Change (OPTMENU_CALLBACK_PARMS)
 {
-	conwidth = gtk_list_child_position(l, (GtkWidget *) l->selection->data);
+	conwidth = GTKUI_GET_OPTMENU_IDX(optmenu);
 }
 
 static void libgl_Change (GtkEntry *entry, gpointer user_data)
@@ -589,10 +716,10 @@ static void on_H2W (GtkButton *button, gpointer user_data)
 }
 
 #if !defined(DEMOBUILD)
-static void H2GameChange (GtkEntry *unused, GtkList *l)
+static void H2GameChange (OPTMENU_CALLBACK_PARMS)
 {
 	int i;
-	int menu_index = gtk_list_child_position(l, (GtkWidget *) l->selection->data);
+	int menu_index = GTKUI_GET_OPTMENU_IDX(optmenu);
 
 	h2game = 0;
 	for (i = 0; i < MAX_H2GAMES; i++)
@@ -606,10 +733,10 @@ static void H2GameChange (GtkEntry *unused, GtkList *l)
 	gtk_widget_set_sensitive (WGT_LANBUTTON, !h2game_names[h2game].is_botmatch);
 }
 
-static void HWGameChange (GtkEntry *unused, GtkList *l)
+static void HWGameChange (OPTMENU_CALLBACK_PARMS)
 {
 	int i;
-	int menu_index = gtk_list_child_position(l, (GtkWidget *) l->selection->data);
+	int menu_index = GTKUI_GET_OPTMENU_IDX(optmenu);
 
 	hwgame = 0;
 	for (i = 0; i < MAX_HWGAMES; i++)
@@ -649,7 +776,8 @@ static void basedir_Change (GtkButton *unused, gpointer user_data)
 	static gboolean	in_progress = FALSE;	/* do I need this? */
 #if !defined(DEMOBUILD)
 	int		i, menu_index;
-	GList *TmpList = NULL;
+	int		new_handler;
+	GTKUI_OPTMENU_VARS
 #endif	/* ! DEMOBUILD */
 
 	if (in_progress)
@@ -666,42 +794,51 @@ static void basedir_Change (GtkButton *unused, gpointer user_data)
 	gtk_widget_set_sensitive (WGT_H2WORLD, (gameflags & GAME_HEXENWORLD) ? TRUE : FALSE);
 /* rebuild the game mod lists */
 #if !defined(DEMOBUILD)
+	new_handler = 0;
+	if (h2game_handler)
+	{
+		gtkui_kill_optmenu_handler(GTKUI_OPTMENU_CAST(WGT_H2GAME), &h2game_handler);
+		new_handler |= 1;
+	}
+	if (hwgame_handler)
+	{
+		gtkui_kill_optmenu_handler(GTKUI_OPTMENU_CAST(WGT_HWGAME), &hwgame_handler);
+		new_handler |= 2;
+	}
+
 	if (mp_support)
 		gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON(WGT_PORTALS), FALSE);
 	h2game = hwgame = mp_support = 0;
 	menu_index = 0;
+	GTKUI_OPTMENUS_FRESHEN(WGT_H2GAME);
 	for (i = 0; i < MAX_H2GAMES; i++)
 	{
 		if (h2game_names[i].available)
 		{
-			TmpList = g_list_append (TmpList, g_strdup(h2game_names[i].name));
+			GTKUI_OPTMENUS_ADD(WGT_H2GAME, h2game_names[i].name);
 			h2game_names[i].menu_index = menu_index;
 			menu_index++;
 		}
 		else	h2game_names[i].menu_index = -1;
 	}
-	gtk_combo_set_popdown_strings (GTK_COMBO(WGT_H2GAME), TmpList);
-	g_list_foreach(TmpList, g_free_func, NULL);
-	g_list_free (TmpList);
+	GTKUI_OPTMENUS_FINISH(WGT_H2GAME);
 
-	TmpList = NULL;
 	menu_index = 0;
+	GTKUI_OPTMENUS_FRESHEN(WGT_HWGAME);
 	for (i = 0; i < MAX_HWGAMES; i++)
 	{
 		if (hwgame_names[i].available)
 		{
-			TmpList = g_list_append (TmpList, g_strdup(hwgame_names[i].name));
+			GTKUI_OPTMENUS_ADD(WGT_HWGAME, hwgame_names[i].name);
 			hwgame_names[i].menu_index = menu_index;
 			menu_index++;
 		}
 		else	hwgame_names[i].menu_index = -1;
 	}
-	gtk_combo_set_popdown_strings (GTK_COMBO(WGT_HWGAME), TmpList);
-	g_list_foreach(TmpList, g_free_func, NULL);
-	g_list_free (TmpList);
+	GTKUI_OPTMENUS_FINISH(WGT_HWGAME);
 
-	gtk_entry_set_text (GTK_ENTRY(GTK_COMBO(WGT_H2GAME)->entry), h2game_names[0].name);
-	gtk_entry_set_text (GTK_ENTRY(GTK_COMBO(WGT_HWGAME)->entry), hwgame_names[0].name);
+	GTKUI_SET_OPTMENU_IDX (GTKUI_OPTMENU_CAST(WGT_H2GAME), 0);
+	GTKUI_SET_OPTMENU_IDX (GTKUI_OPTMENU_CAST(WGT_HWGAME), 0);
 	if (gameflags & (GAME_REGISTERED|GAME_REGISTERED_OLD))
 	{
 		gtk_widget_set_sensitive (WGT_H2GAME, TRUE);
@@ -715,6 +852,12 @@ static void basedir_Change (GtkButton *unused, gpointer user_data)
 		gtk_widget_set_sensitive (WGT_HWGAME, FALSE);
 		gtk_widget_set_sensitive (WGT_PORTALS, FALSE);
 	}
+
+	/* if there was a signal handler, install a new one: */
+	if (new_handler & 1)
+		h2game_handler = gtkui_set_optmenu_handler(GTKUI_OPTMENU_CAST(WGT_H2GAME), GTKUI_SIGNALFUNC(H2GameChange));
+	if (new_handler & 2)
+		hwgame_handler = gtkui_set_optmenu_handler(GTKUI_OPTMENU_CAST(WGT_HWGAME), GTKUI_SIGNALFUNC(HWGameChange));
 #endif	/* ! DEMOBUILD */
 
 	in_progress = FALSE;
@@ -747,10 +890,10 @@ static void create_window2 (GtkWidget *unused1, gpointer user_data)
 {
 	GtkWidget *Txt1;	/* Window label */
 	GtkWidget *TxtWindow;	/* Holder Window for the textview */
-#if !defined(_H2L_USE_GTK1)
+#if (GTK_MAJOR_VERSION > 1)
 	GtkTextBuffer	*buf;
 	GtkTextIter	start;
-#endif	/* _H2L_USE_GTK1 */
+#endif	/* GTK2+ */
 
 	PATCH_WINDOW = gtk_window_new (GTK_WINDOW_TOPLEVEL);
 	gtk_window_set_title (GTK_WINDOW(PATCH_WINDOW), "Hexen II PAK patch");
@@ -809,17 +952,17 @@ static void create_window2 (GtkWidget *unused1, gpointer user_data)
 	gtk_scrolled_window_set_shadow_type (GTK_SCROLLED_WINDOW(TxtWindow), GTK_SHADOW_ETCHED_IN);
 
 /* The textview: */
-#if defined(_H2L_USE_GTK1)
+#if (GTK_MAJOR_VERSION < 2)
 	patch_win.LOGVIEW = gtk_text_new (NULL, NULL);
 #else	/* GTK2 */
 	patch_win.LOGVIEW = gtk_text_view_new ();
-#endif	/* _H2L_USE_GTK2 */
+#endif	/* GTK_MAJOR_VERSION */
 	gtk_widget_set_size_request (patch_win.LOGVIEW, 324, 146);
 	gtk_container_add (GTK_CONTAINER (TxtWindow), patch_win.LOGVIEW);
 	gtk_widget_show (patch_win.LOGVIEW);
 	GTKUI_DISABLE_FOCUS (patch_win.LOGVIEW);
 /*	gtk_widget_set_sensitive (patch_win.LOGVIEW, FALSE);*/
-#if defined(_H2L_USE_GTK1)
+#if (GTK_MAJOR_VERSION < 2)
 /*	gtk_text_set_line_wrap(GTK_TEXT(patch_win.LOGVIEW), FALSE);*/
 	gtk_text_set_editable (GTK_TEXT(patch_win.LOGVIEW), FALSE);
 #else	/* GTK2 */
@@ -830,7 +973,7 @@ static void create_window2 (GtkWidget *unused1, gpointer user_data)
 	buf = gtk_text_view_get_buffer (GTK_TEXT_VIEW(patch_win.LOGVIEW));
 	gtk_text_buffer_get_start_iter (buf, &start);
 	gtk_text_buffer_create_mark (buf, "ins_mark", &start, 0);
-#endif	/* _H2L_USE_GTK2 */
+#endif	/* GTK_MAJOR_VERSION */
 
 /* Close button */
 	patch_win.bCLOSE = gtk_button_new_with_label (_("Close"));
@@ -880,7 +1023,7 @@ static void create_window1 (void)
 	GtkWidget *TxtGame0;	/* Destiny label */
 	GtkWidget *TxtVideo;	/* Renderer, etc. */
 	GtkWidget *TxtResol;	/* Resolution */
-	GtkWidget *TxtSound;	/* Sound driver combo */
+	GtkWidget *TxtSound;	/* Sound driver menu */
 /* Widgets for basics which needn't be in a relevant struct */
 	GtkWidget *bQUIT;	/* Quit button */
 
@@ -901,7 +1044,7 @@ static void create_window1 (void)
 	GtkWidget *hseparator1;
 
 /* Other stuff */
-	GList *TmpList;
+	GTKUI_OPTMENU_VARS
 	GSList *Destinies;
 #if !defined(DEMOBUILD)
 	int	game_index, menu_index;
@@ -1078,13 +1221,9 @@ static void create_window1 (void)
 	gtk_label_set_justify (GTK_LABEL(TxtResol), GTK_JUSTIFY_LEFT);
 
 /* resolution menu */
-	WGT_RESMENU = gtk_combo_new ();
-	gtk_combo_set_use_arrows (GTK_COMBO(WGT_RESMENU), FALSE);
+	WGT_RESMENU = GTKUI_OPTMENU_NEW();
 	gtk_widget_set_size_request (WGT_RESMENU, 110, 24);
 	gtk_fixed_put (GTK_FIXED(BASIC_TAB), WGT_RESMENU, 102, 176);
-/* resolution display */
-/*	gtk_entry_set_alignment (GTK_ENTRY(GTK_COMBO(WGT_RESMENU)->entry), 1);*/
-	gtk_editable_set_editable (GTK_EDITABLE(GTK_COMBO(WGT_RESMENU)->entry), FALSE);
 	/* menu listing for resolution come from a callback */
 	Make_ResMenu ();
 	gtk_widget_show (WGT_RESMENU);
@@ -1097,27 +1236,24 @@ static void create_window1 (void)
 	gtk_fixed_put (GTK_FIXED(BASIC_TAB), TxtSound, 14, 212);
 	gtk_label_set_justify (GTK_LABEL(TxtSound), GTK_JUSTIFY_LEFT);
 
-	WGT_SOUND = gtk_combo_new ();
-	gtk_combo_set_use_arrows (GTK_COMBO(WGT_SOUND), FALSE);
+	WGT_SOUND = GTKUI_OPTMENU_NEW();
 	gtk_widget_set_size_request (WGT_SOUND, 110, 24);
-	TmpList = NULL;
+	GTKUI_OPTMENUS_BEGIN(WGT_SOUND);
 	for (i = 0; snd_drivers[i].id != INT_MIN; i++)
-		TmpList = g_list_append (TmpList, g_strdup(snd_drivers[i].name));
-	gtk_combo_set_popdown_strings (GTK_COMBO(WGT_SOUND), TmpList);
-	g_list_foreach(TmpList, g_free_func, NULL);
-	g_list_free (TmpList);
+	{
+		GTKUI_OPTMENUS_ADD(WGT_SOUND, snd_drivers[i].name);
+	}
+	GTKUI_OPTMENUS_FINISH(WGT_SOUND);
 	gtk_fixed_put (GTK_FIXED(BASIC_TAB), WGT_SOUND, 102, 208);
 	gtk_widget_show (WGT_SOUND);
 	for (i = 0; snd_drivers[i].id != INT_MIN; i++)
 	{
 		if (sound == snd_drivers[i].id)
 		{
-			gtk_entry_set_text (GTK_ENTRY(GTK_COMBO(WGT_SOUND)->entry), snd_drivers[i].name);
+			GTKUI_SET_OPTMENU_IDX (GTKUI_OPTMENU_CAST(WGT_SOUND), i);
 			break;
 		}
 	}
-	gtk_editable_set_editable (GTK_EDITABLE(GTK_COMBO(WGT_SOUND)->entry), FALSE);
-/*	gtk_entry_set_alignment (GTK_ENTRY(GTK_COMBO(WGT_SOUND)->entry), 1);*/
 
 /* Sampling rate selection */
 	TxtSound2 = gtk_label_new (_("Sample Rate:"));
@@ -1125,19 +1261,17 @@ static void create_window1 (void)
 	gtk_fixed_put (GTK_FIXED(BASIC_TAB), TxtSound2, 14, 242);
 	gtk_label_set_justify (GTK_LABEL(TxtSound2), GTK_JUSTIFY_LEFT);
 
-	WGT_SRATE = gtk_combo_new ();
-	gtk_combo_set_use_arrows (GTK_COMBO(WGT_SRATE), FALSE);
+	WGT_SRATE = GTKUI_OPTMENU_NEW();
 	gtk_widget_set_size_request (WGT_SRATE, 110, 24);
-	TmpList = NULL;
+	GTKUI_OPTMENUS_BEGIN(WGT_SRATE);
 	for (i = 0; i < MAX_RATES; i++)
-		TmpList = g_list_append (TmpList, g_strdup(snd_rates[i]));
-	gtk_combo_set_popdown_strings (GTK_COMBO(WGT_SRATE), TmpList);
-	g_list_foreach(TmpList, g_free_func, NULL);
-	g_list_free (TmpList);
+	{
+		GTKUI_OPTMENUS_ADD(WGT_SRATE, snd_rates[i]);
+	}
+	GTKUI_OPTMENUS_FINISH(WGT_SRATE);
 	gtk_fixed_put (GTK_FIXED(BASIC_TAB), WGT_SRATE, 102, 238);
 	gtk_widget_show (WGT_SRATE);
-	gtk_entry_set_text (GTK_ENTRY(GTK_COMBO(WGT_SRATE)->entry), snd_rates[sndrate]);
-	gtk_editable_set_editable (GTK_EDITABLE(GTK_COMBO(WGT_SRATE)->entry), FALSE);
+	GTKUI_SET_OPTMENU_IDX (GTKUI_OPTMENU_CAST(WGT_SRATE), sndrate);
 
 /********************************************************************
  TAB - 2:		ADDITIONAL OPTIONS
@@ -1157,17 +1291,16 @@ static void create_window1 (void)
 	gtk_label_set_justify (GTK_LABEL(TxtGameT), GTK_JUSTIFY_LEFT);
 
 /* game types menu for hexen2 */
-	WGT_H2GAME = gtk_combo_new ();
+	WGT_H2GAME = GTKUI_OPTMENU_NEW();
 	gtk_widget_set_size_request (WGT_H2GAME, 172, 32);
 #ifndef DEMOBUILD
 	game_index = menu_index = 0;
-	TmpList = NULL;
-	gtk_combo_set_use_arrows (GTK_COMBO(WGT_H2GAME), FALSE);
+	GTKUI_OPTMENUS_BEGIN(WGT_H2GAME);
 	for (i = 0; i < MAX_H2GAMES; i++)
 	{
 		if (h2game_names[i].available)
 		{
-			TmpList = g_list_append (TmpList, g_strdup(h2game_names[i].name));
+			GTKUI_OPTMENUS_ADD(WGT_H2GAME, h2game_names[i].name);
 			h2game_names[i].menu_index = menu_index;
 			if (i == h2game)
 				game_index = menu_index;
@@ -1175,36 +1308,34 @@ static void create_window1 (void)
 		}
 		else	h2game_names[i].menu_index = -1;
 	}
-	gtk_combo_set_popdown_strings (GTK_COMBO(WGT_H2GAME), TmpList);
-	g_list_foreach(TmpList, g_free_func, NULL);
-	g_list_free (TmpList);
-#endif	/* DEMOBUILD */
+	GTKUI_OPTMENUS_FINISH(WGT_H2GAME);
 	gtk_fixed_put (GTK_FIXED(ADDON_TAB2), WGT_H2GAME, 36, 36);
-#ifndef DEMOBUILD
-	gtk_editable_set_editable (GTK_EDITABLE(GTK_COMBO(WGT_H2GAME)->entry), FALSE);
-	gtk_entry_set_text (GTK_ENTRY(GTK_COMBO(WGT_H2GAME)->entry), h2game_names[h2game].name);
+	GTKUI_SET_OPTMENU_IDX (GTKUI_OPTMENU_CAST(WGT_H2GAME), game_index);
 	if (!(gameflags & (GAME_REGISTERED|GAME_REGISTERED_OLD)))
 		gtk_widget_set_sensitive (WGT_H2GAME, FALSE);
 	if (destiny == DEST_H2)
 		gtk_widget_show (WGT_H2GAME);
 #else
+	GTKUI_OPTMENUS_BEGIN(WGT_H2GAME);
+	GTKUI_OPTMENUS_ADD(WGT_H2GAME, "(  None  )");
+	GTKUI_OPTMENUS_FINISH(WGT_H2GAME);
+	gtk_fixed_put (GTK_FIXED(ADDON_TAB2), WGT_H2GAME, 36, 36);
 	gtk_widget_show (WGT_H2GAME);
-	gtk_entry_set_text (GTK_ENTRY(GTK_COMBO(WGT_H2GAME)->entry), "(  None  )");
+	GTKUI_SET_OPTMENU_IDX (GTKUI_OPTMENU_CAST(WGT_H2GAME), 0);
 	gtk_widget_set_sensitive (WGT_H2GAME, FALSE);
 #endif
 
 #ifndef DEMOBUILD
 /* game types menu for hexenworld */
-	WGT_HWGAME = gtk_combo_new ();
+	WGT_HWGAME = GTKUI_OPTMENU_NEW();
 	gtk_widget_set_size_request (WGT_HWGAME, 172, 32);
 	game_index = menu_index = 0;
-	TmpList = NULL;
-	gtk_combo_set_use_arrows (GTK_COMBO(WGT_HWGAME), FALSE);
+	GTKUI_OPTMENUS_BEGIN(WGT_HWGAME);
 	for (i = 0; i < MAX_HWGAMES; i++)
 	{
 		if (hwgame_names[i].available)
 		{
-			TmpList = g_list_append (TmpList, g_strdup(hwgame_names[i].name));
+			GTKUI_OPTMENUS_ADD(WGT_HWGAME,hwgame_names[i].name);
 			hwgame_names[i].menu_index = menu_index;
 			if (i == hwgame)
 				game_index = menu_index;
@@ -1212,13 +1343,10 @@ static void create_window1 (void)
 		}
 		else	hwgame_names[i].menu_index = -1;
 	}
-	gtk_combo_set_popdown_strings (GTK_COMBO(WGT_HWGAME), TmpList);
-	g_list_foreach(TmpList, g_free_func, NULL);
-	g_list_free (TmpList);
+	GTKUI_OPTMENUS_FINISH(WGT_HWGAME);
 /*	gtk_fixed_put (GTK_FIXED(ADDON_TAB2), WGT_HWGAME, 68, 66);*/
 	gtk_fixed_put (GTK_FIXED(ADDON_TAB2), WGT_HWGAME, 36, 36);
-	gtk_editable_set_editable (GTK_EDITABLE(GTK_COMBO(WGT_HWGAME)->entry), FALSE);
-	gtk_entry_set_text (GTK_ENTRY(GTK_COMBO(WGT_HWGAME)->entry), hwgame_names[hwgame].name);
+	GTKUI_SET_OPTMENU_IDX (GTKUI_OPTMENU_CAST(WGT_HWGAME), game_index);
 	if (!(gameflags & (GAME_REGISTERED|GAME_REGISTERED_OLD)))
 		gtk_widget_set_sensitive (WGT_HWGAME, FALSE);
 	if (destiny == DEST_HW)
@@ -1285,14 +1413,10 @@ static void create_window1 (void)
 	gtk_widget_set_sensitive (WGT_CONWBUTTON, opengl_support);
 
 /* conwidth menu */
-	WGT_CONWMENU = gtk_combo_new ();
-	gtk_combo_set_use_arrows (GTK_COMBO(WGT_CONWMENU), FALSE);
+	WGT_CONWMENU = GTKUI_OPTMENU_NEW();
 	gtk_widget_set_size_request (WGT_CONWMENU, 108, 24);
 	gtk_fixed_put (GTK_FIXED(ADDON_TAB2), WGT_CONWMENU, 100, 182);
 	gtk_widget_set_sensitive (WGT_CONWMENU, opengl_support);
-/* conwidth display */
-/*	gtk_entry_set_alignment (GTK_ENTRY(GTK_COMBO(WGT_CONWMENU)->entry), 1);*/
-	gtk_editable_set_editable (GTK_EDITABLE(GTK_COMBO(WGT_CONWMENU)->entry), FALSE);
 	/* menu listing for conwidth come from a callback */
 	Make_ConWidthMenu();
 	gtk_widget_show (WGT_CONWMENU);
@@ -1518,20 +1642,12 @@ static void create_window1 (void)
 	GTKUI_SIGNAL_CONNECT (WGT_LAUNCH, "clicked", launch_hexen2_bin, NULL);
 	GTKUI_SIGNAL_CONNECT (bQUIT, "clicked", ui_quit, NULL);
 #ifndef DEMOBUILD
-	GTKUI_SIGNAL_CONNECT (GTK_COMBO(WGT_H2GAME)->entry, "changed", H2GameChange,
-								GTK_LIST((GTK_COMBO(WGT_H2GAME))->list));
-	GTKUI_SIGNAL_CONNECT (GTK_COMBO(WGT_HWGAME)->entry, "changed", HWGameChange,
-								GTK_LIST((GTK_COMBO(WGT_HWGAME))->list));
 	GTKUI_SIGNAL_CONNECT (WGT_PORTALS, "toggled", BoolRevert, &mp_support);
-#endif	/* DEMOBUILD */
+#endif
 	GTKUI_SIGNAL_CONNECT (bPATCH, "clicked", create_window2, NULL);
 	GTKUI_SIGNAL_CONNECT (WGT_HEXEN2, "clicked", on_HEXEN2, NULL);
 	GTKUI_SIGNAL_CONNECT (WGT_H2WORLD, "clicked", on_H2W, NULL);
 	GTKUI_SIGNAL_CONNECT (WGT_OPENGL, "toggled", on_OGL, NULL);
-	GTKUI_SIGNAL_CONNECT (GTK_COMBO(WGT_SOUND)->entry, "changed", on_SND,
-								GTK_LIST((GTK_COMBO(WGT_SOUND))->list));
-	GTKUI_SIGNAL_CONNECT (GTK_COMBO(WGT_SRATE)->entry, "changed", on_SRATE,
-								GTK_LIST((GTK_COMBO(WGT_SRATE))->list));
 	GTKUI_SIGNAL_CONNECT (WGT_SBITS, "toggled", on_SBITS, &sndbits);
 	GTKUI_SIGNAL_CONNECT (WGT_MIDI, "toggled", BoolRevert, &midi);
 	GTKUI_SIGNAL_CONNECT (WGT_CDAUDIO, "toggled", BoolRevert, &cdaudio);
@@ -1550,15 +1666,19 @@ static void create_window1 (void)
 	GTKUI_SIGNAL_CONNECT (WGT_MEMHEAP, "toggled", BoolRevert, &use_heap);
 	GTKUI_SIGNAL_CONNECT (WGT_MEMZONE, "toggled", BoolRevert, &use_zone);
 	GTKUI_SIGNAL_CONNECT (WGT_EXTBTN, "toggled", BoolRevert, &use_extra);
-	reslist_handler = GTKUI_SIGNAL_CONNECT (GTK_COMBO(WGT_RESMENU)->entry, "changed", res_Change,
-									GTK_LIST((GTK_COMBO(WGT_RESMENU))->list));
-	conwlist_handler = GTKUI_SIGNAL_CONNECT (GTK_COMBO(WGT_CONWMENU)->entry, "changed", con_Change,
-									GTK_LIST((GTK_COMBO(WGT_CONWMENU))->list));
 	GTKUI_SIGNAL_CONNECT (WGT_GLPATH, "changed", libgl_Change, NULL);
 	GTKUI_SIGNAL_CONNECT (WGT_EXTARGS, "changed", extargs_Change, NULL);
 	GTKUI_SIGNAL_CONNECT (WGT_HEAPADJ, "value_changed", adj_Change, &heapsize);
 	GTKUI_SIGNAL_CONNECT (WGT_ZONEADJ, "value_changed", adj_Change, &zonesize);
 	GTKUI_SIGNAL_CONNECT (MORE_LESS, "clicked", on_MORE, NULL);
+	gtkui_set_optmenu_handler (GTKUI_OPTMENU_CAST(WGT_SOUND), GTKUI_SIGNALFUNC(on_SND));
+	gtkui_set_optmenu_handler (GTKUI_OPTMENU_CAST(WGT_SRATE), GTKUI_SIGNALFUNC(on_SRATE));
+#	ifndef DEMOBUILD
+	h2game_handler = gtkui_set_optmenu_handler (GTKUI_OPTMENU_CAST(WGT_H2GAME), GTKUI_SIGNALFUNC(H2GameChange));
+	hwgame_handler = gtkui_set_optmenu_handler (GTKUI_OPTMENU_CAST(WGT_HWGAME), GTKUI_SIGNALFUNC(HWGameChange));
+#	endif
+	reslist_handler = gtkui_set_optmenu_handler (GTKUI_OPTMENU_CAST(WGT_RESMENU), GTKUI_SIGNALFUNC(res_Change));
+	conwlist_handler = gtkui_set_optmenu_handler (GTKUI_OPTMENU_CAST(WGT_CONWMENU), GTKUI_SIGNALFUNC(con_Change));
 
 /* show the window */
 	gtk_widget_show (MAIN_WINDOW);
@@ -1629,7 +1749,7 @@ void ui_pump (void)
 		gtk_main_iteration ();
 }
 
-#if !defined(_H2L_USE_GTK1)
+#if (GTK_MAJOR_VERSION > 1)
 /* gtk-2.x version: */
 void ui_error (const char *msg)
 {
@@ -1681,5 +1801,5 @@ void ui_error (const char *msg)
 
 	gtk_widget_destroy(dialog);
 }
-#endif	/* _H2L_USE_GTK1 */
+#endif	/* GTK_MAJOR_VERSION */
 

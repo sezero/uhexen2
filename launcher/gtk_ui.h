@@ -35,17 +35,13 @@
  =============================
 */
 
-#undef	_H2L_USE_GTK1
-
 #if (GTK_MAJOR_VERSION < 2)
-#if GTK_CHECK_VERSION(1,2,0)
-#define	_H2L_USE_GTK1	(1)
-#else
+#if !GTK_CHECK_VERSION(1,2,0)
 #error You need at least 1.2.0 version of GTK+
 #endif
 #endif
 
-#if defined(_H2L_USE_GTK1)		/* "gtk-1.2 doesnt have it" wrappers */
+#if (GTK_MAJOR_VERSION < 2)		/* "gtk-1.2 doesnt have it" wrappers */
 
 #define	GTK_WIN_POS_CENTER_ON_PARENT	GTK_WIN_POS_NONE
 #define	gtk_statusbar_set_has_resize_grip(x, y)
@@ -56,8 +52,9 @@
 #define	gtk_progress_bar_set_fraction	gtk_progress_bar_update
 #define	gtk_adjustment_get_value(a)	(a)->value
 #define	gtk_radio_button_get_group	gtk_radio_button_group
-
-#endif	/* _H2L_USE_GTK1 */
+#define	gtk_option_menu_get_history(m)	g_list_index(GTK_MENU_SHELL(GTK_MENU((m)->menu))->children,	\
+								gtk_menu_get_active(GTK_MENU((m)->menu)))
+#endif	/* GTK1 */
 
 #if (GLIB_MAJOR_VERSION < 2)
 #define g_usleep			usleep
@@ -66,7 +63,9 @@
 /* further compatibility macros */
 #define	GTKUI_DISABLE_FOCUS(widget)	GTK_WIDGET_UNSET_FLAGS((widget),GTK_CAN_FOCUS)
 
-#if defined(_H2L_USE_GTK1)	/* gtk-1.2 */
+#if (GTK_MAJOR_VERSION < 2)	/* gtk-1.2 */
+#define	GTKUI_SIGNALFUNC_T	GtkSignalFunc
+#define	GTKUI_SIGNALFUNC(f)	GTK_SIGNAL_FUNC(f)
 #define	GTK_SIGHANDLER_T	guint
 #define	GTKUI_SIGNAL_CONNECT(object, name, func, func_data)		\
 	gtk_signal_connect(GTK_OBJECT((object)),(name),GTK_SIGNAL_FUNC((func)),(func_data))
@@ -79,6 +78,8 @@
 #define	GTKUI_SIGNAL_HANDLER_UNBLOCK(object, handler)			\
 	gtk_signal_handler_unblock (GTK_OBJECT((object)), (handler))
 #else	/* gtk-2 / gtk-3 */
+#define	GTKUI_SIGNALFUNC_T	GCallback
+#define	GTKUI_SIGNALFUNC(f)	G_CALLBACK(f)
 #define	GTK_SIGHANDLER_T	gulong
 #define	GTKUI_SIGNAL_CONNECT(object, name, func, func_data)		\
 	g_signal_connect ((gpointer)(object),(name),G_CALLBACK((func)),(gpointer)(func_data))
@@ -90,7 +91,7 @@
 	g_signal_handler_block ((gpointer)(object), (handler))
 #define	GTKUI_SIGNAL_HANDLER_UNBLOCK(object, handler)			\
 	g_signal_handler_unblock ((gpointer)(object), (handler))
-#endif	/* _H2L_USE_GTK1 */
+#endif	/* GTK_MAJOR_VERSION */
 
 #if (GTK_MAJOR_VERSION > 2)
 #undef	gtk_tooltips_set_tip

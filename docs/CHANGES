@@ -4,6 +4,13 @@ Development Progress	:
 ---------------------------
 
 2012-02-06 (SVN):
+    * launcher: Added support for gtk-3.x: Removed the GtkCombo code and
+      made menus to use GtkOptionMenu for gtk-1.x/2.x and GtkComboBoxText
+      for gtk-3.x. Added multiple macros to eliminate ifdefs in the menu
+      code. Some further cleanup might be possible, but the code seems to
+      work just fine.
+
+2012-02-06 (SVN):
     * launcher: Added compatibility macro GTK_SIGHANDLER_T, defined as
       guint for gtk1 and as gulong for newer gtk versions.
 

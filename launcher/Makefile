@@ -3,6 +3,7 @@
 #
 #  gtk-2.x will be used default.
 #  to compile against gtk-1.2:   make GTK1=yes
+#  to compile against gtk-3.x:   make GTK3=yes
 #
 #  if building for the demo version, run with
 #  make DEMO=yes [other stuff]
