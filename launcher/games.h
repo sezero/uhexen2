@@ -87,17 +87,8 @@ typedef struct
 	int	menu_index;
 } h2game_t;
 
-typedef struct
-{
-	const char	*dirname;
-	const char	*name;		/* user-friendly name */
-	const char	*checkfile;	/* filename for extra check */
-	int	available;
-	int	menu_index;
-} hwgame_t;
-
 extern	h2game_t	h2game_names[];
-extern	hwgame_t	hwgame_names[];
+extern	h2game_t	hwgame_names[];
 
 extern	const int	MAX_H2GAMES;
 extern	const int	MAX_HWGAMES;

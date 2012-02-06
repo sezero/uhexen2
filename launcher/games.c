@@ -186,17 +186,17 @@ h2game_t h2game_names[] =	/* first entry is always available */
 
 const int MAX_H2GAMES = sizeof(h2game_names) / sizeof(h2game_names[0]);
 
-hwgame_t hwgame_names[] =	/* first entry is always available */
+h2game_t hwgame_names[] =	/* first entry is always available */
 {
-	{  NULL     , "Plain DeathMatch", NULL,			   1, -1 },
-	{ "hexarena", "HexArena"	, "sound/ha/fight.wav",    0, -1 },
-	{ "hwctf"   , "Capture the Flag", "models/ctf_flag.mdl",   0, -1 },
-	{ "siege"   , "Siege"		, "models/h_hank.mdl",     0, -1 },
-	{ "db"      , "Dungeon Break"	, "sound/donewell.wav",    0, -1 },
-	{ "rk"      , "Rival Kingdoms"	, "troll/h_troll.mdl",     0, -1 },
+	{  NULL     , "Plain DeathMatch", NULL,			0, 1, -1 },
+	{ "hexarena", "HexArena"	, "sound/ha/fight.wav", 0, 0, -1 },
+	{ "hwctf"   , "Capture the Flag", "models/ctf_flag.mdl",0, 0, -1 },
+	{ "siege"   , "Siege"		, "models/h_hank.mdl",  0, 0, -1 },
+	{ "db"      , "Dungeon Break"	, "sound/donewell.wav", 0, 0, -1 },
+	{ "rk"      , "Rival Kingdoms"	, "troll/h_troll.mdl",  0, 0, -1 },
 };
 
-const int	MAX_HWGAMES = sizeof(hwgame_names) / sizeof(hwgame_names[0]);
+const int MAX_HWGAMES = sizeof(hwgame_names) / sizeof(hwgame_names[0]);
 
 static size_t	string_size;
 

@@ -4,6 +4,10 @@ Development Progress	:
 ---------------------------
 
 2012-02-06 (SVN):
+    * launcher: Remove hwgames_t structure whose only difference from
+      h2games_t was the absence of the is_botmatch field.
+
+2012-02-06 (SVN):
     * launcher: Fixed game selection callback functions assigning a bad
       selection. Bug was introduced in launcher-v1.0.6/uhexen2-v1.5.1.
 
