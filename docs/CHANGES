@@ -3,6 +3,10 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2012-02-07 (SVN):
+    * launcher: Set absence as well as availability in scan_h2_mods() and
+      scan_hw_mods().
+
 2012-02-06 (SVN):
     * launcher: Added support for gtk-3.x: Removed the GtkCombo code and
       made menus to use GtkOptionMenu for gtk-1.x/2.x and GtkComboBoxText

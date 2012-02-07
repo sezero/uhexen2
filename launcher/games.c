@@ -241,6 +241,7 @@ static void scan_h2_mods (void)
 		sprintf (path, "%s/%s/%s", scan_dir, h2game_names[i].dirname, h2game_names[i].checkfile);
 		if (access(path, R_OK) == 0)
 			h2game_names[i].available = 1;
+		else	h2game_names[i].available = 0;
 	}
 	free (path);
 }
@@ -265,6 +266,7 @@ static void scan_hw_mods (void)
 		}
 		if (j == 0)
 			hwgame_names[i].available = 1;
+		else	hwgame_names[i].available = 0;
 	}
 	free (path);
 }
