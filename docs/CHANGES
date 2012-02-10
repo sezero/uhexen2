@@ -3,6 +3,11 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2012-02-10 (SVN):
+    * hexen2, cl_main.c (CL_EstablishConnection): Send a clc_nop to the
+      server after establishing connection. Fixes the connection getting
+      stuck sometimes after displaying the "Connection accepted" message.
+
 2012-02-07 (SVN):
     * launcher: Set absence as well as availability in scan_h2_mods() and
       scan_hw_mods().
