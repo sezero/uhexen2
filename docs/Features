@@ -17,6 +17,9 @@ Features:
 * In-game resolution changing for both opengl and software renderers.
   Instant fullscreen/windowed toggling on X11 (unix).
 
+* Support FOV (field of view) wider than 90 for wide-screen resolutions
+  in opengl as well as software rendering.
+
 * OpenGL enhancements including multitexturing, glow effects, working
   brightness control, text and hud size changing on the fly, translucent
   console background, console background stretching, colored lights and
@@ -36,7 +39,7 @@ Features:
 
 * MouseWheel support.
 
-* Improvements and fixes to the HexenC game code.
+* Improvements and lots of fixes to the HexenC game code.
 
 * Improved sound support: A selection of three different sound drivers
   (ALSA, OSS and SDL) for Linux. FreeBSD is supported with OSS and SDL,
@@ -63,5 +66,5 @@ Features:
   hwmquery: tool for querying hw master servers, hwrcon and hwterm: rcon
   tools) are maintained and are being kept up to date.
 
-* Many bug fixes, security fixes and other improvements.
+* Countless bug fixes, security fixes and other improvements.
 

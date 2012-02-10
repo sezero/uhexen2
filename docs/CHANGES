@@ -4,6 +4,9 @@ Development Progress	:
 ---------------------------
 
 2012-02-10 (SVN):
+    * Updated the features document after the recent fov enhancements.
+
+2012-02-10 (SVN):
     * hexen2, cl_main.c (CL_EstablishConnection): Send a clc_nop to the
       server after establishing connection. Fixes the connection getting
       stuck sometimes after displaying the "Connection accepted" message.
