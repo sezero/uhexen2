@@ -4,6 +4,15 @@ Development Progress	:
 ---------------------------
 
 2012-02-11 (SVN):
+    * screen.c, gl_screen.c: Tweaked SCR_DrawLoading to draw the loading
+      plaque only when necessary, i.e. once only after SCR_UpdateScreen
+      is called. Changed scr_drawloading from a boolean to int, so that
+      it can be used to store the need for drawing the loading plaque as
+      well as the truth value of loading screen being in effect by using
+      bit flags. Skip the Draw_Fill() calls when there is no progress to
+      draw, i.e. when count is 0.
+
+2012-02-11 (SVN):
     * in_sdl.c: Fixed Mac OS X console and message mode backspace key
       (bug #2688151)
 
