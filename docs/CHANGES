@@ -4,6 +4,18 @@ Development Progress	:
 ---------------------------
 
 2012-02-11 (SVN):
+    * screen.c, gl_screen.c: Revert parts of rev.4530 which changed the
+      loading plaque drawing and the scr_drawloading global, because of
+      an unexpected weirdness with ATI linux open source drivers. Minor
+      tidying up.
+
+2012-02-11 (SVN):
+    * revert previous r.4531, block unnecessary redraws of the progress
+      bars earlier in D_ShowLoadingSize().
+    * screen.c, gl_screen.c: only draw the progress bars when they have
+      changed.
+
+2012-02-11 (SVN):
     * screen.c, gl_screen.c: Tweaked SCR_DrawLoading to draw the loading
       plaque only when necessary, i.e. once only after SCR_UpdateScreen
       is called. Changed scr_drawloading from a boolean to int, so that

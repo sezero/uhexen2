@@ -83,7 +83,7 @@ static	cvar_t	scr_showturtle = {"showturtle", "0", CVAR_NONE};
 static	cvar_t	scr_showpause = {"showpause", "1", CVAR_NONE};
 static	cvar_t	scr_showfps = {"showfps", "0", CVAR_NONE};
 
-static int	scr_drawloading;
+static qboolean	scr_drawloading;
 static float	scr_disabled_time;
 int		total_loading_size, current_loading_size, loading_stage;
 qboolean	scr_disabled_for_loading;
@@ -567,38 +567,37 @@ SCR_DrawLoading
 */
 void SCR_DrawLoading (void)
 {
-	static int	ls_offset;
-	int		size, count;
+	int	size, count, offset;
 	qpic_t	*pic;
 
-	if (scr_drawloading & 2)
-	{
-		scr_drawloading &= ~2;
-		pic = Draw_CachePic ("gfx/menu/loading.lmp");
-		ls_offset = (vid.width - pic->width) / 2;
-		Draw_TransPic (ls_offset, 0, pic);
-		ls_offset += 42;
-	}
+	if (!scr_drawloading && loading_stage == 0)
+		return;
+
+	pic = Draw_CachePic ("gfx/menu/loading.lmp");
+	offset = (vid.width - pic->width) / 2;
+	Draw_TransPic (offset, 0, pic);
 
 	if (loading_stage == 0)
 		return;
 
 	size = (total_loading_size) ?
 		(current_loading_size * 106 / total_loading_size) : 0;
+	offset += 42;
 
 	count = (loading_stage == 1) ? size : 106;
 	if (count)
 	{
-		Draw_Fill (ls_offset, 87, count, 1, 136);
-		Draw_Fill (ls_offset, 87+1, count, 4, 138);
-		Draw_Fill (ls_offset, 87+5, count, 1, 136);
+		Draw_Fill (offset, 87+0, count, 1, 136);
+		Draw_Fill (offset, 87+1, count, 4, 138);
+		Draw_Fill (offset, 87+5, count, 1, 136);
 	}
+
 	count = (loading_stage == 2) ? size : 0;
 	if (count)
 	{
-		Draw_Fill (ls_offset, 97, count, 1, 168);
-		Draw_Fill (ls_offset, 97+1, count, 4, 170);
-		Draw_Fill (ls_offset, 97+5, count, 1, 168);
+		Draw_Fill (offset, 97+0, count, 1, 168);
+		Draw_Fill (offset, 97+1, count, 4, 170);
+		Draw_Fill (offset, 97+5, count, 1, 168);
 	}
 }
 
@@ -622,10 +621,11 @@ void SCR_BeginLoadingPlaque (void)
 	scr_centertime_off = 0;
 	scr_con_current = 0;
 
-	scr_drawloading = 1;
+	scr_drawloading = true;
 	scr_fullupdate = 0;
 	Sbar_Changed();
 	SCR_UpdateScreen ();
+	scr_drawloading = false;
 
 	scr_disabled_for_loading = true;
 	scr_disabled_time = realtime;
@@ -642,7 +642,6 @@ void SCR_EndLoadingPlaque (void)
 {
 	scr_disabled_for_loading = false;
 	scr_fullupdate = 0;
-	scr_drawloading = 0;
 	Con_ClearNotify ();
 }
 
@@ -658,7 +657,7 @@ static void SCR_SetUpToDrawConsole (void)
 {
 	Con_CheckResize ();
 
-	if (scr_drawloading & 1)
+	if (scr_drawloading)
 		return;		// never a console with loading plaque
 
 // decide on the height of the console
@@ -1211,7 +1210,6 @@ void SCR_UpdateScreen (void)
 	 */
 		if (realtime - scr_disabled_time > 20)
 		{
-			scr_drawloading = 0;
 			scr_disabled_for_loading = false;
 			total_loading_size = 0;
 			loading_stage = 0;
@@ -1227,7 +1225,6 @@ void SCR_UpdateScreen (void)
 	if (!scr_initialized || !con_initialized)
 		return;		// not initialized yet
 
-	scr_drawloading |= 2;
 	GL_BeginRendering (&glx, &gly, &glwidth, &glheight);
 
 //
@@ -1273,7 +1270,7 @@ void SCR_UpdateScreen (void)
 			M_Draw();
 		}
 
-		if (scr_drawloading & 1)
+		if (scr_drawloading)
 			SCR_DrawLoading();
 	}
 /*	else if (cl.intermission == 2 && key_dest == key_game)
@@ -1282,7 +1279,7 @@ void SCR_UpdateScreen (void)
 		SCR_CheckDrawCenterString();
 	}
 */
-	else if (scr_drawloading & 1)
+	else if (scr_drawloading)
 	{
 	//	Sbar_Draw();
 		Draw_FadeScreen ();
