@@ -3,6 +3,10 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2012-02-11 (SVN):
+    * in_sdl.c: Fixed Mac OS X console and message mode backspace key
+      (bug #2688151)
+
 2012-02-10 (SVN):
     * Updated the features document after the recent fov enhancements.
 
