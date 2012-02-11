@@ -594,10 +594,12 @@ void SCR_DrawLoading (void)
 	static int	ls_offset;
 	int		size, count;
 	qpic_t	*pic;
+	static int	prev_loading_stage, prev_size;
 
 	if (scr_drawloading & 2)
 	{
 		scr_drawloading &= ~2;
+		prev_loading_stage = prev_size = 0;
 		pic = Draw_CachePic ("gfx/menu/loading.lmp");
 		ls_offset = (vid.width - pic->width) / 2;
 		Draw_TransPic (ls_offset, 0, pic);
@@ -609,6 +611,12 @@ void SCR_DrawLoading (void)
 
 	size = (total_loading_size) ?
 		(current_loading_size * 106 / total_loading_size) : 0;
+
+	if (loading_stage == prev_loading_stage && size == prev_size)
+		return;
+
+	prev_loading_stage = loading_stage;
+	prev_size = size;
 
 	count = (loading_stage == 1) ? size : 106;
 	if (count)
