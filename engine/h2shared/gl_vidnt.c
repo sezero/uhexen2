@@ -2428,8 +2428,18 @@ void VID_ToggleFullscreen (void)
 //unused in hexenworld
 void D_ShowLoadingSize (void)
 {
+	int cur_perc;
+	static int prev_perc;
+
 	if (!vid_initialized)
 		return;
+
+	cur_perc = loading_stage * 100;
+	if (total_loading_size)
+		cur_perc += current_loading_size * 100 / total_loading_size;
+	if (cur_perc == prev_perc)
+		return;
+	prev_perc = cur_perc;
 
 	glDrawBuffer_fp (GL_FRONT);
 
