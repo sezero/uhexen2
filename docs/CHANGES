@@ -4,6 +4,11 @@ Development Progress	:
 ---------------------------
 
 2012-02-12 (SVN):
+    * windows mouse: Disabled windows gdi mouse acceleration for better
+      operation on winxp and newer. players can change their sensitivity
+      setting if necessary.
+
+2012-02-12 (SVN):
     * windows mouse: Made in_win.c:dinput_init variable public. Removed
       the IN_RestoreMouse helper and added explicit dinput_init checks
       in gl_vidnt.c, vid_win.c and vid_mgl4.c with additional comments.

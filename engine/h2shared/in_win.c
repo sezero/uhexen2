@@ -21,7 +21,14 @@ static POINT		current_pos;
 static int		mouse_x, mouse_y, old_mouse_x, old_mouse_y, mx_accum, my_accum;
 
 static qboolean	restore_spi;
-static int		originalmouseparms[3], newmouseparms[3] = {0, 0, 1};
+static int		originalmouseparms[3], newmouseparms[3] = {0, 0, 0};
+			/* [0] threshold to double movement (only if accel level is >= 1)
+			 * [1] threshold to quadruple movement (only if accel level is >= 2)
+			 * [2] maximum level of acceleration (0 = off)
+			 * maximum acceleration was set to 1 in the original engine:
+			 * disabling it for better operation on Windows XP and newer.
+			 * players can change their sensitivity setting if necessary. */
+
 static qboolean	mouseactive;
 static qboolean	mouseinitialized;
 static qboolean	mouseparmsvalid, mouseactivatetoggle;
