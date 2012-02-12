@@ -20,12 +20,6 @@ Known Bugs
   video options menu and change the color depth to 32 bit before doing
   anything (or, run the game with the "-bpp 32" command line argument.)
 
-- Software renderer, C-only code, Rider Bosses: The death beams doesn't
-  fade out as they do in the intel assembly code. The origin of Famine's
-  tractor beam isn't translucent as it should be. These models are using
-  D_Polyset???T5 functions (EF_SPECIAL_TRANS) and we are doing something
-  wrong with their C-implementation.
-
 - HexenWorld: Spectator mode (chasecam) isn't as it should be, compare
   with the quakeworld code and fix.
 

@@ -4,6 +4,12 @@ Development Progress	:
 ---------------------------
 
 2012-02-12 (SVN):
+    * d_polyse.c: Fixed the long-standing bug of EF_SPECIAL_TRANS models
+      being drawn with incorrect transparency when compiled without the
+      x86 assembler routines: D_PolysetDrawSpans8T5() shouldn't refer to
+      acolormap, fixed thusly.
+
+2012-02-12 (SVN):
     * windows mouse: Disabled windows gdi mouse acceleration for better
       operation on winxp and newer. players can change their sensitivity
       setting if necessary.

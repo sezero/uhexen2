@@ -227,10 +227,7 @@ static void do_PolysetDrawFinalVertsT5 (finalvert_t *pv)
 				*zbuf = z;
 				pix = color_map_idx;
 				pix2 = d_viewbuffer[d_scantable[pv->v[1]] + pv->v[0]];
-				/* FIXME: x86-assembly code uses transTable here,
-				 * but we must actually fix the T5 functions first
-				 * before changing that. See BUGS for details.	*/
-				pix = mainTransTable[(pix<<8) + pix2];
+				pix = transTable[(pix<<8) + pix2];
 				d_viewbuffer[d_scantable[pv->v[1]] + pv->v[0]] = pix;
 			}
 		}
@@ -685,10 +682,7 @@ split:
 			*zbuf = z;
 			pix = color_map_idx;
 			pix2 = d_viewbuffer[d_scantable[new_p[1]] + new_p[0]];
-			/* FIXME: x86-assembly code uses transTable here,
-			 * but we must actually fix the T5 functions first
-			 * before changing that. See BUGS for details.	*/
-			pix = mainTransTable[(pix<<8) + pix2];
+			pix = transTable[(pix<<8) + pix2];
 			d_viewbuffer[d_scantable[new_p[1]] + new_p[0]] = pix;
 		}
 	}
@@ -1148,7 +1142,6 @@ D_PolysetScanLeftEdge
 */
 static void D_PolysetScanLeftEdge (int height)
 {
-
 	do
 	{
 		d_pedgespanpackage->pdest = d_pdest;
@@ -1620,7 +1613,7 @@ static void D_PolysetDrawSpans8T5 (spanpackage_t *pspanpackage)
 	int		lsfrac, ltfrac;
 	int		lzi;
 	short		*lpz;
-	unsigned int	btemp, color_map_idx;
+	unsigned int	color_map_idx;
 
 	do
 	{
@@ -1653,11 +1646,7 @@ static void D_PolysetDrawSpans8T5 (spanpackage_t *pspanpackage)
 				{
 					if ((lzi >> 16) >= *lpz)
 					{
-						btemp = ((byte *) acolormap)[*lptex];
-						/* FIXME: x86-assembly code uses transTable here,
-						 * but we must actually fix the T5 functions first
-						 * before changing that. See BUGS for details.	*/
-						*lpdest = mainTransTable[(btemp<<8) + (*lpdest)];
+						*lpdest = transTable[(color_map_idx<<8) + (*lpdest)];
 						*lpz = lzi >> 16;
 					}
 				}
@@ -1691,7 +1680,7 @@ D_PolysetFillSpans8
 */
 void D_PolysetFillSpans8 (spanpackage_t *pspanpackage)
 {
-	int				color;
+	int		color;
 
 // FIXME: do z buffering
 
