@@ -3,6 +3,11 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2012-02-12 (SVN):
+    * windows mouse: Made in_win.c:dinput_init variable public. Removed
+      the IN_RestoreMouse helper and added explicit dinput_init checks
+      in gl_vidnt.c, vid_win.c and vid_mgl4.c with additional comments.
+
 2012-02-11 (SVN):
     * screen.c, gl_screen.c: Revert parts of rev.4530 which changed the
       loading plaque drawing and the scr_drawloading global, because of

@@ -163,8 +163,7 @@ static int		nummodes;
 static int		aPage;	// Current active display page
 static int		vPage;	// Current visible display page
 
-/* Pa3PyX: in MGL 4.05, thare are actually
-   three values for waitVRT
+/* Pa3PyX: in MGL 4.05, thare are three values for waitVRT
 
 	triple buffer (0),
 	wait for vertical retrace (1),
@@ -304,7 +303,7 @@ static qboolean VID_AllocBuffers (int width, int height)
 
 	vid_surfcache = (byte *)d_pzbuffer +
 			width * height * sizeof (*d_pzbuffer);
-	
+
 	return true;
 }
 
@@ -2821,10 +2820,13 @@ static void AppActivate (BOOL fActive, BOOL minimize)
 			}
 			else if (modestate == MS_WINDOWED && _enable_mouse.integer)
 			{
-			//	IN_ActivateMouse ();
-			//	IN_HideMouse ();
-			// S.A. Don't reactivate mouse if windowed && !direct input
-				IN_RestoreMouse ();
+			// with winmouse, we may fail having our
+			// window back from the iconified state. yuck...
+				if (dinput_init)
+				{
+					IN_ActivateMouse ();
+					IN_HideMouse ();
+				}
 			}
 		}
 

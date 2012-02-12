@@ -21,7 +21,7 @@
 #endif
 
 extern	HINSTANCE	global_hInstance;
-extern	int			global_nCmdShow;
+extern	int		global_nCmdShow;
 
 #ifndef WM_MOUSEWHEEL
 #define	WM_MOUSEWHEEL		0x020A
@@ -39,9 +39,10 @@ extern	int			global_nCmdShow;
 #endif
 
 
-extern qboolean			DDActive;
+extern qboolean		DDActive;
+extern qboolean		dinput_init;
 
-extern HWND			mainwindow;
+extern HWND		mainwindow;
 extern qboolean		ActiveApp, Minimized;
 
 extern qboolean		Win95, Win95old, WinNT, WinVista;

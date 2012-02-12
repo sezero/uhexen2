@@ -1770,10 +1770,13 @@ static void AppActivate (BOOL fActive, BOOL minimize)
 			}
 			else if (modestate == MS_WINDOWED && _enable_mouse.integer)
 			{
-			//	IN_ActivateMouse ();
-			//	IN_HideMouse ();
-			// S.A. Don't reactivate mouse if windowed && !direct input
-				IN_RestoreMouse ();
+			// with winmouse, we may fail having our
+			// window back from the iconified state. yuck...
+				if (dinput_init)
+				{
+					IN_ActivateMouse ();
+					IN_HideMouse ();
+				}
 			}
 		}
 

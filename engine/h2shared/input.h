@@ -34,7 +34,6 @@ void IN_HideMouse (void);
 #if defined(PLATFORM_WINDOWS)
 #undef IN_Accumulate
 void IN_Accumulate (void);	/* accumulate winmouse movements during frame updates */
-void IN_RestoreMouse (void);	/* S.A.: don't reactivate mouse if windowed && !dinput */
 void IN_UpdateClipCursor (void);	/* clip the mouse cursor to the window rectangle */
 void IN_MouseEvent (int mstate);		/* called from the window procedure */
 void IN_SetQuakeMouseState (void);		/* used by Scitech MGL video driver */

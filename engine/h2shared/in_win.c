@@ -39,7 +39,8 @@ static int buttonremap[] =
 #define	NUM_MOUSEBUTTONS	(sizeof(buttonremap) / sizeof(buttonremap[0]))
 
 /* DirectInput mouse control: */
-static qboolean			dinput_init, dinput_acquired;
+qboolean			dinput_init;
+static qboolean			dinput_acquired;
 static unsigned int		mstate_di;
 
 static LPDIRECTINPUT		g_pdi;
@@ -268,16 +269,6 @@ void IN_ActivateMouse (void)
 		}
 
 		mouseactive = true;
-	}
-}
-
-
-void IN_RestoreMouse (void)
-{
-// S.A -- only reactivate if direct mouse enabled
-	if (dinput_init) {
-		IN_ActivateMouse ();
-		IN_HideMouse ();
 	}
 }
 
