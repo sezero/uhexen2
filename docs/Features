@@ -23,8 +23,8 @@ Features:
 * OpenGL enhancements including multitexturing, glow effects, working
   brightness control, text and hud size changing on the fly, translucent
   console background, console background stretching, colored lights and
-  support for external lit files, fixes for texture cache and model mesh
-  cache mismatches.
+  support for external lit files, anisotropic texture filtering, fixes
+  for texture cache and model mesh cache mismatches.
 
 * Fully network-compatible with Raven's 1.11 windows version as well as
   with other Hexen II ports. Can load and play games saved with Raven's

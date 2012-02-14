@@ -4,6 +4,9 @@ Development Progress	:
 ---------------------------
 
 2012-02-14 (SVN):
+    * updated documentation for the anisotropic texture filter support.
+
+2012-02-14 (SVN):
     * glheader.h,glquake.h,gl_func.h,gl_vidnt.c,gl_vidsdl.c,gl_draw.c:
       Added support for anisotropic texture filtering, controlled by the
       new gl_texture_anisotropy cvar: valid values between 1 to whatever
