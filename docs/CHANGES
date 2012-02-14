@@ -4,6 +4,15 @@ Development Progress	:
 ---------------------------
 
 2012-02-12 (SVN):
+    * gl_draw.c, gl_rmisc.c, gl_vidnt.c,gl_vidsdl.c: Revised the default
+      texture filter mode settings by feeding specific preferences to
+      GL_LoadTexture and not explicitly setting the MAG_ and MIN_FILTER
+      unless necessary. The console and menu fonts as well as the status
+      bar text have much better readability now when the 2D elements are
+      scaled up by either using the menu option or the -conwidth command
+      line switch.
+
+2012-02-12 (SVN):
     * d_polyse.c: Fixed the long-standing bug of EF_SPECIAL_TRANS models
       being drawn with incorrect transparency when compiled without the
       x86 assembler routines: D_PolysetDrawSpans8T5() shouldn't refer to

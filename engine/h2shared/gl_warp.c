@@ -731,11 +731,8 @@ void R_LoadSkys (void)
 	//	LoadPCX (f);
 
 		q_snprintf(texname, sizeof(texname), "skybox%i", i);
-		sky_tex[i] = GL_LoadTexture(texname, targa_rgba, 256, 256, TEX_RGBA);
+		sky_tex[i] = GL_LoadTexture(texname, targa_rgba, 256, 256, TEX_RGBA|TEX_LINEAR);
 		Hunk_FreeToLowMark(mark);
-
-		glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, gl_texmodes[gl_filter_idx].maximize);
-		glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, gl_texmodes[gl_filter_idx].maximize);
 	}
 }
 

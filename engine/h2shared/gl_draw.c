@@ -116,9 +116,7 @@ qpic_t *Draw_PicFromFile (const char *name)
 
 	p = (qpic_t *)FS_LoadHunkFile (name, NULL);
 	if (!p)
-	{
 		return NULL;
-	}
 
 	SwapPic (p);
 
@@ -202,9 +200,6 @@ qpic_t	*Draw_CachePic (const char *path)
 	pic->pic.width = dat->width;
 	pic->pic.height = dat->height;
 
-	glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
 	gl.texnum = GL_LoadPicTexture (dat);
 	gl.sl = 0;
 	gl.sh = 1;
@@ -245,12 +240,13 @@ static void Draw_TextureMode_f (cvar_t *var)
 				// change all the existing mipmap texture objects
 				for (i = 0, glt = gltextures; i < numgltextures; i++, glt++)
 				{
+					if (glt->flags & (TEX_NEAREST|TEX_LINEAR))
+						continue;
 					GL_Bind (glt->texnum);
 					glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, gl_texmodes[gl_filter_idx].maximize);
 					if (glt->flags & TEX_MIPMAP)
 						glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, gl_texmodes[gl_filter_idx].minimize);
-					else
-						glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, gl_texmodes[gl_filter_idx].maximize);
+					else	glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, gl_texmodes[gl_filter_idx].maximize);
 				}
 			}
 			return;
@@ -301,9 +297,7 @@ void Draw_Init (void)
 		if (chars[i] == 0)
 			chars[i] = 255;	// proper transparent color
 	}
-	char_texture = GL_LoadTexture ("charset", chars, 256, 128, TEX_ALPHA);
-	glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, gl_texmodes[gl_filter_idx].maximize);
-	glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, gl_texmodes[gl_filter_idx].maximize);
+	char_texture = GL_LoadTexture ("charset", chars, 256, 128, TEX_ALPHA|TEX_NEAREST);
 
 	// load the small characters for status bar
 	chars = (byte *) W_GetLumpName("tinyfont");
@@ -312,9 +306,7 @@ void Draw_Init (void)
 		if (chars[i] == 0)
 			chars[i] = 255;	// proper transparent color
 	}
-	char_smalltexture = GL_LoadTexture ("smallcharset", chars, 128, 32, TEX_ALPHA);
-	glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, gl_texmodes[gl_filter_idx].maximize);
-	glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, gl_texmodes[gl_filter_idx].maximize);
+	char_smalltexture = GL_LoadTexture ("smallcharset", chars, 128, 32, TEX_ALPHA|TEX_NEAREST);
 
 	// load the big menu font
 	// Note: old version of demo has bigfont.lmp, not bigfont2.lmp
@@ -327,17 +319,13 @@ void Draw_Init (void)
 		if (p->data[i] == 0)
 			p->data[i] = 255;	// proper transparent color
 	}
-	char_menufonttexture = GL_LoadTexture ("menufont", p->data, p->width, p->height, TEX_ALPHA);
-	glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, gl_texmodes[gl_filter_idx].maximize);
-	glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, gl_texmodes[gl_filter_idx].maximize);
+	char_menufonttexture = GL_LoadTexture ("menufont", p->data, p->width, p->height, TEX_ALPHA|TEX_LINEAR);
 
 	// load the console background
 	p = (qpic_t *)FS_LoadTempFile ("gfx/menu/conback.lmp", NULL);
 	Draw_PicCheckError (p, "gfx/menu/conback.lmp");
 	SwapPic (p);
-	glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, gl_texmodes[gl_filter_idx].maximize);
-	glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, gl_texmodes[gl_filter_idx].maximize);
-	conback = GL_LoadTexture ("conback", p->data, p->width, p->height, TEX_DEFAULT);
+	conback = GL_LoadTexture ("conback", p->data, p->width, p->height, TEX_LINEAR);
 
 	// load the backtile
 	p = (qpic_t *)FS_LoadTempFile ("gfx/menu/backtile.lmp", NULL);
@@ -722,9 +710,6 @@ qpic_t *Draw_CachePicNoTrans (const char *path)
 	}
 	gl.texnum = GL_LoadPicTexture (dat);
 
-	glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
 	gl.sl = 0;
 	gl.sh = 1;
 	gl.tl = 0;
@@ -975,7 +960,7 @@ void Draw_TransPicTranslate (int x, int y, qpic_t *pic, byte *translation, int p
 		q_snprintf(texname, 19, "plyrmtex%i%i%i", p_class, top, bottom);
 		plyrtex[p_class - 1][top][bottom] = GL_LoadTexture(texname, (byte *)trans,
 									PLAYER_DEST_WIDTH, PLAYER_DEST_HEIGHT,
-									TEX_ALPHA | TEX_RGBA);
+									TEX_ALPHA | TEX_RGBA | TEX_LINEAR);
 	}
 	GL_Bind(plyrtex[p_class - 1][top][bottom]);
 
@@ -1424,10 +1409,22 @@ static void GL_Upload32 (unsigned int *data, gltexture_t *glt)
 			miplevel++;
 			if (is8bit && !(glt->flags & TEX_ALPHA))
 				fxPalTexImage2D (GL_TEXTURE_2D, miplevel, samples, scaled_width, scaled_height, 0, GL_RGBA, GL_UNSIGNED_BYTE, scaled);
-			else
-				glTexImage2D_fp (GL_TEXTURE_2D, miplevel, samples, scaled_width, scaled_height, 0, GL_RGBA, GL_UNSIGNED_BYTE, scaled);
+			else	glTexImage2D_fp (GL_TEXTURE_2D, miplevel, samples, scaled_width, scaled_height, 0, GL_RGBA, GL_UNSIGNED_BYTE, scaled);
 		}
+	}
 
+	if (glt->flags & TEX_NEAREST)
+	{
+		glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+		glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	}
+	else if (glt->flags & TEX_LINEAR)
+	{
+		glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	}
+	else if (glt->flags & TEX_MIPMAP)
+	{
 		glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, gl_texmodes[gl_filter_idx].minimize);
 		glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, gl_texmodes[gl_filter_idx].maximize);
 	}
@@ -1612,8 +1609,7 @@ gl_rebind:
 	GL_Bind (glt->texnum);
 	if (flags & TEX_RGBA)
 		GL_Upload32 ((unsigned int *)data, glt);
-	else
-		GL_Upload8 (data, glt);
+	else	GL_Upload8 (data, glt);
 
 	return glt->texnum;
 }
@@ -1651,7 +1647,7 @@ static GLuint GL_LoadPixmap (const char *name, const char *data)
 		}
 	}
 
-	return GL_LoadTexture (name, (unsigned char *) pixels, 32, 32, TEX_ALPHA | TEX_RGBA);
+	return GL_LoadTexture (name, (unsigned char *) pixels, 32, 32, TEX_ALPHA | TEX_RGBA | TEX_LINEAR);
 }
 
 /*
@@ -1661,6 +1657,6 @@ GL_LoadPicTexture
 */
 GLuint GL_LoadPicTexture (qpic_t *pic)
 {
-	return GL_LoadTexture ("", pic->data, pic->width, pic->height, TEX_ALPHA);
+	return GL_LoadTexture ("", pic->data, pic->width, pic->height, TEX_ALPHA|TEX_LINEAR);
 }
 

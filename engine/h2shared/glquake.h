@@ -286,6 +286,8 @@ GLuint GL_LoadTexture (const char *identifier, byte *data,
 #define	TEX_MIPMAP		(1 << 1)
 #define	TEX_ALPHA		(1 << 2)
 #define	TEX_RGBA		(1 << 5)	/* texture is 32 bit RGBA, not 8 bit */
+#define	TEX_NEAREST		(1 << 6)	/* force point sampled */
+#define	TEX_LINEAR		(1 << 7)	/* force linear filtering */
 /* duplicated EF_ values from gl_model.h: */
 #define	TEX_TRANSPARENT		(1 << 12)	/* Transparent sprite				*/
 #define	TEX_HOLEY		(1 << 14)	/* Solid model with color 0			*/
