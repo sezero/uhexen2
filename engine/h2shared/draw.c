@@ -1206,7 +1206,7 @@ void Draw_SubPic (int x, int y, qpic_t *pic, int srcx, int srcy, int width, int 
 Draw_TransPicTranslate
 =============
 */
-void Draw_TransPicTranslate (int x, int y, qpic_t *pic, byte *translation)
+void Draw_TransPicTranslate (int x, int y, qpic_t *pic, byte *translation, int p_class)
 {
 	byte		*source, tbyte;
 	int		v, u;

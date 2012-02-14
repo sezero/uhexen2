@@ -139,7 +139,6 @@ extern	GLuint		currenttexture;
 extern	GLuint		particletexture;
 extern	GLuint		lightmap_textures[MAX_LIGHTMAPS];
 extern	GLuint		playertextures[MAX_CLIENTS];
-extern	GLuint		plyrtex[MAX_PLAYER_CLASS][16][16];	// player textures in multiplayer config screens
 extern	GLuint		gl_extra_textures[MAX_EXTRA_TEXTURES];	// generic textures for models
 
 /* the GL_Bind macro */

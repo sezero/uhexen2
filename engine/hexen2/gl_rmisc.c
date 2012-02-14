@@ -493,8 +493,6 @@ void D_ClearOpenGLTextures (int last_tex)
 	memset(menu_cachepics, 0, menu_numcachepics * sizeof(cachepic_t));
 	menu_numcachepics = 0;
 
-	// Clear player pic cache
-	memset(plyrtex, 0, MAX_PLAYER_CLASS * 16 * 16 * sizeof(GLuint));
 	Con_DPrintf ("Purged OpenGL textures\n");
 }
 

@@ -2451,19 +2451,10 @@ static void M_Menu_Setup_f (void)
 }
 
 
-#if 0
-void M_DrawTransPicTranslate (int x, int y, qpic_t *pic)
+static void M_DrawTransPicTranslate (int x, int y, qpic_t *pic, int p_class)
 {
-	Draw_TransPicTranslate (x + ((vid.width - 320)>>1), y, pic, translationTable);
+	Draw_TransPicTranslate (x + ((vid.width - 320)>>1), y, pic, translationTable, p_class);
 }
-#endif
-
-#ifdef GLQUAKE
-#define M_DrawTransPicTranslate(x,y,pic,p_class,top,bottom) Draw_TransPicTranslate(x + ((vid.width - 320)>>1), y, pic, translationTable, p_class, top, bottom)
-#else
-#define M_DrawTransPicTranslate(x,y,pic,p_class,top,bottom) Draw_TransPicTranslate(x + ((vid.width - 320)>>1), y, pic, translationTable)
-#endif
-
 
 static void M_Setup_Draw (void)
 {
@@ -2549,7 +2540,7 @@ static void M_Setup_Draw (void)
 	M_BuildTranslationTable(setup_top, setup_bottom);
 
 	/* garymct */
-	M_DrawTransPicTranslate (220, 72, p, which_class, setup_top, setup_bottom);
+	M_DrawTransPicTranslate (220, 72, p, which_class);
 
 	M_DrawCharacter (56, setup_cursor_table [setup_cursor], 12+((int)(realtime*4)&1));
 

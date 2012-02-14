@@ -26,7 +26,7 @@ static cvar_t	gl_picmip = {"gl_picmip", "0", CVAR_NONE};
 static cvar_t	gl_constretch = {"gl_constretch", "0", CVAR_ARCHIVE};
 static cvar_t	gl_texturemode = {"gl_texturemode", "", CVAR_ARCHIVE};
 
-GLuint			plyrtex[MAX_PLAYER_CLASS][16][16];	// player textures in multiplayer config screens
+static GLuint		menuplyr_textures[MAX_PLAYER_CLASS];	// player textures in multiplayer config screens
 static GLuint		draw_backtile;
 static GLuint		conback;
 static GLuint		char_texture;
@@ -284,9 +284,6 @@ void Draw_Init (void)
 		gl_texturemode.string = gl_texmodes[gl_filter_idx].name;
 		Cvar_RegisterVariable (&gl_texturemode);
 		Cvar_SetCallback (&gl_texturemode, Draw_TextureMode_f);
-
-	// initialize the player texnums array for multiplayer config screens
-		memset(plyrtex, 0, MAX_PLAYER_CLASS * 16 * 16 * sizeof(GLuint));
 	}
 
 	// load the charset: 8*8 graphic characters
@@ -335,6 +332,9 @@ void Draw_Init (void)
 
 	// load the crosshair texture
 	cs_texture = GL_LoadPixmap ("crosshair", cs_data);
+
+	// initialize the player texnums for multiplayer config screens
+	glGenTextures_fp(MAX_PLAYER_CLASS, menuplyr_textures);
 }
 
 /*
@@ -924,25 +924,22 @@ Draw_TransPicTranslate
 Only used for the player color selection menu
 =============
 */
-void Draw_TransPicTranslate (int x, int y, qpic_t *pic, byte *translation, int p_class, int top, int bottom)
+void Draw_TransPicTranslate (int x, int y, qpic_t *pic, byte *translation, int p_class)
 {
 	int		i, j, v, u;
 	unsigned int	trans[PLAYER_DEST_WIDTH * PLAYER_DEST_HEIGHT], *dest;
 	byte		*src;
 	int		p;
-	char	texname[20];	// texture handle, name and trackers (Pa3PyX)
 
+	GL_Bind(menuplyr_textures[p_class-1]);
 	dest = trans;
 	for (v = 0; v < 64; v++, dest += 64)
 	{
-		src = &menuplyr_pixels[p_class-1][ ((v*pic->height)>>6) *pic->width];
+		src = &menuplyr_pixels[p_class-1][((v*pic->height)>>6) * pic->width];
 		for (u = 0; u < 64; u++)
 		{
 			p = src[(u*pic->width)>>6];
-			if (p == 255)
-				dest[u] = p;
-			else
-				dest[u] =  d_8to24table[translation[p]];
+			dest[u] = (p == 255) ? 255 : d_8to24table[translation[p]];
 		}
 	}
 
@@ -950,19 +947,15 @@ void Draw_TransPicTranslate (int x, int y, qpic_t *pic, byte *translation, int p
 	{
 		for (j = 0; j < PLAYER_PIC_HEIGHT; j++)
 		{
-			trans[j * PLAYER_DEST_WIDTH + i] = d_8to24table[translation[menuplyr_pixels[p_class-1][j * PLAYER_PIC_WIDTH + i]]];
+			trans[j * PLAYER_DEST_WIDTH + i] =
+			 d_8to24table[translation[menuplyr_pixels[p_class-1][j * PLAYER_PIC_WIDTH + i]]];
 		}
 	}
 
-	// See if the texture has already been loaded; if not, do it (Pa3PyX)
-	if (!plyrtex[p_class - 1][top][bottom])
-	{
-		q_snprintf(texname, 19, "plyrmtex%i%i%i", p_class, top, bottom);
-		plyrtex[p_class - 1][top][bottom] = GL_LoadTexture(texname, (byte *)trans,
-									PLAYER_DEST_WIDTH, PLAYER_DEST_HEIGHT,
-									TEX_ALPHA | TEX_RGBA | TEX_LINEAR);
-	}
-	GL_Bind(plyrtex[p_class - 1][top][bottom]);
+	glTexImage2D_fp (GL_TEXTURE_2D, 0, gl_alpha_format, PLAYER_DEST_WIDTH, PLAYER_DEST_HEIGHT,
+			 0, GL_RGBA, GL_UNSIGNED_BYTE, trans);
+	glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
 	glColor3f_fp (1,1,1);
 	glBegin_fp (GL_QUADS);

@@ -34,11 +34,8 @@ void Draw_Crosshair (void);
 void Draw_AlphaPic (int x, int y, qpic_t *pic, float alpha);
 #endif	/*  GLQUAKE */
 
-#if defined(GLQUAKE)
-void Draw_TransPicTranslate (int x, int y, qpic_t *pic, byte *translation, int p_class, int top, int bottom);
-#else	/* !GLQUAKE */
-void Draw_TransPicTranslate (int x, int y, qpic_t *pic, byte *translation);
-#endif	/*  GLQUAKE */
+void Draw_TransPicTranslate (int x, int y, qpic_t *pic, byte *translation, int p_class);
+					/* Only used for the player color selection menu */
 
 #if FULLSCREEN_INTERMISSIONS
 # if defined(GLQUAKE)
