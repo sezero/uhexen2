@@ -1,9 +1,7 @@
 /*
-	glheader.h
-	opengl system includes
-
-	$Id: glheader.h,v 1.2 2007-07-11 16:47:14 sezero Exp $
-*/
+ * glheader.h: opengl system includes
+ * $Id$
+ */
 
 
 #ifndef __GLHEADER_H
@@ -55,8 +53,8 @@
 #define	GL_SHARED_TEXTURE_PALETTE_EXT		0x81FB
 #endif
 
-#ifndef GL_COLOR_INDEX8_EXT
-#define GL_COLOR_INDEX8_EXT			0x80E5
+#ifndef	GL_COLOR_INDEX8_EXT
+#define	GL_COLOR_INDEX8_EXT			0x80E5
 #endif
 
 #ifndef	GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT
