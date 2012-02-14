@@ -315,7 +315,7 @@ will have them chained together.
 */
 void EmitBothSkyLayers (msurface_t *fa)
 {
-	// note: 3dfx doesn't like GL_DECAL
+	// 3dfx doesn't like GL_DECAL:
 	if (!is_3dfx && gl_multitexture.integer && gl_mtexable)
 	{
 		EmitSkyPolysMulti (fa);
@@ -351,7 +351,7 @@ void R_DrawSkyChain (msurface_t *s)
 {
 	msurface_t	*fa;
 
-	// note: 3dfx doesn't like GL_DECAL
+	// 3dfx doesn't like GL_DECAL:
 	if (!is_3dfx && gl_multitexture.integer && gl_mtexable)
 	{
 		for (fa = s ; fa ; fa = fa->texturechain)
@@ -385,9 +385,7 @@ void R_DrawSkyChain (msurface_t *s)
 
 /*
 =================================================================
-
 Quake 2 environment sky
-
 =================================================================
 */
 
@@ -1086,7 +1084,7 @@ void R_DrawSkyBox (void)
 }
 
 
-#endif	// end of Quake2 sky
+#endif	/* end of Quake2 sky */
 
 //===============================================================
 
@@ -1111,7 +1109,6 @@ void R_InitSky (texture_t *mt)
 
 	// make an average value for the back to avoid
 	// a fringe on the top level
-
 	r = g = b = 0;
 	for (i = 0; i < 128; i++)
 	{
@@ -1131,7 +1128,7 @@ void R_InitSky (texture_t *mt)
 	((byte *)&transpix)[2] = b / (128*128);
 	((byte *)&transpix)[3] = 0;
 
-	solidskytexture = GL_LoadTexture("upsky", (byte *)trans, 128, 128, TEX_RGBA);
+	solidskytexture = GL_LoadTexture("upsky", (byte *)trans, 128, 128, TEX_RGBA|TEX_LINEAR);
 
 	for (i = 0; i < 128; i++)
 	{
@@ -1145,6 +1142,6 @@ void R_InitSky (texture_t *mt)
 		}
 	}
 
-	alphaskytexture = GL_LoadTexture("lowsky", (byte *)trans, 128, 128, TEX_ALPHA | TEX_RGBA);
+	alphaskytexture = GL_LoadTexture("lowsky", (byte *)trans, 128, 128, TEX_ALPHA|TEX_RGBA|TEX_LINEAR);
 }
 

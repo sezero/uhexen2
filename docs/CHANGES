@@ -4,6 +4,9 @@ Development Progress	:
 ---------------------------
 
 2012-02-14 (SVN):
+    * gl_warp.c: set lowsky and upsky texture filters as GL_LINEAR
+
+2012-02-14 (SVN):
     * gl_draw.c, menu.c, gl_rmisc.c, draw.c: Reverted an old patch about
       how multiplayer menu player setup pictures are drawn.
 
