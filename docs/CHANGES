@@ -3,7 +3,12 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
-2012-02-12 (SVN):
+2012-02-14 (SVN):
+    * gl_vidnt.c, gl_vidsdl.c: Cleaned up VID_Init, VID_ChangeConsize and
+      VID_ConWidth where we set the conwidth. Allowed conwidth settings
+      even as low as 320.
+
+2012-02-14 (SVN):
     * gl_draw.c, gl_rmisc.c, gl_vidnt.c,gl_vidsdl.c: Revised the default
       texture filter mode settings by feeding specific preferences to
       GL_LoadTexture and not explicitly setting the MAG_ and MIN_FILTER

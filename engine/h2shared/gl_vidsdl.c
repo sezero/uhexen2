@@ -300,20 +300,18 @@ static void VID_ConWidth (int modenum)
 	}
 
 	w = vid_config_consize.integer;
-// disabling this: we may have non-multiple-of-eight resolutions
-//	w &= 0xfff8; // make it a multiple of eight
-
+	w &= 0xfff8; /* make it a multiple of 8 */
 	if (w < MIN_WIDTH)
 		w = MIN_WIDTH;
+	else if (w > modelist[modenum].width)
+		w = modelist[modenum].width;
 
-// pick a conheight that matches with correct aspect
-//	h = w * 3 / 4;
 	h = w * modelist[modenum].height / modelist[modenum].width;
-//	if (h < MIN_HEIGHT
-	if (h < 200 || h > modelist[modenum].height || w > modelist[modenum].width)
+	if (h < 200 /* MIN_HEIGHT */ ||
+	    h > modelist[modenum].height || w > modelist[modenum].width)
 	{
-		Cvar_SetValueQuick (&vid_config_consize, modelist[modenum].width);
 		vid_conscale = false;
+		Cvar_SetValueQuick (&vid_config_consize, modelist[modenum].width);
 		return;
 	}
 	vid.width = vid.conwidth = w;
@@ -324,35 +322,30 @@ static void VID_ConWidth (int modenum)
 		vid_conscale = false;
 }
 
-void VID_ChangeConsize(int dir)
+void VID_ChangeConsize (int dir)
 {
 	int	w, h;
 
 	switch (dir)
 	{
-	case -1:	// smaller text, bigger res nums
-	//	w = (((float)vid.conwidth/vid.width) + .1) * vid.width;
-		w = ((vid.conwidth/vid.width) + .05) * vid.width;
-		if (w > vid.conwidth && w <= modelist[vid_modenum].width)
-			goto set_size;
-		w = modelist[vid_modenum].width;
-		goto set_size;
+	case -1: /* smaller text */
+		w = ((float)vid.conwidth/(float)vid.width + 0.05f) * vid.width; /* use 0.10f increment ?? */
+		w &= 0xfff8; /* make it a multiple of 8 */
+		if (w > modelist[vid_modenum].width)
+			w = modelist[vid_modenum].width;
+		break;
 
-	case 1:	// bigger text, smaller res nums
-		w = ((vid.conwidth/vid.width) - .05) * vid.width;
-		// 18 is magic number to constrain text size (19 even safer) - S.A
-		if (w + 18 < vid.conwidth && w <= modelist[vid_modenum].width)
-			goto set_size;
-		// Scale is getting too big, don't increase it
-		// w = std_modes[0].width;
-		// goto set_size;
+	case 1: /* bigger text */
+		w = ((float)vid.conwidth/(float)vid.width - 0.05f) * vid.width;
+		w &= 0xfff8; /* make it a multiple of 8 */
+		if (w < MIN_WIDTH)
+			w = MIN_WIDTH;
+		break;
 
-	default:	// bad key
+	default:	/* bad key */
 		return;
 	}
 
-set_size:
-	// preserve the same aspect ratio as the resolution
 	h = w * modelist[vid_modenum].height / modelist[vid_modenum].width;
 	if (h < 200)
 		return;
@@ -1577,11 +1570,13 @@ void	VID_Init (unsigned char *palette)
 	// resolutions. The fonts will be somewhat distorted, though
 	i = COM_CheckParm("-conwidth");
 	if (i != 0 && i < com_argc-1)
-	{
-		Cvar_SetValueQuick(&vid_config_consize, atoi(com_argv[i+1]));
-		if (vid_config_consize.integer != width)
-			vid_conscale = true;
-	}
+		i = atoi(com_argv[i + 1]);
+	else	i = vid_config_consize.integer;
+	if (i < MIN_WIDTH)	i = MIN_WIDTH;
+	else if (i > width)	i = width;
+	Cvar_SetValueQuick(&vid_config_consize, i);
+	if (vid_config_consize.integer != width)
+		vid_conscale = true;
 
 	multisample = vid_config_fsaa.integer;
 	i = COM_CheckParm ("-fsaa");
