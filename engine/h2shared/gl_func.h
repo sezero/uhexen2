@@ -26,6 +26,7 @@ GL_FUNCTION(void, glBindTexture, (GLenum,GLuint))
 GL_FUNCTION(void, glDeleteTextures, (GLsizei,const GLuint *))
 GL_FUNCTION(void, glGenTextures, (GLsizei,GLuint *))
 GL_FUNCTION(void, glTexParameterf, (GLenum,GLenum,GLfloat))
+GL_FUNCTION(void, glGetTexParameterfv, (GLenum,GLenum,GLfloat *))
 GL_FUNCTION(void, glTexEnvf, (GLenum,GLenum,GLfloat))
 GL_FUNCTION(void, glScalef, (GLfloat,GLfloat,GLfloat))
 GL_FUNCTION(void, glTexImage2D, (GLenum,GLint,GLint,GLsizei,GLsizei,GLint,GLenum,GLenum,const GLvoid*))
@@ -102,6 +103,7 @@ GL_FUNCTION(void, glClearStencil, (GLint))
 #define glDeleteTextures_fp	glDeleteTextures
 #define glGenTextures_fp	glGenTextures
 #define glTexParameterf_fp	glTexParameterf
+#define glGetTexParameterfv_fp	glGetTexParameterfv
 #define glTexEnvf_fp		glTexEnvf
 #define glScalef_fp		glScalef
 #define glTexImage2D_fp		glTexImage2D

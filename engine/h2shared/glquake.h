@@ -164,6 +164,7 @@ extern	glmode_t	gl_texmodes[NUM_GL_FILTERS];
 
 /* hardware-caps related globals */
 extern	GLint		gl_max_size;
+extern	GLfloat		gl_max_anisotropy;
 extern	qboolean	is_3dfx;
 extern	qboolean	is8bit;
 extern	qboolean	gl_mtexable;

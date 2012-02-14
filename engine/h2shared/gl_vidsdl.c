@@ -173,6 +173,7 @@ static const char	*gl_extensions;
 qboolean	is_3dfx = false;
 
 GLint		gl_max_size = 256;
+GLfloat		gl_max_anisotropy;
 float		gldepthmin, gldepthmax;
 
 // palettized textures
@@ -318,8 +319,7 @@ static void VID_ConWidth (int modenum)
 	vid.height = vid.conheight = h;
 	if (w != modelist[modenum].width)
 		vid_conscale = true;
-	else
-		vid_conscale = false;
+	else	vid_conscale = false;
 }
 
 void VID_ChangeConsize (int dir)
@@ -355,8 +355,7 @@ void VID_ChangeConsize (int dir)
 	vid.recalc_refdef = 1;
 	if (vid.conwidth != modelist[vid_modenum].width)
 		vid_conscale = true;
-	else
-		vid_conscale = false;
+	else	vid_conscale = false;
 }
 
 float VID_ReportConsize(void)
@@ -634,7 +633,7 @@ void VID_ShiftPalette (unsigned char *palette)
 }
 
 
-static void CheckMultiTextureExtensions(void)
+static void CheckMultiTextureExtensions (void)
 {
 	gl_mtexable = false;
 
@@ -664,8 +663,6 @@ static void CheckMultiTextureExtensions(void)
 
 		Con_SafePrintf("Found %i TMUs support\n", num_tmus);
 		gl_mtexable = true;
-
-		// start up with the correct texture selected!
 		glDisable_fp(GL_TEXTURE_2D);
 		glActiveTextureARB_fp(GL_TEXTURE0_ARB);
 	}
@@ -675,7 +672,44 @@ static void CheckMultiTextureExtensions(void)
 	}
 }
 
-static void CheckStencilBuffer(void)
+static void CheckAnisotropyExtensions (void)
+{
+	gl_max_anisotropy = 1;
+
+	Con_SafePrintf("Anisotropic filtering ");
+	if (strstr(gl_extensions, "GL_EXT_texture_filter_anisotropic"))
+	{
+		GLfloat test1, test2;
+		GLuint tex;
+
+		// test to make sure we really have control over it
+		// 1.0 and 2.0 should always be legal values.
+		glGenTextures_fp(1, &tex);
+		glBindTexture_fp(GL_TEXTURE_2D, tex);
+		glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, 1.0f);
+		glGetTexParameterfv_fp(GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, &test1);
+		glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, 2.0f);
+		glGetTexParameterfv_fp(GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, &test2);
+		glDeleteTextures_fp(1, &tex);
+		if (test1 != 1 || test2 != 2)
+		{
+			Con_SafePrintf("driver-locked @ %.1f\n", test1);
+		}
+		else
+		{
+			glGetFloatv_fp(GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, &gl_max_anisotropy);
+			if (gl_max_anisotropy < 2)
+				Con_SafePrintf("broken\n");
+			else	Con_SafePrintf("found, max %.1f\n", gl_max_anisotropy);
+		}
+	}
+	else
+	{
+		Con_SafePrintf("not found\n");
+	}
+}
+
+static void CheckStencilBuffer (void)
 {
 	have_stencil = false;
 
@@ -688,7 +722,7 @@ static void CheckStencilBuffer(void)
 
 
 #ifdef GL_DLSYM
-static qboolean GL_OpenLibrary(const char *name)
+static qboolean GL_OpenLibrary (const char *name)
 {
 	int	ret;
 	char	gl_liblocal[MAX_OSPATH];
@@ -733,7 +767,7 @@ static qboolean GL_OpenLibrary(const char *name)
 
 
 #ifdef GL_DLSYM
-static void GL_Init_Functions(void)
+static void GL_Init_Functions (void)
 {
 #define GL_FUNCTION(ret, func, params)				\
     do {							\
@@ -748,7 +782,7 @@ static void GL_Init_Functions(void)
 }
 #endif	/* GL_DLSYM */
 
-static void GL_ResetFunctions(void)
+static void GL_ResetFunctions (void)
 {
 #ifdef	GL_DLSYM
 #define GL_FUNCTION(ret, func, params)	\
@@ -815,6 +849,7 @@ static void GL_Init (void)
 		fullsbardraw = true;	// this actually seems useless, things aren't like those in quake
 
 	CheckMultiTextureExtensions();
+	CheckAnisotropyExtensions();
 	CheckStencilBuffer();
 
 	glClearColor_fp (1,0,0,0);

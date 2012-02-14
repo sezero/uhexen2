@@ -25,6 +25,7 @@ qboolean	draw_reinit = false;
 static cvar_t	gl_picmip = {"gl_picmip", "0", CVAR_NONE};
 static cvar_t	gl_constretch = {"gl_constretch", "0", CVAR_ARCHIVE};
 static cvar_t	gl_texturemode = {"gl_texturemode", "", CVAR_ARCHIVE};
+static cvar_t	gl_texture_anisotropy = {"gl_texture_anisotropy", "1", CVAR_ARCHIVE};
 
 static GLuint		menuplyr_textures[MAX_PLAYER_CLASS];	// player textures in multiplayer config screens
 static GLuint		draw_backtile;
@@ -225,10 +226,30 @@ glmode_t gl_texmodes[NUM_GL_FILTERS] =
 Draw_TextureMode_f
 ===============
 */
+static void Draw_TouchFilterModes (void)
+{
+	gltexture_t	*glt;
+	unsigned int	i;
+
+	for (i = 0, glt = gltextures; i < numgltextures; i++, glt++)
+	{
+		if (glt->flags & (TEX_NEAREST|TEX_LINEAR))
+			continue;
+		GL_Bind (glt->texnum);
+		glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, gl_texmodes[gl_filter_idx].maximize);
+		if (glt->flags & TEX_MIPMAP)
+		{
+			glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, gl_texmodes[gl_filter_idx].minimize);
+			if (gl_max_anisotropy >= 2)
+				glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, gl_texture_anisotropy.value);
+		}
+		else	glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, gl_texmodes[gl_filter_idx].maximize);
+	}
+}
+
 static void Draw_TextureMode_f (cvar_t *var)
 {
 	unsigned int	i;
-	gltexture_t	*glt;
 
 	for (i = 0; i < NUM_GL_FILTERS; i++)
 	{
@@ -238,16 +259,7 @@ static void Draw_TextureMode_f (cvar_t *var)
 			{
 				gl_filter_idx = i;
 				// change all the existing mipmap texture objects
-				for (i = 0, glt = gltextures; i < numgltextures; i++, glt++)
-				{
-					if (glt->flags & (TEX_NEAREST|TEX_LINEAR))
-						continue;
-					GL_Bind (glt->texnum);
-					glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, gl_texmodes[gl_filter_idx].maximize);
-					if (glt->flags & TEX_MIPMAP)
-						glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, gl_texmodes[gl_filter_idx].minimize);
-					else	glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, gl_texmodes[gl_filter_idx].maximize);
-				}
+				Draw_TouchFilterModes ();
 			}
 			return;
 		}
@@ -264,6 +276,23 @@ static void Draw_TextureMode_f (cvar_t *var)
 
 	Con_Printf ("bad filter name\n");
 	Cvar_SetQuick (&gl_texturemode, gl_texmodes[gl_filter_idx].name);
+}
+
+static void Draw_Anisotropy_f (cvar_t *var)
+{
+	if (gl_texture_anisotropy.value < 1)
+	{
+		Cvar_SetQuick (&gl_texture_anisotropy, "1");
+	}
+	else if (gl_texture_anisotropy.value > gl_max_anisotropy)
+	{
+		Cvar_SetValueQuick (&gl_texture_anisotropy, gl_max_anisotropy);
+	}
+	else
+	{
+		if (gl_max_anisotropy >= 2)
+			Draw_TouchFilterModes ();
+	}
 }
 
 /*
@@ -283,7 +312,9 @@ void Draw_Init (void)
 		Cvar_RegisterVariable (&gl_constretch);
 		gl_texturemode.string = gl_texmodes[gl_filter_idx].name;
 		Cvar_RegisterVariable (&gl_texturemode);
+		Cvar_RegisterVariable (&gl_texture_anisotropy);
 		Cvar_SetCallback (&gl_texturemode, Draw_TextureMode_f);
+		Cvar_SetCallback (&gl_texture_anisotropy, Draw_Anisotropy_f);
 	}
 
 	// load the charset: 8*8 graphic characters
@@ -1420,6 +1451,8 @@ static void GL_Upload32 (unsigned int *data, gltexture_t *glt)
 	{
 		glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, gl_texmodes[gl_filter_idx].minimize);
 		glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, gl_texmodes[gl_filter_idx].maximize);
+		if (gl_max_anisotropy >= 2)
+			glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, gl_texture_anisotropy.value);
 	}
 	else
 	{

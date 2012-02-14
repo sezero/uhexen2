@@ -3,7 +3,7 @@
 	these are the only functions outside the refresh
 	allowed to touch the vid buffer
 
-	$Id: draw.h,v 1.30 2007-11-25 09:22:54 sezero Exp $
+	$Id$
 */
 
 #ifndef __HX2_DRAW_H
@@ -65,7 +65,7 @@ void Draw_SmallString (int x, int y, const char *str);
 void Draw_RedString (int x, int y, const char *str);
 void Draw_BigCharacter (int x, int y, int num);
 
-// game/engine name to draw on the console
+/* game/engine name to draw on the console */
 #define GAME_MOD_NAME		ENGINE_NAME
 #define ENGINE_WATERMARK	GAME_MOD_NAME " " STRINGIFY(ENGINE_VERSION) " (" PLATFORM_STRING ")"
 
