@@ -11,9 +11,9 @@
 # --without mp3: build without mp3 music streaming support
 # --with mpg123: build mp3 music streaming using libmpg123 instead of libmad
 # --without ogg: build without ogg/vorbis music streaming support
-# --without asm : do not use x86 assembly even on an intel cpu
-# --without gtk2: do not use glib-2.x / gtk-2.x, and build the launcher against
-#		  gtk-1.2
+# --without asm: do not use x86 assembly even on an intel cpu
+# --without gtk2: build the launcher against gtk-1.2 instead of gtk-2.x
+# --with gtk3: build the launcher against gtk-3.x instead of gtk-2.x
 # --without freedesktop: do not use desktop-file-utils for the desktop shortcut
 
 %ifnarch %{ix86}
@@ -23,11 +23,16 @@
 %{?el2:%define _without_freedesktop 1}
 %{?rh7:%define _without_freedesktop 1}
 
+%{?el2:%undefine _with_gtk3 1}
+%{?rh7:%undefine _with_gtk3 1}
+
 %{?el2:%define _without_gtk2 1}
 %{?rh7:%define _without_gtk2 1}
 
+%{?_with_gtk3:%undefine _without_gtk2}
+
 # default build options
-%{!?_without_gtk2:%define gtk1_buildopt GTK2=yes}
+%{!?_without_gtk2:%define gtk_buildopt GTK2=yes}
 %{!?_without_asm:%define asm_buildopt USE_X86_ASM=yes}
 %{!?_without_alsa:%define alsa_buildopt USE_ALSA=yes}
 %{!?_without_midi:%define midi_buildopt USE_MIDI=yes}
@@ -37,7 +42,9 @@
 %{!?_without_mp3:%define mp3_buildopt USE_CODEC_MP3=yes}
 %{!?_without_ogg:%define ogg_buildopt USE_CODEC_VORBIS=yes}
 # build option overrides
-%{?_without_gtk2:%define gtk1_buildopt GTK1=yes}
+%{?_without_gtk2:%define gtk_buildopt GTK1=yes}
+%{?_with_gtk3:%undefine gtk_buildopt}
+%{?_with_gtk3:%define gtk_buildopt GTK3=yes}
 %{?_without_asm:%define asm_buildopt USE_X86_ASM=no}
 %{?_without_alsa:%define alsa_buildopt USE_ALSA=no}
 %{?_without_midi:%define midi_buildopt USE_MIDI=no}
@@ -80,7 +87,7 @@ BuildRequires:	SDL-devel >= 1.2.4
 %{!?_without_asm:BuildRequires:  nasm >= 0.98.38}
 %{!?_without_freedesktop:BuildRequires: desktop-file-utils}
 %{?_without_gtk2:BuildRequires:  gtk+-devel}
-%{!?_without_gtk2:BuildRequires: gtk2-devel}
+%{!?_without_gtk2:BuildRequires: %{!?_with_gtk3:gtk2-devel}%{?_with_gtk3:gtk3-devel}}
 Obsoletes:	hexen2-missionpack
 Requires:	SDL >= 1.2.4
 # timidity++-patches requirement is non-fatal
@@ -139,7 +146,7 @@ run a HexenWorld server or client, and a master server application.
 %{__make} -C h2patch
 
 # Launcher binaries
-%{__make} -C launcher %{gtk1_buildopt}
+%{__make} -C launcher %{gtk_buildopt}
 
 # Build the hcode compiler
 %{__make} -C utils/hcc
@@ -370,7 +377,10 @@ desktop-file-install \
 %{_prefix}/games/%{name}/docs/README.hwmaster
 
 %changelog
-* Sat Jan 14 2012 O.Sezer <sezero@users.sourceforge.net> 1.5.2-1
+* Wed Feb 15 2012 O.Sezer <sezero@users.sourceforge.net> 1.5.2-1
+- Added --with gtk3 build option for the launcher
+
+* Sat Jan 14 2012 O.Sezer <sezero@users.sourceforge.net>
 - gamecode version 1.25
 
 * Sat Dec 17 2011 O.Sezer <sezero@users.sourceforge.net>

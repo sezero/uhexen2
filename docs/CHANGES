@@ -4,6 +4,9 @@ Development Progress	:
 ---------------------------
 
 2012-02-15 (SVN):
+    * rpm spec file: Added "--with gtk3" build option for the launcher.
+
+2012-02-15 (SVN):
     * menu.c: Added menu item for anisotropic filter level. Minor clean
       up in the opengl features menu.
 
