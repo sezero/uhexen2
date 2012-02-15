@@ -3,6 +3,10 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2012-02-15 (SVN):
+    * menu.c: Added menu item for anisotropic filter level. Minor clean
+      up in the opengl features menu.
+
 2012-02-14 (SVN):
     * updated documentation for the anisotropic texture filter support.
 

@@ -932,6 +932,7 @@ enum
 	OGL_COLOREDDYNAMIC,
 	OGL_COLOREDEXTRA,
 	OGL_TEXFILTER,
+	OGL_ANISOTROPY,
 	OGL_SHADOWS,
 	OGL_STENCIL,
 	OGL_ITEMS
@@ -1025,6 +1026,10 @@ static void M_OpenGL_Draw (void)
 	M_Print (32 + (5 * 8), 90 + 8*OGL_TEXFILTER,	"Texture filtering");
 	M_Print (232, 90 + 8*OGL_TEXFILTER, gl_texmodes[gl_filter_idx].name);
 
+	M_Print (32 + (5 * 8), 90 + 8*OGL_ANISOTROPY,	"Anisotropy level:");
+	M_Print (232, 90 + 8*OGL_ANISOTROPY, (gl_max_anisotropy < 2) ? "N/A" :
+				Cvar_VariableString("gl_texture_anisotropy"));
+
 	M_Print (32 + (15 * 8), 90 + 8*OGL_SHADOWS,	"Shadows");
 	M_DrawCheckbox (232, 90 + 8*OGL_SHADOWS, r_shadows.integer);
 	M_Print (32 + (8 * 8), 90 + 8*OGL_STENCIL,	"Stencil buffer");
@@ -1083,18 +1088,16 @@ static void M_OpenGL_Key (int k)
 
 	case K_UPARROW:
 		S_LocalSound ("raven/menu1.wav");
-		opengl_cursor--;
-		if (opengl_cursor == OGL_COLOREDLIGHT)
-			opengl_cursor--;
+		if (--opengl_cursor == OGL_COLOREDLIGHT)
+			--opengl_cursor;
 		if (opengl_cursor < 0)
 			opengl_cursor = OGL_ITEMS-1;
 		break;
 
 	case K_DOWNARROW:
 		S_LocalSound ("raven/menu1.wav");
-		opengl_cursor++;
-		if (opengl_cursor == OGL_COLOREDLIGHT)
-			opengl_cursor++;
+		if (++opengl_cursor == OGL_COLOREDLIGHT)
+			++opengl_cursor;
 		if (opengl_cursor >= OGL_ITEMS)
 			opengl_cursor = 0;
 		break;
@@ -1129,14 +1132,12 @@ static void M_OpenGL_Key (int k)
 			switch (k)
 			{
 			case K_RIGHTARROW:
-				lm_format++;
-				if (lm_format >= (int)MAX_LMFORMATS - 1)
+				if (++lm_format >= (int)MAX_LMFORMATS - 1)
 					lm_format = MAX_LMFORMATS - 2;
 				Cvar_Set ("gl_lightmapfmt", lm_formats[lm_format].name);
 				break;
 			case K_LEFTARROW:
-				lm_format--;
-				if (lm_format < 0)
+				if (--lm_format < 0)
 					lm_format = 0;
 				Cvar_Set ("gl_lightmapfmt", lm_formats[lm_format].name);
 				break;
@@ -1152,7 +1153,7 @@ static void M_OpenGL_Key (int k)
 				Cvar_Set ("gl_coloredlight", (gl_coloredlight.integer >= 1) ? "2" : "1");
 				break;
 			case K_LEFTARROW:
-				Cvar_Set ("gl_coloredlight", (gl_coloredlight.integer <= 1) ? "0": "1");
+				Cvar_Set ("gl_coloredlight", (gl_coloredlight.integer <= 1) ? "0" : "1");
 				break;
 			default:
 				break;
@@ -1172,20 +1173,37 @@ static void M_OpenGL_Key (int k)
 			switch (k)
 			{
 			case K_LEFTARROW:
-				tex_mode--;
-				if (tex_mode < 0)
+				if (--tex_mode < 0)
 					tex_mode = 0;
 				break;
 			case K_RIGHTARROW:
-				tex_mode++;
-				if (tex_mode >= NUM_GL_FILTERS)
+				if (++tex_mode >= NUM_GL_FILTERS)
 					tex_mode = NUM_GL_FILTERS-1;
 				break;
 			default:
 				return;
 			}
-			if (tex_mode != gl_filter_idx)
-				Cvar_Set ("gl_texturemode", gl_texmodes[tex_mode].name);
+			Cvar_Set ("gl_texturemode", gl_texmodes[tex_mode].name);
+			break;
+
+		case OGL_ANISOTROPY:	// anisotropic filter level
+			if (gl_max_anisotropy < 2)
+				return;
+			tex_mode = Cvar_VariableValue("gl_texture_anisotropy");
+			switch (k)
+			{
+			case K_LEFTARROW:
+				if (--tex_mode < 1)
+					tex_mode = 1;
+				break;
+			case K_RIGHTARROW:
+				if (++tex_mode > gl_max_anisotropy)
+					tex_mode = gl_max_anisotropy;
+				break;
+			default:
+				return;
+			}
+			Cvar_SetValue ("gl_texture_anisotropy", tex_mode);
 			break;
 
 		case OGL_SHADOWS:	// shadows
