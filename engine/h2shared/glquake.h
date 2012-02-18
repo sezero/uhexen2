@@ -286,6 +286,7 @@ GLuint GL_LoadTexture (const char *identifier, byte *data,
 #define	TEX_MIPMAP		(1 << 1)
 #define	TEX_ALPHA		(1 << 2)
 #define	TEX_RGBA		(1 << 5)	/* texture is 32 bit RGBA, not 8 bit */
+/* TEX_NEAREST and TEX_LINEAR aren't supposed to be ORed with TEX_MIPMAP */
 #define	TEX_NEAREST		(1 << 6)	/* force point sampled */
 #define	TEX_LINEAR		(1 << 7)	/* force linear filtering */
 /* duplicated EF_ values from gl_model.h: */

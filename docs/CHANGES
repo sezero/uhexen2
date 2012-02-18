@@ -3,6 +3,10 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2012-02-18 (SVN):
+    * gl_draw.c (Draw_Anisotropy_f): apply anisotropic level setting only
+      to mipmap textures.
+
 2012-02-15 (SVN):
     * rpm spec file: Added "--with gtk3" build option for the launcher.
 

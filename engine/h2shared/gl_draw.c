@@ -226,14 +226,14 @@ glmode_t gl_texmodes[NUM_GL_FILTERS] =
 Draw_TextureMode_f
 ===============
 */
-static void Draw_TouchFilterModes (void)
+static void Draw_TouchAllFilterModes (void)
 {
 	gltexture_t	*glt;
 	unsigned int	i;
 
 	for (i = 0, glt = gltextures; i < numgltextures; i++, glt++)
 	{
-		if (glt->flags & (TEX_NEAREST|TEX_LINEAR))
+		if (glt->flags & (TEX_NEAREST|TEX_LINEAR))	/* TEX_MIPMAP mustn't be set in this case */
 			continue;
 		GL_Bind (glt->texnum);
 		glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, gl_texmodes[gl_filter_idx].maximize);
@@ -259,7 +259,7 @@ static void Draw_TextureMode_f (cvar_t *var)
 			{
 				gl_filter_idx = i;
 				// change all the existing mipmap texture objects
-				Draw_TouchFilterModes ();
+				Draw_TouchAllFilterModes ();
 			}
 			return;
 		}
@@ -278,6 +278,23 @@ static void Draw_TextureMode_f (cvar_t *var)
 	Cvar_SetQuick (&gl_texturemode, gl_texmodes[gl_filter_idx].name);
 }
 
+static void Draw_TouchMipmapFilterModes (void)
+{
+	gltexture_t	*glt;
+	unsigned int	i;
+
+	for (i = 0, glt = gltextures; i < numgltextures; i++, glt++)
+	{
+		if (glt->flags & TEX_MIPMAP)
+		{
+			GL_Bind (glt->texnum);
+			glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, gl_texmodes[gl_filter_idx].maximize);
+			glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, gl_texmodes[gl_filter_idx].minimize);
+			glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, gl_texture_anisotropy.value);
+		}
+	}
+}
+
 static void Draw_Anisotropy_f (cvar_t *var)
 {
 	if (gl_texture_anisotropy.value < 1)
@@ -291,7 +308,7 @@ static void Draw_Anisotropy_f (cvar_t *var)
 	else
 	{
 		if (gl_max_anisotropy >= 2)
-			Draw_TouchFilterModes ();
+			Draw_TouchMipmapFilterModes ();
 	}
 }
 
