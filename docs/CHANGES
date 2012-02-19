@@ -4,6 +4,9 @@ Development Progress	:
 ---------------------------
 
 2012-02-19 (SVN):
+    * gl_screen.c: Merged hexenworld version of SCR_TileClear to hexen2.
+
+2012-02-19 (SVN):
     * pr_cmds.c, pr_exec.c, pr_edict.c, progdefs.h, sv_main.c: Changed
       several Sys_Error() calls to Host_Error(). Made type_size array
       static to pr_edict.c. To be consistent, renamed globalvars_t to

@@ -960,46 +960,43 @@ SCR_TileClear
 */
 static void SCR_TileClear (void)
 {
-	if (vid.conwidth > 320)
+    if (vid.conwidth > 320) {
+	if (r_refdef.vrect.x > 0)
 	{
-		if (r_refdef.vrect.x > 0)
-		{
-			// left
-			Draw_TileClear (0, 0, r_refdef.vrect.x, vid.height);
-			// right
-			Draw_TileClear (r_refdef.vrect.x + r_refdef.vrect.width, 0,
-				vid.width - r_refdef.vrect.x + r_refdef.vrect.width, vid.height);
-		}
-//		if (r_refdef.vrect.y > 0)
-		{
-			// top
-			Draw_TileClear (r_refdef.vrect.x, 0,
-				r_refdef.vrect.x + r_refdef.vrect.width, r_refdef.vrect.y);
-			// bottom
-			Draw_TileClear (r_refdef.vrect.x, r_refdef.vrect.y + r_refdef.vrect.height,
-				r_refdef.vrect.width, vid.height - (r_refdef.vrect.height + r_refdef.vrect.y));
-		}
+		// left
+		Draw_TileClear (0, 0, r_refdef.vrect.x, vid.height);
+		// right
+		Draw_TileClear (r_refdef.vrect.x + r_refdef.vrect.width, 0,
+			vid.width - r_refdef.vrect.x + r_refdef.vrect.width, vid.height);
 	}
-	else
+//	if (r_refdef.vrect.y > 0) // if (r_refdef.vrect.height < vid.height-44)
 	{
-		if (r_refdef.vrect.x > 0)
-		{
-			// left
-			Draw_TileClear (0, 0, r_refdef.vrect.x, vid.height - sb_lines);
-			// right
-			Draw_TileClear (r_refdef.vrect.x + r_refdef.vrect.width, 0,
-				vid.width - r_refdef.vrect.x + r_refdef.vrect.width, vid.height - sb_lines);
-		}
-		if (r_refdef.vrect.y > 0)
-		{
-			// top
-			Draw_TileClear (r_refdef.vrect.x, 0,
-				r_refdef.vrect.x + r_refdef.vrect.width, r_refdef.vrect.y);
-			// bottom
-			Draw_TileClear (r_refdef.vrect.x, r_refdef.vrect.y + r_refdef.vrect.height,
-				r_refdef.vrect.width, vid.height - sb_lines - (r_refdef.vrect.height + r_refdef.vrect.y));
-		}
+		// top
+		Draw_TileClear (r_refdef.vrect.x, 0,
+			r_refdef.vrect.x + r_refdef.vrect.width, r_refdef.vrect.y);
+		// bottom
+		Draw_TileClear (r_refdef.vrect.x, r_refdef.vrect.y + r_refdef.vrect.height,
+			r_refdef.vrect.width, vid.height - (r_refdef.vrect.height + r_refdef.vrect.y));
 	}
+    } else {
+	if (r_refdef.vrect.x > 0)
+	{
+		// left
+		Draw_TileClear (0, 0, r_refdef.vrect.x, vid.height - sb_lines);
+		// right
+		Draw_TileClear (r_refdef.vrect.x + r_refdef.vrect.width, 0,
+			vid.width - r_refdef.vrect.x + r_refdef.vrect.width, vid.height - sb_lines);
+	}
+	if (r_refdef.vrect.y > 0)
+	{
+		// top
+		Draw_TileClear (r_refdef.vrect.x, 0,
+			r_refdef.vrect.x + r_refdef.vrect.width, r_refdef.vrect.y);
+		// bottom
+		Draw_TileClear (r_refdef.vrect.x, r_refdef.vrect.y + r_refdef.vrect.height,
+			r_refdef.vrect.width, vid.height - sb_lines - (r_refdef.vrect.height + r_refdef.vrect.y));
+	}
+    }
 }
 
 //=============================================================================
