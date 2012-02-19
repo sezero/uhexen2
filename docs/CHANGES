@@ -4,6 +4,11 @@ Development Progress	:
 ---------------------------
 
 2012-02-19 (SVN):
+    * gl_screen.c: Unlike its screen.c counterpart, SCR_CalcRefdef() of
+      the opengl version sets sb_lines to 36, not 46. Added a fixme note
+      about it.
+
+2012-02-19 (SVN):
     * gl_screen.c: Merged hexenworld version of SCR_TileClear to hexen2.
 
 2012-02-19 (SVN):

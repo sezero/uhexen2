@@ -314,7 +314,7 @@ static void SCR_CalcRefdef (void)
 	if (scr_viewsize.integer >= 110)
 		sb_lines = 0;		// no status bar
 	else
-		sb_lines = 36;
+		sb_lines = 36;	// FIXME: why not 46, i.e. BAR_TOP_HEIGHT?
 
 	size = scr_viewsize.integer > 100 ? 100.0 : scr_viewsize.integer;
 	if (cl.intermission)
