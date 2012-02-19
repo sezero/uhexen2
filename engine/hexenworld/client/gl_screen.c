@@ -82,7 +82,7 @@ static	cvar_t	scr_showram = {"showram", "1", CVAR_NONE};
 static	cvar_t	scr_showturtle = {"showturtle", "0", CVAR_NONE};
 static	cvar_t	scr_showpause = {"showpause", "1", CVAR_NONE};
 static	cvar_t	scr_showfps = {"showfps", "0", CVAR_NONE};
-static	cvar_t	gl_triplebuffer = {"gl_triplebuffer", "0", CVAR_ARCHIVE};
+//static	cvar_t	gl_triplebuffer = {"gl_triplebuffer", "0", CVAR_ARCHIVE};
 
 qboolean	scr_disabled_for_loading;
 qboolean	scr_skipupdate;
@@ -356,7 +356,7 @@ void SCR_Init (void)
 	Cvar_RegisterVariable (&scr_showpause);
 	Cvar_RegisterVariable (&scr_showfps);
 	Cvar_RegisterVariable (&scr_centertime);
-	Cvar_RegisterVariable (&gl_triplebuffer);
+//	Cvar_RegisterVariable (&gl_triplebuffer);
 
 	Cmd_AddCommand ("screenshot",SCR_ScreenShot_f);
 	Cmd_AddCommand ("sizeup",SCR_SizeUp_f);
@@ -1018,8 +1018,7 @@ void SCR_UpdateScreen (void)
 	if (block_drawing)
 		return;
 
-	vid.numpages = (gl_triplebuffer.integer) ? 3 : 2;
-
+//	vid.numpages = (gl_triplebuffer.integer) ? 3 : 2;
 	scr_copytop = 0;
 	scr_copyeverything = 0;
 
