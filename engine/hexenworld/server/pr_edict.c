@@ -20,23 +20,23 @@ static	ddef_t		*pr_fielddefs;
 static	ddef_t		*pr_globaldefs;
 
 dstatement_t	*pr_statements;
+float		*pr_globals;
 sv_globals_t	sv_globals;
-float		*pr_globals;		// same as sv_globals
-int		pr_edict_size;		// in bytes
+int		pr_edict_size;		/* in bytes */
 
 qboolean	ignore_precache = false;
 
 unsigned short	pr_crc;
 
-int		type_size[8] = {
-	1,					// ev_void
-	1,	// sizeof(string_t) / 4		// ev_string
-	1,					// ev_float
-	3,					// ev_vector
-	1,					// ev_entity
-	1,					// ev_field
-	1,	// sizeof(func_t) / 4		// ev_function
-	1	// sizeof(void *) / 4		// ev_pointer
+static int	type_size[8] = {
+	1,	/* ev_void */
+	1,	/* ev_string */
+	1,	/* ev_float */
+	3,	/* ev_vector */
+	1,	/* ev_entity */
+	1,	/* ev_field */
+	1,	/* ev_function */
+	1	/* ev_pointer */
 };
 
 typedef struct sv_def_s
@@ -48,7 +48,7 @@ typedef struct sv_def_s
 
 #define OFS_V011(m)	(int)offsetof(globalvars_v011_t,m)/4
 #define OFS_V014(m)	(int)offsetof(globalvars_v014_t,m)/4
-#define OFS_V015(m)	(int)offsetof(globalvars_t,m)/4
+#define OFS_V015(m)	(int)offsetof(globalvars_v015_t,m)/4
 
 static sv_def_t globals_v011[] = {
 	{ev_entity,	OFS_V011(self),			&sv_globals.self},
@@ -369,11 +369,9 @@ edict_t *ED_Alloc_Temp (void)
 	int			i, j;
 	edict_t		*e, *Least;
 	float		LeastTime;
-	qboolean	LeastSet;
 
 	LeastTime = -1;
-	LeastSet = false;
-	Least = NULL;	// shut up compiler
+	Least = NULL;
 	for (i = MAX_CLIENTS + 1, j = 0; j < max_temp_edicts.integer; i++, j++)
 	{
 		e = EDICT_NUM(i);
@@ -386,11 +384,10 @@ edict_t *ED_Alloc_Temp (void)
 
 			return e;
 		}
-		else if (e->alloctime < LeastTime || !LeastSet)
+		if (Least == NULL || e->alloctime < LeastTime)
 		{
 			Least = e;
 			LeastTime = e->alloctime;
-			LeastSet = true;
 		}
 	}
 
@@ -966,17 +963,17 @@ void ED_ParseGlobals (const char *data)
 		if (com_token[0] == '}')
 			break;
 		if (!data)
-			SV_Error ("%s: EOF without closing brace", __thisfunc__);
+			Host_Error ("%s: EOF without closing brace", __thisfunc__);
 
 		strcpy (keyname, com_token);
 
 	// parse value
 		data = COM_Parse (data);
 		if (!data)
-			SV_Error ("%s: EOF without closing brace", __thisfunc__);
+			Host_Error ("%s: EOF without closing brace", __thisfunc__);
 
 		if (com_token[0] == '}')
-			SV_Error ("%s: closing brace without data", __thisfunc__);
+			Host_Error ("%s: closing brace without data", __thisfunc__);
 
 		key = ED_FindGlobal (keyname);
 		if (!key)
@@ -986,7 +983,7 @@ void ED_ParseGlobals (const char *data)
 		}
 
 		if (!ED_ParseEpair ((void *)pr_globals, key, com_token))
-			SV_Error ("%s: parse error", __thisfunc__);
+			Host_Error ("%s: parse error", __thisfunc__);
 	}
 }
 
@@ -1129,7 +1126,7 @@ const char *ED_ParseEdict (const char *data, edict_t *ent)
 		if (com_token[0] == '}')
 			break;
 		if (!data)
-			SV_Error ("%s: EOF without closing brace", __thisfunc__);
+			Host_Error ("%s: EOF without closing brace", __thisfunc__);
 
 		// anglehack is to allow QuakeEd to write single scalar angles
 		// and allow them to be turned into vectors. (FIXME...)
@@ -1158,10 +1155,10 @@ const char *ED_ParseEdict (const char *data, edict_t *ent)
 		// parse value
 		data = COM_Parse (data);
 		if (!data)
-			SV_Error ("%s: EOF without closing brace", __thisfunc__);
+			Host_Error ("%s: EOF without closing brace", __thisfunc__);
 
 		if (com_token[0] == '}')
-			SV_Error ("%s: closing brace without data", __thisfunc__);
+			Host_Error ("%s: closing brace without data", __thisfunc__);
 
 		init = true;
 
@@ -1196,7 +1193,7 @@ const char *ED_ParseEdict (const char *data, edict_t *ent)
 		}
 
 		if (!ED_ParseEpair ((void *)&ent->v, key, com_token))
-			SV_Error ("%s: parse error", __thisfunc__);
+			Host_Error ("%s: parse error", __thisfunc__);
 	}
 
 	if (!init)
@@ -1237,7 +1234,7 @@ void ED_LoadFromFile (const char *data)
 		if (!data)
 			break;
 		if (com_token[0] != '{')
-			SV_Error ("%s: found %s when expecting {", __thisfunc__, com_token);
+			Host_Error ("%s: found %s when expecting {", __thisfunc__, com_token);
 
 		if (!ent)
 			ent = EDICT_NUM(0);
@@ -1477,7 +1474,7 @@ void PR_LoadProgs (void)
 	progname = PR_GetProgFilename();
 	progs = (dprograms_t *)FS_LoadHunkFile (progname, NULL);
 	if (!progs)
-		SV_Error ("%s: couldn't load %s", __thisfunc__, progname);
+		Host_Error ("%s: couldn't load %s", __thisfunc__, progname);
 	Con_DPrintf ("Programs occupy %luK.\n", (unsigned long)(fs_filesize/1024));
 
 	// add prog crc to the serverinfo
@@ -1490,7 +1487,7 @@ void PR_LoadProgs (void)
 		((int *)progs)[i] = LittleLong ( ((int *)progs)[i] );
 
 	if (progs->version != PROG_VERSION)
-		SV_Error ("%s is of unsupported version (%d, should be %d)", progname, progs->version, PROG_VERSION);
+		Host_Error ("%s is of unsupported version (%d, should be %d)", progname, progs->version, PROG_VERSION);
 	switch (progs->crc)
 	{
 	case PROGS_V011_CRC:
@@ -1506,7 +1503,7 @@ void PR_LoadProgs (void)
 		progvstr = "HW/v0.15";
 		break;
 	default:
-		SV_Error ("Unexpected crc ( %d ) for %s", progs->crc, progname);
+		Host_Error ("Unexpected crc ( %d ) for %s", progs->crc, progname);
 		/* silence compiler */
 		def = globals_v015;
 		progvstr = "Unknown";
@@ -1516,7 +1513,7 @@ void PR_LoadProgs (void)
 	pr_functions = (dfunction_t *)((byte *)progs + progs->ofs_functions);
 	pr_strings = (char *)progs + progs->ofs_strings;
 	if (progs->ofs_strings + progs->numstrings >= (int)fs_filesize)
-		SV_Error ("%s: strings go past end of file\n", progname);
+		Host_Error ("%s: strings go past end of file\n", progname);
 
 	// initialize the strings
 	pr_numknownstrings = 0;
@@ -1569,7 +1566,7 @@ void PR_LoadProgs (void)
 	{
 		pr_fielddefs[i].type = LittleShort (pr_fielddefs[i].type);
 		if (pr_fielddefs[i].type & DEF_SAVEGLOBAL)
-			SV_Error ("%s: pr_fielddefs[i].type & DEF_SAVEGLOBAL", __thisfunc__);
+			Host_Error ("%s: pr_fielddefs[i].type & DEF_SAVEGLOBAL", __thisfunc__);
 		pr_fielddefs[i].ofs = LittleShort (pr_fielddefs[i].ofs);
 		pr_fielddefs[i].s_name = LittleLong (pr_fielddefs[i].s_name);
 	}
@@ -1617,7 +1614,7 @@ void PR_Init (void)
 edict_t *EDICT_NUM(int n)
 {
 	if (n < 0 || n >= MAX_EDICTS)
-		SV_Error ("%s: bad number %i", __thisfunc__, n);
+		Host_Error ("%s: bad number %i", __thisfunc__, n);
 	return (edict_t *)((byte *)sv.edicts + (n)*pr_edict_size);
 }
 
@@ -1666,7 +1663,7 @@ const char *PR_GetString (int num)
 	{
 		if (!pr_knownstrings[-1 - num])
 		{
-			SV_Error ("%s: attempt to get a non-existant string %d\n",
+			Host_Error ("%s: attempt to get a non-existant string %d\n",
 								__thisfunc__, num);
 			return "";
 		}
@@ -1674,7 +1671,7 @@ const char *PR_GetString (int num)
 	}
 	else
 	{
-		SV_Error ("%s: invalid string offset %d\n", __thisfunc__, num);
+		Host_Error ("%s: invalid string offset %d\n", __thisfunc__, num);
 		return "";
 	}
 }
@@ -1687,7 +1684,7 @@ int PR_SetEngineString (const char *s)
 		return 0;
 #if 0	/* can't: sv.model_precache & sv.sound_precache points to pr_strings */
 	if (s >= pr_strings && s <= pr_strings + pr_stringssize)
-		SV_Error ("%s: \"%s\" is in pr_strings area\n", __thisfunc__, s);
+		Host_Error ("%s: \"%s\" is in pr_strings area\n", __thisfunc__, s);
 #else
 	if (s >= pr_strings && s <= pr_strings + pr_stringssize - 2)
 		return (int)(s - pr_strings);

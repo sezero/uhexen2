@@ -124,8 +124,6 @@ int NUM_FOR_EDICT(edict_t *e);
 #define	E_VECTOR(e,o)		(&((float*)&e->v)[o])
 #define	E_STRING(e,o)		(PR_GetString(*(string_t *)&((float*)&e->v)[o]))
 
-extern	int		type_size[8];
-
 typedef void (*builtin_t) (void);
 extern	builtin_t	*pr_builtins;
 extern	int		pr_numbuiltins;

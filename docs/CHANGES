@@ -3,6 +3,14 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2012-02-19 (SVN):
+    * pr_cmds.c, pr_exec.c, pr_edict.c, progdefs.h, sv_main.c: Changed
+      several Sys_Error() calls to Host_Error(). Made type_size array
+      static to pr_edict.c. To be consistent, renamed globalvars_t to
+      globalvars_v112_t for hexen2 and globalvars_v015_t for hexenworld.
+      Minor cleanup in Ed_Alloc_Temp() by removing the rather useless
+      LeastSet variable.
+
 2012-02-18 (SVN):
     * gl_draw.c (Draw_Anisotropy_f): apply anisotropic level setting only
       to mipmap textures.

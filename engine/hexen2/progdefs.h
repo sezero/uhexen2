@@ -234,11 +234,11 @@ typedef struct
 	func_t	ClientReEnter;
 	func_t	ClientDisconnect;
 	func_t	ClassChangeWeapon;
-} globalvars_t;
+} globalvars_v112_t;
 
 typedef struct
 {
-	int	*self;			/* @ offset 28. */
+	int	*self;		/* @ offset 28. */
 	int	*other;
 	int	*world;
 	float	*time;

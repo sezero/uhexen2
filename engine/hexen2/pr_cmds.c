@@ -736,7 +736,7 @@ static void PF_StopSound(void)
 	channel = G_FLOAT(OFS_PARM1);
 
 	if (channel < 0 || channel > 7)
-		Sys_Error ("%s: channel = %i", __thisfunc__, channel);
+		Host_Error ("%s: channel = %i", __thisfunc__, channel);
 
 	SV_StopSound (entity, channel);
 }
@@ -756,7 +756,7 @@ static void PF_UpdateSoundPos(void)
 	channel = G_FLOAT(OFS_PARM1);
 
 	if (channel < 0 || channel > 7)
-		Sys_Error ("%s: channel = %i", __thisfunc__, channel);
+		Host_Error ("%s: channel = %i", __thisfunc__, channel);
 
 	SV_UpdateSoundPos (entity, channel);
 }
@@ -791,13 +791,13 @@ static void PF_sound (void)
 	attenuation = G_FLOAT(OFS_PARM4);
 
 	if (volume < 0 || volume > 255)
-		Sys_Error ("%s: volume = %i", __thisfunc__, volume);
+		Host_Error ("%s: volume = %i", __thisfunc__, volume);
 
 	if (attenuation < 0 || attenuation > 4)
-		Sys_Error ("%s: attenuation = %f", __thisfunc__, attenuation);
+		Host_Error ("%s: attenuation = %f", __thisfunc__, attenuation);
 
 	if (channel < 0 || channel > 7)
-		Sys_Error ("%s: channel = %i", __thisfunc__, channel);
+		Host_Error ("%s: channel = %i", __thisfunc__, channel);
 
 	SV_StartSound (entity, channel, sample, volume, attenuation);
 }

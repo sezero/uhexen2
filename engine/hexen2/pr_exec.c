@@ -813,7 +813,7 @@ static int LeaveFunction (void)
 
 	if (pr_depth <= 0)
 	{
-		Sys_Error("prog stack underflow");
+		Host_Error("prog stack underflow");
 	}
 
 	// Restore locals from the stack

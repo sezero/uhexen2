@@ -142,7 +142,7 @@ void PR_ExecuteProgram (func_t fnum)
 		{
 			ED_Print(PROG_TO_EDICT(*sv_globals.self));
 		}
-		SV_Error("%s: NULL function", __thisfunc__);
+		Host_Error("%s: NULL function", __thisfunc__);
 	}
 
 	f = &pr_functions[fnum];
@@ -813,7 +813,7 @@ static int LeaveFunction (void)
 
 	if (pr_depth <= 0)
 	{
-		SV_Error("prog stack underflow");
+		Host_Error("prog stack underflow");
 	}
 
 	// Restore locals from the stack
@@ -857,9 +857,9 @@ void PR_RunError (const char *error, ...)
 	fprintf (stderr, "%s\n", string);
 	Con_Printf("%s\n", string);
 
-	pr_depth = 0;	// dump the stack so sv_error can shutdown functions
+	pr_depth = 0;	// dump the stack so host_error can shutdown functions
 
-	SV_Error("Program error");
+	Host_Error("Program error");
 }
 
 

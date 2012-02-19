@@ -20,23 +20,23 @@ static	ddef_t		*pr_fielddefs;
 static	ddef_t		*pr_globaldefs;
 
 dstatement_t	*pr_statements;
+float		*pr_globals;
 sv_globals_t	sv_globals;
-float		*pr_globals;		// same as sv_globals
-int		pr_edict_size;		// in bytes
+int		pr_edict_size;		/* in bytes */
 
 qboolean	ignore_precache = false;
 
 unsigned short	pr_crc;
 
-int		type_size[8] = {
-	1,					// ev_void
-	1,	// sizeof(string_t) / 4		// ev_string
-	1,					// ev_float
-	3,					// ev_vector
-	1,					// ev_entity
-	1,					// ev_field
-	1,	// sizeof(func_t) / 4		// ev_function
-	1	// sizeof(void *) / 4		// ev_pointer
+static int	type_size[8] = {
+	1,	/* ev_void */
+	1,	/* ev_string */
+	1,	/* ev_float */
+	3,	/* ev_vector */
+	1,	/* ev_entity */
+	1,	/* ev_field */
+	1,	/* ev_function */
+	1	/* ev_pointer */
 };
 
 typedef struct sv_def_s
@@ -48,7 +48,7 @@ typedef struct sv_def_s
 
 #define OFS_V103(m)	(int)offsetof(globalvars_v103_t,m)/4
 #define OFS_V111(m)	(int)offsetof(globalvars_v111_t,m)/4
-#define OFS_V112(m)	(int)offsetof(globalvars_t,m)/4
+#define OFS_V112(m)	(int)offsetof(globalvars_v112_t,m)/4
 
 static sv_def_t globals_v103[] = {
 	{ev_entity,	OFS_V103(self),			&sv_globals.self},
@@ -300,7 +300,7 @@ edict_t *ED_Alloc (void)
 	if (i == MAX_EDICTS)
 	{
 		SV_Edicts("edicts.txt");
-		Sys_Error ("%s: no free edicts", __thisfunc__);
+		Host_Error ("%s: no free edicts", __thisfunc__);
 	}
 
 	sv.num_edicts++;
@@ -315,11 +315,9 @@ edict_t *ED_Alloc_Temp (void)
 	int			i, j;
 	edict_t		*e, *Least;
 	float		LeastTime;
-	qboolean	LeastSet;
 
 	LeastTime = -1;
-	LeastSet = false;
-	Least = NULL;	// shut up compiler
+	Least = NULL;
 	for (i = svs.maxclients + 1, j = 0; j < max_temp_edicts.integer; i++, j++)
 	{
 		e = EDICT_NUM(i);
@@ -332,11 +330,10 @@ edict_t *ED_Alloc_Temp (void)
 
 			return e;
 		}
-		else if (e->alloctime < LeastTime || !LeastSet)
+		if (Least == NULL || e->alloctime < LeastTime)
 		{
 			Least = e;
 			LeastTime = e->alloctime;
-			LeastSet = true;
 		}
 	}
 
@@ -927,17 +924,17 @@ void ED_ParseGlobals (const char *data)
 		if (com_token[0] == '}')
 			break;
 		if (!data)
-			Sys_Error ("%s: EOF without closing brace", __thisfunc__);
+			Host_Error ("%s: EOF without closing brace", __thisfunc__);
 
 		strcpy (keyname, com_token);
 
 	// parse value
 		data = COM_Parse (data);
 		if (!data)
-			Sys_Error ("%s: EOF without closing brace", __thisfunc__);
+			Host_Error ("%s: EOF without closing brace", __thisfunc__);
 
 		if (com_token[0] == '}')
-			Sys_Error ("%s: closing brace without data", __thisfunc__);
+			Host_Error ("%s: closing brace without data", __thisfunc__);
 
 		key = ED_FindGlobal (keyname);
 		if (!key)
@@ -1090,7 +1087,7 @@ const char *ED_ParseEdict (const char *data, edict_t *ent)
 		if (com_token[0] == '}')
 			break;
 		if (!data)
-			Sys_Error ("%s: EOF without closing brace", __thisfunc__);
+			Host_Error ("%s: EOF without closing brace", __thisfunc__);
 
 		// anglehack is to allow QuakeEd to write single scalar angles
 		// and allow them to be turned into vectors. (FIXME...)
@@ -1119,10 +1116,10 @@ const char *ED_ParseEdict (const char *data, edict_t *ent)
 		// parse value
 		data = COM_Parse (data);
 		if (!data)
-			Sys_Error ("%s: EOF without closing brace", __thisfunc__);
+			Host_Error ("%s: EOF without closing brace", __thisfunc__);
 
 		if (com_token[0] == '}')
-			Sys_Error ("%s: closing brace without data", __thisfunc__);
+			Host_Error ("%s: closing brace without data", __thisfunc__);
 
 		init = true;
 
@@ -1213,7 +1210,7 @@ void ED_LoadFromFile (const char *data)
 #endif	/* SERVERONLY */
 
 		if (com_token[0] != '{')
-			Sys_Error ("%s: found %s when expecting {", __thisfunc__, com_token);
+			Host_Error ("%s: found %s when expecting {", __thisfunc__, com_token);
 
 		if (!ent)
 			ent = EDICT_NUM(0);
@@ -1470,7 +1467,7 @@ void PR_LoadProgs (void)
 	progname = PR_GetProgFilename();
 	progs = (dprograms_t *)FS_LoadHunkFile (progname, NULL);
 	if (!progs)
-		Sys_Error ("%s: couldn't load %s", __thisfunc__, progname);
+		Host_Error ("%s: couldn't load %s", __thisfunc__, progname);
 	Con_DPrintf ("Programs occupy %luK.\n", (unsigned long)(fs_filesize/1024));
 
 	pr_crc = CRC_Block ((byte *)progs, fs_filesize);
@@ -1480,7 +1477,7 @@ void PR_LoadProgs (void)
 		((int *)progs)[i] = LittleLong ( ((int *)progs)[i] );
 
 	if (progs->version != PROG_VERSION)
-		Sys_Error ("%s is of unsupported version (%d, should be %d)", progname, progs->version, PROG_VERSION);
+		Host_Error ("%s is of unsupported version (%d, should be %d)", progname, progs->version, PROG_VERSION);
 	switch (progs->crc)
 	{
 	case PROGS_V103_CRC:
@@ -1496,7 +1493,7 @@ void PR_LoadProgs (void)
 		progvstr = "H2MP/v1.12";
 		break;
 	default:
-		Sys_Error ("Unexpected crc ( %d ) for %s", progs->crc, progname);
+		Host_Error ("Unexpected crc ( %d ) for %s", progs->crc, progname);
 		/* silence compiler */
 		def = globals_v112;
 		progvstr = "Unknown";
@@ -1559,7 +1556,7 @@ void PR_LoadProgs (void)
 	{
 		pr_fielddefs[i].type = LittleShort (pr_fielddefs[i].type);
 		if (pr_fielddefs[i].type & DEF_SAVEGLOBAL)
-			Sys_Error ("%s: pr_fielddefs[i].type & DEF_SAVEGLOBAL", __thisfunc__);
+			Host_Error ("%s: pr_fielddefs[i].type & DEF_SAVEGLOBAL", __thisfunc__);
 		pr_fielddefs[i].ofs = LittleShort (pr_fielddefs[i].ofs);
 		pr_fielddefs[i].s_name = LittleLong (pr_fielddefs[i].s_name);
 	}
@@ -1615,7 +1612,7 @@ void PR_Init (void)
 edict_t *EDICT_NUM(int n)
 {
 	if (n < 0 || n >= MAX_EDICTS)
-		Sys_Error ("%s: bad number %i", __thisfunc__, n);
+		Host_Error ("%s: bad number %i", __thisfunc__, n);
 	return (edict_t *)((byte *)sv.edicts + (n)*pr_edict_size);
 }
 

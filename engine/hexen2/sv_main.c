@@ -349,13 +349,13 @@ void SV_StartSound (edict_t *entity, int channel, const char *sample, int volume
 	}
 
 	if (volume < 0 || volume > 255)
-		Sys_Error ("%s: volume = %i", __thisfunc__, volume);
+		Host_Error ("%s: volume = %i", __thisfunc__, volume);
 
 	if (attenuation < 0 || attenuation > 4)
-		Sys_Error ("%s: attenuation = %f", __thisfunc__, attenuation);
+		Host_Error ("%s: attenuation = %f", __thisfunc__, attenuation);
 
 	if (channel < 0 || channel > 7)
-		Sys_Error ("%s: channel = %i", __thisfunc__, channel);
+		Host_Error ("%s: channel = %i", __thisfunc__, channel);
 
 	if (sv.datagram.cursize > MAX_DATAGRAM-16)
 		return;

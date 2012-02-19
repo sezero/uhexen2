@@ -90,7 +90,7 @@ static void PF_error (void)
 	ed = PROG_TO_EDICT(*sv_globals.self);
 	ED_Print (ed);
 
-	SV_Error ("Program error");
+	Host_Error ("Program error");
 }
 
 /*
@@ -115,7 +115,7 @@ static void PF_objerror (void)
 	ED_Print (ed);
 	ED_Free (ed);
 
-	SV_Error ("Program error");
+	Host_Error ("Program error");
 }
 
 
@@ -911,7 +911,7 @@ static void PF_StopSound(void)
 	channel = G_FLOAT(OFS_PARM1);
 
 	if (channel < 0 || channel > 7)
-		SV_Error ("%s: channel = %i", __thisfunc__, channel);
+		Host_Error ("%s: channel = %i", __thisfunc__, channel);
 
 	SV_StopSound (entity, channel);
 }
@@ -931,7 +931,7 @@ static void PF_UpdateSoundPos(void)
 	channel = G_FLOAT(OFS_PARM1);
 
 	if (channel < 0 || channel > 7)
-		SV_Error ("%s: channel = %i", __thisfunc__, channel);
+		Host_Error ("%s: channel = %i", __thisfunc__, channel);
 
 	SV_UpdateSoundPos (entity, channel);
 }

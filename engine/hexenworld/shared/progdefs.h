@@ -294,11 +294,11 @@ typedef struct
 	func_t	SetNewParms;
 	func_t	SetChangeParms;
 	func_t	SmitePlayer;	/* in v0.15 */
-} globalvars_t;
+} globalvars_v015_t;
 
 typedef struct
 {
-	int	*self;			/* @ offset 28. */
+	int	*self;		/* @ offset 28. */
 	int	*other;
 	int	*world;
 	float	*time;
