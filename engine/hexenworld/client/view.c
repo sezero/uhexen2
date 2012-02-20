@@ -403,7 +403,6 @@ void V_ParseDamage (void)
 	v_dmg_time = v_kicktime.value;
 }
 
-
 /*
 ==================
 V_cshift_f
@@ -416,7 +415,6 @@ static void V_cshift_f (void)
 	cshift_empty.destcolor[2] = atoi(Cmd_Argv(3));
 	cshift_empty.percent = atoi(Cmd_Argv(4));
 }
-
 
 /*
 ==================
@@ -482,21 +480,6 @@ V_CalcPowerupCshift
 */
 static void V_CalcPowerupCshift(void)
 {
-/*	if (cl.items & IT_QUAD)
-	{
-		cl.cshifts[CSHIFT_POWERUP].destcolor[0] = 0;
-		cl.cshifts[CSHIFT_POWERUP].destcolor[1] = 0;
-		cl.cshifts[CSHIFT_POWERUP].destcolor[2] = 255;
-		cl.cshifts[CSHIFT_POWERUP].percent = 30;
-	}
-	else if (cl.items & IT_SUIT)
-	{
-		cl.cshifts[CSHIFT_POWERUP].destcolor[0] = 0;
-		cl.cshifts[CSHIFT_POWERUP].destcolor[1] = 255;
-		cl.cshifts[CSHIFT_POWERUP].destcolor[2] = 0;
-		cl.cshifts[CSHIFT_POWERUP].percent = 20;
-	}
-*/
 	if ((int)cl.v.artifact_active&ARTFLAG_DIVINE_INTERVENTION)
 	{
 		cl.cshifts[CSHIFT_BONUS].destcolor[0] = 255;
@@ -1101,11 +1084,6 @@ void V_RenderView (void)
 	R_PushDlights ();
 
 	R_RenderView ();
-
-#ifndef GLQUAKE
-	if (crosshair.integer && !cls.demoplayback)
-		Draw_Crosshair();
-#endif
 }
 
 //============================================================================

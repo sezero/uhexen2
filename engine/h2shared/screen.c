@@ -654,7 +654,7 @@ void SCR_BeginLoadingPlaque (void)
 		return;
 	if (cls.signon != SIGNONS)
 		return;
-	
+
 // redraw with no console and the loading plaque
 	Con_ClearNotify ();
 	scr_centertime_off = 0;
@@ -1453,7 +1453,7 @@ void SCR_UpdateScreen (void)
 
 		if (scr_drawloading)
 			SCR_DrawLoading();
-#endif	/* H2W */
+#endif
 	}
 #if !defined(H2W)
 	else if (scr_drawloading)
@@ -1465,6 +1465,9 @@ void SCR_UpdateScreen (void)
 #endif	/* H2W */
 	else
 	{
+		if (crosshair.integer && !cls.demoplayback)
+			Draw_Crosshair();
+
 		SCR_DrawRam();
 		SCR_DrawNet();
 		SCR_DrawTurtle();
@@ -1483,7 +1486,7 @@ void SCR_UpdateScreen (void)
 			UpdateInfoMessage();
 			Info_Plaque_Draw(infomessage);
 		}
-#endif
+#endif	/* H2W */
 	}
 
 	D_DisableBackBufferAccess ();	// for adapters that can't stay mapped
