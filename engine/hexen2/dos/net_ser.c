@@ -756,7 +756,7 @@ void Serial_Close (qsocket_t *sock)
 
 #if 0	/* unused globals */
 const char *com_types[] = {"direct", "modem"};
-unsigned com_bauds [] = {9600, 14400, 19200, 28800, 57600};
+const unsigned com_bauds [] = {9600, 14400, 19200, 28800, 57600};
 #endif
 
 #if !defined(SERVERONLY)

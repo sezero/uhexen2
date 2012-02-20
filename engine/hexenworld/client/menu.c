@@ -58,7 +58,7 @@ static int	setup_class, which_class;
 static const char	*message,*message2;
 static double message_time;
 
-static const char *ClassNames[MAX_PLAYER_CLASS] = 
+static const char *ClassNames[MAX_PLAYER_CLASS] =
 {
 	"Paladin",
 	"Crusader",
@@ -2244,7 +2244,7 @@ static cvar_t	hostname10 = {"host10", "", CVAR_ARCHIVE};
 static int connect_cursor = 0;
 #define MAX_CONNECT_CMDS 11
 
-static int	connect_cursor_table[MAX_CONNECT_CMDS] =
+static const int	connect_cursor_table[MAX_CONNECT_CMDS] =
 {
 	72 + 0 * 8,
 	72 + 1 * 8,
@@ -2417,7 +2417,7 @@ static void M_Connect_Key (int k)
 /* SETUP MENU */
 
 static int		setup_cursor = 6;
-static int		setup_cursor_table[] = {40, 56, 72, 88, 112, 136, 164};
+static const int	setup_cursor_table[] = {40, 56, 72, 88, 112, 136, 164};
 
 static char	setup_myname[16];
 static int		setup_oldtop;
@@ -2500,17 +2500,17 @@ static void M_Setup_Draw (void)
 
 	switch (setup_class)
 	{
-		case 0:
-			M_PrintWhite (88, 96, "Random");
-			break;
-		case 1:
-		case 2:
-		case 3:
-		case 4:
-		case 5:
-		case 6:
-			M_PrintWhite (88, 96, ClassNames[setup_class-1]);
-			break;
+	case 0:
+		M_PrintWhite (88, 96, "Random");
+		break;
+	case 1:
+	case 2:
+	case 3:
+	case 4:
+	case 5:
+	case 6:
+		M_PrintWhite (88, 96, ClassNames[setup_class-1]);
+		break;
 	}
 
 	M_Print (64, 112, "First color patch");

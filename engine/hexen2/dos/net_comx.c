@@ -138,8 +138,8 @@ extern char	m_return_reason[32];
 #define	UART_8250		1
 #define	UART_16550		2
 
-static int	ISA_uarts[]	= {0x3f8, 0x2f8, 0x3e8, 0x2e8};
-static int	ISA_IRQs[]	= {4, 3, 4, 3};
+static const int	ISA_uarts[]	= {0x3f8, 0x2f8, 0x3e8, 0x2e8};
+static const int	ISA_IRQs[]	= {4, 3, 4, 3};
 
 typedef struct ComPort_s
 {

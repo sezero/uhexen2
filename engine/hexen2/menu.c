@@ -125,7 +125,7 @@ static void M_ConfigureNetSubsystem(void);
 
 static void M_Menu_Class_f (void);
 
-const char *ClassNames[MAX_PLAYER_CLASS] = 
+const char *ClassNames[MAX_PLAYER_CLASS] =
 {
 	"Paladin",
 	"Crusader",
@@ -134,7 +134,7 @@ const char *ClassNames[MAX_PLAYER_CLASS] =
 	"Demoness"
 };
 
-static const char *ClassNamesU[MAX_PLAYER_CLASS] = 
+static const char *ClassNamesU[MAX_PLAYER_CLASS] =
 {
 	"PALADIN",
 	"CRUSADER",
@@ -1454,7 +1454,7 @@ static void M_MultiPlayer_Key (int key)
 /* SETUP MENU */
 
 static int		setup_cursor = 5;
-static int		setup_cursor_table[] = {40, 56, 80, 104, 128, 156};
+static const int	setup_cursor_table[] = {40, 56, 80, 104, 128, 156};
 
 static char	setup_hostname[16];
 static char	setup_myname[16];
@@ -3655,12 +3655,12 @@ static void M_Quit_Draw (void)
 #if defined(NET_USE_SERIAL)
 
 static int	serialConfig_cursor;
-static int	serialConfig_cursor_table[] = { 80, 96, 112, 128, 144, 164 };	// { 48, 64, 80, 96, 112, 132 }
+static const int	serialConfig_cursor_table[] = { 80, 96, 112, 128, 144, 164 };	// { 48, 64, 80, 96, 112, 132 }
 #define	NUM_SERIALCONFIG_CMDS		6
 
-static int	ISA_uarts[4]	= { 0x3f8, 0x2f8, 0x3e8, 0x2e8};
-static int	ISA_IRQs[4]	= { 4, 3, 4, 3 };
-static int	serialConfig_baudrate[6] = { 9600, 14400, 19200, 28800, 38400, 57600 };
+static const int	ISA_uarts[4]	= { 0x3f8, 0x2f8, 0x3e8, 0x2e8};
+static const int	ISA_IRQs[4]	= { 4, 3, 4, 3 };
+static const int	serialConfig_baudrate[6] = { 9600, 14400, 19200, 28800, 38400, 57600 };
 
 static int	serialConfig_comport;
 static int	serialConfig_irq ;
@@ -3943,7 +3943,7 @@ forward:
 /* MODEM CONFIG MENU */
 
 static int	modemConfig_cursor;
-static int	modemConfig_cursor_table[] = { 64, 78, 108, 138, 172 };	// { 40, 56, 88, 120, 156 }
+static const int	modemConfig_cursor_table[] = { 64, 78, 108, 138, 172 };	// { 40, 56, 88, 120, 156 }
 #define NUM_MODEMCONFIG_CMDS		5
 
 static char	modemConfig_dialing;
@@ -4114,7 +4114,7 @@ static void M_ModemConfig_Key (int key)
 /* LAN CONFIG MENU */
 
 static int	lanConfig_cursor = -1;
-static int	lanConfig_cursor_table[] = {100, 120, 140, 172};
+static const int	lanConfig_cursor_table[] = {100, 120, 140, 172};
 #define NUM_LANCONFIG_CMDS	4
 
 static int	lanConfig_port;
@@ -4515,7 +4515,7 @@ static int	maxplayers;
 //static qboolean m_serverInfoMessage = false;
 //static double	m_serverInfoMessageTime;
 
-static int gameoptions_cursor_table[] = {40, 56, 64, 72, 80, 88, 96, 104, 112, 128, 136};
+static const int	gameoptions_cursor_table[] = {40, 56, 64, 72, 80, 88, 96, 104, 112, 128, 136};
 #define	NUM_GAMEOPTIONS	11
 static int	gameoptions_cursor;
 
