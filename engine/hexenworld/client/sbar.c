@@ -51,7 +51,6 @@ static int Sbar_itoa(int num, char *buf);
 static void Sbar_DrawNum(int x, int y, int number, int digits);
 static void Sbar_SortFrags (qboolean includespec);
 #if 0	/* all uses are commented out */
-static void Sbar_DrawFrags(void);
 static void Sbar_DrawCharacter(int x, int y, int num);
 static void Sbar_DrawSmallCharacter(int x, int y, int num);
 static void Sbar_DrawString(int x, int y, const char *str);
@@ -126,7 +125,7 @@ static const char *PlayerClassNames[MAX_PLAYER_CLASS] =
 	"Dwarf"
 };
 
-static int AmuletAC[MAX_PLAYER_CLASS] =
+static const int AmuletAC[MAX_PLAYER_CLASS] =
 {
 	8,		// Paladin
 	4,		// Crusader
@@ -136,7 +135,7 @@ static int AmuletAC[MAX_PLAYER_CLASS] =
 	0		// Dwarf
 };
 
-static int BracerAC[MAX_PLAYER_CLASS] =
+static const int BracerAC[MAX_PLAYER_CLASS] =
 {
 	6,		// Paladin
 	8,		// Crusader
@@ -146,7 +145,7 @@ static int BracerAC[MAX_PLAYER_CLASS] =
 	10		// Dwarf
 };
 
-static int BreastplateAC[MAX_PLAYER_CLASS] =
+static const int BreastplateAC[MAX_PLAYER_CLASS] =
 {
 	2,		// Paladin
 	6,		// Crusader
@@ -156,7 +155,7 @@ static int BreastplateAC[MAX_PLAYER_CLASS] =
 	12		// Dwarf
 };
 
-static int HelmetAC[MAX_PLAYER_CLASS] =
+static const int HelmetAC[MAX_PLAYER_CLASS] =
 {
 	4,		// Paladin
 	2,		// Crusader
@@ -166,7 +165,7 @@ static int HelmetAC[MAX_PLAYER_CLASS] =
 	10		// Dwarf
 };
 
-static int AbilityLineIndex[MAX_PLAYER_CLASS] =
+static const int AbilityLineIndex[MAX_PLAYER_CLASS] =
 {
 	400,		// Paladin
 	402,		// Crusader
@@ -436,9 +435,6 @@ void Sbar_Draw(void)
 		DrawBarArtifactIcon(144, 3, cl.inv_order[cl.inv_selected]);
 	//	Sbar_DrawTransPic(144, 3, Draw_CachePic(va("gfx/arti%02d.lmp", cl.inv_order[cl.inv_selected])));
 	}
-
-	// FIXME: Check for deathmatch and draw frags
-	// if (cl.maxclients != 1) Sbar_DrawFrags ();
 
 	DrawArtifactInventory();
 
@@ -892,154 +888,6 @@ static void Sbar_SortFrags (qboolean includespec)
 		}
 	}
 }
-
-#if 0	/* unused stuff */
-static int Sbar_ColorForMap (int m)
-{
-	return m < 128 ? m + 8 : m + 8;
-}
-
-//==========================================================================
-//
-// SoloScoreboard
-//
-//==========================================================================
-
-static void Sbar_SoloScoreboard(void)
-{
-	char	str[80];
-	int		minutes, seconds, tens, units;
-	int		l;
-
-	sprintf (str, "Monsters:%3i /%3i", cl.stats[STAT_MONSTERS], cl.stats[STAT_TOTALMONSTERS]);
-	Sbar_DrawString (8, 4, str);
-
-	sprintf (str, "Secrets :%3i /%3i", cl.stats[STAT_SECRETS], cl.stats[STAT_TOTALSECRETS]);
-	Sbar_DrawString (8, 12, str);
-
-	// draw time
-	minutes = cl.time / 60;
-	seconds = cl.time - 60*minutes;
-	tens = seconds / 10;
-	units = seconds - 10*tens;
-	sprintf (str, "Time :%3i:%i%i", minutes, tens, units);
-	Sbar_DrawString (184, 4, str);
-
-	// draw level name
-	l = strlen (cl.levelname);
-	Sbar_DrawString (232 - l*4, 12, cl.levelname);
-}
-
-//==========================================================================
-//
-// Sbar_DrawScoreboard
-//
-//==========================================================================
-
-void Sbar_DrawScoreboard(void)
-{
-	Sbar_SoloScoreboard();
-//rjr	if (cl.gametype == GAME_DEATHMATCH)
-	{
-		Sbar_DeathmatchOverlay();
-	}
-}
-
-//==========================================================================
-//
-// Sbar_DrawFrags
-//
-//==========================================================================
-
-static void Sbar_DrawFrags (void)
-{
-	int		i, k, l;
-	int		top, bottom;
-	int		x, y, f;
-//	int		xofs;
-	char		num[12];
-	player_info_t	*s;
-
-	Sbar_SortFrags (false);
-
-// draw the text
-	l = scoreboardlines <= 4 ? scoreboardlines : 4;
-
-	x = 23;
-//	xofs = (vid.width - 320)>>1;
-	y = vid.height - BAR_TOP_HEIGHT - 23;
-
-	for (i = 0 ; i < l ; i++)
-	{
-		k = fragsort[i];
-		s = &cl.players[k];
-		if (!s->name[0])
-			continue;
-		if (s->spectator)
-			continue;
-
-	// draw background
-		top = s->topcolor;
-		bottom = s->bottomcolor;
-		top = (top < 0) ? 0 : ((top > 13) ? 13 : top);
-		bottom = (bottom < 0) ? 0 : ((bottom > 13) ? 13 : bottom);
-		top = Sbar_ColorForMap (top);
-		bottom = Sbar_ColorForMap (bottom);
-
-	//	Draw_Fill (xofs + x*8 + 10, y, 28, 4, top);
-	//	Draw_Fill (xofs + x*8 + 10, y+4, 28, 3, bottom);
-		Draw_Fill (x*8 + 10, y, 28, 4, top);
-		Draw_Fill (x*8 + 10, y+4, 28, 3, bottom);
-
-	// draw number
-		f = s->frags;
-		sprintf (num, "%3i",f);
-
-		Sbar_DrawCharacter ((x+1)*8, -24, num[0]);
-		Sbar_DrawCharacter ((x+2)*8, -24, num[1]);
-		Sbar_DrawCharacter ((x+3)*8, -24, num[2]);
-
-		if (k == cl.playernum)
-		{
-			Sbar_DrawCharacter (x*8+2, -24, 16);
-			Sbar_DrawCharacter ((x+4)*8-4, -24, 17);
-		}
-		x += 4;
-	}
-}
-
-//==========================================================================
-//
-// Sbar_IntermissionNumber
-//
-//==========================================================================
-
-void Sbar_IntermissionNumber (int x, int y, int num, int digits, int color)
-{
-	char			str[12];
-	char			*ptr;
-	int				l, frame;
-
-	l = Sbar_itoa (num, str);
-	ptr = str;
-	if (l > digits)
-		ptr += (l-digits);
-	if (l < digits)
-		x += (digits-l)*24;
-
-	while (*ptr)
-	{
-		if (*ptr == '-')
-			frame = STAT_MINUS;
-		else
-			frame = *ptr -'0';
-
-		Draw_TransPic (x,y,sb_nums[frame]);
-		x += 24;
-		ptr++;
-	}
-}
-#endif	/* end of unused stuff */
 
 static void FindColor (int slot, int *color1, int *color2)
 {
@@ -2107,8 +1955,7 @@ void SB_ViewSizeChanged(void)
 
 //==========================================================================
 //
-// Sbar_DrawPic
-//
+// Sbar_Draw**Pic
 // Relative to the current status bar location.
 //
 //==========================================================================
@@ -2118,66 +1965,32 @@ static void Sbar_DrawPic(int x, int y, qpic_t *pic)
 	Draw_PicCropped (x+((vid.width-320)>>1), y+(vid.height-(int)BarHeight), pic);
 }
 
-//==========================================================================
-//
-// Sbar_DrawSubPic
-//
-// Relative to the current status bar location.
-//
-//==========================================================================
-
 static void Sbar_DrawSubPic(int x, int y, int h, qpic_t *pic)
 {
 	Draw_SubPicCropped (x+((vid.width-320)>>1), y+(vid.height-(int)BarHeight), h, pic);
 }
-
-//==========================================================================
-//
-// Sbar_DrawTransPic
-//
-// Relative to the current status bar location.
-//
-//==========================================================================
 
 static void Sbar_DrawTransPic(int x, int y, qpic_t *pic)
 {
 	Draw_TransPicCropped (x+((vid.width-320)>>1), y+(vid.height-(int)BarHeight), pic);
 }
 
-#if 0	/* all uses are commented out */
-//==========================================================================
-//
-// Sbar_DrawCharacter
-//
-//==========================================================================
-
+#if 0	/* no callers */
 static void Sbar_DrawCharacter(int x, int y, int num)
 {
 	Draw_Character (x+((vid.width-320)>>1)+4, y+vid.height-(int)BarHeight, num);
 }
-
-//==========================================================================
-//
-// Sbar_DrawString
-//
-//==========================================================================
 
 static void Sbar_DrawString(int x, int y, const char *str)
 {
 	Draw_String (x+((vid.width-320)>>1), y+vid.height-(int)BarHeight, str);
 }
 
-//==========================================================================
-//
-// Sbar_DrawSmallCharacter
-//
-//==========================================================================
-
 static void Sbar_DrawSmallCharacter(int x, int y, int num)
 {
 	Draw_SmallCharacter (x+((vid.width-320)>>1)+4, y+vid.height-(int)BarHeight, num);
 }
-#endif	/* end of unused stuff */
+#endif
 
 static void Sbar_DrawRedString (int cx, int cy, const char *str)
 {
@@ -2189,22 +2002,10 @@ static void Sbar_DrawRedString (int cx, int cy, const char *str)
 	}
 }
 
-//==========================================================================
-//
-// Sbar_DrawSmallString
-//
-//==========================================================================
-
 static void Sbar_DrawSmallString(int x, int y, const char *str)
 {
 	Draw_SmallString (x+((vid.width-320)>>1), y+vid.height-(int)BarHeight, str);
 }
-
-//==========================================================================
-//
-// DrawBarArtifactNumber
-//
-//==========================================================================
 
 static void DrawBarArtifactNumber(int x, int y, int number)
 {

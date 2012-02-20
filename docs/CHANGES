@@ -4,6 +4,9 @@ Development Progress	:
 ---------------------------
 
 2012-02-20 (SVN):
+    * gl_screen.c, screen.c, sbar.c: Minor tidyings.
+
+2012-02-20 (SVN):
     * view.c: Moved the Draw_Crosshair() call from V_RenderView() to
       SCR_UpdateScreen() of screen.c.
 

@@ -957,7 +957,6 @@ int SCR_ModalMessage (const char *text)
 
 //=============================================================================
 
-
 /*
 ===============
 SCR_BringDownConsole
@@ -975,71 +974,12 @@ void SCR_BringDownConsole (void)
 	for (i = 0; i < 20 && scr_conlines != scr_con_current; i++)
 		SCR_UpdateScreen ();
 
-	cl.cshifts[0].percent = 0;		// no area contents palette on next frame
+	cl.cshifts[0].percent = 0;	// no area contents palette on next frame
 	VID_SetPalette (host_basepal);
 }
 #endif
 
 //=============================================================================
-
-
-#if 0
-static void Plaque_Draw (void)
-{
-	int	length, line_cnt, i1, i2, row, col;
-	char	*holdmessage, *hold2;
-	char	line[32];
-
-	if (scr_con_current == vid.height)
-		return;		// console is full screen
-
-	if (!*plaquemessage)
-		return;
-
-	length = strlen(plaquemessage);
-	line_cnt = length/28;
-
-	if ((line_cnt * 28) < length)
-		++line_cnt;
-
-	M_DrawTextBox (40, 76, 30, line_cnt);
-
-	row = 84;
-	col = 56;
-	i2 = 0;
-
-	hold2 = plaquemessage;
-	for (i1 = 0; i1 < length; )
-	{
-		holdmessage = hold2;
-
-		if ((i1 + 28) >= length)	// Past end of line
-		{
-			strcpy (line, hold2);
-			M_Print (col, row, line);
-			i1 += 28;
-		}
-		else
-		{
-			// looking for a space to break line at
-			for (i2 = 28; i2 > 0; --i2)
-			{
-				if (*(holdmessage + i2) == ' ')
-				{
-					memcpy (line, hold2, i2);
-					line[i2] = '\0';
-					M_Print (col, row, line);
-					row += 8;
-					++i2;	// Jump over space
-					break;
-				}
-			}
-			i1 += i2;
-			hold2 += i2;
-		}
-	}
-}
-#endif
 
 static void Plaque_Draw (const char *message, qboolean AlwaysDraw)
 {
@@ -1191,58 +1131,53 @@ static void SB_IntermissionOverlay (void)
 
 	switch (cl.intermission)
 	{
-		case 1:
-			pic = Load_IntermissionPic_FN ("gfx/meso.lmp", vid.width, vid.height);
-			break;
-		case 2:
-			pic = Load_IntermissionPic_FN ("gfx/egypt.lmp", vid.width, vid.height);
-			break;
-		case 3:
-			pic = Load_IntermissionPic_FN ("gfx/roman.lmp", vid.width, vid.height);
-			break;
-		case 4:
-			pic = Load_IntermissionPic_FN ("gfx/castle.lmp", vid.width, vid.height);
-			break;
-		case 5:
-			pic = Load_IntermissionPic_FN ("gfx/castle.lmp", vid.width, vid.height);
-			break;
-		case 6:
-			pic = Load_IntermissionPic_FN ("gfx/end-1.lmp", vid.width, vid.height);
-			break;
-		case 7:
-			pic = Load_IntermissionPic_FN ("gfx/end-2.lmp", vid.width, vid.height);
-			break;
-		case 8:
-			pic = Load_IntermissionPic_FN ("gfx/end-3.lmp", vid.width, vid.height);
-			break;
-		case 9:
-			pic = Load_IntermissionPic_FN ("gfx/castle.lmp", vid.width, vid.height);
-			break;
+	case 1: /* defeated famine: episode 1 (village) to 2 (mazaera) */
+		pic = Load_IntermissionPic_FN ("gfx/meso.lmp", vid.width, vid.height);
+		break;
+	case 2: /* defeated death: episode 2 (mazaera) to 3 (egypt) */
+		pic = Load_IntermissionPic_FN ("gfx/egypt.lmp", vid.width, vid.height);
+		break;
+	case 3: /* defeated pestilence: episode 3 (egypt) to 4 (roman) */
+		pic = Load_IntermissionPic_FN ("gfx/roman.lmp", vid.width, vid.height);
+		break;
+	case 4: /* defeated war: episode 4 (roman) to last (castle) */
+		pic = Load_IntermissionPic_FN ("gfx/castle.lmp", vid.width, vid.height);
+		break;
+	case 5: /* finale for the demo version */
+		pic = Load_IntermissionPic_FN ("gfx/castle.lmp", vid.width, vid.height);
+		break;
+	case 6: /* defeated eidolon: finale, part 1/3 */
+		pic = Load_IntermissionPic_FN ("gfx/end-1.lmp", vid.width, vid.height);
+		break;
+	case 7: /* defeated eidolon: finale, part 2/3 */
+		pic = Load_IntermissionPic_FN ("gfx/end-2.lmp", vid.width, vid.height);
+		break;
+	case 8: /* defeated eidolon: finale, part 2/3 */
+		pic = Load_IntermissionPic_FN ("gfx/end-3.lmp", vid.width, vid.height);
+		break;
+	case 9: /* finale for the bundle (oem) version */
+		pic = Load_IntermissionPic_FN ("gfx/castle.lmp", vid.width, vid.height);
+		break;
 #if !defined(H2W)
-		// mission pack
-		case 10:
-			pic = Load_IntermissionPic_FN ("gfx/mpend.lmp", vid.width, vid.height);
-			break;
-		case 11:
-			pic = Load_IntermissionPic_FN ("gfx/mpmid.lmp", vid.width, vid.height);
-			break;
-		case 12:
-			pic = Load_IntermissionPic_FN ("gfx/end-3.lmp", vid.width, vid.height);
-			break;
+	case 10: /* defeated praevus: mission pack finale */
+		pic = Load_IntermissionPic_FN ("gfx/mpend.lmp", vid.width, vid.height);
+		break;
+	case 11: /* mission pack, episode change to tibet */
+		pic = Load_IntermissionPic_FN ("gfx/mpmid.lmp", vid.width, vid.height);
+		break;
+	case 12: /* mission pack, opening */
+		pic = Load_IntermissionPic_FN ("gfx/end-3.lmp", vid.width, vid.height);
+		break;
 #else
-		// siege
-		case 10:
-			//Defender win - wipe out or time limit
-			pic = Load_IntermissionPic_FN ("gfx/defwin.lmp", vid.width, vid.height);
-			break;
-		case 11:
-			//Attacker win - caught crown
-			pic = Load_IntermissionPic_FN ("gfx/attwin.lmp", vid.width, vid.height);
-			break;
-		case 12:
-			//Attacker win 2 - wiped out
-			pic = Load_IntermissionPic_FN ("gfx/attwin2.lmp", vid.width, vid.height);
-			break;
+	case 10: /* Siege: Defender win - wipe out or time limit */
+		pic = Load_IntermissionPic_FN ("gfx/defwin.lmp", vid.width, vid.height);
+		break;
+	case 11: /* Siege: Attacker win - caught crown */
+		pic = Load_IntermissionPic_FN ("gfx/attwin.lmp", vid.width, vid.height);
+		break;
+	case 12: /* Siege: Attacker win 2 - wiped out */
+		pic = Load_IntermissionPic_FN ("gfx/attwin2.lmp", vid.width, vid.height);
+		break;
 #endif	/* H2W */
 	}
 	if (pic == NULL)
@@ -1261,12 +1196,12 @@ static void SB_IntermissionOverlay (void)
 			elapsed = 0;
 	}
 #if !defined(H2W)
-	else if (cl.intermission == 12)	// mission pack entry screen
+	else if (cl.intermission == 12)	/* mission pack entry screen */
 	{
-	// this intermission is NOT triggered by a server message, but
-	// by starting a new game through the menu system. therefore,
-	// you cannot use cl.time, and cl.completed_time must be set by
-	// the menu sytem, as well.
+	/* this intermission is NOT triggered by a server message, but
+	 * by starting a new game through the menu system. therefore,
+	 * you cannot use cl.time, and cl.completed_time must be set by
+	 * the menu sytem, as well.  */
 		elapsed = (realtime - cl.completed_time) * 20;
 	}
 #endif	/* H2W */
@@ -1277,14 +1212,14 @@ static void SB_IntermissionOverlay (void)
 
 	if (cl.intermission <= 4 && cl.intermission + 394 <= host_string_count)
 		message = &host_strings[host_string_index[cl.intermission + 394]];
-	else if (cl.intermission == 5)	// finale for the demo
+	else if (cl.intermission == 5)	/* finale for the demo */
 		message = &host_strings[host_string_index[DEMO_MSG_INDEX]];
 	else if (cl.intermission >= 6 && cl.intermission <= 8 && cl.intermission + 386 <= host_string_count)
 		message = &host_strings[host_string_index[cl.intermission + 386]];
-	else if (cl.intermission == 9)	// finale for the bundle (oem) version
+	else if (cl.intermission == 9)	/* finale for the bundle (oem) version */
 		message = &host_strings[host_string_index[391]];
 #if !defined(H2W)
-	// mission pack
+	/* mission pack */
 	else if (cl.intermission == 10)
 		message = &host_strings[host_string_index[538]];
 	else if (cl.intermission == 11)
