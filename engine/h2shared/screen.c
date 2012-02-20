@@ -85,9 +85,11 @@ static	cvar_t	scr_showturtle = {"showturtle", "0", CVAR_NONE};
 static	cvar_t	scr_showpause = {"showpause", "1", CVAR_NONE};
 static	cvar_t	scr_showfps = {"showfps", "0", CVAR_NONE};
 
+#if !defined(H2W)
 static qboolean	scr_drawloading;
 static float	scr_disabled_time;
 int		total_loading_size, current_loading_size, loading_stage;
+#endif	/* H2W */
 qboolean	scr_disabled_for_loading;
 qboolean	scr_skipupdate;
 qboolean	block_drawing;
@@ -101,9 +103,11 @@ static void SCR_ScreenShot_f (void);
 const char	*plaquemessage = NULL;	// pointer to current plaque message
 
 static void Plaque_Draw (const char *message, qboolean AlwaysDraw);
+#if !defined(H2W)
 /* procedures for the mission pack intro messages and objectives */
 static void Info_Plaque_Draw (const char *message);
 static void Bottom_Plaque_Draw (const char *message);
+#endif	/* H2W */
 
 
 /*
@@ -124,6 +128,7 @@ static int	scr_erase_lines;
 static int	lines;
 static int	StartC[MAXLINES], EndC[MAXLINES];
 
+#if !defined(H2W)
 /* mission pack objectives: */
 #define	MAX_INFO	1024
 static char	infomessage[MAX_INFO];
@@ -162,6 +167,7 @@ static void UpdateInfoMessage (void)
 		}
 	}
 }
+#endif	/* H2W */
 
 static void FindTextBreaks (const char *message, int Width)
 {
@@ -230,7 +236,8 @@ static void SCR_EraseCenterString (void)
 		return;
 	}
 
-	y = (25-lines) * 8 / 2;
+//	y = (25-lines) * 8 / 2;
+	y = (scr_center_lines <= 4) ? vid.height*0.35 : 48;
 
 	scr_copytop = 1;
 	height = q_min(8 * scr_erase_lines, (int)vid.height - y - 1);
@@ -280,12 +287,13 @@ static void SCR_CheckDrawCenterString (void)
 {
 	if (! SCR_CheckDrawCenterString2())
 		return;
-
+#if !defined(H2W)
 	if (intro_playing)
 	{
 		Bottom_Plaque_Draw(scr_centerstring);
 		return;
 	}
+#endif	/* H2W */
 	SCR_DrawCenterString ();
 }
 
@@ -468,7 +476,7 @@ static void SCR_DrawTurtle (void)
 	if (!scr_showturtle.integer)
 		return;
 
-	if (host_frametime < 0.05)
+	if (host_frametime < HX_FRAME_TIME)
 	{
 		count = 0;
 		return;
@@ -488,8 +496,14 @@ SCR_DrawNet
 */
 static void SCR_DrawNet (void)
 {
+#if !defined(H2W)
 	if (realtime - cl.last_received_message < 0.3)
 		return;
+#else
+	if (cls.netchan.outgoing_sequence -
+			cls.netchan.incoming_acknowledged < UPDATE_BACKUP-1)
+		return;
+#endif
 	if (cls.demoplayback)
 		return;
 
@@ -584,6 +598,7 @@ static void SCR_DrawPause (void)
 	Draw_TransPicCropped ( (vid.width - pic->width)/2, finaly, pic);
 }
 
+#if !defined(H2W)
 /*
 ==============
 SCR_DrawLoading
@@ -668,6 +683,7 @@ void SCR_EndLoadingPlaque (void)
 	scr_topupdate = 0;
 	Con_ClearNotify ();
 }
+#endif	/* H2W */
 
 //=============================================================================
 
@@ -681,12 +697,16 @@ static void SCR_SetUpToDrawConsole (void)
 {
 	Con_CheckResize ();
 
+#if !defined(H2W)
 	if (scr_drawloading)
 		return;		// never a console with loading plaque
 
-// decide on the height of the console
 	con_forcedup = !cl.worldmodel || cls.signon != SIGNONS;
+#else
+	con_forcedup = cls.state != ca_active;
+#endif	/* H2W */
 
+// decide on the height of the console
 	if (con_forcedup)
 	{
 		scr_conlines = vid.height;	// full screen
@@ -754,6 +774,7 @@ SCREEN SHOTS
 ==============================================================================
 */
 
+#if !defined(H2W)	/* FIXME!!! */
 typedef struct
 {
 	char	manufacturer;
@@ -770,6 +791,7 @@ typedef struct
 	char	filler[58];
 	unsigned char	data;	// unbounded
 } pcx_t;
+#endif	/* H2W */
 
 /*
 ==============
@@ -840,6 +862,13 @@ static int WritePCXfile (const char *filename, byte *data, int width, int height
 SCR_ScreenShot_f
 ==================
 */
+#if !defined(H2W)
+static const char scr_shotbase[] = "shots/hexen00.pcx";
+#define SHOTNUM_POS 11
+#else
+static const char scr_shotbase[] = "shots/hw00.pcx";
+#define SHOTNUM_POS 8
+#endif
 static void SCR_ScreenShot_f (void)
 {
 	char	pcxname[80];
@@ -848,15 +877,12 @@ static void SCR_ScreenShot_f (void)
 
 	q_snprintf (checkname, sizeof(checkname), "%s/shots", fs_userdir);
 	Sys_mkdir (checkname, false);
-//
-// find a file name to save it to
-//
-	q_strlcpy (pcxname, "shots/hexen00.pcx", sizeof(pcxname));
-
+	// find a slot to save it to
+	q_strlcpy (pcxname, scr_shotbase, sizeof(pcxname));
 	for (i = 0; i <= 99; i++)
 	{
-		pcxname[11] = i/10 + '0';
-		pcxname[12] = i%10 + '0';
+		pcxname[SHOTNUM_POS+0] = i/10 + '0';
+		pcxname[SHOTNUM_POS+1] = i%10 + '0';
 		q_snprintf (checkname, sizeof(checkname), "%s/%s", fs_userdir, pcxname);
 		if (Sys_FileType(checkname) == FS_ENT_NONE)
 			break;	// file doesn't exist
@@ -903,9 +929,10 @@ and waits for a Y or N keypress.
 */
 int SCR_ModalMessage (const char *text)
 {
+#if !defined(H2W)
 	if (cls.state == ca_dedicated)
 		return true;
-
+#endif	/* H2W */
 	scr_notifystring = text;
 
 // draw a fresh screen
@@ -1043,6 +1070,7 @@ static void Plaque_Draw (const char *message, qboolean AlwaysDraw)
 	}
 }
 
+#if !defined(H2W)
 static void Info_Plaque_Draw (const char *message)
 {
 	int	i, cnt;
@@ -1151,7 +1179,11 @@ static void SB_IntermissionOverlay (void)
 	scr_copyeverything = 1;
 	scr_fullupdate = 0;
 
+#if !defined(H2W)
 	if (cl.gametype == GAME_DEATHMATCH)
+#else
+	if (!cl_siege)
+#endif
 	{
 		Sbar_DeathmatchOverlay ();
 		return;
@@ -1186,6 +1218,7 @@ static void SB_IntermissionOverlay (void)
 		case 9:
 			pic = Load_IntermissionPic_FN ("gfx/castle.lmp", vid.width, vid.height);
 			break;
+#if !defined(H2W)
 		// mission pack
 		case 10:
 			pic = Load_IntermissionPic_FN ("gfx/mpend.lmp", vid.width, vid.height);
@@ -1196,6 +1229,21 @@ static void SB_IntermissionOverlay (void)
 		case 12:
 			pic = Load_IntermissionPic_FN ("gfx/end-3.lmp", vid.width, vid.height);
 			break;
+#else
+		// siege
+		case 10:
+			//Defender win - wipe out or time limit
+			pic = Load_IntermissionPic_FN ("gfx/defwin.lmp", vid.width, vid.height);
+			break;
+		case 11:
+			//Attacker win - caught crown
+			pic = Load_IntermissionPic_FN ("gfx/attwin.lmp", vid.width, vid.height);
+			break;
+		case 12:
+			//Attacker win 2 - wiped out
+			pic = Load_IntermissionPic_FN ("gfx/attwin2.lmp", vid.width, vid.height);
+			break;
+#endif	/* H2W */
 	}
 	if (pic == NULL)
 	{
@@ -1212,6 +1260,7 @@ static void SB_IntermissionOverlay (void)
 		if (elapsed < 0)
 			elapsed = 0;
 	}
+#if !defined(H2W)
 	else if (cl.intermission == 12)	// mission pack entry screen
 	{
 	// this intermission is NOT triggered by a server message, but
@@ -1220,6 +1269,7 @@ static void SB_IntermissionOverlay (void)
 	// the menu sytem, as well.
 		elapsed = (realtime - cl.completed_time) * 20;
 	}
+#endif	/* H2W */
 	else
 	{
 		elapsed = (cl.time - cl.completed_time) * 20;
@@ -1233,6 +1283,7 @@ static void SB_IntermissionOverlay (void)
 		message = &host_strings[host_string_index[cl.intermission + 386]];
 	else if (cl.intermission == 9)	// finale for the bundle (oem) version
 		message = &host_strings[host_string_index[391]];
+#if !defined(H2W)
 	// mission pack
 	else if (cl.intermission == 10)
 		message = &host_strings[host_string_index[538]];
@@ -1240,24 +1291,12 @@ static void SB_IntermissionOverlay (void)
 		message = &host_strings[host_string_index[545]];
 	else if (cl.intermission == 12)
 		message = &host_strings[host_string_index[561]];
-	else
-		message = "";
+#endif	/* H2W */
+	else	message = "";
 
 	FindTextBreaks(message, 38);
 
-	// hacks to print the final messages centered: "by" is the y offset
-	// in pixels to begin printing at. each line is 8 pixels - S.A
-	//if (cl.intermission == 8)
-	//	by = 16;
-	if (cl.intermission >= 6 && cl.intermission <= 8)
-		// eidolon, endings. num == 6,7,8
-		by = (vid.height/2 - lines*4);
-	else if (cl.intermission == 10)
-		// mission pack: tibet10. num == 10
-		by = 33;
-	else
-		by = (25-lines) * 8 / 2;
-
+	by = (cl.intermission == 8) ? 16 : (25-lines) * 8 / 2;
 	for (i = 0; i < lines; i++, by += 8)
 	{
 		size = EndC[i] - StartC[i];
@@ -1284,23 +1323,7 @@ static void SB_IntermissionOverlay (void)
 		cl.completed_time = cl.time;
 	}
 }
-
-/*
-===============
-SB_FinaleOverlay
-===============
-*/
-#if 0	/* not used in Hexen II */
-static void SB_FinaleOverlay(void)
-{
-	qpic_t	*pic;
-
-	scr_copyeverything = 1;
-
-	pic = Draw_CachePic("gfx/finale.lmp");
-	Draw_TransPic((vid.width-pic->width)/2, 16, pic);
-}
-#endif
+#endif	/* H2W */
 
 //=============================================================================
 
@@ -1332,6 +1355,10 @@ void SCR_UpdateScreen (void)
 	scr_copytop = 0;
 	scr_copyeverything = 0;
 
+#if defined(H2W)
+	if (scr_disabled_for_loading)
+		return;
+#else
 	if (scr_disabled_for_loading)
 	{
 	/* FIXME -- This really needs to be fixed properly:
@@ -1352,6 +1379,7 @@ void SCR_UpdateScreen (void)
 
 	if (cls.state == ca_dedicated)
 		return;		// stdout only
+#endif	/* H2W */
 
 	if (!scr_initialized || !con_initialized)
 		return;		// not initialized yet
@@ -1415,6 +1443,7 @@ void SCR_UpdateScreen (void)
 	}
 	else if (cl.intermission >= 1 && cl.intermission <= 12)
 	{
+#if !defined(H2W)
 		SB_IntermissionOverlay();
 		if (cl.intermission < 12)
 		{
@@ -1424,19 +1453,16 @@ void SCR_UpdateScreen (void)
 
 		if (scr_drawloading)
 			SCR_DrawLoading();
+#endif	/* H2W */
 	}
-/*	else if (cl.intermission == 2 && key_dest == key_game)
-	{
-		SB_FinaleOverlay();
-		SCR_CheckDrawCenterString();
-	}
-*/
+#if !defined(H2W)
 	else if (scr_drawloading)
 	{
 	//	Sbar_Draw();
 		Draw_FadeScreen ();
 		SCR_DrawLoading ();
 	}
+#endif	/* H2W */
 	else
 	{
 		SCR_DrawRam();
@@ -1451,11 +1477,13 @@ void SCR_UpdateScreen (void)
 		SCR_DrawConsole();
 		M_Draw();
 
+#if !defined(H2W)
 		if (info_up)
 		{
 			UpdateInfoMessage();
 			Info_Plaque_Draw(infomessage);
 		}
+#endif
 	}
 
 	D_DisableBackBufferAccess ();	// for adapters that can't stay mapped

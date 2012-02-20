@@ -297,7 +297,7 @@
 		70158B900AAF3B3600F6437C /* r_surf.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = r_surf.c; path = ../../h2shared/r_surf.c; sourceTree = SOURCE_ROOT; };
 		70158B910AAF3B3600F6437C /* r_vars.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = r_vars.c; path = ../../h2shared/r_vars.c; sourceTree = SOURCE_ROOT; };
 		70158B920AAF3B3600F6437C /* render.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = render.h; path = ../render.h; sourceTree = SOURCE_ROOT; };
-		70158B930AAF3B3600F6437C /* screen.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = screen.c; path = ../screen.c; sourceTree = SOURCE_ROOT; };
+		70158B930AAF3B3600F6437C /* screen.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = screen.c; path = ../../h2shared/screen.c; sourceTree = SOURCE_ROOT; };
 		70158B940AAF3B3600F6437C /* screen.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = screen.h; path = ../../h2shared/screen.h; sourceTree = SOURCE_ROOT; };
 		70158C530AAF3C8800F6437C /* Hexen II.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Hexen II.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		70158F0A0AAF427F00F6437C /* vid_sdl.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = vid_sdl.c; path = ../../h2shared/vid_sdl.c; sourceTree = SOURCE_ROOT; };
@@ -355,7 +355,7 @@
 		707D579D0AA9F6EE00313A9F /* gl_rmain.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = gl_rmain.c; path = ../gl_rmain.c; sourceTree = SOURCE_ROOT; };
 		707D579E0AA9F6EE00313A9F /* gl_rmisc.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = gl_rmisc.c; path = ../gl_rmisc.c; sourceTree = SOURCE_ROOT; };
 		707D579F0AA9F6EE00313A9F /* gl_rsurf.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = gl_rsurf.c; path = ../gl_rsurf.c; sourceTree = SOURCE_ROOT; };
-		707D57A00AA9F6EE00313A9F /* gl_screen.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = gl_screen.c; path = ../gl_screen.c; sourceTree = SOURCE_ROOT; };
+		707D57A00AA9F6EE00313A9F /* gl_screen.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = gl_screen.c; path = ../../h2shared/gl_screen.c; sourceTree = SOURCE_ROOT; };
 		707D57A20AA9F6EE00313A9F /* gl_vidsdl.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = gl_vidsdl.c; path = ../../h2shared/gl_vidsdl.c; sourceTree = SOURCE_ROOT; };
 		707D57A30AA9F6EE00313A9F /* gl_warp_sin.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = gl_warp_sin.h; path = ../../h2shared/gl_warp_sin.h; sourceTree = SOURCE_ROOT; };
 		707D57A40AA9F6EE00313A9F /* gl_warp.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = gl_warp.c; path = ../../h2shared/gl_warp.c; sourceTree = SOURCE_ROOT; };

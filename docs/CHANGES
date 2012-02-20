@@ -3,6 +3,10 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2012-02-20 (SVN):
+    * gl_screen.c, screen.c: Merged hexen2 and hexenworld versions, and
+      moved under h2shared.
+
 2012-02-19 (SVN):
     * gl_screen.c: Commented out gl_triplebuffer cvar in the hexenworld
       version which was virtually non-functional. Added it to the hexen2
