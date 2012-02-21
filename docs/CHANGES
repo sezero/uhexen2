@@ -3,6 +3,13 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2012-02-21 (SVN):
+    * hexenworld, server/sv_phys.c (SV_Physics_Step): changed hit sound
+      from demon/dland2.wav to fx/thngland.wav. demon/dland2.wav doesn't
+      exist in hexen2, the reference there seems to have been missed by
+      Raven guys while porting qw source to hw. fixes the "SV_StartSound:
+      demon/dland2.wav not precached" messages from hwsv.
+
 2012-02-20 (SVN):
     * menu.c, net_comx.c, net_ser.c: Made some lookup tables const data.
 

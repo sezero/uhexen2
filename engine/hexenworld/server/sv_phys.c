@@ -2003,7 +2003,7 @@ static void SV_Physics_Step (edict_t *ent)
 		if (((int)ent->v.flags & FL_ONGROUND) && !((int)ent->v.flags & FL_MONSTER))
 		{	// just hit ground
 			if (hitsound)
-				SV_StartSound (ent, 0, "demon/dland2.wav", 255, 1);
+				SV_StartSound (ent, 0, "fx/thngland.wav", 255, 1);
 		}
 	}
 
