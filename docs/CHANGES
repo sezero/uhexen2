@@ -3,6 +3,12 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2012-02-24 (SVN):
+    * sys_win.c (Sys_MakeCodeWriteable): Changed the VirtualProtect flag
+      from PAGE_READWRITE to PAGE_EXECUTE_READWRITE. This bypasses DEP
+      on vista and newer with software renderer built with x86 assembler
+      drawing routines using visual studio.
+
 2012-02-21 (SVN):
     * hexenworld, server/sv_phys.c (SV_Physics_Step): changed hit sound
       from demon/dland2.wav to fx/thngland.wav. demon/dland2.wav doesn't
