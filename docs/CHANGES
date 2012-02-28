@@ -3,6 +3,10 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2012-02-28 (SVN):
+    * gl_vidnt.c, gl_vidsdl.c: Removed the arbitrary 1024 limit from
+      gl_max_size.
+
 2012-02-24 (SVN):
     * sys_win.c (Sys_MakeCodeWriteable): Changed the VirtualProtect flag
       from PAGE_READWRITE to PAGE_EXECUTE_READWRITE. This bypasses DEP
