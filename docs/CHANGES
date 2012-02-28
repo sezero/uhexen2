@@ -4,6 +4,9 @@ Development Progress	:
 ---------------------------
 
 2012-02-28 (SVN):
+    * client.h, cl_main.c: Killed references to non-existent cl_autofire
+
+2012-02-28 (SVN):
     * gl_vidnt.c, gl_vidsdl.c: Removed the arbitrary 1024 limit from
       gl_max_size.
 
