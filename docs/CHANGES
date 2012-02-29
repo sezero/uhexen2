@@ -4,6 +4,12 @@ Development Progress	:
 ---------------------------
 
 2012-02-29 (SVN):
+    * hexen2/cl_parse.c (CL_ParseServerInfo): Check for old demo before
+      calling Mod_FindName for crusader and necromancer in player_models
+      assingment, similar to what we have been doing for the succubus.
+    * hexenworld/client/cl_parse.c (CL_ParseModellist): Likewise.
+
+2012-02-29 (SVN):
     * gl_draw.c (Draw_Init): Try to load gfx/menu/bigfont.lmp in case
       gfx/menu/bigfont2.lmp can not be found, which is the case with the
       original (old) hexen2 demo from august 1997.

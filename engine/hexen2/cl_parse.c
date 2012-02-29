@@ -366,13 +366,10 @@ static void CL_ParseServerInfo (void)
 	}
 
 	player_models[0] = (qmodel_t *)Mod_FindName ("models/paladin.mdl");
-	// Note: old demo doesnt have necro and crusader classes. add
-	// a GAME_OLD_DEMO flag check ?
-	player_models[1] = (qmodel_t *)Mod_FindName ("models/crusader.mdl");
-	player_models[2] = (qmodel_t *)Mod_FindName ("models/necro.mdl");
+	player_models[1] = !(gameflags & GAME_OLD_DEMO) ? (qmodel_t *)Mod_FindName ("models/crusader.mdl") : NULL;
+	player_models[2] = !(gameflags & GAME_OLD_DEMO) ? (qmodel_t *)Mod_FindName ("models/necro.mdl") : NULL;
 	player_models[3] = (qmodel_t *)Mod_FindName ("models/assassin.mdl");
-	if (gameflags & GAME_PORTALS)
-		player_models[4] = (qmodel_t *)Mod_FindName ("models/succubus.mdl");
+	player_models[4] = (gameflags & GAME_PORTALS) ? (qmodel_t *)Mod_FindName ("models/succubus.mdl") : NULL;
 
 	S_BeginPrecaching ();
 	for (i = 1; i < numsounds; i++)
