@@ -363,8 +363,7 @@ void M_ToggleMenu_f (void)
 }
 
 // Note: old version of demo has bigfont.lmp, not bigfont2.lmp
-// add a GAME_OLD_DEMO flag check around here ?
-//#define BIGCHAR_FONT_FILE	"gfx/menu/bigfont.lmp"
+#define	BIGCHAR_FONT_FILE0	"gfx/menu/bigfont.lmp"
 #define	BIGCHAR_FONT_FILE	"gfx/menu/bigfont2.lmp"
 #define	BIGCHAR_WIDTH_FILE	"gfx/menu/fontsize.lmp"
 
@@ -380,6 +379,7 @@ static void M_BuildBigCharWidth (void)
 	char	After[20], Before[20];
 
 	p = (qpic_t *)FS_LoadTempFile (BIGCHAR_FONT_FILE, NULL);
+	if (!p) p = (qpic_t *)FS_LoadTempFile (BIGCHAR_FONT_FILE0, NULL);
 	if (!p)
 		Sys_Error ("Failed to load %s", BIGCHAR_FONT_FILE);
 	SwapPic(p);

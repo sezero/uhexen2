@@ -355,8 +355,8 @@ void Draw_Init (void)
 
 	// load the big menu font
 	// Note: old version of demo has bigfont.lmp, not bigfont2.lmp
-	// add a GAME_OLD_DEMO flag check ?
 	p = (qpic_t *)FS_LoadTempFile("gfx/menu/bigfont2.lmp", NULL);
+	if (!p) p = (qpic_t *)FS_LoadTempFile("gfx/menu/bigfont.lmp", NULL);
 	Draw_PicCheckError (p, "gfx/menu/bigfont2.lmp");
 	SwapPic (p);
 	for (i = 0; i < p->width * p->height; i++)	// MUST be 160 * 80

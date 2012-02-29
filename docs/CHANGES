@@ -3,6 +3,12 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2012-02-29 (SVN):
+    * gl_draw.c (Draw_Init): Try to load gfx/menu/bigfont.lmp in case
+      gfx/menu/bigfont2.lmp can not be found, which is the case with the
+      original (old) hexen2 demo from august 1997.
+    * menu.c (M_BuildBigCharWidth): Likewise.
+
 2012-02-28 (SVN):
     * client.h, cl_main.c: Killed references to non-existent cl_autofire
 
