@@ -4,6 +4,12 @@ Development Progress	:
 ---------------------------
 
 2012-03-03 (SVN):
+    * Added support for non-power-of-two textures extension: detect in
+      gl_vidsdl.c/gl_vidnt.c by searching GL_ARB_texture_non_power_of_two
+      and do not snap the height and width of the texture to a power of
+      2 in gldraw.c::GL_Upload32() if the extension is present.
+
+2012-03-03 (SVN):
     * gl_rmain.c (R_DrawAliasModel): If shadows are enabled always get
       the lighting information regardless of special cases where it is
       not used because R_LightPoint[Color]() calculates lightspot for us

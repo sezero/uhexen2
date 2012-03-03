@@ -1422,15 +1422,21 @@ static void GL_Upload32 (unsigned int *data, gltexture_t *glt)
 	int		mark = 0;
 	int		scaled_width, scaled_height;
 
+	if (gl_tex_NPOT && !is8bit)
+	{
+		scaled_width = glt->width >> gl_picmip.integer;
+		scaled_height = glt->height >> gl_picmip.integer;
+	}
+	else
+	{
 	// Snap the height and width to a power of 2.
-	for (scaled_width = 1 ; scaled_width < glt->width ; scaled_width<<=1)
-		;
-
-	for (scaled_height = 1 ; scaled_height < glt->height ; scaled_height<<=1)
-		;
-
-	scaled_width >>= gl_picmip.integer;
-	scaled_height >>= gl_picmip.integer;
+		for (scaled_width = 1; scaled_width < glt->width; scaled_width <<= 1)
+			;
+		for (scaled_height = 1; scaled_height < glt->height; scaled_height <<= 1)
+			;
+		scaled_width >>= gl_picmip.integer;
+		scaled_height >>= gl_picmip.integer;
+	}
 
 	if (scaled_width < 1)
 		scaled_width = 1;

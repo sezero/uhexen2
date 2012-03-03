@@ -174,6 +174,7 @@ static const char	*gl_extensions;
 qboolean	is_3dfx = false;
 
 GLint		gl_max_size = 256;
+qboolean	gl_tex_NPOT = false;
 GLfloat		gl_max_anisotropy;
 float		gldepthmin, gldepthmax;
 
@@ -696,6 +697,19 @@ static void CheckAnisotropyExtensions (void)
 	}
 }
 
+static void CheckNonPowerOfTwoTextures (void)
+{
+	if (strstr(gl_extensions, "GL_ARB_texture_non_power_of_two"))
+	{
+		gl_tex_NPOT = true;
+		Con_SafePrintf("Found ARB_texture_non_power_of_two\n");
+	}
+	else
+	{
+		gl_tex_NPOT = false;
+	}
+}
+
 static void CheckStencilBuffer (void)
 {
 	have_stencil = false;
@@ -787,6 +801,8 @@ static void GL_ResetFunctions (void)
 	is8bit = false;
 	glColorTableEXT_fp = NULL;
 
+	gl_tex_NPOT = false;
+
 	GetDeviceGammaRamp_f = NULL;
 	SetDeviceGammaRamp_f = NULL;
 }
@@ -848,6 +864,7 @@ static void GL_Init (void)
 
 	CheckMultiTextureExtensions();
 	CheckAnisotropyExtensions();
+	CheckNonPowerOfTwoTextures();
 	CheckStencilBuffer();
 
 	glClearColor_fp (1,0,0,0);
