@@ -680,6 +680,18 @@ R_DrawAliasModel
 
 =================
 */
+static void AliasModelGetLightInfo (entity_t *e)
+{
+	vec3_t		adjust_origin;
+
+	VectorCopy(e->origin, adjust_origin);
+	adjust_origin[2] += (e->model->mins[2] + e->model->maxs[2]) / 2;
+	if (gl_lightmap_format == GL_RGBA)
+		ambientlight = R_LightPointColor (adjust_origin);
+	else
+		ambientlight = shadelight = R_LightPoint (adjust_origin);
+}
+
 static void R_DrawAliasModel (entity_t *e)
 {
 	int		i;
@@ -697,7 +709,6 @@ static void R_DrawAliasModel (entity_t *e)
 	glpic_t		*gl;
 	char		temp[80];
 	int		mls;
-	vec3_t		adjust_origin;
 
 	clmodel = currententity->model;
 
@@ -709,6 +720,12 @@ static void R_DrawAliasModel (entity_t *e)
 
 	VectorCopy (currententity->origin, r_entorigin);
 	VectorSubtract (r_origin, r_entorigin, modelorg);
+
+	// if shadows are enabled, get lighting information here regardless
+	// of special cases below, because R_LightPoint[Color]() calculates
+	// lightspot for us which is used by GL_DrawAliasShadow()
+	if (r_shadows.integer && e != &cl.viewent)
+		AliasModelGetLightInfo (currententity);
 
 	mls = currententity->drawflags & MLS_MASKIN;
 	if (currententity->model->flags & EF_ROTATE)
@@ -742,13 +759,8 @@ static void R_DrawAliasModel (entity_t *e)
 	}
 	else if (e != &cl.viewent)	// R_DrawViewModel() already does viewmodel lighting.
 	{
-		// get lighting information
-		VectorCopy(currententity->origin, adjust_origin);
-		adjust_origin[2] += (currententity->model->mins[2] + currententity->model->maxs[2]) / 2;
-		if (gl_lightmap_format == GL_RGBA)
-			ambientlight = R_LightPointColor (adjust_origin);
-		else
-			ambientlight = shadelight = R_LightPoint (adjust_origin);
+		if (!r_shadows.integer)
+			AliasModelGetLightInfo (currententity);
 
 		for (lnum = 0; lnum < MAX_DLIGHTS; lnum++)
 		{

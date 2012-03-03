@@ -4,6 +4,13 @@ Development Progress	:
 ---------------------------
 
 2012-03-03 (SVN):
+    * gl_rmain.c (R_DrawAliasModel): If shadows are enabled always get
+      the lighting information regardless of special cases where it is
+      not used because R_LightPoint[Color]() calculates lightspot for us
+      which is used by GL_DrawAliasShadow(). Fixes the broken shadows
+      after svn rev. 2509 during development of uhexen2 v1.4.2.
+
+2012-03-03 (SVN):
     * removed gl_stencilshadow cvar, enabled shadows stencil buffering
       by default. BTW, shadows have always been broken and svn commit
       rev.2509 added even another brokenness to them: remove them soon?
