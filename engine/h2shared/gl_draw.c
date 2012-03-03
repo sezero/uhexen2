@@ -577,7 +577,7 @@ void Draw_SmallCharacter (int x, int y, int num)
 	if (num == 0)
 		return;
 
-	if (y <= -8 || y >= (int)vid.height)
+	if (y <= -8 || y >= vid.height)
 		return; 	// totally off screen
 
 	row = num >> 4;
@@ -839,19 +839,19 @@ void Draw_PicCropped (int x, int y, qpic_t *pic)
 	glpic_t 	*gl;
 	float		th, tl;
 
-	if ((x < 0) || (x+pic->width > (int)vid.width))
+	if ((x < 0) || (x+pic->width > vid.width))
 	{
 		Sys_Error("%s: bad coordinates", __thisfunc__);
 	}
 
-	if (y >= (int)vid.height || y+pic->height < 0)
+	if (y >= vid.height || y+pic->height < 0)
 		return;		// totally off screen
 
 	gl = (glpic_t *)pic->data;
 
 	// rjr	tl/th need to be computed based upon pic->tl and pic->th
 	//	cuz the piece may come from the scrap
-	if (y+pic->height > (int)vid.height)
+	if (y+pic->height > vid.height)
 	{
 		height = vid.height-y;
 		tl = 0;
@@ -892,19 +892,19 @@ void Draw_SubPicCropped (int x, int y, int h, qpic_t *pic)
 	glpic_t 	*gl;
 	float		th,tl;
 
-	if ((x < 0) || (x+pic->width > (int)vid.width))
+	if ((x < 0) || (x+pic->width > vid.width))
 	{
 		Sys_Error("%s: bad coordinates", __thisfunc__);
 	}
 
-	if (y >= (int)vid.height || y+h < 0)
+	if (y >= vid.height || y+h < 0)
 		return;		// totally off screen
 
 	gl = (glpic_t *)pic->data;
 
 	// rjr	tl/th need to be computed based upon pic->tl and pic->th
 	//	cuz the piece may come from the scrap
-	if (y+pic->height > (int)vid.height)
+	if (y+pic->height > vid.height)
 	{
 		height = vid.height-y;
 		tl = 0;
@@ -951,8 +951,8 @@ Draw_TransPic
 */
 void Draw_TransPic (int x, int y, qpic_t *pic)
 {
-	if (x < 0 || (unsigned int)(x + pic->width) > vid.width || y < 0 ||
-			(unsigned int)(y + pic->height) > vid.height)
+	if (x < 0 || (x + pic->width) > vid.width ||
+	    y < 0 || (y + pic->height) > vid.height)
 	{
 		Sys_Error ("%s: bad coordinates", __thisfunc__);
 	}
@@ -1169,9 +1169,9 @@ void Draw_FadeScreen (void)
 			bx = 0;
 		if (by < 0)
 			by = 0;
-		if (ex > (int)vid.width)
+		if (ex > vid.width)
 			ex = vid.width;
-		if (ey > (int)vid.height)
+		if (ey > vid.height)
 			ey = vid.height;
 
 		glBegin_fp (GL_QUADS);

@@ -240,7 +240,7 @@ static void SCR_EraseCenterString (void)
 	y = (scr_center_lines <= 4) ? vid.height*0.35 : 48;
 
 	scr_copytop = 1;
-	height = q_min(8 * scr_erase_lines, (int)vid.height - y - 1);
+	height = q_min(8 * scr_erase_lines, vid.height - y - 1);
 	Draw_TileClear (0, y, vid.width, height);
 }
 */

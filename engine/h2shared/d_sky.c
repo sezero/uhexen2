@@ -1,7 +1,7 @@
 /*
 	d_sky.c
 
-	$Id: d_sky.c,v 1.3 2007-03-14 21:03:06 sezero Exp $
+	$Id$
 */
 
 #include "quakedef.h"
@@ -27,8 +27,8 @@ static void D_Sky_uv_To_st (int u, int v, fixed16_t *s, fixed16_t *t)
 	else
 		temp = (float)r_refdef.vrect.height;
 
-	wu = 8192.0 * (float)(u-((int)vid.width>>1)) / temp;
-	wv = 8192.0 * (float)(((int)vid.height>>1)-v) / temp;
+	wu = 8192.0 * (float)(u - (vid.width>>1)) / temp;
+	wv = 8192.0 * (float)((vid.height>>1) - v)/ temp;
 
 	end[0] = 4096*vpn[0] + wu*vright[0] + wv*vup[0];
 	end[1] = 4096*vpn[1] + wu*vright[1] + wv*vup[1];

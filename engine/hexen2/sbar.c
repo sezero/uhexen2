@@ -871,7 +871,7 @@ void Sbar_DeathmatchOverlay(void)
 
 	for (i = 0; i < l; i++)
 	{
-		if (y+10 >= (int)vid.height)
+		if (y+10 >= vid.height)
 			break;
 
 		k = fragsort[i];

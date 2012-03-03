@@ -548,8 +548,8 @@ void Con_DrawNotify (void)
 		}
 
 		s = chat_buffer;
-		if (chat_bufferlen > (int)(vid.width>>3) - (skip + 1))
-			s += chat_bufferlen - ((int)(vid.width>>3) - (skip + 1));
+		if (chat_bufferlen > (vid.width>>3) - (skip + 1))
+			s += chat_bufferlen - ((vid.width>>3) - (skip + 1));
 		x = 0;
 		while (s[x])
 		{
