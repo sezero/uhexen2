@@ -121,11 +121,10 @@ extern	const int	MAX_HWGAMES;
    level which the later 1.11 version of the demo had. Grep the source
    for ENABLE_OLD_DEMO and GAME_OLD_DEMO for more info. Even with those
    runtime checks, it still lacks certain models that our current,
-   1.11 and later version, progs require to be precached. Therefore
-   the old demo version doesn't run as it is.  Besides, it was given
-   out even before the retail version was released, so it may contain
-   map and scripting bugs.
-   Default: disabled (0). Enabling NOT recommended.
+   1.11 and later version, progs require to be precached. Therefore, it
+   it must be run using ITS OWN progs which is v1.03, requiring uhexen2
+   version 1.5.2.
+   Default: disabled (0).
    ================================================================== */
 #define	ENABLE_OLD_DEMO			0
 

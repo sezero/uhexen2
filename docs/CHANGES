@@ -4,6 +4,10 @@ Development Progress	:
 ---------------------------
 
 2012-03-03 (SVN):
+    * engine/h2shared/h2config.h, launcher/games.h: Updated notes about
+      the ENABLE_OLD_DEMO compile time option.
+
+2012-03-03 (SVN):
     * cl_parse.c: Allow intermission picture and messages to be drawn
       during demo recording and playback. Do not automatically send a
       button0 cmd to skip the intermission and let the recorder to do
