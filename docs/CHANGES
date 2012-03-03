@@ -4,6 +4,11 @@ Development Progress	:
 ---------------------------
 
 2012-03-03 (SVN):
+    * viddef_t changes, #2/3: Changed width, height, conwidth, conheight
+      and most importantly the rowbytes member of the viddef_t structure
+      from unsigned int to signed int.
+
+2012-03-03 (SVN):
     * viddef_t changes, #1/3: Removed several int casts from earlier
       patches which are intended for silencing -Wsign-compare warnings.
 

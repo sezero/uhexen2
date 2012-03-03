@@ -2,7 +2,7 @@
 	vid.h
 	video driver defs
 
-	$Id: vid.h,v 1.39 2010-10-30 08:55:22 sezero Exp $
+	$Id$
 */
 
 #ifndef __VID_DEFS_H
@@ -42,16 +42,16 @@ typedef struct
 	pixel_t		*colormap;	// 256 * VID_GRADES size
 	unsigned short	*colormap16;	// 256 * VID_GRADES size
 	int		fullbright;	// index of first fullbright color
-	unsigned int	rowbytes;	// may be > width if displayed in a window
-	unsigned int	width;
-	unsigned int	height;
+	int		rowbytes;	// may be > width if displayed in a window
+	int		width;
+	int		height;
 	float		aspect;		// width / height -- < 0 is taller than wide
 	int		numpages;
 	int		recalc_refdef;	// if true, recalc vid-based stuff
 	pixel_t		*conbuffer;
 	int		conrowbytes;
-	unsigned int	conwidth;
-	unsigned int	conheight;
+	int		conwidth;
+	int		conheight;
 	int		maxwarpwidth;
 	int		maxwarpheight;
 	pixel_t		*direct;	// direct drawing to framebuffer,
