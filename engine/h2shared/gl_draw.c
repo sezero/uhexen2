@@ -1295,25 +1295,75 @@ static void GL_ResampleTexture (unsigned int *in, int inwidth, int inheight, uns
 ================
 GL_MipMap
 
-Operates in place, quartering the size of the texture
+Quarters the size of the texture
+May operate in-place.
+This version is from Darkplaces.
 ================
 */
-static void GL_MipMap (byte *in, int width, int height)
+static void GL_MipMap (const byte *in, byte *out, int *width, int *height, int destwidth, int destheight)
 {
-	int		i, j;
-	byte	*out;
+	const byte *inrow;
+	int x, y, nextrow;
 
-	width <<= 2;
-	height >>= 1;
-	out = in;
-	for (i = 0; i < height; i++, in += width)
+	// if given odd width/height this discards the last row/column
+	// of pixels, rather than doing a proper box-filter scale down
+	inrow = in;
+	nextrow = *width * 4;
+	if (*width > destwidth)
 	{
-		for (j = 0; j < width; j += 8, out += 4, in += 8)
+		*width >>= 1;
+		if (*height > destheight)
 		{
-			out[0] = (in[0] + in[4] + in[width+0] + in[width+4])>>2;
-			out[1] = (in[1] + in[5] + in[width+1] + in[width+5])>>2;
-			out[2] = (in[2] + in[6] + in[width+2] + in[width+6])>>2;
-			out[3] = (in[3] + in[7] + in[width+3] + in[width+7])>>2;
+			// reduce both
+			*height >>= 1;
+			for (y = 0; y < *height; y++, inrow += nextrow * 2)
+			{
+				for (in = inrow, x = 0; x < *width; x++)
+				{
+					out[0] = (byte) ((in[0] + in[4] + in[nextrow  ] + in[nextrow+4]) >> 2);
+					out[1] = (byte) ((in[1] + in[5] + in[nextrow+1] + in[nextrow+5]) >> 2);
+					out[2] = (byte) ((in[2] + in[6] + in[nextrow+2] + in[nextrow+6]) >> 2);
+					out[3] = (byte) ((in[3] + in[7] + in[nextrow+3] + in[nextrow+7]) >> 2);
+					out += 4;
+					in += 8;
+				}
+			}
+		}
+		else
+		{
+			// reduce width
+			for (y = 0; y < *height; y++, inrow += nextrow)
+			{
+				for (in = inrow, x = 0; x < *width; x++)
+				{
+					out[0] = (byte) ((in[0] + in[4]) >> 1);
+					out[1] = (byte) ((in[1] + in[5]) >> 1);
+					out[2] = (byte) ((in[2] + in[6]) >> 1);
+					out[3] = (byte) ((in[3] + in[7]) >> 1);
+					out += 4;
+					in += 8;
+				}
+			}
+		}
+	}
+	else
+	{
+		if (*height > destheight)
+		{
+			// reduce height
+			*height >>= 1;
+			for (y = 0; y < *height; y++, inrow += nextrow * 2)
+			{
+				for (in = inrow, x = 0; x < *width; x++)
+				{
+					out[0] = (byte) ((in[0] + in[nextrow  ]) >> 1);
+					out[1] = (byte) ((in[1] + in[nextrow+1]) >> 1);
+					out[2] = (byte) ((in[2] + in[nextrow+2]) >> 1);
+					out[3] = (byte) ((in[3] + in[nextrow+3]) >> 1);
+					out += 4;
+					in += 4;
+				}
+			}
 		}
 	}
 }
@@ -1440,13 +1490,7 @@ static void GL_Upload32 (unsigned int *data, gltexture_t *glt)
 		miplevel = 0;
 		while (scaled_width > 1 || scaled_height > 1)
 		{
-			GL_MipMap ((byte *)scaled, scaled_width, scaled_height);
-			scaled_width >>= 1;
-			scaled_height >>= 1;
-			if (scaled_width < 1)
-				scaled_width = 1;
-			if (scaled_height < 1)
-				scaled_height = 1;
+			GL_MipMap ((byte *)scaled, (byte *)scaled, &scaled_width, &scaled_height, 1, 1);
 			miplevel++;
 			if (is8bit && !(glt->flags & TEX_ALPHA))
 				fxPalTexImage2D (GL_TEXTURE_2D, miplevel, samples, scaled_width, scaled_height, 0, GL_RGBA, GL_UNSIGNED_BYTE, scaled);

@@ -4,6 +4,10 @@ Development Progress	:
 ---------------------------
 
 2012-03-03 (SVN):
+    * gl_draw.c: Replaced the GL_MipMap() procedure by a newer version
+      adapted from darkplaces.
+
+2012-03-03 (SVN):
     * gl_model.h, gl_model.c: Added XF_GLOW_TORCH_EFYPT as new flag for
       eflmtrch.mdl, adjusted Mod_SetAliasModelExtraFlags() to use it.
     * gl_rmain.c: Changed the default of torch glow effects to disabled.
