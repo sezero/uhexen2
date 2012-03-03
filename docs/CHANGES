@@ -4,6 +4,10 @@ Development Progress	:
 ---------------------------
 
 2012-03-03 (SVN):
+    * viddef_t changes, #3/3: Now that vid.rowbytes is signed int, as it
+      should be, changed vid_win.c to use bottom-up DIB.
+
+2012-03-03 (SVN):
     * viddef_t changes, #2/3: Changed width, height, conwidth, conheight
       and most importantly the rowbytes member of the viddef_t structure
       from unsigned int to signed int.

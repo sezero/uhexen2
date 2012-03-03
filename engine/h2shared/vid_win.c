@@ -358,13 +358,13 @@ static void VID_CreateDIB (int width, int height, unsigned char *palette)
 	// set video buffers
 	if (pbmiDIB->bmiHeader.biHeight > 0)
 	{
-		// bottom up
+		// bottom-up
 		vid.buffer = (pixel_t *)pDIBBase + (height - 1) * width;
 		vid.rowbytes = -width;
 	}
 	else
 	{
-		// top down
+		// top-down
 		vid.buffer = (pixel_t *)pDIBBase;
 		vid.rowbytes = vid.width;
 	}
@@ -373,7 +373,7 @@ static void VID_CreateDIB (int width, int height, unsigned char *palette)
 	vid.conrowbytes = vid.rowbytes;
 
 	// clear the buffer
-	if (height < 0)	// we are sent a negative height for top down bitmap
+	if (height < 0)	// we are sent a negative height for top-down bitmap
 		memset (pDIBBase, 0xff, width * -height);
 	else	memset (pDIBBase, 0xff, width * height);
 
@@ -961,10 +961,8 @@ static int VID_SetMode (int modenum, unsigned char *palette)
 		IN_HideMouse ();
 	}
 
-	// create the DIB
-	// send -DIBHeight for topdown bitmap: the
-	// rest of the SW renderer code relies on it.
-	VID_CreateDIB(DIBWidth, -DIBHeight, palette);
+//	VID_CreateDIB(DIBWidth,-DIBHeight, palette);	// top-down
+	VID_CreateDIB(DIBWidth, DIBHeight, palette);	// bottom-up
 
 	window_width = vid.width;
 	window_height = vid.height;
