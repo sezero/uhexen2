@@ -412,17 +412,11 @@ This command causes the client to wait for the signon messages again.
 This is sent just before a server changes levels
 ==================
 */
-extern qboolean		demohack;	// see in cl_parse.c
-
 static void Host_Reconnect_f (void)
 {
 	R_ClearParticles ();	//jfm: for restarts which didn't use to clear parts.
-	if (demohack)
-	{
-		demohack = false;
-		Cbuf_AddText("-attack\n");
-	}
-	if (oem.integer && cl.intermission == 9)
+
+	if (oem.integer && cl.intermission == 9)	// Matrox m3D bundle version's ending
 	{
 		CL_Disconnect();
 		return;

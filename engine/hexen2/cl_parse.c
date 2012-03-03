@@ -83,11 +83,6 @@ int		LastServerMessageSize;
 
 qmodel_t	*player_models[MAX_PLAYER_CLASS];
 
-// when recording demos across multiple levels and we hit an intermission,
-// we issue an +attack to skip the intermission. when reconnecting to the
-// server, we must reverse it by an -attack in Host_Reconnect_f()   - O.S.
-qboolean	demohack = false;
-
 extern	cvar_t	precache;
 extern	int	stufftext_frame;
 extern	qboolean menu_disabled_mouse;
@@ -394,9 +389,7 @@ static void CL_ParseServerInfo (void)
 	R_NewMap ();
 
 	if (!sv.active)
-	{
 		Host_LoadStrings();
-	}
 	CL_LoadPuzzleStrings();
 	// mission pack, objectives strings
 	if (gameflags & GAME_PORTALS)
@@ -1543,31 +1536,6 @@ void CL_ParseServerMessage (void)
 			cl.intermission = MSG_ReadByte();
 			if (oem.integer && cl.intermission == 1)
 				cl.intermission = 9;
-			// skip intermissions while recording demos in single
-			// player games, but stop recording at ending scenes.
-			// skip intermissions when playing demos.
-			if (cls.demorecording)
-			{
-				// 5: finale for the demo version
-				// 6, 7, 8: eidolon end-1 to end-3
-				// 9: finale for the bundle version
-				// 10: praevus ending
-				if (sv.active && svs.maxclients == 1 &&
-				    (cl.intermission < 5 || cl.intermission > 10))
-				{
-					cl.intermission = 0;
-					demohack = true;
-					Cbuf_AddText("+attack\n");	// HACK !..
-					break;
-				}
-
-				CL_Stop_f ();
-			}
-			else if (cls.demoplayback)
-			{
-				cl.intermission = 0;
-				break;
-			}
 
 			cl.completed_time = cl.time;
 			vid.recalc_refdef = true;	// go to full screen

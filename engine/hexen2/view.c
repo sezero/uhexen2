@@ -1041,7 +1041,7 @@ void V_RenderView (void)
 	}
 	else
 	{
-		if (!cl.paused /* && (sv.maxclients > 1 || key_dest == key_game) */ )
+		if (!cl.paused /*&& (cl.maxclients > 1 || key_dest == key_game)*/)
 			V_CalcRefdef ();
 	}
 

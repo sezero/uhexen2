@@ -3,6 +3,15 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2012-03-03 (SVN):
+    * cl_parse.c: Allow intermission picture and messages to be drawn
+      during demo recording and playback. Do not automatically send a
+      button0 cmd to skip the intermission and let the recorder to do
+      that by himself. Do not automatically stop recording upon game
+      ending and let the recorder to do that by himself.
+    * host_cmd.c (Host_Reconnect_f): Adjusted after the removal of the
+      demo hacks.
+
 2012-02-29 (SVN):
     * hexen2/cl_parse.c (CL_ParseServerInfo): Check for old demo before
       calling Mod_FindName for crusader and necromancer in player_models
