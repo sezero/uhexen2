@@ -115,15 +115,15 @@ extern	const int	MAX_HWGAMES;
 
 /* ====================================================================
    ENABLE_OLD_DEMO:	0 or 1
-   Allow running with the old version (28.8.1997, v0.42? 1.07?) of the
-   Hexen II Demo: It was class-restricted (paladin and assassin only),
+   Allow running with the old (original) version of the Hexen II Demo
+   from 28.8.1997: It was class-restricted, paladin and assassin only,
    as a result it lacked certain models. It didn't include the demo3
-   level which the later 1.11 version of the demo had. Grep the source
-   for ENABLE_OLD_DEMO and GAME_OLD_DEMO for more info. Even with those
-   runtime checks, it still lacks certain models that our current,
-   1.11 and later version, progs require to be precached. Therefore,
-   it must be run using ITS OWN progs which is v1.03, requiring uhexen2
-   version 1.5.2.
+   (The Mill) level which the later 1.11 version of the demo had, but
+   it had the mill area merged in the demo1 map instead.  Even with
+   GAME_OLD_DEMO runtime checks, it still lacks certain models that
+   our current 1.11 and later version progs require to be precached.
+   Therefore, it must be run using ITS OWN progs which is v1.03 style,
+   requiring uhexen2 version 1.5.2 or newer.
    Default: disabled (0).
    ================================================================== */
 #define	ENABLE_OLD_DEMO			0
