@@ -72,7 +72,7 @@ void VideoRegisterSet (const int *pregset)
 			break;
 
 		default:
-			Sys_Error ("VideoRegisterSet: Invalid command\n");
+			Sys_Error ("%s: Invalid command", __thisfunc__);
 		}
 	}
 }

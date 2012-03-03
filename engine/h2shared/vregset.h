@@ -30,9 +30,9 @@
 #ifndef __VREGSET_H__
 #define __VREGSET_H__
 
-//
-// registers & subregisters
-//
+/*
+ * registers & subregisters
+ */
 #define	MISC_OUTPUT	0x3C2
 
 #define	SC_INDEX	0x3C4
@@ -53,9 +53,9 @@
 #define	UNDERLINE	0x14
 #define	MODE_CONTROL	0x17
 
-//
-// register-set commands
-//
+/*
+ * register-set commands
+ */
 #define	VRS_END		0
 #define	VRS_BYTE_OUT	1
 #define	VRS_BYTE_RMW	2

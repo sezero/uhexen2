@@ -4,6 +4,10 @@ Development Progress	:
 ---------------------------
 
 2012-03-03 (SVN):
+    * vregset.c: Removed the trailing newline from the Sys_Error message
+      and used __func__ for function name printing.
+
+2012-03-03 (SVN):
     * engine/h2shared/h2config.h, launcher/games.h: Updated notes about
       the ENABLE_OLD_DEMO compile time option.
 
