@@ -374,6 +374,7 @@ typedef enum {mod_brush, mod_sprite, mod_alias} modtype_t;
 // XF_ Extra model effects set by engine: qmodel_t->ex_flags
 // effects are model name dependent
 #define XF_TORCH_GLOW		(1 << 0 )	/* glowing torches				*/
+#define XF_TORCH_GLOW_EGYPT	(1 << 30)	/* glowing torches, egypt			*/
 #define XF_GLOW			(1 << 1 )	/* other glows					*/
 #define XF_MISSILE_GLOW		(1 << 2 )	/* missile glows				*/
 

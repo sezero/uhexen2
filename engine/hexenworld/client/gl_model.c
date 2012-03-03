@@ -1986,8 +1986,7 @@ static void Mod_SetAliasModelExtraFlags (qmodel_t *mod)
 	mod->ex_flags = 0;
 
 	// Torch glows
-	if (!q_strncasecmp (mod->name, "models/eflmtrch",15) ||
-	    !q_strncasecmp (mod->name, "models/rflmtrch",15) ||
+	if (!q_strncasecmp (mod->name, "models/rflmtrch",15) ||
 	    !q_strncasecmp (mod->name, "models/cflmtrch",15) ||
 	    !q_strncasecmp (mod->name, "models/castrch",15)  ||
 	    !q_strncasecmp (mod->name, "models/rometrch",15) ||
@@ -1996,6 +1995,14 @@ static void Mod_SetAliasModelExtraFlags (qmodel_t *mod)
 	{
 		mod->ex_flags |= XF_TORCH_GLOW;
 		// set yellow color
+		mod->glow_color[0] = 0.8f;
+		mod->glow_color[1] = 0.4f;
+		mod->glow_color[2] = 0.1f;
+		mod->glow_color[3] = 1.0f;
+	}
+	else if (!q_strncasecmp (mod->name, "models/eflmtrch",15))
+	{
+		mod->ex_flags |= (XF_TORCH_GLOW | XF_TORCH_GLOW_EGYPT);
 		mod->glow_color[0] = 0.8f;
 		mod->glow_color[1] = 0.4f;
 		mod->glow_color[2] = 0.1f;

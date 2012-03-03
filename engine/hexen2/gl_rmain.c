@@ -92,7 +92,7 @@ cvar_t	gl_keeptjunctions = {"gl_keeptjunctions", "1", CVAR_ARCHIVE};
 cvar_t	gl_reporttjunctions = {"gl_reporttjunctions", "0", CVAR_NONE};
 cvar_t	gl_waterripple = {"gl_waterripple", "2", CVAR_ARCHIVE};
 cvar_t	gl_stencilshadow = {"gl_stencilshadow", "0", CVAR_ARCHIVE};
-cvar_t	gl_glows = {"gl_glows", "1", CVAR_ARCHIVE};
+cvar_t	gl_glows = {"gl_glows", "0", CVAR_ARCHIVE};	// torch glows
 cvar_t	gl_other_glows = {"gl_other_glows", "0", CVAR_ARCHIVE};
 cvar_t	gl_missile_glows = {"gl_missile_glows", "1", CVAR_ARCHIVE};
 
@@ -1192,11 +1192,9 @@ static void R_DrawGlow (entity_t *e)
 			// Translate the glow to coincide with the flame. KH
 			if (clmodel->ex_flags & XF_TORCH_GLOW)
 			{
-				if (!q_strncasecmp (clmodel->name, "models/eflmtrch",15))
-					// egypt torch fix
+				if (clmodel->ex_flags & XF_TORCH_GLOW_EGYPT)	// egypt torch fix
 					glTranslatef_fp (cos(e->angles[1]/180*M_PI)*8.0f, sin(e->angles[1]/180*M_PI)*8.0f, 16.0f);
-				else
-					glTranslatef_fp (0.0f, 0.0f, 8.0f);
+				else	glTranslatef_fp (0.0f, 0.0f, 8.0f);
 			}
 
 			// 'floating' movement

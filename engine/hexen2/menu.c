@@ -2255,11 +2255,11 @@ static void M_OpenGL_Draw (void)
 	M_Print (32 + (4 * 8), 90 + 8*OGL_PURGETEX,	"Purge map textures");
 	M_DrawCheckbox (232, 90 + 8*OGL_PURGETEX, gl_purge_maptex.integer);
 
-	M_Print (32 + (10 * 8), 90 + 8*OGL_GLOW1,	"Glow effects");
-	M_DrawCheckbox (232, 90 + 8*OGL_GLOW1, gl_glows.integer);
+	M_Print (32 + (9 * 8), 90 + 8*OGL_GLOW1,	"missile glows");
+	M_DrawCheckbox (232, 90 + 8*OGL_GLOW1, gl_missile_glows.integer);
 
-	M_Print (32 + (9 * 8), 90 + 8*OGL_GLOW2,	"missile glows");
-	M_DrawCheckbox (232, 90 + 8*OGL_GLOW2, gl_missile_glows.integer);
+	M_Print (32 + (11 * 8), 90 + 8*OGL_GLOW2,	"torch glows");
+	M_DrawCheckbox (232, 90 + 8*OGL_GLOW2, gl_glows.integer);
 
 	M_Print (32 + (11 * 8), 90 + 8*OGL_GLOW3,	"other glows");
 	M_DrawCheckbox (232, 90 + 8*OGL_GLOW3, gl_other_glows.integer);
@@ -2388,12 +2388,12 @@ static void M_OpenGL_Key (int k)
 			Cvar_Set ("gl_purge_maptex", gl_purge_maptex.integer ? "0" : "1");
 			break;
 
-		case OGL_GLOW1:	// glow effects, main: torches
-			Cvar_Set ("gl_glows", gl_glows.integer ? "0" : "1");
+		case OGL_GLOW1:	// glow effects, missiles
+			Cvar_Set ("gl_missile_glows", gl_missile_glows.integer ? "0" : "1");
 			break;
 
-		case OGL_GLOW2:	// glow effects, missiles
-			Cvar_Set ("gl_missile_glows", gl_missile_glows.integer ? "0" : "1");
+		case OGL_GLOW2:	// glow effects, torches,
+			Cvar_Set ("gl_glows", gl_glows.integer ? "0" : "1");
 			break;
 
 		case OGL_GLOW3:	// glow effects, other: mana, etc.

@@ -4,6 +4,13 @@ Development Progress	:
 ---------------------------
 
 2012-03-03 (SVN):
+    * gl_model.h, gl_model.c: Added XF_GLOW_TORCH_EFYPT as new flag for
+      eflmtrch.mdl, adjusted Mod_SetAliasModelExtraFlags() to use it.
+    * gl_rmain.c: Changed the default of torch glow effects to disabled.
+      Adjusted R_DrawGlow for the new XF_GLOW_TORCH_EFYPT.
+    * menu.c: Changed the order of torch and missile glow options.
+
+2012-03-03 (SVN):
     * engine/h2shared/h2config.h, launcher/games.h: Updated notes about
       the ENABLE_OLD_DEMO compile time option. (... again...)
 
