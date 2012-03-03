@@ -2206,7 +2206,6 @@ enum
 	OGL_TEXFILTER,
 	OGL_ANISOTROPY,
 	OGL_SHADOWS,
-	OGL_STENCIL,
 	OGL_ITEMS
 };
 
@@ -2304,11 +2303,6 @@ static void M_OpenGL_Draw (void)
 
 	M_Print (32 + (15 * 8), 90 + 8*OGL_SHADOWS,	"Shadows");
 	M_DrawCheckbox (232, 90 + 8*OGL_SHADOWS, r_shadows.integer);
-	M_Print (32 + (8 * 8), 90 + 8*OGL_STENCIL,	"Stencil buffer");
-	if (have_stencil)
-		M_DrawCheckbox (232, 90 + 8*OGL_STENCIL, gl_stencilshadow.integer);
-	else
-		M_Print (232, 90 + 8*OGL_STENCIL, "Not available");
 
 	// cursor
 	M_DrawCharacter (216, 90 + opengl_cursor*8, 12+((int)(realtime*4)&1));
@@ -2392,7 +2386,7 @@ static void M_OpenGL_Key (int k)
 			Cvar_Set ("gl_missile_glows", gl_missile_glows.integer ? "0" : "1");
 			break;
 
-		case OGL_GLOW2:	// glow effects, torches,
+		case OGL_GLOW2:	// glow effects, torches
 			Cvar_Set ("gl_glows", gl_glows.integer ? "0" : "1");
 			break;
 
@@ -2480,11 +2474,6 @@ static void M_OpenGL_Key (int k)
 
 		case OGL_SHADOWS:	// shadows
 			Cvar_Set ("r_shadows", r_shadows.integer ? "0" : "1");
-			break;
-
-		case OGL_STENCIL:	// stencil buffered shadows
-			if (have_stencil)
-				Cvar_Set ("gl_stencilshadow", gl_stencilshadow.integer ? "0" : "1");
 			break;
 
 		default:

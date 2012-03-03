@@ -91,7 +91,6 @@ cvar_t	gl_nocolors = {"gl_nocolors", "0", CVAR_NONE};
 cvar_t	gl_keeptjunctions = {"gl_keeptjunctions", "1", CVAR_ARCHIVE};
 cvar_t	gl_reporttjunctions = {"gl_reporttjunctions", "0", CVAR_NONE};
 cvar_t	gl_waterripple = {"gl_waterripple", "2", CVAR_ARCHIVE};
-cvar_t	gl_stencilshadow = {"gl_stencilshadow", "0", CVAR_ARCHIVE};
 cvar_t	gl_glows = {"gl_glows", "0", CVAR_ARCHIVE};	// torch glows
 cvar_t	gl_other_glows = {"gl_other_glows", "0", CVAR_ARCHIVE};
 cvar_t	gl_missile_glows = {"gl_missile_glows", "1", CVAR_ARCHIVE};
@@ -596,7 +595,7 @@ static void GL_DrawAliasShadow (aliashdr_t *paliashdr, int posenum)
 
 	height = -lheight + 1.0;
 
-	if (have_stencil && gl_stencilshadow.integer)
+	if (have_stencil)
 	{
 		glEnable_fp(GL_STENCIL_TEST);
 		glStencilFunc_fp(GL_EQUAL,1,2);
@@ -640,7 +639,7 @@ static void GL_DrawAliasShadow (aliashdr_t *paliashdr, int posenum)
 		glEnd_fp ();
 	}
 
-	if (have_stencil && gl_stencilshadow.integer)
+	if (have_stencil)
 		glDisable_fp(GL_STENCIL_TEST);
 }
 
@@ -1812,7 +1811,7 @@ static void R_Clear (void)
 
 	glDepthRange_fp (gldepthmin, gldepthmax);
 
-	if (have_stencil && gl_stencilshadow.integer && r_shadows.integer)
+	if (have_stencil && r_shadows.integer)
 	{
 		glClearStencil_fp(1);
 		glClear_fp(GL_STENCIL_BUFFER_BIT);

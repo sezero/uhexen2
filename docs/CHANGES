@@ -4,6 +4,11 @@ Development Progress	:
 ---------------------------
 
 2012-03-03 (SVN):
+    * removed gl_stencilshadow cvar, enabled shadows stencil buffering
+      by default. BTW, shadows have always been broken and svn commit
+      rev.2509 added even another brokenness to them: remove them soon?
+
+2012-03-03 (SVN):
     * gl_draw.c: Replaced the GL_MipMap() procedure by a newer version
       adapted from darkplaces.
 
