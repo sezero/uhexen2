@@ -229,7 +229,7 @@ Draw_TextureMode_f
 static void Draw_TouchAllFilterModes (void)
 {
 	gltexture_t	*glt;
-	unsigned int	i;
+	int	i;
 
 	for (i = 0, glt = gltextures; i < numgltextures; i++, glt++)
 	{
@@ -249,7 +249,7 @@ static void Draw_TouchAllFilterModes (void)
 
 static void Draw_TextureMode_f (cvar_t *var)
 {
-	unsigned int	i;
+	int	i;
 
 	for (i = 0; i < NUM_GL_FILTERS; i++)
 	{
@@ -281,7 +281,7 @@ static void Draw_TextureMode_f (cvar_t *var)
 static void Draw_TouchMipmapFilterModes (void)
 {
 	gltexture_t	*glt;
-	unsigned int	i;
+	int	i;
 
 	for (i = 0, glt = gltextures; i < numgltextures; i++, glt++)
 	{

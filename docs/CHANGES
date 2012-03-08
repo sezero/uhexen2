@@ -3,6 +3,11 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2012-03-08 (SVN):
+    * glquake.h, gl_draw.c, gl_rsurf.c, net_chan.c: Fixed -Wsign-compare
+      warnings.
+    * updated version date stamp to 2012-03-08.
+
 2012-03-03 (SVN):
     * viddef_t changes, #3/3: Now that vid.rowbytes is signed int, as it
       should be, changed vid_win.c to use bottom-up DIB.

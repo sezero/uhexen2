@@ -17,7 +17,7 @@
 #define MAX_GLTEXTURES		2048
 #define MAX_EXTRA_TEXTURES	156	/* 255-100+1 */
 #define	MAX_CACHED_PICS		256
-#define	MAX_LIGHTMAPS		64U
+#define	MAX_LIGHTMAPS		64
 
 #define	GL_UNUSED_TEXTURE	(~(GLuint)0)
 

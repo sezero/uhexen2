@@ -267,7 +267,7 @@ modifies net_message so that it points to the packet payload
 qboolean Netchan_Process (netchan_t *chan)
 {
 	unsigned int	sequence, sequence_ack;
-	unsigned int	reliable_ack, reliable_message;
+	int	reliable_ack, reliable_message;
 
 	if (NOT_DEMOPLAYBACK && !NET_CompareAdr (net_from, chan->remote_address))
 	{
@@ -279,15 +279,15 @@ qboolean Netchan_Process (netchan_t *chan)
 	sequence = MSG_ReadLong ();
 	sequence_ack = MSG_ReadLong ();
 
-	reliable_message = sequence >> 31;
-	reliable_ack = sequence_ack >> 31;
+	reliable_message = (int)(sequence >> 31);
+	reliable_ack = (int)(sequence_ack >> 31);
 
 	sequence &= ~(1<<31);
 	sequence_ack &= ~(1<<31);
 
 	if (showpackets.integer)
 	{
-		Con_Printf ("<-- s=%u(%u) a=%u(%u) %i\n",
+		Con_Printf ("<-- s=%u(%i) a=%u(%i) %i\n",
 				sequence,
 				reliable_message,
 				sequence_ack,
