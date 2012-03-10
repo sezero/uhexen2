@@ -762,7 +762,7 @@ static void VID_InitFullDIB (HINSTANCE hInstance)
 	int		i, j, modenum, existingmode, originalnummodes, lowestres;
 	int		numlowresmodes, bpp, done;
 	int		cstretch, istretch, mstretch;
-	BOOL	stat;
+	BOOL	status;
 
 // enumerate 8 bpp modes
 	originalnummodes = nummodes;
@@ -771,7 +771,7 @@ static void VID_InitFullDIB (HINSTANCE hInstance)
 
 	do
 	{
-		stat = EnumDisplaySettings (NULL, modenum, &devmode);
+		status = EnumDisplaySettings (NULL, modenum, &devmode);
 
 		if ((devmode.dmBitsPerPel == 8) &&
 			(devmode.dmPelsWidth <= MAXWIDTH) &&
@@ -831,7 +831,7 @@ static void VID_InitFullDIB (HINSTANCE hInstance)
 		}
 
 		modenum++;
-	} while (stat);
+	} while (status);
 
 // see if any of them were actually settable; if so, this is our mode list,
 // else enumerate all modes; our mode list is whichever ones are settable
@@ -845,7 +845,7 @@ static void VID_InitFullDIB (HINSTANCE hInstance)
 
 		do
 		{
-			stat = EnumDisplaySettings (NULL, modenum, &devmode);
+			status = EnumDisplaySettings (NULL, modenum, &devmode);
 
 			if ((((devmode.dmPelsWidth <= MAXWIDTH) &&
 				  (devmode.dmPelsHeight <= MAXHEIGHT)) ||
@@ -912,7 +912,7 @@ static void VID_InitFullDIB (HINSTANCE hInstance)
 			}
 
 			modenum++;
-		} while (stat);
+		} while (status);
 	}
 
 // see if there are any low-res modes that aren't being reported
@@ -1606,7 +1606,7 @@ static void VID_RestoreOldMode (int original_mode)
 static int VID_SetMode (int modenum, unsigned char *palette)
 {
 	int		original_mode, temp;
-	qboolean	stat;
+	qboolean	status;
 	MSG		msg;
 	HDC		hdc;
 
@@ -1653,7 +1653,7 @@ static int VID_SetMode (int modenum, unsigned char *palette)
 	{
 		if (_enable_mouse.integer)
 		{
-			stat = VID_SetWindowedMode(modenum);
+			status = VID_SetWindowedMode(modenum);
 			IN_ActivateMouse ();
 			IN_HideMouse ();
 		}
@@ -1661,18 +1661,18 @@ static int VID_SetMode (int modenum, unsigned char *palette)
 		{
 			IN_DeactivateMouse ();
 			IN_ShowMouse ();
-			stat = VID_SetWindowedMode(modenum);
+			status = VID_SetWindowedMode(modenum);
 		}
 	}
 	else if (modelist[modenum].type == MS_FULLDIB)
 	{
-		stat = VID_SetFullDIBMode(modenum);
+		status = VID_SetFullDIBMode(modenum);
 		IN_ActivateMouse ();
 		IN_HideMouse ();
 	}
 	else
 	{
-		stat = VID_SetFullscreenMode(modenum);
+		status = VID_SetFullscreenMode(modenum);
 		IN_ActivateMouse ();
 		IN_HideMouse ();
 	}
@@ -1684,7 +1684,7 @@ static int VID_SetMode (int modenum, unsigned char *palette)
 	CDAudio_Resume ();
 	scr_disabled_for_loading = temp;
 
-	if (!stat)
+	if (!status)
 	{
 		VID_RestoreOldMode (original_mode);
 		return false;
@@ -2367,7 +2367,7 @@ void VID_Update (vrect_t *rects)
 			VID_SetMode (vid_mode.integer, vid_curpal);
 			Cvar_SetValueQuick (&vid_mode, vid_modenum);
 							// so if mode set fails, we don't keep on
-							//  trying to set that mode
+							//  trying to set it
 			vid_realmode = vid_modenum;
 		}
 	}

@@ -427,7 +427,7 @@ static qboolean VID_SetFullDIBMode (int modenum)
 
 static int VID_SetMode (int modenum, unsigned char *palette)
 {
-	qboolean	stat = false;
+	qboolean	status = false;
 	MSG		msg;
 	HDC		hdc;
 
@@ -441,20 +441,20 @@ static int VID_SetMode (int modenum, unsigned char *palette)
 	{
 		if (_enable_mouse.integer)
 		{
-			stat = VID_SetWindowedMode(modenum);
+			status = VID_SetWindowedMode(modenum);
 			IN_ActivateMouse ();
 			IN_HideMouse ();
 		}
 		else
 		{
-			stat = VID_SetWindowedMode(modenum);
+			status = VID_SetWindowedMode(modenum);
 			IN_DeactivateMouse ();
 			IN_ShowMouse ();
 		}
 	}
 	else if (modelist[modenum].type == MS_FULLDIB)
 	{
-		stat = VID_SetFullDIBMode(modenum);
+		status = VID_SetFullDIBMode(modenum);
 		IN_ActivateMouse ();
 		IN_HideMouse ();
 	}
@@ -463,7 +463,7 @@ static int VID_SetMode (int modenum, unsigned char *palette)
 		Sys_Error ("%s: Bad mode type in modelist", __thisfunc__);
 	}
 
-	if (!stat)
+	if (!status)
 	{
 		Sys_Error ("Couldn't set video mode");
 	}
@@ -1673,7 +1673,7 @@ static void VID_InitFullDIB (HINSTANCE hInstance)
 	DEVMODE	devmode;
 	int	i, modenum, existingmode;
 	int	j, bpp, done;
-	BOOL	stat;
+	BOOL	status;
 
 	num_fmodes = 0;
 
@@ -1682,7 +1682,7 @@ static void VID_InitFullDIB (HINSTANCE hInstance)
 	// enumerate >8 bpp modes
 	do
 	{
-		stat = EnumDisplaySettings (NULL, modenum, &devmode);
+		status = EnumDisplaySettings (NULL, modenum, &devmode);
 
 		if ((devmode.dmBitsPerPel >= 15) &&
 			(devmode.dmPelsWidth <= MAXWIDTH) &&
@@ -1740,7 +1740,7 @@ static void VID_InitFullDIB (HINSTANCE hInstance)
 		}
 
 		modenum++;
-	} while (stat);
+	} while (status);
 
 	// see if there are any low-res modes that aren't being reported
 	bpp = 16;

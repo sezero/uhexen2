@@ -214,7 +214,7 @@ VID_SetMode
 */
 static int VID_SetMode (int modenum, unsigned char *palette)
 {
-	int		stat;
+	int		status;
 	vmode_t	*pnewmode, *poldmode;
 
 	if ((modenum >= numvidmodes) || (modenum < 0))
@@ -250,11 +250,11 @@ static int VID_SetMode (int modenum, unsigned char *palette)
 	vid.aspect = pcurrentmode->aspect;
 	vid.rowbytes = pcurrentmode->rowbytes;
 
-	stat = (*pcurrentmode->setmode) (&vid, pcurrentmode);
+	status = (*pcurrentmode->setmode) (&vid, pcurrentmode);
 
-	if (stat < 1)
+	if (status < 1)
 	{
-		if (stat == 0)
+		if (status == 0)
 		{
 		// real, hard failure that requires resetting the mode
 			if (!VID_SetMode (vid_modenum, palette))	// restore prior mode
@@ -263,7 +263,7 @@ static int VID_SetMode (int modenum, unsigned char *palette)
 			Con_Printf ("Failed to set mode %d\n", modenum);
 			return 0;
 		}
-		else if (stat == -1)
+		else if (status == -1)
 		{
 		// not enough memory; just put things back the way they were
 			pcurrentmode = poldmode;
@@ -275,7 +275,7 @@ static int VID_SetMode (int modenum, unsigned char *palette)
 		}
 		else
 		{
-			Sys_Error ("VID_SetMode: invalid setmode return code %d", stat);
+			Sys_Error ("VID_SetMode: invalid setmode return code %d", status);
 		}
 	}
 
@@ -367,7 +367,7 @@ void VID_Update (vrect_t *rects)
 			VID_SetMode (vid_mode.integer, vid_current_palette);
 			Cvar_SetValueQuick (&vid_mode, (float)vid_modenum);
 							// so if mode set fails, we don't keep on
-							//  trying to set that mode
+							//  trying to set it
 			vid_realmode = vid_modenum;
 		}
 	}

@@ -573,7 +573,7 @@ static int VID_SetMode (int modenum, unsigned char *palette)
 //
 static void VID_ChangeVideoMode (int newmode)
 {
-	int		stat, temp;
+	int		status, temp;
 
 	if (!screen)
 		return;
@@ -584,8 +584,8 @@ static void VID_ChangeVideoMode (int newmode)
 	BGM_Pause ();
 	S_ClearBuffer ();
 
-	stat = VID_SetMode (newmode, vid_curpal);
-	if (!stat)
+	status = VID_SetMode (newmode, vid_curpal);
+	if (!status)
 	{
 		if (vid_modenum == newmode)
 			Sys_Error ("Couldn't set video mode: %s", SDL_GetError());
@@ -593,8 +593,8 @@ static void VID_ChangeVideoMode (int newmode)
 		// failed setting mode, probably due to insufficient
 		// memory. go back to previous mode.
 		Cvar_SetValueQuick (&vid_mode, vid_modenum);
-		stat = VID_SetMode (vid_modenum, vid_curpal);
-		if (!stat)
+		status = VID_SetMode (vid_modenum, vid_curpal);
+		if (!status)
 			Sys_Error ("Couldn't set video mode: %s", SDL_GetError());
 	}
 

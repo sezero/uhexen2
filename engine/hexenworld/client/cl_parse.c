@@ -910,24 +910,24 @@ static void CL_UpdateUserinfo (void)
 CL_SetStat
 =====================
 */
-static void CL_SetStat (int stat, int value)
+static void CL_SetStat (int idx, int value)
 {
 	int	j;
 
-	if (stat < 0 || stat >= MAX_CL_STATS)
-		Sys_Error ("%s: %i is invalid", __thisfunc__, stat);
+	if (idx < 0 || idx >= MAX_CL_STATS)
+		Sys_Error ("%s: %i is invalid", __thisfunc__, idx);
 
 	Sbar_Changed ();
 
-	if (stat == STAT_ITEMS)
+	if (idx == STAT_ITEMS)
 	{	// set flash times
 		Sbar_Changed ();
 		for (j = 0; j < 32; j++)
-			if ( (value & (1<<j)) && !(cl.stats[stat] & (1<<j)) )
+			if ( (value & (1<<j)) && !(cl.stats[idx] & (1<<j)) )
 				cl.item_gettime[j] = cl.time;
 	}
 
-	cl.stats[stat] = value;
+	cl.stats[idx] = value;
 }
 
 /*

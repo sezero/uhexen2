@@ -3,6 +3,11 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2012-03-10 (SVN):
+    * gl_vidnt.c, vid_dos.c,vid_mgl4.c,vid_sdl.c,vid_win.c, cl_parse.c:
+      Don't use stat as a variable name.
+    * updated version date stamp to 2012-03-10.
+
 2012-03-08 (SVN):
     * glquake.h, gl_draw.c, gl_rsurf.c, net_chan.c: Fixed -Wsign-compare
       warnings.

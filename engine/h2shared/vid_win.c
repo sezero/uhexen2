@@ -467,7 +467,7 @@ static void VID_GetDisplayModes (void)
 {
 	DEVMODE	devmode;
 	int		i, modenum, existingmode, originalnummodes, lowestres;
-	BOOL	stat;
+	BOOL	status;
 
 // enumerate > 8 bpp modes
 	originalnummodes = nummodes;
@@ -476,7 +476,7 @@ static void VID_GetDisplayModes (void)
 
 	do
 	{
-		stat = EnumDisplaySettings (NULL, modenum, &devmode);
+		status = EnumDisplaySettings (NULL, modenum, &devmode);
 
 		if ((devmode.dmPelsWidth <= MAXWIDTH) &&
 			(devmode.dmPelsHeight <= MAXHEIGHT) &&
@@ -521,7 +521,7 @@ static void VID_GetDisplayModes (void)
 		}
 
 		modenum++;
-	} while (stat);
+	} while (status);
 
 	if (nummodes != originalnummodes)
 		vid_default = MODE_FULLSCREEN_DEFAULT;
@@ -896,7 +896,7 @@ static void VID_RestoreOldMode (int original_mode)
 static int VID_SetMode (int modenum, unsigned char *palette)
 {
 	int		original_mode, temp;
-	qboolean	stat;
+	qboolean	status;
 	MSG		msg;
 	HDC		hdc;
 
@@ -943,7 +943,7 @@ static int VID_SetMode (int modenum, unsigned char *palette)
 	{
 		if (_enable_mouse.integer)
 		{
-			stat = VID_SetWindowedMode(modenum);
+			status = VID_SetWindowedMode(modenum);
 			IN_ActivateMouse ();
 			IN_HideMouse ();
 		}
@@ -951,12 +951,12 @@ static int VID_SetMode (int modenum, unsigned char *palette)
 		{
 			IN_DeactivateMouse ();
 			IN_ShowMouse ();
-			stat = VID_SetWindowedMode(modenum);
+			status = VID_SetWindowedMode(modenum);
 		}
 	}
 	else
 	{
-		stat = VID_SetFullDIBMode(modenum);
+		status = VID_SetFullDIBMode(modenum);
 		IN_ActivateMouse ();
 		IN_HideMouse ();
 	}
@@ -970,7 +970,7 @@ static int VID_SetMode (int modenum, unsigned char *palette)
 	CDAudio_Resume ();
 	scr_disabled_for_loading = temp;
 
-	if (!stat)
+	if (!status)
 	{
 		VID_RestoreOldMode (original_mode);
 		return false;
@@ -1435,7 +1435,7 @@ void VID_Update (vrect_t *rects)
 			VID_SetMode (vid_mode.integer, vid_curpal);
 			Cvar_SetValueQuick (&vid_mode, vid_modenum);
 							// so if mode set fails, we don't keep on
-							//  trying to set that mode
+							//  trying to set it
 			vid_realmode = vid_modenum;
 		}
 	}
