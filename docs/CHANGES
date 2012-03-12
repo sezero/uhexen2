@@ -4,6 +4,10 @@ Development Progress	:
 ---------------------------
 
 2012-03-12 (SVN):
+    * Moved the stufftext_frame global to client_static_t structure and
+      adjusted CL_GetDemoMessage and CL_ParseServerMessage accordingly.
+
+2012-03-12 (SVN):
     * windows codecs: updated libmpg123 to latest stable 1.13.6 version.
     * updated version date stamp to 2012-03-12.
 

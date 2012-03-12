@@ -84,7 +84,6 @@ int		LastServerMessageSize;
 qmodel_t	*player_models[MAX_PLAYER_CLASS];
 
 extern	cvar_t	precache;
-extern	int	stufftext_frame;
 extern	qboolean menu_disabled_mouse;
 
 
@@ -1294,8 +1293,8 @@ void CL_ParseServerMessage (void)
 			break;
 
 		case svc_stufftext:
-			stufftext_frame = host_framecount;	// allow full frame update
-								// on stuff messages. Pa3PyX
+			cls.stufftext_frame = host_framecount;	// allow full frame update
+								// in demo playback -- Pa3PyX
 			Cbuf_AddText (MSG_ReadString ());
 			break;
 
