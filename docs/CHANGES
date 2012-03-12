@@ -3,6 +3,10 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2012-03-12 (SVN):
+    * windows codecs: updated libmpg123 to latest stable 1.13.6 version.
+    * updated version date stamp to 2012-03-12.
+
 2012-03-10 (SVN):
     * gl_vidnt.c, vid_dos.c,vid_mgl4.c,vid_sdl.c,vid_win.c, cl_parse.c:
       Don't use stat as a variable name.
