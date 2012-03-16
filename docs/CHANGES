@@ -3,6 +3,14 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2012-03-16 (SVN):
+    * vid_mgl4.c: Disabled MGL's DirectDraw support by default, because
+      it causes more trouble than it is actually worth. Can be enabled
+      by the new -useddraw or -usedirectdraw command line switches, if
+      required. Added back the 24 bpp checks to VID_InitFullDIB() in the
+      low resolution modes search.
+    * updated version date stamp to 2012-03-16.
+
 2012-03-12 (SVN):
     * Moved the stufftext_frame global to client_static_t structure and
       adjusted CL_GetDemoMessage and CL_ParseServerMessage accordingly.

@@ -139,7 +139,7 @@ unsigned int	d_8to24table[256];
 static int	driver = grDETECT, mode;
 
 static qboolean	useWinDirect = false;
-static qboolean	useDirectDraw = true;
+static qboolean	useDirectDraw= false;
 
 static MGLDC	*mgldc = NULL, *memdc = NULL, *dibdc = NULL, *windc = NULL;
 
@@ -387,10 +387,8 @@ static void registerAllDispDrivers (void)
 	/* Register display drivers */
 	if (useWinDirect)
 	{
-		//we don't want VESA 1.X drivers
-		//MGL_registerDriver(MGL_SVGA8NAME, SVGA8_driver);
+	//	MGL_registerDriver(MGL_SVGA8NAME, SVGA8_driver); // we don't want VESA 1.X drivers
 		MGL_registerDriver(MGL_LINEAR8NAME, LINEAR8_driver);
-
 		if (!COM_CheckParm ("-novbeaf"))
 			MGL_registerDriver(MGL_ACCEL8NAME, ACCEL8_driver);
 	}
@@ -415,13 +413,10 @@ static void VID_InitMGLFull (HINSTANCE hInstance)
 	int		lowstretchedres, stretchedmode, lowstretched;
 	uchar		*m;
 
-// FIXME: NT is checked for because MGL currently has a bug that causes it
-// to try to use WinDirect modes even on NT
-	if ( (COM_CheckParm("-usewindirect") || COM_CheckParm("-usevesa")) && !WinNT )
+	if (COM_CheckParm("-usedirectdraw") || COM_CheckParm("-useddraw"))
+		useDirectDraw = true;
+	if (!WinNT && (COM_CheckParm("-usewindirect") || COM_CheckParm("-usevesa")))
 		useWinDirect = true;
-
-	if (COM_CheckParm("-nodirectdraw") || COM_CheckParm("-noddraw") || COM_CheckParm("-nodd"))
-		useDirectDraw = false;
 
 	// Initialise the MGL
 	MGL_unregisterAllDrivers();
@@ -643,16 +638,11 @@ static MGLDC *createDisplayDC (int forcemem)
 		memdcWidth = memdc->mi.bytesPerLine * (memdc->mi.bitsPerPixel / 8);
 	}
 
-	// Pa3PyX: now more judicious about picking default mode
 	if (vid.numpages > 2)
-		// try triple buffering
 		defaultVRT = MGL_tripleBuffer;
 	else if (vid.numpages == 2)
-		// regular double buffering/vsync
-		defaultVRT = MGL_waitVRT;
-	else
-		// only one video page (aPage == vPage)
-		// software buffer used, no need to sync
+		defaultVRT = MGL_waitVRT;	// regular double buffering/vsync
+	else	// only 1 video page (aPage == vPage), software buffer, no need to sync
 		defaultVRT = MGL_dontWait;
 
 	return dc;
@@ -927,7 +917,7 @@ static void VID_InitFullDIB (HINSTANCE hInstance)
 	devmode.dmFields = DM_BITSPERPEL | DM_PELSWIDTH | DM_PELSHEIGHT;
 
 	if (ChangeDisplaySettings (&devmode, CDS_TEST | CDS_FULLSCREEN) ==
-			DISP_CHANGE_SUCCESSFUL)
+						DISP_CHANGE_SUCCESSFUL)
 	{
 		done = 1;
 	}
@@ -981,17 +971,18 @@ static void VID_InitFullDIB (HINSTANCE hInstance)
 
 		switch (bpp)
 		{
-			case 8:
-				bpp = 16;
-				break;
-
-			case 16:
-				bpp = 32;
-				break;
-
-			case 32:
-				done = 1;
-				break;
+		case 8:
+			bpp = 16;
+			break;
+		case 16:
+			bpp = 32;
+			break;
+		case 32:
+			bpp = 24;
+			break;
+		case 24:
+			done = 1;
+			break;
 		}
 	}
 

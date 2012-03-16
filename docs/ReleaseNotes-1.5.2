@@ -1,5 +1,5 @@
 Hexen II: Hammer of Thyrion (uhexen2)
-Release Notes for version 1.5.2 (Mar. 12, 2012.)
+Release Notes for version 1.5.2 (Mar. 16, 2012.)
 ================================================
 
 Changes since the uhexen2-1.5.1 release:
@@ -58,6 +58,10 @@ Changes since the uhexen2-1.5.1 release:
   (problem was introduced in version 1.5.1)
 * Windows software renderer: Fixed restoring of the saved
   video mode on startup (problem was introduced in v1.4.4.)
+* Windows software renderer: Disabled MGL DirectDraw support
+  by default (causes more trouble than it's actually worth.)
+  Can be enabled by -useddraw or -usedirectdraw command line
+  switches, if required.
 * All platforms: Revised the cross-episode demo recording
   and playback behavior, allowing the intermission screens
   to be displayed.
