@@ -4,6 +4,9 @@ Development Progress	:
 ---------------------------
 
 2012-03-23 (SVN):
+    * Updated the AUTHORS file. Updated the v1.5.2 release notes file.
+
+2012-03-23 (SVN):
     * utils/dcc/dcc.c: Fixed two -Wunused-but-set-variable warnings.
 
 2012-03-23 (SVN):
