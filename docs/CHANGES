@@ -3,6 +3,9 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2012-03-23 (SVN):
+    * updated version date stamp to 2012-03-23.
+
 2012-03-16 (SVN):
     * vid_mgl4.c: Disabled MGL's DirectDraw support by default, because
       it causes more trouble than it is actually worth. Can be enabled
