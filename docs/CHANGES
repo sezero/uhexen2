@@ -4,6 +4,9 @@ Development Progress	:
 ---------------------------
 
 2012-03-23 (SVN):
+    * re-diff'ed some of the extra patches so that they apply cleanly.
+
+2012-03-23 (SVN):
     * Updated the AUTHORS file. Updated the v1.5.2 release notes file.
 
 2012-03-23 (SVN):
