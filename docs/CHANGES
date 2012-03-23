@@ -4,6 +4,10 @@ Development Progress	:
 ---------------------------
 
 2012-03-23 (SVN):
+    * libs/xdelta3/xdelta3.c (xd3_set_source): Fixed a variable set but
+      not used warning.
+
+2012-03-23 (SVN):
     * updated version date stamp to 2012-03-23.
 
 2012-03-16 (SVN):

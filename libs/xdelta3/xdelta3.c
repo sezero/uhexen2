@@ -1601,6 +1601,7 @@ xd3_set_source (xd3_stream *stream,
 		xd3_source *src)
 {
   usize_t shiftby;
+  int check;
 
   stream->src = src;
   src->srclen  = 0;
@@ -1608,9 +1609,9 @@ xd3_set_source (xd3_stream *stream,
 
   /* Enforce power-of-two blocksize so that source-block number
    * calculations are cheap. */
-  if (!xd3_check_pow2 (src->blksize, &shiftby) == 0)
+  check = xd3_check_pow2 (src->blksize, &shiftby);
+  if (check != 0)
     {
-      int check;
       src->blksize = xd3_pow2_roundup(src->blksize);
       check = xd3_check_pow2 (src->blksize, &shiftby);
       XD3_ASSERT (check == 0);
