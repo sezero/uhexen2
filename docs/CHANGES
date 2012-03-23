@@ -4,6 +4,9 @@ Development Progress	:
 ---------------------------
 
 2012-03-23 (SVN):
+    * utils/dcc/dcc.c: Fixed two -Wunused-but-set-variable warnings.
+
+2012-03-23 (SVN):
     * utils/dcc/dcc.c: Use the DEF_SAVEGLOBAL macro instead of the magic
       number 1<<15 itself. Cleanup the code where the DEF_SAVEGLOBAL bit
       is cleared.

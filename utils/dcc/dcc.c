@@ -1380,7 +1380,8 @@ static void PR_LocalGlobals (void)
 	int		i, j, ps, cnt = 0;
 	int		start, end, bsize;
 	dfunction_t	*df, *dfpred;
-	ddef_t		*par, *par2;
+	ddef_t		*par;
+//	ddef_t		*par2;
 	ddef_t		*ef;
 	const char	*arg2;
 
@@ -1407,7 +1408,7 @@ static void PR_LocalGlobals (void)
 	for (j = start; j < end; j++)
 	{
 		par = DEC_GetParameter (j);
-		par2 = DEC_GetParameter (j+1);
+	//	par2 = DEC_GetParameter (j+1);
 		if (! (j & 0xf) )
 			printf(".");
 
@@ -1522,8 +1523,9 @@ static const char *GetFieldFunctionHeader (const char *s_name)
 {
 	int		i, j = 0;
 	dstatement_t	*d;
-	def_t		*typ1, *typ2;
-	const char	*arg1, *arg2, *arg3;
+//	const char	*arg1;
+	const char	*arg2, *arg3;
+	def_t		*typ;
 
 	for (i = 1; i < numstatements; i++)
 	{
@@ -1531,10 +1533,10 @@ static const char *GetFieldFunctionHeader (const char *s_name)
 
 		if (d->op == OP_ADDRESS)
 		{
-			typ1 = pr_opcodes[d->op].type_a;
-			typ2 = pr_opcodes[d->op].type_b;
-			arg1 = PR_PrintGlobal((unsigned short)d->a, typ1);
-			arg2 = PR_PrintGlobal((unsigned short)d->b, typ2);
+		//	typ  = pr_opcodes[d->op].type_a;
+		//	arg1 = PR_PrintGlobal((unsigned short)d->a, typ);
+			typ  = pr_opcodes[d->op].type_b;
+			arg2 = PR_PrintGlobal((unsigned short)d->b, typ);
 
 			if (arg2)
 			{
@@ -1543,8 +1545,8 @@ static const char *GetFieldFunctionHeader (const char *s_name)
 					if ((d+1)->op == OP_STOREP_FNC)
 					{
 						d++;
-						typ1 = pr_opcodes[d->op].type_a;
-						arg3 = PR_PrintGlobal((unsigned short)d->a, typ1);
+						typ  = pr_opcodes[d->op].type_a;
+						arg3 = PR_PrintGlobal((unsigned short)d->a, typ);
 						if (!arg3)
 							continue;
 						j = DEC_GetFunctionIdxByName(arg3);
@@ -1558,10 +1560,10 @@ static const char *GetFieldFunctionHeader (const char *s_name)
 					if ((d+1)->op == OP_LOAD_FNC && (d+2)->op == OP_STOREP_FNC)
 					{
 						d++;
-						typ1 = pr_opcodes[d->op].type_a;
-						arg1 = PR_PrintGlobal((unsigned short)d->a, typ1);
-						typ2 = pr_opcodes[d->op].type_b;
-						arg2 = PR_PrintGlobal((unsigned short)d->b, typ2);
+					//	typ  = pr_opcodes[d->op].type_a;
+					//	arg1 = PR_PrintGlobal((unsigned short)d->a, typ);
+						typ  = pr_opcodes[d->op].type_b;
+						arg2 = PR_PrintGlobal((unsigned short)d->b, typ);
 						if (!arg2)
 							continue;
 						if (strcmp(s_name, arg2))
