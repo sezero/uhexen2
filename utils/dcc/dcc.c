@@ -1420,8 +1420,7 @@ static void PR_LocalGlobals (void)
 			cnt = 0;
 			bsize = CalcArraySize(j, end);
 
-			if (par->type & (1<<15))
-				par->type -= (1<<15);
+			par->type &= ~DEF_SAVEGLOBAL;
 
 		//	printf("%s type: %d ofs: %d par2: %d bsize: %d\n",
 		//		  strings + par->s_name, par->type,
@@ -1451,7 +1450,7 @@ static void PR_LocalGlobals (void)
 							ef = PR_GetField(strings + par->s_name, par);
 							if (!ef)
 								Error("Could not locate a field named \"%s\"", strings + par->s_name);
-							i = (ef->type - (ef->type & (0x1<<15)));
+							i = (ef->type & ~DEF_SAVEGLOBAL);
 							if (i == ev_vector)
 								j += 3;
 							if (i == ev_function)
@@ -1788,10 +1787,10 @@ void FindBuiltinParameters (int func)
 
 //print results to string
 	memset (plist, 0, sizeof(plist));
-	if (type[8] & (1<<15))
+	if (type[8] & DEF_SAVEGLOBAL)
 	{
 		sprintf(plist,".");
-		type[8] -= (type[8] & (1<<15));
+		type[8] &= ~DEF_SAVEGLOBAL;
 	}
 
 	switch (type[8])
@@ -1834,10 +1833,10 @@ void FindBuiltinParameters (int func)
 	{
 		for (i = 0; i < j; i++)
 		{
-			if (type[i] & (1<<15))
+			if (type[i] & DEF_SAVEGLOBAL)
 			{
 				strcat(plist, ".");
-				type[i] -= (type[i] & (1<<15));
+				type[i] &= ~DEF_SAVEGLOBAL;
 			}
 
 			switch (type[i])
@@ -1946,15 +1945,14 @@ static unsigned short GetType (gofs_t ofs)
 
 	if (par)
 	{
-		if (par->type & (1<<15))
-			par->type -= (1<<15);
+		par->type &= ~DEF_SAVEGLOBAL;
 
 		if (par->type == ev_field)
 		{
 			ef = PR_GetField(strings + par->s_name, par);
 			if (!ef)
 				Error("Could not locate a field named \"%s\"", strings + par->s_name);
-			rtype = (ef->type | (0x1<<15));
+			rtype = (ef->type | DEF_SAVEGLOBAL);
 		}
 		else
 		{

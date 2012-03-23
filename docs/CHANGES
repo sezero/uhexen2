@@ -4,6 +4,11 @@ Development Progress	:
 ---------------------------
 
 2012-03-23 (SVN):
+    * utils/dcc/dcc.c: Use the DEF_SAVEGLOBAL macro instead of the magic
+      number 1<<15 itself. Cleanup the code where the DEF_SAVEGLOBAL bit
+      is cleared.
+
+2012-03-23 (SVN):
     * libs/xdelta3/xdelta3.c (xd3_set_source): Fixed a variable set but
       not used warning.
 
