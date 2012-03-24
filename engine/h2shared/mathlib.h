@@ -14,10 +14,17 @@
 #define M_PI		3.14159265358979323846	/* matches value in gcc v2 math.h */
 #endif
 
-#define	nanmask		(255 << 23)
+#define	nanmask		(255 << 23)	/* 7F800000 */
+#if 0	/* macro is violating strict aliasing rules */
 #define	IS_NAN(x)	(((*(int *) (char *) &x) & nanmask) == nanmask)
-
-int Q_isnan (float x);	/* don't pass doubles to this */
+#else
+static inline int IS_NAN (float x) {
+	union { float f; int i; } num;
+	num.f = x;
+	return ((num.i & nanmask) == nanmask);
+}
+#endif
+int Q_isnan (float x);	/* For 32 bit floats only. */
 
 extern vec3_t vec3_origin;
 

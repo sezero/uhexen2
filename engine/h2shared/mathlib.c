@@ -15,7 +15,7 @@ vec3_t vec3_origin = { 0, 0, 0 };
 Q_isnan
 
 For NaN tests with -ffast-math
-Don't pass doubles to this
+For 32 bit floats only.
 ================
 */
 int Q_isnan (float x)

@@ -4,6 +4,12 @@ Development Progress	:
 ---------------------------
 
 2012-03-23 (SVN):
+    * mathlib.h (IS_NAN): Fixed strict aliasing violation by providing
+      an inline function using a float/int union instead of the original
+      macro.
+    * updated version date stamp to 2012-03-24.
+
+2012-03-23 (SVN):
     * Updated the COMPILE document to reflect the support for gcc-4.7.
 
 2012-03-23 (SVN):
