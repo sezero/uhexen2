@@ -47,6 +47,13 @@
 #endif	/* VORBIS */
 #endif	/* CODECS_USE_ZONE */
 
+#if defined(SERVERONLY)
+#undef	MEM_STATIC_TEX
+#define	MEM_STATIC_TEX	0
+#undef	MEM_CODEC_MEM
+#define	MEM_CODEC_MEM	0
+#endif
+
 #define	SECZONE_SIZE			\
 	(MEM_STATIC_TEX + MEM_CODEC_MEM)
 
@@ -1300,14 +1307,20 @@ void Memory_Init (void *buf, int size)
 	}
 	Memory_InitZone (mainzone, Z_MAINZONE, ZMAGIC, zonesize);
 
-#if !defined(SERVERONLY)
-/* initialize a 256 KB secondary zone for static textures */
+#if (SECZONE_SIZE > 0)
+	zonesize = 0;
 	if (!isDedicated)
-		Memory_InitZone (sec_zone, Z_SECZONE, ZMAGIC2, SECZONE_SIZE);
+	{
+		zonesize += MEM_STATIC_TEX;
+		zonesize += MEM_CODEC_MEM;
+	}
+	if (zonesize > 0)
+		Memory_InitZone (sec_zone, Z_SECZONE, ZMAGIC2, zonesize);
+#endif	/* SECONDARY ZONE */
 
+#if !defined(SERVERONLY)
 	Cmd_AddCommand ("flush", Cache_Flush);
 #endif	/* SERVERONLY */
-
 #if Z_DEBUG_COMMANDS
 	Cmd_AddCommand ("sys_memory", Memory_Display_f);
 	Cmd_AddCommand ("sys_zone", Zone_Display_f);

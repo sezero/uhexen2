@@ -4,6 +4,12 @@ Development Progress	:
 ---------------------------
 
 2012-03-23 (SVN):
+    * zone.c: Changed the secondary zone allocation to be realized when
+      SECZONE_SIZE is defined as a positive value, not only for client
+      applications.
+    * updated version date stamp to 2012-03-25.
+
+2012-03-23 (SVN):
     * mathlib.h (IS_NAN): Fixed strict aliasing violation by providing
       an inline function using a float/int union instead of the original
       macro.
