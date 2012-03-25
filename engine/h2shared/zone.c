@@ -107,7 +107,7 @@ all big things are allocated on the hunk.
 
 static	zonelist_t	*zonelist;
 static	char		mainzone[] = "MAINZONE";
-#if !defined(SERVERONLY)
+#if (SECZONE_SIZE > 0)
 static	char		sec_zone[] = "SEC_ZONE";
 #endif
 
