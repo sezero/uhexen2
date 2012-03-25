@@ -160,6 +160,10 @@ VORBISLIB=vorbis
 # system memory (set to yes for DOS builds, for example)
 CODECS_USE_ZONE=no
 
+# whether WatTCP for DOS allocate on the zone instead of
+# system memory (WatTCP is only used for DOS.)
+WATT32_USE_ZONE=yes
+
 # include the common dirty stuff
 include $(UHEXEN2_TOP)/scripts/makefile.inc
 
@@ -357,12 +361,17 @@ USE_CODEC_TIMIDITY=no
 USE_CODEC_WILDMIDI=no
 # use Tremor as Vorbis decoder for DOS?
 VORBISLIB=tremor
-# DOS decoders must allocate on the zone
+# make DOS decoders allocate on the zone
 CODECS_USE_ZONE=yes
+# make WATT-32/DOS allocate on the zone
+WATT32_USE_ZONE=yes
 
 INCLUDES += -I$(OSLIBS)/dos
 # WATT-32 is needed for DOS
 CPPFLAGS+= -DUSE_WATT32
+ifeq ($(WATT32_USE_ZONE),yes)
+CPPFLAGS+= -DWATT32_USE_ZONE
+endif
 INCLUDES+= -I$(OSLIBS)/dos/watt32/inc
 LDFLAGS += -L$(OSLIBS)/dos/watt32/lib -lwatt
 LDFLAGS += -lc -lgcc -lm

@@ -47,6 +47,10 @@ COMPILE_32BITS=no
 
 USE_WINSOCK2=no
 
+# whether WatTCP for DOS allocate on the zone instead of
+# system memory (WatTCP is only used for DOS.)
+WATT32_USE_ZONE=yes
+
 # include the common dirty stuff
 include $(UHEXEN2_TOP)/scripts/makefile.inc
 
@@ -135,9 +139,15 @@ endif
 #############################################################
 ifeq ($(TARGET_OS),dos)
 
+# make WATT-32/DOS allocate on the zone
+WATT32_USE_ZONE=yes
+
 INCLUDES += -I$(OSLIBS)/dos
 # WATT-32 is needed for DOS
 CPPFLAGS+= -DUSE_WATT32
+ifeq ($(WATT32_USE_ZONE),yes)
+CPPFLAGS+= -DWATT32_USE_ZONE
+endif
 INCLUDES+= -I$(OSLIBS)/dos/watt32/inc
 LDFLAGS += -L$(OSLIBS)/dos/watt32/lib -lwatt
 LDFLAGS += -lc -lgcc -lm

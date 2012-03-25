@@ -4,6 +4,11 @@ Development Progress	:
 ---------------------------
 
 2012-03-23 (SVN):
+    * Changed DOS version so that WatTCP library allocates memory on the
+      secondary zone instead of from system. Adjusted zone.c to reserve
+      proper amount of memory for WatTCP.
+
+2012-03-23 (SVN):
     * zone.c: Changed the secondary zone allocation to be realized when
       SECZONE_SIZE is defined as a positive value, not only for client
       applications.

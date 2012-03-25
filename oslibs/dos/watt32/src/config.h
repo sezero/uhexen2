@@ -31,6 +31,7 @@
 #undef USE_FRAGMENTS   /* Include IP-fragment handling */
 #undef USE_STATISTICS  /* Include protocol statistics count */
 #undef USE_FORTIFY     /* Use Fortify malloc-lib for allocations */
+#undef USE_ZONEMEM     /* Use Z_Malloc & friends for allocations */
 #undef USE_FSEXT       /* Use djgpp's File Extensions for file I/O functions */
 #undef USE_LOOPBACK    /* Use the simple loopback device */
 #undef USE_EMBEDDED    /* Make an embeddable (ROM-able) target. See note at end */
@@ -134,6 +135,7 @@
 #if defined(__DJGPP__)
   #define USE_FSEXT
   #define USE_RS232_DBG
+  #define USE_ZONEMEM
 /*#define USE_FORTIFY */
 /*#define USE_SECURE_ARP */
 #endif
@@ -202,6 +204,7 @@
  */
 #if defined(WATT32_DOS_DLL) || defined(MAKE_TSR)
   #undef USE_FORTIFY
+  #undef USE_ZONEMEM
 #endif
 
 /*

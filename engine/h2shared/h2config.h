@@ -167,8 +167,22 @@
 
 
 /* ====================================================================
-   ========================  CODECS SETUP:  ===========================
+   ========================  MEMORY SETUP:  ===========================
    ================================================================== */
+
+/* ====================================================================
+   If WATT32_USE_ZONE is defined (see the Makefile), then DOS/WatTCP
+   will allocate on the zone instead of system memory.  Remember that
+   this requires recompiling the Watt-32 library with proper memory
+   allocator changes to it.  The memory requirements are defined below.
+   Affects:	zone.c.
+   ================================================================== */
+
+#if defined(H2W)
+#define	WATT32_NEEDMEM	0x20000	/* 128K is more than enough for hw */
+#else
+#define	WATT32_NEEDMEM	0x5F000	/* 380K is more than enough for hexen2 */
+#endif
 
 /* ====================================================================
    If CODECS_USE_ZONE is defined (see the Makefile), then mp3 (libmad)
