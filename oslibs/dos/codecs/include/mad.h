@@ -24,12 +24,8 @@
 extern "C" {
 # endif
 
-/* windows-only configuration : */
-#ifdef _WIN64
-# define FPM_64BIT /* FPM_DEFAULT */
-#else
+/* DJGPP-only configuration : */
 # define FPM_INTEL /* for x86 only */
-#endif
 # define SIZEOF_LONG 4
 /*
 # ifdef __i386__

@@ -31,6 +31,11 @@ Things not tested, but should work:
   play, which has been reported to work without issues.  See WatTCP
   documentation (http://home.broadpark.no/~gvanem/) to setup WatTCP.
   Note: WatTCP won't initialize if IPX is running.
+  Note: WatTCP was observed not to work with H2DOS as a server, nor
+  with H2DED. HexenWorld client or server with WatTCP doesn't work for
+  now, either.
+
+  Note: The Hexen II dedicated server application H2DED is not tested.
 
   In case you want to disable some or all network functionality, here
   are the related command line switches:

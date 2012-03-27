@@ -31,7 +31,7 @@
 #undef USE_FRAGMENTS   /* Include IP-fragment handling */
 #undef USE_STATISTICS  /* Include protocol statistics count */
 #undef USE_FORTIFY     /* Use Fortify malloc-lib for allocations */
-#undef USE_ZONEMEM     /* Use Z_Malloc & friends for allocations */
+#undef USE_ZONEMEM     /* Use Z_Malloc & friends for allocations -- FOR UHEXEN2 */
 #undef USE_FSEXT       /* Use djgpp's File Extensions for file I/O functions */
 #undef USE_LOOPBACK    /* Use the simple loopback device */
 #undef USE_EMBEDDED    /* Make an embeddable (ROM-able) target. See note at end */
@@ -106,14 +106,14 @@
   #define USE_DHCP
 /*#define USE_LANGUAGE */
   #define USE_FRAGMENTS
-  #define USE_STATISTICS
+/*#define USE_STATISTICS*/
 /*#define USE_BIND */
   #define USE_BSD_API
   #define USE_BSD_FATAL
   #define USE_LOOPBACK
   #define USE_BUFFERED_IO
 /*#define USE_TFTP */
-  #define USE_MULTICAST
+/*#define USE_MULTICAST*/
   #define USE_PPPOE
   #define OPT_DEFINED
 #endif
@@ -134,7 +134,7 @@
 
 #if defined(__DJGPP__)
   #define USE_FSEXT
-  #define USE_RS232_DBG
+/*#define USE_RS232_DBG*/
   #define USE_ZONEMEM
 /*#define USE_FORTIFY */
 /*#define USE_SECURE_ARP */

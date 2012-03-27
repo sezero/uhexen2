@@ -3,18 +3,24 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
-2012-03-23 (SVN):
+2012-03-27 (SVN):
+    * oslibs/dos/watt32/lib/libwatt.a: recompiled with more compile time
+      options (USE_STATISTICS, USE_MULTICAST and USE_RS232_DBG) disabled.
+    * oslibs/dos/codecs: recompiled dos codecs.
+    * updated version date stamp to 2012-03-27.
+
+2012-03-25 (SVN):
     * Changed DOS version so that WatTCP library allocates memory on the
       secondary zone instead of from system. Adjusted zone.c to reserve
       proper amount of memory for WatTCP.
 
-2012-03-23 (SVN):
+2012-03-25 (SVN):
     * zone.c: Changed the secondary zone allocation to be realized when
       SECZONE_SIZE is defined as a positive value, not only for client
       applications.
     * updated version date stamp to 2012-03-25.
 
-2012-03-23 (SVN):
+2012-03-24 (SVN):
     * mathlib.h (IS_NAN): Fixed strict aliasing violation by providing
       an inline function using a float/int union instead of the original
       macro.
