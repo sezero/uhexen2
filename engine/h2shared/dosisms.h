@@ -122,5 +122,15 @@ int dos_int386 (int vec, __dpmi_regs *inregs, __dpmi_regs *outregs);
 /* global variables: */
 extern __dpmi_regs	regs;
 
+/* memory setup: */
+#define	LEAVE_FOR_CACHE		0x80000	/* 512K - FIXME: tune */
+
+#define	MALLOC_NEEDMEM		0x20000	/* 128K - FIXME: tune */
+#if defined(USE_WATT32)
+#define	LOCKED_FOR_MALLOC	(MALLOC_NEEDMEM + WATT32_NEEDMEM)
+#else
+#define	LOCKED_FOR_MALLOC	(MALLOC_NEEDMEM)
+#endif
+
 #endif	/* _DOSISMS_H_ */
 

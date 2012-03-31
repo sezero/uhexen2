@@ -29,6 +29,9 @@
 #include "arch_def.h"
 #include "net_sys.h"
 #include <net/if.h>
+#if defined(PLATFORM_DOS)	/* Watt-32 */
+#include "tcp.h"
+#endif
 #include "quakedef.h"
 #include "net_defs.h"
 
@@ -107,7 +110,7 @@ sys_socket_t UDP_Init (void)
 
 	if (COM_CheckParm ("-noudp"))
 		return INVALID_SOCKET;
-#if defined(PLATFORM_DOS)
+#if defined(PLATFORM_DOS)	/* WatTCP */
 #if defined(USE_MPATH)
 	if (COM_CheckParm ("-mpath"))
 	{
@@ -127,6 +130,8 @@ sys_socket_t UDP_Init (void)
 		Con_Printf("Skipping WATTCP (IPX present)\n");
 		return  INVALID_SOCKET;
 	}
+/*	dbug_init();*/
+	sock_init();
 #endif	/* PLATFORM_DOS */
 
 	// determine my name & address

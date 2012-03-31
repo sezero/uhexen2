@@ -171,18 +171,18 @@
    ================================================================== */
 
 /* ====================================================================
-   If WATT32_USE_ZONE is defined (see the Makefile), then DOS/WatTCP
-   will allocate on the zone instead of system memory.  Remember that
-   this requires recompiling the Watt-32 library with proper memory
-   allocator changes to it.  The memory requirements are defined below.
-   Affects:	zone.c.
+   The amount of memory needed by Watt-32 (WatTCP) for DOS:
+   - Hexen II server opens a socket for each client, plus it needs its
+     accept socket and broadcast socket, so (MAX_PLAYERS + 3) * 11K is
+     normally the maximum needed memory.
+   - HexenWorld opens one socket, but it sends two large data, i.e. the
+     soundlist and the modellist, in a single chunk, therefore WatTCP
+     needs to allocate some additional memory (~ 2*64K?) to reassemble
+     the fragmented data.
+   Affects:	sys_dos.c.
    ================================================================== */
 
-#if defined(H2W)
-#define	WATT32_NEEDMEM	0x20000	/* 128K is more than enough for hw */
-#else
-#define	WATT32_NEEDMEM	0x5F000	/* 380K is more than enough for hexen2 */
-#endif
+#define	WATT32_NEEDMEM	0x30000	/* 192 K */
 
 /* ====================================================================
    If CODECS_USE_ZONE is defined (see the Makefile), then mp3 (libmad)

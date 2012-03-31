@@ -55,9 +55,6 @@
  */
 int	_crt0_startup_flags = _CRT0_FLAG_UNIX_SBRK;
 
-#define	LEAVE_FOR_CACHE		(512*1024)	/* FIXME: tune */
-#define	LOCKED_FOR_MALLOC	(128*1024)	/* FIXME: tune */
-
 int		end_of_memory;
 static qboolean	lockmem, lockunlockmem, unlockmem;
 static int	win95;

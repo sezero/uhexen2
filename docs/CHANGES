@@ -3,6 +3,16 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2012-03-31 (SVN):
+    * Reverted dos Watt-32 library's use of zone memory, because I still
+      need debugging things. Changed Watt-32 memory requirement to 192K,
+      as detailed in h2config.h. LEAVE_FOR_CACHE and LOCKED_FOR_MALLOC
+      definitions are moved to dosisms.h. Changed the LOCKED_FOR_MALLOC
+      value so that it includes the additional memory needed by Watt-32.
+      Added explicit call of dbug_init() to net_udp.c::NET_Init(). Added
+      explicit call of sock_init() to net_udp.c::NET_Init().
+    * updated version date stamp to 2012-03-31.
+
 2012-03-27 (SVN):
     * oslibs/dos/watt32/lib/libwatt.a: recompiled with more compile time
       options (USE_STATISTICS, USE_MULTICAST and USE_RS232_DBG) disabled.

@@ -153,9 +153,6 @@ USE_WINSOCK2=no
 USE_SERIAL=yes
 # whether to use WatTCP for DOS UDP networking
 USE_WATT32=yes
-# whether WatTCP for DOS allocate on the zone instead of
-# system memory (WatTCP is only used for DOS.)
-WATT32_USE_ZONE=yes
 # whether to use Beame & Whiteside for DOS networking
 USE_BWTCP=yes
 # whether to use MPATH for DOS UDP networking under Win9x
@@ -387,8 +384,6 @@ USE_CODEC_WILDMIDI=no
 VORBISLIB=tremor
 # make DOS decoders allocate on the zone
 CODECS_USE_ZONE=yes
-# make WATT-32/DOS allocate on the zone
-WATT32_USE_ZONE=yes
 
 INCLUDES += -I$(OSLIBS)/dos
 ifeq ($(USE_SERIAL),yes)
@@ -402,9 +397,6 @@ CPPFLAGS+= -DUSE_MPATH
 endif
 ifeq ($(USE_WATT32),yes)
 CPPFLAGS+= -DUSE_WATT32
-ifeq ($(WATT32_USE_ZONE),yes)
-CPPFLAGS+= -DWATT32_USE_ZONE
-endif
 INCLUDES+= -I$(OSLIBS)/dos/watt32/inc
 LDFLAGS += -L$(OSLIBS)/dos/watt32/lib -lwatt
 endif

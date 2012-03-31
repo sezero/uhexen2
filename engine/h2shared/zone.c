@@ -55,14 +55,8 @@
 #define	MEM_CODEC_MEM	0
 #endif
 
-#if defined(USE_WATT32) && defined(WATT32_USE_ZONE)
-#define	MEM_WATTCP_MEM	WATT32_NEEDMEM
-#else
-#define	MEM_WATTCP_MEM	0
-#endif
-
 #define	SECZONE_SIZE			\
-	(MEM_STATIC_TEX + MEM_CODEC_MEM + MEM_WATTCP_MEM)
+	(MEM_STATIC_TEX + MEM_CODEC_MEM)
 
 typedef struct memblock_s
 {
@@ -1315,7 +1309,7 @@ void Memory_Init (void *buf, int size)
 	Memory_InitZone (mainzone, Z_MAINZONE, ZMAGIC, zonesize);
 
 #if (SECZONE_SIZE > 0)
-	zonesize = MEM_WATTCP_MEM;
+	zonesize = 0;
 	if (!isDedicated)
 	{
 		zonesize += MEM_STATIC_TEX;
