@@ -486,7 +486,7 @@ static void NET_Stats_f (void)
 static qboolean testInProgress = false;
 static int		testPollCount;
 static int		testDriver;
-static int		testSocket;
+static sys_socket_t	testSocket;
 
 static void Test_Poll (void *);
 static PollProcedure	testPollProcedure = {NULL, 0.0, Test_Poll};
@@ -593,7 +593,7 @@ static void Test_f (void)
 
 JustDoIt:
 	testSocket = dfunc.Open_Socket(0);
-	if (testSocket == -1)
+	if (testSocket == INVALID_SOCKET)
 		return;
 
 	testInProgress = true;
@@ -617,7 +617,7 @@ JustDoIt:
 
 static qboolean test2InProgress = false;
 static int		test2Driver;
-static int		test2Socket;
+static sys_socket_t	test2Socket;
 
 static void Test2_Poll (void *);
 static PollProcedure	test2PollProcedure = {NULL, 0.0, Test2_Poll};
@@ -724,7 +724,7 @@ static void Test2_f (void)
 
 JustDoIt:
 	test2Socket = dfunc.Open_Socket(0);
-	if (test2Socket == -1)
+	if (test2Socket == INVALID_SOCKET)
 		return;
 
 	test2InProgress = true;

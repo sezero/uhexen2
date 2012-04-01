@@ -3,6 +3,11 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2012-04-01 (SVN):
+    * net_dgrm.c: Fixed the types of testSocket and test2Socket from int
+      to sys_socket_t.
+    * updated version date stamp to 2012-04-01.
+
 2012-03-31 (SVN):
     * Reverted dos Watt-32 library's use of zone memory, because I still
       need debugging things. Changed Watt-32 memory requirement to 192K,
