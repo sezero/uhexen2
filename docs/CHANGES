@@ -3,6 +3,10 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2012-04-03 (SVN):
+    * updated BUGS and TODO documents and v1.5.2 release notes.
+    * updated version date stamp to 2012-04-03.
+
 2012-04-01 (SVN):
     * net_dgrm.c: Fixed the types of testSocket and test2Socket from int
       to sys_socket_t.

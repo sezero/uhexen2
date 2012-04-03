@@ -22,6 +22,7 @@ TODO:
   make sure it still works out of the box.
 - Maybe do other ports? (Amiga, etc?)
 - Does Solaris compile / work?
+- Add sound font support to Timidity.
 - Add sequencer (mpu-401) support for midi (alsa / oss)
 - DOS: Implement MIDI music playback.
 - DOS: Implement loading progress bars.
