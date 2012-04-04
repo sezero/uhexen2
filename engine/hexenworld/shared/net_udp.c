@@ -8,9 +8,6 @@
 #include "q_stdinc.h"
 #include "arch_def.h"
 #include "net_sys.h"
-#ifdef PLATFORM_DOS	/* Watt-32 */
-#include "tcp.h"
-#endif
 #include "quakedef.h"
 #include "huffman.h"
 
@@ -351,9 +348,17 @@ void NET_Init (int port)
 	if (err != 0)
 		Sys_Error ("Winsock initialization failed (%s)", socketerror(err));
 #endif
-#ifdef PLATFORM_DOS
+#ifdef PLATFORM_DOS	/* WatTCP */
+	int i, err;
+
 /*	dbug_init();*/
-	sock_init();
+
+	i = _watt_do_exit;
+	_watt_do_exit = 0;
+	err = sock_init();
+	_watt_do_exit = i;
+	if (err != 0)
+		Sys_Error ("WATTCP initialization failed (%s)", sock_init_err(err));
 #endif	/* WatTCP  */
 
 	//

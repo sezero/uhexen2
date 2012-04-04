@@ -154,6 +154,8 @@ COMPILE_TIME_ASSERT(sockaddr, offsetof(struct sockaddr, sa_family) == SA_FAM_OFF
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #include <netdb.h>
+#include <tcp.h>		/* for sock_init() & co */
+extern int	_watt_do_exit;	/* in sock_ini.h, but not in public headers. */
 
 #define	IOCTLARG_P(x)	(char *)x
 

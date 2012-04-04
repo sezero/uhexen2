@@ -3,6 +3,12 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2012-04-04 (SVN):
+    * net_udp.c (UDP_Init): Made Watt-32 to not exit immediately when
+      sock_init() fails, such as when a pktdrv is not present. Moved a
+      Watt-32 specific include to net_sys.h.
+    * updated version date stamp to 2012-04-04.
+
 2012-04-03 (SVN):
     * updated BUGS and TODO documents and v1.5.2 release notes.
     * updated version date stamp to 2012-04-03.
