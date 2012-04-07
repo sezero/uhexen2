@@ -67,12 +67,12 @@
 # package release number for final-release:
 %define pkg_final	1
 # package release number for pre-release:
-%define pkg_prerel	6
+%define pkg_prerel	1
 
 Name:		hexen2
 License:	GPLv2
 Group:		Amusements/Games
-Version:	1.5.2
+Version:	1.5.3
 Release:	%{?prerelease:0.%{pkg_prerel}.%{prerelease}}%{!?prerelease:%{pkg_final}}
 Summary:	Hexen II: Hammer of Thyrion
 URL:		http://uhexen2.sourceforge.net/
@@ -359,6 +359,7 @@ desktop-file-install \
 %{_prefix}/games/%{name}/docs/ReleaseNotes-1.4.3
 %{_prefix}/games/%{name}/docs/ReleaseNotes-1.5.0
 %{_prefix}/games/%{name}/docs/ReleaseNotes-1.5.1
+%{_prefix}/games/%{name}/docs/ReleaseNotes-1.5.2
 %{!?_without_freedesktop:%{_datadir}/applications/%{desktop_vendor}-%{name}.desktop}
 %{?_without_freedesktop:%{_sysconfdir}/X11/applnk/Games/%{name}.desktop}
 
@@ -377,6 +378,9 @@ desktop-file-install \
 %{_prefix}/games/%{name}/docs/README.hwmaster
 
 %changelog
+* Sat Apr 07 2012 O.Sezer <sezero@users.sourceforge.net> 1.5.3-1
+- Bump version to 1.5.3
+
 * Wed Feb 15 2012 O.Sezer <sezero@users.sourceforge.net> 1.5.2-1
 - Added --with gtk3 build option for the launcher
 
