@@ -4,6 +4,10 @@ Development Progress	:
 ---------------------------
 
 2012-04-08 (SVN):
+    * hexen2/client.h (cactive_t): For hexenworld compatibility, added
+      ca_active as an alias to ca_connected.
+
+2012-04-08 (SVN):
     * Moved extern declaration of Mod_ReloadTextures() to gl_model.h.
 
 2012-04-07 (SVN):
