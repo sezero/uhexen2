@@ -204,9 +204,6 @@ qboolean	have_stencil = false;
 // misc gl tweaks
 static qboolean	fullsbardraw = false;
 
-// misc external data and functions
-extern void	Mod_ReloadTextures (void);
-
 // menu drawing
 static void VID_MenuDraw (void);
 static void VID_MenuKey (int key);
