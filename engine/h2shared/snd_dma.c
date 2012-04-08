@@ -754,7 +754,7 @@ static void S_UpdateAmbientSounds (void)
 	channel_t	*chan;
 
 // calc ambient sound levels
-	if (!cl.worldmodel)
+	if (!cl.worldmodel || cls.state != ca_active)
 		return;
 
 	l = Mod_PointInLeaf (listener_origin, cl.worldmodel);

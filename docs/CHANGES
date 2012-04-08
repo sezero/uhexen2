@@ -4,6 +4,9 @@ Development Progress	:
 ---------------------------
 
 2012-04-08 (SVN):
+    * snd_dma.c (S_UpdateAmbientSounds): No ambients when disconnected.
+
+2012-04-08 (SVN):
     * hexen2/client.h (cactive_t): For hexenworld compatibility, added
       ca_active as an alias to ca_connected.
 
