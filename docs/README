@@ -102,7 +102,7 @@ b. Manual install/update of data files:
 
    If you want to install HexenWorld, download the HexenWorld
    binary package (e.g., hexenworld-1.5.3.i586.tgz) and extract
-   it in the same directory you extracted the base HoT tarball.
+   it in the same directory you extracted the base uhexen2 tarball.
    No additional patching is necessary for hexenworld.
 
 
@@ -307,23 +307,22 @@ See README.music for more information.
 
 Since version 1.4.2 (engine version 1.19), Hammer of Thyrion binaries
 are fully compatible Raven's Windows Hexen II-1.11 binaries.  When run
-as a client, it can connect to Raven-1.11 servers and can play just
-fine.  It can playback the demos created with 1.11 version, as well.
-On the other hand, if a 1.11 client wants to connect to a H.o.T. server,
+as a client, it can connect to Raven-1.11 servers and play just fine.
+It can playback the demos created with 1.11 version, as well.
+On the other hand if a 1.11 client wants to connect to a uhexen2 server,
 the server must be started with "-protocol 18" command line argument.
 Remember that the original cdrom versions (1.03) are not supported at
 all: Network compatibility is only valid with the updated 1.11 version.
 Mission pack is, of course, fully network-compatible across platforms.
-As for the other Hexen II ports such as UQE, Pa3PyX, NewHexen, JSHexen,
-Hammer of Thyrion is compatible with them, too.
+As for the other Hexen II ports, Hammer of Thyrion is compatible with
+them, too.
 
 
 1.6 Game Saves and Configuration files
 --------------------------------------
 
 Your game saves and configuration files are stored in a folder
-named  .hexen2 in your home folder:  ~/.hexen2   For the demo
-version, it's ~/.hexen2demo instead.
+named  .hexen2 in your home folder:  ~/.hexen2
 
 Saves/configs for Hexen2 are stored under ~/.hexen2/data1
 For the Mission Pack, they are stored under ~/.hexen2/portals
@@ -358,9 +357,10 @@ combination whenever you want.
 2.1 Sound Problems
 ------------------
 
-First, we recommend using high sampling rates. This can be done either
-by a command line argument like "-sndspeed 44100" or "-sndspeed 48000",
-or by using the game launcher. ALSA is the driver of choice.
+First, we recommend using 44100 or 48000 as the sampling rate with
+recent sound chipsets:  either use a command line argument like
+-sndspeed 44100, or select from the game launcher menus. ALSA is the
+driver of choice.
 
 If you have problems making sound to work correctly, using the arts
 sound server may help you:    artsd & ; artsdsp -m glhexen2 -sndoss
@@ -411,7 +411,7 @@ documented by Davide Cendron.)
 A common problem, especially with 3dfx cards, is flickering lines
 across the screen caused by a GL tweak. To fix this, bring down
 the console with the '~' key and enter 'gl_ztrick 0'.
-With fresh installations of HoT-1.2.3 and later, this option is
+With fresh installations of uhexen2-1.2.3 and later, this option is
 disabled by default.
 
 
@@ -439,10 +439,10 @@ line. For example, in order to run Fortress of Four Doors:
 
     ./glhexen2 -game fo4d
 
-If you want to run your mod with mission pack support enabled, use
+If you want to run some mod with mission pack support enabled, use
 a command line with -portals argument included. For example:
 
-    ./glhexen2 -portals -game fo4d
+    ./glhexen2 -portals -game somemod
 
 Fortress of Four Doors is one of the few large mods for Hexen II. It
 has a confusing level near the middle, but is otherwise great. Look
@@ -473,7 +473,7 @@ variable	valid values
 _snd_mixahead	0.1-0.9	: 0.1 = less latency,
 			  0.9 = better performance
 
-gl_multitexture	0 or 1	: Disable/enable multitexturing on the fly.
+gl_multitexture	 0 or 1	: Disable/enable multitexturing on the fly.
 			  0 is default. Faster performance if the
 			  hardware supports it. Also adjustable from
 			  the menu.
@@ -642,10 +642,10 @@ consult the document README.3dfx.
 	QNX builds		: http://sourceforge.net/projects/openqnx/files/
 
     Other Hexen II ports
-	JLQuake, a Quake1/2/3 and Hexen2/HexenWorld
-			engine	: http://sourceforge.net/projects/vquake/
-	FTE QW, a Quake/QuakeWorld engine with Hexen II
-			support	: http://www.fteqw.com/
+	JLQuake, a Quake1/2/3 and H2/HW engine:
+				  http://sourceforge.net/projects/vquake/
+	FTE QW, a Q1/QW engine with H2 support:
+				  http://www.fteqw.com/
 	Hexen II PSP port	: http://jurajstyk.host.sk/
 	Korax's UQE Hexen II	: http://www.korvinkorax.com/category/games/ultimate-quake-engine/
 

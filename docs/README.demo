@@ -1,6 +1,7 @@
 
-Hexen II: Hammer of Thyrion 1.5.3 (demo version)
-------------------------------------------------
+Hexen II: Hammer of Thyrion 1.5.3
+	(demo version)
+---------------------------------
 
 
 1. Installation
@@ -247,9 +248,9 @@ See README.music for more information.
 
 Since version 1.4.2 (engine version 1.19), Hammer of Thyrion binaries
 are fully compatible Raven's Windows Hexen II-1.11 binaries.  When run
-as a client, it can connect to Raven-1.11 servers and can play just
-fine.  It can playback the demos created with 1.11 version, as well.
-On the other hand, if a 1.11 client wants to connect to a H.o.T. server,
+as a client, it can connect to Raven-1.11 servers and play just fine.
+It can playback the demos created with 1.11 version, as well.
+On the other hand if a 1.11 client wants to connect to a uhexen2 server,
 the server must be started with "-protocol 18" command line argument.
 Remember that the old demo version is not supported at all:  Network
 compatibility is only valid with the 1.11 version.
@@ -291,9 +292,10 @@ combination whenever you want.
 2.1 Sound Problems
 ------------------
 
-First, we recommend using high sampling rates. This can be done either
-by a command line argument like "-sndspeed 44100" or "-sndspeed 48000",
-or by using the game launcher. ALSA is the driver of choice.
+First, we recommend using 44100 or 48000 as the sampling rate with
+recent sound chipsets:  either use a command line argument like
+-sndspeed 44100, or select from the game launcher menus. ALSA is the
+driver of choice.
 
 If you have problems making sound to work correctly, using the arts
 sound server may help you:    artsd & ; artsdsp -m glhexen2 -sndoss
@@ -344,7 +346,7 @@ documented by Davide Cendron.)
 A common problem, especially with 3dfx cards, is flickering lines
 across the screen caused by a GL tweak. To fix this, bring down
 the console with the '~' key and enter 'gl_ztrick 0'.
-With fresh installations of HoT-1.2.3 and later, this option is
+With fresh installations of uhexen2-1.2.3 and later, this option is
 disabled by default.
 
 
@@ -386,7 +388,7 @@ variable	valid values
 _snd_mixahead	0.1-0.9	: 0.1 = less latency,
 			  0.9 = better performance
 
-gl_multitexture	0 or 1	: Disable/enable multitexturing on the fly.
+gl_multitexture	 0 or 1	: Disable/enable multitexturing on the fly.
 			  0 is default. Faster performance if the
 			  hardware supports it. Also adjustable from
 			  the menu.
@@ -550,10 +552,10 @@ consult the document README.3dfx.
 	QNX builds		: http://sourceforge.net/projects/openqnx/files/
 
     Other Hexen II ports
-	JLQuake, a Quake1/2/3 and Hexen2/HexenWorld
-			engine	: http://sourceforge.net/projects/vquake/
-	FTE QW, a Quake/QuakeWorld engine with Hexen II
-			support	: http://www.fteqw.com/
+	JLQuake, a Quake1/2/3 and H2/HW engine:
+				  http://sourceforge.net/projects/vquake/
+	FTE QW, a Q1/QW engine with H2 support:
+				  http://www.fteqw.com/
 	Hexen II PSP port	: http://jurajstyk.host.sk/
 	Korax's UQE Hexen II	: http://www.korvinkorax.com/category/games/ultimate-quake-engine/
 
