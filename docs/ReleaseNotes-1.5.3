@@ -1,8 +1,12 @@
 Hexen II: Hammer of Thyrion (uhexen2)
-Release Notes for version 1.5.3 (Apr. 08, 2012.)
+Release Notes for version 1.5.3 (Apr. 09, 2012.)
 ================================================
 
 Changes since the uhexen2-1.5.2 release:
 
-* 
+* OpenGL: Made non-power-of-two textures support configurable by a cvar,
+  gl_texture_NPOT, disabled by default:  Fixes serious slowdown on some
+  old graphics hardware, such as R300 to R500 class Radeons on Mac OS X,
+  which the driver is lying about its capability. Added a menu entry to
+  enable/disable the feature (OpenGL features -> NPOT textures.)
 

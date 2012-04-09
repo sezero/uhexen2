@@ -173,7 +173,9 @@ static const char	*gl_extensions;
 qboolean	is_3dfx = false;
 
 GLint		gl_max_size = 256;
+static qboolean	gl_has_NPOT = false;
 qboolean	gl_tex_NPOT = false;
+cvar_t		gl_texture_NPOT = {"gl_texture_NPOT", "0", CVAR_ARCHIVE};
 GLfloat		gl_max_anisotropy;
 float		gldepthmin, gldepthmax;
 
@@ -709,15 +711,28 @@ static void CheckAnisotropyExtensions (void)
 
 static void CheckNonPowerOfTwoTextures (void)
 {
+/* On Mac OS X, old Radeons lie about NPOT textures capability, they
+ * fallback to software with mipmap NPOT textures.  see, e.g.:
+ * http://lists.apple.com/archives/mac-opengl/2006/Dec/msg00000.html
+ * http://lists.apple.com/archives/mac-opengl/2009/Oct/msg00040.html
+ * http://www.idevgames.com/forums/printthread.php?tid=3814&page=2
+ * MH says NVIDIA once did the same with their GeForce FX on Windows:
+ * http://forums.inside3d.com/viewtopic.php?f=10&t=4832
+ * Therefore, advertisement of this extension is an unreliable way of
+ * detecting the actual capability: we are binding NPOT support to a
+ * cvar defaulting to disabled.
+ */
 	if (strstr(gl_extensions, "GL_ARB_texture_non_power_of_two"))
 	{
-		gl_tex_NPOT = true;
+		gl_has_NPOT = true;
 		Con_SafePrintf("Found ARB_texture_non_power_of_two\n");
 	}
 	else
 	{
-		gl_tex_NPOT = false;
+		gl_has_NPOT = false;
+		Cvar_SetROM("gl_texture_NPOT", "0");
 	}
+	gl_tex_NPOT = !!gl_texture_NPOT.integer;
 }
 
 static void CheckStencilBuffer (void)
@@ -814,6 +829,7 @@ static void GL_ResetFunctions (void)
 	is8bit = false;
 	glColorTableEXT_fp = NULL;
 
+	gl_has_NPOT = false;
 	gl_tex_NPOT = false;
 }
 
@@ -1429,6 +1445,7 @@ void	VID_Init (unsigned char *palette)
 				"vid_config_glx",
 				"vid_config_gly",
 				"vid_config_consize",
+				"gl_texture_NPOT",
 				"gl_lightmapfmt" };
 #define num_readvars	( sizeof(read_vars)/sizeof(read_vars[0]) )
 
@@ -1442,6 +1459,7 @@ void	VID_Init (unsigned char *palette)
 	Cvar_RegisterVariable (&vid_config_consize);
 	Cvar_RegisterVariable (&vid_mode);
 	Cvar_RegisterVariable (&_enable_mouse);
+	Cvar_RegisterVariable (&gl_texture_NPOT);
 	Cvar_RegisterVariable (&gl_lightmapfmt);
 
 	Cmd_AddCommand ("vid_showinfo", VID_ShowInfo_f);

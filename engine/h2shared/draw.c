@@ -206,11 +206,11 @@ void Draw_Init (void)
 /*
 ===============
 Draw_ReInit
-This procedure re-inits some textures, those that
-are read during engine's init phase, which may be
-changed by mods. This should NEVER be called when
-a level is active. This is intended to be called
-just after changing the game directory.
+Delete and reload textures that read during engine's
+init phase which may be changed by mods and purge all
+others, i.e. map/model textures.
+Should NEVER be called when a map is active: Only
+intended to be called upon a game directory change.
 ===============
 */
 void Draw_ReInit (void)
@@ -219,14 +219,14 @@ void Draw_ReInit (void)
 
 	temp = scr_disabled_for_loading;
 	scr_disabled_for_loading = true;
-
 	draw_reinit = true;
+
 	W_LoadWadFile ("gfx.wad");
 	Draw_Init();
 	SCR_Init();
 	Sbar_Init();
-	draw_reinit = false;
 
+	draw_reinit = false;
 	scr_disabled_for_loading = temp;
 }
 

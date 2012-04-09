@@ -314,6 +314,116 @@ static void Draw_Anisotropy_f (cvar_t *var)
 
 /*
 ===============
+Draw_ClearAllModels
+Callback for Draw_ReInit() and Draw_ReinitTextures():
+Clear all models along with their textures.
+===============
+*/
+static void Draw_ClearAllModels (void)
+{
+	int	temp = gl_purge_maptex.integer;
+	flush_textures = true;
+	Cvar_Set ("gl_purge_maptex", "1");
+	Mod_ClearAll ();
+	Cvar_SetValue ("gl_purge_maptex", temp);
+}
+
+/*
+===============
+Draw_ReinitTextures
+Delete and reload all textures
+===============
+*/
+static void Draw_ReinitTextures (void)
+{
+	int	temp;
+
+	temp = scr_disabled_for_loading;
+	scr_disabled_for_loading = true;
+	draw_reinit = true;
+
+	D_ClearOpenGLTextures(0);
+	memset (lightmap_textures, 0, sizeof(lightmap_textures));
+	// make sure all of alias models are cleared
+	if (cls.state != ca_active)
+		Draw_ClearAllModels ();
+
+	// Reload pre-map pics, fonts, console, etc
+	W_LoadWadFile ("gfx.wad");
+	Draw_Init();
+	SCR_Init();
+	Sbar_Init();
+	// Reload the particle texture
+	R_InitParticleTexture();
+	R_InitExtraTextures ();
+#if defined(H2W)
+	R_InitNetgraphTexture();
+#endif	/* H2W */
+
+	// Reload the map's textures
+	if (cls.state == ca_active)
+	{
+		Mod_ReloadTextures();
+		GL_BuildLightmaps();
+	}
+
+	draw_reinit = false;
+	scr_disabled_for_loading = temp;
+}
+
+/*
+===============
+Draw_Callback_NPOT
+Callback for gl_texture_NPOT
+===============
+*/
+static void Draw_Callback_NPOT (cvar_t *var)
+{
+	gl_tex_NPOT = !!var->integer;
+	Draw_ReinitTextures ();
+}
+
+/*
+===============
+Draw_ReInit
+Delete and reload textures that read during engine's
+init phase which may be changed by mods and purge all
+others, i.e. map/model textures.
+Should NEVER be called when a map is active: Only
+intended to be called upon a game directory change.
+===============
+*/
+void Draw_ReInit (void)
+{
+	int	temp;
+
+	temp = scr_disabled_for_loading;
+	scr_disabled_for_loading = true;
+	draw_reinit = true;
+
+	D_ClearOpenGLTextures(0);
+	memset (lightmap_textures, 0, sizeof(lightmap_textures));
+	// make sure all of alias models are cleared
+	Draw_ClearAllModels ();
+
+	// Reload pre-map pics, fonts, console, etc
+	W_LoadWadFile ("gfx.wad");
+	Draw_Init();
+	SCR_Init();
+	Sbar_Init();
+	// Reload the particle texture
+	R_InitParticleTexture();
+	R_InitExtraTextures ();
+#if defined(H2W)
+	R_InitNetgraphTexture();
+#endif	/* H2W */
+
+	draw_reinit = false;
+	scr_disabled_for_loading = temp;
+}
+
+/*
+===============
 Draw_Init
 ===============
 */
@@ -332,6 +442,7 @@ void Draw_Init (void)
 		Cvar_RegisterVariable (&gl_texture_anisotropy);
 		Cvar_SetCallback (&gl_texturemode, Draw_TextureMode_f);
 		Cvar_SetCallback (&gl_texture_anisotropy, Draw_Anisotropy_f);
+		Cvar_SetCallback (&gl_texture_NPOT, Draw_Callback_NPOT);
 	}
 
 	// load the charset: 8*8 graphic characters
@@ -383,50 +494,6 @@ void Draw_Init (void)
 
 	// initialize the player texnums for multiplayer config screens
 	glGenTextures_fp(MAX_PLAYER_CLASS, menuplyr_textures);
-}
-
-/*
-===============
-Draw_ReInit
-This procedure re-inits some textures, those that
-are read during engine's init phase, which may be
-changed by mods. This should NEVER be called when
-a level is active. This is intended to be called
-just after changing the game directory.
-===============
-*/
-void Draw_ReInit (void)
-{
-	int	temp, temp2;
-
-	temp = scr_disabled_for_loading;
-	scr_disabled_for_loading = true;
-
-	draw_reinit = true;
-
-	D_ClearOpenGLTextures(0);
-	memset (lightmap_textures, 0, sizeof(lightmap_textures));
-	// make sure all of alias models are cleared
-	flush_textures = true;
-	temp2 = gl_purge_maptex.integer;
-	Cvar_Set ("gl_purge_maptex", "1");
-	Mod_ClearAll ();
-
-	// Reload pre-map pics, fonts, console, etc
-	W_LoadWadFile ("gfx.wad");
-	Draw_Init();
-	SCR_Init();
-	Sbar_Init();
-	// Reload the particle texture
-	R_InitParticleTexture();
-	R_InitExtraTextures ();
-#if defined(H2W)
-	R_InitNetgraphTexture();
-#endif	/* H2W */
-
-	Cvar_SetValue ("gl_purge_maptex", temp2);
-	draw_reinit = false;
-	scr_disabled_for_loading = temp;
 }
 
 

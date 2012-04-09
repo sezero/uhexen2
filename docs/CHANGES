@@ -3,6 +3,24 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2012-04-09 (SVN):
+    * gl_vidsdl.c, gl_vidnt.c: Bound non-power-of-two textures support
+      to a newly added cvar gl_texture_NPOT, disabled by default. Fixes
+      serious framerate drop on old graphics hardware which the driver
+      is lying about its GL_ARB_texture_non_power_of_two capability.
+      Mac OS X with ATI R300 to R500 series graphics cards is well known:
+      http://lists.apple.com/archives/mac-opengl/2006/Dec/msg00000.html
+      http://lists.apple.com/archives/mac-opengl/2009/Oct/msg00040.html
+      http://www.idevgames.com/forums/printthread.php?tid=3814&page=2
+      MH says NVIDIA once did the same with their GeForce FX on Windows:
+      http://forums.inside3d.com/viewtopic.php?f=10&t=4832
+      Identifying and blacklisting each and every problematic driver is
+      virtually impossible, hence the cvar solution.
+    * gl_draw.c: Added Draw_ReinitTextures() as a cvar callback function
+      for gl_texture_NPOT.
+    * menu.c: Added menu item to change the setting as desired.
+    * updated version date stamp to 2012-04-09.
+
 2012-04-08 (SVN):
     * snd_dma.c (S_UpdateAmbientSounds): No ambients when disconnected.
 
