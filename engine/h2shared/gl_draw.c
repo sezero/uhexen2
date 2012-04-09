@@ -253,7 +253,7 @@ static void Draw_TextureMode_f (cvar_t *var)
 
 	for (i = 0; i < NUM_GL_FILTERS; i++)
 	{
-		if (!strcmp (gl_texmodes[i].name, gl_texturemode.string))
+		if (!strcmp (gl_texmodes[i].name, var->string))
 		{
 			if (gl_filter_idx != i)
 			{
@@ -267,15 +267,15 @@ static void Draw_TextureMode_f (cvar_t *var)
 
 	for (i = 0; i < NUM_GL_FILTERS; i++)
 	{
-		if (!q_strcasecmp (gl_texmodes[i].name, gl_texturemode.string))
+		if (!q_strcasecmp (gl_texmodes[i].name, var->string))
 		{
-			Cvar_SetQuick (&gl_texturemode, gl_texmodes[i].name);
+			Cvar_SetQuick (var, gl_texmodes[i].name);
 			return;
 		}
 	}
 
 	Con_Printf ("bad filter name\n");
-	Cvar_SetQuick (&gl_texturemode, gl_texmodes[gl_filter_idx].name);
+	Cvar_SetQuick (var, gl_texmodes[gl_filter_idx].name);
 }
 
 static void Draw_TouchMipmapFilterModes (void)
@@ -297,13 +297,13 @@ static void Draw_TouchMipmapFilterModes (void)
 
 static void Draw_Anisotropy_f (cvar_t *var)
 {
-	if (gl_texture_anisotropy.value < 1)
+	if (var->value < 1)
 	{
-		Cvar_SetQuick (&gl_texture_anisotropy, "1");
+		Cvar_SetQuick (var, "1");
 	}
-	else if (gl_texture_anisotropy.value > gl_max_anisotropy)
+	else if (var->value > gl_max_anisotropy)
 	{
-		Cvar_SetValueQuick (&gl_texture_anisotropy, gl_max_anisotropy);
+		Cvar_SetValueQuick (var, gl_max_anisotropy);
 	}
 	else
 	{

@@ -4,6 +4,12 @@ Development Progress	:
 ---------------------------
 
 2012-04-09 (SVN):
+    * gl_draw.c (Draw_TextureMode_f, Draw_Anisotropy_f): Some micro
+      optimization: Simply use the cvar pointer passed to the function
+      instead of specifically referencing gl_texture_anisotropy or
+      gl_texturemode specifically.
+
+2012-04-09 (SVN):
     * gl_vidsdl.c, gl_vidnt.c: Bound non-power-of-two textures support
       to a newly added cvar gl_texture_NPOT, disabled by default. Fixes
       serious framerate drop on old graphics hardware which the driver
