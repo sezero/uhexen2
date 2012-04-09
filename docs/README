@@ -557,9 +557,6 @@ gl_extra_dynamic_lights   0 or 1:
 			  Disable/enable extra dynamic lights. 0 is the
 			  default. Also adjustable from the menu.
 
-gl_stencilshadow  0 or 1: Disable/enable stencil buffered shadows on the
-			  fly. Default is 0.  Adjustable from the menu.
-
 gl_purge_maptex	  0 or 1: Purge opengl textures upon map change. Textures
 			  won't keep accumulating from map to map but the
 			  levels will load slower. Default is 1. Adjustable
