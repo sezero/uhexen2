@@ -113,7 +113,7 @@ Requires:	SDL >= 1.2.4
 # these will be picked by rpm already
 #%{!?_without_mp3:Requires: libmad}
 #%{!?_without_ogg:Requires: libvorbis}
-Requires:	hexen2 >= 1.5.1
+Requires:	hexen2 >= 1.5.3
 
 %description -n hexenworld
 Hexen II is a class based shooter game by Raven Software from 1997.
@@ -209,6 +209,7 @@ utils/hcc/hcc -src gamecode-%{gamecode_ver}/hc/hw -oi -on
 %{__install} -D -m644 docs/ReleaseNotes-1.4.3 %{buildroot}/%{_prefix}/games/%{name}/docs/ReleaseNotes-1.4.3
 %{__install} -D -m644 docs/ReleaseNotes-1.5.0 %{buildroot}/%{_prefix}/games/%{name}/docs/ReleaseNotes-1.5.0
 %{__install} -D -m644 docs/ReleaseNotes-1.5.1 %{buildroot}/%{_prefix}/games/%{name}/docs/ReleaseNotes-1.5.1
+%{__install} -D -m644 docs/ReleaseNotes-1.5.2 %{buildroot}/%{_prefix}/games/%{name}/docs/ReleaseNotes-1.5.2
 
 # Install the gamedata
 %{__mkdir_p} %{buildroot}/%{_prefix}/games/%{name}/data1/
@@ -599,4 +600,3 @@ desktop-file-install \
 
 * Thu Aug 21 2005 O.Sezer <sezero@users.sourceforge.net> 1.3.0-1
 - First sketchy spec file for RedHat and Fedora Core
-
