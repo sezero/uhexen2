@@ -1,5 +1,5 @@
 /*  h2patch3 - hexen2 pak patch application using xdelta3
- *  Copyright (C) 2007-2011.  O.Sezer <sezero@users.sourceforge.net>
+ *  Copyright (C) 2007-2012.  O.Sezer <sezero@users.sourceforge.net>
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -103,7 +103,7 @@ static	char	csum[CHECKSUM_SIZE+1];
 #define	XD3_VERSION_SVN		342
 #define	HOT_VERSION_MAJ		1
 #define	HOT_VERSION_MID		5
-#define	HOT_VERSION_MIN		2
+#define	HOT_VERSION_MIN		3
 
 #define	H2PATCH_SRCWINSZ	(1<<23)	/* 8 MB is enough */
 

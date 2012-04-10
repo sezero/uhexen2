@@ -1,6 +1,8 @@
 
 -------------------------------------------------------------------------
 
+		Hexen II: Hammer of Thyrion (uHexen2)
+
 This is a pretty messy draft of notes I gathered while working on the
 Hexen II, HexenWorld and utilities code.  For known bugs, see the file
 named BUGS.  This file lists several issues in the code which mostly

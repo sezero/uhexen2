@@ -1,4 +1,4 @@
-Hexen II for DOS, version 1.5.2
+Hexen II for DOS, version 1.5.3
 
 DOS port of Hexen II, using the Hammer of Thyrion (uHexen2) engine
 http://uhexen2.sourceforge.net/
@@ -30,13 +30,14 @@ Things not tested, but should work:
   In addition, uHexen2 includes WatTCP (WATT-32) support for internet
   play, which has been reported to work without issues.  See WatTCP
   documentation (http://home.broadpark.no/~gvanem/) to setup WatTCP.
-  Note: WatTCP won't initialize if IPX is running.
-  Note: WatTCP was observed not to work with H2DOS as a dedicated or
-  listen server, i.e. clients can't connect to it; same with H2DED too.
-  Note: HexenWorld client or server with WatTCP doesn't work for now
-  due to a WatTCP bug.
 
-  Note: The Hexen II dedicated server application H2DED is not tested.
+  - Note: WatTCP won't initialize if IPX is running.
+  - Note: WatTCP was observed not to work with H2DOS as a dedicated or
+    listen server, i.e. clients can't connect to it. Same with H2DED.
+  - Note: HexenWorld client or server with WatTCP doesn't work for now
+    due to a WatTCP bug.
+
+  - Note: The Hexen II dedicated server application H2DED is not tested.
 
   In case you want to disable some or all network functionality, here
   are the related command line switches:
@@ -66,8 +67,8 @@ NOTES:
 
 	h2dos -mem 16
 
-  Note: Higher video resolutions will be disabled in case of insuffi-
-  cient memory.
+  - Note: Higher video resolutions will be disabled when sufficient
+    amount of memory is not present.
 
 * CWSDPMI: Packaged with h2dos is CWSDPMI r7, which is the latest as
   of this writing. If you ever have problems with it, try switching
@@ -89,8 +90,8 @@ NOTES:
 
 	h2dos -mwheel
 
-  Note: Since cutemouse 2.1 beta 4 version (cutemouse21b4.zip), the
-  wheel is not enabled by default: you must use their /O switch.
+  - Note: As of cutemouse-2.1-beta4 version (cutemouse21b4.zip), the
+    wheel is not enabled by default: you must use their /O switch.
 
 * SOUND:  You must install the DOS drivers for your sound card.  For
   sound blaster emulation, the BLASTER environment variable must be set.

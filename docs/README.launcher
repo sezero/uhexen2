@@ -4,8 +4,10 @@ with GTK+ interface. Version 1.0.7
 ----------------------------------
 
 Place the launcher binary into the directory that you installed
-Hammer of Thyrion v1.5.3.  Execute it and enjoy. You can also
-create a symlink for it in a directory on your path.  Examples:
+Hammer of Thyrion (uHexen2) v1.5.3.  Execute it and enjoy. You can
+also create a symlink for it in a directory on your path.
+
+Examples:
 
 # ln -s /usr/local/games/hexen2/h2launcher  /home/my_name/bin/hexen2
 

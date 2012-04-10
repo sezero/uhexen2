@@ -16,8 +16,8 @@ Initial port to Linux (the Anvil of Thyrion engine) :
   Dan Olson <theoddone33@icculus.org>
   Clément Bourdarias <phneutre@icculus.org>
 
-Contributors:
--------------
+Contributors (coding):
+----------------------
   Steven Atkinson <stevenaaus@yahoo.com>
   Levent Yavas <leventyavas@gmail.com>
   Thomas Freundt <thf_ebay@yahoo.de>
@@ -25,27 +25,30 @@ Contributors:
   Keith Rozett <krozett@gmail.com>
   Juraj Styk <jurajstyk@host.sk>
   Jacques Krige <korax@sagamedev.com>
-  Michal Wozniak (kiero) <wozniak_m@interia.pl>
+  Michal Wozniak <wozniak_m@interia.pl>
   Julien Langer <bluti@users.sourceforge.net>
-
-Contributors (documentation & testing):
----------------------------------------
-  plusminus <plusminus@users.sourceforge.net>
-  Davide Cendron <scen@gentoo.org>
-  Anthony Williams (rugxulo) <rugxulo@users.sourceforge.net>
 
 Credits: Miscellaneous Quake/Hexen II projects and/or
 their authors that we used code from:
 -----------------------------------------------------
   QuakeForge - http://sourceforge.net/projects/quake/
   ioquake3 - http://ioquake3.org/
-  Matthias Buecher (Maddes, QIP) - http://www.inside3d.com/qip/
-  Kevin Shanahan (Tyrann) <tyrann@disenchant.net>
-  Forest Hale (LordHavoc) <lordhavoc@ghdigital.com>
+  QIP project - http://www.inside3d.com/qip/
+  Matthias Buecher <maddes.b@arcor.de>
+  Kevin Shanahan <kmshanah@disenchant.net>
+  Forest Hale <lordhavoc@ghdigital.com>
   Pa3PyX <pa3pyx87405703@icqmail.com>
   Juraj Styk <jurajstyk@host.sk>
   Eric Hobbs <elhobbs@comcast.net>
-  Marc Allaire (Kor Skarn) <korskarn@hexenworld.com>
+  Marc Allaire <korskarn@hexenworld.com>
+  "MH" (parts of DIB code) - http://mhquake.blogspot.com/
+
+More contributors (documentation & testing):
+--------------------------------------------
+  plusminus <plusminus@users.sourceforge.net>
+  Davide Cendron <scen@gentoo.org>
+  Anthony Williams <rugxulo@users.sourceforge.net>
+  Frank Sapone <emoaddict15@gmail.com>
 
 If you think your name is missing and should be mentioned here,
 please contact us so we can add it.

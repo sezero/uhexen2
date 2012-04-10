@@ -1,7 +1,7 @@
-Hexen II: Hammer of Thyrion
+Hexen II: Hammer of Thyrion (uHexen2)
 
-Known Bugs
----------------------------
+Known Bugs:
+-------------------------------------
 
 - BUG # 2176023: Can't move backwards after dying (a.k.a. the DEATHBUG):
   http://sf.net/tracker/?group_id=124987&atid=701006&aid=2176023&func=detail

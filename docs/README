@@ -1,6 +1,6 @@
 
-Hexen II: Hammer of Thyrion 1.5.3
----------------------------------
+Hexen II: Hammer of Thyrion (uHexen2) - v1.5.3
+----------------------------------------------
 
 
 1. Installation
@@ -226,10 +226,10 @@ that option in the Makefile when compiling).
 1.4 Sound and Midi
 ------------------
 
-Hammer of Thyrion (uHexen2) includes a choice of three sound drivers for
-linux/unix users: SDL, OSS and ALSA. The engine tries them and uses the
-first one which successfully initializes. You can make the engine to use
-only a specific driver by command line arguments, too.
+uHexen2 includes several choices of sound drivers for linux/unix users:
+SDL, OSS and ALSA.  The engine tries them and uses the first one which
+successfully initializes. You can make the engine to use only a specific
+driver by command line arguments, too.
 
 a. SDL sound code
 -----------------
@@ -311,11 +311,9 @@ as a client, it can connect to Raven-1.11 servers and play just fine.
 It can playback the demos created with 1.11 version, as well.
 On the other hand if a 1.11 client wants to connect to a uhexen2 server,
 the server must be started with "-protocol 18" command line argument.
-Remember that the original cdrom versions (1.03) are not supported at
-all: Network compatibility is only valid with the updated 1.11 version.
+There is no network compatibility with Hexen II protocols older than 18.
 Mission pack is, of course, fully network-compatible across platforms.
-As for the other Hexen II ports, Hammer of Thyrion is compatible with
-them, too.
+As for the other Hexen II ports, uHexen2 is compatible with them, too.
 
 
 1.6 Game Saves and Configuration files

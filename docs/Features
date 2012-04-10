@@ -1,7 +1,7 @@
-Hexen II: Hammer of Thyrion
+Hexen II: Hammer of Thyrion (uHexen2)
 
 Features:
----------------------------
+-------------------------------------
 
 * Support for Hexen II, Hexen II demo, Portal of Praevus mission pack
   and HexenWorld.
@@ -32,8 +32,11 @@ Features:
 
 * The same binary handles both original hexen2 and the mission pack.
 
-* The same hexen2 binary transparently handles both v1.11 (hexen2) and
-  v1.12 (mission pack) style progs.dat files.
+* The same hexen2 binary transparently handles all v1.03-v1.11 (hexen2)
+  and v1.12 (mission pack) style progs.dat files.
+
+* The same hexenworld binary transparently handles all v0.11, v0.14 and
+  v0.15 style progs.dat files.
 
 * Fullscreen intermissions and help dialogs.
 

@@ -1,8 +1,7 @@
-Hammer of Thyrion,
-HexenWorld Server
+Hammer of Thyrion (uHexen2) - HexenWorld Server
 
 Server Modes:
---------------
+---------------------
 
 There are different modes that you can run your HexenWorld server in.
 These are only for unmodified hexenworld. Some community created mods,
@@ -153,5 +152,4 @@ Mesage broadcasting:
 
 spartanPrint 1	Only sends chat and relevant death messages to clients. 0 or 1.
 		Default is 1.
-
 

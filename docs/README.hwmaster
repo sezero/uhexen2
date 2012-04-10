@@ -1,7 +1,6 @@
-Hammer of Thyrion,
-HexenWorld Master Server
-Version 1.2.7
-------------------------
+Hammer of Thyrion (uHexen2) - HexenWorld Master Server - version 1.2.7
+
+----------------------------
 
 This is a small, commandline-only program. It doesn't need any Hexen II
 or HexenWorld installation. It uses 26900 as the default port.

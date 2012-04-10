@@ -3,6 +3,9 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2012-04-10 (SVN):
+    * A lot of documentation updates and clean-ups.
+
 2012-04-09 (SVN):
     * gl_draw.c (Draw_TextureMode_f, Draw_Anisotropy_f): Some micro
       optimization: Simply use the cvar pointer passed to the function

@@ -1,5 +1,4 @@
-Hexen II: Hammer of Thyrion
-Version 1.5.2
+Hexen II: Hammer of Thyrion (uHexen2) - v1.5.3
 
 Instructions for Compiling:
 ===========================
@@ -33,9 +32,10 @@ NASM	:	Netwide Assembler. An x86 assembler.
 		Minimum version required is 0.98.38 or 0.98.39 from the
 		old series.  Versions 2.02, 2.03.01, 2.05.01 or 2.09.10
 		from the new 2.x series are recommended.
-		YASM, a re-write of NASM, is also supported:  Versions
-		0.5.0, 0.6.x, 0.7.x, 0.8.0, 1.0.1 and 1.1.0 are tested.
-		Versions 0.7.2 or 1.1.0 are highly recommended.
+
+		YASM, a re-write of NASM, is also supported:  yasm-0.5.0
+		and newer can compile our asm.  Versions 1.1.0 and 1.2.0
+		are recommended.
 
 		The assemblers nasm or yasm are required for compiling
 		hexen2 and hexenworld clients for 32 bit x86 machines.
@@ -229,8 +229,8 @@ Compilers other than djgpp, such as OpenWatcom, most probably won't work
 and would need adjustments.
 
 CWSDPMI.EXE is needed at runtime: use the "0.90+ r5" or a newer version.
-I have been successfully using the  "release 5, 2008 refresh"  version
-(dated 21 August 2008) for quite some time.
+I've been successfully using the R5 "2008 refresh" (21 Aug.2008) as well
+as the R7 (07 Jan. 2010) versions for quite some time.
 
 
 Links:
@@ -238,7 +238,7 @@ Links:
 SDL homepage		:	http://www.libsdl.org/
 Ogg/Vorbis homepage	:	http://xiph.org/
 libmad homepage		:	http://www.underbit.com/products/mad/
-mpg123 homepage		:	http://mpg123.org/  http://mpg123.de/
+mpg123 homepage		:	http://mpg123.org/
 ALSA homepage		:	http://www.alsa-project.org/
 GCC homepage		:	http://gcc.gnu.org/
 Binutils homepage	:	http://sourceware.org/binutils/
