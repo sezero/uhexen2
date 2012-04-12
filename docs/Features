@@ -6,11 +6,10 @@ Features:
 * Support for Hexen II, Hexen II demo, Portal of Praevus mission pack
   and HexenWorld.
 
-* Cross-platform code: Tested on Linux, FreeBSD, OpenBSD, Mac OS X and
-  Windows. Also reported to build and run fine on QNX and Nokia N770,
-  N800 and N810. Other unices should also work. Even DOS is supported
-  for nostalgic purposes. There are seperate ports to MorphOS, AmigaOS4,
-  PalmOS, GP2X and Pandora.
+* Cross-platform code: Well tested on Linux, FreeBSD, OpenBSD, Mac OS X,
+  Windows, and even DOS. Also reported to build and run fine on QNX and
+  Nokia N770, N800 and N810. Other unices should also work. There are
+  seperate ports to AROS, AmigaOS4, MorphOS, PalmOS, GP2X and Pandora.
 
 * Tested on 32 bit and 64 bit platforms.
 
