@@ -2,8 +2,8 @@ Hexen II: Hammer of Thyrion (uHexen2)
   http://uhexen2.sourceforge.net/
   http://sourceforge.net/projects/uhexen2/
 
-Maintainers:
-------------
+Maintainers / Coding:
+---------------------
   O. Sezer <sezero@users.sourceforge.net>
 
 Original Engine:
@@ -37,7 +37,7 @@ their authors that we used code from:
   Matthias Buecher <maddes.b@arcor.de>
   Kevin Shanahan <kmshanah@disenchant.net>
   Forest Hale <lordhavoc@ghdigital.com>
-  Pa3PyX <pa3pyx87405703@icqmail.com>
+  "Pa3PyX" <pa3pyx87405703@icqmail.com>
   Juraj Styk <jurajstyk@host.sk>
   Eric Hobbs <elhobbs@comcast.net>
   Marc Allaire <korskarn@hexenworld.com>
@@ -49,6 +49,7 @@ More contributors (documentation & testing):
   Davide Cendron <scen@gentoo.org>
   Anthony Williams <rugxulo@users.sourceforge.net>
   Frank Sapone <emoaddict15@gmail.com>
+  Oleh Moiseyev <raven-05@inbox.ru>
 
 If you think your name is missing and should be mentioned here,
 please contact us so we can add it.
