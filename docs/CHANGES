@@ -4,6 +4,15 @@ Development Progress	:
 ---------------------------
 
 2012-04-18 (SVN):
+    * Limited hexen2 struct qsocket_s details only to net_*.c sources.
+      For menu serverlist handling, added new procedures NET_SlistSort,
+      NET_SlistPrintServer and NET_SlistPrintServerName. Added new
+      procedure NET_QSocketGetTime for status and spawn commands' print
+      functionality in host_cmd.c. Added new NET_QSocketGetAddressString
+      procedure for status and connect commands' print functionality in
+      host_cmd.c and sv_main.c.
+
+2012-04-18 (SVN):
     * Made plaquemessage static to [gl_]screen.c. Added new procedure
       SCR_SetPlaqueMessage() to set it from other places.
 

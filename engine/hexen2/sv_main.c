@@ -5,11 +5,7 @@
 	$Id$
 */
 
-#include "q_stdinc.h"
-#include "arch_def.h"
-#include "net_sys.h"	/* for net_defs.h */
 #include "quakedef.h"
-#include "net_defs.h"	/* for struct qsocket_s details */
 
 server_t	sv;
 server_static_t	svs;
@@ -503,7 +499,7 @@ static void SV_ConnectClient (int clientnum)
 
 	client = svs.clients + clientnum;
 
-	Con_DPrintf ("Client %s connected\n", client->netconnection->address);
+	Con_DPrintf ("Client %s connected\n", NET_QSocketGetAddressString(client->netconnection));
 
 	edictnum = clientnum+1;
 

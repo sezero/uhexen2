@@ -5,11 +5,7 @@
 	$Id$
 */
 
-#include "q_stdinc.h"
-#include "arch_def.h"
-#include "net_sys.h"	/* for net_defs.h */
 #include "quakedef.h"
-#include "net_defs.h"	/* for struct qsocket_s details */
 #include <ctype.h>
 
 static	double	old_time;
@@ -72,7 +68,7 @@ static void Host_Status_f (void)
 	{
 		if (!client->active)
 			continue;
-		seconds = (int)(net_time - client->netconnection->connecttime);
+		seconds = (int)(net_time - NET_QSocketGetTime(client->netconnection));
 		minutes = seconds / 60;
 		if (minutes)
 		{
@@ -86,7 +82,7 @@ static void Host_Status_f (void)
 		print_fn (_PRINT_NORMAL, "#%-2u %-16.16s  %3i  %2i:%02i:%02i\n",
 					j + 1, client->name, (int)client->edict->v.frags,
 					hours, minutes, seconds);
-		print_fn (_PRINT_NORMAL, "   %s\n", client->netconnection->address);
+		print_fn (_PRINT_NORMAL, "   %s\n", NET_QSocketGetAddressString(client->netconnection));
 	}
 }
 
@@ -1466,7 +1462,7 @@ static void Host_Spawn_f (void)
 			*sv_globals.self = EDICT_TO_PROG(sv_player);
 			PR_ExecuteProgram (*sv_globals.ClientConnect);
 
-			if ((Sys_DoubleTime() - host_client->netconnection->connecttime) <= sv.time)
+			if ((Sys_DoubleTime() - NET_QSocketGetTime(host_client->netconnection)) <= sv.time)
 				Sys_Printf ("%s entered the game\n", host_client->name);
 
 			PR_ExecuteProgram (*sv_globals.PutClientInServer);

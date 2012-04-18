@@ -4,11 +4,7 @@
 	$Id$
 */
 
-#include "q_stdinc.h"
-#include "arch_def.h"
-#include "net_sys.h"	/* FIXME */
 #include "quakedef.h"
-#include "net_defs.h"	/* FIXME */
 #include "bgmusic.h"
 #include "cdaudio.h"
 #include "r_shared.h"
@@ -4960,45 +4956,17 @@ static void M_Menu_ServerList_f (void)
 static void M_ServerList_Draw (void)
 {
 	int	n;
-	char	string[64];
-	const char *name;
 
 	if (!slist_sorted)
 	{
-		if (hostCacheCount > 1)
-		{
-			int	i,j;
-			hostcache_t temp;
-			for (i = 0; i < hostCacheCount; i++)
-			{
-				for (j = i+1; j < hostCacheCount; j++)
-				{
-					if (strcmp(hostcache[j].name, hostcache[i].name) < 0)
-					{
-						memcpy(&temp, &hostcache[j], sizeof(hostcache_t));
-						memcpy(&hostcache[j], &hostcache[i], sizeof(hostcache_t));
-						memcpy(&hostcache[i], &temp, sizeof(hostcache_t));
-					}
-				}
-			}
-		}
 		slist_sorted = true;
+		NET_SlistSort ();
 	}
 
 	ScrollTitle("gfx/menu/title4.lmp");
 	for (n = 0; n < hostCacheCount; n++)
-	{
-		if (hostcache[n].driver == 0)
-			name = net_drivers[hostcache[n].driver].name;
-		else
-			name = net_landrivers[hostcache[n].ldriver].name;
+		M_Print (16, 60 + 8*n, NET_SlistPrintServer (n));
 
-		if (hostcache[n].maxusers)
-			q_snprintf(string, sizeof(string), "%-11.11s %-8.8s %-10.10s %2d/%2d\n", hostcache[n].name, name, hostcache[n].map, hostcache[n].users, hostcache[n].maxusers);
-		else
-			q_snprintf(string, sizeof(string), "%-11.11s %-8.8s %-10.10s\n", hostcache[n].name, name, hostcache[n].map);
-		M_Print (16, 60 + 8*n, string);
-	}
 	M_DrawCharacter (0, 60 + slist_cursor*8, 12+((int)(realtime*4)&1));
 
 	if (*m_return_reason)
@@ -5041,7 +5009,7 @@ static void M_ServerList_Key (int k)
 		slist_sorted = false;
 		key_dest = key_game;
 		m_state = m_none;
-		Cbuf_AddText ( va ("connect \"%s\"\n", hostcache[slist_cursor].cname) );
+		Cbuf_AddText ( va ("connect \"%s\"\n", NET_SlistPrintServerName(slist_cursor)) );
 		break;
 
 	default:
