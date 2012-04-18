@@ -295,7 +295,7 @@ static void Sys_Init (void)
 
 #if defined(__MACOSX__)
 #define Sys_ErrorMessage	Cocoa_ErrorMessage
-extern void Cocoa_ErrorMessage (const char *errorMsg);	/* in SDLMain.m */
+extern void Cocoa_ErrorMessage (const char *errorMsg);	/* in customized hexen2/MacOSX/SDLMain.h */
 #else
 #define Sys_ErrorMessage(T)	do {} while (0)
 #endif
