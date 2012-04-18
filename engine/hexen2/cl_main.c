@@ -83,7 +83,7 @@ void CL_ClearState (void)
 	cl.reference_frame = cl.last_frame = cl.last_sequence = 199;
 	cl.need_build = 2;
 
-	plaquemessage = "";
+	SCR_SetPlaqueMessage("");
 
 	SB_InvReset();
 }

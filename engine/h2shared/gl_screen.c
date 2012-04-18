@@ -99,7 +99,7 @@ static qpic_t	*scr_turtle;
 
 static void SCR_ScreenShot_f (void);
 
-const char	*plaquemessage = NULL;	// pointer to current plaque message
+static const char	*plaquemessage = "";	// pointer to current plaque message
 
 static void Plaque_Draw (const char *message, qboolean AlwaysDraw);
 #if !defined(H2W)
@@ -894,6 +894,11 @@ void SCR_BringDownConsole (void)
 #endif
 
 //=============================================================================
+
+void SCR_SetPlaqueMessage (const char *msg)
+{
+	plaquemessage = msg;
+}
 
 static void Plaque_Draw (const char *message, qboolean AlwaysDraw)
 {

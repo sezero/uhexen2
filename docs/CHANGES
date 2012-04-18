@@ -4,6 +4,10 @@ Development Progress	:
 ---------------------------
 
 2012-04-18 (SVN):
+    * Made plaquemessage static to [gl_]screen.c. Added new procedure
+      SCR_SetPlaqueMessage() to set it from other places.
+
+2012-04-18 (SVN):
     * pr_cmds.c: Removed remnants of client-only and already commented
       out code.
 

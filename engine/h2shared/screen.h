@@ -20,11 +20,10 @@ void SCR_CenterPrint (const char *str);
 void SCR_BeginLoadingPlaque (void);
 void SCR_EndLoadingPlaque (void);
 
-int SCR_ModalMessage (const char *text);
-
 void SCR_DrawLoading (void);	// for the Loading plaque
 
-extern	const char		*plaquemessage;	// pointer to current plaque message
+void SCR_SetPlaqueMessage (const char *msg);	// set pointer to current plaque message
+int SCR_ModalMessage (const char *text);
 
 extern	int			total_loading_size;	// global vars for
 extern	int			current_loading_size;	// the Loading screen
