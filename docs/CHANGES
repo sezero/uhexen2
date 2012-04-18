@@ -3,6 +3,10 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2012-04-18 (SVN):
+    * pr_cmds.c: Removed remnants of client-only and already commented
+      out code.
+
 2012-04-10 (SVN):
     * A lot of documentation updates and clean-ups.
 

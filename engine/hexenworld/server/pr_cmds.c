@@ -421,7 +421,6 @@ static void PF_name_print (void)
 {
 	int idx, style;
 
-//	plaquemessage = G_STRING(OFS_PARM0);
 	idx = (int) G_EDICTNUM(OFS_PARM2);
 	style = (int) G_FLOAT(OFS_PARM1);
 
@@ -479,7 +478,6 @@ static void PF_print_indexed (void)
 {
 	int idx, style;
 
-//	plaquemessage = G_STRING(OFS_PARM0);
 	idx = (int) G_FLOAT(OFS_PARM2);
 	style = (int) G_FLOAT(OFS_PARM1);
 
@@ -2464,7 +2462,6 @@ static void PF_Fixme (void)
 static void PF_plaque_draw (void)
 {
 	int idx = (int) G_FLOAT(OFS_PARM1);
-//	plaquemessage = G_STRING(OFS_PARM0);
 
 	/* 0 means "clear the plaquemessage", hence
 	 * the check for idx < 0 and NOT for idx < 1 */
