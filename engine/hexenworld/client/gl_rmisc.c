@@ -124,6 +124,7 @@ Grab six views for environment mapping tests
 */
 static void R_Envmap_f (void)
 {
+#if 0 /* drawing to front buffer is evil */
 	byte	buffer[256*256*4];
 	refdef_t	save_refdef;
 
@@ -187,6 +188,7 @@ static void R_Envmap_f (void)
 
 	memcpy (&r_refdef, &save_refdef, sizeof(refdef_t));
 	vid.recalc_refdef = 1;
+#endif /* if 0 */
 }
 
 /*
