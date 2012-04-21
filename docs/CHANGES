@@ -4,6 +4,10 @@ Development Progress	:
 ---------------------------
 
 2012-04-21 (SVN):
+    * Updated the known BUGS file: the fix for bug ##3519666 cures the
+      issue of "16 bpp with ATI on windows", too.
+
+2012-04-21 (SVN):
     * Fix bug #3519666: Disabled the progress bars drawing during level
       load in opengl: the implementation draws at certain intervals to
       GL_FRONT which is evil and causes flickering problems. If progress

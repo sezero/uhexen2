@@ -13,14 +13,7 @@ Known Bugs:
   file lists an issue of "Tome of Power (use/die/can't use)" with "CNR"
   i.e. "can't reproduce" as the status and it seems related to this one.
 
-- OpenGL:  Running in 16 bit color depth and starting a new game might
-  draw gibberish when the loading progress bars should appear. 32 bit is
-  fine. Ran into this on Windows with an ATI card. Workaround: go to the
-  video options menu and change the color depth to 32 bit before doing
-  anything (or, run the game with the "-bpp 32" command line argument.)
-
-- HexenWorld: Spectator mode (chasecam) isn't as it should be, compare
-  with the quakeworld code and fix.
+- HexenWorld: Spectator mode (the chasecam) isn't as it should be.
 
 - HexenWorld: Coop mode is broken. Known problem since Raven's latest
   beta versions.
