@@ -1756,10 +1756,10 @@ void VID_ToggleFullscreen (void)
 }
 
 
-#ifndef H2W
-//unused in hexenworld
+#ifndef H2W /* unused in hexenworld */
 void D_ShowLoadingSize (void)
 {
+#if defined(DRAW_PROGRESSBARS)
 	int cur_perc;
 	static int prev_perc;
 
@@ -1780,6 +1780,7 @@ void D_ShowLoadingSize (void)
 	glFlush_fp();
 
 	glDrawBuffer_fp (GL_BACK);
+#endif	/* DRAW_PROGRESSBARS */
 }
 #endif
 

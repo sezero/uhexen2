@@ -581,6 +581,20 @@ static void SCR_DrawPause (void)
 SCR_DrawLoading
 ==============
 */
+#if !defined(DRAW_PROGRESSBARS)
+void SCR_DrawLoading (void)
+{
+	int	offset;
+	qpic_t	*pic;
+
+	if (!scr_drawloading && loading_stage == 0)
+		return;
+
+	pic = Draw_CacheLoadingPic ();
+	offset = (vid.width - pic->width) / 2;
+	Draw_TransPic (offset, 0, pic);
+}
+#else
 void SCR_DrawLoading (void)
 {
 	int	size, count, offset;
@@ -616,6 +630,7 @@ void SCR_DrawLoading (void)
 		Draw_Fill (offset, 97+5, count, 1, 168);
 	}
 }
+#endif	/* !DRAW_PROGRESSBARS */
 
 /*
 ===============

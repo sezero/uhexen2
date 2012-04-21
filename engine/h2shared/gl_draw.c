@@ -211,6 +211,58 @@ qpic_t	*Draw_CachePic (const char *path)
 	return &pic->pic;
 }
 
+#if !defined(DRAW_PROGRESSBARS)
+/*
+================
+Draw_CacheLoadingPic
+like Draw_CachePic() but only for loading.lmp
+with its progress bars eliminated.
+================
+*/
+static const char ls_path[] = "gfx/menu/loading.lmp";
+qpic_t	*Draw_CacheLoadingPic (void)
+{
+	cachepic_t	*pic;
+	int			i;
+	qpic_t		*dat;
+	glpic_t		gl;
+
+	for (pic = menu_cachepics, i = 0; i < menu_numcachepics; pic++, i++)
+	{
+		if (!strcmp (ls_path, pic->name))
+			return &pic->pic;
+	}
+
+	if (menu_numcachepics == MAX_CACHED_PICS)
+		Sys_Error ("menu_numcachepics == MAX_CACHED_PICS");
+
+	dat = (qpic_t *)FS_LoadTempFile (ls_path, NULL);
+	Draw_PicCheckError (dat, ls_path);
+	SwapPic (dat);
+	if (fs_filesize != 17592 || dat->width != 157 || dat->height != 112)
+		return Draw_CachePic(ls_path);
+
+	q_strlcpy (pic->name, ls_path, MAX_QPATH);
+	menu_numcachepics++;
+
+	/* kill the progress slot pixels between rows [85:103] */
+	memmove(&dat->data[3] + 157*85, &dat->data[3] + 157*104, 157*(112 - 104));
+	dat->height -= (104 - 85);
+
+	pic->pic.width = dat->width;
+	pic->pic.height = dat->height;
+
+	gl.texnum = GL_LoadPicTexture (dat);
+	gl.sl = 0;
+	gl.sh = 1;
+	gl.tl = 0;
+	gl.th = 1;
+	memcpy (pic->pic.data, &gl, sizeof(glpic_t));
+
+	return &pic->pic;
+}
+#endif	/* !DRAW_PROGRESSBARS */
+
 glmode_t gl_texmodes[NUM_GL_FILTERS] =
 {
 	{ "GL_NEAREST",			GL_NEAREST,			GL_NEAREST },	/* point sampled	*/
