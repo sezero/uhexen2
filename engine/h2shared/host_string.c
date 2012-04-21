@@ -7,9 +7,9 @@
 
 #include "quakedef.h"
 
-int		*host_string_index = NULL;
+static char	*host_strings = NULL;
+static int	*host_string_index = NULL;
 int		host_string_count = 0;
-char		*host_strings = NULL;
 
 
 void Host_LoadStrings (void)
@@ -61,7 +61,7 @@ void Host_LoadStrings (void)
 		}
 #if defined(H2W)
 		/* Hexenworld: translate '^' to
-		 * a newline for indexed prints */
+		 * '\n' for indexed prints */
 		else if (host_strings[i] == '^')
 		{
 			host_strings[i] = '\n';
@@ -71,5 +71,10 @@ void Host_LoadStrings (void)
 
 	host_string_count = count;
 	Con_DPrintf("Read in %d string lines\n", count);
+}
+
+const char *Host_GetString (int idx)
+{
+	return &host_strings[host_string_index[idx]];
 }
 

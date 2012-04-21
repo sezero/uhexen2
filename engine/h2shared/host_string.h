@@ -8,10 +8,10 @@
 #ifndef HOST_STRING_H
 #define HOST_STRING_H
 
-extern	char		*host_strings;
-extern	int		*host_string_index;
 extern	int		host_string_count;
 
 void Host_LoadStrings (void);
+const char *Host_GetString (int idx);
 
 #endif	/* HOST_STRING_H */
+

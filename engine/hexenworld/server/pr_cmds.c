@@ -495,7 +495,7 @@ static void PF_print_indexed (void)
 		client_t	*cl;
 		int			i;
 
-		Sys_Printf("%s", &host_strings[host_string_index[idx - 1]]);
+		Sys_Printf("%s", Host_GetString(idx - 1));
 
 		for (i = 0, cl = svs.clients; i < MAX_CLIENTS; i++, cl++)
 		{
@@ -3027,7 +3027,7 @@ static void PF_GetString(void)
 					__thisfunc__, idx, host_string_count);
 	}
 
-	G_INT(OFS_RETURN) = PR_SetEngineString(&host_strings[host_string_index[idx - 1]]);
+	G_INT(OFS_RETURN) = PR_SetEngineString(Host_GetString(idx - 1));
 }
 
 

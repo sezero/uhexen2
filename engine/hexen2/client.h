@@ -343,18 +343,16 @@ extern	int		num_intro_msg;	/* for the mission pack intro */
 //
 // cl_string.c
 //
-extern	char	*puzzle_strings;
-extern	int	*puzzle_string_index;
 extern	int	puzzle_string_count;
 
 void CL_LoadPuzzleStrings (void);
+const char *CL_FindPuzzleString (const char *shortname);
 
 /* mission pack objectives strings */
-extern	char	*info_strings;
-extern	int	*info_string_index;
 extern	int	info_string_count;
 
 void CL_LoadInfoStrings (void);
+const char *CL_GetInfoString (int idx);
 
 //
 // cl_parse.c

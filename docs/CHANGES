@@ -3,6 +3,13 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2012-04-21 (SVN):
+    * Made host_strings, info_strings and puzzle_strings static to their
+      source files and only accessible by proper function calls. Added
+      Host_GetString, CL_GetInfoString and CL_FindPuzzleString for this
+      purpose. The string count global variables are still global. (As a
+      side note, the new functions may use a little bit more security.)
+
 2012-04-18 (SVN):
     * Limited hexen2 struct qsocket_s details only to net_*.c sources.
       For menu serverlist handling, added new procedures NET_SlistSort,

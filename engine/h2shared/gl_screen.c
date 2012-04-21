@@ -138,7 +138,7 @@ static void UpdateInfoMessage (void)
 
 	q_strlcpy(infomessage, "Objectives:", sizeof(infomessage));
 
-	if (!info_string_count || !info_strings)
+	if (!info_string_count)
 		return;
 
 	for (i = 0; i < 32; i++)
@@ -147,7 +147,7 @@ static void UpdateInfoMessage (void)
 
 		if (cl.info_mask & check)
 		{
-			newmessage = &info_strings[info_string_index[i]];
+			newmessage = CL_GetInfoString(i);
 			q_strlcat(infomessage, "@@", sizeof(infomessage));
 			q_strlcat(infomessage, newmessage, sizeof(infomessage));
 		}
@@ -159,7 +159,7 @@ static void UpdateInfoMessage (void)
 
 		if (cl.info_mask2 & check)
 		{
-			newmessage = &info_strings[info_string_index[i + 32]];
+			newmessage = CL_GetInfoString(i + 32);
 			q_strlcat(infomessage, "@@", sizeof(infomessage));
 			q_strlcat(infomessage, newmessage, sizeof(infomessage));
 		}
@@ -1124,21 +1124,21 @@ static void SB_IntermissionOverlay (void)
 	}
 
 	if (cl.intermission <= 4 && cl.intermission + 394 <= host_string_count)
-		message = &host_strings[host_string_index[cl.intermission + 394]];
+		message = Host_GetString(cl.intermission + 394);
 	else if (cl.intermission == 5)	/* finale for the demo */
-		message = &host_strings[host_string_index[DEMO_MSG_INDEX]];
+		message = Host_GetString(DEMO_MSG_INDEX);
 	else if (cl.intermission >= 6 && cl.intermission <= 8 && cl.intermission + 386 <= host_string_count)
-		message = &host_strings[host_string_index[cl.intermission + 386]];
+		message = Host_GetString(cl.intermission + 386);
 	else if (cl.intermission == 9)	/* finale for the bundle (oem) version */
-		message = &host_strings[host_string_index[391]];
+		message = Host_GetString(391);
 #if !defined(H2W)
 	/* mission pack */
 	else if (cl.intermission == 10)
-		message = &host_strings[host_string_index[538]];
+		message = Host_GetString(538);
 	else if (cl.intermission == 11)
-		message = &host_strings[host_string_index[545]];
+		message = Host_GetString(545);
 	else if (cl.intermission == 12)
-		message = &host_strings[host_string_index[561]];
+		message = Host_GetString(561);
 #endif	/* H2W */
 	else	message = "";
 

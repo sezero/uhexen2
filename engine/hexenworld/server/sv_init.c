@@ -145,8 +145,9 @@ Return the full levelname
 */
 const char *SV_GetLevelname (void)
 {
-	if (sv.edicts->v.message > 0 && sv.edicts->v.message <= host_string_count)
-		return &host_strings[host_string_index[(int)sv.edicts->v.message - 1]];
+	int idx = (int)sv.edicts->v.message;
+	if (idx > 0 && idx <= host_string_count)
+		return Host_GetString(idx - 1);
 
 /*	return "";*/
 /* Use netname on map if there is one, so they don't have to edit strings.txt */

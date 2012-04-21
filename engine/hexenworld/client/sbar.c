@@ -632,11 +632,11 @@ static void DrawLowerBar(void)
 	{
 		if (((int)cl.v.flags) & FL_SPECIAL_ABILITY1)
 		{
-			Sbar_DrawSmallString(8, 89, &host_strings[host_string_index[i]]);
+			Sbar_DrawSmallString(8, 89, Host_GetString(i));
 		}
 		if (((int)cl.v.flags) & FL_SPECIAL_ABILITY2)
 		{
-			Sbar_DrawSmallString(8, 96, &host_strings[host_string_index[i + 1]]);
+			Sbar_DrawSmallString(8, 96, Host_GetString(i + 1));
 		}
 	}
 
@@ -1133,22 +1133,9 @@ void Sbar_DeathmatchOverlay(void)
 #if 0	/* not used in hexenworld */
 static void FindPuzzlePieceName(const char *which, char *name)
 {
-	int		j;
-
-	strcpy(name, "Unknown");
-
-	if ( !puzzle_strings )
-		return;
-
-	for (j = 0; j < puzzle_string_count; j += 2)
-	{
-		if (q_strcasecmp(which, puzzle_strings + puzzle_string_index[j]) == 0)
-		{
-			q_strlcpy(name, puzzle_strings + puzzle_string_index[j+1], 40);
-				// 40 == sizeof(Name) in our caller Sbar_PuzzlePieceOverlay
-			return;
-		}
-	}
+	const char *str = CL_FindPuzzleString (which);
+	if (!str) str = "Unknown";
+	q_strlcpy (name, str, 40);	/* 40 == array size in caller */
 }
 
 static void Sbar_PuzzlePieceOverlay(void)

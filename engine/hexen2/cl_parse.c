@@ -1078,7 +1078,7 @@ static void CL_Plaque(void)
 	idx = MSG_ReadShort ();
 
 	if (idx > 0 && idx <= host_string_count)
-		SCR_SetPlaqueMessage (&host_strings[host_string_index[idx - 1]]);
+		SCR_SetPlaqueMessage (Host_GetString(idx - 1));
 	else	SCR_SetPlaqueMessage ("");
 }
 

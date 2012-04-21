@@ -3045,7 +3045,7 @@ static void PF_GetString(void)
 					__thisfunc__, idx, host_string_count);
 	}
 
-	G_INT(OFS_RETURN) = PR_SetEngineString(&host_strings[host_string_index[idx - 1]]);
+	G_INT(OFS_RETURN) = PR_SetEngineString(Host_GetString(idx - 1));
 }
 
 

@@ -8,13 +8,13 @@
 #include "quakedef.h"
 
 /* puzzle piece strings for Sbar_PuzzlePieceOverlay() */
-char		*puzzle_strings = NULL;
-int		*puzzle_string_index = NULL;
+static char	*puzzle_strings = NULL;
+static int	*puzzle_string_index = NULL;
 int		puzzle_string_count = 0;
 
 /* strings for the mission pack's Objectives display. */
-char		*info_strings = NULL;
-int		*info_string_index = NULL;
+static char	*info_strings = NULL;
+static int	*info_string_index = NULL;
 int		info_string_count = 0;
 
 void CL_LoadPuzzleStrings (void)
@@ -146,6 +146,19 @@ forward:
 	Con_DPrintf("Read in %d puzzle piece names\n", count);
 }
 
+const char *CL_FindPuzzleString (const char *shortname)
+{
+	int		i;
+
+	for (i = 0; i < puzzle_string_count; i += 2)
+	{
+		if (q_strcasecmp(shortname, &puzzle_strings[puzzle_string_index[i]]) == 0)
+			return &puzzle_strings[puzzle_string_index[i + 1]];
+	}
+
+	return NULL;
+}
+
 
 void CL_LoadInfoStrings (void)
 {
@@ -198,5 +211,10 @@ void CL_LoadInfoStrings (void)
 
 	info_string_count = count;
 	Con_DPrintf("Read in %d objectives\n", count);
+}
+
+const char *CL_GetInfoString (int idx)
+{
+	return &info_strings[info_string_index[idx]];
 }
 
