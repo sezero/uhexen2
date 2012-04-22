@@ -4,6 +4,10 @@ Development Progress	:
 ---------------------------
 
 2012-04-22 (SVN):
+    * gl_func.h: Unless DRAW_PROGRESSBARS is defined, don't try linking
+      to glDrawBuffer().
+
+2012-04-22 (SVN):
     * Just removed the envmap thing altogether.
     * updated version date stamp to 2012-04-22.
 
