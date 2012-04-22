@@ -19,7 +19,6 @@ mplane_t	frustum[4];
 int			c_brush_polys, c_alias_polys;
 
 qboolean	r_cache_thrash;			// compatability
-qboolean	envmap;				// true during envmap command capture 
 
 GLuint			currenttexture = GL_UNUSED_TEXTURE;	// to avoid unnecessary texture sets
 
@@ -1411,8 +1410,7 @@ static void R_DrawViewModel (void)
 	if ((cl.v.health <= 0) ||
 //rjr	    (cl.items & IT_INVISIBILITY) ||
 	    (!r_drawviewmodel.integer) ||
-	    (!r_drawentities.integer) ||
-	    (envmap))
+	    (!r_drawentities.integer))
 	{
 		return;
 	}
@@ -1745,12 +1743,6 @@ static void R_SetupGL (void)
 
 	w = x2 - x;
 	h = y - y2;
-
-	if (envmap)
-	{
-		x = y2 = 0;
-		w = h = 256;
-	}
 
 	glViewport_fp (glx + x, gly + y2, w, h);
 	GL_SetFrustum (r_refdef.fov_x, r_refdef.fov_y);

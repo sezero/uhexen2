@@ -3,6 +3,10 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2012-04-22 (SVN):
+    * Just removed the envmap thing altogether.
+    * updated version date stamp to 2012-04-22.
+
 2012-04-21 (SVN):
     * Now that we disabled D_ShowLoadingSize() for its drawing to front
       buffer, disable gl_rmisc.c::R_Envmap_f() too, for the same reason.

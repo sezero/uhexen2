@@ -267,7 +267,6 @@ extern	mplane_t	*mirror_plane;
 extern	int		mirrortexturenum;	/* quake texturenum, not gltexturenum */
 extern	int		skytexturenum;		/* index in cl.loadmodel, not gl texture object */
 
-extern	qboolean	envmap;
 extern	qboolean	gl_dogamma;		/* should we use gl tricks for brightening. */
 
 
