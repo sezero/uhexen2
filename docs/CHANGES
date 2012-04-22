@@ -4,6 +4,10 @@ Development Progress	:
 ---------------------------
 
 2012-04-22 (SVN):
+    * pr_edict.c (ED_Alloc_Temp): Remove the intermediary LeastTime var
+      and directly compare against Least->alloctime.
+
+2012-04-22 (SVN):
     * menu.c (M_NewMissionPackGame): make sure the mouse is active, so
       that a mouse click can be captured by Key_Event() and we get out
       of the intermission and go into a game using the mouse.

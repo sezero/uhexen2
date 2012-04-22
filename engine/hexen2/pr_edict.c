@@ -314,9 +314,7 @@ edict_t *ED_Alloc_Temp (void)
 {
 	int			i, j;
 	edict_t		*e, *Least;
-	float		LeastTime;
 
-	LeastTime = -1;
 	Least = NULL;
 	for (i = svs.maxclients + 1, j = 0; j < max_temp_edicts.integer; i++, j++)
 	{
@@ -330,10 +328,9 @@ edict_t *ED_Alloc_Temp (void)
 
 			return e;
 		}
-		if (Least == NULL || e->alloctime < LeastTime)
+		if (Least == NULL || e->alloctime < Least->alloctime)
 		{
 			Least = e;
-			LeastTime = e->alloctime;
 		}
 	}
 
