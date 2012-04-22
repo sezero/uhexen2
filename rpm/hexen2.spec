@@ -72,7 +72,7 @@
 Name:		hexen2
 License:	GPLv2
 Group:		Amusements/Games
-Version:	1.5.3
+Version:	1.5.4
 Release:	%{?prerelease:0.%{pkg_prerel}.%{prerelease}}%{!?prerelease:%{pkg_final}}
 Summary:	Hexen II: Hammer of Thyrion
 URL:		http://uhexen2.sourceforge.net/
@@ -113,7 +113,7 @@ Requires:	SDL >= 1.2.4
 # these will be picked by rpm already
 #%{!?_without_mp3:Requires: libmad}
 #%{!?_without_ogg:Requires: libvorbis}
-Requires:	hexen2 >= 1.5.3
+Requires:	hexen2 >= 1.5.4
 
 %description -n hexenworld
 Hexen II is a class based shooter game by Raven Software from 1997.
@@ -210,6 +210,7 @@ utils/hcc/hcc -src gamecode-%{gamecode_ver}/hc/hw -oi -on
 %{__install} -D -m644 docs/ReleaseNotes-1.5.0 %{buildroot}/%{_prefix}/games/%{name}/docs/ReleaseNotes-1.5.0
 %{__install} -D -m644 docs/ReleaseNotes-1.5.1 %{buildroot}/%{_prefix}/games/%{name}/docs/ReleaseNotes-1.5.1
 %{__install} -D -m644 docs/ReleaseNotes-1.5.2 %{buildroot}/%{_prefix}/games/%{name}/docs/ReleaseNotes-1.5.2
+%{__install} -D -m644 docs/ReleaseNotes-1.5.3 %{buildroot}/%{_prefix}/games/%{name}/docs/ReleaseNotes-1.5.3
 
 # Install the gamedata
 %{__mkdir_p} %{buildroot}/%{_prefix}/games/%{name}/data1/
@@ -361,6 +362,7 @@ desktop-file-install \
 %{_prefix}/games/%{name}/docs/ReleaseNotes-1.5.0
 %{_prefix}/games/%{name}/docs/ReleaseNotes-1.5.1
 %{_prefix}/games/%{name}/docs/ReleaseNotes-1.5.2
+%{_prefix}/games/%{name}/docs/ReleaseNotes-1.5.3
 %{!?_without_freedesktop:%{_datadir}/applications/%{desktop_vendor}-%{name}.desktop}
 %{?_without_freedesktop:%{_sysconfdir}/X11/applnk/Games/%{name}.desktop}
 
@@ -379,6 +381,9 @@ desktop-file-install \
 %{_prefix}/games/%{name}/docs/README.hwmaster
 
 %changelog
+* Sun Apr 22 2012 O.Sezer <sezero@users.sourceforge.net> 1.5.4-1
+- Bump version to 1.5.4
+
 * Sat Apr 07 2012 O.Sezer <sezero@users.sourceforge.net> 1.5.3-1
 - Bump version to 1.5.3
 
@@ -600,3 +605,4 @@ desktop-file-install \
 
 * Thu Aug 21 2005 O.Sezer <sezero@users.sourceforge.net> 1.3.0-1
 - First sketchy spec file for RedHat and Fedora Core
+

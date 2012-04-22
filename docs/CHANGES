@@ -4,6 +4,10 @@ Development Progress	:
 ---------------------------
 
 2012-04-22 (SVN):
+    * bumped uhexen2 version to 1.5.4. bumped versions for hexen2 engine
+      to 1.26 and hexenworld to 0.26.
+
+2012-04-22 (SVN):
     * Separated intermissions setup from [gl_]screen.c into new source
       file cl_inlude.c. Added new members to the client_state_t struct
       to hold the intermission properties and flags. Added new function
