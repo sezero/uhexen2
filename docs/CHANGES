@@ -4,6 +4,10 @@ Development Progress	:
 ---------------------------
 
 2012-04-22 (SVN):
+    * updated XCode project file from Kristian after the addition of new
+      cl_inlude.c source file.
+
+2012-04-22 (SVN):
     * pr_edict.c (ED_Alloc_Temp): Remove the intermediary LeastTime var
       and directly compare against Least->alloctime.
 
