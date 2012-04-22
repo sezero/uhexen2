@@ -445,6 +445,7 @@ COMMONOBJS = \
 	cl_demo.o \
 	cl_effect.o \
 	cl_ents.o \
+	cl_inlude.o \
 	cl_input.o \
 	cl_main.o \
 	cl_parse.o \

@@ -173,8 +173,14 @@ typedef struct
 	qboolean	onground;
 	qboolean	inwater;
 
+// intermissions: setup by CL_SetupIntermission() and run by SB_IntermissionOverlay()
 	int		intermission;		// don't change view angle, full screen, etc
 	int		completed_time;		// latched at intermission start
+	int		message_index;
+	int		intermission_flags;
+	const char	*intermission_pic;
+	int		lasting_time;
+	int		intermission_next;
 
 	double		mtime[2];		// the timestamp of last two messages
 	double		time;			// clients view of time, should be between
@@ -353,6 +359,20 @@ extern	int	info_string_count;
 
 void CL_LoadInfoStrings (void);
 const char *CL_GetInfoString (int idx);
+
+//
+// cl_interlude.c
+//
+#define	INTERMISSION_NOT_CONNECTED	(1<<0)	/* can not use cl.time, use realtime */
+#define	INTERMISSION_NO_MENUS		(1<<1)	/* don't allow drawing the menus */
+#define	INTERMISSION_NO_MESSAGE		(1<<2)	/* doesn't need a valid message index */
+#define	INTERMISSION_PRINT_TOP		(1<<3)	/* print centered in top half of screen */
+#define	INTERMISSION_PRINT_TOPMOST	(1<<4)	/* print at top-most side of the screen */
+		/* without either of the above two, prints centered on the whole screen */
+#define	INTERMISSION_PRINT_WHITE	(1<<5)	/* print in white, not in red */
+#define	INTERMISSION_PRINT_DELAY	(1<<6)	/* delay message print for ca. 2.5s */
+
+void CL_SetupIntermission (int n);
 
 //
 // cl_parse.c

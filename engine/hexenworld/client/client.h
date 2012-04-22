@@ -265,8 +265,14 @@ typedef struct
 
 	float		punchangle;		// temporary view kick from weapon firing
 
+// intermissions: setup by CL_SetupIntermission() and run by SB_IntermissionOverlay()
 	int		intermission;		// don't change view angle, full screen, etc
-	int		completed_time;		// latched from time at intermission start
+	int		completed_time;		// latched at intermission start
+	int		message_index;
+	int		intermission_flags;
+	const char	*intermission_pic;
+	int		lasting_time;
+	int		intermission_next;
 
 //
 // information that is static for the entire time connected to a server
@@ -457,6 +463,20 @@ void CL_TimeDemo_f (void);
 void CL_WriteDemoCmd (const usercmd_t *pcmd);
 
 //
+// cl_interlude.c
+//
+#define	INTERMISSION_NOT_CONNECTED	(1<<0)	/* can not use cl.time, use realtime */
+#define	INTERMISSION_NO_MENUS		(1<<1)	/* don't allow drawing the menus */
+#define	INTERMISSION_NO_MESSAGE		(1<<2)	/* doesn't need a valid message index */
+#define	INTERMISSION_PRINT_TOP		(1<<3)	/* print centered in top half of screen */
+#define	INTERMISSION_PRINT_TOPMOST	(1<<4)	/* print at top-most side of the screen */
+		/* without either of the above two, prints centered on the whole screen */
+#define	INTERMISSION_PRINT_WHITE	(1<<5)	/* print in white, not in red */
+#define	INTERMISSION_PRINT_DELAY	(1<<6)	/* delay message print for ca. 2.5s */
+
+void CL_SetupIntermission (int n);
+
+//
 // cl_parse.c
 //
 void CL_ParseServerMessage (void);
@@ -499,7 +519,6 @@ void CL_ParseMultiEffect (void);
 void CL_UpdateEffects (void);
 void CL_TurnEffect (void);
 void CL_ReviseEffect (void);
-
 
 //
 // cl_tent
@@ -556,7 +575,7 @@ typedef struct
 	unsigned short	bytes_per_line;
 	unsigned short	palette_type;
 	char		filler[58];
-	unsigned char	data;			// unbounded
+	unsigned char	data;	// unbounded
 } pcx_t;
 
 void Skin_Find (player_info_t *sc);
@@ -576,7 +595,6 @@ extern	unsigned int	defLosses;	// Defender losses
 extern	unsigned int	attLosses;	// Attacker losses
 extern	int		cl_keyholder;
 extern	int		cl_doc;		// Defender of Crown (Excalibur)
-
 
 #endif	/* __H2W_CLIENT_H */
 

@@ -1531,11 +1531,7 @@ void CL_ParseServerMessage (void)
 			break;
 
 		case svc_intermission:
-			cl.intermission = MSG_ReadByte();
-			if (oem.integer && cl.intermission == 1)
-				cl.intermission = 9;
-
-			cl.completed_time = cl.time;
+			CL_SetupIntermission (MSG_ReadByte());
 			vid.recalc_refdef = true;	// go to full screen
 			break;
 

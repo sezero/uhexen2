@@ -1080,18 +1080,25 @@ static void Bottom_Plaque_Draw (const char *message)
 //=============================================================================
 
 
-static void I_DrawCharacter (int cx, int line, int num)
+static void I_Print (int cx, int cy, const char *str, int flags)
 {
-	Draw_Character (cx + ((vid.width - 320)>>1), line + ((vid.height - 200)>>1), num);
-}
+	int	num, x, y;
+	const char	*s;
 
-static void I_Print (int cx, int cy, char *str)
-{
-	while (*str)
+	x = cx + ((vid.width - 320)>>1);
+	y = cy;
+	if (!(flags & (INTERMISSION_PRINT_TOP|INTERMISSION_PRINT_TOPMOST)))
+		y += ((vid.height - 200)>>1);
+	s = str;
+
+	while (*s)
 	{
-		I_DrawCharacter (cx, cy, ((unsigned char)(*str)) + 256);
-		str++;
-		cx += 8;
+		num = (unsigned char)(*s);
+		if (!(flags & INTERMISSION_PRINT_WHITE))
+			num += 256;
+		Draw_Character (x, y, num);
+		s++;
+		x += 8;
 	}
 }
 
@@ -1103,12 +1110,6 @@ static void I_Print (int cx, int cy, char *str)
 #	define	Draw_IntermissionPic_FN(X,Y,Z)	Draw_Pic((X),(Y),(Z))
 #endif
 
-#define	DEMO_MSG_INDEX	408
-// in Hammer of Thyrion, the demo version isn't allowed in combination
-// with the mission pack. therefore, the formula below isn't necessary
-//#define	DEMO_MSG_INDEX	(ABILITIES_STR_INDEX+MAX_PLAYER_CLASS*2)
-//			408 for H2, 410 for H2MP strings.txt
-
 /*
 ===============
 SB_IntermissionOverlay
@@ -1116,7 +1117,7 @@ SB_IntermissionOverlay
 */
 static void SB_IntermissionOverlay (void)
 {
-	qpic_t	*pic = NULL;
+	qpic_t	*pic;
 	int	elapsed, size, bx, by, i;
 	char		temp[80];
 	const char	*message;
@@ -1134,109 +1135,41 @@ static void SB_IntermissionOverlay (void)
 		return;
 	}
 
-	switch (cl.intermission)
+	if (cl.intermission_pic == NULL)
+		Host_Error ("%s: NULL intermission picture", __thisfunc__);
+	else
 	{
-	case 1: /* defeated famine: episode 1 (village) to 2 (mazaera) */
-		pic = Load_IntermissionPic_FN ("gfx/meso.lmp", vid.width, vid.height);
-		break;
-	case 2: /* defeated death: episode 2 (mazaera) to 3 (egypt) */
-		pic = Load_IntermissionPic_FN ("gfx/egypt.lmp", vid.width, vid.height);
-		break;
-	case 3: /* defeated pestilence: episode 3 (egypt) to 4 (roman) */
-		pic = Load_IntermissionPic_FN ("gfx/roman.lmp", vid.width, vid.height);
-		break;
-	case 4: /* defeated war: episode 4 (roman) to last (castle) */
-		pic = Load_IntermissionPic_FN ("gfx/castle.lmp", vid.width, vid.height);
-		break;
-	case 5: /* finale for the demo version */
-		pic = Load_IntermissionPic_FN ("gfx/castle.lmp", vid.width, vid.height);
-		break;
-	case 6: /* defeated eidolon: finale, part 1/3 */
-		pic = Load_IntermissionPic_FN ("gfx/end-1.lmp", vid.width, vid.height);
-		break;
-	case 7: /* defeated eidolon: finale, part 2/3 */
-		pic = Load_IntermissionPic_FN ("gfx/end-2.lmp", vid.width, vid.height);
-		break;
-	case 8: /* defeated eidolon: finale, part 2/3 */
-		pic = Load_IntermissionPic_FN ("gfx/end-3.lmp", vid.width, vid.height);
-		break;
-	case 9: /* finale for the bundle (oem) version */
-		pic = Load_IntermissionPic_FN ("gfx/castle.lmp", vid.width, vid.height);
-		break;
-#if !defined(H2W)
-	case 10: /* defeated praevus: mission pack finale */
-		pic = Load_IntermissionPic_FN ("gfx/mpend.lmp", vid.width, vid.height);
-		break;
-	case 11: /* mission pack, episode change to tibet */
-		pic = Load_IntermissionPic_FN ("gfx/mpmid.lmp", vid.width, vid.height);
-		break;
-	case 12: /* mission pack, opening */
-		pic = Load_IntermissionPic_FN ("gfx/end-3.lmp", vid.width, vid.height);
-		break;
-#else
-	case 10: /* Siege: Defender win - wipe out or time limit */
-		pic = Load_IntermissionPic_FN ("gfx/defwin.lmp", vid.width, vid.height);
-		break;
-	case 11: /* Siege: Attacker win - caught crown */
-		pic = Load_IntermissionPic_FN ("gfx/attwin.lmp", vid.width, vid.height);
-		break;
-	case 12: /* Siege: Attacker win 2 - wiped out */
-		pic = Load_IntermissionPic_FN ("gfx/attwin2.lmp", vid.width, vid.height);
-		break;
-#endif	/* H2W */
-	}
-	if (pic == NULL)
-	{
-		Host_Error ("%s: Bad episode ending number %d", __thisfunc__, cl.intermission);
-		return;
+		pic = Load_IntermissionPic_FN (cl.intermission_pic, vid.width, vid.height);
+		Draw_IntermissionPic_FN (((vid.width - 320)>>1), ((vid.height - 200)>>1), pic);
 	}
 
-	Draw_IntermissionPic_FN (((vid.width - 320)>>1), ((vid.height - 200)>>1), pic);
-
-	if (cl.intermission >= 6 && cl.intermission <= 8)
+	if (cl.message_index >= 0 && cl.message_index < host_string_count)
+		message = Host_GetString (cl.message_index);
+	else if (cl.intermission_flags & INTERMISSION_NO_MESSAGE)
+		message = "";
+	else
 	{
-		elapsed = (cl.time - cl.completed_time) * 20;
-		elapsed -= 50;
+		message = ""; /* silence compilers */
+		Host_Error ("%s: Intermission string #%d not available (host_string_count: %d)",
+					__thisfunc__, cl.message_index, host_string_count);
+	}
+
+	if (cl.intermission_flags & INTERMISSION_NOT_CONNECTED)
+		elapsed = (realtime - cl.completed_time) * 20;
+	else	elapsed = (cl.time  - cl.completed_time) * 20;
+	if (cl.intermission_flags & INTERMISSION_PRINT_DELAY)
+	{
+		elapsed -= 50;	/* delay about 2.5 seconds */
 		if (elapsed < 0)
 			elapsed = 0;
 	}
-#if !defined(H2W)
-	else if (cl.intermission == 12)	/* mission pack entry screen */
-	{
-	/* this intermission is NOT triggered by a server message, but
-	 * by starting a new game through the menu system. therefore,
-	 * you cannot use cl.time, and cl.completed_time must be set by
-	 * the menu sytem, as well.  */
-		elapsed = (realtime - cl.completed_time) * 20;
-	}
-#endif	/* H2W */
-	else
-	{
-		elapsed = (cl.time - cl.completed_time) * 20;
-	}
-
-	if (cl.intermission <= 4 && cl.intermission + 394 <= host_string_count)
-		message = Host_GetString(cl.intermission + 394);
-	else if (cl.intermission == 5)	/* finale for the demo */
-		message = Host_GetString(DEMO_MSG_INDEX);
-	else if (cl.intermission >= 6 && cl.intermission <= 8 && cl.intermission + 386 <= host_string_count)
-		message = Host_GetString(cl.intermission + 386);
-	else if (cl.intermission == 9)	/* finale for the bundle (oem) version */
-		message = Host_GetString(391);
-#if !defined(H2W)
-	/* mission pack */
-	else if (cl.intermission == 10)
-		message = Host_GetString(538);
-	else if (cl.intermission == 11)
-		message = Host_GetString(545);
-	else if (cl.intermission == 12)
-		message = Host_GetString(561);
-#endif	/* H2W */
-	else	message = "";
 
 	FindTextBreaks(message, 38);
 
-	by = (cl.intermission == 8) ? 16 : (25-lines) * 8 / 2;
+	if (cl.intermission_flags & INTERMISSION_PRINT_TOPMOST)
+		by =  16;
+	else	by = (25-lines) * 8 / 2;
+
 	for (i = 0; i < lines; i++, by += 8)
 	{
 		size = EndC[i] - StartC[i];
@@ -1247,21 +1180,15 @@ static void SB_IntermissionOverlay (void)
 		temp[size] = 0;
 
 		bx = (40-strlen(temp)) * 8 / 2;
-		if (cl.intermission < 6 || cl.intermission > 9)
-			I_Print (bx, by, temp);
-		else
-			M_PrintWhite (bx, by, temp);
+		I_Print (bx, by, temp, cl.intermission_flags);
 
 		elapsed -= size;
 		if (elapsed <= 0)
 			break;
 	}
 
-	if (i == lines && elapsed >= 300 && cl.intermission >= 6 && cl.intermission <= 7)
-	{
-		cl.intermission++;
-		cl.completed_time = cl.time;
-	}
+	if (i == lines && cl.lasting_time && elapsed >= 20*cl.lasting_time)
+		CL_SetupIntermission (cl.intermission_next);
 }
 #endif	/* H2W */
 
@@ -1364,7 +1291,7 @@ void SCR_UpdateScreen (void)
 
 #if FULLSCREEN_INTERMISSIONS
 	// no need to draw view in fullscreen intermission screens
-	if (cl.intermission < 1)
+	if (!cl.intermission)
 #endif
 	{
 		VID_LockBuffer ();
@@ -1381,11 +1308,11 @@ void SCR_UpdateScreen (void)
 		SCR_DrawNotifyString ();
 		scr_copyeverything = true;
 	}
-	else if (cl.intermission >= 1 && cl.intermission <= 12)
+	else if (cl.intermission)
 	{
 #if !defined(H2W)
 		SB_IntermissionOverlay();
-		if (cl.intermission < 12)
+		if (!(cl.intermission_flags & INTERMISSION_NO_MENUS))
 		{
 			SCR_DrawConsole();
 			M_Draw();
@@ -1393,12 +1320,11 @@ void SCR_UpdateScreen (void)
 
 		if (scr_drawloading)
 			SCR_DrawLoading();
-#endif
+#endif	/* H2W */
 	}
 #if !defined(H2W)
 	else if (scr_drawloading)
 	{
-	//	Sbar_Draw();
 		Draw_FadeScreen ();
 		SCR_DrawLoading ();
 	}

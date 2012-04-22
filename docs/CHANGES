@@ -4,6 +4,17 @@ Development Progress	:
 ---------------------------
 
 2012-04-22 (SVN):
+    * Separated intermissions setup from [gl_]screen.c into new source
+      file cl_inlude.c. Added new members to the client_state_t struct
+      to hold the intermission properties and flags. Added new function
+      CL_SetupIntermission() to setup the intermission properties. Now
+      SB_IntermissionOverlay() of [gl_]screen.c only cares about drawing
+      the intermissions and their messages according to the flags set.
+      Changed CL_ParseServerMessage() and M_NewMissionPackGame() to call
+      the new CL_SetupIntermission() helper function. Small clean up in
+      SCR_UpdateScreen() regarding cl.intermission cases.
+
+2012-04-22 (SVN):
     * snd_mp3.c, snd_vorbis.c, snd_wave.c: Make _sure_ that the number
       of channels in the music file is supported, i.e. either stereo or
       mono. Minor tidy up of the error return paths.

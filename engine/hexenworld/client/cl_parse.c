@@ -1394,8 +1394,7 @@ void CL_ParseServerMessage (void)
 		case svc_intermission:
 		//	if (cl_siege)
 		//	{//MG
-				cl.intermission = MSG_ReadByte();
-				cl.completed_time = realtime;
+				CL_SetupIntermission (MSG_ReadByte());
 				vid.recalc_refdef = true;	// go to full screen
 				break;
 			/*

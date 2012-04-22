@@ -705,28 +705,14 @@ static void M_Difficulty_Draw (void)
 
 static void M_NewMissionPackGame (void)
 {
-/* NOTES:
- - running a new single player mission pack game through
-   the menu system starts an "intermission screen" (#12)
-   first: some scrolling text giving a story background.
- - this intermission screen #12 is only started by this
-   menu system: unlike the other intermissions, it isn't
-   progs (server) controlled.
- - there will not be a svc_intermission message for this
-   so, we must set cl.completed_time and cl.intermission
-   by hand here.
- - since the user may just have started the game, we must
-   load strings.txt for the scrolling text before setting
-   cl.intermission, if necessary.
- - running the keep1 map is also a client-side thing:  it
-   is triggered by Key_Event() when the user hits a key.
+/* running a new single player mission pack game through
+ * the menu system starts intermission screen #12, first.
+ * when the user hits a key, Key_Event () gets us out of
+ * the intermission by running the keep1 map.
  */
 	key_dest = key_game;
-	if (! host_string_count)
-		Host_LoadStrings ();
-	cl.intermission = 12;
-	cl.completed_time = realtime;
 	cls.demonum = m_save_demonum;
+	CL_SetupIntermission (12);
 }
 
 static void M_Difficulty_Key (int key)
