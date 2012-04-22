@@ -5,7 +5,7 @@ Development Progress	:
 
 2012-04-22 (SVN):
     * gl_func.h: Unless DRAW_PROGRESSBARS is defined, don't try linking
-      to glDrawBuffer().
+      to glDrawBuffer(). glReadBuffer() is no longer needed at all.
 
 2012-04-22 (SVN):
     * Just removed the envmap thing altogether.
