@@ -713,6 +713,10 @@ static void M_NewMissionPackGame (void)
 	key_dest = key_game;
 	cls.demonum = m_save_demonum;
 	CL_SetupIntermission (12);
+/* make sure the mouse is active, so that pressing a mouse
+ * button can be captured by Key_Event (see above.) */
+	menu_disabled_mouse = false;
+	IN_ActivateMouse ();
 }
 
 static void M_Difficulty_Key (int key)

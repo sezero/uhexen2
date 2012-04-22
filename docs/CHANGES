@@ -4,6 +4,11 @@ Development Progress	:
 ---------------------------
 
 2012-04-22 (SVN):
+    * menu.c (M_NewMissionPackGame): make sure the mouse is active, so
+      that a mouse click can be captured by Key_Event() and we get out
+      of the intermission and go into a game using the mouse.
+
+2012-04-22 (SVN):
     * bumped uhexen2 version to 1.5.4. bumped versions for hexen2 engine
       to 1.26 and hexenworld to 0.26.
 
