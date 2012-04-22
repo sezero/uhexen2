@@ -134,7 +134,7 @@ static snd_stream_t *S_MP3_CodecOpenStream (const char *filename)
 		stream->info.channels = 2;
 		break;
 	default:
-		Con_Printf("Unsupported channel count in %s\n", filename);
+		Con_Printf("Unsupported number of channels %d in %s\n", channels, filename);
 		goto _fail;
 	}
 

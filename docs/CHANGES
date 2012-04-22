@@ -4,6 +4,11 @@ Development Progress	:
 ---------------------------
 
 2012-04-22 (SVN):
+    * snd_mp3.c, snd_vorbis.c, snd_wave.c: Make _sure_ that the number
+      of channels in the music file is supported, i.e. either stereo or
+      mono. Minor tidy up of the error return paths.
+
+2012-04-22 (SVN):
     * gl_func.h: Unless DRAW_PROGRESSBARS is defined, don't try linking
       to glDrawBuffer(). glReadBuffer() is no longer needed at all.
 
