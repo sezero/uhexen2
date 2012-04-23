@@ -531,12 +531,6 @@ void D_BeginDirectRect (int x, int y, byte *pbitmap, int width, int height)
 	(*pcurrentmode->begindirectrect) (&vid, pcurrentmode, x, y, pbitmap, width, height);
 }
 
-
-void D_ShowLoadingSize (void)
-{
-}
-
-
 /*
 ================
 D_EndDirectRect
@@ -555,6 +549,28 @@ void D_EndDirectRect (int x, int y, int width, int height)
 		return;
 
 	(*pcurrentmode->enddirectrect) (&vid, pcurrentmode, x, y, width, height);
+}
+
+void D_ShowLoadingSize (void)
+{
+/* to be implemented. */
+}
+
+void VID_LockBuffer (void)
+{
+/* nothing to do */
+}
+
+void VID_UnlockBuffer (void)
+{
+/* nothing to do */
+}
+
+
+void VID_HandlePause (qboolean paused)
+{
+	if (paused)	IN_DeactivateMouse ();
+	else		IN_ActivateMouse ();
 }
 
 

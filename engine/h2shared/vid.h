@@ -89,24 +89,12 @@ void VID_Shutdown (void);
 void VID_Update (vrect_t *rects);
 // flushes the given rectangles from the view buffer to the screen
 
-#if defined(PLATFORM_DOS) || defined(SVGAQUAKE)
-#define VID_LockBuffer()	do {} while (0)
-#define VID_UnlockBuffer()	do {} while (0)
-#elif defined(GLQUAKE)
-#define VID_LockBuffer()	do {} while (0)
-#define VID_UnlockBuffer()	do {} while (0)
-#else
 void VID_LockBuffer (void);
 void VID_UnlockBuffer (void);
-// vid buffer locking, not used in opengl version or DOS/SVGA software version
-#endif
+// video buffer locking. some drivers don't need it.
 
-#if defined(PLATFORM_DOS) || defined(SVGAQUAKE)
-#define VID_HandlePause(x)	do {} while (0)
-#else
 void VID_HandlePause (qboolean paused);
-// called on windowed environments when pause happens, so the mouse can be released
-#endif
+// releases the mouse when pause happens
 
 void VID_ToggleFullscreen (void);	// from Steven
 // toggles between windowed/fullscreen modes. for unix/sdl

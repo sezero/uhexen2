@@ -218,6 +218,16 @@ cvar_t		_enable_mouse = {"_enable_mouse", "0", CVAR_ARCHIVE};
 
 //====================================
 
+void VID_LockBuffer (void)
+{
+// nothing to do
+}
+
+void VID_UnlockBuffer (void)
+{
+// nothing to do
+}
+
 void VID_HandlePause (qboolean paused)
 {
 	if ((modestate == MS_WINDOWED) && _enable_mouse.integer)

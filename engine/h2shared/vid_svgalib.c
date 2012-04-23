@@ -674,13 +674,6 @@ void D_BeginDirectRect (int x, int y, byte *pbitmap, int width, int height)
 	}
 }
 
-
-void D_ShowLoadingSize (void)
-{
-/* to be implemented. */
-}
-
-
 /*
 ================
 D_EndDirectRect
@@ -752,5 +745,27 @@ void D_EndDirectRect (int x, int y, int width, int height)
 			}
 		}
 	}
+}
+
+void D_ShowLoadingSize (void)
+{
+/* to be implemented. */
+}
+
+void VID_LockBuffer (void)
+{
+/* nothing to do */
+}
+
+void VID_UnlockBuffer (void)
+{
+/* nothing to do */
+}
+
+
+void VID_HandlePause (qboolean paused)
+{
+	if (paused)	IN_DeactivateMouse ();
+	else		IN_ActivateMouse ();
 }
 

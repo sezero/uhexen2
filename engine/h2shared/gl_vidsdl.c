@@ -229,6 +229,16 @@ cvar_t		_enable_mouse = {"_enable_mouse", "1", CVAR_ARCHIVE};
 
 //====================================
 
+void VID_LockBuffer (void)
+{
+// nothing to do
+}
+
+void VID_UnlockBuffer (void)
+{
+// nothing to do
+}
+
 void VID_HandlePause (qboolean paused)
 {
 #if 0	// change to 1 if dont want to disable mouse in fullscreen
