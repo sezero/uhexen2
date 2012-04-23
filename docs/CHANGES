@@ -4,6 +4,8 @@ Development Progress	:
 ---------------------------
 
 2012-04-23 (SVN):
+    * in_dos.c (IN_ReadMouseMove): Replaced confusing decimal number 11
+      by hexadecimal 0x0B .
     * in_dos.c: Made it to not read movement when mouse is deactivated.
       Made it to detect wheel by default, added a -nowheel command line
       switch to disable it.

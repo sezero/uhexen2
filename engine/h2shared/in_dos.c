@@ -325,7 +325,7 @@ IN_Move
 */
 static void IN_ReadMouseMove (int *x, int *y)
 {
-	regs.x.ax = 11;	/* read move */
+	regs.x.ax = 0x0B;	/* read move */
 	dos_int86(0x33);
 	if (x)	*x = (short) regs.x.cx;
 	if (y)	*y = (short) regs.x.dx;
