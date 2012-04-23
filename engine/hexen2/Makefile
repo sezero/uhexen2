@@ -146,7 +146,7 @@ USE_SDLCD=no
 
 LINK_DIRECTX=no
 WITH_SPLASHES=yes
-USE_MGL=yes
+USE_MGL=no
 USE_WINSOCK2=no
 
 # whether to use Serial driver for DOS networking
