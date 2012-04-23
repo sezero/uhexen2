@@ -85,6 +85,7 @@ typedef struct
 static cvar_t	m_filter = {"m_filter", "1", CVAR_NONE};
 
 static	qboolean	mouse_avail;
+static	qboolean	mouseactive;
 static	qboolean	mouse_wheel;
 static	int		mouse_buttons;
 static	int		mouse_oldbuttonstate;
@@ -156,7 +157,8 @@ static void IN_StartupMouse (void)
 	if (mouse_buttons > 3)
 		mouse_buttons = 3;
 	Con_Printf("%d-button mouse available\n", mouse_buttons);
-	if (!COM_CheckParm ("-mwheel"))
+	mouseactive = true;
+	if (COM_CheckParm ("-nowheel"))
 		return;
 	regs.x.ax = 0x11;
 	dos_int86(0x33);
@@ -173,11 +175,13 @@ void IN_ActivateMouse (void)
 	{
 		old_mouse_x = old_mouse_y = 0;
 		IN_ReadMouseMove (NULL, NULL);
+		mouseactive = true;
 	}
 }
 
 void IN_DeactivateMouse (void)
 {
+	mouseactive = false;
 }
 
 void IN_ShowMouse (void)
@@ -331,7 +335,7 @@ static void IN_MouseMove (usercmd_t *cmd)
 {
 	int		mx, my;
 
-	if (!mouse_avail)
+	if (!mouse_avail || !mouseactive)
 		return;
 
 	IN_ReadMouseMove (&mx, &my);

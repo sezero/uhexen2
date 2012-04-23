@@ -84,11 +84,9 @@ NOTES:
 
 * MOUSE WHEEL:  If you use the latest beta version of cutemouse, which
   is 2.1b3 (ctmouse21b3.zip), the wheel should work nicely. We tested
-  with the 2.0-alpha and 2.1-beta versions.  Since this is technically
-  an experimental feature, you must run the game using the "-mwheel"
-  command line argument, such as:
-
-	h2dos -mwheel
+  with the 2.0-alpha and 2.1-beta versions. We automatically detect and
+  use the wheel if it is present. To disable the wheel, use the command
+  line argument -nowheel.
 
   - Note: As of cutemouse-2.1-beta4 version (cutemouse21b4.zip), the
     wheel is not enabled by default: you must use their /O switch.

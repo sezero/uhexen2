@@ -4,6 +4,11 @@ Development Progress	:
 ---------------------------
 
 2012-04-23 (SVN):
+    * in_dos.c: Made it to not read movement when mouse is deactivated.
+      Made it to detect wheel by default, added a -nowheel command line
+      switch to disable it.
+
+2012-04-23 (SVN):
     * vid.h: Removed the macros VID_LockBuffer(), VID_UnlockBuffer() and
       VID_HandlePause() and made them into functions for drivers that do
       not need them.
