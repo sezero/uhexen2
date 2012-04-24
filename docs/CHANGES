@@ -3,6 +3,10 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2012-04-24 (SVN):
+    * Added link to Rino's Hexen II single player mods to the README.
+      Homepage is at:  https://sites.google.com/site/missionpackbyrino/
+
 2012-04-23 (SVN):
     * in_sdl.c: Invert the behaviour of numlock (numbers when on, not
       when off).
