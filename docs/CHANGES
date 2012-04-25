@@ -3,6 +3,16 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2012-04-25 (SVN):
+    * gl_vidnt.c (VID_Init): Fixed a 6-year-old/one-letter-only typo in
+      findbpp code (compare j against MAX_NUMBPP, not i.)  Made sure
+      that the default value of vid_config_bpp is supported by the OS
+      and video driver: fixes the issue that uhexen2 would not run on
+      Windows 8 Consumer Preview unless 32 bit color depth was specified
+      on the command line. Tested by Ronald Eijkman on Win8/CP.
+    * docs/AUTHORS: Added Ronald Eijkman under contributors->testing.
+    * updated version date stamp to 2012-04-25.
+
 2012-04-24 (SVN):
     * Added link to Rino's Hexen II single player mods to the README.
       Homepage is at:  https://sites.google.com/site/missionpackbyrino/

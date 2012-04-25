@@ -2136,6 +2136,16 @@ void	VID_Init (unsigned char *palette)
 
 	// sort the modes
 	VID_SortModes();
+	// make sure our vid_config_bpp default is supported by the OS
+	for (i = 0; i < MAX_NUMBPP; i++)
+	{
+		if (!bpplist[i][0])
+			break;
+		if (vid_config_bpp.integer == bpplist[i][0])
+			break; // OK.
+	}
+	if (i == MAX_NUMBPP || vid_config_bpp.integer != bpplist[i][0]) // not OK
+		Cvar_SetValueQuick(&vid_config_bpp, bpplist[0][0]);
 
 	// perform an early read of config.cfg
 	CFG_ReadCvars (read_vars, num_readvars);
@@ -2343,7 +2353,7 @@ void	VID_Init (unsigned char *palette)
 					if (findbpp)
 					{
 						j++;
-						if (i >= MAX_NUMBPP || !bpplist[j][0])
+						if (j >= MAX_NUMBPP || !bpplist[j][0])
 							done = 1;
 						if (!done)
 							bpp = bpplist[j][0];
