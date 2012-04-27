@@ -3,6 +3,13 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2012-04-27 (SVN):
+    * gl_vidnt.c (VID_Init): Fixed another 6-year-old and shameful bug
+      in the findbpp code. We now silently adapt ourselves and work
+      properly even with stale config.cfg files with unsupported bpp
+      settings.
+    * updated version date stamp to 2012-04-27.
+
 2012-04-25 (SVN):
     * gl_vidnt.c (VID_Init): Fixed a 6-year-old/one-letter-only typo in
       findbpp code (compare j against MAX_NUMBPP, not i.)  Made sure

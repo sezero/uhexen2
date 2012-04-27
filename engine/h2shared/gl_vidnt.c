@@ -1971,24 +1971,13 @@ static int sort_modes (const void *arg1, const void *arg2)
 	a1 = (vmode_t *) arg1;
 	a2 = (vmode_t *) arg2;
 
-	if (a1->bpp == a2->bpp)
-	{
-		if (a1->width == a2->width)
-		{
-			return a1->height - a2->height;	// lowres-to-highres
-		//	return a2->height - a1->height;	// highres-to-lowres
-		}
-		else
-		{
-			return a1->width - a2->width;	// lowres-to-highres
-		//	return a2->width - a1->width;	// highres-to-lowres
-		}
-	}
-	else
-	{
-		return a1->bpp - a2->bpp;	// low bpp-to-high bpp
-	//	return a2->bpp - a1->bpp;	// high bpp-to-low bpp
-	}
+	/* low to high bpp ? */
+	if (a1->bpp != a2->bpp)
+		return a1->bpp - a2->bpp;
+	/* lowres to highres */
+	if (a1->width == a2->width)
+		return a1->height - a2->height;
+	return a1->width - a2->width;
 }
 
 static void VID_SortModes (void)
@@ -2137,6 +2126,7 @@ void	VID_Init (unsigned char *palette)
 	// sort the modes
 	VID_SortModes();
 	// make sure our vid_config_bpp default is supported by the OS
+	// (we have a findbpp code below, but let's be on the safe side..)
 	for (i = 0; i < MAX_NUMBPP; i++)
 	{
 		if (!bpplist[i][0])
@@ -2243,7 +2233,6 @@ void	VID_Init (unsigned char *palette)
 		vid_default = -1;
 
 		findbpp = 1;
-		//bpp = bpplist[0][0];
 		bpp = vid_config_bpp.integer;
 		if (Win95old)
 		{	// don't bother with multiple bpp values on
@@ -2352,11 +2341,13 @@ void	VID_Init (unsigned char *palette)
 				{
 					if (findbpp)
 					{
-						j++;
+						if (bpp == bpplist[j][0])
+							j++;
 						if (j >= MAX_NUMBPP || !bpplist[j][0])
 							done = 1;
 						if (!done)
 							bpp = bpplist[j][0];
+						j++;
 					}
 					else
 					{

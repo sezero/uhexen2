@@ -1241,12 +1241,15 @@ static int sort_modes (const void *arg1, const void *arg2)
 	a1 = (vmode_t *) arg1;
 	a2 = (vmode_t *) arg2;
 
+#if 0
+	/* low to high bpp ? */
+	if (a1->bpp != a2->bpp)
+		return a1->bpp - a2->bpp;
+#endif
+	/* lowres to highres */
 	if (a1->width == a2->width)
-		return a1->height - a2->height;	// lowres-to-highres
-	//	return a2->height - a1->height;	// highres-to-lowres
-	else
-		return a1->width - a2->width;	// lowres-to-highres
-	//	return a2->width - a1->width;	// highres-to-lowres
+		return a1->height - a2->height;
+	return a1->width - a2->width;
 }
 
 static void VID_PrepareModes (SDL_Rect **sdl_modes)
