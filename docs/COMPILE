@@ -226,7 +226,7 @@ should be possible too: remember adding DOSBUILD=1 to your environment,
 like above.
 
 Compilers other than djgpp, such as OpenWatcom, most probably won't work
-and would need adjustments.
+and would need specifically porting to.
 
 CWSDPMI.EXE is needed at runtime: use the "0.90+ r5" or a newer version.
 I've been successfully using the R5 "2008 refresh" (21 Aug.2008) as well

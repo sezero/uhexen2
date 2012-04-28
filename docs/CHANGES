@@ -3,6 +3,9 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2012-04-28 (SVN):
+    * A few documentation updates.
+
 2012-04-27 (SVN):
     * gl_vidnt.c (VID_Init): Fixed another 6-year-old and shameful bug
       in the findbpp code. We now silently adapt ourselves and work

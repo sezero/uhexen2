@@ -4,7 +4,7 @@ Known Bugs:
 -------------------------------------
 
 - BUG # 2176023: Can't move backwards after dying (a.k.a. the DEATHBUG):
-  http://sf.net/tracker/?group_id=124987&atid=701006&aid=2176023&func=detail
+  # sf.net/tracker/?group_id=124987&atid=701006&aid=2176023&func=detail
   Die, auto-reload and can't move backwards; can't use some artifacts
   such as the tome of power or the torch, either. The problem is stuck
   in the saved game. This is reported for the mission pack; validity for
@@ -14,18 +14,16 @@ Known Bugs:
   i.e. "can't reproduce" as the status and it seems related to this one.
 
 - HexenWorld: Spectator mode (the chasecam) isn't as it should be.
-
 - HexenWorld: Coop mode is broken. Known problem since Raven's latest
   beta versions.
 
 - DOS: HexenWorld client running on DOS can't connect to servers due to
   fragmented packets handling bugs in the WatTCP library. Other clients
-  can't connect to DOS H2 servers either for reasons yet to be analyzed.
+  can't connect to DOS H2 servers either,for reasons yet to be analyzed.
 
 - 3dfx Voodoo Graphics / Voodoo2:  Palettized textures are broken with
   the old Mesa 3.x drivers. The new Mesa-6.x drivers work fine. Windows
   people should use the latest "MesaFX" driver.
-
 - 3dfx Voodoo: May not work correctly with multitexturing when running
   with gl_luminance lightmaps. This is a 3dfx problem. For best results,
   use Mesa-6.2 on Linux and the latest "MesaFX" driver on Windows.

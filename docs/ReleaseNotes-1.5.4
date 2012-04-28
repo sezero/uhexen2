@@ -1,5 +1,5 @@
 Hexen II: Hammer of Thyrion (uHexen2)
-Release Notes for version 1.5.4 (Apr. 27, 2012.)
+Release Notes for version 1.5.4 (Apr. 28, 2012.)
 ================================================
 
 Changes since the uhexen2-1.5.3 release:
@@ -7,12 +7,12 @@ Changes since the uhexen2-1.5.3 release:
 * OpenGL: Fixed screen flickering resulting from progress bars drawing
   with some drivers (bug #3519666.) uHexen2 no longer draws the loading
   progress bars during level load in opengl mode.
-* OpenGL (Windows): Fixed bug which used to prevent running on windows8
+* OpenGL (Windows): Fixed a bug which would prevent running on Windows8
   consumer preview versions, unless 32 bit color depth was specified on
-  the command line.
+  the command line. Works just fine now.
 * Music playback: Made sure that the file's channels count is supported.
 * Client, all: Revised the intermissions setup code.
-* Mouse (DOS): Wheel is now detected and used by default. Use -nowheel
+* Mouse (DOS): Wheel is now detected and used by default. Use "-nowheel"
   command line switch to disable it.
 * Mouse (DOS): Pausing the game, moving the mouse and then unpausing it,
   doesn't change the view angle anymore.
