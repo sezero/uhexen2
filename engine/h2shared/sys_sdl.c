@@ -24,5 +24,5 @@
 #include "sdl_inc.h"
 #include "sys_sdl.h"
 
-/* NOTHING HERE YET */
+/* NOTHING HERE YET. */
 
