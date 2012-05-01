@@ -346,18 +346,10 @@ static void CustomApplicationMain (int argc, char **argv)
 
 
 
-/* Display the message from Sys_Error() on a window */
-void Cocoa_ErrorMessage (const char *errorMsg)
-{
-    NSRunCriticalAlertPanel(@"Hexen II Error",
-			    [NSString stringWithUTF8String:errorMsg],
-			    @"OK", nil, nil);
-}
-
-
 #ifdef main
 #  undef main
 #endif
+
 
 /* Main entry point to executable - should *not* be SDL_main! */
 int main (int argc, char **argv)

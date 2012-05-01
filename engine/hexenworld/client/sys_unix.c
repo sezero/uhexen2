@@ -6,14 +6,16 @@
 */
 
 #include "quakedef.h"
+#if defined(__MACOSX__)
+#include "sys_osx.h"	/* Mac OS X specifics */
+#elif defined(SDLQUAKE)
+#include "sys_sdl.h"	/* alternative implementations using SDL. */
+#endif
 #include "userdir.h"
 #include "debuglog.h"
 
 #include <errno.h>
 #include <unistd.h>
-#ifdef __MACOSX__
-#include <libgen.h>	/* for dirname and basename */
-#endif
 #if USE_PASSWORD_FILE && DO_USERDIRS
 #include <pwd.h>
 #endif	/* USE_PASSWORD_FILE */
@@ -292,10 +294,7 @@ static void Sys_Init (void)
 }
 
 
-#if defined(__MACOSX__)
-#define Sys_ErrorMessage	Cocoa_ErrorMessage
-extern void Cocoa_ErrorMessage (const char *errorMsg);	/* in SDLMain.m */
-#else
+#if !defined(Sys_ErrorMessage)
 #define Sys_ErrorMessage(T)	do {} while (0)
 #endif
 
@@ -436,76 +435,12 @@ char *Sys_GetClipboardData (void)
 	return NULL;
 }
 
-#ifdef __MACOSX__
-/*
-=================
-Sys_StripAppBundle
-
-If passed dir is suffixed with the directory structure of a Mac OS X
-.app bundle, the .app directory structure is stripped off the end and
-the result is returned. If not, dir is returned untouched. Taken from
-the quake3 project at icculus.org.
-
-For Mac OS X, we package the game like this:
-
-	Hexen II	( --> the holder directory)
-	|
-	 - Hexen II gl.app (bundle dir for the opengl application)
-	|  |
-	|   - Contents
-	|  |  |
-	|  |   - MacOS	(the actual binary resides here)
-	|  |
-	|   - Resources (icons here)
-	|
-	 - data1	( --> game data directories)
-	|
-	 - portals	( ditto)
-
-=================
-*/
-static char *Sys_StripAppBundle (char *dir)
-{
-	static char	osx_path[MAX_OSPATH];
-
-	q_strlcpy (osx_path, dir, sizeof(osx_path));
-	if (strcmp(basename(osx_path), "MacOS"))
-		return dir;
-	q_strlcpy (osx_path, dirname(osx_path), sizeof(osx_path));
-	if (strcmp(basename(osx_path), "Contents"))
-		return dir;
-	q_strlcpy (osx_path, dirname(osx_path), sizeof(osx_path));
-	if (!strstr(basename(osx_path), ".app"))
-		return dir;
-	q_strlcpy (osx_path, dirname(osx_path), sizeof(osx_path));
-	return osx_path;
-}
-#endif	/* __MACOSX__ */
-
-static int Sys_GetBasedir (char *argv0, char *dst, size_t dstsize)
+#if !defined(Sys_GetBasedir)
+#define Sys_GetBasedir UNIX_GetBasedir
+static int UNIX_GetBasedir (char *argv0, char *dst, size_t dstsize)
 {
 	char	*tmp;
 
-#ifdef __MACOSX__
-	if (realpath(argv0, dst) == NULL)
-	{
-		if (getcwd(dst, dstsize - 1) == NULL)
-			return -1;
-	}
-	else
-	{
-		/* strip off the binary name */
-		tmp = strdup (dst);
-		if (!tmp)
-			return -1;
-		q_strlcpy (dst, dirname(tmp), dstsize);
-		free (tmp);
-	}
-
-	tmp = Sys_StripAppBundle(dst);
-	if (tmp != dst)
-		q_strlcpy (dst, tmp, dstsize);
-#else
 	if (getcwd(dst, dstsize - 1) == NULL)
 		return -1;
 
@@ -518,10 +453,10 @@ static int Sys_GetBasedir (char *argv0, char *dst, size_t dstsize)
 		if (tmp != dst && *tmp == '/')
 			*tmp = 0;
 	}
-#endif
 
 	return 0;
 }
+#endif /* Sys_GetBasedir */
 
 #if DO_USERDIRS
 static int Sys_GetUserdir (char *dst, size_t dstsize)

@@ -601,6 +601,12 @@ endif
 	$(CC) -c $(CFLAGS) $(CPPFLAGS) $(SDLFLAGS) $(INCLUDES) -o $@ $<
 %.o: $(LIBS_DIR)/common/%.c
 	$(CC) -c $(CFLAGS) $(CPPFLAGS) $(SDLFLAGS) $(INCLUDES) -o $@ $<
+%.o: %.m
+	$(CC) -c $(CFLAGS) $(CPPFLAGS) $(SDLFLAGS) $(INCLUDES) -o $@ $<
+%.o: $(COMMONDIR)/%.m
+	$(CC) -c $(CFLAGS) $(CPPFLAGS) $(SDLFLAGS) $(INCLUDES) -o $@ $<
+%.o: $(LIBS_DIR)/common/%.m
+	$(CC) -c $(CFLAGS) $(CPPFLAGS) $(SDLFLAGS) $(INCLUDES) -o $@ $<
 %.o: %.asm
 	$(NASM) $(NASMFLAGS) $(NASM_INC) -o $@ $<
 %.o: $(COMMONDIR)/%.asm
@@ -778,11 +784,17 @@ SYSOBJ_SYS := dos_v2.o sys_dos.o
 #	dosasm.o
 endif
 ifeq ($(TARGET_OS),unix)
+# unix clients use SDL:
 SYSOBJ_INPUT := in_sdl.o
 SYSOBJ_GL_VID:= gl_vidsdl.o fx_gamma.o
 SYSOBJ_SOFT_VID:= vid_sdl.o
 SYSOBJ_NET := net_bsd.o net_udp.o
 SYSOBJ_SYS := sys_unix.o
+ifeq ($(HOST_OS),darwin)
+SYSOBJ_SYS += sys_osx.o
+else
+SYSOBJ_SYS += sys_sdl.o
+endif
 endif
 
 # Final list of objects
