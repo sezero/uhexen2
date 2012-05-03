@@ -3,6 +3,10 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2012-05-03 (SVN):
+    * oslibs/windows/dxsdk/include/ddraw.h: updated from wine git repo
+      e0fab0d39ccd19ca5bc3499305b0927e6f350431 (a comment correction.)
+
 2012-05-01 (SVN):
     * Added new sys_osx.m under engine/h2shared/, moved Sys_GetBasedir()
       from sys_unix.c and Cocoa_ErrorMessage() from customized SDLMain.m
