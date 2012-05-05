@@ -9,7 +9,7 @@ Hexen II: Hammer of Thyrion (uHexen2) - v1.5.4
   1.1 Getting Started
   1.2 Software Requirements
   1.3 Running the Game
-  1.4 Sound and Midi
+  1.4 Sound and Music
   1.5 Networking/Multiplayer
   1.6 Game Saves and Configuration files
   1.7 Fullscreen/Windowed modes and mouse
@@ -164,8 +164,8 @@ switch to activate native 3dfx gamma controls (make sure that you enable
 that option in the Makefile when compiling).
 
 
-1.4 Sound and Midi
-------------------
+1.4 Sound and Music
+-------------------
 
 uHexen2 includes several choices of sound drivers for linux/unix users:
 SDL, OSS and ALSA.  The engine tries them and uses the first one which
@@ -224,18 +224,20 @@ If you can't get sound working, the "-nosound" option will disable
 it. Send a bug report on the project page.
 
 
-1.4.1 Midi support
-------------------
+1.4.1 Midi and Music support
+----------------------------
 
-On linux / unix, midi background music is implemented using timidity,
-so, you will need GUS-compatible patch files and properly configured
-timidity.cfg. For example, you can get a complete set of GUS patches
-from http://www.libsdl.org/projects/mixer/timidity/timidity.tar.gz
+On linux/unix, midi background music is implemented using timidity, so,
+you'll need GUS-compatible instrument patch files along with a properly
+configured timidity.cfg. The configuration file timidity.cfg is searched
+first under the installation directory, then under /etc, /etc/timidity,
+/usr/share/timidity, /usr/local/share/timidity, /usr/local/lib/timidity
+in this order. You can get a complete set of GUS patches by downloading
+the timidity_patches.tar.gz from our site. Extract it into your uHexen2
+installation directory and midi should be ready to play:
+http://sourceforge.net/project/downloading.php?group_id=124987&filename=timidity_patches.tar.gz
 
-The timidity.cfg file is searched under /etc, /etc/timidity,
-/usr/share/timidity and /usr/local/lib/timidity, in this order.
-
-Hammer of Thyrion supports ogg, mp3 and wav external music files to be
+Hammer of Thyrion supports OGG, MP3 and WAV external music files to be
 played instead of the original midi files, so you can enjoy the hexen2
 music in better quality like they are from the hexen2 cdrom audio tracks.
 Ogg playback requires libogg and libvorbis, mp3 playback requires libmad
