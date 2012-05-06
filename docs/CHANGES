@@ -3,6 +3,10 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2012-05-06 (SVN):
+    * Xcode project file update from Steven
+    * updated version date stamp to 2012-05-05.
+
 2012-05-05 (SVN):
     * Added timidity_patches.tar.gz to our download pages under support
       files section. Adjusted the README files for it.
