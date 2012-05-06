@@ -247,8 +247,6 @@
 		7086E4E70AC0070900E9F894 /* Hexen2.icns in Resources */ = {isa = PBXBuildFile; fileRef = 7086E4E50AC0070900E9F894 /* Hexen2.icns */; };
 		708C407D0C1E8A4F00B4A314 /* debuglog.c in Sources */ = {isa = PBXBuildFile; fileRef = 70310B320BFDE90900CA35D3 /* debuglog.c */; };
 		708C408F0C1E8B8200B4A314 /* link_ops.c in Sources */ = {isa = PBXBuildFile; fileRef = 70310B370BFDE94700CA35D3 /* link_ops.c */; };
-		B0E546A615564FC10033037D /* sys_osx.m in Sources */ = {isa = PBXBuildFile; fileRef = B0E546A515564FC10033037D /* sys_osx.m */; };
-		B0E546A715564FC10033037D /* sys_osx.m in Sources */ = {isa = PBXBuildFile; fileRef = B0E546A515564FC10033037D /* sys_osx.m */; };
 		B0E74B1E144E7FF40043F808 /* qsnprint.c in Sources */ = {isa = PBXBuildFile; fileRef = B0E74B1D144E7FF40043F808 /* qsnprint.c */; };
 		B0E74B1F144E7FF40043F808 /* qsnprint.c in Sources */ = {isa = PBXBuildFile; fileRef = B0E74B1D144E7FF40043F808 /* qsnprint.c */; };
 		B0E74B23144E80170043F808 /* strlcat.c in Sources */ = {isa = PBXBuildFile; fileRef = B0E74B22144E80170043F808 /* strlcat.c */; };
@@ -436,7 +434,6 @@
 		707D592A0AAA076A00313A9F /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = /System/Library/Frameworks/OpenGL.framework; sourceTree = "<absolute>"; };
 		707D592B0AAA076A00313A9F /* QuickTime.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuickTime.framework; path = /System/Library/Frameworks/QuickTime.framework; sourceTree = "<absolute>"; };
 		7086E4E50AC0070900E9F894 /* Hexen2.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = Hexen2.icns; sourceTree = "<group>"; };
-		B0E546A515564FC10033037D /* sys_osx.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = sys_osx.m; path = ../../h2shared/sys_osx.m; sourceTree = SOURCE_ROOT; };
 		B0E74B1D144E7FF40043F808 /* qsnprint.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = qsnprint.c; path = ../../../libs/common/qsnprint.c; sourceTree = SOURCE_ROOT; };
 		B0E74B22144E80170043F808 /* strlcat.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = strlcat.c; path = ../../../libs/common/strlcat.c; sourceTree = SOURCE_ROOT; };
 		B0E74B27144E802B0043F808 /* strlcpy.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = strlcpy.c; path = ../../../libs/common/strlcpy.c; sourceTree = SOURCE_ROOT; };
@@ -485,7 +482,6 @@
 		707D57580AA9F4B100313A9F = {
 			isa = PBXGroup;
 			children = (
-				B0E546A515564FC10033037D /* sys_osx.m */,
 				483B16A4154472FE00BBDAD1 /* cl_inlude.c */,
 				B0E74B3B144E80960043F808 /* snd_timidity.c */,
 				B0E74B36144E807F0043F808 /* snd_mpg123.c */,
@@ -952,7 +948,6 @@
 				B0E74B33144E806D0043F808 /* snd_vorbis.c in Sources */,
 				B0E74B38144E807F0043F808 /* snd_mpg123.c in Sources */,
 				B0E74B3D144E80960043F808 /* snd_timidity.c in Sources */,
-				B0E546A715564FC10033037D /* sys_osx.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1037,7 +1032,6 @@
 				B0E74B37144E807F0043F808 /* snd_mpg123.c in Sources */,
 				B0E74B3C144E80960043F808 /* snd_timidity.c in Sources */,
 				483B16A5154472FE00BBDAD1 /* cl_inlude.c in Sources */,
-				B0E546A615564FC10033037D /* sys_osx.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
