@@ -131,7 +131,7 @@ int	CopyString (const char *str)
 }
 
 
-#if 0	// all uses are commented out
+#if 0	/* all uses are commented out */
 static void PrintStrings (void)
 {
 	int		i, l, j;
@@ -139,7 +139,7 @@ static void PrintStrings (void)
 	for (i = 0 ; i < strofs ; i += l)
 	{
 		l = strlen(strings+i) + 1;
-		printf ("%5i : ",i);
+		printf ("%5i : ", i);
 		for (j = 0 ; j < l ; j++)
 		{
 			if (strings[i+j] == '\n')
@@ -164,7 +164,7 @@ static void PrintFunctions (void)
 		d = &functions[i];
 		printf ("%s : %s : %i %i (", strings + d->s_file, strings + d->s_name, d->first_statement, d->parm_start);
 		for (j = 0 ; j < d->numparms ; j++)
-			printf ("%i ",d->parm_size[j]);
+			printf ("%i ", d->parm_size[j]);
 		printf (")\n");
 	}
 }
@@ -192,7 +192,7 @@ static void PrintGlobals (void)
 		printf ("%5i : (%i) %s\n", d->ofs, d->type, strings + d->s_name);
 	}
 }
-#endif	// end of unused stuff
+#endif	/* end of unused stuff */
 
 
 static void InitData (void)
@@ -210,11 +210,6 @@ static void InitData (void)
 		def_parms[i].ofs = OFS_PARM0 + 3*i;
 }
 
-//==========================================================================
-//
-// WriteData
-//
-//==========================================================================
 
 static void WriteData (int crc)
 {
@@ -222,13 +217,11 @@ static void WriteData (int crc)
 	ddef_t		*dd;
 	dprograms_t	progs;
 	FILE	*h;
-	int			i;
-	int	localName = 0;	// init to 0, silence compiler warning
+	int	i, localName;
 
 	if (hcc_OptimizeNameTable)
-	{
 		localName = CopyString("LCL+");
-	}
+	else	localName = 0;	/* init to 0, silence compiler warning */
 
 	for (def = pr.def_head.next ; def ; def = def->next)
 	{
@@ -397,7 +390,6 @@ static const char *PR_String (const char *string)
 	return buf;
 }
 
-
 static def_t *PR_DefForFieldOfs (gofs_t ofs)
 {
 	def_t	*d;
@@ -406,7 +398,7 @@ static def_t *PR_DefForFieldOfs (gofs_t ofs)
 	{
 		if (d->type->type != ev_field)
 			continue;
-		if (*((int *)&pr_globals[d->ofs]) == ofs)
+		if (((int *)pr_globals)[d->ofs] == ofs)
 			return d;
 	}
 	Error ("%s: couldn't find %i", __thisfunc__, ofs);
@@ -507,10 +499,10 @@ static const char *PR_GlobalString (gofs_t ofs)
 	if (def->initialized && def->type->type != ev_function)
 	{
 		s = PR_ValueString (def->type->type, &pr_globals[ofs]);
-		sprintf (line,"%i(%s)", ofs, s);
+		sprintf (line, "%i(%s)", ofs, s);
 	}
 	else
-		sprintf (line,"%i(%s)", ofs, def->name);
+		sprintf (line, "%i(%s)", ofs, def->name);
 
 	i = strlen(line);
 	for ( ; i < 16 ; i++)
@@ -525,10 +517,10 @@ static const char *PR_GlobalString (gofs_t ofs)
 PR_PrintOfs
 ============
 */
-#if 0	// not used
+#if 0	/* not used */
 static void PR_PrintOfs (gofs_t ofs)
 {
-	printf ("%s\n",PR_GlobalString(ofs));
+	printf ("%s\n", PR_GlobalString(ofs));
 }
 #endif
 
@@ -547,7 +539,7 @@ static void PR_PrintStatement (dstatement_t *s)
 		printf (" ");
 
 	if (s->op == OP_IF || s->op == OP_IFNOT)
-		printf ("%sbranch %i", PR_GlobalString(s->a),s->b);
+		printf ("%sbranch %i", PR_GlobalString(s->a), s->b);
 	else if (s->op == OP_GOTO)
 	{
 		printf ("branch %i", s->a);
@@ -577,14 +569,13 @@ static void PR_PrintStatement (dstatement_t *s)
 	printf ("\n");
 }
 
-//==========================================================================
-//
-// BeginCompilation
-//
-// Called before compiling a batch of files, clears the pr struct.
-//
-//==========================================================================
+/*
+==============
+BeginCompilation
 
+called before compiling a batch of files, clears the pr struct
+==============
+*/
 static void BeginCompilation (void)
 {
 	int		i;
@@ -603,15 +594,14 @@ static void BeginCompilation (void)
 	pr_error_count = 0;
 }
 
-//==========================================================================
-//
-// FinishCompilation
-//
-// Called after all files are compiled to check for errors.  Returns
-// false if errors were detected.
-//
-//==========================================================================
+/*
+==============
+FinishCompilation
 
+called after all files are compiled to check for errors
+Returns false if errors were detected.
+==============
+*/
 static qboolean FinishCompilation (void)
 {
 	def_t		*d;
@@ -637,6 +627,7 @@ static qboolean FinishCompilation (void)
 			}
 		}
 	}
+
 	return !errors;
 }
 
@@ -669,30 +660,30 @@ static int PR_WriteProgdefs (const char *filename)
 		switch (d->type->type)
 		{
 		case ev_float:
-			fprintf (f, "\tfloat\t%s;\n",d->name);
+			fprintf (f, "\tfloat\t%s;\n", d->name);
 			break;
 		case ev_vector:
-			fprintf (f, "\tvec3_t\t%s;\n",d->name);
+			fprintf (f, "\tvec3_t\t%s;\n", d->name);
 			d = d->next->next->next;	// skip the elements
 			break;
 		case ev_string:
-			fprintf (f,"\tstring_t\t%s;\n",d->name);
+			fprintf (f, "\tstring_t\t%s;\n", d->name);
 			break;
 		case ev_function:
-			fprintf (f,"\tfunc_t\t%s;\n",d->name);
+			fprintf (f, "\tfunc_t\t%s;\n", d->name);
 			break;
 		case ev_entity:
-			fprintf (f,"\tint\t%s;\n",d->name);
+			fprintf (f, "\tint\t%s;\n", d->name);
 			break;
 		default:
-			fprintf (f,"\tint\t%s;\n",d->name);
+			fprintf (f, "\tint\t%s;\n", d->name);
 			break;
 		}
 	}
-	fprintf (f,"} globalvars_t;\n\n");
+	fprintf (f, "} globalvars_t;\n\n");
 
 	// print all fields
-	fprintf (f,"typedef struct\n{\n");
+	fprintf (f, "typedef struct\n{\n");
 	for (d = pr.def_head.next ; d ; d = d->next)
 	{
 		if (!strcmp (d->name, "end_sys_fields"))
@@ -704,27 +695,27 @@ static int PR_WriteProgdefs (const char *filename)
 		switch (d->type->aux_type->type)
 		{
 		case ev_float:
-			fprintf (f,"\tfloat\t%s;\n",d->name);
+			fprintf (f, "\tfloat\t%s;\n", d->name);
 			break;
 		case ev_vector:
-			fprintf (f,"\tvec3_t\t%s;\n",d->name);
+			fprintf (f, "\tvec3_t\t%s;\n", d->name);
 			d = d->next->next->next;	// skip the elements
 			break;
 		case ev_string:
-			fprintf (f,"\tstring_t\t%s;\n",d->name);
+			fprintf (f, "\tstring_t\t%s;\n", d->name);
 			break;
 		case ev_function:
-			fprintf (f,"\tfunc_t\t%s;\n",d->name);
+			fprintf (f, "\tfunc_t\t%s;\n", d->name);
 			break;
 		case ev_entity:
-			fprintf (f,"\tint\t%s;\n",d->name);
+			fprintf (f, "\tint\t%s;\n", d->name);
 			break;
 		default:
-			fprintf (f,"\tint\t%s;\n",d->name);
+			fprintf (f, "\tint\t%s;\n", d->name);
 			break;
 		}
 	}
-	fprintf (f,"} entvars_t;\n\n");
+	fprintf (f, "} entvars_t;\n\n");
 
 	fclose (f);
 
@@ -734,7 +725,7 @@ static int PR_WriteProgdefs (const char *filename)
 	while ((c = fgetc(f)) != EOF)
 		CRC_ProcessByte (&crc, (byte)c);
 
-	fprintf (f,"#define PROGHEADER_CRC %i\n", crc);
+	fprintf (f, "#define PROGHEADER_CRC %i\n", crc);
 	fclose (f);
 
 	return crc;
@@ -764,12 +755,11 @@ static void PrintFunction (const char *name)
 	}
 }
 
-//==========================================================================
-//
-// main
-//
-//==========================================================================
-
+/*
+============
+main
+============
+*/
 int main (int argc, char **argv)
 {
 	const char	*psrc;

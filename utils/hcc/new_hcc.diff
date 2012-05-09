@@ -99,16 +99,16 @@ diff -urNp hcc_old/expr.c hcc/expr.c
 diff -urNp hcc_old/hcc.c hcc/hcc.c
 --- hcc_old/hcc.c	2011-06-02 00:15:46.000000000 +0300
 +++ hcc/hcc.c	2011-06-02 00:15:46.000000000 +0300
-@@ -227,7 +227,7 @@ static void WriteData (int crc)
+@@ -220,7 +220,7 @@ static void WriteData (int crc)
+ 	int	i, localName;
  
  	if (hcc_OptimizeNameTable)
- 	{
 -		localName = CopyString("LOCAL+");
 +		localName = CopyString("LCL+");
- 	}
+ 	else	localName = 0;	/* init to 0, silence compiler warning */
  
  	for (def = pr.def_head.next ; def ; def = def->next)
-@@ -248,9 +248,12 @@ static void WriteData (int crc)
+@@ -241,9 +241,12 @@ static void WriteData (int crc)
  			&& def->type->type != ev_field
  			&& def->scope == NULL)
  		{
@@ -123,7 +123,7 @@ diff -urNp hcc_old/hcc.c hcc/hcc.c
  		{
  			dd->s_name = localName;
  		}
-@@ -554,6 +557,14 @@ static void PR_PrintStatement (dstatemen
+@@ -546,6 +549,14 @@ static void PR_PrintStatement (dstatemen
  		printf ("%s", PR_GlobalString(s->a));
  		printf ("%s", PR_GlobalStringNoContents(s->b));
  	}
@@ -138,7 +138,7 @@ diff -urNp hcc_old/hcc.c hcc/hcc.c
  	else
  	{
  		if (s->a)
-@@ -605,10 +616,14 @@ static qboolean FinishCompilation (void)
+@@ -595,10 +606,14 @@ static qboolean FinishCompilation (void)
  {
  	def_t		*d;
  	qboolean	errors;
@@ -153,7 +153,7 @@ diff -urNp hcc_old/hcc.c hcc/hcc.c
  		if (d->type->type == ev_function && !d->scope)
  		{
  			if (!d->initialized)
-@@ -616,7 +631,7 @@ static qboolean FinishCompilation (void)
+@@ -606,7 +621,7 @@ static qboolean FinishCompilation (void)
  				printf("function '%s' was not defined\n", d->name);
  				errors = true;
  			}
@@ -162,7 +162,7 @@ diff -urNp hcc_old/hcc.c hcc/hcc.c
  			{ // Function never used
  				printf("unreferenced function '%s'\n", d->name);
  			}
-@@ -773,6 +788,8 @@ int main (int argc, char **argv)
+@@ -763,6 +778,8 @@ int main (int argc, char **argv)
  
  	if (CheckParm("-?") || CheckParm("-h") || CheckParm("-help") || CheckParm("--help"))
  	{

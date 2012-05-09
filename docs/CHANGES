@@ -4,6 +4,10 @@ Development Progress	:
 ---------------------------
 
 2012-05-09 (SVN):
+    * utils/dcc/hcc.c (PR_DefForFieldOfs): Made the typecast comparison
+      more aliasing-friendly.
+
+2012-05-09 (SVN):
     * utils/dcc/dcc.c (DEC_ReadData): Assign and print the globals before
       reading the progs.
     * utils/dcc/hcc.c: Remove the useless -crc command line option.
