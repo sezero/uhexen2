@@ -653,7 +653,7 @@ static int PR_WriteProgdefs (const char *filename)
 {
 	def_t	*d;
 	FILE	*f;
-	unsigned short		crc;
+	unsigned short	crc;
 	int		c;
 
 	printf ("writing %s\n", filename);
@@ -836,9 +836,7 @@ int main (int argc, char **argv)
 
 	psrc = COM_Parse(psrc);
 	if (!psrc)
-	{
 		Error("No destination filename.  HCC -help for info.\n");
-	}
 	sprintf(destfile, "%s%s", sourcedir, com_token);
 
 	BeginCompilation();
@@ -855,22 +853,17 @@ int main (int argc, char **argv)
 	{
 		psrc = COM_Parse(psrc);
 		if (!psrc)
-		{
 			break;
-		}
+
 		registerCount = numpr_globals;
 		statementCount = numstatements;
 		functionCount = numfunctions;
 		sprintf(filename, "%s%s", sourcedir, com_token);
 		if (!quiet)
-		{
 			printf("compiling %s\n", filename);
-		}
 		LoadFile(filename, &src2);
 		if (!CO_CompileFile((char *)src2, filename))
-		{
 			exit (1);
-		}
 		if (!quiet && fileInfo)
 		{
 			registerCount = numpr_globals-registerCount;
@@ -887,9 +880,7 @@ int main (int argc, char **argv)
 	} while (1);
 
 	if (!FinishCompilation())
-	{
 		Error ("compilation errors");
-	}
 
 	p = CheckParm("-asm");
 	if (p)
@@ -897,9 +888,7 @@ int main (int argc, char **argv)
 		for (p++; p < argc; p++)
 		{
 			if (argv[p][0] == '-')
-			{
 				break;
-			}
 			PrintFunction(argv[p]);
 		}
 	}

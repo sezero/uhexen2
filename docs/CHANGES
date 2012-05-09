@@ -4,6 +4,11 @@ Development Progress	:
 ---------------------------
 
 2012-05-09 (SVN):
+    * utils/dcc/dcc.c (DEC_ReadData): Assign and print the globals before
+      reading the progs.
+    * utils/dcc/hcc.c: Remove the useless -crc command line option.
+
+2012-05-09 (SVN):
     * utils/dcc/dcc.c: Made DEC_GetFunctionIdxByName to actually be able
       return 0: It used to return the numfunctions value when it failed
       to find a match. GetReturnType and GetLastFunctionReturn do check

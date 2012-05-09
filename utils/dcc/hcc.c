@@ -624,7 +624,7 @@ static int PR_WriteProgdefs (const char *filename)
 {
 	def_t	*d;
 	FILE	*f;
-	unsigned short		crc;
+	unsigned short	crc;
 	int		c;
 
 	printf ("writing %s\n", filename);
@@ -749,10 +749,8 @@ int main (int argc, char **argv)
 	const char	*psrc;
 	void		*src, *src2;
 	char	filename[1024];
-	int		p, c;
-	unsigned short		crc;
+	int		p, crc;
 	double	start, stop;
-	FILE	*f;
 
 	myargc = argc;
 	myargv = argv;
@@ -791,20 +789,6 @@ int main (int argc, char **argv)
 	if (p)
 		pr_dumpasm = true;
 
-	// do a crc of the file
-	p = CheckParm("-crc");
-	if (p)
-	{
-		CRC_Init (&crc);
-		f = fopen ("progdefs.h", "r");
-		while ((c = fgetc(f)) != EOF)
-			CRC_ProcessByte (&crc, (byte)c);
-
-		printf ("#define PROGHEADER_CRC %i %d\n", crc, (int)crc);
-		fclose (f);
-		exit (0);
-	}
-
 	p = CheckParm("-dcc");
 	if (p)
 	{
@@ -817,13 +801,16 @@ int main (int argc, char **argv)
 		p = CheckParm("-bbb");
 		if (p)
 		{
-		/*	i= -999;
+			/*
+			i= -999;
 			for (p = 0; p < numstatements; p++)
-				if ((statements+p)->op > i)
-					i = (statements+p)->op;
-			printf("largest op %d\n", i); */
+			{
+				if ((statements + p)->op > i)
+					i = (statements + p)->op;
+			}
+			printf("largest op %d\n", i);
+			*/
 			FindBuiltinParameters(1);
-
 			exit (0);
 		}
 
@@ -909,9 +896,7 @@ int main (int argc, char **argv)
 
 	psrc = COM_Parse(psrc);
 	if (!psrc)
-	{
 		Error("No destination filename. dhcc -help for info.\n");
-	}
 
 	strcpy(destfile, com_token);
 	printf("outputfile: %s\n", destfile);
@@ -933,13 +918,10 @@ int main (int argc, char **argv)
 
 		if (!PR_CompileFile((char *)src2, filename))
 			exit (1);
-
 	} while (1);
 
 	if (!PR_FinishCompilation())
-	{
 		Error ("compilation errors");
-	}
 
 	p = CheckParm("-asm");
 	if (p)
@@ -947,16 +929,13 @@ int main (int argc, char **argv)
 		for (p++; p < argc; p++)
 		{
 			if (argv[p][0] == '-')
-			{
 				break;
-			}
 			PrintFunction(argv[p]);
 		}
 	}
 
 	// write progdefs.h
 	crc = PR_WriteProgdefs("progdefs.h");
-//	crc = 14046;	// FIXME: cheap hack for now!!!!!!!!!!!!!
 
 	// write data file
 	WriteData(crc);

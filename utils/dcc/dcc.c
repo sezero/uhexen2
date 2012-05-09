@@ -115,9 +115,7 @@ static const char *PR_PrintStringAtOfs (gofs_t ofs, def_t* typ)
 	}
 
 	if (!def)
-	{
 		return Make_Immediate(ofs, NULL, 2);
-	}
 
 	if (!strcmp(strings + def->s_name, IMMEDIATE_NAME))
 		return DCC_ValueString ((etype_t)def->type, &pr_globals[ofs]);
@@ -126,9 +124,7 @@ static const char *PR_PrintStringAtOfs (gofs_t ofs, def_t* typ)
 	{
 	//	printf("type %s %d\n", strings + def->s_name, typ->type->type);
 		if (typ->type->type == ev_float && d->type == ev_vector)
-		{
-			def = &globals[i+1];
-		}
+			def = &globals[i + 1];
 	}
 //	printf("found %s\n", strings + def->s_name);
 	return (strings + def->s_name);
@@ -151,9 +147,7 @@ static const char *PR_PrintGlobal (gofs_t ofs, def_t* typ)
 	}
 
 	if (!def)
-	{
 		return NULL;
-	}
 
 	if (!strcmp(strings + def->s_name, IMMEDIATE_NAME))
 		return DCC_ValueString ((etype_t)def->type, &pr_globals[ofs]);
@@ -161,11 +155,9 @@ static const char *PR_PrintGlobal (gofs_t ofs, def_t* typ)
 	if (typ)
 	{
 		if (typ->type->type == ev_float && d->type == ev_vector)
-		{
-			def = &globals[i+1];
-		}
+			def = &globals[i + 1];
 	}
-	return  (strings + def->s_name);
+	return (strings + def->s_name);
 }
 
 
@@ -301,9 +293,7 @@ static void DccStatement (dstatement_t *s)
 		if (par && s->op == OP_STORE_F)
 		{
 			if (par->type == ev_vector)
-			{
 				strcat(a1, "_x");
-			}
 		}
 */
 		arg3 = PR_PrintGlobal((unsigned short)s->b, typ2);
@@ -328,9 +318,7 @@ static void DccStatement (dstatement_t *s)
 		if (par && s->op == OP_STOREP_F)
 		{
 			if (par->type == ev_vector)
-			{
 				strcat(a1, "_x");
-			}
 		}
 
 		arg2 = PR_PrintStringAtOfs((unsigned short)s->b, typ2);
@@ -394,9 +382,7 @@ static void DccStatement (dstatement_t *s)
 			arg1 = temp_val[OFS_PARM0+(i*3)];
 			arg2 = Make_Immediate(OFS_PARM0+(i*3), NULL, 2);
 			if (!arg2)
-			{
 				continue;
-			}
 			strcat(dsline, arg2);
 		//	temp_val[OFS_PARM0+(i*3)] = NULL;
 /*
@@ -422,14 +408,10 @@ static void DccStatement (dstatement_t *s)
 		{
 		//	printf ("\n%d\n", (s + i)->op);
 			if ((s + i)->op % 100 == OP_DONE)
-			{
 				break;
-			}
 
 			if ((s + i)->op % 100 >= 92)
-			{
 				break;
-			}
 
 			if ((s + i)->a == OFS_RETURN ||
 			    (s + i)->b == OFS_RETURN ||
@@ -581,9 +563,7 @@ static void DccStatement (dstatement_t *s)
 		PR_Print("%s %s %s;\n", arg2, pr_opcodes[s->op].name, a1);
 
 		if (s->c)
-		{
 			Make_Immediate((unsigned short)s->c, dsline, 1);
-		}
 	}
 	else if (s->op == 80 || s->op == 81)
 	{
@@ -1045,9 +1025,7 @@ static unsigned short GetReturnType (int func)
 
 		if (ds->op == OP_RETURN)
 		{ /* find 2 different returns if possible just to be certain (ie: findtarget) */
-
 			j++; /* we do come here with j == 1 already.  put j > 1 checks below. */
-
 			if (ds->a != 0)
 			{
 				if (ds->a == OFS_RETURN)
@@ -1981,29 +1959,42 @@ void DEC_ReadData (const char *srcfile)
 	for (i = 0; i < (int)sizeof(progs)/4; i++)
 		((int *)&progs)[i] = LittleLong ( ((int *)&progs)[i] );
 
-	fseek (h, progs.ofs_strings, SEEK_SET);
 	strofs = progs.numstrings;
+	numstatements = progs.numstatements;
+	numfunctions = progs.numfunctions;
+	numglobaldefs = progs.numglobaldefs;
+	numfielddefs = progs.numfielddefs;
+	numpr_globals = progs.numglobals;
+
+	printf ("read data from %s:\n", srcfile);
+	printf ("%10i bytes, version %i, crc: %i\n", (int) Q_filelength(h), progs.version, progs.crc);
+	printf ("%10i strofs\n", strofs);
+	printf ("%10i numstatements\n", numstatements);
+	printf ("%10i numfunctions\n", numfunctions);
+	printf ("%10i numglobaldefs\n", numglobaldefs);
+	printf ("%10i numfielddefs\n", numfielddefs);
+	printf ("%10i numpr_globals\n", numpr_globals);
+	printf ("----------------------------------------\n");
+
+	fseek (h, progs.ofs_strings, SEEK_SET);
 	SafeRead (h, strings, strofs);
 
 	fseek (h, progs.ofs_statements, SEEK_SET);
-	numstatements = progs.numstatements;
 	SafeRead (h, statements, numstatements*sizeof(dstatement_t));
 
 	fseek (h, progs.ofs_functions, SEEK_SET);
-	numfunctions = progs.numfunctions;
 	SafeRead (h, functions, numfunctions*sizeof(dfunction_t));
 
 	fseek (h, progs.ofs_globaldefs, SEEK_SET);
-	numglobaldefs = progs.numglobaldefs;
 	SafeRead (h, globals, numglobaldefs*sizeof(ddef_t));
 
 	fseek (h, progs.ofs_fielddefs, SEEK_SET);
-	numfielddefs = progs.numfielddefs;
 	SafeRead (h, fields, numfielddefs*sizeof(ddef_t));
 
 	fseek (h, progs.ofs_globals, SEEK_SET);
-	numpr_globals = progs.numglobals;
 	SafeRead (h, pr_globals, numpr_globals*4);
+
+	fclose (h);
 
 	/* byte swap the lumps */
 	for (i = 0; i < numstatements; i++)
@@ -2042,18 +2033,6 @@ void DEC_ReadData (const char *srcfile)
 
 	for (i = 0; i < numpr_globals; i++)
 		((int *)pr_globals)[i] = LittleLong (((int *)pr_globals)[i]);
-
-	printf ("read data from %s:\n", srcfile);
-	printf ("%10i bytes, version %i, crc: %i\n", (int) Q_filelength(h), progs.version, progs.crc);
-	printf ("%10i strofs\n", strofs);
-	printf ("%10i numstatements\n", numstatements);
-	printf ("%10i numfunctions\n", numfunctions);
-	printf ("%10i numglobaldefs\n", numglobaldefs);
-	printf ("%10i numfielddefs\n", numfielddefs);
-	printf ("%10i numpr_globals\n", numpr_globals);
-	printf ("----------------------------------------\n");
-
-	fclose (h);
 }
 
 
