@@ -1438,6 +1438,7 @@ static void PR_LocalGlobals (void)
 				if (strcmp(strings + par->s_name, strings + cfunc->s_name) == 0)
 					continue;
 				i = DEC_GetFunctionIdxByName(strings + par->s_name);
+				/* check for i == 0 here ???? */
 				PR_FunctionHeader(functions + i);
 				PR_Print("%s%s;\n", func_headers[i],strings + (functions + i)->s_name);
 			}
@@ -1547,6 +1548,7 @@ static const char *GetFieldFunctionHeader (const char *s_name)
 						if (!arg3)
 							continue;
 						j = DEC_GetFunctionIdxByName(arg3);
+						/* check for j == 0 here ???? */
 						PR_FunctionHeader(functions + j);
 						if (strcmp("void  ()", func_headers[j]))
 							return func_headers[j];
@@ -1593,26 +1595,21 @@ void FindBuiltinParameters (int func)
 	if (func_headers[func])
 		return;
 
-//	func = DEC_GetFunctionIdxByName("starteffect");
-
 	df = functions + func;
 
 //	printf("%s %d\n", strings + df->s_name, df->numparms);
-
 	printf("looking for builtin %s...: ", strings+df->s_name);
 
 	for (i = 1; i < numfunctions; i++)
-	{ /* let'em know its working, not hanging */
-		if (! (i & 0xf) )
-			printf(".");
+	{
+		if (! (i & 0xf))
+			printf(".");	/* let'em know its working, not hanging */
 
 		j = (functions + i)->first_statement;
-
 		if (j < 0)
 			continue;
 
 		ds = statements + j;
-		//j = 0;
 
 		while (ds && ds->op)
 		{
@@ -1665,19 +1662,14 @@ void FindBuiltinParameters (int func)
 			{
 				type[8] = pr_opcodes[ds->op].type_c->type->type;
 				if (type[8] == ev_pointer)
-				{
 					type[8] = BackBuildReturnType(dft, ds, ds->c);
-				}
 			}
 			else
 			{
 				type[8] = pr_opcodes[ds->op].type_b->type->type;
 				if (type[8] == ev_pointer)
-				{
 					type[8] = BackBuildReturnType(dft, ds, ds->b);
-				}
 			}
-
 			break;
 		}
 
@@ -1686,10 +1678,7 @@ void FindBuiltinParameters (int func)
 		//	printf("%d %d %d %d 2 rt %d\n", ds->op, ds->a, ds->b, ds->c, pr_opcodes[ds->op].type_b->type->type);
 			type[8] = pr_opcodes[ds->op].type_b->type->type;
 			if (type[8] == ev_pointer)
-			{
 				type[8] = BackBuildReturnType(dft, ds, ds->b);
-			}
-
 			break;
 		}
 
@@ -1698,10 +1687,7 @@ void FindBuiltinParameters (int func)
 		//	printf("%d %d %d %d 3 rt %d\n", ds->op, ds->a, ds->b, ds->c, pr_opcodes[ds->op].type_c->type->type);
 			type[8] = pr_opcodes[ds->op].type_c->type->type;
 			if (type[8] == ev_pointer)
-			{
 				type[8] = BackBuildReturnType(dft, ds, ds->c);
-			}
-
 			break;
 		}
 	}
@@ -1762,7 +1748,6 @@ void FindBuiltinParameters (int func)
 					if (type[i] == ev_pointer || type[i] == ev_field)
 						type[i] = BackBuildReturnType(dft, ds, ds->c);
 				}
-
 				break;
 			}
 
@@ -2087,10 +2072,10 @@ static int DEC_GetFunctionIdxByName (const char *name)
 	for (i = 1; i < numfunctions; i++)
 	{
 		if (!strcmp (name, strings + functions[i].s_name))
-			break;
+			return i;
 	}
 
-	return i;
+	return 0;
 }
 
 
@@ -2104,11 +2089,8 @@ static ddef_t *DEC_GetParameter (gofs_t ofs)
 	for (i = 0; i < numglobaldefs; i++)
 	{
 		def = &globals[i];
-
-		if (def->ofs == ofs )
-		{
+		if (def->ofs == ofs)
 			return def;
-		}
 	}
 
 	return NULL;
@@ -2146,7 +2128,7 @@ static void FixFunctionNames (void)
 {
 	int		i, j;
 	dfunction_t	*d;
-	char		s[128], *c;
+	char	s[128], *c;
 
 	for (i = 1; i < numfunctions; i++)
 	{

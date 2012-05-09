@@ -4,6 +4,15 @@ Development Progress	:
 ---------------------------
 
 2012-05-09 (SVN):
+    * utils/dcc/dcc.c: Made DEC_GetFunctionIdxByName to actually be able
+      return 0: It used to return the numfunctions value when it failed
+      to find a match. GetReturnType and GetLastFunctionReturn do check
+      the value returned from DEC_GetFunctionIdxByName against 0. On the
+      other hand PR_LocalGlobals() and GetFieldFunctionHeader(), the two
+      other callers of DEC_GetFunctionIdxByName, don't do so: added fixme
+      notes to them.
+
+2012-05-09 (SVN):
     * utils/dcc/dcc.c (Dcc_Functions): Unixify the file path and create
       parent directories if any. Fixes the file open failure with hcbots
       v1.03 progs where the file names have windows backslashes in them.
