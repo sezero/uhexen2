@@ -1269,7 +1269,7 @@ void Dcc_Functions (void)
 {
 	int		i;
 	dfunction_t	*df;
-	char	fname[1024];
+	char	fname[1024], *p;
 	FILE		*prgs;
 
 	prgs = fopen("progs.src","w");
@@ -1285,6 +1285,16 @@ void Dcc_Functions (void)
 		if (FILE_NUM_FOR_NAME)
 			sprintf (fname, "%d.hc", df->s_file);
 		else	sprintf (fname, "%s", strings + df->s_file);
+		/* unixify the path, */
+		p = fname;
+		while (*p)
+		{
+			if (*p == '\\')
+				*p = '/';
+			++p;
+		}
+		/* create parent directories, if any */
+		CreatePath(fname);
 
 		if (! DEC_AlreadySeen(fname))
 		{

@@ -4,6 +4,13 @@ Development Progress	:
 ---------------------------
 
 2012-05-09 (SVN):
+    * utils/dcc/dcc.c (Dcc_Functions): Unixify the file path and create
+      parent directories if any. Fixes the file open failure with hcbots
+      v1.03 progs where the file names have windows backslashes in them.
+      We still go into some endless loop when decompiling hcbots' progs,
+      though: to be looked into.
+
+2012-05-09 (SVN):
     * utils/dcc/dcc.c: Whitespace and coding style cleanup. Changed some
       else cases whose matching ifs always return into ifs. Changed some
       if(condition) into if(!condition) where it made the code some more
