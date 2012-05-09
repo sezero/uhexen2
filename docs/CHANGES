@@ -3,6 +3,12 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2012-05-09 (SVN):
+    * utils/dcc/dcc.c: Whitespace and coding style cleanup. Changed some
+      else cases whose matching ifs always return into ifs. Changed some
+      if(condition) into if(!condition) where it made the code some more
+      readable. Changed malloc()/strcpy() call pairs into strdup() calls.
+
 2012-05-06 (SVN):
     * Xcode project file update from Steven
     * updated version date stamp to 2012-05-05.
