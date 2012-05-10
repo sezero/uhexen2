@@ -62,7 +62,6 @@ def_t *pr_global_defs[MAX_REGS];	// to find def for a global variable
 def_t *pr_scope;	// the function being parsed, or NULL
 
 string_t s_file;	// filename for function definition
-int srcdir_len = 0;	// length of source directory string
 
 int locals_end;		// for tracking local variables vs temps
 
@@ -257,9 +256,7 @@ qboolean CO_CompileFile (const char *fileText, const char *fileName)
 
 	FrameIndex = -1;
 	inProgress = false;
-	//s_file = CopyString(fileName);
-	// no need to write source directory name into strings
-	s_file = CopyString(fileName+srcdir_len);
+	s_file = CopyString(fileName);
 
 	// Ugly hack to prevent longjmp failure from within
 	// LX_NewSourceFile().

@@ -464,9 +464,9 @@ static const char *PR_GlobalStringNoContents (gofs_t ofs)
 	def = pr_global_defs[ofs];
 	if (!def)
 	//	Error ("%s: no def for %i", __thisfunc__, ofs);
-		sprintf (line,"%i(?)", ofs);
+		sprintf (line, "%i(?)", ofs);
 	else
-		sprintf (line,"%i(%s)", ofs, def->name);
+		sprintf (line, "%i(%s)", ofs, def->name);
 
 	i = strlen(line);
 	for ( ; i < 16 ; i++)
@@ -744,6 +744,7 @@ int main (int argc, char **argv)
 	const char	*psrc;
 	void		*src, *src2;
 	char	filename[1024];
+	char	*nameptr; /* filename[] without the parent sourcedir */
 	int		p, crc;
 	double	start, stop;
 
@@ -768,13 +769,17 @@ int main (int argc, char **argv)
 	p = CheckParm("-src");
 	if (p && p < argc-1)
 	{
+	/* everything will now be relative to sourcedir: */
 		strcpy(sourcedir, argv[p+1]);
 		strcat(sourcedir, "/");
 		printf("Source directory: %s\n", sourcedir);
+		strcpy(filename, sourcedir);
+		nameptr = strchr(filename, '\0');
 	}
 	else
 	{
 		sourcedir[0] = '\0';
+		nameptr = filename;
 	}
 
 	InitData ();
@@ -885,7 +890,7 @@ int main (int argc, char **argv)
 		exit (0);
 	}
 
-	sprintf(filename, "%sprogs.src", sourcedir);
+	strcpy(nameptr, "progs.src");
 	LoadFile(filename, &src);
 	psrc = (char *) src;
 
@@ -893,7 +898,7 @@ int main (int argc, char **argv)
 	if (!psrc)
 		Error("No destination filename. dhcc -help for info.\n");
 
-	strcpy(destfile, com_token);
+	sprintf(destfile, "%s%s", sourcedir, com_token);
 	printf("outputfile: %s\n", destfile);
 
 	pr_dumpasm = false;
@@ -907,11 +912,11 @@ int main (int argc, char **argv)
 		if (!psrc)
 			break;
 
-		sprintf (filename, "%s%s", sourcedir, com_token);
-		printf ("compiling %s\n", filename);
+		strcpy (nameptr, com_token);
+		printf ("compiling %s\n", nameptr);
 		LoadFile (filename, &src2);
 
-		if (!PR_CompileFile((char *)src2, filename))
+		if (!PR_CompileFile((char *)src2, nameptr))
 			exit (1);
 	} while (1);
 
@@ -930,7 +935,8 @@ int main (int argc, char **argv)
 	}
 
 	// write progdefs.h
-	crc = PR_WriteProgdefs("progdefs.h");
+	strcpy(nameptr, "progdefs.h");
+	crc = PR_WriteProgdefs(filename);
 
 	// write data file
 	WriteData(crc);

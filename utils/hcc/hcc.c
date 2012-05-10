@@ -35,8 +35,6 @@ static qboolean FinishCompilation(void);
 
 // EXTERNAL DATA DECLARATIONS ----------------------------------------------
 
-extern int srcdir_len;
-
 // PUBLIC DATA DEFINITIONS -------------------------------------------------
 
 int		hcc_OptimizeImmediates;
@@ -221,7 +219,7 @@ static void WriteData (int crc)
 
 	if (hcc_OptimizeNameTable)
 		localName = CopyString("LCL+");
-	else	localName = 0;	/* init to 0, silence compiler warning */
+	else	localName = 0;	/* silence compiler warning */
 
 	for (def = pr.def_head.next ; def ; def = def->next)
 	{
@@ -474,9 +472,9 @@ static const char *PR_GlobalStringNoContents (gofs_t ofs)
 	def = pr_global_defs[ofs];
 	if (!def)
 	//	Error ("%s: no def for %i", __thisfunc__, ofs);
-		sprintf (line,"%i(?)", ofs);
+		sprintf (line, "%i(?)", ofs);
 	else
-		sprintf (line,"%i(%s)", ofs, def->name);
+		sprintf (line, "%i(%s)", ofs, def->name);
 
 	i = strlen(line);
 	for ( ; i < 16 ; i++)
@@ -764,7 +762,8 @@ int main (int argc, char **argv)
 {
 	const char	*psrc;
 	void		*src, *src2;
-	char	filename[1024], infile[1024];
+	char	filename[1024];
+	char	*nameptr; /* filename[] without the parent sourcedir */
 	int		p, crc;
 	double	start, stop;
 	int		registerCount, registerSize;
@@ -794,33 +793,29 @@ int main (int argc, char **argv)
 	p = CheckParm("-src");
 	if (p && p < argc-1)
 	{
+	/* everything will now be relative to sourcedir: */
 		strcpy(sourcedir, argv[p+1]);
-		strcat(sourcedir, "/");
 		printf("Source directory: %s\n", sourcedir);
-		srcdir_len = strlen(sourcedir);
+		strcat(sourcedir, "/");
+		strcpy(filename, sourcedir);
+		nameptr = strchr(filename, '\0');
 	}
 	else
 	{
 		sourcedir[0] = '\0';
+		nameptr = filename;
 	}
 
 	p = CheckParm("-name");
 	if (p && p < argc-1)
 	{
-		strcpy(infile, argv[p+1]);
-		printf("Input file: %s\n", infile);
+		printf("Input file: %s\n", argv[p+1]);
+		strcpy(nameptr, argv[p+1]);
 	}
 	else
 	{
-		strcpy(infile, "progs.src");
+		strcpy(nameptr, "progs.src");
 	}
-
-	InitData ();
-	LX_Init ();
-	CO_Init ();
-	EX_Init ();
-
-	sprintf(filename, "%s%s", sourcedir, infile);
 	LoadFile(filename, &src);
 	psrc = (char *) src;
 
@@ -828,6 +823,11 @@ int main (int argc, char **argv)
 	if (!psrc)
 		Error("No destination filename.  HCC -help for info.\n");
 	sprintf(destfile, "%s%s", sourcedir, com_token);
+
+	InitData ();
+	LX_Init ();
+	CO_Init ();
+	EX_Init ();
 
 	BeginCompilation();
 
@@ -848,11 +848,12 @@ int main (int argc, char **argv)
 		registerCount = numpr_globals;
 		statementCount = numstatements;
 		functionCount = numfunctions;
-		sprintf(filename, "%s%s", sourcedir, com_token);
+		strcpy(nameptr, com_token);
 		if (!quiet)
-			printf("compiling %s\n", filename);
+			printf("compiling %s\n", nameptr);
+
 		LoadFile(filename, &src2);
-		if (!CO_CompileFile((char *)src2, filename))
+		if (!CO_CompileFile((char *)src2, nameptr))
 			exit (1);
 		if (!quiet && fileInfo)
 		{
@@ -884,7 +885,7 @@ int main (int argc, char **argv)
 	}
 
 	// write progdefs.h
-	sprintf(filename, "%sprogdefs.h", sourcedir);
+	strcpy(nameptr, "progdefs.h");
 	crc = PR_WriteProgdefs(filename);
 
 	// write data file

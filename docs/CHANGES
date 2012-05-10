@@ -3,6 +3,11 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2012-05-10 (SVN):
+    * utils/dcc/hcc.c: Cleaned up the -src command line option handling.
+    * utils/dcc/hcc.c: Made -src command line option behave the same in
+      dhcc as in hcc itself.
+
 2012-05-09 (SVN):
     * utils/dcc/hcc.c (PR_DefForFieldOfs): Made the typecast comparison
       more aliasing-friendly.
