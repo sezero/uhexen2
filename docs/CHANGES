@@ -4,6 +4,10 @@ Development Progress	:
 ---------------------------
 
 2012-05-11 (SVN):
+    * Updated documentation, mentioning and adding links to the RISC OS
+      port of uhexen2.
+
+2012-05-11 (SVN):
     * utils/dcc/dcc.c: When decompiling the progs.dat of the hcbots mod,
       GetFieldFunctionHeader() goes into an infinite recursion by calling
       itself with "think" and "th_stand" as the arguments alternating
