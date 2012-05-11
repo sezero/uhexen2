@@ -3,6 +3,15 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2012-05-11 (SVN):
+    * utils/dcc/dcc.c: When decompiling the progs.dat of the hcbots mod,
+      GetFieldFunctionHeader() goes into an infinite recursion by calling
+      itself with "think" and "th_stand" as the arguments alternating
+      between each succession. So I just added a MAX_DEPTH check at the
+      function's entrance, which works around the problem. It is a stupid
+      solution yes, but I don't have anything better so far.
+    * updated version date stamp to 2012-05-11.
+
 2012-05-10 (SVN):
     * utils/dcc/hcc.c: Cleaned up the -src command line option handling.
     * utils/dcc/hcc.c: Made -src command line option behave the same in

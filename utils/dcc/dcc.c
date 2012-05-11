@@ -95,6 +95,11 @@ static int	DEC_FileCtr = 0;
 static qboolean	printassign = false;
 static dfunction_t	*cfunc = NULL;
 
+/* avoid infinite recursion in GetFieldFunctionHeader() which has
+ * thankfully only one caller, PR_LocalGlobals(). this solution
+ * is naive, cheesy, [insert more here.. or find a better one...] */
+#define GFFH_MAX_DEPTH	64
+static int	GFFH_depth = 0;
 
 // CODE --------------------------------------------------------------------
 
@@ -1435,6 +1440,7 @@ static void PR_LocalGlobals (void)
 					if (i == ev_function)
 					{
 						arg2 = GetFieldFunctionHeader(strings + ef->s_name);
+						GFFH_depth = 0;
 					//	printf("function .%s %s;\n", arg2, strings + ef->s_name);
 						PR_Print(".%s %s;\n", arg2, strings + ef->s_name);
 					}
@@ -1503,6 +1509,13 @@ static const char *GetFieldFunctionHeader (const char *s_name)
 	const char	*arg2, *arg3;
 	def_t		*typ;
 
+	if (++GFFH_depth > GFFH_MAX_DEPTH) /* see below */
+	{
+	//	printf("\n%s: MAX_DEPTH reached for \"%s\", returning void ()\n",
+	//						__thisfunc__, s_name);
+		return "void  ()";
+	}
+
 	for (i = 1; i < numstatements; i++)
 	{
 		d = statements + i;
@@ -1531,6 +1544,13 @@ static const char *GetFieldFunctionHeader (const char *s_name)
 						if (strcmp("void  ()", func_headers[j]))
 							return func_headers[j];
 						/* if void (), continue checking just to be certain (ie: th_pain) */
+
+						/* NOTE:  When decompiling progs.dat of hcbots, this
+						 * results in an infinite recursion below by the function
+						 * calling itself with "think" and "th_stand" as the
+						 * arguments alternating between each succession,
+						 * hence the MAX_DEPTH check at the function's entrance.
+						 * I don't have a better solution so far.. - O.S. */
 					}
 
 					if ((d + 1)->op == OP_LOAD_FNC && (d + 2)->op == OP_STOREP_FNC)
@@ -1543,9 +1563,7 @@ static const char *GetFieldFunctionHeader (const char *s_name)
 						if (!arg2)
 							continue;
 						if (strcmp(s_name, arg2))
-						{
 							return GetFieldFunctionHeader(arg2);
-						}
 					}
 				}
 			}
