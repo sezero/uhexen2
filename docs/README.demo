@@ -536,7 +536,7 @@ consult the document README.3dfx.
 	AROS port		: http://wizard2k8.uw.hu/aros.html
 				  http://aros-exec.org/modules/newbb/viewtopic.php?forum=4&topic_id=6903
 	GP2X port		: http://www.gp32x.com/board/index.php?showtopic=40562
-				  http://www.dcemu.co.uk/vbulletin/showthread.php?p=2148019592
+				  http://www.dcemu.co.uk/content/8550-2xhexen2-Hammer-Of-Thyrion-v0-05
 				  http://wiki.gp2x.org/wiki/2xhexen2
 	Pandora (GP2X) port	: http://dl.openhandhelds.org/cgi-bin/pandora.cgi?0,0,0,0,30,66
 	PalmOS port		: http://www.metaviewsoft.de/
@@ -552,7 +552,6 @@ consult the document README.3dfx.
 		the main ebuild	: http://bugs.gentoo.org/show_bug.cgi?id=105780
 		for demo data	: http://bugs.gentoo.org/show_bug.cgi?id=139262
 		for extra data	: http://bugs.gentoo.org/show_bug.cgi?id=139278
-	Gentoo Sunrise overlay	: http://overlays.gentoo.org/proj/sunrise/browser/sunrise/games-fps
 	Nokia N770/800/810 build: http://www.internettablettalk.com/forums/showthread.php?p=134552
 	QNX builds		: http://sourceforge.net/projects/openqnx/files/
 
@@ -578,7 +577,6 @@ consult the document README.3dfx.
 	DarkRavager's Hexen II resources:
 				  http://pages.citenet.net/users/danielm/hexen/hexen.html
 	Hexen2-Linux Game Tome	: http://happypenguin.org/show?Hammer%20of%20Thyrion
-	Hexen2-Linux Gamer Guide: http://linux.strangegamer.com/index.php?title=HeXen_II
 	Linux Quake How-To	: http://tldp.org/HOWTO/Quake-HOWTO.html
 	SDL homepage		: http://www.libsdl.org/
 	ALSA homepage		: http://www.alsa-project.org/

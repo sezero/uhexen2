@@ -7,9 +7,10 @@ Features:
   and HexenWorld.
 
 * Cross-platform code: Well tested on Linux, FreeBSD, Mac OS X, Windows,
-  and even DOS. Also reported to build and run fine on Nokia N770, N800
-  and N810 QNX and. Other unices should also work. There are separate
-  ports to AROS, AmigaOS4, MorphOS, RISC OS, PalmOS, GP2X and Pandora.
+  and even DOS. Reported to build and run just fine for Nokia internet
+  tablets N770, N800 and N810 using Maemo, and QNX. Other unices with
+  SDL support should also work fine. There are separate ports to AROS,
+  AmigaOS4, MorphOS, RISC OS, PalmOS, GP2X and Pandora.
 
 * Well tested on both 32 bit and 64 bit platforms.
 
