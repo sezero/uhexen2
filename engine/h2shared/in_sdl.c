@@ -943,7 +943,7 @@ void IN_SendKeyEvents (void)
 
 		case SDL_JOYBUTTONDOWN:
 		case SDL_JOYBUTTONUP:
-			if (!in_joystick.value)
+			if (!in_joystick.integer)
 				break;
 			if (event.jbutton.button > K_AUX32 - K_JOY1)
 			{
