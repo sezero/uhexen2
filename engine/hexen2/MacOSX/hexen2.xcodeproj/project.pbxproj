@@ -263,6 +263,7 @@
 		B0E74B38144E807F0043F808 /* snd_mpg123.c in Sources */ = {isa = PBXBuildFile; fileRef = B0E74B36144E807F0043F808 /* snd_mpg123.c */; };
 		B0E74B3C144E80960043F808 /* snd_timidity.c in Sources */ = {isa = PBXBuildFile; fileRef = B0E74B3B144E80960043F808 /* snd_timidity.c */; };
 		B0E74B3D144E80960043F808 /* snd_timidity.c in Sources */ = {isa = PBXBuildFile; fileRef = B0E74B3B144E80960043F808 /* snd_timidity.c */; };
+		CEA6789F155B7E0E008B9770 /* cl_inlude.c in Sources */ = {isa = PBXBuildFile; fileRef = 483B16A4154472FE00BBDAD1 /* cl_inlude.c */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -423,7 +424,7 @@
 		707D57E30AA9F6EE00313A9F /* world.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = world.h; path = ../world.h; sourceTree = SOURCE_ROOT; };
 		707D57E40AA9F6EE00313A9F /* zone.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = zone.c; path = ../../h2shared/zone.c; sourceTree = SOURCE_ROOT; };
 		707D57E50AA9F6EE00313A9F /* zone.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = zone.h; path = ../../h2shared/zone.h; sourceTree = SOURCE_ROOT; };
-		707D58EA0AA9FBB700313A9F /* Hexen II gl.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Hexen II gl.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		707D58EA0AA9FBB700313A9F /* Hexen II gl.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = "Hexen II gl.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		707D59030AAA019300313A9F /* SDLMain.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = SDLMain.h; sourceTree = "<group>"; };
 		707D59040AAA019300313A9F /* SDLMain.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = SDLMain.m; sourceTree = "<group>"; };
 		707D59200AAA071800313A9F /* SDL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL.framework; path = /Library/Frameworks/SDL.framework; sourceTree = "<absolute>"; };
@@ -803,7 +804,7 @@
 /* Begin PBXProject section */
 		707D575A0AA9F4B100313A9F /* Project object */ = {
 			isa = PBXProject;
-			buildConfigurationList = 707D575B0AA9F4B100313A9F /* Build configuration list for PBXProject "hexen2" */;
+			buildConfigurationList = 707D575B0AA9F4B100313A9F /* Build configuration list for PBXProject "h2" */;
 			compatibilityVersion = "Xcode 2.4";
 			hasScannedForEncodings = 0;
 			mainGroup = 707D57580AA9F4B100313A9F;
@@ -892,6 +893,7 @@
 				70158C1C0AAF3C8800F6437C /* cl_cmd.c in Sources */,
 				70158C1D0AAF3C8800F6437C /* cl_demo.c in Sources */,
 				70158C1E0AAF3C8800F6437C /* cl_effect.c in Sources */,
+				CEA6789F155B7E0E008B9770 /* cl_inlude.c in Sources */,
 				70158C1F0AAF3C8800F6437C /* cl_input.c in Sources */,
 				70158C200AAF3C8800F6437C /* cl_main.c in Sources */,
 				70158C210AAF3C8800F6437C /* cl_parse.c in Sources */,
@@ -1151,7 +1153,7 @@
 					/usr/include/SDL,
 				);
 				OTHER_LDFLAGS = "";
-				SDKROOT = /Developer/SDKs/MacOSX10.5.sdk;
+				SDKROOT = /Developer/SDKs/MacOSX10.4u.sdk;
 			};
 			name = Debug;
 		};
@@ -1177,7 +1179,7 @@
 					/usr/include/SDL,
 				);
 				OTHER_LDFLAGS = "";
-				SDKROOT = /Developer/SDKs/MacOSX10.5.sdk;
+				SDKROOT = /Developer/SDKs/MacOSX10.4u.sdk;
 			};
 			name = Release;
 		};
@@ -1263,7 +1265,7 @@
 				OTHER_REZFLAGS = "";
 				PREBINDING = NO;
 				PRODUCT_NAME = "Hexen II gl";
-				SDKROOT = /Developer/SDKs/MacOSX10.5.sdk;
+				SDKROOT = /Developer/SDKs/MacOSX10.4u.sdk;
 				SECTORDER_FLAGS = "";
 				STRIP_INSTALLED_PRODUCT = YES;
 				WARNING_CFLAGS = (
@@ -1288,7 +1290,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		707D575B0AA9F4B100313A9F /* Build configuration list for PBXProject "hexen2" */ = {
+		707D575B0AA9F4B100313A9F /* Build configuration list for PBXProject "h2" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				707D575C0AA9F4B100313A9F /* Debug */,

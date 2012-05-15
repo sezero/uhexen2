@@ -4,6 +4,9 @@ Development Progress	:
 ---------------------------
 
 2012-05-15 (SVN):
+    * Xcode project file update from Levent for Mac OS X.
+
+2012-05-15 (SVN):
     * Added SDL joystick (gamepad) support. New cvars are documented in
       the README file. The code is based on darkplaces (svn rev.10980.)
 
