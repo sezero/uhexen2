@@ -5,7 +5,9 @@
 	$Id$
 
 	Copyright (C) 2001  contributors of the Anvil of Thyrion project
-	Copyright (C) 2005-2011  Steven Atkinson, O.Sezer
+	Joystick code taken from the darkplaces project with modifications
+	to make it work in uHexen2: Copyright (C) 2006-2011 Forest Hale
+	Copyright (C) 2005-2012  Steven Atkinson, O.Sezer, Sander van Dijk
 
 	This program is free software; you can redistribute it and/or
 	modify it under the terms of the GNU General Public License
@@ -53,18 +55,50 @@ static int buttonremap[] =
 	K_MOUSE5
 };
 
-#define	USE_JOYSTICK	0 /* disabled until we finish joystick support */
-#if USE_JOYSTICK
-static	cvar_t	in_joystick = {"joystick", "1", CVAR_ARCHIVE};
+/* joystick support: */
+#define	MAX_JOYSTICKS		8
+#define	MAX_JOYSTICK_AXES	16
 
-#define	MAX_JOYSTICKS	8
 static	SDL_Joystick	*joy_id[MAX_JOYSTICKS];
 static	int		joy_available;
+
+static	cvar_t	in_joystick = {"joystick", "0", CVAR_ARCHIVE};		/* enable/disable joystick */
+
+static	cvar_t	joy_index = {"joy_index", "0", CVAR_NONE};		/* joystick to use when have multiple */
+static	cvar_t	joy_axisforward = {"joy_axisforward", "1", CVAR_NONE};	/* axis for forward/backward movement */
+static	cvar_t	joy_axisside = {"joy_axisside", "0", CVAR_NONE};	/* axis for right/left movement */
+static	cvar_t	joy_axisup = {"joy_axisup", "-1", CVAR_NONE};		/* axis for up/down movement */
+static	cvar_t	joy_axispitch = {"joy_axispitch", "3", CVAR_NONE};	/* axis for looking up/down" */
+static	cvar_t	joy_axisyaw = {"joy_axisyaw", "2", CVAR_NONE};		/* axis for looking right/left */
+/* joy_axisroll & co. (for tilting head right/left??): Nope. */
+static	cvar_t	joy_deadzoneforward = {"joy_deadzoneforward", "0", CVAR_NONE};	/* deadzone tolerance, suggested 0 to 0.01 */
+static	cvar_t	joy_deadzoneside = {"joy_deadzoneside", "0", CVAR_NONE};	/* deadzone tolerance */
+static	cvar_t	joy_deadzoneup = {"joy_deadzoneup", "0", CVAR_NONE};		/* deadzone tolerance */
+static	cvar_t	joy_deadzonepitch = {"joy_deadzonepitch", "0", CVAR_NONE};	/* deadzone tolerance */
+static	cvar_t	joy_deadzoneyaw = {"joy_deadzoneyaw", "0", CVAR_NONE};		/* deadzone tolerance */
+static	cvar_t	joy_sensitivityforward = {"joy_sensitivityforward", "-1", CVAR_NONE};	/* movement multiplier */
+static	cvar_t	joy_sensitivityside = {"joy_sensitivityside", "1", CVAR_NONE};		/* movement multiplier */
+static	cvar_t	joy_sensitivityup = {"joy_sensitivityup", "1", CVAR_NONE};		/* movement multiplier */
+static	cvar_t	joy_sensitivitypitch = {"joy_sensitivitypitch", "1", CVAR_NONE};	/* movement multiplier */
+static	cvar_t	joy_sensitivityyaw = {"joy_sensitivityyaw", "-1", CVAR_NONE};		/* movement multiplier */
+
+/* hack to generate uparrow/leftarrow etc. key events for joystick axes, if stick driver is not generating them */
+static	cvar_t	joy_axiskeyevents = {"joy_axiskeyevents", "0", CVAR_ARCHIVE};
+static	cvar_t	joy_axiskeyevents_deadzone = {"joy_axiskeyevents_deadzone", "0.5", CVAR_ARCHIVE};
+
+/* joystick axes state */
+typedef struct
+{
+	float oldmove;
+	float move;
+	double keytime;
+} joy_axiscache_t;
+static joy_axiscache_t joy_axescache[MAX_JOYSTICK_AXES];
 
 /* forward-referenced functions */
 static void IN_StartupJoystick (void);
 static void IN_JoyMove (usercmd_t *cmd);
-#endif	/* USE_JOYSTICK */
+
 
 /*
 ===========
@@ -208,17 +242,31 @@ void IN_Init (void)
 {
 	/* mouse variables */
 	Cvar_RegisterVariable (&m_filter);
-#if USE_JOYSTICK
 	/* joystick variables */
 	Cvar_RegisterVariable (&in_joystick);
-#endif	/* USE_JOYSTICK */
+	Cvar_RegisterVariable (&joy_index);
+	Cvar_RegisterVariable (&joy_axisforward);
+	Cvar_RegisterVariable (&joy_axisside);
+	Cvar_RegisterVariable (&joy_axisup);
+	Cvar_RegisterVariable (&joy_axispitch);
+	Cvar_RegisterVariable (&joy_axisyaw);
+	Cvar_RegisterVariable (&joy_deadzoneforward);
+	Cvar_RegisterVariable (&joy_deadzoneside);
+	Cvar_RegisterVariable (&joy_deadzoneup);
+	Cvar_RegisterVariable (&joy_deadzonepitch);
+	Cvar_RegisterVariable (&joy_deadzoneyaw);
+	Cvar_RegisterVariable (&joy_sensitivityforward);
+	Cvar_RegisterVariable (&joy_sensitivityside);
+	Cvar_RegisterVariable (&joy_sensitivityup);
+	Cvar_RegisterVariable (&joy_sensitivitypitch);
+	Cvar_RegisterVariable (&joy_sensitivityyaw);
+	Cvar_RegisterVariable (&joy_axiskeyevents);
+	Cvar_RegisterVariable (&joy_axiskeyevents_deadzone);
 
 	Cmd_AddCommand ("force_centerview", Force_CenterView_f);
 
 	IN_StartupMouse ();
-#if USE_JOYSTICK
 	IN_StartupJoystick ();
-#endif	/* USE_JOYSTICK */
 
 	SDL_EnableUNICODE (0); /* frame updates will change this as key_dest changes */
 	SDL_EnableKeyRepeat (SDL_DEFAULT_REPEAT_DELAY, SDL_DEFAULT_REPEAT_INTERVAL*2);
@@ -231,10 +279,21 @@ IN_Shutdown
 */
 void IN_Shutdown (void)
 {
+	int	i;
 
 	IN_DeactivateMouse ();
 	IN_ShowMouse ();
 	mouseinitialized = false;
+
+	for (i = 0; i < MAX_JOYSTICKS; i++)
+	{
+		if (joy_id[i])
+			SDL_JoystickClose(joy_id[i]);
+	}
+	memset (joy_id, 0, sizeof(joy_id));
+	joy_available = 0;
+	if (SDL_WasInit(SDL_INIT_JOYSTICK))
+		SDL_QuitSubSystem(SDL_INIT_JOYSTICK);
 }
 
 /*
@@ -329,9 +388,8 @@ static void IN_DiscardMove (void)
 		old_mouse_x = old_mouse_y = 0;
 		SDL_GetRelativeMouseState (NULL, NULL);
 	}
-#if USE_JOYSTICK
-	/* to be coded. */
-#endif	/* USE_JOYSTICK */
+
+	/* JOYSTICK ??? */
 }
 
 /*
@@ -353,14 +411,11 @@ void IN_Move (usercmd_t *cmd)
 	if (mouseactive)
 		IN_MouseMove (cmd);
 
-#if USE_JOYSTICK
 	if (SDL_GetAppState() & SDL_APPACTIVE)
 		IN_JoyMove (cmd);
-#endif	/* USE_JOYSTICK */
 }
 
 
-#if USE_JOYSTICK
 /*
 ===============
 IN_StartupJoystick
@@ -369,7 +424,7 @@ IN_StartupJoystick
 static void IN_StartupJoystick (void)
 {
 	int		i, num_joys;
-	SDL_Joystick	*j;
+	SDL_Joystick	*js;
 
 	memset (joy_id, 0, sizeof(joy_id));
 	joy_available = 0;
@@ -392,35 +447,105 @@ static void IN_StartupJoystick (void)
 
 	for (i = 0; i < num_joys && joy_available < MAX_JOYSTICKS; i++)
 	{
-		j = SDL_JoystickOpen(i);
-		if (j == NULL)
+		js = SDL_JoystickOpen(i);
+		if (js == NULL)
 		{
 			Con_Printf("joystick #%d: open failed: %s\n", i, SDL_GetError());
 		}
 		else
 		{
-			joy_id[joy_available++] = j;
-			Con_Printf("joystick #%d: opened \"%s\" with %d axes, %d buttons, %d balls, %d hats\n",
-					i, SDL_JoystickName(i), SDL_JoystickNumAxes(j), SDL_JoystickNumButtons(j),
-					SDL_JoystickNumBalls(j), SDL_JoystickNumHats(j));
+			joy_id[joy_available] = js;
+			Con_Printf("joystick #%d: \"%s\"\n %d axes, %d buttons, %d balls, %d hats\n",
+					i, SDL_JoystickName(i),
+					SDL_JoystickNumAxes(js), SDL_JoystickNumButtons(js),
+					SDL_JoystickNumBalls(js), SDL_JoystickNumHats(js));
+			++joy_available;
 		}
 	}
 
 	if (!joy_available)
 	{
+		SDL_QuitSubSystem(SDL_INIT_JOYSTICK);
 		Con_Printf ("Unable to open any of the joystick devices\n");
 	}
 }
 
 
-/*
-===============
-IN_ReadJoystick
-===============
-*/
-static qboolean IN_ReadJoystick (void)
+static float IN_JoystickGetAxis (SDL_Joystick *js, int axis, float sensitivity, float deadzone)
 {
-	return false;	/* to be coded... */
+	float value;
+	if (axis < 0 || axis >= SDL_JoystickNumAxes(js))
+		return 0; /* no such axis on this joystick */
+	value = SDL_JoystickGetAxis(js, axis) * (1.0f / 32767.0f);
+	if (value < -1)		value = -1;
+	else if (value > 1)	value =  1;
+	if (fabs(value) < deadzone)
+		return 0; /* within deadzone around center */
+	return value * sensitivity;
+}
+
+/*
+ * Joystick axis key events:  a sort of hack emulating Arrow keys for
+ * joystick axes as some drives dont send such key events for them.
+ * additionally, we should block drivers that do send arrow key events
+ * to prevent double events.
+ */
+static inline void DEBUG_KeyeventForAxis (float move, int key_pos, int key_neg)
+{
+/*	Con_Printf("joy %s %f\n", Key_KeynumToString((move > 0) ? key_pos : key_neg), cl.time);*/
+}
+
+static void IN_JoystickKeyeventForAxis (SDL_Joystick *js, int axis, int key_pos, int key_neg)
+{
+	double joytime;
+	if (axis < 0 || axis >= SDL_JoystickNumAxes(js))
+		return; /* no such axis on this joystick */
+	joytime = Sys_DoubleTime();
+	/* no key event, continuous keydown event */
+	if (joy_axescache[axis].move == joy_axescache[axis].oldmove)
+	{
+		if (joy_axescache[axis].move != 0 && joytime > joy_axescache[axis].keytime)
+		{
+			DEBUG_KeyeventForAxis (joy_axescache[axis].move, key_pos, key_neg);
+			Key_Event((joy_axescache[axis].move > 0) ? key_pos : key_neg, true);
+			joy_axescache[axis].keytime = joytime + 0.5 / 20;
+		}
+		return;
+	}
+	/* generate key up event */
+	if (joy_axescache[axis].oldmove)
+	{
+		DEBUG_KeyeventForAxis (joy_axescache[axis].oldmove, key_pos, key_neg);
+		Key_Event((joy_axescache[axis].oldmove > 0) ? key_pos : key_neg, false);
+	}
+	/* generate key down event */
+	if (joy_axescache[axis].move)
+	{
+		DEBUG_KeyeventForAxis (joy_axescache[axis].move, key_pos, key_neg);
+		Key_Event((joy_axescache[axis].move > 0) ? key_pos : key_neg, true);
+		joy_axescache[axis].keytime = joytime + 0.5;
+	}
+}
+
+static qboolean IN_JoystickBlockDoubledKeyEvents (int keycode)
+{
+	if (!joy_axiskeyevents.integer)
+		return false;
+	if (!joy_available || !in_joystick.integer)
+		return false;
+	/* block keyevent if it's going to be provided by joystick keyevent system */
+	if (joy_index.integer >= 0 && joy_index.integer < joy_available)
+	{
+		SDL_Joystick *js = joy_id[joy_index.integer];
+
+		if (keycode == K_UPARROW || keycode == K_DOWNARROW)
+			if (IN_JoystickGetAxis(js, joy_axisforward.integer, 1, joy_axiskeyevents_deadzone.value) || joy_axescache[joy_axisforward.integer].move || joy_axescache[joy_axisforward.integer].oldmove)
+				return true;
+		if (keycode == K_RIGHTARROW || keycode == K_LEFTARROW)
+			if (IN_JoystickGetAxis(js, joy_axisside.integer, 1, joy_axiskeyevents_deadzone.value) || joy_axescache[joy_axisside.integer].move || joy_axescache[joy_axisside.integer].oldmove)
+				return true;
+	}
+	return false;
 }
 
 /*
@@ -430,29 +555,77 @@ IN_JoyMove
 */
 static void IN_JoyMove (usercmd_t *cmd)
 {
+	int		x, y;
+	int		i, numaxes, numballs;
+	float		speed, aspeed;
+	float		value;
+	SDL_Joystick	*js;
+
 	if (!joy_available || !in_joystick.integer)
 		return;
-
-	if (IN_ReadJoystick () != true)
-	{
+	if (joy_index.integer < 0 || joy_index.integer >= joy_available)
 		return;
-	}
 
-	/*
 	if (in_speed.state & 1)
 		speed = cl_movespeedkey.value;
-	else
-		speed = 1;
+	else	speed = 1;
 	aspeed = speed * host_frametime;
-	*/
 
-	/* loop through the axes */
-		/* to be coded.. */
+	js = joy_id[joy_index.integer];
+
+	/* balls convert to mousemove */
+	numballs = SDL_JoystickNumBalls(js);
+	for (i = 0; i < numballs; i++)
+	{
+		SDL_JoystickGetBall(js, i, &x, &y);
+		mouse_x += x;
+		mouse_y += y;
+	}
+
+	/* axes */
+	value  = IN_JoystickGetAxis(js, joy_axisforward.integer, joy_sensitivityforward.value, joy_deadzoneforward.value);
+	value *= speed * 200;	/*cl_forwardspeed.value*/
+	cmd->forwardmove += value;
+
+	value  = IN_JoystickGetAxis(js, joy_axisside.integer, joy_sensitivityside.value, joy_deadzoneside.value);
+	value *= speed * 225;	/*cl_sidespeed.value*/
+	cmd->sidemove += value;
+
+	value  = IN_JoystickGetAxis(js, joy_axisup.integer, joy_sensitivityup.value, joy_deadzoneup.value);
+	value *= speed * 200;	/*cl_upspeed.value*/
+	cmd->upmove += value;
+
+	value  = IN_JoystickGetAxis(js, joy_axispitch.integer, joy_sensitivitypitch.value, joy_deadzonepitch.value);
+	value *= aspeed * cl_pitchspeed.value;
+	cl.viewangles[PITCH] += value;
+	if (value) V_StopPitchDrift ();
+
+	value  = IN_JoystickGetAxis(js, joy_axisyaw.integer, joy_sensitivityyaw.value, joy_deadzoneyaw.value);
+	value *= aspeed * cl_yawspeed.value;
+	cl.viewangles[YAW] += value;
 
 	/* bounds check pitch */
-		/* to be coded.. */
+	if (cl.viewangles[PITCH] > 80.0)
+		cl.viewangles[PITCH] = 80.0;
+	if (cl.viewangles[PITCH] < -70.0)
+		cl.viewangles[PITCH] = -70.0;
+
+	/* cache state of axes to emulate button events for them */
+	numaxes = SDL_JoystickNumAxes(js);
+	if (numaxes > MAX_JOYSTICK_AXES)
+		numaxes = MAX_JOYSTICK_AXES;
+	for (i = 0; i < numaxes; i++)
+	{
+		joy_axescache[i].oldmove = joy_axescache[i].move;
+		joy_axescache[i].move = IN_JoystickGetAxis(js, i, 1, joy_axiskeyevents_deadzone.value);
+	}
+	/* run keyevents */
+	if (joy_axiskeyevents.integer)
+	{
+		IN_JoystickKeyeventForAxis(js, joy_axisforward.integer, K_DOWNARROW, K_UPARROW);
+		IN_JoystickKeyeventForAxis(js, joy_axisside.integer, K_RIGHTARROW, K_LEFTARROW);
+	}
 }
-#endif	/* USE_JOYSTICK */
 
 /*
 ===========
@@ -461,22 +634,7 @@ IN_Commands
 */
 void IN_Commands (void)
 {
-#if USE_JOYSTICK
-	if (!joy_available)
-		return;
-
-	if (cls.state != ca_connected || cls.signon != SIGNONS)
-	{
-		IN_ReadJoystick ();
-	}
-
-	/* loop through the joystick buttons */
-		/* to be coded.. */
-
-	/* key a joystick event or auxillary event for
-	   higher number buttons for each state change */
-		/* to be coded.. */
-#endif	/* USE_JOYSTICK */
+	/* all button events handled by IN_SendKeyEvents() */
 }
 
 
@@ -749,7 +907,8 @@ void IN_SendKeyEvents (void)
 			 * above 255, just force it to 0 */
 			if (sym > 255)
 				sym = 0;
-			Key_Event (sym, state);
+			if (!IN_JoystickBlockDoubledKeyEvents(sym))
+				Key_Event(sym, state);
 			break;
 
 		case SDL_MOUSEBUTTONDOWN:
@@ -767,10 +926,8 @@ void IN_SendKeyEvents (void)
 			break;
 
 		case SDL_MOUSEMOTION:
-		/*	SDL_GetMouseState (NULL, NULL);*/
-			break;
+			break;	/* handled by IN_MouseMove() */
 
-#if USE_JOYSTICK
 		case SDL_JOYBUTTONDOWN:
 		case SDL_JOYBUTTONUP:
 			if (!in_joystick.value)
@@ -787,9 +944,7 @@ void IN_SendKeyEvents (void)
 		case SDL_JOYAXISMOTION:
 		case SDL_JOYHATMOTION:
 		case SDL_JOYBALLMOTION:
-		/* to be coded.. */
-			break;
-#endif	/* USE_JOYSTICK */
+			break;	/* handled by IN_JoyMove() */
 
 		case SDL_QUIT:
 			CL_Disconnect ();

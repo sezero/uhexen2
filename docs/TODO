@@ -5,7 +5,6 @@ TODO:
 
 - Add a pak-patch application for Mac OS X.
 - Revise the gtk launcher GUI.
-- Add joystick support through sdl
 - Re-visit the messy mouse grab code and clean it up.
 - Do a clean-up of the opengl system
 - Add multisampling support to win32
@@ -18,10 +17,9 @@ TODO:
 - Net: Find some way to workaround the infamous router troubles
 - HexenWorld: Spectator mode (chasecam) isn't as it should be,
   compare with the quakeworld code and fix.
-- MorphOS: the port isn't touched since 1.4.0-prerelease times,
-  make sure it still works out of the box.
-- Maybe do other ports? (Amiga, etc?)
+- Does MorphOS port still compile/work?
 - Does Solaris compile / work?
+- Maybe ports to other operating systems?
 - Add sound font support to Timidity.
 - Add sequencer (mpu-401) support for midi (alsa / oss)
 - DOS: Implement MIDI music playback.

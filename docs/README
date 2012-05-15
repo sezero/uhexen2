@@ -12,6 +12,7 @@ Hexen II: Hammer of Thyrion (uHexen2) - v1.5.4
   1.5 Networking/Multiplayer
   1.6 Game Saves and Configuration files
   1.7 Fullscreen/Windowed modes and mouse
+  1.8 Joystick (gamepad) support
 
 2. Known Problems
 
@@ -152,6 +153,7 @@ Important command-line switches:
 			Smaller the number, bigger the text. 640 is the
 			sanest. Can also be adjusted from the menu.
  -nomouse		Disables mouse usage in game
+ -nojoy			Disables joystick (gamepad) probing and usage
  -heapsize  N		Heapsize (memory to allocate, in KB)
  -fsaa N		Enable N sample anti-aliasing (N: 0,2,4) (can also be
 			set from the menu)
@@ -345,6 +347,48 @@ fly. While in windowed mode, disabling the mouse ungrabs the mouse
 pointer, so that you can easily use your desktop. You can also
 ungrab/regrab the mouse pointer by pressing the  CTRL + G  key
 combination whenever you want.
+
+
+1.8 Joystick (gamepad) support
+------------------------------
+
+Hammer of Thyrion supports joysticks (gamepads) through SDL. The feature
+can be enabled or disabled on the fly by setting joystick to 1 or 0 from
+the console.  It is disabled by default.  On the other hand, the -nojoy
+command line switch disables all joystick probing and usage.
+
+Multiple joysticks can be opened at the same time:  The joy_index cvar
+decides which one to use if the are really more than one.  The default
+joy_index value is 0, i.e. the first opened joystick.
+
+You can setup which axis to query for which movement or look by using
+the following cvars from the console.  -1 means 'none', i.e. if you set
+any of them to -1, then the corresponding movement or look will not be
+queried on the joystick:
+
+	joy_axisside	Axis for left/right movement		0
+	joy_axisforward	Axis for forward/backward movement	1
+	joy_axisup	Axis for up/down movement.	-1 (none)
+	joy_axisyaw	Axis for looking left/right		2
+	joy_axispitch	Axis for looking up/down		3
+
+The following cvars the axis deadzone tolerance values for the above,
+all defaulting to 0. suggested values range between 0 to 0.01:
+
+	joy_deadzoneside, joy_deadzoneforward, joy_deadzoneup,
+	joy_deadzoneyaw, joy_deadzonepitch.
+
+The following cvars are the axis movement multiplier (sensitivity) for
+the above, all defaulting to 1:
+
+	joy_sensitivityside, joy_sensitivityforward, joy_sensitivityup,
+	joy_sensitivityyaw, joy_sensitivitypitch.
+
+You can enable a hack to generate uparrow, leftarrow, etc. key events
+for joystick axes, if your joystick driver is not already generating
+them, by setting "joy_axiskeyevents" to 1: Not really recommended and
+default is 0.  joy_axiskeyevents_deadzone defines the deadzone value
+for this hack, its default being 0.5.
 
 ----------------------------------------------------------------
 

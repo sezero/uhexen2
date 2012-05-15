@@ -3,6 +3,10 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2012-05-15 (SVN):
+    * Added SDL joystick (gamepad) support. New cvars are documented in
+      the README file. The code is based on darkplaces (svn rev.10980.)
+
 2012-05-11 (SVN):
     * Updated documentation, mentioning and adding links to the RISC OS
       port of uhexen2.
