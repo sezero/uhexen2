@@ -4,6 +4,9 @@ Development Progress	:
 ---------------------------
 
 2012-05-15 (SVN):
+    * README: Clarified the joy_index documentation after svn rev. 4674.
+
+2012-05-15 (SVN):
     * cvar.c: Added a note that not doing anything upon no change in
       the Cvar_Set*() functions is a behavior which the cvar callbacks
       may be relying upon.

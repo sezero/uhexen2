@@ -293,9 +293,9 @@ can be enabled or disabled on the fly by setting joystick to 1 or 0 from
 the console.  It is disabled by default.  On the other hand, the -nojoy
 command line switch disables all joystick probing and usage.
 
-Multiple joysticks can be opened at the same time:  The joy_index cvar
-decides which one to use if the are really more than one.  The default
-joy_index value is 0, i.e. the first opened joystick.
+The "joy_index" cvar defines which joystick to use if more than one are
+attached to the computer. The default value of joy_index is 0, i.e. the
+first one.
 
 You can setup which axis to query for which movement or look by using
 the following cvars from the console.  -1 means 'none', i.e. if you set
