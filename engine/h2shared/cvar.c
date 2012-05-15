@@ -154,8 +154,11 @@ void Cvar_SetQuick (cvar_t *var, const char *value)
 	{
 		size_t	len;
 
+	// If no change, then DON'T do anything at all.
+	// Some, if not all, of the cvar callbacks may
+	// actually rely on this behavior!!!
 		if (!strcmp(var->string, value))
-			return;	// no change
+			return;
 
 		var->flags |= CVAR_CHANGED;
 		len = strlen (value);
