@@ -24,6 +24,7 @@
 #include "userdir.h"
 
 #include <libgen.h>	/* dirname() and basename() */
+#include <unistd.h>	/* getcwd() */
 #import <Cocoa/Cocoa.h>	/* NSRunCriticalAlertPanel() */
 
 /*

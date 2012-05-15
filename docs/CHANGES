@@ -4,6 +4,9 @@ Development Progress	:
 ---------------------------
 
 2012-05-15 (SVN):
+    * sys_osx.m: Added missing include for unistd.h.
+
+2012-05-15 (SVN):
     * Xcode project file update from Levent for Mac OS X.
 
 2012-05-15 (SVN):
