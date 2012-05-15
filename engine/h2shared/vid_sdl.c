@@ -883,18 +883,14 @@ void VID_Update (vrect_t *rects)
 	FlipScreen (rects);
 
 	// handle the mouse state when windowed if that's changed
-#if 0	// change to 1 if dont want to disable mouse in fullscreen
-	if (modestate == MS_WINDOWED)
-#endif
-		if (_enable_mouse.integer != enable_mouse)
-		{
-			if (_enable_mouse.integer)
-				IN_ActivateMouse ();
-			else
-				IN_DeactivateMouse ();
+	if (_enable_mouse.integer != enable_mouse /*&& modestate == MS_WINDOWED*/)
+	{
+		if (_enable_mouse.integer)
+			IN_ActivateMouse ();
+		else	IN_DeactivateMouse ();
 
-			enable_mouse = _enable_mouse.integer;
-		}
+		enable_mouse = _enable_mouse.integer;
+	}
 }
 
 
@@ -906,7 +902,7 @@ D_BeginDirectRect
 void D_BeginDirectRect (int x, int y, byte *pbitmap, int width, int height)
 {
 //	these bits from quakeforge
-	Uint8      *offset;
+	Uint8	*offset;
 
 	if (!screen)
 		return;
@@ -1016,13 +1012,9 @@ VID_HandlePause
 */
 void VID_HandlePause (qboolean paused)
 {
-#if 0	// change to 1 if dont want to disable mouse in fullscreen
-	if ((modestate == MS_WINDOWED) && _enable_mouse.integer)
-#else
-	if (_enable_mouse.integer)
-#endif
+	if (_enable_mouse.integer /*&& (modestate == MS_WINDOWED)*/)
 	{
-		// for consistency , don't show pointer S.A
+		// for consistency, don't show pointer - S.A
 		if (paused)
 		{
 			IN_DeactivateMouse ();

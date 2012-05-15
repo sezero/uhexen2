@@ -137,16 +137,14 @@ void IN_ActivateMouse (void)
 		return;
 
 	if (!mouseactivatetoggle)
-#if 0	/* change to 1 if dont want to disable mouse in fullscreen */
-		if ((modestate != MS_WINDOWED) || _enable_mouse.integer)
-#else
-		if (_enable_mouse.integer)
-#endif
+	{
+		if (_enable_mouse.integer /*|| (modestate != MS_WINDOWED)*/)
 		{
 			mouseactivatetoggle = true;
 			mouseactive = true;
 			SDL_WM_GrabInput (SDL_GRAB_ON);
 		}
+	}
 
 	/* nuke events from when mouse was disabled: */
 	SDL_PumpEvents ();
@@ -187,11 +185,7 @@ static void IN_StartupMouse (void)
 	mouseinitialized = true;
 
 	/*if (mouseactivatetoggle)*/
-#if 0	/* change to 1 if dont want to disable mouse in fullscreen */
-	if ((modestate != MS_WINDOWED) || _enable_mouse.integer)
-#else
-	if (_enable_mouse.integer)
-#endif
+	if (_enable_mouse.integer /*|| (modestate != MS_WINDOWED)*/)
 		IN_ActivateMouse ();
 }
 

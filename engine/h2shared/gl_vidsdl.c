@@ -241,13 +241,9 @@ void VID_UnlockBuffer (void)
 
 void VID_HandlePause (qboolean paused)
 {
-#if 0	// change to 1 if dont want to disable mouse in fullscreen
-	if ((modestate == MS_WINDOWED) && _enable_mouse.integer)
-#else
-	if (_enable_mouse.integer)
-#endif
+	if (_enable_mouse.integer/* && (modestate == MS_WINDOWED)*/)
 	{
-		// for consistency , don't show pointer S.A
+		// for consistency, don't show pointer - S.A
 		if (paused)
 		{
 			IN_DeactivateMouse ();
@@ -945,18 +941,14 @@ void GL_EndRendering (void)
 		SDL_GL_SwapBuffers();
 
 // handle the mouse state when windowed if that's changed
-#if 0	// change to 1 if dont want to disable mouse in fullscreen
-	if (modestate == MS_WINDOWED)
-#endif
-		if (_enable_mouse.integer != enable_mouse)
-		{
-			if (_enable_mouse.integer)
-				IN_ActivateMouse ();
-			else
-				IN_DeactivateMouse ();
+	if (_enable_mouse.integer != enable_mouse /*&& modestate == MS_WINDOWED*/)
+	{
+		if (_enable_mouse.integer)
+			IN_ActivateMouse ();
+		else	IN_DeactivateMouse ();
 
-			enable_mouse = _enable_mouse.integer;
-		}
+		enable_mouse = _enable_mouse.integer;
+	}
 
 	if (fullsbardraw)
 		Sbar_Changed();
@@ -1743,10 +1735,8 @@ void VID_ToggleFullscreen (void)
 		modestate = (is_fullscreen) ? MS_FULLDIB : MS_WINDOWED;
 		if (is_fullscreen)
 		{
-#if 0	// change to 1 if dont want to disable mouse in fullscreen
-			if (!_enable_mouse.integer)
-				Cvar_SetQuick (&_enable_mouse, "1");
-#endif
+		//	if (!_enable_mouse.integer)
+		//		Cvar_SetQuick (&_enable_mouse, "1");
 			// activate mouse in fullscreen mode
 			// in_sdl.c handles other non-moused cases
 			if (menu_disabled_mouse)
