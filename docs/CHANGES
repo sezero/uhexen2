@@ -4,6 +4,11 @@ Development Progress	:
 ---------------------------
 
 2012-05-15 (SVN):
+    * in_sdl.c: Added cvar callback functions IN_Callback_JoyEnable()
+      and IN_Callback_JoyIndex(). We now keep only one joystick open
+      and only if the functionality is enabled.
+
+2012-05-15 (SVN):
     * sys_osx.m: Added missing include for unistd.h.
 
 2012-05-15 (SVN):
