@@ -989,7 +989,7 @@ SV_SendBan
 */
 static void SV_SendBan (void)
 {
-	static char data[] = { 0xff, 0xff, 0xff, 0xff, A2C_PRINT,
+	static byte data[] = { 0xff, 0xff, 0xff, 0xff, A2C_PRINT,
 		'\n', 'b', 'a', 'n', 'n', 'e', 'd', '.', '\n', '\0' };
 
 	NET_SendPacket (15, data, net_from);

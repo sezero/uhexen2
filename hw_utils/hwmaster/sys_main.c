@@ -100,7 +100,7 @@ char *Sys_ConsoleInput (void)
 		}
 		con_text[textlen] = c;
 		textlen++;
-		if (textlen < sizeof(con_text))
+		if (textlen < (int) sizeof(con_text))
 			con_text[textlen] = '\0';
 		else
 		{
@@ -145,7 +145,7 @@ char *Sys_ConsoleInput (void)
 		}
 		con_text[textlen] = c;
 		textlen++;
-		if (textlen < sizeof(con_text))
+		if (textlen < (int) sizeof(con_text))
 			con_text[textlen] = '\0';
 		else
 		{
@@ -287,11 +287,9 @@ int main (int argc, char **argv)
 
 	Cbuf_Init();
 	Cmd_Init ();
-
 	SV_InitNet();
 
 	printf ("Exe: "__TIME__" "__DATE__"\n");
-
 	printf("======== HW master %d.%d.%d initialized ========\n\n",
 		VER_HWMASTER_MAJ, VER_HWMASTER_MID, VER_HWMASTER_MIN);
 

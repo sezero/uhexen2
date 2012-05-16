@@ -94,8 +94,7 @@ void *safe_malloc(size_t count)
 
   p = malloc(count);
   if (p == NULL)
-    DEBUG_MSG("Sorry. Couldn't malloc %d bytes.\n", count);
-
+    DEBUG_MSG("Sorry. Couldn't malloc %lu bytes.\n", (unsigned long)count);
   return p;
 }
 

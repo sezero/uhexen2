@@ -426,7 +426,7 @@ void R_RenderFace (msurface_t *fa, int clipflags)
 			{
 				if (r_pedge->cachededgeoffset & FULLY_CLIPPED_CACHED)
 				{
-					if ((r_pedge->cachededgeoffset & FRAMECOUNT_MASK) == r_framecount)
+					if ((int)(r_pedge->cachededgeoffset & FRAMECOUNT_MASK) == r_framecount)
 					{
 						r_lastvertvalid = false;
 						continue;
@@ -467,7 +467,7 @@ void R_RenderFace (msurface_t *fa, int clipflags)
 			{
 				if (r_pedge->cachededgeoffset & FULLY_CLIPPED_CACHED)
 				{
-					if ((r_pedge->cachededgeoffset & FRAMECOUNT_MASK) == r_framecount)
+					if ((int)(r_pedge->cachededgeoffset & FRAMECOUNT_MASK) == r_framecount)
 					{
 						r_lastvertvalid = false;
 						continue;

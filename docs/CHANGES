@@ -3,6 +3,17 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2012-05-16 (SVN):
+    * engine/h2shared/r_draw.c (R_RenderFace): Fixed -Wsign-compare.
+    * engine/hexenworld/server/sv_main.c (SV_SendBan): Changed type from
+      char to byte to fix -Wnarrowing.
+    * hw_utils/hwmaster/sys_main.c (Sys_ConsoleInput): -Wsign-compare.
+    * hw_utils/hwrcon/hwterm.c (main): Fixed another -Wsign-compare.
+    * libs/timidity/common.c (safe_malloc): Fixed -Wformat in debug msg.
+    * utils/texutils/bsp2wal/bsp2wal.c: De-constified WriteWALFile() and
+      MakeWorkPath() because they actually write to their string args.
+    * updated version date stamp to 2012-05-16.
+
 2012-05-15 (SVN):
     * README: Clarified the joy_index documentation after svn rev. 4674.
 

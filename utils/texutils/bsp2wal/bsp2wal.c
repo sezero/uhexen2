@@ -25,7 +25,7 @@ static int		miponly;
 
 //===========================================================================
 
-static char *MakeWorkPath (const char *infilename)
+static char *MakeWorkPath (char *infilename)
 {
 	char		*tmp;
 
@@ -55,7 +55,7 @@ static char *MakeWorkPath (const char *infilename)
 	return tmp;
 }
 
-static void WriteWALFile (const char *bspfilename)
+static void WriteWALFile (char *bspfilename)
 {
 	int		i, j;
 	dmiptexlump_t	*m;

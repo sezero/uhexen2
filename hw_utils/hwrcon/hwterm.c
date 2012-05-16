@@ -328,7 +328,7 @@ int main (int argc, char *argv[])
 			{
 				HuffDecode(huffbuff, response, size, &size, sizeof(response));
 
-				if (size > sizeof(response))
+				if (size > (int) sizeof(response))
 					Sys_Error ("Received oversized compressed data!");
 				if (memcmp(response, rcon_rep, 5) != 0)
 					Sys_Error ("Invalid response received");
