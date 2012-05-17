@@ -3,6 +3,10 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2012-05-17 (SVN):
+    * Combined the ReleaseNotes files. Updated rpm spec file to reflect
+      the change.
+
 2012-05-16 (SVN):
     * engine/h2shared/r_draw.c (R_RenderFace): Fixed -Wsign-compare.
     * engine/hexenworld/server/sv_main.c (SV_SendBan): Changed type from

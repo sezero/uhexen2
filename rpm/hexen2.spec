@@ -198,19 +198,8 @@ utils/hcc/hcc -src gamecode-%{gamecode_ver}/hc/hw -oi -on
 %{__install} -D -m644 docs/README.hwsv %{buildroot}/%{_prefix}/games/%{name}/docs/README.hwsv
 %{__install} -D -m644 docs/README.hwmaster %{buildroot}/%{_prefix}/games/%{name}/docs/README.hwmaster
 %{__install} -D -m644 docs/SrcNotes.txt %{buildroot}/%{_prefix}/games/%{name}/docs/SrcNotes.txt
-%{__install} -D -m644 docs/ReleaseNotes-%{version} %{buildroot}/%{_prefix}/games/%{name}/docs/ReleaseNotes-%{version}
-# install release notes for the older versions
-%{__install} -D -m644 docs/ReleaseNotes-1.2.3 %{buildroot}/%{_prefix}/games/%{name}/docs/ReleaseNotes-1.2.3
-%{__install} -D -m644 docs/ReleaseNotes-1.2.4a %{buildroot}/%{_prefix}/games/%{name}/docs/ReleaseNotes-1.2.4a
-%{__install} -D -m644 docs/ReleaseNotes-1.3.0 %{buildroot}/%{_prefix}/games/%{name}/docs/ReleaseNotes-1.3.0
-%{__install} -D -m644 docs/ReleaseNotes-1.4.0 %{buildroot}/%{_prefix}/games/%{name}/docs/ReleaseNotes-1.4.0
-%{__install} -D -m644 docs/ReleaseNotes-1.4.1 %{buildroot}/%{_prefix}/games/%{name}/docs/ReleaseNotes-1.4.1
-%{__install} -D -m644 docs/ReleaseNotes-1.4.2 %{buildroot}/%{_prefix}/games/%{name}/docs/ReleaseNotes-1.4.2
-%{__install} -D -m644 docs/ReleaseNotes-1.4.3 %{buildroot}/%{_prefix}/games/%{name}/docs/ReleaseNotes-1.4.3
-%{__install} -D -m644 docs/ReleaseNotes-1.5.0 %{buildroot}/%{_prefix}/games/%{name}/docs/ReleaseNotes-1.5.0
-%{__install} -D -m644 docs/ReleaseNotes-1.5.1 %{buildroot}/%{_prefix}/games/%{name}/docs/ReleaseNotes-1.5.1
-%{__install} -D -m644 docs/ReleaseNotes-1.5.2 %{buildroot}/%{_prefix}/games/%{name}/docs/ReleaseNotes-1.5.2
-%{__install} -D -m644 docs/ReleaseNotes-1.5.3 %{buildroot}/%{_prefix}/games/%{name}/docs/ReleaseNotes-1.5.3
+%{__install} -D -m644 docs/ReleaseNotes %{buildroot}/%{_prefix}/games/%{name}/docs/ReleaseNotes
+%{__install} -D -m644 docs/ReleaseNotes.old %{buildroot}/%{_prefix}/games/%{name}/docs/ReleaseNotes.old
 
 # Install the gamedata
 %{__mkdir_p} %{buildroot}/%{_prefix}/games/%{name}/data1/
@@ -351,18 +340,8 @@ desktop-file-install \
 %{_prefix}/games/%{name}/docs/README.3dfx
 %{_prefix}/games/%{name}/docs/TODO
 %{_prefix}/games/%{name}/docs/SrcNotes.txt
-%{_prefix}/games/%{name}/docs/ReleaseNotes-%{version}
-%{_prefix}/games/%{name}/docs/ReleaseNotes-1.2.3
-%{_prefix}/games/%{name}/docs/ReleaseNotes-1.2.4a
-%{_prefix}/games/%{name}/docs/ReleaseNotes-1.3.0
-%{_prefix}/games/%{name}/docs/ReleaseNotes-1.4.0
-%{_prefix}/games/%{name}/docs/ReleaseNotes-1.4.1
-%{_prefix}/games/%{name}/docs/ReleaseNotes-1.4.2
-%{_prefix}/games/%{name}/docs/ReleaseNotes-1.4.3
-%{_prefix}/games/%{name}/docs/ReleaseNotes-1.5.0
-%{_prefix}/games/%{name}/docs/ReleaseNotes-1.5.1
-%{_prefix}/games/%{name}/docs/ReleaseNotes-1.5.2
-%{_prefix}/games/%{name}/docs/ReleaseNotes-1.5.3
+%{_prefix}/games/%{name}/docs/ReleaseNotes
+%{_prefix}/games/%{name}/docs/ReleaseNotes.old
 %{!?_without_freedesktop:%{_datadir}/applications/%{desktop_vendor}-%{name}.desktop}
 %{?_without_freedesktop:%{_sysconfdir}/X11/applnk/Games/%{name}.desktop}
 
@@ -381,7 +360,8 @@ desktop-file-install \
 %{_prefix}/games/%{name}/docs/README.hwmaster
 
 %changelog
-* Sun Apr 22 2012 O.Sezer <sezero@users.sourceforge.net> 1.5.4-1
+* Thu May 17 2012 O.Sezer <sezero@users.sourceforge.net> 1.5.4-1
+- Updated documents installation after the ReleaseNotes* changes.
 - Bump version to 1.5.4
 
 * Sat Apr 07 2012 O.Sezer <sezero@users.sourceforge.net> 1.5.3-1

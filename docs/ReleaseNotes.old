@@ -1,0 +1,1042 @@
+Hammer of Thyrion (uHexen2) release notes:
+
+========================================================================
+Changes in v1.4.3: (Apr. 04, 2008.)
+========================================================================
+
+- Fixed compilation with gcc-2.x and gcc-3.0.x series.
+
+- Re-enabled the success check during gfx.wad loading.
+
+- Fixed some errors in a few endianness macros.
+
+- Fixed a bug in key events handler which prevented the pause key events
+  on some platforms.
+
+- Added back the use of password file on unix systems.
+
+- Passed NULL as the timezone argument to gettimeofday().
+
+- Sound: Buffer lock fixes in SDL audio output.
+
+- Sound: internal changes in the driver interface.
+
+- Video/Input: The game now blocks/unblocks sound upon window focus loss
+  or gain (SDL input driver).
+
+- Software renderer: Fixed fullscreen intermission and help picture size
+  mismatches after resolution changes which would cause errors under
+  certain conditions.
+
+- Fixed a glitch in hexenworld class selection menu.
+
+- Fixed invalid class handling glitches in hexen2.
+
+- Fixed a buffer overrun in dhcc (the hexenc decompiler)
+
+- Fixed a buffer overrun vulnerability in the hexenworld huffman decoder
+  (Secunia advisory SA28124).
+
+- Fixed a theoretical buffer overrun in console input.
+
+- Several other fixes elsewhere for buffer size safety.
+
+- Replaced some technically dangerous memcpy calls with memmove calls.
+
+- Some protocol related clean-ups and documentation.
+
+- Fixed the paths in texutils cross compilation scripts.
+
+- Console: added ctrl-right and ctrl-left key handling.
+
+- Console line editing: made insert mode the default.
+
+- Launcher: added a progress bar for the patch operation.
+
+- Added support for the oem (Matrox m3D bundle) version.
+
+- Added a new compile time option to disable the user directories even
+  on multi-user platforms.
+
+- Added a new compile time option to detect byte order at runtime (off
+  by default, see q_endian.h).
+
+- Always use MAXHOSTNAMELEN sized buffers with gethostname
+
+- Added DOS support for the software renderer (we already have dosquake,
+  why not have a dos-hexen2 ;)
+
+- Added an experimental svgalib client (software renderer, based on
+  quake1 code) - not tested or supported, yet.
+
+- Updates in platform headers for better portability.
+
+- Completed the const correctness effort.
+
+- Incremented the engine versions to 1.21 for Hexen II and 0.21 for
+  HexenWorld.
+
+- Incremented the gamecode version number to 1.19a.
+
+- Fixed and updated several build and patch scripts.
+
+- A few documentation updates and corrections.
+
+- Added PDP (NUXI) endian stuff (for reference, actually, neithed tested
+  nor supported..)
+
+
+========================================================================
+Changes in v1.4.2: (Oct. 03, 2007.)
+========================================================================
+
+Many thanks to Juraj Styk for his help and for the code he provided for
+the non-intel software renderer support, to Davide Cendron for 64 bit
+testing and to Kevin Shanahan (aka. Tyrann) for useful discussions and
+ideas.
+
+- Engine version is now at 1.19 for Hexen II and 0.19 for HexenWorld.
+
+- Added support for 64 bit architectures: crashes on amd64 are fixed.
+
+- Added support for protocol 18: Hammer of Thyrion is now fully network-
+  compatible with Raven's 1.11 windows version, as it has been with
+  other Hexen II ports.
+
+- The net compatibility works both ways: When H.o.T is run as a client,
+  it can connect to Raven-1.11 servers and can play just fine.  On the
+  other hand, if a 1.11 client wants to connect to a H.o.T. server, the
+  server must be started with "-protocol 18" command line argument.
+
+- You can also load and play games saved with the 1.11 windows version
+  and can playback the demos recorded with the 1.11 version.
+
+- Fixed and improved parsing of puzzles.txt: This fixes the bug where
+  the names used to be listed as Unknown in the puzzle pieces inventory
+  display (you can access the puzzle pieces inventory display using a
+  key bound to the +showdm command, the default is q).
+
+- Updated the loading of strings.txt, infolist.txt and puzzles.txt.
+
+- Added ability of deleting saved games from within the game: press the
+  DEL key in the load or save menu and press y at the dialog. The new
+  console command deletesave <savename> does the same thing.
+
+- Updates to SDL input code.  Added the Shift-Escape key combination as
+  a new means for opening the in-game console.
+
+- Fixed wheelmouse for direct input mode in the windows version. Added
+  the direct input support of HexenWorld to Hexen II. DirectInput is
+  activated by the "-dinput" command line argument.
+
+- Revised pak data checking.
+
+- Added experimental support for using unpatched, off-the-cdrom 1.03
+  version pak files as a compile time option. Disabled by default.
+
+- Several cvar tweaks.
+
+- Made the load and connect commands to get rid of the menu or the
+  console.
+
+- Made the item inventory bar to wrap around.
+
+- Fixed multiplayer episode selection in the menu system.
+
+- Updates to zone memory usage: a 256 KB secondary zone for static
+  textures (sec_zone) is now initialized, which is especially useful for
+  the software renderer and have its merits for the opengl version, too.
+
+- Revised several unsafe LoadStackFile and LoadBufFile usage.
+
+- Removed the useless net_vcr facility.
+
+- Tweaked the init sequence.
+
+- Changed the remnants of malloc usage into hunk or zone allocations.
+
+- Worked around crashes in gcc-4.0.x unit-at-a-time mode compilations by
+  allocating several sizebufs dynamically instead of pointing to a
+  static buffer.
+
+- Mac OS X: Ensured that the basedir always stays the same.
+
+- The gamecode is now at version 1.19.
+
+- Gamecode: Origin fixes for tomed fires of vorpal sword and purifier:
+  paladin used to fire them always from the non-crouched eye position,
+  and it was even the worst when he was looking up (and down). You won't
+  be shooting your back when standing just in front of a wall and fire
+  your tomed purifier to the sky, from now on.
+
+- Gamecode: Fixed an obscure bug where the assasin with her 4th weapon
+  uses the tome of power and can't fire it (gamecode version 1.16a.)
+
+- Console: Added prefix matching support to the maplist command.
+
+- Console: A bug in duplicate name detection in the maplist command was
+  fixed.
+
+- Console: Updated and sanitized the command lister procedures.
+
+- Console: Added a -developer command line argument which sets the
+  developer cvar to 1 during the init phase (ie. before the config is
+  read).
+
+- Console: Combined all Con_Printf and Sys_Printf family of procedures
+  into a single flag based procedure. Added macros for compatibility
+  with the old api.
+
+- Console: Revised logging system, made all Con_Printf and Sys_Printf
+  output to be written into the logs from the start. Added a -devlog
+  command line switch to enable logging of developer message even when
+  the developer cvar isn't set.
+
+- Hexen II, UDP: added network interface scanning to overcome cases
+  where the host address resolves to 127.0.0.1 (loopback) using the old
+  hostent method. If, for some reason, you want to disable this feature,
+  use the command line argument -noifscan.
+
+- Hexen II, UDP/Winsock: Added -localip command line option to hexen2,
+  usage: -localip <ip_address>.  This changes the ip address embedded in
+  response packets for serverinfo and connect requests to use command-
+  line-provided ip address. The server still binds to INADDR_ANY and it
+  can see the broadcast requests.
+
+- Hexen II, UDP/Winsock: Added hexenworld (quakeworld) style ip binding
+  option, usage: -ip <ip_address> or -bindip <ip_address>.  This enables
+  the server admins to bind to a specific IP address on a multi-homed
+  host. Note that using this option will prevent the us from receiving
+  broadcast packets, so the server discovery on the LAN will not work if
+  the server is started this way.
+
+- Hexenworld: added -bindip as an alternative for the -ip option to
+  follow the similar hexen2 change (both options are the same, -ip is
+  checked first).
+
+- Fixed net driver checks in Hexen II dedicated server: It was broken in
+  the 1.4.1 release and works properly now.
+
+- Fixed Datagram_Init() returning success even if it couldn't initialize
+  any of the lan drivers.
+
+- Fixed a long-standing 0 byte UDP packet DoS bug in Hexen II.
+
+- Fixed a bug in NET_SendToAll (mainly used for reconnecting clients
+  upon changing levels) where it didn't skip non-connected clients.
+
+- Fixed a crash when changelevel2 is requested for a non-existant map.
+
+- Fixed  mission pack's doWhiteFlash server message: it used to affect
+  the local client only. Naturally, the recorded demos didn't carry the
+  message and the flash didn't appear, either. It works properly now.
+
+- Made the Hexen II dedicated server to exec not hexen.rc or config.cfg,
+  but server.cfg if available. As an alternative, any config file can be
+  exec'ed when starting the server, such as: "h2ded +exec myconfig.cfg"
+
+- Hexen II dedicated server now starts the demo1 map, if the server is
+  still not active when initialization is complete.
+
+- Video: Added 'apply changes' and 'reset changes' items to the video
+  options menu.
+
+- Software Renderer: Added support for non-intel cpus: x86 assembly is
+  not needed anymore.
+
+- Software Renderer: Fixed a few endianness issues.
+
+- Software Renderer: r_transwater now always acts as a toggle for water
+  translucency: it used to fail if a map was loaded with r_transwater
+  disabled. works now.
+
+- OpenGL: Some speed-ups in the alias model drawing.
+
+- OpenGL: Fixed RGBA lighting.
+
+- OpenGL: Fixed sprite translucencies, such as punch hits, demoness'
+  fireball and powered-up acidball attacks.
+
+- OpenGL: Fixed an invalid glTexParameterf call which used to result in
+  extra lines being drawn on the screen.
+
+- OpenGL: Fixed bug that the array size for playertextures must be
+  MAX_CLIENTS, but was hardcoded as 16.
+
+- Added ability to load external wal texture files instead of internal
+  pixel data of the brush model (depends on the new r_texture_external
+  cvar).
+
+- Sound: Added a new version of SDL audio driver which fixes a rare bug
+  of game randomly erroring out with the message 'Cache_MakeLRU: active
+  link'.
+
+- Sound: Made 22050 Hz the default sample rate.
+
+- Added external music file support via SDL_mixer as an optional patch.
+
+- CDAudio: Updated the volume setting procedures.
+
+- HexenWorld OpenGL: Fixed bug that netgraphtexture was not reset during
+  reinitialization of the draw subsystem (used to affect the packet loss
+  status graph by r_netgraph).
+
+- HexenWorld, OpenGL: Fixed bug that dynamic lights had a problem with
+  RGBA lightmaps, such as torches didn't illuminate, but luminance mode
+  was fine. Lightmaps in RGBA mode are working now.
+
+- HexenWorld, OpenGL: Added colored dynamic lights and extra dynamic
+  lights (stuff copied over from hexen2). The gl_colored_dynamic_lights
+  and gl_extra_dynamic_lights cvars and their menu items are functional
+  now.
+
+- Launcher: Added integrated ability to patch the pak files.
+
+- The launcher now scans the installation directory against known game
+  versions for pak file health and pops up the patch window with a short
+  report if it finds something bad. It now disables the mission pack or
+  hexenworld options according to the results it took from the
+  installation scanning.
+
+- Launcher: Added ability to specify a different data installation
+  directory.
+
+- Launcher: Added ability to specify extra command line arguments which
+  aren't directly supported by the graphical interface.
+
+- Launcher: Many clean-ups. Now at version 1.0.2.
+
+- Utilities: Added bsp2wal which extracts all texture data into hwal
+  files.
+
+- Utilities: Added lmp2pcx which converts hexen2 texture data into pcx
+  and tga.
+
+- Utilities: Fixed the broken project path decision in qbsp. it doesn't
+  scan for a maps directory anymore.
+
+- Utilities: Added a findfirst/findnext implementation to the common
+  library.
+
+- Utilities: Several fixes in dcc.
+
+- Utilities: Minor updates to the hexenworld utilities hwmquery, hwrcon
+  and hwterm. Added extra patches against xqf and qstat for similar
+  functionality.
+
+- Imported the latest xdelta-1.1 sources into the tree.
+
+- A lot of code clean-up all over the tree. Updated inline commentaries,
+  fixed many printf format string errors, started a large scale attempt
+  at improving const-correctness.
+
+
+========================================================================
+Changes in v1.4.1: (Oct. 30, 2006.)
+========================================================================
+
+- Added support for QNX.
+
+- Added support for Mac OS X.
+
+- A few MorphOS fixes (some of which are probably correct for Amiga, as
+  well.)
+
+- Added a hexen2 dedicated server application (h2ded).
+
+- The data1 subdirectory is now used in the user directories. Users'
+  data from older versions are automatically updated.
+
+- Made console and menu to disappear for playdemo like it does in
+  timedemo.
+
+- Fixed demos freezing upon changing maps.
+
+- Fixed demo recording and playback covering multiple episodes: The
+  intermissions are now skipped while recording demos across multiple
+  levels, and recording is stopped at ending scenes.
+
+- Made background music to stop upon disconnect.
+
+- Disabled the forced centerview (pitch drifting) when flying in hexen2.
+  The behavior now matches that of hexenworld.
+
+- Removed unintended viewmodel movement upon setting viewsize to maximum
+
+- Fixed client segmentation faults in heterogenous client/server
+  situations, such as pure hexen2 client vs. mission pack server: we now
+  Host_Error upon missing models when connecting to a server.
+
+- Added network compatibility support for Korax's UQE-Hexen2 v1.13
+
+- No erroring out if we can't bind to a network interface at init phase.
+
+- Made the alias command to display the value of the given alias instead
+  of clearing its value.
+
+- Added new console commands: unalias, which deletes the given alias
+  command, and unaliasall, which deletes all aliases.
+
+- Unbinding a key now frees its memory.
+
+- Disabled the sys_memory, sys_cache and sys_stats console commands for
+  server-only binaries except for debug builds.
+
+- Disabled the VCR facility by default. After all, it is not an ordinary
+  demo recording but a server only feature for debugging server bugs.
+
+- Fixed and improved parsing of maplist.txt and config.cfg.
+
+- Engine version is now 1.16 for Hexen II, and 0.18 for HexenWorld.
+  Gamecode is now at version 1.16.
+
+- Gameplay: Fixed long-standing hexenc bug in mezzo_reflect_trig_touch
+  which used to crash the game with an additional message about
+  fangel/deflect.wav when changing levels.
+
+- Gamecode: Disabled impulse 11 which was a developer-only command but
+  could be issued from any client and might clobber the server.
+
+- Gamecode: Cleaned up and tweaked hexenworld and siege map cycling.
+
+- Gamecode: Fixed hexen2 and hexenworld server crashes upon deathmatch
+  level change in cases of a custom map being run and there is no map
+  cycling. The mission pack actually didn't used to crash but it always
+  failed changing into a new level. it is now fixed, as well.
+
+- Video: Enabled fullscreen/windowed switching through the menu system
+  in cases where instant SDL toggling doesn't work.
+
+- Video: Added procedures to re-initialize the draw subsystem upon game
+  directory changes. Hexenworld already uses it. Hexen II can use it in
+  future versions.
+
+- OpenGL: Made scaling of the text and hud size adjustable from the menu
+  system.
+
+- OpenGL: Fixed the light level being incorrectly set when the game is
+  run with rgba lightmaps which used to prevent the cloaking ability of
+  the assasin.
+
+- OpenGL: Fixed some endianness issues.
+
+- OpenGL: Added console background stretching (cvar: gl_constretch, 0 or
+  1).
+
+- Sound: Added mute, volumeup and volumedown console commands.
+
+- Sound, OSS driver: Endianness fixes.
+
+- Sound, OSS driver: The GETOSPACE ioctl must be issued after setting
+  the parameters.
+
+- Sound: Added 48000, 24000 and 16000 Hz to the array of sampling rates.
+  Should help with 48khz AC97 chips.
+
+- Sound: Added an experimental SUN audio driver for native audio in
+  OpenBSD, NetBSD and SUN.
+
+- CDAudio: The case when the user changes track without using the "cd"
+  command should now be handled correctly on linux and bsd.
+
+- CDAudio: Added -cddev commandline argument support to sdl cd driver.
+
+- CDAudio: Merged a better sdl cdaudio driver which doesn't cause slow-
+  downs.
+
+- HexenWorld: Fixed a buffer overflow vulnerability in Huffman packet
+  decompression.
+
+- HexenWorld: Fixed wrong charset and conback display problem upon
+  gamedir changes.
+
+- HexenWorld: Cleaned-up hexenworld master server. Added the "clear"
+  console command
+  to clear the list of registered servers.
+
+- HexenWorld: Added hwmquery, a tiny utility for querying hexenworld
+  master servers.
+
+- HexenWorld: Fixed hexenworld gamecode so that it can be played using
+  the demo version with crusader and necromancer classes.
+
+- Utilities: Added big-endian support to the hcc (the hexenc compiler),
+  dcc (dhcc: progs decompiler) and jsh2color (the litfile generator).
+
+- Utilities, qbsp: Do the name search in a case insensitive way in the
+  bsp compiler: some wad files doesn't have the texture name in expected
+  case.
+
+- Utilities, dhcc: Several fixes including a workaround for crashes when
+  compiled by gcc-4.x, and a fix for bad decompilation of the mission
+  pack progs.
+
+- Launcher: Fixed finding of actual command path.
+
+- Launcher: Fixed broken display of launcher binary name when run using
+  a symlink.
+
+- Launcher: Updated for engine-side changes, version 0.8.0.
+
+- Ensured that string operations are safe regarding their buffer size in
+  many places.
+
+- Added support for yasm (v0.5.0) as an alternative assembler
+
+- Fixes and improvements in the build system
+
+- Many compile and linkage fixes.
+
+- Many other bug fixes, clean-ups and small improvements.
+
+
+========================================================================
+Changes in v1.4.0: (Apr. 28, 2006.)
+========================================================================
+
+- Engine version is now 1.15 for Hexen II, and 0.17 for HexenWorld.
+  Gamecode is now at version 1.15.
+
+- The same binary now handles both original hexen2 and the mission pack.
+  No need for two different files. Mission pack is simply activated by
+  the -portals or -missionpack commandline switch.
+
+- The same hexen2 binary now transparently handles both hexen2-1.11 and
+  h2mp-v1.12 progs.dat files.
+
+- Unix version now yields the CPU when the game is paused, minimized or
+  doesn't have focus.
+
+- Better error checking when saving games on unix
+
+- Increased minimum heapsize to 16 mb to prevent hunk allocation errors
+
+- host_hunklevel and gl_texlevel are now set before execing hexen.rc to
+  prevent "bad things" (TM) from happening
+
+- Added flags support to the cvar system.
+
+- Added support for the pak files in users' directories.
+
+- Several fixes and updates to the filesystem handling.
+
+- Video: Added support for on the fly resolution change for both opengl
+  and software renderers. The video modes menu is now fully functional.
+
+- OpenGL: Suffort for colored lights and external lit files
+
+- OpenGL: A new opengl features menu to control most opengl options.
+
+- OpenGL: Fixes in palettized texture uploading code
+
+- OpenGL: Switched back to original h2 code for palettized textures and
+  texture resampling for better quality, left the hw code as a compile
+  time option
+
+- OpenGL: Moved sdl multisampling capability check from compile time to
+  runtime for much better compatibility
+
+- OpenGL: Fixed glows of floating models (eg. mana) not floating along
+  with the model
+
+- OpenGL: Fixed win32 version to use dlsymmed opengl function calls
+
+- OpenGL: Took care of flickering problem while drawing the loading
+  plaque
+
+- OpenGL: Fixed the loading plaque not being displayed when antialiasing
+  was in effect
+
+- OpenGL: Fixed the loading screen not being displayed correctly on
+  win32 when antialiasing was in effect
+
+- OpenGL: Added stencil buffered shadows
+
+- OpenGL: Added the lightmaps portion of adjustable filters which have
+  been left missing since v1.2.3
+
+- OpenGL: Disabled model data caching (*.ms2) which may lead to problems
+
+- OpenGL: Disabled multitexture for 3dfx sky rendering, which was broken
+
+- OpenGL: Built-in support for 3dfx specific gamma
+
+- Software Renderer: Updated sdl software video driver and made the
+  loading plaque and the rotating skull to work
+
+- Software Renderer: Fixed mgl library linkage for win32 software
+  renderer
+
+- Software Renderer: Fixed win32 software renderer not switching to the
+  resolution saved in config.cfg
+
+- Software Renderer: Ported win32 software renderer changes from hexen2
+  to hexenworld
+
+- Console: Improved insert/overwrite mode console editing and command
+  completion
+
+- Console: Made keys autorepeating work in unix
+
+- Console: Added new cvarlist and aliaslist commands, changed the old
+  command lister name from list to cmdlist.
+
+- Console: Added maplist command to list maps in pakfiles and in game
+  searchpath
+
+- Sound: Several small driver updates
+
+- Sound: Added support for systems without OSS sound
+
+- Fixed objectives display in the expansion pack which was broken during
+  the 1.3.0 development cycle
+
+- Added checks for coop and deathmatch not be set at the same time
+
+- Made noexit, timelimit and fraglimit to matter only for deathmatch,
+  not for coop and single player, as they should.
+
+- Fixed a bug where with viewsize (scr_viewsize) being set to 120, the
+  game wouldn't start with mini status bar unless the user did a size-up
+
+- Set the default playerclass to paladin: fresh installations of
+  original hexen2 without a config shall no longer fail when run first
+  time with a +map XXX commandline argument
+
+- The menu/console now automatically disappears when playing a timedemo
+
+- The panels now properly disappear upon starting a new game through the
+  menu system
+
+- Unix: Minimum required SDL (and SDL_mixer) version is now 1.2.4
+
+- Win32: Fixed to compile with start-up splash screens enabled
+
+- Made udp to quietly absorb empty packets
+
+- Fixed glh2 and glh2mp segfaults when run as dedicated server
+
+- HexenWorld: Fixed ability string indexes for the demoness and dwarf
+  classes and armor class display
+
+- HexenWorld: Fixed the crash when the server is spawned with dmmode 1
+
+- HexenWorld: Fixed server not correctly updating its gamedir serverinfo
+  under some conditions
+
+- HexenWorld: Fixed window restore bug that prevented the screen from
+  being updated
+
+- HexenWorld: User directory information now properly updated upon
+  gamedir changes
+
+- HexenWorld: Added ip interface binding option (-ip xxx.xxx.xxx.xxx) to
+  the server
+
+- HexenWorld: Added sanity checking to and fixed the off by one error in
+  -ip option of the master server
+
+- Hexenworld: server shall now flush its logfiles upon every print
+
+- HexenWorld: Added -noportals command line switch to skip mission pack
+  support if required
+
+- HexenWorld: Changed server log filename from qconsole.log to hwsv.log
+
+- Utilities: Big tidy-up.
+
+- Utilities: Added jsh2color (lit file generator for colored lights)
+
+- Utilities: Added hexenworld standalone rcon and terminal tools (hwrcon
+  and hwterm) which make it possible to remotely administer servers
+  without installing a full client. (See in: hw_utils)
+
+- Major build system update
+
+- Added math optimization flags to utilities and hwsv
+
+- Added cross compilation support on unix for the win32 version
+
+- Several other fixes and lots of code clean-up and improvements
+
+
+========================================================================
+Changes in v1.3.1: (Apr. 20, 2006.)
+========================================================================
+
+This release contains only strict bug-fixes to v1.3.0:
+
+- fixed objectives in the expansion pack which was broken during the
+  1.3.0 development cycle by a bad gcc4 fix.
+
+- fixed the snd_scaletable init breakage with gcc-4.1 at -O1 and higher.
+  From Kevin Shanahan, aka Tyrann.
+
+- fixed win32 window restore bug that prevented the screen from being
+  updated in hexenworld.
+
+- fixed a typo in the utilities' makefiles
+
+
+========================================================================
+Changes in v1.3.0: (Aug. 29, 2005.)
+========================================================================
+
+- Engine version is now 1.14 for hexen2, 0.16 for hexenworld. Gamecode
+  is now at version 1.14.
+
+- Gameplay: Teleportation push-speed is now the same as Raven's original
+  except for single player game in the Cathedral level.
+
+- Gameplay: Added Pa3PyX' fire delay bits for paladin's staff.
+
+- Gameplay: Disallowed cycling to a weapon without proper mana.
+
+- Gameplay: Enabled impulse 34, (puzzle piece inventory listing)
+
+- Gameplay: Speed key now acts as slow key when "always run" is chosen.
+
+- Mouse: mlook and lookspring fixes.
+
+- Menu: Multiplayer episode selection fixed.
+
+- Mini-status is now allowed when hud transparency is set.
+
+- Several pointer fixes which would lead to endless loops, bad movement
+  and such.
+
+- Fixed a sneaky demo playback bug which caused a fake freeze-like
+  appearance when no next demos were found.
+
+- ChaseCam clipping and pitch fixes (still not perfect, but much better
+  than what we previously had.)
+
+- Endianness detection fixes (now decided at compile time not in
+  runtime.)
+
+- We now allocate on the hunk (or zone) and don't malloc system memory
+  unless necessary.
+
+- Increased hexen2 minimum zone size to 256 kb which now matches that of
+  hexenworld
+
+- Fixed ALSA minimum required version detection.
+
+- Added missing console input code for dedicated server cases.
+
+- Added lower/upper boundaries (8mb/96mb) for -heapsize argument.
+
+- Added lower (256kb)/upper (1mb) boundaries for -zone argument.
+
+- Many build system / makefile fixes.
+
+- Huge code cleanup. The source should be gcc4-ready now. Many dead or
+  broken code are removed, as well.
+
+- Other smallish fixes such as out-of-bound arrays, etc.
+
+- Video: Added support for window manager icon using xbm format.
+
+- OpenGL: Improved support for 3dfx Voodoo Graphics and Voodoo2
+  accelerators including native gamma support through the lib3dfxgamma
+  library. A small HOWTO for these boards is provided, as well.
+
+- OpenGL: Added 2-TMU multitexturing support (doesn't work correctly for
+  3dfx cards, yet.)
+
+- OpenGL: Added 2 and 4 sample FSAA support (SDL >= 1.2.6 is required)
+
+- OpenGL: Revived palettized textures support which helps saving video
+  memory on old low-end cards, activated by -paltex command line switch.
+
+- OpenGL: Added texture checksumming which fixes "white" textures when
+  gl_purge_maptex is not set.
+
+- OpenGL: Added support for the -conwidth argument which enables larger,
+  thus readable text and bigger hud in high resolutions.
+
+- OpenGL: mesh cache is now searched directly under com_userdir/glhexen,
+  not in search_path, fixing the crazy polygons in mods bug.
+
+- OpenGL: Prevent Z fighting in shadows.
+
+- OpenGL: Added a gl-gamma trick by LordHavoc which is activated if all
+  other methods of brightness control fail.
+
+- OpenGL: Added and fixed (worked-around) "crosshair 2" support of
+  hexenworld to hexen2, which now uses 32x32 pixmaps. pixmap loading
+  procedure stolen from the twilight project. Also merged crosshaircolor
+  (0-255) support of original quake.
+
+- Software Renderer: Added hexenworld's "crosshair 2" support to hexen2.
+
+- Software Renderer: Added hexenworld's transparent statusbar to hexen2.
+  Cvar controlled:  "sbtrans N",  N = 0: solid, 1: slightly transparent,
+  2: very transparent.
+
+- Sound: Added device selection support (-ossdev) to OSS sound.
+
+- Sound: OSS sound now mmaps /dev/dsp with PROT_READ flag set.
+
+- Sound, CDAudio: Documented the device selection options.
+
+- CDAudio: Updated code so that it doesn't completely fail when there is
+  no disc in the drive during initialization.
+
+- CDAudio: Fixed a volume update bug.
+
+- Music: Fixed music volume from config.cfg not taken into action on
+  startup
+
+- CDAudio: Added FreeBSD and SDL cdrom code.
+
+- MIDI: Fixed midi not playing when midifile exists in the game's search
+  path but not in <userdir>/.midi
+
+- MIDI: Fixed an oversight in reinit_music which resulted in a needless
+  restart of midi music upon pressing Esc twice.
+
+- Filesystem: Userdir support is expanded to cover the whole code
+  including server logs, recorded demos, downloaded files and all
+  others.
+
+- Filesystem: COM_InitFilesystem is updated and demo/retail detection is
+  improved.
+
+- Mouse: code re-visited with bug-fixes and cleaned-ups.
+
+- Mouse: -nomouse option is revived to completely disable mouse usage
+  upon request.
+
+- Hexenworld: Fixed a longstanding client crash with lightning streams.
+
+- Hexenworld: Ported all features and fixes (such as glow code, model
+  recycling, opengl texture flushing, hud fixes, etc) which resided in
+  hexen2. The two trees are now in sync feature-wise.
+
+- Hexenworld: Added hexenworld master server (by Marc Allaire, aka.
+  Kor Skarn).
+
+- Hexenworld: Connection is no longer refused upon client/server version
+  mismatches. Such things should rely on protocol version, not simply
+  version.
+
+- Hexenworld: Fixed Dwarf class was never being enabled in Siege game in
+  the menu system because of a com_gamedir oversight.
+
+- Hexenworld: Fixed server sending the wrong message for cdrom track
+  which resulted in cd music not playing on the client side.
+
+- Tiny update for failure cases of NET_SendPacket and NET_GetPacket.
+
+- Launcher: Cleaned-up, bug-fixed and and updated to version 0.6.1 to
+  support more options.
+
+- FreeBSD: Updated the code to support FreeBSD ( >= 5.3 ).
+
+- Win32: Restored code's compilability on Windows platform (using MinGW
+  and MSYS.) HoT tree is now functional on Win32.
+
+
+========================================================================
+Changes in v1.2.4: (Mar. 06, 2005.)
+========================================================================
+
+The primary focus of this new release may be considered as sound and
+music changes: Two new sound drivers, SDL and ALSA, were added. People
+who used to have issues with sound should now play the game with sound.
+Volume adjustment issues for music are also addressed. A more detailed
+list of changes is below. Many thanks to Levent Yavas for his remarkable
+patience in testing of this release.
+
+- SDL and ALSA sound drivers are added. These should help people having
+  sound problems with the OSS driver. Sound drivers can be chosen either
+  by using the game launcher or by command line switches. ALSA requires
+  1.0.X versions of alsa kernel modules and ALSA libraries.  Midi music
+  doesn't work with SDL sound driver due SDL and SDL_mixer conflicts: to
+  be addressed in future versions.
+
+- Fixed cd music stopping upon changing volume.
+
+- Added working volume control for cdrom and midi music.
+
+- Midi music now works for HexenWorld.
+
+- Further small fixes to the core sound code and to OSS driver.
+
+- Fixed bug where demos played without models when the -nosound command
+  line switch was in effect.
+
+- Added support for mouse buttons 4 and 5 (thanks Julien Langer)
+
+- Fixed statusbar being displayed with an ugly brown-colored band
+
+- Added sky alpha (transparency for lower sky layer)
+
+- Added transparency for console background (from hexenworld).
+
+- Fixed hexenworld client bug causing mouse not being activated after
+  connecting to a server.
+
+- Fixed "flush_textures" decision which used to be always true. Loading
+  the same map should now be faster on old systems.
+
+- Ported many features/fixes from Hexen2 to HexenWorld. There should be
+  less difference between the two now.
+
+- The game launcher now scans for known hexenworld game-types and hexen2
+  botmatch mods, and provides a list menu.
+
+- The launcher interface now has two modes, basic and detailed.
+
+- Many internal changes to the source code (see the CHANGES file for
+  such details.)
+
+* HexenWorld Gamecode changes/fixes:
+
+- Server no longer crashes on maps rider1a, rider2c, romeric6, meso9 and
+  eidolon
+
+- Added map cycling for HexenWorld server
+
+* Hexen2 Gameplay changes/fixes (merged from Pa3PyX' sources):
+
+- Fps-independent crossbow, setstaff and flameorb fire rates
+
+- No more 20 tornadoes per second from meteor staff at 200 fps
+
+- Fix for ravenstaff bug where splitting missiles would collide with
+  each other.
+
+- Assasin cloak ability re-write.
+
+- Necromancer soul steal adjustments to make it really useful.
+
+- Fixes to demoness abilities according to the manual
+
+- Crusader's full-mana ability starts at level3, assasin's backstab and
+  crusader's holy strength start at level6.
+
+
+========================================================================
+Changes in v1.2.3: (Jan. 20, 2005.)
+========================================================================
+
+- The user directory is ~/.hexen2 for the registered version and
+  ~/.hexen2demo for the demo version, from now on.
+
+- The demo ending screen message is fixed.
+
+- Added build options for the demo version.
+
+- Source code cleanup.
+
+- More merges of fixes/features from hexen2 to hexenworld.
+
+- Documentation clarifications on network compatibility.
+
+- Launcher: Fixed, tweaked, added support for GTK+-2.x.
+
+- Gameplay: Typo fixes in strings.txt of Hexen2.
+
+- Gameplay: Holy item in the Cathedral balcony wasn't reachable (reduced
+  game's teleport-pushing speed.)
+
+- Gameplay: Fixed Eidolon losing his hostility under certain conditions
+  (merged newer eidolon code of the mission pack.)
+
+- Gameplay: Fixed Eidolon failing to landing after his initial jump.
+
+- Fixed GL Glows menu item, made it control gl_other_glows, too.
+
+- New menu item for "Previous Weapon".
+
+- New menu item for Fullscreen/Windowed toggling.
+
+- Wheelmouse support added.
+
+- Mouse2/Mouse3 buttons behavior is fixed.
+
+- _windowed_mouse also defaults to 1 for opengl version.
+
+- Mouse can now be disabled for fullscreen modes.
+
+- Filesystem: The -game argument is now correctly honored for the user
+  directories.
+
+- Intermission screens are drawn fullscreen even on high resolutions.
+  Same for the Help screens.
+
+- OpenGL: Texture delete/reload support, no more dying on texture cache
+  mismatches. Fixed textures going missing sometimes.
+
+- OpenGL: gl_ztrick also disabled by default in HexenWorld.
+
+- OpenGL: Fixed gl_other_glows option not being written into config.
+
+- OpenGL: Maximum texture size is now detected using glGetIntegerv, not
+  vendor string.
+
+- OpenGL: Removed second arg from the function EmitSkyPolys().
+
+- OpenGL: Several other cleanups.
+
+
+========================================================================
+Changes in v1.2.2a/b: (Jan. 15, 2005.)
+========================================================================
+
+- Can now toggle between fullscreen and windowed modes.
+
+- Transparent console background.
+
+
+========================================================================
+Changes in v1.2.2: (Dec. 19, 2004.)
+========================================================================
+
+- Heapsize is now 32768 by default
+
+- Centered the end of game messages
+
+- Bugfix: in window mode, mouse can now be bound in the Options menu.
+
+- Bugfix: in window mode, "-nomouse" option works.
+
+- Music automaticly restarts after changing it in Options menu.
+
+- Partial fix for Demoness fire-weapon OpenGL bug.
+
+- HexenWorld: dlsym'ed all calls to GL functions.
+
+- Added an experimental SDL sound driver. Very buggy for now.
+
+- Revived the GTK launcher from AoT: fully functional, works fine with
+  fullscreen opengl modes.
+
+
+========================================================================
+Changes in v1.2.1: (Nov. 26, 2004.)
+========================================================================
+
+First release of Hammer of Thyrion based on Anvil of Thyrion v1.2.0.
+Changes from AoT-1.2.0:
+
+- The "No Boss" bug is fixed.
+
+- Proper fullscreen mode(s) for OpenGL. Screen sizes are selectable with
+  "-width" and "-height" options.
+
+- Mouse grab in window modes, which is released when menus appear.
+
+- Interactive video modes in software game disabled. Replaced Video Mode
+  menu with a helpful message.
+
+- Merged the OpenGL glows patch by Juraj Styk.
+
+- New menu items for GL Glow, Chase mode, Draw Shadows.
+
+- Changes to initial cvar_t variables r_shadows and _windowed_mouse
+
+- Two general overflow bug-fixes by Pa3PyX.
+
