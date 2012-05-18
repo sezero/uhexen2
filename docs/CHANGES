@@ -3,6 +3,9 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2012-05-18 (SVN):
+    * updated all build scripts.
+
 2012-05-17 (SVN):
     * Combined the ReleaseNotes files. Updated rpm spec file to reflect
       the change.

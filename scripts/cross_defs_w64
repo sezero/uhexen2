@@ -1,7 +1,8 @@
 # $Id$
-
+#
 # This file contains all common Win64 cross compilation definitions for
 # use with all other build_cross_win64.sh scripts for the uhexen2 tree.
+#
 # Change this script to meet your needs and/or environment.
 
 #TARGET=x86_64-pc-mingw32
@@ -18,6 +19,7 @@ AS="$TARGET-as"
 RANLIB="$TARGET-ranlib"
 AR="$TARGET-ar"
 WINDRES="$TARGET-windres"
+
 export CC WINDRES AS RANLIB AR W64BUILD
 
 STRIPPER="$TARGET-strip"

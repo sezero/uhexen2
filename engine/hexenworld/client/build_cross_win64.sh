@@ -9,24 +9,19 @@ if test "$1" = "strip"; then
 fi
 
 HOST_OS=`uname|sed -e s/_.*//|tr '[:upper:]' '[:lower:]'`
-
 case "$HOST_OS" in
-linux)
-	MAKE_CMD=make
-	;;
 freebsd|openbsd|netbsd)
-	MAKE_CMD=gmake
-	;;
-*)
-	MAKE_CMD=make
-	;;
+	MAKE_CMD=gmake ;;
+linux)	MAKE_CMD=make ;;
+*)	MAKE_CMD=make ;;
 esac
 
 if test "$1" = "all"; then
+	shift
 	$MAKE_CMD clean
-	$MAKE_CMD $2 $3 $4 $5 $6 glhw || exit 1
+	$MAKE_CMD glhw $* || exit 1
 	$MAKE_CMD clean
-	$MAKE_CMD $2 $3 $4 $5 $6 hw || exit 1
+	$MAKE_CMD hw $* || exit 1
 	$MAKE_CMD clean
 	exit 0
 fi

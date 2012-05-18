@@ -18,17 +18,11 @@ RANLIB="$TARGET-ranlib"
 export CC AS AR RANLIB
 
 HOST_OS=`uname|sed -e s/_.*//|tr '[:upper:]' '[:lower:]'`
-
 case "$HOST_OS" in
 freebsd|openbsd|netbsd)
-	MAKE_CMD=gmake
-	;;
-linux)
-	MAKE_CMD=make
-	;;
-*)
-	MAKE_CMD=make
-	;;
+	MAKE_CMD=gmake ;;
+linux)	MAKE_CMD=make ;;
+*)	MAKE_CMD=make ;;
 esac
 
 exec $MAKE_CMD $*

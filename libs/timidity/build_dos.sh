@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# used for building with djgpp cross toolchain
+# Change this script to meet your needs and/or environment.
 
 TARGET=i586-pc-msdosdjgpp
 PREFIX=/usr/local/cross-djgpp
@@ -15,18 +15,12 @@ RANLIB="$TARGET-ranlib"
 export CC AS AR RANLIB
 
 HOST_OS=`uname|sed -e s/_.*//|tr '[:upper:]' '[:lower:]'`
-
 case "$HOST_OS" in
 freebsd|openbsd|netbsd)
-	MAKE_CMD=gmake
-	;;
-linux)
-	MAKE_CMD=make
-	;;
-*)
-	MAKE_CMD=make
-	;;
+	MAKE_CMD=gmake ;;
+linux)	MAKE_CMD=make ;;
+*)	MAKE_CMD=make ;;
 esac
 
-$MAKE_CMD $*
+exec $MAKE_CMD $*
 
