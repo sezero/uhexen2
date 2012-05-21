@@ -1,14 +1,20 @@
 # GNU Makefile for hexen2 pak tools using GCC.
 # $Id$
 #
-# if building a debug version :		make DEBUG=1 [other stuff]
+# To cross-compile for Win32 on Unix: either pass the W32BUILD=1
+# argument to make, or export it.  Also see build_cross_win32.sh.
+# Requires: a mingw or mingw-w64 compiler toolchain.
 #
-# To cross-compile for Win32 on Unix, you must pass the W32BUILD=1
-# argument to make. It would be best if you examine the script named
-# build_cross_win32.sh for cross compilation.
+# To cross-compile for Win64 on Unix: either pass the W64BUILD=1
+# argument to make, or export it. Also see build_cross_win64.sh.
+# Requires: a mingw-w64 compiler toolchain.
 #
-# To cross-compile for Win64 on Unix, you must pass the W64BUILD=1
-# argument to make. Also see build_cross_win64.sh for details.
+# To (cross-)compile for DOS: either pass the DOSBUILD=1 argument
+# to make, or export it. Also see build_cross_dos.sh. Requires: a
+# djgpp compiler toolchain.
+#
+# To build a debug version:		make DEBUG=1 [other stuff]
+#
 
 # Path settings:
 # main uhexen2 relative path

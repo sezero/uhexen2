@@ -1,22 +1,8 @@
 #!/bin/sh
 
-# Change this script to meet your needs and/or environment.
+UHEXEN2_TOP=..
+. $UHEXEN2_TOP/scripts/cross_defs.dj
 
-TARGET=i586-pc-msdosdjgpp
-PREFIX=/usr/local/cross-djgpp
-
-PATH="$PREFIX/bin:$PATH"
-export PATH
-
-DOSBUILD=1
-
-CC="$TARGET-gcc"
-AS="$TARGET-as"
-RANLIB="$TARGET-ranlib"
-AR="$TARGET-ar"
-export CC AS RANLIB AR
-
-STRIPPER="$TARGET-strip"
 if [ "$1" = "strip" ]; then
 	$STRIPPER h2patch.exe
 	exit 0

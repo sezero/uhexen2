@@ -1,7 +1,20 @@
 # Quick GNU Makefile for building a static timidity library using GCC.
 # $Id$
 #
-# if building a debug version:  make DEBUG=yes
+# To cross-compile for Win32 on Unix: either pass the W32BUILD=1
+# argument to make, or export it.  Also see build_win32.sh script.
+# Requires: a mingw or mingw-w64 compiler toolchain.
+#
+# To cross-compile for Win64 on Unix: either pass the W64BUILD=1
+# argument to make, or export it. Also see build_win64.sh script.
+# Requires: a mingw-w64 compiler toolchain.
+#
+# To (cross-)compile for DOS: either pass the DOSBUILD=1 argument
+# to make, or export it. Also see build_dos.sh script. Requires: a
+# djgpp compiler toolchain.
+#
+# To build a debug version:	make DEBUG=yes
+#
 
 UHEXEN2_TOP:=../..
 LIBS_DIR:=$(UHEXEN2_TOP)/libs

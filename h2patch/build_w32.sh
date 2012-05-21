@@ -1,26 +1,8 @@
 #!/bin/sh
 
-# Change this script to meet your needs and/or environment.
+UHEXEN2_TOP=..
+. $UHEXEN2_TOP/scripts/cross_defs.w32
 
-#TARGET=i386-mingw32msvc
-#TARGET=i686-w64-mingw32
-TARGET=i686-pc-mingw32
-#PREFIX=/opt/cross_win32
-PREFIX=/usr/local/cross-win32
-
-PATH="$PREFIX/bin:$PATH"
-export PATH
-
-W32BUILD=1
-
-CC="$TARGET-gcc"
-AS="$TARGET-as"
-RANLIB="$TARGET-ranlib"
-AR="$TARGET-ar"
-WINDRES="$TARGET-windres"
-export CC AS RANLIB AR WINDRES
-
-STRIPPER="$TARGET-strip"
 if [ "$1" = "strip" ]; then
 	$STRIPPER h2patch.exe
 	exit 0

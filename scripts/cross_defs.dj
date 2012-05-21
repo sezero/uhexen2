@@ -1,0 +1,24 @@
+# $Id$
+#
+# This file contains all common DOS cross compilation definitions for
+# use with all other build_cross_dos.sh scripts for the uhexen2 tree.
+#
+# Change this script to meet your needs and/or environment.
+
+TARGET=i586-pc-msdosdjgpp
+PREFIX=/usr/local/cross-djgpp
+
+PATH="$PREFIX/bin:$PATH"
+export PATH
+
+DOSBUILD=1
+
+CC="$TARGET-gcc"
+AS="$TARGET-as"
+RANLIB="$TARGET-ranlib"
+AR="$TARGET-ar"
+
+export CC AS RANLIB AR DOSBUILD
+
+STRIPPER="$TARGET-strip"
+

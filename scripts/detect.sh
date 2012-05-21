@@ -1,6 +1,6 @@
 #! /bin/sh
 
-# script taken from loki_setup tools.
+# script from loki_setup tools
 
 DetectARCH()
 {
@@ -12,7 +12,7 @@ DetectARCH()
 	    i?86 | i86*)
 		echo "x86"
 		status=0;;
-	    90*/*) 
+	    90*/*)
 		echo "hppa"
 		status=0;;
 	    *)

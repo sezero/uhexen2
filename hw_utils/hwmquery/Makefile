@@ -1,27 +1,28 @@
 # GNU Makefile for hwmquery using GCC.
 # $Id$
 #
-# if building a debug version :		make DEBUG=1 [other stuff]
+# To cross-compile for Win32 on Unix: either pass the W32BUILD=1
+# argument to make, or export it.  Also see build_cross_win32.sh.
+# Requires: a mingw or mingw-w64 compiler toolchain.
 #
-# To cross-compile for Win32 on Unix, you must pass the W32BUILD=1
-# argument to make. It would be best if you examine the script named
-# build_cross_win32.sh for cross compilation.
+# To cross-compile for Win64 on Unix: either pass the W64BUILD=1
+# argument to make, or export it. Also see build_cross_win64.sh.
+# Requires: a mingw-w64 compiler toolchain.
 #
-# To cross-compile for Win64 on Unix, you must pass the W64BUILD=1
-# argument to make. Also see build_cross_win64.sh for details.
+# To (cross-)compile for DOS: either pass the DOSBUILD=1 argument
+# to make, or export it. Also see build_cross_dos.sh. Requires: a
+# djgpp compiler toolchain.
 #
-# Build Options:
-#
-# USE_WINSOCK2	yes  =	Use WinSock2 and link to ws2_32 instead of wsock32
-# (for Win32)	no   =	(default) Use WinSock1.1 for compatibility with old
-#			Windows 95 machines.
+# To build a debug version:		make DEBUG=1 [other stuff]
 #
 
-# Path settings:
+# PATH SETTINGS:
 # main uhexen2 relative path
 UHEXEN2_TOP:=../..
 LIBS_DIR:=$(UHEXEN2_TOP)/libs
 
+# use WinSock2 instead of WinSock-1.1? (disabled for w32 for compat.
+# with old Win95 machines.) (enabled for Win64 below.)
 USE_WINSOCK2=no
 
 # include the common dirty stuff

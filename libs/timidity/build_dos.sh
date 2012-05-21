@@ -1,18 +1,7 @@
 #!/bin/sh
 
-# Change this script to meet your needs and/or environment.
-
-TARGET=i586-pc-msdosdjgpp
-PREFIX=/usr/local/cross-djgpp
-
-PATH="$PREFIX/bin:$PATH"
-export PATH
-
-CC="$TARGET-gcc"
-AS="$TARGET-as"
-AR="$TARGET-ar"
-RANLIB="$TARGET-ranlib"
-export CC AS AR RANLIB
+UHEXEN2_TOP=../..
+. $UHEXEN2_TOP/scripts/cross_defs.dj
 
 HOST_OS=`uname|sed -e s/_.*//|tr '[:upper:]' '[:lower:]'`
 case "$HOST_OS" in
@@ -23,4 +12,3 @@ linux)	MAKE_CMD=make ;;
 esac
 
 exec $MAKE_CMD $*
-

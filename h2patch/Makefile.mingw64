@@ -1,4 +1,7 @@
-#  if building a debug version:  make DEBUG=yes
+# GNU Makefile for the H2PATCH tool - Win64: MinGW-w64
+# $Id$
+#
+# To build a debug version:		make DEBUG=yes
 #
 
 UHEXEN2_TOP:=..

@@ -1,161 +1,116 @@
 # GNU Makefile for (gl)hexen2 client/server binaries using GCC.
 # $Id$
 #
-# Type "make help" to see the valid targets.
-#
-# It is ESSENTIAL that you run make clean between different
-# types of builds or different types of targets.
-#
+# Remember to "make clean" between different types of builds or targets.
 # Unix platforms require SDL !!!
 #
-# To cross-compile for Win32 on Unix, you must pass the W32BUILD=1
-# argument to make. It would be best if you examine the script named
-# build_cross_win32.sh for cross compilation.
+# To cross-compile for Win32 on Unix: either pass the W32BUILD=1
+# argument to make, or export it.  Also see build_cross_win32.sh.
+# Requires: a mingw or mingw-w64 compiler toolchain.
 #
-# To cross-compile for Win64 on Unix, you must pass the W64BUILD=1
-# argument to make. Also see build_cross_win64.sh for details.
+# To cross-compile for Win64 on Unix: either pass the W64BUILD=1
+# argument to make, or export it. Also see build_cross_win64.sh.
+# Requires: a mingw-w64 compiler toolchain.
 #
-# To (cross-)compile for DOS, you must pass the DOSBUILD=1 argument
-# to make, such as "DOSBUILD=1 make h2". You need djgpp compiler set.
-# Also examine the build_cross_dos.sh script for cross compilation
-# on linux / unix.
+# To (cross-)compile for DOS: either pass the DOSBUILD=1 argument
+# to make, or export it. Also see build_cross_dos.sh. Requires: a
+# djgpp compiler toolchain.
 #
-# Build Options:
+# To see valid targets:			make help
 #
-# USE_SOUND :	yes  =	Include sound support (default).
-#		no   =	Don't include sound support.
+# To use a compiler other than gcc:	make CC=compiler_name [other stuff]
 #
-# USE_SDLAUDIO:	yes  =	Include SDL audio support (default).
-# (for Unix)	no   =	Don't include SDL audio support.
-#		SDL audio is enabled on all unix-like platforms.
+# To use a different nasm-compatible assembler, such as yasm:
+#					make NASM=yasm [other stuff]
 #
-# USE_ALSA :	yes  =	Include ALSA sound support (default).
-# (for Unix)	no   =	Don't include alsa support.
-#		Requires alsa-lib and alsa-kernel modules >= 1.0.1
-#		(0.9.8 and 1.0.0 should also work, but isn't supported.)
-#		On any platform other than Linux, ALSA support will be
-#		automatically be disabled.
-#
-# USE_OSS :	yes  =	Include OSS audio support (default).
-# (for Unix)	no   =	Don't include OSS support.
-#		OSS is enabled on Linux and FreeBSD.
-#		It is automatically disabled on other platforms.
-#		See snd_sys.h for a more complete list.
-#
-# USE_SUNAUDIO:	yes  =	Include SUN audio support (default).
-# (for Unix)	no   =	Don't include SUN audio support.
-#		SUN audio is enabled on OpenBSD, NetBSD and SUN.
-#		It is automatically disabled on other platforms.
-#		See snd_sys.h for a more complete list.
-#
-# USE_CDAUDIO :	yes  =	Include CDAudio support (default).
-#		no   =	Don't include CDAudio support.
-#
-# USE_SDLCD:	no   =	Don't use SDL cdaudio (default); platform specific
-# (for Unix)		cdrom code will be used.  The only problem with
-#			SDL_cdrom is that it lacks proper volume controls.
-#			See cd_unix.h for the availability of platform
-#			specific cdaudio drivers.
-#		yes  =	Use SDL for cdaudio instead of platform specific code
-#		NOTE :	SDL dropped support for cd audio in version 1.3.0 and
-#			later!
-#
-# USE_MIDI :	yes  =	Include target's MIDI driver if available (default).
-#		no   =	Don't include MIDI driver.
-#
-# WITH_SPLASHES	yes  =	(default) enable startup splash screens
-# (for Win32)	no   =	disable startup splash screens
-#
-# USE_MGL	yes  =	Use SciTech MGL for Win32 software video driver.
-#			Defaults to yes for x86. Force-set to no for Win64.
-# (for Win32)	no   =	Use the DIB/GDI-only compatibility software video
-#			driver, which is the default for Win64.
-#
-# USE_WINSOCK2	yes  =	Use WinSock2 and link to ws2_32 instead of wsock32
-# (for Win32)	no   =	(default) Use WinSock1.1 for compatibility with old
-#			Windows 95 machines.
-#
-# LINK_DIRECTX	no  =	(default) Don't link to the dsound and dinput at compile
-# (for Win32)		time. The binaries will dynamically load the necessary
-#			dll files and functions at runtime. This ensures our exe
-#			to run on ancient windows versions without any directx
-#			installation.
-#		yes =	link to the directx libraries at compile time
-#
-# LINK_GL_LIBS	no  =	(default) Don't link to the opengl libraries at compile
-#			time. The binaries will dynamically load the necessary
-#			libraries and functions at runtime.
-#		yes =	link to the opengl libraries at compile time
-#
-# USE_3DFXGAMMA	yes =	enable 3dfx glide hacks for native hardware gamma for
-# (Linux / FreeBSD)	the old Voodoo Graphics and Voodoo2 cards.
-#		no  =	disable 3dfx glide gamma hacks (default).
-#
-# OPT_EXTRA	yes  =  Some extra optimization flags will be added (default)
-#		no   =	No extra optimizations will be made
-#
-# USE_X86_ASM	yes  =  Use x86 assembly on ia32 machines which is faster.
-#			Automatically disabled for any other cpu.
-#		no   =	Do not use intel assembly even on ix86.
-#
-# COMPILE_32BITS yes =  Compile as a 32 bit binary. If you are on a 64 bit
-#			platform and having problems with 64 bit compiled
-#			binaries, set this option to yes. Default: no .
-#			If you set this to yes, you need to have the 32 bit
-#			versions of the libraries that you link against.
-#		no   =	Compile for the native word size of your platform,
-#			which is the default option.
-#
-# The default compiler is gcc
-# To build with a different compiler:	make CC=compiler_name [other stuff]
-#
-# The default x86 assembler is nasm. To use a different nasm-compatible
-# assembler, such as yasm	:	make NASM=yasm [other stuff]
-#
-# If X installation is somewhere other than /usr/X11R6, such as /usr/X11R7,
-# specify it on the command line:	make X11BASE=/your/x11/path [other stuff]
+# To specify X installation at somewhere other than /usr/X11R6
+# such as /usr/X11R7 :			make X11BASE=/your/x11/path [other stuff]
 #
 # To build for the demo version:	make DEMO=1 [other stuff]
 #
-# if building a debug version :		make DEBUG=1 [other stuff]
+# To build a debug version:		make DEBUG=1 [other stuff]
 #
 
-# Path settings:
+# PATH SETTINGS:
 # main uhexen2 relative path
 UHEXEN2_TOP:=../..
 LIBS_DIR:=$(UHEXEN2_TOP)/libs
 # common sources path:
 COMMONDIR:=../h2shared
 
-# General options (see explanations at the top)
+# GENERAL OPTIONS (customize as required)
+
+# enable some extra optimizations?
 OPT_EXTRA=yes
+
+# compile only as a 32 bit binary even on a 64 bit platform?
 COMPILE_32BITS=no
+
+# use fast x86 assembly on ia32 machines? (auto-disabled for
+# any other cpu.)
 USE_X86_ASM=yes
 
+# link to the opengl libraries at compile time? (defaults
+# to no, so the binaries will dynamically load the necessary
+# libraries and functions at runtime.)
 LINK_GL_LIBS=no
+
+# enable evil 3dfx glide hacks for native hardware gamma for
+# the old Voodoo Graphics and Voodoo2 cards?  (Linux/FreeBSD)
 USE_3DFXGAMMA=no
 
+# enable sound support?
 USE_SOUND=yes
+# ALSA audio support? (req: alsa-lib and alsa-kernel modules
+# >= 1.0.1.  v0.9.8 and v1.0.0 might work, but not supported.
+# If not Linux, ALSA will be automatically be disabled.)
 USE_ALSA=yes
+# OSS audio support? (for Unix. enabled on Linux and FreeBSD.
+# automatically disabled on other platforms: see snd_sys.h)
 USE_OSS=yes
+# SUN audio support? (enabled on OpenBSD, NetBSD and SUN.
+# automatically disabled on others: see snd_sys.h)
 USE_SUNAUDIO=yes
+# SDL audio support? (enabled on all unix-like platforms.)
 USE_SDLAUDIO=yes
+
+# include target's MIDI driver if available?
 USE_MIDI=yes
+
+# CDAudio support?
 USE_CDAUDIO=yes
+# use SDL cdaudio? (otherwise platform specific cdrom code will
+# be used.  The only problem with SDL_cdrom is that it lacks
+# proper volume controls.  See cd_unix.h for the availability of
+# platform specific cdaudio drivers.
+# NOTE: SDL dropped cdaudio support in version 1.3.0 and later!)
 USE_SDLCD=no
 
+# link to the directx libraries at compile time? (otherwise, link
+# to the dynamically load the necessary dll files and functions at
+# runtime which ensures our exe to run on ancient windows versions
+# without a directx installation.)
 LINK_DIRECTX=no
+
+# enable startup splash screens? (windows)
 WITH_SPLASHES=yes
+
+# use SciTech MGL for Win32 software video driver? (Default to yes
+# for x86, auto-disabled for Win64.  if disabled, the DIB/GDI-only
+# compatibility software video driver will be used.)
 USE_MGL=yes
+
+# use WinSock2 instead of WinSock-1.1? (disabled for w32 for compat.
+# with old Win95 machines.) (enabled for Win64 in the win64 section.)
 USE_WINSOCK2=no
 
-# whether to use Serial driver for DOS networking
+# use Serial driver for DOS networking?
 USE_SERIAL=yes
-# whether to use WatTCP for DOS UDP networking
+# use WatTCP (WATT-32) for DOS UDP networking?
 USE_WATT32=yes
-# whether to use Beame & Whiteside for DOS networking
+# use Beame & Whiteside TCP for DOS networking?
 USE_BWTCP=yes
-# whether to use MPATH for DOS UDP networking under Win9x
+# use MPATH for DOS UDP networking under Win9x?
 USE_MPATH=yes
 
 # Enable/disable codecs for streaming music support:

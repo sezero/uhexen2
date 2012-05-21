@@ -1,21 +1,8 @@
 #!/bin/sh
 
-TARGET=i586-pc-msdosdjgpp
-PREFIX=/usr/local/cross-djgpp
+UHEXEN2_TOP=../..
+. $UHEXEN2_TOP/scripts/cross_defs.dj
 
-PATH="$PREFIX/bin:$PATH"
-export PATH
-
-DOSBUILD=1
-
-CC="$TARGET-gcc"
-AS="$TARGET-as"
-RANLIB="$TARGET-ranlib"
-AR="$TARGET-ar"
-
-export CC AS RANLIB AR DOSBUILD
-
-STRIPPER="$TARGET-strip"
 if test "$1" = "strip"; then
 	$STRIPPER h2dos.exe h2ded.exe
 	exit 0

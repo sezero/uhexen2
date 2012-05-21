@@ -1,74 +1,57 @@
 # GNU Makefile for Hexen II Dedicated Server (h2ded) using GCC.
 # $Id$
 #
-# It is ESSENTIAL that you run make clean between different
-# types of builds or different types of targets.
+# Remember to "make clean" between different types of builds or targets.
 #
-# To cross-compile for Win32 on Unix, you must pass the W32BUILD=1
-# argument to make. It would be best if you examine the script named
-# build_cross_win32.sh for cross compilation.
+# To cross-compile for Win32 on Unix: either pass the W32BUILD=1
+# argument to make, or export it.  Also see build_cross_win32.sh.
+# Requires: a mingw or mingw-w64 compiler toolchain.
 #
-# To cross-compile for Win64 on Unix, you must pass the W64BUILD=1
-# argument to make. Also see build_cross_win64.sh for details.
+# To cross-compile for Win64 on Unix: either pass the W64BUILD=1
+# argument to make, or export it. Also see build_cross_win64.sh.
+# Requires: a mingw-w64 compiler toolchain.
 #
-# To (cross-)compile for DOS, you must pass the DOSBUILD=1 argument
-# to make. You need djgpp compiler set. See the build_cross_dos.sh
-# script for cross compilation on linux / unix.
+# To (cross-)compile for DOS: either pass the DOSBUILD=1 argument
+# to make, or export it. Also see build_cross_dos.sh. Requires: a
+# djgpp compiler toolchain.
 #
-# Build Options:
-#
-# OPT_EXTRA	yes  =  Some extra optimization flags will be added (default)
-#		no   =	No extra optimizations will be made
-#
-# USE_WINSOCK2	yes  =	Use WinSock2 and link to ws2_32 instead of wsock32
-# (for Win32)	no   =	(default) Use WinSock1.1 for compatibility with old
-#			Windows 95 machines.
-#
-# COMPILE_32BITS yes =  Compile as a 32 bit binary. If you are on a 64 bit
-#			platform and having problems with 64 bit compiled
-#			binaries, set this option to yes. Default: no .
-#			If you set this to yes, you need to have the 32 bit
-#			versions of the libraries that you link against.
-#		 no  =	Compile for the native word size of your platform,
-#			which is the default option.
-#
-# The default compiler is gcc
-# To build with a different compiler:	make CC=compiler_name [other stuff]
+# To use a compiler other than gcc:	make CC=compiler_name [other stuff]
 #
 # To build for the demo version:	make DEMO=1 [other stuff]
 #
-# if building a debug version :		make DEBUG=1 [other stuff]
+# To build a debug version:		make DEBUG=1 [other stuff]
 #
 
-# Path settings:
+# PATH SETTINGS:
 # main uhexen2 relative path
 UHEXEN2_TOP:=../..
 LIBS_DIR:=$(UHEXEN2_TOP)/libs
 # common sources path:
 COMMONDIR:=../h2shared
 
-# General options (see explanations at the top)
+# GENERAL OPTIONS (customize as required)
+
+# enable some extra optimizations?
 OPT_EXTRA=yes
+
+# compile only as a 32 bit binary even on a 64 bit platform?
 COMPILE_32BITS=no
 
+# use WinSock2 instead of WinSock-1.1? (disabled for w32 for compat.
+# with old Win95 machines.) (enabled for Win64 in the win64 section.)
 USE_WINSOCK2=no
 
-# whether to use Serial driver for DOS networking
+# use Serial driver for DOS networking?
 USE_SERIAL=yes
-# whether to use WatTCP for DOS UDP networking
+# use WatTCP (WATT-32) for DOS UDP networking?
 USE_WATT32=yes
-# whether to use Beame & Whiteside for DOS networking
+# use Beame & Whiteside TCP for DOS networking?
 USE_BWTCP=yes
-# whether to use MPATH for DOS UDP networking under Win9x
+# use MPATH for DOS UDP networking under Win9x?
 USE_MPATH=yes
 
 # include the common dirty stuff
 include $(UHEXEN2_TOP)/scripts/makefile.inc
-
-ifeq ($(TARGET_OS),win64)
-# use winsock2 for win64
-USE_WINSOCK2=yes
-endif
 
 # Names of the binaries
 BINARY:=h2ded$(exe_ext)
@@ -200,6 +183,9 @@ endif
 ifeq ($(TARGET_OS),win64)
 
 CFLAGS += -DWIN32_LEAN_AND_MEAN
+
+# use winsock2 for win64
+USE_WINSOCK2=yes
 
 ifeq ($(USE_WINSOCK2),yes)
 CPPFLAGS+= -D_USE_WINSOCK2

@@ -1,14 +1,13 @@
 # GNU Makefile for uhexen2 gtk-launcher app using GCC.
 # $Id$
 #
-#  gtk-2.x will be used default.
-#  to compile against gtk-1.2:   make GTK1=yes
-#  to compile against gtk-3.x:   make GTK3=yes
+# GTK-2.x will be used default.
+# To build against GTK-1.2:	make GTK1=yes
+# To build against GTK-3.x:	make GTK3=yes
 #
-#  if building for the demo version, run with
-#  make DEMO=yes [other stuff]
+# To build for demo version:	make DEMO=yes [other stuff]
 #
-#  if building a debug version:  make DEBUG=yes
+# To build a debug version:	make DEBUG=yes
 #
 
 # main uhexen2 relative path
