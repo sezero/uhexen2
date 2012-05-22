@@ -1,7 +1,7 @@
 Hammer of Thyrion (uHexen2) release notes:
 
 ========================================================================
-Changes in v1.5.4: (May 16, 2012.)
+Changes in v1.5.4: (May 22, 2012.)
 ========================================================================
 
 - OpenGL:  Fixed screen flickering resulting from progress bars drawing
@@ -25,6 +25,8 @@ Changes in v1.5.4: (May 16, 2012.)
 - Mouse (DOS): Pausing the game, moving the mouse and then unpausing it,
   doesn't change the view angle anymore.
 
+- All platforms, gameplay: Fixed a rare crash in the ambient fish hcode.
+
 - Utils, dcc (progs decompiler): Fixed an infinite recursion issue when
   decompiling the hcbots progs.dat. Made the -src command line option of
   dhcc behave the same as it does with hcc.
@@ -33,7 +35,7 @@ Changes in v1.5.4: (May 16, 2012.)
   handling.
 
 - All: Incremented versions for the hexen2 engine to 1.26 and hexenworld
-  engine to 0.26.
+  engine to 0.26. Incremented gamecode version to 1.26.
 
 - Several source code cleanups and documentation updates.
 

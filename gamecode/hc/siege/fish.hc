@@ -1,5 +1,5 @@
 /*
- * $Header: /cvsroot/uhexen2/gamecode/hc/siege/fish.hc,v 1.2 2007-02-07 17:01:02 sezero Exp $
+ * siege/fish.hc
  */
 
 /*
@@ -77,6 +77,13 @@ void fish_follow(void)
 
 	AdvanceFrame($SWIM01,$SWIM40);
 
+	if (self.goalentity == world)	/* experienced by Rugxulo */
+	{
+		self.think = fish_hover;
+		self.monster_stage = FISH_STAGE_MOVE;
+		return;
+	}
+
 	if (random() > 0.1)
 		return;
 
@@ -88,7 +95,8 @@ void fish_follow(void)
 		self.goalentity.fish_leader_count -= 1;
 		self.goalentity = world;
 		//dprint("Fish got bored\n");
-//		self.drawflags (-) MLS_ABSLIGHT;
+		//self.drawflags (-) MLS_ABSLIGHT;
+		return;	/* a return was missing here -- O.S. */
 	}
 
 	self.movedir = self.monster_last_seen - self.origin + randomv('-20 -20 -25', '20 20 25');
@@ -122,21 +130,19 @@ void fish_move(void)
 	ChangeYaw();
 	retval = walkmove(self.angles_y, self.fish_speed, FALSE);
 	retval = movestep(0, 0, self.movedir_z, FALSE);
-
-/*	if (retval != 2)
+	/*
+	if (retval != 2)
 	{
 		self.goalentity = world;
 		self.monster_stage = FISH_STAGE_MOVE;
 	}
-*/
+	*/
 	if (self.count >= 170)
 		self.fish_speed *= 1.05;
 	else if (self.count < 30)
 		self.fish_speed *= .9;
 
 	self.count -= 1;
-
-
 	if (self.count < 1)
 	{
 		self.count = 0;
@@ -256,7 +262,7 @@ void() swimmonster_start_go =
 		self.proj_ofs = '0 0 2';
 
 	self.use = monster_use;
-	
+
 	self.flags(+)FL_MONSTER;
 
 	if (self.target)
@@ -268,7 +274,7 @@ void() swimmonster_start_go =
 			dprint (vtos(self.origin));
 			dprint ("\n");
 		}
-// this used to be an objerror
+	// this used to be an objerror
 		self.ideal_yaw = vectoyaw(self.goalentity.origin - self.origin);
 		self.th_walk ();
 	}
@@ -345,6 +351,7 @@ void pirhana_check_enemy ()
 	if(self.enemy.health<=0||self.enemy.rings & RING_WATER||self.search_time<time)
 		self.enemy=world;
 	else
+	{
 		if(self.search_time<=time+4.5)
 		{
 			if(self.last_time<time)
@@ -364,6 +371,7 @@ void pirhana_check_enemy ()
 				}
 			}
 		}
+	}
 }
 
 void pirhana_hunt ()
@@ -398,7 +406,7 @@ entity found;
 	}
 }
 
-void fish_run  () //[++0 .. 39 ] 
+void fish_run () //[++0 .. 39 ]
 {
 	self.think=fish_run;
 	thinktime self: 0.05;
@@ -420,7 +428,7 @@ void fish_run  () //[++0 .. 39 ]
 		pirhana_hunt();
 }
 
-void fish_walk  () //[++0 .. 39 ] 
+void fish_walk () //[++0 .. 39 ]
 {
 	self.think=fish_walk;
 	thinktime self: 0.05;
@@ -433,11 +441,11 @@ void fish_walk  () //[++0 .. 39 ]
 		pirhana_hunt();
 }
 
-void fish_stand  () //[++0 .. 39 ] 
+void fish_stand () //[++0 .. 39 ]
 {
 	self.think=fish_stand;
 	thinktime self: 0.05;
- 	if(self.velocity_x||self.velocity_y||self.velocity_z)
+	if(self.velocity_x||self.velocity_y||self.velocity_z)
 		self.velocity=self.velocity*0.75;
 
 	pirhana_check_enemy();
@@ -450,7 +458,7 @@ void fish_stand  () //[++0 .. 39 ]
 void fish_melee ()
 {
 vector	delta,hitspot;
-float 	ldmg;
+float	ldmg;
 
 	if(self.attack_finished>time)
 		return;
@@ -485,7 +493,7 @@ void fish_attack()// [++0 .. 39 ]
 		self.velocity=self.velocity*0.75;
 
 	pirhana_check_enemy();
-/*
+	/*
 	if(pointcontents(self.enemy.origin)!=CONTENT_WATER)
 	{
 		if(vlen(self.enemy.origin-self.origin)<128)
@@ -497,7 +505,7 @@ void fish_attack()// [++0 .. 39 ]
 		if(self.flags&FL_SWIM)
 			self.enemy=world;
 	}
-*/
+	*/
 	if(!self.enemy)
 	{
 		if(self.pathentity)
@@ -525,26 +533,26 @@ void() monster_pirhana =
 	setmodel (self,"models/fish.mdl");
 
 	setsize (self, '0 0 0', '0 0 0');
-	//	setsize (self, '-4 -4 -4', '4 4 4');
+//	setsize (self, '-4 -4 -4', '4 4 4');
 	self.hull=HULL_POINT;//use pentacles
 	self.health=10000000;
 	self.init_org=self.origin;
-/*
+	/*
 	if(skill==3)
 		self.health = 800;
 	else
 		self.health = 400;
-*/
+	*/
 	self.mass = 0.1;
 	self.speed=14+random(6);
-	
+
 	self.thingtype=THINGTYPE_FLESH;
 	self.th_stand = fish_stand;
 	self.th_walk = fish_walk;
 	self.th_run = fish_run;
 	self.th_die = chunk_death;
 	self.th_melee = fish_attack;
-//    self.flags2(+)FL_ALIVE;
+//	self.flags2(+)FL_ALIVE;
 	self.flags(+)FL_SWIM;
 
 	swimmonster_start ();

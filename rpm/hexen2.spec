@@ -58,7 +58,7 @@
 
 %define desktop_vendor	uhexen2
 
-%define gamecode_ver	1.25
+%define gamecode_ver	1.26
 
 # pre-release version: MAKE SURE to change this
 # to an %undefine for the final realease!!
@@ -360,7 +360,8 @@ desktop-file-install \
 %{_prefix}/games/%{name}/docs/README.hwmaster
 
 %changelog
-* Thu May 17 2012 O.Sezer <sezero@users.sourceforge.net> 1.5.4-1
+* Tue May 22 2012 O.Sezer <sezero@users.sourceforge.net> 1.5.4-1
+- Bump gamecode version to 1.26.
 - Updated documents installation after the ReleaseNotes* changes.
 - Bump version to 1.5.4
 

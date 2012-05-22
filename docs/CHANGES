@@ -4,6 +4,14 @@ Development Progress	:
 ---------------------------
 
 2012-05-22 (SVN):
+    * fish.hc (fish_follow): Proceed only if the goalentity is a valid
+      one. Fixes an "assignment to world entity" error, as reported by
+      Rugxulo. Also made it to return if the function puts the fish into
+      bored state: seems like an old oversight.
+    * bumped gamecode version number to 1.26.
+    * updated version date stamp to 2012-05-22.
+
+2012-05-22 (SVN):
     * snd_wildmidi.c: Check for timidity.cfg or wildmidi.cfg file under
       the installation directory and the user directory first. Check it
       under the system directories only if the former attempts failed.

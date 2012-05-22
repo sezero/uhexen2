@@ -1,5 +1,5 @@
 /*
- * $Header: /cvsroot/uhexen2/gamecode/hc/hw/fish.hc,v 1.2 2007-02-07 16:57:54 sezero Exp $
+ * hw/fish.hc
  */
 
 /*
@@ -77,6 +77,13 @@ void fish_follow(void)
 
 	AdvanceFrame($SWIM01,$SWIM40);
 
+	if (self.goalentity == world)	/* experienced by Rugxulo */
+	{
+		self.think = fish_hover;
+		self.monster_stage = FISH_STAGE_MOVE;
+		return;
+	}
+
 	if (random() > 0.1)
 		return;
 
@@ -88,7 +95,8 @@ void fish_follow(void)
 		self.goalentity.fish_leader_count -= 1;
 		self.goalentity = world;
 		//dprint("Fish got bored\n");
-//		self.drawflags (-) MLS_ABSLIGHT;
+		//self.drawflags (-) MLS_ABSLIGHT;
+		return;	/* a return was missing here -- O.S. */
 	}
 
 	self.movedir = self.monster_last_seen - self.origin + randomv('-20 -20 -25', '20 20 25');
@@ -122,21 +130,19 @@ void fish_move(void)
 	ChangeYaw();
 	retval = walkmove(self.angles_y, self.fish_speed, FALSE);
 	retval = movestep(0, 0, self.movedir_z, FALSE);
-
-/*	if (retval != 2)
+	/*
+	if (retval != 2)
 	{
 		self.goalentity = world;
 		self.monster_stage = FISH_STAGE_MOVE;
 	}
-*/
+	*/
 	if (self.count >= 170)
 		self.fish_speed *= 1.05;
 	else if (self.count < 30)
 		self.fish_speed *= .9;
 
 	self.count -= 1;
-
-
 	if (self.count < 1)
 	{
 		self.count = 0;

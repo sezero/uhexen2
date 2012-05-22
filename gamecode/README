@@ -4,6 +4,12 @@ Hexen II: Hammer of Thyrion (uHexen2) - GAMECODE
 Changes
 -------
 
+2012-05-22 (1.26):
+===================
+- fish.hc (fish_follow):  Proceed only if the goalentity is a valid one.
+  Also made it to return if the function puts the fish into bored state.
+- Bumped version number to 1.26.
+
 2012-01-15 (1.25):
 ===================
 - h2/axe.hc (axetail_run): if no owner, remove self and return (just
