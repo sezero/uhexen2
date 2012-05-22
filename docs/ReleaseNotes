@@ -14,6 +14,11 @@ Changes in v1.5.4: (May 22, 2012.)
 
 - Music playback: Made sure that the file's channels count is supported.
 
+- Unix MIDI (Timidity): Configuration file timidity.cfg is now searched
+  first under the user directory and the installation directory before
+  the common system locations. Full absolute path of timidity.cfg can be
+  specified by setting the TIMIDITY_CFG environment variable, too.
+
 - Client, all: Revised the intermissions setup code.
 
 - Linux/Unix (SDL): Added joystick (gamepad) support. The new cvars are

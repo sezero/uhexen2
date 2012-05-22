@@ -4,6 +4,21 @@ Development Progress	:
 ---------------------------
 
 2012-05-22 (SVN):
+    * snd_wildmidi.c: Search config file first under the userdir, _then_
+      under the installdir. Added support for TIMIDITY_CFG environment
+      variable override.
+    * libs/timidity: The library doesn't add common timidity.cfg system
+      locations to its search path: callers of mid_init() is responsible
+      for it. If filename argument to mid_init() contains a directory,
+      only that one will be added to timidity search path. The helper
+      routine add_to_pathlist() now requires a length argument, so it
+      can now duplicate and add parts of paths, too.
+    * snd_timidity.c: Check for timidity.cfg or wildmidi.cfg file under
+      the user directory and the installation directory first. Check it
+      under the system locations only if the former attempts failed.
+      Honor the TIMIDITY_CFG environment variable as an override.
+
+2012-05-22 (SVN):
     * fish.hc (fish_follow): Proceed only if the goalentity is a valid
       one. Fixes an "assignment to world entity" error, as reported by
       Rugxulo. Also made it to return if the function puts the fish into

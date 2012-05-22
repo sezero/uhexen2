@@ -57,6 +57,7 @@ static const char *cfgfile[] = {
 	"/etc",
 	"/etc/timidity",
 	"/usr/share/timidity",
+	"/usr/local/share/timidity",
 	"/usr/local/lib/timidity",
 #endif
 	NULL
@@ -67,14 +68,17 @@ static int WILDMIDI_InitHelper (const char *cfgdir)
 	char path[MAX_OSPATH];
 
 	q_snprintf(path, sizeof(path), "%s/wildmidi.cfg", cfgdir);
+	Con_DPrintf("WildMIDI: trying %s\n", path);
 	if (WildMidi_Init(path, wildmidi_rate, wildmidi_opts) == 0)
 		return 0;
 	q_snprintf(path, sizeof(path), "%s/timidity.cfg", cfgdir);
+	Con_DPrintf("WildMIDI: trying %s\n", path);
 	return  WildMidi_Init(path, wildmidi_rate, wildmidi_opts);
 }
 
 static qboolean S_WILDMIDI_CodecInitialize (void)
 {
+	const char *timi_env;
 	int i, err;
 
 	if (wildmidi_codec.initialized)
@@ -87,14 +91,25 @@ static qboolean S_WILDMIDI_CodecInitialize (void)
 		wildmidi_rate = 44100;
 	else	wildmidi_rate = shm->speed;
 
-	/* TODO: implement a cvar pointing to timidity.cfg full path,
-	 * or check the value of TIMIDITY_CFG environment variable? */
-	/* check with installation directory first: */
-	err = WILDMIDI_InitHelper(fs_basedir);
+	err = -1;
+	timi_env = getenv("WILDMIDI_CFG");
+	if (timi_env == NULL)
+		timi_env = getenv("TIMIDITY_CFG");
+	if (timi_env)
+	{
+		Con_DPrintf("WildMIDI: trying %s\n", timi_env);
+		/* env is an override: if it fails, we
+		 * don't bother trying anything else. */
+		err = WildMidi_Init(timi_env, wildmidi_rate, wildmidi_opts);
+		goto _finish;
+	}
 #if DO_USERDIRS
-	if (err != 0)	/* then check with userdir: */
-		err = WILDMIDI_InitHelper(host_parms->userdir);
+	/* check under the user's directory first: */
+	err = WILDMIDI_InitHelper(host_parms->userdir);
 #endif
+	/* then, check under the installation dir: */
+	if (err != 0)
+		err = WILDMIDI_InitHelper(fs_basedir);
 	/* lastly, check with the system locations: */
 	i = 0;
 	while (err != 0 && cfgfile[i] != NULL)
@@ -102,6 +117,7 @@ static qboolean S_WILDMIDI_CodecInitialize (void)
 		err = WILDMIDI_InitHelper(cfgfile[i]);
 		++i;
 	}
+ _finish:
 	if (err != 0)
 	{
 		Con_Printf ("Could not initialize WildMIDI\n");

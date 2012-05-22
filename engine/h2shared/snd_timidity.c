@@ -62,14 +62,66 @@ static int timidity_fclose (void *ctx)
 	return 0;		/* we fclose() elsewhere. */
 }
 
+static const char *cfgfile[] = {
+#ifdef _WIN32
+	"\\TIMIDITY",
+#else
+	"/etc",
+	"/etc/timidity",
+	"/usr/share/timidity",
+	"/usr/local/share/timidity",
+	"/usr/local/lib/timidity",
+#endif
+	NULL
+};
+
+static int TIMIDITY_InitHelper (const char *cfgdir)
+{
+	char path[MAX_OSPATH];
+
+	q_snprintf(path, sizeof(path), "%s/timidity.cfg", cfgdir);
+	Con_DPrintf("Timidity: trying %s\n", path);
+	if (mid_init(path) == 0)
+		return 0;
+	mid_exit (); /* make sure timidity frees all malloc'ed mem */
+	return -1;
+}
+
 static qboolean S_TIMIDITY_CodecInitialize (void)
 {
+	const char *timi_env;
+	int i, err;
+
 	if (timidity_codec.initialized)
 		return true;
 
-	/* TODO: implement a cvar pointing to timidity.cfg full path,
-	 * or check the value of TIMIDITY_CFG environment variable? */
-	if (mid_init (NULL) < 0)
+	err = -1;
+	timi_env = getenv("TIMIDITY_CFG");
+	if (timi_env)
+	{
+		Con_DPrintf("Timidity: trying %s\n", timi_env);
+		/* env is an override: if it fails, we
+		 * don't bother trying anything else. */
+		err = mid_init(timi_env);
+		if (err != 0) mid_exit();
+		goto _finish;
+	}
+#if DO_USERDIRS
+	/* check under the user's directory first: */
+	err = TIMIDITY_InitHelper(host_parms->userdir);
+#endif
+	/* then, check under the installation dir: */
+	if (err != 0)
+		err = TIMIDITY_InitHelper(fs_basedir);
+	/* lastly, check with the system locations: */
+	i = 0;
+	while (err != 0 && cfgfile[i] != NULL)
+	{
+		err = TIMIDITY_InitHelper(cfgfile[i]);
+		++i;
+	}
+ _finish:
+	if (err != 0)
 	{
 		Con_Printf ("Could not initialize Timidity\n");
 		return false;

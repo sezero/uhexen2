@@ -290,13 +290,18 @@ it. Send a bug report on the project page.
 
 On linux/unix, midi background music is implemented using timidity, so,
 you'll need GUS-compatible instrument patch files along with a properly
-configured timidity.cfg. The configuration file timidity.cfg is searched
-first under the installation directory, then under /etc, /etc/timidity,
-/usr/share/timidity, /usr/local/share/timidity, /usr/local/lib/timidity
-in this order. You can get a complete set of GUS patches by downloading
-the timidity_patches.tar.gz from our site. Extract it into your uHexen2
-installation directory and midi should be ready to play:
+configured timidity.cfg.  You can get a complete set of GUS patches by
+downloading the timidity_patches.tar.gz from our site.  Extract it into
+your uHexen2 installation directory and midi should be ready to play:
 http://sourceforge.net/project/downloading.php?group_id=124987&filename=timidity_patches.tar.gz
+
+Note to the curious:  Configuration file timidity.cfg is searched first
+under the user directory, i.e.: ~/.hexen2, then under the installation
+directory, then under the common system locations /etc, /etc/timidity,
+/usr/share/timidity, /usr/local/share/timidity, /usr/local/lib/timidity
+in this order. Full absolute path of timidity.cfg can be specified by
+setting the TIMIDITY_CFG environment variable as an override too, e.g.:
+  export TIMIDITY_CFG=/usr/local/share/timidity/timidity.cfg
 
 Hammer of Thyrion supports OGG, MP3 and WAV external music files to be
 played instead of the original midi files, so you can enjoy the hexen2
