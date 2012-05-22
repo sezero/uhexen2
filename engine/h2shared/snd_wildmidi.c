@@ -49,6 +49,7 @@ typedef struct _midi_buf_t
 } midi_buf_t;
 
 static unsigned short wildmidi_rate;
+static unsigned short wildmidi_opts;
 static const char *cfgfile[] = {
 #ifdef _WIN32
 	"\\TIMIDITY",
@@ -61,37 +62,47 @@ static const char *cfgfile[] = {
 	NULL
 };
 
-static qboolean S_WILDMIDI_CodecInitialize (void)
+static int WILDMIDI_InitHelper (const char *cfgdir)
 {
 	char path[MAX_OSPATH];
-	int i, res;
+
+	q_snprintf(path, sizeof(path), "%s/wildmidi.cfg", cfgdir);
+	if (WildMidi_Init(path, wildmidi_rate, wildmidi_opts) == 0)
+		return 0;
+	q_snprintf(path, sizeof(path), "%s/timidity.cfg", cfgdir);
+	return  WildMidi_Init(path, wildmidi_rate, wildmidi_opts);
+}
+
+static qboolean S_WILDMIDI_CodecInitialize (void)
+{
+	int i, err;
 
 	if (wildmidi_codec.initialized)
 		return true;
 
-	wildmidi_rate = shm->speed;
-	if (wildmidi_rate < 11000)
+	wildmidi_opts = WM_MO_ENHANCED_RESAMPLING;
+	if (shm->speed < 11025)
 		wildmidi_rate = 11025;
-	else if (wildmidi_rate > 65000)
+	else if (shm->speed > 48000)
 		wildmidi_rate = 44100;
-	i = 0;
-	res = -1;
+	else	wildmidi_rate = shm->speed;
 
 	/* TODO: implement a cvar pointing to timidity.cfg full path,
 	 * or check the value of TIMIDITY_CFG environment variable? */
-	while (res != 0 && cfgfile[i] != NULL)
+	/* check with installation directory first: */
+	err = WILDMIDI_InitHelper(fs_basedir);
+#if DO_USERDIRS
+	if (err != 0)	/* then check with userdir: */
+		err = WILDMIDI_InitHelper(host_parms->userdir);
+#endif
+	/* lastly, check with the system locations: */
+	i = 0;
+	while (err != 0 && cfgfile[i] != NULL)
 	{
-		q_snprintf(path, sizeof(path), "%s/wildmidi.cfg", cfgfile[i]);
-		res = WildMidi_Init(path, wildmidi_rate, WM_MO_ENHANCED_RESAMPLING);
-		if (res < 0)
-		{
-			q_snprintf(path, sizeof(path), "%s/timidity.cfg", cfgfile[i]);
-			res = WildMidi_Init(path, wildmidi_rate, WM_MO_ENHANCED_RESAMPLING);
-		}
+		err = WILDMIDI_InitHelper(cfgfile[i]);
 		++i;
 	}
-
-	if (res < 0)
+	if (err != 0)
 	{
 		Con_Printf ("Could not initialize WildMIDI\n");
 		return false;

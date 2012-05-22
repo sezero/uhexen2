@@ -3,6 +3,14 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2012-05-22 (SVN):
+    * snd_wildmidi.c: Check for timidity.cfg or wildmidi.cfg file under
+      the installation directory and the user directory first. Check it
+      under the system directories only if the former attempts failed.
+      Also fixed sampling rate selection according to the wildmidi_lib.c
+      code because the man page was incorrect. Removed the remarks from
+      the makefiles saying that wildmidi is unsupported.
+
 2012-05-21 (SVN):
     * updated all of the makefiles and the cross-build scripts.
 

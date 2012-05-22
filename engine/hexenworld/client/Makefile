@@ -109,8 +109,9 @@ USE_WINSOCK2=no
 USE_CODEC_WAVE=yes
 USE_CODEC_MP3=yes
 USE_CODEC_VORBIS=yes
+# either timidity or wildmidi (both possible
+# but not needed nor meaningful)
 USE_CODEC_TIMIDITY=yes
-# wildmidi is not supported
 USE_CODEC_WILDMIDI=no
 # which library to use for mp3 decoding: mad or mpg123
 MP3LIB=mad
