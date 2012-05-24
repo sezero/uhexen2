@@ -4,6 +4,15 @@ Development Progress	:
 ---------------------------
 
 2012-05-24 (SVN):
+    * libs/timidity/instrum_dls.c (load_instrument_dls): Merged changes
+      from vavoom svn repo rev. 4175 to fix loading of drums.
+    * libs/timidity/instrum_dls.c (load_connection): Merged some of the
+      changes from vavoom svn repo revisions 4425 and 4428 to somewhat
+      improve timidity's dls use: still sounds horrible with many midi
+      files. Rest of the changes from those two vavoom revisions may (or
+      may not) be merged later.
+
+2012-05-24 (SVN):
     * libs/timidity/timidity_internal.h (struct _MidSong): Renamed the
       patches member to dlspatches.
     * libs/timidity/timidity.h: Typo fixes.

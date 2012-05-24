@@ -738,6 +738,19 @@ static int load_connection(ULONG cConnections, CONNECTION *artList, USHORT desti
       if (conn->usSource == CONN_SRC_NONE &&
 	  conn->usControl == CONN_SRC_NONE &&
 	  conn->usTransform == CONN_TRN_NONE) {
+	switch (destination) {
+	/* from Vavoom svn repository rev.4425 & 4428: */
+	case CONN_DST_EG1_ATTACKTIME:
+	  if (conn->lScale > 78743200)
+	      conn->lScale -= 78743200; /* maximum velocity */
+	  break;
+	case CONN_DST_EG1_SUSTAINLEVEL:
+	  conn->lScale /= (1000*512);
+	  break;
+	case CONN_DST_PAN:
+	  conn->lScale /= (65536000/128);
+	  break;
+	}
 	value += conn->lScale;
       }
     }
@@ -838,6 +851,7 @@ MidInstrument *load_instrument_dls(MidSong *song, int drum, int bank, int instru
   if (!song->dlspatches)
     return NULL;
 
+#if 0
   drum = drum ? 0x80000000 : 0;
   for (i = 0; i < song->dlspatches->cInstruments; ++i) {
     dls_ins = &song->dlspatches->instruments[i];
@@ -870,4 +884,75 @@ MidInstrument *load_instrument_dls(MidSong *song, int drum, int bank, int instru
   for (i = 0; i < dls_ins->header->cRegions; ++i)
     load_region_dls(song, &inst->sample[i], dls_ins, i);
   return inst;
+#else
+  /* fixed drum loading code from Vavoom svn repository rev. 4175 */
+  if (drum) goto _dodrum;
+
+  for (i = 0; i < song->dlspatches->cInstruments; ++i) {
+    dls_ins = &song->dlspatches->instruments[i];
+    if (!(dls_ins->header->Locale.ulBank & 0x80000000) &&
+	((dls_ins->header->Locale.ulBank >> 8) & 0xFF) == (uint32)bank &&
+	dls_ins->header->Locale.ulInstrument == (uint32)instrument)
+      break;
+  }
+  if (i == song->dlspatches->cInstruments && !bank) {
+    for (i = 0; i < song->dlspatches->cInstruments; ++i) {
+      dls_ins = &song->dlspatches->instruments[i];
+      if (!(dls_ins->header->Locale.ulBank & 0x80000000) &&
+	  dls_ins->header->Locale.ulInstrument == (uint32)instrument)
+	break;
+    }
+  }
+  if (i == song->dlspatches->cInstruments || dls_ins == NULL) {
+    DEBUG_MSG("Couldn't find melodic instrument %d in bank %d\n", instrument, bank);
+    return NULL;
+  }
+
+  inst = (MidInstrument *)safe_malloc(sizeof(*inst));
+  inst->samples = dls_ins->header->cRegions;
+  inst->sample = (MidSample *)safe_malloc(inst->samples * sizeof(*inst->sample));
+  memset(inst->sample, 0, inst->samples * sizeof(*inst->sample));
+  for (i = 0; i < dls_ins->header->cRegions; ++i)
+    load_region_dls(song, &inst->sample[i], dls_ins, i);
+  return inst;
+
+_dodrum:
+  for (i = 0; i < song->dlspatches->cInstruments; ++i) {
+    dls_ins = &song->dlspatches->instruments[i];
+    if ((dls_ins->header->Locale.ulBank & 0x80000000) &&
+	 dls_ins->header->Locale.ulInstrument == (uint32)bank)
+      break;
+  }
+  if (i == song->dlspatches->cInstruments && !bank) {
+    for (i = 0; i < song->dlspatches->cInstruments; ++i) {
+      dls_ins = &song->dlspatches->instruments[i];
+      if ((dls_ins->header->Locale.ulBank & 0x80000000) &&
+	  dls_ins->header->Locale.ulInstrument == 0)
+	break;
+    }
+  }
+  if (i == song->dlspatches->cInstruments || dls_ins == NULL) {
+    DEBUG_MSG("Couldn't find drum instrument in bank %d\n", bank);
+    return NULL;
+  }
+  drum = -1; /* find drum_reg */
+  for (i = 0; i < dls_ins->header->cRegions; i++) {
+    if ((int)dls_ins->regions[i].header->RangeKey.usLow == instrument) {
+      drum = i;
+      break;
+    }
+  }
+  if (drum == -1) {
+    DEBUG_MSG("Couldn't find drum note %d\n", instrument);
+    return NULL;
+  }
+
+  inst = (MidInstrument *)safe_malloc(sizeof(*inst));
+  inst->samples = 1;
+  inst->sample = (MidSample *)safe_malloc(inst->samples * sizeof(*inst->sample));
+  memset(inst->sample, 0, inst->samples * sizeof(*inst->sample));
+  load_region_dls(song, &inst->sample[0], dls_ins, drum);
+
+  return inst;
+#endif
 }
