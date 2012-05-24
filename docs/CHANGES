@@ -3,6 +3,16 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2012-05-24 (SVN):
+    * libs/timidity/timidity_internal.h (struct _MidSong): Renamed the
+      patches member to dlspatches.
+    * libs/timidity/timidity.h: Typo fixes.
+    * libs/timidity/timidity.c: Adjusted for the struct _MidSong change.
+    * libs/timidity/instrum_dls.c: Whitespace tidy-up. Removed the RIFF
+      and DLS information printing functions. If compiling for windows,
+      used windows native headers instead of defining the windows types.
+      Adjusted for the struct _MidSong patches member name change.
+
 2012-05-22 (SVN):
     * snd_wildmidi.c: Search config file first under the userdir, _then_
       under the installdir. Added support for TIMIDITY_CFG environment

@@ -151,8 +151,8 @@ extern "C" {
   extern int mid_istream_close (MidIStream * stream);
 
 
-/* DLS Pathes Functions
- * ====================
+/* DLS Patch Functions
+ * ===================
  */
 
 /* Load DLS patches
@@ -161,7 +161,7 @@ extern "C" {
 
 /* Destroy DLS patches
  */
-  extern void mid_dlspatches_free (MidDLSPatches * patches);
+  extern void mid_dlspatches_free (MidDLSPatches * data);
 
 
 /* MIDI Song Functions
@@ -173,10 +173,10 @@ extern "C" {
   extern MidSong *mid_song_load (MidIStream * stream,
 				 MidSongOptions * options);
 
-/* Load MIDI song with specified DLS pathes
+/* Load MIDI song with specified DLS patches
  */
   extern MidSong *mid_song_load_dls (MidIStream * stream,
-				     MidDLSPatches * patches,
+				     MidDLSPatches * dlspatches,
 				     MidSongOptions * options);
 
 /* Set song amplification value
@@ -191,15 +191,15 @@ extern "C" {
  */
   extern size_t mid_song_read_wave (MidSong * song, sint8 * ptr, size_t size);
 
-/* Seek song to specified offset in millseconds
+/* Seek song to specified offset in milliseconds
  */
   extern void mid_song_seek (MidSong * song, uint32 ms);
 
-/* Get total song time in millseconds
+/* Get total song time in milliseconds
  */
   extern uint32 mid_song_get_total_time (MidSong * song);
 
-/* Get current song time in millseconds
+/* Get current song time in milliseconds
  */
   extern uint32 mid_song_get_time (MidSong * song);
 

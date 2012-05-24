@@ -84,11 +84,11 @@ struct _MidSample
   sint32 envelope_rate[6], envelope_offset[6];
   float volume;
   sample_t *data;
-    sint32
+  sint32
     tremolo_sweep_increment, tremolo_phase_increment,
     vibrato_sweep_increment, vibrato_control_ratio;
-    uint8 tremolo_depth, vibrato_depth, modes;
-    sint8 panning, note_to_use;
+  uint8 tremolo_depth, vibrato_depth, modes;
+  sint8 panning, note_to_use;
 };
 
 typedef struct _MidChannel MidChannel;
@@ -167,12 +167,12 @@ struct _MidSong
   int bytes_per_sample;
   float master_volume;
   sint32 amplification;
-  MidDLSPatches *patches;
+  MidDLSPatches *dlspatches;
   MidToneBank *tonebank[128];
   MidToneBank *drumset[128];
   MidInstrument *default_instrument;
   int default_program;
-  void (*write) (void *dp, sint32 * lp, sint32 c);
+  void (*write) (void *dp, sint32 *lp, sint32 c);
   int buffer_size;
   sample_t *resample_buffer;
   sint32 *common_buffer;

@@ -441,7 +441,7 @@ int mid_init(const char *config_file)
   return rc;
 }
 
-MidSong *mid_song_load_dls(MidIStream *stream, MidDLSPatches *patches, MidSongOptions *options)
+MidSong *mid_song_load_dls(MidIStream *stream, MidDLSPatches *dlspatches, MidSongOptions *options)
 {
   MidSong *song;
   int i;
@@ -452,7 +452,7 @@ MidSong *mid_song_load_dls(MidIStream *stream, MidDLSPatches *patches, MidSongOp
   /* Allocate memory for the song */
   song = (MidSong *)safe_malloc(sizeof(*song));
   memset(song, 0, sizeof(*song));
-  song->patches = patches;
+  song->dlspatches = dlspatches;
 
   for (i = 0; i < 128; i++)
   {
