@@ -23,5 +23,8 @@
 #define TIMIDITY_INSTRUM_DLS_H
 
 extern MidInstrument *load_instrument_dls(MidSong *song, int drum, int bank, int instrument);
+#if !defined(TIMIDITY_USE_DLS)
+#define load_instrument_dls(S, D, B, I) NULL
+#endif
 
 #endif /* TIMIDITY_INSTRUM_DLS_H */

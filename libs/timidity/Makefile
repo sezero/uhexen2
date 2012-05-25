@@ -28,6 +28,16 @@ ifndef DEBUG
 CFLAGS += -O2 -DNDEBUG=1
 endif
 #CFLAGS+= -DTIMIDITY_DEBUG
+
+# include DLS instruments support? (no: the dls code we inherited from
+# libtimidity and SDL_sound isn't good enough and it isn't used in unix
+# installations where timidity is normally needed, either.)
+USE_DLS = no
+
+ifeq ($(USE_DLS),yes)
+CFLAGS += -DTIMIDITY_USE_DLS
+endif
+
 INCLUDES= -I. -I$(LIBS_DIR)/common
 TARGETS:= libtimidity.a
 

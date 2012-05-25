@@ -3,6 +3,12 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2012-05-25 (SVN):
+    * timidity: Made DLS instruments support optional. Default is no,
+      because the dls code we inherited from libtimidity and SDL_sound
+      isn't good enough and it isn't used in unix installations where
+      timidity is normally needed, either.
+
 2012-05-24 (SVN):
     * libs/timidity/instrum_dls.c (load_instrument_dls): Merged changes
       from vavoom svn repo rev. 4175 to fix loading of drums.

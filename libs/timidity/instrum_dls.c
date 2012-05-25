@@ -28,6 +28,19 @@
 #include "tables.h"
 #include "common.h"
 
+#if !defined(TIMIDITY_USE_DLS) /* stubs */
+MidDLSPatches *mid_dlspatches_load (MidIStream *stream)
+{
+  return NULL;
+}
+
+void mid_dlspatches_free (MidDLSPatches *data)
+{
+}
+
+#else /* DLS support: */
+#include "instrum_dls.h"
+
 /* ------- load_riff.h ------- */
 typedef struct _RIFF_Chunk {
     uint32 magic;
@@ -269,9 +282,6 @@ struct _MidDLSPatches {
     const char *copyright;
     const char *comments;
 };
-
-extern MidDLSPatches* mid_dlspatches_load(MidIStream *stream);
-extern void mid_dlspatches_free(MidDLSPatches *chunk);
 
 /* ------- load_dls.c ------- */
 
@@ -956,3 +966,5 @@ _dodrum:
   return inst;
 #endif
 }
+
+#endif /* TIMIDITY_USE_DLS */
