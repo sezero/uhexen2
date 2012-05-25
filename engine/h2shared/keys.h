@@ -66,11 +66,9 @@
 #define	K_JOY2			208
 #define	K_JOY3			209
 #define	K_JOY4			210
-
-//
 // aux keys are for multi-buttoned joysticks to generate so they can use
 // the normal binding process
-//
+// aux29-32: reserved for the HAT (POV) switch motion
 #define	K_AUX1			211
 #define	K_AUX2			212
 #define	K_AUX3			213

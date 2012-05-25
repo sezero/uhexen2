@@ -4,6 +4,19 @@ Development Progress	:
 ---------------------------
 
 2012-05-25 (SVN):
+    * in_sdl.c: IN_JoystickGetAxis() and IN_JoystickKeyeventForAxis() no
+      longer accept a joystick id pointer parameter, but use the joy_id
+      variable. Disabled the "keyevents for joystick axes" hack for now.
+      Added a hack making IN_ActivateMouse() and IN_DeactivateMouse() to
+      affect the trackball in order for joystick trackballs convert to
+      mousemove properly. For the same purpose, move joystick trackball
+      querying from IN_JoyMove() to IN_MouseMove(). Reserved K_AUX29-32
+      for hat (POV) switch motion (like in_win.c, code to be added soon)
+      and changed SDL_JOYBUTTONUP/DOWN events' upper key limit to AUX28.
+    * docs/README: Removed the disabled joy_axiskeyevents documentation.
+    * updated version date stamp to 2012-05-25.
+
+2012-05-25 (SVN):
     * timidity: Made DLS instruments support optional. Default is no,
       because the dls code we inherited from libtimidity and SDL_sound
       isn't good enough and it isn't used in unix installations where

@@ -373,27 +373,23 @@ queried on the joystick:
 
 	joy_axisside	Axis for left/right movement		0
 	joy_axisforward	Axis for forward/backward movement	1
-	joy_axisup	Axis for up/down movement.	-1 (none)
 	joy_axisyaw	Axis for looking left/right		2
 	joy_axispitch	Axis for looking up/down		3
+	joy_axisup	Axis for up/down movement.	-1 (none)
 
 The following cvars the axis deadzone tolerance values for the above,
 all defaulting to 0. suggested values range between 0 to 0.01:
 
-	joy_deadzoneside, joy_deadzoneforward, joy_deadzoneup,
-	joy_deadzoneyaw, joy_deadzonepitch.
+	joy_deadzoneside, joy_deadzoneforward,
+	joy_deadzoneyaw,  joy_deadzonepitch,
+	joy_deadzoneup
 
 The following cvars are the axis movement multiplier (sensitivity) for
 the above, all defaulting to 1:
 
-	joy_sensitivityside, joy_sensitivityforward, joy_sensitivityup,
-	joy_sensitivityyaw, joy_sensitivitypitch.
-
-You can enable a hack to generate uparrow, leftarrow, etc. key events
-for joystick axes, if your joystick driver is not already generating
-them, by setting "joy_axiskeyevents" to 1: Not really recommended and
-default is 0.  joy_axiskeyevents_deadzone defines the deadzone value
-for this hack, its default being 0.5.
+	joy_sensitivityside, joy_sensitivityforward,
+	joy_sensitivityyaw,  joy_sensitivitypitch,
+	joy_sensitivityup
 
 ----------------------------------------------------------------
 
