@@ -109,10 +109,10 @@ CL_PredictMove
 */
 void CL_PredictMove (void)
 {
-	int			i;
-	float		f;
-	frame_t		*from, *to = NULL;
-	int			oldphysent;
+	int	i;
+	float	f;
+	frame_t	*from, *to = NULL;
+	int	oldphysent;
 
 	if (cl_pushlatency.value > 0)
 		Cvar_SetQuick (&cl_pushlatency, "0");
@@ -161,7 +161,7 @@ void CL_PredictMove (void)
 
 //	to = &cl.frames[cls.netchan.incoming_sequence & UPDATE_MASK];
 
-	for (i = 1; i < UPDATE_BACKUP-1 && cls.netchan.incoming_sequence+i < cls.netchan.outgoing_sequence; i++)
+	for (i = 1; i < UPDATE_BACKUP-1 && cls.netchan.incoming_sequence + i < cls.netchan.outgoing_sequence; i++)
 	{
 		to = &cl.frames[(cls.netchan.incoming_sequence+i) & UPDATE_MASK];
 		CL_PredictUsercmd (&from->playerstate[cl.playernum],
@@ -170,7 +170,6 @@ void CL_PredictMove (void)
 
 		if (to->senttime >= cl.time)
 			break;
-
 		from = to;
 	}
 
@@ -187,10 +186,9 @@ void CL_PredictMove (void)
 	else
 	{
 		f = (cl.time - from->senttime) / (to->senttime - from->senttime);
-
 		if (f < 0)
 			f = 0;
-		if (f > 1)
+		else if (f > 1)
 			f = 1;
 	}
 
@@ -212,14 +210,15 @@ void CL_PredictMove (void)
 				f * (to->playerstate[cl.playernum].velocity[i] - from->playerstate[cl.playernum].velocity[i]);
 	}
 
-/*	Con_Printf("(%5.2f %5.2f %5.2f)  (%5.2f %5.2f %5.2f)\n",
+	/*
+	Con_Printf("(%5.2f %5.2f %5.2f)  (%5.2f %5.2f %5.2f)\n",
 			cl.simorg[0] - to->playerstate[cl.playernum].origin[0],
 			cl.simorg[1] - to->playerstate[cl.playernum].origin[1],
 			cl.simorg[2] - to->playerstate[cl.playernum].origin[2],
 			cl.simvel[0] - to->playerstate[cl.playernum].velocity[0],
 			cl.simvel[1] - to->playerstate[cl.playernum].velocity[1],
 			cl.simvel[2] - to->playerstate[cl.playernum].velocity[2]);
-*/
+	*/
 }
 
 

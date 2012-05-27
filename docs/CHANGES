@@ -4,6 +4,12 @@ Development Progress	:
 ---------------------------
 
 2012-05-27 (SVN):
+    * cl_main.c, cl_ents.c, cl_input.c, cl_parse.c, cl_tent.c, host.c:
+      Random tidying up. Also made hexenworld version of CL_BaseMove()
+      to match its hexen2 counterpart by not calculating angles during
+      cameramode.
+
+2012-05-27 (SVN):
     * in_sdl.c: Support for joystick hat (POV) switch motion, based on
       ioquake3 code. We translate hat motions into K_AUX key presses.
 

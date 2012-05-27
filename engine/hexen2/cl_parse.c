@@ -76,7 +76,7 @@ static const char *svc_strings[] =
 	"svc_mod_name",	// UQE v1.13 by Korax, music file name
 	"svc_skybox"	// UQE v1.13 by Korax, skybox name
 };
-#define	NUM_SVC_STRINGS	( sizeof(svc_strings)/sizeof(svc_strings[0]) )
+#define	NUM_SVC_STRINGS	(sizeof(svc_strings) / sizeof(svc_strings[0]))
 
 int		cl_protocol;	/* protocol version used by the server */
 int		LastServerMessageSize;
@@ -131,13 +131,11 @@ static void CL_ParseStartSoundPacket(void)
 
 	if (field_mask & SND_VOLUME)
 		volume = MSG_ReadByte ();
-	else
-		volume = DEFAULT_SOUND_PACKET_VOLUME;
+	else	volume = DEFAULT_SOUND_PACKET_VOLUME;
 
 	if (field_mask & SND_ATTENUATION)
 		attenuation = MSG_ReadByte () / 64.0;
-	else
-		attenuation = DEFAULT_SOUND_PACKET_ATTENUATION;
+	else	attenuation = DEFAULT_SOUND_PACKET_ATTENUATION;
 
 	channel = MSG_ReadShort ();
 	sound_num = MSG_ReadByte ();
@@ -419,7 +417,7 @@ static void CL_ParseUpdate (int bits)
 	qboolean	forcelink;
 	entity_t	*ent;
 	int		num;
-	entity_state2_t *ref_ent,*set_ent,build_ent,dummy;
+	entity_state2_t *ref_ent, *set_ent, build_ent, dummy;
 
 	if (cls.signon == SIGNONS - 1)
 	{	// first update is the final signon stage
@@ -439,30 +437,22 @@ static void CL_ParseUpdate (int bits)
 		bits |= (i<<16);
 	}
 
-	if (bits & U_LONGENTITY)	
+	if (bits & U_LONGENTITY)
 		num = MSG_ReadShort ();
-	else
-		num = MSG_ReadByte ();
+	else	num = MSG_ReadByte ();
+
 	ent = CL_EntityNum (num);
-
 	ent->baseline.flags |= BE_ON;
-
-/*	if (num == 2)
-	{
-		FH = fopen("c.txt","r+");
-		fseek(FH,0,SEEK_END);
-	}
-*/
 	ref_ent = NULL;
 
 	for (i = 0; i < cl.frames[0].count; i++)
+	{
 		if (cl.frames[0].states[i].index == num)
 		{
 			ref_ent = &cl.frames[0].states[i];
-//			if (num == 2) fprintf(FH,"Found Reference\n");
 			break;
 		}
-
+	}
 	if (!ref_ent)
 	{
 		ref_ent = &build_ent;
@@ -503,8 +493,7 @@ static void CL_ParseUpdate (int bits)
 
 	if (ent->msgtime != cl.mtime[1])
 		forcelink = true;	// no previous frame to lerp from
-	else
-		forcelink = false;
+	else	forcelink = false;
 
 	ent->msgtime = cl.mtime[0];
 
@@ -514,26 +503,22 @@ static void CL_ParseUpdate (int bits)
 		if (modnum >= MAX_MODELS)
 			Host_Error ("%s: bad modnum", __thisfunc__);
 	}
-	else
-		modnum = ref_ent->modelindex;
+	else	modnum = ref_ent->modelindex;
 
 	model = cl.model_precache[modnum];
 	set_ent->modelindex = modnum;
 	if (model != ent->model)
 	{
 		ent->model = model;
-
-	// automatic animation (torches, etc) can be either all together
-	// or randomized
+		// automatic animation (torches, etc) can
+		// be either all together or randomized
 		if (model)
 		{
 			if (model->synctype == ST_RAND)
 				ent->syncbase = rand() * (1.0 / RAND_MAX);//(float)(rand() & 0x7fff) / 0x7fff;
-			else
-				ent->syncbase = 0.0;
+			else	ent->syncbase = 0.0;
 		}
-		else
-			forcelink = true;	// hack to make null model players work
+		else	forcelink = true;	// hack to make null model players work
 #ifdef GLQUAKE
 		if (num > 0 && num <= cl.maxclients)
 			R_TranslatePlayerSkin (num - 1);
@@ -542,18 +527,15 @@ static void CL_ParseUpdate (int bits)
 
 	if (bits & U_FRAME)
 		set_ent->frame = ent->frame = MSG_ReadByte ();
-	else
-		ent->frame = ref_ent->frame;
+	else	ent->frame = ref_ent->frame;
 
 	if (bits & U_COLORMAP)
 		set_ent->colormap = i = MSG_ReadByte();
-	else
-		i = ref_ent->colormap;
+	else	i = ref_ent->colormap;
 
 	if (num && num <= cl.maxclients)
 		ent->colormap = ent->sourcecolormap = cl.scores[num-1].translations;
-	else
-		ent->sourcecolormap = vid.colormap;
+	else	ent->sourcecolormap = vid.colormap;
 
 #ifdef GLQUAKE
 //	ent->colormap = vid.colormap;
@@ -587,59 +569,36 @@ static void CL_ParseUpdate (int bits)
 	}
 
 	if (bits & U_EFFECTS)
-	{
 		set_ent->effects = ent->effects = MSG_ReadByte();
-	//	if (num == 2)
-	//		fprintf(FH,"Read effects %d\n",set_ent->effects);
-	}
-	else
-	{
-		ent->effects = ref_ent->effects;
-		//if (num == 2)
-		//	fprintf(FH,"restored effects %d\n",ref_ent->effects);
-	}
+	else	ent->effects = ref_ent->effects;
 
 // shift the known values for interpolation
 	VectorCopy (ent->msg_origins[0], ent->msg_origins[1]);
 	VectorCopy (ent->msg_angles[0], ent->msg_angles[1]);
 
 	if (bits & U_ORIGIN1)
-	{
 		set_ent->origin[0] = ent->msg_origins[0][0] = MSG_ReadCoord ();
-		//if (num == 2)
-		//	fprintf(FH,"Read origin[0] %f\n",set_ent->angles[0]);
-	}
-	else
-	{
-		ent->msg_origins[0][0] = ref_ent->origin[0];
-		//if (num == 2)
-		//	fprintf(FH,"Restored origin[0] %f\n",ref_ent->angles[0]);
-	}
+	else	ent->msg_origins[0][0] = ref_ent->origin[0];
 
 	if (bits & U_ANGLE1)
 		set_ent->angles[0] = ent->msg_angles[0][0] = MSG_ReadAngle();
-	else
-		ent->msg_angles[0][0] = ref_ent->angles[0];
+	else	ent->msg_angles[0][0] = ref_ent->angles[0];
 
 	if (bits & U_ORIGIN2)
 		set_ent->origin[1] = ent->msg_origins[0][1] = MSG_ReadCoord ();
-	else
-		ent->msg_origins[0][1] = ref_ent->origin[1];
+	else	ent->msg_origins[0][1] = ref_ent->origin[1];
 
 	if (bits & U_ANGLE2)
 		set_ent->angles[1] = ent->msg_angles[0][1] = MSG_ReadAngle();
-	else
-		ent->msg_angles[0][1] = ref_ent->angles[1];
+	else	ent->msg_angles[0][1] = ref_ent->angles[1];
 
 	if (bits & U_ORIGIN3)
 		set_ent->origin[2] = ent->msg_origins[0][2] = MSG_ReadCoord ();
-	else
-		ent->msg_origins[0][2] = ref_ent->origin[2];
+	else	ent->msg_origins[0][2] = ref_ent->origin[2];
 
 	if (bits & U_ANGLE3)
 		set_ent->angles[2] = ent->msg_angles[0][2] = MSG_ReadAngle();
-	else
-		ent->msg_angles[0][2] = ref_ent->angles[2];
+	else	ent->msg_angles[0][2] = ref_ent->angles[2];
 
 	if (bits & U_SCALE)
 	{
@@ -655,7 +614,7 @@ static void CL_ParseUpdate (int bits)
 	if (bits & U_NOLERP)
 		ent->forcelink = true;
 
-	if ( forcelink )
+	if (forcelink)
 	{	// didn't have an update last message
 		VectorCopy (ent->msg_origins[0], ent->msg_origins[1]);
 		VectorCopy (ent->msg_origins[0], ent->origin);
@@ -663,71 +622,51 @@ static void CL_ParseUpdate (int bits)
 		VectorCopy (ent->msg_angles[0], ent->angles);
 		ent->forcelink = true;
 	}
-
-//	if (sv.active || num != 2)
-//		return;
 }
 
 static void CL_ParseUpdate2 (int bits)
 {
-	int		i;
+	int	i;
 
 	if (bits & U_MOREBITS)
 	{
 		i = MSG_ReadByte ();
 		bits |= (i<<8);
 	}
-
 	if (bits & U_MOREBITS2)
 	{
 		i = MSG_ReadByte ();
 		bits |= (i<<16);
 	}
-
 	if (bits & U_LONGENTITY)
 		MSG_ReadShort ();
-	else
-		MSG_ReadByte ();
-
+	else	MSG_ReadByte ();
 	if (bits & U_MODEL)
-	{
 		MSG_ReadShort ();
-	}
-
 	if (bits & U_FRAME)
 		MSG_ReadByte ();
-
 	if (bits & U_COLORMAP)
 		MSG_ReadByte();
-
 	if (bits & U_SKIN)
 	{
 		MSG_ReadByte();
 		MSG_ReadByte();
 	}
-
 	if (bits & U_EFFECTS)
 		MSG_ReadByte();
-
 	if (bits & U_ORIGIN1)
 		MSG_ReadCoord ();
-
 	if (bits & U_ANGLE1)
 		MSG_ReadAngle();
-
 	if (bits & U_ORIGIN2)
 		MSG_ReadCoord ();
-
 	if (bits & U_ANGLE2)
 		MSG_ReadAngle();
-
 	if (bits & U_ORIGIN3)
 		MSG_ReadCoord ();
-
 	if (bits & U_ANGLE3)
 		MSG_ReadAngle();
-
-	if (bits&U_SCALE)
+	if (bits & U_SCALE)
 	{
 		MSG_ReadByte();
 		MSG_ReadByte();
@@ -741,7 +680,7 @@ CL_ParseBaseline
 */
 static void CL_ParseBaseline (entity_t *ent)
 {
-	int			i;
+	int	i;
 
 	ent->baseline.modelindex = MSG_ReadShort ();
 	ent->baseline.frame = MSG_ReadByte ();
@@ -771,39 +710,36 @@ static void CL_ParseClientdata (int bits)
 
 	if (bits & SU_VIEWHEIGHT)
 		cl.viewheight = MSG_ReadChar ();
-//rjr	else
-//rjr		cl.viewheight = DEFAULT_VIEWHEIGHT;
+//rjr	else	cl.viewheight = DEFAULT_VIEWHEIGHT;
 
 	if (bits & SU_IDEALPITCH)
 		cl.idealpitch = MSG_ReadChar ();
 
 	if (bits & SU_IDEALROLL)
 		cl.idealroll = MSG_ReadChar ();
-//rjr	else
-//rjr		cl.idealroll = 0;
+//rjr	else	cl.idealroll = 0;
 
 	VectorCopy (cl.mvelocity[0], cl.mvelocity[1]);
 	for (i = 0; i < 3; i++)
 	{
-		if (bits & (SU_PUNCH1<<i) )
+		if (bits & (SU_PUNCH1<<i))
 			cl.punchangle[i] = MSG_ReadChar();
-//rjr		else
-//rjr			cl.punchangle[i] = 0;
-		if (bits & (SU_VELOCITY1<<i) )
+//rjr		else	cl.punchangle[i] = 0;
+		if (bits & (SU_VELOCITY1<<i))
 			cl.mvelocity[0][i] = MSG_ReadChar()*16;
-//rjr		else
-//rjr			cl.mvelocity[0][i] = 0;
+//rjr		else	cl.mvelocity[0][i] = 0;
 	}
 
-/*	if (bits & SU_ITEMS)
+	/*
+	if (bits & SU_ITEMS)
 		i = MSG_ReadLong ();
-*/
+	*/
 
 	if (cl.items != i)
 	{	// set flash times
 		Sbar_Changed();
 		for (j = 0; j < 32; j++)
-			if ( (i & (1<<j)) && !(cl.items & (1<<j)))
+			if ((i & (1<<j)) && !(cl.items & (1<<j)))
 				cl.item_gettime[j] = cl.time;
 		cl.items = i;
 	}
@@ -813,8 +749,7 @@ static void CL_ParseClientdata (int bits)
 
 	if (bits & SU_WEAPONFRAME)
 		cl.stats[STAT_WEAPONFRAME] = MSG_ReadByte ();
-//rjr	else
-//rjr		cl.stats[STAT_WEAPONFRAME] = 0;
+//rjr	else	cl.stats[STAT_WEAPONFRAME] = 0;
 
 	if (bits & SU_ARMOR)
 	{
@@ -828,7 +763,8 @@ static void CL_ParseClientdata (int bits)
 		Sbar_Changed();
 	}
 
-/*	sc1 = sc2 = 0;
+	/*
+	sc1 = sc2 = 0;
 
 	if (bits & SU_SC1)
 		sc1 = MSG_ReadLong ();
@@ -950,8 +886,7 @@ static void CL_ParseClientdata (int bits)
 
 	if ((sc1 & SC1_INV) || (sc2 & SC2_INV))
 		SB_InvChanged();
-*/
-
+	*/
 }
 
 /*
@@ -962,8 +897,8 @@ CL_NewTranslation
 static void CL_NewTranslation (int slot)
 {
 #ifndef GLQUAKE
-	int		i, j;
-	int		top, bottom;
+	int	i, j;
+	int	top, bottom;
 	byte	*dest, *source, *sourceA, *sourceB, *colorA, *colorB;
 #endif
 
@@ -984,15 +919,11 @@ static void CL_NewTranslation (int slot)
 	bottom = (cl.scores[slot].colors & 15);
 
 	if (top > 11 || bottom > 11)
-	{
-		Con_Printf("Invalid Player Color: %d,%d\n",top,bottom);
-	}
-
+		Con_Printf("Invalid Player Color: %d,%d\n", top, bottom);
 	if (top > 10)
 		top = 0;
 	if (bottom > 10)
 		bottom = 0;
-
 	top -= 1;
 	bottom -= 1;
 
@@ -1022,7 +953,7 @@ CL_ParseStatic
 static void CL_ParseStatic (void)
 {
 	entity_t *ent;
-	int		i;
+	int	i;
 
 	i = cl.num_statics;
 	if (i >= MAX_STATIC_ENTITIES)
@@ -1053,17 +984,16 @@ CL_ParseStaticSound
 */
 static void CL_ParseStaticSound (void)
 {
-	vec3_t		org;
-	int			sound_num, vol, atten;
-	int			i;
+	vec3_t	org;
+	int	sound_num, vol, atten;
+	int	i;
 
 	for (i = 0; i < 3; i++)
 		org[i] = MSG_ReadCoord ();
 
 	if (cl_protocol == PROTOCOL_RAVEN_111)
 		sound_num = MSG_ReadByte ();
-	else
-		sound_num = MSG_ReadShort();
+	else	sound_num = MSG_ReadShort();
 	vol = MSG_ReadByte ();
 	atten = MSG_ReadByte ();
 
@@ -1084,8 +1014,8 @@ static void CL_Plaque(void)
 
 static void CL_ParticleExplosion(void)
 {
-	vec3_t org;
-	short color, radius, counter;
+	vec3_t	org;
+	short	color, radius, counter;
 
 	org[0] = MSG_ReadCoord();
 	org[1] = MSG_ReadCoord();
@@ -1099,9 +1029,9 @@ static void CL_ParticleExplosion(void)
 
 static void CL_ParseRainEffect(void)
 {
-	vec3_t		org, e_size;
-	short		color,count;
-	int			x_dir, y_dir;
+	vec3_t	org, e_size;
+	short	color,count;
+	int	x_dir, y_dir;
 
 	org[0] = MSG_ReadCoord();
 	org[1] = MSG_ReadCoord();
@@ -1132,8 +1062,7 @@ static void CL_DumpPacket (void)
 		{
 			if (pos >= net_message.cursize)
 				Con_Printf(" X ");
-			else
-				Con_Printf("%2x ", (unsigned char)packet[pos]);
+			else	Con_Printf("%2x ", (unsigned char)packet[pos]);
 			pos++;
 		}
 		pos -= 16;
@@ -1143,8 +1072,7 @@ static void CL_DumpPacket (void)
 				Con_Printf("X");
 			else if (packet[pos] == 0)
 				Con_Printf(".");
-			else
-				Con_Printf("%c", (unsigned char)packet[pos]);
+			else	Con_Printf("%c", (unsigned char)packet[pos]);
 			pos++;
 		}
 		Con_Printf("\n");
@@ -1154,11 +1082,11 @@ static void CL_DumpPacket (void)
 }
 #endif	/* CL_DumpPacket */
 
-#define SHOWNET(S)							\
-	do {								\
-		if (cl_shownet.integer == 2)				\
-			Con_Printf ("%3i:%s\n", msg_readcount-1, (S));	\
-	} while (0)
+#define SHOWNET(S)						\
+do {								\
+	if (cl_shownet.integer == 2)				\
+		Con_Printf ("%3i:%s\n", msg_readcount-1, (S));	\
+} while (0)
 
 /*
 =====================
@@ -1175,15 +1103,12 @@ void CL_ParseServerMessage (void)
 	static		double lasttime;
 	static		qboolean packet_loss = false;
 	entity_t	*ent;
-	short		RemovePlace, OrigPlace, NewPlace, AddedIndex;
 	int		sc1, sc2;
 	byte		test;
 	float		compangles[2][3];
 	vec3_t		deltaangles;
 
-//
 // if recording demos, copy the message out
-//
 	if (net_message.cursize > LastServerMessageSize)
 	{
 		LastServerMessageSize = net_message.cursize;
@@ -1194,12 +1119,13 @@ void CL_ParseServerMessage (void)
 		lasttime = realtime;
 	}
 	else if (cl_shownet.integer == 2)
+	{
 		Con_Printf ("------------------\n");
+	}
 
 	cl.onground = false;	// unless the server says otherwise
-//
+
 // parse the message
-//
 	MSG_BeginReading ();
 
 	while (1)
@@ -1208,14 +1134,12 @@ void CL_ParseServerMessage (void)
 			Host_Error ("%s: Bad server message", __thisfunc__);
 
 		cmd = MSG_ReadByte ();
-
 		if (cmd == -1)
 		{
 			if (cl_shownet.integer == 1)
-				Con_Printf ("Ent: %i (%i bytes)",EntityCount,EntitySize);
-
+				Con_Printf ("Ent: %i (%i bytes)", EntityCount, EntitySize);
 			SHOWNET("END OF MESSAGE");
-			return;		// end of message
+			return; // end of message
 		}
 
 	// if the high bit of the command byte is set, it is a fast update
@@ -1224,17 +1148,15 @@ void CL_ParseServerMessage (void)
 			before = msg_readcount;
 			SHOWNET("fast update");
 			if (packet_loss)
-				CL_ParseUpdate2 (cmd&127);
-			else
-				CL_ParseUpdate (cmd&127);
+				CL_ParseUpdate2 (cmd & 127);
+			else	CL_ParseUpdate (cmd & 127);
 
 			EntityCount++;
 			EntitySize += msg_readcount - before + 1;
 			continue;
 		}
 
-		if (cmd < (int)NUM_SVC_STRINGS)	// else, it'll hit the illegible message below
-		{
+		if (cmd < (int)NUM_SVC_STRINGS) {
 			SHOWNET(svc_strings[cmd]);
 		}
 
@@ -1281,10 +1203,11 @@ void CL_ParseServerMessage (void)
 			break;
 
 		case svc_print:
-			if (intro_playing)
+			if (intro_playing) {
 				MSG_ReadString ();
-			else
-				Con_Printf ("%s", MSG_ReadString ());
+				break;
+			}
+			Con_Printf ("%s", MSG_ReadString ());
 			break;
 
 		case svc_centerprint:
@@ -1509,22 +1432,18 @@ void CL_ParseServerMessage (void)
 			cl.cdtrack = MSG_ReadByte ();
 			cl.looptrack = MSG_ReadByte ();
 			if (q_strcasecmp(bgmtype.string,"cd") != 0)
-			{
-				CDAudio_Stop();
-				break;
-			}
-			if ((cls.demoplayback || cls.demorecording) && cls.forcetrack != -1)
+				CDAudio_Stop ();
+			else if ((cls.demoplayback || cls.demorecording) &&
+						cls.forcetrack != -1)
 				CDAudio_Play ((byte)cls.forcetrack, true);
-			else
-				CDAudio_Play ((byte)cl.cdtrack, true);
+			else	CDAudio_Play ((byte)cl.cdtrack, true);
 			break;
 
 		case svc_midi_name:
 			q_strlcpy (cl.midi_name, MSG_ReadString(), sizeof(cl.midi_name));
-			if (q_strcasecmp(bgmtype.string,"midi") == 0)
-				BGM_PlayMIDIorMusic(cl.midi_name);
-			else
+			if (q_strcasecmp(bgmtype.string,"midi") != 0)
 				BGM_Stop();
+			else	BGM_PlayMIDIorMusic(cl.midi_name);
 			break;
 
 		case svc_toggle_statbar:
@@ -1554,6 +1473,7 @@ void CL_ParseServerMessage (void)
 			Cmd_ExecuteString ("help", src_command);
 			break;
 		*/
+
 		case svc_set_view_flags:
 			cl.viewent.drawflags |= MSG_ReadByte();
 			break;
@@ -1583,6 +1503,8 @@ void CL_ParseServerMessage (void)
 			break;
 
 		case svc_reference:
+		  {	short RemovePlace, OrigPlace, NewPlace, AddedIndex;
+
 			packet_loss = false;
 			cl.last_frame = cl.current_frame;
 			cl.last_sequence = cl.current_sequence;
@@ -1591,7 +1513,7 @@ void CL_ParseServerMessage (void)
 			if (cl.need_build == 2)
 			{
 			//	Con_Printf("CL: NB2 CL(%d,%d) R(%d)\n",
-			//			cl.current_sequence, cl.current_frame,cl.reference_frame);
+			//		cl.current_sequence, cl.current_frame, cl.reference_frame);
 				cl.frames[0].count = cl.frames[1].count = cl.frames[2].count = 0;
 				cl.need_build = 1;
 				cl.reference_frame = cl.current_frame;
@@ -1599,31 +1521,33 @@ void CL_ParseServerMessage (void)
 			else if (cl.last_sequence != cl.current_sequence)
 			{
 			//	Con_Printf("CL: Sequence CL(%d,%d) R(%d)\n",
-			//			cl.current_sequence, cl.current_frame,cl.reference_frame);
+			//		cl.current_sequence, cl.current_frame, cl.reference_frame);
 				if (cl.reference_frame >= 1 && cl.reference_frame <= MAX_FRAMES)
 				{
 					RemovePlace = OrigPlace = NewPlace = AddedIndex = 0;
 					for (i = 0; i < cl.num_entities; i++)
 					{
-						if (RemovePlace >= cl.NumToRemove || cl.RemoveList[RemovePlace] != i)
+						if (RemovePlace >= cl.NumToRemove ||
+						    cl.RemoveList[RemovePlace] != i)
 						{
 							if (NewPlace < cl.frames[1].count &&
-								cl.frames[1].states[NewPlace].index == i)
+							    cl.frames[1].states[NewPlace].index == i)
 							{
-								cl.frames[2].states[AddedIndex] = cl.frames[1].states[NewPlace];
+								cl.frames[2].states[AddedIndex] =
+									cl.frames[1].states[NewPlace];
 								AddedIndex++;
 								cl.frames[2].count++;
 							}
 							else if (OrigPlace < cl.frames[0].count &&
-								     cl.frames[0].states[OrigPlace].index == i)
+								 cl.frames[0].states[OrigPlace].index == i)
 							{
-								cl.frames[2].states[AddedIndex] = cl.frames[0].states[OrigPlace];
+								cl.frames[2].states[AddedIndex] =
+									cl.frames[0].states[OrigPlace];
 								AddedIndex++;
 								cl.frames[2].count++;
 							}
 						}
-						else
-							RemovePlace++;
+						else	RemovePlace++;
 
 						if (cl.frames[0].states[OrigPlace].index == i)
 							OrigPlace++;
@@ -1639,29 +1563,24 @@ void CL_ParseServerMessage (void)
 			else
 			{
 			//	Con_Printf("CL: Normal CL(%d,%d) R(%d)\n",
-			//			cl.current_sequence, cl.current_frame,cl.reference_frame);
+			//		cl.current_sequence, cl.current_frame,cl.reference_frame);
 				cl.need_build = 0;
 			}
 
 			for (i = 1, ent = cl_entities+1; i < cl.num_entities; i++, ent++)
-			{
 				ent->baseline.flags &= ~BE_ON;
-			}
-
 			for (i = 0; i < cl.frames[0].count; i++)
 			{
 				ent = CL_EntityNum (cl.frames[0].states[i].index);
 				ent->model = cl.model_precache[cl.frames[0].states[i].modelindex];
 				ent->baseline.flags |= BE_ON;
 			}
-			break;
+		  }	break;
 
 		case svc_clear_edicts:
 			j = MSG_ReadByte();
 			if (cl.need_build)
-			{
 				cl.NumToRemove = j;
-			}
 			for (i = 0; i < j; i++)
 			{
 				k = MSG_ReadShort();

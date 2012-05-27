@@ -9,15 +9,9 @@
 #include "debuglog.h"
 
 /*
-
-A server can always be started, even if the system started out as a client
-to a remote system.
-
-A client can NOT be started if the system started as a dedicated server.
-
-Memory is cleared / released when a server or client begins, not when they end.
-
-*/
+ * Memory is cleared / released when a server or client begins, not when
+ * they end.
+ */
 
 quakeparms_t	*host_parms;
 
@@ -195,60 +189,11 @@ static void Host_FindMaxClients (void)
 	Cvar_Set ("deathmatch", "1");
 }
 
-#if 0
-/* just an easy place to do some profile testing */
-static void Host_Version_f (void)
-{
-	int		i;
-	int		repcount = 10000;
-	float	time1, time2, r1, r2;
-
-	if (Cmd_Argc() == 2)
-	{
-		repcount = atof(Cmd_Argv(1));
-		if (repcount < 0)
-			repcount =0;
-	}
-	Con_Printf ("looping %d times.\n", repcount);
-
-	time1 = Sys_DoubleTime();
-	for (i = repcount; i; i--)
-	{
-		char buf[2048];
-		memset (buf, i, 2048);
-	}
-	time2 = Sys_DoubleTime();
-	r1 = time2 - time1;
-	Con_Printf ("loop 1 = %f\n", r1);
-
-	time1 = Sys_DoubleTime();
-	for (i = repcount; i; i--)
-	{
-		char buf[2048];
-		memset (buf, i, 2048);
-	}
-	time2 = Sys_DoubleTime();
-	r2 = time2 - time1;
-	Con_Printf ("loop 2 = %f\n", r2);
-
-	if (r2 < r1)
-	{
-		Con_Printf ("loop 2 is faster by %f\n", r1-r2);
-	}
-	else
-	{
-		Con_Printf ("loop 1 is faster by %f\n", r2-r1);
-	}
-	Con_Printf ("Version %4.2f\n", ENGINE_VERSION);
-	Con_Printf ("Exe: "__TIME__" "__DATE__"\n");
-}
-#else
 static void Host_Version_f (void)
 {
 	Con_Printf ("Version %4.2f\n", ENGINE_VERSION);
 	Con_Printf ("Exe: "__TIME__" "__DATE__"\n");
 }
-#endif
 
 /* cvar callback functions : */
 void Host_Callback_Notify (cvar_t *var)
@@ -528,10 +473,8 @@ void Host_ShutdownServer(qboolean crash)
 			SV_DropClient(crash);
 	}
 
-//
 // clear structures
-//
-	//memset (&sv, 0, sizeof(sv)); // ServerSpawn will already do this by Host_ClearMemory
+//	memset (&sv, 0, sizeof(sv)); // ServerSpawn already do this by Host_ClearMemory
 	memset (svs.clients, 0, svs.maxclientslimit*sizeof(client_t));
 }
 
@@ -650,7 +593,7 @@ void Host_Frame (float time)
 {
 	double	time1, time2;
 	static double	timetotal;
-	static int		timecount;
+	static int	timecount;
 	int		i, c, m;
 
 	if (!serverprofile.integer)
@@ -683,7 +626,6 @@ void Host_Frame (float time)
 }
 
 //============================================================================
-
 
 /*
 ====================
@@ -729,7 +671,6 @@ void Host_Init (void)
 	if (!sv.active)
 		Cmd_ExecuteString ("map demo1", src_command);
 }
-
 
 /*
 ===============

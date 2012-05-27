@@ -12,11 +12,6 @@ static	cvar_t	chase_up = {"chase_up", "16", CVAR_NONE};
 static	cvar_t	chase_right = {"chase_right", "0", CVAR_NONE};
 cvar_t		chase_active = {"chase_active", "0", CVAR_NONE};
 
-#if 0
-static	vec3_t	chase_pos;
-static	vec3_t	chase_angles;
-static	vec3_t	chase_dest_angles;
-#endif
 static	vec3_t	chase_dest;
 
 
@@ -40,47 +35,54 @@ static void TraceLine (vec3_t start, vec3_t end, vec3_t impact)
 
 	memset (&trace, 0, sizeof(trace));
 	SV_RecursiveHullCheck (cl.worldmodel->hulls, 0, 0, 1, start, end, &trace);
-
 	VectorCopy (trace.endpos, impact);
 }
 
 void Chase_Update (void)
 {
-	int		i;
 	float	dist;
 	vec3_t	forward, up, right;
 	vec3_t	dest, stop;
 
-
-	// if can't see player, reset
+// if can't see player, reset
 	AngleVectors (cl.viewangles, forward, right, up);
 
-	// calc exact destination
-	for (i = 0; i < 3; i++)
-		chase_dest[i] = r_refdef.vieworg[i] 
-					- forward[i]*chase_back.value
-					- right[i]*chase_right.value;
-	//chase_dest[2] += chase_up.value;
+// calc exact destination
+	chase_dest[0] = r_refdef.vieworg[0] -
+			forward[0] * chase_back.value -
+			right[0] * chase_right.value;
+	chase_dest[1] = r_refdef.vieworg[1] -
+			forward[1] * chase_back.value -
+			right[1] * chase_right.value;
+#if 0
+	chase_dest[2] = r_refdef.vieworg[2] -
+			forward[2] * chase_back.value -
+			right[] * chase_right.value;
+	chase_dest[2] += chase_up.value;
+#endif
 	chase_dest[2] = r_refdef.vieworg[2] + chase_up.value;
 
-	// find the spot the player is looking at
+// find the spot the player is looking at
 	VectorMA (r_refdef.vieworg, 4096, forward, dest);
 	TraceLine (r_refdef.vieworg, dest, stop);
 
-	// calculate pitch to look at the same spot from camera
+// calculate pitch to look at the same spot from camera
 	VectorSubtract (stop, r_refdef.vieworg, stop);
 	dist = DotProduct (stop, forward);
 	if (dist < 1)
 		dist = 1;
 	r_refdef.viewangles[PITCH] = -atan(stop[2] / dist) / M_PI * 180;
 
-	// check for walls between player and camera. from quakeforge
+// check for walls between player and camera (from quakeforge)
 	TraceLine(r_refdef.vieworg, chase_dest, stop);
 	if (VectorLength(stop) != 0)
-		for (i = 0; i < 3; i++)
-			chase_dest[i] = stop[i] + forward[i] * 8;
+	{
+		chase_dest[0] = stop[0] + forward[0] * 8;
+		chase_dest[1] = stop[1] + forward[1] * 8;
+		chase_dest[2] = stop[2] + forward[2] * 8;
+	}
 
-	// move towards destination
+// move towards destination
 	VectorCopy (chase_dest, r_refdef.vieworg);
 }
 

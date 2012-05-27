@@ -13,15 +13,15 @@
 #include <setjmp.h>
 
 /*
-
-A server can always be started, even if the system started out as a client
-to a remote system.
-
-A client can NOT be started if the system started as a dedicated server.
-
-Memory is cleared / released when a server or client begins, not when they end.
-
-*/
+ * A server can always be started, even if the system started out as a
+ * client to a remote system.
+ *
+ * A client can NOT be started if the system is started as a dedicated
+ * server.
+ *
+ * Memory is cleared / released when a server or client begins, not when
+ * they end.
+ */
 
 static void Host_WriteConfiguration (const char *fname);
 
@@ -297,19 +297,6 @@ static void Host_SaveConfig_f (void)
 	if (cmd_source != src_command)
 		return;
 
-/*	if (!sv.active)
-	{
-		Con_Printf ("Not playing a local game.\n");
-		return;
-	}
-
-	if (cl.intermission)
-	{
-		Con_Printf ("Can't save in intermission.\n");
-		return;
-	}
-*/
-
 	if (Cmd_Argc() != 2)
 	{
 		Con_Printf ("saveConfig <savename> : save a config file\n");
@@ -326,60 +313,11 @@ static void Host_SaveConfig_f (void)
 	Host_WriteConfiguration (p);
 }
 
-#if 0
-/* just an easy place to do some profile testing */
-static void Host_Version_f (void)
-{
-	int		i;
-	int		repcount = 10000;
-	float	time1, time2, r1, r2;
-
-	if (Cmd_Argc() == 2)
-	{
-		repcount = atof(Cmd_Argv(1));
-		if (repcount < 0)
-			repcount =0;
-	}
-	Con_Printf ("looping %d times.\n", repcount);
-
-	time1 = Sys_DoubleTime();
-	for (i = repcount; i; i--)
-	{
-		char buf[2048];
-		memset (buf, i, 2048);
-	}
-	time2 = Sys_DoubleTime();
-	r1 = time2 - time1;
-	Con_Printf ("loop 1 = %f\n", r1);
-
-	time1 = Sys_DoubleTime();
-	for (i = repcount; i; i--)
-	{
-		char buf[2048];
-		memset (buf, i, 2048);
-	}
-	time2 = Sys_DoubleTime();
-	r2 = time2 - time1;
-	Con_Printf ("loop 2 = %f\n", r2);
-
-	if (r2 < r1)
-	{
-		Con_Printf ("loop 2 is faster by %f\n", r1-r2);
-	}
-	else
-	{
-		Con_Printf ("loop 1 is faster by %f\n", r2-r1);
-	}
-	Con_Printf ("Version %4.2f\n", ENGINE_VERSION);
-	Con_Printf ("Exe: "__TIME__" "__DATE__"\n");
-}
-#else
 static void Host_Version_f (void)
 {
 	Con_Printf ("Version %4.2f\n", ENGINE_VERSION);
 	Con_Printf ("Exe: "__TIME__" "__DATE__"\n");
 }
-#endif
 
 /* cvar callback functions : */
 void Host_Callback_Notify (cvar_t *var)
@@ -463,8 +401,8 @@ static void Host_WriteConfiguration (const char *fname)
 
 		Key_WriteBindings (f);
 		Cvar_WriteVariables (f);
-
-		if (in_mlook.state & 1)		//if mlook was down, keep it that way
+		// if mlook was down, keep it that way:
+		if (in_mlook.state & 1)
 			fprintf (f, "+mlook\n");
 
 		fclose (f);
@@ -669,10 +607,8 @@ void Host_ShutdownServer(qboolean crash)
 			SV_DropClient(crash);
 	}
 
-//
 // clear structures
-//
-	//memset (&sv, 0, sizeof(sv)); // ServerSpawn will already do this by Host_ClearMemory
+//	memset (&sv, 0, sizeof(sv)); // ServerSpawn already do this by Host_ClearMemory
 	memset (svs.clients, 0, svs.maxclientslimit*sizeof(client_t));
 }
 
@@ -895,7 +831,6 @@ static void _Host_Frame (float time)
 	Host_GetConsoleCommands ();
 
 #ifdef FPS_20
-
 	if (sv.active)
 		Host_ServerFrame ();
 
@@ -969,7 +904,6 @@ static void _Host_Frame (float time)
 	} while (total_host_frametime > 0);
 
 	host_frametime = save_host_frametime;
-
 #endif
 
 // update video
@@ -1010,7 +944,7 @@ void Host_Frame (float time)
 {
 	double	time1, time2;
 	static double	timetotal;
-	static int		timecount;
+	static int	timecount;
 	int		i, c, m;
 
 	if (!serverprofile.integer)
@@ -1043,7 +977,6 @@ void Host_Frame (float time)
 }
 
 //============================================================================
-
 
 /*
 ====================
@@ -1145,7 +1078,6 @@ void Host_Init (void)
 			Cbuf_AddText ("map demo1\n");
 	}
 }
-
 
 /*
 ===============

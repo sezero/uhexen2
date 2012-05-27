@@ -24,7 +24,6 @@ cvar_t	lookspring = {"lookspring", "0", CVAR_ARCHIVE};
 cvar_t	lookstrafe = {"lookstrafe", "0", CVAR_ARCHIVE};
 cvar_t	sensitivity = {"sensitivity", "3", CVAR_ARCHIVE};
 cvar_t	mwheelthreshold = {"mwheelthreshold", "120", CVAR_ARCHIVE};
-static float save_sensitivity;
 
 cvar_t	m_pitch = {"m_pitch", "0.022", CVAR_ARCHIVE};
 cvar_t	m_yaw = {"m_yaw", "0.022", CVAR_ARCHIVE};
@@ -35,14 +34,14 @@ cvar_t	m_side = {"m_side", "0.8", CVAR_ARCHIVE};
 client_static_t	cls;
 client_state_t	cl;
 // FIXME: put these on hunk?
-efrag_t			cl_efrags[MAX_EFRAGS];
-entity_t		cl_entities[MAX_EDICTS];
-entity_t		cl_static_entities[MAX_STATIC_ENTITIES];
-lightstyle_t		cl_lightstyle[MAX_LIGHTSTYLES];
-dlight_t		cl_dlights[MAX_DLIGHTS];
+efrag_t		cl_efrags[MAX_EFRAGS];
+entity_t	cl_entities[MAX_EDICTS];
+entity_t	cl_static_entities[MAX_STATIC_ENTITIES];
+lightstyle_t	cl_lightstyle[MAX_LIGHTSTYLES];
+dlight_t	cl_dlights[MAX_DLIGHTS];
 
-int				cl_numvisedicts;
-entity_t		*cl_visedicts[MAX_VISEDICTS];
+int		cl_numvisedicts;
+entity_t	*cl_visedicts[MAX_VISEDICTS];
 
 
 /*
@@ -53,7 +52,7 @@ CL_ClearState
 */
 void CL_ClearState (void)
 {
-	int			i;
+	int	i;
 
 	if (!sv.active)
 		Host_ClearMemory ();
@@ -63,7 +62,7 @@ void CL_ClearState (void)
 
 	SZ_Clear (&cls.message);
 
-// clear other arrays	
+// clear other arrays
 	memset (cl_efrags, 0, sizeof(cl_efrags));
 	memset (cl_entities, 0, sizeof(cl_entities));
 	memset (cl_dlights, 0, sizeof(cl_dlights));
@@ -71,9 +70,7 @@ void CL_ClearState (void)
 	CL_ClearTEnts();
 	CL_ClearEffects();
 
-//
 // allocate the efrags and chain together into a free list
-//
 	cl.free_efrags = cl_efrags;
 	for (i = 0; i < MAX_EFRAGS-1; i++)
 		cl.free_efrags[i].entnext = &cl.free_efrags[i+1];
@@ -260,7 +257,7 @@ CL_PrintEntities_f
 static void CL_PrintEntities_f (void)
 {
 	entity_t	*ent;
-	int			i;
+	int	i;
 
 	for (i = 0, ent = cl_entities; i < cl.num_entities; i++, ent++)
 	{
@@ -271,14 +268,10 @@ static void CL_PrintEntities_f (void)
 			continue;
 		}
 		Con_Printf ("%s:%2i  (%5.1f,%5.1f,%5.1f) [%5.1f %5.1f %5.1f]\n",
-				ent->model->name,
-				ent->frame,
-				ent->origin[0],
-				ent->origin[1],
-				ent->origin[2],
-				ent->angles[0],
-				ent->angles[1],
-				ent->angles[2] );
+				ent->model->name, ent->frame,
+				ent->origin[0], ent->origin[1],
+				ent->origin[2], ent->angles[0],
+				ent->angles[1], ent->angles[2]);
 	}
 }
 
@@ -360,10 +353,7 @@ dlight_t *CL_AllocDlight (int key)
 done:
 	memset (dl, 0, sizeof(*dl));
 	dl->key = key;
-	dl->color[0] =
-		dl->color[1] =
-		dl->color[2] =
-		dl->color[3] = 1.0;
+	dl->color[0] = dl->color[1] = dl->color[2] = dl->color[3] = 1.0;
 	return dl;
 }
 
@@ -376,9 +366,9 @@ CL_DecayLights
 */
 void CL_DecayLights (void)
 {
-	int			i;
 	dlight_t	*dl;
-	float		time;
+	float	time;
+	int	i;
 
 	time = cl.time - cl.oldtime;
 
@@ -466,7 +456,7 @@ CL_RelinkEntities
 static void CL_RelinkEntities (void)
 {
 	entity_t	*ent;
-	int			i, j;
+	int		i, j;
 	float		frac, f, d;
 	vec3_t		delta;
 	vec3_t		oldorg;
@@ -477,15 +467,13 @@ static void CL_RelinkEntities (void)
 
 	cl_numvisedicts = 0;
 
-//
 // interpolate player info
-//
 	for (i = 0; i < 3; i++)
 		cl.velocity[i] = cl.mvelocity[1][i] + frac * (cl.mvelocity[0][i] - cl.mvelocity[1][i]);
 
 	if (cls.demoplayback && !intro_playing)
 	{
-	// interpolate the angles	
+	// interpolate the angles
 		for (j = 0; j < 3; j++)
 		{
 			d = cl.mviewangles[0][j] - cl.mviewangles[1][j];
@@ -751,7 +739,6 @@ static void CL_RelinkEntities (void)
 		{
 			if ((rand() & 3) < 1)
 				R_RocketTrail (oldorg, ent->origin, rt_magicmissile);
-
 #		ifdef GLQUAKE
 			// extra dynamic lights
 			if (gl_extra_dynamic_lights.integer)
@@ -777,7 +764,6 @@ static void CL_RelinkEntities (void)
 		else if (ent->model->flags & EF_SCARAB)
 		{
 			R_RocketTrail (oldorg, ent->origin, rt_scarab);
-
 #		ifdef GLQUAKE
 			// extra dynamic lights
 			if (gl_extra_dynamic_lights.integer)
@@ -802,7 +788,7 @@ static void CL_RelinkEntities (void)
 		if (i == cl.viewentity && !chase_active.integer)
 			continue;
 
-		if ( ent->effects & EF_NODRAW )
+		if (ent->effects & EF_NODRAW)
 			continue;
 
 		if (cl_numvisedicts < MAX_VISEDICTS)
@@ -823,7 +809,7 @@ Read all incoming data from the server
 */
 int CL_ReadFromServer (void)
 {
-	int		ret;
+	int	ret;
 
 	cl.oldtime = cl.time;
 	cl.time += host_frametime;
@@ -846,9 +832,7 @@ int CL_ReadFromServer (void)
 	CL_RelinkEntities ();
 	CL_UpdateTEnts ();
 
-//
 // bring the links up to date
-//
 	return 0;
 }
 
@@ -859,7 +843,7 @@ CL_SendCmd
 */
 void CL_SendCmd (void)
 {
-	usercmd_t		cmd;
+	usercmd_t	cmd;
 
 	if (cls.state != ca_connected)
 		return;
@@ -900,15 +884,19 @@ void CL_SendCmd (void)
 
 static void CL_Sensitivity_save_f (void)
 {
+	static float save_sensitivity = 3;
 	if (Cmd_Argc() != 2)
 	{
 		Con_Printf ("sensitivity_save <save/restore>\n");
-		return;
 	}
-	if (q_strcasecmp(Cmd_Argv(1),"save") == 0)
+	else if (q_strcasecmp(Cmd_Argv(1),"save") == 0)
+	{
 		save_sensitivity = sensitivity.value;
+	}
 	else if (q_strcasecmp(Cmd_Argv(1),"restore") == 0)
+	{
 		Cvar_SetValueQuick (&sensitivity, save_sensitivity);
+	}
 }
 
 /*

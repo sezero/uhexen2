@@ -69,24 +69,23 @@ typedef struct explosion_t explosion_t;
 
 struct explosion_t
 {
-	vec3_t		origin;
-	vec3_t		oldorg;// holds position from last frame
-	float		startTime;
-	float		endTime;
-	vec3_t		velocity;
-	vec3_t		accel;
-	vec3_t		angles;
-	vec3_t		avel;	// angular velocity
-	int		flags;
-	int		abslight;
-//	exflags_t	exflags;
-	int		exflags;
-	int		skin;
-	int		scale;
+	vec3_t	origin;
+	vec3_t	oldorg;// holds position from last frame
+	float	startTime;
+	float	endTime;
+	vec3_t	velocity;
+	vec3_t	accel;
+	vec3_t	angles;
+	vec3_t	avel;	// angular velocity
+	int	flags;
+	int	abslight;
+	int	exflags; // exflags_t
+	int	skin;
+	int	scale;
 	qmodel_t	*model;
 	void (*frameFunc)(explosion_t *ex);
 	void (*removeFunc)(explosion_t *ex);
-	float		data; //for easy transition of script code that relied on counters of some sort
+	float	data; //for easy transition of script code that relied on counters of some sort
 };
 
 // PUBLIC FUNCTION DEFINITIONS ---------------------------------------------
@@ -249,15 +248,13 @@ static void vectoangles(vec3_t vec, vec3_t ang)
 		yaw = 0;
 		if (vec[2] > 0)
 			pitch = 90;
-		else
-			pitch = 270;
+		else	pitch = 270;
 	}
 	else
 	{
 		yaw = (int) (atan2(vec[1], vec[0]) * 180 / M_PI);
 		if (yaw < 0)
 			yaw += 360;
-
 		forward = sqrt (vec[0]*vec[0] + vec[1]*vec[1]);
 		pitch = (int) (atan2(vec[2], forward) * 180 / M_PI);
 		if (pitch < 0)
@@ -349,9 +346,7 @@ static void CL_ParseBeam (qmodel_t *m)
 	end[2] = MSG_ReadCoord ();
 
 	if (!m)
-	{
 		return;
-	}
 
 // override any beam with the same entity
 	for (i = 0, b = cl_beams; i < MAX_BEAMS; i++, b++)
@@ -385,9 +380,9 @@ static void CL_ParseBeam (qmodel_t *m)
 
 entity_state_t *FindState(int EntNum)
 {
-	packet_entities_t		*pack;
+	packet_entities_t	*pack;
 	static entity_state_t	pretend_player;
-	int		pnum;
+	int	pnum;
 
 	if (EntNum >= 1 && EntNum <= MAX_CLIENTS)
 	{
@@ -409,9 +404,7 @@ entity_state_t *FindState(int EntNum)
 	for (pnum = 0; pnum < pack->num_entities; pnum++)
 	{
 		if (pack->entities[pnum].number == EntNum)
-		{
 			return &pack->entities[pnum];
-		}
 	}
 
 	return NULL;
@@ -563,7 +556,7 @@ void CLTENT_XbowImpact(vec3_t pos, vec3_t vel, int chType, int damage, int arrow
 		{
 			if (rand() & 3)	// chunky go
 			{
-				cnt	= (rand() % 2) + 1;
+				cnt = (rand() % 2) + 1;
 
 				for (i = 0; i < cnt; i++)
 				{
@@ -600,7 +593,7 @@ void CLTENT_XbowImpact(vec3_t pos, vec3_t vel, int chType, int damage, int arrow
 						ex->model = Mod_ForName ("models/splnter2.mdl", true);
 					else if (final < 0.75)
 						ex->model = Mod_ForName ("models/splnter3.mdl", true);
-					else 
+					else
 						ex->model = Mod_ForName ("models/splnter4.mdl", true);
 
 					ex->startTime = cl.time;
@@ -651,9 +644,9 @@ static void ParseStream(int type)
 {
 	int	ent, tag, flags, skin;
 	vec3_t		source, dest;
-	stream_t		*stream;
-	float			duration;
-	qmodel_t		*models[4];
+	stream_t	*stream;
+	float		duration;
+	qmodel_t	*models[4];
 	entity_state_t	*state;
 
 	ent = MSG_ReadShort();
@@ -663,9 +656,7 @@ static void ParseStream(int type)
 	skin = 0;
 
 	if (type == TE_STREAM_COLORBEAM)
-	{
 		skin = MSG_ReadByte();
-	}
 
 	source[0] = MSG_ReadCoord();
 	source[1] = MSG_ReadCoord();
@@ -755,24 +746,20 @@ static void ParseStream(int type)
 
 static stream_t *NewStream(int ent, int tag)
 {
-	int		i;
 	stream_t	*stream;
+	int	i;
 
 	// Search for a stream with matching entity and tag
 	for (i = 0, stream = cl_Streams; i < MAX_STREAMS; i++, stream++)
 	{
 		if (stream->entity == ent && stream->tag == tag)
-		{
 			return stream;
-		}
 	}
 	// Search for a free stream
 	for (i = 0, stream = cl_Streams; i < MAX_STREAMS; i++, stream++)
 	{
 		if (!stream->models[0] || stream->endTime < cl.time)
-		{
 			return stream;
-		}
 	}
 	return NULL;
 }
@@ -784,13 +771,13 @@ CL_ParseTEnt
 */
 void CL_ParseTEnt (void)
 {
-	int		cnt, cnt2, i, rnd;
-	int		type, damage, chType;
-	float		scale = 1.0;	// init to 1, make compiler happy
-	float		dir, cosval, sinval, volume;
+	int	cnt, cnt2, i, rnd;
+	int	type, damage, chType;
+	float	scale = 1.0;	// init to 1, make compiler happy
+	float	dir, cosval, sinval, volume;
 	dlight_t	*dl;
 	explosion_t	*ex;
-	vec3_t		pos, vel, movedir, offset;
+	vec3_t	pos, vel, movedir, offset;
 
 	type = MSG_ReadByte ();
 	switch (type)
@@ -990,7 +977,7 @@ void CL_ParseTEnt (void)
 
 			if (type == TE_CHUNK)
 			{
-				cnt	= MSG_ReadByte();
+				cnt = MSG_ReadByte();
 			}
 			else
 			{
@@ -1426,7 +1413,6 @@ void CL_ParseTEnt (void)
 				ex->endTime = ex->startTime + 4.0;
 			}
 			// make the actual explosion
-			//for (i = 0; i < 7; i++)
 			i = (host_frametime < .07) ? 0 : 8;	// based on framerate
 			for ( ; i < 11; i++)
 			{
@@ -1439,15 +1425,6 @@ void CL_ParseTEnt (void)
 				ex->velocity[0] = (ex->origin[0] - pos[0])*12;
 				ex->velocity[1] = (ex->origin[1] - pos[1])*12;
 				ex->velocity[2] = (ex->origin[2] - pos[2])*12;
-
-			/*	ex->origin[0] += (rand() % 10) - 5;
-				ex->origin[1] += (rand() % 10) - 5;
-				ex->origin[2] += (rand() % 10) - 5;
-
-				ex->velocity[0] = (ex->origin[0] - pos[0])*10;
-				ex->velocity[1] = (ex->origin[1] - pos[1])*10;
-				ex->velocity[2] = (ex->origin[2] - pos[2])*10 + 200;
-			*/
 
 				switch (rand() % 4)
 				{
@@ -1462,10 +1439,9 @@ void CL_ParseTEnt (void)
 					ex->model = Mod_ForName("models/gen_expl.spr", true);
 					break;
 				}
+
 				if (host_frametime < .07)
-				{
 					ex->flags |= MLS_ABSLIGHT|DRF_TRANSLUCENT;
-				}
 				ex->abslight = 160 + (rand() % 64);
 				ex->skin = 0;
 				ex->scale = 80 + (rand() % 40);
@@ -1557,13 +1533,8 @@ void CL_ParseTEnt (void)
 
 			//sound
 			if (cnt2)
-			{
 				S_StartSound(TempSoundChannel(), 1, cl_sfx_bonehit, pos, 1, 1);
-			}
-			else
-			{
-				S_StartSound(TempSoundChannel(), 1, cl_sfx_bonewal, pos, 1, 1);
-			}
+			else	S_StartSound(TempSoundChannel(), 1, cl_sfx_bonewal, pos, 1, 1);
 
 			R_RunParticleEffect4 (pos, 3, 368 + (rand() % 16), pt_grav, 7);
 		//	particle4(self.origin, 3, random(368,384), PARTICLETYPE_GRAV, self.dmg/2);
@@ -1637,7 +1608,6 @@ void CL_ParseTEnt (void)
 			pos[2] = MSG_ReadCoord();
 
 			cnt2 = MSG_ReadByte();	// 0 for person, 1 for wall
-
 			if (cnt2)
 			{
 				i = (host_frametime < .07) ? 0 : 5;	// based on framerate
@@ -1662,13 +1632,8 @@ void CL_ParseTEnt (void)
 					ex->avel[2] = (rand() % 850) - 425;
 
 					if (cnt2 == 2)
-					{
 						ex->scale = 65 + (rand() % 10);
-					}
-					else
-					{
-						ex->scale = 35 + (rand() % 10);
-					}
+					else	ex->scale = 35 + (rand() % 10);
 					ex->data = THINGTYPE_ICE;
 
 					ex->model = Mod_ForName("models/shard.mdl", true);
@@ -1680,9 +1645,7 @@ void CL_ParseTEnt (void)
 					ex->startTime = cl.time;
 					ex->endTime = ex->startTime + 2.0;
 					if (cnt2 == 2)
-					{
 						ex->endTime += 3.0;
-					}
 				}
 			}
 			else
@@ -1698,75 +1661,64 @@ void CL_ParseTEnt (void)
 			ex->model = Mod_ForName("models/icehit.spr", true);
 			ex->startTime = cl.time;
 			ex->endTime = ex->startTime + ex->model->numframes * 0.1;
-
 			// Add in the sound
 			if (cnt2 == 1)
-			{	// hit a wall
-				S_StartSound (TempSoundChannel(), 0, cl_sfx_icewall, pos, 1, 1);
-			}
+				S_StartSound (TempSoundChannel(), 0, cl_sfx_icewall, pos, 1, 1); // hit a wall
 			else if (cnt2 == 2)
-			{
 				S_StartSound (TempSoundChannel(), 0, cl_sfx_iceshatter, pos, 1, 1);
-			}
-			else
-			{	// hit a person
-				S_StartSound (TempSoundChannel(), 0, cl_sfx_iceflesh, pos, 1, 1);
-			}
+			else	S_StartSound (TempSoundChannel(), 0, cl_sfx_iceflesh, pos, 1, 1); // hit a person
 			break;
 
 		case TE_ICESTORM:
+		  {	int		ent;
+			vec3_t		center;
+			stream_t	*stream;
+			qmodel_t	*models[2];
+			entity_state_t	*state;
+
+			ent = MSG_ReadShort();
+
+			state = FindState(ent);
+			if (state)
 			{
-				int		ent;
-				vec3_t		center;
-				stream_t	*stream;
-				qmodel_t	*models[2];
-				entity_state_t	*state;
+				VectorCopy(state->origin, center);
 
-				ent = MSG_ReadShort();
-
-				state = FindState(ent);
-				if (state)
+				playIceSound += host_frametime;
+				if (playIceSound >= .6)
 				{
-					VectorCopy(state->origin, center);
+					S_StartSound (TempSoundChannel(), 0, cl_sfx_icestorm, center, 1, 1);
+					playIceSound -= .6;
+				}
 
-					playIceSound+=host_frametime;
-					if (playIceSound >= .6)
+				for (i = 0; i < 5; i++)
+				{	// make some ice beams...
+					models[0] = Mod_ForName("models/stice.mdl", true);
+					if ((stream = NewStream(ent, i)) == NULL)
 					{
-						S_StartSound (TempSoundChannel(), 0, cl_sfx_icestorm, center, 1, 1);
-						playIceSound -= .6;
+						Con_Printf("stream list overflow\n");
+						return;
 					}
+					stream->type = TE_STREAM_ICECHUNKS;
+					stream->tag = (i)&15;	// FIXME
+					stream->flags = (i+STREAM_ATTACHED);
+					stream->entity = ent;
+					stream->skin = 0;
+					stream->models[0] = models[0];
+					stream->endTime = cl.time + 0.3;
+					stream->lastTrailTime = 0;
 
-					for (i = 0; i < 5; i++)
-					{	// make some ice beams...
-						models[0] = Mod_ForName("models/stice.mdl", true);
+					VectorCopy(center, stream->source);
+					stream->source[0] += (rand() % 100) - 50;
+					stream->source[1] += (rand() % 100) - 50;
+					VectorCopy(stream->source, stream->dest);
+					stream->dest[2] += 128;
 
-						if ((stream = NewStream(ent, i)) == NULL)
-						{
-							Con_Printf("stream list overflow\n");
-							return;
-						}
-						stream->type = TE_STREAM_ICECHUNKS;
-						stream->tag = (i)&15;	// FIXME
-						stream->flags = (i+STREAM_ATTACHED);
-						stream->entity = ent;
-						stream->skin = 0;
-						stream->models[0] = models[0];
-						stream->endTime = cl.time + 0.3;
-						stream->lastTrailTime = 0;
+					VectorClear(stream->offset);
 
-						VectorCopy(center, stream->source);
-						stream->source[0] += (rand() % 100) - 50;
-						stream->source[1] += (rand() % 100) - 50;
-						VectorCopy(stream->source, stream->dest);
-						stream->dest[2] += 128;
-
-						VectorClear(stream->offset);
-
-						VectorSubtract(stream->source, state->origin, stream->offset);
-					}
+					VectorSubtract(stream->source, state->origin, stream->offset);
 				}
 			}
-			break;
+		  }	break;
 
 		case TE_HWMISSILEFLASH:
 			pos[0] = MSG_ReadCoord ();
@@ -1792,139 +1744,120 @@ void CL_ParseTEnt (void)
 			break;
 
 		case TE_SUNSTAFF_CHEAP:
+		  {	int		ent;
+			vec3_t		points[4];
+			int		j, reflect_count;
+			short int	tempVal;
+			entity_state_t	*state;
+			stream_t	*stream;
+			qmodel_t	*models[4];
+
+			ent = MSG_ReadShort();
+			reflect_count = MSG_ReadByte();
+			state = FindState(ent);
+
+			if (state)
 			{
-				int		ent;
-				vec3_t		points[4];
-				int		j, reflect_count;
-				short int	tempVal;
-				entity_state_t	*state;
-				stream_t	*stream;
-				qmodel_t	*models[4];
-
-				ent = MSG_ReadShort();
-				reflect_count = MSG_ReadByte();
-				state = FindState(ent);
-
-				if (state)
+				// read in up to 4 points for up to 3 beams
+				for (i = 0; i < 3; i++)
 				{
-					// read in up to 4 points for up to 3 beams
-					for (i = 0; i < 3; i++)
+					tempVal = MSG_ReadCoord();
+					points[0][i] = tempVal;
+				}
+				for (i = 1; i < 2 + reflect_count; i++)
+				{
+					for (j = 0; j < 3; j++)
 					{
 						tempVal = MSG_ReadCoord();
-						points[0][i] = tempVal;
-					}
-					for (i = 1; i < 2 + reflect_count; i++)
-					{
-						for (j = 0; j < 3; j++)
-						{
-							tempVal = MSG_ReadCoord();
-							points[i][j] = tempVal;
-						}
-					}
-
-					// actually create the sun model pieces
-					for (i = 0; i < reflect_count + 1; i++)
-					{
-						models[0] = Mod_ForName("models/stsunsf1.mdl", true);
-						models[1] = Mod_ForName("models/stsunsf2.mdl", true);
-						models[2] = Mod_ForName("models/stsunsf3.mdl", true);
-						models[3] = Mod_ForName("models/stsunsf4.mdl", true);
-
-						if ((stream = NewStream(ent, i)) == NULL)
-						{
-							Con_Printf("stream list overflow\n");
-							return;
-						}
-						stream->type = TE_STREAM_SUNSTAFF1;
-						stream->tag = i;
-						if (!i)
-						{
-							stream->flags = (i+STREAM_ATTACHED);
-						}
-						else
-						{
-							stream->flags = i;
-						}
-						stream->entity = ent;
-						stream->skin = 0;
-						stream->models[0] = models[0];
-						stream->models[1] = models[1];
-						stream->models[2] = models[2];
-						stream->models[3] = models[3];
-						stream->endTime = cl.time + 0.5;	// FIXME
-						stream->lastTrailTime = 0;
-
-						VectorCopy(points[i], stream->source);
-						VectorCopy(points[i+1], stream->dest);
-
-						if (!i)
-						{
-							VectorClear(stream->offset);
-							VectorSubtract(stream->source, state->origin, stream->offset);
-						}
+						points[i][j] = tempVal;
 					}
 				}
-				else
-				{	// read in everything to keep everything in sync
-					for (i = 0; i < (2 + reflect_count)*3; i++)
+				// actually create the sun model pieces
+				for (i = 0; i < reflect_count + 1; i++)
+				{
+					models[0] = Mod_ForName("models/stsunsf1.mdl", true);
+					models[1] = Mod_ForName("models/stsunsf2.mdl", true);
+					models[2] = Mod_ForName("models/stsunsf3.mdl", true);
+					models[3] = Mod_ForName("models/stsunsf4.mdl", true);
+					if ((stream = NewStream(ent, i)) == NULL)
 					{
-						tempVal = MSG_ReadShort();
+						Con_Printf("stream list overflow\n");
+						return;
+					}
+					stream->type = TE_STREAM_SUNSTAFF1;
+					stream->tag = i;
+					if (!i)
+						stream->flags = (i+STREAM_ATTACHED);
+					else	stream->flags = i;
+					stream->entity = ent;
+					stream->skin = 0;
+					stream->models[0] = models[0];
+					stream->models[1] = models[1];
+					stream->models[2] = models[2];
+					stream->models[3] = models[3];
+					stream->endTime = cl.time + 0.5;	// FIXME
+					stream->lastTrailTime = 0;
+
+					VectorCopy(points[i], stream->source);
+					VectorCopy(points[i+1], stream->dest);
+
+					if (!i)
+					{
+						VectorClear(stream->offset);
+						VectorSubtract(stream->source, state->origin, stream->offset);
 					}
 				}
 			}
-			break;
+			else
+			{	// read in everything to keep everything in sync
+				for (i = 0; i < (2 + reflect_count)*3; i++)
+					tempVal = MSG_ReadShort();
+			}
+		  }	break;
 
 		case TE_LIGHTNING_HAMMER:
+		  {	int		ent;
+			stream_t	*stream;
+			qmodel_t	*models[2];
+			entity_state_t	*state;
+
+			ent = MSG_ReadShort();
+			state = FindState(ent);
+
+			if (state)
 			{
-				int		ent;
-				stream_t	*stream;
-				qmodel_t	*models[2];
-				entity_state_t	*state;
+				if (rand() & 1)
+					S_StartSound (TempSoundChannel(), 0, cl_sfx_lightning1, state->origin, 1, 1);
+				else	S_StartSound (TempSoundChannel(), 0, cl_sfx_lightning2, state->origin, 1, 1);
 
-				ent = MSG_ReadShort();
-				state = FindState(ent);
-
-				if (state)
-				{
-					if (rand() & 1)
+				for (i = 0; i < 5; i++)
+				{	// make some lightning
+					models[0] = Mod_ForName("models/stlghtng.mdl", true);
+					if ((stream = NewStream(ent, i)) == NULL)
 					{
-						S_StartSound (TempSoundChannel(), 0, cl_sfx_lightning1, state->origin, 1, 1);
+						Con_Printf("stream list overflow\n");
+						return;
 					}
-					else
-					{
-						S_StartSound (TempSoundChannel(), 0, cl_sfx_lightning2, state->origin, 1, 1);
-					}
+					//stream->type = TE_STREAM_ICECHUNKS;
+					stream->type = TE_STREAM_LIGHTNING;
+					stream->tag = i;
+					stream->flags = i;
+					stream->entity = ent;
+					stream->skin = 0;
+					stream->models[0] = models[0];
+					stream->endTime = cl.time + 0.5;
+					stream->lastTrailTime = 0;
 
-					for (i = 0; i < 5; i++)
-					{	// make some lightning
-						models[0] = Mod_ForName("models/stlghtng.mdl", true);
-
-						if ((stream = NewStream(ent, i)) == NULL)
-						{
-							Con_Printf("stream list overflow\n");
-							return;
-						}
-						//stream->type = TE_STREAM_ICECHUNKS;
-						stream->type = TE_STREAM_LIGHTNING;
-						stream->tag = i;
-						stream->flags = i;
-						stream->entity = ent;
-						stream->skin = 0;
-						stream->models[0] = models[0];
-						stream->endTime = cl.time + 0.5;
-						stream->lastTrailTime = 0;
-
-						VectorCopy(state->origin, stream->source);
-						stream->source[0] += (rand() % 30) - 15;
-						stream->source[1] += (rand() % 30) - 15;
-						VectorCopy(stream->source, stream->dest);
-						stream->dest[0] += (rand() % 80) - 40;
-						stream->dest[1] += (rand() % 80) - 40;
-						stream->dest[2] += 64 + (rand() % 48);
-					}
+					VectorCopy(state->origin, stream->source);
+					stream->source[0] += (rand() % 30) - 15;
+					stream->source[1] += (rand() % 30) - 15;
+					VectorCopy(stream->source, stream->dest);
+					stream->dest[0] += (rand() % 80) - 40;
+					stream->dest[1] += (rand() % 80) - 40;
+					stream->dest[2] += 64 + (rand() % 48);
 				}
 			}
-			break;
+		  }	break;
 
 		case TE_HWTELEPORT:
 			pos[0] = MSG_ReadCoord ();
@@ -1935,7 +1868,7 @@ void CL_ParseTEnt (void)
 
 			ex = CL_AllocExplosion ();
 			VectorCopy(pos, ex->origin);
-			ex->frameFunc = TeleportFlashThink;	
+			ex->frameFunc = TeleportFlashThink;
 			ex->model = Mod_ForName("models/teleport.mdl", true);
 			ex->startTime = cl.time;
 			ex->endTime = ex->startTime + 2;
@@ -1970,71 +1903,64 @@ void CL_ParseTEnt (void)
 			break;
 
 		case TE_SWORD_EXPLOSION:
+		  {	int		ent;
+			stream_t	*stream;
+			qmodel_t	*models[2];
+			entity_state_t	*state;
+
+			pos[0] = MSG_ReadCoord();
+			pos[1] = MSG_ReadCoord();
+			pos[2] = MSG_ReadCoord();
+			ent = MSG_ReadShort();
+			state = FindState(ent);
+
+			if (state)
 			{
-				int		ent;
-				stream_t	*stream;
-				qmodel_t	*models[2];
-				entity_state_t	*state;
+				if (rand() & 1)
+					S_StartSound (TempSoundChannel(), 0, cl_sfx_lightning1, pos, 1, 1);
+				else	S_StartSound (TempSoundChannel(), 0, cl_sfx_lightning2, pos, 1, 1);
 
-				pos[0] = MSG_ReadCoord();
-				pos[1] = MSG_ReadCoord();
-				pos[2] = MSG_ReadCoord();
-				ent = MSG_ReadShort();
-				state = FindState(ent);
+				for (i = 0; i < 5; i++)
+				{	// make some lightning
+					models[0] = Mod_ForName("models/stlghtng.mdl", true);
 
-				if (state)
-				{
-					if (rand() & 1)
+					if ((stream = NewStream(ent, i)) == NULL)
 					{
-						S_StartSound (TempSoundChannel(), 0, cl_sfx_lightning1, pos, 1, 1);
+						Con_Printf("stream list overflow\n");
+						return;
 					}
-					else
-					{
-						S_StartSound (TempSoundChannel(), 0, cl_sfx_lightning2, pos, 1, 1);
-					}
+					//stream->type = TE_STREAM_ICECHUNKS;
+					stream->type = TE_STREAM_LIGHTNING;
+					stream->tag = i;
+					stream->flags = i;
+					stream->entity = ent;
+					stream->skin = 0;
+					stream->models[0] = models[0];
+					stream->endTime = cl.time + 0.5;
+					stream->lastTrailTime = 0;
 
-					for (i = 0; i < 5; i++)
-					{	// make some lightning
-						models[0] = Mod_ForName("models/stlghtng.mdl", true);
-
-						if ((stream = NewStream(ent, i)) == NULL)
-						{
-							Con_Printf("stream list overflow\n");
-							return;
-						}
-						//stream->type = TE_STREAM_ICECHUNKS;
-						stream->type = TE_STREAM_LIGHTNING;
-						stream->tag = i;
-						stream->flags = i;
-						stream->entity = ent;
-						stream->skin = 0;
-						stream->models[0] = models[0];
-						stream->endTime = cl.time + 0.5;
-						stream->lastTrailTime = 0;
-
-						VectorCopy(pos, stream->source);
-						stream->source[0] += (rand() % 30) - 15;
-						stream->source[1] += (rand() % 30) - 15;
-						VectorCopy(stream->source, stream->dest);
-						stream->dest[0] += (rand() % 80) - 40;
-						stream->dest[1] += (rand() % 80) - 40;
-						stream->dest[2] += 64 + (rand() % 48);
-					}
+					VectorCopy(pos, stream->source);
+					stream->source[0] += (rand() % 30) - 15;
+					stream->source[1] += (rand() % 30) - 15;
+					VectorCopy(stream->source, stream->dest);
+					stream->dest[0] += (rand() % 80) - 40;
+					stream->dest[1] += (rand() % 80) - 40;
+					stream->dest[2] += 64 + (rand() % 48);
 				}
-				ex = CL_AllocExplosion();
-				VectorCopy(pos, ex->origin);
-				ex->model = Mod_ForName("models/vorpshok.mdl", true);
-				ex->startTime = cl.time;
-				ex->endTime = ex->startTime + 1.0;
-				ex->flags |= MLS_ABSLIGHT;
-				ex->abslight = 128;
-				ex->skin = 0;
-				ex->scale = 100;
-				ex->frameFunc = SwordFrameFunc;
-
-				S_StartSound (TempSoundChannel(), 0, cl_sfx_swordExplode, pos, 1, 1);
 			}
-			break;
+			ex = CL_AllocExplosion();
+			VectorCopy(pos, ex->origin);
+			ex->model = Mod_ForName("models/vorpshok.mdl", true);
+			ex->startTime = cl.time;
+			ex->endTime = ex->startTime + 1.0;
+			ex->flags |= MLS_ABSLIGHT;
+			ex->abslight = 128;
+			ex->skin = 0;
+			ex->scale = 100;
+			ex->frameFunc = SwordFrameFunc;
+
+			S_StartSound (TempSoundChannel(), 0, cl_sfx_swordExplode, pos, 1, 1);
+		  }	break;
 
 		case TE_AXE_BOUNCE:
 			pos[0] = MSG_ReadCoord();
@@ -2168,93 +2094,89 @@ void CL_ParseTEnt (void)
 			break;
 
 		case TE_SUNSTAFF_POWER:
+		  {	int		ent;
+			stream_t	*stream;
+			qmodel_t	*models[4];
+			entity_state_t	*state;
+
+			ent = MSG_ReadShort();
+
+			vel[0] = MSG_ReadCoord();
+			vel[1] = MSG_ReadCoord();
+			vel[2] = MSG_ReadCoord();
+			pos[0] = MSG_ReadCoord();
+			pos[1] = MSG_ReadCoord();
+			pos[2] = MSG_ReadCoord();
+
+			for (i = 0; i < 2; i++)
 			{
-				int		ent;
-				stream_t	*stream;
-				qmodel_t	*models[4];
-				entity_state_t	*state;
-
-				ent = MSG_ReadShort();
-
-				vel[0] = MSG_ReadCoord();
-				vel[1] = MSG_ReadCoord();
-				vel[2] = MSG_ReadCoord();
-				pos[0] = MSG_ReadCoord();
-				pos[1] = MSG_ReadCoord();
-				pos[2] = MSG_ReadCoord();
-
-				for (i = 0; i < 2; i++)
+				ex = CL_AllocExplosion();
+				VectorCopy(pos, ex->origin);
+				if (i)
 				{
-					ex = CL_AllocExplosion();
-					VectorCopy(pos, ex->origin);
-					if (i)
-					{
-						ex->model = Mod_ForName("models/stsunsf3.mdl", true);
-						ex->scale = 200;
-						ex->frameFunc = sunPowerUpdate;
-					}
-					else
-					{
-						ex->model = Mod_ForName("models/blast.mdl", true);
-						ex->flags |= DRF_TRANSLUCENT;
-						ex->frameFunc = sunBallUpdate;
-						ex->scale = 120;
-					}
-					ex->flags |= MLS_ABSLIGHT|SCALE_TYPE_UNIFORM|SCALE_ORIGIN_CENTER;
-					ex->abslight = 128;
-					ex->skin = 0;
+					ex->model = Mod_ForName("models/stsunsf3.mdl", true);
 					ex->scale = 200;
-					ex->startTime = cl.time;
-					ex->endTime = ex->startTime + .8;
-
-					ex->exflags = EXFLAG_ROTATE;
-
-					ex->avel[0] = 50;
-					ex->avel[1] = 50;
-					ex->avel[2] = 50;
+					ex->frameFunc = sunPowerUpdate;
 				}
-
-				S_StartSound (TempSoundChannel(), 0, cl_sfx_fireBall, pos, 1, 1);
-
-				state = FindState(ent);
-
-				if (state)
+				else
 				{
-					S_StartSound (TempSoundChannel(), 0, cl_sfx_sunstaff, state->origin, 1, 1);
-
-					models[0] = Mod_ForName("models/stsunsf2.mdl", true);
-					models[1] = Mod_ForName("models/stsunsf1.mdl", true);
-					models[2] = Mod_ForName("models/stsunsf3.mdl", true);
-					models[3] = Mod_ForName("models/stsunsf4.mdl", true);
-
-					if ((stream = NewStream(ent, 0)) == NULL)
-					{
-						Con_Printf("stream list overflow\n");
-						return;
-					}
-					stream->type = TE_STREAM_SUNSTAFF2;
-					stream->tag = 0;
-					//stream->flags = STREAM_ATTACHED;
-					stream->flags = 0;
-					stream->entity = ent;
-					stream->skin = 0;
-					stream->models[0] = models[0];
-					stream->models[1] = models[1];
-					stream->models[2] = models[2];
-					stream->models[3] = models[3];
-					stream->endTime = cl.time + 0.8;
-					stream->lastTrailTime = 0;
-
-					VectorCopy(vel, stream->source);
-					VectorCopy(pos, stream->dest);
-
-					//VectorClear(stream->offset);
-					//VectorSubtract(stream->source, vel, stream->offset);
-
-					// make some spiffy particles to glue it all together
+					ex->model = Mod_ForName("models/blast.mdl", true);
+					ex->flags |= DRF_TRANSLUCENT;
+					ex->frameFunc = sunBallUpdate;
+					ex->scale = 120;
 				}
+				ex->flags |= MLS_ABSLIGHT|SCALE_TYPE_UNIFORM|SCALE_ORIGIN_CENTER;
+				ex->abslight = 128;
+				ex->skin = 0;
+				ex->scale = 200;
+				ex->startTime = cl.time;
+				ex->endTime = ex->startTime + .8;
+
+				ex->exflags = EXFLAG_ROTATE;
+
+				ex->avel[0] = 50;
+				ex->avel[1] = 50;
+				ex->avel[2] = 50;
 			}
-			break;
+
+			S_StartSound (TempSoundChannel(), 0, cl_sfx_fireBall, pos, 1, 1);
+
+			state = FindState(ent);
+			if (state)
+			{
+				S_StartSound (TempSoundChannel(), 0, cl_sfx_sunstaff, state->origin, 1, 1);
+
+				models[0] = Mod_ForName("models/stsunsf2.mdl", true);
+				models[1] = Mod_ForName("models/stsunsf1.mdl", true);
+				models[2] = Mod_ForName("models/stsunsf3.mdl", true);
+				models[3] = Mod_ForName("models/stsunsf4.mdl", true);
+				if ((stream = NewStream(ent, 0)) == NULL)
+				{
+					Con_Printf("stream list overflow\n");
+					return;
+				}
+				stream->type = TE_STREAM_SUNSTAFF2;
+				stream->tag = 0;
+				//stream->flags = STREAM_ATTACHED;
+				stream->flags = 0;
+				stream->entity = ent;
+				stream->skin = 0;
+				stream->models[0] = models[0];
+				stream->models[1] = models[1];
+				stream->models[2] = models[2];
+				stream->models[3] = models[3];
+				stream->endTime = cl.time + 0.8;
+				stream->lastTrailTime = 0;
+
+				VectorCopy(vel, stream->source);
+				VectorCopy(pos, stream->dest);
+
+				//VectorClear(stream->offset);
+				//VectorSubtract(stream->source, vel, stream->offset);
+
+				// make some spiffy particles to glue it all together
+			}
+		  }	break;
 
 		case TE_PURIFY2_EXPLODE:
 			pos[0] = MSG_ReadCoord();
@@ -2313,255 +2235,237 @@ void CL_ParseTEnt (void)
 			break;
 
 		case TE_PLAYER_DEATH:
+		  {	int	angle;	// from 0 to 256
+			int	pitch;	// from 0 to 256
+			int	force, style;
+			float	throwPower, curAng, curPitch;
+
+			pos[0] = MSG_ReadCoord();
+			pos[1] = MSG_ReadCoord();
+			pos[2] = MSG_ReadCoord();
+
+			angle = MSG_ReadByte();
+			pitch = MSG_ReadByte();
+			force = MSG_ReadByte();
+			style = MSG_ReadByte();
+
+			i = (host_frametime < 0.07) ? 0 : 8;
+			for ( ; i < 12; i++)
 			{
-				int	angle;	// from 0 to 256
-				int	pitch;	// from 0 to 256
-				int	force, style;
-				float	throwPower, curAng, curPitch;
+				ex = CL_AllocExplosion();
+				VectorCopy(pos, ex->origin);
+				ex->origin[0] += (rand() % 40) - 20;
+				ex->origin[1] += (rand() % 40) - 20;
+				ex->origin[2] += (rand() % 40);
+				ex->frameFunc = ChunkThink;
 
-				pos[0] = MSG_ReadCoord();
-				pos[1] = MSG_ReadCoord();
-				pos[2] = MSG_ReadCoord();
+				throwPower = 3.5 + ((rand() % 100) / 100.0);
+				curAng = angle*6.28/256.0 + ((rand() % 100) / 50.0) - 1.0;
+				curPitch = pitch*6.28/256.0 + ((rand() % 100) / 100.0) - .5;
 
-				angle = MSG_ReadByte();
-				pitch = MSG_ReadByte();
-				force = MSG_ReadByte();
-				style = MSG_ReadByte();
+				ex->velocity[0] = force*throwPower * cos(curAng) * cos(curPitch);
+				ex->velocity[1] = force*throwPower * sin(curAng) * cos(curPitch);
+				ex->velocity[2] = force*throwPower * sin(curPitch);
 
-				i = (host_frametime < 0.07) ? 0 : 8;
-				for ( ; i < 12; i++)
+				// are these in degrees or radians?
+				ex->angles[0] = rand() % 360;
+				ex->angles[1] = rand() % 360;
+				ex->angles[2] = rand() % 360;
+				ex->exflags = EXFLAG_ROTATE;
+
+				ex->avel[0] = (rand() % 850) - 425;
+				ex->avel[1] = (rand() % 850) - 425;
+				ex->avel[2] = (rand() % 850) - 425;
+
+				ex->scale = 80 + (rand() % 40);
+				ex->data = THINGTYPE_FLESH;
+
+				switch (rand() % 3)
+				{
+				case 0:
+					ex->model = Mod_ForName("models/flesh1.mdl", true);
+					break;
+				case 1:
+					ex->model = Mod_ForName("models/flesh2.mdl", true);
+					break;
+				case 2:
+					ex->model = Mod_ForName("models/flesh3.mdl", true);
+					break;
+				}
+
+				ex->skin = 0;
+				ex->startTime = cl.time;
+				ex->endTime = ex->startTime + 4.0;
+			}
+
+			switch (style)
+			{
+			case 0:
+				S_StartSound (TempSoundChannel(), 0, cl_sfx_big_gib, pos, 1, 1);
+				break;
+			case 1:
+				if (rand() % 2)
+					S_StartSound (TempSoundChannel(), 0, cl_sfx_gib1, pos, 1, 1);
+				else	S_StartSound (TempSoundChannel(), 0, cl_sfx_gib2, pos, 1, 1);
+				break;
+			case 2:
+				S_StartSound (TempSoundChannel(), 0, cl_sfx_telefrag, pos, 1, 1);
+				break;
+			}
+		  }	break;
+
+		case TE_PURIFY1_EFFECT:
+		  {	float	angle, pitch, dist;
+			vec3_t	endPos;
+
+			pos[0] = MSG_ReadCoord();
+			pos[1] = MSG_ReadCoord();
+			pos[2] = MSG_ReadCoord();
+
+			angle = MSG_ReadByte()*6.28/256.0;
+			pitch = MSG_ReadByte()*6.28/256.0;
+			dist = MSG_ReadShort();
+
+			endPos[0] = pos[0] + dist * cos(angle) * cos(pitch);
+			endPos[1] = pos[1] + dist * sin(angle) * cos(pitch);
+			endPos[2] = pos[2] + dist * sin(pitch);
+
+			R_RocketTrail (pos, endPos, rt_purify);
+
+			S_StartSound (TempSoundChannel(), 0, cl_sfx_purify1_fire, pos, 1, 1);
+			S_StartSound (TempSoundChannel(), 0, cl_sfx_purify1_hit, endPos, 1, 1);
+
+			ex = CL_AllocExplosion();
+			VectorCopy(endPos, ex->origin);
+			ex->model = Mod_ForName("models/fcircle.spr", true);
+			ex->startTime = cl.time;
+			ex->flags |= MLS_ABSLIGHT;
+			ex->abslight = 128;
+			ex->skin = 0;
+			ex->scale = 100;
+			ex->endTime = ex->startTime + ex->model->numframes * 0.05;
+		  }	break;
+
+		case TE_TELEPORT_LINGER:
+		  {	float duration;
+
+			pos[0] = MSG_ReadCoord();
+			pos[1] = MSG_ReadCoord();
+			pos[2] = MSG_ReadCoord();
+
+			duration = MSG_ReadCoord();
+
+			ex = CL_AllocExplosion();
+			VectorCopy(pos, ex->origin);
+			ex->model = Mod_ForName("models/bspark.spr", true);
+			ex->startTime = cl.time;
+			ex->flags |= MLS_ABSLIGHT;
+			ex->abslight = 128;
+			ex->frameFunc = telEffectUpdate;
+			ex->skin = 0;
+			ex->scale = 0;
+			ex->endTime = ex->startTime + duration;
+		  }	break;
+
+		case TE_LINE_EXPLOSION:
+		  {	int	distance;
+			vec3_t	endPos,midPos,curPos,distVec;
+			float	ratio;
+
+			pos[0] = MSG_ReadCoord();
+			pos[1] = MSG_ReadCoord();
+			pos[2] = MSG_ReadCoord();
+			endPos[0] = MSG_ReadCoord();
+			endPos[1] = MSG_ReadCoord();
+			endPos[2] = MSG_ReadCoord();
+
+			VectorAdd(pos,endPos,midPos);
+			VectorScale(midPos,0.5,midPos);
+
+			VectorSubtract(midPos,pos,distVec);
+			distance = (int)(VectorNormalize(distVec)*0.025);
+			if (distance > 0)
+			{
+				VectorScale(distVec,40,distVec);
+				VectorCopy(midPos,curPos);
+
+				for (i = 0; i < distance; i++)
 				{
 					ex = CL_AllocExplosion();
-					VectorCopy(pos, ex->origin);
-					ex->origin[0] += (rand() % 40) - 20;
-					ex->origin[1] += (rand() % 40) - 20;
-					ex->origin[2] += (rand() % 40);
-					ex->frameFunc = ChunkThink;
-
-					throwPower = 3.5 + ((rand() % 100) / 100.0);
-					curAng = angle*6.28/256.0 + ((rand() % 100) / 50.0) - 1.0;
-					curPitch = pitch*6.28/256.0 + ((rand() % 100) / 100.0) - .5;
-
-					ex->velocity[0] = force*throwPower * cos(curAng) * cos(curPitch);
-					ex->velocity[1] = force*throwPower * sin(curAng) * cos(curPitch);
-					ex->velocity[2] = force*throwPower * sin(curPitch);
-
-					// are these in degrees or radians?
-					ex->angles[0] = rand() % 360;
-					ex->angles[1] = rand() % 360;
-					ex->angles[2] = rand() % 360;
-					ex->exflags = EXFLAG_ROTATE;
-
-					ex->avel[0] = (rand() % 850) - 425;
-					ex->avel[1] = (rand() % 850) - 425;
-					ex->avel[2] = (rand() % 850) - 425;
-
-					ex->scale = 80 + (rand() % 40);
-					ex->data = THINGTYPE_FLESH;
-
+					VectorCopy(curPos, ex->origin);
 					switch (rand() % 3)
 					{
 					case 0:
-						ex->model = Mod_ForName("models/flesh1.mdl", true);
+						ex->model = Mod_ForName("models/gen_expl.spr", true);
 						break;
 					case 1:
-						ex->model = Mod_ForName("models/flesh2.mdl", true);
+						ex->model = Mod_ForName("models/bg_expld.spr", true);
 						break;
 					case 2:
-						ex->model = Mod_ForName("models/flesh3.mdl", true);
+						ex->model = Mod_ForName("models/sm_expld.spr", true);
 						break;
 					}
-
+					ex->flags |= MLS_ABSLIGHT;
+					ex->abslight = 128;
 					ex->skin = 0;
+					ratio = (float)i/(float)distance;
+					ex->scale = 200-(int)(150.0*ratio);
+					ex->startTime = cl.time + ratio*0.75;
+					ex->endTime = ex->startTime + ex->model->numframes * (0.025 + FRANDOM()*0.01);
 
-					ex->startTime = cl.time;
-					ex->endTime = ex->startTime + 4.0;
+					VectorAdd(curPos,distVec,curPos);
 				}
 
-				switch (style)
+				VectorScale(distVec,-1,distVec);
+				VectorCopy(midPos,curPos);
+
+				for (i = 0; i < distance; i++)
 				{
-				case 0:
-					S_StartSound (TempSoundChannel(), 0, cl_sfx_big_gib, pos, 1, 1);
-					break;
-				case 1:
-					if (rand() % 2)
+					ex = CL_AllocExplosion();
+					VectorCopy(curPos, ex->origin);
+					switch (rand() % 3)
 					{
-						S_StartSound (TempSoundChannel(), 0, cl_sfx_gib1, pos, 1, 1);
+					case 0:
+						ex->model = Mod_ForName("models/gen_expl.spr", true);
+						break;
+					case 1:
+						ex->model = Mod_ForName("models/bg_expld.spr", true);
+						break;
+					case 2:
+						ex->model = Mod_ForName("models/sm_expld.spr", true);
+						break;
 					}
-					else
-					{
-						S_StartSound (TempSoundChannel(), 0, cl_sfx_gib2, pos, 1, 1);
-					}
-					break;
-				case 2:
-					S_StartSound (TempSoundChannel(), 0, cl_sfx_telefrag, pos, 1, 1);
-					break;
+					ex->flags |= MLS_ABSLIGHT;
+					ex->abslight = 128;
+					ex->skin = 0;
+					ratio = (float)i / (float)distance;
+					ex->scale = 200 - (int)(150.0*ratio);
+					ex->startTime = cl.time + ratio*0.75;
+					ex->endTime = ex->startTime + ex->model->numframes * (0.025+FRANDOM()*0.01);
+
+					VectorAdd(curPos,distVec,curPos);
 				}
 			}
-			break;
-
-		case TE_PURIFY1_EFFECT:
-			{
-				float	angle, pitch, dist;
-				vec3_t	endPos;
-
-				pos[0] = MSG_ReadCoord();
-				pos[1] = MSG_ReadCoord();
-				pos[2] = MSG_ReadCoord();
-
-				angle = MSG_ReadByte()*6.28/256.0;
-				pitch = MSG_ReadByte()*6.28/256.0;
-				dist = MSG_ReadShort();
-
-				endPos[0] = pos[0] + dist * cos(angle) * cos(pitch);
-				endPos[1] = pos[1] + dist * sin(angle) * cos(pitch);
-				endPos[2] = pos[2] + dist * sin(pitch);
-
-				//R_RocketTrail (pos, endPos, rt_purify);
-				R_RocketTrail (pos, endPos, rt_purify);
-
-				S_StartSound (TempSoundChannel(), 0, cl_sfx_purify1_fire, pos, 1, 1);
-				S_StartSound (TempSoundChannel(), 0, cl_sfx_purify1_hit, endPos, 1, 1);
-
-				ex = CL_AllocExplosion();
-				VectorCopy(endPos, ex->origin);
-				ex->model = Mod_ForName("models/fcircle.spr", true);
-				ex->startTime = cl.time;
-				ex->flags |= MLS_ABSLIGHT;
-				ex->abslight = 128;
-				ex->skin = 0;
-				ex->scale = 100;
-				ex->endTime = ex->startTime + ex->model->numframes * 0.05;
-			}
-			break;
-
-		case TE_TELEPORT_LINGER:
-			{
-				float duration;
-
-				pos[0] = MSG_ReadCoord();
-				pos[1] = MSG_ReadCoord();
-				pos[2] = MSG_ReadCoord();
-
-				duration = MSG_ReadCoord();
-
-				ex = CL_AllocExplosion();
-				VectorCopy(pos, ex->origin);
-				ex->model = Mod_ForName("models/bspark.spr", true);
-				ex->startTime = cl.time;
-				ex->flags |= MLS_ABSLIGHT;
-				ex->abslight = 128;
-				ex->frameFunc = telEffectUpdate;
-				ex->skin = 0;
-				ex->scale = 0;
-				ex->endTime = ex->startTime + duration;
-			}
-			break;
-
-		case TE_LINE_EXPLOSION:
-			{
-				int	distance;
-				vec3_t	endPos,midPos,curPos,distVec;
-				float	ratio;
-
-				pos[0] = MSG_ReadCoord();
-				pos[1] = MSG_ReadCoord();
-				pos[2] = MSG_ReadCoord();
-				endPos[0] = MSG_ReadCoord();
-				endPos[1] = MSG_ReadCoord();
-				endPos[2] = MSG_ReadCoord();
-
-				VectorAdd(pos,endPos,midPos);
-				VectorScale(midPos,0.5,midPos);
-
-				VectorSubtract(midPos,pos,distVec);
-				distance = (int)(VectorNormalize(distVec)*0.025);
-				if (distance > 0)
-				{
-					VectorScale(distVec,40,distVec);
-
-					VectorCopy(midPos,curPos);
-
-					for (i = 0; i < distance; i++)
-					{
-						ex = CL_AllocExplosion();
-						VectorCopy(curPos, ex->origin);
-						switch (rand() % 3)
-						{
-						case 0:
-							ex->model = Mod_ForName("models/gen_expl.spr", true);
-							break;
-						case 1:
-							ex->model = Mod_ForName("models/bg_expld.spr", true);
-							break;
-						case 2:
-							ex->model = Mod_ForName("models/sm_expld.spr", true);
-							break;
-						}
-						ex->flags |= MLS_ABSLIGHT;
-						ex->abslight = 128;
-						ex->skin = 0;
-						ratio = (float)i/(float)distance;
-						ex->scale = 200-(int)(150.0*ratio);
-						ex->startTime = cl.time + ratio*0.75;
-						ex->endTime = ex->startTime + ex->model->numframes * (0.025 + FRANDOM()*0.01);
-
-						VectorAdd(curPos,distVec,curPos);
-					}
-
-					VectorScale(distVec,-1,distVec);
-					VectorCopy(midPos,curPos);
-
-					for (i = 0; i < distance; i++)
-					{
-						ex = CL_AllocExplosion();
-						VectorCopy(curPos, ex->origin);
-						switch (rand() % 3)
-						{
-						case 0:
-							ex->model = Mod_ForName("models/gen_expl.spr", true);
-							break;
-						case 1:
-							ex->model = Mod_ForName("models/bg_expld.spr", true);
-							break;
-						case 2:
-							ex->model = Mod_ForName("models/sm_expld.spr", true);
-							break;
-						}
-						ex->flags |= MLS_ABSLIGHT;
-						ex->abslight = 128;
-						ex->skin = 0;
-						ratio = (float)i/(float)distance;
-						ex->scale = 200 - (int)(150.0*ratio);
-						ex->startTime = cl.time + ratio*0.75;
-						ex->endTime = ex->startTime + ex->model->numframes * (0.025+FRANDOM()*0.01);
-
-						VectorAdd(curPos,distVec,curPos);
-					}
-				}
-			}
-			break;
+		  }	break;
 
 		case TE_METEOR_CRUSH:
-			{
-				float	maxDist;
+		  {	float	maxDist;
 
-				pos[0] = MSG_ReadCoord();
-				pos[1] = MSG_ReadCoord();
-				pos[2] = MSG_ReadCoord();
-				maxDist = MSG_ReadLong();
+			pos[0] = MSG_ReadCoord();
+			pos[1] = MSG_ReadCoord();
+			pos[2] = MSG_ReadCoord();
+			maxDist = MSG_ReadLong();
 
-				ex = CL_AllocExplosion();
-				VectorCopy(pos, ex->origin);
-				ex->model = Mod_ForName("models/null.spr", true);
-				ex->startTime = cl.time;
-				ex->endTime = ex->startTime + 0.4;
-				ex->frameFunc = MeteorCrushSpawnThink;
-				ex->data = maxDist;
+			ex = CL_AllocExplosion();
+			VectorCopy(pos, ex->origin);
+			ex->model = Mod_ForName("models/null.spr", true);
+			ex->startTime = cl.time;
+			ex->endTime = ex->startTime + 0.4;
+			ex->frameFunc = MeteorCrushSpawnThink;
+			ex->data = maxDist;
 
-				S_StartSound (TempSoundChannel(), 0, cl_sfx_axeExplode, pos, 1, 1);
-			}
-			break;
+			S_StartSound (TempSoundChannel(), 0, cl_sfx_axeExplode, pos, 1, 1);
+		  }	break;
 
 		case TE_ACIDBALL:
 			pos[0] = MSG_ReadCoord();
@@ -2583,9 +2487,7 @@ void CL_ParseTEnt (void)
 
 				ex->model = Mod_ForName("models/axplsn_2.spr", true);
 				if (host_frametime < 0.07)
-				{
 					ex->flags |= MLS_ABSLIGHT|DRF_TRANSLUCENT;
-				}
 				ex->abslight = 160 + (rand() % 24);
 				ex->skin = 0;
 				ex->scale = 80 + (rand() % 40);
@@ -2628,9 +2530,7 @@ void CL_ParseTEnt (void)
 					break;
 				}
 				if (host_frametime < 0.07)
-				{
 					ex->flags |= MLS_ABSLIGHT|DRF_TRANSLUCENT;
-				}
 				ex->abslight = 1;
 				ex->skin = 0;
 				ex->scale = 80 + (rand() % 40);
@@ -2675,85 +2575,77 @@ void CL_ParseTEnt (void)
 			break;
 
 		case TE_FIREWALL:
+		  {	float	travelAng, travelPitch;
+			float	fireCounts;
+			vec3_t	endPos, curPos, posAdd;
+			dlight_t	*dlx;
+			mleaf_t		*l;
+
+			pos[0] = MSG_ReadCoord();
+			pos[1] = MSG_ReadCoord();
+			pos[2] = MSG_ReadCoord();
+			travelAng = MSG_ReadByte()*6.28/256.0;
+			travelPitch = MSG_ReadByte()*6.28/256.0;
+			fireCounts = MSG_ReadByte();
+
+			dlx = CL_AllocDlight (0);
+			VectorCopy (pos,  dlx->origin);
+			dlx->radius = 200 + (rand() & 31);
+			dlx->die = cl.time + 0.001;
+
+			VectorCopy(pos, endPos);
+			endPos[0] += cos(travelAng) * cos(travelPitch) * 450;
+			endPos[1] += sin(travelAng) * cos(travelPitch) * 450;
+			endPos[2] += sin(travelPitch) * 450;
+
+			VectorCopy(pos, curPos);
+			VectorSubtract(endPos, pos, posAdd);
+			VectorScale(posAdd, .125, posAdd);
+
+			for (i = 0; i < fireCounts; i++)
 			{
-				float	travelAng, travelPitch;
-				float	fireCounts;
-				dlight_t	*dlx;
-				vec3_t		endPos, curPos, posAdd;
-				mleaf_t		*l;
-
-				pos[0] = MSG_ReadCoord();
-				pos[1] = MSG_ReadCoord();
-				pos[2] = MSG_ReadCoord();
-				travelAng = MSG_ReadByte()*6.28/256.0;
-				travelPitch = MSG_ReadByte()*6.28/256.0;
-				fireCounts = MSG_ReadByte();
-
-				dlx = CL_AllocDlight (0);
-				VectorCopy (pos,  dlx->origin);
-				dlx->radius = 200 + (rand() & 31);
-				dlx->die = cl.time + 0.001;
-
-				VectorCopy(pos, endPos);
-				endPos[0] += cos(travelAng) * cos(travelPitch) * 450;
-				endPos[1] += sin(travelAng) * cos(travelPitch) * 450;
-				endPos[2] += sin(travelPitch) * 450;
-
-				VectorCopy(pos, curPos);
-				VectorSubtract(endPos, pos, posAdd);
-				VectorScale(posAdd, .125, posAdd);
-
-				for (i = 0; i < fireCounts; i++)
+				ex = CL_AllocExplosion();
+				VectorCopy(curPos, ex->origin);
+				switch (rand() % 3)
 				{
-					ex = CL_AllocExplosion();
-					VectorCopy(curPos, ex->origin);
-					switch (rand() % 3)
-					{
-					case 0:
-						ex->model = Mod_ForName("models/firewal1.spr", true);
-						break;
-					case 1:
-						ex->model = Mod_ForName("models/firewal5.spr", true);
-						break;
-					case 2:
-						ex->model = Mod_ForName("models/firewal4.spr", true);
-						break;
-					}
-					ex->startTime = cl.time + .3/8.0 * i;
-					ex->endTime = ex->startTime + ex->model->numframes * 0.05;
-
-					do
-					{	// I dunno how expensive this is, but it kind of sucks anyway around it...
-						l = Mod_PointInLeaf (ex->origin, cl.worldmodel);
-
-						if (l->contents == CONTENTS_EMPTY)
-						{
-							ex->origin[2] -= 16;
-						}
-						else
-						{
-							ex->origin[2] += 16;
-						}
-					} while (l->contents == CONTENTS_EMPTY);
-
-					ex->origin[0] += (rand() % 8) - 4;
-					ex->origin[1] += (rand() % 8) - 4;
-					ex->origin[2] += (rand() % 6) + 21;
-
-					ex = CL_AllocExplosion();
-					VectorCopy(curPos, ex->origin);
-					ex->origin[0] += (rand() % 8) - 4;
-					ex->origin[1] += (rand() % 8) - 4;
-					ex->origin[2] += (rand() % 6) - 3;
-					ex->model = Mod_ForName("models/flamestr.spr", true);
-					ex->startTime = cl.time + .3/8.0 * i;
-					ex->endTime = ex->startTime + ex->model->numframes * 0.05;
-					ex->flags |= DRF_TRANSLUCENT;
-
-					VectorAdd(curPos, posAdd, curPos);
+				case 0:
+					ex->model = Mod_ForName("models/firewal1.spr", true);
+					break;
+				case 1:
+					ex->model = Mod_ForName("models/firewal5.spr", true);
+					break;
+				case 2:
+					ex->model = Mod_ForName("models/firewal4.spr", true);
+					break;
 				}
+				ex->startTime = cl.time + .3/8.0 * i;
+				ex->endTime = ex->startTime + ex->model->numframes * 0.05;
+
+				do
+				{	// I dunno how expensive this is, but it kind of sucks anyway around it...
+					l = Mod_PointInLeaf (ex->origin, cl.worldmodel);
+					if (l->contents == CONTENTS_EMPTY)
+						ex->origin[2] -= 16;
+					else	ex->origin[2] += 16;
+				} while (l->contents == CONTENTS_EMPTY);
+
+				ex->origin[0] += (rand() % 8) - 4;
+				ex->origin[1] += (rand() % 8) - 4;
+				ex->origin[2] += (rand() % 6) + 21;
+
+				ex = CL_AllocExplosion();
+				VectorCopy(curPos, ex->origin);
+				ex->origin[0] += (rand() % 8) - 4;
+				ex->origin[1] += (rand() % 8) - 4;
+				ex->origin[2] += (rand() % 6) - 3;
+				ex->model = Mod_ForName("models/flamestr.spr", true);
+				ex->startTime = cl.time + .3/8.0 * i;
+				ex->endTime = ex->startTime + ex->model->numframes * 0.05;
+				ex->flags |= DRF_TRANSLUCENT;
+
+				VectorAdd(curPos, posAdd, curPos);
 			}
-			break;
+		  }	break;
 
 		case TE_FIREWALL_IMPACT:
 			// Add in the actual explosion
@@ -2794,697 +2686,648 @@ void CL_ParseTEnt (void)
 			break;
 
 		case TE_POWERFLAME:
+		  {	float	travelAng, travelPitch;
+			float	fireCounts;
+			dlight_t	*dlx;
+			vec3_t	endPos, curPos, posAdd;
+			vec3_t	angles, forward, right, up;
+			float	cVal, sVal, svTime;
+
+			pos[0] = MSG_ReadCoord();
+			pos[1] = MSG_ReadCoord();
+			pos[2] = MSG_ReadCoord();
+			travelAng = MSG_ReadByte()*6.28/256.0;
+			travelPitch = MSG_ReadByte()*6.28/256.0;
+			fireCounts = MSG_ReadByte();
+			svTime = MSG_ReadLong();
+
+			angles[0] = travelPitch*360/(2*M_PI);
+			angles[1] = travelAng*360/(2*M_PI);
+			angles[2] = 0;
+
+			AngleVectors(angles, forward, right, up);
+
+			dlx = CL_AllocDlight (0);
+			VectorCopy (pos,  dlx->origin);
+			dlx->radius = 200 + (rand() & 31);
+			dlx->die = cl.time + 0.001;
+
+			VectorCopy(pos, endPos);
+			endPos[0] += cos(travelAng) * cos(travelPitch) * 375;
+			endPos[1] += sin(travelAng) * cos(travelPitch) * 375;
+			endPos[2] += sin(travelPitch) * 375;
+
+			VectorCopy(pos, curPos);
+			VectorSubtract(endPos, pos, posAdd);
+			VectorScale(posAdd, .125, posAdd);
+
+			for (i = 0; i < fireCounts; i++)
 			{
-				float	travelAng, travelPitch;
-				float	fireCounts;
-				dlight_t	*dlx;
-				vec3_t		endPos, curPos, posAdd;
-				vec3_t		angles, forward, right, up;
-				float	cVal, sVal, svTime;
+				cVal = cos((svTime + (i*.3/8.0))*8)*10;
+				sVal = sin((svTime + (i*.3/8.0))*8)*10;
 
-				pos[0] = MSG_ReadCoord();
-				pos[1] = MSG_ReadCoord();
-				pos[2] = MSG_ReadCoord();
-				travelAng = MSG_ReadByte()*6.28/256.0;
-				travelPitch = MSG_ReadByte()*6.28/256.0;
-				fireCounts = MSG_ReadByte();
-				svTime = MSG_ReadLong();
+				ex = CL_AllocExplosion();
+				VectorCopy(curPos, ex->origin);
+				VectorMA(ex->origin, cVal, right, ex->origin);
+				VectorMA(ex->origin, sVal, up, ex->origin);
+				ex->origin[0] += (rand() % 8) - 4;
+				ex->origin[1] += (rand() % 8) - 4;
+				ex->origin[2] += (rand() % 6) - 3;
+				ex->model = Mod_ForName("models/flamestr.spr", true);
+				ex->startTime = cl.time + .3/8.0 * i;
+				ex->endTime = ex->startTime + ex->model->numframes * 0.05;
+				ex->flags |= DRF_TRANSLUCENT;
 
+				ex->velocity[0] = 0;
+				ex->velocity[1] = 0;
+				ex->velocity[2] = 0;
+				VectorMA(ex->velocity, cVal * 4.0, right, ex->velocity);
+				VectorMA(ex->velocity, sVal * 4.0, up, ex->velocity);
+
+				ex = CL_AllocExplosion();
+				VectorCopy(curPos, ex->origin);
+				VectorMA(ex->origin, -cVal, right, ex->origin);
+				VectorMA(ex->origin, -sVal, up, ex->origin);
+				ex->origin[0] += (rand() % 8) - 4;
+				ex->origin[1] += (rand() % 8) - 4;
+				ex->origin[2] += (rand() % 6) - 3;
+				ex->model = Mod_ForName("models/flamestr.spr", true);
+				ex->startTime = cl.time + .3/8.0 * i;
+				ex->endTime = ex->startTime + ex->model->numframes * 0.05;
+				ex->flags |= DRF_TRANSLUCENT;
+
+				ex->velocity[0] = 0;
+				ex->velocity[1] = 0;
+				ex->velocity[2] = 0;
+				VectorMA(ex->velocity, -cVal * 4.0, right, ex->velocity);
+				VectorMA(ex->velocity, -sVal * 4.0, up, ex->velocity);
+
+				VectorAdd(curPos, posAdd, curPos);
+			}
+		  }	break;
+
+		case TE_BLOODRAIN:
+		  {	float	travelAng, travelPitch;
+			float	trailLen;
+			unsigned char	health;
+			vec3_t	angles, forward, right, up;
+
+			pos[0] = MSG_ReadCoord();
+			pos[1] = MSG_ReadCoord();
+			pos[2] = MSG_ReadCoord();
+			travelAng = MSG_ReadByte()*6.28/256.0;
+			travelPitch = MSG_ReadByte()*6.28/256.0;
+			trailLen = MSG_ReadByte();
+			health = MSG_ReadByte();
+
+			vel[0] = cos(travelAng) * cos(travelPitch) * 800;
+			vel[1] = sin(travelAng) * cos(travelPitch) * 800;
+			vel[2] = sin(travelPitch) * 800;
+
+			ex = CL_AllocExplosion();
+			VectorCopy(pos, ex->origin);
+			ex->model = Mod_ForName("models/sucwp1p.mdl", true);
+			ex->startTime = cl.time;
+			ex->endTime = ex->startTime + trailLen*.3/240.0;
+			ex->angles[0] = travelPitch*360/6.28;
+			ex->angles[1] = travelAng*360/6.28;
+			ex->scale = health;
+			VectorCopy(vel, ex->velocity);
+			ex->frameFunc = updateBloodRain;
+			ex->exflags |= EXFLAG_COLLIDE;
+
+			if (health > 90)
+			{
 				angles[0] = travelPitch*360/(2*M_PI);
 				angles[1] = travelAng*360/(2*M_PI);
 				angles[2] = 0;
 
 				AngleVectors(angles, forward, right, up);
 
-				dlx = CL_AllocDlight (0);
-				VectorCopy (pos,  dlx->origin);
-				dlx->radius = 200 + (rand() & 31);
-				dlx->die = cl.time + 0.001;
-
-				VectorCopy(pos, endPos);
-				endPos[0] += cos(travelAng) * cos(travelPitch) * 375;
-				endPos[1] += sin(travelAng) * cos(travelPitch) * 375;
-				endPos[2] += sin(travelPitch) * 375;
-
-				VectorCopy(pos, curPos);
-				VectorSubtract(endPos, pos, posAdd);
-				VectorScale(posAdd, .125, posAdd);
-
-				for (i = 0; i < fireCounts; i++)
-				{
-					cVal = cos((svTime + (i*.3/8.0))*8)*10;
-					sVal = sin((svTime + (i*.3/8.0))*8)*10;
-				//	cVal = cos((svTime + (i*.3/8.0))*16)*35;
-				//	sVal = sin((svTime + (i*.3/8.0))*16)*35;
-
-					ex = CL_AllocExplosion();
-					VectorCopy(curPos, ex->origin);
-					VectorMA(ex->origin, cVal, right, ex->origin);
-					VectorMA(ex->origin, sVal, up, ex->origin);
-					ex->origin[0] += (rand() % 8) - 4;
-					ex->origin[1] += (rand() % 8) - 4;
-					ex->origin[2] += (rand() % 6) - 3;
-					ex->model = Mod_ForName("models/flamestr.spr", true);
-					ex->startTime = cl.time + .3/8.0 * i;
-					ex->endTime = ex->startTime + ex->model->numframes * 0.05;
-					ex->flags |= DRF_TRANSLUCENT;
-
-					ex->velocity[0] = 0;
-					ex->velocity[1] = 0;
-					ex->velocity[2] = 0;
-					VectorMA(ex->velocity, cVal * 4.0, right, ex->velocity);
-					VectorMA(ex->velocity, sVal * 4.0, up, ex->velocity);
-
-					ex = CL_AllocExplosion();
-					VectorCopy(curPos, ex->origin);
-					VectorMA(ex->origin, -cVal, right, ex->origin);
-					VectorMA(ex->origin, -sVal, up, ex->origin);
-					ex->origin[0] += (rand() % 8) - 4;
-					ex->origin[1] += (rand() % 8) - 4;
-					ex->origin[2] += (rand() % 6) - 3;
-					ex->model = Mod_ForName("models/flamestr.spr", true);
-					ex->startTime = cl.time + .3/8.0 * i;
-					ex->endTime = ex->startTime + ex->model->numframes * 0.05;
-					ex->flags |= DRF_TRANSLUCENT;
-
-					ex->velocity[0] = 0;
-					ex->velocity[1] = 0;
-					ex->velocity[2] = 0;
-					VectorMA(ex->velocity, -cVal * 4.0, right, ex->velocity);
-					VectorMA(ex->velocity, -sVal * 4.0, up, ex->velocity);
-
-					VectorAdd(curPos, posAdd, curPos);
-				}
-			}
-			break;
-
-		case TE_BLOODRAIN:
-			{
-				float	travelAng, travelPitch;
-				float	trailLen;
-				unsigned char	health;
-				vec3_t	angles, forward, right, up;
-
-				pos[0] = MSG_ReadCoord();
-				pos[1] = MSG_ReadCoord();
-				pos[2] = MSG_ReadCoord();
-				travelAng = MSG_ReadByte()*6.28/256.0;
-				travelPitch = MSG_ReadByte()*6.28/256.0;
-				trailLen = MSG_ReadByte();
-				health = MSG_ReadByte();
-
-				vel[0] = cos(travelAng) * cos(travelPitch) * 800;
-				vel[1] = sin(travelAng) * cos(travelPitch) * 800;
-				vel[2] = sin(travelPitch) * 800;
-
 				ex = CL_AllocExplosion();
 				VectorCopy(pos, ex->origin);
+				VectorMA(ex->origin, 7, right, ex->origin);
 				ex->model = Mod_ForName("models/sucwp1p.mdl", true);
 				ex->startTime = cl.time;
 				ex->endTime = ex->startTime + trailLen*.3/240.0;
 				ex->angles[0] = travelPitch*360/6.28;
 				ex->angles[1] = travelAng*360/6.28;
-				ex->scale = health;
+				ex->scale = health - 90;
 				VectorCopy(vel, ex->velocity);
 				ex->frameFunc = updateBloodRain;
 				ex->exflags |= EXFLAG_COLLIDE;
 
-				if (health > 90)
-				{
-					angles[0] = travelPitch*360/(2*M_PI);
-					angles[1] = travelAng*360/(2*M_PI);
-					angles[2] = 0;
-
-					AngleVectors(angles, forward, right, up);
-
-					ex = CL_AllocExplosion();
-					VectorCopy(pos, ex->origin);
-					VectorMA(ex->origin, 7, right, ex->origin);
-					ex->model = Mod_ForName("models/sucwp1p.mdl", true);
-					ex->startTime = cl.time;
-					ex->endTime = ex->startTime + trailLen*.3/240.0;
-					ex->angles[0] = travelPitch*360/6.28;
-					ex->angles[1] = travelAng*360/6.28;
-					ex->scale = health - 90;
-					VectorCopy(vel, ex->velocity);
-					ex->frameFunc = updateBloodRain;
-					ex->exflags |= EXFLAG_COLLIDE;
-
-					ex = CL_AllocExplosion();
-					VectorCopy(pos, ex->origin);
-					VectorMA(ex->origin, -7, right, ex->origin);
-					ex->model = Mod_ForName("models/sucwp1p.mdl", true);
-					ex->startTime = cl.time;
-					ex->endTime = ex->startTime + trailLen*.3/240.0;
-					ex->angles[0] = travelPitch*360/6.28;
-					ex->angles[1] = travelAng*360/6.28;
-					ex->scale = health - 90;
-					VectorCopy(vel, ex->velocity);
-					ex->frameFunc = updateBloodRain;
-					ex->exflags |= EXFLAG_COLLIDE;
-				}
+				ex = CL_AllocExplosion();
+				VectorCopy(pos, ex->origin);
+				VectorMA(ex->origin, -7, right, ex->origin);
+				ex->model = Mod_ForName("models/sucwp1p.mdl", true);
+				ex->startTime = cl.time;
+				ex->endTime = ex->startTime + trailLen*.3/240.0;
+				ex->angles[0] = travelPitch*360/6.28;
+				ex->angles[1] = travelAng*360/6.28;
+				ex->scale = health - 90;
+				VectorCopy(vel, ex->velocity);
+				ex->frameFunc = updateBloodRain;
+				ex->exflags |= EXFLAG_COLLIDE;
 			}
-			break;
+		  }	break;
 
 		case TE_AXE:
-			{
-				float	travelAng, travelPitch;
-				float	trailLen;
+		  {	float	travelAng, travelPitch;
+			float	trailLen;
 
-				pos[0] = MSG_ReadCoord();
-				pos[1] = MSG_ReadCoord();
-				pos[2] = MSG_ReadCoord();
-				travelAng = MSG_ReadByte()*6.28/256.0;
-				travelPitch = MSG_ReadByte()*6.28/256.0;
-				trailLen = MSG_ReadByte() * .01;
+			pos[0] = MSG_ReadCoord();
+			pos[1] = MSG_ReadCoord();
+			pos[2] = MSG_ReadCoord();
+			travelAng = MSG_ReadByte()*6.28/256.0;
+			travelPitch = MSG_ReadByte()*6.28/256.0;
+			trailLen = MSG_ReadByte() * .01;
 
-				vel[0] = cos(travelAng) * cos(travelPitch) * 1100;
-				vel[1] = sin(travelAng) * cos(travelPitch) * 1100;
-				vel[2] = sin(travelPitch) * 1100;
+			vel[0] = cos(travelAng) * cos(travelPitch) * 1100;
+			vel[1] = sin(travelAng) * cos(travelPitch) * 1100;
+			vel[2] = sin(travelPitch) * 1100;
 
-				ex = CL_AllocExplosion();
-				VectorCopy(pos, ex->origin);
-				ex->model = Mod_ForName("models/axblade.mdl", true);
-				ex->startTime = cl.time;
-				ex->endTime = ex->startTime + trailLen*.3;
-				ex->angles[0] = travelPitch*360/6.28;
-				ex->angles[1] = travelAng*360/6.28;
-				VectorCopy(vel, ex->velocity);
-				ex->exflags |= EXFLAG_COLLIDE;
+			ex = CL_AllocExplosion();
+			VectorCopy(pos, ex->origin);
+			ex->model = Mod_ForName("models/axblade.mdl", true);
+			ex->startTime = cl.time;
+			ex->endTime = ex->startTime + trailLen*.3;
+			ex->angles[0] = travelPitch*360/6.28;
+			ex->angles[1] = travelAng*360/6.28;
+			VectorCopy(vel, ex->velocity);
+			ex->exflags |= EXFLAG_COLLIDE;
 
-				ex = CL_AllocExplosion();
-				VectorCopy(pos, ex->origin);
-				ex->model = Mod_ForName("models/axtail.mdl", true);
-				ex->startTime = cl.time;
-				ex->endTime = ex->startTime + trailLen*.3;
-				ex->angles[0] = travelPitch*360/6.28;
-				ex->angles[1] = travelAng*360/6.28;
-				VectorCopy(vel, ex->velocity);
-				ex->exflags |= EXFLAG_COLLIDE;
-				ex->exflags |= EXFLAG_STILL_FRAME;
-				ex->data = 0;
-				ex->flags |= MLS_ABSLIGHT|DRF_TRANSLUCENT;
-				ex->abslight = 128;
-				ex->skin = 0;
-			}
-			break;
+			ex = CL_AllocExplosion();
+			VectorCopy(pos, ex->origin);
+			ex->model = Mod_ForName("models/axtail.mdl", true);
+			ex->startTime = cl.time;
+			ex->endTime = ex->startTime + trailLen*.3;
+			ex->angles[0] = travelPitch*360/6.28;
+			ex->angles[1] = travelAng*360/6.28;
+			VectorCopy(vel, ex->velocity);
+			ex->exflags |= EXFLAG_COLLIDE;
+			ex->exflags |= EXFLAG_STILL_FRAME;
+			ex->data = 0;
+			ex->flags |= MLS_ABSLIGHT|DRF_TRANSLUCENT;
+			ex->abslight = 128;
+			ex->skin = 0;
+		  }	break;
 
 		case TE_PURIFY2_MISSILE:
-			{
-				float	travelAng, travelPitch;
-				float	trailLen;
+		  {	float	travelAng, travelPitch;
+			float	trailLen;
 
-				pos[0] = MSG_ReadCoord();
-				pos[1] = MSG_ReadCoord();
-				pos[2] = MSG_ReadCoord();
-				travelAng = MSG_ReadByte()*6.28/256.0;
-				travelPitch = MSG_ReadByte()*6.28/256.0;
-				trailLen = MSG_ReadByte() * .01;
+			pos[0] = MSG_ReadCoord();
+			pos[1] = MSG_ReadCoord();
+			pos[2] = MSG_ReadCoord();
+			travelAng = MSG_ReadByte()*6.28/256.0;
+			travelPitch = MSG_ReadByte()*6.28/256.0;
+			trailLen = MSG_ReadByte() * .01;
 
-				vel[0] = cos(travelAng) * cos(travelPitch) * 1000;
-				vel[1] = sin(travelAng) * cos(travelPitch) * 1000;
-				vel[2] = sin(travelPitch) * 1000;
+			vel[0] = cos(travelAng) * cos(travelPitch) * 1000;
+			vel[1] = sin(travelAng) * cos(travelPitch) * 1000;
+			vel[2] = sin(travelPitch) * 1000;
 
-				ex = CL_AllocExplosion();
-				VectorCopy(pos, ex->origin);
-				ex->model = Mod_ForName("models/drgnball.mdl", true);
-				ex->startTime = cl.time;
-				ex->endTime = ex->startTime + trailLen*.3;
-				ex->angles[0] = travelPitch*360/6.28;
-				ex->angles[1] = travelAng*360/6.28;
-				VectorCopy(vel, ex->velocity);
-				ex->exflags |= EXFLAG_COLLIDE;
-				ex->frameFunc = updatePurify2;
-				ex->scale = 150;
-			}
-			break;
+			ex = CL_AllocExplosion();
+			VectorCopy(pos, ex->origin);
+			ex->model = Mod_ForName("models/drgnball.mdl", true);
+			ex->startTime = cl.time;
+			ex->endTime = ex->startTime + trailLen*.3;
+			ex->angles[0] = travelPitch*360/6.28;
+			ex->angles[1] = travelAng*360/6.28;
+			VectorCopy(vel, ex->velocity);
+			ex->exflags |= EXFLAG_COLLIDE;
+			ex->frameFunc = updatePurify2;
+			ex->scale = 150;
+		  }	break;
 
 		case TE_SWORD_SHOT:
-			{
-				float	travelAng, travelPitch;
-				float	trailLen;
+		  {	float	travelAng, travelPitch;
+			float	trailLen;
 
-				pos[0] = MSG_ReadCoord();
-				pos[1] = MSG_ReadCoord();
-				pos[2] = MSG_ReadCoord();
-				travelAng = MSG_ReadByte()*6.28/256.0;
-				travelPitch = MSG_ReadByte()*6.28/256.0;
-				trailLen = MSG_ReadByte() * .01;
+			pos[0] = MSG_ReadCoord();
+			pos[1] = MSG_ReadCoord();
+			pos[2] = MSG_ReadCoord();
+			travelAng = MSG_ReadByte()*6.28/256.0;
+			travelPitch = MSG_ReadByte()*6.28/256.0;
+			trailLen = MSG_ReadByte() * .01;
 
-				vel[0] = cos(travelAng) * cos(travelPitch) * 1200;
-				vel[1] = sin(travelAng) * cos(travelPitch) * 1200;
-				vel[2] = sin(travelPitch) * 1200;
+			vel[0] = cos(travelAng) * cos(travelPitch) * 1200;
+			vel[1] = sin(travelAng) * cos(travelPitch) * 1200;
+			vel[2] = sin(travelPitch) * 1200;
 
-				ex = CL_AllocExplosion();
-				VectorCopy(pos, ex->origin);
-				ex->model = Mod_ForName("models/vorpshot.mdl", true);
-				ex->startTime = cl.time;
-				ex->endTime = ex->startTime + trailLen*.3;
-				ex->angles[0] = travelPitch*360/6.28;
-				ex->angles[1] = travelAng*360/6.28;
-				VectorCopy(vel, ex->velocity);
-				ex->exflags |= EXFLAG_COLLIDE;
-				ex->frameFunc = updateSwordShot;
-				ex->scale = 100;
-				ex->exflags |= EXFLAG_STILL_FRAME;
-				ex->data = 16 + ((int)(cl.time * 20.0)%13);
-			}
-			break;
+			ex = CL_AllocExplosion();
+			VectorCopy(pos, ex->origin);
+			ex->model = Mod_ForName("models/vorpshot.mdl", true);
+			ex->startTime = cl.time;
+			ex->endTime = ex->startTime + trailLen*.3;
+			ex->angles[0] = travelPitch*360/6.28;
+			ex->angles[1] = travelAng*360/6.28;
+			VectorCopy(vel, ex->velocity);
+			ex->exflags |= EXFLAG_COLLIDE;
+			ex->frameFunc = updateSwordShot;
+			ex->scale = 100;
+			ex->exflags |= EXFLAG_STILL_FRAME;
+			ex->data = 16 + ((int)(cl.time * 20.0)%13);
+		  }	break;
 
 		case TE_ICESHOT:
-			{
-				float	travelAng, travelPitch;
-				float	trailLen;
-				explosion_t	*ex2;
+		  {	float	travelAng, travelPitch;
+			float	trailLen;
+			explosion_t	*ex2;
 
-				pos[0] = MSG_ReadCoord();
-				pos[1] = MSG_ReadCoord();
-				pos[2] = MSG_ReadCoord();
-				travelAng = MSG_ReadByte()*6.28/256.0;
-				travelPitch = MSG_ReadByte()*6.28/256.0;
-				trailLen = MSG_ReadByte() * .01;
+			pos[0] = MSG_ReadCoord();
+			pos[1] = MSG_ReadCoord();
+			pos[2] = MSG_ReadCoord();
+			travelAng = MSG_ReadByte()*6.28/256.0;
+			travelPitch = MSG_ReadByte()*6.28/256.0;
+			trailLen = MSG_ReadByte() * .01;
 
-				vel[0] = cos(travelAng) * cos(travelPitch) * 1200;
-				vel[1] = sin(travelAng) * cos(travelPitch) * 1200;
-				vel[2] = sin(travelPitch) * 1200;
+			vel[0] = cos(travelAng) * cos(travelPitch) * 1200;
+			vel[1] = sin(travelAng) * cos(travelPitch) * 1200;
+			vel[2] = sin(travelPitch) * 1200;
 
-				ex = CL_AllocExplosion();
-				VectorCopy(pos, ex->origin);
-				ex->model = Mod_ForName("models/iceshot1.mdl", true);
-				ex->startTime = cl.time;
-				ex->endTime = ex->startTime + trailLen*.3;
-				ex->angles[0] = travelPitch*360/6.28;
-				ex->angles[1] = travelAng*360/6.28;
-				VectorCopy(vel, ex->velocity);
-				ex->exflags |= EXFLAG_COLLIDE;
-				ex->frameFunc = updateIceShot;
-				ex->scale = 100;
+			ex = CL_AllocExplosion();
+			VectorCopy(pos, ex->origin);
+			ex->model = Mod_ForName("models/iceshot1.mdl", true);
+			ex->startTime = cl.time;
+			ex->endTime = ex->startTime + trailLen*.3;
+			ex->angles[0] = travelPitch*360/6.28;
+			ex->angles[1] = travelAng*360/6.28;
+			VectorCopy(vel, ex->velocity);
+			ex->exflags |= EXFLAG_COLLIDE;
+			ex->frameFunc = updateIceShot;
+			ex->scale = 100;
 
-				ex->exflags = EXFLAG_ROTATE;
+			ex->exflags = EXFLAG_ROTATE;
 
-				ex->avel[0] = 425;
-				ex->avel[1] = 425;
-				ex->avel[2] = 425;
+			ex->avel[0] = 425;
+			ex->avel[1] = 425;
+			ex->avel[2] = 425;
 
-				ex2 = ex;
+			ex2 = ex;
 
-				ex = CL_AllocExplosion();
-				VectorCopy(pos, ex->origin);
-				ex->model = Mod_ForName("models/iceshot2.mdl", true);
-				ex->startTime = cl.time;
-				ex->endTime = ex->startTime + trailLen*.3;
-				ex->angles[0] = travelPitch*360/6.28;
-				ex->angles[1] = travelAng*360/6.28;
-				VectorCopy(vel, ex->velocity);
-				ex->exflags |= EXFLAG_COLLIDE;
-				//ex->frameFunc = updateSwordShot;
-				ex->scale = 200;
-				ex->flags |= MLS_ABSLIGHT|DRF_TRANSLUCENT;
-				ex->abslight = 128;
-				ex->exflags = EXFLAG_ROTATE;
+			ex = CL_AllocExplosion();
+			VectorCopy(pos, ex->origin);
+			ex->model = Mod_ForName("models/iceshot2.mdl", true);
+			ex->startTime = cl.time;
+			ex->endTime = ex->startTime + trailLen*.3;
+			ex->angles[0] = travelPitch*360/6.28;
+			ex->angles[1] = travelAng*360/6.28;
+			VectorCopy(vel, ex->velocity);
+			ex->exflags |= EXFLAG_COLLIDE;
+			//ex->frameFunc = updateSwordShot;
+			ex->scale = 200;
+			ex->flags |= MLS_ABSLIGHT|DRF_TRANSLUCENT;
+			ex->abslight = 128;
+			ex->exflags = EXFLAG_ROTATE;
 
-				VectorCopy(ex2->avel, ex->avel);
-			}
-			break;
+			VectorCopy(ex2->avel, ex->avel);
+		  }	break;
 
 		case TE_METEOR:
-			{
-				float	travelAng, travelPitch;
-				float	trailLen;
+		  {	float	travelAng, travelPitch;
+			float	trailLen;
 
-				pos[0] = MSG_ReadCoord();
-				pos[1] = MSG_ReadCoord();
-				pos[2] = MSG_ReadCoord();
-				travelAng = MSG_ReadByte()*6.28/256.0;
-				travelPitch = MSG_ReadByte()*6.28/256.0;
-				trailLen = MSG_ReadByte() * .01;
+			pos[0] = MSG_ReadCoord();
+			pos[1] = MSG_ReadCoord();
+			pos[2] = MSG_ReadCoord();
+			travelAng = MSG_ReadByte()*6.28/256.0;
+			travelPitch = MSG_ReadByte()*6.28/256.0;
+			trailLen = MSG_ReadByte() * .01;
 
-				vel[0] = cos(travelAng) * cos(travelPitch) * 1000;
-				vel[1] = sin(travelAng) * cos(travelPitch) * 1000;
-				vel[2] = sin(travelPitch) * 1000;
+			vel[0] = cos(travelAng) * cos(travelPitch) * 1000;
+			vel[1] = sin(travelAng) * cos(travelPitch) * 1000;
+			vel[2] = sin(travelPitch) * 1000;
 
-				ex = CL_AllocExplosion();
-				VectorCopy(pos, ex->origin);
-				ex->model = Mod_ForName("models/tempmetr.mdl", true);
-				ex->startTime = cl.time;
-				ex->endTime = ex->startTime + trailLen*.3;
-				ex->angles[0] = travelPitch*360/6.28;
-				ex->angles[1] = travelAng*360/6.28;
-				VectorCopy(vel, ex->velocity);
-				ex->exflags |= EXFLAG_COLLIDE;
-				ex->frameFunc = updateMeteor;
-				ex->scale = 100;
+			ex = CL_AllocExplosion();
+			VectorCopy(pos, ex->origin);
+			ex->model = Mod_ForName("models/tempmetr.mdl", true);
+			ex->startTime = cl.time;
+			ex->endTime = ex->startTime + trailLen*.3;
+			ex->angles[0] = travelPitch*360/6.28;
+			ex->angles[1] = travelAng*360/6.28;
+			VectorCopy(vel, ex->velocity);
+			ex->exflags |= EXFLAG_COLLIDE;
+			ex->frameFunc = updateMeteor;
+			ex->scale = 100;
 
-				ex->exflags = EXFLAG_ROTATE;
+			ex->exflags = EXFLAG_ROTATE;
 
-				ex->avel[0] = 200;
-				ex->avel[1] = 200;
-				ex->avel[2] = 200;
-			}
-			break;
+			ex->avel[0] = 200;
+			ex->avel[1] = 200;
+			ex->avel[2] = 200;
+		  }	break;
 
 		case TE_LIGHTNINGBALL:
-			{
-				float	travelAng, travelPitch;
-				float	trailLen, speed;
+		  {	float	travelAng, travelPitch;
+			float	trailLen, speed;
 
-				pos[0] = MSG_ReadCoord();
-				pos[1] = MSG_ReadCoord();
-				pos[2] = MSG_ReadCoord();
-				travelAng = MSG_ReadByte()*6.28/256.0;
-				travelPitch = MSG_ReadByte()*6.28/256.0;
-				speed = MSG_ReadShort();
-				trailLen = MSG_ReadByte() * .01;
+			pos[0] = MSG_ReadCoord();
+			pos[1] = MSG_ReadCoord();
+			pos[2] = MSG_ReadCoord();
+			travelAng = MSG_ReadByte()*6.28/256.0;
+			travelPitch = MSG_ReadByte()*6.28/256.0;
+			speed = MSG_ReadShort();
+			trailLen = MSG_ReadByte() * .01;
 
-				// light
-				dl = CL_AllocDlight (0);
-				VectorCopy (pos, dl->origin);
-				dl->radius = 350;
-				dl->die = cl.time + 0.5;
-				dl->decay = 300;
-				dl->color[0] = 0.2;
-				dl->color[1] = 0.1;
-				dl->color[2] = 0.05;
-				dl->color[3] = 0.7;
+			// light
+			dl = CL_AllocDlight (0);
+			VectorCopy (pos, dl->origin);
+			dl->radius = 350;
+			dl->die = cl.time + 0.5;
+			dl->decay = 300;
+			dl->color[0] = 0.2;
+			dl->color[1] = 0.1;
+			dl->color[2] = 0.05;
+			dl->color[3] = 0.7;
 
-				vel[0] = cos(travelAng) * cos(travelPitch) * speed;
-				vel[1] = sin(travelAng) * cos(travelPitch) * speed;
-				vel[2] = sin(travelPitch) * speed;
+			vel[0] = cos(travelAng) * cos(travelPitch) * speed;
+			vel[1] = sin(travelAng) * cos(travelPitch) * speed;
+			vel[2] = sin(travelPitch) * speed;
 
-				ex = CL_AllocExplosion();
-				VectorCopy(pos, ex->origin);
-				ex->model = Mod_ForName("models/lball.mdl", true);
-				ex->startTime = cl.time;
-				ex->endTime = ex->startTime + trailLen*.2;
-				ex->angles[0] = travelPitch*360/6.28;
-				ex->angles[1] = travelAng*360/6.28;
-				VectorCopy(vel, ex->velocity);
-				ex->exflags |= EXFLAG_COLLIDE;
-				//ex->frameFunc = updateMeteor;
-				//ex->scale = 230;
+			ex = CL_AllocExplosion();
+			VectorCopy(pos, ex->origin);
+			ex->model = Mod_ForName("models/lball.mdl", true);
+			ex->startTime = cl.time;
+			ex->endTime = ex->startTime + trailLen*.2;
+			ex->angles[0] = travelPitch*360/6.28;
+			ex->angles[1] = travelAng*360/6.28;
+			VectorCopy(vel, ex->velocity);
+			ex->exflags |= EXFLAG_COLLIDE;
+			//ex->frameFunc = updateMeteor;
+			//ex->scale = 230;
 
-				//ex->exflags = EXFLAG_ROTATE;
+			//ex->exflags = EXFLAG_ROTATE;
 
-				//ex->avel[0] = 200;
-				//ex->avel[1] = 200;
-				//ex->avel[2] = 200;
-			}
-			break;
+			//ex->avel[0] = 200;
+			//ex->avel[1] = 200;
+			//ex->avel[2] = 200;
+		  }	break;
 
 		case TE_MEGAMETEOR:
-			{
-				float	travelAng, travelPitch;
-				float	trailLen;
+		  {	float	travelAng, travelPitch;
+			float	trailLen;
 
-				pos[0] = MSG_ReadCoord();
-				pos[1] = MSG_ReadCoord();
-				pos[2] = MSG_ReadCoord();
-				travelAng = MSG_ReadByte()*6.28/256.0;
-				travelPitch = MSG_ReadByte()*6.28/256.0;
-				trailLen = MSG_ReadByte() * .01;
+			pos[0] = MSG_ReadCoord();
+			pos[1] = MSG_ReadCoord();
+			pos[2] = MSG_ReadCoord();
+			travelAng = MSG_ReadByte()*6.28/256.0;
+			travelPitch = MSG_ReadByte()*6.28/256.0;
+			trailLen = MSG_ReadByte() * .01;
 
-				vel[0] = cos(travelAng) * cos(travelPitch) * 1600;
-				vel[1] = sin(travelAng) * cos(travelPitch) * 1600;
-				vel[2] = sin(travelPitch) * 1600;
+			vel[0] = cos(travelAng) * cos(travelPitch) * 1600;
+			vel[1] = sin(travelAng) * cos(travelPitch) * 1600;
+			vel[2] = sin(travelPitch) * 1600;
 
-				ex = CL_AllocExplosion();
-				VectorCopy(pos, ex->origin);
-				ex->model = Mod_ForName("models/tempmetr.mdl", true);
-				ex->startTime = cl.time;
-				ex->endTime = ex->startTime + trailLen*.3;
-				ex->angles[0] = travelPitch*360/6.28;
-				ex->angles[1] = travelAng*360/6.28;
-				VectorCopy(vel, ex->velocity);
-				ex->exflags |= EXFLAG_COLLIDE;
-				ex->frameFunc = updateMeteor;
-				ex->scale = 230;
-				ex->flags |= DRF_TRANSLUCENT;
+			ex = CL_AllocExplosion();
+			VectorCopy(pos, ex->origin);
+			ex->model = Mod_ForName("models/tempmetr.mdl", true);
+			ex->startTime = cl.time;
+			ex->endTime = ex->startTime + trailLen*.3;
+			ex->angles[0] = travelPitch*360/6.28;
+			ex->angles[1] = travelAng*360/6.28;
+			VectorCopy(vel, ex->velocity);
+			ex->exflags |= EXFLAG_COLLIDE;
+			ex->frameFunc = updateMeteor;
+			ex->scale = 230;
+			ex->flags |= DRF_TRANSLUCENT;
 
-				ex->exflags = EXFLAG_ROTATE;
+			ex->exflags = EXFLAG_ROTATE;
 
-				ex->avel[0] = 200;
-				ex->avel[1] = 200;
-				ex->avel[2] = 200;
-			}
-			break;
+			ex->avel[0] = 200;
+			ex->avel[1] = 200;
+			ex->avel[2] = 200;
+		  }	break;
 
 		case TE_CUBEBEAM:
+		  {	int	ent, ent2, tag, flags, skin;
+			vec3_t	source, dest;
+			float	duration;
+			entity_state_t	*state;
+			entity_state_t	*state2;
+
+			type = TE_STREAM_COLORBEAM;
+
+			ent = MSG_ReadShort();
+			ent2 = MSG_ReadShort();
+			flags = 0;
+			tag = 0;
+			duration = 0.1;
+			skin = rand() % 5;
+
+			state = FindState(ent);
+			state2 = FindState(ent2);
+
+			if (state || state2)
 			{
-				int	ent, ent2, tag, flags, skin;
-				vec3_t	source, dest;
-				float	duration;
-				entity_state_t	*state;
-				entity_state_t	*state2;
-
-				type = TE_STREAM_COLORBEAM;
-
-				ent = MSG_ReadShort();
-				ent2 = MSG_ReadShort();
-				flags = 0;
-				tag = 0;
-				duration = 0.1;
-				skin = rand() % 5;
-			//	source[0] = MSG_ReadCoord();
-			//	source[1] = MSG_ReadCoord();
-			//	source[2] = MSG_ReadCoord();
-			//	dest[0] = MSG_ReadCoord();
-			//	dest[1] = MSG_ReadCoord();
-			//	dest[2] = MSG_ReadCoord();
-
-				state = FindState(ent);
-				state2 = FindState(ent2);
-
-				if (state || state2)
+				if (state)
 				{
-					if (state)
-					{
-						VectorCopy(state->origin, source);
-					}
-					else	//don't know where the damn cube is--prolly
-					{	//won't see beam anyway then, so put it all
-						//at the target
-						VectorCopy(state2->origin, source);
-						source[2] += 10;
-					}
-
-					if (state2)
-					{
-						//in case they're both valid, copy me again
-						VectorCopy(state2->origin, dest);
-						dest[2] += 30;
-					}
-					else	//don't know where the damn victim is--prolly
-					{	//won't see beam anyway then, so put it all
-						//at the cube
-						VectorCopy(source, dest);
-						dest[2] += 10;
-					}
-
-					S_StartSound (TempSoundChannel(), 0, cl_sfx_sunstaff, source, 1, 1);
-					S_StartSound (TempSoundChannel(), 0, cl_sfx_sunhit, dest, 1, 1);
-					R_SunStaffTrail(dest, source);
-					CreateStream(TE_STREAM_COLORBEAM, ent, flags, tag, duration, skin, source, dest);
+					VectorCopy(state->origin, source);
 				}
+				else	//don't know where the damn cube is--prolly
+				{	//won't see beam anyway then, so put it all
+					//at the target
+					VectorCopy(state2->origin, source);
+					source[2] += 10;
+				}
+				if (state2)
+				{
+					//in case they're both valid, copy me again
+					VectorCopy(state2->origin, dest);
+					dest[2] += 30;
+				}
+				else	//don't know where the damn victim is--prolly
+				{	//won't see beam anyway then, so put it all
+					//at the cube
+					VectorCopy(source, dest);
+					dest[2] += 10;
+				}
+
+				S_StartSound (TempSoundChannel(), 0, cl_sfx_sunstaff, source, 1, 1);
+				S_StartSound (TempSoundChannel(), 0, cl_sfx_sunhit, dest, 1, 1);
+				R_SunStaffTrail(dest, source);
+				CreateStream(TE_STREAM_COLORBEAM, ent, flags, tag, duration, skin, source, dest);
 			}
-			break;
+		  }	break;
 
 		case TE_LIGHTNINGEXPLODE:
-			{
-				int		ent;
-				stream_t	*stream;
-				qmodel_t	*models[2];
-				entity_state_t	*state;
-				float	tempAng, tempPitch;
+		  {	int		ent;
+			stream_t	*stream;
+			qmodel_t	*models[2];
+			entity_state_t	*state;
+			float	tempAng, tempPitch;
 
-				ent = MSG_ReadShort();
+			ent = MSG_ReadShort();
 
-				state = FindState(ent);
-				(void) state; /* variable set but not used */
-				pos[0] = MSG_ReadCoord();
-				pos[1] = MSG_ReadCoord();
-				pos[2] = MSG_ReadCoord();
+			state = FindState(ent);
+			(void) state; /* variable set but not used */
+			pos[0] = MSG_ReadCoord();
+			pos[1] = MSG_ReadCoord();
+			pos[2] = MSG_ReadCoord();
 
-				if (rand() & 1)
+			if (rand() & 1)
+				S_StartSound (TempSoundChannel(), 0, cl_sfx_lightning1, pos, 1, 1);
+			else	S_StartSound (TempSoundChannel(), 0, cl_sfx_lightning2, pos, 1, 1);
+
+			for (i = 0; i < 10; i++)
+			{	// make some lightning
+				models[0] = Mod_ForName("models/stlghtng.mdl", true);
+
+				if ((stream = NewStream(ent, i)) == NULL)
 				{
-					S_StartSound (TempSoundChannel(), 0, cl_sfx_lightning1, pos, 1, 1);
+					Con_Printf("stream list overflow\n");
+					return;
 				}
-				else
-				{
-					S_StartSound (TempSoundChannel(), 0, cl_sfx_lightning2, pos, 1, 1);
-				}
+				stream->type = TE_STREAM_LIGHTNING;
+				stream->tag = i;
+				stream->flags = i;
+				stream->entity = ent;
+				stream->skin = 0;
+				stream->models[0] = models[0];
+				stream->endTime = cl.time + 0.5;
+				stream->lastTrailTime = 0;
 
-				for (i = 0; i < 10; i++)
-				{	// make some lightning
-					models[0] = Mod_ForName("models/stlghtng.mdl", true);
+				tempAng = (rand() % 628) / 100.0;
+				tempPitch = (rand() % 628) / 100.0;
 
-					if ((stream = NewStream(ent, i)) == NULL)
-					{
-						Con_Printf("stream list overflow\n");
-						return;
-					}
-					stream->type = TE_STREAM_LIGHTNING;
-					stream->tag = i;
-					stream->flags = i;
-					stream->entity = ent;
-					stream->skin = 0;
-					stream->models[0] = models[0];
-					stream->endTime = cl.time + 0.5;
-					stream->lastTrailTime = 0;
-
-					tempAng = (rand() % 628) / 100.0;
-					tempPitch = (rand() % 628) / 100.0;
-
-					VectorCopy(pos, stream->source);
-					VectorCopy(stream->source, stream->dest);
-					stream->dest[0] += 75.0 * cos(tempAng) * cos(tempPitch);
-					stream->dest[1] += 75.0 * sin(tempAng) * cos(tempPitch);
-					stream->dest[2] += 75.0 * sin(tempPitch);
-				}
+				VectorCopy(pos, stream->source);
+				VectorCopy(stream->source, stream->dest);
+				stream->dest[0] += 75.0 * cos(tempAng) * cos(tempPitch);
+				stream->dest[1] += 75.0 * sin(tempAng) * cos(tempPitch);
+				stream->dest[2] += 75.0 * sin(tempPitch);
 			}
-			break;
+		  }	break;
 
 		case TE_ACID_BALL_FLY:
-			{
-				float	travelAng, travelPitch;
-				float	trailLen;
+		  {	float	travelAng, travelPitch;
+			float	trailLen;
 
-				pos[0] = MSG_ReadCoord();
-				pos[1] = MSG_ReadCoord();
-				pos[2] = MSG_ReadCoord();
-				travelAng = MSG_ReadByte()*6.28/256.0;
-				travelPitch = MSG_ReadByte()*6.28/256.0;
-				trailLen = MSG_ReadByte() * .01;
+			pos[0] = MSG_ReadCoord();
+			pos[1] = MSG_ReadCoord();
+			pos[2] = MSG_ReadCoord();
+			travelAng = MSG_ReadByte()*6.28/256.0;
+			travelPitch = MSG_ReadByte()*6.28/256.0;
+			trailLen = MSG_ReadByte() * .01;
 
-				vel[0] = cos(travelAng) * cos(travelPitch) * 850;
-				vel[1] = sin(travelAng) * cos(travelPitch) * 850;
-				vel[2] = sin(travelPitch) * 850;
+			vel[0] = cos(travelAng) * cos(travelPitch) * 850;
+			vel[1] = sin(travelAng) * cos(travelPitch) * 850;
+			vel[2] = sin(travelPitch) * 850;
 
-				ex = CL_AllocExplosion();
-				VectorCopy(pos, ex->origin);
-				ex->model = Mod_ForName("models/sucwp2p.mdl", true);
-				ex->startTime = cl.time;
-				ex->endTime = ex->startTime + trailLen*.3;
-				ex->angles[0] = travelPitch*360/6.28;
-				ex->angles[1] = travelAng*360/6.28;
-				VectorCopy(vel, ex->velocity);
-				ex->exflags |= EXFLAG_COLLIDE;
-				ex->frameFunc = updateAcidBall;
-			}
-			break;
+			ex = CL_AllocExplosion();
+			VectorCopy(pos, ex->origin);
+			ex->model = Mod_ForName("models/sucwp2p.mdl", true);
+			ex->startTime = cl.time;
+			ex->endTime = ex->startTime + trailLen*.3;
+			ex->angles[0] = travelPitch*360/6.28;
+			ex->angles[1] = travelAng*360/6.28;
+			VectorCopy(vel, ex->velocity);
+			ex->exflags |= EXFLAG_COLLIDE;
+			ex->frameFunc = updateAcidBall;
+		  }	break;
 
 		case TE_ACID_BLOB_FLY:
-			{
-				float	travelAng, travelPitch;
-				float	trailLen;
+		  {	float	travelAng, travelPitch;
+			float	trailLen;
 
-				pos[0] = MSG_ReadCoord();
-				pos[1] = MSG_ReadCoord();
-				pos[2] = MSG_ReadCoord();
-				travelAng = MSG_ReadByte()*6.28/256.0;
-				travelPitch = MSG_ReadByte()*6.28/256.0;
-				trailLen = MSG_ReadByte() * .01;
+			pos[0] = MSG_ReadCoord();
+			pos[1] = MSG_ReadCoord();
+			pos[2] = MSG_ReadCoord();
+			travelAng = MSG_ReadByte()*6.28/256.0;
+			travelPitch = MSG_ReadByte()*6.28/256.0;
+			trailLen = MSG_ReadByte() * .01;
 
-				vel[0] = cos(travelAng) * cos(travelPitch) * 1000;
-				vel[1] = sin(travelAng) * cos(travelPitch) * 1000;
-				vel[2] = sin(travelPitch) * 1000;
+			vel[0] = cos(travelAng) * cos(travelPitch) * 1000;
+			vel[1] = sin(travelAng) * cos(travelPitch) * 1000;
+			vel[2] = sin(travelPitch) * 1000;
 
-				ex = CL_AllocExplosion();
-				VectorCopy(pos, ex->origin);
-				ex->model = Mod_ForName("models/sucwp2p.mdl", true);
-				ex->startTime = cl.time;
-				ex->endTime = ex->startTime + trailLen*.3;
-				ex->angles[0] = travelPitch*360/6.28;
-				ex->angles[1] = travelAng*360/6.28;
-				VectorCopy(vel, ex->velocity);
-				ex->exflags |= EXFLAG_COLLIDE;
-				ex->frameFunc = updateAcidBlob;
-				ex->scale = 230;
+			ex = CL_AllocExplosion();
+			VectorCopy(pos, ex->origin);
+			ex->model = Mod_ForName("models/sucwp2p.mdl", true);
+			ex->startTime = cl.time;
+			ex->endTime = ex->startTime + trailLen*.3;
+			ex->angles[0] = travelPitch*360/6.28;
+			ex->angles[1] = travelAng*360/6.28;
+			VectorCopy(vel, ex->velocity);
+			ex->exflags |= EXFLAG_COLLIDE;
+			ex->frameFunc = updateAcidBlob;
+			ex->scale = 230;
 
-				//ex->exflags = EXFLAG_ROTATE;
-				//ex->avel[0] = 200;
-				//ex->avel[1] = 200;
-				//ex->avel[2] = 200;
-			}
-			break;
+			//ex->exflags = EXFLAG_ROTATE;
+			//ex->avel[0] = 200;
+			//ex->avel[1] = 200;
+			//ex->avel[2] = 200;
+		  }	break;
 
 		case TE_CHAINLIGHTNING:
+		  {
+			vec3_t		points[12];
+			int		numTargs = 0;
+			int		ent, oldNum, temp;
+			stream_t	*stream;
+			qmodel_t	*models[2];
+
+			ent = MSG_ReadShort();
+			do
 			{
-				vec3_t		points[12];
-				int		numTargs = 0;
-				int		ent, oldNum, temp;
-				stream_t	*stream;
-				qmodel_t	*models[2];
-
-				ent = MSG_ReadShort();
-
-				do
+				points[numTargs][0] = MSG_ReadCoord();
+				points[numTargs][1] = MSG_ReadCoord();
+				points[numTargs][2] = MSG_ReadCoord();
+				oldNum = numTargs;
+				if (points[numTargs][0] || points[numTargs][1] || points[numTargs][2])
 				{
-					points[numTargs][0] = MSG_ReadCoord();
-					points[numTargs][1] = MSG_ReadCoord();
-					points[numTargs][2] = MSG_ReadCoord();
-
-					oldNum = numTargs;
-
-					if (points[numTargs][0] || points[numTargs][1] || points[numTargs][2])
-					{
-						if (numTargs < 9)
-						{
-							numTargs++;
-						}
-					}
-				} while (points[oldNum][0] || points[oldNum][1] || points[oldNum][2]);
-
-				if (numTargs == 0)
-				{
-					break;
+					if (numTargs < 9)
+						numTargs++;
 				}
+			} while (points[oldNum][0] || points[oldNum][1] || points[oldNum][2]);
 
-				for (temp = 0; temp < numTargs - 1; temp++)
+			if (numTargs == 0)
+				break;
+
+			for (temp = 0; temp < numTargs - 1; temp++)
+			{
+				// make the connecting lightning...
+				models[0] = Mod_ForName("models/stlghtng.mdl", true);
+
+				if ((stream = NewStream(ent, temp)) == NULL)
 				{
-					// make the connecting lightning...
-					models[0] = Mod_ForName("models/stlghtng.mdl", true);
-
-					if ((stream = NewStream(ent, temp)) == NULL)
-					{
-						Con_Printf("stream list overflow\n");
-						return;
-					}
-					stream->type = TE_STREAM_LIGHTNING;
-					stream->tag = temp;
-					stream->flags = temp;
-					stream->entity = ent;
-					stream->skin = 0;
-					stream->models[0] = models[0];
-					stream->endTime = cl.time + 0.3;
-					stream->lastTrailTime = 0;
-
-					VectorCopy(points[temp], stream->source);
-					VectorCopy(points[temp + 1], stream->dest);
-
-					ex = CL_AllocExplosion();
-					VectorCopy(points[temp+1], ex->origin);
-					ex->model = Mod_ForName("models/vorpshok.mdl", true);
-					ex->startTime = cl.time;
-					ex->endTime = ex->startTime + .3;
-					ex->flags |= MLS_ABSLIGHT;//|DRF_TRANSLUCENT;
-					//ex->abslight = 128;
-					ex->abslight = 224;
-					ex->skin = rand() & 1;
-					ex->scale = 150;
-					ex->frameFunc = zapFrameFunc;
-					//ex->frameFunc = SwordFrameFunc;
-					//ex->flags = DRF_TRANSLUCENT;// | MLS_ABSLIGHT;
-					//ex->angles[0] = travelPitch*360/6.28;
-					//ex->angles[1] = travelAng*360/6.28;
+					Con_Printf("stream list overflow\n");
+					return;
 				}
+				stream->type = TE_STREAM_LIGHTNING;
+				stream->tag = temp;
+				stream->flags = temp;
+				stream->entity = ent;
+				stream->skin = 0;
+				stream->models[0] = models[0];
+				stream->endTime = cl.time + 0.3;
+				stream->lastTrailTime = 0;
+
+				VectorCopy(points[temp], stream->source);
+				VectorCopy(points[temp + 1], stream->dest);
+
+				ex = CL_AllocExplosion();
+				VectorCopy(points[temp+1], ex->origin);
+				ex->model = Mod_ForName("models/vorpshok.mdl", true);
+				ex->startTime = cl.time;
+				ex->endTime = ex->startTime + .3;
+				ex->flags |= MLS_ABSLIGHT;//|DRF_TRANSLUCENT;
+				//ex->abslight = 128;
+				ex->abslight = 224;
+				ex->skin = rand() & 1;
+				ex->scale = 150;
+				ex->frameFunc = zapFrameFunc;
+				//ex->frameFunc = SwordFrameFunc;
+				//ex->flags = DRF_TRANSLUCENT;// | MLS_ABSLIGHT;
+				//ex->angles[0] = travelPitch*360/6.28;
+				//ex->angles[1] = travelAng*360/6.28;
 			}
-			break;
+		  }	break;
 
 		default:
 			Sys_Error ("%s: bad type", __thisfunc__);
 	}
 }
-
 
 /*
 =================
@@ -3508,7 +3351,6 @@ entity_t *CL_NewTempEntity (void)
 	return ent;
 }
 
-
 /*
 =================
 CL_UpdateBeams
@@ -3516,11 +3358,11 @@ CL_UpdateBeams
 */
 static void CL_UpdateBeams (void)
 {
-	int		i;
-	float		d, yaw, pitch, forward;
-	beam_t		*b;
-	vec3_t		dist, org;
 	entity_t	*ent;
+	float	d, yaw, pitch, forward;
+	beam_t	*b;
+	vec3_t	dist, org;
+	int	i;
 
 	// update lightning
 	for (i = 0, b = cl_beams; i < MAX_BEAMS; i++, b++)
@@ -3543,15 +3385,13 @@ static void CL_UpdateBeams (void)
 			yaw = 0;
 			if (dist[2] > 0)
 				pitch = 90;
-			else
-				pitch = 270;
+			else	pitch = 270;
 		}
 		else
 		{
 			yaw = (int) (atan2(dist[1], dist[0]) * 180 / M_PI);
 			if (yaw < 0)
 				yaw += 360;
-
 			forward = sqrt (dist[0]*dist[0] + dist[1]*dist[1]);
 			pitch = (int) (atan2(dist[2], forward) * 180 / M_PI);
 			if (pitch < 0)
@@ -3586,7 +3426,7 @@ CL_UpdateExplosions
 */
 static void CL_UpdateExplosions (void)
 {
-	int		i, f;
+	int	i, f;
 	explosion_t	*ex;
 	entity_t	*ent;
 	mleaf_t		*l;
@@ -3602,9 +3442,7 @@ static void CL_UpdateExplosions (void)
 			if (l->contents != CONTENTS_EMPTY)
 			{
 				if (ex->removeFunc)
-				{
 					ex->removeFunc(ex);
-				}
 				ex->model = NULL;
 				continue;
 			}
@@ -3615,9 +3453,7 @@ static void CL_UpdateExplosions (void)
 		if (ex->endTime <= cl.time)
 		{
 			if (ex->removeFunc)
-			{
 				ex->removeFunc(ex);
-			}
 			ex->model = NULL;
 			continue;
 		}
@@ -3631,7 +3467,8 @@ static void CL_UpdateExplosions (void)
 		}
 		else
 		{
-			f = (ex->model->numframes-1) * (cl.time - ex->startTime) / (ex->endTime - ex->startTime);
+			f = (ex->model->numframes - 1) * (cl.time - ex->startTime) /
+							(ex->endTime - ex->startTime);
 		}
 
 		// apply velocity
@@ -3656,9 +3493,7 @@ static void CL_UpdateExplosions (void)
 			continue;
 
 		if (ex->frameFunc)
-		{
 			ex->frameFunc(ex);
-		}
 
 		// allow for the possibility for the frame func to reset startTime
 		if (ex->startTime > cl.time)
@@ -3679,37 +3514,31 @@ static void CL_UpdateExplosions (void)
 		ent->drawflags = ex->flags;
 
 		if (ex->flags & MLS_ABSLIGHT)
-		{
 			ent->abslight = ex->abslight;
-		}
 		if (ex->scale)
-		{
 			ent->scale = ex->scale;
-		}
 	}
 }
 
 static void CL_UpdateStreams(void)
 {
-	int		i, j, offset;
-	stream_t	*stream;
-	vec3_t		dist, org, discard, right, up;
-	float		cosTime = 0.0, sinTime = 0.0;	// init to 0, make compiler happy
-	float		cos2Time = 0.0, sin2Time = 0.0, lifeTime = 0.0;	// ditto
-	float		d, yaw, pitch, forward;
 	entity_t	*ent;
+	stream_t	*stream;
 	entity_state_t	*state;
+	vec3_t	dist, org, discard, right, up;
+	float	cosTime = 0.0, sinTime = 0.0;	// init to 0, make compiler happy
+	float	cos2Time = 0.0, sin2Time = 0.0, lifeTime = 0.0;	// ditto
+	float	d, yaw, pitch, forward;
+	int	i, j, offset;
 
 	// Update streams
 	for (i = 0, stream = cl_Streams; i < MAX_STREAMS; i++, stream++)
 	{
 		if (!stream->models[0])// || stream->endTime < cl.time)
-		{ // Inactive
-			continue;
-		}
+			continue; // inactive
 
 		if (stream->endTime < cl.time)
-		{ // Inactive
+		{ // inactive
 			if (stream->type != TE_STREAM_LIGHTNING && stream->type != TE_STREAM_LIGHTNING_SMALL)
 				continue;
 			else if (stream->endTime + 0.25 < cl.time)
@@ -3730,27 +3559,18 @@ static void CL_UpdateStreams(void)
 		{
 			yaw = 0;
 			if (dist[2] > 0)
-			{
 				pitch = 90;
-			}
-			else
-			{
-				pitch = 270;
-			}
+			else	pitch = 270;
 		}
 		else
 		{
 			yaw = (int)(atan2(dist[1], dist[0])*180/M_PI);
 			if (yaw < 0)
-			{
 				yaw += 360;
-			}
 			forward = sqrt(dist[0]*dist[0]+dist[1]*dist[1]);
 			pitch = (int)(atan2(dist[2], forward)*180/M_PI);
 			if (pitch < 0)
-			{
 				pitch += 360;
-			}
 		}
 
 		VectorCopy(stream->source, org);
@@ -3774,18 +3594,14 @@ static void CL_UpdateStreams(void)
 		{
 			offset = (int)(cl.time*40)%30;
 			for (j = 0; j < 3; j++)
-			{
 				org[j] += dist[j]*offset;
-			}
 		}
 
 		while (d > 0)
 		{
 			ent = CL_NewTempEntity();
 			if (!ent)
-			{
 				return;
-			}
 			VectorCopy(org, ent->origin);
 			ent->model = stream->models[0];
 			ent->angles[0] = pitch;
@@ -3806,9 +3622,7 @@ static void CL_UpdateStreams(void)
 
 				ent = CL_NewTempEntity();
 				if (!ent)
-				{
 					return;
-				}
 				VectorCopy(org, ent->origin);
 				ent->model = stream->models[1];
 				ent->angles[0] = pitch;
@@ -3829,9 +3643,7 @@ static void CL_UpdateStreams(void)
 
 				ent = CL_NewTempEntity();
 				if (!ent)
-				{
 					return;
-				}
 				VectorCopy(org, ent->origin);
 				ent->model = stream->models[0];
 				ent->angles[0] = pitch;
@@ -3847,9 +3659,7 @@ static void CL_UpdateStreams(void)
 				{
 					ent = CL_NewTempEntity();
 					if (!ent)
-					{
 						return;
-					}
 					VectorCopy(org, ent->origin);
 					if (j)
 					{
@@ -3927,9 +3737,7 @@ static void CL_UpdateStreams(void)
 			}
 
 			for (j = 0; j < 3; j++)
-			{
 				org[j] += dist[j]*30;
-			}
 			d -= 30;
 		}
 
@@ -3943,9 +3751,7 @@ static void CL_UpdateStreams(void)
 
 			ent = CL_NewTempEntity();
 			if (ent == NULL)
-			{
 				return;
-			}
 			VectorCopy(stream->dest, ent->origin);
 			ent->model = stream->models[2];
 			ent->drawflags = MLS_ABSLIGHT;
@@ -3955,9 +3761,7 @@ static void CL_UpdateStreams(void)
 
 			ent = CL_NewTempEntity();
 			if (ent == NULL)
-			{
 				return;
-			}
 			VectorCopy(stream->dest, ent->origin);
 			ent->model = stream->models[3];
 			ent->drawflags = MLS_ABSLIGHT|DRF_TRANSLUCENT;
@@ -3966,7 +3770,6 @@ static void CL_UpdateStreams(void)
 		}
 	}
 }
-
 
 /*
 =================
@@ -3984,19 +3787,15 @@ void CL_UpdateTEnts (void)
 static void MultiGrenadeExplodeSound (explosion_t *ex)
 {
 	//plug up all of -1's channels w/ grenade sounds
-	if ( !(rand() & 7) )
+	if (! (rand() & 7))
 	{
 		if (MultiGrenadeCurrentChannel >= MAX_DYNAMIC_CHANNELS || MultiGrenadeCurrentChannel < 0)
-		{
 			MultiGrenadeCurrentChannel = 0;
-		}
-
 		S_StartSound (TempSoundChannel(), MultiGrenadeCurrentChannel++, cl_sfx_explode, ex->origin, 1, 1);
 	}
 
 	ex->frameFunc=NULL;
 }
-
 
 static void MultiGrenadeThink (explosion_t *ex)
 {//FIXME: too messy
@@ -4004,8 +3803,8 @@ static void MultiGrenadeThink (explosion_t *ex)
 	int	attack_counter, number_explosions;
 	float	ftemp;
 
-	VectorSet(ex->velocity,0,0,0);
-	VectorSet(ex->accel,0,0,0);
+	VectorSet(ex->velocity, 0, 0, 0);
+	VectorSet(ex->accel, 0, 0, 0);
 
 	ex->frameFunc = MultiGrenadeExplodeSound;
 
@@ -4014,7 +3813,7 @@ static void MultiGrenadeThink (explosion_t *ex)
 
 	while (attack_counter < number_explosions)
 	{
-		attack_counter += 1;
+		attack_counter++;
 		missile = CL_AllocExplosion();
 
 		missile->frameFunc = MultiGrenadePieceThink;
@@ -4023,8 +3822,7 @@ static void MultiGrenadeThink (explosion_t *ex)
 
 		if (rand() & 1)
 			missile->model = Mod_ForName("models/gen_expl.spr", true);
-		else
-			missile->model = Mod_ForName("models/bg_expld.spr", true);
+		else	missile->model = Mod_ForName("models/bg_expld.spr", true);
 
 		switch (attack_counter % 3)
 		{
@@ -4034,9 +3832,9 @@ static void MultiGrenadeThink (explosion_t *ex)
 			missile->velocity[1] = (rand() % 600) - 300;
 			missile->velocity[2] = 0;	//(rand() % 100) + 50;
 
-			ftemp = ( rand() / RAND_MAX * (0.5) );
+			ftemp = (rand() / RAND_MAX * 0.5);
 			missile->startTime = cl.time;// + 0.1 + ftemp - (ex->startTime - cl.time);
-			ftemp = ( rand() / RAND_MAX * (0.3) ) - 0.15;
+			ftemp = (rand() / RAND_MAX * 0.3) - 0.15;
 			missile->endTime = missile->startTime + missile->model->numframes * 0.1 + ftemp;
 			break;
 		case 1:
@@ -4045,9 +3843,9 @@ static void MultiGrenadeThink (explosion_t *ex)
 			missile->velocity[1] = (rand() % 80 ) - 40;
 			missile->velocity[2] = (rand() % 150) + 150;
 
-			ftemp = ( rand() / RAND_MAX  * (0.5) );
+			ftemp = (rand() / RAND_MAX  * 0.5);
 			missile->startTime = cl.time;	// + 0.1 + ftemp - (ex->startTime - cl.time);
-			ftemp = ( rand() / RAND_MAX  * (0.3) ) - 0.15;
+			ftemp = (rand() / RAND_MAX  * 0.3) - 0.15;
 			missile->endTime = missile->startTime + missile->model->numframes * 0.1 + ftemp;
 			break;
 		default://some extra explosions for at first
@@ -4056,16 +3854,15 @@ static void MultiGrenadeThink (explosion_t *ex)
 			missile->origin[1] += (rand() % 50) - 25;
 			missile->origin[2] += (rand() % 50) - 25;
 
-			ftemp = ( rand() / RAND_MAX * (0.2) );
+			ftemp = (rand() / RAND_MAX * 0.2);
 			missile->startTime = cl.time + ftemp;
-			ftemp = ( rand() / RAND_MAX * (0.2) ) - 0.1;
+			ftemp = (rand() / RAND_MAX * 0.2) - 0.1;
 			missile->endTime = missile->startTime + missile->model->numframes * 0.1 + ftemp;
 			break;
 		}
 
-		ftemp = ( rand() / RAND_MAX * (0.2) );
-
-		missile->data = ex->data * (0.7  +  ftemp);
+		ftemp = (rand() / RAND_MAX * 0.2);
+		missile->data = ex->data * (0.7 + ftemp);
 	}
 }
 
@@ -4075,21 +3872,19 @@ static void MultiGrenadePieceThink (explosion_t *ex)
 	int	attack_counter, number_explosions;
 	float	ftemp;
 
-	VectorSet(ex->velocity,0,0,0);
-	VectorSet(ex->accel,0,0,0);
+	VectorSet(ex->velocity, 0, 0, 0);
+	VectorSet(ex->accel, 0, 0, 0);
 
 	ex->frameFunc = MultiGrenadeExplodeSound;
 
 	if (ex->data < 70)
 		ex->data = 70;
 
-	ftemp = ( rand() / RAND_MAX * (0.2) ) - 0.1;
-	ex->startTime = cl.time + ((1-(ex->data-69)/180.0)+ftemp-0.3) * 1.25;
+	ftemp = (rand() / RAND_MAX * 0.2) - 0.1;
+	ex->startTime = cl.time + ((1 - (ex->data - 69) / 180.0) + ftemp - 0.3) * 1.25;
 	if (ex->startTime < cl.time)
-	{
 		ex->startTime = cl.time;
-	}
-	ftemp = ( rand() / RAND_MAX * (0.4) ) - 0.4;
+	ftemp = (rand() / RAND_MAX * 0.4) - 0.4;
 	ex->endTime = ex->startTime + ex->model->numframes * 0.1 + ftemp;
 
 	if (ex->model->numframes > 14)
@@ -4117,16 +3912,14 @@ static void MultiGrenadePieceThink (explosion_t *ex)
 		missile->origin[1] += (rand() % 100) - 50;
 		missile->origin[2] += (rand() % 10 ) - 4;
 
-		ftemp = ( rand() / RAND_MAX * (0.2) );
-
+		ftemp = (rand() / RAND_MAX * 0.2);
 		missile->data = ex->data * (0.7 + ftemp);
 
 		if (rand() & 7)
 			missile->model = Mod_ForName("models/bg_expld.spr", true);
-		else
-			missile->model = Mod_ForName("models/fl_expld.spr", true);
+		else	missile->model = Mod_ForName("models/fl_expld.spr", true);
 
-		ftemp = ( rand() / RAND_MAX * (0.5) );
+		ftemp = (rand() / RAND_MAX * 0.5);
 
 		missile->startTime = cl.time + 0.01;
 		missile->endTime = missile->startTime + missile->model->numframes * 0.1;
@@ -4139,19 +3932,17 @@ static void MultiGrenadePiece2Think (explosion_t *ex)
 	int	attack_counter, number_explosions;
 	float	ftemp;
 
-	VectorSet(ex->velocity,0,0,0);
-	VectorSet(ex->accel,0,0,0);
+	VectorSet(ex->velocity, 0, 0, 0);
+	VectorSet(ex->accel, 0, 0, 0);
 
 	ex->frameFunc = MultiGrenadeExplodeSound;
 
 	if (ex->data < 70)
-	{
 		ex->data = 70;
-	}
 
-	ftemp = 0;	//( rand() / RAND_MAX * (0.2) ) - 0.1;
-	ex->startTime = cl.time + (((1 - (ex->data-69)/200.0)+ftemp)*1.5) - 0.2;
-	ftemp = ( rand() / RAND_MAX * (0.4) ) - 0.2;
+	ftemp = 0;	//(rand() / RAND_MAX * 0.2) - 0.1;
+	ex->startTime = cl.time + (((1 - (ex->data - 69) / 200.0) + ftemp) * 1.5) - 0.2;
+	ftemp = (rand() / RAND_MAX * 0.4) - 0.2;
 	ex->endTime = ex->startTime + ex->model->numframes * 0.1 + ftemp;
 
 	if (ex->data <= 71)
@@ -4173,16 +3964,14 @@ static void MultiGrenadePiece2Think (explosion_t *ex)
 		missile->origin[1] += (rand() % 30) - 15;
 
 		ftemp = rand() / RAND_MAX;
-
-		missile->origin[2] += (ftemp*7) + 30;
+		missile->origin[2] += (ftemp * 7) + 30;
 		missile->data = ex->data - ftemp * 10 - 20;
 
 		if (rand() & 1)
 			missile->model = Mod_ForName("models/gen_expl.spr", true);
-		else
-			missile->model = Mod_ForName("models/bg_expld.spr", true);
+		else	missile->model = Mod_ForName("models/bg_expld.spr", true);
 
-		ftemp = ( rand() / RAND_MAX * (0.5) );
+		ftemp = (rand() / RAND_MAX * 0.5);
 
 		missile->startTime = cl.time + 0.01;
 		missile->endTime = missile->startTime + missile->model->numframes * 0.1;
@@ -4217,12 +4006,9 @@ static void ChunkThink(explosion_t *ex)
 			{	// hit, now make a splash of acid
 			//	vec3_t	dmin = {-40, -40, 10};
 			//	vec3_t	dmax = {40, 40, 40};
-
-				//R_RunParticleEffect2 (ex->origin, dmin, dmax, 136 + (rand() % 5), pt_darken, 20);	// FIXME - These should be green
-				if ( !(rand() % 3) )
-				{
+			//	R_RunParticleEffect2 (ex->origin, dmin, dmax, 136 + (rand() % 5), pt_darken, 20);	// FIXME - These should be green
+				if (! (rand() % 3))
 					S_StartSound (TempSoundChannel(), 0, cl_sfx_dropfizzle, ex->origin, 1, 1);
-				}
 			}
 		}
 
@@ -4242,13 +4028,8 @@ static void ChunkThink(explosion_t *ex)
 		{
 		case THINGTYPE_METEOR:
 			if (cl.time + host_frametime * 4 < ex->endTime)
-			{	// just crossed the threshold
-				ex->abslight = 200;
-			}
-			else
-			{
-				ex->abslight -= 35;
-			}
+				ex->abslight = 200;	// just crossed the threshold
+			else	ex->abslight -= 35;
 			ex->flags |= DRF_TRANSLUCENT|MLS_ABSLIGHT;
 			ex->scale *= 1.4;
 			ex->angles[0] += 20;
@@ -4345,17 +4126,17 @@ static void BubbleThink(explosion_t *ex)
 
 			if (ex->velocity[0] > 10)
 				ex->velocity[0] = 5;
-			if (ex->velocity[0] < -10)
+			else if (ex->velocity[0] < -10)
 				ex->velocity[0] = -5;
 
 			if (ex->velocity[1] > 10)
 				ex->velocity[1] = 5;
-			if (ex->velocity[1] < -10)
+			else if (ex->velocity[1] < -10)
 				ex->velocity[1] = -5;
 
 			if (ex->velocity[2] < 10)
 				ex->velocity[2] = 15;
-			if (ex->velocity[2] > 30)
+			else if (ex->velocity[2] > 30)
 				ex->velocity[2] = 25;
 
 			ex->data += 0.5;
@@ -4390,9 +4171,7 @@ static void CheckSpaceThink(explosion_t *ex)
 
 	l = Mod_PointInLeaf (ex->origin, cl.worldmodel);
 	if (l->contents != CONTENTS_EMPTY) 
-	{
 		ex->endTime = ex->startTime;
-	}
 }
 
 // functions to create tempents from client effect calls
@@ -4471,28 +4250,18 @@ void CreateExplosionWithSound(vec3_t pos)
 static void SwordFrameFunc(explosion_t *ex)
 {
 	ex->scale = (ex->endTime - cl.time)*150 + 1;
-	if ( ((int)(cl.time * 20.0)) % 2 )
-	{
+	if (((int)(cl.time * 20.0)) % 2)
 		ex->skin = 0;
-	}
-	else
-	{
-		ex->skin = 1;
-	}
+	else	ex->skin = 1;
 }
 
 static void zapFrameFunc(explosion_t *ex)
 {
 	ex->scale = (ex->endTime - cl.time)*(150/.3) + 1;
 	//ex->abslight = (224/.3) * (ex->endTime - cl.time) + 1;
-	if ( ((int)(cl.time * 20.0)) % 2 )
-	{
+	if (((int)(cl.time * 20.0)) % 2)
 		ex->skin = 0;
-	}
-	else
-	{
-		ex->skin = 1;
-	}
+	else	ex->skin = 1;
 }
 
 static void fireBallUpdate(explosion_t *ex)
@@ -4509,7 +4278,7 @@ static void sunPowerUpdate(explosion_t *ex)
 {
 }
 
-#if 0	// not used
+#if 0	/* not used */
 static void purify1Update(explosion_t *ex)
 {
 	R_RocketTrail (ex->oldorg, ex->origin, rt_purify);
@@ -4519,11 +4288,11 @@ static void purify1Update(explosion_t *ex)
 
 void MeteorBlastThink(explosion_t *ex)
 {
-	int		i, maxI;
+	int	i, maxI;
 	mleaf_t		*l;
 	explosion_t	*ex2;
 	vec3_t		tempVect, oldPos;
-	int		hitWall = 0;
+	int	hitWall = 0;
 
 	R_RocketTrail (ex->oldorg, ex->origin, rt_fireball);
 
@@ -4545,9 +4314,7 @@ void MeteorBlastThink(explosion_t *ex)
 			VectorMA(tempVect, 1.0 - (.1 * (i+1)), ex->oldorg, tempVect);
 			l = Mod_PointInLeaf (tempVect, cl.worldmodel);
 			if (l->contents != CONTENTS_EMPTY)
-			{
 				hitWall = 1;
-			}
 		}
 	}
 
@@ -4589,9 +4356,7 @@ void MeteorBlastThink(explosion_t *ex)
 			ex2->endTime = ex2->startTime + ex2->model->numframes * 0.03;
 		}
 		if (rand() & 1)
-		{
 			S_StartSound (TempSoundChannel(), 0, cl_sfx_axeExplode, ex->origin, 1, 1);
-		}
 
 		ex->model = NULL;
 		ex->endTime = cl.time;
@@ -4604,22 +4369,15 @@ static void MeteorCrushSpawnThink(explosion_t *ex)
 	explosion_t *ex2;
 
 	if (host_frametime <= 0.05)
-	{
 		chance = (host_frametime / .4 * 16);
-	}
-	else
-	{
-		chance = (host_frametime / .4 * 8);
-	}
+	else	chance = (host_frametime / .4 * 8);
 
 	while (chance > 0)
 	{
 		if (chance < 1.0)
 		{	// take care of fractional numbers of meteors...
 			if (rand() % 100 > chance * 100)
-			{
 				return;
-			}
 		}
 
 		ex2 = CL_AllocExplosion();
@@ -4656,9 +4414,7 @@ static void updateBloodRain(explosion_t *ex)
 
 	ex->scale -= host_frametime / .3 * 60;
 	if (ex->scale <= 0)
-	{
 		ex->endTime = cl.time - 1;
-	}
 }
 
 static void updatePurify2(explosion_t *ex)
@@ -4669,13 +4425,8 @@ static void updatePurify2(explosion_t *ex)
 	R_RocketTrail (ex->oldorg, ex->origin, rt_purify);
 
 	if (host_frametime <= 0.05)
-	{
 		numSprites = 20;
-	}
-	else
-	{
-		numSprites = 8;
-	}
+	else	numSprites = 8;
 
 	if ((rand() % 100) / 100.0 < numSprites * host_frametime)
 	{
@@ -4714,13 +4465,8 @@ static void updateSwordShot(explosion_t *ex)
 	testVal = (int)(cl.time * 20.0);
 
 	if (testVal % 2)
-	{
 		ex->skin = 0;
-	}
-	else
-	{
-		ex->skin = 1;
-	}
+	else	ex->skin = 1;
 }
 
 static void updateIceShot(explosion_t *ex)
@@ -4745,7 +4491,7 @@ static void updateAcidBlob(explosion_t *ex)
 
 	if (testVal != testVal2)
 	{
-		if ( !(testVal%2) )
+		if (! (testVal % 2))
 		{
 			ex2 = CL_AllocExplosion();
 			VectorCopy(ex->origin, ex2->origin);
@@ -4785,13 +4531,8 @@ void CL_UpdatePoisonGas(entity_t *ent, int edict_num)
 	float		smokeCount;
 
 	if (host_frametime <= 0.05)
-	{
 		smokeCount = 32 * host_frametime;
-	}
-	else
-	{
-		smokeCount = 16 * host_frametime;
-	}
+	else	smokeCount = 16 * host_frametime;
 
 	while (smokeCount > 0)
 	{
@@ -4989,7 +4730,7 @@ void CL_UpdateHammer(entity_t *ent, int edict_num)
 
 	if (testVal != testVal2)
 	{
-		if ( !(testVal%3) )
+		if (! (testVal % 3))
 		{
 			//S_StartSound(TempSoundChannel(), 1, cl_sfx_hammersound, ent->origin, 1, 1);
 			S_StartSound(edict_num, 2, cl_sfx_hammersound, ent->origin, 1, 1);
@@ -5007,17 +4748,15 @@ void CL_UpdateBug(entity_t *ent)
 	if (testVal != testVal2)
 	{
 	// do this every .1 seconds
-//		if ( !(testVal%3) )
-//		{
+	//	if (! (testVal % 3))
 			S_StartSound(TempSoundChannel(), 1, cl_sfx_buzzbee, ent->origin, 1, 1);
-//		}
 	}
 }
 
 void CL_UpdateIceStorm(entity_t *ent, int edict_num)
 {
-	vec3_t		center, side1;
-	vec3_t		side2 = {160, 160, 128};
+	vec3_t	center, side1;
+	vec3_t	side2 = {160, 160, 128};
 	entity_state_t	*state;
 
 	state = FindState(edict_num);
@@ -5095,9 +4834,7 @@ static void telPuffMove (explosion_t *ex)
 	ex->velocity[2] += FRANDOM();
 
 	if (ex->velocity[2] > 40)
-	{
 		ex->velocity[2] = 30;
-	}
 
 	//keep it from getting too spread out:
 	ex->velocity[0] += tvec2[0];
@@ -5125,7 +4862,7 @@ static void telEffectUpdate (explosion_t *ex)
 
 	if (testVal != testVal2)
 	{
-		if ( !(testVal%3) )
+		if (! (testVal % 3))
 		{
 			ex2 = CL_AllocExplosion();
 			angle = FRANDOM() * 3.14159;
@@ -5157,9 +4894,7 @@ static void telEffectUpdate (explosion_t *ex)
 	}
 
 	if (ex->endTime > cl.time + 0.01)
-	{
 		ex->startTime = cl.time + 0.01;
-	}
 }
 
 static void CL_UpdateTargetBall(void)
@@ -5172,15 +4907,11 @@ static void CL_UpdateTargetBall(void)
 	float		newScale;
 
 	if (v_targDist < 24)
-	{	// either there is no ball, or it's too close to be needed...
-		return;
-	}
+		return;	// either there is no ball, or it's too close to be needed...
 
 	// search for the two thingies.  If they
 	// don't exist, make new ones and set v_oldTargOrg
-
 	iceMod = Mod_ForName("models/iceshot2.mdl", true);
-
 	for (i = 0; i < MAX_EXPLOSIONS; i++)
 	{
 		if (cl_explosions[i].endTime > cl.time)
@@ -5188,13 +4919,8 @@ static void CL_UpdateTargetBall(void)
 			if (cl_explosions[i].model == iceMod)
 			{
 				if (cl_explosions[i].flags & DRF_TRANSLUCENT)
-				{
 					ex1 = &cl_explosions[i];
-				}
-				else
-				{
-					ex2 = &cl_explosions[i];
-				}
+				else	ex2 = &cl_explosions[i];
 			}
 		}
 	}
@@ -5204,14 +4930,9 @@ static void CL_UpdateTargetBall(void)
 	newOrg[1] += sin(v_targAngle*M_PI*2/256.0) * 50 * cos(v_targPitch*M_PI*2/256.0);
 	newOrg[2] += 44 + sin(v_targPitch*M_PI*2/256.0) * 50 + cos(cl.time*2)*5;
 
-	if (v_targDist < 60)
-	{	// make it scale back down up close...
+	if (v_targDist < 60)	// make it scale back down up close...
 		newScale = 172 - (172 * (1.0 - (v_targDist - 24.0)/36.0));
-	}
-	else
-	{
-		newScale = 80 + (120 * ((256.0 - v_targDist)/256.0));
-	}
+	else	newScale = 80 + (120 * ((256.0 - v_targDist)/256.0));
 
 	if (ex1 == NULL)
 	{
@@ -5236,14 +4957,9 @@ static void CL_UpdateTargetBall(void)
 	ex1->angles[2] = cl.time * 240;
 	ex1->abslight = 96 + (32 * cos(cl.time*6.5)) + (64 * ((256.0 - v_targDist)/256.0));
 
-	if (v_targDist < 60)
-	{	// make it scale back down up close...
+	if (v_targDist < 60)	// make it scale back down up close...
 		newScale = 76 - (76 * (1.0 - (v_targDist - 24.0)/36.0));
-	}
-	else
-	{
-		newScale = 30 + (60 * ((256.0 - v_targDist)/256.0));
-	}
+	else	newScale = 30 + (60 * ((256.0 - v_targDist)/256.0));
 
 	if (ex2 == NULL)
 	{
@@ -5271,20 +4987,12 @@ static void CL_UpdateTargetBall(void)
 static void SmokeRingFrameFunc(explosion_t *ex)
 {
 	if (cl.time - ex->startTime < .3)
-	{
 		ex->skin = 0;
-	}
 	else if (cl.time - ex->startTime < .6)
-	{
 		ex->skin = 1;
-	}
 	else if (cl.time - ex->startTime < .9)
-	{
 		ex->skin = 2;
-	}
 	else
-	{
 		ex->skin = 3;
-	}
 }
 

@@ -32,7 +32,6 @@ state bit 2 is edge triggered on the down to up transition
 ===============================================================================
 */
 
-
 kbutton_t	in_mlook, in_klook;
 kbutton_t	in_left, in_right, in_forward, in_back;
 kbutton_t	in_lookup, in_lookdown, in_moveleft, in_moveright;
@@ -51,8 +50,7 @@ static void KeyDown (kbutton_t *b)
 	c = Cmd_Argv(1);
 	if (c[0])
 		k = atoi(c);
-	else
-		k = -1;		// typed manually at the console for continuous down
+	else	k = -1;		// typed manually at the console for continuous down
 
 	if (k == b->down[0] || k == b->down[1])
 		return;		// repeating key
@@ -93,8 +91,7 @@ static void KeyUp (kbutton_t *b)
 		b->down[0] = 0;
 	else if (b->down[1] == k)
 		b->down[1] = 0;
-	else
-		return;		// key up without coresponding down (menu pass through)
+	else	return;		// key up without coresponding down (menu pass through)
 
 	if (b->down[0] || b->down[1])
 		return;		// some other key is still holding it down
@@ -124,7 +121,7 @@ static void IN_MLookDown (void)
 static void IN_MLookUp (void)
 {
 	KeyUp(&in_mlook);
-	if ( !(in_mlook.state&1) && lookspring.integer)
+	if (!(in_mlook.state & 1) && lookspring.integer)
 		V_StartPitchDrift();
 }
 
@@ -285,13 +282,10 @@ static void IN_Impulse (void)
 
 static void IN_CrouchDown (void)
 {
-//	int state;
-
 	if (key_dest == key_game)
 	{
-//		state = in_crouch.state;
+//		int state = in_crouch.state;
 		KeyDown(&in_crouch);
-
 //		if (!(state & 1) && (in_crouch.state & 1))
 //			in_impulse = 22;
 	}
@@ -299,13 +293,10 @@ static void IN_CrouchDown (void)
 
 static void IN_CrouchUp (void)
 {
-//	int state;
-
 	if (key_dest == key_game)
 	{
-//		state = in_crouch.state;
+//		int state = in_crouch.state;
 		KeyUp(&in_crouch);
-
 //		if ((state & 1) && !(in_crouch.state & 1))
 //			in_impulse = 22;
 	}
@@ -313,9 +304,9 @@ static void IN_CrouchUp (void)
 
 static void IN_infoPlaqueUp (void)
 {
+// lower the plaque
 	if (key_dest == key_game)
 	{
-		//They want to lower the plaque
 		info_up = false;
 		KeyUp(&in_infoplaque);
 	}
@@ -323,9 +314,9 @@ static void IN_infoPlaqueUp (void)
 
 static void IN_infoPlaqueDown (void)
 {
+// show the plaque
 	if (key_dest == key_game)
 	{
-		//They want to see the plaque
 		info_up = true;
 		KeyDown(&in_infoplaque);
 	}
@@ -355,29 +346,25 @@ static float CL_KeyState (kbutton_t *key)
 	{
 		if (down)
 			val = 0.5;	// pressed and held this frame
-		else
-			val = 0;	//	I_Error ();
+		else	val = 0;
 	}
 	if (impulseup && !impulsedown)
 	{
 		if (down)
-			val = 0;	//	I_Error ();
-		else
-			val = 0;	// released this frame
+			val = 0;
+		else	val = 0;	// released this frame
 	}
 	if (!impulsedown && !impulseup)
 	{
 		if (down)
 			val = 1.0;	// held the entire frame
-		else
-			val = 0;	// up the entire frame
+		else	val = 0;	// up the entire frame
 	}
 	if (impulsedown && impulseup)
 	{
 		if (down)
 			val = 0.75;	// released and re-pressed this frame
-		else
-			val = 0.25;	// pressed and released this frame
+		else	val = 0.25;	// pressed and released this frame
 	}
 
 	key->state &= 1;		// clear impulses
@@ -391,12 +378,12 @@ static float CL_KeyState (kbutton_t *key)
 cvar_t	cl_upspeed = {"cl_upspeed", "200", CVAR_NONE};
 cvar_t	cl_forwardspeed = {"cl_forwardspeed", "200", CVAR_ARCHIVE};
 cvar_t	cl_backspeed = {"cl_backspeed", "200", CVAR_ARCHIVE};
-//cvar_t	cl_sidespeed = {"cl_sidespeed", "350", CVAR_NONE};
 cvar_t	cl_sidespeed = {"cl_sidespeed", "225", CVAR_NONE};
 cvar_t	cl_movespeedkey = {"cl_movespeedkey", "2.0", CVAR_NONE};
 cvar_t	cl_yawspeed = {"cl_yawspeed", "140", CVAR_NONE};
 cvar_t	cl_pitchspeed = {"cl_pitchspeed", "150", CVAR_NONE};
 cvar_t	cl_anglespeedkey = {"cl_anglespeedkey", "1.5", CVAR_NONE};
+
 
 /*
 ================
@@ -412,8 +399,7 @@ static void CL_AdjustAngles (void)
 
 	if (in_speed.state & 1)
 		speed = host_frametime * cl_anglespeedkey.value;
-	else
-		speed = host_frametime;
+	else	speed = host_frametime;
 
 	if (!(in_strafe.state & 1))
 	{
@@ -428,8 +414,8 @@ static void CL_AdjustAngles (void)
 		cl.viewangles[PITCH] += speed*cl_pitchspeed.value * CL_KeyState (&in_back);
 	}
 
-	// FIXME: This is a cheap way of doing this, it belongs in V_CalcViewRoll
-	// but I don't see where I can get the yaw velocity, I have to get on to other things so here it is
+// FIXME: This is a cheap way of doing this, it belongs in V_CalcViewRoll
+// but I don't see where I can get the yaw velocity.
 	cl.idealroll = 0;
 	if (cl.v.movetype == MOVETYPE_FLY)
 	{
@@ -467,11 +453,10 @@ Send the intended movement message to the server
 ================
 */
 void CL_BaseMove (usercmd_t *cmd)
-{	
+{
 	if (cls.signon != SIGNONS)
 		return;
-
-	if (cl.v.cameramode)	// Stuck in a different camera so don't move
+	if (cl.v.cameramode)	// stuck in a different camera so don't move
 	{
 		memset (cmd, 0, sizeof(*cmd));
 		return;
@@ -497,15 +482,14 @@ void CL_BaseMove (usercmd_t *cmd)
 	cmd->upmove += cl_upspeed.value * CL_KeyState (&in_up);
 	cmd->upmove -= cl_upspeed.value * CL_KeyState (&in_down);
 
-	if (! (in_klook.state & 1) )
-	{	
+	if (! (in_klook.state & 1))
+	{
 //		cmd->forwardmove += cl_forwardspeed.value * CL_KeyState (&in_forward);
 		cmd->forwardmove += 200 * CL_KeyState (&in_forward);
 //		cmd->forwardmove -= cl_backspeed.value * CL_KeyState (&in_back);
 		cmd->forwardmove -= 200 * CL_KeyState (&in_back);
 	}
 
-//
 // adjust for speed key, but not if "always run" has been chosen
 // speed key now acts as slow key when always run is chosen - OS
 //	if ( ((cl_forwardspeed.value > 200) ||(in_speed.state & 1))
@@ -517,7 +501,7 @@ void CL_BaseMove (usercmd_t *cmd)
 		cmd->upmove *= cl_movespeedkey.value;
 	}
 
-	// Hasted player?
+// Hasted player?
 	if (cl.v.hasted)
 	{
 		cmd->forwardmove = cmd->forwardmove * cl.v.hasted;
@@ -536,8 +520,7 @@ CL_SendMove
 */
 void CL_SendMove (const usercmd_t *cmd)
 {
-	int		i;
-	int		bits;
+	int	i, bits;
 	sizebuf_t	buf;
 	byte	data[128];
 
@@ -545,9 +528,7 @@ void CL_SendMove (const usercmd_t *cmd)
 
 	cl.cmd = *cmd;
 
-//
 // send the movement message
-//
 	MSG_WriteByte (&buf, clc_frame);
 	MSG_WriteByte (&buf, cl.reference_frame);
 	MSG_WriteByte (&buf, cl.current_sequence);
@@ -563,19 +544,15 @@ void CL_SendMove (const usercmd_t *cmd)
 	MSG_WriteShort (&buf, cmd->sidemove);
 	MSG_WriteShort (&buf, cmd->upmove);
 
-//
 // send button bits
-//
 	bits = 0;
 
-	if ( in_attack.state & 3 )
+	if (in_attack.state & 3)
 		bits |= 1;
-
 	in_attack.state &= ~2;
 
 	if (in_jump.state & 3)
 		bits |= 2;
-
 	in_jump.state &= ~2;
 
 	if (in_crouch.state & 1)
@@ -586,21 +563,15 @@ void CL_SendMove (const usercmd_t *cmd)
 	MSG_WriteByte (&buf, in_impulse);
 	in_impulse = 0;
 
-//
 // light level
-//
 	MSG_WriteByte (&buf, cmd->lightlevel);
 
-//
 // deliver the message
-//
 	if (cls.demoplayback)
 		return;
 
-//
-// always dump the first two message, because it may contain leftover inputs
-// from the last level
-//
+// always dump the first two message, because it may
+// contain leftover inputs from the last level
 	if (++cl.movemessages <= 2)
 		return;
 
@@ -610,6 +581,7 @@ void CL_SendMove (const usercmd_t *cmd)
 		CL_Disconnect ();
 	}
 }
+
 
 /*
 ============
@@ -660,7 +632,6 @@ void CL_InitInput (void)
 	Cmd_AddCommand ("+infoplaque", IN_infoPlaqueDown);
 	Cmd_AddCommand ("-infoplaque", IN_infoPlaqueUp);
 }
-
 
 /*
 ============

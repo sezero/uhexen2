@@ -44,11 +44,11 @@
 
 typedef struct
 {
-	int		type;
-	int		entity;
-	int		tag;
-	int		flags;
-	int		skin;
+	int	type;
+	int	entity;
+	int	tag;
+	int	flags;
+	int	skin;
 	struct qmodel_s *models[4];
 	vec3_t	source;
 	vec3_t	dest;
@@ -207,7 +207,7 @@ void CL_ParseTEnt(void)
 		pos[1] = MSG_ReadCoord ();
 		pos[2] = MSG_ReadCoord ();
 		R_ParticleExplosion (pos);
-	//	break;	// WTF ?.
+	//	break;	// why was this here???
 		dl = CL_AllocDlight (0);
 		VectorCopy (pos, dl->origin);
 		dl->radius = 350;
@@ -224,6 +224,7 @@ void CL_ParseTEnt(void)
 #	endif
 		S_StartSound (-1, 0, cl_sfx_r_exp3, pos, 1, 1);
 		break;
+
 	case TE_LIGHTNING1:
 	case TE_LIGHTNING2:
 	case TE_LIGHTNING3:
@@ -274,7 +275,7 @@ void CL_ParseTEnt(void)
 
 static void ParseStream(int type)
 {
-	int		ent, tag, flags, skin;
+	int	ent, tag, flags, skin;
 	vec3_t	source, dest;
 	float	duration;
 	stream_t	*stream;
@@ -286,9 +287,7 @@ static void ParseStream(int type)
 	duration = (float)MSG_ReadByte()*0.05;
 	skin = 0;
 	if (type == TE_STREAM_COLORBEAM)
-	{
 		skin = MSG_ReadByte();
-	}
 	source[0] = MSG_ReadCoord();
 	source[1] = MSG_ReadCoord();
 	source[2] = MSG_ReadCoord();
@@ -315,11 +314,11 @@ static void ParseStream(int type)
 		break;
 	case TE_STREAM_LIGHTNING:
 		models[0] = Mod_ForName("models/stlghtng.mdl", true);
-//		duration*=2;
+//		duration *= 2;
 		break;
 	case TE_STREAM_LIGHTNING_SMALL:
 		models[0] = Mod_ForName("models/stltng2.mdl", true);
-//		duration*=2;
+//		duration *= 2;
 		break;
 	case TE_STREAM_FAMINE:
 		models[0] = Mod_ForName("models/fambeam.mdl", true);
@@ -372,24 +371,20 @@ static void ParseStream(int type)
 
 static stream_t *NewStream(int ent, int tag)
 {
-	int			i;
 	stream_t	*stream;
+	int	i;
 
 	// Search for a stream with matching entity and tag
 	for (i = 0, stream = cl_Streams; i < MAX_STREAMS; i++, stream++)
 	{
 		if (stream->entity == ent && stream->tag == tag)
-		{
 			return stream;
-		}
 	}
 	// Search for a free stream
 	for (i = 0, stream = cl_Streams; i < MAX_STREAMS; i++, stream++)
 	{
 		if (!stream->models[0] || stream->endTime < cl.time)
-		{
 			return stream;
-		}
 	}
 	return NULL;
 }
@@ -402,13 +397,12 @@ static stream_t *NewStream(int ent, int tag)
 
 void CL_UpdateTEnts(void)
 {
-	int		i, j;
+	int	i, j, offset;
 	stream_t	*stream;
 	vec3_t		dist, org;
 	float		d;
 	entity_t	*ent;
 	float	yaw, pitch, forward;
-	int		offset;
 
 	// Update streams
 	StreamEntityCount = 0;
@@ -436,27 +430,18 @@ void CL_UpdateTEnts(void)
 		{
 			yaw = 0;
 			if (dist[2] > 0)
-			{
 				pitch = 90;
-			}
-			else
-			{
-				pitch = 270;
-			}
+			else	pitch = 270;
 		}
 		else
 		{
 			yaw = (int)(atan2(dist[1], dist[0])*180/M_PI);
 			if (yaw < 0)
-			{
 				yaw += 360;
-			}
 			forward = sqrt(dist[0]*dist[0]+dist[1]*dist[1]);
 			pitch = (int)(atan2(dist[2], forward)*180/M_PI);
 			if (pitch < 0)
-			{
 				pitch += 360;
-			}
 		}
 
 		VectorCopy(stream->source, org);
@@ -466,19 +451,14 @@ void CL_UpdateTEnts(void)
 		{
 			offset = (int)(cl.time*40)%30;
 			for (j = 0; j < 3; j++)
-			{
 				org[j] += dist[j]*offset;
-			}
 		}
 
 		while (d > 0)
 		{
 			ent = NewStreamEntity();
-
 			if (!ent)
-			{
 				return;
-			}
 
 			VectorCopy(org, ent->origin);
 			ent->model = stream->models[0];
@@ -500,9 +480,7 @@ void CL_UpdateTEnts(void)
 
 				ent = NewStreamEntity();
 				if (!ent)
-				{
 					return;
-				}
 				VectorCopy(org, ent->origin);
 				ent->model = stream->models[1];
 				ent->angles[0] = pitch;
@@ -575,9 +553,7 @@ void CL_UpdateTEnts(void)
 			}
 
 			for (j = 0; j < 3; j++)
-			{
 				org[j] += dist[j]*30;
-			}
 
 			d -= 30;
 		}
@@ -592,9 +568,7 @@ void CL_UpdateTEnts(void)
 
 			ent = NewStreamEntity();
 			if (ent == NULL)
-			{
 				return;
-			}
 
 			VectorCopy(stream->dest, ent->origin);
 			ent->model = stream->models[2];
@@ -605,9 +579,7 @@ void CL_UpdateTEnts(void)
 
 			ent = NewStreamEntity();
 			if (ent == NULL)
-			{
 				return;
-			}
 
 			VectorCopy(stream->dest, ent->origin);
 			ent->model = stream->models[3];
@@ -629,14 +601,9 @@ static entity_t *NewStreamEntity(void)
 	entity_t	*ent;
 
 	if (cl_numvisedicts == MAX_VISEDICTS)
-	{
 		return NULL;
-	}
-
 	if (StreamEntityCount == MAX_STREAM_ENTITIES)
-	{
 		return NULL;
-	}
 
 	ent = &StreamEntities[StreamEntityCount++];
 	memset(ent, 0, sizeof(*ent));

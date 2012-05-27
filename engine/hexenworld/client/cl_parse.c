@@ -111,7 +111,7 @@ static const char *svc_strings[] =
 	"NEW PROTOCOL",
 	"NEW PROTOCOL"
 };
-#define	NUM_SVC_STRINGS	( sizeof(svc_strings)/sizeof(svc_strings[0]) )
+#define	NUM_SVC_STRINGS	(sizeof(svc_strings) / sizeof(svc_strings[0]))
 
 int		parsecountmod;
 double		parsecounttime;
@@ -184,8 +184,8 @@ Model_NextDownload
 */
 static void Model_NextDownload (void)
 {
-	char	*s;
-	int		i;
+	const char	*s;
+	int	i;
 
 	if (cls.downloadnumber == 0)
 	{
@@ -241,8 +241,8 @@ Sound_NextDownload
 */
 static void Sound_NextDownload (void)
 {
-	char	*s;
-	int		i;
+	const char	*s;
+	int	i;
 
 	if (cls.downloadnumber == 0)
 	{
@@ -306,7 +306,7 @@ A download message has been received from the server
 */
 static void CL_ParseDownload (void)
 {
-	int		size, percent;
+	int	size, percent;
 	char	name[MAX_OSPATH];
 
 	// read the data
@@ -336,13 +336,6 @@ static void CL_ParseDownload (void)
 	// open the file if not opened yet
 	if (!cls.download)
 	{
-#if 0
-		if (strncmp(cls.downloadtempname,"skins/",6))
-			q_snprintf (name, sizeof(name), "%s/%s", fs_gamedir, cls.downloadtempname);
-		else
-			q_snprintf (name, sizeof(name), "hw/%s", cls.downloadtempname);
-#endif
-	/* Do I really need to care more about skins like above?.. */
 		q_snprintf (name, sizeof(name), "%s/%s", fs_userdir, cls.downloadtempname);
 		if ( FS_CreatePath(name) )
 		{
@@ -367,16 +360,7 @@ static void CL_ParseDownload (void)
 
 	if (percent != 100)
 	{
-// change display routines by zoid
 		// request next block
-#if 0
-		Con_Printf (".");
-		if (10*(percent/10) != cls.downloadpercent)
-		{
-			cls.downloadpercent = 10*(percent/10);
-			Con_Printf ("%i%%", cls.downloadpercent);
-		}
-#endif
 		cls.downloadpercent = percent;
 
 		MSG_WriteByte (&cls.netchan.message, clc_stringcmd);
@@ -392,19 +376,6 @@ static void CL_ParseDownload (void)
 		cls.download = NULL;
 		cls.downloadpercent = 0;
 
-#if 0
-		if (strncmp(cls.downloadtempname,"skins/",6))
-		{
-			q_snprintf (oldn, sizeof(oldn), "%s/%s", fs_gamedir, cls.downloadtempname);
-			q_snprintf (newn, sizeof(newn), "%s/%s", fs_gamedir, cls.downloadname);
-		}
-		else
-		{
-			q_snprintf (oldn, sizeof(oldn), "hw/%s", cls.downloadtempname);
-			q_snprintf (newn, sizeof(newn), "hw/%s", cls.downloadname);
-		}
-#endif
-	/* Do I really need to care more about skins like above?.. */
 		q_snprintf (oldn, sizeof(oldn), "%s/%s", fs_userdir, cls.downloadtempname);
 		q_snprintf (newn, sizeof(newn), "%s/%s", fs_userdir, cls.downloadname);
 		if (Sys_rename(oldn, newn) != 0)
@@ -419,7 +390,7 @@ static void CL_ParseDownload (void)
 /*
 =====================================================================
 
-  SERVER CONNECTING MESSAGES
+SERVER CONNECTING MESSAGES
 
 =====================================================================
 */
@@ -432,7 +403,7 @@ CL_ParseServerData
 static void CL_ParseServerData (void)
 {
 	const char	*str;
-	int		protover;
+	int	protover;
 
 	Con_DPrintf ("Serverdata packet received.\n");
 
@@ -640,7 +611,7 @@ CL_ParseBaseline
 */
 static void CL_ParseBaseline (entity_state_t *es)
 {
-	int			i;
+	int	i;
 
 	es->modelindex = MSG_ReadShort ();
 	es->frame = MSG_ReadByte ();
@@ -669,7 +640,7 @@ like torches
 static void CL_ParseStatic (void)
 {
 	entity_t *ent;
-	int		i;
+	int	i;
 	entity_state_t	es;
 
 	CL_ParseBaseline (&es);
@@ -702,9 +673,9 @@ CL_ParseStaticSound
 */
 static void CL_ParseStaticSound (void)
 {
-	vec3_t		org;
-	int			sound_num, vol, atten;
-	int			i;
+	vec3_t	org;
+	int	sound_num, vol, atten;
+	int	i;
 
 	for (i = 0; i < 3; i++)
 		org[i] = MSG_ReadCoord ();
@@ -732,22 +703,20 @@ CL_ParseStartSoundPacket
 static void CL_ParseStartSoundPacket(void)
 {
 	vec3_t	pos;
-	int		channel, ent;
-	int		sound_num, volume;
+	int	channel, ent;
+	int	sound_num, volume;
 	float	attenuation;
-	int		i;
+	int	i;
 
 	channel = MSG_ReadShort();
 
 	if (channel & SND_VOLUME)
 		volume = MSG_ReadByte ();
-	else
-		volume = DEFAULT_SOUND_PACKET_VOLUME;
+	else	volume = DEFAULT_SOUND_PACKET_VOLUME;
 
 	if (channel & SND_ATTENUATION)
 		attenuation = MSG_ReadByte () / 32.0;
-	else
-		attenuation = DEFAULT_SOUND_PACKET_ATTENUATION;
+	else	attenuation = DEFAULT_SOUND_PACKET_ATTENUATION;
 
 	sound_num = MSG_ReadByte ();
 
@@ -793,15 +762,14 @@ static void CL_ParseClientdata (void)
 
 	if (latency < 0 || latency > 1.0)
 	{
-//		Con_Printf ("Odd latency: %5.2f\n", latency);
+	//	Con_Printf ("Odd latency: %5.2f\n", latency);
 	}
 	else
 	{
 	// drift the average latency towards the observed latency
 		if (latency < cls.latency)
 			cls.latency = latency;
-		else
-			cls.latency += 0.001;	// drift up, so correction are needed
+		else	cls.latency += 0.001;	// drift up, so correction are needed
 	}
 }
 
@@ -819,8 +787,8 @@ static void CL_NewTranslation (int slot)
 	R_TranslatePlayerSkin(slot);
 #else
 
-	int		i, j;
-	int		top, bottom;
+	int	i, j;
+	int	top, bottom;
 	byte	*dest, *source, *sourceA, *sourceB, *colorA, *colorB;
 	player_info_t	*player;
 
@@ -838,11 +806,9 @@ static void CL_NewTranslation (int slot)
 	top = player->topcolor;
 	if (top > 10 || top < 0)
 		top = 10;
-
 	bottom = player->bottomcolor;
 	if (bottom > 10 || bottom < 0)
 		bottom = 10;
-
 	top -= 1;
 	bottom -= 1;
 
@@ -886,8 +852,7 @@ static void CL_UpdateUserinfo (void)
 	player->bottomcolor = atoi(Info_ValueForKey (player->userinfo, "bottomcolor"));
 	if (Info_ValueForKey (player->userinfo, "*spectator")[0])
 		player->spectator = true;
-	else
-		player->spectator = false;
+	else	player->spectator = false;
 
 	if (cls.state == ca_active)
 		Skin_Find (player);
@@ -895,9 +860,7 @@ static void CL_UpdateUserinfo (void)
 	player->playerclass = atoi(Info_ValueForKey (player->userinfo, "playerclass"));
 	/*
 	if (cl.playernum == slot && player->playerclass != playerclass.integer)
-	{
 		Cvar_SetValue ("playerclass",player->playerclass);
-	}
 	*/
 	Sbar_Changed ();
 	player->Translated = false;
@@ -923,7 +886,7 @@ static void CL_SetStat (int idx, int value)
 	{	// set flash times
 		Sbar_Changed ();
 		for (j = 0; j < 32; j++)
-			if ( (value & (1<<j)) && !(cl.stats[idx] & (1<<j)) )
+			if ((value & (1<<j)) && !(cl.stats[idx] & (1<<j)))
 				cl.item_gettime[j] = cl.time;
 	}
 
@@ -937,22 +900,20 @@ CL_MuzzleFlash
 */
 static void CL_MuzzleFlash (void)
 {
-	vec3_t		fv, rv, uv;
+	vec3_t	fv, rv, uv;
 	dlight_t	*dl;
-	int			i;
+	int		i;
 	player_state_t	*pl;
 
 	i = MSG_ReadShort ();
 
 	if ((unsigned int)(i - 1) >= MAX_CLIENTS)
 		return;
-
 #ifdef GLQUAKE
 	// don't draw our own muzzle flash in gl if flashblending
 	if (i - 1 == cl.playernum && gl_flashblend.integer)
 		return;
 #endif
-
 	pl = &cl.frames[parsecountmod].playerstate[i-1];
 
 	dl = CL_AllocDlight (i);
@@ -992,15 +953,9 @@ static void CL_IndexedPrint(void)
 	}
 
 	idx = MSG_ReadShort ();
-
 	if (idx > 0 && idx <= host_string_count)
-	{
 		Con_Printf ("%s", Host_GetString(idx - 1));
-	}
-//	else
-//	{
-//		Con_Printf ("");
-//	}
+
 	con_ormask = 0;
 }
 
@@ -1016,15 +971,9 @@ static void CL_NamePrint(void)
 	}
 
 	idx = MSG_ReadByte ();
-
 	if (idx >= 0 && idx < MAX_CLIENTS)
-	{
 		Con_Printf ("%s", (char *)&cl.players[idx].name);
-	}
-//	else
-//	{
-//		Con_Printf ("");
-//	}
+
 	con_ormask = 0;
 }
 
@@ -1058,8 +1007,7 @@ static void CL_DumpPacket (void)
 		{
 			if (pos >= net_message.cursize)
 				Con_Printf(" X ");
-			else
-				Con_Printf("%2x ", (unsigned char)packet[pos]);
+			else	Con_Printf("%2x ", (unsigned char)packet[pos]);
 			pos++;
 		}
 		pos -= 16;
@@ -1069,8 +1017,7 @@ static void CL_DumpPacket (void)
 				Con_Printf("X");
 			else if (packet[pos] == 0)
 				Con_Printf(".");
-			else
-				Con_Printf("%c", (unsigned char)packet[pos]);
+			else	Con_Printf("%c", (unsigned char)packet[pos]);
 			pos++;
 		}
 		Con_Printf("\n");
@@ -1080,11 +1027,11 @@ static void CL_DumpPacket (void)
 }
 #endif	/* CL_DumpPacket */
 
-#define SHOWNET(S)							\
-	do {								\
-		if (cl_shownet.integer == 2)				\
-			Con_Printf ("%3i:%s\n", msg_readcount-1, (S));	\
-	} while (0)
+#define SHOWNET(S)						\
+do {								\
+	if (cl_shownet.integer == 2)				\
+		Con_Printf ("%3i:%s\n", msg_readcount-1, (S));	\
+} while (0)
 
 /*
 =====================
@@ -1113,9 +1060,7 @@ void CL_ParseServerMessage (void)
 	v_targDist = 0;	// This clears out the target field on each netupdate;
 			// it won't be drawn unless another update comes...
 
-//
 // if recording demos, copy the message out
-//
 	if (cl_shownet.integer == 1)
 		Con_Printf ("%i ",net_message.cursize);
 	else if (cl_shownet.integer == 2)
@@ -1123,9 +1068,7 @@ void CL_ParseServerMessage (void)
 
 	CL_ParseClientdata ();
 
-//
 // parse the message
-//
 	while (1)
 	{
 		if (msg_badread)
@@ -1135,16 +1078,13 @@ void CL_ParseServerMessage (void)
 		}
 
 		cmd = MSG_ReadByte ();
-
 		if (cmd == -1)
 		{
 			msg_readcount++;	// so the EOM showner has the right value
 			SHOWNET("END OF MESSAGE");
 			break;
 		}
-
-		if (cmd < (int)NUM_SVC_STRINGS)	// else, it'll hit the illegible message below
-		{
+		if (cmd < (int)NUM_SVC_STRINGS) {
 			SHOWNET(svc_strings[cmd]);
 		}
 
@@ -1376,31 +1316,26 @@ void CL_ParseServerMessage (void)
 		case svc_cdtrack:
 			cl.cdtrack = MSG_ReadByte ();
 			if (q_strcasecmp(bgmtype.string,"cd") != 0)
-			{
-				CDAudio_Stop();
-				break;
-			}
-			CDAudio_Play ((byte)cl.cdtrack, true);
+				CDAudio_Stop ();
+			else	CDAudio_Play ((byte)cl.cdtrack, true);
 			break;
 
 		case svc_midi_name:
 			q_strlcpy (cl.midi_name, MSG_ReadString(), sizeof(cl.midi_name));
-			if (q_strcasecmp(bgmtype.string,"midi") == 0)
-				BGM_PlayMIDIorMusic(cl.midi_name);
-			else
+			if (q_strcasecmp(bgmtype.string,"midi") != 0)
 				BGM_Stop();
+			else	BGM_PlayMIDIorMusic(cl.midi_name);
 			break;
 
 		case svc_intermission:
-		//	if (cl_siege)
-		//	{//MG
+			/*
+			if (cl_siege) {//MG
+			*/
 				CL_SetupIntermission (MSG_ReadByte());
 				vid.recalc_refdef = true;	// go to full screen
 				break;
 			/*
-			}
-			else
-			{ // Old Quake way- won't work
+			} else { // Old Quake way- won't work
 				cl.intermission = 1;
 				cl.completed_time = realtime;
 				vid.recalc_refdef = true;	// go to full screen
@@ -1563,7 +1498,7 @@ void CL_ParseServerMessage (void)
 			if (sc1 & SC1_TELEPORT_TIME)
 			{
 		//		Con_Printf("Teleport_time>time, got bit\n");
-				cl.v.teleport_time = realtime + 2;//can't airmove for 2 seconds
+				cl.v.teleport_time = realtime + 2; // can't airmove for 2s
 			}
 
 			if (sc1 & SC1_BLUEMANA)

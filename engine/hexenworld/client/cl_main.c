@@ -181,7 +181,7 @@ void CL_SendConnectPacket (void)
 
 	t2 = Sys_DoubleTime ();
 
-	connect_time = realtime+t2-t1;	// for retransmit requests
+	connect_time = realtime + t2 - t1;	// for retransmit requests
 
 	Con_Printf ("Connecting to %s...\n", cls.servername);
 	q_snprintf (data, sizeof(data), "%c%c%c%cconnect %d \"%s\"\n",
@@ -311,7 +311,7 @@ CL_ClearState
 */
 void CL_ClearState (void)
 {
-	int			i;
+	int	i;
 
 	S_StopAllSounds (true);
 
@@ -428,8 +428,7 @@ Dump userdata / masterdata for a user
 */
 static void CL_User_f (void)
 {
-	int		uid;
-	int		i;
+	int	i, uid;
 
 	if (Cmd_Argc() != 2)
 	{
@@ -462,8 +461,7 @@ Dump userids for all current players
 */
 static void CL_Users_f (void)
 {
-	int		i;
-	int		c;
+	int	i, c;
 
 	c = 0;
 	Con_Printf ("userid frags name\n");
@@ -483,7 +481,7 @@ static void CL_Users_f (void)
 static void CL_Color_f (void)
 {
 	// just for quake compatability...
-	int		top, bottom;
+	int	top, bottom;
 	char	num[16];
 
 	if (Cmd_Argc() == 1)
@@ -547,18 +545,6 @@ static void CL_FullServerinfo_f (void)
 			if (!server_version)
 				Con_Printf("Version %1.2f Server\n", v);
 			server_version = v;
-#if 0
-			if ((int)(server_version*100) > (int)(ENGINE_VERSION*100))
-			{
-				Con_Printf("The server is running v%4.2f, you have v%4.2f, please go to www.hexenworld.com and update your client to join\n",server_version,ENGINE_VERSION);
-				CL_Disconnect_f ();
-			}
-			if ((int)(server_version*100) < (int)(ENGINE_VERSION*100))
-			{
-				Con_Printf("The server is running an old version (v%4.2f), you have v%4.2f, please ask server admin to update to latest version\n",server_version,ENGINE_VERSION);
-				CL_Disconnect_f ();
-			}
-#endif
 		}
 	}
 }
@@ -778,7 +764,7 @@ Responses to broadcasts, etc
 static void CL_ConnectionlessPacket (void)
 {
 	const char	*s;
-	int		c;
+	int	c;
 
 	MSG_BeginReading ();
 	MSG_ReadLong ();	// skip the -1
@@ -863,9 +849,7 @@ static void CL_ReadPackets (void)
 //	while (NET_GetPacket())
 	while (CL_GetMessage())
 	{
-		//
 		// remote command packet
-		//
 		if (*(int *)net_message.data == -1)
 		{
 			CL_ConnectionlessPacket ();
@@ -878,9 +862,7 @@ static void CL_ReadPackets (void)
 			continue;
 		}
 
-		//
 		// packet from server
-		//
 		if (!cls.demoplayback && 
 			!NET_CompareAdr (net_from, cls.netchan.remote_address))
 		{
@@ -891,14 +873,9 @@ static void CL_ReadPackets (void)
 		if (!Netchan_Process(&cls.netchan))
 			continue;	// wasn't accepted for some reason
 		CL_ParseServerMessage ();
-
-//		if (cls.demoplayback && cls.state >= ca_active && !CL_DemoBehind())
-//			return;
 	}
 
-	//
 	// check timeout
-	//
 	if (cls.state >= ca_connected
 		 && realtime - cls.netchan.last_received > cl_timeout.value)
 	{
@@ -917,7 +894,7 @@ CL_Download_f
 */
 static void CL_Download_f (void)
 {
-	char		tmp[MAX_OSPATH];
+	char	tmp[MAX_OSPATH];
 
 	if (cls.state == ca_disconnected)
 	{
@@ -943,7 +920,7 @@ static void CL_Download_f (void)
 		return;
 	}
 
-	if ( FS_CreatePath(tmp) )
+	if (FS_CreatePath(tmp) != 0)
 	{
 		Con_Printf ("Unable to create directory for downloading %s\n", Cmd_Argv(1));
 		return;
@@ -973,23 +950,18 @@ CL_Minimize_f
 */
 static void CL_Windows_f (void)
 {
-//	if (modestate == MS_WINDOWED)
-//		ShowWindow(mainwindow, SW_MINIMIZE);
-//	else
-		SendMessage(mainwindow, WM_SYSKEYUP, VK_TAB, 1 | (0x0F << 16) | (1<<29));
+	SendMessage(mainwindow, WM_SYSKEYUP, VK_TAB, 1 | (0x0F << 16) | (1<<29));
 }
 #endif
 
 static void CL_Sensitivity_save_f (void)
 {
 	static float save_sensitivity = 3;
-
 	if (Cmd_Argc() != 2)
 	{
 		Con_Printf ("sensitivity_save <save/restore>\n");
-		return;
 	}
-	if (q_strcasecmp(Cmd_Argv(1),"save") == 0)
+	else if (q_strcasecmp(Cmd_Argv(1),"save") == 0)
 	{
 		save_sensitivity = sensitivity.value;
 	}
@@ -1023,9 +995,7 @@ void CL_Init (void)
 	CL_InitCam ();
 	Pmove_Init ();
 
-//
 // register our commands
-//
 	Cmd_AddCommand ("saveconfig", Host_SaveConfig_f);
 
 	Cvar_RegisterVariable (&developer);
@@ -1070,9 +1040,7 @@ void CL_Init (void)
 	Cvar_RegisterVariable (&baseskin);
 	Cvar_RegisterVariable (&noskins);
 
-	//
-	// info mirrors
-	//
+// info mirrors
 	Cvar_SetCallback (&name, CL_Callback_Userinfo);
 	Cvar_SetCallback (&playerclass, CL_Callback_Userinfo);
 	Cvar_SetCallback (&password, CL_Callback_Userinfo);
@@ -1130,17 +1098,13 @@ void CL_Init (void)
 
 	Cmd_AddCommand ("sensitivity_save", CL_Sensitivity_save_f);
 
-//
 // forward to server commands
-//
 	Cmd_AddCommand ("kill", NULL);
 	Cmd_AddCommand ("say", NULL);
 	Cmd_AddCommand ("say_team", NULL);
 	Cmd_AddCommand ("serverinfo", NULL);
 
-//
-//  Windows commands
-//
+// Windows commands
 #ifdef _WINDOWS
 	Cmd_AddCommand ("windows", CL_Windows_f);
 #endif
@@ -1226,8 +1190,8 @@ void Host_WriteConfiguration (const char *fname)
 
 		Key_WriteBindings (f);
 		Cvar_WriteVariables (f);
-
-		if (in_mlook.state & 1)	//if mlook was down, keep it that way
+		// if mlook was down, keep it that way:
+		if (in_mlook.state & 1)
 			fprintf (f, "+mlook\n");
 
 		fclose (f);
@@ -1353,7 +1317,7 @@ void Host_Frame (float time)
 		pass2 = (time2 - time1)*1000;
 		pass3 = (time3 - time2)*1000;
 		Con_Printf ("%3i tot %3i server %3i gfx %3i snd\n",
-					pass1+pass2+pass3, pass1, pass2, pass3);
+				pass1+pass2+pass3, pass1, pass2, pass3);
 	}
 
 	host_framecount++;
