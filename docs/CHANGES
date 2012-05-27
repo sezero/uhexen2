@@ -4,6 +4,10 @@ Development Progress	:
 ---------------------------
 
 2012-05-27 (SVN):
+    * in_sdl.c: Support for joystick hat (POV) switch motion, based on
+      ioquake3 code. We translate hat motions into K_AUX key presses.
+
+2012-05-27 (SVN):
     * snd_timidity.c, snd_wildmidi.c: Changed a while construct into a
       for for better readability.
 

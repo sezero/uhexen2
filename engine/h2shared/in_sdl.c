@@ -102,10 +102,22 @@ static joy_axiscache_t joy_axescache[MAX_JOYSTICK_AXES];
  * make IN_ActivateMouse()/IN_DeactivateMouse() to affect the trackball: */
 static qboolean	trackballactive = false;
 
+/* translate hat events into keypresses. the 4
+ * highest buttons are used for the first hat */
+static int hat_keys[16] = {
+	K_AUX29, K_AUX30, K_AUX31, K_AUX32,
+	K_AUX25, K_AUX26, K_AUX27, K_AUX28,
+	K_AUX21, K_AUX22, K_AUX23, K_AUX24,
+	K_AUX17, K_AUX18, K_AUX19, K_AUX20
+};
+static Uint32	oldhats = 0;	/* old hat state */
+
 /* forward-referenced functions */
 static void IN_StartupJoystick (void);
 static void IN_JoyMove (usercmd_t *cmd);
 static void IN_JoyTrackballMove (int *ballx, int *bally); /* adds to x/y args */
+static void IN_JoyHatMove (void);
+static float IN_JoystickGetAxis (int axis, float sensitivity, float deadzone);
 static void IN_Callback_JoyEnable (cvar_t *var);
 static void IN_Callback_JoyIndex (cvar_t *var);
 
@@ -498,6 +510,7 @@ static void IN_Callback_JoyIndex (cvar_t *var)
 #if (JOY_KEYEVENT_FOR_AXES)
 	memset (joy_axescache, 0, MAX_JOYSTICK_AXES * sizeof(joy_axiscache_t));
 #endif
+	oldhats = 0;
 	if (joy_id)
 	{
 		SDL_JoystickClose(joy_id);
@@ -516,12 +529,21 @@ static void IN_Callback_JoyIndex (cvar_t *var)
 		}
 		else
 		{
+			int numaxes, numbtns, numballs, numhats;
 			Con_Printf("joystick open ");
 			Con_Printf("#%d: \"%s\"\n", idx, SDL_JoystickName(idx));
+			numaxes = SDL_JoystickNumAxes(joy_id);
+			numbtns = SDL_JoystickNumButtons(joy_id);
+			numballs= SDL_JoystickNumBalls(joy_id);
+			numhats = SDL_JoystickNumHats(joy_id);
 			Con_Printf(" %d axes, %d buttons, %d balls, %d hats\n",
-					SDL_JoystickNumAxes(joy_id), SDL_JoystickNumButtons(joy_id),
-					SDL_JoystickNumBalls(joy_id), SDL_JoystickNumHats(joy_id));
+					numaxes, numbtns, numballs, numhats);
 			IN_JoyTrackballMove (NULL, NULL);
+			if (numhats > 4) numhats = 4;
+			for (idx = 0; idx < numhats; ++idx)
+				((Uint8 *)&oldhats)[idx] = SDL_JoystickGetHat(joy_id, idx);
+			for (idx = 0; idx < numaxes; ++idx)
+				SDL_JoystickGetAxis(joy_id, idx);
 		}
 	}
 }
@@ -541,6 +563,99 @@ static void IN_JoyTrackballMove (int *ballx, int *bally)
 		if (ballx) *ballx += x;
 		if (bally) *bally += y;
 	}
+}
+
+static void IN_JoyHatMove (void)
+{
+	int		i, k, numhats;
+	Uint32		hats;
+
+	if (!joy_id)	return;
+	numhats = SDL_JoystickNumHats(joy_id);
+	if (!numhats)	return;
+	if (numhats > 4) numhats = 4;
+	hats = 0;
+	for (i = 0; i < numhats; ++i)
+		((Uint8 *)&hats)[i] = SDL_JoystickGetHat(joy_id, i);
+	if (hats == oldhats)
+		return;
+
+	for (i = 0; i < numhats; i++ )
+	{
+		if (((Uint8 *)&hats)[i] == ((Uint8 *)&oldhats)[i])
+			continue;
+		k = 4 * i;
+		/* release event */
+		switch (((Uint8 *)&oldhats)[i])
+		{
+		case SDL_HAT_UP:
+			Key_Event(hat_keys[k + 0], false);
+			break;
+		case SDL_HAT_RIGHT:
+			Key_Event(hat_keys[k + 1], false);
+			break;
+		case SDL_HAT_DOWN:
+			Key_Event(hat_keys[k + 2], false);
+			break;
+		case SDL_HAT_LEFT:
+			Key_Event(hat_keys[k + 3], false);
+			break;
+		case SDL_HAT_RIGHTUP:
+			Key_Event(hat_keys[k + 0], false);
+			Key_Event(hat_keys[k + 1], false);
+			break;
+		case SDL_HAT_RIGHTDOWN:
+			Key_Event(hat_keys[k + 2], false);
+			Key_Event(hat_keys[k + 1], false);
+			break;
+		case SDL_HAT_LEFTUP:
+			Key_Event(hat_keys[k + 0], false);
+			Key_Event(hat_keys[k + 3], false);
+			break;
+		case SDL_HAT_LEFTDOWN:
+			Key_Event(hat_keys[k + 2], false);
+			Key_Event(hat_keys[k + 3], false);
+			break;
+		default:
+			break;
+		}
+		/* press event */
+		switch (((Uint8 *)&hats)[i])
+		{
+		case SDL_HAT_UP:
+			Key_Event(hat_keys[k + 0], true);
+			break;
+		case SDL_HAT_RIGHT:
+			Key_Event(hat_keys[k + 1], true);
+			break;
+		case SDL_HAT_DOWN:
+			Key_Event(hat_keys[k + 2], true);
+			break;
+		case SDL_HAT_LEFT:
+			Key_Event(hat_keys[k + 3], true);
+			break;
+		case SDL_HAT_RIGHTUP:
+			Key_Event(hat_keys[k + 0], true);
+			Key_Event(hat_keys[k + 1], true);
+			break;
+		case SDL_HAT_RIGHTDOWN:
+			Key_Event(hat_keys[k + 2], true);
+			Key_Event(hat_keys[k + 1], true);
+			break;
+		case SDL_HAT_LEFTUP:
+			Key_Event(hat_keys[k + 0], true);
+			Key_Event(hat_keys[k + 3], true);
+			break;
+		case SDL_HAT_LEFTDOWN:
+			Key_Event(hat_keys[k + 2], true);
+			Key_Event(hat_keys[k + 3], true);
+			break;
+		default:
+			break;
+		}
+	}
+
+	oldhats = hats;	/* save hat state */
 }
 
 static float IN_JoystickGetAxis (int axis, float sensitivity, float deadzone)
@@ -664,6 +779,9 @@ static void IN_JoyMove (usercmd_t *cmd)
 		cl.viewangles[PITCH] = 80.0;
 	if (cl.viewangles[PITCH] < -70.0)
 		cl.viewangles[PITCH] = -70.0;
+
+	/* hats (pov): */
+	IN_JoyHatMove ();
 
 #if (JOY_KEYEVENT_FOR_AXES)
 	/* cache state of axes to emulate button events for them */
@@ -972,12 +1090,9 @@ void IN_SendKeyEvents (void)
 			Key_Event(buttonremap[event.button.button - 1], event.button.state == SDL_PRESSED);
 			break;
 
-		case SDL_MOUSEMOTION:
-			break;	/* handled by IN_MouseMove() */
-
 		case SDL_JOYBUTTONDOWN:
 		case SDL_JOYBUTTONUP:
-			if (!in_joystick.integer)
+			if (in_mode_set)
 				break;
 			if (event.jbutton.button > K_AUX28 - K_JOY1)
 			{
@@ -988,10 +1103,13 @@ void IN_SendKeyEvents (void)
 			Key_Event(K_JOY1 + event.jbutton.button, event.jbutton.state == SDL_PRESSED);
 			break;
 
-		case SDL_JOYAXISMOTION:
-		case SDL_JOYHATMOTION:
+		/* mouse/trackball motion handled by IN_MouseMove() */
+		/* axes and hat (pov) motion handled by IN_JoyMove() */
+		case SDL_MOUSEMOTION:
 		case SDL_JOYBALLMOTION:
-			break;	/* handled by IN_JoyMove() */
+		case SDL_JOYHATMOTION:
+		case SDL_JOYAXISMOTION:
+			break;
 
 		case SDL_QUIT:
 			CL_Disconnect ();
