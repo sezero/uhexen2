@@ -111,12 +111,8 @@ static qboolean S_WILDMIDI_CodecInitialize (void)
 	if (err != 0)
 		err = WILDMIDI_InitHelper(fs_basedir);
 	/* lastly, check with the system locations: */
-	i = 0;
-	while (err != 0 && cfgfile[i] != NULL)
-	{
+	for (i = 0; err != 0 && cfgfile[i] != NULL; ++i)
 		err = WILDMIDI_InitHelper(cfgfile[i]);
-		++i;
-	}
  _finish:
 	if (err != 0)
 	{

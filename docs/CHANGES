@@ -3,6 +3,10 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2012-05-27 (SVN):
+    * snd_timidity.c, snd_wildmidi.c: Changed a while construct into a
+      for for better readability.
+
 2012-05-25 (SVN):
     * in_sdl.c: IN_JoystickGetAxis() and IN_JoystickKeyeventForAxis() no
       longer accept a joystick id pointer parameter, but use the joy_id
