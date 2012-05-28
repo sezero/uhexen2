@@ -1,9 +1,9 @@
 Hexen II: Hammer of Thyrion (uHexen2) - Music support
 -----------------------------------------------------
 
-Hammer of Thyrion supports ogg, mp3 and wav external music files to be
+Hammer of Thyrion supports OGG, MP3 and WAV external music files to be
 played instead of the original midi files, so you can enjoy the hexen2
-music in better quality like they are from the hexen2 cdrom audio tracks.
+music in good quality like they are from the hexen2 cdrom audio tracks.
 
 Actually the midi music of hexen2 and its mission pack are the same
 songs as the hexen2 cdaudio, so you can just rip your hexen2 cdaudio
@@ -32,7 +32,7 @@ What you should do is simple:
    as "midi" and bgm_extmusic as 1.)
 
 6. Let's do some file renaming: the trackXX files should match the midi
-   names.  Linux/unix users can do these easily using our cdrip_hexen2.sh
+   names. Linux/unix users can do these easily using our cdrip_hexen2.sh
    and cdrip_missionpack.sh shell scripts.
 
    Note to the curious: this file renaming is necessary.  Unlike quake,
@@ -45,19 +45,19 @@ What you should do is simple:
 
    data1/music :
    -------------
-   track02  ->  casa1       track08  ->  egyp3       track14  ->  roma3
-   track03  ->  casa2       track09  ->  meso1       track15  ->  casb1
-   track04  ->  casa3       track10  ->  meso2       track16  ->  casb2
-   track05  ->  casa4       track11  ->  meso3       track17  ->  casb3
-   track06  ->  egyp1       track12  ->  roma1
-   track07  ->  egyp2       track13  ->  roma2
+   track02  ->  casa1      track08  ->  egyp3      track14  ->  roma3
+   track03  ->  casa2      track09  ->  meso1      track15  ->  casb1
+   track04  ->  casa3      track10  ->  meso2      track16  ->  casb2
+   track05  ->  casa4      track11  ->  meso3      track17  ->  casb3
+   track06  ->  egyp1      track12  ->  roma1
+   track07  ->  egyp2      track13  ->  roma2
 
    portals/music :
    ---------------
-   track02  ->  tulku7      track06  ->  tulku9      track09  ->  tulku5
-   track03  ->  tulku1      track07  ->  tulku10     track10  ->  tulku8
-   track04  ->  tulku4      track08  ->  tulku6      track11  ->  tulku3
-   track05  ->  tulku2     (track12 won't match to anything, leave as is)
+   track02  ->  tulku7     track06  ->  tulku9     track09  ->  tulku5
+   track03  ->  tulku1     track07  ->  tulku10    track10  ->  tulku8
+   track04  ->  tulku4     track08  ->  tulku6     track11  ->  tulku3
+   track05  ->  tulku2    (track12 won't match to anything, leave as is)
 
    Notice that there is no such thing as track01:  The first tracks of
    both Hexen II and Portal of Praevus cdroms are always "data" tracks.
@@ -71,9 +71,9 @@ Notes on less common Hexen II cdrom media:
 8. A note for the owners of Hexen II/xplosiv release:
 
    Xplosiv is (was) a publishing label that did budget or re-releases of
-   quite some games, one of them Hexen II.  Audio tracks on the Xplosiv
-   release of Hexen II is the exact opposite of the order on the original
-   release, like so: (information was kindly provided by Sander van Dijk)
+   quite some games, one of them Hexen II.
+   Audio tracks on the Xplosiv release of Hexen II is the exact opposite
+   of the order on the original release, like so:
 
    track02  ->  casb3       track08  ->  meso3       track14  ->  casa4
    track03  ->  casb2       track09  ->  meso2       track15  ->  casa3
@@ -82,18 +82,19 @@ Notes on less common Hexen II cdrom media:
    track06  ->  roma2       track12  ->  egyp2
    track07  ->  roma1       track13  ->  egyp1
 
-   (You can use the cdrip_hexen2_xplosiv.sh script with it, if you are
-   on linux.)
+   (Information was kindly provided by Sander van Dijk. You can use the
+   cdrip_hexen2_xplosiv.sh script with it, if you are on linux.)
 
-9. Yet another note for the owners of Hexen II Matrox m3D bundled version,
-   also known as "Continent of Blackmarsh":  That disc has tracks 2 and 4
-   in reversed order, like so: (noted on "M3D_2" disc with Hexen II v1.10)
+
+9. Another note, for the owners of Hexen II Matrox m3D bundled version,
+   also known as "Continent of Blackmarsh": That disc has tracks 2 and
+   4 in reversed order, like so:
 
    track02  ->  casa3       track03  ->  casa2       track04  ->  casa1
    track05  ->  casa4
 
-   (You can use the cdrip_hexen2_matroxm3d.sh script with it, if you are
-   on linux.)
+   (Information noted on M3D_2 disc with Hexen II v1.10. You can use the
+   cdrip_hexen2_matroxm3d.sh script with it, if you are on linux.)
 
 
 New console commands:
@@ -129,18 +130,18 @@ New console commands:
 
 Removed console commands:
 -------------------------
-midi_play, midi_stop, midi_pause and midi_loop commands from the original
+midi_play, midi_stop, midi_pause and midi_loop commands of the original
 game are removed in favor of the new music commands above.
 
 New cvars:
 -------------------------
-- bgm_extmusic (0 or 1): Disable or enable playback of external music files
-  instead of original midi files. default is 1 (enabled).
+- bgm_extmusic (0 or 1): Disable or enable playback of external music
+  files instead of original midi files. default is 1 (enabled).
 
 New command line options:
 -------------------------
-- -noextmusic: Disables the playback of external music files instead of the
-  original midi files.
+- -noextmusic: Disables the playback of external music files instead of
+  the original midi files.
 
 Music files in PAK files:
 -------------------------
@@ -148,18 +149,19 @@ PAK-contained music files are fully supported.
 
 Music file directories:
 -------------------------
-- The midi music files are always searched under the "midi" directory, as
-  usual, for compatibility.
-- Other kinds of music files, anything other than midi, are always searched
-  under the "music" directory.
+- The midi music files are always searched under the "midi" directory,
+  as usual, for compatibility.
+- Other kinds of music files, i.e. anything other than midi, are always
+  searched under the "music" directory.
 
 Music file search order:
 -------------------------
-The engine can handle multiple audio formats.  The map-dictated music, i.e.
-the music from the svc_midi_name server message, is always searched by the
-order of searchpath priority: the file from the searchpath with the highest
-priority is chosen, because it is most likely the one from our own game
-directory itself.  This way, if a mod has egyp1 as a mp3 or a midi, which
-is below egyp1.ogg in the music_handler order, the mp3 or midi will still
-have priority over egyp1.ogg from the data1 game directory.
+The engine can handle multiple audio formats.  The map-dictated music,
+i.e. the music from the svc_midi_name server message, is always searched
+by the order of searchpath priority: the file from the searchpath with
+the highest priority is chosen, because it is most likely the one from
+our own game directory itself.  This way, if a game mod has egyp1 as a
+mp3 or a midi, which is below egyp1.ogg in the music_handler order, the
+mp3 or midi will still have priority over egyp1.ogg from the data1 game
+directory.
 

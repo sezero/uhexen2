@@ -54,7 +54,8 @@ cdroms: the windows discs released by Raven and Activision back in 1997.
 The less common "Xplosive" cdrom published in UK is also supported.
 To install the "Portal of Praevus" mission pack, you need your original
 mission pack cdrom.  To install the Matrox m3D bundled (oem) version of
-the game, you need your M3D_2 cdrom.
+the game (also known as "Continent of Blackmarsh"), you need your M3D_2
+cdrom.
 
 Hexen II requires its game data to be updated to version 1.11, too.
 
@@ -67,8 +68,8 @@ b. Manual install/update of data files:
    Download the base binary tarball (e.g., hexen2-1.5.4.i586.tgz) and
    extract it. Copy the two files pak0.pak and pak1.pak from your cdrom
    into the "data1" directory in your own installation.  The pak file
-   names should be lower-cased, if not already.  Fix their permissions
-   by running:  chmod 644 data1/pak*
+   names should be lower-cased, if not already.
+   To fix the permissions: chmod 644 data1/pak*
    To patch the pak files, use the included "h2patch" program: it will
    do the job, confirm the result and report its success by checking
    with the following md5sums:
@@ -77,22 +78,22 @@ b. Manual install/update of data files:
    c2ac5b0640773eed9ebe1cda2eca2ad0  data1/pak1.pak
 
    As an alternative, the game launcher has the integrated ability of
-   patching those pak files: just press the button and it'll be done.
+   patching those pak files.
 
    If you have the Portal of Praevus mission pack, copy the pak3.pak
    file from your cdrom into the "portals" directory in your own
-   installation.  To fix its permissions:  chmod 644 portals/pak*
-   No additional patching is necessary for the mission pack. Here is
-   the md5sum of pak3.pak, just in case:
+   installation.  To fix the permissions:  chmod 644 portals/pak*
+   The mission pack data doesn't need patching.  Here is the md5sum of
+   pak3.pak, just in case:
 
    77ae298dd0dcd16ab12f4a68067ff2c3  portals/pak3.pak
 
    If you want to install HexenWorld, download the HexenWorld binary
    package (e.g., hexenworld-1.5.4.i586.tgz) and extract it in the
-   same directory you extracted the base uhexen2 tarball. No patch is
-   necessary for hexenworld.
+   same directory you extracted the base uhexen2 tarball. HexenWorld
+   data doesn't need patching.
 
-   Here are the names of the binaries to be installed:
+   Here are the game binaries' names:
 
 	hexen2	-  Hexen II (software rendering)
 	glhexen2 - Hexen II (opengl rendering)
@@ -251,13 +252,13 @@ If you wish to brighten the display, simply use the game's menu entry.
 In case that it doesn't work for you, you can use the "xgamma" utility:
 Here is the script I use for xgamma:
 
-    xgamma -q -gamma 1.3;       # brighten the display
+    xgamma -q -gamma 1.3;  # brighten the display
     ./glhexen2
-    xgamma -q -gamma 1;         # restore old brightness
+    xgamma -q -gamma 1;    # restore old brightness
 
 3dfx Voodoo1 and Voodoo2 users can employ the -3dfxgamma command line
-switch to activate native 3dfx gamma controls (make sure that you enable
-that option in the Makefile when compiling).
+switch to activate native 3dfx gamma controls (remember to enable that
+option in the Makefile when compiling).
 
 
 1.4 Sound and Music
@@ -808,8 +809,8 @@ Raven games fan sites:
 		http://www.raven-games.com/
 		http://www.raven-games.com/vintage/
 
-SDL homepage : http://www.libsdl.org/
-ALSA homepage: http://www.alsa-project.org/
+SDL homepage  : http://www.libsdl.org/
+ALSA homepage : http://www.alsa-project.org/
 
 
 ---------------------------------
@@ -819,11 +820,11 @@ APPENDIX  A.  Some Legacy Options
 If, while running around, the screen occasionally twitches up and down,
 then disable lookspring by typing "lookspring 0" in the game console.
 
-Lookspring, lookstrafe and keyboard look (+klook) are legacy options for
-systems without a mouse which we actually didn't kill for historical
-reasons. They are pretty much of no use today and we recommend disabling
-them if they are not already. These options and key bindings are removed
-from the menu system of Hammer of Thyrion.
+Lookspring, lookstrafe and keyboard look (+klook) are legacy options
+from DOS times for systems without a mouse, which we didn't kill only
+for historical reasons. They are pretty much of no use today and we
+recommend disabling them if they aren't already. Those options and/or
+key bindings are removed from the menu system of Hammer of Thyrion.
 
 For reference, here are what they are meant to do, as written in the old
 manuals:

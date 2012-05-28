@@ -3,16 +3,16 @@ Hexen II: Hammer of Thyrion (uHexen2) - v1.5.4
 Instructions for Compiling:
 ===========================
 
-To compile the your own binaries, you need a unix build environment. The
-makefiles also present several build options, please read them. Makefiles
-rely on some scripts residing in the scripts directory. You may be able
-to modify them to meet your needs, if necessary, but the defaults should
-work just fine.
+To compile the your own binaries, you need a unix build environment.
+The makefiles also present several build options, please read them.
+Makefiles rely on some scripts residing in the scripts directory. You
+may be able to modify them to meet your needs, if necessary, but the
+defaults should work just fine.
 
-By editing the makefiles, you can change some compile time options. Other
-than the makefiles, we have gathered most, if not all, of our compile time
-options in the header file named "h2config.h".  You can edit it with care
-if necessary, as well.
+By editing the makefiles, you can change some compile time options.
+Other than the makefiles, we have gathered most, if not all, of our
+compile time options in the header file named "h2config.h".  You can
+edit it with care too, if necessary.
 
 Here is the recommended software for building:
 
@@ -69,56 +69,53 @@ SDL	:	Simple DirectMedia Layer libraries.
 Linux requirements	:
 -------------------------
 
-GLIBC	:	C libraries.  Any glibc >= 2.1 should be fine. Not tested
+GLIBC	:	C libraries. Any glibc >= 2.1 should be fine. Not tested
 		with anything older.
 
 ALSA	:	Advanced Linux Sound Architecture libraries.
 		Necessary, if you want to support ALSA sound on Linux.
-		Minimum version required is 1.0.1. Version 0.9.8 should
-		theoretically work, but not tested. 1.0.7 or newer are
-		recommended at runtime.  The makefiles present an option
-		for disabling ALSA sound support, in that case this
-		library will not be necessary.
+		Minimum version required is 1.0.1. (v0.9.8 might work,
+		but not tested.)  v1.0.7 or newer are recommended at
+		runtime.
+		The makefiles present an option for disabling ALSA audio
+		support, in that case this library won't be necessary.
 
 Windows requirements	:
 -------------------------
 
-MSVCRT.DLL:	The windows exe files depend on msvcrt.dll, the microsoft
-		C runtime library. Any sane windows installation already
-		has it unless it is a very ancient windows version, such as
-		win95.  In case you need it, here is a download link from
+MSVCRT.DLL:	Windows exe files depend on msvcrt.dll, the microsoft C
+		runtime library. Any sane windows installation already
+		has it unless it's a very ancient windows version, e.g.
+		win95.  In case you need, here is a download link from
 		the MS site:  http://support.microsoft.com/kb/259403
-		or:
-		http://support.microsoft.com/default.aspx?scid=kb;en-us;259403
+		or:  http://support.microsoft.com/?scid=kb;en-us;259403
 
 Mac OS X requirements	:
 -------------------------
 
-Xcode, SDKs:	Install the free Xcode suite from developer.apple.com :  It
-		comes with all required things except SDL.  Our own project
-		files are for the latest xcode.  SDL framework for Mac OS X:
+Xcode, SDKs:	Install the free Xcode suite from developer.apple.com,
+		then get the SDL framework for Mac OS X from:
 		http://www.libsdl.org/release/SDL-1.2.14.dmg
-		Copy the SDL.framework from that package into your
+		and copy SDL.framework from that package into your
 		/Library/Frameworks  folder.
 
 Additional requirements	:
 -------------------------
 
 libogg and either of libvorbis or libtremor:
-		Required if you want to enable Ogg/Vorbis music playback.
+		Required if you want Ogg/Vorbis music playback.
 libmad or libmpg123:
-		Required if you want to enable mp3 music playback.
+		Required if you want MP3 music playback.
 
 
 Compiling the software renderer for non-x86:
 ============================================
 
-The software renderer clients can be compiled for non-x86 cpus: not as fast
-as the intel code, yet, but it works very well in general.
-
-On the other hand, it's still possible to compile them as 32 bit binaries
-for intel compatible cpus, such as amd64: for that, you must add -m32 to
-the cpu and linker flags (see the COMPILE_32BITS option in the Makefiles)
+The software renderer clients can be compiled for non-x86 cpus: not as
+fast as the intel code, yet, but it works very well in general.  On the
+other hand, it's still possible to compile them as 32 bit binaries for
+intel compatible cpus, such as amd64:  for that, you must add -m32 to
+the cpu and linker flags (see: COMPILE_32BITS option in the Makefiles)
 and link against 32 bit versions of any necessary libraries.
 
 
@@ -127,34 +124,34 @@ Compiling for Windows:
 
 a. On Linux, using MinGW cross compiler:
 ----------------------------------------
-To compile for Win32 (x86) mingw cross compilers can be used under linux.
-We provide mingw cross compilers on our downloads page, too: see under
-the support files section if you need one.  Run the  build_cross_win32.sh
-scripts residing in all directories in order to compile. Read the scripts
-and edit them as necessary. Settings for the build_cross_win32.sh scripts
-are in the  scripts/cross_defs  file: edit it to meet your needs/setup,
-if necessary.
+To compile for Win32 (x86), the mingw cross compilers can be used under
+linux. We provide mingw cross compilers on our downloads page, too: see
+under the support files section if you need one.
+Run the  build_cross_win32.sh scripts residing in all directories in
+order to compile. Read the scripts and edit them as necessary. Settings
+for the build_cross_win32.sh scripts are in the  scripts/cross_defs.w32
+file: edit it to meet your needs/setup, if necessary.
 
 To compile for Win64 (X64), mingw-w64 cross compilers can be used under
 linux.  We provide mingw-w64 cross compilers on our downloads page, too:
 see under the support files section if you need one. To compile, use the
-"build_cross_win64.sh" scripts residing in all the directories.  Read the
+"build_cross_win64.sh" scripts residing in all the directories. Read the
 scripts and edit them as necessary.  Settings for build_cross_win64.sh
-scripts are in the  scripts/cross_defs_w64  file:  edit it to meet your
+scripts are in the  scripts/cross_defs.w64  file:  edit it to meet your
 needs, if necessary.
 
 
 b. On Windows, using win32-native MinGW compiler:
 -------------------------------------------------
 Download a prebuilt MinGW installer and install it to C:\MinGW .  Then
-download MSys and install it to c:\msys (1.0.11-2004.04.30 is the version
-I use.)  As x86 assembler, download nasm version 2.09.10, put nasm.exe
-into the C:\MinGW\bin directory. Adding the mingw directory to your PATH
-may be a good idea, too.  MinGW-3.1.0 comes with gcc-3.2.3.  MinGW-5.1.4,
-on the other hand, comes with gcc-3.4.5 and is recommended.
+download MSys and install it to c:\msys
+As x86 assembler, download nasm version 2.09.10, put nasm.exe into the
+C:\MinGW\bin directory. Adding the mingw directory to your PATH may be
+a good idea, too.  MinGW-3.1.0 comes with gcc-3.2.3.  MinGW-5.1.4, on
+the other hand, comes with gcc-3.4.5 and is recommended.
 
 Open a console window, cd into \msys and type "msys sh.exe". You will be
-in a unixish sh environment. The rest is just like doing things in linux:
+in a unixish sh environment.  The rest is like doing things in linux:
 cd into your fake "home directory", extract uhexen2 tarball, then change
 into into each subdirectory you want to build and normally use the make
 commands to compile.
@@ -165,24 +162,25 @@ do a make clean between each different build.
 
 c. On Windows, using Visual Studio 2005/2008 or 2010:
 -----------------------------------------------------
-Visual Studio 2005, 2008 and 2010 versions have been tested to compile all
-uhexen2 code successfully.  The VisualStudio2005.zip files contain the
-*.vcproj project files and *.sln solution files: unzipping them and double-
-clicking on them should start visual studio and you will be ready to go.
-The VS2005 project files are imported perfectly into VS2008, therefore
-VS2008 owners can use the VS2005 project files.  VS2010 project files are
-also provided for hexen2 and hexenworld projects for your convenience. All
+Visual Studio 2005, 2008 and 2010 versions have been tested to compile
+all uhexen2 code successfully.  The VisualStudio2005.zip files contain
+the *.vcproj project files and *.sln solution files: unzipping them and
+double-clicking on them should start visual studio and you will be ready
+to go.  The VS2005 project files import perfectly into VS2008, therefore
+VS2008 owners can use the VS2005 project files.  For your convenience,
+VS2010 project files are provided for hexen2 and hexenworld.  All of the
 projects are adjusted for Win32 (x86) and x64 targets.
 
-Compiling the software renderer versions h2.exe and hwcl.exe require YASM
-as the x86 assembler (link down below). Versions 0.7.2, 1.1.0 or newer are
-recommended.  As an alternative, you can use NASM as the assembler: version
-2.09.10 or newer are recommended.  Both nasm and yasm are very easy to
-integrate into Visual Studio using a rule file: see oslibs/windows/yasm and
-oslibs/windows/nasm directories.  Our project files are currently adjusted
-for using yasm.  For Visual Studio 2010, you need "vsyasm" which is simply
-a version of yasm tailored for vs2010. Version 1.1.0 of vsyasm is tested to
-function properly. See oslibs/windows/yasm/vs2010 for details.
+Compiling software renderer versions h2.exe and hwcl.exe require YASM as
+the x86 assembler (link down below). Versions 0.7.2, 1.1.0 or newer are
+recommended.  As an alternative, you can use NASM as the assembler:
+version 2.09.10 or newer are recommended.
+Both nasm and yasm are very easy to integrate into Visual Studio using a
+rule file: see oslibs/windows/yasm and oslibs/windows/nasm directories.
+Our project files are currently adjusted for using yasm. For vs2010, you
+need "vsyasm" which is simply a version of yasm tailored for vs2010.
+Versions 1.1.0 and 1.2.0 of vsyasm are tested to function properly.  See
+oslibs/windows/yasm/vs2010 for details.
 
 
 Compiling for Mac OS X:
@@ -212,12 +210,15 @@ Compiling for DOS:
 You need DJGPP. Tested compilation and functionality using djgpp v2.03
 and v2.04 using gcc-3.3.6, 3.4.6 and 4.4.7.  I compile on linux using
 cross toolchains: see the tiny build_cross_dos.sh script to understand
-how I do it.  We provide djgpp cross compilers on our downloads page,
-too: see under the support files section if you need one.
+how I do it.  Settings for the build_cross_dos.sh scripts are in the
+scripts/cross_defs.dj file: edit it to meet your needs/setup, if needed.
+We provide djgpp cross compilers on our downloads page: see under the
+support files section if you need one.
 
-Compiling in a native DOS/DJGPP environment is possible if you have long
-file names (LFN) support. Remember adding DOSBUILD=1 to your environment.
-For example, in order to compile the dos version of hexen2 on native dos:
+Compiling in a native DOS/DJGPP environment is possible *if* you have
+long file names (LFN) support. Remember adding DOSBUILD=1 to your
+environment. For example, in order to compile the dos version of hexen2
+on native dos:
 	set DOSBUILD=1
 	make h2
 
@@ -235,20 +236,20 @@ as the R7 (07 Jan. 2010) versions for quite some time.
 
 Links:
 ------
-SDL homepage		:	http://www.libsdl.org/
-Ogg/Vorbis homepage	:	http://xiph.org/
-libmad homepage		:	http://www.underbit.com/products/mad/
-mpg123 homepage		:	http://mpg123.org/
-ALSA homepage		:	http://www.alsa-project.org/
-GCC homepage		:	http://gcc.gnu.org/
-Binutils homepage	:	http://sourceware.org/binutils/
-clang homepage		:	http://clang.llvm.org/
-NASM homepage		:	http://www.nasm.us/
-YASM homepage		:	http://yasm.tortall.net/
-DJGPP homepage		:	http://www.delorie.com/djgpp/
-WATT-32 homepage	:	http://home.broadpark.no/~gvanem/
-MinGW/MSYS homepage	:	http://mingw.org/
-				http://sourceforge.net/projects/mingw/
-MinGW-w64 homepage	:	http://mingw-w64.sourceforge.net/
-				http://sourceforge.net/projects/mingw-w64/
+SDL homepage		: http://www.libsdl.org/
+Ogg/Vorbis homepage	: http://xiph.org/
+libmad homepage		: http://www.underbit.com/products/mad/
+mpg123 homepage		: http://mpg123.org/
+ALSA homepage		: http://www.alsa-project.org/
+GCC homepage		: http://gcc.gnu.org/
+Binutils homepage	: http://sourceware.org/binutils/
+clang homepage		: http://clang.llvm.org/
+NASM homepage		: http://www.nasm.us/
+YASM homepage		: http://yasm.tortall.net/
+DJGPP homepage		: http://www.delorie.com/djgpp/
+WATT-32 homepage	: http://home.broadpark.no/~gvanem/
+MinGW/MSYS homepage	: http://mingw.org/
+			  http://sourceforge.net/projects/mingw/
+MinGW-w64 homepage	: http://mingw-w64.sourceforge.net/
+			  http://sourceforge.net/projects/mingw-w64/
 
