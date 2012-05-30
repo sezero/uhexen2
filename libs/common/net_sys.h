@@ -37,7 +37,7 @@
 
 #if defined(__FreeBSD__) || defined(__DragonFly__)	|| \
     defined(__OpenBSD__) || defined(__NetBSD__)		|| \
-    defined(PLATFORM_AMIGA) /* the bsdsocket.library */	|| \
+    defined(PLATFORM_AMIGA) /* bsdsocket.library */	|| \
     defined(__MACOSX__)  || defined(__FreeBSD_kernel__)
 /* struct sockaddr has unsigned char sa_len as the first member in BSD
  * variants and the family member is also an unsigned char instead of an
@@ -122,7 +122,7 @@ typedef unsigned int	in_addr_t;	/* u_int32_t */
 #define	NET_ECONNREFUSED	ECONNREFUSED
 
 #define	socketerror(x)	strerror((x))
-/* bsdsocket.library has h_errno, hstrerror() */
+/* there is h_errno but no hstrerror() */
 #define	hstrerror(x)	strerror((x))
 
 /* Verify that we defined HAVE_SA_LEN correctly: */
