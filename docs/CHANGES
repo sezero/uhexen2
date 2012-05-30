@@ -4,6 +4,10 @@ Development Progress	:
 ---------------------------
 
 2012-05-30 (SVN):
+    * scripts/makefile.inc (LIBSOCKET): Solaris (sun) needs -lresolv, as
+      reported by Steven.
+
+2012-05-30 (SVN):
     * hexen2/net_udp.c: Solaris (sun) needs including sys/sockio.h for
       SIOCGIFCONF and friends.
 

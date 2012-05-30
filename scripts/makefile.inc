@@ -199,12 +199,13 @@ endif
 # -lsocket is needed on some arches
 
 LIBSOCKET=
+
 ifeq ($(CROSS_COMPILE),n)
 ifeq ($(HOST_OS),qnx)
 LIBSOCKET=-lsocket
 endif
 ifeq ($(HOST_OS),sunos)
-LIBSOCKET=-lsocket -lnsl
+LIBSOCKET=-lsocket -lnsl -lresolv
 endif
 endif
 
