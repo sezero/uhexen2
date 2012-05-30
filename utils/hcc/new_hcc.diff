@@ -155,7 +155,7 @@ diff -urNp hcc_old/hcc.c hcc/hcc.c
  			{ // Function never used
  				printf("unreferenced function '%s'\n", d->name);
  			}
-@@ -762,6 +777,8 @@ int main (int argc, char **argv)
+@@ -801,6 +816,8 @@ int main (int argc, char **argv)
  
  	if (CheckParm("-?") || CheckParm("-h") || CheckParm("-help") || CheckParm("--help"))
  	{
