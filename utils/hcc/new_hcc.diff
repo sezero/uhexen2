@@ -29,7 +29,7 @@ diff -urNp hcc_old/expr.c hcc/expr.c
  	argCount = 0;
  	args[0] = NULL;
  	args[1] = NULL;
-@@ -516,6 +527,32 @@ static void PrecacheModel (def_t *e, int
+@@ -516,6 +527,30 @@ static void PrecacheModel (def_t *e, int
  // PrecacheFile
  //
  //==========================================================================
@@ -40,9 +40,7 @@ diff -urNp hcc_old/expr.c hcc/expr.c
 +	for (i = 0; i < numfiles; i++)
 +	{
 +		if (!strcmp(n, precache_files[i]))
-+		{
 +			return;
-+		}
 +	}
 +	if (numfiles == MAX_FILES)
 +	{
@@ -62,31 +60,26 @@ diff -urNp hcc_old/expr.c hcc/expr.c
  
  static void PrecacheFile (def_t *e, int ch)
  {
-@@ -632,6 +669,33 @@ static def_t *ParseIntrinsicFunc (const 
+@@ -632,6 +667,28 @@ static def_t *ParseIntrinsicFunc (const 
  		return &def_ret;
  	}
  
-+	if (!strncmp(name, "precache_file", 13))	//i put this here to keep if from going in progs.dat
++	if (!strncmp(name, "precache_file", 13))	//keep it from going in progs.dat
 +	{
 +		def_ret.type = &type_void;
 +		LX_Require("(");
 +		if (TK_CHECK(TK_RPAREN))
-+		{
 +			return &def_ret;	//it's empty for some reason.
-+		}
-+		//i should be getting an immediate string here...
++		//i should be getting an immediate string here
 +		if (pr_token_type != tt_immediate)	//oops
-+			return (NULL);
-+/*			expr1  = CO_ParseImmediate();
++			return NULL;
++		/*
++		expr1 = CO_ParseImmediate();
 +		if (expr1->type->type != ev_string)
-+		{
 +			PR_ParseError("'precache_file' : parm not a string");
-+		}
-+*/
++		*/
 +		if (pr_immediate_type != &type_string)
-+		{
 +			PR_ParseError("'precache_file' : parm not a string");
-+		}
 +		PrecacheFileName(pr_immediate_string, name[13]);
 +		LX_Fetch();
 +		LX_Require(")");
@@ -109,15 +102,15 @@ diff -urNp hcc_old/hcc.c hcc/hcc.c
  
  	for (def = pr.def_head.next ; def ; def = def->next)
 @@ -239,9 +239,12 @@ static void WriteData (int crc)
- 			&& def->type->type != ev_field
- 			&& def->scope == NULL)
+ 		    def->type->type != ev_field &&
+ 		    def->scope == NULL)
  		{
 -			dd->type |= DEF_SAVEGLOBAL;
-+			if (strncmp (def->name,"STR_", 4) != 0)	//str_ is a special case string constant
++			//str_ is a special case string constant
++			if (strncmp (def->name,"STR_", 4) != 0)
 +				dd->type |= DEF_SAVEGLOBAL;
  		}
 -		if (hcc_OptimizeNameTable && def->scope != NULL)
-+
 +		if (hcc_OptimizeNameTable && ((def->scope != NULL) ||
 +			(!(dd->type&DEF_SAVEGLOBAL)&&(def->type->type < ev_field))))
  		{

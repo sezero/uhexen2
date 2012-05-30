@@ -3,6 +3,10 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2012-05-30 (SVN):
+    * utils/hcc, dhcc: Don't use 0 instead of NULL as a function param
+      for PR_Statement(), PR_GetDef() and CO_GenCode().
+
 2012-05-27 (SVN):
     * cl_main.c, cl_ents.c, cl_input.c, cl_parse.c, cl_tent.c, host.c:
       Random tidying up. Also made hexenworld version of CL_BaseMove()

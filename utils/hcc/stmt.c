@@ -305,7 +305,7 @@ static void ParseReturn (void)
 		{
 			PR_ParseError("missing return value");
 		}
-		CO_GenCode(&pr_opcodes[OP_RETURN], 0, 0);
+		CO_GenCode(&pr_opcodes[OP_RETURN], NULL, NULL);
 		LX_Fetch();
 		return;
 	}
@@ -315,7 +315,7 @@ static void ParseReturn (void)
 		PR_ParseError("return type mismatch");
 	}
 	LX_Require(";");
-	CO_GenCode(&pr_opcodes[OP_RETURN], e, 0);
+	CO_GenCode(&pr_opcodes[OP_RETURN], e, NULL);
 	st_ReturnParsed = true;
 }
 
@@ -335,7 +335,7 @@ static void ParseLoop (void)
 	patch1 = &statements[numstatements];
 	ParseStatement(SCONTEXT_LOOP);
 	tempDef.ofs = patch1 - &statements[numstatements];
-	CO_GenCode(&pr_opcodes[OP_GOTO], &tempDef, 0);
+	CO_GenCode(&pr_opcodes[OP_GOTO], &tempDef, NULL);
 	FixContinues(contStatement);
 	FixBreaks();
 }
@@ -360,10 +360,10 @@ static void ParseWhile (void)
 	LX_Require(")");
 	LX_CheckFetch("do");
 	patch1 = &statements[numstatements];
-	CO_GenCode(&pr_opcodes[OP_IFNOT], e, 0);
+	CO_GenCode(&pr_opcodes[OP_IFNOT], e, NULL);
 	ParseStatement(SCONTEXT_WHILE);
 	tempDef.ofs = patch2 - &statements[numstatements];
-	CO_GenCode(&pr_opcodes[OP_GOTO], &tempDef, 0);
+	CO_GenCode(&pr_opcodes[OP_GOTO], &tempDef, NULL);
 	patch1->b = &statements[numstatements] - patch1;
 	FixContinues(contStatement);
 	FixBreaks();
@@ -389,10 +389,10 @@ static void ParseUntil (void)
 	LX_Require(")");
 	LX_CheckFetch("do");
 	patch1 = &statements[numstatements];
-	CO_GenCode(&pr_opcodes[OP_IF], e, 0);
+	CO_GenCode(&pr_opcodes[OP_IF], e, NULL);
 	ParseStatement(SCONTEXT_UNTIL);
 	tempDef.ofs = patch2 - &statements[numstatements];
-	CO_GenCode(&pr_opcodes[OP_GOTO], &tempDef, 0);
+	CO_GenCode(&pr_opcodes[OP_GOTO], &tempDef, NULL);
 	patch1->b = &statements[numstatements] - patch1;
 	FixContinues(contStatement);
 	FixBreaks();
@@ -460,14 +460,14 @@ static void ParseIf (void)
 	LX_Require(")");
 
 	patch1 = &statements[numstatements];
-	CO_GenCode(&pr_opcodes[ifOpcode], e, 0);
+	CO_GenCode(&pr_opcodes[ifOpcode], e, NULL);
 
 	ParseStatement(SCONTEXT_IF);
 
 	if (LX_CheckFetch("else"))
 	{
 		patch2 = &statements[numstatements];
-		CO_GenCode(&pr_opcodes[OP_GOTO], 0, 0);
+		CO_GenCode(&pr_opcodes[OP_GOTO], NULL, NULL);
 		patch1->b = &statements[numstatements] - patch1;
 		ParseStatement(SCONTEXT_ELSE);
 		patch2->a = &statements[numstatements] - patch2;
@@ -586,7 +586,7 @@ static void ParseSwitch (void)
 	{
 		tempDef.ofs = &statements[defaultStatement]
 				-&statements[numstatements];
-		CO_GenCode(&pr_opcodes[OP_GOTO], &tempDef, 0);
+		CO_GenCode(&pr_opcodes[OP_GOTO], &tempDef, NULL);
 	}
 
 	if (patch != NULL)

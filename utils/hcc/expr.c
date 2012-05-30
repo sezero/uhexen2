@@ -245,15 +245,15 @@ static def_t *Term (void)
 		e = EX_Expression(NOT_PRIORITY);
 		t = e->type->type;
 		if (t == ev_float)
-			e2 = CO_GenCode(&pr_opcodes[OP_NOT_F], e, 0);
+			e2 = CO_GenCode(&pr_opcodes[OP_NOT_F], e, NULL);
 		else if (t == ev_string)
-			e2 = CO_GenCode(&pr_opcodes[OP_NOT_S], e, 0);
+			e2 = CO_GenCode(&pr_opcodes[OP_NOT_S], e, NULL);
 		else if (t == ev_entity)
-			e2 = CO_GenCode(&pr_opcodes[OP_NOT_ENT], e, 0);
+			e2 = CO_GenCode(&pr_opcodes[OP_NOT_ENT], e, NULL);
 		else if (t == ev_vector)
-			e2 = CO_GenCode(&pr_opcodes[OP_NOT_V], e, 0);
+			e2 = CO_GenCode(&pr_opcodes[OP_NOT_V], e, NULL);
 		else if (t == ev_function)
-			e2 = CO_GenCode(&pr_opcodes[OP_NOT_FNC], e, 0);
+			e2 = CO_GenCode(&pr_opcodes[OP_NOT_FNC], e, NULL);
 		else
 		{
 			e2 = NULL; // Shut up compiler warning
@@ -534,9 +534,7 @@ static void PrecacheFileName (const char *n, int ch)
 	for (i = 0; i < numfiles; i++)
 	{
 		if (!strcmp(n, precache_files[i]))
-		{
 			return;
-		}
 	}
 	if (numfiles == MAX_FILES)
 	{
@@ -669,27 +667,22 @@ static def_t *ParseIntrinsicFunc (const char *name)
 		return &def_ret;
 	}
 
-	if (!strncmp(name, "precache_file", 13))	//i put this here to keep if from going in progs.dat
+	if (!strncmp(name, "precache_file", 13))	//keep it from going in progs.dat
 	{
 		def_ret.type = &type_void;
 		LX_Require("(");
 		if (TK_CHECK(TK_RPAREN))
-		{
 			return &def_ret;	//it's empty for some reason.
-		}
-		//i should be getting an immediate string here...
+		//i should be getting an immediate string here
 		if (pr_token_type != tt_immediate)	//oops
-			return (NULL);
-/*			expr1  = CO_ParseImmediate();
+			return NULL;
+		/*
+		expr1 = CO_ParseImmediate();
 		if (expr1->type->type != ev_string)
-		{
 			PR_ParseError("'precache_file' : parm not a string");
-		}
-*/
+		*/
 		if (pr_immediate_type != &type_string)
-		{
 			PR_ParseError("'precache_file' : parm not a string");
-		}
 		PrecacheFileName(pr_immediate_string, name[13]);
 		LX_Fetch();
 		LX_Require(")");

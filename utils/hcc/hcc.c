@@ -234,15 +234,15 @@ static void WriteData (int crc)
 		dd = &globals[numglobaldefs];
 		numglobaldefs++;
 		dd->type = def->type->type;
-		if (!def->initialized
-			&& def->type->type != ev_function
-			&& def->type->type != ev_field
-			&& def->scope == NULL)
+		if (!def->initialized &&
+		    def->type->type != ev_function &&
+		    def->type->type != ev_field &&
+		    def->scope == NULL)
 		{
-			if (strncmp (def->name,"STR_", 4) != 0)	//str_ is a special case string constant
+			//str_ is a special case string constant
+			if (strncmp (def->name,"STR_", 4) != 0)
 				dd->type |= DEF_SAVEGLOBAL;
 		}
-
 		if (hcc_OptimizeNameTable && ((def->scope != NULL) ||
 			(!(dd->type&DEF_SAVEGLOBAL)&&(def->type->type < ev_field))))
 		{

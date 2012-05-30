@@ -561,7 +561,7 @@ static void ParseState (void)
 
 		pr_token_type = tt_name;
 		name = PR_ParseName();
-		def = PR_GetDef(&type_function, name, 0, true);
+		def = PR_GetDef(&type_function, name, NULL, true);
 		LX_Require("]");
 		CO_GenCode(&pr_opcodes[OP_STATE], s1, def);
 		return;
@@ -637,7 +637,7 @@ static void ParseState (void)
 		LX_Fetch();
 	}
 	name = PR_ParseName();
-	def = PR_GetDef(&type_function, name, 0, true);
+	def = PR_GetDef(&type_function, name, NULL, true);
 
 	LX_Require("]");
 	CO_GenCode(&pr_opcodes[OP_STATE], s1, def);
@@ -729,7 +729,7 @@ static function_t *ParseImmediateStatements (type_t *type)
 	}
 
 	// Emit an end of statements opcode
-	CO_GenCode(pr_opcodes, 0, 0);
+	CO_GenCode(pr_opcodes, NULL, NULL);
 
 	return f;
 }

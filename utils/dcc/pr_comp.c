@@ -427,7 +427,7 @@ static def_t *PR_ParseFunctionCall (def_t *func)
 	statement->b = a1 ? a1->ofs : 0;
 	statement->c = a2 ? a2->ofs : 0;
 
-//	PR_Statement (&pr_opcodes[OP_CALL0+arg], func, 0);
+//	PR_Statement (&pr_opcodes[OP_CALL0+arg], func, NULL);
 
 	def_ret.type = t->aux_type;
 	return &def_ret;
@@ -446,7 +446,7 @@ static def_t *PR_ParseRandom (void)
 
 	if (PR_Check(")"))
 	{
-		PR_Statement (&pr_opcodes[92],0,0);
+		PR_Statement (&pr_opcodes[92], NULL, NULL);
 		def_ret.type = def_float.type;
 		return &def_ret;
 	}
@@ -471,9 +471,9 @@ static def_t *PR_ParseRandom (void)
 		{
 			PR_Expect(")");
 			if (e->type == def_float.type)
-				PR_Statement (&pr_opcodes[93], e, 0);
+				PR_Statement (&pr_opcodes[93], e, NULL);
 			else if (e->type == def_vector.type)
-				PR_Statement (&pr_opcodes[96], e, 0);
+				PR_Statement (&pr_opcodes[96], e, NULL);
 			def_ret.type = e->type;
 			return &def_ret;
 		}
@@ -524,15 +524,15 @@ static def_t *PR_Term (void)
 		e = PR_Expression (NOT_PRIORITY);
 		t = e->type->type;
 		if (t == ev_float)
-			e2 = PR_Statement (&pr_opcodes[OP_NOT_F], e, 0);
+			e2 = PR_Statement (&pr_opcodes[OP_NOT_F], e, NULL);
 		else if (t == ev_string)
-			e2 = PR_Statement (&pr_opcodes[OP_NOT_S], e, 0);
+			e2 = PR_Statement (&pr_opcodes[OP_NOT_S], e, NULL);
 		else if (t == ev_entity)
-			e2 = PR_Statement (&pr_opcodes[OP_NOT_ENT], e, 0);
+			e2 = PR_Statement (&pr_opcodes[OP_NOT_ENT], e, NULL);
 		else if (t == ev_vector)
-			e2 = PR_Statement (&pr_opcodes[OP_NOT_V], e, 0);
+			e2 = PR_Statement (&pr_opcodes[OP_NOT_V], e, NULL);
 		else if (t == ev_function)
-			e2 = PR_Statement (&pr_opcodes[OP_NOT_FNC], e, 0);
+			e2 = PR_Statement (&pr_opcodes[OP_NOT_FNC], e, NULL);
 		else
 		{
 			e2 = NULL;	// shut up compiler warning;
@@ -691,7 +691,7 @@ static void PR_ParseStatement (void)
 	{
 		if (PR_Check (";"))
 		{
-			PR_Statement (&pr_opcodes[OP_RETURN], 0, 0);
+			PR_Statement (&pr_opcodes[OP_RETURN], NULL, NULL);
 			return;
 		}
 		e = PR_Expression (TOP_PRIORITY);
@@ -700,7 +700,7 @@ static void PR_ParseStatement (void)
 			PR_ParseError ("type mismatch on return for %s, expected %d found %d",
 						pr_scope->name, pr_scope->type->aux_type->type, e->type->type);
 		PR_Expect (";");
-		PR_Statement (&pr_opcodes[OP_RETURN], e, 0);
+		PR_Statement (&pr_opcodes[OP_RETURN], e, NULL);
 		return;
 	}
 
@@ -711,10 +711,10 @@ static void PR_ParseStatement (void)
 		e = PR_Expression (TOP_PRIORITY);
 		PR_Expect (")");
 		patch1 = &statements[numstatements];
-		PR_Statement (&pr_opcodes[OP_IFNOT], e, 0);
+		PR_Statement (&pr_opcodes[OP_IFNOT], e, NULL);
 		PR_ParseStatement ();
 		junkdef.ofs = patch2 - &statements[numstatements];
-		PR_Statement (&pr_opcodes[OP_GOTO], &junkdef, 0);
+		PR_Statement (&pr_opcodes[OP_GOTO], &junkdef, NULL);
 		patch1->b = &statements[numstatements] - patch1;
 		return;
 	}
@@ -746,7 +746,7 @@ static void PR_ParseStatement (void)
 		if (PR_Check(")"))
 		{
 			PR_Expect(";");
-			PR_Statement (&pr_opcodes[92], 0, 0);
+			PR_Statement (&pr_opcodes[92], NULL, NULL);
 			return;
 		}
 		else
@@ -755,7 +755,7 @@ static void PR_ParseStatement (void)
 			if (PR_Check(")"))
 			{
 				PR_Expect(";");
-				PR_Statement (&pr_opcodes[93], e, 0);
+				PR_Statement (&pr_opcodes[93], e, NULL);
 				return;
 			}
 			else
@@ -812,14 +812,14 @@ static void PR_ParseStatement (void)
 		PR_Expect (")");
 
 		patch1 = &statements[numstatements];
-		PR_Statement (&pr_opcodes[OP_IFNOT], e, 0);
+		PR_Statement (&pr_opcodes[OP_IFNOT], e, NULL);
 
 		PR_ParseStatement ();
 
 		if (PR_Check ("else"))
 		{
 			patch2 = &statements[numstatements];
-			PR_Statement (&pr_opcodes[OP_GOTO], 0, 0);
+			PR_Statement (&pr_opcodes[OP_GOTO], NULL, NULL);
 			patch1->b = &statements[numstatements] - patch1;
 			PR_ParseStatement ();
 			patch2->a = &statements[numstatements] - patch2;
@@ -865,7 +865,7 @@ static void PR_ParseState (void)
 	PR_Expect (",");
 
 	name = PR_ParseName ();
-	def = PR_GetDef (&type_function, name, 0, true);
+	def = PR_GetDef (&type_function, name, NULL, true);
 
 	PR_Expect ("]");
 
@@ -930,7 +930,7 @@ static function_t *PR_ParseImmediateStatements (type_t *type)
 		PR_ParseStatement ();
 
 // emit an end of statements opcode
-	PR_Statement (pr_opcodes, 0, 0);
+	PR_Statement (pr_opcodes, NULL, NULL);
 
 	return f;
 }
