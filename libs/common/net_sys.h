@@ -76,6 +76,7 @@ typedef int	sys_socket_t;
 #define	SOCKETERRNO	errno
 #define	ioctlsocket	ioctl
 #define	closesocket	close
+#define	selectsocket	select
 #define	IOCTLARG_P(x)	/* (char *) */ x
 
 #define	NET_EWOULDBLOCK		EWOULDBLOCK
@@ -116,6 +117,8 @@ typedef unsigned int	in_addr_t;	/* u_int32_t */
 #define	SOCKETERRNO	Errno()
 #define	ioctlsocket	IoctlSocket
 #define	closesocket	CloseSocket
+#define	selectsocket(_N,_R,_W,_E,_T)		\
+	WaitSelect((_N),(_R),(_W),(_E),(_T),NULL)
 #define	IOCTLARG_P(x)	(char *) x
 
 #define	NET_EWOULDBLOCK		EWOULDBLOCK
@@ -153,6 +156,7 @@ typedef int	socklen_t;
 
 typedef SOCKET	sys_socket_t;
 
+#define	selectsocket	select
 #define	IOCTLARG_P(x)	/* (u_long *) */ x
 
 #define	SOCKETERRNO	WSAGetLastError()
@@ -187,9 +191,10 @@ COMPILE_TIME_ASSERT(sockaddr, offsetof(struct sockaddr, sa_family) == SA_FAM_OFF
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #include <netdb.h>
-#include <tcp.h>		/* for sock_init() & co */
+#include <tcp.h>		/* for select_s(), sock_init() & co. */
 extern int	_watt_do_exit;	/* in sock_ini.h, but not in public headers. */
 
+#define	selectsocket	select_s
 #define	IOCTLARG_P(x)	(char *)x
 
 #define	SOCKETERRNO	errno

@@ -54,6 +54,10 @@ static struct in_addr	myAddr,		// the local address returned by the OS.
 
 #include "net_udp.h"
 
+#if defined(PLATFORM_AMIGA)
+struct Library	*SocketBase;
+#endif
+
 //=============================================================================
 
 static int udp_scan_iface (sys_socket_t socketfd)
@@ -110,6 +114,14 @@ sys_socket_t UDP_Init (void)
 
 	if (COM_CheckParm ("-noudp"))
 		return INVALID_SOCKET;
+#if defined(PLATFORM_AMIGA)
+	SocketBase = OpenLibrary("bsdsocket.library", 0);
+	if (!SocketBase)
+	{
+		Con_SafePrintf("%s: Can't open bsdsocket.library\n", __thisfunc__);
+		return INVALID_SOCKET;
+	}
+#endif	/* PLATFORM_AMIGA */
 #if defined(PLATFORM_DOS)	/* WatTCP */
 #if defined(USE_MPATH)
 	if (COM_CheckParm ("-mpath"))
@@ -254,6 +266,13 @@ void UDP_Shutdown (void)
 {
 	UDP_Listen (false);
 	UDP_CloseSocket (net_controlsocket);
+#if defined(PLATFORM_AMIGA)
+	if (SocketBase)
+	{
+		CloseLibrary(SocketBase);
+		SocketBase = NULL;
+	}
+#endif	/* PLATFORM_AMIGA */
 }
 
 //=============================================================================
@@ -393,7 +412,7 @@ int UDP_Connect (sys_socket_t socketid, struct qsockaddr *addr)
 
 sys_socket_t UDP_CheckNewConnections (void)
 {
-#if defined(__MORPHOS__)
+#if defined(PLATFORM_AMIGA)
 	char		buf[4096];
 
 	if (net_acceptsocket == INVALID_SOCKET)

@@ -53,9 +53,12 @@ typedef struct
 	unsigned short	pad;
 } netadr_t;
 
+#if defined(PLATFORM_AMIGA)
+struct Library	*SocketBase;
+#endif
 #if defined(PLATFORM_WINDOWS)
 #include "wsaerror.h"
-static WSADATA		winsockdata;
+static WSADATA	winsockdata;
 #endif
 static sys_socket_t	socketfd = INVALID_SOCKET;
 
@@ -135,6 +138,11 @@ static void NET_Init (void)
 	if (err != 0)
 		Sys_Error ("Winsock initialization failed (%s)", socketerror(err));
 #endif	/* PLATFORM_WINDOWS */
+#ifdef PLATFORM_AMIGA
+	SocketBase = OpenLibrary("bsdsocket.library", 0);
+	if (!SocketBase)
+		Sys_Error ("Can't open bsdsocket.library.");
+#endif	/* PLATFORM_AMIGA */
 }
 
 static void NET_Shutdown (void)
@@ -146,6 +154,13 @@ static void NET_Shutdown (void)
 	}
 #if defined(PLATFORM_WINDOWS)
 	WSACleanup ();
+#endif
+#ifdef PLATFORM_AMIGA
+	if (SocketBase)
+	{
+		CloseLibrary(SocketBase);
+		SocketBase = NULL;
+	}
 #endif
 }
 

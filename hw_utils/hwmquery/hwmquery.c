@@ -33,15 +33,14 @@
 
 #include "arch_def.h"
 #include "compiler.h"
-
+#if defined(PLATFORM_UNIX) ||		\
+    defined(PLATFORM_AMIGA)
+#include <sys/time.h>	/* struct timeval */
+#endif
 #define	COMPILE_TIME_ASSERT(name, x)	\
 	typedef int dummy_ ## name[(x) * 2 - 1]
-
 #include "net_sys.h"
 #include "qsnprint.h"
-#if defined(PLATFORM_UNIX)
-#include <sys/time.h>
-#endif
 
 /*****************************************************************************/
 
@@ -60,9 +59,12 @@ typedef int	ssize_t;
 #endif	/* _WIN64 */
 #endif	/* _MSC_VER */
 
+#if defined(PLATFORM_AMIGA)
+struct Library	*SocketBase;
+#endif
 #if defined(PLATFORM_WINDOWS)
 #include "wsaerror.h"
-static WSADATA		winsockdata;
+static WSADATA	winsockdata;
 #endif
 static sys_socket_t	socketfd = INVALID_SOCKET;
 
@@ -145,7 +147,7 @@ static int NET_CheckReadTimeout (long sec, long usec)
 	timeout.tv_sec = sec;
 	timeout.tv_usec = usec;
 
-	return select(socketfd + 1, &readfds, NULL, NULL, &timeout);
+	return selectsocket(socketfd + 1, &readfds, NULL, NULL, &timeout);
 }
 
 static void NET_Init (void)
@@ -155,6 +157,11 @@ static void NET_Init (void)
 	if (err != 0)
 		Sys_Error ("Winsock initialization failed (%s)", socketerror(err));
 #endif	/* PLATFORM_WINDOWS */
+#ifdef PLATFORM_AMIGA
+	SocketBase = OpenLibrary("bsdsocket.library", 0);
+	if (!SocketBase)
+		Sys_Error ("Can't open bsdsocket.library.");
+#endif	/* PLATFORM_AMIGA */
 }
 
 static void NET_Shutdown (void)
@@ -166,6 +173,13 @@ static void NET_Shutdown (void)
 	}
 #if defined(PLATFORM_WINDOWS)
 	WSACleanup ();
+#endif
+#ifdef PLATFORM_AMIGA
+	if (SocketBase)
+	{
+		CloseLibrary(SocketBase);
+		SocketBase = NULL;
+	}
 #endif
 }
 
@@ -250,7 +264,7 @@ int main (int argc, char **argv)
 		Sys_Error ("Couldn't open socket: %s", socketerror(err));
 	}
 /* set the socket to non-blocking mode */
-	if (ioctlsocket (socketfd, FIONBIO, &_true) == SOCKET_ERROR)
+	if (ioctlsocket (socketfd, FIONBIO, IOCTLARG_P(&_true)) == SOCKET_ERROR)
 	{
 		err = SOCKETERRNO;
 		Sys_Error ("ioctl FIONBIO: %s", socketerror(err));

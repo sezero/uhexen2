@@ -4,6 +4,14 @@ Development Progress	:
 ---------------------------
 
 2012-05-30 (SVN):
+    * net_sys.h: Added new selectsocket macro, which expands simply to
+      select for unix and windows, to select_s for dos and to WaitSelect
+      for amiga.
+    * hexen2/net_udp.c, hexenworld/net_udp.c, hw_utils/hwmaster/net.c,
+      hwmquery/hwmquery.c, hwrcon/hwrcon.c, hwrcon/hwterm.c: Add support
+      for amiga (bsdsocket.library).
+
+2012-05-30 (SVN):
     * net_sys.h: Added missing Amiga (bsdsocket.library) defs, separated
       unix and amiga sections.
 

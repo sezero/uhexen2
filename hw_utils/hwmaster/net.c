@@ -7,15 +7,15 @@
 
 #include "q_stdinc.h"
 #include "arch_def.h"
+#if defined(PLATFORM_UNIX) ||		\
+    defined(PLATFORM_AMIGA)
+#include <sys/time.h>	/* struct timeval */
+#endif
 #include "net_sys.h"
 #include "compiler.h"
 #include "defs.h"
 
 //=============================================================================
-
-//
-// net driver vars
-//
 
 netadr_t	net_local_adr;
 netadr_t	net_loopback_adr;
@@ -24,6 +24,9 @@ sizebuf_t	net_message;
 
 static sys_socket_t	net_socket = INVALID_SOCKET;
 
+#if defined(PLATFORM_AMIGA)
+struct Library	*SocketBase;
+#endif
 #ifdef PLATFORM_WINDOWS
 #include "wsaerror.h"
 static WSADATA	winsockdata;
@@ -34,10 +37,6 @@ static byte	net_message_buffer[MAX_UDP_PACKET];
 
 
 //=============================================================================
-
-//
-// net driver functions
-//
 
 static void NetadrToSockadr (netadr_t *a, struct sockaddr_in *s)
 {
@@ -170,7 +169,7 @@ int NET_GetPacket (void)
 			return 0;
 		}
 # endif	/* _WINDOWS */
-	//	Sys_Error ("%s: %s", __thisfunc__, socketerror(err));
+	/*	Sys_Error ("%s: %s", __thisfunc__, socketerror(err));*/
 		printf ("%s warning: %s\n", __thisfunc__, socketerror(err));
 		return 0;
 	}
@@ -222,7 +221,7 @@ int NET_CheckReadTimeout (long sec, long usec)
 	timeout.tv_sec = sec;
 	timeout.tv_usec = usec;
 
-	return select(net_socket + 1, &readfds, NULL, NULL, &timeout);
+	return selectsocket(net_socket + 1, &readfds, NULL, NULL, &timeout);
 }
 
 //=============================================================================
@@ -246,7 +245,7 @@ static sys_socket_t UDP_OpenSocket (int port)
 		Sys_Error ("%s: socket: %s", __thisfunc__, socketerror(err));
 	}
 
-	if (ioctlsocket (newsocket, FIONBIO, &_true) == SOCKET_ERROR)
+	if (ioctlsocket (newsocket, FIONBIO, IOCTLARG_P(&_true)) == SOCKET_ERROR)
 	{
 		err = SOCKETERRNO;
 		Sys_Error ("%s: ioctl FIONBIO: %s", __thisfunc__, socketerror(err));
@@ -324,20 +323,19 @@ void NET_Init (int port)
 	if (err != 0)
 		Sys_Error ("Winsock initialization failed (%s)", socketerror(err));
 #endif
+#ifdef PLATFORM_AMIGA
+	SocketBase = OpenLibrary("bsdsocket.library", 0);
+	if (!SocketBase)
+		Sys_Error ("Can't open bsdsocket.library.");
+#endif
 
-	//
 	// open the single socket to be used for all communications
-	//
 	net_socket = UDP_OpenSocket (port);
 
-	//
 	// init the message buffer
-	//
 	SZ_Init (&net_message, net_message_buffer, sizeof(net_message_buffer));
 
-	//
 	// determine my name & address
-	//
 	NET_GetLocalAddress ();
 
 	memset (&net_loopback_adr, 0, sizeof(netadr_t));
@@ -360,6 +358,13 @@ void	NET_Shutdown (void)
 	}
 #ifdef PLATFORM_WINDOWS
 	WSACleanup ();
+#endif
+#ifdef PLATFORM_AMIGA
+	if (SocketBase)
+	{
+		CloseLibrary(SocketBase);
+		SocketBase = NULL;
+	}
 #endif
 }
 
