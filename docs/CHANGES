@@ -4,6 +4,9 @@ Development Progress	:
 ---------------------------
 
 2012-05-30 (SVN):
+    * net_sys.h: Amiga bsdsockets.library struct sockaddr has sa_len.
+
+2012-05-30 (SVN):
     * arch_def.h: Classified AROS as PLATFORM_AMIGA.
 
 2012-05-30 (SVN):
