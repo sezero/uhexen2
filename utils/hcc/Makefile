@@ -96,7 +96,6 @@ OBJECTS= qsnprint.o \
 	hcc.o \
 	pr_comp.o \
 	pr_lex.o \
-	pr_parse.o \
 	stmt.o
 
 $(BINARY) : $(OBJECTS)

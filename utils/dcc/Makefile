@@ -91,8 +91,7 @@ OBJECTS= qsnprint.o \
 	dcc.o \
 	hcc.o \
 	pr_comp.o \
-	pr_lex.o \
-	pr_parse.o
+	pr_lex.o
 
 $(BINARY): $(OBJECTS)
 	$(LINKER) $(OBJECTS) $(LDFLAGS) $(LDLIBS) -o $@

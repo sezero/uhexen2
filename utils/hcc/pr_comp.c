@@ -1271,7 +1271,7 @@ static void ParseFunctionDef (def_t *def, type_t *type)
 static void ParseCStyleFunctionDef (const char *funcName, type_t *type)
 {
 	int		i;
-	const char	*name = NULL;	// FIXME: init to NULL, avoid compiler warning
+	const char	*name = "???";	// FIXME: init to "???", silence compiler
 	type_t	newType;
 	type_t	*funcType;
 	def_t	*def;

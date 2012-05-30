@@ -754,6 +754,45 @@ static void PrintFunction (const char *name)
 }
 
 /*
+==============
+PR_ParseError
+==============
+*/
+void PR_ParseError (const char *error, ...)
+{
+	va_list		argptr;
+	char	string[1024];
+
+	va_start (argptr, error);
+	q_vsnprintf (string, sizeof(string), error, argptr);
+	va_end (argptr);
+
+	printf ("%s(%d) : %s\n", strings+s_file, lx_SourceLine, string);
+
+	longjmp (pr_parse_abort, 1);
+}
+
+/*
+==============
+PR_ParseWarning
+==============
+*/
+void PR_ParseWarning (const char *error, ...)
+{
+	va_list		argptr;
+	char	string[1024];
+
+	if (!hcc_WarningsActive)
+		return;
+
+	va_start (argptr, error);
+	q_vsnprintf (string, sizeof(string), error, argptr);
+	va_end (argptr);
+
+	printf ("%s(%d) : warning : %s\n", strings+s_file, lx_SourceLine, string);
+}
+
+/*
 ============
 main
 ============
