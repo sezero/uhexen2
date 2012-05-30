@@ -523,6 +523,8 @@ static int VID_SetMode (int modenum, unsigned char *palette)
 	if (vid_config_fscr.integer)
 		flags |= SDL_FULLSCREEN;
 
+	VID_SetIcon();
+
 	// Set the mode
 	screen = SDL_SetVideoMode(modelist[modenum].width, modelist[modenum].height, modelist[modenum].bpp, flags);
 	if (!screen)
@@ -555,8 +557,6 @@ static int VID_SetMode (int modenum, unsigned char *palette)
 
 	VID_SetPalette (palette);
 
-	// setup the window manager stuff
-	VID_SetIcon();
 	SDL_WM_SetCaption(WM_TITLEBAR_TEXT, WM_ICON_TEXT);
 
 	Con_SafePrintf ("Video Mode: %ux%ux%d\n", vid.width, vid.height, modelist[modenum].bpp);

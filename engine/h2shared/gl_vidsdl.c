@@ -413,6 +413,9 @@ static int VID_SetMode (int modenum)
 	}
 
 	Con_SafePrintf ("Requested mode %d: %dx%dx%d\n", modenum, modelist[modenum].width, modelist[modenum].height, bpp);
+
+	VID_SetIcon();
+
 	screen = SDL_SetVideoMode (modelist[modenum].width, modelist[modenum].height, bpp, flags);
 	if (!screen)
 	{
@@ -432,7 +435,7 @@ static int VID_SetMode (int modenum)
 		}
 	}
 
-	// success. set vid_modenum properly and adjust other vars.
+	// set vid_modenum properly and adjust other vars
 	vid_modenum = modenum;
 	is_fullscreen = (screen->flags & SDL_FULLSCREEN) ? 1 : 0;
 	modestate = (is_fullscreen) ? MS_FULLDIB : MS_WINDOWED;
@@ -465,8 +468,6 @@ static int VID_SetMode (int modenum)
 	Con_SafePrintf ("vid_info: red: %d, green: %d, blue: %d, alpha: %d, depth: %d\n",
 			vid_attribs.red, vid_attribs.green, vid_attribs.blue, vid_attribs.alpha, vid_attribs.depth);
 
-	// setup the window manager stuff
-	VID_SetIcon();
 	SDL_WM_SetCaption(WM_TITLEBAR_TEXT, WM_ICON_TEXT);
 
 	IN_HideMouse ();

@@ -4,6 +4,11 @@ Development Progress	:
 ---------------------------
 
 2012-05-30 (SVN):
+    * gl_vidsdl.c, vid_sdl.c (VID_SetMode): SDL documentation says that
+      before the first call to SDL_SetVideoMode(), SDL_WM_SetIcon() must
+      be called. Do so properly.
+
+2012-05-30 (SVN):
     * scripts/makefile.inc: Defined default for AS.
 
 2012-05-30 (SVN):
