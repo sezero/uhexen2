@@ -29,6 +29,9 @@
 #include "arch_def.h"
 #include "net_sys.h"
 #include <net/if.h>
+#if defined(__sun) || defined(sun)
+#include <sys/sockio.h>
+#endif	/* sunos */
 #include "quakedef.h"
 #include "net_defs.h"
 

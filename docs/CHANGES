@@ -4,6 +4,10 @@ Development Progress	:
 ---------------------------
 
 2012-05-30 (SVN):
+    * hexen2/net_udp.c: Solaris (sun) needs including sys/sockio.h for
+      SIOCGIFCONF and friends.
+
+2012-05-30 (SVN):
     * snd_sun.c: Moved the Shutdown procedure above GetDMAPos in order
       to fix compilation.
 
