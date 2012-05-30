@@ -4,6 +4,9 @@ Development Progress	:
 ---------------------------
 
 2012-05-30 (SVN):
+    * scripts/makefile.inc: Defined default for AS.
+
+2012-05-30 (SVN):
     * utils/hcc, dhcc: Removed pr_parse.c, merged its contents to hcc.c.
     * utils/hcc, dhcc: Don't use 0 instead of NULL as a function param
       for PR_Statement(), PR_GetDef() and CO_GenCode().

@@ -147,6 +147,7 @@ CC ?= gcc
 ifeq ($(CC),)
 CC := gcc
 endif
+AS ?= as
 
 AR ?= ar
 RANLIB ?= ranlib
@@ -206,5 +207,4 @@ ifeq ($(HOST_OS),sunos)
 LIBSOCKET=-lsocket -lnsl
 endif
 endif
-
 
