@@ -37,8 +37,8 @@
 
 #if defined(__FreeBSD__) || defined(__DragonFly__)	|| \
     defined(__OpenBSD__) || defined(__NetBSD__)		|| \
-    defined(__MACOSX__)  || defined(__FreeBSD_kernel__)	|| \
-    defined(PLATFORM_AMIGA) /* amiga's bsdsockets lib */
+    defined(PLATFORM_AMIGA) /* the bsdsocket.library */	|| \
+    defined(__MACOSX__)  || defined(__FreeBSD_kernel__)
 /* struct sockaddr has unsigned char sa_len as the first member in BSD
  * variants and the family member is also an unsigned char instead of an
  * unsigned short. This should matter only when PLATFORM_UNIX is defined,
@@ -53,7 +53,7 @@
 #endif	/* BSD, sockaddr */
 
 /* unix includes and compatibility macros */
-#if defined(PLATFORM_UNIX) || defined(PLATFORM_AMIGA)
+#if defined(PLATFORM_UNIX)
 
 #include <sys/param.h>
 #include <sys/ioctl.h>
@@ -63,9 +63,6 @@
 #include <sys/filio.h>
 #endif	/* __sunos__ */
 
-#if defined(PLATFORM_AMIGA)
-#include <proto/socket.h>
-#endif
 #include <sys/socket.h>
 
 #include <netinet/in.h>
@@ -76,16 +73,9 @@ typedef int	sys_socket_t;
 #define	INVALID_SOCKET	(-1)
 #define	SOCKET_ERROR	(-1)
 
-#if defined(PLATFORM_AMIGA)
-typedef int	socklen_t;
-#define	SOCKETERRNO	Errno()
-#define	ioctlsocket	IoctlSocket
-#define	closesocket	CloseSocket
-#else
 #define	SOCKETERRNO	errno
 #define	ioctlsocket	ioctl
 #define	closesocket	close
-#endif
 #define	IOCTLARG_P(x)	/* (char *) */ x
 
 #define	NET_EWOULDBLOCK		EWOULDBLOCK
@@ -97,6 +87,48 @@ typedef int	socklen_t;
 COMPILE_TIME_ASSERT(sockaddr, offsetof(struct sockaddr, sa_family) == SA_FAM_OFFSET);
 
 #endif	/* end of unix stuff */
+
+
+/* amiga includes and compatibility macros */
+#if defined(PLATFORM_AMIGA) /* Amiga bsdsocket.library */
+
+#include <sys/param.h>
+#include <sys/ioctl.h>
+#include <unistd.h>
+
+#include <proto/exec.h>
+#include <proto/socket.h>
+#include <sys/socket.h>
+
+#include <netinet/in.h>
+#include <arpa/inet.h>
+#include <netdb.h>
+
+typedef int	sys_socket_t;
+#define	INVALID_SOCKET	(-1)
+#define	SOCKET_ERROR	(-1)
+
+#if !defined(__AROS__)
+typedef int	socklen_t;
+#endif
+typedef unsigned int	in_addr_t;	/* u_int32_t */
+
+#define	SOCKETERRNO	Errno()
+#define	ioctlsocket	IoctlSocket
+#define	closesocket	CloseSocket
+#define	IOCTLARG_P(x)	(char *) x
+
+#define	NET_EWOULDBLOCK		EWOULDBLOCK
+#define	NET_ECONNREFUSED	ECONNREFUSED
+
+#define	socketerror(x)	strerror((x))
+/* bsdsocket.library has h_errno, hstrerror() */
+#define	hstrerror(x)	strerror((x))
+
+/* Verify that we defined HAVE_SA_LEN correctly: */
+COMPILE_TIME_ASSERT(sockaddr, offsetof(struct sockaddr, sa_family) == SA_FAM_OFFSET);
+
+#endif	/* end of amiga bsdsocket.library stuff */
 
 
 /* windows includes and compatibility macros */
