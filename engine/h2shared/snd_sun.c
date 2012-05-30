@@ -155,6 +155,16 @@ static qboolean S_SUN_Init (dma_t *dma)
 	return true;
 }
 
+static void S_SUN_Shutdown (void)
+{
+	if (shm)
+	{
+		shm = NULL;
+		close (audio_fd);
+		audio_fd = -1;
+	}
+}
+
 static int S_SUN_GetDMAPos (void)
 {
 	audio_info_t	info;
@@ -170,16 +180,6 @@ static int S_SUN_GetDMAPos (void)
 	}
 
 	return ((info.play.samples * shm->channels) % shm->samples);
-}
-
-static void S_SUN_Shutdown (void)
-{
-	if (shm)
-	{
-		shm = NULL;
-		close (audio_fd);
-		audio_fd = -1;
-	}
 }
 
 /*
