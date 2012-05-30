@@ -84,7 +84,7 @@
 #	define	PLATFORM_MAC		1
 #   endif
 
-#elif defined(__MORPHOS__) || defined(__AMIGA__)
+#elif defined(__MORPHOS__) || defined(__AMIGA__) || defined(__AROS__)
 
 #   if !defined(PLATFORM_AMIGA)
 #	define	PLATFORM_AMIGA		1
@@ -107,8 +107,8 @@
 #endif	/* end of PLATFORM_ definitions */
 
 
-/* Hack section: Platforms that are mostly fine when
- * classified under PLATFORM_UNIX :
+/* Platforms that are (mostly) fine
+ * when classified as PLATFORM_UNIX :
  */
 #if defined(__MACOSX__)
 
@@ -116,7 +116,7 @@
 #	define	PLATFORM_UNIX		2
 #   endif
 
-#endif	/* end of PLATFORM_UNIX hacks */
+#endif	/* end of (pseudo) PLATFORM_UNIX */
 
 
 #if defined(_WIN64)
@@ -137,6 +137,8 @@
 #	define	PLATFORM_STRING	"OpenBSD"
 #elif defined(__MORPHOS__)
 #	define	PLATFORM_STRING	"MorphOS"
+#elif defined(__AROS__)
+#	define	PLATFORM_STRING	"AROS"
 #elif defined(__AMIGA__)
 #	define	PLATFORM_STRING	"AmigaOS"
 #elif defined(__QNX__)
