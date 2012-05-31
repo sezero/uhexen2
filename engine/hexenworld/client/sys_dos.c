@@ -513,7 +513,7 @@ filenames only.
 static struct ffblk	finddata;
 static int		findhandle = -1;
 
-char *Sys_FindFirstFile (const char *path, const char *pattern)
+const char *Sys_FindFirstFile (const char *path, const char *pattern)
 {
 	if (findhandle == 0)
 		Sys_Error ("Sys_FindFirst without FindClose");
@@ -527,7 +527,7 @@ char *Sys_FindFirstFile (const char *path, const char *pattern)
 	return NULL;
 }
 
-char *Sys_FindNextFile (void)
+const char *Sys_FindNextFile (void)
 {
 	if (findhandle != 0)
 		return NULL;
@@ -990,7 +990,6 @@ static void Sys_NoFPUExceptionHandler (int whatever)
 
 	exit (1);
 }
-
 
 /*
 ================

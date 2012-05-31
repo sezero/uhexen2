@@ -56,7 +56,7 @@
 static HANDLE findhandle = INVALID_HANDLE_VALUE;
 static WIN32_FIND_DATA finddata;
 
-char *Q_FindFirstFile (const char *path, const char *pattern)
+const char *Q_FindFirstFile (const char *path, const char *pattern)
 {
 	char	tmp_buf[256];
 
@@ -71,7 +71,7 @@ char *Q_FindFirstFile (const char *path, const char *pattern)
 	return finddata.cFileName;
 }
 
-char *Q_FindNextFile (void)
+const char *Q_FindNextFile (void)
 {
 	if (findhandle == INVALID_HANDLE_VALUE)
 		return NULL;
@@ -162,7 +162,7 @@ int Q_FileType (const char *path)
 static struct ffblk	finddata;
 static int		findhandle = -1;
 
-char *Q_FindFirstFile (const char *path, const char *pattern)
+const char *Q_FindFirstFile (const char *path, const char *pattern)
 {
 	char	tmp_buf[256];
 
@@ -179,7 +179,7 @@ char *Q_FindFirstFile (const char *path, const char *pattern)
 	return NULL;
 }
 
-char *Q_FindNextFile (void)
+const char *Q_FindNextFile (void)
 {
 	if (findhandle != 0)
 		return NULL;
@@ -259,7 +259,7 @@ static struct dirent	*finddata;
 static char		*findpath, *findpattern;
 static char		matchpath[256];
 
-char *Q_FindFirstFile (const char *path, const char *pattern)
+const char *Q_FindFirstFile (const char *path, const char *pattern)
 {
 	if (finddir)
 		Error ("FindFirst without FindClose");
@@ -293,7 +293,7 @@ char *Q_FindFirstFile (const char *path, const char *pattern)
 	return Q_FindNextFile();
 }
 
-char *Q_FindNextFile (void)
+const char *Q_FindNextFile (void)
 {
 	struct stat	test;
 

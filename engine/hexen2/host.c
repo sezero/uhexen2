@@ -79,13 +79,13 @@ SAVEGAME FILES HANDLING
 
 void Host_RemoveGIPFiles (const char *path)
 {
-	char	*name, tempdir[MAX_OSPATH], *p;
+	const char	*name;
+	char	tempdir[MAX_OSPATH], *p;
 	size_t	len;
 
 	if (path)
 		q_strlcpy(tempdir, path, MAX_OSPATH);
-	else
-		q_strlcpy(tempdir, fs_userdir, MAX_OSPATH);
+	else	q_strlcpy(tempdir, fs_userdir, MAX_OSPATH);
 
 	len = strlen(tempdir);
 	p = tempdir + len;
@@ -119,7 +119,8 @@ void Host_DeleteSave (const char *savepath)
 
 int Host_CopyFiles (const char *source, const char *pat, const char *dest)
 {
-	char	*name, tempdir[MAX_OSPATH], tempdir2[MAX_OSPATH];
+	const char	*name;
+	char	tempdir[MAX_OSPATH], tempdir2[MAX_OSPATH];
 	int	error;
 
 	name = Sys_FindFirstFile(source, pat);
@@ -127,8 +128,8 @@ int Host_CopyFiles (const char *source, const char *pat, const char *dest)
 
 	while (name)
 	{
-		if ( q_snprintf(tempdir, sizeof(tempdir),"%s/%s", source, name) >= (int)sizeof(tempdir) ||
-		     q_snprintf(tempdir2, sizeof(tempdir2),"%s/%s", dest, name) >= (int)sizeof(tempdir2) )
+		if (q_snprintf(tempdir, sizeof(tempdir),"%s/%s", source, name) >= (int)sizeof(tempdir) ||
+		    q_snprintf(tempdir2, sizeof(tempdir2),"%s/%s", dest, name) >= (int)sizeof(tempdir2))
 		{
 			Sys_FindClose();
 			Host_Error("%s: %d: string buffer overflow!", __thisfunc__, __LINE__);

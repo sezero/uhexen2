@@ -685,7 +685,7 @@ int main (int argc, char **argv)
 {
 	int		i, j;
 	unsigned int	flags;
-	char		*name;
+	const char	*name;
 	void		*pbuf;
 
 	ValidateByteorder ();

@@ -183,7 +183,7 @@ static DIR		*finddir;
 static struct dirent	*finddata;
 static char		*findpath, *findpattern;
 
-char *Sys_FindFirstFile (const char *path, const char *pattern)
+const char *Sys_FindFirstFile (const char *path, const char *pattern)
 {
 	if (finddir)
 		Sys_Error ("Sys_FindFirst without FindClose");
@@ -198,7 +198,7 @@ char *Sys_FindFirstFile (const char *path, const char *pattern)
 	return Sys_FindNextFile();
 }
 
-char *Sys_FindNextFile (void)
+const char *Sys_FindNextFile (void)
 {
 	struct stat	test;
 

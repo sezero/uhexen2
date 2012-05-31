@@ -35,8 +35,8 @@ int	Q_rename (const char *oldp, const char *newp);
 void	Q_getwd (char *out, size_t size);
 long	Q_filesize (const char *path);
 int	Q_FileType (const char *path);
-char	*Q_FindFirstFile (const char *path, const char *pattern);
-char	*Q_FindNextFile (void);
+const char *Q_FindFirstFile (const char *path, const char *pattern);
+const char *Q_FindNextFile (void);
 void	Q_FindClose (void);
 
 long	Q_filelength (FILE *f);

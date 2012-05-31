@@ -1174,7 +1174,7 @@ static void FS_Maplist_f (void)
 		}
 		else
 		{
-			char		*findname;
+			const char	*findname;
 
 			findname = Sys_FindFirstFile (va("%s/maps",search->filename), "*.bsp");
 			while (findname)

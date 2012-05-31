@@ -1,42 +1,37 @@
 /*
-	sys.h
-	non-portable functions
-
-	$Id$
-*/
+ * sys.h: non-portable functions
+ * $Id$
+ */
 
 #ifndef __HX2_SYS_H
 #define __HX2_SYS_H
 
-//
-// file IO
-//
+/* file IO */
+
 int Sys_mkdir (const char *path, qboolean crash);
 int Sys_rmdir (const char *path);
 int Sys_unlink (const char *path);
 int Sys_rename (const char *oldp, const char *newp);
 
 int Sys_FileType (const char *path);
-// returns an FS entity type, i.e. FS_ENT_FILE or FS_ENT_DIRECTORY.
-// returns FS_ENT_NONE (0) if no such file or directory is present.
+/* returns an FS entity type, i.e. FS_ENT_FILE or FS_ENT_DIRECTORY.
+ * returns FS_ENT_NONE (0) if no such file or directory is present. */
 
 long Sys_filesize (const char *path);
 
 int Sys_CopyFile (const char *frompath, const char *topath);
 
-// simplified findfirst/findnext implementation
-char *Sys_FindFirstFile (const char *path, const char *pattern);
-char *Sys_FindNextFile (void);
+const char *Sys_FindFirstFile (const char *path, const char *pattern);
+const char *Sys_FindNextFile (void);
 void Sys_FindClose (void);
 
-//
-// memory protection
-//
+
+/* memory protection */
+
 void Sys_MakeCodeWriteable (unsigned long startaddr, unsigned long length);
 
-//
-// UID detection
-//
+
+/* UID detection */
 
 /* disable use of password file on platforms where they
    aren't necessary or not possible. */
@@ -45,31 +40,31 @@ void Sys_MakeCodeWriteable (unsigned long startaddr, unsigned long length);
 #define	USE_PASSWORD_FILE	0
 #endif	/* _PASSWORD_FILE */
 
-//
-// system IO
-//
+
+/* system IO */
+
 void Sys_Error (const char *error, ...) __attribute__((__format__(__printf__,1,2), __noreturn__));
-// an error will cause the entire program to exit
+	/* cause the entire program to exit */
 
 void Sys_PrintTerm (const char *msgtxt);
-// prints the given string to the terminal
+	/* print the given string to the terminal */
 
 void Sys_Quit (void) __attribute__((__noreturn__));
 
 double Sys_DoubleTime (void);
 
 char *Sys_DateTimeString (char *buf);
-// returns date + time string equivalent to the combination
-// of following calls:	char buf[20]; t = time(NULL);
-// strftime (buf, sizeof(buf), "%m/%d/%Y %H:%M:%S", localtime(&t));
+	/* returns date + time string equivalent to the combination
+	 * of following calls:	char buf[20]; t = time(NULL);
+	 * strftime (buf, sizeof(buf), "%m/%d/%Y %H:%M:%S", localtime(&t)); */
 
 const char *Sys_ConsoleInput (void);
 
 void Sys_Sleep (unsigned long msecs);
-// yield for about 'msecs' milliseconds.
+	/* yield for about 'msecs' milliseconds */
 
 void Sys_SendKeyEvents (void);
-// Perform Key_Event () callbacks until the input que is empty
+	/* perform Key_Event () callbacks until the input que is empty */
 
 char *Sys_GetClipboardData (void);
 

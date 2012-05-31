@@ -127,7 +127,7 @@ what we presently need in this engine.
 static HANDLE findhandle = INVALID_HANDLE_VALUE;
 static WIN32_FIND_DATA finddata;
 
-char *Sys_FindFirstFile (const char *path, const char *pattern)
+const char *Sys_FindFirstFile (const char *path, const char *pattern)
 {
 	if (findhandle != INVALID_HANDLE_VALUE)
 		Sys_Error ("Sys_FindFirst without FindClose");
@@ -139,7 +139,7 @@ char *Sys_FindFirstFile (const char *path, const char *pattern)
 	return finddata.cFileName;
 }
 
-char *Sys_FindNextFile (void)
+const char *Sys_FindNextFile (void)
 {
 	if (findhandle == INVALID_HANDLE_VALUE)
 		return NULL;
