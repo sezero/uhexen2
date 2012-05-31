@@ -4,6 +4,10 @@ Development Progress	:
 ---------------------------
 
 2012-05-31 (SVN):
+    * Makefiles: refuse the stupid 'cc' default of make for CC, which
+      not necessarily exist everywhere.
+
+2012-05-31 (SVN):
     * Makefiles: Cleanup. Moved many things from scripts/makefile.inc to
       individual makefiles. Also added a dummy Amiga section, leaving it
       to porters for filling in its blanks, for now.

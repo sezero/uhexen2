@@ -115,8 +115,10 @@ endif
 # Compiler selection:
 
 CC ?= gcc
-ifeq ($(CC),)
-CC := gcc
+ifeq ($(origin CC),default)
+# refuse the stupid 'cc' default of make
+# which not necessarily exist everywhere
+CC  = gcc
 endif
 AS ?= as
 

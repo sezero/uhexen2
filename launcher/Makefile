@@ -19,6 +19,11 @@ OSLIBS:=$(UHEXEN2_TOP)/oslibs
 HOST_OS:=$(shell uname|sed -e s/_.*//|tr '[:upper:]' '[:lower:]')
 
 CC ?= gcc
+ifeq ($(origin CC),default)
+# refuse the stupid 'cc' default of make
+# which not necessarily exist everywhere
+CC  = gcc
+endif
 AR ?= ar
 RANLIB ?= ranlib
 

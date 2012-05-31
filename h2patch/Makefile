@@ -10,6 +10,11 @@ LIBS_DIR:=$(UHEXEN2_TOP)/libs
 OSLIBS:=$(UHEXEN2_TOP)/oslibs
 
 CC ?= gcc
+ifeq ($(origin CC),default)
+# refuse the stupid 'cc' default of make
+# which not necessarily exist everywhere
+CC  = gcc
+endif
 LINKER := $(CC)
 
 #CPUFLAGS= -march=i486
