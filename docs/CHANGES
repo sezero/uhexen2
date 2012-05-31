@@ -4,6 +4,10 @@ Development Progress	:
 ---------------------------
 
 2012-05-31 (SVN):
+    * Steven reports that uhexen2 works nicely on Solaris: updated the
+      release notes and TODO files.
+
+2012-05-31 (SVN):
     * Makefiles: refuse the stupid 'cc' default of make for CC, which
       not necessarily exist everywhere.
 

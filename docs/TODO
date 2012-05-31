@@ -17,8 +17,6 @@ TODO:
 - Net: Find some way to workaround the infamous router troubles
 - HexenWorld: Spectator mode (chasecam) isn't as it should be,
   compare with the quakeworld code and fix.
-- Does MorphOS port still compile/work?
-- Does Solaris compile / work?
 - Maybe ports to other operating systems?
 - Add sound font support to Timidity.
 - Add sequencer (mpu-401) support for midi (alsa / oss)
