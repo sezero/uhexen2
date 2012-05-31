@@ -816,7 +816,7 @@ static void CL_ConnectionlessPacket (void)
 	// ping from somewhere
 	if (c == A2A_PING)
 	{
-		char	data[6];
+		byte	data[6];
 
 		data[0] = 0xff;
 		data[1] = 0xff;
@@ -825,7 +825,7 @@ static void CL_ConnectionlessPacket (void)
 		data[4] = A2A_ACK;
 		data[5] = 0;
 
-		NET_SendPacket (6, &data, net_from);
+		NET_SendPacket (6, data, net_from);
 		return;
 	}
 

@@ -4,6 +4,11 @@ Development Progress	:
 ---------------------------
 
 2012-05-31 (SVN):
+    * hexenworld/client/cl_main.c (CL_ConnectionlessPacket): Removed the
+      extra '&' before the array variable 'data' when sending A2A_ACK,
+      also changed its type to byte instead of char.
+
+2012-05-31 (SVN):
     * Changed Sys_FindFirst() and Sys_FindNext() to return const.
 
 2012-05-31 (SVN):
