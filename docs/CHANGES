@@ -3,6 +3,10 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2012-05-31 (SVN):
+    * Makefiles: Removed the ARCHFLAGS variable, not used for quite some
+      time.
+
 2012-05-30 (SVN):
     * net_sys.h: Added new selectsocket macro, which expands simply to
       select for unix and windows, to select_s for dos and to WaitSelect

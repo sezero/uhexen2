@@ -35,11 +35,8 @@ BINARY:=dhcc$(exe_ext)
 # NOTE: the i586 cpuflag is causing a ~two-fold~ slowdown!
 CPUFLAGS=
 
-# Overrides for the default ARCHFLAGS
-#ARCHFLAGS=
-
 CFLAGS += -g -Wall
-CFLAGS += $(CPUFLAGS) $(ARCHFLAGS)
+CFLAGS += $(CPUFLAGS)
 ifndef DEBUG
 CFLAGS += -O2 -DNDEBUG=1
 endif

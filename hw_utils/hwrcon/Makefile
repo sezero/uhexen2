@@ -45,11 +45,8 @@ endif
 # Overrides for the default CPUFLAGS
 CPUFLAGS=$(CPU_X86)
 
-# Overrides for the default ARCHFLAGS
-#ARCHFLAGS=
-
 CFLAGS += -g -Wall
-CFLAGS += $(CPUFLAGS) $(ARCHFLAGS)
+CFLAGS += $(CPUFLAGS)
 ifndef DEBUG
 CFLAGS += -O2 -DNDEBUG=1
 endif

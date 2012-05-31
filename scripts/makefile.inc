@@ -166,19 +166,6 @@ check_gcc = $(shell if echo | $(CC) $(1) -S -o /dev/null -xc - > /dev/null 2>&1;
 
 
 ################################
-# Determine common build flags:
-
-# Possible ARCH flags
-ARCHFLAGS=
-
-ifeq ($(CROSS_COMPILE),n)
-ifeq ($(HOST_OS),morphos)
-ARCHFLAGS=-noixemul
-endif
-endif
-
-
-################################
 # the "sdl-config" command
 
 SDL_CONFIG ?=sdl-config
