@@ -2,38 +2,16 @@
 # $Id$
 
 # This file is responsible for determining the Host OS and Target OS,
-# setting common paths, selecting the compiler, assigning the compiler
-# command as the linker, defining helper functions for compiler flags
-# detection, setting the "sdl-config" command.
-
-# We also define some common flags in here:
-# Possible ARCH flags, flags for NASM and SDL, flags for opengl linkage.
-# See them near the bottom of this file.
-
-# Unless overriden, these settings will be used in any includer makefile
-# in the uhexen2 tree. The intention is to make the actual Makefiles some
-# more readable and uniform.
+# selecting the compiler, assigning the compiler command as the linker,
+# defining helper functions for compiler flags detection.
 
 # Common unix shell tools, such as uname, which, sed and tr, are required
 # for successful operation. If you are running on windows, you must run
 # under MSYS, otherwise this makefile system will fail.
 
-
 ################################
 # Helper function to check availability of a given command
-
 check_cmd=$(shell if which $(1) > /dev/null 2>&1; then echo "";else echo $(1);fi)
-
-
-################################
-# Common paths:
-
-# X directory
-X11BASE ?=/usr/X11R6
-
-# local directory for os-specific headers and libraries:
-OSLIBS :=$(UHEXEN2_TOP)/oslibs
-
 
 ################################
 # OS and TARGET_OS detection:
@@ -75,14 +53,11 @@ else
 TARGET_OS:=win32
 endif
 endif
-
-endif  # Windows
-
+endif #
 
 ifneq ($(HOST_OS),windows)
 ifneq ($(HOST_OS),dos)
-
-# running on a Unixish OS
+# assuming a unix host
 
 ifdef W32BUILD
 # cross compilation for windows
@@ -105,8 +80,7 @@ TARGET_OS:=unix
 endif
 
 endif
-endif
-
+endif #
 
 ifeq ($(TARGET_OS),unix)
 MACH_TYPE:=$(shell sh $(UHEXEN2_TOP)/scripts/detect.sh arch)
@@ -120,10 +94,8 @@ MACH_TYPE:=x86
 endif
 ifeq ($(TARGET_OS),win64)
 # FIXME: uname from msys might not work here
-#MACH_TYPE:=ia64
 MACH_TYPE:=x86_64
 endif
-
 
 ################################
 # Binary filename extension:
@@ -138,7 +110,6 @@ endif
 ifeq ($(TARGET_OS),win64)
 exe_ext:=.exe
 endif
-
 
 ################################
 # Compiler selection:
@@ -157,42 +128,9 @@ WINDRES ?= windres
 
 LINKER = $(CC)
 
-
 ################################
 # Helper function to check if gcc supports a given flag.
 # this relies on gcc option of taking input from stdin
 
 check_gcc = $(shell if echo | $(CC) $(1) -S -o /dev/null -xc - > /dev/null 2>&1; then echo "$(1)"; else echo "$(2)"; fi;)
-
-
-################################
-# the "sdl-config" command
-
-SDL_CONFIG ?=sdl-config
-
-################################
-# SDL flags:
-
-ifeq ($(TARGET_OS),unix)
-SDLFLAGS:= $(shell $(SDL_CONFIG) --cflags 2> /dev/null)
-SDLLINK := $(shell $(SDL_CONFIG) --libs 2> /dev/null)
-else
-SDLFLAGS:=
-SDLLINK :=
-endif
-
-
-################################
-# -lsocket is needed on some arches
-
-LIBSOCKET=
-
-ifeq ($(CROSS_COMPILE),n)
-ifeq ($(HOST_OS),qnx)
-LIBSOCKET=-lsocket
-endif
-ifeq ($(HOST_OS),sunos)
-LIBSOCKET=-lsocket -lnsl -lresolv
-endif
-endif
 

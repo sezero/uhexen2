@@ -17,6 +17,8 @@
 # main uhexen2 relative path
 UHEXEN2_TOP:=../..
 LIBS_DIR:=$(UHEXEN2_TOP)/libs
+# local directory for os-specific headers and libraries
+OSLIBS:=$(UHEXEN2_TOP)/oslibs
 # common sources path:
 COMMONDIR:=../h2shared
 
@@ -184,7 +186,7 @@ endif
 #############################################################
 NASMFLAGS=-f elf -d_NO_PREFIX
 
-LDFLAGS += $(LIBSOCKET) -lm -lvga
+LDFLAGS += -lm -lvga
 
 CPPFLAGS+= -DSVGAQUAKE
 
@@ -277,15 +279,15 @@ endif
 
 # Rules for turning source files into .o files
 %.o: %.c
-	$(CC) -c $(CFLAGS) $(CPPFLAGS) $(INCLUDES) -o $@ $<
+	$(CC) -c $(INCLUDES) $(CPPFLAGS) $(CFLAGS) -o $@ $<
 %.o: $(COMMONDIR)/%.c
-	$(CC) -c $(CFLAGS) $(CPPFLAGS) $(INCLUDES) -o $@ $<
+	$(CC) -c $(INCLUDES) $(CPPFLAGS) $(CFLAGS) -o $@ $<
 %.o: $(LIBS_DIR)/common/%.c
-	$(CC) -c $(CFLAGS) $(CPPFLAGS) $(INCLUDES) -o $@ $<
+	$(CC) -c $(INCLUDES) $(CPPFLAGS) $(CFLAGS) -o $@ $<
 %.o: %.asm
-	$(NASM) $(NASMFLAGS) $(NASM_INC) -o $@ $<
+	$(NASM) $(NASM_INC) $(NASMFLAGS) -o $@ $<
 %.o: $(COMMONDIR)/%.asm
-	$(NASM) $(NASMFLAGS) $(NASM_INC) -o $@ $<
+	$(NASM) $(NASM_INC) $(NASMFLAGS) -o $@ $<
 
 # Objects
 
@@ -478,7 +480,7 @@ hexen2: $(SW_BINARY)
 
 # extra rule for snd_timidity.c because of timidity/timidity.h and libtimidity.a
 snd_timidity.o: $(COMMONDIR)/snd_timidity.c
-	$(CC) -c $(CFLAGS) $(CPPFLAGS) $(SDLFLAGS) $(INCLUDES) -I$(LIBS_DIR) -o $@ $(COMMONDIR)/snd_timidity.c
+	$(CC) -c $(INCLUDES) -I$(LIBS_DIR) $(CPPFLAGS) $(CFLAGS) -o $@ $(COMMONDIR)/snd_timidity.c
 
 include $(LIBS_DIR)/timidity/_timi.mak
 

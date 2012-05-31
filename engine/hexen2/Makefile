@@ -35,10 +35,19 @@
 # main uhexen2 relative path
 UHEXEN2_TOP:=../..
 LIBS_DIR:=$(UHEXEN2_TOP)/libs
+# local directory for os-specific headers and libraries
+OSLIBS:=$(UHEXEN2_TOP)/oslibs
 # common sources path:
 COMMONDIR:=../h2shared
 
 # GENERAL OPTIONS (customize as required)
+
+# X directory
+X11BASE   ?=/usr/X11R6
+# the sdl-config command
+SDL_CONFIG?=sdl-config
+SDL_CFLAGS = $(shell $(SDL_CONFIG) --cflags 2> /dev/null)
+SDL_LIBS   = $(shell $(SDL_CONFIG) --libs 2> /dev/null)
 
 # enable some extra optimizations?
 OPT_EXTRA=yes
@@ -242,7 +251,7 @@ endif
 # OpenGL settings
 #############################################################
 GL_DEFS = -DGLQUAKE
-GLFLAGS =
+GL_LIBS =
 
 #############################################################
 # streaming music initial setup
@@ -281,11 +290,13 @@ endif
 ifneq ($(X11BASE),)
 INCLUDES+= -I$(X11BASE)/include
 endif
-LDFLAGS += $(LIBSOCKET) -lm
-
-# Unix builds rely on SDL:
-# SDLQUAKE must be defined for all SDL using platforms/targets
-CPPFLAGS+= -DSDLQUAKE
+ifeq ($(HOST_OS),qnx)
+LDFLAGS += -lsocket
+endif
+ifeq ($(HOST_OS),sunos)
+LDFLAGS += -lsocket -lnsl -lresolv
+endif
+LDFLAGS += -lm
 
 ifneq ($(X11BASE),)
 GL_LINK=-L$(X11BASE)/lib -lGL
@@ -320,6 +331,12 @@ ifeq ($(USE_SDLCD),yes)
 CPPFLAGS+= -DWITH_SDLCD
 endif
 endif
+
+# Unix builds rely on SDL:
+# SDLQUAKE must be defined for all SDL using platforms/targets
+CPPFLAGS+= -DSDLQUAKE
+CFLAGS  += $(SDL_CFLAGS)
+LDFLAGS += $(SDL_LIBS)
 
 endif
 # End of Unix settings
@@ -481,6 +498,20 @@ endif
 
 
 #############################################################
+# Amiga, MorphOS, etc. flags/settings and overrides:
+# DUMMY section : porters should fill in the blanks!.
+#############################################################
+
+ifeq ($(HOST_OS),morphos)
+CFLAGS += -noixemul
+LDFLAGS += -noixemul
+endif
+
+# End of Amiga settings
+#############################################################
+
+
+#############################################################
 # Streaming music settings
 #############################################################
 ifeq ($(MP3LIB),mad)
@@ -542,13 +573,13 @@ CPPFLAGS+= -DUSE_INTEL_ASM
 endif
 
 ifeq ($(USE_3DFXGAMMA),yes)
-# linux 3dfx gamma hack
+# linux 3dfx gamma evil hack
 GL_DEFS+= -DUSE_3DFXGAMMA
 endif
 ifneq ($(LINK_GL_LIBS),yes)
 GL_DEFS+= -DGL_DLSYM
 else
-GLFLAGS+= $(GL_LINK)
+GL_LIBS+= $(GL_LINK)
 endif
 #
 #############################################################
@@ -556,25 +587,25 @@ endif
 
 # Rules for turning source files into .o files
 %.o: %.c
-	$(CC) -c $(CFLAGS) $(CPPFLAGS) $(SDLFLAGS) $(INCLUDES) -o $@ $<
+	$(CC) -c $(INCLUDES) $(CPPFLAGS) $(CFLAGS) -o $@ $<
 %.o: $(COMMONDIR)/%.c
-	$(CC) -c $(CFLAGS) $(CPPFLAGS) $(SDLFLAGS) $(INCLUDES) -o $@ $<
+	$(CC) -c $(INCLUDES) $(CPPFLAGS) $(CFLAGS) -o $@ $<
 %.o: $(LIBS_DIR)/common/%.c
-	$(CC) -c $(CFLAGS) $(CPPFLAGS) $(SDLFLAGS) $(INCLUDES) -o $@ $<
+	$(CC) -c $(INCLUDES) $(CPPFLAGS) $(CFLAGS) -o $@ $<
 %.o: %.m
-	$(CC) -c $(CFLAGS) $(CPPFLAGS) $(SDLFLAGS) $(INCLUDES) -o $@ $<
+	$(CC) -c $(INCLUDES) $(CPPFLAGS) $(CFLAGS) -o $@ $<
 %.o: $(COMMONDIR)/%.m
-	$(CC) -c $(CFLAGS) $(CPPFLAGS) $(SDLFLAGS) $(INCLUDES) -o $@ $<
+	$(CC) -c $(INCLUDES) $(CPPFLAGS) $(CFLAGS) -o $@ $<
 %.o: $(LIBS_DIR)/common/%.m
-	$(CC) -c $(CFLAGS) $(CPPFLAGS) $(SDLFLAGS) $(INCLUDES) -o $@ $<
+	$(CC) -c $(INCLUDES) $(CPPFLAGS) $(CFLAGS) -o $@ $<
 %.o: %.asm
-	$(NASM) $(NASMFLAGS) $(NASM_INC) -o $@ $<
+	$(NASM) $(NASM_INC) $(NASMFLAGS) -o $@ $<
 %.o: $(COMMONDIR)/%.asm
-	$(NASM) $(NASMFLAGS) $(NASM_INC) -o $@ $<
+	$(NASM) $(NASM_INC) $(NASMFLAGS) -o $@ $<
 %.res: %.rc
-	$(WINDRES) -DWIN32_LEAN_AND_MEAN $(CPPFLAGS) $(RES_INC) --output-format=coff -o $@ $<
+	$(WINDRES) $(RES_INC) $(CPPFLAGS) -DWIN32_LEAN_AND_MEAN --output-format=coff -o $@ $<
 %.res: $(COMMONDIR)/%.rc
-	$(WINDRES) -DWIN32_LEAN_AND_MEAN $(CPPFLAGS) $(RES_INC) --output-format=coff -o $@ $<
+	$(WINDRES) $(RES_INC) $(CPPFLAGS) -DWIN32_LEAN_AND_MEAN --output-format=coff -o $@ $<
 
 # Objects
 
@@ -896,15 +927,15 @@ dos/net_ser.o: dos/net_comx.c
 
 # extra rule for snd_timidity.c because of timidity/timidity.h and libtimidity.a
 snd_timidity.o: $(COMMONDIR)/snd_timidity.c
-	$(CC) -c $(CFLAGS) $(CPPFLAGS) $(SDLFLAGS) $(INCLUDES) -I$(LIBS_DIR) -o $@ $(COMMONDIR)/snd_timidity.c
+	$(CC) -c $(INCLUDES) -I$(LIBS_DIR) $(CPPFLAGS) $(CFLAGS) -o $@ $(COMMONDIR)/snd_timidity.c
 
 include $(LIBS_DIR)/timidity/_timi.mak
 
 $(SW_BINARY): $(SOFT_ASM) $(SOFTOBJS) $(COMMON_ASM) $(COMMONOBJS) $(TIMIDEPS)
-	$(LINKER) $(SOFT_ASM) $(SOFTOBJS) $(COMMON_ASM) $(COMMONOBJS) $(LDFLAGS) $(SDLLINK) -o $@
+	$(LINKER) $(SOFT_ASM) $(SOFTOBJS) $(COMMON_ASM) $(COMMONOBJS) $(LDFLAGS) -o $@
 
 $(GL_BINARY): $(GLOBJS) $(COMMON_ASM) $(COMMONOBJS) $(TIMIDEPS)
-	$(LINKER) $(GLOBJS) $(COMMON_ASM) $(COMMONOBJS) $(LDFLAGS) $(GLFLAGS) $(SDLLINK) -o $@
+	$(LINKER) $(GLOBJS) $(COMMON_ASM) $(COMMONOBJS) $(LDFLAGS) $(GL_LIBS) -o $@
 
 localclean:
 	rm -f *.o *.res dos/*.o core

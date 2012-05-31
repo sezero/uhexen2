@@ -13,6 +13,8 @@
 # main uhexen2 relative path
 UHEXEN2_TOP:=..
 LIBS_DIR:=$(UHEXEN2_TOP)/libs
+# local directory for os-specific headers and libraries
+OSLIBS:=$(UHEXEN2_TOP)/oslibs
 
 HOST_OS:=$(shell uname|sed -e s/_.*//|tr '[:upper:]' '[:lower:]')
 

@@ -6,6 +6,8 @@
 
 UHEXEN2_TOP:=..
 LIBS_DIR:=$(UHEXEN2_TOP)/libs
+# local directory for os-specific headers and libraries
+OSLIBS:=$(UHEXEN2_TOP)/oslibs
 
 CC ?= gcc
 LINKER := $(CC)

@@ -20,6 +20,8 @@
 # main uhexen2 relative path
 UHEXEN2_TOP:=../..
 LIBS_DIR:=$(UHEXEN2_TOP)/libs
+# local directory for os-specific headers and libraries
+OSLIBS:=$(UHEXEN2_TOP)/oslibs
 
 # use WinSock2 instead of WinSock-1.1? (disabled for w32 for compat.
 # with old Win95 machines.) (enabled for Win64 below.)
@@ -72,6 +74,7 @@ endif
 INCLUDES+= -I$(OSLIBS)/windows
 LDFLAGS += $(LIBWINSOCK) -lwinmm -mconsole
 endif
+
 ifeq ($(TARGET_OS),win64)
 CFLAGS  += -DWIN32_LEAN_AND_MEAN
 ifeq ($(USE_WINSOCK2),yes)
@@ -80,8 +83,23 @@ endif
 INCLUDES+= -I$(OSLIBS)/windows
 LDFLAGS += $(LIBWINSOCK) -lwinmm -mconsole
 endif
+
 ifeq ($(TARGET_OS),unix)
-LDFLAGS += $(LIBSOCKET)
+ifeq ($(HOST_OS),qnx)
+LDFLAGS += -lsocket
+endif
+ifeq ($(HOST_OS),sunos)
+LDFLAGS += -lsocket -lnsl -lresolv
+endif
+endif
+
+#############################################################
+# Amiga, MorphOS, etc. flags/settings and overrides:
+# DUMMY section : porters should fill in the blanks!.
+#############################################################
+ifeq ($(HOST_OS),morphos)
+CFLAGS += -noixemul
+LDFLAGS += -noixemul
 endif
 
 

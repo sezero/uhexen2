@@ -26,6 +26,8 @@
 # main uhexen2 relative path
 UHEXEN2_TOP:=../..
 LIBS_DIR:=$(UHEXEN2_TOP)/libs
+# local directory for os-specific headers and libraries
+OSLIBS:=$(UHEXEN2_TOP)/oslibs
 # common sources path:
 COMMONDIR:=../h2shared
 
@@ -203,22 +205,43 @@ endif
 # Unix flags/settings
 #############################################################
 ifeq ($(TARGET_OS),unix)
-LDFLAGS += $(LIBSOCKET) -lm
+
+ifeq ($(HOST_OS),qnx)
+LDFLAGS += -lsocket
+endif
+ifeq ($(HOST_OS),sunos)
+LDFLAGS += -lsocket -lnsl -lresolv
+endif
+LDFLAGS += -lm
 
 endif
 # End of Unix settings
 #############################################################
 
 
+#############################################################
+# Amiga, MorphOS, etc. flags/settings and overrides:
+# DUMMY section : porters should fill in the blanks!.
+#############################################################
+
+ifeq ($(HOST_OS),morphos)
+CFLAGS += -noixemul
+LDFLAGS += -noixemul
+endif
+
+# End of Amiga settings
+#############################################################
+
+
 # Rules for turning source files into .o files
 %.o: server/%.c
-	$(CC) -c $(CFLAGS) $(CPPFLAGS) $(INCLUDES) -o $@ $<
+	$(CC) -c $(INCLUDES) $(CPPFLAGS) $(CFLAGS) -o $@ $<
 %.o: %.c
-	$(CC) -c $(CFLAGS) $(CPPFLAGS) $(INCLUDES) -o $@ $<
+	$(CC) -c $(INCLUDES) $(CPPFLAGS) $(CFLAGS) -o $@ $<
 %.o: $(COMMONDIR)/%.c
-	$(CC) -c $(CFLAGS) $(CPPFLAGS) $(INCLUDES) -o $@ $<
+	$(CC) -c $(INCLUDES) $(CPPFLAGS) $(CFLAGS) -o $@ $<
 %.o: $(LIBS_DIR)/common/%.c
-	$(CC) -c $(CFLAGS) $(CPPFLAGS) $(INCLUDES) -o $@ $<
+	$(CC) -c $(INCLUDES) $(CPPFLAGS) $(CFLAGS) -o $@ $<
 
 # Objects
 
