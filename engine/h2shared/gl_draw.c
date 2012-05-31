@@ -246,7 +246,7 @@ qpic_t	*Draw_CacheLoadingPic (void)
 	menu_numcachepics++;
 
 	/* kill the progress slot pixels between rows [85:103] */
-	memmove(&dat->data[3] + 157*85, &dat->data[3] + 157*104, 157*(112 - 104));
+	memmove(dat->data + 157*85, dat->data + 157*104, 157*(112 - 104));
 	dat->height -= (104 - 85);
 
 	pic->pic.width = dat->width;

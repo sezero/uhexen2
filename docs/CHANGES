@@ -4,6 +4,13 @@ Development Progress	:
 ---------------------------
 
 2012-05-31 (SVN):
+    * gl_draw.c (Draw_CacheLoadingPic): When moving pixels, do not take
+      the start point as data[3]: data[0], i.e. data itself, should be
+      just OK. (can't remember why I did it that way, but I noticed it
+      thanks to a weird "array subscript is above array bounds" warning
+      from g++..
+
+2012-05-31 (SVN):
     * hexenworld/client/cl_main.c (CL_ConnectionlessPacket): Removed the
       extra '&' before the array variable 'data' when sending A2A_ACK,
       also changed its type to byte instead of char.
