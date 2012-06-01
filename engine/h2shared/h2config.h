@@ -41,8 +41,8 @@
    Affects:	file system, quakefs.c.
 
    Allows separating user directories on multi-user systems. We HIGHLY
-   recommend keeping it as 1. Also see quakefs.h where DO_USERDIRS may
-   be disabled on purpose for some platforms.
+   recommend keeping it as 1. Also see "sys.h" where DO_USERDIRS may be
+   disabled on purpose for some platforms.
    =================================================================== */
 #define	DO_USERDIRS			1
 

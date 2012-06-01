@@ -16,10 +16,10 @@
 #include <sys/stat.h>
 #include <unistd.h>
 #include <sys/time.h>
-#if USE_PASSWORD_FILE
+#if USE_PASSWORD_FILE && DO_USERDIRS
 #include <pwd.h>
 #endif
-#endif
+#endif	/* _UNIX */
 
 #if defined(PLATFORM_WINDOWS)
 #include <windows.h>
@@ -37,10 +37,12 @@ static DWORD		starttime;
 #if defined(PLATFORM_UNIX)
 static double		starttime;
 static qboolean		first = true;
+#endif	/* PLATFORM_UNIX */
 
+#if DO_USERDIRS
 static char	userdir[MAX_OSPATH];
 extern char	filters_file[MAX_OSPATH];
-#endif	/* PLATFORM_UNIX */
+#endif	/* DO_USERDIRS */
 
 
 //=============================================================================
@@ -197,8 +199,9 @@ double Sys_DoubleTime (void)
 #endif
 }
 
-#ifdef PLATFORM_UNIX
+#if DO_USERDIRS
 
+#ifdef PLATFORM_UNIX
 int Sys_mkdir (const char *path, qboolean crash)
 {
 	int rc = mkdir (path, 0777);
@@ -240,6 +243,7 @@ static int Sys_GetUserdir (char *dst, size_t dstsize)
 	return 0;
 }
 #endif
+#endif	/* DO_USERDIRS */
 
 
 //=============================================================================
@@ -272,7 +276,7 @@ int main (int argc, char **argv)
 	com_argv = argv;
 	com_argc = argc;
 
-#ifdef PLATFORM_UNIX
+#if DO_USERDIRS
 	if (Sys_GetUserdir(userdir, sizeof(userdir)) != 0)
 		Sys_Error ("Couldn't determine userspace directory");
 	printf ("Userdir: %s\n", userdir);

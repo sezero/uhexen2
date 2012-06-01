@@ -11,10 +11,10 @@
 #include "net_sys.h"
 #include "defs.h"
 
-#if defined(PLATFORM_WINDOWS) || defined(PLATFORM_DOS)
-#define	filters_file	FILTERS_FILE
-#else
+#if DO_USERDIRS
 char	filters_file[MAX_OSPATH];
+#else
+#define	filters_file	FILTERS_FILE
 #endif
 
 

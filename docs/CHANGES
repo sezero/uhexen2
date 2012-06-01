@@ -3,6 +3,11 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2012-06-01 (SVN):
+    * Changed the place where DO_USERDIRS may be disabled on purpose for
+      some platforms from quakefs.h to sys.h. Added proper DO_USERDIRS
+      macro usage to hwmaster.
+
 2012-05-31 (SVN):
     * quakefs.h: Added Amiga to list of platforms where we don't need
       user directories.

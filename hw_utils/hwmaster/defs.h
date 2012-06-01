@@ -8,8 +8,6 @@
 #ifndef __HWMASTER_DEFS
 #define __HWMASTER_DEFS
 
-//=============================================================================
-// Defines
 
 #define __STRINGIFY(x) #x
 #define STRINGIFY(x) __STRINGIFY(x)
@@ -19,6 +17,15 @@
 #define VER_HWMASTER_MIN	7
 #define VER_HWMASTER_STR	STRINGIFY(VER_HWMASTER_MAJ) "." STRINGIFY(VER_HWMASTER_MID) "." STRINGIFY(VER_HWMASTER_MIN)
 
+/* =====================================================================
+   DO_USERDIRS: 0 or 1
+   Allows separating user directories on multi-user systems. We HIGHLY
+   recommend keeping it as 1. Also see "sys.h" where DO_USERDIRS may be
+   disabled on purpose for some platforms.  Only userdir functionality
+   in hwmaster is where the filters.ini is stored: under the userdir if
+   configured for userdirs, or under the currentdir otherwise.
+   =================================================================== */
+#define DO_USERDIRS	1
 #define HWM_USERDIR	".hwmaster"	/* user directory for unix	*/
 
 #define	MAX_OSPATH	256		/* max length of a filesystem pathname	*/
@@ -41,9 +48,9 @@
 #define	USE_PASSWORD_FILE		1
 
 
-//=============================================================================
-// Includes
+/* Includes */
 
+#include "sys.h"
 #include "sizebuf.h"
 #include "msg_io.h"
 #include "protocol.h"
@@ -51,19 +58,13 @@
 #include "common.h"
 #include "cmd.h"
 #include "net.h"
-#include "sys.h"
 #include "server.h"
 
 
-//=============================================================================
-// Macros
+/* Globals */
 
-
-//=============================================================================
-// Globals
-
-extern char		com_token[1024];
-extern int		com_argc;
+extern char	com_token[1024];
+extern int	com_argc;
 extern char	**com_argv;
 
 

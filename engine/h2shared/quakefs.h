@@ -36,15 +36,6 @@ extern	char	fs_gamedir[MAX_OSPATH];
 extern	char	fs_gamedir_nopath[MAX_QPATH];
 extern	char	fs_userdir[MAX_OSPATH];
 
-/* disable user directories on platforms where they
- * aren't necessary or not possible. */
-#if defined(PLATFORM_WINDOWS)			|| \
-    defined(PLATFORM_DOS)			|| \
-    defined(PLATFORM_AMIGA)
-#undef	DO_USERDIRS
-#define	DO_USERDIRS	0
-#endif	/* DO_USERDIRS  */
-
 /* NOTE:  the savedir (fs_savedir, or the
  * old com_savedir) is no longer available
  * as a separate variable. the saves are
