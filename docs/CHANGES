@@ -4,6 +4,13 @@ Development Progress	:
 ---------------------------
 
 2012-06-01 (SVN):
+    * h2patch/h2patch3.c, launcher/apply_patch.c: The patch process now
+      outputs a description of the pak file it is processing so that the
+      user can understand the reasons of a probable failure better.
+    * launcher: bumped version to 1.0.8
+    * updated version date stamp to 2012-06-01.
+
+2012-06-01 (SVN):
     * Changed the place where DO_USERDIRS may be disabled on purpose for
       some platforms from quakefs.h to sys.h. Added proper DO_USERDIRS
       macro usage to hwmaster.

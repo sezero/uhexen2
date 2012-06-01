@@ -1,7 +1,7 @@
 Hammer of Thyrion (uHexen2) release notes:
 
 ========================================================================
-Changes in v1.5.4: (May 31, 2012.)
+Changes in v1.5.4: (June 01, 2012.)
 ========================================================================
 
 - OpenGL:  Fixed screen flickering resulting from progress bars drawing
@@ -33,6 +33,10 @@ Changes in v1.5.4: (May 31, 2012.)
   doesn't change the view angle anymore.
 
 - All platforms, gameplay: Fixed a rare crash in the ambient fish hcode.
+
+- All platforms, h2patch: More detailed output and better reporting in
+  case of incompatible or corrupted pak files. Same with the pak-patch
+  functionality of the gtk-launcher application.
 
 - Utils, dcc (progs decompiler): Fixed an infinite recursion issue when
   decompiling the hcbots progs.dat. Made the -src command line option of

@@ -59,28 +59,82 @@
 #include "md5.h"
 #include "xdelta3-mainopt.h"
 
+struct other_pak
+{
+	long			size;
+	const char		*desc;
+	struct other_pak const	*next;
+};
+
+static const struct other_pak pak0_oem1 = {
+	22720659, "Continent of Blackmarsh (m3D, v1.10)",
+	NULL
+};
+
+static const struct other_pak pak0_oem0 = {
+		/* not sure: don't have this one myself */
+	22719295, "Continent of Blackmarsh (m3D, v1.08)",
+	&pak0_oem1
+};
+
+static const struct other_pak pak0_demo1 = {
+	27750257, "Demo (Nov. 1997, v1.11)",
+	&pak0_oem0
+};
+
+static const struct other_pak pak0_demo0 = {
+	23537707, "Demo (Aug. 1997, v1.03)",
+	&pak0_demo1
+};
+
+#if 0
+static const struct other_pak pak2_oem1 = {
+	"Continent of Blackmarsh (m3D, v1.10)", 17742721
+	NULL
+};
+
+static const struct other_pak pak2_oem0 = {
+		/* not sure: don't have this one myself */
+	"Continent of Blackmarsh (m3D, v1.08)", 17739969
+	&pak2_oem1
+};
+#endif
+
 #define NUM_PATCHES	2
 
-static const struct
+struct patch_pak
 {
 	const char	*dir_name;	/* where the file is	*/
 	const char	*filename;	/* file to patch	*/
 	const char	*deltaname;	/* delta file to use	*/
 	const char	*old_md5;	/* unpatched md5sum	*/
 	const char	*new_md5;	/* md5sum after patch	*/
+	const char	*old_desc;
+	const char	*new_desc;
+	struct other_pak const	*other_data;
+			/* possible descriptions of same-named pak
+			 * versions not supported by this program. */
 	long	old_size, new_size;
-} patch_data[NUM_PATCHES] =
+};
+
+static const struct patch_pak patch_data[NUM_PATCHES] =
 {
 	{  "data1", "pak0.pak",
 	   "data1pk0.xd3",
 	   "b53c9391d16134cb3baddc1085f18683",
 	   "c9675191e75dd25a3b9ed81ee7e05eff",
+	   "retail, from Hexen II cdrom (v1.03)",
+	   "retail, already patched (v1.11)",
+	   &pak0_demo0,
 	   21714275, 22704056
 	},
 	{  "data1", "pak1.pak",
 	   "data1pk1.xd3",
 	   "9a2010aafb9c0fe71c37d01292030270",
 	   "c2ac5b0640773eed9ebe1cda2eca2ad0",
+	   "retail, from Hexen II cdrom (v1.03)",
+	   "retail, already patched (v1.11)",
+	   NULL,
 	   76958474, 75601170
 	}
 };
@@ -417,6 +471,19 @@ static void log_print (const char *fmt, ...)
 	va_end (argptr);
 }
 
+static const char *other_pak_desc (int num, long len)
+{
+	const struct other_pak *p = patch_data[num].other_data;
+
+	for ( ; p != NULL; p = p->next)
+	{
+		if (len == p->size)
+			return p->desc;
+	}
+
+	return "an unknown pak file";
+}
+
 
 int main (int argc, char **argv)
 {
@@ -488,15 +555,16 @@ int main (int argc, char **argv)
 		q_snprintf (dst, sizeof(dst), "%s/%s",
 						patch_data[i].dir_name,
 						patch_data[i].filename);
+		fprintf (stdout, "File %s :\n", dst);
 
 		ret = check_access(dst);
 		switch (ret)
 		{
 		case ACCESS_NOFILE:
-			fprintf (stderr, "Error: File %s not found\n", dst);
+			fprintf (stderr, "... Error: cannot find!\n");
 			return 1;
 		case ACCESS_NOPERM:
-			fprintf (stderr, "Error: cannot access %s, check permissions!\n", dst);
+			fprintf (stderr, "... Error: cannot access, check permissions!\n");
 			return 1;
 		case ACCESS_FILEOK:
 		default:
@@ -504,25 +572,33 @@ int main (int argc, char **argv)
 		}
 
 		len = Sys_filesize (dst);
-		if (len != patch_data[i].old_size &&
-			len != patch_data[i].new_size)
+		if (len == patch_data[i].old_size)
 		{
-			fprintf (stderr, "Error: File %s is an incompatible version\n", dst);
+			fprintf (stdout, "... looks like %s\n", patch_data[i].old_desc);
+		}
+		else if (len == patch_data[i].new_size)
+		{
+			fprintf (stdout, "... looks like %s\n", patch_data[i].new_desc);
+		}
+		else
+		{
+			fprintf (stderr, "... looks like %s\n", other_pak_desc(i, len));
+			fprintf (stderr, "... Error: not supported by h2ptach!\n");
 			return 1;
 		}
 
-		fprintf (stdout, "Checksumming %s, please wait...\n", dst);
+		fprintf (stdout, "... checksumming...\n");
 		memset (csum, 0, sizeof(csum));
 		md5_compute(dst, csum);
 		if (strcmp(csum, patch_data[i].new_md5) == 0)
 		{
-			fprintf (stdout, "File %s is already patched\n\n", dst);
+			fprintf (stdout, "... OK: already patched.\n\n");
 			h2patch_progress.current_written += patch_data[i].new_size;
 			continue;
 		}
 		if (strcmp(csum, patch_data[i].old_md5) != 0)
 		{
-			fprintf (stderr, "Error: File %s is an incompatible version\n", dst);
+			fprintf (stderr, "... Error: file probably corrupted!\n");
 			return 1;
 		}
 
@@ -531,7 +607,7 @@ int main (int argc, char **argv)
 						   patch_data[i].deltaname);
 		if (Sys_FileType(pat) != FS_ENT_FILE)
 		{
-			fprintf (stderr, "Error: File %s not found\n", pat);
+			fprintf (stderr, "... Error: delta file not found!\n");
 			return 1;
 		}
 
@@ -545,7 +621,7 @@ int main (int argc, char **argv)
 		q_snprintf (out, sizeof(out), "%s/%s",
 						patch_data[i].dir_name,
 							 patch_tmpname);
-		fprintf (stdout, "Patching %s, please wait...\n", dst);
+		fprintf (stdout, "... applying patch...\n");
 
 		start_file_progress (patch_data[i].new_size);
 		ret = xd3_main_patcher(&h2patch_options, dst, pat, out);
@@ -553,17 +629,17 @@ int main (int argc, char **argv)
 		if (ret != 0)
 		{
 			Sys_unlink (out);
-			fprintf (stderr, "Error: Failed patching %s\n", dst);
+			fprintf (stderr, "... Error: patch failed!\n");
 			return 2;
 		}
 
-		fprintf (stdout, "Checksumming %s, please wait...\n", out);
+		fprintf (stdout, "... verifying checksum...\n");
 		memset (csum, 0, sizeof(csum));
 		md5_compute(out, csum);
 		if (strcmp(csum, patch_data[i].new_md5) != 0)
 		{
 			Sys_unlink (out);
-			fprintf (stderr, "Error: File %s failed checksum after patching\n", dst);
+			fprintf (stderr, "... Error: checksum after patching failed!\n");
 			return 2;
 		}
 
@@ -571,12 +647,12 @@ int main (int argc, char **argv)
 		if (Sys_rename(out, dst) != 0)
 		{
 			Sys_unlink (out);
-			fprintf (stderr, "Error: Failed renaming patched file to %s\n", patch_data[i].filename);
+			fprintf (stderr, "... Error: failed renaming patched file\n");
 			return 2;
 		}
 
 		num_patched++;
-		fprintf (stdout, "Patch successful for %s\n\n", dst);
+		fprintf (stdout, "... OK. Patch successful.\n\n");
 	}
 
 	fprintf (stdout, "%d file(s) patched.\n", num_patched);

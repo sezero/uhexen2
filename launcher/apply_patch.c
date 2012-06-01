@@ -30,28 +30,82 @@
 #include "apply_patch.h"
 #include "launcher_ui.h"
 
+struct other_pak
+{
+	long			size;
+	const char		*desc;
+	struct other_pak const	*next;
+};
+
+static const struct other_pak pak0_oem1 = {
+	22720659, "Continent of Blackmarsh (m3D, v1.10)",
+	NULL
+};
+
+static const struct other_pak pak0_oem0 = {
+		/* not sure: don't have this one myself */
+	22719295, "Continent of Blackmarsh (m3D, v1.08)",
+	&pak0_oem1
+};
+
+static const struct other_pak pak0_demo1 = {
+	27750257, "Demo (Nov. 1997, v1.11)",
+	&pak0_oem0
+};
+
+static const struct other_pak pak0_demo0 = {
+	23537707, "Demo (Aug. 1997, v1.03)",
+	&pak0_demo1
+};
+
+#if 0
+static const struct other_pak pak2_oem1 = {
+	"Continent of Blackmarsh (m3D, v1.10)", 17742721
+	NULL
+};
+
+static const struct other_pak pak2_oem0 = {
+		/* not sure: don't have this one myself */
+	"Continent of Blackmarsh (m3D, v1.08)", 17739969
+	&pak2_oem1
+};
+#endif
+
 #define NUM_PATCHES	2
 
-static const struct
+struct patch_pak
 {
 	const char	*dir_name;	/* where the file is	*/
 	const char	*filename;	/* file to patch	*/
 	const char	*deltaname;	/* delta file to use	*/
 	const char	*old_md5;	/* unpatched md5sum	*/
 	const char	*new_md5;	/* md5sum after patch	*/
+	const char	*old_desc;
+	const char	*new_desc;
+	struct other_pak const	*other_data;
+			/* possible descriptions of same-named pak
+			 * versions not supported by this program. */
 	long	old_size, new_size;
-} patch_data[NUM_PATCHES] =
+};
+
+static const struct patch_pak patch_data[NUM_PATCHES] =
 {
 	{  "data1", "pak0.pak",
 	   "data1pk0.xd3",
 	   "b53c9391d16134cb3baddc1085f18683",
 	   "c9675191e75dd25a3b9ed81ee7e05eff",
+	   "retail, from Hexen II cdrom (v1.03)",
+	   "retail, already patched (v1.11)",
+	   &pak0_demo0,
 	   21714275, 22704056
 	},
 	{  "data1", "pak1.pak",
 	   "data1pk1.xd3",
 	   "9a2010aafb9c0fe71c37d01292030270",
 	   "c2ac5b0640773eed9ebe1cda2eca2ad0",
+	   "retail, from Hexen II cdrom (v1.03)",
+	   "retail, already patched (v1.11)",
+	   NULL,
 	   76958474, 75601170
 	}
 };
@@ -136,6 +190,19 @@ static void finish_file_progress (void)
 	}
 }
 
+static const char *other_pak_desc (int num, long len)
+{
+	const struct other_pak *p = patch_data[num].other_data;
+
+	for ( ; p != NULL; p = p->next)
+	{
+		if (len == p->size)
+			return p->desc;
+	}
+
+	return "an unknown pak file";
+}
+
 void *apply_patches (void *workdir)
 {
 	int	i, ret;
@@ -184,11 +251,19 @@ void *apply_patches (void *workdir)
 			return &rc;
 		}
 
-		if (stbuf.st_size != patch_data[i].old_size &&
-			stbuf.st_size != patch_data[i].new_size)
+		if (stbuf.st_size == patch_data[i].old_size)
+		{
+			ui_log_queue ("... looks like %s\n", patch_data[i].old_desc);
+		}
+		else if (stbuf.st_size == patch_data[i].new_size)
+		{
+			ui_log_queue ("... looks like %s\n", patch_data[i].new_desc);
+		}
+		else
 		{
 			rc |= XPATCH_FAIL;
-			ui_log_queue ("... is an incompatible version!\n");
+			ui_log_queue ("... looks like %s\n", other_pak_desc(i, stbuf.st_size));
+			ui_log_queue ("... not supported by h2patch!\n");
 			thread_alive = 0;
 			return &rc;
 		}
@@ -199,13 +274,13 @@ void *apply_patches (void *workdir)
 		if (strcmp(csum, patch_data[i].new_md5) == 0)
 		{
 			h2patch_progress.current_written += patch_data[i].new_size;
-			ui_log_queue ("... already patched.\n");
+			ui_log_queue ("... OK: already patched.\n");
 			continue;
 		}
 		if (strcmp(csum, patch_data[i].old_md5) != 0)
 		{
 			rc |= XPATCH_FAIL;
-			ui_log_queue ("... is an incompatible version!\n");
+			ui_log_queue ("... file probably corrupted!\n");
 			thread_alive = 0;
 			return &rc;
 		}
@@ -260,7 +335,7 @@ void *apply_patches (void *workdir)
 		}
 
 		rc |= XPATCH_APPLIED;
-		ui_log_queue ("... Patch successful.\n");
+		ui_log_queue ("... OK. Patch successful.\n");
 	}
 
 	if (rc & XPATCH_APPLIED)
