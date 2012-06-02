@@ -4,6 +4,9 @@ Development Progress	:
 ---------------------------
 
 2012-06-02 (SVN):
+    * Removed the beta/prerelease versioning stuff.
+
+2012-06-02 (SVN):
     * sys_amiga.c: Added a pattern helper for Sys_FindFirst() to replace
       each occurence of "*" by "#?" which is what Amiga's MatchFirst api
       expects. Should fix game load/save on Amiga/AROS.

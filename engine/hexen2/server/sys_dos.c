@@ -924,11 +924,7 @@ static int Sys_GetBasedir (char *argv0, char *dst, size_t dstsize)
 
 static void PrintVersion (void)
 {
-#if HOT_VERSION_BETA
-	printf ("Hammer of Thyrion, %s-%s (%s) pre-release\n", HOT_VERSION_STR, HOT_VERSION_BETA_STR, HOT_VERSION_REL_DATE);
-#else
 	printf ("Hammer of Thyrion, release %s (%s)\n", HOT_VERSION_STR, HOT_VERSION_REL_DATE);
-#endif
 	printf ("Hexen II dedicated server %4.2f (%s)\n", ENGINE_VERSION, PLATFORM_STRING);
 	printf ("More info / sending bug reports:  http://uhexen2.sourceforge.net\n");
 }

@@ -556,8 +556,7 @@ const char *Sys_ConsoleInput (void)
 void Sys_Sleep (unsigned long msecs)
 {
 	timerio->tr_node.io_Command = TR_ADDREQUEST;
-//	timerio->tr_time.tv_secs = (msecs * 1000) / 1000000; // i'm lazy...
-	timerio->tr_time.tv_secs = msecs / 1000; // not anymore
+	timerio->tr_time.tv_secs = msecs / 1000;
 	timerio->tr_time.tv_micro = (msecs * 1000) % 1000000;
 	SendIO((struct IORequest *) timerio);
 	WaitIO((struct IORequest *) timerio);
@@ -640,11 +639,7 @@ static void Sys_CheckSDL (void)
 
 static void PrintVersion (void)
 {
-#if HOT_VERSION_BETA
-	Sys_Printf ("Hammer of Thyrion, %s-%s (%s) pre-release\n", HOT_VERSION_STR, HOT_VERSION_BETA_STR, HOT_VERSION_REL_DATE);
-#else
 	Sys_Printf ("Hammer of Thyrion, release %s (%s)\n", HOT_VERSION_STR, HOT_VERSION_REL_DATE);
-#endif
 	Sys_Printf ("running on %s engine %4.2f (%s)\n", ENGINE_NAME, ENGINE_VERSION, PLATFORM_STRING);
 	Sys_Printf ("More info / sending bug reports:  http://uhexen2.sourceforge.net\n");
 }

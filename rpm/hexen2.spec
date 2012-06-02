@@ -60,25 +60,16 @@
 
 %define gamecode_ver	1.26
 
-# pre-release version: MAKE SURE to change this
-# to an %undefine for the final realease!!
-%undefine prerelease
-
-# package release number for final-release:
-%define pkg_final	1
-# package release number for pre-release:
-%define pkg_prerel	1
-
 Name:		hexen2
 License:	GPLv2
 Group:		Amusements/Games
 Version:	1.5.4
-Release:	%{?prerelease:0.%{pkg_prerel}.%{prerelease}}%{!?prerelease:%{pkg_final}}
+Release:	1
 Summary:	Hexen II: Hammer of Thyrion
 URL:		http://uhexen2.sourceforge.net/
-Source:		http://download.sourceforge.net/uhexen2/hexen2source-%{version}%{?prerelease:-%{prerelease}}.tgz
+Source:		http://download.sourceforge.net/uhexen2/hexen2source-%{version}.tgz
 #Source1:	http://download.sourceforge.net/uhexen2/gamedata-src-%{gamecode_ver}.tgz
-Source1:	http://download.sourceforge.net/uhexen2/hexen2source-gamecode-%{version}%{?prerelease:-%{prerelease}}.tgz
+Source1:	http://download.sourceforge.net/uhexen2/hexen2source-gamecode-%{version}.tgz
 Source2:	http://download.sourceforge.net/uhexen2/hexenworld-pakfiles-0.15.tgz
 BuildRoot:	%{_tmppath}/%{name}-%{version}-build
 BuildRequires:	SDL-devel >= 1.2.4
@@ -123,7 +114,7 @@ internet play. This package contains the files which are required to
 run a HexenWorld server or client, and a master server application.
 
 %prep
-%setup -q -n hexen2source-%{version}%{?prerelease:-%{prerelease}} -a1 -a2
+%setup -q -n hexen2source-%{version} -a1 -a2
 
 %build
 # Build the main game binaries
@@ -360,7 +351,8 @@ desktop-file-install \
 %{_prefix}/games/%{name}/docs/README.hwmaster
 
 %changelog
-* Tue May 22 2012 O.Sezer <sezero@users.sourceforge.net> 1.5.4-1
+* Sat Jun 02 2012 O.Sezer <sezero@users.sourceforge.net> 1.5.4-1
+- Removed the beta/prerelease versioning stuff.
 - Bump gamecode version to 1.26.
 - Updated documents installation after the ReleaseNotes* changes.
 - Bump version to 1.5.4

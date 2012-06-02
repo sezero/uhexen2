@@ -73,11 +73,7 @@ void LOG_Printf (const char *fmt, ...)
 static void LOG_PrintVersion (void)
 {
 /* repeating the PrintVersion() messages from main() here */
-#if HOT_VERSION_BETA
-	LOG_Printf("Hammer of Thyrion, %s-%s (%s) pre-release\n", HOT_VERSION_STR, HOT_VERSION_BETA_STR, HOT_VERSION_REL_DATE);
-#else
 	LOG_Printf("Hammer of Thyrion, release %s (%s)\n", HOT_VERSION_STR, HOT_VERSION_REL_DATE);
-#endif
 #if defined(SERVERONLY) && !defined(H2W)
 	LOG_Printf("Hexen II dedicated server %4.2f (%s)\n", ENGINE_VERSION, PLATFORM_STRING);
 #else

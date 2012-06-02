@@ -2076,15 +2076,10 @@ static void M_Quit_Draw (void)
 	y = 12;
 	M_DrawTextBox (0, 0, 38, 23);
 
-//	the increment to the x offset is
-//	for properly centering the line.
+// the increment to the x offset is for properly centering the line
 	M_Print      (16 + (6 * 8), y,		"Hexen2World version " STRINGIFY(ENGINE_VERSION));
 	M_Print      (16 + (9 * 8), y + 8,	"by Raven Software");
-#if HOT_VERSION_BETA
-	M_PrintWhite (16 + (5 * 8), y + 16,	"Hammer of Thyrion " HOT_VERSION_STR "-" HOT_VERSION_BETA_STR);
-#else
 	M_PrintWhite (16 + (7 * 8), y + 16,	"Hammer of Thyrion " HOT_VERSION_STR);
-#endif
 	M_PrintWhite (16 +(13 * 8), y + 24,	"Source Port");
 	y += 40;
 
