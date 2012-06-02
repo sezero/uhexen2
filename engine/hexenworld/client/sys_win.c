@@ -126,12 +126,14 @@ what we presently need in this engine.
 */
 static HANDLE findhandle = INVALID_HANDLE_VALUE;
 static WIN32_FIND_DATA finddata;
+static char	findstr[MAX_OSPATH];
 
 const char *Sys_FindFirstFile (const char *path, const char *pattern)
 {
 	if (findhandle != INVALID_HANDLE_VALUE)
 		Sys_Error ("Sys_FindFirst without FindClose");
-	findhandle = FindFirstFile(va("%s/%s", path, pattern), &finddata);
+	q_snprintf (findstr, sizeof(findstr), "%s/%s", path, pattern);
+	findhandle = FindFirstFile(findstr, &finddata);
 	if (findhandle == INVALID_HANDLE_VALUE)
 		return NULL;
 	if (finddata.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)
@@ -566,8 +568,8 @@ int WINAPI WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 	if (parms.memsize < MIN_MEM_ALLOC)
 		parms.memsize = MIN_MEM_ALLOC;
 
-	if (parms.memsize < (lpBuffer.dwTotalPhys >> 1))
-		parms.memsize = lpBuffer.dwTotalPhys >> 1;
+	if (parms.memsize < (int) (lpBuffer.dwTotalPhys >> 1))
+		parms.memsize = (int) (lpBuffer.dwTotalPhys >> 1);
 
 	if (parms.memsize > STD_MEM_ALLOC)
 		parms.memsize = STD_MEM_ALLOC;

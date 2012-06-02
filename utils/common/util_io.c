@@ -55,15 +55,14 @@
 
 static HANDLE findhandle = INVALID_HANDLE_VALUE;
 static WIN32_FIND_DATA finddata;
+static char		findstr[256];
 
 const char *Q_FindFirstFile (const char *path, const char *pattern)
 {
-	char	tmp_buf[256];
-
 	if (findhandle != INVALID_HANDLE_VALUE)
 		Error ("FindFirst without FindClose");
-	q_snprintf (tmp_buf, sizeof(tmp_buf), "%s/%s", path, pattern);
-	findhandle = FindFirstFile(tmp_buf, &finddata);
+	q_snprintf (findstr, sizeof(findstr), "%s/%s", path, pattern);
+	findhandle = FindFirstFile(findstr, &finddata);
 	if (findhandle == INVALID_HANDLE_VALUE)
 		return NULL;
 	if (finddata.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)
@@ -161,18 +160,17 @@ int Q_FileType (const char *path)
 
 static struct ffblk	finddata;
 static int		findhandle = -1;
+static char		findstr[256];
 
 const char *Q_FindFirstFile (const char *path, const char *pattern)
 {
-	char	tmp_buf[256];
-
 	if (findhandle == 0)
 		Error ("FindFirst without FindClose");
 
-	q_snprintf (tmp_buf, sizeof(tmp_buf), "%s/%s", path, pattern);
+	q_snprintf (findstr, sizeof(findstr), "%s/%s", path, pattern);
 	memset (&finddata, 0, sizeof(finddata));
 
-	findhandle = findfirst(tmp_buf, &finddata, FA_ARCH | FA_RDONLY);
+	findhandle = findfirst(findstr, &finddata, FA_ARCH | FA_RDONLY);
 	if (findhandle == 0)
 		return finddata.ff_name;
 
@@ -267,20 +265,10 @@ const char *Q_FindFirstFile (const char *path, const char *pattern)
 	finddir = opendir (path);
 	if (!finddir)
 		return NULL;
-
 	findpattern = strdup (pattern);
-	if (!findpattern)
-	{
-		Q_FindClose();
-		return NULL;
-	}
-
 	findpath = strdup (path);
-	if (!findpath)
-	{
-		Q_FindClose();
+	if (!findpattern || !findpath)
 		return NULL;
-	}
 
 	if (*findpath != '\0')
 	{

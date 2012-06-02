@@ -203,11 +203,10 @@ filenames only, not a dirent struct. this is
 what we presently need in this engine.
 =================================================
 */
-
 #define PATH_SIZE 1024
 static struct AnchorPath *apath;
-static struct FileInfoBlock *find_fib;
 static BPTR oldcurrentdir;
+static STRPTR pattern_str;
 
 static STRPTR pattern_helper (const char *pat)
 {
@@ -250,9 +249,6 @@ static STRPTR pattern_helper (const char *pat)
 
 const char *Sys_FindFirstFile (const char *path, const char *pattern)
 {
-	STRPTR patfix;
-	LONG err;
-
 	if (apath)
 		Sys_Error ("Sys_FindFirst without FindClose");
 
@@ -264,15 +260,10 @@ const char *Sys_FindFirstFile (const char *path, const char *pattern)
 	apath->ap_BreakBits = 0;
 	apath->ap_Flags = APB_DOWILD | !APB_DODIR;
 	oldcurrentdir = CurrentDir(Lock((const STRPTR) path, SHARED_LOCK));
-	patfix = pattern_helper (pattern);
-	err = MatchFirst((const STRPTR) patfix, apath);
-	Z_Free (patfix);
+	pattern_str = pattern_helper (pattern);
 
-	if (err == 0)
-	{
-		find_fib = &(apath->ap_Info);
-		return (const char *) find_fib->fib_FileName;
-	}
+	if (MatchFirst((const STRPTR) pattern_str, apath) == 0)
+		return (const char *) (apath->ap_Info.fib_FileName);
 
 	return NULL;
 }
@@ -283,10 +274,7 @@ const char *Sys_FindNextFile (void)
 		return NULL;
 
 	if (MatchNext(apath) == 0)
-	{
-		find_fib = &(apath->ap_Info);
-		return (const char *) find_fib->fib_FileName;
-	}
+		return (const char *) (apath->ap_Info.fib_FileName);
 
 	return NULL;
 }
@@ -300,7 +288,8 @@ void Sys_FindClose (void)
 	CurrentDir(oldcurrentdir);
 	oldcurrentdir = NULL;
 	apath = NULL;
-	find_fib = NULL;
+	Z_Free(pattern_str);
+	pattern_str = NULL;
 }
 
 /*

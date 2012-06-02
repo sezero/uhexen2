@@ -4,6 +4,11 @@ Development Progress	:
 ---------------------------
 
 2012-06-02 (SVN):
+    * sys_amiga.c, sys_dos.c, sys_win.c (Sys_FindFirst): Make sure that
+      the string we pass to OS findfirst-like function stays persistent
+      and doesn't lose context.
+
+2012-06-02 (SVN):
     * sys_amiga.c (pattern_helper): Fixed infinite loop in the first for
       construct.
     * Extended Amiga/AROS support to h2ded and hexenworld client/server.

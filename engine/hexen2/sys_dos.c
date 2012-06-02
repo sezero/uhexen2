@@ -514,15 +514,17 @@ filenames only.
 */
 static struct ffblk	finddata;
 static int		findhandle = -1;
+static char	findstr[MAX_OSPATH];
 
 const char *Sys_FindFirstFile (const char *path, const char *pattern)
 {
 	if (findhandle == 0)
 		Sys_Error ("Sys_FindFirst without FindClose");
 
+	q_snprintf (findstr, sizeof(findstr), "%s/%s", path, pattern);
 	memset (&finddata, 0, sizeof(finddata));
 
-	findhandle = findfirst(va("%s/%s", path, pattern), &finddata, FA_ARCH | FA_RDONLY);
+	findhandle = findfirst(findstr, &finddata, FA_ARCH | FA_RDONLY);
 	if (findhandle == 0)
 		return finddata.ff_name;
 
