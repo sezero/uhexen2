@@ -1,7 +1,7 @@
 Hammer of Thyrion (uHexen2) release notes:
 
 ========================================================================
-Changes in v1.5.4: (June 01, 2012.)
+Changes in v1.5.4: (June 02, 2012.)
 ========================================================================
 
 - OpenGL:  Fixed screen flickering resulting from progress bars drawing
@@ -22,6 +22,8 @@ Changes in v1.5.4: (June 01, 2012.)
 - Client, all: Revised the intermissions setup code.
 
 - Support for Solaris.
+
+- Support for Amiga/AROS.
 
 - Linux/Unix (SDL): Added joystick (gamepad) support. The new cvars are
   documented in the README file.

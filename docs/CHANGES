@@ -4,6 +4,11 @@ Development Progress	:
 ---------------------------
 
 2012-06-02 (SVN):
+    * docs/AUTHORS: Added Szilard Biro under contributors->coding for
+      the Amiga/AROS support.
+    * Updated ReleaseNotes file.
+
+2012-06-02 (SVN):
     * engine/hexen2/sys_amiga.c: Support for Amiga (AROS), many thanks
       to Szilard Biro.
     * engine/hexen2/Makefile, scripts/makefile.inc: Add adjustments for
