@@ -6,41 +6,25 @@
 */
 
 #include "quakedef.h"
-#include "debuglog.h"
 
 #include <proto/exec.h>
 #include <proto/dos.h>
 
-#include <proto/intuition.h>
-#include <proto/iffparse.h>
-#include <datatypes/textclass.h>
-
-#include <devices/timer.h>
-#include <proto/timer.h>
-
 #include <time.h>
-#if defined(SDLQUAKE)
-#include "sdl_inc.h"
-#endif	/* SDLQUAKE */
 
 
-// heapsize: minimum 16mb, standart 32 mb, max is 96 mb.
+// heapsize: minimum 8 mb, standart 16 mb, max is 32 mb.
 // -heapsize argument will abide by these min/max settings
 // unless the -forcemem argument is used
-#define MIN_MEM_ALLOC	0x1000000
-#define STD_MEM_ALLOC	0x2000000
-#define MAX_MEM_ALLOC	0x6000000
+#define MIN_MEM_ALLOC	0x0800000
+#define STD_MEM_ALLOC	0x1000000
+#define MAX_MEM_ALLOC	0x2000000
 
 cvar_t		sys_nostdout = {"sys_nostdout", "0", CVAR_NONE};
-cvar_t		sys_throttle = {"sys_throttle", "0.02", CVAR_ARCHIVE};
+int		devlog;	/* log the Con_DPrintf and Sys_DPrintf content when !developer.integer */
 
-qboolean		isDedicated;
 static double		starttime;
 static qboolean		first = true;
-
-struct timerequest	*timerio;
-struct MsgPort		*timerport;
-struct Device		*TimerBase;
 
 
 /*
@@ -313,61 +297,11 @@ SYSTEM IO
 
 /*
 ================
-Sys_MakeCodeWriteable
-================
-*/
-#if id386 && !defined(GLQUAKE)
-void Sys_MakeCodeWriteable (unsigned long startaddr, unsigned long length)
-{
-/* Not needed on Amiga. */
-}
-#endif	/* id386, !GLQUAKE */
-
-
-/*
-================
 Sys_Init
 ================
 */
 static void Sys_Init (void)
 {
-/*	Sys_SetFPCW();*/
-
-	if ((timerport = CreateMsgPort()))
-	{
-		if ((timerio = CreateIORequest(timerport, sizeof(timerio))))
-		{
-			if (OpenDevice((STRPTR) TIMERNAME, UNIT_MICROHZ,
-					(struct IORequest *) timerio, 0) == 0)
-			{
-				TimerBase = timerio->tr_node.io_Device;
-			}
-			else
-			{
-				DeleteIORequest(timerio);
-				DeleteMsgPort(timerport);
-			}
-		}
-		else
-		{
-			DeleteMsgPort(timerport);
-		}
-	}
-	if (!TimerBase)
-		Sys_Error("Can't open timer.device");
-}
-
-void Sys_ErrorMessage(const char *string)
-{
-	struct EasyStruct es;
-
-	es.es_StructSize = sizeof(es);
-	es.es_Flags = 0;
-	es.es_Title = (STRPTR) ENGINE_NAME " error";
-	es.es_TextFormat = (STRPTR) string;
-	es.es_GadgetFormat = (STRPTR) "Quit";
-
-	EasyRequest(0, &es, 0, 0);
 }
 
 #define ERROR_PREFIX	"\nFATAL ERROR: "
@@ -382,14 +316,11 @@ void Sys_Error (const char *error, ...)
 	q_vsnprintf (text, sizeof(text), error, argptr);
 	va_end (argptr);
 
-	if (con_debuglog)
+	if (sv_logfile)
 	{
-		LOG_Print (ERROR_PREFIX);
-		LOG_Print (text);
-		LOG_Print ("\n\n");
+		fprintf (sv_logfile, ERROR_PREFIX "%s\n\n", text);
+		fflush (sv_logfile);
 	}
-
-	Host_Shutdown ();
 
 	for (p = (const unsigned char *) text2; *p; p++)
 		putc (*p, stderr);
@@ -397,8 +328,6 @@ void Sys_Error (const char *error, ...)
 		putc (*p, stderr);
 	putc ('\n', stderr);
 	putc ('\n', stderr);
-	if (!isDedicated)
-		Sys_ErrorMessage (text);
 
 	exit (1);
 }
@@ -416,24 +345,6 @@ void Sys_PrintTerm (const char *msgtxt)
 
 void Sys_Quit (void)
 {
-	Host_Shutdown();
-
-	if (TimerBase)
-	{
-		/*
-		if (!CheckIO((struct IORequest *) timerio)
-		{
-			AbortIO((struct IORequest *) timerio);
-			WaitIO((struct IORequest *) timerio);
-		}
-		*/
-		WaitIO((struct IORequest *) timerio);
-		CloseDevice((struct IORequest *) timerio);
-		DeleteIORequest((struct IORequest *) timerio);
-		DeleteMsgPort(timerport);
-		TimerBase = NULL;
-	}
-
 	exit (0);
 }
 
@@ -555,56 +466,6 @@ const char *Sys_ConsoleInput (void)
 	return NULL;
 }
 
-void Sys_Sleep (unsigned long msecs)
-{
-	timerio->tr_node.io_Command = TR_ADDREQUEST;
-	timerio->tr_time.tv_secs = msecs / 1000;
-	timerio->tr_time.tv_micro = (msecs * 1000) % 1000000;
-	SendIO((struct IORequest *) timerio);
-	WaitIO((struct IORequest *) timerio);
-}
-
-void Sys_SendKeyEvents (void)
-{
-	IN_SendKeyEvents();
-}
-
-/* This never gets called on AROS due to some SDL bug in the key handling.
-   I'll leave it in for future releases. */
-static char chunk_buffer[1024];
-
-char *Sys_GetClipboardData (void)
-{
-	struct IFFHandle *IFFHandle;
-	struct ContextNode *cn;
-	ULONG error, readbytes = 0;
-
-	if ((IFFHandle = AllocIFF())) {
-	    if ((IFFHandle->iff_Stream = (ULONG)OpenClipboard(0))) {
-		InitIFFasClip(IFFHandle);
-		if (!OpenIFF(IFFHandle, IFFF_READ)) {
-		    if (!StopChunk(IFFHandle, ID_FTXT, ID_CHRS)) {
-			if (!(error = ParseIFF(IFFHandle, IFFPARSE_SCAN))) {
-			    cn = CurrentChunk(IFFHandle);
-			    if (cn && (cn->cn_Type == ID_FTXT) &&
-					(cn->cn_ID == ID_CHRS)) {
-				readbytes = ReadChunkBytes(IFFHandle,
-							   chunk_buffer, 1024);
-			    }
-			}
-		    }
-		    CloseIFF(IFFHandle);
-		}
-		CloseClipboard((struct ClipboardHandle *) IFFHandle->iff_Stream);
-	    }
-	    FreeIFF(IFFHandle);
-	}
-
-	if (readbytes > 0)
-	    return chunk_buffer;
-	return NULL;
-}
-
 static int Sys_GetBasedir (char *argv0, char *dst, size_t dstsize)
 {
 	struct Task *self;
@@ -618,82 +479,10 @@ static int Sys_GetBasedir (char *argv0, char *dst, size_t dstsize)
 	return -1;
 }
 
-static void Sys_CheckSDL (void)
-{
-#if defined(SDLQUAKE)
-	const SDL_version *sdl_version;
-
-	sdl_version = SDL_Linked_Version();
-	Sys_Printf("Found SDL version %i.%i.%i\n",sdl_version->major,sdl_version->minor,sdl_version->patch);
-	if (SDL_VERSIONNUM(sdl_version->major,sdl_version->minor,sdl_version->patch) < SDL_REQUIREDVERSION)
-	{	/*reject running under SDL versions older than what is stated in sdl_inc.h */
-		Sys_Error("You need at least v%d.%d.%d of SDL to run this game.", SDL_MIN_X,SDL_MIN_Y,SDL_MIN_Z);
-	}
-# if defined(SDL_NEW_VERSION_REJECT)
-	if (SDL_VERSIONNUM(sdl_version->major,sdl_version->minor,sdl_version->patch) >= SDL_NEW_VERSION_REJECT)
-	{	/*reject running under SDL versions newer than what is stated in sdl_inc.h */
-		Sys_Error("Your version of SDL library is incompatible with me.\n"
-			  "You need a library version in the line of %d.%d.%d\n", SDL_MIN_X,SDL_MIN_Y,SDL_MIN_Z);
-	}
-# endif /* SDL_NEW_VERSION_REJECT */
-#endif	/* SDLQUAKE */
-}
-
 static void PrintVersion (void)
 {
+	Sys_Printf ("HexenWorld server %4.2f (%s)\n", ENGINE_VERSION, PLATFORM_STRING);
 	Sys_Printf ("Hammer of Thyrion, release %s (%s)\n", HOT_VERSION_STR, HOT_VERSION_REL_DATE);
-	Sys_Printf ("running on %s engine %4.2f (%s)\n", ENGINE_NAME, ENGINE_VERSION, PLATFORM_STRING);
-	Sys_Printf ("More info / sending bug reports:  http://uhexen2.sourceforge.net\n");
-}
-
-#include "snd_sys.h"
-static const char *help_strings[] = {
-	"     [-v | --version]        Display version information",
-#ifndef DEMOBUILD
-#   if defined(H2MP)
-	"     [-noportals]            Disable the mission pack support",
-#   else
-	"     [-portals | -h2mp ]     Run the Portal of Praevus mission pack",
-#   endif
-#endif
-	"     [-w | -window ]         Run the game windowed",
-	"     [-f | -fullscreen]      Run the game fullscreen",
-	"     [-width X [-height Y]]  Select screen size",
-#ifdef GLQUAKE
-	"     [-bpp]                  Depth for GL fullscreen mode",
-	"     [-g | -gllibrary]       Select 3D rendering library",
-	"     [-fsaa N]               Enable N sample antialiasing",
-	"     [-paltex]               Enable 8-bit textures",
-	"     [-nomtex]               Disable multitexture detection/usage",
-#endif
-#if !defined(_NO_SOUND)
-#if SOUND_NUMDRIVERS
-	"     [-s | -nosound]         Run the game without sound",
-#endif
-#if (SOUND_NUMDRIVERS > 1)
-#if HAVE_SDL_SOUND
-	"     [-sndsdl]               Use SDL sound",
-#endif
-#endif	/*  SOUND_NUMDRIVERS */
-#endif	/* _NO_SOUND */
-	"     [-nomouse]              Disable mouse usage",
-	"     [-listen N]             Enable multiplayer with max N players",
-	"     [-heapsize Bytes]       Heapsize (memory to allocate)",
-	NULL
-};
-
-static void PrintHelp (const char *name)
-{
-	int i = 0;
-
-	Sys_Printf ("Usage: %s [options]\n", name);
-	while (help_strings[i])
-	{
-		Sys_PrintTerm (help_strings[i]);
-		Sys_PrintTerm ("\n");
-		i++;
-	}
-	Sys_PrintTerm ("\n");
 }
 
 /*
@@ -705,14 +494,11 @@ MAIN
 */
 static quakeparms_t	parms;
 static char	cwd[MAX_OSPATH];
-#if defined(SDLQUAKE)
-static Uint8		appState;
-#endif
 
 int main (int argc, char **argv)
 {
 	int			i;
-	double		time, oldtime, newtime;
+	double		newtime, time, oldtime;
 
 	PrintVersion();
 
@@ -728,7 +514,7 @@ int main (int argc, char **argv)
 			else if ( !(strcmp(argv[i], "-h")) || !(strcmp(argv[i], "-help" )) ||
 				  !(strcmp(argv[i], "-?")) || !(strcmp(argv[i], "--help")) )
 			{
-				PrintHelp(argv[0]);
+				Sys_PrintTerm ("See the documentation for details\n");
 				exit (0);
 			}
 		}
@@ -746,21 +532,14 @@ int main (int argc, char **argv)
 	parms.argv = argv;
 	host_parms = &parms;
 
-	LOG_Init (&parms);
+	devlog = COM_CheckParm("-devlog");
 
 	Sys_Printf("basedir is: %s\n", parms.basedir);
 	Sys_Printf("userdir is: %s\n", parms.userdir);
 
 	COM_ValidateByteorder ();
 
-	isDedicated = (COM_CheckParm ("-dedicated") != 0);
-
-	Sys_CheckSDL ();
-
-	if (isDedicated)
-		parms.memsize = MIN_MEM_ALLOC;
-	else
-		parms.memsize = STD_MEM_ALLOC;
+	parms.memsize = STD_MEM_ALLOC;
 
 	i = COM_CheckParm ("-heapsize");
 	if (i && i < com_argc-1)
@@ -788,58 +567,26 @@ int main (int argc, char **argv)
 
 	Sys_Init ();
 
-	Host_Init();
+	SV_Init();
 
-	oldtime = Sys_DoubleTime ();
+// report the filesystem to the user
+	Sys_Printf("fs_gamedir is: %s\n", fs_gamedir);
+	Sys_Printf("fs_userdir is: %s\n", fs_userdir);
 
-	/* main window message loop */
+//
+// main loop
+//
+	oldtime = Sys_DoubleTime () - HX_FRAME_TIME;
 	while (1)
 	{
-	    if (isDedicated)
-	    {
+		if (NET_CheckReadTimeout(0, 10000) == -1)
+			continue;
+
 		newtime = Sys_DoubleTime ();
 		time = newtime - oldtime;
-
-		while (time < sys_ticrate.value )
-		{
-			Sys_Sleep(1);
-			newtime = Sys_DoubleTime ();
-			time = newtime - oldtime;
-		}
-
-		Host_Frame (time);
 		oldtime = newtime;
-	    }
-	    else
-	    {
-#if defined(SDLQUAKE)
-		appState = SDL_GetAppState();
-		/* If we have no input focus at all, sleep a bit */
-		if ( !(appState & (SDL_APPMOUSEFOCUS | SDL_APPINPUTFOCUS)) || cl.paused)
-		{
-			Sys_Sleep(16);
-		}
-		/* If we're minimised, sleep a bit more */
-		if ( !(appState & SDL_APPACTIVE))
-		{
-			scr_skipupdate = 1;
-			Sys_Sleep(32);
-		}
-		else
-		{
-			scr_skipupdate = 0;
-		}
-#endif	/* SDLQUAKE */
-		newtime = Sys_DoubleTime ();
-		time = newtime - oldtime;
 
-		Host_Frame (time);
-
-		if (time < sys_throttle.value)
-			Sys_Sleep(1);
-
-		oldtime = newtime;
-	    }
+		SV_Frame (time);
 	}
 
 	return 0;

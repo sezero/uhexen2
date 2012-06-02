@@ -34,7 +34,6 @@
 cvar_t		sys_nostdout = {"sys_nostdout", "0", CVAR_NONE};
 cvar_t		sys_throttle = {"sys_throttle", "0.02", CVAR_ARCHIVE};
 
-qboolean		isDedicated;
 static double		starttime;
 static qboolean		first = true;
 
@@ -397,8 +396,7 @@ void Sys_Error (const char *error, ...)
 		putc (*p, stderr);
 	putc ('\n', stderr);
 	putc ('\n', stderr);
-	if (!isDedicated)
-		Sys_ErrorMessage (text);
+	Sys_ErrorMessage (text);
 
 	exit (1);
 }
@@ -509,52 +507,6 @@ char *Sys_DateTimeString (char *buf)
 }
 
 
-/*
-================
-Sys_ConsoleInput
-================
-*/
-const char *Sys_ConsoleInput (void)
-{
-	static char	con_text[256];
-	static int	textlen;
-	char		c;
-
-	while (WaitForChar(Input(),10))
-	{
-		Read (0, &c, 1);
-		if (c == '\n' || c == '\r')
-		{
-			con_text[textlen] = '\0';
-			textlen = 0;
-			return con_text;
-		}
-		else if (c == 8)
-		{
-			if (textlen)
-			{
-				textlen--;
-				con_text[textlen] = '\0';
-			}
-			continue;
-		}
-		con_text[textlen] = c;
-		textlen++;
-		if (textlen < (int) sizeof(con_text))
-			con_text[textlen] = '\0';
-		else
-		{
-		// buffer is full
-			textlen = 0;
-			con_text[0] = '\0';
-			Sys_PrintTerm("\nConsole input too long!\n");
-			break;
-		}
-	}
-
-	return NULL;
-}
-
 void Sys_Sleep (unsigned long msecs)
 {
 	timerio->tr_node.io_Command = TR_ADDREQUEST;
@@ -649,13 +601,7 @@ static void PrintVersion (void)
 #include "snd_sys.h"
 static const char *help_strings[] = {
 	"     [-v | --version]        Display version information",
-#ifndef DEMOBUILD
-#   if defined(H2MP)
 	"     [-noportals]            Disable the mission pack support",
-#   else
-	"     [-portals | -h2mp ]     Run the Portal of Praevus mission pack",
-#   endif
-#endif
 	"     [-w | -window ]         Run the game windowed",
 	"     [-f | -fullscreen]      Run the game fullscreen",
 	"     [-width X [-height Y]]  Select screen size",
@@ -677,7 +623,6 @@ static const char *help_strings[] = {
 #endif	/*  SOUND_NUMDRIVERS */
 #endif	/* _NO_SOUND */
 	"     [-nomouse]              Disable mouse usage",
-	"     [-listen N]             Enable multiplayer with max N players",
 	"     [-heapsize Bytes]       Heapsize (memory to allocate)",
 	NULL
 };
@@ -753,14 +698,9 @@ int main (int argc, char **argv)
 
 	COM_ValidateByteorder ();
 
-	isDedicated = (COM_CheckParm ("-dedicated") != 0);
-
 	Sys_CheckSDL ();
 
-	if (isDedicated)
-		parms.memsize = MIN_MEM_ALLOC;
-	else
-		parms.memsize = STD_MEM_ALLOC;
+	parms.memsize = STD_MEM_ALLOC;
 
 	i = COM_CheckParm ("-heapsize");
 	if (i && i < com_argc-1)
@@ -795,23 +735,6 @@ int main (int argc, char **argv)
 	/* main window message loop */
 	while (1)
 	{
-	    if (isDedicated)
-	    {
-		newtime = Sys_DoubleTime ();
-		time = newtime - oldtime;
-
-		while (time < sys_ticrate.value )
-		{
-			Sys_Sleep(1);
-			newtime = Sys_DoubleTime ();
-			time = newtime - oldtime;
-		}
-
-		Host_Frame (time);
-		oldtime = newtime;
-	    }
-	    else
-	    {
 #if defined(SDLQUAKE)
 		appState = SDL_GetAppState();
 		/* If we have no input focus at all, sleep a bit */
@@ -839,7 +762,6 @@ int main (int argc, char **argv)
 			Sys_Sleep(1);
 
 		oldtime = newtime;
-	    }
 	}
 
 	return 0;

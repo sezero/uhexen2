@@ -4,6 +4,11 @@ Development Progress	:
 ---------------------------
 
 2012-06-02 (SVN):
+    * sys_amiga.c (pattern_helper): Fixed infinite loop in the first for
+      construct.
+    * Extended Amiga/AROS support to h2ded and hexenworld client/server.
+
+2012-06-02 (SVN):
     * Removed the beta/prerelease versioning stuff.
 
 2012-06-02 (SVN):

@@ -240,6 +240,9 @@ endif
 ifeq ($(TARGET_OS),unix)
 SYSOBJ_SYS = sys_unix.o
 endif
+ifeq ($(TARGET_OS),aros)
+SYSOBJ_SYS = sys_amiga.o
+endif
 
 # Final list of objects
 OBJECTS = \
