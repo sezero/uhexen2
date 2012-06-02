@@ -161,6 +161,10 @@ ifeq ($(TARGET_OS),unix)
 SW_BINARY:=hexen2$(exe_ext)
 GL_BINARY:=glhexen2$(exe_ext)
 endif
+ifeq ($(TARGET_OS),aros)
+SW_BINARY:=hexen2$(exe_ext)
+GL_BINARY:=glhexen2$(exe_ext)
+endif
 
 #############################################################
 # Compiler flags
@@ -512,6 +516,44 @@ endif
 
 
 #############################################################
+# AROS flags/settings and overrides:
+#############################################################
+ifeq ($(TARGET_OS),aros)
+
+# Don't use x86 assembly for AROS
+USE_X86_ASM=no
+
+# WildMidi works nice on AROS
+USE_CODEC_TIMIDITY=no
+USE_CODEC_WILDMIDI=yes
+
+# libiberty for fnmatch stuff
+#LDFLAGS += -liberty
+
+ifeq ($(USE_SOUND),yes)
+ifneq ($(USE_SDLAUDIO),yes)
+CPPFLAGS+= -DNO_SDL_AUDIO
+endif
+endif
+
+ifeq ($(USE_CDAUDIO),yes)
+ifeq ($(USE_SDLCD),yes)
+CPPFLAGS+= -DWITH_SDLCD
+endif
+endif
+
+# AROS builds rely on SDL:
+# SDLQUAKE must be defined for all SDL using platforms/targets
+CPPFLAGS+= -DSDLQUAKE
+CFLAGS  += $(SDL_CFLAGS)
+LDFLAGS += $(SDL_LIBS)
+
+endif
+# End of AROS settings
+#############################################################
+
+
+#############################################################
 # Streaming music settings
 #############################################################
 ifeq ($(MP3LIB),mad)
@@ -679,6 +721,9 @@ endif
 ifeq ($(TARGET_OS),unix)
 SYSOBJ_SND := snd_oss.o snd_alsa.o snd_sun.o snd_sdl.o
 endif
+ifeq ($(TARGET_OS),aros)
+SYSOBJ_SND := snd_sdl.o
+endif
 # end of Sound objects
 endif
 
@@ -705,6 +750,10 @@ SYSOBJ_MIDI:= midi_nul.o
 CPPFLAGS += -D_NO_MIDIDRV
 endif
 endif
+ifeq ($(TARGET_OS),aros)
+SYSOBJ_MIDI:= midi_nul.o
+CPPFLAGS += -D_NO_MIDIDRV
+endif
 # end of MIDI objects
 endif
 
@@ -724,6 +773,9 @@ SYSOBJ_CDA := cd_dos.o
 endif
 ifeq ($(TARGET_OS),unix)
 SYSOBJ_CDA := cd_sdl.o cd_bsd.o cd_linux.o
+endif
+ifeq ($(TARGET_OS),aros)
+SYSOBJ_CDA := cd_sdl.o
 endif
 # end of CDAudio objects
 endif
@@ -786,6 +838,14 @@ SYSOBJ_SYS += sys_osx.o
 else
 SYSOBJ_SYS += sys_sdl.o
 endif
+endif
+ifeq ($(TARGET_OS),aros)
+# aros clients use SDL:
+SYSOBJ_INPUT := in_sdl.o
+SYSOBJ_GL_VID:= gl_vidsdl.o
+SYSOBJ_SOFT_VID:= vid_sdl.o
+SYSOBJ_NET := net_bsd.o net_udp.o
+SYSOBJ_SYS := sys_amiga.o
 endif
 
 # Final list of objects

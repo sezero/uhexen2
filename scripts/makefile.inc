@@ -97,6 +97,12 @@ ifeq ($(TARGET_OS),win64)
 MACH_TYPE:=x86_64
 endif
 
+ifneq (,$(findstring AROS,$(HOST_OS0)))
+HOST_OS :=aros
+TARGET_OS :=aros
+CROSS_COMPILE:=n
+endif
+
 ################################
 # Binary filename extension:
 
@@ -134,5 +140,9 @@ LINKER = $(CC)
 # Helper function to check if gcc supports a given flag.
 # this relies on gcc option of taking input from stdin
 
+ifeq ($(TARGET_OS),aros)
+check_gcc = $(shell if echo | $(CC) $(1) -S -o t:gcctemp -xc - > /dev/null 2>&1; then echo "$(1)"; else echo "$(2)"; fi;)
+else
 check_gcc = $(shell if echo | $(CC) $(1) -S -o /dev/null -xc - > /dev/null 2>&1; then echo "$(1)"; else echo "$(2)"; fi;)
+endif
 
