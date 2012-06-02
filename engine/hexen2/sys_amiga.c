@@ -209,8 +209,48 @@ static struct AnchorPath *apath;
 static struct FileInfoBlock *find_fib;
 static BPTR oldcurrentdir;
 
+static STRPTR pattern_helper (const char *pat)
+{
+	char	*pdup;
+	const char	*p;
+	int	n;
+
+	for (n = 0, p = pat; p != NULL; )
+	{
+		p = strchr (p, '*');
+		if (p != NULL)
+			++n;
+	}
+
+	if (n == 0)
+		pdup = Z_Strdup(pat);
+	else
+	{
+	/* replace each "*" by "#?" */
+		n += (int) strlen(pat) + 1;
+		pdup = (char *) Z_Malloc(n, Z_MAINZONE);
+
+		for (n = 0, p = pat; *p != '\0'; ++p, ++n)
+		{
+			if (*p != '*')
+				pdup[n] = *p;
+			else
+			{
+				pdup[n] = '#'; ++n;
+				pdup[n] = '?';
+			}
+		}
+		pdup[n] = '\0';
+	}
+
+	return (STRPTR) pdup;
+}
+
 const char *Sys_FindFirstFile (const char *path, const char *pattern)
 {
+	STRPTR patfix;
+	LONG err;
+
 	if (apath)
 		Sys_Error ("Sys_FindFirst without FindClose");
 
@@ -222,11 +262,16 @@ const char *Sys_FindFirstFile (const char *path, const char *pattern)
 	apath->ap_BreakBits = 0;
 	apath->ap_Flags = APB_DOWILD | !APB_DODIR;
 	oldcurrentdir = CurrentDir(Lock((const STRPTR) path, SHARED_LOCK));
-	if (MatchFirst((const STRPTR) pattern, apath) == 0)
+	patfix = pattern_helper (pattern);
+	err = MatchFirst((const STRPTR) patfix, apath);
+	Z_Free (patfix);
+
+	if (err == 0)
 	{
 		find_fib = &(apath->ap_Info);
 		return (const char *) find_fib->fib_FileName;
 	}
+
 	return NULL;
 }
 
