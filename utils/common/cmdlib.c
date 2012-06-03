@@ -22,6 +22,11 @@
 #include <sys/time.h>
 #include <time.h>
 #endif
+#ifdef PLATFORM_AMIGA
+#include <proto/exec.h>
+#include <proto/dos.h>
+#include <time.h>
+#endif
 #include <ctype.h>
 
 // MACROS ------------------------------------------------------------------
@@ -157,6 +162,15 @@ double GetTime (void)
 {
 	struct timeval tv;
 	gettimeofday (&tv, NULL);
+	return tv.tv_sec + tv.tv_usec / 1000000.0;
+}
+#endif
+
+#ifdef PLATFORM_AMIGA
+double GetTime (void)
+{
+	struct timeval tv;
+	GetSysTime(&tv);
 	return tv.tv_sec + tv.tv_usec / 1000000.0;
 }
 #endif

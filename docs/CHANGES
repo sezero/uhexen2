@@ -4,6 +4,10 @@ Development Progress	:
 ---------------------------
 
 2012-06-03 (SVN):
+    * utils/cmdlib.c, util_io.c: Added amiga specific time and file i/o
+      procedures based on engine-side sys_amiga.c.
+
+2012-06-03 (SVN):
     * hw_utils/hwmaster: Split sys_main.c into sys_unix.c and sys_win.c.
       Added sys_amiga.c based on hwsv version of the file. Adjusted the
       makefile for target specific sys_* objects.

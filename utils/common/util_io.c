@@ -24,6 +24,10 @@
 #include <io.h>
 #include <dir.h>
 #include <fcntl.h>
+#elif defined(PLATFORM_AMIGA)
+#include <proto/exec.h>
+#include <proto/dos.h>
+#include <time.h>
 #else	/* Unix */
 #include <sys/stat.h>
 #include <unistd.h>
@@ -248,6 +252,183 @@ int Q_FileType (const char *path)
 		return FS_ENT_DIRECTORY;
 
 	return FS_ENT_FILE;
+}
+
+#elif defined(PLATFORM_AMIGA)
+
+#define PATH_SIZE 1024
+static struct AnchorPath *apath;
+static BPTR oldcurrentdir;
+static STRPTR pattern_str;
+
+static STRPTR pattern_helper (const char *pat)
+{
+	char	*pdup;
+	const char	*p;
+	int	n;
+
+	for (n = 0, p = pat; p != NULL; )
+	{
+		p = strchr (p, '*');
+		if (p != NULL)
+		{
+			++n;	++p;
+		}
+	}
+
+	if (n == 0)
+		pdup = strdup(pat);
+	else
+	{
+	/* replace each "*" by "#?" */
+		n += (int) strlen(pat) + 1;
+		pdup = (char *) malloc (n);
+
+		for (n = 0, p = pat; *p != '\0'; ++p, ++n)
+		{
+			if (*p != '*')
+				pdup[n] = *p;
+			else
+			{
+				pdup[n] = '#'; ++n;
+				pdup[n] = '?';
+			}
+		}
+		pdup[n] = '\0';
+	}
+
+	return (STRPTR) pdup;
+}
+
+const char *Q_FindFirstFile (const char *path, const char *pattern)
+{
+	if (apath)
+		Sys_Error ("Sys_FindFirst without FindClose");
+
+	apath = AllocMem (sizeof(struct AnchorPath) + PATH_SIZE, MEMF_CLEAR);
+	if (!apath)
+		return NULL;
+
+	apath->ap_Strlen = PATH_SIZE;
+	apath->ap_BreakBits = 0;
+	apath->ap_Flags = APB_DOWILD | !APB_DODIR;
+	oldcurrentdir = CurrentDir(Lock((const STRPTR) path, SHARED_LOCK));
+	pattern_str = pattern_helper (pattern);
+
+	if (MatchFirst((const STRPTR) pattern_str, apath) == 0)
+		return (const char *) (apath->ap_Info.fib_FileName);
+
+	return NULL;
+}
+
+const char *Q_FindNextFile (void)
+{
+	if (!apath)
+		return NULL;
+
+	if (MatchNext(apath) == 0)
+		return (const char *) (apath->ap_Info.fib_FileName);
+
+	return NULL;
+}
+
+void Q_FindClose (void)
+{
+	if (apath == NULL)
+		return;
+	MatchEnd(apath);
+	FreeMem(apath, sizeof(struct AnchorPath) + PATH_SIZE);
+	CurrentDir(oldcurrentdir);
+	oldcurrentdir = NULL;
+	apath = NULL;
+	free (pattern_str);
+	pattern_str = NULL;
+}
+
+void Q_getwd (char *out, size_t size)
+{
+	struct Task *self;
+	BPTR lock;
+
+	self = FindTask(NULL);
+	lock = ((struct Process *) self)->pr_CurrentDir;
+
+	NameFromLock(lock, (STRPTR) out, size);
+}
+
+void Q_mkdir (const char *path)
+{
+	BPTR lock = CreateDir((const STRPTR) path);
+
+	if (lock)
+		UnLock(lock);
+	if (IoErr() == ERROR_OBJECT_EXISTS)
+		return;
+
+	Error("Unable to create directory %s", path);
+}
+
+int Q_rmdir (const char *path)
+{
+	if (DeleteFile((const STRPTR) path) != 0)
+		return 0;
+	return -1;
+}
+
+int Q_unlink (const char *path)
+{
+	if (DeleteFile((const STRPTR) path) != 0)
+		return 0;
+	return -1;
+}
+
+int Q_rename (const char *oldp, const char *newp)
+{
+	if (Rename((const STRPTR) oldp, (const STRPTR) newp) != 0)
+		return 0;
+	return -1;
+}
+
+long Q_filesize (const char *path)
+{
+	long size = -1;
+	BPTR fh = Open((const STRPTR) path, MODE_OLDFILE);
+	if (fh != NULL)
+	{
+		struct FileInfoBlock *fib = (struct FileInfoBlock*)
+					AllocDosObject(DOS_FIB, NULL);
+		if (fib != NULL)
+		{
+			if (ExamineFH(fh, fib))
+				size = fib->fib_Size;
+			FreeDosObject(DOS_FIB, fib);
+		}
+		Close(fh);
+	}
+	return size;
+}
+
+int Q_FileType (const char *path)
+{
+	long type = FS_ENT_NONE;
+	BPTR fh = Open((const STRPTR) path, MODE_OLDFILE);
+	if (fh != NULL)
+	{
+		struct FileInfoBlock *fib = (struct FileInfoBlock*)
+					AllocDosObject(DOS_FIB, NULL);
+		if (fib != NULL)
+		{
+			if (ExamineFH(fh, fib))
+			{
+				if (fib->fib_DirEntryType >= 0)
+					type = FS_ENT_DIRECTORY;
+				else	type = FS_ENT_FILE;
+			}
+			FreeDosObject(DOS_FIB, fib);
+		}
+		Close(fh);
+	}
+	return type;
 }
 
 #else	/* Unix */
