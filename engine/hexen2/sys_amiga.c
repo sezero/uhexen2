@@ -38,6 +38,10 @@ qboolean		isDedicated;
 static double		starttime;
 static qboolean		first = true;
 
+static BPTR		amiga_stdin, amiga_stdout;
+#define	MODE_RAW	1
+#define	MODE_NORMAL	0
+
 struct timerequest	*timerio;
 struct MsgPort		*timerport;
 struct Device		*TimerBase;
@@ -320,8 +324,6 @@ Sys_Init
 */
 static void Sys_Init (void)
 {
-/*	Sys_SetFPCW();*/
-
 	if ((timerport = CreateMsgPort()))
 	{
 		if ((timerio = CreateIORequest(timerport, sizeof(timerio))))
@@ -344,6 +346,36 @@ static void Sys_Init (void)
 	}
 	if (!TimerBase)
 		Sys_Error("Can't open timer.device");
+
+	Sys_Sleep (1);
+
+	amiga_stdout = Output();
+	if (isDedicated)
+	{
+		amiga_stdin = Input();
+		SetMode(amiga_stdin, MODE_RAW);
+	}
+}
+
+static void Sys_AtExit (void)
+{
+	if (amiga_stdin)
+		SetMode(amiga_stdin, MODE_NORMAL);
+	if (TimerBase)
+	{
+		/*
+		if (!CheckIO((struct IORequest *) timerio)
+		{
+			AbortIO((struct IORequest *) timerio);
+			WaitIO((struct IORequest *) timerio);
+		}
+		*/
+		WaitIO((struct IORequest *) timerio);
+		CloseDevice((struct IORequest *) timerio);
+		DeleteIORequest((struct IORequest *) timerio);
+		DeleteMsgPort(timerport);
+		TimerBase = NULL;
+	}
 }
 
 void Sys_ErrorMessage(const char *string)
@@ -406,22 +438,6 @@ void Sys_PrintTerm (const char *msgtxt)
 void Sys_Quit (void)
 {
 	Host_Shutdown();
-
-	if (TimerBase)
-	{
-		/*
-		if (!CheckIO((struct IORequest *) timerio)
-		{
-			AbortIO((struct IORequest *) timerio);
-			WaitIO((struct IORequest *) timerio);
-		}
-		*/
-		WaitIO((struct IORequest *) timerio);
-		CloseDevice((struct IORequest *) timerio);
-		DeleteIORequest((struct IORequest *) timerio);
-		DeleteMsgPort(timerport);
-		TimerBase = NULL;
-	}
 
 	exit (0);
 }
@@ -509,11 +525,12 @@ const char *Sys_ConsoleInput (void)
 	static int	textlen;
 	char		c;
 
-	while (WaitForChar(Input(),10))
+	while (WaitForChar(amiga_stdin,10))
 	{
-		Read (0, &c, 1);
+		Read (amiga_stdin, &c, 1);
 		if (c == '\n' || c == '\r')
 		{
+			Write(amiga_stdout, "\n", 1);
 			con_text[textlen] = '\0';
 			textlen = 0;
 			return con_text;
@@ -522,6 +539,7 @@ const char *Sys_ConsoleInput (void)
 		{
 			if (textlen)
 			{
+				Write(amiga_stdout, "\b \b", 3);
 				textlen--;
 				con_text[textlen] = '\0';
 			}
@@ -530,7 +548,10 @@ const char *Sys_ConsoleInput (void)
 		con_text[textlen] = c;
 		textlen++;
 		if (textlen < (int) sizeof(con_text))
+		{
+			Write(amiga_stdout, &c, 1);
 			con_text[textlen] = '\0';
+		}
 		else
 		{
 		// buffer is full
@@ -775,6 +796,7 @@ int main (int argc, char **argv)
 	if (!parms.membase)
 		Sys_Error ("Insufficient memory.\n");
 
+	atexit (Sys_AtExit);
 	Sys_Init ();
 
 	Host_Init();

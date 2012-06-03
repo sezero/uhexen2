@@ -3,6 +3,14 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2012-06-03 (SVN):
+    * sys_amiga.c: Sys_ConsoleInput fix from Szilard Biro. Added a new
+      Sys_AtExit() procedure, moved the timerio cleanup and console mode
+      restoration calls into it. Registered Sys_AtExit to atexit() from
+      main() just before calling Sys_Init(). After opening timer.device
+      in Sys_Init(), added call to wait 1ms (noticed in old Amiga Quake
+      ports.)
+
 2012-06-02 (SVN):
     * sys_amiga.c, sys_dos.c, sys_win.c (Sys_FindFirst): Make sure that
       the string we pass to OS findfirst-like function stays persistent

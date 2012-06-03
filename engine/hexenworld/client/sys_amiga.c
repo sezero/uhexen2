@@ -319,8 +319,6 @@ Sys_Init
 */
 static void Sys_Init (void)
 {
-/*	Sys_SetFPCW();*/
-
 	if ((timerport = CreateMsgPort()))
 	{
 		if ((timerio = CreateIORequest(timerport, sizeof(timerio))))
@@ -343,6 +341,27 @@ static void Sys_Init (void)
 	}
 	if (!TimerBase)
 		Sys_Error("Can't open timer.device");
+
+	Sys_Sleep (1);
+}
+
+static void Sys_AtExit (void)
+{
+	if (TimerBase)
+	{
+		/*
+		if (!CheckIO((struct IORequest *) timerio)
+		{
+			AbortIO((struct IORequest *) timerio);
+			WaitIO((struct IORequest *) timerio);
+		}
+		*/
+		WaitIO((struct IORequest *) timerio);
+		CloseDevice((struct IORequest *) timerio);
+		DeleteIORequest((struct IORequest *) timerio);
+		DeleteMsgPort(timerport);
+		TimerBase = NULL;
+	}
 }
 
 void Sys_ErrorMessage(const char *string)
@@ -404,22 +423,6 @@ void Sys_PrintTerm (const char *msgtxt)
 void Sys_Quit (void)
 {
 	Host_Shutdown();
-
-	if (TimerBase)
-	{
-		/*
-		if (!CheckIO((struct IORequest *) timerio)
-		{
-			AbortIO((struct IORequest *) timerio);
-			WaitIO((struct IORequest *) timerio);
-		}
-		*/
-		WaitIO((struct IORequest *) timerio);
-		CloseDevice((struct IORequest *) timerio);
-		DeleteIORequest((struct IORequest *) timerio);
-		DeleteMsgPort(timerport);
-		TimerBase = NULL;
-	}
 
 	exit (0);
 }
@@ -715,6 +718,7 @@ int main (int argc, char **argv)
 	if (!parms.membase)
 		Sys_Error ("Insufficient memory.\n");
 
+	atexit (Sys_AtExit);
 	Sys_Init ();
 
 	Host_Init();

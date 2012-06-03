@@ -26,6 +26,10 @@ int		devlog;	/* log the Con_DPrintf and Sys_DPrintf content when !developer.inte
 static double		starttime;
 static qboolean		first = true;
 
+static BPTR		amiga_stdin, amiga_stdout;
+#define	MODE_RAW	1
+#define	MODE_NORMAL	0
+
 
 /*
 ===============================================================================
@@ -291,6 +295,15 @@ Sys_Init
 */
 static void Sys_Init (void)
 {
+	amiga_stdout = Output();
+	amiga_stdin = Input();
+	SetMode(amiga_stdin, MODE_RAW);
+}
+
+static void Sys_AtExit (void)
+{
+	if (amiga_stdin)
+		SetMode(amiga_stdin, MODE_NORMAL);
 }
 
 #define ERROR_PREFIX	"\nFATAL ERROR: "
@@ -420,11 +433,12 @@ const char *Sys_ConsoleInput (void)
 	static int	textlen;
 	char		c;
 
-	while (WaitForChar(Input(),10))
+	while (WaitForChar(amiga_stdin,10))
 	{
-		Read (0, &c, 1);
+		Read (amiga_stdin, &c, 1);
 		if (c == '\n' || c == '\r')
 		{
+			Write(amiga_stdout, "\n", 1);
 			con_text[textlen] = '\0';
 			textlen = 0;
 			return con_text;
@@ -433,6 +447,7 @@ const char *Sys_ConsoleInput (void)
 		{
 			if (textlen)
 			{
+				Write(amiga_stdout, "\b \b", 3);
 				textlen--;
 				con_text[textlen] = '\0';
 			}
@@ -441,7 +456,10 @@ const char *Sys_ConsoleInput (void)
 		con_text[textlen] = c;
 		textlen++;
 		if (textlen < (int) sizeof(con_text))
+		{
+			Write(amiga_stdout, &c, 1);
 			con_text[textlen] = '\0';
+		}
 		else
 		{
 		// buffer is full
@@ -554,6 +572,7 @@ int main (int argc, char **argv)
 	if (!parms.membase)
 		Sys_Error ("Insufficient memory.\n");
 
+	atexit (Sys_AtExit);
 	Sys_Init ();
 
 	SV_Init();
