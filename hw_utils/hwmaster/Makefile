@@ -110,7 +110,22 @@ endif
 	$(CC) -c $(CFLAGS) $(CPPFLAGS) $(INCLUDES) -o $@ $<
 
 # Objects
-OBJECTS = qsnprint.o sizebuf.o msg_io.o cmds.o common.o net.o master.o sys_main.o
+
+# Platform specific object settings
+ifeq ($(TARGET_OS),win32)
+SYSOBJ_SYS = sys_win.o
+endif
+ifeq ($(TARGET_OS),win64)
+SYSOBJ_SYS = sys_win.o
+endif
+ifeq ($(TARGET_OS),unix)
+SYSOBJ_SYS = sys_unix.o
+endif
+ifeq ($(TARGET_OS),aros)
+SYSOBJ_SYS = sys_amiga.o
+endif
+
+OBJECTS = qsnprint.o sizebuf.o msg_io.o cmds.o common.o net.o master.o $(SYSOBJ_SYS)
 
 # Targets
 .PHONY: clean distclean

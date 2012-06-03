@@ -4,6 +4,11 @@ Development Progress	:
 ---------------------------
 
 2012-06-03 (SVN):
+    * hw_utils/hwmaster: Split sys_main.c into sys_unix.c and sys_win.c.
+      Added sys_amiga.c based on hwsv version of the file. Adjusted the
+      makefile for target specific sys_* objects.
+
+2012-06-03 (SVN):
     * sys_amiga.c: Sys_ConsoleInput fix from Szilard Biro. Added a new
       Sys_AtExit() procedure, moved the timerio cleanup and console mode
       restoration calls into it. Registered Sys_AtExit to atexit() from

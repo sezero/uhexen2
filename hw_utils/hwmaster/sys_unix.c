@@ -11,7 +11,6 @@
 
 #include "defs.h"
 
-#if defined(PLATFORM_UNIX)
 #include <errno.h>
 #include <sys/stat.h>
 #include <unistd.h>
@@ -19,25 +18,9 @@
 #if USE_PASSWORD_FILE && DO_USERDIRS
 #include <pwd.h>
 #endif
-#endif	/* _UNIX */
 
-#if defined(PLATFORM_WINDOWS)
-#include <windows.h>
-#include <io.h>
-#include <conio.h>
-#include <mmsystem.h>
-#include "io_msvc.h"
-#endif	/* WINDOWS */
-
-#if defined(PLATFORM_WINDOWS)
-#define	TIME_WRAP_VALUE	(~(DWORD)0)
-static DWORD		starttime;
-#endif	/* PLATFORM_WINDOWS */
-
-#if defined(PLATFORM_UNIX)
 static double		starttime;
 static qboolean		first = true;
-#endif	/* PLATFORM_UNIX */
 
 #if DO_USERDIRS
 static char	userdir[MAX_OSPATH];
@@ -72,52 +55,7 @@ void Sys_Quit (void)
 char *Sys_ConsoleInput (void)
 {
 	static char	con_text[256];
-	static int		textlen;
-
-#ifdef PLATFORM_WINDOWS
-	int		c;
-
-	// read a line out
-	while (_kbhit())
-	{
-		c = _getch();
-		_putch (c);
-		if (c == '\r')
-		{
-			con_text[textlen] = '\0';
-			_putch ('\n');
-			textlen = 0;
-			return con_text;
-		}
-		if (c == 8)
-		{
-			if (textlen)
-			{
-				_putch (' ');
-				_putch (c);
-				textlen--;
-				con_text[textlen] = '\0';
-			}
-			continue;
-		}
-		con_text[textlen] = c;
-		textlen++;
-		if (textlen < (int) sizeof(con_text))
-			con_text[textlen] = '\0';
-		else
-		{
-		// buffer is full
-			textlen = 0;
-			con_text[0] = '\0';
-			printf("\nConsole input too long!\n");
-			break;
-		}
-	}
-
-	return NULL;
-
-#else	/* UNIX: */
-
+	static int	textlen;
 	char		c;
 	fd_set		set;
 	struct timeval	timeout;
@@ -160,27 +98,10 @@ char *Sys_ConsoleInput (void)
 	}
 
 	return NULL;
-#endif
 }
 
 double Sys_DoubleTime (void)
 {
-#ifdef PLATFORM_WINDOWS
-	DWORD	now, passed;
-
-	now = timeGetTime();
-	if (now < starttime)	/* wrapped? */
-	{
-		passed = TIME_WRAP_VALUE - starttime;
-		passed += now;
-	}
-	else
-	{
-		passed = now - starttime;
-	}
-
-	return (passed == 0) ? 0.0 : (passed / 1000.0);
-#else
 	struct timeval	tp;
 	double		now;
 
@@ -196,12 +117,9 @@ double Sys_DoubleTime (void)
 	}
 
 	return now - starttime;
-#endif
 }
 
 #if DO_USERDIRS
-
-#ifdef PLATFORM_UNIX
 int Sys_mkdir (const char *path, qboolean crash)
 {
 	int rc = mkdir (path, 0777);
@@ -242,7 +160,6 @@ static int Sys_GetUserdir (char *dst, size_t dstsize)
 	q_snprintf (dst, dstsize, "%s/%s", home_dir, HWM_USERDIR);
 	return 0;
 }
-#endif
 #endif	/* DO_USERDIRS */
 
 
@@ -282,11 +199,6 @@ int main (int argc, char **argv)
 	printf ("Userdir: %s\n", userdir);
 	Sys_mkdir(userdir, true);
 	q_snprintf(filters_file, sizeof(filters_file), "%s/filters.ini", userdir);
-#endif
-
-#ifdef PLATFORM_WINDOWS
-	timeBeginPeriod (1);	/* 1 ms timer precision */
-	starttime = timeGetTime ();
 #endif
 
 	Cbuf_Init();
