@@ -44,8 +44,6 @@
 
 static char s_ahi_driver[] = "AHI audio system";
 
-static struct AHIdata *ad;
-
 struct Library *AHIBase;
 
 struct AHIChannelInfo
@@ -66,8 +64,14 @@ struct AHIdata
 	unsigned int readpos;
 };
 
+static struct AHIdata *ad;
+
+#if !(defined(__AROS__) || defined(__MORPHOS__))
+typedef ULONG IPTR;
+#endif
+
 #if !defined(__AROS__)
-ULONG EffectFunc()
+IPTR EffectFunc()
 {
 	struct Hook *hook = (struct Hook *)REG_A0;
 	struct AHIEffChannelInfo *aeci = (struct AHIEffChannelInfo *)REG_A1;
@@ -83,7 +87,7 @@ static struct EmulLibEntry EffectFunc_Gate =
 	TRAP_LIB, 0, (void (*)(void))EffectFunc
 };
 #else
-AROS_UFH3(ULONG, EffectFunc,
+AROS_UFH3(IPTR, EffectFunc,
 	AROS_UFHA(struct Hook *, hook, A0),
 	AROS_UFHA(struct AHIAudioCtrl *, aac, A2),
 	AROS_UFHA(struct AHIEffChannelInfo *, aeci, A1)
@@ -140,13 +144,13 @@ static qboolean S_AHI_Init(dma_t *dma)
 				{
 					AHI_GetAudioAttrs(AHI_INVALID_ID, ad->audioctrl,
 								AHIDB_BufferLen, sizeof(modename),
-								AHIDB_Name, (ULONG)modename,
-								AHIDB_MaxChannels, (ULONG)&channels,
-								AHIDB_Bits, (ULONG)&bits,
+								AHIDB_Name, (IPTR) modename,
+								AHIDB_MaxChannels, (IPTR) &channels,
+								AHIDB_Bits, (IPTR) &bits,
 								TAG_END);
 
 					AHI_ControlAudio(ad->audioctrl,
-								AHIC_MixFreq_Query, (ULONG)&speed,
+								AHIC_MixFreq_Query, (IPTR) &speed,
 								TAG_END);
 
 					if (bits == 8 || bits == 16)

@@ -581,16 +581,19 @@ void Sys_SendKeyEvents (void)
 
 /* This never gets called on AROS due to some SDL bug in the key handling.
    I'll leave it in for future releases. */
-static char chunk_buffer[1024];
-
+#if !(defined(__AROS__) || defined(__MORPHOS__))
+typedef ULONG IPTR;
+#endif /* AROS IPTR */
 char *Sys_GetClipboardData (void)
 {
+	static char chunk_buffer[1024];
+
 	struct IFFHandle *IFFHandle;
 	struct ContextNode *cn;
 	ULONG error, readbytes = 0;
 
 	if ((IFFHandle = AllocIFF())) {
-	    if ((IFFHandle->iff_Stream = (ULONG)OpenClipboard(0))) {
+	    if ((IFFHandle->iff_Stream = (IPTR) OpenClipboard(0))) {
 		InitIFFasClip(IFFHandle);
 		if (!OpenIFF(IFFHandle, IFFF_READ)) {
 		    if (!StopChunk(IFFHandle, ID_FTXT, ID_CHRS)) {

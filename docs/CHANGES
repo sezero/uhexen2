@@ -4,6 +4,10 @@ Development Progress	:
 ---------------------------
 
 2012-06-04 (SVN):
+    * snd_ahi.c, sys_amiga.c: Changed several ULONG type usage into IPTR
+      for 64 bits corectness.
+
+2012-06-04 (SVN):
     * snd_timidity.c, snd_wildmidi.c (_InitHelper): Added kludge so that
       the resulting path doesn't have ":/" or "//", which have different
       meaning on amiga. This can actually be made into a new Sys_ or FS_
