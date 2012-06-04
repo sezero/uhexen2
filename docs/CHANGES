@@ -3,6 +3,10 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2012-06-04 (SVN):
+    * Added snd_ahi.c as a new audio driver for amiga, adjusted snd_sys
+      and the makefiles for it. Added Mark Olsen to AUTHORS->credits.
+
 2012-06-03 (SVN):
     * utils/cmdlib.c, util_io.c: Added amiga specific time and file i/o
       procedures based on engine-side sys_amiga.c.

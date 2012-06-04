@@ -692,7 +692,7 @@ ifeq ($(TARGET_OS),unix)
 SYSOBJ_SND := snd_oss.o snd_alsa.o snd_sun.o snd_sdl.o
 endif
 ifeq ($(TARGET_OS),aros)
-SYSOBJ_SND := snd_sdl.o
+SYSOBJ_SND := snd_ahi.o snd_sdl.o
 endif
 # end of Sound objects
 endif

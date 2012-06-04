@@ -28,6 +28,7 @@
 
 #include "quakedef.h"
 #include "snd_sys.h"
+
 /* drivers' headers: */
 #include "snd_alsa.h"
 #include "snd_oss.h"
@@ -37,6 +38,7 @@
 #include "snd_dsound.h"
 #include "snd_sb.h"
 #include "snd_gus.h"
+#include "snd_ahi.h"
 
 static qboolean	snd_sys_inited = false;
 
@@ -140,6 +142,11 @@ void S_DriversInit (void)
 #if HAVE_SDL_SOUND
 	S_RegisterDriver(&snddrv_sdl);
 	if (COM_CheckParm ("-sndsdl"))
+		snd_drivers->userpreferred = true;
+#endif
+#if HAVE_AHI_SOUND
+	S_RegisterDriver(&snddrv_ahi);
+	if (COM_CheckParm ("-sndahi"))
 		snd_drivers->userpreferred = true;
 #endif
 }
