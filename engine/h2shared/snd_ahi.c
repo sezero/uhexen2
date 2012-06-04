@@ -156,6 +156,7 @@ static qboolean S_AHI_Init(dma_t *dma)
 
 						shm->speed = speed;
 						shm->samplebits = bits;
+						shm->signed8 = (bits == 8); /* AHI does signed 8 bit. */
 						shm->channels = channels;
 						shm->samples = BUFFER_SIZE*(speed/11025);
 						shm->submission_chunk = 1;

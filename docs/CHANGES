@@ -4,6 +4,11 @@ Development Progress	:
 ---------------------------
 
 2012-06-04 (SVN):
+    * Made snd_mix.c to support 8 bit signed output. S8 mode is used by
+      the Amiga AHI backend which doesn't support U8, at least not when
+      running stereo: ahi.h lists AHIST_M8U (obsolete) but no AHIST_S8U.
+
+2012-06-04 (SVN):
     * snd_ahi.c (EffectFunc): Fixed shadowing of the file-scoped ad
       variable. Made file-scoped ad pointer static.
 

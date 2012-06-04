@@ -123,6 +123,7 @@ static qboolean S_SDL_Init (dma_t *dma)
 	/* Make sure we can support the audio format */
 	switch (obtained.format)
 	{
+	case AUDIO_S8:		/* maybe needed by AHI */
 	case AUDIO_U8:
 	case AUDIO_S16SYS:
 		/* Supported */
@@ -139,6 +140,7 @@ static qboolean S_SDL_Init (dma_t *dma)
 
 	/* Fill the audio DMA information block */
 	shm->samplebits = (obtained.format & 0xFF); /* first byte of format is bits */
+	shm->signed8 = (obtained.format == AUDIO_S8);
 	if (obtained.freq != desired_speed)
 		Con_Printf ("Warning: Rate set (%d) didn't match requested rate (%d)!\n", obtained.freq, desired_speed);
 	shm->speed = obtained.freq;
