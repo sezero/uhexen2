@@ -4,6 +4,15 @@ Development Progress	:
 ---------------------------
 
 2012-06-04 (SVN):
+    * snd_timidity.c, snd_wildmidi.c (_InitHelper): Added kludge so that
+      the resulting path doesn't have ":/" or "//", which have different
+      meaning on amiga. This can actually be made into a new Sys_ or FS_
+      CatTo[Base|User]path() helper procedure later and all prints using
+      fs_basedir, fs_userdir, etc can be made through it. Well, later..
+      While we are there, added "Timidity:" to cfgfile[] of timidity and
+      wildmidi.
+
+2012-06-04 (SVN):
     * snd_ahi.c updates from Szilard Biro: -sndbits and -sndmono command
       line arguments are now honored. BUFFER_SIZE is now 16384 for AROS
       and MorphOS and 2048 for others. Made sure that shm->buffer isn't

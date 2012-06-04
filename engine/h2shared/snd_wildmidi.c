@@ -53,6 +53,8 @@ static unsigned short wildmidi_opts;
 static const char *cfgfile[] = {
 #ifdef _WIN32
 	"\\TIMIDITY",
+#elif defined (__AROS__)
+	"Timidity:",
 #else
 	"/etc",
 	"/etc/timidity",
@@ -65,15 +67,39 @@ static const char *cfgfile[] = {
 
 static int WILDMIDI_InitHelper (const char *cfgdir)
 {
-	char path[MAX_OSPATH];
+	char path[MAX_OSPATH], *p;
 
-	q_snprintf(path, sizeof(path), "%s/wildmidi.cfg", cfgdir);
+	if (! *cfgdir)
+		p = path;
+	else
+	{
+		/* kludge, mainly for AROS / Amiga where
+		 * ":/" or "//" have a different meaning. */
+		qboolean do_sep = true;
+		int len = q_strlcpy(path, cfgdir, sizeof(path));
+		if (len >= (int)sizeof(path) - 1)
+			return -1;
+		p = &path[len];
+		if (p[-1] == '/') do_sep = false;
+#if defined(PLATFORM_AMIGA)
+		if (p[-1] == ':') do_sep = false;
+#endif
+#if defined(PLATFORM_WINDOWS)
+		if (p[-1] == '\\') do_sep = false;
+#endif
+		if (do_sep)
+			*p++ = '/';
+	}
+
+	*p = '\0';
+	q_strlcat(path, "wildmidi.cfg", sizeof(path));
 	Con_DPrintf("WildMIDI: trying %s\n", path);
 	if (WildMidi_Init(path, wildmidi_rate, wildmidi_opts) == 0)
 		return 0;
-	q_snprintf(path, sizeof(path), "%s/timidity.cfg", cfgdir);
+	*p = '\0';
+	q_strlcat(path, "timidity.cfg", sizeof(path));
 	Con_DPrintf("WildMIDI: trying %s\n", path);
-	return  WildMidi_Init(path, wildmidi_rate, wildmidi_opts);
+	return WildMidi_Init(path, wildmidi_rate, wildmidi_opts);
 }
 
 static qboolean S_WILDMIDI_CodecInitialize (void)
