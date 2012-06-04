@@ -4,6 +4,10 @@ Development Progress	:
 ---------------------------
 
 2012-06-04 (SVN):
+    * snd_ahi.c (EffectFunc): Fixed shadowing of the file-scoped ad
+      variable. Made file-scoped ad pointer static.
+
+2012-06-04 (SVN):
     * Added snd_ahi.c as a new audio driver for amiga, adjusted snd_sys
       and the makefiles for it. Added Mark Olsen to AUTHORS->credits.
 

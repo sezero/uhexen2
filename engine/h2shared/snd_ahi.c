@@ -44,8 +44,9 @@
 
 static char s_ahi_driver[] = "AHI audio system";
 
+static struct AHIdata *ad;
+
 struct Library *AHIBase;
-struct AHIdata *ad;
 
 struct AHIChannelInfo
 {
@@ -71,10 +72,8 @@ ULONG EffectFunc()
 	struct Hook *hook = (struct Hook *)REG_A0;
 	struct AHIEffChannelInfo *aeci = (struct AHIEffChannelInfo *)REG_A1;
 
-	struct AHIdata *ad;
-
-	ad = hook->h_Data;
-	ad->readpos = aeci->ahieci_Offset[0];
+	struct AHIdata *adata = hook->h_Data;
+	adata->readpos = aeci->ahieci_Offset[0];
 
 	return 0;
 }
@@ -92,10 +91,8 @@ AROS_UFH3(ULONG, EffectFunc,
 {
     AROS_USERFUNC_INIT
 
-	struct AHIdata *ad;
-
-	ad = hook->h_Data;
-	ad->readpos = aeci->ahieci_Offset[0];
+	struct AHIdata *adata = hook->h_Data;
+	adata->readpos = aeci->ahieci_Offset[0];
 
 	return 0;
 
