@@ -36,10 +36,10 @@
 #include <proto/ahi.h>
 #include <utility/hooks.h>
 
-#ifdef __AROS__
-#define BUFFER_SIZE 2048
-#else
+#if defined(__AROS__) || defined(__MORPHOS__)
 #define BUFFER_SIZE 16384
+#else
+#define BUFFER_SIZE 2048
 #endif
 
 static char s_ahi_driver[] = "AHI audio system";
@@ -89,14 +89,14 @@ AROS_UFH3(ULONG, EffectFunc,
 	AROS_UFHA(struct AHIEffChannelInfo *, aeci, A1)
 	)
 {
-    AROS_USERFUNC_INIT
+	AROS_USERFUNC_INIT
 
 	struct AHIdata *adata = hook->h_Data;
 	adata->readpos = aeci->ahieci_Offset[0];
 
 	return 0;
 
-    AROS_USERFUNC_EXIT
+	AROS_USERFUNC_EXIT
 }
 #endif
 
@@ -151,8 +151,10 @@ static qboolean S_AHI_Init(dma_t *dma)
 
 					if (bits == 8 || bits == 16)
 					{
-						if (channels > 2)
-							channels = 2;
+						if (channels > desired_channels)
+							channels = desired_channels;
+						if (bits > desired_bits)
+							bits = desired_bits;
 
 						shm->speed = speed;
 						shm->samplebits = bits;
@@ -218,6 +220,7 @@ static qboolean S_AHI_Init(dma_t *dma)
 									return true;
 								}
 							}
+							shm->buffer = NULL;
 						}
 						FreeVec(ad->samplebuffer);
 					}

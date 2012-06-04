@@ -4,6 +4,12 @@ Development Progress	:
 ---------------------------
 
 2012-06-04 (SVN):
+    * snd_ahi.c updates from Szilard Biro: -sndbits and -sndmono command
+      line arguments are now honored. BUFFER_SIZE is now 16384 for AROS
+      and MorphOS and 2048 for others. Made sure that shm->buffer isn't
+      set to anything other than NULL if the driver fails.
+
+2012-06-04 (SVN):
     * Made snd_mix.c to support 8 bit signed output. S8 mode is used by
       the Amiga AHI backend which doesn't support U8, at least not when
       running stereo: ahi.h lists AHIST_M8U (obsolete) but no AHIST_S8U.
