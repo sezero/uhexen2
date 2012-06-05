@@ -361,7 +361,10 @@ void Q_mkdir (const char *path)
 	BPTR lock = CreateDir((const STRPTR) path);
 
 	if (lock)
+	{
 		UnLock(lock);
+		return;
+	}
 	if (IoErr() == ERROR_OBJECT_EXISTS)
 		return;
 

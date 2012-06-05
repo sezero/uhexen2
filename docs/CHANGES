@@ -4,6 +4,9 @@ Development Progress	:
 ---------------------------
 
 2012-06-05 (SVN):
+    * util_io.c (AMIGA, Q_mkdir): Fixed to return if we got a pointer.
+
+2012-06-05 (SVN):
     * hwmaster/sys_amiga.c: Added missing timer initialization stuff, so
       that GetSysTime() can be used.
 
