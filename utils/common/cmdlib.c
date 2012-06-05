@@ -25,6 +25,8 @@
 #ifdef PLATFORM_AMIGA
 #include <proto/exec.h>
 #include <proto/dos.h>
+#include <devices/timer.h>
+#include <proto/timer.h>
 #include <time.h>
 #endif
 #include <ctype.h>
@@ -52,6 +54,12 @@ char		com_token[1024];
 qboolean	com_eof;
 
 // PRIVATE DATA DEFINITIONS ------------------------------------------------
+
+#ifdef PLATFORM_AMIGA
+struct timerequest	*timerio;
+struct MsgPort		*timerport;
+struct Device		*TimerBase;
+#endif
 
 // REPLACEMENTS FOR LIBRARY FUNCTIONS --------------------------------------
 
@@ -167,13 +175,69 @@ double GetTime (void)
 #endif
 
 #ifdef PLATFORM_AMIGA
+static void AMIGA_TimerCleanup (void)
+{
+	if (TimerBase)
+	{
+		/*
+		if (!CheckIO((struct IORequest *) timerio)
+		{
+			AbortIO((struct IORequest *) timerio);
+			WaitIO((struct IORequest *) timerio);
+		}
+		*/
+		WaitIO((struct IORequest *) timerio);
+		CloseDevice((struct IORequest *) timerio);
+		DeleteIORequest((struct IORequest *) timerio);
+		DeleteMsgPort(timerport);
+		TimerBase = NULL;
+	}
+}
+
+static void AMIGA_TimerInit (void)
+{
+	if ((timerport = CreateMsgPort()))
+	{
+		if ((timerio = CreateIORequest(timerport, sizeof(timerio))))
+		{
+			if (OpenDevice((STRPTR) TIMERNAME, UNIT_MICROHZ,
+					(struct IORequest *) timerio, 0) == 0)
+			{
+				TimerBase = timerio->tr_node.io_Device;
+			}
+			else
+			{
+				DeleteIORequest(timerio);
+				DeleteMsgPort(timerport);
+			}
+		}
+		else
+		{
+			DeleteMsgPort(timerport);
+		}
+	}
+
+	if (!TimerBase)
+		Error("Can't open timer.device");
+
+	atexit (AMIGA_TimerCleanup);
+	/* 1us wait, for timer cleanup success */
+	timerio->tr_node.io_Command = TR_ADDREQUEST;
+	timerio->tr_time.tv_secs = 0;
+	timerio->tr_time.tv_micro = 1;
+	SendIO((struct IORequest *) timerio);
+	WaitIO((struct IORequest *) timerio);
+}
+
 double GetTime (void)
 {
 	struct timeval tv;
+	if (!TimerBase)
+		AMIGA_TimerInit();
 	GetSysTime(&tv);
 	return tv.tv_sec + tv.tv_usec / 1000000.0;
 }
-#endif
+#endif	/* PLATFORM_AMIGA */
 
 /*
 ==============

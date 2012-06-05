@@ -4,6 +4,11 @@ Development Progress	:
 ---------------------------
 
 2012-06-04 (SVN):
+    * sys_amiga.c (Sys_Init): Removed 1ms Sys_Sleep after the timer init
+      and inlined a 1us wait, instead. Added missing timer init stuff to
+      hexenworld server and utils/cmdlib so that GetSysTime can be used.
+
+2012-06-04 (SVN):
     * snd_ahi.c, sys_amiga.c: Changed several ULONG type usage into IPTR
       for 64 bits corectness.
 

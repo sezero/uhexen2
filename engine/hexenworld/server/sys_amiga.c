@@ -10,6 +10,9 @@
 #include <proto/exec.h>
 #include <proto/dos.h>
 
+#include <devices/timer.h>
+#include <proto/timer.h>
+
 #include <time.h>
 
 
@@ -29,6 +32,10 @@ static qboolean		first = true;
 static BPTR		amiga_stdin, amiga_stdout;
 #define	MODE_RAW	1
 #define	MODE_NORMAL	0
+
+struct timerequest	*timerio;
+struct MsgPort		*timerport;
+struct Device		*TimerBase;
 
 
 /*
@@ -295,6 +302,37 @@ Sys_Init
 */
 static void Sys_Init (void)
 {
+	if ((timerport = CreateMsgPort()))
+	{
+		if ((timerio = CreateIORequest(timerport, sizeof(timerio))))
+		{
+			if (OpenDevice((STRPTR) TIMERNAME, UNIT_MICROHZ,
+					(struct IORequest *) timerio, 0) == 0)
+			{
+				TimerBase = timerio->tr_node.io_Device;
+			}
+			else
+			{
+				DeleteIORequest(timerio);
+				DeleteMsgPort(timerport);
+			}
+		}
+		else
+		{
+			DeleteMsgPort(timerport);
+		}
+	}
+
+	if (!TimerBase)
+		Sys_Error("Can't open timer.device");
+
+	/* 1us wait, for timer cleanup success */
+	timerio->tr_node.io_Command = TR_ADDREQUEST;
+	timerio->tr_time.tv_secs = 0;
+	timerio->tr_time.tv_micro = 1;
+	SendIO((struct IORequest *) timerio);
+	WaitIO((struct IORequest *) timerio);
+
 	amiga_stdout = Output();
 	amiga_stdin = Input();
 	SetMode(amiga_stdin, MODE_RAW);
@@ -304,6 +342,21 @@ static void Sys_AtExit (void)
 {
 	if (amiga_stdin)
 		SetMode(amiga_stdin, MODE_NORMAL);
+	if (TimerBase)
+	{
+		/*
+		if (!CheckIO((struct IORequest *) timerio)
+		{
+			AbortIO((struct IORequest *) timerio);
+			WaitIO((struct IORequest *) timerio);
+		}
+		*/
+		WaitIO((struct IORequest *) timerio);
+		CloseDevice((struct IORequest *) timerio);
+		DeleteIORequest((struct IORequest *) timerio);
+		DeleteMsgPort(timerport);
+		TimerBase = NULL;
+	}
 }
 
 #define ERROR_PREFIX	"\nFATAL ERROR: "

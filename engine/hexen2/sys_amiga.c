@@ -344,10 +344,16 @@ static void Sys_Init (void)
 			DeleteMsgPort(timerport);
 		}
 	}
+
 	if (!TimerBase)
 		Sys_Error("Can't open timer.device");
 
-	Sys_Sleep (1);
+	/* 1us wait, for timer cleanup success */
+	timerio->tr_node.io_Command = TR_ADDREQUEST;
+	timerio->tr_time.tv_secs = 0;
+	timerio->tr_time.tv_micro = 1;
+	SendIO((struct IORequest *) timerio);
+	WaitIO((struct IORequest *) timerio);
 
 	amiga_stdout = Output();
 	if (isDedicated)
