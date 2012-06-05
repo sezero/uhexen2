@@ -4,6 +4,10 @@ Development Progress	:
 ---------------------------
 
 2012-06-05 (SVN):
+    * sys_amiga.c (Sys_CopyFile): Replace FRead() and FWrite() calls by
+      Read() and Write(). Check the success of ExamineFH().
+
+2012-06-05 (SVN):
     * sys_amiga.c, sys_dos.c, sys_unix.c (Sys_CopyFile): Fixed flipped
       string args in error messages (ugh...)
 

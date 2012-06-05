@@ -135,10 +135,9 @@ int Sys_FileType (const char *path)
 int Sys_CopyFile (const char *frompath, const char *topath)
 {
 	char buf[COPY_READ_BUFSIZE];
-	long remaining = 0;
-	long count;
 	BPTR in, out;
 	struct FileInfoBlock *fib;
+	LONG remaining, count;
 
 	in = Open((const STRPTR) frompath, MODE_OLDFILE);
 	if (!in)
@@ -151,11 +150,19 @@ int Sys_CopyFile (const char *frompath, const char *topath)
 	{
 		if (ExamineFH(in, fib))
 			remaining = fib->fib_Size;
+		else	remaining = -1;
 		FreeDosObject(DOS_FIB, fib);
+		if (remaining < 0)
+		{
+			Con_Printf("%s: can't determine size for %s\n", __thisfunc__, frompath);
+			Close(in);
+			return 1;
+		}
 	}
 	else
 	{
 		Con_Printf ("%s: can't allocate FileInfoBlock for %s\n", __thisfunc__, frompath);
+		Close(in);
 		return 1;
 	}
 	out = Open((const STRPTR) topath, MODE_NEWFILE);
@@ -174,12 +181,10 @@ int Sys_CopyFile (const char *frompath, const char *topath)
 		else
 			count = sizeof(buf);
 
-		FRead(in, buf, 1, count);
-		if (IoErr())
+		if (Read(in, buf, count) == -1)
 			break;
 
-		FWrite(out, buf, 1, count);
-		if (IoErr())
+		if (Write(out, buf, count) == -1)
 			break;
 
 		remaining -= count;
