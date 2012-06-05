@@ -125,19 +125,19 @@ int Sys_CopyFile (const char *frompath, const char *topath)
 
 	if (stat(frompath, &st) != 0)
 	{
-		Con_Printf ("%s: unable to stat %s\n", frompath, __thisfunc__);
+		Con_Printf ("%s: unable to stat %s\n", __thisfunc__, frompath);
 		return 1;
 	}
 	in = fopen (frompath, "rb");
 	if (!in)
 	{
-		Con_Printf ("%s: unable to open %s\n", frompath, __thisfunc__);
+		Con_Printf ("%s: unable to open %s\n", __thisfunc__, frompath);
 		return 1;
 	}
 	out = fopen (topath, "wb");
 	if (!out)
 	{
-		Con_Printf ("%s: unable to create %s\n", topath, __thisfunc__);
+		Con_Printf ("%s: unable to create %s\n", __thisfunc__, topath);
 		fclose (in);
 		return 1;
 	}

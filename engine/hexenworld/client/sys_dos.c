@@ -448,20 +448,20 @@ int Sys_CopyFile (const char *frompath, const char *topath)
 	in = open (frompath, O_RDONLY | O_BINARY);
 	if (in < 0)
 	{
-		Con_Printf ("%s: unable to open %s\n", frompath, __thisfunc__);
+		Con_Printf ("%s: unable to open %s\n", __thisfunc__, frompath);
 		return 1;
 	}
 	remaining = filelength (in);
 	if (remaining < 0)
 	{
-		Con_Printf ("%s: %s failed filelength()\n", frompath, __thisfunc__);
+		Con_Printf ("%s: %s failed filelength()\n", __thisfunc__, frompath);
 		close (in);
 		return 1;
 	}
 	out = open (topath, O_CREAT | O_WRONLY | O_TRUNC | O_BINARY, 0666);
 	if (out < 0)
 	{
-		Con_Printf ("%s: unable to create %s\n", topath, __thisfunc__);
+		Con_Printf ("%s: unable to create %s\n", __thisfunc__, topath);
 		close (in);
 		return 1;
 	}

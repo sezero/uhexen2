@@ -148,7 +148,7 @@ int Sys_CopyFile (const char *frompath, const char *topath)
 	in = Open((const STRPTR) frompath, MODE_OLDFILE);
 	if (!in)
 	{
-		Con_Printf ("%s: unable to open %s\n", frompath, __thisfunc__);
+		Con_Printf ("%s: unable to open %s\n", __thisfunc__, frompath);
 		return 1;
 	}
 	fib = (struct FileInfoBlock*) AllocDosObject(DOS_FIB, NULL);
@@ -160,13 +160,13 @@ int Sys_CopyFile (const char *frompath, const char *topath)
 	}
 	else
 	{
-		Con_Printf ("%s: can't allocate the FileInfoBlock %s\n", frompath, __thisfunc__);
+		Con_Printf ("%s: can't allocate FileInfoBlock for %s\n", __thisfunc__, frompath);
 		return 1;
 	}
 	out = Open((const STRPTR) topath, MODE_NEWFILE);
 	if (!out)
 	{
-		Con_Printf ("%s: unable to open %s\n", topath, __thisfunc__);
+		Con_Printf ("%s: unable to open %s\n", __thisfunc__, topath);
 		Close(in);
 		return 1;
 	}
