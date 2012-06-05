@@ -4,6 +4,10 @@ Development Progress	:
 ---------------------------
 
 2012-06-05 (SVN):
+    * hwmaster/sys_amiga.c: Added missing timer initialization stuff, so
+      that GetSysTime() can be used.
+
+2012-06-05 (SVN):
     * utils: Renamed GetTime to COM_GetTime and Error to COM_Error so as
       not to run into possible clashes with any library functions (such
       as the case with Error and Amiga's proto/dos.h). Also replaced the
