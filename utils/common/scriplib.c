@@ -83,7 +83,7 @@ qboolean GetToken (qboolean crossline)
 	if (script_p >= scriptend_p)
 	{
 		if (!crossline)
-			Error ("Line %i is incomplete\n",scriptline);
+			COM_Error ("Line %i is incomplete\n",scriptline);
 		endofscript = true;
 		return false;
 	}
@@ -97,14 +97,14 @@ skipspace:
 		if (script_p >= scriptend_p)
 		{
 			if (!crossline)
-				Error ("Line %i is incomplete\n",scriptline);
+				COM_Error ("Line %i is incomplete\n",scriptline);
 			endofscript = true;
 			return true;
 		}
 		if (*script_p++ == '\n')
 		{
 			if (!crossline)
-				Error ("Line %i is incomplete\n",scriptline);
+				COM_Error ("Line %i is incomplete\n",scriptline);
 			scriptline++;
 		}
 	}
@@ -112,7 +112,7 @@ skipspace:
 	if (script_p >= scriptend_p)
 	{
 		if (!crossline)
-			Error ("Line %i is incomplete\n",scriptline);
+			COM_Error ("Line %i is incomplete\n",scriptline);
 		endofscript = true;
 		return true;
 	}
@@ -120,7 +120,7 @@ skipspace:
 	if (*script_p == ';' || *script_p == '#')	// semicolon is comment field
 	{							// also make # a comment field
 		if (!crossline)
-			Error ("Line %i is incomplete\n",scriptline);
+			COM_Error ("Line %i is incomplete\n",scriptline);
 
 		while (*script_p++ != '\n')
 		{
@@ -144,7 +144,7 @@ skipspace:
 		if (script_p == scriptend_p)
 			break;
 		if (token_p == &token[MAXTOKEN])
-			Error ("Token too large on line %i\n",scriptline);
+			COM_Error ("Token too large on line %i\n",scriptline);
 	}
 
 	*token_p = 0;

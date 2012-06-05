@@ -458,7 +458,7 @@ static void DccStatement (dstatement_t *s)
 		if (s->op == OP_IFNOT)
 		{
 			if (s->b < 1)
-				Error("Found a negative IFNOT jump.");
+				COM_Error("Found a negative IFNOT jump.");
 
 			/* get instruction right before the target */
 			t = s + s->b - 1; /* */
@@ -690,7 +690,7 @@ static char *Make_Immediate (gofs_t ofs, const char *linestr, int mode)
 	i = ofs;
 	if (i >= MAX_REGS)
 	{
-		Error ("%s: MAX_REGS reached (%d), max: %d,\n"
+		COM_Error ("%s: MAX_REGS reached (%d), max: %d,\n"
 			"currently in use: %d (%d %d %d %d)\n",
 			__thisfunc__, i, MAX_REGS, regs_used, i,
 			cfunc->parm_start, cfunc->locals, ofs);
@@ -703,7 +703,7 @@ static char *Make_Immediate (gofs_t ofs, const char *linestr, int mode)
 			free(temp_val[i]);
 		temp_val[i] = strdup(linestr);
 		if (temp_val[i] == NULL)
-			Error("%s: failed to create new string for %s\n", __thisfunc__, linestr);
+			COM_Error("%s: failed to create new string for %s\n", __thisfunc__, linestr);
 		return temp_val[i];
 	}
 
@@ -985,7 +985,7 @@ static void PR_FunctionHeader (dfunction_t *df)
 	strcat(linetxt, ")");
 	func_headers[df - functions] = strdup(linetxt);
 	if (func_headers[df - functions] == NULL)
-		Error ("%s: strdup failed.", __thisfunc__);
+		COM_Error ("%s: strdup failed.", __thisfunc__);
 }
 
 
@@ -1043,7 +1043,7 @@ static unsigned short GetReturnType (int func)
 							type1 = pr_opcodes[di->op].type_a;
 							arg1 = PR_PrintStringAtOfs((unsigned short)di->a, type1);
 							if (!arg1)
-								Error("function name not found!!!\n");
+								COM_Error("function name not found!!!\n");
 							i = DEC_GetFunctionIdxByName(arg1);
 							if (i == 0)
 								break;
@@ -1257,7 +1257,7 @@ void Dcc_Functions (void)
 
 	prgs = fopen("progs.src","w");
 	if (!prgs)
-		Error("unable to open progs.src!!!\n");
+		COM_Error("unable to open progs.src!!!\n");
 
 	fprintf(prgs, "%s", "../progs.dat\n\n");
 
@@ -1289,7 +1289,7 @@ void Dcc_Functions (void)
 		if (PR_FILE == NULL)
 		{
 			PR_FILE = stdout;
-			Error("unable to open %s\n", fname);
+			COM_Error("unable to open %s\n", fname);
 		}
 
 		PR_PrintFunction(strings + df->s_name);
@@ -1433,7 +1433,7 @@ static void PR_LocalGlobals (void)
 				{
 					ef = PR_GetField(strings + par->s_name, par);
 					if (!ef)
-						Error("Could not locate a field named \"%s\"", strings + par->s_name);
+						COM_Error("Could not locate a field named \"%s\"", strings + par->s_name);
 					i = (ef->type & ~DEF_SAVEGLOBAL);
 					if (i == ev_vector)
 						j += 3;
@@ -1639,7 +1639,7 @@ void FindBuiltinParameters (int func)
 		printf("NOT found!!\nsetting parameters to void\n");
 		func_headers[func] = strdup("void ()");
 		if (func_headers[func] == NULL)
-			Error ("%s: strdup failed.", __thisfunc__);
+			COM_Error ("%s: strdup failed.", __thisfunc__);
 		return;
 	}
 
@@ -1716,7 +1716,7 @@ void FindBuiltinParameters (int func)
 	while (i < j)
 	{
 		if (i > 8)	/* just in case.. */
-			Error ("%s (%d): array out of bounds.", __thisfunc__, __LINE__);
+			COM_Error ("%s (%d): array out of bounds.", __thisfunc__, __LINE__);
 		type[i] = ev_void;
 		for (ds = dsf; ds - statements >= dft->first_statement; ds--)
 		{
@@ -1858,7 +1858,7 @@ void FindBuiltinParameters (int func)
 	strcat(plist, ")");
 	func_headers[func] = strdup(plist);
 	if (func_headers[func] == NULL)
-		Error ("%s: strdup failed.", __thisfunc__);
+		COM_Error ("%s: strdup failed.", __thisfunc__);
 	printf("%s%s\nin %s in file %s\n", plist, sname, strings + dft->s_name, strings + dft->s_file);
 }
 
@@ -1926,7 +1926,7 @@ static unsigned short GetType (gofs_t ofs)
 		{
 			ef = PR_GetField(strings + par->s_name, par);
 			if (!ef)
-				Error("Could not locate a field named \"%s\"", strings + par->s_name);
+				COM_Error("Could not locate a field named \"%s\"", strings + par->s_name);
 			rtype = (ef->type | DEF_SAVEGLOBAL);
 		}
 		else
@@ -2044,7 +2044,7 @@ void DEC_ReadData (const char *srcfile)
 	{
 		fields[i].type = LittleShort (fields[i].type);
 	//	if (fields[i].type & DEF_SAVEGLOBAL)
-	//		Error ("%s: pr_fielddefs[i].type & DEF_SAVEGLOBAL", __thisfunc__);
+	//		COM_Error ("%s: pr_fielddefs[i].type & DEF_SAVEGLOBAL", __thisfunc__);
 		fields[i].ofs = LittleShort (fields[i].ofs);
 		fields[i].s_name = LittleLong (fields[i].s_name);
 	}
@@ -2100,7 +2100,7 @@ static int DEC_AlreadySeen (const char *fname)
 	char		*new1;
 
 //	if (DEC_FileCtr >= MAX_DEC_FILES)
-//		Error("%s: DEC_FileCtr: %d", __thisfunc__, DEC_FileCtr);
+//		COM_Error("%s: DEC_FileCtr: %d", __thisfunc__, DEC_FileCtr);
 
 	for (i = 0; i < DEC_FileCtr; i++)
 	{
@@ -2109,11 +2109,11 @@ static int DEC_AlreadySeen (const char *fname)
 	}
 
 	if (DEC_FileCtr >= MAX_DEC_FILES - 1)
-		Error("%s: too many source files.", __thisfunc__);
+		COM_Error("%s: too many source files.", __thisfunc__);
 
 	new1 = strdup(fname);
 	if (new1 == NULL)
-		Error ("%s: strdup failed.", __thisfunc__);
+		COM_Error ("%s: strdup failed.", __thisfunc__);
 	DEC_FilesSeen[DEC_FileCtr++] = new1;
 
 	return 0;
@@ -2202,7 +2202,7 @@ void PR_PrintFunction (const char *name)
 	}
 
 	if (i == numfunctions)
-		Error ("No function names \"%s\"", name);
+		COM_Error ("No function names \"%s\"", name);
 
 	df = functions + i;
 	cfunc = df;
@@ -2264,7 +2264,7 @@ static unsigned short GetLastFunctionReturn (dfunction_t *df, dstatement_t *ds)
 			type1 = pr_opcodes[di->op].type_a;
 			arg1 = PR_PrintStringAtOfs((unsigned short)di->a, type1);
 			if (!arg1)
-				Error("function name not found!!!\n");
+				COM_Error("function name not found!!!\n");
 
 			i = DEC_GetFunctionIdxByName(arg1);
 			if (i == 0)

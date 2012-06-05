@@ -88,7 +88,7 @@ void SubdivideFace (face_t *f, face_t **prevptr)
 			next = f->next;
 			SplitFace (f, &plane, &front, &back);
 			if (!front || !back)
-				Error ("%s: didn't split the polygon", __thisfunc__);
+				COM_Error ("%s: didn't split the polygon", __thisfunc__);
 			*prevptr = front;
 			front->next = back;
 			back->next = next;
@@ -154,7 +154,7 @@ void SubdivideFace (face_t *f, face_t **prevptr)
 			next = f->next;
 			SplitFace (f, &plane, &front, &back);
 			if (!front || !back)
-				Error ("%s: didn't split the polygon", __thisfunc__);
+				COM_Error ("%s: didn't split the polygon", __thisfunc__);
 			*prevptr = back;
 			back->next = front;
 			front->next = next;
@@ -382,12 +382,12 @@ static int GetVertex (vec3_t in, int planenum)
 	VectorCopy (vert, hv->point);
 	hv->num = numvertexes;
 	if (hv->num == MAX_MAP_VERTS)
-		Error ("%s: MAX_MAP_VERTS", __thisfunc__);
+		COM_Error ("%s: MAX_MAP_VERTS", __thisfunc__);
 	hvert_p++;
 
 // emit a vertex
 	if (numvertexes == MAX_MAP_VERTS)
-		Error ("numvertexes == MAX_MAP_VERTS");
+		COM_Error ("numvertexes == MAX_MAP_VERTS");
 
 	dvertexes[numvertexes].point[0] = vert[0];
 	dvertexes[numvertexes].point[1] = vert[1];
@@ -416,7 +416,7 @@ static int GetEdge (vec3_t p1, vec3_t p2, face_t *f)
 	int		i;
 
 	if (!f->contents[0])
-		Error ("%s: 0 contents", __thisfunc__);
+		COM_Error ("%s: 0 contents", __thisfunc__);
 
 	c_tryedges++;
 	v1 = GetVertex (p1, f->planenum);
@@ -435,7 +435,7 @@ static int GetEdge (vec3_t p1, vec3_t p2, face_t *f)
 
 // emit an edge
 	if (numedges == MAX_MAP_EDGES)
-		Error ("numedges == MAX_MAP_EDGES");
+		COM_Error ("numedges == MAX_MAP_EDGES");
 	edge = &dedges[numedges];
 	numedges++;
 	edge->v[0] = v1;
@@ -457,7 +457,7 @@ static void FindFaceEdges (face_t *face)
 
 	face->outputnumber = -1;
 	if (face->numpoints > MAXEDGES)
-		Error ("%s: %i points", __thisfunc__, face->numpoints);
+		COM_Error ("%s: %i points", __thisfunc__, face->numpoints);
 
 	for (i = 0; i < face->numpoints ; i++)
 		face->edges[i] = GetEdge (face->pts[i], face->pts[(i+1)%face->numpoints], face);

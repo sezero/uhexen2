@@ -126,7 +126,7 @@ static void RecursiveGrowRegion (dface_t *r, face_t *f)
 		return;
 
 	if (f->outputnumber != -1)
-		Error ("%s: region collision", __thisfunc__);
+		COM_Error ("%s: region collision", __thisfunc__);
 	f->outputnumber = numfaces;
 
 // add edges
@@ -155,7 +155,7 @@ static void RecursiveGrowRegion (dface_t *r, face_t *f)
 		{
 		// emit a surfedge
 			if (numsurfedges == MAX_MAP_SURFEDGES)
-				Error ("numsurfedges == MAX_MAP_SURFEDGES");
+				COM_Error ("numsurfedges == MAX_MAP_SURFEDGES");
 			dsurfedges[numsurfedges] = e;
 			numsurfedges++;
 		}
@@ -266,13 +266,13 @@ static void HealEdges (int e1, int e2)
 	else if (ed->v[1] == ed2->v[1])
 		ed->v[1] = ed2->v[0];
 	else
-		Error ("%s: edges don't meet", __thisfunc__);
+		COM_Error ("%s: edges don't meet", __thisfunc__);
 
 	VectorSubtract (dvertexes[ed->v[1]].point, dvertexes[ed->v[0]].point, v2);
 	VectorNormalize (v2);
 
 	if (!VectorCompare (v1, v2))
-		Error ("%s: edges not colinear", __thisfunc__);
+		COM_Error ("%s: edges not colinear", __thisfunc__);
 
 	edgemapping[e2] = e1;
 	saved = 0;
@@ -437,7 +437,7 @@ static void GrowNodeRegion_r (node_t *node)
 
 	// emit a region
 		if (numfaces == MAX_MAP_FACES)
-			Error ("MAX_MAP_FACES");
+			COM_Error ("MAX_MAP_FACES");
 		f->outputnumber = numfaces;
 		r = &dfaces[numfaces];
 
@@ -458,7 +458,7 @@ static void GrowNodeRegion_r (node_t *node)
 		for (i = 0 ; i < f->numpoints ; i++)
 		{
 			if (numsurfedges == MAX_MAP_SURFEDGES)
-				Error ("numsurfedges == MAX_MAP_SURFEDGES");
+				COM_Error ("numsurfedges == MAX_MAP_SURFEDGES");
 			dsurfedges[numsurfedges] = f->edges[i];
 			numsurfedges++;
 		}

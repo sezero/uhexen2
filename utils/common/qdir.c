@@ -74,12 +74,12 @@ void SetQdirFromPath (const char *path)
 				}
 				c++;
 			}
-			Error ("No gamedir in %s", path);
+			COM_Error ("No gamedir in %s", path);
 		}
 		--c;
 	}
 end:
-	Error ("%s: no '%s' in %s", __thisfunc__, BUILDDIR, path);
+	COM_Error ("%s: no '%s' in %s", __thisfunc__, BUILDDIR, path);
 }
 
 char *ExpandArg (const char *path)
@@ -104,7 +104,7 @@ char *ExpandPath (const char *path)
 	static char full[1024];
 
 	if (!qdir[0])
-		Error ("%s called without qdir set", __thisfunc__);
+		COM_Error ("%s called without qdir set", __thisfunc__);
 
 	if (path[0] == '/' || path[0] == '\\' || path[1] == ':')
 	{

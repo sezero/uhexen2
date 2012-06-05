@@ -80,7 +80,7 @@ void SplitFace (face_t *in, plane_t *split, face_t **front, face_t **back)
 	vec3_t	mid;
 
 	if (in->numpoints < 0)
-		Error ("%s: freed face", __thisfunc__);
+		COM_Error ("%s: freed face", __thisfunc__);
 	counts[0] = counts[1] = counts[2] = 0;
 
 // determine sides for each point
@@ -121,7 +121,7 @@ void SplitFace (face_t *in, plane_t *split, face_t **front, face_t **back)
 	for (i = 0 ; i < in->numpoints ; i++)
 	{
 		if (newf->numpoints > MAXEDGES || new2->numpoints > MAXEDGES)
-			Error ("%s: numpoints > MAXEDGES", __thisfunc__);
+			COM_Error ("%s: numpoints > MAXEDGES", __thisfunc__);
 
 		p1 = in->pts[i];
 
@@ -169,7 +169,7 @@ void SplitFace (face_t *in, plane_t *split, face_t **front, face_t **back)
 	}
 
 	if (newf->numpoints > MAXEDGES || new2->numpoints > MAXEDGES)
-		Error ("%s: numpoints > MAXEDGES", __thisfunc__);
+		COM_Error ("%s: numpoints > MAXEDGES", __thisfunc__);
 
 #if 0
 	CheckFace (newf);
@@ -461,7 +461,7 @@ surface_t *CSGFaces (brushset_t *bs)
 
 #if 0
 	if (!csgfaces)
-		Error ("No faces");
+		COM_Error ("No faces");
 #endif
 
 	surfhead = BuildSurfaces ();

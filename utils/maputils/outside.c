@@ -245,7 +245,7 @@ qboolean FillOutside (node_t *node)
 	{
 		leakfile = fopen (pointfilename, "w");
 		if (!leakfile)
-			Error ("Couldn't open %s\n", pointfilename);
+			COM_Error ("Couldn't open %s\n", pointfilename);
 	}
 
 	if (RecursiveFillOutside (outside_node.portals->nodes[s], false))

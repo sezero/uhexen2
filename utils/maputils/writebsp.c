@@ -52,7 +52,7 @@ int FindFinalPlane (dplane_t *p)
 // new plane
 //
 	if (numplanes == MAX_MAP_PLANES)
-		Error ("numplanes == MAX_MAP_PLANES");
+		COM_Error ("numplanes == MAX_MAP_PLANES");
 	dplane = &dplanes[numplanes];
 	*dplane = *p;
 	numplanes++;
@@ -75,7 +75,7 @@ static void WriteNodePlanes_r (node_t *node)
 		planemapping[node->planenum] = numplanes;
 
 		if (numplanes == MAX_MAP_PLANES)
-			Error ("numplanes == MAX_MAP_PLANES");
+			COM_Error ("numplanes == MAX_MAP_PLANES");
 		plane = &planes[node->planenum];
 		dplane = &dplanes[numplanes];
 		dplane->normal[0] = plane->normal[0];
@@ -188,7 +188,7 @@ static void WriteLeaf (node_t *node)
 	{
 	// emit a marksurface
 		if (nummarksurfaces == MAX_MAP_MARKSURFACES)
-			Error ("nummarksurfaces == MAX_MAP_MARKSURFACES");
+			COM_Error ("nummarksurfaces == MAX_MAP_MARKSURFACES");
 		f = *fp;
 		do
 		{
@@ -214,7 +214,7 @@ static void WriteDrawNodes_r (node_t *node)
 
 // emit a node
 	if (numnodes == MAX_MAP_NODES)
-		Error ("numnodes == MAX_MAP_NODES");
+		COM_Error ("numnodes == MAX_MAP_NODES");
 	n = &dnodes[numnodes];
 	numnodes++;
 
@@ -262,12 +262,12 @@ void WriteDrawNodes (node_t *headnode)
 
 #if 0
 	if (headnode->contents < 0)
-		Error ("%s: empty model", __thisfunc__);
+		COM_Error ("%s: empty model", __thisfunc__);
 #endif
 
 // emit a model
 	if (nummodels == MAX_MAP_MODELS)
-		Error ("nummodels == MAX_MAP_MODELS");
+		COM_Error ("nummodels == MAX_MAP_MODELS");
 	bm = &dmodels[nummodels];
 	nummodels++;
 
@@ -306,7 +306,7 @@ void BumpModel (int hullnumber)
 
 // emit a model
 	if (nummodels == MAX_MAP_MODELS)
-		Error ("nummodels == MAX_MAP_MODELS");
+		COM_Error ("nummodels == MAX_MAP_MODELS");
 	bm = &dmodels[nummodels];
 	nummodels++;
 
@@ -377,7 +377,7 @@ static void TEX_InitFromWad (const char *path)
 	wl->texfile = SafeOpenRead (path);
 	SafeRead (wl->texfile, &wl->wadinfo, sizeof(wadinfo_t));
 	if (strncmp (wl->wadinfo.identification, "WAD2", 4))
-		Error ("%s: %s isn't a wadfile", __thisfunc__, path);
+		COM_Error ("%s: %s isn't a wadfile", __thisfunc__, path);
 	wl->wadinfo.numlumps = LittleLong(wl->wadinfo.numlumps);
 	wl->wadinfo.infotableofs = LittleLong(wl->wadinfo.infotableofs);
 	fseek (wl->texfile, wl->wadinfo.infotableofs, SEEK_SET);
@@ -567,7 +567,7 @@ static void WriteMiptex (void)
 		l->dataofs[i] = data - (byte *)l;
 		len = LoadLump (miptex[i], data);
 		if (data + len - dtexdata >= MAX_MAP_MIPTEX)
-			Error ("Textures exceeded MAX_MAP_MIPTEX");
+			COM_Error ("Textures exceeded MAX_MAP_MIPTEX");
 		if (!len)
 			l->dataofs[i] = -1;	// didn't find the texture
 		data += len;

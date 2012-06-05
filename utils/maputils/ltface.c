@@ -122,7 +122,7 @@ static void CalcFaceVectors (lightinfo_t *l)
 // flip it towards plane normal
 	distscale = (float)DotProduct (texnormal, l->facenormal);
 	if (!distscale)
-		Error ("Texture axis perpendicular to face");
+		COM_Error ("Texture axis perpendicular to face");
 	if (distscale < 0)
 	{
 		distscale = -distscale;
@@ -207,7 +207,7 @@ static void CalcFaceExtents (lightinfo_t *l)
 		l->texmins[i] = (int)floor(mins[i]);
 		l->texsize[i] = (int)floor(maxs[i] - mins[i]);
 		if (l->texsize[i] > 17)
-			Error ("Bad surface extents");
+			COM_Error ("Bad surface extents");
 	}
 }
 
@@ -530,7 +530,7 @@ void LightFace (int surfnum)
 
 	size = lightmapwidth*(l.texsize[1]+1);
 	if (size > SINGLEMAP)
-		Error ("Bad lightmap size");
+		COM_Error ("Bad lightmap size");
 
 	for (i = 0 ; i < MAXLIGHTMAPS ; i++)
 		l.lightstyles[i] = 255;
@@ -568,7 +568,7 @@ void LightFace (int surfnum)
 	for (i = 0 ; i < l.numlightstyles ; i++)
 	{
 		if (l.lightstyles[i] == 0xff)
-			Error ("Wrote empty lightmap");
+			COM_Error ("Wrote empty lightmap");
 		light = l.lightmaps[i];
 		c = 0;
 		for (t = 0 ; t <= l.texsize[1] ; t++)
@@ -587,7 +587,7 @@ void LightFace (int surfnum)
 				if (total > 255)
 					total = 255;
 				if (total < 0)
-					Error ("light < 0");
+					COM_Error ("light < 0");
 				*out++ = (byte) total;
 			}
 		}

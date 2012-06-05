@@ -50,13 +50,13 @@ skipspace:
 		if (!*script_p)
 		{
 			if (!crossline)
-				Error ("Line %i is incomplete",scriptline);
+				COM_Error ("Line %i is incomplete",scriptline);
 			return false;
 		}
 		if (*script_p++ == '\n')
 		{
 			if (!crossline)
-				Error ("Line %i is incomplete",scriptline);
+				COM_Error ("Line %i is incomplete",scriptline);
 			scriptline++;
 		}
 	}
@@ -64,12 +64,12 @@ skipspace:
 	if (script_p[0] == '/' && script_p[1] == '/')	// comment field
 	{
 		if (!crossline)
-			Error ("Line %i is incomplete\n",scriptline);
+			COM_Error ("Line %i is incomplete\n",scriptline);
 		while (*script_p++ != '\n')
 			if (!*script_p)
 			{
 				if (!crossline)
-					Error ("Line %i is incomplete",scriptline);
+					COM_Error ("Line %i is incomplete",scriptline);
 				return false;
 			}
 		goto skipspace;
@@ -86,10 +86,10 @@ skipspace:
 		while ( *script_p != '"' )
 		{
 			if (!*script_p)
-				Error ("EOF inside quoted token");
+				COM_Error ("EOF inside quoted token");
 			*token_p++ = *script_p++;
 			if (token_p == &token[MAXTOKEN])
-				Error ("Token too large on line %i",scriptline);
+				COM_Error ("Token too large on line %i",scriptline);
 		}
 		script_p++;
 	}
@@ -97,7 +97,7 @@ skipspace:
 	{
 		*token_p++ = *script_p++;
 		if (token_p == &token[MAXTOKEN])
-			Error ("Token too large on line %i",scriptline);
+			COM_Error ("Token too large on line %i",scriptline);
 	}
 
 	*token_p = 0;
@@ -202,7 +202,7 @@ static qboolean CopyBrush (void)
 		{
 			GetToken (false);
 			if (token[0] != '(')
-				return false; //Error ("%s: couldn't parse", __thisfunc__);
+				return false; //COM_Error ("%s: couldn't parse", __thisfunc__);
 			for (j = 0 ; j < 3 ; j++)
 			{
 				GetToken (false);
@@ -210,7 +210,7 @@ static qboolean CopyBrush (void)
 			}
 			GetToken (false);
 			if (token[0] != ')')
-				return false; //Error ("%s: couldn't parse", __thisfunc__);
+				return false; //COM_Error ("%s: couldn't parse", __thisfunc__);
 		}
 
 		GetToken (false);
@@ -280,7 +280,7 @@ static int ParseEntity (void)
 		return false;
 
 	if (strcmp (token, "{") )
-		Error ("%s: { not found", __thisfunc__);
+		COM_Error ("%s: { not found", __thisfunc__);
 
 	fprintf (f,"{\n");
 
@@ -289,7 +289,7 @@ static int ParseEntity (void)
 	do
 	{
 		if (!GetToken (true))
-			Error ("%s: EOF without closing brace", __thisfunc__);
+			COM_Error ("%s: EOF without closing brace", __thisfunc__);
 		if (!strcmp (token, "}") )
 			break;
 		if (!strcmp (token, "{") )
@@ -334,11 +334,11 @@ static void Remap (char *filename)
 	strcat (backname, ".old");
 	strcat (workname, ".tmp");
 
-	remove (workname);
+	Q_unlink (workname);
 
 	f = fopen (workname, "w");
 	if (!f)
-		Error ("Couldn't write to %s", backname);
+		COM_Error ("Couldn't write to %s", backname);
 
 	StartTokenParsing (buf);
 
@@ -363,9 +363,9 @@ static void Remap (char *filename)
 	}
 
 	printf ("%5i entities\n", num_entities);
-	remove (backname);
-	rename (filename, backname);
-	rename (workname, filename);
+	Q_unlink (backname);
+	Q_rename (filename, backname);
+	Q_rename (workname, filename);
 }
 
 
@@ -374,7 +374,7 @@ int main (int argc, char **argv)
 	int		i;
 
 	if (argc < 2)
-		Error ("USAGE: entmap [mapfile]\nRenames the map to .old, then remaps entity values");
+		COM_Error ("USAGE: entmap [mapfile]\nRenames the map to .old, then remaps entity values");
 
 	for (i = 1 ; i < argc ; i++)
 		Remap (argv[i]);

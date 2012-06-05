@@ -38,7 +38,7 @@ static void CheckColinear (face_t *f)
 		VectorNormalize (v2);
 
 		if (VectorCompare (v1, v2))
-			Error ("Colinear edge");
+			COM_Error ("Colinear edge");
 	}
 }
 #endif
@@ -145,7 +145,7 @@ static face_t *TryMerge (face_t *f1, face_t *f2)
 //
 	if (f1->numpoints + f2->numpoints > MAXEDGES)
 	{
-	//	Error ("%s: too many edges!", __thisfunc__);
+	//	COM_Error ("%s: too many edges!", __thisfunc__);
 		return NULL;
 	}
 

@@ -275,7 +275,7 @@ void DecisionTime (const char *msg)
 #endif
 
 	if (c == 'n' || c == 'N')
-		Error ("Program Terminated by user\n");
+		COM_Error ("Program Terminated by user\n");
 }
 
 

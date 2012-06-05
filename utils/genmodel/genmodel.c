@@ -245,10 +245,8 @@ int main(int argc, char **argv)
 		q_strlcpy(bakname, path, sizeof(bakname));
 		bakname[i - 4] = 0;
 		DefaultExtension(bakname, ".bak", sizeof(bakname));
-		if (rename(path, bakname))
-		{
-			Error("Could not rename file!\n");
-		}
+		if (Q_rename(path, bakname))
+			COM_Error("Could not rename file!\n");
 	}
 	else
 	{
@@ -358,7 +356,7 @@ static void WriteFrame (FILE *modelouthandle, int framenum)
 		tarray[j].lightnormalindex = pframe[j].lightnormalindex;
 
 		if (tarray[j].lightnormalindex > NUMVERTEXNORMALS)
-			Error ("invalid lightnormalindex %d\n", tarray[j].lightnormalindex);
+			COM_Error ("invalid lightnormalindex %d\n", tarray[j].lightnormalindex);
 
 		for (k = 0 ; k < 3 ; k++)
 		{
@@ -708,7 +706,7 @@ static void OptimizeVertices(void)
 
 			c = in->v[j].vnorm.numnormals;
 			if (!c)
-				Error ("Vertex with no triangles attached");
+				COM_Error ("Vertex with no triangles attached");
 
 			VectorScale (in->v[j].vnorm.normalsum, 1.0/c, v);
 			VectorNormalize (v, v);
@@ -804,7 +802,7 @@ static void WriteModel (void)
 	}
 
 	if (!skincount)
-		Error ("frames with no skins\n");
+		COM_Error ("frames with no skins\n");
 
 	StripExtension (outname);
 	q_strlcat(outname, ".mdl", sizeof(outname));
@@ -851,16 +849,14 @@ static void ReadModel(const char *FileName)
 
 	FH = fopen(FileName,"rb");
 	if (!FH)
-	{
-		Error ("Could not open model %s\n",FileName);
-	}
+		COM_Error ("Could not open model %s\n",FileName);
 
 	SafeRead(FH, (void *)&mdl, sizeof(mdl));
 
 	if (mdl.ident != LittleLong (IDPOLYHEADER) ||
 		mdl.version != LittleLong (ALIAS_VERSION))
 	{
-		Error ("Invalid model version for file %s\n",FileName);
+		COM_Error ("Invalid model version for file %s\n",FileName);
 	}
 
 	model.boundingradius = LittleFloat (mdl.boundingradius);
@@ -944,7 +940,7 @@ static void ReadModel(const char *FileName)
 		}
 		else
 		{
-			Error("group frames not implemented");
+			COM_Error("group frames not implemented");
 
 /*			int		j, numframes, groupframe;
 			float	totinterval;
@@ -1229,7 +1225,7 @@ static void Cmd_Skin (void)
 		GetToken (false);
 		skins[skincount].interval = atof (token);
 		if (skins[skincount].interval <= 0.0)
-			Error ("Non-positive interval");
+			COM_Error ("Non-positive interval");
 	}
 	else
 	{
@@ -1243,14 +1239,14 @@ static void Cmd_Skin (void)
 	sch = (float)ExtractNumber(pskinbitmap, ENCODED_HEIGHT_X, ENCODED_HEIGHT_Y);
 	if (ScaleWidth != scw || ScaleHeight != sch)
 	{
-		Error("Conflicting scale values in %s.\nBase info: %d, %d\n"
+		COM_Error("Conflicting scale values in %s.\nBase info: %d, %d\n"
 			"Skin info: %d, %d", file1, (int)ScaleWidth, (int)ScaleHeight,
 			(int)scw, (int)sch);
 	}
 
 	skins[skincount].pdata = malloc (model.skinwidth * model.skinheight);
 	if (!skins[skincount].pdata)
-		Error ("couldn't get memory for skin texture");
+		COM_Error ("couldn't get memory for skin texture");
 
 	// Copy skinwidth*skinheight, since PCXs are always
 	// loaded as 640x480 bitmaps
@@ -1266,7 +1262,7 @@ static void Cmd_Skin (void)
 	skincount++;
 
 	if (skincount > MAXSKINS)
-		Error ("Too many skins; increase MAXSKINS");
+		COM_Error ("Too many skins; increase MAXSKINS");
 }
 
 //==========================================================================
@@ -1305,8 +1301,8 @@ static int ExtractDigit(byte *pic, int x, int y)
 			return i;
 		}
 	}
-	Error("Unable to extract scaling info from skin PCX.");
-	return -1;	// shut-up the compiler
+	COM_Error("Unable to extract scaling info from skin PCX.");
+	return -1;
 }
 
 
@@ -1338,7 +1334,7 @@ static void GrabFrame (const char *frame, int isgroup)
 
 	if (numtris != model.numtris)
 	{
-		Error("Number of triangles doesn't match\n"
+		COM_Error("Number of triangles doesn't match\n"
 			"Base frame: %d, frame %s: %d\n",
 			model.numtris, frame, numtris);
 	}
@@ -1349,7 +1345,7 @@ static void GrabFrame (const char *frame, int isgroup)
 		GetToken (false);
 		frames[framecount].interval = atof (token);
 		if (frames[framecount].interval <= 0.0)
-			Error ("Non-positive interval %s %f", token, frames[framecount].interval);
+			COM_Error ("Non-positive interval %s %f", token, frames[framecount].interval);
 	}
 	else
 	{
@@ -1462,7 +1458,7 @@ static void GrabFrame (const char *frame, int isgroup)
 		}
 		else
 		{
-			Error ("Vertex with no non-degenerate triangles attached");
+			COM_Error ("Vertex with no non-degenerate triangles attached");
 		}
 
 		VectorNormalize (v);
@@ -1488,7 +1484,7 @@ static void GrabFrame (const char *frame, int isgroup)
 	framecount++;
 
 	if (framecount >= MAXFRAMES)
-		Error ("Too many frames; increase MAXFRAMES");
+		COM_Error ("Too many frames; increase MAXFRAMES");
 
 	free (ptri);
 	firstframe = 0;
@@ -1523,7 +1519,7 @@ static void Cmd_SkinGroupStart (void)
 
 	groupskin = skincount++;
 	if (skincount >= MAXFRAMES)
-		Error ("Too many skins; increase MAXSKINS");
+		COM_Error ("Too many skins; increase MAXSKINS");
 
 	skins[groupskin].type = ALIAS_SKIN_GROUP;
 	skins[groupskin].numgroupskins = 0;
@@ -1532,7 +1528,7 @@ static void Cmd_SkinGroupStart (void)
 	{
 		GetToken (true);
 		if (endofscript)
-			Error ("End of file during group");
+			COM_Error ("End of file during group");
 
 		if (!strcmp (token, "$skin"))
 		{
@@ -1545,12 +1541,12 @@ static void Cmd_SkinGroupStart (void)
 		}
 		else
 		{
-			Error ("$skin or $skingroupend expected\n");
+			COM_Error ("$skin or $skingroupend expected\n");
 		}
 	}
 
 	if (skins[groupskin].numgroupskins == 0)
-		Error ("Empty group\n");
+		COM_Error ("Empty group\n");
 }
 
 /*
@@ -1564,7 +1560,7 @@ static void Cmd_FrameGroupStart (void)
 
 	groupframe = framecount++;
 	if (framecount >= MAXFRAMES)
-		Error ("Too many frames; increase MAXFRAMES");
+		COM_Error ("Too many frames; increase MAXFRAMES");
 
 	frames[groupframe].type = ALIAS_GROUP;
 	frames[groupframe].numgroupframes = 0;
@@ -1573,7 +1569,7 @@ static void Cmd_FrameGroupStart (void)
 	{
 		GetToken (true);
 		if (endofscript)
-			Error ("End of file during group");
+			COM_Error ("End of file during group");
 
 		if (!strcmp (token, "$frame"))
 		{
@@ -1585,14 +1581,14 @@ static void Cmd_FrameGroupStart (void)
 		}
 		else
 		{
-			Error ("$frame or $framegroupend expected\n");
+			COM_Error ("$frame or $framegroupend expected\n");
 		}
 	}
 
 	frames[groupframe].numgroupframes += framecount - groupframe - 1;
 
 	if (frames[groupframe].numgroupframes == 0)
-		Error ("Empty group\n");
+		COM_Error ("Empty group\n");
 }
 
 /*
@@ -1734,7 +1730,7 @@ static void ParseScript (void)
 		else if (!strcmp (token, "$cd"))
 		{
 			if (cdset)
-				Error ("Two $cd in one model");
+				COM_Error ("Two $cd in one model");
 			cdset = true;
 			GetToken (false);
 			q_strlcpy (cdpartial, token, sizeof(cdpartial));
@@ -1789,7 +1785,7 @@ static void ParseScript (void)
 		}
 		else
 		{
-			Error ("bad command %s\n", token);
+			COM_Error ("bad command %s\n", token);
 		}
 	}
 }
@@ -1831,13 +1827,13 @@ static void LoadPCXSkin(const char *filename, byte **buffer)
 		printf("->lineBytes = %d\n", pcx->lineBytes);
 		printf("width = %d [640]\n", w);
 		printf("height = %d [480]\n", h);
-		Error("Bad PCX skin file.\n");
+		COM_Error("Bad PCX skin file.\n");
 	}
 
 	// Allocate page
 	if ((dst = (byte *) malloc(SKINPAGE_SIZE)) == NULL)
 	{
-		Error("Failed to allocate memory for skin page.\n");
+		COM_Error("Failed to allocate memory for skin page.\n");
 	}
 	*buffer = dst;
 	memset(dst, 0, SKINPAGE_SIZE);
@@ -1867,7 +1863,7 @@ static void LoadPCXSkin(const char *filename, byte **buffer)
 		}
 		if (count > SKINPAGE_WIDTH)
 		{
-			Error("PCX decompression overflow.\n");
+			COM_Error("PCX decompression overflow.\n");
 		}
 	}
 

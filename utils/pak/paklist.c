@@ -68,12 +68,12 @@ int main (int argc, char **argv)
 
 	pak = LoadPackFile (argv[1]);
 	if (!pak)
-		Error ("Unable to open file %s", argv[i]);
+		COM_Error ("Unable to open file %s", argv[i]);
 	printf ("PAK file %s: %li bytes, %i files, header crc %u.\n",
 			pak->filename, Q_filelength(pak->handle),
 			pak->numfiles, pak->crc);
 	if (!pak->numfiles)
-		Error ("%s has no files.", argv[1]);
+		COM_Error ("%s has no files.", argv[1]);
 	printf ("============================================================================\n");
 	printf ("%-56s%10s%10s\n", "Filename", "Length", "Offset");
 	printf ("============================================================================\n");

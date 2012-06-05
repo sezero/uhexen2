@@ -121,7 +121,7 @@ static void CanonicalVector (vec3_t vec)
 	}
 	else
 		vec[2] = 0;
-	Error ("%s: degenerate", __thisfunc__);
+	COM_Error ("%s: degenerate", __thisfunc__);
 }
 
 static wedge_t *FindEdge (vec3_t p1, vec3_t p2, double *t1, double *t2)
@@ -175,7 +175,7 @@ static wedge_t *FindEdge (vec3_t p1, vec3_t p2, double *t1, double *t2)
 	}
 
 	if (numwedges == MAXWEDGES)
-		Error ("%s: numwedges == MAXWEDGES", __thisfunc__);
+		COM_Error ("%s: numwedges == MAXWEDGES", __thisfunc__);
 	w = &wedges[numwedges];
 	numwedges++;
 
@@ -214,7 +214,7 @@ static void AddVert (wedge_t *w, double t)
 
 // insert a new wvert before v
 	if (numwverts == MAXWVERTS)
-		Error ("%s: numwverts == MAXWVERTS", __thisfunc__);
+		COM_Error ("%s: numwverts == MAXWVERTS", __thisfunc__);
 
 	newv = &wverts[numwverts];
 	numwverts++;
@@ -339,7 +339,7 @@ restart:
 
 		newf = NewFaceFromFace (f);
 		if (f->original)
-			Error ("%s: f->original", __thisfunc__);
+			COM_Error ("%s: f->original", __thisfunc__);
 
 		newf->original = chain;
 		chain = newf;

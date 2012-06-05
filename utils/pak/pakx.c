@@ -74,7 +74,7 @@ static void ExtractFile (pack_t *pak, const char *filename, const char *destdir)
 			dest[sizeof(dest) - 1] = '\0';
 			printf ("%s --> %s\n", pak->files[i].name, dest);
 			if (Q_WriteFileFromHandle(pak->handle, dest, pak->files[i].filelen) != 0)
-				Error ("I/O errors during copy.");
+				COM_Error ("I/O errors during copy.");
 			continue;
 		}
 		if (!strcmp (pak->files[i].name, filename))
@@ -84,7 +84,7 @@ static void ExtractFile (pack_t *pak, const char *filename, const char *destdir)
 			dest[sizeof(dest) - 1] = '\0';
 			printf ("%s --> %s\n", pak->files[i].name, dest);
 			if (Q_WriteFileFromHandle(pak->handle, dest, pak->files[i].filelen) != 0)
-				Error ("I/O errors during copy.");
+				COM_Error ("I/O errors during copy.");
 			break;
 		}
 	}
@@ -140,10 +140,10 @@ int main (int argc, char **argv)
 
 	pak = LoadPackFile (argv[i]);
 	if (!pak)
-		Error ("Unable to open file %s", argv[i]);
+		COM_Error ("Unable to open file %s", argv[i]);
 	printf ("Opened %s (%i files)\n", pak->filename, pak->numfiles);
 	if (!pak->numfiles)
-		Error ("%s has no files.", pak->filename);
+		COM_Error ("%s has no files.", pak->filename);
 	if (++i >= argc)
 		ExtractFile (pak, NULL, destdir);
 	else

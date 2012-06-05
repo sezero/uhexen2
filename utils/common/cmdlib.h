@@ -42,7 +42,6 @@ extern size_t qerr_strlcpy (const char *caller, int linenum, char *dst, const ch
 extern int qerr_snprintf (const char *caller, int linenum, char *str, size_t size, const char *format, ...)
 									__attribute__((__format__(__printf__,5,6)));
 
-
 // PUBLIC DATA DECLARATIONS ------------------------------------------------
 
 /* set myargc and myargv properly
@@ -59,11 +58,11 @@ extern qboolean		com_eof;
 char	*q_strlwr (char *str);
 char	*q_strupr (char *str);
 
-double	GetTime (void);
+double	COM_GetTime (void);
 
 void	*SafeMalloc (size_t size);
 
-void	Error (const char *error, ...) __attribute__((__format__(__printf__,1,2), __noreturn__));
+void	COM_Error (const char *error, ...) __attribute__((__format__(__printf__,1,2), __noreturn__));
 int	CheckParm (const char *check);
 
 const char	*COM_Parse (const char *data);

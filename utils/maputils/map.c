@@ -48,7 +48,7 @@ int FindMiptex (const char *name)
 			return i;
 	}
 	if (nummiptex == MAX_MAP_TEXINFO)
-		Error ("nummiptex == MAX_MAP_TEXINFO");
+		COM_Error ("nummiptex == MAX_MAP_TEXINFO");
 	strcpy (miptex[i], name);
 	nummiptex++;
 	return i;
@@ -100,7 +100,7 @@ static int FindTexinfo (texinfo_t *t)
 
 // allocate a new texture
 	if (numtexinfo == MAX_MAP_TEXINFO)
-		Error ("numtexinfo == MAX_MAP_TEXINFO");
+		COM_Error ("numtexinfo == MAX_MAP_TEXINFO");
 	texinfo[i] = *t;
 	numtexinfo++;
 
@@ -140,13 +140,13 @@ skipspace:
 		if (!*script_p)
 		{
 			if (!crossline)
-				Error ("Line %i is incomplete",scriptline);
+				COM_Error ("Line %i is incomplete",scriptline);
 			return false;
 		}
 		if (*script_p++ == '\n')
 		{
 			if (!crossline)
-				Error ("Line %i is incomplete",scriptline);
+				COM_Error ("Line %i is incomplete",scriptline);
 			scriptline++;
 		}
 	}
@@ -154,12 +154,12 @@ skipspace:
 	if (script_p[0] == '/' && script_p[1] == '/')	// comment field
 	{
 		if (!crossline)
-			Error ("Line %i is incomplete\n",scriptline);
+			COM_Error ("Line %i is incomplete\n",scriptline);
 		while (*script_p++ != '\n')
 			if (!*script_p)
 			{
 				if (!crossline)
-					Error ("Line %i is incomplete",scriptline);
+					COM_Error ("Line %i is incomplete",scriptline);
 				return false;
 			}
 		goto skipspace;
@@ -176,10 +176,10 @@ skipspace:
 		while ( *script_p != '"' )
 		{
 			if (!*script_p)
-				Error ("EOF inside quoted token");
+				COM_Error ("EOF inside quoted token");
 			*token_p++ = *script_p++;
 			if (token_p > &token[MAXTOKEN-1])
-				Error ("Token too large on line %i",scriptline);
+				COM_Error ("Token too large on line %i",scriptline);
 		}
 		script_p++;
 	}
@@ -187,7 +187,7 @@ skipspace:
 	{
 		*token_p++ = *script_p++;
 		if (token_p > &token[MAXTOKEN-1])
-			Error ("Token too large on line %i",scriptline);
+			COM_Error ("Token too large on line %i",scriptline);
 	}
 
 	*token_p = 0;
@@ -222,11 +222,11 @@ static void ParseEpair (void)
 	mapent->epairs = e;
 
 	if (strlen(token) >= MAX_KEY-1)
-		Error ("%s: token too long", __thisfunc__);
+		COM_Error ("%s: token too long", __thisfunc__);
 	e->key = copystring(token);
 	GetToken (false);
 	if (strlen(token) >= MAX_VALUE-1)
-		Error ("%s: token too long", __thisfunc__);
+		COM_Error ("%s: token too long", __thisfunc__);
 	e->value = copystring(token);
 }
 
@@ -368,7 +368,7 @@ static void ParseBrush (void)
 			if (i != 0)
 				GetToken (true);
 			if (strcmp (token, "(") )
-				Error ("parsing brush");
+				COM_Error ("parsing brush");
 
 			for (j = 0 ; j < 3 ; j++)
 			{
@@ -378,7 +378,7 @@ static void ParseBrush (void)
 
 			GetToken (false);
 			if (strcmp (token, ")") )
-				Error ("parsing brush");
+				COM_Error ("parsing brush");
 		}
 
 	// read the texturedef
@@ -538,7 +538,7 @@ static void ParseBrush (void)
 		vec3_t	origin;
 
 		if (num_entities == 1)
-			Error ("Origin brushes not allowed in world");
+			COM_Error ("Origin brushes not allowed in world");
 
 		BrushOrigin (b, origin);
 
@@ -562,10 +562,10 @@ static qboolean ParseEntity (void)
 		return false;
 
 	if (strcmp (token, "{") )
-		Error ("%s: { not found", __thisfunc__);
+		COM_Error ("%s: { not found", __thisfunc__);
 
 	if (num_entities == MAX_MAP_ENTITIES)
-		Error ("num_entities == MAX_MAP_ENTITIES");
+		COM_Error ("num_entities == MAX_MAP_ENTITIES");
 
 	mapent = &entities[num_entities];
 	num_entities++;
@@ -573,7 +573,7 @@ static qboolean ParseEntity (void)
 	do
 	{
 		if (!GetToken (true))
-			Error ("%s: EOF without closing brace", __thisfunc__);
+			COM_Error ("%s: EOF without closing brace", __thisfunc__);
 		if (!strcmp (token, "}") )
 			break;
 		if (!strcmp (token, "{") )
@@ -718,7 +718,7 @@ void WriteEntitiesToString (void)
 		end += 2;
 
 		if (end > buf + MAX_MAP_ENTSTRING)
-			Error ("Entity text too long");
+			COM_Error ("Entity text too long");
 	}
 	entdatasize = end - buf + 1;
 }

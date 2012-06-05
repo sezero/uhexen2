@@ -230,7 +230,7 @@ static int CopyLump (int lump, void *dest, int size)
 	ofs = header->lumps[lump].fileofs;
 
 	if (length % size)
-		Error ("%s: odd lump size", __thisfunc__);
+		COM_Error ("%s: odd lump size", __thisfunc__);
 
 	memcpy (dest, (byte *)header + ofs, length);
 
@@ -258,7 +258,7 @@ void LoadBSPFile (const char *filename)
 		((int *)header)[i] = LittleLong ( ((int *)header)[i]);
 
 	if (header->version != BSPVERSION)
-		Error ("%s is version %i, not %i", filename, i, BSPVERSION);
+		COM_Error ("%s is version %i, not %i", filename, i, BSPVERSION);
 
 	nummodels = CopyLump (LUMP_MODELS, dmodels, sizeof(dmodel_t));
 	numvertexes = CopyLump (LUMP_VERTEXES, dvertexes, sizeof(dvertex_t));

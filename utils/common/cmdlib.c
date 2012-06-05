@@ -92,7 +92,7 @@ size_t qerr_strlcat (const char *caller, int linenum,
 {
 	size_t	ret = q_strlcat (dst, src, size);
 	if (ret >= size)
-		Error("%s: %d: string buffer overflow!", caller, linenum);
+		COM_Error("%s: %d: string buffer overflow!", caller, linenum);
 	return ret;
 }
 
@@ -101,7 +101,7 @@ size_t qerr_strlcpy (const char *caller, int linenum,
 {
 	size_t	ret = q_strlcpy (dst, src, size);
 	if (ret >= size)
-		Error("%s: %d: string buffer overflow!", caller, linenum);
+		COM_Error("%s: %d: string buffer overflow!", caller, linenum);
 	return ret;
 }
 
@@ -116,7 +116,7 @@ int qerr_snprintf (const char *caller, int linenum,
 	va_end (argptr);
 
 	if ((size_t)ret >= size)
-		Error("%s: %d: string buffer overflow!", caller, linenum);
+		COM_Error("%s: %d: string buffer overflow!", caller, linenum);
 	return ret;
 }
 
@@ -125,21 +125,12 @@ int qerr_snprintf (const char *caller, int linenum,
 
 /*
 ==============
-GetTime
+COM_GetTime
 
 ==============
 */
-#if 0
-double GetTime (void)
-{
-	time_t	t;
-	time(&t);
-	return t;
-}
-#endif
-
-#ifdef PLATFORM_WINDOWS
-double GetTime (void)
+#if defined(PLATFORM_WINDOWS)
+double COM_GetTime (void)
 {
 /* http://www.codeproject.com/KB/datetime/winapi_datetime_ops.aspx
  * It doesn't matter that the offset is Jan 1, 1601, result
@@ -155,26 +146,23 @@ double GetTime (void)
 
 	return (double)ul1.QuadPart / 10000000.0;
 }
-#endif
 
-#ifdef PLATFORM_DOS
-double GetTime (void)
+#elif defined(PLATFORM_DOS)
+double COM_GetTime (void)
 {
 /* See  DJGPP uclock() man page for its limitations */
 	return (double) uclock() / (double) UCLOCKS_PER_SEC;
 }
-#endif
 
-#ifdef PLATFORM_UNIX
-double GetTime (void)
+#elif defined(PLATFORM_UNIX)
+double COM_GetTime (void)
 {
 	struct timeval tv;
 	gettimeofday (&tv, NULL);
 	return tv.tv_sec + tv.tv_usec / 1000000.0;
 }
-#endif
 
-#ifdef PLATFORM_AMIGA
+#elif defined(PLATFORM_AMIGA)
 static void AMIGA_TimerCleanup (void)
 {
 	if (TimerBase)
@@ -218,7 +206,7 @@ static void AMIGA_TimerInit (void)
 	}
 
 	if (!TimerBase)
-		Error("Can't open timer.device");
+		COM_Error("Can't open timer.device");
 
 	atexit (AMIGA_TimerCleanup);
 	/* 1us wait, for timer cleanup success */
@@ -229,7 +217,7 @@ static void AMIGA_TimerInit (void)
 	WaitIO((struct IORequest *) timerio);
 }
 
-double GetTime (void)
+double COM_GetTime (void)
 {
 	struct timeval tv;
 	if (!TimerBase)
@@ -237,7 +225,15 @@ double GetTime (void)
 	GetSysTime(&tv);
 	return tv.tv_sec + tv.tv_usec / 1000000.0;
 }
-#endif	/* PLATFORM_AMIGA */
+
+#else /* GENERIC CASE: */
+double COM_GetTime (void)
+{
+	time_t	t;
+	time(&t);
+	return t;
+}
+#endif
 
 /*
 ==============
@@ -346,12 +342,12 @@ const char *COM_Parse (const char *data)
 
 /*
 ==============
-Error
+COM_Error
 
 For abnormal program terminations.
 ==============
 */
-void Error (const char *error, ...)
+void COM_Error (const char *error, ...)
 {
 	va_list argptr;
 
@@ -372,7 +368,7 @@ void *SafeMalloc (size_t size)
 {
 	void *ptr = calloc(1, size);
 	if (!ptr)
-		Error ("Malloc failed for %lu bytes.", (unsigned long)size);
+		COM_Error ("Malloc failed for %lu bytes.", (unsigned long)size);
 	return ptr;
 }
 
@@ -390,10 +386,8 @@ int CheckParm (const char *check)
 
 	for (i = 1; i < myargc; i++)
 	{
-		if ( !q_strcasecmp(check, myargv[i]) )
-		{
+		if (!q_strcasecmp(check, myargv[i]))
 			return i;
-		}
 	}
 	return 0;
 }
@@ -421,7 +415,7 @@ int ParseHex (const char *hex)
 		else if (*str >= 'A' && *str <= 'F')
 			num += 10 + *str-'A';
 		else
-			Error ("Bad hex number: %s",hex);
+			COM_Error ("Bad hex number: %s",hex);
 		str++;
 	}
 

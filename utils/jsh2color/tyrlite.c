@@ -82,7 +82,7 @@ byte *GetFileSpace (int size)
 	file_p += size;
 	UNLOCK;
 	if (file_p > file_end)
-		Error ("%s: overrun", __thisfunc__);
+		COM_Error ("%s: overrun", __thisfunc__);
 	return buf;
 }
 
@@ -161,7 +161,7 @@ static void FindFaceOffsets (void)
 		sprintf (name, "*%d", i);
 		ent = FindEntityWithKeyPair("model", name);
 		if ( !ent )
-			Error("%s: Couldn't find entity for model %s.\n", __thisfunc__, name);
+			COM_Error("%s: Couldn't find entity for model %s.\n", __thisfunc__, name);
 
 		classname = ValueForKey (ent, "classname");
 		if ( !strncmp(classname, "rotate_", 7) )
@@ -294,7 +294,7 @@ static void LightWorld (void)
 	printf ("\n");
 
 	if (!num_colors)
-		Error ("This BSP contains no light color modifying data!");
+		COM_Error ("This BSP contains no light color modifying data!");
 
 	LightThread (NULL);
 
@@ -401,7 +401,7 @@ int main (int argc, char **argv)
 			}
 		}
 		else if (argv[i][0] == '-')
-			Error ("Unknown option \"%s\"", argv[i]);
+			COM_Error ("Unknown option \"%s\"", argv[i]);
 		else
 			break;
 	}
@@ -420,7 +420,7 @@ int main (int argc, char **argv)
 
 	InitThreads ();
 
-	start = GetTime ();
+	start = COM_GetTime ();
 
 	strcpy (source, argv[i]);
 	StripExtension (source);
@@ -450,7 +450,7 @@ int main (int argc, char **argv)
 
 	CloseDefFile ();
 
-	end = GetTime ();
+	end = COM_GetTime ();
 	printf ("%0.1f seconds elapsed\n", end-start);
 
 	return 0;

@@ -170,7 +170,7 @@ void LoadTriangleList(const char *fileName, triangle_t **triList, int *triangleC
 		return;
 	}
 
-	Error("Could not open file '%s':\n"
+	COM_Error("Could not open file '%s':\n"
 		"No ASC, HRC, HTR, or TRI match.\n", fileName);
 }
 
@@ -238,7 +238,7 @@ static void LoadHRC(char *fileName, triangle_t **triList, int *triangleCount)
 		TK_BeyondRequire(TK_LBRACKET, TK_INTNUMBER);
 		if (tk_IntNumber != i)
 		{
-			Error("File '%s', line %d:\nVertex index mismatch.\n",
+			COM_Error("File '%s', line %d:\nVertex index mismatch.\n",
 						tk_SourceName, tk_Line);
 		}
 		TK_Beyond(TK_POSITION);
@@ -274,7 +274,7 @@ static void LoadHRC(char *fileName, triangle_t **triList, int *triangleCount)
 	triCount = tk_IntNumber;
 	if (triCount >= MAXTRIANGLES)
 	{
-		Error("Too many triangles in file %s\n", InputFileName);
+		COM_Error("Too many triangles in file %s\n", InputFileName);
 	}
 	*triangleCount = triCount;
 	tList = (triangle_t *) SafeMalloc(MAXTRIANGLES * sizeof(triangle_t));
@@ -284,13 +284,13 @@ static void LoadHRC(char *fileName, triangle_t **triList, int *triangleCount)
 		TK_BeyondRequire(TK_LBRACKET, TK_INTNUMBER);
 		if (tk_IntNumber != i)
 		{
-			Error("File '%s', line %d:\nTriangle index mismatch.\n",
+			COM_Error("File '%s', line %d:\nTriangle index mismatch.\n",
 						tk_SourceName, tk_Line);
 		}
 		TK_BeyondRequire(TK_NODES, TK_INTNUMBER);
 		if (tk_IntNumber != 3)
 		{
-			Error("File '%s', line %d:\nBad polygon vertex count: %d.",
+			COM_Error("File '%s', line %d:\nBad polygon vertex count: %d.",
 					tk_SourceName, tk_Line, tk_IntNumber);
 		}
 		for (j = 0; j < 3; j++)
@@ -298,7 +298,7 @@ static void LoadHRC(char *fileName, triangle_t **triList, int *triangleCount)
 			TK_BeyondRequire(TK_LBRACKET, TK_INTNUMBER);
 			if (tk_IntNumber != j)
 			{
-				Error("File '%s', line %d:\nTriangle vertex index"
+				COM_Error("File '%s', line %d:\nTriangle vertex index"
 					" mismatch.  %d should be %d\n", tk_SourceName, tk_Line,
 					tk_IntNumber, j);
 			}
@@ -367,7 +367,7 @@ static void LoadASC(char *fileName, triangle_t **triList, int *triangleCount)
 	triCount = tk_IntNumber;
 	if (triCount >= MAXTRIANGLES)
 	{
-		Error("Too many triangles in file %s\n", InputFileName);
+		COM_Error("Too many triangles in file %s\n", InputFileName);
 	}
 	*triangleCount = triCount;
 	tList = (triangle_t *) SafeMalloc(MAXTRIANGLES * sizeof(triangle_t));
@@ -385,7 +385,7 @@ static void LoadASC(char *fileName, triangle_t **triList, int *triangleCount)
 		TK_BeyondRequire(TK_C_VERTEX, TK_INTNUMBER);
 		if (tk_IntNumber != i)
 		{
-			Error("File '%s', line %d:\nVertex index mismatch.\n",
+			COM_Error("File '%s', line %d:\nVertex index mismatch.\n",
 						tk_SourceName, tk_Line);
 		}
 		TK_FetchRequireFetch(TK_COLON);
@@ -420,7 +420,7 @@ static void LoadASC(char *fileName, triangle_t **triList, int *triangleCount)
 		TK_BeyondRequire(TK_C_FACE, TK_INTNUMBER);
 		if (tk_IntNumber != i)
 		{
-			Error("File '%s', line %d:\nTriangle index mismatch.\n",
+			COM_Error("File '%s', line %d:\nTriangle index mismatch.\n",
 						tk_SourceName, tk_Line);
 		}
 		for (j = 0; j < 3; j++)
@@ -429,7 +429,7 @@ static void LoadASC(char *fileName, triangle_t **triList, int *triangleCount)
 			TK_FetchRequire(TK_INTNUMBER);
 			if (tk_IntNumber >= vertexCount)
 			{
-				Error("File '%s', line %d:\nVertex number"
+				COM_Error("File '%s', line %d:\nVertex number"
 					" > vertexCount: %d\n", tk_SourceName, tk_Line,
 					tk_IntNumber);
 			}
@@ -483,7 +483,7 @@ static void LoadHTR(char *fileName, triangle_t **triList, int *triangleCount)
 	TK_BeyondRequire(TK_C_VERSION, TK_INTNUMBER);
 	if (tk_IntNumber != 1)
 	{
-		Error("Unsupported version (%d) in file %s\n", tk_IntNumber,
+		COM_Error("Unsupported version (%d) in file %s\n", tk_IntNumber,
 							InputFileName);
 	}
 
@@ -497,7 +497,7 @@ static void LoadHTR(char *fileName, triangle_t **triList, int *triangleCount)
 	triCount = tk_IntNumber;
 	if (triCount >= MAXTRIANGLES)
 	{
-		Error("Too many triangles in file %s\n", InputFileName);
+		COM_Error("Too many triangles in file %s\n", InputFileName);
 	}
 	*triangleCount = triCount;
 	tList = (triangle_t *) SafeMalloc(MAXTRIANGLES * sizeof(triangle_t));
@@ -561,7 +561,7 @@ static void LoadHTR(char *fileName, triangle_t **triList, int *triangleCount)
 			vertexNum = tk_IntNumber-1;
 			if (vertexNum >= vertexCount)
 			{
-				Error("File '%s', line %d:\nVertex number"
+				COM_Error("File '%s', line %d:\nVertex number"
 					" >= vertexCount: %d\n", tk_SourceName, tk_Line,
 					tk_IntNumber);
 			}
@@ -719,7 +719,7 @@ static void Load3DS(FILE *input, triangle_t **triList, int *triangleCount)
 				triCount = ReadShort();
 				if (triCount >= MAXTRIANGLES)
 				{
-					Error("Too many triangles in file %s\n",
+					COM_Error("Too many triangles in file %s\n",
 								InputFileName);
 				}
 				*triangleCount = triCount;
@@ -757,7 +757,7 @@ static void Load3DS(FILE *input, triangle_t **triList, int *triangleCount)
 
 static void _3DSError(char *message)
 {
-	Error(message);
+	COM_Error(message);
 }
 
 static float ReadFloat(void)
@@ -844,7 +844,7 @@ static void LoadTRI(FILE *input, triangle_t **triList, int *triangleCount)
 	fread(&magic, sizeof(int), 1, input);
 	if (BigLong(magic) != TRI_MAGIC)
 	{
-		Error("Bad .TRI file: %s\n", InputFileName);
+		COM_Error("Bad .TRI file: %s\n", InputFileName);
 	}
 
 	ptri = (triangle_t *) SafeMalloc(MAXTRIANGLES * sizeof(triangle_t));
@@ -922,7 +922,7 @@ static void LoadTRI(FILE *input, triangle_t **triList, int *triangleCount)
 			ptri++;
 			if ((ptri - *triList) >= MAXTRIANGLES)
 			{
-				Error("Error: too many triangles; increase MAXTRIANGLES\n");
+				COM_Error("Error: too many triangles; increase MAXTRIANGLES\n");
 			}
 		}
 	}

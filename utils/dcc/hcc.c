@@ -70,7 +70,7 @@ static void WriteFiles (void)
 	sprintf (filename, "%sfiles.dat", sourcedir);
 	f = fopen (filename, "w");
 	if (!f)
-		Error ("Couldn't open %s", filename);
+		COM_Error ("Couldn't open %s", filename);
 
 	fprintf (f, "%i\n", numsounds);
 	for (i = 0 ; i < numsounds ; i++)
@@ -391,7 +391,7 @@ def_t *PR_DefForFieldOfs (gofs_t ofs)
 		if (((int *)pr_globals)[d->ofs] == ofs)
 			return d;
 	}
-	Error ("%s: couldn't find %i", __thisfunc__, ofs);
+	COM_Error ("%s: couldn't find %i", __thisfunc__, ofs);
 	return NULL;
 }
 
@@ -463,7 +463,7 @@ static const char *PR_GlobalStringNoContents (gofs_t ofs)
 
 	def = pr_global_defs[ofs];
 	if (!def)
-	//	Error ("%s: no def for %i", __thisfunc__, ofs);
+	//	COM_Error ("%s: no def for %i", __thisfunc__, ofs);
 		sprintf (line, "%i(?)", ofs);
 	else
 		sprintf (line, "%i(%s)", ofs, def->name);
@@ -720,7 +720,7 @@ static void PrintFunction (const char *name)
 		if (!strcmp (name, strings + functions[i].s_name))
 			break;
 	if (i == numfunctions)
-		Error ("No function names \"%s\"", name);
+		COM_Error ("No function names \"%s\"", name);
 	df = functions + i;
 
 	printf ("Statements for %s:\n", name);
@@ -783,7 +783,7 @@ int main (int argc, char **argv)
 
 	ValidateByteorder ();
 
-	start = GetTime ();
+	start = COM_GetTime ();
 
 	p = CheckParm("-src");
 	if (p && p < argc-1)
@@ -902,7 +902,7 @@ int main (int argc, char **argv)
 		else
 		{
 			Dcc_Functions ();
-			stop = GetTime ();
+			stop = COM_GetTime ();
 			printf("\n%d seconds elapsed.\n", (int)(stop-start));
 		}
 
@@ -915,7 +915,7 @@ int main (int argc, char **argv)
 
 	psrc = COM_Parse(psrc);
 	if (!psrc)
-		Error("No destination filename. dhcc -help for info.\n");
+		COM_Error("No destination filename. dhcc -help for info.\n");
 
 	sprintf(destfile, "%s%s", sourcedir, com_token);
 	printf("outputfile: %s\n", destfile);
@@ -940,7 +940,7 @@ int main (int argc, char **argv)
 	} while (1);
 
 	if (!PR_FinishCompilation())
-		Error ("compilation errors");
+		COM_Error ("compilation errors");
 
 	p = CheckParm("-asm");
 	if (p)
@@ -963,7 +963,7 @@ int main (int argc, char **argv)
 	// write files.dat
 	WriteFiles();
 
-	stop = GetTime ();
+	stop = COM_GetTime ();
 	printf("\n%d seconds elapsed.\n", (int)(stop-start));
 
 	exit (0);

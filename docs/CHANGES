@@ -4,6 +4,12 @@ Development Progress	:
 ---------------------------
 
 2012-06-05 (SVN):
+    * utils: Renamed GetTime to COM_GetTime and Error to COM_Error so as
+      not to run into possible clashes with any library functions (such
+      as the case with Error and Amiga's proto/dos.h). Also replaced the
+      calls to remove and rename by Q_unlink and Q_rename.
+
+2012-06-05 (SVN):
     * sys_amiga.c: Added -sndahi to the clients' help strings.
 
 2012-06-05 (SVN):

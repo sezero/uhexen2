@@ -298,7 +298,7 @@ static void PrecacheSound (def_t *e, int ch)
 			return;
 	}
 	if (numsounds == MAX_SOUNDS)
-		Error ("%s: numsounds == MAX_SOUNDS", __thisfunc__);
+		COM_Error ("%s: numsounds == MAX_SOUNDS", __thisfunc__);
 	strcpy (precache_sounds[i], n);
 	if (ch >= '1'  && ch <= '9')
 		precache_sounds_block[i] = ch - '0';
@@ -319,7 +319,7 @@ static void PrecacheModel (def_t *e, int ch)
 		if (!strcmp(n, precache_models[i]))
 			return;
 	if (nummodels == MAX_MODELS)
-		Error ("%s: nummodels == MAX_MODELS", __thisfunc__);
+		COM_Error ("%s: nummodels == MAX_MODELS", __thisfunc__);
 	strcpy (precache_models[i], n);
 	if (ch >= '1' && ch <= '9')
 		precache_models_block[i] = ch - '0';
@@ -342,7 +342,7 @@ static void PrecacheFile (def_t *e, int ch)
 			return;
 	}
 	if (numfiles == MAX_FILES)
-		Error ("%s: numfiles == MAX_FILES", __thisfunc__);
+		COM_Error ("%s: numfiles == MAX_FILES", __thisfunc__);
 	strcpy (precache_files[i], n);
 	if (ch >= '1' && ch <= '9')
 		precache_files_block[i] = ch - '0';
@@ -910,7 +910,7 @@ static function_t *PR_ParseImmediateStatements (type_t *type)
 		defs[i] = PR_GetDef (type->parm_types[i], pr_parm_names[i], pr_scope, true);
 		f->parm_ofs[i] = defs[i]->ofs;
 		if (i > 0 && f->parm_ofs[i] < f->parm_ofs[i-1])
-			Error ("bad parm order");
+			COM_Error ("bad parm order");
 	}
 
 	f->code = numstatements;

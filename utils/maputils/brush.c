@@ -33,7 +33,7 @@ static void CheckFace (face_t *f)
 	vec3_t	dir, edgenormal, facenormal;
 
 	if (f->numpoints < 3)
-		Error ("%s: %i points", __thisfunc__, f->numpoints);
+		COM_Error ("%s: %i points", __thisfunc__, f->numpoints);
 
 	VectorCopy (planes[f->planenum].normal, facenormal);
 	if (f->planeside)
@@ -47,7 +47,7 @@ static void CheckFace (face_t *f)
 
 		for (j = 0 ; j < 3 ; j++)
 			if (p1[j] > BOGUS_RANGE || p1[j] < -BOGUS_RANGE)
-				Error ("%s: BUGUS_RANGE: %f", __thisfunc__, p1[j]);
+				COM_Error ("%s: BUGUS_RANGE: %f", __thisfunc__, p1[j]);
 
 		j = (i+1 == f->numpoints) ? 0 : i+1;
 
@@ -55,7 +55,7 @@ static void CheckFace (face_t *f)
 /*		d = DotProduct (p1, planes[f->planenum].normal) - planes[f->planenum].dist;
 		if (d < -ON_EPSILON || d > ON_EPSILON)
 		//	printf ("%s: point #%i off plane\n", __thisfunc__, i);
-			Error ("%s: point #%i off plane", __thisfunc__, i);
+			COM_Error ("%s: point #%i off plane", __thisfunc__, i);
 */
 
 	// check the edge isn't degenerate
@@ -63,7 +63,7 @@ static void CheckFace (face_t *f)
 		VectorSubtract (p2, p1, dir);
 
 		if (VectorLength (dir) < ON_EPSILON)
-			Error ("%s: degenerate edge", __thisfunc__);
+			COM_Error ("%s: degenerate edge", __thisfunc__);
 
 		CrossProduct (facenormal, dir, edgenormal);
 		VectorNormalize (edgenormal);
@@ -77,7 +77,7 @@ static void CheckFace (face_t *f)
 				continue;
 			d = DotProduct (f->pts[j], edgenormal);
 			if (d > edgedist)
-				Error ("%s: non-convex", __thisfunc__);
+				COM_Error ("%s: non-convex", __thisfunc__);
 		}
 	}
 }
@@ -136,7 +136,7 @@ int PlaneTypeForNormal (vec3_t normal)
 	if (normal[2] == 1.0)
 		return PLANE_Z;
 	if (normal[0] == -1.0 || normal[1] == -1.0 || normal[2] == -1.0)
-		Error ("%s: not a canonical vector", __thisfunc__);
+		COM_Error ("%s: not a canonical vector", __thisfunc__);
 
 	ax = fabs(normal[0]);
 	ay = fabs(normal[1]);
@@ -220,7 +220,7 @@ int FindPlane (plane_t *dplane, int *side)
 
 	dot = VectorLength(dplane->normal);
 	if (dot < 1.0 - ANGLEEPSILON || dot > 1.0 + ANGLEEPSILON)
-		Error ("%s: normalization error", __thisfunc__);
+		COM_Error ("%s: normalization error", __thisfunc__);
 
 	pl = *dplane;
 	NormalizePlane (&pl);
@@ -240,7 +240,7 @@ int FindPlane (plane_t *dplane, int *side)
 	}
 
 	if (numbrushplanes == MAX_MAP_PLANES)
-		Error ("numbrushplanes == MAX_MAP_PLANES");
+		COM_Error ("numbrushplanes == MAX_MAP_PLANES");
 
 	planes[numbrushplanes] = pl;
 
@@ -266,7 +266,7 @@ int FindPlane_old (plane_t *dplane, int *side)
 
 	dot = VectorLength(dplane->normal);
 	if (dot < 1.0 - ANGLEEPSILON || dot > 1.0 + ANGLEEPSILON)
-		Error ("%s: normalization error", __thisfunc__);
+		COM_Error ("%s: normalization error", __thisfunc__);
 
 	dp = planes;
 
@@ -290,7 +290,7 @@ int FindPlane_old (plane_t *dplane, int *side)
 	*dp = *dplane;
 
 	if (numbrushplanes == MAX_MAP_PLANES)
-		Error ("numbrushplanes == MAX_MAP_PLANES");
+		COM_Error ("numbrushplanes == MAX_MAP_PLANES");
 	numbrushplanes++;
 
 	*side = 0;
@@ -403,7 +403,7 @@ static void CreateBrushFaces (void)
 		f = AllocFace ();
 		f->numpoints = w->numpoints;
 		if (f->numpoints > MAXEDGES)
-			Error ("f->numpoints > MAXEDGES");
+			COM_Error ("f->numpoints > MAXEDGES");
 
 		for (j = 0 ; j < w->numpoints ; j++)
 		{
@@ -474,11 +474,11 @@ static void AddBrushPlane (plane_t *plane)
 
 	if (numbrushfaces == MAX_FACES)
 		printf ("%s: numbrushfaces == MAX_FACES\n", __thisfunc__);
-//		Error ("%s: numbrushfaces == MAX_FACES", __thisfunc__);
+//		COM_Error ("%s: numbrushfaces == MAX_FACES", __thisfunc__);
 
 	l = VectorLength (plane->normal);
 	if (l < 0.999 || l > 1.001)
-		Error ("%s: bad normal", __thisfunc__);
+		COM_Error ("%s: bad normal", __thisfunc__);
 
 	for (i = 0 ; i < numbrushfaces ; i++)
 	{
@@ -593,7 +593,7 @@ static int AddHullPoint (vec3_t p, int hullnumber)
 	}
 
 	if (num_hull_points == MAX_HULL_POINTS)
-		Error ("MAX_HULL_POINTS");
+		COM_Error ("MAX_HULL_POINTS");
 
 	num_hull_points++;
 
@@ -628,7 +628,7 @@ static void AddHullEdge (vec3_t p1, vec3_t p2, int hullnumber)
 	}
 
 	if (num_hull_edges == MAX_HULL_EDGES)
-		Error ("MAX_HULL_EDGES");
+		COM_Error ("MAX_HULL_EDGES");
 
 	hull_edges[i][0] = pt1;
 	hull_edges[i][1] = pt2;

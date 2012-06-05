@@ -56,7 +56,7 @@ pack_t *LoadPackFile (const char *packfile)
 	if (header.id[0] != 'P' || header.id[1] != 'A' ||
 	    header.id[2] != 'C' || header.id[3] != 'K')
 	{
-		Error ("%s is not a packfile.", packfile);
+		COM_Error ("%s is not a packfile.", packfile);
 	}
 
 	header.dirofs = LittleLong (header.dirofs);
@@ -66,7 +66,7 @@ pack_t *LoadPackFile (const char *packfile)
 
 	if (header.dirlen < 0 || header.dirofs < 0)
 	{
-		Error ("Invalid packfile %s (dirlen: %i, dirofs: %i)",
+		COM_Error ("Invalid packfile %s (dirlen: %i, dirofs: %i)",
 				packfile, header.dirlen, header.dirofs);
 	}
 	pack = (pack_t *) SafeMalloc (sizeof(pack_t));

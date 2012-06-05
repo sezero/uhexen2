@@ -24,7 +24,7 @@ AddPortalToNodes
 static void AddPortalToNodes (portal_t *p, node_t *front, node_t *back)
 {
 	if (p->nodes[0] || p->nodes[1])
-		Error ("%s: already included", __thisfunc__);
+		COM_Error ("%s: already included", __thisfunc__);
 
 	p->nodes[0] = front;
 	p->next[0] = front->portals;
@@ -51,7 +51,7 @@ static void RemovePortalFromNode (portal_t *portal, node_t *l)
 	{
 		t = *pp;
 		if (!t)
-			Error ("%s: portal not in leaf", __thisfunc__);
+			COM_Error ("%s: portal not in leaf", __thisfunc__);
 
 		if (t == portal)
 			break;
@@ -61,7 +61,7 @@ static void RemovePortalFromNode (portal_t *portal, node_t *l)
 		else if (t->nodes[1] == l)
 			pp = &t->next[1];
 		else
-			Error ("%s: portal not bounding leaf", __thisfunc__);
+			COM_Error ("%s: portal not bounding leaf", __thisfunc__);
 	}
 
 	if (portal->nodes[0] == l)
@@ -231,7 +231,7 @@ static void CheckLeafPortalConsistancy (node_t *node)
 		else if (p->nodes[1] == node)
 			side = 1;
 		else
-			Error ("%s: mislinked portal", __thisfunc__);
+			COM_Error ("%s: mislinked portal", __thisfunc__);
 		CheckWindingInNode (p->winding, node);
 		CheckWindingArea (p->winding);
 
@@ -246,7 +246,7 @@ static void CheckLeafPortalConsistancy (node_t *node)
 			else if (p2->nodes[1] == node)
 				side2 = 1;
 			else
-				Error ("%s: mislinked portal", __thisfunc__);
+				COM_Error ("%s: mislinked portal", __thisfunc__);
 			w = p2->winding;
 			for (i = 0 ; i < w->numpoints ; i++)
 			{
@@ -314,7 +314,7 @@ static void CutNodePortals_r (node_t *node)
 			side = 1;
 		}
 		else
-			Error ("%s: mislinked portal", __thisfunc__);
+			COM_Error ("%s: mislinked portal", __thisfunc__);
 
 		w = ClipWinding (w, &clipplane, true);
 		if (!w)
@@ -341,7 +341,7 @@ static void CutNodePortals_r (node_t *node)
 		else if (p->nodes[1] == node)
 			side = 1;
 		else
-			Error ("%s: mislinked portal", __thisfunc__);
+			COM_Error ("%s: mislinked portal", __thisfunc__);
 		next_portal = p->next[side];
 
 		other_node = p->nodes[!side];
@@ -587,7 +587,7 @@ void WritePortalfile (node_t *headnode)
 	printf ("writing %s\n", portfilename);
 	pf = fopen (portfilename, "w");
 	if (!pf)
-		Error ("Error opening %s", portfilename);
+		COM_Error ("Error opening %s", portfilename);
 
 	fprintf (pf, "%s\n", PORTALFILE);
 	fprintf (pf, "%i\n", num_visleafs);

@@ -166,7 +166,7 @@ static void CalcFaceVectors (lightinfo_t *l)
 // flip it towards plane normal
 	distscale = DotProduct (texnormal, l->facenormal);
 	if (!distscale)
-		Error ("Texture axis perpendicular to face\n"
+		COM_Error ("Texture axis perpendicular to face\n"
 			"Face point at (%f, %f, %f)\n",
 			dvertexes[ dedges[ l->face->firstedge ].v[ 0 ] ].point[ 0 ],
 			dvertexes[ dedges[ l->face->firstedge ].v[ 0 ] ].point[ 1 ],
@@ -269,7 +269,7 @@ static void CalcFaceExtents (lightinfo_t *l, vec3_t faceoffset, qboolean fail)
 		l->texsize[i] = maxs[i] - mins[i];
 
 		if (fail && l->texsize[i] > 17)
-			Error ("Bad surface extents");
+			COM_Error ("Bad surface extents");
 	}
 }
 
@@ -330,7 +330,7 @@ static void CalcPoints (lightinfo_t *l)
 		for (s = 0 ; s < w ; s++, surf+=3)
 		{
 			if (surf > l->surfpt[SINGLEMAP - 1])
-				Error ("%s: surf out of bounds (numsurfpt=%d)", __thisfunc__, l->numsurfpt);
+				COM_Error ("%s: surf out of bounds (numsurfpt=%d)", __thisfunc__, l->numsurfpt);
 			us = starts + s*step;
 			ut = startt + t*step;
 
@@ -547,7 +547,7 @@ static void SingleLightFace (entity_t *light, lightinfo_t *l, vec3_t faceoffset,
 	for (c = 0 ; c < l->numsurfpt ; c++, surf+=3)
 	{
 		if (surf > l->surfpt[SINGLEMAP - 1])
-			Error ("%s: surf out of bounds (numsurfpt=%d)", __thisfunc__, l->numsurfpt);
+			COM_Error ("%s: surf out of bounds (numsurfpt=%d)", __thisfunc__, l->numsurfpt);
 		//dist = CastRay(light->origin, surf)*scaledist;
 		dist = scaledDistance(CastRay(light->origin, surf), light);
 		if (dist < 0)
@@ -646,7 +646,7 @@ void SkyLightFace (lightinfo_t *l, vec3_t faceoffset)
 	for (j = 0 ; j < l->numsurfpt ; j++, surf+=3)
 	{
 		if (surf > l->surfpt[SINGLEMAP - 1])
-			Error ("%s: surf out of bounds (numsurfpt=%d)", __thisfunc__, l->numsurfpt);
+			COM_Error ("%s: surf out of bounds (numsurfpt=%d)", __thisfunc__, l->numsurfpt);
 		if (TestSky(surf, sunmangle))
 		{
 			l->lightmaps[i][j] += (angle*sunlight);
@@ -802,7 +802,7 @@ void LightFace (int surfnum, qboolean nolight, vec3_t faceoffset)
 
 	size = lightmapwidth*(l.texsize[1]+1);
 	if (size > SINGLEMAP)
-		Error ("Bad lightmap size");
+		COM_Error ("Bad lightmap size");
 
 	for (i = 0 ; i < MAXLIGHTMAPS ; i++)
 		l.lightstyles[i] = 255;
@@ -845,7 +845,7 @@ void LightFace (int surfnum, qboolean nolight, vec3_t faceoffset)
 	for (i = 0 ; i < l.numlightstyles ; i++)
 	{
 		if (l.lightstyles[i] == 0xff)
-			Error ("Wrote empty lightmap");
+			COM_Error ("Wrote empty lightmap");
 		light = l.lightmaps[i];
 		lightcolor = l.lightmapcolors[i];
 		c = 0;
@@ -910,7 +910,7 @@ void LightFace (int surfnum, qboolean nolight, vec3_t faceoffset)
 					total = 255.0f;
 				else if (total < 0.0f)
 					total = 0.0f;	// this used to be an error!!!
-					//Error ("light < 0");
+					//COM_Error ("light < 0");
 
 				// write out the lightmap in RGBA format
 				if (colored)
@@ -987,7 +987,7 @@ void LightFaceLIT (int surfnum, qboolean nolight, vec3_t faceoffset)
 
 	size = lightmapwidth*(l.texsize[1]+1);
 	if (size > SINGLEMAP)
-		Error ("Bad lightmap size");
+		COM_Error ("Bad lightmap size");
 
 	for (i = 0 ; i < MAXLIGHTMAPS ; i++)
 		l.lightstyles[i] = 255;
@@ -1027,7 +1027,7 @@ void LightFaceLIT (int surfnum, qboolean nolight, vec3_t faceoffset)
 	for (i = 0 ; i < l.numlightstyles ; i++)
 	{
 		if (l.lightstyles[i] == 0xff)
-			Error ("Wrote empty lightmap");
+			COM_Error ("Wrote empty lightmap");
 
 		lightcolor = l.lightmapcolors[i];
 		c = 0;
@@ -1121,7 +1121,7 @@ static void TestSingleLightFace (entity_t *light, lightinfo_t *l, vec3_t faceoff
 	for (c = 0 ; c < l->numsurfpt ; c++, surf+=3)
 	{
 		if (surf > l->surfpt[SINGLEMAP - 1])
-			Error ("%s: surf out of bounds (numsurfpt=%d)", __thisfunc__, l->numsurfpt);
+			COM_Error ("%s: surf out of bounds (numsurfpt=%d)", __thisfunc__, l->numsurfpt);
 		dist = scaledDistance(CastRay(light->origin, surf), light);
 
 		if (dist < 0)

@@ -40,13 +40,13 @@ static char *MakeWorkPath (char *infilename)
 	{
 		tmp++;
 		if (tmp - infilename > workpath_size)
-			Error("%s: insufficient buffer size", __thisfunc__);
+			COM_Error("%s: insufficient buffer size", __thisfunc__);
 		memcpy (workpath, infilename, tmp - infilename);
 		tmp = workpath + (tmp - infilename);
 		workpath_size -= (tmp - infilename);
 	}
 	if (workpath_size < (int)sizeof(WAL_EXT_DIRNAME) + 1)
-		Error("%s: insufficient buffer size", __thisfunc__);
+		COM_Error("%s: insufficient buffer size", __thisfunc__);
 	memcpy (tmp, WAL_EXT_DIRNAME, sizeof(WAL_EXT_DIRNAME));
 	tmp += sizeof(WAL_EXT_DIRNAME) - 1;
 	workpath_size -= (int)sizeof(WAL_EXT_DIRNAME) + 1;
@@ -150,7 +150,7 @@ int main (int argc, char **argv)
 		else if (argv[i][0] == '-')
 		{
 			print_help ();
-			Error ("Unknown option \"%s\"", argv[i]);
+			COM_Error ("Unknown option \"%s\"", argv[i]);
 		}
 		else
 			break;
@@ -159,7 +159,7 @@ int main (int argc, char **argv)
 	if (i == argc)
 	{
 		print_help ();
-		Error ("No input file specified.");
+		COM_Error ("No input file specified.");
 	}
 
 	for ( ; i < argc ; i++)

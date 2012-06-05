@@ -9,6 +9,7 @@
 #include "cmdlib.h"
 #include "q_endian.h"
 #include "byteordr.h"
+#include "util_io.h"
 #include "pathutil.h"
 #include "mathlib.h"
 #include "bspfile.h"
@@ -90,7 +91,7 @@ winding_t *BaseWindingForPlane (plane_t *p)
 		}
 	}
 	if (x == -1)
-		Error ("%s: no axis found", __thisfunc__);
+		COM_Error ("%s: no axis found", __thisfunc__);
 
 	VectorClear (vup);
 	switch (x)
@@ -264,7 +265,7 @@ winding_t *ClipWinding (winding_t *in, plane_t *split, qboolean keepon)
 	}
 
 	if (neww->numpoints > maxpts)
-		Error ("%s: points exceeded estimate", __thisfunc__);
+		COM_Error ("%s: points exceeded estimate", __thisfunc__);
 
 // free the original winding
 	FreeWinding (in);
@@ -383,7 +384,7 @@ void DivideWinding (winding_t *in, plane_t *split, winding_t **front, winding_t 
 	}
 
 	if (f->numpoints > maxpts || b->numpoints > maxpts)
-		Error ("%s: points exceeded estimate", __thisfunc__);
+		COM_Error ("%s: points exceeded estimate", __thisfunc__);
 }
 
 
@@ -416,7 +417,7 @@ winding_t *NewWinding (int points)
 	size_t			size;
 
 	if (points > MAX_POINTS_ON_WINDING)
-		Error ("%s: %i points", __thisfunc__, points);
+		COM_Error ("%s: %i points", __thisfunc__, points);
 
 //	c_activewindings++;
 //	if (c_activewindings > c_peakwindings)
@@ -591,7 +592,7 @@ static void ProcessEntity (int entnum)
 	if (!bs->brushes)
 	{
 		PrintEntity (ent);
-		Error ("Entity with no valid brushes");
+		COM_Error ("Entity with no valid brushes");
 	}
 
 	brushset = bs;
@@ -711,7 +712,7 @@ static void WriteClipHull (void)
 
 	f = fopen (hullfilename, "w");
 	if (!f)
-		Error ("Couldn't open %s", hullfilename);
+		COM_Error ("Couldn't open %s", hullfilename);
 
 	fprintf (f, "%i\n", nummodels);
 
@@ -754,13 +755,13 @@ static void ReadClipHull (int hullnumber)
 
 	f = fopen (hullfilename, "r");
 	if (!f)
-		Error ("Couldn't open %s", hullfilename);
+		COM_Error ("Couldn't open %s", hullfilename);
 
 	if (fscanf (f,"%i\n", &n) != 1)
-		Error ("Error parsing %s", hullfilename);
+		COM_Error ("Error parsing %s", hullfilename);
 
 	if (n != nummodels)
-		Error ("%s: hull had %i models, base had %i", __thisfunc__, n, nummodels);
+		COM_Error ("%s: hull had %i models, base had %i", __thisfunc__, n, nummodels);
 
 	for (i = 0 ; i < n ; i++)
 	{
@@ -774,11 +775,11 @@ static void ReadClipHull (int hullnumber)
 	for (i = 0 ; i < n ; i++)
 	{
 		if (numclipnodes == MAX_MAP_CLIPNODES)
-			Error ("%s: MAX_MAP_CLIPNODES", __thisfunc__);
+			COM_Error ("%s: MAX_MAP_CLIPNODES", __thisfunc__);
 		d = &dclipnodes[numclipnodes];
 		numclipnodes++;
 		if (fscanf (f,"%i : %f %f %f %f : %i %i\n", &junk, &f1, &f2, &f3, &f4, &c1, &c2) != 7)
-			Error ("Error parsing %s", hullfilename);
+			COM_Error ("Error parsing %s", hullfilename);
 
 		p.normal[0] = f1;
 		p.normal[1] = f2;
@@ -1060,22 +1061,22 @@ static void ProcessFile (char *sourcebase, char *bspfilename1)
 
 	if (!onlyents)
 	{
-		remove (bspfilename);
+		Q_unlink (bspfilename);
 		if (!usehulls && hullnum == 0)
 		{
 			hullfilename[strlen(hullfilename)-1] = '1';
-			remove (hullfilename);
+			Q_unlink (hullfilename);
 			hullfilename[strlen(hullfilename)-1] = '2';
-			remove (hullfilename);
+			Q_unlink (hullfilename);
 			hullfilename[strlen(hullfilename)-1] = '3';
-			remove (hullfilename);
+			Q_unlink (hullfilename);
 			hullfilename[strlen(hullfilename)-1] = '4';
-			remove (hullfilename);
+			Q_unlink (hullfilename);
 			hullfilename[strlen(hullfilename)-1] = '5';
-			remove (hullfilename);
+			Q_unlink (hullfilename);
 		}
-		remove (portfilename);
-		remove (pointfilename);
+		Q_unlink (portfilename);
+		Q_unlink (pointfilename);
 	}
 
 // load brushes and entities
@@ -1223,11 +1224,11 @@ int main (int argc, char **argv)
 			i++;
 		}
 		else
-			Error ("qbsp: Unknown option '%s'", argv[i]);
+			COM_Error ("qbsp: Unknown option '%s'", argv[i]);
 	}
 
 	if (i != argc - 2 && i != argc - 1)
-		Error ("usage: qbsp [options] sourcefile [destfile]\noptions: -notjunc -nofill -draw -onlyents -verbose -proj <projectpath>");
+		COM_Error ("usage: qbsp [options] sourcefile [destfile]\noptions: -notjunc -nofill -draw -onlyents -verbose -proj <projectpath>");
 
 	MakeProjectPath (argv[i]);
 
@@ -1250,9 +1251,9 @@ int main (int argc, char **argv)
 //
 // do it!
 //
-	start = GetTime ();
+	start = COM_GetTime ();
 	ProcessFile (sourcename, destname);
-	end = GetTime ();
+	end = COM_GetTime ();
 	printf ("%5.1f seconds elapsed\n", end-start);
 
 	return 0;

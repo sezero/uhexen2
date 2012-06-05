@@ -138,7 +138,7 @@ static winding_t *OldNewWinding (int points)
 	size_t			size;
 
 	if (points > MAX_POINTS_ON_WINDING)
-		Error ("%s: %i points", __thisfunc__, points);
+		COM_Error ("%s: %i points", __thisfunc__, points);
 
 	size = (size_t)((winding_t *)0)->points[points];
 	w = (winding_t *) malloc (size);
@@ -199,7 +199,7 @@ winding_t *NewWinding (int points)
 	size_t			size;
 
 	if (points > MAX_POINTS_ON_WINDING)
-		Error ("%s: %i points", __thisfunc__, points);
+		COM_Error ("%s: %i points", __thisfunc__, points);
 
 	size = (size_t)((winding_t *)0)->points[points];
 	w = (winding_t *) malloc (size);
@@ -358,7 +358,7 @@ winding_t *ClipWinding (winding_t *in, plane_t *split, qboolean keepon)
 	}
 
 	if (neww->numpoints > maxpts)
-		Error ("%s: points exceeded estimate", __thisfunc__);
+		COM_Error ("%s: points exceeded estimate", __thisfunc__);
 
 // free the original winding
 	FreeWinding (in);
@@ -557,13 +557,13 @@ static void LeafFlow (int leafnum)
 	{
 		p = leaf->portals[i];
 		if (p->status != stat_done)
-			Error ("portal not done");
+			COM_Error ("portal not done");
 		for (j = 0 ; j < bitbytes ; j++)
 			outbuffer[j] |= p->visbits[j];
 	}
 
 	if (outbuffer[leafnum>>3] & (1<<(leafnum&7)))
-		Error ("Leaf portals saw into leaf");
+		COM_Error ("Leaf portals saw into leaf");
 
 	outbuffer[leafnum>>3] |= (1<<(leafnum&7));
 
@@ -592,7 +592,7 @@ static void LeafFlow (int leafnum)
 	vismap_p += i;
 
 	if (vismap_p > vismap_end)
-		Error ("Vismap expansion overflow");
+		COM_Error ("Vismap expansion overflow");
 
 	dleafs[leafnum+1].visofs = dest-vismap;	// leaf 0 is a common solid
 
@@ -641,7 +641,7 @@ static void CalcPortalVis (void)
 						&IDThread);
 
 		if (work_threads[i] == NULL)
-			Error ("pthread_create failed");
+			COM_Error ("pthread_create failed");
 	}
 
 	LeafThread((LPVOID)(numthreads-1));
@@ -662,32 +662,32 @@ static void CalcPortalVis (void)
 
 	my_mutex = (pthread_mutex_t *) malloc (sizeof(*my_mutex));
 	if (pthread_mutexattr_create (&mattrib) == -1)
-		Error ("pthread_mutex_attr_create failed");
+		COM_Error ("pthread_mutex_attr_create failed");
 	if (pthread_mutexattr_setkind_np (&mattrib, MUTEX_FAST_NP) == -1)
-		Error ("pthread_mutexattr_setkind_np failed");
+		COM_Error ("pthread_mutexattr_setkind_np failed");
 	if (pthread_mutex_init (my_mutex, mattrib) == -1)
-		Error ("pthread_mutex_init failed");
+		COM_Error ("pthread_mutex_init failed");
 
 	if (pthread_attr_create (&attrib) == -1)
-		Error ("pthread_attr_create failed");
+		COM_Error ("pthread_attr_create failed");
 	if (pthread_attr_setstacksize (&attrib, 0x100000) == -1)
-		Error ("pthread_attr_setstacksize failed");
+		COM_Error ("pthread_attr_setstacksize failed");
 
 	for (i = 0 ; i < numthreads ; i++)
 	{
 		if (pthread_create(&work_threads[i], attrib,
 				LeafThread, (pthread_addr_t)i) == -1)
-			Error ("pthread_create failed");
+			COM_Error ("pthread_create failed");
 	}
 
 	for (i = 0 ; i < numthreads ; i++)
 	{
 		if (pthread_join (work_threads[i], &status) == -1)
-			Error ("pthread_join failed");
+			COM_Error ("pthread_join failed");
 	}
 
 	if (pthread_mutex_destroy (my_mutex) == -1)
-		Error ("pthread_mutex_destroy failed");
+		COM_Error ("pthread_mutex_destroy failed");
     }
 #else	/* no threads */
 
@@ -906,9 +906,9 @@ static void LoadPortals (char *name)
 	}
 
 	if (fscanf (f,"%79s\n%i\n%i\n",magic, &portalleafs, &numportals) != 3)
-		Error ("%s: failed to read header", __thisfunc__);
+		COM_Error ("%s: failed to read header", __thisfunc__);
 	if (strcmp(magic,PORTALFILE))
-		Error ("%s: not a portal file", __thisfunc__);
+		COM_Error ("%s: not a portal file", __thisfunc__);
 
 	printf ("%4i portalleafs\n", portalleafs);
 	printf ("%4i numportals\n", numportals);
@@ -931,11 +931,11 @@ static void LoadPortals (char *name)
 	for (i = 0, p = portals ; i < numportals ; i++)
 	{
 		if (fscanf (f, "%i %i %i ", &numpoints, &leafnums[0], &leafnums[1]) != 3)
-			Error ("%s: Error reading portal %i", __thisfunc__, i);
+			COM_Error ("%s: Error reading portal %i", __thisfunc__, i);
 		if (numpoints > MAX_POINTS_ON_WINDING)
-			Error ("%s: portal %i has too many points", __thisfunc__, i);
+			COM_Error ("%s: portal %i has too many points", __thisfunc__, i);
 		if ( leafnums[0] > portalleafs || leafnums[1] > portalleafs)
-			Error ("%s: portal %i, leafnums > portalleafs", __thisfunc__, i);
+			COM_Error ("%s: portal %i, leafnums > portalleafs", __thisfunc__, i);
 
 		w = p->winding = NewWinding (numpoints);
 		w->original = true;
@@ -945,7 +945,7 @@ static void LoadPortals (char *name)
 		{
 			if (fscanf (f, "(%lf %lf %lf ) ",
 					&w->points[j][0], &w->points[j][1], &w->points[j][2]) != 3)
-				Error ("%s: reading portal %i", __thisfunc__, i);
+				COM_Error ("%s: reading portal %i", __thisfunc__, i);
 		}
 		fscanf (f, "\n");
 
@@ -955,7 +955,7 @@ static void LoadPortals (char *name)
 	// create forward portal
 		l = &leafs[leafnums[0]];
 		if (l->numportals == MAX_PORTALS_ON_LEAF)
-			Error ("Leaf with too many portals");
+			COM_Error ("Leaf with too many portals");
 		l->portals[l->numportals] = p;
 		l->numportals++;
 
@@ -968,7 +968,7 @@ static void LoadPortals (char *name)
 	// create backwards portal
 		l = &leafs[leafnums[1]];
 		if (l->numportals == MAX_PORTALS_ON_LEAF)
-			Error ("Leaf with too many portals");
+			COM_Error ("Leaf with too many portals");
 		l->portals[l->numportals] = p;
 		l->numportals++;
 
@@ -1027,15 +1027,15 @@ int main (int argc, char **argv)
 			verbose = true;
 		}
 		else if (argv[i][0] == '-')
-			Error ("Unknown option \"%s\"", argv[i]);
+			COM_Error ("Unknown option \"%s\"", argv[i]);
 		else
 			break;
 	}
 
 	if (i != argc - 1)
-		Error ("usage: vis [-nogil] [-threads #] [-level 0-4] [-fast] [-v] bspfile");
+		COM_Error ("usage: vis [-nogil] [-threads #] [-level 0-4] [-fast] [-v] bspfile");
 
-	start = GetTime ();
+	start = COM_GetTime ();
 
 	strcpy (source, argv[i]);
 	StripExtension (source);
@@ -1066,7 +1066,7 @@ int main (int argc, char **argv)
 //	unlink (portalfile);
 	if (GilMode)
 		PrintStats();
-	end = GetTime ();
+	end = COM_GetTime ();
 	printf ("%5.1f seconds elapsed\n", end-start);
 
 	return 0;

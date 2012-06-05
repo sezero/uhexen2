@@ -18,7 +18,7 @@ int main (int argc, char **argv)
 	char		source[1024];
 
 	if (argc == 1)
-		Error ("usage: bspinfo bspfile [bspfiles]");
+		COM_Error ("usage: bspinfo bspfile [bspfiles]");
 
 	ValidateByteorder ();
 

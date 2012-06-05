@@ -36,7 +36,7 @@ void ValidateByteorder (void)
 		break;
 	}
 	if (host_byteorder < 0)
-		Error ("%s: Unsupported byte order [%s]", __thisfunc__, tmp);
+		COM_Error ("%s: Unsupported byte order [%s]", __thisfunc__, tmp);
 //	printf("Detected byte order: %s\n", tmp);
 #if !ENDIAN_RUNTIME_DETECT
 	if (host_byteorder != BYTE_ORDER)
@@ -58,7 +58,7 @@ void ValidateByteorder (void)
 			tmp2 = endianism[3];
 			break;
 		}
-		Error ("Detected byte order %s doesn't match compiled %s order!", tmp, tmp2);
+		COM_Error ("Detected byte order %s doesn't match compiled %s order!", tmp, tmp2);
 	}
 #endif	/* ENDIAN_RUNTIME_DETECT */
 }

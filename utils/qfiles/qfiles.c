@@ -53,7 +53,7 @@ void PackFile (const char *src, const char *name)
 	char	buf[4096];
 
 	if ((byte *)pf - (byte *)pfiles > (ptrdiff_t)sizeof(pfiles))
-		Error ("Too many files in pak file");
+		COM_Error ("Too many files in pak file");
 
 	in = SafeOpenRead (src);
 	remaining = Q_filelength (in);
@@ -247,7 +247,7 @@ int main (int argc, char **argv)
 		BspModels ();
 	}
 	else
-		Error ("unknown command: %s", argv[1]);
+		COM_Error ("unknown command: %s", argv[1]);
 
 	return 0;
 }

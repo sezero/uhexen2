@@ -42,7 +42,7 @@ byte *GetFileSpace (int size)
 	file_p += size;
 	UNLOCK;
 	if (file_p > file_end)
-		Error ("%s: overrun", __thisfunc__);
+		COM_Error ("%s: overrun", __thisfunc__);
 	return buf;
 }
 
@@ -122,17 +122,17 @@ int main (int argc, char **argv)
 			i++;
 		}
 		else if (argv[i][0] == '-')
-			Error ("Unknown option \"%s\"", argv[i]);
+			COM_Error ("Unknown option \"%s\"", argv[i]);
 		else
 			break;
 	}
 
 	if (i != argc - 1)
-		Error ("usage: light [-threads num] [-extra] [-dist ?] [-range ?] bspfile");
+		COM_Error ("usage: light [-threads num] [-extra] [-dist ?] [-range ?] bspfile");
 
 	InitThreads ();
 
-	start = GetTime ();
+	start = COM_GetTime ();
 
 	strcpy (source, argv[i]);
 	StripExtension (source);
@@ -148,7 +148,7 @@ int main (int argc, char **argv)
 	WriteEntitiesToString ();
 	WriteBSPFile (source);
 
-	end = GetTime ();
+	end = COM_GetTime ();
 	printf ("%5.1f seconds elapsed\n", end-start);
 
 	return 0;

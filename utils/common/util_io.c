@@ -64,7 +64,7 @@ static char		findstr[256];
 const char *Q_FindFirstFile (const char *path, const char *pattern)
 {
 	if (findhandle != INVALID_HANDLE_VALUE)
-		Error ("FindFirst without FindClose");
+		COM_Error ("FindFirst without FindClose");
 	q_snprintf (findstr, sizeof(findstr), "%s/%s", path, pattern);
 	findhandle = FindFirstFile(findstr, &finddata);
 	if (findhandle == INVALID_HANDLE_VALUE)
@@ -107,7 +107,7 @@ void Q_mkdir (const char *path)
 	if (_mkdir (path) != -1)
 		return;
 	if (errno != EEXIST)
-		Error ("Unable to create directory %s", path);
+		COM_Error ("Unable to create directory %s", path);
 }
 
 int Q_rmdir (const char *path)
@@ -169,7 +169,7 @@ static char		findstr[256];
 const char *Q_FindFirstFile (const char *path, const char *pattern)
 {
 	if (findhandle == 0)
-		Error ("FindFirst without FindClose");
+		COM_Error ("FindFirst without FindClose");
 
 	q_snprintf (findstr, sizeof(findstr), "%s/%s", path, pattern);
 	memset (&finddata, 0, sizeof(finddata));
@@ -209,7 +209,7 @@ void Q_mkdir (const char *path)
 	if (rc != 0 && errno == EEXIST)
 		rc = 0;
 	if (rc != 0)
-		Error ("Unable to create directory %s", path);
+		COM_Error ("Unable to create directory %s", path);
 }
 
 int Q_rmdir (const char *path)
@@ -303,7 +303,7 @@ static STRPTR pattern_helper (const char *pat)
 const char *Q_FindFirstFile (const char *path, const char *pattern)
 {
 	if (apath)
-		Sys_Error ("Sys_FindFirst without FindClose");
+		COM_Error ("Sys_FindFirst without FindClose");
 
 	apath = AllocMem (sizeof(struct AnchorPath) + PATH_SIZE, MEMF_CLEAR);
 	if (!apath)
@@ -365,7 +365,7 @@ void Q_mkdir (const char *path)
 	if (IoErr() == ERROR_OBJECT_EXISTS)
 		return;
 
-	Error("Unable to create directory %s", path);
+	COM_Error("Unable to create directory %s", path);
 }
 
 int Q_rmdir (const char *path)
@@ -441,7 +441,7 @@ static char		matchpath[256];
 const char *Q_FindFirstFile (const char *path, const char *pattern)
 {
 	if (finddir)
-		Error ("FindFirst without FindClose");
+		COM_Error ("FindFirst without FindClose");
 
 	finddir = opendir (path);
 	if (!finddir)
@@ -516,7 +516,7 @@ void Q_mkdir (const char *path)
 	if (rc != 0)
 	{
 		rc = errno;
-		Error ("Unable to create directory %s: %s", path, strerror(rc));
+		COM_Error ("Unable to create directory %s: %s", path, strerror(rc));
 	}
 }
 
@@ -596,7 +596,7 @@ FILE *SafeOpenWrite (const char *filename)
 	f = fopen(filename, "wb");
 
 	if (!f)
-		Error("Error opening %s: %s", filename, strerror(errno));
+		COM_Error("Error opening %s: %s", filename, strerror(errno));
 
 	return f;
 }
@@ -614,7 +614,7 @@ FILE *SafeOpenRead (const char *filename)
 	f = fopen(filename, "rb");
 
 	if (!f)
-		Error("Error opening %s: %s", filename, strerror(errno));
+		COM_Error("Error opening %s: %s", filename, strerror(errno));
 
 	return f;
 }
@@ -628,7 +628,7 @@ SafeRead
 void SafeRead (FILE *f, void *buffer, int count)
 {
 	if ( fread (buffer, 1, count, f) != (size_t)count)
-		Error("File read failure");
+		COM_Error("File read failure");
 }
 
 /*
@@ -640,7 +640,7 @@ SafeWrite
 void SafeWrite (FILE *f, const void *buffer, int count)
 {
 	if (fwrite(buffer, 1, count, f) != (size_t)count)
-		Error("File write failure");
+		COM_Error("File write failure");
 }
 
 /*
@@ -729,10 +729,10 @@ int Q_CopyFile (const char *frompath, const char *topath)
 
 	in = fopen (frompath, "rb");
 	if (!in)
-		Error ("Unable to open file %s", frompath);
+		COM_Error ("Unable to open file %s", frompath);
 	out = fopen (topath, "wb");
 	if (!out)
-		Error ("Unable to create file %s", topath);
+		COM_Error ("Unable to create file %s", topath);
 
 	remaining = Q_filelength (in);
 	memset (buf, 0, sizeof(buf));
@@ -776,7 +776,7 @@ int Q_WriteFileFromHandle (FILE *fromfile, const char *topath, size_t size)
 
 	out = fopen (topath, "wb");
 	if (!out)
-		Error ("Unable to create file %s", topath);
+		COM_Error ("Unable to create file %s", topath);
 
 	memset (buf, 0, sizeof(buf));
 	remaining = size;

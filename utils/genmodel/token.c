@@ -254,7 +254,7 @@ void TK_Require(tokenType_t tokType)
 	}
 	if (tk_Token != tokType)
 	{
-		Error("File '%s', line %d:\nExpected '%s', found '%s'.\n",
+		COM_Error("File '%s', line %d:\nExpected '%s', found '%s'.\n",
 			tk_SourceName, tk_Line, TokenNames[tokType],
 			TokenNames[tk_Token]);
 	}
@@ -285,7 +285,7 @@ tokenType_t TK_Beyond(tokenType_t tokType)
 	{
 		if (TK_Fetch() == TK_EOF)
 		{
-			Error("File '%s':\nCould not find token '%s'.\n",
+			COM_Error("File '%s':\nCould not find token '%s'.\n",
 				tk_SourceName, TokenNames[tokType]);
 		}
 	}
@@ -316,7 +316,7 @@ static void ProcessLetterToken(void)
 	{
 		if (++i == MAX_IDENTIFIER_LENGTH)
 		{
-			Error("File '%s', line %d:\nIdentifier too long.\n",
+			COM_Error("File '%s', line %d:\nIdentifier too long.\n",
 				tk_SourceName, tk_Line);
 		}
 		*text++ = Chr;
@@ -407,12 +407,12 @@ static void ProcessQuoteToken(void)
 	{
 		if (Chr == EOF_CHARACTER)
 		{
-			Error("File '%s', line %d:\n<EOF> inside string.\n",
+			COM_Error("File '%s', line %d:\n<EOF> inside string.\n",
 				tk_SourceName, tk_Line);
 		}
 		if (++i > MAX_QUOTED_LENGTH-1)
 		{
-			Error("File '%s', line %d:\nString literal too long.\n",
+			COM_Error("File '%s', line %d:\nString literal too long.\n",
 				tk_SourceName, tk_Line);
 		}
 		*text++ = Chr;

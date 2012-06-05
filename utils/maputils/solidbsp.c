@@ -151,7 +151,7 @@ static surface_t *ChooseMidPlaneFromList (surface_t *surfaces, vec3_t mins, vec3
 			if (!p->onnode)
 				return p;		// first valid surface
 		}
-		Error ("%s: no valid planes", __thisfunc__);
+		COM_Error ("%s: no valid planes", __thisfunc__);
 	}
 
 	return bestsurface;
@@ -335,7 +335,7 @@ void CalcSurfaceInfo (surface_t *surf)
 	face_t	*f;
 
 	if (!surf->faces)
-		Error ("%s: surface without a face", __thisfunc__);
+		COM_Error ("%s: surface without a face", __thisfunc__);
 
 //
 // calculate a bounding box
@@ -349,7 +349,7 @@ void CalcSurfaceInfo (surface_t *surf)
 	for (f = surf->faces ; f ; f = f->next)
 	{
 		if (f->contents[0] >= 0 || f->contents[1] >= 0)
-			Error ("Bad contents");
+			COM_Error ("Bad contents");
 		for (i = 0 ; i < f->numpoints ; i++)
 		{
 			for (j = 0 ; j < 3 ; j++)
@@ -532,7 +532,7 @@ static void LinkConvexFaces (surface_t *planelist, node_t *leafnode)
 			if (!leafnode->contents)
 				leafnode->contents = f->contents[0];
 			else if (leafnode->contents != f->contents[0])
-				Error ("Mixed face contents in leafnode");
+				COM_Error ("Mixed face contents in leafnode");
 		}
 	}
 
@@ -565,7 +565,7 @@ static void LinkConvexFaces (surface_t *planelist, node_t *leafnode)
 		break;
 
 	default:
-		Error ("%s: bad contents number", __thisfunc__);
+		COM_Error ("%s: bad contents number", __thisfunc__);
 	}
 
 //
@@ -682,14 +682,14 @@ static void PartitionSurfaces (surface_t *surfaces, node_t *node)
 		if (frontfrag)
 		{
 			if (!frontfrag->faces)
-				Error ("surface with no faces");
+				COM_Error ("surface with no faces");
 			frontfrag->next = frontlist;
 			frontlist = frontfrag;
 		}
 		if (backfrag)
 		{
 			if (!backfrag->faces)
-				Error ("surface with no faces");
+				COM_Error ("surface with no faces");
 			backfrag->next = backlist;
 			backlist = backfrag;
 		}

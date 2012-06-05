@@ -711,7 +711,7 @@ int main (int argc, char **argv)
 		else
 		{
 			print_usage ();
-			Error ("Unknown option \"%s\"", argv[i]);
+			COM_Error ("Unknown option \"%s\"", argv[i]);
 		}
 	}
 
@@ -729,7 +729,7 @@ int main (int argc, char **argv)
 		j = LoadFile ("palette.lmp", &pbuf);
 		if (j != 768)
 		{
-			Error ("palette.lmp has invalid size.");
+			COM_Error ("palette.lmp has invalid size.");
 			/*
 			free (pbuf);
 			gamepalette = (unsigned char *) gamepal;

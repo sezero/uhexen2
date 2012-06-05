@@ -111,10 +111,10 @@ void LoadEntities (void)
 		if (!data)
 			break;
 		if (com_token[0] != '{')
-			Error ("%s: found %s when expecting {", __thisfunc__, com_token);
+			COM_Error ("%s: found %s when expecting {", __thisfunc__, com_token);
 
 		if (num_entities == MAX_MAP_ENTITIES)
-			Error ("%s: MAX_MAP_ENTITIES", __thisfunc__);
+			COM_Error ("%s: MAX_MAP_ENTITIES", __thisfunc__);
 		entity = &entities[num_entities];
 		num_entities++;
 
@@ -126,7 +126,7 @@ void LoadEntities (void)
 		// parse key
 			data = COM_Parse (data);
 			if (!data)
-				Error ("%s: EOF without closing brace", __thisfunc__);
+				COM_Error ("%s: EOF without closing brace", __thisfunc__);
 			if (!strcmp(com_token,"}"))
 				break;
 			strcpy (key, com_token);
@@ -134,10 +134,10 @@ void LoadEntities (void)
 		// parse value
 			data = COM_Parse (data);
 			if (!data)
-				Error ("%s: EOF without closing brace", __thisfunc__);
+				COM_Error ("%s: EOF without closing brace", __thisfunc__);
 			c = com_token[0];
 			if (c == '}')
-				Error ("%s: closing brace without data", __thisfunc__);
+				COM_Error ("%s: closing brace without data", __thisfunc__);
 
 			epair = (epair_t *) malloc (sizeof(epair_t));
 			memset (epair, 0, sizeof(epair_t));
@@ -158,7 +158,7 @@ void LoadEntities (void)
 						&entity->origin[0],
 						&entity->origin[1],
 						&entity->origin[2]) != 3)
-					Error ("%s: not 3 values for origin", __thisfunc__);
+					COM_Error ("%s: not 3 values for origin", __thisfunc__);
 			}
 			else if (!strncmp(key, "light", 5))
 			{
@@ -168,7 +168,7 @@ void LoadEntities (void)
 			{
 				entity->style = atoi(com_token);
 				if ((unsigned int)entity->style > 254)
-					Error ("Bad light style %i (must be 0-254)", entity->style);
+					COM_Error ("Bad light style %i (must be 0-254)", entity->style);
 			}
 			else if (!strcmp(key, "angle"))
 			{
@@ -286,7 +286,7 @@ void WriteEntitiesToString (void)
 		end += 2;
 
 		if (end > buf + MAX_MAP_ENTSTRING)
-			Error ("Entity text too long");
+			COM_Error ("Entity text too long");
 	}
 	entdatasize = end - buf + 1;
 }
