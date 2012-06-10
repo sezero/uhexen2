@@ -36,6 +36,7 @@
 #endif
 #include "util_io.h"
 #include "cmdlib.h"
+#include "filenames.h"
 
 // MACROS ------------------------------------------------------------------
 
@@ -349,11 +350,21 @@ void Q_getwd (char *out, size_t size)
 {
 	struct Task *self;
 	BPTR lock;
+	size_t sz;
 
 	self = FindTask(NULL);
 	lock = ((struct Process *) self)->pr_CurrentDir;
 
 	NameFromLock(lock, (STRPTR) out, size);
+
+	if (! *out)
+		return;
+	sz = strlen(out);
+	if (sz >= size - 1 || out[sz - 1] == ':' || out[sz - 1] == '/')
+		return;
+
+	out[sz] = '/';
+	out[sz + 1] = '\0';
 }
 
 void Q_mkdir (const char *path)

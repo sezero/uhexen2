@@ -10,6 +10,7 @@
 #include "arch_def.h"
 #include "cmdlib.h"
 #include "util_io.h"
+#include "filenames.h"
 
 /*
 	qdir will hold the path up to the base hexen2 directory (as
@@ -39,8 +40,8 @@ void SetQdirFromPath (const char *path)
 	char	temp[1024];
 	const char	*c, *mark;
 
-	if (!(path[0] == '/' || path[0] == '\\' || path[1] == ':'))
-	{	// path is partial
+	if (!IS_ABSOLUTE_PATH(path))
+	{
 		Q_getwd (temp, sizeof(temp));
 		qerr_strlcat(__thisfunc__, __LINE__, temp, path, sizeof(temp));
 		path = temp;
@@ -49,7 +50,7 @@ void SetQdirFromPath (const char *path)
 	c = path;
 	while (*c)
 		++c;
-	while (c > path && *c != '/' && *c != '\\')
+	while (c > path && !IS_DIR_SEPARATOR(*c))
 		--c;
 	if (c == path)
 		goto end;
@@ -66,7 +67,7 @@ void SetQdirFromPath (const char *path)
 			c += sizeof(BUILDDIR);
 			while (c < mark)
 			{
-				if (*c == '/' || *c == '\\')
+				if (IS_DIR_SEPARATOR(*c))
 				{
 					strncpy (gamedir, path, c + 1 - path);
 					printf ("gamedir: %s\n", gamedir);
@@ -86,7 +87,7 @@ char *ExpandArg (const char *path)
 {
 	static char full[1024];
 
-	if (path[0] != '/' && path[0] != '\\' && path[1] != ':')
+	if (!IS_ABSOLUTE_PATH(path))
 	{
 		Q_getwd (full, sizeof(full));
 		qerr_strlcat(__thisfunc__, __LINE__, full, path, sizeof(full));
@@ -106,7 +107,7 @@ char *ExpandPath (const char *path)
 	if (!qdir[0])
 		COM_Error ("%s called without qdir set", __thisfunc__);
 
-	if (path[0] == '/' || path[0] == '\\' || path[1] == ':')
+	if (IS_ABSOLUTE_PATH(path))
 	{
 		qerr_snprintf(__thisfunc__, __LINE__, full, sizeof(full), "%s", path);
 	}

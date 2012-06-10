@@ -4,6 +4,15 @@ Development Progress	:
 ---------------------------
 
 2012-06-10 (SVN):
+    * engine/h2shared/common.c (COM_StripExtension,COM_FileGetExtension,
+      COM_DefaultExtension): Changed to use filename.h macros.
+    * utils/common/pathutil.c, qdir.c: Likewise.
+    * utils/maputils/qbsp.c: Likewise.
+    * utils/texutils/bsp2wal/bsp2wal.c: Likewise.
+    * utils/common/util_io.c (Q_getwd, _AMIGA): Likewise. Make sure that
+      the resulting path has a trailing directory separator.
+
+2012-06-10 (SVN):
     * libs/common: Added filenames.h with several macros and inlines to
       address pathname handling differences between different operating
       systems.

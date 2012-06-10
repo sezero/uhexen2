@@ -13,6 +13,7 @@
 #include "byteordr.h"
 #include "bspfile.h"
 #include "hwal.h"
+#include "filenames.h"
 
 // the miptex_wal_t structure has two extra int fields at the beginning
 // and the name field is 32 chars long instead of 16, hence this shift.
@@ -31,9 +32,7 @@ static char *MakeWorkPath (char *infilename)
 
 	workpath_size = (int) sizeof(workpath);
 	memset (workpath, 0, sizeof(workpath));
-	tmp = strrchr (infilename, '/');
-	if (!tmp)
-		tmp = strrchr (infilename, '\\');
+	tmp = FIND_LAST_DIRSEP(infilename);
 	if (!tmp)
 		tmp = workpath;
 	else

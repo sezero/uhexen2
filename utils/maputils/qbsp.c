@@ -14,12 +14,10 @@
 #include "mathlib.h"
 #include "bspfile.h"
 #include "bsp5.h"
-
-//#define __alpha	//for multithreads
-
 #ifdef PLATFORM_WINDOWS
 #include <windows.h>
 #endif
+#include "filenames.h"
 
 
 //
@@ -1131,21 +1129,22 @@ static void MakeProjectPath (char *sourcebase)
 	if (projectpath[0])
 	{	// specified by hand, check for trailing slash
 		l = strlen (projectpath);
+#  ifdef PLATFORM_WINDOWS
 		if (projectpath[l-1] == '\\')
 			projectpath[l-1] = '/';
-		else if (projectpath[l-1] != '/')
+#  endif /* WINDOWS */
+		if (!IS_DIR_SEPARATOR(projectpath[l-1]))
 			strcat (projectpath, "/");
 	}
 	else
 	{
 		memset (projectpath, 0, sizeof(projectpath));
-		scan = strrchr (sourcebase, '/');
-		if (!scan)
-			scan = strrchr (sourcebase, '\\');
+		scan = FIND_LAST_DIRSEP(sourcebase);
 		if (!scan)
 		{
 			projectpath[0] = '.';
 			projectpath[1] = '/';
+			projectpath[2] = '\0';
 		}
 		else
 		{

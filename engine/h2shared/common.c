@@ -28,6 +28,7 @@
 
 #include "quakedef.h"
 #include <ctype.h>
+#include "filenames.h"
 
 
 int		safemode;
@@ -195,7 +196,7 @@ void COM_StripExtension (const char *in, char *out, size_t outsize)
 	while (length > 0 && out[length] != '.')
 	{
 		--length;
-		if (out[length] == '/' || out[length] == '\\')
+		if (IS_DIR_SEPARATOR(out[length]))
 			return;	/* no extension */
 	}
 	if (length > 0)
@@ -219,7 +220,7 @@ const char *COM_FileGetExtension (const char *in)
 	src = in + len - 1;
 	while (src != in && src[-1] != '.')
 		src--;
-	if (src == in || strchr(src, '/') != NULL || strchr(src, '\\') != NULL)
+	if (src == in || FIND_FIRST_DIRSEP(src) != NULL)
 		return "";	/* no extension, or parent directory has a dot */
 
 	return src;
@@ -292,7 +293,7 @@ void COM_DefaultExtension (char *path, const char *extension, size_t len)
 		return;
 	src = path + strlen(path) - 1;
 
-	while (*src != '/' && src != path)
+	while (!IS_DIR_SEPARATOR(*src) && src != path)
 	{
 		if (*src == '.')
 			return;		// it has an extension

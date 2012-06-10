@@ -13,6 +13,7 @@
 #include "arch_def.h"
 #include "pathutil.h"
 #include "cmdlib.h"
+#include "filenames.h"
 
 // MACROS ------------------------------------------------------------------
 
@@ -43,7 +44,7 @@ void DefaultExtension (char *path, const char *extension, size_t len)
 		return;
 	src = path + strlen(path) - 1;
 
-	while (*src != PATHSEPERATOR && src != path)
+	while (!IS_DIR_SEPARATOR(*src) && src != path)
 	{
 		if (*src == '.')
 			return;		// it has an extension
@@ -57,10 +58,8 @@ void DefaultPath (char *path, const char *basepath, size_t len)
 {
 	char	temp[MAX_OSPATH];
 
-	if (path[0] == '/' || path[0] == '\\')
-		return;		// absolute path location
-	if (path[0] != '\0' && path[1] == ':')
-		return;		// absolute path location, like c:\dir
+	if (IS_ABSOLUTE_PATH(path))
+		return;
 
 	qerr_strlcpy(__thisfunc__, __LINE__, temp, path, sizeof(temp));
 	qerr_strlcpy(__thisfunc__, __LINE__, path, basepath, len);
@@ -72,7 +71,7 @@ void StripFilename (char *path)
 	int		length;
 
 	length = (int)strlen(path) - 1;
-	while (length > 0 && path[length] != '/' && path[length] != '\\')
+	while (length > 0 && !IS_DIR_SEPARATOR(path[length]))
 		length--;
 	if (length >= 0)
 		path[length] = 0;
@@ -86,7 +85,7 @@ void StripExtension (char *path)
 	while (length > 0 && path[length] != '.')
 	{
 		length--;
-		if (path[length] == '/' || path[length] == '\\')
+		if (IS_DIR_SEPARATOR(path[length]))
 			return;		/* no extension */
 	}
 	if (length > 0)
@@ -112,7 +111,7 @@ void ExtractFilePath (const char *in, char *out, size_t outsize)
 		return;
 	}
 
-	while (src != in && src[-1] != '\\' && src[-1] != '/')
+	while (src != in && !IS_DIR_SEPARATOR(src[-1]))
 		src--;
 
 	len = src - in;
@@ -133,7 +132,7 @@ void ExtractFileBase (const char *in, char *out, size_t outsize)
 		return;
 	}
 
-	while (src != in && src[-1] != '/' && src[-1] != '\\')
+	while (src != in && !IS_DIR_SEPARATOR(src[-1]))
 		src--;
 	while (*src && *src != '.' && outsize)
 	{
@@ -155,7 +154,7 @@ const char *FileGetExtension (const char *in)
 	src = in + len - 1;
 	while (src != in && src[-1] != '.')
 		src--;
-	if (src == in || strchr(src, '/') != NULL || strchr(src, '\\') != NULL)
+	if (src == in || FIND_FIRST_DIRSEP(src) != NULL)
 		return "";	/* no extension, or parent directory has a dot */
 
 	return src;
