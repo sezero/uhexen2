@@ -34,6 +34,7 @@
 #include "timidity_internal.h"
 #include "options.h"
 #include "common.h"
+#include "filenames.h"
 
 /* The paths in this list will be tried whenever we're reading a file */
 static PathList *pathlist = NULL; /* This is a linked list */
@@ -55,7 +56,7 @@ FILE *open_file(const char *name)
   if ((fp = fopen(name, OPEN_MODE)))
     return fp;
 
-  if (name[0] != PATH_SEP)
+  if (!IS_ABSOLUTE_PATH(name))
   {
     char current_filename[1024];
     PathList *plp = pathlist;
@@ -68,9 +69,9 @@ FILE *open_file(const char *name)
 	if(l)
 	  {
 	    strcpy(current_filename, plp->path);
-	    if(current_filename[l - 1] != PATH_SEP)
+	    if (!IS_DIR_SEPARATOR(current_filename[l - 1]))
 	    {
-	      current_filename[l] = PATH_SEP;
+	      current_filename[l] = DIR_SEPARATOR_CHAR;
 	      current_filename[l + 1] = '\0';
 	    }
 	  }

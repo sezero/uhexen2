@@ -31,6 +31,7 @@
 #include "snd_codeci.h"
 #include "snd_timidity.h"
 #include "timidity/timidity.h"
+#include "filenames.h"
 
 #define CACHEBUFFER_SIZE 4096
 
@@ -85,21 +86,11 @@ static int TIMIDITY_InitHelper (const char *cfgdir)
 		p = path;
 	else
 	{
-		/* kludge, mainly for AROS / Amiga where
-		 * ":/" or "//" have a different meaning. */
-		qboolean do_sep = true;
 		int len = q_strlcpy(path, cfgdir, sizeof(path));
 		if (len >= (int)sizeof(path) - 1)
 			return -1;
 		p = &path[len];
-		if (p[-1] == '/') do_sep = false;
-#if defined(PLATFORM_AMIGA)
-		if (p[-1] == ':') do_sep = false;
-#endif
-#if defined(PLATFORM_WINDOWS)
-		if (p[-1] == '\\') do_sep = false;
-#endif
-		if (do_sep)
+		if (!IS_DIR_SEPARATOR(p[-1]))
 			*p++ = '/';
 	}
 

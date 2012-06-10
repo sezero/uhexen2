@@ -37,6 +37,8 @@
 
 #include "tables.h"
 
+#include "filenames.h"
+
 static MidToneBank *master_tonebank[128], *master_drumset[128];
 
 static char def_instr_name[256] = "";
@@ -433,9 +435,9 @@ int mid_init(const char *config_file)
 
   if (config_file == NULL || *config_file == '\0')
       config_file = CONFIG_FILE;
-  p = strrchr(config_file, '/');
+  p = FIND_LAST_DIRSEP(config_file);
   if (p != NULL)
-    add_to_pathlist(config_file, p - config_file);
+      add_to_pathlist(config_file, p - config_file + 1); /* including DIRSEP */
 
   rc = read_config_file(config_file);
   return rc;

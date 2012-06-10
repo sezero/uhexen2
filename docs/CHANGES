@@ -3,6 +3,17 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2012-06-10 (SVN):
+    * libs/common: Added filenames.h with several macros and inlines to
+      address pathname handling differences between different operating
+      systems.
+    * libs/timidity/timidity.c (mid_init): Include directory separator
+      character when adding the path of the config file to the pathlist.
+      Use the filename.h macros.
+    * libs/timidity/common.c (open_file): Use the filename.h macros.
+    * engine/h2shared/snd_timidity.c, snd_wildmidi.c (_InitHelper): Use
+      the filename.h macros.
+
 2012-06-05 (SVN):
     * sys_amiga.c (Sys_CopyFile): Replace FRead() and FWrite() calls by
       Read() and Write(). Check the success of ExamineFH().

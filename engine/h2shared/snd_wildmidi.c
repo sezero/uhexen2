@@ -34,6 +34,7 @@
 #include "snd_codeci.h"
 #include "snd_wildmidi.h"
 #include <wildmidi_lib.h>
+#include "filenames.h"
 
 #if !defined(WM_MO_ENHANCED_RESAMPLING)
 #error wildmidi version 0.2.3.4 or newer is required.
@@ -73,21 +74,11 @@ static int WILDMIDI_InitHelper (const char *cfgdir)
 		p = path;
 	else
 	{
-		/* kludge, mainly for AROS / Amiga where
-		 * ":/" or "//" have a different meaning. */
-		qboolean do_sep = true;
 		int len = q_strlcpy(path, cfgdir, sizeof(path));
 		if (len >= (int)sizeof(path) - 1)
 			return -1;
 		p = &path[len];
-		if (p[-1] == '/') do_sep = false;
-#if defined(PLATFORM_AMIGA)
-		if (p[-1] == ':') do_sep = false;
-#endif
-#if defined(PLATFORM_WINDOWS)
-		if (p[-1] == '\\') do_sep = false;
-#endif
-		if (do_sep)
+		if (!IS_DIR_SEPARATOR(p[-1]))
 			*p++ = '/';
 	}
 
