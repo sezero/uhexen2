@@ -169,7 +169,7 @@ const char *COM_SkipPath (const char *pathname)
 	last = pathname;
 	while (*pathname)
 	{
-		if (*pathname == '/')
+		if (IS_DIR_SEPARATOR(*pathname))
 			last = pathname + 1;
 		pathname++;
 	}
@@ -249,32 +249,7 @@ write only 'filename' to the output
 */
 void COM_FileBase (const char *in, char *out, size_t outsize)
 {
-	const char	*dot, *slash, *s;
-
-	s = in;
-	slash = in;
-	dot = NULL;
-	while (*s)
-	{
-		if (*s == '/')
-			slash = s + 1;
-		if (*s == '.')
-			dot = s;
-		s++;
-	}
-	if (dot == NULL)
-		dot = s;
-
-	if (dot - slash < 2)
-		q_strlcpy (out, "?model?", outsize);
-	else
-	{
-		size_t	len = dot - slash;
-		if (len >= outsize)
-			len = outsize - 1;
-		memcpy (out, slash, len);
-		out[len] = '\0';
-	}
+	COM_StripExtension (COM_SkipPath(in), out, outsize);
 }
 
 /*

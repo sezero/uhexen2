@@ -334,7 +334,7 @@ static void CL_ParseServerInfo (void)
 	}
 
 	// copy the naked name of the map file to the cl structure
-	COM_StripExtension (COM_SkipPath(model_precache[1]), cl.mapname, sizeof(cl.mapname));
+	COM_FileBase (model_precache[1], cl.mapname, sizeof(cl.mapname));
 
 	//always precache the world!!!
 	cl.model_precache[1] = Mod_ForName (model_precache[1], false);

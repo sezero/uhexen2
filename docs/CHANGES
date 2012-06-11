@@ -4,6 +4,13 @@ Development Progress	:
 ---------------------------
 
 2012-06-11 (SVN):
+    * engine/h2shared/common.c: Used the IS_DIR_SEPARATOR() macro in
+      COM_SkipPath(). Changed the COM_FileBase() helper to simply do
+      COM_StripExtension(COM_SkipPath(in),out,outsize).
+    * engine, cl_parse.c (CL_ParseServerInfo): When copying the naked
+      map file name to cl.mapname, changed it to use COM_FileBase().
+
+2012-06-11 (SVN):
     * utils, hcc.c: If -src is specified, add a trailing slash only if
       there isn't a trailing directory separator already.
 

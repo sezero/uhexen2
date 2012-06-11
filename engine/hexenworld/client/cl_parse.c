@@ -219,7 +219,7 @@ static void Model_NextDownload (void)
 	}
 
 	// copy the naked name of the map file to the cl structure
-	COM_StripExtension (COM_SkipPath(cl.model_name[1]), cl.mapname, sizeof(cl.mapname));
+	COM_FileBase (cl.model_name[1], cl.mapname, sizeof(cl.mapname));
 
 	// all done
 	cl.worldmodel = cl.model_precache[1];
