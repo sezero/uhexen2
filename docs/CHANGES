@@ -4,6 +4,11 @@ Development Progress	:
 ---------------------------
 
 2012-06-11 (SVN):
+    * engine, zone.c: Use memcpy instead of strcpy in Hunk_Strdup() and
+      Z_Strdup().
+    * utils, qbsp.c: Minor cleanup in MakeProjectPath().
+
+2012-06-11 (SVN):
     * libs/common/filenames.h: For __cplusplus, added overloaded cases
       of FIND_FIRST_DIRSEP and FIND_LAST_DIRSEP inlines, i.e. char* vs.
       const char*, so that it compiles using g++>=4.4 against string.h

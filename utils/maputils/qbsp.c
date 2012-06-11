@@ -1140,12 +1140,11 @@ static void MakeProjectPath (char *sourcebase)
 		{
 			projectpath[0] = '.';
 			projectpath[1] = '/';
-			projectpath[2] = '\0';
 		}
 		else
 		{
-			scan++;
-			memcpy (projectpath, sourcebase, scan - sourcebase);
+			memcpy (projectpath, sourcebase,
+				scan - sourcebase + 1); // including DIRSEP
 		}
 	}
 

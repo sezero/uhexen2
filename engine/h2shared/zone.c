@@ -328,8 +328,9 @@ void *Z_Realloc (void *ptr, int size, int zone_id)
 
 char *Z_Strdup (const char *s)
 {
-	char *ptr = (char *) Z_Malloc (strlen(s) + 1, Z_MAINZONE);
-	strcpy (ptr, s);
+	size_t sz = strlen(s) + 1;
+	char *ptr = (char *) Z_Malloc (sz, Z_MAINZONE);
+	memcpy (ptr, s, sz);
 	return ptr;
 }
 
@@ -531,8 +532,9 @@ void *Hunk_TempAlloc (int size)
 
 char *Hunk_Strdup (const char *s, const char *name)
 {
-	char *ptr = (char *) Hunk_AllocName (strlen(s) + 1, name);
-	strcpy (ptr, s);
+	size_t sz = strlen(s) + 1;
+	char *ptr = (char *) Hunk_AllocName (sz, name);
+	memcpy (ptr, s, sz);
 	return ptr;
 }
 
