@@ -1129,10 +1129,6 @@ static void MakeProjectPath (char *sourcebase)
 	if (projectpath[0])
 	{	// specified by hand, check for trailing slash
 		l = strlen (projectpath);
-#  ifdef PLATFORM_WINDOWS
-		if (projectpath[l-1] == '\\')
-			projectpath[l-1] = '/';
-#  endif /* WINDOWS */
 		if (!IS_DIR_SEPARATOR(projectpath[l-1]))
 			strcat (projectpath, "/");
 	}

@@ -19,6 +19,7 @@
 #include "hcc.h"
 #include "q_endian.h"
 #include "byteordr.h"
+#include "filenames.h"
 
 // MACROS ------------------------------------------------------------------
 
@@ -834,8 +835,10 @@ int main (int argc, char **argv)
 	{
 	/* everything will now be relative to sourcedir: */
 		strcpy(sourcedir, argv[p+1]);
+		p = strlen (sourcedir);
+		if (!IS_DIR_SEPARATOR(sourcedir[p-1]))
+			strcat(sourcedir, "/");
 		printf("Source directory: %s\n", sourcedir);
-		strcat(sourcedir, "/");
 		strcpy(filename, sourcedir);
 		nameptr = strchr(filename, '\0');
 	}

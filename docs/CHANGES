@@ -3,6 +3,10 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2012-06-11 (SVN):
+    * utils, hcc.c: If -src is specified, add a trailing slash only if
+      there isn't a trailing directory separator already.
+
 2012-06-10 (SVN):
     * engine/h2shared/common.c (COM_StripExtension,COM_FileGetExtension,
       COM_DefaultExtension): Changed to use filename.h macros.

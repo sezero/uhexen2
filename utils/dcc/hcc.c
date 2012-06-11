@@ -15,6 +15,7 @@
 #include "crc.h"
 #include "q_endian.h"
 #include "byteordr.h"
+#include "filenames.h"
 
 static char	sourcedir[1024];
 static char	destfile[1024];
@@ -790,7 +791,9 @@ int main (int argc, char **argv)
 	{
 	/* everything will now be relative to sourcedir: */
 		strcpy(sourcedir, argv[p+1]);
-		strcat(sourcedir, "/");
+		p = strlen (sourcedir);
+		if (!IS_DIR_SEPARATOR(sourcedir[p-1]))
+			strcat(sourcedir, "/");
 		printf("Source directory: %s\n", sourcedir);
 		strcpy(filename, sourcedir);
 		nameptr = strchr(filename, '\0');
