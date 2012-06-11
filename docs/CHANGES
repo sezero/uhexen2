@@ -4,6 +4,14 @@ Development Progress	:
 ---------------------------
 
 2012-06-11 (SVN):
+    * libs/common/filenames.h: For __cplusplus, added overloaded cases
+      of FIND_FIRST_DIRSEP and FIND_LAST_DIRSEP inlines, i.e. char* vs.
+      const char*, so that it compiles using g++>=4.4 against string.h
+      from newer glibc versions (__CORRECT_ISO_CPP_STRING_H_PROTO).
+      Added FIXME notes to the DOS-ish versions regarding semi-absolute
+      paths like C:FOO.
+
+2012-06-11 (SVN):
     * engine/h2shared/common.c: Used the IS_DIR_SEPARATOR() macro in
       COM_SkipPath(). Changed the COM_FileBase() helper to simply do
       COM_StripExtension(COM_SkipPath(in),out,outsize).

@@ -29,7 +29,9 @@
 #define FILENAMES_H
 
 #include "compiler.h" /* for inline, etc */
+#include <string.h>
 
+/* ---------------------- Windows, DOS, OS2: ---------------------- */
 #if defined(__MSDOS__) || defined(MSDOS) || defined(__DOS__) || \
 	defined(_WIN32) || defined(__OS2__) || defined(__CYGWIN__)
 
@@ -44,24 +46,59 @@
    a file name, which should not be done with a name like d:foo.  */
 #define IS_ABSOLUTE_PATH(f)	(IS_DIR_SEPARATOR((f)[0]) || (((f)[0]) && ((f)[1] == ':')))
 
-static inline char *FIND_FIRST_DIRSEP(const char *_the_path)
-{
+#ifdef __cplusplus
+static inline char *FIND_FIRST_DIRSEP(char *_the_path) {
+/* FIXME: What about C:FOO ? */
     char *p1 = strchr(_the_path, '/');
     char *p2 = strchr(_the_path, '\\');
     if (p1 == NULL) return p2;
     if (p2 == NULL) return p1;
     return (p1 < p2)? p1 : p2;
 }
-
-static inline char *FIND_LAST_DIRSEP(const char *_the_path)
-{
+static inline char *FIND_LAST_DIRSEP (char *_the_path) {
+/* FIXME: What about C:FOO ? */
     char *p1 = strrchr(_the_path, '/');
     char *p2 = strrchr(_the_path, '\\');
     if (p1 == NULL) return p2;
     if (p2 == NULL) return p1;
     return (p1 > p2)? p1 : p2;
 }
+static inline const char *FIND_FIRST_DIRSEP(const char *_the_path) {
+/* FIXME: What about C:FOO ? */
+    const char *p1 = strchr(_the_path, '/');
+    const char *p2 = strchr(_the_path, '\\');
+    if (p1 == NULL) return p2;
+    if (p2 == NULL) return p1;
+    return (p1 < p2)? p1 : p2;
+}
+static inline const char *FIND_LAST_DIRSEP (const char *_the_path) {
+/* FIXME: What about C:FOO ? */
+    const char *p1 = strrchr(_the_path, '/');
+    const char *p2 = strrchr(_the_path, '\\');
+    if (p1 == NULL) return p2;
+    if (p2 == NULL) return p1;
+    return (p1 > p2)? p1 : p2;
+}
+#else
+static inline char *FIND_FIRST_DIRSEP(const char *_the_path) {
+/* FIXME: What about C:FOO ? */
+    char *p1 = strchr(_the_path, '/');
+    char *p2 = strchr(_the_path, '\\');
+    if (p1 == NULL) return p2;
+    if (p2 == NULL) return p1;
+    return (p1 < p2)? p1 : p2;
+}
+static inline char *FIND_LAST_DIRSEP (const char *_the_path) {
+/* FIXME: What about C:FOO ? */
+    char *p1 = strrchr(_the_path, '/');
+    char *p2 = strrchr(_the_path, '\\');
+    if (p1 == NULL) return p2;
+    if (p2 == NULL) return p1;
+    return (p1 > p2)? p1 : p2;
+}
+#endif /* C++ */
 
+/* ----------------- AmigaOS, MorphOS, AROS, etc: ----------------- */
 #elif defined(__amigados__) || defined(__amigaos4__) || defined(__AMIGA) || \
 	defined(__amigaos__) || defined(__MORPHOS__) || defined(__AROS__)
 
@@ -70,37 +107,70 @@ static inline char *FIND_LAST_DIRSEP(const char *_the_path)
 #define IS_ABSOLUTE_PATH(f)	(IS_DIR_SEPARATOR((f)[0]) || (strchr((f), ':')))
 #define HAVE_CASE_INSENSITIVE_FILE_SYSTEM 1
 
-static inline char *FIND_FIRST_DIRSEP(const char *_the_path)
-{
+#ifdef __cplusplus
+static inline char *FIND_FIRST_DIRSEP(char *_the_path) {
     char *p = strchr(_the_path, ':');
     if (p != NULL) return p;
     return strchr(_the_path, '/');
 }
-
-static inline char *FIND_LAST_DIRSEP(const char *_the_path)
-{
+static inline char *FIND_LAST_DIRSEP (char *_the_path) {
     char *p = strrchr(_the_path, '/');
     if (p != NULL) return p;
     return strchr(_the_path, ':');
 }
+static inline const char *FIND_FIRST_DIRSEP(const char *_the_path) {
+    const char *p = strchr(_the_path, ':');
+    if (p != NULL) return p;
+    return strchr(_the_path, '/');
+}
+static inline const char *FIND_LAST_DIRSEP (const char *_the_path) {
+    const char *p = strrchr(_the_path, '/');
+    if (p != NULL) return p;
+    return strchr(_the_path, ':');
+}
+#else
+static inline char *FIND_FIRST_DIRSEP(const char *_the_path) {
+    char *p = strchr(_the_path, ':');
+    if (p != NULL) return p;
+    return strchr(_the_path, '/');
+}
+static inline char *FIND_LAST_DIRSEP (const char *_the_path) {
+    char *p = strrchr(_the_path, '/');
+    if (p != NULL) return p;
+    return strchr(_the_path, ':');
+}
+#endif /* C++ */
 
-#else  /* not DOSish */
+/* ------------------------------ UNIX : -------------------------- */
+#else /* */
 
 #define IS_DIR_SEPARATOR(c)	((c) == '/')
 #define DIR_SEPARATOR_CHAR	'/'
 #define IS_ABSOLUTE_PATH(f)	(IS_DIR_SEPARATOR((f)[0]))
 
-static inline char *FIND_FIRST_DIRSEP(const char *_the_path)
-{
+#ifdef __cplusplus
+static inline char *FIND_FIRST_DIRSEP(char *_the_path) {
     return strchr(_the_path, '/');
 }
-
-static inline char *FIND_LAST_DIRSEP(const char *_the_path)
-{
+static inline char *FIND_LAST_DIRSEP (char *_the_path) {
     return strrchr(_the_path, '/');
 }
+static inline const char *FIND_FIRST_DIRSEP(const char *_the_path) {
+    return strchr(_the_path, '/');
+}
+static inline const char *FIND_LAST_DIRSEP (const char *_the_path) {
+    return strrchr(_the_path, '/');
+}
+#else
+static inline char *FIND_FIRST_DIRSEP(const char *_the_path) {
+    return strchr(_the_path, '/');
+}
+static inline char *FIND_LAST_DIRSEP (const char *_the_path) {
+    return strrchr(_the_path, '/');
+}
+#endif /* C++ */
 
-#endif /* not DOSish */
+#endif
 
 #endif /* FILENAMES_H */
 
