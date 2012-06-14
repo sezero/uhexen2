@@ -4,6 +4,9 @@ Development Progress	:
 ---------------------------
 
 2012-06-14 (SVN):
+    * updated the StandaloneMods extra patch after the FS changes.
+
+2012-06-14 (SVN):
     * quakefs.c (processMapname): Clean-up and fix duplicate detection.
 
 2012-06-14 (SVN):

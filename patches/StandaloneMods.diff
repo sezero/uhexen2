@@ -3,18 +3,17 @@ see the documentation file StandaloneMods.txt for details.
 
 Index: engine/h2shared/quakefs.c
 ===================================================================
---- engine/h2shared/quakefs.c	(revision 4404)
+--- engine/h2shared/quakefs.c	(revision 4760)
 +++ engine/h2shared/quakefs.c	(working copy)
-@@ -49,6 +49,8 @@ unsigned int	gameflags;
- cvar_t	oem = {"oem", "0", CVAR_ROM};
- cvar_t	registered = {"registered", "0", CVAR_ROM};
+@@ -43,6 +43,7 @@ static searchpath_t	*fs_base_searchpaths
+ static const char	*fs_basedir;
+ static char	fs_gamedir[MAX_OSPATH];
+ static char	fs_userdir[MAX_OSPATH];
++static char	fs_dirstdalone[MAX_QPATH];	/* gamedir for standalone games */
+ char	fs_gamedir_nopath[MAX_QPATH];
  
-+static char	fs_dirstdalone[MAX_QPATH];	/* game dir for standalone games */
-+
- typedef struct
- {
- 	int	numfiles;
-@@ -199,7 +201,7 @@ static pack_t *FS_LoadPackFile (const ch
+ unsigned int	gameflags;
+@@ -208,7 +209,7 @@ static pack_t *FS_LoadPackFile (const ch
  		CRC_ProcessByte (&crc, ((byte *)info)[i]);
  
  	/* check for modifications */
@@ -23,7 +22,7 @@ Index: engine/h2shared/quakefs.c
  	{
  		if (strcmp(fs_gamedir_nopath, pakdata[paknum].dirname) != 0)
  		{
-@@ -470,6 +472,10 @@ void FS_Gamedir (const char *dir)
+@@ -480,6 +481,10 @@ void FS_Gamedir (const char *dir)
  /* check for reserved gamedirs */
  	if (!q_strcasecmp(dir, "hw"))
  	{
@@ -34,7 +33,7 @@ Index: engine/h2shared/quakefs.c
  #if !defined(H2W)
  	/* hw is reserved for hexenworld only. hexen2 shouldn't use it */
  		Sys_Printf ("WARNING: Gamedir not set to hw :\n"
-@@ -506,6 +512,27 @@ void FS_Gamedir (const char *dir)
+@@ -516,6 +521,27 @@ void FS_Gamedir (const char *dir)
  	 * command line argument like -game data1, ignore it. */
  		return;
  	}
@@ -48,10 +47,10 @@ Index: engine/h2shared/quakefs.c
 +	 * that we reached here means the hw server decided to abandon
 +	 * whatever the previous mod it was running and went back to
 +	 * pure hw. weird.. do as he wishes anyway and adjust our variables. */
-+		qerr_snprintf(__thisfunc__, __LINE__, fs_gamedir, sizeof(fs_gamedir),
-+						"%s/%s", fs_basedir, fs_dirstdalone);
-+		qerr_snprintf(__thisfunc__, __LINE__, fs_userdir, sizeof(fs_userdir),
-+						"%s/%s", host_parms->userdir, fs_dirstdalone);
++		FSERR_MakePath_BUF(__thisfunc__, __LINE__, FS_BASEDIR,
++					fs_gamedir, sizeof(fs_gamedir), fs_dirstdalone);
++		FSERR_MakePath_BUF(__thisfunc__, __LINE__, FS_USERBASE,
++					fs_userdir, sizeof(fs_userdir), fs_dirstdalone);
 +#    if defined(SERVERONLY)
 +	/* change the *gamedir serverinfo properly */
 +		Info_SetValueForStarKey (svs.info, "*gamedir", fs_dirstdalone, MAX_SERVERINFO_STRING);
@@ -62,7 +61,7 @@ Index: engine/h2shared/quakefs.c
  	else
  	{
  	/* a new gamedir: let's set it here. */
-@@ -1263,8 +1290,36 @@ static int CheckRegistered (void)
+@@ -1262,8 +1288,36 @@ static int CheckRegistered (void)
  FS_Init
  ================
  */
@@ -96,11 +95,11 @@ Index: engine/h2shared/quakefs.c
 +
 +static void FS_InitRaven (void)
 +{
- 	int		i;
- 	char		temp[32];
- 	qboolean	check_portals = false;
-@@ -1461,6 +1516,92 @@ void FS_Init (void)
- 	}
+ 	char	temp[32];
+ 	qboolean check_portals = false;
+ 	int	i;
+@@ -1622,6 +1676,92 @@ const char *FS_GetUserdir (void)
+ 	return fs_userdir;
  }
  
 +static void FS_InitStandalone (void)
@@ -133,13 +132,13 @@ Index: engine/h2shared/quakefs.c
 +		fs_basedir = host_parms->basedir;
 +	}
 +
-+	qerr_snprintf(__thisfunc__, __LINE__, fs_userdir, sizeof(fs_userdir),
-+					"%s/%s", host_parms->userdir, fs_dirstdalone);
++	FSERR_MakePath_BUF(__thisfunc__, __LINE__, FS_USERBASE,
++				fs_userdir, sizeof(fs_userdir), fs_dirstdalone);
 +#if DO_USERDIRS
 +	if (strcmp(fs_gamedir, fs_userdir))
 +		Sys_mkdir (fs_userdir, true);
 +#endif
-+	FS_AddGameDirectory (va("%s/%s", fs_basedir, fs_dirstdalone), true);
++	FS_AddGameDirectory (FS_MakePath(FS_BASEDIR,NULL,fs_dirstdalone), true);
 +
 +	/* force-add the registered flags: */
 +	Cvar_SetROM ("registered", "1");
@@ -194,7 +193,7 @@ Index: engine/h2shared/quakefs.c
   * because we need the bookkeeping about file start/end positions.
 Index: engine/h2shared/quakefs.h
 ===================================================================
---- engine/h2shared/quakefs.h	(revision 4404)
+--- engine/h2shared/quakefs.h	(revision 4760)
 +++ engine/h2shared/quakefs.h	(working copy)
 @@ -31,6 +31,12 @@
  
@@ -206,7 +205,7 @@ Index: engine/h2shared/quakefs.h
 +#define	GAME_ONLY_HEXEN2	(1 << 15)
 +#define	GAME_ONLY_H2W		(1 << 16)
 +
- extern	const char	*fs_basedir;
- extern	char	fs_gamedir[MAX_OSPATH];
  extern	char	fs_gamedir_nopath[MAX_QPATH];
+ 
+ const char *FS_GetBasedir (void);
 
