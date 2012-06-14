@@ -16,14 +16,14 @@
 typedef struct
 {
 	char	name[MAX_QPATH];
-	int		filepos, filelen;
+	int	filepos, filelen;
 } pakfiles_t;
 
 typedef struct pack_s
 {
 	char	filename[MAX_OSPATH];
 	FILE	*handle;
-	int		numfiles;
+	int	numfiles;
 	pakfiles_t	*files;
 } pack_t;
 
@@ -156,12 +156,12 @@ of the list so they override previous pack files.
 static pack_t *FS_LoadPackFile (const char *packfile, int paknum, qboolean base_fs)
 {
 	dpackheader_t	header;
-	int			i, numpackfiles;
-	pakfiles_t		*newfiles;
-	pack_t			*pack;
-	FILE			*packhandle;
-	dpackfile_t		info[MAX_FILES_IN_PACK];
-	unsigned short		crc;
+	int	i, numpackfiles;
+	pakfiles_t	*newfiles;
+	pack_t		*pack;
+	FILE		*packhandle;
+	dpackfile_t	info[MAX_FILES_IN_PACK];
+	unsigned short	crc;
 
 	packhandle = fopen (packfile, "rb");
 	if (!packhandle)
@@ -340,18 +340,18 @@ contain a path information, at least a partial one.
 */
 static void FS_AddGameDirectory (const char *dir, qboolean base_fs)
 {
-	int				i;
-	unsigned int		path_id;
-	searchpath_t		*search;
-	pack_t			*pak;
-	char			pakfile[MAX_OSPATH];
-	char			*p;
-	qboolean		been_here = false;
+	unsigned int	path_id;
+	searchpath_t	*search;
+	pack_t		*pak;
+	char	pakfile[MAX_OSPATH];
+	char		*p;
+	qboolean been_here = false;
+	int	i;
 
 	qerr_strlcpy(__thisfunc__, __LINE__, fs_gamedir, dir, sizeof(fs_gamedir));
 	p = FIND_LAST_DIRSEP (fs_gamedir);
 	if (p)	p++;
-	else	p = fs_gamedir; /* gamedir is like "" */
+	else	p = fs_gamedir; /* userdir or basedir is like "" */
 	qerr_strlcpy(__thisfunc__, __LINE__, fs_gamedir_nopath, p,
 							sizeof(fs_gamedir_nopath));
 
@@ -387,8 +387,8 @@ add_pakfile:
 	}
 
 /* add the directory to the search path */
-/* O.S: this needs to be done ~after~ adding the pakfiles in
- * this dir, so that the dir itself will be placed above the
+/* unlike Quake, hexen2 does this ~after~ adding the pakfiles
+ * in this dir, so that the dir itself will be placed above the
  * pakfiles in the search order which, in turn, will allow
  * override files: this way, data1/default.cfg will be opened
  * instead of data1/pak0.pak:/default.cfg
@@ -436,11 +436,11 @@ a gamedir command from within SV_Gamedir_f().
 void FS_Gamedir (const char *dir)
 {
 	searchpath_t	*search, *next;
-	int				i;
-	unsigned int		path_id;
-	pack_t			*pak;
-	char			pakfile[MAX_OSPATH];
-	qboolean		been_here = false;
+	unsigned int	path_id;
+	pack_t		*pak;
+	char	pakfile[MAX_OSPATH];
+	qboolean been_here = false;
+	int	i;
 
 	if (strstr(dir, "..") || FIND_FIRST_DIRSEP(dir) || HAS_DRIVE_SPEC(dir))
 	{
@@ -555,8 +555,8 @@ add_pakfiles:
 	}
 
 /* add the directory to the search path */
-/* O.S: this needs to be done ~after~ adding the pakfiles in
- * this dir, so that the dir itself will be placed above the
+/* unlike Quake, hexen2 does this ~after~ adding the pakfiles
+ * in this dir, so that the dir itself will be placed above the
  * pakfiles in the search order.
  */
 	search = (searchpath_t *) Z_Malloc (sizeof(searchpath_t), Z_MAINZONE);
@@ -614,16 +614,16 @@ int		file_from_pak;	/* ZOID: global indicating that file came from a pak */
 FS_filelength
 ================
 */
-size_t FS_filelength (FILE *f)
+long FS_filelength (FILE *f)
 {
-	long		pos, end;
+	long	pos, end;
 
 	pos = ftell (f);
 	fseek (f, 0, SEEK_END);
 	end = ftell (f);
 	fseek (f, pos, SEEK_SET);
 
-	return (size_t)end;
+	return end;
 }
 
 /*
@@ -636,8 +636,8 @@ Used for saving the game. Returns 0 on success, non-zero on error.
 */
 int FS_CopyFile (const char *frompath, const char *topath)
 {
-	char		*tmp;
-	int		err;
+	char	*tmp;
+	int	err;
 
 	if (!frompath || !topath)
 	{
@@ -663,10 +663,10 @@ int FS_WriteFileFromHandle (FILE *fromfile, const char *topath, size_t size)
 {
 	char	buf[COPY_READ_BUFSIZE];
 	FILE	*out;
-/*	off_t		remaining, count;*/
-	size_t		remaining, count;
-	char		*tmp;
-	int		err;
+/*	off_t	remaining, count;*/
+	size_t	remaining, count;
+	char	*tmp;
+	int	err;
 
 	if (!fromfile || !topath)
 	{
@@ -838,9 +838,9 @@ Finds the file in the search path, returns fs_filesize.
 size_t FS_OpenFile (const char *filename, FILE **file, unsigned int *path_id)
 {
 	searchpath_t	*search;
-	char		netpath[MAX_OSPATH];
 	pack_t		*pak;
-	int			i;
+	char	ospath[MAX_OSPATH];
+	int	i;
 
 	file_from_pak = 0;
 
@@ -872,17 +872,17 @@ size_t FS_OpenFile (const char *filename, FILE **file, unsigned int *path_id)
 		}
 		else	/* check a file in the directory tree */
 		{
-			q_snprintf (netpath, sizeof(netpath), "%s/%s",search->filename, filename);
-			fs_filesize = (size_t) Sys_filesize (netpath);
+			q_snprintf (ospath, sizeof(ospath), "%s/%s",search->filename, filename);
+			fs_filesize = (size_t) Sys_filesize (ospath);
 			if (fs_filesize == (size_t)-1)
 				continue;
 			if (path_id)
 				*path_id = search->path_id;
 			if (!file) /* for FS_FileExists() */
 				return fs_filesize;
-			*file = fopen (netpath, "rb");
+			*file = fopen (ospath, "rb");
 			if (!*file)
-				Sys_Error ("Couldn't reopen %s", netpath);
+				Sys_Error ("Couldn't reopen %s", ospath);
 			fs_filepath = search->filename;
 			return fs_filesize;
 		}
@@ -1101,13 +1101,13 @@ is added, or -1 upon failures.
 #if !defined(SERVERONLY)	/* dedicated servers dont need this command */
 
 #define MAX_NUMMAPS	256	/* max number of maps to list */
-static int		map_count = 0;
-static char		*maplist[MAX_NUMMAPS];
+static int	map_count = 0;
+static char	*maplist[MAX_NUMMAPS];
 
 static int processMapname (const char *mapname, const char *partial, size_t len_partial, qboolean from_pak)
 {
-	size_t			len;
-	int			j;
+	size_t	len;
+	int	j;
 	char	cur_name[MAX_QPATH];
 
 	if (map_count >= MAX_NUMMAPS)
@@ -1116,9 +1116,9 @@ static int processMapname (const char *mapname, const char *partial, size_t len_
 		return -1;
 	}
 
-	if ( len_partial )
+	if (len_partial)
 	{
-		if ( q_strncasecmp(partial, mapname, len_partial) )
+		if (q_strncasecmp(partial, mapname, len_partial) != 0)
 			return 0;	/* doesn't match the prefix. skip. */
 	}
 
@@ -1126,7 +1126,7 @@ static int processMapname (const char *mapname, const char *partial, size_t len_
 	len = strlen(cur_name) - 4;	/* ".bsp" : 4  */
 	if (from_pak)
 	{
-		if ( strcmp(cur_name + len, ".bsp") )
+		if (strcmp(cur_name + len, ".bsp") != 0)
 			return 0;
 	}
 
@@ -1251,12 +1251,11 @@ Sets the registered flag.
 */
 static int CheckRegistered (void)
 {
-	FILE		*h;
+	FILE	*h;
 	unsigned short	check[128];
-	int			i;
+	int	i;
 
 	FS_OpenFile("gfx/pop.lmp", &h, NULL);
-
 	if (!h)
 		return -1;
 
@@ -1265,7 +1264,7 @@ static int CheckRegistered (void)
 
 	for (i = 0; i < 128; i++)
 	{
-		if ( pop[i] != (unsigned short)BigShort(check[i]) )
+		if (pop[i] != (unsigned short)BigShort(check[i]))
 		{
 			Sys_Printf ("Corrupted data file\n");
 			return -1;
@@ -1282,9 +1281,9 @@ FS_Init
 */
 void FS_Init (void)
 {
-	int		i;
-	char		temp[32];
-	qboolean	check_portals = false;
+	char	temp[32];
+	qboolean check_portals = false;
+	int	i;
 
 	Cvar_RegisterVariable (&oem);
 	Cvar_RegisterVariable (&registered);
@@ -1368,7 +1367,7 @@ void FS_Init (void)
 		if (CheckRegistered() != 0)
 			Sys_Error ("Unable to verify retail version data.");
 	}
-#if !( defined(H2W) && defined(SERVERONLY) )
+#if !(defined(H2W) && defined(SERVERONLY))
 	if (gameflags & GAME_MODIFIED && !(gameflags & (GAME_REGISTERED|GAME_REGISTERED_OLD)))
 		Sys_Error ("You must have the full version of Hexen II to play modified games");
 #endif
@@ -1414,7 +1413,7 @@ void FS_Init (void)
 			Sys_mkdir (fs_userdir, true);
 		FS_AddGameDirectory (FS_MakePath(FS_BASEDIR,NULL,"portals"), true);
 
-		if ( !(gameflags & GAME_PORTALS))
+		if (! (gameflags & GAME_PORTALS))
 		{
 #if !defined(H2W)
 			Sys_Error ("Missing or invalid mission pack installation\n");
@@ -1574,7 +1573,7 @@ static char *FSERR_MakePath_BUF (const char *caller, int linenum, int base,
 static char *FSERR_MakePath_VABUF (const char *caller, int linenum, int base,
 				char *buf, size_t siz, const char *format, ...)
 {
-	va_list		argptr;
+	va_list	argptr;
 	int	err;
 	char	*p;
 
@@ -1598,7 +1597,7 @@ char *FS_MakePath_BUF (int base, int *error, char *buf, size_t siz, const char *
 
 char *FS_MakePath_VA (int base, int *error, const char *format, ...)
 {
-	va_list		argptr;
+	va_list	argptr;
 	char	*p;
 
 	va_start (argptr, format);
@@ -1610,7 +1609,7 @@ char *FS_MakePath_VA (int base, int *error, const char *format, ...)
 
 char *FS_MakePath_VABUF (int base, int *error, char *buf, size_t siz, const char *format, ...)
 {
-	va_list		argptr;
+	va_list	argptr;
 	char	*p;
 
 	va_start (argptr, format);
@@ -1752,7 +1751,6 @@ long FS_ftell(fshandle_t *fh)
 		return -1;
 	}
 
-	/* send the relative file position */
 	return fh->pos;
 }
 
