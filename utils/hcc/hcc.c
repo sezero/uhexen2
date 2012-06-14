@@ -836,8 +836,11 @@ int main (int argc, char **argv)
 	/* everything will now be relative to sourcedir: */
 		strcpy(sourcedir, argv[p+1]);
 		p = strlen (sourcedir);
-		if (!IS_DIR_SEPARATOR(sourcedir[p-1]))
-			strcat(sourcedir, "/");
+		if (p && !IS_DIR_SEPARATOR(sourcedir[p - 1]))
+		{
+			sourcedir[p] = DIR_SEPARATOR_CHAR;
+			sourcedir[p + 1] = '\0';
+		}
 		printf("Source directory: %s\n", sourcedir);
 		strcpy(filename, sourcedir);
 		nameptr = strchr(filename, '\0');

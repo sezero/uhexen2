@@ -4,6 +4,11 @@ Development Progress	:
 ---------------------------
 
 2012-06-14 (SVN):
+    * utils dcc/hcc.c, hcc/hcc.c, maputils/qbsp.c, texutils/bsp2wal.c:
+      Revised filenames.h macro usage.
+    * utils pak/pakx.c: Used filenames.h macros.
+
+2012-06-14 (SVN):
     * utils/common/util_io.c: Fixed CreatePath() for DRIVE_SPEC and made
       it to use filenams.h macros.
 

@@ -50,7 +50,8 @@ static char *MakeWorkPath (char *infilename)
 	tmp += sizeof(WAL_EXT_DIRNAME) - 1;
 	workpath_size -= (int)sizeof(WAL_EXT_DIRNAME) + 1;
 	Q_mkdir (workpath);
-	*tmp++ = '/';
+	*tmp++ = DIR_SEPARATOR_CHAR;
+
 	return tmp;
 }
 

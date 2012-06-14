@@ -1129,20 +1129,20 @@ static void MakeProjectPath (char *sourcebase)
 	if (projectpath[0])
 	{	// specified by hand, check for trailing slash
 		l = strlen (projectpath);
-		if (!IS_DIR_SEPARATOR(projectpath[l-1]))
-			strcat (projectpath, "/");
+		if (l && !IS_DIR_SEPARATOR(projectpath[l - 1]))
+		{
+			projectpath[l] = DIR_SEPARATOR_CHAR;
+			projectpath[l + 1] = '\0';
+		}
 	}
 	else
 	{
-		memset (projectpath, 0, sizeof(projectpath));
 		scan = FIND_LAST_DIRSEP(sourcebase);
 		if (!scan)
-		{
-			projectpath[0] = '.';
-			projectpath[1] = '/';
-		}
+			Q_getwd(projectpath, sizeof(projectpath));
 		else
 		{
+			memset (projectpath, 0, sizeof(projectpath));
 			memcpy (projectpath, sourcebase,
 				scan - sourcebase + 1); // including DIRSEP
 		}

@@ -35,6 +35,7 @@
 #include "pathutil.h"
 #include "pakfile.h"
 #include "pak.h"
+#include "filenames.h"
 
 //======================================================================
 
@@ -51,18 +52,12 @@ static void ExtractFile (pack_t *pak, const char *filename, const char *destdir)
 	{
 		strcpy (dest, destdir);
 		i = strlen (destdir);
-		if (dest[i - 1] != '/' && dest[i - 1] != '\\')
+		if (!IS_DIR_SEPARATOR(dest[i - 1]))
 		{
-			dest[i] = '/';
+			dest[i] = DIR_SEPARATOR_CHAR;
 			dest[i + 1] = '\0';
 		}
-		dptr = dest;
-		while (*dptr)
-		{
-			if (*dptr == '\\')
-				*dptr = '/';
-			++dptr;
-		}
+		dptr = strchr(dest, '\0');
 	}
 
 	for (i = 0; i < pak->numfiles; i++)
