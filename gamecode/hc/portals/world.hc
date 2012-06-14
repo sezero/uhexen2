@@ -136,8 +136,8 @@ void() main =
 	precache_file4("t9.dem");
     precache_file4("maps/thomas.bsp");
     precache_file4("maps/monsters.bsp");
-    precache_file4("maps/sheephunt.bsp");
-    precache_file4("maps/mgallmon.bsp");
+//  precache_file4("maps/sheephunt.bsp");
+//  precache_file4("maps/mgallmon.bsp");
 };
 
 

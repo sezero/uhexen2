@@ -4,6 +4,10 @@ Development Progress	:
 ---------------------------
 
 2012-06-14 (SVN):
+    * gamecode/hc/portals/world.hc: Commented out precache_file4 calls
+      for non-existant maps/sheephunt.bsp and maps/mgallmon.bsp.
+
+2012-06-14 (SVN):
     * updated the StandaloneMods extra patch after the FS changes.
 
 2012-06-14 (SVN):
