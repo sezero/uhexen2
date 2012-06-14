@@ -3,6 +3,10 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2012-06-14 (SVN):
+    * libs/common/filenames.h: Added HAS_DRIVE_SPEC and STRIP_DRIVE_SPEC
+      macros.
+
 2012-06-11 (SVN):
     * engine, zone.c: Use memcpy instead of strcpy in Hunk_Strdup() and
       Z_Strdup().
