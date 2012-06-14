@@ -4,6 +4,9 @@ Development Progress	:
 ---------------------------
 
 2012-06-14 (SVN):
+    * quakefs.c (processMapname): Clean-up and fix duplicate detection.
+
+2012-06-14 (SVN):
     * sys_amiga.c (Sys_GetBasedir): Simply return "PROGDIR:"
     * utils/common/util_io.c (Q_getwd, _AMIGA): Likewise.
 

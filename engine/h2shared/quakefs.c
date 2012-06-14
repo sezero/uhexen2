@@ -1104,11 +1104,10 @@ is added, or -1 upon failures.
 static int	map_count = 0;
 static char	*maplist[MAX_NUMMAPS];
 
-static int processMapname (const char *mapname, const char *partial, size_t len_partial, qboolean from_pak)
+static int processMapname (const char *mapname, const char *partial, size_t len_partial)
 {
-	size_t	len;
-	int	j;
 	char	cur_name[MAX_QPATH];
+	int	j, len;
 
 	if (map_count >= MAX_NUMMAPS)
 	{
@@ -1122,33 +1121,22 @@ static int processMapname (const char *mapname, const char *partial, size_t len_
 			return 0;	/* doesn't match the prefix. skip. */
 	}
 
-	q_strlcpy (cur_name, mapname, sizeof(cur_name));
-	len = strlen(cur_name) - 4;	/* ".bsp" : 4  */
-	if (from_pak)
-	{
-		if (strcmp(cur_name + len, ".bsp") != 0)
-			return 0;
-	}
+	len = q_strlcpy (cur_name, mapname, sizeof(cur_name)) - 4; /* -4 to kill ".bsp" */
+	if (len <= 0)
+		return 0;
+	if (q_strcasecmp(&cur_name[len], ".bsp") != 0)
+		return 0;
 
 	cur_name[len] = 0;
-	if (! cur_name[0])
-		return 0;
 
 	for (j = 0; j < map_count; j++)
 	{
-		if (! q_strcasecmp(maplist[j], mapname))
+		if (! q_strcasecmp(maplist[j], cur_name))
 			return 0;	/* duplicated name. skip. */
 	}
 
 	/* add to the maplist */
-	maplist[map_count] = (char *) Z_Malloc (len+1, Z_MAINZONE);
-	if (maplist[map_count] == NULL)
-	{
-		Con_Printf ("WARNING: Failed allocating memory for maplist\n");
-		return -1;
-	}
-
-	q_strlcpy (maplist[map_count], mapname, len+1);
+	maplist[map_count] = Z_Strdup (cur_name);
 	return (++map_count);
 }
 
@@ -1179,13 +1167,13 @@ static void FS_Maplist_f (void)
 	{
 		if (search->pack)
 		{
-			int			i;
+			int	i;
 
 			for (i = 0; i < search->pack->numfiles; i++)
 			{
 				if (strncmp("maps/", search->pack->files[i].name, 5) != 0)
 					continue;
-				if (processMapname(search->pack->files[i].name + 5, prefix, preLen, true) < 0)
+				if (processMapname(search->pack->files[i].name + 5, prefix, preLen) < 0)
 					goto done;
 			}
 		}
@@ -1196,7 +1184,7 @@ static void FS_Maplist_f (void)
 			findname = Sys_FindFirstFile (va("%s/maps",search->filename), "*.bsp");
 			while (findname)
 			{
-				if (processMapname(findname, prefix, preLen, false) < 0)
+				if (processMapname(findname, prefix, preLen) < 0)
 				{
 					Sys_FindClose ();
 					goto done;
@@ -1213,11 +1201,8 @@ done:
 		Con_Printf ("No maps found.\n\n");
 		return;
 	}
-	else
-	{
-		Con_Printf ("Found %d maps:\n\n", map_count);
-	}
 
+	Con_Printf ("Found %d maps:\n\n", map_count);
 	/* sort the list */
 	if (map_count > 1)
 		qsort (maplist, map_count, sizeof(char *), COM_StrCompare);
@@ -1226,9 +1211,7 @@ done:
 
 	/* free the memory and zero map_count */
 	while (map_count)
-	{
 		Z_Free (maplist[--map_count]);
-	}
 }
 #endif	/* SERVERONLY */
 
