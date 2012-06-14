@@ -706,14 +706,18 @@ void CreatePath (char *path)
 
 	if (!path || !*path)
 		return;
-	if (path[1] == ':')
-		path += 2;
 
-	for (ofs = path + 1; *ofs; ofs++)
+	ofs = path;
+	if (HAS_DRIVE_SPEC(ofs))
+		ofs = STRIP_DRIVE_SPEC(ofs);
+	if (IS_DIR_SEPARATOR(*ofs))
+		ofs++;
+
+	for ( ; *ofs; ofs++)
 	{
 		c = *ofs;
-		if (c == '/' || c == '\\')
-		{	// create the directory
+		if (IS_DIR_SEPARATOR(c))
+		{
 			*ofs = 0;
 			Q_mkdir (path);
 			*ofs = c;

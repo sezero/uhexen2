@@ -4,6 +4,10 @@ Development Progress	:
 ---------------------------
 
 2012-06-14 (SVN):
+    * utils/common/util_io.c: Fixed CreatePath() for DRIVE_SPEC and made
+      it to use filenams.h macros.
+
+2012-06-14 (SVN):
     * libs/common/filenames.h: Added HAS_DRIVE_SPEC and STRIP_DRIVE_SPEC
       macros.
 
