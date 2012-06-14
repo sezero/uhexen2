@@ -137,16 +137,16 @@ void S_DriversInit (void)
 #if HAVE_DOS_GUS_SOUND
 	S_RegisterDriver(&snddrv_gus);
 #endif
+#if HAVE_AHI_SOUND
+	S_RegisterDriver(&snddrv_ahi);
+	if (COM_CheckParm ("-sndahi"))
+		snd_drivers->userpreferred = true;
+#endif
 /* if sdl audio is compiled for any supported platform, then
  * register sdl audio the last to make it the default choice. */
 #if HAVE_SDL_SOUND
 	S_RegisterDriver(&snddrv_sdl);
 	if (COM_CheckParm ("-sndsdl"))
-		snd_drivers->userpreferred = true;
-#endif
-#if HAVE_AHI_SOUND
-	S_RegisterDriver(&snddrv_ahi);
-	if (COM_CheckParm ("-sndahi"))
 		snd_drivers->userpreferred = true;
 #endif
 }

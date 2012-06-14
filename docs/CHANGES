@@ -4,6 +4,10 @@ Development Progress	:
 ---------------------------
 
 2012-06-14 (SVN):
+    * snd_sys.c: Moved registeration of AHI before SDL, so that SDL is
+      still the default for Amigas.
+
+2012-06-14 (SVN):
     * utils dcc/hcc.c, hcc/hcc.c, maputils/qbsp.c, texutils/bsp2wal.c:
       Revised filenames.h macro usage.
     * utils pak/pakx.c: Used filenames.h macros.
