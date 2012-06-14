@@ -348,6 +348,9 @@ void Q_FindClose (void)
 
 void Q_getwd (char *out, size_t size)
 {
+#if 1
+	qerr_strlcpy(__thisfunc__, __LINE__, out, "PROGDIR:", size);
+#else
 	struct Task *self;
 	BPTR lock;
 	size_t sz;
@@ -365,6 +368,7 @@ void Q_getwd (char *out, size_t size)
 
 	out[sz] = '/';
 	out[sz + 1] = '\0';
+#endif
 }
 
 void Q_mkdir (const char *path)
@@ -424,7 +428,7 @@ long Q_filesize (const char *path)
 
 int Q_FileType (const char *path)
 {
-	long type = FS_ENT_NONE;
+	int type = FS_ENT_NONE;
 	BPTR fh = Open((const STRPTR) path, MODE_OLDFILE);
 	if (fh != NULL)
 	{

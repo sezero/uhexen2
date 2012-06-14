@@ -4,6 +4,10 @@ Development Progress	:
 ---------------------------
 
 2012-06-14 (SVN):
+    * sys_amiga.c (Sys_GetBasedir): Simply return "PROGDIR:"
+    * utils/common/util_io.c (Q_getwd, _AMIGA): Likewise.
+
+2012-06-14 (SVN):
     * Now that timidity works OK with Amiga paths, preferred it instead
       of wildmidi in AROS builds.
 

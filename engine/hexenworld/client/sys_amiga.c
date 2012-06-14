@@ -110,7 +110,7 @@ long Sys_filesize (const char *path)
 
 int Sys_FileType (const char *path)
 {
-	long type = FS_ENT_NONE;
+	int type = FS_ENT_NONE;
 	BPTR fh = Open((const STRPTR) path, MODE_OLDFILE);
 	if (fh != NULL)
 	{
@@ -565,6 +565,12 @@ char *Sys_GetClipboardData (void)
 
 static int Sys_GetBasedir (char *argv0, char *dst, size_t dstsize)
 {
+#if 1
+	int len = q_strlcpy(dst, "PROGDIR:", dstsize);
+	if (len < (int)dstsize)
+		return 0;
+	return -1;
+#else
 	struct Task *self;
 	BPTR lock;
 
@@ -574,6 +580,7 @@ static int Sys_GetBasedir (char *argv0, char *dst, size_t dstsize)
 	if (NameFromLock(lock, (STRPTR) dst, dstsize) != 0)
 		return 0;
 	return -1;
+#endif
 }
 
 static void Sys_CheckSDL (void)
