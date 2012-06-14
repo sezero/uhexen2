@@ -489,12 +489,9 @@ ifeq ($(TARGET_OS),aros)
 # Don't use x86 assembly for AROS
 USE_X86_ASM=no
 
-# WildMidi works nice on AROS
-USE_CODEC_TIMIDITY=no
-USE_CODEC_WILDMIDI=yes
-
-# libiberty for fnmatch stuff
-#LDFLAGS += -liberty
+# both WildMidi and the local timidity work nice on AROS
+USE_CODEC_WILDMIDI=no
+USE_CODEC_TIMIDITY=yes
 
 ifeq ($(USE_SOUND),yes)
 ifneq ($(USE_SDLAUDIO),yes)
