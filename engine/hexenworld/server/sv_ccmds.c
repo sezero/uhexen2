@@ -6,6 +6,7 @@
 */
 
 #include "quakedef.h"
+#include "filenames.h"
 
 static qboolean	sv_allow_cheats;
 
@@ -78,7 +79,7 @@ SV_Logfile_f
 */
 static void SV_Logfile_f (void)
 {
-	char	name[MAX_OSPATH];
+	const char	*name;
 
 	if (sv_logfile)
 	{
@@ -88,8 +89,7 @@ static void SV_Logfile_f (void)
 		return;
 	}
 
-	qerr_snprintf(__thisfunc__, __LINE__, name, sizeof(name), "%s/hwsv.log", fs_userdir);
-
+	name = FS_MakePath(FS_USERDIR, NULL, "hwsv.log");
 	Con_Printf ("Logging text to %s.\n", name);
 	sv_logfile = fopen (name, "w");
 	if (!sv_logfile)
@@ -120,8 +120,7 @@ static void SV_Fraglogfile_f (void)
 	// find an unused name
 	for (i = 0; i < 1000; i++)
 	{
-		qerr_snprintf(__thisfunc__, __LINE__, name, sizeof(name), "%s/frag_%i.log", fs_userdir, i);
-
+		FS_MakePath_VABUF (FS_USERDIR, NULL, name, sizeof(name), "frag_%i.log", i);
 		sv_fraglogfile = fopen (name, "r");
 		if (!sv_fraglogfile)
 		{	// can't read it, so create this one
@@ -773,8 +772,7 @@ static void SV_Gamedir (void)
 
 	dir = Cmd_Argv(1);
 
-	if (strstr(dir, "..") || strstr(dir, "/")
-		|| strstr(dir, "\\") || strstr(dir, ":") )
+	if (strstr(dir, "..") || FIND_FIRST_DIRSEP(dir) || HAS_DRIVE_SPEC(dir))
 	{
 		Con_Printf ("*Gamedir should be a single filename, not a path\n");
 		return;
@@ -863,7 +861,7 @@ static void SV_Gamedir_f (void)
 
 	if (Cmd_Argc() == 1)
 	{
-		Con_Printf ("Current gamedir: %s\n", fs_gamedir);
+		Con_Printf ("Current gamedir: %s\n", FS_GetGamedir());
 		return;
 	}
 
@@ -875,8 +873,7 @@ static void SV_Gamedir_f (void)
 
 	dir = Cmd_Argv(1);
 
-	if (strstr(dir, "..") || strstr(dir, "/")
-		|| strstr(dir, "\\") || strstr(dir, ":") )
+	if (strstr(dir, "..") || FIND_FIRST_DIRSEP(dir) || HAS_DRIVE_SPEC(dir))
 	{
 		Con_Printf ("Gamedir should be a single filename, not a path\n");
 		return;

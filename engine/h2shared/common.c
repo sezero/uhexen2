@@ -220,7 +220,7 @@ const char *COM_FileGetExtension (const char *in)
 	src = in + len - 1;
 	while (src != in && src[-1] != '.')
 		src--;
-	if (src == in || FIND_FIRST_DIRSEP(src) != NULL)
+	if (src == in || FIND_FIRST_DIRSEP(src) != NULL || HAS_DRIVE_SPEC(src))
 		return "";	/* no extension, or parent directory has a dot */
 
 	return src;

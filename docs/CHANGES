@@ -4,6 +4,13 @@ Development Progress	:
 ---------------------------
 
 2012-06-14 (SVN):
+    * Revamped engine pathname handling: fs_gamedir, fs_userdir and
+      fs_basedir are not global anymore. All function needing to make a
+      path string using them now go through the new FS helper functions
+      FS_MakePath, FS_MakePath_VA, FS_MakePath_BUF, FS_MakePath_VABUF,
+      and the macros from filenames.h are now used everywhere.
+
+2012-06-14 (SVN):
     * snd_sys.c: Moved registeration of AHI before SDL, so that SDL is
       still the default for Amigas.
 

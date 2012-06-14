@@ -172,8 +172,7 @@ static void *MIDI_Play (const char *filename)
 		int		ret;
 
 		Con_DPrintf("Extracting %s from pakfile\n", filename);
-		q_snprintf (midipath, sizeof(midipath), "%s/%s",
-			    host_parms->userdir, TEMP_MIDINAME);
+		FS_MakePath_BUF(FS_USERBASE, NULL, midipath, sizeof(midipath), TEMP_MIDINAME);
 		ret = FS_WriteFileFromHandle (f, midipath, fs_filesize);
 		fclose (f);
 		if (ret != 0)

@@ -11,6 +11,7 @@
 #ifdef PLATFORM_WINDOWS
 #include <io.h>
 #endif
+#include "filenames.h"
 
 typedef struct
 {
@@ -39,10 +40,10 @@ typedef struct searchpath_s
 static searchpath_t	*fs_searchpaths;
 static searchpath_t	*fs_base_searchpaths;	/* without gamedirs */
 
-const char	*fs_basedir;
-char	fs_gamedir[MAX_OSPATH];
+static const char	*fs_basedir;
+static char	fs_gamedir[MAX_OSPATH];
+static char	fs_userdir[MAX_OSPATH];
 char	fs_gamedir_nopath[MAX_QPATH];
-char	fs_userdir[MAX_OSPATH];
 
 unsigned int	gameflags;
 
@@ -109,6 +110,14 @@ static const unsigned short pop[] =
 	0x0000, 0x0000, 0x0000, 0x0000, 0x6400, 0x0000, 0x0000, 0x0000
 };
 
+static char *FSERR_MakePath_BUF (const char *caller, int linenum, int base,
+				 char *buf, size_t siz, const char *path);
+static char *FSERR_MakePath_VABUF (const char *caller, int linenum, int base,
+				char *buf, size_t siz, const char *format, ...)
+				__attribute__((__format__(__printf__,6,7)));
+static char *do_MakePath_VA (int base, int *error, char *buf, size_t siz,
+					const char *format, va_list args)
+				__attribute__((__format__(__printf__,5,0)));
 
 /*
 All of Quake's data access is through a hierchal file system, but the contents
@@ -340,8 +349,10 @@ static void FS_AddGameDirectory (const char *dir, qboolean base_fs)
 	qboolean		been_here = false;
 
 	qerr_strlcpy(__thisfunc__, __LINE__, fs_gamedir, dir, sizeof(fs_gamedir));
-	p = strrchr (fs_gamedir, '/');
-	qerr_strlcpy(__thisfunc__, __LINE__, fs_gamedir_nopath, ++p,
+	p = FIND_LAST_DIRSEP (fs_gamedir);
+	if (p)	p++;
+	else	p = fs_gamedir; /* gamedir is like "" */
+	qerr_strlcpy(__thisfunc__, __LINE__, fs_gamedir_nopath, p,
 							sizeof(fs_gamedir_nopath));
 
 /* assign a path_id to this game directory */
@@ -357,8 +368,8 @@ add_pakfile:
 	{
 		if (been_here)
 		{
-			qerr_snprintf(__thisfunc__, __LINE__, pakfile, sizeof(pakfile),
-							"%s/pak%i.pak", fs_userdir, i);
+			FSERR_MakePath_VABUF (__thisfunc__, __LINE__, FS_USERDIR,
+					pakfile, sizeof(pakfile), "pak%i.pak", i);
 		}
 		else
 		{
@@ -431,8 +442,7 @@ void FS_Gamedir (const char *dir)
 	char			pakfile[MAX_OSPATH];
 	qboolean		been_here = false;
 
-	if (strstr(dir, "..") || strstr(dir, "/")
-		|| strstr(dir, "\\") || strstr(dir, ":") )
+	if (strstr(dir, "..") || FIND_FIRST_DIRSEP(dir) || HAS_DRIVE_SPEC(dir))
 	{
 		Sys_Printf ("Gamedir should be a single directory name, not a path\n");
 		return;
@@ -479,10 +489,10 @@ void FS_Gamedir (const char *dir)
 	/* that we reached here means the hw server decided to abandon
 	 * whatever the previous mod it was running and went back to
 	 * pure hw. weird.. do as he wishes anyway and adjust our variables. */
-		qerr_snprintf(__thisfunc__, __LINE__, fs_gamedir, sizeof(fs_gamedir),
-								"%s/hw", fs_basedir);
-		qerr_snprintf(__thisfunc__, __LINE__, fs_userdir, sizeof(fs_userdir),
-							"%s/hw", host_parms->userdir);
+		FSERR_MakePath_BUF (__thisfunc__, __LINE__, FS_BASEDIR,
+					fs_gamedir, sizeof(fs_gamedir), "hw");
+		FSERR_MakePath_BUF (__thisfunc__, __LINE__, FS_USERBASE,
+					fs_userdir, sizeof(fs_userdir), "hw");
 #    if defined(SERVERONLY)
 	/* change the *gamedir serverinfo properly */
 		Info_SetValueForStarKey (svs.info, "*gamedir", "hw", MAX_SERVERINFO_STRING);
@@ -509,8 +519,8 @@ void FS_Gamedir (const char *dir)
 	else
 	{
 	/* a new gamedir: let's set it here. */
-		qerr_snprintf(__thisfunc__, __LINE__, fs_gamedir, sizeof(fs_gamedir),
-							"%s/%s", fs_basedir, dir);
+		FSERR_MakePath_BUF (__thisfunc__, __LINE__, FS_BASEDIR,
+					fs_gamedir, sizeof(fs_gamedir), dir);
 	}
 
 /* assign a path_id to this game directory */
@@ -526,13 +536,13 @@ add_pakfiles:
 	{
 		if (been_here)
 		{
-			qerr_snprintf(__thisfunc__, __LINE__, pakfile, sizeof(pakfile),
-							"%s/pak%i.pak", fs_userdir, i);
+			FSERR_MakePath_VABUF (__thisfunc__, __LINE__, FS_USERDIR,
+					pakfile, sizeof(pakfile), "pak%i.pak", i);
 		}
 		else
 		{
-			qerr_snprintf(__thisfunc__, __LINE__, pakfile, sizeof(pakfile),
-							"%s/pak%i.pak", fs_gamedir, i);
+			FSERR_MakePath_VABUF (__thisfunc__, __LINE__, FS_GAMEDIR,
+					pakfile, sizeof(pakfile), "pak%i.pak", i);
 		}
 		pak = FS_LoadPackFile (pakfile, i, false);
 		if (!pak)
@@ -573,8 +583,8 @@ add_pakfiles:
 
 /* add user's directory to the search path */
 #if DO_USERDIRS
-	qerr_snprintf(__thisfunc__, __LINE__, fs_userdir, sizeof(fs_userdir),
-						"%s/%s", host_parms->userdir, dir);
+	FSERR_MakePath_BUF (__thisfunc__, __LINE__, FS_USERBASE,
+					fs_userdir, sizeof(fs_userdir), dir);
 	Sys_mkdir (fs_userdir, true);
 /* add any pak files in the user's directory */
 	if (strcmp(fs_gamedir, fs_userdir))
@@ -721,8 +731,10 @@ int FS_WriteFile (const char *filename, const void *data, size_t len)
 	FILE	*f;
 	char	name[MAX_OSPATH];
 	size_t	size;
+	int	err;
 
-	if (q_snprintf(name, sizeof(name), "%s/%s", fs_userdir, filename) >= (int)sizeof(name))
+	FS_MakePath_BUF (FS_USERDIR, &err, name, sizeof(name), filename);
+	if (err)
 	{
 		Host_Error("%s: %d: string buffer overflow!", __thisfunc__, __LINE__);
 		return 1;
@@ -754,17 +766,16 @@ FS_CreatePath
 Creates directory under user's path, making parent directories
 as needed. The path must either be a path to a file, or, if the
 full path is meant to be created, it must have the trailing path
-seperator. Only used for CopyFile and download. Returns 0 on
-success, non-zero on error.
+seperator. Returns 0 on success, non-zero on error.
 ============
 */
 int FS_CreatePath (char *path)
 {
-	char	*ofs;
-	int		error_state = 0;
-	size_t		offset;
+	char	*ofs, c;
+	int	err = 0;
+	size_t	offset;
 
-	if (!path || !path[0])
+	if (!path || !*path)
 	{
 		Con_Printf ("%s: no path!\n", __thisfunc__);
 		return 1;
@@ -776,38 +787,44 @@ int FS_CreatePath (char *path)
 		return 1;
 	}
 
-	if (strstr(path, host_parms->userdir) != path)
+	offset = strlen(host_parms->userdir);
+	if (offset && strstr(path, host_parms->userdir) != path)
 	{
-error_out:
 		Sys_Error ("Attempted to create a directory out of user's path");
 		return 1;
 	}
 
-	offset = strlen(host_parms->userdir);
 	ofs = path + offset;
+	if (*ofs == '\0')	/* not necessarily an error. */
+		return 0;
 	/* check for the path separator after the userdir. */
-	if (!*ofs)
+	if (IS_DIR_SEPARATOR(*ofs))
+		ofs++;
+	else if (offset)
 	{
-		Con_Printf ("%s: bad path\n", __thisfunc__);
-		return 1;
+		/* if the userdir itself has no trailing DIRSEP
+		 * either, then it is a bad path: */
+		if (!IS_DIR_SEPARATOR(host_parms->userdir[offset - 1]))
+		{
+			Con_Printf ("%s: bad path\n", __thisfunc__);
+			return 1;
+		}
 	}
-	if (*ofs != '/')
-		goto error_out;
-	ofs++;
 
-	for ( ; *ofs ; ofs++)
+	for ( ; *ofs; ofs++)
 	{
-		if (*ofs == '/')
+		c = *ofs;
+		if (IS_DIR_SEPARATOR(c))
 		{	/* create the directory */
 			*ofs = 0;
-			error_state = Sys_mkdir (path, false);
-			*ofs = '/';
-			if (error_state)
+			err = Sys_mkdir (path, false);
+			*ofs = c;
+			if (err)
 				break;
 		}
 	}
 
-	return error_state;
+	return err;
 }
 
 
@@ -905,10 +922,10 @@ qboolean FS_FileInGamedir (const char *filename)
 {
 	int	ret;
 
-	ret = Sys_FileType(va("%s/%s", fs_userdir, filename));
+	ret = Sys_FileType(FS_MakePath(FS_USERDIR, NULL, filename));
 	if (ret & FS_ENT_FILE)
 		return true;
-	ret = Sys_FileType(va("%s/%s", fs_gamedir, filename));
+	ret = Sys_FileType(FS_MakePath(FS_GAMEDIR, NULL, filename));
 	if (ret & FS_ENT_FILE)
 		return true;
 
@@ -1293,11 +1310,11 @@ void FS_Init (void)
 	}
 
 /* step 1: start up with data1 by default */
-	qerr_snprintf(__thisfunc__, __LINE__, fs_userdir, sizeof(fs_userdir),
-						"%s/data1", host_parms->userdir);
+	FSERR_MakePath_BUF (__thisfunc__, __LINE__, FS_USERBASE,
+					fs_userdir, sizeof(fs_userdir), "data1");
 	if (strcmp(fs_gamedir, fs_userdir))
 		Sys_mkdir (fs_userdir, true);
-	FS_AddGameDirectory (va("%s/data1", fs_basedir), true);
+	FS_AddGameDirectory (FS_MakePath(FS_BASEDIR,NULL,"data1"), true);
 
 	if (gameflags & GAME_REGISTERED0 && gameflags & GAME_REGISTERED1)
 		gameflags |= GAME_REGISTERED;
@@ -1391,11 +1408,11 @@ void FS_Init (void)
 #endif
 		i = Hunk_LowMark ();
 
-		qerr_snprintf(__thisfunc__, __LINE__, fs_userdir, sizeof(fs_userdir),
-							"%s/portals", host_parms->userdir);
+		FSERR_MakePath_BUF (__thisfunc__, __LINE__, FS_USERBASE,
+					fs_userdir, sizeof(fs_userdir), "portals");
 		if (strcmp(fs_gamedir, fs_userdir))
 			Sys_mkdir (fs_userdir, true);
-		FS_AddGameDirectory (va("%s/portals", fs_basedir), true);
+		FS_AddGameDirectory (FS_MakePath(FS_BASEDIR,NULL,"portals"), true);
 
 		if ( !(gameflags & GAME_PORTALS))
 		{
@@ -1424,19 +1441,19 @@ void FS_Init (void)
 			fs_searchpaths = mark;
 			Hunk_FreeToLowMark (i);
 			/* back to data1 */
-			q_snprintf (fs_gamedir, sizeof(fs_gamedir), "%s/data1", fs_basedir);
-			q_snprintf (fs_userdir, sizeof(fs_userdir), "%s/data1", host_parms->userdir);
+			FS_MakePath_BUF (FS_BASEDIR, NULL, fs_gamedir, sizeof(fs_gamedir), "data1");
+			FS_MakePath_BUF (FS_USERBASE,NULL, fs_userdir, sizeof(fs_userdir), "data1");
 #endif	/* H2W */
 		}
 	}
 
 /* step 3: hw directory (hexenworld) */
 #if defined(H2W)
-	qerr_snprintf(__thisfunc__, __LINE__, fs_userdir, sizeof(fs_userdir),
-						"%s/hw", host_parms->userdir);
+	FSERR_MakePath_BUF (__thisfunc__, __LINE__, FS_USERBASE,
+				fs_userdir, sizeof(fs_userdir), "hw");
 	if (strcmp(fs_gamedir, fs_userdir))
 		Sys_mkdir (fs_userdir, true);
-	FS_AddGameDirectory (va("%s/hw", fs_basedir), true);
+	FS_AddGameDirectory (FS_MakePath(FS_BASEDIR,NULL,"hw"), true);
 	/* error out if GAME_HEXENWORLD isn't set */
 	if (!(gameflags & GAME_HEXENWORLD))
 		Sys_Error ("You must have the HexenWorld data installed");
@@ -1459,6 +1476,168 @@ void FS_Init (void)
 		if (i < com_argc - 1)
 			FS_Gamedir (com_argv[i+1]);
 	}
+}
+
+#define	FS_NUM_BUFFS	4
+#define	FS_BUFFERLEN	1024
+
+static char *get_fs_buffer(void)
+{
+	static char fs_buffers[FS_NUM_BUFFS][FS_BUFFERLEN];
+	static int buffer_idx = 0;
+	buffer_idx = (buffer_idx + 1) & (FS_NUM_BUFFS - 1);
+	return fs_buffers[buffer_idx];
+}
+
+static int init_MakePath (int base, char *buf, size_t siz)
+{
+	int	len;
+
+	switch (base)
+	{
+	case FS_USERDIR:
+		len = q_strlcpy(buf, fs_userdir, siz);
+		break;
+	case FS_GAMEDIR:
+		len = q_strlcpy(buf, fs_gamedir, siz);
+		break;
+	case FS_USERBASE:
+		len = q_strlcpy(buf, host_parms->userdir, siz);
+		break;
+	case FS_BASEDIR:
+		len = q_strlcpy(buf, fs_basedir, siz);
+		break;
+	default:
+		Sys_Error ("%s: Bad FS_BASE", __thisfunc__);
+		return -1;
+	}
+
+	if (len >= (int)siz - 1)
+		return -1;
+	if (len && !IS_DIR_SEPARATOR(buf[len - 1]))
+		buf[len++] = DIR_SEPARATOR_CHAR;
+	buf[len] = '\0';
+	return len;
+}
+
+static char *do_MakePath (int base, int *error, char *buf, size_t siz, const char *path)
+{
+	int	len;
+
+	len = init_MakePath(base, buf, siz);
+	if (len < 0) goto _bad;
+
+	len = q_strlcat(buf, path, siz);
+	if (len < (int)siz) {
+		if (error) *error = 0;
+	} else {
+	_bad:
+		if (error) *error = 1;
+		Con_DPrintf("%s: overflow (string truncated)\n", __thisfunc__);
+	}
+
+	return buf;
+}
+
+static char *do_MakePath_VA (int base, int *error, char *buf, size_t siz,
+					const char *format, va_list args)
+{
+	int	len, ret;
+
+	len = init_MakePath(base, buf, siz);
+	if (len < 0) goto _bad;
+
+	ret = q_vsnprintf(&buf[len], siz - len, format, args);
+	if (ret < (int)siz - len) {
+		if (error) *error = 0;
+	} else {
+	_bad:
+		if (error) *error = 1;
+		Con_DPrintf("%s: overflow (string truncated)\n", __thisfunc__);
+	}
+
+	return buf;
+}
+
+static char *FSERR_MakePath_BUF (const char *caller, int linenum, int base,
+				 char *buf, size_t siz, const char *path)
+{
+	int	err;
+	char	*p;
+
+	p = do_MakePath(base, &err, buf, siz, path);
+
+	if (err) Sys_Error("%s: %d: string buffer overflow!", caller, linenum);
+	return p;
+}
+
+static char *FSERR_MakePath_VABUF (const char *caller, int linenum, int base,
+				char *buf, size_t siz, const char *format, ...)
+{
+	va_list		argptr;
+	int	err;
+	char	*p;
+
+	va_start (argptr, format);
+	p = do_MakePath_VA(base, &err, buf, siz, format, argptr);
+	va_end (argptr);
+
+	if (err) Sys_Error("%s: %d: string buffer overflow!", caller, linenum);
+	return p;
+}
+
+char *FS_MakePath (int base, int *error, const char *path)
+{
+	return do_MakePath(base, error, get_fs_buffer(), FS_BUFFERLEN, path);
+}
+
+char *FS_MakePath_BUF (int base, int *error, char *buf, size_t siz, const char *path)
+{
+	return do_MakePath(base, error, buf, siz, path);
+}
+
+char *FS_MakePath_VA (int base, int *error, const char *format, ...)
+{
+	va_list		argptr;
+	char	*p;
+
+	va_start (argptr, format);
+	p = do_MakePath_VA(base, error, get_fs_buffer(), FS_BUFFERLEN, format, argptr);
+	va_end (argptr);
+
+	return p;
+}
+
+char *FS_MakePath_VABUF (int base, int *error, char *buf, size_t siz, const char *format, ...)
+{
+	va_list		argptr;
+	char	*p;
+
+	va_start (argptr, format);
+	p = do_MakePath_VA(base, error, buf, siz, format, argptr);
+	va_end (argptr);
+
+	return p;
+}
+
+const char *FS_GetBasedir (void)
+{
+	return fs_basedir;
+}
+
+const char *FS_GetUserbase (void)
+{
+	return host_parms->userdir;
+}
+
+const char *FS_GetGamedir (void)
+{
+	return fs_gamedir;
+}
+
+const char *FS_GetUserdir (void)
+{
+	return fs_userdir;
 }
 
 /* The following FS_*() stdio replacements are necessary if one is

@@ -895,6 +895,7 @@ CL_Download_f
 static void CL_Download_f (void)
 {
 	char	tmp[MAX_OSPATH];
+	int	err;
 
 	if (cls.state == ca_disconnected)
 	{
@@ -914,7 +915,8 @@ static void CL_Download_f (void)
 		return;
 	}
 
-	if (q_snprintf (tmp, sizeof(tmp), "%s/%s", fs_userdir, Cmd_Argv(1)) >= MAX_OSPATH)
+	FS_MakePath_BUF (FS_USERDIR, &err, tmp, sizeof(tmp), Cmd_Argv(1));
+	if (err)
 	{
 		Host_Error("%s: %d: string buffer overflow!", __thisfunc__, __LINE__);
 		return;
@@ -1181,7 +1183,7 @@ void Host_WriteConfiguration (const char *fname)
 
 	if (host_initialized)
 	{
-		f = fopen (va("%s/%s",fs_userdir,fname), "w");
+		f = fopen (FS_MakePath(FS_USERDIR,NULL,fname), "w");
 		if (!f)
 		{
 			Con_Printf ("Couldn't write %s.\n",fname);

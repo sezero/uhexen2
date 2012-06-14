@@ -44,6 +44,7 @@
 #include "cdaudio.h"
 #include "sdl_inc.h"
 #include <unistd.h>
+#include "filenames.h"
 
 
 #define WARP_WIDTH		320
@@ -769,9 +770,10 @@ static qboolean GL_OpenLibrary (const char *name)
 		// a valid path information. In that case, make sure it doesnt
 		// contain any path information and exists in our own basedir,
 		// then try loading it
-		if ( name && !strchr(name, '/') )
+		if (name != NULL &&
+		    FIND_FIRST_DIRSEP(name) == NULL && !HAS_DRIVE_SPEC(name))
 		{
-			q_snprintf (gl_liblocal, MAX_OSPATH, "%s/%s", fs_basedir, name);
+			FS_MakePath_BUF (FS_BASEDIR, NULL, gl_liblocal, MAX_OSPATH, name);
 			if (! (Sys_FileType(gl_liblocal) & FS_ENT_FILE))
 				return false;
 
@@ -1024,7 +1026,7 @@ static void VID_CreateInversePalette (unsigned char *palette)
 		}
 	}
 
-	FS_CreatePath(va("%s/%s", fs_userdir, INVERSE_PALNAME));
+	FS_CreatePath(FS_MakePath(FS_USERDIR, NULL, INVERSE_PALNAME));
 	FS_WriteFile (INVERSE_PALNAME, inverse_pal, INVERSE_PAL_SIZE);
 }
 

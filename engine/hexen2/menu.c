@@ -437,7 +437,7 @@ static void M_BuildBigCharWidth (void)
 		}
 	}
 
-	FS_CreatePath(va("%s/%s", fs_userdir, BIGCHAR_WIDTH_FILE));
+	FS_CreatePath(FS_MakePath(FS_USERDIR, NULL, BIGCHAR_WIDTH_FILE));
 	FS_WriteFile (BIGCHAR_WIDTH_FILE, BigCharWidth, sizeof(BigCharWidth));
 }
 
@@ -1001,7 +1001,7 @@ static void M_ScanSaves (void)
 	{
 		q_strlcpy (m_filenames[i], "--- UNUSED SLOT ---", SAVEGAME_COMMENT_LENGTH+1);
 		loadable[i] = false;
-		q_snprintf (name, sizeof(name), "%s/s%i/info.dat", fs_userdir, i);
+		FS_MakePath_VABUF (FS_USERDIR, NULL, name, sizeof(name), "s%i/info.dat", i);
 		f = fopen (name, "r");
 		if (!f)
 			continue;
@@ -1091,7 +1091,7 @@ static void M_Load_Key (int k)
 			return;
 		if (!SCR_ModalMessage("Are you sure you want to\ndelete this saved game?\n"))
 			return;
-		q_snprintf (savefile, sizeof(savefile), "%s/s%i", fs_userdir, load_cursor);
+		FS_MakePath_VABUF (FS_USERDIR, NULL, savefile, sizeof(savefile), "s%i", load_cursor);
 		Host_DeleteSave (savefile);
 		M_ScanSaves ();
 		break;
@@ -1144,7 +1144,7 @@ static void M_Save_Key (int k)
 			return;
 		if (!SCR_ModalMessage("Are you sure you want to\ndelete this saved game?\n"))
 			return;
-		q_snprintf (savefile, sizeof(savefile), "%s/s%i", fs_userdir, load_cursor);
+		FS_MakePath_VABUF (FS_USERDIR, NULL, savefile, sizeof(savefile), "s%i", load_cursor);
 		Host_DeleteSave (savefile);
 		M_ScanSaves ();
 		break;
@@ -1190,7 +1190,7 @@ static void M_ScanMSaves (void)
 	{
 		q_strlcpy (m_filenames[i], "--- UNUSED SLOT ---", SAVEGAME_COMMENT_LENGTH+1);
 		loadable[i] = false;
-		q_snprintf (name, sizeof(name), "%s/ms%i/info.dat", fs_userdir, i);
+		FS_MakePath_VABUF (FS_USERDIR, NULL, name, sizeof(name), "ms%i/info.dat", i);
 		f = fopen (name, "r");
 		if (!f)
 			continue;
@@ -1253,7 +1253,7 @@ static void M_MLoad_Key (int k)
 			return;
 		if (!SCR_ModalMessage("Are you sure you want to\ndelete this saved game?\n"))
 			return;
-		q_snprintf (savefile, sizeof(savefile), "%s/ms%i", fs_userdir, load_cursor);
+		FS_MakePath_VABUF (FS_USERDIR, NULL, savefile, sizeof(savefile), "ms%i", load_cursor);
 		Host_DeleteSave (savefile);
 		M_ScanMSaves ();
 		break;
@@ -1310,7 +1310,7 @@ static void M_MSave_Key (int k)
 			return;
 		if (!SCR_ModalMessage("Are you sure you want to\ndelete this saved game?\n"))
 			return;
-		q_snprintf (savefile, sizeof(savefile), "%s/ms%i", fs_userdir, load_cursor);
+		FS_MakePath_VABUF (FS_USERDIR, NULL, savefile, sizeof(savefile), "ms%i", load_cursor);
 		Host_DeleteSave (savefile);
 		M_ScanMSaves ();
 		break;

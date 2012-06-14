@@ -336,7 +336,7 @@ static void CL_ParseDownload (void)
 	// open the file if not opened yet
 	if (!cls.download)
 	{
-		q_snprintf (name, sizeof(name), "%s/%s", fs_userdir, cls.downloadtempname);
+		FS_MakePath_BUF (FS_USERDIR, NULL, name, sizeof(name), cls.downloadtempname);
 		if ( FS_CreatePath(name) )
 		{
 			msg_readcount += size;
@@ -376,8 +376,8 @@ static void CL_ParseDownload (void)
 		cls.download = NULL;
 		cls.downloadpercent = 0;
 
-		q_snprintf (oldn, sizeof(oldn), "%s/%s", fs_userdir, cls.downloadtempname);
-		q_snprintf (newn, sizeof(newn), "%s/%s", fs_userdir, cls.downloadname);
+		FS_MakePath_BUF (FS_USERDIR, NULL, oldn, sizeof(oldn), cls.downloadtempname);
+		FS_MakePath_BUF (FS_USERDIR, NULL, newn, sizeof(newn), cls.downloadname);
 		if (Sys_rename(oldn, newn) != 0)
 			Con_Printf ("failed to rename.\n");
 

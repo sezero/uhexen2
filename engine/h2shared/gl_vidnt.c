@@ -1036,7 +1036,7 @@ static void VID_CreateInversePalette (unsigned char *palette)
 		}
 	}
 
-	FS_CreatePath(va("%s/%s", fs_userdir, INVERSE_PALNAME));
+	FS_CreatePath(FS_MakePath(FS_USERDIR, NULL, INVERSE_PALNAME));
 	FS_WriteFile (INVERSE_PALNAME, inverse_pal, INVERSE_PAL_SIZE);
 }
 

@@ -121,7 +121,7 @@ void SV_Edicts (const char *Name)
 	int		i;
 	edict_t	*e;
 
-	FH = fopen(va("%s/%s", fs_userdir, Name), "w");
+	FH = fopen(FS_MakePath(FS_USERDIR,NULL,Name), "w");
 	if (!FH)
 	{
 		Con_Printf("Could not open %s\n", Name);

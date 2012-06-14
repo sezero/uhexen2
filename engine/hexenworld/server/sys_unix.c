@@ -569,8 +569,8 @@ int main (int argc, char **argv)
 	SV_Init();
 
 // report the filesystem to the user
-	Sys_Printf("fs_gamedir is: %s\n", fs_gamedir);
-	Sys_Printf("fs_userdir is: %s\n", fs_userdir);
+	Sys_Printf("gamedir is: %s\n", FS_GetGamedir());
+	Sys_Printf("userdir is: %s\n", FS_GetUserdir());
 
 // run one frame immediately for first heartbeat
 	SV_Frame (HX_FRAME_TIME);

@@ -80,25 +80,21 @@ static const char *cfgfile[] = {
 
 static int TIMIDITY_InitHelper (const char *cfgdir)
 {
-	char path[MAX_OSPATH], *p;
+	char path[MAX_OSPATH];
+	int len;
 
-	if (! *cfgdir)
-		p = path;
-	else
-	{
-		int len = q_strlcpy(path, cfgdir, sizeof(path));
-		if (len >= (int)sizeof(path) - 1)
-			return -1;
-		p = &path[len];
-		if (!IS_DIR_SEPARATOR(p[-1]))
-			*p++ = '/';
-	}
+	len = q_strlcpy(path, cfgdir, sizeof(path));
+	if (len >= (int)sizeof(path) - 1)
+		return -1;
+	if (len && !IS_DIR_SEPARATOR(path[len - 1]))
+		path[len++] = DIR_SEPARATOR_CHAR;
 
-	*p = '\0';
+	path[len] = '\0';
 	q_strlcat(path, "timidity.cfg", sizeof(path));
 	Con_DPrintf("Timidity: trying %s\n", path);
 	if (mid_init(path) == 0)
 		return 0;
+
 	mid_exit (); /* make sure timidity frees all malloc'ed mem */
 	return -1;
 }
@@ -124,15 +120,16 @@ static qboolean S_TIMIDITY_CodecInitialize (void)
 	}
 #if DO_USERDIRS
 	/* check under the user's directory first: */
-	err = TIMIDITY_InitHelper(host_parms->userdir);
+	err = TIMIDITY_InitHelper(FS_GetUserbase());
 #endif
 	/* then, check under the installation dir: */
 	if (err != 0)
-		err = TIMIDITY_InitHelper(fs_basedir);
+		err = TIMIDITY_InitHelper(FS_GetBasedir());
 	/* lastly, check with the system locations: */
 	for (i = 0; err != 0 && cfgfile[i] != NULL; ++i)
 		err = TIMIDITY_InitHelper(cfgfile[i]);
- _finish:
+
+	_finish:
 	if (err != 0)
 	{
 		Con_Printf ("Could not initialize Timidity\n");

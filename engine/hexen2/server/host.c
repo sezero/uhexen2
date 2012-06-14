@@ -64,7 +64,7 @@ void Host_RemoveGIPFiles (const char *path)
 
 	if (path)
 		q_strlcpy(tempdir, path, MAX_OSPATH);
-	else	q_strlcpy(tempdir, fs_userdir, MAX_OSPATH);
+	else	q_strlcpy(tempdir, FS_GetUserdir(), MAX_OSPATH);
 
 	len = strlen(tempdir);
 	p = tempdir + len;
@@ -87,7 +87,7 @@ void Host_DeleteSave (const char *savepath)
 {
 	char	tmppath[MAX_OSPATH];
 
-	if (strstr(savepath, fs_userdir) != savepath)
+	if (strstr(savepath, FS_GetUserdir()) != savepath)
 		return;
 
 	Host_RemoveGIPFiles (savepath);

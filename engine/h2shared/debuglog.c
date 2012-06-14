@@ -40,7 +40,11 @@
 #ifdef PLATFORM_DOS	/* __DJGPP */
 #include <unistd.h>	/* write() */
 #endif
+#ifdef PLATFORM_AMIGA
+#include <unistd.h>	/* write() */
+#endif
 
+#include "filenames.h"
 
 unsigned int		con_debuglog	= LOG_NONE;
 
@@ -98,7 +102,10 @@ void LOG_Init (quakeparms_t *parms)
 	if (con_debuglog == LOG_NONE)
 		return;
 
-	q_snprintf (logfilename, sizeof(logfilename), "%s/%s", parms->userdir, DEBUGLOG_FILENAME);
+	j = q_strlcpy (logfilename, parms->userdir, sizeof(logfilename));
+	if (j && !IS_DIR_SEPARATOR(logfilename[j - 1]))
+		q_strlcat(logfilename, "/", sizeof(logfilename));
+	q_strlcat(logfilename, DEBUGLOG_FILENAME, sizeof(logfilename));
 	Sys_DateTimeString (session);
 
 	/*

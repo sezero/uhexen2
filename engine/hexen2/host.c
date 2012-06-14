@@ -85,7 +85,7 @@ void Host_RemoveGIPFiles (const char *path)
 
 	if (path)
 		q_strlcpy(tempdir, path, MAX_OSPATH);
-	else	q_strlcpy(tempdir, fs_userdir, MAX_OSPATH);
+	else	q_strlcpy(tempdir, FS_GetUserdir(), MAX_OSPATH);
 
 	len = strlen(tempdir);
 	p = tempdir + len;
@@ -107,7 +107,7 @@ void Host_DeleteSave (const char *savepath)
 {
 	char	tmppath[MAX_OSPATH];
 
-	if (strstr(savepath, fs_userdir) != savepath)
+	if (strstr(savepath, FS_GetUserdir()) != savepath)
 		return;
 
 	Host_RemoveGIPFiles (savepath);
@@ -393,7 +393,7 @@ static void Host_WriteConfiguration (const char *fname)
 // config.cfg cvars
 	if (host_initialized && !isDedicated)
 	{
-		f = fopen (va("%s/%s",fs_userdir,fname), "w");
+		f = fopen (FS_MakePath(FS_USERDIR,NULL,fname), "w");
 		if (!f)
 		{
 			Con_Printf ("Couldn't write %s.\n",fname);

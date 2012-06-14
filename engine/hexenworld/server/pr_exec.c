@@ -962,7 +962,7 @@ void PR_Profile_f (void)
 	int		total;
 	int		funcCount;
 	qboolean	byHC;
-	char	saveName[MAX_OSPATH];
+	const char	*saveName = NULL;
 	FILE	*saveFile = NULL;
 	int		currentFile;
 	int		bestFile;
@@ -974,7 +974,6 @@ void PR_Profile_f (void)
 
 	byHC = false;
 	funcCount = 10;
-	*saveName = 0;
 	for (i = 1; i < Cmd_Argc(); i++)
 	{
 		s = Cmd_Argv(i);
@@ -987,11 +986,11 @@ void PR_Profile_f (void)
 			if (i + 1 < Cmd_Argc() && !isdigit(*Cmd_Argv(i + 1)))
 			{
 				i++;
-				sprintf(saveName, "%s/%s", fs_userdir, Cmd_Argv(i));
+				saveName = FS_MakePath(FS_USERDIR, NULL, Cmd_Argv(i));
 			}
 			else
 			{
-				sprintf(saveName, "%s/profile.txt", fs_userdir);
+				saveName = FS_MakePath(FS_USERDIR, NULL, "profile.txt");
 			}
 		}
 		else if (isdigit(*s))
@@ -1010,7 +1009,7 @@ void PR_Profile_f (void)
 		total += pr_functions[i].profile;
 	}
 
-	if (*saveName)
+	if (saveName)
 	{ // Create the output file
 		saveFile = fopen(saveName, "w");
 		if (saveFile == NULL)

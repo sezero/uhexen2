@@ -31,16 +31,12 @@
 
 #define	GAME_MODIFIED		(1 << 16)
 
-extern	const char	*fs_basedir;
-extern	char	fs_gamedir[MAX_OSPATH];
 extern	char	fs_gamedir_nopath[MAX_QPATH];
-extern	char	fs_userdir[MAX_OSPATH];
 
-/* NOTE:  the savedir (fs_savedir, or the
- * old com_savedir) is no longer available
- * as a separate variable. the saves are
- * always put in the current userdir now.
- */
+const char *FS_GetBasedir (void);
+const char *FS_GetUserbase (void);
+const char *FS_GetGamedir (void);
+const char *FS_GetUserdir (void);
 
 extern	struct cvar_s	registered;
 extern	struct cvar_s	oem;
@@ -114,6 +110,21 @@ struct cache_user_s;
 void  FS_LoadCacheFile (const char *path, struct cache_user_s *cu,
 							unsigned int *path_id);
 	/* uses cache mem for allocating the buffer.  */
+
+#define	FS_BASEDIR	0	/* host_parms->basedir (i.e.:  fs_basedir) */
+#define	FS_USERBASE	1	/* host_parms->userdir */
+#define	FS_GAMEDIR	2	/* host_parms->basedir/gamedir (fs_gamedir) */
+#define	FS_USERDIR	3	/* host_parms->userdir/gamedir (fs_userdir) */
+
+char *FS_MakePath (int base, int *error, const char *path);
+	/* strcat to an FS path basename. returns a static buffer.  */
+char *FS_MakePath_VA (int base, int *error, const char *format, ...)
+				__attribute__((__format__(__printf__,3,4)));
+				/* like FS_MakePath(), but does varargs.  */
+char *FS_MakePath_BUF (int base, int *error, char *buf, size_t siz, const char *path);
+char *FS_MakePath_VABUF (int base, int *error, char *buf, size_t siz, const char *format, ...)
+				__attribute__((__format__(__printf__,5,6)));
+		/* like the two above, but with a user-provided buffer.  */
 
 /* The following FS_*() stdio replacements are necessary if one is
  * to perform non-sequential reads on files reopened on pak files

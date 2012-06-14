@@ -2748,7 +2748,7 @@ static void Mod_Print (void)
 	{
 		if (q_strcasecmp(Cmd_Argv(counter),"save") == 0)
 		{
-			FH = fopen(va("%s/mcache.txt", fs_userdir),"w");
+			FH = fopen(FS_MakePath(FS_USERDIR,NULL,"mcache.txt"), "w");
 			break;
 		}
 	}

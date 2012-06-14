@@ -910,7 +910,7 @@ static void Hunk_Print (qboolean all, qboolean write_file)
 
 	FH = NULL;
 	if (write_file)
-		FH = fopen(va("%s/memory.txt", fs_userdir),"w");
+		FH = fopen(FS_MakePath(FS_USERDIR,NULL,"memory.txt"), "w");
 
 	h = (hunk_t *)hunk_base;
 	endlow = (hunk_t *)(hunk_base + hunk_low_used);
@@ -1013,7 +1013,7 @@ static void Cache_Print (qboolean write_file)
 
 	FH = NULL;
 	if (write_file)
-		FH = fopen(va("%s/cache.txt", fs_userdir),"w");
+		FH = fopen(FS_MakePath(FS_USERDIR,NULL,"cache.txt"), "w");
 
 	count = sum = 0;
 	num_mod = sum_mod = 0;
@@ -1110,7 +1110,7 @@ static void Zone_Display_f(void)
 	if ((Cmd_Argc() == 2) &&
 	    (q_strcasecmp(Cmd_Argv(1),"save") == 0))
 	{
-		FH = fopen(va("%s/zone.txt", fs_userdir), "w");
+		FH = fopen(FS_MakePath(FS_USERDIR,NULL,"zone.txt"), "w");
 	}
 	else
 	{
@@ -1218,7 +1218,7 @@ static void Memory_Stats_f(void)
 
 	FH = NULL;
 	if (write_file)
-		FH = fopen(va("%s/stats.txt", fs_userdir),"w");
+		FH = fopen(FS_MakePath(FS_USERDIR,NULL,"stats.txt"), "w");
 
 	MEM_Printf(FH,"Group           Count Size\n");
 	MEM_Printf(FH,"--------------- ----- --------\n");

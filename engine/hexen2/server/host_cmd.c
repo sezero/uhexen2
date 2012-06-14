@@ -456,7 +456,8 @@ static void Host_Savegame_f (void)
 	if (error_state)
 		return;
 
-	if (q_snprintf(savename, sizeof(savename), "%s/%s", fs_userdir, p) >= (int)sizeof(savename))
+	FS_MakePath_BUF (FS_USERDIR, &error_state, savename, sizeof(savename), p);
+	if (error_state)
 	{
 		Con_Printf ("%s: save directory name too long\n", __thisfunc__);
 		return;
@@ -469,17 +470,18 @@ static void Host_Savegame_f (void)
 
 	Host_RemoveGIPFiles(savename);
 
-	q_snprintf (savename, sizeof(savename), "%s/clients.gip", fs_userdir);
+	FS_MakePath_BUF (FS_USERDIR, NULL, savename, sizeof(savename), "clients.gip");
 	Sys_unlink(savename);
 
-	q_snprintf (savedest, sizeof(savedest), "%s/%s", fs_userdir, p);
+	FS_MakePath_BUF (FS_USERDIR, NULL, savedest, sizeof(savedest), p);
 	Con_Printf ("Saving game to %s...\n", savedest);
 
-	error_state = Host_CopyFiles(fs_userdir, "*.gip", savedest);
+	error_state = Host_CopyFiles(FS_GetUserdir(), "*.gip", savedest);
 	if (error_state)
 		goto finish;
 
-	if (q_snprintf(savedest, sizeof(savedest), "%s/%s/info.dat", fs_userdir, p) >= (int)sizeof(savedest))
+	FS_MakePath_VABUF (FS_USERDIR, &error_state, savedest, sizeof(savedest), "%s/info.dat", p);
+	if (error_state)
 	{
 		Host_Error("%s: %d: string buffer overflow!", __thisfunc__, __LINE__);
 		return;
@@ -527,6 +529,7 @@ Host_DeleteSave_f
 static void Host_DeleteSave_f (void)
 {
 	const char	*p;
+	int	err;
 
 	if (cmd_source != src_command)
 		return;
@@ -544,10 +547,9 @@ static void Host_DeleteSave_f (void)
 		return;
 	}
 
-	if (q_snprintf(savename, sizeof(savename), "%s/%s", fs_userdir, p) >= (int)sizeof(savename))
-		return;
-
-	Host_DeleteSave (savename);
+	FS_MakePath_BUF (FS_USERDIR, &err, savename, sizeof(savename), p);
+	if (!err)
+		Host_DeleteSave (savename);
 }
 
 
@@ -581,7 +583,8 @@ static void Host_Loadgame_f (void)
 
 	Host_RemoveGIPFiles(NULL);
 
-	if (q_snprintf(savename, sizeof(savename), "%s/%s", fs_userdir, Cmd_Argv(1)) >= (int)sizeof(savename))
+	FS_MakePath_BUF (FS_USERDIR, &error_state, savename, sizeof(savename), Cmd_Argv(1));
+	if (error_state)
 	{
 		Con_Printf ("%s: save directory name too long\n", __thisfunc__);
 		return;
@@ -660,10 +663,10 @@ static void Host_Loadgame_f (void)
 
 	fclose (f);
 
-	Host_RemoveGIPFiles(fs_userdir);
+	Host_RemoveGIPFiles(FS_GetUserdir());
 
-	q_snprintf (savedest, sizeof(savedest), "%s/%s", fs_userdir, Cmd_Argv(1));
-	error_state = Host_CopyFiles(savedest, "*.gip", fs_userdir);
+	FS_MakePath_BUF (FS_USERDIR, NULL, savedest, sizeof(savedest), Cmd_Argv(1));
+	error_state = Host_CopyFiles(savedest, "*.gip", FS_GetUserdir());
 	if (error_state)
 	{
 		Host_Error ("%s: The game could not be loaded properly!", __thisfunc__);
@@ -701,7 +704,8 @@ int SaveGamestate (qboolean ClientsOnly)
 		start = 1;
 		end = svs.maxclients+1;
 
-		if (q_snprintf(savename, sizeof(savename), "%s/clients.gip", fs_userdir) >= (int)sizeof(savename))
+		FS_MakePath_BUF (FS_USERDIR, &error_state, savename, sizeof(savename), "clients.gip");
+		if (error_state)
 		{
 			Host_Error("%s: %d: string buffer overflow!", __thisfunc__, __LINE__);
 			return -1;
@@ -712,7 +716,8 @@ int SaveGamestate (qboolean ClientsOnly)
 		start = 1;
 		end = sv.num_edicts;
 
-		if (q_snprintf(savename, sizeof(savename), "%s/%s.gip", fs_userdir, sv.name) >= (int)sizeof(savename))
+		FS_MakePath_VABUF (FS_USERDIR, &error_state, savename, sizeof(savename), "%s.gip", sv.name);
+		if (error_state)
 		{
 			Host_Error("%s: %d: string buffer overflow!", __thisfunc__, __LINE__);
 			return -1;
@@ -845,7 +850,8 @@ static int LoadGamestate (const char *level, const char *startspot, int ClientsM
 			Con_Printf ("%s: server not active\n", __thisfunc__);
 			return -1;
 		}
-		if (q_snprintf(savename, sizeof(savename), "%s/clients.gip", fs_userdir) >= (int)sizeof(savename))
+		FS_MakePath_BUF (FS_USERDIR, &r, savename, sizeof(savename), "clients.gip");
+		if (r)
 		{
 			Host_Error("%s: %d: string buffer overflow!", __thisfunc__, __LINE__);
 			return -1;
@@ -853,7 +859,8 @@ static int LoadGamestate (const char *level, const char *startspot, int ClientsM
 	}
 	else
 	{
-		if (q_snprintf(savename, sizeof(savename), "%s/%s.gip", fs_userdir, level) >= (int)sizeof(savename))
+		FS_MakePath_VABUF (FS_USERDIR, &r, savename, sizeof(savename), "%s.gip", level);
+		if (r)
 		{
 			Host_Error("%s: %d: string buffer overflow!", __thisfunc__, __LINE__);
 			return -1;

@@ -791,7 +791,7 @@ static void SCR_ScreenShot_f (void)
 	int	mark;
 	byte	*buffer;
 
-	q_snprintf (checkname, sizeof(checkname), "%s/shots", fs_userdir);
+	FS_MakePath_BUF (FS_USERDIR, NULL, checkname, sizeof(checkname), "shots");
 	Sys_mkdir (checkname, false);
 	// find a slot to save it to
 	q_strlcpy (pcxname, scr_shotbase, sizeof(pcxname));
@@ -799,7 +799,7 @@ static void SCR_ScreenShot_f (void)
 	{
 		pcxname[SHOTNUM_POS+0] = i/10 + '0';
 		pcxname[SHOTNUM_POS+1] = i%10 + '0';
-		q_snprintf (checkname, sizeof(checkname), "%s/%s", fs_userdir, pcxname);
+		FS_MakePath_BUF (FS_USERDIR, NULL, checkname, sizeof(checkname), pcxname);
 		if (Sys_FileType(checkname) == FS_ENT_NONE)
 			break;	// file doesn't exist
 	}

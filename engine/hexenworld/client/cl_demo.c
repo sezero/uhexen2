@@ -317,11 +317,7 @@ void CL_Record_f (void)
 		return;
 	}
 
-	q_snprintf (name, sizeof(name), "%s/%s", fs_userdir, p);
-
-//
-// open the demo file
-//
+	FS_MakePath_BUF (FS_USERDIR, NULL, name, sizeof(name), p);
 	COM_DefaultExtension (name, ".qwd", sizeof(name));
 
 	cls.demofile = fopen (name, "wb");
@@ -337,9 +333,7 @@ void CL_Record_f (void)
 	Con_Printf ("recording to %s.\n", name);
 	cls.demorecording = true;
 
-//
-// start the map up
-//
+// start the map
 	Cmd_ExecuteString ( va("connect %s", Cmd_Argv(2)), src_command);
 }
 
@@ -379,11 +373,7 @@ void CL_ReRecord_f (void)
 		return;
 	}
 
-	q_snprintf (name, sizeof(name), "%s/%s", fs_userdir, p);
-
-//
-// open the demo file
-//
+	FS_MakePath_BUF (FS_USERDIR, NULL, name, sizeof(name), p);
 	COM_DefaultExtension (name, ".qwd", sizeof(name));
 
 	cls.demofile = fopen (name, "wb");

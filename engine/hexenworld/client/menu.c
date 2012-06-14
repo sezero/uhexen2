@@ -326,7 +326,7 @@ static void M_BuildBigCharWidth (void)
 		}
 	}
 
-	FS_CreatePath(va("%s/%s", fs_userdir, BIGCHAR_WIDTH_FILE));
+	FS_CreatePath(FS_MakePath(FS_USERDIR, NULL, BIGCHAR_WIDTH_FILE));
 	FS_WriteFile (BIGCHAR_WIDTH_FILE, BigCharWidth, sizeof(BigCharWidth));
 }
 

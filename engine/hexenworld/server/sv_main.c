@@ -957,12 +957,11 @@ SV_WriteIP_f
 static void SV_WriteIP_f (void)
 {
 	FILE	*f;
-	char	name[MAX_OSPATH];
+	const char	*name;
 	byte	*b;
-	int		i;
+	int	i;
 
-	sprintf (name, "%s/listip.cfg", fs_userdir);
-
+	name = FS_MakePath(FS_USERDIR, NULL, "listip.cfg");
 	Con_Printf ("Writing %s.\n", name);
 
 	f = fopen (name, "wb");

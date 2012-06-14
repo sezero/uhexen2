@@ -889,7 +889,7 @@ static void Cmd_WriteCommands_f (void)
 	cvar_t		*var;
 	cmdalias_t	*a;
 
-	FH = fopen(va("%s/commands.txt", fs_userdir),"w");
+	FH = fopen(FS_MakePath(FS_USERDIR,NULL,"commands.txt"), "w");
 	if (!FH)
 	{
 		return;

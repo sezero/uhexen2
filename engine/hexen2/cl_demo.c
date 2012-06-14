@@ -312,17 +312,13 @@ void CL_Record_f (void)
 		track = -1;
 	}
 
-	q_snprintf (name, sizeof(name), "%s/%s", fs_userdir, p);
+	FS_MakePath_BUF (FS_USERDIR, NULL, name, sizeof(name), p);
 
-//
 // start the map up
-//
 	if (c > 2)
 		Cmd_ExecuteString ( va("map %s", Cmd_Argv(2)), src_command);
 
-//
 // open the demo file
-//
 	COM_DefaultExtension (name, ".dem", sizeof(name));
 
 	Con_Printf ("recording to %s.\n", name);
@@ -363,14 +359,10 @@ void CL_PlayDemo_f (void)
 // get rid of the menu and/or console
 	key_dest = key_game;
 
-//
 // disconnect from server
-//
 	CL_Disconnect ();
 
-//
 // open the demo file
-//
 	q_strlcpy (name, Cmd_Argv(1), sizeof(name));
 
 	intro_playing = false;
