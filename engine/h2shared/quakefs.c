@@ -82,7 +82,7 @@ static pakdata_t old_pakdata[] =
 	{ 697,	53062, "data1"	},	/* pak0.pak, original cdrom (1.03) version	*/
 	{ 525,	47762, "data1"	},	/* pak1.pak, original cdrom (1.03) version	*/
 	{ 701,	20870, "data1"	},	/* pak0.pak, Raven's first version of the demo	*/
-					/* The old (28.8.1997, v0.42? 1.07?) demo is not supported:
+					/* The old (28.8.1997, v0.42? v1.07?) demo,
 					 * pak0.pak::progs.dat : 19267 crc, progheader crc: 14046 */
 /* FIXME: add pak0 and pak2 data for the
  * oem (Matrox m3D bundle) 1.08 original
@@ -143,14 +143,77 @@ directory, then opened there.
 */
 
 
+static unsigned int FS_CheckKnownPAKS (int paknum, int numfiles, unsigned short crc)
+{
+	if (paknum >= MAX_PAKDATA)
+		return GAME_MODIFIED;
+
+	if (strcmp(fs_gamedir_nopath, pakdata[paknum].dirname) != 0)
+		return GAME_MODIFIED;	/* Raven didn't ship like that */
+
+	if (numfiles != pakdata[paknum].numfiles)
+	{
+		switch (paknum)
+		{
+		case 0:	/* demo ?? */
+			if (numfiles == demo_pakdata[0].numfiles &&
+					crc == demo_pakdata[0].crc)
+				return GAME_DEMO;
+			/* oem ?? */
+			if (numfiles == oem0_pakdata[0].numfiles &&
+					crc == oem0_pakdata[0].crc)
+				return GAME_OEM0;
+			/*
+			 * FIXME: add old oem version pak file
+			 *	  checks here...
+			 */
+			/* old version of demo ?? */
+			if (numfiles == old_pakdata[2].numfiles &&
+					crc == old_pakdata[2].crc)
+				return GAME_OLD_DEMO;
+			/* old cdrom version ?? */
+			if (numfiles == old_pakdata[0].numfiles &&
+					crc == old_pakdata[0].crc)
+				return GAME_OLD_CDROM0;
+			/* not original: */
+			return GAME_MODIFIED;
+		case 1:	/* old cdrom version ?? */
+			if (numfiles == old_pakdata[1].numfiles &&
+					crc == old_pakdata[1].crc)
+				return GAME_OLD_CDROM1;
+			/* not original: */
+			return GAME_MODIFIED;
+		default:/* not original */
+			return GAME_MODIFIED;
+		}
+	}
+
+	if (crc != pakdata[paknum].crc)
+		return GAME_MODIFIED;	/* not original */
+
+	/* both crc and numfiles are good, we are still original */
+	switch (paknum)
+	{
+	case 0:	/* pak0 of full version 1.11 */
+		return GAME_REGISTERED0;
+	case 1:	/* pak1 of full version 1.11 */
+		return GAME_REGISTERED1;
+	case 2:	/* bundle version */
+		return GAME_OEM2;
+	case 3:	/* mission pack */
+		return GAME_PORTALS;
+	case 4:	/* hexenworld */
+		return GAME_HEXENWORLD;
+	default:/* we shouldn't reach here */
+		return GAME_MODIFIED;
+	}
+}
+
 /*
 =================
 FS_LoadPackFile
 
-Takes an explicit (not game tree related) path to a pak file.
-
-Loads the header and directory, adding the files at the beginning
-of the list so they override previous pack files.
+Takes a path to a pak file.  Loads the header and directory.
 =================
 */
 static pack_t *FS_LoadPackFile (const char *packfile, int paknum, qboolean base_fs)
@@ -208,103 +271,9 @@ static pack_t *FS_LoadPackFile (const char *packfile, int paknum, qboolean base_
 		CRC_ProcessByte (&crc, ((byte *)info)[i]);
 
 	/* check for modifications */
-	if (base_fs && paknum < MAX_PAKDATA)
-	{
-		if (strcmp(fs_gamedir_nopath, pakdata[paknum].dirname) != 0)
-		{
-		/* raven didnt ship like that */
-			gameflags |= GAME_MODIFIED;
-		}
-		else if (numpackfiles != pakdata[paknum].numfiles)
-		{
-			if (paknum == 0)
-			{
-				/* demo ?? */
-				if (crc == demo_pakdata[0].crc &&
-				    numpackfiles == demo_pakdata[0].numfiles)
-				{
-					gameflags |= GAME_DEMO;
-				}
-				/* oem ?? */
-				else if (crc == oem0_pakdata[0].crc &&
-					 numpackfiles == oem0_pakdata[0].numfiles)
-				{
-					gameflags |= GAME_OEM0;
-				}
-				/* old version of demo ?? */
-				else if (crc == old_pakdata[2].crc &&
-					 numpackfiles == old_pakdata[2].numfiles)
-				{
-					gameflags |= GAME_OLD_DEMO;
-				}
-				/* old, un-patched cdrom version ?? */
-				else if (crc == old_pakdata[0].crc &&
-					 numpackfiles == old_pakdata[0].numfiles)
-				{
-					gameflags |= GAME_OLD_CDROM0;
-				}
-				/*
-				 * FIXME: add old oem version pak file
-				 * checks here...
-				 */
-				else
-				{	/* not original */
-					gameflags |= GAME_MODIFIED;
-				}
-			}
-			else if (paknum == 1)
-			{
-				/* old, un-patched cdrom version ?? */
-				if (crc == old_pakdata[1].crc &&
-				    numpackfiles == old_pakdata[1].numfiles)
-				{
-					gameflags |= GAME_OLD_CDROM1;
-				}
-				else
-				{	/* not original */
-					gameflags |= GAME_MODIFIED;
-				}
-			}
-			else
-			{
-			/* not original */
-				gameflags |= GAME_MODIFIED;
-			}
-		}
-		else if (crc != pakdata[paknum].crc)
-		{
-		/* not original */
-			gameflags |= GAME_MODIFIED;
-		}
-		else
-		{
-			switch (paknum)
-			{
-			case 0:	/* pak0 of full version 1.11 */
-				gameflags |= GAME_REGISTERED0;
-				break;
-			case 1:	/* pak1 of full version 1.11 */
-				gameflags |= GAME_REGISTERED1;
-				break;
-			case 2:	/* bundle version */
-				gameflags |= GAME_OEM2;
-				break;
-			case 3:	/* mission pack */
-				gameflags |= GAME_PORTALS;
-				break;
-			case 4:	/* hexenworld */
-				gameflags |= GAME_HEXENWORLD;
-				break;
-			default:/* we shouldn't reach here */
-				break;
-			}
-		}
-		/* both crc and numfiles are good, we are still original */
-	}
-	else
-	{
-		gameflags |= GAME_MODIFIED;
-	}
+	if (base_fs)
+		gameflags |= FS_CheckKnownPAKS (paknum, numpackfiles, crc);
+	else	gameflags |= GAME_MODIFIED;
 
 	/* parse the directory */
 	for (i = 0; i < numpackfiles; i++)
@@ -332,10 +301,8 @@ pak_error:
 ================
 FS_AddGameDirectory
 
-Sets fs_gamedir, adds the directory to the head of the path,
-then loads and adds pak1.pak pak2.pak ... 
-This is a callback for FS_Init() ONLY. The dir argument must
-contain a path information, at least a partial one.
+Sets fs_gamedir, fs_userdir and fs_gamedir_nopath.  adds the directory
+to the head of the path, then loads and adds pak1.pak pak2.pak ...
 ================
 */
 static void FS_AddGameDirectory (const char *dir, qboolean base_fs)
@@ -344,77 +311,68 @@ static void FS_AddGameDirectory (const char *dir, qboolean base_fs)
 	searchpath_t	*search;
 	pack_t		*pak;
 	char	pakfile[MAX_OSPATH];
-	char		*p;
-	qboolean been_here = false;
+	qboolean do_userdir = false;
 	int	i;
 
-	qerr_strlcpy(__thisfunc__, __LINE__, fs_gamedir, dir, sizeof(fs_gamedir));
-	p = FIND_LAST_DIRSEP (fs_gamedir);
-	if (p)	p++;
-	else	p = fs_gamedir; /* userdir or basedir is like "" */
-	qerr_strlcpy(__thisfunc__, __LINE__, fs_gamedir_nopath, p,
-							sizeof(fs_gamedir_nopath));
+	qerr_strlcpy(__thisfunc__, __LINE__, fs_gamedir_nopath, dir,
+						sizeof(fs_gamedir_nopath));
+	FSERR_MakePath_BUF (__thisfunc__, __LINE__, FS_BASEDIR,
+				fs_gamedir, sizeof(fs_gamedir), dir);
+	FSERR_MakePath_BUF (__thisfunc__, __LINE__, FS_USERBASE,
+				fs_userdir, sizeof(fs_userdir), dir);
 
 /* assign a path_id to this game directory */
 	if (fs_searchpaths)
 		path_id = fs_searchpaths->path_id << 1;
 	else	path_id = 1U;
 
-/* add any pak files in the format pak0.pak pak1.pak, ... */
 #if DO_USERDIRS
 add_pakfile:
 #endif
+/* add any pak files in the format pak0.pak pak1.pak, ...
+ * unlike Quake, Hexen II can't stop at first unavailable
+ * pak: the mission pack has only pak3, hw has only pak4.
+ */
 	for (i = 0; i < 10; i++)
 	{
-		if (been_here)
-		{
-			FSERR_MakePath_VABUF (__thisfunc__, __LINE__, FS_USERDIR,
+		FSERR_MakePath_VABUF (__thisfunc__, __LINE__,
+					(do_userdir) ? FS_USERDIR : FS_GAMEDIR,
 					pakfile, sizeof(pakfile), "pak%i.pak", i);
-		}
-		else
-		{
-			qerr_snprintf(__thisfunc__, __LINE__, pakfile, sizeof(pakfile),
-								"%s/pak%i.pak", dir, i);
-		}
 		pak = FS_LoadPackFile (pakfile, i, base_fs);
-		if (!pak)
-			continue;
-		search = (searchpath_t *) Hunk_AllocName (sizeof(searchpath_t), "searchpath");
+		if (!pak) continue;
+		search = (searchpath_t *) Z_Malloc (sizeof(searchpath_t), Z_MAINZONE);
 		search->path_id = path_id;
 		search->pack = pak;
 		search->next = fs_searchpaths;
 		fs_searchpaths = search;
 	}
 
-/* add the directory to the search path */
-/* unlike Quake, hexen2 does this ~after~ adding the pakfiles
- * in this dir, so that the dir itself will be placed above the
- * pakfiles in the search order which, in turn, will allow
- * override files: this way, data1/default.cfg will be opened
- * instead of data1/pak0.pak:/default.cfg
+/* add the directory itself to the search path.  unlike Quake,
+ * Hexen II does this ~after~ adding the pakfiles in this dir,
+ * so that the dir itself will be placed above the pakfiles in
+ * the search order which, in turn, will allow override files.
  */
-	search = (searchpath_t *) Hunk_AllocName (sizeof(searchpath_t), "searchpath");
-	if (been_here)
-	{
+	search = (searchpath_t *) Z_Malloc (sizeof(searchpath_t), Z_MAINZONE);
+	if (do_userdir)
 		qerr_strlcpy(__thisfunc__, __LINE__, search->filename, fs_userdir, MAX_OSPATH);
-	}
-	else
-	{
-		qerr_strlcpy(__thisfunc__, __LINE__, search->filename, dir, MAX_OSPATH);
-	}
+	else	qerr_strlcpy(__thisfunc__, __LINE__, search->filename, fs_gamedir, MAX_OSPATH);
 	search->path_id = path_id;
 	search->next = fs_searchpaths;
 	fs_searchpaths = search;
 
-	if (been_here)
+	if (do_userdir)
 		return;
-	been_here = true;
+	do_userdir = true;
 
-/* add user's directory to the search path and
- * add any pak files in the user's directory. */
 #if DO_USERDIRS
+/* add user's directory to the search path and
+ * add any pak files in the user's directory.
+ */
 	if (strcmp(fs_gamedir, fs_userdir))
+	{
+		Sys_mkdir (fs_userdir, true);
 		goto add_pakfile;
+	}
 #endif
 }
 
@@ -424,23 +382,18 @@ FS_Gamedir
 
 Sets the gamedir and path to a different directory.
 
-Hexen2 uses this for setting the gamedir upon seeing
-a -game commandline argument. In addition to this,
-hexenworld uses this procedure to set the gamedir on
-both server and client sides during game execution:
-Client calls this upon every map change from within
-CL_ParseServerData() and the Server calls this upon
-a gamedir command from within SV_Gamedir_f().
+Hexen II uses this for setting the game directory from a -game
+command line argument.
+
+HexenWorld uses this to set the gamedir on both server and client
+sides while the game is running: The client calls this upon every
+map change from within CL_ParseServerData(), and the Server calls
+this upon a gamedir command from within SV_Gamedir_f().
 ================
 */
 void FS_Gamedir (const char *dir)
 {
-	searchpath_t	*search, *next;
-	unsigned int	path_id;
-	pack_t		*pak;
-	char	pakfile[MAX_OSPATH];
-	qboolean been_here = false;
-	int	i;
+	searchpath_t	*next;
 
 	if (strstr(dir, "..") || FIND_FIRST_DIRSEP(dir) || HAS_DRIVE_SPEC(dir))
 	{
@@ -450,9 +403,6 @@ void FS_Gamedir (const char *dir)
 
 	if (!q_strcasecmp(fs_gamedir_nopath, dir))
 		return;		/* still the same */
-	qerr_strlcpy(__thisfunc__, __LINE__, fs_gamedir_nopath, dir, sizeof(fs_gamedir_nopath));
-
-	/* FIXME: Should I check for directory's existence ?? */
 
 /* free up any current game dir info: our top searchpath dir will be hw
  * and any gamedirs set before by this very procedure will be removed.
@@ -480,117 +430,58 @@ void FS_Gamedir (const char *dir)
 /* check for reserved gamedirs */
 	if (!q_strcasecmp(dir, "hw"))
 	{
-#if !defined(H2W)
-	/* hw is reserved for hexenworld only. hexen2 shouldn't use it */
-		Sys_Printf ("WARNING: Gamedir not set to hw :\n"
-			    "It is reserved for HexenWorld.\n");
-		return;
-#else
+#if defined(H2W)
 	/* that we reached here means the hw server decided to abandon
 	 * whatever the previous mod it was running and went back to
 	 * pure hw. weird.. do as he wishes anyway and adjust our variables. */
+	_do_hw:
+		qerr_strlcpy(__thisfunc__, __LINE__, fs_gamedir_nopath, "hw",
+						sizeof(fs_gamedir_nopath));
 		FSERR_MakePath_BUF (__thisfunc__, __LINE__, FS_BASEDIR,
 					fs_gamedir, sizeof(fs_gamedir), "hw");
 		FSERR_MakePath_BUF (__thisfunc__, __LINE__, FS_USERBASE,
 					fs_userdir, sizeof(fs_userdir), "hw");
-#    if defined(SERVERONLY)
+# ifdef SERVERONLY
 	/* change the *gamedir serverinfo properly */
 		Info_SetValueForStarKey (svs.info, "*gamedir", "hw", MAX_SERVERINFO_STRING);
-#    endif
-		return;
+# endif /* HWSV */
+#else	/* hexen2 case: */
+	/* hw is reserved for hexenworld only. hexen2 shouldn't use it */
+		Sys_Printf ("WARNING: Gamedir not set to hw :\n"
+			    "It is reserved for HexenWorld.\n");
 #endif	/* H2W */
+		return;
 	}
-	else if (!q_strcasecmp(dir, "portals"))
+
+	if (!q_strcasecmp(dir, "portals"))
 	{
 	/* no hw server is supposed to set gamedir to portals
 	 * and hw must be above portals in hierarchy. this is
 	 * actually a hypothetical case.
 	 * as for hexen2, it cannot reach here.  */
+#ifdef H2W
+		goto _do_hw;
+#endif
 		return;
 	}
-	else if (!q_strcasecmp(dir, "data1"))
+
+	if (!q_strcasecmp(dir, "data1"))
 	{
 	/* another hypothetical case: no hw mod is supposed to
 	 * do this and hw must stay above data1 in hierarchy.
 	 * as for hexen2, it can only reach here by a silly
 	 * command line argument like -game data1, ignore it. */
-		return;
-	}
-	else
-	{
-	/* a new gamedir: let's set it here. */
-		FSERR_MakePath_BUF (__thisfunc__, __LINE__, FS_BASEDIR,
-					fs_gamedir, sizeof(fs_gamedir), dir);
-	}
-
-/* assign a path_id to this game directory */
-	if (fs_searchpaths)
-		path_id = fs_searchpaths->path_id << 1;
-	else	path_id = 1U;
-
-/* add any pak files in the format pak0.pak pak1.pak, ... */
-#if DO_USERDIRS
-add_pakfiles:
+#ifdef H2W
+		goto _do_hw;
 #endif
-	for (i = 0; i < 10; i++)
-	{
-		if (been_here)
-		{
-			FSERR_MakePath_VABUF (__thisfunc__, __LINE__, FS_USERDIR,
-					pakfile, sizeof(pakfile), "pak%i.pak", i);
-		}
-		else
-		{
-			FSERR_MakePath_VABUF (__thisfunc__, __LINE__, FS_GAMEDIR,
-					pakfile, sizeof(pakfile), "pak%i.pak", i);
-		}
-		pak = FS_LoadPackFile (pakfile, i, false);
-		if (!pak)
-			continue;
-		search = (searchpath_t *) Z_Malloc (sizeof(searchpath_t), Z_MAINZONE);
-		search->path_id = path_id;
-		search->pack = pak;
-		search->next = fs_searchpaths;
-		fs_searchpaths = search;
-	}
-
-/* add the directory to the search path */
-/* unlike Quake, hexen2 does this ~after~ adding the pakfiles
- * in this dir, so that the dir itself will be placed above the
- * pakfiles in the search order.
- */
-	search = (searchpath_t *) Z_Malloc (sizeof(searchpath_t), Z_MAINZONE);
-	if (been_here)
-	{
-		qerr_strlcpy(__thisfunc__, __LINE__, search->filename, fs_userdir, MAX_OSPATH);
-	}
-	else
-	{
-		qerr_strlcpy(__thisfunc__, __LINE__, search->filename, fs_gamedir, MAX_OSPATH);
-	}
-	search->path_id = path_id;
-	search->next = fs_searchpaths;
-	fs_searchpaths = search;
-
-	if (been_here)
 		return;
-	been_here = true;
+	}
 
+/* a new gamedir: let's set it here. */
+	FS_AddGameDirectory(dir, false);
 #if defined(H2W) && defined(SERVERONLY)
 /* change the *gamedir serverinfo properly */
 	Info_SetValueForStarKey (svs.info, "*gamedir", dir, MAX_SERVERINFO_STRING);
-#endif
-
-/* add user's directory to the search path */
-#if DO_USERDIRS
-	FSERR_MakePath_BUF (__thisfunc__, __LINE__, FS_USERBASE,
-					fs_userdir, sizeof(fs_userdir), dir);
-	Sys_mkdir (fs_userdir, true);
-/* add any pak files in the user's directory */
-	if (strcmp(fs_gamedir, fs_userdir))
-		goto add_pakfiles;
-#else
-	qerr_strlcpy (__thisfunc__, __LINE__, fs_userdir, fs_gamedir, sizeof(fs_userdir));
 #endif
 }
 
@@ -1292,11 +1183,7 @@ void FS_Init (void)
 	}
 
 /* step 1: start up with data1 by default */
-	FSERR_MakePath_BUF (__thisfunc__, __LINE__, FS_USERBASE,
-					fs_userdir, sizeof(fs_userdir), "data1");
-	if (strcmp(fs_gamedir, fs_userdir))
-		Sys_mkdir (fs_userdir, true);
-	FS_AddGameDirectory (FS_MakePath(FS_BASEDIR,NULL,"data1"), true);
+	FS_AddGameDirectory ("data1", true);
 
 	if (gameflags & GAME_REGISTERED0 && gameflags & GAME_REGISTERED1)
 		gameflags |= GAME_REGISTERED;
@@ -1388,14 +1275,7 @@ void FS_Init (void)
 #if defined(H2W)
 		searchpath_t	*mark = fs_searchpaths;
 #endif
-		i = Hunk_LowMark ();
-
-		FSERR_MakePath_BUF (__thisfunc__, __LINE__, FS_USERBASE,
-					fs_userdir, sizeof(fs_userdir), "portals");
-		if (strcmp(fs_gamedir, fs_userdir))
-			Sys_mkdir (fs_userdir, true);
-		FS_AddGameDirectory (FS_MakePath(FS_BASEDIR,NULL,"portals"), true);
-
+		FS_AddGameDirectory ("portals", true);
 		if (! (gameflags & GAME_PORTALS))
 		{
 #if !defined(H2W)
@@ -1411,6 +1291,8 @@ void FS_Init (void)
 				if (fs_searchpaths->pack)
 				{
 					fclose (fs_searchpaths->pack->handle);
+					Z_Free (fs_searchpaths->pack->files);
+					Z_Free (fs_searchpaths->pack);
 					Sys_Printf ("Removed packfile %s\n", fs_searchpaths->pack->filename);
 				}
 				else
@@ -1418,10 +1300,10 @@ void FS_Init (void)
 					Sys_Printf ("Removed path %s\n", fs_searchpaths->filename);
 				}
 				next = fs_searchpaths->next;
+				Z_Free (fs_searchpaths);
 				fs_searchpaths = next;
 			}
 			fs_searchpaths = mark;
-			Hunk_FreeToLowMark (i);
 			/* back to data1 */
 			FS_MakePath_BUF (FS_BASEDIR, NULL, fs_gamedir, sizeof(fs_gamedir), "data1");
 			FS_MakePath_BUF (FS_USERBASE,NULL, fs_userdir, sizeof(fs_userdir), "data1");
@@ -1431,11 +1313,7 @@ void FS_Init (void)
 
 /* step 3: hw directory (hexenworld) */
 #if defined(H2W)
-	FSERR_MakePath_BUF (__thisfunc__, __LINE__, FS_USERBASE,
-				fs_userdir, sizeof(fs_userdir), "hw");
-	if (strcmp(fs_gamedir, fs_userdir))
-		Sys_mkdir (fs_userdir, true);
-	FS_AddGameDirectory (FS_MakePath(FS_BASEDIR,NULL,"hw"), true);
+	FS_AddGameDirectory ("hw", true);
 	/* error out if GAME_HEXENWORLD isn't set */
 	if (!(gameflags & GAME_HEXENWORLD))
 		Sys_Error ("You must have the HexenWorld data installed");

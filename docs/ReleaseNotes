@@ -1,7 +1,7 @@
 Hammer of Thyrion (uHexen2) release notes:
 
 ========================================================================
-Changes in v1.5.4: (June 14, 2012.)
+Changes in v1.5.4: (June 15, 2012.)
 ========================================================================
 
 - OpenGL:  Fixed screen flickering resulting from progress bars drawing
@@ -21,7 +21,7 @@ Changes in v1.5.4: (June 14, 2012.)
 
 - Client, all: Revised the intermissions setup code.
 
-- All platforms: Majorly revised path name handling.
+- All platforms: Majorly revised path name handling and filesystem code.
 
 - Support for Solaris.
 

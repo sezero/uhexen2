@@ -3,6 +3,17 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2012-06-15 (SVN):
+    * quakefs.c: A lot of tidy-up: Moved Raven pak files check from
+      FS_LoadPackFile() to new FS_CheckKnownPAKS() helper. Changed
+      FS_AddGameDirectory() to be the only place where fs_gamedir,
+      fs_userdir and fs_gamedir_nopath are set; FS_Gamedir() will still
+      need further cleanup for that. Creating the fs_userdir directory
+      is also done in FS_AddGameDirectory() now. FS_AddGameDirectory()
+      now allocates the searchpath memory only on the zone instead of
+      hunk. After checking for reserved gamedirs, FS_Gamedir() now calls
+      FS_AddGameDirectory() to do the rest of the job.
+
 2012-06-14 (SVN):
     * gamecode/hc/portals/world.hc: Commented out precache_file4 calls
       for non-existant maps/sheephunt.bsp and maps/mgallmon.bsp.
