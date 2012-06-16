@@ -1,9 +1,25 @@
 /*
-	quakedef.h
-	common definitions for client and server
-
-	$Id$
-*/
+ * quakedef.h -- common definitions for client and server.
+ * $Id$
+ *
+ * Copyright (C) 1996-1997  Id Software, Inc.
+ * Copyright (C) 1997-1998  Raven Software Corp.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or (at
+ * your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ *
+ * See the GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License along
+ * with this program; if not, write to the Free Software Foundation, Inc.,
+ * 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ */
 
 #ifndef __QUAKEDEFS_H
 #define __QUAKEDEFS_H
@@ -43,7 +59,6 @@
 // fall over
 #define	ROLL		2
 
-
 //
 // Timing macros
 //
@@ -69,9 +84,7 @@
 #define	MAX_MODELS	512		/* Sent over the net as a word */
 #define	MAX_SOUNDS	256		/* Sent over the net as a byte */
 
-
 #define	MAX_STYLESTRING		64
-
 
 //
 // stats are integers communicated to the client by the server
@@ -95,16 +108,13 @@
 #define	STAT_ITEMS		15
 //define	STAT_VIEWHEIGHT		16
 
-
 #define	MAX_INVENTORY		15	// Max inventory array size
 /* the number of cnt_<artifact_name> members in the entvars_t struct:
    from cnt_torch to cnt_invincibility: 15 total (see in progdefs.h). */
 
-
 #define	SAVEGAME_VERSION	5
 #define	SAVEGAME_COMMENT_LENGTH	39	// 0-19: level name, 21-rest: save time
 #define	MAX_SAVEGAMES		12	// Max number of savegames for the menu listing
-
 
 //
 // quake item flags

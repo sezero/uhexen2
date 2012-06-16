@@ -1,9 +1,25 @@
 /*
-	d_iface.h
-	interface header file for rasterization driver modules
-
-	$Id: d_iface.h,v 1.16 2008-03-30 12:25:16 sezero Exp $
-*/
+ * d_iface.h -- interface header file for rasterization driver modules
+ * $Id: d_iface.h,v 1.16 2008-03-30 12:25:16 sezero Exp $
+ *
+ * Copyright (C) 1996-1997  Id Software, Inc.
+ * Copyright (C) 1997-1998  Raven Software Corp.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or (at
+ * your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ *
+ * See the GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License along
+ * with this program; if not, write to the Free Software Foundation, Inc.,
+ * 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ */
 
 #ifndef __D_IFACE_H
 #define __D_IFACE_H

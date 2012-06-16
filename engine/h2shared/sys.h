@@ -61,7 +61,7 @@ void Sys_MakeCodeWriteable (unsigned long startaddr, unsigned long length);
 #endif	/* _PASSWORD_FILE */
 
 /* disable user directories on platforms where they
- * aren't necessary or not possible. */
+ * are not necessary or not possible. */
 #if defined(PLATFORM_DOS) || defined(PLATFORM_AMIGA) || \
     defined(PLATFORM_WINDOWS)
 #undef	DO_USERDIRS

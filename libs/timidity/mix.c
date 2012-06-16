@@ -13,9 +13,9 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
- * You should have received another copy of the GNU General Public
- * License along with this program; if not, write to the Free
- * Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * You should have received a copy of the GNU General Public License along
+ * with this program; if not, write to the Free Software Foundation, Inc.,
+ * 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  * I bet they'll be amazed.
  *
  * mix.c
@@ -552,7 +552,7 @@ void mix_voice(MidSong *song, sint32 *buf, int v, sint32 c)
 		mix_center(song, sp, buf, v, c);
 	    }
 	  else
-	    { 
+	    {
 	      /* It's either full left or full right. In either case,
 		 every other sample is 0. Just get the offset right: */
 	      if (vp->panned == PANNED_RIGHT) buf++;

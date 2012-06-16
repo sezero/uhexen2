@@ -4,17 +4,18 @@
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
+ * the Free Software Foundation; either version 2 of the License, or (at
+ * your option) any later version.
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * See the GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License along
+ * with this program; if not, write to the Free Software Foundation, Inc.,
+ * 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  *
  * resample.c
  */
@@ -68,7 +69,7 @@ static sample_t *rs_plain(MidSong *song, int v, sint32 *countptr)
     }
   else count -= i;
 
-  while (i--) 
+  while (i--)
     {
       v1 = src[ofs >> FRACTION_BITS];
       v2 = src[(ofs >> FRACTION_BITS)+1];
@@ -76,7 +77,7 @@ static sample_t *rs_plain(MidSong *song, int v, sint32 *countptr)
       ofs += incr;
     }
 
-  if (ofs >= le) 
+  if (ofs >= le)
     {
       if (ofs == le)
 	*dest++ = src[ofs >> FRACTION_BITS];
@@ -103,20 +104,20 @@ static sample_t *rs_loop(MidSong *song, MidVoice *vp, sint32 count)
     *src=vp->sample->data;
   sint32 i;
 
-  while (count) 
+  while (count)
     {
       if (ofs >= le)
 	/* NOTE: Assumes that ll > incr and that incr > 0. */
 	ofs -= ll;
       /* Precalc how many times we should go through the loop */
       i = (le - ofs) / incr + 1;
-      if (i > count) 
+      if (i > count)
 	{
 	  i = count;
 	  count = 0;
-	} 
+	}
       else count -= i;
-      while (i--) 
+      while (i--)
 	{
 	  v1 = src[ofs >> FRACTION_BITS];
 	  v2 = src[(ofs >> FRACTION_BITS)+1];
@@ -146,19 +147,19 @@ static sample_t *rs_bidir(MidSong *song, MidVoice *vp, sint32 count)
     i;
   /* Play normally until inside the loop region */
 
-  if (ofs <= ls) 
+  if (ofs <= ls)
     {
       /* NOTE: Assumes that incr > 0, which is NOT always the case
 	 when doing bidirectional looping.  I have yet to see a case
 	 where both ofs <= ls AND incr < 0, however. */
       i = (ls - ofs) / incr + 1;
-      if (i > count) 
+      if (i > count)
 	{
 	  i = count;
 	  count = 0;
-	} 
+	}
       else count -= i;
-      while (i--) 
+      while (i--)
 	{
 	  v1 = src[ofs >> FRACTION_BITS];
 	  v2 = src[(ofs >> FRACTION_BITS)+1];
@@ -172,26 +173,26 @@ static sample_t *rs_bidir(MidSong *song, MidVoice *vp, sint32 count)
     {
       /* Precalc how many times we should go through the loop */
       i = ((incr > 0 ? le : ls) - ofs) / incr + 1;
-      if (i > count) 
+      if (i > count)
 	{
 	  i = count;
 	  count = 0;
-	} 
+	}
       else count -= i;
-      while (i--) 
+      while (i--)
 	{
 	  v1 = src[ofs >> FRACTION_BITS];
 	  v2 = src[(ofs >> FRACTION_BITS)+1];
 	  *dest++ = v1 + (((v2 - v1) * (ofs & FRACTION_MASK)) >> FRACTION_BITS);
 	  ofs += incr;
 	}
-      if (ofs>=le) 
+      if (ofs>=le)
 	{
 	  /* fold the overshoot back in */
 	  ofs = le2 - ofs;
 	  incr *= -1;
-	} 
-      else if (ofs <= ls) 
+	}
+      else if (ofs <= ls)
 	{
 	  ofs = ls2 - ofs;
 	  incr *= -1;
@@ -359,17 +360,17 @@ static sample_t *rs_vib_loop(MidSong *song, MidVoice *vp, sint32 count)
 	{
 	  i = cc;
 	  vibflag = 1;
-	} 
+	}
       else cc -= i;
       count -= i;
-      while(i--) 
+      while (i--)
 	{
 	  v1 = src[ofs >> FRACTION_BITS];
 	  v2 = src[(ofs >> FRACTION_BITS)+1];
 	  *dest++ = v1 + (((v2 - v1) * (ofs & FRACTION_MASK)) >> FRACTION_BITS);
 	  ofs += incr;
 	}
-      if(vibflag) 
+      if(vibflag)
 	{
 	  cc = vp->vibrato_control_ratio;
 	  incr = update_vibrato(song, vp, 0);
@@ -404,25 +405,25 @@ static sample_t *rs_vib_bidir(MidSong *song, MidVoice *vp, sint32 count)
     vibflag = 0;
 
   /* Play normally until inside the loop region */
-  while (count && (ofs <= ls)) 
+  while (count && (ofs <= ls))
     {
       i = (ls - ofs) / incr + 1;
       if (i > count) i = count;
-      if (i > cc) 
+      if (i > cc)
 	{
 	  i = cc;
 	  vibflag = 1;
-	} 
+	}
       else cc -= i;
       count -= i;
-      while (i--) 
+      while (i--)
 	{
 	  v1 = src[ofs >> FRACTION_BITS];
 	  v2 = src[(ofs >> FRACTION_BITS)+1];
 	  *dest++ = v1 + (((v2 - v1) * (ofs & FRACTION_MASK)) >> FRACTION_BITS);
 	  ofs += incr;
 	}
-      if (vibflag) 
+      if (vibflag)
 	{
 	  cc = vp->vibrato_control_ratio;
 	  incr = update_vibrato(song, vp, 0);
@@ -436,11 +437,11 @@ static sample_t *rs_vib_bidir(MidSong *song, MidVoice *vp, sint32 count)
       /* Precalc how many times we should go through the loop */
       i = ((incr > 0 ? le : ls) - ofs) / incr + 1;
       if(i > count) i = count;
-      if(i > cc) 
+      if(i > cc)
 	{
 	  i = cc;
 	  vibflag = 1;
-	} 
+	}
       else cc -= i;
       count -= i;
       while (i--)
@@ -450,19 +451,19 @@ static sample_t *rs_vib_bidir(MidSong *song, MidVoice *vp, sint32 count)
 	  *dest++ = v1 + (((v2 - v1) * (ofs & FRACTION_MASK)) >> FRACTION_BITS);
 	  ofs += incr;
 	}
-      if (vibflag) 
+      if (vibflag)
 	{
 	  cc = vp->vibrato_control_ratio;
 	  incr = update_vibrato(song, vp, (incr < 0));
 	  vibflag = 0;
 	}
-      if (ofs >= le) 
+      if (ofs >= le)
 	{
 	  /* fold the overshoot back in */
 	  ofs = le2 - ofs;
 	  incr *= -1;
-	} 
-      else if (ofs <= ls) 
+	}
+      else if (ofs <= ls)
 	{
 	  ofs = ls2 - ofs;
 	  incr *= -1;

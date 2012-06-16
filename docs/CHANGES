@@ -4,6 +4,10 @@ Development Progress	:
 ---------------------------
 
 2012-06-16 (SVN):
+    * Added missing GPL headers and copyright notes to all *.c, *.h and
+      *.asm files.
+
+2012-06-16 (SVN):
     * snd_mpg123.c: We need MPG123_API_VERSION at least 24, not 25. v24
       is the api version when mpg123 introduced handle-based custom I/O
       which we do rely on.

@@ -1,9 +1,5 @@
-//
-// win32res.rc
-// Win32 resource file for Hexen II
-//
+// win32res.rc -- Win32 resource file for Hexen II
 // $Id$
-//
 
 #include <afxres.h>
 #include <winresrc.h>

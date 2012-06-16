@@ -1,15 +1,31 @@
 /*
-	view.c
-	player eye positioning
-
-	$Id$
-
-	The view is allowed to move slightly from it's true position
-	for bobbing, but if it exceeds 8 pixels linear distance
-	(spherical, not box), the list of entities sent from the server
-	may not include everything in the pvs, especially when crossing
-	a water boudnary.
-*/
+ * view.c -- player eye positioning
+ * $Id$
+ *
+ * The view is allowed to move slightly from it's true position
+ * for bobbing, but if it exceeds 8 pixels linear distance
+ * (spherical, not box), the list of entities sent from the server
+ * may not include everything in the pvs, especially when crossing
+ * a water boudnary.
+ *
+ * Copyright (C) 1996-1997  Id Software, Inc.
+ * Copyright (C) 1997-1998  Raven Software Corp.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or (at
+ * your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ *
+ * See the GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License along
+ * with this program; if not, write to the Free Software Foundation, Inc.,
+ * 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ */
 
 #include "quakedef.h"
 
@@ -125,9 +141,7 @@ void V_StartPitchDrift (void)
 {
 #if 1
 	if (cl.laststop == cl.time)
-	{
 		return;		// something else is keeping it from drifting
-	}
 #endif
 	if (cl.nodrift || !cl.pitchvel)
 	{

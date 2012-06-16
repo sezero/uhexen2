@@ -1,6 +1,9 @@
 /*
  * $Id$
  *
+ * Copyright (C) 1999-2005 Id Software, Inc.
+ * Copyright (C) 2010-2012 O.Sezer <sezero@users.sourceforge.net>
+ *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or (at
@@ -18,7 +21,8 @@
  *
  */
 
-#if 0 /* removed support for cdtrack to midiname mapping */
+/* removed support for cdtrack to midiname mapping */
+
 /*
  * These mappings apply only to original Hexen II and its
  * expansion pack Portal of Praevus:  community maps need
@@ -212,5 +216,4 @@ void BGM_PlayMIDIorMusic (const char *filename)
 
 	Con_Printf("Couldn't handle music file %s\n", filename);
 }
-#endif /* removed support for cdtrack to midiname mapping */
 

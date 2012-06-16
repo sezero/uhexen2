@@ -1,5 +1,4 @@
-; dosasm.asm
-;
+; dosasm.asm  --
 ; $Id$
 ; this file uses NASM syntax.
 ;

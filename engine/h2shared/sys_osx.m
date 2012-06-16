@@ -95,8 +95,7 @@ int OSX_GetBasedir (char *argv0, char *dst, size_t dstsize)
 }
 
 
-/* Display message from Sys_Error() on a window */
-
+/* Display message from Sys_Error() on a window: */
 void Cocoa_ErrorMessage (const char *errorMsg)
 {
 	NSRunCriticalAlertPanel(@"Hexen II Error",

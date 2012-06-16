@@ -1,11 +1,9 @@
 /*
  * MP3 decoding support using libmpg123, loosely based on an SDL_mixer
- * plugin found at http://bubu.lv/
  * See: http://bubu.lv/changeset/4/public/libs/SDL/generated/SDL_mixer
- *
- * Copyright (C) 2011 O.Sezer <sezero@users.sourceforge.net>
- *
  * $Id$
+ *
+ * Copyright (C) 2011-2012 O.Sezer <sezero@users.sourceforge.net>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by

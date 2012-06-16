@@ -1,22 +1,23 @@
 /* md5.c - MD5 Message-Digest Algorithm
- *	Copyright (C) 1995, 1996, 1998, 1999 Free Software Foundation, Inc.
+ * Copyright (C) 1995, 1996, 1998, 1999 Free Software Foundation, Inc.
  *
  * according to the definition of MD5 in RFC 1321 from April 1992.
  * NOTE: This is *not* the same file as the one from glibc.
  *
- * This program is free software; you can redistribute it and/or modify it
- * under the terms of the GNU General Public License as published by the
- * Free Software Foundation; either version 2, or (at your option) any
- * later version.
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or (at
+ * your option) any later version.
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software Foundation,
- * Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ * See the GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License along
+ * with this program; if not, write to the Free Software Foundation, Inc.,
+ * 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 /* Written by Ulrich Drepper <drepper@gnu.ai.mit.edu>, 1995.  */
 /* heavily modified for GnuPG by <werner.koch@guug.de> */
@@ -37,9 +38,8 @@
 #include <fcntl.h>
 #include <sys/stat.h>
 
-/*#include "arch.h"*/
-#include "q_endian.h"
 #include "md5.h"
+#include "q_endian.h"
 
 
 void md5_init( MD5_CONTEXT *ctx )
@@ -104,12 +104,12 @@ static void transform( MD5_CONTEXT *ctx, unsigned char *data )
 	memcpy( correct_words, data, 64 );
 #endif
 
-#define OP(a, b, c, d, s, T)				\
-    do {						\
-	a += FF (b, c, d) + (*cwp++) + T; 		\
-	a = rol(a, s);					\
-	a += b;						\
-    } while (0)
+#define OP(a, b, c, d, s, T)			\
+do {						\
+	a += FF (b, c, d) + (*cwp++) + T; 	\
+	a = rol(a, s);				\
+	a += b;					\
+} while (0)
 
 /* Before we start, one word about the strange constants.
    They are defined in RFC 1321 as
@@ -135,12 +135,12 @@ static void transform( MD5_CONTEXT *ctx, unsigned char *data )
 	OP (B, C, D, A, 22, 0x49b40821);
 
 #undef OP
-#define OP(f, a, b, c, d, k, s, T)			\
-    do {						\
-	a += f (b, c, d) + correct_words[k] + T;	\
-	a = rol(a, s);					\
-	a += b; 					\
-    } while (0)
+#define OP(f, a, b, c, d, k, s, T)		\
+do {						\
+	a += f (b, c, d) + correct_words[k] + T;\
+	a = rol(a, s);				\
+	a += b; 				\
+} while (0)
 
 	/* Round 2.  */
 	OP (FG, A, B, C, D,  1,  5, 0xf61e2562);

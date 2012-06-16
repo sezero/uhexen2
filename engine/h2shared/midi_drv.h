@@ -1,10 +1,9 @@
 /*
- * MIDI driver exports for BGM interface
+ * midi_drv.h - MIDI driver exports for BGM interface
+ * $Id$
  *
  * Copyright (C) 1999-2005 Id Software, Inc.
- * Copyright (C) 2010 O.Sezer <sezero@users.sourceforge.net>
- *
- * $Id$
+ * Copyright (C) 2010-2012 O.Sezer <sezero@users.sourceforge.net>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by

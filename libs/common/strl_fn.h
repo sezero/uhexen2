@@ -1,9 +1,5 @@
-/*
-	strl_fn.h
-	header file for BSD strlcat and strlcpy
-
-	$Id$
-*/
+/* strl_fn.h - header file for BSD strlcat and strlcpy
+ * $Id$  */
 
 #ifndef __STRLFUNCS_H
 #define __STRLFUNCS_H

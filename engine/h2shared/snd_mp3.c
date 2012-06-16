@@ -8,7 +8,7 @@
  * functions were adapted from the GPL-licensed libid3tag library, see at
  * http://www.underbit.com/products/mad/.  Adapted to Quake and Hexen II
  * game engines by O.Sezer :
- * Copyright (C) 2010-2011 O.Sezer <sezero@users.sourceforge.net>
+ * Copyright (C) 2010-2012 O.Sezer <sezero@users.sourceforge.net>
  *
  * $Id$
  *
@@ -26,7 +26,6 @@
  * You should have received a copy of the GNU General Public License along
  * with this program; if not, write to the Free Software Foundation, Inc.,
  * 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
- *
  */
 
 #include "quakedef.h"

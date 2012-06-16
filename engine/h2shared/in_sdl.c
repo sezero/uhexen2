@@ -1,32 +1,27 @@
 /*
-	in_sdl.c
-	SDL game input code
-
-	$Id$
-
-	Copyright (C) 2001  contributors of the Anvil of Thyrion project
-	Joystick code taken from the darkplaces project with modifications
-	to make it work in uHexen2: Copyright (C) 2006-2011 Forest Hale
-	Copyright (C) 2005-2012  Steven Atkinson, O.Sezer, Sander van Dijk
-
-	This program is free software; you can redistribute it and/or
-	modify it under the terms of the GNU General Public License
-	as published by the Free Software Foundation; either version 2
-	of the License, or (at your option) any later version.
-
-	This program is distributed in the hope that it will be useful,
-	but WITHOUT ANY WARRANTY; without even the implied warranty of
-	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-
-	See the GNU General Public License for more details.
-
-	You should have received a copy of the GNU General Public License
-	along with this program; if not, write to:
-
-		Free Software Foundation, Inc.
-		51 Franklin St, Fifth Floor,
-		Boston, MA  02110-1301  USA
-*/
+ * in_sdl.c -- SDL game input code
+ * $Id$
+ *
+ * Copyright (C) 2001  contributors of the Anvil of Thyrion project
+ * Joystick code taken from the darkplaces project with modifications
+ * to make it work in uHexen2: Copyright (C) 2006-2011 Forest Hale
+ * Copyright (C) 2005-2012  Steven Atkinson, O.Sezer, Sander van Dijk
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or (at
+ * your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ *
+ * See the GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License along
+ * with this program; if not, write to the Free Software Foundation, Inc.,
+ * 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ */
 
 #include "sdl_inc.h"
 #include "quakedef.h"
@@ -424,8 +419,8 @@ IN_Move
 */
 void IN_Move (usercmd_t *cmd)
 {
-	int		x, y;
-	qboolean	app_active;
+	int	x, y;
+	qboolean app_active;
 
 	if (cl.v.cameramode)
 	{
@@ -459,7 +454,7 @@ IN_StartupJoystick
 */
 static void IN_StartupJoystick (void)
 {
-	int		i;
+	int	i;
 
 	if (safemode || COM_CheckParm ("-nojoy"))
 		return;
@@ -550,8 +545,8 @@ static void IN_Callback_JoyIndex (cvar_t *var)
 
 static void IN_JoyTrackballMove (int *ballx, int *bally)
 {
-	int		i, numballs;
-	int		x, y;
+	int	i, numballs;
+	int	x, y;
 
 	if (!joy_id)
 		return;
@@ -567,8 +562,8 @@ static void IN_JoyTrackballMove (int *ballx, int *bally)
 
 static void IN_JoyHatMove (void)
 {
-	int		i, k, numhats;
-	Uint32		hats;
+	int	i, k, numhats;
+	Uint32	hats;
 
 	if (!joy_id)	return;
 	numhats = SDL_JoystickNumHats(joy_id);
@@ -738,10 +733,10 @@ IN_JoyMove
 */
 static void IN_JoyMove (usercmd_t *cmd)
 {
-	float		speed, aspeed;
-	float		value;
+	float	speed, aspeed;
+	float	value;
 #if (JOY_KEYEVENT_FOR_AXES)
-	int		i, numaxes;
+	int	i, numaxes;
 #endif
 
 	if (!joy_id)

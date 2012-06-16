@@ -6,7 +6,7 @@
  * you pass with WildMidi_OpenBuffer() when you do WildMidi_Close().
  * The library seems experimental, so, you are on your own with this.
  *
- * Copyright (C) 2010-2011 O.Sezer <sezero@users.sourceforge.net>
+ * Copyright (C) 2010-2012 O.Sezer <sezero@users.sourceforge.net>
  *
  * $Id$
  *
