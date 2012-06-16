@@ -16,7 +16,7 @@ Index: engine/hexen2/sys_unix.c
 ===================================================================
 --- engine/hexen2/sys_unix.c	(revision 4653)
 +++ engine/hexen2/sys_unix.c	(working copy)
-@@ -577,65 +577,266 @@ static void PrintVersion (void)
+@@ -600,65 +600,266 @@ static void PrintVersion (void)
  }
  
  #include "snd_sys.h"
@@ -313,7 +313,7 @@ Index: engine/hexen2/sys_unix.c
  }
  
  /*
-@@ -661,23 +862,7 @@ int main (int argc, char **argv)
+@@ -684,23 +885,7 @@ int main (int argc, char **argv)
  
  	PrintVersion();
  
