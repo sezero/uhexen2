@@ -3,9 +3,9 @@ see the documentation file StandaloneMods.txt for details.
 
 Index: engine/h2shared/quakefs.c
 ===================================================================
---- engine/h2shared/quakefs.c	(revision 4764)
+--- engine/h2shared/quakefs.c	(revision 4767)
 +++ engine/h2shared/quakefs.c	(working copy)
-@@ -43,6 +43,7 @@ static searchpath_t	*fs_base_searchpaths
+@@ -59,6 +59,7 @@ static searchpath_t	*fs_base_searchpaths
  static const char	*fs_basedir;
  static char	fs_gamedir[MAX_OSPATH];
  static char	fs_userdir[MAX_OSPATH];
@@ -13,7 +13,7 @@ Index: engine/h2shared/quakefs.c
  char	fs_gamedir_nopath[MAX_QPATH];
  
  unsigned int	gameflags;
-@@ -271,7 +272,7 @@ static pack_t *FS_LoadPackFile (const ch
+@@ -287,7 +288,7 @@ static pack_t *FS_LoadPackFile (const ch
  		CRC_ProcessByte (&crc, ((byte *)info)[i]);
  
  	/* check for modifications */
@@ -22,7 +22,7 @@ Index: engine/h2shared/quakefs.c
  		gameflags |= FS_CheckKnownPAKS (paknum, numpackfiles, crc);
  	else	gameflags |= GAME_MODIFIED;
  
-@@ -430,6 +431,10 @@ void FS_Gamedir (const char *dir)
+@@ -446,6 +447,10 @@ void FS_Gamedir (const char *dir)
  /* check for reserved gamedirs */
  	if (!q_strcasecmp(dir, "hw"))
  	{
@@ -33,7 +33,7 @@ Index: engine/h2shared/quakefs.c
  #if defined(H2W)
  	/* that we reached here means the hw server decided to abandon
  	 * whatever the previous mod it was running and went back to
-@@ -477,6 +482,30 @@ void FS_Gamedir (const char *dir)
+@@ -493,6 +498,30 @@ void FS_Gamedir (const char *dir)
  		return;
  	}
  
@@ -64,7 +64,7 @@ Index: engine/h2shared/quakefs.c
  /* a new gamedir: let's set it here. */
  	FS_AddGameDirectory(dir, false);
  #if defined(H2W) && defined(SERVERONLY)
-@@ -1153,8 +1182,36 @@ static int CheckRegistered (void)
+@@ -1169,8 +1198,36 @@ static int CheckRegistered (void)
  FS_Init
  ================
  */
@@ -101,7 +101,7 @@ Index: engine/h2shared/quakefs.c
  	char	temp[32];
  	qboolean check_portals = false;
  	int	i;
-@@ -1480,6 +1537,86 @@ char *FS_MakePath_VABUF (int base, int *
+@@ -1496,6 +1553,86 @@ char *FS_MakePath_VABUF (int base, int *
  	return p;
  }
  
@@ -190,9 +190,9 @@ Index: engine/h2shared/quakefs.c
  	return fs_basedir;
 Index: engine/h2shared/quakefs.h
 ===================================================================
---- engine/h2shared/quakefs.h	(revision 4764)
+--- engine/h2shared/quakefs.h	(revision 4767)
 +++ engine/h2shared/quakefs.h	(working copy)
-@@ -31,6 +31,12 @@
+@@ -47,6 +47,12 @@
  
  #define	GAME_MODIFIED		(1 << 16)
  
