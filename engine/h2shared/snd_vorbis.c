@@ -69,13 +69,13 @@ static const ov_callbacks ovc_qfs =
 };
 
 #if !defined(__MORPHOS__)
-#define OV_OPEN CALLBACKS		ov_open_callbacks
+#define OV_OPEN_CALLBACKS		ov_open_callbacks
 #else
 struct Library *VorbisFileBase;
 /* AFAIK, no other Amiga variant but MorphOS has vorbisfile.library, and
  * that one has a nasty ov_open_callbacks() api change where the function
  * accepts not an ov_callbacks but an ov_callbacks pointer as last parm: */
-#define OV_OPEN CALLBACKS(S,F,I,IB,CB)	ov_open_callbacks(S,F,I,IB,&CB)
+#define OV_OPEN_CALLBACKS(S,F,I,IB,CB)	ov_open_callbacks(S,F,I,IB,&CB)
 #endif	/* __MORPHOS__ */
 
 static qboolean S_OGG_CodecInitialize (void)
