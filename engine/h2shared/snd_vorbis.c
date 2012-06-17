@@ -35,6 +35,9 @@
 /* for Tremor / Vorbisfile api differences,
  * see doc/diff.html in the Tremor package. */
 #include <tremor/ivorbisfile.h>
+#elif defined(__MORPHOS__)
+#include <proto/exec.h>
+#include <proto/vorbisfile.h>
 #else
 #include <vorbis/vorbisfile.h>
 #endif
@@ -65,13 +68,36 @@ static const ov_callbacks ovc_qfs =
 	(long (*)(void *))				FS_ftell
 };
 
+#if !defined(__MORPHOS__)
+#define OV_OPEN CALLBACKS		ov_open_callbacks
+#else
+struct Library *VorbisFileBase;
+/* AFAIK, no other Amiga variant but MorphOS has vorbisfile.library, and
+ * that one has a nasty ov_open_callbacks() api change where the function
+ * accepts not an ov_callbacks but an ov_callbacks pointer as last parm: */
+#define OV_OPEN CALLBACKS(S,F,I,IB,CB)	ov_open_callbacks(S,F,I,IB,&CB)
+#endif	/* __MORPHOS__ */
+
 static qboolean S_OGG_CodecInitialize (void)
 {
+#if defined(__MORPHOS__)
+	VorbisFileBase = OpenLibrary("vorbisfile.library", 0);
+	if (!VorbisFileBase)
+		return false;
+#endif	/* __MORPHOS__ */
 	return true;
 }
 
 static void S_OGG_CodecShutdown (void)
 {
+#if defined(__MORPHOS__)
+	if (VorbisFileBase)
+	{
+		CloseLibrary(VorbisFileBase);
+		VorbisFileBase = NULL;
+		ogg_codec.initialized = false;
+	}
+#endif	/* __MORPHOS__ */
 }
 
 static snd_stream_t *S_OGG_CodecOpenStream (const char *filename)
@@ -86,7 +112,7 @@ static snd_stream_t *S_OGG_CodecOpenStream (const char *filename)
 		return NULL;
 
 	ovFile = (OggVorbis_File *) Z_Malloc(sizeof(OggVorbis_File), Z_MAINZONE);
-	res = ov_open_callbacks(&stream->fh, ovFile, NULL, 0, ovc_qfs);
+	res = OV_OPEN_CALLBACKS(&stream->fh, ovFile, NULL, 0, ovc_qfs);
 	if (res != 0)
 	{
 		Con_Printf("%s is not a valid Ogg Vorbis file (error %i).\n",
@@ -183,7 +209,11 @@ static int S_OGG_CodecRewindStream (snd_stream_t *stream)
 snd_codec_t ogg_codec =
 {
 	CODECTYPE_OGG,
+#ifdef __MORPHOS__
+	false,
+#else
 	true,	/* always available. */
+#endif
 	"ogg",
 	S_OGG_CodecInitialize,
 	S_OGG_CodecShutdown,
