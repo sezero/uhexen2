@@ -41,7 +41,6 @@
 #ifdef PLATFORM_AMIGA
 #include <proto/exec.h>
 #include <proto/dos.h>
-#include <devices/timer.h>
 #include <proto/timer.h>
 #include <time.h>
 #endif
@@ -72,8 +71,12 @@ qboolean	com_eof;
 #ifdef PLATFORM_AMIGA
 struct timerequest	*timerio;
 struct MsgPort		*timerport;
+#ifdef __AROS__
 struct Device		*TimerBase;
+#else
+struct Library		*TimerBase;
 #endif
+#endif /*  _AMIGA */
 
 // REPLACEMENTS FOR LIBRARY FUNCTIONS --------------------------------------
 
@@ -200,16 +203,20 @@ static void AMIGA_TimerInit (void)
 {
 	if ((timerport = CreateMsgPort()))
 	{
-		if ((timerio = CreateIORequest(timerport, sizeof(timerio))))
+		if ((timerio = (struct timerequest *)CreateIORequest(timerport, sizeof(struct timerequest))))
 		{
 			if (OpenDevice((STRPTR) TIMERNAME, UNIT_MICROHZ,
 					(struct IORequest *) timerio, 0) == 0)
 			{
+#ifdef __AROS__
 				TimerBase = timerio->tr_node.io_Device;
+#else
+				TimerBase = (struct Library *)timerio->tr_node.io_Device;
+#endif
 			}
 			else
 			{
-				DeleteIORequest(timerio);
+				DeleteIORequest((struct IORequest *)timerio);
 				DeleteMsgPort(timerport);
 			}
 		}
@@ -237,7 +244,7 @@ double COM_GetTime (void)
 	if (!TimerBase)
 		AMIGA_TimerInit();
 	GetSysTime(&tv);
-	return tv.tv_sec + tv.tv_usec / 1000000.0;
+	return tv.tv_secs + tv.tv_micro / 1000000.0;
 }
 
 #else /* GENERIC CASE: */

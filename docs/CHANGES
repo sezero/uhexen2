@@ -4,6 +4,12 @@ Development Progress	:
 ---------------------------
 
 2012-06-17 (SVN):
+    * sys_amiga.c, cmdlib.c: Remove unnecessary devices/timer.h include.
+      Fix the TimerBase type so that it works on other Amiga variants.
+      Use tv_secs and tv_micro to access struct timeval members instead
+      of tv_sec and tv_usec, for the same reasons.
+
+2012-06-17 (SVN):
     * snd_vorbis.c: Adjusted to support MorphOS.
 
 2012-06-17 (SVN):

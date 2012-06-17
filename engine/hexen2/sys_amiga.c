@@ -27,14 +27,13 @@
 #include <proto/exec.h>
 #include <proto/dos.h>
 
+#include <proto/timer.h>
+#include <time.h>
+
 #include <proto/intuition.h>
 #include <proto/iffparse.h>
 #include <datatypes/textclass.h>
 
-#include <devices/timer.h>
-#include <proto/timer.h>
-
-#include <time.h>
 #if defined(SDLQUAKE)
 #include "sdl_inc.h"
 #endif	/* SDLQUAKE */
@@ -60,7 +59,11 @@ static BPTR		amiga_stdin, amiga_stdout;
 
 struct timerequest	*timerio;
 struct MsgPort		*timerport;
+#ifdef __AROS__
 struct Device		*TimerBase;
+#else
+struct Library		*TimerBase;
+#endif
 
 
 /*
@@ -347,16 +350,20 @@ static void Sys_Init (void)
 {
 	if ((timerport = CreateMsgPort()))
 	{
-		if ((timerio = CreateIORequest(timerport, sizeof(timerio))))
+		if ((timerio = (struct timerequest *)CreateIORequest(timerport, sizeof(struct timerequest))))
 		{
 			if (OpenDevice((STRPTR) TIMERNAME, UNIT_MICROHZ,
 					(struct IORequest *) timerio, 0) == 0)
 			{
+#ifdef __AROS__
 				TimerBase = timerio->tr_node.io_Device;
+#else
+				TimerBase = (struct Library *)timerio->tr_node.io_Device;
+#endif
 			}
 			else
 			{
-				DeleteIORequest(timerio);
+				DeleteIORequest((struct IORequest *)timerio);
 				DeleteMsgPort(timerport);
 			}
 		}
@@ -482,7 +489,7 @@ double Sys_DoubleTime (void)
 
 	GetSysTime(&tp);
 
-	now = tp.tv_sec + tp.tv_usec / 1e6;
+	now = tp.tv_secs + tp.tv_micro / 1e6;
 
 	if (first)
 	{
