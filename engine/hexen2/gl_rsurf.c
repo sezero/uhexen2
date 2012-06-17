@@ -1029,7 +1029,7 @@ static void DrawTextureChains (void)
 			if (((currententity->drawflags & DRF_TRANSLUCENT) ||
 				(currententity->drawflags & MLS_ABSLIGHT) == MLS_ABSLIGHT))
 			{
-				for ( ; s ; s = s->texturechain);
+				for ( ; s ; s = s->texturechain)
 					R_RenderBrushPoly (s, false);
 			}
 			else if (gl_multitexture.integer && gl_mtexable)

@@ -4,6 +4,10 @@ Development Progress	:
 ---------------------------
 
 2012-06-17 (SVN):
+    * gl_rsurf.c (DrawTextureChains): Remove an extra semicolon from the
+      end of a for construct. An obvious old typo found by clang-3.1.
+
+2012-06-17 (SVN):
     * oslibs/windows/scitech/x86/libmglfx.def: commented out all of the
       opengl related exports to reduce the generated import library size
 
