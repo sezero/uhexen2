@@ -1,6 +1,7 @@
 ; I commented out all of the opengl related exports
 ; so as to reduce the generated import library size
-;
+; To compile: dlltool -U -d libmglfx.def -l libmglfx.a
+; (see :  http://mingw.org/wiki/MSVC_and_MinGW_DLLs)
 LIBRARY MGLFX.dll
 EXPORTS
 @__lockDebuggerData$qv
