@@ -84,6 +84,7 @@ static qboolean S_OGG_CodecInitialize (void)
 	VorbisFileBase = OpenLibrary("vorbisfile.library", 0);
 	if (!VorbisFileBase)
 		return false;
+	ogg_codec.initialized = true;
 #endif	/* __MORPHOS__ */
 	return true;
 }
