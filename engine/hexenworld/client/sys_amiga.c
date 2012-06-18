@@ -38,6 +38,9 @@
 #include "sdl_inc.h"
 #endif	/* SDLQUAKE */
 
+#ifdef __MORPHOS__
+int __stack = 0x200000; /* 2 MB stack */
+#endif
 
 // heapsize: minimum 16mb, standart 32 mb, max is 96 mb.
 // -heapsize argument will abide by these min/max settings

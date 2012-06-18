@@ -4,6 +4,9 @@ Development Progress	:
 ---------------------------
 
 2012-06-18 (SVN):
+    * engine (all), sys_amiga.c: Use 2 MB stack for MorphOS.
+
+2012-06-18 (SVN):
     * Makefiles: Added support for MorphOS.
 
 2012-06-17 (SVN):

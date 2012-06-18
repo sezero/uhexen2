@@ -30,6 +30,9 @@
 #include <proto/timer.h>
 #include <time.h>
 
+#ifdef __MORPHOS__
+int __stack = 0x200000; /* 2 MB stack */
+#endif
 
 // heapsize: minimum 8 mb, standart 16 mb, max is 32 mb.
 // -heapsize argument will abide by these min/max settings
