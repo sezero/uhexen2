@@ -522,10 +522,10 @@ endif
 #############################################################
 ifeq ($(TARGET_OS),aros)
 
-GL_LINK=-lGL
-
 # Don't use x86 assembly for AROS
 USE_X86_ASM=no
+
+#GL_LINK=-lGL
 
 # both WildMidi and the local timidity work nice on AROS
 USE_CODEC_WILDMIDI=no

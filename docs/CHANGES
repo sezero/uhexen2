@@ -4,6 +4,9 @@ Development Progress	:
 ---------------------------
 
 2012-06-18 (SVN):
+    * Makefiles: Commented out GL_LINK setting for AROS, not needed
+
+2012-06-18 (SVN):
     * opengl: Dynamically load glGetTexParameterfv at runtime and skip
       the anisotropy driver-lock status if loading fails.
 
