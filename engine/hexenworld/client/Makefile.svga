@@ -25,9 +25,6 @@ COMMON_HW:=../shared
 
 # GENERAL OPTIONS (customize as required)
 
-# enable some extra optimizations?
-OPT_EXTRA=yes
-
 # compile only as a 32 bit binary even on a 64 bit platform?
 COMPILE_32BITS=no
 
@@ -89,31 +86,9 @@ CPUFLAGS=$(CPU_X86)
 
 CFLAGS += -g -Wall
 CFLAGS += $(CPUFLAGS)
-
 ifndef DEBUG
 # optimization flags
-CFLAGS += -O2 -DNDEBUG=1 -ffast-math -fexpensive-optimizations
-
-ifeq ($(OPT_EXTRA),yes)
-ifeq ($(MACH_TYPE),x86)
-ALIGN_OPT:= $(call check_gcc,-falign-loops=2 -falign-jumps=2 -falign-functions=2,)
-ifeq ($(ALIGN_OPT),)
-ALIGN_OPT:= $(call check_gcc,-malign-loops=2 -malign-jumps=2 -malign-functions=2,)
-endif
-CFLAGS += $(ALIGN_OPT)
-endif
-
-ifeq ($(MACH_TYPE),x86_64)
-ALIGN_OPT:= $(call check_gcc,-falign-loops=2 -falign-jumps=2 -falign-functions=2,)
-ifeq ($(ALIGN_OPT),)
-ALIGN_OPT:= $(call check_gcc,-malign-loops=2 -malign-jumps=2 -malign-functions=2,)
-endif
-CFLAGS += $(ALIGN_OPT)
-endif
-
-CFLAGS += -fomit-frame-pointer
-endif
-#
+CFLAGS += -O2 -DNDEBUG=1 -ffast-math -fomit-frame-pointer
 endif
 
 CPPFLAGS=

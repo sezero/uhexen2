@@ -45,7 +45,7 @@ CPUFLAGS=$(CPU_X86)
 CFLAGS += -g -Wall
 CFLAGS += $(CPUFLAGS)
 ifndef DEBUG
-CFLAGS += -O2 -DNDEBUG=1 -ffast-math -fexpensive-optimizations
+CFLAGS += -O2 -DNDEBUG=1 -ffast-math
 endif
 CFLAGS += -DDOUBLEVEC_T
 

@@ -49,9 +49,6 @@ SDL_CONFIG?=sdl-config
 SDL_CFLAGS = $(shell $(SDL_CONFIG) --cflags 2> /dev/null)
 SDL_LIBS   = $(shell $(SDL_CONFIG) --libs 2> /dev/null)
 
-# enable some extra optimizations?
-OPT_EXTRA=yes
-
 # compile only as a 32 bit binary even on a 64 bit platform?
 COMPILE_32BITS=no
 
@@ -182,31 +179,9 @@ CPUFLAGS=$(CPU_X86)
 
 CFLAGS += -g -Wall
 CFLAGS += $(CPUFLAGS)
-
 ifndef DEBUG
 # optimization flags
-CFLAGS += -O2 -DNDEBUG=1 -ffast-math -fexpensive-optimizations
-
-ifeq ($(OPT_EXTRA),yes)
-ifeq ($(MACH_TYPE),x86)
-ALIGN_OPT:= $(call check_gcc,-falign-loops=2 -falign-jumps=2 -falign-functions=2,)
-ifeq ($(ALIGN_OPT),)
-ALIGN_OPT:= $(call check_gcc,-malign-loops=2 -malign-jumps=2 -malign-functions=2,)
-endif
-CFLAGS += $(ALIGN_OPT)
-endif
-
-ifeq ($(MACH_TYPE),x86_64)
-ALIGN_OPT:= $(call check_gcc,-falign-loops=2 -falign-jumps=2 -falign-functions=2,)
-ifeq ($(ALIGN_OPT),)
-ALIGN_OPT:= $(call check_gcc,-malign-loops=2 -malign-jumps=2 -malign-functions=2,)
-endif
-CFLAGS += $(ALIGN_OPT)
-endif
-
-CFLAGS += -fomit-frame-pointer
-endif
-#
+CFLAGS += -O2 -DNDEBUG=1 -ffast-math -fomit-frame-pointer
 endif
 
 CPPFLAGS=
@@ -512,6 +487,10 @@ ifeq ($(HOST_OS),morphos)
 
 LDFLAGS += -noixemul
 
+GL_LINK=-lGL
+# dynamic loading of ogl functions doesn't work
+LINK_GL_LIBS=yes
+
 USE_CODEC_VORBIS=yes
 USE_CODEC_MP3=no
 
@@ -542,6 +521,8 @@ endif
 # AROS flags/settings and overrides:
 #############################################################
 ifeq ($(TARGET_OS),aros)
+
+GL_LINK=-lGL
 
 # Don't use x86 assembly for AROS
 USE_X86_ASM=no

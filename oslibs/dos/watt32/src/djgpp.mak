@@ -119,8 +119,7 @@ PKT_STUB = pkt_stub.h
 
 
 CC     = i586-pc-msdosdjgpp-gcc
-CFLAGS = -O2 -I. -I../inc -W -Wall -falign-loops=2 -falign-jumps=2 -falign-functions=2 \
-         -ffast-math -fomit-frame-pointer #-fno-strength-reduce -ffunction-sections
+CFLAGS = -O2 -I. -I../inc -W -Wall -ffast-math -fomit-frame-pointer
 
 AS     = i586-pc-msdosdjgpp-as
 TARGET = ../lib/libwatt.a

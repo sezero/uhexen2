@@ -4,6 +4,17 @@ Development Progress	:
 ---------------------------
 
 2012-06-18 (SVN):
+    * Makefiles: Removed the -fexpensive-optimizations flag, gcc seems
+      to enable it at -O2 and higher. Removed the -falign-* flags, which
+      aren't really necessary. Removed the OPT_EXTRA makefile option,
+      moved the -fomit-frame-pointer flag among main optimization flags.
+      Made the MorphOS builds to link to opengl library at compile time
+      i.e. set LINK_GL_LIBS to yes. Defined GL_LINK as -lGL for MorphOS
+      and AROS builds.
+    * oslibs/dos: Recompiled libmad.a and libwatt.a without adding the
+      -falign-* flags.
+
+2012-06-18 (SVN):
     * gl_vidsdl.c: Replaced setenv() calls with putenv().
 
 2012-06-18 (SVN):
