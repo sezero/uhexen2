@@ -114,14 +114,13 @@ static qboolean S_AHI_Init(dma_t *dma)
 	if (ad)
 		return true;
 
-	shm = dma;
-	bzero(shm, sizeof(*shm));
-
-	speed = desired_speed;
-
 	ad = AllocVec(sizeof(*ad), MEMF_ANY);
 	if (!ad)
 		return false;
+
+	speed = desired_speed;
+	shm = dma;
+	memset ((void *) dma, 0, sizeof(dma_t));
 
 	ad->msgport = CreateMsgPort();
 	if (ad->msgport)
@@ -224,7 +223,6 @@ static qboolean S_AHI_Init(dma_t *dma)
 									return true;
 								}
 							}
-							shm->buffer = NULL;
 						}
 						FreeVec(ad->samplebuffer);
 					}
@@ -239,6 +237,9 @@ static qboolean S_AHI_Init(dma_t *dma)
 		}
 		DeleteMsgPort(ad->msgport);
 	}
+
+	shm->buffer = NULL;
+	shm = NULL;
 	FreeVec(ad);
 	ad = NULL;
 	AHIBase = NULL;
@@ -248,13 +249,16 @@ static qboolean S_AHI_Init(dma_t *dma)
 
 static int S_AHI_GetDMAPos(void)
 {
-	return ad->readpos*shm->channels;
+	return ad->readpos * shm->channels;
 }
 
 static void S_AHI_Shutdown(void)
 {
 	if (ad == NULL)
 		return;
+
+	shm->buffer = NULL;
+	shm = NULL;
 
 	ad->aci.aeci.ahie_Effect = AHIET_CHANNELINFO|AHIET_CANCEL;
 	AHI_SetEffect(&ad->aci.aeci, ad->audioctrl);

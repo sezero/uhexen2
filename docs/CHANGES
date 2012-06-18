@@ -4,6 +4,10 @@ Development Progress	:
 ---------------------------
 
 2012-06-18 (SVN):
+    * snd_ahi.c: In case of failure, make sure that shm is NULL before
+      returning. Also set shm and its buffer to NULL in shutdown().
+
+2012-06-18 (SVN):
     * gl_vidnt.c: Fixed dynamic loading of glGetTexParameterfv().
 
 2012-06-18 (SVN):
