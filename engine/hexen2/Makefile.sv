@@ -220,16 +220,25 @@ endif
 
 
 #############################################################
-# Amiga, MorphOS, etc. flags/settings and overrides:
-# DUMMY section : porters should fill in the blanks!.
+# MorphOS flags/settings and overrides:
+#############################################################
+ifeq ($(HOST_OS),morphos)
+
+LDFLAGS += -noixemul
+
+endif
+# End of MorphOS settings
 #############################################################
 
-ifeq ($(HOST_OS),morphos)
-CFLAGS += -noixemul
-LDFLAGS += -noixemul
-endif
 
-# End of Amiga settings
+#############################################################
+# AROS flags/settings and overrides:
+#############################################################
+ifeq ($(HOST_OS),aros)
+
+
+endif
+# End of AROS settings
 #############################################################
 
 
@@ -280,6 +289,10 @@ SYSOBJ_NET := net_bsd.o net_udp.o
 SYSOBJ_SYS := sys_unix.o
 endif
 ifeq ($(TARGET_OS),aros)
+SYSOBJ_NET := net_bsd.o net_udp.o
+SYSOBJ_SYS := sys_amiga.o
+endif
+ifeq ($(TARGET_OS),morphos)
 SYSOBJ_NET := net_bsd.o net_udp.o
 SYSOBJ_SYS := sys_amiga.o
 endif

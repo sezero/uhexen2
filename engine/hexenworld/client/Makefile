@@ -468,16 +468,35 @@ endif
 
 
 #############################################################
-# Amiga, MorphOS, etc. flags/settings and overrides:
-# DUMMY section : porters should fill in the blanks!.
+# MorphOS flags/settings and overrides:
 #############################################################
-
 ifeq ($(HOST_OS),morphos)
-CFLAGS += -noixemul
+
 LDFLAGS += -noixemul
+
+USE_CODEC_VORBIS=yes
+USE_CODEC_MP3=no
+
+ifeq ($(USE_SOUND),yes)
+ifneq ($(USE_SDLAUDIO),yes)
+CPPFLAGS+= -DNO_SDL_AUDIO
+endif
 endif
 
-# End of Amiga settings
+ifeq ($(USE_CDAUDIO),yes)
+ifeq ($(USE_SDLCD),yes)
+CPPFLAGS+= -DWITH_SDLCD
+endif
+endif
+
+# MorphOS builds rely on SDL:
+# SDLQUAKE must be defined for all SDL using platforms/targets
+CPPFLAGS+= -DSDLQUAKE
+CFLAGS  += $(SDL_CFLAGS)
+LDFLAGS += $(SDL_LIBS)
+
+endif
+# End of MorphOS settings
 #############################################################
 
 
@@ -529,7 +548,9 @@ lib_mp3dec=-lmpg123
 endif
 ifeq ($(VORBISLIB),vorbis)
 cpp_vorbisdec=
+ifneq ($(TARGET_OS),morphos)
 lib_vorbisdec=-lvorbisfile -lvorbis -logg
+endif
 endif
 ifeq ($(VORBISLIB),tremor)
 cpp_vorbisdec=-DVORBIS_USE_TREMOR
@@ -691,6 +712,9 @@ endif
 ifeq ($(TARGET_OS),aros)
 SYSOBJ_SND := snd_ahi.o snd_sdl.o
 endif
+ifeq ($(TARGET_OS),morphos)
+SYSOBJ_SND := snd_ahi.o snd_sdl.o
+endif
 # end of Sound objects
 endif
 
@@ -721,6 +745,10 @@ ifeq ($(TARGET_OS),aros)
 SYSOBJ_MIDI:= midi_nul.o
 CPPFLAGS += -D_NO_MIDIDRV
 endif
+ifeq ($(TARGET_OS),morphos)
+SYSOBJ_MIDI:= midi_nul.o
+CPPFLAGS += -D_NO_MIDIDRV
+endif
 # end of MIDI objects
 endif
 
@@ -742,6 +770,9 @@ ifeq ($(TARGET_OS),unix)
 SYSOBJ_CDA := cd_sdl.o cd_bsd.o cd_linux.o
 endif
 ifeq ($(TARGET_OS),aros)
+SYSOBJ_CDA := cd_sdl.o
+endif
+ifeq ($(TARGET_OS),morphos)
 SYSOBJ_CDA := cd_sdl.o
 endif
 # end of CDAudio objects
@@ -787,6 +818,13 @@ endif
 endif
 ifeq ($(TARGET_OS),aros)
 # aros clients use SDL:
+SYSOBJ_INPUT := in_sdl.o
+SYSOBJ_GL_VID:= gl_vidsdl.o
+SYSOBJ_SOFT_VID:= vid_sdl.o
+SYSOBJ_SYS := sys_amiga.o
+endif
+ifeq ($(TARGET_OS),morphos)
+# morphos clients use SDL:
 SYSOBJ_INPUT := in_sdl.o
 SYSOBJ_GL_VID:= gl_vidsdl.o
 SYSOBJ_SOFT_VID:= vid_sdl.o

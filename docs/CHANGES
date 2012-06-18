@@ -3,6 +3,9 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2012-06-18 (SVN):
+    * Makefiles: Added support for MorphOS.
+
 2012-06-17 (SVN):
     * sys_amiga.c, cmdlib.c: Remove unnecessary devices/timer.h include.
       Fix the TimerBase type so that it works on other Amiga variants.

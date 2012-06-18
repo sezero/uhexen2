@@ -16,10 +16,10 @@ check_cmd=$(shell if which $(1) > /dev/null 2>&1; then echo "";else echo $(1);fi
 ################################
 # OS and TARGET_OS detection:
 
-CROSS_COMPILE:=n
+CROSS_COMPILE=n
 
-HOST_OS0:=$(shell uname)
-HOST_OS :=$(shell uname|sed -e s/_.*//|tr '[:upper:]' '[:lower:]')
+HOST_OS0=$(shell uname)
+HOST_OS =$(shell uname|sed -e s/_.*//|tr '[:upper:]' '[:lower:]')
 
 # NOTE:	We only support these types of cross compilation:
 #	Compiling for windows or dos (djgpp) on unix.
@@ -29,12 +29,12 @@ HOST_OS :=$(shell uname|sed -e s/_.*//|tr '[:upper:]' '[:lower:]')
 # NOTE:	DOS target is only tested by cross compilation on
 #	linux, so the following thing is not supported.
 #ifneq (,$(findstring DOS,$(HOST_OS0)))
-#HOST_OS :=dos
-#TARGET_OS:=dos
+#HOST_OS  =dos
+#TARGET_OS=dos
 #endif
 
 ifneq (,$(findstring mingw32,$(HOST_OS)))
-HOST_OS :=windows
+HOST_OS =windows
 endif
 
 ifeq ($(HOST_OS),windows)
@@ -42,15 +42,15 @@ ifeq ($(HOST_OS),windows)
 
 ifdef DOSBUILD
 # compiling for dos
-CROSS_COMPILE:=y
-TARGET_OS:=dos
+CROSS_COMPILE=y
+TARGET_OS=dos
 else
 # compiling for windows
 ifdef W64BUILD
-CROSS_COMPILE:=y
-TARGET_OS:=win64
+CROSS_COMPILE=y
+TARGET_OS=win64
 else
-TARGET_OS:=win32
+TARGET_OS=win32
 endif
 endif
 endif #
@@ -61,60 +61,66 @@ ifneq ($(HOST_OS),dos)
 
 ifdef W32BUILD
 # cross compilation for windows
-CROSS_COMPILE:=y
-TARGET_OS:=win32
+CROSS_COMPILE=y
+TARGET_OS=win32
 endif
 ifdef W64BUILD
 # cross compilation for windows
-CROSS_COMPILE:=y
-TARGET_OS:=win64
+CROSS_COMPILE=y
+TARGET_OS=win64
 endif
 ifdef DOSBUILD
 # cross compilation for dos
-CROSS_COMPILE:=y
-TARGET_OS:=dos
+CROSS_COMPILE=y
+TARGET_OS=dos
 endif
 ifeq ($(CROSS_COMPILE),n)
 # compiling for the host os.
-TARGET_OS:=unix
+TARGET_OS=unix
 endif
 
 endif
 endif #
 
 ifeq ($(TARGET_OS),unix)
-MACH_TYPE:=$(shell sh $(UHEXEN2_TOP)/scripts/detect.sh arch)
+MACH_TYPE=$(shell sh $(UHEXEN2_TOP)/scripts/detect.sh arch)
 endif
 ifeq ($(TARGET_OS),dos)
-MACH_TYPE:=x86
+MACH_TYPE=x86
 endif
 ifeq ($(TARGET_OS),win32)
 # FIXME: win32 does not have to be x86.
-MACH_TYPE:=x86
+MACH_TYPE=x86
 endif
 ifeq ($(TARGET_OS),win64)
 # FIXME: uname from msys might not work here
-MACH_TYPE:=x86_64
+MACH_TYPE=x86_64
 endif
 
 ifneq (,$(findstring AROS,$(HOST_OS0)))
-HOST_OS :=aros
-TARGET_OS :=aros
-CROSS_COMPILE:=n
+HOST_OS  =aros
+TARGET_OS=aros
+CROSS_COMPILE=n
+endif
+
+ifneq (,$(findstring morphos,$(HOST_OS)))
+HOST_OS  =morphos
+TARGET_OS=morphos
+CROSS_COMPILE=n
 endif
 
 ################################
 # Binary filename extension:
 
-exe_ext:=
+exe_ext=
 ifeq ($(TARGET_OS),dos)
-exe_ext:=.exe
+exe_ext=.exe
 endif
 ifeq ($(TARGET_OS),win32)
-exe_ext:=.exe
+exe_ext=.exe
 endif
 ifeq ($(TARGET_OS),win64)
-exe_ext:=.exe
+exe_ext=.exe
 endif
 
 ################################

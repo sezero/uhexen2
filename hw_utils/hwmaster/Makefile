@@ -93,12 +93,7 @@ LDFLAGS += -lsocket -lnsl -lresolv
 endif
 endif
 
-#############################################################
-# Amiga, MorphOS, etc. flags/settings and overrides:
-# DUMMY section : porters should fill in the blanks!.
-#############################################################
 ifeq ($(HOST_OS),morphos)
-CFLAGS += -noixemul
 LDFLAGS += -noixemul
 endif
 
@@ -122,6 +117,9 @@ ifeq ($(TARGET_OS),unix)
 SYSOBJ_SYS = sys_unix.o
 endif
 ifeq ($(TARGET_OS),aros)
+SYSOBJ_SYS = sys_amiga.o
+endif
+ifeq ($(TARGET_OS),morphos)
 SYSOBJ_SYS = sys_amiga.o
 endif
 
