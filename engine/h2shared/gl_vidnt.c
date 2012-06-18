@@ -181,8 +181,8 @@ unsigned char	*inverse_pal;
 // gl stuff
 static void GL_Init (void);
 
-#ifdef GL_DLSYM
 HINSTANCE	hInstGL;
+#ifdef GL_DLSYM
 static const char	*gl_library;
 #endif
 
@@ -698,7 +698,7 @@ static void CheckAnisotropyExtensions (void)
 		GLfloat test1, test2;
 		GLuint tex;
 
-		glGetTexParameterfv_fp = (glGetTexParameterfv_f) wglGetProcAddress_fp("glGetTexParameterfv");
+		glGetTexParameterfv_fp = (glGetTexParameterfv_f) GetProcAddress(hInstGL, "glGetTexParameterfv");
 		if (glGetTexParameterfv_fp == NULL)
 		{
 			Con_SafePrintf("... can't check driver-lock status\n... ");
@@ -2139,6 +2139,8 @@ void	VID_Init (unsigned char *palette)
 		gl_library = "opengl32.dll";
 	if (!GL_OpenLibrary(gl_library))
 		Sys_Error ("Unable to load GL library %s", gl_library);
+#else
+	hInstGL = GetModuleHandleA("opengl32.dll");
 #endif
 
 	hIcon = LoadIcon (global_hInstance, MAKEINTRESOURCE (IDI_ICON2));
