@@ -1440,6 +1440,11 @@ VID_Init
 */
 void	VID_Init (unsigned char *palette)
 {
+	static char nvidia_env_vsync[32] = "__GL_SYNC_TO_VBLANK=1";
+	static char fxmesa_env_fullscreen[32] = "MESA_GLX_FX=f";
+	static char fxmesa_env_multitex[32] = "FX_DONT_FAKE_MULTITEX=1";
+	static char fxglide_env_nosplash[32] = "FX_GLIDE_NO_SPLASH=0";
+
 	int	i, temp, width, height;
 	SDL_Rect	**enumlist;
 	const SDL_version	*sdl_version;
@@ -1511,13 +1516,13 @@ void	VID_Init (unsigned char *palette)
 	// enable vsync for nvidia geforce or newer - S.A
 	if (COM_CheckParm("-sync") || COM_CheckParm("-vsync"))
 	{
-		setenv("__GL_SYNC_TO_VBLANK", "1", 1);
+		putenv(nvidia_env_vsync);
 		Con_SafePrintf ("Nvidia GL vsync enabled\n");
 	}
 
-	// set fxMesa mode to fullscreen, don't let it it cheat multitexturing
-	setenv ("MESA_GLX_FX","f",1);
-	setenv ("FX_DONT_FAKE_MULTITEX","1",1);
+	// set fxMesa mode to fullscreen, don't let it cheat multitexturing
+	putenv (fxmesa_env_fullscreen);
+	putenv (fxmesa_env_multitex);
 
 	// init sdl
 	// the first check is actually unnecessary
@@ -1672,7 +1677,7 @@ void	VID_Init (unsigned char *palette)
 	VID_InitGamma();
 
 	// avoid the 3dfx splash screen on resolution changes
-	setenv ("FX_GLIDE_NO_SPLASH","0",1);
+	putenv (fxglide_env_nosplash);
 
 	// set our palette
 	VID_SetPalette (palette);
