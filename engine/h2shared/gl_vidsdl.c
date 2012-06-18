@@ -1440,11 +1440,12 @@ VID_Init
 */
 void	VID_Init (unsigned char *palette)
 {
+#ifndef __MORPHOS__
 	static char nvidia_env_vsync[32] = "__GL_SYNC_TO_VBLANK=1";
 	static char fxmesa_env_fullscreen[32] = "MESA_GLX_FX=f";
 	static char fxmesa_env_multitex[32] = "FX_DONT_FAKE_MULTITEX=1";
 	static char fxglide_env_nosplash[32] = "FX_GLIDE_NO_SPLASH=0";
-
+#endif
 	int	i, temp, width, height;
 	SDL_Rect	**enumlist;
 	const SDL_version	*sdl_version;
@@ -1513,6 +1514,7 @@ void	VID_Init (unsigned char *palette)
 	if (SDL_VERSIONNUM(sdl_version->major,sdl_version->minor,sdl_version->patch) >= SDL_VER_WITH_MULTISAMPLING)
 		sdl_has_multisample = true;
 
+#ifndef __MORPHOS__
 	// enable vsync for nvidia geforce or newer - S.A
 	if (COM_CheckParm("-sync") || COM_CheckParm("-vsync"))
 	{
@@ -1523,6 +1525,7 @@ void	VID_Init (unsigned char *palette)
 	// set fxMesa mode to fullscreen, don't let it cheat multitexturing
 	putenv (fxmesa_env_fullscreen);
 	putenv (fxmesa_env_multitex);
+#endif
 
 	// init sdl
 	// the first check is actually unnecessary
@@ -1676,8 +1679,10 @@ void	VID_Init (unsigned char *palette)
 	GL_Init ();
 	VID_InitGamma();
 
+#ifndef __MORPHOS__
 	// avoid the 3dfx splash screen on resolution changes
 	putenv (fxglide_env_nosplash);
+#endif
 
 	// set our palette
 	VID_SetPalette (palette);

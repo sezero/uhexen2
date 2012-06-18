@@ -4,6 +4,9 @@ Development Progress	:
 ---------------------------
 
 2012-06-18 (SVN):
+    * cd_sdl.c, gl_vidsdl.c: Disabled the putenv() calls on MorphOS.
+
+2012-06-18 (SVN):
     * Makefiles: Removed the -fexpensive-optimizations flag, gcc seems
       to enable it at -O2 and higher. Removed the -falign-* flags, which
       aren't really necessary. Removed the OPT_EXTRA makefile option,

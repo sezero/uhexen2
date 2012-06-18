@@ -438,7 +438,7 @@ static void export_cddev_arg (void)
 {
 /* Bad ugly hack to workaround SDL's cdrom device detection.
  * not needed for windows due to the way SDL_cdrom works. */
-#if !defined(_WIN32)
+#if !defined(_WIN32) && !defined(__MORPHOS__)
 	int i = COM_CheckParm("-cddev");
 	if (i != 0 && i < com_argc - 1 && com_argv[i+1][0] != '\0')
 	{
