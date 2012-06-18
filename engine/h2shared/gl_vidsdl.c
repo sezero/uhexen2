@@ -687,6 +687,12 @@ static void CheckAnisotropyExtensions (void)
 		GLfloat test1, test2;
 		GLuint tex;
 
+		glGetTexParameterfv_fp = (glGetTexParameterfv_f) SDL_GL_GetProcAddress("glGetTexParameterfv");
+		if (glGetTexParameterfv_fp == NULL)
+		{
+			Con_SafePrintf("... can't check driver-lock status\n... ");
+			goto _skiptest;
+		}
 		// test to make sure we really have control over it
 		// 1.0 and 2.0 should always be legal values.
 		glGenTextures_fp(1, &tex);
@@ -702,6 +708,7 @@ static void CheckAnisotropyExtensions (void)
 		}
 		else
 		{
+		_skiptest:
 			glGetFloatv_fp(GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, &gl_max_anisotropy);
 			if (gl_max_anisotropy < 2)
 				Con_SafePrintf("broken\n");
