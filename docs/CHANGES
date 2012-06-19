@@ -4,6 +4,9 @@ Development Progress	:
 ---------------------------
 
 2012-06-19 (SVN):
+    * rpm spec file: Updated, changed --without gtk2 to --with gtk1.
+
+2012-06-19 (SVN):
     * launcher/gtk_ui.c: Use a format string with gtk_message_dialog_new
 
 2012-06-18 (SVN):

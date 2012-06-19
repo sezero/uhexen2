@@ -12,7 +12,7 @@
 # --with mpg123: build mp3 music streaming using libmpg123 instead of libmad
 # --without ogg: build without ogg/vorbis music streaming support
 # --without asm: do not use x86 assembly even on an intel cpu
-# --without gtk2: build the launcher against gtk-1.2 instead of gtk-2.x
+# --with gtk1: build the launcher against gtk-1.2 instead of gtk-2.x
 # --with gtk3: build the launcher against gtk-3.x instead of gtk-2.x
 # --without freedesktop: do not use desktop-file-utils for the desktop shortcut
 
@@ -23,16 +23,13 @@
 %{?el2:%define _without_freedesktop 1}
 %{?rh7:%define _without_freedesktop 1}
 
-%{?el2:%undefine _with_gtk3 1}
-%{?rh7:%undefine _with_gtk3 1}
+%{?el2:%define _with_gtk1 1}
+%{?rh7:%define _with_gtk1 1}
 
-%{?el2:%define _without_gtk2 1}
-%{?rh7:%define _without_gtk2 1}
-
-%{?_with_gtk3:%undefine _without_gtk2}
+%{?_with_gtk3:%undefine _with_gtk1}
 
 # default build options
-%{!?_without_gtk2:%define gtk_buildopt GTK2=yes}
+%{!?_with_gtk1:%define gtk_buildopt GTK2=yes}
 %{!?_without_asm:%define asm_buildopt USE_X86_ASM=yes}
 %{!?_without_alsa:%define alsa_buildopt USE_ALSA=yes}
 %{!?_without_midi:%define midi_buildopt USE_MIDI=yes}
@@ -42,7 +39,7 @@
 %{!?_without_mp3:%define mp3_buildopt USE_CODEC_MP3=yes}
 %{!?_without_ogg:%define ogg_buildopt USE_CODEC_VORBIS=yes}
 # build option overrides
-%{?_without_gtk2:%define gtk_buildopt GTK1=yes}
+%{?_with_gtk1:%define gtk_buildopt GTK1=yes}
 %{?_with_gtk3:%undefine gtk_buildopt}
 %{?_with_gtk3:%define gtk_buildopt GTK3=yes}
 %{?_without_asm:%define asm_buildopt USE_X86_ASM=no}
@@ -77,8 +74,8 @@ BuildRequires:	SDL-devel >= 1.2.4
 %{!?_without_ogg:BuildRequires:  libogg-devel libvorbis-devel}
 %{!?_without_asm:BuildRequires:  nasm >= 0.98.38}
 %{!?_without_freedesktop:BuildRequires: desktop-file-utils}
-%{?_without_gtk2:BuildRequires:  gtk+-devel}
-%{!?_without_gtk2:BuildRequires: %{!?_with_gtk3:gtk2-devel}%{?_with_gtk3:gtk3-devel}}
+%{?_with_gtk1:BuildRequires:  gtk+-devel}
+%{!?_with_gtk1:BuildRequires: %{!?_with_gtk3:gtk2-devel}%{?_with_gtk3:gtk3-devel}}
 Obsoletes:	hexen2-missionpack
 Requires:	SDL >= 1.2.4
 # timidity++-patches requirement is non-fatal
@@ -351,7 +348,8 @@ desktop-file-install \
 %{_prefix}/games/%{name}/docs/README.hwmaster
 
 %changelog
-* Sat Jun 02 2012 O.Sezer <sezero@users.sourceforge.net> 1.5.4-1
+* Tue Jun 18 2012 O.Sezer <sezero@users.sourceforge.net> 1.5.4-1
+- Changed --without gtk2 option to --with gtk1.
 - Removed the beta/prerelease versioning stuff.
 - Bump gamecode version to 1.26.
 - Updated documents installation after the ReleaseNotes* changes.
@@ -389,22 +387,12 @@ desktop-file-install \
 * Fri Aug 05 2011 O.Sezer <sezero@users.sourceforge.net>
 - docs/ReleaseNotes-1.4.4 is no more.
 
-* Wed Jul 13 2011 O.Sezer <sezero@users.sourceforge.net> 1.5.0-0.5.rc6
-- Bumped version to 1.5.0-rc6.
-
-* Thu Jul 07 2011 O.Sezer <sezero@users.sourceforge.net> 1.5.0-0.5.rc5
-- Bumped version to 1.5.0-rc5.
-
-* Mon Jun 20 2011 O.Sezer <sezero@users.sourceforge.net> 1.5.0-0.4.rc4
+* Mon Jun 20 2011 O.Sezer <sezero@users.sourceforge.net>
 - Install the cd-rip scripts.
 
 * Sun Jun 19 2011 O.Sezer <sezero@users.sourceforge.net>
-- Bumped version to 1.5.0-rc4.
 - Install modified entities for the cathedral map to handle the map's
   quirks.
-
-* Sun Jun 05 2011 O.Sezer <sezero@users.sourceforge.net> 1.5.0-0.3.rc3
-- Bumped version to 1.5.0-rc3.
 
 * Sun Jun 05 2011 O.Sezer <sezero@users.sourceforge.net>
 - Build the main game progs using the new hcc tool.
@@ -418,14 +406,11 @@ desktop-file-install \
 * Wed May 04 2011 O.Sezer <sezero@users.sourceforge.net>
 - Install demo2 and egypt4 entity fixes for handling map quirks.
 
-* Sun Apr 24 2011 O.Sezer <sezero@users.sourceforge.net> 1.5.0-0.2.rc2
-- Bumped version to 1.5.0-rc2.
-
 * Tue Mar 08 2011 O.Sezer <sezero@users.sourceforge.net>
 - Fix license tag as GPLv2.
 - Add missing missing pack map entity fixes to the packaged files list.
 
-* Thu Mar 03 2011 O.Sezer <sezero@users.sourceforge.net> 1.5.0-0.1.rc1
+* Thu Mar 03 2011 O.Sezer <sezero@users.sourceforge.net>
 - Nasm version 0.98 can not be supported anymore due to its inability to
   handle -I arguments. Bumped the minimum required version to 0.98.38.
 
@@ -439,7 +424,6 @@ desktop-file-install \
 - Install ent fixes handling map quirks.
 
 * Sun Dec 19 2010 O.Sezer <sezero@users.sourceforge.net>
-- Bumped version to 1.5.0-rc1.
 - Added new build options after the music playback changes.
 - Dropped SDL_mixer dependency which is not used anymore.
 - Added README.music among the installed documents.
@@ -449,44 +433,8 @@ desktop-file-install \
 * Fri Dec 17 2010 O.Sezer <sezero@users.sourceforge.net>
 - Moved xdelta under the libs directory.
 
-* Thu Nov 25 2010 O.Sezer <sezero@users.sourceforge.net> 1.4.4-0.11.pre11
-- 1.4.4-pre11
-
-* Mon Aug 23 2010 O.Sezer <sezero@users.sourceforge.net> 1.4.4-0.10.pre10
-- 1.4.4-pre10
-
-* Sat May 08 2010 O.Sezer <sezero@users.sourceforge.net> 1.4.4-0.9.pre9
-- 1.4.4-pre9
-
-* Sun Dec 27 2009 O.Sezer <sezero@users.sourceforge.net> 1.4.4-0.8.pre8
-- 1.4.4-pre8
-
-* Sun Aug 02 2009 O.Sezer <sezero@users.sourceforge.net> 1.4.4-0.7.pre7
-- 1.4.4-pre7
-
-* Mon Feb 02 2009 O.Sezer <sezero@users.sourceforge.net> 1.4.4-0.5.pre5
-- 1.4.4-pre5
-
-* Sun Jan 04 2009 O.Sezer <sezero@users.sourceforge.net> 1.4.4-0.4.pre4
-- 1.4.4-pre4
-
-* Tue Nov 18 2008 O.Sezer <sezero@users.sourceforge.net> 1.4.4-0.3.pre3
-- 1.4.4-pre3
-
-* Sat Nov 08 2008 O.Sezer <sezero@users.sourceforge.net> 1.4.4-0.2.pre2
-- 1.4.4-pre2
-
-* Mon Oct 27 2008 O.Sezer <sezero@users.sourceforge.net> 1.4.4-0.1.pre1
-- 1.4.4-pre1 (new prerelease version)
-
 * Fri Apr 04 2008 O.Sezer <sezero@users.sourceforge.net> 1.4.3-1
 - 1.4.3-final.
-
-* Tue Mar 25 2008 O.Sezer <sezero@users.sourceforge.net> 1.4.3-0.2.rc2
-- 1.4.3-rc2.
-
-* Thu Feb 07 2008 O.Sezer <sezero@users.sourceforge.net> 1.4.3-0.1.rc1
-- 1.4.3-rc1.
 
 * Wed Feb 05 2008 O.Sezer <sezero@users.sourceforge.net>
 - incremented the gamecode version number to 1.19a
@@ -494,38 +442,20 @@ desktop-file-install \
 * Wed Oct 03 2007 O.Sezer <sezero@users.sourceforge.net> 1.4.2-1
 - 1.4.2-final.
 
-* Wed Sep 26 2007 O.Sezer <sezero@users.sourceforge.net> 1.4.2-0.6.rc3
-- 1.4.2-rc3.
-
 * Mon Aug 22 2007 O.Sezer <sezero@users.sourceforge.net>
 - removed the .gtk1 suffix from launcher gtk-1.2 builds
-
-* Sun Jul 22 2007 O.Sezer <sezero@users.sourceforge.net> 1.4.2-0.5.rc2
-- 1.4.2-rc2.
 
 * Fri Jun 15 2007 O.Sezer <sezero@users.sourceforge.net>
 - The software renderer clients can now be compiled on non-intel.
 
-* Sun May 20 2007 O.Sezer <sezero@users.sourceforge.net> 1.4.2-0.4.rc1
-- 1.4.2-rc1.
-
 * Tue Apr 10 2007 O.Sezer <sezero@users.sourceforge.net>
 - xdelta now builds without autotools.
-
-* Tue Apr 03 2007 O.Sezer <sezero@users.sourceforge.net> 1.4.2-0.3.pre3
-- 1.4.2-pre3 prerelease.
 
 * Tue Mar 20 2007 O.Sezer <sezero@users.sourceforge.net>
 - xdelta version is 1.1.4: rename the binary properly.
 
-* Tue Mar 20 2007 O.Sezer <sezero@users.sourceforge.net> 1.4.2-0
-- 1.4.2-pre2 prerelease.
-
 * Sun Mar 18 2007 O.Sezer <sezero@users.sourceforge.net>
 - gamecode version changed to 1.17.
-
-* Mon Feb 13 2007 O.Sezer <sezero@users.sourceforge.net> 1.4.2-0
-- 1.4.2-pre1 prerelease.
 
 * Mon Feb 05 2007 O.Sezer <sezero@users.sourceforge.net>
 - xdelta is now included in the source tarball.
@@ -546,32 +476,32 @@ desktop-file-install \
   using x86 assembly until we fix them properly.
 - Version 1.4.1-final.
 
-* Wed Aug 14 2006 O.Sezer <sezero@users.sourceforge.net> 1.4.1-0
+* Wed Aug 14 2006 O.Sezer <sezero@users.sourceforge.net>
 - Added the dedicated server to the packaged binaries.
-  1.4.1-pre8. Preparing for a future 1.4.1 release.
+  Preparing for a future 1.4.1 release.
 
 * Tue Apr 18 2006 O.Sezer <sezero@users.sourceforge.net> 1.4.0-7
 - More packaging tidy-ups for 1.4.0-final
 
-* Sun Apr 16 2006 O.Sezer <sezero@users.sourceforge.net> 1.4.0-6
+* Sun Apr 16 2006 O.Sezer <sezero@users.sourceforge.net>
 - Back to xdelta: removed loki_patch. All of its fancy bloat can
   be done in a shell script, which is more customizable.
 
-* Mon Apr 04 2006 O.Sezer <sezero@users.sourceforge.net> 1.4.0-5
+* Mon Apr 04 2006 O.Sezer <sezero@users.sourceforge.net>
 - Since 1.4.0-rc2 no mission pack specific binaries are needed.
 
-* Mon Mar 26 2006 O.Sezer <sezero@users.sourceforge.net> 1.4.0-4
+* Mon Mar 26 2006 O.Sezer <sezero@users.sourceforge.net>
 - Moved hexenworld related documentation to the hexenworld package
   lib3dfxgamma is no longer needed. not packaging it.
 
-* Thu Mar 02 2006 O.Sezer <sezero@users.sourceforge.net> 1.4.0-3
+* Thu Mar 02 2006 O.Sezer <sezero@users.sourceforge.net>
 - Added Features to the packaged documentation
 
-* Wed Mar 01 2006 O.Sezer <sezero@users.sourceforge.net> 1.4.0-2
+* Wed Mar 01 2006 O.Sezer <sezero@users.sourceforge.net>
 - Updated after the utilities reorganization
 
-* Sun Feb 12 2006 O.Sezer <sezero@users.sourceforge.net> 1.4.0-1
-- Updated for 1.4.0
+* Sun Feb 12 2006 O.Sezer <sezero@users.sourceforge.net>
+- Updated for a future 1.4.0
 
 * Thu Aug 29 2005 O.Sezer <sezero@users.sourceforge.net> 1.3.0-2
 - Patch: We need to remove OS checks from the update_h2 script
