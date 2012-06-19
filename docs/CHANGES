@@ -4,6 +4,9 @@ Development Progress	:
 ---------------------------
 
 2012-06-19 (SVN):
+    * gl_vidnt.c: Made hInstGL static.
+
+2012-06-19 (SVN):
     * rpm spec file: Updated, changed --without gtk2 to --with gtk1.
 
 2012-06-19 (SVN):

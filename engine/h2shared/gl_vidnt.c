@@ -181,7 +181,7 @@ unsigned char	*inverse_pal;
 // gl stuff
 static void GL_Init (void);
 
-HINSTANCE	hInstGL;
+static HINSTANCE	hInstGL;
 #ifdef GL_DLSYM
 static const char	*gl_library;
 #endif
@@ -2140,7 +2140,7 @@ void	VID_Init (unsigned char *palette)
 	if (!GL_OpenLibrary(gl_library))
 		Sys_Error ("Unable to load GL library %s", gl_library);
 #else
-	hInstGL = GetModuleHandleA("opengl32.dll");
+	hInstGL = GetModuleHandle("opengl32.dll");
 #endif
 
 	hIcon = LoadIcon (global_hInstance, MAKEINTRESOURCE (IDI_ICON2));
