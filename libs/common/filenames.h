@@ -8,7 +8,7 @@
  * Copyright 2000, 2001, 2007 Free Software Foundation, Inc.
  *
  * This is based on filenames.h from BFD, the Binary File Descriptor
- * library.
+ * library, changed further for our needs.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,8 +28,8 @@
 #ifndef FILENAMES_H
 #define FILENAMES_H
 
-#include "compiler.h" /* for inline, etc */
 #include <string.h>
+#include "compiler.h" /* for inline, etc */
 
 /* ---------------------- Windows, DOS, OS2: ---------------------- */
 #if defined(__MSDOS__) || defined(MSDOS) || defined(__DOS__) || \
@@ -41,7 +41,14 @@
 #define HAS_DRIVE_SPEC(f)	((f)[0] && ((f)[1] == ':'))
 #define STRIP_DRIVE_SPEC(f)	((f) + 2)
 #define IS_DIR_SEPARATOR(c)	((c) == '/' || (c) == '\\')
-#define DIR_SEPARATOR_CHAR	'\\' /* both '/' and '\\' work.  */
+/* both '/' and '\\' work as dir separator.  djgpp likes changing
+ * '\\' into '/', so I define DIR_SEPARATOR_CHAR as '/' for djgpp,
+ * '\\' otherwise.  */
+#ifdef __DJGPP__
+#define DIR_SEPARATOR_CHAR	'/'
+#else
+#define DIR_SEPARATOR_CHAR	'\\'
+#endif
 /* Note that IS_ABSOLUTE_PATH accepts d:foo as well, although it is
    only semi-absolute.  This is because the users of IS_ABSOLUTE_PATH
    want to know whether to prepend the current working directory to
@@ -145,7 +152,7 @@ static inline char *FIND_LAST_DIRSEP (const char *_the_path) {
 }
 #endif /* C++ */
 
-/* ------------------------------ UNIX : -------------------------- */
+/* ------------------------ assumed UNIX : ------------------------ */
 #else /* */
 
 #define IS_DIR_SEPARATOR(c)	((c) == '/')
