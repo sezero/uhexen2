@@ -1755,7 +1755,8 @@ void ui_error (const char *msg)
 {
 	GtkWidget	*dialog;
 
-	dialog = gtk_message_dialog_new (NULL, GTK_DIALOG_MODAL, GTK_MESSAGE_ERROR, GTK_BUTTONS_CLOSE, msg);
+	dialog = gtk_message_dialog_new (NULL, GTK_DIALOG_MODAL, GTK_MESSAGE_ERROR, GTK_BUTTONS_CLOSE,
+					 "%s", msg);
 	gtk_window_set_title (GTK_WINDOW(dialog), "Hexen II Launcher: Error");
 	gtk_dialog_run (GTK_DIALOG(dialog));
 	gtk_widget_destroy (dialog);
