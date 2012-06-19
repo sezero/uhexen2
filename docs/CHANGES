@@ -4,6 +4,10 @@ Development Progress	:
 ---------------------------
 
 2012-06-19 (SVN):
+    * h2patch.c: Use DIR_SEPARATOR_CHAR from filenames.h when building
+      file names.
+
+2012-06-19 (SVN):
     * filenames.h: define DIR_SEPARATOR_CHAR as '/' for djgpp.
 
 2012-06-19 (SVN):

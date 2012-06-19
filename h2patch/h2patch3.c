@@ -45,6 +45,7 @@
 
 #include "compiler.h"
 #include "qsnprint.h"
+#include "filenames.h"
 
 
 #if !defined(MAXPATHLEN)
@@ -526,9 +527,8 @@ int main (int argc, char **argv)
 	{
 		h2patch_progress.total_bytes += patch_data[i].new_size;
 		/* delete our temp files from possible previous runs */
-		q_snprintf (out, sizeof(out), "%s/%s",
-						patch_data[i].dir_name,
-							 patch_tmpname);
+		q_snprintf (out, sizeof(out), "%s%c%s", patch_data[i].dir_name,
+						DIR_SEPARATOR_CHAR, patch_tmpname);
 		Sys_unlink (out);
 	}
 
@@ -552,9 +552,8 @@ int main (int argc, char **argv)
 
 	for (i = 0; i < NUM_PATCHES; i++)
 	{
-		q_snprintf (dst, sizeof(dst), "%s/%s",
-						patch_data[i].dir_name,
-						patch_data[i].filename);
+		q_snprintf (dst, sizeof(dst), "%s%c%s", patch_data[i].dir_name,
+					DIR_SEPARATOR_CHAR, patch_data[i].filename);
 		fprintf (stdout, "File %s :\n", dst);
 
 		ret = check_access(dst);
@@ -602,9 +601,9 @@ int main (int argc, char **argv)
 			return 1;
 		}
 
-		q_snprintf (pat, sizeof(pat), "%s/%s/%s",
-					DELTA_DIR, patch_data[i].dir_name,
-						   patch_data[i].deltaname);
+		q_snprintf (pat, sizeof(pat), "%s%c%s%c%s", DELTA_DIR, DIR_SEPARATOR_CHAR,
+						patch_data[i].dir_name, DIR_SEPARATOR_CHAR,
+								patch_data[i].deltaname);
 		if (Sys_FileType(pat) != FS_ENT_FILE)
 		{
 			fprintf (stderr, "... Error: delta file not found!\n");
@@ -618,9 +617,8 @@ int main (int argc, char **argv)
 		}
 #endif	/* __DJGPP__ */
 
-		q_snprintf (out, sizeof(out), "%s/%s",
-						patch_data[i].dir_name,
-							 patch_tmpname);
+		q_snprintf (out, sizeof(out), "%s%c%s", patch_data[i].dir_name,
+						DIR_SEPARATOR_CHAR, patch_tmpname);
 		fprintf (stdout, "... applying patch...\n");
 
 		start_file_progress (patch_data[i].new_size);
