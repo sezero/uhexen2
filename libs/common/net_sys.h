@@ -58,6 +58,7 @@
 
 #if defined(__sun) || defined(sun)
 #include <sys/filio.h>
+#include <sys/sockio.h>
 #endif	/* __sunos__ */
 
 #include <sys/socket.h>

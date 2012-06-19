@@ -25,9 +25,6 @@
 #include "arch_def.h"
 #include "net_sys.h"
 #include <net/if.h>
-#if defined(__sun) || defined(sun)
-#include <sys/sockio.h>
-#endif	/* sunos */
 #include "quakedef.h"
 #include "net_defs.h"
 
@@ -419,6 +416,7 @@ sys_socket_t UDP_CheckNewConnections (void)
 	{
 		return net_acceptsocket;
 	}
+	return INVALID_SOCKET;
 #else
 #if defined(PLATFORM_WINDOWS) || defined(PLATFORM_DOS)
 	u_long		available;
@@ -441,8 +439,8 @@ sys_socket_t UDP_CheckNewConnections (void)
 		return net_acceptsocket;
 	// quietly absorb empty packets
 	recvfrom (net_acceptsocket, buff, 0, 0, (struct sockaddr *) &from, &fromlen);
-#endif
 	return INVALID_SOCKET;
+#endif
 }
 
 //=============================================================================

@@ -4,6 +4,9 @@ Development Progress	:
 ---------------------------
 
 2012-06-19 (SVN):
+    * Moved sun sys/sockio.h include from net_udp.c to net_sys.h
+
+2012-06-19 (SVN):
     * gl_vidnt.c: Made hInstGL static.
 
 2012-06-19 (SVN):
