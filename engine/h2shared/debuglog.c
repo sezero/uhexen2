@@ -96,7 +96,7 @@ void LOG_Init (quakeparms_t *parms)
 
 	j = q_strlcpy (logfilename, parms->userdir, sizeof(logfilename));
 	if (j && !IS_DIR_SEPARATOR(logfilename[j - 1]))
-		q_strlcat(logfilename, "/", sizeof(logfilename));
+		q_strlcat(logfilename, DIR_SEPARATOR_STR, sizeof(logfilename));
 	q_strlcat(logfilename, DEBUGLOG_FILENAME, sizeof(logfilename));
 	Sys_DateTimeString (session);
 
