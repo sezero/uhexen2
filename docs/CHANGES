@@ -4,6 +4,9 @@ Development Progress	:
 ---------------------------
 
 2012-06-20 (SVN):
+    * utils/util_io.c (Q_getwd, PLATFORM_AMIGA): Don't return PROGDIR:
+
+2012-06-20 (SVN):
     * sys_amiga.c (Sys_CopyFile): Restore the copied file's timestamp.
 
 2012-06-19 (SVN):

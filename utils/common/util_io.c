@@ -364,7 +364,7 @@ void Q_FindClose (void)
 
 void Q_getwd (char *out, size_t size)
 {
-#if 1
+#if 0
 	qerr_strlcpy(__thisfunc__, __LINE__, out, "PROGDIR:", size);
 #else
 	struct Task *self;
