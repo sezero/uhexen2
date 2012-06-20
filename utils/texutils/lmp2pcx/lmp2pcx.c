@@ -28,9 +28,12 @@
 #include "util_io.h"
 #include "q_endian.h"
 #include "byteordr.h"
+#include "filenames.h"
 
 
-#define	OUTPUT_DIR		"outfiles"
+#define	OUTDIR_LEN	9 /* strlen (OUTPUT_DIR) + 1 */
+static const char OUTPUT_DIR[OUTDIR_LEN] = "outfiles";
+
 #define	ASTERIX_REPLACE			'_'
 	/* character to replace '*' in texture names. */
 
@@ -385,12 +388,13 @@ static unsigned char *LoadLMP (const char *filename, int idx)
 static void ConvertLMP (const char *filename, int idx)
 {
 	unsigned char		*data;
-	char		tempname[4096];
+	char		tempname[1024];
 
-	q_snprintf (tempname, sizeof(tempname), "%s/%s", OUTPUT_DIR, filename);
+	q_snprintf (tempname, sizeof(tempname), "%s%c%s",
+				OUTPUT_DIR, DIR_SEPARATOR_CHAR, filename);
 	StripExtension (tempname);
 	// conchars = weird (hexen2 version)
-	if (!strcmp(tempname + sizeof(OUTPUT_DIR), "conchars"))
+	if (!strcmp(&tempname[OUTDIR_LEN], "conchars"))
 	{
 		void		*lmpdata;
 		LoadFile (filename, &lmpdata);
@@ -399,7 +403,7 @@ static void ConvertLMP (const char *filename, int idx)
 		image_height = 128;
 	}
 	// skip the palette file itself
-	else if (!strcmp(tempname + sizeof(OUTPUT_DIR), "palette"))
+	else if (!strcmp(&tempname[OUTDIR_LEN], "palette"))
 	{
 		return;
 	}
@@ -477,12 +481,13 @@ static unsigned char *LoadMIP (const char *filename, int idx)
 static void ConvertMIP (const char *filename, int idx)
 {
 	unsigned char		*data;
-	char		tempname[4096];
+	char		tempname[1024];
 
 	data = LoadMIP (filename, idx);
 	if (!data)
 		return;
-	q_snprintf (tempname, sizeof(tempname), "%s/%s", OUTPUT_DIR, filename);
+	q_snprintf (tempname, sizeof(tempname), "%s%c%s",
+				OUTPUT_DIR, DIR_SEPARATOR_CHAR, filename);
 	StripExtension (tempname);
 	q_strlcat (tempname, ".pcx", sizeof(tempname));
 	WritePCX (tempname, data, image_width, image_height, gamepalette);
@@ -550,7 +555,7 @@ static void ConvertWAD (const char *filename, int idx)
 	lumpinfo_t		*lump;
 	void			*waddata;
 	unsigned char		*data;
-	char		tempname[4096], *ptr;
+	char		tempname[1024], *ptr;
 
 	LoadFile (filename, &waddata);
 	wad = (wadinfo_t *) waddata;
@@ -559,8 +564,8 @@ static void ConvertWAD (const char *filename, int idx)
 		printf("%s: \"%s\" is not a %s file\n", __thisfunc__, filename, convertdata[idx].datatype);
 		return;
 	}
-	q_snprintf (tempname, sizeof(tempname), "%s/", OUTPUT_DIR);
-	ptr = tempname + sizeof(OUTPUT_DIR);
+	q_snprintf (tempname, sizeof(tempname), "%s%c", OUTPUT_DIR, DIR_SEPARATOR_CHAR);
+	ptr = &tempname[OUTDIR_LEN];
 	wad->numlumps = LittleLong(wad->numlumps);
 	wad->infotableofs = LittleLong(wad->infotableofs);
 	printf ("%s: converting \"%s\" (%i lumps)\n", __thisfunc__, filename, wad->numlumps);
@@ -678,6 +683,8 @@ static void print_usage (void)
 	printf ("Usage: lmp2pcx [-lmp] [-wad] [-mip] [-wal] [-all]\n");
 }
 
+static char	cwd[1024];
+
 int main (int argc, char **argv)
 {
 	int		i, j;
@@ -739,13 +746,14 @@ int main (int argc, char **argv)
 		}
 	}
 
+	Q_getwd (cwd, sizeof(cwd));
 	Q_mkdir (OUTPUT_DIR);
 
 	for (i = 0 ; convertdata[i].flag ; i++)
 	{
 		if (flags & convertdata[i].flag)
 		{
-			name = Q_FindFirstFile (".", convertdata[i].matchpattern);
+			name = Q_FindFirstFile (cwd, convertdata[i].matchpattern);
 			while (name)
 			{
 				convertdata[i].func (name, i);

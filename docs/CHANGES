@@ -4,6 +4,11 @@ Development Progress	:
 ---------------------------
 
 2012-06-20 (SVN):
+    * utils/texutils/lmp2pcx/lmp2pcx.c: Don't pass "." to Q_FindFirst()
+      as the current directory, pass the value returned by Q_getwd(),
+      instead. Also use DIR_SEPARATOR_CHAR when building file names.
+
+2012-06-20 (SVN):
     * quakefs.c, quakefs.h: Removed fs_filepath global.
     * midi_mac.c (MIDI_Play): Now that fs_filepath is no more, changed
       it to always extract the midi file.
