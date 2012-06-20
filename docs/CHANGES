@@ -4,6 +4,10 @@ Development Progress	:
 ---------------------------
 
 2012-06-20 (SVN):
+    * filenames.h: Added new macro DIR_SEPARATOR_STR, which is simply a
+      string version of DIR_SEPARATOR_CHAR.
+
+2012-06-20 (SVN):
     * utils/util_io.c (Q_getwd, PLATFORM_AMIGA): Don't return PROGDIR:
 
 2012-06-20 (SVN):

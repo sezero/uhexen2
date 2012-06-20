@@ -46,8 +46,10 @@
  * '\\' otherwise.  */
 #ifdef __DJGPP__
 #define DIR_SEPARATOR_CHAR	'/'
+#define DIR_SEPARATOR_STR	"/"
 #else
 #define DIR_SEPARATOR_CHAR	'\\'
+#define DIR_SEPARATOR_STR	"\\"
 #endif
 /* Note that IS_ABSOLUTE_PATH accepts d:foo as well, although it is
    only semi-absolute.  This is because the users of IS_ABSOLUTE_PATH
@@ -115,6 +117,7 @@ static inline char *FIND_LAST_DIRSEP (const char *_the_path) {
 #define STRIP_DRIVE_SPEC(f)	(f) /* */
 #define IS_DIR_SEPARATOR(c)	((c) == '/' || (c) == ':')
 #define DIR_SEPARATOR_CHAR	'/'
+#define DIR_SEPARATOR_STR	"/"
 #define IS_ABSOLUTE_PATH(f)	(IS_DIR_SEPARATOR((f)[0]) || (strchr((f), ':')))
 #define HAVE_CASE_INSENSITIVE_FILE_SYSTEM 1
 
@@ -152,11 +155,12 @@ static inline char *FIND_LAST_DIRSEP (const char *_the_path) {
 }
 #endif /* C++ */
 
-/* ------------------------ assumed UNIX : ------------------------ */
+/* ---------------------- assumed UNIX-ish : ---------------------- */
 #else /* */
 
 #define IS_DIR_SEPARATOR(c)	((c) == '/')
 #define DIR_SEPARATOR_CHAR	'/'
+#define DIR_SEPARATOR_STR	"/"
 #define IS_ABSOLUTE_PATH(f)	(IS_DIR_SEPARATOR((f)[0]))
 #define HAS_DRIVE_SPEC(f)	(0)
 #define STRIP_DRIVE_SPEC(f)	(f)
