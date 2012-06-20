@@ -154,6 +154,7 @@ int Sys_CopyFile (const char *frompath, const char *topath)
 	char buf[COPY_READ_BUFSIZE];
 	BPTR in, out;
 	struct FileInfoBlock *fib;
+	struct DateStamp stamp;
 	LONG remaining, count;
 
 	in = Open((const STRPTR) frompath, MODE_OLDFILE);
@@ -165,9 +166,13 @@ int Sys_CopyFile (const char *frompath, const char *topath)
 	fib = (struct FileInfoBlock*) AllocDosObject(DOS_FIB, NULL);
 	if (fib != NULL)
 	{
-		if (ExamineFH(in, fib))
+		if (ExamineFH(in, fib) == 0)
+			remaining = -1;
+		else
+		{
 			remaining = fib->fib_Size;
-		else	remaining = -1;
+			stamp = fib->fib_Date;
+		}
 		FreeDosObject(DOS_FIB, fib);
 		if (remaining < 0)
 		{
@@ -212,6 +217,8 @@ int Sys_CopyFile (const char *frompath, const char *topath)
 
 	if (remaining != 0)
 		return 1;
+
+	SetFileDate(topath, &stamp);
 
 	return 0;
 }

@@ -3,6 +3,9 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2012-06-20 (SVN):
+    * sys_amiga.c (Sys_CopyFile): Restore the copied file's timestamp.
+
 2012-06-19 (SVN):
     * h2patch.c: Use DIR_SEPARATOR_CHAR from filenames.h when building
       file names.
