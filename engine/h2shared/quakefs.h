@@ -66,8 +66,6 @@ void FS_Gamedir (const char *dir);
 
 /* file i/o within qfs */
 extern	size_t	fs_filesize;	/* size of the last file opened through QFS api */
-extern	char	*fs_filepath;	/* path of the last file opened through QFS api
-				 *		   NULL for files in a pakfile. */
 
 extern	int	file_from_pak;	/* global indicating that file came from a pak. */
 

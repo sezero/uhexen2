@@ -140,6 +140,7 @@ static void *MIDI_Play (const char *filename)
 #define	TEMP_MIDINAME	"tmpmusic.mid"
 	FILE	*f;
 	char	midipath[MAX_OSPATH];
+	int	ret;
 	OSErr	err;
 	FSSpec	midiSpec;
 	FSRef	midiRef;
@@ -162,26 +163,16 @@ static void *MIDI_Play (const char *filename)
 	}
 
 	/* FIXME: is there not an api with which I can send the
-	 * midi data from memory and avoid this utter crap?? */
-	if (file_from_pak)
-	{
-		int		ret;
-
-		Con_DPrintf("Extracting %s from pakfile\n", filename);
-		FS_MakePath_BUF(FS_USERBASE, NULL, midipath, sizeof(midipath), TEMP_MIDINAME);
+	 * midi data from memory and avoid this utter crap??? */
+	Con_DPrintf("Extracting %s from pakfile\n", filename);
+	FS_MakePath_BUF(FS_USERBASE, &ret, midipath, sizeof(midipath), TEMP_MIDINAME);
+	if (ret == 0)
 		ret = FS_WriteFileFromHandle (f, midipath, fs_filesize);
-		fclose (f);
-		if (ret != 0)
-		{
-			Con_Printf("Error while extracting from pak\n");
-			return NULL;
-		}
-	}
-	else	/* use the file directly */
+	fclose (f);
+	if (ret != 0)
 	{
-		fclose (f);
-		q_snprintf (midipath, sizeof(midipath), "%s/%s",
-			    fs_filepath, filename);
+		Con_Printf("Error while extracting from pak\n");
+		return NULL;
 	}
 
 	/* converting path to FSSpec. found in CarbonCocoaIntegration.pdf:

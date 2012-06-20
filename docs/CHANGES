@@ -4,6 +4,11 @@ Development Progress	:
 ---------------------------
 
 2012-06-20 (SVN):
+    * quakefs.c, quakefs.h: Removed fs_filepath global.
+    * midi_mac.c (MIDI_Play): Now that fs_filepath is no more, changed
+      it to always extract the midi file.
+
+2012-06-20 (SVN):
     * debuglog.c: Use DIR_SEPARATOR_STR.
 
 2012-06-20 (SVN):

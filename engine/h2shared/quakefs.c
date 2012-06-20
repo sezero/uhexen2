@@ -511,8 +511,6 @@ FILE I/O within QFS
 */
 
 size_t		fs_filesize;	/* size of the last file opened through QFS */
-char		*fs_filepath;	/* path of the last file opened through QFS
-				 *		   NULL for files in a pak. */
 int		file_from_pak;	/* ZOID: global indicating that file came from a pak */
 
 
@@ -764,7 +762,6 @@ size_t FS_OpenFile (const char *filename, FILE **file, unsigned int *path_id)
 				/* found it! */
 				fs_filesize = (size_t) pak->files[i].filelen;
 				file_from_pak = 1;
-				fs_filepath = NULL;
 				if (path_id)
 					*path_id = search->path_id;
 				if (!file) /* for FS_FileExists() */
@@ -790,16 +787,13 @@ size_t FS_OpenFile (const char *filename, FILE **file, unsigned int *path_id)
 			*file = fopen (ospath, "rb");
 			if (!*file)
 				Sys_Error ("Couldn't reopen %s", ospath);
-			fs_filepath = search->filename;
 			return fs_filesize;
 		}
 	}
 
 	Sys_DPrintf ("%s: can't find %s\n", __thisfunc__, filename);
 
-	if (file)
-		*file = NULL;
-	fs_filepath = NULL;
+	if (file) *file = NULL;
 	fs_filesize = (size_t)-1;
 	return fs_filesize;
 }
