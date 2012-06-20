@@ -87,6 +87,12 @@
 #	define	PLATFORM_AMIGA		1
 #   endif
 
+#elif defined(__riscos__)
+
+#   if !defined(PLATFORM_RISCOS)
+#	define	PLATFORM_RISCOS		1
+#   endif
+
 #else	/* here goes the unix platforms */
 
 #if defined(__unix) || defined(__unix__) || defined(unix)	|| \
@@ -152,6 +158,8 @@
 #	define	PLATFORM_STRING	"SunOS"
 #elif defined(__IRIX__)
 #	define	PLATFORM_STRING	"Irix"
+#elif defined(PLATFORM_RISCOS)
+#	define	PLATFORM_STRING	"RiscOS"
 #elif defined(PLATFORM_UNIX)
 #	define	PLATFORM_STRING	"Unix"
 #else

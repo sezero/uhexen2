@@ -4,6 +4,10 @@ Development Progress	:
 ---------------------------
 
 2012-06-20 (SVN):
+    * Added RISCOS defines to arch_def.h and net_sys.h, thanks to Chris
+      Gransden.
+
+2012-06-20 (SVN):
     * filenames.h: Added new macro DIR_SEPARATOR_STR, which is simply a
       string version of DIR_SEPARATOR_CHAR.
 

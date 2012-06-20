@@ -35,13 +35,15 @@
 #if defined(__FreeBSD__) || defined(__DragonFly__)	|| \
     defined(__OpenBSD__) || defined(__NetBSD__)		|| \
     defined(PLATFORM_AMIGA) /* bsdsocket.library */	|| \
-    defined(__MACOSX__)  || defined(__FreeBSD_kernel__)
+    defined(__MACOSX__)  || defined(__FreeBSD_kernel__)	|| \
+    defined(__riscos__)
 /* struct sockaddr has unsigned char sa_len as the first member in BSD
  * variants and the family member is also an unsigned char instead of an
  * unsigned short. This should matter only when PLATFORM_UNIX is defined,
  * however, checking for the offset of sa_family in every platform that
  * provide a struct sockaddr doesn't hurt either (see down below for the
  * compile time asserts.) */
+/* FIXME : GET RID OF THIS ABOMINATION !!! */
 #define	HAVE_SA_LEN	1
 #define	SA_FAM_OFFSET	1
 #else
@@ -50,7 +52,7 @@
 #endif	/* BSD, sockaddr */
 
 /* unix includes and compatibility macros */
-#if defined(PLATFORM_UNIX)
+#if defined(PLATFORM_UNIX) || defined(PLATFORM_RISCOS)
 
 #include <sys/param.h>
 #include <sys/ioctl.h>

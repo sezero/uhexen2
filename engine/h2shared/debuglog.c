@@ -29,13 +29,10 @@
 #include <io.h>		/* write() */
 #include "io_msvc.h"
 #endif
-#ifdef PLATFORM_UNIX
-#include <unistd.h>	/* write() */
-#endif
-#ifdef PLATFORM_DOS	/* __DJGPP */
-#include <unistd.h>	/* write() */
-#endif
-#ifdef PLATFORM_AMIGA
+#if defined(PLATFORM_UNIX) ||	\
+    defined(PLATFORM_AMIGA) ||	\
+    defined(__DJGPP__) ||	\
+    defined(PLATFORM_RISCOS)
 #include <unistd.h>	/* write() */
 #endif
 
