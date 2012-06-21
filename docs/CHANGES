@@ -4,6 +4,10 @@ Development Progress	:
 ---------------------------
 
 2012-06-21 (SVN):
+    * updated the ReleaseNotes file.
+    * updated version date stamp to 2012-06-21.
+
+2012-06-21 (SVN):
     * Make the keypad send seperate key event, but only in-game. (Only
       for the SDL port for now.)
 
