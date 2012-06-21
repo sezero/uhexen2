@@ -41,6 +41,8 @@ enum m_state_e
 };
 extern	enum m_state_e	m_state;
 
+extern	qboolean	m_keys_bind_grab;
+
 /* menus */
 void M_Init (void);
 void M_Keydown (int key);

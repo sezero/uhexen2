@@ -61,6 +61,24 @@
 #define	K_HOME			151
 #define	K_END			152
 
+#define K_KP_NUMLOCK		153
+#define K_KP_SLASH		154
+#define K_KP_STAR		155
+#define K_KP_MINUS		156
+#define K_KP_HOME		157
+#define K_KP_UPARROW		158
+#define K_KP_PGUP		159
+#define K_KP_PLUS		160
+#define K_KP_LEFTARROW		161
+#define K_KP_5			162
+#define K_KP_RIGHTARROW		163
+#define K_KP_END		164
+#define K_KP_DOWNARROW		165
+#define K_KP_PGDN		166
+#define K_KP_ENTER		167
+#define K_KP_INS		168
+#define K_KP_DEL		169
+
 #define K_PAUSE			255
 
 //

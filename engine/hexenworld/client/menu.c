@@ -1296,7 +1296,7 @@ static const char *bindnames[][2] =
 #define KEYS_SIZE 14
 
 static int		keys_cursor;
-static int		bind_grab;
+qboolean		m_keys_bind_grab;
 static int		keys_top = 0;
 
 static void M_Menu_Keys_f (void)
@@ -1370,7 +1370,7 @@ static void M_Keys_Draw (void)
 //	p = Draw_CachePic("gfx/menu/hback.lmp");
 //	M_DrawTransPicCropped(8, 62, p);
 
-	if (bind_grab)
+	if (m_keys_bind_grab)
 		M_Print (12, 64, "Press a key or button for this action");
 	else
 		M_Print (18, 64, "Enter to change, backspace to clear");
@@ -1406,7 +1406,7 @@ static void M_Keys_Draw (void)
 		}
 	}
 
-	if (bind_grab)
+	if (m_keys_bind_grab)
 		M_DrawCharacter (130, 80 + (keys_cursor-keys_top)*8, '=');
 	else
 		M_DrawCharacter (130, 80 + (keys_cursor-keys_top)*8, 12+((int)(realtime*4)&1));
@@ -1418,12 +1418,12 @@ static void M_Keys_Key (int k)
 	char	cmd[80];
 	int		keys[2];
 
-	if (bind_grab)
+	if (m_keys_bind_grab)
 	{	// defining a key
 		S_LocalSound ("raven/menu1.wav");
 		if (k == K_ESCAPE)
 		{
-			bind_grab = false;
+			m_keys_bind_grab = false;
 		}
 		else if (k != '`')
 		{
@@ -1431,7 +1431,7 @@ static void M_Keys_Key (int k)
 			Cbuf_InsertText (cmd);
 		}
 
-		bind_grab = false;
+		m_keys_bind_grab = false;
 		return;
 	}
 
@@ -1462,7 +1462,7 @@ static void M_Keys_Key (int k)
 		S_LocalSound ("raven/menu2.wav");
 		if (keys[1] != -1)
 			M_UnbindCommand (bindnames[keys_cursor][0]);
-		bind_grab = true;
+		m_keys_bind_grab = true;
 		break;
 
 	case K_BACKSPACE:	// delete bindings

@@ -3,6 +3,10 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2012-06-21 (SVN):
+    * Make the keypad send seperate key event, but only in-game. (Only
+      for the SDL port for now.)
+
 2012-06-20 (SVN):
     * utils/texutils/lmp2pcx/lmp2pcx.c: Don't pass "." to Q_FindFirst()
       as the current directory, pass the value returned by Q_getwd(),
