@@ -746,7 +746,7 @@ int main (int argc, char **argv)
 		}
 	}
 
-	Q_getwd (cwd, sizeof(cwd));
+	Q_getwd (cwd, sizeof(cwd), false);
 	Q_mkdir (OUTPUT_DIR);
 
 	for (i = 0 ; convertdata[i].flag ; i++)

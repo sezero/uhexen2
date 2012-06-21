@@ -59,7 +59,7 @@ void SetQdirFromPath (const char *path)
 
 	if (!IS_ABSOLUTE_PATH(path))
 	{
-		Q_getwd (temp, sizeof(temp));
+		Q_getwd (temp, sizeof(temp), true);
 		qerr_strlcat(__thisfunc__, __LINE__, temp, path, sizeof(temp));
 		path = temp;
 	}
@@ -106,7 +106,7 @@ char *ExpandArg (const char *path)
 
 	if (!IS_ABSOLUTE_PATH(path))
 	{
-		Q_getwd (full, sizeof(full));
+		Q_getwd (full, sizeof(full), true);
 		qerr_strlcat(__thisfunc__, __LINE__, full, path, sizeof(full));
 	}
 	else

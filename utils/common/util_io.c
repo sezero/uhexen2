@@ -113,9 +113,17 @@ void Q_FindClose (void)
 	}
 }
 
-void Q_getwd (char *out, size_t size)
+void Q_getwd (char *out, size_t size, qboolean trailing_dirsep)
 {
-	_getcwd (out, size);
+	size_t sz;
+
+	if (_getcwd(out, size) == NULL)
+		COM_Error ("Couldn't determine current directory");
+	if (!trailing_dirsep)
+		return;
+	sz = strlen(out);
+	if (!sz || out[sz - 1] == '\\' || out[sz - 1] == '/')
+		return;
 	qerr_strlcat(__thisfunc__, __LINE__, out, "\\", size);
 }
 
@@ -214,9 +222,17 @@ void Q_FindClose (void)
 	findhandle = -1;
 }
 
-void Q_getwd (char *out, size_t size)
+void Q_getwd (char *out, size_t size, qboolean trailing_dirsep)
 {
-	getcwd (out, size);
+	size_t sz;
+
+	if (getcwd(out, size) == NULL)
+		COM_Error ("Couldn't determine current directory");
+	if (!trailing_dirsep)
+		return;
+	sz = strlen(out);
+	if (!sz || out[sz - 1] == '\\' || out[sz - 1] == '/')
+		return;
 	qerr_strlcat(__thisfunc__, __LINE__, out, "/", size);
 }
 
@@ -362,7 +378,7 @@ void Q_FindClose (void)
 	pattern_str = NULL;
 }
 
-void Q_getwd (char *out, size_t size)
+void Q_getwd (char *out, size_t size, qboolean trailing_dirsep)
 {
 #if 0
 	qerr_strlcpy(__thisfunc__, __LINE__, out, "PROGDIR:", size);
@@ -373,17 +389,14 @@ void Q_getwd (char *out, size_t size)
 
 	self = FindTask(NULL);
 	lock = ((struct Process *) self)->pr_CurrentDir;
-
-	NameFromLock(lock, (STRPTR) out, size);
-
-	if (! *out)
+	if (NameFromLock(lock, (STRPTR) out, size) == 0)
+		COM_Error ("Couldn't determine current directory");
+	if (!trailing_dirsep)
 		return;
 	sz = strlen(out);
-	if (sz >= size - 1 || out[sz - 1] == ':' || out[sz - 1] == '/')
+	if (!sz || out[sz - 1] == ':' || out[sz - 1] == '/')
 		return;
-
-	out[sz] = '/';
-	out[sz + 1] = '\0';
+	qerr_strlcat(__thisfunc__, __LINE__, out, "/", size);
 #endif
 }
 
@@ -536,9 +549,17 @@ void Q_FindClose (void)
 	}
 }
 
-void Q_getwd (char *out, size_t size)
+void Q_getwd (char *out, size_t size, qboolean trailing_dirsep)
 {
-	getcwd (out, size);
+	size_t sz;
+
+	if (getcwd(out, size) == NULL)
+		COM_Error ("Couldn't determine current directory");
+	if (!trailing_dirsep)
+		return;
+	sz = strlen(out);
+	if (!sz || out[sz - 1] == '/')
+		return;
 	qerr_strlcat(__thisfunc__, __LINE__, out, "/", size);
 }
 

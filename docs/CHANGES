@@ -4,6 +4,12 @@ Development Progress	:
 ---------------------------
 
 2012-06-21 (SVN):
+    * utils, Q_getwd: Added trailing_dirsep parameter to the function
+      and appended the trailing directory separator character only if
+      requested so. Made all its callers except for lmp2pcx to request
+      a trailing directory separator.
+
+2012-06-21 (SVN):
     * updated the ReleaseNotes file.
     * updated version date stamp to 2012-06-21.
 

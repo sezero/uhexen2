@@ -1157,7 +1157,7 @@ static void MakeProjectPath (char *sourcebase)
 	{
 		scan = FIND_LAST_DIRSEP(sourcebase);
 		if (!scan)
-			Q_getwd(projectpath, sizeof(projectpath));
+			Q_getwd(projectpath, sizeof(projectpath), true);
 		else
 		{
 			memset (projectpath, 0, sizeof(projectpath));

@@ -48,7 +48,7 @@ void	Q_mkdir (const char *path);
 int	Q_rmdir (const char *path);
 int	Q_unlink (const char *path);
 int	Q_rename (const char *oldp, const char *newp);
-void	Q_getwd (char *out, size_t size);
+void	Q_getwd (char *out, size_t size, qboolean trailing_dirsep);
 long	Q_filesize (const char *path);
 int	Q_FileType (const char *path);
 const char *Q_FindFirstFile (const char *path, const char *pattern);
