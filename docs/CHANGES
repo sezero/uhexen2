@@ -4,6 +4,10 @@ Development Progress	:
 ---------------------------
 
 2012-06-24 (SVN):
+    * cl_input.c: Allow KeyUp() for in_crouch and in_infoplaque even if
+      key_dest!=key_game so that they don't get stuck.
+
+2012-06-24 (SVN):
     * gl_vidnt.c, vid_mgl4.c, vid_win.c: Make the keypad send separate
       key event, but only in-game. (ported in_sdl.c changes to windows.)
     * in_sdl.c: Minor cleanup.

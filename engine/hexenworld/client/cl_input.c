@@ -308,13 +308,13 @@ static void IN_CrouchDown (void)
 
 static void IN_CrouchUp (void)
 {
-	if (key_dest == key_game)
-	{
+//	if (key_dest == key_game)
+//	{
 //		int state = in_crouch.state;
 		KeyUp(&in_crouch);
 //		if ((state & 1) && !(in_crouch.state & 1))
 //			in_impulse = 22;
-	}
+//	}
 }
 
 /*
