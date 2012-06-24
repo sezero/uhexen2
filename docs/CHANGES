@@ -4,6 +4,15 @@ Development Progress	:
 ---------------------------
 
 2012-06-24 (SVN):
+    * key.c (Key_ClearStates): Instead of clearing all key's down state
+      and repeat count, run KeyEvent(k,false) keys in down state, which
+      will already clear those states for them. This also helps getting
+      rid of several actions bound to keypad keys.
+    * gl_vidsdl.c, vid_sdl.c, vid_mgl4.c, vid_win.c (ClearAllStates):
+      Removed code triggering every key with a release event, because we
+      just changed Key_ClearStates() to do that for the necessary keys.
+
+2012-06-24 (SVN):
     * cl_input.c: Allow KeyUp() for in_crouch and in_infoplaque even if
       key_dest!=key_game so that they don't get stuck.
 
