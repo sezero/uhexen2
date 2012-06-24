@@ -3,6 +3,11 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2012-06-24 (SVN):
+    * gl_vidnt.c, vid_mgl4.c, vid_win.c: Make the keypad send separate
+      key event, but only in-game. (ported in_sdl.c changes to windows.)
+    * in_sdl.c: Minor cleanup.
+
 2012-06-21 (SVN):
     * utils, Q_getwd: Added trailing_dirsep parameter to the function
       and appended the trailing directory separator character only if
@@ -14,7 +19,7 @@ Development Progress	:
     * updated version date stamp to 2012-06-21.
 
 2012-06-21 (SVN):
-    * Make the keypad send seperate key event, but only in-game. (Only
+    * Make the keypad send separate key event, but only in-game. (Only
       for the SDL port for now.)
 
 2012-06-20 (SVN):

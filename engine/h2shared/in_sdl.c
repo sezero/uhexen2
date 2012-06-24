@@ -810,19 +810,18 @@ void IN_Commands (void)
 
 void IN_SendKeyEvents (void)
 {
+	static qboolean prev_gamekey;
 	SDL_Event event;
 	int sym, state;
 	int modstate;
 	qboolean gamekey;
-	static qboolean prev_gamekey;
 
 	gamekey = (key_dest == key_game || m_keys_bind_grab);
-
 	if (gamekey != prev_gamekey)
 	{
-		SDL_EnableUNICODE(!gamekey);
-		Key_ClearStates();
 		prev_gamekey = gamekey;
+		Key_ClearStates();
+		SDL_EnableUNICODE(!gamekey);
 	}
 
 	while (SDL_PollEvent(&event))
@@ -833,15 +832,8 @@ void IN_SendKeyEvents (void)
 			if (event.active.state & (SDL_APPINPUTFOCUS|SDL_APPACTIVE))
 			{
 				if (event.active.gain)
-				{
-				/*	Sys_Printf("FOCUS GAIN\n");*/
 					S_UnblockSound();
-				}
-				else
-				{
-				/*	Sys_Printf("FOCUS LOSS\n");*/
-					S_BlockSound();
-				}
+				else	S_BlockSound();
 			}
 			break;
 
@@ -852,19 +844,20 @@ void IN_SendKeyEvents (void)
 				VID_ToggleFullscreen();
 				break;
 			}
-			else if ((event.key.keysym.sym == SDLK_ESCAPE) &&
-				 (event.key.keysym.mod & KMOD_SHIFT))
+			if ((event.key.keysym.sym == SDLK_ESCAPE) &&
+			    (event.key.keysym.mod & KMOD_SHIFT))
 			{
 				Con_ToggleConsole_f();
 				break;
 			}
-			else if ((event.key.keysym.sym == SDLK_g) &&
-				 (event.key.keysym.mod & KMOD_CTRL))
+			if ((event.key.keysym.sym == SDLK_g) &&
+			    (event.key.keysym.mod & KMOD_CTRL))
 			{
-				SDL_WM_GrabInput( (SDL_WM_GrabInput (SDL_GRAB_QUERY) == SDL_GRAB_ON) ? SDL_GRAB_OFF : SDL_GRAB_ON );
+				SDL_WM_GrabInput((SDL_WM_GrabInput (SDL_GRAB_QUERY) == SDL_GRAB_ON) ?
+									  SDL_GRAB_OFF : SDL_GRAB_ON);
 				break;
 			}
-
+		/* fallthrough */
 		case SDL_KEYUP:
 			sym = event.key.keysym.sym;
 			state = event.key.state;

@@ -1166,13 +1166,13 @@ static byte scantokey[128] =
 	0  ,    27,     '1',    '2',    '3',    '4',    '5',    '6',
 	'7',    '8',    '9',    '0',    '-',    '=', K_BACKSPACE, 9,	// 0
 	'q',    'w',    'e',    'r',    't',    'y',    'u',    'i',
-	'o',    'p',    '[',    ']',     13,   K_CTRL,  'a',    's',	// 1
+	'o',    'p',    '[',    ']',  K_ENTER, K_CTRL,  'a',    's',	// 1
 	'd',    'f',    'g',    'h',    'j',    'k',    'l',    ';',
 	'\'',   '`',  K_SHIFT,  '\\',   'z',    'x',    'c',    'v',	// 2
-	'b',    'n',    'm',    ',',    '.',    '/',  K_SHIFT,  '*',
+	'b',    'n',    'm',    ',',    '.',    '/',  K_SHIFT, K_KP_STAR,
 	K_ALT,  ' ',     0 ,    K_F1,   K_F2,   K_F3,   K_F4,  K_F5,	// 3
 	K_F6,  K_F7,   K_F8,    K_F9,  K_F10, K_PAUSE,   0 , K_HOME,
-	K_UPARROW,K_PGUP,'-',K_LEFTARROW,'5',K_RIGHTARROW,'+',K_END,	// 4
+	K_UPARROW,K_PGUP,K_KP_MINUS,K_LEFTARROW,K_KP_5,K_RIGHTARROW,K_KP_PLUS,K_END,	// 4
 	K_DOWNARROW,K_PGDN,K_INS,K_DEL,   0 ,    0 ,     0 ,  K_F11,
 	K_F12,   0 ,     0 ,     0 ,      0 ,    0 ,     0 ,     0 ,	// 5
 	0  ,     0 ,     0 ,     0 ,      0 ,    0 ,     0 ,     0 ,
@@ -1189,13 +1189,13 @@ static byte shiftscantokey[128] =
 	0  ,    27,     '!',    '@',    '#',    '$',    '%',    '^',
 	'&',    '*',    '(',    ')',    '_',    '+', K_BACKSPACE, 9,	// 0
 	'Q',    'W',    'E',    'R',    'T',    'Y',    'U',    'I',
-	'O',    'P',    '{',    '}',    13 ,   K_CTRL,  'A',    'S',	// 1
+	'O',    'P',    '{',    '}',  K_ENTER, K_CTRL,  'A',    'S',	// 1
 	'D',    'F',    'G',    'H',    'J',    'K',    'L',    ':',
 	'"' ,    '~', K_SHIFT,  '|',    'Z',    'X',    'C',    'V',	// 2
-	'B',    'N',    'M',    '<',    '>',    '?',  K_SHIFT,  '*',
+	'B',    'N',    'M',    '<',    '>',    '?',  K_SHIFT, K_KP_STAR,
 	K_ALT,  ' ',     0 ,    K_F1,   K_F2,   K_F3,   K_F4,  K_F5,	// 3
 	K_F6,  K_F7,   K_F8,    K_F9,  K_F10, K_PAUSE,   0 , K_HOME,
-	K_UPARROW,K_PGUP,'_',K_LEFTARROW,'%',K_RIGHTARROW,'+',K_END,	// 4
+	K_UPARROW,K_PGUP,K_KP_MINUS,K_LEFTARROW,K_KP_5,K_RIGHTARROW,K_KP_PLUS,K_END,	// 4
 	K_DOWNARROW,K_PGDN,K_INS,K_DEL,   0 ,    0 ,     0 ,  K_F11,
 	K_F12,   0 ,     0 ,     0 ,      0 ,    0 ,     0 ,     0 ,	// 5
 	0  ,     0 ,     0 ,     0 ,      0 ,    0 ,     0 ,     0 ,
@@ -1214,12 +1214,80 @@ Map from windows to quake keynums
 */
 static int MapKey (int key)
 {
-	key = (key >> 16) & 255;
-	if (key > 127)
+	static qboolean prev_gamekey;
+	int result;
+	qboolean gamekey;
+
+	gamekey = (key_dest == key_game || m_keys_bind_grab);
+	if (gamekey != prev_gamekey)
+	{
+		prev_gamekey = gamekey;
+		Key_ClearStates();
+	}
+
+	result = (key >> 16) & 255;
+	if (result > 127)
 		return 0;
-	if (scantokey[key] == 0)
-		Con_DPrintf("key 0x%02x has no translation\n", key);
-	return scantokey[key];
+	result = scantokey[result];
+
+	if (key & (1 << 24)) /* extended */
+	{
+		switch (result)
+		{
+		case K_PAUSE:
+			return	(gamekey) ? K_KP_NUMLOCK : 0;
+		case K_ENTER:
+			return	(gamekey) ? K_KP_ENTER : K_ENTER;
+		case '/':
+			return	(gamekey) ? K_KP_SLASH : '/';
+		}
+	}
+	else /* standart */
+	{
+		switch (result)
+		{
+		case K_KP_STAR:
+			return	(gamekey) ? K_KP_STAR : '*';
+		case K_KP_PLUS:
+			return	(gamekey) ? K_KP_PLUS : '+';
+		case K_KP_MINUS:
+			return	(gamekey) ? K_KP_MINUS : '-';
+		case K_HOME:
+			return	(gamekey) ? K_KP_HOME :
+				(GetKeyState(VK_NUMLOCK) & 0x01) ? '7' : K_HOME;
+		case K_UPARROW:
+			return	(gamekey) ? K_KP_UPARROW :
+				(GetKeyState(VK_NUMLOCK) & 0x01) ? '8' : K_UPARROW;
+		case K_PGUP:
+			return	(gamekey) ? K_KP_PGUP :
+				(GetKeyState(VK_NUMLOCK) & 0x01) ? '9' : K_PGUP;
+		case K_LEFTARROW:
+			return	(gamekey) ? K_KP_LEFTARROW :
+				(GetKeyState(VK_NUMLOCK) & 0x01) ? '4' : K_LEFTARROW;
+		case K_KP_5:
+			return	(gamekey) ? K_KP_5 : '5';
+		case K_RIGHTARROW:
+			return	(gamekey) ? K_KP_RIGHTARROW :
+				(GetKeyState(VK_NUMLOCK) & 0x01) ? '6' : K_RIGHTARROW;
+		case K_END:
+			return	(gamekey) ? K_KP_END :
+				(GetKeyState(VK_NUMLOCK) & 0x01) ? '1' : K_END;
+		case K_DOWNARROW:
+			return	(gamekey) ? K_KP_DOWNARROW :
+				(GetKeyState(VK_NUMLOCK) & 0x01) ? '2' : K_DOWNARROW;
+		case K_PGDN:
+			return	(gamekey) ? K_KP_PGDN :
+				(GetKeyState(VK_NUMLOCK) & 0x01) ? '3' : K_PGDN;
+		case K_INS:
+			return	(gamekey) ? K_KP_INS :
+				(GetKeyState(VK_NUMLOCK) & 0x01) ? '0' : K_INS;
+		case K_DEL:
+			return	(gamekey) ? K_KP_DEL :
+				(GetKeyState(VK_NUMLOCK) & 0x01) ? '.' : K_DEL;
+		}
+	}
+
+	return result;
 }
 
 /*
