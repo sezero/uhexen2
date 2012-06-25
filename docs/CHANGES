@@ -4,6 +4,12 @@ Development Progress	:
 ---------------------------
 
 2012-06-25 (SVN):
+    * in_sdl.c: Fixed after r4803 so that SDL_EnableUNICODE() is called
+      correctly. Makes SHIFT keys to work properly on the console again.
+      Also made K_KP_5 to send '5' when not in game mode, regardless of
+      the numlock status.
+
+2012-06-25 (SVN):
     * keys.c: Prevented KP_NUMLOCK from binding. Minor cleanups.
 
 2012-06-24 (SVN):

@@ -27,7 +27,7 @@
 #include "quakedef.h"
 
 
-static keydest_t	prev_key_dest;
+static qboolean	prev_gamekey;
 
 /* mouse variables */
 static cvar_t	m_filter = {"m_filter", "0", CVAR_NONE};
@@ -296,7 +296,8 @@ void IN_Init (void)
 	IN_StartupMouse ();
 	IN_StartupJoystick ();
 
-	SDL_EnableUNICODE (0); /* frame updates will change this as key_dest changes */
+	prev_gamekey = (key_dest == key_game || m_keys_bind_grab);
+	SDL_EnableUNICODE (!prev_gamekey);
 	SDL_EnableKeyRepeat (SDL_DEFAULT_REPEAT_DELAY, SDL_DEFAULT_REPEAT_INTERVAL*2);
 }
 
@@ -328,8 +329,8 @@ void IN_ReInit (void)
 {
 	IN_StartupMouse ();
 
-	SDL_EnableUNICODE (0); /* frame updates will change this as key_dest changes */
-	prev_key_dest = key_game;
+	prev_gamekey = (key_dest == key_game || m_keys_bind_grab);
+	SDL_EnableUNICODE (!prev_gamekey);
 	SDL_EnableKeyRepeat (SDL_DEFAULT_REPEAT_DELAY, SDL_DEFAULT_REPEAT_INTERVAL*2);
 
 	/* no need for joystick to reinit */
@@ -810,7 +811,6 @@ void IN_Commands (void)
 
 void IN_SendKeyEvents (void)
 {
-	static qboolean prev_gamekey;
 	SDL_Event event;
 	int sym, state;
 	int modstate;
@@ -1018,7 +1018,7 @@ void IN_SendKeyEvents (void)
 			case SDLK_KP5:
 				if (gamekey)
 					sym = K_KP_5;
-				else	sym = (modstate & KMOD_NUM) ? SDLK_5 : 0;
+				else	sym = SDLK_5;
 				break;
 			case SDLK_KP6:
 				if (gamekey)
