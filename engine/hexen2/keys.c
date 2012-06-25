@@ -86,7 +86,7 @@ static keyname_t keynames[] =
 	{"HOME", K_HOME},
 	{"END", K_END},
 
-	{"KP_NUMLOCK", K_KP_NUMLOCK},
+//	{"KP_NUMLOCK", K_KP_NUMLOCK},
 	{"KP_SLASH", K_KP_SLASH},
 	{"KP_STAR", K_KP_STAR},
 	{"KP_MINUS", K_KP_MINUS},
@@ -171,7 +171,7 @@ static void CompleteCommand (void)
 	char		backup[MAXCMDLINE];
 	char		c, *prefix, *workline;
 	qboolean	editing;
-	int		count = 0, i;
+	int		count, i;
 	size_t		len1, len2;
 
 	if (key_linepos < 2)
@@ -213,6 +213,7 @@ static void CompleteCommand (void)
 	len1 = len2 = strlen(prefix);
 
 	// start checking for matches, finally...
+	count = 0;
 	count += ListCommands(prefix, (const char**)matches, count);
 	count += ListCvars   (prefix, (const char**)matches, count);
 	count += ListAlias   (prefix, (const char**)matches, count);
@@ -272,12 +273,10 @@ static void CompleteCommand (void)
 		workline[key_linepos] = 0;
 	}
 
+	// put back the remainder of the original text
+	// which was lost after the trimming
 	if (editing)
-	{
-		// put back the remainder of the original text
-		// which was lost after the trimming
 		q_strlcpy (workline + key_linepos, backup, MAXCMDLINE-key_linepos);
-	}
 }
 
 /*
@@ -369,8 +368,8 @@ static void Key_Console (int key)
 				len = strlen(workline);
 				memmove (workline, workline + 1, len);
 			}
-			else
-				*workline = 0;
+			else	*workline = 0;
+
 			key_linepos--;
 		}
 		return;
@@ -384,8 +383,7 @@ static void Key_Console (int key)
 				len = strlen(workline);
 				memmove (workline, workline + 1, len);
 			}
-			else
-				*workline = 0;
+			else	*workline = 0;
 		}
 		return;
 
@@ -441,15 +439,13 @@ static void Key_Console (int key)
 	case K_HOME:
 		if (keydown[K_CTRL])
 			con->display = con->current - con_totallines + 10;
-		else
-			key_linepos = 1;
+		else	key_linepos = 1;
 		return;
 
 	case K_END:
 		if (keydown[K_CTRL])
 			con->display = con->current;
-		else
-			key_linepos = strlen(workline);
+		else	key_linepos = strlen(workline);
 		return;
 	}
 
@@ -520,13 +516,12 @@ static void Key_Console (int key)
 
 //============================================================================
 
-char chat_buffer[32];
-qboolean team_message = false;
+qboolean	team_message = false;
+char		chat_buffer[32];
+int		chat_bufferlen = 0;
 
 static void Key_Message (int key)
 {
-	static int	chat_bufferlen = 0;
-
 	if (key == K_ENTER)
 	{
 		if (team_message)
@@ -607,8 +602,8 @@ FIXME: handle quote special (general escape sequence?)
 */
 const char *Key_KeynumToString (int keynum)
 {
-	keyname_t	*kn;
 	static	char	tinystr[2];
+	keyname_t	*kn;
 
 	if (keynum == -1)
 		return "<KEY NOT FOUND>";
@@ -650,9 +645,7 @@ void Key_SetBinding (int keynum, const char *binding)
 
 // allocate memory for new binding
 	if (binding)
-	{
 		keybindings[keynum] = Z_Strdup(binding);
-	}
 }
 
 /*
@@ -662,7 +655,7 @@ Key_Unbind_f
 */
 static void Key_Unbind_f (void)
 {
-	int		b;
+	int	b;
 
 	if (Cmd_Argc() != 2)
 	{
@@ -682,7 +675,7 @@ static void Key_Unbind_f (void)
 
 static void Key_Unbindall_f (void)
 {
-	int		i;
+	int	i;
 
 	for (i = 0; i < 256; i++)
 		Key_SetBinding(i, NULL);
@@ -696,8 +689,8 @@ Key_Bind_f
 */
 static void Key_Bind_f (void)
 {
-	int			i, c, b;
-	char		cmd[1024];
+	int	i, c, b;
+	char	cmd[1024];
 
 	c = Cmd_Argc();
 
@@ -723,7 +716,7 @@ static void Key_Bind_f (void)
 	}
 
 // copy the rest of the command line
-	cmd[0] = 0;		// start out with a null string
+	cmd[0] = 0;
 	for (i = 2; i < c; i++)
 	{
 		q_strlcat (cmd, Cmd_Argv(i), sizeof(cmd));
@@ -743,7 +736,7 @@ Writes lines containing "bind key value"
 */
 void Key_WriteBindings (FILE *f)
 {
-	int		i;
+	int	i;
 
 	for (i = 0; i < 256; i++)
 	{
@@ -760,7 +753,7 @@ Key_Init
 */
 void Key_Init (void)
 {
-	int		i;
+	int	i;
 
 	for (i = 0; i < 32; i++)
 	{
@@ -773,9 +766,7 @@ void Key_Init (void)
 	memset (menubound, 0, sizeof(menubound));
 	memset (keyreserved, 0, sizeof(keyreserved));
 
-//
 // init ascii characters in console mode
-//
 	for (i = 32; i < 128; i++)
 		consolekeys[i] = true;
 	consolekeys[K_ENTER] = true;
@@ -829,19 +820,16 @@ void Key_Init (void)
 
 	memset (key_repeats, 0, sizeof(key_repeats));
 
-//
 // bind our reserved keys
-//
 	Key_SetBinding ('`', "toggleconsole");
 	Key_SetBinding ('~', "toggleconsole");
 	Key_SetBinding (K_PAUSE, "pause");
 	keyreserved['`'] = true;
 	keyreserved['~'] = true;
+	keyreserved[K_KP_NUMLOCK] = true;
 	keyreserved[K_PAUSE] = true;
 
-//
 // register our functions
-//
 	Cmd_AddCommand ("bind",Key_Bind_f);
 	Cmd_AddCommand ("unbind",Key_Unbind_f);
 	Cmd_AddCommand ("unbindall",Key_Unbindall_f);
@@ -868,9 +856,7 @@ void Key_Event (int key, qboolean down)
 	key_lastpress = key;
 	key_count++;
 	if (key_count <= 0)
-	{
 		return;		// just catching keys for Con_NotifyBox
-	}
 
 // update auto-repeat status
 	if (down)
@@ -878,37 +864,31 @@ void Key_Event (int key, qboolean down)
 		/* Pause key doesn't generate a scancode when released,
 		 * never increment its auto-repeat status.
 		 */
-		if (key != K_PAUSE)
+		if (key != K_PAUSE && key != K_KP_NUMLOCK)
 			key_repeats[key]++;
 		/*
-		if (key != K_BACKSPACE 
-			&& key_repeats[key] > 1)
-		{
+		if (key != K_BACKSPACE &&
+					key_repeats[key] > 1)
 			return;	// ignore most autorepeats
-		}
 		*/
 		if (key_repeats[key] > 1)
 		{
-			// ignore autorepeats unless chatting or in console
 			if (key_dest == key_console)
 				goto autorep0;
 			if (key_dest == key_message)
 				goto autorep0;
-			return;
+			return;	// ignore autorepeats unless chatting or in console
 		}
 
 		if (key >= 200 && !keybindings[key])
-			Con_Printf ("%s is unbound, hit F4 to set.\n", Key_KeynumToString (key) );
+			Con_Printf ("%s is unbound, hit F4 to set.\n", Key_KeynumToString(key));
 	}
 
 autorep0:
-
 	if (key == K_SHIFT)
 		shift_down = down;
 
-//
 // handle escape specialy, so the user can never unbind it
-//
 	if (key == K_ESCAPE)
 	{
 		if (!down)
@@ -931,13 +911,11 @@ autorep0:
 		return;
 	}
 
-//
 // key up events only generate commands if the game key binding is
 // a button command (leading + sign).  These will occur even in console mode,
 // to keep the character from continuing an action started before a console
 // switch.  Button commands include the kenum as a parameter, so multiple
 // downs can be matched with ups
-//
 	if (!down)
 	{
 		kb = keybindings[key];
@@ -958,9 +936,7 @@ autorep0:
 		return;
 	}
 
-//
 // during demo playback, most keys bring up the main menu
-//
 	if (cls.demoplayback && down && consolekeys[key] && key_dest == key_game)
 	{
 		M_ToggleMenu_f ();
@@ -972,12 +948,10 @@ autorep0:
 		Cbuf_AddText ("map keep1\n");
 	}
 
-//
 // if not a consolekey, send to the interpreter no matter what mode is
-//
-	if ( (key_dest == key_menu && menubound[key])
-		|| (key_dest == key_console && !consolekeys[key])
-		|| (key_dest == key_game && ( !con_forcedup || !consolekeys[key] )) )
+	if ((key_dest == key_menu && menubound[key]) ||
+	    (key_dest == key_console && !consolekeys[key]) ||
+	    (key_dest == key_game && (!con_forcedup || !consolekeys[key])))
 	{
 		kb = keybindings[key];
 		if (kb)
@@ -1000,9 +974,7 @@ autorep0:
 		return;		// other systems only care about key down events
 
 	if (shift_down)
-	{
 		key = keyshift[key];
-	}
 
 	switch (key_dest)
 	{
@@ -1030,7 +1002,7 @@ Key_ClearStates
 */
 void Key_ClearStates (void)
 {
-	int		i;
+	int	i;
 
 	for (i = 0; i < 256; i++)
 	{

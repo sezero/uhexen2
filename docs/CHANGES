@@ -3,8 +3,11 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2012-06-25 (SVN):
+    * keys.c: Prevented KP_NUMLOCK from binding. Minor cleanups.
+
 2012-06-24 (SVN):
-    * key.c (Key_ClearStates): Instead of clearing all key's down state
+    * keys.c (Key_ClearStates): Instead of clearing all key's down state
       and repeat count, run KeyEvent(k,false) keys in down state, which
       will already clear those states for them. This also helps getting
       rid of several actions bound to keypad keys.
