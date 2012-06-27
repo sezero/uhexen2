@@ -32,7 +32,6 @@
 
 const char	*pr_file_p;
 int		pr_source_line;
-static const char	*pr_line_start;	// start of current source line
 
 static int	pr_bracelevel;
 
@@ -47,25 +46,25 @@ int		pr_error_count;
 
 static const char	*pr_punctuation[] =
 {
-		// longer symbols must be before
-		// a shorter partial match
-		"&&",		"||",
-		"<=",		">=",
-		"==",		"!=",
-		";",		",",
-		"!",		"*=",
-		"*",		"/=",
-		"/",		"(", ")",
-		"-=" ,		"->",
-		"-",		"+=",
-		"+",		"=",
-		"[", "]",	"{", "}",
-		"...",		".",
-		"<",		">" ,
-		"#" ,		"&" ,
-		"|=",		"|" ,
-		"^=",		":",
-		NULL
+	// longer symbols must be before
+	// a shorter partial match
+	"&&",		"||",
+	"<=",		">=",
+	"==",		"!=",
+	";",		",",
+	"!",		"*=",
+	"*",		"/=",
+	"/",		"(", ")",
+	"-=",		"->",
+	"-",		"+=",
+	"+",		"=",
+	"[", "]",	"{", "}",
+	"...",		".",
+	"<",		">",
+	"#",		"&",
+	"|=",		"|",
+	"^=",		":",
+	NULL
 };
 
 // simple types.  function types are dynamically allocated
@@ -104,23 +103,6 @@ static void PR_LexWhitespace (void);
 
 /*
 ==============
-PR_PrintNextLine
-==============
-*/
-#if 0	/* not used */
-static void PR_PrintNextLine (void)
-{
-	const char	*t;
-
-	printf ("%3i:", pr_source_line);
-	for (t = pr_line_start ; *t && *t != '\n' ; t++)
-		printf ("%c", *t);
-	printf ("\n");
-}
-#endif
-
-/*
-==============
 PR_NewLine
 
 Call at start of file and when *pr_file_p == '\n'
@@ -139,10 +121,7 @@ void PR_NewLine (void)
 		m = false;
 
 	pr_source_line++;
-	pr_line_start = pr_file_p;
 
-//	if (pr_dumpasm)
-//		PR_PrintNextLine ();
 	if (m)
 		pr_file_p--;
 }
@@ -231,7 +210,7 @@ static void PR_LexVector (void)
 	pr_file_p++;
 	pr_token_type = tt_immediate;
 	pr_immediate_type = &type_vector;
-	for (i = 0 ; i < 3 ; i++)
+	for (i = 0; i < 3; i++)
 	{
 		pr_immediate.vector[i] = PR_LexNumber ();
 		PR_LexWhitespace ();
@@ -261,7 +240,7 @@ static void PR_LexName (void)
 		len++;
 		pr_file_p++;
 		c = *pr_file_p;
-	} while ( (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || c == '_' 
+	} while ((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || c == '_'
 						|| (c >= '0' && c <= '9'));
 	pr_token[len] = 0;
 	pr_token_type = tt_name;
@@ -280,7 +259,7 @@ static void PR_LexPunctuation (void)
 
 	pr_token_type = tt_punct;
 
-	for (i = 0 ; (p = pr_punctuation[i]) != NULL ; i++)
+	for (i = 0; (p = pr_punctuation[i]) != NULL; i++)
 	{
 		len = strlen(p);
 		if (!strncmp(p, pr_file_p, len) )
@@ -310,7 +289,7 @@ static void PR_LexWhitespace (void)
 	while (1)
 	{
 	// skip whitespace
-		while ( (c = *pr_file_p) <= ' ')
+		while ((c = *pr_file_p) <= ' ')
 		{
 			if (c == '\n')
 				PR_NewLine ();
@@ -365,7 +344,7 @@ static void PR_FindMacro (void)
 {
 	int		i;
 
-	for (i = 0 ; i < pr_nummacros ; i++)
+	for (i = 0; i < pr_nummacros; i++)
 	{
 		if (!strcmp (pr_token, pr_framemacros[i]))
 		{
@@ -386,7 +365,7 @@ static qboolean PR_SimpleGetToken (void)
 	int		i;
 
 // skip whitespace
-	while ( (c = *pr_file_p) <= ' ')
+	while ((c = *pr_file_p) <= ' ')
 	{
 		if (c == '\n' || c == 0)
 			return false;
@@ -394,7 +373,7 @@ static qboolean PR_SimpleGetToken (void)
 	}
 
 	i = 0;
-	while ( (c = *pr_file_p) > ' ' && c != ',' && c != ';')
+	while ((c = *pr_file_p) > ' ' && c != ',' && c != ';')
 	{
 		pr_token[i] = c;
 		i++;
@@ -433,12 +412,12 @@ static void PR_LexGrab (void)
 		PR_Lex ();
 	}
 // ignore other known $commands
-	else if (!strcmp (pr_token, "cd")
-			|| !strcmp (pr_token, "origin")
-			|| !strcmp (pr_token, "base")
-			|| !strcmp (pr_token, "flags")
-			|| !strcmp (pr_token, "scale")
-			|| !strcmp (pr_token, "skin") )
+	else if (!strcmp (pr_token, "cd") ||
+		 !strcmp (pr_token, "origin") ||
+		 !strcmp (pr_token, "base") ||
+		 !strcmp (pr_token, "flags") ||
+		 !strcmp (pr_token, "scale") ||
+		 !strcmp (pr_token, "skin"))
 	{	// skip to end of line
 		while (PR_SimpleGetToken ())
 			;
@@ -446,7 +425,9 @@ static void PR_LexGrab (void)
 	}
 // look for a frame name macro
 	else
+	{
 		PR_FindMacro ();
+	}
 }
 
 //============================================================================
@@ -496,7 +477,7 @@ void PR_Lex (void)
 
 // if the first character is a valid identifier, parse until a non-id
 // character is reached
-	if ( (c >= '0' && c <= '9') || ( c == '-' && pr_file_p[1] >= '0' && pr_file_p[1] <= '9') )
+	if ((c >= '0' && c <= '9') || ( c == '-' && pr_file_p[1] >= '0' && pr_file_p[1] <= '9'))
 	{
 		pr_token_type = tt_immediate;
 		pr_immediate_type = &type_float;
@@ -504,7 +485,7 @@ void PR_Lex (void)
 		return;
 	}
 
-	if ( (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || c == '_' )
+	if ((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || c == '_' )
 	{
 		PR_LexName ();
 		return;
@@ -587,21 +568,25 @@ static type_t *PR_FindType (type_t *type)
 {
 	def_t	*def;
 	type_t	*check;
-	int		i;
+	int	i;
 
-	for (check = pr.types ; check ; check = check->next)
+	for (check = pr.types; check; check = check->next)
 	{
-		if (check->type != type->type
-				|| check->aux_type != type->aux_type
-				|| check->num_parms != type->num_parms)
+		if (check->type != type->type ||
+		    check->aux_type != type->aux_type ||
+		    check->num_parms != type->num_parms)
+		{
 			continue;
-
-		for (i = 0 ; i < type->num_parms ; i++)
+		}
+		for (i = 0; i < type->num_parms; i++)
+		{
 			if (check->parm_types[i] != type->parm_types[i])
 				break;
-
+		}
 		if (i == type->num_parms)
+		{
 			return check;
+		}
 	}
 
 // allocate a new one
@@ -658,17 +643,15 @@ type_t *PR_ParseType (void)
 		return PR_FindType (&newtype);
 	}
 
-	if (!strcmp (pr_token, "float") )
+	if (!strcmp (pr_token, "float"))
 		type = &type_float;
-	else if (!strcmp (pr_token, "vector") )
+	else if (!strcmp (pr_token, "vector"))
 		type = &type_vector;
-	else if (!strcmp (pr_token, "float") )
-		type = &type_float;
-	else if (!strcmp (pr_token, "entity") )
+	else if (!strcmp (pr_token, "entity"))
 		type = &type_entity;
-	else if (!strcmp (pr_token, "string") )
+	else if (!strcmp (pr_token, "string"))
 		type = &type_string;
-	else if (!strcmp (pr_token, "void") )
+	else if (!strcmp (pr_token, "void"))
 		type = &type_void;
 	else
 	{

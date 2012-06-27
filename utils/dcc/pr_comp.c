@@ -37,7 +37,6 @@ int		pr_edict_size;
 //========================================
 
 def_t		*pr_scope;		// the function being parsed, or NULL
-qboolean	pr_dumpasm;
 string_t	s_file;			// filename for function definition
 
 int		locals_end;		// for tracking local variables vs temps
@@ -238,7 +237,7 @@ static def_t *PR_ParseImmediate (void)
 	def_t	*cn;
 
 	// check for a constant with the same value
-	for (cn = pr.def_head.next ; cn ; cn = cn->next)
+	for (cn = pr.def_head.next; cn; cn = cn->next)
 	{
 		if (!cn->initialized)
 			continue;
@@ -246,7 +245,7 @@ static def_t *PR_ParseImmediate (void)
 			continue;
 		if (pr_immediate_type == &type_string)
 		{
-			if (!strcmp(G_STRING(cn->ofs), pr_immediate_string) )
+			if (!strcmp(G_STRING(cn->ofs), pr_immediate_string))
 			{
 				PR_Lex ();
 				return cn;
@@ -262,9 +261,9 @@ static def_t *PR_ParseImmediate (void)
 		}
 		else if	(pr_immediate_type == &type_vector)
 		{
-			if ( ( G_FLOAT(cn->ofs) == pr_immediate.vector[0] )
-				&& ( G_FLOAT(cn->ofs+1) == pr_immediate.vector[1] )
-				&& ( G_FLOAT(cn->ofs+2) == pr_immediate.vector[2] ) )
+			if ((G_FLOAT(cn->ofs) == pr_immediate.vector[0]) &&
+			    (G_FLOAT(cn->ofs+1) == pr_immediate.vector[1]) &&
+			    (G_FLOAT(cn->ofs+2) == pr_immediate.vector[2]))
 			{
 				PR_Lex ();
 				return cn;
@@ -311,7 +310,7 @@ static void PrecacheSound (def_t *e, int ch)
 	if (!e->ofs)
 		return;
 	n = G_STRING(e->ofs);
-	for (i = 0 ; i < numsounds ; i++)
+	for (i = 0; i < numsounds; i++)
 	{
 		if (!strcmp(n, precache_sounds[i]))
 			return;
@@ -334,7 +333,7 @@ static void PrecacheModel (def_t *e, int ch)
 	if (!e->ofs)
 		return;
 	n = G_STRING(e->ofs);
-	for (i = 0 ; i < nummodels ; i++)
+	for (i = 0; i < nummodels; i++)
 		if (!strcmp(n, precache_models[i]))
 			return;
 	if (nummodels == MAX_MODELS)
@@ -355,7 +354,7 @@ static void PrecacheFile (def_t *e, int ch)
 	if (!e->ofs)
 		return;
 	n = G_STRING(e->ofs);
-	for (i = 0 ; i < numfiles ; i++)
+	for (i = 0; i < numfiles; i++)
 	{
 		if (!strcmp(n, precache_files[i]))
 			return;
@@ -407,7 +406,7 @@ static def_t *PR_ParseFunctionCall (def_t *func)
 					PrecacheFile (e, func->name[13]);
 			}
 
-			if (t->num_parms != -1 && ( e->type != t->parm_types[arg] ) )
+			if (t->num_parms != -1 && (e->type != t->parm_types[arg]))
 				PR_ParseError ("type mismatch on parm %i", arg);
 		// a vector copy will copy everything
 			def_parms[arg].type = t->parm_types[arg];
@@ -583,17 +582,17 @@ static def_t *PR_Expression (int priority)
 
 	if (priority == 0)
 		return PR_Term ();
-	if (priority == 1 && PR_Check ("random") )
+	if (priority == 1 && PR_Check ("random"))
 		return PR_ParseRandom();
 
 	e = PR_Expression (priority-1);
 
 	while (1)
 	{
-		if (priority == 1 && PR_Check ("(") )
+		if (priority == 1 && PR_Check ("("))
 			return PR_ParseFunctionCall (e);
 
-		for (op = pr_opcodes ; op->name ; op++)
+		for (op = pr_opcodes; op->name; op++)
 		{
 			if (op->priority != priority)
 				continue;
@@ -602,7 +601,7 @@ static def_t *PR_Expression (int priority)
 			if ( op->right_associative )
 			{
 			// if last statement is an indirect, change it to an address of
-				if ( (unsigned int)(statements[numstatements-1].op - OP_LOAD_F) < 6 )
+				if ((unsigned int)(statements[numstatements-1].op - OP_LOAD_F) < 6)
 				{
 				//	printf("op was %s %s %d \n", pr_opcodes[statements[numstatements-1].op].opname, pr_opcodes[statements[numstatements-1].op].name, statements[numstatements-1].op);
 				//	getche();
@@ -614,7 +613,7 @@ static def_t *PR_Expression (int priority)
 			}
 			else
 			{
-				if ( ((op-pr_opcodes) >= 92) && ((op-pr_opcodes) <= 94))
+				if (((op - pr_opcodes) >= 92) && ((op - pr_opcodes) <= 94))
 				{
 					e2 = PR_Expression (priority);
 				//	printf("finding e2 %s %dright assoc %d\n", e2 ? e2->name : "???", e2 ? e2->type->type : -1, priority);
@@ -623,7 +622,7 @@ static def_t *PR_Expression (int priority)
 					def_ret.type = e->type;
 					return &def_ret;
 				}
-				else if ( ((op-pr_opcodes) >= 95) && ((op-pr_opcodes) <= 97))
+				else if (((op - pr_opcodes) >= 95) && ((op - pr_opcodes) <= 97))
 				{
 					e2 = PR_Expression (priority);
 				//	printf("finding e2 %s %dright assoc %d\n", e2 ? e2->name: "???", e2 ? e2->type->type : -1, priority);
@@ -650,17 +649,20 @@ static def_t *PR_Expression (int priority)
 				type_c = ev_void;
 
 			oldop = op;
-			while (type_a != op->type_a->type->type
-				|| type_b != op->type_b->type->type
-				|| (type_c != ev_void && type_c != op->type_c->type->type) )
+			while ( type_a != op->type_a->type->type ||
+				type_b != op->type_b->type->type ||
+				(type_c != ev_void && type_c != op->type_c->type->type))
 			{
 				op++;
 				if (!op->name || strcmp (op->name , oldop->name))
 				{
 					op--;
-					printf("op : %s(%ld) a: %s b: %s\n", op->name, (long)(op-pr_opcodes), e->name, e2->name);
-					printf("a: %d %d b: %d %d c: %d %d\n", type_a, op->type_a->type->type,
-							type_b, op->type_b->type->type, type_c, op->type_c->type->type);
+					printf("op : %s(%ld) a: %s b: %s\n",
+						op->name, (long)(op - pr_opcodes), e->name, e2->name);
+					printf("a: %d %d b: %d %d c: %d %d\n",
+						type_a, op->type_a->type->type,
+						type_b, op->type_b->type->type,
+						type_c, op->type_c->type->type);
 					PR_ParseError ("type mismatch for %s here", oldop->name);
 				}
 			}
@@ -924,7 +926,7 @@ static function_t *PR_ParseImmediateStatements (type_t *type)
 //
 // define the parms
 //
-	for (i = 0 ; i < type->num_parms ; i++)
+	for (i = 0; i < type->num_parms; i++)
 	{
 		defs[i] = PR_GetDef (type->parm_types[i], pr_parm_names[i], pr_scope, true);
 		f->parm_ofs[i] = defs[i]->ofs;
@@ -969,9 +971,9 @@ def_t *PR_GetDef (type_t *type, const char *name, def_t *scope, qboolean allocat
 
 	// see if the name is already in use
 	old = &pr.search;
-	for (def = *old ; def ; old = &def->search_next, def = *old)
+	for (def = *old; def; old = &def->search_next, def = *old)
 	{
-		if (!strcmp(def->name,name) )
+		if (!strcmp(def->name,name))
 		{
 			if (def->scope && def->scope != scope)
 				continue;	// in a different function
@@ -1047,9 +1049,6 @@ def_t *PR_GetDef (type_t *type, const char *name, def_t *scope, qboolean allocat
 			pr.size_fields += type_size[type->aux_type->type];
 	}
 
-//	if (pr_dumpasm)
-//		PR_PrintOfs (def->ofs);
-
 	return def;
 }
 
@@ -1064,17 +1063,12 @@ static void PR_InitArray (def_t *scope,int size)
 		if (pr_immediate_type->type != scope->type->type)
 			PR_ParseError ("Type mismatch on redeclaration of %s", scope->name);
 		memcpy (pr_globals + scope->ofs + (i*type_size[pr_immediate_type->type]), &pr_immediate, 4*type_size[pr_immediate_type->type]);
-/*		if (pr_immediate_type->type == ev_float)
-		{
+		/*
+		if (pr_immediate_type->type == ev_float)
 			printf("%s[%d] = %f\n", scope->name, i, pr_immediate._float);
-		//	getche();
-		}
 		if (pr_immediate_type->type == ev_vector)
-		{
 			printf("%s[%d] = '%f %f %f'\n", scope->name, i, pr_immediate.vector[0], pr_immediate.vector[1], pr_immediate.vector[2]);
-		//	getche();
-		}
-*/
+		*/
 		if (!PR_Check(","))
 			break;
 		if (PR_Check("}"))
@@ -1091,7 +1085,7 @@ static def_t *PR_AllocateArray (type_t *type, const char *name, def_t *scope, qb
 
 	// see if the name is already in use
 	old = &pr.search;
-	for (def = *old ; def ; old = &def->search_next, def = *old)
+	for (def = *old; def; old = &def->search_next, def = *old)
 	{
 		if (!strcmp(def->name, name))
 		{
@@ -1172,9 +1166,6 @@ static def_t *PR_AllocateArray (type_t *type, const char *name, def_t *scope, qb
 			pr.size_fields += size*type_size[type->aux_type->type];
 	}
 
-//	if (pr_dumpasm)
-//		PR_PrintOfs (def->ofs);
-
 	return def;
 }
 
@@ -1198,13 +1189,13 @@ static void PR_ParseDefs (void)
 
 	type = PR_ParseType ();
 
-	if (pr_scope && (type->type == ev_field || type->type == ev_function) )
+	if (pr_scope && (type->type == ev_field || type->type == ev_function))
 		PR_ParseError ("Fields and functions must be global");
 
 	do
 	{
 		name = PR_ParseName ();
-		if ( PR_Check ("alias") )
+		if (PR_Check ("alias"))
 		{
 			def = PR_GetDef (type, name, pr_scope, true);
 			numpr_globals--;
@@ -1243,7 +1234,7 @@ static void PR_ParseDefs (void)
 			def = PR_GetDef (type, name, pr_scope, true);
 
 		// check for an initialization
-		if ( PR_Check ("=") )
+		if (PR_Check ("="))
 		{
 			if (def->initialized)
 				PR_ParseError ("%s redeclared", name);
@@ -1257,8 +1248,6 @@ static void PR_ParseDefs (void)
 				def->initialized = 1;
 				G_FUNCTION(def->ofs) = numfunctions;
 				f->def = def;
-//				if (pr_dumpasm)
-//					PR_PrintFunction (def);
 
 			// fill in the dfunction
 				df = &functions[numfunctions];
@@ -1272,7 +1261,7 @@ static void PR_ParseDefs (void)
 				df->numparms =  f->def->type->num_parms;
 				df->locals = locals_end - locals_start;
 				df->parm_start = locals_start;
-				for (i = 0 ; i < df->numparms ; i++)
+				for (i = 0; i < df->numparms; i++)
 					df->parm_size[i] = type_size[f->def->type->parm_types[i]->type];
 
 				continue;

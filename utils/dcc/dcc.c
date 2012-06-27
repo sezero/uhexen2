@@ -36,14 +36,15 @@
 
 // MACROS ------------------------------------------------------------------
 
-#define	MAX_DEC_FILES	1024
+#define	MAX_DEC_FILES	512
+
+#define	IMMEDIATE_CLR	0
+#define	IMMEDIATE_SET	1
+#define	IMMEDIATE_GET	2
 
 // TYPES -------------------------------------------------------------------
 
 // EXTERNAL FUNCTION PROTOTYPES --------------------------------------------
-
-extern const char *PR_String (const char *string);
-extern def_t	*PR_DefForFieldOfs (gofs_t ofs);
 
 // PRIVATE FUNCTION PROTOTYPES ---------------------------------------------
 
@@ -55,7 +56,7 @@ extern def_t	*PR_DefForFieldOfs (gofs_t ofs);
  * argument to dstatement_t->a, b or c values, therefore you must not do
  * that casting for that case.
  */
-static char	*Make_Immediate (gofs_t ofs, const char *linestr, int mode);
+static char	*Make_Immediate (int mode, gofs_t ofs, const char *linestr);
 static void	PR_Indent (void);
 static void	PR_FunctionHeader (dfunction_t *df);
 static void	PR_Print (const char *s,...) __attribute__((__format__(__printf__,1,2)));
@@ -69,23 +70,27 @@ static const char *GetFieldFunctionHeader (const char *s_name);
 static void	DccStatement (dstatement_t *s);
 static void	AddProgramFlowInfo (dfunction_t *df);
 static void	PR_Locals (dfunction_t *df);
+static const char * PR_ValueString (etype_t type, void *val);
 static const char *DCC_ValueString (etype_t type, void *val);
+		/* same as PR_ValueString(), differing
+		 * in float/vector print precision.  */
 static unsigned short	GetReturnType (int func);
 static unsigned short	BackBuildReturnType (dfunction_t *df, dstatement_t *dsf, gofs_t ofs);
 static unsigned short	GetType (gofs_t ofs);
 static unsigned short	GetLastFunctionReturn (dfunction_t *df, dstatement_t *ds);
 
+static void	Init_Dcc (void);
+static void	DEC_ReadData (const char *srcfile);
+static void	Dcc_Functions (void);
+static void	FindBuiltinParameters (int func);
+static void	DccFunctionOP (unsigned short op);
+static void	PR_PrintFunction (const char *name);
+static def_t	*PR_DefForFieldOfs (gofs_t ofs);
+static const char *PR_String (const char *string);
+
 // EXTERNAL DATA DECLARATIONS ----------------------------------------------
 
-extern ddef_t		globals[MAX_GLOBALS];
-extern int			numglobaldefs;
-
-extern ddef_t		fields[MAX_FIELDS];
-extern int			numfielddefs;
-
 // PUBLIC DATA DEFINITIONS -------------------------------------------------
-
-int		FILE_NUM_FOR_NAME = 0;
 
 // PRIVATE DATA DEFINITIONS ------------------------------------------------
 
@@ -101,16 +106,27 @@ static const char *type_names[8] =
 	"ev_pointer"
 };
 
-static FILE	*PR_FILE;
-static char	*temp_val[MAX_REGS];
-static char	*func_headers[MAX_FUNCTIONS];
+static dprograms_t	*progs;
+static dfunction_t	*pr_functions;
+static ddef_t		*pr_globaldefs;
+static ddef_t		*pr_fielddefs;
+static dstatement_t	*pr_statements;
+static char		*pr_strings;
+static int		progs_length;
 
-static int	regs_used = 0;
+static dfunction_t	*cfunc;
+
+static qboolean		FILE_NUM_FOR_NAME;
+static qboolean		pr_dumpasm;
+static qboolean		printassign;
+
+static FILE	*PR_FILE;
+static char	**func_headers;
+static char	**temp_val;
+
 static int	lindent;
-static char	*DEC_FilesSeen[MAX_DEC_FILES];
-static int	DEC_FileCtr = 0;
-static qboolean	printassign = false;
-static dfunction_t	*cfunc = NULL;
+static char	**DEC_FilesSeen;
+static int	DEC_FileCtr;
 
 /* avoid infinite recursion in GetFieldFunctionHeader() which has
  * thankfully only one caller, PR_LocalGlobals(). this solution
@@ -126,9 +142,9 @@ static const char *PR_PrintStringAtOfs (gofs_t ofs, def_t* typ)
 	ddef_t	*def = NULL;
 	ddef_t	*d = NULL;
 
-	for (i = 0; i < numglobaldefs; i++)
+	for (i = 0; i < progs->numglobaldefs; i++)
 	{
-		d = &globals[i];
+		d = &pr_globaldefs[i];
 		if (d->ofs == ofs)
 		{
 			def = d;
@@ -137,19 +153,19 @@ static const char *PR_PrintStringAtOfs (gofs_t ofs, def_t* typ)
 	}
 
 	if (!def)
-		return Make_Immediate(ofs, NULL, 2);
+		return Make_Immediate(IMMEDIATE_GET, ofs, NULL);
 
-	if (!strcmp(strings + def->s_name, IMMEDIATE_NAME))
+	if (!strcmp(pr_strings + def->s_name, IMMEDIATE_NAME))
 		return DCC_ValueString ((etype_t)def->type, &pr_globals[ofs]);
 
 	if (typ)
 	{
-	//	printf("type %s %d\n", strings + def->s_name, typ->type->type);
+	//	printf("type %s %d\n", pr_strings + def->s_name, typ->type->type);
 		if (typ->type->type == ev_float && d->type == ev_vector)
-			def = &globals[i + 1];
+			def = &pr_globaldefs[i + 1];
 	}
-//	printf("found %s\n", strings + def->s_name);
-	return (strings + def->s_name);
+//	printf("found %s\n", pr_strings + def->s_name);
+	return (pr_strings + def->s_name);
 }
 
 static const char *PR_PrintGlobal (gofs_t ofs, def_t* typ)
@@ -158,9 +174,9 @@ static const char *PR_PrintGlobal (gofs_t ofs, def_t* typ)
 	ddef_t	*def = NULL;
 	ddef_t	*d = NULL;
 
-	for (i = 0; i < numglobaldefs; i++)
+	for (i = 0; i < progs->numglobaldefs; i++)
 	{
-		d = &globals[i];
+		d = &pr_globaldefs[i];
 		if (d->ofs == ofs)
 		{
 			def = d;
@@ -171,15 +187,15 @@ static const char *PR_PrintGlobal (gofs_t ofs, def_t* typ)
 	if (!def)
 		return NULL;
 
-	if (!strcmp(strings + def->s_name, IMMEDIATE_NAME))
+	if (!strcmp(pr_strings + def->s_name, IMMEDIATE_NAME))
 		return DCC_ValueString ((etype_t)def->type, &pr_globals[ofs]);
 
 	if (typ)
 	{
 		if (typ->type->type == ev_float && d->type == ev_vector)
-			def = &globals[i + 1];
+			def = &pr_globaldefs[i + 1];
 	}
-	return (strings + def->s_name);
+	return (pr_strings + def->s_name);
 }
 
 
@@ -245,7 +261,7 @@ static void DccStatement (dstatement_t *s)
 	else if (s->op == OP_STATE)
 	{
 	}
-	else if (s->op == OP_RETURN )
+	else if (s->op == OP_RETURN)
 	{
 		PR_Indent();
 		PR_Print("return ");
@@ -260,7 +276,7 @@ static void DccStatement (dstatement_t *s)
 	}
 	else if ((OP_MUL_F <= s->op && s->op <= OP_SUB_V) ||
 		 (OP_EQ_F  <= s->op && s->op <= OP_GT   ) ||
-		 (OP_AND   <= s->op && s->op <= OP_BITOR) )
+		 (OP_AND   <= s->op && s->op <= OP_BITOR))
 	{
 		arg1 = PR_PrintStringAtOfs((unsigned short)s->a, typ1);
 		if (arg1)
@@ -279,7 +295,7 @@ static void DccStatement (dstatement_t *s)
 		else
 		{
 			sprintf(dsline, "(%s %s %s)", a1, pr_opcodes[s->op].name, a2);
-			Make_Immediate((unsigned short)s->c, dsline, 1);
+			Make_Immediate(IMMEDIATE_SET, (unsigned short)s->c, dsline);
 		}
 	}
 	else if (OP_LOAD_F <= s->op && s->op <= OP_ADDRESS)
@@ -302,7 +318,7 @@ static void DccStatement (dstatement_t *s)
 		{
 			sprintf(dsline, "%s.%s", a1, a2);
 		//	printf("%s.%s making immediate at %d\n",a1,a2,s->c);
-			Make_Immediate((unsigned short)s->c, dsline, 1);
+			Make_Immediate(IMMEDIATE_SET, (unsigned short)s->c, dsline);
 		}
 	}
 	else if ((OP_STORE_F <= s->op) && (s->op <= OP_STORE_FNC))
@@ -311,13 +327,14 @@ static void DccStatement (dstatement_t *s)
 		if (arg1)
 			strcpy(a1,arg1);
 
-/*		par = DEC_GetParameter ((unsigned short)s->a);
+		/*
+		par = DEC_GetParameter ((unsigned short)s->a);
 		if (par && s->op == OP_STORE_F)
 		{
 			if (par->type == ev_vector)
 				strcat(a1, "_x");
 		}
-*/
+		*/
 		arg3 = PR_PrintGlobal((unsigned short)s->b, typ2);
 		if (arg3)
 		{
@@ -327,7 +344,7 @@ static void DccStatement (dstatement_t *s)
 		else
 		{
 			sprintf(dsline,"%s", a1);
-			Make_Immediate((unsigned short)s->b, dsline, 1);
+			Make_Immediate(IMMEDIATE_SET, (unsigned short)s->b, dsline);
 		}
 	}
 	else if ((OP_STOREP_F <= s->op) && (s->op <= OP_STOREP_FNC))
@@ -352,7 +369,7 @@ static void DccStatement (dstatement_t *s)
 	{
 		arg1 = PR_PrintStringAtOfs((unsigned short)s->a, typ1);
 		sprintf(dsline, "!%s", arg1);
-		Make_Immediate((unsigned short)s->c, dsline, 1);
+		Make_Immediate(IMMEDIATE_SET, (unsigned short)s->c, dsline);
 	}
 	else if ((OP_CALL0 <= s->op) && (s->op <= OP_CALL8))
 	{
@@ -366,8 +383,6 @@ static void DccStatement (dstatement_t *s)
 		arg2 = PR_PrintStringAtOfs((unsigned short)s->b, typ2);
 		if (arg2)
 			strcpy(a2, arg2);
-
-	//	PR_Print(" type3 %d\n", typ3->type->type);
 
 		arg3 = PR_PrintStringAtOfs((unsigned short)s->c, typ3);
 		sprintf(dsline, "%s (", a1);
@@ -389,7 +404,7 @@ static void DccStatement (dstatement_t *s)
 				if (len >= 2)
 				{
 					len -= 2;
-					if ( (strcmp(&arg3[len], "_x")) &&
+					if (strcmp(&arg3[len], "_x") &&
 						!(!strcmp(&arg3[len], "_y") ||
 						  !strcmp(&arg3[len], "_z") ||
 						  !strcmp(&arg3[len+1], ")")))
@@ -401,29 +416,14 @@ static void DccStatement (dstatement_t *s)
 		for (i = 2; i < nargs; i++)
 		{
 			strcat(dsline, ", ");
-			arg1 = temp_val[OFS_PARM0+(i*3)];
-			arg2 = Make_Immediate(OFS_PARM0+(i*3), NULL, 2);
+			arg2 = Make_Immediate(IMMEDIATE_GET, OFS_PARM0+(i*3), NULL);
 			if (!arg2)
 				continue;
 			strcat(dsline, arg2);
-		//	temp_val[OFS_PARM0+(i*3)] = NULL;
-/*
-#ifndef DONT_USE_DIRTY_TRICKS
-			if ( (!strcmp(funcname, "WriteCoord")) && (i == 1))
-			{
-				if ( (strcmp(&arg1[strlen(a1)-2], "_x")) &&
-					!(!strcmp(&a1[strlen(arg1)-2], "_y") ||
-					  !strcmp(&a1[strlen(arg1)-2], "_z")) )
-				    strcat(dsline, "_x");
-			}
-#endif
-*/
-		//	if (arg1)
-		//		free(arg1);
 		}
 
 		strcat(dsline, ")");
-		Make_Immediate(OFS_RETURN, dsline, 1);
+		Make_Immediate(IMMEDIATE_SET, OFS_RETURN, dsline);
 		j = 1;	/* print now */
 
 		for (i = 1; (s + i)->op; i++)
@@ -437,7 +437,7 @@ static void DccStatement (dstatement_t *s)
 
 			if ((s + i)->a == OFS_RETURN ||
 			    (s + i)->b == OFS_RETURN ||
-			    (s + i)->c == OFS_RETURN )
+			    (s + i)->c == OFS_RETURN)
 			{
 				j = 0;
 			//	printf("ofs_return is used before another call %d %d %d\n",
@@ -449,9 +449,7 @@ static void DccStatement (dstatement_t *s)
 			    ((s + i)->op % 100) <= OP_CALL8)
 			{
 			//	if (i == 1)
-			//	{
 			//		j = 0;
-			//	}
 			//	printf("another call %d  %d %d %d \n",
 			//		j, i, (s + i)->a, (s + i)->b);
 				break;
@@ -463,8 +461,6 @@ static void DccStatement (dstatement_t *s)
 			PR_Indent();
 			PR_Print("%s;\n", temp_val[OFS_RETURN]);
 		}
-
-	//	PR_Print("\n%s;\n", temp_val[OFS_RETURN]);
 	}
 	else if (s->op == OP_IF || s->op == OP_IFNOT)
 	{
@@ -585,7 +581,7 @@ static void DccStatement (dstatement_t *s)
 		PR_Print("%s %s %s;\n", arg2, pr_opcodes[s->op].name, a1);
 
 		if (s->c)
-			Make_Immediate((unsigned short)s->c, dsline, 1);
+			Make_Immediate(IMMEDIATE_SET, (unsigned short)s->c, dsline);
 	}
 	else if (s->op == 80 || s->op == 81)
 	{
@@ -606,7 +602,7 @@ static void DccStatement (dstatement_t *s)
 		else
 		{
 			sprintf(dsline, "(%s->%s)", a1, a2);
-			Make_Immediate((unsigned short)s->c, dsline, 1);
+			Make_Immediate(IMMEDIATE_SET, (unsigned short)s->c, dsline);
 		}
 	}
 	else if (s->op == 85)
@@ -632,7 +628,7 @@ static void DccStatement (dstatement_t *s)
 	else if (s->op == 92)
 	{
 		sprintf(dsline,"random()");
-		Make_Immediate(OFS_RETURN, dsline, 1);
+		Make_Immediate(IMMEDIATE_SET, OFS_RETURN, dsline);
 	}
 	else if (s->op == 93)
 	{
@@ -641,7 +637,7 @@ static void DccStatement (dstatement_t *s)
 			strcpy(a1, arg1);
 
 		sprintf(dsline, "random(%s)", a1);
-		Make_Immediate(OFS_RETURN, dsline, 1);
+		Make_Immediate(IMMEDIATE_SET, OFS_RETURN, dsline);
 	}
 	else if (s->op == 94)
 	{
@@ -651,12 +647,12 @@ static void DccStatement (dstatement_t *s)
 
 		arg2 = PR_PrintStringAtOfs((unsigned short)s->b, typ2);
 		sprintf(dsline, "random(%s,%s)", a1, arg2);
-		Make_Immediate(OFS_RETURN, dsline, 1);
+		Make_Immediate(IMMEDIATE_SET, OFS_RETURN, dsline);
 	}
 	else if (s->op == 95)
 	{
 		sprintf(dsline,"random( )");
-		Make_Immediate(OFS_RETURN, dsline, 1);
+		Make_Immediate(IMMEDIATE_SET, OFS_RETURN, dsline);
 	}
 	else if (s->op == 96)
 	{
@@ -665,7 +661,7 @@ static void DccStatement (dstatement_t *s)
 			strcpy(a1, arg1);
 
 		sprintf(dsline, "random(%s)", a1);
-		Make_Immediate(OFS_RETURN, dsline, 1);
+		Make_Immediate(IMMEDIATE_SET, OFS_RETURN, dsline);
 	}
 	else if (s->op == 97)
 	{
@@ -675,7 +671,7 @@ static void DccStatement (dstatement_t *s)
 
 		arg2 = PR_PrintStringAtOfs((unsigned short)s->b, typ2);
 		sprintf(dsline, "random(%s,%s)", a1, arg2);
-		Make_Immediate(OFS_RETURN, dsline, 1);
+		Make_Immediate(IMMEDIATE_SET, OFS_RETURN, dsline);
 	}
 	else
 	{
@@ -689,46 +685,42 @@ static void DccStatement (dstatement_t *s)
 	}
 }
 
-static char *Make_Immediate (gofs_t ofs, const char *linestr, int mode)
+static char *Make_Immediate (int mode, gofs_t ofs, const char *linestr)
 {
-	unsigned short	i;
-
-	if (mode == 0)
+	if (mode == IMMEDIATE_CLR)
 	{
-		for (i = 0; i < MAX_REGS; i++)
+		int	i;
+		for (i = 0; i < progs->numglobals; i++)
 		{
 			if (temp_val[i])
+			{
 				free(temp_val[i]);
-			temp_val[i] = NULL;
+				temp_val[i] = NULL;
+			}
 		}
 		return NULL;
 	}
 
-	i = ofs;
-	if (i >= MAX_REGS)
+	if (ofs >= progs->numglobals)
 	{
-		COM_Error ("%s: MAX_REGS reached (%d), max: %d,\n"
-			"currently in use: %d (%d %d %d %d)\n",
-			__thisfunc__, i, MAX_REGS, regs_used, i,
-			cfunc->parm_start, cfunc->locals, ofs);
+		/* this isn't supposed to happen, but DHCC doesn't know some OP codes, either */
+		printf ("%s: ofs %d is past numpr_globals %d (cfunc->parm_start: %d, cfunc->locals: %d)\n",
+				__thisfunc__, ofs, progs->numglobals, cfunc->parm_start, cfunc->locals);
+		return NULL;
 	}
 
-	if (mode == 1) /* write */
+	if (mode == IMMEDIATE_SET)
 	{
-		regs_used++;
-		if (temp_val[i])
-			free(temp_val[i]);
-		temp_val[i] = strdup(linestr);
-		if (temp_val[i] == NULL)
+		if (temp_val[ofs])
+			free(temp_val[ofs]);
+		temp_val[ofs] = strdup(linestr);
+		if (temp_val[ofs] == NULL)
 			COM_Error("%s: failed to create new string for %s\n", __thisfunc__, linestr);
-		return temp_val[i];
+		return temp_val[ofs];
 	}
 
-	if (mode == 2) /* read */
-	{
-		regs_used--;
-		return temp_val[i];
-	}
+	if (mode == IMMEDIATE_GET)
+		return temp_val[ofs];
 
 	return NULL;
 }
@@ -740,7 +732,7 @@ static void AddProgramFlowInfo (dfunction_t *df)
 	signed short	dom, tom;
 	dstatement_t	*k;
 
-	ds = statements + df->first_statement;
+	ds = pr_statements + df->first_statement;
 
 	while (1)
 	{
@@ -851,7 +843,7 @@ static void PR_Locals (dfunction_t *df)
 				continue;
 			}
 
-			if (!strcmp(IMMEDIATE_NAME, strings + par->s_name))
+			if (!strcmp(IMMEDIATE_NAME, pr_strings + par->s_name))
 				continue;
 
 			PR_Print("local ");
@@ -885,7 +877,7 @@ static void PR_Locals (dfunction_t *df)
 				break;
 			}
 
-			PR_Print(" %s", strings + par->s_name);
+			PR_Print(" %s", pr_strings + par->s_name);
 
 			if (par->type == ev_float || par->type == ev_vector)
 				PR_Print(" = %s", DCC_ValueString((etype_t)par->type, &pr_globals[par->ofs]));
@@ -903,18 +895,18 @@ static void PR_FunctionHeader (dfunction_t *df)
 	char	linetxt[512];
 	unsigned short	t1;
 
-	if (func_headers[df - functions])	/* already done */
+	if (func_headers[df - pr_functions])	/* already done */
 		return;
 
 	if (df->first_statement < 0)
 	{ /* builtin */
-		FindBuiltinParameters(df - functions);
+		FindBuiltinParameters(df - pr_functions);
 		return;
 	}
 
 	/* get return type */
 	linetxt[0] = '\0';
-	t1 = GetReturnType(df - functions);
+	t1 = GetReturnType(df - pr_functions);
 
 	switch (t1)
 	{
@@ -986,7 +978,7 @@ static void PR_FunctionHeader (dfunction_t *df)
 				break;
 			}
 
-			strcat(linetxt, strings + par->s_name);
+			strcat(linetxt, pr_strings + par->s_name);
 		}
 		else
 		{
@@ -1000,8 +992,8 @@ static void PR_FunctionHeader (dfunction_t *df)
 	}
 
 	strcat(linetxt, ")");
-	func_headers[df - functions] = strdup(linetxt);
-	if (func_headers[df - functions] == NULL)
+	func_headers[df - pr_functions] = strdup(linetxt);
+	if (func_headers[df - pr_functions] == NULL)
 		COM_Error ("%s: strdup failed.", __thisfunc__);
 }
 
@@ -1028,8 +1020,8 @@ static unsigned short GetReturnType (int func)
 	if (func == 0)
 		return ev_void;
 
-	df = functions + func;
-	ds = statements + df->first_statement;
+	df = pr_functions + func;
+	ds = pr_statements + df->first_statement;
 
 	if (df->first_statement < 0)
 	{
@@ -1053,7 +1045,7 @@ static unsigned short GetReturnType (int func)
 				if (ds->a == OFS_RETURN)
 				{
 					di = ds - 1;
-					while ((di - statements) >= df->first_statement)
+					while ((di - pr_statements) >= df->first_statement)
 					{	/* that stupid equal, what a bitch */
 						if (OP_CALL0 <= di->op && di->op <= OP_CALL8)
 						{
@@ -1077,14 +1069,14 @@ static unsigned short GetReturnType (int func)
 								break;
 							}
 						} /* end if call */
-						else if (92  <= di->op && di->op <= 94 )
+						else if (92  <= di->op && di->op <= 94)
 						{
 							if (j < 2)
 								rtype[j] = ev_float;
 							/* else: array out of bounds */
 							break;
 						}
-						else if (95  <= di->op && di->op <= 97 )
+						else if (95  <= di->op && di->op <= 97)
 						{
 							if (j < 2)
 								rtype[j] = ev_vector;
@@ -1230,10 +1222,10 @@ static ddef_t *PR_GetField (const char *name, ddef_t *dd)
 	int	i;
 	ddef_t	*d;
 
-	for (i = 1; i < numfielddefs; i++)
+	for (i = 1; i < progs->numfielddefs; i++)
 	{
-		d = &fields[i];
-		if (!strcmp(strings + d->s_name, name))
+		d = &pr_fielddefs[i];
+		if (!strcmp(pr_strings + d->s_name, name))
 		{
 		//	printf("%s %d %d\n", name, dd ? dd->ofs : 0, d ? d->ofs : 0);
 			return d;
@@ -1249,14 +1241,14 @@ static ddef_t *PR_FieldIsUnique (ddef_t *dd)
 	int	i;
 	ddef_t	*d;
 
-	for (i = 1; i < numfielddefs; i++)
+	for (i = 1; i < progs->numfielddefs; i++)
 	{
-		d = &fields[i];
+		d = &pr_fielddefs[i];
 		if (d->ofs == dd->ofs)
 		{
 			if (d->type == ev_vector && dd - 1 == d)
 				return dd;
-		//	printf("%s %d %d\n", dd ? strings + dd->s_name : "null", dd ? dd->ofs : 0, d ? d->ofs : 0);
+		//	printf("%s %d %d\n", dd ? pr_strings + dd->s_name : "null", dd ? dd->ofs : 0, d ? d->ofs : 0);
 			return d;
 		}
 	}
@@ -1265,7 +1257,7 @@ static ddef_t *PR_FieldIsUnique (ddef_t *dd)
 }
 
 
-void Dcc_Functions (void)
+static void Dcc_Functions (void)
 {
 	int		i;
 	dfunction_t	*df;
@@ -1276,15 +1268,15 @@ void Dcc_Functions (void)
 	if (!prgs)
 		COM_Error("unable to open progs.src!!!\n");
 
-	fprintf(prgs, "%s", "../progs.dat\n\n");
+	fprintf(prgs, "%s", "progs.dat\n\n");
 
-	for (i = 1; i < numfunctions; i++)
+	for (i = 1; i < progs->numfunctions; i++)
 	{
-		df = functions + i;
+		df = pr_functions + i;
 
 		if (FILE_NUM_FOR_NAME)
 			sprintf (fname, "%d.hc", df->s_file);
-		else	sprintf (fname, "%s", strings + df->s_file);
+		else	sprintf (fname, "%s", pr_strings + df->s_file);
 		/* unixify the path, */
 		p = fname;
 		while (*p)
@@ -1309,7 +1301,7 @@ void Dcc_Functions (void)
 			COM_Error("unable to open %s\n", fname);
 		}
 
-		PR_PrintFunction(strings + df->s_name);
+		PR_PrintFunction(pr_strings + df->s_name);
 		fclose(PR_FILE);
 		PR_FILE = stdout;
 	}
@@ -1325,12 +1317,12 @@ static int CalcArraySize (int j, int end)
 	if (j == end)
 		return 0;
 
-	for (j++ ; j < end; j++)
+	for (j++; j < end; j++)
 	{
 		par = DEC_GetParameter (j);
-		if (par && strcmp(strings + par->s_name, IMMEDIATE_NAME))
+		if (par && strcmp(pr_strings + par->s_name, IMMEDIATE_NAME))
 		{
-		//	printf("next is %s at %d\n", strings + par->s_name, par->ofs);
+		//	printf("next is %s at %d\n", pr_strings + par->s_name, par->ofs);
 			return par->ofs;
 		}
 	}
@@ -1418,7 +1410,7 @@ static void PR_LocalGlobals (void)
 		if (!par)
 			cnt++;
 
-		if (par/* && strcmp(strings + par->s_name, IMMEDIATE_NAME)*/)
+		if (par/* && strcmp(pr_strings + par->s_name, IMMEDIATE_NAME)*/)
 		{
 		//	printf("cnt is %d\n", cnt);
 			cnt = 0;
@@ -1427,49 +1419,48 @@ static void PR_LocalGlobals (void)
 			par->type &= ~DEF_SAVEGLOBAL;
 
 		//	printf("%s type: %d ofs: %d par2: %d bsize: %d\n",
-		//		  strings + par->s_name, par->type,
+		//		  pr_strings + par->s_name, par->type,
 		//		  par->ofs, par2 ? (par2->ofs-par->ofs) : -1,
 		//		  bsize-par->ofs);
 
 			if (par->type == ev_function)
 			{
-				if (strcmp(strings + par->s_name, IMMEDIATE_NAME) == 0)
+				if (strcmp(pr_strings + par->s_name, IMMEDIATE_NAME) == 0)
 					continue;
-				if (strcmp(strings + par->s_name, strings + cfunc->s_name) == 0)
+				if (strcmp(pr_strings + par->s_name, pr_strings + cfunc->s_name) == 0)
 					continue;
-				i = DEC_GetFunctionIdxByName(strings + par->s_name);
+				i = DEC_GetFunctionIdxByName(pr_strings + par->s_name);
 				/* check for i == 0 here ???? */
-				PR_FunctionHeader(functions + i);
-				PR_Print("%s%s;\n", func_headers[i],strings + (functions + i)->s_name);
+				PR_FunctionHeader(pr_functions + i);
+				PR_Print("%s%s;\n", func_headers[i],pr_strings + (pr_functions + i)->s_name);
 			}
 			else if (par->type != ev_pointer)
 			{
-				if (strcmp(strings + par->s_name, IMMEDIATE_NAME) == 0)
+				if (strcmp(pr_strings + par->s_name, IMMEDIATE_NAME) == 0)
 					continue;
 				if (par->type == ev_field)
 				{
-					ef = PR_GetField(strings + par->s_name, par);
+					ef = PR_GetField(pr_strings + par->s_name, par);
 					if (!ef)
-						COM_Error("Could not locate a field named \"%s\"", strings + par->s_name);
+						COM_Error("Could not locate a field named \"%s\"", pr_strings + par->s_name);
 					i = (ef->type & ~DEF_SAVEGLOBAL);
 					if (i == ev_vector)
 						j += 3;
 					if (i == ev_function)
 					{
-						arg2 = GetFieldFunctionHeader(strings + ef->s_name);
+						arg2 = GetFieldFunctionHeader(pr_strings + ef->s_name);
 						GFFH_depth = 0;
-					//	printf("function .%s %s;\n", arg2, strings + ef->s_name);
-						PR_Print(".%s %s;\n", arg2, strings + ef->s_name);
+					//	printf("function .%s %s;\n", arg2, pr_strings + ef->s_name);
+						PR_Print(".%s %s;\n", arg2, pr_strings + ef->s_name);
 					}
 					else
 					{
-					//	printf("variable %d .%s %s;\n", i, type_names[i], strings + ef->s_name);
+					//	printf("variable %d .%s %s;\n", i, type_names[i], pr_strings + ef->s_name);
 						par = PR_FieldIsUnique(ef);
 						if (par == ef)
-							PR_Print(".%s %s;\n", type_names[i], strings + ef->s_name);
+							PR_Print(".%s %s;\n", type_names[i], pr_strings + ef->s_name);
 						else
-						//	PR_Print(".%s %s;\n", type_names[i], strings + ef->s_name);
-							PR_Print(".%s %s alias %s;\n", type_names[i], strings + ef->s_name, strings + par->s_name);
+							PR_Print(".%s %s alias %s;\n", type_names[i], pr_strings + ef->s_name, pr_strings + par->s_name);
 					}
 				}
 				else
@@ -1488,25 +1479,25 @@ static void PR_LocalGlobals (void)
 						j += 2;
 					if (par->type == ev_entity || par->type == ev_void)
 					{
-						if (!strcmp(strings + par->s_name, "end_sys_fields"))
+						if (!strcmp(pr_strings + par->s_name, "end_sys_fields"))
 							printassign = true;
-						PR_Print("%s %s;\n", type_names[par->type], strings + par->s_name);
+						PR_Print("%s %s;\n", type_names[par->type], pr_strings + par->s_name);
 					}
 					else
 					{
 						if (pr_dumpasm  ||
 						    printassign ||
-						   !strcmp(strings + par->s_name, "string_null"))
+						   !strcmp(pr_strings + par->s_name, "string_null"))
 						{
 							if (bsize < 2)
-								PR_Print("%s %s   = ", type_names[par->type], strings + par->s_name);
+								PR_Print("%s %s   = ", type_names[par->type], pr_strings + par->s_name);
 							else
-								PR_Print("%s %s [%d]   = ", type_names[par->type], strings + par->s_name, bsize);
+								PR_Print("%s %s [%d]   = ", type_names[par->type], pr_strings + par->s_name, bsize);
 							PR_InitValues(par, bsize);
 						}
 						else
 						{
-							PR_Print("%s %s;\n", type_names[par->type], strings + par->s_name);
+							PR_Print("%s %s;\n", type_names[par->type], pr_strings + par->s_name);
 						}
 					}
 				}
@@ -1533,9 +1524,9 @@ static const char *GetFieldFunctionHeader (const char *s_name)
 		return "void  ()";
 	}
 
-	for (i = 1; i < numstatements; i++)
+	for (i = 1; i < progs->numstatements; i++)
 	{
-		d = statements + i;
+		d = pr_statements + i;
 
 		if (d->op == OP_ADDRESS)
 		{
@@ -1557,7 +1548,7 @@ static const char *GetFieldFunctionHeader (const char *s_name)
 							continue;
 						j = DEC_GetFunctionIdxByName(arg3);
 						/* check for j == 0 here ???? */
-						PR_FunctionHeader(functions + j);
+						PR_FunctionHeader(pr_functions + j);
 						if (strcmp("void  ()", func_headers[j]))
 							return func_headers[j];
 						/* if void (), continue checking just to be certain (ie: th_pain) */
@@ -1596,7 +1587,7 @@ static const char *GetFieldFunctionHeader (const char *s_name)
 }
 
 
-void FindBuiltinParameters (int func)
+static void FindBuiltinParameters (int func)
 {
 	int		i, j;
 	unsigned short	type[9];
@@ -1608,21 +1599,21 @@ void FindBuiltinParameters (int func)
 	if (func_headers[func])
 		return;
 
-	df = functions + func;
+	df = pr_functions + func;
 
-//	printf("%s %d\n", strings + df->s_name, df->numparms);
-	printf("looking for builtin %s...: ", strings+df->s_name);
+//	printf("%s %d\n", pr_strings + df->s_name, df->numparms);
+	printf("looking for builtin %s...: ", pr_strings + df->s_name);
 
-	for (i = 1; i < numfunctions; i++)
+	for (i = 1; i < progs->numfunctions; i++)
 	{
 		if (! (i & 0xf))
 			printf(".");	/* let'em know its working, not hanging */
 
-		j = (functions + i)->first_statement;
+		j = (pr_functions + i)->first_statement;
 		if (j < 0)
 			continue;
 
-		ds = statements + j;
+		ds = pr_statements + j;
 
 		while (ds && ds->op)
 		{
@@ -1632,10 +1623,10 @@ void FindBuiltinParameters (int func)
 
 				if (arg1)
 				{
-					if (!strcmp(strings + df->s_name, arg1))
+					if (!strcmp(pr_strings + df->s_name, arg1))
 					{
 						dsf = ds;
-						dft = functions + i;
+						dft = pr_functions + i;
 						printf("\nfound!!\ndetermining parameters\n");
 						break;
 					}
@@ -1644,7 +1635,7 @@ void FindBuiltinParameters (int func)
 
 			arg1 = NULL;
 			ds++;
-		//	ds = statements + (functions + i)->first_statement + j;
+		//	ds = pr_statements + (pr_functions + i)->first_statement + j;
 		}
 
 		if (dsf)
@@ -1735,7 +1726,7 @@ void FindBuiltinParameters (int func)
 		if (i > 8)	/* just in case.. */
 			COM_Error ("%s (%d): array out of bounds.", __thisfunc__, __LINE__);
 		type[i] = ev_void;
-		for (ds = dsf; ds - statements >= dft->first_statement; ds--)
+		for (ds = dsf; ds - pr_statements >= dft->first_statement; ds--)
 		{
 			if (ds->a == ((3 * i) + 4))
 			{
@@ -1876,7 +1867,7 @@ void FindBuiltinParameters (int func)
 	func_headers[func] = strdup(plist);
 	if (func_headers[func] == NULL)
 		COM_Error ("%s: strdup failed.", __thisfunc__);
-	printf("%s%s\nin %s in file %s\n", plist, sname, strings + dft->s_name, strings + dft->s_file);
+	printf("%s%s\nin %s in file %s\n", plist, sname, pr_strings + dft->s_name, pr_strings + dft->s_file);
 }
 
 
@@ -1888,7 +1879,7 @@ static unsigned short BackBuildReturnType (dfunction_t *df,dstatement_t *dsf, go
 
 //	printf("backbuilding...\n");
 
-	for (ds = dsf - 1; ds - statements >= df->first_statement; ds--)
+	for (ds = dsf - 1; ds - pr_statements >= df->first_statement; ds--)
 	{
 		if (ds->a == ofs)
 		{
@@ -1941,9 +1932,9 @@ static unsigned short GetType (gofs_t ofs)
 
 		if (par->type == ev_field)
 		{
-			ef = PR_GetField(strings + par->s_name, par);
+			ef = PR_GetField(pr_strings + par->s_name, par);
 			if (!ef)
-				COM_Error("Could not locate a field named \"%s\"", strings + par->s_name);
+				COM_Error("Could not locate a field named \"%s\"", pr_strings + par->s_name);
 			rtype = (ef->type | DEF_SAVEGLOBAL);
 		}
 		else
@@ -1956,24 +1947,24 @@ static unsigned short GetType (gofs_t ofs)
 }
 
 
-void DccFunctionOP (unsigned short op)
+static void DccFunctionOP (unsigned short op)
 {
 	int		i, j = 0;
 	dfunction_t	*df;
 	dstatement_t	*ds;
 
-	for (i = 1; i < numfunctions; i++)
+	for (i = 1; i < progs->numfunctions; i++)
 	{
-		df = functions + i;
+		df = pr_functions + i;
 
 		if (df->first_statement < 0)
 			continue;
 
-		for (ds = &statements[df->first_statement]; ds && ds->op; ds++)
+		for (ds = &pr_statements[df->first_statement]; ds && ds->op; ds++)
 		{
 			if (ds->op == op && j++)
 			{
-				PR_PrintFunction(strings + df->s_name);
+				PR_PrintFunction(pr_strings + df->s_name);
 				return;
 			}
 		}
@@ -1981,101 +1972,104 @@ void DccFunctionOP (unsigned short op)
 }
 
 
-void DEC_ReadData (const char *srcfile)
+static void DEC_ReadData (const char *srcfile)
 {
-	dprograms_t	progs;
-	FILE*		h;
-	int			i;
+	void		*p;
+	int		i;
 
-	h = SafeOpenRead (srcfile);
-	SafeRead (h, &progs, sizeof(progs));
+	progs_length = LoadFile (srcfile, &p);
+	progs = (dprograms_t *) p;
 
 	/* byte swap the header */
-	for (i = 0; i < (int)sizeof(progs)/4; i++)
-		((int *)&progs)[i] = LittleLong ( ((int *)&progs)[i] );
-
-	strofs = progs.numstrings;
-	numstatements = progs.numstatements;
-	numfunctions = progs.numfunctions;
-	numglobaldefs = progs.numglobaldefs;
-	numfielddefs = progs.numfielddefs;
-	numpr_globals = progs.numglobals;
+	for (i = 0; i < (int) sizeof(*progs) / 4; i++)
+		((int *)progs)[i] = LittleLong ( ((int *)progs)[i] );
 
 	printf ("read data from %s:\n", srcfile);
-	printf ("%10i bytes, version %i, crc: %i\n", (int) Q_filelength(h), progs.version, progs.crc);
-	printf ("%10i strofs\n", strofs);
-	printf ("%10i numstatements\n", numstatements);
-	printf ("%10i numfunctions\n", numfunctions);
-	printf ("%10i numglobaldefs\n", numglobaldefs);
-	printf ("%10i numfielddefs\n", numfielddefs);
-	printf ("%10i numpr_globals\n", numpr_globals);
+	printf ("%10i bytes, version %i, crc: %i\n", progs_length, progs->version, progs->crc);
+	printf ("%10i strofs\n", progs->numstrings);
+	printf ("%10i numstatements\n", progs->numstatements);
+	printf ("%10i numfunctions\n", progs->numfunctions);
+	printf ("%10i numglobaldefs\n", progs->numglobaldefs);
+	printf ("%10i numfielddefs\n", progs->numfielddefs);
+	printf ("%10i numpr_globals\n", progs->numglobals);
 	printf ("----------------------------------------\n");
 
-	fseek (h, progs.ofs_strings, SEEK_SET);
-	SafeRead (h, strings, strofs);
-
-	fseek (h, progs.ofs_statements, SEEK_SET);
-	SafeRead (h, statements, numstatements*sizeof(dstatement_t));
-
-	fseek (h, progs.ofs_functions, SEEK_SET);
-	SafeRead (h, functions, numfunctions*sizeof(dfunction_t));
-
-	fseek (h, progs.ofs_globaldefs, SEEK_SET);
-	SafeRead (h, globals, numglobaldefs*sizeof(ddef_t));
-
-	fseek (h, progs.ofs_fielddefs, SEEK_SET);
-	SafeRead (h, fields, numfielddefs*sizeof(ddef_t));
-
-	fseek (h, progs.ofs_globals, SEEK_SET);
-	SafeRead (h, pr_globals, numpr_globals*4);
-
-	fclose (h);
+	pr_functions = (dfunction_t *)((byte *)progs + progs->ofs_functions);
+	pr_globaldefs = (ddef_t *)((byte *)progs + progs->ofs_globaldefs);
+	pr_fielddefs = (ddef_t *)((byte *)progs + progs->ofs_fielddefs);
+	pr_statements = (dstatement_t *)((byte *)progs + progs->ofs_statements);
+	pr_globals = (float *)((byte *)progs + progs->ofs_globals);
+	pr_strings = (char *)progs + progs->ofs_strings;
 
 	/* byte swap the lumps */
-	for (i = 0; i < numstatements; i++)
+	for (i = 0; i < progs->numstatements; i++)
 	{
-		statements[i].op = LittleShort(statements[i].op);
-		statements[i].a = LittleShort(statements[i].a);
-		statements[i].b = LittleShort(statements[i].b);
-		statements[i].c = LittleShort(statements[i].c);
+		pr_statements[i].op = LittleShort(pr_statements[i].op);
+		pr_statements[i].a = LittleShort(pr_statements[i].a);
+		pr_statements[i].b = LittleShort(pr_statements[i].b);
+		pr_statements[i].c = LittleShort(pr_statements[i].c);
 	}
 
-	for (i = 0; i < numfunctions; i++)
+	for (i = 0; i < progs->numfunctions; i++)
 	{
-		functions[i].first_statement = LittleLong (functions[i].first_statement);
-		functions[i].parm_start = LittleLong (functions[i].parm_start);
-		functions[i].s_name = LittleLong (functions[i].s_name);
-		functions[i].s_file = LittleLong (functions[i].s_file);
-		functions[i].numparms = LittleLong (functions[i].numparms);
-		functions[i].locals = LittleLong (functions[i].locals);
+		pr_functions[i].first_statement = LittleLong (pr_functions[i].first_statement);
+		pr_functions[i].parm_start = LittleLong (pr_functions[i].parm_start);
+		pr_functions[i].s_name = LittleLong (pr_functions[i].s_name);
+		pr_functions[i].s_file = LittleLong (pr_functions[i].s_file);
+		pr_functions[i].numparms = LittleLong (pr_functions[i].numparms);
+		pr_functions[i].locals = LittleLong (pr_functions[i].locals);
 	}
 
-	for (i = 0; i < numglobaldefs; i++)
+	for (i = 0; i < progs->numglobaldefs; i++)
 	{
-		globals[i].type = LittleShort (globals[i].type);
-		globals[i].ofs = LittleShort (globals[i].ofs);
-		globals[i].s_name = LittleLong (globals[i].s_name);
+		pr_globaldefs[i].type = LittleShort (pr_globaldefs[i].type);
+		pr_globaldefs[i].ofs = LittleShort (pr_globaldefs[i].ofs);
+		pr_globaldefs[i].s_name = LittleLong (pr_globaldefs[i].s_name);
 	}
 
-	for (i = 0; i < numfielddefs; i++)
+	for (i = 0; i < progs->numfielddefs; i++)
 	{
-		fields[i].type = LittleShort (fields[i].type);
-	//	if (fields[i].type & DEF_SAVEGLOBAL)
+		pr_fielddefs[i].type = LittleShort (pr_fielddefs[i].type);
+	//	if (pr_fielddefs[i].type & DEF_SAVEGLOBAL)
 	//		COM_Error ("%s: pr_fielddefs[i].type & DEF_SAVEGLOBAL", __thisfunc__);
-		fields[i].ofs = LittleShort (fields[i].ofs);
-		fields[i].s_name = LittleLong (fields[i].s_name);
+		pr_fielddefs[i].ofs = LittleShort (pr_fielddefs[i].ofs);
+		pr_fielddefs[i].s_name = LittleLong (pr_fielddefs[i].s_name);
 	}
 
-	for (i = 0; i < numpr_globals; i++)
+	for (i = 0; i < progs->numglobals; i++)
 		((int *)pr_globals)[i] = LittleLong (((int *)pr_globals)[i]);
 }
 
 
-void Init_Dcc (void)
+static void Init_Dcc (void)
 {
+	if (CheckParm("-fix"))		/* fix mangled names? */
+		FILE_NUM_FOR_NAME = true;
+	else	FILE_NUM_FOR_NAME = false;
+
+	if (CheckParm("-dump"))
+		pr_dumpasm = true;
+	else	pr_dumpasm = false;
+
 	PR_FILE = stdout;
-	memset(func_headers, 0, MAX_FUNCTIONS * sizeof(char *));
-	memset(temp_val, 0, MAX_REGS * sizeof(char *));
+	cfunc = NULL;
+	printassign = false;
+	DEC_FileCtr = 0;
+
+	func_headers = (char **) malloc (progs->numfunctions * sizeof(char *));
+	if (func_headers == NULL)
+		COM_Error ("%s: malloc failed.", __thisfunc__);
+	memset(func_headers, 0, progs->numfunctions * sizeof(char *));
+
+	temp_val = (char **) malloc (progs->numglobals * sizeof(char *));
+	if (temp_val == NULL)
+		COM_Error ("%s: malloc failed.", __thisfunc__);
+	memset(temp_val, 0, progs->numglobals * sizeof(char *));
+
+	DEC_FilesSeen = (char **) malloc (MAX_DEC_FILES * sizeof(char *));
+	if (DEC_FilesSeen == NULL)
+		COM_Error ("%s: malloc failed.", __thisfunc__);
+	memset(DEC_FilesSeen, 0, MAX_DEC_FILES * sizeof(char *));
 }
 
 
@@ -2083,9 +2077,9 @@ static int DEC_GetFunctionIdxByName (const char *name)
 {
 	int	i;
 
-	for (i = 1; i < numfunctions; i++)
+	for (i = 1; i < progs->numfunctions; i++)
 	{
-		if (!strcmp (name, strings + functions[i].s_name))
+		if (!strcmp (name, pr_strings + pr_functions[i].s_name))
 			return i;
 	}
 
@@ -2100,9 +2094,9 @@ static ddef_t *DEC_GetParameter (gofs_t ofs)
 
 	def = NULL;
 
-	for (i = 0; i < numglobaldefs; i++)
+	for (i = 0; i < progs->numglobaldefs; i++)
 	{
-		def = &globals[i];
+		def = &pr_globaldefs[i];
 		if (def->ofs == ofs)
 			return def;
 	}
@@ -2115,9 +2109,6 @@ static int DEC_AlreadySeen (const char *fname)
 {
 	int		i;
 	char		*new1;
-
-//	if (DEC_FileCtr >= MAX_DEC_FILES)
-//		COM_Error("%s: DEC_FileCtr: %d", __thisfunc__, DEC_FileCtr);
 
 	for (i = 0; i < DEC_FileCtr; i++)
 	{
@@ -2144,20 +2135,117 @@ static void FixFunctionNames (void)
 	dfunction_t	*d;
 	char	s[128], *c;
 
-	for (i = 1; i < numfunctions; i++)
+	for (i = 1; i < progs->numfunctions; i++)
 	{
-		d = &functions[i];
-	//	printf ("%s : %s : %i %i (", strings + d->s_file, strings + d->s_name, d->first_statement, d->parm_start);
+		d = &pr_functions[i];
+	//	printf ("%s : %s : %i %i (", pr_strings + d->s_file, pr_strings + d->s_name, d->first_statement, d->parm_start);
 		s[0] = '\0';
-		j = strlen(strings + d->s_file) + 1;
+		j = strlen(pr_strings + d->s_file) + 1;
 		sprintf (s, "%d.qc", d->s_file);
-		c = strings;
+		c = pr_strings;
 		c += d->s_file;
 		sprintf (c, "%s", s);
 	}
 }
 #endif	/* end of unused */
 
+
+static const char *PR_String (const char *string)
+{
+	static char	buf[80];
+	char	*s;
+
+	s = buf;
+	*s++ = '"';
+	while (string && *string)
+	{
+		if (s == buf + sizeof(buf) - 2)
+			break;
+		if (*string == '\n')
+		{
+			*s++ = '\\';
+			*s++ = 'n';
+		}
+		else if (*string == '"')
+		{
+			*s++ = '\\';
+			*s++ = '"';
+		}
+		else
+			*s++ = *string;
+		string++;
+		if (s - buf > 60)
+		{
+			*s++ = '.';
+			*s++ = '.';
+			*s++ = '.';
+			break;
+		}
+	}
+	*s++ = '"';
+	*s++ = 0;
+	return buf;
+}
+
+static def_t *PR_DefForFieldOfs (gofs_t ofs)
+{
+	def_t	*d;
+
+	for (d = pr.def_head.next; d; d = d->next)
+	{
+		if (d->type->type != ev_field)
+			continue;
+		if (((int *)pr_globals)[d->ofs] == ofs)
+			return d;
+	}
+	COM_Error ("%s: couldn't find %i", __thisfunc__, ofs);
+	return NULL;
+}
+
+static const char *PR_ValueString (etype_t type, void *val)
+{
+	static char	line[256];
+	def_t		*def;
+	dfunction_t	*f;
+
+	switch (type)
+	{
+	case ev_string:
+		sprintf (line, "%s", PR_String(pr_strings + *(int *)val));
+		break;
+	case ev_entity:
+		sprintf (line, "entity %i", *(int *)val);
+		break;
+	case ev_function:
+		f = pr_functions + *(int *)val;
+		if (!f)
+			sprintf (line, "undefined function");
+		else
+			sprintf (line, "%s()", pr_strings + f->s_name);
+		break;
+	case ev_field:
+		def = PR_DefForFieldOfs ( *(int *)val );
+		sprintf (line, ".%s", def->name);
+		break;
+	case ev_void:
+		sprintf (line, "void");
+		break;
+	case ev_float:
+		sprintf (line, "%5.1f", *(float *)val);
+		break;
+	case ev_vector:
+		sprintf (line, "'%5.1f %5.1f %5.1f'", ((float *)val)[0], ((float *)val)[1], ((float *)val)[2]);
+		break;
+	case ev_pointer:
+		sprintf (line, "pointer");
+		break;
+	default:
+		sprintf (line, "bad type %i", type);
+		break;
+	}
+
+	return line;
+}
 
 static const char *DCC_ValueString (etype_t type, void *val)
 {
@@ -2168,16 +2256,16 @@ static const char *DCC_ValueString (etype_t type, void *val)
 	switch (type)
 	{
 	case ev_string:
-		sprintf (vsline, "%s", PR_String(strings + *(int *)val));
+		sprintf (vsline, "%s", PR_String(pr_strings + *(int *)val));
 		break;
 	case ev_entity:
 		sprintf (vsline, "entity %i", *(int *)val);
 		break;
 	case ev_function:
-		f = functions + *(int *)val;
+		f = pr_functions + *(int *)val;
 		if (!f)
 			sprintf (vsline, "undefined function");
-		else	sprintf (vsline, "%s()", strings + f->s_name);
+		else	sprintf (vsline, "%s()", pr_strings + f->s_name);
 		break;
 	case ev_field:
 		def = PR_DefForFieldOfs (*(int *)val);
@@ -2204,7 +2292,7 @@ static const char *DCC_ValueString (etype_t type, void *val)
 }
 
 
-void PR_PrintFunction (const char *name)
+static void PR_PrintFunction (const char *name)
 {
 	int		i;
 	dstatement_t	*ds;
@@ -2212,30 +2300,30 @@ void PR_PrintFunction (const char *name)
 	const char	*arg1, *arg2;
 	def_t		*typ1, *typ2;
 
-	for (i = 0; i < numfunctions; i++)
+	for (i = 0; i < progs->numfunctions; i++)
 	{
-		if (!strcmp (name, strings + functions[i].s_name))
+		if (!strcmp (name, pr_strings + pr_functions[i].s_name))
 			break;
 	}
 
-	if (i == numfunctions)
+	if (i == progs->numfunctions)
 		COM_Error ("No function names \"%s\"", name);
 
-	df = functions + i;
+	df = pr_functions + i;
 	cfunc = df;
 	printf("Statements for %s:\n", name);
-	ds = statements + df->first_statement;
-	Make_Immediate(0, NULL, 0);
+	ds = pr_statements + df->first_statement;
+	Make_Immediate(IMMEDIATE_CLR, 0, NULL);
 	PR_LocalGlobals();
 	PR_FunctionHeader(df);
 
 	if (df->first_statement < 0)
 	{
-		PR_Print("\n%s%s = #%d;\n", func_headers[df - functions], strings + df->s_name, -df->first_statement);
+		PR_Print("\n%s%s = #%d;\n", func_headers[df - pr_functions], pr_strings + df->s_name, -df->first_statement);
 		return;
 	}
 
-	PR_Print("\n%s%s = ", func_headers[df - functions], strings + df->s_name);
+	PR_Print("\n%s%s = ", func_headers[df - pr_functions], pr_strings + df->s_name);
 
 	if (ds->op == OP_STATE)
 	{
@@ -2272,7 +2360,7 @@ static unsigned short GetLastFunctionReturn (dfunction_t *df, dstatement_t *ds)
 
 	di = ds - 1;
 
-	while ((di - statements) >= df->first_statement)
+	while ((di - pr_statements) >= df->first_statement)
 	{	/* that stupid equal, what a bitch */
 		printf(" op %d a: %d b: %d c: %d\n", di->op, di->a, di->b, di->c);
 
@@ -2287,7 +2375,7 @@ static unsigned short GetLastFunctionReturn (dfunction_t *df, dstatement_t *ds)
 			if (i == 0)
 				break;
 
-			if (i != (df - functions))
+			if (i != (df - pr_functions))
 			{
 				i = GetReturnType(i);
 				printf("%s %d is found\n", arg1, i);
@@ -2311,5 +2399,65 @@ static unsigned short GetLastFunctionReturn (dfunction_t *df, dstatement_t *ds)
 	} /* end while ofs_return */
 
 	return ev_void;
+}
+
+
+int Dcc_main (int argc, char **argv)
+{
+	int		p;
+	double	start, stop;
+
+	start = COM_GetTime ();
+
+	DEC_ReadData ("progs.dat");
+
+	Init_Dcc ();
+
+	p = CheckParm("-bbb");
+	if (p)
+	{
+		/*
+		i= -999;
+		for (p = 0; p < progs->numstatements; ++p)
+		{
+			if ((pr_statements + p)->op > i)
+				i = (pr_statements + p)->op;
+		}
+		printf("largest op %d\n", i);
+		*/
+		FindBuiltinParameters(1);
+		return 0;
+	}
+
+	p = CheckParm("-ddd");
+	if (p)
+	{
+		for (++p; p < argc; ++p)
+		{
+			if (argv[p][0] == '-')
+				break;
+			DccFunctionOP (atoi(argv[p]));
+		}
+		return 0;
+	}
+
+	p = CheckParm("-asm");
+	if (p)
+	{
+		for (++p; p < argc; ++p)
+		{
+			if (argv[p][0] == '-')
+				break;
+			PR_PrintFunction(argv[p]);
+		}
+	}
+	else
+	{
+		Dcc_Functions ();
+		stop = COM_GetTime ();
+		printf("\n%d seconds elapsed.\n", (int)(stop - start));
+	}
+
+	return 0;
 }
 

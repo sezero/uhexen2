@@ -4,6 +4,16 @@ Development Progress	:
 ---------------------------
 
 2012-06-27 (SVN):
+    * utils, dcc: Isolated all decompiler stuff to dcc.c. Changed the
+      decompiler to not copy the progs data but use pointers to loaded
+      file instead. Changed the decompiler to not use static buffers but
+      dynamically allocate memory instead: fixes decompilation of rival
+      kingdoms progs. Changed the compiler-side MAX_STRINGS, MAX_GLOBALS
+      and MAX_STATEMENTS macros to hcc values. Removed the MAX_PARMS and
+      OFS_* macros from qcc.h which are already defined in pr_comp.h to
+      the same values.
+
+2012-06-27 (SVN):
     * utils, hcc: Minor cleanups.
     * updated version date stamp to 2012-06-27.
 

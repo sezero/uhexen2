@@ -29,9 +29,9 @@
 #include "arch_def.h"
 #include "cmdlib.h"
 #include "util_io.h"
+#include "crc.h"
 #include "qcc.h"
 #include "dcc.h"
-#include "crc.h"
 #include "q_endian.h"
 #include "byteordr.h"
 #include "filenames.h"
@@ -93,15 +93,15 @@ static void WriteFiles (void)
 		COM_Error ("Couldn't open %s", filename);
 
 	fprintf (f, "%i\n", numsounds);
-	for (i = 0 ; i < numsounds ; i++)
+	for (i = 0; i < numsounds; i++)
 		fprintf (f, "%i %s\n", precache_sounds_block[i], precache_sounds[i]);
 
 	fprintf (f, "%i\n", nummodels);
-	for (i = 0 ; i < nummodels ; i++)
+	for (i = 0; i < nummodels; i++)
 		fprintf (f, "%i %s\n", precache_models_block[i], precache_models[i]);
 
 	fprintf (f, "%i\n", numfiles);
-	for (i = 0 ; i < numfiles ; i++)
+	for (i = 0; i < numfiles; i++)
 		fprintf (f, "%i %s\n", precache_files_block[i], precache_files[i]);
 
 	fclose (f);
@@ -114,7 +114,7 @@ int	CopyString (const char *str)
 	int		old;
 	int		i, l;
 
-	for (i = 0 ; i < strofs ; i += l)
+	for (i = 0; i < strofs; i += l)
 	{
 		l = strlen(strings+i) + 1;
 		if (!strcmp(strings+i, str))
@@ -132,15 +132,16 @@ int	CopyString (const char *str)
 }
 
 
+#if 0	/* all uses are commented out */
 static void PrintStrings (void)
 {
 	int		i, l, j;
 
-	for (i = 0 ; i < strofs ; i += l)
+	for (i = 0; i < strofs; i += l)
 	{
 		l = strlen(strings+i) + 1;
 		printf ("%5i : ", i);
-		for (j = 0 ; j < l ; j++)
+		for (j = 0; j < l; j++)
 		{
 			if (strings[i+j] == '\n')
 			{
@@ -159,11 +160,11 @@ static void PrintFunctions (void)
 	int		i, j;
 	dfunction_t	*d;
 
-	for (i = 0 ; i < numfunctions ; i++)
+	for (i = 0; i < numfunctions; i++)
 	{
 		d = &functions[i];
 		printf ("%s : %s : %i %i (", strings + d->s_file, strings + d->s_name, d->first_statement, d->parm_start);
-		for (j = 0 ; j < d->numparms ; j++)
+		for (j = 0; j < d->numparms; j++)
 			printf ("%i ", d->parm_size[j]);
 		printf (")\n");
 	}
@@ -174,7 +175,7 @@ static void PrintFields (void)
 	int		i;
 	ddef_t	*d;
 
-	for (i = 0 ; i < numfielddefs ; i++)
+	for (i = 0; i < numfielddefs; i++)
 	{
 		d = &fields[i];
 		printf ("%5i %5i : (%i) %s\n", i, d->ofs, d->type, strings + d->s_name);
@@ -186,34 +187,13 @@ static void PrintGlobals (void)
 	int		i;
 	ddef_t	*d;
 
-	for (i = 0 ; i < numglobaldefs ; i++)
+	for (i = 0; i < numglobaldefs; i++)
 	{
 		d = &globals[i];
 		printf ("%5i : %5i : (%i) %s\n", i, d->ofs, d->type, strings + d->s_name);
 	}
 }
-
-static void PrintPRGlobals (void)
-{
-	int		i;
-
-	for (i = 0 ; i < numpr_globals ; i++)
-	{
-		printf ("%5i %5.5f %5d\n", i, pr_globals[i], ((int *)pr_globals)[i]);
-	}
-}
-
-static void Printstatements (void)
-{
-	int		i;
-	dstatement_t	*ds;
-
-	for (i = 0 ; i < numstatements ; i++)
-	{
-		ds = statements + i;
-		printf ("%5d op: %2d a: %5d b: %5d c: %5d\n", i, ds->op, ds->a, ds->b, ds->c);
-	}
-}
+#endif	/* end of unused stuff */
 
 
 static void InitData (void)
@@ -227,7 +207,7 @@ static void InitData (void)
 	numfielddefs = 1;
 
 	def_ret.ofs = OFS_RETURN;
-	for (i = 0 ; i < MAX_PARMS ; i++)
+	for (i = 0; i < MAX_PARMS; i++)
 		def_parms[i].ofs = OFS_PARM0 + 3*i;
 }
 
@@ -238,16 +218,11 @@ static void WriteData (int crc)
 	ddef_t		*dd;
 	dprograms_t	progs;
 	FILE	*h;
-	int			i;
+	int	i;
 
-	for (def = pr.def_head.next ; def ; def = def->next)
+	for (def = pr.def_head.next; def; def = def->next)
 	{
-		if (def->type->type == ev_function)
-		{
-//			df = &functions[numfunctions];
-//			numfunctions++;
-		}
-		else if (def->type->type == ev_field)
+		if (def->type->type == ev_field)
 		{
 			dd = &fields[numfielddefs];
 			numfielddefs++;
@@ -258,10 +233,10 @@ static void WriteData (int crc)
 		dd = &globals[numglobaldefs];
 		numglobaldefs++;
 		dd->type = def->type->type;
-		if (!def->initialized
-			&& def->type->type != ev_function
-			&& def->type->type != ev_field
-			&& def->scope == NULL)
+		if (!def->initialized &&
+		    def->type->type != ev_function &&
+		    def->type->type != ev_field &&
+		    def->scope == NULL)
 		{
 			dd->type |= DEF_SAVEGLOBAL;
 		}
@@ -292,7 +267,7 @@ static void WriteData (int crc)
 
 	progs.ofs_statements = ftell (h);
 	progs.numstatements = numstatements;
-	for (i = 0 ; i < numstatements ; i++)
+	for (i = 0; i < numstatements; i++)
 	{
 		statements[i].op = LittleShort(statements[i].op);
 		statements[i].a = LittleShort(statements[i].a);
@@ -303,7 +278,7 @@ static void WriteData (int crc)
 
 	progs.ofs_functions = ftell (h);
 	progs.numfunctions = numfunctions;
-	for (i = 0 ; i < numfunctions ; i++)
+	for (i = 0; i < numfunctions; i++)
 	{
 		functions[i].first_statement = LittleLong (functions[i].first_statement);
 		functions[i].parm_start = LittleLong (functions[i].parm_start);
@@ -316,7 +291,7 @@ static void WriteData (int crc)
 
 	progs.ofs_globaldefs = ftell (h);
 	progs.numglobaldefs = numglobaldefs;
-	for (i = 0 ; i < numglobaldefs ; i++)
+	for (i = 0; i < numglobaldefs; i++)
 	{
 		globals[i].type = LittleShort (globals[i].type);
 		globals[i].ofs = LittleShort (globals[i].ofs);
@@ -326,7 +301,7 @@ static void WriteData (int crc)
 
 	progs.ofs_fielddefs = ftell (h);
 	progs.numfielddefs = numfielddefs;
-	for (i = 0 ; i < numfielddefs ; i++)
+	for (i = 0; i < numfielddefs; i++)
 	{
 		fields[i].type = LittleShort (fields[i].type);
 		fields[i].ofs = LittleShort (fields[i].ofs);
@@ -336,7 +311,7 @@ static void WriteData (int crc)
 
 	progs.ofs_globals = ftell (h);
 	progs.numglobals = numpr_globals;
-	for (i = 0 ; i < numpr_globals ; i++)
+	for (i = 0; i < numpr_globals; i++)
 		((int *)pr_globals)[i] = LittleLong (((int *)pr_globals)[i]);
 	SafeWrite (h, pr_globals, numpr_globals*4);
 
@@ -348,7 +323,7 @@ static void WriteData (int crc)
 	progs.crc = crc;
 
 // byte swap the header and write it out
-	for (i = 0 ; i < (int)sizeof(progs)/4 ; i++)
+	for (i = 0; i < (int)sizeof(progs)/4; i++)
 		((int *)&progs)[i] = LittleLong ( ((int *)&progs)[i] );
 	fseek (h, 0, SEEK_SET);
 	SafeWrite (h, &progs, sizeof(progs));
@@ -363,7 +338,7 @@ PR_String
 Returns a string suitable for printing (no newlines, max 60 chars length)
 ===============
 */
-const char *PR_String (const char *string)
+static const char *PR_String (const char *string)
 {
 	static char	buf[80];
 	char	*s;
@@ -400,11 +375,11 @@ const char *PR_String (const char *string)
 	return buf;
 }
 
-def_t *PR_DefForFieldOfs (gofs_t ofs)
+static def_t *PR_DefForFieldOfs (gofs_t ofs)
 {
 	def_t	*d;
 
-	for (d = pr.def_head.next ; d ; d = d->next)
+	for (d = pr.def_head.next; d; d = d->next)
 	{
 		if (d->type->type != ev_field)
 			continue;
@@ -422,7 +397,7 @@ PR_ValueString
 Returns a string describing *data in a type specific manner
 =============
 */
-const char *PR_ValueString (etype_t type, void *val)
+static const char *PR_ValueString (etype_t type, void *val)
 {
 	static char	line[256];
 	def_t		*def;
@@ -489,7 +464,7 @@ static const char *PR_GlobalStringNoContents (gofs_t ofs)
 		sprintf (line, "%i(%s)", ofs, def->name);
 
 	i = strlen(line);
-	for ( ; i < 16 ; i++)
+	for ( ; i < 16; i++)
 		strcat (line, " ");
 	strcat (line, " ");
 
@@ -515,24 +490,12 @@ static const char *PR_GlobalString (gofs_t ofs)
 		sprintf (line, "%i(%s)", ofs, def->name);
 
 	i = strlen(line);
-	for ( ; i < 16 ; i++)
+	for ( ; i < 16; i++)
 		strcat (line, " ");
 	strcat (line, " ");
 
 	return line;
 }
-
-/*
-============
-PR_PrintOfs
-============
-*/
-#if 0	/* all uses are commented out */
-void PR_PrintOfs (gofs_t ofs)
-{
-	printf ("%s\n", PR_GlobalString(ofs));
-}
-#endif
 
 /*
 =================
@@ -545,7 +508,7 @@ static void PR_PrintStatement (dstatement_t *s)
 
 	printf ("%4i : %4i : %s ", (int)(s - statements), statement_linenums[s-statements], pr_opcodes[s->op].opname);
 	i = strlen(pr_opcodes[s->op].opname);
-	for ( ; i < 10 ; i++)
+	for ( ; i < 10; i++)
 		printf (" ");
 
 	if (s->op == OP_IF || s->op == OP_IFNOT)
@@ -554,7 +517,7 @@ static void PR_PrintStatement (dstatement_t *s)
 	{
 		printf ("branch %i", s->a);
 	}
-	else if ( (unsigned int)(s->op - OP_STORE_F) < 6)
+	else if ((unsigned int)(s->op - OP_STORE_F) < 6)
 	{
 		printf ("%s", PR_GlobalString(s->a));
 		printf ("%s", PR_GlobalStringNoContents(s->b));
@@ -584,7 +547,7 @@ static void PR_BeginCompilation (void)
 
 	numpr_globals = RESERVED_OFS;
 	pr.def_tail = &pr.def_head;
-	for (i = 0 ; i < RESERVED_OFS ; i++)
+	for (i = 0; i < RESERVED_OFS; i++)
 	{
 		pr_global_defs[i] = &def_void;
 	}
@@ -612,12 +575,10 @@ static qboolean PR_FinishCompilation (void)
 	errors = false;
 
 	// check to make sure all functions prototyped have code
-	for (d = pr.def_head.next ; d ; d = d->next)
+	for (d = pr.def_head.next; d; d = d->next)
 	{
 		if (d->type->type == ev_function && !d->scope)
-		{ // function parms are ok
-		//	f = G_FUNCTION(d->ofs);
-		//	if (!f || (!f->code && !f->builtin) )
+		{
 			if (!d->initialized)
 			{
 				printf("function '%s' was not defined\n", d->name);
@@ -643,7 +604,7 @@ static int PR_WriteProgdefs (const char *filename)
 	def_t	*d;
 	FILE	*f;
 	unsigned short	crc;
-	int		c;
+	int	c;
 
 	printf ("writing %s\n", filename);
 	printf ("compacting string heap, this may take a while...\n");
@@ -651,7 +612,7 @@ static int PR_WriteProgdefs (const char *filename)
 
 	// print global vars until the first field is defined
 	fprintf (f,"\n/* generated by hcc, do not modify */\n\ntypedef struct\n{\tint\tpad[%i];\n", RESERVED_OFS);
-	for (d = pr.def_head.next ; d ; d = d->next)
+	for (d = pr.def_head.next; d; d = d->next)
 	{
 		if (!strcmp (d->name, "end_sys_globals"))
 			break;
@@ -683,7 +644,7 @@ static int PR_WriteProgdefs (const char *filename)
 
 	// print all fields
 	fprintf (f, "typedef struct\n{\n");
-	for (d = pr.def_head.next ; d ; d = d->next)
+	for (d = pr.def_head.next; d; d = d->next)
 	{
 		if (!strcmp (d->name, "end_sys_fields"))
 			break;
@@ -734,9 +695,9 @@ static void PrintFunction (const char *name)
 {
 	int		i;
 	dstatement_t	*ds;
-	dfunction_t		*df;
+	dfunction_t	*df;
 
-	for (i = 0 ; i < numfunctions ; i++)
+	for (i = 0; i < numfunctions; i++)
 		if (!strcmp (name, strings + functions[i].s_name))
 			break;
 	if (i == numfunctions)
@@ -803,6 +764,13 @@ int main (int argc, char **argv)
 
 	ValidateByteorder ();
 
+	p = CheckParm("-dcc");
+	if (p)
+	{
+		Dcc_main (argc, argv);
+		exit (0);
+	}
+
 	start = COM_GetTime ();
 
 	p = CheckParm("-src");
@@ -826,114 +794,6 @@ int main (int argc, char **argv)
 		nameptr = filename;
 	}
 
-	InitData ();
-	Init_Dcc ();
-
-	p = CheckParm("-dump");
-	if (p)
-		pr_dumpasm = true;
-
-	p = CheckParm("-dcc");
-	if (p)
-	{
-		DEC_ReadData ("progs.dat");
-		//fix mangled names if asked
-		p = CheckParm ("-fix");
-		if (p)
-			FILE_NUM_FOR_NAME = 1;
-
-		p = CheckParm("-bbb");
-		if (p)
-		{
-			/*
-			i= -999;
-			for (p = 0; p < numstatements; p++)
-			{
-				if ((statements + p)->op > i)
-					i = (statements + p)->op;
-			}
-			printf("largest op %d\n", i);
-			*/
-			FindBuiltinParameters(1);
-			exit (0);
-		}
-
-		p = CheckParm("-ddd");
-		if (p)
-		{
-			for (p++ ; p < argc ; p++)
-			{
-				if (argv[p][0] == '-')
-					break;
-				DccFunctionOP (atoi(argv[p]));
-			}
-			exit (0);
-		}
-
-		p = CheckParm("-info2");
-		if (p)
-		{
-			printf("\n=======================\n");
-			printf("fields\n");
-			printf("=======================\n");
-			PrintFields ();
-			printf("\n=======================\n");
-			printf("globals\n");
-			printf("=======================\n");
-			PrintGlobals ();
-			exit (0);
-		}
-
-		p = CheckParm("-info");
-		if (p)
-		{
-			printf("\n=======================\n");
-			printf("strings\n");
-			printf("=======================\n");
-			PrintStrings ();
-			printf("\n=======================\n");
-			printf("functions");
-			printf("\n=======================\n");
-			PrintFunctions ();
-			printf("\n=======================\n");
-			printf("fields\n");
-			printf("=======================\n");
-			PrintFields ();
-			printf("\n=======================\n");
-			printf("globals\n");
-			printf("=======================\n");
-			PrintGlobals ();
-			printf("\n=======================\n");
-			printf("pr_globals\n");
-			printf("=======================\n");
-			PrintPRGlobals ();
-			printf("\n=======================\n");
-			printf("statements\n");
-			printf("=======================\n");
-			Printstatements();
-			exit (0);
-		}
-
-		p = CheckParm("-asm");
-		if (p)
-		{
-			for (p++; p < argc; p++)
-			{
-				if (argv[p][0] == '-')
-					break;
-				PR_PrintFunction(argv[p]);
-			}
-		}
-		else
-		{
-			Dcc_Functions ();
-			stop = COM_GetTime ();
-			printf("\n%d seconds elapsed.\n", (int)(stop-start));
-		}
-
-		exit (0);
-	}
-
 	strcpy(nameptr, "progs.src");
 	LoadFile(filename, &src);
 	psrc = (char *) src;
@@ -941,11 +801,10 @@ int main (int argc, char **argv)
 	psrc = COM_Parse(psrc);
 	if (!psrc)
 		COM_Error("No destination filename. dhcc -help for info.\n");
-
 	sprintf(destfile, "%s%s", sourcedir, com_token);
 	printf("outputfile: %s\n", destfile);
 
-	pr_dumpasm = false;
+	InitData ();
 
 	PR_BeginCompilation();
 
@@ -989,7 +848,7 @@ int main (int argc, char **argv)
 	WriteFiles();
 
 	stop = COM_GetTime ();
-	printf("\n%d seconds elapsed.\n", (int)(stop-start));
+	printf("\n%d seconds elapsed.\n", (int)(stop - start));
 
 	exit (0);
 }

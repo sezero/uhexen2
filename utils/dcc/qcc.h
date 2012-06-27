@@ -269,13 +269,10 @@ gotchas
 
 // MACROS ------------------------------------------------------------------
 
-//#define MAX_STRINGS		500000
-//#define MAX_GLOBALS		16384
-#define MAX_STRINGS		600000
-#define MAX_GLOBALS		100000
+#define MAX_STRINGS		500000
+#define MAX_GLOBALS		16384
 #define MAX_FIELDS		1024
-//#define MAX_STATEMENTS	65536
-#define MAX_STATEMENTS		200000
+#define MAX_STATEMENTS		65536*2
 #define MAX_FUNCTIONS		8192
 #define MAX_SOUNDS		1024
 #define MAX_MODELS		1024
@@ -284,17 +281,6 @@ gotchas
 #define MAX_ERRORS		10
 #define MAX_NAME		64		// chars long
 #define MAX_REGS		0xffff
-
-#define MAX_PARMS	8
-
-#define OFS_NULL		0
-#define OFS_RETURN		1
-#define OFS_PARM0		4	// leave 3 ofs for each parm to hold vectors
-#define OFS_PARM1		7
-#define OFS_PARM2		10
-#define OFS_PARM3		13
-#define OFS_PARM4		16
-#define RESERVED_OFS	28
 
 #define G_FLOAT(o)	(pr_globals[o])
 #define G_INT(o)	(*(int *)&pr_globals[o])
@@ -396,7 +382,6 @@ def_t	*PR_GetDef (type_t *type, const char *name, def_t *scope, qboolean allocat
 void	PR_SkipToSemicolon (void);
 void	PR_ClearGrabMacros (void);
 qboolean PR_CompileFile (const char *string, const char *filename);
-const char	*PR_ValueString (etype_t type, void *val);
 
 // PUBLIC DATA DECLARATIONS ------------------------------------------------
 
@@ -418,8 +403,6 @@ extern	char		pr_token[2048];
 extern	token_type_t	pr_token_type;
 extern	type_t		*pr_immediate_type;
 extern	eval_t		pr_immediate;
-
-extern	qboolean	pr_dumpasm;
 
 extern	jmp_buf	pr_parse_abort;	// longjump with this on parse error
 extern	int		pr_source_line;
