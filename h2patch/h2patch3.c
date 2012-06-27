@@ -36,7 +36,6 @@
 #include <unistd.h>
 #include <dir.h>
 #include <fcntl.h>
-#include <conio.h>
 #else /* POSIX */
 #include <sys/stat.h>
 #include <sys/time.h>
