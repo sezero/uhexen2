@@ -192,29 +192,6 @@ static xd3_options_t h2patch_options =
 #define ACCESS_NOPERM		(-2)
 
 #if defined(__DJGPP__)
-static void ask_user_abort (const char *msg)
-{
-	char	c;
-
-	fprintf (stdout, "%s\n", msg);
-	fprintf (stdout, "Continue anyway? [Y/N] ");
-
-	while (1)
-	{
-		c = getch ();
-		if (c == 'y' || c == 'Y' || c == 'n' || c == 'N')
-			break;
-	}
-
-	fprintf (stdout, "%c\n", c);
-
-	if (c == 'n' || c == 'N')
-	{
-		fprintf (stderr, "Terminated by user!\n");
-		exit (1);
-	}
-}
-
 static int Sys_unlink (const char *path)
 {
 	return remove(path);
@@ -490,11 +467,6 @@ int main (int argc, char **argv)
 {
 	int	i, num_patched, ret;
 	long		len;
-#if defined(__DJGPP__)
-	unsigned long	bytes;
-	unsigned int	drive;
-	struct diskfree_t  df;
-#endif	/* __DJGPP__ */
 
 	print_version ();
 	for (i = 1; i < argc; ++i)
@@ -531,20 +503,6 @@ int main (int argc, char **argv)
 						DIR_SEPARATOR_CHAR, patch_tmpname);
 		Sys_unlink (out);
 	}
-
-#if defined(__DJGPP__)
-	/* get the free disk space */
-	_dos_getdrive(&drive);
-	if (_dos_getdiskfree(drive, &df) != 0)
-	{
-		fprintf (stderr, "Error: Unable to determine free diskspace.\n");
-		return 2;
-	}
-
-	bytes = (unsigned long)df.avail_clusters *
-		(unsigned long)df.bytes_per_sector *
-		(unsigned long)df.sectors_per_cluster;
-#endif	/* __DJGPP__ */
 
 #ifdef _WIN32
 	setvbuf(stderr, NULL, _IONBF, 0);  /* Do not buffer stderr */
@@ -609,13 +567,6 @@ int main (int argc, char **argv)
 			fprintf (stderr, "... Error: delta file not found!\n");
 			return 1;
 		}
-
-#if defined(__DJGPP__)
-		if (bytes < patch_data[i].new_size)
-		{
-			ask_user_abort ("Not enough disk space for patching");
-		}
-#endif	/* __DJGPP__ */
 
 		q_snprintf (out, sizeof(out), "%s%c%s", patch_data[i].dir_name,
 						DIR_SEPARATOR_CHAR, patch_tmpname);

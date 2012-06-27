@@ -4,6 +4,14 @@ Development Progress	:
 ---------------------------
 
 2012-06-27 (SVN):
+    * h2patch: Removed code checking for free disk space in DOS builds.
+
+2012-06-27 (SVN):
+    * utils, dcc (Init_Dcc), hcc (InitData): Copy over def_ret.ofs and
+      def_parms[x].ofs initialization stuff from InitData (), just in
+      case.. Initialize the pr_globals pointer in InitData ().
+
+2012-06-27 (SVN):
     * utils, dcc: Added new Get_Immediate() and Clear_Immediates(), made
       Make_Immediate() to only allocate new values. Commented out offset
       overrun debug messages in them. Added -name command line argument
