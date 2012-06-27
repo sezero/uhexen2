@@ -124,8 +124,8 @@ def_t *EX_Expression (int priority)
 	etype_t	type_a;
 	etype_t	type_b;
 	etype_t	type_c;
-	int		tag;
-	int		opIndex;
+	int	tag;
+	int	opIndex;
 
 	if (priority == 0)
 	{
@@ -159,7 +159,7 @@ def_t *EX_Expression (int priority)
 			}
 			if (op->right_associative)
 			{
-				if ( (unsigned int)(statements[numstatements-1].op-OP_LOAD_F) < 6)
+				if ((unsigned int)(statements[numstatements-1].op - OP_LOAD_F) < 6)
 				{
 					// The preceding statement was an indirect.  Change it to
 					// an address of.
@@ -167,14 +167,14 @@ def_t *EX_Expression (int priority)
 					def_pointer.type->aux_type = e->type;
 					e->type = def_pointer.type;
 				}
-/*
-				else if ( (unsigned int)(statements[numstatements-1].op-OP_FETCH_GBL_F) < 5)
+				/*
+				else if ((unsigned int)(statements[numstatements-1].op - OP_FETCH_GBL_F) < 5)
 				{
 					// The preceding statement was an array lookup.  Assignment
 					// is currently not allowed to arrays.
 					PR_ParseError("assignment not allowed to arrays");
 				}
-*/
+				*/
 				e2 = EX_Expression(priority);
 			}
 			else
@@ -203,9 +203,9 @@ def_t *EX_Expression (int priority)
 
 			// Find the opcode that matches the types
 			tag = op->tag;
-			while (type_a != op->type_a->type->type
-				|| type_b != op->type_b->type->type
-				|| (type_c != ev_void && type_c != op->type_c->type->type))
+			while ( type_a != op->type_a->type->type ||
+				type_b != op->type_b->type->type ||
+				(type_c != ev_void && type_c != op->type_c->type->type))
 			{
 				op++;
 				if (tag != op->tag)
@@ -372,7 +372,7 @@ static def_t *ParseFunctionCall (def_t *func)
 {
 	def_t	*e;
 	def_t	*args[2];
-	int		argCount;
+	int	argCount;
 	type_t	*t;
 
 	t = func->type;
@@ -432,8 +432,8 @@ static def_t *ParseFunctionCall (def_t *func)
 			}
 			else
 			{
-				if (t->parm_types[argCount] == NULL // Variable args
-					|| t->parm_types[argCount]->type == ev_vector)
+				if (t->parm_types[argCount] == NULL ||		// Variable args
+				    t->parm_types[argCount]->type == ev_vector)
 				{
 					CO_GenCode(&pr_opcodes[OP_STORE_V], e,
 							&def_parms[argCount]);
@@ -481,9 +481,7 @@ static void PrecacheSound (def_t *e, int ch)
 	for (i = 0; i < numsounds; i++)
 	{
 		if (!strcmp(n, precache_sounds[i]))
-		{
 			return;
-		}
 	}
 	if (numsounds == MAX_SOUNDS)
 	{
@@ -520,9 +518,7 @@ static void PrecacheModel (def_t *e, int ch)
 	for (i = 0; i < nummodels; i++)
 	{
 		if (!strcmp(n, precache_models[i]))
-		{
 			return;
-		}
 	}
 	if (nummodels == MAX_MODELS)
 	{
@@ -583,9 +579,7 @@ static void PrecacheFile (def_t *e, int ch)
 	for (i = 0; i < numfiles; i++)
 	{
 		if (!strcmp(n, precache_files[i]))
-		{
 			return;
-		}
 	}
 	if (numfiles == MAX_FILES)
 	{
@@ -625,16 +619,14 @@ static def_t *ParseIntrinsicFunc (const char *name)
 			expr1 = EX_Expression(TOP_PRIORITY);
 			if (expr1->type->type != ev_float)
 			{
-				PR_ParseError("'random' : incompatible "
-						"parameter type");
+				PR_ParseError("'random' : incompatible parameter type");
 			}
 			if (TK_CHECK(TK_COMMA))
 			{
 				expr2 = EX_Expression(TOP_PRIORITY);
 				if (expr2->type->type != ev_float)
 				{
-					PR_ParseError("'random' : incompatible "
-							"parameter type");
+					PR_ParseError("'random' : incompatible parameter type");
 				}
 				LX_Require(")");
 				CO_GenCode(&pr_opcodes[OP_RAND2], expr1, expr2);
@@ -661,16 +653,14 @@ static def_t *ParseIntrinsicFunc (const char *name)
 			expr1 = EX_Expression(TOP_PRIORITY);
 			if (expr1->type->type != ev_vector)
 			{
-				PR_ParseError("'randomv' : incompatible "
-						"parameter type");
+				PR_ParseError("'randomv' : incompatible parameter type");
 			}
 			if (TK_CHECK(TK_COMMA))
 			{
 				expr2 = EX_Expression(TOP_PRIORITY);
 				if (expr2->type->type != ev_vector)
 				{
-					PR_ParseError("'randomv' : incompatible "
-							"parameter type");
+					PR_ParseError("'randomv' : incompatible parameter type");
 				}
 				LX_Require(")");
 				CO_GenCode(&pr_opcodes[OP_RANDV2], expr1, expr2);
@@ -707,6 +697,7 @@ static def_t *ParseIntrinsicFunc (const char *name)
 
 		return &def_ret;
 	}
+
 	return NULL;
 }
 

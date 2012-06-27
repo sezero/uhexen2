@@ -122,15 +122,15 @@ static void WriteFiles (void)
 		COM_Error ("Couldn't open %s", filename);
 
 	fprintf (f, "%i\n", numsounds);
-	for (i = 0 ; i < numsounds ; i++)
+	for (i = 0; i < numsounds; i++)
 		fprintf (f, "%i %s\n", precache_sounds_block[i], precache_sounds[i]);
 
 	fprintf (f, "%i\n", nummodels);
-	for (i = 0 ; i < nummodels ; i++)
+	for (i = 0; i < nummodels; i++)
 		fprintf (f, "%i %s\n", precache_models_block[i], precache_models[i]);
 
 	fprintf (f, "%i\n", numfiles);
-	for (i = 0 ; i < numfiles ; i++)
+	for (i = 0; i < numfiles; i++)
 		fprintf (f, "%i %s\n", precache_files_block[i], precache_files[i]);
 
 	fclose (f);
@@ -154,11 +154,11 @@ static void PrintStrings (void)
 {
 	int		i, l, j;
 
-	for (i = 0 ; i < strofs ; i += l)
+	for (i = 0; i < strofs; i += l)
 	{
 		l = strlen(strings+i) + 1;
 		printf ("%5i : ", i);
-		for (j = 0 ; j < l ; j++)
+		for (j = 0; j < l; j++)
 		{
 			if (strings[i+j] == '\n')
 			{
@@ -177,11 +177,11 @@ static void PrintFunctions (void)
 	int		i, j;
 	dfunction_t	*d;
 
-	for (i = 0 ; i < numfunctions ; i++)
+	for (i = 0; i < numfunctions; i++)
 	{
 		d = &functions[i];
 		printf ("%s : %s : %i %i (", strings + d->s_file, strings + d->s_name, d->first_statement, d->parm_start);
-		for (j = 0 ; j < d->numparms ; j++)
+		for (j = 0; j < d->numparms; j++)
 			printf ("%i ", d->parm_size[j]);
 		printf (")\n");
 	}
@@ -192,7 +192,7 @@ static void PrintFields (void)
 	int		i;
 	ddef_t	*d;
 
-	for (i = 0 ; i < numfielddefs ; i++)
+	for (i = 0; i < numfielddefs; i++)
 	{
 		d = &fields[i];
 		printf ("%5i : (%i) %s\n", d->ofs, d->type, strings + d->s_name);
@@ -204,7 +204,7 @@ static void PrintGlobals (void)
 	int		i;
 	ddef_t	*d;
 
-	for (i = 0 ; i < numglobaldefs ; i++)
+	for (i = 0; i < numglobaldefs; i++)
 	{
 		d = &globals[i];
 		printf ("%5i : (%i) %s\n", d->ofs, d->type, strings + d->s_name);
@@ -224,7 +224,7 @@ static void InitData (void)
 	numfielddefs = 1;
 
 	def_ret.ofs = OFS_RETURN;
-	for (i = 0 ; i < MAX_PARMS ; i++)
+	for (i = 0; i < MAX_PARMS; i++)
 		def_parms[i].ofs = OFS_PARM0 + 3*i;
 }
 
@@ -241,7 +241,7 @@ static void WriteData (int crc)
 		localName = CopyString("LCL+");
 	else	localName = 0;	/* silence compiler warning */
 
-	for (def = pr.def_head.next ; def ; def = def->next)
+	for (def = pr.def_head.next; def; def = def->next)
 	{
 		if (def->type->type == ev_field)
 		{
@@ -300,7 +300,7 @@ static void WriteData (int crc)
 
 	progs.ofs_statements = ftell (h);
 	progs.numstatements = numstatements;
-	for (i = 0 ; i < numstatements ; i++)
+	for (i = 0; i < numstatements; i++)
 	{
 		statements[i].op = LittleShort(statements[i].op);
 		statements[i].a = LittleShort(statements[i].a);
@@ -311,7 +311,7 @@ static void WriteData (int crc)
 
 	progs.ofs_functions = ftell (h);
 	progs.numfunctions = numfunctions;
-	for (i = 0 ; i < numfunctions ; i++)
+	for (i = 0; i < numfunctions; i++)
 	{
 		functions[i].first_statement = LittleLong (functions[i].first_statement);
 		functions[i].parm_start = LittleLong (functions[i].parm_start);
@@ -324,7 +324,7 @@ static void WriteData (int crc)
 
 	progs.ofs_globaldefs = ftell (h);
 	progs.numglobaldefs = numglobaldefs;
-	for (i = 0 ; i < numglobaldefs ; i++)
+	for (i = 0; i < numglobaldefs; i++)
 	{
 		globals[i].type = LittleShort (globals[i].type);
 		globals[i].ofs = LittleShort (globals[i].ofs);
@@ -334,7 +334,7 @@ static void WriteData (int crc)
 
 	progs.ofs_fielddefs = ftell (h);
 	progs.numfielddefs = numfielddefs;
-	for (i = 0 ; i < numfielddefs ; i++)
+	for (i = 0; i < numfielddefs; i++)
 	{
 		fields[i].type = LittleShort (fields[i].type);
 		fields[i].ofs = LittleShort (fields[i].ofs);
@@ -344,7 +344,7 @@ static void WriteData (int crc)
 
 	progs.ofs_globals = ftell (h);
 	progs.numglobals = numpr_globals;
-	for (i = 0 ; i < numpr_globals ; i++)
+	for (i = 0; i < numpr_globals; i++)
 		((int *)pr_globals)[i] = LittleLong (((int *)pr_globals)[i]);
 	SafeWrite (h, pr_globals, numpr_globals*4);
 
@@ -356,7 +356,7 @@ static void WriteData (int crc)
 	progs.crc = crc;
 
 // byte swap the header and write it out
-	for (i = 0 ; i < (int)sizeof(progs)/4 ; i++)
+	for (i = 0; i < (int)sizeof(progs)/4; i++)
 		((int *)&progs)[i] = LittleLong ( ((int *)&progs)[i] );
 	fseek (h, 0, SEEK_SET);
 	SafeWrite (h, &progs, sizeof(progs));
@@ -412,7 +412,7 @@ static def_t *PR_DefForFieldOfs (gofs_t ofs)
 {
 	def_t	*d;
 
-	for (d = pr.def_head.next ; d ; d = d->next)
+	for (d = pr.def_head.next; d; d = d->next)
 	{
 		if (d->type->type != ev_field)
 			continue;
@@ -497,7 +497,7 @@ static const char *PR_GlobalStringNoContents (gofs_t ofs)
 		sprintf (line, "%i(%s)", ofs, def->name);
 
 	i = strlen(line);
-	for ( ; i < 16 ; i++)
+	for ( ; i < 16; i++)
 		strcat (line, " ");
 	strcat (line, " ");
 
@@ -523,24 +523,12 @@ static const char *PR_GlobalString (gofs_t ofs)
 		sprintf (line, "%i(%s)", ofs, def->name);
 
 	i = strlen(line);
-	for ( ; i < 16 ; i++)
+	for ( ; i < 16; i++)
 		strcat (line, " ");
 	strcat (line, " ");
 
 	return line;
 }
-
-/*
-============
-PR_PrintOfs
-============
-*/
-#if 0	/* not used */
-static void PR_PrintOfs (gofs_t ofs)
-{
-	printf ("%s\n", PR_GlobalString(ofs));
-}
-#endif
 
 /*
 =================
@@ -553,7 +541,7 @@ static void PR_PrintStatement (dstatement_t *s)
 
 	printf ("%4i : %4i : %s ", (int)(s - statements), statement_linenums[s-statements], pr_opcodes[s->op].opname);
 	i = strlen(pr_opcodes[s->op].opname);
-	for ( ; i < 10 ; i++)
+	for ( ; i < 10; i++)
 		printf (" ");
 
 	if (s->op == OP_IF || s->op == OP_IFNOT)
@@ -562,12 +550,12 @@ static void PR_PrintStatement (dstatement_t *s)
 	{
 		printf ("branch %i", s->a);
 	}
-	else if ( (unsigned int)(s->op - OP_STORE_F) < 6)
+	else if ((unsigned int)(s->op - OP_STORE_F) < 6)
 	{
 		printf ("%s", PR_GlobalString(s->a));
 		printf ("%s", PR_GlobalStringNoContents(s->b));
 	}
-	else if ( (unsigned int)(s->op - OP_SWITCH_F) < 5)
+	else if ((unsigned int)(s->op - OP_SWITCH_F) < 5)
 	{
 		printf ("%sbranch %i", PR_GlobalString(s->a),s->b);
 	}
@@ -600,7 +588,7 @@ static void BeginCompilation (void)
 
 	numpr_globals = RESERVED_OFS;
 	pr.def_tail = &pr.def_head;
-	for (i = 0 ; i < RESERVED_OFS ; i++)
+	for (i = 0; i < RESERVED_OFS; i++)
 	{
 		pr_global_defs[i] = &def_void;
 	}
@@ -623,15 +611,14 @@ Returns false if errors were detected.
 static qboolean FinishCompilation (void)
 {
 	def_t		*d;
-	qboolean	errors;
-	qboolean	globals_done = false;
+	qboolean	errors, globals_done;
 
+	globals_done = false;
 	errors = false;
-	for (d = pr.def_head.next ; d ; d = d->next)
+	for (d = pr.def_head.next; d; d = d->next)
 	{
 		if (!strcmp (d->name, "end_sys_globals"))
 			globals_done = true;
-			
 		if (d->type->type == ev_function && !d->scope)
 		{
 			if (!d->initialized)
@@ -639,7 +626,7 @@ static qboolean FinishCompilation (void)
 				printf("function '%s' was not defined\n", d->name);
 				errors = true;
 			}
-			if (hcc_ShowUnrefFuncs && (d->referenceCount == 0) && globals_done)
+			if (hcc_ShowUnrefFuncs && d->referenceCount == 0 && globals_done)
 			{ // Function never used
 				printf("unreferenced function '%s'\n", d->name);
 			}
@@ -663,14 +650,14 @@ static int PR_WriteProgdefs (const char *filename)
 	def_t	*d;
 	FILE	*f;
 	unsigned short	crc;
-	int		c;
+	int	c;
 
 	printf ("writing %s\n", filename);
 	f = fopen (filename, "w");
 
 	// print global vars until the first field is defined
 	fprintf (f,"\n/* generated by hcc, do not modify */\n\ntypedef struct\n{\tint\tpad[%i];\n", RESERVED_OFS);
-	for (d = pr.def_head.next ; d ; d = d->next)
+	for (d = pr.def_head.next; d; d = d->next)
 	{
 		if (!strcmp (d->name, "end_sys_globals"))
 			break;
@@ -702,7 +689,7 @@ static int PR_WriteProgdefs (const char *filename)
 
 	// print all fields
 	fprintf (f, "typedef struct\n{\n");
-	for (d = pr.def_head.next ; d ; d = d->next)
+	for (d = pr.def_head.next; d; d = d->next)
 	{
 		if (!strcmp (d->name, "end_sys_fields"))
 			break;
@@ -753,9 +740,9 @@ static void PrintFunction (const char *name)
 {
 	int		i;
 	dstatement_t	*ds;
-	dfunction_t		*df;
+	dfunction_t	*df;
 
-	for (i = 0 ; i < numfunctions ; i++)
+	for (i = 0; i < numfunctions; i++)
 		if (!strcmp (name, strings + functions[i].s_name))
 			break;
 	if (i == numfunctions)

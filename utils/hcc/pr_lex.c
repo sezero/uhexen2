@@ -767,10 +767,10 @@ static qboolean SimpleGetToken (void)
 	}
 
 	i = 0;
-	while ((c = *pr_file_p) > ' '
-		&& c != ',' && c != ';' && c != '.'
-		&& c != '(' && c != ')'
-		&& c != '[' && c != ']')
+	while ((c = *pr_file_p) > ' ' &&
+		c != ',' && c != ';' && c != '.' &&
+		c != '(' && c != ')' &&
+		c != '[' && c != ']')
 	{
 		pr_token[i] = tolower(c);
 		i++;
@@ -857,16 +857,16 @@ static void LexGrab (void)
 		FrameMacroIndex = FrameMacroBookmarks[mark];
 		LX_Fetch();
 	}
-	else if (!strcmp (pr_token, "cd")
-			|| !strcmp (pr_token, "origin")
-			|| !strcmp (pr_token, "base")
-			|| !strcmp (pr_token, "flags")
-			|| !strcmp (pr_token, "scale")
-			|| !strcmp (pr_token, "skin") )
+	else if (!strcmp (pr_token, "cd") ||
+		 !strcmp (pr_token, "origin") ||
+		 !strcmp (pr_token, "base") ||
+		 !strcmp (pr_token, "flags") ||
+		 !strcmp (pr_token, "scale") ||
+		 !strcmp (pr_token, "skin"))
 	{ // Ignore known $commands
 		// skip to end of line
 		while (SimpleGetToken())
-		;
+			;
 		LX_Fetch();
 	}
 	else
@@ -1018,24 +1018,22 @@ const char *PR_ParseName (void)
 
 type_t *PR_FindType (type_t *type)
 {
-	int		i;
 	def_t	*def;
 	type_t	*check;
+	int	i;
 
 	for (check = pr.types; check; check = check->next)
 	{
-		if (check->type != type->type
-			|| check->aux_type != type->aux_type
-			|| check->num_parms != type->num_parms)
+		if (check->type != type->type ||
+		    check->aux_type != type->aux_type ||
+		    check->num_parms != type->num_parms)
 		{
 			continue;
 		}
 		for (i = 0; i < type->num_parms; i++)
 		{
 			if (check->parm_types[i] != type->parm_types[i])
-			{
 				break;
-			}
 		}
 		if (i == type->num_parms)
 		{
@@ -1086,17 +1084,15 @@ type_t *PR_ParseType (void)
 		return PR_FindType(&newtype);
 	}
 
-	if (!strcmp (pr_token, "float") )
+	if (!strcmp (pr_token, "float"))
 		type = &type_float;
-	else if (!strcmp (pr_token, "vector") )
+	else if (!strcmp (pr_token, "vector"))
 		type = &type_vector;
-//	else if (!strcmp (pr_token, "float") )
-//		type = &type_float;
-	else if (!strcmp (pr_token, "entity") )
+	else if (!strcmp (pr_token, "entity"))
 		type = &type_entity;
-	else if (!strcmp (pr_token, "string") )
+	else if (!strcmp (pr_token, "string"))
 		type = &type_string;
-	else if (!strcmp (pr_token, "void") )
+	else if (!strcmp (pr_token, "void"))
 		type = &type_void;
 	else
 	{

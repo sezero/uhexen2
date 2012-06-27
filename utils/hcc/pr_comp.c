@@ -971,8 +971,7 @@ void CO_ParseDefs (void)
 				LX_Require("}");
 				if (i != elementCount)
 				{
-					PR_ParseError("element count mismatch in array"
-							" initialization");
+					PR_ParseError("element count mismatch in array initialization");
 				}
 				def->initialized = 1;
 				continue;
@@ -1263,7 +1262,7 @@ static void ParseFunctionDef (def_t *def, type_t *type)
 	if (f->builtin)
 	{
 		df->first_statement = -f->builtin;
-		def->referenceCount++;	
+		def->referenceCount++;
 	}
 	else
 	{

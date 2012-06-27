@@ -1,9 +1,9 @@
 these are the differences between the old (from Raven's h2_utils package)
 and new versions (from Raven's h2mputil package) of the hcc tool.
 
-diff -urNp hcc_old/expr.c hcc/expr.c
---- hcc_old/expr.c	2011-06-02 00:15:46.000000000 +0300
-+++ hcc/expr.c	2011-06-02 00:15:46.000000000 +0300
+diff -urNp hcc.old/expr.c hcc/expr.c
+--- hcc.old/expr.c
++++ hcc/expr.c
 @@ -297,6 +297,11 @@ static def_t *Term (void)
  	name = PR_ParseName();
  	if ((d = ParseIntrinsicFunc(name)) != NULL)
@@ -29,7 +29,7 @@ diff -urNp hcc_old/expr.c hcc/expr.c
  	argCount = 0;
  	args[0] = NULL;
  	args[1] = NULL;
-@@ -534,6 +545,30 @@ static void PrecacheModel (def_t *e, int
+@@ -530,6 +541,30 @@ static void PrecacheModel (def_t *e, int
  // PrecacheFile
  //
  //==========================================================================
@@ -60,7 +60,7 @@ diff -urNp hcc_old/expr.c hcc/expr.c
  
  static void PrecacheFile (def_t *e, int ch)
  {
-@@ -650,6 +685,28 @@ static def_t *ParseIntrinsicFunc (const 
+@@ -640,6 +675,28 @@ static def_t *ParseIntrinsicFunc (const 
  		return &def_ret;
  	}
  
@@ -86,12 +86,12 @@ diff -urNp hcc_old/expr.c hcc/expr.c
 +
 +		return &def_ret;
 +	}
+ 
  	return NULL;
  }
- 
-diff -urNp hcc_old/hcc.c hcc/hcc.c
---- hcc_old/hcc.c	2011-06-02 00:15:46.000000000 +0300
-+++ hcc/hcc.c	2011-06-02 00:15:46.000000000 +0300
+diff -urNp hcc.old/hcc.c hcc/hcc.c
+--- hcc.old/hcc.c
++++ hcc/hcc.c
 @@ -238,7 +238,7 @@ static void WriteData (int crc)
  	int	i, localName;
  
@@ -100,7 +100,7 @@ diff -urNp hcc_old/hcc.c hcc/hcc.c
 +		localName = CopyString("LCL+");
  	else	localName = 0;	/* silence compiler warning */
  
- 	for (def = pr.def_head.next ; def ; def = def->next)
+ 	for (def = pr.def_head.next; def; def = def->next)
 @@ -259,9 +259,12 @@ static void WriteData (int crc)
  		    def->type->type != ev_field &&
  		    def->scope == NULL)
@@ -116,11 +116,11 @@ diff -urNp hcc_old/hcc.c hcc/hcc.c
  		{
  			dd->s_name = localName;
  		}
-@@ -564,6 +567,14 @@ static void PR_PrintStatement (dstatemen
+@@ -552,6 +555,14 @@ static void PR_PrintStatement (dstatemen
  		printf ("%s", PR_GlobalString(s->a));
  		printf ("%s", PR_GlobalStringNoContents(s->b));
  	}
-+	else if ( (unsigned int)(s->op - OP_SWITCH_F) < 5)
++	else if ((unsigned int)(s->op - OP_SWITCH_F) < 5)
 +	{
 +		printf ("%sbranch %i", PR_GlobalString(s->a),s->b);
 +	}
@@ -131,31 +131,32 @@ diff -urNp hcc_old/hcc.c hcc/hcc.c
  	else
  	{
  		if (s->a)
-@@ -613,10 +624,14 @@ static qboolean FinishCompilation (void)
+@@ -600,11 +611,14 @@ Returns false if errors were detected.
+ static qboolean FinishCompilation (void)
  {
  	def_t		*d;
- 	qboolean	errors;
-+	qboolean	globals_done = false;
+-	qboolean	errors;
++	qboolean	errors, globals_done;
  
++	globals_done = false;
  	errors = false;
- 	for (d = pr.def_head.next ; d ; d = d->next)
+ 	for (d = pr.def_head.next; d; d = d->next)
  	{
 +		if (!strcmp (d->name, "end_sys_globals"))
 +			globals_done = true;
-+			
  		if (d->type->type == ev_function && !d->scope)
  		{
  			if (!d->initialized)
-@@ -624,7 +639,7 @@ static qboolean FinishCompilation (void)
+@@ -612,7 +626,7 @@ static qboolean FinishCompilation (void)
  				printf("function '%s' was not defined\n", d->name);
  				errors = true;
  			}
 -			if (hcc_ShowUnrefFuncs && d->referenceCount == 0)
-+			if (hcc_ShowUnrefFuncs && (d->referenceCount == 0) && globals_done)
++			if (hcc_ShowUnrefFuncs && d->referenceCount == 0 && globals_done)
  			{ // Function never used
  				printf("unreferenced function '%s'\n", d->name);
  			}
-@@ -821,6 +836,8 @@ int main (int argc, char **argv)
+@@ -809,6 +823,8 @@ int main (int argc, char **argv)
  
  	if (CheckParm("-?") || CheckParm("-h") || CheckParm("-help") || CheckParm("--help"))
  	{
@@ -164,30 +165,30 @@ diff -urNp hcc_old/hcc.c hcc/hcc.c
  		printf(" -quiet           : Quiet mode\n");
  		printf(" -fileinfo        : Show object sizes per file\n");
  		printf(" -src <directory> : Specify source directory\n");
-diff -urNp hcc_old/hcc.h hcc/hcc.h
---- hcc_old/hcc.h	2011-06-02 00:15:46.000000000 +0300
-+++ hcc/hcc.h	2011-06-02 00:15:46.000000000 +0300
-@@ -35,7 +35,7 @@
+diff -urNp hcc.old/hcc.h hcc/hcc.h
+--- hcc.old/hcc.h
++++ hcc/hcc.h
+@@ -34,7 +34,7 @@
  #define MAX_STRINGS		500000
  #define MAX_GLOBALS		16384
  #define MAX_FIELDS		1024
 -#define MAX_STATEMENTS		65536
-+#define MAX_STATEMENTS		65536*2	// new limit is 2147483647
++#define MAX_STATEMENTS		65536*2
  #define MAX_FUNCTIONS		8192
  #define MAX_SOUNDS		1024
  #define MAX_MODELS		1024
-diff -urNp hcc_old/pr_comp.c hcc/pr_comp.c
---- hcc_old/pr_comp.c	2011-06-03 17:45:22.000000000 +0300
-+++ hcc/pr_comp.c	2011-06-03 18:04:23.000000000 +0300
-@@ -1263,6 +1263,7 @@ static void ParseFunctionDef (def_t *def
+diff -urNp hcc.old/pr_comp.c hcc/pr_comp.c
+--- hcc.old/pr_comp.c
++++ hcc/pr_comp.c
+@@ -1262,6 +1262,7 @@ static void ParseFunctionDef (def_t *def
  	if (f->builtin)
  	{
  		df->first_statement = -f->builtin;
-+		def->referenceCount++;	
++		def->referenceCount++;
  	}
  	else
  	{
-@@ -1352,6 +1353,7 @@ static void ParseCStyleFunctionDef (cons
+@@ -1351,6 +1352,7 @@ static void ParseCStyleFunctionDef (cons
  		if (f->builtin)
  		{
  			df->first_statement = -f->builtin;
@@ -195,9 +196,9 @@ diff -urNp hcc_old/pr_comp.c hcc/pr_comp.c
  		}
  		else
  		{
-diff -urNp hcc_old/pr_lex.c hcc/pr_lex.c
---- hcc_old/pr_lex.c	2011-06-02 00:15:46.000000000 +0300
-+++ hcc/pr_lex.c	2011-06-02 00:15:46.000000000 +0300
+diff -urNp hcc.old/pr_lex.c hcc/pr_lex.c
+--- hcc.old/pr_lex.c
++++ hcc/pr_lex.c
 @@ -34,7 +34,7 @@
  
  // MACROS ------------------------------------------------------------------
@@ -230,4 +231,3 @@ diff -urNp hcc_old/pr_lex.c hcc/pr_lex.c
  
  def_t	def_ret, def_parms[MAX_PARMS];
  
-

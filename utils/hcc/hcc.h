@@ -1,6 +1,5 @@
 /*
  * hcc.h
- *
  * $Id: hcc.h,v 1.10 2010-01-11 18:48:20 sezero Exp $
  *
  * Copyright (C) 1996-1997  Id Software, Inc.
@@ -35,7 +34,7 @@
 #define MAX_STRINGS		500000
 #define MAX_GLOBALS		16384
 #define MAX_FIELDS		1024
-#define MAX_STATEMENTS		65536*2	// new limit is 2147483647
+#define MAX_STATEMENTS		65536*2
 #define MAX_FUNCTIONS		8192
 #define MAX_SOUNDS		1024
 #define MAX_MODELS		1024
