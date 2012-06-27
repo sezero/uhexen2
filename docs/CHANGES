@@ -4,6 +4,9 @@ Development Progress	:
 ---------------------------
 
 2012-06-27 (SVN):
+    * updated the ReleaseNotes file.
+
+2012-06-27 (SVN):
     * utils, dcc: Isolated all decompiler stuff to dcc.c. Changed the
       decompiler to not copy the progs data but use pointers to loaded
       file instead. Changed the decompiler to not use static buffers but

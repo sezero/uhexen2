@@ -1,7 +1,7 @@
 Hammer of Thyrion (uHexen2) release notes:
 
 ========================================================================
-Changes in v1.5.4: (June 21, 2012.)
+Changes in v1.5.4: (June 27, 2012.)
 ========================================================================
 
 - OpenGL:  Fixed screen flickering resulting from progress bars drawing
@@ -23,12 +23,11 @@ Changes in v1.5.4: (June 21, 2012.)
 
 - All platforms: Majorly revised path name handling and filesystem code.
 
-- Support for Solaris.
+- Support for Solaris. Support for Amiga, AROS, MorphOS. Added missing
+  RISCOS defines.
 
-- Support for Amiga, AROS, MorphOS.
-
-- Linux/Unix (SDL): Made the keypad keys to send separate key events in
-  game mode.
+- Linux/Unix (SDL), Windows: Made the keypad keys to send separate key
+  events in game mode.
 
 - Linux/Unix (SDL): Added joystick (gamepad) support. The new cvars are
   documented in the README file.
@@ -46,8 +45,9 @@ Changes in v1.5.4: (June 21, 2012.)
   functionality of the gtk-launcher application.
 
 - Utils, dcc (progs decompiler): Fixed an infinite recursion issue when
-  decompiling the hcbots progs.dat. Made the -src command line option of
-  dhcc behave the same as it does with hcc.
+  decompiling the hcbots progs.dat. Fixed decompiling of rival kingdoms
+  progs. Changed decompiler memory usage. Made -src command line option
+  of dhcc to behave the same as it does with hcc.
 
 - Utils, hcc (HexenC compiler): Cleaned up the -src command line option
   handling.
