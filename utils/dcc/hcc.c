@@ -755,7 +755,9 @@ int main (int argc, char **argv)
 	{
 		printf(" Compiles progs.dat using progs.src in the current directory\n");
 		printf(" -src <directory> : Specify source directory\n");
+		printf(" -name <source>   : Specify the name of the .src file\n");
 		printf(" -dcc : decompile the progs.dat in the current directory\n");
+		printf(" -dcc -name <progsname> : specify name of progs to decompile\n");
 		printf(" -dcc -fix : fixes mangled names during decompilation\n");
 		printf(" -dcc -asm <functionname> : decompile filename to the console\n");
 		printf(" -dcc -dump -asm <functionname> : same as above but will show\n\t\tinstructions (opcodes and parms) as well\n");
@@ -794,7 +796,16 @@ int main (int argc, char **argv)
 		nameptr = filename;
 	}
 
-	strcpy(nameptr, "progs.src");
+	p = CheckParm("-name");
+	if (p && p < argc-1)
+	{
+		printf("Input file: %s\n", argv[p+1]);
+		strcpy(nameptr, argv[p+1]);
+	}
+	else
+	{
+		strcpy(nameptr, "progs.src");
+	}
 	LoadFile(filename, &src);
 	psrc = (char *) src;
 

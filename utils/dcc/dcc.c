@@ -38,10 +38,6 @@
 
 #define	MAX_DEC_FILES	512
 
-#define	IMMEDIATE_CLR	0
-#define	IMMEDIATE_SET	1
-#define	IMMEDIATE_GET	2
-
 // TYPES -------------------------------------------------------------------
 
 // EXTERNAL FUNCTION PROTOTYPES --------------------------------------------
@@ -56,7 +52,9 @@
  * argument to dstatement_t->a, b or c values, therefore you must not do
  * that casting for that case.
  */
-static char	*Make_Immediate (int mode, gofs_t ofs, const char *linestr);
+static void	Make_Immediate (gofs_t ofs, const char *s);
+static char	*Get_Immediate (gofs_t ofs);
+static void	Clear_Immediates (void);
 static void	PR_Indent (void);
 static void	PR_FunctionHeader (dfunction_t *df);
 static void	PR_Print (const char *s,...) __attribute__((__format__(__printf__,1,2)));
@@ -153,7 +151,7 @@ static const char *PR_PrintStringAtOfs (gofs_t ofs, def_t* typ)
 	}
 
 	if (!def)
-		return Make_Immediate(IMMEDIATE_GET, ofs, NULL);
+		return Get_Immediate(ofs);
 
 	if (!strcmp(pr_strings + def->s_name, IMMEDIATE_NAME))
 		return DCC_ValueString ((etype_t)def->type, &pr_globals[ofs]);
@@ -295,7 +293,7 @@ static void DccStatement (dstatement_t *s)
 		else
 		{
 			sprintf(dsline, "(%s %s %s)", a1, pr_opcodes[s->op].name, a2);
-			Make_Immediate(IMMEDIATE_SET, (unsigned short)s->c, dsline);
+			Make_Immediate((unsigned short)s->c, dsline);
 		}
 	}
 	else if (OP_LOAD_F <= s->op && s->op <= OP_ADDRESS)
@@ -318,7 +316,7 @@ static void DccStatement (dstatement_t *s)
 		{
 			sprintf(dsline, "%s.%s", a1, a2);
 		//	printf("%s.%s making immediate at %d\n",a1,a2,s->c);
-			Make_Immediate(IMMEDIATE_SET, (unsigned short)s->c, dsline);
+			Make_Immediate((unsigned short)s->c, dsline);
 		}
 	}
 	else if ((OP_STORE_F <= s->op) && (s->op <= OP_STORE_FNC))
@@ -344,7 +342,7 @@ static void DccStatement (dstatement_t *s)
 		else
 		{
 			sprintf(dsline,"%s", a1);
-			Make_Immediate(IMMEDIATE_SET, (unsigned short)s->b, dsline);
+			Make_Immediate((unsigned short)s->b, dsline);
 		}
 	}
 	else if ((OP_STOREP_F <= s->op) && (s->op <= OP_STOREP_FNC))
@@ -369,7 +367,7 @@ static void DccStatement (dstatement_t *s)
 	{
 		arg1 = PR_PrintStringAtOfs((unsigned short)s->a, typ1);
 		sprintf(dsline, "!%s", arg1);
-		Make_Immediate(IMMEDIATE_SET, (unsigned short)s->c, dsline);
+		Make_Immediate((unsigned short)s->c, dsline);
 	}
 	else if ((OP_CALL0 <= s->op) && (s->op <= OP_CALL8))
 	{
@@ -416,14 +414,14 @@ static void DccStatement (dstatement_t *s)
 		for (i = 2; i < nargs; i++)
 		{
 			strcat(dsline, ", ");
-			arg2 = Make_Immediate(IMMEDIATE_GET, OFS_PARM0+(i*3), NULL);
+			arg2 = Get_Immediate(OFS_PARM0 + (i * 3));
 			if (!arg2)
 				continue;
 			strcat(dsline, arg2);
 		}
 
 		strcat(dsline, ")");
-		Make_Immediate(IMMEDIATE_SET, OFS_RETURN, dsline);
+		Make_Immediate(OFS_RETURN, dsline);
 		j = 1;	/* print now */
 
 		for (i = 1; (s + i)->op; i++)
@@ -581,7 +579,7 @@ static void DccStatement (dstatement_t *s)
 		PR_Print("%s %s %s;\n", arg2, pr_opcodes[s->op].name, a1);
 
 		if (s->c)
-			Make_Immediate(IMMEDIATE_SET, (unsigned short)s->c, dsline);
+			Make_Immediate((unsigned short)s->c, dsline);
 	}
 	else if (s->op == 80 || s->op == 81)
 	{
@@ -602,7 +600,7 @@ static void DccStatement (dstatement_t *s)
 		else
 		{
 			sprintf(dsline, "(%s->%s)", a1, a2);
-			Make_Immediate(IMMEDIATE_SET, (unsigned short)s->c, dsline);
+			Make_Immediate((unsigned short)s->c, dsline);
 		}
 	}
 	else if (s->op == 85)
@@ -628,7 +626,7 @@ static void DccStatement (dstatement_t *s)
 	else if (s->op == 92)
 	{
 		sprintf(dsline,"random()");
-		Make_Immediate(IMMEDIATE_SET, OFS_RETURN, dsline);
+		Make_Immediate(OFS_RETURN, dsline);
 	}
 	else if (s->op == 93)
 	{
@@ -637,7 +635,7 @@ static void DccStatement (dstatement_t *s)
 			strcpy(a1, arg1);
 
 		sprintf(dsline, "random(%s)", a1);
-		Make_Immediate(IMMEDIATE_SET, OFS_RETURN, dsline);
+		Make_Immediate(OFS_RETURN, dsline);
 	}
 	else if (s->op == 94)
 	{
@@ -647,12 +645,12 @@ static void DccStatement (dstatement_t *s)
 
 		arg2 = PR_PrintStringAtOfs((unsigned short)s->b, typ2);
 		sprintf(dsline, "random(%s,%s)", a1, arg2);
-		Make_Immediate(IMMEDIATE_SET, OFS_RETURN, dsline);
+		Make_Immediate(OFS_RETURN, dsline);
 	}
 	else if (s->op == 95)
 	{
 		sprintf(dsline,"random( )");
-		Make_Immediate(IMMEDIATE_SET, OFS_RETURN, dsline);
+		Make_Immediate(OFS_RETURN, dsline);
 	}
 	else if (s->op == 96)
 	{
@@ -661,7 +659,7 @@ static void DccStatement (dstatement_t *s)
 			strcpy(a1, arg1);
 
 		sprintf(dsline, "random(%s)", a1);
-		Make_Immediate(IMMEDIATE_SET, OFS_RETURN, dsline);
+		Make_Immediate(OFS_RETURN, dsline);
 	}
 	else if (s->op == 97)
 	{
@@ -671,7 +669,7 @@ static void DccStatement (dstatement_t *s)
 
 		arg2 = PR_PrintStringAtOfs((unsigned short)s->b, typ2);
 		sprintf(dsline, "random(%s,%s)", a1, arg2);
-		Make_Immediate(IMMEDIATE_SET, OFS_RETURN, dsline);
+		Make_Immediate(OFS_RETURN, dsline);
 	}
 	else
 	{
@@ -685,44 +683,44 @@ static void DccStatement (dstatement_t *s)
 	}
 }
 
-static char *Make_Immediate (int mode, gofs_t ofs, const char *linestr)
+static void Make_Immediate (gofs_t ofs, const char *s)
 {
-	if (mode == IMMEDIATE_CLR)
+	if (ofs >= progs->numglobals) /* happens with opcodes that DHCC doesn't know, i.e. switches. */
 	{
-		int	i;
-		for (i = 0; i < progs->numglobals; i++)
+	//	printf ("%s: ofs %d is past numpr_globals %d (cfunc->parm_start: %d, cfunc->locals: %d)\n",
+	//			__thisfunc__, ofs, progs->numglobals, cfunc->parm_start, cfunc->locals);
+		return;
+	}
+	if (temp_val[ofs])
+		free(temp_val[ofs]);
+	temp_val[ofs] = strdup(s);
+	if (temp_val[ofs] == NULL)
+		COM_Error("%s: failed to create new string for %s\n", __thisfunc__, s);
+}
+
+static char *Get_Immediate (gofs_t ofs)
+{
+	if (ofs >= progs->numglobals) /* happens with opcodes that DHCC doesn't know, i.e. switches. */
+	{
+	//	printf ("%s: ofs %d is past numpr_globals %d (cfunc->parm_start: %d, cfunc->locals: %d)\n",
+	//			__thisfunc__, ofs, progs->numglobals, cfunc->parm_start, cfunc->locals);
+		return NULL;
+	}
+
+	return temp_val[ofs];
+}
+
+static void Clear_Immediates (void)
+{
+	int	i;
+	for (i = 0; i < progs->numglobals; i++)
+	{
+		if (temp_val[i])
 		{
-			if (temp_val[i])
-			{
-				free(temp_val[i]);
-				temp_val[i] = NULL;
-			}
+			free(temp_val[i]);
+			temp_val[i] = NULL;
 		}
-		return NULL;
 	}
-
-	if (ofs >= progs->numglobals)
-	{
-		/* this isn't supposed to happen, but DHCC doesn't know some OP codes, either */
-		printf ("%s: ofs %d is past numpr_globals %d (cfunc->parm_start: %d, cfunc->locals: %d)\n",
-				__thisfunc__, ofs, progs->numglobals, cfunc->parm_start, cfunc->locals);
-		return NULL;
-	}
-
-	if (mode == IMMEDIATE_SET)
-	{
-		if (temp_val[ofs])
-			free(temp_val[ofs]);
-		temp_val[ofs] = strdup(linestr);
-		if (temp_val[ofs] == NULL)
-			COM_Error("%s: failed to create new string for %s\n", __thisfunc__, linestr);
-		return temp_val[ofs];
-	}
-
-	if (mode == IMMEDIATE_GET)
-		return temp_val[ofs];
-
-	return NULL;
 }
 
 
@@ -2313,7 +2311,7 @@ static void PR_PrintFunction (const char *name)
 	cfunc = df;
 	printf("Statements for %s:\n", name);
 	ds = pr_statements + df->first_statement;
-	Make_Immediate(IMMEDIATE_CLR, 0, NULL);
+	Clear_Immediates();
 	PR_LocalGlobals();
 	PR_FunctionHeader(df);
 
@@ -2409,7 +2407,10 @@ int Dcc_main (int argc, char **argv)
 
 	start = COM_GetTime ();
 
-	DEC_ReadData ("progs.dat");
+	p = CheckParm("-name");
+	if (p && p < argc - 1)
+		DEC_ReadData (argv[p + 1]);
+	else	DEC_ReadData ("progs.dat");
 
 	Init_Dcc ();
 

@@ -4,6 +4,14 @@ Development Progress	:
 ---------------------------
 
 2012-06-27 (SVN):
+    * utils, dcc: Added new Get_Immediate() and Clear_Immediates(), made
+      Make_Immediate() to only allocate new values. Commented out offset
+      overrun debug messages in them. Added -name command line argument
+      either for specifying a name other than progs.src for the compiler
+      like hcc itself or for specifying a name other than progs.dat for
+      the decompiler.
+
+2012-06-27 (SVN):
     * updated the ReleaseNotes file.
 
 2012-06-27 (SVN):

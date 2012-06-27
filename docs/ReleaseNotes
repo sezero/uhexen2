@@ -47,7 +47,10 @@ Changes in v1.5.4: (June 27, 2012.)
 - Utils, dcc (progs decompiler): Fixed an infinite recursion issue when
   decompiling the hcbots progs.dat. Fixed decompiling of rival kingdoms
   progs. Changed decompiler memory usage. Made -src command line option
-  of dhcc to behave the same as it does with hcc.
+  of dhcc to behave the same as it does with hcc. Added -name command
+  line option either for specifying a name other than progs.src for the
+  compiler like hcc itself or for specifying a name other than progs.dat
+  for the decompiler.
 
 - Utils, hcc (HexenC compiler): Cleaned up the -src command line option
   handling.
