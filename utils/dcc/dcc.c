@@ -2041,7 +2041,13 @@ static void DEC_ReadData (const char *srcfile)
 
 static void Init_Dcc (void)
 {
-	if (CheckParm("-fix"))		/* fix mangled names? */
+	int		i;
+
+	def_ret.ofs = OFS_RETURN;
+	for (i = 0; i < MAX_PARMS; i++)
+		def_parms[i].ofs = OFS_PARM0 + 3*i;
+
+	if (CheckParm("-fix"))		/* fix mangled names */
 		FILE_NUM_FOR_NAME = true;
 	else	FILE_NUM_FOR_NAME = false;
 

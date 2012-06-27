@@ -40,7 +40,7 @@ static char	sourcedir[1024];
 static char	destfile[1024];
 
 byte		_pr_globals[MAX_REGS * sizeof(float)];
-float		*pr_globals = (float *)_pr_globals;
+float		*pr_globals;
 int			numpr_globals;
 
 char		strings[MAX_STRINGS];
@@ -206,6 +206,7 @@ static void InitData (void)
 	numglobaldefs = 1;
 	numfielddefs = 1;
 
+	pr_globals = (float *)_pr_globals;
 	def_ret.ofs = OFS_RETURN;
 	for (i = 0; i < MAX_PARMS; i++)
 		def_parms[i].ofs = OFS_PARM0 + 3*i;
@@ -452,9 +453,9 @@ padded to 20 field width
 */
 static const char *PR_GlobalStringNoContents (gofs_t ofs)
 {
-	int		i;
-	def_t		*def;
 	static char	line[128];
+	def_t		*def;
+	int	i;
 
 	def = pr_global_defs[ofs];
 	if (!def)
@@ -473,10 +474,10 @@ static const char *PR_GlobalStringNoContents (gofs_t ofs)
 
 static const char *PR_GlobalString (gofs_t ofs)
 {
-	const char	*s;
-	int		i;
-	def_t		*def;
 	static char	line[128];
+	const char	*s;
+	def_t		*def;
+	int	i;
 
 	def = pr_global_defs[ofs];
 	if (!def)
