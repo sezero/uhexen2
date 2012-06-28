@@ -26,11 +26,11 @@ Changes in v1.5.4: (June 27, 2012.)
 - Support for Solaris. Support for Amiga, AROS, MorphOS. Added missing
   RISCOS defines.
 
-- Linux/Unix (SDL), Windows: Made the keypad keys to send separate key
-  events in game mode.
+- Keyboard input: Made the keypad keys to send separate key events in
+  game mode. (for Windows and SDL-using builds, e.g. Linux/Unix, OSX.)
 
-- Linux/Unix (SDL): Added joystick (gamepad) support. The new cvars are
-  documented in the README file.
+- Joystick: Added joystick (gamepad) support for all SDL-using builds,
+  e.g. Linux/Unix, MacOSX. The new cvars are documented in the README.
 
 - Mouse (DOS): Wheel is now detected and used by default. Use "-nowheel"
   command line switch to disable it.
