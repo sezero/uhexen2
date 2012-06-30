@@ -4,6 +4,9 @@ Development Progress	:
 ---------------------------
 
 2012-06-30 (SVN):
+    * updated the ReleaseNotes file.
+
+2012-06-30 (SVN):
     * hexen2, cl_effect.c (CL_ParseEffect): ent->abslight and ent->scale
       are of int type, not float, therefore they must be not be assigned
       normalized floating point values but integers, another old HexenII
