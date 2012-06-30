@@ -1,4 +1,0 @@
-These are Raven's original asm files.
-Should be compilable using:
-
-  ml.exe /c /Cp /coff /Zm /Zp8 File.asm
