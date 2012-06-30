@@ -85,15 +85,14 @@ static qboolean S_OSS_Init (dma_t *dma)
 		ossdev = com_argv[tmp + 1];
 	Con_Printf ("OSS: Using device: %s\n", ossdev);
 
-// open /dev/dsp, confirm capability to mmap, and get size of dma buffer
 	audio_fd = open(ossdev, O_RDWR|O_NONBLOCK);
 	if (audio_fd == -1)
-	{	// Failed open, retry up to 3 times if it's busy
+	{	/* retry up to 3 times if it's busy */
 		tmp = 3;
-		while ( (audio_fd == -1) && tmp-- &&
-			((errno == EAGAIN) || (errno == EBUSY)) )
+		while (audio_fd == -1 && tmp-- &&
+				(errno == EAGAIN || errno == EBUSY))
 		{
-			sleep (1);
+			usleep (300000);
 			audio_fd = open(ossdev, O_RDWR|O_NONBLOCK);
 		}
 		if (audio_fd == -1)
@@ -102,9 +101,6 @@ static qboolean S_OSS_Init (dma_t *dma)
 			return false;
 		}
 	}
-
-	memset ((void *) dma, 0, sizeof(dma_t));
-	shm = dma;
 
 	if (ioctl(audio_fd, SNDCTL_DSP_RESET, 0) == -1)
 	{
@@ -124,28 +120,27 @@ static qboolean S_OSS_Init (dma_t *dma)
 		goto error;
 	}
 
-// set sample bits & speed
-	i = desired_bits;
+	memset ((void *) dma, 0, sizeof(dma_t));
+	shm = dma;
+
+	/* set format & rate */
 	tmp = (desired_bits == 16) ? FORMAT_S16 : AFMT_U8;
 	if (ioctl(audio_fd, SNDCTL_DSP_SETFMT, &tmp) == -1)
 	{
-		Con_Printf("Problems setting %d bit format, trying alternatives..\n", i);
-		// try what the device gives us
+		Con_Printf("Problems setting %d bit format, trying alternatives..\n", desired_bits);
+		/* try what the device gives us */
 		if (ioctl(audio_fd, SNDCTL_DSP_GETFMTS, &tmp) == -1)
 		{
 			Con_Printf("Unable to retrieve supported formats. %s\n", strerror(errno));
 			goto error;
 		}
-		if (tmp & FORMAT_S16)
-		{
-			i = 16;
+		i = tmp;
+		if (i & FORMAT_S16)
 			tmp = FORMAT_S16;
-		}
-		else if (tmp & AFMT_U8)
-		{
-			i = 8;
+		else if (i & AFMT_U8)
 			tmp = AFMT_U8;
-		}
+		else if (i & AFMT_S8)
+			tmp = AFMT_S8;
 		else
 		{
 			Con_Printf("Neither 8 nor 16 bit format supported.\n");
@@ -157,7 +152,19 @@ static qboolean S_OSS_Init (dma_t *dma)
 			goto error;
 		}
 	}
-	shm->samplebits = i;
+	if (tmp == FORMAT_S16)
+		shm->samplebits = 16;
+	else if (tmp == AFMT_U8)
+		shm->samplebits = 8;
+	else if (tmp == AFMT_S8)
+	{
+		shm->signed8 = 1;
+		shm->samplebits = 8;
+	}
+	else /* unreached */
+	{
+		goto error;
+	}
 
 	tmp = desired_speed;
 	if (ioctl(audio_fd, SNDCTL_DSP_SPEED, &tmp) == -1)
@@ -176,7 +183,7 @@ static qboolean S_OSS_Init (dma_t *dma)
 				if (tmp != tryrates[i])
 				{
 					Con_Printf ("Warning: Rate set (%d) didn't match requested rate (%d)!\n", tmp, tryrates[i]);
-				//	goto error;
+				/*	goto error;*/
 				}
 				shm->speed = tmp;
 				break;
@@ -193,7 +200,7 @@ static qboolean S_OSS_Init (dma_t *dma)
 		if (tmp != desired_speed)
 		{
 			Con_Printf ("Warning: Rate set (%d) didn't match requested rate (%d)!\n", tmp, desired_speed);
-		//	goto error;
+		/*	goto error;*/
 		}
 		shm->speed = tmp;
 	}
@@ -222,32 +229,31 @@ static qboolean S_OSS_Init (dma_t *dma)
 	shm->samples = info.fragstotal * info.fragsize / (shm->samplebits / 8);
 	shm->submission_chunk = 1;
 
-// memory map the dma buffer
+	/* memory map the dma buffer */
 	sz = sysconf (_SC_PAGESIZE);
 	mmaplen = info.fragstotal * info.fragsize;
-	mmaplen = (mmaplen + sz - 1) & ~(sz - 1);
+	mmaplen += sz - 1;
+	mmaplen &= ~(sz - 1);
 	shm->buffer = (unsigned char *) mmap(NULL, mmaplen, PROT_READ|PROT_WRITE,
 					     MAP_FILE|MAP_SHARED, audio_fd, 0);
-	if (!shm->buffer || shm->buffer == MAP_FAILED)
+	if (shm->buffer == MAP_FAILED)
 	{
 		Con_Printf("Could not mmap %s. %s\n", ossdev, strerror(errno));
 		goto error;
 	}
 	Con_Printf ("OSS: mmaped %lu bytes buffer\n", mmaplen);
 
-// toggle the trigger & start her up
+	/* toggle the trigger & start her up */
 	tmp = 0;
 	if (ioctl(audio_fd, SNDCTL_DSP_SETTRIGGER, &tmp) == -1)
 	{
 		Con_Printf("Could not toggle %s. %s\n", ossdev, strerror(errno));
-		munmap (shm->buffer, mmaplen);
 		goto error;
 	}
 	tmp = PCM_ENABLE_OUTPUT;
 	if (ioctl(audio_fd, SNDCTL_DSP_SETTRIGGER, &tmp) == -1)
 	{
 		Con_Printf("Could not toggle %s. %s\n", ossdev, strerror(errno));
-		munmap (shm->buffer, mmaplen);
 		goto error;
 	}
 
@@ -258,6 +264,8 @@ static qboolean S_OSS_Init (dma_t *dma)
 error:
 	close(audio_fd);
 	audio_fd = -1;
+	if (shm->buffer && shm->buffer != MAP_FAILED)
+		munmap (shm->buffer, mmaplen);
 	shm->buffer = NULL;
 	shm = NULL;
 	return false;
@@ -280,8 +288,6 @@ static int S_OSS_GetDMAPos (void)
 		audio_fd = -1;
 		return 0;
 	}
-//	shm->samplepos = (count.bytes / (shm->samplebits / 8)) & (shm->samples-1);
-//	fprintf(stderr, "%d    \r", count.ptr);
 	shm->samplepos = count.ptr / (shm->samplebits / 8);
 
 	return shm->samplepos;
@@ -289,9 +295,9 @@ static int S_OSS_GetDMAPos (void)
 
 static void S_OSS_Shutdown (void)
 {
-	int	tmp = 0;
 	if (shm)
 	{
+		int	tmp = 0;
 		Con_Printf ("Shutting down OSS sound\n");
 		munmap (shm->buffer, mmaplen);
 		shm->buffer = NULL;

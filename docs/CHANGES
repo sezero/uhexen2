@@ -3,6 +3,13 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2012-06-30 (SVN):
+    * snd_oss.c: Coding style cleanup. Support for AFMT_S8. Reduced the
+      sound device open retry sleep time to 0.3s and changed the sleep()
+      call into usleep(). Test the mmap success only against MAP_FAILED,
+      and not against NULL.
+    * snd_alsa.c: Coding style cleanup.
+
 2012-06-27 (SVN):
     * h2patch: Removed code checking for free disk space in DOS builds.
 

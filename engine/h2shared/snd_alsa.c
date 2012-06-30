@@ -241,31 +241,23 @@ static qboolean S_ALSA_Init (dma_t *dma)
 	shm = dma;
 
 	shm->channels = tmp_chan;
-
-	/*
-	// don't mix less than this in mono samples:
-	err = hx2snd_pcm_hw_params_get_period_size (hw, 
-			(snd_pcm_uframes_t *) (char *) (&shm->submission_chunk), 0);
-	ALSA_CHECK_ERR(err, "unable to get period size. %s\n", hx2snd_strerror(err));
-	*/
 	shm->submission_chunk = 1;
 	shm->samplepos = 0;
 	shm->samplebits = tmp_bits;
 
 	Con_Printf ("ALSA: %lu bytes buffer with mmap interleaved access\n", (unsigned long)buffer_size);
 
-	shm->samples = buffer_size * shm->channels; // mono samples in buffer
+	shm->samples = buffer_size * shm->channels; /* mono samples in buffer */
 	shm->speed = rate;
 
-	S_ALSA_GetDMAPos ();	// sets shm->buffer
+	S_ALSA_GetDMAPos ();	/* sets shm->buffer */
 
 	hx2snd_pcm_hw_params_free(hw);
 	hx2snd_pcm_sw_params_free(sw);
 
 	return true;
 
-error:
-// full clean-up
+error:	/* full clean-up*/
 	if (hw)
 		hx2snd_pcm_hw_params_free(hw);
 	if (sw)
@@ -290,13 +282,13 @@ static int S_ALSA_GetDMAPos (void)
 	nframes = shm->samples/shm->channels;
 	hx2snd_pcm_avail_update (pcm);
 	hx2snd_pcm_mmap_begin (pcm, &areas, &offset, &nframes);
-	// The following commit was absent in QF, causing the
-	// very first sound to be corrupted
+	/* the following commit was absent in QF, causing the
+	 * very first sound to be corrupted */
 	hx2snd_pcm_mmap_commit (pcm, offset, nframes);
 	offset *= shm->channels;
 	nframes *= shm->channels;
 	shm->samplepos = offset;
-	shm->buffer = (unsigned char *) areas->addr;	// FIXME! there's an area per channel
+	shm->buffer = (unsigned char *) areas->addr;	/* FIXME! there's an area per channel */
 	return shm->samplepos;
 }
 
@@ -304,9 +296,9 @@ static void S_ALSA_Shutdown (void)
 {
 	if (shm)
 	{
-	// full clean-up
+	/* full clean-up */
 		Con_Printf ("Shutting down ALSA sound\n");
-		hx2snd_pcm_drop (pcm);	// do I need this?
+		hx2snd_pcm_drop (pcm);	/* do I need this? */
 		hx2snd_pcm_close (pcm);
 		pcm = NULL;
 		shm->buffer = NULL;
