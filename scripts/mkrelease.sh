@@ -15,9 +15,8 @@ GAMECODE_VER=1.26
 mv rpm/hexen2.spec .
 rm -rf rpm
 
-# move the license file to the root
-mv docs/LICENSE .
+# copy the docs/COPYING file to the root as LICENSE.TXT
+cp -p docs/COPYING ./LICENSE.txt
 
 # rename the gamecode directory to include its version number
 mv gamecode gamecode-$GAMECODE_VER
-
