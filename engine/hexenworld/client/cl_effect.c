@@ -437,7 +437,7 @@ void CL_ParseEffect (void)
 			{
 				ent->model = Mod_ForName("models/muzzle1.spr", true);
 				ent->drawflags = DRF_TRANSLUCENT | MLS_ABSLIGHT;
-				ent->abslight = 0.2;
+				ent->abslight = 51;
 			}
 			else if (cl.Effects[idx].type == CE_FLAMEWALL)
 				ent->model = Mod_ForName("models/firewal1.spr", true);
@@ -455,7 +455,7 @@ void CL_ParseEffect (void)
 					ent->model = Mod_ForName("models/firewal3.spr", true);
 
 				ent->drawflags = DRF_TRANSLUCENT;
-				ent->abslight = 1;
+				ent->abslight = 255;
 				ent->frame = cl.Effects[idx].ef.Smoke.frame;
 			}
 			else if (cl.Effects[idx].type == CE_RIPPLE)
@@ -499,7 +499,7 @@ void CL_ParseEffect (void)
 			if (cl.Effects[idx].type == CE_FLAMESTREAM)
 			{
 				ent->drawflags = DRF_TRANSLUCENT | MLS_ABSLIGHT;
-				ent->abslight = 1;
+				ent->abslight = 255;
 				ent->frame = cl.Effects[idx].ef.Smoke.frame;
 			}
 
@@ -507,7 +507,7 @@ void CL_ParseEffect (void)
 			{
 				ent->model = Mod_ForName("models/ghost.spr", true);
 				ent->drawflags = DRF_TRANSLUCENT | MLS_ABSLIGHT;
-				ent->abslight = .5;
+				ent->abslight = 127;
 			}
 
 			if (cl.Effects[idx].type == CE_TELESMK1)
@@ -638,7 +638,7 @@ void CL_ParseEffect (void)
 			{
 				ent->model = Mod_ForName("models/axplsn_5.spr", true);
 				ent->drawflags = MLS_ABSLIGHT;
-				ent->abslight = 1;
+				ent->abslight = 255;
 			}
 			else if (cl.Effects[idx].type == CE_FBOOM)
 				ent->model = Mod_ForName("models/fboom.spr", true);
@@ -1129,12 +1129,12 @@ void CL_ParseEffect (void)
 			ent = &EffectEntities[cl.Effects[idx].ef.Star.ent1];
 			VectorCopy(cl.Effects[idx].ef.Star.origin, ent->origin);
 			ent->drawflags |= MLS_ABSLIGHT;
-			ent->abslight = 0.5;
+			ent->abslight = 127;
 			ent->angles[2] = 90;
 			if (cl.Effects[idx].type == CE_HWMISSILESTAR)
 			{
 				ent->model = Mod_ForName("models/star.mdl", true);
-				ent->scale = 0.3;
+				ent->scale = 30;
 				S_StartSound (TempSoundChannel(), 1, cl_fxsfx_mmfire,
 								ent->origin, 1, 1);
 			}
@@ -1153,8 +1153,8 @@ void CL_ParseEffect (void)
 				VectorCopy(cl.Effects[idx].ef.Star.origin, ent->origin);
 				ent->model = Mod_ForName("models/star.mdl", true);
 				ent->drawflags |= MLS_ABSLIGHT;
-				ent->abslight = 0.5;
-				ent->scale = 0.3;
+				ent->abslight = 127;
+				ent->scale = 30;
 			}
 		}
 		break;
@@ -2446,7 +2446,7 @@ void CL_UpdateEffects (void)
 			{
 				ent2= &EffectEntities[cl.Effects[idx].ef.Star.ent1];
 				VectorCopy(ent->origin, ent2->origin);
-				ent2->scale = cl.Effects[idx].ef.Star.scale;
+				ent2->scale = cl.Effects[idx].ef.Star.scale * 100;
 				ent2->angles[1] += frametime * 300;
 				ent2->angles[2] += frametime * 400;
 				CL_LinkEntity(ent2);
@@ -2457,7 +2457,7 @@ void CL_UpdateEffects (void)
 				{
 					ent2 = &EffectEntities[cl.Effects[idx].ef.Star.ent2];
 					VectorCopy(ent->origin, ent2->origin);
-					ent2->scale = cl.Effects[idx].ef.Star.scale;
+					ent2->scale = cl.Effects[idx].ef.Star.scale * 100;
 					ent2->angles[1] += frametime * -300;
 					ent2->angles[2] += frametime * -400;
 					CL_LinkEntity(ent2);

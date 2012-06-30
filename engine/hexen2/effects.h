@@ -154,8 +154,8 @@ struct EffectT
 			vec3_t origin;
 			int entity_index;
 			float time_amount;
-			int reverse;  /* Forward animation has been run,
-					 now go backwards */
+			int reverse;	/* Forward animation has been
+					   run, now go backwards */
 		} Flash;
 		struct
 		{

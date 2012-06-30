@@ -4,6 +4,20 @@ Development Progress	:
 ---------------------------
 
 2012-06-30 (SVN):
+    * hexen2, cl_effect.c (CL_ParseEffect): ent->abslight and ent->scale
+      are of int type, not float, therefore they must be not be assigned
+      normalized floating point values but integers, another old HexenII
+      bug caught by clang-3.1. Changed ent->abslight assignment from 0.2
+      to 51 for CE_ACID_MUZZFL, 1 to 255 for CE_ONFIRE, CE_FLAMESTREAM
+      and CE_ACID_EXPL, 0.5 to 127 for CE_GHOST and chunk THINGTYPE_ICE.
+    * hexenworld, cl_effect.c (CL_ParseEffect,CL_UpdateEffects): Same as
+      hexen2 counterpart. In addition, changed ent->abslight assignment
+      from 0.5 to 127 for CE_HWMISSILESTAR and CE_HWEIDOLONSTAR, changed
+      ent->scale assignments from 0.3 to 30 and multiplied the other non
+      constant floating point values by 100 for the same two enums.
+    * effects.h: Minor whitespace tidyup.
+
+2012-06-30 (SVN):
     * snd_oss.c: Coding style cleanup. Support for AFMT_S8. Reduced the
       sound device open retry sleep time to 0.3s and changed the sleep()
       call into usleep(). Test the mmap success only against MAP_FAILED,

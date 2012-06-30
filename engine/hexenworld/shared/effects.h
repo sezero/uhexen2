@@ -188,8 +188,8 @@ struct EffectT
 			vec3_t origin;
 			int entity_index;
 			float time_amount;
-			int reverse;  /* Forward animation has been run,
-					 now go backwards */
+			int reverse;	/* Forward animation has been
+					   run, now go backwards */
 		} Flash;
 		struct
 		{
@@ -223,7 +223,7 @@ struct EffectT
 			vec3_t avelocity;
 			vec3_t velocity;
 			int entity_index;
-			float time_amount;	
+			float time_amount;
 			float	scale;	/* star effects on top of missile */
 			int	scaleDir;
 			int	ent1, ent2;

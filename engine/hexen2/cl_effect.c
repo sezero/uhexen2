@@ -324,7 +324,7 @@ void CL_ParseEffect (void)
 			{
 				ent->model = Mod_ForName("models/muzzle1.spr", true);
 				ent->drawflags = DRF_TRANSLUCENT | MLS_ABSLIGHT;
-				ent->abslight = 0.2;
+				ent->abslight = 51;
 			}
 			else if (cl.Effects[idx].type == CE_FLAMEWALL)
 				ent->model = Mod_ForName("models/firewal1.spr", true);
@@ -342,7 +342,7 @@ void CL_ParseEffect (void)
 					ent->model = Mod_ForName("models/firewal3.spr", true);
 
 				ent->drawflags = DRF_TRANSLUCENT;
-				ent->abslight = 1;
+				ent->abslight = 255;
 				ent->frame = cl.Effects[idx].ef.Smoke.frame;
 			}
 
@@ -354,7 +354,7 @@ void CL_ParseEffect (void)
 			if (cl.Effects[idx].type == CE_FLAMESTREAM)
 			{
 				ent->drawflags = DRF_TRANSLUCENT | MLS_ABSLIGHT;
-				ent->abslight = 1;
+				ent->abslight = 255;
 				ent->frame = cl.Effects[idx].ef.Smoke.frame;
 			}
 
@@ -362,7 +362,7 @@ void CL_ParseEffect (void)
 			{
 				ent->model = Mod_ForName("models/ghost.spr", true);
 				ent->drawflags = DRF_TRANSLUCENT | MLS_ABSLIGHT;
-				ent->abslight = .5;
+				ent->abslight = 127;
 			}
 		}
 		else
@@ -465,7 +465,7 @@ void CL_ParseEffect (void)
 			{
 				ent->model = Mod_ForName("models/axplsn_5.spr", true);
 				ent->drawflags = MLS_ABSLIGHT;
-				ent->abslight = 1;
+				ent->abslight = 255;
 			}
 			else if (cl.Effects[idx].type == CE_FBOOM)
 				ent->model = Mod_ForName("models/fboom.spr", true);
@@ -886,7 +886,7 @@ void CL_ParseEffect (void)
 					ent->skinnum = 0;
 					ent->frame = rand() % 2;
 					ent->drawflags |= DRF_TRANSLUCENT|MLS_ABSLIGHT;
-					ent->abslight = 0.5;
+					ent->abslight = 127;
 				}
 				else if (cl.Effects[idx].ef.Chunk.type == THINGTYPE_METEOR)
 				{
