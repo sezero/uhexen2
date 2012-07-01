@@ -1,7 +1,7 @@
 Hammer of Thyrion (uHexen2) release notes:
 
 ========================================================================
-Changes in v1.5.4: (June 30, 2012.)
+Changes in v1.5.4: (July 01, 2012.)
 ========================================================================
 
 - OpenGL:  Fixed screen flickering resulting from progress bars drawing

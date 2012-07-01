@@ -471,7 +471,7 @@ static void SV_BeginDownload_f(void)
 		// leading dot is no good
 		|| *name == '.'
 		// leading slash bad as well, must be in subdir
-		|| *name == '/'
+		|| *name == '/' || *name == '\\'
 		// next up, skin check
 		|| (strncmp(name, "skins/", 6) == 0 && !allow_download_skins.integer)
 		// now models
@@ -482,7 +482,7 @@ static void SV_BeginDownload_f(void)
 		|| (strncmp(name, "maps/", 6) == 0 && !allow_download_maps.integer)
 		// MUST be in a subdirectory
 		|| !strstr (name, "/") )
-	{	// don't allow anything with .. path
+	{
 		MSG_WriteByte (&host_client->netchan.message, svc_download);
 		MSG_WriteShort (&host_client->netchan.message, -1);
 		MSG_WriteByte (&host_client->netchan.message, 0);

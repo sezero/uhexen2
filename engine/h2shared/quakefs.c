@@ -411,9 +411,9 @@ void FS_Gamedir (const char *dir)
 {
 	searchpath_t	*next;
 
-	if (strstr(dir, "..") || FIND_FIRST_DIRSEP(dir) || HAS_DRIVE_SPEC(dir))
+	if (strstr(dir, "..") || strstr(dir, "/") || strstr(dir, "\\") || strstr(dir, ":"))
 	{
-		Sys_Printf ("Gamedir should be a single directory name, not a path\n");
+		Con_Printf ("gamedir should be a single directory name, not a path\n");
 		return;
 	}
 
@@ -463,7 +463,7 @@ void FS_Gamedir (const char *dir)
 # endif /* HWSV */
 #else	/* hexen2 case: */
 	/* hw is reserved for hexenworld only. hexen2 shouldn't use it */
-		Sys_Printf ("WARNING: Gamedir not set to hw :\n"
+		Con_Printf ("WARNING: Gamedir not set to hw :\n"
 			    "It is reserved for HexenWorld.\n");
 #endif	/* H2W */
 		return;

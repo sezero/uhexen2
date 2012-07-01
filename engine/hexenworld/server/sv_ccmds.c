@@ -772,7 +772,7 @@ Sets the fake *gamedir to a different directory.
 */
 static void SV_Gamedir (void)
 {
-	const char		*dir;
+	const char	*dir;
 
 	if (Cmd_Argc() == 1)
 	{
@@ -787,10 +787,9 @@ static void SV_Gamedir (void)
 	}
 
 	dir = Cmd_Argv(1);
-
-	if (strstr(dir, "..") || FIND_FIRST_DIRSEP(dir) || HAS_DRIVE_SPEC(dir))
+	if (strstr(dir, "..") || strstr(dir, "/") || strstr(dir, "\\") || strstr(dir, ":"))
 	{
-		Con_Printf ("*Gamedir should be a single filename, not a path\n");
+		Con_Printf ("gamedir should be a single directory name, not a path\n");
 		return;
 	}
 
@@ -873,8 +872,6 @@ Sets the gamedir and path to a different directory.
 */
 static void SV_Gamedir_f (void)
 {
-	const char		*dir;
-
 	if (Cmd_Argc() == 1)
 	{
 		Con_Printf ("Current gamedir: %s\n", FS_GetGamedir());
@@ -887,18 +884,7 @@ static void SV_Gamedir_f (void)
 		return;
 	}
 
-	dir = Cmd_Argv(1);
-
-	if (strstr(dir, "..") || FIND_FIRST_DIRSEP(dir) || HAS_DRIVE_SPEC(dir))
-	{
-		Con_Printf ("Gamedir should be a single filename, not a path\n");
-		return;
-	}
-
-	FS_Gamedir (dir);
-
-// *gamedir is now changed in FS_Gamedir()
-//	Info_SetValueForStarKey (svs.info, "*gamedir", dir, MAX_SERVERINFO_STRING);
+	FS_Gamedir (Cmd_Argv(1));		// also sets *gamedir
 }
 
 

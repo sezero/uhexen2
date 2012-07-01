@@ -3,6 +3,15 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2012-07-01 (SVN):
+    * SV_Gamedir, SV_Gamedir_f, FS_Gamedir: Reverted bad gamedir checks
+      using filenames.h macros and went back to explicitly searching the
+      unwanted slash, backslash and colon characters. In FS_Gamedir, use
+      Con_Printf and not Sys_Printf as it can be called when the game is
+      alive, at least for hexenworld. In SV_BeginDownload_f, added names
+      with a leading backslash to the list of rejected names.
+    * updated version date stamp to 2012-07-01.
+
 2012-06-30 (SVN):
     * updated the ReleaseNotes file.
 
