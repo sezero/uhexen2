@@ -157,7 +157,7 @@ static	char	csum[CHECKSUM_SIZE+1];
 #define	XD3_VERSION_SVN		342
 #define	HOT_VERSION_MAJ		1
 #define	HOT_VERSION_MID		5
-#define	HOT_VERSION_MIN		4
+#define	HOT_VERSION_MIN		5
 
 #define	H2PATCH_SRCWINSZ	(1<<23)	/* 8 MB is enough */
 
