@@ -4,6 +4,10 @@ Development Progress	:
 ---------------------------
 
 2012-07-05 (SVN):
+    * h2/windows: Removed hooks for QHOST, which is (was) a proprietery
+      server management tool by Xoanan.
+
+2012-07-05 (SVN):
     * Incremented engine version to 1.5.5 and datestamp to 2012-07-05 in
       the development tree.
 

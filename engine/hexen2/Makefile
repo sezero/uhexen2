@@ -803,14 +803,14 @@ else
 SYSOBJ_SOFT_VID:= vid_win.o
 endif
 SYSOBJ_NET := net_win.o net_wins.o net_wipx.o
-SYSOBJ_SYS := conproc.o sys_win.o win32res.res
+SYSOBJ_SYS := sys_win.o win32res.res
 endif
 ifeq ($(TARGET_OS),win64)
 SYSOBJ_INPUT := in_win.o
 SYSOBJ_GL_VID:= gl_vidnt.o
 SYSOBJ_SOFT_VID:= vid_win.o
 SYSOBJ_NET := net_win.o net_wins.o net_wipx.o
-SYSOBJ_SYS := conproc.o sys_win.o win32res.res
+SYSOBJ_SYS := sys_win.o win32res.res
 endif
 ifeq ($(TARGET_OS),dos)
 SYSOBJ_INPUT := in_dos.o

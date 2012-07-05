@@ -25,7 +25,6 @@
 #include "winquake.h"
 #include <mmsystem.h>
 #include "resource.h"
-#include "conproc.h"
 #include "debuglog.h"
 
 
@@ -54,9 +53,6 @@ static qboolean		sc_return_on_enter = false;
 static HANDLE		hinput, houtput;
 
 static HANDLE	tevent;
-static HANDLE	hFile;
-static HANDLE	heventParent;
-static HANDLE	heventChild;
 
 static volatile int	sys_checksum;
 
@@ -331,9 +327,6 @@ void Sys_Error (const char *error, ...)
 		MessageBox(NULL, text, ENGINE_NAME " Error", MB_OK | MB_SETFOREGROUND | MB_ICONSTOP);
 	}
 
-// shut down QHOST hooks if necessary
-	DeinitConProc ();
-
 	exit (1);
 }
 
@@ -359,9 +352,6 @@ void Sys_Quit (void)
 
 	if (isDedicated)
 		FreeConsole ();
-
-// shut down QHOST hooks if necessary
-	DeinitConProc ();
 
 	exit (0);
 }
@@ -779,38 +769,8 @@ int WINAPI WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 	}
 
 	tevent = CreateEvent(NULL, FALSE, FALSE, NULL);
-
 	if (!tevent)
 		Sys_Error ("Couldn't create event");
-
-	if (isDedicated)
-	{
-	/* give QHOST a chance to hook into the console */
-#		if !defined(_WIN64)
-#		 define a_to_intptr	 atoi
-#		else
-#		 define a_to_intptr	_atoi64
-#		endif	/* _WIN64 */
-		i = COM_CheckParm ("-HFILE");
-		if (i && i < com_argc-1)
-		{
-			hFile = (HANDLE)a_to_intptr(com_argv[i+1]);
-		}
-
-		i = COM_CheckParm ("-HPARENT");
-		if (i && i < com_argc-1)
-		{
-			heventParent = (HANDLE)a_to_intptr(com_argv[i+1]);
-		}
-
-		i = COM_CheckParm ("-HCHILD");
-		if (i && i < com_argc-1)
-		{
-			heventChild = (HANDLE)a_to_intptr(com_argv[i+1]);
-		}
-
-		InitConProc (hFile, heventParent, heventChild);
-	}
 
 	Sys_Init ();
 
