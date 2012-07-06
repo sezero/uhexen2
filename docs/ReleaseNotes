@@ -1,8 +1,10 @@
 Hammer of Thyrion (uHexen2) release notes:
 
 ========================================================================
-Changes in v1.5.5: (July 05, 2012.)
+Changes in v1.5.5: (July 06, 2012.)
 ========================================================================
+
+- MorphOS fixes: added missing -noixemul to CPPFLAGS.
 
 - Windows:  Removed hooks for QHOST, which is (was) a proprietery server
   administation tool.

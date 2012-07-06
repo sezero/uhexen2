@@ -65,6 +65,10 @@ CFLAGS  += -DWIN32_LEAN_AND_MEAN
 INCLUDES+= -I$(OSLIBS)/windows
 LDFLAGS += -mconsole
 endif
+ifeq ($(HOST_OS),morphos)
+CFLAGS  += -noixemul
+LDFLAGS += -noixemul
+endif
 ifeq ($(TARGET_OS),unix)
 # nothing else needed
 endif

@@ -3,6 +3,11 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2012-07-06 (SVN):
+    * Added -noixemul to CPPFLAGS for MorphOS in all of the Makefiles.
+      For h2patch, added new Makefile.amiga for AmigaOS and MorphOS.
+    * updated version date stamp to 2012-07-06.
+
 2012-07-05 (SVN):
     * h2/windows: Removed hooks for QHOST, which is (was) a proprietery
       server management tool by Xoanan.

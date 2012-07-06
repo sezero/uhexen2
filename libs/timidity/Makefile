@@ -21,14 +21,8 @@ LIBS_DIR:=$(UHEXEN2_TOP)/libs
 # local directory for os-specific headers and libraries
 OSLIBS:=$(UHEXEN2_TOP)/oslibs
 
-CC ?= gcc
-ifeq ($(origin CC),default)
-# refuse the stupid 'cc' default of make
-# which not necessarily exist everywhere
-CC  = gcc
-endif
-AR ?= ar
-RANLIB ?= ranlib
+# include the common dirty stuff
+include $(UHEXEN2_TOP)/scripts/makefile.inc
 
 CFLAGS += -g -Wall
 ifndef DEBUG
@@ -43,6 +37,10 @@ USE_DLS = no
 
 ifeq ($(USE_DLS),yes)
 CFLAGS += -DTIMIDITY_USE_DLS
+endif
+
+ifeq ($(HOST_OS),morphos)
+CFLAGS += -noixemul
 endif
 
 INCLUDES= -I. -I$(LIBS_DIR)/common

@@ -68,6 +68,10 @@ INCLUDES+= -I$(OSLIBS)/windows
 # default 2 MB stack is not enough
 LDFLAGS += -mconsole -Wl,--stack,4194304
 endif
+ifeq ($(HOST_OS),morphos)
+CFLAGS  += -noixemul
+LDFLAGS += -noixemul
+endif
 ifeq ($(TARGET_OS),unix)
 LDLIBS  += -lm
 endif

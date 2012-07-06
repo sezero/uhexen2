@@ -94,6 +94,7 @@ endif
 endif
 
 ifeq ($(HOST_OS),morphos)
+CPPFLAGS+= -noixemul
 LDFLAGS += -noixemul
 endif
 
