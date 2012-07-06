@@ -5,7 +5,8 @@ Development Progress	:
 
 2012-07-06 (SVN):
     * Added -noixemul to CPPFLAGS for MorphOS in all of the Makefiles.
-      For h2patch, added new Makefile.amiga for AmigaOS and MorphOS.
+      For h2patch, added new Makefile.amiga for AmigaOS and MorphOS
+      builds.
     * updated version date stamp to 2012-07-06.
 
 2012-07-05 (SVN):
@@ -16,7 +17,7 @@ Development Progress	:
     * Incremented engine version to 1.5.5 and datestamp to 2012-07-05 in
       the development tree.
 
-2012-07-01 (SVN):
+2012-07-01 (1.5.4-final / SVN):
     * SV_Gamedir, SV_Gamedir_f, FS_Gamedir: Reverted bad gamedir checks
       using filenames.h macros and went back to explicitly searching the
       unwanted slash, backslash and colon characters. In FS_Gamedir, use
