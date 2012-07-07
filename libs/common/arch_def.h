@@ -101,7 +101,7 @@
     defined(__OpenBSD__) || defined(__NetBSD__)			|| \
     defined(__hpux) || defined(__hpux__) || defined(_hpux)	|| \
     defined(__sun) || defined(sun) || defined(__IRIX__)		|| \
-    defined(__QNX__)
+    defined(__GNU__) /* GNU/Hurd */ || defined(__QNX__)
 #   if !defined(PLATFORM_UNIX)
 #	define	PLATFORM_UNIX		1
 #   endif
@@ -160,6 +160,8 @@
 #	define	PLATFORM_STRING	"Irix"
 #elif defined(PLATFORM_RISCOS)
 #	define	PLATFORM_STRING	"RiscOS"
+#elif defined(__GNU__)
+#	define	PLATFORM_STRING	"GNU/Hurd"
 #elif defined(PLATFORM_UNIX)
 #	define	PLATFORM_STRING	"Unix"
 #else

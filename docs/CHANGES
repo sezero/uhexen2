@@ -4,6 +4,9 @@ Development Progress	:
 ---------------------------
 
 2012-07-07 (SVN):
+    * arch_def.h: Added GNU/Hurd defs.
+
+2012-07-07 (SVN):
     * gl_vidnt.c, gl_vidsdl.c: Moved the glColorTableEXT definitions to
       gl_func.h.
 
