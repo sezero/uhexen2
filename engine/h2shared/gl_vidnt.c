@@ -200,8 +200,6 @@ GLfloat		gl_max_anisotropy;
 float		gldepthmin, gldepthmax;
 
 // palettized textures
-typedef void	(APIENTRY *glColorTableEXT_f)(int, int, int, int, int, const void*);
-static	glColorTableEXT_f  glColorTableEXT_fp;
 static qboolean	have8bit = false;
 qboolean	is8bit = false;
 static cvar_t	vid_config_gl8bit = {"vid_config_gl8bit", "0", CVAR_ARCHIVE};
@@ -571,7 +569,6 @@ static void VID_Init8bitPalette (void)
 
 	have8bit = false;
 	is8bit = false;
-	glColorTableEXT_fp = NULL;
 
 	if (strstr(gl_extensions, "GL_EXT_shared_texture_palette"))
 	{
@@ -847,7 +844,6 @@ static void GL_ResetFunctions (void)
 
 	have8bit = false;
 	is8bit = false;
-	glColorTableEXT_fp = NULL;
 
 	gl_has_NPOT = false;
 	gl_tex_NPOT = false;

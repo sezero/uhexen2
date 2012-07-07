@@ -4,6 +4,10 @@ Development Progress	:
 ---------------------------
 
 2012-07-07 (SVN):
+    * gl_vidnt.c, gl_vidsdl.c: Moved the glColorTableEXT definitions to
+      gl_func.h.
+
+2012-07-07 (SVN):
     * updated version date stamp to 2012-07-07.
 
 2012-07-07 (SVN):
