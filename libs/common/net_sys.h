@@ -1,6 +1,5 @@
 /*
- * net_sys.h
- * common network system header
+ * net_sys.h -- common network system header.
  * - depends on arch_def.h
  * - may depend on q_stdinc.h
  *
@@ -36,7 +35,7 @@
     defined(__OpenBSD__) || defined(__NetBSD__)		|| \
     defined(PLATFORM_AMIGA) /* bsdsocket.library */	|| \
     defined(__MACOSX__)  || defined(__FreeBSD_kernel__)	|| \
-    defined(__riscos__)
+    defined(__GNU__) /* GNU/Hurd */ || defined(__riscos__)
 /* struct sockaddr has unsigned char sa_len as the first member in BSD
  * variants and the family member is also an unsigned char instead of an
  * unsigned short. This should matter only when PLATFORM_UNIX is defined,
@@ -178,6 +177,7 @@ COMPILE_TIME_ASSERT(sockaddr, offsetof(struct sockaddr, sa_family) == SA_FAM_OFF
 /* our local headers : */
 #include "dos/dos_inet.h"
 #include "dos/dos_sock.h"
+
 #else	/* USE_WATT32 */
 /* Waterloo TCP defines INVALID_SOCKET and SOCKET_ERROR.
  * It uses ioctlsocket and closesocket, similar to WinSock.

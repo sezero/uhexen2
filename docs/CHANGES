@@ -3,6 +3,10 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2012-07-07 (SVN):
+    * net_sys.h: GNU/Hurd has BSD-style struct sockaddr too (reported
+      by Svante Signell in debian bug #657793.)
+
 2012-07-06 (SVN):
     * Added -noixemul to CPPFLAGS for MorphOS in all of the Makefiles.
       For h2patch, added new Makefile.amiga for AmigaOS and MorphOS
