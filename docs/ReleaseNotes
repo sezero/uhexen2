@@ -1,7 +1,7 @@
 Hammer of Thyrion (uHexen2) release notes:
 
 ========================================================================
-Changes in v1.5.5: (July 06, 2012.)
+Changes in v1.5.5: (July 07, 2012.)
 ========================================================================
 
 - Windows:  Removed hooks for QHOST, which is (was) a proprietery server
@@ -48,7 +48,7 @@ Changes in v1.5.4: (July 01, 2012.)
 - Mouse (DOS): Wheel is now detected and used by default. Use "-nowheel"
   command line switch to disable it.
 
-- Mouse (DOS): Pausing the game, moving the mouse and then unpausing it,
+- Mouse (DOS): Pausing the game, moving the mouse and then unpausing it
   doesn't change the view angle anymore.
 
 - All platforms, gameplay: Fixed a rare crash in the ambient fish hcode.

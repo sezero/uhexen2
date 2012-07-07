@@ -4,6 +4,9 @@ Development Progress	:
 ---------------------------
 
 2012-07-07 (SVN):
+    * updated version date stamp to 2012-07-07.
+
+2012-07-07 (SVN):
     * net_sys.h: GNU/Hurd has BSD-style struct sockaddr too (reported
       by Svante Signell in debian bug #657793.)
 
