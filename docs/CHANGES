@@ -3,6 +3,9 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2012-07-08 (SVN):
+    * Updated documentation for supported platforms and separate ports.
+
 2012-07-07 (SVN):
     * arch_def.h: Added GNU/Hurd defs.
 

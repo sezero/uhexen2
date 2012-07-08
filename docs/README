@@ -718,17 +718,8 @@ CVS Repository (old)	: http://uhexen2.cvs.sourceforge.net/uhexen2/
 3.5.2  Hammer of Thyrion ports:
 -------------------------------
 
-MorphOS port:
-http://www.binaryriot.org/users/kiero/
-http://aminet.net/package/game/shoot/GLHexen2
-
 AmigaOS4 port:
 http://os4depot.net/?function=showfile&file=game/roleplaying/uhexen2.lha
-
-AROS port:
-http://wizard2k8.uw.hu/aros.html
-http://aros-exec.org/modules/newbb/viewtopic.php?forum=4&topic_id=6903
-http://archives.aros-exec.org/
 
 GP2X port:
 http://www.gp32x.com/board/index.php?showtopic=40562
@@ -741,8 +732,8 @@ http://dl.openhandhelds.org/cgi-bin/pandora.cgi?0,0,0,0,30,66
 PalmOS port: http://www.metaviewsoft.de/
 
 RISC OS port:
+http://www.riscository.com/2012/hexen-ii-port-released/
 http://www.iconbar.com/forums/viewthread.php?threadid=8455&page=1#120298
-http://www.cgransden.co.uk/hexen2.zip
 
 3.5.3  Hammer of Thyrion packages / builds:
 -------------------------------------------
@@ -783,6 +774,8 @@ Hexen II Mac port : http://macglquake.sourceforge.net/
 Hexen II Dreamcast: http://dcquake.sourceforge.net/
 JSHexen II	  : http://jurajstyk.host.sk/
 Pa3PyX's Hexen II : http://pa3pyx.dnsalias.org/
+Kiero's old MorphOS port of Hammer of Thyrion:
+		    http://www.binaryriot.org/users/kiero/
 
 3.5.6  Other links:
 -------------------
