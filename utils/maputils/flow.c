@@ -58,7 +58,7 @@ void PrintStats (void)
 
 static double ComputeBoundingSphere (winding_t *source,vec3_t c)
 {
-	int		i;
+	int	i;
 	double	r, tr;
 	vec3_t	dif;
 
@@ -156,13 +156,13 @@ flipclip should be set.
 */
 static winding_t *ClipToSeperators (winding_t *source, winding_t *pass, winding_t *target, qboolean flipclip)
 {
-	int			i, j, k, l;
+	int		i, j, k, l;
 	plane_t		plane;
 	vec3_t		v1, v2;
 	float		d;
 	double		length;
-	int			counts[3];
-	qboolean		fliptest;
+	int		counts[3];
+	qboolean	fliptest;
 
 // check all combinations
 	if (GilMode)
@@ -319,9 +319,9 @@ static void RecursiveLeafFlow (int leafnum, threaddata_t *thread, pstack_t *prev
 	plane_t		backplane;
 	winding_t	*source, *target;
 	leaf_t		*leaf;
-	int			i, j;
+	int		i, j;
 	long		*test, *might, *vis;
-	qboolean		more;
+	qboolean	more;
 
 	c_chains++;
 
@@ -339,7 +339,7 @@ static void RecursiveLeafFlow (int leafnum, threaddata_t *thread, pstack_t *prev
 	stack.next = NULL;
 	stack.leaf = leaf;
 	stack.portal = NULL;
-	stack.mightsee = (byte *) malloc(bitbytes);
+	stack.mightsee = (byte *) SafeMalloc(bitbytes);
 	might = (long *)stack.mightsee;
 	vis = (long *)thread->leafvis;
 
@@ -490,8 +490,7 @@ void PortalFlow (portal_t *p)
 		COM_Error ("%s: reflowed", __thisfunc__);
 	p->status = stat_working;
 
-	p->visbits = (byte *) malloc (bitbytes);
-	memset (p->visbits, 0, bitbytes);
+	p->visbits = (byte *) SafeMalloc (bitbytes);
 
 	memset (&data, 0, sizeof(data));
 	data.leafvis = p->visbits;
@@ -536,7 +535,7 @@ static void SimpleFlood (portal_t *srcportal, int leafnum)
 	for (i = 0 ; i < leaf->numportals ; i++)
 	{
 		p = leaf->portals[i];
-		if ( !portalsee[ p - portals ] )
+		if (!portalsee[p - portals])
 			continue;
 		SimpleFlood (srcportal, p->leaf);
 	}
@@ -550,7 +549,7 @@ BasePortalVis
 */
 void BasePortalVis (void)
 {
-	int			i, j, k;
+	int		i, j, k;
 	portal_t	*tp, *p;
 	float		d;
 	winding_t	*w;
@@ -558,8 +557,7 @@ void BasePortalVis (void)
 
 	for (i = 0, p = portals ; i < num2 ; i++, p++)
 	{
-		p->mightsee = (byte *) malloc (bitbytes);
-		memset (p->mightsee, 0, bitbytes);
+		p->mightsee = (byte *) SafeMalloc (bitbytes);
 
 		c_portalsee = 0;
 		memset (portalsee, 0, num2);

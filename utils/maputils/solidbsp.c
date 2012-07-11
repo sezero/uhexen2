@@ -590,7 +590,7 @@ static void LinkConvexFaces (surface_t *planelist, node_t *leafnode)
 // write the list of faces, and free the originals
 //
 	leaffaces += count;
-	leafnode->markfaces = (face_t **) malloc(sizeof(face_t *)*(count+1));
+	leafnode->markfaces = (face_t **) SafeMalloc(sizeof(face_t *)*(count+1));
 	i = 0;
 	for (surf = planelist ; surf ; surf = pnext)
 	{

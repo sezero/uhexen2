@@ -164,7 +164,7 @@ winding_t *CopyWinding (winding_t *w)
 	winding_t	*c;
 
 	size = (size_t)((winding_t *)0)->points[w->numpoints];
-	c = (winding_t *) malloc (size);
+	c = (winding_t *) SafeMalloc (size);
 	memcpy (c, w, size);
 	return c;
 }
@@ -440,8 +440,7 @@ winding_t *NewWinding (int points)
 //		c_peakwindings = c_activewindings;
 
 	size = (size_t)((winding_t *)0)->points[points];
-	w = (winding_t *) malloc (size);
-	memset (w, 0, size);
+	w = (winding_t *) SafeMalloc (size);
 
 	return w;
 }
@@ -467,8 +466,7 @@ face_t *AllocFace (void)
 //	if (c_activefaces > c_peakfaces)
 //		c_peakfaces = c_activefaces;
 
-	f = (face_t *) malloc (sizeof(face_t));
-	memset (f, 0, sizeof(face_t));
+	f = (face_t *) SafeMalloc (sizeof(face_t));
 	f->planenum = -1;
 
 	return f;
@@ -478,7 +476,7 @@ face_t *AllocFace (void)
 void FreeFace (face_t *f)
 {
 //	c_activefaces--;
-	//memset (f,0xff,sizeof(face_t));
+//	memset (f,0xff,sizeof(face_t));
 	free (f);
 }
 
@@ -492,8 +490,7 @@ surface_t *AllocSurface (void)
 {
 	surface_t	*s;
 
-	s = (surface_t *) malloc (sizeof(surface_t));
-	memset (s, 0, sizeof(surface_t));
+	s = (surface_t *) SafeMalloc (sizeof(surface_t));
 
 //	c_activesurfaces++;
 //	if (c_activesurfaces > c_peaksurfaces)
@@ -521,8 +518,7 @@ portal_t *AllocPortal (void)
 //	if (c_activeportals > c_peakportals)
 //		c_peakportals = c_activeportals;
 
-	p = (portal_t *) malloc (sizeof(portal_t));
-	memset (p, 0, sizeof(portal_t));
+	p = (portal_t *) SafeMalloc (sizeof(portal_t));
 
 	return p;
 }
@@ -543,8 +539,7 @@ node_t *AllocNode (void)
 {
 	node_t  *n;
 
-	n = (node_t *) malloc (sizeof(node_t));
-	memset (n, 0, sizeof(node_t));
+	n = (node_t *) SafeMalloc (sizeof(node_t));
 
 	return n;
 }
@@ -558,8 +553,7 @@ brush_t *AllocBrush (void)
 {
 	brush_t	*b;
 
-	b = (brush_t *) malloc (sizeof(brush_t));
-	memset (b, 0, sizeof(brush_t));
+	b = (brush_t *) SafeMalloc (sizeof(brush_t));
 
 	return b;
 }
@@ -1194,8 +1188,6 @@ int main (int argc, char **argv)
 		strcat(gargs," ");
 	}
 #endif
-
-//	malloc_debug (15);
 
 //
 // let forked processes change name for ps status

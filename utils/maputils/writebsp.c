@@ -388,7 +388,7 @@ static void TEX_InitFromWad (const char *path)
 	int			i;
 	wadlist_t	*wl;
 
-	wl = (wadlist_t *) malloc (sizeof(wadlist_t));
+	wl = (wadlist_t *) SafeMalloc (sizeof(wadlist_t));
 	wl->next = wadlist;
 	wadlist = wl;
 
@@ -399,7 +399,7 @@ static void TEX_InitFromWad (const char *path)
 	wl->wadinfo.numlumps = LittleLong(wl->wadinfo.numlumps);
 	wl->wadinfo.infotableofs = LittleLong(wl->wadinfo.infotableofs);
 	fseek (wl->texfile, wl->wadinfo.infotableofs, SEEK_SET);
-	wl->lumpinfo = (lumpinfo_t *) malloc(wl->wadinfo.numlumps*sizeof(lumpinfo_t));
+	wl->lumpinfo = (lumpinfo_t *) SafeMalloc(wl->wadinfo.numlumps*sizeof(lumpinfo_t));
 	SafeRead (wl->texfile, wl->lumpinfo, wl->wadinfo.numlumps*sizeof(lumpinfo_t));
 
 	for (i = 0 ; i < wl->wadinfo.numlumps ; i++)

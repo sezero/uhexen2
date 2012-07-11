@@ -905,9 +905,7 @@ static void ReadModel(const char *FileName)
 	for (i = 0 ; i < model.numskins ; i++)
 	{
 		SafeRead (FH, &skins[i].type, sizeof(skins[i].type));
-
-		skins[i].pdata = malloc (model.skinwidth * model.skinheight);
-
+		skins[i].pdata = SafeMalloc (model.skinwidth * model.skinheight);
 		SafeRead (FH, skins[i].pdata, model.skinwidth * model.skinheight);
 	}
 
@@ -1262,9 +1260,7 @@ static void Cmd_Skin (void)
 			(int)scw, (int)sch);
 	}
 
-	skins[skincount].pdata = malloc (model.skinwidth * model.skinheight);
-	if (!skins[skincount].pdata)
-		COM_Error ("couldn't get memory for skin texture");
+	skins[skincount].pdata = SafeMalloc (model.skinwidth * model.skinheight);
 
 	// Copy skinwidth*skinheight, since PCXs are always
 	// loaded as 640x480 bitmaps
@@ -1849,12 +1845,8 @@ static void LoadPCXSkin(const char *filename, byte **buffer)
 	}
 
 	// Allocate page
-	if ((dst = (byte *) malloc(SKINPAGE_SIZE)) == NULL)
-	{
-		COM_Error("Failed to allocate memory for skin page.\n");
-	}
+	dst = (byte *) SafeMalloc(SKINPAGE_SIZE));
 	*buffer = dst;
-	memset(dst, 0, SKINPAGE_SIZE);
 
 	// Decompress
 	for (src = &pcx->data, i = 0; i < SKINPAGE_HEIGHT;

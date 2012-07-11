@@ -4,6 +4,10 @@ Development Progress	:
 ---------------------------
 
 2012-07-11 (SVN):
+    * utils: Replaced rest of the malloc() calls by SafeMalloc() in all
+      of the utils.
+
+2012-07-11 (SVN):
     * utils: Added new helper SafeStrdup(). Replaced all strdup() calls
       by SafeStrdup(). Replaced all malloc calls in [d]hcc and texutils
       by SafeMalloc() and SafeStrdup(). Reverted previous _strdup patch.

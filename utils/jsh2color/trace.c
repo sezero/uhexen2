@@ -87,7 +87,7 @@ Loads the node structure out of a .bsp file to be used for light occlusion
 */
 void MakeTnodes (dmodel_t *bm)
 {
-	tnode_p = tnodes = (tnode_t *) malloc(numnodes * sizeof(tnode_t));
+	tnode_p = tnodes = (tnode_t *) SafeMalloc(numnodes * sizeof(tnode_t));
 
 	MakeTnode (0);
 }

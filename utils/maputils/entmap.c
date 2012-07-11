@@ -180,8 +180,7 @@ static void ParseEpair (void)
 {
 	epair_t	*e;
 
-	e = malloc (sizeof(epair_t));
-	memset (e, 0, sizeof(epair_t));
+	e = (epair_t *) SafeMalloc (sizeof(epair_t));
 	e->next = ent->epairs;
 	ent->epairs = e;
 

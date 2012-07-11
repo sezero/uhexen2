@@ -168,8 +168,7 @@ void LoadEntities (void)
 			if (c == '}')
 				COM_Error ("%s: closing brace without data", __thisfunc__);
 
-			epair = (epair_t *) malloc (sizeof(epair_t));
-			memset (epair, 0, sizeof(epair_t));
+			epair = (epair_t *) SafeMalloc (sizeof(epair_t));
 			strcpy (epair->key, key);
 			strcpy (epair->value, com_token);
 			epair->next = entity->epairs;
@@ -481,7 +480,7 @@ void SetKeyValue (entity_t *ent, const char *key, const char *value)
 		}
 	}
 
-	ep = (epair_t *) malloc (sizeof(*ep));
+	ep = (epair_t *) SafeMalloc (sizeof(*ep));
 	ep->next = ent->epairs;
 	ent->epairs = ep;
 	strcpy (ep->key, key);

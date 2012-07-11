@@ -866,8 +866,7 @@ brushset_t *Brush_LoadEntity (entity_t *ent, int hullnumber)
 	int			numbrushes;
 	brushset_t	*bset;
 
-	bset = (brushset_t *) malloc (sizeof(brushset_t));
-	memset (bset, 0, sizeof(brushset_t));
+	bset = (brushset_t *) SafeMalloc (sizeof(brushset_t));
 	ClearBounds (bset);
 
 	numbrushes = 0;

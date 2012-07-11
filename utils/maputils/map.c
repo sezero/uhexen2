@@ -40,14 +40,6 @@ int			nummiptex;
 char		miptex[MAX_MAP_TEXINFO][16];
 
 
-static char *copystring (const char *s)
-{
-	char	*b;
-	b = (char *) malloc(strlen(s)+1);
-	strcpy (b, s);
-	return b;
-}
-
 //============================================================================
 
 /*
@@ -234,18 +226,17 @@ static void ParseEpair (void)
 {
 	epair_t	*e;
 
-	e = (epair_t *) malloc (sizeof(epair_t));
-	memset (e, 0, sizeof(epair_t));
+	e = (epair_t *) SafeMalloc (sizeof(epair_t));
 	e->next = mapent->epairs;
 	mapent->epairs = e;
 
 	if (strlen(token) >= MAX_KEY-1)
 		COM_Error ("%s: token too long", __thisfunc__);
-	e->key = copystring(token);
+	e->key = SafeStrdup(token);
 	GetToken (false);
 	if (strlen(token) >= MAX_VALUE-1)
 		COM_Error ("%s: token too long", __thisfunc__);
-	e->value = copystring(token);
+	e->value = SafeStrdup(token);
 }
 
 //============================================================================
@@ -438,7 +429,7 @@ static void ParseBrush (void)
 			continue;
 		}
 
-		f = (mface_t *) malloc(sizeof(mface_t));
+		f = (mface_t *) SafeMalloc(sizeof(mface_t));
 		f->next = b->faces;
 		b->faces = f;
 
@@ -677,16 +668,16 @@ void SetKeyValue (entity_t *ent, const char *key, const char *value)
 		if (!strcmp (ep->key, key) )
 		{
 			free (ep->value);
-			ep->value = copystring(value);
+			ep->value = SafeStrdup(value);
 			return;
 		}
 	}
 
-	ep = (epair_t *) malloc (sizeof(*ep));
+	ep = (epair_t *) SafeMalloc (sizeof(*ep));
 	ep->next = ent->epairs;
 	ent->epairs = ep;
-	ep->key = copystring(key);
-	ep->value = copystring(value);
+	ep->key = SafeStrdup(key);
+	ep->value = SafeStrdup(value);
 }
 
 float FloatForKey (entity_t *ent, const char *key)

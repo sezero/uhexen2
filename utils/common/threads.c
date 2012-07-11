@@ -85,7 +85,7 @@ void InitThreads (void)
 {
 	pthread_mutexattr_t	mattrib;
 
-	my_mutex = (pthread_mutex_t *) malloc (sizeof(*my_mutex));
+	my_mutex = (pthread_mutex_t *) SafeMalloc (sizeof(*my_mutex));
 	if (pthread_mutexattr_create (&mattrib) == -1)
 		COM_Error ("pthread_mutex_attr_create failed");
 	if (pthread_mutexattr_setkind_np (&mattrib, MUTEX_FAST_NP) == -1)

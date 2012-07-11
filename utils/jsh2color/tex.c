@@ -92,7 +92,7 @@ static void ParseDefFile (const char *filename)
 	num = q_max( 0, getNumLines(FH) );
 	num = q_min( num , MAX_ENTRYNUM );
 	tc_list.num = num;
-	tc_list.entries = (tex_col*) malloc(sizeof(tex_col) * num);
+	tc_list.entries = (tex_col*) SafeMalloc(sizeof(tex_col) * num);
 
 	while (fgets(line, sizeof(line), FH) != NULL)
 	{

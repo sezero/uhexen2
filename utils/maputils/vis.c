@@ -159,8 +159,7 @@ static winding_t *OldNewWinding (int points)
 		COM_Error ("%s: %i points", __thisfunc__, points);
 
 	size = (size_t)((winding_t *)0)->points[points];
-	w = (winding_t *) malloc (size);
-//	memset (w, 0, size);
+	w = (winding_t *) SafeMalloc (size);
 	w->fixedsize = 0;
 	w->original = 0;
 	w->numpoints = 0;
@@ -220,8 +219,7 @@ winding_t *NewWinding (int points)
 		COM_Error ("%s: %i points", __thisfunc__, points);
 
 	size = (size_t)((winding_t *)0)->points[points];
-	w = (winding_t *) malloc (size);
-	memset (w, 0, size);
+	w = (winding_t *) SafeMalloc (size);
 
 	return w;
 }
@@ -271,7 +269,7 @@ winding_t *CopyWinding (winding_t *w)
 
 	size = (size_t)((winding_t *)0)->points[w->numpoints];
 
-//	c = (winding_t *) malloc (size);
+//	c = (winding_t *) SafeMalloc (size);
 	c = NewWinding(w->numpoints);
 	memcpy (c, w, size);
 	c->original = false;
@@ -678,7 +676,7 @@ static void CalcPortalVis (void)
 	pthread_mutexattr_t	mattrib;
 	int		i;
 
-	my_mutex = (pthread_mutex_t *) malloc (sizeof(*my_mutex));
+	my_mutex = (pthread_mutex_t *) SafeMalloc (sizeof(*my_mutex));
 	if (pthread_mutexattr_create (&mattrib) == -1)
 		COM_Error ("pthread_mutex_attr_create failed");
 	if (pthread_mutexattr_setkind_np (&mattrib, MUTEX_FAST_NP) == -1)
@@ -880,7 +878,7 @@ sep_t *Findpassages (winding_t *source, winding_t *pass)
 		//
 			count_sep++;
 
-			sep = (sep_t *) malloc(sizeof(*sep));
+			sep = (sep_t *) SafeMalloc(sizeof(*sep));
 			sep->next = list;
 			list = sep;
 			sep->plane = plane;
@@ -935,11 +933,8 @@ static void LoadPortals (char *name)
 	bitlongs = bitbytes / sizeof(long);
 
 // each file portal is split into two memory portals
-	portals = (portal_t *) malloc(2 * numportals * sizeof(portal_t));
-	memset (portals, 0, 2 * numportals * sizeof(portal_t));
-
-	leafs = (leaf_t *) malloc(portalleafs * sizeof(leaf_t));
-	memset (leafs, 0, portalleafs * sizeof(leaf_t));
+	portals = (portal_t *) SafeMalloc(2 * numportals * sizeof(portal_t));
+	leafs = (leaf_t *) SafeMalloc(portalleafs * sizeof(leaf_t));
 
 	originalvismapsize = portalleafs*((portalleafs+7)/8);
 
@@ -1067,8 +1062,7 @@ int main (int argc, char **argv)
 
 	LoadPortals (portalfile);
 
-	uncompressed = (byte *) malloc(bitbytes*portalleafs);
-	memset (uncompressed, 0, bitbytes*portalleafs);
+	uncompressed = (byte *) SafeMalloc(bitbytes*portalleafs);
 
 	CalcVis ();
 
@@ -1081,7 +1075,7 @@ int main (int argc, char **argv)
 
 	WriteBSPFile (source);
 
-//	unlink (portalfile);
+//	Q_unlink (portalfile);
 	if (GilMode)
 		PrintStats();
 	end = COM_GetTime ();
