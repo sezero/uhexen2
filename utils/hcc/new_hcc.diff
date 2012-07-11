@@ -180,7 +180,7 @@ diff -urNp hcc.old/hcc.h hcc/hcc.h
 diff -urNp hcc.old/pr_comp.c hcc/pr_comp.c
 --- hcc.old/pr_comp.c
 +++ hcc/pr_comp.c
-@@ -1262,6 +1262,7 @@ static void ParseFunctionDef (def_t *def
+@@ -1253,6 +1253,7 @@ static void ParseFunctionDef (def_t *def
  	if (f->builtin)
  	{
  		df->first_statement = -f->builtin;
@@ -188,7 +188,7 @@ diff -urNp hcc.old/pr_comp.c hcc/pr_comp.c
  	}
  	else
  	{
-@@ -1351,6 +1352,7 @@ static void ParseCStyleFunctionDef (cons
+@@ -1342,6 +1343,7 @@ static void ParseCStyleFunctionDef (cons
  		if (f->builtin)
  		{
  			df->first_statement = -f->builtin;

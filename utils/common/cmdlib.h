@@ -77,6 +77,7 @@ char	*q_strupr (char *str);
 double	COM_GetTime (void);
 
 void	*SafeMalloc (size_t size);
+char	*SafeStrdup (const char *str);
 
 void	COM_Error (const char *error, ...) __attribute__((__format__(__printf__,1,2), __noreturn__));
 int	CheckParm (const char *check);

@@ -86,13 +86,7 @@ void WritePCX (const char *filename, unsigned char *data, int width, int height,
 	pcx_t	*pcx;
 	unsigned char	*pack, *dataend;
 
-	pcx = (pcx_t *) malloc (width*height*2 + 1000);
-	if (!pcx)
-	{
-		printf ("%s: unable to allocate buffer\n", __thisfunc__);
-		return;
-	}
-	memset (pcx, 0, sizeof(pcx_t));
+	pcx = (pcx_t *) SafeMalloc (width*height*2 + 1000);
 
 	pcx->manufacturer = 0x0A;	// PCX id
 	pcx->version = 5;		// 256 color
@@ -152,9 +146,8 @@ void WriteTGA (const char *filename, unsigned char *data, int width, int height,
 		// contains transparent pixels
 		// BGRA truecolor since some programs can't deal with BGRA colormaps
 		// a buffer big enough to store the worst compression ratio possible (1 extra byte per pixel)
-		buffer = (unsigned char *) malloc (18 + width*height*5);
+		buffer = (unsigned char *) SafeMalloc (18 + width*height*5);
 
-		memset (buffer, 0, 18);
 		buffer[2] = 10;		// RLE truecolor
 		buffer[12] = (width >> 0) & 0xFF;
 		buffer[13] = (width >> 8) & 0xFF;
@@ -227,9 +220,8 @@ void WriteTGA (const char *filename, unsigned char *data, int width, int height,
 	else
 	{
 #if 1
-		buffer = (unsigned char *) malloc (18 + width*height*4);
+		buffer = (unsigned char *) SafeMalloc (18 + width*height*4);
 
-		memset (buffer, 0, 18);
 		buffer[2] = 10;		// RLE truecolor
 		buffer[12] = (width >> 0) & 0xFF;
 		buffer[13] = (width >> 8) & 0xFF;
@@ -279,9 +271,8 @@ void WriteTGA (const char *filename, unsigned char *data, int width, int height,
 #else
 		// contains only opaque pixels
 		// a buffer big enough to store the worst compression ratio possible (2 bytes per pixel)
-		buffer = (unsigned char *) malloc (18 + 768 + width*height*2);
+		buffer = (unsigned char *) SafeMalloc (18 + 768 + width*height*2);
 
-		memset (buffer, 0, 18);
 		buffer[1] = 1;		// colormap type 1
 		buffer[2] = 9;		// RLE compressed colormapped
 		// colormap_index
@@ -373,13 +364,7 @@ static unsigned char *LoadLMP (const char *filename, int idx)
 		printf ("%s: \"%s\" is not a %s file\n", __thisfunc__, filename, convertdata[idx].datatype);
 		return NULL;
 	}
-	data = (unsigned char *) malloc (image_width*image_height);
-	if (!data)
-	{
-		free (lmpdata);
-		printf ("%s: unable to allocate memory for \"%s\"\n", __thisfunc__, filename);
-		return NULL;
-	}
+	data = (unsigned char *) SafeMalloc (image_width*image_height);
 	memcpy (data, (unsigned char *)lmpdata + 8, image_width*image_height);
 	free (lmpdata);
 	return data;
@@ -466,13 +451,7 @@ static unsigned char *LoadMIP (const char *filename, int idx)
 		printf ("%s: \"%s\" is not a %s file\n", __thisfunc__, filename, convertdata[idx].datatype);
 		return NULL;
 	}
-	data = (unsigned char *) malloc (image_width*image_height);
-	if (!data)
-	{
-		free (mipdata);
-		printf ("%s: unable to allocate memory for \"%s\"\n", __thisfunc__, filename);
-		return NULL;
-	}
+	data = (unsigned char *) SafeMalloc (image_width*image_height);
 	memcpy (data, (unsigned char *)mipdata + 40 + 4*shift, image_width*image_height);
 	free (mipdata);
 	return data;

@@ -3,6 +3,11 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2012-07-11 (SVN):
+    * utils: Added new helper SafeStrdup(). Replaced all strdup() calls
+      by SafeStrdup(). Replaced all malloc calls in [d]hcc and texutils
+      by SafeMalloc() and SafeStrdup(). Reverted previous _strdup patch.
+
 2012-07-10 (SVN):
     * utils: Define strdup as _strdup after all headers are included,
       M$ deprecated it.

@@ -36,9 +36,6 @@
 
 // MACROS ------------------------------------------------------------------
 
-#ifdef PLATFORM_WINDOWS
-#define strdup _strdup
-#endif
 #define	MAX_DEC_FILES	512
 
 // TYPES -------------------------------------------------------------------
@@ -696,9 +693,7 @@ static void Make_Immediate (gofs_t ofs, const char *s)
 	}
 	if (temp_val[ofs])
 		free(temp_val[ofs]);
-	temp_val[ofs] = strdup(s);
-	if (temp_val[ofs] == NULL)
-		COM_Error("%s: failed to create new string for %s\n", __thisfunc__, s);
+	temp_val[ofs] = SafeStrdup(s);
 }
 
 static char *Get_Immediate (gofs_t ofs)
@@ -993,9 +988,7 @@ static void PR_FunctionHeader (dfunction_t *df)
 	}
 
 	strcat(linetxt, ")");
-	func_headers[df - pr_functions] = strdup(linetxt);
-	if (func_headers[df - pr_functions] == NULL)
-		COM_Error ("%s: strdup failed.", __thisfunc__);
+	func_headers[df - pr_functions] = SafeStrdup(linetxt);
 }
 
 
@@ -1646,9 +1639,7 @@ static void FindBuiltinParameters (int func)
 	if (!dsf)
 	{
 		printf("NOT found!!\nsetting parameters to void\n");
-		func_headers[func] = strdup("void ()");
-		if (func_headers[func] == NULL)
-			COM_Error ("%s: strdup failed.", __thisfunc__);
+		func_headers[func] = SafeStrdup("void ()");
 		return;
 	}
 
@@ -1865,9 +1856,7 @@ static void FindBuiltinParameters (int func)
 	}
 
 	strcat(plist, ")");
-	func_headers[func] = strdup(plist);
-	if (func_headers[func] == NULL)
-		COM_Error ("%s: strdup failed.", __thisfunc__);
+	func_headers[func] = SafeStrdup(plist);
 	printf("%s%s\nin %s in file %s\n", plist, sname, pr_strings + dft->s_name, pr_strings + dft->s_file);
 }
 
@@ -2061,22 +2050,12 @@ static void Init_Dcc (void)
 	PR_FILE = stdout;
 	cfunc = NULL;
 	printassign = false;
+
 	DEC_FileCtr = 0;
 
-	func_headers = (char **) malloc (progs->numfunctions * sizeof(char *));
-	if (func_headers == NULL)
-		COM_Error ("%s: malloc failed.", __thisfunc__);
-	memset(func_headers, 0, progs->numfunctions * sizeof(char *));
-
-	temp_val = (char **) malloc (progs->numglobals * sizeof(char *));
-	if (temp_val == NULL)
-		COM_Error ("%s: malloc failed.", __thisfunc__);
-	memset(temp_val, 0, progs->numglobals * sizeof(char *));
-
-	DEC_FilesSeen = (char **) malloc (MAX_DEC_FILES * sizeof(char *));
-	if (DEC_FilesSeen == NULL)
-		COM_Error ("%s: malloc failed.", __thisfunc__);
-	memset(DEC_FilesSeen, 0, MAX_DEC_FILES * sizeof(char *));
+	func_headers = (char **) SafeMalloc (progs->numfunctions * sizeof(char *));
+	temp_val = (char **) SafeMalloc (progs->numglobals * sizeof(char *));
+	DEC_FilesSeen = (char **) SafeMalloc (MAX_DEC_FILES * sizeof(char *));
 }
 
 
@@ -2126,9 +2105,7 @@ static int DEC_AlreadySeen (const char *fname)
 	if (DEC_FileCtr >= MAX_DEC_FILES - 1)
 		COM_Error("%s: too many source files.", __thisfunc__);
 
-	new1 = strdup(fname);
-	if (new1 == NULL)
-		COM_Error ("%s: strdup failed.", __thisfunc__);
+	new1 = SafeStrdup(fname);
 	DEC_FilesSeen[DEC_FileCtr++] = new1;
 
 	return 0;

@@ -211,8 +211,7 @@ static def_t *PR_Statement ( opcode_t *op, def_t *var_a, def_t *var_b)
 	}
 	else
 	{	// allocate result space
-		var_c = (def_t *) malloc (sizeof(def_t));
-		memset (var_c, 0, sizeof(def_t));
+		var_c = (def_t *) SafeMalloc (sizeof(def_t));
 		var_c->ofs = numpr_globals;
 		var_c->type = op->type_c->type;
 
@@ -274,7 +273,7 @@ static def_t *PR_ParseImmediate (void)
 	}
 
 	// allocate a new one
-	cn = (def_t *) malloc (sizeof(def_t));
+	cn = (def_t *) SafeMalloc (sizeof(def_t));
 	cn->next = NULL;
 
 	pr.def_tail->next = cn;
@@ -906,7 +905,7 @@ static function_t *PR_ParseImmediateStatements (type_t *type)
 	function_t	*f;
 	def_t		*defs[MAX_PARMS];
 
-	f = (function_t *) malloc (sizeof(function_t));
+	f = (function_t *) SafeMalloc (sizeof(function_t));
 
 //
 // check for builtin function definition #1, #2, etc
@@ -967,7 +966,7 @@ If allocate is true, a new def will be allocated if it can't be found
 def_t *PR_GetDef (type_t *type, const char *name, def_t *scope, qboolean allocate)
 {
 	def_t		*def, **old;
-	char	element[MAX_NAME], *tmp;
+	char	element[MAX_NAME];
 
 	// see if the name is already in use
 	old = &pr.search;
@@ -993,8 +992,7 @@ def_t *PR_GetDef (type_t *type, const char *name, def_t *scope, qboolean allocat
 		return NULL;
 
 	// allocate a new def
-	def = (def_t *) malloc (sizeof(def_t));
-	memset (def, 0, sizeof(*def));
+	def = (def_t *) SafeMalloc (sizeof(def_t));
 	def->next = NULL;
 	pr.def_tail->next = def;
 	pr.def_tail = def;
@@ -1002,11 +1000,8 @@ def_t *PR_GetDef (type_t *type, const char *name, def_t *scope, qboolean allocat
 	def->search_next = pr.search;
 	pr.search = def;
 
-	tmp = (char *) malloc (strlen(name) + 1);
-	strcpy (tmp, name);
-	def->name = tmp;
+	def->name = SafeStrdup(name);
 	def->type = type;
-
 	def->scope = scope;
 
 	def->ofs = numpr_globals;
@@ -1081,7 +1076,7 @@ static void PR_InitArray (def_t *scope,int size)
 static def_t *PR_AllocateArray (type_t *type, const char *name, def_t *scope, qboolean allocate, int size)
 {
 	def_t		*def, **old;
-	char	element[MAX_NAME], *tmp;
+	char	element[MAX_NAME];
 
 	// see if the name is already in use
 	old = &pr.search;
@@ -1107,8 +1102,7 @@ static def_t *PR_AllocateArray (type_t *type, const char *name, def_t *scope, qb
 		return NULL;
 
 	// allocate a new def
-	def = (def_t *) malloc (sizeof(def_t));
-	memset (def, 0, sizeof(*def));
+	def = (def_t *) SafeMalloc (sizeof(def_t));
 	def->next = NULL;
 	pr.def_tail->next = def;
 	pr.def_tail = def;
@@ -1116,11 +1110,8 @@ static def_t *PR_AllocateArray (type_t *type, const char *name, def_t *scope, qb
 	def->search_next = pr.search;
 	pr.search = def;
 
-	tmp = (char *) malloc (strlen(name) + 1);
-	strcpy (tmp, name);
-	def->name = tmp;
+	def->name = SafeStrdup(name);
 	def->type = type;
-
 	def->scope = scope;
 	if (size > 1)
 	{

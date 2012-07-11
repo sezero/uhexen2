@@ -1042,14 +1042,13 @@ type_t *PR_FindType (type_t *type)
 	}
 
 	// Allocate a new one
-	check = (type_t *) malloc(sizeof(*check));
+	check = (type_t *) SafeMalloc(sizeof(*check));
 	*check = *type;
 	check->next = pr.types;
 	pr.types = check;
 
 	// Allocate a generic def for the type, so fields can reference it
-	def = (def_t *) malloc(sizeof(def_t));
-	memset(def, 0, sizeof(*def));
+	def = (def_t *) SafeMalloc(sizeof(def_t));
 	def->name = "COMPLEX TYPE";
 	def->type = check;
 	check->def = def;

@@ -389,7 +389,22 @@ void *SafeMalloc (size_t size)
 {
 	void *ptr = calloc(1, size);
 	if (!ptr)
-		COM_Error ("Malloc failed for %lu bytes.", (unsigned long)size);
+		COM_Error ("%s failed for %lu bytes.", __thisfunc__, (unsigned long)size);
+	return ptr;
+}
+
+/*
+==============
+SafeStrdup
+==============
+*/
+char *SafeStrdup (const char *str)
+{
+	size_t sz = strlen(str) + 1;
+	char *ptr = (char *) malloc(sz);
+	if (!ptr)
+		COM_Error ("%s failed for %lu bytes.", __thisfunc__, (unsigned long)sz);
+	memcpy (ptr, str, sz);
 	return ptr;
 }
 

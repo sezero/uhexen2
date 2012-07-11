@@ -112,8 +112,7 @@ static void WriteWALFile (char *bspfilename)
 			continue;
 		}
 
-		wt = (miptex_wal_t *) malloc (sizeof(miptex_wal_t) + pixels);
-		memset (wt, 0, sizeof(miptex_wal_t));
+		wt = (miptex_wal_t *) SafeMalloc (sizeof(miptex_wal_t) + pixels);
 
 		wt->ident = LittleLong (IDWALHEADER);
 		wt->version = LittleLong (WALVERSION);

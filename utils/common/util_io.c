@@ -56,10 +56,6 @@
 
 // MACROS ------------------------------------------------------------------
 
-#ifdef PLATFORM_WINDOWS
-#define strdup _strdup
-#endif
-
 // TYPES -------------------------------------------------------------------
 
 // EXTERNAL FUNCTION PROTOTYPES --------------------------------------------
@@ -314,12 +310,12 @@ static STRPTR pattern_helper (const char *pat)
 	}
 
 	if (n == 0)
-		pdup = strdup(pat);
+		pdup = SafeStrdup(pat);
 	else
 	{
 	/* replace each "*" by "#?" */
 		n += (int) strlen(pat) + 1;
-		pdup = (char *) malloc (n);
+		pdup = (char *) SafeMalloc (n);
 
 		for (n = 0, p = pat; *p != '\0'; ++p, ++n)
 		{
@@ -497,10 +493,8 @@ const char *Q_FindFirstFile (const char *path, const char *pattern)
 	finddir = opendir (path);
 	if (!finddir)
 		return NULL;
-	findpattern = strdup (pattern);
-	findpath = strdup (path);
-	if (!findpattern || !findpath)
-		return NULL;
+	findpattern = SafeStrdup (pattern);
+	findpath = SafeStrdup (path);
 
 	if (*findpath != '\0')
 	{
@@ -716,7 +710,7 @@ int LoadFile (const char *filename, void **bufferptr)
 
 	f = SafeOpenRead (filename);
 	length = Q_filelength (f);
-	buffer = malloc (length+1);
+	buffer = SafeMalloc (length + 1);
 	((char *)buffer)[length] = 0;
 	SafeRead(f, buffer, length);
 	fclose (f);
