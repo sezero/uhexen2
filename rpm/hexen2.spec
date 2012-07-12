@@ -60,7 +60,7 @@
 Name:		hexen2
 License:	GPLv2
 Group:		Amusements/Games
-Version:	1.5.4
+Version:	1.5.5
 Release:	1
 Summary:	Hexen II: Hammer of Thyrion
 URL:		http://uhexen2.sourceforge.net/
@@ -348,6 +348,9 @@ desktop-file-install \
 %{_prefix}/games/%{name}/docs/README.hwmaster
 
 %changelog
+* Wed Jul 11 2012 O.Sezer <sezero@users.sourceforge.net> 1.5.5-1
+- Bump version to 1.5.5
+
 * Tue Jun 18 2012 O.Sezer <sezero@users.sourceforge.net> 1.5.4-1
 - Changed --without gtk2 option to --with gtk1.
 - Removed the beta/prerelease versioning stuff.
