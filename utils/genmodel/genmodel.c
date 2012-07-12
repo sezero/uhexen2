@@ -1845,7 +1845,7 @@ static void LoadPCXSkin(const char *filename, byte **buffer)
 	}
 
 	// Allocate page
-	dst = (byte *) SafeMalloc(SKINPAGE_SIZE));
+	dst = (byte *) SafeMalloc(SKINPAGE_SIZE);
 	*buffer = dst;
 
 	// Decompress
