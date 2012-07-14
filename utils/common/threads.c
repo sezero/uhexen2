@@ -1,6 +1,6 @@
 /*
  * threads.c
- * $Id: threads.c,v 1.2 2008-12-27 19:30:06 sezero Exp $
+ * $Id$
  *
  * Copyright (C) 1996-1997  Id Software, Inc.
  *
@@ -26,8 +26,95 @@
 #include "cmdlib.h"
 #include "threads.h"
 
-#define	MAX_THREADS	32
 
+/* Thread_GetNumCPUS () -- see:
+ * http://stackoverflow.com/questions/150355/programmatically-find-the-number-of-cores-on-a-machine
+ */
+#if defined(PLATFORM_WINDOWS)
+#include <windows.h>
+int Thread_GetNumCPUS (void)
+{
+	SYSTEM_INFO info;
+	int numcpus;
+	GetSystemInfo(&info);
+	numcpus = info.dwNumberOfProcessors;
+	if (numcpus < 1)
+		numcpus = 1;
+	return numcpus;
+}
+
+#elif defined(__linux__) || defined(__SOLARIS__) || defined(_AIX)
+#include <unistd.h>
+int Thread_GetNumCPUS (void)
+{
+	int numcpus = sysconf(_SC_NPROCESSORS_ONLN);
+	if (numcpus < 1)
+		numcpus = 1;
+	return numcpus;
+}
+
+#elif defined(__MACOSX) /* needs >= 10.4 */
+#include <unistd.h>
+int Thread_GetNumCPUS (void)
+{
+	int numcpus = sysconf(_SC_NPROCESSORS_ONLN);
+	if (numcpus < 1)
+		numcpus = 1;
+	return numcpus;
+}
+
+#elif defined(__IRIX__)
+#include <unistd.h>
+int Thread_GetNumCPUS (void)
+{
+	int numcpus = sysconf(_SC_NPROC_ONLN);
+	if (numcpus < 1)
+		numcpus = 1;
+	return numcpus;
+}
+
+#elif defined(__FreeBSD__) || defined(__OpenBSD__) || defined(__NetBSD__) || defined(__DragonFly__)
+#include <sys/sysctl.h>
+int Thread_GetNumCPUS (void)
+{
+	int numcpus, mib[4];
+	size_t len = sizeof(numcpus);
+	mib[0] = CTL_HW;
+	mib[1] = HW_AVAILCPU;
+	sysctl(mib, 2, &numcpus, &len, NULL, 0);
+	if (numcpus < 1)
+	{
+		mib[1] = HW_NCPU;
+		sysctl(mib, 2, &numcpus, &len, NULL, 0);
+		if (numcpus < 1)
+			numcpus = 1;
+	}
+	return numcpus;
+}
+
+#elif defined(__hpux) || defined(__hpux__) || defined(_hpux)
+#include <sys/mpctl.h>
+int Thread_GetNumCPUS (void)
+{
+	int numcpus = mpctl(MPC_GETNUMSPUS, NULL, NULL);
+	return numcpus;
+}
+
+#elif defined(PLATFORM_DOS)
+int Thread_GetNumCPUS (void)
+{
+	return 1;
+}
+
+#else /* unknown OS */
+int Thread_GetNumCPUS (void)
+{
+	return -2;
+}
+#endif /* GetNumCPUS */
+
+
+/* THREAD FUNCTIONS: */
 
 #if defined(PLATFORM_WINDOWS)
 
@@ -46,14 +133,7 @@ static DWORD WINAPI ThreadWorkerFunc (LPVOID threadnum)
 void InitThreads (void)
 {
 	if (numthreads == -1)
-	{
-		SYSTEM_INFO	info;
-		GetSystemInfo(&info);
-		numthreads = info.dwNumberOfProcessors;
-		if (numthreads > MAX_THREADS)
-			numthreads = MAX_THREADS;
-	}
-
+		numthreads = Thread_GetNumCPUS ();
 	if (numthreads <= 1)
 		return;
 
@@ -79,7 +159,7 @@ void ThreadUnlock (void)
 RunThreadsOn
 ===============
 */
-void RunThreadsOn ( threadfunc_t func )
+void RunThreadsOn (threadfunc_t func)
 {
 	DWORD	IDThread;
 	HANDLE	work_threads[MAX_THREADS];
@@ -93,20 +173,20 @@ void RunThreadsOn ( threadfunc_t func )
 
 	workfunc = func;
 
-	for (i = 0 ; i < numthreads ; i++)
+	for (i = 0; i < numthreads; i++)
 	{
-		work_threads[i] = CreateThread(NULL,	// no security attrib
-			0x100000,			// stack size
-			ThreadWorkerFunc,		// thread function
-			(LPVOID) i,			// thread function arg
-			0,				// use default creation flags
+		work_threads[i] = CreateThread(NULL,	/* no security attrib */
+			0x100000,			/* stack size */
+			ThreadWorkerFunc,		/* thread function */
+			(LPVOID) i,			/* thread function arg */
+			0,				/* use default creation flags */
 			&IDThread);
 
 		if (work_threads[i] == NULL)
 			COM_Error ("pthread_create failed");
 	}
 
-	for (i = 0 ; i < numthreads ; i++)
+	for (i = 0; i < numthreads; i++)
 	{
 		WaitForSingleObject(work_threads[i], INFINITE);
 	}
@@ -175,7 +255,7 @@ void RunThreadsOn (threadfunc_t func)
 	for (i = 0; i < numthreads - 1; i++)
 	{
 		pid[i] = sprocsp (ThreadWorkerFunc, PR_SALL, (void *)i,
-				  NULL, 0x100000);	// 1 MB stacks
+				  NULL, 0x100000);	/* 1 MB stacks */
 		if (pid[i] == -1)
 		{
 			perror ("sproc");
@@ -260,15 +340,15 @@ void RunThreadsOn (threadfunc_t func)
 	if (pthread_attr_setstacksize (&attrib, 0x100000) == -1)
 		COM_Error ("pthread_attr_setstacksize failed");
 
-	for (i = 0 ; i < numthreads ; i++)
+	for (i = 0; i < numthreads; i++)
 	{
-		if ( pthread_create(&work_threads[i], attrib,
+		if (pthread_create(&work_threads[i], attrib,
 					ThreadWorkerFunc,
-					(pthread_addr_t)i) == -1 )
+					(pthread_addr_t)i) == -1)
 			COM_Error ("pthread_create failed");
 	}
 
-	for (i = 0 ; i < numthreads ; i++)
+	for (i = 0; i < numthreads; i++)
 	{
 		if (pthread_join (work_threads[i], &status) == -1)
 			COM_Error ("pthread_join failed");
@@ -299,8 +379,6 @@ void InitThreads (void)
 	my_mutex = (pthread_mutex_t *) SafeMalloc (sizeof (*my_mutex));
 	if (pthread_mutexattr_init (&mattrib) == -1)
 		COM_Error ("pthread_mutex_attr_init failed");
-//	if (pthread_mutexattr_setkind_np (&mattrib, MUTEX_FAST_NP) == -1)
-//		COM_Error ("pthread_mutexattr_setkind_np failed");
 	if (pthread_mutex_init (my_mutex, &mattrib) == -1)
 		COM_Error ("pthread_mutex_init failed");
 }

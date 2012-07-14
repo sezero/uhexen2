@@ -1,6 +1,6 @@
 /*
  * threads.h
- * $Id: threads.h,v 1.3 2009-05-12 14:23:12 sezero Exp $
+ * $Id$
  *
  * Copyright (C) 1996-1997  Id Software, Inc.
  *
@@ -23,7 +23,11 @@
 #ifndef __H2UTILS_THREADS_H
 #define __H2UTILS_THREADS_H
 
+#define	MAX_THREADS	32
+
 extern	int		numthreads;
+
+int	Thread_GetNumCPUS (void);
 
 typedef void (*threadfunc_t) (void *);
 

@@ -4,6 +4,10 @@ Development Progress	:
 ---------------------------
 
 2012-07-14 (SVN):
+    * utils, threads.c: added Thread_GetNumCPUS() based on a nice entry
+      at stackoverflow.com. moved the MAX_THREADS macro to threads.h.
+
+2012-07-14 (SVN):
     * utils, jsh2colour: removed excessive stdout prints. renamed the
       thread procedures. removed lightdatasize computation from the end
       of LightWorld(). Moved CloseDefFile() call before MakeLITFile().
