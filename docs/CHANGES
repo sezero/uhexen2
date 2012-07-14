@@ -4,6 +4,13 @@ Development Progress	:
 ---------------------------
 
 2012-07-14 (SVN):
+    * utils: cleaned up the threads mess. windows no longer needs to be
+      __alpha for multi-threading. added pthread support for unix. added
+      irix sprocsp support based on code from GtkRadiant. windows tls
+      code in vis is removed. multi-threads are available for light, vis
+      and jsh2colour on windows and unix. further cleanups will follow.
+
+2012-07-14 (SVN):
     * scripts: added config.guess and config.sub from savannah git repo.
       added ax_pthread.m4 from the autoconf-archive git repo. added new
       pthread.sh script based on the SDL library's configury.

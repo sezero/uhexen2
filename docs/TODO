@@ -6,7 +6,7 @@ TODO:
 - Add a pak-patch application for Mac OS X.
 - Revise the gtk launcher GUI.
 - Re-visit the messy mouse grab code and clean it up.
-- Do a clean-up of the opengl system
+- Do a clean-up of the opengl code and modernize it.
 - Add multisampling support to win32
 - Maybe add support for several image formats (jpeg, png, etc)
 - Maybe add model interpolation stuff?
@@ -17,14 +17,10 @@ TODO:
 - Net: Find some way to workaround the infamous router troubles
 - HexenWorld: Spectator mode (chasecam) isn't as it should be,
   compare with the quakeworld code and fix.
-- Maybe ports to other operating systems?
 - Add sound font support to Timidity.
 - Add sequencer (mpu-401) support for midi (alsa / oss)
 - DOS: Implement MIDI music playback.
 - DOS: Implement loading progress bars.
-- Utilities: Add pthread support and revise the current windows
-  threads mess. Threads need't be for alpha-only.
-- utils/jsh2colour: clean-up the huge mess and improve a bit.
 - utils/maputils: improvements on the light tool?
 - utils/texutils: add some more texture tools (pcx2wal, etc.) ?
 - More unification of hexen2 and hexenworld trees

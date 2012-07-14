@@ -46,16 +46,6 @@ leaf_t			*leafs;
 int			leafon;		// the next leaf to be given
 					// to a thread to process
 
-#if defined(__alpha) && defined (PLATFORM_WINDOWS)
-	/* FIXME: __alpha shouldn't be needed.. */
-int		numthreads = 4;
-HANDLE		my_mutex;
-#elif defined(__osf__)
-pthread_mutex_t *my_mutex;
-#else	/* no threads  */
-int		numthreads = 1;
-#endif
-
 static byte	*vismap, *vismap_p, *vismap_end;        // past visfile
 static int		originalvismapsize;
 
@@ -145,71 +135,6 @@ NewWinding
 ==================
 */
 
-#define MAX_FREE_WINDINGS	(10000)
-#define MAX_FAST_ALLOC_WINDINGS	(16)
-
-#ifdef PLATFORM_WINDOWS
-
-static winding_t *OldNewWinding (int points)
-{
-	winding_t	*w;
-	size_t			size;
-
-	if (points > MAX_POINTS_ON_WINDING)
-		COM_Error ("%s: %i points", __thisfunc__, points);
-
-	size = (size_t)((winding_t *)0)->points[points];
-	w = (winding_t *) SafeMalloc (size);
-	w->fixedsize = 0;
-	w->original = 0;
-	w->numpoints = 0;
-
-	return w;
-}
-
-static void OldFreeWinding (winding_t *w)
-{
-	if (!w->original)
-		free (w);
-}
-
-static __threadlocal__ int nFreeWindings = 0;
-static __threadlocal__ winding_t *FreeWindings[MAX_FREE_WINDINGS];
-
-winding_t *NewWinding (int points)
-{
-	winding_t	*ret;
-
-	if (points > MAX_FAST_ALLOC_WINDINGS || !GilMode)
-	{
-		ret = OldNewWinding(points);
-		ret->fixedsize = 0;
-	}
-	else if (nFreeWindings)
-		ret = FreeWindings[--nFreeWindings];
-	else
-	{
-		ret = OldNewWinding(MAX_FAST_ALLOC_WINDINGS);
-		ret->fixedsize = 1;
-	}
-	ret->original = 0;
-	ret->numpoints = 0;
-	return ret;
-}
-
-void FreeWinding (winding_t *w)
-{
-	if (!w->original)
-	{
-		if (nFreeWindings >= MAX_FREE_WINDINGS || !w->fixedsize)
-			OldFreeWinding(w);
-		else
-			FreeWindings[nFreeWindings++] = w;
-	}
-}
-
-#else	/* old way */
-
 winding_t *NewWinding (int points)
 {
 	winding_t	*w;
@@ -229,7 +154,6 @@ void FreeWinding (winding_t *w)
 	if (!w->original)
 		free (w);
 }
-#endif
 
 
 #if 0	/* not used */
@@ -404,10 +328,10 @@ static portal_t *GetNextPortal (void)
 //	int			ndone;
 	const int		num2 = numportals*2;
 
+	ThreadLock();
+
 	min = 99999;
 	p = NULL;
-
-	LOCK;
 
 //	ndone = 0;
 	for (j = 0, tp = portals ; j < num2 ; j++, tp++)
@@ -424,7 +348,7 @@ static portal_t *GetNextPortal (void)
 	if (p)
 		p->status = stat_working;
 
-	UNLOCK;
+	ThreadUnlock();
 
 	/*
 	if (GilMode)
@@ -448,7 +372,7 @@ static portal_t *GetNextPortal (void)
 	portal_t	*p, *tp;
 	int			min;
 
-	LOCK;
+	ThreadLock();
 
 	min = -99999;
 	p = NULL;
@@ -465,7 +389,7 @@ static portal_t *GetNextPortal (void)
 	if (p)
 		p->status = stat_working;
 
-	UNLOCK;
+	ThreadUnlock();
 
 	return p;
 }
@@ -477,18 +401,11 @@ static portal_t *GetNextPortal (void)
 LeafThread
 ==============
 */
-#if defined(__alpha) && defined(PLATFORM_WINDOWS)
-	/* FIXME: __alpha shouldn't be needed.. */
-static	LPVOID	LeafThread (LPVOID thread)
-#elif defined(__osf__)	/*__alpha  */
-static	pthread_addr_t	LeafThread (pthread_addr_t thread)
-#else	/* no threads  */
-static	void	*LeafThread (int thread)
-#endif
+static	void	LeafThread (void *junk)
 {
 	portal_t	*p;
 
-	printf ("Begining %s: %i\n", __thisfunc__, (int)thread);
+	printf ("Begining %s: %i\n", __thisfunc__, (int)(intptr_t)junk);
 	do
 	{
 		p = GetNextPortal ();
@@ -501,9 +418,7 @@ static	void	*LeafThread (int thread)
 			printf ("portal:%4i  mightsee:%4i  cansee:%4i\n", (int)(p - portals), p->nummightsee, p->numcansee);
 	} while (1);
 
-	printf ("Completed %s: %i\n", __thisfunc__, (int)thread);
-
-	return NULL;
+	printf ("Completed %s: %i\n", __thisfunc__, (int)(intptr_t)junk);
 }
 
 /*
@@ -638,78 +553,7 @@ static void CalcPortalVis (void)
 
 	leafon = 0;
 
-#if defined(__alpha) && defined(PLATFORM_WINDOWS)
-	/* FIXME: __alpha shouldn't be needed.. */
-    {
-	DWORD	IDThread;
-	HANDLE	work_threads[MAX_THREADS];
-	int		i;
-
-	my_mutex = CreateMutex(NULL, FALSE, NULL);	// cleared
-
-	for (i = 0 ; i < numthreads-1 ; i++)
-	{
-		work_threads[i] = CreateThread( NULL,		// no security attrib
-						0x100000,	// stack size
-						(LPTHREAD_START_ROUTINE) LeafThread,	// thread function
-						(LPVOID) i,	// thread function arg
-						0,		// use default creation flags
-						&IDThread);
-
-		if (work_threads[i] == NULL)
-			COM_Error ("pthread_create failed");
-	}
-
-	LeafThread((LPVOID)(numthreads-1));
-	for (i = 0 ; i < numthreads-1 ; i++)
-	{
-		WaitForSingleObject(work_threads[i], INFINITE);
-	}
-
-	CloseHandle (my_mutex);
-    }
-#elif defined(__osf__)	/* __alpha */
-    {
-	pthread_t	work_threads[MAX_THREADS];
-	pthread_addr_t	status;
-	pthread_attr_t	attrib;
-	pthread_mutexattr_t	mattrib;
-	int		i;
-
-	my_mutex = (pthread_mutex_t *) SafeMalloc (sizeof(*my_mutex));
-	if (pthread_mutexattr_create (&mattrib) == -1)
-		COM_Error ("pthread_mutex_attr_create failed");
-	if (pthread_mutexattr_setkind_np (&mattrib, MUTEX_FAST_NP) == -1)
-		COM_Error ("pthread_mutexattr_setkind_np failed");
-	if (pthread_mutex_init (my_mutex, mattrib) == -1)
-		COM_Error ("pthread_mutex_init failed");
-
-	if (pthread_attr_create (&attrib) == -1)
-		COM_Error ("pthread_attr_create failed");
-	if (pthread_attr_setstacksize (&attrib, 0x100000) == -1)
-		COM_Error ("pthread_attr_setstacksize failed");
-
-	for (i = 0 ; i < numthreads ; i++)
-	{
-		if (pthread_create(&work_threads[i], attrib,
-				LeafThread, (pthread_addr_t)i) == -1)
-			COM_Error ("pthread_create failed");
-	}
-
-	for (i = 0 ; i < numthreads ; i++)
-	{
-		if (pthread_join (work_threads[i], &status) == -1)
-			COM_Error ("pthread_join failed");
-	}
-
-	if (pthread_mutex_destroy (my_mutex) == -1)
-		COM_Error ("pthread_mutex_destroy failed");
-    }
-#else	/* no threads */
-
-	LeafThread (0);
-
-#endif
+	RunThreadsOn (LeafThread);
 
 	if (verbose)
 	{
@@ -1016,6 +860,8 @@ int main (int argc, char **argv)
 		if (!strcmp(argv[i],"-threads"))
 		{
 			numthreads = atoi (argv[i+1]);
+			if (numthreads < 1)
+				COM_Error("Invalid number of threads");
 			i++;
 		}
 		else if (!strcmp(argv[i], "-nogil"))
@@ -1047,6 +893,8 @@ int main (int argc, char **argv)
 
 	if (i != argc - 1)
 		COM_Error ("usage: vis [-nogil] [-threads #] [-level 0-4] [-fast] [-v] bspfile");
+
+	InitThreads ();
 
 	start = COM_GetTime ();
 

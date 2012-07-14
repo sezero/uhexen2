@@ -74,6 +74,15 @@ LDFLAGS += -noixemul
 endif
 ifeq ($(TARGET_OS),unix)
 LDLIBS  += -lm
+# threads: use sprocsp code for IRIX, pthreads for others.
+ifeq (,$(findstring irix,$(HOST_OS)))
+USE_PTHREADS=yes
+endif
+ifeq ($(USE_PTHREADS),yes)
+CFLAGS  += -DUSE_PTHREADS
+CFLAGS  += $(shell sh $(UHEXEN2_TOP)/scripts/pthread.sh $(UHEXEN2_TOP)/scripts/config.guess --cflags)
+LDLIBS  += $(shell sh $(UHEXEN2_TOP)/scripts/pthread.sh $(UHEXEN2_TOP)/scripts/config.guess --libs)
+endif
 endif
 
 # Targets

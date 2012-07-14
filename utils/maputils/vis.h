@@ -33,11 +33,6 @@ typedef struct
 } winding_t;
 
 
-#ifdef PLATFORM_WINDOWS
-#include <windows.h>
-#endif
-
-
 #define MAX_POINTS_ON_WINDING	64
 #define	MAX_PORTALS	32768
 #define	PORTALFILE	"PRT1"

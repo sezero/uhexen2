@@ -75,6 +75,15 @@ LDFLAGS += -noixemul
 endif
 ifeq ($(TARGET_OS),unix)
 LDLIBS  += -lm
+# threads: use sprocsp code for IRIX, pthreads for others.
+ifeq (,$(findstring irix,$(HOST_OS)))
+USE_PTHREADS=yes
+endif
+ifeq ($(USE_PTHREADS),yes)
+CFLAGS  += -DUSE_PTHREADS
+CFLAGS  += $(shell sh $(UHEXEN2_TOP)/scripts/pthread.sh $(UHEXEN2_TOP)/scripts/config.guess --cflags)
+LDLIBS  += $(shell sh $(UHEXEN2_TOP)/scripts/pthread.sh $(UHEXEN2_TOP)/scripts/config.guess --libs)
+endif
 endif
 
 # Targets
@@ -106,7 +115,8 @@ OBJ_LIGHT= threads.o \
 	ltface.o \
 	trace.o
 
-OBJ_VIS= flow.o \
+OBJ_VIS= threads.o \
+	flow.o \
 	soundpvs.o \
 	vis.o
 
@@ -145,7 +155,7 @@ $(QBSP) : $(OBJ_COMMON) $(OBJ_QBSP)
 	$(LINKER) $(OBJ_COMMON) $(OBJ_QBSP) $(LDFLAGS) $(LDLIBS) -o $@
 
 $(BSPINFO) : $(OBJ_BSPINFO)
-	$(LINKER) $(OBJ_BSPINFO) $(LDFLAGS) -o $@
+	$(LINKER) $(OBJ_BSPINFO) $(LDFLAGS) $(LDLIBS) -o $@
 
 clean:
 	rm -f *.o core

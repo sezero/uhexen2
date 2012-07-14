@@ -4,6 +4,10 @@ Hammer of Thyrion (uHexen2) release notes:
 Changes in v1.5.5: (July 14, 2012.)
 ========================================================================
 
+- Utils (light, vis, jsh2color): Added unix pthreads support for running
+  multi-threaded. Enabled windows multi-threads on all platforms instead
+  of alpha-only.
+
 - Windows:  Removed hooks for QHOST, which is (was) a proprietery server
   administation tool.
 

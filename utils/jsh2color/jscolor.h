@@ -30,7 +30,6 @@ extern	byte		newdlightdata[MAX_MAP_LIGHTING*3];
 extern	int		newlightdatasize;
 
 void Init_JSColor (void);
-void DecisionTime (const char *msg);
 
 #endif	/* __JSCOLOR_H */
 

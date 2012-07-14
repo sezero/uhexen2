@@ -54,11 +54,11 @@ byte *GetFileSpace (int size)
 {
 	byte	*buf;
 
-	LOCK;
+	ThreadLock();
 	file_p = (byte *)(((intptr_t)file_p + 3) & ~3);
 	buf = file_p;
 	file_p += size;
-	UNLOCK;
+	ThreadUnlock();
 	if (file_p > file_end)
 		COM_Error ("%s: overrun", __thisfunc__);
 	return buf;
@@ -72,9 +72,9 @@ void LightThread (void *junk)
 	printf("Thread %d started\n", (int)(intptr_t)junk);
 	while (1)
 	{
-		LOCK;
+		ThreadLock();
 		i = bspfileface++;
-		UNLOCK;
+		ThreadUnlock();
 		if (i >= numfaces)
 			return;
 
@@ -122,6 +122,8 @@ int main (int argc, char **argv)
 		if (!strcmp(argv[i],"-threads"))
 		{
 			numthreads = atoi (argv[i+1]);
+			if (numthreads < 1)
+				COM_Error("Invalid number of threads");
 			i++;
 		}
 		else if (!strcmp(argv[i],"-extra"))

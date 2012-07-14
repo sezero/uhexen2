@@ -26,17 +26,52 @@
 #include "cmdlib.h"
 #include "threads.h"
 
+#define	MAX_THREADS	32
 
-#if defined(__alpha) && defined(PLATFORM_WINDOWS)
-	/* FIXME: __alpha shouldn't be needed.. */
 
-int		numthreads = 4;
-HANDLE		my_mutex;
+#if defined(PLATFORM_WINDOWS)
 
+#include <windows.h>
+
+int		numthreads = 1;
+static HANDLE		my_mutex;
+static threadfunc_t	workfunc;
+
+static DWORD WINAPI ThreadWorkerFunc (LPVOID threadnum)
+{
+	workfunc ((void *)threadnum);
+	return 0;
+}
 
 void InitThreads (void)
 {
-	my_mutex = CreateMutex(NULL, FALSE, NULL);	//cleared
+	if (numthreads == -1)
+	{
+		SYSTEM_INFO	info;
+		GetSystemInfo(&info);
+		numthreads = info.dwNumberOfProcessors;
+		if (numthreads > MAX_THREADS)
+			numthreads = MAX_THREADS;
+	}
+
+	if (numthreads <= 1)
+		return;
+
+	my_mutex = CreateMutex(NULL, FALSE, NULL);
+	if (my_mutex == NULL)
+		COM_Error("CreateMutex failed");
+}
+
+void ThreadLock (void)
+{
+	if (numthreads > 1)
+		WaitForSingleObject (my_mutex, INFINITE);
+}
+
+void ThreadUnlock (void)
+{
+	if (numthreads > 1)
+		ReleaseMutex (my_mutex);
 }
 
 /*
@@ -47,20 +82,22 @@ RunThreadsOn
 void RunThreadsOn ( threadfunc_t func )
 {
 	DWORD	IDThread;
-	HANDLE	work_threads[256];
-	int		i;
+	HANDLE	work_threads[MAX_THREADS];
+	INT_PTR		i;
 
-	if (numthreads == 1)
+	if (numthreads <= 1)
 	{
 		func (NULL);
 		return;
 	}
 
+	workfunc = func;
+
 	for (i = 0 ; i < numthreads ; i++)
 	{
 		work_threads[i] = CreateThread(NULL,	// no security attrib
 			0x100000,			// stack size
-			(LPTHREAD_START_ROUTINE) func,	// thread function
+			ThreadWorkerFunc,		// thread function
 			(LPVOID) i,			// thread function arg
 			0,				// use default creation flags
 			&IDThread);
@@ -75,15 +112,107 @@ void RunThreadsOn ( threadfunc_t func )
 	}
 }
 
-#elif defined(__osf__)	/* __alpha */
+
+#elif defined(__IRIX__) /* defined(_MIPS_ISA) */ && !defined(USE_PTHREADS)
+
+#include <task.h>
+#include <abi_mutex.h>
+#include <sys/types.h>
+#include <sys/prctl.h>
+
+int		numthreads = -1;
+static abilock_t	lck;
+
+static void ThreadWorkerFunc (void *threadnum, size_t stksize)
+{
+	workfunc (threadnum);
+}
+
+void InitThreads (void)
+{
+	if (numthreads == -1)
+	{
+		numthreads = prctl(PR_MAXPPROCS);
+		if (numthreads > MAX_THREADS)
+			numthreads = MAX_THREADS;
+	}
+
+	if (numthreads > 1)
+		usconfig (CONF_INITUSERS, numthreads);
+}
+
+void ThreadLock (void)
+{
+	if (numthreads > 1)
+		spin_lock (&lck);
+}
+
+void ThreadUnlock (void)
+{
+	if (numthreads > 1)
+		release_lock (&lck);
+}
+
+/*
+=============
+RunThreadsOn
+=============
+*/
+void RunThreadsOn (threadfunc_t func)
+{
+	pid_t		pid[MAX_THREADS];
+	long		i;
+
+	if (numthreads <= 1)
+	{
+		func (NULL);
+		return;
+	}
+
+	init_lock (&lck);
+	workfunc = func;
+
+	for (i = 0; i < numthreads - 1; i++)
+	{
+		pid[i] = sprocsp (ThreadWorkerFunc, PR_SALL, (void *)i,
+				  NULL, 0x100000);	// 1 MB stacks
+		if (pid[i] == -1)
+		{
+			perror ("sproc");
+			COM_Error ("sproc failed");
+		}
+	}
+
+	func ((void *)i);
+
+	for (i = 0; i < numthreads - 1; i++)
+		wait (NULL);
+}
+
+
+#elif defined(USE_PTHREADS)
+
+#if defined(__osf__)
+/* original OSF/1 code of Quake */
+
+#include <pthread.h>
 
 int		numthreads = 4;
-pthread_mutex_t	*my_mutex;
+static pthread_mutex_t	*my_mutex;
+static threadfunc_t	workfunc;
 
+static pthread_addr_t ThreadWorkerFunc (pthread_addr_t threadnum)
+{
+	workfunc ((void *)threadnum);
+	return NULL;
+}
 
 void InitThreads (void)
 {
 	pthread_mutexattr_t	mattrib;
+
+	if (numthreads <= 1)
+		return;
 
 	my_mutex = (pthread_mutex_t *) SafeMalloc (sizeof(*my_mutex));
 	if (pthread_mutexattr_create (&mattrib) == -1)
@@ -94,6 +223,18 @@ void InitThreads (void)
 		COM_Error ("pthread_mutex_init failed");
 }
 
+void ThreadLock (void)
+{
+	if (numthreads > 1)
+		pthread_mutex_lock (my_mutex);
+}
+
+void ThreadUnlock (void)
+{
+	if (numthreads > 1)
+		pthread_mutex_unlock (my_mutex);
+}
+
 /*
 ===============
 RunThreadsOn
@@ -101,16 +242,18 @@ RunThreadsOn
 */
 void RunThreadsOn (threadfunc_t func)
 {
-	pthread_t	work_threads[256];
+	pthread_t	work_threads[MAX_THREADS];
 	pthread_addr_t	status;
 	pthread_attr_t	attrib;
-	int		i;
+	long		i;
 
-	if (numthreads == 1)
+	if (numthreads <= 1)
 	{
 		func (NULL);
 		return;
 	}
+
+	workfunc = func;
 
 	if (pthread_attr_create (&attrib) == -1)
 		COM_Error ("pthread_attr_create failed");
@@ -120,7 +263,7 @@ void RunThreadsOn (threadfunc_t func)
 	for (i = 0 ; i < numthreads ; i++)
 	{
 		if ( pthread_create(&work_threads[i], attrib,
-					(pthread_startroutine_t)func,
+					ThreadWorkerFunc,
 					(pthread_addr_t)i) == -1 )
 			COM_Error ("pthread_create failed");
 	}
@@ -132,12 +275,106 @@ void RunThreadsOn (threadfunc_t func)
 	}
 }
 
+#else /* common pthreads: */
+
+#include <pthread.h>
+
+int		numthreads = 1;
+static pthread_mutex_t	*my_mutex;
+static threadfunc_t	workfunc;
+
+static void *ThreadWorkerFunc (void *threadnum)
+{
+	workfunc (threadnum);
+	return NULL;
+}
+
+void InitThreads (void)
+{
+	pthread_mutexattr_t mattrib;
+
+	if (numthreads <= 1)
+		return;
+
+	my_mutex = (pthread_mutex_t *) SafeMalloc (sizeof (*my_mutex));
+	if (pthread_mutexattr_init (&mattrib) == -1)
+		COM_Error ("pthread_mutex_attr_init failed");
+//	if (pthread_mutexattr_setkind_np (&mattrib, MUTEX_FAST_NP) == -1)
+//		COM_Error ("pthread_mutexattr_setkind_np failed");
+	if (pthread_mutex_init (my_mutex, &mattrib) == -1)
+		COM_Error ("pthread_mutex_init failed");
+}
+
+void ThreadLock (void)
+{
+	if (numthreads > 1)
+		pthread_mutex_lock (my_mutex);
+}
+
+void ThreadUnlock (void)
+{
+	if (numthreads > 1)
+		pthread_mutex_unlock (my_mutex);
+}
+
+/*
+=============
+RunThreadsOn
+=============
+*/
+void RunThreadsOn (threadfunc_t func)
+{
+	pthread_t	work_threads[MAX_THREADS];
+	void		*status;
+	pthread_attr_t	attrib;
+	long		i;
+
+	if (numthreads <= 1)
+	{
+		func (NULL);
+		return;
+	}
+
+	if (pthread_attr_init (&attrib) == -1)
+		COM_Error ("pthread_attr_init failed");
+	if (pthread_attr_setstacksize (&attrib, 0x100000) == -1)
+		COM_Error ("pthread_attr_setstacksize failed");
+
+	workfunc = func;
+
+	for (i = 0; i < numthreads; i++)
+	{
+		if (pthread_create (&work_threads[i], &attrib,
+					ThreadWorkerFunc,
+					(void *)i) == -1)
+			COM_Error ("pthread_create failed");
+	}
+
+	for (i = 0; i < numthreads; i++)
+	{
+		if (pthread_join (work_threads[i], &status) == -1)
+			COM_Error ("pthread_join failed");
+	}
+}
+#endif	/* USE_PTHREADS */
+
+
 #else	/* no threads  */
 
 int		numthreads = 1;
 
 
 void InitThreads (void)
+{
+	/* ( nothing ) */
+}
+
+void ThreadLock (void)
+{
+	/* ( nothing ) */
+}
+
+void ThreadUnlock (void)
 {
 	/* ( nothing ) */
 }

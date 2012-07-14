@@ -1,9 +1,10 @@
 2012-07-14 1.2.5 sezero
 Changes since 1.2.4:
+ * support for running multi-threaded to reduce completion time on
+   smp or multi-core machines.
  * several cleanups: the -lit and -force command line switches are
    now ignored. removed several globals which have no real meaning
-   in the tool. removed some unused functions. prepared the code so
-   that it can be run multithreaded.
+   in the tool. removed some unused functions.
 
 2010-10-27 1.2.4 sezero
 Changes since 1.2.3:
