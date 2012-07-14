@@ -4,6 +4,10 @@ Development Progress	:
 ---------------------------
 
 2012-07-14 (SVN):
+    * utils (dhcc, hcc, genmodel, jsh2color, light, qbsp, qfiles, vis):
+      correctly handle command line options requiring additional args.
+
+2012-07-14 (SVN):
     * utils, threads.c: added Thread_GetNumCPUS() based on a nice entry
       at stackoverflow.com. moved the MAX_THREADS macro to threads.h.
 

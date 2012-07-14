@@ -81,11 +81,13 @@ static void ParseDefFile (const char *filename)
 	char	name[MAX_TEX_NAME];
 	char	line[1024];
 
-	FILE*	FH = fopen(filename,"rt");
+	if (!filename || !*filename)
+		return;
 
+	FILE*	FH = fopen(filename,"rt");
 	if (FH == NULL)
 	{
-		printf("Unable to open file named : %s \n", filename);
+		COM_Error("%s: unable to open \"%s\"", __thisfunc__, filename);
 		return;
 	}
 
@@ -127,8 +129,7 @@ static void ParseDefFile (const char *filename)
 void InitDefFile (const char *fname)
 {
 	tc_list.entries = NULL;
-	if (external == true)
-		ParseDefFile (fname);
+	ParseDefFile (fname);
 }
 
 void CloseDefFile (void)

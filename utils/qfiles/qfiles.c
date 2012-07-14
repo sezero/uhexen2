@@ -242,8 +242,8 @@ main
 */
 int main (int argc, char **argv)
 {
-	if (argc == 1)
-	{
+	if (argc == 1) {
+	_usage:
 		printf ("qfiles -pak <0 / 1 / 2 / 3> : build a .pak file\n");
 		printf ("qfiles -bspmodels : regenerates all brush models\n");
 		exit (1);
@@ -251,20 +251,23 @@ int main (int argc, char **argv)
 
 	ValidateByteorder ();
 
-	SetQdirFromPath ("");
-
-	ReadFiles ();
-
 	if (!strcmp (argv[1], "-pak"))
 	{
+		if (argc != 3) goto _usage;
+		SetQdirFromPath ("");
+		ReadFiles ();
 		CopyQFiles (atoi(argv[2]));
 	}
 	else if (!strcmp (argv[1], "-bspmodels"))
 	{
+		SetQdirFromPath ("");
+		ReadFiles ();
 		BspModels ();
 	}
 	else
+	{
 		COM_Error ("unknown command: %s", argv[1]);
+	}
 
 	return 0;
 }

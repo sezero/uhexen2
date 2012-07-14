@@ -227,11 +227,11 @@ int main(int argc, char **argv)
 	{
 		if (!q_strcasecmp(argv[i], "-archive"))
 		{
+			if (i >= argc - 1)
+				COM_Error ("No archive dirname specified with -archive");
 			archive = true;
-			q_strlcpy(archivedir, argv[i+1], sizeof(archivedir));
+			q_strlcpy(archivedir, argv[++i], sizeof(archivedir));
 			printf("Archiving source to: %s\n", archivedir);
-
-			i++;
 		}
 		else if (!q_strncasecmp(argv[i], "-opt", 4))
 		{

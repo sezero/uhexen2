@@ -1218,14 +1218,16 @@ int main (int argc, char **argv)
 			usehulls = true;	// don't fork -- use the existing files
 		else if (!strcmp (argv[i],"-hullnum"))
 		{
-			hullnum = atoi(argv[i+1]);
+			if (i >= argc - 1)
+				COM_Error("Missing argument to \"%s\"", argv[i]);
+			hullnum = atoi(argv[++i]);
 			sprintf (argv0, "HUL%i", hullnum);
-			i++;
 		}
 		else if (!strcmp (argv[i],"-proj"))
 		{
-			strcpy (projectpath, argv[i+1]);
-			i++;
+			if (i >= argc - 1)
+				COM_Error("Missing argument to \"%s\"", argv[i]);
+			strcpy (projectpath, argv[++i]);
 		}
 		else
 			COM_Error ("qbsp: Unknown option '%s'", argv[i]);

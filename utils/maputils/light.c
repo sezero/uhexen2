@@ -121,10 +121,11 @@ int main (int argc, char **argv)
 	{
 		if (!strcmp(argv[i],"-threads"))
 		{
-			numthreads = atoi (argv[i+1]);
+			if (i >= argc - 1)
+				COM_Error("Missing argument to \"%s\"", argv[i]);
+			numthreads = atoi (argv[++i]);
 			if (numthreads < 1)
 				COM_Error("Invalid number of threads");
-			i++;
 		}
 		else if (!strcmp(argv[i],"-extra"))
 		{
@@ -133,13 +134,15 @@ int main (int argc, char **argv)
 		}
 		else if (!strcmp(argv[i],"-dist"))
 		{
-			scaledist = (float)atof (argv[i+1]);
-			i++;
+			if (i >= argc - 1)
+				COM_Error("Missing argument to \"%s\"", argv[i]);
+			scaledist = (float)atof (argv[++i]);
 		}
 		else if (!strcmp(argv[i],"-range"))
 		{
-			rangescale = (float)atof (argv[i+1]);
-			i++;
+			if (i >= argc - 1)
+				COM_Error("Missing argument to \"%s\"", argv[i]);
+			rangescale = (float)atof (argv[++i]);
 		}
 		else if (argv[i][0] == '-')
 			COM_Error ("Unknown option \"%s\"", argv[i]);

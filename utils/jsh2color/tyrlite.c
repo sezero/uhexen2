@@ -279,7 +279,6 @@ int main (int argc, char **argv)
 	int		i;
 	double		start, end;
 	char		source[1024];
-	qboolean	extfile_notfound = false;
 
 	printf ("---------------------------------------------------\n");
 	printf ("JSH2Colour %s - %s\n", JSH2COLOR_VER, PLATFORM_STRING);
@@ -290,36 +289,42 @@ int main (int argc, char **argv)
 
 	// defaults for the user settable options
 	external = false;	// js feature
+	extfilename[0] = '\0';
 	nodefault = false;	// js feature
 
 	for (i = 1 ; i < argc ; i++)
 	{
 		if (!strcmp(argv[i],"-threads"))
 		{
-			numthreads = atoi (argv[i+1]);
+			if (i >= argc - 1)
+				COM_Error("Missing argument to \"%s\"", argv[i]);
+			numthreads = atoi (argv[++i]);
 			if (numthreads < 1)
 				COM_Error("Invalid number of threads");
-			i++;
 		}
 		else if (!strcmp(argv[i],"-extra"))
 		{
 			extrasamples = true;
 			printf ("extra sampling enabled\n");
 		}
-		else if (!strcmp(argv[i],"-dist") && argc > i)
+		else if (!strcmp(argv[i],"-dist"))
 		{
-			scaledist = atof (argv[i+1]);
+			if (i >= argc - 1)
+				COM_Error("Missing argument to \"%s\"", argv[i]);
 			i++;
+			scaledist = atof (argv[i]);
 		}
-		else if (!strcmp(argv[i],"-range") && argc > i)
+		else if (!strcmp(argv[i],"-range"))
 		{
-			rangescale = atof (argv[i+1]);
-			i++;
+			if (i >= argc - 1)
+				COM_Error("Missing argument to \"%s\"", argv[i]);
+			rangescale = atof (argv[++i]);
 		}
-		else if (!strcmp(argv[i],"-light") && argc > i)
+		else if (!strcmp(argv[i],"-light"))
 		{
-			worldminlight = atof (argv[i+1]);
-			i++;
+			if (i >= argc - 1)
+				COM_Error("Missing argument to \"%s\"", argv[i]);
+			worldminlight = atof (argv[++i]);
 		}
 		else if (!strcmp(argv[i],"-force")) // compat
 		{
@@ -329,39 +334,23 @@ int main (int argc, char **argv)
 		{
 			continue;
 		}
-		else if (!strcmp (argv[i], "-external") && argc > i)
+		else if (!strcmp (argv[i], "-external"))
 		{	// js feature
-			strcpy(extfilename, argv[i+1]);
+			if (i >= argc - 1)
+				COM_Error("Missing argument to \"%s\"", argv[i]);
+			strcpy(extfilename, argv[++i]);
 			if (Q_FileType(extfilename) != FS_ENT_FILE)
-			{
-				printf ("No such file : %s, Ignoring this option\n", extfilename);
-				extfile_notfound = true;
-				if (nodefault == true)
-				{
-					printf ("and re-enabling the built-in color definitions\n");
-					nodefault = false;
-				}
-			}
+				COM_Error("No such file as \"%s\"", extfilename);
 			else
 			{
 				external = true;
 				printf ("Using external definition file : %s\n",extfilename);
 			}
-
-			i++;
 		}
 		else if (!strcmp (argv[i], "-nodefault"))
 		{	// js feature
-			if (extfile_notfound)
-			{
-				printf ("Ignoring the -nodefault option, because the external\n");
-				printf ("definition file specified can not be accessed\n");
-			}
-			else
-			{
-				nodefault = true;
-				printf ("Ignoring built-in color definition list\n");
-			}
+			nodefault = true;
+			printf ("Ignoring built-in color definition list\n");
 		}
 		else if (argv[i][0] == '-')
 			COM_Error ("Unknown option \"%s\"", argv[i]);

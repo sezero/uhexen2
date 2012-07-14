@@ -809,10 +809,11 @@ int main (int argc, char **argv)
 	{
 		if (!strcmp(argv[i],"-threads"))
 		{
-			numthreads = atoi (argv[i+1]);
+			if (i >= argc - 1)
+				COM_Error("Missing argument to \"%s\"", argv[i]);
+			numthreads = atoi (argv[++i]);
 			if (numthreads < 1)
 				COM_Error("Invalid number of threads");
-			i++;
 		}
 		else if (!strcmp(argv[i], "-nogil"))
 		{
@@ -826,9 +827,10 @@ int main (int argc, char **argv)
 		}
 		else if (!strcmp(argv[i], "-level"))
 		{
-			testlevel = atoi(argv[i+1]);
+			if (i >= argc - 1)
+				COM_Error("Missing argument to \"%s\"", argv[i]);
+			testlevel = atoi(argv[++i]);
 			printf ("testlevel = %i\n", testlevel);
-			i++;
 		}
 		else if (!strcmp(argv[i], "-v"))
 		{

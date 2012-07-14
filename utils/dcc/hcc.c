@@ -777,9 +777,11 @@ int main (int argc, char **argv)
 	start = COM_GetTime ();
 
 	p = CheckParm("-src");
-	if (p && p < argc-1)
+	if (p != 0)
 	{
 	/* everything will now be relative to sourcedir: */
+		if (p >= argc - 1)
+			COM_Error ("No source dirname specified with -src");
 		strcpy(sourcedir, argv[p+1]);
 		p = strlen (sourcedir);
 		if (p && !IS_DIR_SEPARATOR(sourcedir[p - 1]))
@@ -798,10 +800,12 @@ int main (int argc, char **argv)
 	}
 
 	p = CheckParm("-name");
-	if (p && p < argc-1)
+	if (p != 0)
 	{
-		printf("Input file: %s\n", argv[p+1]);
+		if (p >= argc - 1)
+			COM_Error ("No input filename specified with -name");
 		strcpy(nameptr, argv[p+1]);
+		printf("Input file: %s\n", nameptr);
 	}
 	else
 	{
