@@ -81,9 +81,6 @@ typedef struct entity_s
 extern	entity_t	entities[MAX_MAP_ENTITIES];
 extern	int			num_entities;
 
-//extern int            numtexlights;
-//extern entity_t       texlights[MAX_MAP_FACES];
-
 void	SetKeyValue (entity_t *ent, const char *key, const char *value);
 const char	*ValueForKey (entity_t *ent, const char *key);
 float	FloatForKey (entity_t *ent, const char *key);
@@ -91,7 +88,6 @@ void	GetVectorForKey (entity_t *ent, const char *key, vec3_t vec);
 entity_t *FindEntityWithKeyPair (const char *key, const char *value);
 
 void	LoadEntities (void);
-void	WriteEntitiesToString (void);
 
 #endif	/* __ENTITIES_H__ */
 

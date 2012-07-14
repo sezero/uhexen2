@@ -24,7 +24,7 @@
 #ifndef __TYRLITE_H__
 #define __TYRLITE_H__
 
-#define JSH2COLOR_VER	"1.2.3"		/* version string */
+#define JSH2COLOR_VER	"1.2.5"		/* version string */
 
 #define	ON_EPSILON	0.1
 
@@ -48,12 +48,6 @@ extern	byte		*filebase;
 extern	vec3_t		bsp_origin;
 
 extern	qboolean	extrasamples;
-extern	qboolean	compress_ents;
-extern	qboolean	colored;
-extern	qboolean	force;
-extern	qboolean	nominlimit;
-extern	qboolean	makelit;
-extern	qboolean	force;
 extern	qboolean	external;
 extern	qboolean	nodefault;
 
@@ -66,9 +60,8 @@ byte	*GetFileSpace (int size);
 qboolean TestLine (vec3_t start, vec3_t stop);
 // TYR - added TestSky
 qboolean TestSky  (vec3_t start, vec3_t dirn);
-void	TestLightFace (int surfnum, qboolean nolight, vec3_t faceoffset);
-void	LightFace (int surfnum, qboolean nolight, vec3_t faceoffset);
-void	LightFaceLIT (int surfnum, qboolean nolight, vec3_t faceoffset);
+void	TestLightFace (int surfnum, vec3_t faceoffset);
+void	LightFaceLIT (int surfnum, vec3_t faceoffset);
 void	CheckTex (void);
 void	FindTexlightColor (int *surf_r, int *surf_g, int *surf_b, const char *texname);
 

@@ -296,7 +296,7 @@ void LoadEntities (void)
 
 	// all fields have been parsed
 	// check default settings and check for light value in worldspawn
-	/*
+		/*
 		if (!strncmp (entity->classname, "light", 5) && !entity->light)
 			entity->light = DEFAULTLIGHTLEVEL;
 
@@ -311,7 +311,7 @@ void LoadEntities (void)
 				SetKeyValue (entity, "style", s);
 			}
 		}
-	*/
+		*/
 
 		if (!strncmp (entity->classname, "light", 5))
 		{
@@ -328,15 +328,14 @@ void LoadEntities (void)
 			// since the map has no color info anyway, we don't need to test this
 			if (!q_strncasecmp(entity->classname, "light_torch", 11))
 			{
-			/*
+				/*
 				In Hexen 2 :
 				light_torch_castle
 				light_torch_rome
 				light_torch_meso
 				light_torch_egypt
 				light_torch_small_walltorch
-			*/
-
+				*/
 				// make it orange
 				entity->lightcolor[0] = 255;
 				entity->lightcolor[1] = 128;
@@ -345,11 +344,11 @@ void LoadEntities (void)
 			else if (!q_strncasecmp(entity->classname, "light_flame", 11))
 			{
 				// make it orange
-			/*
+				/*
 				In Hexen 2 :
 				light_flame_large_yellow
 				light_flame_small_yellow
-			*/
+				*/
 
 				entity->lightcolor[0] = 255;
 				entity->lightcolor[1] = 128;
@@ -407,7 +406,7 @@ void LoadEntities (void)
 			}
 
 			num_lights++;
-			//printf ("entity light %i\n", entity->light);
+		//	printf ("entity light %i\n", entity->light);
 		}
 
 		if (!strcmp (entity->classname, "light"))
@@ -528,91 +527,5 @@ entity_t *FindEntityWithKeyPair (const char *key, const char *value)
 		}
 	}
 	return NULL;
-}
-
-
-
-/*
-================
-WriteEntitiesToString
-================
-*/
-void WriteEntitiesToString (void)
-{
-	char	*buf, *end;
-	epair_t	*ep;
-	char	line[128];
-	int		i;
-
-	buf = dentdata;
-	end = buf;
-	*end = 0;
-
-	printf ("%i switchable light styles\n", numlighttargets);
-
-	for (i = 0 ; i < num_entities ; i++)
-	{
-		ep = entities[i].epairs;
-		if (!ep)
-			continue;	// ent got removed
-
-		strcat (end,"{\n");
-		end += 2;
-
-		for (ep = entities[i].epairs ; ep ; ep = ep->next)
-		{
-			if (!strncmp(entities[i].classname, "light", 5) && compress_ents)
-			{
-				// mfah - added style and target here cos the engine needs them!
-				if (!strcmp(ep->key, "classname"))
-				{
-					sprintf (line, "\"%s\" \"%s\"\n", ep->key, ep->value);
-					strcat (end, line);
-					end += strlen(line);
-				}
-				else if (!strcmp(ep->key, "origin"))
-				{
-					sprintf (line, "\"%s\" \"%s\"\n", ep->key, ep->value);
-					strcat (end, line);
-					end += strlen(line);
-				}
-				else if (!strcmp(ep->key, "style"))
-				{
-					sprintf (line, "\"%s\" \"%s\"\n", ep->key, ep->value);
-					strcat (end, line);
-					end += strlen(line);
-				}
-				else if (!strcmp(ep->key, "target"))
-				{
-					sprintf (line, "\"%s\" \"%s\"\n", ep->key, ep->value);
-					strcat (end, line);
-					end += strlen(line);
-				}
-				else if (!strcmp(ep->key, "targetname"))
-				{
-					sprintf (line, "\"%s\" \"%s\"\n", ep->key, ep->value);
-					strcat (end, line);
-					end += strlen(line);
-				}
-
-				// output a color...
-				//sprintf (line, "\"_color\" \"%i %i %i\"\n", entities[i].lightcolor[0], entities[i].lightcolor[1], entities[i].lightcolor[2]);
-				//strcat (end, line);
-				//end += strlen(line);
-			}
-			else
-			{
-				sprintf (line, "\"%s\" \"%s\"\n", ep->key, ep->value);
-				strcat (end, line);
-				end += strlen(line);
-			}
-		}
-		strcat (end,"}\n");
-		end += 2;
-
-		if (end > buf + MAX_MAP_ENTSTRING)
-			COM_Error ("Entity text too long");
-	}
-	entdatasize = end - buf + 1;
 }
 

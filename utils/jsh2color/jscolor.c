@@ -23,9 +23,6 @@
 #include "q_stdinc.h"
 #include "compiler.h"
 #include "arch_def.h"
-#if defined(PLATFORM_WINDOWS)
-#include <conio.h>
-#endif	/* PLATFORM_WINDOWS */
 #include "cmdlib.h"
 #include "util_io.h"
 #include "q_endian.h"
@@ -36,13 +33,13 @@
 
 
 miptex_t		miptex[512];
-int				numlighttex;
+int			numlighttex;
 
 static void ParseTexinfo (void)
 {
-	int	i;
-	miptex_t *out;
-	dmiptexlump_t *m;
+	int		i;
+	miptex_t	*out;
+	dmiptexlump_t	*m;
 
 	m = (dmiptexlump_t *)&dtexdata[0];
 
@@ -90,10 +87,10 @@ void CheckTex (void)
 	int		r, g, b;
 	int		count;
 	int		r2[100], g2[100], b2[100];
-	dface_t	*f;
+	dface_t		*f;
 	int		facecolors[100];
 	int		bad;
-	char	color_name[10];
+	char		color_name[10];
 	int		foundlava;
 	int		foundslime;
 	int		uniquecolors;
@@ -195,10 +192,9 @@ void CheckTex (void)
 	// what's a good number to use here? - 50 seems to work out well
 	if (numlighttex < (numfaces / 50) || bad)
 	{
-		if (num_clights > (num_lights / 4))
-			DecisionTime ("Entity lights will probably still be effective - I suggest you continue");
-		else
-			DecisionTime ("Entity lights probably won't help much - I suggest you quit");
+		if (num_clights <= (num_lights / 4))
+			printf ("num_clights <= num_lights / 4:\nEntity lights probably "
+				"won't help much - don't expect a good result\n");
 	}
 }
 
@@ -210,7 +206,7 @@ int	newlightdatasize;
 static void StoreFaceInfo (void)
 {
 	int		i;
-	dface_t	*fa;
+	dface_t		*fa;
 
 	for (i = 0; i < numfaces; i++)
 	{
@@ -235,57 +231,10 @@ static void MakeNewLightData (void)
 }
 
 
-void DecisionTime (const char *msg)
-{
-// Take user's decision to continue or abort
-	char	c;
-
-	// if we're forcing coloring irrespective of potential
-	// effectiveness (eg in a batch file), just get out
-	if (force)
-		return;
-
-	printf ("\nJsH2Colour reports that it may not light this BSP effectively\n(%s)\n", msg);
-
-#ifdef PLATFORM_WINDOWS
-	printf ("Continue? [Y/N] ");
-	while (1)
-	{
-		c = _getch ();
-
-		if (c == 'y' || c == 'Y' || c == 'n' || c == 'N')
-			break;
-	}
-
-	printf ("%c\n", c);
-
-#else	/* unix solution */
-	while (1)
-	{
-		c = 0;
-		printf ("Continue? [Y/N] ");
-		fflush(stdout);
-		c = getchar();
-		if (c == 'y' || c == 'Y' || c == 'n' || c == 'N')
-			break;
-	}
-	printf ("\n");
-	fflush(stdout);
-#endif
-
-	if (c == 'n' || c == 'N')
-		COM_Error ("Program Terminated by user\n");
-}
-
-
 void Init_JSColor (void)
 {
 	ParseTexinfo ();
-
-	if (makelit)
-	{
-		StoreFaceInfo ();
-		MakeNewLightData ();
-	}
+	StoreFaceInfo ();
+	MakeNewLightData ();
 }
 

@@ -3,6 +3,13 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2012-07-14 (SVN):
+    * utils, jsh2colour: several cleanups: the -lit and -force command
+      line switches are now ignored. removed several global varss which
+      have no real meaning in the tool. removed some unused functions.
+      prepared the code so that it can be run multithreaded. incremented
+      its version to 1.2.5.
+
 2012-07-11 (SVN):
     * utils: Replaced rest of the malloc() calls by SafeMalloc() in all
       of the utils.

@@ -1,3 +1,18 @@
+2012-07-14 1.2.5 sezero
+Changes since 1.2.4:
+ * several cleanups: the -lit and -force command line switches are
+   now ignored. removed several globals which have no real meaning
+   in the tool. removed some unused functions. prepared the code so
+   that it can be run multithreaded.
+
+2010-10-27 1.2.4 sezero
+Changes since 1.2.3:
+ * worked around a stack corruption resulting in crashes due to the
+   code's way of dealing with TEX_SPECIAL cases by blindly changing
+   SINGLEMAP definition from 18*18*4 to 64*64*4. this significantly
+   increases the stack size requirement to approx. 3MB, which isn't
+   ideal at all.
+
 2006-09-19 1.2.3 sezero
 Changes since 1.2.2:
  * added big-endian support.

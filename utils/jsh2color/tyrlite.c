@@ -53,16 +53,10 @@ vec3_t		bsp_origin;
 byte		*filebase;
 static byte	*file_p, *file_end;
 
-qboolean	nolightface[MAX_MAP_FACES];
-vec3_t		faceoffset[MAX_MAP_FACES];
+static vec3_t	faceoffset[MAX_MAP_FACES];
 extern int	num_lights;
 
 qboolean	extrasamples;
-qboolean	compress_ents;
-qboolean	colored;
-qboolean	nominlimit;
-qboolean	force;
-qboolean	makelit;
 // js features
 qboolean	external;
 qboolean	nodefault;
@@ -94,37 +88,27 @@ static void LightThread (void *junk)
 		i = bspfileface++;
 		UNLOCK;
 
-		printf("Lighting face %i of %i\r", i, numfaces);
-		fflush(stdout);
-
 		if (i >= numfaces)
 		{
 			printf("\n\nJSH2colour completed.\n\n");
 			return;
 		}
 
-		if (!makelit)
-			LightFace (i, nolightface[i], faceoffset[i]);
-		else
-			LightFaceLIT (i, nolightface[i], faceoffset[i]);
+		printf("Lighting face %i of %i\r", i+1, numfaces);
+		LightFaceLIT (i, faceoffset[i]);
 	}
 }
 
 
 static void LightThread2 (void *junk)
 {
-	int			i, j;
-
-	j = bspfileface;
+	int			i;
 
 	while (1)
 	{
 		LOCK;
-		i = j++;
+		i = bspfileface++;
 		UNLOCK;
-
-		printf("Checking face %i of %i\r", i, numfaces);
-		fflush(stdout);
 
 		if (i >= numfaces)
 		{
@@ -132,7 +116,8 @@ static void LightThread2 (void *junk)
 			return;
 		}
 
-		TestLightFace (i, nolightface[i], faceoffset[i]);
+		printf("Checking face %i of %i\r", i+1, numfaces);
+		TestLightFace (i, faceoffset[i]);
 	}
 }
 
@@ -147,11 +132,6 @@ static void FindFaceOffsets (void)
 	char		name[20];
 	const char	*classname;
 	vec3_t	org;
-
-	memset (nolightface, 0, sizeof(nolightface));
-
-	for (j = dmodels[ 0 ].firstface; j < dmodels[ 0 ].numfaces; j++)
-		nolightface[ j ] = 0;
 
 	for (i = 1; i < nummodels; i++)
 	{
@@ -172,7 +152,6 @@ static void FindFaceOffsets (void)
 			end = start + dmodels[ i ].numfaces;
 			for (j = start; j < end; j++)
 			{
-				nolightface[j] = 300;
 				faceoffset[j][0] = org[0];
 				faceoffset[j][1] = org[1];
 				faceoffset[j][2] = org[2];
@@ -212,9 +191,10 @@ static void LightWorld (void)
 		}
 	}
 
-	// since we're not running on an alpha box, we can safely do it this way...
+	setvbuf(stdout, NULL, _IONBF, 0);
+
 	if (numlighttex)
-		LightThread2 (NULL);
+		RunThreadsOn (LightThread2);
 	else
 		printf ("Skipping texture lighting - no faces modify light color in this BSP!\n");
 
@@ -286,14 +266,13 @@ static void LightWorld (void)
 						num_colors, num_lights);
 
 	if (num_colors < (num_lights / 4))
-		DecisionTime ("I suggest you don't continue, especially if you got the first warning too");
-
-	printf ("\n");
+		printf ("num_colors < num_lights / 4, don't expect a good result\n");
 
 	if (!num_colors)
 		COM_Error ("This BSP contains no light color modifying data!");
 
-	LightThread (NULL);
+	bspfileface = 0;	// reset
+	RunThreadsOn (LightThread);
 
 	lightdatasize = file_p - filebase;
 
@@ -321,20 +300,20 @@ int main (int argc, char **argv)
 
 	ValidateByteorder ();
 
-	// set the options we always want
-	makelit = true;
-	nominlimit = false;
-	colored = true;
-	compress_ents = false;
-
 	// defaults for the user settable options
-	force = false;
 	external = false;	// js feature
 	nodefault = false;	// js feature
 
 	for (i = 1 ; i < argc ; i++)
 	{
-		if (!strcmp(argv[i],"-extra"))
+		if (!strcmp(argv[i],"-threads"))
+		{
+			numthreads = atoi (argv[i+1]);
+			if (numthreads < 1)
+				COM_Error("Invalid number of threads");
+			i++;
+		}
+		else if (!strcmp(argv[i],"-extra"))
 		{
 			extrasamples = true;
 			printf ("extra sampling enabled\n");
@@ -354,14 +333,13 @@ int main (int argc, char **argv)
 			worldminlight = atof (argv[i+1]);
 			i++;
 		}
-		else if (!strcmp(argv[i],"-force"))
+		else if (!strcmp(argv[i],"-force")) // compat
 		{
-			force = true;
-			printf ("Forcing coloring regardless of potential effectiveness\n");
+			continue;
 		}
-		else if (!strcmp (argv[i], "-lit"))
+		else if (!strcmp (argv[i], "-lit")) // compat
 		{
-			makelit = true;
+			continue;
 		}
 		else if (!strcmp (argv[i], "-external") && argc > i)
 		{	// js feature
@@ -405,13 +383,10 @@ int main (int argc, char **argv)
 
 	if (i != argc - 1)
 	{
-		printf ("Usage: jsh2colour [-light num] [-extra] [-force] [-dist num]\n"
+		printf ("Usage: jsh2colour [-threads #] [-light num] [-extra] [-dist num]\n"
 			"\t\t  [-range num] [-nodefault] [-external file] bspfile\n");
 		exit(0);
 	}
-
-	if (makelit == true)
-		printf ("Making a LIT file\n");
 
 	InitDefFile (extfilename);	// js feature
 
@@ -434,16 +409,7 @@ int main (int argc, char **argv)
 	FindFaceOffsets();
 	LightWorld ();
 
-	WriteEntitiesToString ();
-
-//	if (colored)
-//		WriteBSPFile (source, BSP_COLORED_VERSION);
-//	else
-//		WriteBSPFile (source, BSP_OLD_VERSION);
-	if (makelit)
-		MakeLITFile (source);
-	else
-		WriteBSPFile (source);
+	MakeLITFile (source);
 
 	CloseDefFile ();
 

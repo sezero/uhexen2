@@ -118,18 +118,9 @@ TestLineOrSky
 TYR - modified TestLine (a bit of a hack job...)
 ==============
 */
-//qboolean TestLine (vec3_t start, vec3_t stop)
 static qboolean TestLineOrSky (vec3_t start, vec3_t stop, qboolean sky_test)
 {
-	int			node, side;
-/*	With vec_t defined as double, these front and back stuff need to
-	be vec_t as well:  While creating LIT files for demo2 or castle4,
-	the gcc compiled program segfaults under either of these conditions:
-	- the program is not compiled with the -ffast-math flag.
-	- compiled with gcc v4 for arches >= pentiumpro: i686, pentium2,
-	or pentium3 without the -msse -mfpmath=sse extra flags.		*/ 
-//	float		front, back;
-//	float		frontx, fronty, frontz, backx, backy, backz;
+	int		node, side;
 	vec_t		front, back;
 	vec_t		frontx, fronty, frontz, backx, backy, backz;
 	tracestack_t	*tstack_p;
