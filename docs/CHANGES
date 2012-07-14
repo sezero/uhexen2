@@ -4,6 +4,9 @@ Development Progress	:
 ---------------------------
 
 2012-07-14 (SVN):
+    * updated version date stamp to 2012-07-14.
+
+2012-07-14 (SVN):
     * utils, jsh2colour: several cleanups: the -lit and -force command
       line switches are now ignored. removed several global varss which
       have no real meaning in the tool. removed some unused functions.

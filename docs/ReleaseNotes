@@ -1,7 +1,7 @@
 Hammer of Thyrion (uHexen2) release notes:
 
 ========================================================================
-Changes in v1.5.5: (July 07, 2012.)
+Changes in v1.5.5: (July 14, 2012.)
 ========================================================================
 
 - Windows:  Removed hooks for QHOST, which is (was) a proprietery server
