@@ -4,6 +4,11 @@ Development Progress	:
 ---------------------------
 
 2012-07-14 (SVN):
+    * scripts: added config.guess and config.sub from savannah git repo.
+      added ax_pthread.m4 from the autoconf-archive git repo. added new
+      pthread.sh script based on the SDL library's configury.
+
+2012-07-14 (SVN):
     * updated version date stamp to 2012-07-14.
 
 2012-07-14 (SVN):
