@@ -78,10 +78,11 @@ byte *GetFileSpace (int size)
 }
 
 
-static void LightThread (void *junk)
+static void ColorLightThread (void *junk)
 {
 	int			i;
 
+	printf ("Begining %s: %i\n", __thisfunc__, (int)(intptr_t)junk);
 	while (1)
 	{
 		ThreadLock();
@@ -89,21 +90,18 @@ static void LightThread (void *junk)
 		ThreadUnlock();
 
 		if (i >= numfaces)
-		{
-			printf("\n\nJSH2colour completed.\n\n");
 			return;
-		}
 
-		printf("Lighting face %i of %i\r", i+1, numfaces);
 		LightFaceLIT (i, faceoffset[i]);
 	}
 }
 
 
-static void LightThread2 (void *junk)
+static void TestLightThread (void *junk)
 {
 	int			i;
 
+	printf ("Begining %s: %i\n", __thisfunc__, (int)(intptr_t)junk);
 	while (1)
 	{
 		ThreadLock();
@@ -111,12 +109,8 @@ static void LightThread2 (void *junk)
 		ThreadUnlock();
 
 		if (i >= numfaces)
-		{
-			printf ("\n");
 			return;
-		}
 
-		printf("Checking face %i of %i\r", i+1, numfaces);
 		TestLightFace (i, faceoffset[i]);
 	}
 }
@@ -191,10 +185,8 @@ static void LightWorld (void)
 		}
 	}
 
-	setvbuf(stdout, NULL, _IONBF, 0);
-
 	if (numlighttex)
-		RunThreadsOn (LightThread2);
+		RunThreadsOn (TestLightThread);
 	else
 		printf ("Skipping texture lighting - no faces modify light color in this BSP!\n");
 
@@ -272,11 +264,7 @@ static void LightWorld (void)
 		COM_Error ("This BSP contains no light color modifying data!");
 
 	bspfileface = 0;	// reset
-	RunThreadsOn (LightThread);
-
-	lightdatasize = file_p - filebase;
-
-	//printf ("lightdatasize: %i\n", lightdatasize);
+	RunThreadsOn (ColorLightThread);
 }
 
 
@@ -409,9 +397,8 @@ int main (int argc, char **argv)
 	FindFaceOffsets();
 	LightWorld ();
 
-	MakeLITFile (source);
-
 	CloseDefFile ();
+	MakeLITFile (source);
 
 	end = COM_GetTime ();
 	printf ("%0.1f seconds elapsed\n", end-start);

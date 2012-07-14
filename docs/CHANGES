@@ -4,6 +4,13 @@ Development Progress	:
 ---------------------------
 
 2012-07-14 (SVN):
+    * utils, jsh2colour: removed excessive stdout prints. renamed the
+      thread procedures. removed lightdatasize computation from the end
+      of LightWorld(). Moved CloseDefFile() call before MakeLITFile().
+    * utils, vis: removed some commented out code. renamed min variable
+      to minsee in GetNextPortal().
+
+2012-07-14 (SVN):
     * utils: cleaned up the threads mess. windows no longer needs to be
       __alpha for multi-threading. added pthread support for unix. added
       irix sprocsp support based on code from GtkRadiant. windows tls

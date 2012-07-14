@@ -34,8 +34,6 @@
 #include "vis.h"
 
 
-#define	MAX_THREADS		4
-
 int			GilMode = 1;
 int			numportals, portalleafs;
 int			c_portaltest, c_portalpass, c_portalcheck;
@@ -318,70 +316,23 @@ Returns the portals from the least complex, so the later ones can reuse
 the earlier information.
 =============
 */
-#if 1
-//static int maxpercent = 0;
 static portal_t *GetNextPortal (void)
 {
-	int			j;
+	int		j;
 	portal_t	*p, *tp;
-	int			min;
-//	int			ndone;
-	const int		num2 = numportals*2;
+	int		minsee;
+	const int	num2 = numportals * 2;
 
 	ThreadLock();
 
-	min = 99999;
+	minsee = 99999;
 	p = NULL;
 
-//	ndone = 0;
 	for (j = 0, tp = portals ; j < num2 ; j++, tp++)
 	{
-		if (tp->nummightsee < min && tp->status == stat_none)
+		if (tp->nummightsee < minsee && tp->status == stat_none)
 		{
-			min = tp->nummightsee;
-			p = tp;
-		}
-//		else if (tp->status == stat_done)
-//			ndone++;
-	}
-
-	if (p)
-		p->status = stat_working;
-
-	ThreadUnlock();
-
-	/*
-	if (GilMode)
-	{
-		ndone *= 50;
-		ndone /= numportals;
-		if (ndone-1 > maxpercent)
-		{
-			maxpercent = ndone;
-			printf("%d %% done\t", ndone);
-		}
-	}
-	*/
-
-	return p;
-}
-#else
-static portal_t *GetNextPortal (void)
-{
-	int			j;
-	portal_t	*p, *tp;
-	int			min;
-
-	ThreadLock();
-
-	min = -99999;
-	p = NULL;
-
-	for (j = 0, tp = portals ; j < numportals*2 ; j++, tp++)
-	{
-		if (tp->nummightsee > min && tp->status == stat_none)
-		{
-			min = tp->nummightsee;
+			minsee = tp->nummightsee;
 			p = tp;
 		}
 	}
@@ -393,8 +344,6 @@ static portal_t *GetNextPortal (void)
 
 	return p;
 }
-#endif
-
 
 /*
 ==============
@@ -413,9 +362,10 @@ static	void	LeafThread (void *junk)
 			break;
 
 		PortalFlow (p);
-
-		if (verbose)
-			printf ("portal:%4i  mightsee:%4i  cansee:%4i\n", (int)(p - portals), p->nummightsee, p->numcansee);
+		if (verbose) {
+			printf ("portal:%4i  mightsee:%4i  cansee:%4i\n",
+				(int)(p - portals), p->nummightsee, p->numcansee);
+		}
 	} while (1);
 
 	printf ("Completed %s: %i\n", __thisfunc__, (int)(intptr_t)junk);
