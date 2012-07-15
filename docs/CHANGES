@@ -4,6 +4,9 @@ Development Progress	:
 ---------------------------
 
 2012-07-14 (SVN):
+    * utils (genmodel): better handling of command line switches.
+
+2012-07-14 (SVN):
     * utils (dhcc, hcc, genmodel, jsh2color, light, qbsp, qfiles, vis):
       correctly handle command line options requiring additional args.
 

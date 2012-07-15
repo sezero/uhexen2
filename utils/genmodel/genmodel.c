@@ -208,41 +208,41 @@ static const char *DigitDefs[] =
 
 int main(int argc, char **argv)
 {
-	int		i;
+	int		i, j;
 	char	path[1024], bakname[1024];
 
 	printf("GENMODEL Version "VERSION_TEXT" ("__DATE__")\n\n");
 
-	if (argc == 1)
-	{
-		printf("usage: genmodel [-archive path] [-opt] model.hc\n");
-		return 0;
+	if (argc == 1) {
+	_usage:
+		printf("usage: genmodel [-opt] [-archive path] model.hc\n");
+		exit (1);
 	}
 
 	ValidateByteorder ();
 
 	path[0] = 0;
 
-	for (i = 1; i < argc; i++)
+	myargc = argc;
+	myargv = argv;
+
+	i = CheckParm("-archive");
+	if (i != 0)
 	{
-		if (!q_strcasecmp(argv[i], "-archive"))
-		{
-			if (i >= argc - 1)
-				COM_Error ("No archive dirname specified with -archive");
-			archive = true;
-			q_strlcpy(archivedir, argv[++i], sizeof(archivedir));
-			printf("Archiving source to: %s\n", archivedir);
-		}
-		else if (!q_strncasecmp(argv[i], "-opt", 4))
-		{
-			DoOpts = true;
-		}
-		else
-		{
-			q_strlcpy(path, argv[i], sizeof(path));
-			break;
-		}
+		if (i >= argc - 1) goto _usage;
+		archive = true;
+		q_strlcpy(archivedir, argv[++i], sizeof(archivedir));
+		printf("Archiving source to: %s\n", archivedir);
 	}
+	j = CheckParm("-opt");
+	if (j != 0)
+		DoOpts = true;
+	if (i < j) i = j;
+	if (i + 1 > argc - 1)
+		goto _usage;
+
+	q_strlcpy(path, argv[i + 1], sizeof(path));
+	SetQdirFromPath("");		/* (path); */
 
 	// Init
 	for (i = 0; i < 3; i++)
