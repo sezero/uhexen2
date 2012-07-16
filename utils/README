@@ -16,7 +16,7 @@ hcc	: HCode (HexenC) compiler. From Raven's h2mputil package.
 	  progdefs.h for use in engine compilation, and files.dat
 	  to be used as input for qfiles.
 
-maputils: Map compiling tools (qbsp, light, vis). From Raven's
+maputils (qbsp, light, vis): Map compiling tools. From Raven's
 	  h2mputil package. Also includes bspinfo, which dumps
 	  the count and size statistics on a .bsp file.
 

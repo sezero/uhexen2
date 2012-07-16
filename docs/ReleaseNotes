@@ -9,6 +9,8 @@ Changes in v1.5.5: (July 16, 2012.)
   of alpha-only. Default is single-threaded. Use "-threads #" to specify
   the required number of threads. (max: 32. -1 tries to autodetect.)
 
+- Utils, all: Some fixes/improvements to command line options handling.
+
 - Windows:  Removed hooks for QHOST, which is (was) a proprietery server
   administation tool.
 

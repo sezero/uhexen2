@@ -4,6 +4,9 @@ Development Progress	:
 ---------------------------
 
 2012-07-16 (SVN):
+    * docs: minor update.
+
+2012-07-16 (SVN):
     * utils, threads: Made numthreads static. Changed InitThreads(), so
       that the caller passes wanted number of threads and needed stack
       size. A negative required threads number will autodetect. Default
