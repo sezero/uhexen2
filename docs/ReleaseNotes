@@ -11,6 +11,9 @@ Changes in v1.5.5: (July 16, 2012.)
 
 - Utils, all: Some fixes/improvements to command line options handling.
 
+- Client: Fixed a minor intermissions glitch, which is almost impossible
+  to hit.
+
 - Windows:  Removed hooks for QHOST, which is (was) a proprietery server
   administation tool.
 

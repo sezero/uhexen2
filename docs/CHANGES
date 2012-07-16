@@ -4,6 +4,11 @@ Development Progress	:
 ---------------------------
 
 2012-07-16 (SVN):
+    * cl_main.c (CL_Disconnect): set cl.intermission to 0. fixes a minor
+      intermissions glitch which is almost impossible to hit in hexen2.
+      See Baker's post: http://forums.inside3d.com/viewtopic.php?t=4944
+
+2012-07-16 (SVN):
     * docs: minor update.
 
 2012-07-16 (SVN):

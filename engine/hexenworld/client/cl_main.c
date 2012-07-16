@@ -409,6 +409,7 @@ void CL_Disconnect (void)
 		cls.demoplayback = cls.demorecording = cls.timedemo = false;
 	}
 	Cam_Reset();
+	cl.intermission = 0;
 }
 
 static void CL_Disconnect_f (void)
