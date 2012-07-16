@@ -29,7 +29,7 @@ COMMONDIR:=../common
 include $(UHEXEN2_TOP)/scripts/makefile.inc
 
 # Names of the binaries
-QBSP:=qbsp$(exe_ext)
+BSPINFO:=bspinfo$(exe_ext)
 
 # Compiler flags
 
@@ -54,7 +54,7 @@ INCLUDES= -I. -I$(COMMONDIR) -I$(LIBS_DIR)/common
 
 ifeq ($(TARGET_OS),dos)
 INCLUDES+= -I$(OSLIBS)/dos
-LDFLAGS += -lc -lgcc -lm
+LDFLAGS += -lc -lgcc
 endif
 ifeq ($(TARGET_OS),win32)
 CFLAGS  += -DWIN32_LEAN_AND_MEAN
@@ -71,7 +71,7 @@ CFLAGS  += -noixemul
 LDFLAGS += -noixemul
 endif
 ifeq ($(TARGET_OS),unix)
-LDLIBS  += -lm
+# nothing extra is needed
 endif
 
 # Targets
@@ -86,7 +86,7 @@ all : $(LIGHT) $(VIS) $(QBSP) $(BSPINFO)
 	$(CC) -c $(CFLAGS) $(INCLUDES) -o $@ $<
 
 # Objects
-OBJ_COMMON= qsnprint.o \
+OBJ_BSPINFO= qsnprint.o \
 	strlcat.o \
 	strlcpy.o \
 	cmdlib.o \
@@ -94,28 +94,14 @@ OBJ_COMMON= qsnprint.o \
 	byteordr.o \
 	util_io.o \
 	pathutil.o \
-	mathlib.o \
-	bspfile.o
+	bspfile.o \
+	bspinfo.o
 
-OBJ_QBSP= brush.o \
-	csg4.o \
-	map.o \
-	merge.o \
-	nodraw.o \
-	outside.o \
-	portals.o \
-	qbsp.o \
-	region.o \
-	solidbsp.o \
-	surfaces.o \
-	tjunc.o \
-	writebsp.o
-
-$(QBSP) : $(OBJ_COMMON) $(OBJ_QBSP)
-	$(LINKER) $(OBJ_COMMON) $(OBJ_QBSP) $(LDFLAGS) $(LDLIBS) -o $@
+$(BSPINFO) : $(OBJ_BSPINFO)
+	$(LINKER) $(OBJ_BSPINFO) $(LDFLAGS) $(LDLIBS) -o $@
 
 clean:
 	rm -f *.o core
 distclean: clean
-	rm -f $(QBSP)
+	rm -f $(BSPINFO)
 

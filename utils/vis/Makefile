@@ -29,7 +29,7 @@ COMMONDIR:=../common
 include $(UHEXEN2_TOP)/scripts/makefile.inc
 
 # Names of the binaries
-QBSP:=qbsp$(exe_ext)
+VIS:=vis$(exe_ext)
 
 # Compiler flags
 
@@ -72,6 +72,15 @@ LDFLAGS += -noixemul
 endif
 ifeq ($(TARGET_OS),unix)
 LDLIBS  += -lm
+# threads: use sprocsp code for IRIX, pthreads for others.
+ifeq (,$(findstring irix,$(HOST_OS)))
+USE_PTHREADS=yes
+endif
+ifeq ($(USE_PTHREADS),yes)
+CFLAGS  += -DUSE_PTHREADS
+CFLAGS  += $(shell sh $(UHEXEN2_TOP)/scripts/pthread.sh $(UHEXEN2_TOP)/scripts/config.guess --cflags)
+LDLIBS  += $(shell sh $(UHEXEN2_TOP)/scripts/pthread.sh $(UHEXEN2_TOP)/scripts/config.guess --libs)
+endif
 endif
 
 # Targets
@@ -97,25 +106,16 @@ OBJ_COMMON= qsnprint.o \
 	mathlib.o \
 	bspfile.o
 
-OBJ_QBSP= brush.o \
-	csg4.o \
-	map.o \
-	merge.o \
-	nodraw.o \
-	outside.o \
-	portals.o \
-	qbsp.o \
-	region.o \
-	solidbsp.o \
-	surfaces.o \
-	tjunc.o \
-	writebsp.o
+OBJ_VIS= threads.o \
+	flow.o \
+	soundpvs.o \
+	vis.o
 
-$(QBSP) : $(OBJ_COMMON) $(OBJ_QBSP)
-	$(LINKER) $(OBJ_COMMON) $(OBJ_QBSP) $(LDFLAGS) $(LDLIBS) -o $@
+$(VIS) : $(OBJ_COMMON) $(OBJ_VIS)
+	$(LINKER) $(OBJ_COMMON) $(OBJ_VIS) $(LDFLAGS) $(LDLIBS) -o $@
 
 clean:
 	rm -f *.o core
 distclean: clean
-	rm -f $(QBSP)
+	rm -f $(VIS)
 

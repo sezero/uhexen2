@@ -4,8 +4,7 @@ UHEXEN2_TOP=../..
 . $UHEXEN2_TOP/scripts/cross_defs.w32
 
 if test "$1" = "strip"; then
-	echo "Stripping binaries"
-	$STRIPPER qbsp.exe bspinfo.exe light.exe vis.exe
+	$STRIPPER qbsp.exe
 	exit 0
 fi
 

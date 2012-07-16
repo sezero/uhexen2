@@ -7,10 +7,10 @@ if test "$1" = "strip"; then
 	echo "Stripping all hexen2util win64 binaries"
 	$STRIPPER hcc/hcc.exe			\
 		dcc/dhcc.exe			\
-		maputils/vis.exe		\
-		maputils/light.exe		\
-		maputils/qbsp.exe		\
-		maputils/bspinfo.exe		\
+		vis/vis.exe			\
+		light/light.exe			\
+		qbsp/qbsp.exe			\
+		bspinfo/bspinfo.exe		\
 		qfiles/qfiles.exe		\
 		pak/pakx.exe			\
 		pak/paklist.exe			\
@@ -31,7 +31,10 @@ esac
 
 if test "$1" = "clean"; then
 	$MAKE_CMD -s -C hcc clean
-	$MAKE_CMD -s -C maputils clean
+	$MAKE_CMD -s -C bspinfo clean
+	$MAKE_CMD -s -C qbsp clean
+	$MAKE_CMD -s -C light clean
+	$MAKE_CMD -s -C vis clean
 	$MAKE_CMD -s -C genmodel clean
 	$MAKE_CMD -s -C qfiles clean
 	$MAKE_CMD -s -C pak clean
@@ -54,8 +57,17 @@ $MAKE_CMD -C pak $* || exit 1
 echo "" && echo "Now building genmodel.."
 $MAKE_CMD -C genmodel $* || exit 1
 
-echo "" && echo "Now building light, vis and qbsp.."
-$MAKE_CMD -C maputils $* || exit 1
+echo "" && echo "Now building qbsp.."
+$MAKE_CMD -C qbsp $* || exit 1
+
+echo "" && echo "Now building light.."
+$MAKE_CMD -C light $* || exit 1
+
+echo "" && echo "Now building vis.."
+$MAKE_CMD -C vis $* || exit 1
+
+echo "" && echo "Now building bspinfo.."
+$MAKE_CMD -C bspinfo $* || exit 1
 
 echo "" && echo "Now building dhcc, a progs.dat decompiler.."
 $MAKE_CMD -C dcc $* || exit 1

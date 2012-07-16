@@ -1,10 +1,10 @@
 #!/bin/sh
 
 UHEXEN2_TOP=../..
-. $UHEXEN2_TOP/scripts/cross_defs.w64
+. $UHEXEN2_TOP/scripts/cross_defs.w32
 
 if test "$1" = "strip"; then
-	$STRIPPER qbsp.exe
+	$STRIPPER vis.exe
 	exit 0
 fi
 

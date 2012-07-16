@@ -7,10 +7,10 @@ if test "$1" = "strip"; then
 	fi
 	strip hcc/hcc$exe_ext			\
 		dcc/dhcc$exe_ext		\
-		maputils/vis$exe_ext		\
-		maputils/light$exe_ext		\
-		maputils/qbsp$exe_ext		\
-		maputils/bspinfo$exe_ext	\
+		vis/vis$exe_ext			\
+		light/light$exe_ext		\
+		qbsp/qbsp$exe_ext		\
+		bspinfo/bspinfo$exe_ext		\
 		qfiles/qfiles$exe_ext		\
 		pak/pakx$exe_ext		\
 		pak/paklist$exe_ext		\
@@ -31,7 +31,10 @@ esac
 
 if test "$1" = "clean"; then
 	$MAKE_CMD -s -C hcc clean
-	$MAKE_CMD -s -C maputils clean
+	$MAKE_CMD -s -C bspinfo clean
+	$MAKE_CMD -s -C qbsp clean
+	$MAKE_CMD -s -C light clean
+	$MAKE_CMD -s -C vis clean
 	$MAKE_CMD -s -C genmodel clean
 	$MAKE_CMD -s -C qfiles clean
 	$MAKE_CMD -s -C pak clean
@@ -50,8 +53,14 @@ echo "" && echo "Now building pak tools.."
 $MAKE_CMD -C pak $* || exit 1
 echo "" && echo "Now building genmodel.."
 $MAKE_CMD -C genmodel $* || exit 1
-echo "" && echo "Now building light, vis and qbsp.."
-$MAKE_CMD -C maputils $* || exit 1
+echo "" && echo "Now building qbsp.."
+$MAKE_CMD -C qbsp $* || exit 1
+echo "" && echo "Now building light.."
+$MAKE_CMD -C light $* || exit 1
+echo "" && echo "Now building vis.."
+$MAKE_CMD -C vis $* || exit 1
+echo "" && echo "Now building bspinfo.."
+$MAKE_CMD -C bspinfo $* || exit 1
 echo "" && echo "Now building dhcc, a progs.dat decompiler.."
 $MAKE_CMD -C dcc $* || exit 1
 echo "" && echo "Now building jsh2colour, a lit file generator.."

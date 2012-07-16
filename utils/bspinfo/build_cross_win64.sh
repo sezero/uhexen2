@@ -4,7 +4,7 @@ UHEXEN2_TOP=../..
 . $UHEXEN2_TOP/scripts/cross_defs.w64
 
 if test "$1" = "strip"; then
-	$STRIPPER qbsp.exe
+	$STRIPPER bspinfo.exe
 	exit 0
 fi
 
