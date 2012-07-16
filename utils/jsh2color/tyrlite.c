@@ -277,6 +277,7 @@ light modelfile
 int main (int argc, char **argv)
 {
 	int		i;
+	int		wantthreads;
 	double		start, end;
 	char		source[1024];
 
@@ -291,6 +292,7 @@ int main (int argc, char **argv)
 	external = false;	// js feature
 	extfilename[0] = '\0';
 	nodefault = false;	// js feature
+	wantthreads = 1;	// default to single threaded
 
 	for (i = 1 ; i < argc ; i++)
 	{
@@ -298,9 +300,7 @@ int main (int argc, char **argv)
 		{
 			if (i >= argc - 1)
 				COM_Error("Missing argument to \"%s\"", argv[i]);
-			numthreads = atoi (argv[++i]);
-			if (numthreads < 1)
-				COM_Error("Invalid number of threads");
+			wantthreads = atoi (argv[++i]);
 		}
 		else if (!strcmp(argv[i],"-extra"))
 		{
@@ -366,8 +366,7 @@ int main (int argc, char **argv)
 	}
 
 	InitDefFile (extfilename);	// js feature
-
-	InitThreads ();
+	InitThreads (wantthreads, 0x300000);	// FIXME: crazy stacksize: see ltface.c.
 
 	start = COM_GetTime ();
 

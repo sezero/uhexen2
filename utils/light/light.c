@@ -110,6 +110,7 @@ light modelfile
 int main (int argc, char **argv)
 {
 	int		i;
+	int		wantthreads;
 	double		start, end;
 	char		source[1024];
 
@@ -117,15 +118,15 @@ int main (int argc, char **argv)
 
 	ValidateByteorder ();
 
+	wantthreads = 1;	// default to single threaded
+
 	for (i = 1 ; i < argc ; i++)
 	{
 		if (!strcmp(argv[i],"-threads"))
 		{
 			if (i >= argc - 1)
 				COM_Error("Missing argument to \"%s\"", argv[i]);
-			numthreads = atoi (argv[++i]);
-			if (numthreads < 1)
-				COM_Error("Invalid number of threads");
+			wantthreads = atoi (argv[++i]);
 		}
 		else if (!strcmp(argv[i],"-extra"))
 		{
@@ -153,7 +154,7 @@ int main (int argc, char **argv)
 	if (i != argc - 1)
 		COM_Error ("usage: light [-threads num] [-extra] [-dist ?] [-range ?] bspfile");
 
-	InitThreads ();
+	InitThreads (wantthreads, 0);
 
 	start = COM_GetTime ();
 

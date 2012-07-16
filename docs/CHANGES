@@ -4,6 +4,13 @@ Development Progress	:
 ---------------------------
 
 2012-07-16 (SVN):
+    * utils, threads: Made numthreads static. Changed InitThreads(), so
+      that the caller passes wanted number of threads and needed stack
+      size. A negative required threads number will autodetect. Default
+      without a -threads # command line option is single-threaded.
+    * updated version date stamp to 2012-07-16.
+
+2012-07-16 (SVN):
     * split maputils to four directories, qbsp, light, vis and bspinfo.
 
 2012-07-14 (SVN):

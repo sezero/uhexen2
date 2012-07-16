@@ -116,11 +116,14 @@ int Thread_GetNumCPUS (void)
 
 /* THREAD FUNCTIONS: */
 
+#define DEFAULT_STACKSIZ	0x100000	/* 1MB is enough for most */
+
 #if defined(PLATFORM_WINDOWS)
 
 #include <windows.h>
 
-int		numthreads = 1;
+static int	numthreads;
+static size_t	stacksiz;
 static HANDLE		my_mutex;
 static threadfunc_t	workfunc;
 
@@ -130,10 +133,22 @@ static DWORD WINAPI ThreadWorkerFunc (LPVOID threadnum)
 	return 0;
 }
 
-void InitThreads (void)
+void InitThreads (int wantthreads, size_t needstack)
 {
-	if (numthreads == -1)
+	if (needstack != 0)
+		stacksiz = needstack;
+	else	stacksiz = DEFAULT_STACKSIZ;
+
+	numthreads = wantthreads;
+	if (numthreads < 0)
 		numthreads = Thread_GetNumCPUS ();
+	if (numthreads < 1)
+		numthreads = 1;
+	if (numthreads > MAX_THREADS)
+		numthreads = MAX_THREADS;
+
+	printf ("Setup for %d threads, 0x%x stack size\n",
+			numthreads, (unsigned int)stacksiz);
 	if (numthreads <= 1)
 		return;
 
@@ -176,7 +191,7 @@ void RunThreadsOn (threadfunc_t func)
 	for (i = 0; i < numthreads; i++)
 	{
 		work_threads[i] = CreateThread(NULL,	/* no security attrib */
-			0x100000,			/* stack size */
+			stacksiz,			/* stack size */
 			ThreadWorkerFunc,		/* thread function */
 			(LPVOID) i,			/* thread function arg */
 			0,				/* use default creation flags */
@@ -200,7 +215,8 @@ void RunThreadsOn (threadfunc_t func)
 #include <sys/types.h>
 #include <sys/prctl.h>
 
-int		numthreads = -1;
+static int	numthreads;
+static size_t	stacksiz;
 static abilock_t	lck;
 
 static void ThreadWorkerFunc (void *threadnum, size_t stksize)
@@ -208,17 +224,25 @@ static void ThreadWorkerFunc (void *threadnum, size_t stksize)
 	workfunc (threadnum);
 }
 
-void InitThreads (void)
+void InitThreads (int wantthreads, size_t needstack)
 {
-	if (numthreads == -1)
-	{
-		numthreads = prctl(PR_MAXPPROCS);
-		if (numthreads > MAX_THREADS)
-			numthreads = MAX_THREADS;
-	}
+	if (needstack != 0)
+		stacksiz = needstack;
+	else	stacksiz = DEFAULT_STACKSIZ;
 
-	if (numthreads > 1)
-		usconfig (CONF_INITUSERS, numthreads);
+	numthreads = wantthreads;
+	if (numthreads < 0)
+		numthreads = prctl(PR_MAXPPROCS);
+	if (numthreads < 1)
+		numthreads = 1;
+	if (numthreads > MAX_THREADS)
+		numthreads = MAX_THREADS;
+
+	printf ("Setup for %d threads, 0x%x stack size\n",
+			numthreads, (unsigned int)stacksiz);
+	if (numthreads <= 1)
+		return;
+	usconfig (CONF_INITUSERS, numthreads);
 }
 
 void ThreadLock (void)
@@ -255,7 +279,7 @@ void RunThreadsOn (threadfunc_t func)
 	for (i = 0; i < numthreads - 1; i++)
 	{
 		pid[i] = sprocsp (ThreadWorkerFunc, PR_SALL, (void *)i,
-				  NULL, 0x100000);	/* 1 MB stacks */
+				  NULL, stacksiz);
 		if (pid[i] == -1)
 		{
 			perror ("sproc");
@@ -277,7 +301,8 @@ void RunThreadsOn (threadfunc_t func)
 
 #include <pthread.h>
 
-int		numthreads = 4;
+static int	numthreads;
+static size_t	stacksiz;
 static pthread_mutex_t	*my_mutex;
 static threadfunc_t	workfunc;
 
@@ -287,10 +312,24 @@ static pthread_addr_t ThreadWorkerFunc (pthread_addr_t threadnum)
 	return NULL;
 }
 
-void InitThreads (void)
+void InitThreads (int wantthreads, size_t needstack)
 {
 	pthread_mutexattr_t	mattrib;
 
+	if (needstack != 0)
+		stacksiz = needstack;
+	else	stacksiz = DEFAULT_STACKSIZ;
+
+	numthreads = wantthreads;
+	if (numthreads < 0)
+		numthreads = 4;
+	if (numthreads < 1)
+		numthreads = 1;
+	if (numthreads > MAX_THREADS)
+		numthreads = MAX_THREADS;
+
+	printf ("Setup for %d threads, 0x%x stack size\n",
+			numthreads, (unsigned int)stacksiz);
 	if (numthreads <= 1)
 		return;
 
@@ -337,7 +376,7 @@ void RunThreadsOn (threadfunc_t func)
 
 	if (pthread_attr_create (&attrib) == -1)
 		COM_Error ("pthread_attr_create failed");
-	if (pthread_attr_setstacksize (&attrib, 0x100000) == -1)
+	if (pthread_attr_setstacksize (&attrib, stacksiz) == -1)
 		COM_Error ("pthread_attr_setstacksize failed");
 
 	for (i = 0; i < numthreads; i++)
@@ -359,7 +398,8 @@ void RunThreadsOn (threadfunc_t func)
 
 #include <pthread.h>
 
-int		numthreads = 1;
+static int	numthreads;
+static size_t	stacksiz;
 static pthread_mutex_t	*my_mutex;
 static threadfunc_t	workfunc;
 
@@ -369,10 +409,24 @@ static void *ThreadWorkerFunc (void *threadnum)
 	return NULL;
 }
 
-void InitThreads (void)
+void InitThreads (int wantthreads, size_t needstack)
 {
 	pthread_mutexattr_t mattrib;
 
+	if (needstack != 0)
+		stacksiz = needstack;
+	else	stacksiz = DEFAULT_STACKSIZ;
+
+	numthreads = wantthreads;
+	if (numthreads < 0)
+		numthreads = Thread_GetNumCPUS ();
+	if (numthreads < 1)
+		numthreads = 1;
+	if (numthreads > MAX_THREADS)
+		numthreads = MAX_THREADS;
+
+	printf ("Setup for %d threads, 0x%x stack size\n",
+			numthreads, (unsigned int)stacksiz);
 	if (numthreads <= 1)
 		return;
 
@@ -415,7 +469,7 @@ void RunThreadsOn (threadfunc_t func)
 
 	if (pthread_attr_init (&attrib) == -1)
 		COM_Error ("pthread_attr_init failed");
-	if (pthread_attr_setstacksize (&attrib, 0x100000) == -1)
+	if (pthread_attr_setstacksize (&attrib, stacksiz) == -1)
 		COM_Error ("pthread_attr_setstacksize failed");
 
 	workfunc = func;
@@ -439,12 +493,9 @@ void RunThreadsOn (threadfunc_t func)
 
 #else	/* no threads  */
 
-int		numthreads = 1;
-
-
-void InitThreads (void)
+void InitThreads (int wantthreads, size_t needstack)
 {
-	/* ( nothing ) */
+	printf ("Single-threaded at compile time\n");
 }
 
 void ThreadLock (void)

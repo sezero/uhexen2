@@ -25,13 +25,11 @@
 
 #define	MAX_THREADS	32
 
-extern	int		numthreads;
-
 int	Thread_GetNumCPUS (void);
 
 typedef void (*threadfunc_t) (void *);
 
-void	InitThreads (void);
+void	InitThreads (int wantthreads, size_t needstack);
 void	ThreadLock (void);
 void	ThreadUnlock (void);
 void	RunThreadsOn (threadfunc_t func);

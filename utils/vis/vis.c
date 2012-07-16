@@ -799,11 +799,14 @@ int main (int argc, char **argv)
 	char	portalfile[1024];
 	char	source[1024];
 	int		i;
+	int		wantthreads;
 	double	start, end;
 
 	printf ("---- vis ----\n");
 
 	ValidateByteorder ();
+
+	wantthreads = 1;	// default to single threaded
 
 	for (i = 1 ; i < argc ; i++)
 	{
@@ -811,9 +814,7 @@ int main (int argc, char **argv)
 		{
 			if (i >= argc - 1)
 				COM_Error("Missing argument to \"%s\"", argv[i]);
-			numthreads = atoi (argv[++i]);
-			if (numthreads < 1)
-				COM_Error("Invalid number of threads");
+			wantthreads = atoi (argv[++i]);
 		}
 		else if (!strcmp(argv[i], "-nogil"))
 		{
@@ -846,7 +847,7 @@ int main (int argc, char **argv)
 	if (i != argc - 1)
 		COM_Error ("usage: vis [-nogil] [-threads #] [-level 0-4] [-fast] [-v] bspfile");
 
-	InitThreads ();
+	InitThreads (wantthreads, 0);
 
 	start = COM_GetTime ();
 
