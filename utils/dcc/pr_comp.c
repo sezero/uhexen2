@@ -203,7 +203,7 @@ static def_t *PR_Statement ( opcode_t *op, def_t *var_a, def_t *var_b)
 	statement->op = op - pr_opcodes;
 	statement->a = var_a ? var_a->ofs : 0;
 	statement->b = var_b ? var_b->ofs : 0;
-	if (((op->type_c == &def_void) ^ op->right_associative) || statement->op == 89)
+	if (((op->type_c == &def_void) ^ op->right_associative) || statement->op == OP_BITSETP)
 	{
 		var_c = NULL;
 		statement->c = 0;	// ifs, gotos, and assignments
@@ -463,7 +463,7 @@ static def_t *PR_ParseRandom (void)
 
 	if (PR_Check(")"))
 	{
-		PR_Statement (&pr_opcodes[92], NULL, NULL);
+		PR_Statement (&pr_opcodes[OP_RAND0], NULL, NULL);
 		def_ret.type = def_float.type;
 		return &def_ret;
 	}
@@ -477,9 +477,9 @@ static def_t *PR_ParseRandom (void)
 			if (e->type == e2->type)
 			{
 				if (e->type == def_float.type)
-					PR_Statement (&pr_opcodes[94], e, e2);
+					PR_Statement (&pr_opcodes[OP_RAND2], e, e2);
 				else if (e->type == def_vector.type)
-					PR_Statement (&pr_opcodes[97], e, e2);
+					PR_Statement (&pr_opcodes[OP_RANDV2], e, e2);
 				def_ret.type = e2->type;
 				return &def_ret;
 			}
@@ -488,9 +488,9 @@ static def_t *PR_ParseRandom (void)
 		{
 			PR_Expect(")");
 			if (e->type == def_float.type)
-				PR_Statement (&pr_opcodes[93], e, NULL);
+				PR_Statement (&pr_opcodes[OP_RAND1], e, NULL);
 			else if (e->type == def_vector.type)
-				PR_Statement (&pr_opcodes[96], e, NULL);
+				PR_Statement (&pr_opcodes[OP_RANDV1], e, NULL);
 			def_ret.type = e->type;
 			return &def_ret;
 		}
@@ -612,7 +612,7 @@ static def_t *PR_Expression (int priority)
 			}
 			else
 			{
-				if (((op - pr_opcodes) >= 92) && ((op - pr_opcodes) <= 94))
+				if (((op - pr_opcodes) >= OP_RAND0) && ((op - pr_opcodes) <= OP_RAND2))
 				{
 					e2 = PR_Expression (priority);
 				//	printf("finding e2 %s %dright assoc %d\n", e2 ? e2->name : "???", e2 ? e2->type->type : -1, priority);
@@ -621,7 +621,7 @@ static def_t *PR_Expression (int priority)
 					def_ret.type = e->type;
 					return &def_ret;
 				}
-				else if (((op - pr_opcodes) >= 95) && ((op - pr_opcodes) <= 97))
+				else if (((op - pr_opcodes) >= OP_RANDV0) && ((op - pr_opcodes) <= OP_RANDV2))
 				{
 					e2 = PR_Expression (priority);
 				//	printf("finding e2 %s %dright assoc %d\n", e2 ? e2->name: "???", e2 ? e2->type->type : -1, priority);
@@ -760,13 +760,14 @@ static void PR_ParseStatement (void)
 		return;
 	}
 
-/*	if (PR_Check("random"))
+	/*
+	if (PR_Check("random"))
 	{
 		PR_Expect ("(");
 		if (PR_Check(")"))
 		{
 			PR_Expect(";");
-			PR_Statement (&pr_opcodes[92], NULL, NULL);
+			PR_Statement (&pr_opcodes[OP_RAND0], NULL, NULL);
 			return;
 		}
 		else
@@ -775,7 +776,7 @@ static void PR_ParseStatement (void)
 			if (PR_Check(")"))
 			{
 				PR_Expect(";");
-				PR_Statement (&pr_opcodes[93], e, NULL);
+				PR_Statement (&pr_opcodes[OP_RAND1], e, NULL);
 				return;
 			}
 			else
@@ -784,14 +785,14 @@ static void PR_ParseStatement (void)
 				e2 = PR_Expression (TOP_PRIORITY);
 				PR_Expect(")");
 				PR_Expect(";");
-				PR_Statement (&pr_opcodes[94], e, e2);
+				PR_Statement (&pr_opcodes[OP_RAND2], e, e2);
 				return;
 			}
 		}
 
 		return;
 	}
-*/
+	*/
 
 	if (PR_Check("AdvanceThinkTime"))
 	{
@@ -805,7 +806,7 @@ static void PR_ParseStatement (void)
 			PR_ParseError ("type mismatch for %s", e2->name);
 		PR_Expect (")");
 		PR_Expect (";");
-		PR_Statement (&pr_opcodes[87], e, e2);
+		PR_Statement (&pr_opcodes[OP_THINKTIME], e, e2);
 		return;
 	}
 
@@ -821,7 +822,7 @@ static void PR_ParseStatement (void)
 			PR_ParseError ("type mismatch for %s", e2->name);
 		PR_Expect (")");
 		PR_Expect (";");
-		PR_Statement (&pr_opcodes[85], e, e2);
+		PR_Statement (&pr_opcodes[OP_CSTATE], e, e2);
 		return;
 	}
 

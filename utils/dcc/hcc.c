@@ -757,7 +757,7 @@ int main (int argc, char **argv)
 		printf(" Compiles progs.dat using progs.src in the current directory\n");
 		printf(" -src <directory> : Specify source directory\n");
 		printf(" -name <source>   : Specify the name of the .src file\n");
-		printf(" -dcc : decompile the progs.dat in the current directory\n");
+		printf(" -dcc (or -dec)   : decompile progs.dat in current directory\n");
 		printf(" -dcc -name <progsname> : specify name of progs to decompile\n");
 		printf(" -dcc -fix : fixes mangled names during decompilation\n");
 		printf(" -dcc -asm <functionname> : decompile filename to the console\n");

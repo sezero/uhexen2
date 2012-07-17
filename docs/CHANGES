@@ -4,6 +4,10 @@ Development Progress	:
 ---------------------------
 
 2012-07-17 (SVN):
+    * utils, dhcc: replaced opcode magic numbers with enumerated value
+      names at several places.
+
+2012-07-17 (SVN):
     * utils, dhcc: added -dec cmdline switch, as an alternative to -dcc.
 
 2012-07-16 (SVN):

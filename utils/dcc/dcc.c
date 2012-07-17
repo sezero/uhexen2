@@ -430,7 +430,7 @@ static void DccStatement (dstatement_t *s)
 			if ((s + i)->op % 100 == OP_DONE)
 				break;
 
-			if ((s + i)->op % 100 >= 92)
+			if ((s + i)->op % 100 >= OP_RAND0)
 				break;
 
 			if ((s + i)->a == OFS_RETURN ||
@@ -564,8 +564,8 @@ static void DccStatement (dstatement_t *s)
 			PR_Print("}\n");
 		}
 	}
-	else if ((s->op >= 66 && s->op <= 79) ||
-		 (s->op >= 88 && s->op <= 91))
+	else if ((s->op >= OP_MULSTORE_F && s->op <= OP_SUBSTOREP_V) ||
+		 (s->op >= OP_BITSET && s->op <= OP_BITCLRP))
 	{
 		arg1 = PR_PrintStringAtOfs((unsigned short)s->a, typ1);
 		if (arg1)
@@ -581,7 +581,7 @@ static void DccStatement (dstatement_t *s)
 		if (s->c)
 			Make_Immediate((unsigned short)s->c, dsline);
 	}
-	else if (s->op == 80 || s->op == 81)
+	else if (s->op == OP_FETCH_GBL_F || s->op == OP_FETCH_GBL_V)
 	{
 		arg1 = PR_PrintStringAtOfs((unsigned short)s->a, typ1);
 		if (arg1)
@@ -603,7 +603,7 @@ static void DccStatement (dstatement_t *s)
 			Make_Immediate((unsigned short)s->c, dsline);
 		}
 	}
-	else if (s->op == 85)
+	else if (s->op == OP_CSTATE)
 	{
 		arg1 = PR_PrintStringAtOfs((unsigned short)s->a, typ1);
 		if (arg1)
@@ -613,7 +613,7 @@ static void DccStatement (dstatement_t *s)
 		PR_Indent();
 		PR_Print("AdvanceFrame( %s, %s);\n", a1, arg2);
 	}
-	else if (s->op == 87)
+	else if (s->op == OP_THINKTIME)
 	{
 		arg1 = PR_PrintStringAtOfs((unsigned short)s->a, typ1);
 		if (arg1)
@@ -623,12 +623,12 @@ static void DccStatement (dstatement_t *s)
 		PR_Indent();
 		PR_Print("AdvanceThinkTime(%s,%s);\n", a1, arg2);
 	}
-	else if (s->op == 92)
+	else if (s->op == OP_RAND0)
 	{
 		sprintf(dsline,"random()");
 		Make_Immediate(OFS_RETURN, dsline);
 	}
-	else if (s->op == 93)
+	else if (s->op == OP_RAND1)
 	{
 		arg1 = PR_PrintStringAtOfs((unsigned short)s->a, typ1);
 		if (arg1)
@@ -637,7 +637,7 @@ static void DccStatement (dstatement_t *s)
 		sprintf(dsline, "random(%s)", a1);
 		Make_Immediate(OFS_RETURN, dsline);
 	}
-	else if (s->op == 94)
+	else if (s->op == OP_RAND2)
 	{
 		arg1 = PR_PrintStringAtOfs((unsigned short)s->a, typ1);
 		if (arg1)
@@ -647,12 +647,12 @@ static void DccStatement (dstatement_t *s)
 		sprintf(dsline, "random(%s,%s)", a1, arg2);
 		Make_Immediate(OFS_RETURN, dsline);
 	}
-	else if (s->op == 95)
+	else if (s->op == OP_RANDV0)
 	{
 		sprintf(dsline,"random( )");
 		Make_Immediate(OFS_RETURN, dsline);
 	}
-	else if (s->op == 96)
+	else if (s->op == OP_RANDV1)
 	{
 		arg1 = PR_PrintStringAtOfs((unsigned short)s->a, typ1);
 		if (arg1)
@@ -661,7 +661,7 @@ static void DccStatement (dstatement_t *s)
 		sprintf(dsline, "random(%s)", a1);
 		Make_Immediate(OFS_RETURN, dsline);
 	}
-	else if (s->op == 97)
+	else if (s->op == OP_RANDV2)
 	{
 		arg1 = PR_PrintStringAtOfs((unsigned short)s->a, typ1);
 		if (arg1)
@@ -1063,14 +1063,14 @@ static unsigned short GetReturnType (int func)
 								break;
 							}
 						} /* end if call */
-						else if (92  <= di->op && di->op <= 94)
+						else if (OP_RAND0 <= di->op && di->op <= OP_RAND2)
 						{
 							if (j < 2)
 								rtype[j] = ev_float;
 							/* else: array out of bounds */
 							break;
 						}
-						else if (95  <= di->op && di->op <= 97)
+						else if (OP_RANDV0 <= di->op && di->op <= OP_RANDV2)
 						{
 							if (j < 2)
 								rtype[j] = ev_vector;
@@ -1648,7 +1648,7 @@ static void FindBuiltinParameters (int func)
 
 	for (ds = dsf + 1; ds && ds->op; ds++)
 	{
-		if ((ds->op >= OP_CALL0 && ds->op <= OP_CALL8) || ds->op >= 92)
+		if ((ds->op >= OP_CALL0 && ds->op <= OP_CALL8) || ds->op >= OP_RAND0)
 			break;
 
 		if (ds->a == OFS_RETURN)
@@ -2370,11 +2370,11 @@ static unsigned short GetLastFunctionReturn (dfunction_t *df, dstatement_t *ds)
 				break;
 			}
 		} /* end if call */
-		else if (92 <= di->op && di->op <= 94)
+		else if (OP_RAND0 <= di->op && di->op <= OP_RAND2)
 		{
 			return ev_float;
 		}
-		else if (95 <= di->op && di->op <= 97)
+		else if (OP_RANDV0 <= di->op && di->op <= OP_RANDV2)
 		{
 			return ev_vector;
 		}
