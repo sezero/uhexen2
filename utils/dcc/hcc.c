@@ -842,7 +842,7 @@ int main (int argc, char **argv)
 		COM_Error ("compilation errors");
 
 	p = CheckParm("-asm");
-	if (p)
+	if (p != 0)
 	{
 		for (p++; p < argc; p++)
 		{

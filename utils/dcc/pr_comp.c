@@ -137,7 +137,7 @@ opcode_t pr_opcodes[] =
 	{"&", "BITAND", 2, false, &def_float, &def_float, &def_float},
 	{"|", "BITOR", 2, false, &def_float, &def_float, &def_float},
 
-//added by hexen2
+// added by hexen2
 	{"*=", "MUL_E_FF", 5, true, &def_float, &def_float, &def_float},
 	{"*=", "MUL_E_FV", 5, true, &def_vector, &def_float, &def_vector},
 	{"*=", "MULP_E_FV", 5, true, &def_pointer, &def_float, &def_float},

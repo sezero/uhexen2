@@ -4,6 +4,15 @@ Development Progress	:
 ---------------------------
 
 2012-07-17 (SVN):
+    * utils, dhcc: add new flowinfo_t structure. instead of abusing the
+      op member of the statement, store the if and do counts in the new
+      flowinfo structure. this is better, because the old code assumed
+      that the opcodes numbers could not go past 99, which is incorrect
+      with the portals mission pack and h2w where switch statements are
+      added and the highest opcode is 104. dhcc now properly prints the
+      error notes for them (because it cannot decompile them.)
+
+2012-07-17 (SVN):
     * utils, dhcc: replaced opcode magic numbers with enumerated value
       names at several places.
 

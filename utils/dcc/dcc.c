@@ -40,6 +40,12 @@
 
 // TYPES -------------------------------------------------------------------
 
+struct flowinfo_t
+{
+	int	if_cnt;
+	int	do_cnt;
+};
+
 // EXTERNAL FUNCTION PROTOTYPES --------------------------------------------
 
 // PRIVATE FUNCTION PROTOTYPES ---------------------------------------------
@@ -113,6 +119,7 @@ static char		*pr_strings;
 static int		progs_length;
 
 static dfunction_t	*cfunc;
+static struct flowinfo_t	*flowinfo;
 
 static qboolean		FILE_NUM_FOR_NAME;
 static qboolean		pr_dumpasm;
@@ -204,14 +211,15 @@ static void DccStatement (dstatement_t *s)
 	char		a1[1024], a2[1024], a3[1024];
 	int		nargs, i, j;
 	dstatement_t	*t, *k;
-	unsigned short	doc, ifc, tom;
+	int		doc, ifc;
+	unsigned short	tom;
 	def_t		*typ1 = NULL, *typ2 = NULL, *typ3 = NULL;
 	ddef_t		*par;
 
 	a1[0] = a2[0] = a3[0] = dsline[0] = funcname[0] = '\0';
 
-	doc =  s->op / 10000;
-	ifc = (s->op % 10000) / 100;
+	doc = flowinfo[s - pr_statements].do_cnt;
+	ifc = flowinfo[s - pr_statements].if_cnt;
 
 /* use program flow information */
 	for (i = 0; i < ifc; i++)
@@ -230,9 +238,6 @@ static void DccStatement (dstatement_t *s)
 		lindent++;
 	}
 
-/* remove all program flow information */
-	s->op %= 100;
-
 	typ1 = pr_opcodes[s->op].type_a;
 	typ2 = pr_opcodes[s->op].type_b;
 	typ3 = pr_opcodes[s->op].type_c;
@@ -243,7 +248,7 @@ static void DccStatement (dstatement_t *s)
 		arg2 = PR_PrintGlobal((unsigned short)s->b, typ2);
 		arg3 = PR_PrintGlobal((unsigned short)s->c, typ3);
 		PR_Print("\n%s(%d): %s(%d) %s(%d) %s(%d):\n",
-			  pr_opcodes[s->op].opname,s->op,
+			  pr_opcodes[s->op].opname, s->op,
 			  arg1, s->a, arg2, s->b, arg3, s->c);
 	}
 
@@ -427,10 +432,10 @@ static void DccStatement (dstatement_t *s)
 		for (i = 1; (s + i)->op; i++)
 		{
 		//	printf ("\n%d\n", (s + i)->op);
-			if ((s + i)->op % 100 == OP_DONE)
+			if ((s + i)->op == OP_DONE)
 				break;
 
-			if ((s + i)->op % 100 >= OP_RAND0)
+			if ((s + i)->op >= OP_RAND0)
 				break;
 
 			if ((s + i)->a == OFS_RETURN ||
@@ -443,8 +448,7 @@ static void DccStatement (dstatement_t *s)
 				break;
 			}
 
-			if (OP_CALL0 <= ((s + i)->op % 100) &&
-			    ((s + i)->op % 100) <= OP_CALL8)
+			if (OP_CALL0 <= (s + i)->op && (s + i)->op <= OP_CALL8)
 			{
 			//	if (i == 1)
 			//		j = 0;
@@ -473,7 +477,7 @@ static void DccStatement (dstatement_t *s)
 
 			/* get instruction right before the target */
 			t = s + s->b - 1; /* */
-			tom = t->op % 100;
+			tom = t->op;
 
 			if (tom != OP_GOTO)
 			{
@@ -505,7 +509,7 @@ static void DccStatement (dstatement_t *s)
 						int		dum = 1;
 						for (k = t + t->a; k < s; k++)
 						{
-							tom = k->op % 100;
+							tom = k->op;
 							if (tom == OP_GOTO || tom == OP_IF || tom == OP_IFNOT)
 								dum = 0;
 						}
@@ -725,14 +729,14 @@ static void Clear_Immediates (void)
 static void AddProgramFlowInfo (dfunction_t *df)
 {
 	dstatement_t	*ds, *ts;
-	signed short	dom, tom;
+	unsigned short	dom, tom;
 	dstatement_t	*k;
 
 	ds = pr_statements + df->first_statement;
 
 	while (1)
 	{
-		dom = (ds->op) % 100;
+		dom = ds->op;
 		if (!dom)
 		{
 			break;
@@ -743,18 +747,20 @@ static void AddProgramFlowInfo (dfunction_t *df)
 			if (ds->a > 0)
 			{
 				ts = ds + ds->a;
-				ts->op += 100;	/* mark the end of a if/ite construct */
+				/* mark the end of a if/ite construct */
+				flowinfo[ts - pr_statements].if_cnt++;
 			}
 		}
 		else if (dom == OP_IFNOT)
 		{
 		/* check for pure if */
 			ts  = ds + ds->b; /* FIXME: ds->b < 0 possible? */
-			tom = (ts - 1)->op % 100;
+			tom = (ts - 1)->op;
 
 			if (tom != OP_GOTO)
 			{
-				ts->op += 100;	/* mark the end of a if/ite construct */
+				/* mark the end of a if/ite construct */
+				flowinfo[ts - pr_statements].if_cnt++;
 			}
 			else
 			{
@@ -762,21 +768,22 @@ static void AddProgramFlowInfo (dfunction_t *df)
 				{
 					if ((ts - 1)->a + ds->b > 1)
 					{ /* pure if */
-						ts->op += 100;	/* mark the end of a if/ite construct */
+						/* mark the end of a if/ite construct */
+						flowinfo[ts - pr_statements].if_cnt++;
 					}
 					else
 					{
 						int	dum = 1;
 						for (k = (ts - 1) + (ts - 1)->a; k < ds; k++)
 						{
-							tom = k->op % 100;
+							tom = k->op;
 							if (tom == OP_GOTO || tom == OP_IF || tom == OP_IFNOT)
 								dum = 0;
 						}
 						if (!dum)
-						{
-						/* pure if */
-							ts->op += 100;	/* mark the end of a if/ite construct */
+						{ /* pure if */
+							/* mark the end of a if/ite construct */
+							flowinfo[ts - pr_statements].if_cnt++;
 						}
 					}
 				}
@@ -787,11 +794,13 @@ static void AddProgramFlowInfo (dfunction_t *df)
 			ts = ds + ds->b;
 			if (ds->b < 0)
 			{
-				ts->op += 10000; /* mark the start of a do construct */
+				/* mark the start of a do construct */
+				flowinfo[ts - pr_statements].do_cnt++;
 			}
 			else
 			{
-				ts->op += 100; /* mark the end of a if/ite construct */
+				/* mark the end of a if/ite construct */
+				flowinfo[ts - pr_statements].if_cnt++;
 			}
 		}
 
@@ -2056,6 +2065,7 @@ static void Init_Dcc (void)
 	func_headers = (char **) SafeMalloc (progs->numfunctions * sizeof(char *));
 	temp_val = (char **) SafeMalloc (progs->numglobals * sizeof(char *));
 	DEC_FilesSeen = (char **) SafeMalloc (MAX_DEC_FILES * sizeof(char *));
+	flowinfo = (struct flowinfo_t *) SafeMalloc (progs->numstatements * sizeof(struct flowinfo_t));
 }
 
 
@@ -2125,7 +2135,7 @@ static void FixFunctionNames (void)
 	//	printf ("%s : %s : %i %i (", pr_strings + d->s_file, pr_strings + d->s_name, d->first_statement, d->parm_start);
 		s[0] = '\0';
 		j = strlen(pr_strings + d->s_file) + 1;
-		sprintf (s, "%d.qc", d->s_file);
+		sprintf (s, "%d.hc", d->s_file);
 		c = pr_strings;
 		c += d->s_file;
 		sprintf (c, "%s", s);
@@ -2394,14 +2404,19 @@ int Dcc_main (int argc, char **argv)
 	start = COM_GetTime ();
 
 	p = CheckParm("-name");
-	if (p && p < argc - 1)
+	if (p == 0)
+		DEC_ReadData ("progs.dat");
+	else
+	{
+		if (p >= argc - 1)
+			COM_Error ("No input filename specified with -name");
 		DEC_ReadData (argv[p + 1]);
-	else	DEC_ReadData ("progs.dat");
+	}
 
 	Init_Dcc ();
 
 	p = CheckParm("-bbb");
-	if (p)
+	if (p != 0)
 	{
 		/*
 		i= -999;
@@ -2417,7 +2432,7 @@ int Dcc_main (int argc, char **argv)
 	}
 
 	p = CheckParm("-ddd");
-	if (p)
+	if (p != 0)
 	{
 		for (++p; p < argc; ++p)
 		{
@@ -2429,7 +2444,7 @@ int Dcc_main (int argc, char **argv)
 	}
 
 	p = CheckParm("-asm");
-	if (p)
+	if (p != 0)
 	{
 		for (++p; p < argc; ++p)
 		{
