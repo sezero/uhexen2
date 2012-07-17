@@ -767,8 +767,7 @@ int main (int argc, char **argv)
 
 	ValidateByteorder ();
 
-	p = CheckParm("-dcc");
-	if (p)
+	if (CheckParm("-dcc") || CheckParm("-dec"))
 	{
 		Dcc_main (argc, argv);
 		exit (0);

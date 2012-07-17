@@ -3,6 +3,9 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2012-07-17 (SVN):
+    * utils, dhcc: added -dec cmdline switch, as an alternative to -dcc.
+
 2012-07-16 (SVN):
     * cl_main.c (CL_Disconnect): set cl.intermission to 0. fixes a minor
       intermissions glitch which is almost impossible to hit in hexen2.
