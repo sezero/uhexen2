@@ -424,17 +424,10 @@ void CL_PlayDemo_f (void)
 		return;
 	}
 
-// get rid of the menu and/or console
-	key_dest = key_game;
-
-//
 // disconnect from server
-//
 	CL_Disconnect ();
 
-//
 // open the demo file
-//
 	q_strlcpy (name, Cmd_Argv(1), sizeof(name));
 	COM_DefaultExtension (name, ".qwd", sizeof(name));
 
@@ -446,6 +439,9 @@ void CL_PlayDemo_f (void)
 		cls.demonum = -1;	// stop demo loop
 		return;
 	}
+
+// get rid of the menu and/or console
+	key_dest = key_game;
 
 	cls.demoplayback = true;
 	cls.state = ca_demostart;
@@ -490,6 +486,8 @@ void CL_TimeDemo_f (void)
 	}
 
 	CL_PlayDemo_f ();
+	if (!cls.demofile)
+		return;
 
 //	if (cls.state != ca_active)
 //		return;

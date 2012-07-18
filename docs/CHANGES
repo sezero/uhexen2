@@ -4,6 +4,10 @@ Development Progress	:
 ---------------------------
 
 2012-07-18 (SVN):
+    * cl_demo.c (CL_PlayDemo_f): set key_dest to key_game only when the
+      demo file is successfully opened.
+
+2012-07-18 (SVN):
     * cl_demo.c: for a command like "record demoname map [track]", don't
       continue if the map cannot be started. do not continue if the demo
       file cannot be opened for the timedemo command.
