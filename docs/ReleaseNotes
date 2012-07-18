@@ -15,7 +15,7 @@ Changes in v1.5.5: (July 18, 2012.)
 
 - Client: Fixed a demo playback failure when certain conditions are met.
 
-- Client: Fixed a minor and intermission glitch.
+- Client: Fixed a minor and rare intermission glitch.
 
 - Windows:  Removed hooks for QHOST, which is (was) a proprietery server
   administation tool.

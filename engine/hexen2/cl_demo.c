@@ -332,7 +332,11 @@ void CL_Record_f (void)
 
 // start the map up
 	if (c > 2)
+	{
 		Cmd_ExecuteString ( va("map %s", Cmd_Argv(2)), src_command);
+		if (cls.state != ca_connected)
+			return;
+	}
 
 // open the demo file
 	COM_DefaultExtension (name, ".dem", sizeof(name));
@@ -497,6 +501,8 @@ void CL_TimeDemo_f (void)
 	}
 
 	CL_PlayDemo_f ();
+	if (!cls.demofile)
+		return;
 
 // cls.td_starttime will be grabbed at the second frame of the demo, so
 // all the loading time doesn't get counted
