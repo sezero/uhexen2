@@ -1,7 +1,7 @@
 Hammer of Thyrion (uHexen2) release notes:
 
 ========================================================================
-Changes in v1.5.5: (July 17, 2012.)
+Changes in v1.5.5: (July 18, 2012.)
 ========================================================================
 
 - Utils (light, vis, jsh2color): Added unix pthreads support for running
@@ -13,8 +13,9 @@ Changes in v1.5.5: (July 17, 2012.)
 
 - Utils, all: Some fixes/improvements to command line options handling.
 
-- Client: Fixed a minor intermissions glitch, which is almost impossible
-  to hit.
+- Client: Fixed a demo playback failure when certain conditions are met.
+
+- Client: Fixed a minor and intermission glitch.
 
 - Windows:  Removed hooks for QHOST, which is (was) a proprietery server
   administation tool.

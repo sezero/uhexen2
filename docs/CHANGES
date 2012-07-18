@@ -4,6 +4,16 @@ Development Progress	:
 ---------------------------
 
 2012-07-17 (SVN):
+    * cl_demo.c (CL_PlayDemo_f): don't use fscanf() to read forcetrack:
+      even though a *.dem file is a binary, cls.forcetrack is "printed"
+      at the very start as a decimal number followed by a '\n'. a space
+      character e.g. 0x20 (' ') following the '\n' makes fscanf to skip
+      that byte too and screws up further reads. we now manually parse
+      the forcetrack, like q1 code does, and also verify that the '\n'
+      byte appears among the very first 12 bytes of the file.
+    * updated version date stamp to 2012-07-18.
+
+2012-07-17 (SVN):
     * utils, dhcc: add new flowinfo_t structure. instead of abusing the
       op member of the statement, store the if and do counts in the new
       flowinfo structure. this is better, because the old code assumed
