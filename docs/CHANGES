@@ -4,6 +4,10 @@ Development Progress	:
 ---------------------------
 
 2012-07-19 (SVN):
+    * utils (LoadFile): don't use SafeMalloc() to avoid an unnecessary
+      memset. reverted to using malloc() directly.
+
+2012-07-19 (SVN):
     * utils, jsh2colour: removed unused GetFileSpace() and file globals.
       removed unnecessary check for extfile existence during arguments
       parsing, because ParseDefFile() already errors out if the file is

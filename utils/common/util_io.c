@@ -647,7 +647,6 @@ FILE *SafeOpenWrite (const char *filename)
 	FILE	*f;
 
 	f = fopen(filename, "wb");
-
 	if (!f)
 		COM_Error("Error opening %s: %s", filename, strerror(errno));
 
@@ -665,7 +664,6 @@ FILE *SafeOpenRead (const char *filename)
 	FILE	*f;
 
 	f = fopen(filename, "rb");
-
 	if (!f)
 		COM_Error("Error opening %s: %s", filename, strerror(errno));
 
@@ -680,7 +678,7 @@ SafeRead
 */
 void SafeRead (FILE *f, void *buffer, int count)
 {
-	if ( fread (buffer, 1, count, f) != (size_t)count)
+	if (fread (buffer, 1, count, f) != (size_t)count)
 		COM_Error("File read failure");
 }
 
@@ -705,12 +703,14 @@ LoadFile
 int LoadFile (const char *filename, void **bufferptr)
 {
 	FILE	*f;
-	long	length;
+	size_t	length;
 	void	*buffer;
 
 	f = SafeOpenRead (filename);
-	length = Q_filelength (f);
-	buffer = SafeMalloc (length + 1);
+	length = (size_t) Q_filelength (f);
+	buffer = malloc (length + 1);
+	if (!buffer)
+		COM_Error ("%s failed for %lu bytes.", __thisfunc__, (unsigned long)length);
 	((char *)buffer)[length] = 0;
 	SafeRead(f, buffer, length);
 	fclose (f);
