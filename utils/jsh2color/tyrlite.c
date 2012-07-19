@@ -46,12 +46,8 @@ int		sunlight	= 0;
 vec3_t		sunlight_color	= { 255, 255, 255 };	// defaults to white light
 vec3_t		sunmangle	= { 0, 0, 16384 };	// defaults to straight down
 
-//dmodel_t	*bspmodel;
 int		bspfileface;	// next surface to dispatch
 vec3_t		bsp_origin;
-
-byte		*filebase;
-static byte	*file_p, *file_end;
 
 static vec3_t	faceoffset[MAX_MAP_FACES];
 extern int	num_lights;
@@ -61,21 +57,6 @@ qboolean	extrasamples;
 qboolean	external;
 qboolean	nodefault;
 char		extfilename[MAX_OSPATH];
-
-
-byte *GetFileSpace (int size)
-{
-	byte	*buf;
-
-	ThreadLock();
-	file_p = (byte *)(((intptr_t)file_p + 3) & ~3);
-	buf = file_p;
-	file_p += size;
-	ThreadUnlock();
-	if (file_p > file_end)
-		COM_Error ("%s: overrun", __thisfunc__);
-	return buf;
-}
 
 
 static void ColorLightThread (void *junk)
@@ -171,9 +152,6 @@ static void LightWorld (void)
 
 	CheckTex ();
 	printf ("\n");
-
-	filebase = file_p = dlightdata;
-	file_end = filebase + MAX_MAP_LIGHTING;
 
 	for (i = 0; i < num_entities; i++)
 	{
@@ -339,13 +317,8 @@ int main (int argc, char **argv)
 			if (i >= argc - 1)
 				COM_Error("Missing argument to \"%s\"", argv[i]);
 			strcpy(extfilename, argv[++i]);
-			if (Q_FileType(extfilename) != FS_ENT_FILE)
-				COM_Error("No such file as \"%s\"", extfilename);
-			else
-			{
-				external = true;
-				printf ("Using external definition file : %s\n",extfilename);
-			}
+			external = true;
+			printf ("Using external definition file : %s\n",extfilename);
 		}
 		else if (!strcmp (argv[i], "-nodefault"))
 		{	// js feature

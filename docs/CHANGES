@@ -3,6 +3,12 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2012-07-19 (SVN):
+    * utils, jsh2colour: removed unused GetFileSpace() and file globals.
+      removed unnecessary check for extfile existence during arguments
+      parsing, because ParseDefFile() already errors out if the file is
+      not found.
+
 2012-07-18 (SVN):
     * cl_demo.c (CL_PlayDemo_f): set key_dest to key_game only when the
       demo file is successfully opened.

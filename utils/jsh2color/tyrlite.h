@@ -44,7 +44,6 @@ extern	vec3_t		sunlight_color;
 extern	vec3_t		sunmangle;
 
 //extern int		c_culldistplane, c_proper;
-extern	byte		*filebase;
 extern	vec3_t		bsp_origin;
 
 extern	qboolean	extrasamples;
@@ -54,8 +53,6 @@ extern	qboolean	nodefault;
 //void	TransformSample (vec3_t in, vec3_t out);
 //void	RotateSample (vec3_t in, vec3_t out);
 //void	LoadNodes (char *file);
-
-byte	*GetFileSpace (int size);
 
 qboolean TestLine (vec3_t start, vec3_t stop);
 // TYR - added TestSky
