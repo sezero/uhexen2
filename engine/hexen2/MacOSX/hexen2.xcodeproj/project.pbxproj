@@ -65,7 +65,7 @@
 		70158C2C0AAF3C8800F6437C /* keys.c in Sources */ = {isa = PBXBuildFile; fileRef = 707D57AA0AA9F6EE00313A9F /* keys.c */; };
 		70158C2D0AAF3C8800F6437C /* mathlib.c in Sources */ = {isa = PBXBuildFile; fileRef = 707D57AD0AA9F6EE00313A9F /* mathlib.c */; };
 		70158C2E0AAF3C8800F6437C /* menu.c in Sources */ = {isa = PBXBuildFile; fileRef = 707D57AF0AA9F6EE00313A9F /* menu.c */; };
-		70158C2F0AAF3C8800F6437C /* midi_mac.c in Sources */ = {isa = PBXBuildFile; fileRef = 707D57B10AA9F6EE00313A9F /* midi_mac.c */; };
+		70158C2F0AAF3C8800F6437C /* midi_osx.c in Sources */ = {isa = PBXBuildFile; fileRef = 707D57B10AA9F6EE00313A9F /* midi_osx.c */; };
 		70158C300AAF3C8800F6437C /* net_bsd.c in Sources */ = {isa = PBXBuildFile; fileRef = 707D57B30AA9F6EE00313A9F /* net_bsd.c */; };
 		70158C310AAF3C8800F6437C /* net_dgrm.c in Sources */ = {isa = PBXBuildFile; fileRef = 707D57B40AA9F6EE00313A9F /* net_dgrm.c */; };
 		70158C320AAF3C8800F6437C /* net_loop.c in Sources */ = {isa = PBXBuildFile; fileRef = 707D57B60AA9F6EE00313A9F /* net_loop.c */; };
@@ -97,11 +97,10 @@
 		70158C870AAF421B00F6437C /* ApplicationServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 707D59240AAA076A00313A9F /* ApplicationServices.framework */; };
 		70158C880AAF421B00F6437C /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 707D59250AAA076A00313A9F /* AudioToolbox.framework */; };
 		70158C890AAF421B00F6437C /* AudioUnit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 707D59260AAA076A00313A9F /* AudioUnit.framework */; };
-		70158C8A0AAF421B00F6437C /* Carbon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 707D59270AAA076A00313A9F /* Carbon.framework */; };
+		70158C8A0AAF421B00F6437C /* CoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 707D59270AAA076A00313A9F /* CoreServices.framework */; };
 		70158C8B0AAF421B00F6437C /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 707D59280AAA076A00313A9F /* Cocoa.framework */; };
 		70158C8C0AAF421B00F6437C /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 707D59290AAA076A00313A9F /* IOKit.framework */; };
 		70158C8D0AAF421B00F6437C /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 707D592A0AAA076A00313A9F /* OpenGL.framework */; };
-		70158C8E0AAF421B00F6437C /* QuickTime.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 707D592B0AAA076A00313A9F /* QuickTime.framework */; };
 		70158C8F0AAF421B00F6437C /* SDL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 707D59200AAA071800313A9F /* SDL.framework */; };
 		70158F0B0AAF427F00F6437C /* vid_sdl.c in Sources */ = {isa = PBXBuildFile; fileRef = 70158F0A0AAF427F00F6437C /* vid_sdl.c */; };
 		70310B260BFDE84D00CA35D3 /* msg_io.c in Sources */ = {isa = PBXBuildFile; fileRef = 70310B240BFDE84D00CA35D3 /* msg_io.c */; };
@@ -204,7 +203,7 @@
 		707D58C40AA9FBB700313A9F /* keys.c in Sources */ = {isa = PBXBuildFile; fileRef = 707D57AA0AA9F6EE00313A9F /* keys.c */; };
 		707D58C50AA9FBB700313A9F /* mathlib.c in Sources */ = {isa = PBXBuildFile; fileRef = 707D57AD0AA9F6EE00313A9F /* mathlib.c */; };
 		707D58C60AA9FBB700313A9F /* menu.c in Sources */ = {isa = PBXBuildFile; fileRef = 707D57AF0AA9F6EE00313A9F /* menu.c */; };
-		707D58C70AA9FBB700313A9F /* midi_mac.c in Sources */ = {isa = PBXBuildFile; fileRef = 707D57B10AA9F6EE00313A9F /* midi_mac.c */; };
+		707D58C70AA9FBB700313A9F /* midi_osx.c in Sources */ = {isa = PBXBuildFile; fileRef = 707D57B10AA9F6EE00313A9F /* midi_osx.c */; };
 		707D58C80AA9FBB700313A9F /* net_bsd.c in Sources */ = {isa = PBXBuildFile; fileRef = 707D57B30AA9F6EE00313A9F /* net_bsd.c */; };
 		707D58C90AA9FBB700313A9F /* net_dgrm.c in Sources */ = {isa = PBXBuildFile; fileRef = 707D57B40AA9F6EE00313A9F /* net_dgrm.c */; };
 		707D58CA0AA9FBB700313A9F /* net_loop.c in Sources */ = {isa = PBXBuildFile; fileRef = 707D57B60AA9F6EE00313A9F /* net_loop.c */; };
@@ -238,11 +237,10 @@
 		707D592C0AAA076A00313A9F /* ApplicationServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 707D59240AAA076A00313A9F /* ApplicationServices.framework */; };
 		707D592D0AAA076A00313A9F /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 707D59250AAA076A00313A9F /* AudioToolbox.framework */; };
 		707D592E0AAA076A00313A9F /* AudioUnit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 707D59260AAA076A00313A9F /* AudioUnit.framework */; };
-		707D592F0AAA076A00313A9F /* Carbon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 707D59270AAA076A00313A9F /* Carbon.framework */; };
+		707D592F0AAA076A00313A9F /* CoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 707D59270AAA076A00313A9F /* CoreServices.framework */; };
 		707D59300AAA076A00313A9F /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 707D59280AAA076A00313A9F /* Cocoa.framework */; };
 		707D59310AAA076A00313A9F /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 707D59290AAA076A00313A9F /* IOKit.framework */; };
 		707D59320AAA076A00313A9F /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 707D592A0AAA076A00313A9F /* OpenGL.framework */; };
-		707D59330AAA076A00313A9F /* QuickTime.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 707D592B0AAA076A00313A9F /* QuickTime.framework */; };
 		7086E4E60AC0070900E9F894 /* Hexen2.icns in Resources */ = {isa = PBXBuildFile; fileRef = 7086E4E50AC0070900E9F894 /* Hexen2.icns */; };
 		7086E4E70AC0070900E9F894 /* Hexen2.icns in Resources */ = {isa = PBXBuildFile; fileRef = 7086E4E50AC0070900E9F894 /* Hexen2.icns */; };
 		708C407D0C1E8A4F00B4A314 /* debuglog.c in Sources */ = {isa = PBXBuildFile; fileRef = 70310B320BFDE90900CA35D3 /* debuglog.c */; };
@@ -375,7 +373,7 @@
 		707D57AE0AA9F6EE00313A9F /* mathlib.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = mathlib.h; path = ../../h2shared/mathlib.h; sourceTree = SOURCE_ROOT; };
 		707D57AF0AA9F6EE00313A9F /* menu.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = menu.c; path = ../menu.c; sourceTree = SOURCE_ROOT; };
 		707D57B00AA9F6EE00313A9F /* menu.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = menu.h; path = ../menu.h; sourceTree = SOURCE_ROOT; };
-		707D57B10AA9F6EE00313A9F /* midi_mac.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = midi_mac.c; path = ../../h2shared/midi_mac.c; sourceTree = SOURCE_ROOT; };
+		707D57B10AA9F6EE00313A9F /* midi_osx.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = midi_osx.c; path = ../../h2shared/midi_osx.c; sourceTree = SOURCE_ROOT; };
 		707D57B30AA9F6EE00313A9F /* net_bsd.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = net_bsd.c; path = ../net_bsd.c; sourceTree = SOURCE_ROOT; };
 		707D57B40AA9F6EE00313A9F /* net_dgrm.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = net_dgrm.c; path = ../net_dgrm.c; sourceTree = SOURCE_ROOT; };
 		707D57B50AA9F6EE00313A9F /* net_dgrm.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = net_dgrm.h; path = ../net_dgrm.h; sourceTree = SOURCE_ROOT; };
@@ -431,11 +429,10 @@
 		707D59240AAA076A00313A9F /* ApplicationServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ApplicationServices.framework; path = /System/Library/Frameworks/ApplicationServices.framework; sourceTree = "<absolute>"; };
 		707D59250AAA076A00313A9F /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = /System/Library/Frameworks/AudioToolbox.framework; sourceTree = "<absolute>"; };
 		707D59260AAA076A00313A9F /* AudioUnit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioUnit.framework; path = /System/Library/Frameworks/AudioUnit.framework; sourceTree = "<absolute>"; };
-		707D59270AAA076A00313A9F /* Carbon.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Carbon.framework; path = /System/Library/Frameworks/Carbon.framework; sourceTree = "<absolute>"; };
+		707D59270AAA076A00313A9F /* CoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreServices.framework; path = /System/Library/Frameworks/CoreServices.framework; sourceTree = "<absolute>"; };
 		707D59280AAA076A00313A9F /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = /System/Library/Frameworks/Cocoa.framework; sourceTree = "<absolute>"; };
 		707D59290AAA076A00313A9F /* IOKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = IOKit.framework; path = /System/Library/Frameworks/IOKit.framework; sourceTree = "<absolute>"; };
 		707D592A0AAA076A00313A9F /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = /System/Library/Frameworks/OpenGL.framework; sourceTree = "<absolute>"; };
-		707D592B0AAA076A00313A9F /* QuickTime.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuickTime.framework; path = /System/Library/Frameworks/QuickTime.framework; sourceTree = "<absolute>"; };
 		7086E4E50AC0070900E9F894 /* Hexen2.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = Hexen2.icns; sourceTree = "<group>"; };
 		B0E546A515564FC10033037D /* sys_osx.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = sys_osx.m; path = ../../h2shared/sys_osx.m; sourceTree = SOURCE_ROOT; };
 		B0E74B1D144E7FF40043F808 /* qsnprint.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = qsnprint.c; path = ../../../libs/common/qsnprint.c; sourceTree = SOURCE_ROOT; };
@@ -455,11 +452,10 @@
 				70158C870AAF421B00F6437C /* ApplicationServices.framework in Frameworks */,
 				70158C880AAF421B00F6437C /* AudioToolbox.framework in Frameworks */,
 				70158C890AAF421B00F6437C /* AudioUnit.framework in Frameworks */,
-				70158C8A0AAF421B00F6437C /* Carbon.framework in Frameworks */,
+				70158C8A0AAF421B00F6437C /* CoreServices.framework in Frameworks */,
 				70158C8B0AAF421B00F6437C /* Cocoa.framework in Frameworks */,
 				70158C8C0AAF421B00F6437C /* IOKit.framework in Frameworks */,
 				70158C8D0AAF421B00F6437C /* OpenGL.framework in Frameworks */,
-				70158C8E0AAF421B00F6437C /* QuickTime.framework in Frameworks */,
 				70158C8F0AAF421B00F6437C /* SDL.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -472,11 +468,10 @@
 				707D592C0AAA076A00313A9F /* ApplicationServices.framework in Frameworks */,
 				707D592D0AAA076A00313A9F /* AudioToolbox.framework in Frameworks */,
 				707D592E0AAA076A00313A9F /* AudioUnit.framework in Frameworks */,
-				707D592F0AAA076A00313A9F /* Carbon.framework in Frameworks */,
+				707D592F0AAA076A00313A9F /* CoreServices.framework in Frameworks */,
 				707D59300AAA076A00313A9F /* Cocoa.framework in Frameworks */,
 				707D59310AAA076A00313A9F /* IOKit.framework in Frameworks */,
 				707D59320AAA076A00313A9F /* OpenGL.framework in Frameworks */,
-				707D59330AAA076A00313A9F /* QuickTime.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -550,11 +545,10 @@
 				707D59240AAA076A00313A9F /* ApplicationServices.framework */,
 				707D59250AAA076A00313A9F /* AudioToolbox.framework */,
 				707D59260AAA076A00313A9F /* AudioUnit.framework */,
-				707D59270AAA076A00313A9F /* Carbon.framework */,
+				707D59270AAA076A00313A9F /* CoreServices.framework */,
 				707D59280AAA076A00313A9F /* Cocoa.framework */,
 				707D59290AAA076A00313A9F /* IOKit.framework */,
 				707D592A0AAA076A00313A9F /* OpenGL.framework */,
-				707D592B0AAA076A00313A9F /* QuickTime.framework */,
 				707D59200AAA071800313A9F /* SDL.framework */,
 				707D59030AAA019300313A9F /* SDLMain.h */,
 				707D59040AAA019300313A9F /* SDLMain.m */,
@@ -615,7 +609,7 @@
 				707D57AE0AA9F6EE00313A9F /* mathlib.h */,
 				707D57AF0AA9F6EE00313A9F /* menu.c */,
 				707D57B00AA9F6EE00313A9F /* menu.h */,
-				707D57B10AA9F6EE00313A9F /* midi_mac.c */,
+				707D57B10AA9F6EE00313A9F /* midi_osx.c */,
 				707D57B30AA9F6EE00313A9F /* net_bsd.c */,
 				707D57B40AA9F6EE00313A9F /* net_dgrm.c */,
 				707D57B50AA9F6EE00313A9F /* net_dgrm.h */,
@@ -911,7 +905,7 @@
 				70158C2C0AAF3C8800F6437C /* keys.c in Sources */,
 				70158C2D0AAF3C8800F6437C /* mathlib.c in Sources */,
 				70158C2E0AAF3C8800F6437C /* menu.c in Sources */,
-				70158C2F0AAF3C8800F6437C /* midi_mac.c in Sources */,
+				70158C2F0AAF3C8800F6437C /* midi_osx.c in Sources */,
 				70158C300AAF3C8800F6437C /* net_bsd.c in Sources */,
 				70158C310AAF3C8800F6437C /* net_dgrm.c in Sources */,
 				70158C320AAF3C8800F6437C /* net_loop.c in Sources */,
@@ -996,7 +990,7 @@
 				707D58C40AA9FBB700313A9F /* keys.c in Sources */,
 				707D58C50AA9FBB700313A9F /* mathlib.c in Sources */,
 				707D58C60AA9FBB700313A9F /* menu.c in Sources */,
-				707D58C70AA9FBB700313A9F /* midi_mac.c in Sources */,
+				707D58C70AA9FBB700313A9F /* midi_osx.c in Sources */,
 				707D58C80AA9FBB700313A9F /* net_bsd.c in Sources */,
 				707D58C90AA9FBB700313A9F /* net_dgrm.c in Sources */,
 				707D58CA0AA9FBB700313A9F /* net_loop.c in Sources */,
@@ -1067,7 +1061,6 @@
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
 				HEADER_SEARCH_PATHS = (
 					/Library/Frameworks/SDL.framework/Headers,
-					/Developer/SDKs/MacOSX10.4u.sdk/Developer/Headers/FlatCarbon,
 					../../h2shared,
 					../../../libs/common,
 				);
@@ -1109,7 +1102,6 @@
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
 				HEADER_SEARCH_PATHS = (
 					/Library/Frameworks/SDL.framework/Headers,
-					/Developer/SDKs/MacOSX10.4u.sdk/Developer/Headers/FlatCarbon,
 					../../h2shared,
 					../../../libs/common,
 				);
@@ -1209,7 +1201,6 @@
 					../../h2shared,
 					../../../libs/common,
 					/Library/Frameworks/SDL.framework/Headers,
-					/Developer/SDKs/MacOSX10.4u.sdk/Developer/Headers/FlatCarbon,
 				);
 				INFOPLIST_FILE = glhexen2.plist;
 				MACOSX_DEPLOYMENT_TARGET = "";
@@ -1254,7 +1245,6 @@
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
 				HEADER_SEARCH_PATHS = (
 					/Library/Frameworks/SDL.framework/Headers,
-					/Developer/SDKs/MacOSX10.4u.sdk/Developer/Headers/FlatCarbon,
 					../../h2shared,
 					../../../libs/common,
 				);

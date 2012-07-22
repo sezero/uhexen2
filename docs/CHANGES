@@ -3,7 +3,12 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
-2012-07-19 (SVN):
+2012-07-22 (SVN):
+    * Added new OSX midi driver based on SDL_mixer using CoreServices,
+      added it to build and removed the old QuickTime code from build.
+      As a bonus, this eliminates our dependency to Carbon stuff.
+
+2012-07-22 (SVN):
     * Moved SDLMain.[m|h] from MacOSX subdir to under h2shared. Added
       SDLMain.o to SYSOBJ_SYS in the makefiles for (gl)h2 and (gl)hw.
 
