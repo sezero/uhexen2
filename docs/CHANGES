@@ -4,6 +4,10 @@ Development Progress	:
 ---------------------------
 
 2012-07-22 (SVN):
+    * Fixed OSX gl linkage when we aren't dynamically linking to opengl
+      functions at runtime. No need for -lm either.
+
+2012-07-22 (SVN):
     * Added support for building the OSX versions usin gthe makefiles.
       Do not rely on sdl-config on OSX Framework builds and define new
       SDL_FRAMEWORK and NO_SDL_CONFIG preprocessor macros to indicate

@@ -298,12 +298,17 @@ endif
 ifeq ($(HOST_OS),sunos)
 LDFLAGS += -lsocket -lnsl -lresolv
 endif
-LDFLAGS += -lm
 
+ifeq ($(HOST_OS),darwin)
+GL_LINK=-Wl,-framework,OpenGL
+else
+
+LDFLAGS += -lm
 ifneq ($(X11BASE),)
 GL_LINK=-L$(X11BASE)/lib -lGL
 else
 GL_LINK=-lGL
+endif
 endif
 
 ifeq ($(USE_SOUND),yes)
