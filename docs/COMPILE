@@ -203,6 +203,14 @@ double click on the little icon at the left of "Architectures" and
 select only "ppc"; then double click on the "SDK Path" value and
 delete "/Developer/SDKs/MacOSX10.4u.sdk" from there, build as usual.
 
+Cross compiling for OSX on linux is also possible.  To create a cross-
+toolchain, you can follow the instructions from the OpenTTD project,
+here:	http://devs.openttd.org/~truebrain/compile-farm/
+which basically boils down to compiling odcctools, downloading xcode
+v3.1.x from the Apple website (you need an account) and extracting the
+sdk from it, and compiling a gcc source capable of targeting osx, e.g.
+gcc-4.0 or 4.2 from:	http://www.opensource.apple.com/tarballs/
+
 
 Compiling for DOS:
 ========================================

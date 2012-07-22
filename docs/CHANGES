@@ -4,6 +4,10 @@ Development Progress	:
 ---------------------------
 
 2012-07-22 (SVN):
+    * updated version date stamp to 2012-07-22.
+    * updated documentation.
+
+2012-07-22 (SVN):
     * Separated common unix and darwin sections in the makefiles.
 
 2012-07-22 (SVN):

@@ -1,7 +1,7 @@
 Hammer of Thyrion (uHexen2) release notes:
 
 ========================================================================
-Changes in v1.5.5: (July 18, 2012.)
+Changes in v1.5.5: (July 22, 2012.)
 ========================================================================
 
 - Utils (light, vis, jsh2color): Added unix pthreads support for running
@@ -19,6 +19,11 @@ Changes in v1.5.5: (July 18, 2012.)
 
 - Windows:  Removed hooks for QHOST, which is (was) a proprietery server
   administation tool.
+
+- Mac OS X: New MIDI driver.
+
+- Mac OS X: Added support for compiling simply using the makefiles. Added
+  support for cross-compiling from linux.
 
 - MorphOS builds: added missing -noixemul to CPPFLAGS.
 
