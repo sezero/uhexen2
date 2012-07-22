@@ -4,6 +4,12 @@ Development Progress	:
 ---------------------------
 
 2012-07-22 (SVN):
+    * Added support for building the OSX versions usin gthe makefiles.
+      Do not rely on sdl-config on OSX Framework builds and define new
+      SDL_FRAMEWORK and NO_SDL_CONFIG preprocessor macros to indicate
+      that and include SDL.h with the "SDL" subdirectory name included.
+
+2012-07-22 (SVN):
     * Added new OSX midi driver based on SDL_mixer using CoreServices,
       added it to build and removed the old QuickTime code from build.
       As a bonus, this eliminates our dependency to Carbon stuff.

@@ -27,7 +27,11 @@
 #error "SDLQUAKE must be defined in order to use sdl_inc.h"
 #endif	/* SDLQUAKE */
 
+#if defined(SDL_FRAMEWORK) || defined(NO_SDL_CONFIG)
+#include <SDL/SDL.h>
+#else
 #include "SDL.h"
+#endif
 
 /* =================================================================
 Minimum required SDL versions:

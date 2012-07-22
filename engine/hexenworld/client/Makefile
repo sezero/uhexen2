@@ -238,6 +238,25 @@ ifeq ($(TARGET_OS),unix)
 
 ifeq ($(HOST_OS),darwin)
 NASMFLAGS=-f macho
+CPUFLAGS=
+X11BASE=
+USE_SUNAUDIO=no
+USE_OSS=no
+USE_ALSA=no
+USE_CODEC_TIMIDITY=no
+USE_CODEC_WILDMIDI=no
+# disable mp3 and ogg for now
+USE_CODEC_MP3=no
+USE_CODEC_VORBIS=no
+ifeq ($(USE_MIDI),yes)
+LDFLAGS += -Wl,-framework,AudioToolbox -Wl,-framework,AudioUnit -Wl,-framework,CoreServices
+endif
+USE_SDLCD=yes
+# not relying on sdl-config command and assuming
+# /Library/Frameworks/SDL.framework is available
+SDL_CFLAGS =-D_GNU_SOURCE=1 -D_THREAD_SAFE
+SDL_CFLAGS+=-DSDL_FRAMEWORK -DNO_SDL_CONFIG
+SDL_LIBS   =-Wl,-framework,SDL -Wl,-framework,Cocoa
 else
 NASMFLAGS=-f elf -d_NO_PREFIX
 endif

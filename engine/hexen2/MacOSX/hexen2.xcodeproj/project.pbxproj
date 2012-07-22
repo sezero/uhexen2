@@ -1055,12 +1055,12 @@
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"__MACOSX__=1",
 					SDLQUAKE,
+					SDL_FRAMEWORK,
 					"_GNU_SOURCE=1",
 					_THREAD_SAFE,
 				);
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
 				HEADER_SEARCH_PATHS = (
-					/Library/Frameworks/SDL.framework/Headers,
 					../../h2shared,
 					../../../libs/common,
 				);
@@ -1096,12 +1096,12 @@
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"__MACOSX__=1",
 					SDLQUAKE,
+					SDL_FRAMEWORK,
 					"_GNU_SOURCE=1",
 					_THREAD_SAFE,
 				);
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
 				HEADER_SEARCH_PATHS = (
-					/Library/Frameworks/SDL.framework/Headers,
 					../../h2shared,
 					../../../libs/common,
 				);
@@ -1132,6 +1132,7 @@
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"__MACOSX__=1",
 					SDLQUAKE,
+					SDL_FRAMEWORK,
 					GLQUAKE,
 					GL_DLSYM,
 					"_GNU_SOURCE=1",
@@ -1158,6 +1159,7 @@
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"__MACOSX__=1",
 					SDLQUAKE,
+					SDL_FRAMEWORK,
 					GLQUAKE,
 					GL_DLSYM,
 					"_GNU_SOURCE=1",
@@ -1191,6 +1193,7 @@
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"__MACOSX__=1",
 					SDLQUAKE,
+					SDL_FRAMEWORK,
 					GLQUAKE,
 					GL_DLSYM,
 					"_GNU_SOURCE=1",
@@ -1200,7 +1203,6 @@
 				HEADER_SEARCH_PATHS = (
 					../../h2shared,
 					../../../libs/common,
-					/Library/Frameworks/SDL.framework/Headers,
 				);
 				INFOPLIST_FILE = glhexen2.plist;
 				MACOSX_DEPLOYMENT_TARGET = "";
@@ -1237,6 +1239,7 @@
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"__MACOSX__=1",
 					SDLQUAKE,
+					SDL_FRAMEWORK,
 					GLQUAKE,
 					GL_DLSYM,
 					"_GNU_SOURCE=1",
@@ -1244,7 +1247,6 @@
 				);
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
 				HEADER_SEARCH_PATHS = (
-					/Library/Frameworks/SDL.framework/Headers,
 					../../h2shared,
 					../../../libs/common,
 				);
