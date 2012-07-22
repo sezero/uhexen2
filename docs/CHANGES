@@ -4,6 +4,9 @@ Development Progress	:
 ---------------------------
 
 2012-07-22 (SVN):
+    * Separated common unix and darwin sections in the makefiles.
+
+2012-07-22 (SVN):
     * Fixed OSX gl linkage when we aren't dynamically linking to opengl
       functions at runtime. No need for -lm either.
 

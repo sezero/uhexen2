@@ -265,12 +265,11 @@ endif
 ifeq ($(TARGET_OS),unix)
 
 ifeq ($(HOST_OS),darwin)
+# Mac OS X :
 NASMFLAGS=-f macho
 CPUFLAGS=
-X11BASE=
-USE_SUNAUDIO=no
-USE_OSS=no
-USE_ALSA=no
+
+# no need for timidity, we have a midi driver
 USE_CODEC_TIMIDITY=no
 USE_CODEC_WILDMIDI=no
 # disable mp3 and ogg for now
@@ -279,15 +278,36 @@ USE_CODEC_VORBIS=no
 ifeq ($(USE_MIDI),yes)
 LDFLAGS += -Wl,-framework,AudioToolbox -Wl,-framework,AudioUnit -Wl,-framework,CoreServices
 endif
+
+ifeq ($(USE_SOUND),yes)
+ifneq ($(USE_SDLAUDIO),yes)
+CPPFLAGS+= -DNO_SDL_AUDIO
+endif
+CPPFLAGS+= -DNO_ALSA_AUDIO -DNO_OSS_AUDIO -DNO_SUN_AUDIO
+endif
+
 USE_SDLCD=yes
+ifeq ($(USE_CDAUDIO),yes)
+CPPFLAGS+= -DWITH_SDLCD
+endif
+
+# Unix builds rely on SDL:
+# SDLQUAKE must be defined for all SDL using platforms/targets
+CPPFLAGS+= -DSDLQUAKE
 # not relying on sdl-config command and assuming
 # /Library/Frameworks/SDL.framework is available
 SDL_CFLAGS =-D_GNU_SOURCE=1 -D_THREAD_SAFE
 SDL_CFLAGS+=-DSDL_FRAMEWORK -DNO_SDL_CONFIG
 SDL_LIBS   =-Wl,-framework,SDL -Wl,-framework,Cocoa
+CFLAGS  += $(SDL_CFLAGS)
+LDFLAGS += $(SDL_LIBS)
+
+GL_LINK=-Wl,-framework,OpenGL
+
 else
+# common unix:
+
 NASMFLAGS=-f elf -d_NO_PREFIX
-endif
 
 ifneq ($(X11BASE),)
 INCLUDES+= -I$(X11BASE)/include
@@ -298,17 +318,12 @@ endif
 ifeq ($(HOST_OS),sunos)
 LDFLAGS += -lsocket -lnsl -lresolv
 endif
-
-ifeq ($(HOST_OS),darwin)
-GL_LINK=-Wl,-framework,OpenGL
-else
-
 LDFLAGS += -lm
+
 ifneq ($(X11BASE),)
 GL_LINK=-L$(X11BASE)/lib -lGL
 else
 GL_LINK=-lGL
-endif
 endif
 
 ifeq ($(USE_SOUND),yes)
@@ -345,6 +360,8 @@ CPPFLAGS+= -DSDLQUAKE
 CFLAGS  += $(SDL_CFLAGS)
 LDFLAGS += $(SDL_LIBS)
 
+endif
+# end of unix variants
 endif
 # End of Unix settings
 #############################################################
