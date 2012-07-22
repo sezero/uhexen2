@@ -849,6 +849,7 @@ SYSOBJ_NET := net_bsd.o net_udp.o
 SYSOBJ_SYS := sys_unix.o
 ifeq ($(HOST_OS),darwin)
 SYSOBJ_SYS += sys_osx.o
+SYSOBJ_SYS += SDLMain.o
 else
 SYSOBJ_SYS += sys_sdl.o
 endif

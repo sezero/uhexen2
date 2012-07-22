@@ -4,6 +4,10 @@ Development Progress	:
 ---------------------------
 
 2012-07-19 (SVN):
+    * Moved SDLMain.[m|h] from MacOSX subdir to under h2shared. Added
+      SDLMain.o to SYSOBJ_SYS in the makefiles for (gl)h2 and (gl)hw.
+
+2012-07-19 (SVN):
     * utils (LoadFile): don't use SafeMalloc() to avoid an unnecessary
       memset. reverted to using malloc() directly.
 
