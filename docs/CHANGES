@@ -4,6 +4,11 @@ Development Progress	:
 ---------------------------
 
 2012-07-23 (SVN):
+    * xcode project file: enabled the mp3, vorbis and wav codecs, added
+      the codecd header path to HEADER_SEARCH_PATHS. the link libraries
+      still need adding.
+
+2012-07-23 (SVN):
     * updated version date stamp to 2012-07-23.
     * updated documentation.
 
