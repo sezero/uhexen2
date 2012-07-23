@@ -3,6 +3,10 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2012-07-23 (SVN):
+    * oslibs: added libmad and ogg/vorbis headers and static libraries
+      for macosx.
+
 2012-07-22 (SVN):
     * updated version date stamp to 2012-07-22.
     * updated documentation.
