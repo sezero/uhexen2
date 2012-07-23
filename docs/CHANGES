@@ -4,6 +4,10 @@ Development Progress	:
 ---------------------------
 
 2012-07-23 (SVN):
+    * updated version date stamp to 2012-07-23.
+    * updated documentation.
+
+2012-07-23 (SVN):
     * macosx: require 10.5 for 64 bit builds.
 
 2012-07-23 (SVN):
