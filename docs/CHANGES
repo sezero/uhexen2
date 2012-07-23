@@ -4,6 +4,9 @@ Development Progress	:
 ---------------------------
 
 2012-07-23 (SVN):
+    * macosx: enabled the mp3 and ogg/vorbis music playback.
+
+2012-07-23 (SVN):
     * oslibs: added libmad and ogg/vorbis headers and static libraries
       for macosx.
 

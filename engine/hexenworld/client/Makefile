@@ -244,9 +244,6 @@ CPUFLAGS=
 # no need for timidity, we have a midi driver
 USE_CODEC_TIMIDITY=no
 USE_CODEC_WILDMIDI=no
-# disable mp3 and ogg for now
-USE_CODEC_MP3=no
-USE_CODEC_VORBIS=no
 ifeq ($(USE_MIDI),yes)
 LDFLAGS += -Wl,-framework,AudioToolbox -Wl,-framework,AudioUnit -Wl,-framework,CoreServices
 endif
@@ -275,6 +272,17 @@ CFLAGS  += $(SDL_CFLAGS)
 LDFLAGS += $(SDL_LIBS)
 
 GL_LINK=-Wl,-framework,OpenGL
+
+ifeq ($(USE_CODEC_VORBIS),yes)
+CODEC_INC = -I$(OSLIBS)/macosx/codecs/include
+CODEC_LINK= -L$(OSLIBS)/macosx/codecs/$(MACH_TYPE)
+endif
+ifeq ($(USE_CODEC_MP3),yes)
+CODEC_INC = -I$(OSLIBS)/macosx/codecs/include
+CODEC_LINK= -L$(OSLIBS)/macosx/codecs/$(MACH_TYPE)
+endif
+INCLUDES += $(CODEC_INC)
+LDFLAGS += $(CODEC_LINK)
 
 else
 # common unix:
