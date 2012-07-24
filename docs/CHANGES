@@ -3,6 +3,10 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2012-07-24 (SVN):
+    * oslibs: added ppc64 versions of libmad and ogg/vorbis static libs
+      for macosx. (untested for now)
+
 2012-07-23 (SVN):
     * xcode project file: enabled the mp3, vorbis and wav codecs, added
       the codecd header path to HEADER_SEARCH_PATHS. the link libraries
