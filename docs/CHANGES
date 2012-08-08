@@ -3,6 +3,11 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2012-08-08 (SVN):
+    * oslibs: recompiled x86_64 versions of osx codecs against 10.4 SDK
+      using a gcc-5666.3/cctools-806 based cross-toolchain as described
+      at https://github.com/Tatsh/xchain/.
+
 2012-08-02 (SVN):
     * oslibs: added dylib versions of libmad and ogg/vorbis for macosx,
       fat binaries for ppc, x86 and x86_64. removed the ppc64 versions
