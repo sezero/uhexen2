@@ -31,6 +31,7 @@
 #include "bgmusic.h"
 #include "midi_drv.h"
 
+#include <CoreServices/CoreServices.h>
 #include <AudioToolbox/AudioToolbox.h>
 #include <AvailabilityMacros.h>
 
