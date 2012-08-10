@@ -4,6 +4,9 @@ Development Progress	:
 ---------------------------
 
 2012-08-10 (SVN):
+    * docs/COMPILE: updated for osx x86_64 cross-toolchain instructions.
+
+2012-08-10 (SVN):
     * midi_osx.c: use MusicSequenceLoadSMFData() in ppc builds, instead
       of MusicSequenceLoadSMFDataWithFlags(). the former works back to
       10.2, whereas the latter requires 10.3 and newer. we already call
