@@ -4,6 +4,13 @@ Development Progress	:
 ---------------------------
 
 2012-08-10 (SVN):
+    * midi_osx.c: use MusicSequenceLoadSMFData() in ppc builds, instead
+      of MusicSequenceLoadSMFDataWithFlags(). the former works back to
+      10.2, whereas the latter requires 10.3 and newer. we already call
+      MusicSequenceLoadSMFDataWithFlags() with zero as the flags value,
+      which makes it equivalent to calling MusicSequenceLoadSMFData().
+
+2012-08-10 (SVN):
     * midi_osx.c: use AUGraphAddNode() also with 10.5. we were using it
       only with 10.6+ because of struct AudioComponentDescription being
       only in SDK 10.6+. AudioComponentDescription is actually the same
