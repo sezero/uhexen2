@@ -25,10 +25,14 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
+#ifdef __LP64__
+#error QuickTime midi is not for 64 bit
+#endif
+
 #include "quakedef.h"
 #include "bgmusic.h"
 #include "midi_drv.h"
-#include <Sound.h>
+#include <Carbon/Carbon.h>	/* <Sound.h> */
 #include <QuickTime/Movies.h>
 
 static Movie	midiTrack = NULL;

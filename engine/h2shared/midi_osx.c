@@ -31,7 +31,8 @@
 #include "bgmusic.h"
 #include "midi_drv.h"
 
-#include <CoreServices/CoreServices.h>
+#include <CoreServices/CoreServices.h>		/* ComponentDescription */
+#include <AudioUnit/AudioUnit.h>
 #include <AudioToolbox/AudioToolbox.h>
 #include <AvailabilityMacros.h>
 
@@ -194,7 +195,7 @@ static OSStatus GetSequenceAudioUnit(MusicSequence sequence, AudioUnit *aunit)
 
 		if (AUGraphGetIndNode(graph, i, &node) != noErr)
 			continue;
-#if MAC_OS_X_VERSION_MIN_REQUIRED < 1060
+#if MAC_OS_X_VERSION_MIN_REQUIRED < 1050
 		/* this is deprecated, but works back to 10.0 */
 		{
 		struct ComponentDescription desc;
@@ -209,9 +210,16 @@ static OSStatus GetSequenceAudioUnit(MusicSequence sequence, AudioUnit *aunit)
 		else if (desc.componentSubType != kAudioUnitSubType_DefaultOutput)
 			continue;
 		}
-#else
-		/* not deprecated, but requires 10.5 or later */
+#else	/* this requires 10.5 or later */
 		{
+		#if !defined(AUDIO_UNIT_VERSION) || ((AUDIO_UNIT_VERSION + 0) < 1060)
+		/* AUGraphAddNode () is changed to take an AudioComponentDescription*
+		 * desc parameter instead of a ComponentDescription* in the 10.6 SDK.
+		 * AudioComponentDescription is in 10.6 or newer, but it is actually
+		 * the same as struct ComponentDescription with 20 bytes of size and
+		 * the same offsets of all members, therefore, is binary compatible. */
+		#  define AudioComponentDescription ComponentDescription
+		#endif
 		AudioComponentDescription desc;
 		if (AUGraphNodeInfo(graph, node, &desc, aunit) != noErr)
 			continue;

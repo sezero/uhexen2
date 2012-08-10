@@ -3,6 +3,18 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2012-08-10 (SVN):
+    * midi_osx.c: use AUGraphAddNode() also with 10.5. we were using it
+      only with 10.6+ because of struct AudioComponentDescription being
+      only in SDK 10.6+. AudioComponentDescription is actually the same
+      as ComponentDescription with 20 bytes of size and same offsets of
+      all members, therefore, is binary compatible, so we simply define
+      AudioComponentDescription as ComponentDescription when compiling
+      against 10.5 SDK.
+    * midi_mac.c: include Carbon/Carbon.h instead of Sound.h so that it
+      compiles. added #error directive against 64 bit compile attempts.
+    * updated version date stamp to 2012-08-10.
+
 2012-08-08 (SVN):
     * midi_osx.c: include CoreServices/CoreServices.h to fix compilation
       against 10.6 SDK.

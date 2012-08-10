@@ -280,6 +280,7 @@ endif
 USE_CODEC_TIMIDITY=no
 USE_CODEC_WILDMIDI=no
 ifeq ($(USE_MIDI),yes)
+# note: midi_mac.c requires -Wl,-framework,QuickTime which we are not using anymore.
 LDFLAGS += -Wl,-framework,AudioToolbox -Wl,-framework,AudioUnit -Wl,-framework,CoreServices
 endif
 
@@ -809,6 +810,7 @@ CPPFLAGS += -D_NO_MIDIDRV
 endif
 ifeq ($(TARGET_OS),unix)
 ifeq ($(HOST_OS),darwin)
+# not using midi_mac.c
 SYSOBJ_MIDI:= midi_osx.o
 else
 SYSOBJ_MIDI:= midi_nul.o
