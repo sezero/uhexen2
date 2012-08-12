@@ -1,0 +1,31 @@
+replaced malloc, calloc and free calls by Z_Malloc and ZFree
+
+--- os_types.h.orig
++++ os_types.h
+@@ -19,10 +19,26 @@
+ 
+ /* make it easy on the folks that want to compile the libs with a
+    different malloc than stdlib */
++/*
+ #define _ogg_malloc  malloc
+ #define _ogg_calloc  calloc
+ #define _ogg_realloc realloc
+ #define _ogg_free    free
++*/
++#include "zone.h"
++#define _ogg_malloc(s)    Z_Malloc((s),Z_SECZONE)
++#define _ogg_calloc(n,s)  Z_Malloc((n)*(s),Z_SECZONE)
++#define _ogg_realloc(p,s) Z_Realloc((p),(s),Z_SECZONE)
++#define _ogg_free(p)      Z_Free((p))
++/* replacing alloca() was not necessary */
++/*
++#define _ogg_alloca       alloca
++#define _ogg_stackfree(p) do{}while(0)
++*/
++/*
++#define _ogg_alloca(s)    Z_Malloc((s),Z_SECZONE)
++#define _ogg_stackfree(p) Z_Free((p))
++*/
+ 
+ #if defined(_WIN32) 
+ 

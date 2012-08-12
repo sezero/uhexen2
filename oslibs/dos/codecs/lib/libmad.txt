@@ -49,24 +49,28 @@ GNU assembler version 2.16.1 (i586-pc-msdosdjgpp) using BFD version 2.16.1
  /* --- Layer III ----------------------------------------------------------- */
  
  enum {
-@@ -2527,7 +2527,7 @@ int mad_layer_III(struct mad_stream *str
+@@ -2527,19 +2527,11 @@ int mad_layer_III(struct mad_stream *str
    /* allocate Layer III dynamic structures */
  
    if (stream->main_data == 0) {
 -    stream->main_data = malloc(MAD_BUFFER_MDLEN);
+-    if (stream->main_data == 0) {
+-      stream->error = MAD_ERROR_NOMEM;
+-      return -1;
+-    }
 +    stream->main_data = Z_Malloc(MAD_BUFFER_MDLEN, Z_SECZONE);
-     if (stream->main_data == 0) {
-       stream->error = MAD_ERROR_NOMEM;
-       return -1;
-@@ -2535,7 +2535,7 @@ int mad_layer_III(struct mad_stream *str
    }
  
    if (frame->overlap == 0) {
 -    frame->overlap = calloc(2 * 32 * 18, sizeof(mad_fixed_t));
+-    if (frame->overlap == 0) {
+-      stream->error = MAD_ERROR_NOMEM;
+-      return -1;
+-    }
 +    frame->overlap = Z_Malloc(2 * 32 * 18 * sizeof(mad_fixed_t), Z_SECZONE);
-     if (frame->overlap == 0) {
-       stream->error = MAD_ERROR_NOMEM;
-       return -1;
+   }
+ 
+   nch = MAD_NCHANNELS(header);
 --- stream.c.orig
 +++ stream.c
 @@ -29,7 +29,7 @@

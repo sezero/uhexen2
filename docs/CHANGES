@@ -3,6 +3,11 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2012-08-12 (SVN):
+    * oslibs/dos: recompile codec libs by removing unnecessary NULL ptr
+      checks (since we are using Z_Malloc() and friends, alloc failures
+      are Sys_Error(), and the returned memory is zero filled, as well).
+
 2012-08-10 (SVN):
     * docs/COMPILE: updated for osx x86_64 cross-toolchain instructions.
 
