@@ -103,19 +103,15 @@ static void ParseDefFile (const char *filename)
 		len = strlen(line);
 		if (len > 0 && line[len - 1] == '\n')
 			line[len - 1] = '\0';
-		if (*line != '\0')
+		if (line[0] != '\0' &&
+		    sscanf(line, "%s %d %d %d", name, &r, &g, &b) == 4)
 		{
-			sscanf(line, "%s %d %d %d", name, &r, &g, &b);
-			if (*name != '\0')
-			{
-				strcpy(tc_list.entries[i].name, name);
-				tc_list.entries[i].red  = q_min(q_max(r, 1), 255);
-				tc_list.entries[i].green= q_min(q_max(g, 1), 255);
-				tc_list.entries[i].blue = q_min(q_max(b, 1), 255);
-				i++;
-			}
+			strcpy(tc_list.entries[i].name, name);
+			tc_list.entries[i].red  = q_min(q_max(r, 1), 255);
+			tc_list.entries[i].green= q_min(q_max(g, 1), 255);
+			tc_list.entries[i].blue = q_min(q_max(b, 1), 255);
+			i++;
 		}
-
 		if (i >= num)
 			break;
 	}
