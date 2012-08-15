@@ -248,8 +248,8 @@ int main (int argc, char **argv)
 	int		i;
 	int		wantthreads;
 	double		start, end;
+	const char	*extfilename;
 	char		source[1024];
-	char		*extfilename;
 
 	printf ("---------------------------------------------------\n");
 	printf ("JSH2Colour %s - %s\n", JSH2COLOR_VER, PLATFORM_STRING);
