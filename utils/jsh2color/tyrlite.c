@@ -4,6 +4,7 @@
  *
  * Copyright (C) 1996-1997  Id Software, Inc.
  * Modifications by Kevin Shanahan, 1999-2000
+ * MH, 2001,  Juraj Styk, 2002,  O.Sezer 2012
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
