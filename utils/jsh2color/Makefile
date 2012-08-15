@@ -113,7 +113,6 @@ OBJECTS= qsnprint.o \
 	ltface.o \
 	trace.o \
 	jscolor.o \
-	tex.o \
 	tyrlite.o
 
 $(BINARY) : $(OBJECTS)

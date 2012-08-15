@@ -1,6 +1,6 @@
 /*
  * tyrlite.h
- * $Id: tyrlite.h,v 1.16 2010-02-23 00:07:50 sezero Exp $
+ * $Id$
  *
  * Copyright (C) 1996-1997  Id Software, Inc.
  * Modifications by Kevin Shanahan, 1999-2000
@@ -21,18 +21,12 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-#ifndef __TYRLITE_H__
-#define __TYRLITE_H__
-
-#define JSH2COLOR_VER	"1.2.5"		/* version string */
+#ifndef TYRLITE_H
+#define TYRLITE_H
 
 #define	ON_EPSILON	0.1
 
 #define	MAXLIGHTS	1024
-
-// js features
-#define	MAX_ENTRYNUM	32784
-#define	MAX_TEX_NAME	64
 
 extern	float		scaledist;
 extern	float		scalecos;
@@ -47,8 +41,6 @@ extern	vec3_t		sunmangle;
 extern	vec3_t		bsp_origin;
 
 extern	qboolean	extrasamples;
-extern	qboolean	external;
-extern	qboolean	nodefault;
 
 //void	TransformSample (vec3_t in, vec3_t out);
 //void	RotateSample (vec3_t in, vec3_t out);
@@ -59,15 +51,9 @@ qboolean TestLine (vec3_t start, vec3_t stop);
 qboolean TestSky  (vec3_t start, vec3_t dirn);
 void	TestLightFace (int surfnum, vec3_t faceoffset);
 void	LightFaceLIT (int surfnum, vec3_t faceoffset);
-void	CheckTex (void);
-void	FindTexlightColor (int *surf_r, int *surf_g, int *surf_b, const char *texname);
 
 void	LightLeaf (dleaf_t *leaf);
 void	MakeTnodes (dmodel_t *bm);
 
-// js features
-void	InitDefFile (const char *fname);
-void	CloseDefFile (void);
-
-#endif	/* __TYRLITE_H__ */
+#endif	/* TYRLITE_H */
 

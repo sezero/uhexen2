@@ -3,6 +3,13 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2012-08-15 (SVN):
+    * utils/jsh2color/tex.c: merged to jscolor.c. minor cleanups.
+      (ParseDefFile): fixed lazy declaration of the FILE pointer.
+      (FindTexlightColorExt): start the search at index 0, not 1.
+      accept a pointer to a tex_col_list as the last param, not
+      a tex_col_list structure itself.
+
 2012-08-12 (SVN):
     * oslibs/dos: recompile codec libs by removing unnecessary NULL ptr
       checks (since we are using Z_Malloc() and friends, alloc failures

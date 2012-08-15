@@ -50,13 +50,8 @@ int		bspfileface;	// next surface to dispatch
 vec3_t		bsp_origin;
 
 static vec3_t	faceoffset[MAX_MAP_FACES];
-extern int	num_lights;
 
 qboolean	extrasamples;
-// js features
-qboolean	external;
-qboolean	nodefault;
-char		extfilename[MAX_OSPATH];
 
 
 static void ColorLightThread (void *junk)
@@ -97,9 +92,6 @@ static void TestLightThread (void *junk)
 }
 
 
-extern int	nummodels;
-extern dmodel_t	dmodels[MAX_MAP_MODELS];
-
 static void FindFaceOffsets (void)
 {
 	int		i, j;
@@ -135,8 +127,6 @@ static void FindFaceOffsets (void)
 	}
 }
 
-
-extern int	num_clights;
 
 /*
 =============
@@ -258,6 +248,7 @@ int main (int argc, char **argv)
 	int		wantthreads;
 	double		start, end;
 	char		source[1024];
+	char		*extfilename;
 
 	printf ("---------------------------------------------------\n");
 	printf ("JSH2Colour %s - %s\n", JSH2COLOR_VER, PLATFORM_STRING);
@@ -266,10 +257,10 @@ int main (int argc, char **argv)
 
 	ValidateByteorder ();
 
-	// defaults for the user settable options
-	external = false;	// js feature
-	extfilename[0] = '\0';
-	nodefault = false;	// js feature
+	external = false;
+	extfilename = NULL;
+	nodefault = false;
+
 	wantthreads = 1;	// default to single threaded
 
 	for (i = 1 ; i < argc ; i++)
@@ -316,9 +307,9 @@ int main (int argc, char **argv)
 		{	// js feature
 			if (i >= argc - 1)
 				COM_Error("Missing argument to \"%s\"", argv[i]);
-			strcpy(extfilename, argv[++i]);
+			extfilename = argv[++i];
 			external = true;
-			printf ("Using external definition file : %s\n",extfilename);
+			printf ("Using external definition file: %s\n", extfilename);
 		}
 		else if (!strcmp (argv[i], "-nodefault"))
 		{	// js feature
