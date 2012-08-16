@@ -39,7 +39,7 @@ qpic_t *Draw_PicFromFile (const char *name);
 
 qpic_t *Draw_CachePic (const char *path);
 #if !defined(DRAW_PROGRESSBARS)
-qpic_t *Draw_CacheLoadingPic (void);	/* without the progress bars in opengl */
+qpic_t *Draw_CacheLoadingPic (void);	/* without the progress bars. */
 #else
 #define Draw_CacheLoadingPic ()		Draw_CachePic ("gfx/menu/loading.lmp")
 #endif	/* DRAW_PROGRESSBARS */

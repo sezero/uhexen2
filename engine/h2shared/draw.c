@@ -96,7 +96,6 @@ qpic_t	*Draw_CachePic (const char *path)
 	}
 
 	dat = (qpic_t *) Cache_Check (&pic->cache);
-
 	if (dat)
 		return dat;
 
@@ -111,6 +110,58 @@ qpic_t	*Draw_CachePic (const char *path)
 
 	return dat;
 }
+
+#if !defined(DRAW_PROGRESSBARS)
+/*
+================
+Draw_CacheLoadingPic
+like Draw_CachePic() but only for loading.lmp
+with its progress bars eliminated.
+================
+*/
+static const char ls_path[] = "gfx/menu/loading.lmp";
+qpic_t	*Draw_CacheLoadingPic (void)
+{
+	cachepic_t	*pic;
+	int			i;
+	qpic_t		*dat;
+
+	for (pic = menu_cachepics, i = 0; i < menu_numcachepics; pic++, i++)
+		if (!strcmp (ls_path, pic->name))
+			break;
+
+	if (i == menu_numcachepics)
+	{
+		if (menu_numcachepics == MAX_CACHED_PICS)
+			Sys_Error ("menu_numcachepics == MAX_CACHED_PICS");
+		menu_numcachepics++;
+		q_strlcpy (pic->name, ls_path, MAX_QPATH);
+	}
+
+	dat = (qpic_t *) Cache_Check (&pic->cache);
+	if (dat)
+		return dat;
+
+//
+// load the pic from disk
+//
+	FS_LoadCacheFile (ls_path, &pic->cache, NULL);
+
+	dat = (qpic_t *)pic->cache.data;
+	Draw_PicCheckError (dat, ls_path);
+	SwapPic (dat);
+
+	if (fs_filesize != 17592 || dat->width != 157 || dat->height != 112)
+		return dat;
+
+	/* kill the progress slot pixels between rows [85:103] */
+	memmove(dat->data + 157*85, dat->data + 157*104, 157*(112 - 104));
+	dat->height -= (104 - 85);
+
+	return dat;
+}
+
+#endif	/* !DRAW_PROGRESSBARS */
 
 
 #if FULLSCREEN_INTERMISSIONS

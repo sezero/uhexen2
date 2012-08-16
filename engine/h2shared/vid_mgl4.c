@@ -2493,6 +2493,7 @@ void D_BeginDirectRect (int x, int y, byte *pbitmap, int width, int height)
 /* unused in hexenworld */
 void D_ShowLoadingSize (void)
 {
+#if defined(DRAW_PROGRESSBARS)
 	static int prev_perc;
 	int		cur_perc;
 	vrect_t		rect;
@@ -2565,6 +2566,7 @@ void D_ShowLoadingSize (void)
 	}
 
 	vid = save_vid;
+#endif	/* !DRAW_PROGRESSBARS */
 }
 #endif	/* ! H2W */
 

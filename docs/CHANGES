@@ -4,6 +4,20 @@ Development Progress	:
 ---------------------------
 
 2012-08-16 (SVN):
+    * screen.c: Disabled the progress bars drawing during level load in
+      software renderer, too: at least the macosx/sdl-1.2.14 combination
+      is reported to have excessively long load times due to progress
+      bars. Added a short version of SCR_DrawLoading() which uses the
+      new Draw_CacheLoadingPic() and doesn't draw the progress bars when
+      DRAW_PROGRESSBARS is not defined.
+    * vid_sdl.c, vid_mgl4.c, vid_win.c, vid_dos.c, vid_svgalib.c: Made
+      D_ShowLoadingSize() a stub function when DRAW_PROGRESSBARS is not
+      defined.
+    * draw.c: Added Draw_CacheLoadingPic(), which is essentially the
+      same as Draw_CachePic() but only loads gfx/menu/loading.lmp and
+      deletes the progress bar pixels from it.
+
+2012-08-16 (SVN):
     * vid_sdl.c, vid_mgl4.c, vid_win.c (D_ShowLoadingSize): block
       unnecessary redraws of progress bars. (from gl_vidsdl.c/rev.4532)
 
