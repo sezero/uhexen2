@@ -924,14 +924,23 @@ void D_EndDirectRect (int x, int y, int width, int height)
 // unused in hexenworld
 void D_ShowLoadingSize (void)
 {
+	static int prev_perc;
+	int		cur_perc;
 	vrect_t		rect;
 	viddef_t	save_vid;	// global video state
 
 	if (!vid_showload.integer)
-		return; 
+		return;
 
 	if (!vid_initialized)
 		return;
+
+	cur_perc = loading_stage * 100;
+	if (total_loading_size)
+		cur_perc += current_loading_size * 100 / total_loading_size;
+	if (cur_perc == prev_perc)
+		return;
+	prev_perc = cur_perc;
 
 	save_vid = vid;
 	if (vid.numpages == 1)

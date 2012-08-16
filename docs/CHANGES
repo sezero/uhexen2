@@ -3,6 +3,10 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2012-08-16 (SVN):
+    * vid_sdl.c, vid_mgl4.c, vid_win.c (D_ShowLoadingSize): block
+      unnecessary redraws of progress bars. (from gl_vidsdl.c/rev.4532)
+
 2012-08-15 (SVN):
     * utils/jsh2color/tex.c: merged to jscolor.c. minor cleanups.
       (ParseDefFile): fixed lazy declaration of the FILE pointer.
