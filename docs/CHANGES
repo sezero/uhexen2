@@ -4,6 +4,9 @@ Development Progress	:
 ---------------------------
 
 2012-08-16 (SVN):
+    * updated version date stamp to 2012-08-16.
+
+2012-08-16 (SVN):
     * screen.c: Disabled the progress bars drawing during level load in
       software renderer, too: at least the macosx/sdl-1.2.14 combination
       is reported to have excessively long load times due to progress
