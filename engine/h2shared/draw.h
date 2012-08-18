@@ -70,12 +70,16 @@ qpic_t *Draw_CachePicResize (const char *path, int targetWidth, int targetHeight
 #endif	/*  FULLSCREEN_INTERMISSIONS */
 
 #if defined(GLQUAKE)
+#undef DRAW_LOADINGSKULL
+#endif
+
+#if !defined(DRAW_LOADINGSKULL)
 #define Draw_BeginDisc()
 #define Draw_EndDisc()
-#else	/* !GLQUAKE */
+#else
 void Draw_BeginDisc (void);
 void Draw_EndDisc (void);
-#endif	/*  GLQUAKE */
+#endif
 
 void Draw_TileClear (int x, int y, int w, int h);
 void Draw_Fill (int x, int y, int w, int h, int c);

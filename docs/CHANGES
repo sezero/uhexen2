@@ -3,6 +3,11 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2012-08-18 (SVN):
+    * draw.c: Disabled the stupid rotating skull animation during file
+      i/o, unless DRAW_LOADINGSKULL is defined.
+    * updated version date stamp to 2012-08-18.
+
 2012-08-16 (SVN):
     * updated version date stamp to 2012-08-16.
 

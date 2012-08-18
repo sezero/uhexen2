@@ -39,10 +39,12 @@ static rectdesc_t	r_rectdesc;
 static byte	*draw_smallchars;	// Small characters for status bar
 static byte	*draw_chars;		// 8*8 graphic characters
 static qpic_t	*draw_backtile;
-static qpic_t	*draw_disc[MAX_DISC] = 
+#if defined(DRAW_LOADINGSKULL)
+static qpic_t	*draw_disc[MAX_DISC] =
 {
-	NULL  // make the first one null for sure
+	NULL	// make the first one null for sure
 };
+#endif
 
 qboolean	draw_reinit = false;
 
@@ -230,6 +232,7 @@ Draw_Init
 */
 void Draw_Init (void)
 {
+#if defined(DRAW_LOADINGSKULL)
 	int		i;
 	char	temp[MAX_QPATH];
 
@@ -238,17 +241,9 @@ void Draw_Init (void)
 		for (i = 0; i < MAX_DISC; i++)
 			draw_disc[i] = NULL;
 	}
-
-	if (draw_chars)
-		Z_Free (draw_chars);
-	draw_chars = FS_LoadZoneFile ("gfx/menu/conchars.lmp", Z_SECZONE, NULL);
-	Draw_PicCheckError (draw_chars, "gfx/menu/conchars.lmp");
-
-	draw_smallchars = (byte *) W_GetLumpName("tinyfont");
-
-	// Do this backwards so we don't try and draw the 
+	// Do this backwards so we don't try and draw the
 	// skull as we are loading
-	for (i = MAX_DISC-1; i >= 0; i--)
+	for (i = MAX_DISC - 1; i >= 0; i--)
 	{
 		if (draw_disc[i])
 			Z_Free (draw_disc[i]);
@@ -258,6 +253,14 @@ void Draw_Init (void)
 		if (draw_disc[i])
 			SwapPic (draw_disc[i]);
 	}
+#endif	/* DRAW_LOADINGSKULL */
+
+	if (draw_chars)
+		Z_Free (draw_chars);
+	draw_chars = FS_LoadZoneFile ("gfx/menu/conchars.lmp", Z_SECZONE, NULL);
+	Draw_PicCheckError (draw_chars, "gfx/menu/conchars.lmp");
+
+	draw_smallchars = (byte *) W_GetLumpName("tinyfont");
 
 	if (draw_backtile)
 		Z_Free (draw_backtile);
@@ -1807,6 +1810,7 @@ void Draw_FadeScreen (void)
 
 //=============================================================================
 
+#if defined(DRAW_LOADINGSKULL)
 /*
 ================
 Draw_BeginDisc
@@ -1826,8 +1830,7 @@ void Draw_BeginDisc (void)
 	if (!draw_disc[disc_idx])
 		return;
 
-	disc_idx++;
-	if (disc_idx >= MAX_DISC)
+	if (++disc_idx >= MAX_DISC)
 		disc_idx = 0;
 
 	D_BeginDirectRect (vid.width - 28, 0, draw_disc[disc_idx]->data, 28, 24);
@@ -1859,4 +1862,5 @@ void Draw_EndDisc (void)
 	scr_topupdate = 0;	// this was disabled by rjr in the hw source for what reason?
 #endif
 }
+#endif	/* DRAW_LOADINGSKULL */
 
