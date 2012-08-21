@@ -96,12 +96,20 @@ typedef uint64_t xoff_t;
 #define SIZEOF_USIZE_T 4
 #ifdef _WIN32
 #define Q "I64"
+#elif defined(__APPLE__) && defined(__MACH__)
+#if ((__ENVIRONMENT_MAC_OS_X_VERSION_MIN_REQUIRED__+0) > 1020)
+#define Q "ll"	/* darwin uint64_t is unsigned long long */
+#else
+#define Q "q"			/* but "ll" requires > 10.2 */
+#endif /* MAC OS X */
 #elif (LONG_MAX > 2147483647L)
 #define Q "l"	/* rely on uint64_t being defined as unsigned long */
 #else
 #define Q "ll"	/* rely on uint64_t being defined as unsigned long long */
 #endif
-#else
+
+#else /* !XD3_USE_LARGEFILE64: */
+
 typedef uint32_t xoff_t;
 #define SIZEOF_XOFF_T 4
 #define SIZEOF_USIZE_T 4
@@ -110,7 +118,7 @@ typedef uint32_t xoff_t;
 #else
 #define Q	/* rely on uint32_t being defined as unsigned int */
 #endif
-#endif
+#endif /* !XD3_USE_LARGEFILE64 */
 
 #define USE_UINT32 (SIZEOF_USIZE_T == 4 || SIZEOF_XOFF_T == 4)
 #define USE_UINT64 (SIZEOF_USIZE_T == 8 || SIZEOF_XOFF_T == 8)

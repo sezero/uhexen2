@@ -3,6 +3,9 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2012-08-21 (SVN):
+    * libs/xdelta3/xdelta3.h: fix uint64_t length modifier for macosx.
+
 2012-08-18 (SVN):
     * draw.c: Disabled the stupid rotating skull animation during file
       i/o, unless DRAW_LOADINGSKULL is defined.
