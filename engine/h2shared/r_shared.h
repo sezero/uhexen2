@@ -35,7 +35,7 @@
 					// polygon (while processing)
 
 // !!! if this is changed, it must be changed in d_ifacea.h too !!!
-#define	MAXHEIGHT	1024
+#define	MAXHEIGHT	1024		/* also in d_polysa.inc !!!  */
 #define	MAXWIDTH	1280
 #define	MAXDIMENSION	((MAXHEIGHT > MAXWIDTH) ? MAXHEIGHT : MAXWIDTH)
 

@@ -26,6 +26,7 @@
 ;
 
 %include "asm_nasm.inc"
+%include "d_polysa.inc"
 
 ; underscore prefix handling
 ; for C-shared symbols:
@@ -767,7 +768,7 @@ D_Aff8PatchT3:
 
  global D_PolysetDrawT3
 D_PolysetDrawT3:
- sub esp,offset (((1024+1 + 1 + ((32 - 1) / 32)) + 1) * 32)
+ sub esp,offset SPAN_SIZE
  mov eax,esp
  add eax,32 - 1
  and eax,offset ~(32 - 1)
@@ -873,7 +874,7 @@ Ldone2:
  pop ebx
  pop esi
 ;pop ebp
- add esp,offset (((1024+1 + 1 + ((32 - 1) / 32)) + 1) * 32)
+ add esp,offset SPAN_SIZE
  ret
 
 
@@ -1144,6 +1145,6 @@ LNextTri:
  pop esi
  pop ebx
 ;pop ebp
- add esp,offset (((1024+1 + 1 + ((32 - 1) / 32)) + 1) * 32)
+ add esp,offset SPAN_SIZE
  ret
 

@@ -3,6 +3,13 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2012-08-27 (SVN):
+    * added new d_polysa.inc asm header where a new SPAN_SIZE macro is
+      defined based on MAXHEIGHT and CACHE_SIZE macros. included the new
+      header in d_polys*.asm and replaced the hard coded span sizes with
+      the new macro. this is needed if we ever want to change MAXHEIGHT.
+    * updated version date stamp to 2012-08-27.
+
 2012-08-21 (SVN):
     * libs/xdelta3/xdelta3.h: fix uint64_t length modifier for macosx.
 
