@@ -77,9 +77,10 @@ ifeq (,$(findstring irix,$(HOST_OS)))
 USE_PTHREADS=yes
 endif
 ifeq ($(USE_PTHREADS),yes)
-CFLAGS  += -DUSE_PTHREADS
-CFLAGS  += $(shell sh $(UHEXEN2_TOP)/scripts/pthread.sh $(UHEXEN2_TOP)/scripts/config.guess --cflags)
-LDLIBS  += $(shell sh $(UHEXEN2_TOP)/scripts/pthread.sh $(UHEXEN2_TOP)/scripts/config.guess --libs)
+PTHREAD_CFLAGS= $(shell sh $(UHEXEN2_TOP)/scripts/pthread.sh $(UHEXEN2_TOP)/scripts/config.guess --cflags)
+PTHREAD_LIBS  = $(shell sh $(UHEXEN2_TOP)/scripts/pthread.sh $(UHEXEN2_TOP)/scripts/config.guess --libs)
+CFLAGS  += $(PTHREAD_CFLAGS) -DUSE_PTHREADS
+LDLIBS  += $(PTHREAD_LIBS)
 endif
 endif
 
