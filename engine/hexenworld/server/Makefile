@@ -163,6 +163,17 @@ endif
 #############################################################
 ifeq ($(TARGET_OS),unix)
 
+ifeq ($(HOST_OS),darwin)
+# Mac OS X :
+CPUFLAGS=
+# require 10.5 for 64 bit builds
+ifeq ($(MACH_TYPE),x86_64)
+CPUFLAGS+=-mmacosx-version-min=10.5
+endif
+ifeq ($(MACH_TYPE),ppc64)
+CPUFLAGS+=-mmacosx-version-min=10.5
+endif
+endif
 ifeq ($(HOST_OS),qnx)
 LDFLAGS += -lsocket
 endif

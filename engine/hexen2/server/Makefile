@@ -24,12 +24,12 @@
 
 # PATH SETTINGS:
 # main uhexen2 relative path
-UHEXEN2_TOP:=../..
+UHEXEN2_TOP:=../../..
 LIBS_DIR:=$(UHEXEN2_TOP)/libs
 # local directory for os-specific headers and libraries
 OSLIBS:=$(UHEXEN2_TOP)/oslibs
 # common sources path:
-COMMONDIR:=../h2shared
+COMMONDIR:=../../h2shared
 
 # GENERAL OPTIONS (customize as required)
 
@@ -76,7 +76,7 @@ CPPFLAGS=
 LDFLAGS =
 
 # compiler includes
-INCLUDES= -I./server -I. -I$(COMMONDIR) -I$(LIBS_DIR)/common
+INCLUDES= -I. -I.. -I$(COMMONDIR) -I$(LIBS_DIR)/common
 
 ifeq ($(COMPILE_32BITS),yes)
 CFLAGS += -m32
@@ -181,6 +181,17 @@ endif
 #############################################################
 ifeq ($(TARGET_OS),unix)
 
+ifeq ($(HOST_OS),darwin)
+# Mac OS X :
+CPUFLAGS=
+# require 10.5 for 64 bit builds
+ifeq ($(MACH_TYPE),x86_64)
+CPUFLAGS+=-mmacosx-version-min=10.5
+endif
+ifeq ($(MACH_TYPE),ppc64)
+CPUFLAGS+=-mmacosx-version-min=10.5
+endif
+endif
 ifeq ($(HOST_OS),qnx)
 LDFLAGS += -lsocket
 endif
@@ -219,9 +230,11 @@ endif
 
 
 # Rules for turning source files into .o files
-%.o: server/%.c
-	$(CC) -c $(INCLUDES) $(CPPFLAGS) $(CFLAGS) -o $@ $<
 %.o: %.c
+	$(CC) -c $(INCLUDES) $(CPPFLAGS) $(CFLAGS) -o $@ $<
+%.o: ../%.c
+	$(CC) -c $(INCLUDES) $(CPPFLAGS) $(CFLAGS) -o $@ $<
+dos/%.o: ../dos/%.c
 	$(CC) -c $(INCLUDES) $(CPPFLAGS) $(CFLAGS) -o $@ $<
 %.o: $(COMMONDIR)/%.c
 	$(CC) -c $(INCLUDES) $(CPPFLAGS) $(CFLAGS) -o $@ $<
@@ -319,11 +332,11 @@ $(BINARY): $(OBJECTS)
 	$(LINKER) $(OBJECTS) $(LDFLAGS) -o $@
 
 # deps for *.c including another *.c
-dos/mplpc.o: dos/mplib.c
-dos/net_ser.o: dos/net_comx.c
+dos/mplpc.o: ../dos/mplib.c
+dos/net_ser.o: ../dos/net_comx.c
 
 clean:
-	rm -f *.o *.res core
+	rm -f *.o *.res dos/*.o core
 distclean: clean
 	rm -f $(BINARY)
 

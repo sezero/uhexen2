@@ -121,7 +121,7 @@ run a HexenWorld server or client, and a master server application.
 %{__make} -C engine/hexen2 %{engine_buildopt} glh2
 %{__make} -s -C engine/hexen2 localclean
 # Build the dedicated server
-%{__make} -C engine/hexen2 -f Makefile.sv
+%{__make} -C engine/hexen2/server
 # HexenWorld binaries
 %{__make} -C engine/hexenworld/server
 %{__make} -C engine/hexenworld/client %{engine_buildopt} hw
@@ -150,9 +150,9 @@ utils/hcc/hcc -src gamecode-%{gamecode_ver}/hc/hw -oi -on
 %install
 %{__rm} -rf %{buildroot}
 %{__mkdir_p} %{buildroot}/%{_prefix}/games/%{name}/docs
-%{__install} -D -m755 engine/hexen2/h2ded %{buildroot}/%{_prefix}/games/%{name}/h2ded
 %{__install} -D -m755 engine/hexen2/glhexen2 %{buildroot}/%{_prefix}/games/%{name}/glhexen2
 %{__install} -D -m755 engine/hexen2/hexen2 %{buildroot}/%{_prefix}/games/%{name}/hexen2
+%{__install} -D -m755 engine/hexen2/server/h2ded %{buildroot}/%{_prefix}/games/%{name}/h2ded
 %{__install} -D -m755 engine/hexenworld/client/hwcl %{buildroot}/%{_prefix}/games/%{name}/hwcl
 %{__install} -D -m755 engine/hexenworld/client/glhwcl %{buildroot}/%{_prefix}/games/%{name}/glhwcl
 %{__install} -D -m755 engine/hexenworld/server/hwsv %{buildroot}/%{_prefix}/games/%{name}/hwsv
@@ -271,9 +271,9 @@ desktop-file-install \
 
 %files
 %defattr(-,root,root)
-%{_prefix}/games/%{name}/h2ded
 %{_prefix}/games/%{name}/hexen2
 %{_prefix}/games/%{name}/glhexen2
+%{_prefix}/games/%{name}/h2ded
 %{_prefix}/games/%{name}/h2patch
 %{_prefix}/games/%{name}/patchdat/data1/data1pk0.xd3
 %{_prefix}/games/%{name}/patchdat/data1/data1pk1.xd3
@@ -348,7 +348,8 @@ desktop-file-install \
 %{_prefix}/games/%{name}/docs/README.hwmaster
 
 %changelog
-* Wed Jul 11 2012 O.Sezer <sezero@users.sourceforge.net> 1.5.5-1
+* Wed Aug 29 2012 O.Sezer <sezero@users.sourceforge.net> 1.5.5-1
+- Adjusted h2ded build and installation after moved Makefile.sv
 - Bump version to 1.5.5
 
 * Tue Jun 18 2012 O.Sezer <sezero@users.sourceforge.net> 1.5.4-1

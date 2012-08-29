@@ -3,6 +3,19 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2012-08-29 (SVN):
+    * engine/hexen2: move Makefile.sv under the server subdirectory and
+      add missing osx flags. adjust the existing cross-compile scripts.
+      add new cross-compile scripts under the server subdirectory.
+    * engine/hexenworld/server: add missing osx flags to the Makefile.
+      add new osx cross-compile script.
+    * rpm spec file: adjust after moved Makefile.sv.
+
+2012-08-29 (SVN):
+    * Makefiles for jsh2color, light, vis: store the pthread flags in
+      the PTHREAD_CFLAGS and PTHREAD_LIBS variables so that they can be
+      overriden using the make command line.
+
 2012-08-27 (SVN):
     * added new d_polysa.inc asm header where a new SPAN_SIZE macro is
       defined based on MAXHEIGHT and CACHE_SIZE macros. included the new

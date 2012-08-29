@@ -4,7 +4,7 @@ UHEXEN2_TOP=../..
 . $UHEXEN2_TOP/scripts/cross_defs.dj
 
 if test "$1" = "strip"; then
-	$STRIPPER h2dos.exe h2ded.exe
+	$STRIPPER h2dos.exe server/h2ded.exe
 	exit 0
 fi
 
@@ -18,16 +18,20 @@ esac
 
 if test "$1" = "h2ded"; then
 	shift
-	$MAKE_CMD -f Makefile.sv $* || exit 1
+	$MAKE_CMD -C server $* || exit 1
 	exit 0
 fi
 if test "$1" = "all"; then
 	shift
+
 	$MAKE_CMD clean
 	$MAKE_CMD h2 $*  || exit 1
+
+	$MAKE_CMD -C server clean
+	$MAKE_CMD -C server $* || exit 1
+
 	$MAKE_CMD clean
-	$MAKE_CMD -f Makefile.sv $* || exit 1
-	$MAKE_CMD clean
+	$MAKE_CMD -C server clean
 	exit 0
 fi
 

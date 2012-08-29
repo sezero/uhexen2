@@ -10,9 +10,13 @@ esac
 
 $MAKE_CMD clean
 $MAKE_CMD h2 $* || exit 1
+
 $MAKE_CMD localclean
 $MAKE_CMD glh2 $* || exit 1
-$MAKE_CMD localclean
-$MAKE_CMD -f Makefile.sv $* || exit 1
+
+$MAKE_CMD -C server clean
+$MAKE_CMD -C server $* || exit 1
+
 $MAKE_CMD clean
+$MAKE_CMD -C server clean
 
