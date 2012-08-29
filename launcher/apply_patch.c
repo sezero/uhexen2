@@ -42,7 +42,7 @@ static const struct other_pak pak0_oem1 = {
 };
 
 static const struct other_pak pak0_oem0 = {
-		/* not sure: don't have this one myself */
+	/* don't have this myself, therefore no patch. */
 	22719295, "Continent of Blackmarsh (m3D, v1.08)",
 	&pak0_oem1
 };
@@ -59,13 +59,13 @@ static const struct other_pak pak0_demo0 = {
 
 #if 0
 static const struct other_pak pak2_oem1 = {
-	"Continent of Blackmarsh (m3D, v1.10)", 17742721
+	17742721, "Continent of Blackmarsh (m3D, v1.10)",
 	NULL
 };
 
 static const struct other_pak pak2_oem0 = {
-		/* not sure: don't have this one myself */
-	"Continent of Blackmarsh (m3D, v1.08)", 17739969
+	/* don't have this myself, therefore no patch. */
+	17739969, "Continent of Blackmarsh (m3D, v1.08)",
 	&pak2_oem1
 };
 #endif
