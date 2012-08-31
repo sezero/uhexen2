@@ -92,16 +92,12 @@
    Allow running with the old, pre-1.11 (such as 1.03 cdrom) versions
    of Hexen II.  The game actually seems to run fine with the original
    cdrom version, but Raven's later patches provided several fixes for
-   map/scripting bugs. Therefore, running with the old version may or
-   may not result in unexpected gameplay behavior. Remember that you
-   must still use 1.11 or later (preferably Hammer of Thyrion provided)
-   progs.dat files: this only enables the use of un-patched pak files.
-   FYI, here are the maps that changed between 1.03 and 1.11 versions:
-   demo2, village1, village2, village3, meso1, meso8, egypt6, rider2c,
-   cath, tower, eidolon, ravdm1, ravdm3, ravdm5.  Here are the models
-   that changed:  assassin.mdl, ball.mdl, bonelump.mdl, scrbpwng.mdl.
-   Four sound files (spider: step1.wav, step2.wav and step3.wav,  and
-   weapons: ric2.wav) changed, too.
+   map/scripting bugs.  Therefore, running with the old version may or
+   may not result in unexpected gameplay behavior.  (Here are the maps
+   changed between v1.03 and v1.11: demo2, village1, village2, village3,
+   meso1, meso8, egypt6, rider2c, cath, tower, eidolon, ravdm1, ravdm3,
+   ravdm5.  Models: assassin.mdl, ball.mdl, bonelump.mdl, scrbpwng.mdl.
+   Sounds: spider/step1.wav, step2.wav, step3.wav,  weapons/ric2.wav.)
    Default: disabled (0).
    ================================================================== */
 #define	ENABLE_OLD_RETAIL		0
@@ -115,12 +111,11 @@
    Allow running with the old (original) version of the Hexen II Demo
    from 28.8.1997: It was class-restricted, paladin and assassin only,
    as a result it lacked certain models. It didn't include the demo3
-   (The Mill) level which the later 1.11 version of the demo had, but
-   it had the mill area merged in the demo1 map instead.  Even with
-   GAME_OLD_DEMO runtime checks, it still lacks certain models that
-   our current 1.11 and later version progs require to be precached.
-   Therefore, it must be run using ITS OWN progs which is v1.03 style,
-   requiring uhexen2 version 1.5.2 or newer.
+   (The Mill) level which the later (Nov. 1997, v1.11) of the demo had,
+   but it had the Mill area merged in the demo1 map instead.
+   It lacks certain models that our current progs precache, therefore,
+   it must be run using ITS OWN progs which requires uhexen2 v1.5.2 or
+   newer.
    Default: disabled (0).
    ================================================================== */
 #define	ENABLE_OLD_DEMO			0
