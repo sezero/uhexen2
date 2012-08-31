@@ -138,10 +138,10 @@
    command line argument to disable mission pack support.
    ================================================================== */
 #undef	H2MP
-/* When compiling HexenWorld, H2MP must not be defined !  =========== */
-#ifdef	H2W
+/* When building HexenWorld or demo-specific, H2MP mustn't be defined */
+#if defined(H2W) || defined(DEMOBUILD)
 #undef	H2MP
-#endif
+#endif		/* H2W || DEMOBUILD */
 
 
 /* ====================================================================

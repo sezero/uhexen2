@@ -48,9 +48,9 @@ typedef struct searchpath_s
 	unsigned int	path_id;	/* identifier assigned to the game directory
 					 *	Note that <install_dir>/game1 and
 					 *	<userdir>/game1 have the same id. */
-	char	filename[MAX_OSPATH];
-	struct	pack_s	*pack;		/* only one of filename / pack will be used */
-	struct	searchpath_s *next;
+	char		filename[MAX_OSPATH];
+	struct pack_s		*pack;	/* only one of filename / pack will be used */
+	struct searchpath_s	*next;
 } searchpath_t;
 
 static searchpath_t	*fs_searchpaths;
@@ -69,40 +69,52 @@ cvar_t	registered = {"registered", "0", CVAR_ROM};
 typedef struct
 {
 	int	numfiles;
-	int	crc;
+	unsigned int	crc;
+	long	size;
 	const char	*dirname;
 } pakdata_t;
 
-static pakdata_t pakdata[] =
+#define	MAX_PAKDATA	5 /* pak0...4 */
+static pakdata_t pakdata[MAX_PAKDATA] =
 {
-	{ 696,	34289, "data1"	},	/* pak0.pak, registered	*/
-	{ 523,	2995 , "data1"	},	/* pak1.pak, registered	*/
-	{ 183,	4807 , "data1"	},	/* pak2.pak, oem, v1.11 */
-	{ 245,	1478 , "portals"},	/* pak3.pak, portals	*/
-	{ 102,	41062, "hw"	}	/* pak4.pak, hexenworld	*/
+	{ 696,	34289,	22704056, "data1"	},	/* pak0.pak, registered, up-to-date, v1.11
+							 *	MD5: c9675191e75dd25a3b9ed81ee7e05eff	*/
+	{ 523,	2995 ,	75601170, "data1"	},	/* pak1.pak, registered, up-to-date, v1.11
+							 *	MD5: c2ac5b0640773eed9ebe1cda2eca2ad0	*/
+	{ 183,	4807 ,	17742721, "data1"	},	/* pak2.pak, oem (Matrox m3D bundle) v1.10
+							 *	MD5: 99e0054861e94f66fc8e0e29416859c9	*/
+	{ 245,	1478 ,	49089114, "portals"	},	/* pak3.pak, Portal of Praevus expansion pack
+							 *	MD5: 77ae298dd0dcd16ab12f4a68067ff2c3	*/
+	{ 102,	41062,	10780245, "hw"		}	/* pak4.pak, hexenworld, all versions 0.11-15
+							 *	MD5: 88109ee385d9723ac5f1015e034a44dd	*/
 };
-#define	MAX_PAKDATA	(int)(sizeof(pakdata) / sizeof(pakdata[0]))
 
 static pakdata_t demo_pakdata[] =
 {
-	{ 797,	22780, "data1"	}	/* pak0.pak, demo v1.11	*/
+	{ 797,	22780,	27750257, "data1"	}	/* pak0.pak, demo v1.11 from Nov. 1997
+							 *	MD5: 8e598d82bf53436ed7a0e133aa4b9f09	*/
 };
 
-static pakdata_t oem0_pakdata[] =
+static pakdata_t oem0_pakdata[] =	/* Continent of Blackmarsh */
 {
-	{ 697,	9787 , "data1"	}	/* pak0.pak, oem, v1.11	*/
+	{ 697,	9787 ,	22720659, "data1"	}	/* pak0.pak, oem (Matrox m3D bundle) v1.10
+							 *	MD5: 8c9c6118117baca7b9349d477403fcc0	*/
 };
 
 static pakdata_t old_pakdata[] =
 {
-	{ 697,	53062, "data1"	},	/* pak0.pak, original cdrom (1.03) version	*/
-	{ 525,	47762, "data1"	},	/* pak1.pak, original cdrom (1.03) version	*/
-	{ 701,	20870, "data1"	},	/* pak0.pak, Raven's first version of the demo	*/
-					/* The old (28.8.1997, v0.42? v1.07?) demo,
-					 * pak0.pak::progs.dat : 19267 crc, progheader crc: 14046 */
-/* FIXME: add pak0 and pak2 data for the
- * oem (Matrox m3D bundle) 1.08 original
- * version here.  */
+	{ 697,	53062,	21714275, "data1"	},	/* pak0.pak, original cdrom (1.03) version
+							 *	MD5: b53c9391d16134cb3baddc1085f18683	*/
+	{ 525,	47762,	76958474, "data1"	},	/* pak1.pak, original cdrom (1.03) version
+							 *	MD5: 9a2010aafb9c0fe71c37d01292030270	*/
+	{ 701,	20870,	23537707, "data1"	},	/* pak0.pak, original demo v1.03 (v0.42?? v1.07??)
+							 *	from Aug. 1997
+							 *	MD5: 208643a09193dafbca4b851762479438	*/
+/* !!! FIXME:  I don't have the original v1.08 of Continent of Blackmarsh. I only know the file sizes.	*/
+	{ -1,	0,	22719295, "data1"	},	/* pak0.pak, original oem (Matrox m3D) v1.08
+							 *	MD5: ????????????????????????????????	*/
+	{ -1,	0,	17739969, "data1"	},	/* pak2.pak, original oem (Matrox m3D) v1.08
+							 *	MD5: ????????????????????????????????	*/
 };
 
 /* this graphic needs to be in the pak file to use registered features */
@@ -151,15 +163,10 @@ to.  This can be overridden with the "-game" command line parameter.  The game
 directory can never be changed while quake is executing.  This is a precacution
 against having a malicious server instruct clients to write files over areas
 they shouldn't.
-
-The "cache directory" is only used during development to save network bandwidth
-especially over ISDN / T1 lines.  If there is a cache directory specified, when
-a file is found by the normal search path, it will be mirrored into the cache
-directory, then opened there.
 */
 
 
-static unsigned int FS_CheckKnownPAKS (int paknum, int numfiles, unsigned short crc)
+static unsigned int check_known_paks (int paknum, int numfiles, unsigned short crc)
 {
 	if (paknum >= MAX_PAKDATA)
 		return GAME_MODIFIED;
@@ -179,10 +186,6 @@ static unsigned int FS_CheckKnownPAKS (int paknum, int numfiles, unsigned short 
 			if (numfiles == oem0_pakdata[0].numfiles &&
 					crc == oem0_pakdata[0].crc)
 				return GAME_OEM0;
-			/*
-			 * FIXME: add old oem version pak file
-			 *	  checks here...
-			 */
 			/* old version of demo ?? */
 			if (numfiles == old_pakdata[2].numfiles &&
 					crc == old_pakdata[2].crc)
@@ -191,12 +194,22 @@ static unsigned int FS_CheckKnownPAKS (int paknum, int numfiles, unsigned short 
 			if (numfiles == old_pakdata[0].numfiles &&
 					crc == old_pakdata[0].crc)
 				return GAME_OLD_CDROM0;
+			/* old oem version ?? */
+			if (numfiles == old_pakdata[3].numfiles &&
+					crc == old_pakdata[3].crc)
+				return GAME_OLD_OEM0;
 			/* not original: */
 			return GAME_MODIFIED;
 		case 1:	/* old cdrom version ?? */
 			if (numfiles == old_pakdata[1].numfiles &&
 					crc == old_pakdata[1].crc)
 				return GAME_OLD_CDROM1;
+			/* not original: */
+			return GAME_MODIFIED;
+		case 2:	/* old oem version ?? */
+			if (numfiles == old_pakdata[4].numfiles &&
+					crc == old_pakdata[4].crc)
+				return GAME_OLD_OEM2;
 			/* not original: */
 			return GAME_MODIFIED;
 		default:/* not original */
@@ -220,9 +233,9 @@ static unsigned int FS_CheckKnownPAKS (int paknum, int numfiles, unsigned short 
 		return GAME_PORTALS;
 	case 4:	/* hexenworld */
 		return GAME_HEXENWORLD;
-	default:/* we shouldn't reach here */
-		return GAME_MODIFIED;
 	}
+
+	return GAME_MODIFIED;	/* we shouldn't reach here */
 }
 
 /*
@@ -288,7 +301,7 @@ static pack_t *FS_LoadPackFile (const char *packfile, int paknum, qboolean base_
 
 	/* check for modifications */
 	if (base_fs)
-		gameflags |= FS_CheckKnownPAKS (paknum, numpackfiles, crc);
+		gameflags |= check_known_paks (paknum, numpackfiles, crc);
 	else	gameflags |= GAME_MODIFIED;
 
 	/* parse the directory */
@@ -1165,7 +1178,6 @@ FS_Init
 */
 void FS_Init (void)
 {
-	char	temp[32];
 	qboolean check_portals = false;
 	int	i;
 
@@ -1206,9 +1218,12 @@ void FS_Init (void)
 	/* check for bad installations (mix'n'match data): */
 	if ((gameflags & GAME_REGISTERED0 && gameflags & GAME_OLD_CDROM1) ||
 	    (gameflags & GAME_REGISTERED1 && gameflags & GAME_OLD_CDROM0) ||
-	    (gameflags & GAME_OEM2 && gameflags & (GAME_REGISTERED|GAME_REGISTERED_OLD|GAME_DEMO|GAME_OLD_DEMO)) ||
-	    (gameflags & (GAME_REGISTERED1|GAME_OLD_CDROM1) && gameflags & (GAME_DEMO|GAME_OLD_DEMO|GAME_OEM0|GAME_OEM2)))
+	    (gameflags & (GAME_OEM2|GAME_OLD_OEM2) && gameflags & (GAME_REGISTERED|GAME_REGISTERED_OLD|GAME_DEMO|GAME_OLD_DEMO)) ||
+	    (gameflags & (GAME_REGISTERED1|GAME_OLD_CDROM1) &&
+					 gameflags & (GAME_DEMO|GAME_OLD_DEMO|GAME_OEM0|GAME_OLD_OEM0|GAME_OEM2|GAME_OLD_OEM2)))
+	{
 		Sys_Error ("Bad Hexen II installation: mixed data from incompatible versions");
+	}
 #if !ENABLE_OLD_DEMO
 	if (gameflags & GAME_OLD_DEMO)
 		Sys_Error ("Old version of Hexen II demo isn't supported");
@@ -1222,24 +1237,23 @@ void FS_Init (void)
 	/* finish the base filesystem setup */
 	if (gameflags & (GAME_REGISTERED|GAME_REGISTERED_OLD))
 	{
-		q_snprintf (temp, sizeof(temp), "registered");
 		Cvar_SetROM ("registered", "1");
+		Sys_Printf ("Playing the registered version.\n");
 	}
 	else if (gameflags & GAME_OEM)
 	{
-		q_snprintf (temp, sizeof(temp), "oem");
 		Cvar_SetROM ("oem", "1");
+		Sys_Printf ("Playing the oem (Matrox m3D bundle) version \"Continent of Blackmarsh\"\n");
 	}
 	else if (gameflags & (GAME_DEMO|GAME_OLD_DEMO))
 	{
-		q_snprintf (temp, sizeof(temp), "demo");
+		Sys_Printf ("Playing the demo version.\n");
 	}
 	else
 	{
 	/* no proper Raven data: it's best to error out here */
 		Sys_Error ("Unable to find a proper Hexen II installation");
 	}
-	Sys_Printf ("Playing %s version.\n", temp);
 	if (gameflags & (GAME_OLD_DEMO|GAME_REGISTERED_OLD|GAME_OLD_OEM))
 		Sys_Printf ("Using old/unsupported, pre-1.11 version pak files.\n");
 	if (gameflags & (GAME_REGISTERED|GAME_REGISTERED_OLD))

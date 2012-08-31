@@ -37,41 +37,125 @@ static char	*scan_dir;
 typedef struct
 {
 	int	numfiles;
-	int	crc;
+	unsigned int	crc;
+	long	size;
 	const char	*dirname;
 } pakdata_t;
 
-static pakdata_t pakdata[] =
+#define	MAX_PAKDATA	5 /* pak0...4 */
+static pakdata_t pakdata[MAX_PAKDATA] =
 {
-	{ 696,	34289, "data1"	},	/* pak0.pak, registered	*/
-	{ 523,	2995 , "data1"	},	/* pak1.pak, registered	*/
-	{ 183,	4807 , "data1"	},	/* pak2.pak, oem, v1.11 */
-	{ 245,	1478 , "portals"},	/* pak3.pak, portals	*/
-	{ 102,	41062, "hw"	}	/* pak4.pak, hexenworld	*/
+	{ 696,	34289,	22704056, "data1"	},	/* pak0.pak, registered, up-to-date, v1.11
+							 *	MD5: c9675191e75dd25a3b9ed81ee7e05eff	*/
+	{ 523,	2995 ,	75601170, "data1"	},	/* pak1.pak, registered, up-to-date, v1.11
+							 *	MD5: c2ac5b0640773eed9ebe1cda2eca2ad0	*/
+	{ 183,	4807 ,	17742721, "data1"	},	/* pak2.pak, oem (Matrox m3D bundle) v1.10
+							 *	MD5: 99e0054861e94f66fc8e0e29416859c9	*/
+	{ 245,	1478 ,	49089114, "portals"	},	/* pak3.pak, Portal of Praevus expansion pack
+							 *	MD5: 77ae298dd0dcd16ab12f4a68067ff2c3	*/
+	{ 102,	41062,	10780245, "hw"		}	/* pak4.pak, hexenworld, all versions 0.11-15
+							 *	MD5: 88109ee385d9723ac5f1015e034a44dd	*/
 };
-#define	MAX_PAKDATA	(int)(sizeof(pakdata) / sizeof(pakdata[0]))
 
 static pakdata_t demo_pakdata[] =
 {
-	{ 797,	22780, "data1"	}	/* pak0.pak, demo v1.11	*/
+	{ 797,	22780,	27750257, "data1"	}	/* pak0.pak, demo v1.11 from Nov. 1997
+							 *	MD5: 8e598d82bf53436ed7a0e133aa4b9f09	*/
 };
 
-static pakdata_t oem0_pakdata[] =
+static pakdata_t oem0_pakdata[] =	/* Continent of Blackmarsh */
 {
-	{ 697,	9787 , "data1"	}	/* pak0.pak, oem, v1.11	*/
+	{ 697,	9787 ,	22720659, "data1"	}	/* pak0.pak, oem (Matrox m3D bundle) v1.10
+							 *	MD5: 8c9c6118117baca7b9349d477403fcc0	*/
 };
 
 static pakdata_t old_pakdata[] =
 {
-	{ 697,	53062, "data1"	},	/* pak0.pak, original cdrom (1.03) version	*/
-	{ 525,	47762, "data1"	},	/* pak1.pak, original cdrom (1.03) version	*/
-	{ 701,	20870, "data1"	},	/* pak0.pak, Raven's first version of the demo	*/
-					/* The old (28.8.1997, v0.42? 1.07?) demo is not supported:
-					 * pak0.pak::progs.dat : 19267 crc, progheader crc: 14046 */
-/* FIXME: add pak0 and pak2 data for the
- * oem (Matrox m3D bundle) 1.08 original
- * version here.  */
+	{ 697,	53062,	21714275, "data1"	},	/* pak0.pak, original cdrom (1.03) version
+							 *	MD5: b53c9391d16134cb3baddc1085f18683	*/
+	{ 525,	47762,	76958474, "data1"	},	/* pak1.pak, original cdrom (1.03) version
+							 *	MD5: 9a2010aafb9c0fe71c37d01292030270	*/
+	{ 701,	20870,	23537707, "data1"	},	/* pak0.pak, original demo v1.03 (v0.42?? v1.07??)
+							 *	from Aug. 1997
+							 *	MD5: 208643a09193dafbca4b851762479438	*/
+/* !!! FIXME:  I don't have the original v1.08 of Continent of Blackmarsh. I only know the file sizes.	*/
+	{ -1,	0,	22719295, "data1"	},	/* pak0.pak, original oem (Matrox m3D) v1.08
+							 *	MD5: ????????????????????????????????	*/
+	{ -1,	0,	17739969, "data1"	},	/* pak2.pak, original oem (Matrox m3D) v1.08
+							 *	MD5: ????????????????????????????????	*/
 };
+
+static unsigned int check_known_paks (int paknum, int numfiles, unsigned short crc)
+{
+	if (paknum >= MAX_PAKDATA)
+		return GAME_MODIFIED;
+#if 0
+	if (strcmp(fs_gamedir_nopath, pakdata[paknum].dirname) != 0)
+		return GAME_MODIFIED;	/* Raven didn't ship like that */
+#endif
+	if (numfiles != pakdata[paknum].numfiles)
+	{
+		switch (paknum)
+		{
+		case 0:	/* demo ?? */
+			if (numfiles == demo_pakdata[0].numfiles &&
+					crc == demo_pakdata[0].crc)
+				return GAME_DEMO;
+			/* oem ?? */
+			if (numfiles == oem0_pakdata[0].numfiles &&
+					crc == oem0_pakdata[0].crc)
+				return GAME_OEM0;
+			/* old version of demo ?? */
+			if (numfiles == old_pakdata[2].numfiles &&
+					crc == old_pakdata[2].crc)
+				return GAME_OLD_DEMO;
+			/* old cdrom version ?? */
+			if (numfiles == old_pakdata[0].numfiles &&
+					crc == old_pakdata[0].crc)
+				return GAME_OLD_CDROM0;
+			/* old oem version ?? */
+			if (numfiles == old_pakdata[3].numfiles &&
+					crc == old_pakdata[3].crc)
+				return GAME_OLD_OEM0;
+			/* not original: */
+			return GAME_MODIFIED;
+		case 1:	/* old cdrom version ?? */
+			if (numfiles == old_pakdata[1].numfiles &&
+					crc == old_pakdata[1].crc)
+				return GAME_OLD_CDROM1;
+			/* not original: */
+			return GAME_MODIFIED;
+		case 2:	/* old oem version ?? */
+			if (numfiles == old_pakdata[4].numfiles &&
+					crc == old_pakdata[4].crc)
+				return GAME_OLD_OEM2;
+			/* not original: */
+			return GAME_MODIFIED;
+		default:/* not original */
+			return GAME_MODIFIED;
+		}
+	}
+
+	if (crc != pakdata[paknum].crc)
+		return GAME_MODIFIED;	/* not original */
+
+	/* both crc and numfiles are good, we are still original */
+	switch (paknum)
+	{
+	case 0:	/* pak0 of full version 1.11 */
+		return GAME_REGISTERED0;
+	case 1:	/* pak1 of full version 1.11 */
+		return GAME_REGISTERED1;
+	case 2:	/* bundle version */
+		return GAME_OEM2;
+	case 3:	/* mission pack */
+		return GAME_PORTALS;
+	case 4:	/* hexenworld */
+		return GAME_HEXENWORLD;
+	}
+
+	return GAME_MODIFIED;	/* we shouldn't reach here */
+}
 
 static void scan_pak_files (const char *packfile, int paknum)
 {
@@ -106,70 +190,7 @@ static void scan_pak_files (const char *packfile, int paknum)
 	for (i = 0; i < header.dirlen; i++)
 		CRC_ProcessByte (&crc, ((unsigned char *)info)[i]);
 
-	if (numpackfiles != pakdata[paknum].numfiles)
-	{
-		if (paknum == 0)
-		{
-			/* demo ?? */
-			if (crc == demo_pakdata[0].crc &&
-			    numpackfiles == demo_pakdata[0].numfiles)
-			{
-				gameflags |= GAME_DEMO;
-			}
-			/* oem ?? */
-			else if (crc == oem0_pakdata[0].crc &&
-				 numpackfiles == oem0_pakdata[0].numfiles)
-			{
-				gameflags |= GAME_OEM0;
-			}
-			/* old version of demo ?? */
-			else if (crc == old_pakdata[2].crc &&
-				 numpackfiles == old_pakdata[2].numfiles)
-			{
-				gameflags |= GAME_OLD_DEMO;
-			}
-			/* old, un-patched cdrom version ?? */
-			else if (crc == old_pakdata[0].crc &&
-				 numpackfiles == old_pakdata[0].numfiles)
-			{
-				gameflags |= GAME_OLD_CDROM0;
-			}
-			/*
-			 * FIXME: add old oem version pak file
-			 * checks here...
-			 */
-		}
-		else if (paknum == 1)
-		{
-			/* old, un-patched cdrom version ?? */
-			if (crc == old_pakdata[1].crc &&
-			    numpackfiles == old_pakdata[1].numfiles)
-			{
-				gameflags |= GAME_OLD_CDROM1;
-			}
-		}
-	}
-	else if (crc == pakdata[paknum].crc)
-	{
-		switch (paknum)
-		{
-		case 0:	/* pak0 of full version 1.11 */
-			gameflags |= GAME_REGISTERED0;
-			break;
-		case 1:	/* pak1 of full version 1.11 */
-			gameflags |= GAME_REGISTERED1;
-			break;
-		case 2:	/* bundle version */
-			gameflags |= GAME_OEM2;
-			break;
-		case 3:	/* mission pack */
-			gameflags |= GAME_PORTALS;
-			break;
-		case 4:	/* hexenworld */
-			gameflags |= GAME_HEXENWORLD;
-			break;
-		}
-	}
+	gameflags |= check_known_paks (paknum, numpackfiles, crc);
 finish:
 	fclose (packhandle);
 }
@@ -327,19 +348,24 @@ void scan_game_installation (void)
 	if (gameflags & GAME_OEM2 && gameflags & GAME_OLD_OEM0)
 		gameflags |= GAME_CANPATCH1;
 
-	if ((gameflags & GAME_OEM2 && gameflags & (GAME_REGISTERED|GAME_REGISTERED_OLD|GAME_DEMO|GAME_OLD_DEMO)) ||
-	    (gameflags & (GAME_REGISTERED1|GAME_OLD_CDROM1) && gameflags & (GAME_DEMO|GAME_OLD_DEMO|GAME_OEM0|GAME_OEM2)))
+	if ((gameflags & (GAME_OEM2|GAME_OLD_OEM2) && gameflags & (GAME_REGISTERED|GAME_REGISTERED_OLD|GAME_DEMO|GAME_OLD_DEMO)) ||
+	    (gameflags & (GAME_REGISTERED1|GAME_OLD_CDROM1) &&
+					 gameflags & (GAME_DEMO|GAME_OLD_DEMO|GAME_OEM0|GAME_OLD_OEM0|GAME_OEM2|GAME_OLD_OEM2)))
+	{
 		gameflags |= GAME_INSTBAD|GAME_INSTBAD2;	/* mix'n'match: bad	*/
+	}
 
 	if (!(gameflags & GAME_INSTBAD2))
 	{
 		if (gameflags & (GAME_REGISTERED_OLD|GAME_OLD_OEM) ||
 		    gameflags & (GAME_CANPATCH0|GAME_CANPATCH1))
-			gameflags |= GAME_CANPATCH;	/* 1.11 pak patch can fix this thing	*/
+		{
+			gameflags |= GAME_CANPATCH;	/* 1.11 pak patch can fix this	*/
+		}
 	}
 
 	if (gameflags & (GAME_CANPATCH0|GAME_CANPATCH1))
-		gameflags |= GAME_INSTBAD|GAME_INSTBAD2;	/* still a mix'n'match.	*/
+		gameflags |= GAME_INSTBAD|GAME_INSTBAD2;	/* still a mix'n'match	*/
 
 #if !ENABLE_OLD_DEMO
 	if (gameflags & GAME_OLD_DEMO)

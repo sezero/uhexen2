@@ -3,7 +3,7 @@ see the documentation file StandaloneMods.txt for details.
 
 Index: engine/h2shared/quakefs.c
 ===================================================================
---- engine/h2shared/quakefs.c	(revision 4801)
+--- engine/h2shared/quakefs.c	(revision 4908)
 +++ engine/h2shared/quakefs.c	(working copy)
 @@ -59,6 +59,7 @@ static searchpath_t	*fs_base_searchpaths
  static const char	*fs_basedir;
@@ -13,16 +13,16 @@ Index: engine/h2shared/quakefs.c
  char	fs_gamedir_nopath[MAX_QPATH];
  
  unsigned int	gameflags;
-@@ -287,7 +288,7 @@ static pack_t *FS_LoadPackFile (const ch
+@@ -300,7 +301,7 @@ static pack_t *FS_LoadPackFile (const ch
  		CRC_ProcessByte (&crc, ((byte *)info)[i]);
  
  	/* check for modifications */
 -	if (base_fs)
 +	if (base_fs && !(gameflags & GAME_STANDALONE))
- 		gameflags |= FS_CheckKnownPAKS (paknum, numpackfiles, crc);
+ 		gameflags |= check_known_paks (paknum, numpackfiles, crc);
  	else	gameflags |= GAME_MODIFIED;
  
-@@ -446,6 +447,10 @@ void FS_Gamedir (const char *dir)
+@@ -459,6 +460,10 @@ void FS_Gamedir (const char *dir)
  /* check for reserved gamedirs */
  	if (!q_strcasecmp(dir, "hw"))
  	{
@@ -33,7 +33,7 @@ Index: engine/h2shared/quakefs.c
  #if defined(H2W)
  	/* that we reached here means the hw server decided to abandon
  	 * whatever the previous mod it was running and went back to
-@@ -493,6 +498,30 @@ void FS_Gamedir (const char *dir)
+@@ -506,6 +511,30 @@ void FS_Gamedir (const char *dir)
  		return;
  	}
  
@@ -64,7 +64,7 @@ Index: engine/h2shared/quakefs.c
  /* a new gamedir: let's set it here. */
  	FS_AddGameDirectory(dir, false);
  #if defined(H2W) && defined(SERVERONLY)
-@@ -1163,8 +1192,36 @@ static int CheckRegistered (void)
+@@ -1176,8 +1205,36 @@ static int CheckRegistered (void)
  FS_Init
  ================
  */
@@ -98,10 +98,10 @@ Index: engine/h2shared/quakefs.c
 +
 +static void FS_InitRaven (void)
 +{
- 	char	temp[32];
  	qboolean check_portals = false;
  	int	i;
-@@ -1490,6 +1547,86 @@ char *FS_MakePath_VABUF (int base, int *
+ 
+@@ -1504,6 +1561,86 @@ char *FS_MakePath_VABUF (int base, int *
  	return p;
  }
  
