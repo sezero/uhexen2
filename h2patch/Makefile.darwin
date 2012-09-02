@@ -17,7 +17,7 @@ ifeq ($(origin CC),default)
 # which not necessarily exist everywhere
 CC  = gcc
 endif
-LINKER := $(CC)
+LINKER = $(CC)
 
 CPUFLAGS=
 # require 10.5 for 64 bit builds

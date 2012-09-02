@@ -133,13 +133,11 @@ ifeq ($(origin CC),default)
 CC  = gcc
 endif
 AS ?= as
-
 AR ?= ar
 RANLIB ?= ranlib
-
 NASM ?= nasm
 WINDRES ?= windres
-
+LIPO ?= lipo
 LINKER = $(CC)
 
 ################################

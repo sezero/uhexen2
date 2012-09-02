@@ -15,9 +15,8 @@ ifeq ($(origin CC),default)
 # which not necessarily exist everywhere
 CC  = gcc
 endif
-LINKER := $(CC)
+LINKER = $(CC)
 
-#CPUFLAGS= -march=i486
 CPUFLAGS= -march=i586
 CFLAGS  = -g -Wall
 CFLAGS += $(CPUFLAGS)

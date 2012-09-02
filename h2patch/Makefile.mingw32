@@ -16,9 +16,8 @@ ifeq ($(origin CC),default)
 CC  = gcc
 endif
 WINDRES ?= windres
-LINKER := $(CC)
+LINKER = $(CC)
 
-#CPUFLAGS= -march=i486
 CPUFLAGS= -march=i586
 CFLAGS  = -g -Wall
 CFLAGS += $(CPUFLAGS)
