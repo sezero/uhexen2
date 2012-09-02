@@ -53,8 +53,9 @@ int Thread_GetNumCPUS (void)
 	return numcpus;
 }
 
-#elif defined(__MACOSX) /* needs >= 10.4 */
+#elif defined(__MACOSX__)
 #include <unistd.h>
+#if defined(_SC_NPROCESSORS_ONLN)	/* needs >= 10.5 */
 int Thread_GetNumCPUS (void)
 {
 	int numcpus = sysconf(_SC_NPROCESSORS_ONLN);
@@ -62,6 +63,32 @@ int Thread_GetNumCPUS (void)
 		numcpus = 1;
 	return numcpus;
 }
+#else	/* no _SC_NPROCESSORS_ONLN: */
+#include <sys/sysctl.h>
+#if defined(HW_AVAILCPU)	/* BSD code, needs >= 10.2 */
+int Thread_GetNumCPUS (void)
+{
+	int numcpus, mib[4];
+	size_t len = sizeof(numcpus);
+	mib[0] = CTL_HW;
+	mib[1] = HW_AVAILCPU;
+	sysctl(mib, 2, &numcpus, &len, NULL, 0);
+	if (numcpus < 1)
+	{
+		mib[1] = HW_NCPU;
+		sysctl(mib, 2, &numcpus, &len, NULL, 0);
+		if (numcpus < 1)
+			numcpus = 1;
+	}
+	return numcpus;
+}
+#else	/* no HW_AVAILCPU: */
+int Thread_GetNumCPUS (void)
+{
+	return 1;
+}
+#endif
+#endif	/* Mac OS X versions */
 
 #elif defined(__IRIX__)
 #include <unistd.h>

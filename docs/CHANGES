@@ -3,6 +3,9 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2012-09-02 (SVN):
+    * utils/common/threads.c: fixed OSX version of Thread_GetNumCPUS().
+
 2012-08-31 (SVN):
     * engine/h2shared/quakefs.c, launcher/games.c: added details about
       the known hexen2 pak files. minor clean-ups.
