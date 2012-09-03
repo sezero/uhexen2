@@ -9,6 +9,9 @@ make -f Makefile.darwin distclean
 OLDPATH=$PATH
 MAKE_CMD=make
 
+OSXBUILD=1
+export OSXBUILD
+
 # ppc
 PATH=/opt/cross_osx-ppc/bin:$OLDPATH
 CC=powerpc-apple-darwin9-gcc

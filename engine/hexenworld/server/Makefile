@@ -159,21 +159,32 @@ endif
 
 
 #############################################################
-# Unix flags/settings
+# Mac OS X flags/settings
 #############################################################
-ifeq ($(TARGET_OS),unix)
+ifeq ($(TARGET_OS),darwin)
 
-ifeq ($(HOST_OS),darwin)
-# Mac OS X :
 CPUFLAGS=
 # require 10.5 for 64 bit builds
 ifeq ($(MACH_TYPE),x86_64)
 CPUFLAGS+=-mmacosx-version-min=10.5
+LDFLAGS +=-mmacosx-version-min=10.5
 endif
 ifeq ($(MACH_TYPE),ppc64)
 CPUFLAGS+=-mmacosx-version-min=10.5
+LDFLAGS +=-mmacosx-version-min=10.5
 endif
+
 endif
+# End of Mac OS X settings
+#############################################################
+
+
+#############################################################
+# Unix flags/settings
+#############################################################
+ifeq ($(TARGET_OS),unix)
+# common unix:
+
 ifeq ($(HOST_OS),qnx)
 LDFLAGS += -lsocket
 endif
@@ -190,7 +201,7 @@ endif
 #############################################################
 # MorphOS flags/settings and overrides:
 #############################################################
-ifeq ($(HOST_OS),morphos)
+ifeq ($(TARGET_OS),morphos)
 
 CPPFLAGS+= -noixemul
 LDFLAGS += -noixemul
@@ -203,7 +214,7 @@ endif
 #############################################################
 # AROS flags/settings and overrides:
 #############################################################
-ifeq ($(HOST_OS),aros)
+ifeq ($(TARGET_OS),aros)
 
 
 endif
@@ -234,6 +245,9 @@ ifeq ($(TARGET_OS),dos)
 SYSOBJ_SYS := dos_v2.o sys_dos.o
 endif
 ifeq ($(TARGET_OS),unix)
+SYSOBJ_SYS = sys_unix.o
+endif
+ifeq ($(TARGET_OS),darwin)
 SYSOBJ_SYS = sys_unix.o
 endif
 ifeq ($(TARGET_OS),aros)

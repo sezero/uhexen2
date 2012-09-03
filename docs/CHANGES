@@ -3,6 +3,12 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2012-09-03 (SVN):
+    * Makefiles: -mmacosx-version-min also needs to be among the linker
+      flags for darwin x86_64 builds. adjusted accordingly.
+    * Makefiles: cleaned up for darwin (osx) builds. other tidy-ups.
+    * build_cross_osx.sh: added darwin cross-compile scripts all over.
+
 2012-09-02 (SVN):
     * utils/common/threads.c: fixed OSX version of Thread_GetNumCPUS().
 

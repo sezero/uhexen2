@@ -1,9 +1,9 @@
 #!/bin/sh
 
-rm -f	h2ded.ppc \
-	h2ded.x86 \
-	h2ded.x86_64 \
-	h2ded.bin
+rm -f	hcc.ppc \
+	hcc.x86 \
+	hcc.x86_64 \
+	hcc.bin
 make distclean
 
 OLDPATH=$PATH
@@ -21,8 +21,8 @@ RANLIB=powerpc-apple-darwin9-ranlib
 LIPO=powerpc-apple-darwin9-lipo
 export PATH CC AS AR RANLIB LIPO
 $MAKE_CMD MACH_TYPE=ppc $* || exit 1
-powerpc-apple-darwin9-strip -S h2ded || exit 1
-mv h2ded h2ded.ppc || exit 1
+powerpc-apple-darwin9-strip -S hcc || exit 1
+mv hcc hcc.ppc || exit 1
 $MAKE_CMD distclean
 
 # x86
@@ -34,8 +34,8 @@ RANLIB=i686-apple-darwin9-ranlib
 LIPO=i686-apple-darwin9-lipo
 export PATH CC AS AR RANLIB LIPO
 $MAKE_CMD MACH_TYPE=x86 $* || exit 1
-i686-apple-darwin9-strip -S h2ded || exit 1
-mv h2ded h2ded.x86 || exit 1
+i686-apple-darwin9-strip -S hcc || exit 1
+mv hcc hcc.x86 || exit 1
 $MAKE_CMD distclean
 
 # x86_64
@@ -47,8 +47,8 @@ RANLIB=x86_64-apple-darwin9-ranlib
 LIPO=x86_64-apple-darwin9-lipo
 export PATH CC AS AR RANLIB LIPO
 $MAKE_CMD MACH_TYPE=x86_64 $* || exit 1
-x86_64-apple-darwin9-strip -S h2ded || exit 1
-mv h2ded h2ded.x86_64 || exit 1
+x86_64-apple-darwin9-strip -S hcc || exit 1
+mv hcc hcc.x86_64 || exit 1
 $MAKE_CMD distclean
 
-$LIPO -create -o h2ded.bin h2ded.ppc h2ded.x86 h2ded.x86_64 || exit 1
+$LIPO -create -o hcc.bin hcc.ppc hcc.x86 hcc.x86_64 || exit 1

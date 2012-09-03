@@ -20,19 +20,21 @@ endif
 LINKER = $(CC)
 
 CPUFLAGS=
+LDFLAGS =
 # require 10.5 for 64 bit builds
 ifeq ($(MACH_TYPE),x86_64)
 CPUFLAGS+=-mmacosx-version-min=10.5
+LDFLAGS +=-mmacosx-version-min=10.5
 endif
 ifeq ($(MACH_TYPE),ppc64)
 CPUFLAGS+=-mmacosx-version-min=10.5
+LDFLAGS +=-mmacosx-version-min=10.5
 endif
 CFLAGS  = -g -Wall
 CFLAGS += $(CPUFLAGS)
 ifndef DEBUG
 CFLAGS += -O2 -DNDEBUG=1
 endif
-LDFLAGS =
 
 XDELTA_DIR:= $(LIBS_DIR)/xdelta3
 XDFLAGS:= -DXD3_DEBUG=0

@@ -68,9 +68,28 @@ INCLUDES+= -I$(OSLIBS)/windows
 # default 2 MB stack is not enough
 LDFLAGS += -mconsole -Wl,--stack,4194304
 endif
-ifeq ($(HOST_OS),morphos)
+ifeq ($(TARGET_OS),morphos)
 CFLAGS  += -noixemul
 LDFLAGS += -noixemul
+endif
+ifeq ($(TARGET_OS),darwin)
+CPUFLAGS=
+# require 10.5 for 64 bit builds
+ifeq ($(MACH_TYPE),x86_64)
+CPUFLAGS+=-mmacosx-version-min=10.5
+LDFLAGS +=-mmacosx-version-min=10.5
+endif
+ifeq ($(MACH_TYPE),ppc64)
+CPUFLAGS+=-mmacosx-version-min=10.5
+LDFLAGS +=-mmacosx-version-min=10.5
+endif
+USE_PTHREADS=yes
+ifeq ($(USE_PTHREADS),yes)
+PTHREAD_CFLAGS= -D_THREAD_SAFE
+PTHREAD_LIBS  = -pthread
+CFLAGS  += $(PTHREAD_CFLAGS) -DUSE_PTHREADS
+LDLIBS  += $(PTHREAD_LIBS)
+endif
 endif
 ifeq ($(TARGET_OS),unix)
 LDLIBS  += -lm

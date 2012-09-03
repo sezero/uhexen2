@@ -22,7 +22,7 @@ HOST_OS0=$(shell uname)
 HOST_OS =$(shell uname|sed -e s/_.*//|tr '[:upper:]' '[:lower:]')
 
 # NOTE:	We only support these types of cross compilation:
-#	Compiling for windows or dos (djgpp) on unix.
+#	Compiling for windows, dos (djgpp) or osx on unix.
 #	This means, unless cross compiling, the actual
 #	TARGET_OS remains as the HOST_OS.
 
@@ -74,9 +74,19 @@ ifdef DOSBUILD
 CROSS_COMPILE=y
 TARGET_OS=dos
 endif
+ifdef OSXBUILD
+# cross compilation for mac os x
+CROSS_COMPILE=y
+TARGET_OS=darwin
+endif
 ifeq ($(CROSS_COMPILE),n)
 # compiling for the host os.
+ifneq (,$(findstring darwin,$(HOST_OS)))
+# separate darwin and unix:
+TARGET_OS=darwin
+else
 TARGET_OS=unix
+endif
 endif
 
 endif
@@ -84,6 +94,11 @@ endif #
 
 ifeq ($(TARGET_OS),unix)
 MACH_TYPE=$(shell sh $(UHEXEN2_TOP)/scripts/detect.sh arch)
+endif
+ifeq ($(TARGET_OS),darwin)
+ifeq ($(CROSS_COMPILE),n)
+MACH_TYPE=$(shell sh $(UHEXEN2_TOP)/scripts/detect.sh arch)
+endif
 endif
 ifeq ($(TARGET_OS),dos)
 MACH_TYPE=x86

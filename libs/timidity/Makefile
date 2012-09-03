@@ -39,7 +39,16 @@ ifeq ($(USE_DLS),yes)
 CFLAGS += -DTIMIDITY_USE_DLS
 endif
 
-ifeq ($(HOST_OS),morphos)
+ifeq ($(TARGET_OS),darwin)
+# require 10.5 for 64 bit builds
+ifeq ($(MACH_TYPE),x86_64)
+CFLAGS +=-mmacosx-version-min=10.5
+endif
+ifeq ($(MACH_TYPE),ppc64)
+CFLAGS +=-mmacosx-version-min=10.5
+endif
+endif
+ifeq ($(TARGET_OS),morphos)
 CFLAGS += -noixemul
 endif
 

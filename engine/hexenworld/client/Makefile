@@ -44,9 +44,9 @@ COMMON_HW:=../shared
 # GENERAL OPTIONS (customize as required)
 
 # X directory
-X11BASE   ?=/usr/X11R6
+X11BASE    =/usr/X11R6
 # the sdl-config command
-SDL_CONFIG?=sdl-config
+SDL_CONFIG =sdl-config
 SDL_CFLAGS = $(shell $(SDL_CONFIG) --cflags 2> /dev/null)
 SDL_LIBS   = $(shell $(SDL_CONFIG) --libs 2> /dev/null)
 
@@ -232,20 +232,20 @@ endif
 
 
 #############################################################
-# Unix flags/settings and overrides:
+# Mac OS X flags/settings and overrides:
 #############################################################
-ifeq ($(TARGET_OS),unix)
+ifeq ($(TARGET_OS),darwin)
 
-ifeq ($(HOST_OS),darwin)
-# Mac OS X :
 NASMFLAGS=-f macho
 CPUFLAGS=
 # require 10.5 for 64 bit builds
 ifeq ($(MACH_TYPE),x86_64)
 CPUFLAGS+=-mmacosx-version-min=10.5
+LDFLAGS +=-mmacosx-version-min=10.5
 endif
 ifeq ($(MACH_TYPE),ppc64)
 CPUFLAGS+=-mmacosx-version-min=10.5
+LDFLAGS +=-mmacosx-version-min=10.5
 endif
 
 # no need for timidity, we have a midi driver
@@ -260,12 +260,13 @@ ifeq ($(USE_SOUND),yes)
 ifneq ($(USE_SDLAUDIO),yes)
 CPPFLAGS+= -DNO_SDL_AUDIO
 endif
-CPPFLAGS+= -DNO_ALSA_AUDIO -DNO_OSS_AUDIO -DNO_SUN_AUDIO
 endif
 
 USE_SDLCD=yes
 ifeq ($(USE_CDAUDIO),yes)
+ifeq ($(USE_SDLCD),yes)
 CPPFLAGS+= -DWITH_SDLCD
+endif
 endif
 
 # Unix builds rely on SDL:
@@ -294,7 +295,15 @@ endif
 INCLUDES += $(CODEC_INC)
 LDFLAGS += $(CODEC_LINK)
 
-else
+endif
+# End of Mac OS X settings
+#############################################################
+
+
+#############################################################
+# Unix flags/settings and overrides:
+#############################################################
+ifeq ($(TARGET_OS),unix)
 # common unix:
 
 NASMFLAGS=-f elf -d_NO_PREFIX
@@ -350,8 +359,6 @@ CPPFLAGS+= -DSDLQUAKE
 CFLAGS  += $(SDL_CFLAGS)
 LDFLAGS += $(SDL_LIBS)
 
-endif
-# end of unix variants
 endif
 # End of Unix settings
 #############################################################
@@ -504,7 +511,7 @@ endif
 #############################################################
 # MorphOS flags/settings and overrides:
 #############################################################
-ifeq ($(HOST_OS),morphos)
+ifeq ($(TARGET_OS),morphos)
 
 CPPFLAGS+= -noixemul
 LDFLAGS += -noixemul
@@ -750,6 +757,9 @@ endif
 ifeq ($(TARGET_OS),unix)
 SYSOBJ_SND := snd_oss.o snd_alsa.o snd_sun.o snd_sdl.o
 endif
+ifeq ($(TARGET_OS),darwin)
+SYSOBJ_SND := snd_sdl.o
+endif
 ifeq ($(TARGET_OS),aros)
 SYSOBJ_SND := snd_ahi.o snd_sdl.o
 endif
@@ -775,13 +785,12 @@ SYSOBJ_MIDI:= midi_nul.o
 CPPFLAGS += -D_NO_MIDIDRV
 endif
 ifeq ($(TARGET_OS),unix)
-ifeq ($(HOST_OS),darwin)
-# not using midi_mac.c
-SYSOBJ_MIDI:= midi_osx.o
-else
 SYSOBJ_MIDI:= midi_nul.o
 CPPFLAGS += -D_NO_MIDIDRV
 endif
+ifeq ($(TARGET_OS),darwin)
+# not using midi_mac.c
+SYSOBJ_MIDI:= midi_osx.o
 endif
 ifeq ($(TARGET_OS),aros)
 SYSOBJ_MIDI:= midi_nul.o
@@ -810,6 +819,9 @@ SYSOBJ_CDA := cd_dos.o
 endif
 ifeq ($(TARGET_OS),unix)
 SYSOBJ_CDA := cd_sdl.o cd_bsd.o cd_linux.o
+endif
+ifeq ($(TARGET_OS),darwin)
+SYSOBJ_CDA := cd_sdl.o
 endif
 ifeq ($(TARGET_OS),aros)
 SYSOBJ_CDA := cd_sdl.o
@@ -852,12 +864,17 @@ SYSOBJ_INPUT := in_sdl.o
 SYSOBJ_GL_VID:= gl_vidsdl.o fx_gamma.o
 SYSOBJ_SOFT_VID:= vid_sdl.o
 SYSOBJ_SYS := sys_unix.o
-ifeq ($(HOST_OS),darwin)
-SYSOBJ_SYS += sys_osx.o
-SYSOBJ_SYS += SDLMain.o
-else
 SYSOBJ_SYS += sys_sdl.o
 endif
+ifeq ($(TARGET_OS),darwin)
+# unix clients use SDL:
+SYSOBJ_INPUT := in_sdl.o
+SYSOBJ_GL_VID:= gl_vidsdl.o fx_gamma.o
+SYSOBJ_SOFT_VID:= vid_sdl.o
+SYSOBJ_NET := net_bsd.o net_udp.o
+SYSOBJ_SYS := sys_unix.o
+SYSOBJ_SYS += sys_osx.o
+SYSOBJ_SYS += SDLMain.o
 endif
 ifeq ($(TARGET_OS),aros)
 # aros clients use SDL:
