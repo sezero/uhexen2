@@ -4,6 +4,9 @@ Development Progress	:
 ---------------------------
 
 2012-09-03 (SVN):
+    * updated the version date stamp to 2012-09-03.
+
+2012-09-03 (SVN):
     * Makefiles: -mmacosx-version-min also needs to be among the linker
       flags for darwin x86_64 builds. adjusted accordingly.
     * Makefiles: cleaned up for darwin (osx) builds. other tidy-ups.
