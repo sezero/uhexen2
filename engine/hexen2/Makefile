@@ -314,15 +314,13 @@ LDFLAGS += $(SDL_LIBS)
 
 GL_LINK=-Wl,-framework,OpenGL
 
-#codeclibdir=$(MACH_TYPE)
-codeclibdir=fat
 ifeq ($(USE_CODEC_VORBIS),yes)
 CODEC_INC = -I$(OSLIBS)/macosx/codecs/include
-CODEC_LINK= -L$(OSLIBS)/macosx/codecs/$(codeclibdir)
+CODEC_LINK= -L$(OSLIBS)/macosx/codecs/lib
 endif
 ifeq ($(USE_CODEC_MP3),yes)
 CODEC_INC = -I$(OSLIBS)/macosx/codecs/include
-CODEC_LINK= -L$(OSLIBS)/macosx/codecs/$(codeclibdir)
+CODEC_LINK= -L$(OSLIBS)/macosx/codecs/lib
 endif
 INCLUDES += $(CODEC_INC)
 LDFLAGS += $(CODEC_LINK)

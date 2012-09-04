@@ -3,6 +3,12 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2012-09-04 (SVN):
+    * added explicit int casts when printing GLint values, because some
+      older SDKs define GLint as long instead of int, e.g. Mac OSX SDKs
+      10.4 and older. removed static versions of osx codec import libs.
+      renamed osx codec dylib import lib directory to be lib.
+
 2012-09-03 (SVN):
     * updated the version date stamp to 2012-09-03.
 
