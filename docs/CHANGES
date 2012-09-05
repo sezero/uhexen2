@@ -4,6 +4,10 @@ Development Progress	:
 ---------------------------
 
 2012-09-05 (SVN):
+    * net_sys.h: identify Mac OS X SDKs older than 10.3 and define the
+      missing socklen_t type. (for completeness sake...)
+
+2012-09-05 (SVN):
     * sdl_inc.h: require SDL at least 1.2.14 for Mac OS X
 
 2012-09-05 (SVN):

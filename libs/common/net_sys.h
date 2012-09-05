@@ -72,6 +72,11 @@ typedef int	sys_socket_t;
 #define	INVALID_SOCKET	(-1)
 #define	SOCKET_ERROR	(-1)
 
+#if defined(__APPLE__) && defined(SO_NKE) && !defined(SO_NOADDRERR)
+					/* MacOSX SDK < 10.3 is missing socklen_t type */
+typedef int	socklen_t;		/* signed int to match the function prototypes */
+#endif	/* old MacOSX SDK. */
+
 #define	SOCKETERRNO	errno
 #define	ioctlsocket	ioctl
 #define	closesocket	close
