@@ -37,7 +37,7 @@ returned untouched.  Based on the ioquake3 project at icculus.org.
 
 For Mac OS X, we package uHexen2 like this:
 
-Hexen II ( --> the holder directory.)
+Hexen_II ( --> the holder directory.)
 |
  - Hexen II gl.app (the bundle dir for the opengl application)
 |  |

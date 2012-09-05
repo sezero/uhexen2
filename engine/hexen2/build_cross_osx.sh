@@ -3,7 +3,7 @@
 rm -f	glhexen2.ppc hexen2.ppc \
 	glhexen2.x86 hexen2.x86 \
 	glhexen2.x86_64 hexen2.x86_64 \
-	Hexen\ II Hexen\ II\ gl
+	Hexen_II Hexen_II-gl
 make distclean
 
 OLDPATH=$PATH
@@ -63,6 +63,5 @@ x86_64-apple-darwin9-strip -S hexen2 || exit 1
 mv hexen2 hexen2.x86_64 || exit 1
 $MAKE_CMD distclean
 
-$LIPO -create -o Hexen\ II\ gl glhexen2.ppc glhexen2.x86 glhexen2.x86_64 || exit 1
-$LIPO -create -o Hexen\ II hexen2.ppc hexen2.x86 hexen2.x86_64 || exit 1
-
+$LIPO -create -o Hexen_II-gl glhexen2.ppc glhexen2.x86 glhexen2.x86_64 || exit 1
+$LIPO -create -o Hexen_II hexen2.ppc hexen2.x86 hexen2.x86_64 || exit 1

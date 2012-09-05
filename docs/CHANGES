@@ -3,6 +3,10 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2012-09-05 (SVN):
+    * eliminated spaces from macosx binaries names.
+    * updated the version date stamp to 2012-09-05.
+
 2012-09-04 (SVN):
     * added explicit int casts when printing GLint values, because some
       older SDKs define GLint as long instead of int, e.g. Mac OSX SDKs

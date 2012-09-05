@@ -3,7 +3,7 @@
 rm -f	glhwcl.ppc hwcl.ppc \
 	glhwcl.x86 hwcl.x86 \
 	glhwcl.x86_64 hwcl.x86_64 \
-	HexenWorld HexenWorld\ gl
+	HexenWorld HexenWorld-gl
 make distclean
 
 OLDPATH=$PATH
@@ -63,6 +63,5 @@ x86_64-apple-darwin9-strip -S hwcl || exit 1
 mv hwcl hwcl.x86_64 || exit 1
 $MAKE_CMD distclean
 
-$LIPO -create -o HexenWorld\ gl glhwcl.ppc glhwcl.x86 glhwcl.x86_64 || exit 1
+$LIPO -create -o HexenWorld-gl glhwcl.ppc glhwcl.x86 glhwcl.x86_64 || exit 1
 $LIPO -create -o HexenWorld hwcl.ppc hwcl.x86 hwcl.x86_64 || exit 1
-

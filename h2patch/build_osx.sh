@@ -52,4 +52,3 @@ mv h2patch h2patch.x86_64 || exit 1
 $MAKE_CMD distclean
 
 $LIPO -create -o h2patch.bin h2patch.ppc h2patch.x86 h2patch.x86_64 || exit 1
-
