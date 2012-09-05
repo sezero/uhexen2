@@ -1,13 +1,9 @@
 #!/bin/sh
 
-rm -f	hwrcon.ppc \
-	hwrcon.x86 \
-	hwrcon.x86_64 \
-	hwrcon.bin \
-	hwterm.ppc \
-	hwterm.x86 \
-	hwterm.x86_64 \
-	hwterm.bin
+rm -f	hwrcon.ppc hwterm.ppc \
+	hwrcon.x86 hwterm.x86 \
+	hwrcon.x86_64 hwterm.x86_64 \
+	hwrcon.bin hwterm.bin
 make distclean
 
 OLDPATH=$PATH

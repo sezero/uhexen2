@@ -1,13 +1,9 @@
 #!/bin/sh
 
-rm -f	pakx.ppc \
-	pakx.x86 \
-	pakx.x86_64 \
-	pakx.bin \
-	paklist.ppc \
-	paklist.x86 \
-	paklist.x86_64 \
-	paklist.bin
+rm -f	pakx.ppc paklist.ppc \
+	pakx.x86 paklist.x86 \
+	pakx.x86_64 paklist.x86_64 \
+	pakx.bin paklist.bin
 make distclean
 
 OLDPATH=$PATH
