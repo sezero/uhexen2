@@ -48,6 +48,7 @@ ifeq ($(MACH_TYPE),ppc64)
 CFLAGS +=-mmacosx-version-min=10.5
 endif
 endif
+
 ifeq ($(TARGET_OS),morphos)
 CFLAGS += -noixemul
 endif

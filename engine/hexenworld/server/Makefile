@@ -166,11 +166,11 @@ ifeq ($(TARGET_OS),darwin)
 CPUFLAGS=
 # require 10.5 for 64 bit builds
 ifeq ($(MACH_TYPE),x86_64)
-CPUFLAGS+=-mmacosx-version-min=10.5
+CFLAGS  +=-mmacosx-version-min=10.5
 LDFLAGS +=-mmacosx-version-min=10.5
 endif
 ifeq ($(MACH_TYPE),ppc64)
-CPUFLAGS+=-mmacosx-version-min=10.5
+CFLAGS  +=-mmacosx-version-min=10.5
 LDFLAGS +=-mmacosx-version-min=10.5
 endif
 
@@ -203,7 +203,7 @@ endif
 #############################################################
 ifeq ($(TARGET_OS),morphos)
 
-CPPFLAGS+= -noixemul
+CFLAGS  += -noixemul
 LDFLAGS += -noixemul
 
 endif
