@@ -4,6 +4,9 @@ Development Progress	:
 ---------------------------
 
 2012-09-05 (SVN):
+    * sdl_inc.h: require SDL at least 1.2.14 for Mac OS X
+
+2012-09-05 (SVN):
     * utils/common/threads.c: more GetNumCPUS() fixes for OSX and BSD.
       also made sure that it returns only 1 on ancient windows versions.
 

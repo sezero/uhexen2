@@ -53,8 +53,8 @@ hence the SDL_NEW_VERSION_REJECT macro below.
 
 #if SDL_VERSION_ATLEAST(1,3,0)
 
-#define SDL_MIN_X	1
-#define SDL_MIN_Y	3
+#define SDL_MIN_X	2
+#define SDL_MIN_Y	0
 #define SDL_MIN_Z	0
 
 #else	/* SDL-1.2.x */
@@ -65,7 +65,7 @@ hence the SDL_NEW_VERSION_REJECT macro below.
 #define SDL_MIN_Y	2
 
 #if defined(__MACOSX__) || defined(__APPLE__)
-#   define SDL_MIN_Z	8
+#   define SDL_MIN_Z	14	/* 1.2.14 is needed for OS X for proper x86/x86_64 support */
 #else
 #   define SDL_MIN_Z	0
 #endif
