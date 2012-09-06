@@ -77,7 +77,7 @@ md5.o: $(MD5DEPS)
 # the program name is h2patch.exe and "patch" keyword is red-flagged
 # by Windows Vista and newer to trigger UAC for X86 applications.
 # So we need a manifest to set requestedExecutionLevel as "asInvoker"
-# and uiAccess as "false".  Not needed for AMD64, but doesn't hurt,
+# and uiAccess as "false".  Not needed for AMD64, but it doesn't hurt,
 # either.
 h2patch3.res: h2patch3.rc h2patch.exe.manifest
 	$(WINDRES) -DWIN32_LEAN_AND_MEAN --output-format=coff -o $@ $<
