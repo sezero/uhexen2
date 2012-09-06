@@ -134,7 +134,7 @@ endif
 #############################################################
 ifeq ($(TARGET_OS),win32)
 
-CFLAGS += -DWIN32_LEAN_AND_MEAN
+CPPFLAGS+= -DWIN32_LEAN_AND_MEAN
 
 ifeq ($(USE_WINSOCK2),yes)
 CPPFLAGS+= -D_USE_WINSOCK2
@@ -156,7 +156,7 @@ endif
 #############################################################
 ifeq ($(TARGET_OS),win64)
 
-CFLAGS += -DWIN32_LEAN_AND_MEAN
+CPPFLAGS+= -DWIN32_LEAN_AND_MEAN
 
 # use winsock2 for win64
 USE_WINSOCK2=yes

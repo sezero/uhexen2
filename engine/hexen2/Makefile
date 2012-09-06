@@ -463,7 +463,7 @@ else
 LIBWINSOCK=-lwsock32
 endif
 
-CFLAGS  += -DWIN32_LEAN_AND_MEAN
+CPPFLAGS+= -DWIN32_LEAN_AND_MEAN
 INCLUDES+= -I$(OSLIBS)/windows -I$(OSLIBS)/windows/dxsdk/include
 LDFLAGS += $(LIBWINSOCK) -lwinmm -mwindows
 
@@ -518,7 +518,7 @@ else
 LIBWINSOCK=-lwsock32
 endif
 
-CFLAGS  += -DWIN32_LEAN_AND_MEAN
+CPPFLAGS+= -DWIN32_LEAN_AND_MEAN
 INCLUDES+= -I$(OSLIBS)/windows -I$(OSLIBS)/windows/dxsdk/include
 LDFLAGS += $(LIBWINSOCK) -lwinmm -mwindows
 
@@ -717,9 +717,9 @@ endif
 %.o: $(COMMONDIR)/%.asm
 	$(NASM) $(NASM_INC) $(NASMFLAGS) -o $@ $<
 %.res: %.rc
-	$(WINDRES) $(RES_INC) $(CPPFLAGS) -DWIN32_LEAN_AND_MEAN --output-format=coff -o $@ $<
+	$(WINDRES) $(RES_INC) $(CPPFLAGS) --output-format=coff -o $@ $<
 %.res: $(COMMONDIR)/%.rc
-	$(WINDRES) $(RES_INC) $(CPPFLAGS) -DWIN32_LEAN_AND_MEAN --output-format=coff -o $@ $<
+	$(WINDRES) $(RES_INC) $(CPPFLAGS) --output-format=coff -o $@ $<
 
 # Objects
 
