@@ -3,6 +3,9 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2012-09-06 (SVN):
+    * several minor makefile edits.
+
 2012-09-05 (SVN):
     * net_sys.h: identify Mac OS X SDKs older than 10.3 and define the
       missing socklen_t type. (for completeness sake...)

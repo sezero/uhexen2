@@ -31,7 +31,7 @@ Changes in v1.5.5: (Sep. 05, 2012.)
 - Mac OS X: Added support for compiling simply using the makefiles. Added
   support for cross-compiling from linux.
 
-- MorphOS builds: added missing -noixemul to CPPFLAGS.
+- MorphOS builds: added missing -noixemul to the compiler flags.
 
 
 ========================================================================
