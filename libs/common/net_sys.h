@@ -55,15 +55,12 @@
 
 #include <sys/param.h>
 #include <sys/ioctl.h>
-#include <unistd.h>
-
 #if defined(__sun) || defined(sun)
 #include <sys/filio.h>
 #include <sys/sockio.h>
 #endif	/* __sunos__ */
-
+#include <unistd.h>
 #include <sys/socket.h>
-
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #include <netdb.h>
@@ -100,11 +97,9 @@ COMPILE_TIME_ASSERT(sockaddr, offsetof(struct sockaddr, sa_family) == SA_FAM_OFF
 #include <sys/param.h>
 #include <sys/ioctl.h>
 #include <unistd.h>
-
 #include <proto/exec.h>
 #include <proto/socket.h>
 #include <sys/socket.h>
-
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #include <netdb.h>
@@ -196,7 +191,7 @@ COMPILE_TIME_ASSERT(sockaddr, offsetof(struct sockaddr, sa_family) == SA_FAM_OFF
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #include <netdb.h>
-#include <tcp.h>		/* for select_s(), sock_init() & co. */
+#include <tcp.h>		/* for select_s(), sock_init() & friends. */
 extern int	_watt_do_exit;	/* in sock_ini.h, but not in public headers. */
 
 #define	selectsocket	select_s
