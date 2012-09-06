@@ -11,6 +11,11 @@
 # argument to make, or export it. Also see build_cross_win64.sh.
 # Requires: a mingw-w64 compiler toolchain.
 #
+# To cross-compile for MacOSX on Unix: either pass the OSXBUILD=1
+# argument to make, or export it.  You would also need to pass a
+# suitable MACH_TYPE=xxx (ppc, x86, x86_64, or ppc64) argument to
+# make. Also see build_cross_osx.sh.
+#
 # To (cross-)compile for DOS: either pass the DOSBUILD=1 argument
 # to make, or export it. Also see build_cross_dos.sh. Requires: a
 # djgpp compiler toolchain.
