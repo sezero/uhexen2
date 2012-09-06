@@ -16,7 +16,7 @@ Index: engine/hexen2/sys_unix.c
 ===================================================================
 --- engine/hexen2/sys_unix.c	(revision 4767)
 +++ engine/hexen2/sys_unix.c	(working copy)
-@@ -595,65 +595,266 @@ static void PrintVersion (void)
+@@ -595,65 +595,268 @@ static void PrintVersion (void)
  }
  
  #include "snd_sys.h"
@@ -65,7 +65,8 @@ Index: engine/hexen2/sys_unix.c
  #endif
 -	"     [-width X [-height Y]]  Select screen size",
 +	{"-width",	"",		"",	1, "Set screen width"},
-+	{"-height",	"",		"",	1, "Set screen height"},
++	{"-height",	"",		"",	1, "Set screen height (requires -width)"},
++	{"-force",	"",		"",	0, "Skip some video sanity checks"},
 +	{"-conwidth",	"",		"",	1, "Set console width (in pixels)"},
  #ifdef GLQUAKE
 -	"     [-bpp]                  Depth for GL fullscreen mode",
@@ -120,7 +121,7 @@ Index: engine/hexen2/sys_unix.c
 +/* MUSIC */
 +	{"","","",0,"Music"},
 +
-+	{"-nomidi",	"",		"",	0, "Disable midi"}, 
++	{"-nomidi",	"",		"",	0, "Disable midi device"},
 +	{"-nocdaudio",	"",		"",	0, "Disable CD playback"},
 +	{"-cddev",	"",		"",	1, "Use this CD device"},
 +/* NETWORK */
@@ -130,7 +131,7 @@ Index: engine/hexen2/sys_unix.c
 +	{"-dedicated",	"",		"",	-1, "Enable dedicated server with max N players"},
 +	{"-nolan",	"",		"",	0, "Disable local area network"},
 +	{"-noudp",	"",		"",	0, "Disable udp"},
-+	{"-noifscan",	"",		"",	0, "Disable if scan"},
++	{"-noifscan",	"",		"",	0, "Disable net interface scan"},
 +	{"-ip",		"-bindip",	"",	1, "Use this IP address"},
 +	{"-localip",	"",		"",	1, "Use this local IP address"},
 +	{"-port",	"",		"",	1, "Use this port"},
@@ -149,7 +150,9 @@ Index: engine/hexen2/sys_unix.c
 +
 +	{"-lm_1",	"",		"",	0, "use GL_LUMINANCE light format"},
 +	{"-lm_4",	"",		"",	0, "use GL_RGBA      light format"},
++# ifdef USE_3DFXGAMMA
 +	{"-3dfxgamma",	"",		"",	0, "enable 3dfx gamma support"},
++# endif
 +#endif
 +/* SVGA */
 +#ifdef SVGAQUAKE
@@ -166,7 +169,6 @@ Index: engine/hexen2/sys_unix.c
 +	{"-protocol",	"",		"",	1, "Request different game version"},
 +	{"-particles",	"",		"",	1, "Set number of particles"},
 +	{"-fullsbar",	"",		"",	0, "Enable full status bar (unused)"},
-+	{"-force",	"",		"",	0, "Skip some sanity checks"},
 +	{"-nojoy",	"",		"",	0, "Disable joystick"},
 +	{"-zone",	"",		"",	1, "Zone memory size"},
 +/* end used to terminate options */
@@ -313,7 +315,7 @@ Index: engine/hexen2/sys_unix.c
  }
  
  /*
-@@ -679,23 +880,7 @@ int main (int argc, char **argv)
+@@ -679,23 +882,7 @@ int main (int argc, char **argv)
  
  	PrintVersion();
  

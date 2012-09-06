@@ -11,9 +11,9 @@ Basic experimental fog code extracted from jshexen2 (activate with
   somewhat better in fog (personal liking), sigh...
 
 diff -urNp engine/h2shared/gl_func.h engine/h2shared/gl_func.h
---- engine/h2shared/gl_func.h	2012-06-16 23:48:51.000000000 +0300
-+++ engine/h2shared/gl_func.h	2012-06-16 23:55:01.000000000 +0300
-@@ -72,6 +72,11 @@ GL_FUNCTION(void, glColor3ubv, (const GL
+--- engine/h2shared/gl_func.h	2012-07-07 09:10:31.000000000 +0300
++++ engine/h2shared/gl_func.h	2012-07-07 09:55:12.000000000 +0300
+@@ -71,6 +71,11 @@ GL_FUNCTION(void, glColor3ubv, (const GL
  GL_FUNCTION(void, glColor3f, (GLfloat,GLfloat,GLfloat))
  GL_FUNCTION(void, glClearColor, (GLclampf,GLclampf,GLclampf,GLclampf))
  
