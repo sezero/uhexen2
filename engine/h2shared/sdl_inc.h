@@ -65,7 +65,11 @@ hence the SDL_NEW_VERSION_REJECT macro below.
 #define SDL_MIN_Y	2
 
 #if defined(__MACOSX__) || defined(__APPLE__)
+#  if defined (__ppc__) || defined(__POWERPC__)
+#   define SDL_MIN_Z	9
+#  else
 #   define SDL_MIN_Z	14	/* 1.2.14 is needed for OS X for proper x86/x86_64 support */
+#  endif
 #else
 #   define SDL_MIN_Z	0
 #endif

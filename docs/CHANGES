@@ -4,6 +4,9 @@ Development Progress	:
 ---------------------------
 
 2012-09-06 (SVN):
+    * sdl_inc.h: SDL at least 1.2.9 is enough for Mac OS X ppc builds.
+
+2012-09-06 (SVN):
     * several minor makefile edits.
 
 2012-09-05 (SVN):
