@@ -75,8 +75,8 @@ static pakdata_t old_pakdata[] =
 							 *	MD5: b53c9391d16134cb3baddc1085f18683	*/
 	{ 525,	47762,	76958474, "data1"	},	/* pak1.pak, original cdrom (1.03) version
 							 *	MD5: 9a2010aafb9c0fe71c37d01292030270	*/
-	{ 701,	20870,	23537707, "data1"	},	/* pak0.pak, original demo v1.03 (v0.42?? v1.07??)
-							 *	from Aug. 1997
+	{ 701,	20870,	23537707, "data1"	},	/* pak0.pak, original demo v0.42 from Aug. 1997
+							 *	(h2.exe -> console -> version says 1.07!)
 							 *	MD5: 208643a09193dafbca4b851762479438	*/
 /* !!! FIXME:  I don't have the original v1.08 of Continent of Blackmarsh. I only know the file sizes.	*/
 	{ -1,	0,	22719295, "data1"	},	/* pak0.pak, original oem (Matrox m3D) v1.08
