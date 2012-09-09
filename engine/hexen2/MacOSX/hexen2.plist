@@ -24,5 +24,14 @@
 	<string>????</string>
 	<key>CFBundleVersion</key>
 	<string>1.5.5</string>
+	<key>LSMinimumSystemVersionByArchitecture</key>
+	<dict>
+		<key>i386</key>
+		<string>10.4.0</string>
+		<key>ppc</key>
+		<string>10.4.0</string>
+		<key>x86_64</key>
+		<string>10.6.0</string>
+	</dict>
 </dict>
 </plist>
