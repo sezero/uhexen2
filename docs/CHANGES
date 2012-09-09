@@ -4,6 +4,11 @@ Development Progress	:
 ---------------------------
 
 2012-09-09 (SVN):
+    * hexen2 and hexenworld OSX clients: require 10.6 for amd64 builds,
+      not 10.5 (SDL's requirement). needed adding bundle1.o to linkage
+      for dyld_stub_binding_helper.
+
+2012-09-09 (SVN):
     * utils/dhcc: added back information dump facility, with help text
       added to -help output. newly added switches: -fields, -functions,
       -globaldefs, -prglobals, -statements and, -strings.
