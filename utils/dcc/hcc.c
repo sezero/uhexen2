@@ -759,7 +759,13 @@ int main (int argc, char **argv)
 		printf(" -name <source>   : Specify the name of the .src file\n");
 		printf(" -dcc (or -dec)   : decompile progs.dat in current directory\n");
 		printf(" -dcc -name <progsname> : specify name of progs to decompile\n");
-		printf(" -dcc -fix : fixes mangled names during decompilation\n");
+		printf(" -dcc -fix : fixes mangled names during decompile\n");
+		printf(" -dcc -fields     : dumps all fielddefs to stdout\n");
+		printf(" -dcc -functions  : dumps all functions to stdout\n");
+		printf(" -dcc -globaldefs : dumps all globaldefs to stdout\n");
+		printf(" -dcc -prglobals  : dumps all pr_globals to stdout\n");
+		printf(" -dcc -statements : dumps all statements to stdout\n");
+		printf(" -dcc -strings    : dumps all pr_strings to stdout\n");
 		printf(" -dcc -asm <functionname> : decompile filename to the console\n");
 		printf(" -dcc -dump -asm <functionname> : same as above but will show\n\t\tinstructions (opcodes and parms) as well\n");
 		exit(0);

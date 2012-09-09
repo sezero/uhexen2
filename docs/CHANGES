@@ -3,6 +3,11 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2012-09-09 (SVN):
+    * utils/dhcc: added back information dump facility, with help text
+      added to -help output. newly added switches: -fields, -functions,
+      -globaldefs, -prglobals, -statements and, -strings.
+
 2012-09-06 (SVN):
     * sdl_inc.h: SDL at least 1.2.9 is enough for Mac OS X ppc builds.
 

@@ -2395,6 +2395,88 @@ static unsigned short GetLastFunctionReturn (dfunction_t *df, dstatement_t *ds)
 	return ev_void;
 }
 
+static void PrintGlobaldefs (void)
+{
+	int		i;
+	ddef_t		*d;
+
+	for (i = 0; i < progs->numglobaldefs; i++)
+	{
+		d = &pr_globaldefs[i];
+		printf ("%5i : (%i) %s\n", d->ofs, d->type, pr_strings + d->s_name);
+	}
+}
+
+static void PrintPRGlobals (void)
+{
+	int		i;
+
+	for (i = 0; i < progs->numglobals; i++)
+	{
+		printf ("%5i %5.5f %5d\n", i, pr_globals[i], ((int *)pr_globals)[i]);
+	}
+}
+
+static void PrintStatements (void)
+{
+	int		i;
+	dstatement_t	*ds;
+
+	for (i = 0; i < progs->numstatements; i++)
+	{
+		ds = pr_statements + i;
+		printf ("%5d op: %2d a: %5d b: %5d c: %5d\n", i, ds->op, ds->a, ds->b, ds->c);
+	}
+}
+
+static void PrintStrings (void)
+{
+	int		i, l, j;
+
+	for (i = 0; i < progs->numstrings; i += l)
+	{
+		l = strlen(pr_strings+i) + 1;
+		printf ("%5i : ", i);
+		for (j = 0; j < l; j++)
+		{
+			if (pr_strings[i+j] == '\n')
+			{
+				putchar ('\\');
+				putchar ('n');
+			}
+			else
+				putchar (pr_strings[i+j]);
+		}
+		printf ("\n");
+	}
+}
+
+static void PrintFunctions (void)
+{
+	int		i, j;
+	dfunction_t	*d;
+
+	for (i = 0; i < progs->numfunctions; i++)
+	{
+		d = &pr_functions[i];
+		printf ("%s : %s : %i %i (", pr_strings + d->s_file, pr_strings + d->s_name, d->first_statement, d->parm_start);
+		for (j = 0; j < d->numparms; j++)
+			printf ("%i ", d->parm_size[j]);
+		printf (")\n");
+	}
+}
+
+static void PrintFields (void)
+{
+	int		i;
+	ddef_t		*d;
+
+	for (i = 0; i < progs->numfielddefs; i++)
+	{
+		d = &pr_fielddefs[i];
+		printf ("%5i %5i : (%i) %s\n", i, d->ofs, d->type, pr_strings + d->s_name);
+	}
+}
 
 int Dcc_main (int argc, char **argv)
 {
@@ -2411,6 +2493,44 @@ int Dcc_main (int argc, char **argv)
 		if (p >= argc - 1)
 			COM_Error ("No input filename specified with -name");
 		DEC_ReadData (argv[p + 1]);
+	}
+
+	/* don't need Init_Dcc () for the following info stuff */
+	if (CheckParm("-fields") != 0)
+	{
+		printf("\nFIELDS =========================\n");
+		PrintFields ();
+		return 0;
+	}
+	if (CheckParm("-functions") != 0)
+	{
+		printf("\nFUNCTIONS ======================\n");
+		PrintFunctions ();
+		return 0;
+	}
+	if (CheckParm("-globaldefs") != 0)
+	{
+		printf("\nGLOBALDEFS =====================\n");
+		PrintGlobaldefs();
+		return 0;
+	}
+	if (CheckParm("-prglobals") != 0)
+	{
+		printf("\nPR_GLOBALS =====================\n");
+		PrintPRGlobals ();
+		return 0;
+	}
+	if (CheckParm("-statements") != 0)
+	{
+		printf("\nSTATEMENTS =====================\n");
+		PrintStatements();
+		return 0;
+	}
+	if (CheckParm("-strings") != 0)
+	{
+		printf("\nSTRINGS ========================\n");
+		PrintStrings ();
+		return 0;
 	}
 
 	Init_Dcc ();
