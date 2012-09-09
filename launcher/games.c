@@ -53,7 +53,7 @@ static pakdata_t pakdata[MAX_PAKDATA] =
 							 *	MD5: 99e0054861e94f66fc8e0e29416859c9	*/
 	{ 245,	1478 ,	49089114, "portals"	},	/* pak3.pak, Portal of Praevus expansion pack
 							 *	MD5: 77ae298dd0dcd16ab12f4a68067ff2c3	*/
-	{ 102,	41062,	10780245, "hw"		}	/* pak4.pak, hexenworld, all versions 0.11-15
+	{ 102,	41062,	10780245, "hw"		}	/* pak4.pak, hexenworld, versions 0.14 - 0.15
 							 *	MD5: 88109ee385d9723ac5f1015e034a44dd	*/
 };
 
@@ -83,6 +83,8 @@ static pakdata_t old_pakdata[] =
 							 *	MD5: ????????????????????????????????	*/
 	{ -1,	0,	17739969, "data1"	},	/* pak2.pak, original oem (Matrox m3D) v1.08
 							 *	MD5: ????????????????????????????????	*/
+	{  98,	25864,	10678369, "hw"	},		/* pak4.pak, Hexen2World v0.11 (ugh..)
+							 *	MD5: c311a30ac8ee1f112019723b4fe42268	*/
 };
 
 static unsigned int check_known_paks (int paknum, int numfiles, unsigned short crc)
@@ -129,6 +131,12 @@ static unsigned int check_known_paks (int paknum, int numfiles, unsigned short c
 			if (numfiles == old_pakdata[4].numfiles &&
 					crc == old_pakdata[4].crc)
 				return GAME_OLD_OEM2;
+			/* not original: */
+			return GAME_MODIFIED;
+		case 4:	/* old HW version ?? */
+			if (numfiles == old_pakdata[5].numfiles &&
+					crc == old_pakdata[5].crc)
+				return GAME_HEXENWORLD;
 			/* not original: */
 			return GAME_MODIFIED;
 		default:/* not original */
