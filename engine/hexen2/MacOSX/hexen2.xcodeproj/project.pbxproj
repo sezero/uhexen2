@@ -7,6 +7,14 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		48E2EC7D15FB507A00B8D476 /* libmad.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 48E2EC7915FB507A00B8D476 /* libmad.dylib */; };
+		48E2EC7E15FB507A00B8D476 /* libogg.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 48E2EC7A15FB507A00B8D476 /* libogg.dylib */; };
+		48E2EC7F15FB507A00B8D476 /* libvorbis.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 48E2EC7B15FB507A00B8D476 /* libvorbis.dylib */; };
+		48E2EC8015FB507A00B8D476 /* libvorbisfile.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 48E2EC7C15FB507A00B8D476 /* libvorbisfile.dylib */; };
+		4854B1AF1340C5FD004C9F45 /* libmad.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 48E2EC7915FB507A00B8D476 /* libmad.dylib */; };
+		4854B1E71340C964004C9F45 /* libogg.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 48E2EC7A15FB507A00B8D476 /* libogg.dylib */; };
+		4854B1E81340C964004C9F45 /* libvorbis.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 48E2EC7B15FB507A00B8D476 /* libvorbis.dylib */; };
+		4854B1E91340C964004C9F45 /* libvorbisfile.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 48E2EC7C15FB507A00B8D476 /* libvorbisfile.dylib */; };
 		483B16A5154472FE00BBDAD1 /* cl_inlude.c in Sources */ = {isa = PBXBuildFile; fileRef = 483B16A4154472FE00BBDAD1 /* cl_inlude.c */; };
 		70158BF40AAF3C8800F6437C /* d_iface.h in Headers */ = {isa = PBXBuildFile; fileRef = 70158B730AAF3B3600F6437C /* d_iface.h */; };
 		70158BF50AAF3C8800F6437C /* d_local.h in Headers */ = {isa = PBXBuildFile; fileRef = 70158B750AAF3B3600F6437C /* d_local.h */; };
@@ -265,6 +273,10 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		48E2EC7915FB507A00B8D476 /* libmad.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libmad.dylib; path = ../../../oslibs/macosx/codecs/lib/libmad.dylib; sourceTree = "<group>"; };
+		48E2EC7A15FB507A00B8D476 /* libogg.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libogg.dylib; path = ../../../oslibs/macosx/codecs/lib/libogg.dylib; sourceTree = "<group>"; };
+		48E2EC7B15FB507A00B8D476 /* libvorbis.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libvorbis.dylib; path = ../../../oslibs/macosx/codecs/lib/libvorbis.dylib; sourceTree = "<group>"; };
+		48E2EC7C15FB507A00B8D476 /* libvorbisfile.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libvorbisfile.dylib; path = ../../../oslibs/macosx/codecs/lib/libvorbisfile.dylib; sourceTree = "<group>"; };
 		483B16A4154472FE00BBDAD1 /* cl_inlude.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = cl_inlude.c; path = ../cl_inlude.c; sourceTree = SOURCE_ROOT; };
 		70158B710AAF3B3600F6437C /* d_edge.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = d_edge.c; path = ../../h2shared/d_edge.c; sourceTree = SOURCE_ROOT; };
 		70158B720AAF3B3600F6437C /* d_fill.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = d_fill.c; path = ../../h2shared/d_fill.c; sourceTree = SOURCE_ROOT; };
@@ -449,6 +461,10 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4854B1AF1340C5FD004C9F45 /* libmad.dylib in Frameworks */,
+				4854B1E71340C964004C9F45 /* libogg.dylib in Frameworks */,
+				4854B1E81340C964004C9F45 /* libvorbis.dylib in Frameworks */,
+				4854B1E91340C964004C9F45 /* libvorbisfile.dylib in Frameworks */,
 				70158C870AAF421B00F6437C /* ApplicationServices.framework in Frameworks */,
 				70158C880AAF421B00F6437C /* AudioToolbox.framework in Frameworks */,
 				70158C890AAF421B00F6437C /* AudioUnit.framework in Frameworks */,
@@ -464,6 +480,10 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				48E2EC7D15FB507A00B8D476 /* libmad.dylib in Frameworks */,
+				48E2EC7E15FB507A00B8D476 /* libogg.dylib in Frameworks */,
+				48E2EC7F15FB507A00B8D476 /* libvorbis.dylib in Frameworks */,
+				48E2EC8015FB507A00B8D476 /* libvorbisfile.dylib in Frameworks */,
 				707D59210AAA071800313A9F /* SDL.framework in Frameworks */,
 				707D592C0AAA076A00313A9F /* ApplicationServices.framework in Frameworks */,
 				707D592D0AAA076A00313A9F /* AudioToolbox.framework in Frameworks */,
@@ -481,6 +501,10 @@
 		707D57580AA9F4B100313A9F = {
 			isa = PBXGroup;
 			children = (
+				48E2EC7915FB507A00B8D476 /* libmad.dylib */,
+				48E2EC7A15FB507A00B8D476 /* libogg.dylib */,
+				48E2EC7B15FB507A00B8D476 /* libvorbis.dylib */,
+				48E2EC7C15FB507A00B8D476 /* libvorbisfile.dylib */,
 				B0E546A515564FC10033037D /* sys_osx.m */,
 				483B16A4154472FE00BBDAD1 /* cl_inlude.c */,
 				B0E74B3B144E80960043F808 /* snd_timidity.c */,
@@ -1154,6 +1178,7 @@
 					../../../libs/common,
 					../../../oslibs/macosx/codecs/include,
 				);
+				LIBRARY_SEARCH_PATHS = ../../../oslibs/macosx/codecs/lib;
 				OTHER_LDFLAGS = "";
 				SDKROOT = /Developer/SDKs/MacOSX10.4u.sdk;
 			};
@@ -1182,6 +1207,7 @@
 					../../../libs/common,
 					../../../oslibs/macosx/codecs/include,
 				);
+				LIBRARY_SEARCH_PATHS = ../../../oslibs/macosx/codecs/lib;
 				OTHER_LDFLAGS = "";
 				SDKROOT = /Developer/SDKs/MacOSX10.4u.sdk;
 			};
@@ -1221,6 +1247,7 @@
 				INFOPLIST_FILE = glhexen2.plist;
 				MACOSX_DEPLOYMENT_TARGET = "";
 				OTHER_CFLAGS = "";
+				LIBRARY_SEARCH_PATHS = ../../../oslibs/macosx/codecs/lib;
 				OTHER_LDFLAGS = "";
 				OTHER_REZFLAGS = "";
 				PREBINDING = NO;
@@ -1271,6 +1298,7 @@
 				INFOPLIST_FILE = glhexen2.plist;
 				MACOSX_DEPLOYMENT_TARGET = "";
 				OTHER_CFLAGS = "";
+				LIBRARY_SEARCH_PATHS = ../../../oslibs/macosx/codecs/lib;
 				OTHER_LDFLAGS = "";
 				OTHER_REZFLAGS = "";
 				PREBINDING = NO;
