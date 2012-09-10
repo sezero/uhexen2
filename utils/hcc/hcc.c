@@ -59,6 +59,7 @@ static qboolean FinishCompilation(void);
 
 int		hcc_OptimizeImmediates;
 int		hcc_OptimizeNameTable;
+qboolean	old_hcc_behavior;
 qboolean	hcc_WarningsActive;
 qboolean	hcc_ShowUnrefFuncs;
 
@@ -238,9 +239,8 @@ static void WriteData (int crc)
 	FILE	*h;
 	int	i, localName;
 
-	if (hcc_OptimizeNameTable)
-		localName = CopyString("LCL+");
-	else	localName = 0;	/* silence compiler warning */
+	localName = (hcc_OptimizeNameTable) ? CopyString("LCL+") : 0;
+						/* was "LOCAL+" in old HCC from the "H2_UTILS" package */
 
 	for (def = pr.def_head.next; def; def = def->next)
 	{
@@ -261,7 +261,7 @@ static void WriteData (int crc)
 		    def->scope == NULL)
 		{
 			//str_ is a special case string constant
-			if (strncmp (def->name,"STR_", 4) != 0)
+			if (strncmp(def->name,"STR_", 4) != 0 || old_hcc_behavior)
 				dd->type |= DEF_SAVEGLOBAL;
 		}
 		if (hcc_OptimizeNameTable && ((def->scope != NULL) ||
@@ -828,6 +828,8 @@ int main (int argc, char **argv)
 		printf(" -on              : Optimize Name Table\n");
 		printf(" -quiet           : Quiet mode\n");
 		printf(" -fileinfo        : Show object sizes per file\n");
+		printf(" -old             : Old HCC behavior:  allow STR_ constants and\n");
+		printf("                    precache_file () calls going into progs.dat\n");
 		printf(" -src <directory> : Specify source directory\n");
 		printf(" -name <source>   : Specify the name of the .src file\n");
 		exit(0);
@@ -889,6 +891,7 @@ int main (int argc, char **argv)
 
 	hcc_OptimizeImmediates = CheckParm("-oi");
 	hcc_OptimizeNameTable = CheckParm("-on");
+	old_hcc_behavior = CheckParm("-old") ? true : false;
 	hcc_WarningsActive = CheckParm("-nowarnings") ? false : true;
 	hcc_ShowUnrefFuncs = CheckParm("-urfunc") ? true : false;
 

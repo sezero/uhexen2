@@ -299,9 +299,7 @@ static def_t *Term (void)
 	{ // Found and parsed an intrinsic function
 		d->referenceCount++;
 		if (d->parentVector != NULL)
-		{
 			d->parentVector->referenceCount++;
-		}
 		return d;
 	}
 
@@ -313,9 +311,7 @@ static def_t *Term (void)
 
 	d->referenceCount++;
 	if (d->parentVector != NULL)
-	{
 		d->parentVector->referenceCount++;
-	}
 
 	if (TK_CHECK(TK_LBRACKET))
 	{
@@ -675,7 +671,7 @@ static def_t *ParseIntrinsicFunc (const char *name)
 		return &def_ret;
 	}
 
-	if (!strncmp(name, "precache_file", 13))	//keep it from going in progs.dat
+	if (!strncmp(name, "precache_file", 13) && !old_hcc_behavior)	//keep it from going into progs.dat
 	{
 		def_ret.type = &type_void;
 		LX_Require("(");

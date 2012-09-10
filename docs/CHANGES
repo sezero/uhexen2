@@ -3,6 +3,11 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2012-09-10 (SVN):
+    * utils, hcc: Added "-old" command line option, which restores the
+      old hcc behavior of letting the STR_ constants and precache_file()
+      calls going into progs.dat, if so needed.
+
 2012-09-09 (SVN):
     * quakefs: added pak4.pak from hexenworld v0.11 among the known pak
       files, accepted it as valid hexenworld installation. (ancient but,
