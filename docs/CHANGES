@@ -4,6 +4,14 @@ Development Progress	:
 ---------------------------
 
 2012-09-11 (SVN):
+    * gamecode, setstaff.hc (scarab_die): fixed a typo in chain removal
+      code. the bug was at least as old as v0.42 of hexen2. noticed the
+      fix in hexenworld.
+    * bumped gamecode version number to 1.27.
+    * bumped versions for hexen2 engine to 1.27 and hexenworld to 0.27.
+    * updated version date stamp to 2012-05-11.
+
+2012-09-11 (SVN):
     * gamecode: renamed the txt directory to res. adjusted the rpm spec.
 
 2012-09-10 (SVN):

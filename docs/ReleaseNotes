@@ -1,7 +1,7 @@
 Hammer of Thyrion (uHexen2) release notes:
 
 ========================================================================
-Changes in v1.5.5: (Sep. 09, 2012.)
+Changes in v1.5.5: (Sep. 11, 2012.)
 ========================================================================
 
 - Utils (light, vis, jsh2color): Added unix pthreads support for running
@@ -38,6 +38,12 @@ Changes in v1.5.5: (Sep. 09, 2012.)
   support for cross-compiling from linux.
 
 - MorphOS builds: added missing -noixemul to the compiler flags.
+
+- All platforms, gameplay: fixed a minor bug in assassin's fourth weapon
+  in powered mode.
+
+- All: Incremented versions for hexen2 engine to 1.27, hexenworld engine
+  to 0.27, and gamecode version to 1.27.
 
 
 ========================================================================

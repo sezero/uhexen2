@@ -55,7 +55,7 @@
 
 %define desktop_vendor	uhexen2
 
-%define gamecode_ver	1.26
+%define gamecode_ver	1.27
 
 Name:		hexen2
 License:	GPLv2
@@ -352,6 +352,7 @@ desktop-file-install \
 - Adjusted gamedata resource installation after txt->res rename
 - Adjusted h2ded build and installation after moved Makefile.sv
 - Bump version to 1.5.5
+- Bump gamecode version to 1.27
 
 * Tue Jun 18 2012 O.Sezer <sezero@users.sourceforge.net> 1.5.4-1
 - Changed --without gtk2 option to --with gtk1.

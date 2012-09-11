@@ -1,4 +1,4 @@
-this patch adds initial support for standalone free contents (mods).
+this patch adds initial support for standalone free contents.
 see the documentation file StandaloneMods.txt for details.
 
 Index: engine/h2shared/quakefs.c
