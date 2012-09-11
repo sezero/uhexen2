@@ -193,21 +193,21 @@ utils/hcc/hcc -src gamecode-%{gamecode_ver}/hc/hw -oi -on
 %{__mkdir_p} %{buildroot}/%{_prefix}/games/%{name}/data1/
 %{__install} -D -m644 gamecode-%{gamecode_ver}/hc/h2/progs.dat %{buildroot}/%{_prefix}/games/%{name}/data1/progs.dat
 %{__install} -D -m644 gamecode-%{gamecode_ver}/hc/h2/progs2.dat %{buildroot}/%{_prefix}/games/%{name}/data1/progs2.dat
-%{__install} -D -m644 gamecode-%{gamecode_ver}/txt/h2/hexen.rc %{buildroot}/%{_prefix}/games/%{name}/data1/hexen.rc
-%{__install} -D -m644 gamecode-%{gamecode_ver}/txt/h2/strings.txt %{buildroot}/%{_prefix}/games/%{name}/data1/strings.txt
-%{__install} -D -m644 gamecode-%{gamecode_ver}/txt/h2/default.cfg %{buildroot}/%{_prefix}/games/%{name}/data1/default.cfg
+%{__install} -D -m644 gamecode-%{gamecode_ver}/res/h2/hexen.rc %{buildroot}/%{_prefix}/games/%{name}/data1/hexen.rc
+%{__install} -D -m644 gamecode-%{gamecode_ver}/res/h2/strings.txt %{buildroot}/%{_prefix}/games/%{name}/data1/strings.txt
+%{__install} -D -m644 gamecode-%{gamecode_ver}/res/h2/default.cfg %{buildroot}/%{_prefix}/games/%{name}/data1/default.cfg
 %{__mkdir_p} %{buildroot}/%{_prefix}/games/%{name}/portals/
 %{__install} -D -m644 gamecode-%{gamecode_ver}/hc/portals/progs.dat %{buildroot}/%{_prefix}/games/%{name}/portals/progs.dat
-%{__install} -D -m644 gamecode-%{gamecode_ver}/txt/portals/hexen.rc %{buildroot}/%{_prefix}/games/%{name}/portals/hexen.rc
-%{__install} -D -m644 gamecode-%{gamecode_ver}/txt/portals/strings.txt %{buildroot}/%{_prefix}/games/%{name}/portals/strings.txt
-%{__install} -D -m644 gamecode-%{gamecode_ver}/txt/portals/infolist.txt %{buildroot}/%{_prefix}/games/%{name}/portals/infolist.txt
-%{__install} -D -m644 gamecode-%{gamecode_ver}/txt/portals/maplist.txt %{buildroot}/%{_prefix}/games/%{name}/portals/maplist.txt
-%{__install} -D -m644 gamecode-%{gamecode_ver}/txt/portals/puzzles.txt %{buildroot}/%{_prefix}/games/%{name}/portals/puzzles.txt
-%{__install} -D -m644 gamecode-%{gamecode_ver}/txt/portals/default.cfg %{buildroot}/%{_prefix}/games/%{name}/portals/default.cfg
+%{__install} -D -m644 gamecode-%{gamecode_ver}/res/portals/hexen.rc %{buildroot}/%{_prefix}/games/%{name}/portals/hexen.rc
+%{__install} -D -m644 gamecode-%{gamecode_ver}/res/portals/strings.txt %{buildroot}/%{_prefix}/games/%{name}/portals/strings.txt
+%{__install} -D -m644 gamecode-%{gamecode_ver}/res/portals/infolist.txt %{buildroot}/%{_prefix}/games/%{name}/portals/infolist.txt
+%{__install} -D -m644 gamecode-%{gamecode_ver}/res/portals/maplist.txt %{buildroot}/%{_prefix}/games/%{name}/portals/maplist.txt
+%{__install} -D -m644 gamecode-%{gamecode_ver}/res/portals/puzzles.txt %{buildroot}/%{_prefix}/games/%{name}/portals/puzzles.txt
+%{__install} -D -m644 gamecode-%{gamecode_ver}/res/portals/default.cfg %{buildroot}/%{_prefix}/games/%{name}/portals/default.cfg
 %{__mkdir_p} %{buildroot}/%{_prefix}/games/%{name}/hw/
 %{__install} -D -m644 gamecode-%{gamecode_ver}/hc/hw/hwprogs.dat %{buildroot}/%{_prefix}/games/%{name}/hw/hwprogs.dat
-%{__install} -D -m644 gamecode-%{gamecode_ver}/txt/hw/strings.txt %{buildroot}/%{_prefix}/games/%{name}/hw/strings.txt
-%{__install} -D -m644 gamecode-%{gamecode_ver}/txt/hw/default.cfg %{buildroot}/%{_prefix}/games/%{name}/hw/default.cfg
+%{__install} -D -m644 gamecode-%{gamecode_ver}/res/hw/strings.txt %{buildroot}/%{_prefix}/games/%{name}/hw/strings.txt
+%{__install} -D -m644 gamecode-%{gamecode_ver}/res/hw/default.cfg %{buildroot}/%{_prefix}/games/%{name}/hw/default.cfg
 %{__install} -D -m644 hw/pak4.pak %{buildroot}/%{_prefix}/games/%{name}/hw/pak4.pak
 
 # Install ent fixes handling map quirks
@@ -348,7 +348,8 @@ desktop-file-install \
 %{_prefix}/games/%{name}/docs/README.hwmaster
 
 %changelog
-* Wed Aug 29 2012 O.Sezer <sezero@users.sourceforge.net> 1.5.5-1
+* Tue Sep 11 2012 O.Sezer <sezero@users.sourceforge.net> 1.5.5-1
+- Adjusted gamedata resource installation after txt->res rename
 - Adjusted h2ded build and installation after moved Makefile.sv
 - Bump version to 1.5.5
 

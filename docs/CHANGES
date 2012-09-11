@@ -3,6 +3,9 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2012-09-11 (SVN):
+    * gamecode: renamed the txt directory to res. adjusted the rpm spec.
+
 2012-09-10 (SVN):
     * utils, hcc: Added "-old" command line option, which restores the
       old hcc behavior of letting the STR_ constants and precache_file()
