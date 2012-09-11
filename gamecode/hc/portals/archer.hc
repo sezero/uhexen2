@@ -627,7 +627,7 @@ void archerdraw () [++ $tranA1..$tranA13]
 			if (random() < .70)	
 				sound (self, CHAN_BODY, "archer/growl2.wav", 1, ATTN_NORM);
 			else
- 				sound (self, CHAN_BODY, "archer/growl3.wav", 1, ATTN_NORM);
+				sound (self, CHAN_BODY, "archer/growl3.wav", 1, ATTN_NORM);
 		}
 	}
 }
@@ -654,7 +654,7 @@ void archer_run(void)
 			if (random() < .70)	
 				sound (self, CHAN_BODY, "archer/growl2.wav", 1, ATTN_NORM);
 			else
- 				sound (self, CHAN_BODY, "archer/growl3.wav", 1, ATTN_NORM);
+				sound (self, CHAN_BODY, "archer/growl3.wav", 1, ATTN_NORM);
 		}
 	}
 
@@ -691,7 +691,7 @@ void archer_walk(void) [++ $patrol1..$patrol22]
 			if (random() < .70)	
 				sound (self, CHAN_BODY, "archer/growl2.wav", 1, ATTN_NORM);
 			else
- 				sound (self, CHAN_BODY, "archer/growl3.wav", 1, ATTN_NORM);
+				sound (self, CHAN_BODY, "archer/growl3.wav", 1, ATTN_NORM);
 		}
 	}	
 

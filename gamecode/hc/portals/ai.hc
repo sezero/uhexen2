@@ -556,7 +556,7 @@ void(float dist) ai_walk =
 	MonsterCheckContents();
 
 	movedist = dist;
-	
+
 	// check for noticing a player
 //THE PIT!
 	if(world.model=="maps/monsters.bsp")
@@ -693,7 +693,7 @@ float() CheckAnyAttack =
 
 	if(self.classname=="monster_medusa")
 	{
-		dprint("medusa checking\n");
+//		dprint("medusa checking\n");
 		return MedusaCheckAttack();
 	}
 
@@ -1192,7 +1192,7 @@ vector org;
 		{
 			newmis.classname = "monster_archer_ice";
 			newmis.think = monster_archer_ice;
-		}							   
+		}
 		else if (rnd==ICE_IMP)
 		{
 			newmis.classname = "monster_imp_ice";
@@ -1232,7 +1232,7 @@ vector org;
 				newmis.classname = "monster_imp_fire";
 				newmis.think = monster_imp_fire;
 			}
-		}							   
+		}
 		else if (rnd==ARCHER)
 		{
 			newmis.classname = "monster_archer";
@@ -1281,7 +1281,6 @@ vector org;
 			}
 		}
 	}
-
 
 	self.controller.goalentity=newmis;
 	setorigin(newmis,org);

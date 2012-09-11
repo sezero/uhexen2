@@ -51,8 +51,8 @@ void Init_Torch ()
 			dprint(ftos(self.style));
 			dprint(": Bad lightstyle for breakable torch\n");
 		}
-		else 
-			makestatic (self);
+		else
+			makestatic(self);
 	}
 }
 

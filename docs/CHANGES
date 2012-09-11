@@ -4,6 +4,10 @@ Development Progress	:
 ---------------------------
 
 2012-09-11 (SVN):
+    * gamecode, *.hc: commented out several dprints, several whitespace
+      adjustments.
+
+2012-09-11 (SVN):
     * gamecode, setstaff.hc (scarab_die): fixed a typo in chain removal
       code. the bug was at least as old as v0.42 of hexen2. noticed the
       fix in hexenworld.

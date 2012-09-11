@@ -633,6 +633,7 @@ void LinkDoors()
 
 	if (self.enemy)
 		return;		// already linked by another door
+
 	if (self.spawnflags & 4)
 	{
 		self.owner = self.enemy = self;

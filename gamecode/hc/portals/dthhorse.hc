@@ -173,14 +173,14 @@ void fire_circ_hit ()
 
 void firecirc_fall_think()
 {
-	if(self.enemy)
-		if (self.lifetime < time || vlen(self.enemy.origin - self.origin) < 40)
-		{
-			other=self.enemy;
-			self.think=self.touch;
-			thinktime self : 0;
-			return;
-		}
+    if(self.enemy)
+	if (self.lifetime < time || vlen(self.enemy.origin - self.origin) < 40)
+	{
+		other=self.enemy;
+		self.think=self.touch;
+		thinktime self : 0;
+		return;
+	}
 
 	HomeThink();
 	self.angles=vectoangles(self.velocity);

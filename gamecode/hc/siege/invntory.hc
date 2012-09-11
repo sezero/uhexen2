@@ -599,15 +599,15 @@ void UseBlast (void)
 
 		if (victim.classname=="tornato" && victim.enemy.flags2&FL_ALIVE)
 			victim.enemy.flags2(+)FL_TORNATO_SAFE;
+
 //		if(victim.classname=="swarm")
 //		{
 //			victim.think=hive_die;
 //			thinktime victim : 0;
-//		} 
-
+//		}
 
 		victim = victim.chain;
-   }
+	}
 
 	if(self.v_angle_x > 30)
 	{
@@ -620,7 +620,6 @@ void UseBlast (void)
 			self.velocity_z += 300 * sin(self.v_angle_x);
 		}
 	}
-
 }
 
 void jail_touch ()

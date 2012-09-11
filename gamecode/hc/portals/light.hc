@@ -268,10 +268,10 @@ void() light_globe =
 		if(deathmatch||teamplay)
 			makestatic (self);
 		else
-	{
-		self.solid=SOLID_NOT;
-		self.movetype=MOVETYPE_NONE;
-	}
+		{
+			self.solid=SOLID_NOT;
+			self.movetype=MOVETYPE_NONE;
+		}
 	}
 };
 */

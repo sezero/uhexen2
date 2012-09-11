@@ -129,7 +129,6 @@ deactivated - button must be activated before it will work
 */
 void() func_button =
 {
-
 	if (self.soundtype == 0)
 	{
 		precache_sound ("buttons/button1.wav");
@@ -277,13 +276,14 @@ entity found;
 				if(found_bottom_y>self.absmin_y&&found_bottom_y<self.absmax_y)
 					if(found_bottom_z>=self.absmax_z - 3&&found_bottom_z<=self.absmax_z+7)
 						return TRUE;
-/*					else
+			/*		else
 						dprint("Not right height\n");
 				else
 					dprint("Not right y\n");
 			else
 				dprint("Not right x\n");
-*/		found=found.chain;
+			*/
+		found=found.chain;
 	}
 	return FALSE;
 }
@@ -423,8 +423,6 @@ Indestructible barrel mass = 95
 */
 void func_pressure (void)
 {
-//local float		gtemp, ftemp;
-
 	if (self.soundtype == 0)
 	{
 		precache_sound ("buttons/airbut1.wav");

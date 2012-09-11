@@ -64,20 +64,22 @@ void (vector endpos) ThroughWaterZap =
 {
 entity waterloser, attacker;
 float damg;
-    waterloser = spawn();        
-    setorigin (waterloser, endpos);
+	waterloser = spawn();
+	setorigin (waterloser, endpos);
 	if(self.classname=="mjolnir")
 		damg=128;
 	else
 		damg=666*2;
 	attacker=self;
 	if(self.classname!="player")
+	{
 		if(self.owner.classname=="player")
 			attacker=self.owner;
 		else if(self.controller.classname=="player")
 			attacker=self.controller;
-     T_RadiusDamageWater (waterloser, self, damg,self);
-		remove (waterloser);
+	}
+	T_RadiusDamageWater (waterloser, self, damg,self);
+	remove (waterloser);
 };
 
 void (vector startpos) ThroughWater =

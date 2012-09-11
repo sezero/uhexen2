@@ -483,12 +483,12 @@ void UseBlast (void)
 			victim.think=hive_die;
 			thinktime victim : 0;
 		}
-	
+
 		if(victim.classname=="pincer")
 			victim.enemy=victim.owner;
 
 		victim = victim.chain;
-   }
+	}
 
 	self.cnt_blast -= 1;
 }

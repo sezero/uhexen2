@@ -524,7 +524,8 @@ entity() SelectSpawnPoint =
 						thing = world;
 						ok = FALSE;
 					}
-					else thing = thing.chain;
+					else
+						thing = thing.chain;
 				}
 				if (ok)
 				{
@@ -1476,7 +1477,8 @@ void() PlayerPreThink =
 {
 	vector	spot1, spot2;	
 
-	if (!self.flags & FL_INWATER) self.aflag = 0;
+	if (!self.flags & FL_INWATER)
+		self.aflag = 0;
 
 //	dprint(teststr[1]);
 //	dprint("\n");
@@ -1933,9 +1935,11 @@ void PlayerTouch (void)
 
 	if(other==world)
 		return;
+
 	if(self.flags&FL_ONGROUND)
 		return;
-	else if((other.classname=="player"||other.flags&FL_ONGROUND||other.health)&&self.origin_z>=(other.absmin_z+other.absmax_z)*0.5&&self.velocity_z<10)
+
+	if((other.classname=="player"||other.flags&FL_ONGROUND||other.health)&&self.origin_z>=(other.absmin_z+other.absmax_z)*0.5&&self.velocity_z<10)
 		self.flags(+)FL_ONGROUND;
 }
 
@@ -2151,20 +2155,16 @@ string deathstring, deathstring2,iclass;
 				if(tclass==CLASS_ASSASSIN)
 					deathstring = " lost her head over ";
 				else
-					deathstring = "lost his head over ";
+					deathstring = " lost his head over ";
+				deathstring2 = "!\n";
 			}
 			else if (targ.decap==2)
 			{
 				if (tclass==CLASS_ASSASSIN)
-				{
 					deathstring = " got her head blown clean off by ";
-					deathstring2 = "!\n";
-				}
 				else
-				{
 					deathstring = " got his head blown clean off by ";
-					deathstring2 = "!\n";
-				}
+				deathstring2 = "!\n";
 			}
 			else if (iclass=="cube_of_force")
 			{

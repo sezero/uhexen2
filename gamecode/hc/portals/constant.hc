@@ -377,7 +377,7 @@ float	STATE_UP					= 2;
 float	STATE_DOWN					= 3;
 float	STATE_MOVING				= 4;
 
-vector	VEC_ORIGIN				= '0.000000000000000000 0.0000000000000000000 0.0000000000000000000000';
+vector	VEC_ORIGIN				= '0 0 0';
 //vector	VEC_HULL_MIN			= '-16 -16 -24';
 //vector	VEC_HULL_MAX			= '16 16 32';
 
@@ -531,7 +531,7 @@ float	EF_DARKLIGHT				= 16;
 float	EF_DARKFIELD				= 32;
 float	EF_LIGHT					= 64;
 float	EF_NODRAW					= 128;
-float   EF_TEX_STOPF				= 256;
+float	EF_TEX_STOPF				= 256;
 float	EF_TEX_STOPL				= 528;
 
 // messages
@@ -542,7 +542,7 @@ float	MSG_ALL						= 2;		// reliable to all
 
 //float STEP_HEIGHT					= 18;		// Max step height
 
-// monster AI states 
+// monster AI states
 float AI_DECIDE						=    0;		// An action was just finished - time to decide what to do
 float AI_STAND						=    1;		// Standing guard
 float AI_WALK						=    2;		// Walking

@@ -597,9 +597,7 @@ void door_trigger_touch()
 			return;
 		}
 	}
-	
 	self.attack_finished = time + 1;
-
 	activator	= other;
 	door_use();
 }
@@ -632,7 +630,7 @@ void door_touch()
 	float removepp, inversepp;
 
 //	dprint("Door hit!\n");
-	//	if(!other.flags2&FL_ALIVE)
+//	if(!other.flags2&FL_ALIVE)
 //		return;
 
 	if(!other.flags&FL_CLIENT&&!other.flags&FL_MONSTER)
@@ -1086,10 +1084,8 @@ float movedist, num_axes;
 
 	if (!self.wait)
 		self.wait = 3;
-
 	if (!self.lip)
 		self.lip = 8;
-
 	if(world.spawnflags&MISSIONPACK)
 		self.blocked = door_blocked_mp;
 	else

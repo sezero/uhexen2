@@ -916,7 +916,7 @@ void monster_medusa_green (void)
 	self.speed=5;
 	self.yaw_speed = 5;
 	self.classname="monster_medusa";
-	self.health = 700; 
+	self.health = 700;
 	self.experience_value = 500;
 
 	self.th_stand=medusa_stand;
@@ -950,6 +950,6 @@ void monster_medusa_red (void)
 {
 //	self.skin=1;
 	monster_medusa_green();
-	self.health = 250; 
+	self.health = 250;
 	self.experience_value = 125;
 }

@@ -479,11 +479,10 @@ The monster is walking it's beat
 */
 void(float dist) ai_walk =
 {
-	
 	MonsterCheckContents();
 
 	movedist = dist;
-	
+
 	// check for noticing a player
 	if (FindTarget (FALSE))
 		return;
@@ -938,7 +937,7 @@ vector org;
 			newmis.classname = "monster_imp_fire";
 			newmis.think = monster_imp_fire;
 		}
-	}							   
+	}
 	else if (rnd==ARCHER)
 	{
 		newmis.classname = "monster_archer";
@@ -1107,7 +1106,7 @@ void func_monsterspawn_spot (void)
 
 	if(!self.aflag)
 	{
-		dprint("Ooo!  You didn't include me in the spawn cycle!  FIXME!\n");
+//		dprint("Ooo!  You didn't include me in the spawn cycle!  FIXME!\n");
 		remove(self);
 	}
 	if(!self.cnt)
@@ -1116,7 +1115,7 @@ void func_monsterspawn_spot (void)
 
 	if(!monster_spawn_precache())
 	{
-		dprint("You didn't give me any monsters to spawn!!!\n");
+//		dprint("You didn't give me any monsters to spawn!!!\n");
 		remove(self);
 	}
 

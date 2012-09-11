@@ -150,13 +150,14 @@ void artifact_touch()
 		else
 			other.cnt_invincibility += 1;
 	}
-/*	else if(self.classname == "art_sword_and_crown")
+	/*
+	else if(self.classname == "art_sword_and_crown")
 	{
 		centerprint(other,"You are victorious!\n");
 		bprint(other.netname);
 		bprint(" has captured the Crown!\n");
-	} */
-
+	}
+	*/
 
 	amount = random();
 	if (amount < 0.5)
@@ -228,7 +229,6 @@ void GenerateArtifactModel(string modelname,string art_name,float respawnflag)
 {
 	if (respawnflag)	// Should this thing respawn
 		self.artifact_respawn = deathmatch;
-
 	setmodel(self, modelname);
 	self.netname = art_name;
 

@@ -217,8 +217,8 @@ vector vec;
 
 void() fangel_init =
 {  // Set the fallen angel ready
-	dprint(self.enemy.classname);
-	dprint("- Found enemy\n");
+//	dprint(self.enemy.classname);
+//	dprint("- Found enemy\n");
 	self.ideal_yaw = vectoyaw(self.enemy.origin - self.origin);
 	self.think=self.th_stand;
 	thinktime self : random(.1,.6);
@@ -376,7 +376,7 @@ void fangel_move (float thrust)
 
 	if (self.monster_stage == FANGEL_STAGE_WAIT)
 	{
-		dprint("Waiting\n");
+//		dprint("Waiting\n");
 		fangel_wait();
 		return;
 	}
@@ -807,7 +807,7 @@ void() init_fangel =
 	precache_model2 ("models/fablade.mdl");
 	precache_model2 ("models/h_fangel.mdl");
 
-    precache_sound2("fangel/fly.wav");
+	precache_sound2("fangel/fly.wav");
 	precache_sound2("fangel/deflect.wav");
 	precache_sound2("fangel/hand.wav");
 	precache_sound2("fangel/wing.wav");

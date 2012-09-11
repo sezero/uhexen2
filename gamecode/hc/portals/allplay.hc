@@ -132,16 +132,17 @@ void player_pain (entity attacker,float total_damage)
 //		return;
 
 	if(self.playerclass==CLASS_SUCCUBUS)
+	{
 	//	if(self.flags&FL_SPECIAL_ABILITY2)
-/*	Pa3PyX: Made this work only when low on health (less than half),
+	/* Pa3PyX:
+		Made this work only when low on health (less than half),
 		as described in the manual:  "This is purely a survival
 		measure and occurs only when her health is low."
 		Amounts were apparently botched, so new skill stats:
 		clvl         |    6|    7|    8|    9|  10+
 		-------------+-----+-----+-----+-----+-----
 		%absorb:blue |   20|   40|   60|   80|  100
-		%absorb:green|    0|   25|   50|   75|  100
-*/
+		%absorb:green|    0|   25|   50|   75|  100		*/
 		if ((self.flags & FL_SPECIAL_ABILITY2) &&
 		    (self.health < self.max_health / 2.0))
 		{//Sound &/or effect?
@@ -155,22 +156,22 @@ void player_pain (entity attacker,float total_damage)
 			//	if(self.level>6)
 			//		self.greenmana+=total_damage*(self.level - 2/10);
 			//	self.bluemana+=total_damage*(self.level/10);
-		/*	Pa3PyX:	This is wrong, green mana should not fill up
+			/*	Pa3PyX:
+				This is wrong, green mana should not fill up
 				from zero in 3 archer hits. The intention was
 				was probably (l - 2)/10 rather than l - 2/10.
-				We'll make both grow from zero at clvl 5 and
-				7 resp to total damage at clvl 10.
-		*/
-				self.bluemana += total_damage * (self.level - 5) / 5.0;
-				if (self.level > 6) {
-					self.greenmana += total_damage * (self.level - 6) / 4.0;
-				}
+				We'll make both grow from zero at clvl 5 and 7
+				resp to total damage at clvl 10.		*/
+				self.bluemana+=total_damage*(self.level - 5)/5;
+				if (self.level>6)
+					self.greenmana+=total_damage*(self.level - 6)/4;
 			}
 			if(self.bluemana>self.max_mana)
 				self.bluemana=self.max_mana;
 			if(self.greenmana>self.max_mana)
 				self.greenmana=self.max_mana;
 		}
+	}
 
 	if (self.last_attack + 0.5 > time || self.button0)
 		return;

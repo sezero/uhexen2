@@ -260,9 +260,9 @@ vector randomvec;
 
 	if(other.takedamage)
 	{
-		dprint("Doing damage\n");
+//		dprint("Doing damage\n");
 		T_Damage(other, self,self.owner,self.dmg*2);
-		dprint("Doing effects\n");
+//		dprint("Doing effects\n");
 		randomvec=randomv('-20 -20 -20','20 20 20');
 		starteffect(CE_GHOST, self.origin-self.movedir*8+randomvec,'0 0 30'+randomvec, 0.1);
 		randomvec=randomv('-20 -20 -20','20 20 20');
@@ -273,16 +273,16 @@ vector randomvec;
 		starteffect(CE_GHOST, self.origin-self.movedir*8+randomvec,'0 0 30'+randomvec, 0.1);
 	}
 	self.flags2(+)FL2_ADJUST_MON_DAM;
-	dprint("Doing radius damage\n");
+//	dprint("Doing radius damage\n");
 	T_RadiusDamage(self,self.owner,self.dmg,other);
 
 	self.solid=SOLID_NOT;
-	dprint("shattering\n");
+//	dprint("shattering\n");
 	bone_shatter();
-	dprint("Doing final effect\n");
+//	dprint("Doing final effect\n");
 	starteffect(CE_BONE_EXPLOSION, self.origin-self.movedir*6,'0 0 0', HX_FRAME_TIME);
 	particle4(self.origin,50,random(368,384),PARTICLETYPE_GRAV,10);
-	dprint("removing\n");
+//	dprint("removing\n");
 	remove(self);	
 }
 /*
@@ -312,7 +312,6 @@ void bone_smoke_fade ()
 		remove(self);
 }
 
-
 void MakeBoneSmoke ()
 {
 entity smoke;
@@ -330,8 +329,6 @@ entity smoke;
 	smoke.think=bone_smoke_fade;
 	thinktime smoke : 0.05;
 }
-
-
 
 void bone_smoke ()
 {

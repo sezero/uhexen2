@@ -1678,7 +1678,7 @@ float total;
 		}
 		else
 		{
-//			dprint("Bad backpack!");
+			dprint("Bad backpack!");
 			remove(item);
 			self = old_self;
 			return;

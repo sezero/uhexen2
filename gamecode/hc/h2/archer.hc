@@ -609,7 +609,6 @@ void archerdraw () [++ $tranA1..$tranA13]
 				sound (self, CHAN_BODY, "archer/growl2.wav", 1, ATTN_NORM);
 			else
 				sound (self, CHAN_BODY, "archer/growl3.wav", 1, ATTN_NORM);
-
 		}
 	}
 }

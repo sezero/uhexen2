@@ -45,7 +45,7 @@ void SetMovedir()
 		self.movedir = '0 0 1';
 	else if(self.angles == '0 -2 0')
 		self.movedir = '0 0 -1';
-	else 
+	else
 	{
 		makevectors(self.angles);
 		self.movedir = v_forward;
@@ -57,7 +57,7 @@ void SetMovedir()
 		if(fabs(self.movedir_z)<0.001)
 			self.movedir_z=0;
 	}
-	
+
 	self.angles = '0 0 0';
 }
 
@@ -467,13 +467,14 @@ string s;
 //
 // print the message
 //
-	if(activator.classname == "player"&& self.message != 0)
+	if(activator.classname == "player" && self.message != 0)
 	{
 		s = getstring(self.message);
 		centerprint (activator, s);
 		if(!self.noise)
 			sound (activator, CHAN_VOICE, "misc/comm.wav", 1, ATTN_NORM);
 	}
+
 //
 // kill the killtargets
 //

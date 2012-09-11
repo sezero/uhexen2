@@ -557,7 +557,8 @@ entity() SelectSpawnPoint =
 						thing = world;
 						ok = FALSE;
 					}
-					else thing = thing.chain;
+					else
+						thing = thing.chain;
 				}
 				if (ok)
 				{
@@ -1673,7 +1674,8 @@ void() PlayerPreThink =
 		}
 	}
 */
-	if (!self.flags & FL_INWATER) self.aflag = 0;
+	if (!self.flags & FL_INWATER)
+		self.aflag = 0;
 
 //	dprint(teststr[1]);
 //	dprint("\n");

@@ -172,14 +172,13 @@ void() execute_changelevel =
 	while (other != world)
 	{
 //		other.sv_flags=serverflags;
-		
-		dprint("Other model = ");
-		dprint(other.model);
-		dprint("\n");
 
+//		dprint("Other model = ");
+//		dprint(other.model);
+//		dprint("\n");
 		if(other.model=="models/sheep.mdl")
 			unsheep(other);
-		
+
 		thinktime other : 0.5;
 		other.takedamage = DAMAGE_NO;
 		other.solid = SOLID_NOT;
@@ -1674,7 +1673,7 @@ void() PlayerPreThink =
 			setorigin(self,self.oldorigin);
 		}
 	}
-	if (!self.flags & FL_INWATER) 
+	if (!self.flags & FL_INWATER)
 		self.aflag = 0;
 
 	if (intermission_running)
@@ -2502,7 +2501,7 @@ string deathstring, deathstring2,iclass;
 			if(attacker.model=="models/sheep.mdl")
 			{
 				deathstring = " was nibbled to death by ";
-				deathstring2 = "the sheep!!\n";
+				deathstring2 = " the sheep!!\n";
 			}
 			else if(targ.decap==1)
 			{
@@ -2515,13 +2514,9 @@ string deathstring, deathstring2,iclass;
 			else if (targ.decap==2)
 			{
 				if (tclass==CLASS_ASSASSIN||tclass==CLASS_SUCCUBUS)
-				{
 					deathstring = " got her head blown clean off by ";
-				}
 				else
-				{
 					deathstring = " got his head blown clean off by ";
-				}
 				deathstring2 = "!\n";
 			}
 			else if (iclass=="cube_of_force")

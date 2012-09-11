@@ -69,8 +69,8 @@ void (vector endpos) ThroughWaterZap =
 {
 	entity waterloser, attacker;
 	float damg;
-    waterloser = spawn();        
-    setorigin (waterloser, endpos);
+	waterloser = spawn();
+	setorigin (waterloser, endpos);
 	if(self.classname=="mjolnir")
 		damg=128;
 	else
@@ -97,9 +97,9 @@ float mover;
         mover = mover - 10;
         endpos = startpos + v_forward * mover;
         if (pointcontents(endpos) == CONTENT_WATER || pointcontents(endpos) == CONTENT_SLIME)
-			ThroughWaterZap(endpos);
+                ThroughWaterZap(endpos);
         else if (pointcontents(endpos) == CONTENT_SOLID)
-			return;
+                return;
     }
 };
 

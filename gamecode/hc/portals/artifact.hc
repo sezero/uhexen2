@@ -156,8 +156,7 @@ void artifact_touch()
 		centerprint(other,"You are victorious!\n");
 		bprint(other.netname);
 		bprint(" has captured the Crown!\n");
-	} 
-
+	}
 
 	amount = random();
 	if (amount < 0.5)
@@ -230,7 +229,6 @@ void GenerateArtifactModel(string modelname,string art_name,float respawnflag)
 	if (respawnflag)	// Should this thing respawn
 	{
 		self.artifact_respawn = deathmatch;
-		
 		if((art_name==STR_TOME||art_name==STR_MANABOOST)&&mapname=="tibet10")
 			self.artifact_respawn = TRUE;
 		else if((art_name==STR_HEALTHBOOST||art_name==STR_MANABOOST)&&skill>3)

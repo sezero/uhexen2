@@ -583,7 +583,6 @@ void GenerateArtifactModel(string modelname,float art_name,float respawnflag)
 {
 	if (respawnflag)	// Should this thing respawn
 		self.artifact_respawn = deathmatch;
-
 	setmodel(self, modelname);
 	self.artifact_name = art_name;
 	self.netname = "artifact";

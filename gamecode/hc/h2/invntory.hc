@@ -441,14 +441,15 @@ void UseBlast (void)
 
 		if (victim.classname=="tornato" && victim.enemy.flags2&FL_ALIVE)
 			victim.enemy.flags2(+)FL_TORNATO_SAFE;
+
 		if(victim.classname=="swarm")
 		{
 			victim.think=hive_die;
 			thinktime victim : 0;
-		} 
+		}
 
 		victim = victim.chain;
-   }
+	}
 
 	self.cnt_blast -= 1;
 }

@@ -40,11 +40,12 @@ void SetMovedir()
 		self.movedir = '0 0 1';
 	else if(self.angles == '0 -2 0')
 		self.movedir = '0 0 -1';
-	else {
+	else
+	{
 		makevectors(self.angles);
 		self.movedir = v_forward;
-		}
-	
+	}
+
 	self.angles = '0 0 0';
 }
 
@@ -416,12 +417,13 @@ string s;
 	if(self.killtarget)
 	{
 		t = world;
-		do {
+		do
+		{
 			t = find(t, targetname, self.killtarget);
 			if(t!=world)
 				remove(t);
-			}
-			while(t!=world);
+		}
+		while(t!=world);
 	}
 
 //

@@ -122,8 +122,6 @@ deactivated - button must be activated before it will work
 */
 void() func_button =
 {
-//	local float		gtemp, ftemp;
-
 	if (self.soundtype == 0)
 	{
 		precache_sound ("buttons/button1.wav");
@@ -415,8 +413,6 @@ Indestructible barrel mass = 95
 */
 void func_pressure (void)
 {
-//local float		gtemp, ftemp;
-
 	if (self.soundtype == 0)
 	{
 		precache_sound ("buttons/airbut1.wav");

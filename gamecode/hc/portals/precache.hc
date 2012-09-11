@@ -37,54 +37,54 @@ void Precache_lmp (void)
 	precache_file ("puzzles.txt");
 
 	precache_file ("gfx/menu/fontsize.lmp");
-	precache_file ("gfx/menu/backtile.lmp");         
-	precache_file ("gfx/menu/bigfont.lmp");        
-	precache_file ("gfx/menu/bigfont2.lmp");        
-	precache_file ("gfx/menu/conback.lmp");        
+	precache_file ("gfx/menu/backtile.lmp");
+	precache_file ("gfx/menu/bigfont.lmp");
+	precache_file ("gfx/menu/bigfont2.lmp");
+	precache_file ("gfx/menu/conback.lmp");
 	precache_file4 ("gfx/menu/conchars.lmp");		//updated for mission pack
 	precache_file ("gfx/menu/help01.lmp");
 	precache_file ("gfx/menu/help02.lmp");
-	precache_file ("gfx/menu/help03.lmp");        
-	precache_file ("gfx/menu/help04.lmp");        
-	precache_file ("gfx/menu/help05.lmp");        
-	precache_file ("gfx/menu/hplaque.lmp");         
-	precache_file ("gfx/menu/load.lmp");         
-	precache_file ("gfx/menu/loading.lmp");        
-	precache_file ("gfx/menu/menudot1.lmp");         
-	precache_file ("gfx/menu/menudot2.lmp");         
-	precache_file ("gfx/menu/menudot3.lmp");         
-	precache_file ("gfx/menu/menudot4.lmp");         
-	precache_file ("gfx/menu/menudot5.lmp");         
-	precache_file ("gfx/menu/menudot6.lmp");         
-	precache_file ("gfx/menu/menudot7.lmp");         
-	precache_file ("gfx/menu/menudot8.lmp");         
-	precache_file ("gfx/menu/paused.lmp");        
-	precache_file ("gfx/menu/save.lmp");         
-	precache_file ("gfx/menu/skull0.lmp");           
-	precache_file ("gfx/menu/skull1.lmp");           
-	precache_file ("gfx/menu/skull10.lmp");           
-	precache_file ("gfx/menu/skull11.lmp");           
-	precache_file ("gfx/menu/skull12.lmp");          
-	precache_file ("gfx/menu/skull13.lmp");           
-	precache_file ("gfx/menu/skull14.lmp");           
-	precache_file ("gfx/menu/skull15.lmp");           
-	precache_file ("gfx/menu/skull16.lmp");           
-	precache_file ("gfx/menu/skull17.lmp");           
-	precache_file ("gfx/menu/skull2.lmp");           
-	precache_file ("gfx/menu/skull3.lmp");           
-	precache_file ("gfx/menu/skull4.lmp");           
-	precache_file ("gfx/menu/skull5.lmp");           
-	precache_file ("gfx/menu/skull6.lmp");           
-	precache_file ("gfx/menu/skull7.lmp");           
-	precache_file ("gfx/menu/skull8.lmp");           
-	precache_file ("gfx/menu/skull9.lmp");           
-	precache_file ("gfx/menu/title0.lmp");         
-	precache_file ("gfx/menu/title1.lmp");         
-	precache_file ("gfx/menu/title2.lmp");         
-	precache_file ("gfx/menu/title3.lmp");         
-	precache_file ("gfx/menu/title4.lmp");        
-	precache_file ("gfx/menu/title5.lmp");        
-	precache_file ("gfx/menu/title6.lmp");        
+	precache_file ("gfx/menu/help03.lmp");
+	precache_file ("gfx/menu/help04.lmp");
+	precache_file ("gfx/menu/help05.lmp");
+	precache_file ("gfx/menu/hplaque.lmp");
+	precache_file ("gfx/menu/load.lmp");
+	precache_file ("gfx/menu/loading.lmp");
+	precache_file ("gfx/menu/menudot1.lmp");
+	precache_file ("gfx/menu/menudot2.lmp");
+	precache_file ("gfx/menu/menudot3.lmp");
+	precache_file ("gfx/menu/menudot4.lmp");
+	precache_file ("gfx/menu/menudot5.lmp");
+	precache_file ("gfx/menu/menudot6.lmp");
+	precache_file ("gfx/menu/menudot7.lmp");
+	precache_file ("gfx/menu/menudot8.lmp");
+	precache_file ("gfx/menu/paused.lmp");
+	precache_file ("gfx/menu/save.lmp");
+	precache_file ("gfx/menu/skull0.lmp");
+	precache_file ("gfx/menu/skull1.lmp");
+	precache_file ("gfx/menu/skull10.lmp");
+	precache_file ("gfx/menu/skull11.lmp");
+	precache_file ("gfx/menu/skull12.lmp");
+	precache_file ("gfx/menu/skull13.lmp");
+	precache_file ("gfx/menu/skull14.lmp");
+	precache_file ("gfx/menu/skull15.lmp");
+	precache_file ("gfx/menu/skull16.lmp");
+	precache_file ("gfx/menu/skull17.lmp");
+	precache_file ("gfx/menu/skull2.lmp");
+	precache_file ("gfx/menu/skull3.lmp");
+	precache_file ("gfx/menu/skull4.lmp");
+	precache_file ("gfx/menu/skull5.lmp");
+	precache_file ("gfx/menu/skull6.lmp");
+	precache_file ("gfx/menu/skull7.lmp");
+	precache_file ("gfx/menu/skull8.lmp");
+	precache_file ("gfx/menu/skull9.lmp");
+	precache_file ("gfx/menu/title0.lmp");
+	precache_file ("gfx/menu/title1.lmp");
+	precache_file ("gfx/menu/title2.lmp");
+	precache_file ("gfx/menu/title3.lmp");
+	precache_file ("gfx/menu/title4.lmp");
+	precache_file ("gfx/menu/title5.lmp");
+	precache_file ("gfx/menu/title6.lmp");
 	precache_file ("gfx/menu/title7.lmp");
 	precache_file ("gfx/menu/title8.lmp");
 	
@@ -492,7 +492,7 @@ void Precache_wav (void)
 {
 	precache_sound ("raven/kiltorch.wav");	// player torch dying
 	precache_sound ("raven/littorch.wav");	// player torch being lit
-	precache_sound ("raven/fire1.wav");    // player torch burning
+	precache_sound ("raven/fire1.wav");	// player torch burning
 
 //Miscellaneous
 	precache_sound ("misc/drip.wav");		//Ambience
@@ -516,8 +516,8 @@ void Precache_wav (void)
 	precache_sound ("misc/teleprt5.wav");
 	precache_sound ("misc/comm.wav");		// communication
 	precache_sound ("raven/squawk.wav");	//Ambient raven
-	precache_sound ("raven/blast.wav");	
-	precache_sound ("doors/baddoor.wav");   // Bad attempt to open a door
+	precache_sound ("raven/blast.wav");
+	precache_sound ("doors/baddoor.wav");	// Bad attempt to open a door
 	precache_sound ("buttons/switch04.wav");	// used by the trip mine
 
 //FX
@@ -546,7 +546,7 @@ void Precache_wav (void)
 	precache_sound ("items/ringpkup.wav");		// Picking up a ring
 	precache_sound ("items/artpkup.wav");
 	precache_sound ("items/armrpkup.wav");
-	precache_sound ("misc/warning.wav");   //glyph about to explode
+	precache_sound ("misc/warning.wav");	//glyph about to explode
 	precache_sound ("golem/gbfire.wav");	//force cube
 	precache_sound4 ("misc/cubehum.wav");	//force cube
 	precache_sound4 ("misc/Beep1.wav");	//force cube
@@ -595,8 +595,8 @@ void Precache_wav (void)
 //Weapon sounds
 	//Gauntlets
 	precache_sound ("weapons/gaunt1.wav");		//SHARED!
-	precache_sound ("weapons/gauntht1.wav");	//SHARED!	
-	precache_sound ("weapons/gauntht2.wav");	//SHARED!	
+	precache_sound ("weapons/gauntht1.wav");	//SHARED!
+	precache_sound ("weapons/gauntht2.wav");	//SHARED!
 	//Vorpal Sword
 	precache_sound ("weapons/vorpswng.wav");	//SHARED! Vorpal sword swinging
 	precache_sound ("weapons/vorpht2.wav");		//SHARED! Vorpal sword hitting something it cannot da
@@ -625,11 +625,11 @@ void Precache_wav (void)
 //CRUSADER
 	//Warhammer
 	precache_sound ("crusader/lghtn1.wav");		//SHARED! (weather)
-	precache_sound ("crusader/lghtn2.wav");		//SHARED! (weather)	
+	precache_sound ("crusader/lghtn2.wav");		//SHARED! (weather)
 	precache_sound ("raven/lightng1.wav");		//SHARED! (weather)
 	//Ice Staff
 	precache_sound ("crusader/icehit.wav");		//SHARED? (ice shatter)
-	precache_sound ("crusader/frozen.wav");		//SHARED! (Monster unfreezing)	
+	precache_sound ("crusader/frozen.wav");		//SHARED! (Monster unfreezing)
 	precache_sound ("misc/icestatx.wav");		//SHARED! Ice statue breaking
 	//Meteor Staff
 	precache_sound ("misc/rubble.wav");		//SHARED chunks, Meteor bits fall, stoned player bits fall (from Medusa)
@@ -996,9 +996,9 @@ void Precache_Demoness (void)
 	precache_model4("models/axplsn_5.spr");
 //Weapon 3
 	precache_model4("models/sucwp3.mdl");
-	precache_model4("models/flamestr.spr"); //demoness
-	precache_model4("models/pow.spr");      //demoness
-	precache_model4("models/firewal1.spr"); //demoness
+	precache_model4("models/flamestr.spr");	//demoness
+	precache_model4("models/pow.spr");	//demoness
+	precache_model4("models/firewal1.spr");	//demoness
 	precache_model4("models/firewal2.spr");
 	precache_model4("models/firewal3.spr");
 	precache_model4("models/fboom.spr");

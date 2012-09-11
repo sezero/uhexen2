@@ -1291,15 +1291,15 @@ void monster_eidolon(void)
     precache_model2 ("models/boss/shaft.mdl");
     precache_model2 ("models/boss/circle.mdl");
     precache_model2 ("models/boss/star.mdl");
-	precache_model2 ("models/xplod29.spr");	//eidolon and purifier
-	precache_model2 ("models/ring.mdl");		//Smoke ring
+    precache_model2 ("models/xplod29.spr");	//eidolon and purifier
+    precache_model2 ("models/ring.mdl");		//Smoke ring
 
 	precache_sound2 ("eidolon/roar.wav");
-	precache_sound2 ("eidolon/pain.wav");		//Hurt
-	precache_sound2 ("eidolon/death.wav");		//Dies- long and agonizing
-	precache_sound2 ("eidolon/fakedie.wav");	//1st death- fake
-	precache_sound2 ("eidolon/spell.wav");		//Spell attack (tracking globes)
-	precache_sound2 ("eidolon/stomp.wav");		//Hot-steppin'
+	precache_sound2 ("eidolon/pain.wav");	//Hurt
+	precache_sound2 ("eidolon/death.wav");	//Dies- long and agonizing
+	precache_sound2 ("eidolon/fakedie.wav");//1st death- fake
+	precache_sound2 ("eidolon/spell.wav");	//Spell attack (tracking globes)
+	precache_sound2 ("eidolon/stomp.wav");	//Hot-steppin'
 	precache_sound2 ("eidolon/fireball.wav");	//Launching Nasty fireballs
 	precache_sound2 ("eidolon/flamstrt.wav");	//
 	precache_sound2 ("eidolon/flambrth.wav");	//

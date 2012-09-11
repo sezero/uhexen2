@@ -950,7 +950,7 @@ void monster_medusa_green (void)
 	self.yaw_speed = 5;
 	self.classname="monster_medusa";
 	if(!self.health)
-		self.health = 700; 
+		self.health = 700;
 	if(!self.max_health)
 		self.max_health=self.health;
 	self.experience_value = 500;
@@ -994,7 +994,7 @@ void monster_medusa_red (void)
 		self.init_org=self.origin;
 	}
 	if(!self.health)
-		self.health = 250; 
+		self.health = 250;
 	if(!self.max_health)
 		self.max_health=self.health;
 	self.experience_value = 125;

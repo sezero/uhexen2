@@ -79,18 +79,18 @@ void PullBack (void)
 		self.enemy.flags2(-)FL_CHAINED;
 		if(self.enemy.flags2&FL_ALIVE)
 		{
-			dprintf("Restoring old movetype: %s\n",self.enemy.oldmovetype);
+//			dprintf("Restoring old movetype: %s\n",self.enemy.oldmovetype);
 			self.enemy.movetype=self.enemy.oldmovetype;
 		}
 		else
 		{
-			dprint("Setting movetype to bounce\n");
+//			dprint("Setting movetype to bounce\n");
 			self.enemy.movetype=MOVETYPE_BOUNCE;
 		}
 		self.enemy=world;
 	}
-	else
-		dprint("No enemy\n");
+//	else
+//		dprint("No enemy\n");
 
 	self.movetype=MOVETYPE_NOCLIP;
 	self.solid=SOLID_NOT;
@@ -131,7 +131,7 @@ vector dir;
 
 		if(self.enemy.health<=self.health/200&&self.frags)
 	    {
-		    T_Damage (self.enemy, self, self.owner, 5000);
+			T_Damage (self.enemy, self, self.owner, 5000);
 			self.lifetime=time+2;
 			self.think=PullBack;
 			thinktime self : 0;
