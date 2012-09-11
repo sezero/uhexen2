@@ -380,8 +380,10 @@ void weapon_touch (void)
 	else
 		leave = 0;
 
-	other.oldweapon = other.weapon;
-
+// this was causing weapon switching to get stuck if several weapons were
+// picked up too fast:
+// http://sourceforge.net/projects/uhexen2/forums/forum/425206/topic/5635367
+//	other.oldweapon = other.weapon;
 
 	new = self.items;
 	// Give player weapon and mana

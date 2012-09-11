@@ -364,10 +364,12 @@ void W_SetCurrentAmmo (void)
 		else if (self.playerclass == CLASS_CRUSADER)
 			icestaff_select();
 		else if (self.playerclass == CLASS_NECROMANCER)
+		{
 			if(self.oldweapon!=IT_WEAPON3)
 				magicmis_select();
 			else
 				magicmis_select_from_bone();
+		}
 	}
 	else if (self.weapon == IT_WEAPON3)
 	{	
@@ -380,10 +382,12 @@ void W_SetCurrentAmmo (void)
 		else if (self.playerclass == CLASS_CRUSADER)
 			meteor_select();
 		else if (self.playerclass == CLASS_NECROMANCER)
+		{
 			if(self.oldweapon!=IT_WEAPON2)
 				boneshard_select();
 			else
 				boneshard_select_from_mmis();
+		}
 	}
 	else if (self.weapon == IT_WEAPON4)
 	{		
@@ -720,8 +724,12 @@ void W_DeselectWeapon (void)
 		else if (self.playerclass==CLASS_ASSASSIN)
 			crossbow_deselect();
 		else if (self.playerclass==CLASS_NECROMANCER)
+		{
 			if(self.weapon!=IT_WEAPON3)
 				magicmis_deselect();
+			else
+				W_SetCurrentAmmo();
+		}
 		else
 			W_SetCurrentAmmo();
 	}
@@ -734,8 +742,12 @@ void W_DeselectWeapon (void)
 		else if (self.playerclass==CLASS_ASSASSIN)
 			grenade_deselect();
 		else if (self.playerclass==CLASS_NECROMANCER)
+		{
 			if(self.weapon!=IT_WEAPON2)
 				boneshard_deselect();
+			else
+				W_SetCurrentAmmo();
+		}
 		else
 			W_SetCurrentAmmo();
 	}

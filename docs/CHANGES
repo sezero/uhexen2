@@ -4,6 +4,17 @@ Development Progress	:
 ---------------------------
 
 2012-09-11 (SVN):
+    * gamecode,h2/items.hc (weapon_touch): commented out other.oldweapon
+      assignment to other.weapon. it was causing weapon switching to get
+      stuck if several weapons were picked up too fast. see:
+      http://sourceforge.net/projects/uhexen2/forums/forum/425206/topic/5635367
+    * gamecode, h2/weapons.hc (W_DeselectWeapon): added else cases
+      for self.oldweapon==IT_WEAPON2 && self.oldweapon!=IT_WEAPON3, and
+      for self.oldweapon==IT_WEAPON3 && self.oldweapon!=IT_WEAPON2 for
+      necromancer class, simply calling W_SetCurrentAmmo() same as the
+      portals and hw versions do.
+
+2012-09-11 (SVN):
     * gamecode, *.hc: commented out several dprints, several whitespace
       adjustments.
 

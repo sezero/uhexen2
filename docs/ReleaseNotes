@@ -39,6 +39,10 @@ Changes in v1.5.5: (Sep. 11, 2012.)
 
 - MorphOS builds: added missing -noixemul to the compiler flags.
 
+- All platforms, gameplay: fixed bug in original hexen2 hcode which used
+  to cause weapon switching to get stuck if several weapons were picked
+  up too fast .
+
 - All platforms, gameplay: fixed a minor bug in assassin's fourth weapon
   in powered mode.
 

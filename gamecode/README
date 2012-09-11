@@ -6,6 +6,15 @@ Changes
 
 2012-09-11 (1.27):
 ===================
+- h2/items.hc (weapon_touch) : commented out other.oldweapon assignment
+  to other.weapon. was causing weapon switching to get stuck if several
+  weapons were picked up too fast. see:
+  http://sourceforge.net/projects/uhexen2/forums/forum/425206/topic/5635367
+- h2/weapons.hc (W_DeselectWeapon): added else cases for the necromancer
+  for self.oldweapon == IT_WEAPON2 && self.oldweapon != IT_WEAPON3, and
+  for self.oldweapon == IT_WEAPON3 && self.oldweapon != IT_WEAPON2,
+  simply calling W_SetCurrentAmmo() same as the portals and hw versions
+  do.
 - setstaff.hc (scarab_die): fixed a typo in chain removal code. the bug
   was at least as old as v0.42 of hexen2. noticed the fix in hexenworld.
 - commented out several dprints, several whitespace adjustments.
