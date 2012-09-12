@@ -4,6 +4,11 @@ Development Progress	:
 ---------------------------
 
 2012-09-12 (SVN):
+    * hw/, siege/world.hc (GetNextMap): start searching strings.txt at
+      line 592 (STR_GOTDEEPFREEZE), not at line 0. that particular line
+      is present in hexenworld versions of strings.txt as standart.
+
+2012-09-12 (SVN):
     * weapons.hc (CycleWeaponCommand,CycleWeaponReverseCommand): removed
       an unnecessary local variable and changed the loop into a while(1)
       loop and simplified a bit. made them to return in in an impossible
