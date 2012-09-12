@@ -950,8 +950,7 @@ void() CycleWeaponCommand =
 	self.impulse = 0;
 	self.items (+) IT_WEAPON1;
 	fl = self.weapon;
-	while (1)
-	{
+	loop /*while (1)*/ {
 		switch (fl)
 		{
 		case IT_WEAPON1:
@@ -997,8 +996,7 @@ void() CycleWeaponReverseCommand =
 	self.impulse = 0;
 	self.items (+) IT_WEAPON1;
 	fl = self.weapon;
-	while (1)
-	{
+	loop /*while (1)*/ {
 		switch (fl)
 		{
 		case IT_WEAPON1:

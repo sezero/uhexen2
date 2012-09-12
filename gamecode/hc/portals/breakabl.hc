@@ -71,8 +71,7 @@ void linkBreakables()
 	starte = self;
 	t = self;
 	
-	do
-	{
+	loop /*do*/ {
 		self.owner = starte;			// master breakable
 
 		if (self.health) starte.health = self.health;
@@ -119,7 +118,7 @@ void linkBreakables()
 			if (t.maxs_z > cmaxs_z)
 				cmaxs_z = t.maxs_z;
 		}
-	} while (1);
+	} /*while (1);*/
 }
 
 

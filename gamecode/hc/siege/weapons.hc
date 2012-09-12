@@ -1345,8 +1345,7 @@ float	it;
 	self.items (+) IT_WEAPON1;
 	it = self.items;
 
-	while (1)
-	{
+	loop /*while (1)*/ {
 		switch (self.weapon)
 		{
 		case IT_WEAPON8:

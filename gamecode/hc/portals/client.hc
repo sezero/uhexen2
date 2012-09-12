@@ -614,8 +614,7 @@ entity() SelectSpawnPoint =
 	{
 	dprint("dmatch start\n");
 		spot = lastspawn;
-		while (1)
-		{
+		loop /*while (1)*/ {
 			spot = find(spot, classname, "info_player_deathmatch");
 			if (spot != world&&random()<0.5)//add some randomness
 			{

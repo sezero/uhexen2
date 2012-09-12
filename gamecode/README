@@ -6,6 +6,8 @@ Changes
 
 2012-09-12 (1.27):
 ===================
+- breakabl.hc,client.hc,doors.hc,subs.hc,weapons.hc,world.hc: replaced
+  several while(1){} and do{}while(1) loops by loop{} which is shorter.
 - hw/world.hc, siege/world.hc (GetNextMap): start searching strings.txt
   at line 592 (STR_GOTDEEPFREEZE), not at line 0. that particular line
   is present in hexenworld versions of strings.txt as standart.

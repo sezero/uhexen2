@@ -521,8 +521,7 @@ string s;
 	{
 		act = activator;
 		t = world;
-		do
-		{
+		loop /*do*/ {
 			t = find (t, targetname, self.target);
 			if (!t)
 			{
@@ -586,7 +585,7 @@ string s;
 			self = stemp;
 			other = otemp;
 			activator = act;
-		} while (1);
+		} /*while (1);*/
 	}
 }
 

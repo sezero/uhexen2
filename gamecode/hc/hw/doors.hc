@@ -800,8 +800,7 @@ vector	cmins, cmaxs;
 	starte = self;
 	t = self;
 	
-	do
-	{
+	loop /*do*/ {
 		self.owner = starte;			// master door
 
 		if (!self.thingtype && self.health)
@@ -857,7 +856,7 @@ vector	cmins, cmaxs;
 			if (t.maxs_z > cmaxs_z)
 				cmaxs_z = t.maxs_z;
 		}
-	} while (1);
+	} /*while (1);*/
 }
 
 void door_sounds(void)

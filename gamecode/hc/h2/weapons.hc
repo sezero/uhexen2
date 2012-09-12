@@ -874,8 +874,7 @@ void() CycleWeaponCommand =
 	self.impulse = 0;
 	self.items (+) IT_WEAPON1;
 	fl = self.weapon;
-	while (1)
-	{
+	loop /*while (1)*/ {
 		if (fl == IT_WEAPON1)
 		{
 			fl = IT_WEAPON2;
@@ -922,8 +921,7 @@ void() CycleWeaponReverseCommand =
 	self.impulse = 0;
 	self.items (+) IT_WEAPON1;
 	fl = self.weapon;
-	while (1)
-	{
+	loop /*while (1)*/ {
 		if (fl == IT_WEAPON1)
 		{
 			fl = IT_WEAPON4;
