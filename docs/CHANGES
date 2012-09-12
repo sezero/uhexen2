@@ -4,6 +4,11 @@ Development Progress	:
 ---------------------------
 
 2012-09-12 (SVN):
+    * h2/items.hc, portals/items.hc (weapon_touch): IT_WEAPON4 must be
+      OR'ed to new items, not added to. fix copied over from hexenworld
+      version.
+
+2012-09-12 (SVN):
     * xcode project file: replaced all snd_mpg123 left-overs by snd_mp3.
 
 2012-09-11 (SVN):

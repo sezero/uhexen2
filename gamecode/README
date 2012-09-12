@@ -4,8 +4,10 @@ Hexen II: Hammer of Thyrion (uHexen2) - GAMECODE
 Changes
 -------
 
-2012-09-11 (1.27):
+2012-09-12 (1.27):
 ===================
+- h2/items.hc, portals/items.hc (weapon_touch): IT_WEAPON4 must be OR'ed
+  to new items, not added to. fix copied over from hexenworld version.
 - h2/items.hc (weapon_touch) : commented out other.oldweapon assignment
   to other.weapon. was causing weapon switching to get stuck if several
   weapons were picked up too fast. see:

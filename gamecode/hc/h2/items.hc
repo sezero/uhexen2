@@ -429,7 +429,7 @@ void weapon_touch (void)
 		other.greenmana += 25;	
 
 		if (other.items & IT_WEAPON4_2)
-		   new += IT_WEAPON4;				
+		   new (+) IT_WEAPON4;				
 
 	}
 	else if (self.classname=="wp_weapon4_staff")
@@ -447,7 +447,7 @@ void weapon_touch (void)
 		other.greenmana += 25;	
 
 		if (other.items & IT_WEAPON4_1)
-		   new += IT_WEAPON4;				
+		   new (+) IT_WEAPON4;				
 
 	}
 	else
