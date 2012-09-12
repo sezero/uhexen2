@@ -3,6 +3,9 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2012-09-12 (SVN):
+    * xcode project file: replaced all snd_mpg123 left-overs by snd_mp3.
+
 2012-09-11 (SVN):
     * gamecode,h2/items.hc (weapon_touch): commented out other.oldweapon
       assignment to other.weapon. it was causing weapon switching to get
