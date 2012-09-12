@@ -868,14 +868,13 @@ Go to the next weapon with ammo
 */
 void() CycleWeaponCommand =
 {
-	float	am,fl;
+	float	fl;
 	if(self.attack_finished>time)
 		return;
 	self.impulse = 0;
 	self.items (+) IT_WEAPON1;
-	am = 1;
 	fl = self.weapon;
-	while (am)
+	while (1)
 	{
 		if (fl == IT_WEAPON1)
 		{
@@ -888,21 +887,27 @@ void() CycleWeaponCommand =
 		else if (fl == IT_WEAPON3)
 		{
 			fl = IT_WEAPON4;
-		}		
+		}
 		else if (fl == IT_WEAPON4)
 		{
 			fl = IT_WEAPON1;
 		}
-		if ((self.items & fl) && ((W_CheckNoAmmo(fl))||((self.playerclass == CLASS_PALADIN)&&(fl==IT_WEAPON2))))
+		else /* ouch !!?? */
 		{
-			am = 0;
+			return;
+		}
+		if (self.items & fl)
+		{
+			if (W_CheckNoAmmo(fl))
+				break;
+			if (self.playerclass == CLASS_PALADIN && fl == IT_WEAPON2)
+				break;
 		}
 	}
 	self.weapon = fl;
-	
 	W_SetCurrentWeapon ();
-	return;
 };
+
 /*
 ============
 CycleWeaponReverseCommand
@@ -911,14 +916,13 @@ Go to the prev weapon with ammo
 */
 void() CycleWeaponReverseCommand =
 {
-	float	am,fl;
+	float	fl;
 	if(self.attack_finished>time)
 		return;
 	self.impulse = 0;
 	self.items (+) IT_WEAPON1;
-	am = 1;
 	fl = self.weapon;
-	while (am)
+	while (1)
 	{
 		if (fl == IT_WEAPON1)
 		{
@@ -931,19 +935,25 @@ void() CycleWeaponReverseCommand =
 		else if (fl == IT_WEAPON3)
 		{
 			fl = IT_WEAPON2;
-		}		
+		}
 		else if (fl == IT_WEAPON4)
 		{
 			fl = IT_WEAPON3;
 		}
-		if ((self.items & fl) && ((W_CheckNoAmmo(fl))||((self.playerclass == CLASS_PALADIN)&&(fl==IT_WEAPON2))))
+		else /* ouch !!?? */
 		{
-			am = 0;
+			return;
+		}
+		if (self.items & fl)
+		{
+			if (W_CheckNoAmmo(fl))
+				break;
+			if (self.playerclass == CLASS_PALADIN && fl == IT_WEAPON2)
+				break;
 		}
 	}
 	self.weapon = fl;
 	W_SetCurrentWeapon ();
-	return;
 };
 
 /*

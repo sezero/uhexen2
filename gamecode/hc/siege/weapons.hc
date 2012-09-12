@@ -1335,7 +1335,7 @@ Go to the next weapon with ammo
 */
 void() CycleWeaponCommand =
 {
-float	it, am;
+float	it;
 
 	if(self.attack_finished>time)
 		return;
@@ -1347,13 +1347,11 @@ float	it, am;
 
 	while (1)
 	{
-		am = 0;
-
 		switch (self.weapon)
 		{
 		case IT_WEAPON8:
 			self.weapon = IT_WEAPON5;
-		break;
+			break;
 		case IT_WEAPON7:
 			switch (self.playerclass)
 			{
@@ -1366,7 +1364,7 @@ float	it, am;
 				self.weapon = IT_WEAPON8;
 				break;
 			}
-		break;
+			break;
 		case IT_WEAPON6:
 			switch (self.playerclass)
 			{
@@ -1379,7 +1377,7 @@ float	it, am;
 				self.weapon = IT_WEAPON7;
 				break;
 			}
-		break;
+			break;
 		case IT_WEAPON5:
 			switch (self.playerclass)
 			{
@@ -1392,7 +1390,7 @@ float	it, am;
 				self.weapon = IT_WEAPON6;
 				break;
 			}
-		break;
+			break;
 		case IT_WEAPON4:
 			switch (self.playerclass)
 			{
@@ -1405,10 +1403,10 @@ float	it, am;
 				self.weapon = IT_WEAPON5;
 				break;
 			}
-		break;
+			break;
 		case IT_WEAPON1:
 			self.weapon = IT_WEAPON2;
-		break;
+			break;
 		case IT_WEAPON2:
 			switch (self.playerclass)
 			{
@@ -1419,7 +1417,7 @@ float	it, am;
 				self.weapon = IT_WEAPON3;
 				break;
 			}
-		break;
+			break;
 		case IT_WEAPON3:
 			switch (self.playerclass)
 			{
@@ -1431,17 +1429,18 @@ float	it, am;
 				self.weapon = IT_WEAPON4;
 				break;
 			}
-		break;
+			break;
+		default: /* ouch !!?? */
+			return;/*self.weapon = IT_WEAPON1;*/
+		    break;
 		}
-	
-		am = W_CheckNoAmmo(self.weapon);
-		if ((it & self.weapon) && am)
+		if (it & self.weapon)
 		{
-			W_SetCurrentWeapon ();
-			return;
+			if (W_CheckNoAmmo(self.weapon))
+				break;
 		}
 	}
-
+	W_SetCurrentWeapon ();
 };
 
 /*
@@ -1453,45 +1452,7 @@ Go to the prev weapon with ammo
 */
 void() CycleWeaponReverseCommand =
 {
-//	local	float	it, am;
-	//not supported anymore	
-	return;
-	/*
-	it = self.items;
-	self.impulse = 0;
-
-	while (1)
-	{
-		am = 0;
-
-		switch (self.weapon)
-		{
-		case IT_WEAPON4:
-			self.weapon = IT_WEAPON3;
-			if (self.greenmana < 1)
-				am = 1;
-		break;
-		case IT_WEAPON3:
-			self.weapon = IT_WEAPON2;
-		break;
-		case IT_WEAPON2:
-			self.weapon = IT_WEAPON1;
-		break;
-		case IT_WEAPON1:
-			self.weapon = IT_WEAPON4;
-			if ((self.bluemana < 1) && (self.greenmana<1))
-				am = 1;
-		break;
-		}
-	
-		if ( (it & self.weapon) && am == 0)
-		{
-			W_SetCurrentWeapon ();
-			return;
-		}
-	}
-*/
-
+// not supported anymore
 };
 
 /*

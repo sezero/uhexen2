@@ -6,6 +6,11 @@ Changes
 
 2012-09-12 (1.27):
 ===================
+- weapons.hc (CycleWeaponCommand, CycleWeaponReverseCommand): removed an
+  unnecessary local variable and changed the loop into a while(1) loop
+  and simplified a bit. made them to return in in an impossible case of
+  weapon not being one of IT_WEAPON1..4. changed the portals version to
+  use switch statements.
 - h2/items.hc, portals/items.hc (weapon_touch): IT_WEAPON4 must be OR'ed
   to new items, not added to. fix copied over from hexenworld version.
 - h2/items.hc (weapon_touch) : commented out other.oldweapon assignment
