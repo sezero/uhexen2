@@ -117,6 +117,8 @@ static pakdata_t old_pakdata[] =
 							 *	MD5: ????????????????????????????????	*/
 	{  98,	25864,	10678369, "hw"	},		/* pak4.pak, Hexen2World v0.11 (ugh..)
 							 *	MD5: c311a30ac8ee1f112019723b4fe42268	*/
+	{  40,	48258,	 3357888, "hw"	},		/* pak4.pak, Hexen2World v0.09 (ugh ugh ugh!)
+							 *	MD5: 7708da4323f668cf9c71f99315704baa	*/
 };
 
 /* this graphic needs to be in the pak file to use registered features */
