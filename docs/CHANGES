@@ -4,6 +4,9 @@ Development Progress	:
 ---------------------------
 
 2012-09-15 (SVN):
+    * hw/, siege/world.hc (GetNextMap): reverted r4945 (line 592) change
+
+2012-09-15 (SVN):
     * updated release notes
 
 2012-09-12 (SVN):

@@ -118,7 +118,7 @@ float map_sequence_start;
 string map_next;
 
 	have_mapcycle = 0;
-	line_id = STR_GOTDEEPFREEZE;	// 592 - we must have this line in strings.txt
+	line_id = 0;
 	loop /*while (1)*/ {
 		line_id +=1;
 		map_next = getstring(line_id);
