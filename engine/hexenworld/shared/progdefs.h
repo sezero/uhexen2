@@ -26,10 +26,108 @@
 #ifndef __PROGDEFS_H
 #define __PROGDEFS_H
 
-/* progs from hw releases older than v0.14 do NOT have Siege
+/* progs from hw releases older than v0.14 (0.12?) do NOT have Siege
  * support, including the lack of the "siege_team" member in
  * entvars_t, therefore siege_team must be accessed carefully.
+ *
+ * progs from hw-0.09 (AFAIK, the initial hw release) is ancient.
+ * there is no hwprogs.dat but progs.dat and progs2.dat. it is
+ * much more close to h2-v1.11 progs and has no praevus mission
+ * pack support either, therefore four classes only. it has no
+ * has_portals and gravity members in its entvars_t.
  */
+
+/* hexenworld v0.09 progdefs: */
+typedef struct
+{	int	pad[28];
+	int	self;
+	int	other;
+	int	world;
+	float	time;
+	float	frametime;
+	int	newmis;
+	float	force_retouch;
+	string_t	mapname;
+	string_t	startspot;
+	float	deathmatch;
+	float	randomclass;
+	float	damageScale;
+	/* meleeDamScale and shyRespawn
+	 * not in v0.09. */
+	/* spartanPrint not in v0.11 */
+	float	manaScale;
+	float	tomeMode;
+	float	tomeRespawn;
+	float	w2Respawn;
+	float	altRespawn;
+	float	fixedLevel;
+	float	autoItems;
+	float	dmMode;
+	/* easyFourth and patternRunner
+	 * not in v0.09. */
+	float	coop;
+	float	teamplay;
+	float	serverflags;
+	float	total_secrets;
+	float	total_monsters;
+	float	found_secrets;
+	float	killed_monsters;
+	float	chunk_cnt;
+	float	done_precache;
+	float	parm1;
+	float	parm2;
+	float	parm4;
+	float	parm5;
+	float	parm6;
+	float	parm7;
+	float	parm8;
+	float	parm9;
+	float	parm10;
+	float	parm11;
+	float	parm12;
+	float	parm13;
+	float	parm14;
+	float	parm15;
+	float	parm16;
+	string_t	parm3;
+	vec3_t	v_forward;
+	vec3_t	v_up;
+	vec3_t	v_right;
+	float	trace_allsolid;
+	float	trace_startsolid;
+	float	trace_fraction;
+	vec3_t	trace_endpos;
+	vec3_t	trace_plane_normal;
+	float	trace_plane_dist;
+	int	trace_ent;
+	float	trace_inopen;
+	float	trace_inwater;
+	int	msg_entity;
+	float	cycle_wrapped;
+	float	crouch_cnt;
+	float	modelindex_assassin;
+	float	modelindex_crusader;
+	float	modelindex_paladin;
+	float	modelindex_necromancer;
+	float	modelindex_sheep;
+	float	num_players;
+	float	exp_mult;
+	/* max_players, defLosses and attLosses
+	 * are for Siege:  not in v0.11. */
+	func_t	main;
+	func_t	StartFrame;
+	func_t	PlayerPreThink;
+	func_t	PlayerPostThink;
+	func_t	ClientKill;
+	func_t	ClientConnect;
+	func_t	PutClientInServer;
+	func_t	ClientReEnter;
+	func_t	ClientDisconnect;
+	func_t	ClassChangeWeapon;
+	func_t	SetNewParms;
+	func_t	SetChangeParms;
+	/* SmitePlayer only in v0.15 */
+} globalvars_v009_t;
 
 /* hexenworld v0.11 progdefs: */
 typedef struct
@@ -437,7 +535,7 @@ typedef struct
 	float	max_health;
 	float	playerclass;
 	float	next_playerclass;
-	float	has_portals;
+	float	has_portals;	/* has_portals is NOT in v0.09 */
 	float	bluemana;
 	float	greenmana;
 	float	max_mana;
@@ -542,10 +640,12 @@ typedef struct
 	int	movechain;
 	func_t	chainmoved;
 	float	string_index;
-	float	gravity;
-	/* siege support: in v0.14 and newer */
-	float	siege_team;
+	float	gravity;	/* gravity is not in v0.09 */
+	float	siege_team;	/* siege support: in v0.14 (0.12?) and newer */
 } entvars_t;
+
+/* crc for HexenWorld v0.09 hwprogs.dat headers	*/
+#define	PROGS_V009_CRC		27922
 
 /* crc for HexenWorld v0.11 hwprogs.dat headers	*/
 #define	PROGS_V011_CRC		48691
