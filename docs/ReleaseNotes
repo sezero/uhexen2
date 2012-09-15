@@ -41,10 +41,12 @@ Changes in v1.5.5: (Sep. 11, 2012.)
 
 - All platforms, gameplay: fixed bug in original hexen2 hcode which used
   to cause weapon switching to get stuck if several weapons were picked
-  up too fast .
+  up too fast. fixed a minor bug in assassin's fourth weapon in powered
+  mode. cleaned up weapon cycling code, minor fixes/clean-ups in weapon
+  selection. several other hcode cleanups.
 
-- All platforms, gameplay: fixed a minor bug in assassin's fourth weapon
-  in powered mode.
+- All platforms, hexenworld: pak4.pak from the ancient beta 0.11 version
+  is now recognized properly.
 
 - All: Incremented versions for hexen2 engine to 1.27, hexenworld engine
   to 0.27, and gamecode version to 1.27.
