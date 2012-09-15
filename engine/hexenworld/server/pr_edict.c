@@ -68,6 +68,7 @@ typedef struct sv_def_s
 #define OFS_V015(m)	(int)offsetof(globalvars_v015_t,m)/4
 
 #if 0
+COMPILE_TIME_ASSERT(v009_gofs, offsetof(globalvars_v009_t,SetChangeParms) == 464);
 static sv_def_t globals_v009[] = {
 	{ev_entity,	OFS_V009(self),			&sv_globals.self},
 	{ev_entity,	OFS_V009(other),		&sv_globals.other},
@@ -138,6 +139,7 @@ static sv_def_t globals_v009[] = {
 };
 #endif
 
+COMPILE_TIME_ASSERT(v011_gofs, offsetof(globalvars_v011_t,SetChangeParms) == 480);
 static sv_def_t globals_v011[] = {
 	{ev_entity,	OFS_V011(self),			&sv_globals.self},
 	{ev_entity,	OFS_V011(other),		&sv_globals.other},
@@ -211,6 +213,7 @@ static sv_def_t globals_v011[] = {
 	{ev_void,	0,				NULL }
 };
 
+COMPILE_TIME_ASSERT(v014_gofs, offsetof(globalvars_v014_t,SetChangeParms) == 496);
 static sv_def_t globals_v014[] = {
 	{ev_entity,	OFS_V014(self),			&sv_globals.self},
 	{ev_entity,	OFS_V014(other),		&sv_globals.other},
@@ -288,6 +291,7 @@ static sv_def_t globals_v014[] = {
 	{ev_void,	0,				NULL }
 };
 
+COMPILE_TIME_ASSERT(v015_gofs, offsetof(globalvars_v015_t,SmitePlayer) == 500);
 static sv_def_t globals_v015[] = {
 	{ev_entity,	OFS_V015(self),			&sv_globals.self},
 	{ev_entity,	OFS_V015(other),		&sv_globals.other},

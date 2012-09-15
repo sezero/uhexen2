@@ -4,6 +4,10 @@ Development Progress	:
 ---------------------------
 
 2012-09-15 (SVN):
+    * pr_edict.c: added compile time asserts so as to make sure that the
+      globalvars structures have correct member offsets.
+
+2012-09-15 (SVN):
     * updated version date stamp to 2012-09-15.
 
 2012-09-15 (SVN):

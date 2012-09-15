@@ -66,6 +66,7 @@ typedef struct sv_def_s
 #define OFS_V111(m)	(int)offsetof(globalvars_v111_t,m)/4
 #define OFS_V112(m)	(int)offsetof(globalvars_v112_t,m)/4
 
+COMPILE_TIME_ASSERT(v103_gofs, offsetof(globalvars_v103_t,ClassChangeWeapon) == 412);
 static sv_def_t globals_v103[] = {
 	{ev_entity,	OFS_V103(self),			&sv_globals.self},
 	{ev_entity,	OFS_V103(other),		&sv_globals.other},
@@ -122,6 +123,7 @@ static sv_def_t globals_v103[] = {
 	{ev_void,	0,				NULL }
 };
 
+COMPILE_TIME_ASSERT(v111_gofs, offsetof(globalvars_v111_t,ClassChangeWeapon) == 416);
 static sv_def_t globals_v111[] = {
 	{ev_entity,	OFS_V111(self),			&sv_globals.self},
 	{ev_entity,	OFS_V111(other),		&sv_globals.other},
@@ -179,6 +181,7 @@ static sv_def_t globals_v111[] = {
 	{ev_void,	0,				NULL }
 };
 
+COMPILE_TIME_ASSERT(v112_gofs, offsetof(globalvars_v112_t,ClassChangeWeapon) == 404);
 static sv_def_t globals_v112[] = {
 	{ev_entity,	OFS_V112(self),			&sv_globals.self},
 	{ev_entity,	OFS_V112(other),		&sv_globals.other},
