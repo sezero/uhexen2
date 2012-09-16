@@ -4,6 +4,17 @@ Development Progress	:
 ---------------------------
 
 2012-09-16 (SVN):
+    * d_sprite.c (D_DrawSprite): fix (work around) bug #3562290: when
+      R_SetupAndDrawSprite() sets pout->v to a value <= -1, ymin might
+      become negative and that makes the screen pointer pz to point to
+      an invalid address in D_SpriteDrawTransSpans(), thus leading to
+      an access violation. this sometimes happens with sprites rendered
+      very close to the camera origin such as the teleporter puff. we
+      just return without drawing anything when ymin is negative, from
+      now on.
+    * updated version date stamp to 2012-09-16.
+
+2012-09-16 (SVN):
     * updated a web link in the README file.
 
 2012-09-16 (SVN):

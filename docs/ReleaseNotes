@@ -23,9 +23,13 @@ Changes in v1.5.5: (Sep. 15, 2012.)
 
 - Client: Fixed a minor and rare intermission glitch.
 
-- Software renderer:  Disabled progress bars drawing, as it was reported
+- Software renderer: Disabled progress bars drawing, as it was reported
   to cause excessively long load times on some systems. Disabled the
   rotating skull drawing during file i/o.
+
+- Software renderer: Fixed occasional crash when sprites rendered very
+  close to the camera origin, such as the teleportation puff. (used to
+  happen mostly in 64 bit builds. bug #3562290.)
 
 - Windows:  Removed hooks for QHOST, which is (was) a proprietery server
   administation tool.

@@ -586,6 +586,18 @@ void D_DrawSprite (void)
 	if (ymin >= ymax)
 		return;		// doesn't cross any scans at all
 
+	if (ymin < 0) {
+	/* happens when R_SetupAndDrawSprite() sets pout->v to a value <= -1
+	 * with sprites rendered very close to the camera origin such as the
+	 * teleporter puff.  this makes the screen pointer pz to point to an
+	 * invalid address in D_SpriteDrawTransSpans(), leading to an access
+	 * violation. -- see uHexen2 bug #3562290:
+	 * http://sourceforge.net/tracker/?func=detail&atid=701006&aid=3562290&group_id=124987
+	 */
+		Con_DPrintf ("%s: ymin: %f\n", __thisfunc__, ymin);
+		return;
+	}
+
 	cachewidth = r_spritedesc.pspriteframe->width;
 	sprite_height = r_spritedesc.pspriteframe->height;
 	cacheblock = (byte *)&r_spritedesc.pspriteframe->pixels[0];
