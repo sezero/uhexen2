@@ -4,6 +4,9 @@ Development Progress	:
 ---------------------------
 
 2012-09-16 (SVN):
+    * oslibs: recompiled mac os x codec libraries.
+
+2012-09-16 (SVN):
     * d_sprite.c (D_DrawSprite): fix (work around) bug #3562290: when
       R_SetupAndDrawSprite() sets pout->v to a value <= -1, ymin might
       become negative and that makes the screen pointer pz to point to
