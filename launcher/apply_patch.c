@@ -53,7 +53,7 @@ static const struct other_pak pak0_demo1 = {
 };
 
 static const struct other_pak pak0_demo0 = {
-	23537707, "Demo (Aug. 1997, v1.03)",
+	23537707, "Demo (Aug. 1997, v0.42)",
 	&pak0_demo1
 };
 

@@ -83,7 +83,7 @@ static const struct other_pak pak0_demo1 = {
 };
 
 static const struct other_pak pak0_demo0 = {
-	23537707, "Demo (Aug. 1997, v1.03)",
+	23537707, "Demo (Aug. 1997, v0.42)",
 	&pak0_demo1
 };
 
@@ -539,7 +539,7 @@ int main (int argc, char **argv)
 		else
 		{
 			fprintf (stderr, "... looks like %s\n", other_pak_desc(i, len));
-			fprintf (stderr, "... Error: not supported by h2ptach!\n");
+			fprintf (stderr, "... Error: not supported by h2patch!\n");
 			return 1;
 		}
 

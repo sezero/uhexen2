@@ -3,6 +3,9 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2012-09-16 (SVN):
+    * h2patch, launcher/apply_patch: typo fixes.
+
 2012-09-15 (SVN):
     * pr_edict.c: added compile time asserts so as to make sure that the
       globalvars structures have correct member offsets.
