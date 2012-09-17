@@ -9,9 +9,9 @@ Changes in v1.5.5: (Sep. 17, 2012.)
   of alpha-only. Default is single-threaded. Use "-threads #" to specify
   the required number of threads. (max: 32. -1 tries to autodetect.)
 
-- Utils, hcc: Added "-old" command line option, which restores the old
-  hcc behavior of letting the STR_ constants and precache_file() calls
-  going into progs.dat, if so needed.
+- Utils, hcc: Added a command line option "-old" to replicate old hcc
+  versions' behavior of allowing the STR_ constants be saved globals and
+  letting precache_file() calls go into progs.dat, if so needed.
 
 - Utils, dcc: Some small fixes. Added new command line options -fields,
   -functions, -globaldefs, -prglobals, -statements and -strings, which

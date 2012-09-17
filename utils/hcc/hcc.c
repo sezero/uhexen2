@@ -260,7 +260,7 @@ static void WriteData (int crc)
 		    def->type->type != ev_field &&
 		    def->scope == NULL)
 		{
-			//str_ is a special case string constant
+			//STR_ is a special case string constant
 			if (strncmp(def->name,"STR_", 4) != 0 || old_hcc_behavior)
 				dd->type |= DEF_SAVEGLOBAL;
 		}
@@ -828,8 +828,8 @@ int main (int argc, char **argv)
 		printf(" -on              : Optimize Name Table\n");
 		printf(" -quiet           : Quiet mode\n");
 		printf(" -fileinfo        : Show object sizes per file\n");
-		printf(" -old             : Old HCC behavior:  allow STR_ constants and\n");
-		printf("                    precache_file () calls going into progs.dat\n");
+		printf(" -old :           : Old HCC behavior: STR_ constants will be saved\n");
+		printf("                    globals and precache_file() will go into progs\n");
 		printf(" -src <directory> : Specify source directory\n");
 		printf(" -name <source>   : Specify the name of the .src file\n");
 		exit(0);
