@@ -287,6 +287,8 @@ static STRPTR pattern_helper (const char *pat)
 
 const char *Sys_FindFirstFile (const char *path, const char *pattern)
 {
+	BPTR newdir;
+
 	if (apath)
 		Sys_Error ("Sys_FindFirst without FindClose");
 
@@ -297,7 +299,16 @@ const char *Sys_FindFirstFile (const char *path, const char *pattern)
 	apath->ap_Strlen = PATH_SIZE;
 	apath->ap_BreakBits = 0;
 	apath->ap_Flags = APB_DOWILD | !APB_DODIR;
-	oldcurrentdir = CurrentDir(Lock((const STRPTR) path, SHARED_LOCK));
+
+	newdir = Lock((const STRPTR) path, SHARED_LOCK);
+	if (newdir)
+		oldcurrentdir = CurrentDir(newdir);
+	else
+	{
+		FreeMem(apath, sizeof(struct AnchorPath) + PATH_SIZE);
+		return NULL;
+	}
+
 	pattern_str = pattern_helper (pattern);
 
 	if (MatchFirst((const STRPTR) pattern_str, apath) == 0)
@@ -323,7 +334,7 @@ void Sys_FindClose (void)
 		return;
 	MatchEnd(apath);
 	FreeMem(apath, sizeof(struct AnchorPath) + PATH_SIZE);
-	CurrentDir(oldcurrentdir);
+	UnLock(CurrentDir(oldcurrentdir));
 	oldcurrentdir = NULL;
 	apath = NULL;
 	Z_Free(pattern_str);
