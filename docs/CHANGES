@@ -6,6 +6,7 @@ Development Progress	:
 2012-09-17 (SVN):
     * amiga, Sys_FindFirstFile(): unlock the lock created for path in
       Sys_FindClose().
+    * updated version date stamp to 2012-09-17.
 
 2012-09-16 (SVN):
     * oslibs: recompiled mac os x codec libraries.
