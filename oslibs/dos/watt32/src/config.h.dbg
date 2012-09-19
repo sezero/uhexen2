@@ -126,7 +126,7 @@
   #define USE_RARP
 /*#define USE_IPV6 */
 /*#define USE_IDNA */
-  #define USE_TCP_MD5
+/*#define USE_TCP_MD5*/
 /*#define USE_GZIP_COMPR */
 /*#define USE_DYNIP_CLI */
 #endif

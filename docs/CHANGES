@@ -4,6 +4,12 @@ Development Progress	:
 ---------------------------
 
 2012-09-19 (SVN):
+    * oslibs/dos: recompiled watt32 library without USE_TCP_MD5 option.
+      currently, watt32 doesn't even check with the result returned by
+      check_md5_signature(), therefore it was only an additional useless
+      burden.
+
+2012-09-19 (SVN):
     * h2patch: remove the md5 dependency,use the adler32 routine already
       present in xdelta3. do not recalculate and compare the checksum if
       xdelta3 reports success for a patch. when an already patched file
