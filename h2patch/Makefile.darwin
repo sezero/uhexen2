@@ -47,11 +47,7 @@ XDFLAGS+= -DXD3_STDIO=1
 XDFLAGS+= -I$(XDELTA_DIR) -I$(LIBS_DIR)/common
 XDFLAGS+= $(CFLAGS)
 
-MD5DIR:= $(LIBS_DIR)/md5
-MD5FLAGS:= -I$(MD5DIR) -I$(LIBS_DIR)/common
-MD5FLAGS+= $(CFLAGS)
-
-CFLAGS  += -I. -I$(XDELTA_DIR) -I$(MD5DIR) -I$(LIBS_DIR)/common
+CFLAGS  += -I. -I$(XDELTA_DIR) -I$(LIBS_DIR)/common
 
 TARGETS:= h2patch
 
@@ -60,14 +56,10 @@ TARGETS:= h2patch
 
 all: $(TARGETS)
 
-MD5DEPS:= md5.h q_endian.h
 XD3DEPS:= xdelta3-blkcache.h xdelta3-decode.h xdelta3.h \
 	xdelta3-list.h xdelta3-main.h
 
-OBJECTS:= md5.o xdelta3.o qsnprint.o h2patch3.o
-
-MD5DEPS:= md5.c md5.h
-MD5DEPS:= $(patsubst %,$(MD5DIR)/%,$(MD5DEPS))
+OBJECTS:= xdelta3.o qsnprint.o h2patch3.o
 
 XD3DEPS:= xdelta3-decode.h xdelta3-list.h xdelta3-main.h xdelta3-blkcache.h \
 	xdelta3.c xdelta3.h
@@ -81,8 +73,6 @@ XD3DEPS:= $(patsubst %,$(XDELTA_DIR)/%,$(XD3DEPS))
 
 xdelta3.o: $(XD3DEPS)
 	$(CC) $(XDFLAGS) -c $(XDELTA_DIR)/xdelta3.c -o xdelta3.o
-md5.o: $(MD5DEPS)
-	$(CC) $(MD5FLAGS) -c $(MD5DIR)/md5.c -o md5.o
 
 h2patch: $(OBJECTS)
 	$(LINKER) $(OBJECTS) $(LDFLAGS) -o $@

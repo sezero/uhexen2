@@ -25,47 +25,53 @@
 #include "common.h"
 #include <sys/time.h>
 
-#include "md5.h"
 #include "apply_patch.h"
 #include "launcher_ui.h"
 
 struct other_pak
 {
 	long			size;
+	unsigned long		sum;	/* adler32 */
 	const char		*desc;
 	struct other_pak const	*next;
 };
 
 static const struct other_pak pak0_oem1 = {
-	22720659, "Continent of Blackmarsh (m3D, v1.10)",
+	22720659,	0xE9D25D16,
+	"Continent of Blackmarsh (m3D, v1.10)",
 	NULL
 };
 
 static const struct other_pak pak0_oem0 = {
 	/* don't have this myself, therefore no patch. */
-	22719295, "Continent of Blackmarsh (m3D, v1.08)",
+	22719295,	/**/ 0x01,
+	"Continent of Blackmarsh (m3D, v1.08)",
 	&pak0_oem1
 };
 
 static const struct other_pak pak0_demo1 = {
-	27750257, "Demo (Nov. 1997, v1.11)",
+	27750257,	0xED96172E,
+	"Demo (Nov. 1997, v1.11)",
 	&pak0_oem0
 };
 
 static const struct other_pak pak0_demo0 = {
-	23537707, "Demo (Aug. 1997, v0.42)",
+	23537707,	0x88A46443,
+	"Demo (Aug. 1997, v0.42)",
 	&pak0_demo1
 };
 
 #if 0
 static const struct other_pak pak2_oem1 = {
-	17742721, "Continent of Blackmarsh (m3D, v1.10)",
+	17742721,	0x5595110E,
+	"Continent of Blackmarsh (m3D, v1.10)",
 	NULL
 };
 
 static const struct other_pak pak2_oem0 = {
 	/* don't have this myself, therefore no patch. */
-	17739969, "Continent of Blackmarsh (m3D, v1.08)",
+	17739969,	/**/ 0x01,
+	"Continent of Blackmarsh (m3D, v1.08)",
 	&pak2_oem1
 };
 #endif
@@ -77,13 +83,14 @@ struct patch_pak
 	const char	*dir_name;	/* where the file is	*/
 	const char	*filename;	/* file to patch	*/
 	const char	*deltaname;	/* delta file to use	*/
-	const char	*old_md5;	/* unpatched md5sum	*/
-	const char	*new_md5;	/* md5sum after patch	*/
 	const char	*old_desc;
 	const char	*new_desc;
+
 	struct other_pak const	*other_data;
 			/* possible descriptions of same-named pak
 			 * versions not supported by this program. */
+
+	unsigned long	old_sum, new_sum;	/* adler32	*/
 	long	old_size, new_size;
 };
 
@@ -91,20 +98,18 @@ static const struct patch_pak patch_data[NUM_PATCHES] =
 {
 	{  "data1", "pak0.pak",
 	   "data1pk0.xd3",
-	   "b53c9391d16134cb3baddc1085f18683",
-	   "c9675191e75dd25a3b9ed81ee7e05eff",
 	   "retail, from Hexen II cdrom (v1.03)",
 	   "retail, already patched (v1.11)",
 	   &pak0_demo0,
+	   0xCFF397B9, 0xDCF2218F,
 	   21714275, 22704056
 	},
 	{  "data1", "pak1.pak",
 	   "data1pk1.xd3",
-	   "9a2010aafb9c0fe71c37d01292030270",
-	   "c2ac5b0640773eed9ebe1cda2eca2ad0",
 	   "retail, from Hexen II cdrom (v1.03)",
 	   "retail, already patched (v1.11)",
 	   NULL,
+	   0x8C787960, 0xD56A2FE8,
 	   76958474, 75601170
 	}
 };
@@ -136,7 +141,6 @@ static	unsigned long		rc;
 static	char	dst[MAX_OSPATH],
 		pat[MAX_OSPATH],
 		out[MAX_OSPATH];
-static	char	csum[CHECKSUM_SIZE+1];
 
 #define DELTA_DIR	"patchdat"
 #define cdrom_path	"install/hexen2/data1"
@@ -206,6 +210,7 @@ void *apply_patches (void *workdir)
 {
 	int	i, ret;
 	struct stat	stbuf;
+	unsigned long	csum;
 
 	rc = XPATCH_NONE;
 	memset (&h2patch_progress, 0, sizeof(xd3_progress_t));
@@ -230,10 +235,7 @@ void *apply_patches (void *workdir)
 						patch_data[i].dir_name,
 						patch_data[i].filename);
 
-		/* set the pak files' read+write permissions if we can:
-		 * if the files were copied from the cdrom, some perms
-		 * may be missing and access() would fail the R_OK|W_OK
-		 * check. */
+		/* paks copied off of a cdrom might fail R_OK|W_OK */
 		ret = stat_and_fix_perms(dst, &stbuf);
 		if (ret != 0)
 		{
@@ -250,15 +252,19 @@ void *apply_patches (void *workdir)
 			return &rc;
 		}
 
-		if (stbuf.st_size == patch_data[i].old_size)
-		{
-			ui_log_queue ("... looks like %s\n", patch_data[i].old_desc);
-		}
-		else if (stbuf.st_size == patch_data[i].new_size)
+		if (stbuf.st_size == patch_data[i].new_size)
 		{
 			ui_log_queue ("... looks like %s\n", patch_data[i].new_desc);
+			ui_log_queue ("... checksumming...");
+			csum = xd3_calc_adler32(dst);
+			if (csum == patch_data[i].new_sum)
+				ui_log_queue (" OK ");
+			else	ui_log_queue ("\n... WARNING: checksum mismatch! file corrupted?\n");
+			h2patch_progress.current_written += patch_data[i].new_size;
+			ui_log_queue ("... skipped.\n");
+			continue;
 		}
-		else
+		if (stbuf.st_size != patch_data[i].old_size)
 		{
 			rc |= XPATCH_FAIL;
 			ui_log_queue ("... looks like %s\n", other_pak_desc(i, stbuf.st_size));
@@ -267,22 +273,7 @@ void *apply_patches (void *workdir)
 			return &rc;
 		}
 
-		ui_log_queue ("... checksumming...\n");
-		memset (csum, 0, sizeof(csum));
-		md5_compute(dst, csum);
-		if (strcmp(csum, patch_data[i].new_md5) == 0)
-		{
-			h2patch_progress.current_written += patch_data[i].new_size;
-			ui_log_queue ("... OK: already patched.\n");
-			continue;
-		}
-		if (strcmp(csum, patch_data[i].old_md5) != 0)
-		{
-			rc |= XPATCH_FAIL;
-			ui_log_queue ("... file probably corrupted!\n");
-			thread_alive = 0;
-			return &rc;
-		}
+		ui_log_queue ("... looks like %s\n", patch_data[i].old_desc);
 
 		snprintf (pat, sizeof(pat), "%s/%s/%s/%s", (char *)workdir,
 					DELTA_DIR, patch_data[i].dir_name,
@@ -306,19 +297,7 @@ void *apply_patches (void *workdir)
 		{
 			rc |= XPATCH_FAIL;
 			remove (out);
-			ui_log_queue ("... patch failed!\n");
-			thread_alive = 0;
-			return &rc;
-		}
-
-		ui_log_queue ("... verifying checksum...\n");
-		memset (csum, 0, sizeof(csum));
-		md5_compute(out, csum);
-		if (strcmp(csum, patch_data[i].new_md5) != 0)
-		{
-			rc |= XPATCH_FAIL;
-			remove (out);
-			ui_log_queue ("... checksum after patching failed!\n");
+			ui_log_queue ("... patch failed! file corrupted?\n");
 			thread_alive = 0;
 			return &rc;
 		}

@@ -93,28 +93,6 @@ const char* xd3_mainerror(int err_num);
  ENUMS and TYPES
  *********************************************************************/
 
-/* These flags (mainly pertaining to main_read() operations) are set
- * in the main_file->flags variable.  All are related to with external
- * decompression support.
- *
- * RD_FIRST causes the external decompression check when the input is
- * first read.
- *
- * RD_NONEXTERNAL disables external decompression for reading a
- * compressed input, in the case of Xdelta inputs.  Note: Xdelta is
- * supported as an external compression type, which makes is the
- * reason for this flag.  An example to justify this is: to create a
- * delta between two files that are VCDIFF-compressed.  Two external
- * Xdelta decoders are run to supply decompressed source and target
- * inputs to the Xdelta encoder. */
-typedef enum
-{
-  RD_FIRST       = (1 << 0),
-  RD_NONEXTERNAL = (1 << 1),
-  RD_DECOMPSET   = (1 << 2),
-  RD_MAININPUT   = (1 << 3),
-} xd3_read_flags;
-
 /* main_file->mode values */
 typedef enum
 {
@@ -142,7 +120,6 @@ struct _main_file
 
   int                 mode;          /* XO_READ and XO_WRITE */
   const char         *filename;      /* File name. */
-  int                 flags;         /* RD_FIRST, RD_NONEXTERNAL, ... */
   xoff_t              nread;         /* for input position */
   xoff_t              nwrite;        /* for output position */
   xoff_t              source_position;  /* for avoiding seek in getblk_func */
@@ -806,13 +783,12 @@ main_input (main_file   *ifile,
   config.iopt_size = use_options->iopt_size;
   config.sprevsz = use_options->sprevsz;
 
-  if (use_options->use_checksum) { stream_flags |= XD3_ADLER32; }
-
-      if (use_options->use_checksum == 0) { stream_flags |= XD3_ADLER32_NOVER; }
-      ifile->flags |= RD_NONEXTERNAL;
+  if (use_options->use_checksum == 0)
+    {
+      stream_flags |= XD3_ADLER32_NOVER;
+    }
 
   main_bsize = winsize = main_get_winsize (ifile);
-
   if ((main_bdata = (uint8_t*) main_malloc (winsize)) == NULL)
     {
       return EXIT_FAILURE;
@@ -1017,8 +993,6 @@ xd3_main_patcher (xd3_options_t *options,
   if (options != NULL)
     use_options = options;
 
-  ifile.flags    = RD_FIRST | RD_MAININPUT;
-  sfile.flags    = RD_FIRST;
   sfile.filename = srcfile;
   ofile.filename = outfile;
   ifile.filename = deltafile;
@@ -1041,4 +1015,39 @@ xd3_main_patcher (xd3_options_t *options,
   fflush (stdout);
   fflush (stderr);
   return ret;
+}
+
+#define READ_BUFSIZE 8192 /* BUFSIZ */
+unsigned long
+xd3_calc_adler32 (const char *srcfile)
+{
+  main_file ifile;
+  unsigned long sum;
+  uint8_t buf[READ_BUFSIZE];
+  usize_t nread;
+
+  XD3_ASSERT (srcfile != NULL);
+
+  main_file_init (& ifile);
+  ifile.filename = srcfile;
+  if (main_file_open (& ifile, ifile.filename, XO_READ) != 0)
+    return 1UL;
+
+  nread = READ_BUFSIZE;
+  sum = 1UL;
+  while (nread == READ_BUFSIZE) /* otherwise:  short read == EOF */
+    {
+      if (main_read_primary_input (&ifile, buf, READ_BUFSIZE, & nread)
+	  != 0)
+	{
+	  sum = 1UL;
+	  break;
+	}
+
+      if (nread != 0)
+	sum = adler32 (sum, buf, nread);
+    }
+
+  main_file_cleanup (& ifile);
+  return sum;
 }

@@ -64,5 +64,7 @@ extern int xd3_main_patcher (xd3_options_t * /* opts */,
 				const char * /* deltafile */,
 				const char * /* outfile*/);
 
+extern unsigned long xd3_calc_adler32 (const char *srcfile);
+
 #endif /* _XD3_MAINOPTS_H_ */
 

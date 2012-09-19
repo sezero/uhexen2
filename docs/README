@@ -69,10 +69,11 @@ b. Manual install/update of data files:
    extract it. Copy the two files pak0.pak and pak1.pak from your cdrom
    into the "data1" directory in your own installation.  The pak file
    names should be lower-cased, if not already.
+
    To fix the permissions: chmod 644 data1/pak*
-   To patch the pak files, use the included "h2patch" program: it will
-   do the job, confirm the result and report its success by checking
-   with the following md5sums:
+
+   To patch the pak files: use the included "h2patch" program. Here are
+   the md5sums, just in case:
 
    c9675191e75dd25a3b9ed81ee7e05eff  data1/pak0.pak
    c2ac5b0640773eed9ebe1cda2eca2ad0  data1/pak1.pak

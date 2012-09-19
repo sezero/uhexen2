@@ -3,6 +3,18 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2012-09-19 (SVN):
+    * h2patch: remove the md5 dependency,use the adler32 routine already
+      present in xdelta3. do not recalculate and compare the checksum if
+      xdelta3 reports success for a patch. when an already patched file
+      is encountered, do not error out if its checksum doesn't match but
+      only emit a warning. in dos builds, use XD3_POSIX for file i/o.
+    * h2launcher: apply the relevant changes from h2patch.
+    * libs/xdelta3: add new xd3_calc_adler32() helper to xdelta3-main.h.
+      removed the unused file flags.
+    * libs/md5: move, no longer needed.
+    * updated version date stamp to 2012-09-19.
+
 2012-09-17 (SVN):
     * utils, hcc: corrected the -old option description.
 
