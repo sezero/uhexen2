@@ -4,6 +4,7 @@ Development Progress	:
 ---------------------------
 
 2012-09-19 (SVN):
+    * h2ded, dos: don't include the serial driver
     * oslibs/dos: recompiled watt32 library without USE_TCP_MD5 option.
       currently, watt32 doesn't even check with the result returned by
       check_md5_signature(), therefore it was only an additional useless

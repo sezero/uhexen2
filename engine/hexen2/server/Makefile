@@ -45,8 +45,8 @@ COMPILE_32BITS=no
 # with old Win95 machines.) (enabled for Win64 in the win64 section.)
 USE_WINSOCK2=no
 
-# use Serial driver for DOS networking?
-USE_SERIAL=yes
+# DOS Serial driver is useless in h2ded
+USE_SERIAL=no
 # use WatTCP (WATT-32) for DOS UDP networking?
 USE_WATT32=yes
 # use Beame & Whiteside TCP for DOS networking?
