@@ -1,7 +1,7 @@
 Hammer of Thyrion (uHexen2) release notes:
 
 ========================================================================
-Changes in v1.5.5: (Sep. 19, 2012.)
+Changes in v1.5.5: (Sep. 22, 2012.)
 ========================================================================
 
 - Utils (light, vis, jsh2color): Added unix pthreads support for running
@@ -18,6 +18,11 @@ Changes in v1.5.5: (Sep. 19, 2012.)
   dump the related information.
 
 - Utils, all: Some fixes/improvements to command line options handling.
+
+- Fixed a respawn-after-death issue which sometimes rendered the player
+  unable to move backwards, or unable to use certain inventory items, or
+  several other weird effects (bug #2176023.)  The bug was there since
+  the original hexen2 source release.
 
 - Client: Fixed a demo playback failure when certain conditions are met.
 

@@ -3,6 +3,15 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2012-09-22 (SVN):
+    * host_cmd.c (RestoreClients): For clients_mode 3, do not apply any
+      time diffs. mode 3 is only in response to the single player game
+     "restart restore" command issued by progs.dat::client.hc::respawn()
+      function.  No level change, just respawning in the same map with
+      the same playtime from when clients.gip was saved, therefore there
+      CANNOT be a time_diff there.  Fixes bug #2176023, a.k.a. deathbug.
+    * updated version date stamp to 2012-09-22. updated docs/BUGS.
+
 2012-09-19 (SVN):
     * h2ded, dos: don't include the serial driver
     * oslibs/dos: recompiled watt32 library without USE_TCP_MD5 option.

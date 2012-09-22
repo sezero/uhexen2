@@ -26,10 +26,13 @@
 #include "quakedef.h"
 #include <ctype.h>
 
-static	double	old_time;
+static	double	old_svtime;
+	/* sv.time of prev. level when changing levels, saved by changelevel2().
+	 * used for adjusting time globalvars of progs by RestoreClients() when
+	 * travelling levels back and forth (see clients.hc::ClientReEnter().  */
 
 static int LoadGamestate (const char *level, const char *startspot, int ClientsMode);
-static void RestoreClients (void);
+static void RestoreClients (int ClientsMode);
 
 #define TESTSAVE
 
@@ -368,7 +371,7 @@ static void Host_Changelevel2_f (void)
 	SV_SaveSpawnparms ();
 
 	// save the current level's state
-	old_time = sv.time;
+	old_svtime = sv.time;
 	if (SaveGamestate(false) != 0)
 		return;
 
@@ -377,7 +380,7 @@ static void Host_Changelevel2_f (void)
 	{
 		SV_SpawnServer (level, startspot);
 		if (sv.active)
-			RestoreClients();
+			RestoreClients (0);
 	}
 }
 
@@ -404,11 +407,11 @@ static void Host_Restart_f (void)
 
 	if (Cmd_Argc() == 2 && q_strcasecmp(Cmd_Argv(1),"restore") == 0)
 	{
-		if (LoadGamestate (mapname, startspot, 3))
+		if (LoadGamestate(mapname, startspot, 3) != 0)
 		{
 			SV_SpawnServer (mapname, startspot);
 			if (sv.active)
-				RestoreClients();
+				RestoreClients (0);
 		}
 	}
 	else
@@ -572,7 +575,7 @@ static void Host_Savegame_f (void)
 		}
 	}
 
-	error_state = SaveGamestate(false);
+	error_state = SaveGamestate (false);
 	// don't bother doing more if SaveGamestate failed
 	if (error_state)
 		return;
@@ -926,7 +929,7 @@ finish:
 	return error_state;
 }
 
-static void RestoreClients (void)
+static void RestoreClients (int ClientsMode)
 {
 	int		i, j;
 	edict_t		*ent;
@@ -935,7 +938,13 @@ static void RestoreClients (void)
 	if (LoadGamestate(NULL, NULL, 1) != 0)
 		return;
 
-	time_diff = sv.time - old_time;
+/* O.S. -- mode 3 is only in response to the single player game "restart restore"
+ * command issued by progs.dat::client.hc::respawn() function.  No level change,
+ * just respawning in the same map with the same playtime from when clients.gip
+ * was saved, therefore there _CANNOT_ be a time_diff.  See uhexen2 bug #2176023:
+ * http://sourceforge.net/tracker/?group_id=124987&atid=701006&aid=2176023&func=detail
+ */
+	time_diff = (ClientsMode == 3) ? 0 : sv.time - old_svtime;
 
 	for (i = 0, host_client = svs.clients; i < svs.maxclients; i++, host_client++)
 	{
@@ -959,7 +968,7 @@ static void RestoreClients (void)
 		}
 	}
 
-	SaveGamestate(true);
+	SaveGamestate (true);
 }
 
 static int LoadGamestate (const char *level, const char *startspot, int ClientsMode)
@@ -976,7 +985,7 @@ static int LoadGamestate (const char *level, const char *startspot, int ClientsM
 //	float		spawn_parms[NUM_SPAWN_PARMS];
 	qboolean	auto_correct = false;
 
-	if (ClientsMode == 1)	/* RestoreClients only: map must be active */
+	if (ClientsMode == 1)	/* for RestoreClients() only: map must be active */
 	{
 		if (!sv.active)
 		{
@@ -1155,7 +1164,7 @@ static int LoadGamestate (const char *level, const char *startspot, int ClientsM
 		sv.time = playtime;
 		sv.paused = true;
 		*sv_globals.serverflags = svs.serverflags;
-		RestoreClients();
+		RestoreClients (0);
 	}
 	else if (ClientsMode == 2)
 	{
@@ -1165,7 +1174,7 @@ static int LoadGamestate (const char *level, const char *startspot, int ClientsM
 	{
 		sv.time = playtime;
 		*sv_globals.serverflags = svs.serverflags;
-		RestoreClients();
+		RestoreClients (3);
 	}
 
 	if (ClientsMode != 1 && auto_correct)

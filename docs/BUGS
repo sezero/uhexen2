@@ -3,16 +3,6 @@ Hexen II: Hammer of Thyrion (uHexen2)
 Known Bugs:
 -------------------------------------
 
-- BUG # 2176023: Can't move backwards after dying (a.k.a. the DEATHBUG):
-  # sf.net/tracker/?group_id=124987&atid=701006&aid=2176023&func=detail
-  Die, auto-reload and can't move backwards; can't use some artifacts
-  such as the tome of power or the torch, either. The problem is stuck
-  in the saved game. This is reported for the mission pack; validity for
-  the original Hexen II is unknown. Whether this is a bug in the engine
-  or a bug in the HCode (progs) is unknown. Raven's original "bugs.txt"
-  file lists an issue of "Tome of Power (use/die/can't use)" with "CNR"
-  i.e. "can't reproduce" as the status and it seems related to this one.
-
 - HexenWorld: Spectator mode (the chasecam) isn't as it should be.
 - HexenWorld: Coop mode is broken. Known problem since Raven's latest
   beta versions.
