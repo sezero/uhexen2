@@ -56,9 +56,6 @@ TARGETS:= h2patch
 
 all: $(TARGETS)
 
-XD3DEPS:= xdelta3-blkcache.h xdelta3-decode.h xdelta3.h \
-	xdelta3-list.h xdelta3-main.h
-
 OBJECTS:= xdelta3.o qsnprint.o h2patch3.o
 
 XD3DEPS:= xdelta3-decode.h xdelta3-list.h xdelta3-main.h xdelta3-blkcache.h \
