@@ -3,6 +3,9 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2012-09-27 (SVN):
+    * updated version date stamp to 2012-09-27.
+
 2012-09-22 (SVN):
     * host_cmd.c (RestoreClients): For clients_mode 3, do not apply any
       time diffs. mode 3 is only in response to the single player game
