@@ -28,6 +28,8 @@ Changes in v1.5.5: (Sep. 27, 2012.)
 
 - Client: Fixed a minor and rare intermission glitch.
 
+- SDL, keyboard input: Fixed control-character handling in unicode mode.
+
 - Software renderer: Disabled progress bars drawing, as it was reported
   to cause excessively long load times on some systems. Disabled the
   rotating skull drawing during file i/o.

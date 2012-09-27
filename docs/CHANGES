@@ -4,6 +4,10 @@ Development Progress	:
 ---------------------------
 
 2012-09-27 (SVN):
+    * in_sdl.c (IN_SendKeyEvents): fix control-character handling. minor
+      cleanup. from Sander van Dijk.
+
+2012-09-27 (SVN):
     * keys.c: fixes to clipboard text paste code. also moved it into new
       PasteToConsole() helper procedure.
 
