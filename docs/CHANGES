@@ -4,6 +4,10 @@ Development Progress	:
 ---------------------------
 
 2012-09-27 (SVN):
+    * keys.c: fixes to clipboard text paste code. also moved it into new
+      PasteToConsole() helper procedure.
+
+2012-09-27 (SVN):
     * updated version date stamp to 2012-09-27.
 
 2012-09-22 (SVN):
