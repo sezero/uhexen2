@@ -4,6 +4,13 @@ Development Progress	:
 ---------------------------
 
 2012-09-28 (SVN):
+    * keys.c: added K_COMMAND as a new key. added Cmd+V as a Mac special
+      case for paste request.
+    * keys.h: added K_COMMAND as a new key (170 for now).
+    * in_sdl.c (IN_SendKeyEvents): translate SDLK_LMETA/SDLK_RMETA as
+      K_COMMAND. ignore unhandled SDLK_WORLD_* international characters.
+
+2012-09-28 (SVN):
     * Mac OS X: text pasting support from OS clipboard to console. also
       updated the error dialog window procedure.
     * updated version date stamp to 2012-09-28.

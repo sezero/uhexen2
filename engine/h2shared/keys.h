@@ -79,6 +79,8 @@
 #define K_KP_INS		168
 #define K_KP_DEL		169
 
+#define K_COMMAND		170
+
 #define K_PAUSE			255
 
 //

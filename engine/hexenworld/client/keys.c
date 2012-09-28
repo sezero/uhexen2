@@ -104,6 +104,8 @@ static keyname_t keynames[] =
 	{"KP_INS", K_KP_INS},
 	{"KP_DEL", K_KP_DEL},
 
+	{"COMMAND", K_COMMAND},
+
 	{"MOUSE1", K_MOUSE1},
 	{"MOUSE2", K_MOUSE2},
 	{"MOUSE3", K_MOUSE3},
@@ -526,6 +528,14 @@ static void Key_Console (int key)
 		return;
 	}
 
+#if defined(__MACOSX__) || defined(__MACOS__)
+	/* Cmd+V paste request for Mac : */
+	if (keydown[K_COMMAND] && (key == 'V' || key == 'v'))
+	{
+		PasteToConsole();
+		return;
+	}
+#endif
 	/* check for a CTRL+V or SHIFT+INS paste request */
 	if ((keydown[K_CTRL] && (key == 'V' || key == 'v')) ||
 	    (keydown[K_SHIFT] && key == K_INS))

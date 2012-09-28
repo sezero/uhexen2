@@ -45,10 +45,11 @@ Changes in v1.5.5: (Sep. 28, 2012.)
 
 - Mac OS X: New MIDI driver.
 
-- Mac OS X: Added support for compiling simply using the makefiles. Added
-  support for cross-compiling from linux.
+- Mac OS X: Text pasting support from OS clipboard to console. Support
+  for the Apple (Command) key.
 
-- Mac OS X: text pasting support from OS clipboard to console.
+- Mac OS X: Support for building using the makefiles and cross-compiling
+  from Linux.
 
 - MorphOS builds: added missing -noixemul to the compiler flags.
 
