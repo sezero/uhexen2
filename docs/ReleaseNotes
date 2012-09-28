@@ -1,7 +1,7 @@
 Hammer of Thyrion (uHexen2) release notes:
 
 ========================================================================
-Changes in v1.5.5: (Sep. 27, 2012.)
+Changes in v1.5.5: (Sep. 28, 2012.)
 ========================================================================
 
 - Utils (light, vis, jsh2color): Added unix pthreads support for running
@@ -47,6 +47,8 @@ Changes in v1.5.5: (Sep. 27, 2012.)
 
 - Mac OS X: Added support for compiling simply using the makefiles. Added
   support for cross-compiling from linux.
+
+- Mac OS X: text pasting support from OS clipboard to console.
 
 - MorphOS builds: added missing -noixemul to the compiler flags.
 

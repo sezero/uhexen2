@@ -98,8 +98,35 @@ int OSX_GetBasedir (char *argv0, char *dst, size_t dstsize)
 /* Display message from Sys_Error() on a window: */
 void Cocoa_ErrorMessage (const char *errorMsg)
 {
-	NSRunCriticalAlertPanel(@"Hexen II Error",
-				[NSString stringWithUTF8String:errorMsg],
-				@"OK", nil, nil);
+#if (MAC_OS_X_VERSION_MIN_REQUIRED < 1040)	/* ppc builds targeting 10.3 and older */
+    NSString* msg = [NSString stringWithCString:errorMsg];
+#else
+    NSString* msg = [NSString stringWithCString:errorMsg encoding:NSASCIIStringEncoding];
+#endif
+    NSRunCriticalAlertPanel (@"Hexen II Error", msg, @"OK", nil, nil);
+}
+
+
+#define MAX_CLIPBOARDTXT	MAXCMDLINE	/* 256 */
+char *Sys_GetClipboardData (void)
+{
+    char *data			= NULL;
+    NSPasteboard* pasteboard	= [NSPasteboard generalPasteboard];
+    NSArray* types		= [pasteboard types];
+
+    if ([types containsObject: NSStringPboardType]) {
+	NSString* clipboardString = [pasteboard stringForType: NSStringPboardType];
+	if (clipboardString != NULL && [clipboardString length] > 0) {
+		size_t sz = [clipboardString length] + 1;
+		sz = q_min(MAX_CLIPBOARDTXT, sz);
+		data = (char *) Z_Malloc(sz, Z_MAINZONE);
+#if (MAC_OS_X_VERSION_MIN_REQUIRED < 1040)	/* for ppc builds targeting 10.3 and older */
+		q_strlcpy (data, [clipboardString cString], sz);
+#else
+		q_strlcpy (data, [clipboardString cStringUsingEncoding: NSASCIIStringEncoding], sz);
+#endif
+	}
+    }
+    return data;
 }
 

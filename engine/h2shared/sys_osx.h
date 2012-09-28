@@ -9,5 +9,8 @@ int OSX_GetBasedir (char *argv0, char *dst, size_t dstsize);
 void Cocoa_ErrorMessage (const char *errorMsg);
 #define Sys_ErrorMessage	Cocoa_ErrorMessage
 
+#define Sys_GetClipboardData	Sys_GetClipboardData
+	/* this is public, therefore not OSX_GetClipboardData  */
+
 #endif /* SYS_OSX_H */
 

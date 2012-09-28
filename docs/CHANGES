@@ -3,6 +3,11 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2012-09-28 (SVN):
+    * Mac OS X: text pasting support from OS clipboard to console. also
+      updated the error dialog window procedure.
+    * updated version date stamp to 2012-09-28.
+
 2012-09-27 (SVN):
     * in_sdl.c (IN_SendKeyEvents): fix control-character handling. minor
       cleanup. from Sander van Dijk.

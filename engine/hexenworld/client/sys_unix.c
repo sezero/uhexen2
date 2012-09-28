@@ -448,10 +448,13 @@ void Sys_SendKeyEvents (void)
 	IN_SendKeyEvents();
 }
 
+#if !defined(Sys_GetClipboardData)
+#define Sys_GetClipboardData Sys_GetClipboardData /* */
 char *Sys_GetClipboardData (void)
 {
 	return NULL;
 }
+#endif
 
 #if !defined(Sys_GetBasedir)
 #define Sys_GetBasedir UNIX_GetBasedir
