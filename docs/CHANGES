@@ -3,6 +3,11 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2012-09-29 (SVN):
+    * in_sdl.c (IN_SendKeyEvents): fixed major thinko in SDLK_WORLD_xx
+      change from yesterday's r4973.
+    * updated version date stamp to 2012-09-29.
+
 2012-09-28 (SVN):
     * keys.c: added K_COMMAND as a new key. added Cmd+V as a Mac special
       case for paste request.
