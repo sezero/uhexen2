@@ -380,7 +380,7 @@ static void Key_Console (int key)
 		edit_line = (edit_line + 1) & 31;
 		history_line = edit_line;
 		key_lines[edit_line][0] = ']';
-		key_lines[edit_line][1] = 0;	// null terminate
+		key_lines[edit_line][1] = 0;
 		key_linepos = 1;
 		if (cls.state == ca_disconnected)
 			SCR_UpdateScreen ();	// force an update, because the command
@@ -483,12 +483,10 @@ static void Key_Console (int key)
 	case K_DOWNARROW:
 		if (history_line == edit_line)
 			return;
-
 		do
 		{
 			history_line = (history_line + 1) & 31;
-		}
-		while (history_line != edit_line && !key_lines[history_line][1]);
+		} while (history_line != edit_line && !key_lines[history_line][1]);
 
 		if (history_line == edit_line)
 		{
@@ -526,28 +524,38 @@ static void Key_Console (int key)
 			con->display = con->current;
 		else	key_linepos = strlen(workline);
 		return;
-	}
 
+	case K_INS:
+		if (keydown[K_SHIFT])		/* Shift+Ins paste */
+			PasteToConsole();
+		else	key_insert ^= 1;
+		return;
+
+	case 'v':
+	case 'V':
 #if defined(__MACOSX__) || defined(__MACOS__)
-	/* Cmd+V paste request for Mac : */
-	if (keydown[K_COMMAND] && (key == 'V' || key == 'v'))
-	{
-		PasteToConsole();
-		return;
-	}
+		if (keydown[K_COMMAND]) {	/* Cmd+V paste (Mac-only) */
+			PasteToConsole();
+			return;
+		}
 #endif
-	/* check for a CTRL+V or SHIFT+INS paste request */
-	if ((keydown[K_CTRL] && (key == 'V' || key == 'v')) ||
-	    (keydown[K_SHIFT] && key == K_INS))
-	{
-		PasteToConsole();
-		return;
-	}
+		if (keydown[K_CTRL]) {		/* Ctrl+v paste */
+			PasteToConsole();
+			return;
+		}
+		break;
 
-	if (key == K_INS)
-	{
-		key_insert ^= 1;
-		return;
+	case 'c':
+	case 'C':
+		if (keydown[K_CTRL]) {		/* Ctrl+C: abort the line -- S.A */
+			Con_Printf ("%s\n", workline);
+			workline[0] = ']';
+			workline[1] = 0;
+			key_linepos = 1;
+			history_line= edit_line;
+			return;
+		}
+		break;
 	}
 
 	if (key < 32 || key > 127)
