@@ -568,18 +568,17 @@ void Sys_SendKeyEvents (void)
 	IN_SendKeyEvents();
 }
 
-/* This never gets called on AROS due to some SDL bug in the key handling.
-   I'll leave it in for future releases. */
 #if !(defined(__AROS__) || defined(__MORPHOS__))
 typedef ULONG IPTR;
 #endif /* AROS IPTR */
+#define MAX_CLIPBOARDTXT	MAXCMDLINE	/* 256 */
 char *Sys_GetClipboardData (void)
 {
-	static char chunk_buffer[1024];
+	static char chunk_buffer[MAX_CLIPBOARDTXT];
 
 	struct IFFHandle *IFFHandle;
 	struct ContextNode *cn;
-	ULONG error, readbytes = 0;
+	LONG error, readbytes = 0;
 
 	if ((IFFHandle = AllocIFF())) {
 	    if ((IFFHandle->iff_Stream = (IPTR) OpenClipboard(0))) {
@@ -591,7 +590,8 @@ char *Sys_GetClipboardData (void)
 			    if (cn && (cn->cn_Type == ID_FTXT) &&
 					(cn->cn_ID == ID_CHRS)) {
 				readbytes = ReadChunkBytes(IFFHandle,
-							   chunk_buffer, 1024);
+							   chunk_buffer,
+							   MAX_CLIPBOARDTXT - 1);
 			    }
 			}
 		    }
@@ -602,8 +602,10 @@ char *Sys_GetClipboardData (void)
 	    FreeIFF(IFFHandle);
 	}
 
-	if (readbytes > 0)
+	if (readbytes > 0) {
+	    chunk_buffer[readbytes] = '\0'
 	    return chunk_buffer;
+	}
 	return NULL;
 }
 

@@ -4,6 +4,14 @@ Development Progress	:
 ---------------------------
 
 2012-09-30 (SVN):
+    * sys_amiga.c (Sys_GetClipboardData): types of readbytes and error
+      return values must be signed not unsigned. ReadChunkBytes() must
+      be called with one byte less than the read buffer array size as
+      numbytes for the nul terminator. do nul terminate the read buffer
+      when ReadChunkBytes() reports success. read buffer array size is
+      now 256 (MAXCMDLINE), instead of 1024.
+
+2012-09-30 (SVN):
     * keys.c (Key_Console): some tidy-up. made Ctrl-c key combination to
       abort the line (from Steven/Quakespasm rev. 99.)
     * updated version date stamp to 2012-09-30.
