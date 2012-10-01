@@ -3,6 +3,9 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2012-10-01 (SVN):
+    * h2/cube.hc (cube_find_target): fixed parens in the if construct.
+
 2012-09-30 (SVN):
     * sys_amiga.c (Sys_GetClipboardData): types of readbytes and error
       return values must be signed not unsigned. ReadChunkBytes() must

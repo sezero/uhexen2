@@ -19,7 +19,7 @@ float cube_find_target(void)
 
 	while (item)
 	{
-		if ((item.flags & FL_MONSTER) || ((item.classname == "player") && deathmatch == 1) && item.health > 0)
+		if (((item.flags & FL_MONSTER) || (item.classname == "player" && deathmatch == 1)) && item.health > 0)
 		{
 			tracearea (self.origin,item.origin,self.mins,self.maxs,FALSE,self);
 			if (trace_ent == item)
