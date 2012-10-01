@@ -4,6 +4,11 @@ Development Progress	:
 ---------------------------
 
 2012-10-01 (SVN):
+    * client.hc, invntory.hc: artifact_active/artifact_low setting and
+      clearing of ART_TOMEOFPOWER, ART_INVINCIBILITY, ART_INVISIBILITY,
+      and ART_HASTE are now done simply by using BITSET and BITCLR ops.
+
+2012-10-01 (SVN):
     * h2/cube.hc (cube_find_target): fixed parens in the if construct.
       don't choose a monster whose controller is the same as the cube's
       controller, i.e. the player's summoned imp. assign self as the

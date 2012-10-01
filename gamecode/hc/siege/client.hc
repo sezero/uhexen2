@@ -2483,17 +2483,16 @@ void() CheckPowerups =
 	{
 		if (self.haste_time < time)
 		{
-			self.artifact_low =self.artifact_low - (self.artifact_low & ART_HASTE);
-			self.artifact_active =self.artifact_active - (self.artifact_active & ART_HASTE);
+			self.artifact_low (-) ART_HASTE;
+			self.artifact_active (-) ART_HASTE;
 			self.effects(-)EF_DARKFIELD;
 			PlayerSpeed_Calc(self);
 			self.haste_time = 0;
 			self.air_finished = time + 12;
 		}
 		else if ((self.haste_time - 10) < time)
-			self.artifact_low = self.artifact_low | ART_HASTE;
+			self.artifact_low (+) ART_HASTE;
 	}
-
 
 	if (self.artifact_active & ART_INVINCIBILITY)
 	{
@@ -2505,7 +2504,7 @@ void() CheckPowerups =
 		if (self.invincible_time < time)
 			remove_invincibility(self);
 		else if ((self.invincible_time - 10) < time)
-			self.artifact_low = self.artifact_low | ART_INVINCIBILITY;
+			self.artifact_low (+) ART_INVINCIBILITY;
 		/*
 		if(self.playerclass==CLASS_SUCCUBUS)
 		{
@@ -2535,13 +2534,13 @@ void() CheckPowerups =
 
 		if (self.tome_time < time)
 		{
-			self.artifact_low = self.artifact_low - (self.artifact_low & ART_TOMEOFPOWER);
-			self.artifact_active = self.artifact_active - (self.artifact_active & ART_TOMEOFPOWER);
+			self.artifact_low (-) ART_TOMEOFPOWER;
+			self.artifact_active (-) ART_TOMEOFPOWER;
 			self.tome_time = 0;
 			self.drawflags = (self.drawflags & MLS_MASKOUT)| 0;
 		}
 		else if ((self.tome_time - 10) < time)
-			self.artifact_low = self.artifact_low | ART_TOMEOFPOWER;
+			self.artifact_low (+) ART_TOMEOFPOWER;
 //	}
 	
 
@@ -2550,8 +2549,8 @@ void() CheckPowerups =
 	{
 		if (self.invisible_time < time)
 		{	// just stopped
-			self.artifact_low = self.artifact_low - (self.artifact_low & ART_INVISIBILITY);
-			self.artifact_active = self.artifact_active - (self.artifact_active & ART_INVISIBILITY);
+			self.artifact_low (-) ART_INVISIBILITY;
+			self.artifact_active (-) ART_INVISIBILITY;
 			self.invisible_time = 0;
 			msg_entity=self;
 			WriteByte(MSG_ONE, SVC_CLEAR_VIEW_FLAGS);
@@ -2563,7 +2562,7 @@ void() CheckPowerups =
 		else
 		{
 			if ((self.invisible_time - 10) < time)
-				self.artifact_low = self.artifact_low | ART_INVISIBILITY;
+				self.artifact_low (+) ART_INVISIBILITY;
 		}
 
 	}

@@ -204,7 +204,7 @@ void Use_TomeofPower (void)
 		self.sheep_time=0;
 	else
 	{
-		self.artifact_active = self.artifact_active | ART_TOMEOFPOWER;
+		self.artifact_active (+) ART_TOMEOFPOWER;
 		self.tome_time = time + TOME_TIME;
 	}
 	self.cnt_tome -= 1;
@@ -213,7 +213,7 @@ void Use_TomeofPower (void)
 
 void () Use_Haste =
 {
-	self.artifact_active = self.artifact_active | ART_HASTE;
+	self.artifact_active (+) ART_HASTE;
 	self.haste_time = time + TOME_TIME;
 
 //	launch_hastewedge ();
@@ -495,13 +495,12 @@ void UseBlast (void)
 
 void UseInvincibility (void)
 {
-	self.artifact_active = self.artifact_active | ART_INVINCIBILITY;
+	self.artifact_active (+) ART_INVINCIBILITY;
 	if(deathmatch)
 		self.invincible_time = time + TOME_TIME;
 	else
 		self.invincible_time = time + 10;
-	if (self.artifact_low & ART_INVINCIBILITY)
-		self.artifact_low = self.artifact_low - (self.artifact_low & ART_INVINCIBILITY);
+	self.artifact_low (-) ART_INVINCIBILITY;
 
 //Temp invincibility effects
 	if(self.playerclass==CLASS_CRUSADER)
@@ -525,10 +524,9 @@ void UseInvincibility (void)
 void UseInvisibility (void)
 {
 	centerprint(self,"You are Invisible!\n");
-	self.artifact_active = self.artifact_active | ART_INVISIBILITY;
+	self.artifact_active (+) ART_INVISIBILITY;
 	self.invisible_time = time + TOME_TIME;
-	if (self.artifact_low & ART_INVISIBILITY)
-		self.artifact_low = self.artifact_low - (self.artifact_low & ART_INVISIBILITY);
+	self.artifact_low (-) ART_INVISIBILITY;
 
 	msg_entity=self;
 	WriteByte(MSG_ONE, SVC_SET_VIEW_FLAGS);

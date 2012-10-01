@@ -214,7 +214,7 @@ void Use_TomeofPower (void)
 		{	// does nothing but sheep stuff...
 			return;
 		}
-		self.artifact_active = self.artifact_active | ART_TOMEOFPOWER;
+		self.artifact_active (+) ART_TOMEOFPOWER;
 		self.tome_time = time + TOME_TIME;
 	}
 	self.cnt_tome -= 1;
@@ -222,7 +222,7 @@ void Use_TomeofPower (void)
 
 void Use_Haste (entity targ_ent)
 {
-	targ_ent.artifact_active = targ_ent.artifact_active | ART_HASTE;
+	targ_ent.artifact_active (+) ART_HASTE;
 	targ_ent.haste_time = time + 20;
 
 	targ_ent.effects(+)EF_DARKFIELD;
@@ -732,13 +732,12 @@ float found_cnt;
 	}
 	self.cnt_invincibility -= 1;
 /*
-	self.artifact_active = self.artifact_active | ART_INVINCIBILITY;
+	self.artifact_active (+) ART_INVINCIBILITY;
 	if(deathmatch)
 		self.invincible_time = time + TOME_TIME;
 	else
 		self.invincible_time = time + 10;
-	if (self.artifact_low & ART_INVINCIBILITY)
-		self.artifact_low = self.artifact_low - (self.artifact_low & ART_INVINCIBILITY);
+	self.artifact_low (-) ART_INVINCIBILITY;
 
 //Temp invincibility effects
 	if(self.playerclass==CLASS_CRUSADER)
@@ -757,10 +756,9 @@ float found_cnt;
 
 void UseInvisibility (entity targ_ent)
 {
-	targ_ent.artifact_active = targ_ent.artifact_active | ART_INVISIBILITY;
+	targ_ent.artifact_active (+) ART_INVISIBILITY;
 	targ_ent.invisible_time = time + 20;
-	if (targ_ent.artifact_low & ART_INVISIBILITY)
-		targ_ent.artifact_low = targ_ent.artifact_low - (targ_ent.artifact_low & ART_INVISIBILITY);
+	targ_ent.artifact_low (-) ART_INVISIBILITY;
 
 	msg_entity=targ_ent;
 	WriteByte(MSG_ONE, SVC_SET_VIEW_FLAGS);
