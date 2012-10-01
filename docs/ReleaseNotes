@@ -1,7 +1,7 @@
 Hammer of Thyrion (uHexen2) release notes:
 
 ========================================================================
-Changes in v1.5.5: (Sep. 30, 2012.)
+Changes in v1.5.5: (Oct. 01, 2012.)
 ========================================================================
 
 - Utils (light, vis, jsh2color): Added unix pthreads support for running
@@ -57,7 +57,8 @@ Changes in v1.5.5: (Sep. 30, 2012.)
   to cause weapon switching to get stuck if several weapons were picked
   up too fast. fixed a minor bug in assassin's fourth weapon in powered
   mode. cleaned up weapon cycling code, minor fixes/clean-ups in weapon
-  selection. several other hcode cleanups.
+  selection. fixed cube of force, so that it doesn't attack the player's
+  own summoned imp anymore. several other hcode cleanups.
 
 - All platforms, hexenworld: pak4.pak from the ancient beta 0.11 version
   is now recognized properly.

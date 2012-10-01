@@ -6,7 +6,10 @@ Changes
 
 2012-10-01 (1.27):
 ===================
-- h2/cube.hc (cube_find_target): fixed parens in the if construct.
+- h2/cube.hc (cube_find_target): fixed parens in the if construct. don't
+  choose a monster whose controller is the same as the cube's controller
+  i.e. the player's summoned imp. assign self as the cube's controller
+  in UseCubeOfForce(). fixes backported from the mission pack version.
 - breakabl.hc,client.hc,doors.hc,subs.hc,weapons.hc,world.hc: replaced
   several while(1){} and do{}while(1) loops by loop{} which is shorter.
 - weapons.hc (CycleWeaponCommand, CycleWeaponReverseCommand): removed an
