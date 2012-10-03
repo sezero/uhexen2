@@ -40,9 +40,8 @@
 #endif
 
 #include <sys/param.h>
-#include <sys/audioio.h>
 #include <sys/ioctl.h>
-
+#include <sys/audioio.h>
 #include <fcntl.h>
 #include <unistd.h>
 
@@ -98,7 +97,7 @@ static qboolean S_SUN_Init (dma_t *dma)
 	}
 #endif	/* ENDIAN_RUNTIME_DETECT */
 
-	// Open the audio device
+	/* Open the audio device */
 #if defined(_PATH_SOUND)
 	snddev = _PATH_SOUND;
 #elif _SUNAUDIO_SUNOS
@@ -118,16 +117,16 @@ static qboolean S_SUN_Init (dma_t *dma)
 
 	AUDIO_INITINFO (&info);
 
-	// these desired values are decided in snd_dma.c according
-	// to the defaults and the user's command line parameters.
+	/* these desired values are decided in snd_dma.c according
+	 * to the defaults and the user's command line parameters. */
 	info.play.sample_rate = desired_speed;
 	info.play.channels = desired_channels;
 	info.play.precision = desired_bits;
 	info.play.encoding = (desired_bits == 8) ? FORMAT_U8 : FORMAT_S16;
 	if (ioctl(audio_fd, AUDIO_SETINFO, &info) != 0)
 	{
-	// TODO: also try other options of sampling
-	//	 rate and format upon failure???
+	/* TODO: also try other options of sampling
+	 *	 rate and format upon failure???  */
 		Con_Printf("Couldn't set desired sound output format (%d bit, %s, %d Hz)\n",
 				desired_bits, (desired_channels == 2) ? "stereo" : "mono", desired_speed);
 		close (audio_fd);
@@ -209,7 +208,7 @@ static void S_SUN_Submit (void)
 		return;
 
 	if (paintedtime < wbufp)
-		wbufp = 0;	// reset
+		wbufp = 0;	/* reset */
 
 	bsize = shm->channels * shm->samplebits / 8;
 	bytes = (paintedtime - wbufp) * bsize;
@@ -223,8 +222,8 @@ static void S_SUN_Submit (void)
 		stop = wbufp + bytes / bsize;
 	}
 
-	// transfer the sound data from the circular dma_buffer to writebuf
-	// TODO: using 2 memcpys instead of this loop should be faster
+	/* transfer the sound data from the circular dma_buffer to writebuf */
+	/* TODO: using 2 memcpys instead of this loop should be faster */
 	p = writebuf;
 	idx = (wbufp * bsize) & (sizeof(dma_buffer) - 1);
 	for (b = bytes; b; b--)

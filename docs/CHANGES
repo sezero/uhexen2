@@ -3,6 +3,11 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2012-10-03 (SVN):
+    * snd_sun.c: include ioctl.h before audioio.h. changed C++ comments
+      into C-style comments.
+    * snd_alsa.c: changed C++ comments into C-style comments.
+
 2012-10-01 (SVN):
     * client.hc, invntory.hc: artifact_active/artifact_low setting and
       clearing of ART_TOMEOFPOWER, ART_INVINCIBILITY, ART_INVISIBILITY,
