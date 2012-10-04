@@ -640,24 +640,28 @@ typedef ULONG IPTR;
 #define MAX_CLIPBOARDTXT	MAXCMDLINE	/* 256 */
 char *Sys_GetClipboardData (void)
 {
-	static char chunk_buffer[MAX_CLIPBOARDTXT];
-
 	struct IFFHandle *IFFHandle;
 	struct ContextNode *cn;
-	LONG error, readbytes = 0;
+	LONG readbytes;
+	char *chunk_buffer = NULL;
 
 	if ((IFFHandle = AllocIFF())) {
 	    if ((IFFHandle->iff_Stream = (IPTR) OpenClipboard(0))) {
 		InitIFFasClip(IFFHandle);
 		if (!OpenIFF(IFFHandle, IFFF_READ)) {
 		    if (!StopChunk(IFFHandle, ID_FTXT, ID_CHRS)) {
-			if (!(error = ParseIFF(IFFHandle, IFFPARSE_SCAN))) {
+			if (!ParseIFF(IFFHandle, IFFPARSE_SCAN)) {
 			    cn = CurrentChunk(IFFHandle);
 			    if (cn && (cn->cn_Type == ID_FTXT) &&
 					(cn->cn_ID == ID_CHRS)) {
+				chunk_buffer = (char *)
+					  Z_Malloc(MAX_CLIPBOARDTXT, Z_MAINZONE);
 				readbytes = ReadChunkBytes(IFFHandle,
 							   chunk_buffer,
 							   MAX_CLIPBOARDTXT - 1);
+				if (readbytes < 0)
+				    readbytes = 0;
+				chunk_buffer[readbytes] = '\0';
 			    }
 			}
 		    }
@@ -668,11 +672,7 @@ char *Sys_GetClipboardData (void)
 	    FreeIFF(IFFHandle);
 	}
 
-	if (readbytes > 0) {
-	    chunk_buffer[readbytes] = '\0'
-	    return chunk_buffer;
-	}
-	return NULL;
+	return chunk_buffer;
 }
 
 static int Sys_GetBasedir (char *argv0, char *dst, size_t dstsize)

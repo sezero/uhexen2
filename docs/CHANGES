@@ -3,6 +3,10 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2012-10-04 (SVN):
+    * sys_amiga.c: fixed Sys_GetClipboardData(), text pasting now works.
+    * updated version date stamp to 2012-10-04.
+
 2012-10-03 (SVN):
     * snd_sun.c: include ioctl.h before audioio.h. changed C++ comments
       into C-style comments.

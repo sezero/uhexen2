@@ -1,7 +1,7 @@
 Hammer of Thyrion (uHexen2) release notes:
 
 ========================================================================
-Changes in v1.5.5: (Oct. 01, 2012.)
+Changes in v1.5.5: (Oct. 04, 2012.)
 ========================================================================
 
 - Utils (light, vis, jsh2color): Added unix pthreads support for running
@@ -38,20 +38,22 @@ Changes in v1.5.5: (Oct. 01, 2012.)
   close to the camera origin, such as the teleportation puff. (used to
   happen mostly in 64 bit builds. bug #3562290.)
 
-- Windows:  Removed hooks for QHOST, which is (was) a proprietery server
+- Windows: Removed hooks for QHOST, which is (was) a proprietery server
   administation tool.
 
 - Mac OS X: packages now have ogg/vorbis and mp3 music playback support.
 
 - Mac OS X: New MIDI driver.
 
-- Mac OS X: Text pasting support from OS clipboard to console. Support
+- Mac OS X: Support for text paste from OS clipboard to console. Support
   for the Apple (Command) key.
 
 - Mac OS X: Support for building using the makefiles and cross-compiling
   from Linux.
 
 - MorphOS builds: added missing -noixemul to the compiler flags.
+
+- MorphOS, AROS, Amiga: Support text paste from OS clipboard to console.
 
 - All platforms, gameplay: fixed bug in original hexen2 hcode which used
   to cause weapon switching to get stuck if several weapons were picked
