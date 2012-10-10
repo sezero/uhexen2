@@ -812,7 +812,7 @@ void Key_WriteBindings (FILE *f)
 	for (i = 0; i < 256; i++)
 	{
 		if (keybindings[i] && *keybindings[i])
-			fprintf (f, "bind %s \"%s\"\n", Key_KeynumToString(i), keybindings[i]);
+			fprintf (f, "bind \"%s\" \"%s\"\n", Key_KeynumToString(i), keybindings[i]);
 	}
 }
 

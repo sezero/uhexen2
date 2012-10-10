@@ -7,6 +7,7 @@ Development Progress	:
     * hexen2/host.c, hexenworld/client/cl_main.c: unbindall before
       loading stored bindings (configurable by new cvar cfg_unbindall,
       enabled by default.)
+    * hexenworld/client/keys.c (Key_WriteBindings): quote "key".
 
 2012-10-04 (SVN):
     * sys_amiga.c: fixed Sys_GetClipboardData(), text pasting now works.
