@@ -36,6 +36,8 @@ cvar_t	cl_playerclass = {"_cl_playerclass", "1", CVAR_ARCHIVE};
 cvar_t	cl_shownet = {"cl_shownet", "0", CVAR_NONE};	// can be 0, 1, or 2
 cvar_t	cl_nolerp = {"cl_nolerp", "0", CVAR_NONE};
 
+cvar_t	cfg_unbindall = {"cfg_unbindall", "1", CVAR_ARCHIVE};
+
 cvar_t	lookspring = {"lookspring", "0", CVAR_ARCHIVE};
 cvar_t	lookstrafe = {"lookstrafe", "0", CVAR_ARCHIVE};
 cvar_t	sensitivity = {"sensitivity", "3", CVAR_ARCHIVE};
@@ -954,6 +956,8 @@ void CL_Init (void)
 	Cvar_RegisterVariable (&m_yaw);
 	Cvar_RegisterVariable (&m_forward);
 	Cvar_RegisterVariable (&m_side);
+
+	Cvar_RegisterVariable (&cfg_unbindall);
 
 	Cmd_AddCommand ("entities", CL_PrintEntities_f);
 	Cmd_AddCommand ("disconnect", CL_Disconnect_f);

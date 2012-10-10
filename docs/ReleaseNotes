@@ -1,7 +1,7 @@
 Hammer of Thyrion (uHexen2) release notes:
 
 ========================================================================
-Changes in v1.5.5: (Oct. 04, 2012.)
+Changes in v1.5.5: (Oct. 10, 2012.)
 ========================================================================
 
 - Utils (light, vis, jsh2color): Added unix pthreads support for running
@@ -27,6 +27,9 @@ Changes in v1.5.5: (Oct. 04, 2012.)
 - Client: Fixed a demo playback failure when certain conditions are met.
 
 - Client: Fixed a minor and rare intermission glitch.
+
+- Client: unbindall before loading stored bindings (configurable by new
+  cvar cfg_unbindall, enabled by default.)
 
 - SDL, keyboard input: Fixed control-character handling in unicode mode.
 

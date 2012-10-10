@@ -778,6 +778,9 @@ void Key_WriteBindings (FILE *f)
 {
 	int	i;
 
+	// unbindall before loading stored bindings:
+	if (cfg_unbindall.integer)
+		fprintf (f, "unbindall\n");
 	for (i = 0; i < 256; i++)
 	{
 		if (keybindings[i] && *keybindings[i])

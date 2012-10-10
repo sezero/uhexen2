@@ -4,6 +4,12 @@ Development Progress	:
 ---------------------------
 
 2012-10-10 (SVN):
+    * moved cfg_unbindall and its registration to cl_main.c. moved the
+      config.cfg write of unbindall to Key_WriteBindings(). documented
+      the new behavior in the release notes.
+    * updated version date stamp to 2012-10-10.
+
+2012-10-10 (SVN):
     * hexen2/host.c, hexenworld/client/cl_main.c: unbindall before
       loading stored bindings (configurable by new cvar cfg_unbindall,
       enabled by default.)

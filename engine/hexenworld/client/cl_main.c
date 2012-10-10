@@ -41,6 +41,8 @@ static	cvar_t	cl_timeout = {"cl_timeout", "60", CVAR_NONE};
 
 cvar_t	cl_shownet = {"cl_shownet", "0", CVAR_NONE};	// can be 0, 1, or 2
 
+cvar_t	cfg_unbindall = {"cfg_unbindall", "1", CVAR_ARCHIVE};
+
 cvar_t	lookspring = {"lookspring", "0", CVAR_ARCHIVE};
 cvar_t	lookstrafe = {"lookstrafe", "0", CVAR_ARCHIVE};
 cvar_t	sensitivity = {"sensitivity", "3", CVAR_ARCHIVE};
@@ -55,8 +57,6 @@ cvar_t	entlatency = {"entlatency", "20", CVAR_NONE};
 cvar_t	cl_predict_players = {"cl_predict_players", "1", CVAR_NONE};
 cvar_t	cl_predict_players2 = {"cl_predict_players2", "1", CVAR_NONE};
 cvar_t	cl_solid_players = {"cl_solid_players", "1", CVAR_NONE};
-
-cvar_t	cfg_unbindall = {"cfg_unbindall", "1", CVAR_ARCHIVE};
 
 //
 // info mirrors
@@ -1058,10 +1058,10 @@ void CL_Init (void)
 	Cvar_RegisterVariable (&cl_predict_players);
 	Cvar_RegisterVariable (&cl_solid_players);
 
-	Cvar_RegisterVariable (&cfg_unbindall);
-
 	Cvar_RegisterVariable (&baseskin);
 	Cvar_RegisterVariable (&noskins);
+
+	Cvar_RegisterVariable (&cfg_unbindall);
 
 // info mirrors
 	Cvar_SetCallback (&name, CL_Callback_Userinfo);
@@ -1211,9 +1211,6 @@ void Host_WriteConfiguration (const char *fname)
 			return;
 		}
 
-		// unbindall before loading stored bindings:
-		if (cfg_unbindall.integer)
-			fprintf (f, "unbindall\n");
 		Key_WriteBindings (f);
 		Cvar_WriteVariables (f);
 		// if mlook was down, keep it that way:
