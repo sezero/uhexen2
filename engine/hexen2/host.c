@@ -86,6 +86,8 @@ cvar_t	pausable = {"pausable", "1", CVAR_NONE};
 
 cvar_t	temp1 = {"temp1", "0", CVAR_NONE};
 
+cvar_t	cfg_unbindall = {"cfg_unbindall", "1", CVAR_ARCHIVE};
+
 
 /*
 ===============================================================================
@@ -393,6 +395,8 @@ static void Host_InitLocal (void)
 
 	Cvar_RegisterVariable (&temp1);
 
+	Cvar_RegisterVariable (&cfg_unbindall);
+
 	Host_FindMaxClients ();
 }
 
@@ -418,6 +422,9 @@ static void Host_WriteConfiguration (const char *fname)
 			return;
 		}
 
+		// unbindall before loading stored bindings:
+		if (cfg_unbindall.integer)
+			fprintf (f, "unbindall\n");
 		Key_WriteBindings (f);
 		Cvar_WriteVariables (f);
 		// if mlook was down, keep it that way:

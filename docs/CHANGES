@@ -3,6 +3,11 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2012-10-10 (SVN):
+    * hexen2/host.c, hexenworld/client/cl_main.c: unbindall before
+      loading stored bindings (configurable by new cvar cfg_unbindall,
+      enabled by default.)
+
 2012-10-04 (SVN):
     * sys_amiga.c: fixed Sys_GetClipboardData(), text pasting now works.
     * updated version date stamp to 2012-10-04.

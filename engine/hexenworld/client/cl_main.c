@@ -56,6 +56,8 @@ cvar_t	cl_predict_players = {"cl_predict_players", "1", CVAR_NONE};
 cvar_t	cl_predict_players2 = {"cl_predict_players2", "1", CVAR_NONE};
 cvar_t	cl_solid_players = {"cl_solid_players", "1", CVAR_NONE};
 
+cvar_t	cfg_unbindall = {"cfg_unbindall", "1", CVAR_ARCHIVE};
+
 //
 // info mirrors
 //
@@ -1056,6 +1058,8 @@ void CL_Init (void)
 	Cvar_RegisterVariable (&cl_predict_players);
 	Cvar_RegisterVariable (&cl_solid_players);
 
+	Cvar_RegisterVariable (&cfg_unbindall);
+
 	Cvar_RegisterVariable (&baseskin);
 	Cvar_RegisterVariable (&noskins);
 
@@ -1207,6 +1211,9 @@ void Host_WriteConfiguration (const char *fname)
 			return;
 		}
 
+		// unbindall before loading stored bindings:
+		if (cfg_unbindall.integer)
+			fprintf (f, "unbindall\n");
 		Key_WriteBindings (f);
 		Cvar_WriteVariables (f);
 		// if mlook was down, keep it that way:
