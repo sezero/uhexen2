@@ -3,6 +3,9 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2012-10-11 (SVN):
+    * revert r4374, some keyboard input tweaks (from quakespasm).
+
 2012-10-10 (SVN):
     * moved cfg_unbindall and its registration to cl_main.c. moved the
       config.cfg write of unbindall to Key_WriteBindings(). documented
