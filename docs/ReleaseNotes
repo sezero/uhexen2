@@ -1,7 +1,7 @@
 Hammer of Thyrion (uHexen2) release notes:
 
 ========================================================================
-Changes in v1.5.5: (Oct. 10, 2012.)
+Changes in v1.5.5: (Oct. 11, 2012.)
 ========================================================================
 
 - Utils (light, vis, jsh2color): Added unix pthreads support for running
@@ -32,6 +32,8 @@ Changes in v1.5.5: (Oct. 10, 2012.)
   cvar cfg_unbindall, enabled by default.)
 
 - SDL, keyboard input: Fixed control-character handling in unicode mode.
+
+- All, keyboard input: Several tweaks.
 
 - Software renderer: Disabled progress bars drawing, as it was reported
   to cause excessively long load times on some systems. Disabled the

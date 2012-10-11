@@ -4,6 +4,11 @@ Development Progress	:
 ---------------------------
 
 2012-10-11 (SVN):
+    * gl_vidnt.c, vid_mgl4.c, vid_win.c (MapKey): adjust gamekey after
+      r4987.
+    * updated version date stamp to 2012-10-11.
+
+2012-10-11 (SVN):
     * revert r4374, some keyboard input tweaks (from quakespasm).
 
 2012-10-10 (SVN):

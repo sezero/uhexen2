@@ -2661,6 +2661,13 @@ void D_EndDirectRect (int x, int y, int width, int height)
 
 //==========================================================================
 
+/*
+=======
+MapKey
+
+Map from windows to quake keynums
+=======
+*/
 static byte scantokey[128] =
 {
 //	0        1       2       3       4       5       6       7
@@ -2707,20 +2714,13 @@ static byte shiftscantokey[128] =
 };
 #endif
 
-/*
-=======
-MapKey
-
-Map from windows to quake keynums
-=======
-*/
 static int MapKey (int key)
 {
 	static qboolean prev_gamekey;
 	int result;
 	qboolean gamekey;
 
-	gamekey = (key_dest == key_game || m_keys_bind_grab);
+	gamekey = ((key_dest == key_game && !con_forcedup) || m_keys_bind_grab);
 	if (gamekey != prev_gamekey)
 	{
 		prev_gamekey = gamekey;
@@ -2967,7 +2967,7 @@ void VID_HandlePause (qboolean paused)
 	}
 }
 
-			
+
 void VID_ToggleFullscreen (void)
 {
 }
@@ -3305,7 +3305,6 @@ static void VID_MenuDraw (void)
 	{
 		ptr = VID_GetModeDescriptionMemCheck (i);
 		modedescs[i].modenum = modelist[i].modenum;
-		// avoid null pointer if not enough memory for mode. Pa3PyX
 		modedescs[i].desc = ptr ? ptr : no_desc;
 		modedescs[i].ismode13 = 0;
 		modedescs[i].iscur = 0;

@@ -1133,7 +1133,6 @@ void VID_SetPalette (unsigned char *palette)
 
 //==========================================================================
 
-
 static BOOL bSetupPixelFormat (HDC hDC)
 {
 	int	pixelformat;
@@ -1154,7 +1153,13 @@ static BOOL bSetupPixelFormat (HDC hDC)
 }
 
 
+/*
+=======
+MapKey
 
+Map from windows to quake keynums
+=======
+*/
 static byte scantokey[128] =
 {
 //	0        1       2       3       4       5       6       7
@@ -1201,20 +1206,13 @@ static byte shiftscantokey[128] =
 };
 #endif
 
-/*
-=======
-MapKey
-
-Map from windows to quake keynums
-=======
-*/
 static int MapKey (int key)
 {
 	static qboolean prev_gamekey;
 	int result;
 	qboolean gamekey;
 
-	gamekey = (key_dest == key_game || m_keys_bind_grab);
+	gamekey = ((key_dest == key_game && !con_forcedup) || m_keys_bind_grab);
 	if (gamekey != prev_gamekey)
 	{
 		prev_gamekey = gamekey;
@@ -1393,7 +1391,7 @@ static void AppActivate (BOOL fActive, BOOL minimize)
 			IN_DeactivateMouse ();
 			IN_ShowMouse ();
 			if (vid_canalttab)
-			{ 
+			{
 				ChangeDisplaySettings (NULL, 0);
 				vid_wassuspended = true;
 			}
