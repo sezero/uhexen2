@@ -3,6 +3,9 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2012-10-15 (SVN):
+    * Another approach at fixing key_dest.
+
 2012-10-11 (SVN):
     * gl_vidnt.c, vid_mgl4.c, vid_win.c (MapKey): adjust gamekey after
       r4987.
