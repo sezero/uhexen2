@@ -162,6 +162,7 @@ void Key_Event (int key, qboolean down);
 void Key_Init (void);
 void Key_WriteBindings (FILE *f);
 void Key_ClearStates (void);
+void Key_ForceDest (void);
 
 void Key_SetBinding (int keynum, const char *binding);
 const char *Key_KeynumToString (int keynum);

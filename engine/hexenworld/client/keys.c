@@ -1058,7 +1058,6 @@ void Key_Event (int key, qboolean down)
 	}
 }
 
-
 /*
 ===================
 Key_ClearStates
@@ -1072,6 +1071,46 @@ void Key_ClearStates (void)
 	{
 		if (keydown[i])
 			Key_Event (i, false);
+	}
+}
+
+/*
+===================
+Key_ForceDest
+===================
+*/
+void Key_ForceDest (void)
+{
+	static qboolean forced = false;
+
+#if !defined (H2W)
+	if (cls.state == ca_dedicated)
+		return;
+#endif	/* H2W */
+
+	switch (key_dest)
+	{
+	case key_console:
+		if (forced && cls.state == ca_connected)
+		{
+			forced = false;
+			key_dest = key_game;
+		}
+		return;
+	case key_game:
+	case key_message:
+		if (cls.state != ca_connected)
+		{
+			forced = true;
+			if (key_dest == key_message)
+				Key_Message(K_ESCAPE);
+			key_dest = key_console;
+			return;
+		}
+		/* fallthrough */
+	default:
+		forced = false;
+		break;
 	}
 }
 

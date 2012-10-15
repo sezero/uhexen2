@@ -1275,6 +1275,9 @@ void Host_Frame (float time)
 	if (host_frametime > 0.2)
 		host_frametime = 0.2;
 
+	// force key_dest
+	Key_ForceDest ();
+
 	// get new key events
 	Sys_SendKeyEvents ();
 
