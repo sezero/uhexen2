@@ -1057,10 +1057,8 @@ void Key_ForceDest (void)
 {
 	static qboolean forced = false;
 
-#if !defined (H2W)
 	if (cls.state == ca_dedicated)
 		return;
-#endif	/* H2W */
 
 	switch (key_dest)
 	{

@@ -1083,15 +1083,10 @@ void Key_ForceDest (void)
 {
 	static qboolean forced = false;
 
-#if !defined (H2W)
-	if (cls.state == ca_dedicated)
-		return;
-#endif	/* H2W */
-
 	switch (key_dest)
 	{
 	case key_console:
-		if (forced && cls.state == ca_connected)
+		if (forced && cls.state == ca_active)
 		{
 			forced = false;
 			key_dest = key_game;
@@ -1099,7 +1094,7 @@ void Key_ForceDest (void)
 		return;
 	case key_game:
 	case key_message:
-		if (cls.state != ca_connected)
+		if (cls.state != ca_active)
 		{
 			forced = true;
 			if (key_dest == key_message)

@@ -4,6 +4,9 @@ Development Progress	:
 ---------------------------
 
 2012-10-15 (SVN):
+    * fixed hexenworld after r4989. updated date stamp to 2012-10-15.
+
+2012-10-15 (SVN):
     * Another approach at fixing key_dest.
 
 2012-10-11 (SVN):
