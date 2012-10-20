@@ -124,6 +124,8 @@ extern qboolean team_message;
 
 static void Con_MessageMode_f (void)
 {
+	if (cls.state != ca_connected || cls.demoplayback)
+		return;
 	key_dest = key_message;
 	team_message = false;
 }
@@ -136,6 +138,8 @@ Con_MessageMode2_f
 */
 static void Con_MessageMode2_f (void)
 {
+	if (cls.state != ca_connected || cls.demoplayback)
+		return;
 	key_dest = key_message;
 	team_message = true;
 }
