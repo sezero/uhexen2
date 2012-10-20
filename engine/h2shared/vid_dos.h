@@ -29,10 +29,10 @@ typedef struct vmode_s
 	struct vmode_s	*pnext;
 	const char	*name;
 	const char	*header;
-	unsigned int	width;
-	unsigned int	height;
+	int		width;
+	int		height;
 	float		aspect;
-	unsigned int	rowbytes;
+	int		rowbytes;
 	int		planar;
 	int		numpages;
 	void		*pextradata;

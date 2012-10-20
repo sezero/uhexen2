@@ -4,6 +4,10 @@ Development Progress	:
 ---------------------------
 
 2012-10-20 (SVN):
+    * vid_dos.h (vmode_t): changed width, height and rowbytes members to
+      signed int.
+
+2012-10-20 (SVN):
     * console.c (Con_MessageMode_f, Con_MessageMode2_f): do not set the
       messagemode when not really connected.
 
