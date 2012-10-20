@@ -4,6 +4,13 @@ Development Progress	:
 ---------------------------
 
 2012-10-20 (SVN):
+    * cl_main.c (CL_Disconnect): call Key_EndChat() to not get stuck in
+      chat mode.
+    * keys.c (Key_ForceDest): now that key_message is guaranteed to be
+      set only in game mode, removed its cases. also changed the return
+      statements to break for consistency.
+
+2012-10-20 (SVN):
     * made chat_buffer[] and chat_bufferlen static to keys.c. console.c
       will now use the new Key_GetChatBuffer() and Key_GetChatMsgLen()
       accessor functions. renamed the team_message global of hexen2 to

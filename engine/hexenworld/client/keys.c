@@ -174,7 +174,7 @@ static qboolean CheckForCommand (void)
 
 	s = key_lines[edit_line] + 1;
 
-	memset (command, 0, sizeof(command));
+	command[0] = '\0';
 	for (i = 0; i < 127; i++)
 	{
 		if (s[i] <= ' ')
@@ -1106,18 +1106,15 @@ void Key_ForceDest (void)
 			forced = false;
 			key_dest = key_game;
 		}
-		return;
+		break;
 	case key_game:
-	case key_message:
 		if (cls.state != ca_active)
 		{
 			forced = true;
-			if (key_dest == key_message)
-				Key_EndChat ();
 			key_dest = key_console;
-			return;
+			break;
 		}
-		/* fallthrough */
+	/* fallthrough */
 	default:
 		forced = false;
 		break;

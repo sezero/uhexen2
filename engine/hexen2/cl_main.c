@@ -113,6 +113,9 @@ This is also called on Host_Error, so it shouldn't cause any errors
 */
 void CL_Disconnect (void)
 {
+	if (key_dest == key_message)
+		Key_EndChat ();	// don't get stuck in chat mode
+
 	R_ClearParticles ();	//jfm: need to clear parts because some now check world
 	S_StopAllSounds (true);	// stop sounds (especially looping!)
 	BGM_Stop();

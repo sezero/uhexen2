@@ -1083,18 +1083,15 @@ void Key_ForceDest (void)
 			forced = false;
 			key_dest = key_game;
 		}
-		return;
+		break;
 	case key_game:
-	case key_message:
 		if (cls.state != ca_connected)
 		{
 			forced = true;
-			if (key_dest == key_message)
-				Key_EndChat ();
 			key_dest = key_console;
-			return;
+			break;
 		}
-		/* fallthrough */
+	/* fallthrough */
 	default:
 		forced = false;
 		break;

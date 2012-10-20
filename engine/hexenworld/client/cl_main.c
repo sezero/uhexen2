@@ -383,6 +383,9 @@ void CL_Disconnect (void)
 	SetWindowText (mainwindow, "HexenWorld: disconnected");
 #endif
 
+// don't get stuck in chat mode
+	if (key_dest == key_message)
+		Key_EndChat ();
 // no more siege display, etc.
 	cl_siege = false;
 // stop sounds (especially looping!)
