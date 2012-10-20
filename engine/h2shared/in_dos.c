@@ -228,6 +228,12 @@ void IN_Shutdown (void)
 }
 
 
+void IN_UpdateForKeydest (void)
+{
+	/* nothing to do here */
+}
+
+
 /*
 ===========
 IN_Commands

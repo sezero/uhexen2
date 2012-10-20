@@ -4,6 +4,15 @@ Development Progress	:
 ---------------------------
 
 2012-10-20 (SVN):
+    * added IN_UpdateForKeydest() as a new helper who does stuff if the
+      key_dest changes matter to the keyboard driver, e.g. sending KP_
+      key decisions, or SDL unicode stuff. making it a separate helper
+      eliminates the per-key event check on windows in MapKey(). we run
+      it every frame either before Sys_SendKeyEvents(), or from within
+      Key_ForceDest() for now. IN_UpdateForKeydest() an empty function
+      for dos and svgalib targets.
+
+2012-10-20 (SVN):
     * cl_main.c (CL_Disconnect): call Key_EndChat() to not get stuck in
       chat mode.
     * keys.c (Key_ForceDest): now that key_message is guaranteed to be

@@ -825,10 +825,9 @@ static void _Host_Frame (float time)
 	if (!Host_FilterTime (time))
 		return;			// don't run too fast, or packets will flood out
 
-// force key_dest
-	Key_ForceDest ();
-
 // get new key events
+	Key_ForceDest ();
+	//IN_UpdateForKeydest ();
 	Sys_SendKeyEvents ();
 
 // allow mice or other external controllers to add commands
@@ -869,9 +868,7 @@ static void _Host_Frame (float time)
 
 // fetch results from server
 	if (cls.state == ca_connected)
-	{
 		CL_ReadFromServer ();
-	}
 
 #else
 
@@ -879,9 +876,7 @@ static void _Host_Frame (float time)
 	if (sys_adaptive.integer)
 	{
 		if (host_frametime > 0.05)
-		{
 			host_frametime = 0.05;
-		}
 	}
 
 	if (total_host_frametime > 1.0)
@@ -905,9 +900,7 @@ static void _Host_Frame (float time)
 
 	// fetch results from server
 		if (cls.state == ca_connected)
-		{
 			CL_ReadFromServer ();
-		}
 
 		R_UpdateParticles ();
 		CL_UpdateEffects ();

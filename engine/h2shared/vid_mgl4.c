@@ -2714,20 +2714,22 @@ static byte shiftscantokey[128] =
 };
 #endif
 
-static int MapKey (int key)
-{
-	static qboolean prev_gamekey;
-	int result;
-	qboolean gamekey;
+static qboolean prev_gamekey, gamekey;
 
+void IN_UpdateForKeydest (void)
+{
 	gamekey = ((key_dest == key_game && !con_forcedup) || m_keys_bind_grab);
 	if (gamekey != prev_gamekey)
 	{
 		prev_gamekey = gamekey;
 		Key_ClearStates();
 	}
+}
 
-	result = (key >> 16) & 255;
+static int MapKey (int key)
+{
+	int result = (key >> 16) & 255;
+
 	if (result > 127)
 		return 0;
 	result = scantokey[result];

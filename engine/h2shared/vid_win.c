@@ -361,7 +361,7 @@ static void VID_CreateDIB (int width, int height, unsigned char *palette)
 	vid.conrowbytes = vid.rowbytes;
 
 	// clear the buffer
-	if (height < 0)	// we are sent a negative height for top-down bitmap
+	if (height < 0)		// negative height was sent for top-down bitmap
 		memset (pDIBBase, 0xff, width * -height);
 	else	memset (pDIBBase, 0xff, width * height);
 
@@ -1680,20 +1680,22 @@ static byte shiftscantokey[128] =
 };
 #endif
 
-static int MapKey (int key)
-{
-	static qboolean prev_gamekey;
-	int result;
-	qboolean gamekey;
+static qboolean prev_gamekey, gamekey;
 
+void IN_UpdateForKeydest (void)
+{
 	gamekey = ((key_dest == key_game && !con_forcedup) || m_keys_bind_grab);
 	if (gamekey != prev_gamekey)
 	{
 		prev_gamekey = gamekey;
 		Key_ClearStates();
 	}
+}
 
-	result = (key >> 16) & 255;
+static int MapKey (int key)
+{
+	int result = (key >> 16) & 255;
+
 	if (result > 127)
 		return 0;
 	result = scantokey[result];

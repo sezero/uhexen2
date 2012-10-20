@@ -37,6 +37,9 @@ void IN_Move (usercmd_t *cmd);
 void IN_SendKeyEvents (void);
 /* used as a callback for Sys_SendKeyEvents() by some drivers */
 
+void IN_UpdateForKeydest (void);
+/* do stuff if key_dest changes matter to the keyboard driver */
+
 void IN_ClearStates (void);
 
 #define IN_Accumulate()		do {} while (0)

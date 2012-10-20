@@ -68,16 +68,12 @@ void Con_ToggleConsole_f (void)
 
 	Key_ClearTyping ();
 
-	if (key_dest == key_console)
+	if (key_dest == key_console/* || (key_dest == key_game && con_forcedup)*/)
 	{
 		if (cls.state == ca_connected)
-		{
 			key_dest = key_game;
-		}
 		else
-		{
 			M_Menu_Main_f ();
-		}
 	}
 	else
 	{

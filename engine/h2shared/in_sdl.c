@@ -27,7 +27,7 @@
 #include "quakedef.h"
 
 
-static qboolean	prev_gamekey;
+static qboolean	prev_gamekey, gamekey;
 
 /* mouse variables */
 static cvar_t	m_filter = {"m_filter", "0", CVAR_NONE};
@@ -809,12 +809,8 @@ void IN_Commands (void)
 }
 
 
-void IN_SendKeyEvents (void)
+void IN_UpdateForKeydest (void)
 {
-	SDL_Event event;
-	int sym, state, modstate;
-	qboolean gamekey;
-
 	gamekey = ((key_dest == key_game && !con_forcedup) || m_keys_bind_grab);
 	if (gamekey != prev_gamekey)
 	{
@@ -822,6 +818,12 @@ void IN_SendKeyEvents (void)
 		Key_ClearStates();
 		SDL_EnableUNICODE(!gamekey);
 	}
+}
+
+void IN_SendKeyEvents (void)
+{
+	SDL_Event event;
+	int sym, state, modstate;
 
 	while (SDL_PollEvent(&event))
 	{

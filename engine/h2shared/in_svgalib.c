@@ -311,6 +311,11 @@ void IN_Shutdown (void)
 IN_SendKeyEvents
 ===========
 */
+void IN_UpdateForKeydest (void)
+{
+	/* nothing to do here */
+}
+
 void IN_SendKeyEvents (void)
 {
 	if (kbd_initialized)
