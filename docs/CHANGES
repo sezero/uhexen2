@@ -4,6 +4,12 @@ Development Progress	:
 ---------------------------
 
 2012-10-20 (SVN):
+    * made chat_buffer[] and chat_bufferlen static to keys.c. console.c
+      will now use the new Key_GetChatBuffer() and Key_GetChatMsgLen()
+      accessor functions. renamed the team_message global of hexen2 to
+      chat_team as in hexenworld. added Key_EndChat() as a new helper.
+
+2012-10-20 (SVN):
     * vid_dos.h (vmode_t): changed width, height and rowbytes members to
       signed int.
 

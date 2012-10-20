@@ -120,14 +120,12 @@ void Con_ClearNotify (void)
 Con_MessageMode_f
 ================
 */
-extern qboolean team_message;
-
 static void Con_MessageMode_f (void)
 {
 	if (cls.state != ca_connected || cls.demoplayback)
 		return;
+	chat_team = false;
 	key_dest = key_message;
-	team_message = false;
 }
 
 
@@ -140,8 +138,8 @@ static void Con_MessageMode2_f (void)
 {
 	if (cls.state != ca_connected || cls.demoplayback)
 		return;
+	chat_team = true;
 	key_dest = key_message;
-	team_message = true;
 }
 
 
@@ -521,7 +519,6 @@ Con_DrawNotify
 Draws the last few lines of output transparently over the game top
 ================
 */
-extern char chat_buffer[];
 void Con_DrawNotify (void)
 {
 	int	i, x, v;
@@ -552,18 +549,21 @@ void Con_DrawNotify (void)
 
 	if (key_dest == key_message)
 	{
+		const char *s = Key_GetChatBuffer();
+
 		clearnotify = 0;
 		scr_copytop = 1;
 
-		x = 0;
-
 		Draw_String (8, v, "say:");
-		while (chat_buffer[x])
+
+		x = 0;
+		while (s[x])
 		{
-			Draw_Character ( (x+5)<<3, v, chat_buffer[x]);
+			Draw_Character ((x + 5)<<3, v, s[x]);
 			x++;
 		}
-		Draw_Character ( (x+5)<<3, v, 10+((int)(realtime*con_cursorspeed)&1));
+
+		Draw_Character ((x + 5)<<3, v, 10 + ((int)(realtime*con_cursorspeed)&1));
 		v += 8;
 	}
 

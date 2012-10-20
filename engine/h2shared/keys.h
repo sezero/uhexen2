@@ -152,12 +152,6 @@ extern	int		edit_line;
 extern	int		key_linepos;
 extern	int		key_insert;
 
-#if defined(H2W)
-extern char chat_buffer[];
-extern	int chat_bufferlen;
-extern	qboolean	chat_team;
-#endif	/* H2W */
-
 void Key_Event (int key, qboolean down);
 void Key_Init (void);
 void Key_WriteBindings (FILE *f);
@@ -166,6 +160,11 @@ void Key_ForceDest (void);
 
 void Key_SetBinding (int keynum, const char *binding);
 const char *Key_KeynumToString (int keynum);
+
+extern	qboolean	chat_team;
+void Key_EndChat (void);
+const char *Key_GetChatBuffer (void);
+int Key_GetChatMsgLen (void);
 
 #endif	/* __HX2_KEYS_H */
 

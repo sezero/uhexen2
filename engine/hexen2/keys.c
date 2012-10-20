@@ -556,15 +556,32 @@ static void Key_Console (int key)
 
 //============================================================================
 
-qboolean	team_message = false;
-char		chat_buffer[32];
-int		chat_bufferlen = 0;
+qboolean	chat_team = false;
+static char	chat_buffer[32];
+static int	chat_bufferlen = 0;
+
+const char *Key_GetChatBuffer (void)
+{
+	return chat_buffer;
+}
+
+int Key_GetChatMsgLen (void)
+{
+	return chat_bufferlen;
+}
+
+void Key_EndChat (void)
+{
+	key_dest = key_game;
+	chat_bufferlen = 0;
+	chat_buffer[0] = 0;
+}
 
 static void Key_Message (int key)
 {
 	if (key == K_ENTER)
 	{
-		if (team_message)
+		if (chat_team)
 			Cbuf_AddText ("say_team \"");
 		else
 			Cbuf_AddText ("say \"");
@@ -579,9 +596,7 @@ static void Key_Message (int key)
 
 	if (key == K_ESCAPE)
 	{
-		key_dest = key_game;
-		chat_bufferlen = 0;
-		chat_buffer[0] = 0;
+		Key_EndChat ();
 		return;
 	}
 
@@ -1075,7 +1090,7 @@ void Key_ForceDest (void)
 		{
 			forced = true;
 			if (key_dest == key_message)
-				Key_Message(K_ESCAPE);
+				Key_EndChat ();
 			key_dest = key_console;
 			return;
 		}

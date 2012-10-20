@@ -526,8 +526,6 @@ void Con_DrawNotify (void)
 	int	i, x, v;
 	short	*text;
 	float	time;
-	char	*s;
-	int	skip;
 
 	v = 0;
 	for (i = con->current-NUM_CON_TIMES+1; i <= con->current; i++)
@@ -553,6 +551,9 @@ void Con_DrawNotify (void)
 
 	if (key_dest == key_message)
 	{
+		int skip, len = Key_GetChatMsgLen();
+		const char *s = Key_GetChatBuffer();
+
 		clearnotify = 0;
 		scr_copytop = 1;
 
@@ -567,16 +568,17 @@ void Con_DrawNotify (void)
 			skip = 5;
 		}
 
-		s = chat_buffer;
-		if (chat_bufferlen > (vid.width>>3) - (skip + 1))
-			s += chat_bufferlen - ((vid.width>>3) - (skip + 1));
+		if (len > (vid.width>>3) - (skip + 1))
+			s += len - ((vid.width>>3) - (skip + 1));
+
 		x = 0;
 		while (s[x])
 		{
-			Draw_Character ( (x+skip)<<3, v, s[x]);
+			Draw_Character ((x + skip)<<3, v, s[x]);
 			x++;
 		}
-		Draw_Character ( (x+skip)<<3, v, 10+((int)(realtime*con_cursorspeed)&1));
+
+		Draw_Character ((x + skip)<<3, v, 10 + ((int)(realtime*con_cursorspeed)&1));
 		v += 8;
 	}
 

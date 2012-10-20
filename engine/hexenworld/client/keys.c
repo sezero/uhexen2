@@ -588,8 +588,25 @@ static void Key_Console (int key)
 //============================================================================
 
 qboolean	chat_team;
-char		chat_buffer[MAXCMDLINE];
-int		chat_bufferlen = 0;
+static char	chat_buffer[MAXCMDLINE];
+static int	chat_bufferlen = 0;
+
+const char *Key_GetChatBuffer (void)
+{
+	return chat_buffer;
+}
+
+int Key_GetChatMsgLen (void)
+{
+	return chat_bufferlen;
+}
+
+void Key_EndChat (void)
+{
+	key_dest = key_game;
+	chat_bufferlen = 0;
+	chat_buffer[0] = 0;
+}
 
 static void Key_Message (int key)
 {
@@ -610,9 +627,7 @@ static void Key_Message (int key)
 
 	if (key == K_ESCAPE)
 	{
-		key_dest = key_game;
-		chat_bufferlen = 0;
-		chat_buffer[0] = 0;
+		Key_EndChat ();
 		return;
 	}
 
@@ -1098,7 +1113,7 @@ void Key_ForceDest (void)
 		{
 			forced = true;
 			if (key_dest == key_message)
-				Key_Message(K_ESCAPE);
+				Key_EndChat ();
 			key_dest = key_console;
 			return;
 		}
