@@ -1982,7 +1982,7 @@ static void VID_MenuKey (int key)
 			else if (multisample <= 4)
 				multisample = 2;
 			else
-				multisample = 0;
+				multisample = 4;
 			break;
 		case VID_PALTEX:
 			if (have8bit)
@@ -2008,12 +2008,12 @@ static void VID_MenuKey (int key)
 		case VID_MULTISAMPLE:
 			if (!sdl_has_multisample)
 				break;
-			if (multisample >= 2)
-				multisample = 4;
-			else if (multisample >= 0)
+			if (multisample < 2)
 				multisample = 2;
-			else
-				multisample = 0;
+			else if (multisample < 4)
+				multisample = 4;
+			else if (multisample < 8)
+				multisample = 8;
 			break;
 		case VID_PALTEX:
 			if (have8bit)

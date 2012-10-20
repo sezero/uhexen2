@@ -1441,7 +1441,7 @@ static void create_window1 (void)
 	gtk_tooltips_set_tip (tooltips, WGT_FSAA, _("Enable Antialiasing"), NULL);
 	gtk_widget_set_sensitive (WGT_FSAA, opengl_support);
 
-	WGT_ADJFSAA = (GtkAdjustment *) gtk_adjustment_new (aasamples, 0, 4, 2, 10, 0);
+	WGT_ADJFSAA = (GtkAdjustment *) gtk_adjustment_new (aasamples, 0, 8, 2, 10, 0);
 	WGT_AASAMPLES = gtk_spin_button_new (GTK_ADJUSTMENT (WGT_ADJFSAA), 2, 0);
 	gtk_editable_set_editable (GTK_EDITABLE(WGT_AASAMPLES), FALSE);
 	gtk_widget_show (WGT_AASAMPLES);

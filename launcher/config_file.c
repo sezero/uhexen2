@@ -324,7 +324,7 @@ int read_config_file (void)
 		else if (strstr(buff, "aasamples=") == buff)
 		{
 			aasamples = atoi(buff + 10);
-			if (aasamples < 0 || aasamples > 4 || (aasamples % 2))
+			if (aasamples < 0 || aasamples > 8 || (aasamples % 2))
 				aasamples = 0;
 		}
 		else if (strstr(buff, "vsync=") == buff)

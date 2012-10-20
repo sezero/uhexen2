@@ -3,6 +3,10 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2012-10-20 (SVN):
+    * allow 8x fsaa in the menu system and the gtk launcher.
+    * updated version date stamp to 2012-10-20.
+
 2012-10-15 (SVN):
     * fixed hexenworld after r4989. updated date stamp to 2012-10-15.
 
