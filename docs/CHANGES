@@ -4,6 +4,9 @@ Development Progress	:
 ---------------------------
 
 2012-10-21 (SVN):
+    * r_part.c: fixed pointfile loading.
+
+2012-10-21 (SVN):
     * d_local.h, d_vars.c (d_zrowbytes, d_zwidth): changed from unsigned
       to signed int. these were missed in rev.4581 from 2012-03-03.
 

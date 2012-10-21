@@ -200,11 +200,14 @@ void R_ReadPointFile_f (void)
 	int		r;
 	int		c;
 	particle_t	*p;
-	char	name[MAX_OSPATH];
+	char	name[MAX_QPATH];
 	byte	color;
 
+	if (cls.state != ca_connected)
+		return;			// need an active map.
+
 	color = (byte)Cvar_VariableValue("leak_color");
-	sprintf (name,"maps/%s.pts", sv.name);
+	q_snprintf (name, sizeof(name), "maps/%s.pts", cl.mapname);
 
 	FS_OpenFile (name, &f, NULL);
 	if (!f)
