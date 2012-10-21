@@ -588,9 +588,7 @@ static void Key_Message (int key)
 		Cbuf_AddText(chat_buffer);
 		Cbuf_AddText("\"\n");
 
-		key_dest = key_game;
-		chat_bufferlen = 0;
-		chat_buffer[0] = 0;
+		Key_EndChat ();
 		return;
 	}
 
@@ -924,11 +922,11 @@ void Key_Event (int key, qboolean down)
 		 */
 		if (key != K_PAUSE && key != K_KP_NUMLOCK)
 			key_repeats[key]++;
-		/*
-		if (key != K_BACKSPACE &&
+#if 0
+		if (key != K_BACKSPACE && key != K_PGUP && key != K_PGDN &&
 					key_repeats[key] > 1)
 			return;	// ignore most autorepeats
-		*/
+#endif
 		if (key_repeats[key] > 1)
 		{
 			if (key_dest == key_game && !con_forcedup)

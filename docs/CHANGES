@@ -8,6 +8,7 @@ Development Progress	:
       say and say_team like hexenworld does, which adds the necessity of
       horizontal scrolling. some cleanups in both hexen2 and hexenworld
       versions.
+    * keys.c: minor cleanup.
     * updated version date stamp to 2012-10-21.
 
 2012-10-20 (SVN):
