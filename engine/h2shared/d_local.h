@@ -158,7 +158,7 @@ void R_TranPatch4 (void);
 void R_TranPatch5 (void);
 void R_TranPatch6 (void);
 void R_TranPatch7 (void);
-#endif
+#endif /* id386 */
 
 /* C funcs called from asm code: */
 void D_PolysetSetEdgeTable (void);
@@ -178,7 +178,7 @@ void D_Patch (void);
 
 
 extern short	*d_pzbuffer;
-extern unsigned int d_zrowbytes, d_zwidth;
+extern int	d_zrowbytes, d_zwidth;
 
 extern int	*d_pscantable;
 extern int	d_scantable[MAXHEIGHT];

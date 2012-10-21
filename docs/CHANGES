@@ -4,6 +4,10 @@ Development Progress	:
 ---------------------------
 
 2012-10-21 (SVN):
+    * d_local.h, d_vars.c (d_zrowbytes, d_zwidth): changed from unsigned
+      to signed int. these were missed in rev.4581 from 2012-03-03.
+
+2012-10-21 (SVN):
     * console.c: made hexen2 version of Con_DrawNotify() to distinguish
       say and say_team like hexenworld does, which adds the necessity of
       horizontal scrolling. some cleanups in both hexen2 and hexenworld
