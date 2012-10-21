@@ -3,6 +3,13 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2012-10-21 (SVN):
+    * console.c: made hexen2 version of Con_DrawNotify() to distinguish
+      say and say_team like hexenworld does, which adds the necessity of
+      horizontal scrolling. some cleanups in both hexen2 and hexenworld
+      versions.
+    * updated version date stamp to 2012-10-21.
+
 2012-10-20 (SVN):
     * added IN_UpdateForKeydest() as a new helper who does stuff if the
       key_dest changes matter to the keyboard driver, e.g. sending KP_

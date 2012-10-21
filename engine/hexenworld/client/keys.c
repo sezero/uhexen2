@@ -587,7 +587,7 @@ static void Key_Console (int key)
 
 //============================================================================
 
-qboolean	chat_team;
+qboolean	chat_team = false;
 static char	chat_buffer[MAXCMDLINE];
 static int	chat_bufferlen = 0;
 

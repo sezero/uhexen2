@@ -502,9 +502,6 @@ static void Con_DrawInput (void)
 	y = con_vislines - 22;
 	for (i = 0; i < con_linewidth; i++)
 		Draw_Character ((i + 1)<<3, y, text[i]);
-
-// remove cursor
-	//key_lines[edit_line][key_linepos] = 0;
 }
 
 
@@ -518,7 +515,7 @@ Draws the last few lines of output transparently over the game top
 void Con_DrawNotify (void)
 {
 	int	i, x, v;
-	short	*text;
+	const short	*text;
 	float	time;
 
 	v = 0;
@@ -538,28 +535,42 @@ void Con_DrawNotify (void)
 		scr_copytop = 1;
 
 		for (x = 0; x < con_linewidth; x++)
-			Draw_Character ( (x+1)<<3, v, text[x]);
+			Draw_Character ((x+1)<<3, v, text[x]);
 
 		v += 8;
 	}
 
 	if (key_dest == key_message)
 	{
-		const char *s = Key_GetChatBuffer();
+		const char	*s;
 
 		clearnotify = 0;
 		scr_copytop = 1;
 
-		Draw_String (8, v, "say:");
-
-		x = 0;
-		while (s[x])
+		if (chat_team)
 		{
-			Draw_Character ((x + 5)<<3, v, s[x]);
+			Draw_String (8, v, "say_team:");
+			x = 11;
+		}
+		else
+		{
+			Draw_String (8, v, "say:");
+			x = 6;
+		}
+
+		s = Key_GetChatBuffer();
+		i = Key_GetChatMsgLen();
+		if (i > (vid.width>>3) - x - 1)
+			s += i - (vid.width>>3) + x + 1;
+
+		while (*s)
+		{
+			Draw_Character (x<<3, v, *s);
+			s++;
 			x++;
 		}
 
-		Draw_Character ((x + 5)<<3, v, 10 + ((int)(realtime*con_cursorspeed)&1));
+		Draw_Character (x<<3, v, 10 + ((int)(realtime*con_cursorspeed)&1));
 		v += 8;
 	}
 
@@ -578,7 +589,7 @@ void Con_DrawConsole (int lines)
 {
 	int		i, x, y;
 	int		row, rows;
-	short		*text;
+	const short	*text;
 
 	if (lines <= 0)
 		return;
