@@ -45,8 +45,6 @@ static float	con_times[NUM_CON_TIMES];	// realtime time the line was generated
 
 extern qboolean		menu_disabled_mouse;
 
-extern void M_Menu_Main_f (void);
-
 
 static void Key_ClearTyping (void)
 {
@@ -70,7 +68,7 @@ void Con_ToggleConsole_f (void)
 
 	if (key_dest == key_console/* || (key_dest == key_game && con_forcedup)*/)
 	{
-		if (cls.state == ca_connected)
+		if (cls.state == ca_active)
 			key_dest = key_game;
 		else
 			M_Menu_Main_f ();
@@ -118,12 +116,11 @@ Con_MessageMode_f
 */
 static void Con_MessageMode_f (void)
 {
-	if (cls.state != ca_connected || cls.demoplayback)
+	if (cls.state != ca_active || cls.demoplayback)
 		return;
 	chat_team = false;
 	key_dest = key_message;
 }
-
 
 /*
 ================
@@ -132,7 +129,7 @@ Con_MessageMode2_f
 */
 static void Con_MessageMode2_f (void)
 {
-	if (cls.state != ca_connected || cls.demoplayback)
+	if (cls.state != ca_active || cls.demoplayback)
 		return;
 	chat_team = true;
 	key_dest = key_message;
@@ -261,8 +258,7 @@ static void Con_Print (const char *txt)
 	if (txt[0] == 1)
 	{
 		mask = 256;		// go to colored text
-		S_LocalSound ("misc/comm.wav");
-	// play talk wav
+		S_LocalSound ("misc/comm.wav");	// play talk wav
 		txt++;
 	}
 	else if (txt[0] == 2)

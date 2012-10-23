@@ -66,10 +66,12 @@ void Con_ToggleConsole_f (void)
 
 	Key_ClearTyping ();
 
-	if (key_dest == key_console)
+	if (key_dest == key_console/* || (key_dest == key_game && con_forcedup)*/)
 	{
 		if (cls.state == ca_active)
 			key_dest = key_game;
+	//	else
+	//		M_Menu_Main_f ();
 	}
 	else
 	{
@@ -151,6 +153,7 @@ static void Con_MessageMode2_f (void)
 	key_dest = key_message;
 }
 
+
 /*
 ================
 Con_CheckResize
@@ -224,9 +227,6 @@ void Con_Init (void)
 
 	Con_Printf ("Console initialized.\n");
 
-//
-// register our commands
-//
 	Cvar_RegisterVariable (&con_notifytime);
 
 	Cmd_AddCommand ("toggleconsole", Con_ToggleConsole_f);
@@ -274,7 +274,12 @@ static void Con_Print (const char *txt)
 	int		mask;
 	qboolean	boundary;
 
-	if (txt[0] == 1 || txt[0] == 2)
+	if (txt[0] == 1)
+	{
+		mask = 256;		// go to colored text
+		txt++;
+	}
+	else if (txt[0] == 2)
 	{
 		mask = 256;		// go to colored text
 		txt++;

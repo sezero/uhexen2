@@ -1279,8 +1279,7 @@ void Host_Frame (float time)
 		host_frametime = 0.2;
 
 	// get new key events
-	Key_ForceDest ();
-	//IN_UpdateForKeydest ();
+	Key_UpdateForDest ();
 	Sys_SendKeyEvents ();
 
 	// allow mice or other external controllers to add commands

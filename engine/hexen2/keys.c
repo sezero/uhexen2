@@ -1066,24 +1066,24 @@ void Key_ClearStates (void)
 Key_ForceDest
 ===================
 */
-void Key_ForceDest (void)
+void Key_UpdateForDest (void)
 {
 	static qboolean forced = false;
-
+#ifndef H2W
 	if (cls.state == ca_dedicated)
 		return;
-
+#endif
 	switch (key_dest)
 	{
 	case key_console:
-		if (forced && cls.state == ca_connected)
+		if (forced && cls.state == ca_active)
 		{
 			forced = false;
 			key_dest = key_game;
 		}
 		break;
 	case key_game:
-		if (cls.state != ca_connected)
+		if (cls.state != ca_active)
 		{
 			forced = true;
 			key_dest = key_console;

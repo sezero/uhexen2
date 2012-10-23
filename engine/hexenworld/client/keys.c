@@ -1092,10 +1092,13 @@ void Key_ClearStates (void)
 Key_ForceDest
 ===================
 */
-void Key_ForceDest (void)
+void Key_UpdateForDest (void)
 {
 	static qboolean forced = false;
-
+#ifndef H2W
+	if (cls.state == ca_dedicated)
+		return;
+#endif
 	switch (key_dest)
 	{
 	case key_console:

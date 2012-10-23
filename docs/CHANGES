@@ -3,6 +3,12 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2012-10-23 (SVN):
+    * renamed Key_ForceDest to Key_UpdateForDest. added M_Menu_Main_f()
+      prototype to menu.h. changed ca_connected checks to ca_active in
+      console.c and keys.c, for a possible merge of h2 and h2w versions
+      later sometime. updated version date stamp to 2012-10-23.
+
 2012-10-21 (SVN):
     * r_part.c: fixed pointfile loading.
 
