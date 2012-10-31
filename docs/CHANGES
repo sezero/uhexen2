@@ -3,6 +3,19 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2012-10-31 (SVN):
+    * engine: add ImageHasSafeExceptionHandlers=false for h2-mgl builds
+      in Visual Studio 2010 projects, because mglfxi.lib is built using
+      a very old msvc version: importing the project files and building
+      with VS2012 fails linkage with the "mglfxi.lib(MGLFX.dll) : error
+      LNK2026: module unsafe for SAFESEH image" message. also added the
+      same ImageHasSafeExceptionHandlers=false setting to the x86-debug
+      builds of other engine targets in the VS2010 project files, which
+      eliminates "LNK4075: ignoring '/EDITANDCONTINUE' due to '/SAFESEH'
+      specification" linker warning.
+    * h2patch (h2patch3.rc): changed winuser.h include to winresrc.h
+      which eliminates some dumb resource compiler warnings from VS2012.
+
 2012-10-23 (SVN):
     * renamed Key_ForceDest to Key_UpdateForDest. added M_Menu_Main_f()
       prototype to menu.h. changed ca_connected checks to ca_active in
