@@ -4,6 +4,12 @@ Development Progress	:
 ---------------------------
 
 2012-11-05 (SVN):
+    * changed keydest_t from enum to int with legal values defined as
+      bit shifts. added key_menubind as a new dest. the key bind menu
+      now sets key_dest to key_menubind so that it properly changes the
+      gamekey property.
+
+2012-11-05 (SVN):
     * removed the Key_UpdateDest() and IN_UpdateForKeydest() stuff, let
       con_forcedup do its thing in Con_ToggleConsole_f(). added the new
       Key_IsGameKey(), Key_SetDest() and Key_GetDest() functions to the

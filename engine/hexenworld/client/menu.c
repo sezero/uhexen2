@@ -241,7 +241,7 @@ void M_ToggleMenu_f (void)
 
 	m_entersound = true;
 
-	if (dest == key_menu)
+	if (dest & key_menu)
 	{
 		if (m_state != m_main)
 		{
@@ -489,7 +489,7 @@ void M_Menu_Main_f (void)
 	if (modestate == MS_WINDOWED)
 		IN_DeactivateMouse ();
 
-	if (Key_GetDest() != key_menu)
+	if (!(Key_GetDest() & key_menu))
 	{
 		m_save_demonum = cls.demonum;
 		cls.demonum = -1;
@@ -1298,7 +1298,6 @@ static const char *bindnames[][2] =
 #define KEYS_SIZE 14
 
 static int		keys_cursor;
-qboolean		m_keys_bind_grab;
 static int		keys_top = 0;
 
 static void M_Menu_Keys_f (void)
@@ -1372,11 +1371,6 @@ static void M_Keys_Draw (void)
 //	p = Draw_CachePic("gfx/menu/hback.lmp");
 //	M_DrawTransPicCropped(8, 62, p);
 
-	if (m_keys_bind_grab)
-		M_Print (12, 64, "Press a key or button for this action");
-	else
-		M_Print (18, 64, "Enter to change, backspace to clear");
-
 	if (keys_top)
 		M_DrawCharacter (6, 80, 128);
 	if (keys_top + KEYS_SIZE < (int)NUMCOMMANDS)
@@ -1408,34 +1402,22 @@ static void M_Keys_Draw (void)
 		}
 	}
 
-	if (m_keys_bind_grab)
+	if (Key_GetDest() & key_bindbit)
+	{
+		M_Print (12, 64, "Press a key or button for this action");
 		M_DrawCharacter (130, 80 + (keys_cursor-keys_top)*8, '=');
+	}
 	else
+	{
+		M_Print (18, 64, "Enter to change, backspace to clear");
 		M_DrawCharacter (130, 80 + (keys_cursor-keys_top)*8, 12+((int)(realtime*4)&1));
+	}
 }
 
 
 static void M_Keys_Key (int k)
 {
-	char	cmd[80];
 	int		keys[2];
-
-	if (m_keys_bind_grab)
-	{	// defining a key
-		S_LocalSound ("raven/menu1.wav");
-		if (k == K_ESCAPE)
-		{
-			m_keys_bind_grab = false;
-		}
-		else if (k != '`')
-		{
-			q_snprintf (cmd, sizeof(cmd), "bind \"%s\" \"%s\"\n", Key_KeynumToString (k), bindnames[keys_cursor][0]);
-			Cbuf_InsertText (cmd);
-		}
-
-		m_keys_bind_grab = false;
-		return;
-	}
 
 	switch (k)
 	{
@@ -1464,7 +1446,7 @@ static void M_Keys_Key (int k)
 		S_LocalSound ("raven/menu2.wav");
 		if (keys[1] != -1)
 			M_UnbindCommand (bindnames[keys_cursor][0]);
-		m_keys_bind_grab = true;
+		Key_SetDest (key_menubind);
 		break;
 
 	case K_BACKSPACE:	// delete bindings
@@ -2018,7 +2000,7 @@ void M_Menu_Quit_f (void)
 {
 	if (m_state == m_quit)
 		return;
-	wasInMenus = (Key_GetDest () == key_menu);
+	wasInMenus = !!(Key_GetDest () & key_menu);
 	Key_SetDest (key_menu);
 	m_quit_prevstate = m_state;
 	m_state = m_quit;
@@ -2767,7 +2749,7 @@ void M_Init (void)
 
 void M_Draw (void)
 {
-	if (m_state == m_none || Key_GetDest() != key_menu)
+	if (m_state == m_none || !(Key_GetDest() & key_menu))
 		return;
 
 	if (!m_recursiveDraw)
@@ -2850,6 +2832,20 @@ void M_Draw (void)
 	VID_LockBuffer ();
 }
 
+
+void M_Keybind (int key)
+{
+	char	cmd[80];
+	S_LocalSound ("raven/menu1.wav");
+	if (key != K_ESCAPE && key != '`')
+	{
+		q_snprintf (cmd, sizeof(cmd), "bind \"%s\" \"%s\"\n",
+			    Key_KeynumToString (key), bindnames[keys_cursor][0]);
+		Cbuf_InsertText (cmd);
+	}
+
+	Key_SetDest (key_menu);
+}
 
 void M_Keydown (int key)
 {

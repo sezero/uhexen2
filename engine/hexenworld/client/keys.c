@@ -983,6 +983,9 @@ void Key_Event (int key, qboolean down)
 		case key_menu:
 			M_Keydown (key);
 			break;
+		case key_menubind:
+			M_Keybind (key);
+			break;
 		case key_game:
 		case key_console:
 			M_ToggleMenu_f ();
@@ -1026,7 +1029,7 @@ void Key_Event (int key, qboolean down)
 	}
 
 // if not a consolekey, send to the interpreter no matter what mode is
-	if ((key_dest == key_menu && menubound[key]) ||
+	if (((key_dest & key_menu) && menubound[key]) ||
 	    (key_dest == key_console && !consolekeys[key]) ||
 	    (key_dest == key_game && (!con_forcedup || !consolekeys[key])))
 	{
@@ -1061,7 +1064,9 @@ void Key_Event (int key, qboolean down)
 	case key_menu:
 		M_Keydown (key);
 		break;
-
+	case key_menubind:
+		M_Keybind (key);
+		break;
 	case key_game:
 	case key_console:
 		Key_Console (key);
@@ -1089,7 +1094,7 @@ void Key_ClearStates (void)
 
 qboolean Key_IsGameKey (void)
 {
-	return ((key_dest == key_game && !con_forcedup) || m_keys_bind_grab);
+	return ((key_dest == key_game && !con_forcedup) || (key_dest == key_menubind));
 }
 
 keydest_t Key_GetDest (void)

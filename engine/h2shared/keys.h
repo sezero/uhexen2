@@ -140,10 +140,18 @@
 
 #define	MAXCMDLINE	256
 
-typedef enum {key_game, key_console, key_message, key_menu} keydest_t;
+#define	key_game	0
+#define	key_console	(1 << 0)
+#define	key_message	(1 << 1)
+#define	key_menu	(1 << 2)	/* last valid keydest */
+
+#define	key_bindbit	(key_menu << 1)
+#define	key_menubind	(key_menu | key_bindbit)
+
+typedef int keydest_t;
 
 extern	char	*keybindings[256];
-extern	int		key_count;			// incremented every key event
+extern	int		key_count;			/* incremented every key event */
 extern	int		key_lastpress;
 
 extern	char	key_lines[32][MAXCMDLINE];
