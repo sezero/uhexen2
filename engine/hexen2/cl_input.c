@@ -298,7 +298,7 @@ static void IN_Impulse (void)
 
 static void IN_CrouchDown (void)
 {
-	if (key_dest == key_game)
+	if (Key_GetDest() == key_game)
 	{
 //		int state = in_crouch.state;
 		KeyDown(&in_crouch);
@@ -309,7 +309,7 @@ static void IN_CrouchDown (void)
 
 static void IN_CrouchUp (void)
 {
-//	if (key_dest == key_game)
+//	if (Key_GetDest() == key_game)
 //	{
 //		int state = in_crouch.state;
 		KeyUp(&in_crouch);
@@ -321,7 +321,7 @@ static void IN_CrouchUp (void)
 static void IN_infoPlaqueUp (void)
 {
 // lower the plaque
-//	if (key_dest == key_game)
+//	if (Key_GetDest() == key_game)
 //	{
 		info_up = false;
 		KeyUp(&in_infoplaque);
@@ -331,7 +331,7 @@ static void IN_infoPlaqueUp (void)
 static void IN_infoPlaqueDown (void)
 {
 // show the plaque
-	if (key_dest == key_game)
+	if (Key_GetDest() == key_game)
 	{
 		info_up = true;
 		KeyDown(&in_infoplaque);

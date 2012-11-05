@@ -441,7 +441,7 @@ void CL_PlayDemo_f (void)
 	}
 
 // get rid of the menu and/or console
-	key_dest = key_game;
+	Key_SetDest (key_game);
 
 	cls.demoplayback = true;
 	cls.state = ca_demostart;

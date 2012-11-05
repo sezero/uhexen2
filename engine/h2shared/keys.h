@@ -142,7 +142,6 @@
 
 typedef enum {key_game, key_console, key_message, key_menu} keydest_t;
 
-extern keydest_t	key_dest;
 extern	char	*keybindings[256];
 extern	int		key_count;			// incremented every key event
 extern	int		key_lastpress;
@@ -156,9 +155,12 @@ extern	qboolean	chat_team;
 
 void Key_Init (void);
 void Key_ClearStates (void);
-void Key_UpdateForDest (void);
 
 void Key_Event (int key, qboolean down);
+
+qboolean Key_IsGameKey (void);
+keydest_t Key_GetDest (void);
+void Key_SetDest (keydest_t dest);
 
 void Key_SetBinding (int keynum, const char *binding);
 const char *Key_KeynumToString (int keynum);

@@ -32,7 +32,8 @@ int		key_insert = 1;		// insert/overwrite mode toggle
 int		edit_line = 0;
 static int	history_line = 0;
 
-keydest_t	key_dest;
+static keydest_t	key_dest;
+static qboolean		key_gamekey, prev_gamekey;
 
 int		key_count;		// incremented every key event
 
@@ -572,7 +573,7 @@ int Key_GetChatMsgLen (void)
 
 void Key_EndChat (void)
 {
-	key_dest = key_game;
+	Key_SetDest (key_game);
 	chat_bufferlen = 0;
 	chat_buffer[0] = 0;
 }
@@ -1061,40 +1062,23 @@ void Key_ClearStates (void)
 	}
 }
 
-/*
-===================
-Key_ForceDest
-===================
-*/
-void Key_UpdateForDest (void)
+qboolean Key_IsGameKey (void)
 {
-	static qboolean forced = false;
-#ifndef H2W
-	if (cls.state == ca_dedicated)
-		return;
-#endif
-	switch (key_dest)
-	{
-	case key_console:
-		if (forced && cls.state == ca_active)
-		{
-			forced = false;
-			key_dest = key_game;
-		}
-		break;
-	case key_game:
-		if (cls.state != ca_active)
-		{
-			forced = true;
-			key_dest = key_console;
-			break;
-		}
-	/* fallthrough */
-	default:
-		forced = false;
-		break;
-	}
+	return ((key_dest == key_game && !con_forcedup) || m_keys_bind_grab);
+}
 
-	IN_UpdateForKeydest ();
+keydest_t Key_GetDest (void)
+{
+	return key_dest;
+}
+
+void Key_SetDest (keydest_t dest)
+{
+	key_dest = dest;
+	if ((key_gamekey = Key_IsGameKey()) != prev_gamekey)
+	{
+		prev_gamekey = key_gamekey;
+		Key_ClearStates();
+	}
 }
 

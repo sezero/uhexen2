@@ -654,7 +654,7 @@ failed:
 #if !defined(SERVERONLY)
 	if (m_return_onerror)
 	{
-		key_dest = key_menu;
+		Key_SetDest (key_menu);
 		m_state = m_return_state;
 		m_return_onerror = false;
 		strcpy(m_return_reason, "Initialization Failed");
@@ -786,8 +786,8 @@ int TTY_Connect (int handle, const char *host)
 
 	if (p->useModem)
 	{
-		save_key_dest = key_dest;
-		key_dest = key_console;
+		save_key_dest = Key_GetDest ();
+		Key_SetDest (key_console);
 		key_count = -2;
 
 		Con_Printf ("Dialing...\n");
@@ -837,7 +837,7 @@ int TTY_Connect (int handle, const char *host)
 				p->outputQueue.head = p->outputQueue.tail = 0;
 				p->inputQueue.head = p->inputQueue.tail = 0;
 				enable();
-				key_dest = save_key_dest;
+				Key_SetDest (save_key_dest);
 				key_count = 0;
 				m_return_onerror = false;
 				return 0;
@@ -855,11 +855,11 @@ int TTY_Connect (int handle, const char *host)
 			if (strncmp(response, "ERROR", 5) == 0)
 				break;
 		}
-		key_dest = save_key_dest;
+		Key_SetDest (save_key_dest);
 		key_count = 0;
 		if (m_return_onerror)
 		{
-			key_dest = key_menu;
+			Key_SetDest (key_menu);
 			m_state = m_return_state;
 			m_return_onerror = false;
 			q_strlcpy(m_return_reason, response, sizeof(m_return_reason));

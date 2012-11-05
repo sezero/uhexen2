@@ -348,9 +348,11 @@ M_ToggleMenu_f
 */
 void M_ToggleMenu_f (void)
 {
+	keydest_t dest = Key_GetDest();
+
 	m_entersound = true;
 
-	if (key_dest == key_menu)
+	if (dest == key_menu)
 	{
 		if (m_state != m_main)
 		{
@@ -359,11 +361,11 @@ void M_ToggleMenu_f (void)
 			M_Menu_Main_f ();
 			return;
 		}
-		key_dest = key_game;
+		Key_SetDest (key_game);
 		m_state = m_none;
 		return;
 	}
-	if (key_dest == key_console)
+	if (dest == key_console)
 	{
 		Con_ToggleConsole_f ();
 	}
@@ -598,12 +600,12 @@ void M_Menu_Main_f (void)
 	if (modestate == MS_WINDOWED)
 		IN_DeactivateMouse ();
 
-	if (key_dest != key_menu)
+	if (Key_GetDest() != key_menu)
 	{
 		m_save_demonum = cls.demonum;
 		cls.demonum = -1;
 	}
-	key_dest = key_menu;
+	Key_SetDest (key_menu);
 	m_state = m_main;
 	m_entersound = true;
 }
@@ -638,7 +640,7 @@ static void M_Main_Key (int key)
 		if (old_bgmtype[0] != 0 && strcmp(old_bgmtype,bgmtype.string) != 0)
 			BGM_RestartMusic ();
 		old_bgmtype[0] = 0;
-		key_dest = key_game;
+		Key_SetDest (key_game);
 		m_state = m_none;
 		cls.demonum = m_save_demonum;
 		if (cls.demonum != -1 && !cls.demoplayback && cls.state != ca_connected)
@@ -691,7 +693,7 @@ static void M_Main_Key (int key)
 
 static void M_Menu_Difficulty_f (void)
 {
-	key_dest = key_menu;
+	Key_SetDest (key_menu);
 	m_state = m_difficulty;
 }
 
@@ -727,7 +729,7 @@ static void M_NewMissionPackGame (void)
  * when the user hits a key, Key_Event () gets us out of
  * the intermission by running the keep1 map.
  */
-	key_dest = key_game;
+	Key_SetDest (key_game);
 	cls.demonum = m_save_demonum;
 	CL_SetupIntermission (12);
 /* make sure the mouse is active, so that pressing a mouse
@@ -769,7 +771,7 @@ static void M_Difficulty_Key (int key)
 		Cbuf_AddText ("map demo1\n");
 		break;
 	default:
-		key_dest = key_game;
+		Key_SetDest (key_game);
 		m_state = m_none;
 		break;
 	}
@@ -784,13 +786,13 @@ static int	class_flag;
 static void M_Menu_Class_f (void)
 {
 	class_flag = 0;
-	key_dest = key_menu;
+	Key_SetDest (key_menu);
 	m_state = m_class;
 }
 
 static void M_Menu_Class2_f (void)
 {
-	key_dest = key_menu;
+	Key_SetDest (key_menu);
 	m_state = m_class;
 	class_flag=1;
 }
@@ -874,12 +876,12 @@ static void M_Class_Key (int key)
 		}
 		else
 		{
-			key_dest = key_game;
+			Key_SetDest (key_game);
 			m_state = m_none;
 		}
 		break;
 	default:
-		key_dest = key_game;
+		Key_SetDest (key_game);
 		m_state = m_none;
 		break;
 	}
@@ -896,7 +898,7 @@ static int	m_singleplayer_cursor;
 
 static void M_Menu_SinglePlayer_f (void)
 {
-	key_dest = key_menu;
+	Key_SetDest (key_menu);
 	m_state = m_singleplayer;
 	m_entersound = true;
 	Cvar_Set ("timelimit", "0");		//put this here to help play single after dm
@@ -970,7 +972,7 @@ static void M_SinglePlayer_Key (int key)
 			if (sv.active)
 				if (!SCR_ModalMessage("Are you sure you want to\nstart a new game?\n"))
 					break;
-			key_dest = key_game;
+			Key_SetDest (key_game);
 			if (sv.active)
 				Cbuf_AddText ("disconnect\n");
 			Host_RemoveGIPFiles(NULL);
@@ -990,7 +992,7 @@ static void M_SinglePlayer_Key (int key)
 		case 4:
 			if (gameflags & GAME_PORTALS)
 			{
-				key_dest = key_game;
+				Key_SetDest (key_game);
 				Cbuf_AddText("playdemo t9\n");
 			}
 			break;
@@ -1046,7 +1048,7 @@ static void M_Menu_Load_f (void)
 {
 	m_entersound = true;
 	m_state = m_load;
-	key_dest = key_menu;
+	Key_SetDest (key_menu);
 	M_ScanSaves ();
 }
 
@@ -1061,7 +1063,7 @@ static void M_Menu_Save_f (void)
 		return;
 	m_entersound = true;
 	m_state = m_save;
-	key_dest = key_menu;
+	Key_SetDest (key_menu);
 	M_ScanSaves ();
 }
 
@@ -1118,7 +1120,7 @@ static void M_Load_Key (int k)
 		if (!loadable[load_cursor])
 			return;
 		m_state = m_none;
-		key_dest = key_game;
+		Key_SetDest (key_game);
 
 	// Host_Loadgame_f can't bring up the loading plaque because too much
 	// stack space has been used, so do it now
@@ -1168,7 +1170,7 @@ static void M_Save_Key (int k)
 
 	case K_ENTER:
 		m_state = m_none;
-		key_dest = key_game;
+		Key_SetDest (key_game);
 		Cbuf_AddText (va("save s%i\n", load_cursor));
 		menu_disabled_mouse = false;
 		IN_ActivateMouse ();
@@ -1235,7 +1237,7 @@ static void M_Menu_MLoad_f (void)
 {
 	m_entersound = true;
 	m_state = m_mload;
-	key_dest = key_menu;
+	Key_SetDest (key_menu);
 	M_ScanMSaves ();
 }
 
@@ -1251,7 +1253,7 @@ static void M_Menu_MSave_f (void)
 	}
 	m_entersound = true;
 	m_state = m_msave;
-	key_dest = key_menu;
+	Key_SetDest (key_menu);
 	M_ScanMSaves ();
 }
 
@@ -1280,7 +1282,7 @@ static void M_MLoad_Key (int k)
 		if (!loadable[load_cursor])
 			return;
 		m_state = m_none;
-		key_dest = key_game;
+		Key_SetDest (key_game);
 
 		if (sv.active)
 			Cbuf_AddText ("disconnect\n");
@@ -1334,7 +1336,7 @@ static void M_MSave_Key (int k)
 
 	case K_ENTER:
 		m_state = m_none;
-		key_dest = key_game;
+		Key_SetDest (key_game);
 		Cbuf_AddText (va("save ms%i\n", load_cursor));
 		menu_disabled_mouse = false;
 		IN_ActivateMouse ();
@@ -1366,7 +1368,7 @@ static int	m_multiplayer_cursor;
 
 static void M_Menu_MultiPlayer_f (void)
 {
-	key_dest = key_menu;
+	Key_SetDest (key_menu);
 	m_state = m_multiplayer;
 	m_entersound = true;
 
@@ -1470,7 +1472,7 @@ static int		setup_bottom;
 
 static void M_Menu_Setup_f (void)
 {
-	key_dest = key_menu;
+	Key_SetDest (key_menu);
 	m_state = m_setup;
 	m_entersound = true;
 	q_strlcpy(setup_myname, cl_name.string, sizeof(setup_myname));
@@ -1714,7 +1716,7 @@ static const char *net_helpMessage[] =
 
 static void M_Menu_Net_f (void)
 {
-	key_dest = key_menu;
+	Key_SetDest (key_menu);
 	m_state = m_net;
 	m_entersound = true;
 
@@ -1861,7 +1863,7 @@ static int	options_cursor;
 
 void M_Menu_Options_f (void)
 {
-	key_dest = key_menu;
+	Key_SetDest (key_menu);
 	m_state = m_options;
 	m_entersound = true;
 
@@ -2233,7 +2235,7 @@ static int	opengl_cursor;
 
 static void M_Menu_OpenGL_f (void)
 {
-	key_dest = key_menu;
+	Key_SetDest (key_menu);
 	m_state = m_opengl;
 	m_entersound = true;
 }
@@ -2558,7 +2560,7 @@ static int		keys_top = 0;
 
 static void M_Menu_Keys_f (void)
 {
-	key_dest = key_menu;
+	Key_SetDest (key_menu);
 	m_state = m_keys;
 	m_entersound = true;
 }
@@ -2740,7 +2742,7 @@ static void M_Keys_Key (int k)
 
 static void M_Menu_Video_f (void)
 {
-	key_dest = key_menu;
+	Key_SetDest (key_menu);
 	m_state = m_video;
 	m_entersound = true;
 }
@@ -2766,7 +2768,7 @@ static int		help_page;
 
 static void M_Menu_Help_f (void)
 {
-	key_dest = key_menu;
+	Key_SetDest (key_menu);
 	m_state = m_help;
 	m_entersound = true;
 	help_page = 0;
@@ -3508,8 +3510,8 @@ void M_Menu_Quit_f (void)
 {
 	if (m_state == m_quit)
 		return;
-	wasInMenus = (key_dest == key_menu);
-	key_dest = key_menu;
+	wasInMenus = (Key_GetDest () == key_menu);
+	Key_SetDest (key_menu);
 	m_quit_prevstate = m_state;
 	m_state = m_quit;
 	m_entersound = true;
@@ -3546,14 +3548,14 @@ static void M_Quit_Key (int key)
 		}
 		else
 		{
-			key_dest = key_game;
+			Key_SetDest (key_game);
 			m_state = m_none;
 		}
 		break;
 
 	case 'Y':
 	case 'y':
-		key_dest = key_console;
+		Key_SetDest (key_console);
 		Host_Quit_f ();
 		break;
 
@@ -3668,7 +3670,7 @@ static void M_Menu_SerialConfig_f (void)
 	int		baudrate;
 	qboolean	useModem;
 
-	key_dest = key_menu;
+	Key_SetDest (key_menu);
 	m_state = m_serialconfig;
 	m_entersound = true;
 	if (JoiningGame && SerialConfig)
@@ -3886,7 +3888,7 @@ forward:
 
 		m_return_state = m_state;
 		m_return_onerror = true;
-		key_dest = key_game;
+		Key_SetDest (key_game);
 		m_state = m_none;
 
 		if (SerialConfig)
@@ -3947,7 +3949,7 @@ static char	modemConfig_hangup[16];
 
 static void M_Menu_ModemConfig_f (void)
 {
-	key_dest = key_menu;
+	Key_SetDest (key_menu);
 	m_state = m_modemconfig;
 	m_entersound = true;
 	(*GetModemConfig) (0, &modemConfig_dialing, modemConfig_clear, modemConfig_init, modemConfig_hangup);
@@ -4117,7 +4119,7 @@ static char	lanConfig_joinname[30];
 
 static void M_Menu_LanConfig_f (void)
 {
-	key_dest = key_menu;
+	Key_SetDest (key_menu);
 	m_state = m_lanconfig;
 	m_entersound = true;
 	if (lanConfig_cursor == -1)
@@ -4274,7 +4276,7 @@ static void M_LanConfig_Key (int key)
 		{
 			m_return_state = m_state;
 			m_return_onerror = true;
-			key_dest = key_game;
+			Key_SetDest (key_game);
 			m_state = m_none;
 			Cbuf_AddText ( va ("connect \"%s\"\n", lanConfig_joinname) );
 			break;
@@ -4515,7 +4517,7 @@ static int	gameoptions_cursor;
 
 static void M_Menu_GameOptions_f (void)
 {
-	key_dest = key_menu;
+	Key_SetDest (key_menu);
 	m_state = m_gameoptions;
 	m_entersound = true;
 	if (maxplayers == 0)
@@ -4887,7 +4889,7 @@ static double	searchCompleteTime;
 
 static void M_Menu_Search_f (void)
 {
-	key_dest = key_menu;
+	Key_SetDest (key_menu);
 	m_state = m_search;
 	m_entersound = false;
 	slistSilent = true;
@@ -4945,7 +4947,7 @@ static qboolean		slist_sorted;
 
 static void M_Menu_ServerList_f (void)
 {
-	key_dest = key_menu;
+	Key_SetDest (key_menu);
 	m_state = m_slist;
 	m_entersound = true;
 	slist_cursor = 0;
@@ -5009,7 +5011,7 @@ static void M_ServerList_Key (int k)
 		m_return_state = m_state;
 		m_return_onerror = true;
 		slist_sorted = false;
-		key_dest = key_game;
+		Key_SetDest (key_game);
 		m_state = m_none;
 		Cbuf_AddText ( va ("connect \"%s\"\n", NET_SlistPrintServerName(slist_cursor)) );
 		break;
@@ -5063,7 +5065,7 @@ void M_Init (void)
 
 void M_Draw (void)
 {
-	if (m_state == m_none || key_dest != key_menu)
+	if (m_state == m_none || Key_GetDest() != key_menu)
 		return;
 
 	if (!m_recursiveDraw)

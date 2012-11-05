@@ -44,7 +44,7 @@ Host_Quit_f
 
 void Host_Quit_f (void)
 {
-	if (key_dest != key_console && 
+	if (Key_GetDest() != key_console && 
 	    /* quit without asking if we aren't connected  -- Steve */
 	    /* cls.state != ca_dedicated */ cls.state == ca_connected)
 	{
@@ -266,7 +266,7 @@ static void Host_Map_f (void)
 	CL_Disconnect ();
 	Host_ShutdownServer(false);
 
-	key_dest = key_game;		// remove console or menu
+	Key_SetDest (key_game);		// remove console or menu
 	SCR_BeginLoadingPlaque ();
 
 	info_mask = 0;
@@ -455,7 +455,7 @@ static void Host_Connect_f (void)
 	char	name[MAX_QPATH];
 
 	cls.demonum = -1;		// stop demo loop in case this fails
-	key_dest = key_game;		// remove console or menu
+	Key_SetDest (key_game);		// remove console or menu
 	if (cls.demoplayback)
 	{
 		CL_StopPlayback ();
@@ -708,7 +708,7 @@ static void Host_Loadgame_f (void)
 	cls.demonum = -1;		// stop demo loop in case this fails
 	CL_Disconnect();
 	Host_RemoveGIPFiles(NULL);
-	key_dest = key_game;		// remove console or menu
+	Key_SetDest (key_game);		// remove console or menu
 
 	FS_MakePath_BUF (FS_USERDIR, &error_state, savename, sizeof(savename), Cmd_Argv(1));
 	if (error_state)

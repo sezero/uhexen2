@@ -1680,18 +1680,6 @@ static byte shiftscantokey[128] =
 };
 #endif
 
-static qboolean prev_gamekey, gamekey;
-
-void IN_UpdateForKeydest (void)
-{
-	gamekey = ((key_dest == key_game && !con_forcedup) || m_keys_bind_grab);
-	if (gamekey != prev_gamekey)
-	{
-		prev_gamekey = gamekey;
-		Key_ClearStates();
-	}
-}
-
 static int MapKey (int key)
 {
 	int result = (key >> 16) & 255;
@@ -1705,11 +1693,11 @@ static int MapKey (int key)
 		switch (result)
 		{
 		case K_PAUSE:
-			return	(gamekey) ? K_KP_NUMLOCK : 0;
+			return	(Key_IsGameKey()) ? K_KP_NUMLOCK : 0;
 		case K_ENTER:
-			return	(gamekey) ? K_KP_ENTER : K_ENTER;
+			return	(Key_IsGameKey()) ? K_KP_ENTER : K_ENTER;
 		case '/':
-			return	(gamekey) ? K_KP_SLASH : '/';
+			return	(Key_IsGameKey()) ? K_KP_SLASH : '/';
 		}
 	}
 	else /* standart */
@@ -1717,42 +1705,42 @@ static int MapKey (int key)
 		switch (result)
 		{
 		case K_KP_STAR:
-			return	(gamekey) ? K_KP_STAR : '*';
+			return	(Key_IsGameKey()) ? K_KP_STAR : '*';
 		case K_KP_PLUS:
-			return	(gamekey) ? K_KP_PLUS : '+';
+			return	(Key_IsGameKey()) ? K_KP_PLUS : '+';
 		case K_KP_MINUS:
-			return	(gamekey) ? K_KP_MINUS : '-';
+			return	(Key_IsGameKey()) ? K_KP_MINUS : '-';
 		case K_HOME:
-			return	(gamekey) ? K_KP_HOME :
+			return	(Key_IsGameKey()) ? K_KP_HOME :
 				(GetKeyState(VK_NUMLOCK) & 0x01) ? '7' : K_HOME;
 		case K_UPARROW:
-			return	(gamekey) ? K_KP_UPARROW :
+			return	(Key_IsGameKey()) ? K_KP_UPARROW :
 				(GetKeyState(VK_NUMLOCK) & 0x01) ? '8' : K_UPARROW;
 		case K_PGUP:
-			return	(gamekey) ? K_KP_PGUP :
+			return	(Key_IsGameKey()) ? K_KP_PGUP :
 				(GetKeyState(VK_NUMLOCK) & 0x01) ? '9' : K_PGUP;
 		case K_LEFTARROW:
-			return	(gamekey) ? K_KP_LEFTARROW :
+			return	(Key_IsGameKey()) ? K_KP_LEFTARROW :
 				(GetKeyState(VK_NUMLOCK) & 0x01) ? '4' : K_LEFTARROW;
 		case K_KP_5:
-			return	(gamekey) ? K_KP_5 : '5';
+			return	(Key_IsGameKey()) ? K_KP_5 : '5';
 		case K_RIGHTARROW:
-			return	(gamekey) ? K_KP_RIGHTARROW :
+			return	(Key_IsGameKey()) ? K_KP_RIGHTARROW :
 				(GetKeyState(VK_NUMLOCK) & 0x01) ? '6' : K_RIGHTARROW;
 		case K_END:
-			return	(gamekey) ? K_KP_END :
+			return	(Key_IsGameKey()) ? K_KP_END :
 				(GetKeyState(VK_NUMLOCK) & 0x01) ? '1' : K_END;
 		case K_DOWNARROW:
-			return	(gamekey) ? K_KP_DOWNARROW :
+			return	(Key_IsGameKey()) ? K_KP_DOWNARROW :
 				(GetKeyState(VK_NUMLOCK) & 0x01) ? '2' : K_DOWNARROW;
 		case K_PGDN:
-			return	(gamekey) ? K_KP_PGDN :
+			return	(Key_IsGameKey()) ? K_KP_PGDN :
 				(GetKeyState(VK_NUMLOCK) & 0x01) ? '3' : K_PGDN;
 		case K_INS:
-			return	(gamekey) ? K_KP_INS :
+			return	(Key_IsGameKey()) ? K_KP_INS :
 				(GetKeyState(VK_NUMLOCK) & 0x01) ? '0' : K_INS;
 		case K_DEL:
-			return	(gamekey) ? K_KP_DEL :
+			return	(Key_IsGameKey()) ? K_KP_DEL :
 				(GetKeyState(VK_NUMLOCK) & 0x01) ? '.' : K_DEL;
 		}
 	}

@@ -237,9 +237,11 @@ M_ToggleMenu_f
 */
 void M_ToggleMenu_f (void)
 {
+	keydest_t dest = Key_GetDest();
+
 	m_entersound = true;
 
-	if (key_dest == key_menu)
+	if (dest == key_menu)
 	{
 		if (m_state != m_main)
 		{
@@ -248,11 +250,11 @@ void M_ToggleMenu_f (void)
 			M_Menu_Main_f ();
 			return;
 		}
-		key_dest = key_game;
+		Key_SetDest (key_game);
 		m_state = m_none;
 		return;
 	}
-	if (key_dest == key_console && cls.state == ca_active)
+	if (dest == key_console && cls.state == ca_active)
 	{
 		Con_ToggleConsole_f ();
 	}
@@ -487,12 +489,12 @@ void M_Menu_Main_f (void)
 	if (modestate == MS_WINDOWED)
 		IN_DeactivateMouse ();
 
-	if (key_dest != key_menu)
+	if (Key_GetDest() != key_menu)
 	{
 		m_save_demonum = cls.demonum;
 		cls.demonum = -1;
 	}
-	key_dest = key_menu;
+	Key_SetDest (key_menu);
 	m_state = m_main;
 	m_entersound = true;
 }
@@ -525,7 +527,7 @@ static void M_Main_Key (int key)
 		if (old_bgmtype[0] != 0 && strcmp(old_bgmtype,bgmtype.string) != 0)
 			BGM_RestartMusic ();
 		old_bgmtype[0] = 0;
-		key_dest = key_game;
+		Key_SetDest (key_game);
 		m_state = m_none;
 		cls.demonum = m_save_demonum;
 		if (cls.demonum != -1 && !cls.demoplayback && cls.state == ca_disconnected)
@@ -611,7 +613,7 @@ static int	options_cursor;
 
 void M_Menu_Options_f (void)
 {
-	key_dest = key_menu;
+	Key_SetDest (key_menu);
 	m_state = m_options;
 	m_entersound = true;
 
@@ -868,7 +870,7 @@ static void M_Options_Key (int k)
 		case OPT_CONSOLE:
 			//m_state = m_none;
 			//Con_ToggleConsole_f ();
-			key_dest = key_game;
+			Key_SetDest (key_game);
 			m_state = m_none;
 			break;
 		case OPT_DEFAULTS:
@@ -977,7 +979,7 @@ static int	opengl_cursor;
 
 static void M_Menu_OpenGL_f (void)
 {
-	key_dest = key_menu;
+	Key_SetDest (key_menu);
 	m_state = m_opengl;
 	m_entersound = true;
 }
@@ -1301,7 +1303,7 @@ static int		keys_top = 0;
 
 static void M_Menu_Keys_f (void)
 {
-	key_dest = key_menu;
+	Key_SetDest (key_menu);
 	m_state = m_keys;
 	m_entersound = true;
 }
@@ -1483,7 +1485,7 @@ static void M_Keys_Key (int k)
 
 static void M_Menu_Video_f (void)
 {
-	key_dest = key_menu;
+	Key_SetDest (key_menu);
 	m_state = m_video;
 	m_entersound = true;
 }
@@ -1510,7 +1512,7 @@ static int		help_page;
 
 static void M_Menu_Help_f (void)
 {
-	key_dest = key_menu;
+	Key_SetDest (key_menu);
 	m_state = m_help;
 	m_entersound = true;
 	help_page = 0;
@@ -2016,8 +2018,8 @@ void M_Menu_Quit_f (void)
 {
 	if (m_state == m_quit)
 		return;
-	wasInMenus = (key_dest == key_menu);
-	key_dest = key_menu;
+	wasInMenus = (Key_GetDest () == key_menu);
+	Key_SetDest (key_menu);
 	m_quit_prevstate = m_state;
 	m_state = m_quit;
 	m_entersound = true;
@@ -2046,14 +2048,14 @@ static void M_Quit_Key (int key)
 		}
 		else
 		{
-			key_dest = key_game;
+			Key_SetDest (key_game);
 			m_state = m_none;
 		}
 		break;
 
 	case 'Y':
 	case 'y':
-		key_dest = key_console;
+		Key_SetDest (key_console);
 		CL_Disconnect ();
 		Sys_Quit ();
 		break;
@@ -2168,7 +2170,7 @@ static int	m_multiplayer_cursor;
 
 static void M_Menu_MultiPlayer_f (void)
 {
-	key_dest = key_menu;
+	Key_SetDest (key_menu);
 	m_state = m_multiplayer;
 	m_entersound = true;
 
@@ -2273,7 +2275,7 @@ static const int	connect_cursor_table[MAX_CONNECT_CMDS] =
 
 static void M_Menu_Connect_f (void)
 {
-	key_dest = key_menu;
+	Key_SetDest (key_menu);
 	m_state = m_mconnect;
 	m_entersound = true;
 
@@ -2385,7 +2387,7 @@ static void M_Connect_Key (int k)
 
 		if (connect_cursor < MAX_HOST_NAMES)
 		{
-			key_dest = key_game;
+			Key_SetDest (key_game);
 			m_state = m_none;
 			Cbuf_AddText ( va ("connect %s\n", save_names[connect_cursor]) );
 		}
@@ -2444,7 +2446,7 @@ extern cvar_t	bottomcolor;
 
 static void M_Menu_Setup_f (void)
 {
-	key_dest = key_menu;
+	Key_SetDest (key_menu);
 	m_state = m_setup;
 	m_entersound = true;
 	q_strlcpy(setup_myname, name.string, sizeof(setup_myname));
@@ -2765,7 +2767,7 @@ void M_Init (void)
 
 void M_Draw (void)
 {
-	if (m_state == m_none || key_dest != key_menu)
+	if (m_state == m_none || Key_GetDest() != key_menu)
 		return;
 
 	if (!m_recursiveDraw)

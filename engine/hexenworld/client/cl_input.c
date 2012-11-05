@@ -297,7 +297,7 @@ static void IN_Impulse (void)
 
 static void IN_CrouchDown (void)
 {
-	if (key_dest == key_game)
+	if (Key_GetDest() == key_game)
 	{
 //		int state = in_crouch.state;
 		KeyDown(&in_crouch);
@@ -308,7 +308,7 @@ static void IN_CrouchDown (void)
 
 static void IN_CrouchUp (void)
 {
-//	if (key_dest == key_game)
+//	if (Key_GetDest() == key_game)
 //	{
 //		int state = in_crouch.state;
 		KeyUp(&in_crouch);

@@ -27,7 +27,7 @@
 #include "quakedef.h"
 
 
-static qboolean	prev_gamekey, gamekey;
+static qboolean	prev_gamekey;
 
 /* mouse variables */
 static cvar_t	m_filter = {"m_filter", "0", CVAR_NONE};
@@ -296,7 +296,7 @@ void IN_Init (void)
 	IN_StartupMouse ();
 	IN_StartupJoystick ();
 
-	prev_gamekey = ((key_dest == key_game && !con_forcedup) || m_keys_bind_grab);
+	prev_gamekey = Key_IsGameKey();
 	SDL_EnableUNICODE (!prev_gamekey);
 	SDL_EnableKeyRepeat (SDL_DEFAULT_REPEAT_DELAY, SDL_DEFAULT_REPEAT_INTERVAL*2);
 }
@@ -329,7 +329,7 @@ void IN_ReInit (void)
 {
 	IN_StartupMouse ();
 
-	prev_gamekey = ((key_dest == key_game && !con_forcedup) || m_keys_bind_grab);
+	prev_gamekey = Key_IsGameKey();
 	SDL_EnableUNICODE (!prev_gamekey);
 	SDL_EnableKeyRepeat (SDL_DEFAULT_REPEAT_DELAY, SDL_DEFAULT_REPEAT_INTERVAL*2);
 
@@ -809,21 +809,17 @@ void IN_Commands (void)
 }
 
 
-void IN_UpdateForKeydest (void)
-{
-	gamekey = ((key_dest == key_game && !con_forcedup) || m_keys_bind_grab);
-	if (gamekey != prev_gamekey)
-	{
-		prev_gamekey = gamekey;
-		Key_ClearStates();
-		SDL_EnableUNICODE(!gamekey);
-	}
-}
-
 void IN_SendKeyEvents (void)
 {
 	SDL_Event event;
 	int sym, state, modstate;
+	qboolean gamekey;
+
+	if ((gamekey = Key_IsGameKey()) != prev_gamekey)
+	{
+		prev_gamekey = gamekey;
+		SDL_EnableUNICODE(!gamekey);
+	}
 
 	while (SDL_PollEvent(&event))
 	{

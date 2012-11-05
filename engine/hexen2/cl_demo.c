@@ -454,7 +454,7 @@ void CL_PlayDemo_f (void)
 	cls.state = ca_connected;
 
 // get rid of the menu and/or console
-	key_dest = key_game;
+	Key_SetDest (key_game);
 
 // Get a new message on playback start.
 // Moved from CL_TimeDemo_f to here, Pa3PyX.

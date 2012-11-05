@@ -3,6 +3,15 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2012-11-05 (SVN):
+    * removed the Key_UpdateDest() and IN_UpdateForKeydest() stuff, let
+      con_forcedup do its thing in Con_ToggleConsole_f(). added the new
+      Key_IsGameKey(), Key_SetDest() and Key_GetDest() functions to the
+      Key_ layer, made key_dest static to keys.c. Made Key_SetDest() to
+      not only set key_dest, but also to clear the key states whenever
+      the gamekey property changes.
+    * updated version date stamp to 2012-11-05.
+
 2012-10-31 (SVN):
     * engine: add ImageHasSafeExceptionHandlers=false for h2-mgl builds
       in Visual Studio 2010 projects, because mglfxi.lib is built using

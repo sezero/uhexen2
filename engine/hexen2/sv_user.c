@@ -816,7 +816,7 @@ void SV_RunClients (void)
 #if defined(SERVERONLY)
 		if (!sv.paused)
 #else
-		if (!sv.paused && (svs.maxclients > 1 || key_dest == key_game) )
+		if (!sv.paused && (svs.maxclients > 1 || Key_GetDest() == key_game))
 #endif
 			SV_ClientThink ();
 	}

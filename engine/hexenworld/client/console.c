@@ -59,6 +59,8 @@ Con_ToggleConsole_f
 */
 void Con_ToggleConsole_f (void)
 {
+	keydest_t dest = Key_GetDest();
+
 	// activate mouse when in console in
 	// case it is disabled somewhere else
 	menu_disabled_mouse = false;
@@ -66,16 +68,16 @@ void Con_ToggleConsole_f (void)
 
 	Key_ClearTyping ();
 
-	if (key_dest == key_console/* || (key_dest == key_game && con_forcedup)*/)
+	if (dest == key_console || (dest == key_game && con_forcedup))
 	{
 		if (cls.state == ca_active)
-			key_dest = key_game;
+			Key_SetDest (key_game);
 	//	else
 	//		M_Menu_Main_f ();
 	}
 	else
 	{
-		key_dest = key_console;
+		Key_SetDest (key_console);
 	}
 	Con_ClearNotify ();
 }
@@ -89,13 +91,13 @@ static void Con_ToggleChat_f (void)
 {
 	Key_ClearTyping ();
 
-	if (key_dest == key_console)
+	if (Key_GetDest() == key_console)
 	{
 		if (cls.state == ca_active)
-			key_dest = key_game;
+			Key_SetDest (key_game);
 	}
 	else
-		key_dest = key_console;
+		Key_SetDest (key_console);
 
 	Con_ClearNotify ();
 }
@@ -137,7 +139,7 @@ static void Con_MessageMode_f (void)
 	if (cls.state != ca_active || cls.demoplayback)
 		return;
 	chat_team = false;
-	key_dest = key_message;
+	Key_SetDest (key_message);
 }
 
 /*
@@ -150,7 +152,7 @@ static void Con_MessageMode2_f (void)
 	if (cls.state != ca_active || cls.demoplayback)
 		return;
 	chat_team = true;
-	key_dest = key_message;
+	Key_SetDest (key_message);
 }
 
 
@@ -491,7 +493,7 @@ static void Con_DrawInput (void)
 	size_t		pos;
 	char	editlinecopy[MAXCMDLINE], *text;
 
-	if (key_dest != key_console && !con_forcedup)
+	if (Key_GetDest() != key_console && !con_forcedup)
 		return;		// don't draw anything
 
 	pos = q_strlcpy(editlinecopy, key_lines[edit_line], sizeof(editlinecopy));
@@ -551,7 +553,7 @@ void Con_DrawNotify (void)
 		v += 8;
 	}
 
-	if (key_dest == key_message)
+	if (Key_GetDest() == key_message)
 	{
 		const char	*s;
 
@@ -731,7 +733,7 @@ void Con_NotifyBox (const char *text)
 	Con_Printf("\35\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\36\37\n");
 
 	key_count = -2;		// wait for a key down and up
-	key_dest = key_console;
+	Key_SetDest (key_console);
 
 	do
 	{
@@ -743,7 +745,7 @@ void Con_NotifyBox (const char *text)
 	} while (key_count < 0);
 
 	Con_Printf ("\n");
-	key_dest = key_game;
+	Key_SetDest (key_game);
 	realtime = 0;		// put the cursor back to invisible
 }
 

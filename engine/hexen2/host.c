@@ -732,7 +732,7 @@ static void _Host_ServerFrame (void)
 
 // move things around and think
 // always pause in single player if in console or menus
-	if (!sv.paused && (svs.maxclients > 1 || key_dest == key_game) )
+	if (!sv.paused && (svs.maxclients > 1 || Key_GetDest() == key_game))
 	{
 		SV_Physics ();
 
@@ -789,7 +789,7 @@ static void Host_ServerFrame (void)
 
 // move things around and think
 // always pause in single player if in console or menus
-	if (!sv.paused && (svs.maxclients > 1 || key_dest == key_game) )
+	if (!sv.paused && (svs.maxclients > 1 || Key_GetDest() == key_game))
 		SV_Physics ();
 
 // send all messages to the clients
@@ -826,7 +826,6 @@ static void _Host_Frame (float time)
 		return;			// don't run too fast, or packets will flood out
 
 // get new key events
-	Key_UpdateForDest ();
 	Sys_SendKeyEvents ();
 
 // allow mice or other external controllers to add commands

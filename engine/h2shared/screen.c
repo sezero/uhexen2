@@ -293,7 +293,7 @@ static qboolean SCR_CheckDrawCenterString2 (void)
 
 	if (scr_centertime_off <= 0 && !cl.intermission)
 		return false;
-	if (key_dest != key_game)
+	if (Key_GetDest() != key_game)
 		return false;
 
 	return true;
@@ -743,7 +743,7 @@ static void SCR_SetUpToDrawConsole (void)
 		scr_conlines = vid.height;	// full screen
 		scr_con_current = scr_conlines;
 	}
-	else if (key_dest == key_console)
+	else if (Key_GetDest() == key_console)
 		scr_conlines = vid.height / 2;	// half screen
 	else
 		scr_conlines = 0;		// none visible
@@ -791,7 +791,8 @@ static void SCR_DrawConsole (void)
 	}
 	else
 	{
-		if (key_dest == key_game || key_dest == key_message)
+		keydest_t dest = Key_GetDest();
+		if (dest == key_game || dest == key_message)
 			Con_DrawNotify ();	// only draw notify in game
 	}
 }

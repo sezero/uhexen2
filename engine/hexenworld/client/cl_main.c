@@ -147,7 +147,7 @@ CL_Quit_f
 */
 static void CL_Quit_f (void)
 {
-	if (1 /* key_dest != key_console */ /* && cls.state != ca_dedicated */)
+	if (1 /* Key_GetDest() != key_console */ /* && cls.state != ca_dedicated */)
 	{
 		M_Menu_Quit_f ();
 		return;
@@ -252,7 +252,7 @@ static void CL_Connect_f (void)
 
 	CL_Disconnect ();
 
-	key_dest = key_game;		// remove console or menu
+	Key_SetDest (key_game);		// remove console or menu
 	q_strlcpy (cls.servername, server, sizeof(cls.servername));
 	CL_SendConnectPacket ();
 }
@@ -384,7 +384,7 @@ void CL_Disconnect (void)
 #endif
 
 // don't get stuck in chat mode
-	if (key_dest == key_message)
+	if (Key_GetDest() == key_message)
 		Key_EndChat ();
 // no more siege display, etc.
 	cl_siege = false;
@@ -1279,7 +1279,6 @@ void Host_Frame (float time)
 		host_frametime = 0.2;
 
 	// get new key events
-	Key_UpdateForDest ();
 	Sys_SendKeyEvents ();
 
 	// allow mice or other external controllers to add commands
