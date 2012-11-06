@@ -33,6 +33,7 @@ int		edit_line = 0;
 static int	history_line = 0;
 
 static keydest_t	key_dest;
+static qboolean		key_gamekey, prev_gamekey;
 
 int		key_count;		// incremented every key event
 
