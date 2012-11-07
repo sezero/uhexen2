@@ -1,7 +1,7 @@
 Hammer of Thyrion (uHexen2) release notes:
 
 ========================================================================
-Changes in v1.5.5: (Nov. 05, 2012.)
+Changes in v1.5.5: (Nov. 07, 2012.)
 ========================================================================
 
 - Utils (light, vis, jsh2color): Added unix pthreads support for running
@@ -71,6 +71,8 @@ Changes in v1.5.5: (Nov. 05, 2012.)
   is now recognized properly.
 
 - All platforms, h2patch: Simplifications.
+
+- Windows: support for Visual Studio 2012.
 
 - All: Incremented versions for hexen2 engine to 1.27, hexenworld engine
   to 0.27, and gamecode version to 1.27.

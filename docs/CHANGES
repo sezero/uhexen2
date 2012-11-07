@@ -3,6 +3,10 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2012-11-07 (SVN):
+    * better parse for opengl extensions list (from quakeforge.)
+    * updated version date stamp to 2012-11-07.
+
 2012-11-05 (SVN):
     * changed keydest_t from enum to int with legal values defined as
       bit shifts. added key_menubind as a new dest. the key bind menu

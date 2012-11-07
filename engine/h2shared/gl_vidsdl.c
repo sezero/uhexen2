@@ -225,6 +225,32 @@ cvar_t		_enable_mouse = {"_enable_mouse", "1", CVAR_ARCHIVE};
 
 //====================================
 
+static qboolean GL_ParseExtensionList (const char *list, const char *name)
+{
+	const char	*start;
+	const char	*where, *terminator;
+
+	if (!list || !name || !*name)
+		return false;
+	if (strchr(name, ' ') != NULL)
+		return false;	// extension names must not have spaces
+
+	start = list;
+	while (1) {
+		where = strstr (start, name);
+		if (!where)
+			break;
+		terminator = where + strlen (name);
+		if (where == start || where[-1] == ' ')
+			if (*terminator == ' ' || *terminator == '\0')
+				return true;
+		start = terminator;
+	}
+	return false;
+}
+
+//====================================
+
 void VID_LockBuffer (void)
 {
 // nothing to do
@@ -486,7 +512,7 @@ static void VID_Init8bitPalette (void)
 	have8bit = false;
 	is8bit = false;
 
-	if (strstr(gl_extensions, "GL_EXT_shared_texture_palette"))
+	if (GL_ParseExtensionList(gl_extensions, "GL_EXT_shared_texture_palette"))
 	{
 		glColorTableEXT_fp = (glColorTableEXT_f)SDL_GL_GetProcAddress("glColorTableEXT");
 		if (glColorTableEXT_fp == NULL)
@@ -643,7 +669,7 @@ static void CheckMultiTextureExtensions (void)
 	{
 		Con_SafePrintf("Multitexture extensions disabled\n");
 	}
-	else if (strstr(gl_extensions, "GL_ARB_multitexture"))
+	else if (GL_ParseExtensionList(gl_extensions, "GL_ARB_multitexture"))
 	{
 		Con_SafePrintf("ARB Multitexture extensions found\n");
 
@@ -679,7 +705,7 @@ static void CheckAnisotropyExtensions (void)
 	gl_max_anisotropy = 1;
 
 	Con_SafePrintf("Anisotropic filtering ");
-	if (strstr(gl_extensions, "GL_EXT_texture_filter_anisotropic"))
+	if (GL_ParseExtensionList(gl_extensions, "GL_EXT_texture_filter_anisotropic"))
 	{
 		GLfloat test1, test2;
 		GLuint tex;
@@ -731,7 +757,7 @@ static void CheckNonPowerOfTwoTextures (void)
  * detecting the actual capability: we are binding NPOT support to a
  * cvar defaulting to disabled.
  */
-	if (strstr(gl_extensions, "GL_ARB_texture_non_power_of_two"))
+	if (GL_ParseExtensionList(gl_extensions, "GL_ARB_texture_non_power_of_two"))
 	{
 		gl_has_NPOT = true;
 		Con_SafePrintf("Found ARB_texture_non_power_of_two\n");
