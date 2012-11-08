@@ -436,6 +436,7 @@ void SCR_Init (void)
 	Cmd_AddCommand ("sizedown",SCR_SizeDown_f);
 
 	scr_initialized = true;
+	con_forcedup = true;	// we're just initialized and not connected yet
 }
 
 //=============================================================================

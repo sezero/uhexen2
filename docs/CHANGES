@@ -3,6 +3,11 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2012-11-08 (SVN):
+    * [gl_]screen.c (SCR_Init): initialize con_forcedup as true, because
+      we're just initialized and not connected.
+    * updated version date stamp to 2012-11-08.
+
 2012-11-07 (SVN):
     * better parse for opengl extensions list (from quakeforge.)
     * updated version date stamp to 2012-11-07.
