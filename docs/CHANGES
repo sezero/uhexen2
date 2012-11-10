@@ -3,6 +3,11 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2012-11-10 (SVN):
+    * engine/hexen2/sv_user.c: new quake2-style noclip movement. from
+      fitzquake, configured by cvar sv_altnoclip, enabled by default.)
+    * updated version date stamp to 2012-11-10.
+
 2012-11-08 (SVN):
     * [gl_]screen.c (SCR_Init): initialize con_forcedup as true, because
       we're just initialized and not connected.

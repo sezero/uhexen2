@@ -27,6 +27,7 @@ edict_t	*sv_player = NULL;
 
 extern	cvar_t	sv_friction;
 cvar_t	sv_edgefriction = {"edgefriction", "2", CVAR_NONE};
+cvar_t	sv_altnoclip = {"sv_altnoclip", "1", CVAR_ARCHIVE};
 extern	cvar_t	sv_stopspeed;
 
 static	vec3_t		forward, right, up;
@@ -466,6 +467,29 @@ static void SV_WaterJump (void)
 
 /*
 ===================
+SV_NoclipMove
+alternate q2-style noclip from Fitzquake
+old noclip still handled in SV_AirMove()
+===================
+*/
+static void SV_NoclipMove (void)
+{
+	AngleVectors (sv_player->v.v_angle, forward, right, up);
+
+	velocity[0] = forward[0]*cmd.forwardmove + right[0]*cmd.sidemove;
+	velocity[1] = forward[1]*cmd.forwardmove + right[1]*cmd.sidemove;
+	velocity[2] = forward[2]*cmd.forwardmove + right[2]*cmd.sidemove;
+	velocity[2] += cmd.upmove*2; // doubled to match running speed
+
+	if (VectorLength (velocity) > sv_maxspeed.value)
+	{
+		VectorNormalize (velocity);
+		VectorScale (velocity, sv_maxspeed.value, velocity);
+	}
+}
+
+/*
+===================
 SV_AirMove
 
 ===================
@@ -594,6 +618,11 @@ void SV_ClientThink (void)
 //
 // walk
 //
+	if (sv_player->v.movetype == MOVETYPE_NOCLIP && sv_altnoclip.integer)
+	{
+		SV_NoclipMove ();	// alternate quake2-style noclip
+		return;
+	}
 	if ( (sv_player->v.waterlevel >= 2)
 		&& (sv_player->v.movetype != MOVETYPE_NOCLIP) )
 	{

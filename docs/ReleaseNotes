@@ -1,7 +1,7 @@
 Hammer of Thyrion (uHexen2) release notes:
 
 ========================================================================
-Changes in v1.5.5: (Nov. 08, 2012.)
+Changes in v1.5.5: (Nov. 10, 2012.)
 ========================================================================
 
 - Utils (light, vis, jsh2color): Added unix pthreads support for running
@@ -23,6 +23,9 @@ Changes in v1.5.5: (Nov. 08, 2012.)
   unable to move backwards, or unable to use certain inventory items, or
   several other weird effects (bug #2176023.)  The bug was there since
   the original hexen2 source release.
+
+- New quake2-style noclip movement. (from Fitzquake; configured by new
+  cvar sv_altnoclip, enabled by default.)
 
 - Client: Fixed a demo playback failure when certain conditions are met.
 

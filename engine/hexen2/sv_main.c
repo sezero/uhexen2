@@ -47,6 +47,7 @@ extern	cvar_t	sv_edgefriction;
 extern	cvar_t	sv_stopspeed;
 extern	cvar_t	sv_maxspeed;
 extern	cvar_t	sv_accelerate;
+extern	cvar_t	sv_altnoclip;
 extern	cvar_t	sv_idealpitchscale;
 extern	cvar_t	sv_idealrollscale;
 extern	cvar_t	sv_aim;
@@ -85,6 +86,7 @@ void SV_Init (void)
 	Cvar_RegisterVariable (&sv_maxspeed);
 	Cvar_SetCallback (&sv_maxspeed, Host_Callback_Notify);
 	Cvar_RegisterVariable (&sv_accelerate);
+	Cvar_RegisterVariable (&sv_altnoclip);
 	Cvar_RegisterVariable (&sv_idealpitchscale);
 	Cvar_RegisterVariable (&sv_idealrollscale);
 	Cvar_RegisterVariable (&sv_aim);
