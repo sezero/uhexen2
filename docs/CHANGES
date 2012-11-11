@@ -3,6 +3,13 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2012-11-11 (SVN):
+    * [gl_]model.c (Mod_LoadTexinfo): although the end result in memory
+      doesn't change, load the texinfo in a way consistent with the
+      layout of the vecs in the mtexinfo_t struct. from a recent commit
+      in tyr-quake git repo.
+    * updated version date stamp to 2012-11-11.
+
 2012-11-10 (SVN):
     * engine/hexen2/sv_user.c: new quake2-style noclip movement. from
       fitzquake, configured by cvar sv_altnoclip, enabled by default.)

@@ -437,7 +437,7 @@ static void Mod_LoadTexinfo (lump_t *l)
 {
 	texinfo_t *in;
 	mtexinfo_t *out;
-	int	i, j, k, count;
+	int	i, j, count;
 
 	in = (texinfo_t *)(mod_base + l->fileofs);
 	if (l->filelen % sizeof(*in))
@@ -450,10 +450,10 @@ static void Mod_LoadTexinfo (lump_t *l)
 
 	for (i = 0; i < count; i++, in++, out++)
 	{
-		for (k = 0; k < 2; k++)
+		for (j = 0; j < 4; j++)
 		{
-			for (j = 0; j < 4; j++)
-				out->vecs[k][j] = LittleFloat (in->vecs[k][j]);
+			out->vecs[0][j] = LittleFloat (in->vecs[0][j]);
+			out->vecs[1][j] = LittleFloat (in->vecs[1][j]);
 		}
 		out->flags = LittleLong (in->flags);
 	}
