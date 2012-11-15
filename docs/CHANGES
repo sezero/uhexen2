@@ -3,6 +3,12 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2012-11-15 (SVN):
+    * pr_edict.c: ED_PrintEdict_f, ED_PrintEdicts and ED_Count require
+      an active server to print any infos. ED_PrintEdict_f can not work
+      with a negative argument.
+    * updated version date stamp to 2012-11-15.
+
 2012-11-11 (SVN):
     * [gl_]model.c (Mod_LoadTexinfo): although the end result in memory
       doesn't change, load the texinfo in a way consistent with the

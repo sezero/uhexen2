@@ -822,6 +822,9 @@ void ED_PrintEdicts (void)
 {
 	int		i;
 
+	if (!sv.active)
+		return;
+
 	Con_Printf ("%i entities\n", sv.num_edicts);
 	for (i = 0; i < sv.num_edicts; i++)
 		ED_PrintNum (i);
@@ -838,8 +841,11 @@ static void ED_PrintEdict_f (void)
 {
 	int		i;
 
+	if (!sv.active)
+		return;
+
 	i = atoi (Cmd_Argv(1));
-	if (i >= sv.num_edicts)
+	if (i < 0 || i >= sv.num_edicts)
 	{
 		Con_Printf("Bad edict number\n");
 		return;
@@ -856,9 +862,11 @@ For debugging
 */
 static void ED_Count (void)
 {
-	int		i;
 	edict_t	*ent;
-	int		active, models, solid, step;
+	int	i, active, models, solid, step;
+
+	if (!sv.active)
+		return;
 
 	active = models = solid = step = 0;
 	for (i = 0; i < sv.num_edicts; i++)
@@ -1084,10 +1092,9 @@ Used for initial level load and for savegames.
 const char *ED_ParseEdict (const char *data, edict_t *ent)
 {
 	ddef_t		*key;
-	qboolean	anglehack;
-	qboolean	init;
 	char		keyname[256];
-	int			n;
+	qboolean	anglehack, init;
+	int		n;
 
 	init = false;
 
@@ -1121,7 +1128,7 @@ const char *ED_ParseEdict (const char *data, edict_t *ent)
 
 		strcpy (keyname, com_token);
 
-		// another hack to fix heynames with trailing spaces
+		// another hack to fix keynames with trailing spaces
 		n = strlen(keyname);
 		while (n && keyname[n-1] == ' ')
 		{
