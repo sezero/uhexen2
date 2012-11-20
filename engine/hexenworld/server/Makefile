@@ -285,7 +285,7 @@ OBJECTS = \
 	net_chan.o \
 	pmove.o \
 	pmovetst.o \
-	model.o \
+	sv_model.o \
 	pr_cmds.o \
 	pr_edict.o \
 	pr_exec.o \

@@ -72,6 +72,8 @@ typedef struct texture_s
 {
 	char		name[16];
 	unsigned int	width, height;
+	GLuint			gl_texturenum;
+	struct msurface_s	*texturechain;	// for gl_texsort drawing
 	int		anim_total;		// total tenths in sequence ( 0 = no)
 	int		anim_min, anim_max;	// time for this frame min <=time< max
 	struct texture_s *anim_next;		// in the animation sequence
@@ -87,7 +89,9 @@ typedef struct texture_s
 #define SURF_DRAWTILED		0x20
 #define SURF_DRAWBACKGROUND	0x40
 #define SURF_TRANSLUCENT	0x80	/* r_edge.asm checks this */
+#define SURF_UNDERWATER		0x100
 #define SURF_DRAWBLACK		0x200
+#define SURF_DONTWARP		0x400
 
 // !!! if this is changed, it must be changed in asm_draw.h too !!!
 typedef struct
@@ -104,12 +108,20 @@ typedef struct
 	int		flags;
 } mtexinfo_t;
 
+#define	VERTEXSIZE	7
+
+typedef struct glpoly_s
+{
+	struct	glpoly_s	*next;
+	struct	glpoly_s	*chain;
+	int		numverts;
+	int		flags;		// for SURF_UNDERWATER
+	float	verts[4][VERTEXSIZE];	// variable sized (xyz s1t1 s2t2)
+} glpoly_t;
+
 typedef struct msurface_s
 {
 	int		visframe;	// should be drawn when node is crossed
-
-	int		dlightframe;
-	int		dlightbits;
 
 	mplane_t	*plane;
 	int		flags;
@@ -117,16 +129,24 @@ typedef struct msurface_s
 	int		firstedge;	// look up in model->surfedges[], negative numbers
 	int		numedges;	// are backwards edges
 
-// surface generation data
-	struct surfcache_s	*cachespots[MIPLEVELS];
-
 	short		texturemins[2];
 	short		extents[2];
+
+	int		light_s, light_t;	// gl lightmap coordinates
+
+	glpoly_t	*polys;			// multiple if warped
+	struct	msurface_s	*texturechain;
 
 	mtexinfo_t	*texinfo;
 
 // lighting info
+	int		dlightframe;
+	int		dlightbits;
+
+	unsigned int	lightmaptexturenum;
 	byte		styles[MAXLIGHTMAPS];
+	int		cached_light[MAXLIGHTMAPS];	// values currently used in lightmap
+	qboolean	cached_dlight;			// true if dynamic light in cache
 	byte		*samples;		// [numstyles*surfsize]
 } msurface_t;
 
@@ -136,7 +156,7 @@ typedef struct mnode_s
 	int		contents;		// 0, to differentiate from leafs
 	int		visframe;		// node needs to be traversed if current
 
-	short		minmaxs[6];		// for bounding box culling
+	float		minmaxs[6];		// for bounding box culling
 
 	struct mnode_s	*parent;
 
@@ -155,7 +175,7 @@ typedef struct mleaf_s
 	int		contents;		// wil be a negative contents number
 	int		visframe;		// node needs to be traversed if current
 
-	short		minmaxs[6];		// for bounding box culling
+	float		minmaxs[6];		// for bounding box culling
 
 	struct mnode_s	*parent;
 
@@ -180,6 +200,14 @@ typedef struct
 	vec3_t		clip_maxs;
 } hull_t;
 
+#define HULL_IMPLICIT	0	// Choose the hull based on bounding box- like in Quake
+#define HULL_POINT	1	// 0 0 0, 0 0 0
+#define HULL_PLAYER	2	// '-16 -16 0', '16 16 56'
+#define HULL_SCORPION	3	// '-24 -24 -20', '24 24 20'
+#define HULL_CROUCH	4	// '-16 -16 0', '16 16 28'
+#define HULL_HYDRA	5	// '-28 -28 -24', '28 28 24'
+#define HULL_GOLEM	6	// ???,???
+
 /*
 ==============================================================================
 
@@ -194,9 +222,8 @@ typedef struct mspriteframe_s
 {
 	short		width;
 	short		height;
-	//void		*pcachespot;	// remove?
 	float		up, down, left, right;
-	byte		pixels[4];
+	GLuint		gl_texturenum;
 } mspriteframe_t;
 
 typedef struct
@@ -235,19 +262,14 @@ Alias models are position independent, so the cache manager can move them.
 
 typedef struct
 {
-	aliasframetype_t	type;
+	int			firstpose;
+	int			numposes;
+	float			interval;
 	trivertx_t		bboxmin;
 	trivertx_t		bboxmax;
 	int			frame;
 	char			name[16];
 } maliasframedesc_t;
-
-typedef struct
-{
-	aliasskintype_t		type;
-	void			*pcachespot;
-	int			skin;
-} maliasskindesc_t;
 
 typedef struct
 {
@@ -263,34 +285,60 @@ typedef struct
 	maliasgroupframedesc_t	frames[1];
 } maliasgroup_t;
 
-typedef struct
-{
-	int			numskins;
-	int			intervals;
-	maliasskindesc_t	skindescs[1];
-} maliasskingroup_t;
-
-// !!! if this is changed, it must be changed in asm_draw.h too !!!
+//this is only the GL version
 typedef struct mtriangle_s {
 	int			facesfront;
 	unsigned short		vertindex[3];
 	unsigned short		stindex[3];
 } mtriangle_t;
 
+
+#define	MAX_SKINS	32
 typedef struct {
-	int			model;
-	int			stverts;
-	int			skindesc;
-	int			triangles;
-	maliasframedesc_t	frames[1];
+	int		ident;
+	int		version;
+	vec3_t		scale;
+	vec3_t		scale_origin;
+	float		boundingradius;
+	vec3_t		eyeposition;
+	int		numskins;
+	int		skinwidth;
+	int		skinheight;
+	int		numverts;
+	int		numtris;
+	int		numframes;
+	synctype_t	synctype;
+	int		flags;
+	float		size;
+
+	int		numposes;
+	int		poseverts;
+	int		posedata;	// numposes*poseverts trivert_t
+	int		commands;	// gl command list with embedded s/t
+#ifndef H2W /* FIXME!!! */
+	GLuint		gl_texturenum[MAX_SKINS];
+#else
+	GLuint		gl_texturenum[MAX_SKINS][4];
+#endif
+	maliasframedesc_t	frames[1];	// variable sized
 } aliashdr_t;
+
+#define	MAXALIASVERTS	2000
+#define	MAXALIASFRAMES	256
+#define	MAXALIASTRIS	2048
+extern	aliashdr_t	*pheader;
+extern	stvert_t	stverts[MAXALIASVERTS];
+extern	mtriangle_t	triangles[MAXALIASTRIS];
+extern	trivertx_t	*poseverts[MAXALIASFRAMES];
 
 //===================================================================
 
 //
 // entity effects
 //
+#ifndef H2W /* see below for hexenworld */
 #define	EF_BRIGHTFIELD			0x00000001
+#endif
 #define	EF_MUZZLEFLASH			0x00000002
 #define	EF_BRIGHTLIGHT			0x00000004
 #define	EF_DIMLIGHT			0x00000008
@@ -298,6 +346,35 @@ typedef struct {
 #define	EF_DARKFIELD			0x00000020
 #define	EF_LIGHT			0x00000040
 #define	EF_NODRAW			0x00000080
+
+#ifdef H2W
+/* The only difference between Raven's hw-0.15 binary release and the
+ * later HexenC source release is the EF_BRIGHTFIELD and EF_ONFIRE values:
+ * the original binary releases had them as 1 and 1024 respectively, but
+ * the later hcode src releases have them flipped: EF_BRIGHTFIELD = 1024
+ * and EF_ONFIRE = 1, which is a BIG BOO BOO. (On the other hand, Siege
+ * binary and source releases have EF_BRIGHTFIELD and EF_ONFIRE values as
+ * 1 and 1024, which makes the mess even messier.. Sigh..)
+ * The hexenworld engine src release also have EF_BRIGHTFIELD as 1024 and
+ * EF_ONFIRE as 1, therefore uHexen2 sticks to those values.
+ */
+#define	EF_ONFIRE			0x00000001
+#define	EF_BRIGHTFIELD			0x00000400
+#define	EF_POWERFLAMEBURN		0x00000800
+#define	EF_UPDATESOUND			0x00002000
+
+#define	EF_POISON_GAS			0x00200000
+#define	EF_ACIDBLOB			0x00400000
+//#define	EF_PURIFY2_EFFECT		0x00200000
+//#define	EF_AXE_EFFECT			0x00400000
+//#define	EF_SWORD_EFFECT			0x00800000
+//#define	EF_TORNADO_EFFECT		0x01000000
+#define	EF_ICESTORM_EFFECT		0x02000000
+//#define	EF_ICEBALL_EFFECT		0x04000000
+//#define	EF_METEOR_EFFECT		0x08000000
+#define	EF_HAMMER_EFFECTS		0x10000000
+#define	EF_BEETLE_EFFECTS		0x20000000
+#endif /* H2W */
 
 //===================================================================
 
@@ -337,6 +414,13 @@ typedef enum {mod_brush, mod_sprite, mod_alias} modtype_t;
 
 #define	EF_MIP_MAP_FAR		(1 << 24)	/* Set per frame, this model will use the far mip map	*/
 
+// XF_ Extra model effects set by engine: qmodel_t->ex_flags
+// effects are model name dependent
+#define XF_TORCH_GLOW		(1 << 0 )	/* glowing torches				*/
+#define XF_TORCH_GLOW_EGYPT	(1 << 30)	/* glowing torches, egypt			*/
+#define XF_GLOW			(1 << 1 )	/* other glows					*/
+#define XF_MISSILE_GLOW		(1 << 2 )	/* missile glows				*/
+
 typedef struct qmodel_s
 {
 	char		name[MAX_QPATH];
@@ -349,6 +433,7 @@ typedef struct qmodel_s
 	synctype_t	synctype;
 
 	int		flags;
+	int		ex_flags;
 
 //
 // volume occupied by the model graphics
@@ -407,6 +492,8 @@ typedef struct qmodel_s
 // additional model data
 //
 	cache_user_t	cache;		// only access through Mod_Extradata
+
+	float		glow_color[4];
 } qmodel_t;
 
 // values for qmodel_t->needload
@@ -422,6 +509,7 @@ qmodel_t *Mod_ForName (const char *name, qboolean crash);
 qmodel_t *Mod_FindName (const char *name);
 void	*Mod_Extradata (qmodel_t *mod);	// handles caching
 void	Mod_TouchModel (const char *name);
+void	Mod_ReloadTextures (void);
 
 mleaf_t *Mod_PointInLeaf (float *p, qmodel_t *model);
 byte	*Mod_LeafPVS (mleaf_t *leaf, qmodel_t *model);

@@ -67,7 +67,7 @@
 #include "effects.h"
 #include "server.h"
 
-#include "model.h"
+#include "sv_model.h"
 #include "world.h"
 #include "pmove.h"
 

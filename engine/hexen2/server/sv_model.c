@@ -4,8 +4,9 @@
  * running on the same machine.
  * $Id$
  *
- * This version of model.c & model.h are based on a quake dedicated
- * server application, lhnqserver, by LordHavoc.
+ * This version of model.[ch] are based on the quake dedicated server
+ * application lhnqserver by Forest 'LordHavoc' Hale, with simplified
+ * data structures and loading only brush models without the textures.
  *
  * Copyright (C) 1996-1997  Id Software, Inc.
  * Copyright (C) 1997-1998  Raven Software Corp.

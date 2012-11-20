@@ -66,7 +66,7 @@
 #include "effects.h"
 #include "server.h"
 #if defined(SERVERONLY)
-#include "server/model.h"
+#include "sv_model.h"
 #include "world.h"
 
 #else	/* client */

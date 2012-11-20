@@ -3,6 +3,16 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2012-11-20 (SVN):
+    * [gl_]model.h: synced h2 and hw versions and moved under h2shared.
+      added info about the hw EF_BRIGHTFIELD and EF_ONFIRE brokenness.
+    * server/model.h: synced h2 and hw versions, renamed to sv_model.h
+      and moved under h2shared.
+    * server/model.c: renamed to sv_model.c.
+    * updated version date stamp to 2012-11-20.
+    * gamecode/hc, constant.hc: added info about the EF_BRIGHTFIELD and
+      EF_ONFIRE brokenness to hexenworld and siege versions.
+
 2012-11-15 (SVN):
     * pr_edict.c: ED_PrintEdict_f, ED_PrintEdicts and ED_Count require
       an active server to print any infos. ED_PrintEdict_f can not work

@@ -584,7 +584,18 @@ float	UPDATE_STATIC				= 1;
 float	UPDATE_BINARY				= 2;
 float	UPDATE_TEMP					= 3;
 
+
 // entity effects
+/* The only difference between Raven's hw-0.15 binary release and the
+ * later HexenC source release is the EF_BRIGHTFIELD and EF_ONFIRE values:
+ * the original binary releases had them as 1 and 1024 respectively, but
+ * the later hcode src releases have them flipped: EF_BRIGHTFIELD = 1024
+ * and EF_ONFIRE = 1, which is a BIG BOO BOO. (On the other hand, Siege
+ * binary and source releases have EF_BRIGHTFIELD and EF_ONFIRE values as
+ * 1 and 1024, which makes the mess even messier.. Sigh..)
+ * The hexenworld engine src release also have EF_BRIGHTFIELD as 1024 and
+ * EF_ONFIRE as 1, therefore uHexen2 sticks to those values.
+ */
 float	EF_ONFIRE					= 1;//MP
 float	EF_MUZZLEFLASH 				= 2;
 float	EF_BRIGHTLIGHT 				= 4;

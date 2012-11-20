@@ -326,7 +326,7 @@ OBJECTS = \
 	$(SYSOBJ_NET) \
 	net_dgrm.o \
 	net_main.o \
-	model.o \
+	sv_model.o \
 	host.o \
 	host_cmd.o \
 	pr_cmds.o \

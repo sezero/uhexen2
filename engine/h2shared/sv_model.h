@@ -2,8 +2,9 @@
  * sv_model.h -- header for model loading and caching
  * $Id$
  *
- * This version of model.c & model.h are based on a quake dedicated
- * server application, lhnqserver, by LordHavoc.
+ * This version of model.[ch] are based on the quake dedicated server
+ * application lhnqserver by Forest 'LordHavoc' Hale, with simplified
+ * data structures and loading only brush models without the textures.
  *
  * Copyright (C) 1996-1997  Id Software, Inc.
  * Copyright (C) 1997-1998  Raven Software Corp.
@@ -157,7 +158,9 @@ typedef struct
 //
 // entity effects
 //
-#define	EF_ONFIRE			0x00000001
+#ifndef H2W /* see below for hexenworld */
+#define	EF_BRIGHTFIELD			0x00000001
+#endif
 #define	EF_MUZZLEFLASH			0x00000002
 #define	EF_BRIGHTLIGHT			0x00000004
 #define	EF_DIMLIGHT			0x00000008
@@ -166,6 +169,18 @@ typedef struct
 #define	EF_LIGHT			0x00000040
 #define	EF_NODRAW			0x00000080
 
+#ifdef H2W
+/* The only difference between Raven's hw-0.15 binary release and the
+ * later HexenC source release is the EF_BRIGHTFIELD and EF_ONFIRE values:
+ * the original binary releases had them as 1 and 1024 respectively, but
+ * the later hcode src releases have them flipped: EF_BRIGHTFIELD = 1024
+ * and EF_ONFIRE = 1, which is a BIG BOO BOO. (On the other hand, Siege
+ * binary and source releases have EF_BRIGHTFIELD and EF_ONFIRE values as
+ * 1 and 1024, which makes the mess even messier.. Sigh..)
+ * The hexenworld engine src release also have EF_BRIGHTFIELD as 1024 and
+ * EF_ONFIRE as 1, therefore uHexen2 sticks to those values.
+ */
+#define	EF_ONFIRE			0x00000001
 #define	EF_BRIGHTFIELD			0x00000400
 #define	EF_POWERFLAMEBURN		0x00000800
 #define	EF_UPDATESOUND			0x00002000
@@ -181,6 +196,7 @@ typedef struct
 //#define	EF_METEOR_EFFECT		0x08000000
 #define	EF_HAMMER_EFFECTS		0x10000000
 #define	EF_BEETLE_EFFECTS		0x20000000
+#endif /* H2W */
 
 //===================================================================
 
