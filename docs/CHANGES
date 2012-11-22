@@ -3,6 +3,12 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2012-11-22 (SVN):
+    * utils, qbsp: added command line option "-oldhullsize" to replicate
+      the old h2utils/qbsp behavior of using the original hexen2 sizes
+      for hulls #5 and #6, not H2MP ones, if so needed. also removed the
+      unix fork() and windows CreateProcess() code for now.
+
 2012-11-20 (SVN):
     * [gl_]model.h: synced h2 and hw versions and moved under h2shared.
       added info about the hw EF_BRIGHTFIELD and EF_ONFIRE brokenness.

@@ -49,12 +49,9 @@ qboolean	onlyents;
 qboolean	verbose = true;
 qboolean	allverbose;
 qboolean	usehulls;
+qboolean	oldhullsize;
 qboolean	watervis = false;
 
-char	*argv0;			// changed after fork();
-#ifdef PLATFORM_WINDOWS
-char	gargs[512];
-#endif
 char	projectpath[1024];	// with a trailing slash
 char	bspfilename[1024];
 char	pointfilename[1024];
@@ -406,8 +403,7 @@ void DivideWinding (winding_t *in, plane_t *split, winding_t **front, winding_t 
 
 //===========================================================================
 
-#if 0	// no users
-// these actually seem intended for the unused PrintMemory() below.
+#if 0	/* no users */
 static int		c_activefaces, c_peakfaces;
 static int		c_activesurfaces, c_peaksurfaces;
 static int		c_activewindings, c_peakwindings;
@@ -835,173 +831,25 @@ CreateHulls
 */
 static void CreateHulls (void)
 {
-#if defined(__alpha) && defined(PLATFORM_WINDOWS)
-	STARTUPINFO	StartupInfo;
-	char	myargs[512];
-	PROCESS_INFORMATION	ProcH1Info;
-	PROCESS_INFORMATION	ProcH2Info;
-	PROCESS_INFORMATION	ProcH3Info;
-	PROCESS_INFORMATION	ProcH4Info;
-	PROCESS_INFORMATION	ProcH5Info;
-
-	GetStartupInfo(&StartupInfo);
-#endif
-
-// commanded to create a single hull only
-	if (hullnum)
-	{
+	if (hullnum) {
+	// commanded to create a single hull only
 		CreateSingleHull ();
 		exit (0);
 	}
 
-// commanded to use the already existing hulls 1 and 2
-	if (usehulls)
-	{
+	if (usehulls) {
+	// commanded to use the already existing hulls 1 and 2
 		CreateSingleHull ();
 		return;
 	}
 
-// commanded to ignore the hulls altogether
-	if (noclip)
-	{
+	if (noclip) {
+	// commanded to ignore the hulls altogether
 		CreateSingleHull ();
 		return;
 	}
 
 // create all the hulls
-
-#ifdef __alpha
-
-#  ifdef PLATFORM_WINDOWS
-	// fork a process for each clipping hull
-	printf ("Creating hull processes...\n");
-	fflush (stdout);
-
-	sprintf (myargs,"%s -hullnum 1 %s",argv0,gargs);
-	CreateProcess(
-		NULL,	// pointer to name of executable module
-		myargs,	// pointer to command line string
-		NULL,	// pointer to process security attributes
-		NULL,	// pointer to thread security attributes
-		FALSE,	// handle inheritance flag
-		0,	// creation flags
-		NULL,	// pointer to new environment block
-		NULL,	// pointer to current directory name
-		&StartupInfo,	// pointer to STARTUPINFO
-		&ProcH1Info	// pointer to PROCESS_INFORMATION
-	);
-
-	CloseHandle(ProcH1Info.hThread);
-
-	sprintf (myargs,"%s -hullnum 2 %s",argv0,gargs);
-	CreateProcess(
-		NULL,	// pointer to name of executable module
-		myargs,	// pointer to command line string
-		NULL,	// pointer to process security attributes
-		NULL,	// pointer to thread security attributes
-		FALSE,	// handle inheritance flag
-		0,	// creation flags
-		NULL,	// pointer to new environment block
-		NULL,	// pointer to current directory name
-		&StartupInfo,	// pointer to STARTUPINFO
-		&ProcH2Info	// pointer to PROCESS_INFORMATION
-	);
-	CloseHandle(ProcH2Info.hThread);
-
-	//hullnum = 0;
-	// wait for clip hull process to finish
-	WaitForSingleObject(ProcH1Info.hProcess, INFINITE);
-	WaitForSingleObject(ProcH2Info.hProcess, INFINITE);
-
-	sprintf (myargs,"%s -hullnum 3 %s",argv0,gargs);
-	CreateProcess(
-		NULL,	// pointer to name of executable module
-		myargs,	// pointer to command line string
-		NULL,	// pointer to process security attributes
-		NULL,	// pointer to thread security attributes
-		FALSE,	// handle inheritance flag
-		0,	// creation flags
-		NULL,	// pointer to new environment block
-		NULL,	// pointer to current directory name
-		&StartupInfo,	// pointer to STARTUPINFO
-		&ProcH3Info	// pointer to PROCESS_INFORMATION
-	);
-	CloseHandle(ProcH3Info.hThread);
-
-	sprintf (myargs,"%s -hullnum 4 %s",argv0,gargs);
-	CreateProcess(
-		NULL,	// pointer to name of executable module
-		myargs,	// pointer to command line string
-		NULL,	// pointer to process security attributes
-		NULL,	// pointer to thread security attributes
-		FALSE,	// handle inheritance flag
-		0,	// creation flags
-		NULL,	// pointer to new environment block
-		NULL,	// pointer to current directory name
-		&StartupInfo,	// pointer to STARTUPINFO
-		&ProcH4Info	// pointer to PROCESS_INFORMATION
-	);
-	CloseHandle(ProcH4Info.hThread);
-
-	sprintf (myargs,"%s -hullnum 5 %s",argv0,gargs);
-	CreateProcess(
-		NULL,	// pointer to name of executable module
-		myargs,	// pointer to command line string
-		NULL,	// pointer to process security attributes
-		NULL,	// pointer to thread security attributes
-		FALSE,	// handle inheritance flag
-		0,	// creation flags
-		NULL,	// pointer to new environment block
-		NULL,	// pointer to current directory name
-		&StartupInfo,	// pointer to STARTUPINFO
-		&ProcH5Info	// pointer to PROCESS_INFORMATION
-	);
-	CloseHandle(ProcH5Info.hThread);
-
-	sprintf (StartupInfo.lpTitle, "HUL0");
-	CreateSingleHull ();
-
-	WaitForSingleObject(ProcH3Info.hProcess, INFINITE);
-	WaitForSingleObject(ProcH4Info.hProcess, INFINITE);
-	WaitForSingleObject(ProcH5Info.hProcess, INFINITE);
-
-	CloseHandle(ProcH1Info.hProcess);
-	CloseHandle(ProcH2Info.hProcess);
-	CloseHandle(ProcH3Info.hProcess);
-	CloseHandle(ProcH4Info.hProcess);
-	CloseHandle(ProcH5Info.hProcess);
-
-#  else	/* __alpha, but not windows */
-	// fork a process for each clipping hull
-	printf ("forking hull processes...\n");
-	fflush (stdout);
-	if (!fork ())
-	{
-		hullnum = 1;
-		verbose = false;
-		drawflag = false;
-		sprintf (argv0, "HUL%i", hullnum);
-	}
-	else if (!fork ())
-	{
-		hullnum = 2;
-		verbose = false;
-		drawflag = false;
-		sprintf (argv0, "HUL%i", hullnum);
-	}
-	CreateSingleHull ();
-
-	if (hullnum)
-		exit (0);
-
-	wait (NULL);		// wait for clip hull process to finish
-	wait (NULL);		// wait for clip hull process to finish
-
-#  endif  /* end of __alpha */
-
-#else	/* not _alpha */
-
-	// create the hulls sequentially
 	printf ("building hulls sequentially...\n");
 
 	hullnum = 1;
@@ -1036,8 +884,6 @@ static void CreateHulls (void)
 	numclipnodes = 0;
 	hullnum = 0;
 	CreateSingleHull ();
-#endif
-
 }
 
 /*
@@ -1180,22 +1026,6 @@ int main (int argc, char **argv)
 
 	ValidateByteorder ();
 
-#ifdef PLATFORM_WINDOWS
-	gargs[0] = 0;
-	for (i = 1 ; i < argc ; i++)
-	{
-		strcat(gargs,argv[i]);
-		strcat(gargs," ");
-	}
-#endif
-
-//
-// let forked processes change name for ps status
-//
-	argv0 = argv[0];
-//
-// check command line flags
-//
 	for (i = 1 ; i < argc ; i++)
 	{
 		if (argv[i][0] != '-')
@@ -1214,6 +1044,8 @@ int main (int argc, char **argv)
 			onlyents = true;
 		else if (!strcmp (argv[i],"-verbose"))
 			allverbose = true;
+		else if (!strcmp (argv[i],"-oldhullsize"))
+			oldhullsize = true;	// original H2 sizes for hulls #5 and #6, not H2MP ones
 		else if (!strcmp (argv[i],"-usehulls"))
 			usehulls = true;	// don't fork -- use the existing files
 		else if (!strcmp (argv[i],"-hullnum"))
@@ -1221,7 +1053,6 @@ int main (int argc, char **argv)
 			if (i >= argc - 1)
 				COM_Error("Missing argument to \"%s\"", argv[i]);
 			hullnum = atoi(argv[++i]);
-			sprintf (argv0, "HUL%i", hullnum);
 		}
 		else if (!strcmp (argv[i],"-proj"))
 		{
@@ -1234,16 +1065,14 @@ int main (int argc, char **argv)
 	}
 
 	if (i != argc - 2 && i != argc - 1)
-		COM_Error ("usage: qbsp [options] sourcefile [destfile]\noptions: -notjunc -nofill -draw -onlyents -verbose -proj <projectpath>");
+		COM_Error ("usage: qbsp [options] sourcefile [destfile]\noptions: -notjunc -nofill -draw -onlyents -verbose -oldhullsize -proj <projectpath>");
 
 	MakeProjectPath (argv[i]);
 
-//
-// create destination name if not specified
-//
 	strcpy (sourcename, argv[i]);
 	DefaultExtension (sourcename, ".map", sizeof(sourcename));
 
+// create destination name if not specified
 	if (i != argc - 2)
 	{
 		strcpy (destname, argv[i]);
@@ -1254,9 +1083,7 @@ int main (int argc, char **argv)
 	else
 		strcpy (destname, argv[i+1]);
 
-//
 // do it!
-//
 	start = COM_GetTime ();
 	ProcessFile (sourcename, destname);
 	end = COM_GetTime ();

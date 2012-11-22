@@ -9,6 +9,10 @@ Changes in v1.5.5: (Nov. 20, 2012.)
   of alpha-only. Default is single-threaded. Use "-threads #" to specify
   the required number of threads. (max: 32. -1 tries to autodetect.)
 
+- Utils, qbsp: Added a command line option "-oldhullsize" to replicate
+  the old h2utils/qbsp behavior of using the original hexen2 sizes for
+  hulls #5 and #6, not H2MP ones, if so needed.
+
 - Utils, hcc: Added a command line option "-old" to replicate old hcc
   versions' behavior of allowing the STR_ constants be saved globals and
   letting precache_file() calls go into progs.dat, if so needed.

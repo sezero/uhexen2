@@ -458,17 +458,28 @@ This is done by brute force, and could easily get a lot faster if anyone cares.
 ==============================================================================
 */
 
-vec3_t	hull_size[6][2] = {
+typedef vec3_t hull_size_t[2];
 
+static const hull_size_t	hull_size_h2[6] = {	// original H2 sizes for #5 and #6
 	{  {  0,    0,   0 },  {  0,    0,   0 }  },
 	{  { -16, -16, -32 },  {  16,  16,  24 }  },
 	{  { -24, -24, -20 },  {  24,  24,  20 }  },
 	{  { -16, -16, -16 },  {  16,  16,  12 }  },
-//	{  { -40, -40, -42 },  {  40,  40,  42 }  },	// called hyrda, but not really
-//	{  { -48, -48, -50 },  {  48,  48,  50 }  }
+	{  { -40, -40, -42 },  {  40,  40,  42 }  },	// called hyrda, but not really
+	{  { -48, -48, -50 },  {  48,  48,  50 }  }
+};
+
+static const hull_size_t	hull_size_mp[6] = {	// mission pack sizes for #5 and #6
+	{  {  0,    0,   0 },  {  0,    0,   0 }  },
+	{  { -16, -16, -32 },  {  16,  16,  24 }  },
+	{  { -24, -24, -20 },  {  24,  24,  20 }  },
+	{  { -16, -16, -16 },  {  16,  16,  12 }  },
 	{  {  -8,  -8,  -8 },  {   8,   8,   8 }  },
 	{  { -28, -28, -40 },  {  28,  28,  40 }  }
 };
+
+static const hull_size_t	*hull_size;
+
 
 #define	MAX_HULL_POINTS	32
 #define	MAX_HULL_EDGES	64
@@ -873,6 +884,10 @@ brushset_t *Brush_LoadEntity (entity_t *ent, int hullnumber)
 	other = water = NULL;
 
 	qprintf ("--- Brush_LoadEntity ---\n");
+
+	if (oldhullsize)
+		hull_size = hull_size_h2;
+	else	hull_size = hull_size_mp;
 
 	for (mbr = ent->brushes ; mbr ; mbr = mbr->next)
 	{

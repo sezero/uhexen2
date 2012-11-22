@@ -283,6 +283,7 @@ extern	qboolean	notjunc;
 extern	qboolean	noclip;
 
 extern	int		hullnum;
+extern	qboolean	oldhullsize;	// if true, use original H2 sizes for hulls #5 and #6, not H2MP ones
 
 extern	brushset_t	*brushset;
 
