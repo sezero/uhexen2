@@ -4,6 +4,9 @@ Development Progress	:
 ---------------------------
 
 2012-11-23 (SVN):
+    * mathlib.h (VectorClear): remove extraneous semicolon from the end.
+
+2012-11-23 (SVN):
     * utils/common/bspfile.c (SwapBSPFile): although the end result in
       memory needn't change, swap the texinfo in a way consistent with
       the layout of the vecs in the texinfo_t struct. found in a recent

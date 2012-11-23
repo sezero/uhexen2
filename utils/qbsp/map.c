@@ -318,7 +318,7 @@ static void BrushOrigin (mbrush_t *b, vec3_t origin)
 	loadside_t	*s;
 	int			i, j;
 
-	VectorClear (vec3_origin, origin);
+	VectorClear (origin);
 	for (i = 0 ; i < b->numsides ; i++)
 	{
 		s = loadsides + (b->original_sides-brushsides) + i;

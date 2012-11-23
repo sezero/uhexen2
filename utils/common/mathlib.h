@@ -72,7 +72,7 @@ qboolean VectorCompare (vec3_t v1, vec3_t v2);
 		(v)[2] = -(v)[2];					\
 	} while (0)
 
-#define VectorClear(a)		((a)[2] = (a)[1] = (a)[0] = 0);
+#define VectorClear(a)		((a)[2] = (a)[1] = (a)[0] = 0)
 #if 0
 #define VectorCopy(a,b)		memcpy((b),(a),sizeof(vec3_t))
 #else
