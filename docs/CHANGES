@@ -3,6 +3,12 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2012-11-23 (SVN):
+    * utils/common/bspfile.c (SwapBSPFile): although the end result in
+      memory needn't change, swap the texinfo in a way consistent with
+      the layout of the vecs in the texinfo_t struct. found in a recent
+      commit in quakeforge git repo.
+
 2012-11-22 (SVN):
     * utils, qbsp: added command line option "-oldhullsize" to replicate
       the old h2utils/qbsp behavior of using the original hexen2 sizes
