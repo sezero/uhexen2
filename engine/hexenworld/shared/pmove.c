@@ -944,7 +944,7 @@ static void SpectatorMove (void)
 	speed = VectorLength (pmove.velocity);
 	if (speed < 1)
 	{
-		VectorClear (pmove.velocity)
+		VectorClear (pmove.velocity);
 	}
 	else
 	{
