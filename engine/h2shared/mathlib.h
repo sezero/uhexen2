@@ -95,12 +95,16 @@ extern vec3_t vec3_origin;
 		(v)[2] = (c);						\
 	} while (0)
 
+#if 0
+#define VectorNegate(a,b)	VectorSubtract(vec3_origin,(a),(b))
+#else
 #define VectorNegate(a,b)						\
 	do {								\
 		(b)[0] = -(a)[0];					\
 		(b)[1] = -(a)[1];					\
 		(b)[2] = -(a)[2];					\
 	} while (0)
+#endif
 
 #define VectorScale(a,b,c)						\
 	do {								\

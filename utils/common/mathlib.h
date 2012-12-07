@@ -91,12 +91,16 @@ qboolean VectorCompare (vec3_t v1, vec3_t v2);
 		(v)[2] = (c);						\
 	} while (0)
 
+#if 0
+#define VectorNegate(a,b)	VectorSubtract(vec3_origin,(a),(b))
+#else
 #define VectorNegate(a,b)						\
 	do {								\
 		(b)[0] = -(a)[0];					\
 		(b)[1] = -(a)[1];					\
 		(b)[2] = -(a)[2];					\
 	} while (0)
+#endif
 
 #define VectorScale(a,b,c)						\
 	do {								\
