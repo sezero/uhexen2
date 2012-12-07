@@ -267,9 +267,7 @@ void LoadBSPFile (const char *filename)
 	int			i;
 	void		*pbuf;
 
-//
 // load the file header
-//
 	LoadFile (filename, &pbuf);
 	header = (dheader_t *)pbuf;
 
@@ -278,7 +276,7 @@ void LoadBSPFile (const char *filename)
 		((int *)header)[i] = LittleLong ( ((int *)header)[i]);
 
 	if (header->version != BSPVERSION)
-		COM_Error ("%s is version %i, not %i", filename, i, BSPVERSION);
+		COM_Error ("%s is version %i, not %i", filename, header->version, BSPVERSION);
 
 	nummodels = CopyLump (LUMP_MODELS, dmodels, sizeof(dmodel_t));
 	numvertexes = CopyLump (LUMP_VERTEXES, dvertexes, sizeof(dvertex_t));
@@ -299,9 +297,7 @@ void LoadBSPFile (const char *filename)
 
 	free (pbuf);	// everything has been copied out
 
-//
 // swap everything
-//
 	SwapBSPFile (false);
 }
 
