@@ -1,7 +1,7 @@
 Hammer of Thyrion (uHexen2) release notes:
 
 ========================================================================
-Changes in v1.5.5: (Nov. 20, 2012.)
+Changes in v1.5.5: (Dec. 10, 2012.)
 ========================================================================
 
 - Utils (light, vis, jsh2color): Added unix pthreads support for running
@@ -49,6 +49,9 @@ Changes in v1.5.5: (Nov. 20, 2012.)
 - Software renderer: Fixed occasional crash when sprites rendered very
   close to the camera origin, such as the teleportation puff. (used to
   happen mostly in 64 bit builds. bug #3562290.)
+
+- OpenGL: Fixed a crash in texture resampling code with 3d hardware max
+  texture size greater than 1024 and wide-enough textures.
 
 - Windows: Removed hooks for QHOST, which is (was) a proprietery server
   administation tool.

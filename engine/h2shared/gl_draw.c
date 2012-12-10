@@ -1387,13 +1387,17 @@ GL_ResampleTexture
 */
 static void GL_ResampleTexture (unsigned int *in, int inwidth, int inheight, unsigned int *out, int outwidth, int outheight)
 {
-	int		i, j;
+	int		i, j, mark;
 	unsigned int	*inrow, *inrow2;
 	unsigned int	frac, fracstep;
-	unsigned int	p1[1024], p2[1024];
+	unsigned int	*p1, *p2;
 	byte		*pix1, *pix2, *pix3, *pix4;
 
 	fracstep = inwidth * 0x10000 / outwidth;
+
+	mark = Hunk_LowMark();
+	p1 = (unsigned int *) Hunk_Alloc (outwidth * sizeof(unsigned int));
+	p2 = (unsigned int *) Hunk_Alloc (outwidth * sizeof(unsigned int));
 
 	frac = fracstep >> 2;
 	for (i = 0; i < outwidth; i++)
@@ -1426,6 +1430,8 @@ static void GL_ResampleTexture (unsigned int *in, int inwidth, int inheight, uns
 			((byte *)(out+j))[3] = (pix1[3] + pix2[3] + pix3[3] + pix4[3])>>2;
 		}
 	}
+
+	Hunk_FreeToLowMark(mark);
 }
 
 /*
