@@ -4,6 +4,10 @@ Development Progress	:
 ---------------------------
 
 2012-12-27 (SVN):
+    * snd_ahi.c (S_AHI_Init): add MEMF_CLEAR to AllocVec flags so that
+      the memory is cleared and the loud clicks at startup are no more
+
+2012-12-27 (SVN):
     * in_amiga.c: remove an obsoleted debugging define
 
 2012-12-27 (SVN):

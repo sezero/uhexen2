@@ -157,7 +157,7 @@ static qboolean S_AHI_Init(dma_t *dma)
 						shm->samples = BUFFER_SIZE*(speed/11025);
 						shm->submission_chunk = 1;
 
-						ad->samplebuffer = AllocVec(BUFFER_SIZE*(speed/11025)*(bits/8)*channels, MEMF_ANY);
+						ad->samplebuffer = AllocVec(BUFFER_SIZE*(speed/11025)*(bits/8)*channels, MEMF_ANY|MEMF_CLEAR);
 						if (ad->samplebuffer)
 						{
 							shm->buffer = ad->samplebuffer;
