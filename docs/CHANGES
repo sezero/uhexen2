@@ -4,6 +4,10 @@ Development Progress	:
 ---------------------------
 
 2012-12-27 (SVN):
+    * vid_cgx.c, gl_vidamiga.c, in_amiga.c: new native Amiga code from
+      Szilard Biro
+
+2012-12-27 (SVN):
     * snd_ahi.c: Update from Szilard Biro with cleanups and portability
       improvements to make it compile on AmigaOS 3.x too.
     * updated version date stamp to 2012-12-27.
