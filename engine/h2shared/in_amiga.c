@@ -39,10 +39,7 @@
 #if defined __MORPHOS__ || defined __AMIGA__
 #include <intuition/intuitionbase.h>
 #endif
- 
-#if 1
-#define __HX2_INPUT_H
-#endif
+
 #include "quakedef.h"
 
 extern struct Window *window;

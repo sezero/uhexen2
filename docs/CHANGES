@@ -4,6 +4,9 @@ Development Progress	:
 ---------------------------
 
 2012-12-27 (SVN):
+    * in_amiga.c: remove an obsoleted debugging define
+
+2012-12-27 (SVN):
     * vid_cgx.c, gl_vidamiga.c, in_amiga.c: new native Amiga code from
       Szilard Biro
 
