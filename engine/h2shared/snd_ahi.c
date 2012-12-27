@@ -29,12 +29,15 @@
 
 #include "snd_ahi.h"
 
-#include <exec/exec.h>
 #include <devices/ahi.h>
 #include <proto/exec.h>
-#define USE_INLINE_STDARG
 #include <proto/ahi.h>
 #include <utility/hooks.h>
+#ifdef __AROS__
+#include <SDI/SDI_hook.h>
+#elif defined __AMIGA__
+#include <SDI_hook.h>
+#endif
 
 #if defined(__AROS__) || defined(__MORPHOS__)
 #define BUFFER_SIZE 16384
@@ -70,40 +73,28 @@ static struct AHIdata *ad;
 typedef ULONG IPTR;
 #endif
 
-#if !defined(__AROS__)
-IPTR EffectFunc()
+#ifdef __MORPHOS__
+IPTR EffectFuncTramp();
+
+static struct EmulLibEntry EffectFunc =
+{
+	TRAP_LIB, 0, (void (*)(void))EffectFuncTramp
+};
+
+IPTR EffectFuncTramp()
 {
 	struct Hook *hook = (struct Hook *)REG_A0;
 	struct AHIEffChannelInfo *aeci = (struct AHIEffChannelInfo *)REG_A1;
-
-	struct AHIdata *adata = hook->h_Data;
-	adata->readpos = aeci->ahieci_Offset[0];
-
-	return 0;
-}
-
-static struct EmulLibEntry EffectFunc_Gate =
-{
-	TRAP_LIB, 0, (void (*)(void))EffectFunc
-};
 #else
-AROS_UFH3(IPTR, EffectFunc,
-	AROS_UFHA(struct Hook *, hook, A0),
-	AROS_UFHA(struct AHIAudioCtrl *, aac, A2),
-	AROS_UFHA(struct AHIEffChannelInfo *, aeci, A1)
-	)
+HOOKPROTO(EffectFunc, IPTR, struct AHIAudioCtrl *aac, struct AHIEffChannelInfo *aeci)
 {
-	AROS_USERFUNC_INIT
-
+#endif
 	struct AHIdata *adata = hook->h_Data;
 	adata->readpos = aeci->ahieci_Offset[0];
 
 	return 0;
-
-	AROS_USERFUNC_EXIT
 }
-#endif
-
+	
 static qboolean S_AHI_Init(dma_t *dma)
 {
 	ULONG channels, speed, bits;
@@ -209,16 +200,12 @@ static qboolean S_AHI_Init(dma_t *dma)
 									ad->aci.aeci.ahieci_Func = &ad->EffectHook;
 									ad->aci.aeci.ahieci_Channels = 1;
 
-#if !defined(__AROS__)
-									ad->EffectHook.h_Entry = (void *)&EffectFunc_Gate;
-#else
 									ad->EffectHook.h_Entry = (IPTR (*)())&EffectFunc;
-#endif
 									ad->EffectHook.h_Data = ad;
 									AHI_SetEffect(&ad->aci, ad->audioctrl);
 
 									Con_Printf("Using AHI mode \"%s\" for audio output\n", modename);
-									Con_Printf("Channels: %d bits: %d frequency: %d\n", channels, bits, speed);
+									Con_Printf("Channels: %ld bits: %ld frequency: %ld\n", channels, bits, speed);
 
 									return true;
 								}

@@ -3,6 +3,11 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2012-12-27 (SVN):
+    * snd_ahi.c: Update from Szilard Biro with cleanups and portability
+      improvements to make it compile on AmigaOS 3.x too.
+    * updated version date stamp to 2012-12-27.
+
 2012-12-10 (SVN):
     * gl_draw.c (GL_ResampleTexture): allocate p1 and p2 temporarily on
       the hunk instead of having them as array[1024]. if gl_max_size is

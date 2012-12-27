@@ -1,7 +1,7 @@
 Hammer of Thyrion (uHexen2) release notes:
 
 ========================================================================
-Changes in v1.5.5: (Dec. 10, 2012.)
+Changes in v1.5.5: (Dec. 27, 2012.)
 ========================================================================
 
 - Utils (light, vis, jsh2color): Added unix pthreads support for running
