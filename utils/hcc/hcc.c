@@ -249,7 +249,7 @@ static void WriteData (int crc)
 			dd = &fields[numfielddefs];
 			numfielddefs++;
 			dd->type = def->type->aux_type->type;
-			dd->s_name = strofs; // The name gets copied below
+			dd->s_name = strofs; /* The name gets copied below */
 			dd->ofs = G_INT(def->ofs);
 		}
 		dd = &globals[numglobaldefs];
@@ -260,7 +260,7 @@ static void WriteData (int crc)
 		    def->type->type != ev_field &&
 		    def->scope == NULL)
 		{
-			//STR_ is a special case string constant
+			/* STR_ is a special case string constant */
 			if (strncmp(def->name,"STR_", 4) != 0 || old_hcc_behavior)
 				dd->type |= DEF_SAVEGLOBAL;
 		}
@@ -623,12 +623,12 @@ static qboolean FinishCompilation (void)
 		if (d->type->type == ev_function && !d->scope)
 		{
 			if (!d->initialized)
-			{ // Prototype, but no code
+			{
 				printf("function '%s' was not defined\n", d->name);
 				errors = true;
 			}
 			if (hcc_ShowUnrefFuncs && d->referenceCount == 0 && globals_done)
-			{ // Function never used
+			{
 				printf("unreferenced function '%s'\n", d->name);
 			}
 		}
@@ -898,6 +898,7 @@ int main (int argc, char **argv)
 	fileInfo = CheckParm("-fileinfo");
 	quiet = CheckParm("-quiet");
 
+	// compile all the files
 	do
 	{
 		psrc = COM_Parse(psrc);
@@ -907,11 +908,11 @@ int main (int argc, char **argv)
 		registerCount = numpr_globals;
 		statementCount = numstatements;
 		functionCount = numfunctions;
-		strcpy(nameptr, com_token);
+		strcpy (nameptr, com_token);
 		if (!quiet)
 			printf("compiling %s\n", nameptr);
+		LoadFile (filename, &src2);
 
-		LoadFile(filename, &src2);
 		if (!CO_CompileFile((char *)src2, nameptr))
 			exit (1);
 		if (!quiet && fileInfo)
@@ -933,7 +934,7 @@ int main (int argc, char **argv)
 		COM_Error ("compilation errors");
 
 	p = CheckParm("-asm");
-	if (p)
+	if (p != 0)
 	{
 		for (p++; p < argc; p++)
 		{
@@ -957,7 +958,7 @@ int main (int argc, char **argv)
 	printf("  precache_file: %10d / %10d\n", numfiles, MAX_FILES);
 
 	stop = COM_GetTime ();
-	printf("\n%d seconds elapsed.\n", (int)(stop-start));
+	printf("\n%d seconds elapsed.\n", (int)(stop - start));
 
 	exit (0);
 }

@@ -36,9 +36,6 @@
 #include "byteordr.h"
 #include "filenames.h"
 
-static char	sourcedir[1024];
-static char	destfile[1024];
-
 byte		_pr_globals[MAX_REGS * sizeof(float)];
 float		*pr_globals;
 int			numpr_globals;
@@ -70,6 +67,9 @@ int			nummodels;
 char		precache_files[MAX_FILES][MAX_DATA_PATH];
 int			precache_files_block[MAX_SOUNDS];
 int			numfiles;
+
+static char	sourcedir[1024];
+static char	destfile[1024];
 
 
 /*

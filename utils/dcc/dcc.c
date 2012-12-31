@@ -1993,6 +1993,9 @@ static void DEC_ReadData (const char *srcfile)
 	printf ("%10i numpr_globals\n", progs->numglobals);
 	printf ("----------------------------------------\n");
 
+	if (progs->version != PROG_VERSION)
+		COM_Error ("%s is of unsupported version (%d, should be %d)", srcfile, progs->version, PROG_VERSION);
+
 	pr_functions = (dfunction_t *)((byte *)progs + progs->ofs_functions);
 	pr_globaldefs = (ddef_t *)((byte *)progs + progs->ofs_globaldefs);
 	pr_fielddefs = (ddef_t *)((byte *)progs + progs->ofs_fielddefs);
