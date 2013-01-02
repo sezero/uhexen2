@@ -1,7 +1,7 @@
 Hammer of Thyrion (uHexen2) release notes:
 
 ========================================================================
-Changes in v1.5.5: (Dec. 27, 2012.)
+Changes in v1.5.5: (Jan. 02, 2013.)
 ========================================================================
 
 - Utils (light, vis, jsh2color): Added unix pthreads support for running
@@ -22,6 +22,16 @@ Changes in v1.5.5: (Dec. 27, 2012.)
   dump the related information.
 
 - Utils, all: Some fixes/improvements to command line options handling.
+
+- Support for progs v7 spec by Pa3PyX (http://pa3pyx.dnsalias.org/) with
+  32 bit offsets instead of 16 bit of original version 6: On the engine
+  side, compatibility is preserved with v6 progs, so that the engine can
+  run both with v6 as well as with v7 progs. On the utils side, hcc and
+  dhcc are changed to compile the progs as v6 when possible for maximum
+  compatibility, or as v7 otherwise. They can also be made to compile
+  specifically v6 or v7 progs by the new command line options -v6, -v7
+  or -version <n>.  As for decompilation, dhcc can now process both v6
+  and v7 progs.
 
 - Fixed a respawn-after-death issue which sometimes rendered the player
   unable to move backwards, or unable to use certain inventory items, or

@@ -215,6 +215,7 @@ static void DccStatement (dstatement_t *s)
 	unsigned short	tom;
 	def_t		*typ1 = NULL, *typ2 = NULL, *typ3 = NULL;
 	ddef_t		*par;
+	int		op_a, op_b;
 
 	a1[0] = a2[0] = a3[0] = dsline[0] = funcname[0] = '\0';
 
@@ -244,9 +245,9 @@ static void DccStatement (dstatement_t *s)
 
 	if (pr_dumpasm)
 	{
-		arg1 = PR_PrintGlobal((unsigned short)s->a, typ1);
-		arg2 = PR_PrintGlobal((unsigned short)s->b, typ2);
-		arg3 = PR_PrintGlobal((unsigned short)s->c, typ3);
+		arg1 = PR_PrintGlobal(s->a, typ1);
+		arg2 = PR_PrintGlobal(s->b, typ2);
+		arg3 = PR_PrintGlobal(s->c, typ3);
 		PR_Print("\n%s(%d): %s(%d) %s(%d) %s(%d):\n",
 			  pr_opcodes[s->op].opname, s->op,
 			  arg1, s->a, arg2, s->b, arg3, s->c);
@@ -271,7 +272,7 @@ static void DccStatement (dstatement_t *s)
 
 		if (s->a)
 		{
-			arg1 = PR_PrintStringAtOfs((unsigned short)s->a, typ1);
+			arg1 = PR_PrintStringAtOfs(s->a, typ1);
 			PR_Print("( %s )", arg1);
 		}
 
@@ -281,15 +282,15 @@ static void DccStatement (dstatement_t *s)
 		 (OP_EQ_F  <= s->op && s->op <= OP_GT   ) ||
 		 (OP_AND   <= s->op && s->op <= OP_BITOR))
 	{
-		arg1 = PR_PrintStringAtOfs((unsigned short)s->a, typ1);
+		arg1 = PR_PrintStringAtOfs(s->a, typ1);
 		if (arg1)
 			strcpy(a1, arg1);
 
-		arg2 = PR_PrintStringAtOfs((unsigned short)s->b, typ2);
+		arg2 = PR_PrintStringAtOfs(s->b, typ2);
 		if (arg2)
 			strcpy(a2, arg2);
 
-		arg3 = PR_PrintGlobal((unsigned short)s->c, typ3);
+		arg3 = PR_PrintGlobal(s->c, typ3);
 		if (arg3)
 		{
 			PR_Indent();
@@ -298,20 +299,20 @@ static void DccStatement (dstatement_t *s)
 		else
 		{
 			sprintf(dsline, "(%s %s %s)", a1, pr_opcodes[s->op].name, a2);
-			Make_Immediate((unsigned short)s->c, dsline);
+			Make_Immediate(s->c, dsline);
 		}
 	}
 	else if (OP_LOAD_F <= s->op && s->op <= OP_ADDRESS)
 	{
-		arg1 = PR_PrintStringAtOfs((unsigned short)s->a, typ1);
+		arg1 = PR_PrintStringAtOfs(s->a, typ1);
 		if (arg1)
 			strcpy(a1, arg1);
 
-		arg2 = PR_PrintStringAtOfs((unsigned short)s->b, typ2);
+		arg2 = PR_PrintStringAtOfs(s->b, typ2);
 		if (arg2)
 			strcpy(a2, arg2);
 
-		arg3 = PR_PrintGlobal((unsigned short)s->c, typ3);
+		arg3 = PR_PrintGlobal(s->c, typ3);
 		if (arg3)
 		{
 			PR_Indent();
@@ -321,24 +322,24 @@ static void DccStatement (dstatement_t *s)
 		{
 			sprintf(dsline, "%s.%s", a1, a2);
 		//	printf("%s.%s making immediate at %d\n",a1,a2,s->c);
-			Make_Immediate((unsigned short)s->c, dsline);
+			Make_Immediate(s->c, dsline);
 		}
 	}
 	else if ((OP_STORE_F <= s->op) && (s->op <= OP_STORE_FNC))
 	{
-		arg1 = PR_PrintStringAtOfs((unsigned short)s->a, typ1);
+		arg1 = PR_PrintStringAtOfs(s->a, typ1);
 		if (arg1)
 			strcpy(a1,arg1);
 
 		/*
-		par = DEC_GetParameter ((unsigned short)s->a);
+		par = DEC_GetParameter (s->a);
 		if (par && s->op == OP_STORE_F)
 		{
 			if (par->type == ev_vector)
 				strcat(a1, "_x");
 		}
 		*/
-		arg3 = PR_PrintGlobal((unsigned short)s->b, typ2);
+		arg3 = PR_PrintGlobal(s->b, typ2);
 		if (arg3)
 		{
 			PR_Indent();
@@ -347,47 +348,47 @@ static void DccStatement (dstatement_t *s)
 		else
 		{
 			sprintf(dsline,"%s", a1);
-			Make_Immediate((unsigned short)s->b, dsline);
+			Make_Immediate(s->b, dsline);
 		}
 	}
 	else if ((OP_STOREP_F <= s->op) && (s->op <= OP_STOREP_FNC))
 	{
-		arg1 = PR_PrintStringAtOfs((unsigned short)s->a, typ1);
+		arg1 = PR_PrintStringAtOfs(s->a, typ1);
 		if (arg1)
 			strcpy(a1, arg1);
 
-		par = DEC_GetParameter ((unsigned short)s->a);
+		par = DEC_GetParameter (s->a);
 		if (par && s->op == OP_STOREP_F)
 		{
 			if (par->type == ev_vector)
 				strcat(a1, "_x");
 		}
 
-		arg2 = PR_PrintStringAtOfs((unsigned short)s->b, typ2);
+		arg2 = PR_PrintStringAtOfs(s->b, typ2);
 
 		PR_Indent();
 		PR_Print("%s = %s;\n", arg2, a1);
 	}
 	else if ((OP_NOT_F <= s->op) && (s->op <= OP_NOT_FNC))
 	{
-		arg1 = PR_PrintStringAtOfs((unsigned short)s->a, typ1);
+		arg1 = PR_PrintStringAtOfs(s->a, typ1);
 		sprintf(dsline, "!%s", arg1);
-		Make_Immediate((unsigned short)s->c, dsline);
+		Make_Immediate(s->c, dsline);
 	}
 	else if ((OP_CALL0 <= s->op) && (s->op <= OP_CALL8))
 	{
 		nargs = s->op - OP_CALL0;
 
-		arg1 = PR_PrintStringAtOfs((unsigned short)s->a, typ1);
+		arg1 = PR_PrintStringAtOfs(s->a, typ1);
 		if (arg1)
 			strcpy(a1, arg1);
 	//	printf("fname: %s %s\n", a1, arg1);
 
-		arg2 = PR_PrintStringAtOfs((unsigned short)s->b, typ2);
+		arg2 = PR_PrintStringAtOfs(s->b, typ2);
 		if (arg2)
 			strcpy(a2, arg2);
 
-		arg3 = PR_PrintStringAtOfs((unsigned short)s->c, typ3);
+		arg3 = PR_PrintStringAtOfs(s->c, typ3);
 		sprintf(dsline, "%s (", a1);
 		sprintf(funcname, "%s", a1);
 		if (arg2)
@@ -466,17 +467,18 @@ static void DccStatement (dstatement_t *s)
 	}
 	else if (s->op == OP_IF || s->op == OP_IFNOT)
 	{
-		arg1 = PR_PrintStringAtOfs((unsigned short)s->a, typ1);
+		arg1 = PR_PrintStringAtOfs(s->a, typ1);
 		if (arg1)
 			strcpy(a1, arg1);
 
 		if (s->op == OP_IFNOT)
 		{
-			if (s->b < 1)
+			op_b = (progs->version == PROG_VERSION_V6) ? (signed short)s->b : s->b;
+			if (op_b < 1)
 				COM_Error("Found a negative IFNOT jump.");
 
 			/* get instruction right before the target */
-			t = s + s->b - 1; /* */
+			t = s + op_b - 1; /* */
 			tom = t->op;
 
 			if (tom != OP_GOTO)
@@ -488,7 +490,8 @@ static void DccStatement (dstatement_t *s)
 			}
 			else
 			{
-				if (t->a > 0)
+				op_a = (progs->version == PROG_VERSION_V6) ? (signed short)t->a : t->a;
+				if (op_a > 0)
 				{
 				/* ite */
 					PR_Indent();
@@ -497,7 +500,7 @@ static void DccStatement (dstatement_t *s)
 				}
 				else
 				{
-					if (t->a + s->b > 1)
+					if (op_a + op_b > 1)
 					{
 					/* pure if */
 						PR_Indent();
@@ -507,7 +510,7 @@ static void DccStatement (dstatement_t *s)
 					else
 					{
 						int		dum = 1;
-						for (k = t + t->a; k < s; k++)
+						for (k = t + op_a; k < s; k++)
 						{
 							tom = k->op;
 							if (tom == OP_GOTO || tom == OP_IF || tom == OP_IFNOT)
@@ -535,7 +538,8 @@ static void DccStatement (dstatement_t *s)
 		else
 		{
 		/* do ... while */
-			if (s->b < 0)
+			op_b = (progs->version == PROG_VERSION_V6) ? (signed short)s->b : s->b;
+			if (op_b < 0)
 			{
 				lindent--;
 				PR_Indent();
@@ -551,7 +555,8 @@ static void DccStatement (dstatement_t *s)
 	}
 	else if (s->op == OP_GOTO)
 	{
-		if (s->a > 0)
+		op_a = (progs->version == PROG_VERSION_V6) ? (signed short)s->a : s->a;
+		if (op_a > 0)
 		{
 		/* else */
 			lindent--;
@@ -571,11 +576,11 @@ static void DccStatement (dstatement_t *s)
 	else if ((s->op >= OP_MULSTORE_F && s->op <= OP_SUBSTOREP_V) ||
 		 (s->op >= OP_BITSET && s->op <= OP_BITCLRP))
 	{
-		arg1 = PR_PrintStringAtOfs((unsigned short)s->a, typ1);
+		arg1 = PR_PrintStringAtOfs(s->a, typ1);
 		if (arg1)
 			strcpy(a1, arg1);
 
-		arg2 = PR_PrintStringAtOfs((unsigned short)s->b, typ2);
+		arg2 = PR_PrintStringAtOfs(s->b, typ2);
 		if (arg2)
 			sprintf(dsline, "%s", arg2);
 
@@ -583,19 +588,19 @@ static void DccStatement (dstatement_t *s)
 		PR_Print("%s %s %s;\n", arg2, pr_opcodes[s->op].name, a1);
 
 		if (s->c)
-			Make_Immediate((unsigned short)s->c, dsline);
+			Make_Immediate(s->c, dsline);
 	}
 	else if (s->op == OP_FETCH_GBL_F || s->op == OP_FETCH_GBL_V)
 	{
-		arg1 = PR_PrintStringAtOfs((unsigned short)s->a, typ1);
+		arg1 = PR_PrintStringAtOfs(s->a, typ1);
 		if (arg1)
 			strcpy(a1, arg1);
 
-		arg2 = PR_PrintStringAtOfs((unsigned short)s->b, typ2);
+		arg2 = PR_PrintStringAtOfs(s->b, typ2);
 		if (arg2)
 			strcpy(a2, arg2);
 
-		arg3 = PR_PrintStringAtOfs((unsigned short)s->c, typ3);
+		arg3 = PR_PrintStringAtOfs(s->c, typ3);
 		if (arg3)
 		{
 			PR_Indent();
@@ -604,26 +609,26 @@ static void DccStatement (dstatement_t *s)
 		else
 		{
 			sprintf(dsline, "(%s->%s)", a1, a2);
-			Make_Immediate((unsigned short)s->c, dsline);
+			Make_Immediate(s->c, dsline);
 		}
 	}
 	else if (s->op == OP_CSTATE)
 	{
-		arg1 = PR_PrintStringAtOfs((unsigned short)s->a, typ1);
+		arg1 = PR_PrintStringAtOfs(s->a, typ1);
 		if (arg1)
 			strcpy(a1, arg1);
 
-		arg2 = PR_PrintStringAtOfs((unsigned short)s->b, typ2);
+		arg2 = PR_PrintStringAtOfs(s->b, typ2);
 		PR_Indent();
 		PR_Print("AdvanceFrame( %s, %s);\n", a1, arg2);
 	}
 	else if (s->op == OP_THINKTIME)
 	{
-		arg1 = PR_PrintStringAtOfs((unsigned short)s->a, typ1);
+		arg1 = PR_PrintStringAtOfs(s->a, typ1);
 		if (arg1)
 			strcpy(a1, arg1);
 
-		arg2 = PR_PrintStringAtOfs((unsigned short)s->b, typ2);
+		arg2 = PR_PrintStringAtOfs(s->b, typ2);
 		PR_Indent();
 		PR_Print("AdvanceThinkTime(%s,%s);\n", a1, arg2);
 	}
@@ -634,7 +639,7 @@ static void DccStatement (dstatement_t *s)
 	}
 	else if (s->op == OP_RAND1)
 	{
-		arg1 = PR_PrintStringAtOfs((unsigned short)s->a, typ1);
+		arg1 = PR_PrintStringAtOfs(s->a, typ1);
 		if (arg1)
 			strcpy(a1, arg1);
 
@@ -643,11 +648,11 @@ static void DccStatement (dstatement_t *s)
 	}
 	else if (s->op == OP_RAND2)
 	{
-		arg1 = PR_PrintStringAtOfs((unsigned short)s->a, typ1);
+		arg1 = PR_PrintStringAtOfs(s->a, typ1);
 		if (arg1)
 			strcpy(a1, arg1);
 
-		arg2 = PR_PrintStringAtOfs((unsigned short)s->b, typ2);
+		arg2 = PR_PrintStringAtOfs(s->b, typ2);
 		sprintf(dsline, "random(%s,%s)", a1, arg2);
 		Make_Immediate(OFS_RETURN, dsline);
 	}
@@ -658,7 +663,7 @@ static void DccStatement (dstatement_t *s)
 	}
 	else if (s->op == OP_RANDV1)
 	{
-		arg1 = PR_PrintStringAtOfs((unsigned short)s->a, typ1);
+		arg1 = PR_PrintStringAtOfs(s->a, typ1);
 		if (arg1)
 			strcpy(a1, arg1);
 
@@ -667,23 +672,32 @@ static void DccStatement (dstatement_t *s)
 	}
 	else if (s->op == OP_RANDV2)
 	{
-		arg1 = PR_PrintStringAtOfs((unsigned short)s->a, typ1);
+		arg1 = PR_PrintStringAtOfs(s->a, typ1);
 		if (arg1)
 			strcpy(a1, arg1);
 
-		arg2 = PR_PrintStringAtOfs((unsigned short)s->b, typ2);
+		arg2 = PR_PrintStringAtOfs(s->b, typ2);
 		sprintf(dsline, "random(%s,%s)", a1, arg2);
 		Make_Immediate(OFS_RETURN, dsline);
 	}
 	else
 	{
 		PR_Print("\n/* ERROR: UNKNOWN COMMAND */\n OP: %d  ", s->op);
-		arg1 = PR_PrintStringAtOfs((unsigned short)s->a, NULL);
-		PR_Print("a: %s(%d)", arg1, s->a);
-		arg2 = PR_PrintStringAtOfs((unsigned short)s->b, NULL);
-		PR_Print(" b: %s(%d)", arg2, s->b);
-		arg3 = PR_PrintStringAtOfs((unsigned short)s->c, NULL);
-		PR_Print(" c: %s(%d)\n", arg3, s->c);
+		arg1 = PR_PrintStringAtOfs(s->a, NULL);
+		arg2 = PR_PrintStringAtOfs(s->b, NULL);
+		arg3 = PR_PrintStringAtOfs(s->c, NULL);
+		if (progs->version == PROG_VERSION_V6)
+		{
+			PR_Print("a: %s(%d)", arg1, (signed short)s->a);
+			PR_Print(" b: %s(%d)", arg2, (signed short)s->b);
+			PR_Print(" c: %s(%d)\n", arg3, (signed short)s->c);
+		}
+		else /* PROG_VERSION_V7 */
+		{
+			PR_Print("a: %s(%d)", arg1, s->a);
+			PR_Print(" b: %s(%d)", arg2, s->b);
+			PR_Print(" c: %s(%d)\n", arg3, s->c);
+		}
 	}
 }
 
@@ -731,6 +745,7 @@ static void AddProgramFlowInfo (dfunction_t *df)
 	dstatement_t	*ds, *ts;
 	unsigned short	dom, tom;
 	dstatement_t	*k;
+	int		op_a, op_b;
 
 	ds = pr_statements + df->first_statement;
 
@@ -744,9 +759,10 @@ static void AddProgramFlowInfo (dfunction_t *df)
 		else if (dom == OP_GOTO)
 		{
 		/* check for i-t-e */
-			if (ds->a > 0)
+			op_a = (progs->version == PROG_VERSION_V6) ? (signed short)ds->a : ds->a;
+			if (op_a > 0)
 			{
-				ts = ds + ds->a;
+				ts = ds + op_a;
 				/* mark the end of a if/ite construct */
 				flowinfo[ts - pr_statements].if_cnt++;
 			}
@@ -754,7 +770,8 @@ static void AddProgramFlowInfo (dfunction_t *df)
 		else if (dom == OP_IFNOT)
 		{
 		/* check for pure if */
-			ts  = ds + ds->b; /* FIXME: ds->b < 0 possible? */
+			op_b = (progs->version == PROG_VERSION_V6) ? (signed short)ds->b : ds->b;
+			ts  = ds + op_b; /* FIXME: ds->b < 0 possible? */
 			tom = (ts - 1)->op;
 
 			if (tom != OP_GOTO)
@@ -764,9 +781,10 @@ static void AddProgramFlowInfo (dfunction_t *df)
 			}
 			else
 			{
-				if ((ts - 1)->a < 0)
+				op_a = (progs->version == PROG_VERSION_V6) ? (signed short)((ts - 1)->a) : (ts - 1)->a;
+				if (op_a < 0)
 				{
-					if ((ts - 1)->a + ds->b > 1)
+					if (op_a + op_b > 1)
 					{ /* pure if */
 						/* mark the end of a if/ite construct */
 						flowinfo[ts - pr_statements].if_cnt++;
@@ -774,7 +792,7 @@ static void AddProgramFlowInfo (dfunction_t *df)
 					else
 					{
 						int	dum = 1;
-						for (k = (ts - 1) + (ts - 1)->a; k < ds; k++)
+						for (k = (ts - 1) + op_a; k < ds; k++)
 						{
 							tom = k->op;
 							if (tom == OP_GOTO || tom == OP_IF || tom == OP_IFNOT)
@@ -791,8 +809,9 @@ static void AddProgramFlowInfo (dfunction_t *df)
 		}
 		else if (dom == OP_IF)
 		{
-			ts = ds + ds->b;
-			if (ds->b < 0)
+			op_b = (progs->version == PROG_VERSION_V6) ? (signed short)ds->b : ds->b;
+			ts = ds + op_b;
+			if (op_b < 0)
 			{
 				/* mark the start of a do construct */
 				flowinfo[ts - pr_statements].do_cnt++;
@@ -1053,7 +1072,7 @@ static unsigned short GetReturnType (int func)
 						if (OP_CALL0 <= di->op && di->op <= OP_CALL8)
 						{
 							type1 = pr_opcodes[di->op].type_a;
-							arg1 = PR_PrintStringAtOfs((unsigned short)di->a, type1);
+							arg1 = PR_PrintStringAtOfs(di->a, type1);
 							if (!arg1)
 								COM_Error("function name not found!!!\n");
 							i = DEC_GetFunctionIdxByName(arg1);
@@ -1094,7 +1113,7 @@ static unsigned short GetReturnType (int func)
 				{
 					if (j > 1)
 						break;	/* array out of bounds */
-					par = DEC_GetParameter ((unsigned short)ds->a);
+					par = DEC_GetParameter (ds->a);
 					if (par)
 					{
 						rtype[j] = par->type;
@@ -1534,9 +1553,9 @@ static const char *GetFieldFunctionHeader (const char *s_name)
 		if (d->op == OP_ADDRESS)
 		{
 		//	typ  = pr_opcodes[d->op].type_a;
-		//	arg1 = PR_PrintGlobal((unsigned short)d->a, typ);
+		//	arg1 = PR_PrintGlobal(d->a, typ);
 			typ  = pr_opcodes[d->op].type_b;
-			arg2 = PR_PrintGlobal((unsigned short)d->b, typ);
+			arg2 = PR_PrintGlobal(d->b, typ);
 
 			if (arg2)
 			{
@@ -1546,7 +1565,7 @@ static const char *GetFieldFunctionHeader (const char *s_name)
 					{
 						d++;
 						typ  = pr_opcodes[d->op].type_a;
-						arg3 = PR_PrintGlobal((unsigned short)d->a, typ);
+						arg3 = PR_PrintGlobal(d->a, typ);
 						if (!arg3)
 							continue;
 						j = DEC_GetFunctionIdxByName(arg3);
@@ -1568,9 +1587,9 @@ static const char *GetFieldFunctionHeader (const char *s_name)
 					{
 						d++;
 					//	typ  = pr_opcodes[d->op].type_a;
-					//	arg1 = PR_PrintGlobal((unsigned short)d->a, typ);
+					//	arg1 = PR_PrintGlobal(d->a, typ);
 						typ  = pr_opcodes[d->op].type_b;
-						arg2 = PR_PrintGlobal((unsigned short)d->b, typ);
+						arg2 = PR_PrintGlobal(d->b, typ);
 						if (!arg2)
 							continue;
 						if (strcmp(s_name, arg2))
@@ -1622,7 +1641,7 @@ static void FindBuiltinParameters (int func)
 		{
 			if (ds->op >= OP_CALL0 && ds->op <= OP_CALL8)
 			{
-				arg1 = PR_PrintStringAtOfs((unsigned short)ds->a, 0);
+				arg1 = PR_PrintStringAtOfs(ds->a, 0);
 
 				if (arg1)
 				{
@@ -1699,23 +1718,23 @@ static void FindBuiltinParameters (int func)
 
 	/* find name */
 	memset (sname, 0, sizeof(sname));
-	arg1 = PR_PrintStringAtOfs((unsigned short)dsf->a, 0);
+	arg1 = PR_PrintStringAtOfs(dsf->a, 0);
 	sprintf(sname, "%s", arg1);
 
 	/* look for first two parms */
 	if (dsf->b == 1)
 		type[0] = GetLastFunctionReturn(dft, dsf);
-	else	type[0] = GetType((unsigned short)dsf->b);
+	else	type[0] = GetType(dsf->b);
 
 	if (type[0] == ev_pointer)
 		type[0] = BackBuildReturnType(dft, dsf, dsf->b);
 
 	if (dsf->c == 1)
 		type[1] = GetLastFunctionReturn(dft, dsf);
-	else	type[1] = GetType((unsigned short)dsf->c);
+	else	type[1] = GetType(dsf->c);
 
-	printf("type b %d %d\n", type[0], dsf->b);
-	printf("type c %d %d\n", type[1], dsf->c);
+	printf("type b %d %d\n", type[0], (progs->version == PROG_VERSION_V6) ? (signed short)dsf->b : dsf->b);
+	printf("type c %d %d\n", type[1], (progs->version == PROG_VERSION_V6) ? (signed short)dsf->c : dsf->c);
 	if (type[1] == ev_pointer)
 		type[1] = BackBuildReturnType(dft, dsf, dsf->c);
 
@@ -1732,7 +1751,7 @@ static void FindBuiltinParameters (int func)
 			if (ds->a == ((3 * i) + 4))
 			{
 			//	printf("a ");
-				type[i] = GetType((unsigned short)ds->a);
+				type[i] = GetType(ds->a);
 				if (type[i] == ev_pointer)
 					type[i] = BackBuildReturnType(dft, ds, ds->a);
 				break;
@@ -1743,13 +1762,13 @@ static void FindBuiltinParameters (int func)
 			//	printf("b ");
 				if (pr_opcodes[ds->op].right_associative)
 				{
-					type[i] = GetType((unsigned short)ds->a);
+					type[i] = GetType(ds->a);
 					if (type[i] == ev_pointer || type[i] == ev_field)
 						type[i] = BackBuildReturnType(dft, ds, ds->a);
 				}
 				else
 				{
-					type[i] = GetType((unsigned short)ds->c);
+					type[i] = GetType(ds->c);
 					if (type[i] == ev_pointer || type[i] == ev_field)
 						type[i] = BackBuildReturnType(dft, ds, ds->c);
 				}
@@ -1759,7 +1778,7 @@ static void FindBuiltinParameters (int func)
 			if (ds->c == ((3 * i) + 4))
 			{
 			//	printf("c ");
-				type[i] = GetType((unsigned short)ds->a);
+				type[i] = GetType(ds->a);
 				if (type[i] == ev_pointer)
 					type[i] = BackBuildReturnType(dft, ds, ds->c);
 				break;
@@ -1883,7 +1902,7 @@ static unsigned short BackBuildReturnType (dfunction_t *df,dstatement_t *dsf, go
 		if (ds->a == ofs)
 		{
 			rtype = pr_opcodes[ds->op].type_a->type->type;
-			par = DEC_GetParameter ((unsigned short)ds->b);
+			par = DEC_GetParameter (ds->b);
 			if (par)
 			{
 			//	printf("ds->b type: %d\n", par->type);
@@ -1895,7 +1914,7 @@ static unsigned short BackBuildReturnType (dfunction_t *df,dstatement_t *dsf, go
 		if (ds->b == ofs)
 		{
 			rtype = pr_opcodes[ds->op].type_b->type->type;
-			par = DEC_GetParameter ((unsigned short)ds->a);
+			par = DEC_GetParameter (ds->a);
 			if (par)
 			{
 			//	printf("ds->a type: %d\n", par->type);
@@ -1907,7 +1926,7 @@ static unsigned short BackBuildReturnType (dfunction_t *df,dstatement_t *dsf, go
 		if (ds->c == ofs)
 		{
 			rtype = pr_opcodes[ds->op].type_c->type->type;
-		//	rtype = GetType((unsigned short)ds->b);
+		//	rtype = GetType(ds->b);
 			break;
 		}
 	}
@@ -1971,6 +1990,49 @@ static void DccFunctionOP (unsigned short op)
 }
 
 
+/*
+===============
+DEC_ConvertV6Defs, DEC_ConvertV6Stmts -- Pa3PyX
+
+Convert ddef_v6_t and dstatement_v6_t arrays into _v7 format
+with byte swapping.
+===============
+*/
+static ddef_v7_t *DEC_ConvertV6Defs (ddef_v6_t *v6defs, int numdefs)
+{
+	int		i;
+	ddef_v7_t	*v7defs, *v7ptr;
+	ddef_v6_t	*v6ptr;
+
+	v7defs = (ddef_v7_t *) SafeMalloc(sizeof(ddef_v7_t) * numdefs);
+	for (i = 0, v6ptr = v6defs, v7ptr = v7defs; i < numdefs; i++, v6ptr++, v7ptr++)
+	{
+		v7ptr->type = LittleShort(v6ptr->type);
+		v7ptr->ofs = (unsigned short)LittleShort(v6ptr->ofs);
+		v7ptr->s_name = LittleLong(v6ptr->s_name);
+	}
+
+	return v7defs;
+}
+
+static dstatement_v7_t *DEC_ConvertV6Stmts (dstatement_v6_t *v6stmts, int numstmts)
+{
+	int		i;
+	dstatement_v7_t	*v7stmts, *v7ptr;
+	dstatement_v6_t	*v6ptr;
+
+	v7stmts = (dstatement_v7_t *) SafeMalloc(sizeof(dstatement_v7_t) * numstmts);
+	for (i = 0, v6ptr = v6stmts, v7ptr = v7stmts; i < numstmts; i++, v6ptr++, v7ptr++)
+	{
+		v7ptr->op = LittleShort(v6ptr->op);
+		v7ptr->a = (unsigned short)LittleShort(v6ptr->a);
+		v7ptr->b = (unsigned short)LittleShort(v6ptr->b);
+		v7ptr->c = (unsigned short)LittleShort(v6ptr->c);
+	}
+
+	return v7stmts;
+}
+
 static void DEC_ReadData (const char *srcfile)
 {
 	void		*p;
@@ -1993,25 +2055,35 @@ static void DEC_ReadData (const char *srcfile)
 	printf ("%10i numpr_globals\n", progs->numglobals);
 	printf ("----------------------------------------\n");
 
-	if (progs->version != PROG_VERSION)
-		COM_Error ("%s is of unsupported version (%d, should be %d)", srcfile, progs->version, PROG_VERSION);
+	switch (progs->version)
+	{
+	case PROG_VERSION_V6:
+	case PROG_VERSION_V7:
+		break;
+	default:
+		COM_Error("%s is of unsupported version (%d, should be %d or %d)",
+			  srcfile, progs->version, PROG_VERSION_V6, PROG_VERSION_V7);
+		break;
+	}
 
 	pr_functions = (dfunction_t *)((byte *)progs + progs->ofs_functions);
-	pr_globaldefs = (ddef_t *)((byte *)progs + progs->ofs_globaldefs);
-	pr_fielddefs = (ddef_t *)((byte *)progs + progs->ofs_fielddefs);
-	pr_statements = (dstatement_t *)((byte *)progs + progs->ofs_statements);
 	pr_globals = (float *)((byte *)progs + progs->ofs_globals);
 	pr_strings = (char *)progs + progs->ofs_strings;
 
-	/* byte swap the lumps */
-	for (i = 0; i < progs->numstatements; i++)
+	if (progs->version == PROG_VERSION_V6)
 	{
-		pr_statements[i].op = LittleShort(pr_statements[i].op);
-		pr_statements[i].a = LittleShort(pr_statements[i].a);
-		pr_statements[i].b = LittleShort(pr_statements[i].b);
-		pr_statements[i].c = LittleShort(pr_statements[i].c);
+		pr_globaldefs = DEC_ConvertV6Defs ((ddef_v6_t *)((byte *)progs + progs->ofs_globaldefs), progs->numglobaldefs);
+		pr_fielddefs  = DEC_ConvertV6Defs ((ddef_v6_t *)((byte *)progs + progs->ofs_fielddefs),  progs->numfielddefs);
+		pr_statements = DEC_ConvertV6Stmts((dstatement_v6_t *)((byte *)progs + progs->ofs_statements), progs->numstatements);
+	}
+	else
+	{
+		pr_globaldefs = (ddef_t *)((byte *)progs + progs->ofs_globaldefs);
+		pr_fielddefs = (ddef_t *)((byte *)progs + progs->ofs_fielddefs);
+		pr_statements = (dstatement_t *)((byte *)progs + progs->ofs_statements);
 	}
 
+	/* byte swap the lumps */
 	for (i = 0; i < progs->numfunctions; i++)
 	{
 		pr_functions[i].first_statement = LittleLong (pr_functions[i].first_statement);
@@ -2022,20 +2094,29 @@ static void DEC_ReadData (const char *srcfile)
 		pr_functions[i].locals = LittleLong (pr_functions[i].locals);
 	}
 
-	for (i = 0; i < progs->numglobaldefs; i++)
+	if (progs->version == PROG_VERSION_V7)
 	{
-		pr_globaldefs[i].type = LittleShort (pr_globaldefs[i].type);
-		pr_globaldefs[i].ofs = LittleShort (pr_globaldefs[i].ofs);
-		pr_globaldefs[i].s_name = LittleLong (pr_globaldefs[i].s_name);
-	}
+		for (i = 0; i < progs->numstatements; i++)
+		{
+			pr_statements[i].op = LittleShort(pr_statements[i].op);
+			pr_statements[i].a = LittleLong(pr_statements[i].a);
+			pr_statements[i].b = LittleLong(pr_statements[i].b);
+			pr_statements[i].c = LittleLong(pr_statements[i].c);
+		}
 
-	for (i = 0; i < progs->numfielddefs; i++)
-	{
-		pr_fielddefs[i].type = LittleShort (pr_fielddefs[i].type);
-	//	if (pr_fielddefs[i].type & DEF_SAVEGLOBAL)
-	//		COM_Error ("%s: pr_fielddefs[i].type & DEF_SAVEGLOBAL", __thisfunc__);
-		pr_fielddefs[i].ofs = LittleShort (pr_fielddefs[i].ofs);
-		pr_fielddefs[i].s_name = LittleLong (pr_fielddefs[i].s_name);
+		for (i = 0; i < progs->numglobaldefs; i++)
+		{
+			pr_globaldefs[i].type = LittleShort (pr_globaldefs[i].type);
+			pr_globaldefs[i].ofs = LittleLong (pr_globaldefs[i].ofs);
+			pr_globaldefs[i].s_name = LittleLong (pr_globaldefs[i].s_name);
+		}
+
+		for (i = 0; i < progs->numfielddefs; i++)
+		{
+			pr_fielddefs[i].type = LittleShort (pr_fielddefs[i].type);
+			pr_fielddefs[i].ofs = LittleLong (pr_fielddefs[i].ofs);
+			pr_fielddefs[i].s_name = LittleLong (pr_fielddefs[i].s_name);
+		}
 	}
 
 	for (i = 0; i < progs->numglobals; i++)
@@ -2326,8 +2407,8 @@ static void PR_PrintFunction (const char *name)
 	{
 		typ1 = pr_opcodes[ds->op].type_a;
 		typ2 = pr_opcodes[ds->op].type_b;
-		arg1 = PR_ValueString(typ1->type->type, &pr_globals[(unsigned short)ds->a]);
-		arg2 = PR_PrintStringAtOfs((unsigned short)ds->b, typ2);
+		arg1 = PR_ValueString(typ1->type->type, &pr_globals[ds->a]);
+		arg2 = PR_PrintStringAtOfs(ds->b, typ2);
 		PR_Print(" [%s, %s]", arg1, arg2);
 	}
 
@@ -2364,7 +2445,7 @@ static unsigned short GetLastFunctionReturn (dfunction_t *df, dstatement_t *ds)
 		if (OP_CALL0 <= di->op && di->op <= OP_CALL8)
 		{
 			type1 = pr_opcodes[di->op].type_a;
-			arg1 = PR_PrintStringAtOfs((unsigned short)di->a, type1);
+			arg1 = PR_PrintStringAtOfs(di->a, type1);
 			if (!arg1)
 				COM_Error("function name not found!!!\n");
 

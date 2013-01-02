@@ -269,18 +269,32 @@ gotchas
 
 // MACROS ------------------------------------------------------------------
 
+/*
 #define MAX_STRINGS		500000
 #define MAX_GLOBALS		16384
 #define MAX_FIELDS		1024
 #define MAX_STATEMENTS		65536*2
+*/
+#define MAX_STRINGS		1048576
+#define MAX_GLOBALS		524288
+#define MAX_FIELDS		2048
+#define MAX_STATEMENTS		524288
 #define MAX_FUNCTIONS		8192
+/*
 #define MAX_SOUNDS		1024
 #define MAX_MODELS		1024
 #define MAX_FILES		1024
+*/
+#define MAX_SOUNDS		2048
+#define MAX_MODELS		2048
+#define MAX_FILES		2048
 #define MAX_DATA_PATH		64
 #define MAX_ERRORS		10
 #define MAX_NAME		64		// chars long
+/*
 #define MAX_REGS		0xffff
+*/
+#define MAX_REGS		262144
 
 #define G_FLOAT(o)	(pr_globals[o])
 #define G_INT(o)	(*(int *)&pr_globals[o])

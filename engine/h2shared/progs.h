@@ -67,6 +67,8 @@ extern	float		*pr_globals;	/* same as sv_globals */
 
 extern	int		pr_edict_size;	/* in bytes */
 
+extern	qboolean	is_progs_v6;
+
 
 /* If USE_MULTIPLE_PROGS is defined as 1, the hexen2 binary will look for
  * a file named "maplist.txt" in its searchpath and using the info in it,

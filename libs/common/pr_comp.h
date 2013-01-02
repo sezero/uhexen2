@@ -185,11 +185,18 @@ enum
 	OP_CASERANGE
 };
 
-typedef struct statement_s
+typedef struct statement_v6_s
 {
 	unsigned short	op;
 	short	a, b, c;
-} dstatement_t;
+} dstatement_v6_t;
+
+typedef struct statement_v7_s
+{
+	unsigned short	pad;
+	unsigned short	op;
+	int	a, b, c;
+} dstatement_v7_t;
 
 typedef struct
 {
@@ -197,7 +204,21 @@ typedef struct
 				// the variable needs to be saved in savegames
 	unsigned short	ofs;
 	int		s_name;
-} ddef_t;
+} ddef_v6_t;
+
+typedef struct
+{
+	unsigned short	pad;
+	unsigned short	type;	// if DEF_SAVEGLOBAL bit is set
+				// the variable needs to be saved in savegames
+	int		ofs;
+	int		s_name;
+} ddef_v7_t;
+
+COMPILE_TIME_ASSERT(dstatement_v6_t, sizeof(dstatement_v6_t) == 8);
+COMPILE_TIME_ASSERT(dstatement_v7_t, sizeof(dstatement_v7_t) == 16);
+COMPILE_TIME_ASSERT(ddef_v6_t, sizeof(ddef_v6_t) == 8);
+COMPILE_TIME_ASSERT(ddef_v7_t, sizeof(ddef_v7_t) == 12);
 
 #define	DEF_SAVEGLOBAL	(1<<15)
 
@@ -219,7 +240,14 @@ typedef struct
 } dfunction_t;
 
 
-#define	PROG_VERSION	6
+#define	PROG_VERSION_V6		6
+#define	PROG_VERSION_V7		7
+
+// process the progs internally as version 7:
+#define	PROG_VERSION		(PROG_VERSION_V7)
+typedef ddef_v7_t	ddef_t;
+typedef dstatement_v7_t	dstatement_t;
+
 typedef struct
 {
 	int		version;

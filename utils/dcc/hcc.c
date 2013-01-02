@@ -36,6 +36,8 @@
 #include "byteordr.h"
 #include "filenames.h"
 
+int		hcc_version_req;
+
 byte		_pr_globals[MAX_REGS * sizeof(float)];
 float		*pr_globals;
 int			numpr_globals;
@@ -213,10 +215,67 @@ static void InitData (void)
 }
 
 
+static ddef_v6_t *PR_GenV6Defs (ddef_v7_t *v7defs, int numdefs)
+{
+	int		i;
+	ddef_v6_t	*v6defs, *v6ptr;
+	ddef_v7_t	*v7ptr;
+
+	v6defs = (ddef_v6_t *) SafeMalloc(sizeof(ddef_v6_t) * numdefs);
+	for (i = 0, v7ptr = v7defs, v6ptr = v6defs; i < numdefs; i++, v7ptr++, v6ptr++)
+	{
+		v6ptr->type = LittleShort(v7ptr->type);
+
+		if (v7ptr->ofs > 65535 || v7ptr->ofs < 0 /* really? */)
+			goto _v6not;
+		v6ptr->ofs = LittleShort((unsigned short)v7ptr->ofs);
+
+		v6ptr->s_name = LittleLong(v7ptr->s_name);
+	}
+
+	return v6defs;
+_v6not:
+	free(v6defs);
+	printf("Can't generate v6defs due to incompatible ofs values.\n");
+	return NULL;
+}
+
+static dstatement_v6_t *PR_GenV6Stmts (dstatement_v7_t *v7stmts, int numstmts)
+{
+	int		i;
+	dstatement_v6_t	*v6stmts, *v6ptr;
+	dstatement_v7_t	*v7ptr;
+
+	v6stmts = (dstatement_v6_t *) SafeMalloc(sizeof(dstatement_v6_t) * numstmts);
+	for (i = 0, v7ptr = v7stmts, v6ptr = v6stmts; i < numstmts; i++, v7ptr++, v6ptr++)
+	{
+		v6ptr->op = LittleShort(v7ptr->op);
+
+		if (v7ptr->a > 65535 || v7ptr->a < -32768)
+			goto _v6not;
+		if (v7ptr->b > 65535 || v7ptr->b < -32768)
+			goto _v6not;
+		if (v7ptr->c > 65535 || v7ptr->c < -32768)
+			goto _v6not;
+		v6ptr->a = LittleShort((signed short)v7ptr->a);
+		v6ptr->b = LittleShort((signed short)v7ptr->b);
+		v6ptr->c = LittleShort((signed short)v7ptr->c);
+	}
+
+	return v6stmts;
+_v6not:
+	free(v6stmts);
+	printf("Can't generate v6stmts due to incompatible a/b/c values.\n");
+	return NULL;
+}
+
 static void WriteData (int crc)
 {
 	def_t		*def;
 	ddef_t		*dd;
+	dstatement_v6_t	*stmt6;
+	ddef_v6_t	*globals6, *fields6;
+	qboolean	v6able;
 	dprograms_t	progs;
 	FILE	*h;
 	int	i;
@@ -261,6 +320,42 @@ static void WriteData (int crc)
 	printf("    string heap: %10d / %10d\n", strofs, MAX_STRINGS);
 	printf("  entity fields: %10d\n", pr.size_fields);
 
+	stmt6 = NULL;
+	globals6 = NULL;
+	fields6 = NULL;
+	if (numpr_globals < 65536)
+		v6able = true;
+	else
+	{
+		v6able = false;
+		if (hcc_version_req != PROG_VERSION_V7)
+			printf("Too many registers: version 6 output not possible.\n");
+	}
+
+	if (v6able && hcc_version_req != PROG_VERSION_V7)
+	{
+		v6able = (stmt6 = PR_GenV6Stmts(statements, numstatements)) != NULL;
+		if ( v6able) v6able = (globals6 = PR_GenV6Defs(globals, numglobaldefs)) != NULL;
+		if ( v6able) v6able = (fields6 = PR_GenV6Defs(fields, numfielddefs)) != NULL;
+		if (!v6able)
+		{
+			if (stmt6) free (stmt6);
+			if (globals6) free (globals6);
+		}
+	}
+
+	if (!v6able)
+	{
+		if (hcc_version_req == PROG_VERSION_V6)
+			COM_Error("Can not output version 6 progs: v6 limitations not complied with.");
+		hcc_version_req = PROG_VERSION_V7;
+	}
+	else
+	{
+		if (hcc_version_req == -1)
+			hcc_version_req = PROG_VERSION_V6;
+	}
+
 	h = SafeOpenWrite (destfile);
 	SafeWrite (h, &progs, sizeof(progs));
 
@@ -270,14 +365,22 @@ static void WriteData (int crc)
 
 	progs.ofs_statements = ftell (h);
 	progs.numstatements = numstatements;
-	for (i = 0; i < numstatements; i++)
+	if (hcc_version_req == PROG_VERSION_V7)
 	{
-		statements[i].op = LittleShort(statements[i].op);
-		statements[i].a = LittleShort(statements[i].a);
-		statements[i].b = LittleShort(statements[i].b);
-		statements[i].c = LittleShort(statements[i].c);
+		for (i = 0; i < numstatements; i++)
+		{
+			statements[i].op = LittleShort(statements[i].op);
+			statements[i].a = LittleLong(statements[i].a);
+			statements[i].b = LittleLong(statements[i].b);
+			statements[i].c = LittleLong(statements[i].c);
+		}
+		SafeWrite (h, statements, numstatements*sizeof(dstatement_t));
 	}
-	SafeWrite (h, statements, numstatements*sizeof(dstatement_t));
+	else
+	{
+		SafeWrite (h, stmt6, numstatements*sizeof(dstatement_v6_t));
+		free (stmt6);
+	}
 
 	progs.ofs_functions = ftell (h);
 	progs.numfunctions = numfunctions;
@@ -294,23 +397,39 @@ static void WriteData (int crc)
 
 	progs.ofs_globaldefs = ftell (h);
 	progs.numglobaldefs = numglobaldefs;
-	for (i = 0; i < numglobaldefs; i++)
+	if (hcc_version_req == PROG_VERSION_V7)
 	{
-		globals[i].type = LittleShort (globals[i].type);
-		globals[i].ofs = LittleShort (globals[i].ofs);
-		globals[i].s_name = LittleLong (globals[i].s_name);
+		for (i = 0; i < numglobaldefs; i++)
+		{
+			globals[i].type = LittleShort (globals[i].type);
+			globals[i].ofs = LittleLong (globals[i].ofs);
+			globals[i].s_name = LittleLong (globals[i].s_name);
+		}
+		SafeWrite (h, globals, numglobaldefs*sizeof(ddef_t));
 	}
-	SafeWrite (h, globals, numglobaldefs*sizeof(ddef_t));
+	else
+	{
+		SafeWrite (h, globals6, numglobaldefs*sizeof(ddef_v6_t));
+		free (globals6);
+	}
 
 	progs.ofs_fielddefs = ftell (h);
 	progs.numfielddefs = numfielddefs;
-	for (i = 0; i < numfielddefs; i++)
+	if (hcc_version_req == PROG_VERSION_V7)
 	{
-		fields[i].type = LittleShort (fields[i].type);
-		fields[i].ofs = LittleShort (fields[i].ofs);
-		fields[i].s_name = LittleLong (fields[i].s_name);
+		for (i = 0; i < numfielddefs; i++)
+		{
+			fields[i].type = LittleShort (fields[i].type);
+			fields[i].ofs = LittleLong (fields[i].ofs);
+			fields[i].s_name = LittleLong (fields[i].s_name);
+		}
+		SafeWrite (h, fields, numfielddefs*sizeof(ddef_t));
 	}
-	SafeWrite (h, fields, numfielddefs*sizeof(ddef_t));
+	else
+	{
+		SafeWrite (h, fields6, numfielddefs*sizeof(ddef_v6_t));
+		free (fields6);
+	}
 
 	progs.ofs_globals = ftell (h);
 	progs.numglobals = numpr_globals;
@@ -319,10 +438,11 @@ static void WriteData (int crc)
 	SafeWrite (h, pr_globals, numpr_globals*4);
 
 	printf("     total size: %10d bytes\n", (int)ftell(h));
+	printf("  progs version: %10d\n", hcc_version_req);
 
 	progs.entityfields = pr.size_fields;
 
-	progs.version = PROG_VERSION;
+	progs.version = hcc_version_req;
 	progs.crc = crc;
 
 // byte swap the header and write it out
@@ -759,6 +879,9 @@ int main (int argc, char **argv)
 		printf(" Compiles progs.dat using progs.src in the current directory\n");
 		printf(" -src <directory> : Specify source directory\n");
 		printf(" -name <source>   : Specify the name of the .src file\n");
+		printf(" -version <n>     : Output progs as version n (either 6 or 7)\n");
+		printf(" -v6              : Output progs as version 6\n");
+		printf(" -v7              : Output progs as version 7\n");
 		printf(" -dcc (or -dec)   : decompile progs.dat in current directory\n");
 		printf(" -dcc -name <progsname> : specify name of progs to decompile\n");
 		printf(" -dcc -fix : fixes mangled names during decompile\n");
@@ -782,6 +905,30 @@ int main (int argc, char **argv)
 	}
 
 	start = COM_GetTime ();
+
+	hcc_version_req = -1;	/* output as v6 if possible, otherwise as v7 */
+	p = CheckParm("-version");
+	if (p != 0)
+	{
+		if (p >= argc - 1)
+			COM_Error ("No num specified for -version");
+		p = atoi(argv[p+1]);
+		switch (p)
+		{
+		case 6:
+			hcc_version_req = PROG_VERSION_V6;
+			break;
+		case 7:
+			hcc_version_req = PROG_VERSION_V7;
+			break;
+		default:
+			COM_Error ("Version must be either 6 or 7");
+			break;
+		}
+	}
+
+	if (CheckParm("-v6"))	hcc_version_req = PROG_VERSION_V6;
+	if (CheckParm("-v7"))	hcc_version_req = PROG_VERSION_V7;
 
 	p = CheckParm("-src");
 	if (p != 0)

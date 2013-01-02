@@ -40,6 +40,8 @@ float		*pr_globals;
 sv_globals_t	sv_globals;
 int		pr_edict_size;		/* in bytes */
 
+qboolean	is_progs_v6;
+
 qboolean	ignore_precache = false;
 
 unsigned short	pr_crc;
@@ -1551,6 +1553,49 @@ static void set_address (sv_def_t *def, void *address)
 
 /*
 ===============
+PR_ConvertV6Defs, PR_ConvertV6Stmts -- Pa3PyX
+
+Convert ddef_v6_t and dstatement_v6_t arrays into _v7 format
+with byte swapping.  See PR_ExecuteProgram() for more info.
+===============
+*/
+static ddef_v7_t *PR_ConvertV6Defs (ddef_v6_t *v6defs, int numdefs)
+{
+	int		i;
+	ddef_v7_t	*v7defs, *v7ptr;
+	ddef_v6_t	*v6ptr;
+
+	v7defs = (ddef_v7_t *) Hunk_AllocName(sizeof(ddef_v7_t) * numdefs, "prog7defs");
+	for (i = 0, v6ptr = v6defs, v7ptr = v7defs; i < numdefs; i++, v6ptr++, v7ptr++)
+	{
+		v7ptr->type = LittleShort(v6ptr->type);
+		v7ptr->ofs = (unsigned short)LittleShort(v6ptr->ofs);
+		v7ptr->s_name = LittleLong(v6ptr->s_name);
+	}
+
+	return v7defs;
+}
+
+static dstatement_v7_t *PR_ConvertV6Stmts (dstatement_v6_t *v6stmts, int numstmts)
+{
+	int		i;
+	dstatement_v7_t	*v7stmts, *v7ptr;
+	dstatement_v6_t	*v6ptr;
+
+	v7stmts = (dstatement_v7_t *) Hunk_AllocName(sizeof(dstatement_v7_t) * numstmts, "prog7stmt");
+	for (i = 0, v6ptr = v6stmts, v7ptr = v7stmts; i < numstmts; i++, v6ptr++, v7ptr++)
+	{
+		v7ptr->op = LittleShort(v6ptr->op);
+		v7ptr->a = (unsigned short)LittleShort(v6ptr->a);
+		v7ptr->b = (unsigned short)LittleShort(v6ptr->b);
+		v7ptr->c = (unsigned short)LittleShort(v6ptr->c);
+	}
+
+	return v7stmts;
+}
+
+/*
+===============
 PR_LoadProgs
 ===============
 */
@@ -1582,8 +1627,19 @@ void PR_LoadProgs (void)
 	for (i = 0; i < (int) sizeof(*progs) / 4; i++)
 		((int *)progs)[i] = LittleLong ( ((int *)progs)[i] );
 
-	if (progs->version != PROG_VERSION)
-		Host_Error ("%s is of unsupported version (%d, should be %d)", progname, progs->version, PROG_VERSION);
+	switch (progs->version)
+	{
+	case PROG_VERSION_V6:
+		is_progs_v6 = true;
+		break;
+	case PROG_VERSION_V7:
+		is_progs_v6 = false;
+		break;
+	default:
+		Host_Error ("%s is of unsupported version (%d, should be %d or %d)",
+			    progname, progs->version, PROG_VERSION_V6, PROG_VERSION_V7);
+		break;
+	}
 	switch (progs->crc)
 	{
 #if 0
@@ -1626,9 +1682,18 @@ void PR_LoadProgs (void)
 	pr_knownstrings = NULL;
 	PR_SetEngineString(pr_null_string);
 
-	pr_globaldefs = (ddef_t *)((byte *)progs + progs->ofs_globaldefs);
-	pr_fielddefs = (ddef_t *)((byte *)progs + progs->ofs_fielddefs);
-	pr_statements = (dstatement_t *)((byte *)progs + progs->ofs_statements);
+	if (progs->version == PROG_VERSION_V6)
+	{
+		pr_globaldefs = PR_ConvertV6Defs ((ddef_v6_t *)((byte *)progs + progs->ofs_globaldefs), progs->numglobaldefs);
+		pr_fielddefs  = PR_ConvertV6Defs ((ddef_v6_t *)((byte *)progs + progs->ofs_fielddefs),  progs->numfielddefs);
+		pr_statements = PR_ConvertV6Stmts((dstatement_v6_t *)((byte *)progs + progs->ofs_statements), progs->numstatements);
+	}
+	else
+	{
+		pr_globaldefs = (ddef_t *)((byte *)progs + progs->ofs_globaldefs);
+		pr_fielddefs = (ddef_t *)((byte *)progs + progs->ofs_fielddefs);
+		pr_statements = (dstatement_t *)((byte *)progs + progs->ofs_statements);
+	}
 
 	Con_DPrintf ("Loaded %s, v%d, %d crc, %s structures\n",
 			progname, progs->version, progs->crc, progvstr);
@@ -1639,14 +1704,6 @@ void PR_LoadProgs (void)
 		set_address (def, &G_FLOAT(def->offset));
 
 	// byte swap the lumps
-	for (i = 0; i < progs->numstatements; i++)
-	{
-		pr_statements[i].op = LittleShort(pr_statements[i].op);
-		pr_statements[i].a = LittleShort(pr_statements[i].a);
-		pr_statements[i].b = LittleShort(pr_statements[i].b);
-		pr_statements[i].c = LittleShort(pr_statements[i].c);
-	}
-
 	for (i = 0; i < progs->numfunctions; i++)
 	{
 		pr_functions[i].first_statement = LittleLong (pr_functions[i].first_statement);
@@ -1657,20 +1714,35 @@ void PR_LoadProgs (void)
 		pr_functions[i].locals = LittleLong (pr_functions[i].locals);
 	}
 
-	for (i = 0; i < progs->numglobaldefs; i++)
+	if (progs->version == PROG_VERSION_V7)
 	{
-		pr_globaldefs[i].type = LittleShort (pr_globaldefs[i].type);
-		pr_globaldefs[i].ofs = LittleShort (pr_globaldefs[i].ofs);
-		pr_globaldefs[i].s_name = LittleLong (pr_globaldefs[i].s_name);
+		for (i = 0; i < progs->numstatements; i++)
+		{
+			pr_statements[i].op = LittleShort(pr_statements[i].op);
+			pr_statements[i].a = LittleLong(pr_statements[i].a);
+			pr_statements[i].b = LittleLong(pr_statements[i].b);
+			pr_statements[i].c = LittleLong(pr_statements[i].c);
+		}
+
+		for (i = 0; i < progs->numglobaldefs; i++)
+		{
+			pr_globaldefs[i].type = LittleShort (pr_globaldefs[i].type);
+			pr_globaldefs[i].ofs = LittleLong (pr_globaldefs[i].ofs);
+			pr_globaldefs[i].s_name = LittleLong (pr_globaldefs[i].s_name);
+		}
+
+		for (i = 0; i < progs->numfielddefs; i++)
+		{
+			pr_fielddefs[i].type = LittleShort (pr_fielddefs[i].type);
+			pr_fielddefs[i].ofs = LittleLong (pr_fielddefs[i].ofs);
+			pr_fielddefs[i].s_name = LittleLong (pr_fielddefs[i].s_name);
+		}
 	}
 
 	for (i = 0; i < progs->numfielddefs; i++)
 	{
-		pr_fielddefs[i].type = LittleShort (pr_fielddefs[i].type);
 		if (pr_fielddefs[i].type & DEF_SAVEGLOBAL)
 			Host_Error ("%s: pr_fielddefs[i].type & DEF_SAVEGLOBAL", __thisfunc__);
-		pr_fielddefs[i].ofs = LittleShort (pr_fielddefs[i].ofs);
-		pr_fielddefs[i].s_name = LittleLong (pr_fielddefs[i].s_name);
 	}
 
 	for (i = 0; i < progs->numglobals; i++)

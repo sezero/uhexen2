@@ -137,9 +137,16 @@ static const char *pr_opnames[] =
 //
 //==========================================================================
 
+#if 0
 #define OPA ((eval_t *)&pr_globals[(unsigned short)st->a])
 #define OPB ((eval_t *)&pr_globals[(unsigned short)st->b])
 #define OPC ((eval_t *)&pr_globals[(unsigned short)st->c])
+#endif
+/* unsigned short casts were needed with progs version 6.
+ * we are now processing progs internally as version 7. */
+#define OPA ((eval_t *)&pr_globals[st->a])
+#define OPB ((eval_t *)&pr_globals[st->b])
+#define OPC ((eval_t *)&pr_globals[st->c])
 
 void PR_ExecuteProgram (func_t fnum)
 {
@@ -442,21 +449,21 @@ void PR_ExecuteProgram (func_t fnum)
 	case OP_FETCH_GBL_E:
 	case OP_FETCH_GBL_FNC:
 	  {	int i = (int)OPB->_float;
-		if (i < 0 || i > G_INT((unsigned short)st->a - 1))
+		if (i < 0 || i > G_INT(st->a - 1))
 		{
 			pr_xstatement = st - pr_statements;
 			PR_RunError("array index out of bounds: %d", i);
 		}
-		OPC->_int = ((eval_t *)&pr_globals[(unsigned short)st->a + i])->_int;
+		OPC->_int = ((eval_t *)&pr_globals[st->a + i])->_int;
 	  }	break;
 	case OP_FETCH_GBL_V:
 	  {	int i = (int)OPB->_float;
-		if (i < 0 || i > G_INT((unsigned short)st->a - 1))
+		if (i < 0 || i > G_INT(st->a - 1))
 		{
 			pr_xstatement = st - pr_statements;
 			PR_RunError("array index out of bounds: %d", i);
 		}
-		ptr = (eval_t *)&pr_globals[(unsigned short)st->a + (i * 3)];
+		ptr = (eval_t *)&pr_globals[st->a + (i * 3)];
 		OPC->vector[0] = ptr->vector[0];
 		OPC->vector[1] = ptr->vector[1];
 		OPC->vector[2] = ptr->vector[2];
@@ -465,19 +472,38 @@ void PR_ExecuteProgram (func_t fnum)
 	case OP_IFNOT:
 		if (!OPA->_int)
 		{
-			st += st->b - 1;	/* -1 to offset the st++ */
+		/* Pa3PyX: a, b, and c used to be signed shorts for progs v6,
+		 * now they are signed ints.  The problem is, they were used
+		 * as signed sometimes and as unsigned other times - most of
+		 * the time they were used as unsigned with an explicit cast
+		 * in PR_ExecuteProgram().  When we convert the old progs to
+		 * to the new format in PR_ConvertOldStmts(), we zero-extend
+		 * them instead of sign-extending them for that reason: if we
+		 * sign-extend them, most of the code will not work - we will
+		 * have negative array offsets in PR_ExecuteProgram(), among
+		 * other things.  Note that they are cast to unsigned short
+		 * in PR_ConvertOldStmts() prior to assigning them to what is
+		 * now int.  There are a few instances where these shorts are
+		 * used as signed as in the case below where negative offsets
+		 * are needed.  Since we now have a zero-extended number in a,
+		 * b, and c, we must change it back to signed short, so that
+		 * when it is added with and assigned to an int, the result
+		 * ends up sign-extended and we get a proper negative offset,
+		 * if there is one.
+		 */
+			st += (is_progs_v6) ? (signed short)(st->b - 1) : st->b - 1;	/* -1 to offset the st++ */
 		}
 		break;
 
 	case OP_IF:
 		if (OPA->_int)
 		{
-			st += st->b - 1;	/* -1 to offset the st++ */
+			st += (is_progs_v6) ? (signed short)(st->b - 1) : st->b - 1;	/* -1 to offset the st++ */
 		}
 		break;
 
 	case OP_GOTO:
-		st += st->a - 1;		/* -1 to offset the st++ */
+		st += (is_progs_v6) ? (signed short)(st->a - 1) : st->a - 1;		/* -1 to offset the st++ */
 		break;
 
 	case OP_CALL8:
@@ -519,9 +545,9 @@ void PR_ExecuteProgram (func_t fnum)
 		pr_xfunction->profile += profile - startprofile;
 		startprofile = profile;
 		pr_xstatement = st - pr_statements;
-		pr_globals[OFS_RETURN] = pr_globals[(unsigned short)st->a];
-		pr_globals[OFS_RETURN + 1] = pr_globals[(unsigned short)st->a + 1];
-		pr_globals[OFS_RETURN + 2] = pr_globals[(unsigned short)st->a + 2];
+		pr_globals[OFS_RETURN] = pr_globals[st->a];
+		pr_globals[OFS_RETURN + 1] = pr_globals[st->a + 1];
+		pr_globals[OFS_RETURN + 2] = pr_globals[st->a + 2];
 		st = &pr_statements[LeaveFunction()];
 		if (pr_depth == exitdepth)
 		{ // Done
@@ -716,7 +742,7 @@ void PR_ExecuteProgram (func_t fnum)
 	case OP_SWITCH_F:
 		case_type = SWITCH_F;
 		switch_float = OPA->_float;
-		st += st->b - 1;	/* -1 to offset the st++ */
+		st += (is_progs_v6) ? (signed short)(st->b - 1) : st->b - 1;	/* -1 to offset the st++ */
 		break;
 	case OP_SWITCH_V:
 	case OP_SWITCH_S:
@@ -734,7 +760,7 @@ void PR_ExecuteProgram (func_t fnum)
 		}
 		if ((switch_float >= OPA->_float) && (switch_float <= OPB->_float))
 		{
-			st += st->c - 1;		/* -1 to offset the st++ */
+			st += (is_progs_v6) ? (signed short)(st->c - 1) : st->c - 1;		/* -1 to offset the st++ */
 		}
 		break;
 	case OP_CASE:
@@ -743,7 +769,7 @@ void PR_ExecuteProgram (func_t fnum)
 		case SWITCH_F:
 			if (switch_float == OPA->_float)
 			{
-				st += st->b - 1;	/* -1 to offset the st++ */
+				st += (is_progs_v6) ? (signed short)(st->b - 1) : st->b - 1;	/* -1 to offset the st++ */
 			}
 			break;
 		case SWITCH_V:

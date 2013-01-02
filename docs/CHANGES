@@ -4,6 +4,22 @@ Development Progress	:
 ---------------------------
 
 2013-01-02 (SVN):
+    * support for progs v7 spec by Pa3PyX (http://pa3pyx.dnsalias.org/)
+      with 32 bit offsets instead of 16 bit of original version 6. On
+      the engine side, compatibility is preserved with v6 progs, so that
+      the engine can run both with v6 as well as with v7 progs. On the
+      utils side, hcc and dhcc are changed to compile progs as v6 when
+      possible for compatibility, or as v7 otherwise. They can be made
+      to compile specifically v6 or v7 by the new command line options
+      -v6, -v7 or -version <n>.  As for decompilation, dhcc can process
+      both v6 and v7 progs. Pa3PyX's own old binary release did include
+      progs compiled as v7. The only other mod that specifically require
+      v7 progs that I know of is "Project Peanut" of Shanjaq, which has
+      too many functions and variables floating around (outdated website
+      at: http://www.geocities.ws/shanjaq/index.html)
+    * updated version date stamp to 2013-01-01.
+
+2013-01-02 (SVN):
     * hcc.c: minor formatting for less difference between hcc and dhcc
       versions.
 
