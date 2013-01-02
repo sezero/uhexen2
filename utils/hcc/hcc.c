@@ -50,8 +50,8 @@
 
 // PRIVATE FUNCTION PROTOTYPES ---------------------------------------------
 
-static void BeginCompilation(void);
-static qboolean FinishCompilation(void);
+static void PR_BeginCompilation (void);
+static qboolean PR_FinishCompilation (void);
 
 // EXTERNAL DATA DECLARATIONS ----------------------------------------------
 
@@ -264,8 +264,8 @@ static void WriteData (int crc)
 			if (strncmp(def->name,"STR_", 4) != 0 || old_hcc_behavior)
 				dd->type |= DEF_SAVEGLOBAL;
 		}
-		if (hcc_OptimizeNameTable && ((def->scope != NULL) ||
-			(!(dd->type&DEF_SAVEGLOBAL)&&(def->type->type < ev_field))))
+		if (hcc_OptimizeNameTable &&
+		    (def->scope != NULL || (!(dd->type & DEF_SAVEGLOBAL) && def->type->type < ev_field)))
 		{
 			dd->s_name = localName;
 		}
@@ -558,11 +558,11 @@ static void PR_PrintStatement (dstatement_t *s)
 	}
 	else if ((unsigned int)(s->op - OP_SWITCH_F) < 5)
 	{
-		printf ("%sbranch %i", PR_GlobalString(s->a),s->b);
+		printf ("%sbranch %i", PR_GlobalString(s->a), s->b);
 	}
 	else if (s->op == OP_CASE)
 	{
-		printf ("of %i branch %i",s->a, s->b);
+		printf ("of %i branch %i", s->a, s->b);
 	}
 	else
 	{
@@ -578,12 +578,12 @@ static void PR_PrintStatement (dstatement_t *s)
 
 /*
 ==============
-BeginCompilation
+PR_BeginCompilation
 
 called before compiling a batch of files, clears the pr struct
 ==============
 */
-static void BeginCompilation (void)
+static void PR_BeginCompilation (void)
 {
 	int		i;
 
@@ -603,13 +603,13 @@ static void BeginCompilation (void)
 
 /*
 ==============
-FinishCompilation
+PR_FinishCompilation
 
 called after all files are compiled to check for errors
 Returns false if errors were detected.
 ==============
 */
-static qboolean FinishCompilation (void)
+static qboolean PR_FinishCompilation (void)
 {
 	def_t		*d;
 	qboolean	errors, globals_done;
@@ -879,7 +879,7 @@ int main (int argc, char **argv)
 
 	psrc = COM_Parse(psrc);
 	if (!psrc)
-		COM_Error("No destination filename.  HCC -help for info.\n");
+		COM_Error("No destination filename.  hcc -help for info.\n");
 	sprintf(destfile, "%s%s", sourcedir, com_token);
 
 	InitData ();
@@ -887,7 +887,7 @@ int main (int argc, char **argv)
 	CO_Init ();
 	EX_Init ();
 
-	BeginCompilation();
+	PR_BeginCompilation();
 
 	hcc_OptimizeImmediates = CheckParm("-oi");
 	hcc_OptimizeNameTable = CheckParm("-on");
@@ -930,7 +930,7 @@ int main (int argc, char **argv)
 		}
 	} while (1);
 
-	if (!FinishCompilation())
+	if (!PR_FinishCompilation())
 		COM_Error ("compilation errors");
 
 	p = CheckParm("-asm");

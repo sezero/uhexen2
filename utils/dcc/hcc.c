@@ -178,7 +178,7 @@ static void PrintFields (void)
 	for (i = 0; i < numfielddefs; i++)
 	{
 		d = &fields[i];
-		printf ("%5i %5i : (%i) %s\n", i, d->ofs, d->type, strings + d->s_name);
+		printf ("%5i : (%i) %s\n", d->ofs, d->type, strings + d->s_name);
 	}
 }
 
@@ -190,7 +190,7 @@ static void PrintGlobals (void)
 	for (i = 0; i < numglobaldefs; i++)
 	{
 		d = &globals[i];
-		printf ("%5i : %5i : (%i) %s\n", i, d->ofs, d->type, strings + d->s_name);
+		printf ("%5i : (%i) %s\n", d->ofs, d->type, strings + d->s_name);
 	}
 }
 #endif	/* end of unused stuff */
@@ -252,12 +252,14 @@ static void WriteData (int crc)
 
 	strofs = (strofs + 3) & ~3;
 
-	printf ("%10i strofs\n", strofs);
-	printf ("%10i numstatements\n", numstatements);
-	printf ("%10i numfunctions\n", numfunctions);
-	printf ("%10i numglobaldefs\n", numglobaldefs);
-	printf ("%10i numfielddefs\n", numfielddefs);
-	printf ("%10i numpr_globals\n", numpr_globals);
+	printf("object file %s\n", destfile);
+	printf("      registers: %10d / %10d (%10d bytes)\n", numpr_globals, MAX_REGS, numpr_globals*(int)sizeof(float));
+	printf("     statements: %10d / %10d (%10d bytes)\n", numstatements, MAX_STATEMENTS, numstatements*(int)sizeof(dstatement_t));
+	printf("      functions: %10d / %10d (%10d bytes)\n", numfunctions, MAX_FUNCTIONS, numfunctions*(int)sizeof(dfunction_t));
+	printf("    global defs: %10d / %10d (%10d bytes)\n", numglobaldefs, MAX_GLOBALS, numglobaldefs*(int)sizeof(ddef_t));
+	printf("     field defs: %10d / %10d (%10d bytes)\n", numfielddefs, MAX_FIELDS, numfielddefs*(int)sizeof(ddef_t));
+	printf("    string heap: %10d / %10d\n", strofs, MAX_STRINGS);
+	printf("  entity fields: %10d\n", pr.size_fields);
 
 	h = SafeOpenWrite (destfile);
 	SafeWrite (h, &progs, sizeof(progs));
@@ -316,7 +318,7 @@ static void WriteData (int crc)
 		((int *)pr_globals)[i] = LittleLong (((int *)pr_globals)[i]);
 	SafeWrite (h, pr_globals, numpr_globals*4);
 
-	printf ("%10i TOTAL SIZE\n", (int)ftell (h));
+	printf("     total size: %10d bytes\n", (int)ftell(h));
 
 	progs.entityfields = pr.size_fields;
 
@@ -730,7 +732,7 @@ void PR_ParseError (const char *error, ...)
 	q_vsnprintf (string, sizeof(string), error, argptr);
 	va_end (argptr);
 
-	printf ("%s(%i) : %s\n", strings+s_file, pr_source_line, string);
+	printf ("%s(%d) : %s\n", strings+s_file, pr_source_line, string);
 
 	longjmp (pr_parse_abort, 1);
 }
@@ -867,6 +869,9 @@ int main (int argc, char **argv)
 
 	// write files.dat
 	WriteFiles();
+	printf(" precache_sound: %10d / %10d\n", numsounds, MAX_SOUNDS);
+	printf(" precache_model: %10d / %10d\n", nummodels, MAX_MODELS);
+	printf("  precache_file: %10d / %10d\n", numfiles, MAX_FILES);
 
 	stop = COM_GetTime ();
 	printf("\n%d seconds elapsed.\n", (int)(stop - start));

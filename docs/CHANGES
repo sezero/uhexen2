@@ -3,6 +3,10 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2013-01-02 (SVN):
+    * hcc.c: minor formatting for less difference between hcc and dhcc
+      versions.
+
 2012-12-31 (SVN):
     * utils, dcc: make sure the progs to be decompiled is of supported
       version.
