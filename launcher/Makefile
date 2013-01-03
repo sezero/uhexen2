@@ -12,8 +12,8 @@
 
 # main uhexen2 relative path
 UHEXEN2_TOP:=..
+UHEXEN2_SHARED:=$(UHEXEN2_TOP)/common
 LIBS_DIR:=$(UHEXEN2_TOP)/libs
-# local directory for os-specific headers and libraries
 OSLIBS:=$(UHEXEN2_TOP)/oslibs
 
 HOST_OS:=$(shell uname|sed -e s/_.*//|tr '[:upper:]' '[:lower:]')
@@ -33,7 +33,7 @@ BINARY:= h2launcher
 
 XDELTA_DIR:= $(LIBS_DIR)/xdelta3
 XDFLAGS:= -DXD3_DEBUG=0
-XDFLAGS+= -I$(XDELTA_DIR) -I$(LIBS_DIR)/common
+XDFLAGS+= -I$(XDELTA_DIR) -I$(UHEXEN2_SHARED)
 # when XD3_USE_LARGEFILE64 is not defined, xdelta3 defaults
 # to 64 bit xoff_t.
 # define XD3_USE_LARGEFILE64 as 0 or 1.
@@ -70,7 +70,7 @@ CFLAGS += -O2 -DNDEBUG=1
 endif
 XDFLAGS +=$(CFLAGS)
 
-CFLAGS += -I. -I$(LIBS_DIR)/common
+CFLAGS += -I. -I$(UHEXEN2_SHARED)
 CFLAGS += $(PTHREAD_CFLAGS)
 LDFLAGS+= $(PTHREAD_LIBS)
 
@@ -86,7 +86,7 @@ all: $(BINARY)
 # Rules for turning source files into .o files
 %.o: %.c
 	$(CC) -c $(CFLAGS) -o $@ $<
-%.o: $(LIBS_DIR)/common/%.c
+%.o: $(UHEXEN2_SHARED)/%.c
 	$(CC) -c $(CFLAGS) -o $@ $<
 
 # Objects

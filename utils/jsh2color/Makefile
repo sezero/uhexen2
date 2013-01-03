@@ -22,13 +22,12 @@
 #
 
 # Path settings:
-# main uhexen2 relative path
 UHEXEN2_TOP:=../..
+UTILS_TOP:=..
+COMMONDIR:=$(UTILS_TOP)/common
+UHEXEN2_SHARED:=$(UHEXEN2_TOP)/common
 LIBS_DIR:=$(UHEXEN2_TOP)/libs
-# local directory for os-specific headers and libraries
 OSLIBS:=$(UHEXEN2_TOP)/oslibs
-# where the common sources/objects are
-COMMONDIR:=../common
 
 # include the common dirty stuff
 include $(UHEXEN2_TOP)/scripts/makefile.inc
@@ -53,7 +52,7 @@ CFLAGS += -DDOUBLEVEC_T
 
 LDFLAGS =
 LDLIBS  =
-INCLUDES= -I. -I$(COMMONDIR) -I$(LIBS_DIR)/common
+INCLUDES= -I. -I$(COMMONDIR) -I$(UHEXEN2_SHARED)
 
 # Other build flags
 
@@ -118,7 +117,7 @@ all : $(BINARY)
 	$(CC) -c $(CFLAGS) $(INCLUDES) -o $@ $<
 %.o: $(COMMONDIR)/%.c
 	$(CC) -c $(CFLAGS) $(INCLUDES) -o $@ $<
-%.o: $(LIBS_DIR)/common/%.c
+%.o: $(UHEXEN2_SHARED)/%.c
 	$(CC) -c $(CFLAGS) $(INCLUDES) -o $@ $<
 
 # Objects

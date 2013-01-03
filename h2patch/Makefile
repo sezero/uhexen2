@@ -5,8 +5,8 @@
 #
 
 UHEXEN2_TOP:=..
+UHEXEN2_SHARED:=$(UHEXEN2_TOP)/common
 LIBS_DIR:=$(UHEXEN2_TOP)/libs
-# local directory for os-specific headers and libraries
 OSLIBS:=$(UHEXEN2_TOP)/oslibs
 
 CC ?= gcc
@@ -33,10 +33,10 @@ XDFLAGS:= -DXD3_DEBUG=0
 XDFLAGS+= -DXD3_USE_LARGEFILE64=1
 # make xdelta3 to use stdio:
 XDFLAGS+= -DXD3_STDIO=1
-XDFLAGS+= -I$(XDELTA_DIR) -I$(LIBS_DIR)/common
+XDFLAGS+= -I$(XDELTA_DIR) -I$(UHEXEN2_SHARED)
 XDFLAGS+= $(CFLAGS)
 
-CFLAGS  += -I. -I$(XDELTA_DIR) -I$(LIBS_DIR)/common
+CFLAGS  += -I. -I$(XDELTA_DIR) -I$(UHEXEN2_SHARED)
 
 TARGETS:= h2patch
 
@@ -54,7 +54,7 @@ XD3DEPS:= $(patsubst %,$(XDELTA_DIR)/%,$(XD3DEPS))
 # Rules for turning source files into .o files
 %.o: %.c
 	$(CC) -c $(CFLAGS) -o $@ $<
-%.o: $(LIBS_DIR)/common/%.c
+%.o: $(UHEXEN2_SHARED)/%.c
 	$(CC) -c $(CFLAGS) -o $@ $<
 
 xdelta3.o: $(XD3DEPS)

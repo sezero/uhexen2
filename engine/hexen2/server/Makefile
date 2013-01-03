@@ -28,13 +28,12 @@
 #
 
 # PATH SETTINGS:
-# main uhexen2 relative path
 UHEXEN2_TOP:=../../..
+ENGINE_TOP:=../..
+COMMONDIR:=$(ENGINE_TOP)/h2shared
+UHEXEN2_SHARED:=$(UHEXEN2_TOP)/common
 LIBS_DIR:=$(UHEXEN2_TOP)/libs
-# local directory for os-specific headers and libraries
 OSLIBS:=$(UHEXEN2_TOP)/oslibs
-# common sources path:
-COMMONDIR:=../../h2shared
 
 # GENERAL OPTIONS (customize as required)
 
@@ -81,7 +80,7 @@ CPPFLAGS=
 LDFLAGS =
 
 # compiler includes
-INCLUDES= -I. -I.. -I$(COMMONDIR) -I$(LIBS_DIR)/common
+INCLUDES= -I. -I.. -I$(COMMONDIR) -I$(UHEXEN2_SHARED)
 
 ifeq ($(COMPILE_32BITS),yes)
 CFLAGS += -m32
@@ -254,7 +253,7 @@ dos/%.o: ../dos/%.c
 	$(CC) -c $(INCLUDES) $(CPPFLAGS) $(CFLAGS) -o $@ $<
 %.o: $(COMMONDIR)/%.c
 	$(CC) -c $(INCLUDES) $(CPPFLAGS) $(CFLAGS) -o $@ $<
-%.o: $(LIBS_DIR)/common/%.c
+%.o: $(UHEXEN2_SHARED)/%.c
 	$(CC) -c $(INCLUDES) $(CPPFLAGS) $(CFLAGS) -o $@ $<
 
 # Objects

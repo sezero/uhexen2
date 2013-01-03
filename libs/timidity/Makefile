@@ -22,8 +22,8 @@
 #
 
 UHEXEN2_TOP:=../..
+UHEXEN2_SHARED:=$(UHEXEN2_TOP)/common
 LIBS_DIR:=$(UHEXEN2_TOP)/libs
-# local directory for os-specific headers and libraries
 OSLIBS:=$(UHEXEN2_TOP)/oslibs
 
 # include the common dirty stuff
@@ -58,7 +58,7 @@ ifeq ($(TARGET_OS),morphos)
 CFLAGS += -noixemul
 endif
 
-INCLUDES= -I. -I$(LIBS_DIR)/common
+INCLUDES= -I. -I$(UHEXEN2_SHARED)
 TARGETS:= libtimidity.a
 
 OBJECTS = common.o \
@@ -81,7 +81,7 @@ all: $(TARGETS)
 # Rules for turning source files into .o files
 %.o: %.c
 	$(CC) -c $(CFLAGS) $(INCLUDES) -o $@ $<
-#%.o: $(LIBS_DIR)/common/%.c
+#%.o: $(UHEXEN2_SHARED)/%.c
 #	$(CC) -c $(CFLAGS) $(INCLUDES) -o $@ $<
 
 # object dependencies:

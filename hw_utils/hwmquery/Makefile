@@ -22,10 +22,9 @@
 #
 
 # PATH SETTINGS:
-# main uhexen2 relative path
 UHEXEN2_TOP:=../..
+UHEXEN2_SHARED:=$(UHEXEN2_TOP)/common
 LIBS_DIR:=$(UHEXEN2_TOP)/libs
-# local directory for os-specific headers and libraries
 OSLIBS:=$(UHEXEN2_TOP)/oslibs
 
 # use WinSock2 instead of WinSock-1.1? (disabled for w32 for compat.
@@ -61,7 +60,7 @@ CPPFLAGS=
 LDFLAGS =
 
 # compiler includes
-INCLUDES= -I. -I$(LIBS_DIR)/common
+INCLUDES= -I. -I$(UHEXEN2_SHARED)
 
 ifeq ($(USE_WINSOCK2),yes)
 LIBWINSOCK=-lws2_32
@@ -120,7 +119,7 @@ endif
 # Rules for turning source files into .o files
 %.o: %.c
 	$(CC) -c $(CFLAGS) $(CPPFLAGS) $(INCLUDES) -o $@ $<
-%.o: $(LIBS_DIR)/common/%.c
+%.o: $(UHEXEN2_SHARED)/%.c
 	$(CC) -c $(CFLAGS) $(CPPFLAGS) $(INCLUDES) -o $@ $<
 
 # Objects

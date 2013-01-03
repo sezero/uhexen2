@@ -37,14 +37,14 @@
 #
 
 # PATH SETTINGS:
-# main uhexen2 relative path
 UHEXEN2_TOP:=../../..
+ENGINE_TOP:=../..
+HW_TOP:=..
+COMMONDIR:=$(ENGINE_TOP)/h2shared
+COMMON_HW:=$(HW_TOP)/shared
+UHEXEN2_SHARED:=$(UHEXEN2_TOP)/common
 LIBS_DIR:=$(UHEXEN2_TOP)/libs
-# local directory for os-specific headers and libraries
 OSLIBS:=$(UHEXEN2_TOP)/oslibs
-# common sources path:
-COMMONDIR:=../../h2shared
-COMMON_HW:=../shared
 
 # GENERAL OPTIONS (customize as required)
 
@@ -164,7 +164,7 @@ CPPFLAGS=
 LDFLAGS =
 
 # compiler includes
-INCLUDES= -I. -I$(COMMON_HW) -I$(COMMONDIR) -I$(LIBS_DIR)/common
+INCLUDES= -I. -I$(COMMON_HW) -I$(COMMONDIR) -I$(UHEXEN2_SHARED)
 # nasm includes: the trailing directory separator matters
 NASM_INC= -I./ -I$(COMMON_HW)/ -I$(COMMONDIR)/
 # windows resource compiler includes
@@ -671,13 +671,13 @@ endif
 	$(CC) -c $(INCLUDES) $(CPPFLAGS) $(CFLAGS) -o $@ $<
 %.o: $(COMMONDIR)/%.c
 	$(CC) -c $(INCLUDES) $(CPPFLAGS) $(CFLAGS) -o $@ $<
-%.o: $(LIBS_DIR)/common/%.c
+%.o: $(UHEXEN2_SHARED)/%.c
 	$(CC) -c $(INCLUDES) $(CPPFLAGS) $(CFLAGS) -o $@ $<
 %.o: %.m
 	$(CC) -c $(INCLUDES) $(CPPFLAGS) $(CFLAGS) -o $@ $<
 %.o: $(COMMONDIR)/%.m
 	$(CC) -c $(INCLUDES) $(CPPFLAGS) $(CFLAGS) -o $@ $<
-%.o: $(LIBS_DIR)/common/%.m
+%.o: $(UHEXEN2_SHARED)/%.m
 	$(CC) -c $(INCLUDES) $(CPPFLAGS) $(CFLAGS) -o $@ $<
 %.o: %.asm
 	$(NASM) $(NASM_INC) $(NASMFLAGS) -o $@ $<
