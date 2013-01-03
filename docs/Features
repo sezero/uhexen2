@@ -32,6 +32,9 @@ Features:
 
 * The same binary handles both original hexen2 and the mission pack.
 
+* The same binary transparently handles progs.dat files of both v6 and
+  v7 specs.
+
 * The same hexen2 binary transparently handles all v1.03-v1.11 (hexen2)
   and v1.12 (mission pack) style progs.dat files.
 
@@ -69,5 +72,5 @@ Features:
   hwmquery: tool for querying hw master servers, hwrcon and hwterm: rcon
   tools) are maintained and are being kept up to date.
 
-* Countless bug fixes, security fixes and other improvements.
+* Countless bug fixes, security fixes, and other improvements.
 

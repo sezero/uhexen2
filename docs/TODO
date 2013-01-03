@@ -15,13 +15,12 @@ TODO:
   translucency pieces and the d_8to16 and d_8to24 translation
   tables.
 - Net: Find some way to workaround the infamous router troubles
-- HexenWorld: Spectator mode (chasecam) isn't as it should be,
-  compare with the quakeworld code and fix.
 - Add sound font support to Timidity.
-- Add sequencer (mpu-401) support for midi (alsa / oss)
-- DOS: Implement MIDI music playback.
-- DOS: Implement loading progress bars.
+- ALSA, OSS: Add sequencer support for MIDI playback.
+- DOS: Implement MIDI music playback (MPU-401, AdLib/FM synth.)
 - utils, light: improvements?
 - utils, texutils: add more texture tools (pcx2wal, etc.)?
 - More unification of hexen2 and hexenworld trees
+- HexenWorld: Spectator mode (chasecam) isn't as it should be,
+  compare with quakeworld code and fix?
 

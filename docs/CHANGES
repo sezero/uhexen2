@@ -3,6 +3,9 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2013-01-03 (SVN):
+    * minor documentation updates.
+
 2013-01-02 (SVN):
     * support for progs v7 spec by Pa3PyX (http://pa3pyx.dnsalias.org/)
       with 32 bit offsets instead of 16 bit of original version 6. On
