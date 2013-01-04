@@ -318,8 +318,8 @@
 		70158F0A0AAF427F00F6437C /* vid_sdl.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = vid_sdl.c; path = ../../h2shared/vid_sdl.c; sourceTree = SOURCE_ROOT; };
 		70310B240BFDE84D00CA35D3 /* msg_io.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = msg_io.c; path = ../../h2shared/msg_io.c; sourceTree = SOURCE_ROOT; };
 		70310B250BFDE84D00CA35D3 /* msg_io.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = msg_io.h; path = ../../h2shared/msg_io.h; sourceTree = SOURCE_ROOT; };
-		70310B2A0BFDE89200CA35D3 /* q_endian.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = q_endian.c; path = ../../../libs/common/q_endian.c; sourceTree = SOURCE_ROOT; };
-		70310B2B0BFDE89200CA35D3 /* q_endian.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = q_endian.h; path = ../../../libs/common/q_endian.h; sourceTree = SOURCE_ROOT; };
+		70310B2A0BFDE89200CA35D3 /* q_endian.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = q_endian.c; path = ../../../common/q_endian.c; sourceTree = SOURCE_ROOT; };
+		70310B2B0BFDE89200CA35D3 /* q_endian.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = q_endian.h; path = ../../../common/q_endian.h; sourceTree = SOURCE_ROOT; };
 		70310B320BFDE90900CA35D3 /* debuglog.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = debuglog.c; path = ../../h2shared/debuglog.c; sourceTree = SOURCE_ROOT; };
 		70310B330BFDE90900CA35D3 /* debuglog.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = debuglog.h; path = ../../h2shared/debuglog.h; sourceTree = SOURCE_ROOT; };
 		70310B370BFDE94700CA35D3 /* link_ops.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = link_ops.c; path = ../../h2shared/link_ops.c; sourceTree = SOURCE_ROOT; };
@@ -330,9 +330,9 @@
 		70310B430BFDE9D900CA35D3 /* quakefs.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = quakefs.h; path = ../../h2shared/quakefs.h; sourceTree = SOURCE_ROOT; };
 		70310B490BFDEA0F00CA35D3 /* cfgfile.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = cfgfile.c; path = ../../h2shared/cfgfile.c; sourceTree = SOURCE_ROOT; };
 		70310B4A0BFDEA0F00CA35D3 /* cfgfile.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = cfgfile.h; path = ../../h2shared/cfgfile.h; sourceTree = SOURCE_ROOT; };
-		707D57770AA9F6EE00313A9F /* adivtab.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = adivtab.h; path = ../../../libs/common/adivtab.h; sourceTree = SOURCE_ROOT; };
+		707D57770AA9F6EE00313A9F /* adivtab.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = adivtab.h; path = ../../../common/adivtab.h; sourceTree = SOURCE_ROOT; };
 		707D57790AA9F6EE00313A9F /* anorm_dots.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = anorm_dots.h; path = ../../h2shared/anorm_dots.h; sourceTree = SOURCE_ROOT; };
-		707D577A0AA9F6EE00313A9F /* anorms.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = anorms.h; path = ../../../libs/common/anorms.h; sourceTree = SOURCE_ROOT; };
+		707D577A0AA9F6EE00313A9F /* anorms.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = anorms.h; path = ../../../common/anorms.h; sourceTree = SOURCE_ROOT; };
 		707D577B0AA9F6EE00313A9F /* bspfile.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = bspfile.h; path = ../bspfile.h; sourceTree = SOURCE_ROOT; };
 		707D577C0AA9F6EE00313A9F /* cd_sdl.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = cd_sdl.c; path = ../../h2shared/cd_sdl.c; sourceTree = SOURCE_ROOT; };
 		707D577D0AA9F6EE00313A9F /* cd_unix.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = cd_unix.h; path = ../../h2shared/cd_unix.h; sourceTree = SOURCE_ROOT; };
@@ -353,12 +353,12 @@
 		707D578C0AA9F6EE00313A9F /* common.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = common.h; path = ../../h2shared/common.h; sourceTree = SOURCE_ROOT; };
 		707D578D0AA9F6EE00313A9F /* console.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = console.c; path = ../console.c; sourceTree = SOURCE_ROOT; };
 		707D578E0AA9F6EE00313A9F /* console.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = console.h; path = ../../h2shared/console.h; sourceTree = SOURCE_ROOT; };
-		707D578F0AA9F6EE00313A9F /* crc.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = crc.c; path = ../../../libs/common/crc.c; sourceTree = SOURCE_ROOT; };
-		707D57900AA9F6EE00313A9F /* crc.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = crc.h; path = ../../../libs/common/crc.h; sourceTree = SOURCE_ROOT; };
+		707D578F0AA9F6EE00313A9F /* crc.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = crc.c; path = ../../../common/crc.c; sourceTree = SOURCE_ROOT; };
+		707D57900AA9F6EE00313A9F /* crc.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = crc.h; path = ../../../common/crc.h; sourceTree = SOURCE_ROOT; };
 		707D57910AA9F6EE00313A9F /* cvar.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = cvar.c; path = ../../h2shared/cvar.c; sourceTree = SOURCE_ROOT; };
 		707D57920AA9F6EE00313A9F /* cvar.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = cvar.h; path = ../../h2shared/cvar.h; sourceTree = SOURCE_ROOT; };
 		707D57930AA9F6EE00313A9F /* bgmusic.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = bgmusic.c; path = ../../h2shared/bgmusic.c; sourceTree = SOURCE_ROOT; };
-		707D57940AA9F6EE00313A9F /* genmodel.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = genmodel.h; path = ../../../libs/common/genmodel.h; sourceTree = SOURCE_ROOT; };
+		707D57940AA9F6EE00313A9F /* genmodel.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = genmodel.h; path = ../../../common/genmodel.h; sourceTree = SOURCE_ROOT; };
 		707D57950AA9F6EE00313A9F /* gl_draw.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = gl_draw.c; path = ../../h2shared/gl_draw.c; sourceTree = SOURCE_ROOT; };
 		707D57960AA9F6EE00313A9F /* gl_func.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = gl_func.h; path = ../../h2shared/gl_func.h; sourceTree = SOURCE_ROOT; };
 		707D57970AA9F6EE00313A9F /* gl_mesh.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = gl_mesh.c; path = ../../h2shared/gl_mesh.c; sourceTree = SOURCE_ROOT; };
@@ -396,7 +396,7 @@
 		707D57BA0AA9F6EE00313A9F /* net_udp.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = net_udp.h; path = ../net_udp.h; sourceTree = SOURCE_ROOT; };
 		707D57BD0AA9F6EE00313A9F /* snd_codec.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = snd_codec.c; path = ../../h2shared/snd_codec.c; sourceTree = SOURCE_ROOT; };
 		707D57BE0AA9F6EE00313A9F /* pr_cmds.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = pr_cmds.c; path = ../pr_cmds.c; sourceTree = SOURCE_ROOT; };
-		707D57BF0AA9F6EE00313A9F /* pr_comp.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = pr_comp.h; path = ../../../libs/common/pr_comp.h; sourceTree = SOURCE_ROOT; };
+		707D57BF0AA9F6EE00313A9F /* pr_comp.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = pr_comp.h; path = ../../../common/pr_comp.h; sourceTree = SOURCE_ROOT; };
 		707D57C00AA9F6EE00313A9F /* pr_edict.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = pr_edict.c; path = ../pr_edict.c; sourceTree = SOURCE_ROOT; };
 		707D57C10AA9F6EE00313A9F /* pr_exec.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = pr_exec.c; path = ../pr_exec.c; sourceTree = SOURCE_ROOT; };
 		707D57C20AA9F6EE00313A9F /* cl_string.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = cl_string.c; path = ../cl_string.c; sourceTree = SOURCE_ROOT; };
@@ -417,7 +417,7 @@
 		707D57D10AA9F6EE00313A9F /* snd_sys.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = snd_sys.c; path = ../../h2shared/snd_sys.c; sourceTree = SOURCE_ROOT; };
 		707D57D20AA9F6EE00313A9F /* snd_sys.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = snd_sys.h; path = ../../h2shared/snd_sys.h; sourceTree = SOURCE_ROOT; };
 		707D57D30AA9F6EE00313A9F /* q_sound.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = q_sound.h; path = ../../h2shared/q_sound.h; sourceTree = SOURCE_ROOT; };
-		707D57D40AA9F6EE00313A9F /* spritegn.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = spritegn.h; path = ../../../libs/common/spritegn.h; sourceTree = SOURCE_ROOT; };
+		707D57D40AA9F6EE00313A9F /* spritegn.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = spritegn.h; path = ../../../common/spritegn.h; sourceTree = SOURCE_ROOT; };
 		707D57D50AA9F6EE00313A9F /* sv_effect.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = sv_effect.c; path = ../sv_effect.c; sourceTree = SOURCE_ROOT; };
 		707D57D60AA9F6EE00313A9F /* sv_main.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = sv_main.c; path = ../sv_main.c; sourceTree = SOURCE_ROOT; };
 		707D57D70AA9F6EE00313A9F /* sv_move.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = sv_move.c; path = ../sv_move.c; sourceTree = SOURCE_ROOT; };
@@ -447,9 +447,9 @@
 		707D592A0AAA076A00313A9F /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = /System/Library/Frameworks/OpenGL.framework; sourceTree = "<absolute>"; };
 		7086E4E50AC0070900E9F894 /* Hexen2.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = Hexen2.icns; sourceTree = "<group>"; };
 		B0E546A515564FC10033037D /* sys_osx.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = sys_osx.m; path = ../../h2shared/sys_osx.m; sourceTree = SOURCE_ROOT; };
-		B0E74B1D144E7FF40043F808 /* qsnprint.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = qsnprint.c; path = ../../../libs/common/qsnprint.c; sourceTree = SOURCE_ROOT; };
-		B0E74B22144E80170043F808 /* strlcat.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = strlcat.c; path = ../../../libs/common/strlcat.c; sourceTree = SOURCE_ROOT; };
-		B0E74B27144E802B0043F808 /* strlcpy.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = strlcpy.c; path = ../../../libs/common/strlcpy.c; sourceTree = SOURCE_ROOT; };
+		B0E74B1D144E7FF40043F808 /* qsnprint.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = qsnprint.c; path = ../../../common/qsnprint.c; sourceTree = SOURCE_ROOT; };
+		B0E74B22144E80170043F808 /* strlcat.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = strlcat.c; path = ../../../common/strlcat.c; sourceTree = SOURCE_ROOT; };
+		B0E74B27144E802B0043F808 /* strlcpy.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = strlcpy.c; path = ../../../common/strlcpy.c; sourceTree = SOURCE_ROOT; };
 		B0E74B2C144E80540043F808 /* snd_wave.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = snd_wave.c; path = ../../h2shared/snd_wave.c; sourceTree = SOURCE_ROOT; };
 		B0E74B31144E806D0043F808 /* snd_vorbis.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = snd_vorbis.c; path = ../../h2shared/snd_vorbis.c; sourceTree = SOURCE_ROOT; };
 		B0E74B36144E807F0043F808 /* snd_mp3.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = snd_mp3.c; path = ../../h2shared/snd_mp3.c; sourceTree = SOURCE_ROOT; };
@@ -1089,7 +1089,7 @@
 				HEADER_SEARCH_PATHS = (
 					.,
 					../../h2shared,
-					../../../libs/common,
+					../../../common,
 					../../../oslibs/macosx/codecs/include,
 				);
 				INFOPLIST_FILE = hexen2.plist;
@@ -1134,7 +1134,7 @@
 				HEADER_SEARCH_PATHS = (
 					.,
 					../../h2shared,
-					../../../libs/common,
+					../../../common,
 					../../../oslibs/macosx/codecs/include,
 				);
 				INFOPLIST_FILE = hexen2.plist;
@@ -1175,7 +1175,7 @@
 				HEADER_SEARCH_PATHS = (
 					.,
 					../../h2shared,
-					../../../libs/common,
+					../../../common,
 					../../../oslibs/macosx/codecs/include,
 				);
 				LIBRARY_SEARCH_PATHS = ../../../oslibs/macosx/codecs/lib;
@@ -1204,7 +1204,7 @@
 				HEADER_SEARCH_PATHS = (
 					.,
 					../../h2shared,
-					../../../libs/common,
+					../../../common,
 					../../../oslibs/macosx/codecs/include,
 				);
 				LIBRARY_SEARCH_PATHS = ../../../oslibs/macosx/codecs/lib;
@@ -1241,7 +1241,7 @@
 				HEADER_SEARCH_PATHS = (
 					.,
 					../../h2shared,
-					../../../libs/common,
+					../../../common,
 					../../../oslibs/macosx/codecs/include,
 				);
 				INFOPLIST_FILE = glhexen2.plist;
@@ -1292,7 +1292,7 @@
 				HEADER_SEARCH_PATHS = (
 					.,
 					../../h2shared,
-					../../../libs/common,
+					../../../common,
 					../../../oslibs/macosx/codecs/include,
 				);
 				INFOPLIST_FILE = glhexen2.plist;
