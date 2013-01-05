@@ -559,6 +559,15 @@ endif
 #############################################################
 ifeq ($(TARGET_OS),morphos)
 
+# MorphOS builds can use SDL or native code
+USE_SDL=no
+ifneq ($(USE_SDL),yes)
+USE_SDLCD=no
+USE_SDLAUDIO=no
+# no native cdaudio code yet
+USE_CDAUDIO=no
+endif
+
 CFLAGS  += -noixemul
 LDFLAGS += -noixemul
 
@@ -581,11 +590,12 @@ CPPFLAGS+= -DWITH_SDLCD
 endif
 endif
 
-# MorphOS builds rely on SDL:
+ifeq ($(USE_SDL),yes)
 # SDLQUAKE must be defined for all SDL using platforms/targets
 CPPFLAGS+= -DSDLQUAKE
 CFLAGS  += $(SDL_CFLAGS)
 LDFLAGS += $(SDL_LIBS)
+endif
 
 endif
 # End of MorphOS settings
@@ -596,6 +606,15 @@ endif
 # AROS flags/settings and overrides:
 #############################################################
 ifeq ($(TARGET_OS),aros)
+
+# AROS builds can use SDL or native code
+USE_SDL=no
+ifneq ($(USE_SDL),yes)
+USE_SDLCD=no
+USE_SDLAUDIO=no
+# no native cdaudio code yet
+USE_CDAUDIO=no
+endif
 
 # Don't use x86 assembly for AROS
 USE_X86_ASM=no
@@ -618,11 +637,12 @@ CPPFLAGS+= -DWITH_SDLCD
 endif
 endif
 
-# AROS builds rely on SDL:
+ifeq ($(USE_SDL),yes)
 # SDLQUAKE must be defined for all SDL using platforms/targets
 CPPFLAGS+= -DSDLQUAKE
 CFLAGS  += $(SDL_CFLAGS)
 LDFLAGS += $(SDL_LIBS)
+endif
 
 endif
 # End of AROS settings
@@ -940,18 +960,28 @@ SYSOBJ_SYS += sys_osx.o
 SYSOBJ_SYS += SDLMain.o
 endif
 ifeq ($(TARGET_OS),aros)
-# aros clients use SDL:
+ifeq ($(USE_SDL),yes)
 SYSOBJ_INPUT := in_sdl.o
 SYSOBJ_GL_VID:= gl_vidsdl.o
 SYSOBJ_SOFT_VID:= vid_sdl.o
+else
+SYSOBJ_INPUT := in_amiga.o
+SYSOBJ_GL_VID:= gl_vidamiga.o
+SYSOBJ_SOFT_VID:= vid_cgx.o
+endif
 SYSOBJ_NET := net_bsd.o net_udp.o
 SYSOBJ_SYS := sys_amiga.o
 endif
 ifeq ($(TARGET_OS),morphos)
-# morphos clients use SDL:
+ifeq ($(USE_SDL),yes)
 SYSOBJ_INPUT := in_sdl.o
 SYSOBJ_GL_VID:= gl_vidsdl.o
 SYSOBJ_SOFT_VID:= vid_sdl.o
+else
+SYSOBJ_INPUT := in_amiga.o
+SYSOBJ_GL_VID:= gl_vidamiga.o
+SYSOBJ_SOFT_VID:= vid_cgx.o
+endif
 SYSOBJ_NET := net_bsd.o net_udp.o
 SYSOBJ_SYS := sys_amiga.o
 endif

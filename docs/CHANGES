@@ -3,6 +3,10 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2013-01-05 (SVN):
+    * switched AROS and MorphOS clients build from SDL to native code,
+      as requested by Szilard Biro.
+
 2013-01-03 (SVN):
     * moved $topdir/libs/common to $topdir/common, adjusted makefiles
       and MS Visual Studio project files.
