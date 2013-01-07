@@ -24,7 +24,7 @@
  */
 
 #include "quakedef.h"
-#if defined(__MACOSX__)
+#if defined(PLATFORM_OSX)
 #include "sys_osx.h"	/* Mac OS X specifics */
 #elif defined(SDLQUAKE)
 #include "sys_sdl.h"	/* alternative implementations using SDL. */
@@ -281,17 +281,14 @@ void Sys_MakeCodeWriteable (unsigned long startaddr, unsigned long length)
 {
 	int		r;
 	unsigned long	endaddr = startaddr + length;
-#if !defined(__QNX__)
-# if	1
+// systems with mprotect but not getpagesize (or similar) probably don't
+// need to page align the arguments to mprotect (eg, QNX)
+#if !(defined(__QNX__) || defined(__QNXNTO__))
+//	int		psize = getpagesize ();
 	long		psize = sysconf (_SC_PAGESIZE);
-# else
-	int		psize = getpagesize();
-# endif
 	startaddr &= ~(psize - 1);
 	endaddr = (endaddr + psize - 1) & ~(psize - 1);
 #endif
-	// systems with mprotect but not getpagesize (or similar) probably don't
-	// need to page align the arguments to mprotect (eg, QNX)
 	r = mprotect ((char *) startaddr, endaddr - startaddr, PROT_WRITE | PROT_READ | PROT_EXEC);
 
 	if (r == -1)

@@ -49,7 +49,7 @@ int Thread_GetNumCPUS (void)
 	return (numcpus < 1) ? 1 : numcpus;
 }
 
-#elif defined(__linux__) || defined(__SOLARIS__) || defined(_AIX)
+#elif defined(__linux__) || defined(__sun) || defined(sun) || defined(_AIX)
 #include <unistd.h>
 int Thread_GetNumCPUS (void)
 {
@@ -57,7 +57,7 @@ int Thread_GetNumCPUS (void)
 	return (numcpus < 1) ? 1 : numcpus;
 }
 
-#elif defined(__MACOSX__)
+#elif defined(PLATFORM_OSX)
 #include <unistd.h>
 #include <sys/sysctl.h>
 #if !defined(HW_AVAILCPU)	/* using an ancient SDK? */
@@ -87,7 +87,7 @@ int Thread_GetNumCPUS (void)
 	return (numcpus < 1) ? 1 : numcpus;
 }
 
-#elif defined(__IRIX__)
+#elif defined(__sgi) || defined(sgi) || defined(__sgi__) /* IRIX */
 #include <unistd.h>
 int Thread_GetNumCPUS (void)
 {
@@ -97,7 +97,7 @@ int Thread_GetNumCPUS (void)
 	return numcpus;
 }
 
-#elif defined(__FreeBSD__) || defined(__OpenBSD__) || defined(__NetBSD__) || defined(__DragonFly__)
+#elif defined(PLATFORM_BSD)
 #include <unistd.h>
 #include <sys/sysctl.h>
 int Thread_GetNumCPUS (void)
@@ -111,7 +111,7 @@ int Thread_GetNumCPUS (void)
 	if (numcpus != -1)
 		return (numcpus < 1) ? 1 : numcpus;
 #endif
-	size_t len = sizeof(numcpus);
+	len = sizeof(numcpus);
 	mib[0] = CTL_HW;
 	mib[1] = HW_NCPU;
 	if (sysctl(mib, 2, &numcpus, &len, NULL, 0) == -1)
@@ -235,7 +235,8 @@ void RunThreadsOn (threadfunc_t func)
 }
 
 
-#elif defined(__IRIX__) /* defined(_MIPS_ISA) */ && !defined(USE_PTHREADS)
+#elif (defined(__sgi) || defined(sgi) || defined(__sgi__)) \
+   && !defined(USE_PTHREADS) /* original IRIX code of Quake */
 
 #include <task.h>
 #include <abi_mutex.h>

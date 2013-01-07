@@ -3,6 +3,12 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2013-01-07 (SVN):
+    * removed several custom macros, especially those with underscores,
+      in arch_def.h which reportedly did more harm than good. tidied up
+      several other macros. adjusted all of the code for the changes.
+    * utils/common/threads.c: fixed a typo in BSD-specific sysctl code.
+
 2013-01-05 (SVN):
     * switched AROS and MorphOS clients build from SDL to native code,
       as requested by Szilard Biro.

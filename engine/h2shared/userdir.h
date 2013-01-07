@@ -38,7 +38,7 @@
 #endif
 
 
-#if defined(__MACOSX__)
+#if defined(PLATFORM_OSX)
 #define	AOT_USERDIR		SYS_USERDIR_OSX
 #else	/* unix: */
 #define	AOT_USERDIR		SYS_USERDIR_UNIX

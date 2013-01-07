@@ -9,10 +9,10 @@
 
 #if defined(PLATFORM_WINDOWS)
 #include <windows.h>
-#endif
-#if defined(__MACOSX__)
+#include <GL/gl.h>
+#elif defined(PLATFORM_OSX)
 #include <OpenGL/gl.h>
-#elif defined(__MACOS__)
+#elif defined(PLATFORM_MAC)
 #include <gl.h>
 #elif defined(__MORPHOS__)
 #include <proto/tinygl.h>
