@@ -4,6 +4,14 @@ Development Progress	:
 ---------------------------
 
 2013-01-10 (SVN):
+    * gl_rmain.c (R_DrawAliasModel): check whether the skinnum is legit,
+      set it to 0 otherwise, just like in the software renderer version.
+      this works around archer models sometimes being drawn as "white"
+      in certain weird mods, i.e. project peanut, where the mod's hcode
+      initializes those entities with non-existant skins. while we were
+      there, did a little tidying too.
+
+2013-01-10 (SVN):
     * Incremented engine version to 1.5.6 and datestamp to 2013-01-10 in
       the development tree.
 

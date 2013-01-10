@@ -688,13 +688,10 @@ static void R_DrawAliasModel (entity_t *e)
 	vec3_t		mins, maxs;
 	aliashdr_t	*paliashdr;
 	float		an;
-	int		anim;
 	static float	tmatrix[3][4];
 	float		entScale;
 	float		xyfact = 1.0, zfact = 1.0; // avoid compiler warning
-	qpic_t		*stonepic;
-	glpic_t		*gl;
-	char		temp[80];
+	int		skinnum;
 	int		mls;
 
 	clmodel = currententity->model;
@@ -904,27 +901,37 @@ static void R_DrawAliasModel (entity_t *e)
 //	if (cl.players[currententity->scoreboard - cl.players].siege_team == ST_DEFENDER)
 //		currententity->skinnum = cl.players[currententity->scoreboard - cl.players].playerclass + 110;
 
-	if (currententity->skinnum >= 100)
+	skinnum = currententity->skinnum;
+	if (skinnum >= 100)
 	{
-		if (currententity->skinnum > 255)
-		{
+		if (skinnum > 255)
 			Sys_Error ("skinnum > 255");
-		}
 
-		if (gl_extra_textures[currententity->skinnum-100] == GL_UNUSED_TEXTURE) // Need to load it in
+		if (gl_extra_textures[skinnum - 100] == GL_UNUSED_TEXTURE) // Need to load it in
 		{
-			q_snprintf (temp, sizeof(temp), "gfx/skin%d.lmp", currententity->skinnum);
+			qpic_t		*stonepic;
+			glpic_t		*gl;
+			char		temp[80];
+
+			q_snprintf (temp, sizeof(temp), "gfx/skin%d.lmp", skinnum);
 			stonepic = Draw_CachePic(temp);
 			gl = (glpic_t *)stonepic->data;
-			gl_extra_textures[currententity->skinnum-100] = gl->texnum;
+			gl_extra_textures[skinnum - 100] = gl->texnum;
 		}
 
-		GL_Bind(gl_extra_textures[currententity->skinnum-100]);
+		GL_Bind(gl_extra_textures[skinnum - 100]);
 	}
 	else
 	{
+		int		anim;
+
+		if ((skinnum >= paliashdr->numskins) || (skinnum < 0))
+		{
+			Con_DPrintf ("%s: no such skin # %d\n", __thisfunc__, skinnum);
+			skinnum = 0;
+		}
 		anim = (int)(cl.time*10) & 3;
-		GL_Bind(paliashdr->gl_texturenum[currententity->skinnum][anim]);
+		GL_Bind(paliashdr->gl_texturenum[skinnum][anim]);
 
 		// we can't dynamically colormap textures, so they are cached
 		// seperately for the players.  Heads are just uncolored.
