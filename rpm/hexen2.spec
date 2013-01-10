@@ -60,7 +60,7 @@
 Name:		hexen2
 License:	GPLv2
 Group:		Amusements/Games
-Version:	1.5.5
+Version:	1.5.6
 Release:	1
 Summary:	Hexen II: Hammer of Thyrion
 URL:		http://uhexen2.sourceforge.net/
@@ -101,7 +101,7 @@ Requires:	SDL >= 1.2.4
 # these will be picked by rpm already
 #%{!?_without_mp3:Requires: libmad}
 #%{!?_without_ogg:Requires: libvorbis}
-Requires:	hexen2 >= 1.5.4
+Requires:	hexen2 >= %{version}
 
 %description -n hexenworld
 Hexen II is a class based shooter game by Raven Software from 1997.
@@ -348,6 +348,9 @@ desktop-file-install \
 %{_prefix}/games/%{name}/docs/README.hwmaster
 
 %changelog
+* Thu Jan 10 2013 O.Sezer <sezero@users.sourceforge.net> 1.5.6-1
+- Bump version to 1.5.6
+
 * Tue Sep 11 2012 O.Sezer <sezero@users.sourceforge.net> 1.5.5-1
 - Adjusted gamedata resource installation after txt->res rename
 - Adjusted h2ded build and installation after moved Makefile.sv

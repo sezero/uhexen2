@@ -3,7 +3,11 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
-2013-01-07 (SVN):
+2013-01-10 (SVN):
+    * Incremented engine version to 1.5.6 and datestamp to 2013-01-10 in
+      the development tree.
+
+2013-01-07 (1.5.5-final / SVN):
     * removed several custom macros, especially those with underscores,
       in arch_def.h which reportedly did more harm than good. tidied up
       several other macros. adjusted all of the code for the changes.

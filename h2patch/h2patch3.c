@@ -161,7 +161,7 @@ static	char	dst[MAX_OSPATH],
 #define	XD3_VERSION_SVN		342
 #define	HOT_VERSION_MAJ		1
 #define	HOT_VERSION_MID		5
-#define	HOT_VERSION_MIN		5
+#define	HOT_VERSION_MIN		6
 
 #define	H2PATCH_SRCWINSZ	(1<<23)	/* 8 MB is enough */
 

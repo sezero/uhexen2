@@ -1,5 +1,5 @@
 
-Hexen II: Hammer of Thyrion (uHexen2) - v1.5.5
+Hexen II: Hammer of Thyrion (uHexen2) - v1.5.6
 ----------------------------------------------
 
 
@@ -65,7 +65,7 @@ a. Using the installer: The installer will get the files from your
    the HexenWorld multiplayer support which doesn't require a cdrom.
 
 b. Manual install/update of data files:
-   Download the base binary tarball (e.g., hexen2-1.5.5.i586.tgz) and
+   Download the base binary tarball (e.g., hexen2-1.5.6.i586.tgz) and
    extract it. Copy the two files pak0.pak and pak1.pak from your cdrom
    into the "data1" directory in your own installation.  The pak file
    names should be lower-cased, if not already.
@@ -90,7 +90,7 @@ b. Manual install/update of data files:
    77ae298dd0dcd16ab12f4a68067ff2c3  portals/pak3.pak
 
    If you want to install HexenWorld, download the HexenWorld binary
-   package (e.g., hexenworld-1.5.5.i586.tgz) and extract it in the
+   package (e.g., hexenworld-1.5.6.i586.tgz) and extract it in the
    same directory you extracted the base uhexen2 tarball. HexenWorld
    data doesn't need patching.
 
