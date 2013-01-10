@@ -35,7 +35,7 @@
 #include <utility/hooks.h>
 #ifdef __AROS__
 #include <SDI/SDI_hook.h>
-#elif defined __AMIGA__
+#elif !defined __MORPHOS__
 #include <SDI_hook.h>
 #endif
 
@@ -94,7 +94,7 @@ HOOKPROTO(EffectFunc, IPTR, struct AHIAudioCtrl *aac, struct AHIEffChannelInfo *
 
 	return 0;
 }
-	
+
 static qboolean S_AHI_Init(dma_t *dma)
 {
 	ULONG channels, speed, bits;

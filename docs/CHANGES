@@ -4,6 +4,10 @@ Development Progress	:
 ---------------------------
 
 2013-01-10 (SVN):
+    * in_amiga.c, snd_ahi.c: updates from Szilard Biro to fix predefined
+      OS macros usage.
+
+2013-01-10 (SVN):
     * Makefiles, MorphOS builds: Add -lm to linker flags where relevant.
 
 2013-01-10 (SVN):

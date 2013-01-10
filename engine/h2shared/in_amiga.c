@@ -22,10 +22,10 @@
  */
 
 #include <devices/input.h>
-#ifdef __AMIGA__
-#include <newmouse.h>
-#else
+#if defined __AROS__
 #include <devices/rawkeycodes.h>
+#elif !defined __MORPHOS__
+#include <newmouse.h>
 #endif
 #include <intuition/intuition.h>
 #include <proto/intuition.h>
@@ -33,10 +33,10 @@
 #include <proto/keymap.h>
 #ifdef __AROS__
 #include <SDI/SDI_interrupt.h>
-#elif defined __AMIGA__
+#elif !defined __MORPHOS__
 #include <SDI_interrupt.h>
 #endif
-#if defined __MORPHOS__ || defined __AMIGA__
+#ifdef __AMIGA__
 #include <intuition/intuitionbase.h>
 #endif
 
@@ -505,7 +505,7 @@ HANDLERPROTO(IN_KeyboardHandler, struct InputEvent *, struct InputEvent *moo, AP
 			((coin->ie_Class == IECLASS_RAWMOUSE || coin->ie_Class == IECLASS_NEWMOUSE) && coin->ie_Code != IECODE_NOBUTTON))
 		{
 			if ((imsghigh > imsglow && !(imsghigh == MAXIMSGS - 1 && imsglow == 0)) ||
-				(imsghigh < imsglow && imsghigh != imsglow - 1) || 
+				(imsghigh < imsglow && imsghigh != imsglow - 1) ||
 				(imsglow == imsghigh))
 			{
 				CopyMem(coin, &imsgs[imsghigh], sizeof(imsgs[0]));
@@ -565,7 +565,6 @@ void IN_Init (void)
 				inputreq->io_Data = (void *)&InputHandler;
 				inputreq->io_Command = IND_ADDHANDLER;
 				DoIO((struct IORequest *)inputreq);
-
 				return;
 			}
 			DeleteIORequest(inputreq);
@@ -806,7 +805,7 @@ void IN_SendKeyEvents (void)
 				break;
 			}
 		}
-#if defined __MORPHOS__ || defined __AMIGA__
+#ifdef __AMIGA__
 		else if (imsgs[i].ie_Class == IECLASS_NEWMOUSE && mouseactive && !in_mode_set)
 		{
 			switch (imsgs[i].ie_Code & ~IECODE_UP_PREFIX)
