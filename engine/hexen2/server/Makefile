@@ -227,6 +227,7 @@ ifeq ($(TARGET_OS),morphos)
 
 CFLAGS  += -noixemul
 LDFLAGS += -noixemul
+LDFLAGS += -lm
 
 endif
 # End of MorphOS settings

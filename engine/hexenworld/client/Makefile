@@ -529,6 +529,7 @@ endif
 
 CFLAGS  += -noixemul
 LDFLAGS += -noixemul
+LDFLAGS += -lm
 
 GL_LINK=-lGL
 # dynamic loading of ogl functions doesn't work

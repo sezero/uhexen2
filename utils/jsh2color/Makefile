@@ -75,6 +75,7 @@ endif
 ifeq ($(TARGET_OS),morphos)
 CFLAGS  += -noixemul
 LDFLAGS += -noixemul
+LDLIBS  += -lm
 endif
 ifeq ($(TARGET_OS),darwin)
 CPUFLAGS=
