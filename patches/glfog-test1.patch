@@ -70,8 +70,8 @@ diff -urNp engine/h2shared/gl_rlight.c engine/h2shared/gl_rlight.c
  
  
 diff -urNp engine/hexen2/gl_rmain.c engine/hexen2/gl_rmain.c
---- engine/hexen2/gl_rmain.c	2012-06-16 23:48:51.000000000 +0300
-+++ engine/hexen2/gl_rmain.c	2012-06-16 23:55:01.000000000 +0300
+--- engine/hexen2/gl_rmain.c	2013-01-10 16:21:16.000000000 +0200
++++ engine/hexen2/gl_rmain.c	2013-01-11 12:10:03.000000000 +0200
 @@ -49,6 +49,8 @@ mplane_t	*mirror_plane;
  
  static float	model_constant_alpha;
@@ -96,7 +96,7 @@ diff -urNp engine/hexen2/gl_rmain.c engine/hexen2/gl_rmain.c
  
  cvar_t	gl_coloredlight = {"gl_coloredlight", "0", CVAR_ARCHIVE};
  cvar_t	gl_colored_dynamic_lights = {"gl_colored_dynamic_lights", "0", CVAR_ARCHIVE};
-@@ -1324,6 +1334,9 @@ static void R_DrawAllGlows (void)
+@@ -1330,6 +1340,9 @@ static void R_DrawAllGlows (void)
  	if (!r_drawentities.integer)
  		return;
  
@@ -106,7 +106,7 @@ diff -urNp engine/hexen2/gl_rmain.c engine/hexen2/gl_rmain.c
  	glDepthMask_fp (0);
  	glDisable_fp (GL_TEXTURE_2D);
  	glShadeModel_fp (GL_SMOOTH);
-@@ -1344,6 +1357,9 @@ static void R_DrawAllGlows (void)
+@@ -1350,6 +1363,9 @@ static void R_DrawAllGlows (void)
  		}
  	}
  
@@ -116,7 +116,7 @@ diff -urNp engine/hexen2/gl_rmain.c engine/hexen2/gl_rmain.c
  	glDisable_fp (GL_BLEND);
  	glEnable_fp (GL_TEXTURE_2D);
  	glBlendFunc_fp (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-@@ -1769,6 +1785,23 @@ static void R_RenderScene (void)
+@@ -1775,6 +1791,23 @@ static void R_RenderScene (void)
  
  	R_MarkLeaves ();	// done here so we know if we're in water
  
@@ -140,7 +140,7 @@ diff -urNp engine/hexen2/gl_rmain.c engine/hexen2/gl_rmain.c
  	R_DrawWorld ();		// adds static entities to the list
  
  	S_ExtraUpdate ();	// don't let sound get messed up if going slow
-@@ -1777,6 +1810,8 @@ static void R_RenderScene (void)
+@@ -1783,6 +1816,8 @@ static void R_RenderScene (void)
  
  	R_DrawAllGlows();
  
@@ -149,7 +149,7 @@ diff -urNp engine/hexen2/gl_rmain.c engine/hexen2/gl_rmain.c
  	R_RenderDlights ();
  }
  
-@@ -1970,6 +2005,39 @@ void R_RenderView (void)
+@@ -1976,6 +2011,39 @@ void R_RenderView (void)
  
  	R_Clear ();
  
@@ -189,7 +189,7 @@ diff -urNp engine/hexen2/gl_rmain.c engine/hexen2/gl_rmain.c
  	// render normal view
  	R_RenderScene ();
  
-@@ -1985,6 +2053,9 @@ void R_RenderView (void)
+@@ -1991,6 +2059,9 @@ void R_RenderView (void)
  
  	R_DrawViewModel();
  
@@ -199,7 +199,7 @@ diff -urNp engine/hexen2/gl_rmain.c engine/hexen2/gl_rmain.c
  	// render mirror view
  	R_Mirror ();
  
-@@ -1992,5 +2063,7 @@ void R_RenderView (void)
+@@ -1998,5 +2069,7 @@ void R_RenderView (void)
  
  	if (r_speeds.integer)
  		R_PrintTimes ();
