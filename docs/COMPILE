@@ -50,6 +50,10 @@ GCC	:	GNU C Compiler.
 		gcc-2.91.66 (aka. egcs-1.1.2) still works.  Even v2.7.2
 		is reported to compile OK.
 
+		Avoid buggy versions: for example, gcc-4.1.0/4.1.1 has a
+		nasty bug which is fixed in gcc-4.1.2 and later:
+		http://gcc.gnu.org/bugzilla/show_bug.cgi?id=26719
+
 		CLANG: As an alternative to gcc, clang (version 3.0) is
 		tested to compile all uhexen2 sources correctly.
 
