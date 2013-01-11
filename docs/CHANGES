@@ -5,6 +5,11 @@ Development Progress	:
 
 2013-01-11 (SVN):
     * pr_exec.c (PR_ExecuteProgram): when interpreting a version6 progs,
+      calculate the jump offset using a top-level local int32 variable.
+      this way, gcc seems to refactor and output smaller code.
+
+2013-01-11 (SVN):
+    * pr_exec.c (PR_ExecuteProgram): when interpreting a version6 progs,
       calculate the jump offset not by first decrementing a, b or c and
       then casting the result to signed short, but by casting first to
       signed short and then decrementing. the former gives wrong result
