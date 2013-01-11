@@ -4,6 +4,10 @@ Development Progress	:
 ---------------------------
 
 2013-01-11 (SVN):
+    * Makefiles, AROS builds: uncomment GL_LINK variable and compile the
+      native opengl builds using LINK_GL_LIBS=yes.
+
+2013-01-11 (SVN):
     * pr_exec.c (PR_ExecuteProgram): when interpreting a version6 progs,
       calculate the jump offset using a top-level local int32 variable.
       this way, gcc seems to refactor and output smaller code.

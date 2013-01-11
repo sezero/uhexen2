@@ -615,12 +615,14 @@ USE_SDLCD=no
 USE_SDLAUDIO=no
 # no native cdaudio code yet
 USE_CDAUDIO=no
+# native ogl code need this:
+LINK_GL_LIBS=yes
 endif
 
 # Don't use x86 assembly for AROS
 USE_X86_ASM=no
 
-#GL_LINK=-lGL
+GL_LINK=-lGL
 
 # both WildMidi and the local timidity work nice on AROS
 USE_CODEC_WILDMIDI=no
