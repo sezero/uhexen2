@@ -3,6 +3,10 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2013-01-12 (SVN):
+    * snd_mix.c (SND_InitScaletable): fixed an off-by-one mistake in the
+      signed char conversion.
+
 2013-01-11 (SVN):
     * docs/COMPILE: added a warning note to avoid buggy gcc versions,
       giving specifically gcc-4.1.0 and gcc-4.1.1 as examples.  updated
