@@ -5,7 +5,8 @@ Development Progress	:
 
 2013-01-11 (SVN):
     * docs/COMPILE: added a warning note to avoid buggy gcc versions,
-      giving specifically gcc-4.1.0 and gcc-4.1.1 as examples.
+      giving specifically gcc-4.1.0 and gcc-4.1.1 as examples.  updated
+      tested clang versions.
 
 2013-01-11 (SVN):
     * Makefiles, AROS builds: uncomment GL_LINK variable and compile the

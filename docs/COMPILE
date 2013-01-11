@@ -45,7 +45,7 @@ NASM	:	Netwide Assembler. An x86 assembler.
 GCC	:	GNU C Compiler.
 
 		Minimum version required is GCC 2.95.  GCC versions in
-		the 2.95/2.96, 3.x and 4.x series up to 4.7.0 are tested
+		the 2.95/2.96, 3.x and 4.x series up to 4.7.x are tested
 		and work fine.  As for the really ancient gcc versions,
 		gcc-2.91.66 (aka. egcs-1.1.2) still works.  Even v2.7.2
 		is reported to compile OK.
@@ -54,7 +54,9 @@ GCC	:	GNU C Compiler.
 		nasty bug which is fixed in gcc-4.1.2 and later:
 		http://gcc.gnu.org/bugzilla/show_bug.cgi?id=26719
 
-		CLANG: As an alternative to gcc, clang (version 3.0) is
+CLANG	:	a C language family frontend for LLVM (http://llvm.org/)
+
+		As an alternative to gcc, clang versions 3.0 to 3.2 are
 		tested to compile all uhexen2 sources correctly.
 
 
