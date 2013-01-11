@@ -53,8 +53,10 @@ GCC	:	GNU C Compiler.
 		Avoid buggy versions: for example, gcc-4.1.0/4.1.1 has a
 		nasty bug which is fixed in gcc-4.1.2 and later:
 		http://gcc.gnu.org/bugzilla/show_bug.cgi?id=26719
+		Although those buggy versions seem to compile our source
+		correctly, avoiding them would be safer.
 
-CLANG	:	a C language family frontend for LLVM (http://llvm.org/)
+CLANG	:	a C language family frontend for LLVM
 
 		As an alternative to gcc, clang versions 3.0 to 3.2 are
 		tested to compile all uhexen2 sources correctly.
