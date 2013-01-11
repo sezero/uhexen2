@@ -1,12 +1,14 @@
 Hammer of Thyrion (uHexen2) release notes:
 
 ========================================================================
-Changes in v1.5.6: (Jan. 10, 2013.)
+Changes in v1.5.6: (Jan. 11, 2013.)
 ========================================================================
 
 - OpenGL: worked around weird mods, e.g.: project peanut, where certain
   models are sometimes drawn "white" because the mod's hcode initializes
   those entities with non-existant skins.
+
+- Progs VM: Fixed a corner case thinko in version6 progs execution.
 
 
 ========================================================================

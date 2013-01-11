@@ -491,19 +491,19 @@ void PR_ExecuteProgram (func_t fnum)
 		 * ends up sign-extended and we get a proper negative offset,
 		 * if there is one.
 		 */
-			st += (is_progs_v6) ? (signed short)(st->b - 1) : st->b - 1;	/* -1 to offset the st++ */
+			st += (is_progs_v6) ? (signed short)st->b - 1 : st->b - 1;	/* -1 to offset the st++ */
 		}
 		break;
 
 	case OP_IF:
 		if (OPA->_int)
 		{
-			st += (is_progs_v6) ? (signed short)(st->b - 1) : st->b - 1;	/* -1 to offset the st++ */
+			st += (is_progs_v6) ? (signed short)st->b - 1 : st->b - 1;	/* -1 to offset the st++ */
 		}
 		break;
 
 	case OP_GOTO:
-		st += (is_progs_v6) ? (signed short)(st->a - 1) : st->a - 1;		/* -1 to offset the st++ */
+		st += (is_progs_v6) ? (signed short)st->a - 1 : st->a - 1;		/* -1 to offset the st++ */
 		break;
 
 	case OP_CALL8:
@@ -742,7 +742,7 @@ void PR_ExecuteProgram (func_t fnum)
 	case OP_SWITCH_F:
 		case_type = SWITCH_F;
 		switch_float = OPA->_float;
-		st += (is_progs_v6) ? (signed short)(st->b - 1) : st->b - 1;	/* -1 to offset the st++ */
+		st += (is_progs_v6) ? (signed short)st->b - 1 : st->b - 1;	/* -1 to offset the st++ */
 		break;
 	case OP_SWITCH_V:
 	case OP_SWITCH_S:
@@ -760,7 +760,7 @@ void PR_ExecuteProgram (func_t fnum)
 		}
 		if ((switch_float >= OPA->_float) && (switch_float <= OPB->_float))
 		{
-			st += (is_progs_v6) ? (signed short)(st->c - 1) : st->c - 1;		/* -1 to offset the st++ */
+			st += (is_progs_v6) ? (signed short)st->c - 1 : st->c - 1;		/* -1 to offset the st++ */
 		}
 		break;
 	case OP_CASE:
@@ -769,7 +769,7 @@ void PR_ExecuteProgram (func_t fnum)
 		case SWITCH_F:
 			if (switch_float == OPA->_float)
 			{
-				st += (is_progs_v6) ? (signed short)(st->b - 1) : st->b - 1;	/* -1 to offset the st++ */
+				st += (is_progs_v6) ? (signed short)st->b - 1 : st->b - 1;	/* -1 to offset the st++ */
 			}
 			break;
 		case SWITCH_V:

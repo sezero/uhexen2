@@ -3,6 +3,16 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2013-01-11 (SVN):
+    * pr_exec.c (PR_ExecuteProgram): when interpreting a version6 progs,
+      calculate the jump offset not by first decrementing a, b or c and
+      then casting the result to signed short, but by casting first to
+      signed short and then decrementing. the former gives wrong result
+      for -32768 (or 32768), a corner case I couldn't hit in real world
+      yet. this was possibly a parenthesis typo by Pa3PyX back in 2003,
+      or some kind of thinko in an already confusing case.
+    * updated version date stamp to 2013-01-11.
+
 2013-01-10 (SVN):
     * in_amiga.c, snd_ahi.c: updates from Szilard Biro to fix predefined
       OS macros usage.
