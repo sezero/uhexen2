@@ -4,6 +4,10 @@ Development Progress	:
 ---------------------------
 
 2013-01-12 (SVN):
+    * snd_wildmidi.c: added "/etc/wildmidi" to cfgfile[], which is where
+      debian seems to install wildmidi.cfg.
+
+2013-01-11 (SVN):
     * snd_mix.c (SND_InitScaletable): fixed an off-by-one mistake in the
       signed char conversion.
 
@@ -97,11 +101,11 @@ Development Progress	:
       the memory is cleared and the loud clicks at startup are no more
 
 2012-12-27 (SVN):
-    * in_amiga.c: remove an obsoleted debugging define
+    * in_amiga.c: remove an obsoleted debugging define.
 
 2012-12-27 (SVN):
     * vid_cgx.c, gl_vidamiga.c, in_amiga.c: new native Amiga code from
-      Szilard Biro
+      Szilard Biro.
 
 2012-12-27 (SVN):
     * snd_ahi.c: Update from Szilard Biro with cleanups and portability

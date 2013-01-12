@@ -1,10 +1,9 @@
 /*
  * MIDI streaming music support using WildMIDI library.
  *
- * At least wildmidi-0.2.3.4 is required at both compile and runtime:
+ * wildmidi at least v0.2.3.4 is required at both compile and runtime:
  * wildmidi-0.2.2 has horrific mistakes like free()ing the buffer that
  * you pass with WildMidi_OpenBuffer() when you do WildMidi_Close().
- * The library seems experimental, so, you are on your own with this.
  *
  * Copyright (C) 2010-2012 O.Sezer <sezero@users.sourceforge.net>
  *
@@ -58,6 +57,7 @@ static const char *cfgfile[] = {
 	"Timidity:",
 #else
 	"/etc",
+	"/etc/wildmidi",
 	"/etc/timidity",
 	"/usr/share/timidity",
 	"/usr/local/share/timidity",
