@@ -402,15 +402,14 @@ static MidInstrument *load_instrument(MidSong *song, const char *name,
 	  sint32 k=sp->data_length;
 	  uint8 *cp=(uint8 *)(sp->data);
 	  uint16 *tmp16,*new16;
-	  tmp16 = new16 = (uint16 *) safe_malloc(sp->data_length*2);
-	  while (k--)
-	    *tmp16++ = (uint16)(*cp++) << 8;
-	  cp=(uint8 *)(sp->data);
-	  sp->data = (sample_t *)new16;
-	  free(cp);
 	  sp->data_length *= 2;
 	  sp->loop_start *= 2;
 	  sp->loop_end *= 2;
+	  tmp16 = new16 = (uint16 *) safe_malloc(sp->data_length+2);
+	  while (k--)
+	    *tmp16++ = (uint16)(*cp++) << 8;
+	  free(sp->data);
+	  sp->data = (sample_t *)new16;
 	}
 /*#ifndef LITTLE_ENDIAN*/
 #if BYTE_ORDER == BIG_ENDIAN
@@ -484,6 +483,10 @@ static MidInstrument *load_instrument(MidSong *song, const char *name,
       sp->data_length /= 2; /* These are in bytes. Convert into samples. */
       sp->loop_start /= 2;
       sp->loop_end /= 2;
+
+      /* initialize the added extra sample space (see the +2 bytes in
+	 allocation) using the last actual sample:  */
+      sp->data[sp->data_length] = sp->data[sp->data_length-1];
 
       /* Then fractional samples */
       sp->data_length <<= FRACTION_BITS;

@@ -4,6 +4,11 @@ Development Progress	:
 ---------------------------
 
 2013-01-14 (SVN):
+    * libs/timidity/instrum.c (load_instrument): initialize the added
+      extra sample space (the +2 bytes in added in the previous patch)
+      using the last actual sample.  while we are there, re-order the
+      8-to-16 bit conversion code a little and apply the same +2 bytes
+      patch there as well.
     * libs/timidity/instrum.c (load_instrument): allocate sp data with 2
       additional bytes. Timidity++ changelog from 1999-10-26 notes this
       patch by E.A.Welsh as: "It is possible that (OFS>>FRACTION_BITS)+1
