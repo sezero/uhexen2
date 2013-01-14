@@ -393,7 +393,7 @@ static MidInstrument *load_instrument(MidSong *song, const char *name,
 	}
 
       /* Then read the sample data */
-      sp->data = (sample_t *) safe_malloc(sp->data_length);
+      sp->data = (sample_t *) safe_malloc(sp->data_length+2);
       if (1 != fread(sp->data, sp->data_length, 1, fp))
 	goto fail;
 

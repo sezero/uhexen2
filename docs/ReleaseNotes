@@ -10,6 +10,8 @@ Changes in v1.5.6: (Jan. 11, 2013.)
 
 - Progs VM: Fixed a corner case thinko in version6 progs execution.
 
+- Timidity (Unix MIDI): Fixed a bug found by valgrind.
+
 
 ========================================================================
 Changes in v1.5.5: (Jan. 02, 2013.)

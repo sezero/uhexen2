@@ -3,6 +3,15 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2013-01-14 (SVN):
+    * libs/timidity/instrum.c (load_instrument): allocate sp data with 2
+      additional bytes. Timidity++ changelog from 1999-10-26 notes this
+      patch by E.A.Welsh as: "It is possible that (OFS>>FRACTION_BITS)+1
+      will yield a value which is 1 beyond the length of the sample.
+      This happens when OFS < data_length, but (OFS>>FRACTION_BITS) ==
+      (data_length>>FRACTION_BITS)." This fixes a valgrind error report
+      for an invalid read of 2 bytes in resample.c:rs_plain().
+
 2013-01-12 (SVN):
     * snd_wildmidi.c: added "/etc/wildmidi" to cfgfile[], which is where
       debian seems to install wildmidi.cfg.
