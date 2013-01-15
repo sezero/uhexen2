@@ -110,20 +110,7 @@ Call at start of file and when *pr_file_p == '\n'
 */
 void PR_NewLine (void)
 {
-	qboolean	m;
-
-	if (*pr_file_p == '\n')
-	{
-		pr_file_p++;
-		m = true;
-	}
-	else
-		m = false;
-
 	pr_source_line++;
-
-	if (m)
-		pr_file_p--;
 }
 
 /*
@@ -292,10 +279,18 @@ static void PR_LexWhitespace (void)
 		while ((c = *pr_file_p) <= ' ')
 		{
 			if (c == '\n')
+			{
 				PR_NewLine ();
-			if (c == 0)
-				return;		// end of file
-			pr_file_p++;
+				pr_file_p++;
+				if (*pr_file_p == 0)	// EOF
+					return;
+			}
+			else
+			{
+				if (c == 0)
+					return;		// EOF
+				pr_file_p++;
+			}
 		}
 
 	// skip // comments
@@ -304,22 +299,23 @@ static void PR_LexWhitespace (void)
 			while (*pr_file_p && *pr_file_p != '\n')
 				pr_file_p++;
 			PR_NewLine();
-			pr_file_p++;
+			if (*pr_file_p == '\n')	// not when EOF
+				pr_file_p++;
 			continue;
 		}
 
 	// skip /* */ comments
 		if (c == '/' && pr_file_p[1] == '*')
 		{
+			pr_file_p += 2;
 			do
 			{
-				pr_file_p++;
 				if (pr_file_p[0] == '\n')
 					PR_NewLine();
-				if (pr_file_p[1] == 0)
-					return;
+				if (pr_file_p[0] == 0 || pr_file_p[1] == 0)
+					PR_ParseError("EOF inside comment");
+				pr_file_p++;
 			} while (pr_file_p[-1] != '*' || pr_file_p[0] != '/');
-
 			pr_file_p++;
 			continue;
 		}

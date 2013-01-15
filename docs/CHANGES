@@ -3,6 +3,13 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2013-01-15 (SVN):
+    * utils, hcc, dhcc, pr_lex.c: removed defunct code in PR_NewLine()
+      which was meant to function when _PrintNextLine() was to be used
+      which had never been and removed ages ago. fixed LexWhitespace()
+      so that we never from beyond EOF: fixes valgrind error reports.
+      made EOF within C-style comments to error out.
+
 2013-01-14 (SVN):
     * libs/timidity/instrum.c (load_instrument): initialize the added
       extra sample space (the +2 bytes in added in the previous patch)

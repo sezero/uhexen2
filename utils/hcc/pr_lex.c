@@ -188,19 +188,7 @@ void LX_NewSourceFile (const char *fileText)
 
 static void NewLine (void)
 {
-	qboolean	m;
-
-	m = false;
-	if (*pr_file_p == '\n')
-	{
-		pr_file_p++;
-		m = true;
-	}
 	lx_SourceLine++;
-	if (m)
-	{
-		pr_file_p--;
-	}
 }
 
 //==========================================================================
@@ -662,38 +650,38 @@ static void LexWhitespace (void)
 			if (c == '\n')
 			{
 				NewLine();
+				pr_file_p++;
+				if (*pr_file_p == 0)	// EOF
+					return;
 			}
-			if (c == 0)
-			{ // EOF
-				return;
+			else
+			{
+				if (c == 0)		// EOF
+					return;
+				pr_file_p++;
 			}
-			pr_file_p++;
 		}
 
 		if (c == '/' && pr_file_p[1] == '/')
 		{ // Skip // comments
 			while (*pr_file_p && *pr_file_p != '\n')
-			{
 				pr_file_p++;
-			}
 			NewLine();
-			pr_file_p++;
+			if (*pr_file_p == '\n')	// not when EOF
+				pr_file_p++;
 			continue;
 		}
 
 		if (c == '/' && pr_file_p[1] == '*')
 		{ // Skip /* */ comments
+			pr_file_p += 2;
 			do
 			{
-				pr_file_p++;
 				if (pr_file_p[0] == '\n')
-				{
 					NewLine();
-				}
-				if (pr_file_p[1] == 0)
-				{ // EOF
-					return;
-				}
+				if (pr_file_p[0] == 0 || pr_file_p[1] == 0)
+					PR_ParseError("EOF inside comment");
+				pr_file_p++;
 			} while (pr_file_p[-1] != '*' || pr_file_p[0] != '/');
 			pr_file_p++;
 			continue;
