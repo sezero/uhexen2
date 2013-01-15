@@ -4,6 +4,7 @@ Development Progress	:
 ---------------------------
 
 2013-01-15 (SVN):
+    * updated the release notes file for v1.5.6.
     * COM_Parse: really fix quoted strings parsing when EOF is reached
       before the closing quotation mark.
 
