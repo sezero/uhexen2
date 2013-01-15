@@ -304,10 +304,10 @@ const char *COM_Parse (const char *data)
 
 // skip whitespace
 skipwhite:
-	while ( (c = *data) <= ' ')
+	while ((c = *data) <= ' ')
 	{
 		if (c == 0)
-			return NULL;			// end of file;
+			return NULL;	// end of file
 		data++;
 	}
 
@@ -316,6 +316,17 @@ skipwhite:
 	{
 		while (*data && *data != '\n')
 			data++;
+		goto skipwhite;
+	}
+
+// skip /*..*/ comments
+	if (c == '/' && data[1] == '*')
+	{
+		data += 2;
+		while (*data && !(*data == '*' && data[1] == '/'))
+			data++;
+		if (*data)
+			data += 2;
 		goto skipwhite;
 	}
 
@@ -336,15 +347,17 @@ skipwhite:
 		}
 	}
 
+#if 0
 // parse single characters
-/*	if (c == '{' || c == '}' || c == ')' || c == '(' || c == '\'' || c == ':')
+	if (c == '{' || c == '}' || c == '(' || c == ')' || c == '\'' || c == ':')
 	{
 		com_token[len] = c;
 		len++;
 		com_token[len] = 0;
 		return data+1;
 	}
-*/
+#endif
+
 // parse a regular word
 	do
 	{
@@ -352,9 +365,10 @@ skipwhite:
 		data++;
 		len++;
 		c = *data;
-
-//		if (c == '{' || c == '}' || c == ')' || c == '(' || c == '\'' || c == ':')
-//			break;
+#if 0
+		if (c == '{' || c == '}' || c == '(' || c == ')' || c == '\'' || c == ':')
+			break;
+#endif
 	} while (c > 32);
 
 	com_token[len] = 0;

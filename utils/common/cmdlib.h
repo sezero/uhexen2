@@ -66,7 +66,6 @@ extern int		myargc;
 extern char		**myargv;
 
 extern char	com_token[1024];
-extern qboolean		com_eof;
 
 
 // PUBLIC FUNCTION PROTOTYPES ----------------------------------------------

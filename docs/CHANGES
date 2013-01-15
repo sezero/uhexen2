@@ -4,10 +4,20 @@ Development Progress	:
 ---------------------------
 
 2013-01-15 (SVN):
+    * engine/h2shared/common.c (COM_Parse): support for C-style /*...*/
+      comments. minor tidy-up to reduce diff output against utils-side
+      COM_Parse().
+    * utils/common/cmdlib.c (COM_Parse): removed com_eof as it has never
+      been used. fixed quoted strings parsing so it actually stops when
+      EOF is reached before the closing quotation mark. changed C-style
+      comments parsing so we never read beyond EOF. tidied up the layout
+      so it looks the same as engine-side COM_Parse().
+
+2013-01-15 (SVN):
     * utils, hcc, dhcc, pr_lex.c: removed defunct code in PR_NewLine()
       which was meant to function when _PrintNextLine() was to be used
       which had never been and removed ages ago. fixed LexWhitespace()
-      so that we never from beyond EOF: fixes valgrind error reports.
+      so we never read from beyond EOF: fixes valgrind error reports.
       made EOF within C-style comments to error out.
 
 2013-01-14 (SVN):
