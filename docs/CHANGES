@@ -4,6 +4,9 @@ Development Progress	:
 ---------------------------
 
 2013-01-15 (SVN):
+    * updated version date stamp to 2013-01-15.
+
+2013-01-15 (SVN):
     * engine/h2shared/common.c (COM_Parse): support for C-style /*...*/
       comments. minor tidy-up to reduce diff output against utils-side
       COM_Parse().
