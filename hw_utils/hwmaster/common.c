@@ -80,7 +80,8 @@ skipwhite:
 		data++;
 		while (1)
 		{
-			c = *data++;
+			if ((c = *data) != 0)
+				++data;
 			if (c == '\"' || !c)
 			{
 				com_token[len] = 0;
