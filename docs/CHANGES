@@ -3,6 +3,18 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2013-01-16 (SVN):
+    * view.c (V_Init): in opengl builds, do initialize the gamma ramps
+      array along with the gamma table. minor tidy-up.
+    * gl_vidnt.c (AppActivate): add paranoid check to apply gamma only
+      if host is initialized and we aren't in the middle of a video mode
+      change.
+    * gl_vidamiga.c, gl_vidnt.c, gl_vidsdl.c: renamed VID_SetPalete() to
+      VID_InitPalette() to be called only from VID_Init() as the first
+      thing. VID_InitPalette only generates the translation tables, etc.
+      added VID_SetPalete as a nop function.
+    * updated version date stamp to 2013-01-16.
+
 2013-01-15 (SVN):
     * updated the release notes file for v1.5.6.
     * COM_Parse: really fix quoted strings parsing when EOF is reached

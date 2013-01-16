@@ -598,7 +598,7 @@ unsigned short	ramps[3][256];
 void V_UpdatePalette (void)
 {
 	int		i, j;
-	unsigned long	obr_buf;
+	unsigned int	t;
 
 	V_CalcPowerupCshift ();
 
@@ -635,10 +635,10 @@ void V_UpdatePalette (void)
 		// calc hardware gamma
 		for (i = 0; i < 256; i++)
 		{
-			obr_buf = gammatable[i] << 8;
-			ramps[0][i] = obr_buf;
-			ramps[1][i] = obr_buf;
-			ramps[2][i] = obr_buf;
+			t = gammatable[i] << 8;
+			ramps[0][i] = t;
+			ramps[1][i] = t;
+			ramps[2][i] = t;
 		}
 		// Update hardware gamma if available
 		VID_ShiftPalette(NULL);
@@ -1109,6 +1109,8 @@ V_Init
 */
 void V_Init (void)
 {
+	unsigned int	i;
+
 	Cmd_AddCommand ("v_cshift", V_cshift_f);
 	Cmd_AddCommand ("bf", V_BonusFlash_f);
 	Cmd_AddCommand ("df", V_DarkFlash_f);
@@ -1143,7 +1145,17 @@ void V_Init (void)
 	Cvar_RegisterVariable (&v_kickroll);
 	Cvar_RegisterVariable (&v_kickpitch);
 
-	BuildGammaTable (1.0);	// no gamma yet
 	Cvar_RegisterVariable (&v_gamma);
+
+/* no gamma yet */
+	for (i = 0; i < 256; i++)
+	{
+		gammatable[i] = i;
+#ifdef	GLQUAKE
+		ramps[0][i] = i << 8;
+		ramps[1][i] = i << 8;
+		ramps[2][i] = i << 8;
+#endif
+	}
 }
 

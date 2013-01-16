@@ -943,15 +943,42 @@ static void VID_CreateInversePalette (unsigned char *palette)
 	FS_WriteFile (INVERSE_PALNAME, inverse_pal, INVERSE_PAL_SIZE);
 }
 
-
-void VID_SetPalette (unsigned char *palette)
+static void VID_InitPalette (unsigned char *palette)
 {
 	byte	*pal;
 	unsigned short	r, g, b;
 	unsigned short	i, p, c;
 	unsigned int	v, *table;
 	int		mark;
-	static qboolean	been_here = false;
+
+#if ENDIAN_RUNTIME_DETECT
+	switch (host_byteorder)
+	{
+	case BIG_ENDIAN:	/* R G B A */
+		MASK_r	=	0xff000000;
+		MASK_g	=	0x00ff0000;
+		MASK_b	=	0x0000ff00;
+		MASK_a	=	0x000000ff;
+		SHIFT_r	=	24;
+		SHIFT_g	=	16;
+		SHIFT_b	=	8;
+		SHIFT_a	=	0;
+		break;
+	case LITTLE_ENDIAN:	/* A B G R */
+		MASK_r	=	0x000000ff;
+		MASK_g	=	0x0000ff00;
+		MASK_b	=	0x00ff0000;
+		MASK_a	=	0xff000000;
+		SHIFT_r	=	0;
+		SHIFT_g	=	8;
+		SHIFT_b	=	16;
+		SHIFT_a	=	24;
+		break;
+	default:
+		break;
+	}
+	MASK_rgb	=	(MASK_r|MASK_g|MASK_b);
+#endif	/* ENDIAN_RUNTIME_DETECT */
 
 //
 // 8 8 8 encoding
@@ -994,10 +1021,6 @@ void VID_SetPalette (unsigned char *palette)
 	}
 
 	// Initialize the palettized textures data
-	if (been_here)
-		return;
-	been_here = true;
-
 	mark = Hunk_LowMark ();
 	inverse_pal = (unsigned char *) FS_LoadHunkFile (INVERSE_PALNAME, NULL);
 	if (inverse_pal != NULL && fs_filesize != INVERSE_PAL_SIZE)
@@ -1010,6 +1033,11 @@ void VID_SetPalette (unsigned char *palette)
 		inverse_pal = (unsigned char *) Hunk_AllocName (INVERSE_PAL_SIZE + 1, INVERSE_PALNAME);
 		VID_CreateInversePalette (palette);
 	}
+}
+
+void VID_SetPalette (unsigned char *palette)
+{
+// nothing to do
 }
 
 
@@ -1147,7 +1175,7 @@ static void VID_PrepareModes (void)
 
 	// fullscreen modes
 	id = INVALID_ID;
-	
+
 	while((id = NextDisplayInfo(id)) != INVALID_ID)
 	{
 		handle = FindDisplayInfo(id);
@@ -1298,42 +1326,9 @@ void	VID_Init (unsigned char *palette)
 	Cmd_AddCommand ("vid_nummodes", VID_NumModes_f);
 	Cmd_AddCommand ("vid_restart", VID_Restart_f);
 
+	VID_InitPalette (palette);
+
 	vid.numpages = 2;
-
-#if ENDIAN_RUNTIME_DETECT
-	switch (host_byteorder)
-	{
-	case BIG_ENDIAN:	/* R G B A */
-		MASK_r	=	0xff000000;
-		MASK_g	=	0x00ff0000;
-		MASK_b	=	0x0000ff00;
-		MASK_a	=	0x000000ff;
-		SHIFT_r	=	24;
-		SHIFT_g	=	16;
-		SHIFT_b	=	8;
-		SHIFT_a	=	0;
-		break;
-	case LITTLE_ENDIAN:	/* A B G R */
-		MASK_r	=	0x000000ff;
-		MASK_g	=	0x0000ff00;
-		MASK_b	=	0x00ff0000;
-		MASK_a	=	0xff000000;
-		SHIFT_r	=	0;
-		SHIFT_g	=	8;
-		SHIFT_b	=	16;
-		SHIFT_a	=	24;
-		break;
-	default:
-		break;
-	}
-	MASK_rgb	=	(MASK_r|MASK_g|MASK_b);
-#endif	/* ENDIAN_RUNTIME_DETECT */
-
-	i = COM_CheckParm("-bpp");
-	if (i && i < com_argc-1)
-	{
-		bpp = atoi(com_argv[i+1]);
-	}
 
 	// prepare the modelists, find the actual modenum for vid_default
 	VID_PrepareModes();
@@ -1376,6 +1371,11 @@ void	VID_Init (unsigned char *palette)
 			height = atoi(com_argv[i+1]);
 		else	// proceed with 4/3 ratio
 			height = 3 * width / 4;
+	}
+	i = COM_CheckParm("-bpp");
+	if (i && i < com_argc-1)
+	{
+		bpp = atoi(com_argv[i+1]);
 	}
 
 	// user requested a mode either from the config or from the
@@ -1444,11 +1444,6 @@ void	VID_Init (unsigned char *palette)
 	GL_SetupLightmapFmt(true);
 	GL_Init ();
 	VID_InitGamma();
-
-	// set our palette
-	VID_SetPalette (palette);
-
-	// enable paletted textures
 	VID_Init8bitPalette();
 
 	// lock the early-read cvars until Host_Init is finished
