@@ -431,7 +431,7 @@ void Draw_Character (int x, int y, unsigned int num)
 				dest[7] = d_8to16table[source[7]];
 
 			source += 256;
-			dest += (vid.conrowbytes >> 1);
+			dest += vid.conrowbytes / 2;
 		}
 	}
 }
@@ -655,7 +655,7 @@ void Draw_SmallCharacter (int x, int y, int num)
 			if (source[7])
 				dest[7] = d_8to16table[source[7]];
 			source += 128;
-			dest += (vid.conrowbytes>>1);
+			dest += vid.conrowbytes / 2;
 		}
 	}
 }
@@ -740,7 +740,7 @@ void Draw_Pic (int x, int y, qpic_t *pic)
 	else /* r_pixbytes == 2 */
 	{
 		// FIXME: pretranslate at load time?
-		unsigned short *dest = (unsigned short *)vid.buffer + y * (vid.rowbytes>>1) + x;
+		unsigned short *dest = (unsigned short *)vid.buffer + y * (vid.rowbytes / 2) + x;
 		// FIXME: transparency bits are missing
 		for (v = 0; v < pic->height; v++)
 		{
@@ -749,7 +749,7 @@ void Draw_Pic (int x, int y, qpic_t *pic)
 				dest[u] = d_8to16table[source[u]];
 			}
 
-			dest += vid.rowbytes >> 1;
+			dest += vid.rowbytes / 2;
 			source += pic->width;
 		}
 	}
@@ -837,7 +837,7 @@ void Draw_PicCropped (int x, int y, qpic_t *pic)
 	else /* r_pixbytes == 2 */
 	{
 		// FIXME: pretranslate at load time?
-		unsigned short *dest = (unsigned short *)vid.buffer + y * (vid.rowbytes>>1) + x;
+		unsigned short *dest = (unsigned short *)vid.buffer + y * (vid.rowbytes / 2) + x;
 		// FIXME: transparency bits are missing
 		for (v = 0; v < height; v++)
 		{
@@ -845,7 +845,7 @@ void Draw_PicCropped (int x, int y, qpic_t *pic)
 			{
 				dest[u] = d_8to16table[source[u]];
 			}
-			dest += vid.rowbytes>>1;
+			dest += vid.rowbytes / 2;
 			source += pic->width;
 		}
 	}
@@ -917,7 +917,7 @@ void Draw_TransPic (int x, int y, qpic_t *pic)
 	else /* r_pixbytes == 2 */
 	{
 		// FIXME: pretranslate at load time?
-		unsigned short *dest = (unsigned short *)vid.buffer + y * (vid.rowbytes>>1) + x;
+		unsigned short *dest = (unsigned short *)vid.buffer + y * (vid.rowbytes / 2) + x;
 		// FIXME: transparency bits are missing
 		for (v = 0; v < pic->height; v++)
 		{
@@ -931,7 +931,7 @@ void Draw_TransPic (int x, int y, qpic_t *pic)
 				}
 			}
 
-			dest += vid.rowbytes >> 1;
+			dest += vid.rowbytes / 2;
 			source += pic->width;
 		}
 	}
@@ -1024,7 +1024,7 @@ void Draw_SubPicCropped (int x, int y, int h, qpic_t *pic)
 	else /* r_pixbytes == 2 */
 	{
 		// FIXME: pretranslate at load time?
-		unsigned short *dest = (unsigned short *)vid.buffer + y * (vid.rowbytes>>1) + x;
+		unsigned short *dest = (unsigned short *)vid.buffer + y * (vid.rowbytes / 2) + x;
 		// FIXME: transparency bits are missing
 		for (v = 0; v < height; v++)
 		{
@@ -1032,7 +1032,7 @@ void Draw_SubPicCropped (int x, int y, int h, qpic_t *pic)
 			{
 				dest[u] = d_8to16table[source[u]];
 			}
-			dest += vid.rowbytes>>1;
+			dest += vid.rowbytes / 2;
 			source += pic->width;
 		}
 	}
@@ -1204,7 +1204,7 @@ void Draw_TransPicCropped (int x, int y, qpic_t *pic)
 	else /* r_pixbytes == 2 */
 	{
 		// FIXME: pretranslate at load time?
-		unsigned short *dest = (unsigned short *)vid.buffer + y * (vid.rowbytes>>1) + x;
+		unsigned short *dest = (unsigned short *)vid.buffer + y * (vid.rowbytes / 2) + x;
 		// FIXME: transparency bits are missing
 		for (v = 0; v < height; v++)
 		{
@@ -1216,7 +1216,7 @@ void Draw_TransPicCropped (int x, int y, qpic_t *pic)
 					dest[u] = d_8to16table[tbyte];
 				}
 			}
-			dest += vid.rowbytes>>1;
+			dest += vid.rowbytes / 2;
 			source += pic->width;
 		}
 	}
@@ -1254,7 +1254,7 @@ void Draw_SubPic (int x, int y, qpic_t *pic, int srcx, int srcy, int width, int 
 	else /* r_pixbytes == 2 */
 	{
 		// FIXME: pretranslate at load time?
-		unsigned short *dest = (unsigned short *)vid.buffer + y * (vid.rowbytes >> 1) + x;
+		unsigned short *dest = (unsigned short *)vid.buffer + y * (vid.rowbytes / 2) + x;
 		for (v = 0; v < height; v++)
 		{
 			for (u = srcx; u < (srcx+width); u++)
@@ -1262,7 +1262,7 @@ void Draw_SubPic (int x, int y, qpic_t *pic, int srcx, int srcy, int width, int 
 				dest[u] = d_8to16table[source[u]];
 			}
 
-			dest += vid.rowbytes >> 1;
+			dest += vid.rowbytes / 2;
 			source += pic->width;
 		}
 	}
@@ -1334,7 +1334,7 @@ void Draw_TransPicTranslate (int x, int y, qpic_t *pic, byte *translation, int p
 	else /* r_pixbytes == 2 */
 	{
 		// FIXME: pretranslate at load time?
-		unsigned short *dest = (unsigned short *)vid.buffer + y * (vid.rowbytes>>1) + x;
+		unsigned short *dest = (unsigned short *)vid.buffer + y * (vid.rowbytes / 2) + x;
 		// FIXME: transparency bits are missing
 		for (v = 0; v < pic->height; v++)
 		{
@@ -1348,7 +1348,7 @@ void Draw_TransPicTranslate (int x, int y, qpic_t *pic, byte *translation, int p
 				}
 			}
 
-			dest += vid.rowbytes >> 1;
+			dest += vid.rowbytes / 2;
 			source += pic->width;
 		}
 	}
@@ -1481,7 +1481,7 @@ void Draw_ConsoleBackground (int lines)
 		unsigned short *dest = (unsigned short *)vid.conbuffer;
 		fstep = 320 * 0x10000 / vid.conwidth;
 
-		for (y = 0; y < lines; y++, dest += (vid.conrowbytes >> 1))
+		for (y = 0; y < lines; y++, dest += (vid.conrowbytes / 2))
 		{
 		// FIXME: pre-expand to native format?
 		// FIXME: does the endian switching go away in production?
@@ -1578,10 +1578,10 @@ void R_DrawRect16 (vrect_t *prect, int rowbytes, byte *psrc,
 // FIXME: would it be better to pre-expand native-format versions?
 
 	pdest = (unsigned short *)vid.buffer +
-			(prect->y * (vid.rowbytes >> 1)) + prect->x;
+			(prect->y * (vid.rowbytes / 2)) + prect->x;
 
 	srcdelta = rowbytes - prect->width;
-	destdelta = (vid.rowbytes >> 1) - prect->width;
+	destdelta = (vid.rowbytes / 2) - prect->width;
 
 	if (transparent)
 	{
@@ -1748,10 +1748,10 @@ void Draw_Fill (int x, int y, int w, int h, int c)
 	}
 	else /* r_pixbytes == 2 */
 	{
-		unsigned short *dest = (unsigned short *)vid.buffer + y * (vid.rowbytes>>1) + x;
+		unsigned short *dest = (unsigned short *)vid.buffer + y * (vid.rowbytes / 2) + x;
 		unsigned int uc = d_8to16table[c];
 		// FIXME: transparency bits are missing
-		for (v = 0; v < h; v++, dest += (vid.rowbytes >> 1))
+		for (v = 0; v < h; v++, dest += (vid.rowbytes / 2))
 		{
 			for (u = 0; u < w; u++)
 				dest[u] = uc;

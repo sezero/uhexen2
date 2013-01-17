@@ -3,6 +3,12 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2013-01-17 (SVN):
+    * draw.c: change several places where a bit shift was used to divide
+      vid.rowbytes by 2: behaviour is undefined for signed numbers with
+      negative values. (from a recent commit in tyrquake git repo.)
+    * updated version date stamp to 2013-01-17.
+
 2013-01-16 (SVN):
     * view.c (V_Init): in opengl builds, do initialize the gamma ramps
       array along with the gamma table. minor tidy-up.
