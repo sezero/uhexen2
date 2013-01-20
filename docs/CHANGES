@@ -3,6 +3,9 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2013-01-20 (SVN):
+    * timidity: fixed a few -Wempty-body warnings.
+
 2013-01-17 (SVN):
     * draw.c: change several places where a bit shift was used to divide
       vid.rowbytes by 2: behaviour is undefined for signed numbers with

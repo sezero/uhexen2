@@ -218,8 +218,9 @@ static MidEventList *read_midi_event(MidIStream *stream, MidSong *song)
 		     warnings about undefined tone banks. */
 		  case 0: control=ME_TONE_BANK; break;
 		  case 32: 
-		    if (b!=0)
+		    if (b!=0) {
 		      DEBUG_MSG("(Strange: tone bank change 0x20%02x)\n", b);
+		    }
 		    else
 		      control=ME_TONE_BANK;
 		    break;
