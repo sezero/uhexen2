@@ -4,6 +4,9 @@ Development Progress	:
 ---------------------------
 
 2013-01-22 (SVN):
+    * docs/AUTHORS: Added Sean Stach (Rhiyo) under contributors:testing.
+
+2013-01-22 (SVN):
     * gl_vidamiga.c: fixed the MorphOS gamma functionality.
     * updated version date stamp to 2013-01-22.
 
