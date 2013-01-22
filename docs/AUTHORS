@@ -42,9 +42,10 @@ their authors that we used code from:
   "Pa3PyX" <pa3pyx87405703@icqmail.com>
   Juraj Styk <jurajstyk@host.sk>
   Eric Hobbs <elhobbs@comcast.net>
-  Marc Allaire <korskarn@hexenworld.com>
+  Ryan C. Gordon <icculus@icculus.org>
   "MH" (parts of DIB code) - http://mhquake.blogspot.com/
   Mark Olsen <bigfoot@private.dk>
+  Marc Allaire <korskarn@hexenworld.com>
 
 More contributors (documentation & testing):
 --------------------------------------------
@@ -52,7 +53,7 @@ More contributors (documentation & testing):
   Davide Cendron <scen@gentoo.org>
   Anthony Williams <rugxulo@users.sourceforge.net>
   Frank Sapone <emoaddict15@gmail.com>
-  Oleh Moiseyev <raven-05@inbox.ru>
+  Oleg Moiseyev <whitemagicraven@gmail.com>
   Ronald Eijkman <ronald.eijkman@gmail.com>
   Sean Stach <rhiyo@users.sourceforge.net>
 
