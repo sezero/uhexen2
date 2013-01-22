@@ -569,72 +569,16 @@ static void VID_InitGamma (void)
 		Con_SafePrintf("gamma not available, using gl tricks\n");
 }
 
-#ifdef __MORPHOS__
-unsigned char gammatable[256];
-
-/* this comes from PowerSDL */
-static void CalculateGammaRamp(float gamma, unsigned char *ramp)
-{
-	int i;
-	int value;
-
-	/* 0.0 gamma is all black */
-	if (gamma <= 0.0f) {
-		for (i = 0; i < 256; ++i) {
-			ramp[i] = 0;
-		}
-		return;
-	}
-
-	/* 1.0 gamma is identity */
-	if ( gamma == 1.0f ) {
-		for ( i=0; i<256; ++i ) {
-			ramp[i] = (i << 8) | i;
-		}
-		return;
-	}
-
-	/* Calculate a real gamma ramp */
-	gamma = 1.0f / gamma;
-	for (i = 0; i < 256; ++i)
-	{
-		value = (int)(pow((double)i/256.0, gamma)*255.0+0.5);
-		if (value > 255)
-		{
-			value = 255;
-		}
-		ramp[i] = value;
-	}
-}
-#endif
-
 void VID_ShiftPalette (unsigned char *palette)
 {
 #ifdef __MORPHOS__
 	if (screen)
 	{
-#if 1
-		float	value;
-
-		if (v_gamma.value > (1.0 / GAMMA_MAX))
-			value = 1.0 / v_gamma.value;
-		else
-			value = GAMMA_MAX;
-
-		CalculateGammaRamp(value, gammatable);
-
 		SetAttrs(screen,
 				SA_GammaRed, gammatable,
 				SA_GammaGreen, gammatable,
 				SA_GammaBlue, gammatable,
 				TAG_DONE);
-#else
-		SetAttrs(screen,
-			SA_GammaRed, ramps[0],
-			SA_GammaGreen, ramps[1],
-			SA_GammaBlue, ramps[2],
-			TAG_DONE);
-#endif
 	}
 #endif
 }
