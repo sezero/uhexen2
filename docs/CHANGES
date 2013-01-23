@@ -3,6 +3,11 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2013-01-23 (SVN):
+    * rest of the timidity-0.2i fixes from the timidity-0.2i-bugfix.pat
+      patch found at the onicos.com site.
+    * updated version date stamp to 2013-01-23.
+
 2013-01-22 (SVN):
     * docs/AUTHORS: Added Sean Stach (Rhiyo) under contributors:testing.
       added Ryan C. Gordon under contributors:coding (for osx midi code,
