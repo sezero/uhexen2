@@ -568,24 +568,16 @@ void pre_resample(MidSong *song, MidSample *sp)
   for(i = 0; i < count; i++)
     {
       vptr = src + (ofs >> FRACTION_BITS);
-      /*
-       * Electric Fence to the rescue: Accessing *(vptr - 1) is not a
-       * good thing to do when vptr <= src. (TiMidity++ has a similar
-       * safe-guard here.)
-       */
-      v1 = (vptr == src) ? *vptr : *(vptr - 1);
+    /*v1 = ((vptr>=src+1)? *(vptr - 1):0);*/
+      v1 = (vptr > src) ?
+	   *(vptr - 1) : *vptr /* not 0 to not distort the first sample */;
       v2 = *vptr;
       v3 = *(vptr + 1);
       v4 = *(vptr + 2);
       xdiff = FSCALENEG(ofs & FRACTION_MASK, FRACTION_BITS);
       v = (sint32)(v2 + (xdiff / 6.0) * (-2 * v1 - 3 * v2 + 6 * v3 - v4 +
        xdiff * (3 * (v1 - 2 * v2 + v3) + xdiff * (-v1 + 3 * (v2 - v3) + v4))));
-      if(v < -32768)
-	  *dest++ = -32768;
-      else if(v > 32767)
-	  *dest++ = 32767;
-      else
-	  *dest++ = (sint16)v;
+      *dest++ = (sint16)((v1 > 32767) ? 32767 : ((v1 < -32768) ? -32768 : v1));
       ofs += incr;
     }
 
