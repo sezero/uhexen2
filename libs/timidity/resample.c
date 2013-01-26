@@ -320,7 +320,7 @@ static sample_t *rs_vib_plain(MidSong *song, int v, sint32 *countptr)
 	  break;
 	}
     }
-  
+
   vp->vibrato_control_counter=cc;
   vp->sample_increment=incr;
   vp->sample_offset=ofs; /* Update offset */
@@ -480,7 +480,7 @@ sample_t *resample_voice(MidSong *song, int v, sint32 *countptr)
   sint32 ofs;
   uint8 modes;
   MidVoice *vp=&(song->voice[v]);
-  
+
   if (!(vp->sample->sample_rate))
     {
       /* Pre-resampled data -- just update the offset and check if
@@ -541,8 +541,7 @@ void pre_resample(MidSong *song, MidSample *sp)
   sint16 *newdata, *dest, *src = (sint16 *) sp->data, *vptr;
   sint32 v, v1, v2, v3, v4, i;
 #ifdef TIMIDITY_DEBUG
-  static const char note_name[12][3] =
-  {
+  static const char note_name[12][3] = {
     "C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"
   };
 #endif
@@ -551,13 +550,23 @@ void pre_resample(MidSong *song, MidSample *sp)
 	  sp->note_to_use,
 	  note_name[sp->note_to_use % 12], (sp->note_to_use & 0x7F) / 12);
 
-  a = ((double) (sp->sample_rate) * freq_table[(int) (sp->note_to_use)]) /
-    ((double) (sp->root_freq) * song->rate);
-  newlen = (sint32)(sp->data_length / a);
-  dest = newdata = (sint16 *) safe_malloc((newlen >> (FRACTION_BITS - 1)) + 2);
+  a = ((double) (sp->root_freq) * song->rate) /
+      ((double) (sp->sample_rate) * freq_table[(int) (sp->note_to_use)]);
+  if(sp->data_length * a >= 0x7fffffffL) { /* Too large to compute */
+    DEBUG_MSG(" *** Can't pre-resampling for note %d\n", sp->note_to_use);
+    return;
+  }
 
+  newlen = (sint32)(sp->data_length * a);
   count = (newlen >> FRACTION_BITS) - 1;
   ofs = incr = (sp->data_length - (1 << FRACTION_BITS)) / count;
+
+  if((double)newlen + incr >= 0x7fffffffL) { /* Too large to compute */
+    DEBUG_MSG(" *** Can't pre-resampling for note %d\n", sp->note_to_use);
+    return;
+  }
+
+  dest = newdata = (sint16 *) safe_malloc((newlen >> (FRACTION_BITS - 1)) + 2);
 
   if (--count)
     *dest++ = src[0];
@@ -568,9 +577,7 @@ void pre_resample(MidSong *song, MidSample *sp)
   for(i = 0; i < count; i++)
     {
       vptr = src + (ofs >> FRACTION_BITS);
-    /*v1 = ((vptr>=src+1)? *(vptr - 1):0);*/
-      v1 = (vptr > src) ?
-	   *(vptr - 1) : *vptr /* not 0 to not distort the first sample */;
+      v1 = ((vptr>=src+1)? *(vptr - 1):0);
       v2 = *vptr;
       v3 = *(vptr + 1);
       v4 = *(vptr + 2);
@@ -593,8 +600,8 @@ void pre_resample(MidSong *song, MidSample *sp)
   *dest = *(dest - 1) / 2;
 
   sp->data_length = newlen;
-  sp->loop_start = (sint32)(sp->loop_start / a);
-  sp->loop_end = (sint32)(sp->loop_end / a);
+  sp->loop_start = (sint32)(sp->loop_start * a);
+  sp->loop_end = (sint32)(sp->loop_end * a);
   free(sp->data);
   sp->data = (sample_t *) newdata;
   sp->sample_rate = 0;

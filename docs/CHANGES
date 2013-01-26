@@ -3,6 +3,11 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2013-01-26 (SVN):
+    * timidity, resample.c (pre_resample): some safe-guards taken from
+      Timidity++-2.11.3. went back to the Timidity++ way for the first
+      sample case in the cubic interpolation loop.
+
 2013-01-25 (SVN):
     * timidity, resample.c (pre_resample): some simplification/tidy-ups.
     * updated version date stamp to 2013-01-25.

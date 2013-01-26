@@ -794,7 +794,8 @@ static void load_region_dls(MidSong *song, MidSample *sample, DLS_Instrument *in
 
   if (sample->modes & MODES_SUSTAIN) {
     int value;
-    double attack, hold, decay, release; int sustain;
+    double attack, hold, decay, release;
+    int sustain;
     CONNECTIONLIST *art;
     CONNECTION *artList;
 
