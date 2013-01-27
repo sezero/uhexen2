@@ -4,6 +4,9 @@ Development Progress	:
 ---------------------------
 
 2013-01-27 (SVN):
+    * utils/dhcc makefile: enabled -march=i586 for ix86 builds.
+
+2013-01-27 (SVN):
     * timidity makefile: use -march=i586 by default when compiling for
       x86, and -fomit-frame-pointer -ffast-math for optimized builds.
 

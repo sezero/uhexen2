@@ -38,8 +38,10 @@ BINARY:=dhcc$(exe_ext)
 # Compiler flags
 
 # Overrides for the default CPUFLAGS
-# NOTE: the i586 cpuflag is causing a ~two-fold~ slowdown!
-CPUFLAGS=
+ifeq ($(MACH_TYPE),x86)
+CPU_X86=-march=i586
+endif
+CPUFLAGS=$(CPU_X86)
 
 CFLAGS += -g -Wall
 CFLAGS += $(CPUFLAGS)
