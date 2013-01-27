@@ -65,7 +65,9 @@ static int timidity_fclose (void *ctx)
 
 static const char *cfgfile[] = {
 #ifdef _WIN32
-	"\\TIMIDITY",
+	"C:\\TIMIDITY",
+#elif defined (__MorphOS__)
+	"LIBS:GerontoPlayer",
 #elif defined (__AROS__)
 	"Timidity:",
 #else

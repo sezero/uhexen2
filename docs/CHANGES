@@ -4,6 +4,10 @@ Development Progress	:
 ---------------------------
 
 2013-01-27 (SVN):
+    * snd_timidity.c: add "LIBS:GerontoPlayer" to cfgfile[] for MorphOS
+      builds. likewise for snd_wildmidi.c.
+
+2013-01-27 (SVN):
     * utils/dhcc makefile: enabled -march=i586 for ix86 builds.
 
 2013-01-27 (SVN):

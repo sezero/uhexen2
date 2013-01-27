@@ -52,7 +52,9 @@ static unsigned short wildmidi_rate;
 static unsigned short wildmidi_opts;
 static const char *cfgfile[] = {
 #ifdef _WIN32
-	"\\TIMIDITY",
+	"C:\\TIMIDITY",
+#elif defined (__MorphOS__)
+	"LIBS:GerontoPlayer",
 #elif defined (__AROS__)
 	"Timidity:",
 #else
