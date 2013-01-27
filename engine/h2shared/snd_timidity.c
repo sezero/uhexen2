@@ -68,11 +68,13 @@ static const char *cfgfile[] = {
 	"C:\\TIMIDITY",
 #elif defined(__DJGPP__)
 	"C:/TIMIDITY",
+#elif defined(MSDOS) || defined(__MSDOS__) || defined(__DOS__)
+	"C:\\TIMIDITY",
 #elif defined(__MORPHOS__)
 	"LIBS:GerontoPlayer",
 #elif defined(__AROS__)
 	"Timidity:",
-#else /* PLATFORM_UNIX : */
+#else /* unix, osx, riscos, ... */
 	"/etc",
 	"/etc/timidity",
 	"/usr/share/timidity",
