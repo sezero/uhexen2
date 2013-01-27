@@ -36,6 +36,12 @@
 #	define	PLATFORM_DOS		1
 #   endif
 
+#elif defined(__OS2__) || defined(__EMX__)
+
+#   if !defined(PLATFORM_OS2)
+#	define	PLATFORM_OS2		1
+#   endif
+
 #elif defined(_WIN32) || defined(_WIN64)
 
 #   if !defined(PLATFORM_WINDOWS)
@@ -85,7 +91,7 @@
 #   endif
 #endif
 
-#endif	/* end of PLATFORM_ definitions */
+#endif	/* PLATFORM_xxx */
 
 
 #if defined (PLATFORM_OSX)		/* OS X is unix-based */
@@ -110,6 +116,8 @@
 #	define	PLATFORM_STRING	"Windows"
 #elif defined(PLATFORM_DOS)
 #	define	PLATFORM_STRING	"DOS"
+#elif defined(PLATFORM_OS2)
+#	define	PLATFORM_STRING	"OS/2"
 #elif defined(__linux__) || defined(__linux)
 #	define	PLATFORM_STRING	"Linux"
 #elif defined(__DragonFly__)
@@ -149,7 +157,7 @@
 #else
 #	define	PLATFORM_STRING	"Unknown"
 #	warning "Platform is UNKNOWN."
-#endif	/* end of PLATFORM_STRING definitions */
+#endif	/* PLATFORM_STRING */
 
 #endif	/* __HX2_ARCHDEFS__ */
 

@@ -64,7 +64,7 @@ static int timidity_fclose (void *ctx)
 }
 
 static const char *cfgfile[] = {
-#if defined(_WIN32) || defined(__OS2__)
+#if defined(_WIN32) || defined(__OS2__) || defined(__EMX__)
 	"C:\\TIMIDITY",
 #elif defined(__DJGPP__)
 	"C:/TIMIDITY",

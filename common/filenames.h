@@ -32,8 +32,9 @@
 #include "compiler.h" /* for inline, etc */
 
 /* ---------------------- Windows, DOS, OS2: ---------------------- */
-#if defined(__MSDOS__) || defined(MSDOS) || defined(__DOS__) || \
-	defined(_WIN32) || defined(__OS2__) || defined(__CYGWIN__)
+#if defined(__MSDOS__) || defined(MSDOS) || defined(__DOS__)	|| \
+    defined(__DJGPP__) || defined(__OS2__) || defined(__EMX__)	|| \
+    defined(_WIN32) || defined(__CYGWIN__)
 
 #define HAVE_DOS_BASED_FILE_SYSTEM 1
 #define HAVE_CASE_INSENSITIVE_FILE_SYSTEM 1
