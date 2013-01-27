@@ -4,6 +4,10 @@ Development Progress	:
 ---------------------------
 
 2013-01-27 (SVN):
+    * timidity, resample.c (pre_resample): fixed a typo introduced by
+      commit r5064.
+
+2013-01-27 (SVN):
     * added OS2 platform macros for completeness sake.
 
 2013-01-27 (SVN):

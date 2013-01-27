@@ -584,7 +584,7 @@ void pre_resample(MidSong *song, MidSample *sp)
       xdiff = FSCALENEG(ofs & FRACTION_MASK, FRACTION_BITS);
       v = (sint32)(v2 + (xdiff / 6.0) * (-2 * v1 - 3 * v2 + 6 * v3 - v4 +
        xdiff * (3 * (v1 - 2 * v2 + v3) + xdiff * (-v1 + 3 * (v2 - v3) + v4))));
-      *dest++ = (sint16)((v1 > 32767) ? 32767 : ((v1 < -32768) ? -32768 : v1));
+      *dest++ = (sint16)((v > 32767) ? 32767 : ((v < -32768) ? -32768 : v));
       ofs += incr;
     }
 
