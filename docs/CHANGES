@@ -3,6 +3,10 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2013-01-27 (SVN):
+    * timidity makefile: use -march=i586 by default when compiling for
+      x86, and -fomit-frame-pointer -ffast-math for optimized builds.
+
 2013-01-26 (SVN):
     * timidity, resample.c (pre_resample): some safe-guards taken from
       Timidity++-2.11.3. went back to the Timidity++ way for the first

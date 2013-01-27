@@ -29,15 +29,23 @@ OSLIBS:=$(UHEXEN2_TOP)/oslibs
 # include the common dirty stuff
 include $(UHEXEN2_TOP)/scripts/makefile.inc
 
-CFLAGS += -g -Wall
-ifndef DEBUG
-CFLAGS += -O2 -DNDEBUG=1
+# compiler flags, customize as needed
+ifeq ($(MACH_TYPE),x86)
+CPU_X86=-march=i586
 endif
-#CFLAGS+= -DTIMIDITY_DEBUG
+# Overrides for the default CPUFLAGS
+CPUFLAGS=$(CPU_X86)
 
-# include DLS instruments support? (no: the dls code we inherited from
-# libtimidity and SDL_sound isn't good enough and it isn't used in unix
-# installations where timidity is normally needed, either.)
+CFLAGS += -g -Wall
+CFLAGS += $(CPUFLAGS)
+ifndef DEBUG
+CFLAGS += -O2 -DNDEBUG=1 -ffast-math -fomit-frame-pointer
+endif
+#CFLAGS += -DTIMIDITY_DEBUG
+
+# include DLS instruments support? (no: the DLS code we inherited from
+# SDL_sound isn't good enough, nor is it used on unices where timidity
+# is normally needed, either.)
 USE_DLS = no
 
 ifeq ($(USE_DLS),yes)
@@ -45,6 +53,7 @@ CFLAGS += -DTIMIDITY_USE_DLS
 endif
 
 ifeq ($(TARGET_OS),darwin)
+CPUFLAGS=
 # require 10.5 for 64 bit builds
 ifeq ($(MACH_TYPE),x86_64)
 CFLAGS +=-mmacosx-version-min=10.5
