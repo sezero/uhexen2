@@ -51,13 +51,15 @@ typedef struct _midi_buf_t
 static unsigned short wildmidi_rate;
 static unsigned short wildmidi_opts;
 static const char *cfgfile[] = {
-#ifdef _WIN32
+#if defined(_WIN32) || defined(__OS2__)
 	"C:\\TIMIDITY",
-#elif defined (__MorphOS__)
+#elif defined(__DJGPP__)
+	"C:/TIMIDITY",
+#elif defined(__MORPHOS__)
 	"LIBS:GerontoPlayer",
-#elif defined (__AROS__)
+#elif defined(__AROS__)
 	"Timidity:",
-#else
+#else /* PLATFORM_UNIX : */
 	"/etc",
 	"/etc/wildmidi",
 	"/etc/timidity",
