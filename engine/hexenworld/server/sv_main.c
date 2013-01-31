@@ -1633,18 +1633,15 @@ void SV_Init (void)
 	Con_Printf ("%4.1f megabyte heap\n", host_parms->memsize/(1024*1024.0));
 	Con_Printf ("======== HexenWorld Initialized ========\n");
 
-	// unlock the early-set cvars after init
-	Cvar_UnlockAll ();
+	Cvar_UnlockAll ();			/* unlock the early-set cvars after init */
 
 	Cbuf_InsertText ("exec server.cfg\n");
 	Cbuf_Execute ();
 
-	// process command line arguments
-	Cmd_StuffCmds_f ();
+	Cmd_StuffCmds_f ();				/* process command line arguments */
 	Cbuf_Execute ();
 
-	// if a map wasn't specified on the command line, spawn demo1.map
-	if (sv.state == ss_dead)
+	if (sv.state == ss_dead)	/* no map specified on the command line: spawn demo1.map */
 		Cmd_ExecuteString ("map demo1", src_command);
 	if (sv.state == ss_dead)
 		SV_Error ("Couldn't spawn a server");

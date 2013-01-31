@@ -676,18 +676,15 @@ void Host_Init (void)
 	host_initialized = true;
 	Con_Printf("\n===== Hexen II dedicated server initialized ======\n\n");
 
-	// unlock the early-set cvars after init
-	Cvar_UnlockAll ();
+	Cvar_UnlockAll ();			/* unlock the early-set cvars after init */
 
 	Cbuf_InsertText ("exec server.cfg\n");
 	Cbuf_Execute ();
 
-	// process command line arguments
-	Cmd_StuffCmds_f ();
+	Cmd_StuffCmds_f ();				/* process command line arguments */
 	Cbuf_Execute ();
 
-	// if a map wasn't specified on the command line, spawn demo1.map
-	if (!sv.active)
+	if (!sv.active)		/* no map specified on the command line: spawn demo1.map */
 		Cmd_ExecuteString ("map demo1", src_command);
 }
 

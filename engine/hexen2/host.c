@@ -47,7 +47,7 @@ quakeparms_t	*host_parms;
 
 qboolean	host_initialized;		// true if into command execution
 
-static jmp_buf 	host_abortserver;
+static jmp_buf	host_abort;
 
 double		host_frametime;
 double		realtime;			// without any filtering or bounding
@@ -201,7 +201,7 @@ void Host_EndGame (const char *message, ...)
 	else
 		CL_Disconnect ();
 
-	longjmp (host_abortserver, 1);
+	longjmp (host_abort, 1);
 }
 
 /*
@@ -240,7 +240,7 @@ void Host_Error (const char *error, ...)
 
 	inerror = false;
 
-	longjmp (host_abortserver, 1);
+	longjmp (host_abort, 1);
 }
 
 /*
@@ -815,7 +815,7 @@ static void _Host_Frame (float time)
 	double	save_host_frametime,total_host_frametime;
 #endif
 
-	if (setjmp (host_abortserver) )
+	if (setjmp(host_abort))
 		return;			// something bad happened, or the server disconnected
 
 // keep the random time dependent
@@ -1054,8 +1054,8 @@ void Host_Init (void)
 	CFG_CloseConfig();
 
 #ifdef GLQUAKE
-/*	analogous to host_hunklevel, this will mark OpenGL texture
-	beyond which everything will need to be purged on new map */
+/* analogous to host_hunklevel, this will mark OpenGL texture
+ * beyond which everything will need to be purged on new map */
 	gl_texlevel = numgltextures;
 #endif
 
@@ -1065,27 +1065,21 @@ void Host_Init (void)
 	host_initialized = true;
 	Con_Printf("\n======== Hexen II Initialized =========\n\n");
 
+/* execute the hexen.rc file: a valid file runs default.cfg, config.cfg
+ * and autoexec.cfg in this order, then processes the cmdline arguments
+ * by sending "stuffcmds". */
 	if (cls.state != ca_dedicated)
 	{
-	// execute the hexen.rc file: a valid file runs default.cfg,
-	// config.cfg and autoexec.cfg in this order, then processes
-	// the command line arguments by sending a stuffcmds.
 		Cbuf_InsertText ("exec hexen.rc\n");
-	// in case the execution fails and causes a longjmp() call
-	// such as by way of a Host_Error(), we will just segfault
-	// because we haven't saved the stack context/environment.
-	// do so here:
-		setjmp (host_abortserver);
-		Cbuf_Execute();
+		if (!setjmp(host_abort))		/* in case exec fails with a longjmp(), e.g. Host_Error() */
+			Cbuf_Execute ();
 	}
 
-	// unlock the early-set cvars after init
-	Cvar_UnlockAll ();
+	Cvar_UnlockAll ();				/* unlock the early-set cvars after init */
 
 	if (cls.state == ca_dedicated)
 	{
-	// process command line arguments
-		Cmd_StuffCmds_f ();
+		Cmd_StuffCmds_f ();				/* process command line arguments */
 		Cbuf_Execute ();
 		if (!sv.active)
 			Cbuf_AddText ("map demo1\n");

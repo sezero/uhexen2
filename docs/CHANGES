@@ -3,6 +3,11 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2013-01-31 (SVN):
+    * rename host_abortserver of h2 to host_abort, in line with h2w.
+      tweak the setjmp() call in Host_Init(). style clean-up.
+    * updated version date stamp to 2013-01-31.
+
 2013-01-27 (SVN):
     * timidity, resample.c (pre_resample): fixed a typo introduced by
       commit r5064.

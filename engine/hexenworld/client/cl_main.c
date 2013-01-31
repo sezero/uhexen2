@@ -1261,7 +1261,7 @@ void Host_Frame (float time)
 	int			pass1, pass2, pass3;
 	float			fps;
 
-	if (setjmp (host_abort) )
+	if (setjmp(host_abort))
 		return;	// something bad happened, or the server disconnected
 
 	// decide the simulation time
@@ -1416,8 +1416,8 @@ void Host_Init (void)
 	CFG_CloseConfig();
 
 #ifdef GLQUAKE
-/*	analogous to host_hunklevel, this will mark OpenGL texture
-	beyond which everything will need to be purged on new map */
+/* analogous to host_hunklevel, this will mark OpenGL texture
+ * beyond which everything will need to be purged on new map */
 	gl_texlevel = numgltextures;
 #endif
 
@@ -1427,18 +1427,14 @@ void Host_Init (void)
 	host_initialized = true;
 	Con_Printf ("\n======= HexenWorld Initialized ========\n\n");
 
-	// execute the hexen.rc file: a valid file runs default.cfg,
-	// config.cfg and autoexec.cfg in this order, then processes
-	// the command line arguments by sending a stuffcmds.
+/* execute the hexen.rc file: a valid file runs default.cfg, config.cfg
+ * and autoexec.cfg in this order, then processes the cmdline arguments
+ * by sending "stuffcmds". */
 	Cbuf_InsertText ("exec hexen.rc\n");
-	// in case the execution fails and causes a longjmp() call
-	// such as by way of a Host_Error(), we will just segfault
-	// because we haven't saved the stack context/environment.
-	// do so here:
-	setjmp (host_abort);
-	Cbuf_Execute();
-	// unlock the early-set cvars after init
-	Cvar_UnlockAll ();
+	if (!setjmp(host_abort))		/* in case exec fails with a longjmp(), e.g. Host_Error() */
+		Cbuf_Execute ();
+
+	Cvar_UnlockAll ();			/* unlock the early-set cvars after init */
 }
 
 
