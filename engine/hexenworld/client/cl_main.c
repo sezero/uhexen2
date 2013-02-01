@@ -99,7 +99,7 @@ quakeparms_t	*host_parms;
 
 qboolean	host_initialized;	// true if into command execution
 
-static jmp_buf 	host_abort;
+static jmp_buf	host_abort;
 
 double		host_frametime;
 double		realtime;		// without any filtering or bounding
@@ -147,7 +147,7 @@ CL_Quit_f
 */
 static void CL_Quit_f (void)
 {
-	if (1 /* Key_GetDest() != key_console */ /* && cls.state != ca_dedicated */)
+	if (1 /* Key_GetDest() != key_console && cls.state == ca_active */)
 	{
 		M_Menu_Quit_f ();
 		return;
