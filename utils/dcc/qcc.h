@@ -357,8 +357,8 @@ typedef struct
 {
 	int		builtin;	// if non 0, call an internal function
 	int		code;		// first statement
-	char		*file;		// source file with definition
-	int		file_line;
+//	char		*file;		// source file with definition
+//	int		file_line;
 	struct def_s	*def;
 	int		parm_ofs[MAX_PARMS];	// always contiguous, right?
 } function_t;
@@ -368,7 +368,7 @@ typedef struct
 {
 	const char	*name;
 	const char	*opname;
-	float		priority;
+	int		priority;
 	qboolean	right_associative;
 	def_t		*type_a, *type_b, *type_c;
 } opcode_t;
@@ -386,11 +386,10 @@ typedef enum
 int	CopyString (const char *str);
 type_t	*PR_ParseType (void);
 const char	*PR_ParseName (void);
-
 void	PR_Lex (void);	// reads the next token into pr_token and classifies its type
 qboolean PR_Check (const char *string);
 void	PR_Expect (const char *string);
-void	PR_ParseError (const char *error, ...) __attribute__((__format__(__printf__,1,2)));
+void	PR_ParseError (const char *error, ...) __attribute__((__format__(__printf__,1,2), __noreturn__));
 void	PR_NewLine (void);
 def_t	*PR_GetDef (type_t *type, const char *name, def_t *scope, qboolean allocate);
 void	PR_SkipToSemicolon (void);

@@ -128,7 +128,6 @@ typedef struct
 {
 	const char	*name;
 	const char	*opname;
-//	float		priority;
 	int		priority;
 	qboolean	right_associative;
 	def_t		*type_a, *type_b, *type_c;
@@ -188,11 +187,12 @@ enum
 // PUBLIC FUNCTION PROTOTYPES ----------------------------------------------
 
 // hcc.c
-
 int	CopyString (const char *str);
 
-// lexi.c
+void	PR_ParseError(const char *error, ...) __attribute__((__format__(__printf__,1,2), __noreturn__));
+void	PR_ParseWarning(const char *error, ...) __attribute__((__format__(__printf__,1,2)));
 
+// lexi.c
 void	LX_Init (void);
 void	LX_NewSourceFile (const char *fileText);
 void	LX_Fetch (void);
@@ -207,7 +207,6 @@ type_t	*PR_ParseType (void);
 const char	*PR_ParseName (void);
 
 // comp.c
-
 void	CO_Init (void);
 qboolean CO_CompileFile (const char *fileText, const char *fileName);
 def_t	*CO_GenCode (opcode_t *op, def_t *var_a, def_t *var_b);
@@ -216,18 +215,11 @@ def_t	*CO_ParseImmediate (void);
 void	CO_ParseDefs (void);
 def_t	*PR_GetDef (type_t *type, const char *name, def_t *scope, qboolean allocate);
 
-// parseerr.c
-
-void	PR_ParseError(const char *error, ...) __attribute__((__format__(__printf__,1,2)));
-void	PR_ParseWarning(const char *error, ...) __attribute__((__format__(__printf__,1,2)));
-
 // expr.c
-
 void	EX_Init (void);
 def_t	*EX_Expression (int priority);
 
 // stmt.c
-
 void	ST_ParseStatement (void);
 
 
