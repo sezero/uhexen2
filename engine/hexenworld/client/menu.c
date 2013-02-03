@@ -793,7 +793,7 @@ static void M_Options_Draw (void)
 	M_DrawSlider (220, 60 + 8*OPT_SCALE, (r-1)/2);
 #endif
 	M_Print (16 + (11 * 8), 60 + 8*OPT_SCRSIZE,	"Screen size");
-	r = (scr_viewsize.value - 30.0) / (120 - 30);
+	r = (scr_viewsize.value - 30.0) / (130 - 30);
 	M_DrawSlider (220, 60 + 8*OPT_SCRSIZE, r);
 
 	M_Print (16 + (12 * 8), 60 + 8*OPT_GAMMA,	"Brightness");

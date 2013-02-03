@@ -275,7 +275,7 @@ void Sbar_Draw(void)
 	scr_copyeverything = 1;
 	sb_updates++;
 
-	if (BarHeight < 0)
+	if (BarHeight < 0  && scr_viewsize.integer <= 120)
 		DrawFullScreenInfo();
 
 	//Sbar_DrawPic(0, 0, Draw_CachePic("gfx/topbar.lmp"));

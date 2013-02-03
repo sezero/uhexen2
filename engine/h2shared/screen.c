@@ -351,8 +351,8 @@ static void SCR_CalcRefdef (void)
 // bound viewsize
 	if (scr_viewsize.integer < 30)
 		Cvar_SetQuick (&scr_viewsize, "30");
-	else if (scr_viewsize.integer > 120)
-		Cvar_SetQuick (&scr_viewsize, "120");
+	else if (scr_viewsize.integer > 130)
+		Cvar_SetQuick (&scr_viewsize, "130");
 
 // bound field of view
 	if (scr_fov.integer < 10)
