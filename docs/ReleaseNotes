@@ -10,6 +10,9 @@ Changes in v1.5.6: (Feb. 02, 2013.)
 
 - OpenGL: gamma fixes for several platforms.
 
+- Screen: viewsize greater than 120 now disables the hud (use the screen
+  size slider in the options menu.)
+
 - Progs VM: Fixed a corner case thinko in version6 progs execution.
 
 - Timidity (Unix MIDI): Multiple fixes, including memory errors found by

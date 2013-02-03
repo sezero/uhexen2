@@ -307,10 +307,8 @@ void Sbar_Draw(void)
 		SB_PlacePlayerNames();
 	}
 
-	if (scr_con_current == vid.height)
-	{ // console is full screen
+	if (scr_con_current == vid.height)	// console is full screen
 		return;
-	}
 
 	if (cl.spectator)
 	{
@@ -331,46 +329,33 @@ void Sbar_Draw(void)
 
 	trans_level = sbtrans.integer;
 	if (trans_level < 0 || trans_level > 2)
-	{
 		trans_level = 0;
-	}
 
-	// Draw always until we fix things
-	//if (sb_updates >= vid.numpages)
-	//	return;
+// Draw always until we fix things
+//	if (sb_updates >= vid.numpages)
+//		return;
 
-/*	if (BarHeight == BarTargetHeight)
-	{
-		return;
-	}
-*/
+//	if (BarHeight == BarTargetHeight)
+//		return;
 
 	if (BarHeight < BarTargetHeight)
 	{
 		delta = ((BarTargetHeight-BarHeight)*BarSpeed.value) * host_frametime;
 		if (delta < 0.5)
-		{
 			delta = 0.5;
-		}
 		BarHeight += delta;
 		if (BarHeight > BarTargetHeight)
-		{
 			BarHeight = BarTargetHeight;
-		}
 		scr_fullupdate = 0;
 	}
 	else if (BarHeight > BarTargetHeight)
 	{
 		delta = ((BarHeight-BarTargetHeight)*BarSpeed.value) * host_frametime;
 		if (delta < 0.5)
-		{
 			delta = 0.5;
-		}
 		BarHeight -= delta;
 		if (BarHeight < BarTargetHeight)
-		{
 			BarHeight = BarTargetHeight;
-		}
 		scr_fullupdate = 0;
 	}
 
@@ -380,7 +365,6 @@ void Sbar_Draw(void)
 	if (BarHeight < 0 && scr_viewsize.integer <= 120)
 		DrawFullScreenInfo();
 
-	//Sbar_DrawPic(0, 0, Draw_CachePic("gfx/topbar.lmp"));
 	Sbar_DrawPic(0, 0, Draw_CachePic("gfx/topbar1.lmp"));
 	Sbar_DrawPic(160, 0, Draw_CachePic("gfx/topbar2.lmp"));
 	Sbar_DrawTransPic(0, -23, Draw_CachePic("gfx/topbumpl.lmp"));
@@ -391,13 +375,9 @@ void Sbar_Draw(void)
 	// Blue mana
 	mana = (int)cl.v.bluemana;
 	if (mana < 0)
-	{
 		mana = 0;
-	}
 	else if (mana > maxMana)
-	{
 		mana = maxMana;
-	}
 	sprintf(tempStr, "%03d", mana);
 	Sbar_DrawSmallString(201, 22, tempStr);
 	if (mana)
@@ -410,13 +390,9 @@ void Sbar_Draw(void)
 	// Green mana
 	mana = (int)cl.v.greenmana;
 	if (mana < 0)
-	{
 		mana = 0;
-	}
 	else if (mana > maxMana)
-	{
 		mana = maxMana;
-	}
 	sprintf(tempStr, "%03d", mana);
 	Sbar_DrawSmallString(243, 22, tempStr);
 	if (mana)
@@ -484,43 +460,29 @@ static void SetChainPosition(float health, float maxHealth)
 	float chainTargetPosition;
 
 	if (health < 0)
-	{
 		health = 0;
-	}
 	else if (health > maxHealth)
-	{
 		health = maxHealth;
-	}
 	chainTargetPosition = (health*195)/maxHealth;
 	if (fabs(ChainPosition-chainTargetPosition) < 0.1)
-	{
 		return;
-	}
 	if (ChainPosition < chainTargetPosition)
 	{
 		delta = ((chainTargetPosition-ChainPosition)*5)*host_frametime;
 		if (delta < 0.5)
-		{
 			delta = 0.5;
-		}
 		ChainPosition += delta;
 		if (ChainPosition > chainTargetPosition)
-		{
 			ChainPosition = chainTargetPosition;
-		}
 	}
 	else if (ChainPosition > chainTargetPosition)
 	{
 		delta = ((ChainPosition-chainTargetPosition)*5)*host_frametime;
 		if (delta < 0.5)
-		{
 			delta = 0.5;
-		}
 		ChainPosition -= delta;
 		if (ChainPosition < chainTargetPosition)
-		{
 			ChainPosition = chainTargetPosition;
-		}
 	}
 }
 
@@ -544,26 +506,18 @@ static void DrawFullScreenInfo(void)
 	// Blue mana
 	mana = (int)cl.v.bluemana;
 	if (mana < 0)
-	{
 		mana = 0;
-	}
 	else if (mana > maxMana)
-	{
 		mana = maxMana;
-	}
 	sprintf(tempStr, "%03d", mana);
 	Sbar_DrawSmallString(10, y+6, tempStr);
 
 	// Green mana
 	mana = (int)cl.v.greenmana;
 	if (mana < 0)
-	{
 		mana = 0;
-	}
 	else if (mana > maxMana)
-	{
 		mana = maxMana;
-	}
 	sprintf(tempStr, "%03d", mana);
 	Sbar_DrawSmallString(10, y+18+6, tempStr);
 
@@ -597,7 +551,6 @@ static void DrawLowerBar(void)
 		playerClass = 1;	// Default to paladin
 
 	// Backdrop
-	//Sbar_DrawPic(0, 46, Draw_CachePic("gfx/btmbar.lmp"));
 	Sbar_DrawPic(0, 46, Draw_CachePic("gfx/btmbar1.lmp"));
 	Sbar_DrawPic(160, 46, Draw_CachePic("gfx/btmbar2.lmp"));
 
@@ -733,9 +686,7 @@ static void DrawLowerBar(void)
 	for (i = 0; i < 8; i++)
 	{
 		if (cl.puzzle_pieces[i][0] == 0)
-		{
 			continue;
-		}
 		Sbar_DrawPic(194+(piece%4)*31, piece < 4 ? 51 : 82, Draw_CachePic(va("gfx/puzzle/%s.lmp", cl.puzzle_pieces[i])));
 		piece++;
 	}
@@ -853,13 +804,9 @@ static void Sbar_DrawNum(int x, int y, int number, int digits)
 	while (*ptr)
 	{
 		if (*ptr == '-')
-		{
 			frame = STAT_MINUS;
-		}
 		else
-		{
 			frame = *ptr -'0';
-		}
 		Sbar_DrawTransPic(x, y, sb_nums[frame]);
 		x += 13;
 		ptr++;
@@ -1167,9 +1114,7 @@ static void Sbar_PuzzlePieceOverlay(void)
 	for (i = 0; i < 8; i++)
 	{
 		if (cl.puzzle_pieces[i][0] == 0)
-		{
 			continue;
-		}
 
 		if (piece == 4)
 			y = 40;
@@ -1241,9 +1186,7 @@ static void Sbar_SmallDeathmatchOverlay(void)
 
 	trans_level = dmtrans.integer;
 	if (trans_level < 0 || trans_level > 2)
-	{
 		trans_level = 0;
-	}
 
 	scr_copyeverything = 1;
 	scr_fullupdate = 0;
@@ -1328,7 +1271,7 @@ static void Sbar_SmallDeathmatchOverlay(void)
 			f = s->frags;
 			sprintf (num, "%3i", f);
 
-	/*
+			/*
 			if (k != cl.playernum)
 			{
 				Draw_Character (x+2 , y-1, num[0]);
@@ -1342,7 +1285,7 @@ static void Sbar_SmallDeathmatchOverlay(void)
 				Draw_Character (x+10 , y-1, num[1] + 256);
 				Draw_Character (x+18 , y-1, num[2] + 256);
 			}
-	*/
+			*/
 
 			if (k == cl.playernum)
 			{
@@ -1418,14 +1361,15 @@ static void DrawActiveRings(void)
 		ring_row += 33;
 	}
 
-/*	if (flag & RING_REGENERATION)
+	/*
+	if (flag & RING_REGENERATION)
 	{
 		frame = 1 + ((int)(cl.time * 16) % 16);
 		sprintf(tempStr, "gfx/rngreg%d.lmp", frame);
 		Draw_TransPic(vid.width - 50, ring_row, Draw_CachePic(tempStr));
 		ring_row += 33;
 	}
-*/
+	*/
 
 	if (flag & RING_WATER)
 	{
@@ -1571,9 +1515,7 @@ static void DrawArtifactInventory(void)
 		return;
 	}
 	if (!inv_flg)
-	{
 		return;
-	}
 	if (!cl.inv_count)
 	{
 		Inv_Update(false);
@@ -1581,13 +1523,9 @@ static void DrawArtifactInventory(void)
 	}
 
 	if (BarHeight < 0)
-	{
 		y = BarHeight-34;
-	}
 	else
-	{
 		y = -37;
-	}
 
 	// InvLeft_f and InvRight_f scrolls the inventory as needed - S.A.
 	for (i = 0, x = 64; i < INV_MAX_ICON; i++, x += 33)
@@ -1622,10 +1560,7 @@ static void DrawArtifactInventory(void)
 static void ShowDMDown_f(void)
 {
 	if (sb_ShowDM)
-	{
 		return;
-	}
-
 	sb_ShowDM = true;
 }
 
@@ -1649,10 +1584,7 @@ static void ShowDMUp_f(void)
 static void ShowNamesDown_f(void)
 {
 	if (sb_ShowNames)
-	{
 		return;
-	}
-
 	sb_ShowNames = true;
 }
 
@@ -1675,13 +1607,9 @@ static void ShowNamesUp_f(void)
 
 static void ShowInfoDown_f(void)
 {
-	if (sb_ShowInfo ||
-		cl.intermission ||
-	//	cls.demoplayback ||	// not necessary
-		cls.state < ca_connected)
-	{
+	if (sb_ShowInfo || cl.intermission || cls.state < ca_connected)
 		return;
-	}
+//	if (cls.demoplayback) return;	// demoplay check not needed -- O.S.
 	S_LocalSound("misc/barmovup.wav");
 	BarTargetHeight = BAR_TOTAL_HEIGHT;
 	sb_ShowInfo = true;
@@ -1696,15 +1624,9 @@ static void ShowInfoDown_f(void)
 
 static void ShowInfoUp_f(void)
 {
-//	if (cl.intermission || (scr_viewsize.integer > 110 && !sbtrans.integer))
-	if (cl.intermission || scr_viewsize.integer > 110)
-	{
+	if (cl.intermission || (scr_viewsize.integer > 110/* && !sbtrans.integer*/))
 		BarTargetHeight = 0.0-BAR_BUMP_HEIGHT;
-	}
-	else
-	{
-		BarTargetHeight = BAR_TOP_HEIGHT;
-	}
+	else	BarTargetHeight = BAR_TOP_HEIGHT;
 	S_LocalSound("misc/barmovdn.wav");
 	sb_ShowInfo = false;
 	sb_updates = 0;
@@ -1719,9 +1641,7 @@ static void ShowInfoUp_f(void)
 static void InvLeft_f(void)
 {
 	if (!cl.inv_count || cl.intermission)
-	{
 		return;
-	}
 
 	if (inv_flg)
 	{
@@ -1757,9 +1677,7 @@ static void InvRight_f(void)
 	int		right_icon;
 
 	if (!cl.inv_count || cl.intermission)
-	{
 		return;
-	}
 
 	if (inv_flg)
 	{
@@ -1793,9 +1711,7 @@ static void InvRight_f(void)
 static void InvUse_f(void)
 {
 	if (!cl.inv_count || cl.intermission)
-	{
 		return;
-	}
 	S_LocalSound("misc/invuse.wav");
 	//Inv_Update(false);
 	Inv_Update(true);
@@ -1813,9 +1729,7 @@ static void InvUse_f(void)
 static void InvDrop_f(void)
 {
 	if (!cl.inv_count || cl.intermission)
-	{
 		return;
-	}
 	S_LocalSound("misc/invuse.wav");
 	//Inv_Update(false);
 	Inv_Update(true);
@@ -1943,15 +1857,9 @@ void SB_InvReset(void)
 
 void SB_ViewSizeChanged(void)
 {
-//	if (cl.intermission || (scr_viewsize.integer > 110 && !sbtrans.integer))
-	if (cl.intermission || scr_viewsize.integer > 110)
-	{
+	if (cl.intermission || (scr_viewsize.integer > 110/* && !sbtrans.integer*/))
 		BarHeight = BarTargetHeight = 0.0-BAR_BUMP_HEIGHT;
-	}
-	else
-	{
-		BarHeight = BarTargetHeight = BAR_TOP_HEIGHT;
-	}
+	else	BarHeight = BarTargetHeight = BAR_TOP_HEIGHT;
 }
 
 // DRAWING FUNCTIONS *******************************************************

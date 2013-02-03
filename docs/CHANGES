@@ -4,6 +4,11 @@ Development Progress	:
 ---------------------------
 
 2013-02-03 (SVN):
+    * sbar.c: remove dead code which referenced non-existing art. coding
+      style tidy-up.
+    * update the release notes file for the new no-hud thing.
+
+2013-02-03 (SVN):
     * Make viewsize > 120 mean "no HUD" (more or less). Based on an idea
       and initial patch by Oleg Moiseyev (a.k.a. 'raven').
 
