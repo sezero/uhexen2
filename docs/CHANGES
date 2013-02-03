@@ -4,6 +4,12 @@ Development Progress	:
 ---------------------------
 
 2013-02-02 (SVN):
+    * scripts/pthread.sh: clean up for better flexibility.
+    * utils: adjust the makefiles of jsh2color, light and vis after the
+      pthread.sh cleanup.
+    * launcher: used scripts/pthread.sh in the makefile.
+
+2013-02-02 (SVN):
     * config.guess, config.sub and ax_pthread.m4 from savannah git repo.
     * updated version date stamp to 2013-02-02.
 

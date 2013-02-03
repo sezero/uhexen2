@@ -1,16 +1,14 @@
 #!/bin/sh
-# based on configure.in of SDL library
+# based on configure.in of the SDL library
 
 if test $# -ne 2; then
+	echo "Usage: pthread.sh <target_triplet> <option>"
+	echo "target triplet e.g.: i686-pc-linux"
+	echo "option is either --cflags or --libs"
 	exit 1
 fi
 
-host=`sh $1 2> /dev/null`
-if test $? -ne 0; then
-	exit 1
-fi
-
-case "$host" in
+case $1 in
     *-*-linux*|*-*-uclinux*)
         pthread_cflags="-D_REENTRANT"
         pthread_lib="-lpthread"
@@ -75,11 +73,18 @@ case "$host" in
         ;;
 esac
 
-if test "$2" = "--cflags"; then
-	echo $pthread_cflags
-elif test "$2" = "--libs"; then
-	echo $pthread_lib
-#else
-#	echo "bad argument"
-fi
+case $2 in
+    --cflags)
+        echo $pthread_cflags
+        exit
+        ;;
+    --libs)
+        echo $pthread_lib
+        exit
+        ;;
+    *)
+        echo "invalid argument"
+        exit 1
+        ;;
+esac
 

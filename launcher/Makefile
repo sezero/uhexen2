@@ -54,10 +54,9 @@ GTK_LIBS:= $(shell pkg-config --libs gtk+-2.0)
 endif
 endif
 
-# pthread flags: do note that these are different across
-# different platforms!!!
-PTHREAD_CFLAGS=-D_REENTRANT
-PTHREAD_LIBS=-lpthread
+TARGET_TRIPLET= $(shell sh $(UHEXEN2_TOP)/scripts/config.guess 2>/dev/null)
+PTHREAD_CFLAGS= $(shell sh $(UHEXEN2_TOP)/scripts/pthread.sh $(TARGET_TRIPLET) --cflags 2>/dev/null)
+PTHREAD_LIBS  = $(shell sh $(UHEXEN2_TOP)/scripts/pthread.sh $(TARGET_TRIPLET) --libs   2>/dev/null)
 
 CPUFLAGS=
 
