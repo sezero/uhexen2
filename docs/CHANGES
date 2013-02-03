@@ -3,6 +3,10 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2013-02-03 (SVN):
+    * Make viewsize > 120 mean "no HUD" (more or less). Based on an idea
+      and initial patch by Oleg Moiseyev (a.k.a. 'raven').
+
 2013-02-02 (SVN):
     * scripts/pthread.sh: clean up for better flexibility.
     * utils: adjust the makefiles of jsh2color, light and vis after the
