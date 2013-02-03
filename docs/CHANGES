@@ -3,6 +3,10 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2013-02-02 (SVN):
+    * config.guess, config.sub and ax_pthread.m4 from savannah git repo.
+    * updated version date stamp to 2013-02-02.
+
 2013-02-01 (SVN):
     * utils hcc, dhcc: marked PR_ParseError() as noreturn. in dhcc,
       changed opcode_t:priority type from float to int, commented out
