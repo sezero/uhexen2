@@ -1148,7 +1148,10 @@ static void Host_Class_f (void)
 			return;
 		}
 		if (sv.active && (progs->crc != PROGS_V112_CRC))
-		{
+		{	/* FIXME: This isn't right!!!  A custom progs can actually
+			 * support 5 classes and can have v1.11 structures at the
+			 * same time.  I don't know a way to detect any such thing,
+			 * hence this lame solution! -- O.S.  */
 			Con_Printf("progs.dat in use doesn't support that class.\n");
 			return;
 		}

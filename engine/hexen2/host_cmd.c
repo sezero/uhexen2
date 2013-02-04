@@ -1249,9 +1249,9 @@ static void Host_Class_f (void)
 
 	if (Cmd_Argc () == 1)
 	{
-		if (!cl_playerclass.integer);
-		else
-			Con_Printf ("\"playerclass\" is %d (\"%s\")\n", cl_playerclass.integer, ClassNames[cl_playerclass.integer-1]);
+		Con_Printf("\"playerclass\" is %d (\"%s\")\n", cl_playerclass.integer,
+			   (cl_playerclass.integer < 1 || cl_playerclass.integer > MAX_PLAYER_CLASS) ?
+			   "unknown" : ClassNames[cl_playerclass.integer - 1]);
 		return;
 	}
 	if (Cmd_Argc () == 2)
@@ -1280,7 +1280,10 @@ static void Host_Class_f (void)
 			return;
 		}
 		if (sv.active && (progs->crc != PROGS_V112_CRC))
-		{
+		{	/* FIXME: This isn't right!!!  A custom progs can actually
+			 * support 5 classes and can have v1.11 structures at the
+			 * same time.  I don't know a way to detect any such thing,
+			 * hence this lame solution! -- O.S.  */
 			Con_Printf("progs.dat in use doesn't support that class.\n");
 			return;
 		}
@@ -1290,8 +1293,8 @@ static void Host_Class_f (void)
 	{
 		Cvar_SetValue ("_cl_playerclass", newClass);
 
-		// when classes changes after map load, update cl_playerclass, cl_playerclass should 
-		// probably only be used in worldspawn, though
+		// when class changes after map load, update cl_playerclass,
+		// cl_playerclass should probably only be used in worldspawn, though.
 		if (sv.active && sv_globals.cl_playerclass)
 			*sv_globals.cl_playerclass = newClass;
 
