@@ -4,6 +4,11 @@ Development Progress	:
 ---------------------------
 
 2013-02-04 (SVN):
+    * libs, timidity/readmidi.c: make sure that malloc() is successful
+      in read_meta_data(), read_midi_event(), read_midi_file(), and in
+      groom_list().
+
+2013-02-04 (SVN):
     * libs, timidity/readmidi.c: use safe_free() in read_meta_data(). no
       need for an early return in free_midi_list(). return NULL instead
       of newlist at the end of read_midi_event(), because the whole body

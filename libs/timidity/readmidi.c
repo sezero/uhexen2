@@ -74,6 +74,7 @@ static int read_meta_data(MidIStream *stream, sint32 len, uint8 type, MidSong *s
   MidSongMetaId id;
   char *s = (char *)safe_malloc(len+1);
 
+  if (!s) return -1;
   if (len != (sint32) mid_istream_read(stream, s, 1, len))
     {
       free(s);
@@ -104,6 +105,7 @@ static int read_meta_data(MidIStream *stream, sint32 len, uint8 type, MidSong *s
 
 #define MIDIEVENT(at,t,ch,pa,pb)				\
   newlist = (MidEventList *) safe_malloc(sizeof(MidEventList));	\
+  if (!newlist) goto nomem;					\
   newlist->event.time = at;					\
   newlist->event.type = t;					\
   newlist->event.channel = ch;					\
@@ -287,6 +289,8 @@ static MidEventList *read_midi_event(MidIStream *stream, MidSong *song)
 	}
     }
 
+nomem:
+  DEBUG_MSG("Out of memory\n");
   return NULL;
 }
 
@@ -395,13 +399,18 @@ static MidEvent *groom_list(MidSong *song, sint32 divisions,sint32 *eventsp,
   tempo=500000;
   compute_sample_increment(song, tempo, divisions);
 
-  /* This may allocate a bit more than we need */
-  groomed_list=lp=(MidEvent *) safe_malloc(sizeof(MidEvent) * (song->event_count+1));
-  meep=song->evlist;
-
   our_event_count=0;
   st=at=sample_cum=0;
   counting_time=2; /* We strip any silence before the first NOTE ON. */
+
+  /* This may allocate a bit more than we need */
+  groomed_list=lp=(MidEvent *) safe_malloc(sizeof(MidEvent) * (song->event_count+1));
+  if (!groomed_list)
+    {
+      DEBUG_MSG("Out of memory\n");
+      goto done;
+    }
+  meep=song->evlist;
 
   for (i = 0; i < song->event_count; i++)
     {
@@ -517,6 +526,7 @@ static MidEvent *groom_list(MidSong *song, sint32 divisions,sint32 *eventsp,
   lp->time=st;
   lp->type=ME_EOT;
   our_event_count++;
+done:
   free_midi_list(song);
 
   *eventsp=our_event_count;
@@ -592,6 +602,11 @@ MidEvent *read_midi_file(MidIStream *stream, MidSong *song, sint32 *count, sint3
 
   /* Put a do-nothing event first in the list for easier processing */
   song->evlist=(MidEventList *) safe_malloc(sizeof(MidEventList));
+  if (!song->evlist)
+    {
+      DEBUG_MSG("Out of memory\n");
+      return NULL;
+    }
   song->evlist->event.time=0;
   song->evlist->event.type=ME_NONE;
   song->evlist->next = NULL;
