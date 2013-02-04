@@ -594,21 +594,16 @@ static void SCR_DrawPause (void)
 	}
 
 	pic = Draw_CachePic ("gfx/menu/paused.lmp");
-//	Draw_Pic ( (vid.width - pic->width)/2, 
-//		(vid.height - 48 - pic->height)/2, pic);
+//	Draw_Pic ( (vid.width - pic->width)/2, (vid.height - 48 - pic->height)/2, pic);
 
 	if (LogoPercent < LogoTargetPercent)
 	{
 		delta = ((LogoTargetPercent - LogoPercent) / .5) * host_frametime;
 		if (delta < 0.004)
-		{
 			delta = 0.004;
-		}
 		LogoPercent += delta;
 		if (LogoPercent > LogoTargetPercent)
-		{
 			LogoPercent = LogoTargetPercent;
-		}
 	}
 
 	finaly = ((float)pic->height * LogoPercent) - pic->height;

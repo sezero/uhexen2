@@ -3,6 +3,11 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2013-02-04 (SVN):
+    * menu.c: remove dead code which referenced non-existing art. coding
+      style tidy-up.
+    * d_init.c, gl_screen.c, screen.c: coding style tidy-up.
+
 2013-02-03 (SVN):
     * sbar.c: remove dead code which referenced non-existing art. coding
       style tidy-up.

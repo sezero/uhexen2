@@ -32,7 +32,7 @@ static	cvar_t	d_mipscale = {"d_mipscale", "1", CVAR_NONE};
 
 surfcache_t		*d_initial_rover;
 qboolean		d_roverwrapped;
-int				d_minmip;
+int			d_minmip;
 float			d_scalemip[NUM_MIPS-1];
 
 static float	basemip[NUM_MIPS-1] = {1.0, 0.5*0.8, 0.25*0.8};
@@ -66,13 +66,11 @@ D_CopyRects
 */
 void D_CopyRects (vrect_t *prects, int transparent)
 {
-
 // this function is only required if the CPU doesn't have direct access to the
 // back buffer, and there's some driver interface function that the driver
 // doesn't support and requires Quake to do in software (such as drawing the
 // console); Quake will then draw into wherever the driver points vid.buffer
 // and will call this function before swapping buffers
-
 	UNUSED(prects);
 	UNUSED(transparent);
 }
@@ -162,9 +160,7 @@ D_UpdateRects
 */
 void D_UpdateRects (vrect_t *prect)
 {
-
 // the software driver draws these directly to the vid buffer
-
 	UNUSED(prect);
 }
 

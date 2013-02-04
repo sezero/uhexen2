@@ -405,9 +405,7 @@ void ScrollTitle (const char *name)
 	{
 		delta = ((TitleTargetPercent-TitlePercent)/0.5)*host_frametime;
 		if (delta < 0.004)
-		{
 			delta = 0.004;
-		}
 		TitlePercent += delta;
 		if (TitlePercent > TitleTargetPercent)
 		{
@@ -418,9 +416,7 @@ void ScrollTitle (const char *name)
 	{
 		delta = ((TitlePercent-TitleTargetPercent)/0.15)*host_frametime;
 		if (delta < 0.02)
-		{
 			delta = 0.02;
-		}
 		TitlePercent -= delta;
 		if (TitlePercent <= TitleTargetPercent)
 		{
@@ -431,22 +427,17 @@ void ScrollTitle (const char *name)
 
 	if (LogoPercent < LogoTargetPercent)
 	{
-/*		delta = ((LogoTargetPercent-LogoPercent)/1.1)*host_frametime;
+		/*
+		delta = ((LogoTargetPercent-LogoPercent)/1.1)*host_frametime;
 		if (delta < 0.0015)
-		{
 			delta = 0.0015;
-		}
-*/
+		*/
 		delta = ((LogoTargetPercent-LogoPercent)/.15)*host_frametime;
 		if (delta < 0.02)
-		{
 			delta = 0.02;
-		}
 		LogoPercent += delta;
 		if (LogoPercent > LogoTargetPercent)
-		{
 			LogoPercent = LogoTargetPercent;
-		}
 	}
 
 	if (q_strcasecmp(LastName,name) != 0 && TitleTargetPercent != 0)
@@ -620,7 +611,7 @@ void M_Menu_Options_f (void)
 	// get the current music type
 	if (old_bgmtype[0] == 0)
 		q_strlcpy(old_bgmtype, bgmtype.string, sizeof(old_bgmtype));
-#if 0	// change to 1 if dont want to disable mouse in fullscreen
+#if 0	/* change to 1 if dont want to disable mouse in fullscreen */
 	if ((options_cursor == OPT_USEMOUSE) && (modestate != MS_WINDOWED))
 		options_cursor = 0;
 #endif
@@ -912,7 +903,7 @@ static void M_Options_Key (int k)
 		M_AdjustSliders (1);
 		break;
 	}
-#if 0	// change to 1 if dont want to disable mouse in fullscreen
+#if 0	/* change to 1 if dont want to disable mouse in fullscreen */
 	if ((options_cursor == OPT_USEMOUSE) && (modestate != MS_WINDOWED))
 	{
 		if (k == K_UPARROW)
@@ -1362,14 +1353,8 @@ static void M_Keys_Draw (void)
 	int		i, x, y;
 	int		keys[2];
 	const char	*name;
-//	qpic_t	*p;
 
 	ScrollTitle("gfx/menu/title6.lmp");
-
-//	M_DrawTextBox (6,56, 35,16);
-
-//	p = Draw_CachePic("gfx/menu/hback.lmp");
-//	M_DrawTransPicCropped(8, 62, p);
 
 	if (keys_top)
 		M_DrawCharacter (6, 80, 128);

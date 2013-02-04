@@ -108,7 +108,7 @@ static float	LogoTargetPercent = 1;
 
 static int	setup_class;
 
-static const char	*message, *message2;
+static const char	*msave_message, *msave_message2;
 static double	message_time;
 
 
@@ -516,9 +516,7 @@ void ScrollTitle (const char *name)
 	{
 		delta = ((TitleTargetPercent-TitlePercent)/0.5)*host_frametime;
 		if (delta < 0.004)
-		{
 			delta = 0.004;
-		}
 		TitlePercent += delta;
 		if (TitlePercent > TitleTargetPercent)
 		{
@@ -529,9 +527,7 @@ void ScrollTitle (const char *name)
 	{
 		delta = ((TitlePercent-TitleTargetPercent)/0.15)*host_frametime;
 		if (delta < 0.02)
-		{
 			delta = 0.02;
-		}
 		TitlePercent -= delta;
 		if (TitlePercent <= TitleTargetPercent)
 		{
@@ -542,22 +538,17 @@ void ScrollTitle (const char *name)
 
 	if (LogoPercent < LogoTargetPercent)
 	{
-/*		delta = ((LogoTargetPercent-LogoPercent)/1.1)*host_frametime;
+		/*
+		delta = ((LogoTargetPercent-LogoPercent)/1.1)*host_frametime;
 		if (delta < 0.0015)
-		{
 			delta = 0.0015;
-		}
-*/
+		*/
 		delta = ((LogoTargetPercent-LogoPercent)/.15)*host_frametime;
 		if (delta < 0.02)
-		{
 			delta = 0.02;
-		}
 		LogoPercent += delta;
 		if (LogoPercent > LogoTargetPercent)
-		{
 			LogoPercent = LogoTargetPercent;
-		}
 	}
 
 	if (q_strcasecmp(LastName,name) != 0 && TitleTargetPercent != 0)
@@ -616,7 +607,6 @@ static void M_Main_Draw (void)
 	int		f;
 
 	ScrollTitle("gfx/menu/title0.lmp");
-//	M_DrawTransPic (72, 32, Draw_CachePic ("gfx/mainmenu.lmp") );
 	M_DrawBigString (72, 60 + (0 * 20), "SINGLE PLAYER");
 	M_DrawBigString (72, 60 + (1 * 20), "MULTIPLAYER");
 	M_DrawBigString (72, 60 + (2 * 20), "OPTIONS");
@@ -794,7 +784,7 @@ static void M_Menu_Class2_f (void)
 {
 	Key_SetDest (key_menu);
 	m_state = m_class;
-	class_flag=1;
+	class_flag = 1;
 }
 
 static int	m_class_cursor;
@@ -867,7 +857,6 @@ static void M_Class_Key (int key)
 		break;
 
 	case K_ENTER:
-//		sv_player->v.playerclass=m_class_cursor+1;
 		Cbuf_AddText ( va ("playerclass %d\n", m_class_cursor+1) );
 		m_entersound = true;
 		if (!class_flag)
@@ -1011,10 +1000,9 @@ static int		loadable[MAX_SAVEGAMES];
 
 static void M_ScanSaves (void)
 {
-	int		i, j;
+	int	i, j, version;
 	char	name[MAX_OSPATH];
 	FILE	*f;
-	int		version;
 
 	for (i = 0; i < MAX_SAVEGAMES; i++)
 	{
@@ -1200,10 +1188,9 @@ static void M_Save_Key (int k)
 
 static void M_ScanMSaves (void)
 {
-	int		i, j;
+	int	i, j, version;
 	char	name[MAX_OSPATH];
 	FILE	*f;
-	int		version;
 
 	for (i = 0; i < MAX_SAVEGAMES; i++)
 	{
@@ -1246,8 +1233,8 @@ static void M_Menu_MSave_f (void)
 {
 	if (!sv.active || cl.intermission || svs.maxclients == 1)
 	{
-		message = "Only a network server";
-		message2 = "can save a multiplayer game";
+		msave_message = "Only a network server";
+		msave_message2 = "can save a multiplayer game";
 		message_time = realtime;
 		return;
 	}
@@ -1372,7 +1359,7 @@ static void M_Menu_MultiPlayer_f (void)
 	m_state = m_multiplayer;
 	m_entersound = true;
 
-	message = NULL;
+	msave_message = NULL;
 }
 
 
@@ -1392,12 +1379,12 @@ static void M_MultiPlayer_Draw (void)
 	f = (int)(realtime * 10)%8;
 	M_DrawTransPic (43, 54 + m_multiplayer_cursor * 20,Draw_CachePic( va("gfx/menu/menudot%i.lmp", f+1 ) ) );
 
-	if (message)
+	if (msave_message)
 	{
-		M_PrintWhite ((320/2) - ((27*8)/2), 168, message);
-		M_PrintWhite ((320/2) - ((27*8)/2), 176, message2);
+		M_PrintWhite ((320/2) - ((27*8)/2), 168, msave_message);
+		M_PrintWhite ((320/2) - ((27*8)/2), 176, msave_message2);
 		if (realtime - 5 > message_time)
-			message = NULL;
+			msave_message = NULL;
 	}
 
 	if (serialAvailable || ipxAvailable || tcpipAvailable)
@@ -1544,7 +1531,7 @@ static void M_Setup_Draw (void)
 
 static void M_Setup_Key (int k)
 {
-	int			l;
+	int		l;
 
 	switch (k)
 	{
@@ -1870,7 +1857,7 @@ void M_Menu_Options_f (void)
 	// get the current music type
 	if (old_bgmtype[0] == 0)
 		q_strlcpy(old_bgmtype, bgmtype.string, sizeof(old_bgmtype));
-#if 0	// change to 1 if dont want to disable mouse in fullscreen
+#if 0	/* change to 1 if dont want to disable mouse in fullscreen */
 	if ((options_cursor == OPT_USEMOUSE) && (modestate != MS_WINDOWED))
 		options_cursor = 0;
 #endif
@@ -2105,7 +2092,6 @@ static void M_Options_Draw (void)
 		M_Print (16 + (11 * 8), 60 + 8*OPT_VIDEO,	"Video Modes");
 
 	// cursor
-	// doesn't get drawn properly with XFree4.3/MGA200 S.A.
 	M_DrawCharacter (200, 60 + 8*options_cursor, 12 + ((int)(realtime*4) & 1));
 }
 
@@ -2168,7 +2154,7 @@ static void M_Options_Key (int k)
 		M_AdjustSliders (1);
 		break;
 	}
-#if 0	// change to 1 if dont want to disable mouse in fullscreen
+#if 0	/* change to 1 if dont want to disable mouse in fullscreen */
 	if ((options_cursor == OPT_USEMOUSE) && (modestate != MS_WINDOWED))
 	{
 		if (k == K_UPARROW)
@@ -2529,8 +2515,7 @@ static const char *bindnames[][2] =
 	{"+showinfo",		"full inventory"},
 	{"+showdm",		"info / frags"},
 	{"toggle_dm",		"toggle frags"},
-// command to display the mission pack's objectives
-	{"+infoplaque",		"objectives"},
+	{"+infoplaque",		"objectives"},	/* command to display the mission pack's objectives */
 	{"invleft",		"inv move left"},
 	{"invright",		"inv move right"},
 	{"impulse 100",		"inv:torch"},
@@ -2619,14 +2604,8 @@ static void M_Keys_Draw (void)
 	int		i, x, y;
 	int		keys[2];
 	const char	*name;
-//	qpic_t	*p;
 
 	ScrollTitle("gfx/menu/title6.lmp");
-
-//	M_DrawTextBox (6,56, 35,16);
-
-//	p = Draw_CachePic("gfx/menu/hback.lmp");
-//	M_DrawTransPicCropped(8, 62, p);
 
 	if (keys_top)
 		M_DrawCharacter (6, 80, 128);
