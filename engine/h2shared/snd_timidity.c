@@ -98,11 +98,7 @@ static int TIMIDITY_InitHelper (const char *cfgdir)
 	path[len] = '\0';
 	q_strlcat(path, "timidity.cfg", sizeof(path));
 	Con_DPrintf("Timidity: trying %s\n", path);
-	if (mid_init(path) == 0)
-		return 0;
-
-	mid_exit (); /* make sure timidity frees all malloc'ed mem */
-	return -1;
+	return mid_init(path);
 }
 
 static qboolean S_TIMIDITY_CodecInitialize (void)
@@ -121,7 +117,6 @@ static qboolean S_TIMIDITY_CodecInitialize (void)
 		/* env is an override: if it fails, we
 		 * don't bother trying anything else. */
 		err = mid_init(timi_env);
-		if (err != 0) mid_exit();
 		goto _finish;
 	}
 #if DO_USERDIRS

@@ -4,6 +4,14 @@ Development Progress	:
 ---------------------------
 
 2013-02-04 (SVN):
+    * libs, timidity: change timidity initialization so that a failure,
+      such as config parse failures, shall also warrant a full shutdown
+      of the library which frees all memory.
+    * engine, snd_timidity.c: change the codec initialization routines
+      now that mid_init() errors guarantee an associated mid_exit() from
+      within the library itself.
+
+2013-02-04 (SVN):
     * libs, timidity: added safe_free() as a new macro which expands to
       either simply free(), or to free() with additional NULL check of
       its argument when "CANT_FREE_NULL" preprocessor macro is defined.

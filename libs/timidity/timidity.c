@@ -265,8 +265,12 @@ static int read_config_file(const char *name)
       if (!master_drumset[i])
       {
 	master_drumset[i] = (MidToneBank *) safe_malloc(sizeof(MidToneBank));
+	if (!(master_drumset[i]))
+	  goto nomem;
 	memset(master_drumset[i], 0, sizeof(MidToneBank));
 	master_drumset[i]->tone = (MidToneBankElement *) safe_malloc(128 * sizeof(MidToneBankElement));
+	if (!(master_drumset[i]->tone))
+	  goto nomem;
 	memset(master_drumset[i]->tone, 0, 128 * sizeof(MidToneBankElement));
       }
       bank=master_drumset[i];
@@ -288,8 +292,12 @@ static int read_config_file(const char *name)
       if (!master_tonebank[i])
       {
 	master_tonebank[i] = (MidToneBank *) safe_malloc(sizeof(MidToneBank));
+	if (!(master_tonebank[i]))
+	  goto nomem;
 	memset(master_tonebank[i], 0, sizeof(MidToneBank));
 	master_tonebank[i]->tone = (MidToneBankElement *) safe_malloc(128 * sizeof(MidToneBankElement));
+	if (!(master_tonebank[i]->tone))
+	  goto nomem;
 	memset(master_tonebank[i]->tone, 0, 128 * sizeof(MidToneBankElement));
       }
       bank=master_tonebank[i];
@@ -314,9 +322,11 @@ static int read_config_file(const char *name)
 		name, line);
 	goto fail;
       }
-      if (bank->tone[i].name)
-	free(bank->tone[i].name);
-      strcpy((bank->tone[i].name=(char *) safe_malloc(strlen(w[1])+1)),w[1]);
+      safe_free(bank->tone[i].name);
+      bank->tone[i].name=(char *) safe_malloc(strlen(w[1])+1);
+      if (!(bank->tone[i].name))
+	goto nomem;
+      strcpy(bank->tone[i].name,w[1]);
       bank->tone[i].note=bank->tone[i].amp=bank->tone[i].pan=
       bank->tone[i].strip_loop=bank->tone[i].strip_envelope=
       bank->tone[i].strip_tail=-1;
@@ -406,6 +416,8 @@ static int read_config_file(const char *name)
   }
   fclose(fp);
   return 0;
+nomem:
+  DEBUG_MSG("Out of memory\n");
 fail:
   fclose(fp);
   return -2;
@@ -413,18 +425,29 @@ fail:
 
 int mid_init_no_config(void)
 {
+  master_tonebank[0] = NULL;
+  master_drumset[0] = NULL;
   /* Allocate memory for the standard tonebank and drumset */
   master_tonebank[0] = (MidToneBank *) safe_malloc(sizeof(MidToneBank));
+  if (!(master_tonebank[0])) goto fail;
   memset(master_tonebank[0], 0, sizeof(MidToneBank));
   master_tonebank[0]->tone = (MidToneBankElement *) safe_malloc(128 * sizeof(MidToneBankElement));
+  if (!(master_tonebank[0]->tone)) goto fail;
   memset(master_tonebank[0]->tone, 0, 128 * sizeof(MidToneBankElement));
 
   master_drumset[0] = (MidToneBank *) safe_malloc(sizeof(MidToneBank));
+  if (!(master_drumset[0])) goto fail;
   memset(master_drumset[0], 0, sizeof(MidToneBank));
   master_drumset[0]->tone = (MidToneBankElement *) safe_malloc(128 * sizeof(MidToneBankElement));
+  if (!(master_drumset[0]->tone)) goto fail;
   memset(master_drumset[0]->tone, 0, 128 * sizeof(MidToneBankElement));
 
   return 0;
+
+fail:
+  DEBUG_MSG("Out of memory\n");
+  mid_exit ();
+  return -1;
 }
 
 int mid_init(const char *config_file)
@@ -432,7 +455,9 @@ int mid_init(const char *config_file)
   const char *p;
   int rc;
 
-  mid_init_no_config();
+  rc = mid_init_no_config();
+  if (rc != 0)
+      return rc;
 
   if (config_file == NULL || *config_file == '\0')
       config_file = CONFIG_FILE;
@@ -441,6 +466,9 @@ int mid_init(const char *config_file)
       add_to_pathlist(config_file, p - config_file + 1); /* including DIRSEP */
 
   rc = read_config_file(config_file);
+  if (rc != 0)
+      mid_exit ();
+
   return rc;
 }
 
@@ -590,8 +618,7 @@ void mid_exit(void)
       {
 	for (j = 0; j < 128; j++)
 	{
-	  if (e[j].name != NULL)
-	    free(e[j].name);
+	  safe_free(e[j].name);
 	}
 	free(e);
       }
@@ -603,10 +630,9 @@ void mid_exit(void)
       MidToneBankElement *e = master_drumset[i]->tone;
       if (e != NULL)
       {
-        for (j = 0; j < 128; j++)
-        {
-	  if (e[j].name != NULL)
-	    free(e[j].name);
+	for (j = 0; j < 128; j++)
+	{
+	  safe_free(e[j].name);
 	}
 	free(e);
       }
