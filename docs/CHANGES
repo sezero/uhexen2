@@ -4,6 +4,10 @@ Development Progress	:
 ---------------------------
 
 2013-02-04 (SVN):
+    * libs, timidity/resample.c (pre_resample): do not proceed if memory
+      alloctation fails.
+
+2013-02-04 (SVN):
     * libs, timidity: change timidity initialization so that a failure,
       such as config parse failures, shall also warrant a full shutdown
       of the library which frees all memory.

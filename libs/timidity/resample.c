@@ -567,6 +567,8 @@ void pre_resample(MidSong *song, MidSample *sp)
   }
 
   dest = newdata = (sint16 *) safe_malloc((newlen >> (FRACTION_BITS - 1)) + 2);
+  if (!dest)
+    return;
 
   if (--count)
     *dest++ = src[0];
