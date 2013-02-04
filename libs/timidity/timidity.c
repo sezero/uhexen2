@@ -482,6 +482,7 @@ MidSong *mid_song_load_dls(MidIStream *stream, MidDLSPatches *dlspatches, MidSon
 
   /* Allocate memory for the song */
   song = (MidSong *)safe_malloc(sizeof(*song));
+  if (!song) goto nomem;
   memset(song, 0, sizeof(*song));
   song->dlspatches = dlspatches;
 
@@ -490,12 +491,14 @@ MidSong *mid_song_load_dls(MidIStream *stream, MidDLSPatches *dlspatches, MidSon
     if (master_tonebank[i])
     {
       song->tonebank[i] = (MidToneBank *) safe_malloc(sizeof(MidToneBank));
+      if (!(song->tonebank[i])) goto nomem;
       memset(song->tonebank[i], 0, sizeof(MidToneBank));
       song->tonebank[i]->tone = master_tonebank[i]->tone;
     }
     if (master_drumset[i])
     {
       song->drumset[i] = (MidToneBank *) safe_malloc(sizeof(MidToneBank));
+      if (!(song->drumset[i])) goto nomem;
       memset(song->drumset[i], 0, sizeof(MidToneBank));
       song->drumset[i]->tone = master_drumset[i]->tone;
     }
@@ -538,7 +541,9 @@ MidSong *mid_song_load_dls(MidIStream *stream, MidDLSPatches *dlspatches, MidSon
   song->discard_meta = options->discard_meta;
   song->buffer_size = options->buffer_size;
   song->resample_buffer = (sample_t *) safe_malloc(options->buffer_size * sizeof(sample_t));
+  if (!(song->resample_buffer)) goto nomem;
   song->common_buffer = (sint32 *) safe_malloc(options->buffer_size * 2 * sizeof(sint32));
+  if (!(song->common_buffer)) goto nomem;
 
   song->bytes_per_sample =
 	((song->encoding & PE_MONO) ? 1 : 2) *
@@ -557,10 +562,8 @@ MidSong *mid_song_load_dls(MidIStream *stream, MidDLSPatches *dlspatches, MidSon
 				&song->samples);
 
   /* Make sure everything is okay */
-  if (!song->events) {
-    free(song);
-    return(NULL);
-  }
+  if (!song->events)
+    goto fail;
 
   song->default_instrument = NULL;
   song->default_program = DEFAULT_PROGRAM;
@@ -571,6 +574,11 @@ MidSong *mid_song_load_dls(MidIStream *stream, MidDLSPatches *dlspatches, MidSon
   load_missing_instruments(song);
 
   return(song);
+nomem:
+  DEBUG_MSG("Out of memory\n");
+fail:
+  mid_song_free (song);
+  return NULL;
 }
 
 MidSong *mid_song_load(MidIStream *stream, MidSongOptions *options)
@@ -582,24 +590,23 @@ void mid_song_free(MidSong *song)
 {
   int i;
 
+  if (!song) return;
+
   free_instruments(song);
 
   for (i = 0; i < 128; i++)
   {
-    if (song->tonebank[i])
-      free(song->tonebank[i]);
-    if (song->drumset[i])
-      free(song->drumset[i]);
+    safe_free(song->tonebank[i]);
+    safe_free(song->drumset[i]);
   }
 
-  free(song->common_buffer);
-  free(song->resample_buffer);
-  free(song->events);
+  safe_free(song->common_buffer);
+  safe_free(song->resample_buffer);
+  safe_free(song->events);
 
   for (i = 0; i < (int)(sizeof(song->meta_data) / sizeof(song->meta_data[0])); i++)
   {
-    if (song->meta_data[i])
-      free(song->meta_data[i]);
+    safe_free(song->meta_data[i]);
   }
 
   free(song);

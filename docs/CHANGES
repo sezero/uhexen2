@@ -4,6 +4,17 @@ Development Progress	:
 ---------------------------
 
 2013-02-04 (SVN):
+    * finalize the malloc() safety in timidity: instrum_dls.c still has
+      to be edited, but it is not built by default, either:
+    * libs, timidity/instrum.c: make sure that malloc() is successful.
+      clear the allocated memory for ip and its sample in order to help
+      the error handling and/or freeing routines. make sure that sample
+      pointer is valid in free_instrument().
+    * libs, timidity/timidity.c: make sure that malloc() is successful
+      in mid_song_load_dls(). use safe_free() whenever possible in the
+      song freeing processes.
+
+2013-02-04 (SVN):
     * libs, timidity/instrum.c: remove the noluck variable and directly
       check whether the file pointer is NULL.
 

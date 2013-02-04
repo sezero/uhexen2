@@ -44,12 +44,15 @@ static void free_instrument(MidInstrument *ip)
   MidSample *sp;
   int i;
   if (!ip) return;
-  for (i=0; i<ip->samples; i++)
+  if (ip->sample) {
+    for (i=0; i<ip->samples; i++)
     {
       sp=&(ip->sample[i]);
+      if (!sp) break;
       free(sp->data);
     }
-  free(ip->sample);
+    free(ip->sample);
+  }
   free(ip);
 }
 
@@ -197,6 +200,7 @@ static MidInstrument *load_instrument(MidSong *song, const char *name,
     }
 
   DEBUG_MSG("Loading instrument %s\n", tmp);
+  ip = NULL;
 
   /* Read some headers and do cursory sanity checks. There are loads
      of magic offsets. This could be rewritten... */
@@ -207,28 +211,31 @@ static MidInstrument *load_instrument(MidSong *song, const char *name,
 						      differences are */
     {
       DEBUG_MSG("%s: not an instrument\n", name);
-      fclose(fp);
-      return NULL;
+      goto badpat;
     }
 
   if (tmp[82] != 1 && tmp[82] != 0)  /* instruments. To some patch makers,
 					0 means 1 */
     {
       DEBUG_MSG("Can't handle patches with %d instruments\n", tmp[82]);
-      fclose(fp);
-      return NULL;
+      goto badpat;
     }
 
   if (tmp[151] != 1 && tmp[151] != 0) /* layers. What's a layer? */
     {
       DEBUG_MSG("Can't handle instruments with %d layers\n", tmp[151]);
-      fclose(fp);
-      return NULL;
+      goto badpat;
     }
 
   ip = (MidInstrument *) safe_malloc(sizeof(MidInstrument));
+  if (!ip) goto nomem;
+  memset(ip, 0, sizeof(MidInstrument));
+
   ip->samples = tmp[198];
   ip->sample = (MidSample *) safe_malloc(sizeof(MidSample) * ip->samples);
+  if (!ip->sample) goto nomem;
+  memset(ip->sample, 0, sizeof(MidSample) * ip->samples);
+
   for (i=0; i<ip->samples; i++)
     {
       uint8 fractions;
@@ -237,28 +244,19 @@ static MidInstrument *load_instrument(MidSong *song, const char *name,
       uint8 tmpchar;
 
 #define READ_CHAR(thing)				\
-      if (1 != fread(&tmpchar, 1, 1, fp)) goto fail;	\
+      if (1 != fread(&tmpchar, 1, 1, fp)) goto badread;	\
       thing = tmpchar;
 #define READ_SHORT(thing)				\
-      if (1 != fread(&tmpshort, 2, 1, fp)) goto fail;	\
+      if (1 != fread(&tmpshort, 2, 1, fp)) goto badread;\
       thing = SWAPLE16(tmpshort);
 #define READ_LONG(thing)				\
-      if (1 != fread(&tmplong, 4, 1, fp)) goto fail;	\
+      if (1 != fread(&tmplong, 4, 1, fp)) goto badread;	\
       thing = SWAPLE32(tmplong);
 
       fseek(fp, 7, SEEK_CUR); /* Skip the wave name */
 
       if (1 != fread(&fractions, 1, 1, fp))
-	{
-	fail:
-	  DEBUG_MSG("Error reading sample %d\n", i);
-	  for (j=0; j<i; j++)
-	    free(ip->sample[j].data);
-	  free(ip->sample);
-	  free(ip);
-	  fclose(fp);
-	  return NULL;
-	}
+	goto badread;
 
       sp=&(ip->sample[i]);
 
@@ -282,7 +280,8 @@ static MidInstrument *load_instrument(MidSong *song, const char *name,
 	sp->panning = (uint8)(panning & 0x7F);
 
       /* envelope, tremolo, and vibrato */
-      if (18 != fread(tmp, 1, 18, fp)) goto fail;
+      if (18 != fread(tmp, 1, 18, fp))
+	goto badread;
 
       if (!tmp[13] || !tmp[14])
 	{
@@ -391,8 +390,10 @@ static MidInstrument *load_instrument(MidSong *song, const char *name,
 
       /* Then read the sample data */
       sp->data = (sample_t *) safe_malloc(sp->data_length+2);
+      if (!sp->data) goto nomem;
+
       if (1 != fread(sp->data, sp->data_length, 1, fp))
-	goto fail;
+	goto badread;
 
       if (!(sp->modes & MODES_16BIT)) /* convert to 16-bit data */
 	{
@@ -403,6 +404,7 @@ static MidInstrument *load_instrument(MidSong *song, const char *name,
 	  sp->loop_start *= 2;
 	  sp->loop_end *= 2;
 	  tmp16 = new16 = (uint16 *) safe_malloc(sp->data_length+2);
+	  if (!new16) goto nomem;
 	  while (k--)
 	    *tmp16++ = (uint16)(*cp++) << 8;
 	  free(sp->data);
@@ -512,6 +514,17 @@ static MidInstrument *load_instrument(MidSong *song, const char *name,
 
   fclose(fp);
   return ip;
+
+nomem:
+  DEBUG_MSG("Out of memory\n");
+  goto fail;
+badread:
+  DEBUG_MSG("Error reading sample %d\n", i);
+fail:
+  free_instrument (ip);
+badpat:
+  fclose(fp);
+  return NULL;
 }
 
 static int fill_bank(MidSong *song, int dr, int b)
