@@ -4,6 +4,14 @@ Development Progress	:
 ---------------------------
 
 2013-02-04 (SVN):
+    * libs, timidity: added safe_free() as a new macro which expands to
+      either simply free(), or to free() with additional NULL check of
+      its argument when "CANT_FREE_NULL" preprocessor macro is defined.
+      CANT_FREE_NULL can be defined through the makefile for any such
+      standarts incompliant platforms (if there are still any such in
+      existence) where freeing a NULL pointer crashes or something.
+
+2013-02-04 (SVN):
     * host_cmd.c (Host_Class_f): add a big FIXME note to the lame fifth
       class check against h2mp-style progs. bounds-check cl_playerclass
       before using its value as an index for the ClassNames array.
