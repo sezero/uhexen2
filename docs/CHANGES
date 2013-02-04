@@ -4,6 +4,10 @@ Development Progress	:
 ---------------------------
 
 2013-02-04 (SVN):
+    * updated config.guess and config.sub from savannah git repo.
+    * updated version date stamp to 2013-02-04.
+
+2013-02-04 (SVN):
     * finalize the malloc() safety in timidity: instrum_dls.c still has
       to be edited, but it is not built by default, either:
     * libs, timidity/instrum.c: make sure that malloc() is successful.
