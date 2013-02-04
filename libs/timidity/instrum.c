@@ -169,7 +169,7 @@ static MidInstrument *load_instrument(MidSong *song, const char *name,
   MidSample *sp;
   FILE *fp;
   char tmp[1024];
-  int i,j,noluck=0;
+  int i,j;
   static const char *patch_ext[] = PATCH_EXT_LIST;
 
   if (!name) return NULL;
@@ -177,7 +177,6 @@ static MidInstrument *load_instrument(MidSong *song, const char *name,
   /* Open patch file */
   if ((fp=open_file(name)) == NULL)
     {
-      noluck=1;
       /* Try with various extensions */
       for (i=0; patch_ext[i]; i++)
 	{
@@ -186,15 +185,12 @@ static MidInstrument *load_instrument(MidSong *song, const char *name,
 	      strcpy(tmp, name);
 	      strcat(tmp, patch_ext[i]);
 	      if ((fp=open_file(tmp)) != NULL)
-		{
-		  noluck=0;
 		  break;
-		}
 	    }
 	}
     }
 
-  if (noluck)
+  if (fp == NULL)
     {
       DEBUG_MSG("Instrument `%s' can't be found.\n", name);
       return NULL;
@@ -276,7 +272,7 @@ static MidInstrument *load_instrument(MidSong *song, const char *name,
       sp->low_vel = 0;
       sp->high_vel = 127;
       fseek(fp, 2, SEEK_CUR); /* Why have a "root frequency" and then
-				    * "tuning"?? */
+				* "tuning"?? */
 
       READ_CHAR(tmp[0]);
 
@@ -324,8 +320,8 @@ static MidInstrument *load_instrument(MidSong *song, const char *name,
       READ_CHAR(sp->modes);
 
       fseek(fp, 40, SEEK_CUR); /* skip the useless scale frequency, scale
-				       factor (what's it mean?), and reserved
-				       space */
+				  factor (what's it mean?), and reserved
+				  space */
 
       /* Mark this as a fixed-pitch instrument if such a deed is desired. */
       if (note_to_use!=-1)
@@ -334,9 +330,9 @@ static MidInstrument *load_instrument(MidSong *song, const char *name,
 	sp->note_to_use=0;
 
       /* seashore.pat in the Midia patch set has no Sustain. I don't
-         understand why, and fixing it by adding the Sustain flag to
-         all looped patches probably breaks something else. We do it
-         anyway. */
+	 understand why, and fixing it by adding the Sustain flag to
+	 all looped patches probably breaks something else. We do it
+	 anyway. */
       if (sp->modes & MODES_LOOPING) 
 	sp->modes |= MODES_SUSTAIN;
 

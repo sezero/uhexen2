@@ -4,6 +4,10 @@ Development Progress	:
 ---------------------------
 
 2013-02-04 (SVN):
+    * libs, timidity/instrum.c: remove the noluck variable and directly
+      check whether the file pointer is NULL.
+
+2013-02-04 (SVN):
     * libs, timidity/readmidi.c: make sure that malloc() is successful
       in read_meta_data(), read_midi_event(), read_midi_file(), and in
       groom_list().
