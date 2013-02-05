@@ -3,6 +3,12 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2013-02-05 (SVN):
+    * draw.c (Draw_Character,Draw_SmallCharacter,Draw_TransPicCropped):
+      take the trans_level check out of the loops, evaluating it only
+      once instead of every iteration.
+    * updated version date stamp to 2013-02-05.
+
 2013-02-04 (SVN):
     * updated config.guess and config.sub from savannah git repo.
     * updated version date stamp to 2013-02-04.
