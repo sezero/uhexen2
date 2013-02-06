@@ -4,6 +4,10 @@ Development Progress	:
 ---------------------------
 
 2013-02-05 (SVN):
+    * added Siggi's initial software renderer 2D scaling implementation
+      among the optional patches.
+
+2013-02-05 (SVN):
     * draw.c (Draw_Character,Draw_SmallCharacter,Draw_TransPicCropped):
       take the trans_level check out of the loops, evaluating it only
       once instead of every iteration.

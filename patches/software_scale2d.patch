@@ -1,0 +1,1484 @@
+An initial work on software renderer scaling support for 2D elements,
+i.e. hud and menu, kindly provided by Siggi:
+http://sourceforge.net/projects/uhexen2/forums/forum/425207/topic/5568940
+The patch needs more work:
+* the scaling is not configurable, scaling to to 320x200 is hardcoded:
+  needs implementing properly.
+* only vid_win.c and vid_sdl.c changes are shown, but others should be
+  trivial.
+* the author says that his scaling implementation is actually painfully
+  slow. [...] perhaps using an off-screen buffer which is scaled to the
+  full screen resolution once all the 2D elements are drawn.
+* although it shouldn't, the patch touches to gl_draw.c and gl_screen.c
+  too, possibly in order for the source to compile after draw.h changes:
+  needs addressing.
+
+The original implementation was against uhexen2 v1.5.4, this version is
+an adaptation of it to uhexen2 v1.5.6. Providing the patch here so that
+it won't get lost.
+
+Index: engine/h2shared/draw.h
+===================================================================
+--- engine/h2shared/draw.h	(revision 5092)
++++ engine/h2shared/draw.h	(working copy)
+@@ -45,11 +45,15 @@
+ #endif	/* DRAW_PROGRESSBARS */
+ 
+ void Draw_Pic (int x, int y, qpic_t *pic);
++void Draw_Pic_Scaled (int x, int y, qpic_t *pic);
+ void Draw_PicCropped (int x, int y, qpic_t *pic);
++void Draw_PicCropped_Scaled (int x, int y, qpic_t *pic);
+ void Draw_SubPic (int x, int y, qpic_t *pic, int srcx, int srcy, int width, int height);
+ void Draw_SubPicCropped (int x, int y, int h, qpic_t *pic);
+ void Draw_TransPic (int x, int y, qpic_t *pic);
++void Draw_TransPic_Scaled (int x, int y, qpic_t *pic);
+ void Draw_TransPicCropped (int x, int y, qpic_t *pic);
++void Draw_TransPicCropped_Scaled (int x, int y, qpic_t *pic);
+ void Draw_ConsoleBackground (int lines);
+ void Draw_Crosshair (void);
+ 
+@@ -83,14 +87,19 @@
+ 
+ void Draw_TileClear (int x, int y, int w, int h);
+ void Draw_Fill (int x, int y, int w, int h, int c);
++void Draw_Fill_Scaled (int x, int y, int w, int h, int c);
+ void Draw_FadeScreen (void);
+ 
+ void Draw_Character (int x, int y, unsigned int num);
++void Draw_Character_Scaled (int x, int y, unsigned int num);
+ void Draw_String (int x, int y, const char *str);
+ void Draw_SmallCharacter (int x, int y, int num);
+ void Draw_SmallString (int x, int y, const char *str);
++void Draw_SmallCharacter_Scaled (int x, int y, int num);
++void Draw_SmallString_Scaled (int x, int y, const char *str);
+ void Draw_RedString (int x, int y, const char *str);
+ void Draw_BigCharacter (int x, int y, int num);
++void Draw_BigCharacter_Scaled (int x, int y, int num);
+ 
+ /* game/engine name to draw on the console */
+ #define GAME_MOD_NAME		ENGINE_NAME
+Index: engine/h2shared/draw.c
+===================================================================
+--- engine/h2shared/draw.c	(revision 5092)
++++ engine/h2shared/draw.c	(working copy)
+@@ -445,6 +445,93 @@
+ 	}
+ }
+ 
++void Draw_Character_Scaled (int x, int y, unsigned int num)
++{
++	byte		*source;
++	int		drawline;
++	int		u, v, row, col, s;
++
++	int height, width;
++	float vmax, umax;
++
++	num &= 511;
++
++	if (y <= -8)
++		return;			// totally off screen
++
++	if (y > vid.conheight - 8 || x < 0 || x > vid.conwidth - 8)
++		return;
++
++	row = num >> 5;
++	col = num & 31;
++	source = draw_chars + (row<<11) + (col<<3);
++
++	if (y < 0)
++	{	// clipped
++		drawline = 8 + y;
++		source -= 256*y;
++		y = 0;
++	}
++	else
++		drawline = 8;
++
++	height = drawline;
++	width = 8;
++
++	vmax = height * vid.height / (float)vid.conheight;
++	umax = width * vid.width / (float)vid.conwidth;
++
++	if (r_pixbytes == 1)
++	{
++		byte *dest = vid.conbuffer + (y * vid.height / vid.conheight) * vid.conrowbytes +
++								   (x * vid.width / vid.conwidth);
++
++		for (v = 0; v < vmax; v++)
++		{
++			for (u = 0; u < umax; u++)
++			{
++				s = u * vid.conwidth / vid.width
++					+ (v * vid.conheight / vid.height) * 256;
++				switch (trans_level)
++				{
++				case 0:
++					if (source[s])
++						dest[u] = source[s];
++					break;
++				case 1:
++					if (source[s])
++						dest[u] = mainTransTable[(((unsigned int)dest[u])<<8) + source[s]];
++					break;
++				case 2:
++					if (source[s])
++						dest[u] = mainTransTable[(((unsigned int)source[s])<<8) + dest[u]];
++					break;
++				}
++			}
++
++			dest += vid.conrowbytes;
++		}
++	}
++	else /* r_pixbytes == 2 */
++	{
++		unsigned short *dest = (unsigned short *)
++				((byte *)vid.conbuffer + (y * vid.height / vid.conheight) * vid.conrowbytes +
++									((x * vid.width / vid.conwidth) << 1));
++		for (v = 0; v < vmax; v++)
++		{
++			for (u = 0; u < umax; u++)
++			{
++				s = u * vid.conwidth / vid.width
++					+ (v * vid.conheight / vid.height) * 256;
++				if (source[s])
++					dest[u] = d_8to16table[source[s]];
++			}
++
++			dest += vid.conrowbytes / 2;
++		}
++	}
++}
++
+ /*
+ ================
+ Draw_String
+@@ -678,6 +765,107 @@
+ 	}
+ }
+ 
++void Draw_SmallCharacter_Scaled (int x, int y, int num)
++{
++	byte		*source;
++	int		v, u, row, col, s;
++	int		height, width = 8;
++
++	float umax, vmax;
++
++	if (num < 32)
++	{
++		num = 0;
++	}
++	else if (num >= 'a' && num <= 'z')
++	{
++		num -= 64;
++	}
++	else if (num > '_')
++	{
++		num = 0;
++	}
++	else
++	{
++		num -= 32;
++	}
++
++	if (y >= vid.conheight)
++	{ // Totally off screen
++		return;
++	}
++
++#ifdef PARANOID
++	if ((y < 0) || (x < 0) || (x+8 > vid.width))
++	{
++		Sys_Error("Bad Draw_SmallCharacter: (%d, %d)", x, y);
++	}
++#endif
++
++	if (y + 5 > vid.conheight)
++	{
++		height = vid.conheight - y;
++	}
++	else
++	{
++		height = 5;
++	}
++
++	row = num >> 4;
++	col = num & 15;
++	source = draw_smallchars + (row<<10) + (col<<3);
++
++	vmax = height * vid.height / (float)vid.conheight;
++	umax = width * vid.width / (float)vid.conwidth;
++
++	if (r_pixbytes == 1)
++	{
++		byte *dest = vid.buffer + (y * vid.height / vid.conheight) * vid.rowbytes +
++							    (x * vid.width / vid.conwidth);
++		for (v = 0; v < vmax; v++)
++		{
++			for (u = 0; u < umax; u++)
++			{
++				s = u * vid.conwidth / vid.width + (v * vid.conheight / vid.height) * 128;
++				switch (trans_level)
++				{
++				case 0:
++					if (source[s])
++						dest[u] = source[s];
++					break;
++				case 1:
++					if (source[s])
++						dest[u] = mainTransTable[(((unsigned int)dest[u])<<8) + source[s]];
++					break;
++				case 2:
++					if (source[s])
++						dest[u] = mainTransTable[(((unsigned int)source[s])<<8) + dest[u]];
++					break;
++				}
++			}
++
++			dest += vid.conrowbytes;
++		}
++	}
++	else /* r_pixbytes == 2 */
++	{
++		unsigned short *dest = (unsigned short *)
++				((byte *)vid.buffer + (y * vid.height / vid.conheight) * vid.rowbytes +
++								((x * vid.width / vid.conwidth) << 1));
++		for (v = 0; v < vmax; v++)
++		{
++			for (u = 0; u < umax; u++)
++			{
++				s = u * vid.conwidth / vid.width + (v * vid.conheight / vid.height) * 128;
++				if (source[s])
++					dest[u] = d_8to16table[source[s]];
++			}
++
++			dest += vid.conrowbytes / 2;
++		}
++	}
++}
++
+ //==========================================================================
+ //
+ // Draw_SmallString
+@@ -694,6 +882,16 @@
+ 	}
+ }
+ 
++void Draw_SmallString_Scaled (int x, int y, const char *str)
++{
++	while (*str)
++	{
++		Draw_SmallCharacter_Scaled(x, y, *str);
++		str++;
++		x += 6;
++	}
++}
++
+ //==========================================================================
+ //
+ // Draw_BigCharacter
+@@ -726,7 +924,35 @@
+ 	}
+ }
+ 
++void Draw_BigCharacter_Scaled (int x, int y, int num)
++{
++	qpic_t	*p;
++	int	ypos, xpos, s;
++	byte	*dest;
++	byte	*source;
++	float	xmax, ymax;
+ 
++	p = Draw_CachePic ("gfx/menu/bigfont.lmp");
++	source = p->data + ((num % 8) * 20) + (num / 8 * p->width * 20);
++
++	xmax = 19 * vid.width / (float)vid.conwidth;
++	ymax = 19 * vid.height / (float)vid.conheight;
++
++	dest = vid.buffer + (y * vid.height / vid.conheight) * vid.rowbytes + x * vid.width / vid.conwidth;
++	for (ypos = 0; ypos < ymax; ypos++)
++	{
++		for (xpos = 0; xpos < xmax; xpos++)
++		{
++			s = xpos * vid.conwidth / vid.width + (ypos * vid.conheight / vid.height) * p->width;
++			if (source[s])
++			{
++				dest[xpos + ypos * vid.rowbytes] = source[s];
++			}
++		}
++	}
++}
++
++
+ /*
+ =============
+ Draw_Pic
+@@ -773,7 +999,55 @@
+ 	}
+ }
+ 
++void Draw_Pic_Scaled (int x, int y, qpic_t *pic)
++{
++	byte		*source;
++	int		v, u, s;
++	float		vmax, umax;
+ 
++	if ((x < 0) || (x + pic->width > vid.width) ||
++	    (y < 0) || (y + pic->height > vid.height))
++	{
++		Sys_Error ("%s: bad coordinates", __thisfunc__);
++	}
++
++	source = pic->data;
++
++	umax = pic->width * vid.width / (float)vid.conwidth;
++	vmax = pic->height * vid.height / (float)vid.conheight;
++
++	if (r_pixbytes == 1)
++	{
++		byte *dest = vid.buffer + (y*vid.height/vid.conheight) * vid.rowbytes + (x*vid.width/vid.conwidth);
++		for (v = 0; v < vmax; v++)
++		{
++			for (u = 0; u < umax; u++)
++			{
++				s = u * vid.conwidth / vid.width + (v * vid.conheight/vid.height) * pic->width;
++				dest[u] = source[s];
++			}
++			dest += vid.rowbytes;
++		}
++	}
++	else /* r_pixbytes == 2 */
++	{
++		unsigned short *dest = (unsigned short *)vid.buffer +
++					(y * vid.height / vid.conheight) * vid.rowbytes * (vid.rowbytes / 2) +
++										(x * vid.width / vid.conwidth);
++		for (v = 0; v < vmax; v++)
++		{
++			for (u = 0; u < umax; u++)
++			{
++				s = u * vid.conwidth / vid.width + (v * vid.conheight / vid.height) * pic->width;
++				dest[u] = d_8to16table[source[s]];
++			}
++
++			dest += vid.rowbytes / 2;
++		}
++	}
++}
++
++
+ //==========================================================================
+ //
+ // Draw_PicCropped
+@@ -869,6 +1143,78 @@
+ 	}
+ }
+ 
++void Draw_PicCropped_Scaled (int x, int y, qpic_t *pic)
++{
++	byte		*source;
++	int		v, u, height, s;
++	float		vmax, umax;
++
++	if ((x < 0) || (x+pic->width > (int)vid.width))
++		Sys_Error("%s: bad coordinates", __thisfunc__);
++
++	if (y >= vid.height || y+pic->height < 0)
++		return;
++
++	if (y+pic->height > vid.conheight)
++		height = vid.conheight-y;
++	else if (y < 0)
++		height = pic->height+y;
++	else
++		height = pic->height;
++
++	source = pic->data;
++	if (y < 0)
++	{
++		source += (pic->width * (-y));
++		y = 0;
++	}
++
++	vmax = height * vid.height / (float)vid.conheight;
++	umax = pic->width * vid.width / (float)vid.conwidth;
++
++	if (r_pixbytes == 1)
++	{
++		byte *dest = vid.buffer + (y * vid.height / vid.conheight) * vid.rowbytes +
++							    (x * vid.width / vid.conwidth);
++		for (v = 0; v < vmax; v++)
++		{
++			for (u = 0; u < umax; u++)
++			{
++				s = u*vid.conwidth/vid.width + (v*vid.conheight/vid.height) * pic->width;
++				switch (trans_level)
++				{
++				case 0:
++					dest[u] = source[s];
++					break;
++				case 1:
++					dest[u] = mainTransTable[(((unsigned int)dest[u])<<8) + source[s]];
++					break;
++				case 2:
++					dest[u] = mainTransTable[(((unsigned int)source[s])<<8) + dest[u]];
++					break;
++				}
++			}
++			dest += vid.rowbytes;
++		}
++	}
++	else /* r_pixbytes == 2 */
++	{
++		unsigned short *dest = (unsigned short *)vid.buffer +
++					(y*vid.height/vid.conheight) * (vid.rowbytes / 2) +
++								(x*vid.width/vid.conwidth);
++		for (v = 0; v < vmax; v++)
++		{
++			for (u = 0; u < umax; u++)
++			{
++				s = u * vid.conwidth / vid.width 
++					+ (v * vid.conheight / vid.height) * pic->width;
++				dest[u] = d_8to16table[source[s]];
++			}
++			dest += vid.rowbytes / 2;
++		}
++	}
++}
++
+ /*
+ =============
+ Draw_TransPic
+@@ -955,7 +1301,79 @@
+ 	}
+ }
+ 
++void Draw_TransPic_Scaled (int x, int y, qpic_t *pic)
++{
++	byte		*source, tbyte;
++	int		v, u, s;
++	float		vmax, umax;
+ 
++	if (x < 0 || (x + pic->width) > vid.conwidth ||
++	    y < 0 || (y + pic->height) > vid.conheight)
++	{
++		Sys_Error("%s: bad coordinates", __thisfunc__);
++	}
++
++	source = pic->data;
++
++	vmax = pic->height * vid.height / (float)vid.conheight;
++	umax = pic->width * vid.width / (float)vid.conwidth;
++
++	if (r_pixbytes == 1)
++	{
++		byte *dest = vid.buffer + (y * vid.height / vid.conheight) * vid.rowbytes +
++							    (x * vid.width / vid.conwidth);
++		for (v = 0; v < vmax; v++)
++		{
++			for (u = 0; u < umax; u++)
++			{
++				s = u * vid.conwidth / vid.width 
++					+ (v * vid.conheight / vid.height) * pic->width;
++				switch (trans_level) {
++				case 0:
++					if ((tbyte = source[s]) != TRANSPARENT_COLOR)
++					{
++						dest[u] = tbyte;
++					}
++					break;
++				case 1:
++					if ((tbyte = source[s]) != TRANSPARENT_COLOR)
++					{
++						dest[u] = mainTransTable[(((unsigned int)dest[u])<<8) + tbyte];
++					}
++					break;
++				case 2:
++					if ((tbyte = source[s]) != TRANSPARENT_COLOR)
++					{
++						dest[u] = mainTransTable[(((unsigned int)tbyte)<<8) + dest[u]];
++					}
++					break;
++				}
++			}
++
++			dest += vid.rowbytes;
++		}
++	}
++	else
++	{
++		unsigned short *dest = (unsigned short *)vid.buffer + y * (vid.rowbytes / 2) + x;
++		for (v = 0; v < vmax; v++)
++		{
++			for (u = 0; u < umax; u += 8)
++			{
++				s = u * vid.conwidth / vid.width 
++					+ (v * vid.conheight / vid.height) * pic->width;
++				if ((tbyte = source[s]) != TRANSPARENT_COLOR)
++				{
++					dest[u + v * vid.rowbytes] = d_8to16table[tbyte];
++				}
++			}
++
++			dest += vid.rowbytes / 2;
++		}
++	}
++}
++
++
+ //==========================================================================
+ //
+ // Draw_SubPicCropped
+@@ -1256,7 +1674,101 @@
+ 	}
+ }
+ 
++void Draw_TransPicCropped_Scaled (int x, int y, qpic_t *pic)
++{
++	byte		*source, tbyte;
++	int		v, u, height, s;
+ 
++	float vmax, umax;
++
++	if ((x < 0) || (x+pic->width > vid.width))
++	{
++		Sys_Error("%s: bad coordinates", __thisfunc__);
++	}
++
++	if (y >= vid.conheight || y+pic->height < 0)
++	{ // Totally off screen
++		return;
++	}
++
++	if (y+pic->height > vid.conheight)
++	{
++		height = vid.conheight-y;
++	}
++	else if (y < 0)
++	{
++		height = pic->height+y;
++	}
++	else
++	{
++		height = pic->height;
++	}
++
++	source = pic->data;
++	if (y < 0)
++	{
++		source += (pic->width * (-y));
++		y = 0;
++	}
++
++	vmax = height * vid.height / (float)vid.conheight;
++	umax = pic->width * vid.width / (float)vid.conwidth;
++
++	if (r_pixbytes == 1)
++	{
++		byte *dest = vid.buffer + (y * vid.height/vid.conheight) * vid.rowbytes
++			+ (x * vid.width / vid.conwidth);
++		for (v = 0; v < vmax; v++)
++		{
++			for (u = 0; u < umax; u++)
++			{
++				s = u * vid.conwidth / vid.width 
++					+ (v * vid.conheight / vid.height) * pic->width;
++				switch (trans_level) {
++				case 0:
++					if ((tbyte = source[s]) != TRANSPARENT_COLOR)
++					{
++						dest[u] = tbyte;
++					}
++					break;
++				case 1:
++					if ((tbyte = source[s]) != TRANSPARENT_COLOR)
++					{
++						dest[u] = mainTransTable[(((unsigned int)dest[u])<<8) + tbyte];
++					}
++					break;
++				case 2:
++					if ((tbyte = source[s]) != TRANSPARENT_COLOR)
++					{
++						dest[u] = mainTransTable[(((unsigned int)tbyte)<<8) + dest[u]];
++					}
++					break;
++				}
++			}
++
++			dest += vid.rowbytes;
++		}
++	}
++	else /* r_pixbytes == 2 */
++	{
++		unsigned short *dest = (unsigned short *)vid.buffer + y * (vid.rowbytes / 2) + x;
++		for (v = 0; v < vmax; v++)
++		{
++			for (u = 0; u < umax; u++)
++			{
++				s = u * vid.conwidth / vid.width 
++					+ (v * vid.conheight / vid.height) * pic->width;
++				if ((tbyte = source[s]) != TRANSPARENT_COLOR)
++				{
++					dest[u] = d_8to16table[tbyte];
++				}
++			}
++
++			dest += vid.rowbytes / 2;
++		}
++	}
++}
++
+ /*
+ =============
+ Draw_SubPic
+@@ -1426,7 +1938,7 @@
+ {
+ 	static const char ver[] = ENGINE_WATERMARK;
+ 	const char *ptr = ver;
+-	int x = vid.conwidth - (strlen(ver) * 8 + 11);
++	int x = vid.width - (strlen(ver) * 8 + 11);
+ 	int y = lines - 14;
+ 	for (; *ptr; ++ptr)
+ 		Draw_Character (x + (int)(ptr - ver) * 8, y, *ptr | 0x100);
+@@ -1454,22 +1966,22 @@
+ 	if (r_pixbytes == 1)
+ 	{
+ 		byte *dest = vid.conbuffer;
+-		fstep = 320 * 0x10000 / vid.conwidth;
++		fstep = 320 * 0x10000 / vid.width;
+ 
+ 		for (y = 0; y < lines; y++, dest += vid.conrowbytes)
+ 		{
+-			v = (vid.conheight - lines + y)*200/vid.conheight;
++			v = (vid.height - lines + y)*200/vid.height;
+ 			src = conback->data + v*320;
+-			if (vid.conwidth == 320 && trans_level == 0)
++			if (vid.width == 320 && trans_level == 0)
+ 			{
+-				memcpy (dest, src, vid.conwidth);
++				memcpy (dest, src, vid.width);
+ 				continue;
+ 			}
+ 			f = 0;
+ 			switch (trans_level)
+ 			{
+ 			case 0:
+-				for (x = 0; x < (int)vid.conwidth; x += 4)
++				for (x = 0; x < (int)vid.width; x += 4)
+ 				{
+ 					dest[x] = src[f>>16];
+ 					f += fstep;
+@@ -1482,7 +1994,7 @@
+ 				}
+ 				break;
+ 			case 1:
+-				for (x = 0; x < (int)vid.conwidth; x += 4)
++				for (x = 0; x < (int)vid.width; x += 4)
+ 				{
+ 					dest[x] = mainTransTable[(((unsigned int)dest[x])<<8) + src[f>>16]];
+ 					f += fstep;
+@@ -1495,7 +2007,7 @@
+ 				}
+ 				break;
+ 			case 2:
+-				for (x = 0; x < (int)vid.conwidth; x += 4)
++				for (x = 0; x < (int)vid.width; x += 4)
+ 				{
+ 					dest[x] = mainTransTable[(((unsigned int)src[f>>16])<<8) + dest[x]];
+ 					f += fstep;
+@@ -1513,17 +2025,17 @@
+ 	else /* r_pixbytes == 2 */
+ 	{
+ 		unsigned short *dest = (unsigned short *)vid.conbuffer;
+-		fstep = 320 * 0x10000 / vid.conwidth;
++		fstep = 320 * 0x10000 / vid.width;
+ 
+ 		for (y = 0; y < lines; y++, dest += (vid.conrowbytes / 2))
+ 		{
+ 		// FIXME: pre-expand to native format?
+ 		// FIXME: does the endian switching go away in production?
+-			v = (vid.conheight - lines + y)*200/vid.conheight;
++			v = (vid.height - lines + y)*200/vid.height;
+ 			src = conback->data + v*320;
+ 			f = 0;
+ 		// FIXME: transparency bits are missing
+-			for (x = 0; x < (int)vid.conwidth; x += 4)
++			for (x = 0; x < (int)vid.width; x += 4)
+ 			{
+ 				dest[x] = d_8to16table[src[f>>16]];
+ 				f += fstep;
+@@ -1793,6 +2305,70 @@
+ 	}
+ }
+ 
++void Draw_Fill_Scaled (int x, int y, int w, int h, int c)
++{
++	int		u, v;
++	float		umax, vmax;
++
++	x = (x * vid.width) / vid.conwidth;
++	y = (y * vid.height) / vid.conheight;
++
++	if (x < 0 || x + w > vid.width ||
++	    y < 0 || y + h > vid.height)
++	{
++		Con_Printf("Bad Draw_Fill(%d, %d, %d, %d, %c)\n", x, y, w, h, c);
++		return;
++	}
++
++	vmax = h * vid.height / (float)vid.conheight;
++	umax = w * vid.width / (float)vid.conwidth;
++
++	if (r_pixbytes == 1)
++	{
++		byte *dest = vid.buffer + y*vid.rowbytes + x;
++		switch (trans_level)
++		{
++		case 0:
++			for (v = 0; v < vmax; v++, dest += vid.rowbytes)
++			{
++				for (u = 0; u < umax; u++)
++				{
++					dest[u] = c;
++				}
++			}
++			break;
++		case 1:
++			for (v = 0; v < vmax; v++, dest += vid.rowbytes)
++			{
++				for (u = 0; u < umax; u++)
++				{
++					dest[u] = mainTransTable[(((unsigned int)dest[u])<<8) + c];
++				}
++			}
++			break;
++		case 2:
++			for (v = 0; v < vmax; v++, dest += vid.rowbytes)
++			{
++				for (u = 0; u < umax; u++)
++				{
++					dest[u] = mainTransTable[(c<<8) + dest[u]];
++				}
++			}
++			break;
++		}
++	}
++	else /* r_pixbytes == 2 */
++	{
++		unsigned short *dest = (unsigned short *)vid.buffer + y * (vid.rowbytes / 2) + x;
++		unsigned int uc = d_8to16table[c];
++		for (v = 0; v < vmax; v++, dest += (vid.rowbytes / 2))
++		{
++			for (u = 0; u < umax; u++)
++				dest[u] = uc;
++		}
++	}
++}
++
+ //=============================================================================
+ 
+ /*
+Index: engine/h2shared/vid_sdl.c
+===================================================================
+--- engine/h2shared/vid_sdl.c	(revision 5092)
++++ engine/h2shared/vid_sdl.c	(working copy)
+@@ -518,8 +518,10 @@
+ 		return false;
+ 
+ 	// initial success. adjust vid vars.
+-	vid.height = vid.conheight = modelist[modenum].height;
+-	vid.width = vid.conwidth = modelist[modenum].width;
++	vid.height = modelist[modenum].height;
++	vid.conheight = 200;
++	vid.width = modelist[modenum].width;
++	vid.conwidth = 320;
+ 	vid.buffer = vid.conbuffer = vid.direct = (pixel_t *) screen->pixels;
+ 	vid.rowbytes = vid.conrowbytes = screen->pitch;
+ 	vid.numpages = 1;
+Index: engine/h2shared/vid_win.c
+===================================================================
+--- engine/h2shared/vid_win.c	(revision 5092)
++++ engine/h2shared/vid_win.c	(working copy)
+@@ -782,8 +782,10 @@
+ 	vid.numpages = 1;
+ 	vid.maxwarpwidth = WARP_WIDTH;
+ 	vid.maxwarpheight = WARP_HEIGHT;
+-	vid.height = vid.conheight = DIBHeight;
+-	vid.width = vid.conwidth = DIBWidth;
++	vid.height = DIBHeight;
++	vid.conheight = 200;
++	vid.width = DIBWidth;
++	vid.conwidth = 320;
+ 	vid.aspect = ((float)vid.height / (float)vid.width) * (320.0 / 240.0);
+ 
+ 	SendMessage (mainwindow, WM_SETICON, (WPARAM)TRUE, (LPARAM)hIcon);
+@@ -845,8 +847,10 @@
+ 	vid.numpages = 1;
+ 	vid.maxwarpwidth = WARP_WIDTH;
+ 	vid.maxwarpheight = WARP_HEIGHT;
+-	vid.height = vid.conheight = DIBHeight;
+-	vid.width = vid.conwidth = DIBWidth;
++	vid.height = DIBHeight;
++	vid.conheight = 200;
++	vid.width = DIBWidth;
++	vid.conwidth = 320;
+ 	vid.aspect = ((float)vid.height / (float)vid.width) * (320.0 / 240.0);
+ 
+ // needed because we're not getting WM_MOVE messages fullscreen on NT
+Index: engine/h2shared/screen.c
+===================================================================
+--- engine/h2shared/screen.c	(revision 5092)
++++ engine/h2shared/screen.c	(working copy)
+@@ -271,7 +271,7 @@
+ 
+ 	FindTextBreaks(scr_centerstring, 38);
+ 
+-	by = (25-lines) * 8 / 2 + ((vid.height - 200)>>1);
++	by = (25-lines) * 8 / 2 + ((vid.conheight - 200)>>1);
+ 
+ 	for (i = 0; i < lines; i++, by += 8)
+ 	{
+@@ -373,7 +373,7 @@
+ 	if (scr_viewsize.integer >= 110 || cl.intermission)
+ 		sb_lines = 0;		// no status bar
+ 	else
+-		sb_lines = 46;
++		sb_lines = 46 * vid.height / vid.conheight;
+ 
+ // these calculations mirror those in R_Init() for r_refdef, but take no
+ // account of water warping
+@@ -607,7 +607,7 @@
+ 	}
+ 
+ 	finaly = ((float)pic->height * LogoPercent) - pic->height;
+-	Draw_TransPicCropped ( (vid.width - pic->width)/2, finaly, pic);
++	Draw_TransPicCropped_Scaled ( (vid.conwidth - pic->width)/2, finaly, pic);
+ }
+ 
+ #if !defined(H2W)
+@@ -639,8 +639,8 @@
+ 		return;
+ 
+ 	pic = Draw_CachePic ("gfx/menu/loading.lmp");
+-	offset = (vid.width - pic->width) / 2;
+-	Draw_TransPic (offset, 0, pic);
++	offset = (vid.conwidth - pic->width) / 2;
++	Draw_TransPic_Scaled (offset, 0, pic);
+ 
+ 	if (loading_stage == 0)
+ 		return;
+@@ -652,17 +652,17 @@
+ 	count = (loading_stage == 1) ? size : 106;
+ 	if (count)
+ 	{
+-		Draw_Fill (offset, 87+0, count, 1, 136);
+-		Draw_Fill (offset, 87+1, count, 4, 138);
+-		Draw_Fill (offset, 87+5, count, 1, 136);
++		Draw_Fill_Scaled (offset, 87+0, count, 1, 136);
++		Draw_Fill_Scaled (offset, 87+1, count, 4, 138);
++		Draw_Fill_Scaled (offset, 87+5, count, 1, 136);
+ 	}
+ 
+ 	count = (loading_stage == 2) ? size : 0;
+ 	if (count)
+ 	{
+-		Draw_Fill (offset, 97+0, count, 1, 168);
+-		Draw_Fill (offset, 97+1, count, 4, 170);
+-		Draw_Fill (offset, 97+5, count, 1, 168);
++		Draw_Fill_Scaled (offset, 97+0, count, 1, 168);
++		Draw_Fill_Scaled (offset, 97+1, count, 4, 170);
++		Draw_Fill_Scaled (offset, 97+5, count, 1, 168);
+ 	}
+ }
+ #endif	/* !DRAW_PROGRESSBARS */
+@@ -746,13 +746,13 @@
+ 
+ 	if (scr_conlines < scr_con_current)
+ 	{
+-		scr_con_current -= scr_conspeed.value * host_frametime;
++		scr_con_current -= scr_conspeed.value * host_frametime * vid.height / vid.conheight;
+ 		if (scr_conlines > scr_con_current)
+ 			scr_con_current = scr_conlines;
+ 	}
+ 	else if (scr_conlines > scr_con_current)
+ 	{
+-		scr_con_current += scr_conspeed.value * host_frametime;
++		scr_con_current += scr_conspeed.value * host_frametime * vid.height / vid.conheight;
+ 		if (scr_conlines < scr_con_current)
+ 			scr_con_current = scr_conlines;
+ 	}
+@@ -1030,7 +1030,7 @@
+ 
+ 	FindTextBreaks(message, PLAQUE_WIDTH);
+ 
+-	by = (25-lines) * 8 / 2 + ((vid.height - 200)>>1);
++	by = (25-lines) * 8 / 2 + ((vid.conheight - 200)>>1);
+ 	M_DrawTextBox (32, by - 16, PLAQUE_WIDTH + 4, lines + 2);
+ 
+ 	for (i = 0; i < lines; i++, by += 8)
+@@ -1066,7 +1066,7 @@
+ 		lines = MAXLINES-1;
+ 	}
+ 
+-	by = (25-lines) * 8 / 2 + ((vid.height - 200)>>1);
++	by = (25-lines) * 8 / 2 + ((vid.conheight - 200)>>1);
+ 	M_DrawTextBox (15, by - 16, PLAQUE_WIDTH + 4 + 4, lines + 2);
+ 
+ 	for (i = 0; i < lines; i++, by += 8)
+@@ -1092,7 +1092,7 @@
+ 
+ 	FindTextBreaks(message, PLAQUE_WIDTH);
+ 
+-	by = (((vid.height) / 8) - lines - 2) * 8;
++	by = (((vid.conheight) / 8) - lines - 2) * 8;
+ 	M_DrawTextBox (32, by - 16, PLAQUE_WIDTH + 4, lines + 2);
+ 
+ 	for (i = 0; i < lines; i++, by += 8)
+@@ -1113,10 +1113,10 @@
+ 	int	num, x, y;
+ 	const char	*s;
+ 
+-	x = cx + ((vid.width - 320)>>1);
++	x = cx + ((vid.conwidth - 320)>>1);
+ 	y = cy;
+ 	if (!(flags & (INTERMISSION_PRINT_TOP|INTERMISSION_PRINT_TOPMOST)))
+-		y += ((vid.height - 200)>>1);
++		y += ((vid.conheight - 200)>>1);
+ 	s = str;
+ 
+ 	while (*s)
+@@ -1124,7 +1124,7 @@
+ 		num = (unsigned char)(*s);
+ 		if (!(flags & INTERMISSION_PRINT_WHITE))
+ 			num += 256;
+-		Draw_Character (x, y, num);
++		Draw_Character_Scaled (x, y, num);
+ 		s++;
+ 		x += 8;
+ 	}
+Index: engine/hexen2/console.c
+===================================================================
+--- engine/hexen2/console.c	(revision 5092)
++++ engine/hexen2/console.c	(working copy)
+@@ -150,7 +150,7 @@
+ 	int	i, j, width, oldwidth, oldtotallines, numlines, numchars;
+ 	short	tbuf[CON_TEXTSIZE];
+ 
+-	width = (vid.width >> 3) - 2;
++	width = (vid.conwidth >> 3) - 2;
+ 
+ 	if (width == con_linewidth)
+ 		return;
+@@ -533,7 +533,7 @@
+ 		scr_copytop = 1;
+ 
+ 		for (x = 0; x < con_linewidth; x++)
+-			Draw_Character ((x+1)<<3, v, text[x]);
++			Draw_Character_Scaled ((x+1)<<3, v, text[x]);
+ 
+ 		v += 8;
+ 	}
+@@ -563,12 +563,12 @@
+ 
+ 		while (*s)
+ 		{
+-			Draw_Character (x<<3, v, *s);
++			Draw_Character_Scaled (x<<3, v, *s);
+ 			s++;
+ 			x++;
+ 		}
+ 
+-		Draw_Character (x<<3, v, 10 + ((int)(realtime*con_cursorspeed)&1));
++		Draw_Character_Scaled (x<<3, v, 10 + ((int)(realtime*con_cursorspeed)&1));
+ 		v += 8;
+ 	}
+ 
+Index: engine/hexen2/menu.c
+===================================================================
+--- engine/hexen2/menu.c	(revision 5092)
++++ engine/hexen2/menu.c	(working copy)
+@@ -208,7 +208,7 @@
+ */
+ void M_DrawCharacter (int cx, int line, int num)
+ {
+-	Draw_Character ( cx + ((vid.width - 320)>>1), line, num);
++	Draw_Character_Scaled ( cx + ((vid.conwidth - 320)>>1), line, num);
+ }
+ 
+ void M_Print (int cx, int cy, const char *str)
+@@ -233,17 +233,17 @@
+ 
+ void M_DrawTransPic (int x, int y, qpic_t *pic)
+ {
+-	Draw_TransPic (x + ((vid.width - 320)>>1), y, pic);
++	Draw_TransPic_Scaled (x + ((vid.conwidth - 320)>>1), y, pic);
+ }
+ 
+ void M_DrawPic (int x, int y, qpic_t *pic)
+ {
+-	Draw_Pic (x + ((vid.width - 320)>>1), y, pic);
++	Draw_Pic_Scaled (x + ((vid.conwidth - 320)>>1), y, pic);
+ }
+ 
+ static void M_DrawTransPicCropped (int x, int y, qpic_t *pic)
+ {
+-	Draw_TransPicCropped (x + ((vid.width - 320)>>1), y, pic);
++	Draw_TransPicCropped_Scaled (x + ((vid.conwidth - 320)>>1), y, pic);
+ }
+ 
+ static byte identityTable[256];
+@@ -480,7 +480,7 @@
+ 	else
+ 		numNext -= 65;
+ 
+-	Draw_BigCharacter (x, y, num);
++	Draw_BigCharacter_Scaled (x, y, num);
+ 
+ 	if (numNext < 0 || numNext >= 27)
+ 		return 0;
+@@ -494,7 +494,7 @@
+ 
+ static void M_DrawBigString(int x, int y, const char *string)
+ {
+-	x += ((vid.width - 320)>>1);
++	x += ((vid.conwidth - 320)>>1);
+ 
+ 	while (*string)
+ 	{
+@@ -1487,7 +1487,7 @@
+ 
+ static void M_DrawTransPicTranslate (int x, int y, qpic_t *pic, int p_class)
+ {
+-	Draw_TransPicTranslate (x + ((vid.width - 320)>>1), y, pic, translationTable, p_class);
++	Draw_TransPicTranslate (x + ((vid.conwidth - 320)>>1), y, pic, translationTable, p_class);
+ }
+ 
+ static void M_Setup_Draw (void)
+@@ -2742,7 +2742,7 @@
+ #		define	Draw_HelpPic_FN(X,Y,Z)	Draw_IntermissionPic((Z))
+ #	else
+ #		define	Load_HelpPic_FN(X,Y,Z)	Draw_CachePicResize((X),(Y),(Z))
+-#		define	Draw_HelpPic_FN(X,Y,Z)	Draw_Pic(0,0,(Z))
++#		define	Draw_HelpPic_FN(X,Y,Z)	Draw_Pic_Scaled(0,0,(Z))
+ #	endif
+ #else
+ #	ifdef GLQUAKE
+@@ -2756,7 +2756,7 @@
+ 
+ static void M_Help_Draw (void)
+ {
+-		Draw_HelpPic_FN ((vid.width - 320)>>1, 0, Load_HelpPic_FN(va("gfx/menu/help%02i.lmp", help_page+1), vid.width, vid.height));
++		Draw_HelpPic_FN ((vid.conwidth - 320)>>1, 0, Load_HelpPic_FN(va("gfx/menu/help%02i.lmp", help_page+1), vid.conwidth, vid.conheight));
+ }
+ 
+ 
+Index: engine/hexen2/sbar.c
+===================================================================
+--- engine/hexen2/sbar.c	(revision 5092)
++++ engine/hexen2/sbar.c	(working copy)
+@@ -221,7 +221,7 @@
+ 		return;
+ 	}
+ 
+-	if (scr_con_current == vid.height)	// console is full screen
++	if (scr_con_current == vid.conheight)	// console is full screen
+ 		return;
+ 
+ 	trans_level = sbtrans.integer;
+@@ -833,7 +833,7 @@
+ 
+ 	for (i = 0; i < l; i++)
+ 	{
+-		if (y+10 >= vid.height)
++		if (y+10 >= vid.conheight)
+ 			break;
+ 
+ 		k = fragsort[i];
+@@ -962,7 +962,7 @@
+ 	{
+ 		if (l > 4)
+ 			l = 4;
+-		y = vid.height - BAR_TOP_HEIGHT;
++		y = vid.conheight - BAR_TOP_HEIGHT;
+ 	}
+ 
+ 	x = 10;
+@@ -1023,7 +1023,7 @@
+ 	int		frame;
+ 	char	tempStr[24];
+ 
+-	if (scr_con_current == vid.height)
++	if (scr_con_current == vid.conheight)
+ 		return;		// console is full screen
+ 
+ 	ring_row = 1;
+@@ -1034,7 +1034,7 @@
+ 	{
+ 		frame = 1 + ((int)(cl.time * 16) & 15);
+ 		sprintf(tempStr, "gfx/rngtrn%d.lmp", frame);
+-		Draw_TransPic(vid.width - 50, ring_row, Draw_CachePic(tempStr));
++		Draw_TransPic_Scaled(vid.conwidth - 50, ring_row, Draw_CachePic(tempStr));
+ 		ring_row += 33;
+ 	}
+ 
+@@ -1052,7 +1052,7 @@
+ 	{
+ 		frame = 1 + ((int)(cl.time * 16) & 15);
+ 		sprintf(tempStr, "gfx/rngwtr%d.lmp", frame);
+-		Draw_TransPic(vid.width - 50, ring_row, Draw_CachePic(tempStr));
++		Draw_TransPic_Scaled(vid.conwidth - 50, ring_row, Draw_CachePic(tempStr));
+ 		ring_row += 33;
+ 	}
+ 
+@@ -1060,7 +1060,7 @@
+ 	{
+ 		frame = 1 + ((int)(cl.time * 16) & 15);
+ 		sprintf(tempStr, "gfx/rngfly%d.lmp", frame);
+-		Draw_TransPic(vid.width - 50, ring_row, Draw_CachePic(tempStr));
++		Draw_TransPic_Scaled(vid.conwidth - 50, ring_row, Draw_CachePic(tempStr));
+ 		ring_row += 33;
+ 	}
+ }
+@@ -1090,7 +1090,7 @@
+ 	{
+ 		frame = 1 + ((int)(cl.time * 16) & 15);
+ 		sprintf(tempStr, "gfx/pwrbook%d.lmp", frame);
+-		Draw_TransPic(vid.width-art_col, 1, Draw_CachePic(tempStr));
++		Draw_TransPic_Scaled(vid.conwidth-art_col, 1, Draw_CachePic(tempStr));
+ 		art_col += 50;
+ 		scr_topupdate = 0;
+ 	}
+@@ -1103,7 +1103,7 @@
+ 	{
+ 		frame = 1 + ((int)(cl.time * 16) & 15);
+ 		sprintf(tempStr, "gfx/durhst%d.lmp", frame);
+-		Draw_TransPic(vid.width-art_col, 1, Draw_CachePic(tempStr));
++		Draw_TransPic_Scaled(vid.conwidth-art_col, 1, Draw_CachePic(tempStr));
+ 		art_col += 50;
+ 		scr_topupdate = 0;
+ 	}
+@@ -1116,7 +1116,7 @@
+ 	{
+ 		frame = 1 + ((int)(cl.time * 16) & 15);
+ 		sprintf(tempStr, "gfx/durshd%d.lmp", frame);
+-		Draw_TransPic(vid.width-art_col, 1, Draw_CachePic(tempStr));
++		Draw_TransPic_Scaled(vid.conwidth-art_col, 1, Draw_CachePic(tempStr));
+ 		art_col += 50;
+ 		scr_topupdate = 0;
+ 	}
+@@ -1505,12 +1505,12 @@
+ 
+ static void Sbar_DrawPic(int x, int y, qpic_t *pic)
+ {
+-	Draw_PicCropped (x+((vid.width-320)>>1), y+(vid.height-(int)BarHeight), pic);
++	Draw_PicCropped_Scaled (x+((vid.conwidth-320)>>1), y+(vid.conheight-(int)BarHeight), pic);
+ }
+ 
+ static void Sbar_DrawTransPic(int x, int y, qpic_t *pic)
+ {
+-	Draw_TransPicCropped (x+((vid.width-320)>>1), y+(vid.height-(int)BarHeight), pic);
++	Draw_TransPicCropped_Scaled (x+((vid.conwidth-320)>>1), y+(vid.conheight-(int)BarHeight), pic);
+ }
+ 
+ #if 0	/* no callers */
+@@ -1532,7 +1532,7 @@
+ 
+ static void Sbar_DrawSmallString(int x, int y, const char *str)
+ {
+-	Draw_SmallString (x+((vid.width-320)>>1), y+vid.height-(int)BarHeight, str);
++	Draw_SmallString_Scaled (x+((vid.conwidth-320)>>1), y+vid.conheight-(int)BarHeight, str);
+ }
+ 
+ static void DrawBarArtifactNumber(int x, int y, int number)
+Index: engine/h2shared/gl_draw.c
+===================================================================
+--- engine/h2shared/gl_draw.c	(revision 5092)
++++ engine/h2shared/gl_draw.c	(working copy)
+@@ -611,6 +611,41 @@
+ 	glEnd_fp ();
+ }
+ 
++void Draw_Character_Scaled (int x, int y, unsigned int num)
++{
++	int		row, col;
++	float	frow, fcol, xsize,ysize;
++
++	num &= 511;
++
++	if (num == 32)
++		return;		// space
++
++	if (y <= -8)
++		return;		// totally off screen
++
++	row = num >> 5;
++	col = num & 31;
++
++	xsize = 0.03125;
++	ysize = 0.0625;
++	fcol = col*xsize;
++	frow = row*ysize;
++
++	GL_Bind (char_texture);
++
++	glBegin_fp (GL_QUADS);
++	glTexCoord2f_fp (fcol, frow);
++	glVertex2f_fp (x, y);
++	glTexCoord2f_fp (fcol + xsize, frow);
++	glVertex2f_fp (x+8, y);
++	glTexCoord2f_fp (fcol + xsize, frow + ysize);
++	glVertex2f_fp (x+8, y+8);
++	glTexCoord2f_fp (fcol, frow + ysize);
++	glVertex2f_fp (x, y+8);
++	glEnd_fp ();
++}
++
+ /*
+ ================
+ Draw_String
+@@ -739,6 +774,56 @@
+ 	glEnd_fp ();
+ }
+ 
++void Draw_SmallCharacter_Scaled (int x, int y, int num)
++{
++	int		row, col;
++	float	frow, fcol, xsize,ysize;
++
++	if (num < 32)
++	{
++		num = 0;
++	}
++	else if (num >= 'a' && num <= 'z')
++	{
++		num -= 64;
++	}
++	else if (num > '_')
++	{
++		num = 0;
++	}
++	else
++	{
++		num -= 32;
++	}
++
++	if (num == 0)
++		return;
++
++	if (y <= -8 || y >= vid.height)
++		return; 	// totally off screen
++
++	row = num >> 4;
++	col = num & 15;
++
++	xsize = 0.0625;
++	ysize = 0.25;
++	fcol = col*xsize;
++	frow = row*ysize;
++
++	GL_Bind (char_smalltexture);
++
++	glBegin_fp (GL_QUADS);
++	glTexCoord2f_fp (fcol, frow);
++	glVertex2f_fp (x, y);
++	glTexCoord2f_fp (fcol + xsize, frow);
++	glVertex2f_fp (x+8, y);
++	glTexCoord2f_fp (fcol + xsize, frow + ysize);
++	glVertex2f_fp (x+8, y+8);
++	glTexCoord2f_fp (fcol, frow + ysize);
++	glVertex2f_fp (x, y+8);
++	glEnd_fp ();
++}
++
+ //==========================================================================
+ //
+ // Draw_SmallString
+@@ -754,6 +839,16 @@
+ 	}
+ }
+ 
++void Draw_SmallString_Scaled (int x, int y, const char *str)
++{
++	while (*str)
++	{
++		Draw_SmallCharacter_Scaled (x, y, *str);
++		str++;
++		x += 6;
++	}
++}
++
+ //==========================================================================
+ //
+ // Draw_BigCharacter
+@@ -788,7 +883,34 @@
+ 	glEnd_fp ();
+ }
+ 
++void Draw_BigCharacter_Scaled (int x, int y, int num)
++{
++	int		row, col;
++	float	frow, fcol, xsize, ysize;
+ 
++	row = num / 8;
++	col = num % 8;
++
++	xsize = 0.125;
++	ysize = 0.25;
++	fcol = col*xsize;
++	frow = row*ysize;
++
++	GL_Bind (char_menufonttexture);
++
++	glBegin_fp (GL_QUADS);
++	glTexCoord2f_fp (fcol, frow);
++	glVertex2f_fp (x, y);
++	glTexCoord2f_fp (fcol + xsize, frow);
++	glVertex2f_fp (x+20, y);
++	glTexCoord2f_fp (fcol + xsize, frow + ysize);
++	glVertex2f_fp (x+20, y+20);
++	glTexCoord2f_fp (fcol, frow + ysize);
++	glVertex2f_fp (x, y+20);
++	glEnd_fp ();
++}
++
++
+ /*
+ =============
+ Draw_Pic
+@@ -820,6 +942,32 @@
+ 	glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+ }
+ 
++void Draw_Pic_Scaled (int x, int y, qpic_t *pic)
++{
++	glpic_t			*gl;
++
++	gl = (glpic_t *)pic->data;
++	glColor4f_fp (1,1,1,1);
++	GL_Bind (gl->texnum);
++
++	glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
++	glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
++
++	glBegin_fp (GL_QUADS);
++	glTexCoord2f_fp (gl->sl, gl->tl);
++	glVertex2f_fp (x, y);
++	glTexCoord2f_fp (gl->sh, gl->tl);
++	glVertex2f_fp (x+pic->width, y);
++	glTexCoord2f_fp (gl->sh, gl->th);
++	glVertex2f_fp (x+pic->width, y+pic->height);
++	glTexCoord2f_fp (gl->sl, gl->th);
++	glVertex2f_fp (x, y+pic->height);
++	glEnd_fp ();
++
++	glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
++	glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
++}
++
+ /*
+ =============
+ Draw_AlphaPic
+@@ -1023,6 +1171,59 @@
+ 	glEnd_fp ();
+ }
+ 
++void Draw_PicCropped_Scaled (int x, int y, qpic_t *pic)
++{
++	int		height;
++	glpic_t 	*gl;
++	float		th, tl;
++
++	if ((x < 0) || (x+pic->width > vid.width))
++	{
++		Sys_Error("%s: bad coordinates", __thisfunc__);
++	}
++
++	if (y >= vid.height || y+pic->height < 0)
++		return;		// totally off screen
++
++	gl = (glpic_t *)pic->data;
++
++	// rjr	tl/th need to be computed based upon pic->tl and pic->th
++	//	cuz the piece may come from the scrap
++	if (y+pic->height > vid.height)
++	{
++		height = vid.height-y;
++		tl = 0;
++		th = (height-0.01)/pic->height;
++	}
++	else if (y < 0)
++	{
++		height = pic->height+y;
++		y = -y;
++		tl = (y-0.01)/pic->height;
++		th = (pic->height-0.01)/pic->height;
++		y = 0;
++	}
++	else
++	{
++		height = pic->height;
++		tl = gl->tl;
++		th = gl->th;//(height-0.01)/pic->height;
++	}
++
++	glColor4f_fp (1,1,1,1);
++	GL_Bind (gl->texnum);
++	glBegin_fp (GL_QUADS);
++	glTexCoord2f_fp (gl->sl, tl);
++	glVertex2f_fp (x, y);
++	glTexCoord2f_fp (gl->sh, tl);
++	glVertex2f_fp (x+pic->width, y);
++	glTexCoord2f_fp (gl->sh, th);
++	glVertex2f_fp (x+pic->width, y+height);
++	glTexCoord2f_fp (gl->sl, th);
++	glVertex2f_fp (x, y+height);
++	glEnd_fp ();
++}
++
+ void Draw_SubPicCropped (int x, int y, int h, qpic_t *pic)
+ {
+ 	int		height;
+@@ -1097,11 +1298,27 @@
+ 	Draw_Pic (x, y, pic);
+ }
+ 
++void Draw_TransPic_Scaled (int x, int y, qpic_t *pic)
++{
++	if (x < 0 || (x + pic->width) > vid.width ||
++	    y < 0 || (y + pic->height) > vid.height)
++	{
++		Sys_Error ("%s: bad coordinates", __thisfunc__);
++	}
++
++	Draw_Pic (x, y, pic);
++}
++
+ void Draw_TransPicCropped(int x, int y, qpic_t *pic)
+ {
+ 	Draw_PicCropped (x, y, pic);
+ }
+ 
++void Draw_TransPicCropped_Scaled(int x, int y, qpic_t *pic)
++{
++	Draw_PicCropped (x, y, pic);
++}
++
+ /*
+ =============
+ Draw_TransPicTranslate
+Index: engine/h2shared/gl_screen.c
+===================================================================
+--- engine/h2shared/gl_screen.c	(revision 5092)
++++ engine/h2shared/gl_screen.c	(working copy)
+@@ -338,7 +338,7 @@
+ 	if (scr_viewsize.integer >= 110)
+ 		sb_lines = 0;		// no status bar
+ 	else
+-		sb_lines = 36;	// FIXME: why not 46, i.e. BAR_TOP_HEIGHT?
++		sb_lines = 36 * vid.height / vid.conheight;	// FIXME: why not 46, i.e. BAR_TOP_HEIGHT?
+ 
+ 	size = scr_viewsize.integer > 100 ? 100.0 : scr_viewsize.integer;
+ 	if (cl.intermission)
+
