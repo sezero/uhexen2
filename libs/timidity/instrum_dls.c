@@ -319,7 +319,7 @@ static void FreeRegions(DLS_Instrument *instrument)
 
 static void AllocRegions(DLS_Instrument *instrument)
 {
-    int datalen = (instrument->header->cRegions * sizeof(DLS_Region));
+    size_t datalen = (instrument->header->cRegions * sizeof(DLS_Region));
     FreeRegions(instrument);
     instrument->regions = (DLS_Region *)safe_malloc(datalen);
     if (instrument->regions)
@@ -653,9 +653,12 @@ static void Parse_INFO_DLS(MidDLSPatches *data, RIFF_Chunk *chunk)
 MidDLSPatches *mid_dlspatches_load(MidIStream *stream)
 {
     RIFF_Chunk *chunk;
-    MidDLSPatches *data = (MidDLSPatches *)safe_malloc(sizeof(*data));
+    MidDLSPatches *data;
+
+    data = (MidDLSPatches *)safe_malloc(sizeof(MidDLSPatches));
     if (!data) return NULL;
-    memset(data, 0, sizeof(*data));
+
+    memset(data, 0, sizeof(MidDLSPatches));
 
     data->chunk = LoadRIFF(stream);
     if (!data->chunk) {
@@ -783,8 +786,11 @@ static void load_region_dls(MidSong *song, MidSample *sample, DLS_Instrument *in
   sample->modes = MODES_16BIT;
   sample->sample_rate = wave->format->dwSamplesPerSec;
   sample->data_length = wave->length / 2;
-  sample->data = (sample_t *)safe_malloc(wave->length);
+  sample->data = (sample_t *)safe_malloc(wave->length + 2);
   memcpy(sample->data, wave->data, wave->length);
+  /* initialize the added extra sample space (see the +2 bytes in
+     allocation) using the last actual sample:  */
+  sample->data[sample->data_length] = sample->data[sample->data_length-1];
   if (rgn->wsmp->cSampleLoops) {
     sample->modes |= (MODES_LOOPING|MODES_SUSTAIN);
     sample->loop_start = rgn->wsmp_loop->ulStart / 2;
@@ -885,10 +891,10 @@ MidInstrument *load_instrument_dls(MidSong *song, int drum, int bank, int instru
     return NULL;
   }
 
-  inst = (MidInstrument *)safe_malloc(sizeof(*inst));
+  inst = (MidInstrument *)safe_malloc(sizeof(MidInstrument));
   inst->samples = dls_ins->header->cRegions;
-  inst->sample = (MidSample *)safe_malloc(inst->samples * sizeof(*inst->sample));
-  memset(inst->sample, 0, inst->samples * sizeof(*inst->sample));
+  inst->sample = (MidSample *)safe_malloc(sizeof(MidSample) * inst->samples);
+  memset(inst->sample, 0, sizeof(MidSample) * inst->samples);
   /*
   printf("Found %s instrument %d in bank %d named %s with %d regions\n",
 	 drum ? "drum" : "melodic", instrument, bank, dls_ins->name, inst->samples);
@@ -896,8 +902,8 @@ MidInstrument *load_instrument_dls(MidSong *song, int drum, int bank, int instru
   for (i = 0; i < dls_ins->header->cRegions; ++i)
     load_region_dls(song, &inst->sample[i], dls_ins, i);
   return inst;
-#else
-  /* fixed drum loading code from Vavoom svn repository rev. 4175 */
+
+#else /* fixed drum loading code from Vavoom svn repository rev. 4175 */
   if (drum) goto _dodrum;
 
   for (i = 0; i < song->dlspatches->cInstruments; ++i) {
@@ -920,10 +926,10 @@ MidInstrument *load_instrument_dls(MidSong *song, int drum, int bank, int instru
     return NULL;
   }
 
-  inst = (MidInstrument *)safe_malloc(sizeof(*inst));
+  inst = (MidInstrument *)safe_malloc(sizeof(MidInstrument));
   inst->samples = dls_ins->header->cRegions;
-  inst->sample = (MidSample *)safe_malloc(inst->samples * sizeof(*inst->sample));
-  memset(inst->sample, 0, inst->samples * sizeof(*inst->sample));
+  inst->sample = (MidSample *)safe_malloc(sizeof(MidSample) * inst->samples);
+  memset(inst->sample, 0, sizeof(MidSample) * inst->samples);
   for (i = 0; i < dls_ins->header->cRegions; ++i)
     load_region_dls(song, &inst->sample[i], dls_ins, i);
   return inst;
@@ -959,14 +965,14 @@ _dodrum:
     return NULL;
   }
 
-  inst = (MidInstrument *)safe_malloc(sizeof(*inst));
+  inst = (MidInstrument *)safe_malloc(sizeof(MidInstrument));
   inst->samples = 1;
-  inst->sample = (MidSample *)safe_malloc(inst->samples * sizeof(*inst->sample));
-  memset(inst->sample, 0, inst->samples * sizeof(*inst->sample));
+  inst->sample = (MidSample *)safe_malloc(sizeof(MidSample) * inst->samples);
+  memset(inst->sample, 0, sizeof(MidSample) * inst->samples);
   load_region_dls(song, &inst->sample[0], dls_ins, drum);
 
   return inst;
-#endif
+#endif /* fix from Vavoom */
 }
 
 #endif /* TIMIDITY_USE_DLS */

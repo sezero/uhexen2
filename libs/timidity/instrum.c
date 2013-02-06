@@ -63,7 +63,6 @@ static void free_bank(MidSong *song, int dr, int b)
   for (i=0; i<128; i++)
     if (bank->instrument[i])
       {
-	/* Not that this could ever happen, of course */
 	if (bank->instrument[i] != MAGIC_LOAD_INSTRUMENT)
 	  free_instrument(bank->instrument[i]);
 	bank->instrument[i] = NULL;

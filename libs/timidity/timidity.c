@@ -464,9 +464,9 @@ MidSong *mid_song_load_dls(MidIStream *stream, MidDLSPatches *dlspatches, MidSon
       return NULL;
 
   /* Allocate memory for the song */
-  song = (MidSong *)safe_malloc(sizeof(*song));
+  song = (MidSong *)safe_malloc(sizeof(MidSong));
   if (!song) goto nomem;
-  memset(song, 0, sizeof(*song));
+  memset(song, 0, sizeof(MidSong));
   song->dlspatches = dlspatches;
 
   for (i = 0; i < 128; i++)
