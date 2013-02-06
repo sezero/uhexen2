@@ -83,7 +83,7 @@ FILE *open_file(const char *name)
 	plp = plp->next;
       }
   }
-  
+
   /* Nothing could be opened. */
   DEBUG_MSG("Could not open %s\n", name);
   return NULL;
@@ -92,9 +92,7 @@ FILE *open_file(const char *name)
 /* This'll allocate memory or die. */
 void *safe_malloc(size_t count)
 {
-  void *p;
-
-  p = malloc(count);
+  void *p = malloc(count);
   if (p == NULL) {
     DEBUG_MSG("Sorry. Couldn't malloc %lu bytes.\n", (unsigned long)count);
   }
