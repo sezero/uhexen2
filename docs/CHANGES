@@ -4,6 +4,11 @@ Development Progress	:
 ---------------------------
 
 2013-02-07 (SVN):
+    * timidity: renamed the macro FSCALE to TIM_FSCALE to avoid possible
+      clashes with system headers. renamed FSCALENEG to TIM_FSCALENEG
+      for consistency. new macro names are in line with timidity++-2.xx.
+
+2013-02-07 (SVN):
     * timidity/resample.c (pre_sample): a simplification (use v5 as an
       intermediate variable in computation of v) and a fix (assignment
       of last two samples) from timidity++.

@@ -96,12 +96,12 @@ void apply_envelope_to_amp(MidSong *song, int v)
 	  ramp *= (float)vol_table[song->voice[v].envelope_volume>>23];
 	}
 
-      la = (sint32)FSCALE(lamp,AMP_BITS);
-      
+      la = (sint32)TIM_FSCALE(lamp,AMP_BITS);
+
       if (la>MAX_AMP_VALUE)
 	la=MAX_AMP_VALUE;
 
-      ra = (sint32)FSCALE(ramp,AMP_BITS);
+      ra = (sint32)TIM_FSCALE(ramp,AMP_BITS);
       if (ra>MAX_AMP_VALUE)
 	ra=MAX_AMP_VALUE;
 
@@ -115,7 +115,7 @@ void apply_envelope_to_amp(MidSong *song, int v)
       if (song->voice[v].sample->modes & MODES_ENVELOPE)
 	lamp *= (float)vol_table[song->voice[v].envelope_volume>>23];
 
-      la = (sint32)FSCALE(lamp,AMP_BITS);
+      la = (sint32)TIM_FSCALE(lamp,AMP_BITS);
 
       if (la>MAX_AMP_VALUE)
 	la=MAX_AMP_VALUE;
@@ -164,9 +164,9 @@ static void update_tremolo(MidSong *song, int v)
      song->voice[v].tremolo_phase -= SINE_CYCLE_LENGTH<<RATE_SHIFT;  */
 
   song->voice[v].tremolo_volume = (float) 
-    (1.0 - FSCALENEG((sine(song->voice[v].tremolo_phase >> RATE_SHIFT) + 1.0)
-		    * depth * TREMOLO_AMPLITUDE_TUNING,
-		    17));
+    (1.0 - TIM_FSCALENEG((sine(song->voice[v].tremolo_phase >> RATE_SHIFT) + 1.0)
+			  * depth * TREMOLO_AMPLITUDE_TUNING,
+			 17));
 
   /* I'm not sure about the +1.0 there -- it makes tremoloed voices'
      volumes on average the lower the higher the tremolo amplitude. */
@@ -251,7 +251,7 @@ static void mix_center_signal(MidSong *song, sample_t *sp, sint32 *lp, int v,
 	return;	/* Envelope ran out */
       left = vp->left_mix;
     }
-  
+
   while (count)
     if (cc < count)
       {
@@ -388,7 +388,7 @@ static void mix_center(MidSong *song, sample_t *sp, sint32 *lp, int v, int count
   final_volume_t 
     left = song->voice[v].left_mix;
   sample_t s;
-  
+
   while (count--)
     {
       s = *sp++;
@@ -464,7 +464,7 @@ static void ramp_out(MidSong *song, sample_t *sp, sint32 *lp, int v, sint32 c)
 	      left += li;
 	      if (left<0)
 		return;
-	      s=*sp++;	
+	      s=*sp++;
 	      MIXATION(left);
 	      MIXATION(left);
 	    }

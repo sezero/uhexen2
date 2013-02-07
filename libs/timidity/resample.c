@@ -251,11 +251,11 @@ static sint32 update_vibrato(MidSong *song, MidVoice *vp, int sign)
 	}
     }
 
-  a = FSCALE(((double)(vp->sample->sample_rate) *
-	      (double)(vp->frequency)) /
-	     ((double)(vp->sample->root_freq) *
-	      (double)(song->rate)),
-	     FRACTION_BITS);
+  a = TIM_FSCALE(((double)(vp->sample->sample_rate) *
+		  (double)(vp->frequency)) /
+		 ((double)(vp->sample->root_freq) *
+		  (double)(song->rate)),
+		 FRACTION_BITS);
 
   pb=(int)((sine(vp->vibrato_phase * 
 		 (SINE_CYCLE_LENGTH/(2*MID_VIBRATO_SAMPLE_INCREMENTS)))
@@ -582,7 +582,7 @@ void pre_resample(MidSong *song, MidSample *sp)
       v3 = *(vptr + 1);
       v4 = *(vptr + 2);
       v5 = v2 - v3;
-      xdiff = FSCALENEG(ofs & FRACTION_MASK, FRACTION_BITS);
+      xdiff = TIM_FSCALENEG(ofs & FRACTION_MASK, FRACTION_BITS);
       v = (sint32)(v2 + xdiff * (1.0/6.0) * (3 * (v3 - v5) - 2 * v1 - v4 +
 		xdiff * (3 * (v1 - v2 - v5) + xdiff * (3 * v5 + v4 - v1))));
       *dest++ = (sint16)((v > 32767) ? 32767 : ((v < -32768) ? -32768 : v));

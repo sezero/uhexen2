@@ -113,8 +113,8 @@ static sint32 convert_vibrato_sweep(MidSong *song, uint8 sweep,
     return 0;
 
   return
-    (sint32) (FSCALE((double) (vib_control_ratio) * SWEEP_TUNING, SWEEP_SHIFT)
-	     / (double)(song->rate * sweep));
+    (sint32) (TIM_FSCALE((double) (vib_control_ratio) * SWEEP_TUNING, SWEEP_SHIFT)
+			 / (double)(song->rate * sweep));
 
   /* this was overflowing with seashore.pat
 

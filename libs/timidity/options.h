@@ -93,8 +93,8 @@
 
 #define MAX_AMP_VALUE ((1<<(AMP_BITS+1))-1)
 
-#define FSCALE(a,b) (float)((a) * (double)(1<<(b)))
-#define FSCALENEG(a,b) (float)((a) * (1.0L / (double)(1<<(b))))
+#define TIM_FSCALE(a,b) (float)((a) * (double)(1<<(b)))
+#define TIM_FSCALENEG(a,b) (float)((a) * (1.0L / (double)(1<<(b))))
 
 /* Vibrato and tremolo Choices of the Day */
 #define SWEEP_TUNING 38

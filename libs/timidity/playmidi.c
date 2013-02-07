@@ -130,7 +130,7 @@ static void recompute_freq(MidSong *song, int v)
     sign=(song->voice[v].sample_increment < 0), /* for bidirectional loops */
     pb=song->channel[song->voice[v].channel].pitchbend;
   double a;
-  
+
   if (!song->voice[v].sample->sample_rate)
     return;
 
@@ -168,13 +168,13 @@ static void recompute_freq(MidSong *song, int v)
 		  song->channel[song->voice[v].channel].pitchfactor);
     }
 
-  a = FSCALE(((double)(song->voice[v].sample->sample_rate) *
-	      (double)(song->voice[v].frequency)) /
-	     ((double)(song->voice[v].sample->root_freq) *
-	      (double)(song->rate)),
-	     FRACTION_BITS);
+  a = TIM_FSCALE(((double)(song->voice[v].sample->sample_rate) *
+		  (double)(song->voice[v].frequency)) /
+		 ((double)(song->voice[v].sample->root_freq) *
+		  (double)(song->rate)),
+		 FRACTION_BITS);
 
-  if (sign) 
+  if (sign)
     a = -a; /* need to preserve the loop direction */
 
   song->voice[v].sample_increment = (sint32)(a);
@@ -197,32 +197,32 @@ static void recompute_amp(MidSong *song, int v)
 	  song->voice[v].panned=PANNED_CENTER;
 
 	  song->voice[v].left_amp=
-	    FSCALENEG((double)(tempamp) * song->voice[v].sample->volume * song->master_volume,
-		      21);
+	    TIM_FSCALENEG((double)(tempamp) * song->voice[v].sample->volume * song->master_volume,
+			  21);
 	}
       else if (song->voice[v].panning<5)
 	{
 	  song->voice[v].panned = PANNED_LEFT;
 
 	  song->voice[v].left_amp=
-	    FSCALENEG((double)(tempamp) * song->voice[v].sample->volume * song->master_volume,
-		      20);
+	    TIM_FSCALENEG((double)(tempamp) * song->voice[v].sample->volume * song->master_volume,
+			  20);
 	}
       else if (song->voice[v].panning>123)
 	{
 	  song->voice[v].panned = PANNED_RIGHT;
 
 	  song->voice[v].left_amp= /* left_amp will be used */
-	    FSCALENEG((double)(tempamp) * song->voice[v].sample->volume * song->master_volume,
-		      20);
+	    TIM_FSCALENEG((double)(tempamp) * song->voice[v].sample->volume * song->master_volume,
+			  20);
 	}
       else
 	{
 	  song->voice[v].panned = PANNED_MYSTERY;
 
 	  song->voice[v].left_amp=
-	    FSCALENEG((double)(tempamp) * song->voice[v].sample->volume * song->master_volume,
-		      27);
+	    TIM_FSCALENEG((double)(tempamp) * song->voice[v].sample->volume * song->master_volume,
+			  27);
 	  song->voice[v].right_amp = song->voice[v].left_amp * (song->voice[v].panning);
 	  song->voice[v].left_amp *= (float)(127 - song->voice[v].panning);
 	}
@@ -232,8 +232,8 @@ static void recompute_amp(MidSong *song, int v)
       song->voice[v].panned = PANNED_CENTER;
 
       song->voice[v].left_amp=
-	FSCALENEG((double)(tempamp) * song->voice[v].sample->volume * song->master_volume,
-		  21);
+	TIM_FSCALENEG((double)(tempamp) * song->voice[v].sample->volume * song->master_volume,
+		      21);
     }
 }
 
@@ -259,7 +259,7 @@ static void start_note(MidSong *song, MidEvent *e, int i)
 	song->voice[i].orig_frequency = freq_table[(int)(ip->sample->note_to_use)];
       else
 	song->voice[i].orig_frequency = freq_table[e->a & 0x7F];
-      
+
       /* drums are supposed to have only one sample */
       song->voice[i].sample = ip->sample;
     }
@@ -331,7 +331,7 @@ static void kill_note(MidSong *song, int i)
 /* Only one instance of a note can be playing on a single channel. */
 static void note_on(MidSong *song)
 {
-  int i = song->voices, lowest=-1; 
+  int i = song->voices, lowest=-1;
   sint32 lv=0x7FFFFFFF, v;
   MidEvent *e = song->current_event;
 
@@ -461,7 +461,7 @@ static void adjust_pressure(MidSong *song)
 {
   MidEvent *e = song->current_event;
   int i = song->voices;
-  
+
   while (i--)
     if (song->voice[i].status == VOICE_ON &&
 	song->voice[i].channel == e->channel &&
@@ -597,12 +597,12 @@ static void skip_to(MidSong *song, sint32 until_time)
 static void do_compute_data(MidSong *song, sint32 count)
 {
   int i;
-  memset(song->common_buffer, 0, 
+  memset(song->common_buffer, 0,
 	 (song->encoding & PE_MONO) ? (count * 4) : (count * 8));
   for (i = 0; i < song->voices; i++)
     {
       if(song->voice[i].status != VOICE_FREE)
-					mix_voice(song, song->common_buffer, i, count);
+	mix_voice(song, song->common_buffer, i, count);
     }
   song->current_sample += count;
 }
