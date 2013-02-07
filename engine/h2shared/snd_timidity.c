@@ -84,6 +84,28 @@ static const char *cfgfile[] = {
 	NULL
 };
 
+#if defined(TIMIDITY_USE_DLS)
+/* DLS testing: not good enough yet */
+static MidDLSPatches *dlspat = NULL;
+
+static int S_TIMIDITY_InitDLS (const char *dlsname)
+{
+	MidIStream *f;
+
+	f = mid_istream_open_file(dlsname);
+	if (!f) return -1;
+	if (mid_init_no_config() != 0)
+		return -1; /* nomem! */
+
+	dlspat = mid_dlspatches_load(f);
+	mid_istream_close(f);
+	if (dlspat) return 0;
+
+	mid_exit ();
+	return -1;
+}
+#endif /* TIMIDITY_USE_DLS */
+
 static int TIMIDITY_InitHelper (const char *cfgdir)
 {
 	char path[MAX_OSPATH];
@@ -108,6 +130,15 @@ static qboolean S_TIMIDITY_CodecInitialize (void)
 
 	if (timidity_codec.initialized)
 		return true;
+
+#if defined(TIMIDITY_USE_DLS) /* DLS testing */
+	if (S_TIMIDITY_InitDLS("gm.dls") == 0)
+	{
+		Con_Printf("Timidity: using DLS\n");
+		timidity_codec.initialized = true;
+		return true;
+	}
+#endif /* TIMIDITY_USE_DLS */
 
 	err = -1;
 	timi_env = getenv("TIMIDITY_CFG");
@@ -149,6 +180,13 @@ static void S_TIMIDITY_CodecShutdown (void)
 		return;
 	timidity_codec.initialized = false;
 	Con_Printf("Shutting down Timidity.\n");
+#if defined(TIMIDITY_USE_DLS)
+	if (dlspat != NULL)
+	{
+		mid_dlspatches_free (dlspat);
+		dlspat = NULL;
+	}
+#endif /* USE_DLS */
 	mid_exit ();
 }
 
@@ -189,7 +227,11 @@ static snd_stream_t *S_TIMIDITY_CodecOpenStream (const char *filename)
 		return NULL;
 	}
 	data = (midi_buf_t *) Z_Malloc(sizeof(midi_buf_t), Z_MAINZONE);
+#if defined(TIMIDITY_USE_DLS)
+	data->song = mid_song_load_dls (midistream, dlspat, &options);
+#else
 	data->song = mid_song_load (midistream, &options);
+#endif
 	mid_istream_close (midistream);
 	if (data->song == NULL)
 	{
