@@ -967,8 +967,8 @@ _dodrum:
 
   inst = (MidInstrument *)safe_malloc(sizeof(MidInstrument));
   inst->samples = 1;
-  inst->sample = (MidSample *)safe_malloc(sizeof(MidSample) * inst->samples);
-  memset(inst->sample, 0, sizeof(MidSample) * inst->samples);
+  inst->sample = (MidSample *)safe_malloc(sizeof(MidSample));
+  memset(inst->sample, 0, sizeof(MidSample));
   load_region_dls(song, &inst->sample[0], dls_ins, drum);
 
   return inst;
