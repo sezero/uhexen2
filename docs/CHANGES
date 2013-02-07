@@ -4,6 +4,11 @@ Development Progress	:
 ---------------------------
 
 2013-02-07 (SVN):
+    * timidity/resample.c (pre_sample): a simplification (use v5 as an
+      intermediate variable in computation of v) and a fix (assignment
+      of last two samples) from timidity++.
+
+2013-02-07 (SVN):
     * snd_timidity.c: dls support, mostly for my testing purposes. built
       only when TIMIDITY_USE_DLS is defined (see the Makefile), which is
       not enabled by default.

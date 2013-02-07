@@ -539,7 +539,7 @@ void pre_resample(MidSong *song, MidSample *sp)
   double a, xdiff;
   sint32 incr, ofs, newlen, count;
   sint16 *newdata, *dest, *src = (sint16 *) sp->data, *vptr;
-  sint32 v, v1, v2, v3, v4, i;
+  sint32 v, v1, v2, v3, v4, v5, i;
 #ifdef TIMIDITY_DEBUG
   static const char note_name[12][3] = {
     "C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"
@@ -581,9 +581,10 @@ void pre_resample(MidSong *song, MidSample *sp)
       v2 = *vptr;
       v3 = *(vptr + 1);
       v4 = *(vptr + 2);
+      v5 = v2 - v3;
       xdiff = FSCALENEG(ofs & FRACTION_MASK, FRACTION_BITS);
-      v = (sint32)(v2 + (xdiff / 6.0) * (-2 * v1 - 3 * v2 + 6 * v3 - v4 +
-       xdiff * (3 * (v1 - 2 * v2 + v3) + xdiff * (-v1 + 3 * (v2 - v3) + v4))));
+      v = (sint32)(v2 + xdiff * (1.0/6.0) * (3 * (v3 - v5) - 2 * v1 - v4 +
+		xdiff * (3 * (v1 - v2 - v5) + xdiff * (3 * v5 + v4 - v1))));
       *dest++ = (sint16)((v > 32767) ? 32767 : ((v < -32768) ? -32768 : v));
       ofs += incr;
     }
@@ -596,7 +597,9 @@ void pre_resample(MidSong *song, MidSample *sp)
     }
   else
     *dest++ = src[ofs >> FRACTION_BITS];
+
   *dest = *(dest - 1) / 2;
+ ++dest;
   *dest = *(dest - 1) / 2;
 
   sp->data_length = newlen;
