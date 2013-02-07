@@ -150,11 +150,11 @@ mid_istream_open_fp (FILE * fp, int autoclose)
   StdIOContext *ctx;
   MidIStream *stream;
 
-  stream = (MidIStream *) safe_malloc(sizeof(MidIStream));
+  stream = (MidIStream *) malloc(sizeof(MidIStream));
   if (stream == NULL)
     return NULL;
 
-  ctx = (StdIOContext *) safe_malloc(sizeof(StdIOContext));
+  ctx = (StdIOContext *) malloc(sizeof(StdIOContext));
   if (ctx == NULL)
     {
       free (stream);
@@ -190,11 +190,11 @@ mid_istream_open_mem (void *mem, size_t size, int autofree)
   MemContext *ctx;
   MidIStream *stream;
 
-  stream = (MidIStream *) safe_malloc(sizeof(MidIStream));
+  stream = (MidIStream *) malloc(sizeof(MidIStream));
   if (stream == NULL)
     return NULL;
 
-  ctx = (MemContext *) safe_malloc(sizeof(MemContext));
+  ctx = (MemContext *) malloc(sizeof(MemContext));
   if (ctx == NULL)
     {
       free (stream);
@@ -222,7 +222,7 @@ mid_istream_open_callbacks (MidIStreamReadFunc read,
 {
   MidIStream *stream;
 
-  stream = (MidIStream *) safe_malloc(sizeof(MidIStream));
+  stream = (MidIStream *) malloc(sizeof(MidIStream));
   if (stream == NULL)
     return NULL;
 

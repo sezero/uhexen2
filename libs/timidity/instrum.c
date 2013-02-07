@@ -161,7 +161,8 @@ static void reverse_data(sint16 *sp, sint32 ls, sint32 le)
    undefined.
 
    TODO: do reverse loops right */
-static MidInstrument *load_instrument(MidSong *song, const char *name,
+static void load_instrument(MidSong *song, const char *name,
+				   MidInstrument **out,
 				   int percussion, int panning,
 				   int amp, int note_to_use,
 				   int strip_loop, int strip_envelope,
@@ -174,7 +175,8 @@ static MidInstrument *load_instrument(MidSong *song, const char *name,
   int i,j;
   static const char *patch_ext[] = PATCH_EXT_LIST;
 
-  if (!name) return NULL;
+  *out = NULL;
+  if (!name) return;
 
   /* Open patch file */
   if ((fp=open_file(name)) == NULL)
@@ -195,11 +197,10 @@ static MidInstrument *load_instrument(MidSong *song, const char *name,
   if (fp == NULL)
     {
       DEBUG_MSG("Instrument `%s' can't be found.\n", name);
-      return NULL;
+      return;
     }
 
   DEBUG_MSG("Loading instrument %s\n", tmp);
-  ip = NULL;
 
   /* Read some headers and do cursory sanity checks. There are loads
      of magic offsets. This could be rewritten... */
@@ -226,13 +227,12 @@ static MidInstrument *load_instrument(MidSong *song, const char *name,
       goto badpat;
     }
 
-  ip = (MidInstrument *) safe_malloc(sizeof(MidInstrument));
-  if (!ip) goto nomem;
+  *out = (MidInstrument *) safe_malloc(sizeof(MidInstrument));
+  ip = *out;
   memset(ip, 0, sizeof(MidInstrument));
 
   ip->samples = tmp[198];
   ip->sample = (MidSample *) safe_malloc(sizeof(MidSample) * ip->samples);
-  if (!ip->sample) goto nomem;
   memset(ip->sample, 0, sizeof(MidSample) * ip->samples);
 
   for (i=0; i<ip->samples; i++)
@@ -389,7 +389,6 @@ static MidInstrument *load_instrument(MidSong *song, const char *name,
 
       /* Then read the sample data */
       sp->data = (sample_t *) safe_malloc(sp->data_length+2);
-      if (!sp->data) goto nomem;
 
       if (1 != fread(sp->data, sp->data_length, 1, fp))
 	goto badread;
@@ -403,7 +402,6 @@ static MidInstrument *load_instrument(MidSong *song, const char *name,
 	  sp->loop_start *= 2;
 	  sp->loop_end *= 2;
 	  tmp16 = new16 = (uint16 *) safe_malloc(sp->data_length+2);
-	  if (!new16) goto nomem;
 	  while (k--)
 	    *tmp16++ = (uint16)(*cp++) << 8;
 	  free(sp->data);
@@ -512,18 +510,14 @@ static MidInstrument *load_instrument(MidSong *song, const char *name,
     }
 
   fclose(fp);
-  return ip;
+  return;
 
-nomem:
-  DEBUG_MSG("Out of memory\n");
-  goto fail;
 badread:
   DEBUG_MSG("Error reading sample %d\n", i);
-fail:
   free_instrument (ip);
 badpat:
   fclose(fp);
-  return NULL;
+  *out = NULL;
 }
 
 static int fill_bank(MidSong *song, int dr, int b)
@@ -540,7 +534,7 @@ static int fill_bank(MidSong *song, int dr, int b)
     {
       if (bank->instrument[i]==MAGIC_LOAD_INSTRUMENT)
 	{
-	  bank->instrument[i]=load_instrument_dls(song, dr, b, i);
+	  load_instrument_dls(song, &bank->instrument[i], dr, b, i);
 	  if (bank->instrument[i])
 	    {
 	      continue;
@@ -570,9 +564,11 @@ static int fill_bank(MidSong *song, int dr, int b)
 	      bank->instrument[i] = NULL;
 	      errors++;
 	    }
-	  else if (!(bank->instrument[i] =
-		     load_instrument(song,
+	  else
+	    {
+	      load_instrument(song,
 				     bank->tone[i].name, 
+				     &bank->instrument[i],
 				     (dr) ? 1 : 0,
 				     bank->tone[i].pan,
 				     bank->tone[i].amp,
@@ -585,12 +581,13 @@ static int fill_bank(MidSong *song, int dr, int b)
 				     (bank->tone[i].strip_envelope != -1) ? 
 				     bank->tone[i].strip_envelope :
 				     ((dr) ? 1 : -1),
-				     bank->tone[i].strip_tail )))
-	    {
-	      DEBUG_MSG("Couldn't load instrument %s (%s %d, program %d)\n",
+				     bank->tone[i].strip_tail);
+	      if (!bank->instrument[i]) {
+		DEBUG_MSG("Couldn't load instrument %s (%s %d, program %d)\n",
 		   bank->tone[i].name,
 		   (dr)? "drum set" : "tone bank", b, i);
-	      errors++;
+		errors++;
+	      }
 	    }
 	}
     }
@@ -624,10 +621,9 @@ void free_instruments(MidSong *song)
 
 int set_default_instrument(MidSong *song, const char *name)
 {
-  MidInstrument *ip;
-  if (!(ip=load_instrument(song, name, 0, -1, -1, -1, 0, 0, 0)))
+  load_instrument(song, name, &song->default_instrument, 0, -1, -1, -1, 0, 0, 0);
+  if (!song->default_instrument)
     return -1;
-  song->default_instrument = ip;
   song->default_program = SPECIAL_PROGRAM;
   return 0;
 }

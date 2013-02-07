@@ -3,6 +3,23 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2013-02-07 (SVN):
+    * made safe_malloc() of timidity actually safe: it relies on setjmp
+      and longjmp using a jmp_buf private to timidity. safe_malloc() is
+      now used only after doing a setjmp(), otherwise we directly use
+      malloc() and check its return. safe_malloc() does a longjmp() upon
+      allocation failure: during timidity initialization, jump point is
+      either mid_init_no_config() or read_config_file(), and a failure
+      results in a mid_exit() to free all the allocated memory until
+      that point. if initialization is successful, then safe_malloc() is
+      used during song loading and a failure jumps to mid_song_load()
+      resulting in a mid_song_free() to free all memory allocated for
+      the song until that point. all functions returning safe_malloc'ed
+      local pointer variables are converted to work properly in case of
+      a longjmp(). all NULL checks for pointers returned by safe_malloc
+      are removed.
+    * updated version date stamp to 2013-02-07.
+
 2013-02-05 (SVN):
     * timidity, intrum_dls.c: apply the same one extra sample space fix
       from r5049-r5050 to load_region_dls() to cure memory error reports

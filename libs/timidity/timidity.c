@@ -93,6 +93,9 @@ static int read_config_file(const char *name)
   if (!(fp=open_file(name)))
     return -1;
 
+  if (setjmp(safe_malloc_jmp))
+    goto nomem;
+
   while (timi_fgets(tmp, sizeof(tmp), fp))
   {
     line++;
@@ -199,7 +202,10 @@ static int read_config_file(const char *name)
 	goto fail;
       }
       for (i=1; i<words; i++)
-	add_to_pathlist(w[i], strlen(w[i]));
+      {
+	if (add_to_pathlist(w[i], strlen(w[i])) != 0)
+	  goto nomem;
+      }
     }
     else if (!strcmp(w[0], "source"))
     {
@@ -248,12 +254,8 @@ static int read_config_file(const char *name)
       if (!master_drumset[i])
       {
 	master_drumset[i] = (MidToneBank *) safe_malloc(sizeof(MidToneBank));
-	if (!(master_drumset[i]))
-	  goto nomem;
 	memset(master_drumset[i], 0, sizeof(MidToneBank));
 	master_drumset[i]->tone = (MidToneBankElement *) safe_malloc(128 * sizeof(MidToneBankElement));
-	if (!(master_drumset[i]->tone))
-	  goto nomem;
 	memset(master_drumset[i]->tone, 0, 128 * sizeof(MidToneBankElement));
       }
       bank=master_drumset[i];
@@ -275,12 +277,8 @@ static int read_config_file(const char *name)
       if (!master_tonebank[i])
       {
 	master_tonebank[i] = (MidToneBank *) safe_malloc(sizeof(MidToneBank));
-	if (!(master_tonebank[i]))
-	  goto nomem;
 	memset(master_tonebank[i], 0, sizeof(MidToneBank));
 	master_tonebank[i]->tone = (MidToneBankElement *) safe_malloc(128 * sizeof(MidToneBankElement));
-	if (!(master_tonebank[i]->tone))
-	  goto nomem;
 	memset(master_tonebank[i]->tone, 0, 128 * sizeof(MidToneBankElement));
       }
       bank=master_tonebank[i];
@@ -307,8 +305,6 @@ static int read_config_file(const char *name)
       }
       safe_free(bank->tone[i].name);
       bank->tone[i].name=(char *) safe_malloc(strlen(w[1])+1);
-      if (!(bank->tone[i].name))
-	goto nomem;
       strcpy(bank->tone[i].name,w[1]);
       bank->tone[i].note=bank->tone[i].amp=bank->tone[i].pan=
       bank->tone[i].strip_loop=bank->tone[i].strip_envelope=
@@ -410,27 +406,25 @@ int mid_init_no_config(void)
 {
   master_tonebank[0] = NULL;
   master_drumset[0] = NULL;
+
+  if (setjmp(safe_malloc_jmp)) {
+      DEBUG_MSG("Out of memory\n");
+      mid_exit ();
+      return -1;
+  }
+
   /* Allocate memory for the standard tonebank and drumset */
   master_tonebank[0] = (MidToneBank *) safe_malloc(sizeof(MidToneBank));
-  if (!(master_tonebank[0])) goto fail;
   memset(master_tonebank[0], 0, sizeof(MidToneBank));
   master_tonebank[0]->tone = (MidToneBankElement *) safe_malloc(128 * sizeof(MidToneBankElement));
-  if (!(master_tonebank[0]->tone)) goto fail;
   memset(master_tonebank[0]->tone, 0, 128 * sizeof(MidToneBankElement));
 
   master_drumset[0] = (MidToneBank *) safe_malloc(sizeof(MidToneBank));
-  if (!(master_drumset[0])) goto fail;
   memset(master_drumset[0], 0, sizeof(MidToneBank));
   master_drumset[0]->tone = (MidToneBankElement *) safe_malloc(128 * sizeof(MidToneBankElement));
-  if (!(master_drumset[0]->tone)) goto fail;
   memset(master_drumset[0]->tone, 0, 128 * sizeof(MidToneBankElement));
 
   return 0;
-
-fail:
-  DEBUG_MSG("Out of memory\n");
-  mid_exit ();
-  return -1;
 }
 
 int mid_init(const char *config_file)
@@ -446,7 +440,14 @@ int mid_init(const char *config_file)
       config_file = CONFIG_FILE;
   p = FIND_LAST_DIRSEP(config_file);
   if (p != NULL)
-      add_to_pathlist(config_file, p - config_file + 1); /* including DIRSEP */
+  {
+      rc = add_to_pathlist(config_file, p - config_file + 1); /* including DIRSEP */
+      if (rc != 0) {
+	DEBUG_MSG("Out of memory\n");
+	mid_exit ();
+	return rc;
+      }
+  }
 
   rc = read_config_file(config_file);
   if (rc != 0)
@@ -464,24 +465,25 @@ MidSong *mid_song_load_dls(MidIStream *stream, MidDLSPatches *dlspatches, MidSon
       return NULL;
 
   /* Allocate memory for the song */
-  song = (MidSong *)safe_malloc(sizeof(MidSong));
+  song = (MidSong *)malloc(sizeof(MidSong));
   if (!song) goto nomem;
   memset(song, 0, sizeof(MidSong));
   song->dlspatches = dlspatches;
+
+  if (setjmp(safe_malloc_jmp))
+    goto nomem;
 
   for (i = 0; i < 128; i++)
   {
     if (master_tonebank[i])
     {
       song->tonebank[i] = (MidToneBank *) safe_malloc(sizeof(MidToneBank));
-      if (!(song->tonebank[i])) goto nomem;
       memset(song->tonebank[i], 0, sizeof(MidToneBank));
       song->tonebank[i]->tone = master_tonebank[i]->tone;
     }
     if (master_drumset[i])
     {
       song->drumset[i] = (MidToneBank *) safe_malloc(sizeof(MidToneBank));
-      if (!(song->drumset[i])) goto nomem;
       memset(song->drumset[i], 0, sizeof(MidToneBank));
       song->drumset[i]->tone = master_drumset[i]->tone;
     }
@@ -524,9 +526,7 @@ MidSong *mid_song_load_dls(MidIStream *stream, MidDLSPatches *dlspatches, MidSon
   song->discard_meta = options->discard_meta;
   song->buffer_size = options->buffer_size;
   song->resample_buffer = (sample_t *) safe_malloc(options->buffer_size * sizeof(sample_t));
-  if (!(song->resample_buffer)) goto nomem;
   song->common_buffer = (sint32 *) safe_malloc(options->buffer_size * 2 * sizeof(sint32));
-  if (!(song->common_buffer)) goto nomem;
 
   song->bytes_per_sample =
 	((song->encoding & PE_MONO) ? 1 : 2) *

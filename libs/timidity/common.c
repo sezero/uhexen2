@@ -90,34 +90,37 @@ FILE *open_file(const char *name)
 }
 
 /* This'll allocate memory or die. */
+jmp_buf		safe_malloc_jmp;
 void *safe_malloc(size_t count)
 {
   void *p = malloc(count);
   if (p == NULL) {
     DEBUG_MSG("Sorry. Couldn't malloc %lu bytes.\n", (unsigned long)count);
+    longjmp(safe_malloc_jmp, 1);
   }
   return p;
 }
 
 /* This adds a directory to the path list */
-void add_to_pathlist(const char *s, size_t l)
+int add_to_pathlist(const char *s, size_t l)
 {
-  PathList *plp = (PathList *) safe_malloc(sizeof(PathList));
+  PathList *plp = (PathList *) malloc(sizeof(PathList));
 
   if (plp == NULL)
-      return;
+      return -1;
 
-  plp->path = (char *) safe_malloc(l + 1);
+  plp->path = (char *) malloc(l + 1);
   if (plp->path == NULL)
   {
       free(plp);
-      return;
+      return -1;
   }
 
   strncpy(plp->path, s, l);
   plp->path[l] = '\0';
   plp->next = pathlist;
   pathlist = plp;
+  return 0;
 }
 
 void free_pathlist(void)
