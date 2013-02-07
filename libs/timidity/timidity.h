@@ -83,6 +83,8 @@ extern "C" {
   {
     MID_SONG_TEXT = 0,
     MID_SONG_COPYRIGHT = 1
+/* for struct _MidSong meta_data array size */
+#define MID_META_MAX	(MID_SONG_COPYRIGHT)
   } MidSongMetaId;
 
 

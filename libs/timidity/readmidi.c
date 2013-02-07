@@ -70,7 +70,8 @@ static int read_meta_data(MidIStream *stream, sint32 len, uint8 type, MidSong *s
   static const char *label[] = {
     "Text event: ", "Text: ", "Copyright: ", "Track name: ",
     "Instrument: ", "Lyric: ", "Marker: ", "Cue point: "};
-#endif /* TIMIDITY_DEBUG */
+#endif
+
   MidSongMetaId id;
   char *s = (char *)safe_malloc(len+1);
 
@@ -79,6 +80,7 @@ static int read_meta_data(MidIStream *stream, sint32 len, uint8 type, MidSong *s
       free(s);
       return -1;
     }
+
   s[len]='\0';
   while (len--)
     {
@@ -87,18 +89,15 @@ static int read_meta_data(MidIStream *stream, sint32 len, uint8 type, MidSong *s
     }
   DEBUG_MSG("%s%s\n", label[(type > 7) ? 0 : type], s);
 
-  switch (type)
-  {
+  switch (type) {
     case 1: id = MID_SONG_TEXT; break;
     case 2: id = MID_SONG_COPYRIGHT; break;
-    default: free(s); s = NULL;
+  /* others not stored in song
+     but debug-printed above */
+    default: free(s); return 0;
   }
-  if (s)
-    {
-      safe_free(song->meta_data[id]);
-      song->meta_data[id] = s;
-    }
-
+  safe_free(song->meta_data[id]);
+  song->meta_data[id] = s;
   return 0;
 }
 

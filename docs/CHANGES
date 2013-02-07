@@ -4,6 +4,13 @@ Development Progress	:
 ---------------------------
 
 2013-02-07 (SVN):
+    * timidity: cured a (bogus) uninitialized warning from gcc 3.3 and
+      earlier versions in read_meta_data(). added an index safety check
+      to mid_song_get_meta(). defined a MID_META_MAX macro (currently
+      equal to the last MidSongMetaId enum value of MID_SONG_COPYRIGHT)
+      and limited the MidSong meta_data array size to MID_META_MAX+1.
+
+2013-02-07 (SVN):
     * timidity: renamed the macro FSCALE to TIM_FSCALE to avoid possible
       clashes with system headers. renamed FSCALENEG to TIM_FSCALENEG
       for consistency. new macro names are in line with timidity++-2.xx.

@@ -523,11 +523,11 @@ MidSong *mid_song_load_dls(MidIStream *stream, MidDLSPatches *dlspatches, MidSon
 	  break;
   }
 
-  song->discard_meta = options->discard_meta;
   song->buffer_size = options->buffer_size;
   song->resample_buffer = (sample_t *) safe_malloc(options->buffer_size * sizeof(sample_t));
   song->common_buffer = (sint32 *) safe_malloc(options->buffer_size * 2 * sizeof(sint32));
 
+  song->discard_meta = options->discard_meta;
   song->bytes_per_sample =
 	((song->encoding & PE_MONO) ? 1 : 2) *
 	((song->encoding & PE_16BIT) ? 2 : 1);
@@ -577,8 +577,7 @@ void mid_song_free(MidSong *song)
 
   free_instruments(song);
 
-  for (i = 0; i < 128; i++)
-  {
+  for (i = 0; i < 128; i++) {
     safe_free(song->tonebank[i]);
     safe_free(song->drumset[i]);
   }
@@ -587,8 +586,7 @@ void mid_song_free(MidSong *song)
   safe_free(song->resample_buffer);
   safe_free(song->events);
 
-  for (i = 0; i < (int)(sizeof(song->meta_data) / sizeof(song->meta_data[0])); i++)
-  {
+  for (i = 0; i <= MID_META_MAX; i++) {
     safe_free(song->meta_data[i]);
   }
 
