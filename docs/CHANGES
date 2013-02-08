@@ -4,6 +4,10 @@ Development Progress	:
 ---------------------------
 
 2013-02-08 (SVN):
+    * timidity: changed mid_istream_skip() to accept a long type length
+      instead of size_t and made it to return success or failure.
+
+2013-02-08 (SVN):
     * timidity: don't leak instrument file pointer upon longjmp(), i.e.
       a malloc() failure.
 

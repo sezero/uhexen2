@@ -139,7 +139,7 @@ extern "C" {
 
 /* Seek to a position in the input stream
  */
-  extern int  mid_istream_seek (MidIStream * stream, long offset, int whence);
+  extern int mid_istream_seek (MidIStream * stream, long offset, int whence);
 
 /* Tell the position of input stream
  */
@@ -147,7 +147,7 @@ extern "C" {
 
 /* Skip data from input stream
  */
-  extern void mid_istream_skip (MidIStream * stream, size_t len);
+  extern int mid_istream_skip (MidIStream * stream, long len);
 
 /* Close and destroy input stream
  */

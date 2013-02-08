@@ -253,10 +253,12 @@ mid_istream_tell (MidIStream * stream)
   return stream->tell (stream->ctx);
 }
 
-void
-mid_istream_skip (MidIStream * stream, size_t len)
+int
+mid_istream_skip (MidIStream * stream, long len)
 {
-  stream->seek (stream->ctx, (long) len, SEEK_CUR);
+  if (stream->seek (stream->ctx, len, SEEK_CUR) < 0)
+    return -1;
+  return 0;
 }
 
 int

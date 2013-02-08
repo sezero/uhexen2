@@ -190,7 +190,7 @@ struct _MidSong
   MidDLSPatches *dlspatches;
   MidToneBank *tonebank[128];
   MidToneBank *drumset[128];
-  FILE *ifp; /* patch file pointer used by instrument loader. */
+  FILE *ifp; /* patch file pointer used by the instrument loader */
   MidInstrument *default_instrument;
   int default_program;
   void (*write) (void *dp, sint32 *lp, sint32 c);
