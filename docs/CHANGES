@@ -4,6 +4,13 @@ Development Progress	:
 ---------------------------
 
 2013-02-08 (SVN):
+    * timidity: abandoned libtimidity invention of storing metadata in
+      the song. now we either skip the metadata, or print to stderr if
+      compiled with TIMIDITY_DEBUG defined.
+    * snd_timidity.c: adjusted for the metadata changes.
+    * updated version date stamp to 2013-02-08.
+
+2013-02-08 (SVN):
     * timidity: changed mid_istream_skip() to accept a long type length
       instead of size_t and made it to return success or failure.
 

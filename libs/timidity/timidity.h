@@ -76,15 +76,13 @@ extern "C" {
     uint8 channels;	/* Number of channels: 1 mono, 2 stereo */
     uint8 width;	/* Sample width: 1 for 8 bit, 2 for 16 bit */
     uint16 buffer_size;	/* Sample buffer size in samples */
-    sint16 discard_meta;/* do or don't allocate and parse metadata */
+    uint16 reserved;
   };
 
   typedef enum
   {
     MID_SONG_TEXT = 0,
     MID_SONG_COPYRIGHT = 1
-/* for struct _MidSong meta_data array size */
-#define MID_META_MAX	(MID_SONG_COPYRIGHT)
   } MidSongMetaId;
 
 
@@ -206,7 +204,8 @@ extern "C" {
  */
   extern uint32 mid_song_get_time (MidSong * song);
 
-/* Get song meta data. Return NULL if no meta data found
+/* Get song meta data: for libtimidity-0.1.0 compat. Always
+ * returns NULL because we no longer store any meta data.
  */
   extern char *mid_song_get_meta (MidSong * song, MidSongMetaId what);
 

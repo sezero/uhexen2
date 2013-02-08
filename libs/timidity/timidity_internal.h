@@ -217,8 +217,6 @@ struct _MidSong
   sint32 event_count;
   sint32 at;
   sint32 groomed_event_count;
-  int discard_meta;
-  char *meta_data[MID_META_MAX + 1];
 };
 
 #endif /* TIMIDITY_INTERNAL_H */

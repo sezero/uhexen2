@@ -94,6 +94,7 @@ static int S_TIMIDITY_InitDLS (const char *dlsname)
 
 	f = mid_istream_open_file(dlsname);
 	if (!f) return -1;
+
 	if (mid_init_no_config() != 0)
 		return -1; /* nomem! */
 
@@ -215,7 +216,6 @@ static snd_stream_t *S_TIMIDITY_CodecOpenStream (const char *filename)
 	else /* assumed LITTLE_ENDIAN. */
 		options.format = MID_AUDIO_S16LSB;
 	options.buffer_size = CACHEBUFFER_SIZE / (width * options.channels);
-	options.discard_meta = 1;		/* don't need the metadata */
 
 	midistream = mid_istream_open_callbacks (timidity_fread, timidity_fseek,
 						 timidity_ftell, timidity_fclose,

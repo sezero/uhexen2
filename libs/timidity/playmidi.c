@@ -659,7 +659,7 @@ uint32 mid_song_get_time(MidSong *song)
 
 char *mid_song_get_meta(MidSong *song, MidSongMetaId what)
 {
-  return ((what < 0 || what > MID_META_MAX) ? NULL : song->meta_data[what]);
+  return NULL;
 }
 
 size_t mid_song_read_wave(MidSong *song, sint8 *ptr, size_t size)
