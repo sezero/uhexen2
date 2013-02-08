@@ -179,7 +179,7 @@ static void load_instrument(MidSong *song, const char *name,
   if (!name) return;
 
   /* Open patch file */
-  if ((fp=open_file(name)) == NULL)
+  if ((song->ifp=open_file(name)) == NULL)
     {
       /* Try with various extensions */
       for (i=0; patch_ext[i]; i++)
@@ -188,17 +188,18 @@ static void load_instrument(MidSong *song, const char *name,
 	    {
 	      strcpy(tmp, name);
 	      strcat(tmp, patch_ext[i]);
-	      if ((fp=open_file(tmp)) != NULL)
+	      if ((song->ifp=open_file(tmp)) != NULL)
 		  break;
 	    }
 	}
     }
 
-  if (fp == NULL)
+  if (song->ifp == NULL)
     {
       DEBUG_MSG("Instrument `%s' can't be found.\n", name);
       return;
     }
+  fp = song->ifp;
 
   DEBUG_MSG("Loading instrument %s\n", tmp);
 
@@ -510,6 +511,7 @@ static void load_instrument(MidSong *song, const char *name,
     }
 
   fclose(fp);
+  song->ifp = NULL;
   return;
 
 badread:
@@ -517,6 +519,7 @@ badread:
   free_instrument (ip);
 badpat:
   fclose(fp);
+  song->ifp = NULL;
   *out = NULL;
 }
 

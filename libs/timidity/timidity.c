@@ -576,6 +576,8 @@ void mid_song_free(MidSong *song)
   if (!song) return;
 
   free_instruments(song);
+  if (song->ifp)
+    fclose(song->ifp);
 
   for (i = 0; i < 128; i++) {
     safe_free(song->tonebank[i]);

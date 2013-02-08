@@ -3,6 +3,10 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2013-02-08 (SVN):
+    * timidity: don't leak instrument file pointer upon longjmp(), i.e.
+      a malloc() failure.
+
 2013-02-07 (SVN):
     * timidity: cured a (bogus) uninitialized warning from gcc 3.3 and
       earlier versions in read_meta_data(). added an index safety check
