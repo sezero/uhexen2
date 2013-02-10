@@ -270,7 +270,7 @@ static void InitHashTable (void)
 
 qboolean CO_CompileFile (const char *fileText, const char *fileName)
 {
-	qboolean	inProgress;
+	volatile qboolean	inProgress;
 
 	FrameIndex = -1;
 	inProgress = false;
