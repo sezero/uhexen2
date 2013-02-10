@@ -24,26 +24,7 @@
 #include "timidity.h"
 #include "options.h"
 
-/*
-#if  defined(__i386__) || defined(__ia64__) || defined(WIN32) || \
-    (defined(__alpha__) || defined(__alpha)) || \
-     defined(__arm__) || \
-    (defined(__mips__) && defined(__MIPSEL__)) || \
-     defined(__SYMBIAN32__) || \
-     defined(__x86_64__) || \
-     defined(__LITTLE_ENDIAN__)
-#ifndef LITTLE_ENDIAN
-#define LITTLE_ENDIAN
-#endif
-#undef BIG_ENDIAN
-#else
-#ifndef BIG_ENDIAN
-#define BIG_ENDIAN
-#endif
-#undef LITTLE_ENDIAN
-#endif
-*/
-#include "q_endian.h"
+#include "q_endian.h" /* uhexen2 header for BYTE_ORDER */
 
 /* Instrument files are little-endian, MIDI files big-endian, so we
    need to do some conversions. */
@@ -60,8 +41,7 @@
 		      (((x)>>24)&0xFF))
 #endif
 
-/*#ifdef LITTLE_ENDIAN*/
-#if BYTE_ORDER == LITTLE_ENDIAN
+#if (BYTE_ORDER == LITTLE_ENDIAN) /*# !defined(WORDS_BIGENDIAN)*/
 #define SWAPLE16(x) x
 #define SWAPLE32(x) x
 #define SWAPBE16(x) XCHG_SHORT(x)

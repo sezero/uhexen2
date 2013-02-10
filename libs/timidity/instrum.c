@@ -409,8 +409,7 @@ static void load_instrument(MidSong *song, const char *name,
 	  free(sp->data);
 	  sp->data = (sample_t *)new16;
 	}
-/*#ifndef LITTLE_ENDIAN*/
-#if BYTE_ORDER == BIG_ENDIAN
+#if (BYTE_ORDER != LITTLE_ENDIAN)/* defined(WORDS_BIGENDIAN)*/
       else
 	/* convert to machine byte order */
 	{
