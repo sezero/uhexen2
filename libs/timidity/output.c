@@ -27,7 +27,6 @@
 
 #include "timidity.h"
 #include "timidity_internal.h"
-#include "options.h"
 #include "output.h"
 
 /*****************************************************************/

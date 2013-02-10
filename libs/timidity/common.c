@@ -24,6 +24,10 @@
 #  include <config.h>
 #endif
 
+#ifdef HAVE_SYS_PARAM_H
+#include <sys/param.h>
+#endif
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -33,12 +37,17 @@
 
 #include "timidity.h"
 #include "timidity_internal.h"
-#include "options.h"
 #include "common.h"
 #include "filenames.h"
 
-/* The paths in this list will be tried whenever we're reading a file */
-static PathList *pathlist = NULL; /* This is a linked list */
+/* The paths in this list will be tried whenever open_file()
+   reads a file */
+struct _PathList {
+  char *path;
+  struct _PathList *next;
+};
+
+static PathList *pathlist = NULL;
 
 /* This is meant to find and open files for reading */
 FILE *open_file(const char *name)
@@ -52,14 +61,13 @@ FILE *open_file(const char *name)
     }
 
   /* First try the given name */
-
   DEBUG_MSG("Trying to open %s\n", name);
   if ((fp = fopen(name, OPEN_MODE)))
     return fp;
 
   if (!IS_ABSOLUTE_PATH(name))
   {
-    char current_filename[1024];
+    char current_filename[TIM_MAXPATH];
     PathList *plp = pathlist;
     int l;
 
@@ -89,38 +97,27 @@ FILE *open_file(const char *name)
   return NULL;
 }
 
-/* This'll allocate memory or die. */
-jmp_buf		safe_malloc_jmp;
+/* This'll allocate memory and clear it. */
+jmp_buf malloc_env;
 void *safe_malloc(size_t count)
 {
   void *p = malloc(count);
   if (p == NULL) {
-    DEBUG_MSG("Sorry. Couldn't malloc %lu bytes.\n", (unsigned long)count);
-    longjmp(safe_malloc_jmp, 1);
+    DEBUG_MSG("malloc() failed for %lu bytes.\n", (unsigned long)count);
+    longjmp(malloc_env, 1);
   }
+  memset(p, 0, count);
   return p;
 }
 
 /* This adds a directory to the path list */
-int add_to_pathlist(const char *s, size_t l)
+void add_to_pathlist(const char *s, size_t l)
 {
-  PathList *plp = (PathList *) malloc(sizeof(PathList));
-
-  if (plp == NULL)
-      return -1;
-
-  plp->path = (char *) malloc(l + 1);
-  if (plp->path == NULL)
-  {
-      free(plp);
-      return -1;
-  }
-
-  strncpy(plp->path, s, l);
-  plp->path[l] = '\0';
+  PathList *plp = (PathList *) safe_malloc(sizeof(PathList));
   plp->next = pathlist;
   pathlist = plp;
-  return 0;
+  plp->path = (char *) safe_malloc(l + 1);
+  strncpy(plp->path, s, l);
 }
 
 void free_pathlist(void)
@@ -131,7 +128,7 @@ void free_pathlist(void)
     while (plp)
     {
 	next = plp->next;
-	free(plp->path);
+	safe_free(plp->path);
 	free(plp);
 	plp = next;
     }

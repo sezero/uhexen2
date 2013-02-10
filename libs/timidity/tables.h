@@ -25,7 +25,7 @@
 
 #include <math.h>
 
-#define sine(x) (sin((2*PI/1024.0) * (x)))
+#define sine(x) (sin((2*M_PI/1024.0) * (x)))
 
 #define SINE_CYCLE_LENGTH 1024
 extern const sint32 freq_table[];

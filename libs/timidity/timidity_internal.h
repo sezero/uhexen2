@@ -22,6 +22,8 @@
 #define TIMIDITY_INTERNAL_H
 
 #include "timidity.h"
+#include "options.h"
+
 /*
 #if  defined(__i386__) || defined(__ia64__) || defined(WIN32) || \
     (defined(__alpha__) || defined(__alpha)) || \

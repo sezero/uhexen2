@@ -31,7 +31,6 @@
 
 #include "timidity.h"
 #include "timidity_internal.h"
-#include "options.h"
 #include "instrum.h"
 #include "playmidi.h"
 #include "output.h"
@@ -556,10 +555,10 @@ void mix_voice(MidSong *song, sint32 *buf, int v, sint32 c)
 	      /* It's either full left or full right. In either case,
 		 every other sample is 0. Just get the offset right: */
 	      if (vp->panned == PANNED_RIGHT) buf++;
-	      
+
 	      if (vp->envelope_increment || vp->tremolo_phase_increment)
 		mix_single_signal(song, sp, buf, v, c);
-	      else 
+	      else
 		mix_single(song, sp, buf, v, c);
 	    }
 	}

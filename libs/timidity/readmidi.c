@@ -28,7 +28,6 @@
 
 #include "timidity.h"
 #include "timidity_internal.h"
-#include "options.h"
 #include "common.h"
 #include "instrum.h"
 #include "playmidi.h"
@@ -99,8 +98,8 @@ static int read_meta_data(MidIStream *stream, MidSong *song, sint32 len, uint8 t
   newlist->event.channel = ch;					\
   newlist->event.a = pa;					\
   newlist->event.b = pb;					\
-  newlist->next = NULL;						\
   return newlist;
+/*newlist->next = NULL;*/	/* safe_malloc() clears mem already */
 
 #define MAGIC_EOT ((MidEventList *)(-1))
 
@@ -579,9 +578,9 @@ MidEvent *read_midi_file(MidIStream *stream, MidSong *song, sint32 *count, sint3
 
   /* Put a do-nothing event first in the list for easier processing */
   song->evlist=(MidEventList *) safe_malloc(sizeof(MidEventList));
-  song->evlist->event.time=0;
   song->evlist->event.type=ME_NONE;
-  song->evlist->next = NULL;
+/*song->evlist->event.time=0;
+  song->evlist->next = NULL;*/	/* safe_malloc() clears mem already */
   song->event_count++;
 
   switch(format)

@@ -24,7 +24,6 @@
 
 #include "timidity.h"
 #include "timidity_internal.h"
-#include "options.h"
 #include "instrum.h"
 #include "tables.h"
 #include "common.h"
@@ -62,7 +61,6 @@ static void FreeRIFF(RIFF_Chunk *chunk);
 static void AllocRIFFChunk(RIFF_Chunk **chunk)
 {
     *chunk = (RIFF_Chunk *)safe_malloc(sizeof(RIFF_Chunk));
-    memset(*chunk, 0, sizeof(RIFF_Chunk));
 }
 
 static void FreeRIFFChunk(RIFF_Chunk *chunk)
@@ -320,7 +318,6 @@ static void AllocRegions(DLS_Instrument *instrument)
     size_t datalen = (instrument->header->cRegions * sizeof(DLS_Region));
     FreeRegions(instrument);
     instrument->regions = (DLS_Region *)safe_malloc(datalen);
-    memset(instrument->regions, 0, datalen);
 }
 
 static void FreeInstruments(MidDLSPatches *data)
@@ -339,7 +336,6 @@ static void AllocInstruments(MidDLSPatches *data)
     int datalen = (data->cInstruments * sizeof(DLS_Instrument));
     FreeInstruments(data);
     data->instruments = (DLS_Instrument *)safe_malloc(datalen);
-    memset(data->instruments, 0, datalen);
 }
 
 static void FreeWaveList(MidDLSPatches *data)
@@ -355,7 +351,6 @@ static void AllocWaveList(MidDLSPatches *data)
     int datalen = (data->ptbl->cCues * sizeof(DLS_Wave));
     FreeWaveList(data);
     data->waveList = (DLS_Wave *)safe_malloc(datalen);
-    memset(data->waveList, 0, datalen);
 }
 
 static void Parse_colh(MidDLSPatches *data, RIFF_Chunk *chunk)
@@ -648,30 +643,25 @@ static void Parse_INFO_DLS(MidDLSPatches *data, RIFF_Chunk *chunk)
     }
 }
 
-MidDLSPatches *mid_dlspatches_load(MidIStream *stream)
+static void do_dlspatches_load(MidIStream *stream, MidDLSPatches **out)
 {
     RIFF_Chunk *chunk;
     MidDLSPatches *data;
 
-    data = (MidDLSPatches *)malloc(sizeof(MidDLSPatches));
-    if (!data) {
-    nomem:
+    *out = NULL;
+    if (setjmp(malloc_env)) {
 	DEBUG_MSG("Out of memory\n");
-	return NULL;
+	fail:
+	mid_dlspatches_free(*out);
+	*out = NULL;
+	return;
     }
 
-    memset(data, 0, sizeof(MidDLSPatches));
-
-    if (setjmp(safe_malloc_jmp)) {
-	mid_dlspatches_free(data);
-	goto nomem;
-    }
-
+    *out = (MidDLSPatches *)safe_malloc(sizeof(MidDLSPatches));
+    data = *out;
     LoadRIFF(stream, &data->chunk);
-    if (!data->chunk) {
-	mid_dlspatches_free(data);
-	return NULL;
-    }
+    if (!data->chunk)
+	goto fail;
 
     for (chunk = data->chunk->child; chunk; chunk = chunk->next) {
 	uint32 magic = (chunk->magic == FOURCC_LIST) ? chunk->subtype : chunk->magic;
@@ -693,6 +683,12 @@ MidDLSPatches *mid_dlspatches_load(MidIStream *stream)
 	    break;
 	}
     }
+}
+
+MidDLSPatches *mid_dlspatches_load(MidIStream *stream)
+{
+    MidDLSPatches *data;
+    do_dlspatches_load(stream, &data);
     return data;
 }
 
@@ -902,10 +898,8 @@ void load_instrument_dls(MidSong *song, MidInstrument **out,
 
   *out = (MidInstrument *)safe_malloc(sizeof(MidInstrument));
   inst = *out;
-  memset (inst, 0, sizeof(MidInstrument));
   inst->samples = dls_ins->header->cRegions;
   inst->sample = (MidSample *)safe_malloc(sizeof(MidSample) * inst->samples);
-  memset(inst->sample, 0, sizeof(MidSample) * inst->samples);
   /*
   printf("Found %s instrument %d in bank %d named %s with %d regions\n",
 	 drum ? "drum" : "melodic", instrument, bank, dls_ins->name, inst->samples);
@@ -938,10 +932,8 @@ void load_instrument_dls(MidSong *song, MidInstrument **out,
 
   *out = (MidInstrument *)safe_malloc(sizeof(MidInstrument));
   inst = *out;
-  memset (inst, 0, sizeof(MidInstrument));
   inst->samples = dls_ins->header->cRegions;
   inst->sample = (MidSample *)safe_malloc(sizeof(MidSample) * inst->samples);
-  memset(inst->sample, 0, sizeof(MidSample) * inst->samples);
   for (i = 0; i < dls_ins->header->cRegions; ++i)
     load_region_dls(song, &inst->sample[i], dls_ins, i);
   return;
@@ -979,10 +971,8 @@ _dodrum:
 
   *out = (MidInstrument *)safe_malloc(sizeof(MidInstrument));
   inst = *out;
-  memset (inst, 0, sizeof(MidInstrument));
   inst->samples = 1;
   inst->sample = (MidSample *)safe_malloc(sizeof(MidSample));
-  memset(inst->sample, 0, sizeof(MidSample));
   load_region_dls(song, &inst->sample[0], dls_ins, drum);
 #endif /* fix from Vavoom */
 }

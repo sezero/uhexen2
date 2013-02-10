@@ -76,6 +76,7 @@
 /**************************************************************************/
 
 /* change FRACTION_BITS above, not these */
+#define INTEGER_BITS (32 - FRACTION_BITS)
 #define INTEGER_MASK (0xFFFFFFFF << FRACTION_BITS)
 #define FRACTION_MASK (~ INTEGER_MASK)
 
@@ -106,15 +107,16 @@
 #define SWEEP_SHIFT 16
 #define RATE_SHIFT 5
 
-#ifndef PI
-  #define PI 3.14159265358979323846
+#ifndef M_PI
+#define M_PI 3.14159265358979323846
 #endif
 
-/* The path separator (D.M.) */
-#ifdef WIN32
-#  define PATH_SEP '\\'
+#if defined(MAXPATHLEN)
+#define TIM_MAXPATH MAXPATHLEN
+#elif defined(PATH_MAX)
+#define TIM_MAXPATH PATH_MAX
 #else
-#  define PATH_SEP '/'
+#define TIM_MAXPATH 1024
 #endif
 
 #endif /* TIMIDITY_OPTIONS_H */

@@ -30,7 +30,6 @@
 
 #include "timidity.h"
 #include "timidity_internal.h"
-#include "options.h"
 #include "instrum.h"
 #include "playmidi.h"
 #include "output.h"

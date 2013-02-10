@@ -26,13 +26,16 @@
 #  include <config.h>
 #endif
 
+#ifdef HAVE_SYS_PARAM_H
+#include <sys/param.h>
+#endif
+
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
 
 #include "timidity.h"
 #include "timidity_internal.h"
-#include "options.h"
 #include "common.h"
 #include "instrum.h"
 #include "instrum_dls.h"
@@ -171,7 +174,7 @@ static void load_instrument(MidSong *song, const char *name,
   MidInstrument *ip;
   MidSample *sp;
   FILE *fp;
-  char tmp[1024];
+  char tmp[TIM_MAXPATH];
   int i,j;
   static const char *patch_ext[] = PATCH_EXT_LIST;
 
@@ -184,7 +187,7 @@ static void load_instrument(MidSong *song, const char *name,
       /* Try with various extensions */
       for (i=0; patch_ext[i]; i++)
 	{
-	  if (strlen(name)+strlen(patch_ext[i])<1024)
+	  if (strlen(name)+strlen(patch_ext[i])<TIM_MAXPATH)
 	    {
 	      strcpy(tmp, name);
 	      strcat(tmp, patch_ext[i]);
@@ -230,11 +233,9 @@ static void load_instrument(MidSong *song, const char *name,
 
   *out = (MidInstrument *) safe_malloc(sizeof(MidInstrument));
   ip = *out;
-  memset(ip, 0, sizeof(MidInstrument));
 
   ip->samples = tmp[198];
   ip->sample = (MidSample *) safe_malloc(sizeof(MidSample) * ip->samples);
-  memset(ip->sample, 0, sizeof(MidSample) * ip->samples);
 
   for (i=0; i<ip->samples; i++)
     {
@@ -332,7 +333,7 @@ static void load_instrument(MidSong *song, const char *name,
 	 understand why, and fixing it by adding the Sustain flag to
 	 all looped patches probably breaks something else. We do it
 	 anyway. */
-      if (sp->modes & MODES_LOOPING) 
+      if (sp->modes & MODES_LOOPING)
 	sp->modes |= MODES_SUSTAIN;
 
       /* Strip any loops and envelopes we're permitted to */

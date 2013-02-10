@@ -25,18 +25,17 @@
 
 #include <setjmp.h>
 
-typedef struct _PathList {
-  char *path;
-  struct _PathList *next;
-} PathList;
-
 extern FILE *open_file(const char *name);
-extern int add_to_pathlist(const char *s, size_t len);
+
+/* pathlist funcs only to be used during mid_init/mid_exit */
+typedef struct _PathList PathList;
+extern void add_to_pathlist(const char *s, size_t len);
 extern void free_pathlist(void);
 
-extern jmp_buf safe_malloc_jmp;
-
+extern jmp_buf malloc_env;
+/* safe_malloc() returns cleared mem, longjmp() on error */
 extern void *safe_malloc(size_t count);
+
 #ifndef CANT_FREE_NULL
 #define safe_free free
 #else
