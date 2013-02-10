@@ -4,6 +4,9 @@ Development Progress	:
 ---------------------------
 
 2013-02-10 (SVN):
+    * timidity: removed read_meta_data() stuff altogether.
+
+2013-02-10 (SVN):
     * utils, hcc: fixed a _Wclobbered warning in CO_CompileFile() by
       making the local boolean inProgress variable volatile.
 

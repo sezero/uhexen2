@@ -79,12 +79,6 @@ extern "C" {
     uint16 reserved;
   };
 
-  typedef enum
-  {
-    MID_SONG_TEXT = 0,
-    MID_SONG_COPYRIGHT = 1
-  } MidSongMetaId;
-
 
 /* Core Library Functions
  * ======================
@@ -203,11 +197,6 @@ extern "C" {
 /* Get current song time in milliseconds
  */
   extern uint32 mid_song_get_time (MidSong * song);
-
-/* Get song meta data: for libtimidity-0.1.0 compat. Always
- * returns NULL because we no longer store any meta data.
- */
-  extern char *mid_song_get_meta (MidSong * song, MidSongMetaId what);
 
 /* Destroy song
  */

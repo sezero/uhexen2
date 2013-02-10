@@ -656,11 +656,6 @@ uint32 mid_song_get_time(MidSong *song)
   return retvalue;
 }
 
-char *mid_song_get_meta(MidSong *song, MidSongMetaId what)
-{
-  return NULL;
-}
-
 size_t mid_song_read_wave(MidSong *song, sint8 *ptr, size_t size)
 {
   sint32 start_sample, end_sample, samples;
