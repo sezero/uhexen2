@@ -4,6 +4,10 @@ Development Progress	:
 ---------------------------
 
 2013-02-10 (SVN):
+    * common/q_endian.h: updated with addidional predef.sourceforge.net
+      information.
+
+2013-02-10 (SVN):
     * timidity: removed read_meta_data() stuff altogether. document
       our changes in timidity/CHANGES file.
 

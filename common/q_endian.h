@@ -24,12 +24,6 @@
 #ifndef __QENDIAN_H
 #define __QENDIAN_H
 
-/*
- * endianness stuff: <sys/types.h> is supposed
- * to succeed in locating the correct endian.h
- * this BSD style may not work everywhere.
- */
-
 #undef ENDIAN_GUESSED_SAFE
 #undef ENDIAN_ASSUMED_UNSAFE
 
@@ -39,6 +33,10 @@
  */
 #define	ENDIAN_RUNTIME_DETECT		0
 
+
+/* try system headers first: with BSD and derivatives, <sys/types.h> is
+ * supposed to include the correct endian.h.
+ */
 #include <sys/types.h>
 
 /* include more if it didn't work: */
@@ -46,7 +44,10 @@
 
 # if defined(__linux__) || defined(__linux)
 #	include <endian.h>
-# elif defined(__FreeBSD__) || defined(__NetBSD__) || defined(__OpenBSD__) || defined(__DragonFly__)
+# elif defined(__FreeBSD__) || defined(__NetBSD__) || defined(__OpenBSD__)	|| \
+		defined(__FreeBSD_kernel__) /* Debian GNU/kFreeBSD */		|| \
+		(defined(__APPLE__) && defined(__MACH__)) /* Mac OS X */	|| \
+		defined(__DragonFly__)
 #	include <machine/endian.h>
 # elif defined(__sun) || defined(__svr4__)
 #	include <sys/byteorder.h>
@@ -102,13 +103,30 @@
 
 
 #if !defined(BYTE_ORDER)
-/* supposedly safe assumptions: these may actually
- * be OS dependant and listing all possible compiler
- * macros here is impossible (the ones here are gcc
- * flags, mostly.) so, proceed carefully..
- */
 
-# if defined(__DJGPP__) || defined(MSDOS) || defined(__MSDOS__)
+/* try the compiler-predefined endianness macros:
+ * http://sourceforge.net/p/predef/wiki/Endianness/
+ */
+# if defined(__BIG_ENDIAN__) || defined(_BIG_ENDIAN)
+#	define	BYTE_ORDER	BIG_ENDIAN
+
+# elif defined(__ARMEB__) || defined(__THUMBEB__) || defined(__AARCH64EB__)	|| \
+		defined(_MIPSEB) || defined(__MIPSEB) || defined(__MIPSEB__)
+#	define	BYTE_ORDER	BIG_ENDIAN
+
+# elif defined(__LITTLE_ENDIAN__) || defined(_LITTLE_ENDIAN)
+#	define	BYTE_ORDER	LITTLE_ENDIAN
+
+# elif defined(__ARMEL__) || defined(__THUMBEL__) || defined(__AARCH64EL__)	|| \
+		defined(_MIPSEL) || defined(__MIPSEL) || defined(__MIPSEL__)
+#	define	BYTE_ORDER	LITTLE_ENDIAN
+
+/* supposedly safe assumptions based on OS and/or architecture predefined macros.
+ * listing all possible compiler macros here is impossible (the ones here are gcc
+ * mostly flags), so proceed carefully.
+ * also see: http://sourceforge.net/p/predef/wiki/
+ */
+# elif defined(__DJGPP__) || defined(MSDOS) || defined(__MSDOS__)
 #	define	BYTE_ORDER	LITTLE_ENDIAN	/* DOS */
 
 # elif defined(__sun) || defined(__svr4__)	/* solaris */
