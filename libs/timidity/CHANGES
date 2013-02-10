@@ -1,3 +1,73 @@
+Changes by uHexen2 since libtimidity-0.1.0:
+-------------------------------------------
+
+* stream.c, api change: added mid_istream_seek and mid_istream_tell to
+  the mid_istream_* api. added seek and tell funcs to the _MidIStream
+  structure. mid_istream_open_callbacks() is changed now accepts these
+  callbacks.
+
+* MidSongOptions, api change: added an uint8 width member just after
+  channels (not used yet, but serves as a padding at least.) added an
+  uint16 reserved padding member just after buffer_size.
+
+* read_meta_data(), api change: removed altogether. metadata is no
+  longer stored in the song. text stuff are either skipped or printed
+  to stderr if the library is compiled with TIMIDITY_DEBUG defined.
+
+* safe_malloc(): made it actually safe, relying on setjmp and longjmp
+  using a jmp_buf private to timidity. it does a longjmp() upon failure
+  resulting in either a mid_exit() to free all the allocated memory
+  during init time, or a mid_song_free() to free the allocated memory
+  during a song load time.
+
+* mid_init(), mid_init_no_config(): a mid_exit() is guaranteed upon
+  config file parse failures or malloc() failures. 
+
+* mid_init(): the library doesn't care about common timidity.cfg system
+  locations any more, callers of mid_init() are responsible for it. if
+  the config file argument to mid_init() contains a parent directory,
+  that will be added to timidity search path.
+
+* mid_exit(): does a proper cleanup now and a reinitialization of the
+  library doesn't crash.
+
+* multiple resampling fixes. several timidity-0.2i fixes from the
+  onicos.com site (http://www.onicos.com/staff/iz/timidity/dist/),
+  as well as a few bits from timidity++. several fixes for memory
+  errors reported by valgrind.
+
+* mid_istream_skip(): accepts a long type length instead of size_t
+  and returns success or failure now.
+
+* options.h (DEFAULT_DRUMCHANNELS): do not mark 16 as a drum channel.
+
+* read_midi_file(): added support for Microsoft RMID format.
+
+* read_midi_file(): fixed parsing of certain MIDI files with extra
+  data at the end of the tracks. (SDL_mixer bug:
+  http://bugzilla.libsdl.org/show_bug.cgi?id=1299)
+
+* read_config_file(): honor the return code from a recursive call.
+
+* DLS instruments support: made it a config time option, disabled by
+  default, because the code isn't good enough, neither is it used in
+  unix installations where timidity is normally needed.
+
+* DLS: a few changes from vavoom svn repository to fix loading of drums
+  and somewhat improve the dls instruments use. still not good enough.
+
+* renamed macro FSCALE to TIM_FSCALE to avoid possible clashes with
+  system headers. renamed FSCALENEG to TIM_FSCALENEG for consistency.
+
+* build: changed DEBUG to TIMIDITY_DEBUG for DEBUG_MSG. made to compile
+  cleanly using newer gcc versions, as well as clang. made it to compile
+  using C++ compilers.
+
+------------------------------------------------------------------------
+
+Changes by libtimidity-0.1.0:
+-----------------------------
+
 This version of TiMidity should contain all the fixes from the
 November 15 2004 SDL_sound Subversion snapshot. In addition, I've made some
 changes of my own, e.g.:
@@ -37,3 +107,86 @@ changes of my own, e.g.:
 
 --
 Konstantin Korikov <lostclus@ua.fm>
+
+------------------------------------------------------------------------
+
+Changes by SDL_sound-1.0.1:
+---------------------------
+
+This version of TiMidity should contain all the fixes from the
+September 25 2003 SDL_mixer CVS snapshot. In addition, I've made some
+changes of my own, e.g.:
+
+* All file access is done through SDL_RWops. This means the MIDI
+  stream no longer has to be a file. (The config file and instruments
+  still have to be though.)
+
+* Replacing of TiMidity's endian-handling with SDL's.
+
+* Removal of much unused or unnecessary code, such as
+
+  + The "hooks" for putting a user interface onto TiMidity.
+  + The antialias filter. It wasn't active, and even at 4 kHz I
+    couldn't hear any difference when activating it.
+  + Removed all traces of LOOKUP_HACK and LOOKUP_INTERPOLATION.
+    According to the code comments they weren't very good anyway.
+    ("degrades sound quality noticeably"). I also removed the
+    disclaimer about the "8-bit uLaw to 16-bit PCM and the 13-bit-PCM
+    to 8-bit uLaw tables" disclaimer, since I believe those were the
+    tables I removed.
+  + Removed LOOKUP_SINE since it was already commented out. I think we
+    can count on our target audience having math co-processors
+    nowadays.
+  + Removed USE_LDEXP since it wasn't being used and "it doesn't make
+    much of a difference either way".
+  + Removed decompress hack from open_file() since it didn't look very
+    portable.
+  + Removed heaps of unnecessary constants.
+  + Removed unused functions.
+  + Assume that LINEAR_INTERPOLATION is always used, so remove all
+    code dealing with it not being so. It's not that I think the
+    difference in audio quality is that great, but since it wouldn't
+    compile without code changes I assume no one's used it for quite
+    some time...
+  + Assume PRECALC_LOOPS is always defined. Judging by the comments it
+    may not make much of a difference either way, so why maintain two
+    versions of the same code?
+
+* Moving several static globals into the MidiSong struct. This
+  includes sample rate, formate, etc. which are now all per-song.
+
+* Moved some typedefs (e.g. MidiSong) to timidity.h for easy inclusion
+  into the MIDI decoder.
+
+* Added free_pathlist().
+
+* Replaced TiMidity's own 8, 16 and 32-bit types with SDL's.
+
+* Made TiMidity look for its configuration file in both /etc and
+  /usr/local/lib/timidity. (Windows version remains unchanged.)
+
+* Timidity_PlaySome() now takes three arguments. A MidiSong, a decode
+  buffer and decode buffer size in bytes. (MidiSong is a new argument,
+  and buffer size used to be in samples.)
+
+  In addition, it will return the number of bytes decoded.
+
+* Added Timidity_Exit().
+
+* Removed Timidity_Stop() and Timidity_Active(). Stopping playback
+  should be handled by SDL_sound, and Timidity_PlaySome() will return
+  0 when the MIDI stream is finished.
+
+* Modified the ToneBank stuff to allow some data to be shared between
+  MidiSongs.
+
+* The following files have been removed: controls.c, controls.h,
+  filter.c, filter.h, sdl_a.c, sdl_c.c
+
+* config.h has been renamed as options.h to avoid confusion with the
+  automatically generated config.h for SDL_sound.
+
+* Added support for loading DLS format instruments:
+	Timidity_LoadDLS(), Timidity_FreeDLS(), Timidity_LoadDLSSong()
+
+* Added Timidity_Init_NoConfig()

@@ -4,7 +4,8 @@ Development Progress	:
 ---------------------------
 
 2013-02-10 (SVN):
-    * timidity: removed read_meta_data() stuff altogether.
+    * timidity: removed read_meta_data() stuff altogether. document
+      our changes in timidity/CHANGES file.
 
 2013-02-10 (SVN):
     * utils, hcc: fixed a _Wclobbered warning in CO_CompileFile() by
