@@ -3,6 +3,10 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2013-02-11 (SVN):
+    * h2patch: if we run into oem (m3d) version 1.08, request feedback
+      from the user. likewise for the gtk-launcher patch unit.
+
 2013-02-10 (SVN):
     * timidity: minor edits for byte order macro checks.
 

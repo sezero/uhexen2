@@ -1,5 +1,5 @@
 /* h2patch3 -- hexen2 pak patch application using xdelta3
- * Copyright (C) 2007-2012  O.Sezer <sezero@users.sourceforge.net>
+ * Copyright (C) 2007-2013  O.Sezer <sezero@users.sourceforge.net>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -74,7 +74,7 @@ static const struct other_pak pak0_oem1 = {
 
 static const struct other_pak pak0_oem0 = {
 	/* don't have this myself, therefore no patch. */
-	22719295,	/**/ 0x01,
+	22719295,	/**/ ~0UL,
 	"Continent of Blackmarsh (m3D, v1.08)",
 	&pak0_oem1
 };
@@ -100,7 +100,7 @@ static const struct other_pak pak2_oem1 = {
 
 static const struct other_pak pak2_oem0 = {
 	/* don't have this myself, therefore no patch. */
-	17739969,	/**/ 0x01,
+	17739969,	/**/ ~0UL,
 	"Continent of Blackmarsh (m3D, v1.08)",
 	&pak2_oem1
 };
@@ -450,6 +450,14 @@ static void log_print (const char *fmt, ...)
 	va_end (argptr);
 }
 
+static const char *request_m3d_feedback (const char *desc)
+{
+	static const char msg[] = "Please report this pak to the uHexen2 developers!";
+	static char txt[256];
+	q_snprintf (txt, sizeof(txt), "%s\n... %s\n", desc, msg);
+	return txt;
+}
+
 static const char *other_pak_desc (int num, long len)
 {
 	const struct other_pak *p = patch_data[num].other_data;
@@ -457,7 +465,11 @@ static const char *other_pak_desc (int num, long len)
 	for ( ; p != NULL; p = p->next)
 	{
 		if (len == p->size)
+		{
+			if (p->sum == ~0UL) /* v1.08: wanna hear it */
+				return request_m3d_feedback (p->desc);
 			return p->desc;
+		}
 	}
 
 	return "an unknown pak file";
