@@ -182,12 +182,9 @@ static void S_TIMIDITY_CodecShutdown (void)
 	timidity_codec.initialized = false;
 	Con_Printf("Shutting down Timidity.\n");
 #if defined(TIMIDITY_USE_DLS)
-	if (dlspat != NULL)
-	{
-		mid_dlspatches_free (dlspat);
-		dlspat = NULL;
-	}
-#endif /* USE_DLS */
+	mid_dlspatches_free (dlspat);
+	dlspat = NULL;
+#endif
 	mid_exit ();
 }
 

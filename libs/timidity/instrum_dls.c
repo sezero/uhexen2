@@ -694,6 +694,8 @@ MidDLSPatches *mid_dlspatches_load(MidIStream *stream)
 
 void mid_dlspatches_free(MidDLSPatches *data)
 {
+    if (!data )
+	return;
     if (data->chunk)
 	FreeRIFF(data->chunk);
     FreeInstruments(data);
