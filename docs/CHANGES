@@ -3,6 +3,9 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2013-02-12 (SVN):
+    * updated config.guess and config.sub from savannah git repo.
+
 2013-02-11 (SVN):
     * h2patch: if we run into oem (m3d) version 1.08, request feedback
       from the user. likewise for the gtk-launcher patch unit.
@@ -15,8 +18,8 @@ Development Progress	:
       information.
 
 2013-02-10 (SVN):
-    * timidity: removed read_meta_data() stuff altogether. document
-      our changes in timidity/CHANGES file.
+    * timidity: removed read_meta_data() stuff altogether.
+    * timidity: documented our changes in the CHANGES file.
 
 2013-02-10 (SVN):
     * utils, hcc: fixed a _Wclobbered warning in CO_CompileFile() by
