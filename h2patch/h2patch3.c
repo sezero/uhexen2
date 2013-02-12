@@ -390,7 +390,7 @@ static void print_version (void)
 {
 	fprintf (stdout, "Hexen II 1.11 pak patch / Hammer of Thyrion (uHexen2) %d.%d.%d\n",
 			 HOT_VERSION_MAJ, HOT_VERSION_MID, HOT_VERSION_MIN);
-	fprintf (stdout, "Xdelta version 3.0.0, Copyright (C) 2007-2011, Joshua MacDonald\n");
+	fprintf (stdout, "Xdelta v3.0.0 backend (C) 2007-2011 by Joshua MacDonald\n");
 }
 
 static void print_help (void)
@@ -454,7 +454,7 @@ static const char *request_m3d_feedback (const char *desc)
 {
 	static const char msg[] = "Please report this pak to the uHexen2 developers!";
 	static char txt[256];
-	q_snprintf (txt, sizeof(txt), "%s\n... %s\n", desc, msg);
+	q_snprintf (txt, sizeof(txt), "%s\n... %s", desc, msg);
 	return txt;
 }
 

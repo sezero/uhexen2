@@ -197,7 +197,7 @@ static const char *request_m3d_feedback (const char *desc)
 {
 	static const char msg[] = "Please report this pak to the uHexen2 developers!";
 	static char txt[256];
-	snprintf (txt, sizeof(txt), "%s\n... %s\n", desc, msg);
+	snprintf (txt, sizeof(txt), "%s\n... %s", desc, msg);
 	return txt;
 }
 
