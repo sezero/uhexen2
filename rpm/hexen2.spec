@@ -101,7 +101,7 @@ Requires:	SDL >= 1.2.4
 # these will be picked by rpm already
 #%{!?_without_mp3:Requires: libmad}
 #%{!?_without_ogg:Requires: libvorbis}
-Requires:	hexen2 >= %{version}
+Requires:	%{name} >= %{version}
 
 %description -n hexenworld
 Hexen II is a class based shooter game by Raven Software from 1997.
@@ -240,7 +240,7 @@ utils/hcc/hcc -src gamecode-%{gamecode_ver}/hc/hw -oi -on
 
 # Install the menu icon
 %{__mkdir_p} %{buildroot}/%{_datadir}/pixmaps
-%{__install} -D -m644 engine/resource/h2_32x32x4.png %{buildroot}/%{_datadir}/pixmaps/%{name}.png
+%{__install} -D -m644 engine/resource/h2_32x32x4.png %{buildroot}/%{_datadir}/pixmaps/hexen2.png
 
 # Install menu entry
 %{__cat} > %{name}.desktop << EOF
@@ -309,7 +309,7 @@ desktop-file-install \
 %{_prefix}/games/%{name}/portals/maps/tibet9.ent
 %{_prefix}/games/%{name}/portals/maps/tibet9.txt
 %{_bindir}/hexen2
-%{_datadir}/pixmaps/%{name}.png
+%{_datadir}/pixmaps/hexen2.png
 %{_prefix}/games/%{name}/h2launcher
 %{_prefix}/games/%{name}/cdrip_hexen2.sh
 %{_prefix}/games/%{name}/cdrip_hexen2_xplosiv.sh
@@ -348,8 +348,8 @@ desktop-file-install \
 %{_prefix}/games/%{name}/docs/README.hwmaster
 
 %changelog
-* Thu Jan 10 2013 O.Sezer <sezero@users.sourceforge.net> 1.5.6-1
-- Bump version to 1.5.6
+* Thu Feb 14 2013 O.Sezer <sezero@users.sourceforge.net> 1.5.6-1
+- Bump version to 1.5.6.
 
 * Tue Sep 11 2012 O.Sezer <sezero@users.sourceforge.net> 1.5.5-1
 - Adjusted gamedata resource installation after txt->res rename
