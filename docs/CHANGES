@@ -5,7 +5,7 @@ Development Progress	:
 
 2013-02-14 (SVN):
     * engine/resource: renamed titles in the xbm headers to hx2icon.
-      remove the unused 64x64 h2 icons.
+      remove the unused 64x64 h2 icons. remove unused hw png icons.
     * vid_sdl.c, gl_vidsdl.c (VID_SetIcon): document xbm processing.
       adjust for the renamed xbm titles.
 
