@@ -1700,7 +1700,7 @@ void	VID_Init (unsigned char *palette)
 	VID_SetMode (vid_mode.integer);
 	ClearAllStates ();
 
-	GL_SetupLightmapFmt(true);
+	GL_SetupLightmapFmt();
 	GL_Init ();
 	VID_InitGamma();
 	VID_Init8bitPalette();

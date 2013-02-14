@@ -133,14 +133,13 @@ static void R_AddDynamicLights (msurface_t *surf)
 GL_SetupLightmapFmt
 
 Used to setup the lightmap_format and lightmap_bytes
-at every level change and at first video initialization.
-Best to be called from Mod_LoadLighting() in gl_model.c
+during init from VID_Init() and at every level change
+from Mod_LoadLighting().
 ===============
 */
-void GL_SetupLightmapFmt (qboolean check_cmdline)
+void GL_SetupLightmapFmt (void)
 {
-	// only GL_LUMINANCE and GL_RGBA are actually supported
-	// commenting out other options
+	// only GL_LUMINANCE and GL_RGBA are supported
 	if (!q_strcasecmp(gl_lightmapfmt.string, "GL_LUMINANCE"))
 		gl_lightmap_format = GL_LUMINANCE;
 	else if (!q_strcasecmp(gl_lightmapfmt.string, "GL_RGBA"))
@@ -151,8 +150,7 @@ void GL_SetupLightmapFmt (qboolean check_cmdline)
 		Cvar_SetQuick (&gl_lightmapfmt, "GL_RGBA");
 	}
 
-	// check for commandline overrides
-	if (check_cmdline)
+	if (!host_initialized) // check for cmdline overrides
 	{
 		if (COM_CheckParm ("-lm_1"))
 		{

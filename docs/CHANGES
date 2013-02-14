@@ -4,6 +4,10 @@ Development Progress	:
 ---------------------------
 
 2013-02-14 (SVN):
+    * GL_SetupLightmapFmt: remove the check_cmdline function parameter
+      and rely on the global host_initialized, instead.
+
+2013-02-14 (SVN):
     * new icon for mac os x, thanks to Jacques Krige.
 
 2013-02-14 (SVN):

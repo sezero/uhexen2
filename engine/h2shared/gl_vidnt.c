@@ -2518,7 +2518,7 @@ void	VID_Init (unsigned char *palette)
 	if (!wglMakeCurrent_fp( maindc, baseRC ))
 		Sys_Error ("wglMakeCurrent failed");
 
-	GL_SetupLightmapFmt(true);
+	GL_SetupLightmapFmt();
 	GL_Init ();
 	VID_Init8bitPalette();
 
