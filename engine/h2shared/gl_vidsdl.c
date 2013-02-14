@@ -284,32 +284,35 @@ void VID_HandlePause (qboolean paused)
 
 static void VID_SetIcon (void)
 {
+#	include "xbm_icon.h"	/* the xbm data */
 	SDL_Surface	*icon;
 	SDL_Color	color;
 	Uint8		*ptr;
 	int		i, mask;
-#	include "xbm_icon.h"
 
-	icon = SDL_CreateRGBSurface(SDL_SWSURFACE, HOT_ICON_WIDTH, HOT_ICON_HEIGHT, 8, 0, 0, 0, 0);
+	icon = SDL_CreateRGBSurface(SDL_SWSURFACE, hx2icon_width, hx2icon_height, 8, 0, 0, 0, 0);
 	if (icon == NULL)
 		return;
+
 	SDL_SetColorKey(icon, SDL_SRCCOLORKEY, 0);
 
 	color.r = 255;
 	color.g = 255;
 	color.b = 255;
 	SDL_SetColors(icon, &color, 0, 1);	/* just in case */
-	color.r = 128;
+	color.r = 192;
 	color.g = 0;
 	color.b = 0;
 	SDL_SetColors(icon, &color, 1, 1);
 
 	ptr = (Uint8 *)icon->pixels;
-	for (i = 0; i < (int) sizeof(HOT_ICON_bits); i++)
+	/* one bit represents a pixel, black or white:  each
+	 * byte in the xbm array contains data for 8 pixels. */
+	for (i = 0; i < (int) sizeof(hx2icon_bits); i++)
 	{
 		for (mask = 1; mask != 0x100; mask <<= 1)
 		{
-			*ptr = (HOT_ICON_bits[i] & mask) ? 1 : 0;
+			*ptr = (hx2icon_bits[i] & mask) ? 1 : 0;
 			ptr++;
 		}
 	}
