@@ -588,7 +588,7 @@ static void VID_ChangeVideoMode (int newmode)
 			Sys_Error ("Couldn't set video mode: %s", SDL_GetError());
 	}
 
-	CDAudio_Resume (); 
+	CDAudio_Resume ();
 	BGM_Resume ();
 	scr_disabled_for_loading = temp;
 }

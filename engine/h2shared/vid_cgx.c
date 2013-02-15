@@ -50,7 +50,7 @@ static struct Screen *screen = NULL;
 static char pal[256 * 4];
 static char *buffer = NULL;
 static byte *directbitmap = NULL;
-	
+
 /* ----------------------------------------- */
 
 unsigned char	vid_curpal[256*3];
@@ -242,8 +242,8 @@ static void VID_PrepareModes (void)
 	struct DimensionInfo diminfo;
 
 	num_fmodes = 0;
-	num_wmodes = 0;	
-	
+	num_wmodes = 0;
+
 	// standard 4:3 windowed modes
 	for (i = 0; i < (int)MAX_STDMODES; i++)
 	{
@@ -258,7 +258,7 @@ static void VID_PrepareModes (void)
 				"%d x %d", std_modes[i].width, std_modes[i].height);
 		num_wmodes++;
 	}
-	
+
 	// fullscreen modes
 	id = INVALID_ID;
 	while((id = NextDisplayInfo(id)) != INVALID_ID)
@@ -396,7 +396,7 @@ static int VID_SetMode (int modenum, unsigned char *palette)
 			SA_Quiet, TRUE,
 			TAG_DONE);
 	}
-	
+
 	if (screen)
 	{
 		flags |= WFLG_BORDERLESS;
@@ -494,7 +494,7 @@ static void VID_ChangeVideoMode (int newmode)
 			Sys_Error ("Couldn't set video mode");
 	}
 
-	CDAudio_Resume (); 
+	CDAudio_Resume ();
 	BGM_Resume ();
 	scr_disabled_for_loading = temp;
 }
