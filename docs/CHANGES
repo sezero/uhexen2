@@ -3,6 +3,11 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2013-02-15 (SVN):
+    * vid_sdl.c, gl_vidsdl.c (VID_SetIcon): disabled the embedded icon
+      for osx builds. thanks to Kristian Duske for clarifications.
+    * updated version date stamp to 2013-02-15.
+
 2013-02-14 (SVN):
     * GL_SetupLightmapFmt: remove the check_cmdline function parameter
       and rely on the global host_initialized, instead.

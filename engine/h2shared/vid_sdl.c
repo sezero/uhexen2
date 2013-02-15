@@ -236,6 +236,13 @@ static qboolean VID_CheckAdequateMem (int width, int height)
 
 static void VID_SetIcon (void)
 {
+/* from Kristian Duske:  "AFAIK, the application icon must be present in
+ * Contents/Resources and it must be set in the Info.plist file. It will
+ * then be used by Finder and Dock as well as for individual windows
+ * unless overridden by a document icon. So SDL_WM_SetIcon() is probably
+ * not necessary, and will likely use a low-res image anyway." */
+#if !defined(PLATFORM_OSX)
+
 #	include "xbm_icon.h"	/* the xbm data */
 	SDL_Surface	*icon;
 	SDL_Color	color;
@@ -271,6 +278,7 @@ static void VID_SetIcon (void)
 
 	SDL_WM_SetIcon(icon, NULL);
 	SDL_FreeSurface(icon);
+#endif /* !OSX */
 }
 
 static int sort_modes (const void *arg1, const void *arg2)

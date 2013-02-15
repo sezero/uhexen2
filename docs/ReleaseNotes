@@ -1,7 +1,7 @@
 Hammer of Thyrion (uHexen2) release notes:
 
 ========================================================================
-Changes in v1.5.6: (Feb. 10, 2013.)
+Changes in v1.5.6: (Feb. 15, 2013.)
 ========================================================================
 
 - OpenGL: worked around weird mods, e.g.: project peanut, where certain
@@ -17,6 +17,8 @@ Changes in v1.5.6: (Feb. 10, 2013.)
 
 - Timidity (Unix MIDI): Multiple fixes, including memory errors found by
   valgrind.
+
+- Mac OS X: A new icon.
 
 - Fixed several other minor bugs, some found by valgrind.
 
