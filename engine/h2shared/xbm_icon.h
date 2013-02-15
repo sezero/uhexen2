@@ -21,13 +21,11 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-#if defined(H2W)	/* hexenworld */
-#include "../../resource/h2w_ico.xbm"
-
-#elif defined(H2MP)	/* hexen2 with mission pack */
-#include "../resource/h2mp_ico.xbm"
-
-#else			/* plain hexen2 */
-#include "../resource/h2_ico.xbm"
+#if defined(H2W)
+#include "../../resource/hexenworld.xbm"
+#elif defined(H2MP)
+#include "../resource/h2mp.xbm"
+#else
+#include "../resource/hexen2.xbm"
 #endif
 

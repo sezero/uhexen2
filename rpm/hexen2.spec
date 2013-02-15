@@ -240,7 +240,7 @@ utils/hcc/hcc -src gamecode-%{gamecode_ver}/hc/hw -oi -on
 
 # Install the menu icon
 %{__mkdir_p} %{buildroot}/%{_datadir}/pixmaps
-%{__install} -D -m644 engine/resource/h2_32x32x4.png %{buildroot}/%{_datadir}/pixmaps/hexen2.png
+%{__install} -D -m644 engine/resource/hexen2.png %{buildroot}/%{_datadir}/pixmaps/hexen2.png
 
 # Install menu entry
 %{__cat} > %{name}.desktop << EOF
@@ -348,7 +348,7 @@ desktop-file-install \
 %{_prefix}/games/%{name}/docs/README.hwmaster
 
 %changelog
-* Thu Feb 14 2013 O.Sezer <sezero@users.sourceforge.net> 1.5.6-1
+* Fri Feb 15 2013 O.Sezer <sezero@users.sourceforge.net> 1.5.6-1
 - Bump version to 1.5.6.
 
 * Tue Sep 11 2012 O.Sezer <sezero@users.sourceforge.net> 1.5.5-1

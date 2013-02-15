@@ -15,8 +15,8 @@
 //
 #if defined(H2W)
 #define RES_ICONFILE	"../../resource/hexenworld.ico"
-//#elif defined(H2MP)
-//#define RES_ICONFILE	"../resource/h2mp.ico"
+#elif defined(H2MP)
+#define RES_ICONFILE	"../resource/h2mp.ico"
 #else
 #define RES_ICONFILE	"../resource/hexen2.ico"
 #endif
