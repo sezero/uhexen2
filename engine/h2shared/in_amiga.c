@@ -27,10 +27,12 @@
 #elif !defined __MORPHOS__
 #include <newmouse.h>
 #endif
+#include <libraries/lowlevel.h>
 #include <intuition/intuition.h>
 #include <proto/intuition.h>
 #include <proto/exec.h>
 #include <proto/keymap.h>
+#include <proto/lowlevel.h>
 #ifdef __AROS__
 #include <SDI/SDI_interrupt.h>
 #elif !defined __MORPHOS__
@@ -41,6 +43,8 @@
 #endif
 
 #include "quakedef.h"
+
+struct Library *LowLevelBase = NULL;
 
 extern struct Window *window;
 static struct Interrupt InputHandler;
@@ -66,269 +70,36 @@ static qboolean	mouseinitialized = false;
 static qboolean	mouseactivatetoggle = false;
 /*static qboolean	mouseshowtoggle = true;*/
 
+/* joystick support: */
+static int joy_port = -1;
+static int joy_available = 0;
+static ULONG oldjoyflag = 0;
+
+static	cvar_t	in_joystick = {"joystick", "1", CVAR_ARCHIVE};		/* enable/disable joystick */
+static	cvar_t	joy_index = {"joy_index", "0", CVAR_NONE};		/* joystick to use when have multiple */
+
+/* forward-referenced functions */
+static void IN_StartupJoystick (void);
+static void IN_Callback_JoyEnable (cvar_t *var);
+static void IN_Callback_JoyIndex (cvar_t *var);
+
 static unsigned char keyconv[] =
 {
-	'`',			/* 0 */
-	'1',
-	'2',
-	'3',
-	'4',
-	'5',
-	'6',
-	'7',
-	'8',
-	'9',
-	'0',			/* 10 */
-	'-',
-	'=',
-	0,
-	0,
-	K_KP_INS,
-	'q',
-	'w',
-	'e',
-	'r',
-	't',			/* 20 */
-	'y',
-	'u',
-	'i',
-	'o',
-	'p',
-	'[',
-	']',
-	0,
-	K_KP_END,
-	K_KP_DOWNARROW,		/* 30 */
-	K_KP_PGDN,
-	'a',
-	's',
-	'd',
-	'f',
-	'g',
-	'h',
-	'j',
-	'k',
-	'l',			/* 40 */
-	';',
-	'\'',
-	'\\',
-	0,
-	K_KP_LEFTARROW,
-	K_KP_5,
-	K_KP_RIGHTARROW,
-	'<',
-	'z',
-	'x',			/* 50 */
-	'c',
-	'v',
-	'b',
-	'n',
-	'm',
-	',',
-	'.',
-	'/',
-	0,
-	K_KP_DEL,			/* 60 */
-	K_KP_HOME,
-	K_KP_UPARROW,
-	K_KP_PGUP,
-	' ',
-	K_BACKSPACE,
-	K_TAB,
-	K_KP_ENTER,
-	K_ENTER,
-	K_ESCAPE,
-	K_DEL,			/* 70 */
-	K_INS,
-	K_PGUP,
-	K_PGDN,
-	K_KP_MINUS,
-	K_F11,
-	K_UPARROW,
-	K_DOWNARROW,
-	K_RIGHTARROW,
-	K_LEFTARROW,
-	K_F1,			/* 80 */
-	K_F2,
-	K_F3,
-	K_F4,
-	K_F5,
-	K_F6,
-	K_F7,
-	K_F8,
-	K_F9,
-	K_F10,
-	0,			/* 90 */
-	0,
-	K_KP_SLASH,
-	0,
-	K_KP_PLUS,
-	0,
-	K_SHIFT,
-	K_SHIFT,
-	0,
-	K_CTRL,
-	K_ALT,			/* 100 */
-	K_ALT,
-	0,
-	0,
-	0,
-	0,
-	0,
-	0,
-	0,
-	0,
-	K_PAUSE,		/* 110 */
-	K_F12,
-	K_HOME,
-	K_END,
-	0,
-	0,
-	0,
-	0,
-	0,
-	0,
-	0,			/* 120 */
-	0,
-	K_MWHEELUP,
-	K_MWHEELDOWN,
-	0,
-	0,
-	0,
-	0,
-	0,
-	0,
-	0,			/* 130 */
-	0,
-	0,
-	0,
-	0,
-	0,
-	0,
-	0,
-	0,
-	0,
-	0,			/* 140 */
-	0,
-	0,
-	0,
-	0,
-	0,
-	0,
-	0,
-	0,
-	0,
-	0,			/* 150 */
-	0,
-	0,
-	0,
-	0,
-	0,
-	0,
-	0,
-	0,
-	0,
-	0,			/* 160 */
-	0,
-	0,
-	0,
-	0,
-	0,
-	0,
-	0,
-	0,
-	0,
-	0,			/* 170 */
-	0,
-	0,
-	0,
-	0,
-	0,
-	0,
-	0,
-	0,
-	0,
-	0,			/* 180 */
-	0,
-	0,
-	0,
-	0,
-	0,
-	0,
-	0,
-	0,
-	0,
-	0,			/* 190 */
-	0,
-	0,
-	0,
-	0,
-	0,
-	0,
-	0,
-	0,
-	0,
-	0,			/* 200 */
-	0,
-	0,
-	0,
-	0,
-	0,
-	0,
-	0,
-	0,
-	0,
-	0,			/* 210 */
-	0,
-	0,
-	0,
-	0,
-	0,
-	0,
-	0,
-	0,
-	0,
-	0,			/* 220 */
-	0,
-	0,
-	0,
-	0,
-	0,
-	0,
-	0,
-	0,
-	0,
-	0,			/* 230 */
-	0,
-	0,
-	0,
-	0,
-	0,
-	0,
-	0,
-	0,
-	0,
-	0,			/* 240 */
-	0,
-	0,
-	0,
-	0,
-	0,
-	0,
-	0,
-	0,
-	0,
-	0,			/* 250 */
-	0,
-	0,
-	0,
-	0,
-	0,
-	0,
-	0,
-	0,
-	0
+	'`', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0',							/*  10 */
+	'-', '=', 0, 0,	K_KP_INS, 'q', 'w', 'e', 'r', 't',							/*  20 */
+	'y', 'u', 'i', 'o', 'p', '[', ']', 0, K_KP_END, K_KP_DOWNARROW,						/*  30 */
+	K_KP_PGDN, 'a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l',							/*  40 */
+	';', '\'', '\\', 0, K_KP_LEFTARROW, K_KP_5, K_KP_RIGHTARROW, '<', 'z', 'x',				/*  50 */
+	'c', 'v', 'b', 'n', 'm', ',', '.', '/', 0, K_KP_DEL,							/*  60 */
+	K_KP_HOME, K_KP_UPARROW, K_KP_PGUP, ' ', K_BACKSPACE, K_TAB, K_KP_ENTER, K_ENTER, K_ESCAPE, K_DEL,	/*  70 */
+	K_INS, K_PGUP, K_PGDN, K_KP_MINUS, K_F11, K_UPARROW, K_DOWNARROW, K_RIGHTARROW, K_LEFTARROW, K_F1,	/*  80 */
+	K_F2, K_F3, K_F4, K_F5, K_F6, K_F7, K_F8, K_F9, K_F10, 0,						/*  90 */
+	0, K_KP_SLASH, 0, K_KP_PLUS, 0, K_SHIFT, K_SHIFT, 0, K_CTRL, K_ALT,					/* 100 */
+	K_ALT, 0, 0, 0, 0, 0, 0, 0, 0, K_PAUSE,									/* 110 */
+	K_F12, K_HOME, K_END, 0, 0, 0, 0, 0, 0, 0,								/* 120 */
+	0, K_MWHEELUP, K_MWHEELDOWN, 0, 0, 0, 0, 0, 0, 0							/* 130 */
 };
+#define MAX_KEYCONV (sizeof keyconv / sizeof keyconv[0])
 
 
 /*
@@ -543,12 +314,19 @@ void IN_Init (void)
 {
 	/* mouse variables */
 	Cvar_RegisterVariable (&m_filter);
+	/* joystick variables */
+	Cvar_RegisterVariable (&in_joystick);
+	Cvar_RegisterVariable (&joy_index);
+
+	Cvar_SetCallback (&in_joystick, IN_Callback_JoyEnable);
+	Cvar_SetCallback (&joy_index, IN_Callback_JoyIndex);
 
 	Cmd_AddCommand ("force_centerview", Force_CenterView_f);
 
 	pointermem = AllocVec(256, MEMF_CHIP | MEMF_CLEAR);
 
 	IN_StartupMouse ();
+	IN_StartupJoystick ();
 
 	mx = my = imsglow = imsghigh = 0;
 
@@ -606,6 +384,16 @@ void IN_Shutdown (void)
 	}
 
 	mouseinitialized = false;
+
+	if (LowLevelBase)
+	{
+		CloseLibrary(LowLevelBase);
+		LowLevelBase = NULL;
+	}
+
+	joy_port = -1;
+	joy_available = 0;
+	oldjoyflag = 0;
 }
 
 /*
@@ -714,6 +502,183 @@ void IN_Move (usercmd_t *cmd)
 	}
 }
 
+static int PortIndex (int idx)
+{
+	switch (idx)
+	{
+	case 0:
+		return 1;
+	case 1:
+		return 0;
+	default:
+		break;
+	}
+
+	return idx;
+}
+
+static char *JoystickName(int port)
+{
+	ULONG joyflag = ReadJoyPort(PortIndex(port));
+
+	switch (joyflag & JP_TYPE_MASK)
+	{
+	case JP_TYPE_GAMECTLR:
+		return "game controller";
+	case JP_TYPE_JOYSTK:
+		return "joystick controller";
+	case JP_TYPE_MOUSE:
+		return "mouse";
+	case JP_TYPE_NOTAVAIL:
+		return "not available";
+	case JP_TYPE_UNKNOWN:
+		return "unknown device";
+	default:
+		return "<unknown>";
+	}
+}
+
+/*
+===============
+IN_StartupJoystick
+===============
+*/
+static void IN_StartupJoystick (void)
+{
+	int	i;
+	ULONG joyflag;
+
+	if (safemode || COM_CheckParm ("-nojoy"))
+		return;
+
+	if (!LowLevelBase)
+		LowLevelBase = OpenLibrary("lowlevel.library", 37);
+
+	if (LowLevelBase)
+	{
+		joy_available = 0;
+
+		while (true) // this might be dangerous
+		//while (joy_available < 10)
+		{
+			joyflag = ReadJoyPort(PortIndex(joy_available));
+			if ((joyflag & JP_TYPE_MASK) == JP_TYPE_NOTAVAIL)
+				break;
+			joy_available++;
+		}
+	}
+	else
+	{
+		Con_Printf("Unable to open lowlevel.library\n");
+		return;
+	}
+
+	if (joy_available == 0)
+	{
+		CloseLibrary(LowLevelBase);
+		LowLevelBase = NULL;
+		Con_Printf ("No joystick devices found\n");
+		return;
+	}
+
+	Con_Printf ("lowlevel.library: %d devices are reported:\n", joy_available);
+	for (i = 0; i < joy_available; i++)
+	{
+		Con_Printf("#%d: \"%s\"\n", i, JoystickName(i));
+	}
+
+	if (in_joystick.integer)
+		IN_Callback_JoyIndex(&joy_index);
+}
+
+static void IN_Callback_JoyEnable (cvar_t *var)
+{
+	if (!LowLevelBase)
+		return;
+
+	if (var->integer)
+		IN_Callback_JoyIndex(&joy_index);
+	else
+		joy_port = -1;
+}
+
+static void IN_Callback_JoyIndex (cvar_t *var)
+{
+	ULONG joyflag;
+	int idx = var->integer;
+
+	if (!LowLevelBase)
+		return;
+
+	if (idx < 0 || idx >= joy_available)
+	{
+		Con_Printf ("joystick #%d doesn't exist\n", idx);
+	}
+	else if (in_joystick.integer)
+	{
+		joy_port = -1;
+
+		joyflag = ReadJoyPort(PortIndex(idx));
+
+		if (joyflag & (JP_TYPE_GAMECTLR | JP_TYPE_JOYSTK))
+			joy_port = idx;
+
+		if (joy_port != -1)
+		{
+			Con_Printf("joystick open ");
+			Con_Printf("#%d: \"%s\"\n", idx, JoystickName(idx));
+		}
+		else
+		{
+			Con_Printf("cannot open joystick, unsupported type: %s\n", JoystickName(idx));
+		}
+	}
+}
+
+#define Check_Joy_Event(key, flag, oldflag, mask) \
+	if ((flag & mask) != (oldflag & mask)) { Key_Event(key, (flag & mask) ? true : false); }
+
+static void IN_HandleJoystick (void)
+{
+	ULONG joyflag;
+
+	if (!LowLevelBase || joy_port == -1)
+		return;
+
+	joyflag = ReadJoyPort(PortIndex(joy_port));
+
+	if (joyflag != oldjoyflag)
+	{
+		switch (joyflag & JP_TYPE_MASK)
+		{
+		case JP_TYPE_GAMECTLR:
+			Check_Joy_Event(K_JOY1, joyflag, oldjoyflag, JPF_BUTTON_BLUE);
+			Check_Joy_Event(K_JOY2, joyflag, oldjoyflag, JPF_BUTTON_RED);
+			Check_Joy_Event(K_JOY3, joyflag, oldjoyflag, JPF_BUTTON_YELLOW);
+			Check_Joy_Event(K_JOY4, joyflag, oldjoyflag, JPF_BUTTON_GREEN);
+			Check_Joy_Event(K_AUX1, joyflag, oldjoyflag, JPF_BUTTON_FORWARD);
+			Check_Joy_Event(K_AUX2, joyflag, oldjoyflag, JPF_BUTTON_REVERSE);
+			Check_Joy_Event(K_AUX3, joyflag, oldjoyflag, JPF_BUTTON_PLAY);
+			Check_Joy_Event(K_AUX29, joyflag, oldjoyflag, JPF_JOY_UP);
+			Check_Joy_Event(K_AUX30, joyflag, oldjoyflag, JPF_JOY_DOWN);
+			Check_Joy_Event(K_AUX31, joyflag, oldjoyflag, JPF_JOY_LEFT);
+			Check_Joy_Event(K_AUX32, joyflag, oldjoyflag, JPF_JOY_RIGHT);
+			break;
+		case JP_TYPE_JOYSTK:
+			Check_Joy_Event(K_JOY1, joyflag, oldjoyflag, JPF_BUTTON_BLUE);
+			Check_Joy_Event(K_JOY2, joyflag, oldjoyflag, JPF_BUTTON_RED);
+			Check_Joy_Event(K_AUX29, joyflag, oldjoyflag, JPF_JOY_UP);
+			Check_Joy_Event(K_AUX30, joyflag, oldjoyflag, JPF_JOY_DOWN);
+			Check_Joy_Event(K_AUX31, joyflag, oldjoyflag, JPF_JOY_LEFT);
+			Check_Joy_Event(K_AUX32, joyflag, oldjoyflag, JPF_JOY_RIGHT);
+			break;
+		default:
+			/* nothing to do here */
+			break;
+		}
+		oldjoyflag = joyflag;
+	}
+}
 
 /*
 ===========
@@ -783,7 +748,7 @@ void IN_SendKeyEvents (void)
 					}
 				}
 
-				if (sym == -1)
+				if (sym == -1 && (imsgs[i].ie_Code & ~IECODE_UP_PREFIX) < MAX_KEYCONV)
 					sym = keyconv[imsgs[i].ie_Code & ~IECODE_UP_PREFIX];
 				//Con_Printf("ie_Code %d sym %d state %d\n", imsgs[i].ie_Code & ~IECODE_UP_PREFIX, sym, state);
 			}
@@ -838,5 +803,7 @@ void IN_SendKeyEvents (void)
 			}
 		}
 	}
+
+	IN_HandleJoystick();
 }
 
