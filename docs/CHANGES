@@ -3,6 +3,9 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2013-02-17 (SVN):
+    * d_polyse.c: mark the do_PolysetDrawFinalVerts helpers as inline.
+
 2013-02-15 (SVN):
     * in_amiga.c: native digital joystick support from Szilard Biro.
 

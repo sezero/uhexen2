@@ -104,7 +104,7 @@ static void D_PolysetDrawSpans8T5 (spanpackage_t *pspanpackage);
 D_PolysetDrawFinalVerts
 ================
 */
-static void do_PolysetDrawFinalVerts (finalvert_t *pv)
+static inline void do_PolysetDrawFinalVerts (finalvert_t *pv)
 {
 	int		z;
 	short		*zbuf;
@@ -127,7 +127,7 @@ static void do_PolysetDrawFinalVerts (finalvert_t *pv)
 	}
 }
 
-static void do_PolysetDrawFinalVertsT (finalvert_t *pv)
+static inline void do_PolysetDrawFinalVertsT (finalvert_t *pv)
 {
 	int		z;
 	short		*zbuf;
@@ -157,7 +157,7 @@ static void do_PolysetDrawFinalVertsT (finalvert_t *pv)
 	}
 }
 
-static void do_PolysetDrawFinalVertsT2 (finalvert_t *pv)
+static inline void do_PolysetDrawFinalVertsT2 (finalvert_t *pv)
 {
 	int		z;
 	short		*zbuf;
@@ -194,7 +194,7 @@ static void do_PolysetDrawFinalVertsT2 (finalvert_t *pv)
 	}
 }
 
-static void do_PolysetDrawFinalVertsT3 (finalvert_t *pv)
+static inline void do_PolysetDrawFinalVertsT3 (finalvert_t *pv)
 {
 	int		z;
 	short		*zbuf;
@@ -222,7 +222,7 @@ static void do_PolysetDrawFinalVertsT3 (finalvert_t *pv)
 	}
 }
 
-static void do_PolysetDrawFinalVertsT5 (finalvert_t *pv)
+static inline void do_PolysetDrawFinalVertsT5 (finalvert_t *pv)
 {
 	int		z;
 	short		*zbuf;
