@@ -30,6 +30,7 @@
 qmodel_t	*loadmodel;
 static char	loadname[MAX_QPATH];	// for hunk tags
 
+static qmodel_t *Mod_LoadModel (qmodel_t *mod, qboolean crash);
 static void Mod_LoadSpriteModel (qmodel_t *mod, void *buffer);
 static void Mod_LoadBrushModel (qmodel_t *mod, void *buffer);
 static void Mod_LoadAliasModel (qmodel_t *mod, void *buffer);
@@ -37,11 +38,9 @@ static void Mod_LoadAliasModelNew (qmodel_t *mod, void *buffer);
 
 static void Mod_Print (void);
 
-static qmodel_t *Mod_LoadModel (qmodel_t *mod, qboolean crash);
+static cvar_t	external_ents = {"external_ents", "1", CVAR_ARCHIVE};
 
 static byte	mod_novis[MAX_MAP_LEAFS/8];
-
-static cvar_t	external_ents = {"external_ents", "1", CVAR_ARCHIVE};
 
 #define	MAX_MOD_KNOWN	2048
 static qmodel_t	mod_known[MAX_MOD_KNOWN];
@@ -50,8 +49,6 @@ static int	mod_numknown;
 static vec3_t	aliasmins, aliasmaxs;
 
 int		entity_file_size;
-
-extern float	aliastransform[3][4];
 
 
 /*
@@ -1671,8 +1668,6 @@ static void Mod_LoadAliasModelNew (qmodel_t *mod, void *buffer)
 	int			skinsize;
 	int			start, end, total;
 
-//	Mod_SaveAliasModel (mod->name, buffer);
-
 	start = Hunk_LowMark ();
 
 	pinmodel = (newmdl_t *)buffer;
@@ -1910,8 +1905,6 @@ static void Mod_LoadAliasModel (qmodel_t *mod, void *buffer)
 	int			skinsize;
 	int			start, end, total;
 
-//	Mod_SaveAliasModel (mod->name, buffer);
-
 	start = Hunk_LowMark ();
 
 	pinmodel = (mdl_t *)buffer;
@@ -2052,10 +2045,8 @@ static void Mod_LoadAliasModel (qmodel_t *mod, void *buffer)
 		for (j = 0; j < 3; j++)
 		{
 #if 0
-			if (pintriangles[i].vertindex[j]>Q_MAXSHORT)
-			{
+			if (pintriangles[i].vertindex[j] > Q_MAXSHORT)
 				Sys_Error ("%s: ind too big!", __thisfunc__);
-			}
 #endif
 			ptri[i].vertindex[j] =(short) LittleLong (pintriangles[i].vertindex[j]);
 			ptri[i].stindex[j] = ptri[i].vertindex[j];	//MAKE A COPY

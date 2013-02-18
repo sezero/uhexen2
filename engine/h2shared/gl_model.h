@@ -89,8 +89,8 @@ typedef struct texture_s
 #define SURF_DRAWTILED		0x20
 #define SURF_DRAWBACKGROUND	0x40
 #define SURF_TRANSLUCENT	0x80	/* r_edge.asm checks this */
-#define SURF_UNDERWATER		0x100
-#define SURF_DRAWBLACK		0x200
+#define SURF_DRAWBLACK		0x100
+#define SURF_UNDERWATER		0x200
 #define SURF_DONTWARP		0x400
 
 // !!! if this is changed, it must be changed in asm_draw.h too !!!
@@ -315,11 +315,7 @@ typedef struct {
 	int		poseverts;
 	int		posedata;	// numposes*poseverts trivert_t
 	int		commands;	// gl command list with embedded s/t
-#ifndef H2W /* FIXME!!! */
-	GLuint		gl_texturenum[MAX_SKINS];
-#else
 	GLuint		gl_texturenum[MAX_SKINS][4];
-#endif
 	maliasframedesc_t	frames[1];	// variable sized
 } aliashdr_t;
 

@@ -948,22 +948,23 @@ static void R_DrawAliasModel (entity_t *e)
 	}
 	else
 	{
+		int	anim = (int)(cl.time*10) & 3;
+
 		if ((skinnum >= paliashdr->numskins) || (skinnum < 0))
 		{
 			Con_DPrintf ("%s: no such skin # %d\n", __thisfunc__, skinnum);
 			skinnum = 0;
 		}
-		GL_Bind(paliashdr->gl_texturenum[skinnum]);
+		GL_Bind(paliashdr->gl_texturenum[skinnum][anim]);
 
 		// we can't dynamically colormap textures, so they are cached
 		// seperately for the players.  Heads are just uncolored.
-
 		if (currententity->colormap != vid.colormap && !gl_nocolors.integer)
 		{
 			if (currententity->model == player_models[0] ||
 			    currententity->model == player_models[1] ||
 			    currententity->model == player_models[2] ||
-			    currententity->model == player_models[4] ||	/* demoness */
+			    currententity->model == player_models[4] || /* demoness */
 			    currententity->model == player_models[3])
 			{
 				i = currententity - cl_entities - 1;

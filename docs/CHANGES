@@ -3,6 +3,32 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2013-02-18 (SVN):
+    * model.h: change SURF_DRAWBLACK from 0x200 to 0x100.
+    * gl_model.h: change SURF_DRAWBLACK from 0x200 to 0x100 and change
+      SURF_UNDERWATER from 0x100 to 0x200. these two flags are set only
+      at runtime and now the surface flags are in order in software and
+      opengl versions.
+    * gl_model.c: sync Mod_LoadAllSkins() between h2 and hw versions so
+      that h2 now checks for skintype like hw does. this can be further
+      improved later. on the other hand, I don't know any alias models
+      with ALIAS_SKIN_GROUP skins either, so this shouldn't affect real
+      life experience. update gl_rmain.c and gl_model.h to work against
+      the Mod_LoadAllSkins() change.
+    * gl_model.c (hw version): remove the 32768 checks from aliasmins
+      in Mod_LoadAliasFrame() and Mod_LoadAliasGroup(), because they
+      are already set that way in Mod_LoadAliasModel(). change the loop
+      counter upper boundary from pheader->numverts to pheader->version
+      like in the h2 version.
+    * model.c (hw version): call RadiusFromBounds() after copying the
+      mins/maxs values in Mod_LoadBrushModel(). copy over alias models
+      mins/maxs caslculation via R_AliasTransformVector2() from the h2
+      version. comment out the FIXME'd cls.userinfo pmodel/emodel crc
+      code, because unlike qw it is never checked at the server side.
+    * gl_model.c, model.c (all versions): minor tidying here and there.
+      h2/h2w versions are fairly in sync now.
+    * updated version date stamp to 2013-02-18.
+
 2013-02-17 (SVN):
     * d_polyse.c: mark the do_PolysetDrawFinalVerts helpers as inline.
 

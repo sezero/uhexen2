@@ -30,14 +30,13 @@
 qmodel_t	*loadmodel;
 static char	loadname[MAX_QPATH];	// for hunk tags
 
+static qmodel_t *Mod_LoadModel (qmodel_t *mod, qboolean crash);
 static void Mod_LoadSpriteModel (qmodel_t *mod, void *buffer);
 static void Mod_LoadBrushModel (qmodel_t *mod, void *buffer);
 static void Mod_LoadAliasModel (qmodel_t *mod, void *buffer);
 static void Mod_LoadAliasModelNew (qmodel_t *mod, void *buffer);
 
 static void Mod_Print (void);
-
-static qmodel_t *Mod_LoadModel (qmodel_t *mod, qboolean crash);
 
 static cvar_t	external_ents = {"external_ents", "1", CVAR_ARCHIVE};
 
@@ -47,7 +46,7 @@ static byte	mod_novis[MAX_MAP_LEAFS/8];
 static qmodel_t	mod_known[MAX_MOD_KNOWN];
 static int	mod_numknown;
 
-//static vec3_t	aliasmins, aliasmaxs;
+static vec3_t	aliasmins, aliasmaxs;
 
 
 /*
@@ -1375,10 +1374,10 @@ static void Mod_LoadBrushModel (qmodel_t *mod, void *buffer)
 		mod->firstmodelsurface = bm->firstface;
 		mod->nummodelsurfaces = bm->numfaces;
 
-		mod->radius = RadiusFromBounds (mod->mins, mod->maxs);
-
 		VectorCopy (bm->maxs, mod->maxs);
 		VectorCopy (bm->mins, mod->mins);
+
+		mod->radius = RadiusFromBounds (mod->mins, mod->maxs);
 
 		mod->numleafs = bm->visleafs;
 
@@ -1403,6 +1402,20 @@ ALIAS MODELS
 ==============================================================================
 */
 
+static float	aliastransform2[3][4];
+
+/*
+================
+R_AliasTransformVector
+================
+*/
+static void R_AliasTransformVector2 (vec3_t in, vec3_t out)
+{
+	out[0] = DotProduct(in, aliastransform2[0]) + aliastransform2[0][3];
+	out[1] = DotProduct(in, aliastransform2[1]) + aliastransform2[1][3];
+	out[2] = DotProduct(in, aliastransform2[2]) + aliastransform2[2][3];
+}
+
 /*
 =================
 Mod_LoadAliasFrame
@@ -1410,11 +1423,12 @@ Mod_LoadAliasFrame
 */
 static void *Mod_LoadAliasFrame (void *pin, int *pframeindex, int numv,
 	trivertx_t *pbboxmin, trivertx_t *pbboxmax, aliashdr_t *pheader,
-	char *name)
+	char *name, newmdl_t *pmodel)
 {
 	trivertx_t	*pframe, *pinframe;
 	int		i, j;
 	daliasframe_t	*pdaliasframe;
+	vec3_t		in, out;
 
 	pdaliasframe = (daliasframe_t *)pin;
 
@@ -1433,9 +1447,21 @@ static void *Mod_LoadAliasFrame (void *pin, int *pframeindex, int numv,
 
 	*pframeindex = (byte *)pframe - (byte *)pheader;
 
+	aliastransform2[0][0] = pmodel->scale[0];
+	aliastransform2[1][1] = pmodel->scale[1];
+	aliastransform2[2][2] = pmodel->scale[2];
+	aliastransform2[0][3] = pmodel->scale_origin[0];
+	aliastransform2[1][3] = pmodel->scale_origin[1];
+	aliastransform2[2][3] = pmodel->scale_origin[2];
+
 	for (j = 0; j < numv; j++)
 	{
 		int		k;
+
+		in[0] = pinframe[j].v[0];
+		in[1] = pinframe[j].v[1];
+		in[2] = pinframe[j].v[2];
+		R_AliasTransformVector2(in, out);
 
 	// these are all byte values, so no need to deal with endianness
 		pframe[j].lightnormalindex = pinframe[j].lightnormalindex;
@@ -1443,6 +1469,11 @@ static void *Mod_LoadAliasFrame (void *pin, int *pframeindex, int numv,
 		for (k = 0; k < 3; k++)
 		{
 			pframe[j].v[k] = pinframe[j].v[k];
+
+			if (aliasmins[k] > out[k])
+				aliasmins[k] = out[k];
+			if (aliasmaxs[k] < out[k])
+				aliasmaxs[k] = out[k];
 		}
 	}
 
@@ -1459,7 +1490,7 @@ Mod_LoadAliasGroup
 */
 static void *Mod_LoadAliasGroup (void *pin, int *pframeindex, int numv,
 	trivertx_t *pbboxmin, trivertx_t *pbboxmax, aliashdr_t *pheader,
-	char *name)
+	char *name, newmdl_t *pmodel)
 {
 	daliasgroup_t		*pingroup;
 	maliasgroup_t		*paliasgroup;
@@ -1510,7 +1541,7 @@ static void *Mod_LoadAliasGroup (void *pin, int *pframeindex, int numv,
 						numv,
 						&paliasgroup->frames[i].bboxmin,
 						&paliasgroup->frames[i].bboxmax,
-						pheader, name);
+						pheader, name, pmodel);
 	}
 
 	return ptemp;
@@ -1630,8 +1661,6 @@ static void Mod_LoadAliasModelNew (qmodel_t *mod, void *buffer)
 	maliasskindesc_t	*pskindesc;
 	int			skinsize;
 	int			start, end, total;
-
-//	Mod_SaveAliasModel (mod->name, buffer);
 
 	start = Hunk_LowMark ();
 
@@ -1788,8 +1817,8 @@ static void Mod_LoadAliasModelNew (qmodel_t *mod, void *buffer)
 
 	pframetype = (daliasframetype_t *)&pintriangles[pmodel->numtris];
 
-//	aliasmins[0] = aliasmins[1] = aliasmins[2] = 32768;
-//	aliasmaxs[0] = aliasmaxs[1] = aliasmaxs[2] = -32768;
+	aliasmins[0] = aliasmins[1] = aliasmins[2] = 32768;
+	aliasmaxs[0] = aliasmaxs[1] = aliasmaxs[2] = -32768;
 
 	for (i = 0; i < numframes; i++)
 	{
@@ -1806,8 +1835,8 @@ static void Mod_LoadAliasModelNew (qmodel_t *mod, void *buffer)
 								pmodel->numverts,
 								&pheader->frames[i].bboxmin,
 								&pheader->frames[i].bboxmax,
-								pheader, pheader->frames[i].name);
-								//,pmodel);
+								pheader, pheader->frames[i].name,
+								pmodel);
 		}
 		else
 		{
@@ -1817,23 +1846,22 @@ static void Mod_LoadAliasModelNew (qmodel_t *mod, void *buffer)
 								pmodel->numverts,
 								&pheader->frames[i].bboxmin,
 								&pheader->frames[i].bboxmax,
-								pheader, pheader->frames[i].name);
-								//,pmodel);
+								pheader, pheader->frames[i].name,
+								pmodel);
 		}
 	}
 
 	mod->type = mod_alias;
 
 // FIXME: do this right
-	mod->mins[0] = mod->mins[1] = mod->mins[2] = -16;
-	mod->maxs[0] = mod->maxs[1] = mod->maxs[2] = 16;
-/*	mod->mins[0] = aliasmins[0];
+//	mod->mins[0] = mod->mins[1] = mod->mins[2] = -16;
+//	mod->maxs[0] = mod->maxs[1] = mod->maxs[2] = 16;
+	mod->mins[0] = aliasmins[0];
 	mod->mins[1] = aliasmins[1];
 	mod->mins[2] = aliasmins[2];
 	mod->maxs[0] = aliasmaxs[0];
 	mod->maxs[1] = aliasmaxs[1];
 	mod->maxs[2] = aliasmaxs[2];
-*/
 //
 // move the complete, relocatable alias model to the cache
 //
@@ -1871,9 +1899,8 @@ static void Mod_LoadAliasModel (qmodel_t *mod, void *buffer)
 	int			skinsize;
 	int			start, end, total;
 
-	// rjr FIXME
-	if (!strcmp(loadmodel->name, "models/paladin.mdl") ||
-		!strcmp(loadmodel->name, "progs/eyes.mdl"))
+/*	// rjr FIXME
+	if (!strcmp(loadmodel->name, "models/paladin.mdl"))
 	{
 		unsigned short	crc;
 		byte	*p;
@@ -1886,21 +1913,17 @@ static void Mod_LoadAliasModel (qmodel_t *mod, void *buffer)
 
 		q_snprintf (st, sizeof(st), "%d", (int) crc);
 	// rjr FIXME
-		Info_SetValueForKey (cls.userinfo,
-			!strcmp(loadmodel->name, "models/paladin.mdl") ? "pmodel" : "emodel",
-			st, MAX_INFO_STRING);
+		Info_SetValueForKey (cls.userinfo, "pmodel", st, MAX_INFO_STRING);//"emodel"
 
 	// rjr FIXME
 		if (cls.state >= ca_connected)
 		{
 			MSG_WriteByte (&cls.netchan.message, clc_stringcmd);
-			q_snprintf (st, sizeof(st), "setinfo %s %d",
-					!strcmp(loadmodel->name, "models/paladin.mdl") ? "pmodel" : "emodel",
-					(int)crc);
+			q_snprintf (st, sizeof(st), "setinfo %s %d", "pmodel", (int)crc);//"emodel"
 			SZ_Print (&cls.netchan.message, st);
 		}
 	}
-
+*/
 	start = Hunk_LowMark ();
 
 	pinmodel = (mdl_t *)buffer;
@@ -2040,6 +2063,10 @@ static void Mod_LoadAliasModel (qmodel_t *mod, void *buffer)
 
 		for (j = 0; j < 3; j++)
 		{
+#if 0
+			if (pintriangles[i].vertindex[j] > Q_MAXSHORT)
+				Sys_Error ("%s: ind too big!", __thisfunc__);
+#endif
 			ptri[i].vertindex[j] =(short) LittleLong (pintriangles[i].vertindex[j]);
 			ptri[i].stindex[j] = ptri[i].vertindex[j];	//MAKE A COPY
 		}
@@ -2052,6 +2079,9 @@ static void Mod_LoadAliasModel (qmodel_t *mod, void *buffer)
 		Sys_Error ("%s: Invalid # of frames: %d", __thisfunc__, numframes);
 
 	pframetype = (daliasframetype_t *)&pintriangles[pmodel->numtris];
+
+	aliasmins[0] = aliasmins[1] = aliasmins[2] = 32768;
+	aliasmaxs[0] = aliasmaxs[1] = aliasmaxs[2] = -32768;
 
 	for (i = 0; i < numframes; i++)
 	{
@@ -2068,7 +2098,8 @@ static void Mod_LoadAliasModel (qmodel_t *mod, void *buffer)
 								pmodel->numverts,
 								&pheader->frames[i].bboxmin,
 								&pheader->frames[i].bboxmax,
-								pheader, pheader->frames[i].name);
+								pheader, pheader->frames[i].name,
+								pmodel);
 		}
 		else
 		{
@@ -2078,23 +2109,29 @@ static void Mod_LoadAliasModel (qmodel_t *mod, void *buffer)
 								pmodel->numverts,
 								&pheader->frames[i].bboxmin,
 								&pheader->frames[i].bboxmax,
-								pheader, pheader->frames[i].name);
+								pheader, pheader->frames[i].name,
+								pmodel);
 		}
 	}
 
 	mod->type = mod_alias;
 
 // FIXME: do this right
-	mod->mins[0] = mod->mins[1] = mod->mins[2] = -16;
-	mod->maxs[0] = mod->maxs[1] = mod->maxs[2] = 16;
-
+//	mod->mins[0] = mod->mins[1] = mod->mins[2] = -16;
+//	mod->maxs[0] = mod->maxs[1] = mod->maxs[2] = 16;
+	mod->mins[0] = aliasmins[0];
+	mod->mins[1] = aliasmins[1];
+	mod->mins[2] = aliasmins[2];
+	mod->maxs[0] = aliasmaxs[0];
+	mod->maxs[1] = aliasmaxs[1];
+	mod->maxs[2] = aliasmaxs[2];
 //
 // move the complete, relocatable alias model to the cache
 //
 	end = Hunk_LowMark ();
 	total = end - start;
 
-	Cache_Alloc (&mod->cache, total, loadname);
+	Cache_Alloc (&mod->cache, total, mod->name);
 	if (!mod->cache.data)
 		return;
 	memcpy (mod->cache.data, pheader, total);
@@ -2234,7 +2271,7 @@ static void Mod_LoadSpriteModel (qmodel_t *mod, void *buffer)
 
 	size = sizeof (msprite_t) + (numframes - 1) * sizeof (psprite->frames);
 
-	psprite = (msprite_t *) Hunk_AllocName (size, loadname);
+	psprite = (msprite_t *) Hunk_AllocName (size, mod->name);
 
 	mod->cache.data = psprite;
 

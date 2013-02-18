@@ -29,6 +29,7 @@
 qmodel_t	*loadmodel;
 static char	loadname[MAX_QPATH];	// for hunk tags
 
+static qmodel_t *Mod_LoadModel (qmodel_t *mod, qboolean crash);
 static void Mod_LoadSpriteModel (qmodel_t *mod, void *buffer);
 static void Mod_LoadBrushModel (qmodel_t *mod, void *buffer);
 static void Mod_LoadAliasModel (qmodel_t *mod, void *buffer);
@@ -36,11 +37,9 @@ static void Mod_LoadAliasModelNew (qmodel_t *mod, void *buffer);
 
 static void Mod_Print (void);
 
-static qmodel_t *Mod_LoadModel (qmodel_t *mod, qboolean crash);
+static cvar_t	external_ents = {"external_ents", "1", CVAR_ARCHIVE};
 
 static byte	mod_novis[MAX_MAP_LEAFS/8];
-
-static cvar_t	external_ents = {"external_ents", "1", CVAR_ARCHIVE};
 
 // 650 should be enough with model handle recycling, but.. (Pa3PyX)
 #define	MAX_MOD_KNOWN	2048
@@ -635,10 +634,12 @@ void Mod_ReloadTextures (void)
 	}
 
 	// Reload player skins
-	if (cls.state == ca_connected)
+	if (cls.state == ca_active)
 	{
-		for (j = 0; (j < cl.maxclients) && (j < cl.num_entities + 1); j++)
+		for (j = 0; j < cl.maxclients && j < cl.num_entities + 1; j++)
+		{
 			R_TranslatePlayerSkin(j);
+		}
 	}
 }
 
@@ -1872,11 +1873,14 @@ Mod_LoadAllSkins
 */
 static void *Mod_LoadAllSkins (int numskins, daliasskintype_t *pskintype, int mdl_flags)
 {
-	int	i;
+	int	i, j, k;
 	char	name[MAX_QPATH];
 	int	s;
 	byte	*skin;
 	int	tex_mode;
+	int	groupskins;
+	daliasskingroup_t	*pinskingroup;
+	daliasskininterval_t	*pinskinintervals;
 
 	skin = (byte *)(pskintype + 1);
 
@@ -1895,6 +1899,8 @@ static void *Mod_LoadAllSkins (int numskins, daliasskintype_t *pskintype, int md
 
 	for (i = 0; i < numskins; i++)
 	{
+	    k = LittleLong (pskintype->type);		/* aliasskintype_t */
+	    if (k == ALIAS_SKIN_SINGLE) {
 		Mod_FloodFillSkin (skin, pheader->skinwidth, pheader->skinheight);
 
 		// save 8 bit texels for the player model to remap
@@ -1930,16 +1936,39 @@ static void *Mod_LoadAllSkins (int numskins, daliasskintype_t *pskintype, int md
 		}
 
 		q_snprintf (name, sizeof(name), "%s_%i", loadmodel->name, i);
-		pheader->gl_texturenum[i] = GL_LoadTexture (name, (byte *)(pskintype + 1),
+		pheader->gl_texturenum[i][0] =
+		pheader->gl_texturenum[i][1] =
+		pheader->gl_texturenum[i][2] =
+		pheader->gl_texturenum[i][3] = GL_LoadTexture (name, (byte *)(pskintype + 1),
 						pheader->skinwidth, pheader->skinheight, tex_mode);
 		pskintype = (daliasskintype_t *)((byte *)(pskintype+1) + s);
+
+	    } else /*if (k == ALIAS_SKIN_GROUP)*/
+	    {						/* animating skin group.  yuck. */
+		pskintype++;
+		pinskingroup = (daliasskingroup_t *)pskintype;
+		groupskins = LittleLong (pinskingroup->numskins);
+		pinskinintervals = (daliasskininterval_t *)(pinskingroup + 1);
+
+		pskintype = (daliasskintype_t *)(pinskinintervals + groupskins);
+		for (j = 0; j < groupskins; j++)
+		{
+			Mod_FloodFillSkin (skin, pheader->skinwidth, pheader->skinheight);
+			q_snprintf (name, sizeof(name), "%s_%i_%i", loadmodel->name, i, j);
+			pheader->gl_texturenum[i][j&3] = GL_LoadTexture (name, (byte *)(pskintype),
+						pheader->skinwidth, pheader->skinheight, tex_mode);
+			pskintype = (daliasskintype_t *)((byte *)(pskintype) + s);
+		}
+		for (k = j; j < 4; j++)
+			pheader->gl_texturenum[i][j&3] = pheader->gl_texturenum[i][j - k];
+	    }
 	}
 
 	return (void *)pskintype;
 
 skin_too_large:
 	Sys_Error ("Player skin too large");
-	return NULL;	// silence warnings
+	return NULL;
 }
 
 //=========================================================================
