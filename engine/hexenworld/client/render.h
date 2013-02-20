@@ -144,7 +144,7 @@ void R_NewMap (void);
 
 void R_InitSky (struct texture_s *mt);	// called at level load
 
-void R_DrawName (vec3_t origin, const char *name, int red);
+void R_DrawName (vec3_t origin, const char *name, int siegestatus);
 
 void R_PushDlights (void);
 

@@ -1237,7 +1237,7 @@ static void R_EdgeDrawing (qboolean Translucent)
 }
 
 
-void R_DrawName (vec3_t origin, const char *Name, int Red)
+void R_DrawName (vec3_t origin, const char *name, int siegestatus)
 {
 	vec3_t	local, transformed;
 	float	zi;
@@ -1245,7 +1245,7 @@ void R_DrawName (vec3_t origin, const char *Name, int Red)
 //	short	*pz;
 	int	izi, u, v;
 
-	if (!Name)
+	if (!name)
 		return;
 
 	// transform point
@@ -1266,10 +1266,8 @@ void R_DrawName (vec3_t origin, const char *Name, int Red)
 	u = (int)(xcenter + zi * transformed[0] + 0.5);
 	v = (int)(ycenter - zi * transformed[1] + 0.5);
 
-	if ((v > d_vrectbottom_particle) || 
-		(u > d_vrectright_particle) ||
-		(v < d_vrecty) ||
-		(u < d_vrectx))
+	if ((v > d_vrectbottom_particle) || (u > d_vrectright_particle) ||
+	    (v < d_vrecty) || (u < d_vrectx))
 	{
 		return;
 	}
@@ -1282,37 +1280,37 @@ void R_DrawName (vec3_t origin, const char *Name, int Red)
 //	if (pz[0] > izi)
 //		return;
 
-	u -= strlen(Name) * 4;
+	u -= strlen(name) * 4;
 
-	if (cl_siege)
+	if (siegestatus < 0)	// not siege
 	{
-		if (Red > 10)
-		{
-			Red -= 10;
-			Draw_Character (u, v, 145);	//key
-			u += 8;
-		}
-		if (Red > 0 && Red < 3)		//def
-		{
-			if (Red == true)
-				Draw_Character (u, v, 143);	//shield
-			else
-				Draw_Character (u, v, 130);	//crown
-			Draw_RedString (u+8, v, Name);
-		}
-		else if (!Red)
-		{
-			Draw_Character (u, v, 144);	//sword
-			Draw_String (u+8, v, Name);
-		}
-		else	//neither att nor def
-		{
-			Draw_String (u+8, v, Name);
-		}
+		Draw_String (u, v, name);
+		return;
 	}
-	else
+	if (siegestatus > 10)			//keyholder
 	{
-		Draw_String (u, v, Name);
+		siegestatus -= 10;
+		Draw_Character (u, v, 145);	//key
+		u += 8;
+	}
+	switch (siegestatus)
+	{
+	case 0: //att
+		Draw_Character (u, v, 144);	//sword
+		Draw_String (u+8, v, name);
+		return;
+	case 1: //def
+		Draw_Character (u, v, 143);	//shield
+		Draw_RedString (u+8, v, name);
+		return;
+	case 2: //def
+		Draw_Character (u, v, 130);	//crown
+		Draw_RedString (u+8, v, name);
+		return;
+	case 3: //neither att nor def
+	default:
+		Draw_String (u+8, v, name);
+		return;
 	}
 }
 

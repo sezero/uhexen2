@@ -301,7 +301,7 @@ store:
 				}
 				else
 				{
-					t = (int) ( ((float)q * 0.33f) + ((float)s * 0.33f) + ((float)r * 0.33f) );
+					t = (int) ((float)q * 0.33f + (float)s * 0.33f + (float)r * 0.33f);
 
 					if (t > 255)
 						t = 255;
@@ -674,50 +674,34 @@ void R_RenderBrushPoly (msurface_t *fa, qboolean override)
 {
 	texture_t	*t;
 	byte		*base;
-	int			maps;
+	int		maps;
 	glRect_t	*theRect;
-	int			smax, tmax;
-	float		intensity = 1.0f, alpha_val = 1.0f;
+	int		smax, tmax;
+	float		intensity, alpha_val;
 
 	c_brush_polys++;
-
-#if 0
-	if (currententity->drawflags & DRF_TRANSLUCENT)
-	{
-		glEnable_fp (GL_BLEND);
-		glColor4f_fp (1,1,1,r_wateralpha.value);
-		// rjr
-	}
-	if ((currententity->drawflags & MLS_ABSLIGHT) == MLS_ABSLIGHT)
-	{
-		// rjr
-	}
-#endif
 
 	if (gl_multitexture.integer && gl_mtexable)
 		glActiveTextureARB_fp(GL_TEXTURE0_ARB);
 
+	intensity = 1.0f;
+	alpha_val = 1.0f;
+
 	if (currententity->drawflags & DRF_TRANSLUCENT)
 	{
 		glEnable_fp (GL_BLEND);
-	//	glColor4f_fp (1,1,1,r_wateralpha.value);
 		alpha_val = r_wateralpha.value;
-		// rjr
-
 		glTexEnvf_fp(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
-		intensity = 1.0;
 	}
 	if ((currententity->drawflags & MLS_ABSLIGHT) == MLS_ABSLIGHT)
 	{
 		// currententity->abslight   0 - 255
-		// rjr
 		glTexEnvf_fp(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
-		intensity = ( float )currententity->abslight / 255.0f;
-	//	intensity = 0;
+		intensity = (float)currententity->abslight / 255.0f;
 	}
 
 	if (!override)
-		glColor4f_fp( intensity, intensity, intensity, alpha_val );
+		glColor4f_fp(intensity, intensity, intensity, alpha_val);
 
 	if (fa->flags & SURF_DRAWSKY)
 	{	// warp texture, no lightmaps
@@ -831,29 +815,34 @@ dynamic:
 	{
 		glTexEnvf_fp(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
 	}
+
+	if (currententity->drawflags & DRF_TRANSLUCENT)
+	{
+		glDisable_fp (GL_BLEND);
+	}
 }
 
 void R_RenderBrushPolyMTex (msurface_t *fa, qboolean override)
 {
 	texture_t	*t;
 	byte		*base;
-	int			maps;
+	int		maps;
 	glRect_t	*theRect;
-	int			smax, tmax;
-	float		intensity = 1.0f, alpha_val = 1.0f;
+	int		smax, tmax;
+	float		intensity, alpha_val;
 
 	c_brush_polys++;
 
 	glActiveTextureARB_fp(GL_TEXTURE0_ARB);
 
+	intensity = 1.0f;
+	alpha_val = 1.0f;
+
 	if (currententity->drawflags & DRF_TRANSLUCENT)
 	{
 		glEnable_fp (GL_BLEND);
-
 		alpha_val = r_wateralpha.value;
-
 		glTexEnvf_fp(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
-		intensity = 1.0;
 	}
 	else
 	{
@@ -864,7 +853,7 @@ void R_RenderBrushPolyMTex (msurface_t *fa, qboolean override)
 	if ((currententity->drawflags & MLS_ABSLIGHT) == MLS_ABSLIGHT)
 	{
 		glTexEnvf_fp(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
-		intensity = ( float )currententity->abslight / 255.0f;
+		intensity = (float)currententity->abslight / 255.0f;
 	}
 
 	if (fa->flags & SURF_DRAWTURB)
@@ -893,7 +882,7 @@ void R_RenderBrushPolyMTex (msurface_t *fa, qboolean override)
 
 	if (fa->flags & SURF_DRAWTURB)
 	{
-		glColor4f_fp( 1.0f, 1.0f, 1.0f, 1.0f );
+		glColor4f_fp(1.0f, 1.0f, 1.0f, 1.0f);
 		EmitWaterPolys (fa);
 		//return;
 	}
@@ -977,6 +966,11 @@ dynamic1:
 		glTexEnvf_fp(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
 	}
 
+	if (currententity->drawflags & DRF_TRANSLUCENT)
+	{
+		glDisable_fp (GL_BLEND);
+	}
+
 	glActiveTextureARB_fp(GL_TEXTURE1_ARB);
 }
 
@@ -1011,7 +1005,7 @@ void R_DrawWaterSurfaces (void)
 	if (r_wateralpha.value == 1.0)
 		return;
 
-	glDepthMask_fp( 0 );
+	glDepthMask_fp(0);
 
 	//
 	// go back to the world matrix
@@ -1030,7 +1024,7 @@ void R_DrawWaterSurfaces (void)
 		s = t->texturechain;
 		if (!s)
 			continue;
-		if ( !(s->flags & SURF_DRAWTURB) )
+		if (!(s->flags & SURF_DRAWTURB))
 			continue;
 
 		//if ((s->flags & SURF_DRAWTURB) && (s->flags & SURF_TRANSLUCENT))
@@ -1362,10 +1356,10 @@ static void R_RecursiveWorldNode (mnode_t *node)
 				continue;
 
 			// don't backface underwater surfaces, because they warp
-		//	if ( !(surf->flags & SURF_UNDERWATER) && ( (dot < 0) ^ !!(surf->flags & SURF_PLANEBACK)) )
-			if ( !( ((r_viewleaf->contents == CONTENTS_EMPTY && (surf->flags & SURF_UNDERWATER)) ||
-					(r_viewleaf->contents != CONTENTS_EMPTY && !(surf->flags & SURF_UNDERWATER)) )
-				    && !(surf->flags & SURF_DONTWARP)) && ( (dot < 0) ^ !!(surf->flags & SURF_PLANEBACK)) )
+		//	if (!(surf->flags & SURF_UNDERWATER) && ((dot < 0) ^ !!(surf->flags & SURF_PLANEBACK)))
+			if (!( ((r_viewleaf->contents == CONTENTS_EMPTY && (surf->flags & SURF_UNDERWATER)) ||
+					(r_viewleaf->contents != CONTENTS_EMPTY && !(surf->flags & SURF_UNDERWATER)))
+				    && !(surf->flags & SURF_DONTWARP)) && ((dot < 0) ^ !!(surf->flags & SURF_PLANEBACK)))
 				continue;	// wrong side
 
 			// sorting by texture, just store it out
@@ -1556,7 +1550,7 @@ static void BuildSurfaceDisplayList (msurface_t *fa)
 	//
 	// remove co-linear points - Ed
 	//
-	if (!gl_keeptjunctions.integer && !(fa->flags & SURF_UNDERWATER) )
+	if (!gl_keeptjunctions.integer && !(fa->flags & SURF_UNDERWATER))
 	{
 		for (i = 0; i < lnumverts; ++i)
 		{
@@ -1573,9 +1567,9 @@ static void BuildSurfaceDisplayList (msurface_t *fa)
 			VectorNormalize(v2);
 
 			// skip co-linear points
-			if ((fabs( v1[0] - v2[0] ) <= COLINEAR_EPSILON) &&
-				(fabs( v1[1] - v2[1] ) <= COLINEAR_EPSILON) &&
-				(fabs( v1[2] - v2[2] ) <= COLINEAR_EPSILON))
+			if ((fabs(v1[0] - v2[0]) <= COLINEAR_EPSILON) &&
+			    (fabs(v1[1] - v2[1]) <= COLINEAR_EPSILON) &&
+			    (fabs(v1[2] - v2[2]) <= COLINEAR_EPSILON))
 			{
 				int		j, k;
 				for (j = i + 1; j < lnumverts; ++j)
@@ -1652,10 +1646,10 @@ void GL_BuildLightmaps (void)
 		for (i = 0; i < m->numsurfaces; i++)
 		{
 			GL_CreateSurfaceLightmap (m->surfaces + i);
-			if ( m->surfaces[i].flags & SURF_DRAWTURB )
+			if (m->surfaces[i].flags & SURF_DRAWTURB)
 				continue;
 #ifndef QUAKE2
-			if ( m->surfaces[i].flags & SURF_DRAWSKY )
+			if (m->surfaces[i].flags & SURF_DRAWSKY)
 				continue;
 #endif
 			if (!draw_reinit)

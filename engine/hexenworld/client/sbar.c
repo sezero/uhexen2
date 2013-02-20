@@ -239,51 +239,50 @@ void Sbar_Init(void)
 static void SB_PlacePlayerNames(void)
 {
 	int			i, j;
-	entity_t	*curr_ent;
+	entity_t	*e;
 
 	for (j = 0; j < cl_numvisedicts; j++)
 	{
-		curr_ent = &cl_visedicts[j];
+		e = &cl_visedicts[j];
 
-		i = curr_ent->scoreboard - cl.players;
-/*		if (i >= 0 && i<MAX_CLIENTS && 
-			(	(cl.PIV & (1<<i)) &&	// in PIV and not invis or seen by dwarf MLS_INVIS = 5
-				(curr_ent->drawflags != 5 || cl.v.playerclass == CLASS_DWARF) )	)
-*/
-		if (i >= 0 && i < MAX_CLIENTS && (cl.PIV & (1<<i)) )
+		i = e->scoreboard - cl.players;
+		if (i < 0 || i >= MAX_CLIENTS)
+			continue;
+		if (!(cl.PIV & (1<<i))) // must be in PIV
+			continue;
+		/*
+		// must be not invis or seen by dwarf MLS_INVIS = 5
+		if (e->drawflags == 5 && cl.v.playerclass != CLASS_DWARF)
+			continue;
+		*/
+		if (cl.players[i].shownames_off)
+			continue;
+
+		if (!cl_siege)
 		{
-			if (!cl.players[i].shownames_off)
-			{
-				if (cl_siege)
-				{	//why the fuck does GL fuck this up??!!!
-					if (cl.players[i].siege_team == ST_ATTACKER)
-					{	//attacker
-						if (i == cl_keyholder)
-							R_DrawName(curr_ent->origin, cl.players[i].name, 10);
-						else
-							R_DrawName(curr_ent->origin, cl.players[i].name, false);
-					}
-					else if (cl.players[i].siege_team == ST_DEFENDER)
-					{	//def
-						if (i == cl_keyholder && i == cl_doc)
-							R_DrawName(curr_ent->origin, cl.players[i].name, 12);
-						else if (i == cl_keyholder)
-							R_DrawName(curr_ent->origin, cl.players[i].name, 11);
-						else if (i == cl_doc)
-							R_DrawName(curr_ent->origin, cl.players[i].name, 2);
-						else
-							R_DrawName(curr_ent->origin, cl.players[i].name, 1);
-					}
-					else
-					{
-						R_DrawName(curr_ent->origin, cl.players[i].name, 3);
-					}
-				}
-				else
-				{
-					R_DrawName(curr_ent->origin, cl.players[i].name, false);
-				}
-			}
+			R_DrawName(e->origin, cl.players[i].name, -1);
+		}
+		else if (cl.players[i].siege_team == ST_ATTACKER)
+		{
+			if (i == cl_keyholder)
+				R_DrawName(e->origin, cl.players[i].name, 10);
+			else
+				R_DrawName(e->origin, cl.players[i].name, 0);
+		}
+		else if (cl.players[i].siege_team == ST_DEFENDER)
+		{
+			if (i == cl_keyholder && i == cl_doc)
+				R_DrawName(e->origin, cl.players[i].name, 12);
+			else if (i == cl_keyholder)
+				R_DrawName(e->origin, cl.players[i].name, 11);
+			else if (i == cl_doc)
+				R_DrawName(e->origin, cl.players[i].name, 2);
+			else
+				R_DrawName(e->origin, cl.players[i].name, 1);
+		}
+		else
+		{
+			R_DrawName(e->origin, cl.players[i].name, 3);
 		}
 	}
 }

@@ -141,6 +141,7 @@ typedef double	vec_t;
 typedef float	vec_t;
 #endif	/* DOUBLEVEC_T */
 typedef vec_t	vec3_t[3];
+typedef vec_t	vec4_t[4];
 typedef vec_t	vec5_t[5];
 typedef int	fixed4_t;
 typedef int	fixed8_t;

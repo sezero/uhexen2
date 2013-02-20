@@ -60,7 +60,7 @@ extern qmodel_t	*player_models[MAX_PLAYER_CLASS];
 vec3_t		vup, vpn, vright, r_origin;
 
 float		r_world_matrix[16];
-//static float	r_base_world_matrix[16];	// for R_Mirror()
+float		r_projection_matrix[16];
 
 //
 // screen size info
@@ -134,8 +134,10 @@ qboolean R_CullBox (vec3_t mins, vec3_t maxs)
 	int		i;
 
 	for (i = 0; i < 4; i++)
+	{
 		if (BoxOnPlaneSide (mins, maxs, &frustum[i]) == 2)
 			return true;
+	}
 	return false;
 }
 
@@ -208,7 +210,9 @@ static void R_RotateForEntity2 (entity_t *e)
 	{
 		if (e->model->flags & EF_ROTATE)
 		{
-			glRotatef_fp (anglemod((e->origin[0]+e->origin[1])*0.8 + (108*cl.time)), 0, 0, 1);
+			glRotatef_fp (anglemod((e->origin[0] + e->origin[1])*0.8
+								+ (108*cl.time)),
+						    0, 0, 1);
 		}
 		else
 		{
@@ -291,30 +295,121 @@ R_DrawSpriteModel
 
 =================
 */
+typedef struct
+{
+	vec3_t		vup, vright, vpn;	// in worldspace
+} spritedesc_t;
+
 static void R_DrawSpriteModel (entity_t *e)
 {
 	vec3_t		point;
 	mspriteframe_t	*frame;
 	msprite_t	*psprite;
-	float		*up, *right;
-	vec3_t		v_forward, v_right, v_up;
-
-	// don't even bother culling, because it's just a single
-	// polygon without a surface cache
+	vec3_t		tvec;
+	float		dot, angle, sr, cr;
+	spritedesc_t	r_spritedesc;
+	int			i;
 
 	frame = R_GetSpriteFrame (e);
 	psprite = (msprite_t *) currententity->model->cache.data;
 
-	if (psprite->type == SPR_ORIENTED)
-	{	// bullet marks on walls
-		AngleVectors (currententity->angles, v_forward, v_right, v_up);
-		up = v_up;
-		right = v_right;
+	if (psprite->type == SPR_FACING_UPRIGHT)
+	{
+	// generate the sprite's axes, with vup straight up in worldspace, and
+	// r_spritedesc.vright perpendicular to modelorg.
+	// This will not work if the view direction is very close to straight up or
+	// down, because the cross product will be between two nearly parallel
+	// vectors and starts to approach an undefined state, so we don't draw if
+	// the two vectors are less than 1 degree apart
+		tvec[0] = -modelorg[0];
+		tvec[1] = -modelorg[1];
+		tvec[2] = -modelorg[2];
+		VectorNormalize (tvec);
+		dot = tvec[2];	// same as DotProduct (tvec, r_spritedesc.vup)
+				// because r_spritedesc.vup is 0, 0, 1
+
+		if ((dot > 0.999848) || (dot < -0.999848))	// cos(1 degree) = 0.999848
+			return;
+
+		r_spritedesc.vup[0] = 0;
+		r_spritedesc.vup[1] = 0;
+		r_spritedesc.vup[2] = 1;
+		r_spritedesc.vright[0] = tvec[1];
+								// CrossProduct (r_spritedesc.vup, -modelorg,
+		r_spritedesc.vright[1] = -tvec[0];
+								//		 r_spritedesc.vright)
+		r_spritedesc.vright[2] = 0;
+		VectorNormalize (r_spritedesc.vright);
+		r_spritedesc.vpn[0] = -r_spritedesc.vright[1];
+		r_spritedesc.vpn[1] = r_spritedesc.vright[0];
+		r_spritedesc.vpn[2] = 0;
+					// CrossProduct (r_spritedesc.vright, r_spritedesc.vup,
+					//		 r_spritedesc.vpn)
+	}
+	else if (psprite->type == SPR_VP_PARALLEL)
+	{
+	// generate the sprite's axes, completely parallel to the viewplane. There
+	// are no problem situations, because the sprite is always in the same
+	// position relative to the viewer
+		for (i = 0; i < 3; i++)
+		{
+			r_spritedesc.vup[i] = vup[i];
+			r_spritedesc.vright[i] = vright[i];
+			r_spritedesc.vpn[i] = vpn[i];
+		}
+	}
+	else if (psprite->type == SPR_VP_PARALLEL_UPRIGHT)
+	{
+	// generate the sprite's axes, with vup straight up in worldspace, and
+	// r_spritedesc.vright parallel to the viewplane.
+	// This will not work if the view direction is very close to straight up or
+	// down, because the cross product will be between two nearly parallel
+	// vectors and starts to approach an undefined state, so we don't draw if
+	// the two vectors are less than 1 degree apart
+		dot = vpn[2];	// same as DotProduct (vpn, r_spritedesc.vup)
+				// because r_spritedesc.vup is 0, 0, 1
+
+		if ((dot > 0.999848) || (dot < -0.999848))	// cos(1 degree) = 0.999848
+			return;
+
+		r_spritedesc.vup[0] = 0;
+		r_spritedesc.vup[1] = 0;
+		r_spritedesc.vup[2] = 1;
+		r_spritedesc.vright[0] = vpn[1];
+							// CrossProduct (r_spritedesc.vup, vpn,
+		r_spritedesc.vright[1] = -vpn[0];	//		 r_spritedesc.vright)
+		r_spritedesc.vright[2] = 0;
+		VectorNormalize (r_spritedesc.vright);
+		r_spritedesc.vpn[0] = -r_spritedesc.vright[1];
+		r_spritedesc.vpn[1] = r_spritedesc.vright[0];
+		r_spritedesc.vpn[2] = 0;
+					// CrossProduct (r_spritedesc.vright, r_spritedesc.vup,
+					//		 r_spritedesc.vpn)
+	}
+	else if (psprite->type == SPR_ORIENTED)
+	{
+	// generate the sprite's axes, according to the sprite's world orientation
+		AngleVectors (currententity->angles, r_spritedesc.vpn, r_spritedesc.vright, r_spritedesc.vup);
+	}
+	else if (psprite->type == SPR_VP_PARALLEL_ORIENTED)
+	{
+	// generate the sprite's axes, parallel to the viewplane, but rotated in
+	// that plane around the center according to the sprite entity's roll
+	// angle. So vpn stays the same, but vright and vup rotate
+		angle = currententity->angles[ROLL] * (M_PI*2 / 360);
+		sr = sin(angle);
+		cr = cos(angle);
+
+		for (i = 0; i < 3; i++)
+		{
+			r_spritedesc.vpn[i] = vpn[i];
+			r_spritedesc.vright[i] = vright[i] * cr + vup[i] * sr;
+			r_spritedesc.vup[i] = vright[i] * -sr + vup[i] * cr;
+		}
 	}
 	else
-	{	// normal sprite
-		up = vup;
-		right = vright;
+	{
+		Sys_Error ("%s: Bad sprite type %d", __thisfunc__, psprite->type);
 	}
 
 /* Pa3PyX: new translucency code below
@@ -364,23 +459,23 @@ static void R_DrawSpriteModel (entity_t *e)
 	glBegin_fp (GL_QUADS);
 
 	glTexCoord2f_fp (0, 1);
-	VectorMA (e->origin, frame->down, up, point);
-	VectorMA (point, frame->left, right, point);
+	VectorMA (e->origin, frame->down, r_spritedesc.vup, point);
+	VectorMA (point, frame->left, r_spritedesc.vright, point);
 	glVertex3fv_fp (point);
 
 	glTexCoord2f_fp (0, 0);
-	VectorMA (e->origin, frame->up, up, point);
-	VectorMA (point, frame->left, right, point);
+	VectorMA (e->origin, frame->up, r_spritedesc.vup, point);
+	VectorMA (point, frame->left, r_spritedesc.vright, point);
 	glVertex3fv_fp (point);
 
 	glTexCoord2f_fp (1, 0);
-	VectorMA (e->origin, frame->up, up, point);
-	VectorMA (point, frame->right, right, point);
+	VectorMA (e->origin, frame->up, r_spritedesc.vup, point);
+	VectorMA (point, frame->right, r_spritedesc.vright, point);
 	glVertex3fv_fp (point);
 
 	glTexCoord2f_fp (1, 1);
-	VectorMA (e->origin, frame->down, up, point);
-	VectorMA (point, frame->right, right, point);
+	VectorMA (e->origin, frame->down, r_spritedesc.vup, point);
+	VectorMA (point, frame->right, r_spritedesc.vright, point);
 	glVertex3fv_fp (point);
 
 	glEnd_fp ();
@@ -715,12 +810,12 @@ static void R_DrawAliasModel (entity_t *e)
 	if (currententity->model->flags & EF_ROTATE)
 	{
 		ambientlight = shadelight =
-			lightcolor[0] =
-			lightcolor[1] =
-			lightcolor[2] =
-					60+34+sin(currententity->origin[0]
+		lightcolor[0] =
+		lightcolor[1] =
+		lightcolor[2] =
+				60 + 34 + sin(currententity->origin[0]
 						+ currententity->origin[1]
-						+ (cl.time*3.8))*34;
+						+ (cl.time*3.8)) * 34;
 	}
 	else if (mls == MLS_ABSLIGHT)
 	{
@@ -791,7 +886,6 @@ static void R_DrawAliasModel (entity_t *e)
 	//
 	// draw all the triangles
 	//
-
 	glPushMatrix_fp ();
 	R_RotateForEntity2(e);
 
@@ -947,7 +1041,6 @@ static void R_DrawAliasModel (entity_t *e)
 				{
 					if (!cl.players[i].Translated)
 						R_TranslatePlayerSkin(i);
-
 					GL_Bind(playertextures[i]);
 				}
 			}
@@ -965,9 +1058,9 @@ static void R_DrawAliasModel (entity_t *e)
 
 // restore params
 	if ((currententity->drawflags & DRF_TRANSLUCENT) ||
-			(currententity->model->flags & EF_SPECIAL_TRANS) ||
-			(currententity->model->flags & EF_TRANSPARENT) ||
-			(currententity->model->flags & EF_HOLEY)	)
+	    (currententity->model->flags & EF_SPECIAL_TRANS) ||
+	    (currententity->model->flags & EF_TRANSPARENT) ||
+	    (currententity->model->flags & EF_HOLEY) )
 	{
 		glDisable_fp (GL_BLEND);
 	}
@@ -1027,7 +1120,7 @@ static void R_DrawEntitiesOnList (void)
 	qboolean	item_trans;
 	mleaf_t		*pLeaf;
 	vec3_t		diff;
-	int			test_length, calc_length;
+	int	test_length, calc_length;
 
 	cl_numtransvisedicts = 0;
 	cl_numtranswateredicts = 0;
@@ -1035,14 +1128,8 @@ static void R_DrawEntitiesOnList (void)
 	if (!r_drawentities.integer)
 		return;
 
-	if (r_entdistance.value <= 0)
-	{
-		test_length = 9999*9999;
-	}
-	else
-	{
-		test_length = r_entdistance.value * r_entdistance.value;
-	}
+	test_length = (r_entdistance.value <= 0) ? (9999 * 9999) :
+			r_entdistance.value * r_entdistance.value;
 
 	// draw sprites seperately, because of alpha blending
 	for (i = 0; i < cl_numvisedicts; i++)
@@ -1057,12 +1144,11 @@ static void R_DrawEntitiesOnList (void)
 		{
 		case mod_alias:
 			VectorSubtract(currententity->origin, r_origin, diff);
-			calc_length = (diff[0]*diff[0]) + (diff[1]*diff[1]) + (diff[2]*diff[2]);
+			calc_length = DotProduct(diff,diff);
 			if (calc_length > test_length)
 				continue;
-
 			item_trans = ((currententity->drawflags & DRF_TRANSLUCENT) ||
-						  (currententity->model->flags & (EF_TRANSPARENT|EF_HOLEY|EF_SPECIAL_TRANS))) != 0;
+					(currententity->model->flags & (EF_TRANSPARENT|EF_HOLEY|EF_SPECIAL_TRANS))) != 0;
 			if (!item_trans)
 				R_DrawAliasModel (currententity);
 			break;
@@ -1075,10 +1161,9 @@ static void R_DrawEntitiesOnList (void)
 
 		case mod_sprite:
 			VectorSubtract(currententity->origin, r_origin, diff);
-			calc_length = (diff[0]*diff[0]) + (diff[1]*diff[1]) + (diff[2]*diff[2]);
+			calc_length = DotProduct(diff,diff);
 			if (calc_length > test_length)
 				continue;
-
 			item_trans = true;
 			break;
 
@@ -1687,52 +1772,6 @@ static void GL_SetFrustum (GLdouble fovx, GLdouble fovy)
 	glFrustum_fp (-xmax, xmax, -ymax, ymax, NEARCLIP, FARCLIP);
 }
 
-typedef struct _MATRIX {
-	GLfloat	M[4][4];
-} MATRIX;
-
-typedef struct _point3d {
-	GLfloat	x;
-	GLfloat	y;
-	GLfloat	z;
-} POINT3D;
-
-static MATRIX	ModelviewMatrix, ProjectionMatrix, FinalMatrix;
-
-static void MultiplyMatrix (MATRIX *m1, MATRIX *m2, MATRIX *m3)
-{
-	int		i, j;
-
-	for (j = 0; j < 4; j ++)
-	{
-		for (i = 0; i < 4; i ++)
-		{
-			m1->M[j][i] = m2->M[j][0] * m3->M[0][i] +
-					m2->M[j][1] * m3->M[1][i] +
-					m2->M[j][2] * m3->M[2][i] +
-					m2->M[j][3] * m3->M[3][i];
-		}
-	}
-}
-
-static void TransformPoint (POINT3D *ptOut, POINT3D *ptIn, MATRIX *mat)
-{
-	double	x, y, z;
-
-	x = (ptIn->x * mat->M[0][0]) + (ptIn->y * mat->M[0][1]) +
-			(ptIn->z * mat->M[0][2]) + mat->M[0][3];
-
-	y = (ptIn->x * mat->M[1][0]) + (ptIn->y * mat->M[1][1]) +
-			(ptIn->z * mat->M[1][2]) + mat->M[1][3];
-
-	z = (ptIn->x * mat->M[2][0]) + (ptIn->y * mat->M[2][1]) +
-			(ptIn->z * mat->M[2][2]) + mat->M[2][3];
-
-	ptOut->x = (float) x;
-	ptOut->y = (float) y;
-	ptOut->z = (float) z;
-}
-
 /*
 =============
 R_SetupGL
@@ -1791,6 +1830,7 @@ static void R_SetupGL (void)
 	glTranslatef_fp (-r_refdef.vieworg[0],  -r_refdef.vieworg[1],  -r_refdef.vieworg[2]);
 
 	glGetFloatv_fp (GL_MODELVIEW_MATRIX, r_world_matrix);
+	glGetFloatv_fp (GL_PROJECTION_MATRIX, r_projection_matrix);
 
 	//
 	// set drawing parms
@@ -1803,15 +1843,6 @@ static void R_SetupGL (void)
 	glDisable_fp(GL_BLEND);
 	glDisable_fp(GL_ALPHA_TEST);
 	glEnable_fp(GL_DEPTH_TEST);
-
-	glGetFloatv_fp(GL_MODELVIEW_MATRIX, (float *)ModelviewMatrix.M);
-//	ModelviewMatrix.M[0][3] = 0;
-//	ModelviewMatrix.M[1][3] = 0;
-//	ModelviewMatrix.M[2][3] = 0;
-//	ModelviewMatrix.M[3][3] = 0;
-	glGetFloatv_fp(GL_PROJECTION_MATRIX, (float *)ProjectionMatrix.M);
-//	MultiplyMatrix(&FinalMatrix, &ModelviewMatrix, &ProjectionMatrix);
-	MultiplyMatrix(&FinalMatrix, &ProjectionMatrix, &ModelviewMatrix);
 }
 
 /*
@@ -1902,12 +1933,14 @@ static void R_Clear (void)
 }
 
 
-#if 0 //!!! FIXME, Zoid, mirror is disabled for now
+#if 0 /* !!! FIXME, Zoid, mirror is disabled for now */
 /*
 =============
 R_Mirror
 =============
 */
+static float	r_base_world_matrix[16];
+
 static void R_Mirror (void)
 {
 	float		d;
@@ -1999,64 +2032,101 @@ static void R_PrintTimes (void)
 			fps, ms, c_brush_polys, c_alias_polys, cl_numvisedicts, cl_numtransvisedicts+cl_numtranswateredicts);
 }
 
+void R_TransformModelToClip (const vec3_t src, const float *modelMatrix, const float *projectionMatrix,
+			     vec4_t eye, vec4_t dst)
+{
+	int		i;
+	for (i = 0; i < 4; i++)
+	{
+		eye[i] = src[0] * modelMatrix[i + 0 * 4] +
+			 src[1] * modelMatrix[i + 1 * 4] +
+			 src[2] * modelMatrix[i + 2 * 4] +
+				  modelMatrix[i + 3 * 4];
+	}
+	for (i = 0; i < 4; i++)
+	{
+		dst[i] = eye[0] * projectionMatrix[i + 0 * 4] +
+			 eye[1] * projectionMatrix[i + 1 * 4] +
+			 eye[2] * projectionMatrix[i + 2 * 4] +
+			 eye[3] * projectionMatrix[i + 3 * 4];
+	}
+}
+
+void R_TransformClipToWindow (const vec4_t clip, vec4_t normalized, vec4_t window)
+{
+	normalized[0] = clip[0] / clip[3];
+	normalized[1] = clip[1] / clip[3];
+	normalized[2] = (clip[2] + clip[3]) / (2 * clip[3]);
+
+	window[0] = 0.5f * (1.0f + normalized[0]) * r_refdef.vrect.width;
+	window[1] = 0.5f * (1.0f + normalized[1]) * r_refdef.vrect.height;
+	window[2] = normalized[2];
+
+	window[0] = (int)(window[0] + 0.5f);
+	window[1] = (int)(window[1] + 0.5f);
+}
+
+qboolean R_GetScreenPosFromWorldPos (const vec3_t origin, int *u, int *v)
+{
+	vec4_t eye, clip;
+	vec4_t normalized, window;
+
+	R_TransformModelToClip (origin, r_world_matrix, r_projection_matrix, eye, clip);
+	if (eye[2] > -NEARCLIP)
+		return false;
+
+	R_TransformClipToWindow (clip, normalized, window);
+	*u = r_refdef.vrect.x + (int)window[0];
+	*v = r_refdef.vrect.y + r_refdef.vrect.height - (int)window[1];
+	return true;
+}
 
 /*
 =============
 R_DrawName
 =============
 */
-void R_DrawName (vec3_t origin, const char *Name, int Red)
+void R_DrawName (vec3_t origin, const char *name, int siegestatus)
 {
-	float	zi;
 	int		u, v;
-	POINT3D	In, Out;
 
-	if (!Name)
+	if (!name)
 		return;
 
-	In.x = origin[0];
-	In.y = origin[1];
-	In.z = origin[2];
-	TransformPoint(&Out, &In, &FinalMatrix);
-
-	if (Out.z < 0)
+	if (!R_GetScreenPosFromWorldPos(origin, &u, &v))
 		return;
 
-	zi = 1.0 / (Out.z + 8);
-	u = (int)(r_refdef.vrect.width / 2 * (zi * Out.x + 1) ) + r_refdef.vrect.x;
-	v = (int)(r_refdef.vrect.height / 2 * (zi * (-Out.y) + 1) ) + r_refdef.vrect.y;
+	u -= strlen(name) * 4;
 
-	u -= strlen(Name) * 4;
-
-	if (cl_siege)
+	if (siegestatus < 0)	// not siege
 	{
-		if (Red > 10)
-		{
-			Red -= 10;
-			Draw_Character (u, v, 145);	//key
-			u += 8;
-		}
-		if (Red > 0 && Red < 3)		//def
-		{
-			if (Red == true)
-				Draw_Character (u, v, 143);	//shield
-			else
-				Draw_Character (u, v, 130);	//crown
-			Draw_RedString (u+8, v, Name);
-		}
-		else if (!Red)
-		{
-			Draw_Character (u, v, 144);	//sword
-			Draw_String (u+8, v, Name);
-		}
-		else	//neither att nor def
-		{
-			Draw_String (u+8, v, Name);
-		}
+		Draw_String (u, v, name);
+		return;
 	}
-	else
+	if (siegestatus > 10)			//keyholder
 	{
-		Draw_String (u, v, Name);
+		siegestatus -= 10;
+		Draw_Character (u, v, 145);	//key
+		u += 8;
+	}
+	switch (siegestatus)
+	{
+	case 0: //att
+		Draw_Character (u, v, 144);	//sword
+		Draw_String (u+8, v, name);
+		return;
+	case 1: //def
+		Draw_Character (u, v, 143);	//shield
+		Draw_RedString (u+8, v, name);
+		return;
+	case 2: //def
+		Draw_Character (u, v, 130);	//crown
+		Draw_RedString (u+8, v, name);
+		return;
+	case 3: //neither att nor def
+	default:
+		Draw_String (u+8, v, name);
+		return;
 	}
 }
 

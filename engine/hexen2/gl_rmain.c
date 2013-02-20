@@ -60,7 +60,6 @@ extern qmodel_t	*player_models[MAX_PLAYER_CLASS];
 vec3_t		vup, vpn, vright, r_origin;
 
 float		r_world_matrix[16];
-static float	r_base_world_matrix[16];	// for R_Mirror()
 
 //
 // screen size info
@@ -130,8 +129,10 @@ qboolean R_CullBox (vec3_t mins, vec3_t maxs)
 	int		i;
 
 	for (i = 0; i < 4; i++)
+	{
 		if (BoxOnPlaneSide (mins, maxs, &frustum[i]) == 2)
 			return true;
+	}
 	return false;
 }
 
@@ -204,7 +205,9 @@ static void R_RotateForEntity2 (entity_t *e)
 	{
 		if (e->model->flags & EF_ROTATE)
 		{
-			glRotatef_fp (anglemod((e->origin[0]+e->origin[1])*0.8 + (108*cl.time)), 0, 0, 1);
+			glRotatef_fp (anglemod((e->origin[0] + e->origin[1])*0.8
+								+ (108*cl.time)),
+						    0, 0, 1);
 		}
 		else
 		{
@@ -745,12 +748,12 @@ static void R_DrawAliasModel (entity_t *e)
 	if (currententity->model->flags & EF_ROTATE)
 	{
 		ambientlight = shadelight =
-			lightcolor[0] =
-			lightcolor[1] =
-			lightcolor[2] =
-					60+34+sin(currententity->origin[0]
+		lightcolor[0] =
+		lightcolor[1] =
+		lightcolor[2] =
+				60 + 34 + sin(currententity->origin[0]
 						+ currententity->origin[1]
-						+ (cl.time*3.8))*34;
+						+ (cl.time*3.8)) * 34;
 	}
 	else if (mls == MLS_ABSLIGHT)
 	{
@@ -819,7 +822,6 @@ static void R_DrawAliasModel (entity_t *e)
 	//
 	// draw all the triangles
 	//
-
 	glPushMatrix_fp ();
 	R_RotateForEntity2(e);
 
@@ -987,9 +989,9 @@ static void R_DrawAliasModel (entity_t *e)
 
 // restore params
 	if ((currententity->drawflags & DRF_TRANSLUCENT) ||
-			(currententity->model->flags & EF_SPECIAL_TRANS) ||
-			(currententity->model->flags & EF_TRANSPARENT) ||
-			(currententity->model->flags & EF_HOLEY)	)
+	    (currententity->model->flags & EF_SPECIAL_TRANS) ||
+	    (currententity->model->flags & EF_TRANSPARENT) ||
+	    (currententity->model->flags & EF_HOLEY) )
 	{
 		glDisable_fp (GL_BLEND);
 	}
@@ -1068,7 +1070,7 @@ static void R_DrawEntitiesOnList (void)
 		{
 		case mod_alias:
 			item_trans = ((currententity->drawflags & DRF_TRANSLUCENT) ||
-						  (currententity->model->flags & (EF_TRANSPARENT|EF_HOLEY|EF_SPECIAL_TRANS))) != 0;
+					(currententity->model->flags & (EF_TRANSPARENT|EF_HOLEY|EF_SPECIAL_TRANS))) != 0;
 			if (!item_trans)
 				R_DrawAliasModel (currententity);
 			break;
@@ -1852,6 +1854,8 @@ static void R_Clear (void)
 R_Mirror
 =============
 */
+static float	r_base_world_matrix[16];
+
 static void R_Mirror (void)
 {
 	float		d;
