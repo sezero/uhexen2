@@ -232,14 +232,16 @@ SPRITE MODELS
 R_GetSpriteFrame
 ================
 */
-static mspriteframe_t *R_GetSpriteFrame (msprite_t *psprite)
+static mspriteframe_t *R_GetSpriteFrame (entity_t *e)
 {
+	msprite_t	*psprite;
 	mspritegroup_t	*pspritegroup;
 	mspriteframe_t	*pspriteframe;
 	int			i, numframes, frame;
 	float		*pintervals, fullinterval, targettime, time;
 
-	frame = currententity->frame;
+	psprite = (msprite_t *) e->model->cache.data;
+	frame = e->frame;
 
 	if ((frame >= psprite->numframes) || (frame < 0))
 	{
@@ -258,7 +260,7 @@ static mspriteframe_t *R_GetSpriteFrame (msprite_t *psprite)
 		numframes = pspritegroup->numframes;
 		fullinterval = pintervals[numframes-1];
 
-		time = cl.time + currententity->syncbase;
+		time = cl.time + e->syncbase;
 
 	// when loading in Mod_LoadSpriteGroup, we guaranteed all interval values
 	// are positive, so we don't have to worry about division by 0
@@ -298,8 +300,8 @@ static void R_DrawSpriteModel (entity_t *e)
 	spritedesc_t	r_spritedesc;
 	int			i;
 
-	psprite = (msprite_t *) currententity->model->cache.data;
-	frame = R_GetSpriteFrame (psprite);
+	frame = R_GetSpriteFrame (e);
+	psprite = (msprite_t *) e->model->cache.data;
 
 	if (psprite->type == SPR_FACING_UPRIGHT)
 	{
@@ -377,14 +379,14 @@ static void R_DrawSpriteModel (entity_t *e)
 	else if (psprite->type == SPR_ORIENTED)
 	{
 	// generate the sprite's axes, according to the sprite's world orientation
-		AngleVectors (currententity->angles, r_spritedesc.vpn, r_spritedesc.vright, r_spritedesc.vup);
+		AngleVectors (e->angles, r_spritedesc.vpn, r_spritedesc.vright, r_spritedesc.vup);
 	}
 	else if (psprite->type == SPR_VP_PARALLEL_ORIENTED)
 	{
 	// generate the sprite's axes, parallel to the viewplane, but rotated in
 	// that plane around the center according to the sprite entity's roll
 	// angle. So vpn stays the same, but vright and vup rotate
-		angle = currententity->angles[ROLL] * (M_PI*2 / 360);
+		angle = e->angles[ROLL] * (M_PI*2 / 360);
 		sr = sin(angle);
 		cr = cos(angle);
 
@@ -401,12 +403,12 @@ static void R_DrawSpriteModel (entity_t *e)
 	}
 
 /* Pa3PyX: new translucency code below
-	if (currententity->drawflags & DRF_TRANSLUCENT)
+	if (e->drawflags & DRF_TRANSLUCENT)
 	{
 		glEnable_fp (GL_BLEND);
 		glColor4f_fp (1,1,1,r_wateralpha.value);
 	}
-	else if (currententity->model->flags & EF_TRANSPARENT)
+	else if (e->model->flags & EF_TRANSPARENT)
 	{
 		glEnable_fp (GL_BLEND);
 		glColor3f_fp (1,1,1);
@@ -419,7 +421,7 @@ static void R_DrawSpriteModel (entity_t *e)
 */
 	/* Pa3PyX: new translucency mechanism (doesn't look
 	   as good, should work with non 3Dfx MiniGL drivers */
-	if ((currententity->drawflags & DRF_TRANSLUCENT) || (currententity->model->flags & EF_TRANSPARENT))
+	if ((e->drawflags & DRF_TRANSLUCENT) || (e->model->flags & EF_TRANSPARENT))
 	{
 		glDisable_fp (GL_ALPHA_TEST);
 		glEnable_fp (GL_BLEND);
@@ -475,7 +477,7 @@ static void R_DrawSpriteModel (entity_t *e)
 /* for pa3pyx's translucency code changes above
 	glDisable_fp (GL_BLEND);
 */
-	if ((currententity->drawflags & DRF_TRANSLUCENT) || (currententity->model->flags & EF_TRANSPARENT))
+	if ((e->drawflags & DRF_TRANSLUCENT) || (e->model->flags & EF_TRANSPARENT))
 	{
 		glDisable_fp (GL_BLEND);
 		glTexEnvf_fp (GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);

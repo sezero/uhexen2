@@ -4,6 +4,11 @@ Development Progress	:
 ---------------------------
 
 2013-02-20 (SVN):
+    * gl_rmain.c (R_DrawSpriteModel, R_GetSpriteFrame): no need to use
+      the global currententity, use the e entity pointer already fed to
+      the function as the parameter.
+
+2013-02-20 (SVN):
     * q_stdinc.h: add vec4_t as a new type.
     * gl_rsurf.c (hw version): add missing GL_BLEND disable call at the
       end of R_RenderBrushPoly for DRF_TRANSLUCENT cases. minor tidyups.
