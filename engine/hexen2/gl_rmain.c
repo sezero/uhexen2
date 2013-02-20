@@ -25,7 +25,6 @@
 #include "quakedef.h"
 
 entity_t	r_worldentity;
-entity_t	*currententity;
 vec3_t		modelorg, r_entorigin;
 
 int			r_visframecount;	// bumped when going to a new PVS
@@ -526,7 +525,7 @@ static int	lastposenum;
 GL_DrawAliasFrame
 =============
 */
-static void GL_DrawAliasFrame (aliashdr_t *paliashdr, int posenum)
+static void GL_DrawAliasFrame (entity_t *e, aliashdr_t *paliashdr, int posenum)
 {
 	float		l;
 	trivertx_t	*verts;
@@ -541,7 +540,7 @@ static void GL_DrawAliasFrame (aliashdr_t *paliashdr, int posenum)
 	verts += posenum * paliashdr->poseverts;
 	order = (int *)((byte *)paliashdr + paliashdr->commands);
 
-	ColorShade = currententity->colorshade;
+	ColorShade = e->colorshade;
 
 	if (ColorShade)
 	{
@@ -599,7 +598,7 @@ static void GL_DrawAliasFrame (aliashdr_t *paliashdr, int posenum)
 GL_DrawAliasShadow
 =============
 */
-static void GL_DrawAliasShadow (aliashdr_t *paliashdr, int posenum)
+static void GL_DrawAliasShadow (entity_t *e, aliashdr_t *paliashdr, int posenum)
 {
 	trivertx_t	*verts;
 	int		*order;
@@ -607,7 +606,7 @@ static void GL_DrawAliasShadow (aliashdr_t *paliashdr, int posenum)
 	float		height, lheight;
 	int		count;
 
-	lheight = currententity->origin[2] - lightspot[2];
+	lheight = e->origin[2] - lightspot[2];
 
 	height = 0;
 	verts = (trivertx_t *)((byte *)paliashdr + paliashdr->posedata);
@@ -671,11 +670,12 @@ R_SetupAliasFrame
 
 =================
 */
-static void R_SetupAliasFrame (int frame, aliashdr_t *paliashdr)
+static void R_SetupAliasFrame (entity_t *e, aliashdr_t *paliashdr)
 {
-	int				pose, numposes;
-	float			interval;
+	int	pose, numposes, frame;
+	float		interval;
 
+	frame = e->frame;
 	if ((frame >= paliashdr->numframes) || (frame < 0))
 	{
 		Con_DPrintf ("%s: no such frame %d\n", __thisfunc__, frame);
@@ -691,7 +691,7 @@ static void R_SetupAliasFrame (int frame, aliashdr_t *paliashdr)
 		pose += (int)(cl.time / interval) % numposes;
 	}
 
-	GL_DrawAliasFrame (paliashdr, pose);
+	GL_DrawAliasFrame (e, paliashdr, pose);
 }
 
 
@@ -729,33 +729,31 @@ static void R_DrawAliasModel (entity_t *e)
 	int		skinnum;
 	int		mls;
 
-	clmodel = currententity->model;
+	clmodel = e->model;
 
-	VectorAdd (currententity->origin, clmodel->mins, mins);
-	VectorAdd (currententity->origin, clmodel->maxs, maxs);
+	VectorAdd (e->origin, clmodel->mins, mins);
+	VectorAdd (e->origin, clmodel->maxs, maxs);
 
 	if (!AlwaysDrawModel && R_CullBox (mins, maxs))
 		return;
 
-	VectorCopy (currententity->origin, r_entorigin);
+	VectorCopy (e->origin, r_entorigin);
 	VectorSubtract (r_origin, r_entorigin, modelorg);
 
 	// if shadows are enabled, get lighting information here regardless
 	// of special cases below, because R_LightPoint[Color]() calculates
 	// lightspot for us which is used by GL_DrawAliasShadow()
 	if (r_shadows.integer && e != &cl.viewent)
-		AliasModelGetLightInfo (currententity);
+		AliasModelGetLightInfo (e);
 
-	mls = currententity->drawflags & MLS_MASKIN;
-	if (currententity->model->flags & EF_ROTATE)
+	mls = e->drawflags & MLS_MASKIN;
+	if (e->model->flags & EF_ROTATE)
 	{
 		ambientlight = shadelight =
 		lightcolor[0] =
 		lightcolor[1] =
 		lightcolor[2] =
-				60 + 34 + sin(currententity->origin[0]
-						+ currententity->origin[1]
-						+ (cl.time*3.8)) * 34;
+				60 + 34 + sin(e->origin[0] + e->origin[1] + (cl.time*3.8)) * 34;
 	}
 	else if (mls == MLS_ABSLIGHT)
 	{
@@ -764,7 +762,7 @@ static void R_DrawAliasModel (entity_t *e)
 		lightcolor[2] =
 		ambientlight =
 		shadelight =
-				currententity->abslight;
+				e->abslight;
 	}
 	else if (mls != MLS_NONE)
 	{
@@ -779,13 +777,13 @@ static void R_DrawAliasModel (entity_t *e)
 	else if (e != &cl.viewent)	// R_DrawViewModel() already does viewmodel lighting.
 	{
 		if (!r_shadows.integer)
-			AliasModelGetLightInfo (currententity);
+			AliasModelGetLightInfo (e);
 
 		for (lnum = 0; lnum < MAX_DLIGHTS; lnum++)
 		{
 			if (cl_dlights[lnum].die >= cl.time)
 			{
-				VectorSubtract (currententity->origin, cl_dlights[lnum].origin, dist);
+				VectorSubtract (e->origin, cl_dlights[lnum].origin, dist);
 				add = cl_dlights[lnum].radius - VectorLength(dist);
 				if (add > 0)
 				{
@@ -817,7 +815,7 @@ static void R_DrawAliasModel (entity_t *e)
 	//
 	// locate the proper data
 	//
-	paliashdr = (aliashdr_t *)Mod_Extradata (currententity->model);
+	paliashdr = (aliashdr_t *)Mod_Extradata (e->model);
 
 	c_alias_polys += paliashdr->numtris;
 
@@ -827,10 +825,10 @@ static void R_DrawAliasModel (entity_t *e)
 	glPushMatrix_fp ();
 	R_RotateForEntity2(e);
 
-	if (currententity->scale != 0 && currententity->scale != 100)
+	if (e->scale != 0 && e->scale != 100)
 	{
-		entScale = (float)currententity->scale / 100.0;
-		switch (currententity->drawflags & SCALE_TYPE_MASKIN)
+		entScale = (float)e->scale / 100.0f;
+		switch (e->drawflags & SCALE_TYPE_MASKIN)
 		{
 		case SCALE_TYPE_UNIFORM:
 			tmatrix[0][0] = paliashdr->scale[0]*entScale;
@@ -854,7 +852,7 @@ static void R_DrawAliasModel (entity_t *e)
 			break;
 		}
 
-		switch (currententity->drawflags & SCALE_ORIGIN_MASKIN)
+		switch (e->drawflags & SCALE_ORIGIN_MASKIN)
 		{
 		case SCALE_ORIGIN_CENTER:
 			tmatrix[0][3] = paliashdr->scale_origin[0]-paliashdr->scale[0]*xyfact;
@@ -886,9 +884,7 @@ static void R_DrawAliasModel (entity_t *e)
 	if (clmodel->flags & EF_ROTATE)
 	{
 		// Floating motion
-		tmatrix[2][3] += sin(currententity->origin[0]
-					+ currententity->origin[1]
-					+ (cl.time*3)) * 5.5;
+		tmatrix[2][3] += sin(e->origin[0] + e->origin[1] + (cl.time*3)) * 5.5;
 	}
 
 // [0][3] [1][3] [2][3]
@@ -898,7 +894,7 @@ static void R_DrawAliasModel (entity_t *e)
 //	glScalef_fp (paliashdr->scale[0], paliashdr->scale[1], paliashdr->scale[2]);
 	glScalef_fp (tmatrix[0][0],tmatrix[1][1],tmatrix[2][2]);
 
-	if ((currententity->model->flags & EF_SPECIAL_TRANS))
+	if ((e->model->flags & EF_SPECIAL_TRANS))
 	{
 		glEnable_fp (GL_BLEND);
 		glBlendFunc_fp (GL_ONE_MINUS_SRC_ALPHA, GL_SRC_ALPHA);
@@ -906,19 +902,19 @@ static void R_DrawAliasModel (entity_t *e)
 		model_constant_alpha = 1.0f;
 		glDisable_fp (GL_CULL_FACE);
 	}
-	else if (currententity->drawflags & DRF_TRANSLUCENT)
+	else if (e->drawflags & DRF_TRANSLUCENT)
 	{
 		glEnable_fp (GL_BLEND);
 	//	glColor4f_fp (1,1,1,r_wateralpha.value);
 		model_constant_alpha = r_wateralpha.value;
 	}
-	else if ((currententity->model->flags & EF_TRANSPARENT))
+	else if ((e->model->flags & EF_TRANSPARENT))
 	{
 		glEnable_fp (GL_BLEND);
 	//	glColor3f_fp (1,1,1);
 		model_constant_alpha = 1.0f;
 	}
-	else if ((currententity->model->flags & EF_HOLEY))
+	else if ((e->model->flags & EF_HOLEY))
 	{
 		glEnable_fp (GL_BLEND);
 	//	glColor3f_fp (1,1,1);
@@ -930,7 +926,7 @@ static void R_DrawAliasModel (entity_t *e)
 		model_constant_alpha = 1.0f;
 	}
 
-	skinnum = currententity->skinnum;
+	skinnum = e->skinnum;
 	if (skinnum >= 100)
 	{
 		if (skinnum > 255)
@@ -963,15 +959,15 @@ static void R_DrawAliasModel (entity_t *e)
 
 		// we can't dynamically colormap textures, so they are cached
 		// seperately for the players.  Heads are just uncolored.
-		if (currententity->colormap != vid.colormap && !gl_nocolors.integer)
+		if (e->colormap != vid.colormap && !gl_nocolors.integer)
 		{
-			if (currententity->model == player_models[0] ||
-			    currententity->model == player_models[1] ||
-			    currententity->model == player_models[2] ||
-			    currententity->model == player_models[4] || /* demoness */
-			    currententity->model == player_models[3])
+			if (e->model == player_models[0] ||
+			    e->model == player_models[1] ||
+			    e->model == player_models[2] ||
+			    e->model == player_models[4] ||
+			    e->model == player_models[3])
 			{
-				i = currententity - cl_entities - 1;
+				i = e - cl_entities - 1;
 				if (i >= 0 && i < cl.maxclients)
 				{
 					GL_Bind(playertextures[i]);
@@ -987,18 +983,18 @@ static void R_DrawAliasModel (entity_t *e)
 	if (gl_affinemodels.integer)
 		glHint_fp (GL_PERSPECTIVE_CORRECTION_HINT, GL_FASTEST);
 
-	R_SetupAliasFrame (currententity->frame, paliashdr);
+	R_SetupAliasFrame (e, paliashdr);
 
 // restore params
-	if ((currententity->drawflags & DRF_TRANSLUCENT) ||
-	    (currententity->model->flags & EF_SPECIAL_TRANS) ||
-	    (currententity->model->flags & EF_TRANSPARENT) ||
-	    (currententity->model->flags & EF_HOLEY) )
+	if ((e->drawflags & DRF_TRANSLUCENT) ||
+	    (e->model->flags & EF_SPECIAL_TRANS) ||
+	    (e->model->flags & EF_TRANSPARENT) ||
+	    (e->model->flags & EF_HOLEY) )
 	{
 		glDisable_fp (GL_BLEND);
 	}
 
-	if ((currententity->model->flags & EF_SPECIAL_TRANS))
+	if ((e->model->flags & EF_SPECIAL_TRANS))
 	{
 		glBlendFunc_fp (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 		glEnable_fp (GL_CULL_FACE);
@@ -1020,7 +1016,7 @@ static void R_DrawAliasModel (entity_t *e)
 		glEnable_fp (GL_BLEND);
 		glColor4f_fp (0,0,0,0.5);
 		glDepthMask_fp (0);	// prevent Z fighting
-		GL_DrawAliasShadow (paliashdr, lastposenum);
+		GL_DrawAliasShadow (e, paliashdr, lastposenum);
 		glDepthMask_fp (1);
 		glEnable_fp (GL_TEXTURE_2D);
 		glDisable_fp (GL_BLEND);
@@ -1052,6 +1048,7 @@ static void R_DrawEntitiesOnList (void)
 	int			i;
 	qboolean	item_trans;
 	mleaf_t		*pLeaf;
+	entity_t	*e;
 
 	cl_numtransvisedicts = 0;
 	cl_numtranswateredicts = 0;
@@ -1062,25 +1059,25 @@ static void R_DrawEntitiesOnList (void)
 	// draw sprites seperately, because of alpha blending
 	for (i = 0; i < cl_numvisedicts; i++)
 	{
-		currententity = cl_visedicts[i];
+		e = cl_visedicts[i];
 
 		// chase-cam pitch adj. by FrikaC
-		if (currententity == &cl_entities[cl.viewentity])
-			currententity->angles[0] *= 0.3;
+		if (e == &cl_entities[cl.viewentity])
+			e->angles[0] *= 0.3;
 
-		switch (currententity->model->type)
+		switch (e->model->type)
 		{
 		case mod_alias:
-			item_trans = ((currententity->drawflags & DRF_TRANSLUCENT) ||
-					(currententity->model->flags & (EF_TRANSPARENT|EF_HOLEY|EF_SPECIAL_TRANS))) != 0;
+			item_trans = ((e->drawflags & DRF_TRANSLUCENT) ||
+					(e->model->flags & (EF_TRANSPARENT|EF_HOLEY|EF_SPECIAL_TRANS))) != 0;
 			if (!item_trans)
-				R_DrawAliasModel (currententity);
+				R_DrawAliasModel (e);
 			break;
 
 		case mod_brush:
-			item_trans = ((currententity->drawflags & DRF_TRANSLUCENT)) != 0;
+			item_trans = ((e->drawflags & DRF_TRANSLUCENT)) != 0;
 			if (!item_trans)
-				R_DrawBrushModel (currententity,false);
+				R_DrawBrushModel (e,false);
 			break;
 
 		case mod_sprite:
@@ -1094,12 +1091,12 @@ static void R_DrawEntitiesOnList (void)
 
 		if (item_trans)
 		{
-			pLeaf = Mod_PointInLeaf (currententity->origin, cl.worldmodel);
+			pLeaf = Mod_PointInLeaf (e->origin, cl.worldmodel);
 		//	if (pLeaf->contents == CONTENTS_EMPTY)
 			if (pLeaf->contents != CONTENTS_WATER)
-				cl_transvisedicts[cl_numtransvisedicts++].ent = currententity;
+				cl_transvisedicts[cl_numtransvisedicts++].ent = e;
 			else
-				cl_transwateredicts[cl_numtranswateredicts++].ent = currententity;
+				cl_transwateredicts[cl_numtranswateredicts++].ent = e;
 		}
 	}
 }
@@ -1125,6 +1122,7 @@ static void R_DrawTransEntitiesOnList (qboolean inwater)
 	int		i;
 	int		numents;
 	sortedent_t	*theents;
+	entity_t	*e;
 	int	depthMaskWrite = 0;
 	vec3_t	result;
 
@@ -1144,9 +1142,9 @@ static void R_DrawTransEntitiesOnList (qboolean inwater)
 	glDepthMask_fp(0);
 	for (i = 0; i < numents; i++)
 	{
-		currententity = theents[i].ent;
+		e = theents[i].ent;
 
-		switch (currententity->model->type)
+		switch (e->model->type)
 		{
 		case mod_alias:
 			if (!depthMaskWrite)
@@ -1154,7 +1152,7 @@ static void R_DrawTransEntitiesOnList (qboolean inwater)
 				depthMaskWrite = 1;
 				glDepthMask_fp(1);
 			}
-			R_DrawAliasModel (currententity);
+			R_DrawAliasModel (e);
 			break;
 		case mod_brush:
 			if (!depthMaskWrite)
@@ -1162,7 +1160,7 @@ static void R_DrawTransEntitiesOnList (qboolean inwater)
 				depthMaskWrite = 1;
 				glDepthMask_fp(1);
 			}
-			R_DrawBrushModel (currententity, true);
+			R_DrawBrushModel (e, true);
 			break;
 		case mod_sprite:
 			if (depthMaskWrite)
@@ -1170,7 +1168,7 @@ static void R_DrawTransEntitiesOnList (qboolean inwater)
 				depthMaskWrite = 0;
 				glDepthMask_fp(0);
 			}
-			R_DrawSpriteModel (currententity);
+			R_DrawSpriteModel (e);
 			break;
 		}
 	}
@@ -1191,7 +1189,7 @@ static void R_DrawGlow (entity_t *e)
 {
 	qmodel_t	*clmodel;
 
-	clmodel = currententity->model;
+	clmodel = e->model;
 
 	// Torches & Flames
 	if ((gl_glows.integer && (clmodel->ex_flags & XF_TORCH_GLOW)) ||
@@ -1209,7 +1207,7 @@ static void R_DrawGlow (entity_t *e)
 		vec3_t	vp2;
 
 		// NOTE: I don't think this is centered on the model.
-		VectorCopy(currententity->origin, lightorigin);
+		VectorCopy(e->origin, lightorigin);
 
 		radius = 20.0f;
 
@@ -1237,7 +1235,7 @@ static void R_DrawGlow (entity_t *e)
 
 			// 'floating' movement
 			if (clmodel->flags & EF_ROTATE)
-				glTranslatef_fp (0, 0, sin(currententity->origin[0]+currententity->origin[1]+(cl.time*3))*5.5);
+				glTranslatef_fp (0, 0, sin(e->origin[0] + e->origin[1] + (cl.time*3))*5.5);
 
 			glBegin_fp(GL_TRIANGLE_FAN);
 			// Diminish torch flare inversely with distance.
@@ -1331,6 +1329,7 @@ static void R_DrawGlow (entity_t *e)
 static void R_DrawAllGlows (void)
 {
 	int		i;
+	entity_t	*e;
 
 	if (!r_drawentities.integer)
 		return;
@@ -1343,12 +1342,12 @@ static void R_DrawAllGlows (void)
 
 	for (i = 0; i < cl_numvisedicts; i++)
 	{
-		currententity = cl_visedicts[i];
+		e = cl_visedicts[i];
 
-		switch (currententity->model->type)
+		switch (e->model->type)
 		{
 		case mod_alias:
-			R_DrawGlow (currententity);
+			R_DrawGlow (e);
 			break;
 		default:
 			break;
@@ -1376,15 +1375,16 @@ static void R_DrawViewModel (void)
 	vec3_t		dist;
 	float		add;
 	dlight_t	*dl;
+	entity_t	*e;
 
-	currententity = &cl.viewent;
+	e = &cl.viewent;
 
-	if (!currententity->model)
+	if (!e->model)
 		return;
 
 	if (gl_lightmap_format == GL_RGBA)
 	{
-		ambientlight = R_LightPointColor (currententity->origin);
+		ambientlight = R_LightPointColor (e->origin);
 		if (lightcolor[0] < 24)
 			lightcolor[0] = 24;
 		if (lightcolor[1] < 24)
@@ -1396,7 +1396,7 @@ static void R_DrawViewModel (void)
 	}
 	else
 	{
-		ambientlight = shadelight = R_LightPoint (currententity->origin);
+		ambientlight = shadelight = R_LightPoint (e->origin);
 		if (ambientlight < 24)
 			ambientlight = shadelight = 24;	// always give some light on gun
 	}
@@ -1410,7 +1410,7 @@ static void R_DrawViewModel (void)
 		if (dl->die < cl.time)
 			continue;
 
-		VectorSubtract (currententity->origin, dl->origin, dist);
+		VectorSubtract (e->origin, dl->origin, dist);
 		add = dl->radius - VectorLength(dist);
 		if (add > 0)
 		{
@@ -1443,7 +1443,7 @@ static void R_DrawViewModel (void)
 	// hack the depth range to prevent view model from poking into walls
 	glDepthRange_fp (gldepthmin, gldepthmin + 0.3*(gldepthmax-gldepthmin));
 	AlwaysDrawModel = true;
-	R_DrawAliasModel (currententity);
+	R_DrawAliasModel (e);
 	AlwaysDrawModel = false;
 	glDepthRange_fp (gldepthmin, gldepthmax);
 }
@@ -1924,7 +1924,7 @@ static void R_Mirror (void)
 	glColor4f_fp (1,1,1,r_mirroralpha.value);
 	s = cl.worldmodel->textures[mirrortexturenum]->texturechain;
 	for ( ; s ; s = s->texturechain)
-		R_RenderBrushPoly (s, true);
+		R_RenderBrushPoly (&r_worldentity, s, true);
 	cl.worldmodel->textures[mirrortexturenum]->texturechain = NULL;
 	glDisable_fp (GL_BLEND);
 	glColor4f_fp (1,1,1,1);

@@ -203,7 +203,6 @@ extern	float		r_world_matrix[16];
 extern	entity_t	r_worldentity;
 extern	qboolean	r_cache_thrash;		// compatability
 extern	vec3_t		modelorg, r_entorigin;
-extern	entity_t	*currententity;
 extern	int		r_visframecount;	// ??? what difs?
 extern	int		r_framecount;
 extern	mplane_t	frustum[4];
@@ -316,7 +315,7 @@ void D_ClearOpenGLTextures (int last_tex);
 qboolean R_CullBox (vec3_t mins, vec3_t maxs);
 void R_DrawBrushModel (entity_t *e, qboolean Translucent);
 void R_DrawWorld (void);
-void R_RenderBrushPoly (msurface_t *fa, qboolean override);
+void R_RenderBrushPoly (entity_t *e, msurface_t *fa, qboolean override);
 void R_RotateForEntity (entity_t *e);
 void R_StoreEfrags (efrag_t **ppefrag);
 

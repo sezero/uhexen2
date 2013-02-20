@@ -84,7 +84,8 @@ void	R_InitTextures (void)
 	}
 }
 
-#define	TEXSIZE		16	// was 8
+
+#define	TEXSIZE		16	/* was 8 */
 /*
 static byte dottexture[TEXSIZE][TEXSIZE] =
 {
@@ -306,8 +307,7 @@ void R_TranslatePlayerSkin (int playernum)
 	//
 	// locate the original skin pixels
 	//
-	currententity = &cl_entities[1+playernum];
-	model = currententity->model;
+	model = cl_entities[1+playernum].model;
 	if (!model)
 		return;		// player doesn't have a model yet
 

@@ -84,6 +84,7 @@ void	R_InitTextures (void)
 	}
 }
 
+
 #define	TEXSIZE		8
 
 static byte dottexture[TEXSIZE][TEXSIZE] =

@@ -4,6 +4,10 @@ Development Progress	:
 ---------------------------
 
 2013-02-20 (SVN):
+    * gl_rmain.c, gl_rsurf.c, gl_rmisc.c: removed global currententity
+      altogether from the opengl version.
+
+2013-02-20 (SVN):
     * gl_rmain.c (R_DrawSpriteModel, R_GetSpriteFrame): no need to use
       the global currententity, use the e entity pointer already fed to
       the function as the parameter.

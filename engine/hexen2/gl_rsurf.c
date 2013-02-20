@@ -342,12 +342,12 @@ R_TextureAnimation
 Returns the proper texture for a given time and base texture
 ===============
 */
-static texture_t *R_TextureAnimation (texture_t *base)
+static texture_t *R_TextureAnimation (entity_t *e, texture_t *base)
 {
 	int		reletive;
 	int		count;
 
-	if (currententity->frame)
+	if (e->frame)
 	{
 		if (base->alternate_anims)
 			base = base->alternate_anims;
@@ -650,7 +650,7 @@ static void R_UpdateLightmaps (qboolean Translucent)
 R_RenderBrushPoly
 ================
 */
-void R_RenderBrushPoly (msurface_t *fa, qboolean override)
+void R_RenderBrushPoly (entity_t *e, msurface_t *fa, qboolean override)
 {
 	texture_t	*t;
 	byte		*base;
@@ -665,17 +665,17 @@ void R_RenderBrushPoly (msurface_t *fa, qboolean override)
 	intensity = 1.0f;
 	alpha_val = 1.0f;
 
-	if (currententity->drawflags & DRF_TRANSLUCENT)
+	if (e->drawflags & DRF_TRANSLUCENT)
 	{
 		glEnable_fp (GL_BLEND);
 		alpha_val = r_wateralpha.value;
 		glTexEnvf_fp(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 	}
-	if ((currententity->drawflags & MLS_ABSLIGHT) == MLS_ABSLIGHT)
+	if ((e->drawflags & MLS_ABSLIGHT) == MLS_ABSLIGHT)
 	{
-		// currententity->abslight   0 - 255
+		// ent->abslight   0 - 255
 		glTexEnvf_fp(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
-		intensity = (float)currententity->abslight / 255.0f;
+		intensity = (float)e->abslight / 255.0f;
 	}
 
 	if (!override)
@@ -687,7 +687,7 @@ void R_RenderBrushPoly (msurface_t *fa, qboolean override)
 		return;
 	}
 
-	t = R_TextureAnimation (fa->texinfo->texture);
+	t = R_TextureAnimation (e, fa->texinfo->texture);
 	GL_Bind (t->gl_texturenum);
 
 	if (fa->flags & SURF_DRAWTURB)
@@ -698,8 +698,8 @@ void R_RenderBrushPoly (msurface_t *fa, qboolean override)
 
 	if (gl_multitexture.integer && gl_mtexable)
 	{
-		if ((currententity->drawflags & DRF_TRANSLUCENT) ||
-		    (currententity->drawflags & MLS_ABSLIGHT) == MLS_ABSLIGHT)
+		if ((e->drawflags & DRF_TRANSLUCENT) ||
+		    (e->drawflags & MLS_ABSLIGHT) == MLS_ABSLIGHT)
 		{
 			if (fa->flags & SURF_UNDERWATER)
 				DrawGLWaterPoly (fa->polys);
@@ -763,19 +763,19 @@ dynamic:
 		}
 	}
 
-	if ((currententity->drawflags & MLS_ABSLIGHT) == MLS_ABSLIGHT ||
-	    (currententity->drawflags & DRF_TRANSLUCENT))
+	if ((e->drawflags & MLS_ABSLIGHT) == MLS_ABSLIGHT ||
+	    (e->drawflags & DRF_TRANSLUCENT))
 	{
 		glTexEnvf_fp(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
 	}
 
-	if (currententity->drawflags & DRF_TRANSLUCENT)
+	if (e->drawflags & DRF_TRANSLUCENT)
 	{
 		glDisable_fp (GL_BLEND);
 	}
 }
 
-void R_RenderBrushPolyMTex (msurface_t *fa, qboolean override)
+void R_RenderBrushPolyMTex (entity_t *e, msurface_t *fa, qboolean override)
 {
 	texture_t	*t;
 	byte		*base;
@@ -789,7 +789,7 @@ void R_RenderBrushPolyMTex (msurface_t *fa, qboolean override)
 	intensity = 1.0f;
 	alpha_val = 1.0f;
 
-	if (currententity->drawflags & DRF_TRANSLUCENT)
+	if (e->drawflags & DRF_TRANSLUCENT)
 	{
 		glEnable_fp (GL_BLEND);
 		alpha_val = r_wateralpha.value;
@@ -801,10 +801,10 @@ void R_RenderBrushPolyMTex (msurface_t *fa, qboolean override)
 		glDisable_fp (GL_BLEND);
 	}
 
-	if ((currententity->drawflags & MLS_ABSLIGHT) == MLS_ABSLIGHT)
+	if ((e->drawflags & MLS_ABSLIGHT) == MLS_ABSLIGHT)
 	{
 		glTexEnvf_fp(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
-		intensity = (float)currententity->abslight / 255.0f;
+		intensity = (float)e->abslight / 255.0f;
 	}
 
 	if (fa->flags & SURF_DRAWTURB)
@@ -828,7 +828,7 @@ void R_RenderBrushPolyMTex (msurface_t *fa, qboolean override)
 	}
 
 	glActiveTextureARB_fp(GL_TEXTURE0_ARB);
-	t = R_TextureAnimation (fa->texinfo->texture);
+	t = R_TextureAnimation (e, fa->texinfo->texture);
 	GL_Bind (t->gl_texturenum);
 
 	if (fa->flags & SURF_DRAWTURB)
@@ -839,7 +839,7 @@ void R_RenderBrushPolyMTex (msurface_t *fa, qboolean override)
 	}
 	else
 	{
-		if ((currententity->drawflags & MLS_ABSLIGHT) == MLS_ABSLIGHT)
+		if ((e->drawflags & MLS_ABSLIGHT) == MLS_ABSLIGHT)
 		{
 			glActiveTextureARB_fp(GL_TEXTURE0_ARB);
 
@@ -888,13 +888,13 @@ dynamic1:
 
 	glActiveTextureARB_fp(GL_TEXTURE0_ARB);
 
-	if ((currententity->drawflags & MLS_ABSLIGHT) == MLS_ABSLIGHT ||
-	    (currententity->drawflags & DRF_TRANSLUCENT))
+	if ((e->drawflags & MLS_ABSLIGHT) == MLS_ABSLIGHT ||
+	    (e->drawflags & DRF_TRANSLUCENT))
 	{
 		glTexEnvf_fp(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
 	}
 
-	if (currententity->drawflags & DRF_TRANSLUCENT)
+	if (e->drawflags & DRF_TRANSLUCENT)
 	{
 		glDisable_fp (GL_BLEND);
 	}
@@ -982,7 +982,7 @@ void R_DrawWaterSurfaces (void)
 DrawTextureChains
 ================
 */
-static void DrawTextureChains (void)
+static void DrawTextureChains (entity_t *e)
 {
 	int		i;
 	msurface_t	*s;
@@ -1008,11 +1008,11 @@ static void DrawTextureChains (void)
 			if ((s->flags & SURF_DRAWTURB) && r_wateralpha.value != 1.0)
 				continue;	// draw translucent water later
 
-			if (((currententity->drawflags & DRF_TRANSLUCENT) ||
-				(currententity->drawflags & MLS_ABSLIGHT) == MLS_ABSLIGHT))
+			if (((e->drawflags & DRF_TRANSLUCENT) ||
+				(e->drawflags & MLS_ABSLIGHT) == MLS_ABSLIGHT))
 			{
 				for ( ; s ; s = s->texturechain)
-					R_RenderBrushPoly (s, false);
+					R_RenderBrushPoly (e, s, false);
 			}
 			else if (gl_multitexture.integer && gl_mtexable)
 			{
@@ -1029,7 +1029,7 @@ static void DrawTextureChains (void)
 				glEnable_fp (GL_BLEND);
 
 				for ( ; s ; s = s->texturechain)
-					R_RenderBrushPolyMTex (s, false);
+					R_RenderBrushPolyMTex (e, s, false);
 
 				glDisable_fp(GL_TEXTURE_2D);
 				glTexEnvf_fp(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
@@ -1039,7 +1039,7 @@ static void DrawTextureChains (void)
 			else
 			{
 				for ( ; s ; s = s->texturechain)
-					R_RenderBrushPoly (s, false);
+					R_RenderBrushPoly (e, s, false);
 			}
 		}
 
@@ -1062,7 +1062,6 @@ void R_DrawBrushModel (entity_t *e, qboolean Translucent)
 	qmodel_t	*clmodel;
 	qboolean	rotated;
 
-	currententity = e;
 	currenttexture = GL_UNUSED_TEXTURE;
 
 	clmodel = e->model;
@@ -1165,12 +1164,12 @@ void R_DrawBrushModel (entity_t *e, qboolean Translucent)
 		if (((psurf->flags & SURF_PLANEBACK) && (dot < -BACKFACE_EPSILON)) ||
 			(!(psurf->flags & SURF_PLANEBACK) && (dot > BACKFACE_EPSILON)))
 		{
-			R_RenderBrushPoly (psurf, false);
+			R_RenderBrushPoly (e, psurf, false);
 		}
 	}
 
 	if (!Translucent && 
-		(currententity->drawflags & MLS_ABSLIGHT) != MLS_ABSLIGHT &&
+		(e->drawflags & MLS_ABSLIGHT) != MLS_ABSLIGHT &&
 		!(gl_multitexture.integer && gl_mtexable))
 	{
 		R_BlendLightmaps (Translucent);
@@ -1310,14 +1309,8 @@ R_DrawWorld
 */
 void R_DrawWorld (void)
 {
-	entity_t	ent;
-
-	memset (&ent, 0, sizeof(ent));
-	ent.model = cl.worldmodel;
-
 	VectorCopy (r_refdef.vieworg, modelorg);
 
-	currententity = &ent;
 	currenttexture = GL_UNUSED_TEXTURE;
 
 	glColor4f_fp (1.0f,1.0f,1.0f,1.0f);
@@ -1328,9 +1321,9 @@ void R_DrawWorld (void)
 
 	R_RecursiveWorldNode (cl.worldmodel->nodes);
 
-	DrawTextureChains ();
+	DrawTextureChains (&r_worldentity);
 
-	// disable multitexturing - just in case ...
+	// disable multitexturing - just in case
 	if (gl_multitexture.integer && gl_mtexable)
 	{
 		glActiveTextureARB_fp (GL_TEXTURE1_ARB);
