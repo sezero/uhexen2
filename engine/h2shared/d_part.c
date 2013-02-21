@@ -62,17 +62,15 @@ void D_DrawParticle (particle_t *pparticle)
 	byte	*pdest;
 	short	*pz;
 	int		i, izi, pix, count, u, v;
-	int		Color;	// Crusader's ice particles hitting a wall gives us
-				// -2 as the color, causing a big boom.  therefore,
-				// use signed int here and clamp to 0-511 as needed.
-	qboolean	NoTrans;
+	int		color;
+	qboolean	is_trans;
 
 // transform point
 	VectorSubtract (pparticle->org, r_origin, local);
 
 	transformed[0] = DotProduct(local, r_pright);
 	transformed[1] = DotProduct(local, r_pup);
-	transformed[2] = DotProduct(local, r_ppn);		
+	transformed[2] = DotProduct(local, r_ppn);
 
 	if (transformed[2] < PARTICLE_Z_CLIP)
 		return;
@@ -83,10 +81,8 @@ void D_DrawParticle (particle_t *pparticle)
 	u = (int)(xcenter + zi * transformed[0] + 0.5);
 	v = (int)(ycenter - zi * transformed[1] + 0.5);
 
-	if ((v > d_vrectbottom_particle) || 
-		(u > d_vrectright_particle) ||
-		(v < d_vrecty) ||
-		(u < d_vrectx))
+	if ((v > d_vrectbottom_particle) || (u > d_vrectright_particle) ||
+	    (v < d_vrecty) || (u < d_vrectx))
 	{
 		return;
 	}
@@ -96,20 +92,18 @@ void D_DrawParticle (particle_t *pparticle)
 	izi = (int)(zi * 0x8000);
 
 	pix = izi >> d_pix_shift;
-
 	if (pix < d_pix_min)
 		pix = d_pix_min;
 	else if (pix > d_pix_max)
 		pix = d_pix_max;
 
-	Color = (int)pparticle->color;
-	if (Color < 0)				// try to keep 0-511, see above
-		Color += 511;
-//	if (Color < 0 || Color > 511)
-//		Sys_Error ("%s: Bad color %d", __thisfunc__, Color);
-	NoTrans = (Color <= 255) ? true : false;
-	if (NoTrans == false)
-		Color = (Color - 256) << 8;	// will use as transTable index
+	/* clamp color to 0-511: particle->type 10 and 11 (pt_c_explode
+	 * and pt_c_explode2, e.g. Crusader's ice particles hitting a
+	 * wall) lead to negative values, because R_UpdateParticles ()
+	 * decrements their color against time. */
+	color = ((int) pparticle->color) & 0x01ff;
+	if ((is_trans = (color >= 256)))
+		color = (color - 256) << 8;	/* << 8 for transTable idx */
 
 	switch (pix)
 	{
@@ -121,7 +115,7 @@ void D_DrawParticle (particle_t *pparticle)
 			if (pz[0] <= izi)
 			{
 				pz[0] = izi;
-				pdest[0] = (NoTrans) ? Color : transTable[Color + pdest[0]];
+				pdest[0] = (!is_trans) ? color : transTable[color + pdest[0]];
 			}
 		}
 		break;
@@ -134,13 +128,12 @@ void D_DrawParticle (particle_t *pparticle)
 			if (pz[0] <= izi)
 			{
 				pz[0] = izi;
-				pdest[0] = (NoTrans) ? Color : transTable[Color + pdest[0]];
+				pdest[0] = (!is_trans) ? color : transTable[color + pdest[0]];
 			}
-
 			if (pz[1] <= izi)
 			{
 				pz[1] = izi;
-				pdest[1] = (NoTrans) ? Color : transTable[Color + pdest[1]];
+				pdest[1] = (!is_trans) ? color : transTable[color + pdest[1]];
 			}
 		}
 		break;
@@ -153,19 +146,17 @@ void D_DrawParticle (particle_t *pparticle)
 			if (pz[0] <= izi)
 			{
 				pz[0] = izi;
-				pdest[0] = (NoTrans) ? Color : transTable[Color + pdest[0]];
+				pdest[0] = (!is_trans) ? color : transTable[color + pdest[0]];
 			}
-
 			if (pz[1] <= izi)
 			{
 				pz[1] = izi;
-				pdest[1] = (NoTrans) ? Color : transTable[Color + pdest[1]];
+				pdest[1] = (!is_trans) ? color : transTable[color + pdest[1]];
 			}
-
 			if (pz[2] <= izi)
 			{
 				pz[2] = izi;
-				pdest[2] = (NoTrans) ? Color : transTable[Color + pdest[2]];
+				pdest[2] = (!is_trans) ? color : transTable[color + pdest[2]];
 			}
 		}
 		break;
@@ -178,25 +169,22 @@ void D_DrawParticle (particle_t *pparticle)
 			if (pz[0] <= izi)
 			{
 				pz[0] = izi;
-				pdest[0] = (NoTrans) ? Color : transTable[Color + pdest[0]];
+				pdest[0] = (!is_trans) ? color : transTable[color + pdest[0]];
 			}
-
 			if (pz[1] <= izi)
 			{
 				pz[1] = izi;
-				pdest[1] = (NoTrans) ? Color : transTable[Color + pdest[1]];
+				pdest[1] = (!is_trans) ? color : transTable[color + pdest[1]];
 			}
-
 			if (pz[2] <= izi)
 			{
 				pz[2] = izi;
-				pdest[2] = (NoTrans) ? Color : transTable[Color + pdest[2]];
+				pdest[2] = (!is_trans) ? color : transTable[color + pdest[2]];
 			}
-
 			if (pz[3] <= izi)
 			{
 				pz[3] = izi;
-				pdest[3] = (NoTrans) ? Color : transTable[Color + pdest[3]];
+				pdest[3] = (!is_trans) ? color : transTable[color + pdest[3]];
 			}
 		}
 		break;
@@ -211,7 +199,7 @@ void D_DrawParticle (particle_t *pparticle)
 				if (pz[i] <= izi)
 				{
 					pz[i] = izi;
-					pdest[i] = (NoTrans) ? Color : transTable[Color + pdest[i]];
+					pdest[i] = (!is_trans) ? color : transTable[color + pdest[i]];
 				}
 			}
 		}

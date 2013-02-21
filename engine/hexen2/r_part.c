@@ -1370,15 +1370,15 @@ extern	cvar_t	sv_gravity;
 #if defined(GLQUAKE)
 static const float ptex_coord[4][3][2] =
 {
-	{  {1.000, 0.000}, {1.000, 0.500}, {0.500, 0.000}  },	// any, or snow count < 30
-	{  {0.000, 1.000}, {0.500, 1.000}, {0.000, 0.500}  },	// snow count >= 30
-	{  {0.000, 0.000}, {0.815, 0.000}, {0.000, 0.815}  },	// snow count >= 40
-	{  {1.000, 1.000}, {1.000, 0.180}, {0.180, 1.000}  }	// snow count >= 69 : happy snow!
+	{ {1.000, 0.000}, {1.000, 0.500}, {0.500, 0.000} },	// any, or snow count < 30
+	{ {0.000, 1.000}, {0.500, 1.000}, {0.000, 0.500} },	// snow count >= 30
+	{ {0.000, 0.000}, {0.815, 0.000}, {0.000, 0.815} },	// snow count >= 40
+	{ {1.000, 1.000}, {1.000, 0.180}, {0.180, 1.000} }	// snow count >= 69 : happy snow!
 };
 
 void R_DrawParticles (void)
 {
-	int		i;
+	int		i, color;
 	particle_t	*p;
 	float		scale;
 #define	SCALE_BASE	((p->type == pt_snow) ? p->count/10 : 1)
@@ -1395,18 +1395,22 @@ void R_DrawParticles (void)
 	{
 		// hack a scale up to keep particles from disapearing
 		scale = (p->org[0] - r_origin[0])*vpn[0] +
-				(p->org[1] - r_origin[1])*vpn[1] +
-				(p->org[2] - r_origin[2])*vpn[2];
-
+			(p->org[1] - r_origin[1])*vpn[1] +
+			(p->org[2] - r_origin[2])*vpn[2];
 		if (scale < 20)
 			scale = SCALE_BASE;
 		else
 			scale = SCALE_BASE + scale * 0.004;
 
-		if (p->color <= 255)
-			glColor3ubv_fp ((byte *)&d_8to24table[(int)p->color]);
+	/* clamp color to 0-511: particle->type 10 and 11 (pt_c_explode
+	 * and pt_c_explode2, e.g. Crusader's ice particles hitting a
+	 * wall) lead to negative values, because R_UpdateParticles ()
+	 * decrements their color against time. */
+		color = ((int)p->color) & 0x01ff;
+		if (color < 256)
+			glColor3ubv_fp ((byte *)&d_8to24table[color]);
 		else
-			glColor4ubv_fp ((byte *)&d_8to24TranslucentTable[(int)p->color-256]);
+			glColor4ubv_fp ((byte *)&d_8to24TranslucentTable[color-256]);
 
 		// setup texture coordinates
 		i = 0;

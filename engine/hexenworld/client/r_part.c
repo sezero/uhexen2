@@ -1545,28 +1545,40 @@ static vec3_t		up, right;
 static void R_RenderParticle (particle_t *p)
 {
 #ifdef GLQUAKE
+	int		color;
 	float		scale;
 	unsigned char	*at;
 	unsigned char	theAlpha;
 
+	/* hexenworld progs seems to have abandoned particleexplosion()
+	 * builtin usage, and added the following bounds check instead.
+	 * disabling: clamping the color instead (see below.) -- O.S.
 	if (p->color < 0 || p->color > 511)
 	{
 		Con_Printf("Invalid color for particle type %d\n",(int)p->type);
 		return;
 	}
+	*/
 
 	// hack a scale up to keep particles from disapearing
 	scale = (p->org[0] - r_origin[0])*vpn[0] +
-			(p->org[1] - r_origin[1])*vpn[1] +
-			(p->org[2] - r_origin[2])*vpn[2];
+		(p->org[1] - r_origin[1])*vpn[1] +
+		(p->org[2] - r_origin[2])*vpn[2];
 	if (scale < 20)
 		scale = 1;
 	else
 		scale = 1 + scale * 0.004;
-	at = (byte *)&d_8to24table[(int)p->color];
 
-	if (p->color <= 255)
+	/* clamp color to 0-511: particle->type 10 and 11 (pt_c_explode
+	 * and pt_c_explode2, e.g. Crusader's ice particles hitting a
+	 * wall) lead to negative values, because R_UpdateParticles ()
+	 * decrements their color against time.
+	 * (Crusader ice particles seem to have changed in HW, but..) */
+	color = ((int)p->color) & 0x01ff;
+	if (color < 256)
 	{
+	//	glColor3ubv_fp ((byte *)&d_8to24table[color]);
+		at = (byte *)&d_8to24table[color];
 		if (p->type == pt_fire)
 			theAlpha = 255 * (6 - p->ramp) / 6;
 	//		theAlpha = 192;
@@ -1578,7 +1590,7 @@ static void R_RenderParticle (particle_t *p)
 	}
 	else
 	{
-		glColor4ubv_fp ((byte *)&d_8to24TranslucentTable[(int)p->color-256]);
+		glColor4ubv_fp ((byte *)&d_8to24TranslucentTable[color-256]);
 	}
 
 	glTexCoord2f_fp (0,0);
@@ -1589,12 +1601,13 @@ static void R_RenderParticle (particle_t *p)
 	glVertex3f_fp (p->org[0] + right[0]*scale, p->org[1] + right[1]*scale, p->org[2] + right[2]*scale);
 
 #else
+	/*
 	if (p->color < 0 || p->color > 511)
 	{
 		Con_Printf("Invalid color for particle type %d\n",(int)p->type);
 		return;
 	}
-
+	*/
 	D_DrawParticle (p);
 #endif
 }

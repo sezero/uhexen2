@@ -3,6 +3,23 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2013-02-21 (SVN):
+    * d_part.c (D_DrawParticle): simplified clamping of color to 0-511
+      by AND'ing the int value by 0x1ff. added comments as to why this
+      is needed: ptype_t 10/11, i.e. pt_c_explode and pt_c_explode2,
+      e.g. Crusader's ice particles hitting a wall, lead to negative
+      color values because R_UpdateParticles() decrements their color
+      against time. some coding style cleanups.
+    * r_part.c: in opengl mode, hexen2 R_DrawParticles() used to index
+      d_8to24table[] with negative values in case of ptype_t 10 and 11:
+      fixed by clamping the color the same way we do in d_part.c.
+    * r_part.c: in opengl mode, hexenworld R_RenderParticle might have
+      indexed d_8to24table[] with values higher than 255: fixed. added
+      clamping of color value similar to hexen2 version. commented out
+      the color value boundary check and the corresponding refusal and
+      debug message.
+    * updated version date stamp to 2013-02-21.
+
 2013-02-20 (SVN):
     * gl_rmain.c, gl_rsurf.c, gl_rmisc.c: removed global currententity
       altogether from the opengl version.
