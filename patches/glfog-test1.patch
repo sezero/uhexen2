@@ -10,10 +10,11 @@ Basic experimental fog code extracted from jshexen2 (activate with
   revived this crap is that the glowed missiles look
   somewhat better in fog (personal liking), sigh...
 
-diff -urNp engine/h2shared/gl_func.h engine/h2shared/gl_func.h
---- engine/h2shared/gl_func.h	2012-07-07 09:10:31.000000000 +0300
-+++ engine/h2shared/gl_func.h	2012-07-07 09:55:12.000000000 +0300
-@@ -71,6 +71,11 @@ GL_FUNCTION(void, glColor3ubv, (const GL
+Index: engine/h2shared/gl_func.h
+===================================================================
+--- engine/h2shared/gl_func.h	(revision 4837)
++++ engine/h2shared/gl_func.h	(working copy)
+@@ -71,6 +71,11 @@
  GL_FUNCTION(void, glColor3f, (GLfloat,GLfloat,GLfloat))
  GL_FUNCTION(void, glClearColor, (GLclampf,GLclampf,GLclampf,GLclampf))
  
@@ -25,10 +26,11 @@ diff -urNp engine/h2shared/gl_func.h engine/h2shared/gl_func.h
  GL_FUNCTION(void, glAlphaFunc, (GLenum,GLclampf))
  GL_FUNCTION(void, glBlendFunc, (GLenum,GLenum))
  GL_FUNCTION(void, glShadeModel, (GLenum))
-diff -urNp engine/h2shared/glquake.h engine/h2shared/glquake.h
---- engine/h2shared/glquake.h	2012-06-16 23:48:51.000000000 +0300
-+++ engine/h2shared/glquake.h	2012-06-16 23:55:01.000000000 +0300
-@@ -260,6 +260,16 @@ extern	cvar_t	gl_glows;
+Index: engine/h2shared/glquake.h
+===================================================================
+--- engine/h2shared/glquake.h	(revision 5131)
++++ engine/h2shared/glquake.h	(working copy)
+@@ -259,6 +259,16 @@
  extern	cvar_t	gl_other_glows;
  extern	cvar_t	gl_missile_glows;
  
@@ -45,9 +47,10 @@ diff -urNp engine/h2shared/glquake.h engine/h2shared/glquake.h
  extern	cvar_t	gl_coloredlight;
  extern	cvar_t	gl_colored_dynamic_lights;
  extern	cvar_t	gl_extra_dynamic_lights;
-diff -urNp engine/h2shared/gl_rlight.c engine/h2shared/gl_rlight.c
---- engine/h2shared/gl_rlight.c	2012-06-16 23:48:51.000000000 +0300
-+++ engine/h2shared/gl_rlight.c	2012-06-16 23:55:01.000000000 +0300
+Index: engine/h2shared/gl_rlight.c
+===================================================================
+--- engine/h2shared/gl_rlight.c	(revision 4767)
++++ engine/h2shared/gl_rlight.c	(working copy)
 @@ -177,6 +177,10 @@ void R_RenderDlights (void)
  
  	r_dlightframecount = r_framecount + 1;	// because the count hasn't
@@ -69,10 +72,11 @@ diff -urNp engine/h2shared/gl_rlight.c engine/h2shared/gl_rlight.c
  }
  
  
-diff -urNp engine/hexen2/gl_rmain.c engine/hexen2/gl_rmain.c
---- engine/hexen2/gl_rmain.c	2013-01-10 16:21:16.000000000 +0200
-+++ engine/hexen2/gl_rmain.c	2013-01-11 12:10:03.000000000 +0200
-@@ -49,6 +49,8 @@ mplane_t	*mirror_plane;
+Index: engine/hexen2/gl_rmain.c
+===================================================================
+--- engine/hexen2/gl_rmain.c	(revision 5131)
++++ engine/hexen2/gl_rmain.c	(working copy)
+@@ -48,6 +48,8 @@
  
  static float	model_constant_alpha;
  
@@ -81,7 +85,7 @@ diff -urNp engine/hexen2/gl_rmain.c engine/hexen2/gl_rmain.c
  static float	r_time1;
  static float	r_lasttime1 = 0;
  
-@@ -110,6 +112,14 @@ cvar_t	gl_waterripple = {"gl_waterripple
+@@ -108,6 +110,14 @@
  cvar_t	gl_glows = {"gl_glows", "0", CVAR_ARCHIVE};	// torch glows
  cvar_t	gl_other_glows = {"gl_other_glows", "0", CVAR_ARCHIVE};
  cvar_t	gl_missile_glows = {"gl_missile_glows", "1", CVAR_ARCHIVE};
@@ -96,7 +100,7 @@ diff -urNp engine/hexen2/gl_rmain.c engine/hexen2/gl_rmain.c
  
  cvar_t	gl_coloredlight = {"gl_coloredlight", "0", CVAR_ARCHIVE};
  cvar_t	gl_colored_dynamic_lights = {"gl_colored_dynamic_lights", "0", CVAR_ARCHIVE};
-@@ -1330,6 +1340,9 @@ static void R_DrawAllGlows (void)
+@@ -1334,6 +1344,9 @@ static void R_DrawAllGlows (void)
  	if (!r_drawentities.integer)
  		return;
  
@@ -106,7 +110,7 @@ diff -urNp engine/hexen2/gl_rmain.c engine/hexen2/gl_rmain.c
  	glDepthMask_fp (0);
  	glDisable_fp (GL_TEXTURE_2D);
  	glShadeModel_fp (GL_SMOOTH);
-@@ -1350,6 +1363,9 @@ static void R_DrawAllGlows (void)
+@@ -1354,6 +1367,9 @@ static void R_DrawAllGlows (void)
  		}
  	}
  
@@ -116,7 +120,7 @@ diff -urNp engine/hexen2/gl_rmain.c engine/hexen2/gl_rmain.c
  	glDisable_fp (GL_BLEND);
  	glEnable_fp (GL_TEXTURE_2D);
  	glBlendFunc_fp (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-@@ -1775,6 +1791,23 @@ static void R_RenderScene (void)
+@@ -1780,6 +1796,23 @@ static void R_RenderScene (void)
  
  	R_MarkLeaves ();	// done here so we know if we're in water
  
@@ -140,7 +144,7 @@ diff -urNp engine/hexen2/gl_rmain.c engine/hexen2/gl_rmain.c
  	R_DrawWorld ();		// adds static entities to the list
  
  	S_ExtraUpdate ();	// don't let sound get messed up if going slow
-@@ -1783,6 +1816,8 @@ static void R_RenderScene (void)
+@@ -1788,6 +1821,8 @@ static void R_RenderScene (void)
  
  	R_DrawAllGlows();
  
@@ -149,7 +153,7 @@ diff -urNp engine/hexen2/gl_rmain.c engine/hexen2/gl_rmain.c
  	R_RenderDlights ();
  }
  
-@@ -1976,6 +2011,39 @@ void R_RenderView (void)
+@@ -1983,6 +2018,39 @@ void R_RenderView (void)
  
  	R_Clear ();
  
@@ -189,7 +193,7 @@ diff -urNp engine/hexen2/gl_rmain.c engine/hexen2/gl_rmain.c
  	// render normal view
  	R_RenderScene ();
  
-@@ -1991,6 +2059,9 @@ void R_RenderView (void)
+@@ -1998,6 +2066,9 @@ void R_RenderView (void)
  
  	R_DrawViewModel();
  
@@ -199,7 +203,7 @@ diff -urNp engine/hexen2/gl_rmain.c engine/hexen2/gl_rmain.c
  	// render mirror view
  	R_Mirror ();
  
-@@ -1998,5 +2069,7 @@ void R_RenderView (void)
+@@ -2005,5 +2076,7 @@ void R_RenderView (void)
  
  	if (r_speeds.integer)
  		R_PrintTimes ();
@@ -207,10 +211,11 @@ diff -urNp engine/hexen2/gl_rmain.c engine/hexen2/gl_rmain.c
 +	glDepthMask_fp(1);
  }
  
-diff -urNp engine/hexen2/gl_rmisc.c engine/hexen2/gl_rmisc.c
---- engine/hexen2/gl_rmisc.c	2012-06-16 23:48:51.000000000 +0300
-+++ engine/hexen2/gl_rmisc.c	2012-06-16 23:55:01.000000000 +0300
-@@ -234,6 +234,15 @@ void R_Init (void)
+Index: engine/hexen2/gl_rmisc.c
+===================================================================
+--- engine/hexen2/gl_rmisc.c	(revision 5131)
++++ engine/hexen2/gl_rmisc.c	(working copy)
+@@ -235,6 +235,15 @@ void R_Init (void)
  	Cvar_RegisterVariable (&gl_missile_glows);
  	Cvar_RegisterVariable (&gl_other_glows);
  
