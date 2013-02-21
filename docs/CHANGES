@@ -4,6 +4,29 @@ Development Progress	:
 ---------------------------
 
 2013-02-21 (SVN):
+    * Hor+ field of view scaling based on patches by Ricardo Garci and
+      Szilard Biro, most useful for widescreen modes. keep fov value at
+      the default of 90, set fov_adapt to 1, and it will scale your fov
+      automatically according to the screen resolution. both opengl and
+      software renderers are supported. software renderer needed some
+      special care: in r_main.c:R_ViewChanged(), the global pixelAspect
+      is now set to 1 when fov_adapt is enabled. (pixelAspect is used in
+      D_ViewChanged() for calculating d_y_aspect_shift which in turn is
+      used in D_DrawParticle(), both C and asm variants. it is also used
+      for computing xscale and yscale globals which are now effectively
+      set to 1 when Hor+ is in effect.) in software renderer, fov_adapt
+      is ignored with "tall" video modes, e.g. planar (Mode-X style) VGA
+      modes, which may cause problems in the dos and svgalib ports.
+      (actually such modes, e.g. a 768x848 window, really exhibit issues
+      even if they are displayed in tall form on the screen by SDL: with
+      r_waterwarp enabled and fov_adapt disabled, going into water and
+      enabling fov_adapt and going out of water will mess the vrect: see
+      R_SetupFrame(), as well as R_ViewChanged(). so, ignoring fov_adapt
+      when vid.aspect is higher than 1.1 seems the right thing to do.)
+      fov_adapt is enabled by default in opengl and disabled by default
+      in software renderer.
+
+2013-02-21 (SVN):
     * d_part.c (D_DrawParticle): simplified clamping of color to 0-511
       by AND'ing the int value by 0x1ff. added comments as to why this
       is needed: ptype_t 10/11, i.e. pt_c_explode and pt_c_explode2,

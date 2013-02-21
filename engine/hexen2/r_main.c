@@ -140,8 +140,6 @@ static surf_t	*SaveSurfaces;
 static int	SaveEdgesCount, SaveSurfacesCount, SaveEdgesSize, SaveSurfacesSize;
 static qboolean	AllowTranslucency;
 
-extern	cvar_t		scr_fov;
-
 cvar_t	r_draworder = {"r_draworder", "0", CVAR_NONE};
 cvar_t	r_speeds = {"r_speeds", "0", CVAR_NONE};
 cvar_t	r_timegraph = {"r_timegraph", "0", CVAR_NONE};
@@ -476,17 +474,30 @@ void R_ViewChanged (vrect_t *pvrect, int lineadj, float aspect)
 	r_refdef.aliasvrectright = r_refdef.aliasvrect.x + r_refdef.aliasvrect.width;
 	r_refdef.aliasvrectbottom = r_refdef.aliasvrect.y + r_refdef.aliasvrect.height;
 
-	pixelAspect = aspect;
 	xOrigin = r_refdef.xOrigin;
 	yOrigin = r_refdef.yOrigin;
 
-	screenAspect = r_refdef.vrect.width*pixelAspect / r_refdef.vrect.height;
+/* FIXME:HACK: ignore Hor+ fov_adapt in "tall" vga modes. notice the
+ * direct use of vid.aspect, because we may be called with an aspect
+ * param different than vid.aspect: see R_SetupFrame() for waterwarp
+ * (r_dowarp and r_dowarpold). no better solutions for the moment. */
+#define NOT_VGA_MODE (vid.aspect < 1.1f)
+
+	if (scr_fov_adapt.integer && NOT_VGA_MODE)
+		pixelAspect = 1;
+	else
+	{
+		pixelAspect = aspect;
+		screenAspect = r_refdef.vrect.width*pixelAspect / r_refdef.vrect.height;
+	}
 
 	// 320*200 1.0 pixelAspect = 1.6 screenAspect
 	// 320*240 1.0 pixelAspect = 1.3333 screenAspect
 	// proper 320*200 pixelAspect = 0.8333333
 
-	verticalFieldOfView = r_refdef.horizontalFieldOfView / screenAspect;
+	verticalFieldOfView = (scr_fov_adapt.integer && NOT_VGA_MODE) ?
+				  2.0 * tan (r_refdef.fov_y/360*M_PI) :
+			r_refdef.horizontalFieldOfView / screenAspect;
 
 // values for perspective projection
 // if math were exact, the values would range from 0.5 to to range+0.5

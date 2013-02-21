@@ -91,6 +91,7 @@ int		trans_level = 0;
 
 cvar_t		scr_viewsize = {"viewsize", "110", CVAR_ARCHIVE};
 cvar_t		scr_fov = {"fov", "90", CVAR_NONE};	// 10 - 170
+cvar_t		scr_fov_adapt = {"fov_adapt", "1", CVAR_ARCHIVE};	// "Hor+" scaling
 cvar_t		scr_contrans = {"contrans", "0", CVAR_ARCHIVE};
 static	cvar_t	scr_conspeed = {"scr_conspeed", "300", CVAR_NONE};
 static	cvar_t	scr_centertime = {"scr_centertime", "4", CVAR_NONE};
@@ -286,6 +287,29 @@ static void SCR_CheckDrawCenterString (void)
 
 /*
 ====================
+AdaptFovx
+Adapt a 4:3 horizontal FOV to the current screen size using the "Hor+" scaling:
+2.0 * atan(width / height * 3.0 / 4.0 * tan(fov43 / 2.0))
+====================
+*/
+static float AdaptFovx (float fov_x, float width, float height)
+{
+	float	a, x;
+
+	if (fov_x < 1 || fov_x > 179)
+		Sys_Error ("Bad fov: %f", fov_x);
+
+	if (!scr_fov_adapt.integer)
+		return fov_x;
+	if ((x = height / width) == 0.75)
+		return fov_x;
+	a = atan(0.75 / x * tan(fov_x / 360 * M_PI));
+	a = a * 360 / M_PI;
+	return a;
+}
+
+/*
+====================
 CalcFovy
 ====================
 */
@@ -363,7 +387,7 @@ static void SCR_CalcRefdef (void)
 	r_refdef.vrect.x = (vid.width - r_refdef.vrect.width)/2;
 	r_refdef.vrect.y = (h - r_refdef.vrect.height)/2;
 
-	r_refdef.fov_x = scr_fov.value;
+	r_refdef.fov_x = AdaptFovx (scr_fov.value, r_refdef.vrect.width, r_refdef.vrect.height);
 	r_refdef.fov_y = CalcFovy (r_refdef.fov_x, r_refdef.vrect.width, r_refdef.vrect.height);
 
 	scr_vrect = r_refdef.vrect;
@@ -419,8 +443,10 @@ void SCR_Init (void)
 		return;
 
 	Cvar_SetCallback (&scr_fov, SCR_Callback_refdef);
+	Cvar_SetCallback (&scr_fov_adapt, SCR_Callback_refdef);
 	Cvar_SetCallback (&scr_viewsize, SCR_Callback_refdef);
 	Cvar_RegisterVariable (&scr_fov);
+	Cvar_RegisterVariable (&scr_fov_adapt);
 	Cvar_RegisterVariable (&scr_viewsize);
 	Cvar_RegisterVariable (&scr_contrans);
 	Cvar_RegisterVariable (&scr_conspeed);
