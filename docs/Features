@@ -18,7 +18,8 @@ Features:
   Instant fullscreen/windowed toggling on X11 (unix).
 
 * Support FOV (field of view) wider than 90 for wide-screen resolutions
-  in opengl as well as software rendering.
+  in opengl as well as software rendering. Automatic Hor+ FOV scaling
+  based on screen resoluton.
 
 * OpenGL enhancements including multitexturing, glow effects, working
   brightness control, text and hud size changing on the fly, translucent

@@ -4,7 +4,7 @@ Development Progress	:
 ---------------------------
 
 2013-02-21 (SVN):
-    * Hor+ field of view scaling based on patches by Ricardo Garci and
+    * Hor+ field of view scaling based on patches by Ricardo Garcia and
       Szilard Biro, most useful for widescreen modes. keep fov value at
       the default of 90, set fov_adapt to 1, and it will scale your fov
       automatically according to the screen resolution. both opengl and
@@ -25,6 +25,7 @@ Development Progress	:
       when vid.aspect is higher than 1.1 seems the right thing to do.)
       fov_adapt is enabled by default in opengl and disabled by default
       in software renderer.
+    * updated docs/AUTHORS and docs/Features.
 
 2013-02-21 (SVN):
     * d_part.c (D_DrawParticle): simplified clamping of color to 0-511
