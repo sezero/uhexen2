@@ -4,6 +4,10 @@ Development Progress	:
 ---------------------------
 
 2013-02-23 (SVN):
+    * vid_svgalib.c: remove VGA_Update[Linear|Planar]Screen() external
+      declarations who haven't been used for quite some time.
+
+2013-02-23 (SVN):
     * scripts/pthread.sh: don't link to unnecessary filter libraries for
       pthread and rt on Solaris. (from SDL mercurial repo SDL-1.2 branch
       changeset 6909 6cccc0beb880.)

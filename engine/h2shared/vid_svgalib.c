@@ -41,13 +41,6 @@
 #include "d_local.h"
 
 
-/* extern funcs from d_copy.asm */
-__ASM_FUNCS_BEGIN
-void VGA_UpdatePlanarScreen (void *srcbuffer);
-void VGA_UpdateLinearScreen (void *srcptr, void *destptr, int width,
-					int height, int srcrowbytes, int destrowbytes);
-__ASM_FUNCS_END
-
 unsigned short	d_8to16table[256];	/* not used in 8 bpp mode */
 unsigned int	d_8to24table[256];	/* not used in 8 bpp mode */
 
