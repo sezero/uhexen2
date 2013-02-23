@@ -35,9 +35,21 @@ case $1 in
         pthread_cflags="-D_REENTRANT"
         pthread_lib="-pthread"
         ;;
-    *-*-solaris*)
+    *-*-solaris2.9)
+        # From Solaris 9+, posix4's preferred name is rt.
         pthread_cflags="-D_REENTRANT"
-        pthread_lib="-lpthread -lposix4"
+        pthread_lib="-lpthread -lrt"
+        ;;
+    *-*-solaris2.10)
+        # Solaris 10+ merged pthread into libc.
+        pthread_cflags="-D_REENTRANT"
+        pthread_lib="-lrt"
+        ;;
+    *-*-solaris*)
+        # Solaris 11+ merged rt into libc.
+        pthread_cflags="-D_REENTRANT"
+        #pthread_lib="-lpthread -lposix4"
+        pthread_lib=""
         ;;
     *-*-sysv5*)
         pthread_cflags="-D_REENTRANT -Kthread"

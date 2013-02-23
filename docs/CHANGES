@@ -3,6 +3,11 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2013-02-23 (SVN):
+    * scripts/pthread.sh: don't link to unnecessary filter libraries for
+      pthread and rt on Solaris. (from SDL mercurial repo SDL-1.2 branch
+      changeset 6909 6cccc0beb880.)
+
 2013-02-21 (SVN):
     * Hor+ field of view scaling based on patches by Ricardo Garcia and
       Szilard Biro, most useful for widescreen modes. keep fov value at
