@@ -4,6 +4,15 @@ Development Progress	:
 ---------------------------
 
 2013-02-25 (SVN):
+    * r_main.c (R_ViewChanged): when fov_adapt is in effect, calculate
+      the yscale global using the properly computed verticalFieldOfView
+      and not by multiplying xscale with pixelAspect which is set to 1:
+      fixes d_sprite.c crashes and negative ymin warning messages when
+      r_waterwarp is in effect. also fixes underwater geometry with bad
+      y-scale when r_waterwarp is in effect. Hor+ fov scaling now works
+      just fairly with the software renderer.
+
+2013-02-25 (SVN):
     * partly fix the bad interaction between r_waterwarp and fov_adapt
       (there is still an issue of "D_DrawSprite: ymin: -xx" messages
       appearing upon jumping into water with fov_adapt enabled and a
@@ -16,7 +25,7 @@ Development Progress	:
       explicitly. adjust the R_ViewChanged() call.
     * r_misc.c (R_SetupFrame): call R_SetVrect() before R_ViewChanged().
       adjust the R_ViewChanged() call. when going out of waterwarp mode,
-      no need to just scr_vrect to r_refdef.vrect instead of doing an
+      just assign scr_vrect to r_refdef.vrect instead of doing an
       R_SetVrect(), because scr_vrect holds the original data already.
     * render.h (R_ViewChanged): adjust the prototype.
 

@@ -482,6 +482,12 @@ Called every time the vid structure or r_refdef changes.
 Guaranteed to be called before the first refresh
 ===============
 */
+#if defined(PLATFORM_DOS) || defined(SVGAQUAKE)
+#define NOT_VGA_MODE (vid.aspect <= 1.10f)	/* no Hor+ for weirdass VGA modes */
+#else
+#define NOT_VGA_MODE true
+#endif
+#define FOV_ADAPTING (scr_fov_adapt.integer && NOT_VGA_MODE)
 void R_ViewChanged (float aspect)
 {
 	int		i;
@@ -514,27 +520,20 @@ void R_ViewChanged (float aspect)
 	xOrigin = r_refdef.xOrigin;
 	yOrigin = r_refdef.yOrigin;
 
-#if defined(PLATFORM_DOS) || defined(SVGAQUAKE)
-#define NOT_VGA_MODE (vid.aspect <= 1.10f)	/* no fov_adapt for weird VGA modes */
-#else
-#define NOT_VGA_MODE true
-#endif
-
-	if (scr_fov_adapt.integer && NOT_VGA_MODE)
+	// 320*200 1.0 pixelAspect = 1.6 screenAspect
+	// 320*240 1.0 pixelAspect = 1.3333 screenAspect
+	// proper 320*200 pixelAspect = 0.8333333
+	if (FOV_ADAPTING)
+	{
 		pixelAspect = 1;
+		verticalFieldOfView = 2.0 * tan (r_refdef.fov_y/360*M_PI);
+	}
 	else
 	{
 		pixelAspect = aspect;
 		screenAspect = r_refdef.vrect.width*pixelAspect / r_refdef.vrect.height;
+		verticalFieldOfView = r_refdef.horizontalFieldOfView / screenAspect;
 	}
-
-	// 320*200 1.0 pixelAspect = 1.6 screenAspect
-	// 320*240 1.0 pixelAspect = 1.3333 screenAspect
-	// proper 320*200 pixelAspect = 0.8333333
-
-	verticalFieldOfView = (scr_fov_adapt.integer && NOT_VGA_MODE) ?
-				  2.0 * tan (r_refdef.fov_y/360*M_PI) :
-			r_refdef.horizontalFieldOfView / screenAspect;
 
 // values for perspective projection
 // if math were exact, the values would range from 0.5 to to range+0.5
@@ -550,7 +549,8 @@ void R_ViewChanged (float aspect)
 	xscale = r_refdef.vrect.width / r_refdef.horizontalFieldOfView;
 	aliasxscale = xscale * r_aliasuvscale;
 	xscaleinv = 1.0 / xscale;
-	yscale = xscale * pixelAspect;
+	yscale = (FOV_ADAPTING) ? r_refdef.vrect.height / verticalFieldOfView :
+		 xscale * pixelAspect;
 	aliasyscale = yscale * r_aliasuvscale;
 	yscaleinv = 1.0 / yscale;
 	xscaleshrink = (r_refdef.vrect.width-6)/r_refdef.horizontalFieldOfView;
@@ -612,6 +612,8 @@ void R_ViewChanged (float aspect)
 
 	D_ViewChanged ();
 }
+#undef NOT_VGA_MODE
+#undef FOV_ADAPTING
 
 
 /*
