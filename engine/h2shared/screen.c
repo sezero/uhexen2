@@ -331,10 +331,11 @@ static float AdaptFovx (float fov_x, float width, float height)
 	if (fov_x < 1 || fov_x > 179)
 		Sys_Error ("Bad fov: %f", fov_x);
 
-/* FIXME:HACK: ignore Hor+ fov_adapt in "tall" vga modes.
- * ALSO SEE: R_ViewChanged () */
-#define IS_VGA_MODE (vid.aspect >= 1.1f)
-	if (!scr_fov_adapt.integer || IS_VGA_MODE)
+#if defined(PLATFORM_DOS) || defined(SVGAQUAKE)
+	if (vid.aspect > 0.75f)
+		return fov_x;		/* no fov_adapt for weird VGA modes */
+#endif
+	if (!scr_fov_adapt.integer)
 		return fov_x;
 	if ((x = height / width) == 0.75)
 		return fov_x;

@@ -477,11 +477,11 @@ void R_ViewChanged (vrect_t *pvrect, int lineadj, float aspect)
 	xOrigin = r_refdef.xOrigin;
 	yOrigin = r_refdef.yOrigin;
 
-/* FIXME:HACK: ignore Hor+ fov_adapt in "tall" vga modes. notice the
- * direct use of vid.aspect, because we may be called with an aspect
- * param different than vid.aspect: see R_SetupFrame() for waterwarp
- * (r_dowarp and r_dowarpold). no better solutions for the moment. */
-#define NOT_VGA_MODE (vid.aspect < 1.1f)
+#if defined(PLATFORM_DOS) || defined(SVGAQUAKE)
+#define NOT_VGA_MODE (vid.aspect <= 0.75f)	/* no fov_adapt for weird VGA modes */
+#else
+#define NOT_VGA_MODE true
+#endif
 
 	if (scr_fov_adapt.integer && NOT_VGA_MODE)
 		pixelAspect = 1;
