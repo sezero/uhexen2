@@ -482,14 +482,12 @@ Called every time the vid structure or r_refdef changes.
 Guaranteed to be called before the first refresh
 ===============
 */
-void R_ViewChanged (vrect_t *pvrect, int lineadj, float aspect)
+void R_ViewChanged (float aspect)
 {
 	int		i;
 	float	res_scale;
 
 	r_viewchanged = true;
-
-	R_SetVrect (pvrect, &r_refdef.vrect, lineadj);
 
 	r_refdef.horizontalFieldOfView = 2.0 * tan (r_refdef.fov_x/360*M_PI);
 	r_refdef.fvrectx = (float)r_refdef.vrect.x;

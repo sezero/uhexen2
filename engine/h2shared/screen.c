@@ -390,9 +390,6 @@ static void SCR_CalcRefdef (void)
 
 	vid.recalc_refdef = 0;
 
-	r_refdef.fov_x = AdaptFovx (scr_fov.value, r_refdef.vrect.width, r_refdef.vrect.height);
-	r_refdef.fov_y = CalcFovy (r_refdef.fov_x, r_refdef.vrect.width, r_refdef.vrect.height);
-
 // force the status bar to redraw
 	SB_ViewSizeChanged ();
 	Sbar_Changed();
@@ -411,6 +408,9 @@ static void SCR_CalcRefdef (void)
 	vrect.height = vid.height;
 
 	R_SetVrect (&vrect, &scr_vrect, sb_lines);
+	r_refdef.vrect = scr_vrect;
+	r_refdef.fov_x = AdaptFovx (scr_fov.value, r_refdef.vrect.width, r_refdef.vrect.height);
+	r_refdef.fov_y = CalcFovy (r_refdef.fov_x, r_refdef.vrect.width, r_refdef.vrect.height);
 
 // guard against going from one mode to another that's less than half the
 // vertical resolution
@@ -418,7 +418,7 @@ static void SCR_CalcRefdef (void)
 		scr_con_current = vid.height;
 
 // notify the refresh of the change
-	R_ViewChanged (&vrect, sb_lines, vid.aspect);
+	R_ViewChanged (vid.aspect);
 }
 
 //=============================================================================
@@ -1429,7 +1429,7 @@ void SCR_UpdateScreen (void)
 		vrect.y = 0;
 		vrect.width = vid.width;
 		vrect.height = vid.height;
-		vrect.pnext = 0;
+		vrect.pnext = NULL;
 
 		VID_Update (&vrect);
 	}
@@ -1439,17 +1439,17 @@ void SCR_UpdateScreen (void)
 		vrect.y = 0;
 		vrect.width = vid.width;
 		vrect.height = vid.height - sb_lines;
-		vrect.pnext = 0;
+		vrect.pnext = NULL;
 
 		VID_Update (&vrect);
-	}	
+	}
 	else
 	{
 		vrect.x = scr_vrect.x;
 		vrect.y = scr_vrect.y;
 		vrect.width = scr_vrect.width;
 		vrect.height = scr_vrect.height;
-		vrect.pnext = 0;
+		vrect.pnext = NULL;
 
 		VID_Update (&vrect);
 	}

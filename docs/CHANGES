@@ -4,6 +4,23 @@ Development Progress	:
 ---------------------------
 
 2013-02-25 (SVN):
+    * partly fix the bad interaction between r_waterwarp and fov_adapt
+      (there is still an issue of "D_DrawSprite: ymin: -xx" messages
+      appearing upon jumping into water with fov_adapt enabled and a
+      crash in d_sprite.c:332:D_SpriteDrawTransSpans(), which should be
+      fixed):
+    * r_main.c (R_ViewChanged): do not call R_SetVrect() from here and
+      lose the *pvrect and lineadjust params.
+    * screen.c: (SCR_CalcRefdef): move calculation of r_refdef.fov_[x|y]
+      after calling R_SetVrect(). assign scr_vrect to r_refdef.vrect
+      explicitly. adjust the R_ViewChanged() call.
+    * r_misc.c (R_SetupFrame): call R_SetVrect() before R_ViewChanged().
+      adjust the R_ViewChanged() call. when going out of waterwarp mode,
+      no need to just scr_vrect to r_refdef.vrect instead of doing an
+      R_SetVrect(), because scr_vrect holds the original data already.
+    * render.h (R_ViewChanged): adjust the prototype.
+
+2013-02-25 (SVN):
     * screen.c, r_main.c: ignore fov_adapt if vid.aspect is higher than
       1.10, not 0.75. (previous commit was wrong.)
 2013-02-25 (SVN):

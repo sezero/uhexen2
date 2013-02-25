@@ -142,7 +142,7 @@ void R_InitTextures (void);
 void R_InitEfrags (void);
 void R_RenderView (void);	// must set r_refdef first
 
-void R_ViewChanged (vrect_t *pvrect, int lineadj, float aspect);
+void R_ViewChanged (float aspect);
 				// called whenever r_refdef or vid change
 
 void R_NewMap (void);
