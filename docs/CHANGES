@@ -3,7 +3,10 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
-2013-02-23 (SVN):
+2013-02-25 (SVN):
+    * screen.c, r_main.c: ignore fov_adapt if vid.aspect is higher than
+      1.10, not 0.75. (previous commit was wrong.)
+2013-02-25 (SVN):
     * screen.c, r_main.c: ignore fov_adapt if vid.aspect is higher than
       0.75, not 1.10. do this for DOS and SVGALib ports only. waterwarp
       weirdness still needs fixing.

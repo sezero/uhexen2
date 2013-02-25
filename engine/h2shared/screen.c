@@ -332,7 +332,7 @@ static float AdaptFovx (float fov_x, float width, float height)
 		Sys_Error ("Bad fov: %f", fov_x);
 
 #if defined(PLATFORM_DOS) || defined(SVGAQUAKE)
-	if (vid.aspect > 0.75f)
+	if (vid.aspect > 1.10f)
 		return fov_x;		/* no fov_adapt for weird VGA modes */
 #endif
 	if (!scr_fov_adapt.integer)

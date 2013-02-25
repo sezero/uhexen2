@@ -478,7 +478,7 @@ void R_ViewChanged (vrect_t *pvrect, int lineadj, float aspect)
 	yOrigin = r_refdef.yOrigin;
 
 #if defined(PLATFORM_DOS) || defined(SVGAQUAKE)
-#define NOT_VGA_MODE (vid.aspect <= 0.75f)	/* no fov_adapt for weird VGA modes */
+#define NOT_VGA_MODE (vid.aspect <= 1.10f)	/* no fov_adapt for weird VGA modes */
 #else
 #define NOT_VGA_MODE true
 #endif
