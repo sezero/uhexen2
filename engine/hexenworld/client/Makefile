@@ -120,6 +120,7 @@ USE_WINSOCK2=no
 USE_CODEC_WAVE=yes
 USE_CODEC_MP3=yes
 USE_CODEC_VORBIS=yes
+USE_CODEC_OPUS=no
 # either timidity or wildmidi (both possible
 # but not needed nor meaningful)
 USE_CODEC_TIMIDITY=yes
@@ -222,6 +223,7 @@ USE_CODEC_TIMIDITY=no
 USE_CODEC_WILDMIDI=no
 USE_CODEC_MP3=no
 USE_CODEC_VORBIS=no
+USE_CODEC_OPUS=no
 endif
 # sanity checking for decoder library options
 ifneq ($(VORBISLIB),vorbis)
@@ -297,6 +299,10 @@ ifeq ($(USE_CODEC_MP3),yes)
 CODEC_INC = -I$(OSLIBS)/macosx/codecs/include
 CODEC_LINK= -L$(OSLIBS)/macosx/codecs/lib
 endif
+ifeq ($(USE_CODEC_OPUS),yes)
+CODEC_INC = -I$(OSLIBS)/macosx/codecs/include
+CODEC_LINK= -L$(OSLIBS)/macosx/codecs/lib
+endif
 INCLUDES += $(CODEC_INC)
 LDFLAGS += $(CODEC_LINK)
 
@@ -364,6 +370,14 @@ CPPFLAGS+= -DSDLQUAKE
 CFLAGS  += $(SDL_CFLAGS)
 LDFLAGS += $(SDL_LIBS)
 
+ifeq ($(USE_CODEC_OPUS),yes)
+# opus and opusfile put their *.h under <includedir>/opus,
+# but they include the headers without the opus directory
+# prefix and rely on pkg-config. ewww...
+INCLUDES+= $(shell pkg-config --cflags opusfile)
+LDFLAGS += $(shell pkg-config --libs   opusfile)
+endif
+
 endif
 # End of Unix settings
 #############################################################
@@ -380,6 +394,8 @@ USE_X86_ASM=yes
 
 USE_CODEC_TIMIDITY=no
 USE_CODEC_WILDMIDI=no
+# no need for Opus or DOS
+USE_CODEC_OPUS=no
 # use Tremor as Vorbis decoder for DOS?
 VORBISLIB=tremor
 # make DOS decoders allocate on the zone
@@ -397,6 +413,10 @@ CODEC_INC = -I$(OSLIBS)/dos/codecs/include
 CODEC_LINK= -L$(OSLIBS)/dos/codecs/lib
 endif
 ifeq ($(USE_CODEC_MP3),yes)
+CODEC_INC = -I$(OSLIBS)/dos/codecs/include
+CODEC_LINK= -L$(OSLIBS)/dos/codecs/lib
+endif
+ifeq ($(USE_CODEC_OPUS),yes)
 CODEC_INC = -I$(OSLIBS)/dos/codecs/include
 CODEC_LINK= -L$(OSLIBS)/dos/codecs/lib
 endif
@@ -447,6 +467,10 @@ CODEC_INC = -I$(OSLIBS)/windows/codecs/include
 CODEC_LINK= -L$(OSLIBS)/windows/codecs/x86
 endif
 ifeq ($(USE_CODEC_MP3),yes)
+CODEC_INC = -I$(OSLIBS)/windows/codecs/include
+CODEC_LINK= -L$(OSLIBS)/windows/codecs/x86
+endif
+ifeq ($(USE_CODEC_OPUS),yes)
 CODEC_INC = -I$(OSLIBS)/windows/codecs/include
 CODEC_LINK= -L$(OSLIBS)/windows/codecs/x86
 endif
@@ -505,6 +529,10 @@ ifeq ($(USE_CODEC_MP3),yes)
 CODEC_INC = -I$(OSLIBS)/windows/codecs/include
 CODEC_LINK= -L$(OSLIBS)/windows/codecs/x64
 endif
+ifeq ($(USE_CODEC_OPUS),yes)
+CODEC_INC = -I$(OSLIBS)/windows/codecs/include
+CODEC_LINK= -L$(OSLIBS)/windows/codecs/x64
+endif
 INCLUDES += $(CODEC_INC)
 LDFLAGS += $(CODEC_LINK)
 
@@ -537,6 +565,7 @@ LINK_GL_LIBS=yes
 
 USE_CODEC_VORBIS=yes
 USE_CODEC_MP3=no
+USE_CODEC_OPUS=no
 
 ifeq ($(USE_SOUND),yes)
 ifneq ($(USE_SDLAUDIO),yes)
@@ -635,6 +664,13 @@ endif
 
 ifeq ($(USE_CODEC_WAVE),yes)
 CPPFLAGS+= -DUSE_CODEC_WAVE
+endif
+ifeq ($(USE_CODEC_OPUS),yes)
+CPPFLAGS+= -DUSE_CODEC_OPUS
+ifneq ($(TARGET_OS),unix)
+# we use pkg-config on unix
+LDFLAGS+= -lopusfile -lopus -logg
+endif
 endif
 ifeq ($(USE_CODEC_VORBIS),yes)
 CPPFLAGS+= -DUSE_CODEC_VORBIS $(cpp_vorbisdec)
@@ -769,6 +805,7 @@ MUSIC_OBJS:= bgmusic.o \
 	snd_codec.o \
 	snd_wave.o \
 	snd_vorbis.o \
+	snd_opus.o \
 	$(mp3_obj) \
 	snd_timidity.o \
 	snd_wildmidi.o

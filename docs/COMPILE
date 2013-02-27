@@ -114,6 +114,8 @@ libogg and either of libvorbis or libtremor:
 		Required if you want Ogg/Vorbis music playback.
 libmad or libmpg123:
 		Required if you want MP3 music playback.
+libogg, opus, and opusfile:
+		Required if you want Opus music playback.
 
 
 Compiling the software renderer for non-x86:
@@ -256,6 +258,7 @@ Links:
 ------
 SDL homepage		: http://www.libsdl.org/
 Ogg/Vorbis homepage	: http://xiph.org/
+Opus homepage		: http://opus-codec.org/
 libmad homepage		: http://www.underbit.com/products/mad/
 mpg123 homepage		: http://mpg123.org/
 ALSA homepage		: http://www.alsa-project.org/

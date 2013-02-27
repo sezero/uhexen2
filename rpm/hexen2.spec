@@ -11,6 +11,7 @@
 # --without mp3: build without mp3 music streaming support
 # --with mpg123: build mp3 music streaming using libmpg123 instead of libmad
 # --without ogg: build without ogg/vorbis music streaming support
+# --with opus: build with opus music streaming support
 # --without asm: do not use x86 assembly even on an intel cpu
 # --with gtk1: build the launcher against gtk-1.2 instead of gtk-2.x
 # --with gtk3: build the launcher against gtk-3.x instead of gtk-2.x
@@ -38,6 +39,7 @@
 %{!?_with_mpg123:%define mp3_libraryopt MP3LIB=mad}
 %{!?_without_mp3:%define mp3_buildopt USE_CODEC_MP3=yes}
 %{!?_without_ogg:%define ogg_buildopt USE_CODEC_VORBIS=yes}
+%{!?_with_opus:%define opus_buildopt USE_CODEC_OPUS=no}
 # build option overrides
 %{?_with_gtk1:%define gtk_buildopt GTK1=yes}
 %{?_with_gtk3:%undefine gtk_buildopt}
@@ -50,8 +52,9 @@
 %{?_with_mpg123:%define mp3_libraryopt MP3LIB=mpg123}
 %{?_without_mp3:%define mp3_buildopt USE_CODEC_MP3=no}
 %{?_without_ogg:%define ogg_buildopt USE_CODEC_VORBIS=no}
+%{?_with_opus:%define opus_buildopt USE_CODEC_OPUS=yes}
 # all build options passed to makefile
-%define engine_buildopt	%{asm_buildopt} %{alsa_buildopt} %{midi_buildopt} %{timidity_buildopt} %{wavmusic_buildopt} %{mp3_buildopt} %{mp3_libraryopt} %{ogg_buildopt}
+%define engine_buildopt	%{asm_buildopt} %{alsa_buildopt} %{midi_buildopt} %{timidity_buildopt} %{wavmusic_buildopt} %{mp3_buildopt} %{mp3_libraryopt} %{ogg_buildopt} %{opus_buildopt}
 
 %define desktop_vendor	uhexen2
 
@@ -72,6 +75,7 @@ BuildRoot:	%{_tmppath}/%{name}-%{version}-build
 BuildRequires:	SDL-devel >= 1.2.4
 %{!?_without_mp3:BuildRequires:  %{!?_with_mpg123:libmad-devel}%{?_with_mpg123:libmpg123-devel >= 1.12.0}}
 %{!?_without_ogg:BuildRequires:  libogg-devel libvorbis-devel}
+%{?_with_opus:BuildRequires:  opus-devel opusfile-devel}
 %{!?_without_asm:BuildRequires:  nasm >= 0.98.38}
 %{!?_without_freedesktop:BuildRequires: desktop-file-utils}
 %{?_with_gtk1:BuildRequires:  gtk+-devel}
@@ -81,6 +85,7 @@ Requires:	SDL >= 1.2.4
 # timidity++-patches requirement is non-fatal
 #%{!?_without_timidity:Requires: timidity++-patches}
 # these will be picked by rpm already
+#%{?_with_opus:Requires: opus opusfile}
 #%{!?_without_mp3:Requires: libmad}
 #%{!?_without_ogg:Requires: libvorbis}
 
@@ -348,7 +353,8 @@ desktop-file-install \
 %{_prefix}/games/%{name}/docs/README.hwmaster
 
 %changelog
-* Fri Feb 15 2013 O.Sezer <sezero@users.sourceforge.net> 1.5.6-1
+* Wed Feb 27 2013 O.Sezer <sezero@users.sourceforge.net> 1.5.6-1
+- Add --with opus build option
 - Bump version to 1.5.6.
 
 * Tue Sep 11 2012 O.Sezer <sezero@users.sourceforge.net> 1.5.5-1

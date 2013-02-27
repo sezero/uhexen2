@@ -201,7 +201,6 @@ static int S_VORBIS_CodecReadStream (snd_stream_t *stream, int bytes, void *buff
 
 	if (res < 0)
 		return res;
-
 	return cnt;
 }
 
