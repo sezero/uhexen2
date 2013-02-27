@@ -1,7 +1,7 @@
 Hammer of Thyrion (uHexen2) release notes:
 
 ========================================================================
-Changes in v1.5.6: (Feb. 25, 2013.)
+Changes in v1.5.6: (Feb. 27, 2013.)
 ========================================================================
 
 - OpenGL: worked around weird mods, e.g.: project peanut, where certain
@@ -26,6 +26,9 @@ Changes in v1.5.6: (Feb. 25, 2013.)
 - Mac OS X: A new icon.
 
 - HexenWorld: opengl fixes for the shownames feature, other gl updates.
+
+- Software renderer: fixed color shifts from area contents or power-up
+  items usage staying persistent after a disconnect.
 
 - Fixed several other minor bugs, some found by valgrind.
 

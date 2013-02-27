@@ -625,7 +625,8 @@ void V_UpdatePalette (void)
 	byte	pal[768];
 	int		r, g, b;
 
-	V_CalcPowerupCshift ();
+	if (cls.state == ca_active) V_CalcPowerupCshift ();
+	else	memset (cl.cshifts, 0, sizeof(cl.cshifts));
 
 	is_new = false;
 

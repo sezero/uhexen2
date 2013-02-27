@@ -4,6 +4,14 @@ Development Progress	:
 ---------------------------
 
 2013-02-27 (SVN):
+    * view.c (V_UpdatePalette): call V_CalcPowerupCshift() only when
+      fully connected to the server, otherwise zero the cl.cshifts
+      array. this clears the left-over colors from area contents or
+      used powerup items in software renderer. opengl renderer is not
+      affected, because it does not actually touch the palette.
+    * updated version date stamp to 2013-02-27.
+
+2013-02-27 (SVN):
     * docs/README: add fov_adapt to documentation.
 
 2013-02-27 (SVN):
