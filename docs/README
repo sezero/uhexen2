@@ -490,9 +490,9 @@ documented by Davide Cendron.)
 -------------------
 
 A common problem, especially with 3dfx cards, is flickering lines
-across the screen caused by a GL tweak. To fix this, bring down
-the console with the '~' key and enter 'gl_ztrick 0'.  With fresh
-installations of uhexen2, this option is disabled by default.
+across the screen caused by a GL hack which isn't supported today.
+To fix this, bring down the console and enter 'gl_ztrick 0'.  With
+fresh installations of uhexen2, this option is disabled by default.
 
 
 2.3 Fluxbox
@@ -564,8 +564,18 @@ fov_adapt	 0 or 1	: Disable/enable Hor+ style field of view (FOV)
 			  you won't need changing the fov value. Opengl
 			  and software renderers both supported.
 
-_snd_mixahead	0.1-0.9	: 0.1 = less latency,
-			  0.9 = better performance
+_snd_mixahead	0.1-0.9	: 0.1 = less latency, 0.9 = better performance.
+			  Don't play with the default 0.1 value unless
+			  you really need to.
+
+snow_active	0 - 255	: 0 = none, 1 = normal amount designated by the
+			  map.  Higher acts as a multiplier, very high
+			  values may cause massive performance loss in
+			  opengl.
+
+
+3.2.1 Some opengl options
+-------------------------------
 
 gl_multitexture	 0 or 1	: Disable/enable multitexturing on the fly.
 			  0 is default. Faster performance if the
@@ -600,22 +610,8 @@ gl_texture_NPOT	 0 or 1	: Disable/enable non-power-of-two textures.  If
 
 gl_constretch	0 or 1	: Disable/enable console background eye candy.
 
-gl_ztrick	0 or 1	: 3% performance tweak, mostly unsupported today
 
-gl_picmip	0, 1, 2	: 0 is default. 1 and 2 scale down the textures
-			  (low quality), but the help screens and some
-			  small fonts become unreadable and ugly. Keep
-			  it as 0.
-
-gl_playermip		: similar to gl_picmip, but for player skins.
-
-snow_active	0 - 255	: 0 =  none,
-			  1 =  normal
-			  Amount designated by the map and higher acts
-			  as a multiplier.
-
-
-3.2.1 Software renderer options
+3.2.2 Software renderer options
 -------------------------------
 
 sbtrans		0, 1, 2	: HUD (status bar) transparency.
@@ -630,7 +626,7 @@ contrans	0, 1, 2	: Same as the sbtrans above, but used for the
 			  console background transparency.
 
 
-3.2.2 Other OpenGL options
+3.2.3 Other OpenGL options
 -------------------------------
 
 gl_coloredlight	 0, 1, 2: Static colored lights.  0 is the white light
@@ -660,7 +656,7 @@ gl_purge_maptex	  0 or 1: Purge opengl textures upon map changes.  The
 			  is 1. Adjustable from the menu.
 
 
-3.2.3 Nvidia tweaks
+3.2.4 Nvidia tweaks
 -------------------------------
 
 These are only valid for supported hardware (Geforce and better) with
@@ -792,6 +788,9 @@ Hexen II resources at gamers.org:
 http://www.gamers.org/pub/idgames2/hexen2/
 http://www.gamers.org/pub/idgames2/planetquake/hexenworld/
 
+Rino's Hexen II mods:
+https://sites.google.com/site/missionpackbyrino/
+
 DarkRavager's Hexen II resources:
 http://pages.citenet.net/users/danielm/hexen/hexen.html
 
@@ -844,4 +843,17 @@ manuals:
 		your mouse to look up or down (by sliding it forward and
 		back), and to remain looking up or down even if you move
 		forward.
+
+And here are some legacy opengl options:
+
+ gl_picmip (0, 1, 2): 0 is default. 1 and 2 scale down the textures (low
+		quality), but the help screens and some small fonts
+		become unreadable and ugly. Was useful with old hardware
+		with low memory back at the time. Keep it as 0.
+
+ gl_playermip:	similar to gl_picmip, but was for player skins.
+
+ gl_ztrick (0 or 1): 3% performance hack mostly unsupported today. (See:
+		http://forums.inside3d.com/viewtopic.php?p=36082#p36082)
+		Keep it as 0.
 

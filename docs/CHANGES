@@ -4,6 +4,9 @@ Development Progress	:
 ---------------------------
 
 2013-02-27 (SVN):
+    * docs/README: small updates.
+
+2013-02-27 (SVN):
     * view.c (V_UpdatePalette): call V_CalcPowerupCshift() only when
       fully connected to the server, otherwise zero the cl.cshifts
       array. this clears the left-over colors from area contents or
