@@ -4,6 +4,9 @@ Development Progress	:
 ---------------------------
 
 2013-02-27 (SVN):
+    * docs/README: add fov_adapt to documentation.
+
+2013-02-27 (SVN):
     * oslibs,windows: update dinput.h from mingw-w64 svn repo rev.5620.
 
 2013-02-25 (SVN):

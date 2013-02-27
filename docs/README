@@ -558,6 +558,12 @@ http://www.quakewiki.net/archives/console/commands/quake.html
 variable	valid values
 --------	------------
 
+fov_adapt	 0 or 1	: Disable/enable Hor+ style field of view (FOV)
+			  scaling. If enabled, your fov will be scaled
+			  automatically according to the resolution, so
+			  you won't need changing the fov value. Opengl
+			  and software renderers both supported.
+
 _snd_mixahead	0.1-0.9	: 0.1 = less latency,
 			  0.9 = better performance
 
