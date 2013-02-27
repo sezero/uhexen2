@@ -5,7 +5,7 @@
 
 #if defined(USE_CODEC_VORBIS)
 
-extern snd_codec_t ogg_codec;
+extern snd_codec_t vorbis_codec;
 
 #endif	/* USE_CODEC_VORBIS */
 

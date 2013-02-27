@@ -75,7 +75,7 @@ void S_CodecInit (void)
 	S_CodecRegister(&mp3_codec);
 #endif
 #ifdef USE_CODEC_VORBIS
-	S_CodecRegister(&ogg_codec);
+	S_CodecRegister(&vorbis_codec);
 #endif
 	codec = codecs;
 	while (codec)

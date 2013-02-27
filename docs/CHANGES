@@ -4,6 +4,12 @@ Development Progress	:
 ---------------------------
 
 2013-02-27 (SVN):
+    * codecs: rename CODECTYPE_OGG to CODECTYPE_VORBIS, because ogg is
+      just the container. adjust all other sources and headers for it.
+    * snd_vorbis.c: reject files with more than one streams. (maybe we
+      add section change handling in the future, but not supported now.)
+
+2013-02-27 (SVN):
     * docs/README: small updates.
 
 2013-02-27 (SVN):
