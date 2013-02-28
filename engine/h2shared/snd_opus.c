@@ -33,9 +33,6 @@
 #include <errno.h>
 #include <opusfile.h>
 
-/* use the standard signed short format. */
-#define OPUS_SAMPLEWIDTH 2
-#define OPUS_SIGNED_DATA 1
 
 /* CALLBACK FUNCTIONS: */
 
@@ -145,7 +142,8 @@ static snd_stream_t *S_OPUS_CodecOpenStream (const char *filename)
 	 * S_RawSamples() shall already downsample this, as necessary.  */
 	stream->info.rate = 48000;
 	stream->info.channels = op_info->channel_count;
-	stream->info.width = OPUS_SAMPLEWIDTH;
+	/* op_read() yields 16-bit output using native endian ordering: */
+	stream->info.width = 2;
 
 	return stream;
 _fail:

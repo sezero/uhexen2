@@ -4,6 +4,9 @@ Development Progress	:
 ---------------------------
 
 2013-02-28 (SVN):
+    * snd_opus.c: add comments for clarification on Opus decoded sample
+      rate. add comments about the sample width returned by op_read()
+      and remove two useless macros.
     * updated version date stamp to 2013-02-28.
 
 2013-02-27 (SVN):
