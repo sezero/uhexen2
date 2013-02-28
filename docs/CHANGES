@@ -3,6 +3,9 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2013-02-28 (SVN):
+    * updated version date stamp to 2013-02-28.
+
 2013-02-27 (SVN):
     * codecs: add support for the Opus file decoding, which works just
       fine. it is not enabled by default, but editing the Makefile for
