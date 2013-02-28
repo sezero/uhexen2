@@ -139,7 +139,11 @@ static snd_stream_t *S_OPUS_CodecOpenStream (const char *filename)
 		goto _fail;
 	}
 
-	stream->info.rate =  /* op_info->input_sample_rate */ 48000;
+	/* All Opus audio is coded at 48 kHz, and should also be decoded
+	 * at 48 kHz for playback: info->input_sample_rate only tells us
+	 * the sampling rate of the original input before opus encoding.
+	 * S_RawSamples() shall already downsample this, as necessary.  */
+	stream->info.rate = 48000;
 	stream->info.channels = op_info->channel_count;
 	stream->info.width = OPUS_SAMPLEWIDTH;
 
