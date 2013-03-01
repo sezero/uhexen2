@@ -782,9 +782,9 @@ Index: engine/h2shared/draw.c
  /*
 Index: engine/h2shared/vid_sdl.c
 ===================================================================
---- engine/h2shared/vid_sdl.c	(revision 5092)
+--- engine/h2shared/vid_sdl.c	(revision 5124)
 +++ engine/h2shared/vid_sdl.c	(working copy)
-@@ -518,8 +518,10 @@
+@@ -529,8 +529,10 @@
  		return false;
  
  	// initial success. adjust vid vars.
@@ -829,9 +829,9 @@ Index: engine/h2shared/vid_win.c
  // needed because we're not getting WM_MOVE messages fullscreen on NT
 Index: engine/h2shared/screen.c
 ===================================================================
---- engine/h2shared/screen.c	(revision 5092)
+--- engine/h2shared/screen.c	(revision 5140)
 +++ engine/h2shared/screen.c	(working copy)
-@@ -271,7 +271,7 @@
+@@ -272,7 +272,7 @@
  
  	FindTextBreaks(scr_centerstring, 38);
  
@@ -840,7 +840,7 @@ Index: engine/h2shared/screen.c
  
  	for (i = 0; i < lines; i++, by += 8)
  	{
-@@ -373,7 +373,7 @@
+@@ -398,7 +398,7 @@
  	if (scr_viewsize.integer >= 110 || cl.intermission)
  		sb_lines = 0;		// no status bar
  	else
@@ -849,7 +849,7 @@ Index: engine/h2shared/screen.c
  
  // these calculations mirror those in R_Init() for r_refdef, but take no
  // account of water warping
-@@ -607,7 +607,7 @@
+@@ -637,7 +637,7 @@
  	}
  
  	finaly = ((float)pic->height * LogoPercent) - pic->height;
@@ -858,7 +858,7 @@ Index: engine/h2shared/screen.c
  }
  
  #if !defined(H2W)
-@@ -639,8 +639,8 @@
+@@ -669,8 +669,8 @@
  		return;
  
  	pic = Draw_CachePic ("gfx/menu/loading.lmp");
@@ -869,7 +869,7 @@ Index: engine/h2shared/screen.c
  
  	if (loading_stage == 0)
  		return;
-@@ -652,17 +652,17 @@
+@@ -682,17 +682,17 @@
  	count = (loading_stage == 1) ? size : 106;
  	if (count)
  	{
@@ -893,7 +893,7 @@ Index: engine/h2shared/screen.c
  	}
  }
  #endif	/* !DRAW_PROGRESSBARS */
-@@ -746,13 +746,13 @@
+@@ -776,13 +776,13 @@
  
  	if (scr_conlines < scr_con_current)
  	{
@@ -909,7 +909,7 @@ Index: engine/h2shared/screen.c
  		if (scr_conlines < scr_con_current)
  			scr_con_current = scr_conlines;
  	}
-@@ -1030,7 +1030,7 @@
+@@ -1060,7 +1060,7 @@
  
  	FindTextBreaks(message, PLAQUE_WIDTH);
  
@@ -918,7 +918,7 @@ Index: engine/h2shared/screen.c
  	M_DrawTextBox (32, by - 16, PLAQUE_WIDTH + 4, lines + 2);
  
  	for (i = 0; i < lines; i++, by += 8)
-@@ -1066,7 +1066,7 @@
+@@ -1096,7 +1096,7 @@
  		lines = MAXLINES-1;
  	}
  
@@ -927,7 +927,7 @@ Index: engine/h2shared/screen.c
  	M_DrawTextBox (15, by - 16, PLAQUE_WIDTH + 4 + 4, lines + 2);
  
  	for (i = 0; i < lines; i++, by += 8)
-@@ -1092,7 +1092,7 @@
+@@ -1122,7 +1122,7 @@
  
  	FindTextBreaks(message, PLAQUE_WIDTH);
  
@@ -936,7 +936,7 @@ Index: engine/h2shared/screen.c
  	M_DrawTextBox (32, by - 16, PLAQUE_WIDTH + 4, lines + 2);
  
  	for (i = 0; i < lines; i++, by += 8)
-@@ -1113,10 +1113,10 @@
+@@ -1143,10 +1143,10 @@
  	int	num, x, y;
  	const char	*s;
  
@@ -949,7 +949,7 @@ Index: engine/h2shared/screen.c
  	s = str;
  
  	while (*s)
-@@ -1124,7 +1124,7 @@
+@@ -1154,7 +1154,7 @@
  		num = (unsigned char)(*s);
  		if (!(flags & INTERMISSION_PRINT_WHITE))
  			num += 256;
@@ -1470,9 +1470,9 @@ Index: engine/h2shared/gl_draw.c
  Draw_TransPicTranslate
 Index: engine/h2shared/gl_screen.c
 ===================================================================
---- engine/h2shared/gl_screen.c	(revision 5092)
+--- engine/h2shared/gl_screen.c	(revision 5134)
 +++ engine/h2shared/gl_screen.c	(working copy)
-@@ -338,7 +338,7 @@
+@@ -362,7 +362,7 @@
  	if (scr_viewsize.integer >= 110)
  		sb_lines = 0;		// no status bar
  	else
