@@ -3,7 +3,7 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
-2013-03-28 (SVN):
+2013-03-01 (SVN):
     * added opus libs and headers under oslibs for windows and macosx.
       added snd_opus.c to Xcode and Visual Studio project files. (it is
       still not enabled, however just adding USE_CODEC_OPUS among the
