@@ -267,8 +267,8 @@
 		B0E74B33144E806D0043F808 /* snd_vorbis.c in Sources */ = {isa = PBXBuildFile; fileRef = B0E74B31144E806D0043F808 /* snd_vorbis.c */; };
 		B0E74B37144E807F0043F808 /* snd_mp3.c in Sources */ = {isa = PBXBuildFile; fileRef = B0E74B36144E807F0043F808 /* snd_mp3.c */; };
 		B0E74B38144E807F0043F808 /* snd_mp3.c in Sources */ = {isa = PBXBuildFile; fileRef = B0E74B36144E807F0043F808 /* snd_mp3.c */; };
-		B0E74B3C144E80960043F808 /* snd_timidity.c in Sources */ = {isa = PBXBuildFile; fileRef = B0E74B3B144E80960043F808 /* snd_timidity.c */; };
-		B0E74B3D144E80960043F808 /* snd_timidity.c in Sources */ = {isa = PBXBuildFile; fileRef = B0E74B3B144E80960043F808 /* snd_timidity.c */; };
+		B0E74B3C144E80960043F808 /* snd_opus.c in Sources */ = {isa = PBXBuildFile; fileRef = B0E74B3B144E80960043F808 /* snd_opus.c */; };
+		B0E74B3D144E80960043F808 /* snd_opus.c in Sources */ = {isa = PBXBuildFile; fileRef = B0E74B3B144E80960043F808 /* snd_opus.c */; };
 		CEA6789F155B7E0E008B9770 /* cl_inlude.c in Sources */ = {isa = PBXBuildFile; fileRef = 483B16A4154472FE00BBDAD1 /* cl_inlude.c */; };
 /* End PBXBuildFile section */
 
@@ -453,7 +453,7 @@
 		B0E74B2C144E80540043F808 /* snd_wave.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = snd_wave.c; path = ../../h2shared/snd_wave.c; sourceTree = SOURCE_ROOT; };
 		B0E74B31144E806D0043F808 /* snd_vorbis.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = snd_vorbis.c; path = ../../h2shared/snd_vorbis.c; sourceTree = SOURCE_ROOT; };
 		B0E74B36144E807F0043F808 /* snd_mp3.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = snd_mp3.c; path = ../../h2shared/snd_mp3.c; sourceTree = SOURCE_ROOT; };
-		B0E74B3B144E80960043F808 /* snd_timidity.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = snd_timidity.c; path = ../../h2shared/snd_timidity.c; sourceTree = SOURCE_ROOT; };
+		B0E74B3B144E80960043F808 /* snd_opus.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = snd_opus.c; path = ../../h2shared/snd_opus.c; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -507,7 +507,7 @@
 				48E2EC7C15FB507A00B8D476 /* libvorbisfile.dylib */,
 				B0E546A515564FC10033037D /* sys_osx.m */,
 				483B16A4154472FE00BBDAD1 /* cl_inlude.c */,
-				B0E74B3B144E80960043F808 /* snd_timidity.c */,
+				B0E74B3B144E80960043F808 /* snd_opus.c */,
 				B0E74B36144E807F0043F808 /* snd_mp3.c */,
 				B0E74B31144E806D0043F808 /* snd_vorbis.c */,
 				B0E74B2C144E80540043F808 /* snd_wave.c */,
@@ -971,7 +971,7 @@
 				B0E74B2E144E80540043F808 /* snd_wave.c in Sources */,
 				B0E74B33144E806D0043F808 /* snd_vorbis.c in Sources */,
 				B0E74B38144E807F0043F808 /* snd_mp3.c in Sources */,
-				B0E74B3D144E80960043F808 /* snd_timidity.c in Sources */,
+				B0E74B3D144E80960043F808 /* snd_opus.c in Sources */,
 				B0E546A715564FC10033037D /* sys_osx.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1055,7 +1055,7 @@
 				B0E74B2D144E80540043F808 /* snd_wave.c in Sources */,
 				B0E74B32144E806D0043F808 /* snd_vorbis.c in Sources */,
 				B0E74B37144E807F0043F808 /* snd_mp3.c in Sources */,
-				B0E74B3C144E80960043F808 /* snd_timidity.c in Sources */,
+				B0E74B3C144E80960043F808 /* snd_opus.c in Sources */,
 				483B16A5154472FE00BBDAD1 /* cl_inlude.c in Sources */,
 				B0E546A615564FC10033037D /* sys_osx.m in Sources */,
 			);

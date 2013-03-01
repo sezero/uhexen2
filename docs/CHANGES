@@ -3,6 +3,13 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2013-03-28 (SVN):
+    * added opus libs and headers under oslibs for windows and macosx.
+      added snd_opus.c to Xcode and Visual Studio project files. (it is
+      still not enabled, however just adding USE_CODEC_OPUS among the
+      preprocessor macros and adding libopusfile among the link libs is
+      enough to do it.)
+
 2013-02-28 (SVN):
     * snd_opus.c: add comments for clarification on Opus decoded sample
       rate. add comments about the sample width returned by op_read()
