@@ -386,8 +386,13 @@ void CL_Disconnect (void)
 // don't get stuck in chat mode
 	if (Key_GetDest() == key_message)
 		Key_EndChat ();
+
+// reset any active palette shifts (see view.c:V_UpdatePalette())
+	memset (cl.cshifts, 0, sizeof(cl.cshifts));
+
 // no more siege display, etc.
 	cl_siege = false;
+
 // stop sounds (especially looping!)
 	S_StopAllSounds (true);
 	BGM_Stop();

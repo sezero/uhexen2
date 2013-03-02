@@ -570,7 +570,8 @@ void V_UpdatePalette (void)
 	int		i, j;
 	unsigned int	t;
 
-	V_CalcPowerupCshift ();
+	if (cls.state == ca_active)
+		V_CalcPowerupCshift ();
 
 	for (i = 0; i < NUM_CSHIFTS; i++)
 	{
@@ -599,10 +600,8 @@ void V_UpdatePalette (void)
 		if (v_gamma.value > 1.0 || v_gamma.value < (1.0 / GAMMA_MAX))
 			Cvar_SetQuick (&v_gamma, "1");
 		v_gamma.flags &= ~CVAR_CHANGED;
+		vid.recalc_refdef = 1;
 		BuildGammaTable (v_gamma.value);
-		vid.recalc_refdef = 1;		// force a surface cache flush
-
-		// calc hardware gamma
 		for (i = 0; i < 256; i++)
 		{
 			t = gammatable[i] << 8;
@@ -610,7 +609,6 @@ void V_UpdatePalette (void)
 			ramps[1][i] = t;
 			ramps[2][i] = t;
 		}
-		// Update hardware gamma if available
 		VID_ShiftPalette(NULL);
 	}
 }
@@ -625,8 +623,8 @@ void V_UpdatePalette (void)
 	byte	pal[768];
 	int		r, g, b;
 
-	if (cls.state == ca_active) V_CalcPowerupCshift ();
-	else	memset (cl.cshifts, 0, sizeof(cl.cshifts));
+	if (cls.state == ca_active)
+		V_CalcPowerupCshift ();
 
 	is_new = false;
 

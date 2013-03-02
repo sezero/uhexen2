@@ -113,11 +113,18 @@ This is also called on Host_Error, so it shouldn't cause any errors
 */
 void CL_Disconnect (void)
 {
+// don't get stuck in chat mode
 	if (Key_GetDest() == key_message)
-		Key_EndChat ();	// don't get stuck in chat mode
+		Key_EndChat ();
 
-	R_ClearParticles ();	//jfm: need to clear parts because some now check world
-	S_StopAllSounds (true);	// stop sounds (especially looping!)
+// reset any active palette shift
+	memset (cl.cshifts, 0, sizeof(cl.cshifts));
+
+//jfm: need to clear parts because some now check world
+	R_ClearParticles ();
+
+// stop sounds (especially looping!)
+	S_StopAllSounds (true);
 	BGM_Stop();
 	CDAudio_Stop();
 	loading_stage = 0;
