@@ -352,6 +352,7 @@ static void Host_Restart_f (void)
 	}
 
 	q_strlcpy (mapname, sv.name, sizeof(mapname));	// must copy out, because it gets cleared
+								// in sv_spawnserver
 	q_strlcpy (startspot, sv.startspot, sizeof(startspot));
 
 	if (Cmd_Argc() == 2 && q_strcasecmp(Cmd_Argv(1),"restore") == 0)
@@ -365,7 +366,6 @@ static void Host_Restart_f (void)
 	}
 	else
 	{
-		// in sv_spawnserver
 		SV_SpawnServer (mapname, startspot);
 	}
 }
