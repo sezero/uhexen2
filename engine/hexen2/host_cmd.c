@@ -422,7 +422,7 @@ static void Host_Restart_f (void)
 		{
 			SV_SpawnServer (mapname, startspot);
 			if (!sv.active)
-				Host_Error ("%s: cannot restart map %s", mapname, __thisfunc__);
+				Host_Error ("%s: cannot restart map %s", __thisfunc__, mapname);
 			RestoreClients (0);
 		}
 	}
@@ -430,7 +430,7 @@ static void Host_Restart_f (void)
 	{
 		SV_SpawnServer (mapname, startspot);
 		if (!sv.active)
-			Host_Error ("%s: cannot restart map %s", mapname, __thisfunc__);
+			Host_Error ("%s: cannot restart map %s", __thisfunc__, mapname);
 	}
 }
 

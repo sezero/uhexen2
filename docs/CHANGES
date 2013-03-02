@@ -4,6 +4,10 @@ Development Progress	:
 ---------------------------
 
 2013-03-02 (SVN):
+    * host_cmd.c (Host_Restart_f): fix error message argument order from
+      previous rev.5156 change.
+
+2013-03-02 (SVN):
     * host_cmd.c (Host_Changelevel_f, Host_Changelevel2_f): check to see
       the map file actually exists, issue a Host_Error() if it can't be
       found so that the client won't get stuck, i.e. the ages old "load
