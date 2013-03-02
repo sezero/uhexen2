@@ -4,6 +4,14 @@ Development Progress	:
 ---------------------------
 
 2013-03-02 (SVN):
+    * host_cmd.c (Host_Changelevel_f, Host_Changelevel2_f): check to see
+      the map file actually exists, issue a Host_Error() if it can't be
+      found so that the client won't get stuck, i.e. the ages old "load
+      failed" bug of quake.
+    * (Host_Changelevel_f, Host_Changelevel2_f, Host_Restart_f): if the
+      serverspawn fails even with an existing map, issue a Host_Error().
+
+2013-03-02 (SVN):
     * view.c, cl_main.c: zero the cl.cshifts array from CL_Disconnect()
       instead of from V_UpdatePalette() every frame when not connected.
       copy the rev.5144 behavior, of calling V_CalcPowerupCshift() only

@@ -62,7 +62,8 @@ and then spit the stupid 'load failed' message.  Here, SV_SpawnServer()
 didn't do any Host_ShutDown(), didn't drop any of its clients and didn't
 decrement the active connections.  Now if you try loading a saved game,
 Loop_Connect() naturally fails with a message 'no qsocket available'.
-The problem is the same for the Quake engine, too.
+The problem is inherited from the Quake engine. As of uHexen2 v1.5.6,
+this issue can happen with clients connected to old servers only.
 
 
 Protocol 18 vs 19, soundnum message size, MAX_SOUNDS:

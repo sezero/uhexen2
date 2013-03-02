@@ -322,6 +322,10 @@ static void Host_Changelevel_f (void)
 		return;
 	}
 
+	q_snprintf (level, sizeof(level), "maps/%s.bsp", Cmd_Argv(1));
+	if (!FS_FileExists(level, NULL))
+		Host_Error ("%s: cannot find map %s", __thisfunc__, level);
+
 	q_strlcpy (level, Cmd_Argv(1), sizeof(level));
 	if (Cmd_Argc() == 2)
 		startspot = NULL;
@@ -333,6 +337,8 @@ static void Host_Changelevel_f (void)
 
 	SV_SaveSpawnparms ();
 	SV_SpawnServer (level, startspot);
+	if (!sv.active)
+		Host_Error ("%s: cannot run map %s", __thisfunc__, level);
 }
 
 /*
@@ -359,6 +365,10 @@ static void Host_Changelevel2_f (void)
 		return;
 	}
 
+	q_snprintf (level, sizeof(level), "maps/%s.bsp", Cmd_Argv(1));
+	if (!FS_FileExists(level, NULL))
+		Host_Error ("%s: cannot find map %s", __thisfunc__, level);
+
 	q_strlcpy (level, Cmd_Argv(1), sizeof(level));
 	if (Cmd_Argc() == 2)
 		startspot = NULL;
@@ -379,8 +389,9 @@ static void Host_Changelevel2_f (void)
 	if (LoadGamestate(level, startspot, 0) != 0)
 	{
 		SV_SpawnServer (level, startspot);
-		if (sv.active)
-			RestoreClients (0);
+		if (!sv.active)
+			Host_Error ("%s: cannot run map %s", __thisfunc__, level);
+		RestoreClients (0);
 	}
 }
 
@@ -402,8 +413,7 @@ static void Host_Restart_f (void)
 	if (cmd_source != src_command)
 		return;
 
-	q_strlcpy (mapname, sv.name, sizeof(mapname));	// must copy out, because it gets cleared
-								// in sv_spawnserver
+	q_strlcpy (mapname, sv.name, sizeof(mapname));	// mapname gets cleared in spawnserver
 	q_strlcpy (startspot, sv.startspot, sizeof(startspot));
 
 	if (Cmd_Argc() == 2 && q_strcasecmp(Cmd_Argv(1),"restore") == 0)
@@ -411,13 +421,16 @@ static void Host_Restart_f (void)
 		if (LoadGamestate(mapname, startspot, 3) != 0)
 		{
 			SV_SpawnServer (mapname, startspot);
-			if (sv.active)
-				RestoreClients (0);
+			if (!sv.active)
+				Host_Error ("%s: cannot restart map %s", mapname, __thisfunc__);
+			RestoreClients (0);
 		}
 	}
 	else
 	{
 		SV_SpawnServer (mapname, startspot);
+		if (!sv.active)
+			Host_Error ("%s: cannot restart map %s", mapname, __thisfunc__);
 	}
 }
 
@@ -525,10 +538,9 @@ Host_Savegame_f
 static void Host_Savegame_f (void)
 {
 	FILE	*f;
-	int		i;
+	int		i, error_state;
 	char		comment[SAVEGAME_COMMENT_LENGTH+1];
 	const char	*p;
-	int		error_state = 0;
 
 	if (cmd_source != src_command)
 		return;
@@ -689,12 +701,11 @@ static void Host_Loadgame_f (void)
 	float		playtime;
 	char		str[32768];
 	int		version;
-	int		i;
+	int		i, error_state;
 	int		tempi;
 	float		tempf;
 	edict_t		*ent;
 	float		spawn_parms[NUM_SPAWN_PARMS];
-	int		error_state = 0;
 
 	if (cmd_source != src_command)
 		return;
@@ -829,11 +840,10 @@ static void Host_Loadgame_f (void)
 int SaveGamestate (qboolean ClientsOnly)
 {
 	FILE	*f;
-	int		i;
 	edict_t		*ent;
+	int		i, error_state;
 	int		start, end;
 	char		comment[SAVEGAME_COMMENT_LENGTH+1];
-	int		error_state = 0;
 
 	if (ClientsOnly)
 	{
@@ -1336,16 +1346,13 @@ static void Host_Say (qboolean teamonly)
 
 	if (cmd_source == src_command)
 	{
-		if (cls.state == ca_dedicated)
-		{
-			fromServer = true;
-			teamonly = false;
-		}
-		else
+		if (cls.state != ca_dedicated)
 		{
 			Cmd_ForwardToServer ();
 			return;
 		}
+		fromServer = true;
+		teamonly = false;
 	}
 
 	if (Cmd_Argc () < 2)

@@ -1234,13 +1234,12 @@ void SCR_UpdateScreen (void)
 #else
 	if (scr_disabled_for_loading)
 	{
-	/* FIXME -- This really needs to be fixed properly:
-	 * Simply starting a new game and typing "changelevel fubar"
-	 * will hang the engine for 20s if fubar.bsp does not exist.
-	 * See docs/SrcNotes.txt for details.
-	 */
 		if (realtime - scr_disabled_time > 20)
 		{
+		/* this can happen with clients connected to servers
+		 * older than uHexen2-1.5.6 who don't issue an error
+		 * upon changelevel failures.
+		 */
 			scr_disabled_for_loading = false;
 			total_loading_size = 0;
 			loading_stage = 0;

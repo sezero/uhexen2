@@ -20,6 +20,10 @@ Changes in v1.5.6: (Mar. 02, 2013.)
 
 - Progs VM: Fixed a corner case thinko in version6 progs execution.
 
+- Server: changelevel failures, e.g. in case of non-existent maps, are
+  now considered as error, so that the clients do not get stuck in the
+  connected state anymore.
+
 - Timidity (Unix MIDI): Multiple fixes, including memory errors found by
   valgrind.
 
