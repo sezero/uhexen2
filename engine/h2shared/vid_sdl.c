@@ -410,7 +410,7 @@ no_fmodes:
 		fmodelist[num_fmodes].width = sdl_modes[i]->w;
 		fmodelist[num_fmodes].height = sdl_modes[i]->h;
 		// FIXME: look at vid_win.c and learn how to
-		// really functionalize the halfscreen field.
+		// really functionalize the halfscreen field?
 		fmodelist[num_fmodes].halfscreen = 0;
 		fmodelist[num_fmodes].fullscreen = 1;
 		fmodelist[num_fmodes].bpp = 8;

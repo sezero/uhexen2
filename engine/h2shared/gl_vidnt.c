@@ -220,8 +220,8 @@ static GLint	num_tmus = 1;
 // stencil buffer
 qboolean	have_stencil = false;
 
-// misc gl tweaks
-static qboolean	fullsbardraw = false;
+// this is useless: things aren't like those in quake
+//static qboolean	fullsbardraw = false;
 
 // menu drawing
 static void VID_MenuDraw (void);
@@ -924,8 +924,8 @@ static void GL_Init (void)
 		is_3dfx = true;
 	}
 
-	if (!q_strncasecmp(gl_renderer, "PowerVR", 7))
-		fullsbardraw = true;	// this actually seems useless, things aren't like those in quake
+//	if (!q_strncasecmp(gl_renderer, "PowerVR", 7))
+//		fullsbardraw = true;
 
 	VID_InitGamma ();
 
@@ -1007,8 +1007,8 @@ void GL_EndRendering (void)
 		}
 	}
 
-	if (fullsbardraw)
-		Sbar_Changed();
+//	if (fullsbardraw)
+//		Sbar_Changed();
 }
 
 
@@ -2535,8 +2535,8 @@ void	VID_Init (unsigned char *palette)
 	q_strlcpy (badmode.modedesc,"Bad mode", MAX_DESC);
 	vid_canalttab = true;
 
-	if (COM_CheckParm("-fullsbar"))
-		fullsbardraw = true;
+//	if (COM_CheckParm("-fullsbar"))
+//		fullsbardraw = true;
 }
 
 

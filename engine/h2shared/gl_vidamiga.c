@@ -63,7 +63,6 @@ typedef struct {
 	int			width;
 	int			height;
 	int			modenum;
-/*	int			dib;*/
 	int			fullscreen;
 	int			bpp;
 /*	int			halfscreen;*/
@@ -193,8 +192,8 @@ static GLint	num_tmus = 1;
 // stencil buffer
 qboolean	have_stencil = false;
 
-// misc gl tweaks
-static qboolean	fullsbardraw = false;
+// this is useless: things aren't like those in quake
+//static qboolean	fullsbardraw = false;
 
 // menu drawing
 static void VID_MenuDraw (void);
@@ -416,7 +415,7 @@ static int VID_SetMode (int modenum)
 			AROSMesaMakeCurrent(context);
 #elif defined __MORPHOS__
 		__tglContext = GLInit();
-		if (__tglContext) 
+		if (__tglContext)
 		{
 			if (screen)
 				contextinit = glAInitializeContextScreen(screen);
@@ -810,8 +809,8 @@ void GL_EndRendering (void)
 		enable_mouse = _enable_mouse.integer;
 	}
 
-	if (fullsbardraw)
-		Sbar_Changed();
+//	if (fullsbardraw)
+//		Sbar_Changed();
 }
 
 
@@ -1403,8 +1402,8 @@ void	VID_Init (unsigned char *palette)
 	vid_menudrawfn = VID_MenuDraw;
 	vid_menukeyfn = VID_MenuKey;
 
-	if (COM_CheckParm("-fullsbar"))
-		fullsbardraw = true;
+//	if (COM_CheckParm("-fullsbar"))
+//		fullsbardraw = true;
 }
 
 

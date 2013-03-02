@@ -4,6 +4,12 @@ Development Progress	:
 ---------------------------
 
 2013-03-02 (SVN):
+    * gl_vidamiga.c, gl_vidnt.c, gl_vidsdl.c: comment out the fullsbar
+      stuff: to begin with, things aren't like those in quake and sbar
+      is always drawn. besides, PowerVR cards are not around any more,
+      too.)
+
+2013-03-02 (SVN):
     * host_cmd.c (Host_Restart_f): fix error message argument order from
       previous rev.5156 change.
 

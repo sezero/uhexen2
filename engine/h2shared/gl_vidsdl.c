@@ -58,7 +58,6 @@ typedef struct {
 	int			width;
 	int			height;
 	int			modenum;
-	int			dib;
 	int			fullscreen;
 	int			bpp;
 	int			halfscreen;
@@ -210,8 +209,8 @@ static cvar_t	vid_config_fsaa = {"vid_config_fsaa", "0", CVAR_ARCHIVE};
 // stencil buffer
 qboolean	have_stencil = false;
 
-// misc gl tweaks
-static qboolean	fullsbardraw = false;
+// this is useless: things aren't like those in quake
+//static qboolean	fullsbardraw = false;
 
 // menu drawing
 static void VID_MenuDraw (void);
@@ -918,8 +917,8 @@ static void GL_Init (void)
 		is_3dfx = true;
 	}
 
-	if (!q_strncasecmp(gl_renderer, "PowerVR", 7))
-		fullsbardraw = true;	// this actually seems useless, things aren't like those in quake
+//	if (!q_strncasecmp(gl_renderer, "PowerVR", 7))
+//		fullsbardraw = true;
 
 	CheckMultiTextureExtensions();
 	CheckAnisotropyExtensions();
@@ -990,8 +989,8 @@ void GL_EndRendering (void)
 		enable_mouse = _enable_mouse.integer;
 	}
 
-	if (fullsbardraw)
-		Sbar_Changed();
+//	if (fullsbardraw)
+//		Sbar_Changed();
 }
 
 
@@ -1389,7 +1388,7 @@ no_fmodes:
 			fmodelist[num_fmodes].width = sdl_modes[i]->w;
 			fmodelist[num_fmodes].height = sdl_modes[i]->h;
 			// FIXME: look at gl_vidnt.c and learn how to
-			// really functionalize the halfscreen field.
+			// really functionalize the halfscreen field?
 			fmodelist[num_fmodes].halfscreen = 0;
 			fmodelist[num_fmodes].fullscreen = 1;
 			fmodelist[num_fmodes].bpp = 16;
@@ -1731,8 +1730,8 @@ void	VID_Init (unsigned char *palette)
 	vid_menudrawfn = VID_MenuDraw;
 	vid_menukeyfn = VID_MenuKey;
 
-	if (COM_CheckParm("-fullsbar"))
-		fullsbardraw = true;
+//	if (COM_CheckParm("-fullsbar"))
+//		fullsbardraw = true;
 }
 
 
