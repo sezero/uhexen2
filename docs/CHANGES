@@ -3,6 +3,9 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2013-03-03 (SVN):
+    * update version date stamp to 2013-03-03.
+
 2013-03-02 (SVN):
     * gl_vidamiga.c, gl_vidnt.c, gl_vidsdl.c: comment out the fullsbar
       stuff: to begin with, things aren't like those in quake and sbar
