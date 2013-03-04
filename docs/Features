@@ -17,9 +17,8 @@ Features:
 * In-game resolution changing for both opengl and software renderers.
   Instant fullscreen/windowed toggling on X11 (unix).
 
-* Support FOV (field of view) wider than 90 for wide-screen resolutions
-  in opengl as well as software rendering. Automatic Hor+ FOV scaling
-  based on screen resoluton.
+* Widescreen FOV (field of view) support and automatic Hor+ FOV scaling
+  based on resoluton in both opengl and software renderer.
 
 * OpenGL enhancements including multitexturing, glow effects, working
   brightness control, text and hud size changing on the fly, translucent

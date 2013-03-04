@@ -4,6 +4,9 @@ Development Progress	:
 ---------------------------
 
 2013-03-03 (SVN):
+    * minor documentation updates regarding fov and fov_adapt.
+
+2013-03-03 (SVN):
     * screen.c (fov_adapt): changed software renderer to have fov_adapt
       enabled by default.
 

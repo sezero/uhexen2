@@ -559,10 +559,11 @@ variable	valid values
 --------	------------
 
 fov_adapt	 0 or 1	: Disable/enable Hor+ style field of view (FOV)
-			  scaling. If enabled, your fov will be scaled
-			  automatically according to the resolution, so
-			  you won't need changing the fov value. Opengl
-			  and software renderers both supported.
+			  scaling. Default is enabled: your fov will be
+			  scaled automatically according to the screen
+			  resolution, so that manual fov changing isn't
+			  needed.  Opengl and software renderers both
+			  supported.
 
 _snd_mixahead	0.1-0.9	: 0.1 = less latency, 0.9 = better performance.
 			  Don't play with the default 0.1 value unless

@@ -7,7 +7,7 @@ Changes in v1.5.6: (Mar. 03, 2013.)
 - Screen: implemented Hor+ style field of view (FOV) scaling, useful for
   widescreen resolutions. configured by new cvar fov_adapt: set it to 1
   and your fov will be scaled automatically according to the resolution.
-  opengl and software renderers both supported.
+  enabled by default. opengl and software renderers both supported.
 
 - Screen: viewsize greater than 120 now disables the hud (use the screen
   size slider in the options menu.)
