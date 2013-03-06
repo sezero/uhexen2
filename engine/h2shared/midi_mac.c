@@ -4,6 +4,8 @@
  *
  * Based the macglquake project with adjustments to make
  * it work with Mac OS X and Hexen II: Hammer of Thyrion.
+ * (FIXME: Maybe update this to use QuickTime TunePlayer,
+ *	   as in native_midi_mac of SDL_mixer, sometime?)
  *
  * Copyright (C) 2002  contributors of the macglquake project
  * Copyright (C) 2006  Levent Yavas
@@ -142,10 +144,10 @@ qboolean MIDI_Init(void)
 static void *MIDI_Play (const char *filename)
 {
 #define	TEMP_MIDINAME	"tmpmusic.mid"
-	FILE	*f;
 	char	midipath[MAX_OSPATH];
-	int	ret;
-	OSErr	err;
+	byte	*buf;
+	size_t	len;
+	int	err = 0;
 	FSSpec	midiSpec;
 	FSRef	midiRef;
 	short	midiRefNum;
@@ -159,61 +161,58 @@ static void *MIDI_Play (const char *filename)
 		return NULL;
 	}
 
-	FS_OpenFile (filename, &f, NULL);
-	if (!f)
+	/* midi files are small: safe to load onto hunk */
+	buf = FS_LoadTempFile (filename, NULL);
+	if (!buf)
 	{
 		Con_DPrintf("Couldn't open %s\n", filename);
 		return NULL;
 	}
+	len = fs_filesize;
 
-	/* FIXME: is there not an api with which I can send the
-	 * midi data from memory and avoid this utter crap??? */
+	/* Using NewMovieFromDataRef() to import midi data to QT
+	 * movies would return -2048 if done wrong; using a Data
+	 * Reference Extension is advised (TechNote 1195).  Lazy
+	 * and ugly workaround is simply extracting the file.  */
 	Con_DPrintf("Extracting %s from pakfile\n", filename);
-	FS_MakePath_BUF(FS_USERBASE, &ret, midipath, sizeof(midipath), TEMP_MIDINAME);
-	if (ret == 0)
-		ret = FS_WriteFileFromHandle (f, midipath, fs_filesize);
-	fclose (f);
-	if (ret != 0)
+	FS_MakePath_BUF(FS_USERBASE, &err, midipath, sizeof(midipath), TEMP_MIDINAME);
+	if (err == 0)
+		err = FS_WriteFile (midipath, buf, len);
+	if (err != 0)
 	{
-		Con_Printf("Error while extracting from pak\n");
+		Con_Printf("Error extracting %s from pak\n", filename);
 		return NULL;
 	}
-
-	/* converting path to FSSpec. found in CarbonCocoaIntegration.pdf:
-	 * page 27, Obtaining an FSSpec Structure */
 	err = FSPathMakeRef ((UInt8 *)midipath, &midiRef, NULL);
 	if (err != noErr)
 	{
-		Con_Printf ("MIDI_DRV: FSPathMakeRef error while opening %s\n", midipath);
+		Con_Printf ("Error getting FSRef for %s\n", midipath);
 		return NULL;
 	}
-
 	err = FSGetCatalogInfo (&midiRef, kFSCatInfoNone, NULL, NULL, &midiSpec, NULL);
 	if (err != noErr)
 	{
-		Con_Printf ("MIDI_DRV: FSGetCatalogInfo error while opening %s\n", midipath);
+		Con_Printf ("Error getting FSSpec for %s\n", midipath);
 		return NULL;
 	}
 
 	err = OpenMovieFile (&midiSpec, &midiRefNum, fsRdPerm);
 	if (err != noErr)
 	{
-		Con_Printf ("MIDI_DRV: OpenMovieStream error opening midi file\n");
+		Con_Printf ("OpenMovieStream error opening midi file\n");
 		return NULL;
 	}
-
 	err = NewMovieFromFile (&midiTrack, midiRefNum, NULL, NULL, newMovieActive, NULL);
 	if (err != noErr || !midiTrack)
 	{
-		Con_Printf ("MIDI_DRV: QuickTime error in creating stream.\n");
+		Con_Printf ("QuickTime error in creating midi stream\n");
 		return NULL;
 	}
 
+	CloseMovieFile (midiRefNum);	/* data now in memory */
 	GoToBeginningOfMovie (midiTrack);
 	PrerollMovie (midiTrack, 0, 0);
-
 	SetMovieVolume (midiTrack, (short)(bgmvolume.value * 256.0f));
-
 	StartMovie (midiTrack);
 	Con_Printf ("Started midi music %s\n", filename);
 

@@ -4,6 +4,10 @@ Development Progress	:
 ---------------------------
 
 2013-03-06 (SVN):
+    * midi_mac.c: add missing CloseMovieFile() call in MIDI_Play(). do
+      load the file onto hunk memory. some cleanup and tidyup.
+
+2013-03-06 (SVN):
     * Makefiles,Xcode project file: add -mmacosx-version-min=10.2 among
       the CFLAGS and LDFLAGS. otherwise gcc sets the flag for 10.1, and
       midi_osx.c requires 10.2.
