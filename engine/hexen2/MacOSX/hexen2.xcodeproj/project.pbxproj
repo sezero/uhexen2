@@ -1093,8 +1093,16 @@
 					../../../oslibs/macosx/codecs/include,
 				);
 				INFOPLIST_FILE = hexen2.plist;
+				MACOSX_DEPLOYMENT_TARGET = 10.4;
+				"MACOSX_DEPLOYMENT_TARGET[arch=ppc]" = 10.2;
 				OTHER_CFLAGS = "";
+				"OTHER_CFLAGS[arch=ppc]" = (
+					"-mmacosx-version-min=10.2",
+				);
 				OTHER_LDFLAGS = "";
+				"OTHER_LDFLAGS[arch=ppc]" = (
+					"-mmacosx-version-min=10.2",
+				);
 				OTHER_REZFLAGS = "";
 				PREBINDING = NO;
 				PRODUCT_NAME = "Hexen_II";
@@ -1138,8 +1146,16 @@
 					../../../oslibs/macosx/codecs/include,
 				);
 				INFOPLIST_FILE = hexen2.plist;
+				MACOSX_DEPLOYMENT_TARGET = 10.4;
+				"MACOSX_DEPLOYMENT_TARGET[arch=ppc]" = 10.2;
 				OTHER_CFLAGS = "";
+				"OTHER_CFLAGS[arch=ppc]" = (
+					"-mmacosx-version-min=10.2",
+				);
 				OTHER_LDFLAGS = "";
+				"OTHER_LDFLAGS[arch=ppc]" = (
+					"-mmacosx-version-min=10.2",
+				);
 				OTHER_REZFLAGS = "";
 				PREBINDING = NO;
 				PRODUCT_NAME = "Hexen_II";
@@ -1245,10 +1261,17 @@
 					../../../oslibs/macosx/codecs/include,
 				);
 				INFOPLIST_FILE = glhexen2.plist;
-				MACOSX_DEPLOYMENT_TARGET = "";
+				MACOSX_DEPLOYMENT_TARGET = 10.4;
+				"MACOSX_DEPLOYMENT_TARGET[arch=ppc]" = 10.2;
 				OTHER_CFLAGS = "";
-				LIBRARY_SEARCH_PATHS = ../../../oslibs/macosx/codecs/lib;
+				"OTHER_CFLAGS[arch=ppc]" = (
+					"-mmacosx-version-min=10.2",
+				);
 				OTHER_LDFLAGS = "";
+				"OTHER_LDFLAGS[arch=ppc]" = (
+					"-mmacosx-version-min=10.2",
+				);
+				LIBRARY_SEARCH_PATHS = ../../../oslibs/macosx/codecs/lib;
 				OTHER_REZFLAGS = "";
 				PREBINDING = NO;
 				PRODUCT_NAME = "Hexen_II-gl";
@@ -1296,10 +1319,17 @@
 					../../../oslibs/macosx/codecs/include,
 				);
 				INFOPLIST_FILE = glhexen2.plist;
-				MACOSX_DEPLOYMENT_TARGET = "";
+				MACOSX_DEPLOYMENT_TARGET = 10.4;
+				"MACOSX_DEPLOYMENT_TARGET[arch=ppc]" = 10.2;
 				OTHER_CFLAGS = "";
-				LIBRARY_SEARCH_PATHS = ../../../oslibs/macosx/codecs/lib;
+				"OTHER_CFLAGS[arch=ppc]" = (
+					"-mmacosx-version-min=10.2",
+				);
 				OTHER_LDFLAGS = "";
+				"OTHER_LDFLAGS[arch=ppc]" = (
+					"-mmacosx-version-min=10.2",
+				);
+				LIBRARY_SEARCH_PATHS = ../../../oslibs/macosx/codecs/lib;
 				OTHER_REZFLAGS = "";
 				PREBINDING = NO;
 				PRODUCT_NAME = "Hexen_II-gl";

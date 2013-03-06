@@ -3,6 +3,11 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2013-03-06 (SVN):
+    * Makefiles,Xcode project file: add -mmacosx-version-min=10.2 among
+      the CFLAGS and LDFLAGS. otherwise gcc sets the flag for 10.1, and
+      midi_osx.c requires 10.2.
+
 2013-03-03 (SVN):
     * minor documentation updates regarding fov and fov_adapt.
 
