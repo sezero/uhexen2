@@ -1,7 +1,7 @@
 Hammer of Thyrion (uHexen2) release notes:
 
 ========================================================================
-Changes in v1.5.6: (Mar. 03, 2013.)
+Changes in v1.5.6: (Mar. 06, 2013.)
 ========================================================================
 
 - Screen: implemented Hor+ style field of view (FOV) scaling, useful for

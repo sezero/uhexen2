@@ -24,7 +24,7 @@
  * Copyright (C) 2012  O. Sezer <sezero@users.sourceforge.net>
  *
  * Only for Mac OS X using Core MIDI and requiring version
- * 10.3 or later. Use QuickTime with midi_mac.c, otherwise.
+ * 10.2 or later. Use QuickTime with midi_mac.c, otherwise.
  */
 
 #include "quakedef.h"
@@ -66,7 +66,7 @@ typedef struct _CoreMidiSong
 	MusicPlayer	player;
 	MusicSequence	sequence;
 	MusicTimeStamp	endTime;
-	MusicTimeStamp	pauseTime; /* needed??? (for pause & resume??) */
+	MusicTimeStamp	pauseTime;
 	AudioUnit	audiounit;
 } CoreMidiSong;
 
@@ -142,6 +142,7 @@ static OSStatus GetSequenceLength(MusicSequence sequence, MusicTimeStamp *_seque
 {
 /* http://lists.apple.com/archives/Coreaudio-api/2003/Jul/msg00370.html
  * figure out sequence length  */
+	static qboolean old_osx = false;
 	UInt32 ntracks, i;
 	MusicTimeStamp sequenceLength = 0;
 	OSStatus err;
@@ -153,23 +154,50 @@ static OSStatus GetSequenceLength(MusicSequence sequence, MusicTimeStamp *_seque
 	for (i = 0; i < ntracks; ++i)
 	{
 		MusicTrack track;
+		MusicEventIterator iter = NULL;
 		MusicTimeStamp tracklen = 0;
 		UInt32 tracklenlen = sizeof (tracklen);
 
 		err = MusicSequenceGetIndTrack(sequence, i, &track);
 		if (err != noErr)
 			return err;
-
-		err = MusicTrackGetProperty(track, kSequenceTrackProperty_TrackLength,
-					    &tracklen, &tracklenlen);
-		if (err != noErr)
-			return err;
-
-		if (sequenceLength < tracklen)
-			sequenceLength = tracklen;
+		if (!old_osx)
+		{
+			/* kSequenceTrackProperty_TrackLength (5) needs 10.3 and newer.
+			 * so, the following returns error when run on 10.2 or older. */
+			err = MusicTrackGetProperty(track, 5, &tracklen, &tracklenlen);
+			if (err != noErr)
+			{
+				if (i != 0) return err;
+				old_osx = true;
+				goto _old_code;
+			}
+			if (sequenceLength < tracklen)
+				sequenceLength = tracklen;
+		}
+		else
+		{	_old_code:
+			err = NewMusicEventIterator(track, &iter);
+			if (err != noErr) return err;
+			err = MusicEventIteratorSeek(iter, kMusicTimeStamp_EndOfTrack);
+			if (err != noErr) return err;
+			if (!MusicEventIteratorPreviousEvent(iter))
+			{
+				if (!MusicEventIteratorGetEventInfo(iter, &tracklen,
+								    NULL, NULL, NULL))
+				{
+					tracklen += 4; /* add 4 beats - nice and arbitrary!!! */
+					if (tracklen > sequenceLength)
+						sequenceLength = tracklen;
+				}
+			}
+			if (iter)
+				DisposeMusicEventIterator (iter);
+		}
 	}
 
 	*_sequenceLength = sequenceLength;
+	Con_DPrintf("MIDI sequence len: %f\n", sequenceLength);
 
 	return noErr;
 }
@@ -251,6 +279,7 @@ static void *MIDI_Play (const char *filename)
 		return NULL;
 	}
 
+	/* midi files are small: safe to load onto hunk */
 	buf = FS_LoadTempFile (filename, NULL);
 	if (!buf)
 	{
@@ -259,10 +288,7 @@ static void *MIDI_Play (const char *filename)
 	}
 	len = fs_filesize;
 
-	song = (CoreMidiSong *) malloc(sizeof(CoreMidiSong));
-	if (song == NULL)
-		goto fail;
-	memset(song, 0, sizeof(*song));
+	song = (CoreMidiSong *) Z_Malloc(sizeof(CoreMidiSong), Z_MAINZONE);
 
 	if (NewMusicPlayer(&song->player) != noErr)
 		goto fail;
@@ -323,7 +349,7 @@ fail:
 			DisposeMusicSequence(song->sequence);
 		if (song->player)
 			DisposeMusicPlayer(song->player);
-		free(song);
+		Z_Free(song);
 	}
 	if (data)
 		CFRelease(data);
@@ -336,7 +362,7 @@ static void MIDI_Pause (void **handle)
 	CHECK_MIDI_ALIVE();
 	if (!midi_paused)
 	{
-		MusicPlayerGetTime(currentsong->player, &currentsong->pauseTime); /* needed??? */
+		MusicPlayerGetTime(currentsong->player, &currentsong->pauseTime);
 		MusicPlayerStop(currentsong->player);
 		midi_paused = true;
 	}
@@ -347,7 +373,7 @@ static void MIDI_Resume (void **handle)
 	CHECK_MIDI_ALIVE();
 	if (midi_paused)
 	{
-		MusicPlayerSetTime(currentsong->player, currentsong->pauseTime); /* needed??? */
+		MusicPlayerSetTime(currentsong->player, currentsong->pauseTime);
 		MusicPlayerStart(currentsong->player);
 		midi_paused = false;
 	}
@@ -360,7 +386,7 @@ static void MIDI_Stop (void **handle)
 	MusicPlayerStop(currentsong->player);
 	DisposeMusicSequence(currentsong->sequence);
 	DisposeMusicPlayer(currentsong->player);
-	free(currentsong);
+	Z_Free(currentsong);
 	currentsong = NULL;
 }
 

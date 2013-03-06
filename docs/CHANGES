@@ -4,6 +4,14 @@ Development Progress	:
 ---------------------------
 
 2013-03-06 (SVN):
+    * midi_osx.c: add code in GetSequenceLength() to support running on
+      10.2, because the constant kSequenceTrackProperty_TrackLength (5)
+      requires 10.3 runtime (code taken from an old post on mac mailing
+      lists.) add a debug print for the resulting sequence length value.
+      change malloc() to Z_Malloc() for our private CoreMidiSong struct.
+    * update version date stamp to 2013-03-06.
+
+2013-03-06 (SVN):
     * midi_mac.c: add missing CloseMovieFile() call in MIDI_Play(). do
       load the file onto hunk memory. some cleanup and tidyup.
 
@@ -26,7 +34,7 @@ Development Progress	:
     * gl_vidamiga.c, gl_vidnt.c, gl_vidsdl.c: comment out the fullsbar
       stuff: to begin with, things aren't like those in quake and sbar
       is always drawn. besides, PowerVR cards are not around any more,
-      too.)
+      either.)
 
 2013-03-02 (SVN):
     * host_cmd.c (Host_Restart_f): fix error message argument order from
@@ -269,7 +277,7 @@ Development Progress	:
     * timidity: documented our changes in the CHANGES file.
 
 2013-02-10 (SVN):
-    * utils, hcc: fixed a _Wclobbered warning in CO_CompileFile() by
+    * utils, hcc: fixed a -Wclobbered warning in CO_CompileFile() by
       making the local boolean inProgress variable volatile.
 
 2013-02-10 (SVN):
