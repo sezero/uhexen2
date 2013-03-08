@@ -1173,6 +1173,8 @@ void() NextLevel =
 {
 	entity o;
 
+	serverflags (+) SFL_NEW_UNIT;// because we may not call FindDMLevel()
+
 	// configurable map lists, see if the current map exists as a
 	// serverinfo/localinfo var
 	nextmap = infokey(world, mapname);
