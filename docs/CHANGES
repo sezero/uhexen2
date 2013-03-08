@@ -4,6 +4,14 @@ Development Progress	:
 ---------------------------
 
 2013-03-08 (SVN):
+    * gamecode: increment version to 1.28. revert Kor Skarn's method of
+      abusing strings.txt for map cycling: it was intrusive and unsafe
+      and ugly. the hw and siege hcode now use the standart quakeworld
+      method of localinfo variables: see client.hc:NextLevel().
+    * docs/README.hwsv: update for brief user instructions on setting up
+      a map cycling.
+
+2013-03-08 (SVN):
     * increment engine versions for hexen2 to 1.28, hexenworld to 0.28.
     * update version date stamp to 2013-03-08.
 

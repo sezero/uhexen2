@@ -4,6 +4,14 @@ Hexen II: Hammer of Thyrion (uHexen2) - GAMECODE
 Changes
 -------
 
+2013-03-08 (1.28):
+===================
+- Map cycling: abandoned the old community-invented (Kor Skarn) method
+  of abusing strings.txt: it was intrusive and unsafe and ugly. The hw
+  and siege hcode now use the standart quakeworld method of localinfo
+  variables: see client.hc:NextLevel() for details. docs/README.hwsv is
+  updated for brief user instructions on setting up a map cycling.
+
 2012-10-01 (1.27):
 ===================
 - client.hc, invntory.hc: artifact_active/artifact_low setting/clearing

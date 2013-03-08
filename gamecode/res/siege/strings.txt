@@ -600,13 +600,6 @@ Regeneration
 
 Climbing Boots
 
-map_sequence_start
-siege
-cryptsg
-besiege2
-gorge
-map_sequence_end
-
 <1.you passed the end of the file, pal>
 <2.you passed the end of the file, pal>
 <3.you passed the end of the file, pal>

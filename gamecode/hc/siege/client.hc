@@ -1293,16 +1293,11 @@ void() NextLevel =
 
 	serverflags (+) SFL_NEW_UNIT;
 
-	if(mapname=="")
-		mapname = world.map;
-	
-	if(mapname=="")
-		mapname = "siege"; //If this happens, something is f*****d up somewhere.
-
-	if(world.next_map=="")
-		nextmap = mapname;
-	else
-		nextmap = world.next_map;
+	// configurable map lists, see if the current map exists as a
+	// serverinfo/localinfo var
+	nextmap = infokey(world, mapname);
+	if (nextmap == "")
+		nextmap = /*world.map*/ "siege";
 
 	o = spawn();
 	o.map = nextmap;

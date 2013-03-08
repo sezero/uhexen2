@@ -109,82 +109,6 @@ void() main =
 
 
 entity	lastspawn;
-float	have_mapcycle;
-
-void GetNextMap()
-{
-float line_id, num_maps;
-float map_sequence_start;
-string map_next;
-
-	have_mapcycle = 0;
-	line_id = 0;
-	loop /*while (1)*/ {
-		line_id +=1;
-		map_next = getstring(line_id);
-		if (map_next == "map_sequence_start")
-		{
-			if (map_sequence_start)
-				return;	// invalid list
-
-			// found start marker of the cyling list
-			map_sequence_start = line_id;
-			continue;	// found the list start
-		}
-		if (map_next == "map_sequence_end")
-		{
-			if (map_sequence_start)
-			{
-				num_maps = line_id - map_sequence_start - 1;
-				if (num_maps > 0)
-					break;	// we have a map cycling list
-			}
-
-			return;	// invalid list
-		}
-		if (map_next == "<1.you passed the end of the file, pal>")
-		{
-		// map map cycling list available and we
-		// are reaching the end of strings.txt
-			return;
-		}
-	}
-
-	have_mapcycle = 1;
-	line_id = 1;
-
-	while (line_id <= num_maps)
-	{
-		map_next = getstring(map_sequence_start+line_id);
-
-		if (map_next == mapname)
-		{
-			break;	// found position for old map
-		}
-		line_id += 1;
-	}
-
-	if (line_id > num_maps)
-	{
-		self.next_map = mapname;
-		return;	// running a map not in list
-	}
-
-	line_id += 1;
-	if (line_id > num_maps)
-	{
-	// if we are end of the list, go back to the start
-		line_id = 1;
-	}
-
-	map_next = getstring(map_sequence_start+line_id);
-
-	if (map_next == "*")
-		map_next = "";
-
-	self.next_map = map_next;
-}
-
 
 //=======================
 /*QUAKED worldspawn (0 0 0) ?
@@ -210,18 +134,6 @@ void() worldspawn =
 	InvincibleCache = 0;
 
 // custom map attributes
-
-	GetNextMap();
-
-    if (deathmatch && have_mapcycle)
-    {
-	bprint(PRINT_HIGH, "Current Map is  : ");
-	bprint(PRINT_HIGH, mapname);
-	bprint(PRINT_HIGH, ",\nNext Map will be: ");
-	bprint(PRINT_HIGH, self.next_map);
-	bprint(PRINT_HIGH, "\n");
-    }
-
 /*	don't want hardcoded values for hexenworld
 	if (self.model == "maps/mgtowers.bsp")
 	{

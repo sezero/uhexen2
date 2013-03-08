@@ -760,6 +760,4 @@ entity	sight_entity;	//So monsters wake up other monsters
 .float init_exp_val;
 .entity credit_enemy;
 .string close_target;
-//map cycling
-.string next_map;
 

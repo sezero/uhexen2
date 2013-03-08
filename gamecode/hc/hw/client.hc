@@ -337,11 +337,8 @@ void() changelevel_touch =
 		bprinti (PRINT_MEDIUM, STR_EXITEDLEVEL);
 	}
 	
-	if (deathmatch) {
-	//	FindDMLevel();
-		NextLevel();	// Otherwise map-cycling doesnt work
-				// work for exitters.		O.S.
-	}
+	if (deathmatch)
+		NextLevel();//FindDMLevel();
 	else
 	{
 		nextmap = self.map;
@@ -1176,17 +1173,11 @@ void() NextLevel =
 {
 	entity o;
 
-	FindDMLevel();
-
-    if (have_mapcycle)
-    {
-	// the original authors of map cycling specify that
-	// a map not in map cycling list will reload itself
-	if(world.next_map=="")
-		nextmap = mapname;
-	else
-		nextmap = world.next_map;
-    }
+	// configurable map lists, see if the current map exists as a
+	// serverinfo/localinfo var
+	nextmap = infokey(world, mapname);
+	if (nextmap == "")
+		FindDMLevel();
 
 	if (nextmap == "")
 	{

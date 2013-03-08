@@ -20,33 +20,49 @@ mission pack support, run the server with -noportals commandline switch.
 Setting up Map Cycling:
 -----------------------
 
-Only the server needs to do this. Using your favorite text editor, open the
-file named strings.txt in your hw directory:
-- Go to the end of the file.
-- You will see four warning lines there, the first one says:
-  <1.you passed the end of the file, pal>
-  The second and the rest differ only by the starting number, ie 2, 3 and 4.
-  These lines MUST always stay at the end of the file! Never delete or edit
-  them in any way!
-- Just before the first warning line, insert two new lines: The first one
-  must be map_sequence_start, and the second one must be map_sequence_end .
-- Between these two new lines, add the list of the maps you want to cycle,
-  one map name on each line. Map names must stay between map_sequence_start
-  and map_sequence_end.  Do not edit any other part of the file!
-- Empty lines or lines with spaces only are not allowed. Extra spaces are
-  not allowed.
-- Any number of maps can be put in it.
-- Only the first occurence of a map name is used to determine next map,
-  therefore use a mapname only once.
-- If the server is running a map that is not in the list the same map will
-  reload when game ends.
-- When server reaches the end of the list, it goes back to the start of
-  of the list: looping is enabled.
-- As an example, see the strings.txt file in the hw directory provided
-  by Hammer of Thyrion.
-- If you want to disable map cycling you just created, remove the all the
-  map entries and the map_sequence_start and map_sequence_end headers from
-  strings.txt .
+Only the server needs to do this. As of gamedata-v1.28 (uHexen2-v1.5.6),
+hw and siege map cyling is done using the localinfo variables just like
+in quakeworld.
+
+The following example shows how to rotate four maps on a hw server:
+
+localinfo demo2 romeric5
+localinfo romeric5 village2
+localinfo village5 meso3
+localinfo meso3 demo2
+
+The first line tells that demo2 will be followed by romeric5, the second
+line says romeric5 will be followed by village2, and so on. You can save
+those following lines in hw/mapcycle.cfg, and start your server like:
+
+	hwsv +exec mapcycle.cfg +map demo2
+
+and the specified map rotation will be in effect.
+
+While the server is running, you can change the map rotation, too: edit
+your mapcycle.cfg to clear the old rotation rules and specify a new one,
+e.g:
+
+// these clear the nextmap info for the previous ones, because you
+// probably are not interested in them anymore
+localinfo demo2 ""
+localinfo romeric5 ""
+localinfo village5 ""
+localinfo meso3 ""
+// and these specify new rules
+localinfo village3 hwdm2
+localinfo hwdm2 ravdm4
+localinfo ravdm4 demo3
+localinfo demo3 tower
+localinfo tower village3
+
+Now on the server console you can do "exec mapcycle.cfg" which refreshes
+the map rotation info, and then do "map village3" which starts the first
+map in the rotation.  We provide sample mapcyle.cfg files for the hw and
+siege mods in our packages.
+
+Remember that map cycling is mod-specific: some other mod may require doing
+different things.
 
 
 Tome Mode:

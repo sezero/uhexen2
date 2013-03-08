@@ -37,8 +37,13 @@ Changes in v1.5.6: (Mar. 08, 2013.)
 
 - HexenWorld: opengl fixes for the shownames feature, other gl updates.
 
+- Hexenworld, gamecode: hw and siege map cycling setup is done using the
+  localinfo variables just like in quakeworld, strings.txt abusing is no
+  more. See docs/README.hwsv for brief instructions.
+
 - Fixed several other minor bugs, some found by valgrind. Incremented
-  engine versions for hexen2 to 1.28, hexenworld to 0.28.
+  engine versions for hexen2 to 1.28, hexenworld to 0.28, and gamecode
+  version to 1.28.
 
 
 ========================================================================

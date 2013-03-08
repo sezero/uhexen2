@@ -779,6 +779,3 @@ entity	sight_entity;	//So monsters wake up other monsters
 .string pain_target;
 .float last_up;
 
-//map cycling
-.string next_map;
-

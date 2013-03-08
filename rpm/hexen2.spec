@@ -58,7 +58,7 @@
 
 %define desktop_vendor	uhexen2
 
-%define gamecode_ver	1.27
+%define gamecode_ver	1.28
 
 Name:		hexen2
 License:	GPLv2
@@ -211,6 +211,8 @@ utils/hcc/hcc -src gamecode-%{gamecode_ver}/hc/hw -oi -on
 %{__install} -D -m644 gamecode-%{gamecode_ver}/res/portals/default.cfg %{buildroot}/%{_prefix}/games/%{name}/portals/default.cfg
 %{__mkdir_p} %{buildroot}/%{_prefix}/games/%{name}/hw/
 %{__install} -D -m644 gamecode-%{gamecode_ver}/hc/hw/hwprogs.dat %{buildroot}/%{_prefix}/games/%{name}/hw/hwprogs.dat
+%{__install} -D -m644 gamecode-%{gamecode_ver}/res/hw/mapcycle.cfg %{buildroot}/%{_prefix}/games/%{name}/hw/mapcycle.cfg
+%{__install} -D -m644 gamecode-%{gamecode_ver}/res/hw/server.cfg %{buildroot}/%{_prefix}/games/%{name}/hw/server.cfg
 %{__install} -D -m644 gamecode-%{gamecode_ver}/res/hw/strings.txt %{buildroot}/%{_prefix}/games/%{name}/hw/strings.txt
 %{__install} -D -m644 gamecode-%{gamecode_ver}/res/hw/default.cfg %{buildroot}/%{_prefix}/games/%{name}/hw/default.cfg
 %{__install} -D -m644 hw/pak4.pak %{buildroot}/%{_prefix}/games/%{name}/hw/pak4.pak
@@ -345,6 +347,8 @@ desktop-file-install \
 %{_prefix}/games/%{name}/hwcl
 %{_prefix}/games/%{name}/glhwcl
 %{_prefix}/games/%{name}/hw/hwprogs.dat
+%{_prefix}/games/%{name}/hw/mapcycle.cfg
+%{_prefix}/games/%{name}/hw/server.cfg
 %{_prefix}/games/%{name}/hw/pak4.pak
 %{_prefix}/games/%{name}/hw/strings.txt
 %{_prefix}/games/%{name}/hw/default.cfg
@@ -353,9 +357,10 @@ desktop-file-install \
 %{_prefix}/games/%{name}/docs/README.hwmaster
 
 %changelog
-* Wed Feb 27 2013 O.Sezer <sezero@users.sourceforge.net> 1.5.6-1
+* Fri Mar 08 2013 O.Sezer <sezero@users.sourceforge.net> 1.5.6-1
 - Add --with opus build option
 - Bump version to 1.5.6.
+- Bump gamecode version to 1.28
 
 * Tue Sep 11 2012 O.Sezer <sezero@users.sourceforge.net> 1.5.5-1
 - Adjusted gamedata resource installation after txt->res rename
