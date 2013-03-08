@@ -1,7 +1,7 @@
 Hammer of Thyrion (uHexen2) release notes:
 
 ========================================================================
-Changes in v1.5.6: (Mar. 06, 2013.)
+Changes in v1.5.6: (Mar. 08, 2013.)
 ========================================================================
 
 - Screen: implemented Hor+ style field of view (FOV) scaling, useful for
@@ -37,7 +37,8 @@ Changes in v1.5.6: (Mar. 06, 2013.)
 
 - HexenWorld: opengl fixes for the shownames feature, other gl updates.
 
-- Fixed several other minor bugs, some found by valgrind.
+- Fixed several other minor bugs, some found by valgrind. Incremented
+  engine versions for hexen2 to 1.28, hexenworld to 0.28.
 
 
 ========================================================================
