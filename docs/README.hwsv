@@ -28,7 +28,7 @@ The following example shows how to rotate four maps on a hw server:
 
 localinfo demo2 romeric5
 localinfo romeric5 village2
-localinfo village5 meso3
+localinfo village2 meso3
 localinfo meso3 demo2
 
 The first line tells that demo2 will be followed by romeric5, the second
@@ -47,7 +47,7 @@ e.g:
 // probably are not interested in them anymore
 localinfo demo2 ""
 localinfo romeric5 ""
-localinfo village5 ""
+localinfo village2 ""
 localinfo meso3 ""
 // and these specify new rules
 localinfo village3 hwdm2

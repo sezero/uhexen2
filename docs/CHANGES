@@ -4,6 +4,12 @@ Development Progress	:
 ---------------------------
 
 2013-03-08 (SVN):
+    * docs/README.hwsv, hw/mapcycle.cfg: fix a typo in sample rotation.
+    * hw/client.hc, dmlevels.hc: properly simplify map cycling stuff.
+    * siege/client.hc, dmlevels.hc: minor map cycling stuff, and add
+      some FIXME notes.
+
+2013-03-08 (SVN):
     * hw/client.hc (NextLevel): set SFL_NEW_UNIT unconditionally because
       we may not have to call FindDMLevel().
 

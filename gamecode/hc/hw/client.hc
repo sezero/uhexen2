@@ -189,126 +189,6 @@ void() execute_changelevel =
 	}	
 };
 
-/* now in dmlevels.hc
-void FindDMLevel(void)
-{
-	serverflags (+) SFL_NEW_UNIT;
-
-	nextmap = string_null;
-
-	if (cvar("registered") != 0 || cvar("oem") != 0)
-	{
-		if (mapname == "demo1")
-			nextmap = "demo2";
-		else if (mapname == "demo2")
-			nextmap = "demo3";
-		else if (mapname == "demo3")
-			nextmap = "village1";
-		else if (mapname == "village1")
-			nextmap = "village2";
-		else if (mapname == "village2")
-			nextmap = "village3";
-		else if (mapname == "village3")
-			nextmap = "village4";
-		else if (mapname == "village4")
-			nextmap = "village5";
-		else if (mapname == "village5")
-			nextmap = "rider1a";
-		else if (mapname == "rider1a")
-			nextmap = "demo1";
-
-		else if (mapname == "meso1")
-			nextmap = "meso2";
-		else if (mapname == "meso2")
-			nextmap = "meso3";
-		else if (mapname == "meso3")
-			nextmap = "meso4";
-		else if (mapname == "meso4")
-			nextmap = "meso5";
-		else if (mapname == "meso5")
-			nextmap = "meso6";
-		else if (mapname == "meso6")
-			nextmap = "meso8";
-		else if (mapname == "meso8")
-			nextmap = "meso9";
-		else if (mapname == "meso9")
-			nextmap = "meso1";
-
-		else if (mapname == "egypt1")
-			nextmap = "egypt2";
-		else if (mapname == "egypt2")
-			nextmap = "egypt3";
-		else if (mapname == "egypt3")
-			nextmap = "egypt4";
-		else if (mapname == "egypt4")
-			nextmap = "egypt5";
-		else if (mapname == "egypt5")
-			nextmap = "egypt6";
-		else if (mapname == "egypt6")
-			nextmap = "egypt7";
-		else if (mapname == "egypt7")
-			nextmap = "rider2c";
-		else if (mapname == "rider2c")
-			nextmap = "egypt1";
-
-		else if (mapname == "romeric1")
-			nextmap = "romeric2";
-		else if (mapname == "romeric2")
-			nextmap = "romeric3";
-		else if (mapname == "romeric3")
-			nextmap = "romeric4";
-		else if (mapname == "romeric4")
-			nextmap = "romeric5";
-		else if (mapname == "romeric5")
-			nextmap = "romeric6";
-		else if (mapname == "romeric6")
-			nextmap = "romeric7";
-		else if (mapname == "romeric7")
-			nextmap = "romeric1";
-
-		else if (mapname == "cath")
-			nextmap = "tower";
-		else if (mapname == "tower")
-			nextmap = "castle4";
-		else if (mapname == "castle4")
-			nextmap = "castle5";
-		else if (mapname == "castle5")
-			nextmap = "eidolon";
-		else if (mapname == "eidolon")
-			nextmap = "cath";
-
-		else if (mapname == "ravdm1")
-			nextmap = "ravdm2";
-		else if (mapname == "ravdm2")
-			nextmap = "ravdm3";
-		else if (mapname == "ravdm3")
-			nextmap = "ravdm4";
-		else if (mapname == "ravdm4")
-			nextmap = "ravdm5";
-		else if (mapname == "ravdm5")
-			nextmap = "hwdm1";
-		else if (mapname == "hwdm1")
-			nextmap = "hwdm2";
-		else if (mapname == "hwdm2")
-			nextmap = "hwdm3";
-		else if (mapname == "hwdm3")
-			nextmap = "hwdm4";
-		else if (mapname == "hwdm4")
-			nextmap = "hwdm5";
-		else if (mapname == "hwdm5")
-			nextmap = "ravdm1";
-	}
-	else
-	{
-		if (mapname == "demo1")
-			nextmap = "demo2";
-		else if (mapname == "demo2")
-			nextmap = "ravdm1";
-		else if (mapname == "ravdm1")
-			nextmap = "demo1";
-	}
-}
-*/
 void() changelevel_touch =
 {
 
@@ -338,7 +218,7 @@ void() changelevel_touch =
 	}
 	
 	if (deathmatch)
-		NextLevel();//FindDMLevel();
+		FindDMLevel();
 	else
 	{
 		nextmap = self.map;
@@ -1173,13 +1053,7 @@ void() NextLevel =
 {
 	entity o;
 
-	serverflags (+) SFL_NEW_UNIT;// because we may not call FindDMLevel()
-
-	// configurable map lists, see if the current map exists as a
-	// serverinfo/localinfo var
-	nextmap = infokey(world, mapname);
-	if (nextmap == "")
-		FindDMLevel();
+	FindDMLevel();
 
 	if (nextmap == "")
 	{
@@ -1189,8 +1063,8 @@ void() NextLevel =
 		// go back to start if no trigger_changelevel
 		if (!o)
 		{
-			o = spawn();
 			nextmap = "demo1";
+			o = spawn();
 			o.map = nextmap;
 		}
 		else

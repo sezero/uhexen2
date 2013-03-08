@@ -1,5 +1,4 @@
 /*===========================
-
 Level listings for DM- seperate .hc file to make it easy to find.
 Change the order to whatever you want and recompile the progs.dat.
 
@@ -7,6 +6,9 @@ MG
 =============================*/
 void FindDMLevel(void)
 {
+//FIXME: DO WE EVEN REACH HERE?? IF WE REALLY DO, THEN
+//	 WE SHOULD USE MAP ROTATION LISTS HERE! -- O.S.
+
 	serverflags (+) SFL_NEW_UNIT;
 
 	nextmap = string_null;
@@ -15,7 +17,8 @@ void FindDMLevel(void)
 	{//FIXME: Check a text file for the next map, else use Siege11?
 		nextmap = "siege";
 	}
-	else if (cvar("registered") != 0 || cvar("oem") != 0)
+	else
+	if (cvar("registered") != 0 || cvar("oem") != 0)
 	{//registered
 		if (mapname == "demo1")
 			nextmap = "demo2";
