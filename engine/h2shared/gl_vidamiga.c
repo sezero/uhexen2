@@ -32,12 +32,11 @@
 #include <proto/graphics.h>
 #include <proto/cybergraphics.h>
 
-#include <GL/gl.h>
+//#include <GL/gl.h>
 #ifdef __AROS__
 #include <GL/arosmesa.h>
 #elif defined __MORPHOS__
-#include <tgl/gl.h>
-//#include <tgl/gla.h>
+#include <intuition/intuitionbase.h>
 #include <proto/tinygl.h>
 #endif
 
@@ -355,7 +354,7 @@ static int VID_SetMode (int modenum)
 	    ULONG ModeID;
 
 	    ModeID = BestCModeIDTags(
-			CYBRBIDTG_Depth, 8,
+			CYBRBIDTG_Depth, bpp,
 			CYBRBIDTG_NominalWidth, modelist[modenum].width,
 			CYBRBIDTG_NominalHeight, modelist[modenum].height,
 			TAG_DONE);
@@ -380,7 +379,7 @@ static int VID_SetMode (int modenum)
 	else
 	{
 		Cvar_SetValueQuick (&vid_config_fscr, 0);
-		flags |=  WFLG_DRAGBAR | WFLG_DEPTHGADGET | WFLG_CLOSEGADGET;
+		flags |= WFLG_DRAGBAR | WFLG_DEPTHGADGET | WFLG_CLOSEGADGET;
 	}
 
 	window = OpenWindowTags(0,
@@ -417,7 +416,7 @@ static int VID_SetMode (int modenum)
 		__tglContext = GLInit();
 		if (__tglContext)
 		{
-			if (screen)
+			if (screen && !(TinyGLBase->lib_Version == 0 && TinyGLBase->lib_Revision < 4))
 				contextinit = glAInitializeContextScreen(screen);
 			else
 				contextinit = glAInitializeContextWindowed(window);
@@ -441,21 +440,13 @@ static int VID_SetMode (int modenum)
 
 				// collect the actual attributes
 				memset (&vid_attribs, 0, sizeof(attributes_t));
-#ifdef __AROS__
-				AROSMesaGetConfig(context, GL_RED_BITS, &vid_attribs.red); 
-				AROSMesaGetConfig(context, GL_GREEN_BITS, &vid_attribs.green);
-				AROSMesaGetConfig(context, GL_BLUE_BITS, &vid_attribs.blue);
-				AROSMesaGetConfig(context, GL_ALPHA_BITS, &vid_attribs.alpha);
-				AROSMesaGetConfig(context, GL_DEPTH_BITS, &vid_attribs.depth);
-				AROSMesaGetConfig(context, GL_STENCIL_BITS, &vid_attribs.stencil);
-#elif defined __MORPHOS__
 				glGetIntegerv_fp(GL_RED_BITS, &vid_attribs.red);
 				glGetIntegerv_fp(GL_GREEN_BITS, &vid_attribs.green);
 				glGetIntegerv_fp(GL_BLUE_BITS, &vid_attribs.blue);
 				glGetIntegerv_fp(GL_ALPHA_BITS, &vid_attribs.alpha);
 				glGetIntegerv_fp(GL_DEPTH_BITS, &vid_attribs.depth);
 				glGetIntegerv_fp(GL_STENCIL_BITS, &vid_attribs.stencil);
-#endif
+
 				Con_SafePrintf ("vid_info: red: %d, green: %d, blue: %d, alpha: %d, depth: %d\n",
 						vid_attribs.red, vid_attribs.green, vid_attribs.blue, vid_attribs.alpha, vid_attribs.depth);
 
@@ -489,24 +480,12 @@ static void myglActiveTextureARB (GLenum unit)
 	GLActiveTextureARB(__tglContext, unit);
 }
 
-static void myglColorTable (GLenum target, GLenum internalformat, GLint width,
-			    GLenum format, GLenum type, GLvoid *data)
-{
-	GLColorTable(__tglContext, target, internalformat, width, format, type, data);
-}
-
 static void *AROSMesaGetProcAddress (const char *s)
 {
 	if (strcmp(s, "glMultiTexCoord2fARB") == 0)
 		return (void *)myglMultiTexCoord2fARB;
 	else if (strcmp(s, "glActiveTextureARB") == 0)
 		return (void *)myglActiveTextureARB;
-	else if (strcmp(s, "glColorTableEXT") == 0)
-		return (void *)myglColorTable;
-	/*
-	else if (strcmp(s, "glGetTexParameterfv") == 0)
-		return (void *)myglGetTexParameterfv;
-	*/
 
 	return NULL;
 }
@@ -556,8 +535,8 @@ static void VID_InitGamma (void)
 	if (!gl_dogamma)
 	{
 #ifdef __MORPHOS__
-		if (screen /*&& (IntuitionBase->LibNode.lib_Version > 50 || 
-			(IntuitionBase->LibNode.lib_Version == 50 && IntuitionBase->LibNode.lib_Revision >= 74))*/)
+		if (screen && (IntuitionBase->LibNode.lib_Version > 50 || 
+			(IntuitionBase->LibNode.lib_Version == 50 && IntuitionBase->LibNode.lib_Revision >= 74)))
 			gammaworks = true;
 		else
 #endif
@@ -1092,8 +1071,7 @@ static void VID_Restart_f (void)
 
 static void VID_PrepareModes (void)
 {
-	int	i, j;
-	qboolean	not_multiple;
+	int	i;
 	ULONG id;
 	APTR handle;
 	struct DimensionInfo diminfo;
@@ -1418,11 +1396,11 @@ void	VID_Shutdown (void)
 #elif defined __MORPHOS__
 	if (contextinit)
 	{
-		if (screen)
+		if (screen && !(TinyGLBase->lib_Version == 0 && TinyGLBase->lib_Revision < 4))
 			glADestroyContextScreen();
 		else
 			glADestroyContextWindowed();
-		contextinit = NULL;
+		contextinit = false;
 	}
 
 	if (__tglContext)
