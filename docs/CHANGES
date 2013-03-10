@@ -3,6 +3,9 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2013-03-10 (SVN):
+    * update the Mac OS X icon. add some more under engine/resource/.
+
 2013-03-08 (SVN):
     * docs/README.hwsv, hw/mapcycle.cfg: fix a typo in sample rotation.
     * hw/client.hc, dmlevels.hc: properly simplify map cycling stuff.
