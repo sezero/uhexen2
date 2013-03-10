@@ -687,7 +687,7 @@ static void Mod_LoadLighting (lump_t *l)
 			if (path_id < loadmodel->path_id)
 			{
 				Hunk_FreeToLowMark(mark);
-				Con_Printf("ignored %s from a gamedir with lower priority\n", litfilename);
+				Con_DPrintf("ignored %s from a gamedir with lower priority\n", litfilename);
 				goto _load_internal;
 			}
 			if (data[0] != 'Q' || data[1] != 'L' || data[2] != 'I' || data[3] != 'T')
@@ -839,7 +839,7 @@ static void Mod_LoadEntities (lump_t *l)
 		if (path_id < loadmodel->path_id)
 		{
 			Hunk_FreeToLowMark(mark);
-			Con_Printf("ignored %s from a gamedir with lower priority\n", entfilename);
+			Con_DPrintf("ignored %s from a gamedir with lower priority\n", entfilename);
 		}
 		else
 		{

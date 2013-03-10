@@ -4,6 +4,10 @@ Development Progress	:
 ---------------------------
 
 2013-03-10 (SVN):
+    * [gl_|sv_]model.c: change the 'ignored' messages from external lit
+      and ent files back to developer mode.
+
+2013-03-10 (SVN):
     * update version date stamp to 2013-03-10.
 
 2013-03-10 (SVN):

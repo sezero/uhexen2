@@ -316,7 +316,7 @@ static void Mod_LoadEntities (lump_t *l)
 		if (path_id < loadmodel->path_id)
 		{
 			Hunk_FreeToLowMark(mark);
-			Con_Printf("ignored %s from a gamedir with lower priority\n", entfilename);
+			Con_DPrintf("ignored %s from a gamedir with lower priority\n", entfilename);
 		}
 		else
 		{
