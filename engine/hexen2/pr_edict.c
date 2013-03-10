@@ -1374,6 +1374,7 @@ based on map name, using maplist.txt
 ===============
 */
 static const char def_progname[] = "progs.dat";
+static const char maplist_name[] = "maplist.txt";
 static const char *PR_GetProgFilename (void)
 {
 // see the comments in progs.h about multiple progs
@@ -1381,16 +1382,24 @@ static const char *PR_GetProgFilename (void)
 	return def_progname;
 #else
 	static char	finalprogname[MAX_QPATH];
+	unsigned int	id0, id1;
 	FILE	*FH;
 
-	strcpy(finalprogname, def_progname);
-
-	FS_OpenFile ("maplist.txt", &FH, NULL);
-	if (FH)
+	FS_OpenFile (maplist_name, &FH, &id1);
+	if (FH == NULL)
+		return def_progname;
+	else if (FS_FileExists(def_progname, &id0) && id1 < id0)
+	{
+		Con_DPrintf("ignored %s from a gamedir with lower priority\n", maplist_name);
+		return def_progname;
+	}
+	else
 	{
 		char	build[2048], *test;
 		char	mapname[MAX_QPATH], progname[MAX_QPATH];
-		int			i, j, k;
+		int	i, j, k;
+
+		strcpy(finalprogname, def_progname);
 
 		// Format of maplist.txt :
 		// Line #1 : <number of lines excluding this one>

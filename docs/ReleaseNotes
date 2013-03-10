@@ -18,6 +18,9 @@ Changes in v1.5.6: (Mar. 10, 2013.)
   now considered as error, so that the clients do not get stuck in the
   connected state anymore.
 
+- Server: accept maplist.txt only if it is from the same game directory
+  as progs.dat itself or from a searchpath with a higher priority.
+
 - Timidity (Unix MIDI): Multiple fixes, including memory errors found by
   valgrind.
 

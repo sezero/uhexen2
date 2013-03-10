@@ -4,6 +4,11 @@ Development Progress	:
 ---------------------------
 
 2013-03-10 (SVN):
+    * pr_edict.c: if progs.dat exists, accept maplist.txt only if it is
+      from the same game directory as progs.dat itself or if it is from
+      a searchpath with a higher priority.
+
+2013-03-10 (SVN):
     * [gl_|sv_]model.c: change the 'ignored' messages from external lit
       and ent files back to developer mode.
 
