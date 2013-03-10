@@ -4,6 +4,9 @@ Development Progress	:
 ---------------------------
 
 2013-03-10 (SVN):
+    * oslibs/dos/libwatt32: delete empty object files from the archive.
+
+2013-03-10 (SVN):
     * gl_vidamiga.c: cleanups from Szilard Biro.
 
 2013-03-10 (SVN):
