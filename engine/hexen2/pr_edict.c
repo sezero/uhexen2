@@ -311,7 +311,7 @@ edict_t *ED_Alloc (void)
 		e = EDICT_NUM(i);
 		// the first couple seconds of server time can involve a lot of
 		// freeing and allocating, so relax the replacement policy
-		if (e->free && ( e->freetime < 2 || sv.time - e->freetime > 0.5 ) )
+		if (e->free && (e->freetime < 2 || sv.time - e->freetime > 0.5))
 		{
 			ED_ClearEdict (e);
 			return e;
@@ -342,7 +342,7 @@ edict_t *ED_Alloc_Temp (void)
 		e = EDICT_NUM(i);
 		// the first couple seconds of server time can involve a lot of
 		// freeing and allocating, so relax the replacement policy
-		if (e->free && ( e->freetime < 2 || sv.time - e->freetime > 0.5 ) )
+		if (e->free && (e->freetime < 2 || sv.time - e->freetime > 0.5))
 		{
 			ED_ClearEdict (e);
 			e->alloctime = sv.time;
@@ -1101,7 +1101,7 @@ const char *ED_ParseEdict (const char *data, edict_t *ent)
 	init = false;
 
 	// clear it
-	if (ent != sv.edicts)	// hack
+	if (ent != sv.edicts)	// hack // we rely on this..
 		memset (&ent->v, 0, progs->entityfields * 4);
 
 	// go through all the dictionary pairs
@@ -1377,7 +1377,6 @@ static const char def_progname[] = "progs.dat";
 static const char maplist_name[] = "maplist.txt";
 static const char *PR_GetProgFilename (void)
 {
-// see the comments in progs.h about multiple progs
 #if !USE_MULTIPLE_PROGS
 	return def_progname;
 #else

@@ -70,11 +70,11 @@ extern	int		pr_edict_size;	/* in bytes */
 extern	qboolean	is_progs_v6;
 
 
-/* If USE_MULTIPLE_PROGS is defined as 1, the hexen2 binary will look for
- * a file named "maplist.txt" in its searchpath and using the info in it,
- * it will load a map-specific prog file. Without this, the rider bosses
- * shall not appear in the original Hexen2. The mission pack & HexenWorld
- * uses a single prog file and don't need this.
+/* If USE_MULTIPLE_PROGS is defined as 1, Hexen II will look for a file
+ * named "maplist.txt" in its searchpath and load a map-specific progs
+ * file using the information therein.  The boss levels used this trick
+ * in original Hexen II. The Portal of Praevus expansion and HexenWorld
+ * do not do this, as they use a combined single progs.dat.
  * When progs.dat exists (it usually does), uHexen2 accepts maplist.txt
  * only if it is from the same game directory as progs.dat itself or if
  * it is from a searchpath with a higher priority. */
