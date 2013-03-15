@@ -267,9 +267,11 @@ void R_EntityParticles (entity_t *ent)
 
 	if (!avelocities[0][0])
 	{
-		for (i = 0; i < NUMVERTEXNORMALS * 3; i++)
+		for (i = 0; i < NUMVERTEXNORMALS; i++)
 		{
-			avelocities[0][i] = (rand() & 255) * 0.01;
+			avelocities[i][0] = (rand() & 255) * 0.01;
+			avelocities[i][1] = (rand() & 255) * 0.01;
+			avelocities[i][2] = (rand() & 255) * 0.01;
 		}
 	}
 

@@ -3,6 +3,12 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2013-03-15 (SVN):
+    * r_part.c (R_EntityParticles): fix undefined behavior in the loop
+      init'ing avelocities, thanks to a -Waggressive-loop-optimizations
+      warning from gcc-4.8.
+    * update version date stamp to 2013-03-15.
+
 2013-03-10 (SVN):
     * oslibs/dos/libwatt32: delete empty object files from the archive.
 
