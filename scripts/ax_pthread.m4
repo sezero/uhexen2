@@ -82,7 +82,7 @@
 #   modified version of the Autoconf Macro, you may extend this special
 #   exception to the GPL to apply to your modified version as well.
 
-#serial 19
+#serial 20
 
 AU_ALIAS([ACX_PTHREAD], [AX_PTHREAD])
 AC_DEFUN([AX_PTHREAD], [
@@ -292,20 +292,14 @@ if test "x$ax_pthread_ok" = xyes; then
                   [#handle absolute path differently from PATH based program lookup
                    AS_CASE(["x$CC"],
                      [x/*],
-                     [AS_IF([AS_EXECUTABLE_P([${CC}_r])],
-                        [PTHREAD_CC="${CC}_r"],[PTHREAD_CC="$CC"])],
-                     [AC_CHECK_PROGS([PTHREAD_CC],[${CC}_r],[$CC])])],
-                  [PTHREAD_CC="$CC"])
-                ;;
-
-                *)
-                PTHREAD_CC="$CC"
+                     [AS_IF([AS_EXECUTABLE_P([${CC}_r])],[PTHREAD_CC="${CC}_r"])],
+                     [AC_CHECK_PROGS([PTHREAD_CC],[${CC}_r],[$CC])])])
                 ;;
             esac
         fi
-else
-        PTHREAD_CC="$CC"
 fi
+
+test -n "$PTHREAD_CC" || PTHREAD_CC="$CC"
 
 AC_SUBST(PTHREAD_LIBS)
 AC_SUBST(PTHREAD_CFLAGS)

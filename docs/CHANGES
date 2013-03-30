@@ -3,7 +3,10 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
-2013-03-15 (SVN):
+2013-03-30 (SVN):
+    * scripts/ax_pthread.m4: update from mainstream savannah git repo.
+
+2013-03-15 (1.5.6-final / SVN):
     * r_part.c (R_EntityParticles): fix undefined behavior in the loop
       init'ing avelocities, thanks to a -Waggressive-loop-optimizations
       warning from gcc-4.8.
