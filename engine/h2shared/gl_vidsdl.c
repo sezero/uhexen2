@@ -368,14 +368,14 @@ void VID_ChangeConsize (int dir)
 	{
 	case -1: /* smaller text */
 		w = ((float)vid.conwidth/(float)vid.width + 0.05f) * vid.width; /* use 0.10f increment ?? */
-		w &= 0xfff8; /* make it a multiple of 8 */
+		w &= ~7; /* make it a multiple of eight */
 		if (w > modelist[vid_modenum].width)
 			w = modelist[vid_modenum].width;
 		break;
 
 	case 1: /* bigger text */
 		w = ((float)vid.conwidth/(float)vid.width - 0.05f) * vid.width;
-		w &= 0xfff8; /* make it a multiple of 8 */
+		w &= ~7; /* make it a multiple of eight */
 		if (w < MIN_WIDTH)
 			w = MIN_WIDTH;
 		break;
