@@ -274,7 +274,7 @@ static void VID_ConWidth (int modenum)
 	}
 
 	w = vid_config_consize.integer;
-	w &= 0xfff8; /* make it a multiple of 8 */
+	w &= ~7; /* make it a multiple of eight */
 	if (w < MIN_WIDTH)
 		w = MIN_WIDTH;
 	else if (w > modelist[modenum].width)
