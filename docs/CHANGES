@@ -3,6 +3,10 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2013-04-06 (SVN):
+    * oslibs (macosx, windows): update opusfile builds using today's git
+      repo version c9964275c152b34779ed56607c9f010efcb6a70f.
+
 2013-04-02 (SVN):
     * gl_vidamiga.c, gl_vidnt.c, gl_vidsdl.c (VID_ConWidth): change mask
       to ~7 when making vid.conwidth a multiple of eight. (from tyrquake
