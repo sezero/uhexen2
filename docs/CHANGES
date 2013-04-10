@@ -4,6 +4,11 @@ Development Progress	:
 ---------------------------
 
 2013-04-10 (SVN):
+    * r_shared.h (MAXWIDTH): added a caution note that 12.20 fixed
+      point math used in R_ScanEdges() overflows at width 2048, as
+      noticed by Kevin Shanahan.
+
+2013-04-10 (SVN):
     * oslibs: recompiled libogg-1.3.0 with patch from xiph.org svn rev.
       18758 applied.
 

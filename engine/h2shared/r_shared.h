@@ -36,6 +36,8 @@
 
 // !!! if this is changed, it must be changed in d_ifacea.h too !!!
 #define	MAXHEIGHT	1024		/* also in d_polysa.inc !!!  */
+/* be careful if you ever want to change MAXWIDTH: 12.20 fixed
+ * point math used in R_ScanEdges() overflows at width 2048 !! */
 #define	MAXWIDTH	1280
 #define	MAXDIMENSION	((MAXHEIGHT > MAXWIDTH) ? MAXHEIGHT : MAXWIDTH)
 
