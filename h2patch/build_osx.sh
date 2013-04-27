@@ -23,7 +23,7 @@ export PATH CC AS AR RANLIB LIPO
 $MAKE_CMD -f Makefile.darwin MACH_TYPE=ppc $* || exit 1
 powerpc-apple-darwin9-strip -S h2patch || exit 1
 mv h2patch h2patch.ppc || exit 1
-$MAKE_CMD distclean
+$MAKE_CMD -f Makefile.darwin distclean
 
 # x86
 PATH=/opt/cross_osx-x86/bin:$OLDPATH
@@ -36,7 +36,7 @@ export PATH CC AS AR RANLIB LIPO
 $MAKE_CMD -f Makefile.darwin MACH_TYPE=x86 $* || exit 1
 i686-apple-darwin9-strip -S h2patch || exit 1
 mv h2patch h2patch.x86 || exit 1
-$MAKE_CMD distclean
+$MAKE_CMD -f Makefile.darwin distclean
 
 # x86_64
 PATH=/opt/cross_osx-x86_64/usr/bin:$OLDPATH
@@ -49,6 +49,6 @@ export PATH CC AS AR RANLIB LIPO
 $MAKE_CMD -f Makefile.darwin MACH_TYPE=x86_64 $* || exit 1
 x86_64-apple-darwin9-strip -S h2patch || exit 1
 mv h2patch h2patch.x86_64 || exit 1
-$MAKE_CMD distclean
+$MAKE_CMD -f Makefile.darwin distclean
 
 $LIPO -create -o h2patch.bin h2patch.ppc h2patch.x86 h2patch.x86_64 || exit 1
