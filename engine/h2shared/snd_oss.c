@@ -262,12 +262,12 @@ static qboolean S_OSS_Init (dma_t *dma)
 	return true;
 
 error:
-	close(audio_fd);
-	audio_fd = -1;
 	if (shm->buffer && shm->buffer != MAP_FAILED)
 		munmap (shm->buffer, mmaplen);
 	shm->buffer = NULL;
 	shm = NULL;
+	close(audio_fd);
+	audio_fd = -1;
 	return false;
 }
 

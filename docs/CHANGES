@@ -4,6 +4,10 @@ Development Progress	:
 ---------------------------
 
 2013-04-27 (SVN):
+    * snd_oss.c (S_OSS_Init): in case of an unlikely error, munmap the
+      memory before closing the audio device.
+
+2013-04-27 (SVN):
     * snd_dma.c (tryrates): added 96 kHz among the accepted sound rates.
 
 2013-04-27 (SVN):
