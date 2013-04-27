@@ -1460,10 +1460,11 @@ static const char *PR_GetProgFilename (void)
 #else
 	static char	finalprogname[MAX_QPATH];
 	unsigned int	id0, id1;
-	FILE	*FH;
+	fshandle_t	FH;
 
-	FS_OpenFile (maplist_name, &FH, &id1);
-	if (FH == NULL)
+	FH.length = (long) FS_OpenFile (maplist_name, & FH.file, &id1);
+	FH.pak = file_from_pak;
+	if (FH.file == NULL)
 		return def_progname;
 	else if (FS_FileExists(def_progname, &id0) && id1 < id0)
 	{
@@ -1474,43 +1475,40 @@ static const char *PR_GetProgFilename (void)
 	{
 		char	build[2048], *test;
 		char	mapname[MAX_QPATH], progname[MAX_QPATH];
-		int	i, j, k;
+		int	i, j;
 
 		strcpy(finalprogname, def_progname);
+		FH.pos = 0;
+		FH.start = ftell(FH.file);
 
 		// Format of maplist.txt :
 		// Line #1 : <number of lines excluding this one>
 		// Line #2+: <map name><one space><prog filename>
-		fgets(build, sizeof(build), FH);
+		FS_fgets(build, sizeof(build), &FH);
 		j = atoi(build);
 		for (i = 0; i < j; i++)
 		{
-			k = 0;
 			memset (build, 0, sizeof(build));
-			test = fgets (build, sizeof(build), FH);
+			test = FS_fgets (build, sizeof(build), &FH);
 			if (test)
 			{
 				// remove end-of-line characters
-				while (build[k])
+				while (*test)
 				{
-					if (build[k] == '\r' || build[k] == '\n')
-						build[k] = '\0';
+					if (*test == '\r' || *test == '\n')
+						*test = '\0';
 					// while we're here, replace tabs with spaces
-					if (build[k] == '\t')
-						build[k] = ' ';
-					k++;
+					else if (*test == '\t')
+						*test = ' ';
+					++test;
 				}
 				// go to the last character
-				while (build[k] == 0 && k > 0)
-					k--;
+				test = strchr(build, '\0');
 				// remove trailing spaces
-				while (k > 0)
+				while (--test > &build[0])
 				{
-					if (build[k] == ' ')
-					{
-						build[k] = '\0';
-						k--;
-					}
+					if (*test == ' ')
+						*test = '\0';
 					else
 						break;
 				}
@@ -1520,9 +1518,8 @@ static const char *PR_GetProgFilename (void)
 					*test = 0;
 					strcpy(mapname, build);
 					// in case someone uses more than one space
-					*test = ' ';
-					while (*test == ' ')
-						test++;
+					while (*(++test) == ' ')
+						;
 					strcpy(progname, test);
 					if (q_strcasecmp(mapname, sv.name) == 0)
 					{
@@ -1532,7 +1529,7 @@ static const char *PR_GetProgFilename (void)
 				}
 			}
 		}
-		fclose (FH);
+		FS_fclose (&FH);
 	}
 
 	return finalprogname;

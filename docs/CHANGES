@@ -4,6 +4,11 @@ Development Progress	:
 ---------------------------
 
 2013-04-27 (SVN):
+    * pr_edict.c (PR_GetProgFilename): adjust to use FS_fgets() instead
+      of fgets(), to be on the safe side just in case we run into broken
+      maplist.txt files enclosed in pak files.
+
+2013-04-27 (SVN):
     * snd_oss.c (S_OSS_Init): in case of an unlikely error, munmap the
       memory before closing the audio device.
 
