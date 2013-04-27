@@ -307,7 +307,6 @@ static void SV_Map_f (void)
 {
 	char	level[MAX_QPATH];
 	char	expanded[MAX_QPATH];
-	FILE	*f;
 	char	_startspot[MAX_QPATH];
 	char	*startspot;
 
@@ -321,6 +320,7 @@ static void SV_Map_f (void)
 		}
 		return;
 	}
+
 	q_strlcpy (level, Cmd_Argv(1), sizeof(level));
 	if (Cmd_Argc() == 2)
 	{
@@ -334,13 +334,11 @@ static void SV_Map_f (void)
 
 	// check to make sure the level exists
 	q_snprintf (expanded, sizeof(expanded), "maps/%s.bsp", level);
-	FS_OpenFile (expanded, &f, NULL);
-	if (!f)
+	if (!FS_FileExists(expanded, NULL))
 	{
 		Con_Printf ("Can't find %s\n", expanded);
 		return;
 	}
-	fclose (f);
 
 	SV_BroadcastCommand ("changing\n");
 	SV_SendMessagesToAll ();

@@ -151,18 +151,14 @@ to start a download from the server.
 */
 qboolean CL_CheckOrDownloadFile (const char *filename)
 {
-	FILE	*f;
-
 	if (strstr (filename, ".."))
 	{
 		Con_Printf ("Refusing to download a path with ..\n");
 		return true;
 	}
 
-	FS_OpenFile (filename, &f, NULL);
-	if (f)
+	if (FS_FileExists(filename, NULL))
 	{	// it exists, no need to download
-		fclose (f);
 		return true;
 	}
 

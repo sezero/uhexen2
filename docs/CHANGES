@@ -3,6 +3,10 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2013-04-27 (SVN):
+    * hexenworld, cl_parse.c (CL_CheckOrDownloadFile): use FS_FileExists
+    * hexenworld, sv_ccmds.c (SV_Map_f): use FS_FileExists
+
 2013-04-10 (SVN):
     * r_shared.h (MAXWIDTH): added a caution note that 12.20 fixed
       point math used in R_ScanEdges() overflows at width 2048, as
