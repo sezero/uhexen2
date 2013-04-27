@@ -4,6 +4,9 @@ Development Progress	:
 ---------------------------
 
 2013-04-27 (SVN):
+    * snd_dma.c (tryrates): added 96 kHz among the accepted sound rates.
+
+2013-04-27 (SVN):
     * h2patch/build_osx.sh: fixed make calls without -f Makefile.darwin
       arguments. (they were harmless, but for correctness' sake.)
 
