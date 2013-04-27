@@ -4,6 +4,10 @@ Development Progress	:
 ---------------------------
 
 2013-04-27 (SVN):
+    * snd_sdl.c (S_SDL_Init): set number of samples to 4096 for sampling
+      rates higher than 56, i.e. 96 kHz.
+
+2013-04-27 (SVN):
     * pr_edict.c (PR_GetProgFilename): adjust to use FS_fgets() instead
       of fgets(), to be on the safe side just in case we run into broken
       maplist.txt files enclosed in pak files.
