@@ -3,6 +3,10 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2013-05-15 (SVN):
+    * oslibs: macosx, windows: recompile libogg, libopus and libopusfile
+      using latest stable branches from xiph.org git repository.
+
 2013-04-27 (SVN):
     * snd_sdl.c (S_SDL_Init): set number of samples to 4096 for sampling
       rates higher than 56, i.e. 96 kHz.
