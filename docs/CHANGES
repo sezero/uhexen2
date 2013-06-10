@@ -3,6 +3,9 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2013-06-10 (SVN):
+    * updated config.guess and config.sub from savannah git repo.
+
 2013-05-25 (SVN):
     * oslibs: macosx, windows: recompile libopus using the latest stable
       1.0.x branch from xiph.org git repository.
