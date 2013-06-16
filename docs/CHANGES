@@ -3,6 +3,9 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2013-06-16 (SVN):
+    * in_sdl.c: use a different approach to ignore mouse events.
+
 2013-06-10 (SVN):
     * updated config.guess and config.sub from savannah git repo.
 
