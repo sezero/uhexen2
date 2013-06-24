@@ -3,6 +3,9 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2013-06-24 (SVN):
+    * docs/COMPILE: updated tested compiler versions.
+
 2013-06-16 (SVN):
     * in_sdl.c: use a different approach to ignore mouse events.
 

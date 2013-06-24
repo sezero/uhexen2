@@ -45,7 +45,7 @@ NASM	:	Netwide Assembler. An x86 assembler.
 GCC	:	GNU C Compiler.
 
 		Minimum version required is GCC 2.95.  GCC versions in
-		the 2.95/2.96, 3.x and 4.x series up to 4.7.x are tested
+		the 2.95/2.96, 3.x and 4.x series up to 4.8.x are tested
 		and work fine.  As for the really ancient gcc versions,
 		gcc-2.91.66 (aka. egcs-1.1.2) still works.  Even v2.7.2
 		is reported to compile OK.
@@ -58,7 +58,7 @@ GCC	:	GNU C Compiler.
 
 CLANG	:	a C language family frontend for LLVM
 
-		As an alternative to gcc, clang versions 3.0 to 3.2 are
+		As an alternative to gcc, clang versions 3.0 to 3.3 are
 		tested to compile all uhexen2 sources correctly.
 
 
@@ -170,16 +170,17 @@ Note that "make" may be named "mingw32-make". In that case, you may want
 to try "mingw32-make" if "make" command itself fails to run. Remember to
 do a make clean between each different build.
 
-c. On Windows, using Visual Studio 2005/2008 or 2010:
------------------------------------------------------
+c. On Windows, using Visual Studio 2005/2008 or 2010/2012:
+----------------------------------------------------------
 Visual Studio 2005, 2008 and 2010 versions have been tested to compile
 all uhexen2 code successfully.  The VisualStudio2005.zip files contain
 the *.vcproj project files and *.sln solution files: unzipping them and
 double-clicking on them should start visual studio and you will be ready
 to go.  The VS2005 project files import perfectly into VS2008, therefore
 VS2008 owners can use the VS2005 project files.  For your convenience,
-VS2010 project files are provided for hexen2 and hexenworld.  All of the
-projects are adjusted for Win32 (x86) and x64 targets.
+VS2010 project files are provided for hexen2 and hexenworld, which work
+fine with vs2012 too.  All of the projects are adjusted for Win32 (x86)
+and x64 targets.
 
 Compiling software renderer versions h2.exe and hwcl.exe require YASM as
 the x86 assembler (link down below). Versions 0.7.2, 1.1.0 or newer are
@@ -187,8 +188,8 @@ recommended.  As an alternative, you can use NASM as the assembler:
 version 2.09.10 or newer are recommended.
 Both nasm and yasm are very easy to integrate into Visual Studio using a
 rule file: see oslibs/windows/yasm and oslibs/windows/nasm directories.
-Our project files are currently adjusted for using yasm. For vs2010, you
-need "vsyasm" which is simply a version of yasm tailored for vs2010.
+Our project files are currently adjusted for using yasm.  For vs2010/12,
+you need "vsyasm" which is simply a version of yasm tailored for vs2010.
 Versions 1.1.0 and 1.2.0 of vsyasm are tested to function properly.  See
 oslibs/windows/yasm/vs2010 for details.
 
