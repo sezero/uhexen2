@@ -1369,8 +1369,8 @@ void ED_LoadFromFile (const char *data)
 ===============
 PR_GetProgFilename
 
-find the correct progs.dat filename
-based on map name, using maplist.txt
+return the correct progs filename based on map name
+by parsing maplist.txt
 ===============
 */
 static const char def_progname[] = "progs.dat";
@@ -1380,6 +1380,10 @@ static const char *PR_GetProgFilename (void)
 #if !USE_MULTIPLE_PROGS
 	return def_progname;
 #else
+/* original format:
+ * line #1 : <number of lines excluding this one>
+ * line #2+: <map name><one space><prog filename>
+ */
 	static char	finalprogname[MAX_QPATH];
 	unsigned int	id0, id1;
 	fshandle_t	FH;
@@ -1391,26 +1395,26 @@ static const char *PR_GetProgFilename (void)
 	else if (FS_FileExists(def_progname, &id0) && id1 < id0)
 	{
 		Con_DPrintf("ignored %s from a gamedir with lower priority\n", maplist_name);
-		return def_progname;
+		goto _fail;
 	}
 	else
 	{
 		char	build[256], *test;
-		int	i, j;
+		int	entries;
 
-		q_strlcpy(finalprogname, def_progname, sizeof(finalprogname));
 		FH.pos = 0;
 		FH.start = ftell(FH.file);
 
-		// Line #1 : <number of lines excluding this one>
-		// Line #2+: <map name><one space><prog filename>
-		FS_fgets(build, sizeof(build), &FH);
-		j = atoi(build);
-		for (i = 0; i < j; i++)
+		if (!FS_fgets(build, sizeof(build), &FH))
+			goto _fail;
+		entries = atoi(build);
+		if (entries <= 0)
+			goto _fail;
+
+		while (--entries >= 0)
 		{
-			memset (build, 0, sizeof(build));
 			if (!(test = FS_fgets (build, sizeof(build), &FH)))
-				break;	/* unexpected EOF */
+				goto _fail; /* unexpected EOF */
 			while (*test)
 			{
 				if (*test == '\r' || *test == '\n')
@@ -1434,16 +1438,17 @@ static const char *PR_GetProgFilename (void)
 			*test = 0;
 			if (q_strcasecmp(build, sv.name) == 0)
 			{
+				FS_fclose (&FH);
 				while (*(++test) == ' ')
 					;
 				q_strlcpy(finalprogname, test, sizeof(finalprogname));
-				break;
+				return finalprogname;
 			}
 		}
-		FS_fclose (&FH);
 	}
-
-	return finalprogname;
+_fail:
+	FS_fclose (&FH);
+	return def_progname;
 #endif	/* end of USE_MULTIPLE_PROGS */
 }
 
