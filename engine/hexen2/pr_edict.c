@@ -1395,15 +1395,13 @@ static const char *PR_GetProgFilename (void)
 	}
 	else
 	{
-		char	build[2048], *test;
-		char	mapname[MAX_QPATH], progname[MAX_QPATH];
+		char	build[256], *test;
 		int	i, j;
 
-		strcpy(finalprogname, def_progname);
+		q_strlcpy(finalprogname, def_progname, sizeof(finalprogname));
 		FH.pos = 0;
 		FH.start = ftell(FH.file);
 
-		// Format of maplist.txt :
 		// Line #1 : <number of lines excluding this one>
 		// Line #2+: <map name><one space><prog filename>
 		FS_fgets(build, sizeof(build), &FH);
@@ -1411,44 +1409,35 @@ static const char *PR_GetProgFilename (void)
 		for (i = 0; i < j; i++)
 		{
 			memset (build, 0, sizeof(build));
-			test = FS_fgets (build, sizeof(build), &FH);
-			if (test)
+			if (!(test = FS_fgets (build, sizeof(build), &FH)))
+				break;	/* unexpected EOF */
+			while (*test)
 			{
-				// remove end-of-line characters
-				while (*test)
+				if (*test == '\r' || *test == '\n')
 				{
-					if (*test == '\r' || *test == '\n')
-						*test = '\0';
-					// while we're here, replace tabs with spaces
-					else if (*test == '\t')
-						*test = ' ';
-					++test;
+					*test = '\0';
+					break;
 				}
-				// go to the last character
-				test = strchr(build, '\0');
-				// remove trailing spaces
-				while (--test > &build[0])
-				{
-					if (*test == ' ')
-						*test = '\0';
-					else
-						break;
-				}
-				test = strchr(build, ' ');
-				if (test)
-				{
-					*test = 0;
-					strcpy(mapname, build);
-					// in case someone uses more than one space
-					while (*(++test) == ' ')
-						;
-					strcpy(progname, test);
-					if (q_strcasecmp(mapname, sv.name) == 0)
-					{
-						strcpy(finalprogname, progname);
-						break;
-					}
-				}
+				if (*test == '\t')
+					*test = ' ';
+				++test;
+			}
+			while (--test > &build[0])
+			{
+				if (*test == ' ')
+					*test = '\0';
+				else
+					break;
+			}
+			if (!(test = strchr(build, ' ')))
+				continue;
+			*test = 0;
+			if (q_strcasecmp(build, sv.name) == 0)
+			{
+				while (*(++test) == ' ')
+					;
+				q_strlcpy(finalprogname, test, sizeof(finalprogname));
+				break;
 			}
 		}
 		FS_fclose (&FH);

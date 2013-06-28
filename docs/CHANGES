@@ -3,6 +3,9 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2013-06-28 (SVN):
+    * pr_edict.c (PR_GetProgFilename): simplified and hardened more.
+
 2013-06-24 (SVN):
     * oslibs: updated msinttypes to r29 from mainstream googlecode.com
       repository.
