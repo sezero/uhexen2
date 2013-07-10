@@ -15,6 +15,12 @@ Development Progress	:
 
 2013-06-16 (SVN):
     * in_sdl.c: use a different approach to ignore mouse events.
+      We now use SDL_SetEventFilter() instead of SDL_PumpEvents().
+      This seems to fix a freeze reported by "galtgendo" (see at:
+      sf.net/p/uhexen2/discussion/425207/thread/6f168cfb/.) Since
+      none of the uhexen2 developers have been able to reproduce
+      this freeze it's hard to say exactly what was wrong, but so
+      far this seems to fix it (code adapted from quakespasm).
 
 2013-06-10 (SVN):
     * updated config.guess and config.sub from savannah git repo.
