@@ -3,6 +3,10 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2013-07-12 (SVN):
+    * oslibs: macosx, windows: recompile libopus using the latest stable
+      v1.0.3 release.
+
 2013-06-28 (SVN):
     * pr_edict.c (PR_GetProgFilename): simplified and hardened more.
 
