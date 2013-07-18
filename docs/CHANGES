@@ -3,6 +3,9 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2013-07-18 (SVN):
+    * docs/README: update for web links.
+
 2013-07-17 (SVN):
     * oslibs: macosx, windows: recompile libopusfile, using the latest
       from xiph.org git repo.
