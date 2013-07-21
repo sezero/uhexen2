@@ -7,19 +7,27 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		48E2EC7D15FB507A00B8D476 /* libmad.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 48E2EC7915FB507A00B8D476 /* libmad.dylib */; };
-		48E2EC7E15FB507A00B8D476 /* libogg.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 48E2EC7A15FB507A00B8D476 /* libogg.dylib */; };
-		48E2EC7F15FB507A00B8D476 /* libvorbis.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 48E2EC7B15FB507A00B8D476 /* libvorbis.dylib */; };
-		48E2EC8015FB507A00B8D476 /* libvorbisfile.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 48E2EC7C15FB507A00B8D476 /* libvorbisfile.dylib */; };
-		48AE54C917972447008E11FB /* libopus.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 48AE54C717972447008E11FB /* libopus.dylib */; };
-		48AE54CA17972447008E11FB /* libopusfile.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 48AE54C817972447008E11FB /* libopusfile.dylib */; };
+		48281303179C401D004E1D61 /* libFLAC.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 48281302179C401D004E1D61 /* libFLAC.dylib */; };
+		48281304179C4034004E1D61 /* libFLAC.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 48281302179C401D004E1D61 /* libFLAC.dylib */; };
+		48281307179C4055004E1D61 /* snd_flac.c in Sources */ = {isa = PBXBuildFile; fileRef = 48281305179C4055004E1D61 /* snd_flac.c */; };
+		48281308179C4055004E1D61 /* snd_flac.c in Sources */ = {isa = PBXBuildFile; fileRef = 48281305179C4055004E1D61 /* snd_flac.c */; };
+		48281309179C4055004E1D61 /* snd_flac.h in Headers */ = {isa = PBXBuildFile; fileRef = 48281306179C4055004E1D61 /* snd_flac.h */; };
+		4828130A179C4055004E1D61 /* snd_flac.h in Headers */ = {isa = PBXBuildFile; fileRef = 48281306179C4055004E1D61 /* snd_flac.h */; };
+		483B16A5154472FE00BBDAD1 /* cl_inlude.c in Sources */ = {isa = PBXBuildFile; fileRef = 483B16A4154472FE00BBDAD1 /* cl_inlude.c */; };
 		4854B1AF1340C5FD004C9F45 /* libmad.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 48E2EC7915FB507A00B8D476 /* libmad.dylib */; };
 		4854B1E71340C964004C9F45 /* libogg.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 48E2EC7A15FB507A00B8D476 /* libogg.dylib */; };
 		4854B1E81340C964004C9F45 /* libvorbis.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 48E2EC7B15FB507A00B8D476 /* libvorbis.dylib */; };
 		4854B1E91340C964004C9F45 /* libvorbisfile.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 48E2EC7C15FB507A00B8D476 /* libvorbisfile.dylib */; };
 		4891E1CC179728BF00BED9F7 /* libopus.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 48AE54C717972447008E11FB /* libopus.dylib */; };
 		4891E1CD179728BF00BED9F7 /* libopusfile.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 48AE54C817972447008E11FB /* libopusfile.dylib */; };
-		483B16A5154472FE00BBDAD1 /* cl_inlude.c in Sources */ = {isa = PBXBuildFile; fileRef = 483B16A4154472FE00BBDAD1 /* cl_inlude.c */; };
+		48AE54C5179723F7008E11FB /* snd_opus.h in Headers */ = {isa = PBXBuildFile; fileRef = 48AE54C4179723F7008E11FB /* snd_opus.h */; };
+		48AE54C6179723F7008E11FB /* snd_opus.h in Headers */ = {isa = PBXBuildFile; fileRef = 48AE54C4179723F7008E11FB /* snd_opus.h */; };
+		48AE54C917972447008E11FB /* libopus.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 48AE54C717972447008E11FB /* libopus.dylib */; };
+		48AE54CA17972447008E11FB /* libopusfile.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 48AE54C817972447008E11FB /* libopusfile.dylib */; };
+		48E2EC7D15FB507A00B8D476 /* libmad.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 48E2EC7915FB507A00B8D476 /* libmad.dylib */; };
+		48E2EC7E15FB507A00B8D476 /* libogg.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 48E2EC7A15FB507A00B8D476 /* libogg.dylib */; };
+		48E2EC7F15FB507A00B8D476 /* libvorbis.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 48E2EC7B15FB507A00B8D476 /* libvorbis.dylib */; };
+		48E2EC8015FB507A00B8D476 /* libvorbisfile.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 48E2EC7C15FB507A00B8D476 /* libvorbisfile.dylib */; };
 		70158BF40AAF3C8800F6437C /* d_iface.h in Headers */ = {isa = PBXBuildFile; fileRef = 70158B730AAF3B3600F6437C /* d_iface.h */; };
 		70158BF50AAF3C8800F6437C /* d_local.h in Headers */ = {isa = PBXBuildFile; fileRef = 70158B750AAF3B3600F6437C /* d_local.h */; };
 		70158BF60AAF3C8800F6437C /* draw.h in Headers */ = {isa = PBXBuildFile; fileRef = 70158B800AAF3B3600F6437C /* draw.h */; };
@@ -273,19 +281,21 @@
 		B0E74B38144E807F0043F808 /* snd_mp3.c in Sources */ = {isa = PBXBuildFile; fileRef = B0E74B36144E807F0043F808 /* snd_mp3.c */; };
 		B0E74B3C144E80960043F808 /* snd_opus.c in Sources */ = {isa = PBXBuildFile; fileRef = B0E74B3B144E80960043F808 /* snd_opus.c */; };
 		B0E74B3D144E80960043F808 /* snd_opus.c in Sources */ = {isa = PBXBuildFile; fileRef = B0E74B3B144E80960043F808 /* snd_opus.c */; };
-		48AE54C5179723F7008E11FB /* snd_opus.h in Headers */ = {isa = PBXBuildFile; fileRef = 48AE54C4179723F7008E11FB /* snd_opus.h */; };
-		48AE54C6179723F7008E11FB /* snd_opus.h in Headers */ = {isa = PBXBuildFile; fileRef = 48AE54C4179723F7008E11FB /* snd_opus.h */; };
 		CEA6789F155B7E0E008B9770 /* cl_inlude.c in Sources */ = {isa = PBXBuildFile; fileRef = 483B16A4154472FE00BBDAD1 /* cl_inlude.c */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		48281302179C401D004E1D61 /* libFLAC.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libFLAC.dylib; path = ../../../oslibs/macosx/codecs/lib/libFLAC.dylib; sourceTree = "<group>"; };
+		48281305179C4055004E1D61 /* snd_flac.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = snd_flac.c; path = ../../h2shared/snd_flac.c; sourceTree = "<group>"; };
+		48281306179C4055004E1D61 /* snd_flac.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = snd_flac.h; path = ../../h2shared/snd_flac.h; sourceTree = "<group>"; };
+		483B16A4154472FE00BBDAD1 /* cl_inlude.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = cl_inlude.c; path = ../cl_inlude.c; sourceTree = SOURCE_ROOT; };
+		48AE54C4179723F7008E11FB /* snd_opus.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = snd_opus.h; path = ../../h2shared/snd_opus.h; sourceTree = "<group>"; };
 		48AE54C717972447008E11FB /* libopus.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libopus.dylib; path = ../../../oslibs/macosx/codecs/lib/libopus.dylib; sourceTree = "<group>"; };
 		48AE54C817972447008E11FB /* libopusfile.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libopusfile.dylib; path = ../../../oslibs/macosx/codecs/lib/libopusfile.dylib; sourceTree = "<group>"; };
 		48E2EC7915FB507A00B8D476 /* libmad.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libmad.dylib; path = ../../../oslibs/macosx/codecs/lib/libmad.dylib; sourceTree = "<group>"; };
 		48E2EC7A15FB507A00B8D476 /* libogg.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libogg.dylib; path = ../../../oslibs/macosx/codecs/lib/libogg.dylib; sourceTree = "<group>"; };
 		48E2EC7B15FB507A00B8D476 /* libvorbis.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libvorbis.dylib; path = ../../../oslibs/macosx/codecs/lib/libvorbis.dylib; sourceTree = "<group>"; };
 		48E2EC7C15FB507A00B8D476 /* libvorbisfile.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libvorbisfile.dylib; path = ../../../oslibs/macosx/codecs/lib/libvorbisfile.dylib; sourceTree = "<group>"; };
-		483B16A4154472FE00BBDAD1 /* cl_inlude.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = cl_inlude.c; path = ../cl_inlude.c; sourceTree = SOURCE_ROOT; };
 		70158B710AAF3B3600F6437C /* d_edge.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = d_edge.c; path = ../../h2shared/d_edge.c; sourceTree = SOURCE_ROOT; };
 		70158B720AAF3B3600F6437C /* d_fill.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = d_fill.c; path = ../../h2shared/d_fill.c; sourceTree = SOURCE_ROOT; };
 		70158B730AAF3B3600F6437C /* d_iface.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = d_iface.h; path = ../../h2shared/d_iface.h; sourceTree = SOURCE_ROOT; };
@@ -462,7 +472,6 @@
 		B0E74B31144E806D0043F808 /* snd_vorbis.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = snd_vorbis.c; path = ../../h2shared/snd_vorbis.c; sourceTree = SOURCE_ROOT; };
 		B0E74B36144E807F0043F808 /* snd_mp3.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = snd_mp3.c; path = ../../h2shared/snd_mp3.c; sourceTree = SOURCE_ROOT; };
 		B0E74B3B144E80960043F808 /* snd_opus.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = snd_opus.c; path = ../../h2shared/snd_opus.c; sourceTree = SOURCE_ROOT; };
-		48AE54C4179723F7008E11FB /* snd_opus.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = snd_opus.h; path = ../../h2shared/snd_opus.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -470,6 +479,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				48281304179C4034004E1D61 /* libFLAC.dylib in Frameworks */,
 				4854B1AF1340C5FD004C9F45 /* libmad.dylib in Frameworks */,
 				4854B1E71340C964004C9F45 /* libogg.dylib in Frameworks */,
 				4854B1E81340C964004C9F45 /* libvorbis.dylib in Frameworks */,
@@ -491,6 +501,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				48281303179C401D004E1D61 /* libFLAC.dylib in Frameworks */,
 				48E2EC7D15FB507A00B8D476 /* libmad.dylib in Frameworks */,
 				48E2EC7E15FB507A00B8D476 /* libogg.dylib in Frameworks */,
 				48E2EC7F15FB507A00B8D476 /* libvorbis.dylib in Frameworks */,
@@ -514,6 +525,9 @@
 		707D57580AA9F4B100313A9F = {
 			isa = PBXGroup;
 			children = (
+				48281305179C4055004E1D61 /* snd_flac.c */,
+				48281306179C4055004E1D61 /* snd_flac.h */,
+				48281302179C401D004E1D61 /* libFLAC.dylib */,
 				48E2EC7915FB507A00B8D476 /* libmad.dylib */,
 				48E2EC7A15FB507A00B8D476 /* libogg.dylib */,
 				48E2EC7B15FB507A00B8D476 /* libvorbis.dylib */,
@@ -730,6 +744,7 @@
 				70310B470BFDE9D900CA35D3 /* quakefs.h in Headers */,
 				70310B4E0BFDEA0F00CA35D3 /* cfgfile.h in Headers */,
 				48AE54C6179723F7008E11FB /* snd_opus.h in Headers */,
+				4828130A179C4055004E1D61 /* snd_flac.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -788,6 +803,7 @@
 				70310B450BFDE9D900CA35D3 /* quakefs.h in Headers */,
 				70310B4C0BFDEA0F00CA35D3 /* cfgfile.h in Headers */,
 				48AE54C5179723F7008E11FB /* snd_opus.h in Headers */,
+				48281309179C4055004E1D61 /* snd_flac.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -991,6 +1007,7 @@
 				B0E74B38144E807F0043F808 /* snd_mp3.c in Sources */,
 				B0E74B3D144E80960043F808 /* snd_opus.c in Sources */,
 				B0E546A715564FC10033037D /* sys_osx.m in Sources */,
+				48281308179C4055004E1D61 /* snd_flac.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1076,6 +1093,7 @@
 				B0E74B3C144E80960043F808 /* snd_opus.c in Sources */,
 				483B16A5154472FE00BBDAD1 /* cl_inlude.c in Sources */,
 				B0E546A615564FC10033037D /* sys_osx.m in Sources */,
+				48281307179C4055004E1D61 /* snd_flac.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1098,6 +1116,7 @@
 					USE_CODEC_MP3,
 					USE_CODEC_VORBIS,
 					USE_CODEC_WAVE,
+					USE_CODEC_FLAC,
 					USE_CODEC_OPUS,
 					SDLQUAKE,
 					SDL_FRAMEWORK,
@@ -1149,6 +1168,7 @@
 					USE_CODEC_MP3,
 					USE_CODEC_VORBIS,
 					USE_CODEC_WAVE,
+					USE_CODEC_FLAC,
 					USE_CODEC_OPUS,
 					SDLQUAKE,
 					SDL_FRAMEWORK,
@@ -1195,6 +1215,7 @@
 					USE_CODEC_MP3,
 					USE_CODEC_VORBIS,
 					USE_CODEC_WAVE,
+					USE_CODEC_FLAC,
 					USE_CODEC_OPUS,
 					SDLQUAKE,
 					SDL_FRAMEWORK,
@@ -1225,6 +1246,7 @@
 					USE_CODEC_MP3,
 					USE_CODEC_VORBIS,
 					USE_CODEC_WAVE,
+					USE_CODEC_FLAC,
 					USE_CODEC_OPUS,
 					SDLQUAKE,
 					SDL_FRAMEWORK,
@@ -1262,6 +1284,7 @@
 					USE_CODEC_MP3,
 					USE_CODEC_VORBIS,
 					USE_CODEC_WAVE,
+					USE_CODEC_FLAC,
 					USE_CODEC_OPUS,
 					SDLQUAKE,
 					SDL_FRAMEWORK,
@@ -1317,6 +1340,7 @@
 					USE_CODEC_MP3,
 					USE_CODEC_VORBIS,
 					USE_CODEC_WAVE,
+					USE_CODEC_FLAC,
 					USE_CODEC_OPUS,
 					SDLQUAKE,
 					SDL_FRAMEWORK,
