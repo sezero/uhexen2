@@ -125,6 +125,7 @@ USE_MPATH=yes
 
 # Enable/disable codecs for streaming music support:
 USE_CODEC_WAVE=yes
+USE_CODEC_FLAC=no
 USE_CODEC_MP3=yes
 USE_CODEC_VORBIS=yes
 USE_CODEC_OPUS=no
@@ -250,6 +251,7 @@ GL_LIBS =
 #############################################################
 ifneq ($(USE_SOUND),yes)
 USE_CODEC_WAVE=no
+USE_CODEC_FLAC=no
 USE_CODEC_TIMIDITY=no
 USE_CODEC_WILDMIDI=no
 USE_CODEC_MP3=no
@@ -330,6 +332,10 @@ LDFLAGS += $(SDL_LIBS)
 
 GL_LINK=-Wl,-framework,OpenGL
 
+ifeq ($(USE_CODEC_FLAC),yes)
+CODEC_INC = -I$(OSLIBS)/macosx/codecs/include
+CODEC_LINK= -L$(OSLIBS)/macosx/codecs/lib
+endif
 ifeq ($(USE_CODEC_VORBIS),yes)
 CODEC_INC = -I$(OSLIBS)/macosx/codecs/include
 CODEC_LINK= -L$(OSLIBS)/macosx/codecs/lib
@@ -433,8 +439,10 @@ USE_X86_ASM=yes
 
 USE_CODEC_TIMIDITY=no
 USE_CODEC_WILDMIDI=no
-# no need for Opus or DOS
+# no need for Opus on DOS
 USE_CODEC_OPUS=no
+# no need for Flac on DOS
+USE_CODEC_FLAC=no
 # use Tremor as Vorbis decoder for DOS?
 VORBISLIB=tremor
 # make DOS decoders allocate on the zone
@@ -462,6 +470,10 @@ CODEC_INC = -I$(OSLIBS)/dos/codecs/include
 CODEC_LINK= -L$(OSLIBS)/dos/codecs/lib
 endif
 ifeq ($(USE_CODEC_MP3),yes)
+CODEC_INC = -I$(OSLIBS)/dos/codecs/include
+CODEC_LINK= -L$(OSLIBS)/dos/codecs/lib
+endif
+ifeq ($(USE_CODEC_FLAC),yes)
 CODEC_INC = -I$(OSLIBS)/dos/codecs/include
 CODEC_LINK= -L$(OSLIBS)/dos/codecs/lib
 endif
@@ -511,6 +523,10 @@ ifneq ($(WITH_SPLASHES),yes)
 CPPFLAGS+= -DNO_SPLASHES
 endif
 
+ifeq ($(USE_CODEC_FLAC),yes)
+CODEC_INC = -I$(OSLIBS)/windows/codecs/include
+CODEC_LINK= -L$(OSLIBS)/windows/codecs/x86
+endif
 ifeq ($(USE_CODEC_VORBIS),yes)
 CODEC_INC = -I$(OSLIBS)/windows/codecs/include
 CODEC_LINK= -L$(OSLIBS)/windows/codecs/x86
@@ -570,6 +586,10 @@ ifneq ($(WITH_SPLASHES),yes)
 CPPFLAGS+= -DNO_SPLASHES
 endif
 
+ifeq ($(USE_CODEC_FLAC),yes)
+CODEC_INC = -I$(OSLIBS)/windows/codecs/include
+CODEC_LINK= -L$(OSLIBS)/windows/codecs/x64
+endif
 ifeq ($(USE_CODEC_VORBIS),yes)
 CODEC_INC = -I$(OSLIBS)/windows/codecs/include
 CODEC_LINK= -L$(OSLIBS)/windows/codecs/x64
@@ -612,6 +632,7 @@ GL_LINK=-lGL
 # dynamic loading of ogl functions doesn't work
 LINK_GL_LIBS=yes
 
+USE_CODEC_FLAC=no
 USE_CODEC_VORBIS=yes
 USE_CODEC_MP3=no
 USE_CODEC_OPUS=no
@@ -711,6 +732,10 @@ cpp_vorbisdec=-DVORBIS_USE_TREMOR
 lib_vorbisdec=-lvorbisidec -logg
 endif
 
+ifeq ($(USE_CODEC_FLAC),yes)
+CPPFLAGS+= -DUSE_CODEC_FLAC
+LDFLAGS+=  -lFLAC
+endif
 ifeq ($(USE_CODEC_WAVE),yes)
 CPPFLAGS+= -DUSE_CODEC_WAVE
 endif
@@ -848,6 +873,7 @@ COMOBJ_SND := snd_null.o $(MUSIC_OBJS)
 else
 MUSIC_OBJS:= bgmusic.o \
 	snd_codec.o \
+	snd_flac.o \
 	snd_wave.o \
 	snd_vorbis.o \
 	snd_opus.o \
