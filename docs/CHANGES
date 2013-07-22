@@ -3,6 +3,9 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2013-07-22 (SVN):
+    * docs/ReleaseNotes: updated for a future release.
+
 2013-07-21 (SVN):
     * added flac music support. it is not enabled by default, edit the
       Makefile for USE_CODEC_FLAC, or add "USE_CODEC_FLAC=yes" to your
