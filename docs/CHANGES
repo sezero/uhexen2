@@ -4,6 +4,21 @@ Development Progress	:
 ---------------------------
 
 2013-07-22 (SVN):
+    * snd_codec: store the samplebits value in the snd_info_t struct,
+      and add a new blocksize field to it which the flac decoder can
+      use. updated decoder sources for the snd_info_t changes, where
+      I made minor tidy-ups too, tightening several format checks and
+      fixing a few gotchas in snd_wave.c and snd_mem.c.
+    * snd_flac.c: adjusted for snd_info_t changes. no longed storing
+      metadata->data.stream_info in our private data, but just storing
+      a pointer to the stream->info structure. No longer checking the
+      metadata total_samples field (the FLAC__StreamMetadata_StreamInfo
+      doesn't seem to have any alignment or pack attributes and I don't
+      safe with its offset across different compilers), but added check
+      to make sure that we hit and parsed a STREAMINFO metadata instead,
+      and our new state seems just fine for validating the file.
+
+2013-07-22 (SVN):
     * docs/ReleaseNotes: updated for a future release.
 
 2013-07-21 (SVN):

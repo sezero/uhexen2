@@ -239,6 +239,7 @@ static snd_stream_t *S_TIMIDITY_CodecOpenStream (const char *filename)
 	}
 
 	stream->info.rate = options.rate;
+	stream->info.bits = shm->samplebits;
 	stream->info.width = width;
 	stream->info.channels = options.channels;
 	stream->priv = data;

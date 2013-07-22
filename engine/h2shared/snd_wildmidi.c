@@ -184,6 +184,7 @@ static snd_stream_t *S_WILDMIDI_CodecOpenStream (const char *filename)
 
 	stream->info.rate = wildmidi_rate;
 	stream->info.width = 2; /* WildMIDI does 16 bit signed */
+	stream->info.bits = 16;
 	stream->info.channels = 2; /* WildMIDI does stereo */
 	stream->priv = data;
 
