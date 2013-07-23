@@ -3,6 +3,10 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2013-07-23 (SVN):
+    * snd_mp3.c (mp3_startread): don't error upon a short read as it may
+      be a short but still a valid file.
+
 2013-07-22 (SVN):
     * snd_codec: store the samplebits value in the snd_info_t struct,
       and add a new blocksize field to it which the flac decoder can
