@@ -180,7 +180,9 @@ to go.  The VS2005 project files import perfectly into VS2008, therefore
 VS2008 owners can use the VS2005 project files.  For your convenience,
 VS2010 project files are provided for hexen2 and hexenworld, which work
 fine with vs2012 too.  All of the projects are adjusted for Win32 (x86)
-and x64 targets.
+and x64 targets.  Note that older MSVC versions such as Visual Studio 6
+aren't supported: parts of our code make use of a few C99 features such
+as variadic macros which require Visual Studio 2005 or newer versions.
 
 Compiling software renderer versions h2.exe and hwcl.exe require YASM as
 the x86 assembler (link down below). Versions 0.7.2, 1.1.0 or newer are
