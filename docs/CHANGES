@@ -4,7 +4,8 @@ Development Progress	:
 ---------------------------
 
 2013-07-24 (SVN):
-    * docs/COMPILE: add note about old Visual Studio versions.
+    * docs/COMPILE: add note about old Visual Studio versions.  update
+      the nasm recommended versions.
 
 2013-07-24 (SVN):
     * gl_vidsdl.c (VID_InitGamma): send 1.0 to SDL_SetGamma() instead of

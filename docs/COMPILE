@@ -30,8 +30,8 @@ binutils:	A GNU collection of binary utilities.
 
 NASM	:	Netwide Assembler. An x86 assembler.
 		Minimum version required is 0.98.38 or 0.98.39 from the
-		old series.  Versions 2.02, 2.03.01, 2.05.01 or 2.09.10
-		from the new 2.x series are recommended.
+		old series. Versions 2.09.10 or 2.10.09 from the new 2.x
+		series are recommended.
 
 		YASM, a re-write of NASM, is also supported:  yasm-0.5.0
 		and newer can compile our asm.  Versions 1.1.0 and 1.2.0
