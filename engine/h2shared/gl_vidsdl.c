@@ -602,7 +602,7 @@ static void VID_InitGamma (void)
 #if USE_GAMMA_RAMPS
 		if (SDL_GetGammaRamp(orig_ramps[0], orig_ramps[1], orig_ramps[2]) == 0)
 #else
-		if (SDL_SetGamma(v_gamma.value,v_gamma.value,v_gamma.value) == 0)
+		if (SDL_SetGamma(1, 1, 1) == 0)
 #endif
 			gammaworks = true;
 		else
@@ -623,6 +623,9 @@ static void VID_ShutdownGamma (void)
 #endif	/* USE_3DFXGAMMA */
 	if (!fx_gamma && !gl_dogamma && gammaworks)
 		SDL_SetGammaRamp(orig_ramps[0], orig_ramps[1], orig_ramps[2]);
+#else	/* NO RAMPS: */
+	if (!fx_gamma && !gl_dogamma && gammaworks)
+		SDL_SetGamma (1,1,1);
 #endif	/* USE_GAMMA_RAMPS */
 #if defined (USE_3DFXGAMMA)
 	if (fx_gamma)

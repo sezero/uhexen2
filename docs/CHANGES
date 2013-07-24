@@ -3,6 +3,12 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2013-07-24 (SVN):
+    * gl_vidsdl.c (VID_InitGamma): send 1.0 to SDL_SetGamma() instead of
+      v_gamma.value.
+      (VID_ShutdownGamma): Add missing SDL_SetGamma(1,1,1) call when not
+      compiled to use SDL's GammaRamps api.
+
 2013-07-23 (SVN):
     * snd_mp3.c (mp3_startread): don't error upon a short read as it may
       be a short but still a valid file.
