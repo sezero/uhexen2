@@ -1,6 +1,6 @@
 /*
  * fx_gamma.h
- * $Id: fx_gamma.h,v 1.1 2007-07-06 11:01:53 sezero Exp $
+ * $Id$
  *
  * Small library providing gamma control functions for 3Dfx Voodoo1/2
  * cards by abusing the exposed glide symbols when using fxMesa.
@@ -21,22 +21,20 @@ extern "C" {
 extern void Shutdown_3dfxGamma (void);
 
 extern int Init_3dfxGammaCtrl (void);
-	/* returns 0 for failure, 2 for glide2 or 3 for glide3 api. */
+	/* returns 0 for failure, non-zero for success
+	  (2 glide2 or 3 for glide3 api.) */
 
-extern void do3dfxGammaCtrl (float value);
-	/* gamma correction procedure. takes the gamma value as its
-	   arg (must be between 1 and 0.333) */
-
-#if USE_GAMMA_RAMPS
+extern int do3dfxGammaCtrl (float/* gamma value*/);
+	/* gamma correction proc (1.0 ... 0.333).
+	   returns 0 for failure, 1 for success. */
 
 extern int glSetDeviceGammaRamp3DFX (void *arrays);
-	/* returns 1 for success, 0 for failure. */
+	/* returns 0 for failure, 1 for success. */
 
 extern int glGetDeviceGammaRamp3DFX (void *arrays);
-	/* sends a 1.0 gamma table. use for querying the lib.
-	   returns 1 for success, 0 for failure. */
-
-#endif	/* USE_GAMMA_RAMPS */
+	/* sends an identity (1.0) gamma table.
+	   use for querying the lib.
+	   returns 0 for failure, 1 for success. */
 
 #ifdef __cplusplus
 }

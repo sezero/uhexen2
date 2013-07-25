@@ -211,7 +211,6 @@ static GAMMA_RAMP_FN	SetDeviceGammaRamp_f;
 extern unsigned short	ramps[3][256];	// for hw- or 3dfx-gamma
 static unsigned short	orig_ramps[3][256];	// for hw- or 3dfx-gamma
 static qboolean	gammaworks = false;	// whether hw-gamma works
-qboolean	gl_dogamma = false;
 
 // multitexturing
 qboolean	gl_mtexable = false;
@@ -645,20 +644,15 @@ static void VID_InitGamma (void)
 {
 	GetDeviceGammaRamp_f = NULL;
 	SetDeviceGammaRamp_f = NULL;
+	gammaworks = false;
 
 	VID_Check3dfxGamma ();
 
 	if (GetDeviceGammaRamp_f)
 		gammaworks = GetDeviceGammaRamp_f(maindc, orig_ramps);
-	else
-		gammaworks = false;
 
 	if (!gammaworks)
-	{
-		// we can still adjust the brightness...
-		Con_SafePrintf("gamma not available, using gl tricks\n");
-		gl_dogamma = true;
-	}
+		Con_SafePrintf("gamma adjustment not available\n");
 }
 
 void VID_ShiftPalette (unsigned char *palette)

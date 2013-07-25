@@ -182,7 +182,6 @@ qboolean	is8bit = false;
 static cvar_t	vid_config_gl8bit = {"vid_config_gl8bit", "0", CVAR_ARCHIVE};
 
 static qboolean	gammaworks = false;	// whether hw-gamma works
-qboolean	gl_dogamma = false;	// none of the above two, use gl tricks
 
 // multitexturing
 qboolean	gl_mtexable = false;
@@ -532,19 +531,16 @@ static void VID_Init8bitPalette (void)
 
 static void VID_InitGamma (void)
 {
-	if (!gl_dogamma)
-	{
-#ifdef __MORPHOS__
-		if (screen && (IntuitionBase->LibNode.lib_Version > 50 || 
-			(IntuitionBase->LibNode.lib_Version == 50 && IntuitionBase->LibNode.lib_Revision >= 74)))
-			gammaworks = true;
-		else
-#endif
-			gl_dogamma = true;
-	}
+	gammaworks = false;
 
-	if (gl_dogamma)
-		Con_SafePrintf("gamma not available, using gl tricks\n");
+#ifdef __MORPHOS__
+	if (screen && (IntuitionBase->LibNode.lib_Version > 50 ||
+			(IntuitionBase->LibNode.lib_Version == 50 && IntuitionBase->LibNode.lib_Revision >= 74)))
+		gammaworks = true;
+#endif
+
+	if (!gammaworks)
+		Con_SafePrintf("gamma adjustment not available\n");
 }
 
 void VID_ShiftPalette (unsigned char *palette)

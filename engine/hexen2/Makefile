@@ -1017,16 +1017,19 @@ endif
 ifeq ($(TARGET_OS),unix)
 # unix clients use SDL:
 SYSOBJ_INPUT := in_sdl.o
-SYSOBJ_GL_VID:= gl_vidsdl.o fx_gamma.o
+SYSOBJ_GL_VID:= gl_vidsdl.o
+ifeq ($(USE_3DFXGAMMA),yes)
+SYSOBJ_GL_VID+= fx_gamma.o
+endif
 SYSOBJ_SOFT_VID:= vid_sdl.o
 SYSOBJ_NET := net_bsd.o net_udp.o
 SYSOBJ_SYS := sys_unix.o
 SYSOBJ_SYS += sys_sdl.o
 endif
 ifeq ($(TARGET_OS),darwin)
-# unix clients use SDL:
+# OSX clients use SDL:
 SYSOBJ_INPUT := in_sdl.o
-SYSOBJ_GL_VID:= gl_vidsdl.o fx_gamma.o
+SYSOBJ_GL_VID:= gl_vidsdl.o
 SYSOBJ_SOFT_VID:= vid_sdl.o
 SYSOBJ_NET := net_bsd.o net_udp.o
 SYSOBJ_SYS := sys_unix.o

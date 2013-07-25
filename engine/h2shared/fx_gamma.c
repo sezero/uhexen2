@@ -1,6 +1,6 @@
 /*
  * fx_gamma.c
- * $Id: fx_gamma.c,v 1.6 2007-07-06 12:45:41 sezero Exp $
+ * $Id$
  *
  * Small library providing gamma control functions for 3Dfx Voodoo1/2
  * cards by abusing the exposed glide symbols when using fxMesa.
@@ -12,7 +12,7 @@
  * See the accompanying COPYING file for more details.
  *
  * Compiling as a shared library:
- * gcc lib3dfxgamma.c -O2 -fPIC -Wall  -o lib3dfxgamma.so -shared
+ * gcc fx_gamma.c -O2 -fPIC -Wall -W -o lib3dfxgamma.so -shared
  *
  * How to use:
  * If you are linking to the opengl library at compile time (-lGL),
@@ -42,17 +42,21 @@
  *			(it takes a signed int param*, not unsigned).
  *			Also renamed FX_Get to FX_GetInteger to be more
  *			explicit.
+ * v0.0.5, 2013-07-24:	Several cleanups/tidy-ups.
  */
 
 #include <stdlib.h>
 #include <string.h>
-
-#if defined(USE_3DFXGAMMA)
-
 #include <dlfcn.h>
-
-#define USE_GAMMA_RAMPS		1	/* actual define is in gl_vidsdl.c */
-
+#if 0
+#include <glide.h>
+#else
+#define FX_CALL		/*__stdcall*/
+#define GR_GAMMA_TABLE_ENTRIES	0x05
+typedef signed int	FxI32;
+typedef unsigned int	FxU32;
+typedef float		FxFloat;
+#endif
 #include "fx_gamma.h"
 
 /**********************************************************************/
@@ -60,16 +64,13 @@
 /**	PRIVATE STUFF			**/
 
 /* 3dfx glide2 func for gamma correction */
-static void (*FX_GammaControl2)(float) = NULL;
+static void (FX_CALL *grGammaCorrectionValue_fp)(FxFloat) = NULL;
 /* 3dfx glide3 func for gamma correction */
-static void (*FX_GammaControl3)(float, float, float) = NULL;
+static void (FX_CALL *guGammaCorrectionRGB_fp)(FxFloat, FxFloat, FxFloat) = NULL;
 
-#if USE_GAMMA_RAMPS
 /* 3dfx glide3 funcs to make a replacement wglSetDeviceGammaRamp3DFX */
-#define GR_GAMMA_TABLE_ENTRIES	0x05
-static unsigned int (*FX_GetInteger)(unsigned int, unsigned int, signed int *) = NULL;
-static void (*FX_LoadGammaTable)(unsigned int, unsigned int *, unsigned int *, unsigned int *) = NULL;
-#endif
+static FxU32 (FX_CALL *grGet_fp)(FxU32, FxU32, FxI32*) = NULL;
+static void (FX_CALL *grLoadGammaTable_fp)(FxU32, FxU32*, FxU32*, FxU32*) = NULL;
 
 /**********************************************************************/
 
@@ -80,67 +81,71 @@ static void (*FX_LoadGammaTable)(unsigned int, unsigned int *, unsigned int *, u
 int Init_3dfxGammaCtrl (void)
 {
 	void	*symslist;
-	int	ret = 0;
+	int	ret;
 
-	if (FX_GammaControl2 != NULL)
-		return 2;
-	if (FX_GammaControl3 != NULL)
-		return 3;
+	if (grGammaCorrectionValue_fp != NULL)
+		return 2;	/* already have glide2x proc address */
+	if (guGammaCorrectionRGB_fp != NULL)
+		return 3;	/* already have glide3x proc address */
 
 	symslist = (void *) dlopen(NULL, RTLD_LAZY);
 	if (symslist != NULL)
 	{
-		if ((FX_GammaControl2 = (void (*) (float)) dlsym(symslist, "grGammaCorrectionValue")) != NULL)
-			ret = 2;
-		else if ((FX_GammaControl3 = (void (*) (float, float, float)) dlsym(symslist, "guGammaCorrectionRGB")) != NULL)
-			ret = 3;
+		if ((grGammaCorrectionValue_fp = (void (*) (FxFloat)) dlsym(symslist, "grGammaCorrectionValue")) != NULL)
+			ret = 2;/* glide2x */
+		else if ((guGammaCorrectionRGB_fp = (void (*) (FxFloat, FxFloat, FxFloat)) dlsym(symslist, "guGammaCorrectionRGB")) != NULL)
+			ret = 3;/* glide3x */
+		else	ret = 0;
 
 		dlclose(symslist);
-	}
-	else
-	{	/* shouldn't happen. */
-		ret = -1;
+		return ret;
 	}
 
-	return ret;
+	return 0;	/* shouldn't reach here */
 }
 
 void Shutdown_3dfxGamma (void)
 {
-	FX_GammaControl2 = NULL;
-	FX_GammaControl3 = NULL;
-#if USE_GAMMA_RAMPS
-	FX_GetInteger = NULL;
-	FX_LoadGammaTable = NULL;
-#endif
+	grGammaCorrectionValue_fp = NULL;
+	guGammaCorrectionRGB_fp = NULL;
+	grGet_fp = NULL;
+	grLoadGammaTable_fp = NULL;
 }
 
 /*
  * do3dfxGammaCtrl
  */
-void do3dfxGammaCtrl (float value)
+int do3dfxGammaCtrl (float value)
 {
-	if (FX_GammaControl2)
-		FX_GammaControl2 (value);
-	else if (FX_GammaControl3)
-		FX_GammaControl3 (value, value, value);
+	if (grGammaCorrectionValue_fp)	/* glide2x */
+	{
+		grGammaCorrectionValue_fp (value);
+		return 1;
+	}
+	if (guGammaCorrectionRGB_fp)	/* glide3x */
+	{
+		guGammaCorrectionRGB_fp (value, value, value);
+		return 1;
+	}
+	return 0;
 }
 
 /**********************************************************************/
-#if USE_GAMMA_RAMPS
+
 static int Check_3DfxGammaRamp (void)
 {
 	void	*symslist;
 
-	if (FX_LoadGammaTable != NULL)
+	if (grLoadGammaTable_fp != NULL && grGet_fp != NULL)
 		return 1;
 
 	symslist = (void *) dlopen(NULL, RTLD_LAZY);
 	if (symslist != NULL)
 	{
-		FX_GetInteger = (unsigned int (*) (unsigned int, unsigned int, signed int *)) dlsym(symslist, "grGet");
-		FX_LoadGammaTable = (void (*) (unsigned int, unsigned int *, unsigned int *, unsigned int *)) dlsym(symslist, "grLoadGammaTable");
-		if ((FX_LoadGammaTable != NULL) && (FX_GetInteger != NULL))
+		grGet_fp = (FxU32 (*) (FxU32, FxU32, FxI32 *)) dlsym(symslist, "grGet");
+		grLoadGammaTable_fp = (void (*) (FxU32, FxU32 *, FxU32 *, FxU32 *)) dlsym(symslist, "grLoadGammaTable");
+		dlclose(symslist);
+		if (grLoadGammaTable_fp != NULL && grGet_fp != NULL)
 			return 1;
 	}
 
@@ -155,16 +160,16 @@ static int Check_3DfxGammaRamp (void)
  */
 int glSetDeviceGammaRamp3DFX (void *arrays)
 {
-	int		tableSize = 0;
-	int		i, inc, idx;
+	FxI32		tableSize = 0;
+	FxI32		i, inc, idx;
 	unsigned short	*red, *green, *blue;
-	unsigned int	gammaTableR[256], gammaTableG[256], gammaTableB[256];
+	FxU32		gammaTableR[256], gammaTableG[256], gammaTableB[256];
 
-	if ((FX_LoadGammaTable == NULL) || (FX_GetInteger == NULL))
+	if (grLoadGammaTable_fp == NULL || grGet_fp == NULL)
 		return 0;
 
-	FX_GetInteger (GR_GAMMA_TABLE_ENTRIES, 4, &tableSize);
-	if (!tableSize)
+	grGet_fp (GR_GAMMA_TABLE_ENTRIES, 4, &tableSize);
+	if (tableSize <= 0)
 		return 0;
 
 	inc = 256 / tableSize;
@@ -180,7 +185,7 @@ int glSetDeviceGammaRamp3DFX (void *arrays)
 		gammaTableB[i] = blue[idx] >> 8;
 	}
 
-	FX_LoadGammaTable(tableSize, gammaTableR, gammaTableG, gammaTableB);
+	grLoadGammaTable_fp(tableSize, gammaTableR, gammaTableG, gammaTableB);
 
 	return 1;
 }
@@ -194,7 +199,7 @@ int glGetDeviceGammaRamp3DFX (void *arrays)
 	int		i;
 	unsigned short	gammaTable[3][256];
 
-	if ((FX_LoadGammaTable == NULL) || (FX_GetInteger == NULL))
+	if (grLoadGammaTable_fp == NULL || grGet_fp == NULL)
 	{
 		if (Check_3DfxGammaRamp() == 0)
 			return 0;
@@ -202,16 +207,13 @@ int glGetDeviceGammaRamp3DFX (void *arrays)
 
 	for (i = 0; i < 256; i++)
 	{
-		 gammaTable[0][i] = i << 8;
-		 gammaTable[1][i] = i << 8;
-		 gammaTable[2][i] = i << 8;
+		gammaTable[0][i] = i << 8;
+		gammaTable[1][i] = i << 8;
+		gammaTable[2][i] = i << 8;
 	}
 
 	memcpy (arrays, gammaTable, 3 * 256 * sizeof(unsigned short));
 
 	return 1;
 }
-#endif	/* USE_GAMMA_RAMPS */
-
-#endif	/* USE_3DFXGAMMA */
 

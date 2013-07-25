@@ -1605,15 +1605,15 @@ static void GL_DrawBlendPoly (void)
 GL_DoGamma
 
 Uses GL_DrawBlendPoly() for gamma correction.
+Idea originally from LordHavoc.
 This trick is useful if normal ways of gamma
 adjustment fail: In case of 3dfx Voodoo1/2/Rush,
 we can't use 3dfx specific extensions in unix,
 so this can be our friend at a cost of 4-5 fps.
 To be called from R_PolyBlend().
-Idea originally nicked from LordHavoc, re-worked
-and extended by muff - 5 Feb 2001.
 =================
 */
+#if 0
 static void GL_DoGamma (void)
 {
 	if (v_gamma.value >= 1)
@@ -1626,6 +1626,7 @@ static void GL_DoGamma (void)
 
 	glBlendFunc_fp (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 }
+#endif
 
 /*
 ============
@@ -1652,8 +1653,7 @@ static void R_PolyBlend (void)
 		GL_DrawBlendPoly ();
 	}
 
-	if (gl_dogamma)
-		GL_DoGamma ();
+	/*GL_DoGamma ();*/
 
 	glDisable_fp (GL_BLEND);
 	glEnable_fp (GL_TEXTURE_2D);

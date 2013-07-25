@@ -183,19 +183,20 @@ static cvar_t	vid_config_gl8bit = {"vid_config_gl8bit", "0", CVAR_ARCHIVE};
 
 // Gamma stuff
 #define	USE_GAMMA_RAMPS			0
-#if USE_GAMMA_RAMPS
+
+/* 3dfx gamma hacks: stuff are in fx_gamma.c
+ * Note: gamma ramps crashes voodoo graphics */
+#define	USE_3DFX_RAMPS			0
+#if defined(USE_3DFXGAMMA)
+#include "fx_gamma.h"
+#endif
+
+#if (USE_GAMMA_RAMPS) || (defined(USE_3DFXGAMMA) && (USE_3DFX_RAMPS))
 static unsigned short	orig_ramps[3][256];
 #endif
 
-// 3dfx gamma hacks: stuff are in fx_gamma.c
-// Note: gamma ramps crashes voodoo graphics
-#if defined(USE_3DFXGAMMA)
-#include "fx_gamma.h"
-#endif	/* USE_3DFXGAMMA */
-
 static qboolean	fx_gamma   = false;	// 3dfx-specific gamma control
 static qboolean	gammaworks = false;	// whether hw-gamma works
-qboolean	gl_dogamma = false;	// none of the above two, use gl tricks
 
 // multitexturing
 qboolean	gl_mtexable = false;
@@ -551,23 +552,38 @@ static void VID_Init8bitPalette (void)
 }
 
 
-#if defined (USE_3DFXGAMMA)
+#if !defined(USE_3DFXGAMMA)
+static inline int Init_3dfxGammaCtrl (void)		{ return 0; }
+static inline void Shutdown_3dfxGamma (void)		{ }
+static inline int do3dfxGammaCtrl (float value)			{ return 0; }
+static inline int glGetDeviceGammaRamp3DFX (void *arrays)	{ return 0; }
+static inline int glSetDeviceGammaRamp3DFX (void *arrays)	{ return 0; }
+static inline qboolean VID_Check3dfxGamma (void)	{ return false; }
+#else
 static qboolean VID_Check3dfxGamma (void)
 {
 	int		ret;
 
-	if ( ! COM_CheckParm("-3dfxgamma") )
+	if (!COM_CheckParm("-3dfxgamma"))
 		return false;
 
-#if USE_GAMMA_RAMPS
-// not recommended for Voodoo1, currently crashes
+	/* refuse 3dfxgamma with DRI drivers */
+	if (!q_strncasecmp(gl_renderer, "Mesa DRI", 8) ||
+	    !q_strncasecmp(gl_renderer, "Mesa Glide - DRI", 16))
+		return false;
+	/* Daniel Borca's SAGE is not necessarily V1/2-only
+	 * and I do not know how to detect it better. */
+	if (!q_strncasecmp(gl_renderer, "SAGE Glide", 10))
+		return false;
+
+#if USE_3DFX_RAMPS /* not recommended for Voodoo1, currently crashes */
 	ret = glGetDeviceGammaRamp3DFX(orig_ramps);
 	if (ret != 0)
 	{
 		Con_SafePrintf ("Using 3dfx glide3 specific gamma ramps\n");
 		return true;
 	}
-#else	/* not using gamma ramps */
+#else
 	ret = Init_3dfxGammaCtrl();
 	if (ret > 0)
 	{
@@ -575,102 +591,70 @@ static qboolean VID_Check3dfxGamma (void)
 		return true;
 	}
 #endif
-
 	return false;
 }
 #endif	/* USE_3DFXGAMMA */
 
 static void VID_InitGamma (void)
 {
+	gammaworks = fx_gamma = false;
+	/* we don't have WGL_3DFX_gamma_control or an equivalent in unix.
+	 * assuming is_3dfx means Voodoo1 or Voodoo2, this means we dont
+	 * have hw-gamma. */
+	/* Here is an evil hack abusing the exposed Glide symbols: */
 	if (is_3dfx)
-	{
-	// we don't have WGL_3DFX_gamma_control or an equivalent
-	// in unix. If we have it one day, I'll put stuff checking
-	// for and linking to it here.
-	// Otherwise, assuming is_3dfx means Voodoo1 or Voodoo2,
-	// this means we dont have hw-gamma, just use gl_dogamma
-#if defined (USE_3DFXGAMMA)
-	// Here is an evil hack to abuse the Glide symbols exposed on us
 		fx_gamma = VID_Check3dfxGamma();
-#endif	/* USE_3DFXGAMMA */
-		if (!fx_gamma)
-			gl_dogamma = true;
-	}
-
-	if (!fx_gamma && !gl_dogamma)
+	if (!fx_gamma)
 	{
 #if USE_GAMMA_RAMPS
-		if (SDL_GetGammaRamp(orig_ramps[0], orig_ramps[1], orig_ramps[2]) == 0)
+		gammaworks	= (SDL_GetGammaRamp(orig_ramps[0], orig_ramps[1], orig_ramps[2]) == 0);
+		if (gammaworks)
+		    gammaworks	= (SDL_SetGammaRamp(orig_ramps[0], orig_ramps[1], orig_ramps[2]) == 0);
 #else
-		if (SDL_SetGamma(1, 1, 1) == 0)
+		gammaworks	= (SDL_SetGamma(1, 1, 1) == 0);
 #endif
-			gammaworks = true;
-		else
-			gl_dogamma = true;
 	}
 
-	if (gl_dogamma)
-		Con_SafePrintf("gamma not available, using gl tricks\n");
+	if (!gammaworks && !fx_gamma)
+		Con_SafePrintf("gamma adjustment not available\n");
 }
 
 static void VID_ShutdownGamma (void)
 {
-#if USE_GAMMA_RAMPS	/* restore hardware gamma */
-#if defined (USE_3DFXGAMMA)
-	if (fx_gamma)
-		glSetDeviceGammaRamp3DFX(orig_ramps);
-	else
-#endif	/* USE_3DFXGAMMA */
-	if (!fx_gamma && !gl_dogamma && gammaworks)
-		SDL_SetGammaRamp(orig_ramps[0], orig_ramps[1], orig_ramps[2]);
-#else	/* NO RAMPS: */
-	if (!fx_gamma && !gl_dogamma && gammaworks)
-		SDL_SetGamma (1,1,1);
-#endif	/* USE_GAMMA_RAMPS */
-#if defined (USE_3DFXGAMMA)
-	if (fx_gamma)
-		Shutdown_3dfxGamma();
-#endif	/* USE_3DFXGAMMA */
+#if USE_3DFX_RAMPS
+	if (fx_gamma) glSetDeviceGammaRamp3DFX(orig_ramps);
+#else
+/*	if (fx_gamma) do3dfxGammaCtrl(1);*/
+#endif
+	Shutdown_3dfxGamma();
+#if USE_GAMMA_RAMPS	/* restore hw-gamma */
+	if (gammaworks) SDL_SetGammaRamp(orig_ramps[0], orig_ramps[1], orig_ramps[2]);
+#else
+	if (gammaworks) SDL_SetGamma (1,1,1);
+#endif
 }
 
-#if USE_GAMMA_RAMPS
-static void VID_SetGammaRamp (void)
-{
-#if defined (USE_3DFXGAMMA)
-	if (fx_gamma)
-		glSetDeviceGammaRamp3DFX(ramps);
-	else
-#endif	/* USE_3DFXGAMMA */
-	if (!gl_dogamma && gammaworks)
-		SDL_SetGammaRamp(ramps[0], ramps[1], ramps[2]);
-}
-#else /* ! USE_GAMMA_RAMPS */
 static void VID_SetGamma (void)
 {
-	float	value;
-
-	if (v_gamma.value > (1.0 / GAMMA_MAX))
-		value = 1.0 / v_gamma.value;
-	else
-		value = GAMMA_MAX;
-
-#if defined (USE_3DFXGAMMA)
-	if (fx_gamma)
-		do3dfxGammaCtrl(value);
-	else
-#endif	/* USE_3DFXGAMMA */
-	if (!gl_dogamma && gammaworks)
-		SDL_SetGamma(value,value,value);
+#if (!USE_GAMMA_RAMPS) || (!USE_3DFX_RAMPS)
+	float	value = (v_gamma.value > (1.0 / GAMMA_MAX)) ?
+			(1.0 / v_gamma.value) : GAMMA_MAX;
+#endif
+#if USE_3DFX_RAMPS
+	if (fx_gamma) glSetDeviceGammaRamp3DFX(ramps);
+#else
+	if (fx_gamma) do3dfxGammaCtrl(value);
+#endif
+#if USE_GAMMA_RAMPS
+	if (gammaworks) SDL_SetGammaRamp(ramps[0], ramps[1], ramps[2]);
+#else
+	if (gammaworks) SDL_SetGamma(value,value,value);
+#endif
 }
-#endif	/* USE_GAMMA_RAMPS */
 
 void VID_ShiftPalette (unsigned char *palette)
 {
-#if USE_GAMMA_RAMPS
-	VID_SetGammaRamp();
-#else
 	VID_SetGamma();
-#endif
 }
 
 
@@ -909,7 +893,8 @@ static void GL_Init (void)
 
 	is_3dfx = false;
 	if (!q_strncasecmp(gl_renderer, "3dfx", 4)	  ||
-	    !q_strncasecmp(gl_renderer, "SAGE Glide", 10) ||
+	    !q_strncasecmp(gl_renderer, "SAGE Glide", 10) || /* not necessarily V1/2-only. */
+	    !q_strncasecmp(gl_renderer, "Glide",5)	  ||
 	    !q_strncasecmp(gl_renderer, "Mesa Glide", 10))
 	{
 	// This should hopefully detect Voodoo1 and Voodoo2
