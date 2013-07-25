@@ -4,6 +4,11 @@ Development Progress	:
 ---------------------------
 
 2013-07-25 (SVN):
+    * snd_flac.c (flac_write_func): don't byteswap the 16 bit values.
+      they seem to be in native-endian format. thanks to Levent Yavas
+      for testing on a big endian platform (ppc/OSX 10.4).
+
+2013-07-25 (SVN):
     * removed the gl_dogamma hack. some updates to the sdl and fx gamma
       code.
 
