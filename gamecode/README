@@ -4,6 +4,20 @@ Hexen II: Hammer of Thyrion (uHexen2) - GAMECODE
 Changes
 -------
 
+2013-07-26 (1.29):
+===================
+- combat.hc (FireMelee): broke the long if condition for the assassin's
+  backstab in to smaller three nested ifs ordered in the likelihood of
+  truth. in the siege version, changed some of the if conditions into
+  else if (the player class checks.)
+- ravenstf.hc (create_raven_shot2, hw and siege versions): removed the
+  DAMAGE_YES assignment to missile.solid, just like we did for the h2
+  and portals versions years ago. (it should have been there by mistake
+  or a left over as was noticed by Pa3PyX, which used to cause the
+  missiles to be of SOLID_TRIGGER type and collide with each other.)
+- ravenstf.hc (missle_straight, hw and siege versions): removed useless
+  return statement from the end of the function.
+
 2013-03-08 (1.28):
 ===================
 - Map cycling: abandoned the old community-invented (Kor Skarn) method

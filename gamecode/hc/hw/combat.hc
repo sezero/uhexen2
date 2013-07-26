@@ -61,13 +61,14 @@ void FireMelee (float damage_base,float damage_mod,float attack_radius)
 	if (trace_ent.takedamage)
 	{
 		//FIXME:Add multiplier for level and strength
-		if((trace_ent.flags2 & FL_ALIVE) && !infront_of_ent(self, trace_ent) &&
-		   self.playerclass == CLASS_ASSASSIN && self.weapon == IT_WEAPON1 &&
-		   random(1, 10) < self.level)
+		if(self.playerclass == CLASS_ASSASSIN && self.weapon == IT_WEAPON1)
 		{
+		    if((trace_ent.flags2 & FL_ALIVE) && !infront_of_ent(self, trace_ent) &&
+							random(1, 10) < self.level) {
 			CreateRedFlash(trace_endpos);
 			damage_base*=random(2.5,4);
 			backstab=TRUE;
+		    }
 		}
 
 		damg = random(damage_mod+damage_base,damage_base);

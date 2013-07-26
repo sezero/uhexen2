@@ -69,10 +69,12 @@ void FireMelee (float damage_base,float damage_mod,float attack_radius)
 	if (trace_ent.takedamage)
 	{
 		//FIXME:Add multiplier for level and strength
-		if(self.playerclass == CLASS_PALADIN && self.weapon == IT_WEAPON2 && !(trace_ent.flags2&FL_ALIVE))
-			damage_base*=1.3;
-
-		if(self.playerclass==CLASS_DWARF)
+		if(self.playerclass == CLASS_PALADIN)
+		{
+			if(self.weapon == IT_WEAPON2 && !(trace_ent.flags2&FL_ALIVE))
+				damage_base*=1.3;
+		}
+		else if(self.playerclass == CLASS_DWARF)
 		{
 			if(self.weapon == IT_WEAPON2 && !(trace_ent.flags2&FL_ALIVE))
 			{
@@ -87,7 +89,7 @@ void FireMelee (float damage_base,float damage_mod,float attack_radius)
 				damage_base*=1.2;
 		}
 		/*
-		if((trace_ent.flags2 & FL_ALIVE) && self.playerclass == CLASS_ASSASSIN) //!fov(self,trace_ent,90)
+		else if(self.playerclass == CLASS_ASSASSIN && (trace_ent.flags2&FL_ALIVE)) //!fov(self,trace_ent,90)
 		{
 		vector t_vf,m_vf;
 			makevectors(trace_ent.angles);

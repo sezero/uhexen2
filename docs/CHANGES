@@ -4,6 +4,12 @@ Development Progress	:
 ---------------------------
 
 2013-07-26 (SVN):
+    * combat.hc (FireMelee): broke the long if condition for assassin's
+      backstab in to smaller three nested ifs ordered in the likelihood
+      of truth. in the siege version, changed some of the if conditions
+      into else if (the player class checks.)
+
+2013-07-26 (SVN):
     * ravenstf.hc (create_raven_shot2, hw and siege versions): removed
       the DAMAGE_YES assignment to missile.solid, just like we did for
       the h2 and portals versions years ago. (it should have been there
