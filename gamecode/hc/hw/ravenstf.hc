@@ -493,7 +493,6 @@ void create_raven_shot2(vector location,float add_yaw,float nexttime,float rotat
 	missile.owner = self.owner;
 	missile.movetype = MOVETYPE_FLYMISSILE;
 	missile.solid = SOLID_BBOX;
-	missile.solid = DAMAGE_YES;
 	missile.dmg = 50;
 
 // set missile speed
@@ -567,8 +566,6 @@ void missle_straight(void)
 
 	self.velocity = normalize (v_forward);
 	self.velocity = self.velocity * ravenshot_speed;
-
-	return;
 }
 
 void missle_straight1(void)
