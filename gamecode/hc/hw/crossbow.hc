@@ -26,12 +26,12 @@ $frame select11     select12     select13     select14     select15
 $frame shoot1       shoot2       shoot3       shoot4       shoot5       
 $frame shoot6       shoot7       shoot8       shoot9       shoot10      
 $frame shoot11      shoot12      shoot13      shoot14      shoot15      
-$frame shoot16      shoot17      shoot18      shoot19
-      
+$frame shoot16      shoot17      shoot18      shoot19      
+
+
 void AssBoltExplosion ()
 {
 	T_RadiusDamage (self, self.owner, self.dmg, world);
-
 	remove (self);
 }
 
@@ -51,7 +51,7 @@ void() CB_BoltStick=
 {
 	if(self.wait<=time)
 		self.think=AssBoltExplosion;
-    thinktime self : 0;
+	thinktime self : 0;
 };
 
 void CB_RemoveEffect (void)
@@ -132,7 +132,6 @@ void CB_HitEffect (vector v_forward)
 	//now figure out how far i've travelled
 
 	stickspot = self.origin-self.xbo_startpos;
-
 	updateeffect(self.xbo_effect_id, CE_HWXBOWSHOOT, ttype, vlen(stickspot));
 
 	CB_RemoveBoltFromList();
@@ -146,57 +145,58 @@ void() CB_BoltHit=
 	if (self.xbo_teleported)
 		return;
 
-		float stick;
+	float stick;
 
-		v_forward=normalize(self.velocity);
-		setsize(self,'0 0 0','0 0 0');
-		self.takedamage=DAMAGE_NO;
-        self.velocity='0 0 0';
-        self.movetype=MOVETYPE_NOCLIP;
-        self.solid=SOLID_NOT;
-        self.touch=SUB_Null;
-//		self.health=other.health;
+	v_forward=normalize(self.velocity);
+	setsize(self,'0 0 0','0 0 0');
+	self.takedamage=DAMAGE_NO;
 
-		CB_HitEffect (v_forward);
+	self.velocity='0 0 0';
+	self.movetype=MOVETYPE_NOCLIP;
+	self.solid=SOLID_NOT;
+	self.touch=SUB_Null;
+//	self.health=other.health;
 
-		if(other.takedamage)
-		{
-			if(self.classname=="bolt")
-				T_Damage(other,self,self.owner,15);
-			else
-				T_Damage(other,self,self.owner,3);
-		}
+	CB_HitEffect (v_forward);
+
+	if(other.takedamage)
+	{
+		if(self.classname=="bolt")
+			T_Damage(other,self,self.owner,15);
 		else
-		{
-			if(self.classname!="bolt")
-				stick=TRUE;
-			self.wait=time + self.fusetime;//random(1,3);
-		}
+			T_Damage(other,self,self.owner,3);
+	}
+	else
+	{
+		if(self.classname!="bolt")
+			stick=TRUE;
+		self.wait=time + self.fusetime;//random(1,3);
+	}
 
 //FIXME: only stick in if thingtype is wood or flesh,
 //otherwise, no damage and bounce off!
-        if(other.movetype||other.takedamage||stick||other.health)
-        {
-			if(stick)
-			{
-				self.enemy=other;
-				self.think=CB_BoltStick;
-				thinktime self : 0;
-			}
-			else if(self.classname=="bolt")
-				remove(self);
-			else
-				AssBoltExplosion();
-        }
-        else
-        {
-			self.movetype=MOVETYPE_NONE;
-			if(self.classname=="bolt")
-				self.think=SUB_Remove;
-		    else
-				self.think=AssBoltExplosion;
-            thinktime self : 2;
-        }
+	if(other.movetype||other.takedamage||stick||other.health)
+	{
+		if(stick)
+		{
+			self.enemy=other;
+			self.think=CB_BoltStick;
+			thinktime self : 0;
+		}
+		else if(self.classname=="bolt")
+			remove(self);
+		else
+			AssBoltExplosion();
+	}
+	else
+	{
+		self.movetype=MOVETYPE_NONE;
+		if(self.classname=="bolt")
+			self.think=SUB_Remove;
+		else
+			self.think=AssBoltExplosion;
+		thinktime self : 2;
+	}
 };
 
 void bolt_death (void)
@@ -277,7 +277,7 @@ void ArrowFlyThink (void)
 	{
 		3;//or 4?...
 //		self.takedamage=DAMAGE_YES;
-//        setsize(self,'-3 -3 -2','3 3 2');
+//		setsize(self,'-3 -3 -2','3 3 2');
 	}
 	if(self.model=="models/flaming.mdl")
 	{
@@ -289,6 +289,7 @@ void ArrowFlyThink (void)
 	self.think=ArrowFlyThink;
 	thinktime self : 0.05;
 }
+
 void ArrowSound (void)
 {
 	//attn_static instead?
@@ -311,7 +312,7 @@ void ArrowThinkEnt (entity who)//call me right away now
 	if(!trace_ent.takedamage)
 		HomeThinkEnt(who);
 
-    who.angles=vectoangles(who.velocity);
+	who.angles=vectoangles(who.velocity);
 
 	if(who.classname=="bolt")
 	{
@@ -337,82 +338,80 @@ void ArrowThinkEnt (entity who)//call me right away now
 
 entity (float offset, float powered_up, entity prevbolt, float boltnumber, float effectnum) FireCB_Bolt =
 {
-		local entity missile;
-        makevectors(self.v_angle);
-        missile=spawn();
-		missile.xbo_teleported = FALSE;
-		missile.xbo_effect_id = effectnum;
-		missile.takedamage=DAMAGE_NO;
-//		bprint(PRINT_MEDIUM,ftos(missile.xbo_effect_id));
-//		bprint(PRINT_MEDIUM," effect has new bolt\n");
+local entity missile;
+	makevectors(self.v_angle);
+	missile=spawn();
+	missile.xbo_teleported = FALSE;
+	missile.xbo_effect_id = effectnum;
+	missile.takedamage=DAMAGE_NO;
+//	bprint(PRINT_MEDIUM,ftos(missile.xbo_effect_id));
+//	bprint(PRINT_MEDIUM," effect has new bolt\n");
 
-        missile.owner=self;
-        missile.solid=SOLID_BBOX;
-		missile.hull=HULL_POINT;
-		missile.health=9999;//geesh, are we still getting stack overflows?!?!?! bolts shouldn't be taking damage, but if they still are for whatever reason, give them lotsa health.
+	missile.owner=self;
+	missile.solid=SOLID_BBOX;
+	missile.hull=HULL_POINT;
+	missile.health=9999;//geesh, are we still getting stack overflows?!?!?! bolts shouldn't be taking damage, but if they still are for whatever reason, give them lotsa health.
 
-		 // make sll of bolts in this effect
-		if (prevbolt == world)
-		{
-			missile.firstbolt = missile;
-		}
-		else
-		{
-			prevbolt.nextbolt = missile;
-			missile.firstbolt = prevbolt.firstbolt;
-		}
-		missile.nextbolt = world;
+	// make sll of bolts in this effect
+	if (prevbolt == world)
+	{
+		missile.firstbolt = missile;
+	}
+	else
+	{
+		prevbolt.nextbolt = missile;
+		missile.firstbolt = prevbolt.firstbolt;
+	}
+	missile.nextbolt = world;
 
-		missile.boltnum = boltnumber;
+	missile.boltnum = boltnumber;
 
-
-//		if(deathmatch)//i'm not finding a global like this available on client, so always decrease offset
-			offset*=.333;
-		if(powered_up)
-		{
-			missile.frags=TRUE;
-			missile.thingtype=THINGTYPE_METAL;
-	        missile.movetype=MOVETYPE_FLYMISSILE;
-	        missile.classname="flaming arrow";
-//	        setmodel(missile,"models/flaming.mdl");
-			missile.dmg=40;
-			missile.drawflags(+)MLS_FIREFLICKER;
-//			missile.th_die=fbolt_death;
-		}
-		else
-		{
-			missile.thingtype=THINGTYPE_WOOD;
-	        missile.movetype=MOVETYPE_FLYMISSILE;
+//	if(deathmatch)//i'm not finding a global like this available on client, so always decrease offset
+		offset*=.333;
+	if(powered_up)
+	{
+		missile.frags=TRUE;
+		missile.thingtype=THINGTYPE_METAL;
+		missile.movetype=MOVETYPE_FLYMISSILE;
+		missile.classname="flaming arrow";
+//		setmodel(missile,"models/flaming.mdl");
+		missile.dmg=40;
+		missile.drawflags(+)MLS_FIREFLICKER;
+//		missile.th_die=fbolt_death;
+	}
+	else
+	{
+		missile.thingtype=THINGTYPE_WOOD;
+		missile.movetype=MOVETYPE_FLYMISSILE;
 //bounce testing
-//	        missile.movetype=MOVETYPE_BOUNCEMISSILE;
-	        missile.classname="bolt";
-//	        setmodel(missile,"models/arrow.mdl");
-//			missile.th_die=bolt_death;
-        }
-		missile.touch=CB_BoltHit;
+//		missile.movetype=MOVETYPE_BOUNCEMISSILE;
+		missile.classname="bolt";
+//		setmodel(missile,"models/arrow.mdl");
+//		missile.th_die=bolt_death;
+	}
+	missile.touch=CB_BoltHit;
+//	missile.speed=random(700,1200);
+	missile.speed = 800.0 + seedrand()*500.0;
+	missile.fusetime = 1.0 + seedrand()*2.0;
 
-//		missile.speed=random(700,1200);
-		missile.speed = 800.0 + seedrand()*500.0;
-		missile.fusetime = 1.0 + seedrand()*2.0;
+	missile.o_angle=missile.velocity=normalize(v_forward)*missile.speed+v_right*offset;
+	missile.angles=vectoangles(missile.velocity);
 
-		missile.o_angle=missile.velocity=normalize(v_forward)*missile.speed+v_right*offset;
-        missile.angles=vectoangles(missile.velocity);
-		
-		missile.ideal_yaw=TRUE;
-		missile.turn_time = 0;
-		missile.veer=0;
+	missile.ideal_yaw=TRUE;
+	missile.turn_time = 0;
+	missile.veer=0;
 
-		missile.lifetime=time+0.2;
+	missile.lifetime=time+0.2;
 
-        setsize(missile,'0 0 0','0 0 0');
-        setorigin(missile,self.origin+self.proj_ofs+v_forward*8+v_right*offset*0.05);
+	setsize(missile,'0 0 0','0 0 0');
+	setorigin(missile,self.origin+self.proj_ofs+v_forward*8+v_right*offset*0.05);
 
-		missile.xbo_startpos = missile.origin;//save start pos so i can send the total distance i travelled when i finish
+	missile.xbo_startpos = missile.origin;//save start pos so i can send the total distance i travelled when i finish
 
-		ArrowThinkEnt(missile);
-		thinktime missile : 0;
+	ArrowThinkEnt(missile);
+	thinktime missile : 0;
 
-		return (missile);
+	return (missile);
 };
 
 
@@ -427,11 +426,12 @@ void crossbow_fire (void)
 {
 	entity curmissile;
 	float bolteffect,randseed;
-    
+
 	makevectors(self.v_angle);
 	self.wfs = advanceweaponframe($shoot1,$shoot18);
 	self.th_weapon=crossbow_fire;
 	if (self.weaponframe == $shoot2)
+	{
 		if(self.artifact_active&ART_TOMEOFPOWER)
 		{
 			randseed = random(255);
@@ -456,6 +456,7 @@ void crossbow_fire (void)
 			self.attack_finished=time+0.5;
 			self.bluemana-=3;
 		}
+	}
 	else if (self.wfs==WF_CYCLE_WRAPPED)
 		crossbow_idle();
 }

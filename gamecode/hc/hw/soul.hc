@@ -46,11 +46,9 @@ void () necro_soul_touch =
 		other.health += self.health;
 		if (other.health>other.max_health)
 			other.health = other.max_health;
-		
 		other.bluemana += self.bluemana;
 		if (other.bluemana > other.max_mana)
 			other.bluemana = other.max_mana;
-		
 		other.greenmana += self.greenmana;
 		if (other.greenmana > other.max_mana)
 			other.greenmana = other.max_mana;
@@ -63,7 +61,6 @@ void () necro_soul_touch =
 
 		self.enemy.think=SUB_Remove;
 		thinktime self.enemy : HX_FRAME_TIME * 2;
-
 	}
 	// Good people are hurt by this
 	else if ((other.classname == "player") &&
@@ -73,7 +70,6 @@ void () necro_soul_touch =
 		if (self.pain_finished < time)
 			T_Damage (other, self, self, 5);
 		self.pain_finished = time + .2;
-
 	}
 };
 

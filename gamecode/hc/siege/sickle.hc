@@ -59,28 +59,28 @@ void sickle_fire ()
 	makevectors (self.v_angle);
 	source = self.origin + self.proj_ofs;
 	traceline (source, source + v_forward*64, FALSE, self);
-	if (trace_fraction == 1.0)  
+	if (trace_fraction == 1.0)
 	{
-		traceline (source, source + v_forward*64 - (v_up * 30), FALSE, self);  // 30 down	
-		if (trace_fraction == 1.0)  
+		traceline (source, source + v_forward*64 - (v_up * 30), FALSE, self);  // 30 down
+		if (trace_fraction == 1.0)
 		{
 			traceline (source, source + v_forward*64 + v_up * 30, FALSE, self);  // 30 up
-			if (trace_fraction == 1.0)  
+			if (trace_fraction == 1.0)
 				return;
 		}
 	}
-	
+
 	org = trace_endpos + (v_forward * 4);
 
 	if (trace_ent.takedamage)
 	{
 		// Necromancer stands a chance of vampirically stealing health points
-		if(teamplay && (trace_ent.team == self.team||trace_ent.siege_team == self.siege_team))
+		if(teamplay && (trace_ent.team == self.team || trace_ent.siege_team == self.siege_team))
 			drain_ok=FALSE;
 		else
 			drain_ok=TRUE;
 
-		if  (drain_ok && (trace_ent.flags & FL_MONSTER || trace_ent.flags & FL_CLIENT) && (self.level >= 6))	
+		if  (drain_ok && (trace_ent.flags & FL_MONSTER || trace_ent.flags & FL_CLIENT) && (self.level >= 6))
 		{
 //			msg_entity=self;
 //			WriteByte (MSG_ONE, SVC_SET_VIEW_TINT);
@@ -110,7 +110,7 @@ void sickle_fire ()
 			damage_mod = WEAPON1_PWR_ADD_DAMAGE;
 
 			CreateWhiteFlash(org);
-		
+
 			if(trace_ent.mass<=10)
 				inertia=1;
 			else
@@ -131,7 +131,7 @@ void sickle_fire ()
 						trace_ent.velocity_z = 200/inertia;
 					trace_ent.flags(-)FL_ONGROUND;
 				}
-			}	
+			}
 		}
 		else
 		{
@@ -166,7 +166,6 @@ void sickle_fire ()
 			CreateSpark (org);
 		}
 	}
-
 }
 
 
@@ -179,7 +178,6 @@ void sickle_ready (void)
 
 void () sickle_c =
 {
-
 	self.th_weapon=sickle_c;
 	self.wfs = advanceweaponframe($3swipe1,$3swipe14);
 
@@ -215,7 +213,6 @@ void () sickle_a =
 		sickle_fire();
 	else if (self.wfs == WF_LAST_FRAME)
 		sickle_ready();
-
 };
 
 void sickle_select (void)
@@ -245,13 +242,13 @@ void sickle_decide_attack (void)
 {
 	if (self.attack_cnt < 1)
 		sickle_a ();
-	else 
+	else
 	{
 		sickle_b ();
 		self.attack_cnt = -1;
 	}
 
 	self.attack_cnt += 1;
-  	self.attack_finished = time + 0.5;
+	self.attack_finished = time + 0.5;
 }
 

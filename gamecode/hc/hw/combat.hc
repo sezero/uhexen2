@@ -45,25 +45,25 @@ void FireMelee (float damage_base,float damage_mod,float attack_radius)
 	source = self.origin+self.proj_ofs;
 	traceline (source, source + v_forward*64, FALSE, self);
 
-	if (trace_fraction == 1.0)  
+	if (trace_fraction == 1.0)
 	{
 		traceline (source, source + v_forward*64 - (v_up * 30), FALSE, self);  // 30 down
-	
-		if (trace_fraction == 1.0)  
+		if (trace_fraction == 1.0)
 		{
 			traceline (source, source + v_forward*64 + v_up * 30, FALSE, self);  // 30 up
-		
-			if (trace_fraction == 1.0)  
+			if (trace_fraction == 1.0)
 				return;
 		}
 	}
-	
+
 	org = trace_endpos + (v_forward * 4);
 
 	if (trace_ent.takedamage)
 	{
 		//FIXME:Add multiplier for level and strength
-		if(trace_ent.flags2&FL_ALIVE&&!infront_of_ent(self,trace_ent)&&self.playerclass==CLASS_ASSASSIN&&self.weapon==IT_WEAPON1&&random(1,10)<self.level)
+		if((trace_ent.flags2 & FL_ALIVE) && !infront_of_ent(self, trace_ent) &&
+		   self.playerclass == CLASS_ASSASSIN && self.weapon == IT_WEAPON1 &&
+		   random(1, 10) < self.level)
 		{
 			CreateRedFlash(trace_endpos);
 			damage_base*=random(2.5,4);
@@ -73,7 +73,7 @@ void FireMelee (float damage_base,float damage_mod,float attack_radius)
 		damg = random(damage_mod+damage_base,damage_base);
 		SpawnPuff (org, '0 0 0', damg,trace_ent);
 		T_Damage (trace_ent, self, self, damg);
-		if(!trace_ent.flags2&FL_ALIVE&&backstab)
+		if(!(trace_ent.flags2 & FL_ALIVE) && backstab)
 		{
 			centerprint(self,"Critical Hit Backstab!\n");
 			AwardExperience(self,trace_ent,200);
@@ -81,13 +81,13 @@ void FireMelee (float damage_base,float damage_mod,float attack_radius)
 
 		if(trace_ent.thingtype==THINGTYPE_FLESH)
 			sound (self, CHAN_WEAPON, "weapons/slash.wav", 1, ATTN_NORM);
-		else 
+		else
 			sound (self, CHAN_WEAPON, "weapons/hitwall.wav", 1, ATTN_NORM);
 
 		// Necromancer stands a chance of vampirically stealing health points
-		if (self.playerclass == CLASS_NECROMANCER) 
+		if (self.playerclass == CLASS_NECROMANCER)
 		{
-			if  ((trace_ent.flags & FL_MONSTER) || (trace_ent.flags & FL_CLIENT))	
+			if ((trace_ent.flags & FL_MONSTER) || (trace_ent.flags & FL_CLIENT))
 			{
 				chance = self.level * .05;
 
@@ -117,6 +117,5 @@ void FireMelee (float damage_base,float damage_mod,float attack_radius)
 		WriteCoord (MSG_BROADCAST, org_y);
 		WriteCoord (MSG_BROADCAST, org_z);
 	}
-
 }
 

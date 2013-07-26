@@ -53,29 +53,28 @@ void FireMelee (float damage_base,float damage_mod,float attack_radius)
 	source = self.origin+self.proj_ofs;
 	traceline (source, source + v_forward*64, FALSE, self);
 
-	if (trace_fraction == 1.0)  
+	if (trace_fraction == 1.0)
 	{
 		traceline (source, source + v_forward*64 - (v_up * 30), FALSE, self);  // 30 down
-	
-		if (trace_fraction == 1.0)  
+		if (trace_fraction == 1.0)
 		{
 			traceline (source, source + v_forward*64 + v_up * 30, FALSE, self);  // 30 up
-		
-			if (trace_fraction == 1.0)  
+			if (trace_fraction == 1.0)
 				return;
 		}
 	}
-	
+
 	org = trace_endpos + (v_forward * 4);
 
 	if (trace_ent.takedamage)
 	{
 		//FIXME:Add multiplier for level and strength
-		if(self.playerclass==CLASS_PALADIN&&self.weapon==IT_WEAPON2&&!trace_ent.flags2&FL_ALIVE)
+		if(self.playerclass == CLASS_PALADIN && self.weapon == IT_WEAPON2 && !(trace_ent.flags2&FL_ALIVE))
 			damage_base*=1.3;
 
 		if(self.playerclass==CLASS_DWARF)
-			if(self.weapon==IT_WEAPON2&&!trace_ent.flags2&FL_ALIVE)
+		{
+			if(self.weapon == IT_WEAPON2 && !(trace_ent.flags2&FL_ALIVE))
 			{
 				if(flammable(trace_ent))
 					damage_base*=2.2;
@@ -86,9 +85,9 @@ void FireMelee (float damage_base,float damage_mod,float attack_radius)
 			}
 			else
 				damage_base*=1.2;
-
-
-/*		if(trace_ent.flags2&FL_ALIVE&&self.playerclass==CLASS_ASSASSIN)//!fov(self,trace_ent,90)
+		}
+		/*
+		if((trace_ent.flags2 & FL_ALIVE) && self.playerclass == CLASS_ASSASSIN) //!fov(self,trace_ent,90)
 		{
 		vector t_vf,m_vf;
 			makevectors(trace_ent.angles);
@@ -96,26 +95,29 @@ void FireMelee (float damage_base,float damage_mod,float attack_radius)
 			makevectors(self.angles);
 			m_vf = v_forward;
 			makevectors(self.v_angle);
-			if(t_vf*m_vf>0.5)//facing generally the same direction
+			if(t_vf * m_vf > 0.5) //facing generally the same direction
 			{
 				CreateRedFlash(trace_endpos);
-				damage_base=trace_ent.health*random(0.75,1.2);
+				damage_base=trace_ent.health * random(0.75,1.2);
 				if(damage_base>100)
 					damage_base = 100;
 				backstab=TRUE;
 			}
-		}*/
+		}
+		*/
 
 		damg = random(damage_mod+damage_base,damage_base);
 		SpawnPuff (org, '0 0 0', damg,trace_ent);
 		T_Damage (trace_ent, self, self, damg);
-/*		if(backstab)
+		/*
+		if(backstab)
 		{
-			if(!trace_ent.flags2&FL_ALIVE)
+			if(!(trace_ent.flags2 & FL_ALIVE))
 				centerprint(self,"Critical Hit Backstab!\n");
 			else
 				centerprint(self,"Backstab!\n");
-		}*/
+		}
+		*/
 
 		if(trace_ent.thingtype==THINGTYPE_FLESH)
 			sound (self, CHAN_WEAPON, "weapons/slash.wav", 1, ATTN_NORM);
@@ -123,9 +125,9 @@ void FireMelee (float damage_base,float damage_mod,float attack_radius)
 			sound (self, CHAN_WEAPON, "weapons/hitwall.wav", 1, ATTN_NORM);
 
 		// Necromancer stands a chance of vampirically stealing health points
-		if (self.playerclass == CLASS_NECROMANCER) 
+		if (self.playerclass == CLASS_NECROMANCER)
 		{
-			if  ((trace_ent.flags & FL_MONSTER) || (trace_ent.flags & FL_CLIENT))	
+			if ((trace_ent.flags & FL_MONSTER) || (trace_ent.flags & FL_CLIENT))
 			{
 				chance = self.level * .05;
 
@@ -148,7 +150,7 @@ void FireMelee (float damage_base,float damage_mod,float attack_radius)
 	else
 	{	// hit wall
 		if(!MetalHitSound(trace_ent.thingtype))
-			sound (self, CHAN_WEAPON, "weapons/hitwall.wav", 1, ATTN_NORM);		
+			sound (self, CHAN_WEAPON, "weapons/hitwall.wav", 1, ATTN_NORM);
 		WriteByte (MSG_BROADCAST, SVC_TEMPENTITY);
 		WriteByte (MSG_BROADCAST, TE_GUNSHOT);
 		WriteByte (MSG_BROADCAST, 1);
@@ -156,6 +158,5 @@ void FireMelee (float damage_base,float damage_mod,float attack_radius)
 		WriteCoord (MSG_BROADCAST, org_y);
 		WriteCoord (MSG_BROADCAST, org_z);
 	}
-
 }
 

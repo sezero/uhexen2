@@ -59,17 +59,17 @@ void sickle_fire ()
 	makevectors (self.v_angle);
 	source = self.origin + self.proj_ofs;
 	traceline (source, source + v_forward*64, FALSE, self);
-	if (trace_fraction == 1.0)  
+	if (trace_fraction == 1.0)
 	{
-		traceline (source, source + v_forward*64 - (v_up * 30), FALSE, self);  // 30 down	
-		if (trace_fraction == 1.0)  
+		traceline (source, source + v_forward*64 - (v_up * 30), FALSE, self);  // 30 down
+		if (trace_fraction == 1.0)
 		{
 			traceline (source, source + v_forward*64 + v_up * 30, FALSE, self);  // 30 up
-			if (trace_fraction == 1.0)  
+			if (trace_fraction == 1.0)
 				return;
 		}
 	}
-	
+
 	org = trace_endpos + (v_forward * 4);
 
 	if (trace_ent.takedamage)
@@ -80,7 +80,7 @@ void sickle_fire ()
 		else
 			drain_ok=TRUE;
 
-		if  (drain_ok && (trace_ent.flags & FL_MONSTER || trace_ent.flags & FL_CLIENT) && (self.level >= 6))	
+		if  (drain_ok && (trace_ent.flags & FL_MONSTER || trace_ent.flags & FL_CLIENT) && (self.level >= 6))
 		{
 //			msg_entity=self;
 //			WriteByte (MSG_ONE, SVC_SET_VIEW_TINT);
@@ -95,13 +95,14 @@ void sickle_fire ()
 			//	point_chance = (self.level - 5) * 2;
 			//	if (point_chance > 10)
 			//		point_chance = 10;
-/*	This HAS TO change: One will be dead 3 times before stealing their
-	10 hit points at clvl 10 in 5 hits trying to hack away at a medusa
-	or an archer lord. This has to be at least 20 to make any practical
-	use of this level 6 ability, and at most that, since spiders can be
-	leeched from fairly easily (but they will still caw at you at least
-	twice before your hit actually drains). Given that you cannot leech
-	from dead bodies. Pa3PyX	*/
+			/* Pa3PyX -- This HAS TO change: One will be dead 3 times
+			 * before stealing their 10 hit points at clvl 10 in 5 hits
+			 * trying to hack away at a medusa or an archer lord. This
+			 * has to be at least 20 to make any practical use of this
+			 * level 6 ability, and at most that, since spiders can be
+			 * leeched from fairly easily (but they will still caw at
+			 * you at least twice before your hit actually drains).
+			 * Given that you cannot leech from dead bodies.	*/
 				point_chance = (self.level - 5) * 4;
 				if (point_chance > 20)
 					point_chance = 20;
@@ -114,9 +115,8 @@ void sickle_fire ()
 			//	Pa3PyX: no longer cancel mystic urn effect
 				if (self.health < self.max_health) {
 					self.health += point_chance;
-					if (self.health > self.max_health) {
+					if (self.health>self.max_health)
 						self.health = self.max_health;
-					}
 				}
 			}
 		}
@@ -127,7 +127,7 @@ void sickle_fire ()
 			damage_mod = WEAPON1_PWR_ADD_DAMAGE;
 
 			CreateWhiteFlash(org);
-		
+
 			if(trace_ent.mass<=10)
 				inertia=1;
 			else
@@ -148,7 +148,7 @@ void sickle_fire ()
 						trace_ent.velocity_z = 200/inertia;
 					trace_ent.flags(-)FL_ONGROUND;
 				}
-			}	
+			}
 		}
 		else
 		{
@@ -181,7 +181,6 @@ void sickle_fire ()
 			CreateSpark (org);
 		}
 	}
-
 }
 
 
@@ -194,7 +193,6 @@ void sickle_ready (void)
 
 void () sickle_c =
 {
-
 	self.th_weapon=sickle_c;
 	self.wfs = advanceweaponframe($3swipe1,$3swipe14);
 
@@ -230,7 +228,6 @@ void () sickle_a =
 		sickle_fire();
 	else if (self.wfs == WF_LAST_FRAME)
 		sickle_ready();
-
 };
 
 void sickle_select (void)
@@ -260,13 +257,13 @@ void sickle_decide_attack (void)
 {
 	if (self.attack_cnt < 1)
 		sickle_a ();
-	else 
+	else
 	{
 		sickle_b ();
 		self.attack_cnt = -1;
 	}
 
 	self.attack_cnt += 1;
-  	self.attack_finished = time + 0.5;
+	self.attack_finished = time + 0.5;
 }
 

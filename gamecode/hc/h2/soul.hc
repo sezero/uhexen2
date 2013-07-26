@@ -14,13 +14,12 @@ void () crusader_soul_touch =
 		other.super_damage = 1;
 		other.super_damage_low = 0;
 		// Pa3PyX: since holy strength now only spawns starting at
-		//	   clvl 6 now (as opposed to 4), we offset this negative
+		//	   clvl 6 (as opposed to 4), we offset this negative
 		//	   change by adding small health bonus to it (+clvl)
 		if (other.health < other.max_health) {
 			other.health += other.level;
-			if (other.health > other.max_health) {
+			if (other.health > other.max_health)
 				other.health = other.max_health;
-			}
 		}
 		// Pa3PyX: end changes
 
@@ -58,11 +57,9 @@ void () necro_soul_touch =
 		other.health += self.health;
 		if (other.health>other.max_health)
 			other.health = other.max_health;
-		
 		other.bluemana += self.bluemana;
 		if (other.bluemana > other.max_mana)
 			other.bluemana = other.max_mana;
-		
 		other.greenmana += self.greenmana;
 		if (other.greenmana > other.max_mana)
 			other.greenmana = other.max_mana;
@@ -79,24 +76,20 @@ void () necro_soul_touch =
 		3) The health bonus will no longer cancel the effect
 		   of the Mystic Urn (above max hitpoints).	*/
 		pot_mult = 15.0 - time + self.lifetime;
-		if (pot_mult < 0) {
+		if (pot_mult < 0)
 			pot_mult = 0;
-		}
 		if (other.health < other.max_health) {
 			sprint(other, ftos(self.lifetime));
 			other.health += 2.0 * pot_mult;
-			if (other.health > other.max_health) {
+			if (other.health > other.max_health)
 				other.health = other.max_health;
-			}
 		}
 		other.bluemana += pot_mult;
-		if (other.bluemana > other.max_mana) {
+		if (other.bluemana > other.max_mana)
 			other.bluemana = other.max_mana;
-		}
 		other.greenmana += pot_mult;
-		if (other.greenmana > other.max_mana) {
+		if (other.greenmana > other.max_mana)
 			other.greenmana = other.max_mana;
-		}
 
 		sprint (other, "You have devoured a life force!\n");
 
@@ -106,7 +99,6 @@ void () necro_soul_touch =
 
 		self.enemy.think=SUB_Remove;
 		thinktime self.enemy : HX_FRAME_TIME * 2;
-
 	}
 	// Good people are hurt by this
 	else if ((other.classname == "player") &&
@@ -116,7 +108,6 @@ void () necro_soul_touch =
 		if (self.pain_finished < time)
 			T_Damage (other, self, self, 5);
 		self.pain_finished = time + .2;
-
 	}
 };
 

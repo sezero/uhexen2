@@ -27,7 +27,7 @@ void raven_track(void);
 void raven_flap(void);
 void raven_touch (void);
 void raven_track_init(void);
-void ravenmissile_explode(void);	
+void ravenmissile_explode(void);
 
 void raven_spark (void)
 {
@@ -47,7 +47,6 @@ void raven_spark (void)
 	self.think=SUB_Remove;
 	thinktime self : HX_FRAME_TIME;
 //	thinktime self : HX_FRAME_TIME * 2;
-
 }
 
 void raven_death_init (void)
@@ -65,11 +64,11 @@ void raven_death_init (void)
 	{
 		self.touch = raven_spark;
 		self.think = raven_spark;
-		thinktime self : 1;				
+		thinktime self : 1;
 	}
 
 	self.velocity = normalize('0 0 600');
-	self.velocity = self.velocity * 400;	
+	self.velocity = self.velocity * 400;
 	self.angles = vectoangles(self.velocity);
 }
 
@@ -145,7 +144,7 @@ void raven_search(void)
 			else
 			{
 				traceline(self.origin,(victim.absmin+victim.absmax)*0.5,TRUE,self);
-				if (trace_fraction == 1.0)  
+				if (trace_fraction == 1.0)
 				{
 					self.enemy = victim;
 					self.think1 = raven_track;
@@ -172,13 +171,11 @@ void raven_search(void)
 		makevectors (self.angles);
 		self.velocity = normalize (v_forward);
 		self.velocity = self.velocity * self.speed;
-		
 	}
 
 	if ((self.searchtime < time) || (self.lifetime < time) || (self.controller.raven_cnt > 6))
 		raven_death_init();
 }
-
 
 
 //
@@ -264,12 +261,12 @@ void raven_flap(void)
 
 	if (self.next_action < time)
 	{
-		self.think = self.think1;	
+		self.think = self.think1;
 		self.nextthink = time;
 	}
 	else
 	{
-//		ChangeYaw(); 
+//		ChangeYaw();
 		self.think = raven_flap;
 		self.nextthink = time + HX_FRAME_TIME;
 	}
@@ -300,7 +297,7 @@ void create_raven(void)
 	missile.solid = SOLID_BBOX;
 	missile.takedamage = DAMAGE_NO;
 
-	// set missile speed	
+	// set missile speed
 	makevectors (self.v_angle);
 	missile.velocity = normalize (v_forward);
 	if(deathmatch)
@@ -316,7 +313,7 @@ void create_raven(void)
 	setsize (missile, '-8 -8 8', '8 8 8');
 
 	setorigin (missile, self.origin + self.proj_ofs - v_forward * 14 + v_right * random(-8,8));
-		
+
 	missile.touch = raven_touch;
 	missile.lifetime = time + 10;
 	missile.classname = "bird_missile";
@@ -331,10 +328,10 @@ void create_raven(void)
 		missile.next_action = time + .01;
 		missile.think1 = raven_track;
 		missile.think1 = raven_track_init;
-	// Find an enemy
 	}
 	else
 	{
+		// Find an enemy
 		makevectors(self.v_angle);
 		spot1 = self.origin + self.proj_ofs;
 		spot2 = spot1 + (v_forward*600); // Look ahead
@@ -343,7 +340,7 @@ void create_raven(void)
 		// We have a victim in sights
 		if ((trace_ent!=world) && 
 			(trace_ent.flags & FL_MONSTER) && (trace_ent.owner != self) && (trace_ent.health>0))
-		{	
+		{
 			missile.enemy = trace_ent;
 
 			missile.nextthink = time + HX_FRAME_TIME;
@@ -354,7 +351,7 @@ void create_raven(void)
 			missile.think1 = raven_track_init;
 		}
 		else
-		{	
+		{
 			missile.nextthink = time + .01;
 			missile.think = raven_search;
 		}
@@ -372,7 +369,6 @@ void ravenmissile_explode (void)
 	CreateWhiteSmoke(self.origin + '0 0 10','0 0 8',HX_FRAME_TIME * 3);
 
 	remove(self);
-
 }
 
 void ravenmissile_touch (void)
@@ -413,7 +409,7 @@ void ravenmissile_puff (void)
 	makevectors(self.angles);
 
 	if (self.lifetime < time)
-		ravenmissile_explode();	
+		ravenmissile_explode();
 	else
 	{
 		thinktime self : HX_FRAME_TIME * 3;
@@ -439,7 +435,7 @@ void launch_superraven (void)
 	newmis.solid = SOLID_BBOX;
 	newmis.takedamage = DAMAGE_NO;
 	newmis.owner = self;
-	setsize (newmis, '0 0 0', '0 0 0');		
+	setsize (newmis, '0 0 0', '0 0 0');
 
 	newmis.velocity = normalize (v_forward);
 	newmis.velocity = newmis.velocity * 800;
@@ -448,7 +444,7 @@ void launch_superraven (void)
 
 	newmis.touch = ravenmissile_touch;
 	newmis.lifetime = time + 3;
-	newmis.avelocity_z = 1000; 
+	newmis.avelocity_z = 1000;
 	newmis.scale = .40;
 	thinktime newmis : HX_FRAME_TIME * 3;
 	newmis.think = ravenmissile_puff;
@@ -472,7 +468,6 @@ void ravenshot_touch (void)
 	starteffect(CE_SM_EXPLOSION , self.origin);
 
 	remove(self);
-
 }
 
 void create_raven_shot2(vector location,float add_yaw,float nexttime,float rotate,void() nextfunc)
@@ -484,12 +479,9 @@ void create_raven_shot2(vector location,float add_yaw,float nexttime,float rotat
 	missile.owner = self.owner;
 	missile.movetype = MOVETYPE_FLYMISSILE;
 	missile.solid = SOLID_BBOX;
-	/* Pa3PyX: apparently was here by mistake. caused the missiles to
-		   be of SOLID_TRIGGER type and collide with each other */
-//	missile.solid = DAMAGE_YES;
-		
-// set missile speed	
 	missile.dmg = 30;
+
+// set missile speed
 	missile.angles = self.angles;
 
 	holdangle = self.angles;
@@ -501,21 +493,20 @@ void create_raven_shot2(vector location,float add_yaw,float nexttime,float rotat
 	missile.velocity = missile.velocity * 800;
 
 	if (rotate)
-		missile.avelocity_z = 1000; 
+		missile.avelocity_z = 1000;
 	else
-		missile.avelocity_z = -1000; 
+		missile.avelocity_z = -1000;
 
 	missile.touch = ravenshot_touch;
 
 	setmodel (missile, "models/vindsht1.mdl");
-	setsize (missile, '0 0 0', '0 0 0');		
+	setsize (missile, '0 0 0', '0 0 0');
 	setorigin (missile, location);
 
 	missile.classname = "set_missile";
 
 	thinktime missile : nexttime;
 	missile.think = nextfunc;
-
 }
 
 void create_raven_shot1(vector location,float nexttime,void() nextfunc,vector fire_angle)
@@ -526,21 +517,21 @@ void create_raven_shot1(vector location,float nexttime,void() nextfunc,vector fi
 	missile.owner = self;
 	missile.movetype = MOVETYPE_FLYMISSILE;
 	missile.solid = SOLID_BBOX;
-		
-// set missile speed	
+
+// set missile speed
 	makevectors (fire_angle);
 	missile.velocity = normalize (v_forward);
 	missile.velocity = missile.velocity * 800;
 
-	missile.avelocity_z = 1000; 
+	missile.avelocity_z = 1000;
 
 	missile.angles = vectoangles(missile.velocity);
 	missile.dmg = 90;
-	
+
 	missile.touch = ravenshot_touch;
 
 	setmodel (missile, "models/vindsht1.mdl");
-	setsize (missile, '0 0 0', '0 0 0');		
+	setsize (missile, '0 0 0', '0 0 0');
 	setorigin (missile, location);
 
 	missile.classname = "set_missile";
@@ -561,7 +552,6 @@ void missle_straight(void)
 
 	self.velocity = normalize (v_forward);
 	self.velocity = self.velocity * 800;
-
 }
 
 void missle_straight1(void)
@@ -580,7 +570,6 @@ void missle_straight1(void)
 
 	CreateLittleBlueFlash(self.origin);
 	sound(self,CHAN_WEAPON,"raven/split.wav",1,ATTN_NORM);
-
 }
 
 void missle_straight2(void)
@@ -598,7 +587,6 @@ void missle_straight2(void)
 
 	CreateLittleBlueFlash(self.origin);
 	sound(self,CHAN_WEAPON,"raven/split.wav",1,ATTN_NORM);
-
 }
 
 
@@ -628,7 +616,6 @@ void split (void)
 
 void launch_set (vector dir_mod)
 {
-
 	self.attack_finished = time + 0.5;
 
 	create_raven_shot1(self.origin + self.proj_ofs + v_forward*14,0.05,split,self.v_angle);
@@ -676,7 +663,6 @@ void ravenstaff_normal (void)
 	}
 
 	thinktime self : HX_FRAME_TIME;
-
 }
 
 
@@ -703,7 +689,7 @@ void ravenstaff_fire (void)
 		ravenstaff_normal();
 	}
 
-  	self.attack_finished = time + 0.5;
+	self.attack_finished = time + 0.5;
 }
 
 /*
@@ -716,7 +702,7 @@ void ravenstaff_idle (void)
 	self.weaponframe= $rootpose;
 	self.th_weapon=ravenstaff_idle;
 }
-	
+
 void ravenstaff_select (void)
 {
 	self.wfs=advanceweaponframe($select1,$select12);
@@ -734,10 +720,9 @@ void ravenstaff_deselect (void)
 	self.wfs=advanceweaponframe($select12,$select1);
 	self.th_weapon=ravenstaff_deselect;
 	thinktime self : HX_FRAME_TIME;
-	
+
 	self.oldweapon = IT_WEAPON4;
 	if(self.wfs==WF_CYCLE_WRAPPED)
 		W_SetCurrentAmmo();
-
 }
 
