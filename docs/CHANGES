@@ -4,6 +4,10 @@ Development Progress	:
 ---------------------------
 
 2013-07-27 (SVN):
+    * snd_mp3.c (mp3_startread): set the missing stream->info.bits value
+      (for completeness only.)
+
+2013-07-27 (SVN):
     * incremented uhexen2 version to 1.5.7 and date-stamp to 2013-07-27,
       incremented gamecode version to 1.29, incremented the game engine
       versions for hexen2 to 1.29 and hexenworld to 0.29.
