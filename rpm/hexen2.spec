@@ -11,6 +11,7 @@
 # --without mp3: build without mp3 music streaming support
 # --with mpg123: build mp3 music streaming using libmpg123 instead of libmad
 # --without ogg: build without ogg/vorbis music streaming support
+# --with flac: build with flac music streaming support
 # --with opus: build with opus music streaming support
 # --without asm: do not use x86 assembly even on an intel cpu
 # --with gtk1: build the launcher against gtk-1.2 instead of gtk-2.x
@@ -39,6 +40,7 @@
 %{!?_with_mpg123:%define mp3_libraryopt MP3LIB=mad}
 %{!?_without_mp3:%define mp3_buildopt USE_CODEC_MP3=yes}
 %{!?_without_ogg:%define ogg_buildopt USE_CODEC_VORBIS=yes}
+%{!?_with_flac:%define flac_buildopt USE_CODEC_FLAC=no}
 %{!?_with_opus:%define opus_buildopt USE_CODEC_OPUS=no}
 # build option overrides
 %{?_with_gtk1:%define gtk_buildopt GTK1=yes}
@@ -52,18 +54,19 @@
 %{?_with_mpg123:%define mp3_libraryopt MP3LIB=mpg123}
 %{?_without_mp3:%define mp3_buildopt USE_CODEC_MP3=no}
 %{?_without_ogg:%define ogg_buildopt USE_CODEC_VORBIS=no}
+%{?_with_flac:%define flac_buildopt USE_CODEC_FLAC=yes}
 %{?_with_opus:%define opus_buildopt USE_CODEC_OPUS=yes}
 # all build options passed to makefile
-%define engine_buildopt	%{asm_buildopt} %{alsa_buildopt} %{midi_buildopt} %{timidity_buildopt} %{wavmusic_buildopt} %{mp3_buildopt} %{mp3_libraryopt} %{ogg_buildopt} %{opus_buildopt}
+%define engine_buildopt	%{asm_buildopt} %{alsa_buildopt} %{midi_buildopt} %{timidity_buildopt} %{wavmusic_buildopt} %{mp3_buildopt} %{mp3_libraryopt} %{ogg_buildopt} %{opus_buildopt} %{flac_buildopt}
 
 %define desktop_vendor	uhexen2
 
-%define gamecode_ver	1.28
+%define gamecode_ver	1.29
 
 Name:		hexen2
 License:	GPLv2
 Group:		Amusements/Games
-Version:	1.5.6
+Version:	1.5.7
 Release:	1
 Summary:	Hexen II: Hammer of Thyrion
 URL:		http://uhexen2.sourceforge.net/
@@ -75,6 +78,7 @@ BuildRoot:	%{_tmppath}/%{name}-%{version}-build
 BuildRequires:	SDL-devel >= 1.2.4
 %{!?_without_mp3:BuildRequires:  %{!?_with_mpg123:libmad-devel}%{?_with_mpg123:libmpg123-devel >= 1.12.0}}
 %{!?_without_ogg:BuildRequires:  libogg-devel libvorbis-devel}
+%{?_with_flac:BuildRequires:  flac-devel}
 %{?_with_opus:BuildRequires:  opus-devel opusfile-devel}
 %{!?_without_asm:BuildRequires:  nasm >= 0.98.38}
 %{!?_without_freedesktop:BuildRequires: desktop-file-utils}
@@ -85,6 +89,7 @@ Requires:	SDL >= 1.2.4
 # timidity++-patches requirement is non-fatal
 #%{!?_without_timidity:Requires: timidity++-patches}
 # these will be picked by rpm already
+#%{?_with_flac:Requires: flac}
 #%{?_with_opus:Requires: opus opusfile}
 #%{!?_without_mp3:Requires: libmad}
 #%{!?_without_ogg:Requires: libvorbis}
@@ -357,6 +362,11 @@ desktop-file-install \
 %{_prefix}/games/%{name}/docs/README.hwmaster
 
 %changelog
+* Sat Jul 27 2013 O.Sezer <sezero@users.sourceforge.net> 1.5.7-1
+- Add --with flac build option
+- Bump version to 1.5.7.
+- Bump gamecode version to 1.29
+
 * Fri Mar 08 2013 O.Sezer <sezero@users.sourceforge.net> 1.5.6-1
 - Add --with opus build option
 - Bump version to 1.5.6.

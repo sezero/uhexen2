@@ -1,11 +1,15 @@
 Hammer of Thyrion (uHexen2) release notes:
 
 ========================================================================
-Changes in v1.5.x: (July 22, 2013.)
+Changes in v1.5.7: (July 27, 2013.)
 ========================================================================
 
 - Music: Support for FLAC codec. (edit the makefiles to enable it when
   compiling, if necessary.)
+
+- SDL mouse/kbd input: Fix for a rare freezing issue.
+
+- OpenGL: minor gamma updates.
 
 - Minor fixes, tidy-ups, safeguards elsewhere in the sources.
 

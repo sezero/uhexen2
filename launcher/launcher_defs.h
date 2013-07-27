@@ -34,7 +34,7 @@
 /* Hammer of Thyrion version num. */
 #define HOT_VERSION_MAJ		1
 #define HOT_VERSION_MID		5
-#define HOT_VERSION_MIN		6
+#define HOT_VERSION_MIN		7
 #define HOT_VERSION_STR		STRINGIFY(HOT_VERSION_MAJ) "." STRINGIFY(HOT_VERSION_MID) "." STRINGIFY(HOT_VERSION_MIN)
 
 /* Launcher version num. */

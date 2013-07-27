@@ -4,17 +4,17 @@ Hexen II: Hammer of Thyrion (uHexen2) - GAMECODE
 Changes
 -------
 
-2013-07-26 (1.29):
+2013-07-27 (1.29):
 ===================
 - combat.hc (FireMelee): broke the long if condition for the assassin's
-  backstab in to smaller three nested ifs ordered in the likelihood of
-  truth. in the siege version, changed some of the if conditions into
-  else if (the player class checks.)
+  backstab into smaller 3 nested ifs ordered in the likelihood of truth.
+  in siege version, changed some of the if conditions into else if (the
+  player class checks.)
 - ravenstf.hc (create_raven_shot2, hw and siege versions): removed the
   DAMAGE_YES assignment to missile.solid, just like we did for the h2
-  and portals versions years ago. (it should have been there by mistake
-  or a left over as was noticed by Pa3PyX, which used to cause the
-  missiles to be of SOLID_TRIGGER type and collide with each other.)
+  and portals versions years ago. (must have been there by mistake as
+  noticed by Pa3PyX; used to cause missiles to be of SOLID_TRIGGER type
+  and collide with each other.)
 - ravenstf.hc (missle_straight, hw and siege versions): removed useless
   return statement from the end of the function.
 
@@ -204,19 +204,12 @@ Changes
 ===================
 - Disallowed cycling to a weapon without proper mana (S.A)
 - Enabled impulse 34, (puzzle piece inventory list)  (S.A)
-2005-07-29        :
-===================
-- Map cycling: renamed map_name to a more intuitive map_next
-  Cleaned up some dprint's
-2005-06-25        :
-===================
+- Map cycling: minor cleanups
 - Bumped the teleport-push speed to a highest safe value of 225
   (250 is still safe, but just in case)  and restricted that to
   the Cathedral map when not in deathmatch.  Otherwise, Raven's
   original value (300) is used.
-2005-05-08	  :
-===================
-- added Pa3PyX' fire delay bits for paladin's purifier staff
+- added Pa3PyX' fire delay bits for paladin's staff
 
 2005-03-17 (1.12h):
 ===================
@@ -243,44 +236,26 @@ Merged a bunch of fixes/adjustments from Pa3PyX' sources:
 
 2005-02-15 (1.12f):
 ===================
-- added a separate patch file which allows compiling boss maps into
+- added an optional patch file which allows compiling boss maps into
   hwprogs.dat. this is not of much use, because coop seems broken..
 - updated the hexenworld boss files according to H2MP. although coop
   is broken as of now, maybe someone messes with these one day...
 - added stubs for the hexenworld missing boss-map functions. hwsv no
   longer crashes on maps rider1a, rider2c, romeric6, meso9 and eidolon.
-
-2005-01-27:
-===========
-- Applied Kor Skarn's further changes to the Siege hcode:  This is the
-  code to the hwprogs.dat in "sgcycle.zip". Seems to be first intended
-  for Rival Kingdoms?...
-2005-01-26:
-===========
+- Applied Kor Skarn's further changes to the Siege hcode: this is the
+  code to the hwprogs.dat in "sgcycle.zip" (seems to be first intended
+  for the Rival Kingdoms mod?)
 - Applied map cycling patch for Siege (similar to the one below)
 - Added the hcode for Siege.
-- Applied map cycling for HexenWorld (by Kor Skarn):  Server side mod,
-  so only the server needs to have the new hwprogs.dat and strings.txt.
-  The new strings.txt can then be edited for the required mapnames.
-* map names must stay between map_sequence_start and map_sequence_end
-* only the first occurence of a mapname is used to determine next map
-* if server is running a map that is not in the list the same map will
-  reload when game ends.
-* when server reaches the end of the list, the last map reloads when
-  game ends it does NOT make a loop. To make a loop, add the name of
-  the first map after the last one (it looks for a mapname matching
-  current one and takes the following name for next map)
-* any number of maps can be put in it
-* remove the map entries AND "map_sequence_start / map_sequence_end"
-  strings (or use old strings.txt): server works as without the mod.
+- Applied map cycling for HexenWorld (by Kor Skarn).
 
 1.12d	Reduce the speed of the teleporting process' pushing you
 	forward. Fixes the unreachable Cathedral balcony issue for
 	me (for both Hexen2 and H2MP) (2005-01-06).
 
-1.12c   fix eidolon loses his hostility upon destruction of the orb.
+1.12c	fixed eidolon losing his hostility upon destruction of the orb.
 	(2005-01-05, adaptation of eidolon.hc from H2MP)
-1.12b	fix eidolon not jumping off the ledge (hc/h2/triggers.hc)
+1.12b	fixed eidolon not jumping off the ledge (hc/h2/triggers.hc)
 	(2004-12-09)
 
 1.12a   Raven's original 1.12a hcode for the mission pack (initial)

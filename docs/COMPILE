@@ -1,4 +1,4 @@
-Hexen II: Hammer of Thyrion (uHexen2) - v1.5.6
+Hexen II: Hammer of Thyrion (uHexen2) - v1.5.7
 
 Instructions for Compiling:
 ===========================
@@ -116,6 +116,7 @@ libmad or libmpg123:
 		Required if you want MP3 music playback.
 libogg, opus, and opusfile:
 		Required if you want Opus music playback.
+libFLAC :	Required if you want FLAC music playback.
 
 
 Compiling the software renderer for non-x86:
@@ -264,6 +265,8 @@ Ogg/Vorbis homepage	: http://xiph.org/
 Opus homepage		: http://opus-codec.org/
 libmad homepage		: http://www.underbit.com/products/mad/
 mpg123 homepage		: http://mpg123.org/
+FLAC homepage		: http://xiph.org/flac/
+			  http://sourceforge.net/projects/flac/
 ALSA homepage		: http://www.alsa-project.org/
 GCC homepage		: http://gcc.gnu.org/
 Binutils homepage	: http://sourceware.org/binutils/

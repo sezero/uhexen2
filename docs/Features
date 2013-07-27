@@ -51,8 +51,8 @@ Features:
   (ALSA, OSS and SDL) for Linux. FreeBSD is supported with OSS and SDL,
   OpenBSD and NetBSD are experimentally supported with sunaudio and SDL.
 
-* Support for ogg, mp3 and wav external music files to be played instead
-  of the original midi files.
+* Support for ogg, mp3, opus, flac and wav external music files to be
+  played instead of the original midi files.
 
 * Working music volume controls and on the fly selection of CD or MIDI
   music.
