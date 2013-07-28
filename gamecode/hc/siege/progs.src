@@ -109,26 +109,26 @@ setmodth.hc
 
 fish.hc
 sheep.hc
-raven.hc
+//raven.hc
 rat.hc
-snake.hc
+//snake.hc
 
 fireball.hc		// Imp stuff
 shardice.hc
 //mummy.hc
 imp.hc
-spider.hc
-scorpion.hc
+//spider.hc
+//scorpion.hc
 //golem.hc
-skullwiz.hc
-medusa.hc
+//skullwiz.hc
+//medusa.hc
 mezzoman.hc
-archer.hc
+//archer.hc
 spit.hc			// Hydra stuff
-hydra.hc
-faspell.hc      // Fallen angel stuff
-fablade.hc
-fangel.hc
+//hydra.hc
+//faspell.hc      // Fallen angel stuff
+//fablade.hc
+//fangel.hc
 
 eric.hc
 

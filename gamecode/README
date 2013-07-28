@@ -6,6 +6,10 @@ Changes
 
 2013-07-27 (1.29):
 ===================
+- siege: removed again raven, snake, spider, scorpion, skullwiz, medusa,
+  archer, hydra, faspell, fablade and fangel hc files from build. they
+  were added to build along with KS's siege changes back in 2005, but
+  they aren't really used, and they weren't in siege-v0.15 either...
 - combat.hc (FireMelee): broke the long if condition for the assassin's
   backstab into smaller 3 nested ifs ordered in the likelihood of truth.
   in siege version, changed some of the if conditions into else if (the
