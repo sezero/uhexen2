@@ -796,7 +796,10 @@ entity holdent,lastleader,newking;
 	if (!targ.takedamage)
 		return;
 
-	if(targ.camera_time>=time&&!deathmatch)
+	// make sure target is a player: spider.spiderActiveCount and
+	// player.camera_time overlap in entity union and can make
+	// spiders invincible, otherwise.
+	if (targ.flags&FL_CLIENT&&targ.camera_time>=time&&!deathmatch)
 		return;
 
 	if (targ.classname=="monster_yakman"&&targ.pain_finished>time)

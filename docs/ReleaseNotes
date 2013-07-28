@@ -1,11 +1,14 @@
 Hammer of Thyrion (uHexen2) release notes:
 
 ========================================================================
-Changes in v1.5.7: (July 27, 2013.)
+Changes in v1.5.7: (July 28, 2013.)
 ========================================================================
 
 - Music: Support for FLAC codec. (edit the makefiles to enable it when
   compiling, if necessary.)
+
+- All platforms, gameplay, mission pack: fixed an hcode bug which would
+  make the spiders seemingly invincible for a difficulty-depending time.
 
 - SDL mouse/kbd input: Fix for a rare freezing issue.
 

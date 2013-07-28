@@ -4,8 +4,12 @@ Hexen II: Hammer of Thyrion (uHexen2) - GAMECODE
 Changes
 -------
 
-2013-07-27 (1.29):
+2013-07-28 (1.29):
 ===================
+- portals/damage.hc (T_Damage): make sure target is a player (FL_CLIENT)
+  before checking its camera_time and return: spider.spiderActiveCount
+  and player.camera_time overlap in entity union and can make spiders
+  invincible, otherwise. issue has been there since Raven's v1.12.
 - siege: removed again raven, snake, spider, scorpion, skullwiz, medusa,
   archer, hydra, faspell, fablade and fangel hc files from build. they
   were added to build along with KS's siege changes back in 2005, but

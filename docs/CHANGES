@@ -4,6 +4,12 @@ Development Progress	:
 ---------------------------
 
 2013-07-28 (SVN):
+    * portals/damage.hc (T_Damage): make sure target is a player before
+      checking its camera_time and return: spider.spiderActiveCount and
+      player.camera_time overlap in entity union and can make spiders
+      invincible, otherwise. issue has been there since Raven's v1.12.
+
+2013-07-28 (SVN):
     * hc/siege/progs.src: removed again raven, snake, spider, scorpion,
       skullwiz, medusa, archer, hydra, faspell, fablade and fangel hc
       files from build. (they were added to build along with KS's siege
