@@ -3,6 +3,11 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2013-07-28 (SVN):
+    * hc/siege/client.hc (PlayerTouch): fix misplaced braces to match
+      original siege-0.15 code better. (actually doesn't matter much,
+      because deathmatch will always be set in hexenworld.)
+
 2013-07-27 (SVN):
     * snd_mp3.c (mp3_startread): set the missing stream->info.bits value
       (for completeness only.)

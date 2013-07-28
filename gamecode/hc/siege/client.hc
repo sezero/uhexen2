@@ -2589,7 +2589,6 @@ void PlayerTouch (void)
 		return;
 
 	if(coop||deathmatch)
-	{
 		if(random()<0.5)
 			if(other.classname=="player")
 				if(self.velocity!='0 0 0')//push other players
@@ -2616,8 +2615,6 @@ void PlayerTouch (void)
 
 	if((other.classname=="player"||other.flags&FL_ONGROUND||other.health)&&self.origin_z>=(other.absmin_z+other.absmax_z)*0.5&&self.velocity_z<10)
 		self.flags(+)FL_ONGROUND;
-
-   }
 }
 // KS: END OF RK CHANGES
 
