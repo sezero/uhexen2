@@ -36,6 +36,41 @@
 #include <AudioToolbox/AudioToolbox.h>
 #include <AvailabilityMacros.h>
 
+#if (MAC_OS_X_VERSION_MIN_REQUIRED < 1050)
+#define AUGraphNodeInfo_FN(_graph,_node,_desc,_unit)			\
+	AUGraphGetNodeInfo((_graph),(_node),(_desc),NULL,NULL,(_unit))
+typedef struct ComponentDescription	AudioComponentDesc_t;
+/* MusicSequenceLoadSMFData() (avail. in 10.2, no 64 bit) is
+ * equivalent to calling MusicSequenceLoadSMFDataWithFlags()
+ * with a flags value of 0 (avail. in 10.3, avail. 64 bit).
+ * So, we use MusicSequenceLoadSMFData() for powerpc versions
+ * but the *WithFlags() on intel which require 10.4 anyway. */
+#if defined(__ppc__) || defined(__POWERPC__)
+#define MusicSequenceFileLoadData_FN(_seq,_data,_ftid,_flag)	\
+	MusicSequenceLoadSMFData((_seq),(_data))
+#else	/* 10.4 - intel: */
+#define MusicSequenceFileLoadData_FN(_seq,_data,_ftid,_flag)	\
+	MusicSequenceLoadSMFDataWithFlags((_seq),(_data),(_flag))
+#endif
+
+#else	/* 10.5 OR NEWER: */
+
+#define AUGraphNodeInfo_FN(_graph,_node,_desc,_unit)		\
+	AUGraphNodeInfo((_graph),(_node),(_desc),(_unit))
+/* AUGraphNodeInfo() is changed to take an AudioComponentDescription*
+ * desc parameter instead of a ComponentDescription* in the 10.6 SDK.
+ * AudioComponentDescription is in 10.6 or newer SDKs, but is actually
+ * the same as ComponentDescription with 20 bytes of size and same
+ * offsets and names of all members, therefore is binary compatible. */
+#if !defined(AUDIO_UNIT_VERSION) || ((AUDIO_UNIT_VERSION + 0) < 1060)
+typedef struct ComponentDescription	AudioComponentDesc_t;
+#else	/* SDK 10.6 or newer : */
+typedef AudioComponentDescription	AudioComponentDesc_t;
+#endif
+#define MusicSequenceFileLoadData_FN(_seq,_data,_ftid,_flag)	\
+	MusicSequenceFileLoadData((_seq),(_data),(_ftid),(_flag))
+#endif	/* -- compat macros */
+
 /* prototypes of functions exported to BGM: */
 static void *MIDI_Play (const char *filename);
 static void MIDI_Update (void **handle);
@@ -170,17 +205,16 @@ static OSStatus GetSequenceLength(MusicSequence sequence, MusicTimeStamp *_seque
 			{
 				if (i != 0) return err;
 				old_osx = true;
-				goto _old_code;
+				goto	altern;
 			}
 			if (sequenceLength < tracklen)
 				sequenceLength = tracklen;
 		}
-		else
-		{	_old_code:
-			err = NewMusicEventIterator(track, &iter);
-			if (err != noErr) return err;
-			err = MusicEventIteratorSeek(iter, kMusicTimeStamp_EndOfTrack);
-			if (err != noErr) return err;
+		else {
+		altern:
+			if ((err = NewMusicEventIterator(track, &iter)) != noErr) goto fail;
+			if ((err = MusicEventIteratorSeek(iter, kMusicTimeStamp_EndOfTrack))
+									!= noErr) goto fail;
 			if (!MusicEventIteratorPreviousEvent(iter))
 			{
 				if (!MusicEventIteratorGetEventInfo(iter, &tracklen,
@@ -191,8 +225,9 @@ static OSStatus GetSequenceLength(MusicSequence sequence, MusicTimeStamp *_seque
 						sequenceLength = tracklen;
 				}
 			}
-			if (iter)
-				DisposeMusicEventIterator (iter);
+		fail:
+			if (iter) DisposeMusicEventIterator (iter);
+			if (err != noErr) return err;
 		}
 	}
 
@@ -220,43 +255,18 @@ static OSStatus GetSequenceAudioUnit(MusicSequence sequence, AudioUnit *aunit)
 	for (i = 0; i < nodecount; i++)
 	{
 		AUNode node;
+		AudioComponentDesc_t desc;
 
 		if (AUGraphGetIndNode(graph, i, &node) != noErr)
 			continue;
-#if (MAC_OS_X_VERSION_MIN_REQUIRED < 1050)
-		/* this is deprecated, but works back to 10.0 */
-		{
-		struct ComponentDescription desc;
-		UInt32 classdatasize = 0;
-		void *classdata = NULL;
-		err = AUGraphGetNodeInfo(graph, node, &desc, &classdatasize,
-					 &classdata, aunit);
-		if (err != noErr)
+
+		if (AUGraphNodeInfo_FN(graph, node, &desc, aunit) != noErr)
 			continue;
-		else if (desc.componentType != kAudioUnitType_Output)
+		if (desc.componentType != kAudioUnitType_Output)
 			continue;
-		else if (desc.componentSubType != kAudioUnitSubType_DefaultOutput)
+		if (desc.componentSubType != kAudioUnitSubType_DefaultOutput)
 			continue;
-		}
-#else	/* this requires 10.5 or later */
-		{
-		#if !defined(AUDIO_UNIT_VERSION) || ((AUDIO_UNIT_VERSION + 0) < 1060)
-		/* AUGraphAddNode () is changed to take an AudioComponentDescription*
-		 * desc parameter instead of a ComponentDescription* in the 10.6 SDK.
-		 * AudioComponentDescription is in 10.6 or newer, but it is actually
-		 * the same as struct ComponentDescription with 20 bytes of size and
-		 * the same offsets of all members, therefore, is binary compatible. */
-		#  define AudioComponentDescription ComponentDescription
-		#endif
-		AudioComponentDescription desc;
-		if (AUGraphNodeInfo(graph, node, &desc, aunit) != noErr)
-			continue;
-		else if (desc.componentType != kAudioUnitType_Output)
-			continue;
-		else if (desc.componentSubType != kAudioUnitSubType_DefaultOutput)
-			continue;
-		}
-#endif
+
 		return noErr;	/* found it! */
 	}
 
@@ -299,24 +309,8 @@ static void *MIDI_Play (const char *filename)
 	if (data == NULL)
 		goto fail;
 
-#if (MAC_OS_X_VERSION_MIN_REQUIRED < 1050)
-	/* MusicSequenceLoadSMFData() (avail. in 10.2, no 64 bit) is
-	 * equivalent to calling MusicSequenceLoadSMFDataWithFlags()
-	 * with a flags value of 0 (avail. in 10.3, avail. 64 bit).
-	 * So, we use MusicSequenceLoadSMFData() for powerpc versions
-	 * but the *WithFlags() on intel which require 10.4 anyway. */
-	#if defined(__ppc__) || defined(__POWERPC__)
-	if (MusicSequenceLoadSMFData(song->sequence, data) != noErr)
+	if (MusicSequenceFileLoadData_FN(song->sequence, data, 0, 0) != noErr)
 		goto fail;
-	#else
-	if (MusicSequenceLoadSMFDataWithFlags(song->sequence, data, 0) != noErr)
-		goto fail;
-	#endif
-#else
-	/* MusicSequenceFileLoadData() requires 10.5 or later.  */
-	if (MusicSequenceFileLoadData(song->sequence, data, 0, 0) != noErr)
-		goto fail;
-#endif
 
 	CFRelease(data);
 	data = NULL;

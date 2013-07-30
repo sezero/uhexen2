@@ -3,6 +3,14 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2013-07-30 (SVN):
+    * midi_osx.c: fixed an unlikely memory leak in GetSequenceLength().
+      tidied up several #ifdefs by adding compatibility macros at top
+      of the file. changed some obvious else if usage into pure if in
+      GetSequenceAudioUnit(). changed the AUGraphGetNodeInfo() call in
+      ppc/10.2 builds to take NULL classdata and classdata size params
+      instead of dummy locals.
+
 2013-07-28 (SVN):
     * portals/damage.hc (T_Damage): make sure target is a player before
       checking its camera_time and return: spider.spiderActiveCount and
