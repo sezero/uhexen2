@@ -12,6 +12,7 @@ Development Progress	:
       changes.) in ClientObituary(), changed targ.deathtype check from
       falling to fall to match the v0.15.x code elsewhere in client.hc.
       miscellaneous whitespace changes.
+    * update version date stamp to 2013-08-02.
 
 2013-07-30 (SVN):
     * midi_osx.c: fixed an unlikely memory leak in GetSequenceLength().
