@@ -626,12 +626,14 @@ void jail_touch ()
 {
 entity found,oself;
 float found_cnt;
-	
 	particleexplosion(self.origin,random(144,159),self.absmax_z-self.absmin_z,10);
 	if(other.classname!="player"||(!other.flags&FL_CLIENT)||other.model=="models/yakman.mdl")
 	{
+		//remove(self);
+		// KS change:
 		self.nextthink = time + 0.1;
 		self.think = SUB_Remove;
+
 		return;
 	}
 

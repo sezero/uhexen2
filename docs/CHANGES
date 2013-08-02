@@ -3,6 +3,15 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2013-08-02 (SVN):
+    * siege/client.hc: in Climb(), changed a bitwise and to logical and
+      to better match the code to v0.15 (was a typo from KS's changes.)
+      in PlayerPostThink(), fixed a misplaced else case for the landing
+      sound code to better match the code to v0.15 (was a typo from KS's
+      changes.) in ClientObituary(), changed targ.deathtype check from
+      falling to fall to match the v0.15.x code elsewhere in client.hc.
+      miscellaneous whitespace changes.
+
 2013-07-30 (SVN):
     * midi_osx.c: fixed an unlikely memory leak in GetSequenceLength().
       tidied up several #ifdefs by adding compatibility macros at top

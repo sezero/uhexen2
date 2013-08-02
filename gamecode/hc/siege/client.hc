@@ -1723,16 +1723,15 @@ vector dir;	// KS: Need to put this back for below changes to compile
 				self.drawflags(-)DRF_TRANSLUCENT|MLS_ABSLIGHT;
 				self.frozen=FALSE;
 				self.artifact_active(-)ARTFLAG_FROZEN;
-
 // KS: in 0.15 self.touch=PlayerTouch not SUB_Null
 //				self.touch=SUB_Null;
 				self.touch=PlayerTouch;
-
 				self.credit_enemy=world;
 			}
 		}
 		else
 			self.frozen=self.pausetime=self.teleport_time=0;
+
 
 	// KS: This has been removed in latest progs, putting it back
 	if(self.pausetime>time&&self.model!=self.headmodel)
@@ -1799,10 +1798,8 @@ vector f_dir;
 	centerprint(self,"Jumping Mode\n");
 	sound (self, CHAN_VOICE,"player/assjmp.wav", 1, ATTN_NORM);
 	self.climbing = FALSE;
-
 // KS: This was not in 0.15, removing it
 //	self.safe_time = time + 2;//so if hang on wall a long time, don't splatter when hit
-
 	//	self.velocity_z = self.velocity_z + 270*self.scale;
 	self.velocity = self.velocity + f_dir*300;
 }
@@ -1810,20 +1807,18 @@ vector f_dir;
 void Climb ()
 {
 vector spot;
-
-// KS: Changed this. See below.
-/*	if(self.flags&FL_ONGROUND)
+/* KS: Changed this. See below.
+	if(self.flags&FL_ONGROUND)
 	{
 		self.climbing = FALSE;
 		return;
 	}
 */
 	makevectors (self.v_angle);
-
-	if ( ((self.flags & FL_ONGROUND) || (self.climbing & (vlen ( (self.climbspot - (self.origin + self.view_ofs))) > 64))) ) //Unknown Value for vlen > X!!!
+	if(self.flags&FL_ONGROUND || (self.climbing && (vlen(self.climbspot - (self.origin + self.view_ofs)) > 64)))
 	{
-		ClimbDrop ( );
-		return ;
+		ClimbDrop();
+		return;
 	}
 
     spot=self.origin+self.view_ofs;
@@ -1984,8 +1979,7 @@ void() PlayerPreThink =
 		}
 	}
 */
-	if (!self.flags & FL_INWATER) 
-		self.aflag = 0;
+	if (!self.flags & FL_INWATER) self.aflag = 0;
 
 //	dprint(teststr[1]);
 //	dprint("\n");
@@ -2544,9 +2538,8 @@ void PlayerTouch (void)
 
 	if(self.model=="models/yakman.mdl")
 		return;
-	if(other.classname == "player")
+	if(other.classname=="player") // added by KS
 		return;
-
 	if(self.playerclass==CLASS_NECROMANCER)
 		if(other.netname=="corpse")
 			if(other.think!=corpseblink)
@@ -2618,7 +2611,6 @@ void PlayerTouch (void)
 }
 // KS: END OF RK CHANGES
 
-
 /*
 ================
 PlayerPostThink
@@ -2634,7 +2626,6 @@ void() PlayerPostThink =
 
 	if (self.deadflag)
 		return;
-
 // do weapon stuff
 
 	//fixme, make time-based
@@ -2647,7 +2638,6 @@ void() PlayerPostThink =
 		self.weaponmodel="";
 
 // check to see if player landed and play landing sound	
-
 // KS: This was not in 0.15. Removed it.
 /*	if (self.flags & FL_ONGROUND)
 	{
@@ -2675,38 +2665,35 @@ void() PlayerPostThink =
 				}
 			}
 */
-
 //	KS: modified this to match 0.15
-	if ((self.jump_flag*(self.mass/10) < -300)&&(self.flags&FL_ONGROUND)&&(self.health>0))
+	if ((self.jump_flag*(self.mass/10) < -300) && self.flags & FL_ONGROUND && self.health > 0)
 	{
-		if(self.beast_time<time)
-		{
-			if(self.absorb_time>=time||self.playerclass==CLASS_DWARF)
-				self.jump_flag/=2;
-			if (self.watertype == CONTENT_WATER)
-				sound (self, CHAN_BODY, "player/h2ojmp.wav", 1, ATTN_NORM);
-			else
-			{
-				if (self.jump_flag*(self.mass/10) < -500)//was -650
+				if(self.beast_time<time)
 				{
-					if(self.playerclass==CLASS_ASSASSIN||self.playerclass==CLASS_SUCCUBUS)
-						sound (self, CHAN_VOICE, "player/asslnd.wav", 1, ATTN_NORM);
+					if(self.absorb_time>=time||self.playerclass==CLASS_DWARF)
+						self.jump_flag/=2;
+					if (self.watertype == CONTENT_WATER)
+						sound (self, CHAN_BODY, "player/h2ojmp.wav", 1, ATTN_NORM);
 					else
-						sound (self, CHAN_VOICE, "player/pallnd.wav", 1, ATTN_NORM);
-
-					if(self.health > 0) // KS
-					{//otherwise playertouch handles it
-						self.deathtype = "fall";
-						T_Damage (self, world, world, ((self.jump_flag*self.mass/-10) - 500)*0.1+5);//min 5, + 1/10th of anything over 500
-						self.deathtype="";
+					if (self.jump_flag*(self.mass/10) < -500)//was -650
+					{
+						if(self.playerclass==CLASS_ASSASSIN||self.playerclass==CLASS_SUCCUBUS)
+							sound (self, CHAN_VOICE, "player/asslnd.wav", 1, ATTN_NORM);
+						else
+							sound (self, CHAN_VOICE, "player/pallnd.wav", 1, ATTN_NORM);
+						if(self.health > 0) // KS
+						{//otherwise playertouch handles it
+							self.deathtype = "fall";
+							T_Damage (self, world, world, ((self.jump_flag*self.mass/-10) - 500)*0.1+5);//min 5, + 1/10th of anything over 500
+							self.deathtype="";
+						}
 					}
 					else
 						sound (self, CHAN_VOICE, "player/land.wav", 1, ATTN_NORM);
 				}
-			}
-		}
-		if(self.scale>1&&self.jump_flag*(self.mass/10) < -500)
-				MonsterQuake((self.mass/500)*self.jump_flag);
+				if(self.scale>1&&self.jump_flag*(self.mass/10) < -500)
+					MonsterQuake((self.mass/500)*self.jump_flag);
+
 		self.jump_flag=0;
 	}
 
@@ -2727,7 +2714,9 @@ void() PlayerPostThink =
 			self.jump_flag=self.velocity_z;
 	}
 	else
+	{
 		self.last_onground = time;
+	}
 
 	CheckPowerups ();
 
@@ -2759,9 +2748,7 @@ void() PlayerPostThink =
 		self.velocity='0 0 0';
 		self.velocity = normalize(self.climbspot - (self.origin+self.view_ofs))*80;
 	}
-
 // KS: END OF RK CHANGES
-
 };
 
 
@@ -3470,7 +3457,7 @@ void(entity targ, entity attacker, entity inflictor) ClientObituary =
 		}
 
 		// fell to their death?
-		if (targ.deathtype == "falling")
+		if (targ.deathtype == "fall")
 		{
 			targ.deathtype = "";
 			selectprinti (PRINT_MEDIUM, STR_CHUNKYSALSA);
