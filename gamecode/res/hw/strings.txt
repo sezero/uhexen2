@@ -590,7 +590,6 @@ Polymorph Spell is wearing off...
 Demon Glide
 Masochistic Mana
  got the deep freeze from 
-
 <1.you passed the end of the file, pal>
 <2.you passed the end of the file, pal>
 <3.you passed the end of the file, pal>

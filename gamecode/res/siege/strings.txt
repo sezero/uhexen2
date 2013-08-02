@@ -399,9 +399,9 @@ As the killing blow falls, Pestilence is enveloped in a cloud of energy, forever
 Once again you are victorious, and once again you are magically teleported to another realm.  Still, something is not right, you have a feeling of deja vu.  What sort of vile trickery is this?  You have returned to the land of Blackmarsh, where you first began this heroic adventure.  This entire time, while you hunted down and destroyed the Dark generals, you were within leagues of the darkest heart ever to stalk humanity.  With a renewed vigor, you begin what might be the hardest test of your life.  But the question remains, can Eidolon be defeated in his lair?  There is only one way to find out, and knowing this you begin the last part of your adventure.
 You found a secret area!
 Free Action
-Divine Intervention
 Revivification
 Holy Strength
+Divine Intervention
 Soul Stealing
 Vampiric Drain
 Hide In Shadows
@@ -429,7 +429,7 @@ Bone Shard
 Scarab Staff Piece 1
 Scarab Staff Piece 2
 You do not carry that weapon.^
-Not enough mana for that weapon.^
+Not enough ammo for that weapon.^
 No room to stand up here!^
  was telefragged by 
  quit the game with 
@@ -599,7 +599,6 @@ Regeneration
 's well-aimed ballista bolt!^
 
 Climbing Boots
-
 <1.you passed the end of the file, pal>
 <2.you passed the end of the file, pal>
 <3.you passed the end of the file, pal>

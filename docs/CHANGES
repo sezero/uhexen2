@@ -4,6 +4,7 @@ Development Progress	:
 ---------------------------
 
 2013-08-02 (SVN):
+    * siege/strings.txt: fixed mistakes I introduced long long time ago.
     * siege/client.hc: in Climb(), changed a bitwise and to logical and
       to better match the code to v0.15 (was a typo from KS's changes.)
       in PlayerPostThink(), fixed a misplaced else case for the landing
