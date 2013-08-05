@@ -35,10 +35,9 @@ float	damg;
 	}
 
 	damg = random(8,16);
-	
-	if (other.health)
-		T_Damage (other, self, self.owner, damg );
 
+	if (other.health)
+		T_Damage (other, self, self.owner, damg);
 
 	sound (self, CHAN_WEAPON, "weapons/expsmall.wav", 1, ATTN_NORM);
 	self.origin = self.origin - 8*normalize(self.velocity);
@@ -48,9 +47,7 @@ float	damg;
 
 
 // Frame Code
-void() frame_BLADE      = [ $BLADE     , frame_BLADE      ] {  };
-
-
+//void() frame_BLADE      = [ $BLADE     , frame_BLADE      ] {  };
 
 
 void(vector offset, float set_speed, vector dest_offset) do_faBlade =
@@ -68,19 +65,18 @@ vector vec;
 	missile.abslight=0.5;
 
 	setmodel (missile, "models/fablade.mdl");
-	setsize (missile, '0 0 0', '0 0 0');		
+	setsize (missile, '0 0 0', '0 0 0');
 
-// set missile speed	
-
+// set missile speed
 	makevectors (self.angles);
 	setorigin (missile, self.origin + v_factor(offset));
 
-   vec = self.enemy.origin - missile.origin + self.enemy.proj_ofs + dest_offset;
+	vec = self.enemy.origin - missile.origin + self.enemy.proj_ofs + dest_offset;
 	vec = normalize(vec);
 
 	missile.velocity = (vec+aim_adjust(self.enemy))*set_speed;
 	missile.angles = vectoangles(missile.velocity);
-	
+
 	missile.touch = faBladeTouch;
 };
 

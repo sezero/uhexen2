@@ -7,32 +7,32 @@ float() LocateTarget =
 	return FindTarget(TRUE);
 };
 
-float	MA_SUCCESSFUL = 0;
-float	MA_BLOCKED    = -1;
-float	MA_CROSSED    = -2;
-float	MA_NOWEAPON   = -3;
-float	MA_TOOSOON    = -4;
-float	MA_TOOFAR     = -5;
-float	MA_NOATTACK   = -6;
+float MA_SUCCESSFUL	= 0;
+float MA_BLOCKED	= -1;
+float MA_CROSSED	= -2;
+float MA_NOWEAPON	= -3;
+float MA_TOOSOON	= -4;
+float MA_TOOFAR		= -5;
+float MA_NOATTACK	= -6;
 
-float MA_MELEE				= 1;
-float MA_MISSILE			= 2;
-float MA_BOTH				= 3;
-float MA_FAR_MELEE		= 4;
-float MA_SHORT_MISSILE  = 8;
+float MA_MELEE		= 1;
+float MA_MISSILE	= 2;
+float MA_BOTH		= 3;
+float MA_FAR_MELEE	= 4;
+float MA_SHORT_MISSILE	= 8;
 
 // You must perform the following call sometime before calling this function:
 //    enemy_range = range (self.enemy);
 float(float AttackType, float ChanceModifier) CheckMonsterAttack =
 {
-	local vector	spot1, spot2;	
+	local vector	spot1, spot2;
 	local entity	targ;
-	local float		chance;
+	local float	chance;
 
 	targ = self.enemy;
-	
+
 	if (self.classname == "monster_hydra")
-		if (self.enemy.watertype != CONTENT_WATER) 
+		if (self.enemy.watertype != CONTENT_WATER)
 		{
 			if (self.search_time < time)
 			{
@@ -56,15 +56,15 @@ float(float AttackType, float ChanceModifier) CheckMonsterAttack =
 	if (trace_ent != targ)
 		if(trace_ent.health>25||!trace_ent.takedamage||(trace_ent.flags&FL_MONSTER&&trace_ent.classname!="player_sheep"))
 			return MA_BLOCKED;		// don't have a clear shot
-			
+
 	if (trace_inopen && trace_inwater)
 		return MA_CROSSED;			// sight line crossed contents
 
 	if (enemy_range == RANGE_MELEE)
 	{	// melee attack
-	   if (AttackType & MA_SHORT_MISSILE)
+		if (AttackType & MA_SHORT_MISSILE)
 		{
-		   if (random() < 0.5)
+			if (random() < 0.5)
 			{
 			   self.th_missile ();
 			   return MA_SUCCESSFUL;
@@ -74,26 +74,26 @@ float(float AttackType, float ChanceModifier) CheckMonsterAttack =
 		{
 			if (AttackType & MA_MELEE)
 			{
-			   self.th_melee ();
-			   return MA_SUCCESSFUL;
+				self.th_melee ();
+				return MA_SUCCESSFUL;
 			}
-			else 
+			else
 				return MA_NOWEAPON;
 		}
 	}
-	
+
 // missile attack
 	if (!self.th_missile || !(AttackType & (MA_MISSILE | MA_FAR_MELEE)))
 	{
 		return MA_NOWEAPON;
 	}
-	
+
 	if (time < self.attack_finished)
 		return MA_TOOSOON;
-		
+
 	if (enemy_range == RANGE_FAR)
 		return MA_TOOFAR;
-		
+
 	if (enemy_range == RANGE_MELEE)
 	{
 		chance = 0.9;
@@ -144,8 +144,9 @@ float(float AttackType, float ChanceModifier) CheckMonsterAttack =
 	return MA_NOATTACK;
 };
 
+/*
 float (vector offset, vector to_where)monster_checkpos =
-{  
+{
 	// This function will trace 2 lines - the first line will go from the origin to the offset from the origin.
 	// If this could be done atleast half way, then a 2nd trace is done from the end point of the first trace
 	// to the final destination.  If this was mostly successful, then the function will return true, otherwise 
@@ -156,7 +157,7 @@ float (vector offset, vector to_where)monster_checkpos =
 
 	start = self.origin + offset;
 	traceline (self.origin, start, FALSE, self);
-	if (trace_fraction < 0.5) 
+	if (trace_fraction < 0.5)
 	{  // Couldn't get to the offset
 		return FALSE;
 	}
@@ -171,7 +172,6 @@ float (vector offset, vector to_where)monster_checkpos =
 
 	return FALSE;
 };
-
 
 void (float l, float r, float u, float d, float last_move, vector where) find_path =
 {
@@ -232,7 +232,7 @@ void (float l, float r, float u, float d, float last_move, vector where) find_pa
 			if (retval && retval < length)
 			{
 				//dprint("found you to the up\n");
-  		      newz = 30;
+				newz = 30;
 				self.monster_duration = 18 + 5;
 				length = retval;
 			}
@@ -243,7 +243,7 @@ void (float l, float r, float u, float d, float last_move, vector where) find_pa
 			if (retval && retval < length)
 			{
 				//dprint("found you to the down\n");
-  		      newz = -30;
+				newz = -30;
 				self.monster_duration = 18 + 5;
 				length = retval;
 			}
@@ -264,7 +264,6 @@ void (float l, float r, float u, float d, float last_move, vector where) find_pa
 	}
 };
 
-/*
 float () FindDir =
 { // Monster couldn't go in the direction it is pointed to, so find one it can go to
 	local vector a,b,c;
@@ -297,4 +296,3 @@ float () FindDir =
 	return self.angles_y;
 };
 */
-

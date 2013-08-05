@@ -6,6 +6,13 @@ Changes
 
 2013-08-05 (1.29):
 ===================
+- specials.hc (CheckAbilities): fixed missing parens around two OR'ed
+  constants in the drawflags bittest. (issue was present since at least
+  v1.03.)
+- ravenai.hc: commented out all functions except for LocateTarget() and
+  CheckMonsterAttack(). all of them are unused.
+- fangel.hc (fangel_deathframes): removed an unused local.
+- fablacde.hc: commented out unused frame_BLADE
 - client.hc (changelevel_touch): fixed parens around noxit cvar checks
   (typo was introduced in v1.15.) in siege version, remove the start map
   check (no such map in hexen2/hexen2world.)

@@ -177,7 +177,7 @@ void fangel_find_spot (void)
 {
 float crj, radius,dist;
 vector vec;
-	
+
 	crj=0;
 	while(crj < 50)
 	{
@@ -197,7 +197,7 @@ vector vec;
 
 			dist = self.origin_z - self.monster_last_seen_z;
 
-			if (dist < -20)			
+			if (dist < -20)
 				self.z_movement = random(0,2);
 			else if (dist > 20 )
 				self.z_movement = random(-2,0);
@@ -261,7 +261,7 @@ float chance;
 	self.monster_duration -= 1;
 
 	dist = random(1,4);  // Movement distance this turn
-	
+
 	retval = walkmove(self.angles_y + 90, dist, FALSE);
 
 	if (!retval)
@@ -269,18 +269,18 @@ float chance;
 		self.monster_stage = FANGEL_STAGE_FLY;
 		fangel_find_spot();
 		self.think = fangel_flyframes;
-		self.nextthink = time;		
+		self.nextthink = time;
 		return;
 	}
 
 	dist = self.origin_z - self.monster_last_seen_z;
 
 	if (dist < -20)
-	{	
+	{
 		self.z_movement = random(0,2);
 		self.z_duration = time + HX_FRAME_TIME * random(15,25);
 	}
-	else if (dist > 20 )
+	else if (dist > 20)
 	{
 		self.z_movement = random(-2,0);
 		self.z_duration = time + HX_FRAME_TIME * random(15,25);
@@ -336,7 +336,7 @@ float Length;
 	dist = self.origin_z - self.monster_last_seen_z;
 
 	if (dist < -20)
-	{	
+	{
 		self.z_movement = random(2,4);
 		self.z_duration = time + HX_FRAME_TIME * random(15,25);
 	}
@@ -467,12 +467,10 @@ float chance;
 	check_z_move(3);
 //	movestep(0,0,-1, FALSE);   // Float down while deflecting shots
 
-
-
 	if (self.fangel_Count)
 	{
-	   self.fangel_Count -= 1;
-	   RetVal = 3;
+		self.fangel_Count -= 1;
+		RetVal = 3;
 	}
 	else if(fov(self,self.enemy,30)&&self.enemy.last_attack+0.75>time&&self.frame == $fblock13)
 		self.fangel_Count+=1;
@@ -497,7 +495,6 @@ float chance;
 			self.think = fangel_handframes;  // Come back fighting
 		else
 			self.think = fangel_wingframes;  // Come back fighting
-
 	}
 	else if (RetVal == AF_NORMAL)
 	{
@@ -514,7 +511,7 @@ float chance;
 
 void() fangel_deathframes =
 {
-entity stemp;//,skull;
+//entity skull;
 
 	if(self.health<=-40)
 	{
@@ -546,7 +543,7 @@ entity stemp;//,skull;
 		CreateEntityNew(skull,ENT_FANGEL_HEAD,"models/h_fangel.mdl",chunk_death);
 
 		skull.flags(-)FL_ONGROUND;
-	
+
 		skull.avelocity_x = random(30);
 		skull.avelocity_y = random(30);
 		skull.avelocity_z = random(80);
@@ -640,7 +637,7 @@ void fangel_handframes (void)
 			fangel_find_spot();
 			self.think = fangel_flyframes;
 		}
-		else		
+		else
 		{
 			self.think = self.th_save; 
 		}
@@ -718,8 +715,8 @@ void() fangel_wingframes =
 				}
 				else
 					self.shoot_cnt =0;
-			} 
-			else  
+			}
+			else
 				fangel_prepare_attack();
 		}
 		else
@@ -747,7 +744,7 @@ void() fangel_wingframes =
 
 						WriteCoord (MSG_BROADCAST, trace_endpos_x);
 						WriteCoord (MSG_BROADCAST, trace_endpos_y);
-						WriteCoord (MSG_BROADCAST, trace_endpos_z);		
+						WriteCoord (MSG_BROADCAST, trace_endpos_z);
 
 						LightningDamage (self.origin, trace_endpos, self, 3,"sunbeam");
 
@@ -760,7 +757,7 @@ void() fangel_wingframes =
 					self.shoot_cnt =0;
 			
 			}
-			else  
+			else
 				fangel_prepare_attack();
 		}
 	}
@@ -786,7 +783,7 @@ void(entity attacker, float damage) fangel_pain =
 
 		self.fangel_SaveFrame = self.frame;
 		// didn't want to use self.think just in case we just began to attack
-		self.th_save = fangel_flyframes;  
+		self.th_save = fangel_flyframes;
 		fangel_painframes();
 	}
 };
@@ -842,7 +839,7 @@ void() init_fangel =
 	self.headmodel="models/h_fangel.mdl";
 
 	total_monsters += 1;
-	
+
 	self.ideal_yaw = self.angles * '0 1 0';
 	self.yaw_speed = fangel_move_speed;
 	self.view_ofs = '0 0 -5';
