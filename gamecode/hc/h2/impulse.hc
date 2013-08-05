@@ -99,7 +99,6 @@ float gotone;
 	}
 }
 
-
 void player_everything_cheat(void)
 {
 	if(deathmatch||coop)
@@ -113,7 +112,6 @@ void player_everything_cheat(void)
 
 	// Then they leave home and never call you. The ingrates.
 }
-
 
 void PrintFrags()
 {
@@ -144,8 +142,8 @@ entity lastent;
 	}
 }
 
-
-/*void()gravityup =
+/*
+void()gravityup =
 {
 	self.gravity+=0.01;
 	if(self.gravity==10)
@@ -185,7 +183,7 @@ void HeaveHo (void)
 vector dir;
 float inertia, lift;
 	makevectors(self.v_angle);
-	dir=normalize(v_forward);	
+	dir=normalize(v_forward);
 
 	traceline(self.origin+self.proj_ofs,self.origin+self.proj_ofs+dir*48,FALSE,self);
 	if(trace_ent.movetype&&trace_ent.solid&&trace_ent!=world&&trace_ent.flags&FL_ONGROUND&&trace_ent.solid!=SOLID_BSP)
@@ -535,8 +533,6 @@ void() ImpulseCommands =
 		}
 		respawn ();
 	}
-
-	
 
 	if(self.model=="models/sheep.mdl")
 	{

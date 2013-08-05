@@ -166,7 +166,7 @@ void rat_noise (void)
 
 void rat_touch (void)
 {
-	return;
+
 }
 
 //==========================================================================
@@ -229,7 +229,7 @@ void monster_rat (void)
 		self.th_stand = ratrun;
 		self.th_walk = ratrun;
 	}
-	
+
 	setmodel(self, "models/rat.mdl");
 
 	self.movetype = MOVETYPE_STEP;

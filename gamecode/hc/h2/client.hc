@@ -78,12 +78,12 @@ float cyc;
 	spot = find (world, classname, "info_player_start");
 	if (spot)
 		return spot;
-	
+
 // testinfo_player_start is only found in regioned levels
 	spot = find (world, classname, "testplayerstart");
 	if (spot)
 		return spot;
-	
+
 	objerror ("FindIntermission: no spot");
 }
 
@@ -109,7 +109,7 @@ void ExitIntermission(void)
 	// skip any text in deathmatch
 	if (deathmatch)
 	{
-		intermission_exittime = 
+		intermission_exittime =
 		intermission_running = 0;
 	}
 
@@ -125,7 +125,7 @@ void ExitIntermission(void)
 		other.effects=FALSE;
 		other.weaponmodel=other.lastweapon;
 		other = find (other, classname, "player");
-	}	
+	}
 
 	if (deathmatch)
 	{
@@ -133,7 +133,7 @@ void ExitIntermission(void)
 		GotoNextMap ();
 		return;
 	}
-	
+
 	intermission_exittime = time + 1;
 	intermission_running = intermission_running + 1;
 
@@ -159,21 +159,19 @@ void IntermissionThink(void)
 
 	if (!self.button0 && !self.button1 && !self.button2)
 		return;
-	
+
 	ExitIntermission ();
 }
 
 void() execute_changelevel =
 {
 	intermission_running = 1;
-	
-// enforce a wait time before allowing changelevel
 
+// enforce a wait time before allowing changelevel
 	if (deathmatch)
 		intermission_exittime = time + 5;
 	else
 		intermission_exittime = time + 2;
-
 
 	other = find (world, classname, "player");
 	while (other != world)
@@ -188,7 +186,7 @@ void() execute_changelevel =
 		other.lastweapon=other.weaponmodel;
 		stuffcmd(other,"+showdm\n");
 		other = find (other, classname, "player");
-	}	
+	}
 };
 
 void FindDMLevel(void)
@@ -307,13 +305,12 @@ void FindDMLevel(void)
 
 void() changelevel_touch =
 {
-
 	if (other.classname != "player")//||(!infront_of_ent(self,other)))
 		return;
 
-	if (deathmatch && (cvar("noexit") == 1) || ((cvar("noexit") == 2)))
+	/* noexit is only for dm - from Maddes' QuakeC patches: */
+	if (deathmatch && ((cvar("noexit") == 1) || (cvar("noexit") == 2)))
 	{
-// rjr quake2 change		T_Damage (other, self, self, 50000, 1000, TRUE);
 		T_Damage (other, self, self, 50000);
 		return;
 	}
@@ -332,7 +329,7 @@ void() changelevel_touch =
 		bprint (other.netname);
 		bprint (" exited the level\n");
 	}
-	
+
 	if (deathmatch)
 		FindDMLevel();
 	else
@@ -377,7 +374,7 @@ void() changelevel_touch =
 		GotoNextMap();
 		return;
 	}
-	
+
 	self.touch = SUB_Null;
 
 // we can't move people right now, because touch functions are called
@@ -403,7 +400,7 @@ void() trigger_changelevel =
 {
 	if (!self.map)
 		objerror ("changelevel trigger doesn't have map");
-	
+
 	InitTrigger ();
 	self.touch = changelevel_touch;
 	self.use = changelevel_use;
@@ -429,8 +426,7 @@ void() respawn =
 		SolidPlayer();
 		// get the spawn parms as they were at level start
 		setspawnparms (self);
-		// respawn		
-	
+		// respawn
 		PutClientInServer ();
 	}
 	else if (deathmatch)
@@ -486,12 +482,12 @@ entity() SelectSpawnPoint =
 	entity thing;
 	float  pcount;
 	float ok;
-	
+
 // testinfo_player_start is only found in regioned levels
 	spot = find (world, classname, "testplayerstart");
 	if (spot)
 		return spot;
-		
+
 // choose a info_player_deathmatch point
 	if(self.newclass)
 	{
@@ -580,7 +576,7 @@ entity() SelectSpawnPoint =
 				pcount = 0;
 		}
 	}
-	
+
 	if (!spot)
 	{
 		spot = find (world, classname, "info_player_start");
@@ -628,12 +624,12 @@ entity spot;
 	self.flags(+)FL_CLIENT;
 	self.flags2(+)FL_ALIVE;
 	self.air_finished = time + 12;
-	self.dmg = 2;   		// initial water damage
+	self.dmg = 2;			// initial water damage
 	self.thingtype=THINGTYPE_FLESH;
 	self.adjust_velocity = '-999 -999 -999';
 //Reset all time-based fields
 	self.act_state =
-	self.show_hostile = 
+	self.show_hostile =
 	self.onfire=
 	self.invisible_time=
 	self.camptime=
@@ -652,10 +648,10 @@ entity spot;
 	self.splash_time=
 	self.ring_regen_time=
 	self.rings_low=
-	self.pausetime = 
-	self.teleport_time = 
+	self.pausetime =
+	self.teleport_time =
 	self.sheep_time =
-	self.attack_finished = 
+	self.attack_finished =
 	self.super_damage_time=
 	self.haste_time =
 	self.tome_time =
@@ -710,7 +706,7 @@ entity spot;
 		stats_NewPlayer(self);
 	else
 		self.health = self.max_health;
-	
+
 	if(self.max_health<=0||self.health<=0)
 	{
 		dprint("ERROR: Respawned Dead!\n");
@@ -746,7 +742,7 @@ entity spot;
 		if(self.greenmana<25)
 			self.greenmana=25;
 	}
-	
+
 	W_SetCurrentAmmo ();
 
 	SetModelAndThinks();
@@ -770,8 +766,8 @@ entity spot;
 			self.effects(+)EF_DARKLIGHT;
 	}
 	self.ring_regen_time = 0;
-	self.ring_flight_time=0;	
-	self.ring_water_time=0;	
+	self.ring_flight_time=0;
+	self.ring_water_time=0;
 	self.ring_turning_time=0;
 
 	self.ring_flight=0;			// Health of rings 0 - 100
@@ -784,14 +780,13 @@ entity spot;
 	self.proj_ofs=' 0 0 44';
 	self.hull=HULL_PLAYER;
 	self.idealpitch = cvar("sv_walkpitch");
-	
 
 	self.button0 = self.button1 = self.button2 = 0;
 	self.attack_finished=time+0.5;//so no respawn fire
 
 //	self.th_stand();
 	player_frames();
-	
+
 	if (deathmatch || coop)
 	{
 		makevectors(self.angles);
@@ -842,7 +837,7 @@ entity spot;
 	self.healthtime=
 	self.splash_time=
 	self.decap=
-	self.frozen= 
+	self.frozen=
 	self.plaqueflg = 0;
 	self.artifact_active(-)ARTFLAG_FROZEN|ARTFLAG_STONED;
 
@@ -853,19 +848,19 @@ entity spot;
 
 	self.air_finished = time + 12;
 
-	self.ring_regen_time += TimeDiff; 
-	self.ring_water_time += TimeDiff; 
-	self.ring_turning_time += TimeDiff; 
+	self.ring_regen_time += TimeDiff;
+	self.ring_water_time += TimeDiff;
+	self.ring_turning_time += TimeDiff;
 
-	self.super_damage_time += TimeDiff; 
-	self.haste_time  += TimeDiff; 
-	self.tome_time  += TimeDiff; 
-	self.camera_time  += TimeDiff; 
-	self.torchtime += TimeDiff; 
+	self.super_damage_time += TimeDiff;
+	self.haste_time  += TimeDiff;
+	self.tome_time  += TimeDiff;
+	self.camera_time  += TimeDiff;
+	self.torchtime += TimeDiff;
 
-	self.pausetime += TimeDiff; 
-	self.teleport_time += TimeDiff; 
-	self.sheep_time += TimeDiff; 
+	self.pausetime += TimeDiff;
+	self.teleport_time += TimeDiff;
+	self.sheep_time += TimeDiff;
 	self.attack_finished += TimeDiff;
 	self.catapult_time+= TimeDiff;
 	self.safe_time+= TimeDiff;
@@ -882,9 +877,9 @@ entity spot;
 
 	self.light_level = 128;		// So the assassin doesn't go invisible coming out of the teleporter
 
-	self.dmg = 2;   		// initial water damage
+	self.dmg = 2;			// initial water damage
 
-	setsize (self, '-16 -16 0', '16 16 56');	
+	setsize (self, '-16 -16 0', '16 16 56');
 	self.hull=HULL_PLAYER;
 	self.view_ofs = '0 0 50';
 	self.proj_ofs='0 0 44';
@@ -1018,7 +1013,7 @@ void() NextLevel =
 	}
 
 	gameover = TRUE;
-	
+
 	if (o.nextthink < time)
 	{
 		o.think = execute_changelevel;
@@ -1037,24 +1032,25 @@ void() CheckRules =
 {
 float		timelimit;
 float		fraglimit;
-	
+
+	/* timelimit/fraglimit are only for dm - from Maddes' QuakeC patches: */
 	if (gameover || !deathmatch)	// someone else quit the game already
 		return;
-		
+
 	timelimit = cvar("timelimit") * 60;
 	fraglimit = cvar("fraglimit");
-	
+
 	if (timelimit && time >= timelimit)
 	{
 		NextLevel ();
 		return;
 	}
-	
+
 	if (fraglimit && self.frags >= fraglimit)
 	{
 		NextLevel ();
 		return;
-	}	
+	}
 };
 
 //============================================================================
@@ -1069,7 +1065,7 @@ float		forward;
 		forward = forward - 20;
 		if (forward <= 0)
 			self.velocity = '0 0 0';
-		else	
+		else
 			self.velocity = forward * normalize(self.velocity);
 	}
 
@@ -1168,7 +1164,7 @@ void() PlayerJump =
 	{
 		return;
 	}
-	
+
 	if ( !(self.flags & FL_JUMPRELEASED) )
 		return;		// don't pogo stick
 
@@ -1177,10 +1173,10 @@ void() PlayerJump =
 	self.flags(-)FL_JUMPRELEASED;
 
 	self.flags(-)FL_ONGROUND;	// don't stairwalk
-	
-	self.button2 = 0;
-// player jumping sound
 
+	self.button2 = 0;
+
+// player jumping sound
 	if(self.model=="models/sheep.mdl")//self.modelindex==modelindex_sheep)
 		sheep_sound(1);
 	else if(self.playerclass==CLASS_ASSASSIN)
@@ -1197,25 +1193,17 @@ void() PlayerJump =
 //	else if (self.playerclass == CLASS_ASSASSIN)
 //		sound (self, CHAN_BODY, "player/assjmp.wav", 1, ATTN_NORM);
 
-
-
-
 	self.velocity_z = self.velocity_z + 270*self.scale;
 };
-
-
 
 
 /*
 ===========
 WaterMove
-
 ============
 */
-
 void() WaterMove =
 {
-
 //dprint (ftos(self.waterlevel));
 	if (self.movetype == MOVETYPE_NOCLIP)
 		return;
@@ -1286,10 +1274,10 @@ void() WaterMove =
 			self.pain_finished = time + 1;
 		}
 	}
-	
+
 	if (!self.waterlevel)
 	{  // Getting out of the water
-		if (self.flags & FL_INWATER)	
+		if (self.flags & FL_INWATER)
 		{	// play leave water sound
 			sound (self, CHAN_BODY, "raven/outwater.wav", 1, ATTN_NORM);
 			self.flags(-)FL_INWATER;
@@ -1336,9 +1324,8 @@ void() WaterMove =
 
 		self.flags(+)FL_INWATER;
 		self.dmgtime = 0;
-
 	}
-	
+
 	if (! (self.flags & FL_WATERJUMP) )
 		self.velocity = self.velocity - 0.8*self.waterlevel*frametime*self.velocity;
 };
@@ -1357,7 +1344,7 @@ void CheckCrouch (void)
 				self.view_ofs_z = 24;
 				self.proj_ofs_z = 18;
 				self.crouch_time = 0;
-			}	 
+			}
 			else
 				self.crouch_time = time + HX_FRAME_TIME/4;
 		}
@@ -1370,18 +1357,17 @@ void CheckCrouch (void)
 				self.view_ofs_z = 50;
 				self.proj_ofs_z = 44;
 				self.crouch_time = 0;
-			}	 
+			}
 			else
 				self.crouch_time = time + HX_FRAME_TIME/4;
 		}
 	}
 
-	if ((self.flags2 & FL2_CROUCHED||self.model=="models/sheep.mdl"||self.flags2&FL2_CROUCH_TOGGLE) && (self.hull!=HULL_CROUCH)) 
+	if ((self.flags2 & FL2_CROUCHED||self.model=="models/sheep.mdl"||self.flags2&FL2_CROUCH_TOGGLE) && (self.hull!=HULL_CROUCH))
 		PlayerCrouching ();
 	else if (((!self.flags2 & FL2_CROUCHED&&self.model!="models/sheep.mdl"&&!self.flags2&FL2_CROUCH_TOGGLE) && (self.hull==HULL_CROUCH)) ||
 			(self.crouch_stuck))  // If stuck, constantly try to unstick
 		PlayerUnCrouching();
-
 }
 
 void CheckIncapacities ()
@@ -1449,14 +1435,14 @@ vector dir;
 			self.o_angle+=self.v_angle;
 		}
 
-        msg_entity = self;
-	    WriteByte (MSG_ONE, 10);
-        WriteAngle (MSG_ONE, self.o_angle_x);
-	    WriteAngle (MSG_ONE, self.o_angle_y);
-        WriteAngle (MSG_ONE, self.o_angle_z);
-	    if(self.flags&FL_ONGROUND)
+		msg_entity = self;
+		WriteByte (MSG_ONE, 10);
+		WriteAngle (MSG_ONE, self.o_angle_x);
+		WriteAngle (MSG_ONE, self.o_angle_y);
+		WriteAngle (MSG_ONE, self.o_angle_z);
+		if(self.flags&FL_ONGROUND)
 			self.velocity='0 0 0';
-        self.button0=0;
+		self.button0=0;
 		self.button2=0;
 		self.impulse=0;
 	}
@@ -1474,7 +1460,7 @@ Called every frame before physics are run
 */
 void() PlayerPreThink =
 {
-	vector	spot1, spot2;	
+	vector	spot1, spot2;
 
 	if (!self.flags & FL_INWATER)
 		self.aflag = 0;
@@ -1556,11 +1542,11 @@ void() PlayerPreThink =
 			if ((trace_fraction == 1.0) || (trace_ent.classname!="plaque"))
 			{
 				traceline (spot1, spot2 - (v_up * 30), FALSE, self);  // 30 down
-			
+
 				if ((trace_fraction == 1.0) || (trace_ent.classname!="plaque"))
 				{
 					traceline (spot1, spot2 + v_up * 30, FALSE, self);  // 30 up
-				
+
 					if ((trace_fraction == 1.0) || (trace_ent.classname!="plaque"))
 					{
 						self.plaqueflg=0;
@@ -1594,7 +1580,6 @@ void() PlayerPreThink =
 	else
 		self.camptime = time + random(420,840);
 
-
 	if (self.deadflag == DEAD_DYING)
 		return;	// dying, so do nothing
 
@@ -1603,7 +1588,7 @@ void() PlayerPreThink =
 	else
 		self.flags(+)FL_JUMPRELEASED;
 
-// teleporters can force a non-moving pause time	
+// teleporters can force a non-moving pause time
 	if (time < self.pausetime)
 		self.velocity = '0 0 0';
 
@@ -1629,15 +1614,15 @@ void CheckRings (void)
 		return;
 
 	if (self.rings & RING_REGENERATION)
-	{	
+	{
 		if (self.ring_regen_time < time)
 		{
 			if (self.health < self.max_health)
 			{
 				self.ring_regeneration -= 100/RING_REGENERATION_MAX;
-				self.health += 1;				
+				self.health += 1;
 				self.ring_regen_time = time + 1;
-			}	
+			}
 
 			if ((self.ring_regeneration < 10)  && (!self.rings_low & RING_REGENERATION))
 			{
@@ -1656,7 +1641,7 @@ void CheckRings (void)
 	}
 
 	if (self.rings & RING_FLIGHT)
-	{	
+	{
 		if (self.ring_flight_time < time)
 		{
 			self.ring_flight -= 100/RING_FLIGHT_MAX;
@@ -1681,9 +1666,8 @@ void CheckRings (void)
 		}
 	}
 
-
 	if ((self.rings & RING_WATER) && (self.waterlevel == 3) && (self.air_finished < time))
-	{	
+	{
 		self.rings_active (+) RING_WATER;
 		if (self.ring_water_time < time)
 		{
@@ -1732,7 +1716,6 @@ void CheckRings (void)
 			victim = victim.chain;
 		}
 
-
 		if (self.ring_turning_time < time)
 		{
 			self.ring_turning -= 100/RING_TURNING_MAX;
@@ -1754,9 +1737,8 @@ void CheckRings (void)
 			self.ring_turning_time = time + 1;
 		}
 	}
-
 }
-	
+
 void remove_invincibility(entity loser)
 {
 	loser.artifact_low(-)ART_INVINCIBILITY;
@@ -1766,12 +1748,13 @@ void remove_invincibility(entity loser)
 	if(loser.playerclass==CLASS_CRUSADER)
 		loser.skin = 0;
 	else if(loser.playerclass==CLASS_PALADIN)
-		loser.effects(-)EF_BRIGHTLIGHT; 
+		loser.effects(-)EF_BRIGHTLIGHT;
 	else if(loser.playerclass==CLASS_ASSASSIN)
 		loser.colormap=0;
 	else if(loser.playerclass==CLASS_NECROMANCER)
 		loser.effects(-)EF_DARKLIGHT;
 }
+
 /*
 ================
 CheckPowerups
@@ -1786,13 +1769,13 @@ void() CheckPowerups =
 
 	if (self.divine_time < time)
 		self.artifact_active (-) ARTFLAG_DIVINE_INTERVENTION;
-		
-	// Crusader's special ability to smite 
+
+	// Crusader's special ability to smite
 	if (self.super_damage)
 	{
-		if (self.super_damage_time < time) 
+		if (self.super_damage_time < time)
 		{
-			self.super_damage = 0;		
+			self.super_damage = 0;
 		}
 		else if (((self.super_damage_time - 10) < time) && (!self.super_damage_low))
 		{
@@ -1840,7 +1823,6 @@ void() CheckPowerups =
 		else if ((self.tome_time - 10) < time)
 			self.artifact_low (+) ART_TOMEOFPOWER;
 //	}
-	
 
 // invisibility
 	if (self.artifact_active & ART_INVISIBILITY)
@@ -1870,14 +1852,14 @@ void() CheckPowerups =
 //			sound (self, CHAN_AUTO, "items/inv2.wav", 1, ATTN_NORM);
 			self.sheep_sound_time=TRUE;
 		}
-			
+
 		if (self.sheep_time < time)
 		{
 			sound(self,CHAN_VOICE,"misc/sheepfly.wav",1,ATTN_NORM);
 			particleexplosion((self.absmin+self.absmax)*0.5,random(144,159),self.absmax_z-self.absmin_z,50);
 			GenerateTeleportEffect(self.origin,1);
 
-//			setsize (self, '-16 -16 0', '16 16 56');	
+//			setsize (self, '-16 -16 0', '16 16 56');
 //			self.hull=HULL_PLAYER;
 //			self.view_ofs = '0 0 50';
 //			self.proj_ofs='0 0 44';
@@ -1889,7 +1871,7 @@ void() CheckPowerups =
 
 //			W_SetCurrentAmmo ();
 
-			setsize (self, '-16 -16 0', '16 16 28');	
+			setsize (self, '-16 -16 0', '16 16 28');
 			self.hull=HULL_CROUCH;
 			PlayerSpeed_Calc();
 
@@ -1955,9 +1937,8 @@ void() PlayerPostThink =
 
 	if (self.deadflag)
 		return;
-			
-// do weapon stuff
 
+// do weapon stuff
 	W_WeaponFrame ();
 
 	if(self.viewentity.classname=="chasecam")
@@ -2012,7 +1993,7 @@ void() ClientConnect =
 {
 	bprint (self.netname);
 	bprint (STR_JOINEDTHEGAME);
-	
+
 // a client connecting during an intermission can cause problems
 	if (intermission_running)
 		ExitIntermission ();
@@ -2116,7 +2097,7 @@ string deathstring, deathstring2,iclass;
 			// killed self
 			attacker.frags -= 1;
 			bprint (targ.netname);
-			
+
 			if(random()<0.5)
 				bprint (" must be a masochist!\n");
 			else
@@ -2214,7 +2195,7 @@ string deathstring, deathstring2,iclass;
 				deathstring = " was destroyed by the power of ";
 				deathstring2 = "'s Disc of Repulsion!\n";
 			}
-			else if (rnum == IT_WEAPON1) 
+			else if (rnum == IT_WEAPON1)
 			{
 				if(attacker.artifact_active&ART_TOMEOFPOWER)
 					exp_mult=1.5;
@@ -2249,7 +2230,7 @@ string deathstring, deathstring2,iclass;
 					deathstring2 = "'s sickle!\n";
 				}
 			}
-			else if (rnum == IT_WEAPON2) 
+			else if (rnum == IT_WEAPON2)
 			{
 				if(powered_up)
 					exp_mult=1;
@@ -2308,7 +2289,7 @@ string deathstring, deathstring2,iclass;
 					}
 				}
 			}
-			else if (rnum == IT_WEAPON3) 
+			else if (rnum == IT_WEAPON3)
 			{
 				if(powered_up)
 					exp_mult=0.8;
@@ -2369,7 +2350,7 @@ string deathstring, deathstring2,iclass;
 					}
 				}
 			}
-			else if (rnum == IT_WEAPON4) 
+			else if (rnum == IT_WEAPON4)
 			{
 				if(powered_up)
 					exp_mult=0.5;
@@ -2456,10 +2437,12 @@ string deathstring, deathstring2,iclass;
 		if (attacker.flags & FL_MONSTER)
 		{
 			if(attacker.model=="models/sheep.mdl")
+			{
 				if(random()<0.5)
 					bprint (" was savagely mauled by a sheep!\n");
 				else
 					bprint (" says 'HELLO DOLLY!'\n");
+			}
 			if (attacker.classname == "monster_archer")
 				bprint (" was skewered by an Archer!\n");
 			if (attacker.classname == "monster_archer_lord")
@@ -2469,12 +2452,14 @@ string deathstring, deathstring2,iclass;
 			if (attacker.classname == "monster_fallen_angel_lord")
 				bprint (" was decimated by a Fallen Angel Lord!\n");
 			if (attacker.classname == "monster_golem_bronze")
+			{
 				if(targ.decap==1)
 					bprint ("'s head was taken as a trophy for the Bronze Golem!\n");
 				else if(targ.decap==2)
 					bprint (" became a permanent stain on the wall!\n");
 				else
 					bprint (" was squished like an insect by a Bronze Golem!\n");
+			}
 			if (attacker.classname == "monster_golem_iron")
 			{
 				if (inflictor.classname == "golem_iron_proj")
@@ -2485,10 +2470,12 @@ string deathstring, deathstring2,iclass;
 					bprint (" was crushed by the Iron Golem's fist!\n");
 			}
 			if (attacker.classname == "monster_golem_stone")
+			{
 				if(targ.decap==2)
 					bprint (" is feeling a little light-headed!\n");
 				else
 					bprint (" was pummeled by a Stone Golem!\n");
+			}
 			if (attacker.classname == "monster_golem_crystal")
 				bprint (" was mangled by the Enchanted Crystal Golem!\n");
 			if (attacker.classname == "monster_hydra")
@@ -2498,15 +2485,19 @@ string deathstring, deathstring2,iclass;
 			if (attacker.classname == "monster_imp_ice")
 				bprint (" chills out with the Ice Imps!\n");
 			if (attacker.classname == "monster_medusa")
+			{
 				if (attacker.skin==1)
 					bprint (" was stricken by the beauty of the Crimson Medusa!\n");
 				else
 					bprint (" is helpless in the face of the Medusa's beauty!\n");
+			}
 			if (attacker.classname == "monster_mezzoman")
+			{
 				if (attacker.skin==1)
 					bprint (" is not yet worthy of facing the WerePanther!\n");
 				else
 					bprint (" is no match for the WereJaguar!\n");
+			}
 			if (attacker.classname == "monster_mummy")
 				bprint (" got mummified!\n");
 			if (attacker.classname == "monster_mummy_lord")
@@ -2532,6 +2523,7 @@ string deathstring, deathstring2,iclass;
 			if (attacker.classname == "rider_famine")
 				bprint(" was drained of life-force by Famine!\n");
 			if (attacker.classname == "rider_death")
+			{
 				if(inflictor==attacker)
 					bprint(" was snuffed out of existance by Death!\n");
 				else if(inflictor.netname=="deathbone")
@@ -2540,14 +2532,18 @@ string deathstring, deathstring2,iclass;
 					bprint(" was shot down by Death's crimson bolts!\n");
 				else
 					bprint(" was smitten by Death's unholy fire\n");
+			}
 			if (attacker.classname == "rider_pestilence")
+			{
 				if(targ.deathtype=="poison")
 					bprint(" was poisoned to death by Pestilence's Crossbow!\n");
 				else
 					bprint("'s rotted corpse is the possession of Pestilence!\n");
+			}
 			if (attacker.classname == "rider_war")
 				bprint(" was taught the true meaning of War!\n");
 			if (attacker.classname == "monster_eidolon")
+			{
 				if(inflictor==attacker)
 					bprint(" was squashed like an insect by Eidolon!\n");
 				else if(inflictor.classname=="eidolon fireball")
@@ -2556,6 +2552,7 @@ string deathstring, deathstring2,iclass;
 					bprint(" was introduced to a new level of pain by Eidolon's Magic!\n");
 				else if(inflictor.classname=="eidolon flames")
 					bprint(" was roasted to a crisp by Eidolon's Hellfire!\n");
+			}
 			return;
 		}
 
@@ -2595,7 +2592,7 @@ string deathstring, deathstring2,iclass;
 			return;
 		}
 		if (attacker.solid == SOLID_BSP && attacker != world)
-		{	
+		{
 			bprint (" was squished\n");
 			return;
 		}
@@ -2604,9 +2601,9 @@ string deathstring, deathstring2,iclass;
 			bprint (" was spiked");
 			if (attacker.enemy.classname == "player" && attacker.enemy != targ)
 			{
-			 bprint(" by ");
-			 bprint(attacker.enemy.netname);
-			 attacker.enemy.frags += 1;
+				bprint(" by ");
+				bprint(attacker.enemy.netname);
+				attacker.enemy.frags += 1;
 			}
 			bprint("\n");
 			return;

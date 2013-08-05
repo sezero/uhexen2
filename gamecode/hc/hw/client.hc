@@ -10,6 +10,7 @@ void() DecrementSuperHealth;
 void CheckRings (void);
 void () NextLevel;
 
+
 void FreezeAllEntities(void)
 {
 	entity search;
@@ -77,12 +78,12 @@ float cyc;
 	spot = find (world, classname, "info_player_start");
 	if (spot)
 		return spot;
-	
+
 // testinfo_player_start is only found in regioned levels
 	spot = find (world, classname, "testplayerstart");
 	if (spot)
 		return spot;
-	
+
 	objerror ("FindIntermission: no spot");
 }
 
@@ -107,7 +108,7 @@ void ExitIntermission(void)
 	// skip any text in deathmatch
 	if (deathmatch)
 	{
-		intermission_exittime = 
+		intermission_exittime =
 		intermission_running = 0;
 	}
 
@@ -123,7 +124,7 @@ void ExitIntermission(void)
 		other.effects=FALSE;
 		other.weaponmodel=other.lastweapon;
 		other = find (other, classname, "player");
-	}	
+	}
 
 	if (deathmatch)
 	{
@@ -131,7 +132,7 @@ void ExitIntermission(void)
 		GotoNextMap ();
 		return;
 	}
-	
+
 	intermission_exittime = time + 1;
 	intermission_running = intermission_running + 1;
 
@@ -157,21 +158,19 @@ void IntermissionThink(void)
 
 	if (!self.button0 && !self.button1 && !self.button2)
 		return;
-	
+
 	ExitIntermission ();
 }
 
 void() execute_changelevel =
 {
 	intermission_running = 1;
-	
-// enforce a wait time before allowing changelevel
 
+// enforce a wait time before allowing changelevel
 	if (deathmatch)
 		intermission_exittime = time + 5;
 	else
 		intermission_exittime = time + 2;
-
 
 	other = find (world, classname, "player");
 	while (other != world)
@@ -186,18 +185,17 @@ void() execute_changelevel =
 		other.lastweapon=other.weaponmodel;
 		stuffcmd(other,"+showdm\n");
 		other = find (other, classname, "player");
-	}	
+	}
 };
 
 void() changelevel_touch =
 {
-
 	if (other.classname != "player")//||(!infront_of_ent(self,other)))
 		return;
 
-	if (deathmatch && (cvar("noexit") == 1) || ((cvar("noexit") == 2)))
+	/* noexit is only for dm - from Maddes' QuakeC patches: */
+	if (deathmatch && ((cvar("noexit") == 1) || (cvar("noexit") == 2)))
 	{
-// rjr quake2 change		T_Damage (other, self, self, 50000, 1000, TRUE);
 		T_Damage (other, self, self, 50000);
 		return;
 	}
@@ -216,7 +214,7 @@ void() changelevel_touch =
 		bprintname (PRINT_MEDIUM, other);
 		bprinti (PRINT_MEDIUM, STR_EXITEDLEVEL);
 	}
-	
+
 	if (deathmatch)
 		FindDMLevel();
 	else
@@ -261,7 +259,7 @@ void() changelevel_touch =
 		GotoNextMap();
 		return;
 	}
-	
+
 	self.touch = SUB_Null;
 
 // we can't move people right now, because touch functions are called
@@ -287,7 +285,7 @@ void() trigger_changelevel =
 {
 	if (!self.map)
 		objerror ("changelevel trigger doesn't have map");
-	
+
 	InitTrigger ();
 	self.touch = changelevel_touch;
 	self.use = changelevel_use;
@@ -313,8 +311,7 @@ void() respawn =
 		SolidPlayer();
 		// get the spawn parms as they were at level start
 		setspawnparms (self);
-		// respawn		
-	
+		// respawn
 		PutClientInServer ();
 	}
 	else if (deathmatch)
@@ -396,12 +393,12 @@ entity() SelectSpawnPoint =
 	float ok;
 	float bestdist, curdist, curclosest;
 	float dmsearch,tsearch;
-	
+
 // testinfo_player_start is only found in regioned levels
 	spot = find (world, classname, "testplayerstart");
 	if (spot)
 		return spot;
-		
+
 // choose a info_player_deathmatch point
 	if(self.newclass)
 	{
@@ -468,9 +465,7 @@ entity() SelectSpawnPoint =
 			{
 				thing = find(spot, classname, "player");
 				if (!thing)
-				{
 					thing = find(thing, classname, "player");
-				}
 				firstthing = thing;
 				if (thing)
 				{//find spot for which the closest player is farthest away--won't concern ooselves making distinctions tween spots where the closest guy is more than 9999999^1/2, tho
@@ -480,22 +475,16 @@ entity() SelectSpawnPoint =
 					{
 						if (thing)
 						{//compare distances squared--this is computation-intensive enough without using sqroot like a madman
-							curdist = (thing.origin_x-spot.origin_x)*
-								(thing.origin_x-spot.origin_x)+
-								(thing.origin_y-spot.origin_y)*
-								(thing.origin_y-spot.origin_y)+
-								(thing.origin_z-spot.origin_z)*
-								(thing.origin_z-spot.origin_z);
+							curdist = (thing.origin_x-spot.origin_x)*(thing.origin_x-spot.origin_x)+
+								  (thing.origin_y-spot.origin_y)*(thing.origin_y-spot.origin_y)+
+								  (thing.origin_z-spot.origin_z)*(thing.origin_z-spot.origin_z);
+
 							if (curdist < curclosest)
-							{
 								curclosest = curdist;
-							}
 						}
 						thing = find(thing, classname, "player");
 						if (thing == firstthing)
-						{
 							tsearch = FALSE;
-						}
 					}
 					if (curclosest > bestdist)
 					{
@@ -529,7 +518,7 @@ entity() SelectSpawnPoint =
 				pcount = 0;
 		}
 	}
-	
+
 	if (!spot)
 	{
 		spot = find (world, classname, "info_player_start");
@@ -580,12 +569,12 @@ entity spot;
 	self.flags(+)FL_CLIENT;
 	self.flags2(+)FL_ALIVE;
 	self.air_finished = time + 12;
-	self.dmg = 2;   		// initial water damage
+	self.dmg = 2;			// initial water damage
 	self.thingtype=THINGTYPE_FLESH;
 	self.adjust_velocity = '-999 -999 -999';
 //Reset all time-based fields
 	self.act_state =
-	self.show_hostile = 
+	self.show_hostile =
 	self.onfire=
 	self.invisible_time=
 	self.camptime=
@@ -604,10 +593,10 @@ entity spot;
 	self.splash_time=
 	self.ring_regen_time=
 	self.rings_low=
-	self.pausetime = 
-	self.teleport_time = 
+	self.pausetime =
+	self.teleport_time =
 	self.sheep_time =
-	self.attack_finished = 
+	self.attack_finished =
 	self.super_damage_time=
 	self.haste_time =
 	self.tome_time =
@@ -720,7 +709,7 @@ entity spot;
 	}
 	else
 		self.health = self.max_health;
-	
+
 	if(self.max_health<=0||self.health<=0)
 	{
 		dprint("ERROR: Respawned Dead!\n");
@@ -756,7 +745,7 @@ entity spot;
 		if(self.greenmana<25)
 			self.greenmana=25;
 	}
-	
+
 	W_SetCurrentAmmo ();
 
 	SetModelAndThinks();
@@ -784,8 +773,8 @@ entity spot;
 		}
 	}
 	self.ring_regen_time = 0;
-	self.ring_flight_time=0;	
-	self.ring_water_time=0;	
+	self.ring_flight_time=0;
+	self.ring_water_time=0;
 	self.ring_turning_time=0;
 
 	self.ring_flight=0;			// Health of rings 0 - 100
@@ -806,7 +795,7 @@ entity spot;
 
 //	self.th_stand();
 	player_frames();
-	
+
 	if (deathmatch || coop)
 	{
 		makevectors(self.angles);
@@ -893,7 +882,7 @@ entity spot;
 	self.healthtime=
 	self.splash_time=
 	self.decap=
-	self.frozen= 
+	self.frozen=
 	self.plaqueflg = 0;
 	self.raven_cnt = 0;
 	self.friction=self.gravity=self.standard_grav = 1;
@@ -906,19 +895,19 @@ entity spot;
 
 	self.air_finished = time + 12;
 
-	self.ring_regen_time += TimeDiff; 
-	self.ring_water_time += TimeDiff; 
-	self.ring_turning_time += TimeDiff; 
+	self.ring_regen_time += TimeDiff;
+	self.ring_water_time += TimeDiff;
+	self.ring_turning_time += TimeDiff;
 
-	self.super_damage_time += TimeDiff; 
-	self.haste_time  += TimeDiff; 
-	self.tome_time  += TimeDiff; 
-	self.camera_time  += TimeDiff; 
-	self.torchtime += TimeDiff; 
+	self.super_damage_time += TimeDiff;
+	self.haste_time  += TimeDiff;
+	self.tome_time  += TimeDiff;
+	self.camera_time  += TimeDiff;
+	self.torchtime += TimeDiff;
 
-	self.pausetime += TimeDiff; 
-	self.teleport_time += TimeDiff; 
-	self.sheep_time += TimeDiff; 
+	self.pausetime += TimeDiff;
+	self.teleport_time += TimeDiff;
+	self.sheep_time += TimeDiff;
 	self.attack_finished += TimeDiff;
 	self.catapult_time+= TimeDiff;
 	self.safe_time+= TimeDiff;
@@ -935,9 +924,9 @@ entity spot;
 
 	self.light_level = 128;		// So the assassin doesn't go invisible coming out of the teleporter
 
-	self.dmg = 2;   		// initial water damage
+	self.dmg = 2;			// initial water damage
 
-	setsize (self, '-16 -16 0', '16 16 56');	
+	setsize (self, '-16 -16 0', '16 16 56');
 	self.hull=HULL_PLAYER;
 	self.view_ofs = '0 0 50';
 	self.proj_ofs='0 0 44';
@@ -1079,7 +1068,7 @@ void() NextLevel =
 	}
 
 	gameover = TRUE;
-	
+
 	if (o.nextthink < time)
 	{
 		o.think = execute_changelevel;
@@ -1098,24 +1087,25 @@ void() CheckRules =
 {
 float		timelimit;
 float		fraglimit;
-	
+
+	/* timelimit/fraglimit are only for dm - from Maddes' QuakeC patches: */
 	if (gameover || !deathmatch)	// someone else quit the game already
 		return;
-		
+
 	timelimit = cvar("timelimit") * 60;
 	fraglimit = cvar("fraglimit");
-	
+
 	if (timelimit && time >= timelimit)
 	{
 		NextLevel ();
 		return;
 	}
-	
+
 	if (fraglimit && self.frags >= fraglimit)
 	{
 		NextLevel ();
 		return;
-	}	
+	}
 };
 
 //============================================================================
@@ -1130,7 +1120,7 @@ float		forward;
 		forward = forward - 20;
 		if (forward <= 0)
 			self.velocity = '0 0 0';
-		else	
+		else
 			self.velocity = forward * normalize(self.velocity);
 	}
 
@@ -1239,7 +1229,7 @@ float wall_jump;
 		else
 			return;
 	}
-	
+
 	if ( !(self.flags & FL_JUMPRELEASED) )
 		return;		// don't pogo stick
 
@@ -1248,10 +1238,10 @@ float wall_jump;
 	self.flags(-)FL_JUMPRELEASED;
 
 	self.flags(-)FL_ONGROUND;	// don't stairwalk
-	
-	self.button2 = 0;
-// player jumping sound
 
+	self.button2 = 0;
+
+// player jumping sound
 	if(self.model=="models/sheep.mdl")//self.modelindex==modelindex_sheep)
 		sheep_sound(1);
 	else if(self.playerclass==CLASS_ASSASSIN||self.playerclass==CLASS_SUCCUBUS)
@@ -1266,18 +1256,13 @@ float wall_jump;
 };
 
 
-
-
 /*
 ===========
 WaterMove
-
 ============
 */
-
 void() WaterMove =
 {
-
 //dprint (ftos(self.waterlevel));
 	if (self.movetype == MOVETYPE_NOCLIP)
 		return;
@@ -1333,10 +1318,10 @@ void() WaterMove =
 			self.pain_finished = time + 1;
 		}
 	}
-	
+
 	if (!self.waterlevel)
 	{  // Getting out of the water
-		if (self.flags & FL_INWATER)	
+		if (self.flags & FL_INWATER)
 		{	// play leave water sound
 			sound (self, CHAN_BODY, "raven/outwater.wav", 1, ATTN_NORM);
 			self.flags(-)FL_INWATER;
@@ -1381,9 +1366,8 @@ void() WaterMove =
 
 		self.flags(+)FL_INWATER;
 		self.dmgtime = 0;
-
 	}
-	
+
 //	if (! (self.flags & FL_WATERJUMP) )
 		self.velocity = self.velocity - 0.8*self.waterlevel*frametime*self.velocity;
 };
@@ -1402,7 +1386,7 @@ void CheckCrouch (void)
 				self.view_ofs_z = 24;
 				self.proj_ofs_z = 18;
 				self.crouch_time = 0;
-			}	 
+			}
 			else
 				self.crouch_time = time + HX_FRAME_TIME/4;
 		}
@@ -1415,18 +1399,17 @@ void CheckCrouch (void)
 				self.view_ofs_z = 50;
 				self.proj_ofs_z = 44;
 				self.crouch_time = 0;
-			}	 
+			}
 			else
 				self.crouch_time = time + HX_FRAME_TIME/4;
 		}
 	}
 
-	if ((self.flags2 & FL2_CROUCHED||self.model=="models/sheep.mdl"||self.flags2&FL2_CROUCH_TOGGLE) && (self.hull!=HULL_CROUCH)) 
+	if ((self.flags2 & FL2_CROUCHED||self.model=="models/sheep.mdl"||self.flags2&FL2_CROUCH_TOGGLE) && (self.hull!=HULL_CROUCH))
 		PlayerCrouching ();
 	else if (((!self.flags2 & FL2_CROUCHED&&self.model!="models/sheep.mdl"&&!self.flags2&FL2_CROUCH_TOGGLE) && (self.hull==HULL_CROUCH)) ||
 			(self.crouch_stuck))  // If stuck, constantly try to unstick
 		PlayerUnCrouching();
-
 }
 
 void CheckIncapacities ()
@@ -1496,14 +1479,14 @@ vector dir;
 			self.o_angle+=self.v_angle;
 		}
 
-        msg_entity = self;
-	    WriteByte (MSG_ONE, 10);
-        WriteAngle (MSG_ONE, self.o_angle_x);
-	    WriteAngle (MSG_ONE, self.o_angle_y);
-        WriteAngle (MSG_ONE, self.o_angle_z);
-	    if(self.flags&FL_ONGROUND)
+		msg_entity = self;
+		WriteByte (MSG_ONE, 10);
+		WriteAngle (MSG_ONE, self.o_angle_x);
+		WriteAngle (MSG_ONE, self.o_angle_y);
+		WriteAngle (MSG_ONE, self.o_angle_z);
+		if(self.flags&FL_ONGROUND)
 			self.velocity='0 0 0';
-        self.button0=0;
+		self.button0=0;
 		self.button2=0;
 		if((self.impulse != 23)&&(self.impulse != 100))
  			self.impulse=0;					//allow item use while frozen
@@ -1524,7 +1507,7 @@ Called every frame before physics are run
 */
 void() PlayerPreThink =
 {
-	vector	spot1, spot2;	
+	vector	spot1, spot2;
 
 //	if(self.velocity!='0 0 0'&&random()<0.01)
 //		dprintv("pre_th: %s\n",self.velocity);
@@ -1621,11 +1604,11 @@ void() PlayerPreThink =
 			if ((trace_fraction == 1.0) || (trace_ent.classname!="plaque"))
 			{
 				traceline (spot1, spot2 - (v_up * 30), FALSE, self);  // 30 down
-			
+
 				if ((trace_fraction == 1.0) || (trace_ent.classname!="plaque"))
 				{
 					traceline (spot1, spot2 + v_up * 30, FALSE, self);  // 30 up
-				
+
 					if ((trace_fraction == 1.0) || (trace_ent.classname!="plaque"))
 					{
 						self.plaqueflg=0;
@@ -1659,7 +1642,6 @@ void() PlayerPreThink =
 	else
 		self.camptime = time + random(420,840);
 
-
 	if (self.deadflag == DEAD_DYING)
 		return;	// dying, so do nothing
 
@@ -1668,7 +1650,7 @@ void() PlayerPreThink =
 	else
 		self.flags(+)FL_JUMPRELEASED;
 
-// teleporters can force a non-moving pause time	
+// teleporters can force a non-moving pause time
 	if (time < self.pausetime)
 		self.velocity = '0 0 0';
 
@@ -1694,15 +1676,15 @@ void CheckRings (void)
 		return;
 
 	if (self.rings & RING_REGENERATION)
-	{	
+	{
 		if (self.ring_regen_time < time)
 		{
 			if (self.health < self.max_health)
 			{
 				self.ring_regeneration -= 100/RING_REGENERATION_MAX;
-				self.health += 1;				
+				self.health += 1;
 				self.ring_regen_time = time + 1;
-			}	
+			}
 
 			if ((self.ring_regeneration < 10)  && (!self.rings_low & RING_REGENERATION))
 			{
@@ -1721,7 +1703,7 @@ void CheckRings (void)
 	}
 
 	if (self.rings & RING_FLIGHT)
-	{	
+	{
 		if (self.ring_flight_time < time)
 		{
 			self.ring_flight -= 100/RING_FLIGHT_MAX;
@@ -1746,9 +1728,8 @@ void CheckRings (void)
 		}
 	}
 
-
 	if ((self.rings & RING_WATER) && (self.waterlevel == 3) && (self.air_finished < time))
-	{	
+	{
 		self.rings_active (+) RING_WATER;
 		if (self.ring_water_time < time)
 		{
@@ -1805,7 +1786,6 @@ void CheckRings (void)
 			victim = victim.chain;
 		}
 
-
 		if (self.ring_turning_time < time)
 		{
 			self.ring_turning -= 100/RING_TURNING_MAX;
@@ -1827,9 +1807,8 @@ void CheckRings (void)
 			self.ring_turning_time = time + 1;
 		}
 	}
-
 }
-	
+
 void remove_invincibility(entity loser)
 {
 	loser.artifact_low(-)ART_INVINCIBILITY;
@@ -1839,7 +1818,7 @@ void remove_invincibility(entity loser)
 	if(loser.playerclass==CLASS_CRUSADER)
 		loser.skin = 0;
 	else if(loser.playerclass==CLASS_PALADIN)
-		loser.effects(-)EF_BRIGHTLIGHT; 
+		loser.effects(-)EF_BRIGHTLIGHT;
 	else if(loser.playerclass==CLASS_ASSASSIN)
 		loser.colormap=0;
 	else if(loser.playerclass==CLASS_NECROMANCER)
@@ -1851,7 +1830,6 @@ void remove_invincibility(entity loser)
 		loser.effects(-)EF_INVINC_CIRC;
 	}
 }
-
 
 /*
 ================
@@ -1867,13 +1845,13 @@ void() CheckPowerups =
 
 	if (self.divine_time < time)
 		self.artifact_active (-) ARTFLAG_DIVINE_INTERVENTION;
-		
-	// Crusader's special ability to smite 
+
+	// Crusader's special ability to smite
 	if (self.super_damage)
 	{
-		if (self.super_damage_time < time) 
+		if (self.super_damage_time < time)
 		{
-			self.super_damage = 0;		
+			self.super_damage = 0;
 		}
 		else if (((self.super_damage_time - 10) < time) && (!self.super_damage_low))
 		{
@@ -1908,7 +1886,7 @@ void() CheckPowerups =
 		if(self.playerclass==CLASS_SUCCUBUS)
 		{
 			vector vect, v1, v2;
-		
+
 			vect='0 0 0';
 			vect_y=(self.invincible_time - time)*480;
 			makevectors(vect);
@@ -1920,7 +1898,6 @@ void() CheckPowerups =
 			vect = self.origin + self.proj_ofs - v_forward*32;
 			v1_z=v2_z=0;
 			particle2(vect,v1, v2, 135,PARTICLETYPE_REDFIRE,3);
-
 		}
 		*/
 	}
@@ -1940,7 +1917,6 @@ void() CheckPowerups =
 		else if ((self.tome_time - 10) < time)
 			self.artifact_low (+) ART_TOMEOFPOWER;
 //	}
-	
 
 // invisibility
 	if (self.artifact_active & ART_INVISIBILITY)
@@ -1974,7 +1950,7 @@ void() CheckPowerups =
 //			sound (self, CHAN_AUTO, "items/inv2.wav", 1, ATTN_NORM);
 			self.sheep_sound_time=TRUE;
 		}
-			
+
 		if (self.sheep_time < time)
 		{
 			sound(self,CHAN_VOICE,"misc/sheepfly.wav",1,ATTN_NORM);
@@ -1986,7 +1962,7 @@ void() CheckPowerups =
 			restore_weapon();
 			SetModelAndThinks();
 
-			setsize (self, '-16 -16 0', '16 16 28');	
+			setsize (self, '-16 -16 0', '16 16 28');
 			self.hull=HULL_CROUCH;
 			PlayerSpeed_Calc();
 
@@ -2124,8 +2100,8 @@ void() PlayerPostThink =
 
 	if (self.deadflag)
 		return;
-// do weapon stuff
 
+// do weapon stuff
 	W_WeaponFrame ();
 
 	if(self.viewentity.classname=="chasecam")
@@ -2300,9 +2276,10 @@ called when a player dies
 */
 void(entity targ, entity attacker, entity inflictor) ClientObituary =
 {
-	float rnum,tclass,aclass,reversed,powered_up, exp_mult;
-	string iclass;
-	float deathstring, deathstring2;
+float rnum,tclass,aclass,reversed,powered_up, exp_mult;
+string iclass;
+float deathstring, deathstring2;
+
 	if (targ.classname != "player")
 		return;
 
@@ -2438,7 +2415,7 @@ void(entity targ, entity attacker, entity inflictor) ClientObituary =
 			// killed self
 			attacker.frags -= 1;
 			selectprintname (PRINT_MEDIUM, targ);
-			
+
 			if(random()<0.5)
 				selectprinti (PRINT_MEDIUM, STR_MUSTBEMASOCHIST);
 			else
@@ -2546,7 +2523,7 @@ void(entity targ, entity attacker, entity inflictor) ClientObituary =
 				deathstring = STR_WASDESTROYEDBYPOWER;
 				deathstring2 = STR_SDISCOFREPUL;
 			}
-			else if (rnum == IT_WEAPON1) 
+			else if (rnum == IT_WEAPON1)
 			{
 				if(attacker.artifact_active&ART_TOMEOFPOWER)
 					exp_mult=1.5;
@@ -2586,7 +2563,7 @@ void(entity targ, entity attacker, entity inflictor) ClientObituary =
 					deathstring2 = STR_SSICKLE;
 				}
 			}
-			else if (rnum == IT_WEAPON2) 
+			else if (rnum == IT_WEAPON2)
 			{
 				if(powered_up)
 					exp_mult=1;
@@ -2658,7 +2635,7 @@ void(entity targ, entity attacker, entity inflictor) ClientObituary =
 					}
 				}
 			}
-			else if (rnum == IT_WEAPON3) 
+			else if (rnum == IT_WEAPON3)
 			{
 				if(powered_up)
 					exp_mult=0.8;
@@ -2733,7 +2710,7 @@ void(entity targ, entity attacker, entity inflictor) ClientObituary =
 					}
 				}
 			}
-			else if (rnum == IT_WEAPON4) 
+			else if (rnum == IT_WEAPON4)
 			{
 				if(powered_up)
 					exp_mult=0.5;
@@ -2834,10 +2811,12 @@ void(entity targ, entity attacker, entity inflictor) ClientObituary =
 		if (attacker.flags & FL_MONSTER)
 		{
 			if(attacker.model=="models/sheep.mdl")
+			{
 				if(random()<0.5)
 					selectprint (PRINT_MEDIUM, " was savagely mauled by a sheep!\n");
 				else
 					selectprint (PRINT_MEDIUM, " says 'HELLO DOLLY!'\n");
+			}
 			if (attacker.classname == "monster_archer")
 				selectprint (PRINT_MEDIUM, " was skewered by an Archer!\n");
 			if (attacker.classname == "monster_archer_lord")
@@ -2847,12 +2826,14 @@ void(entity targ, entity attacker, entity inflictor) ClientObituary =
 			if (attacker.classname == "monster_fallen_angel_lord")
 				selectprint (PRINT_MEDIUM, " was decimated by a Fallen Angel Lord!\n");
 			if (attacker.classname == "monster_golem_bronze")
+			{
 				if(targ.decap==1)
 					selectprint (PRINT_MEDIUM, "'s head was taken as a trophy for the Bronze Golem!\n");
 				else if(targ.decap==2)
 					selectprint (PRINT_MEDIUM, " became a permanent stain on the wall!\n");
 				else
 					selectprint (PRINT_MEDIUM, " was squished like an insect by a Bronze Golem!\n");
+			}
 			if (attacker.classname == "monster_golem_iron")
 			{
 				if (inflictor.classname == "golem_iron_proj")
@@ -2863,10 +2844,12 @@ void(entity targ, entity attacker, entity inflictor) ClientObituary =
 					selectprint (PRINT_MEDIUM, " was crushed by the Iron Golem's fist!\n");
 			}
 			if (attacker.classname == "monster_golem_stone")
+			{
 				if(targ.decap==2)
 					selectprint (PRINT_MEDIUM, " is feeling a little light-headed!\n");
 				else
 					selectprint (PRINT_MEDIUM, " was pummeled by a Stone Golem!\n");
+			}
 			if (attacker.classname == "monster_golem_crystal")
 				selectprint (PRINT_MEDIUM, " was mangled by the Enchanted Crystal Golem!\n");
 			if (attacker.classname == "monster_hydra")
@@ -2876,15 +2859,19 @@ void(entity targ, entity attacker, entity inflictor) ClientObituary =
 			if (attacker.classname == "monster_imp_ice")
 				selectprint (PRINT_MEDIUM, " chills out with the Ice Imps!\n");
 			if (attacker.classname == "monster_medusa")
+			{
 				if (attacker.skin==1)
 					selectprint (PRINT_MEDIUM, " was stricken by the beauty of the Crimson Medusa!\n");
 				else
 					selectprint (PRINT_MEDIUM, " is helpless in the face of the Medusa's beauty!\n");
+			}
 			if (attacker.classname == "monster_mezzoman")
+			{
 				if (attacker.skin==1)
 					selectprint (PRINT_MEDIUM, " is not yet worthy of facing the WerePanther!\n");
 				else
 					selectprint (PRINT_MEDIUM, " is no match for the WereJaguar!\n");
+			}
 			if (attacker.classname == "monster_mummy")
 				selectprint (PRINT_MEDIUM, " got mummified!\n");
 			if (attacker.classname == "monster_mummy_lord")
@@ -2910,6 +2897,7 @@ void(entity targ, entity attacker, entity inflictor) ClientObituary =
 			if (attacker.classname == "rider_famine")
 				selectprint(PRINT_MEDIUM, " was drained of life-force by Famine!\n");
 			if (attacker.classname == "rider_death")
+			{
 				if(inflictor==attacker)
 					selectprint(PRINT_MEDIUM, " was snuffed out of existance by Death!\n");
 				else if(inflictor.netname=="deathbone")
@@ -2918,14 +2906,18 @@ void(entity targ, entity attacker, entity inflictor) ClientObituary =
 					selectprint(PRINT_MEDIUM, " was shot down by Death's crimson bolts!\n");
 				else
 					selectprint(PRINT_MEDIUM, " was smitten by Death's unholy fire\n");
+			}
 			if (attacker.classname == "rider_pestilence")
+			{
 				if(targ.deathtype=="poison")
 					selectprint(PRINT_MEDIUM, " was poisoned to death by Pestilence's Crossbow!\n");
 				else
 					selectprint(PRINT_MEDIUM, "'s rotted corpse is the possession of Pestilence!\n");
+			}
 			if (attacker.classname == "rider_war")
 				selectprint(PRINT_MEDIUM, " was taught the true meaning of War!\n");
 			if (attacker.classname == "monster_eidolon")
+			{
 				if(inflictor==attacker)
 					selectprint(PRINT_MEDIUM, " was squashed like an insect by Eidolon!\n");
 				else if(inflictor.classname=="eidolon fireball")
@@ -2934,6 +2926,7 @@ void(entity targ, entity attacker, entity inflictor) ClientObituary =
 					selectprint(PRINT_MEDIUM, " was introduced to a new level of pain by Eidolon's Magic!\n");
 				else if(inflictor.classname=="eidolon flames")
 					selectprint(PRINT_MEDIUM, " was roasted to a crisp by Eidolon's Hellfire!\n");
+			}
 			return;
 		}
 
@@ -2982,9 +2975,9 @@ void(entity targ, entity attacker, entity inflictor) ClientObituary =
 			selectprinti (PRINT_MEDIUM, STR_SPIKED);
 			if (attacker.enemy.classname == "player" && attacker.enemy != targ)
 			{
-			 selectprint(PRINT_MEDIUM, " by ");
-			 selectprintname(PRINT_MEDIUM, attacker.enemy);
-			 attacker.enemy.frags += 1;
+				selectprint(PRINT_MEDIUM, " by ");
+				selectprintname(PRINT_MEDIUM, attacker.enemy);
+				attacker.enemy.frags += 1;
 			}
 			selectprint(PRINT_MEDIUM, "\n");
 			return;

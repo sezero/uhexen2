@@ -3,6 +3,20 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2013-08-05 (SVN):
+    * client.hc (changelevel_touch): fixed parentheses around noxit cvar
+      checks (typo was introduced in v1.15.) in siege version, removed
+      the start map check (no such map in hexen2/hexen2world.)
+    * allplay.hc (DeathBubbles,DeathSound), mummy.hc (mummy_die), rat.hc
+      (rat_touch), triggers.hc (hurt_touch): removed the useless return
+      statements from the end of the functions.
+    * MG_AI.hc (CheckJump): changed several else if statements to simple
+      ifs whose parent if already always return.
+    * triggers.hc (quake_shake_next): removed useless initialization of
+      local entity variable to world.
+    * hc code, several: added braces around several nested ifs, various
+      whitespace tidy-ups.
+
 2013-08-02 (SVN):
     * siege/strings.txt: fixed mistakes I introduced long long time ago.
     * siege/client.hc: in Climb(), changed a bitwise and to logical and

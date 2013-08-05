@@ -202,42 +202,42 @@ float jump_height, jumpup, ignore_height;
 //		dprint("just jumped\n");
 		return FALSE;
 	}
-	else if(pointcontents(self.goalentity.origin)!=CONTENT_EMPTY)
+	if(pointcontents(self.goalentity.origin)!=CONTENT_EMPTY)
 	{
 //		dprint("goalentity in water or lava\n");
 		return FALSE;
 	}
-	else if(!visible(self.goalentity))
+	if(!visible(self.goalentity))
 	{
 //		dprint("can't see goalentity\n");
 		return FALSE;
 	}
-	else if(!ignore_height&&self.goalentity.absmin_z+36>=self.absmin_z&&self.think!=SpiderJumpBegin&&self.classname!="monster_mezzoman")
+	if(!ignore_height&&self.goalentity.absmin_z+36>=self.absmin_z&&self.think!=SpiderJumpBegin&&self.classname!="monster_mezzoman")
 	{
 //		dprint("not above goalentity, and not spider\n");
 		return FALSE;
 	}
-	else if(!self.flags&FL_ONGROUND)
+	if(!self.flags&FL_ONGROUND)
 	{
 //		dprint("not on ground\n");
 		return FALSE;
 	}
-	else if(!self.goalentity.flags&FL_ONGROUND&&self.goalentity.classname!="waypoint")
+	if(!self.goalentity.flags&FL_ONGROUND&&self.goalentity.classname!="waypoint")
 	{
 //		dprint("goalentity in air\n");
 		return FALSE;
 	}
-	else if(!infront(self.goalentity))
+	if(!infront(self.goalentity))
 	{
 //		dprint("goalentity not in front\n");
 		return FALSE;
 	}
-	else if(vlen(spot1-spot2)>777&&!ignore_height)
+	if(vlen(spot1-spot2)>777&&!ignore_height)
 	{
 //		dprint("too far away\n");
 		return FALSE;
 	}
-	else if(vlen(spot1-spot2)<=100)//&&self.think!=SpiderMeleeBegin)
+	if(vlen(spot1-spot2)<=100)//&&self.think!=SpiderMeleeBegin)
 	{
 //		dprint("too close & not spider\n");
 		return FALSE;

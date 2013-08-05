@@ -59,7 +59,8 @@ void() multi_trigger =
 		WriteByte (MSG_ALL, SVC_FOUNDSECRET);
 	}
 
-	if (self.noise) sound (self, CHAN_VOICE, self.noise, 1, ATTN_NORM);
+	if (self.noise)
+		sound (self, CHAN_VOICE, self.noise, 1, ATTN_NORM);
 
 // don't trigger again until reset
 	self.takedamage = DAMAGE_NO;
@@ -79,7 +80,7 @@ void() multi_trigger =
 
 	SUB_UseTargets();
 	self.check_ok=FALSE;//reset check_ok?
-	if (self.wait > 0)	
+	if (self.wait > 0)
 	{
 		self.think = multi_wait;
 		thinktime self : self.wait;
@@ -259,7 +260,7 @@ void() multi_use =
 		multi_trigger();
 		return;
 	}
-		
+
 	self.enemy = activator;
 	self.check_ok=TRUE;
 	multi_trigger();
@@ -290,12 +291,12 @@ void() multi_touch =
 	if (self.spawnflags & SPAWNFLAG_MTOUCH)
 	{
 		if (!other.flags & FL_MONSTER)
-		  return;
+			return;
 	}
 	else if (self.spawnflags & SPAWNFLAG_PUSHTOUCH)
 	{
-	  if (!other.flags & FL_PUSH) 
-		 return;
+		if (!other.flags & FL_PUSH) 
+			return;
 	}
 	else if (other.classname != "player")
 		return;
@@ -337,7 +338,7 @@ void() multi_touch =
 		multi_trigger();
 		return;
 	}
-	
+
 	self.enemy = other;
 	self.check_ok=TRUE;
 	multi_trigger ();
@@ -390,7 +391,7 @@ void() trigger_multiple =
 		precache_sound ("misc/trigger1.wav");
 		self.noise = "misc/trigger1.wav";
 	}
-	
+
 	if (!self.wait)
 		self.wait = 0.2;
 	self.use = multi_use;
@@ -590,7 +591,7 @@ void() trigger_secret =
 		self.message = 400;  // You found a secret area!
 	if (!self.soundtype)
 		self.soundtype = 1;
-	
+
 	if (self.soundtype == 1)
 	{
 		precache_sound ("misc/secret.wav");
@@ -609,37 +610,38 @@ void() trigger_secret =
 //=============================================================================
 
 
-void() counter_find_linked = 
+void() counter_find_linked =
 {
-  entity starte, t;
+	entity starte, t;
 
-  starte = self;
-  t=nextent(world);
+	starte = self;
+	t=nextent(world);
 
-  if (self.netname == "") objerror("Ordered counter without a netname\n");
+	if (self.netname == "")
+		objerror("Ordered counter without a netname\n");
 
-  self.think = SUB_Null;
+	self.think = SUB_Null;
 
-  while (t != world)
-  {
-	 self.owner = starte;
-
-	 t = find(t, netname, starte.netname);
-		 
-	if(t!=world && t!=starte)
+	while (t != world)
 	{
-	 self.lockentity = t;
-	 self = t;
+		self.owner = starte;
+
+		t = find(t, netname, starte.netname);
+
+		if(t!=world && t!=starte)
+		{
+			self.lockentity = t;
+			self = t;
+		}
 	}
-  } 
-  self=starte;
+	self=starte;
 };
 
 void counter_return_buttons ()
 {
 	entity t;
 	t = self.lockentity;
-	
+
 	while(t)
 	{
 		if (t.classname == "button")//Check for netname match too?
@@ -671,8 +673,8 @@ string temp;
 		  )
 				self.items = 1;//Wrong order
 	}
-	else if (other.aflag != self.cnt) 
-	  self.items = 1;//Wrong order?
+	else if (other.aflag != self.cnt)
+		self.items = 1;//Wrong order?
 
 	self.cnt += 1;
 	self.count -= 1;
@@ -700,7 +702,7 @@ string temp;
 			self.items = 0;
 		}
 	}
-	else 
+	else
 	{
 		if (self.count < 0)
 		{
@@ -713,7 +715,7 @@ string temp;
 					temp = "Nothing seemed to happen";
 				centerprint(activator, temp);
 			}
-		
+
 			oldtarg = self.target;
 			self.target = self.puzzle_id;
 			oldmsg = self.message;
@@ -729,7 +731,7 @@ string temp;
 			counter_return_buttons();
 		}
 	}
-};	 
+};
 
 void() counter_use =
 {
@@ -739,11 +741,11 @@ void() counter_use =
 	if (self.count < 0)
 		return;
 //	dprintf("Counter used, count =%s\n",self.count);
-	
+
 	if (self.count != 0)
 	{
-		if (activator.classname == "player"
-		&& (self.spawnflags & SPAWNFLAG_NOMESSAGE) == 0 && !deathmatch)
+		if (activator.classname == "player" &&
+		    (self.spawnflags & SPAWNFLAG_NOMESSAGE) == 0 && !deathmatch)
 		{
 			if (self.count >= 4)
 				centerprint (activator, "There are more to go...");
@@ -757,9 +759,9 @@ void() counter_use =
 		self.check_ok=FALSE;
 		return;
 	}
-	
-	if (activator.classname == "player"
-	&& (self.spawnflags & SPAWNFLAG_NOMESSAGE) == 0 && !deathmatch)
+
+	if (activator.classname == "player" &&
+	    (self.spawnflags & SPAWNFLAG_NOMESSAGE) == 0 && !deathmatch)
 	{
 		centerprint(activator, "Sequence completed!");
 		sound(activator,CHAN_ITEM,"misc/comm.wav",1,ATTN_NORM);
@@ -844,32 +846,32 @@ void trigger_counter_reset ()
 	trigger_multiple();
 }
 
-void() check_find_linked = 
+void() check_find_linked =
 {
 entity starte, t;
 
-  starte = self;
-  t=nextent(world);
+	starte = self;
+	t=nextent(world);
 
-  if (self.netname == "")
-	  dprint("Check trigger without a netname\n");
+	if (self.netname == "")
+		dprint("Check trigger without a netname\n");
 
-  self.think = SUB_Null;
+	self.think = SUB_Null;
 
-  while (t != world)
-  {
-	t = find(t, netname, starte.netname);
-		 
-	if(t!=world&&t!=starte)
+	while (t != world)
 	{
-//		dprint(t.classname);
-//		dprint(" added to trigger_check chain\n");
-		self.check_chain = t;
-		self = t;
-		self.owner = starte;
+		t = find(t, netname, starte.netname);
+
+		if(t!=world&&t!=starte)
+		{
+		//	dprint(t.classname);
+		//	dprint(" added to trigger_check chain\n");
+			self.check_chain = t;
+			self = t;
+			self.owner = starte;
+		}
 	}
-  } 
-  self=starte;
+	self=starte;
 	if(!self.check_chain)
 		dprint("Trigger_check found nothing with a matching netname, Holmes!!!\n");
 };
@@ -894,40 +896,40 @@ string hold_targ;
 	{
 		if (!t.check_ok)
 		{
-//			dprint(t.classname);
-//			dprint(" failed!\n");
+		//	dprint(t.classname);
+		//	dprint(" failed!\n");
 			failed = TRUE;
 		}
-//		else
-//		{	
-//			dprint(t.classname);
-//			dprint(" passed...\n");
-//		}
+	//	else
+	//	{
+	//		dprint(t.classname);
+	//		dprint(" passed...\n");
+	//	}
 		t = t.check_chain;
 	}
 
 	if (!failed && !self.check_ok)
 	{
-//		dprint("Trigger_check: all passed\n");
+	//	dprint("Trigger_check: all passed\n");
 		self.check_ok = TRUE;
 		SUB_UseTargets();
 	}
 	else if (failed && self.check_ok)
-	{		
-//		dprint("Failed but check okay, now i'm not check_ok\n");
+	{
+	//	dprint("Failed but check okay, now i'm not check_ok\n");
 		self.check_ok = FALSE;
 		SUB_UseTargets();
 	}
 	else if (self.failtarget!=""&&failed&&!self.check_ok)
 	{
-//		dprint("Failed, never acvtivated, do fail target\n");
+	//	dprint("Failed, never acvtivated, do fail target\n");
 		hold_targ=self.target;
 		self.target=self.failtarget;
 		SUB_UseTargets();
 		self.target=hold_targ;
 	}
 	self.lifetime = time + self.wait;
-}	 
+}
 
 /*QUAKED trigger_check (.5 .5 .5) ? 
 Checks to see if its child entities are active, and if they are, it triggers
@@ -958,10 +960,12 @@ trigger_quake
 void() quake_shake_next =
 {
 entity player,firstent;
-	if (self.spawnflags & SPAWNFLAG_DODAMAGE) 
+	if (self.spawnflags & SPAWNFLAG_DODAMAGE)
 		T_Damage (self.enemy, self, self, self.dmg);
 
-	firstent=player = find(world, classname, "player");
+	player = find(world, classname, "player");
+	firstent = player;
+
 	while(player)
 	{
 		if(vlen(player.origin-self.origin)<=self.items)
@@ -975,7 +979,7 @@ entity player,firstent;
 			}
 		}
 		player = find(player, classname, "player");
-		if(player==firstent)
+		if (player == firstent)
 			player=world;
 	}
 
@@ -1007,7 +1011,7 @@ void quake_shake ()
 
 	SUB_UseTargets();
 
-	if(!self.spawnflags & SPAWNFLAG_QMULT)
+	if (!self.spawnflags & SPAWNFLAG_QMULT)
 		self.wait = -1;
 }
 
@@ -1015,7 +1019,7 @@ void() quake_use =
 {
 	if (self.nextthink >= time||self.nextthink<0)
 		return;
-   
+
 	self.think = quake_shake;
 	self.lifespan+=time;
 	if(!self.spawnflags&2)
@@ -1042,7 +1046,7 @@ dodamage = inflict damage on player
 "wait" delay before the quake goes off
 */
 void() trigger_quake =
-{	 
+{
 	self.use = quake_use;
 	if (!self.wait)
 		self.wait = 1;
@@ -1074,17 +1078,17 @@ void() play_teleport =
 	local	float v;
 	local	string tmpstr;
 
-   v = random(5);
-    if (v < 1)
-   tmpstr = "misc/teleprt1.wav";
-    else if (v < 2)
-   tmpstr = "misc/teleprt2.wav";
-    else if (v < 3)
-   tmpstr = "misc/teleprt3.wav";
-    else if (v < 4)
-   tmpstr = "misc/teleprt4.wav";
-    else
-	tmpstr = "misc/teleprt5.wav";
+	v = random(5);
+	if (v < 1)
+		tmpstr = "misc/teleprt1.wav";
+	else if (v < 2)
+		tmpstr = "misc/teleprt2.wav";
+	else if (v < 3)
+		tmpstr = "misc/teleprt3.wav";
+	else if (v < 4)
+		tmpstr = "misc/teleprt4.wav";
+	else
+		tmpstr = "misc/teleprt5.wav";
 
 	sound (self, CHAN_VOICE, tmpstr, 1, ATTN_NORM);
 	remove (self);
@@ -1174,7 +1178,7 @@ entity	death;
 	thinktime death : 0.2;
 	death.think = SUB_Remove;
 	death.owner = death_owner;
-	death.frags=self.frags;	
+	death.frags=self.frags;
 	force_retouch = 2;		// make sure even still objects get hit
 };
 
@@ -1198,8 +1202,10 @@ float poof_speed;
 		return;
 
 	if (self.spawnflags & PLAYER_ONLY)
+	{
 		if (other.classname != "player")
 			return;
+	}
 
 // Don't teleport world geometry
 	if (other.solid == SOLID_BSP||other.solid==SOLID_TRIGGER||other.teleport_time>time)
@@ -1208,7 +1214,7 @@ float poof_speed;
 	SUB_UseTargets ();
 
 // put a tfog where the player was UNLESS silent is checked (jweier)
-	if (!self.spawnflags & SILENT)	
+	if (!self.spawnflags & SILENT)
 		GenerateTeleportEffect(other.origin,0);
 
 	if (self.netname != "teleportcoin")
@@ -1223,7 +1229,7 @@ float poof_speed;
 	}
 	else
 		t = SelectSpawnPoint ();//self.goalentity;
-		
+
 // spawn a tfog flash in front of the destination
 	if(t.avelocity!='0 0 0')
 		t.mangle=t.angles;
@@ -1255,7 +1261,7 @@ float poof_speed;
 
 	setorigin (other, t.origin);
 
-	if (!self.spawnflags & SILENT) 
+	if (!self.spawnflags & SILENT)
 	{
 		self.enemy=other;
 		self.think=teleport_effect_delay;
@@ -1369,8 +1375,8 @@ void() trigger_skill_touch =
 
 	if (other.classname != "player")
 		return;
-	
-	//temp = getstring(self.message);	
+
+	//temp = getstring(self.message);
 	cvar_set ("skill", self.noise);
 };
 
@@ -1378,13 +1384,11 @@ void() trigger_skill_touch =
 sets skill level to the value of "noise".
 Only used on start map.
 */
-
 void() trigger_setskill =
 {
 	InitTrigger ();
 	self.touch = trigger_skill_touch;
 };
-
 
 /*
 ==============================================================================
@@ -1458,7 +1462,6 @@ float damage;
 
 	if (other.takedamage)
 	{
-
 		if(other.health - self.dmg < self.level)
 			damage = other.health - self.level;
 		else
@@ -1471,8 +1474,6 @@ float damage;
 			thinktime self : self.wait;
 		}
 	}
-
-	return;
 };
 
 /*QUAKED trigger_hurt (.5 .5 .5) ? PLAYER_ONLY MONSTER_ONLY x INACTIVE
@@ -1593,10 +1594,10 @@ void() trigger_monsterjump_touch =
 	}
 	other.velocity_x = self.movedir_x * self.speed;
 	other.velocity_y = self.movedir_y * self.speed;
-	
+
 	if ( !(other.flags & FL_ONGROUND) )
 		return;
-	
+
 	other.flags(-)FL_ONGROUND;
 
 	other.velocity_z = self.height;
@@ -1657,16 +1658,16 @@ void() trigger_magicfield_touch =
 	else if (other.health > 0)
 	{
 		if (other.artifact_active & ART_TOMEOFPOWER)
-		  return;
+			return;
 		else other.velocity = self.speed * self.movedir * 10;
-		
+
 		if (other.classname == "player" && !deathmatch)
 		{
-		  makevectors(other.angles);
-		  SpawnPuff(other.origin + (v_forward * random(160)), '0 0 -10', 101,other);
-		  SpawnPuff(other.origin + (v_forward * random(160)), '5 5 0', 101,other);
-		  SpawnPuff(other.origin + (v_forward * random(160)), '0 0 10', 101,other);
-		  centerprint(other, "You must have the Tome of Power\n");
+			makevectors(other.angles);
+			SpawnPuff(other.origin + (v_forward * random(160)), '0 0 -10', 101,other);
+			SpawnPuff(other.origin + (v_forward * random(160)), '5 5 0', 101,other);
+			SpawnPuff(other.origin + (v_forward * random(160)), '0 0 10', 101,other);
+			centerprint(other, "You must have the Tome of Power\n");
 		}
 	}
 	if (self.spawnflags & PUSH_ONCE)
@@ -1688,12 +1689,6 @@ void() trigger_magicfield =
 */
 
 
-
-
-
-
-
-
 /*
 ==============================================================================
 
@@ -1705,6 +1700,7 @@ trigger_crosslevel
 void() trigger_crosslevel_use =
 {
 	if(other.classname=="trigger_check")
+	{
 		if(!other.check_ok)
 		{
 			self.check_ok=FALSE;
@@ -1726,6 +1722,7 @@ void() trigger_crosslevel_use =
 				serverflags(-)SFL_CROSS_TRIGGER_8;
 			return;
 		}
+	}
 	if (self.spawnflags & 1)
 		serverflags(+)SFL_CROSS_TRIGGER_1;
 	if (self.spawnflags & 2)
@@ -1833,7 +1830,6 @@ If it doesn't have health, it will just be removed.
 
 FIXME: Solid_bsp's don't seem to touch this
 */
-
 void trigger_deathtouch_touch (void)
 {
 //	dprint("touching\n");
@@ -1935,7 +1931,7 @@ entity killent;
 		}
 	}
 }
-			
+
 void trigger_deathtouch (void)
 {
 	if(!self.target&&!self.spawnflags&2)
@@ -1952,7 +1948,6 @@ void trigger_deathtouch (void)
 	if(!self.spawnflags&1)
 		self.touch = trigger_deathtouch_touch;
 }
-
 
 void GetPuzzle(entity item, entity person)
 {
@@ -1984,7 +1979,7 @@ void GetPuzzle2(entity item, entity person, string which)
 */
 void puzzle_touch(void)
 {
-float		amount;
+float	amount;
 
 	if (other.classname != "player")
 	{
@@ -2025,7 +2020,7 @@ float		amount;
 
 	sprint (other,"\n");
 
-    GetPuzzle(self, other);
+	GetPuzzle(self, other);
 
 	sound (other, CHAN_VOICE, self.noise, 1, ATTN_NORM);
 	stuffcmd (other, "bf\n");
@@ -2126,13 +2121,11 @@ void puzzle_piece(void)
 	if(self.spawnflags&2)
 		self.spawnflags=1;
 
-
 	if ((self.puzzle_id == "glass") || (self.puzzle_id == "lens"))
-		self.drawflags (+) DRF_TRANSLUCENT; 
+		self.drawflags (+) DRF_TRANSLUCENT;
 
 //	if (self.puzzle_id=="orb2")
-//		self.drawflags (+) MLS_POWERMODE; 
-
+//		self.drawflags (+) MLS_POWERMODE;
 }
 
 void DropPuzzlePiece(void)
@@ -2238,7 +2231,8 @@ float fire_range;
 	if (other.classname != "player")
 		return;
 
-	if (self.enemy != world && other != self.enemy) return;
+	if (self.enemy != world && other != self.enemy)
+		return;
 
 	if(self.goalentity.health<=0&&self.health)
 	{
@@ -2268,11 +2262,13 @@ float fire_range;
 		if(self.enemy.angles_y<self.goalentity.angles_y+5&&self.enemy.angles_y>self.goalentity.angles_y - 5)
 			self.goalentity.angles_y=self.enemy.angles_y;
 		if(self.goalentity.think==catapult_ready)
+		{
 			if(self.enemy.button0)
 			{
 				self.goalentity.think=self.goalentity.th_weapon;
 				thinktime self.goalentity : 0;
 			}
+		}
 	}
 	else if(self.goalentity.last_attack+1<time)
 	{
@@ -2280,7 +2276,7 @@ float fire_range;
 		dir=normalize(v_forward);
 		traceline(org,org+dir*10000,FALSE,self.enemy);
 		org=self.goalentity.origin+self.goalentity.proj_ofs;
-	
+
 		fire_range=vlen(org-trace_endpos);
 		if(fire_range>128)
 		{
@@ -2293,19 +2289,21 @@ float fire_range;
 			dir=vectoangles(dir);
 			self.goalentity.angles=dir;
 			self.goalentity.angles_z=dir_z/10;
-	
+
 			if(self.goalentity.think!=self.goalentity.th_weapon)
+			{
 				if(self.enemy.button0&&self.goalentity.th_weapon!=SUB_Null)
 				{
 //					self.goalentity.oldthink = control_return;
 					self.goalentity.think=self.goalentity.th_weapon;
 					thinktime self.goalentity : 0;
 				}
-//				else 
+//				else
 //				{
 //					self.goalentity.think = control_return;
 //					thinktime self.goalentity : 0.1;
 //				}
+			}
 		}
 	}
 	self.think = control_return;
@@ -2338,7 +2336,7 @@ void trigger_control_find_target (void)
 		self.goalentity.mangle = self.goalentity.angles;
 }
 
-void() trigger_control = 
+void() trigger_control =
 {
 	self.enemy = world;
 	self.touch = control_touch;
@@ -2351,7 +2349,6 @@ void() trigger_control =
 /*QUAK-ED trigger_no_friction (.5 .5 .5)
 Takes FL_ONGROUND flag off anything
 */
-
 void trigger_no_fric_touch (void)
 {
 	other.flags(-)FL_ONGROUND;
@@ -2362,7 +2359,6 @@ void trigger_no_friction (void)
 	InitTrigger();
 	self.touch = trigger_no_fric_touch;
 }
-
 
 /*QUAKED trigger_attack (.5 .5 .5) ?
 Checks to see if a player touching it has tried to fire.
@@ -2411,7 +2407,6 @@ void trigger_message_transfer ()
 {
 	InitTrigger();
 	self.use=trigger_message_transfer_use;
-
 }
 
 /*QUAKED trigger_sound_distance (.5 .5 .5) ?
@@ -2429,11 +2424,10 @@ void trigger_sound_distance ()
 }
 
 
-
 void objective_use(void)
 {
 	updateInfoPlaque(self.frags, self.spawnflags);
-	
+
 	self.think = SUB_Remove;
 	thinktime self : 0.1;
 }
@@ -2462,24 +2456,24 @@ void ani_event_use(void)
 	while (found)
 	{
 //		dprint("Found it\n");
-		
+
 		if (self.spawnflags & 1) 
 		{
 //			dprint("Setting animation to ON\n");
 			found.frame = 1;
 		}
-		
+
 		if (self.spawnflags & 2)
 		{
-			found.effects (+) EF_TEX_STOPF;		
+			found.effects (+) EF_TEX_STOPF;
 		}
 		
 		if (self.spawnflags & 4)
 		{
 //			dprint("Setting animation to STOP LAST\n");
-			found.effects (+) EF_TEX_STOPL;		
+			found.effects (+) EF_TEX_STOPL;
 		}
-		
+
 		found = find(found, targetname, self.target);
 	}
 
@@ -2533,9 +2527,8 @@ entity found;
 		}
 
 		found=find(found,targetname,self.target);
-
 	}
-	
+
 	if(self.wait==-1)
 		self.nextthink=-1;
 	else if(self.wait>0)
@@ -2602,8 +2595,8 @@ void hub_intermission_use(void)
 
 	WriteByte (MSG_ALL, SVC_INTERMISSION);
 	WriteByte (MSG_ALL, 11);
-	
-	FreezeAllEntities();	
+
+	FreezeAllEntities();
 }
 
 /*QUAKED trigger_hub_intermission (.5 .5 .5) (-8 -8 -8) (8 8 8)

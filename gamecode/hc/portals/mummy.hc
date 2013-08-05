@@ -89,9 +89,6 @@ $frame crawl6       crawl7       crawl8       crawl9       crawl10
 $frame crawl11      crawl12      crawl13      crawl14      
 
 
-
-
-
 // What parts are gone from the mummy
 float MUMMY_NONE		= 0;	// None 
 float MUMMY_LARM		= 1;	// Left arm is gone
@@ -220,7 +217,7 @@ void SpawnMummyFlame(void)
 	new.pain_finished = 0;
 	new.drawflags=MLS_ABSLIGHT;
 	new.abslight=0.5;
-	new.angles = self.angles;	
+	new.angles = self.angles;
 	new.dmg=3;//was 5, too much!
 
 	chance = random();
@@ -238,7 +235,7 @@ void SpawnMummyFlame(void)
 
 	if(self.classname=="circfire")
 	{
-		new.angles = self.angles +'0 -90 0';	
+		new.angles = self.angles +'0 -90 0';
 		new.scale=2.5;
 		new.cnt=5;
 		particle2(new.origin+'0 0 17','0 0 25','0 0 25',168,7,5);
@@ -251,7 +248,7 @@ void SpawnMummyFlame(void)
 	{
 		particle2(new.origin,'0 0 25','0 0 25',168,7,5);
 
-//self.nextthink = time + .04;
+	//	self.nextthink = time + .04;
 		thinktime self : .04;
 
 		self.think = SpawnMummyFlame;
@@ -283,7 +280,7 @@ void launch_mumshot ()
 	newmis.solid = SOLID_BBOX;
 
 	setmodel (newmis,"models/mumshot.mdl");
-	setsize (newmis, '0 0 0', '0 0 0');		
+	setsize (newmis, '0 0 0', '0 0 0');
 	makevectors (self.angles);
 	setorigin (newmis, self.origin + v_forward*14 + v_right * 15 + v_up * 50);
 	diff = (self.enemy.origin + self.enemy.view_ofs) - newmis.origin ;
@@ -293,16 +290,16 @@ void launch_mumshot ()
 	newmis.angles = vectoangles(newmis.velocity);
 
 	newmis.touch = mumshot_gone;
-		
+
 	CreateRedFlash(self.origin + v_forward*-14 + v_right * 15 + v_up * 50);
 
 	newmis.effects = EF_NODRAW;
 	sound (self, CHAN_WEAPON, "mummy/mislfire.wav", 1, ATTN_NORM);
 
 	newmis.lifetime = time + 2.5;
-	
+
 // set missile duration
-//newmis.nextthink = time + .04;
+//	newmis.nextthink = time + .04;
 	thinktime newmis : .04;
 
 	newmis.think = SpawnMummyFlame;
@@ -324,7 +321,7 @@ void launch_mumshot2 (void)
 
 	sound (self, CHAN_WEAPON, "mummy/mislfire.wav", 1, ATTN_NORM);
 
-	// set missile speed	
+	// set missile speed
 	makevectors (self.angles);
 	diff = (self.enemy.origin + '0 0 20') - newmis.origin ;
 	newmis.velocity = normalize(diff);
@@ -340,13 +337,11 @@ void launch_mumshot2 (void)
 	thinktime newmis : 2.5;
 
 	newmis.think = SUB_Remove;
-
 }
 */
 
 void mummy_die()
 {
-
 	if (self.classname == "monster_mummy_lord")
 		sound (self, CHAN_VOICE, "mummy/die2.wav", 1, ATTN_NORM);
 	else
@@ -354,12 +349,10 @@ void mummy_die()
 
 	chunk_death ();
 
-//self.nextthink = time + 0.01;
+//	self.nextthink = time + 0.01;
 	thinktime self : .01;
 
 	self.think=SUB_Remove;
-
-	return;
 }
 
 
@@ -473,7 +466,6 @@ void mummy_pain(void)
 
 		if (self.parts_gone <= MUMMY_LARM)
 			mummy_throw_rightarm();
-
 	}
 	else if (self.health < 100)
 	{
@@ -483,8 +475,6 @@ void mummy_pain(void)
 
 	if (hold_parts != self.parts_gone)
 		sound (self, CHAN_BODY, "mummy/limbloss.wav", 1, ATTN_NORM);
-
-
 }
 
 
@@ -502,7 +492,7 @@ void lordmummymissile (void)
 
 	if (self.parts_gone == MUMMY_NONE)
 	{
-		result = AdvanceFrame($mstafA1,$mstafA24);		
+		result = AdvanceFrame($mstafA1,$mstafA24);
 
 		if (self.frame == $mstafA10)
 			sound (self, CHAN_WEAPON, "mummy/tap.wav", 1, ATTN_NORM);
@@ -526,7 +516,7 @@ void lordmummymissile (void)
 		else
 			ai_face();
 	}
-	else 
+	else
 		mummyrun();
 
 }
@@ -545,7 +535,7 @@ void mummymissile (void)
 
 	if (self.parts_gone == MUMMY_NONE)
 	{
-		result = AdvanceFrame($shoota1,$shoota16);		
+		result = AdvanceFrame($shoota1,$shoota16);
 
 		if (self.frame == $shoota6)
 		{
@@ -603,16 +593,15 @@ void mummymissile (void)
 		else
 			ai_face();
 	}
-	else 
+	else
 		mummyrun();
-
 }
 
-void mummylordchoice (void) 
+void mummylordchoice (void)
 {
 	float chance;
 
-	// He's more likely to use his flame attack when enemy is 
+	// He's more likely to use his flame attack when enemy is
 	// farther away
 
 	if (enemy_range < RANGE_NEAR)
@@ -626,13 +615,12 @@ void mummylordchoice (void)
 		lordmummymissile();
 	else
 		mummymissile();
-
 }
 
 void mummypunch ()
 {
 	local vector	delta;
-	local float 	ldmg;
+	local float	ldmg;
 
 	delta = self.enemy.origin - self.origin;
 	if (vlen(delta) > 50)
@@ -646,15 +634,14 @@ void mummypunch ()
 		ldmg = DMG_MUMMY_PUNCH * 2;
 
 	T_Damage (self.enemy, self, self, ldmg);
-	
+
 	sound (self, CHAN_WEAPON, "weapons/gauntht1.wav", 1, ATTN_NORM);
-	
 }
 
 void mummybite(void)
 {
 	local vector	delta;
-	local float 	ldmg;
+	local float	ldmg;
 
 	delta = self.enemy.origin - self.origin;
 	if (vlen(delta) > 50)
@@ -664,7 +651,7 @@ void mummybite(void)
 	ldmg = random() * DMG_MUMMY_PUNCH;
 
 	T_Damage (self.enemy, self, self, ldmg);
-	
+
 	sound (self, CHAN_WEAPON, "mummy/bite.wav", 1, ATTN_NORM);
 }
 
@@ -707,8 +694,8 @@ void mummymelee(void)
 			mummypunch();
 	}
 	else	// He's on the floor so he'll bite your legs off
-	{	
-//self.nextthink = time + HX_FRAME_TIME * 2;
+	{
+	//	self.nextthink = time + HX_FRAME_TIME * 2;
 		thinktime self : HX_FRAME_TIME *2;
 
 		self.mummy_state=MUMMY_DOWN;
@@ -719,7 +706,7 @@ void mummymelee(void)
 		if (self.frame == $crawl7)
 			mummybite();
 	}
-	
+
 	if (result == AF_END)
 	{
 		delta = self.enemy.origin - self.origin;
@@ -755,12 +742,10 @@ void mummyrun(void)
 		else if (self.frame==$mwalkA7)
 			sound (self, CHAN_BODY, "mummy/slide.wav", 1, ATTN_NORM);
 
-
 		if ((self.frame >= $mwalkA1) && (self.frame <= $mwalkA4))
 			distance = 3.25;
 		else 
 			distance = 2.25;
-
 	}
 	else if (self.parts_gone==MUMMY_LARM)
 	{
@@ -795,7 +780,6 @@ void mummyrun(void)
 		else if (self.frame==$mwalkC10)
 			sound (self, CHAN_BODY, "mummy/slide.wav", 1, ATTN_NORM);
 		distance = 3;
-
 	}
 	else if (self.parts_gone <= MUMMY_LEG)
 	{
@@ -806,9 +790,9 @@ void mummyrun(void)
 				self.mummy_state=MUMMY_DOWN;
 			distance = 0;
 		}
-		else		
+		else
 		{
-//			self.nextthink = time + HX_FRAME_TIME * 2;
+		//	self.nextthink = time + HX_FRAME_TIME * 2;
 			thinktime self : HX_FRAME_TIME *2;
 
 			AdvanceFrame($crawl1,$crawl14);
@@ -822,9 +806,8 @@ void mummyrun(void)
 				distance = 0;
 		}
 	}
-		
-	ai_run(distance);
 
+	ai_run(distance);
 }
 
 
@@ -855,7 +838,7 @@ void mummywalk(void)
 
 		if ((self.frame >= $mwalkA1) && (self.frame <= $mwalkA4))
 			distance = 3.25;
-		else 
+		else
 			distance = 2.25;
 	}
 	else if (self.parts_gone==MUMMY_LARM)
@@ -904,8 +887,8 @@ void mummywalk(void)
 			distance = 0;
 		}
 		else
-		{		
-//			self.nextthink = time + HX_FRAME_TIME * 2;
+		{
+		//	self.nextthink = time + HX_FRAME_TIME * 2;
 			thinktime self : HX_FRAME_TIME *2;
 
 			if (self.frame == $crawl2)
@@ -919,10 +902,9 @@ void mummywalk(void)
 	}
 
 	ai_walk(distance);
-
 }
 
-void mummystand(void) 
+void mummystand(void)
 {
 //	self.nextthink = time + HX_FRAME_TIME;
 	thinktime self : HX_FRAME_TIME;
@@ -932,7 +914,6 @@ void mummystand(void)
 
 	if (random() < .5)
 		ai_stand();
-
 }
 
 /*QUAKED monster_mummy (1 0.3 0) (-16 -16 0) (16 16 50) AMBUSH 
@@ -975,7 +956,6 @@ void monster_mummy (void)
 		precache_sound2 ("mummy/step.wav");
 		precache_sound2 ("mummy/tap.wav");
 		precache_sound2 ("mummy/bite.wav");
-
 	}
 
 	CreateEntityNew(self,ENT_MUMMY,"models/mummy.mdl",mummy_die);
@@ -1039,7 +1019,6 @@ void monster_mummy_lord (void)
 		precache_sound2 ("mummy/step.wav");
 		precache_sound2 ("mummy/tap.wav");
 		precache_sound2 ("mummy/bite.wav");
-
 	}
 
 	if(!self.health)

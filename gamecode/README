@@ -4,8 +4,18 @@ Hexen II: Hammer of Thyrion (uHexen2) - GAMECODE
 Changes
 -------
 
-2013-08-02 (1.29):
+2013-08-05 (1.29):
 ===================
+- client.hc (changelevel_touch): fixed parens around noxit cvar checks
+  (typo was introduced in v1.15.) in siege version, remove the start map
+  check (no such map in hexen2/hexen2world.)
+- allplay.hc (DeathBubbles,DeathSound), mummy.hc (mummy_die), rat.hc
+  (rat_touch), triggers.hc (hurt_touch): removed the useless return
+  statements from the end of the functions.
+- MG_AI.hc (CheckJump): changed several else if statements to simple ifs
+  whose parent if already always return.
+- triggers.hc (quake_shake_next): remove useless initialization of local
+  entity variable to world.
 - portals/damage.hc (T_Damage): make sure target is a player (FL_CLIENT)
   before checking its camera_time and return: spider.spiderActiveCount
   and player.camera_time overlap in entity union and can make spiders

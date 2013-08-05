@@ -111,8 +111,6 @@ float gotone;
 	self.weaponframe=self.cameramode.weaponframe;
 }
 
-
-
 void player_everything_cheat(float override)
 {
 	if((deathmatch||coop)&&!override)
@@ -126,7 +124,6 @@ void player_everything_cheat(float override)
 
 	// Then they leave home and never call you. The ingrates.
 }
-
 
 void PrintFrags()
 {
@@ -157,8 +154,8 @@ entity lastent;
 	}
 }
 
-
-/*void()gravityup =
+/*
+void()gravityup =
 {
 	self.gravity+=0.01;
 	if(self.gravity==10)
@@ -201,7 +198,7 @@ float inertia, lift;
 		return;
 
 	makevectors(self.v_angle);
-	dir=normalize(v_forward);	
+	dir=normalize(v_forward);
 
 	traceline(self.origin+self.proj_ofs,self.origin+self.proj_ofs+dir*48,FALSE,self);
 
@@ -318,6 +315,7 @@ string printnum;
 	sprint(self,PRINT_HIGH,printnum);
 	sprint(self,PRINT_HIGH,"\n");
 }
+
 /*
 ============
 ImpulseCommands
@@ -361,7 +359,7 @@ void() ImpulseCommands =
 			player_everything_cheat(TRUE);
 			break;
 		}*/
-		
+
 //Have to allow panic button and QuickInventory impulses to work as well as impulse 23
 //	if(self.flags2&FL_CHAINED&&self.impulse!=23)
 //		return;
@@ -624,7 +622,7 @@ void() ImpulseCommands =
 //what's this  - it's code for single play which we don't need anymore
 //		if(!deathmatch&&!coop)
 //			parm7=self.newclass;//Just to tell respawn() not to use restart
-//		elsez----------++++++++++++++++++++++++++++++++
+//		else
 //		{
 			self.model=self.init_model;
 			GibPlayer('0 0 1');

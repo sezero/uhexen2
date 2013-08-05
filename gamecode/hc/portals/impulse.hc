@@ -18,7 +18,7 @@ float r;
 
 	if(self.sheep_call>time)
 		return;
-	
+
 	self.sheep_call=time+2;
 
 	sheep_sound(1);
@@ -176,7 +176,6 @@ float gotone;
 	self.weaponframe=self.cameramode.weaponframe;
 }
 
-
 void player_everything_cheat(void)
 {
 //RESET!
@@ -191,7 +190,6 @@ void player_everything_cheat(void)
 
 	// Then they leave home and never call you. The ingrates.
 }
-
 
 void PrintFrags()
 {
@@ -232,8 +230,8 @@ entity lastent;
 	}
 }
 
-
-/*void()gravityup =
+/*
+void()gravityup =
 {
 	self.gravity+=0.01;
 	if(self.gravity==10)
@@ -273,7 +271,7 @@ void HeaveHo (void)
 vector dir;
 float inertia, lift;
 	makevectors(self.v_angle);
-	dir=normalize(v_forward);	
+	dir=normalize(v_forward);
 
 	traceline(self.origin+self.proj_ofs,self.origin+self.proj_ofs+dir*48,FALSE,self);
 	if(trace_ent.movetype&&trace_ent.solid&&trace_ent!=world&&trace_ent.flags&FL_ONGROUND&&trace_ent.solid!=SOLID_BSP)
@@ -321,6 +319,7 @@ void makeplayer ()
 	newmis.think=SUB_Remove;
 	thinktime newmis : 10;
 }
+
 /*
 ============
 ImpulseCommands
@@ -696,7 +695,7 @@ void() ImpulseCommands =
 		self.impulse=0;
 		return;
 	}
-	
+
 /*	if (self.impulse >= 1 && self.impulse <= 4)
 		W_ChangeWeapon ();
 	else if ((self.impulse == 10) && (wp_deselect == 0))

@@ -27,7 +27,6 @@ void PlayerSpeed_Calc (void)
 
 	if (self.hull==HULL_CROUCH)   // Player crouched
 		self.hasted *= .6;
-
 }
 
 vector VelocityForDamage (float dm)
@@ -57,19 +56,20 @@ void ReadySolid ()
 void StandardPain(void)
 {
 	if(self.playerclass==CLASS_ASSASSIN||self.playerclass==CLASS_SUCCUBUS)
+	{
 		if (random() > 0.5)
 			sound (self, CHAN_VOICE, "player/asspain1.wav", 1, ATTN_NORM);
-		else 
+		else
 			sound (self, CHAN_VOICE, "player/asspain2.wav", 1, ATTN_NORM);
+	}
 	else if (random() > 0.5)
 		sound (self, CHAN_VOICE, "player/palpain1.wav", 1, ATTN_NORM);
-	else 
+	else
 		sound (self, CHAN_VOICE, "player/palpain2.wav", 1, ATTN_NORM);
 }
 
 void PainSound (void)
 {
-
 	if (self.health <= 0)
 		return;
 
@@ -83,7 +83,7 @@ void PainSound (void)
 		return;
 
 	self.pain_finished = time + 0.5;
-		
+
 	// FIXME:  Are we doing seperate sounds for these different pains????
 	if (self.model=="models/sheep.mdl")
 		sheep_sound(1);
@@ -101,25 +101,29 @@ void PainSound (void)
 /*	else if (self.watertype == CONTENT_LAVA)
 	{
 		if(self.playerclass==CLASS_ASSASSIN||self.playerclass==CLASS_SUCCUBUS)
+		{
 			if (random() > 0.5)
 				sound (self, CHAN_VOICE, "player/asspain1.wav", 1, ATTN_NORM);
-			else 
+			else
 				sound (self, CHAN_VOICE, "player/asspain2.wav", 1, ATTN_NORM);
+		}
 		else if (random() > 0.5)
 			sound (self, CHAN_VOICE, "player/palpain1.wav", 1, ATTN_NORM);
-		else 
+		else
 			sound (self, CHAN_VOICE, "player/palpain2.wav", 1, ATTN_NORM);
 	}
 	else
-	{	
+	{
 		if(self.playerclass==CLASS_ASSASSIN||self.playerclass==CLASS_SUCCUBUS)
+		{
 			if (random() > 0.5)
 				sound (self, CHAN_VOICE, "player/asspain1.wav", 1, ATTN_NORM);
-			else 
+			else
 				sound (self, CHAN_VOICE, "player/asspain2.wav", 1, ATTN_NORM);
+		}
 		else if (random() > 0.5)
 			sound (self, CHAN_VOICE, "player/palpain1.wav", 1, ATTN_NORM);
-		else 
+		else
 			sound (self, CHAN_VOICE, "player/palpain2.wav", 1, ATTN_NORM);
 	}*/
 }
@@ -134,17 +138,15 @@ void player_pain (entity attacker,float total_damage)
 	if(self.playerclass==CLASS_SUCCUBUS)
 	{
 	//	if(self.flags&FL_SPECIAL_ABILITY2)
-	/* Pa3PyX:
-		Made this work only when low on health (less than half),
-		as described in the manual:  "This is purely a survival
-		measure and occurs only when her health is low."
-		Amounts were apparently botched, so new skill stats:
-		clvl         |    6|    7|    8|    9|  10+
-		-------------+-----+-----+-----+-----+-----
-		%absorb:blue |   20|   40|   60|   80|  100
-		%absorb:green|    0|   25|   50|   75|  100		*/
-		if ((self.flags & FL_SPECIAL_ABILITY2) &&
-		    (self.health < self.max_health / 2.0))
+		/* Pa3PyX: Made this work only when low on health (less than half),
+		 * as described in the manual:  "This is purely a survival measure
+		 * and occurs only when her health is low." Amounts were apparently
+		 * botched, so new skill stats:
+		 * clvl         |    6|    7|    8|    9|  10+
+		 * -------------+-----+-----+-----+-----+-----
+		 * %absorb:blue |   20|   40|   60|   80|  100
+		 * %absorb:green|    0|   25|   50|   75|  100 */
+		if (self.flags&FL_SPECIAL_ABILITY2 && (self.health < self.max_health / 2.0))
 		{//Sound &/or effect?
 			if(self.level>9)
 			{
@@ -156,12 +158,10 @@ void player_pain (entity attacker,float total_damage)
 			//	if(self.level>6)
 			//		self.greenmana+=total_damage*(self.level - 2/10);
 			//	self.bluemana+=total_damage*(self.level/10);
-			/*	Pa3PyX:
-				This is wrong, green mana should not fill up
-				from zero in 3 archer hits. The intention was
-				was probably (l - 2)/10 rather than l - 2/10.
-				We'll make both grow from zero at clvl 5 and 7
-				resp to total damage at clvl 10.		*/
+				/* Pa3PyX: This is wrong, green mana should not fill up
+				 * from zero in 3 archer hits. The intention was probably
+				 * (l - 2)/10 rather than l - 2/10.  We'll make both grow
+				 * from 0 at clvl 5 and 7 resp to total dmg at clvl 10. */
 				self.bluemana+=total_damage*(self.level - 5)/5;
 				if (self.level>6)
 					self.greenmana+=total_damage*(self.level - 6)/4;
@@ -184,18 +184,18 @@ void player_pain (entity attacker,float total_damage)
 		self.act_state=ACT_PAIN;
 	else
 		self.act_state=ACT_CROUCH_MOVE;//No pain animation for crouch- maybe jump?
-					   //Make it make you stand up?
+								//Make it make you stand up?
 }
 
 void DeathBubblesSpawn ()
 {
 entity	bubble;
-vector   offset;
-	
+vector	offset;
+
 	offset_x = random(18,-18);
 	offset_y = random(18,-18);
 
-	if (pointcontents(self.owner.origin+self.owner.view_ofs)!=CONTENT_WATER) 
+	if (pointcontents(self.owner.origin+self.owner.view_ofs)!=CONTENT_WATER)
 	{
 		remove(self);
 		return;
@@ -225,7 +225,7 @@ vector   offset;
 void DeathBubbles (float num_bubbles)
 {
 entity	bubble_spawner, bubble_owner;
-	
+
 	if(self.classname=="contents damager")
 		bubble_owner = self.enemy;
 	else
@@ -239,7 +239,6 @@ entity	bubble_spawner, bubble_owner;
 	bubble_spawner.think = DeathBubblesSpawn;
 	bubble_spawner.air_finished = 0;
 	bubble_spawner.bubble_count = num_bubbles;
-	return;
 }
 
 
@@ -258,16 +257,17 @@ void DeathSound ()
 	else
 	{
 		if(self.playerclass==CLASS_ASSASSIN||self.playerclass==CLASS_SUCCUBUS)
+		{
 			if (random() > 0.5)
 				sound (self, CHAN_VOICE, "player/assdie1.wav", 1, ATTN_NORM);
-			else 
+			else
 				sound (self, CHAN_VOICE, "player/assdie2.wav", 1, ATTN_NORM);
+		}
 		else if (random() > 0.5)
 			sound (self, CHAN_VOICE, "player/paldie1.wav", 1, ATTN_NORM);
-		else 
+		else
 			sound (self, CHAN_VOICE, "player/paldie2.wav", 1, ATTN_NORM);
 	}
-	return;
 }
 
 void PlayerDead ()
@@ -371,7 +371,7 @@ void PlayerUnCrouching ()
 		return;
 	}
 
-	setsize (self, '-16 -16 0', '16 16 56');	
+	setsize (self, '-16 -16 0', '16 16 56');
 	self.hull=HULL_PLAYER;
 	if (self.viewentity.classname=="chasecam")
 		self.view_ofs = '0 0 0';
@@ -405,18 +405,19 @@ void PlayerCrouching ()
 }
 
 /*
-void PlayerCrouch () 
+void PlayerCrouch ()
 {
 	if (self.hull==HULL_PLAYER)
 		PlayerCrouching();
 	else if (self.hull==HULL_CROUCH)
-		PlayerUnCrouching();	
+		PlayerUnCrouching();
 }
 */
 
+
 void GibPlayer ()
 {
-    ThrowHead (self.headmodel, self.health);
+	ThrowHead (self.headmodel, self.health);
 	ThrowGib ("models/flesh1.mdl", self.health);
 	ThrowGib ("models/flesh2.mdl", self.health);
 	ThrowGib ("models/flesh3.mdl", self.health);
@@ -431,7 +432,7 @@ void GibPlayer ()
 		sound (self, CHAN_VOICE, "player/telefrag.wav", 1, ATTN_NONE);
 		return;
 	}
-		
+
 	if(self.health<-80)
 		sound (self, CHAN_VOICE, "player/megagib.wav", 1, ATTN_NONE);
 	else if (random() < 0.5)
@@ -443,30 +444,30 @@ void GibPlayer ()
 void DecapPlayer ()
 {
 entity headless;
-    headless=spawn();
-    headless.classname="headless";
-    headless.decap=TRUE;
-    headless.movetype=MOVETYPE_STEP;
-    headless.solid=SOLID_PHASE;
-    headless.frame=50;
-    headless.skin=self.skin;
+	headless=spawn();
+	headless.classname="headless";
+	headless.decap=TRUE;
+	headless.movetype=MOVETYPE_STEP;
+	headless.solid=SOLID_PHASE;
+	headless.frame=50;
+	headless.skin=self.skin;
 //Took this out so you can't fall "into" it...
-//  headless.owner=self;
+//	headless.owner=self;
 	headless.thingtype=self.thingtype;
-    headless.angles_y=self.angles_y;
+	headless.angles_y=self.angles_y;
 
-    setmodel(headless,self.model);
-    setsize(headless,'-16 -16 0','16 16 36');
-    setorigin(headless,self.origin);
+	setmodel(headless,self.model);
+	setsize(headless,'-16 -16 0','16 16 36');
+	setorigin(headless,self.origin);
 
 	headless.playerclass=self.playerclass;
-    headless.think=self.th_goredeath;
-    thinktime headless : 0;
+	headless.think=self.th_goredeath;
+	thinktime headless : 0;
 
-    self.health=self.health*4;
-    if(self.health>-30)
-        self.health=-30;
-    if(self.decap==2)
+	self.health=self.health*4;
+	if(self.health>-30)
+		self.health=-30;
+	if(self.decap==2)
 	{
 		ThrowHead ("models/flesh1.mdl", self.health);
 		SpawnPuff(self.origin+self.view_ofs,'0 0 0',fabs(self.health),self);
@@ -503,16 +504,16 @@ void PlayerDie ()
 	msg_entity=self;
 	WriteByte(MSG_ONE, SVC_CLEAR_VIEW_FLAGS);
 	WriteByte(MSG_ONE,255);
-	
-	self.artifact_low = 
+
+	self.artifact_low =
 	self.artifact_active =
-	self.invisible_time = 
+	self.invisible_time =
 	self.effects=
 	self.colormap=0;
 
 	if (deathmatch || coop)
 		DropBackpack();
-	
+
 	if(self.model=="models/sheep.mdl")
 		self.headmodel="";
 
@@ -543,23 +544,23 @@ void PlayerDie ()
 			self.health=-99;
 		return;
 	}
-    else if(self.decap)
-    {
-        DecapPlayer();
+	else if(self.decap)
+	{
+		DecapPlayer();
 		if(self.health<-99)
 			self.health=-99;
-        return;
-    }
-    else if(self.health < -40||self.model=="models/sheep.mdl")//self.modelindex==modelindex_sheep)
+		return;
+	}
+	else if(self.health < -40||self.model=="models/sheep.mdl")//self.modelindex==modelindex_sheep)
 	{
-        GibPlayer ();
+		GibPlayer ();
 		if(self.health<-99)
 			self.health=-99;
 		return;
 	}
 
 	DeathSound();
-	
+
 	self.angles_x = 0;
 	self.angles_z = 0;
 
@@ -599,37 +600,37 @@ void Corpse ()
 void SolidPlayer ()
 {
 entity corpse;
-        corpse = spawn();
-        if(self.angles_x>15||self.angles_x<-15)
-                self.angles_x=0;
-        if(self.angles_z>15||self.angles_z<-15)
-                self.angles_z=0;
-        corpse.angles = self.angles;
-		setmodel(corpse,self.model);
-        corpse.frame = self.frame;
-        corpse.colormap = self.colormap;
-        corpse.movetype = self.movetype;
-        corpse.velocity = self.velocity;
-        corpse.flags = 0;
-        corpse.effects = 0;
-        corpse.skin = self.skin;
-        corpse.controller = self;
-		corpse.thingtype=self.thingtype;
-        setorigin (corpse, self.origin);
-        if(self.model==self.headmodel)
-		{
-			self.classname="head";//So they don't get mixed up with players
-		    corpse.think=Head;
-		}
-        else 
-		{
-			self.classname="corpse";//So they don't get mixed up with players
-			corpse.think=Corpse;
-		}
-        thinktime corpse : 0;
+	corpse = spawn();
+	if(self.angles_x>15||self.angles_x<-15)
+		self.angles_x=0;
+	if(self.angles_z>15||self.angles_z<-15)
+		self.angles_z=0;
+	corpse.angles = self.angles;
+	setmodel(corpse,self.model);
+	corpse.frame = self.frame;
+	corpse.colormap = self.colormap;
+	corpse.movetype = self.movetype;
+	corpse.velocity = self.velocity;
+	corpse.flags = 0;
+	corpse.effects = 0;
+	corpse.skin = self.skin;
+	corpse.controller = self;
+	corpse.thingtype=self.thingtype;
+	setorigin (corpse, self.origin);
+	if(self.model==self.headmodel)
+	{
+		self.classname="head";//So they don't get mixed up with players
+		corpse.think=Head;
+	}
+	else
+	{
+		self.classname="corpse";//So they don't get mixed up with players
+		corpse.think=Corpse;
+	}
+	thinktime corpse : 0;
 }
 
-void player_behead () 
+void player_behead ()
 {
 	self.frame=self.level+self.cnt;
 	makevectors(self.angles);
