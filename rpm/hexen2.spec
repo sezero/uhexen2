@@ -149,11 +149,11 @@ run a HexenWorld server or client, and a master server application.
 # Build the hcode compiler
 %{__make} -C utils/hcc
 # Build the game-code
-utils/hcc/hcc -src gamecode-%{gamecode_ver}/hc/h2
-utils/hcc/hcc -src gamecode-%{gamecode_ver}/hc/h2 -name progs2.src
-utils/hcc/hcc -src gamecode-%{gamecode_ver}/hc/portals -oi -on
-utils/hcc/hcc -src gamecode-%{gamecode_ver}/hc/hw -oi -on
-#utils/hcc/hcc -src gamecode-%{gamecode_ver}/hc/siege -oi -on
+utils/hcc/hcc -src gamecode-%{gamecode_ver}/hc/h2 -os
+utils/hcc/hcc -src gamecode-%{gamecode_ver}/hc/h2 -os -name progs2.src
+utils/hcc/hcc -src gamecode-%{gamecode_ver}/hc/portals -os -oi -on
+utils/hcc/hcc -src gamecode-%{gamecode_ver}/hc/hw -os -oi -on
+#utils/hcc/hcc -src gamecode-%{gamecode_ver}/hc/siege -os -oi -on
 
 # Done building
 
@@ -362,7 +362,8 @@ desktop-file-install \
 %{_prefix}/games/%{name}/docs/README.hwmaster
 
 %changelog
-* Sat Jul 27 2013 O.Sezer <sezero@users.sourceforge.net> 1.5.7-1
+* Thu Aug 08 2013 O.Sezer <sezero@users.sourceforge.net> 1.5.7-1
+- Use hcc's new -os switch when building the hcode
 - Add --with flac build option
 - Bump version to 1.5.7.
 - Bump gamecode version to 1.29
