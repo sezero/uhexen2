@@ -571,10 +571,13 @@ static qboolean VID_Check3dfxGamma (void)
 	if (!q_strncasecmp(gl_renderer, "Mesa DRI", 8) ||
 	    !q_strncasecmp(gl_renderer, "Mesa Glide - DRI", 16))
 		return false;
+#if 0
 	/* Daniel Borca's SAGE is not necessarily V1/2-only
-	 * and I do not know how to detect it better. */
+	 * on Windows. it is V1/2-only on Linux, because it
+	 * is not a DRI driver.  */
 	if (!q_strncasecmp(gl_renderer, "SAGE Glide", 10))
 		return false;
+#endif
 
 #if USE_3DFX_RAMPS /* not recommended for Voodoo1, currently crashes */
 	ret = glGetDeviceGammaRamp3DFX(orig_ramps);
@@ -893,8 +896,8 @@ static void GL_Init (void)
 
 	is_3dfx = false;
 	if (!q_strncasecmp(gl_renderer, "3dfx", 4)	  ||
-	    !q_strncasecmp(gl_renderer, "SAGE Glide", 10) || /* not necessarily V1/2-only. */
-	    !q_strncasecmp(gl_renderer, "Glide",5)	  ||
+	    !q_strncasecmp(gl_renderer, "SAGE Glide", 10) ||
+	    !q_strncasecmp(gl_renderer, "Glide ", 6)	  || /* possible with Mesa 3.x/4.x/5.0.x */
 	    !q_strncasecmp(gl_renderer, "Mesa Glide", 10))
 	{
 	// This should hopefully detect Voodoo1 and Voodoo2

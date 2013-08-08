@@ -912,6 +912,7 @@ static void GL_Init (void)
 	is_3dfx = false;
 	if (!q_strncasecmp(gl_renderer, "3dfx", 4)	  ||
 	    !q_strncasecmp(gl_renderer, "SAGE Glide", 10) ||
+	    !q_strncasecmp(gl_renderer, "Glide ", 6)	  || /* possible with Mesa 3.x/4.x/5.0.x */
 	    !q_strncasecmp(gl_renderer, "Mesa Glide", 10))
 	{
 		Con_SafePrintf("3dfx Voodoo found\n");
