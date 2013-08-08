@@ -4,6 +4,11 @@ Development Progress	:
 ---------------------------
 
 2013-08-08 (SVN):
+    * oslibs: macosx, windows: recompile libopusfile using latest stable
+      v0.3 release. (only a windows code change and a few extra comments
+      in opusfile.h header since the previous build.)
+
+2013-08-08 (SVN):
     * utils, hcc: added new command line option -os which compacts the
       strings heap by eliminating duplicates in CopyString(), procedure
       based on fteqcc. added ability of separately specifiying which old
