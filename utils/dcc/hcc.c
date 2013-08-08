@@ -36,7 +36,11 @@
 #include "byteordr.h"
 #include "filenames.h"
 
+static void PR_BeginCompilation (void);
+static qboolean PR_FinishCompilation (void);
+
 int		hcc_version_req;
+int		hcc_OptimizeStringHeap;
 
 byte		_pr_globals[MAX_REGS * sizeof(float)];
 float		*pr_globals;
@@ -110,48 +114,89 @@ static void WriteFiles (void)
 }
 
 
-// CopyString returns an offset from the string heap
-int	CopyString (const char *str)
+/* CopyString returns an offset from the string heap */
+typedef struct stringtab_s
 {
-	int		old;
-	int		i, l;
+	struct stringtab_s	*prev;
+	char			*ofs;
+	int			len;
+} stringtab_t;
+/* stringtab stuff stolen from FTEQCC */
+#define MAX_CHARS 256 /* UCHAR_MAX+1 */
+static stringtab_t	**stringtablist;
 
-	for (i = 0; i < strofs; i += l)
+int CopyString (const char *str)
+{
+	int	ofs, l;
+/*	char		*s;*/
+	unsigned char	key;
+	stringtab_t	*t;
+
+	if (hcc_OptimizeStringHeap)
 	{
-		l = strlen(strings+i) + 1;
-		if (!strcmp(strings+i, str))
-			return i;
+		if (!*str) return 0;
+		/*
+		for (ofs = 0, s = strings; ofs < strofs; ofs += l, s += l)
+		{
+			if (!strcmp(s, str))
+				return ofs;
+			l = strlen(s) + 1;
+		}
+		*/
+		l = strlen(str);
+		key = str [l-1];
+		for (t = stringtablist[key]; t; t = t->prev)
+		{
+		#if 0
+		/* reusing the tails of longer strings result in an extra
+		 * size reduction only about 2K: is it worth the trouble? */
+			if (t->len >= l)
+			{
+				if (!strcmp(t->ofs + t->len - l, str))
+					return (t->ofs + t->len - l) - strings;
+			}
+		#else
+			if (t->len == l)
+			{
+				if (!strcmp(t->ofs, str))
+					return (t->ofs - strings);
+			}
+		#endif
+		}
+		t = (stringtab_t *) SafeMalloc(sizeof(stringtab_t));
+		t->prev = stringtablist[key];
+		stringtablist[key] = t;
+		t->ofs = strings+strofs;
+		t->len = l;
 	}
 
-	old = strofs;
+	ofs = strofs;
 	strcpy (strings+strofs, str);
 	strofs += strlen(str)+1;
-
-//	printf("\tsaving %s to string heap\n", str);
-//	if (!strcmp("modelindex", str))
-//		getche();
-	return old;
+	return ofs;
 }
 
 
 #if 0	/* all uses are commented out */
 static void PrintStrings (void)
 {
-	int		i, l, j;
+	int		i, l;
+	const char	*s;
 
 	for (i = 0; i < strofs; i += l)
 	{
-		l = strlen(strings+i) + 1;
+		s = strings + i;
+		l = strlen(s) + 1;
 		printf ("%5i : ", i);
-		for (j = 0; j < l; j++)
+		for ( ; *s; ++s)
 		{
-			if (strings[i+j] == '\n')
+			if (*s == '\n')
 			{
 				putchar ('\\');
 				putchar ('n');
 			}
 			else
-				putchar (strings[i+j]);
+				putchar (*s);
 		}
 		printf ("\n");
 	}
@@ -208,10 +253,13 @@ static void InitData (void)
 	numglobaldefs = 1;
 	numfielddefs = 1;
 
+	strings[0] = '\0';
 	pr_globals = (float *)_pr_globals;
 	def_ret.ofs = OFS_RETURN;
 	for (i = 0; i < MAX_PARMS; i++)
 		def_parms[i].ofs = OFS_PARM0 + 3*i;
+	if (hcc_OptimizeStringHeap)
+		stringtablist = (stringtab_t **) SafeMalloc(MAX_CHARS * sizeof(stringtab_t *));
 }
 
 
@@ -279,6 +327,9 @@ static void WriteData (int crc)
 	dprograms_t	progs;
 	FILE	*h;
 	int	i;
+
+	if (hcc_OptimizeStringHeap)
+		printf ("compacting string heap\n");
 
 	for (def = pr.def_head.next; def; def = def->next)
 	{
@@ -730,7 +781,6 @@ static int PR_WriteProgdefs (const char *filename)
 	int	c;
 
 	printf ("writing %s\n", filename);
-	printf ("compacting string heap, this may take a while...\n");
 	f = fopen (filename, "w");
 
 	// print global vars until the first field is defined
@@ -884,6 +934,7 @@ int main (int argc, char **argv)
 		printf(" -v7              : Output progs as version 7\n");
 		printf(" -dcc (or -dec)   : decompile progs.dat in current directory\n");
 		printf(" -dcc -name <progsname> : specify name of progs to decompile\n");
+		printf(" -dcc -info : only print brief info about the progs and exit\n");
 		printf(" -dcc -fix : fixes mangled names during decompile\n");
 		printf(" -dcc -fields     : dumps all fielddefs to stdout\n");
 		printf(" -dcc -functions  : dumps all functions to stdout\n");
@@ -973,6 +1024,8 @@ int main (int argc, char **argv)
 		COM_Error("No destination filename. dhcc -help for info.\n");
 	sprintf(destfile, "%s%s", sourcedir, com_token);
 	printf("outputfile: %s\n", destfile);
+
+	hcc_OptimizeStringHeap = 1;
 
 	InitData ();
 

@@ -60,7 +60,9 @@ static qboolean PR_FinishCompilation (void);
 int		hcc_version_req;
 int		hcc_OptimizeImmediates;
 int		hcc_OptimizeNameTable;
-qboolean	old_hcc_behavior;
+int		hcc_OptimizeStringHeap;
+int		hcc_Compat_STR_SAVEGLOBL;
+int		hcc_Compat_precache_file;
 qboolean	hcc_WarningsActive;
 qboolean	hcc_ShowUnrefFuncs;
 
@@ -139,36 +141,89 @@ static void WriteFiles (void)
 }
 
 
-// CopyString returns an offset from the string heap
-int	CopyString (const char *str)
+/* CopyString returns an offset from the string heap */
+typedef struct stringtab_s
 {
-	int		old;
+	struct stringtab_s	*prev;
+	char			*ofs;
+	int			len;
+} stringtab_t;
+/* stringtab stuff stolen from FTEQCC */
+#define MAX_CHARS 256 /* UCHAR_MAX+1 */
+static stringtab_t	**stringtablist;
 
-	old = strofs;
+int CopyString (const char *str)
+{
+	int	ofs, l;
+/*	char		*s;*/
+	unsigned char	key;
+	stringtab_t	*t;
+
+	if (hcc_OptimizeStringHeap)
+	{
+		if (!*str) return 0;
+		/*
+		for (ofs = 0, s = strings; ofs < strofs; ofs += l, s += l)
+		{
+			if (!strcmp(s, str))
+				return ofs;
+			l = strlen(s) + 1;
+		}
+		*/
+		l = strlen(str);
+		key = str [l-1];
+		for (t = stringtablist[key]; t; t = t->prev)
+		{
+		#if 0
+		/* reusing the tails of longer strings result in an extra
+		 * size reduction only about 2K: is it worth the trouble? */
+			if (t->len >= l)
+			{
+				if (!strcmp(t->ofs + t->len - l, str))
+					return (t->ofs + t->len - l) - strings;
+			}
+		#else
+			if (t->len == l)
+			{
+				if (!strcmp(t->ofs, str))
+					return (t->ofs - strings);
+			}
+		#endif
+		}
+		t = (stringtab_t *) SafeMalloc(sizeof(stringtab_t));
+		t->prev = stringtablist[key];
+		stringtablist[key] = t;
+		t->ofs = strings+strofs;
+		t->len = l;
+	}
+
+	ofs = strofs;
 	strcpy (strings+strofs, str);
 	strofs += strlen(str)+1;
-	return old;
+	return ofs;
 }
 
 
 #if 0	/* all uses are commented out */
 static void PrintStrings (void)
 {
-	int		i, l, j;
+	int		i, l;
+	const char	*s;
 
 	for (i = 0; i < strofs; i += l)
 	{
-		l = strlen(strings+i) + 1;
+		s = strings + i;
+		l = strlen(s) + 1;
 		printf ("%5i : ", i);
-		for (j = 0; j < l; j++)
+		for ( ; *s; ++s)
 		{
-			if (strings[i+j] == '\n')
+			if (*s == '\n')
 			{
 				putchar ('\\');
 				putchar ('n');
 			}
 			else
-				putchar (strings[i+j]);
+				putchar (*s);
 		}
 		printf ("\n");
 	}
@@ -225,10 +280,13 @@ static void InitData (void)
 	numglobaldefs = 1;
 	numfielddefs = 1;
 
+	strings[0] = '\0';
 	pr_globals = (float *)_pr_globals;
 	def_ret.ofs = OFS_RETURN;
 	for (i = 0; i < MAX_PARMS; i++)
 		def_parms[i].ofs = OFS_PARM0 + 3*i;
+	if (hcc_OptimizeStringHeap)
+		stringtablist = (stringtab_t **) SafeMalloc(MAX_CHARS * sizeof(stringtab_t *));
 }
 
 
@@ -300,6 +358,9 @@ static void WriteData (int crc)
 	localName = (hcc_OptimizeNameTable) ? CopyString("LCL+") : 0;
 						/* was "LOCAL+" in old HCC from the "H2_UTILS" package */
 
+	if (hcc_OptimizeStringHeap)
+		printf ("compacting string heap\n");
+
 	for (def = pr.def_head.next; def; def = def->next)
 	{
 		if (def->type->type == ev_field)
@@ -307,7 +368,8 @@ static void WriteData (int crc)
 			dd = &fields[numfielddefs];
 			numfielddefs++;
 			dd->type = def->type->aux_type->type;
-			dd->s_name = strofs; /* The name gets copied below */
+			dd->s_name = (hcc_OptimizeStringHeap) ? CopyString(def->name) :
+						/* name gets copied below : */ strofs;
 			dd->ofs = G_INT(def->ofs);
 		}
 		dd = &globals[numglobaldefs];
@@ -319,7 +381,7 @@ static void WriteData (int crc)
 		    def->scope == NULL)
 		{
 			/* STR_ is a special case string constant */
-			if (strncmp(def->name,"STR_", 4) != 0 || old_hcc_behavior)
+			if (strncmp(def->name,"STR_", 4) != 0 || hcc_Compat_STR_SAVEGLOBL)
 				dd->type |= DEF_SAVEGLOBAL;
 		}
 		if (hcc_OptimizeNameTable &&
@@ -945,10 +1007,12 @@ int main (int argc, char **argv)
 	{
 		printf(" -oi              : Optimize Immediates\n");
 		printf(" -on              : Optimize Name Table\n");
+		printf(" -os              : Optimize String Heap\n");
 		printf(" -quiet           : Quiet mode\n");
 		printf(" -fileinfo        : Show object sizes per file\n");
-		printf(" -old :           : Old HCC behavior: STR_ constants will be saved\n");
-		printf("                    globals and precache_file() will go into progs\n");
+		printf(" -pf              : precache_file() calls go into progs (old HCC compat)\n");
+		printf(" -sc              : STR_ constants can be saved globals (old HCC compat)\n");
+		printf(" -old             : Combined -pf and -sc (as above) for old HCC behavior\n");
 		printf(" -src <directory> : Specify source directory\n");
 		printf(" -name <source>   : Specify the name of the .src file\n");
 		printf(" -version <n>     : Output progs as version n (either 6 or 7)\n");
@@ -1028,21 +1092,28 @@ int main (int argc, char **argv)
 		COM_Error("No destination filename.  hcc -help for info.\n");
 	sprintf(destfile, "%s%s", sourcedir, com_token);
 
+	hcc_Compat_precache_file = CheckParm("-pf");
+	hcc_Compat_STR_SAVEGLOBL = CheckParm("-sc");
+	if (CheckParm("-old"))
+	{
+		hcc_Compat_precache_file = 1;
+		hcc_Compat_STR_SAVEGLOBL = 1;
+	}
+	hcc_OptimizeImmediates = CheckParm("-oi");
+	hcc_OptimizeNameTable = CheckParm("-on");
+	hcc_OptimizeStringHeap = CheckParm("-os");
+	hcc_WarningsActive = CheckParm("-nowarnings") ? false : true;
+	hcc_ShowUnrefFuncs = CheckParm("-urfunc") ? true : false;
+
+	fileInfo = CheckParm("-fileinfo");
+	quiet = CheckParm("-quiet");
+
 	InitData ();
 	LX_Init ();
 	CO_Init ();
 	EX_Init ();
 
 	PR_BeginCompilation();
-
-	hcc_OptimizeImmediates = CheckParm("-oi");
-	hcc_OptimizeNameTable = CheckParm("-on");
-	old_hcc_behavior = CheckParm("-old") ? true : false;
-	hcc_WarningsActive = CheckParm("-nowarnings") ? false : true;
-	hcc_ShowUnrefFuncs = CheckParm("-urfunc") ? true : false;
-
-	fileInfo = CheckParm("-fileinfo");
-	quiet = CheckParm("-quiet");
 
 	// compile all the files
 	do

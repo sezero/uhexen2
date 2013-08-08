@@ -227,8 +227,9 @@ void	ST_ParseStatement (void);
 
 extern	int	hcc_OptimizeImmediates;
 extern	int	hcc_OptimizeNameTable;
-extern	qboolean old_hcc_behavior;	// option to allow STR_ constants be marked DEF_SAVEGLOBAL,
-						// and precache_file () calls going into progs.dat.
+extern	int	hcc_OptimizeStringHeap;
+extern	int	hcc_Compat_precache_file;
+extern	int	hcc_Compat_STR_SAVEGLOBL;
 extern	qboolean hcc_WarningsActive;
 extern	qboolean hcc_ShowUnrefFuncs;
 

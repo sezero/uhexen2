@@ -671,7 +671,7 @@ static def_t *ParseIntrinsicFunc (const char *name)
 		return &def_ret;
 	}
 
-	if (!strncmp(name, "precache_file", 13) && !old_hcc_behavior)	//keep it from going into progs.dat
+	if (!strncmp(name, "precache_file", 13) && !hcc_Compat_precache_file)	//keep it from going into progs.dat
 	{
 		def_ret.type = &type_void;
 		LX_Require("(");
@@ -690,7 +690,6 @@ static def_t *ParseIntrinsicFunc (const char *name)
 		PrecacheFileName(pr_immediate_string, name[13]);
 		LX_Fetch();
 		LX_Require(")");
-
 		return &def_ret;
 	}
 

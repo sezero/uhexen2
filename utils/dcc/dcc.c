@@ -124,6 +124,7 @@ static struct flowinfo_t	*flowinfo;
 static qboolean		FILE_NUM_FOR_NAME;
 static qboolean		pr_dumpasm;
 static qboolean		printassign;
+static int		pr_infoonly;
 
 static FILE	*PR_FILE;
 static char	**func_headers;
@@ -2055,6 +2056,9 @@ static void DEC_ReadData (const char *srcfile)
 	printf ("%10i numpr_globals\n", progs->numglobals);
 	printf ("----------------------------------------\n");
 
+	if (pr_infoonly != 0)
+		return;
+
 	switch (progs->version)
 	{
 	case PROG_VERSION_V6:
@@ -2515,21 +2519,23 @@ static void PrintStatements (void)
 
 static void PrintStrings (void)
 {
-	int		i, l, j;
+	int		i, l;
+	const char	*s;
 
 	for (i = 0; i < progs->numstrings; i += l)
 	{
-		l = strlen(pr_strings+i) + 1;
+		s = pr_strings + i;
+		l = strlen(s) + 1;
 		printf ("%5i : ", i);
-		for (j = 0; j < l; j++)
+		for ( ; *s; ++s)
 		{
-			if (pr_strings[i+j] == '\n')
+			if (*s == '\n')
 			{
 				putchar ('\\');
 				putchar ('n');
 			}
 			else
-				putchar (pr_strings[i+j]);
+				putchar (*s);
 		}
 		printf ("\n");
 	}
@@ -2569,6 +2575,8 @@ int Dcc_main (int argc, char **argv)
 
 	start = COM_GetTime ();
 
+	pr_infoonly = CheckParm("-info");
+
 	p = CheckParm("-name");
 	if (p == 0)
 		DEC_ReadData ("progs.dat");
@@ -2578,6 +2586,9 @@ int Dcc_main (int argc, char **argv)
 			COM_Error ("No input filename specified with -name");
 		DEC_ReadData (argv[p + 1]);
 	}
+
+	if (pr_infoonly != 0)
+		return 0;
 
 	/* don't need Init_Dcc () for the following info stuff */
 	if (CheckParm("-fields") != 0)

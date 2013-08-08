@@ -3,6 +3,19 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2013-08-08 (SVN):
+    * utils, hcc: added new command line option -os which compacts the
+      strings heap by eliminating duplicates in CopyString(), procedure
+      based on fteqcc. added ability of separately specifiying which old
+      behaviors will be reproduced by the new -pf and -sc command line
+      switches. made the -old command line switch to combine -pf and -sc
+      behaviors together. documented the new options in the help output.
+    * utils, dhcc: added -info command line switch to the decompiler so
+      that it only print brief info about the progs and exits. fixed the
+      strings printer so that it doesn't print the nul terminator. added
+      a new string heap duplicate finder procedure to CopyString() which
+      is based on fteqcc and is much faster than the old brute-force.
+
 2013-08-05 (SVN):
     * specials.hc (CheckAbilities): fixed missing parentheses around two
       OR'ed constants in the drawflags bittest. (issue was present since

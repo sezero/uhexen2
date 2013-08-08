@@ -1,5 +1,7 @@
 This is the latest version of HCC, the hcode (HexenC) compiler.
-use -oi and -on to reduce the size of the progs.dat .
+use -oi, -on and -os to reduce the size of the progs.dat .
+
+Run "hcc -h" to see the tool's command line options.
 
 If you use this new version for compiling the progs for original
 hexen2, do not use those switches for compatibility with old saves:

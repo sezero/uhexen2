@@ -8,10 +8,10 @@ command line switches of hcc for compatibility with old saved games.  If
 you use the -oi and -on optimizations, loading old saves make the engine
 to emit warnings at runtime. They are actually harmless, but annoying...
 
-$  hcc				# this compiles progs.dat
-$  hcc -name progs2.src		# this compiles progs2.dat
+$  hcc -os				# this compiles progs.dat
+$  hcc -os -name progs2.src		# this compiles progs2.dat
 
 In order to compile the mission pack, hexenworld or siege hcode, do:
 
-$  hcc -oi -on
+$  hcc -os -oi -on
 
