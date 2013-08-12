@@ -3,6 +3,11 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2013-08-12 (SVN):
+    * cd_win.c (CDAudio_Init): if the user gave a valid -cddev argument,
+      include MCI_OPEN_ELEMENT among the sent MCI flags.
+    * update version date stamp to 2013-08-12.
+
 2013-08-08 (SVN):
     * oslibs: macosx, windows: recompile libopusfile using latest stable
       v0.3 release. (only a windows code change and a few extra comments

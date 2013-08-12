@@ -540,7 +540,7 @@ static const char *get_cddev_arg (const char *arg)
 
 int CDAudio_Init(void)
 {
-	DWORD	dwReturn;
+	DWORD	dwReturn, flags;
 	MCI_OPEN_PARMS	mciOpenParms;
 	MCI_SET_PARMS	mciSetParms;
 	const char	*userdev = NULL;
@@ -549,6 +549,7 @@ int CDAudio_Init(void)
 	if (safemode || COM_CheckParm("-nocdaudio"))
 		return -1;
 
+	flags = MCI_OPEN_TYPE | MCI_OPEN_SHAREABLE;
 	if ((n = COM_CheckParm("-cddev")) != 0 && n < com_argc - 1)
 	{
 		userdev = get_cddev_arg(com_argv[n + 1]);
@@ -558,10 +559,11 @@ int CDAudio_Init(void)
 			return -1;
 		}
 		mciOpenParms.lpstrElementName = userdev;
+		flags |= MCI_OPEN_ELEMENT;
 	}
 
 	mciOpenParms.lpstrDeviceType = "cdaudio";
-	dwReturn = mciSendCommand(0, MCI_OPEN, MCI_OPEN_TYPE | MCI_OPEN_SHAREABLE, (DWORD_PTR) (LPVOID) &mciOpenParms);
+	dwReturn = mciSendCommand(0, MCI_OPEN, flags, (DWORD_PTR) (LPVOID) &mciOpenParms);
 	if (!userdev)
 		userdev = "default cdrom";
 	if (dwReturn)
