@@ -32,6 +32,8 @@
 /* headers for individual codecs */
 #include "snd_timidity.h"
 #include "snd_wildmidi.h"
+#include "snd_mikmod.h"
+#include "snd_modplug.h"
 #include "snd_wave.h"
 #include "snd_flac.h"
 #include "snd_mp3.h"
@@ -70,6 +72,12 @@ void S_CodecInit (void)
 #ifdef USE_CODEC_TIMIDITY
 	S_CodecRegister(&timidity_codec);
 #endif
+#ifdef USE_CODEC_MODPLUG
+	S_CodecRegister(&modplug_codec);
+#endif
+#ifdef USE_CODEC_MIKMOD
+	S_CodecRegister(&mikmod_codec);
+#endif
 #ifdef USE_CODEC_WAVE
 	S_CodecRegister(&wav_codec);
 #endif
@@ -85,6 +93,7 @@ void S_CodecInit (void)
 #ifdef USE_CODEC_OPUS
 	S_CodecRegister(&opus_codec);
 #endif
+
 	codec = codecs;
 	while (codec)
 	{

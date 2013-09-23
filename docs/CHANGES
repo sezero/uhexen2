@@ -3,6 +3,11 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2013-09-23 (SVN):
+    * added tracker music (mod) support. it is not enabled by default,
+      edit Makefile for either USE_CODEC_MIKMOD or USE_CODEC_MODPLUG, or
+      add "USE_CODEC_MIKMOD=yes" to your make command line arguments.
+
 2013-08-12 (SVN):
     * cd_win.c (CDAudio_Init): if the user gave a valid -cddev argument,
       include MCI_OPEN_ELEMENT among the sent MCI flags.
