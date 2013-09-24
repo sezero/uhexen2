@@ -188,20 +188,15 @@ static void S_TIMIDITY_CodecShutdown (void)
 	mid_exit ();
 }
 
-static snd_stream_t *S_TIMIDITY_CodecOpenStream (const char *filename)
+static qboolean S_TIMIDITY_CodecOpenStream (snd_stream_t *stream)
 {
-	snd_stream_t *stream;
 	midi_buf_t *data;
 	MidSongOptions options;
 	MidIStream *midistream;
 	int width;
 
 	if (!timidity_codec.initialized)
-		return NULL;
-
-	stream = S_CodecUtilOpen(filename, &timidity_codec);
-	if (!stream)
-		return NULL;
+		return false;
 
 	options.rate = shm->speed;
 	width = shm->samplebits / 8;
@@ -219,9 +214,8 @@ static snd_stream_t *S_TIMIDITY_CodecOpenStream (const char *filename)
 						 & stream->fh);
 	if (!midistream)
 	{
-		Con_Printf ("Couldn't create Timidity stream for %s\n", filename);
-		S_CodecUtilClose(&stream);
-		return NULL;
+		Con_Printf ("Couldn't create Timidity stream for %s\n", stream->name);
+		return false;
 	}
 	data = (midi_buf_t *) Z_Malloc(sizeof(midi_buf_t), Z_MAINZONE);
 #if defined(TIMIDITY_USE_DLS)
@@ -232,10 +226,9 @@ static snd_stream_t *S_TIMIDITY_CodecOpenStream (const char *filename)
 	mid_istream_close (midistream);
 	if (data->song == NULL)
 	{
-		Con_Printf ("%s is not a valid MIDI file\n", filename);
+		Con_Printf ("%s is not a valid MIDI file\n", stream->name);
 		Z_Free(data);
-		S_CodecUtilClose(&stream);
-		return NULL;
+		return false;
 	}
 
 	stream->info.rate = options.rate;
@@ -247,7 +240,7 @@ static snd_stream_t *S_TIMIDITY_CodecOpenStream (const char *filename)
 	mid_song_set_volume (data->song, 100);
 	mid_song_start (data->song);
 
-	return stream;
+	return true;
 }
 
 static int S_TIMIDITY_CodecReadStream (snd_stream_t *stream, int bytes, void *buffer)

@@ -4,6 +4,13 @@ Development Progress	:
 ---------------------------
 
 2013-09-24 (SVN):
+    * update version date stamp to 2013-09-24.
+    * snd codec layer updates: changed codec_open() to operate only on a
+      stream pointer and moved all file open/close stuff to snd_codec.c.
+      codec_open now only returns true or false upon success or failure
+      instead of a stream pointer. added new snd_codec.c toplevel helper
+      S_CodecForwardStream(), which allows one codec to hand over its
+      stream from its codec_open() to another codec.
     * some tidy-up in FS* stdio replacement functions. add FS_filelength
       to the FS_* api.
 

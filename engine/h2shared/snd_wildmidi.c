@@ -156,41 +156,38 @@ static void S_WILDMIDI_CodecShutdown (void)
 	WildMidi_Shutdown();
 }
 
-static snd_stream_t *S_WILDMIDI_CodecOpenStream (const char *filename)
+static qboolean S_WILDMIDI_CodecOpenStream (snd_stream_t *stream)
 {
-	snd_stream_t *stream;
 	midi_buf_t *data;
 	unsigned char *temp;
+	long len;
+	int mark;
 
 	if (!wildmidi_codec.initialized)
-		return NULL;
+		return false;
 
-	stream = S_CodecUtilOpen(filename, &wildmidi_codec);
-	if (!stream)
-		return NULL;
-
-	temp = (unsigned char *) Hunk_TempAlloc(stream->fh.length + 1);
-	fread (temp, 1, stream->fh.length, stream->fh.file);
+	len = FS_filelength(&stream->fh);
+	mark = Hunk_LowMark();
+	temp = (unsigned char *) Hunk_Alloc(len);
+	FS_fread(temp, 1, len, &stream->fh);
 
 	data = (midi_buf_t *) Z_Malloc(sizeof(midi_buf_t), Z_MAINZONE);
-	data->song = WildMidi_OpenBuffer (temp, stream->fh.length);
+	data->song = WildMidi_OpenBuffer (temp, len);
+	Hunk_FreeToLowMark(mark); /* free original file data */
 	if (data->song == NULL)
 	{
-		Con_Printf ("%s is not a valid MIDI file\n", filename);
+		Con_Printf ("%s is not a valid MIDI file\n", stream->name);
 		Z_Free(data);
-		S_CodecUtilClose(&stream);
-		return NULL;
+		return false;
 	}
-
 	stream->info.rate = wildmidi_rate;
 	stream->info.width = 2; /* WildMIDI does 16 bit signed */
 	stream->info.bits = 16;
 	stream->info.channels = 2; /* WildMIDI does stereo */
 	stream->priv = data;
-
 	WildMidi_MasterVolume (100);
 
-	return stream;
+	return true;
 }
 
 static int S_WILDMIDI_CodecReadStream (snd_stream_t *stream, int bytes, void *buffer)

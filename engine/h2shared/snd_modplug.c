@@ -58,44 +58,33 @@ static void S_MODPLUG_CodecShutdown (void)
 {
 }
 
-static snd_stream_t *S_MODPLUG_CodecOpenStream (const char *filename)
+static qboolean S_MODPLUG_CodecOpenStream (snd_stream_t *stream)
 {
 /* need to load the whole file into memory and pass it to libmodplug */
-	snd_stream_t *stream;
 	byte *moddata;
-	int len, mark;
+	long len;
+	int mark;
 
-	stream = S_CodecUtilOpen(filename, &modplug_codec);
-	if (!stream)
-		return NULL;
-
+	len = FS_filelength (&stream->fh);
 	mark = Hunk_LowMark();
-	moddata = FS_LoadHunkFile(filename, NULL);
-	len = (int) fs_filesize;
-	if (!moddata) { /* impossible.. */
-		S_CodecUtilClose(&stream);
-		return NULL;
-	}
+	moddata = (byte *) Hunk_Alloc(len);
+	FS_fread(moddata, 1, len, &stream->fh);
 
 	S_MODPLUG_SetSettings(stream);
 	stream->priv = ModPlug_Load(moddata, len);
+	Hunk_FreeToLowMark(mark); /* free original file data */
 	if (!stream->priv)
 	{
-		Con_DPrintf("Could not load module %s\n", filename);
-		Hunk_FreeToLowMark(mark);
-		S_CodecUtilClose(&stream);
-		return NULL;
+		Con_DPrintf("Could not load module %s\n", stream->name);
+		return false;
 	}
-
-	Hunk_FreeToLowMark(mark);	/* free original file data */
 
 	ModPlug_Seek((ModPlugFile*)stream->priv, 0);
 #if 0
 	/* default volume (128) sounds rather low? */
 	ModPlug_SetMasterVolume((ModPlugFile*)stream->priv, 384);	/* 0-512 */
 #endif
-
-	return stream;
+	return true;
 }
 
 static int S_MODPLUG_CodecReadStream (snd_stream_t *stream, int bytes, void *buffer)

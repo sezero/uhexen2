@@ -122,14 +122,9 @@ static void S_MIKMOD_CodecShutdown (void)
 	}
 }
 
-static snd_stream_t *S_MIKMOD_CodecOpenStream (const char *filename)
+static qboolean S_MIKMOD_CodecOpenStream (snd_stream_t *stream)
 {
-	snd_stream_t *stream;
 	mik_priv_t *priv;
-
-	stream = S_CodecUtilOpen(filename, &mikmod_codec);
-	if (!stream)
-		return NULL;
 
 	stream->priv = Z_Malloc(sizeof(mik_priv_t), Z_MAINZONE);
 	priv = (mik_priv_t *) stream->priv;
@@ -145,8 +140,7 @@ static snd_stream_t *S_MIKMOD_CodecOpenStream (const char *filename)
 	{
 		Con_DPrintf("Could not load module: %s\n", MikMod_strerror(MikMod_errno));
 		Z_Free(stream->priv);
-		S_CodecUtilClose(&stream);
-		return NULL;
+		return false;
 	}
 
 	/* keep default values of fadeout (0: don't fade out volume during when last
@@ -156,7 +150,6 @@ static snd_stream_t *S_MIKMOD_CodecOpenStream (const char *filename)
 	 * set internally by libmikmod::Player_Init().  just change the loop setting
 	 * to 0, i.e. don't process in-module loops: */
 	priv->module->loop	= 0;
-
 	Player_Start(priv->module);
 
 	stream->info.rate	= md_mixfreq;
@@ -165,7 +158,7 @@ static snd_stream_t *S_MIKMOD_CodecOpenStream (const char *filename)
 	stream->info.channels	= (md_mode & DMODE_STEREO)? 2 : 1;
 /*	Con_DPrintf("Playing %s (%d chn)\n", priv->module->songname, priv->module->numchn);*/
 
-	return stream;
+	return true;
 }
 
 static int S_MIKMOD_CodecReadStream (snd_stream_t *stream, int bytes, void *buffer)
