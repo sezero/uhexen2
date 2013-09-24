@@ -7,8 +7,8 @@ Changes in v1.5.7: (Sep. 24, 2013.)
 - Music: Support for FLAC codec. (edit the makefiles to enable it when
   compiling, if necessary.)
 
-- Music: Support for tracker (MOD) music (edit the makefiles to enable
-  it when compiling.)
+- Music: Support for tracker (MOD) music, including support for Unreal
+  umx containers. (edit the makefiles to enable when compiling.)
 
 - All platforms, gameplay, mission pack: fixed an hcode bug which would
   make the spiders seemingly invincible for a difficulty-depending time.

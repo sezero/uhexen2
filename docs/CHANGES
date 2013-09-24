@@ -5,6 +5,9 @@ Development Progress	:
 
 2013-09-24 (SVN):
     * update version date stamp to 2013-09-24.
+    * support for Unreal UMX container. not enabled by default: edit the
+      Makefile for USE_CODEC_UMX or add "USE_CODEC_UMX=yes" to your make
+      command line arguments.
     * snd codec layer updates: changed codec_open() to operate only on a
       stream pointer and moved all file open/close stuff to snd_codec.c.
       codec_open now only returns true or false upon success or failure

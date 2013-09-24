@@ -129,11 +129,12 @@ USE_CODEC_FLAC=no
 USE_CODEC_MP3=yes
 USE_CODEC_VORBIS=yes
 USE_CODEC_OPUS=no
-# either mikmod or modplug (both possible
+# either mikmod (preferred) or modplug (both possible
 # but not needed nor meaningful.)
 USE_CODEC_MIKMOD=no
 USE_CODEC_MODPLUG=no
-# either timidity or wildmidi (both possible
+USE_CODEC_UMX=no
+# either timidity (preferred) or wildmidi (both possible
 # but not needed nor meaningful)
 USE_CODEC_TIMIDITY=yes
 USE_CODEC_WILDMIDI=no
@@ -260,6 +261,7 @@ USE_CODEC_TIMIDITY=no
 USE_CODEC_WILDMIDI=no
 USE_CODEC_MIKMOD=no
 USE_CODEC_MODPLUG=no
+USE_CODEC_UMX=no
 USE_CODEC_MP3=no
 USE_CODEC_VORBIS=no
 USE_CODEC_OPUS=no
@@ -455,6 +457,7 @@ USE_CODEC_TIMIDITY=no
 USE_CODEC_WILDMIDI=no
 USE_CODEC_MIKMOD=no
 USE_CODEC_MODPLUG=no
+USE_CODEC_UMX=no
 # no need for Opus on DOS
 USE_CODEC_OPUS=no
 # no need for Flac on DOS
@@ -678,6 +681,7 @@ USE_CODEC_MP3=no
 USE_CODEC_OPUS=no
 USE_CODEC_MIKMOD=no
 USE_CODEC_MODPLUG=no
+USE_CODEC_UMX=no
 
 ifeq ($(USE_SOUND),yes)
 ifneq ($(USE_SDLAUDIO),yes)
@@ -803,6 +807,9 @@ endif
 ifeq ($(USE_CODEC_MODPLUG),yes)
 CPPFLAGS+= -DUSE_CODEC_MODPLUG
 LDFLAGS+=  -lmodplug
+endif
+ifeq ($(USE_CODEC_UMX),yes)
+CPPFLAGS+= -DUSE_CODEC_UMX
 endif
 ifeq ($(USE_CODEC_TIMIDITY),yes)
 CPPFLAGS+= -DUSE_CODEC_TIMIDITY
@@ -930,6 +937,7 @@ MUSIC_OBJS:= bgmusic.o \
 	$(mp3_obj) \
 	snd_mikmod.o \
 	snd_modplug.o \
+	snd_umx.o \
 	snd_timidity.o \
 	snd_wildmidi.o
 COMOBJ_SND := snd_sys.o snd_dma.o snd_mix.o $(SOUND_ASM) snd_mem.o $(MUSIC_OBJS)

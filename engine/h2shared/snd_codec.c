@@ -34,6 +34,7 @@
 #include "snd_wildmidi.h"
 #include "snd_mikmod.h"
 #include "snd_modplug.h"
+#include "snd_umx.h"
 #include "snd_wave.h"
 #include "snd_flac.h"
 #include "snd_mp3.h"
@@ -71,6 +72,9 @@ void S_CodecInit (void)
 #endif
 #ifdef USE_CODEC_TIMIDITY
 	S_CodecRegister(&timidity_codec);
+#endif
+#ifdef USE_CODEC_UMX
+	S_CodecRegister(&umx_codec);
 #endif
 #ifdef USE_CODEC_MODPLUG
 	S_CodecRegister(&modplug_codec);
