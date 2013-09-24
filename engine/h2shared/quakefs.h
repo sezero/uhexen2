@@ -163,6 +163,7 @@ int FS_feof(fshandle_t *fh);
 int FS_ferror(fshandle_t *fh);
 int FS_fclose(fshandle_t *fh);
 char *FS_fgets(char *s, int size, fshandle_t *fh);
+long FS_filelength (fshandle_t *fh);
 
 #endif	/* __QUAKEFS_H */
 

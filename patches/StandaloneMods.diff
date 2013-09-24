@@ -3,7 +3,7 @@ see the documentation file StandaloneMods.txt for details.
 
 Index: engine/h2shared/quakefs.c
 ===================================================================
---- engine/h2shared/quakefs.c	(revision 4951)
+--- engine/h2shared/quakefs.c	(revision 5241)
 +++ engine/h2shared/quakefs.c	(working copy)
 @@ -59,6 +59,7 @@ static searchpath_t	*fs_base_searchpaths
  static const char	*fs_basedir;
@@ -64,7 +64,7 @@ Index: engine/h2shared/quakefs.c
  /* a new gamedir: let's set it here. */
  	FS_AddGameDirectory(dir, false);
  #if defined(H2W) && defined(SERVERONLY)
-@@ -1186,8 +1215,36 @@ static int CheckRegistered (void)
+@@ -1169,8 +1198,36 @@ static int CheckRegistered (void)
  FS_Init
  ================
  */
@@ -101,7 +101,7 @@ Index: engine/h2shared/quakefs.c
  	qboolean check_portals = false;
  	int	i;
  
-@@ -1514,6 +1571,86 @@ char *FS_MakePath_VABUF (int base, int *
+@@ -1497,6 +1554,86 @@ char *FS_MakePath_VABUF (int base, int *
  	return p;
  }
  
@@ -190,7 +190,7 @@ Index: engine/h2shared/quakefs.c
  	return fs_basedir;
 Index: engine/h2shared/quakefs.h
 ===================================================================
---- engine/h2shared/quakefs.h	(revision 4801)
+--- engine/h2shared/quakefs.h	(revision 5241)
 +++ engine/h2shared/quakefs.h	(working copy)
 @@ -47,6 +47,12 @@
  

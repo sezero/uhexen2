@@ -3,6 +3,10 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2013-09-24 (SVN):
+    * some tidy-up in FS* stdio replacement functions. add FS_filelength
+      to the FS_* api.
+
 2013-09-23 (SVN):
     * added tracker music (mod) support. it is not enabled by default,
       edit Makefile for either USE_CODEC_MIKMOD or USE_CODEC_MODPLUG, or

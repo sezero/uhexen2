@@ -1,7 +1,7 @@
 Hexen II: Hammer of Thyrion
 Support for Standalone Free contents
 
-[STATUS:  BETA / Incomplete, 2012-09-11, HoT-1.5.5, Engine version 1.27 ]
+[STATUS:  BETA / Incomplete, 2012-09-11, HoT-1.5.7, Engine version 1.29 ]
 
 
 This document is about the support for standalone free contents / mods:
