@@ -28,6 +28,7 @@
 #include "compiler.h"
 #include "arch_def.h"
 #include "cmdlib.h"
+#include "q_ctype.h"
 #ifdef PLATFORM_WINDOWS
 #include <windows.h>
 #endif
@@ -44,19 +45,6 @@
 #include <proto/timer.h>
 #include <time.h>
 #endif
-#include <ctype.h>
-
-// MACROS ------------------------------------------------------------------
-
-// TYPES -------------------------------------------------------------------
-
-// EXTERNAL FUNCTION PROTOTYPES --------------------------------------------
-
-// PUBLIC FUNCTION PROTOTYPES ----------------------------------------------
-
-// PRIVATE FUNCTION PROTOTYPES ---------------------------------------------
-
-// EXTERNAL DATA DECLARATIONS ----------------------------------------------
 
 // PUBLIC DATA DEFINITIONS -------------------------------------------------
 
@@ -79,13 +67,53 @@ struct Library		*TimerBase;
 
 // REPLACEMENTS FOR LIBRARY FUNCTIONS --------------------------------------
 
+int q_strcasecmp(const char * s1, const char * s2)
+{
+	const char * p1 = s1;
+	const char * p2 = s2;
+	char c1, c2;
+
+	if (p1 == p2)
+		return 0;
+
+	do
+	{
+		c1 = q_tolower (*p1++);
+		c2 = q_tolower (*p2++);
+		if (c1 == '\0')
+			break;
+	} while (c1 == c2);
+
+	return (int)(c1 - c2);
+}
+
+int q_strncasecmp(const char *s1, const char *s2, size_t n)
+{
+	const char * p1 = s1;
+	const char * p2 = s2;
+	char c1, c2;
+
+	if (p1 == p2 || n == 0)
+		return 0;
+
+	do
+	{
+		c1 = q_tolower (*p1++);
+		c2 = q_tolower (*p2++);
+		if (c1 == '\0' || c1 != c2)
+			break;
+	} while (--n > 0);
+
+	return (int)(c1 - c2);
+}
+
 char *q_strlwr (char *str)
 {
 	char	*c;
 	c = str;
 	while (*c)
 	{
-		*c = tolower(*c);
+		*c = q_tolower(*c);
 		c++;
 	}
 	return str;
@@ -97,7 +125,7 @@ char *q_strupr (char *str)
 	c = str;
 	while (*c)
 	{
-		*c = toupper(*c);
+		*c = q_toupper(*c);
 		c++;
 	}
 	return str;

@@ -24,7 +24,7 @@
  */
 
 #include "quakedef.h"
-#include <ctype.h>
+#include "q_ctype.h"
 
 static	double	old_svtime;
 	/* sv.time of prev. level when changing levels, saved by changelevel2().

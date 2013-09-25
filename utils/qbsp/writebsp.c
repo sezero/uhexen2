@@ -24,7 +24,7 @@
 #include "q_stdinc.h"
 #include "compiler.h"
 #include "arch_def.h"
-#include <ctype.h>
+#include "q_ctype.h"
 #include "cmdlib.h"
 #include "util_io.h"
 #include "mathlib.h"
@@ -370,7 +370,7 @@ static void CleanupName (char *in, char *out)
 		if (!in[i])
 			break;
 
-		out[i] = toupper(in[i]);
+		out[i] = q_toupper(in[i]);
 	}
 
 	for ( ; i < 16 ; i++)

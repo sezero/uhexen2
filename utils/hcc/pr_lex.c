@@ -28,7 +28,7 @@
 #include "q_stdinc.h"
 #include "compiler.h"
 #include "arch_def.h"
-#include <ctype.h>
+#include "q_ctype.h"
 #include "cmdlib.h"
 #include "hcc.h"
 
@@ -335,7 +335,7 @@ static float LexNumber (void)
 
 static int DigitValue (int digit, int radix)
 {
-	digit = toupper(digit);
+	digit = q_toupper(digit);
 	if (digit < '0' || (digit > '9' && digit < 'A') || digit > 'Z')
 	{
 		return -1;
@@ -760,7 +760,7 @@ static qboolean SimpleGetToken (void)
 		c != '(' && c != ')' &&
 		c != '[' && c != ']')
 	{
-		pr_token[i] = tolower(c);
+		pr_token[i] = q_tolower(c);
 		i++;
 		pr_file_p++;
 	}

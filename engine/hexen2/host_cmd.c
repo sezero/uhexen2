@@ -24,7 +24,7 @@
  */
 
 #include "quakedef.h"
-#include <ctype.h>
+#include "q_ctype.h"
 
 static	double	old_svtime;
 	/* sv.time of prev. level when changing levels, saved by changelevel2().
@@ -1790,7 +1790,7 @@ static int strdiff (const char *s1, const char *s2)
 
 	for (i = 0; (i < L1 && i < L2); i++)
 	{
-		if (tolower(s1[i]) != tolower(s2[i]))
+		if (q_tolower(s1[i]) != q_tolower(s2[i]))
 			break;
 	}
 

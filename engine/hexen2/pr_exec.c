@@ -25,7 +25,7 @@
 // HEADER FILES ------------------------------------------------------------
 
 #include "quakedef.h"
-#include <ctype.h>
+#include "q_ctype.h"
 
 // MACROS ------------------------------------------------------------------
 
@@ -1038,7 +1038,7 @@ void PR_Profile_f (void)
 		}
 		else if (*s == 's' || *s == 'S')
 		{ // Save to file
-			if (i + 1 < Cmd_Argc() && !isdigit(*Cmd_Argv(i + 1)))
+			if (i + 1 < Cmd_Argc() && !q_isdigit(*Cmd_Argv(i + 1)))
 			{
 				i++;
 				saveName = FS_MakePath(FS_USERDIR, NULL, Cmd_Argv(i));
@@ -1048,7 +1048,7 @@ void PR_Profile_f (void)
 				saveName = FS_MakePath(FS_USERDIR, NULL, "profile.txt");
 			}
 		}
-		else if (isdigit(*s))
+		else if (q_isdigit(*s))
 		{ // Specify function count
 			funcCount = atoi(Cmd_Argv(i));
 			if (funcCount < 1)

@@ -28,6 +28,7 @@
 #if HAVE_DOS_GUS_SOUND
 
 #include <dos.h>
+#include "q_ctype.h"
 #include "snd_gus.h"
 #include "dosisms.h"
 
@@ -72,13 +73,6 @@ static struct section_buffer	section_buffers[NUM_SECTION_BUFFERS];
 static struct field_buffer	field_buffers[NUM_FIELD_BUFFERS];
 
 
-static char my_toupper (char c)
-{
-	if (c >= 'a' && c <= 'z')
-		c -= ('a' - 'A');
-	return c;
-}
-
 static void reset_buffer (FILE *f)
 {
 	int		i;
@@ -114,7 +108,7 @@ static int is_section (const char *s, const char *name)
 	{
 		if (!wild)
 		{
-			if (my_toupper(s[0]) != my_toupper(name[0]))
+			if (q_toupper(s[0]) != q_toupper(name[0]))
 				return 0;
 		}
 		s++;
@@ -156,7 +150,7 @@ static int is_field (const char *s, const char *name)
 	{
 		if (!wild)
 		{
-			if (my_toupper(s[0]) != my_toupper(name[0]))
+			if (q_toupper(s[0]) != q_toupper(name[0]))
 				return 0;
 		}
 		s++;

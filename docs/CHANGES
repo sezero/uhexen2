@@ -3,6 +3,11 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2013-09-25 (SVN):
+    * replace all ctype.h functions/macros and strcasecmp/strncasecmp()
+      by locale-insensitive versions, new header q_ctype.h.
+    * update version date stamp to 2013-09-25.
+
 2013-09-24 (SVN):
     * update version date stamp to 2013-09-24.
     * support for Unreal UMX container. not enabled by default: edit the

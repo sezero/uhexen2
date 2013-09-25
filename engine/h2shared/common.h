@@ -38,17 +38,6 @@
 #define	F_OK	0		/* Test for existence.  */
 #endif
 
-#if defined(PLATFORM_WINDOWS)
-#define q_strncasecmp	_strnicmp
-#define q_strcasecmp	_stricmp
-#elif defined(PLATFORM_DOS)
-#define q_strncasecmp	strnicmp
-#define q_strcasecmp	stricmp
-#else
-#define q_strncasecmp	strncasecmp
-#define q_strcasecmp	strcasecmp
-#endif
-
 #ifdef _MSC_VER	/* MS Visual C */
 /* disable some silent conversion warnings */
 #  pragma warning(disable:4244)
@@ -71,6 +60,11 @@ extern size_t qerr_strlcpy (const char *caller, int linenum, char *dst, const ch
 extern int qerr_snprintf (const char *caller, int linenum, char *str, size_t size, const char *format, ...)
 									__attribute__((__format__(__printf__,5,6)));
 
+/* locale-insensitive strcasecmp replacement functions: */
+extern int q_strcasecmp (const char * s1, const char * s2);
+extern int q_strncasecmp (const char *s1, const char *s2, size_t n);
+
+/* locale-insensitive strlwr/upr replacement functions: */
 extern char *q_strlwr (char *str);
 extern char *q_strupr (char *str);
 

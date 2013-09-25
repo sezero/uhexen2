@@ -22,7 +22,7 @@
  */
 
 #include "quakedef.h"
-#include <ctype.h>
+#include "q_ctype.h"
 
 edict_t	*sv_player;
 
@@ -497,7 +497,7 @@ static void SV_BeginDownload_f(void)
 
 	// lowercase the name (needed for case sensitive file systems)
 	for (p = name; *p; p++)
-		*p = (char)tolower(*p);
+		*p = (char)q_tolower(*p);
 
 	host_client->downloadsize = FS_OpenFile (name, &host_client->download, NULL);
 	host_client->downloadcount = 0;

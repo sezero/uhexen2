@@ -28,7 +28,7 @@
 #include "games.h"
 #include "config_file.h"
 #include "launcher_ui.h"
-#include <ctype.h>
+#include "q_ctype.h"
 
 #define AASAMPLES_CHARS	(4)	/* max digits for the aasamples value + 1 (nul) */
 #define HEAPSIZE_CHARS	(8)	/* max digits for the heapsize value  + 1 (nul) */
@@ -242,12 +242,12 @@ void launch_hexen2_bin (void)
 		{
 			if (!*ptr || (i + 2 >= MAX_ARGS))
 				break;
-			while (*ptr && isspace(*ptr))
+			while (*ptr && q_isspace(*ptr))
 				*ptr++ = '\0';
 			if (*ptr)
 			{
 				args[++i] = ptr;
-				while (*ptr && !isspace(*ptr))
+				while (*ptr && !q_isspace(*ptr))
 					ptr++;
 			}
 		}

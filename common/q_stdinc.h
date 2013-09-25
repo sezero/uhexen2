@@ -1,10 +1,11 @@
 /*
- * q_stdinc.h
- * includes the minimum necessary stdc headers,
- * defines common and / or missing types.
+ * q_stdinc.h - includes the minimum necessary stdc headers,
+ *		defines common and / or missing types.
+ *
  * NOTE:	for net stuff use net_sys.h,
  *		for byte order use q_endian.h,
- *		for math stuff use mathlib.h.
+ *		for math stuff use mathlib.h,
+ *		for locale-insensitive ctype.h functions use q_ctype.h.
  *
  * $Id$
  *
@@ -56,9 +57,6 @@
 #include <stdlib.h>
 #include <stdarg.h>
 #include <string.h>
-#if !defined(_WIN32)
-#include <strings.h>	/* strcasecmp and strncasecmp	*/
-#endif	/* ! PLATFORM_WINDOWS */
 
 /*==========================================================================*/
 

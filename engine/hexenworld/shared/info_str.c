@@ -21,7 +21,7 @@
  */
 
 #include "quakedef.h"
-#include <ctype.h>
+#include "q_ctype.h"
 
 /*
 ===============
@@ -218,7 +218,7 @@ void Info_SetValueForStarKey (char *s, const char *key, const char *value, size_
 				continue;
 			// auto lowercase team
 			if (q_strcasecmp(key, "team") == 0)
-				c = tolower(c);
+				c = q_tolower(c);
 		}
 #else
 		if (!sv_highchars.integer)

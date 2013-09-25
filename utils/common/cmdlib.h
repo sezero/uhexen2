@@ -34,17 +34,6 @@
 #define	q_min(a, b)	(((a) < (b)) ? (a) : (b))
 #define	q_max(a, b)	(((a) > (b)) ? (a) : (b))
 
-#if defined(PLATFORM_WINDOWS)
-#define q_strncasecmp	_strnicmp
-#define q_strcasecmp	_stricmp
-#elif defined(PLATFORM_DOS)
-#define q_strncasecmp	strnicmp
-#define q_strcasecmp	stricmp
-#else
-#define q_strncasecmp	strncasecmp
-#define q_strcasecmp	strcasecmp
-#endif
-
 /* easier to include these here */
 #include "strl_fn.h"
 #include "qsnprint.h"
@@ -70,6 +59,11 @@ extern char	com_token[1024];
 
 // PUBLIC FUNCTION PROTOTYPES ----------------------------------------------
 
+/* locale-insensitive strcasecmp replacement functions: */
+extern int q_strcasecmp (const char * s1, const char * s2);
+extern int q_strncasecmp (const char *s1, const char *s2, size_t n);
+
+/* locale-insensitive strlwr/upr replacement functions: */
 char	*q_strlwr (char *str);
 char	*q_strupr (char *str);
 
