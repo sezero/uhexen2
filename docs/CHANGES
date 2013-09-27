@@ -3,6 +3,10 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2013-09-27 (SVN):
+    * add new stdio replacement FS_fgetc() and use it in snd_mikmod.c
+    * update version date stamp to 2013-09-27.
+
 2013-09-25 (SVN):
     * replace all ctype.h functions/macros and strcasecmp/strncasecmp()
       by locale-insensitive versions, new header q_ctype.h.

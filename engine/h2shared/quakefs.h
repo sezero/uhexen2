@@ -162,6 +162,7 @@ void FS_rewind(fshandle_t *fh);
 int FS_feof(fshandle_t *fh);
 int FS_ferror(fshandle_t *fh);
 int FS_fclose(fshandle_t *fh);
+int FS_fgetc(fshandle_t *fh);
 char *FS_fgets(char *s, int size, fshandle_t *fh);
 long FS_filelength (fshandle_t *fh);
 

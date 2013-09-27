@@ -1649,6 +1649,18 @@ int FS_ferror(fshandle_t *fh)
 	return ferror(fh->file);
 }
 
+int FS_fgetc(fshandle_t *fh)
+{
+	if (!fh) {
+		errno = EBADF;
+		return EOF;
+	}
+	if (fh->pos >= fh->length)
+		return EOF;
+	fh->pos += 1;
+	return fgetc(fh->file);
+}
+
 char *FS_fgets(char *s, int size, fshandle_t *fh)
 {
 	char *ret;
