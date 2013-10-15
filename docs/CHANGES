@@ -3,6 +3,11 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2013-10-15 (SVN):
+    * snd_mikmod.c: fix return type of the Seek function.
+    * snd_umx.c: update XM detection. other minor tidy-ups.
+    * update version date stamp to 2013-10-15.
+
 2013-09-27 (SVN):
     * add new stdio replacement FS_fgetc() and use it in snd_mikmod.c
     * update version date stamp to 2013-09-27.
