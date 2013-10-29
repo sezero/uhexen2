@@ -50,6 +50,9 @@ static struct Screen *screen = NULL;
 static char pal[256 * 4];
 static char *buffer = NULL;
 static byte *directbitmap = NULL;
+#if defined(__AMIGA__) && !defined(__MORPHOS__)
+struct Library *CyberGfxBase = NULL;
+#endif
 
 /* ----------------------------------------- */
 
@@ -141,6 +144,10 @@ static void VID_MenuKey (int key);
 #else
 #	define WM_TITLEBAR_TEXT	"Hexen II"
 #endif
+
+#if !(defined(__AROS__) || defined(__MORPHOS__))
+typedef ULONG IPTR;
+#endif /* AROS IPTR */
 
 //====================================
 
@@ -263,7 +270,7 @@ static void VID_PrepareModes (void)
 	id = INVALID_ID;
 	while((id = NextDisplayInfo(id)) != INVALID_ID)
 	{
-#ifdef __AMIGA__
+#if defined(__AMIGA__) && !defined(__MORPHOS__)
 		if (!IsCyberModeID(id))
 			continue;
 #endif
@@ -374,15 +381,13 @@ static int VID_SetMode (int modenum, unsigned char *palette)
 
 	in_mode_set = true;
 
-	VID_Shutdown();
-
 	flags = WFLG_ACTIVATE | WFLG_RMBTRAP;
 
 	if (vid_config_fscr.integer)
 	{
-	    ULONG ModeID;
+		ULONG ModeID;
 
-	    ModeID = BestCModeIDTags(
+		ModeID = BestCModeIDTags(
 			CYBRBIDTG_Depth, 8,
 			CYBRBIDTG_NominalWidth, modelist[modenum].width,
 			CYBRBIDTG_NominalHeight, modelist[modenum].height,
@@ -580,6 +585,14 @@ void VID_Init (unsigned char *palette)
 				"vid_config_swy" };
 #define num_readvars	( sizeof(read_vars)/sizeof(read_vars[0]) )
 
+#if defined(__AMIGA__) && !defined(__MORPHOS__)
+	CyberGfxBase = OpenLibrary("cybergraphics.library", 0);
+	if (!CyberGfxBase)
+	{
+		Sys_Error ("Cannot open cybergraphics.library!");
+	}
+#endif
+
 	temp = scr_disabled_for_loading;
 	scr_disabled_for_loading = true;
 
@@ -729,6 +742,14 @@ void VID_Shutdown (void)
 		CloseScreen(screen);
 		screen = NULL;
 	}
+
+#if defined(__AMIGA__) && !defined(__MORPHOS__)
+	if (CyberGfxBase)
+	{
+		CloseLibrary(CyberGfxBase);
+		CyberGfxBase = NULL;
+	}
+#endif
 }
 
 

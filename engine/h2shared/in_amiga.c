@@ -133,7 +133,7 @@ IN_HideMouse
 void IN_HideMouse (void)
 {
 	if (pointermem)
-		SetPointer(window, pointermem, 16, 1, 0, 0);
+		SetPointer(window, pointermem, 16, 16, 0, 0);
 	//Con_Printf("IN_HideMouseOK\n");
 }
 
@@ -332,7 +332,8 @@ void IN_Init (void)
 
 	if ((inputport = CreateMsgPort()))
 	{
-		if ((inputreq = CreateIORequest(inputport, sizeof(*inputreq))))
+		//if ((inputreq = CreateIORequest(inputport, sizeof(*inputreq))))
+		if ((inputreq = CreateStdIO(inputport)))
 		{
 			if (!OpenDevice("input.device", 0, (struct IORequest *)inputreq, 0))
 			{
@@ -345,7 +346,8 @@ void IN_Init (void)
 				DoIO((struct IORequest *)inputreq);
 				return;
 			}
-			DeleteIORequest(inputreq);
+			//DeleteIORequest(inputreq);
+			DeleteStdIO(inputreq);
 		}
 		DeleteMsgPort(inputport);
 	}
@@ -367,7 +369,8 @@ void IN_Shutdown (void)
 		DoIO((struct IORequest *)inputreq);
 
 		CloseDevice((struct IORequest *)inputreq);
-		DeleteIORequest(inputreq);
+		//DeleteIORequest(inputreq);
+		DeleteStdIO(inputreq);
 	}
 
 	if (inputport)

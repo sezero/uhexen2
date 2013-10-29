@@ -38,8 +38,8 @@
 #include "sdl_inc.h"
 #endif	/* SDLQUAKE */
 
-#ifdef __MORPHOS__
-int __stack = 0x200000; /* 2 MB stack */
+#ifdef __AMIGA__
+int __stack = 0x100000; /* 1 MB stack */
 #endif
 
 // heapsize: minimum 16mb, standart 32 mb, max is 96 mb.
@@ -62,10 +62,10 @@ static BPTR		amiga_stdin, amiga_stdout;
 
 struct timerequest	*timerio;
 struct MsgPort		*timerport;
-#ifdef __AROS__
-struct Device		*TimerBase;
-#else
+#ifdef __MORPHOS__
 struct Library		*TimerBase;
+#else
+struct Device		*TimerBase;
 #endif
 
 
@@ -292,7 +292,7 @@ const char *Sys_FindFirstFile (const char *path, const char *pattern)
 	if (apath)
 		Sys_Error ("Sys_FindFirst without FindClose");
 
-	apath = AllocMem (sizeof(struct AnchorPath) + PATH_SIZE, MEMF_CLEAR);
+	apath = AllocVec (sizeof(struct AnchorPath) + PATH_SIZE, MEMF_CLEAR);
 	if (!apath)
 		return NULL;
 
@@ -305,7 +305,7 @@ const char *Sys_FindFirstFile (const char *path, const char *pattern)
 		oldcurrentdir = CurrentDir(newdir);
 	else
 	{
-		FreeMem(apath, sizeof(struct AnchorPath) + PATH_SIZE);
+		FreeVec(apath);
 		return NULL;
 	}
 
@@ -333,7 +333,7 @@ void Sys_FindClose (void)
 	if (apath == NULL)
 		return;
 	MatchEnd(apath);
-	FreeMem(apath, sizeof(struct AnchorPath) + PATH_SIZE);
+	FreeVec(apath);
 	UnLock(CurrentDir(oldcurrentdir));
 	oldcurrentdir = NULL;
 	apath = NULL;
@@ -376,10 +376,10 @@ static void Sys_Init (void)
 			if (OpenDevice((STRPTR) TIMERNAME, UNIT_MICROHZ,
 					(struct IORequest *) timerio, 0) == 0)
 			{
-#ifdef __AROS__
-				TimerBase = timerio->tr_node.io_Device;
-#else
+#ifdef __MORPHOS__
 				TimerBase = (struct Library *)timerio->tr_node.io_Device;
+#else
+				TimerBase = timerio->tr_node.io_Device;
 #endif
 			}
 			else
@@ -646,13 +646,13 @@ char *Sys_GetClipboardData (void)
 	char *chunk_buffer = NULL;
 
 	if ((IFFHandle = AllocIFF())) {
-	    if ((IFFHandle->iff_Stream = (IPTR) OpenClipboard(0))) {
+		if ((IFFHandle->iff_Stream = (IPTR) OpenClipboard(0))) {
 		InitIFFasClip(IFFHandle);
 		if (!OpenIFF(IFFHandle, IFFF_READ)) {
-		    if (!StopChunk(IFFHandle, ID_FTXT, ID_CHRS)) {
+			if (!StopChunk(IFFHandle, ID_FTXT, ID_CHRS)) {
 			if (!ParseIFF(IFFHandle, IFFPARSE_SCAN)) {
-			    cn = CurrentChunk(IFFHandle);
-			    if (cn && (cn->cn_Type == ID_FTXT) &&
+				cn = CurrentChunk(IFFHandle);
+				if (cn && (cn->cn_Type == ID_FTXT) &&
 					(cn->cn_ID == ID_CHRS)) {
 				chunk_buffer = (char *)
 					  Z_Malloc(MAX_CLIPBOARDTXT, Z_MAINZONE);
@@ -660,16 +660,16 @@ char *Sys_GetClipboardData (void)
 							   chunk_buffer,
 							   MAX_CLIPBOARDTXT - 1);
 				if (readbytes < 0)
-				    readbytes = 0;
+					readbytes = 0;
 				chunk_buffer[readbytes] = '\0';
-			    }
+				}
 			}
-		    }
-		    CloseIFF(IFFHandle);
+			}
+			CloseIFF(IFFHandle);
 		}
 		CloseClipboard((struct ClipboardHandle *) IFFHandle->iff_Stream);
-	    }
-	    FreeIFF(IFFHandle);
+		}
+		FreeIFF(IFFHandle);
 	}
 
 	return chunk_buffer;
@@ -683,13 +683,7 @@ static int Sys_GetBasedir (char *argv0, char *dst, size_t dstsize)
 		return 0;
 	return -1;
 #else
-	struct Task *self;
-	BPTR lock;
-
-	self = FindTask(NULL);
-	lock = ((struct Process *) self)->pr_CurrentDir;
-
-	if (NameFromLock(lock, (STRPTR) dst, dstsize) != 0)
+	if (NameFromLock(((struct Process *) FindTask(NULL))->pr_CurrentDir, (STRPTR) dst, dstsize) != 0)
 		return 0;
 	return -1;
 #endif
@@ -876,8 +870,8 @@ int main (int argc, char **argv)
 	/* main window message loop */
 	while (1)
 	{
-	    if (isDedicated)
-	    {
+		if (isDedicated)
+		{
 		newtime = Sys_DoubleTime ();
 		time = newtime - oldtime;
 
@@ -890,9 +884,9 @@ int main (int argc, char **argv)
 
 		Host_Frame (time);
 		oldtime = newtime;
-	    }
-	    else
-	    {
+		}
+		else
+		{
 #if defined(SDLQUAKE)
 		appState = SDL_GetAppState();
 		/* If we have no input focus at all, sleep a bit */
@@ -920,7 +914,7 @@ int main (int argc, char **argv)
 			Sys_Sleep(1);
 
 		oldtime = newtime;
-	    }
+		}
 	}
 
 	return 0;

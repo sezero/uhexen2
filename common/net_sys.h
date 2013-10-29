@@ -117,6 +117,10 @@ typedef unsigned int	in_addr_t;	/* u_int32_t */
 #define	selectsocket(_N,_R,_W,_E,_T)		\
 	WaitSelect((_N),(_R),(_W),(_E),(_T),NULL)
 #define	IOCTLARG_P(x)	(char *) x
+#if defined(__AMIGA__) && !defined(__MORPHOS__)
+#define	inet_ntoa(x) Inet_NtoA((ULONG *)&x)
+#define	h_errno SOCKETERRNO
+#endif
 
 #define	NET_EWOULDBLOCK		EWOULDBLOCK
 #define	NET_ECONNREFUSED	ECONNREFUSED
