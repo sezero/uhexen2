@@ -3,6 +3,9 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2013-10-29 (SVN):
+    * modified the amiga files to compile on AmigaOS 3.
+
 2013-10-23 (SVN):
     * snd_umx.c: support umx files from unreal 1997/98 beta version.
 
