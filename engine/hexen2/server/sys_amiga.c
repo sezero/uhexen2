@@ -30,8 +30,8 @@
 #include <proto/timer.h>
 #include <time.h>
 
-#ifdef __MORPHOS__
-int __stack = 0x200000; /* 2 MB stack */
+#ifdef __AMIGA__
+int __stack = 0x100000; /* 1 MB stack */
 #endif
 
 // heapsize: minimum 8 mb, standart 16 mb, max is 32 mb.
@@ -53,10 +53,10 @@ static BPTR		amiga_stdin, amiga_stdout;
 
 struct timerequest	*timerio;
 struct MsgPort		*timerport;
-#ifdef __AROS__
-struct Device		*TimerBase;
-#else
+#ifdef __MORPHOS__
 struct Library		*TimerBase;
+#else
+struct Device		*TimerBase;
 #endif
 
 
@@ -243,13 +243,12 @@ static STRPTR pattern_helper (const char *pat)
 	const char	*p;
 	int	n;
 
-	for (n = 0, p = pat; p != NULL; )
+	for (n = 0, p = pat; *p != '\0'; )
 	{
-		p = strchr (p, '*');
-		if (p != NULL)
-		{
-			++n;	++p;
-		}
+		if ((p = strchr (p, '*')) == NULL)
+			break;
+		++n;
+		++p;
 	}
 
 	if (n == 0)
@@ -283,7 +282,7 @@ const char *Sys_FindFirstFile (const char *path, const char *pattern)
 	if (apath)
 		Sys_Error ("Sys_FindFirst without FindClose");
 
-	apath = AllocMem (sizeof(struct AnchorPath) + PATH_SIZE, MEMF_CLEAR);
+	apath = AllocVec (sizeof(struct AnchorPath) + PATH_SIZE, MEMF_CLEAR);
 	if (!apath)
 		return NULL;
 
@@ -296,7 +295,7 @@ const char *Sys_FindFirstFile (const char *path, const char *pattern)
 		oldcurrentdir = CurrentDir(newdir);
 	else
 	{
-		FreeMem(apath, sizeof(struct AnchorPath) + PATH_SIZE);
+		FreeVec(apath);
 		return NULL;
 	}
 
@@ -324,7 +323,7 @@ void Sys_FindClose (void)
 	if (apath == NULL)
 		return;
 	MatchEnd(apath);
-	FreeMem(apath, sizeof(struct AnchorPath) + PATH_SIZE);
+	FreeVec(apath);
 	UnLock(CurrentDir(oldcurrentdir));
 	oldcurrentdir = NULL;
 	apath = NULL;
@@ -354,10 +353,10 @@ static void Sys_Init (void)
 			if (OpenDevice((STRPTR) TIMERNAME, UNIT_MICROHZ,
 					(struct IORequest *) timerio, 0) == 0)
 			{
-#ifdef __AROS__
-				TimerBase = timerio->tr_node.io_Device;
-#else
+#ifdef __MORPHOS__
 				TimerBase = (struct Library *)timerio->tr_node.io_Device;
+#else
+				TimerBase = timerio->tr_node.io_Device;
 #endif
 			}
 			else
@@ -597,13 +596,7 @@ static int Sys_GetBasedir (char *argv0, char *dst, size_t dstsize)
 		return 0;
 	return -1;
 #else
-	struct Task *self;
-	BPTR lock;
-
-	self = FindTask(NULL);
-	lock = ((struct Process *) self)->pr_CurrentDir;
-
-	if (NameFromLock(lock, (STRPTR) dst, dstsize) != 0)
+	if (NameFromLock(((struct Process *) FindTask(NULL))->pr_CurrentDir, (STRPTR) dst, dstsize) != 0)
 		return 0;
 	return -1;
 #endif

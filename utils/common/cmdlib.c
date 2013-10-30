@@ -58,10 +58,10 @@ char		com_token[1024];
 #ifdef PLATFORM_AMIGA
 struct timerequest	*timerio;
 struct MsgPort		*timerport;
-#ifdef __AROS__
-struct Device		*TimerBase;
-#else
+#ifdef __MORPHOS__
 struct Library		*TimerBase;
+#else
+struct Device		*TimerBase;
 #endif
 #endif /*  _AMIGA */
 
@@ -233,10 +233,10 @@ static void AMIGA_TimerInit (void)
 			if (OpenDevice((STRPTR) TIMERNAME, UNIT_MICROHZ,
 					(struct IORequest *) timerio, 0) == 0)
 			{
-#ifdef __AROS__
-				TimerBase = timerio->tr_node.io_Device;
-#else
+#ifdef __MORPHOS__
 				TimerBase = (struct Library *)timerio->tr_node.io_Device;
+#else
+				TimerBase = timerio->tr_node.io_Device;
 #endif
 			}
 			else
@@ -279,7 +279,7 @@ double COM_GetTime (void)
 	time(&t);
 	return t;
 }
-#endif
+#endif	/* COM_GetTime () */
 
 /*
 ==============

@@ -392,7 +392,7 @@ static int VID_SetMode (int modenum, unsigned char *palette)
 			CYBRBIDTG_NominalWidth, modelist[modenum].width,
 			CYBRBIDTG_NominalHeight, modelist[modenum].height,
 			TAG_DONE);
-	
+
 		screen = OpenScreenTags(0,
 			ModeID != INVALID_ID ? SA_DisplayID : TAG_IGNORE, ModeID,
 			SA_Width, modelist[modenum].width,

@@ -300,13 +300,12 @@ static STRPTR pattern_helper (const char *pat)
 	const char	*p;
 	int	n;
 
-	for (n = 0, p = pat; p != NULL; )
+	for (n = 0, p = pat; *p != '\0'; )
 	{
-		p = strchr (p, '*');
-		if (p != NULL)
-		{
-			++n;	++p;
-		}
+		if ((p = strchr (p, '*')) == NULL)
+			break;
+		++n;
+		++p;
 	}
 
 	if (n == 0)
@@ -340,7 +339,7 @@ const char *Q_FindFirstFile (const char *path, const char *pattern)
 	if (apath)
 		COM_Error ("Sys_FindFirst without FindClose");
 
-	apath = AllocMem (sizeof(struct AnchorPath) + PATH_SIZE, MEMF_CLEAR);
+	apath = AllocVec (sizeof(struct AnchorPath) + PATH_SIZE, MEMF_CLEAR);
 	if (!apath)
 		return NULL;
 
@@ -353,7 +352,7 @@ const char *Q_FindFirstFile (const char *path, const char *pattern)
 		oldcurrentdir = CurrentDir(newdir);
 	else
 	{
-		FreeMem(apath, sizeof(struct AnchorPath) + PATH_SIZE);
+		FreeVec(apath);
 		return NULL;
 	}
 
@@ -381,7 +380,7 @@ void Q_FindClose (void)
 	if (apath == NULL)
 		return;
 	MatchEnd(apath);
-	FreeMem(apath, sizeof(struct AnchorPath) + PATH_SIZE);
+	FreeVec(apath);
 	UnLock(CurrentDir(oldcurrentdir));
 	oldcurrentdir = NULL;
 	apath = NULL;
@@ -394,13 +393,8 @@ void Q_getwd (char *out, size_t size, qboolean trailing_dirsep)
 #if 0
 	qerr_strlcpy(__thisfunc__, __LINE__, out, "PROGDIR:", size);
 #else
-	struct Task *self;
-	BPTR lock;
 	size_t sz;
-
-	self = FindTask(NULL);
-	lock = ((struct Process *) self)->pr_CurrentDir;
-	if (NameFromLock(lock, (STRPTR) out, size) == 0)
+	if (NameFromLock(((struct Process *) FindTask(NULL))->pr_CurrentDir, (STRPTR) out, size) == 0)
 		COM_Error ("Couldn't determine current directory");
 	if (!trailing_dirsep)
 		return;

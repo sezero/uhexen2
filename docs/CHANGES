@@ -3,6 +3,14 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2013-10-30 (SVN):
+    * amiga: copy over changes from r5253 to engine/hexen2/server/ and
+      hw_utils/hwmaster/ versions of sys_amiga.c. also copy changes to
+      relevant sources at the utils side.
+    * sys_amiga.c: tidy-up pattern_helper() a bit. fix line alignment-
+      whitespace in Sys_GetClipboardData().
+    * vid_cgx.c: remove trailing whitespace.
+
 2013-10-29 (SVN):
     * modified the amiga files to compile on AmigaOS 3.
 

@@ -247,13 +247,12 @@ static STRPTR pattern_helper (const char *pat)
 	const char	*p;
 	int	n;
 
-	for (n = 0, p = pat; p != NULL; )
+	for (n = 0, p = pat; *p != '\0'; )
 	{
-		p = strchr (p, '*');
-		if (p != NULL)
-		{
-			++n;	++p;
-		}
+		if ((p = strchr (p, '*')) == NULL)
+			break;
+		++n;
+		++p;
 	}
 
 	if (n == 0)
@@ -580,13 +579,13 @@ char *Sys_GetClipboardData (void)
 	char *chunk_buffer = NULL;
 
 	if ((IFFHandle = AllocIFF())) {
-		if ((IFFHandle->iff_Stream = (IPTR) OpenClipboard(0))) {
+	    if ((IFFHandle->iff_Stream = (IPTR) OpenClipboard(0))) {
 		InitIFFasClip(IFFHandle);
 		if (!OpenIFF(IFFHandle, IFFF_READ)) {
-			if (!StopChunk(IFFHandle, ID_FTXT, ID_CHRS)) {
+		    if (!StopChunk(IFFHandle, ID_FTXT, ID_CHRS)) {
 			if (!ParseIFF(IFFHandle, IFFPARSE_SCAN)) {
-				cn = CurrentChunk(IFFHandle);
-				if (cn && (cn->cn_Type == ID_FTXT) &&
+			    cn = CurrentChunk(IFFHandle);
+			    if (cn && (cn->cn_Type == ID_FTXT) &&
 					(cn->cn_ID == ID_CHRS)) {
 				chunk_buffer = (char *)
 					  Z_Malloc(MAX_CLIPBOARDTXT, Z_MAINZONE);
@@ -594,16 +593,16 @@ char *Sys_GetClipboardData (void)
 							   chunk_buffer,
 							   MAX_CLIPBOARDTXT - 1);
 				if (readbytes < 0)
-					readbytes = 0;
+				    readbytes = 0;
 				chunk_buffer[readbytes] = '\0';
-				}
+			    }
 			}
-			}
-			CloseIFF(IFFHandle);
+		    }
+		    CloseIFF(IFFHandle);
 		}
 		CloseClipboard((struct ClipboardHandle *) IFFHandle->iff_Stream);
-		}
-		FreeIFF(IFFHandle);
+	    }
+	    FreeIFF(IFFHandle);
 	}
 
 	return chunk_buffer;

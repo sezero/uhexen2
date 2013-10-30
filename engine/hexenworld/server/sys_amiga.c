@@ -242,13 +242,12 @@ static STRPTR pattern_helper (const char *pat)
 	const char	*p;
 	int	n;
 
-	for (n = 0, p = pat; p != NULL; )
+	for (n = 0, p = pat; *p != '\0'; )
 	{
-		p = strchr (p, '*');
-		if (p != NULL)
-		{
-			++n;	++p;
-		}
+		if ((p = strchr (p, '*')) == NULL)
+			break;
+		++n;
+		++p;
 	}
 
 	if (n == 0)
@@ -353,10 +352,10 @@ static void Sys_Init (void)
 			if (OpenDevice((STRPTR) TIMERNAME, UNIT_MICROHZ,
 					(struct IORequest *) timerio, 0) == 0)
 			{
-#ifdef __AROS__
-				TimerBase = timerio->tr_node.io_Device;
-#else
+#ifdef __MORPHOS__
 				TimerBase = (struct Library *)timerio->tr_node.io_Device;
+#else
+				TimerBase = timerio->tr_node.io_Device;
 #endif
 			}
 			else
