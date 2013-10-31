@@ -176,7 +176,7 @@ int Sys_CopyFile (const char *frompath, const char *topath)
 		FreeDosObject(DOS_FIB, fib);
 		if (remaining < 0)
 		{
-			Con_Printf("%s: can't determine size for %s\n", __thisfunc__, frompath);
+			Con_Printf ("%s: can't determine size for %s\n", __thisfunc__, frompath);
 			Close(in);
 			return 1;
 		}
@@ -195,17 +195,14 @@ int Sys_CopyFile (const char *frompath, const char *topath)
 		return 1;
 	}
 
-	memset (buf, 0, sizeof(buf));
 	while (remaining)
 	{
 		if (remaining < sizeof(buf))
 			count = remaining;
-		else
-			count = sizeof(buf);
+		else	count = sizeof(buf);
 
 		if (Read(in, buf, count) == -1)
 			break;
-
 		if (Write(out, buf, count) == -1)
 			break;
 
@@ -242,12 +239,10 @@ static STRPTR pattern_helper (const char *pat)
 	const char	*p;
 	int	n;
 
-	for (n = 0, p = pat; *p != '\0'; )
+	for (n = 0, p = pat; *p != '\0'; ++p, ++n)
 	{
 		if ((p = strchr (p, '*')) == NULL)
 			break;
-		++n;
-		++p;
 	}
 
 	if (n == 0)

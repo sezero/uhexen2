@@ -602,23 +602,16 @@ int FS_WriteFileFromHandle (FILE *fromfile, const char *topath, size_t size)
 		return 1;
 	}
 
-	memset (buf, 0, sizeof(buf));
 	remaining = size;
 	while (remaining)
 	{
 		if (remaining < sizeof(buf))
 			count = remaining;
-		else
-			count = sizeof(buf);
+		else	count = sizeof(buf);
 
-		fread (buf, 1, count, fromfile);
-		err = ferror (fromfile);
-		if (err)
+		if (fread(buf, 1, count, fromfile) != count)
 			break;
-
-		fwrite (buf, 1, count, out);
-		err = ferror (out);
-		if (err)
+		if (fwrite(buf, 1, count, out) != count)
 			break;
 
 		remaining -= count;
@@ -626,7 +619,7 @@ int FS_WriteFileFromHandle (FILE *fromfile, const char *topath, size_t size)
 
 	fclose (out);
 
-	return err;
+	return (remaining == 0)? 0 : 1;
 }
 
 /*

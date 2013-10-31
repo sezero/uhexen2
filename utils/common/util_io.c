@@ -300,12 +300,10 @@ static STRPTR pattern_helper (const char *pat)
 	const char	*p;
 	int	n;
 
-	for (n = 0, p = pat; *p != '\0'; )
+	for (n = 0, p = pat; *p != '\0'; ++p, ++n)
 	{
 		if ((p = strchr (p, '*')) == NULL)
 			break;
-		++n;
-		++p;
 	}
 
 	if (n == 0)
@@ -781,10 +779,9 @@ int Q_CopyFile (const char *frompath, const char *topath)
 {
 	char	buf[COPY_READ_BUFSIZE];
 	FILE	*in, *out;
-	char		temp[1024];
-	int		err = 0;
-//	off_t		remaining, count;
-	size_t		remaining, count;
+	char	temp[1024];
+/*	off_t	remaining, count;*/
+	size_t	remaining, count;
 
 	strcpy (temp, topath);
 	CreatePath (temp);
@@ -797,22 +794,15 @@ int Q_CopyFile (const char *frompath, const char *topath)
 		COM_Error ("Unable to create file %s", topath);
 
 	remaining = Q_filelength (in);
-	memset (buf, 0, sizeof(buf));
 	while (remaining)
 	{
 		if (remaining < sizeof(buf))
 			count = remaining;
-		else
-			count = sizeof(buf);
+		else	count = sizeof(buf);
 
-		fread (buf, 1, count, in);
-		err = ferror (in);
-		if (err)
+		if (fread(buf, 1, count, in) != count)
 			break;
-
-		fwrite (buf, 1, count, out);
-		err = ferror (out);
-		if (err)
+		if (fwrite(buf, 1, count, out) != count)
 			break;
 
 		remaining -= count;
@@ -821,17 +811,16 @@ int Q_CopyFile (const char *frompath, const char *topath)
 	fclose (in);
 	fclose (out);
 
-	return err;
+	return (remaining == 0)? 0 : 1;
 }
 
 int Q_WriteFileFromHandle (FILE *fromfile, const char *topath, size_t size)
 {
 	char	buf[COPY_READ_BUFSIZE];
 	FILE	*out;
-//	off_t		remaining, count;
-	size_t		remaining, count;
-	char		temp[1024];
-	int		err = 0;
+/*	off_t	remaining, count;*/
+	size_t	remaining, count;
+	char	temp[1024];
 
 	strcpy (temp, topath);
 	CreatePath (temp);
@@ -840,23 +829,16 @@ int Q_WriteFileFromHandle (FILE *fromfile, const char *topath, size_t size)
 	if (!out)
 		COM_Error ("Unable to create file %s", topath);
 
-	memset (buf, 0, sizeof(buf));
 	remaining = size;
 	while (remaining)
 	{
 		if (remaining < sizeof(buf))
 			count = remaining;
-		else
-			count = sizeof(buf);
+		else	count = sizeof(buf);
 
-		fread (buf, 1, count, fromfile);
-		err = ferror (fromfile);
-		if (err)
+		if (fread(buf, 1, count, fromfile) != count)
 			break;
-
-		fwrite (buf, 1, count, out);
-		err = ferror (out);
-		if (err)
+		if (fwrite(buf, 1, count, out) != count)
 			break;
 
 		remaining -= count;
@@ -864,6 +846,6 @@ int Q_WriteFileFromHandle (FILE *fromfile, const char *topath, size_t size)
 
 	fclose (out);
 
-	return err;
+	return (remaining == 0)? 0 : 1;
 }
 

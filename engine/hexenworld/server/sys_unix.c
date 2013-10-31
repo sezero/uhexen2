@@ -125,9 +125,9 @@ int Sys_CopyFile (const char *frompath, const char *topath)
 	char	buf[COPY_READ_BUFSIZE];
 	FILE	*in, *out;
 	struct stat	st;
-	int		err = 0;
-//	off_t		remaining, count;
-	size_t		remaining, count;
+	struct utimbuf	tm;
+/*	off_t	remaining, count;*/
+	size_t	remaining, count;
 
 	if (stat(frompath, &st) != 0)
 	{
@@ -149,22 +149,15 @@ int Sys_CopyFile (const char *frompath, const char *topath)
 	}
 
 	remaining = st.st_size;
-	memset (buf, 0, sizeof(buf));
 	while (remaining)
 	{
 		if (remaining < sizeof(buf))
 			count = remaining;
-		else
-			count = sizeof(buf);
+		else	count = sizeof(buf);
 
-		fread (buf, 1, count, in);
-		err = ferror (in);
-		if (err)
+		if (fread(buf, 1, count, in) != count)
 			break;
-
-		fwrite (buf, 1, count, out);
-		err = ferror (out);
-		if (err)
+		if (fwrite(buf, 1, count, out) != count)
 			break;
 
 		remaining -= count;
@@ -173,16 +166,15 @@ int Sys_CopyFile (const char *frompath, const char *topath)
 	fclose (in);
 	fclose (out);
 
-	if (!err)
-	{
-	// restore the file's timestamp
-		struct utimbuf		tm;
+	if (remaining == 0) {
+	/* restore the file's timestamp */
 		tm.actime = time (NULL);
 		tm.modtime = st.st_mtime;
 		utime (topath, &tm);
+		return 0;
 	}
 
-	return err;
+	return 1;
 }
 
 /*

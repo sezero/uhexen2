@@ -438,8 +438,8 @@ int Sys_CopyFile (const char *frompath, const char *topath)
 {
 	char	buf[COPY_READ_BUFSIZE];
 	int	in, out;
-	int		err = 0;
 	long	remaining, count;
+	struct ftime	ft;
 
 	in = open (frompath, O_RDONLY | O_BINARY);
 	if (in < 0)
@@ -462,33 +462,22 @@ int Sys_CopyFile (const char *frompath, const char *topath)
 		return 1;
 	}
 
-	memset (buf, 0, sizeof(buf));
 	while (remaining)
 	{
 		if (remaining < sizeof(buf))
 			count = remaining;
-		else
-			count = sizeof(buf);
+		else	count = sizeof(buf);
 
 		if (read(in, buf, count) < 0)
-		{
-			err = -1;
 			break;
-		}
-
 		if (write(out, buf, count) < 0)
-		{
-			err = -1;
 			break;
-		}
 
 		remaining -= count;
 	}
 
-	if (!err)
-	{
-	// restore the file's timestamp
-		struct ftime	ft;
+	if (remaining == 0) {
+	/* restore the file's timestamp */
 		if (getftime(in, &ft) == 0)
 			setftime(out, &ft);
 	}
@@ -496,7 +485,7 @@ int Sys_CopyFile (const char *frompath, const char *topath)
 	close (in);
 	close (out);
 
-	return err;
+	return remaining;
 }
 
 /*
