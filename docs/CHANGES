@@ -3,6 +3,10 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2013-12-13 (SVN):
+    * oslibs/dos: recompile watt32 library with a few fixes applied.
+      update watt-32 web links in the docs.
+
 2013-10-31 (SVN):
     * sys_unix.c, sys_amiga.c, sys_dos.c: removed a useless memset and
       simplified error checks in Sys_CopyFile(). minor tidy-ups.

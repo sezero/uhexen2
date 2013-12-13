@@ -267,6 +267,7 @@ libmad homepage		: http://www.underbit.com/products/mad/
 mpg123 homepage		: http://mpg123.org/
 FLAC homepage		: http://xiph.org/flac/
 			  http://sourceforge.net/projects/flac/
+MikMod homepage		: http://mikmod.sourceforge.net/
 ALSA homepage		: http://www.alsa-project.org/
 GCC homepage		: http://gcc.gnu.org/
 Binutils homepage	: http://sourceware.org/binutils/
@@ -274,7 +275,7 @@ clang homepage		: http://clang.llvm.org/
 NASM homepage		: http://www.nasm.us/
 YASM homepage		: http://yasm.tortall.net/
 DJGPP homepage		: http://www.delorie.com/djgpp/
-WATT-32 homepage	: http://home.broadpark.no/~gvanem/
+WATT-32 homepage	: http://www.watt-32.net/
 MinGW/MSYS homepage	: http://mingw.org/
 			  http://sourceforge.net/projects/mingw/
 MinGW-w64 homepage	: http://mingw-w64.sourceforge.net/

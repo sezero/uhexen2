@@ -29,7 +29,7 @@ Things not tested, but should work:
 
   In addition, uHexen2 includes WatTCP (WATT-32) support for internet
   play, which has been reported to work without issues.  See WatTCP
-  documentation (http://home.broadpark.no/~gvanem/) to setup WatTCP.
+  documentation to setup WatTCP (see http://www.watt-32.net/).
 
   - Note: WatTCP won't initialize if IPX is running.
   - Note: WatTCP was observed not to work with H2DOS as a dedicated or
