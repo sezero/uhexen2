@@ -184,25 +184,18 @@ void stats_NewPlayer(entity e)
 
 	// Calc initial health
 	index = (e.playerclass - 1) * 5;
-	e.health = stats_compute(hitpoint_table[index],
-							 hitpoint_table[index+1]);
+	e.health = stats_compute(hitpoint_table[index], hitpoint_table[index+1]);
 	e.max_health = e.health;
 
 	// Calc initial mana
 	index = (e.playerclass - 1) * 5;
-	e.max_mana = stats_compute(mana_table[index],
-							 mana_table[index+1]);
-
+	e.max_mana = stats_compute(mana_table[index], mana_table[index+1]);
 
 	index = (e.playerclass - 1) * 2;
-	e.strength = stats_compute(strength_table[index],
-							   strength_table[index+1]);
-	e.intelligence = stats_compute(intelligence_table[index],
-								   intelligence_table[index+1]);
-	e.wisdom = stats_compute(wisdom_table[index],
-							 wisdom_table[index+1]);
-	e.dexterity = stats_compute(dexterity_table[index],
-								dexterity_table[index+1]);
+	e.strength = stats_compute(strength_table[index], strength_table[index+1]);
+	e.intelligence = stats_compute(intelligence_table[index], intelligence_table[index+1]);
+	e.wisdom = stats_compute(wisdom_table[index], wisdom_table[index+1]);
+	e.dexterity = stats_compute(dexterity_table[index], dexterity_table[index+1]);
 
 	e.level = 1;
 	e.experience = 0;
@@ -268,7 +261,6 @@ void PlayerAdvanceLevel(float NewLevel)
 		case CLASS_CRUSADER:
 			centerprint(self,"Crusader gained a level\n");
 			// Special ability #1, full mana at level advancement
-		//	self.bluemana = self.greenmana = self.max_mana;
 			// Pa3PyX: only do this at level 3 and on, and also
 			//	   fully heal, to make this more useful, and
 			//	   consistent with the manual
@@ -323,11 +315,10 @@ void PlayerAdvanceLevel(float NewLevel)
 		if (self.max_health > 150)
 			self.max_health = 150;
 
-
 		self.greenmana += ManaInc;
 		self.bluemana += ManaInc;
 		self.max_mana += ManaInc;
-		
+
 		sprint(self, "Stats: MP +");
 		s2 = ftos(ManaInc);
 		sprint(self, s2);
@@ -343,7 +334,6 @@ void PlayerAdvanceLevel(float NewLevel)
 
 	if (self.level >5)
 		self.flags(+)FL_SPECIAL_ABILITY2;
-
 }
 
 
@@ -384,12 +374,12 @@ void AwardExperience(entity ToEnt, entity FromEnt, float Amount)
 	float IsPlayer;
 	entity SaveSelf;
 	float index,test40,test80,diff,index2,totalnext,wis_mod;
-	
+
 	if (!Amount) return;
 
 	if(ToEnt.deadflag>=DEAD_DYING)
 		return;
-		
+
 	IsPlayer = (ToEnt.classname == "player");
 
 	if (FromEnt != world && Amount == 0.0)
@@ -406,7 +396,7 @@ void AwardExperience(entity ToEnt, entity FromEnt, float Amount)
 		Amount *= 1.35;
 	else if (ToEnt.playerclass == CLASS_NECROMANCER)
 		Amount *= 1.22;
-	
+
 	wis_mod = ToEnt.wisdom - 11;
 	Amount+=Amount*wis_mod/20;//from .75 to 1.35
 
@@ -427,12 +417,8 @@ void AwardExperience(entity ToEnt, entity FromEnt, float Amount)
 
 			self = SaveSelf;
 		}
-	}
-
 
 	// Crusader Special Ability #1: award full health at 40% and 80% of levels experience
-	if (IsPlayer)
-	{
 		if (ToEnt.playerclass == CLASS_CRUSADER)
 		{
 			index = (ToEnt.playerclass - 1) * (MAX_LEVELS+1);
@@ -445,24 +431,24 @@ void AwardExperience(entity ToEnt, entity FromEnt, float Amount)
 			{
 				test40 = ExperienceValues[index] * .4;
 				test80 = ExperienceValues[index] * .8;
-			}	
-			else if ((ToEnt.level - 1) <= MAX_LEVELS)
-			{			
-				index2 = index - 1;		
+			}
+			else
+			if ((ToEnt.level - 1) <= MAX_LEVELS)
+			{
+				index2 = index - 1;
 				diff = ExperienceValues[index] - ExperienceValues[index2]; 
 				test40 = ExperienceValues[index2] + (diff * .4);
 				test80 = ExperienceValues[index2] + (diff * .8);
 			}
 			else // Past MAX_LEVELS
-			{	
+			{
 				totalnext = ExperienceValues[index - 1];   // index is 1 past MAXLEVEL at this point
 				totalnext += ((ToEnt.level - 1) - MAX_LEVELS) * ExperienceValues[index];
 
 				test40 = totalnext + (ExperienceValues[index] * .4);
 				test80 = totalnext + (ExperienceValues[index] * .8);
-
 			}
-		
+
 			if (((ToEnt.experience - Amount) < test40) && (ToEnt.experience> test40))
 				ToEnt.health = ToEnt.max_health;
 			else if (((ToEnt.experience - Amount) < test80) && (ToEnt.experience> test80))
@@ -494,24 +480,18 @@ float index,newlevel;
 
 	// Calc initial health
 	index = (e.playerclass - 1) * 5;
-	e.health = stats_compute(hitpoint_table[index],
-							 hitpoint_table[index+1]);
+	e.health = stats_compute(hitpoint_table[index], hitpoint_table[index+1]);
 	e.max_health = e.health;
 
 	// Calc initial mana
 	index = (e.playerclass - 1) * 5;
-	e.max_mana = stats_compute(mana_table[index],
-							 mana_table[index+1]);
+	e.max_mana = stats_compute(mana_table[index], mana_table[index+1]);
 
 	index = (e.playerclass - 1) * 2;
-	e.strength = stats_compute(strength_table[index],
-							   strength_table[index+1]);
-	e.intelligence = stats_compute(intelligence_table[index],
-								   intelligence_table[index+1]);
-	e.wisdom = stats_compute(wisdom_table[index],
-							 wisdom_table[index+1]);
-	e.dexterity = stats_compute(dexterity_table[index],
-								dexterity_table[index+1]);
+	e.strength = stats_compute(strength_table[index], strength_table[index+1]);
+	e.intelligence = stats_compute(intelligence_table[index], intelligence_table[index+1]);
+	e.wisdom = stats_compute(wisdom_table[index], wisdom_table[index+1]);
+	e.dexterity = stats_compute(dexterity_table[index], dexterity_table[index+1]);
 
 	//Add level diff stuff
 	newlevel = FindLevel(e);

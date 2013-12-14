@@ -115,7 +115,6 @@ void PlayerSpeed_Calc (entity who)
 	else if(who.flags2&FL2_EXCALIBUR)
 		who.hasted *=1.8;
 
-
 	if (who.hull==HULL_CROUCH)   // Player crouched
 	{
 		if(who.playerclass!=CLASS_DWARF)
@@ -141,6 +140,7 @@ void PlayerSpeed_Calc (entity who)
 //	if(who.waterlevel==3)//swimming mod
 //		who.hasted*=player_swim_mod[who.playerclass - 1];
 }
+
 /*
 float CLASS_PALADIN					= 1;
 float CLASS_CRUSADER				= 2;
@@ -181,25 +181,18 @@ void stats_NewPlayer(entity e)
 
 	// Calc initial health
 	index = (e.playerclass - 1) * 5;
-	e.health = stats_compute(hitpoint_table[index],
-							 hitpoint_table[index+1]);
+	e.health = stats_compute(hitpoint_table[index], hitpoint_table[index+1]);
 	e.max_health = e.health;
 
 	// Calc initial mana
 	index = (e.playerclass - 1) * 5;
-	e.max_mana = stats_compute(mana_table[index],
-							 mana_table[index+1]);
-
+	e.max_mana = stats_compute(mana_table[index], mana_table[index+1]);
 
 	index = (e.playerclass - 1) * 2;
-	e.strength = stats_compute(strength_table[index],
-							   strength_table[index+1]);
-	e.intelligence = stats_compute(intelligence_table[index],
-								   intelligence_table[index+1]);
-	e.wisdom = stats_compute(wisdom_table[index],
-							 wisdom_table[index+1]);
-	e.dexterity = stats_compute(dexterity_table[index],
-								dexterity_table[index+1]);
+	e.strength = stats_compute(strength_table[index], strength_table[index+1]);
+	e.intelligence = stats_compute(intelligence_table[index], intelligence_table[index+1]);
+	e.wisdom = stats_compute(wisdom_table[index], wisdom_table[index+1]);
+	e.dexterity = stats_compute(dexterity_table[index], dexterity_table[index+1]);
 
 	e.level = 1;
 //	e.experience = 0;
@@ -238,33 +231,6 @@ void PlayerAdvanceLevel(float NewLevel)
 
 	if(!self.newclass)
 	{
-/*		if (self.playerclass == CLASS_PALADIN)
-
-		{
-		   sprint(self,PRINT_MEDIUM, "Paladin gained a level\n");
-		}
-		else if (self.playerclass == CLASS_CRUSADER)
-		{
-		   sprint(self,PRINT_MEDIUM, "Crusader gained a level\n");
-
-			// Special ability #1, full mana at level advancement
-			self.bluemana = self.greenmana = self.max_mana;
-
-		}
-		else if (self.playerclass == CLASS_NECROMANCER)
-		{
-		   sprint(self,PRINT_MEDIUM, "Necromancer gained a level\n");
-		}
-		else if (self.playerclass == CLASS_ASSASSIN)
-		{
-		   sprint(self,PRINT_MEDIUM, "Assassin gained a level\n");
-
-		}
-		else if (self.playerclass == CLASS_SUCCUBUS)
-		{
-			sprint(self,PRINT_MEDIUM,"Demoness gained a level\n");
-		}
-*/
 		switch (self.playerclass)
 		{
 		case CLASS_DWARF:
@@ -288,7 +254,6 @@ void PlayerAdvanceLevel(float NewLevel)
 		   centerprint(self,"Demoness gained a level\n");
 		break;
 		}
-
 	}
 
 	if (self.playerclass < CLASS_PALADIN ||
@@ -323,11 +288,10 @@ void PlayerAdvanceLevel(float NewLevel)
 		if (self.max_health > 150)
 			self.max_health = 150;
 
-
 //		self.greenmana += ManaInc;
 //		self.bluemana += ManaInc;
 		self.max_mana += ManaInc;
-		
+
 		if(!deathmatch)
 		{
 			sprint(self, PRINT_LOW,"Stats: MP +");
@@ -346,7 +310,6 @@ void PlayerAdvanceLevel(float NewLevel)
 
 	if (self.level >5)
 		self.flags(+)FL_SPECIAL_ABILITY2;
-
 }
 
 
@@ -372,24 +335,18 @@ float index,newlevel;
 
 	// Calc initial health
 	index = (e.playerclass - 1) * 5;
-	e.health = stats_compute(hitpoint_table[index],
-							 hitpoint_table[index+1]);
+	e.health = stats_compute(hitpoint_table[index], hitpoint_table[index+1]);
 	e.max_health = e.health;
 
 	// Calc initial mana
 	index = (e.playerclass - 1) * 5;
-	e.max_mana = stats_compute(mana_table[index],
-							 mana_table[index+1]);
+	e.max_mana = stats_compute(mana_table[index], mana_table[index+1]);
 
 	index = (e.playerclass - 1) * 2;
-	e.strength = stats_compute(strength_table[index],
-							   strength_table[index+1]);
-	e.intelligence = stats_compute(intelligence_table[index],
-								   intelligence_table[index+1]);
-	e.wisdom = stats_compute(wisdom_table[index],
-							 wisdom_table[index+1]);
-	e.dexterity = stats_compute(dexterity_table[index],
-								dexterity_table[index+1]);
+	e.strength = stats_compute(strength_table[index], strength_table[index+1]);
+	e.intelligence = stats_compute(intelligence_table[index], intelligence_table[index+1]);
+	e.wisdom = stats_compute(wisdom_table[index], wisdom_table[index+1]);
+	e.dexterity = stats_compute(dexterity_table[index], dexterity_table[index+1]);
 
 	//Add level diff stuff
 	if(dmMode==DM_SIEGE)

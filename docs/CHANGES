@@ -3,6 +3,10 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2013-12-14 (SVN):
+    * stats.hc (AwardExperience): eliminated the duplicated IsPlayer
+      check. whitespace cleanups.
+
 2013-12-13 (SVN):
     * oslibs/dos: recompile watt32 library with a few fixes applied.
       update watt-32 web links in the docs.
