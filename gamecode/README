@@ -4,8 +4,11 @@ Hexen II: Hammer of Thyrion (uHexen2) - GAMECODE
 Changes
 -------
 
-2013-08-05 (1.29):
+2013-12-14 (1.29):
 ===================
+- stats.hc (AwardExperience): eliminated the duplicated IsPlayer check.
+  Crusader partial healing at certain experience thresholds now starts
+  at level 3 to be consistent with the manual.
 - specials.hc (CheckAbilities): fixed missing parens around two OR'ed
   constants in the drawflags bittest. (issue was present since at least
   v1.03.)

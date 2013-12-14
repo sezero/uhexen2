@@ -1,7 +1,7 @@
 Hammer of Thyrion (uHexen2) release notes:
 
 ========================================================================
-Changes in v1.5.7: (Oct. 31, 2013.)
+Changes in v1.5.7: (Dec. 14, 2013.)
 ========================================================================
 
 - Music: Support for FLAC codec. (edit the makefiles to enable it when
@@ -12,6 +12,9 @@ Changes in v1.5.7: (Oct. 31, 2013.)
 
 - All platforms, gameplay, mission pack: fixed an hcode bug which would
   make the spiders seemingly invincible for a difficulty-depending time.
+
+- All platforms, gameplay: Crusader partial heal at certain experience
+  thresholds now starts at level 3 to be consistent with the manual.
 
 - SDL mouse/kbd input: Fix for a rare freezing issue.
 

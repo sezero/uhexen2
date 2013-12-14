@@ -384,7 +384,8 @@ void AwardExperience(entity ToEnt, entity FromEnt, float Amount)
 		}
 
 	// Crusader Special Ability #1: award full health at 40% and 80% of levels experience
-		if (ToEnt.playerclass == CLASS_CRUSADER)
+		// O.S.: this is supposed to be for level3+
+		if (ToEnt.playerclass == CLASS_CRUSADER && ToEnt.level > 2)
 		{
 			index = (ToEnt.playerclass - 1) * (MAX_LEVELS+1);
 			if ((ToEnt.level - 1) > MAX_LEVELS)
@@ -392,12 +393,12 @@ void AwardExperience(entity ToEnt, entity FromEnt, float Amount)
 			else
 				index += ToEnt.level - 1;
 
-			if (ToEnt.level == 1)
-			{
-				test40 = ExperienceValues[index] * .4;
-				test80 = ExperienceValues[index] * .8;
-			}
-			else
+		//	if (ToEnt.level == 1)
+		//	{
+		//		test40 = ExperienceValues[index] * .4;
+		//		test80 = ExperienceValues[index] * .8;
+		//	}
+		//	else
 			if ((ToEnt.level - 1) <= MAX_LEVELS)
 			{
 				index2 = index - 1;

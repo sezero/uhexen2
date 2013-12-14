@@ -4,6 +4,12 @@ Development Progress	:
 ---------------------------
 
 2013-12-14 (SVN):
+    * stats.hc (AwardExperience): Crusader partial healing at certain
+      experience thresholds now starts at level 3 to be consistent with
+      the manual.
+    * bumped the version date stamp to 2013-12-14.
+
+2013-12-14 (SVN):
     * stats.hc (AwardExperience): eliminated the duplicated IsPlayer
       check. whitespace cleanups.
 
