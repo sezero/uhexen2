@@ -28,6 +28,15 @@
 #include "snd_mikmod.h"
 #include <mikmod.h>
 
+#if ((LIBMIKMOD_VERSION+0) < 0x030105)
+#error libmikmod version is way too old and unusable.
+#endif
+#if (LIBMIKMOD_VERSION < 0x030107) /* ancient libmikmod */
+#define S_MIKMOD_initlib(c) MikMod_Init()
+#else
+#define S_MIKMOD_initlib(c) MikMod_Init(c)
+#endif
+
 #ifndef DMODE_NOISEREDUCTION
 #define DMODE_NOISEREDUCTION 0x1000 /* Low pass filtering */
 #endif
@@ -98,7 +107,7 @@ static qboolean S_MIKMOD_CodecInitialize (void)
 
 	MikMod_RegisterDriver(&drv_nos);	/* only need the "nosound" driver, none else */
 	MikMod_RegisterAllLoaders();
-	if (MikMod_Init(NULL))
+	if (S_MIKMOD_initlib(NULL))
 	{
 		Con_DPrintf("Could not initialize MikMod: %s\n", MikMod_strerror(MikMod_errno));
 		return false;
