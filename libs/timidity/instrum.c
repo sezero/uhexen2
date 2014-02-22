@@ -390,7 +390,7 @@ static void load_instrument(MidSong *song, const char *name,
 	}
 
       /* Then read the sample data */
-      sp->data = (sample_t *) safe_malloc(sp->data_length+2);
+      sp->data = (sample_t *) safe_malloc(sp->data_length+4);
 
       if (1 != fread(sp->data, sp->data_length, 1, fp))
 	goto badread;
@@ -403,7 +403,7 @@ static void load_instrument(MidSong *song, const char *name,
 	  sp->data_length *= 2;
 	  sp->loop_start *= 2;
 	  sp->loop_end *= 2;
-	  tmp16 = new16 = (uint16 *) safe_malloc(sp->data_length+2);
+	  tmp16 = new16 = (uint16 *) safe_malloc(sp->data_length+4);
 	  while (k--)
 	    *tmp16++ = (uint16)(*cp++) << 8;
 	  free(sp->data);
@@ -481,9 +481,9 @@ static void load_instrument(MidSong *song, const char *name,
       sp->loop_start /= 2;
       sp->loop_end /= 2;
 
-      /* initialize the added extra sample space (see the +2 bytes in
+      /* initialize the added extra sample space (see the +4 bytes in
 	 allocation) using the last actual sample:  */
-      sp->data[sp->data_length] = sp->data[sp->data_length-1];
+      sp->data[sp->data_length] = sp->data[sp->data_length+1] = 0;
 
       /* Then fractional samples */
       sp->data_length <<= FRACTION_BITS;

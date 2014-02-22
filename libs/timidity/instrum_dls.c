@@ -791,11 +791,11 @@ static void load_region_dls(MidSong *song, MidSample *sample, DLS_Instrument *in
   sample->modes = MODES_16BIT;
   sample->sample_rate = wave->format->dwSamplesPerSec;
   sample->data_length = wave->length / 2;
-  sample->data = (sample_t *)safe_malloc(wave->length + 2);
+  sample->data = (sample_t *)safe_malloc(wave->length + 4);
   memcpy(sample->data, wave->data, wave->length);
-  /* initialize the added extra sample space (see the +2 bytes in
+  /* initialize the added extra sample space (see the +4 bytes in
      allocation) using the last actual sample:  */
-  sample->data[sample->data_length] = sample->data[sample->data_length-1];
+  sample->data[sample->data_length] = sample->data[sample->data_length+1] = 0;
   if (rgn->wsmp->cSampleLoops) {
     sample->modes |= (MODES_LOOPING|MODES_SUSTAIN);
     sample->loop_start = rgn->wsmp_loop->ulStart / 2;

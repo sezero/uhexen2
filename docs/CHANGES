@@ -3,6 +3,13 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2014-02-22 (SVN):
+    * timidity/instrum.c (load_instrument): allocate the sp data with 2
+      padding samples, not just 1. fixes invalid reads from resampler,
+      seen with the old MIDIA patchset. (timidity++-2.13 and newer does
+      the same thing.)
+    * bumped the version date stamp to 2014-02-22.
+
 2013-12-14 (SVN):
     * stats.hc (AwardExperience): Crusader partial healing at certain
       experience thresholds now starts at level 3 to be consistent with
