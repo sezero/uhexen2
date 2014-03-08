@@ -1,7 +1,7 @@
 Hammer of Thyrion (uHexen2) release notes:
 
 ========================================================================
-Changes in v1.5.7: (Feb. 22, 2014.)
+Changes in v1.5.7: (Mar. 08, 2014.)
 ========================================================================
 
 - Music: Support for FLAC codec. (edit the makefiles to enable it when

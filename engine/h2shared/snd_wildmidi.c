@@ -1,11 +1,16 @@
 /*
  * MIDI streaming music support using WildMIDI library.
  *
- * wildmidi at least v0.2.3.4 is required at both compile and runtime:
- * wildmidi-0.2.2 has horrific mistakes like free()ing the buffer that
- * you pass with WildMidi_OpenBuffer() when you do WildMidi_Close().
+ * wildmidi at least v0.2.3.x is required at both compile and runtime:
+ * - wildmidi-0.2.2 has a horrific mistake of freeing the buffer that
+ *   you pass with WildMidi_OpenBuffer() when you do WildMidi_Close().
+ * - wildmidi-0.2.3.x-0.3.x have a regression resulting in perversely
+ *   high amount of heap usage (up to about 500mb) because of crazily
+ *   repetitive malloc/free calls (fixed in 0.3.5 and in 0.4.x.)
+ * - wildmidi-0.4.x (not yet released as of this writing) has some api
+ *   changes against 0.2.3/0.3.x.
  *
- * Copyright (C) 2010-2012 O.Sezer <sezero@users.sourceforge.net>
+ * Copyright (C) 2010-2014 O.Sezer <sezero@users.sourceforge.net>
  *
  * $Id$
  *
@@ -44,7 +49,11 @@
 typedef struct _midi_buf_t
 {
 	midi *song;
+#if defined(LIBWILDMIDI_VERSION) && (LIBWILDMIDI_VERSION-0 >= 0x000400L)
+	int8_t midi_buffer[CACHEBUFFER_SIZE];
+#else
 	char midi_buffer[CACHEBUFFER_SIZE];
+#endif
 	int pos, last;
 } midi_buf_t;
 
@@ -104,7 +113,7 @@ static qboolean S_WILDMIDI_CodecInitialize (void)
 	if (wildmidi_codec.initialized)
 		return true;
 
-	wildmidi_opts = WM_MO_ENHANCED_RESAMPLING;
+	wildmidi_opts = 0;/* WM_MO_ENHANCED_RESAMPLING is a cpu hog: no need. */
 	if (shm->speed < 11025)
 		wildmidi_rate = 11025;
 	else if (shm->speed > 48000)
@@ -190,6 +199,20 @@ static qboolean S_WILDMIDI_CodecOpenStream (snd_stream_t *stream)
 	return true;
 }
 
+#if !defined(LIBWILDMIDI_VERSION) || (LIBWILDMIDI_VERSION-0 < 0x000400L)
+static inline void S_WILDMIDI_ConvertSamples (char *dat, int samples) {
+	/* libWildMidi-0.2.x/0.3.x return little-endian samples. */
+	short *swp = (short *) dat;
+	int i = 0;
+	for (; i < samples; i++)
+		swp[i] = LittleShort(swp[i]);
+}
+#else /* libWildMidi >= 0.4.x */
+static inline void S_WILDMIDI_ConvertSamples (int8_t *dat, int samples) {
+	/* libWildMidi >= 0.4.x returns host-endian samples: no swap. */
+}
+#endif /* LIBWILDMIDI_VERSION */
+
 static int S_WILDMIDI_CodecReadStream (snd_stream_t *stream, int bytes, void *buffer)
 {
 	midi_buf_t *data = (midi_buf_t *) stream->priv;
@@ -206,8 +229,8 @@ static int S_WILDMIDI_CodecReadStream (snd_stream_t *stream, int bytes, void *bu
 	{
 		bytes = data->last - data->pos;
 	}
+	S_WILDMIDI_ConvertSamples (& data->midi_buffer[data->pos], bytes / 2);
 	memcpy (buffer, & data->midi_buffer[data->pos], bytes);
-	/* WildMIDI outputs host-endian data, no byte swap needed. */
 	data->pos += bytes;
 	if (data->pos == data->last)
 		data->pos = 0;

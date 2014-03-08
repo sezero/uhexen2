@@ -3,6 +3,11 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2014-03-08 (SVN):
+    * snd_wildmidi.c: fix wrong endianism handling. make it compatible
+      with upcoming libWildMidi-0.4.x.
+    * bumped the version date stamp to 2014-03-08.
+
 2014-02-22 (SVN):
     * timidity/instrum.c (load_instrument): allocate the sp data with 2
       padding samples, not just 1. fixes invalid reads from resampler,
