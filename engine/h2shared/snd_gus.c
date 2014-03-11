@@ -882,7 +882,6 @@ static qboolean GUS_GetGUSData (void)
 	return true;
 }
 
-
 //=============================================================================
 // Programs the DMA controller to start DMAing in Auto-init mode
 //=============================================================================
@@ -1088,7 +1087,6 @@ static void GUS_StartGf1 (int count, BYTE Voices)
 	SetGf18(SET_CONTROL, 0x0C);
 }
 
-
 //=============================================================================
 // Figures out what kind of UltraSound we have, if any, and starts it playing
 //=============================================================================
@@ -1151,7 +1149,7 @@ static qboolean S_GUS_Init (dma_t *dma)
 		if (dma_dosadr == NULL)
 		{
 			shm = NULL;
-			Con_Printf("Couldn't allocate sound dma buffer");
+			Con_Printf("Couldn't allocate sound dma buffer\n");
 			return false;
 		}
 
@@ -1205,7 +1203,7 @@ static qboolean S_GUS_Init (dma_t *dma)
 		if (dma_dosadr == NULL)
 		{
 			shm = NULL;
-			Con_Printf("Couldn't allocate sound dma buffer");
+			Con_Printf("Couldn't allocate sound dma buffer\n");
 			return false;
 		}
 

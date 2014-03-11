@@ -77,7 +77,7 @@ static void PrintBits (byte b)
 
 static void SB_Info_f (void)
 {
-	Con_Printf ("BLASTER=%s\n", getenv("BLASTER"));
+	Con_Printf("BLASTER=%s\n", getenv("BLASTER"));
 	Con_Printf("dsp version=%d.%d\n", dsp_version, dsp_minor_version);
 	Con_Printf("dma=%d\n", dma);
 	if (timeconstant != -1)
@@ -349,7 +349,6 @@ static void BLASTER_StartDMA (void)
 	dos_outportb(disable_reg, dma & ~4);
 }
 
-
 /*
 ==================
 BLASTER_Init
@@ -378,7 +377,7 @@ static qboolean S_BLASTER_Init (dma_t *dma)
 
 	if (ResetDSP())
 	{
-		Con_Printf("Could not reset SB");
+		Con_Printf("Could not reset SB\n");
 		return false;
 	}
 
@@ -444,7 +443,7 @@ static qboolean S_BLASTER_Init (dma_t *dma)
 	if (!dma_dosadr)
 	{
 		shm = NULL;
-		Con_Printf("Couldn't allocate sound dma buffer");
+		Con_Printf("Couldn't allocate sound dma buffer\n");
 		return false;
 	}
 
@@ -459,14 +458,12 @@ static qboolean S_BLASTER_Init (dma_t *dma)
 	shm->samplepos = 0;
 	shm->submission_chunk = 1;
 	shm->buffer = (unsigned char *) dma_buffer;
-	shm->samples = size / (shm->samplebits / 8);
 
 	BLASTER_StartDMA();
 	StartSB();
 
 	return true;
 }
-
 
 /*
 ==============
