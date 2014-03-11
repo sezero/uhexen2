@@ -50,19 +50,6 @@ static int buttonremap[] =
 	K_MOUSE5
 };
 
-static int FilterMouseEvents(const SDL_Event *event)
-{
-	switch (event->type)
-	{
-	case SDL_MOUSEMOTION:
-	case SDL_MOUSEBUTTONDOWN:
-	case SDL_MOUSEBUTTONUP:
-		return 0;
-	}
-
-	return 1;
-}
-
 /* joystick support: */
 static	SDL_Joystick	*joy_id = NULL;
 static	int		joy_available;
@@ -204,13 +191,14 @@ void IN_ActivateMouse (void)
 			mouseactivatetoggle = true;
 			mouseactive = true;
 			SDL_WM_GrabInput (SDL_GRAB_ON);
-			SDL_SetEventFilter(NULL);
 		}
 	    }
 	}
 
 	trackballactive = true; /* HACK... */
 
+	/* nuke events from when mouse was disabled: */
+	SDL_PumpEvents ();
 	if (mouseinitialized)
 		SDL_GetRelativeMouseState (NULL, NULL);
 	IN_JoyTrackballMove (NULL, NULL);
@@ -228,7 +216,6 @@ void IN_DeactivateMouse (void)
 		mouseactivatetoggle = false;
 		mouseactive = false;
 		SDL_WM_GrabInput (SDL_GRAB_OFF);
-		SDL_SetEventFilter(FilterMouseEvents);
 	    }
 	}
 
@@ -246,7 +233,6 @@ static void IN_StartupMouse (void)
 	if (safemode || COM_CheckParm ("-nomouse"))
 	{
 		SDL_WM_GrabInput (SDL_GRAB_OFF);
-		SDL_SetEventFilter(FilterMouseEvents);
 		return;
 	}
 
@@ -256,7 +242,6 @@ static void IN_StartupMouse (void)
 		mouseactivatetoggle = true;
 		mouseactive = true;
 		SDL_WM_GrabInput (SDL_GRAB_ON);
-		SDL_SetEventFilter(NULL);
 		SDL_GetRelativeMouseState (NULL, NULL);
 	}
 }

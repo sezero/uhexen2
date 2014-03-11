@@ -1,7 +1,7 @@
 Hammer of Thyrion (uHexen2) release notes:
 
 ========================================================================
-Changes in v1.5.7: (Mar. 08, 2014.)
+Changes in v1.5.7: (Mar. 11, 2014.)
 ========================================================================
 
 - Music: Support for FLAC codec. (edit the makefiles to enable it when
@@ -15,8 +15,6 @@ Changes in v1.5.7: (Mar. 08, 2014.)
 
 - All platforms, gameplay: Crusader partial heal at certain experience
   thresholds now starts at level 3 to be consistent with the manual.
-
-- SDL mouse/kbd input: Fix for a rare freezing issue.
 
 - OpenGL: minor gamma updates.
 

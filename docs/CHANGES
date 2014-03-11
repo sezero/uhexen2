@@ -3,6 +3,15 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2014-03-11 (SVN):
+    * revert the r5197 'use a different approach to ignore mouse events'
+      (1) the bug reporter found that it's an SDL-1.2 bug regarding IME:
+      http://sf.net/p/uhexen2/discussion/425207/thread/6f168cfb/
+      (2) we have never managed to reproduce the reported bug, only one
+      user reported the bug, and (3) the workaround caused a regression
+      where the first ever keyboard key hit is missed.
+    * bumped the version date stamp to 2014-03-11.
+
 2014-03-08 (SVN):
     * snd_wildmidi.c: fix wrong endianism handling. make it compatible
       with upcoming libWildMidi-0.4.x.
