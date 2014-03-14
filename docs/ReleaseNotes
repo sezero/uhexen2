@@ -18,12 +18,12 @@ Changes in v1.5.7: (Mar. 11, 2014.)
 
 - OpenGL: minor gamma updates.
 
-- cdaudio, windows: a fix for the -cddev command line option
+- cdaudio, windows: fixed the "-cddev" command line option.
 
 - Utils, hcc: Added a command line option "-os" to compact the strings
   heap by eliminating duplicates. some minor revisions.
 
-- Minor fixes, tidy-ups, safeguards elsewhere in the sources.
+- Several small fixes, tidy-ups, safeguards elsewhere in the sources.
 
 
 ========================================================================

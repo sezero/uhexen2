@@ -3,7 +3,7 @@ Hexen II: Hammer of Thyrion (uHexen2)
 Features:
 -------------------------------------
 
-* Support for Hexen II, Hexen II demo, Portal of Praevus mission pack
+* Support for Hexen II, Hexen II demo, Portal of Praevus mission pack,
   and HexenWorld.
 
 * Supported operating systems/platforms: Well tested on Linux, FreeBSD,
@@ -52,7 +52,8 @@ Features:
   OpenBSD and NetBSD are experimentally supported with sunaudio and SDL.
 
 * Support for ogg, mp3, opus, flac and wav external music files to be
-  played instead of the original midi files.
+  played instead of the original midi files. support for mod (tracker)
+  music, including unreal's umx music files.
 
 * Working music volume controls and on the fly selection of CD or MIDI
   music.
