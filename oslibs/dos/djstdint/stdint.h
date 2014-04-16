@@ -1,5 +1,6 @@
 /* Hacked from DJGPP v2.04 for use with older DJGPP versions */
 
+/* Copyright (C) 2013 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2003 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2002 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2001 DJ Delorie, see COPYING.DJ for details */
@@ -24,21 +25,21 @@ typedef signed int int_least32_t;
 typedef unsigned int uint_least32_t;
 typedef signed int int_fast32_t;
 typedef unsigned int uint_fast32_t;
-typedef signed long int32_t;
-typedef unsigned long uint32_t;
+typedef signed int int32_t;
+typedef unsigned int uint32_t;
 
-__extension__ typedef signed long long int_least64_t;
-__extension__ typedef unsigned long long uint_least64_t;
-__extension__ typedef signed long long int_fast64_t;
-__extension__ typedef unsigned long long uint_fast64_t;
-__extension__ typedef signed long long int64_t;
-__extension__ typedef unsigned long long uint64_t;
+__extension__ typedef signed long long int int_least64_t;
+__extension__ typedef unsigned long long int uint_least64_t;
+__extension__ typedef signed long long int int_fast64_t;
+__extension__ typedef unsigned long long int uint_fast64_t;
+__extension__ typedef signed long long int int64_t;
+__extension__ typedef unsigned long long int uint64_t;
 
 typedef long int intptr_t;
-typedef unsigned long uintptr_t;
+typedef unsigned long int uintptr_t;
 
-__extension__ typedef signed long long intmax_t;
-__extension__ typedef unsigned long long uintmax_t;
+__extension__ typedef signed long long int intmax_t;
+__extension__ typedef unsigned long long int uintmax_t;
 
 /* ANSI/ISO C99 says these should not be visible in C++ unless
    explicitly requested.  */

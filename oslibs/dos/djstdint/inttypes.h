@@ -1,10 +1,13 @@
 /* Hacked from DJGPP v2.04 for use with older DJGPP versions */
 
+/* Copyright (C) 2013 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2003 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2002 DJ Delorie, see COPYING.DJ for details */
+
 #ifndef __dj_inttypes__h_
 #define __dj_inttypes__h_
 
+/* Get the type definitions.  */
 #include <stdint.h>
 
 /* ANSI/ISO C99 says these should not be visible in C++ unless
@@ -179,9 +182,7 @@
 
 #endif /* !__cplusplus || __STDC_FORMAT_MACROS */
 
-/* we don't need the functions below.
- * when/if we do, enable the prototypes and implement them... */
-/*
+#if 0 /* don't need the intmax functions below */
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -199,6 +200,6 @@ uintmax_t strtoumax (const char *_nptr, char **_endptr, int _base);
 #ifdef __cplusplus
 }
 #endif
-*/
+#endif /* if 0 */
 
 #endif /* __dj_inttypes__h_ */
