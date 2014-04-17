@@ -281,7 +281,7 @@ float pick_up;
 		else
 		{
 			if(!let_go)
-				if(self.pain_finished=-1)		//Throw it at my goal!
+				if(self.pain_finished==-1)		//Throw it at my goal!
 					self.enemy.velocity=dir*350*self.scale;
 				else
 				{
@@ -658,9 +658,7 @@ void meteor_power_fire (void)
 	// Pa3PyX
 //	if(self.weaponframe==$fire2 && self.attack_finished<=time)
 	if(self.weaponframe==$fire1 && self.attack_finished<=time) {
-			// Pa3PyX
-			self.attack_finished = time + 0.5;
-
+			self.attack_finished = time + 0.5;// Pa3PyX
 			FireMeteorTornado();
 	}
 

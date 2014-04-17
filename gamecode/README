@@ -4,8 +4,11 @@ Hexen II: Hammer of Thyrion (uHexen2) - GAMECODE
 Changes
 -------
 
-2013-12-14 (1.29):
+2014-04-17 (1.29):
 ===================
+- meteor.hc (tornato_spin): fixed typo in pain_finished equality check:
+  if(self.pain_finished==-1), not if(self.pain_finished=-1). issue was
+  present since at least v0.42.
 - stats.hc (AwardExperience): eliminated the duplicated IsPlayer check.
   Crusader partial healing at certain experience thresholds now starts
   at level 3 to be consistent with the manual.

@@ -3,6 +3,12 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2014-04-17 (SVN):
+    * meteor.hc (tornato_spin): fixed typo in pain_finished equality
+      check: if(self.pain_finished==-1), not if(self.pain_finished=-1).
+      issue was present since at least v0.42.
+    * bumped the version date stamp to 2014-04-17.
+
 2014-03-11 (SVN):
     * revert the r5197 'use a different approach to ignore mouse events'
       (1) the bug reporter found that it's an SDL-1.2 bug regarding IME:
