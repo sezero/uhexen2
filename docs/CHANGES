@@ -3,6 +3,10 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2014-04-18 (SVN):
+    * osx port: update SDLMain.m from SDL hg repository/SDL-1.2 branch.
+    * bumped the version date stamp to 2014-04-18.
+
 2014-04-17 (SVN):
     * meteor.hc (tornato_spin): fixed typo in pain_finished equality
       check: if(self.pain_finished==-1), not if(self.pain_finished=-1).
@@ -13,6 +17,8 @@ Development Progress	:
     * revert the r5197 'use a different approach to ignore mouse events'
       (1) the bug reporter found that it's an SDL-1.2 bug regarding IME:
       http://sf.net/p/uhexen2/discussion/425207/thread/6f168cfb/
+      https://bugzilla.libsdl.org/show_bug.cgi?id=2325
+      fixed in the hg repo: https://hg.libsdl.org/SDL/rev/0aade9c0203f
       (2) we have never managed to reproduce the reported bug, only one
       user reported the bug, and (3) the workaround caused a regression
       where the first ever keyboard key hit is missed.
