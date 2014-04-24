@@ -4,6 +4,10 @@ Development Progress	:
 ---------------------------
 
 2014-04-24 (SVN):
+    * oslibs/dos: recompile watt32 library after replacing all access()
+      calls with _chmod(), so that it does not pull in monstrous deps.
+
+2014-04-24 (SVN):
     * Unix (at least Linux) man pages for mkdir(2) document the EEXIST
       error: "pathname already exists (not necessarily as a directory).
       This includes the case where pathname is a symbolic link, dangling
