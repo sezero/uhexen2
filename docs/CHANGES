@@ -3,6 +3,14 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2014-04-24 (SVN):
+    * Unix (at least Linux) man pages for mkdir(2) document the EEXIST
+      error: "pathname already exists (not necessarily as a directory).
+      This includes the case where pathname is a symbolic link, dangling
+      or not." So, add a check to see if the existing pathname is really
+      a directory.
+    * bumped the version date stamp to 2014-04-24.
+
 2014-04-18 (SVN):
     * osx port: update SDLMain.m from SDL hg repository/SDL-1.2 branch.
     * bumped the version date stamp to 2014-04-18.

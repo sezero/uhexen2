@@ -77,7 +77,11 @@ int Sys_mkdir (const char *path, qboolean crash)
 {
 	int rc = mkdir (path, 0777);
 	if (rc != 0 && errno == EEXIST)
-		rc = 0;
+	{
+		struct stat st;
+		if (stat(path, &st) == 0 && S_ISDIR(st.st_mode))
+			rc = 0;
+	}
 	if (rc != 0 && crash)
 	{
 		rc = errno;
