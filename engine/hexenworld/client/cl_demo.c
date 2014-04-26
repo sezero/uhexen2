@@ -334,7 +334,7 @@ void CL_Record_f (void)
 	}
 
 	FS_MakePath_BUF (FS_USERDIR, NULL, name, sizeof(name), p);
-	COM_DefaultExtension (name, ".qwd", sizeof(name));
+	COM_AddExtension (name, ".qwd", sizeof(name));
 
 	cls.demofile = fopen (name, "wb");
 	if (!cls.demofile)
@@ -390,7 +390,7 @@ void CL_ReRecord_f (void)
 	}
 
 	FS_MakePath_BUF (FS_USERDIR, NULL, name, sizeof(name), p);
-	COM_DefaultExtension (name, ".qwd", sizeof(name));
+	COM_AddExtension (name, ".qwd", sizeof(name));
 
 	cls.demofile = fopen (name, "wb");
 	if (!cls.demofile)
@@ -429,7 +429,7 @@ void CL_PlayDemo_f (void)
 
 // open the demo file
 	q_strlcpy (name, Cmd_Argv(1), sizeof(name));
-	COM_DefaultExtension (name, ".qwd", sizeof(name));
+	COM_AddExtension (name, ".qwd", sizeof(name));
 
 	Con_Printf ("Playing demo from %s.\n", name);
 	FS_OpenFile (name, &cls.demofile, NULL);

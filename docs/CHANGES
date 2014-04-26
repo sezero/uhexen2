@@ -3,6 +3,13 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2014-04-26 (SVN):
+    * Avoid using COM_DefaultExtension() whenever possible: it may lead
+      to unpredictable results. Use a new procedure COM_AddExtension()
+      which appends the given extension to the path if the one it has,
+      if any, doesn't match.
+    * bumped the version date stamp to 2014-04-26.
+
 2014-04-24 (SVN):
     * oslibs/dos: recompile watt32 library after replacing all access()
       calls with _chmod(), so that it does not pull in monstrous deps.

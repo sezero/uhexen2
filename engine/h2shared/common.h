@@ -95,6 +95,7 @@ void COM_StripExtension (const char *in, char *out, size_t outsize);
 const char *COM_FileGetExtension (const char *in); /* doesn't return NULL */
 void COM_ExtractExtension (const char *in, char *out, size_t outsize);
 void COM_FileBase (const char *in, char *out, size_t outsize);
+void COM_AddExtension (char *path, const char *extension, size_t len);
 void COM_DefaultExtension (char *path, const char *extension, size_t len);
 
 char	*va (const char *format, ...) __attribute__((__format__(__printf__,1,2)));

@@ -339,7 +339,7 @@ void CL_Record_f (void)
 	}
 
 // open the demo file
-	COM_DefaultExtension (name, ".dem", sizeof(name));
+	COM_AddExtension (name, ".dem", sizeof(name));
 
 	Con_Printf ("recording to %s.\n", name);
 	cls.demofile = fopen (name, "wb");
@@ -399,7 +399,7 @@ void CL_PlayDemo_f (void)
 		}
 	}
 
-	COM_DefaultExtension (name, ".dem", sizeof(name));
+	COM_AddExtension (name, ".dem", sizeof(name));
 
 	Con_Printf ("Playing demo from %s.\n", name);
 
