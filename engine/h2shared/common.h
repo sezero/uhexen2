@@ -96,7 +96,9 @@ const char *COM_FileGetExtension (const char *in); /* doesn't return NULL */
 void COM_ExtractExtension (const char *in, char *out, size_t outsize);
 void COM_FileBase (const char *in, char *out, size_t outsize);
 void COM_AddExtension (char *path, const char *extension, size_t len);
+#if 0 /* COM_DefaultExtension can be dangerous */
 void COM_DefaultExtension (char *path, const char *extension, size_t len);
+#endif
 
 char	*va (const char *format, ...) __attribute__((__format__(__printf__,1,2)));
 /* does a varargs printf into a temp buffer. cycles between
