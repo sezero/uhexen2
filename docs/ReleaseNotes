@@ -1,7 +1,7 @@
 Hammer of Thyrion (uHexen2) release notes:
 
 ========================================================================
-Changes in v1.5.7: (Apr. 26, 2014.)
+Changes in v1.5.7: (Apr. 27, 2014.)
 ========================================================================
 
 - Music: Support for FLAC codec. (edit the makefiles to enable it when
@@ -24,6 +24,9 @@ Changes in v1.5.7: (Apr. 26, 2014.)
 
 - Utils, hcc: Added a command line option "-os" to compact the strings
   heap by eliminating duplicates. some minor revisions.
+
+- external wal texture loading is now a compile time option, disabled
+  by default.
 
 - Several small fixes, tidy-ups, safeguards elsewhere in the sources.
 

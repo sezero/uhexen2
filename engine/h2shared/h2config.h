@@ -205,6 +205,17 @@
 
 
 /* ====================================================================
+   WAL_TEXTURES
+   Value  :	not a value, but a define or undef
+   Affects:	model.c, gl_model.c (opengl & software renderers both.)
+
+   Support for loading external wal mip textures instead of the ones
+   embedded in the mdl. (cvar: r_texture_external.)
+   ================================================================== */
+#undef	WAL_TEXTURES
+
+
+/* ====================================================================
    FULLSCREEN_INTERMISSIONS
    Value  :	0 or 1
    Affects:	screen.c, gl_screen.c, menu.c (hexen2 and hexenworld)

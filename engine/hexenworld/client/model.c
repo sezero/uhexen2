@@ -371,10 +371,12 @@ static void Mod_LoadTextures (lump_t *l)
 	texture_t	*anims[10];
 	texture_t	*altanims[10];
 	dmiptexlump_t *m;
+#ifdef WAL_TEXTURES
 	// external WAL texture loading
 	char		texname[MAX_QPATH];
 	int		mark;
 	miptex_wal_t	*mt_wal;
+#endif
 
 	if (!l->filelen)
 	{
@@ -399,6 +401,7 @@ static void Mod_LoadTextures (lump_t *l)
 		for (j = 0; j < MIPLEVELS; j++)
 			mt->offsets[j] = LittleLong (mt->offsets[j]);
 
+#ifdef WAL_TEXTURES
 		if (!r_texture_external.integer)
 			goto bsp_tex_internal;
 		// try an external wal texture file first
@@ -450,6 +453,7 @@ static void Mod_LoadTextures (lump_t *l)
 		else
 		{	// load internal bsp pixel data
 bsp_tex_internal:
+#endif /* WAL_TEXTURES */
 			if ( (mt->width & 15) || (mt->height & 15) )
 				Sys_Error ("Texture %s is not 16 aligned", mt->name);
 			pixels = mt->width*mt->height/64*85;
@@ -463,7 +467,9 @@ bsp_tex_internal:
 				tx->offsets[j] = mt->offsets[j] + sizeof(texture_t) - sizeof(miptex_t);
 			// the pixels immediately follow the structures
 			memcpy ( tx+1, mt+1, pixels);
+#ifdef WAL_TEXTURES
 		}
+#endif
 
 		if (!strncmp(mt->name,"sky",3))
 			R_InitSky (tx);
