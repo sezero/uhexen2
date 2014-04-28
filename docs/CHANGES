@@ -3,6 +3,11 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2014-04-28 (SVN):
+    * gl_screen.c: fix screenshots when width isn't a multiple of 4.
+      explained by Sander van Dijk.
+    * bumped the version date stamp to 2014-04-28.
+
 2014-04-27 (SVN):
     * HWAL texture loading is now a compile time option in h2config.h.
       default is disabled: it was a dead project of Korax, no one ever

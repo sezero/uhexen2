@@ -83,6 +83,7 @@ GL_FUNCTION(void, glDepthFunc, (GLenum))
 GL_FUNCTION(void, glDrawBuffer, (GLenum))
 #endif
 GL_FUNCTION(void, glReadPixels, (GLint,GLint,GLsizei,GLsizei,GLenum,GLenum, GLvoid *))
+GL_FUNCTION(void, glPixelStorei, (GLenum,GLint))
 GL_FUNCTION(void, glHint, (GLenum,GLenum))
 GL_FUNCTION(void, glCullFace, (GLenum))
 
@@ -159,6 +160,7 @@ GL_FUNCTION(void, glClearStencil, (GLint))
 #define glDrawBuffer_fp		glDrawBuffer
 #endif
 #define glReadPixels_fp		glReadPixels
+#define glPixelStorei_fp	glPixelStorei
 #define glHint_fp		glHint
 #define glCullFace_fp		glCullFace
 
