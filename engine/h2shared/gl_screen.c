@@ -114,7 +114,6 @@ static qpic_t	*scr_ram;
 static qpic_t	*scr_net;
 static qpic_t	*scr_turtle;
 
-static GLint gl_pack_alignment = 4;
 static void SCR_ScreenShot_f (void);
 
 static const char	*plaquemessage = "";	// pointer to current plaque message
@@ -439,8 +438,6 @@ void SCR_Init (void)
 	scr_ram = Draw_PicFromWad ("ram");
 	scr_net = Draw_PicFromWad ("net");
 	scr_turtle = Draw_PicFromWad ("turtle");
-
-	glGetIntegerv_fp (GL_PACK_ALIGNMENT, &gl_pack_alignment);
 
 	if (draw_reinit)
 		return;
@@ -864,7 +861,6 @@ static void SCR_ScreenShot_f (void)
 
 	glPixelStorei_fp (GL_PACK_ALIGNMENT, 1);/* for widths that aren't a multiple of 4 */
 	glReadPixels_fp (glx, gly, glwidth, glheight, GL_RGB, GL_UNSIGNED_BYTE, buffer+18);
-	glPixelStorei_fp (GL_PACK_ALIGNMENT, gl_pack_alignment);
 
 	// swap rgb to bgr
 	for (i = 18; i < size; i += 3)
@@ -1229,7 +1225,7 @@ void SCR_UpdateScreen (void)
 	if (block_drawing)
 		return;
 
-//	vid.numpages = (gl_triplebuffer.integer) ? 3 : 2;
+//	vid.numpages = (gl_triplebuffer.integer)? 3 : 2;
 	scr_copytop = 0;
 	scr_copyeverything = 0;
 
