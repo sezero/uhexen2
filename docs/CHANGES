@@ -4,6 +4,12 @@ Development Progress	:
 ---------------------------
 
 2014-04-28 (SVN):
+    * model.c, gl_model.c, sv_model.c (CalcSurfaceExtents): add double
+      casts to floating point calculation so that 64 bit/sse2 builds'
+      precision matches those of x87 floating point.  (from QuakeSpasm,
+      patch by Eric Wasylishen.)
+
+2014-04-28 (SVN):
     * gl_screen.c: fix screenshots when width isn't a multiple of 4.
       explained by Sander van Dijk.
     * bumped the version date stamp to 2014-04-28.

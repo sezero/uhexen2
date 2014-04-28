@@ -1056,10 +1056,14 @@ static void CalcSurfaceExtents (msurface_t *s)
 
 		for (j = 0; j < 2; j++)
 		{
-			val = v->position[0] * tex->vecs[j][0] + 
-				v->position[1] * tex->vecs[j][1] +
-				v->position[2] * tex->vecs[j][2] +
-				tex->vecs[j][3];
+			/* added double casts so that 64 bit/sse2 builds' precision
+			 * matches that of x87 floating point. took from QuakeSpasm,
+			 * patch by Eric Wasylishen.  */
+			val =	((double)v->position[0] * (double)tex->vecs[j][0]) +
+				((double)v->position[1] * (double)tex->vecs[j][1]) +
+				((double)v->position[2] * (double)tex->vecs[j][2]) +
+				(double)tex->vecs[j][3];
+
 			if (val < mins[j])
 				mins[j] = val;
 			if (val > maxs[j])
