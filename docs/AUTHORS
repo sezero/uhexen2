@@ -28,7 +28,7 @@ Contributors (coding):
   Michal Wozniak <wozniak_m@interia.pl>
   Keith Rozett <krozett@gmail.com>
   Chris Gransden <chrisg@care4free.net>
-  Jacques Krige <korax@sagamedev.com>
+  Jacques Krige <jkrige@corvinstein.com>
   Julien Langer <bluti@users.sourceforge.net>
   Ricardo Garcia <rg3@users.sourceforge.net>
 
@@ -36,6 +36,7 @@ Credits: Miscellaneous Quake/Hexen II projects and/or
 their authors that we used code from:
 -----------------------------------------------------
   QuakeForge - http://sourceforge.net/projects/quake/
+  Bill Currie <bill@taniwha.org>
   ioquake3 - http://ioquake3.org/
   QIP project - http://www.inside3d.com/qip/
   Matthias Buecher <maddes.b@arcor.de>
@@ -45,7 +46,7 @@ their authors that we used code from:
   Juraj Styk <jurajstyk@host.sk>
   Eric Hobbs <elhobbs@comcast.net>
   Ryan C. Gordon <icculus@icculus.org>
-  "MH" (parts of DIB code) - http://mhquake.blogspot.com/
+  Michael Hiney ("MH" - parts of the DIB code from mhquake)
   Mark Olsen <bigfoot@private.dk>
   Marc Allaire <korskarn@hexenworld.com>
 
@@ -53,12 +54,14 @@ More contributors (documentation & testing):
 --------------------------------------------
   plusminus <plusminus@users.sourceforge.net>
   Davide Cendron <scen@gentoo.org>
-  Anthony Williams <rugxulo@users.sourceforge.net>
+  Anthony Williams <rugxulo@gmail.com>
   Frank Sapone <emoaddict15@gmail.com>
   Oleg Moiseyev <whitemagicraven@gmail.com>
   Ronald Eijkman <ronald.eijkman@gmail.com>
   Sean Stach <rhiyo@users.sourceforge.net>
+  "VB" <voreball@zoho.com>
   Burçak Öztürk <rasim4@hotmail.com>
+  Dustin Samko <samko.dustin@gmail.com>
 
 If you think your name is missing and should be mentioned here,
 please contact us so we can add it.
