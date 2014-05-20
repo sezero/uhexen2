@@ -2,10 +2,6 @@ Allows running the original Hexen2 game with a single
 progs.dat file instead of progs.dat + progs2.dat files.
 Not tested much.
 
-If you use this patch, you need to use the new version of hcc
-in order to compile the gamecode, because the old version of
-hcc (found in "hcc_old" in the utils directory) will segfault.
-
 In addition, place a file named maplist.txt with only a 0 in
 it in your data1 directory (a sample file is provided here),
 so that the game wouldn't look for a progs2.dat

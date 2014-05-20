@@ -394,8 +394,7 @@ static void SingleLightFace (entity_t *light, lightinfo_t *l)
 	else
 		falloff = 0;	// shut up compiler warnings
 
-	mapnum = 0;
-	for (mapnum = 0 ; mapnum < l->numlightstyles ; mapnum++)
+	for (mapnum = 0; mapnum < l->numlightstyles; mapnum++)
 	{
 		if (l->lightstyles[mapnum] == light->style)
 			break;

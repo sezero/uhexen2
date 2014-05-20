@@ -475,15 +475,13 @@ static void SingleLightFace (entity_t *light, lightinfo_t *l, vec3_t faceoffset,
 	else
 		falloff = 0;	// shut up compiler warnings
 
-	mapnum = 0;
-	for (mapnum = 0 ; mapnum < l->numlightstyles ; mapnum++)
+	for (mapnum = 0; mapnum < l->numlightstyles; mapnum++)
 	{
 		if (l->lightstyles[mapnum] == light->style)
 			break;
 	}
 	lightsamp = l->lightmaps[mapnum];
 	lightcolorsamp = l->lightmapcolors[mapnum];
-
 	if (mapnum == l->numlightstyles)
 	{	// init a new light map
 		if (mapnum == MAXLIGHTMAPS)
@@ -497,7 +495,6 @@ static void SingleLightFace (entity_t *light, lightinfo_t *l, vec3_t faceoffset,
 			lightcolorsamp[i][0] = 0;
 			lightcolorsamp[i][1] = 0;
 			lightcolorsamp[i][2] = 0;
-
 			lightsamp[i] = 0;
 		}
 	}
@@ -545,7 +542,6 @@ static void SingleLightFace (entity_t *light, lightinfo_t *l, vec3_t faceoffset,
 		// tQER<1>: Calculate add and keep in CPU register
 		// for faster processing. x2.24 faster in profiler
 		add /= 255.0;
-
 		lightcolorsamp[c][0] += add * light->lightcolor[0];
 		lightcolorsamp[c][1] += add * light->lightcolor[1];
 		lightcolorsamp[c][2] += add * light->lightcolor[2];
