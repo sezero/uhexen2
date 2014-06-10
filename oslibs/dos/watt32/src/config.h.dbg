@@ -113,7 +113,7 @@
   #define USE_BUFFERED_IO
 /*#define USE_TFTP */
 /*#define USE_MULTICAST*/
-  #define USE_PPPOE
+/*#define USE_PPPOE */		/* no longer enabled by default in 2.2.11: G.V. says it never worked. */
   #define OPT_DEFINED
 #endif
 

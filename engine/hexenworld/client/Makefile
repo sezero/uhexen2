@@ -438,7 +438,7 @@ CODECS_USE_ZONE=yes
 
 INCLUDES += -I$(OSLIBS)/dos
 # WATT-32 is needed for DOS
-CPPFLAGS+= -DUSE_WATT32
+CPPFLAGS+= -DUSE_WATT32 -DWATT32_NO_OLDIES
 INCLUDES+= -I$(OSLIBS)/dos/watt32/inc
 LDFLAGS += -L$(OSLIBS)/dos/watt32/lib -lwatt
 LDFLAGS += -lc -lgcc -lm

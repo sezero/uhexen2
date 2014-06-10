@@ -122,7 +122,7 @@ ifeq ($(USE_MPATH),yes)
 CPPFLAGS+= -DUSE_MPATH
 endif
 ifeq ($(USE_WATT32),yes)
-CPPFLAGS+= -DUSE_WATT32
+CPPFLAGS+= -DUSE_WATT32 -DWATT32_NO_OLDIES
 INCLUDES+= -I$(OSLIBS)/dos/watt32/inc
 LDFLAGS += -L$(OSLIBS)/dos/watt32/lib -lwatt
 endif
