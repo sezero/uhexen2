@@ -3,6 +3,26 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2014-06-15 (SVN):
+    * SDLMain.m: replace CPS* stuff with activateIgnoringOtherApps.
+
+      CPS stuff are deprecated and emit warnings at runtime, e.g.:
+	warning: CPSGetCurrentProcess(): This call is deprecated and
+		 should not be called anymore
+	warning: CPSSetForegroundOperationState() (as above)
+	warning: capture_display; Captured mirror master 0x350000c1
+		 (unit 1) on behalf of slave 0x042716c0 (unit 0)
+
+      http://lists.libsdl.org/pipermail/sdl-libsdl.org/2006-April/055454.html
+      suggests doing something like:
+	ProcessSerialNumber psn = { 0, kCurrentProcess};
+	TransformProcessType (&psn, kProcessTransformToForegroundApplication);
+	SetFrontProcess (&psn);
+
+      and SetFrontProcess() is deprecated in 10.9. Processes.h suggests
+	[[NSApplication sharedApplication] activateIgnoringOtherApps: YES]
+      to make one's own application frontmost.
+
 2014-04-28 (SVN):
     * model.c, gl_model.c, sv_model.c (CalcSurfaceExtents): add double
       casts to floating point calculation so that 64 bit/sse2 builds'
