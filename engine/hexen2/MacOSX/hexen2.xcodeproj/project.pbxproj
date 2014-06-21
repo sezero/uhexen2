@@ -13,6 +13,8 @@
 		48281308179C4055004E1D61 /* snd_flac.c in Sources */ = {isa = PBXBuildFile; fileRef = 48281305179C4055004E1D61 /* snd_flac.c */; };
 		48281309179C4055004E1D61 /* snd_flac.h in Headers */ = {isa = PBXBuildFile; fileRef = 48281306179C4055004E1D61 /* snd_flac.h */; };
 		4828130A179C4055004E1D61 /* snd_flac.h in Headers */ = {isa = PBXBuildFile; fileRef = 48281306179C4055004E1D61 /* snd_flac.h */; };
+		48305B530D8AF8EC00A29C24 /* snd_mikmod.c in Sources */ = {isa = PBXBuildFile; fileRef = 483A78640D2EEAF000CB2E4C /* snd_mikmod.c */; };
+		483A78780D2EEAF000CB2E4C /* snd_mikmod.c in Sources */ = {isa = PBXBuildFile; fileRef = 483A78640D2EEAF000CB2E4C /* snd_mikmod.c */; };
 		483B16A5154472FE00BBDAD1 /* cl_inlude.c in Sources */ = {isa = PBXBuildFile; fileRef = 483B16A4154472FE00BBDAD1 /* cl_inlude.c */; };
 		4854B1AF1340C5FD004C9F45 /* libmad.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 48E2EC7915FB507A00B8D476 /* libmad.dylib */; };
 		4854B1E71340C964004C9F45 /* libogg.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 48E2EC7A15FB507A00B8D476 /* libogg.dylib */; };
@@ -265,6 +267,8 @@
 		7086E4E70AC0070900E9F894 /* Hexen2.icns in Resources */ = {isa = PBXBuildFile; fileRef = 7086E4E50AC0070900E9F894 /* Hexen2.icns */; };
 		708C407D0C1E8A4F00B4A314 /* debuglog.c in Sources */ = {isa = PBXBuildFile; fileRef = 70310B320BFDE90900CA35D3 /* debuglog.c */; };
 		708C408F0C1E8B8200B4A314 /* link_ops.c in Sources */ = {isa = PBXBuildFile; fileRef = 70310B370BFDE94700CA35D3 /* link_ops.c */; };
+		A4E3AF2A05D43FCC000F1B47 /* libmikmod.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F5F5DE80017CB4370103A810 /* libmikmod.dylib */; };
+		A4E3AF6205D43FCC000F1B47 /* libmikmod.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F5F5DE80017CB4370103A810 /* libmikmod.dylib */; };
 		B0E546A615564FC10033037D /* sys_osx.m in Sources */ = {isa = PBXBuildFile; fileRef = B0E546A515564FC10033037D /* sys_osx.m */; };
 		B0E546A715564FC10033037D /* sys_osx.m in Sources */ = {isa = PBXBuildFile; fileRef = B0E546A515564FC10033037D /* sys_osx.m */; };
 		B0E74B1E144E7FF40043F808 /* qsnprint.c in Sources */ = {isa = PBXBuildFile; fileRef = B0E74B1D144E7FF40043F808 /* qsnprint.c */; };
@@ -288,6 +292,7 @@
 		48281302179C401D004E1D61 /* libFLAC.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libFLAC.dylib; path = ../../../oslibs/macosx/codecs/lib/libFLAC.dylib; sourceTree = "<group>"; };
 		48281305179C4055004E1D61 /* snd_flac.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = snd_flac.c; path = ../../h2shared/snd_flac.c; sourceTree = "<group>"; };
 		48281306179C4055004E1D61 /* snd_flac.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = snd_flac.h; path = ../../h2shared/snd_flac.h; sourceTree = "<group>"; };
+		483A78640D2EEAF000CB2E4C /* snd_mikmod.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = snd_mikmod.c; path = ../../h2shared/snd_mikmod.c; sourceTree = "<group>"; };
 		483B16A4154472FE00BBDAD1 /* cl_inlude.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = cl_inlude.c; path = ../cl_inlude.c; sourceTree = SOURCE_ROOT; };
 		48AE54C4179723F7008E11FB /* snd_opus.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = snd_opus.h; path = ../../h2shared/snd_opus.h; sourceTree = "<group>"; };
 		48AE54C717972447008E11FB /* libopus.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libopus.dylib; path = ../../../oslibs/macosx/codecs/lib/libopus.dylib; sourceTree = "<group>"; };
@@ -472,6 +477,7 @@
 		B0E74B31144E806D0043F808 /* snd_vorbis.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = snd_vorbis.c; path = ../../h2shared/snd_vorbis.c; sourceTree = SOURCE_ROOT; };
 		B0E74B36144E807F0043F808 /* snd_mp3.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = snd_mp3.c; path = ../../h2shared/snd_mp3.c; sourceTree = SOURCE_ROOT; };
 		B0E74B3B144E80960043F808 /* snd_opus.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = snd_opus.c; path = ../../h2shared/snd_opus.c; sourceTree = SOURCE_ROOT; };
+		F5F5DE80017CB4370103A810 /* libmikmod.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; path = libmikmod.dylib; path = ../../../oslibs/macosx/codecs/lib/libmikmod.dylib; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -486,6 +492,7 @@
 				4854B1E91340C964004C9F45 /* libvorbisfile.dylib in Frameworks */,
 				4891E1CC179728BF00BED9F7 /* libopus.dylib in Frameworks */,
 				4891E1CD179728BF00BED9F7 /* libopusfile.dylib in Frameworks */,
+				A4E3AF2A05D43FCC000F1B47 /* libmikmod.dylib in Frameworks */,
 				70158C870AAF421B00F6437C /* ApplicationServices.framework in Frameworks */,
 				70158C880AAF421B00F6437C /* AudioToolbox.framework in Frameworks */,
 				70158C890AAF421B00F6437C /* AudioUnit.framework in Frameworks */,
@@ -508,6 +515,7 @@
 				48E2EC8015FB507A00B8D476 /* libvorbisfile.dylib in Frameworks */,
 				48AE54C917972447008E11FB /* libopus.dylib in Frameworks */,
 				48AE54CA17972447008E11FB /* libopusfile.dylib in Frameworks */,
+				A4E3AF6205D43FCC000F1B47 /* libmikmod.dylib in Frameworks */,
 				707D59210AAA071800313A9F /* SDL.framework in Frameworks */,
 				707D592C0AAA076A00313A9F /* ApplicationServices.framework in Frameworks */,
 				707D592D0AAA076A00313A9F /* AudioToolbox.framework in Frameworks */,
@@ -534,10 +542,12 @@
 				48E2EC7C15FB507A00B8D476 /* libvorbisfile.dylib */,
 				48AE54C717972447008E11FB /* libopus.dylib */,
 				48AE54C817972447008E11FB /* libopusfile.dylib */,
+				F5F5DE80017CB4370103A810 /* libmikmod.dylib */,
 				B0E546A515564FC10033037D /* sys_osx.m */,
 				483B16A4154472FE00BBDAD1 /* cl_inlude.c */,
 				B0E74B3B144E80960043F808 /* snd_opus.c */,
 				48AE54C4179723F7008E11FB /* snd_opus.h */,
+				483A78640D2EEAF000CB2E4C /* snd_mikmod.c */,
 				B0E74B36144E807F0043F808 /* snd_mp3.c */,
 				B0E74B31144E806D0043F808 /* snd_vorbis.c */,
 				B0E74B2C144E80540043F808 /* snd_wave.c */,
@@ -1008,6 +1018,7 @@
 				B0E74B3D144E80960043F808 /* snd_opus.c in Sources */,
 				B0E546A715564FC10033037D /* sys_osx.m in Sources */,
 				48281308179C4055004E1D61 /* snd_flac.c in Sources */,
+				483A78780D2EEAF000CB2E4C /* snd_mikmod.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1094,6 +1105,7 @@
 				483B16A5154472FE00BBDAD1 /* cl_inlude.c in Sources */,
 				B0E546A615564FC10033037D /* sys_osx.m in Sources */,
 				48281307179C4055004E1D61 /* snd_flac.c in Sources */,
+				48305B530D8AF8EC00A29C24 /* snd_mikmod.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1118,6 +1130,7 @@
 					USE_CODEC_WAVE,
 					USE_CODEC_FLAC,
 					USE_CODEC_OPUS,
+					USE_CODEC_MIKMOD,
 					SDLQUAKE,
 					SDL_FRAMEWORK,
 					"_GNU_SOURCE=1",
@@ -1170,6 +1183,7 @@
 					USE_CODEC_WAVE,
 					USE_CODEC_FLAC,
 					USE_CODEC_OPUS,
+					USE_CODEC_MIKMOD,
 					SDLQUAKE,
 					SDL_FRAMEWORK,
 					"_GNU_SOURCE=1",
@@ -1217,6 +1231,7 @@
 					USE_CODEC_WAVE,
 					USE_CODEC_FLAC,
 					USE_CODEC_OPUS,
+					USE_CODEC_MIKMOD,
 					SDLQUAKE,
 					SDL_FRAMEWORK,
 					GLQUAKE,
@@ -1248,6 +1263,7 @@
 					USE_CODEC_WAVE,
 					USE_CODEC_FLAC,
 					USE_CODEC_OPUS,
+					USE_CODEC_MIKMOD,
 					SDLQUAKE,
 					SDL_FRAMEWORK,
 					GLQUAKE,
@@ -1286,6 +1302,7 @@
 					USE_CODEC_WAVE,
 					USE_CODEC_FLAC,
 					USE_CODEC_OPUS,
+					USE_CODEC_MIKMOD,
 					SDLQUAKE,
 					SDL_FRAMEWORK,
 					GLQUAKE,
@@ -1342,6 +1359,7 @@
 					USE_CODEC_WAVE,
 					USE_CODEC_FLAC,
 					USE_CODEC_OPUS,
+					USE_CODEC_MIKMOD,
 					SDLQUAKE,
 					SDL_FRAMEWORK,
 					GLQUAKE,

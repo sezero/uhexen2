@@ -275,6 +275,13 @@ CFLAGS  +=-mmacosx-version-min=10.6
 LDFLAGS +=-mmacosx-version-min=10.6 -Wl,-lbundle1.o
 endif
 
+ifeq ($(USE_SOUND),yes)
+# enable the extra codecs
+USE_CODEC_FLAC=yes
+USE_CODEC_OPUS=yes
+USE_CODEC_MIKMOD=yes
+USE_CODEC_UMX=yes
+endif
 # no need for timidity, we have a midi driver
 USE_CODEC_TIMIDITY=no
 USE_CODEC_WILDMIDI=no
@@ -483,6 +490,13 @@ ifeq ($(TARGET_OS),win32)
 NASMFLAGS=-f win32
 GL_LINK=-lopengl32
 
+ifeq ($(USE_SOUND),yes)
+# enable the extra codecs
+USE_CODEC_FLAC=yes
+USE_CODEC_OPUS=yes
+USE_CODEC_MIKMOD=yes
+USE_CODEC_UMX=yes
+endif
 # timidity not needed, we have a midi driver. if you want it,
 # comment out the following
 USE_CODEC_TIMIDITY=no
@@ -549,6 +563,13 @@ ifeq ($(TARGET_OS),win64)
 NASMFLAGS=-f win64 -d_NO_PREFIX
 GL_LINK=-lopengl32
 
+ifeq ($(USE_SOUND),yes)
+# enable the extra codecs
+USE_CODEC_FLAC=yes
+USE_CODEC_OPUS=yes
+USE_CODEC_MIKMOD=yes
+USE_CODEC_UMX=yes
+endif
 # timidity not needed, we have a midi driver. if you want it,
 # comment out the following
 USE_CODEC_TIMIDITY=no
