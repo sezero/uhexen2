@@ -27,5 +27,6 @@ replaced malloc, calloc and free calls by Z_Malloc and ZFree
 +#define _ogg_stackfree(p) Z_Free((p))
 +*/
  
- #if defined(_WIN32) 
+ #if defined(_WIN32)
  
+

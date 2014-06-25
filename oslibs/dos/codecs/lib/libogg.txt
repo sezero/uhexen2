@@ -1,9 +1,9 @@
-removed unnecessary NULL pointer checks (since we are using Z_Malloc
+removed unnecessary NULL pointer checks: since we are using Z_Malloc
 and friends, alloc failures are Sys_Error(), and the returned memory
-is zero filled, as well.)
+is zero filled, as well.
 
---- libogg-1.3.0/src/bitwise.c.orig
-+++ libogg-1.3.0/src/bitwise.c
+--- libogg-1.3.2/src/bitwise.c.orig
++++ libogg-1.3.2/src/bitwise.c
 @@ -87,7 +87,6 @@ void oggpack_write(oggpack_buffer *b,uns
      if(!b->ptr)return;
      if(b->storage>LONG_MAX-BUFFER_INCREMENT) goto err;
@@ -20,17 +20,17 @@ is zero filled, as well.)
      b->buffer=ret;
      b->storage+=BUFFER_INCREMENT;
      b->ptr=b->buffer+b->endbyte;
-@@ -202,7 +200,6 @@ static void oggpack_writecopy_helper(ogg
-       if(b->endbyte+bytes+BUFFER_INCREMENT>b->storage) goto err;
-       b->storage=b->endbyte+bytes+BUFFER_INCREMENT;
-       ret=_ogg_realloc(b->buffer,b->storage);
--      if(!ret) goto err;
-       b->buffer=ret;
-       b->ptr=b->buffer+b->endbyte;
-     }
---- libogg-1.3.0/src/framing.c.orig
-+++ libogg-1.3.0/src/framing.c
-@@ -195,11 +195,6 @@ int ogg_stream_init(ogg_stream_state *os
+@@ -197,7 +195,6 @@ static void oggpack_writecopy_helper(ogg
+     if(b->storage>b->endbyte+pbytes+BUFFER_INCREMENT) goto err;
+     b->storage=b->endbyte+pbytes+BUFFER_INCREMENT;
+     ret=_ogg_realloc(b->buffer,b->storage);
+-    if(!ret) goto err;
+     b->buffer=ret;
+     b->ptr=b->buffer+b->endbyte;
+   }
+--- libogg-1.3.2/src/framing.c.orig
++++ libogg-1.3.2/src/framing.c
+@@ -196,11 +196,6 @@ int ogg_stream_init(ogg_stream_state *os
      os->lacing_vals=_ogg_malloc(os->lacing_storage*sizeof(*os->lacing_vals));
      os->granule_vals=_ogg_malloc(os->lacing_storage*sizeof(*os->granule_vals));
  
@@ -42,36 +42,36 @@ is zero filled, as well.)
      os->serialno=serialno;
  
      return(0);
-@@ -241,10 +236,6 @@ static int _os_body_expand(ogg_stream_st
-     void *ret;
-     ret=_ogg_realloc(os->body_data,(os->body_storage+needed+1024)*
-                      sizeof(*os->body_data));
+@@ -248,10 +243,6 @@ static int _os_body_expand(ogg_stream_st
+     body_storage=os->body_storage+needed;
+     if(body_storage<LONG_MAX-1024)body_storage+=1024;
+     ret=_ogg_realloc(os->body_data,body_storage*sizeof(*os->body_data));
 -    if(!ret){
 -      ogg_stream_clear(os);
 -      return -1;
 -    }
-     os->body_storage+=(needed+1024);
+     os->body_storage=body_storage;
      os->body_data=ret;
    }
-@@ -256,17 +247,9 @@ static int _os_lacing_expand(ogg_stream_
-     void *ret;
-     ret=_ogg_realloc(os->lacing_vals,(os->lacing_storage+needed+32)*
-                      sizeof(*os->lacing_vals));
+@@ -269,17 +260,9 @@ static int _os_lacing_expand(ogg_stream_
+     lacing_storage=os->lacing_storage+needed;
+     if(lacing_storage<LONG_MAX-32)lacing_storage+=32;
+     ret=_ogg_realloc(os->lacing_vals,lacing_storage*sizeof(*os->lacing_vals));
 -    if(!ret){
 -      ogg_stream_clear(os);
 -      return -1;
 -    }
      os->lacing_vals=ret;
-     ret=_ogg_realloc(os->granule_vals,(os->lacing_storage+needed+32)*
+     ret=_ogg_realloc(os->granule_vals,lacing_storage*
                       sizeof(*os->granule_vals));
 -    if(!ret){
 -      ogg_stream_clear(os);
 -      return -1;
 -    }
      os->granule_vals=ret;
-     os->lacing_storage+=(needed+32);
+     os->lacing_storage=lacing_storage;
    }
-@@ -623,14 +606,7 @@ char *ogg_sync_buffer(ogg_sync_state *oy
+@@ -641,14 +624,7 @@ char *ogg_sync_buffer(ogg_sync_state *oy
      long newsize=size+oy->fill+4096; /* an extra page to be nice */
      void *ret;
  

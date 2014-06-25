@@ -2,8 +2,8 @@
 #define __CONFIG_TYPES_H__
 
 /* these are filled in by configure */
-#define INCLUDE_INTTYPES_H 1
-#define INCLUDE_STDINT_H 1
+#define INCLUDE_INTTYPES_H 0
+#define INCLUDE_STDINT_H 0
 #define INCLUDE_SYS_TYPES_H 1
 
 #if INCLUDE_INTTYPES_H
