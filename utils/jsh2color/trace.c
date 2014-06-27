@@ -114,13 +114,12 @@ typedef struct
 
 /*
 ==============
-TestLineOrSky
-TYR - modified TestLine (a bit of a hack job...)
+TestLine
 ==============
 */
-static qboolean TestLineOrSky (vec3_t start, vec3_t stop, qboolean sky_test)
+qboolean TestLine (const vec3_t start, const vec3_t stop)
 {
-	int		node, side;
+	int			node, side;
 	vec_t		front, back;
 	vec_t		frontx, fronty, frontz, backx, backy, backz;
 	tracestack_t	*tstack_p;
@@ -139,18 +138,12 @@ static qboolean TestLineOrSky (vec3_t start, vec3_t stop, qboolean sky_test)
 
 	while (1)
 	{
-		while (node < 0 && node != CONTENTS_SOLID && (node != CONTENTS_SKY || !sky_test))
+		while (node < 0 && node != CONTENTS_SOLID)
 		{
 		// pop up the stack for a back side
-
-		// we can modify this to check if a vector hits a light casting
-		// node before hitting a one that doesn't, and include sky as a
-		// potential light casting node. in order to do this, we need
-		// to find a way of identifying a texture that may be on a node
 			tstack_p--;
-			if (tstack_p < tracestack) /* if sky_test is...			*/
-				return !sky_test;  /*	true => We didn't hit sky	*/
-					/*	false => no solid obstructions		*/
+			if (tstack_p < tracestack)
+				return true;
 			node = tstack_p->node;
 
 		// set the hit point for this plane
@@ -170,8 +163,6 @@ static qboolean TestLineOrSky (vec3_t start, vec3_t stop, qboolean sky_test)
 
 		if (node == CONTENTS_SOLID)
 			return false;	// DONE!
-		else if (node == CONTENTS_SKY && sky_test)
-			return true;	// DONE!
 
 		tnode = &tnodes[node];
 
@@ -190,10 +181,8 @@ static qboolean TestLineOrSky (vec3_t start, vec3_t stop, qboolean sky_test)
 			back = backz - tnode->dist;
 			break;
 		default:
-			front = (frontx*tnode->normal[0] + fronty*tnode->normal[1]
-							 + frontz*tnode->normal[2]) - tnode->dist;
-			back = (backx*tnode->normal[0] + backy*tnode->normal[1]
-							 + backz*tnode->normal[2]) - tnode->dist;
+			front = (frontx*tnode->normal[0] + fronty*tnode->normal[1] + frontz*tnode->normal[2]) - tnode->dist;
+			back = (backx*tnode->normal[0] + backy*tnode->normal[1] + backz*tnode->normal[2]) - tnode->dist;
 			break;
 		}
 
@@ -231,33 +220,5 @@ static qboolean TestLineOrSky (vec3_t start, vec3_t stop, qboolean sky_test)
 
 		node = tnode->children[side];
 	}
-}
-
-/*
-================
-TestSky  -- TYR
-
-Returns true if the ray cast from point 'start' in the
-direction of vector 'dirn' hits a CONTENTS_SKY node before
-a CONTENTS_SOLID node.
-this is major buggy - we really should be testing in a number of
-directions - up, down, right, left, in, out, and various variations
-in between...
-
-Wrapper functions for testing LOS between two points (TestLine)
-and testing LOS to a sky brush along a direction vector (TestSky)
-================
-*/
-qboolean TestLine(vec3_t start, vec3_t stop)
-{
-	return TestLineOrSky(start, stop, false);
-}
-
-qboolean TestSky (vec3_t start, vec3_t dirn)
-{
-	vec3_t	stop;
-
-	VectorAdd(dirn, start, stop);
-	return TestLineOrSky(start, stop, true);
 }
 

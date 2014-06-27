@@ -38,6 +38,8 @@
 #include "tyrlite.h"
 #include "jscolor.h"
 
+qboolean	extrasamples;
+
 float		scaledist	= 1.0F;
 float		scalecos	= 0.5F;
 float		rangescale	= 0.5F;
@@ -50,10 +52,8 @@ vec3_t		sunmangle	= { 0, 0, 16384 };	// defaults to straight down
 int		bspfileface;	// next surface to dispatch
 vec3_t		bsp_origin;
 
+
 static vec3_t	faceoffset[MAX_MAP_FACES];
-
-qboolean	extrasamples;
-
 
 static void ColorLightThread (void *junk)
 {
@@ -65,7 +65,6 @@ static void ColorLightThread (void *junk)
 		ThreadLock();
 		i = bspfileface++;
 		ThreadUnlock();
-
 		if (i >= numfaces)
 			return;
 
@@ -84,7 +83,6 @@ static void TestLightThread (void *junk)
 		ThreadLock();
 		i = bspfileface++;
 		ThreadUnlock();
-
 		if (i >= numfaces)
 			return;
 
@@ -105,19 +103,18 @@ static void FindFaceOffsets (void)
 	{
 		sprintf (name, "*%d", i);
 		ent = FindEntityWithKeyPair("model", name);
-		if ( !ent )
+		if (!ent)
 			COM_Error("%s: Couldn't find entity for model %s.\n", __thisfunc__, name);
 
 		classname = ValueForKey (ent, "classname");
-		if ( !strncmp(classname, "rotate_", 7) )
+		if (!strncmp(classname, "rotate_", 7))
 		{
-			int	start;
-			int	end;
+			int	start, end;
 
 			GetVectorForKey(ent, "origin", org);
 
-			start = dmodels[ i ].firstface;
-			end = start + dmodels[ i ].numfaces;
+			start = dmodels[i].firstface;
+			end = start + dmodels[i].numfaces;
 			for (j = start; j < end; j++)
 			{
 				faceoffset[j][0] = org[0];
@@ -128,7 +125,6 @@ static void FindFaceOffsets (void)
 	}
 }
 
-
 /*
 =============
 LightWorld
@@ -136,10 +132,8 @@ LightWorld
 */
 static void LightWorld (void)
 {
-	int	i;
-	int	j;
-	int	max;
-	int	num_colors;
+	int	i, j;
+	int	num_colors, colormax;
 
 	CheckTex ();
 	printf ("\n");
@@ -166,15 +160,12 @@ static void LightWorld (void)
 	printf ("\nChecking all light sources for potential effectiveness...\n");
 	for (i = 0; i < num_entities; i++)
 	{
-		printf ("- Checking entity %i of %i\r", i + 1, num_entities);
-		fflush(stdout);
-
 		if (entities[i].light)
 		{
 			// hopefully this should never happen,
 			// but just in case...
 			if (entities[i].lightcolor[0] == 0 &&
-				entities[i].lightcolor[1] == 0 && 
+				entities[i].lightcolor[1] == 0 &&
 				entities[i].lightcolor[2] == 0)
 			{
 				// a faint orange tinge keeps white
@@ -203,21 +194,21 @@ static void LightWorld (void)
 			}
 
 			num_colors++;
-			max = 0;
+			colormax = 0;
 
 			for (j = 0; j < 3; j++)
-				if (entities[i].lightcolor[j] > max)
-					max = entities[i].lightcolor[j];
+				if (entities[i].lightcolor[j] > colormax)
+					colormax = entities[i].lightcolor[j];
 
 			// this condition will happen for any flame,
 			// torch or globe light.
-			if (max == 255)
+			if (colormax == 255)
 				continue;
 
 			// use 275 here instead of 255 because colored lights
 			// can seem darker than white ones
 			for (j = 0; j < 3; j++)
-				entities[i].lightcolor[j] = (275 * entities[i].lightcolor[j]) / max;
+				entities[i].lightcolor[j] = (275 * entities[i].lightcolor[j]) / colormax;
 		}
 	}
 
@@ -238,10 +229,11 @@ static void LightWorld (void)
 
 
 /*
-==================
+========
 main
+
 light modelfile
-==================
+========
 */
 int main (int argc, char **argv)
 {
@@ -281,8 +273,7 @@ int main (int argc, char **argv)
 		{
 			if (i >= argc - 1)
 				COM_Error("Missing argument to \"%s\"", argv[i]);
-			i++;
-			scaledist = atof (argv[i]);
+			scaledist = atof (argv[++i]);
 		}
 		else if (!strcmp(argv[i],"-range"))
 		{
@@ -296,16 +287,16 @@ int main (int argc, char **argv)
 				COM_Error("Missing argument to \"%s\"", argv[i]);
 			worldminlight = atof (argv[++i]);
 		}
-		else if (!strcmp(argv[i],"-force")) // compat
+		else if (!strcmp(argv[i],"-force"))
 		{
-			continue;
+			continue; // compat -- ignore
 		}
-		else if (!strcmp (argv[i], "-lit")) // compat
+		else if (!strcmp (argv[i], "-lit"))
 		{
-			continue;
+			continue; // compat -- ignore
 		}
 		else if (!strcmp (argv[i], "-external"))
-		{	// js feature
+		{
 			if (i >= argc - 1)
 				COM_Error("Missing argument to \"%s\"", argv[i]);
 			extfilename = argv[++i];
@@ -313,7 +304,7 @@ int main (int argc, char **argv)
 			printf ("Using external definition file: %s\n", extfilename);
 		}
 		else if (!strcmp (argv[i], "-nodefault"))
-		{	// js feature
+		{
 			nodefault = true;
 			printf ("Ignoring built-in color definition list\n");
 		}
@@ -330,7 +321,7 @@ int main (int argc, char **argv)
 		exit(0);
 	}
 
-	InitDefFile (extfilename);	// js feature
+	InitDefFile (extfilename);
 	InitThreads (wantthreads, 0x300000);	// FIXME: crazy stacksize: see ltface.c.
 
 	start = COM_GetTime ();

@@ -42,7 +42,7 @@ Returns the distance between the points, or -1 if blocked
 static vec_t CastRay (vec3_t p1, vec3_t p2)
 {
 	int		i;
-	vec_t		t;
+	vec_t	t;
 	qboolean	trace;
 
 	trace = TestLine (p1, p2);
@@ -87,8 +87,8 @@ towards the center until it is valid.
  * CalcFaceExtents() with a no-failure flag), so I bumped the SINGLEMAP
  * definition from 18*18*4 to 64*64*4.  Otherwise the surf pointer goes out
  * of bounds in CalcPoints() and also probably in SingleLightFace(),
- * SkyLightFace() and TestSingleLightFace() and overwrites other data
- * resulting in stack corruption:  See the Error() statements down below.  */
+ * and TestSingleLightFace() and overwrites other data ==> stack corruption.
+ * See the Error() statements down below.  */
 #define	SINGLEMAP	(64*64*4)	// (18*18*4)
 
 typedef struct
@@ -155,12 +155,7 @@ static void CalcFaceVectors (lightinfo_t *l)
 // flip it towards plane normal
 	distscale = DotProduct (texnormal, l->facenormal);
 	if (!distscale)
-		COM_Error ("Texture axis perpendicular to face\n"
-			"Face point at (%f, %f, %f)\n",
-			dvertexes[ dedges[ l->face->firstedge ].v[ 0 ] ].point[ 0 ],
-			dvertexes[ dedges[ l->face->firstedge ].v[ 0 ] ].point[ 1 ],
-			dvertexes[ dedges[ l->face->firstedge ].v[ 0 ] ].point[ 2 ]);
-
+		COM_Error ("Texture axis perpendicular to face");
 	if (distscale < 0)
 	{
 		distscale = -distscale;
@@ -198,10 +193,10 @@ Fills in s->texmins[] and s->texsize[]
 also sets exactmins[] and exactmaxs[]
 ================
 */
-static void CalcFaceExtents (lightinfo_t *l, vec3_t faceoffset, qboolean fail)
+static void CalcFaceExtents (lightinfo_t *l, const vec3_t faceoffset, qboolean fail)
 {
 	dface_t	*s;
-	vec_t		mins[2], maxs[2], val;
+	vec_t	mins[2], maxs[2], val;
 	int		i, j, e;
 	dvertex_t	*v;
 	texinfo_t	*tex;
@@ -223,12 +218,6 @@ static void CalcFaceExtents (lightinfo_t *l, vec3_t faceoffset, qboolean fail)
 
 		for (j = 0 ; j < 2 ; j++)
 		{
-			/*
-			val = v->point[0] * tex->vecs[j][0] + 
-				v->point[1] * tex->vecs[j][1] +
-				v->point[2] * tex->vecs[j][2] +
-				tex->vecs[j][3];
-			*/
 			val =	((double)v->point[0] + faceoffset[0]) * (double)tex->vecs[j][0] +
 				((double)v->point[1] + faceoffset[1]) * (double)tex->vecs[j][1] +
 				((double)v->point[2] + faceoffset[2]) * (double)tex->vecs[j][2] +
@@ -274,9 +263,9 @@ static void CalcPoints (lightinfo_t *l)
 	int		i;
 	int		s, t, j;
 	int		w, h, step;
-	vec_t		starts, startt, us, ut;
-	vec_t		*surf;
-	vec_t		mids, midt;
+	vec_t	starts, startt, us, ut;
+	vec_t	*surf;
+	vec_t	mids, midt;
 	vec3_t	facemid, move;
 
 //
@@ -424,7 +413,7 @@ static vec_t scaledLight (vec_t distance, entity_t *light)
 SingleLightFace
 ================
 */
-static void SingleLightFace (entity_t *light, lightinfo_t *l, vec3_t faceoffset, int bouncelight)
+static void SingleLightFace (entity_t *light, lightinfo_t *l, const vec3_t faceoffset)
 {
 	vec_t	dist;
 	vec3_t	incoming;
@@ -523,24 +512,12 @@ static void SingleLightFace (entity_t *light, lightinfo_t *l, vec3_t faceoffset,
 		}
 
 		angle = (1.0-scalecos) + scalecos*angle;
-		// add = light->light - dist;
 		add = scaledLight(CastRay(light->origin, surf), light);
 		add *= angle;
-		/*
-		if (add < 0)
-			continue;
 		lightsamp[c] += add;
-		if (lightsamp[c] > 1)		// ignore real tiny lights
-			hit = true;
-		*/
-		lightsamp[c] += add;
-
-		// mfah - cap at 255 here
 		if (lightsamp[c] > 255)
 			lightsamp[c] = 255;
 
-		// tQER<1>: Calculate add and keep in CPU register
-		// for faster processing. x2.24 faster in profiler
 		add /= 255.0;
 		lightcolorsamp[c][0] += add * light->lightcolor[0];
 		lightcolorsamp[c][1] += add * light->lightcolor[1];
@@ -564,72 +541,13 @@ static void SingleLightFace (entity_t *light, lightinfo_t *l, vec3_t faceoffset,
 
 /*
 ============
-SkyLightFace
-============
-*/
-#if 0	/* not used */
-void SkyLightFace (lightinfo_t *l, vec3_t faceoffset)
-{
-	int		i, j;
-	vec_t	*surf;
-	vec3_t	incoming;
-	vec_t	angle;
-
-// Don't bother if surface facing away from sun
-	if (DotProduct (sunmangle, l->facenormal) <= 0)
-		return;
-
-// if sunlight is set, use a style 0 light map
-	for (i = 0 ; i < l->numlightstyles ; i++)
-		if (l->lightstyles[i] == 0)
-			break;
-
-	if (i == l->numlightstyles)
-	{
-		if (l->numlightstyles == MAXLIGHTMAPS)
-			return;		// oh well, too many lightmaps
-		l->lightstyles[i] = 0;
-		l->numlightstyles++;
-	}
-
-// Check each point
-	VectorCopy(sunmangle, incoming);
-	VectorNormalize(incoming);
-	angle = DotProduct (incoming, l->facenormal);
-	angle = (1.0-scalecos) + scalecos*angle;
-	surf = l->surfpt[0];
-	for (j = 0 ; j < l->numsurfpt ; j++, surf+=3)
-	{
-		if (surf > l->surfpt[SINGLEMAP - 1])
-			COM_Error ("%s: surf out of bounds (numsurfpt=%d)", __thisfunc__, l->numsurfpt);
-		if (TestSky(surf, sunmangle))
-		{
-			l->lightmaps[i][j] += (angle*sunlight);
-			l->lightmapcolors[i][j][0] += (angle * sunlight * sunlight_color[0]) /255;
-			l->lightmapcolors[i][j][1] += (angle * sunlight * sunlight_color[1]) /255;
-			l->lightmapcolors[i][j][2] += (angle * sunlight * sunlight_color[2]) /255;
-		}
-	}
-}
-#endif
-
-
-/*
-============
 FixMinlight
 ============
 */
 static void FixMinlight (lightinfo_t *l)
 {
 	int		i, j, k;
-	//float	minlight;
 	vec_t	tmp;
-
-	//minlight = minlights[l->surfnum];
-
-//if minlight is set, there must be a style 0 light map
-	//if (!minlight)
-	//	return;
 
 	for (i = 0 ; i < l->numlightstyles ; i++)
 	{
@@ -653,28 +571,20 @@ static void FixMinlight (lightinfo_t *l)
 		l->lightstyles[i] = 0;
 		l->numlightstyles++;
 	}
-	/*
-	else
-	{
+//	else
+//	{
 		for (j = 0 ; j < l->numsurfpt ; j++)
 		{
-			if ( l->lightmaps[i][j] < minlight)
-				l->lightmaps[i][j] = minlight;
+			if ( l->lightmaps[i][j] < worldminlight)
+				l->lightmaps[i][j] = worldminlight;
+			for (k = 0 ; k < 3 ; k++)
+			{
+				tmp = (vec_t)(worldminlight * minlight_color[k]) / 255.0;
+				if (l->lightmapcolors[i][j][k] < tmp )
+					l->lightmapcolors[i][j][k] = tmp;
+			}
 		}
-	}
-	*/
-
-	for (j = 0 ; j < l->numsurfpt ; j++)
-	{
-		if ( l->lightmaps[i][j] < worldminlight)
-			l->lightmaps[i][j] = worldminlight;
-		for (k = 0 ; k < 3 ; k++)
-		{
-			tmp = (vec_t)(worldminlight * minlight_color[k]) / 255.0;
-			if (l->lightmapcolors[i][j][k] < tmp )
-				l->lightmapcolors[i][j][k] = tmp;
-		}
-	}
+//	}
 }
 
 
@@ -683,7 +593,7 @@ static void FixMinlight (lightinfo_t *l)
 LightFace
 ============
 */
-void LightFaceLIT (int surfnum, vec3_t faceoffset)
+void LightFaceLIT (int surfnum, const vec3_t faceoffset)
 {
 	dface_t	*f;
 	lightinfo_t	l;
@@ -727,7 +637,7 @@ void LightFaceLIT (int surfnum, vec3_t faceoffset)
 	VectorCopy (dplanes[f->planenum].normal, l.facenormal);
 	l.facedist = dplanes[f->planenum].dist;
 	VectorScale (l.facenormal, l.facedist, point);
-	VectorAdd( point, faceoffset, point );
+	VectorAdd (point, faceoffset, point);
 	l.facedist = DotProduct( point, l.facenormal );
 
 	if (f->side)
@@ -756,7 +666,7 @@ void LightFaceLIT (int surfnum, vec3_t faceoffset)
 	for (i = 0 ; i < num_entities ; i++)
 	{
 		if (entities[i].light)
-			SingleLightFace (&entities[i], &l, faceoffset, 0);
+			SingleLightFace (&entities[i], &l, faceoffset);
 	}
 
 // minimum lighting
@@ -840,7 +750,7 @@ void LightFaceLIT (int surfnum, vec3_t faceoffset)
 	}
 }
 
-static void TestSingleLightFace (entity_t *light, lightinfo_t *l, vec3_t faceoffset, int bouncelight)
+static void TestSingleLightFace (entity_t *light, lightinfo_t *l, const vec3_t faceoffset)
 {
 	vec_t	dist;
 	vec_t	add;
@@ -901,7 +811,7 @@ static void TestSingleLightFace (entity_t *light, lightinfo_t *l, vec3_t faceoff
 	}
 }
 
-void TestLightFace (int surfnum, vec3_t faceoffset)
+void TestLightFace (int surfnum, const vec3_t faceoffset)
 {
 	dface_t	*f;
 	lightinfo_t	l;
@@ -935,7 +845,7 @@ void TestLightFace (int surfnum, vec3_t faceoffset)
 	VectorCopy (dplanes[f->planenum].normal, l.facenormal);
 	l.facedist = dplanes[f->planenum].dist;
 	VectorScale (l.facenormal, l.facedist, point);
-	VectorAdd( point, faceoffset, point );
+	VectorAdd (point, faceoffset, point);
 	l.facedist = DotProduct( point, l.facenormal );
 
 	if (f->side)
@@ -958,12 +868,12 @@ void TestLightFace (int surfnum, vec3_t faceoffset)
 		{
 			// don't test torches, flames and globes
 			// they already have their own light
-			TestSingleLightFace (&entities[i], &l, faceoffset, 0);
+			TestSingleLightFace (&entities[i], &l, faceoffset);
 		}
 		else if (!strncmp (entities[i].classname, "light_fluor", 11))
 		{
 			// test fluoros as well
-			TestSingleLightFace (&entities[i], &l, faceoffset, 0);
+			TestSingleLightFace (&entities[i], &l, faceoffset);
 		}
 	}
 }

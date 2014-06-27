@@ -26,8 +26,8 @@
 #include "cmdlib.h"
 #include "mathlib.h"
 #include "bspfile.h"
-#include "tyrlite.h"
 #include "entities.h"
+#include "tyrlite.h"
 
 
 entity_t	entities[MAX_MAP_ENTITIES];
@@ -59,11 +59,6 @@ static int LightStyleForTargetname (char *targetname, qboolean alloc)
 		return -1;
 	strcpy (lighttargets[i], targetname);
 	numlighttargets++;
-
-	// DEBUG
-	// printf("Generating lightstyle %i for targetname \"%s\"\n",
-	//         numlighttargets-1+32, targetname);
-
 	return numlighttargets-1 + 32;
 }
 
@@ -120,7 +115,7 @@ void LoadEntities (void)
 	entity_t	*entity;
 	char		key[64];
 	epair_t		*epair;
-	vec_t		vec[3];
+	vec_t		v[3];
 	int		i;
 
 	data = dentdata;
@@ -129,6 +124,7 @@ void LoadEntities (void)
 //
 	num_entities = 0;
 	num_lights = 0;
+
 // go through all the entities
 	while (1)
 	{
@@ -143,8 +139,6 @@ void LoadEntities (void)
 			COM_Error ("%s: MAX_MAP_ENTITIES", __thisfunc__);
 		entity = &entities[num_entities];
 		num_entities++;
-
-	// flag to indicate use of mangle key
 		entity->use_mangle = false;
 
 	// go through all the keys in this entity
@@ -186,11 +180,7 @@ void LoadEntities (void)
 				strcpy (entity->targetname, com_token);
 			else if (!strcmp(key, "origin"))
 			{
-#ifdef DOUBLEVEC_T
 				if (sscanf(com_token, "%lf %lf %lf",
-#else
-				if (sscanf(com_token, "%f %f %f",
-#endif
 						&entity->origin[0],
 						&entity->origin[1],
 						&entity->origin[2]) != 3)
@@ -198,7 +188,6 @@ void LoadEntities (void)
 			}
 			else if (!strncmp(key, "light", 5))
 			{
-				//entity->light = atoi(com_token);
 				entity->light = atof(com_token);
 			}
 			else if (!strncmp (key, "_light", 6))
@@ -219,56 +208,40 @@ void LoadEntities (void)
 				entity->formula = atoi(com_token);
 			else if (!strcmp(key, "mangle"))
 			{
-#ifdef DOUBLEVEC_T
-				if (sscanf(com_token, "%lf %lf %lf", &vec[0], &vec[1], &vec[2]) != 3)
-#else
-				if (sscanf(com_token, "%f %f %f", &vec[0], &vec[1], &vec[2]) != 3)
-#endif
+				if (sscanf(com_token, "%lf %lf %lf", &v[0], &v[1], &v[2]) != 3)
 					COM_Error ("%s: not 3 values for mangle", __thisfunc__);
 
 				/* Precalculate the direction vector		*/
 				entity->use_mangle = true;
-				entity->mangle[0] = cos(vec[0]*Q_PI/180)*cos(vec[1]*Q_PI/180);
-				entity->mangle[1] = sin(vec[0]*Q_PI/180)*cos(vec[1]*Q_PI/180);
-				entity->mangle[2] = sin(vec[1]*Q_PI/180);
+				entity->mangle[0] = cos(v[0]*Q_PI/180)*cos(v[1]*Q_PI/180);
+				entity->mangle[1] = sin(v[0]*Q_PI/180)*cos(v[1]*Q_PI/180);
+				entity->mangle[2] = sin(v[1]*Q_PI/180);
 			}
 			else if (!strcmp(key, "_color")/* don't work with hipnotic particle fields || !strcmp(key, "color")*/)
 			{
-#ifdef DOUBLEVEC_T
-				if (sscanf(com_token, "%lf %lf %lf", &vec[0], &vec[1], &vec[2]) != 3)
-#else
-				if (sscanf(com_token, "%f %f %f", &vec[0], &vec[1], &vec[2]) != 3)
-#endif
+				if (sscanf(com_token, "%lf %lf %lf", &v[0], &v[1], &v[2]) != 3)
 					COM_Error ("%s: not 3 values for color", __thisfunc__);
-				for (i=0 ; i<3 ; i++)
-					entity->lightcolor[i] = vec[i];
+				for (i = 0 ; i < 3 ; i++)
+					entity->lightcolor[i] = v[i];
 			}
 			else if (!strcmp(key, "_sunlight"))
 				sunlight = atof(com_token);
 			else if (!strcmp(key, "_sun_mangle"))
 			{
-#ifdef DOUBLEVEC_T
-				if (sscanf(com_token, "%lf %lf %lf", &vec[0], &vec[1], &vec[2]) != 3)
-#else
-				if (sscanf(com_token, "%f %f %f", &vec[0], &vec[1], &vec[2]) != 3)
-#endif
+				if (sscanf(com_token, "%lf %lf %lf", &v[0], &v[1], &v[2]) != 3)
 					COM_Error ("%s: not 3 values for _sun_mangle", __thisfunc__);
 
 				/* Precalculate sun vector and			*/
 				/* make it too large to fit into the map	*/
-				sunmangle[0] = cos(vec[0]*Q_PI/180)*cos(vec[1]*Q_PI/180);
-				sunmangle[1] = sin(vec[0]*Q_PI/180)*cos(vec[1]*Q_PI/180);
-				sunmangle[2] = sin(vec[1]*Q_PI/180);
+				sunmangle[0] = cos(v[0]*Q_PI/180)*cos(v[1]*Q_PI/180);
+				sunmangle[1] = sin(v[0]*Q_PI/180)*cos(v[1]*Q_PI/180);
+				sunmangle[2] = sin(v[1]*Q_PI/180);
 				VectorNormalize(sunmangle);
 				VectorScale(sunmangle, -16384, sunmangle);
 			}
 			else if (!strcmp(key, "_sunlight_color"))
 			{
-#ifdef DOUBLEVEC_T
 				if (sscanf(com_token, "%lf %lf %lf",
-#else
-				if (sscanf(com_token, "%f %f %f",
-#endif
 						&sunlight_color[0],
 						&sunlight_color[1],
 						&sunlight_color[2]) != 3)
@@ -276,141 +249,46 @@ void LoadEntities (void)
 			}
 			else if (!strcmp(key, "_minlight_color"))
 			{
-#ifdef DOUBLEVEC_T
 				if (sscanf(com_token, "%lf %lf %lf",
-#else
-				if (sscanf(com_token, "%f %f %f",
-#endif
 						&minlight_color[0],
 						&minlight_color[1],
 						&minlight_color[2]) != 3)
 					COM_Error ("%s: not 3 values for _minlight_color", __thisfunc__);
 			}
-			/*
-			else if (!strcmp(key, "angle"))
-			{
-				entity->angle = (float)atof(com_token);
-			}
-			*/
 		}
 
 	// all fields have been parsed
-	// check default settings and check for light value in worldspawn
-		/*
-		if (!strncmp (entity->classname, "light", 5) && !entity->light)
-			entity->light = DEFAULTLIGHTLEVEL;
 
 		if (!strncmp (entity->classname, "light", 5))
 		{
-			if (entity->targetname[0] && !entity->style)
-			{
-				char	s[16];
-
-				entity->style = LightStyleForTargetname (entity->targetname, true);
-				sprintf (s,"%i", entity->style);
-				SetKeyValue (entity, "style", s);
-			}
-		}
-		*/
-
-		if (!strncmp (entity->classname, "light", 5))
-		{
-			num_clights++;
+			num_lights++;
 
 			if (!entity->light)
 				entity->light = DEFAULTLIGHTLEVEL;
 			if (entity->atten <= 0.0)
 				entity->atten = 1.0;
-			if ((entity->formula < 0) || (entity->formula > 3))
+			if (entity->formula < 0 || entity->formula > 3)
 				entity->formula = 0;
 
-			// Convert to Hexen2 Entities
-			// since the map has no color info anyway, we don't need to test this
-			if (!q_strncasecmp(entity->classname, "light_torch", 11))
-			{
-				/*
-				In Hexen 2 :
-				light_torch_castle
-				light_torch_rome
-				light_torch_meso
-				light_torch_egypt
-				light_torch_small_walltorch
-				*/
-				// make it orange
-				entity->lightcolor[0] = 255;
-				entity->lightcolor[1] = 128;
-				entity->lightcolor[2] = 64;
-			}
-			else if (!q_strncasecmp(entity->classname, "light_flame", 11))
-			{
-				// make it orange
-				/*
-				In Hexen 2 :
-				light_flame_large_yellow
-				light_flame_small_yellow
-				*/
-
-				entity->lightcolor[0] = 255;
-				entity->lightcolor[1] = 128;
-				entity->lightcolor[2] = 64;
-			}
-			else if (!strcmp (entity->classname, "light_gem"))
+			// set some colors based on hexen2 entity classname
+			if (!q_strncasecmp(entity->classname, "light_flame", 11) ||	/* _large_yellow, _small_yellow */
+			    !q_strncasecmp(entity->classname, "light_torch", 11) ||	/* _castle, _rome, _meso, _egypt, _walltorch */
+			    !q_strcasecmp (entity->classname, "light_gem"))
 			{
 				// make it orange
 				entity->lightcolor[0] = 255;
 				entity->lightcolor[1] = 128;
 				entity->lightcolor[2] = 64;
+				num_clights++;
 			}
-
-			/*
-			// No Such Light Type in Hexen 2
-			else if (!strncmp (entity->classname, "light_fluor", 11))
-			{
-				// make all colors 0 - fluoro lights are tested the same way as normal ones,
-				// so we don't want any color info to begin with
-				num_clights--;
-				entity->lightcolor[0] = 0;
-				entity->lightcolor[1] = 0;
-				entity->lightcolor[2] = 0;
-			}
-			else if (!strcmp (entity->classname, "light_globe"))
-			{
-				// make it orange
-				entity->lightcolor[0] = 255;
-				entity->lightcolor[1] = 128;
-				entity->lightcolor[2] = 64;
-			}
-			else if (!strcmp (entity->classname, "light_candle"))
-			{
-				// make it orange
-				entity->lightcolor[0] = 255;
-				entity->lightcolor[1] = 128;
-				entity->lightcolor[2] = 64;
-			}
-			else if (!strcmp (entity->classname, "light_lantern"))
-			{
-				// make it orange
-				entity->lightcolor[0] = 255;
-				entity->lightcolor[1] = 128;
-				entity->lightcolor[2] = 64;
-			}
-			*/
-			// End Convert to Hexen2 Entities
 			else
 			{
 				// we don't need any color info to begin with
-				num_clights--;
 				entity->lightcolor[0] = 0;
 				entity->lightcolor[1] = 0;
 				entity->lightcolor[2] = 0;
 			}
 
-			num_lights++;
-		//	printf ("entity light %i\n", entity->light);
-		}
-
-		if (!strcmp (entity->classname, "light"))
-		{
 			if (entity->targetname[0] && !entity->style)
 			{
 				char	s[16];
@@ -421,6 +299,7 @@ void LoadEntities (void)
 			}
 		}
 
+	// check for light value in worldspawn
 		if (!strcmp (entity->classname, "worldspawn"))
 		{
 			// mapname according to the message field requires line
@@ -443,8 +322,7 @@ void LoadEntities (void)
 			}
 
 			worldminlight = 0;
-				// WTF? Why nullify the -light cmdline arg??
-				// This was never in TyrLite but is in MHColour.
+				// FIXME: Why nullify the -light cmdline arg?? (was added in MHColour)
 		}
 	}
 
@@ -463,6 +341,7 @@ const char *ValueForKey (entity_t *ent, const char *key)
 		if (!strcmp (ep->key, key) )
 			return ep->value;
 	}
+
 	return "";
 }
 
@@ -499,28 +378,23 @@ void GetVectorForKey (entity_t *ent, const char *key, vec3_t vec)
 	const char	*k;
 
 	k = ValueForKey (ent, key);
-#ifdef DOUBLEVEC_T
 	sscanf (k, "%lf %lf %lf", &vec[0], &vec[1], &vec[2]);
-#else
-	sscanf (k, "%f %f %f", &vec[0], &vec[1], &vec[2]);
-#endif
 }
-
 
 entity_t *FindEntityWithKeyPair (const char *key, const char *value)
 {
-	entity_t	*ent;
 	epair_t	*ep;
-	int			i;
+	entity_t	*ent;
+	int		i;
 
 	for (i = 0 ; i < num_entities ; i++)
 	{
-		ent = &entities[ i ];
+		ent = &entities[i];
 		for (ep = ent->epairs ; ep ; ep = ep->next)
 		{
 			if (!strcmp (ep->key, key))
 			{
-				if (!strcmp( ep->value, value ))
+				if (!strcmp (ep->value, value))
 					return ent;
 				break;
 			}

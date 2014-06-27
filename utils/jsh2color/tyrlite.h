@@ -47,11 +47,9 @@ extern	qboolean	extrasamples;
 //void	RotateSample (vec3_t in, vec3_t out);
 //void	LoadNodes (char *file);
 
-qboolean TestLine (vec3_t start, vec3_t stop);
-// TYR - added TestSky
-qboolean TestSky  (vec3_t start, vec3_t dirn);
-void	TestLightFace (int surfnum, vec3_t faceoffset);
-void	LightFaceLIT (int surfnum, vec3_t faceoffset);
+qboolean TestLine (const vec3_t start, const vec3_t stop);
+void	TestLightFace (int surfnum, const vec3_t faceoffset);
+void	LightFaceLIT (int surfnum, const vec3_t faceoffset);
 
 void	LightLeaf (dleaf_t *leaf);
 void	MakeTnodes (dmodel_t *bm);
