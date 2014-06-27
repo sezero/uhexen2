@@ -1,6 +1,6 @@
 /*
  * trace.c
- * Id: trace.c,v 1.6 2007-12-14 16:41:28 sezero Exp $
+ * $Id: trace.c,v 1.6 2007-12-14 16:41:28 sezero Exp $
  *
  * Copyright (C) 1996-1997  Id Software, Inc.
  * Copyright (C) 1997-1998  Raven Software Corp.
@@ -117,7 +117,7 @@ typedef struct
 TestLine
 ==============
 */
-qboolean TestLine (vec3_t start, vec3_t stop)
+qboolean TestLine (const vec3_t start, const vec3_t stop)
 {
 	int			node, side;
 	float		front, back;

@@ -53,7 +53,7 @@ static double CastRay (vec3_t p1, vec3_t p2)
 	for (i = 0 ; i < 3 ; i++)
 		t += (p2[i]-p1[i]) * (p2[i]-p1[i]);
 
-	if (t == 0)
+	if (t <= 0)
 		t = 1;		// don't blow up...
 
 	return sqrt(t);

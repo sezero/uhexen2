@@ -47,7 +47,7 @@ extern	qboolean	extrasamples;
 
 byte	*GetFileSpace (int size);
 
-qboolean TestLine (vec3_t start, vec3_t stop);
+qboolean TestLine (const vec3_t start, const vec3_t stop);
 void	LightFace (int surfnum);
 void	LightLeaf (dleaf_t *leaf);
 void	MakeTnodes (dmodel_t *bm);
