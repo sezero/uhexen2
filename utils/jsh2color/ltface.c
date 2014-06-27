@@ -229,10 +229,10 @@ static void CalcFaceExtents (lightinfo_t *l, vec3_t faceoffset, qboolean fail)
 				v->point[2] * tex->vecs[j][2] +
 				tex->vecs[j][3];
 			*/
-			val = (v->point[0] + faceoffset[0]) * tex->vecs[j][0] +
-				(v->point[1] + faceoffset[1]) * tex->vecs[j][1] +
-				(v->point[2] + faceoffset[2]) * tex->vecs[j][2] +
-				tex->vecs[j][3];
+			val =	((double)v->point[0] + faceoffset[0]) * (double)tex->vecs[j][0] +
+				((double)v->point[1] + faceoffset[1]) * (double)tex->vecs[j][1] +
+				((double)v->point[2] + faceoffset[2]) * (double)tex->vecs[j][2] +
+				(double)tex->vecs[j][3];
 
 			if (val < mins[j])
 				mins[j] = val;
@@ -419,7 +419,6 @@ static vec_t scaledLight (vec_t distance, entity_t *light)
 	}
 }
 
-
 /*
 ================
 SingleLightFace
@@ -441,7 +440,7 @@ static void SingleLightFace (entity_t *light, lightinfo_t *l, vec3_t faceoffset,
 	vec_t	falloff;
 	vec_t	*lightsamp;
 	/* Colored lighting */
-	vec3_t		*lightcolorsamp;
+	vec3_t	*lightcolorsamp;
 
 	VectorSubtract (light->origin, bsp_origin, rel);
 	dist = scaledDistance((DotProduct(rel, l->facenormal) - l->facedist), light);
@@ -463,7 +462,8 @@ static void SingleLightFace (entity_t *light, lightinfo_t *l, vec3_t faceoffset,
 		VectorNormalize (spotvec);
 		if (!light->angle)
 			falloff = -cos(20*Q_PI/180);
-		else	falloff = -cos(light->angle/2*Q_PI/180);
+		else
+			falloff = -cos(light->angle/2*Q_PI/180);
 	}
 	else if (light->use_mangle)
 	{
@@ -778,7 +778,7 @@ void LightFaceLIT (int surfnum, vec3_t faceoffset)
 	out = &newdlightdata[faces_ltoffset[surfnum]];
 
 // extra filtering
-	w = (l.texsize[0]+1)*2;
+	w = (l.texsize[0] + 1) * 2;
 
 	for (i = 0 ; i < l.numlightstyles ; i++)
 	{
@@ -840,7 +840,6 @@ void LightFaceLIT (int surfnum, vec3_t faceoffset)
 	}
 }
 
-
 static void TestSingleLightFace (entity_t *light, lightinfo_t *l, vec3_t faceoffset, int bouncelight)
 {
 	vec_t	dist;
@@ -901,7 +900,6 @@ static void TestSingleLightFace (entity_t *light, lightinfo_t *l, vec3_t faceoff
 		return;
 	}
 }
-
 
 void TestLightFace (int surfnum, vec3_t faceoffset)
 {
