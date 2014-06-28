@@ -1,7 +1,7 @@
 Hammer of Thyrion (uHexen2) release notes:
 
 ========================================================================
-Changes in v1.5.7: (Apr. 28, 2014.)
+Changes in v1.5.7: (June 28, 2014.)
 ========================================================================
 
 - Music: Support for FLAC codec. (edit the makefiles to enable it when
@@ -26,6 +26,10 @@ Changes in v1.5.7: (Apr. 28, 2014.)
 
 - Utils, hcc: Added a command line option "-os" to compact the strings
   heap by eliminating duplicates. some minor revisions.
+
+- Utils, jsh2color: ignore minlight values from the -light command line
+  switch: eliminates the majority of the ugly black patches from eidolon
+  and rider2c maps. bump its version to 1.2.6.
 
 - external wal texture loading is now a compile time option, disabled
   by default.

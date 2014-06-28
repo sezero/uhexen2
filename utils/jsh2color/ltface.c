@@ -549,6 +549,9 @@ static void FixMinlight (lightinfo_t *l)
 	int		i, j, k;
 	vec_t	tmp;
 
+	if (!worldminlight)
+		return;
+
 	for (i = 0 ; i < l->numlightstyles ; i++)
 	{
 		if (l->lightstyles[i] == 0)
@@ -559,7 +562,7 @@ static void FixMinlight (lightinfo_t *l)
 		if (l->numlightstyles == MAXLIGHTMAPS)
 			return;		// oh well..
 		for (j = 0 ; j < l->numsurfpt ; j++)
-			l->lightmaps[i][j] = worldminlight;	// minlight;
+			l->lightmaps[i][j] = worldminlight;
 
 		for (j = 0 ; j < l->numsurfpt ; j++)
 		{
@@ -571,8 +574,8 @@ static void FixMinlight (lightinfo_t *l)
 		l->lightstyles[i] = 0;
 		l->numlightstyles++;
 	}
-//	else
-//	{
+	else
+	{
 		for (j = 0 ; j < l->numsurfpt ; j++)
 		{
 			if ( l->lightmaps[i][j] < worldminlight)
@@ -584,7 +587,7 @@ static void FixMinlight (lightinfo_t *l)
 					l->lightmapcolors[i][j][k] = tmp;
 			}
 		}
-//	}
+	}
 }
 
 

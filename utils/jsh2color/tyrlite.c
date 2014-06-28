@@ -285,7 +285,8 @@ int main (int argc, char **argv)
 		{
 			if (i >= argc - 1)
 				COM_Error("Missing argument to \"%s\"", argv[i]);
-			worldminlight = atof (argv[++i]);
+			//worldminlight = atof (argv[++i]);
+			++i;	// ignore: does unusual things with eidolon map.
 		}
 		else if (!strcmp(argv[i],"-force"))
 		{

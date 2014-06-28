@@ -25,7 +25,7 @@
 #ifndef JSCOLOR_H
 #define JSCOLOR_H
 
-#define JSH2COLOR_VER	"1.2.5"		/* version string */
+#define JSH2COLOR_VER	"1.2.6"		/* version string */
 
 #define	MAX_ENTRYNUM	32784
 #define	MAX_TEX_NAME	64

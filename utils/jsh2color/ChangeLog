@@ -1,3 +1,9 @@
+2014-06-28 1.2.6 sezero
+Changes since 1.2.5:
+ * Ignore the worldminlight values from the "-light" command line
+   switch: eliminates the majority of the ugly black patches from
+   eidolon and rider2c maps. Several cleanups.
+
 2012-07-14 1.2.5 sezero
 Changes since 1.2.4:
  * support for running multi-threaded to reduce completion time on

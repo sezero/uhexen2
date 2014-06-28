@@ -320,9 +320,6 @@ void LoadEntities (void)
 			{
 				printf("Using minlight value %i from command line.\n", worldminlight);
 			}
-
-			worldminlight = 0;
-				// FIXME: Why nullify the -light cmdline arg?? (was added in MHColour)
 		}
 	}
 

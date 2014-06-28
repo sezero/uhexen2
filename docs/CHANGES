@@ -3,6 +3,12 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2014-06-28 (SVN):
+    * utils, jsh2color: ignore minlight values from the -light command
+      line switch: eliminates the majority of the ugly black patches
+      from eidolon and rider2c maps. bump its version to 1.2.6.
+    * bumped the version date stamp to 2014-06-28.
+
 2014-06-15 (SVN):
     * SDLMain.m: replace CPS* stuff with activateIgnoringOtherApps.
 
