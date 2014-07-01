@@ -23,14 +23,6 @@
 #ifndef __PATHUTIL_H
 #define __PATHUTIL_H
 
-#define PATHSEPERATOR	'/'
-
-#ifdef _MAX_PATH
-#define	MAX_OSPATH	_MAX_PATH
-#else
-#define	MAX_OSPATH	256
-#endif
-
 void	DefaultExtension (char *path, const char *extension, size_t len);
 void	DefaultPath (char *path, const char *basepath, size_t len);
 void	StripFilename (char *path);

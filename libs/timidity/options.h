@@ -111,10 +111,16 @@
 #define M_PI 3.14159265358979323846
 #endif
 
-#if defined(MAXPATHLEN)
+#if defined(MAXPATHLEN) /* <sys/param.h> */
 #define TIM_MAXPATH MAXPATHLEN
 #elif defined(PATH_MAX)
 #define TIM_MAXPATH PATH_MAX
+#elif defined(_WIN32) && defined(_MAX_PATH)
+#define TIM_MAXPATH _MAX_PATH
+#elif defined(_WIN32) && defined(MAX_PATH)
+#define TIM_MAXPATH MAX_PATH
+#elif defined(__OS2__) && defined(CCHMAXPATH)
+#define TIM_MAXPATH CCHMAXPATH
 #else
 #define TIM_MAXPATH 1024
 #endif

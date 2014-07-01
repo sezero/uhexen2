@@ -37,7 +37,6 @@
 #define	ENGINE_NAME		"Hexen2"
 
 #define	MAX_QPATH	64	// max length of a quake game pathname
-#define	MAX_OSPATH	256	// max length of a filesystem pathname
 
 #define	QUAKE_GAME		// as opposed to utilities
 
@@ -122,7 +121,7 @@
 //#define	STAT_GREENMANA		16
 //#define	STAT_EXPERIENCE		17
 
-#define	MAX_INVENTORY		15	// Max inventory array size
+#define	MAX_INVENTORY		15	/* Max inventory array size */
 /* the number of cnt_<artifact_name> members in the entvars_t struct:
    from cnt_torch to cnt_invincibility: 15 total (see in progdefs.h). */
 

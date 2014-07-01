@@ -32,8 +32,16 @@
 #include <unistd.h>
 #include <string.h>
 #include <errno.h>
+#include <sys/param.h>
 
-#define MAX_OSPATH	256
+#if !defined(PATH_MAX)
+#if defined(MAXPATHLEN)
+#define PATH_MAX MAXPATHLEN
+#else
+#define PATH_MAX 1024
+#endif
+#endif
+#define MAX_OSPATH PATH_MAX
 
 /* =====================================================================
    USE_PASSWORD_FILE, 0 or 1 (main.c)

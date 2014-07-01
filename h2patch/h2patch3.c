@@ -17,11 +17,7 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <stdarg.h>
-#include <limits.h>
+#include "q_stdinc.h"
 #include "q_stdint.h"
 
 #if defined(_WIN32)
@@ -47,16 +43,8 @@
 #include "filenames.h"
 
 
-#if !defined(MAXPATHLEN)
-#if defined(PATH_MAX)
-#define MAXPATHLEN PATH_MAX
-#else
-#define MAXPATHLEN 256
-#endif
-#endif
-#define MAX_OSPATH	MAXPATHLEN
-
 #include "xdelta3-mainopt.h"
+
 
 struct other_pak
 {

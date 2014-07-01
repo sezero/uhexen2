@@ -46,10 +46,6 @@
 #define DO_USERDIRS	1
 #define HWM_USERDIR	".hwmaster"	/* user directory for unix	*/
 
-#define	MAX_OSPATH	256		/* max length of a filesystem pathname	*/
-
-#define MAX_NUM_ARGVS	50
-
 #define FILTERS_FILE	"filters.ini"
 
 #define	MAX_MSGLEN		1450	// max length of a reliable message

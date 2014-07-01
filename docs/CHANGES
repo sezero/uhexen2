@@ -3,6 +3,13 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2014-07-01 (SVN):
+    * move MAX_OSPATH definition to q_stdinc.h. define it as PATH_MAX,
+      or as MAXPATHLEN, _MAX_PATH, MAX_PATH, or CCHMAXPATH if either of
+      them is available, or as 1024 if none are available. this would
+      make us safer in deep installation directory paths.  darkplaces
+      engine seems to do the same.
+
 2014-06-28 (SVN):
     * utils, jsh2color: ignore minlight values from the -light command
       line switch: eliminates the majority of the ugly black patches
