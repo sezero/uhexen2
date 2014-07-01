@@ -480,7 +480,7 @@
 		B0E74B31144E806D0043F808 /* snd_vorbis.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = snd_vorbis.c; path = ../../h2shared/snd_vorbis.c; sourceTree = SOURCE_ROOT; };
 		B0E74B36144E807F0043F808 /* snd_mp3.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = snd_mp3.c; path = ../../h2shared/snd_mp3.c; sourceTree = SOURCE_ROOT; };
 		B0E74B3B144E80960043F808 /* snd_opus.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = snd_opus.c; path = ../../h2shared/snd_opus.c; sourceTree = SOURCE_ROOT; };
-		F5F5DE80017CB4370103A810 /* libmikmod.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; path = libmikmod.dylib; path = ../../../oslibs/macosx/codecs/lib/libmikmod.dylib; sourceTree = "<group>"; };
+		F5F5DE80017CB4370103A810 /* libmikmod.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libmikmod.dylib; path = ../../../oslibs/macosx/codecs/lib/libmikmod.dylib; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
