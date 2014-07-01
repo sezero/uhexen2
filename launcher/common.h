@@ -43,15 +43,6 @@
 #endif
 #define MAX_OSPATH PATH_MAX
 
-/* =====================================================================
-   USE_PASSWORD_FILE, 0 or 1 (main.c)
-   On any sane unix system we shall get the home directory based on the
-   real uid. If this fails (not finding the user in the password file
-   isn't normal) or if you disable this, we will get it by reading the
-   HOME environment variable, only.
-   =================================================================== */
-#define	USE_PASSWORD_FILE		1
-
 /* from main.c */
 extern char	basedir[MAX_OSPATH];
 extern char	userdir[MAX_OSPATH];

@@ -51,16 +51,6 @@
 #define	MAX_MSGLEN		1450	// max length of a reliable message
 #define	MAX_DATAGRAM		1450	// max length of unreliable message
 
-/* =====================================================================
-   USE_PASSWORD_FILE, 0 or 1 (sys_main.c)
-   On any sane unix system we shall get the home directory based on the
-   real uid. If this fails (not finding the user in the password file
-   isn't normal) or if you disable this, we will get it by reading the
-   HOME environment variable, only. Also see sys.h where USE_PASSWORD_FILE
-   may be disabled on purpose for some platforms.
-   =================================================================== */
-#define	USE_PASSWORD_FILE		1
-
 
 /* Includes */
 

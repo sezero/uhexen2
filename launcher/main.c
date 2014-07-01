@@ -26,10 +26,7 @@
 #include "common.h"
 #include "q_endian.h"
 #include <stdarg.h>
-
-#if USE_PASSWORD_FILE
 #include <pwd.h>
-#endif
 
 #include "launcher_defs.h"
 #include "games.h"
@@ -177,15 +174,12 @@ static int Sys_GetUserdir (char *dst, size_t dstsize)
 {
 	size_t		n;
 	const char	*home_dir = NULL;
-#if USE_PASSWORD_FILE
 	struct passwd	*pwent;
 
-	pwent = getpwuid( getuid() );
+	pwent = getpwuid(getuid());
 	if (pwent == NULL)
 		perror("getpwuid");
-	else
-		home_dir = pwent->pw_dir;
-#endif
+	else	home_dir = pwent->pw_dir;
 	if (home_dir == NULL)
 		home_dir = getenv("HOME");
 	if (home_dir == NULL)

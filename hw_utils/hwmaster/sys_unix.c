@@ -31,7 +31,7 @@
 #include <sys/stat.h>
 #include <unistd.h>
 #include <sys/time.h>
-#if USE_PASSWORD_FILE && DO_USERDIRS
+#if DO_USERDIRS
 #include <pwd.h>
 #endif
 
@@ -157,15 +157,12 @@ static int Sys_GetUserdir (char *dst, size_t dstsize)
 {
 	size_t		n;
 	const char	*home_dir = NULL;
-#if USE_PASSWORD_FILE
 	struct passwd	*pwent;
 
-	pwent = getpwuid( getuid() );
+	pwent = getpwuid(getuid());
 	if (pwent == NULL)
 		perror("getpwuid");
-	else
-		home_dir = pwent->pw_dir;
-#endif
+	else	home_dir = pwent->pw_dir;
 	if (home_dir == NULL)
 		home_dir = getenv("HOME");
 	if (home_dir == NULL)

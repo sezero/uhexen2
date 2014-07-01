@@ -31,14 +31,6 @@ double Sys_DoubleTime (void);
 
 char *Sys_ConsoleInput (void);
 
-/* disable use of password file on platforms where they
-   are not necessary or not possible. */
-#if defined(PLATFORM_DOS) || defined(PLATFORM_AMIGA) || \
-    defined(PLATFORM_WINDOWS)
-#undef	USE_PASSWORD_FILE
-#define	USE_PASSWORD_FILE	0
-#endif	/* _PASSWORD_FILE */
-
 /* disable user directories on platforms where they
  * aren't necessary or not possible. */
 #if defined(PLATFORM_DOS) || defined(PLATFORM_AMIGA) || \

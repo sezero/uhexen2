@@ -9,6 +9,8 @@ Development Progress	:
       them is available, or as 1024 if none are available. this would
       make us safer in deep installation directory paths.  darkplaces
       engine seems to do the same.
+    * remove USE_PASSWORD_FILE compile time option for the unix builds
+      and use it unconditionally already.
 
 2014-06-28 (SVN):
     * utils, jsh2color: ignore minlight values from the -light command
