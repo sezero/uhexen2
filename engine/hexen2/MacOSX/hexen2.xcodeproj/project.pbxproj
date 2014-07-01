@@ -3,10 +3,12 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 42;
+	objectVersion = 44;
 	objects = {
 
 /* Begin PBXBuildFile section */
+		32CA4F630368D1EE00C91783 /* snd_umx.c in Sources */ = {isa = PBXBuildFile; fileRef = 4818B0B012D5BA1A006DD66E /* snd_umx.c */; };
+		4818B0B612D5BA1A006DD66E /* snd_umx.c in Sources */ = {isa = PBXBuildFile; fileRef = 4818B0B012D5BA1A006DD66E /* snd_umx.c */; };
 		48281303179C401D004E1D61 /* libFLAC.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 48281302179C401D004E1D61 /* libFLAC.dylib */; };
 		48281304179C4034004E1D61 /* libFLAC.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 48281302179C401D004E1D61 /* libFLAC.dylib */; };
 		48281307179C4055004E1D61 /* snd_flac.c in Sources */ = {isa = PBXBuildFile; fileRef = 48281305179C4055004E1D61 /* snd_flac.c */; };
@@ -15,8 +17,6 @@
 		4828130A179C4055004E1D61 /* snd_flac.h in Headers */ = {isa = PBXBuildFile; fileRef = 48281306179C4055004E1D61 /* snd_flac.h */; };
 		48305B530D8AF8EC00A29C24 /* snd_mikmod.c in Sources */ = {isa = PBXBuildFile; fileRef = 483A78640D2EEAF000CB2E4C /* snd_mikmod.c */; };
 		483A78780D2EEAF000CB2E4C /* snd_mikmod.c in Sources */ = {isa = PBXBuildFile; fileRef = 483A78640D2EEAF000CB2E4C /* snd_mikmod.c */; };
-		32CA4F630368D1EE00C91783 /* snd_umx.c in Sources */ = {isa = PBXBuildFile; fileRef = 4818B0B012D5BA1A006DD66E /* snd_umx.c */; };
-		4818B0B612D5BA1A006DD66E /* snd_umx.c in Sources */ = {isa = PBXBuildFile; fileRef = 4818B0B012D5BA1A006DD66E /* snd_umx.c */; };
 		483B16A5154472FE00BBDAD1 /* cl_inlude.c in Sources */ = {isa = PBXBuildFile; fileRef = 483B16A4154472FE00BBDAD1 /* cl_inlude.c */; };
 		4854B1AF1340C5FD004C9F45 /* libmad.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 48E2EC7915FB507A00B8D476 /* libmad.dylib */; };
 		4854B1E71340C964004C9F45 /* libogg.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 48E2EC7A15FB507A00B8D476 /* libogg.dylib */; };
@@ -291,11 +291,11 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		4818B0B012D5BA1A006DD66E /* snd_umx.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = snd_umx.c; path = ../../h2shared/snd_umx.c; sourceTree = "<group>"; };
 		48281302179C401D004E1D61 /* libFLAC.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libFLAC.dylib; path = ../../../oslibs/macosx/codecs/lib/libFLAC.dylib; sourceTree = "<group>"; };
 		48281305179C4055004E1D61 /* snd_flac.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = snd_flac.c; path = ../../h2shared/snd_flac.c; sourceTree = "<group>"; };
 		48281306179C4055004E1D61 /* snd_flac.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = snd_flac.h; path = ../../h2shared/snd_flac.h; sourceTree = "<group>"; };
 		483A78640D2EEAF000CB2E4C /* snd_mikmod.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = snd_mikmod.c; path = ../../h2shared/snd_mikmod.c; sourceTree = "<group>"; };
-		4818B0B012D5BA1A006DD66E /* snd_umx.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = snd_umx.c; path = ../../h2shared/snd_umx.c; sourceTree = "<group>"; };
 		483B16A4154472FE00BBDAD1 /* cl_inlude.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = cl_inlude.c; path = ../cl_inlude.c; sourceTree = SOURCE_ROOT; };
 		48AE54C4179723F7008E11FB /* snd_opus.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = snd_opus.h; path = ../../h2shared/snd_opus.h; sourceTree = "<group>"; };
 		48AE54C717972447008E11FB /* libopus.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libopus.dylib; path = ../../../oslibs/macosx/codecs/lib/libopus.dylib; sourceTree = "<group>"; };
@@ -461,8 +461,8 @@
 		707D57E40AA9F6EE00313A9F /* zone.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = zone.c; path = ../../h2shared/zone.c; sourceTree = SOURCE_ROOT; };
 		707D57E50AA9F6EE00313A9F /* zone.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = zone.h; path = ../../h2shared/zone.h; sourceTree = SOURCE_ROOT; };
 		707D58EA0AA9FBB700313A9F /* Hexen_II-gl.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Hexen_II-gl.app"; sourceTree = BUILT_PRODUCTS_DIR; };
-		707D59030AAA019300313A9F /* SDLMain.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = ../../h2shared/SDLMain.h; sourceTree = "<group>"; };
-		707D59040AAA019300313A9F /* SDLMain.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = ../../h2shared/SDLMain.m; sourceTree = "<group>"; };
+		707D59030AAA019300313A9F /* SDLMain.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = SDLMain.h; path = ../../h2shared/SDLMain.h; sourceTree = "<group>"; };
+		707D59040AAA019300313A9F /* SDLMain.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; name = SDLMain.m; path = ../../h2shared/SDLMain.m; sourceTree = "<group>"; };
 		707D59200AAA071800313A9F /* SDL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL.framework; path = /Library/Frameworks/SDL.framework; sourceTree = "<absolute>"; };
 		707D59240AAA076A00313A9F /* ApplicationServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ApplicationServices.framework; path = /System/Library/Frameworks/ApplicationServices.framework; sourceTree = "<absolute>"; };
 		707D59250AAA076A00313A9F /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = /System/Library/Frameworks/AudioToolbox.framework; sourceTree = "<absolute>"; };
@@ -871,7 +871,7 @@
 		707D575A0AA9F4B100313A9F /* Project object */ = {
 			isa = PBXProject;
 			buildConfigurationList = 707D575B0AA9F4B100313A9F /* Build configuration list for PBXProject "hexen2" */;
-			compatibilityVersion = "Xcode 2.4";
+			compatibilityVersion = "Xcode 3.0";
 			hasScannedForEncodings = 0;
 			mainGroup = 707D57580AA9F4B100313A9F;
 			productRefGroup = 707D57720AA9F4ED00313A9F /* Products */;
@@ -1144,8 +1144,8 @@
 					_THREAD_SAFE,
 				);
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_VERSION = 4.0;
 				HEADER_SEARCH_PATHS = (
-					.,
 					../../h2shared,
 					../../../common,
 					../../../oslibs/macosx/codecs/include,
@@ -1198,8 +1198,8 @@
 					_THREAD_SAFE,
 				);
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_VERSION = 4.0;
 				HEADER_SEARCH_PATHS = (
-					.,
 					../../h2shared,
 					../../../common,
 					../../../oslibs/macosx/codecs/include,
@@ -1249,14 +1249,13 @@
 					_THREAD_SAFE,
 				);
 				HEADER_SEARCH_PATHS = (
-					.,
 					../../h2shared,
 					../../../common,
 					../../../oslibs/macosx/codecs/include,
 				);
 				LIBRARY_SEARCH_PATHS = ../../../oslibs/macosx/codecs/lib;
 				OTHER_LDFLAGS = "";
-				SDKROOT = /Developer/SDKs/MacOSX10.4u.sdk;
+				SDKROOT = "$(DEVELOPER_SDK_DIR)/MacOSX10.4u.sdk";
 			};
 			name = Debug;
 		};
@@ -1282,14 +1281,13 @@
 					_THREAD_SAFE,
 				);
 				HEADER_SEARCH_PATHS = (
-					.,
 					../../h2shared,
 					../../../common,
 					../../../oslibs/macosx/codecs/include,
 				);
 				LIBRARY_SEARCH_PATHS = ../../../oslibs/macosx/codecs/lib;
 				OTHER_LDFLAGS = "";
-				SDKROOT = /Developer/SDKs/MacOSX10.4u.sdk;
+				SDKROOT = "$(DEVELOPER_SDK_DIR)/MacOSX10.4u.sdk";
 			};
 			name = Release;
 		};
@@ -1322,24 +1320,24 @@
 					_THREAD_SAFE,
 				);
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_VERSION = 4.0;
 				HEADER_SEARCH_PATHS = (
-					.,
 					../../h2shared,
 					../../../common,
 					../../../oslibs/macosx/codecs/include,
 				);
 				INFOPLIST_FILE = glhexen2.plist;
+				LIBRARY_SEARCH_PATHS = ../../../oslibs/macosx/codecs/lib;
 				MACOSX_DEPLOYMENT_TARGET = 10.4;
 				"MACOSX_DEPLOYMENT_TARGET[arch=ppc]" = 10.2;
 				OTHER_CFLAGS = "";
 				"OTHER_CFLAGS[arch=ppc]" = "-mmacosx-version-min=10.2";
 				OTHER_LDFLAGS = "";
 				"OTHER_LDFLAGS[arch=ppc]" = "-mmacosx-version-min=10.2";
-				LIBRARY_SEARCH_PATHS = ../../../oslibs/macosx/codecs/lib;
 				OTHER_REZFLAGS = "";
 				PREBINDING = NO;
 				PRODUCT_NAME = "Hexen_II-gl";
-				SDKROOT = /Developer/SDKs/MacOSX10.4u.sdk;
+				SDKROOT = "$(DEVELOPER_SDK_DIR)/MacOSX10.4u.sdk";
 				SECTORDER_FLAGS = "";
 				STRIP_INSTALLED_PRODUCT = YES;
 				WARNING_CFLAGS = (
@@ -1380,24 +1378,24 @@
 					_THREAD_SAFE,
 				);
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_VERSION = 4.0;
 				HEADER_SEARCH_PATHS = (
-					.,
 					../../h2shared,
 					../../../common,
 					../../../oslibs/macosx/codecs/include,
 				);
 				INFOPLIST_FILE = glhexen2.plist;
+				LIBRARY_SEARCH_PATHS = ../../../oslibs/macosx/codecs/lib;
 				MACOSX_DEPLOYMENT_TARGET = 10.4;
 				"MACOSX_DEPLOYMENT_TARGET[arch=ppc]" = 10.2;
 				OTHER_CFLAGS = "";
 				"OTHER_CFLAGS[arch=ppc]" = "-mmacosx-version-min=10.2";
 				OTHER_LDFLAGS = "";
 				"OTHER_LDFLAGS[arch=ppc]" = "-mmacosx-version-min=10.2";
-				LIBRARY_SEARCH_PATHS = ../../../oslibs/macosx/codecs/lib;
 				OTHER_REZFLAGS = "";
 				PREBINDING = NO;
 				PRODUCT_NAME = "Hexen_II-gl";
-				SDKROOT = /Developer/SDKs/MacOSX10.4u.sdk;
+				SDKROOT = "$(DEVELOPER_SDK_DIR)/MacOSX10.4u.sdk";
 				SECTORDER_FLAGS = "";
 				STRIP_INSTALLED_PRODUCT = YES;
 				WARNING_CFLAGS = (
