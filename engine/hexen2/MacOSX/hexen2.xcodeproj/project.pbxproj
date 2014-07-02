@@ -32,6 +32,24 @@
 		48E2EC7E15FB507A00B8D476 /* libogg.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 48E2EC7A15FB507A00B8D476 /* libogg.dylib */; };
 		48E2EC7F15FB507A00B8D476 /* libvorbis.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 48E2EC7B15FB507A00B8D476 /* libvorbis.dylib */; };
 		48E2EC8015FB507A00B8D476 /* libvorbisfile.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 48E2EC7C15FB507A00B8D476 /* libvorbisfile.dylib */; };
+		63CA72B31963FA25005A8397 /* SDL.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 707D59200AAA071800313A9F /* SDL.framework */; };
+		63CA72B41963FA3A005A8397 /* libogg.dylib in Copy Libraries */ = {isa = PBXBuildFile; fileRef = 48E2EC7A15FB507A00B8D476 /* libogg.dylib */; };
+		63CA72B51963FA58005A8397 /* libFLAC.dylib in Copy Libraries */ = {isa = PBXBuildFile; fileRef = 48281302179C401D004E1D61 /* libFLAC.dylib */; };
+		63CA72B61963FA70005A8397 /* libmad.dylib in Copy Libraries */ = {isa = PBXBuildFile; fileRef = 48E2EC7915FB507A00B8D476 /* libmad.dylib */; };
+		63CA72B71963FA7F005A8397 /* libmikmod.dylib in Copy Libraries */ = {isa = PBXBuildFile; fileRef = F5F5DE80017CB4370103A810 /* libmikmod.dylib */; };
+		63CA72B81963FABC005A8397 /* libopus.dylib in Copy Libraries */ = {isa = PBXBuildFile; fileRef = 48AE54C717972447008E11FB /* libopus.dylib */; };
+		63CA72B91963FAC9005A8397 /* libopusfile.dylib in Copy Libraries */ = {isa = PBXBuildFile; fileRef = 48AE54C817972447008E11FB /* libopusfile.dylib */; };
+		63CA72BA1963FADC005A8397 /* libvorbis.dylib in Copy Libraries */ = {isa = PBXBuildFile; fileRef = 48E2EC7B15FB507A00B8D476 /* libvorbis.dylib */; };
+		63CA72BB1963FAE8005A8397 /* libvorbisfile.dylib in Copy Libraries */ = {isa = PBXBuildFile; fileRef = 48E2EC7C15FB507A00B8D476 /* libvorbisfile.dylib */; };
+		63CA72BE1963FBBA005A8397 /* SDL.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 707D59200AAA071800313A9F /* SDL.framework */; };
+		63CA72BF1963FBC8005A8397 /* libogg.dylib in Copy Libraries */ = {isa = PBXBuildFile; fileRef = 48E2EC7A15FB507A00B8D476 /* libogg.dylib */; };
+		63CA72C01963FBDD005A8397 /* libvorbis.dylib in Copy Libraries */ = {isa = PBXBuildFile; fileRef = 48E2EC7B15FB507A00B8D476 /* libvorbis.dylib */; };
+		63CA72C11963FC09005A8397 /* libmad.dylib in Copy Libraries */ = {isa = PBXBuildFile; fileRef = 48E2EC7915FB507A00B8D476 /* libmad.dylib */; };
+		63CA72C21963FC28005A8397 /* libopus.dylib in Copy Libraries */ = {isa = PBXBuildFile; fileRef = 48AE54C717972447008E11FB /* libopus.dylib */; };
+		63CA72C31963FC33005A8397 /* libopusfile.dylib in Copy Libraries */ = {isa = PBXBuildFile; fileRef = 48AE54C817972447008E11FB /* libopusfile.dylib */; };
+		63CA72C41963FC48005A8397 /* libFLAC.dylib in Copy Libraries */ = {isa = PBXBuildFile; fileRef = 48281302179C401D004E1D61 /* libFLAC.dylib */; };
+		63CA72C51963FC5A005A8397 /* libmikmod.dylib in Copy Libraries */ = {isa = PBXBuildFile; fileRef = F5F5DE80017CB4370103A810 /* libmikmod.dylib */; };
+		63CA72C61963FC75005A8397 /* libvorbisfile.dylib in Copy Libraries */ = {isa = PBXBuildFile; fileRef = 48E2EC7C15FB507A00B8D476 /* libvorbisfile.dylib */; };
 		70158BF40AAF3C8800F6437C /* d_iface.h in Headers */ = {isa = PBXBuildFile; fileRef = 70158B730AAF3B3600F6437C /* d_iface.h */; };
 		70158BF50AAF3C8800F6437C /* d_local.h in Headers */ = {isa = PBXBuildFile; fileRef = 70158B750AAF3B3600F6437C /* d_local.h */; };
 		70158BF60AAF3C8800F6437C /* draw.h in Headers */ = {isa = PBXBuildFile; fileRef = 70158B800AAF3B3600F6437C /* draw.h */; };
@@ -289,6 +307,67 @@
 		B0E74B3D144E80960043F808 /* snd_opus.c in Sources */ = {isa = PBXBuildFile; fileRef = B0E74B3B144E80960043F808 /* snd_opus.c */; };
 		CEA6789F155B7E0E008B9770 /* cl_inlude.c in Sources */ = {isa = PBXBuildFile; fileRef = 483B16A4154472FE00BBDAD1 /* cl_inlude.c */; };
 /* End PBXBuildFile section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		63CA728B1963F98C005A8397 /* Copy Libraries */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 6;
+			files = (
+				63CA72B41963FA3A005A8397 /* libogg.dylib in Copy Libraries */,
+				63CA72BA1963FADC005A8397 /* libvorbis.dylib in Copy Libraries */,
+				63CA72BB1963FAE8005A8397 /* libvorbisfile.dylib in Copy Libraries */,
+				63CA72B61963FA70005A8397 /* libmad.dylib in Copy Libraries */,
+				63CA72B81963FABC005A8397 /* libopus.dylib in Copy Libraries */,
+				63CA72B91963FAC9005A8397 /* libopusfile.dylib in Copy Libraries */,
+				63CA72B51963FA58005A8397 /* libFLAC.dylib in Copy Libraries */,
+				63CA72B71963FA7F005A8397 /* libmikmod.dylib in Copy Libraries */,
+			);
+			name = "Copy Libraries";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		63CA72BD1963FBA2005A8397 /* Copy Libraries */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 6;
+			files = (
+				63CA72BF1963FBC8005A8397 /* libogg.dylib in Copy Libraries */,
+				63CA72C01963FBDD005A8397 /* libvorbis.dylib in Copy Libraries */,
+				63CA72C61963FC75005A8397 /* libvorbisfile.dylib in Copy Libraries */,
+				63CA72C11963FC09005A8397 /* libmad.dylib in Copy Libraries */,
+				63CA72C21963FC28005A8397 /* libopus.dylib in Copy Libraries */,
+				63CA72C31963FC33005A8397 /* libopusfile.dylib in Copy Libraries */,
+				63CA72C41963FC48005A8397 /* libFLAC.dylib in Copy Libraries */,
+				63CA72C51963FC5A005A8397 /* libmikmod.dylib in Copy Libraries */,
+			);
+			name = "Copy Libraries";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		63CA72E11963FE0B005A8397 /* Copy Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				63CA72B31963FA25005A8397 /* SDL.framework in Copy Frameworks */,
+			);
+			name = "Copy Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		63CA72E21963FE0B005A8397 /* Copy Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				63CA72BE1963FBBA005A8397 /* SDL.framework in Copy Frameworks */,
+			);
+			name = "Copy Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		4818B0B012D5BA1A006DD66E /* snd_umx.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = snd_umx.c; path = ../../h2shared/snd_umx.c; sourceTree = "<group>"; };
@@ -824,44 +903,48 @@
 /* End PBXHeadersBuildPhase section */
 
 /* Begin PBXNativeTarget section */
-		70158BF20AAF3C8800F6437C /* hexen2 */ = {
+		70158BF20AAF3C8800F6437C /* Hexen_II */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 70158C4F0AAF3C8800F6437C /* Build configuration list for PBXNativeTarget "hexen2" */;
+			buildConfigurationList = 70158C4F0AAF3C8800F6437C /* Build configuration list for PBXNativeTarget "Hexen_II" */;
 			buildPhases = (
 				70158BF30AAF3C8800F6437C /* Headers */,
 				70158BFC0AAF3C8800F6437C /* Resources */,
 				70158BFD0AAF3C8800F6437C /* Sources */,
 				70158C4D0AAF3C8800F6437C /* Frameworks */,
 				70158C4E0AAF3C8800F6437C /* Rez */,
+				63CA72BD1963FBA2005A8397 /* Copy Libraries */,
+				63CA72E21963FE0B005A8397 /* Copy Frameworks */,
 			);
 			buildRules = (
 			);
 			dependencies = (
 			);
-			name = hexen2;
+			name = Hexen_II;
 			productInstallPath = "$(USER_APPS_DIR)";
-			productName = hexen2;
+			productName = Hexen_II;
 			productReference = 70158C530AAF3C8800F6437C /* Hexen_II.app */;
 			productType = "com.apple.product-type.application";
 		};
-		707D58710AA9FBB700313A9F /* glhexen2 */ = {
+		707D58710AA9FBB700313A9F /* Hexen_II-gl */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 707D58E60AA9FBB700313A9F /* Build configuration list for PBXNativeTarget "glhexen2" */;
+			buildConfigurationList = 707D58E60AA9FBB700313A9F /* Build configuration list for PBXNativeTarget "Hexen_II-gl" */;
 			buildPhases = (
 				707D58720AA9FBB700313A9F /* Headers */,
 				707D58A40AA9FBB700313A9F /* Resources */,
 				707D58A50AA9FBB700313A9F /* Sources */,
 				707D58E40AA9FBB700313A9F /* Frameworks */,
 				707D58E50AA9FBB700313A9F /* Rez */,
+				63CA728B1963F98C005A8397 /* Copy Libraries */,
+				63CA72E11963FE0B005A8397 /* Copy Frameworks */,
 			);
 			buildRules = (
 			);
 			comments = "http://uhexen2.sf.net\n";
 			dependencies = (
 			);
-			name = glhexen2;
+			name = "Hexen_II-gl";
 			productInstallPath = "$(USER_APPS_DIR)";
-			productName = glhexen2;
+			productName = "Hexen_II-gl";
 			productReference = 707D58EA0AA9FBB700313A9F /* Hexen_II-gl.app */;
 			productType = "com.apple.product-type.application";
 		};
@@ -878,8 +961,8 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				707D58710AA9FBB700313A9F /* glhexen2 */,
-				70158BF20AAF3C8800F6437C /* hexen2 */,
+				707D58710AA9FBB700313A9F /* Hexen_II-gl */,
+				70158BF20AAF3C8800F6437C /* Hexen_II */,
 			);
 		};
 /* End PBXProject section */
@@ -1411,7 +1494,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		70158C4F0AAF3C8800F6437C /* Build configuration list for PBXNativeTarget "hexen2" */ = {
+		70158C4F0AAF3C8800F6437C /* Build configuration list for PBXNativeTarget "Hexen_II" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				70158C500AAF3C8800F6437C /* Debug */,
@@ -1429,7 +1512,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		707D58E60AA9FBB700313A9F /* Build configuration list for PBXNativeTarget "glhexen2" */ = {
+		707D58E60AA9FBB700313A9F /* Build configuration list for PBXNativeTarget "Hexen_II-gl" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				707D58E70AA9FBB700313A9F /* Debug */,
