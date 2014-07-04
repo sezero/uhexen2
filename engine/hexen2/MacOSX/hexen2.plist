@@ -9,7 +9,7 @@
 	<key>CFBundleGetInfoString</key>
 	<string></string>
 	<key>CFBundleIconFile</key>
-	<string>Hexen2.icns</string>
+	<string>hexen2.icns</string>
 	<key>CFBundleIdentifier</key>
 	<string>net.sf.uhexen2.hexen2</string>
 	<key>CFBundleInfoDictionaryVersion</key>

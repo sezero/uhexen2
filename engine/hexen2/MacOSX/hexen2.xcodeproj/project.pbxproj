@@ -283,8 +283,8 @@
 		707D59300AAA076A00313A9F /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 707D59280AAA076A00313A9F /* Cocoa.framework */; };
 		707D59310AAA076A00313A9F /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 707D59290AAA076A00313A9F /* IOKit.framework */; };
 		707D59320AAA076A00313A9F /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 707D592A0AAA076A00313A9F /* OpenGL.framework */; };
-		7086E4E60AC0070900E9F894 /* Hexen2.icns in Resources */ = {isa = PBXBuildFile; fileRef = 7086E4E50AC0070900E9F894 /* Hexen2.icns */; };
-		7086E4E70AC0070900E9F894 /* Hexen2.icns in Resources */ = {isa = PBXBuildFile; fileRef = 7086E4E50AC0070900E9F894 /* Hexen2.icns */; };
+		7086E4E60AC0070900E9F894 /* hexen2.icns in Resources */ = {isa = PBXBuildFile; fileRef = 7086E4E50AC0070900E9F894 /* hexen2.icns */; };
+		7086E4E70AC0070900E9F894 /* hexen2.icns in Resources */ = {isa = PBXBuildFile; fileRef = 7086E4E50AC0070900E9F894 /* hexen2.icns */; };
 		708C407D0C1E8A4F00B4A314 /* debuglog.c in Sources */ = {isa = PBXBuildFile; fileRef = 70310B320BFDE90900CA35D3 /* debuglog.c */; };
 		708C408F0C1E8B8200B4A314 /* link_ops.c in Sources */ = {isa = PBXBuildFile; fileRef = 70310B370BFDE94700CA35D3 /* link_ops.c */; };
 		A4E3AF2A05D43FCC000F1B47 /* libmikmod.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F5F5DE80017CB4370103A810 /* libmikmod.dylib */; };
@@ -550,7 +550,7 @@
 		707D59280AAA076A00313A9F /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = /System/Library/Frameworks/Cocoa.framework; sourceTree = "<absolute>"; };
 		707D59290AAA076A00313A9F /* IOKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = IOKit.framework; path = /System/Library/Frameworks/IOKit.framework; sourceTree = "<absolute>"; };
 		707D592A0AAA076A00313A9F /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = /System/Library/Frameworks/OpenGL.framework; sourceTree = "<absolute>"; };
-		7086E4E50AC0070900E9F894 /* Hexen2.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = Hexen2.icns; sourceTree = "<group>"; };
+		7086E4E50AC0070900E9F894 /* hexen2.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; name = hexen2.icns; path = ../../resource/hexen2.icns; sourceTree = "<group>"; };
 		B0E546A515564FC10033037D /* sys_osx.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = sys_osx.m; path = ../../h2shared/sys_osx.m; sourceTree = SOURCE_ROOT; };
 		B0E74B1D144E7FF40043F808 /* qsnprint.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = qsnprint.c; path = ../../../common/qsnprint.c; sourceTree = SOURCE_ROOT; };
 		B0E74B22144E80170043F808 /* strlcat.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = strlcat.c; path = ../../../common/strlcat.c; sourceTree = SOURCE_ROOT; };
@@ -651,7 +651,7 @@
 				70310B2B0BFDE89200CA35D3 /* q_endian.h */,
 				70310B240BFDE84D00CA35D3 /* msg_io.c */,
 				70310B250BFDE84D00CA35D3 /* msg_io.h */,
-				7086E4E50AC0070900E9F894 /* Hexen2.icns */,
+				7086E4E50AC0070900E9F894 /* hexen2.icns */,
 				70158F0A0AAF427F00F6437C /* vid_sdl.c */,
 				70158B710AAF3B3600F6437C /* d_edge.c */,
 				70158B720AAF3B3600F6437C /* d_fill.c */,
@@ -972,7 +972,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				7086E4E70AC0070900E9F894 /* Hexen2.icns in Resources */,
+				7086E4E70AC0070900E9F894 /* hexen2.icns in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -980,7 +980,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				7086E4E60AC0070900E9F894 /* Hexen2.icns in Resources */,
+				7086E4E60AC0070900E9F894 /* hexen2.icns in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
