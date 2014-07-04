@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 44;
+	objectVersion = 42;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -954,7 +954,7 @@
 		707D575A0AA9F4B100313A9F /* Project object */ = {
 			isa = PBXProject;
 			buildConfigurationList = 707D575B0AA9F4B100313A9F /* Build configuration list for PBXProject "hexen2" */;
-			compatibilityVersion = "Xcode 3.0";
+			compatibilityVersion = "Xcode 2.4";
 			hasScannedForEncodings = 0;
 			mainGroup = 707D57580AA9F4B100313A9F;
 			productRefGroup = 707D57720AA9F4ED00313A9F /* Products */;
@@ -1236,11 +1236,8 @@
 				INFOPLIST_FILE = hexen2.plist;
 				LIBRARY_SEARCH_PATHS = ../../../oslibs/macosx/codecs/lib;
 				MACOSX_DEPLOYMENT_TARGET = 10.4;
-				"MACOSX_DEPLOYMENT_TARGET[arch=ppc]" = 10.2;
 				OTHER_CFLAGS = "";
-				"OTHER_CFLAGS[arch=ppc]" = "-mmacosx-version-min=10.2";
 				OTHER_LDFLAGS = "";
-				"OTHER_LDFLAGS[arch=ppc]" = "-mmacosx-version-min=10.2";
 				OTHER_REZFLAGS = "";
 				PREBINDING = NO;
 				PRODUCT_NAME = Hexen_II;
@@ -1290,11 +1287,8 @@
 				INFOPLIST_FILE = hexen2.plist;
 				LIBRARY_SEARCH_PATHS = ../../../oslibs/macosx/codecs/lib;
 				MACOSX_DEPLOYMENT_TARGET = 10.4;
-				"MACOSX_DEPLOYMENT_TARGET[arch=ppc]" = 10.2;
 				OTHER_CFLAGS = "";
-				"OTHER_CFLAGS[arch=ppc]" = "-mmacosx-version-min=10.2";
 				OTHER_LDFLAGS = "";
-				"OTHER_LDFLAGS[arch=ppc]" = "-mmacosx-version-min=10.2";
 				OTHER_REZFLAGS = "";
 				PREBINDING = NO;
 				PRODUCT_NAME = Hexen_II;
@@ -1338,7 +1332,7 @@
 				);
 				LIBRARY_SEARCH_PATHS = ../../../oslibs/macosx/codecs/lib;
 				OTHER_LDFLAGS = "";
-				SDKROOT = "$(DEVELOPER_SDK_DIR)/MacOSX10.4u.sdk";
+				SDKROOT = /Developer/SDKs/MacOSX10.4u.sdk;
 			};
 			name = Debug;
 		};
@@ -1370,7 +1364,7 @@
 				);
 				LIBRARY_SEARCH_PATHS = ../../../oslibs/macosx/codecs/lib;
 				OTHER_LDFLAGS = "";
-				SDKROOT = "$(DEVELOPER_SDK_DIR)/MacOSX10.4u.sdk";
+				SDKROOT = /Developer/SDKs/MacOSX10.4u.sdk;
 			};
 			name = Release;
 		};
@@ -1412,15 +1406,12 @@
 				INFOPLIST_FILE = glhexen2.plist;
 				LIBRARY_SEARCH_PATHS = ../../../oslibs/macosx/codecs/lib;
 				MACOSX_DEPLOYMENT_TARGET = 10.4;
-				"MACOSX_DEPLOYMENT_TARGET[arch=ppc]" = 10.2;
 				OTHER_CFLAGS = "";
-				"OTHER_CFLAGS[arch=ppc]" = "-mmacosx-version-min=10.2";
 				OTHER_LDFLAGS = "";
-				"OTHER_LDFLAGS[arch=ppc]" = "-mmacosx-version-min=10.2";
 				OTHER_REZFLAGS = "";
 				PREBINDING = NO;
 				PRODUCT_NAME = "Hexen_II-gl";
-				SDKROOT = "$(DEVELOPER_SDK_DIR)/MacOSX10.4u.sdk";
+				SDKROOT = /Developer/SDKs/MacOSX10.4u.sdk;
 				SECTORDER_FLAGS = "";
 				STRIP_INSTALLED_PRODUCT = YES;
 				WARNING_CFLAGS = (
@@ -1470,15 +1461,12 @@
 				INFOPLIST_FILE = glhexen2.plist;
 				LIBRARY_SEARCH_PATHS = ../../../oslibs/macosx/codecs/lib;
 				MACOSX_DEPLOYMENT_TARGET = 10.4;
-				"MACOSX_DEPLOYMENT_TARGET[arch=ppc]" = 10.2;
 				OTHER_CFLAGS = "";
-				"OTHER_CFLAGS[arch=ppc]" = "-mmacosx-version-min=10.2";
 				OTHER_LDFLAGS = "";
-				"OTHER_LDFLAGS[arch=ppc]" = "-mmacosx-version-min=10.2";
 				OTHER_REZFLAGS = "";
 				PREBINDING = NO;
 				PRODUCT_NAME = "Hexen_II-gl";
-				SDKROOT = "$(DEVELOPER_SDK_DIR)/MacOSX10.4u.sdk";
+				SDKROOT = /Developer/SDKs/MacOSX10.4u.sdk;
 				SECTORDER_FLAGS = "";
 				STRIP_INSTALLED_PRODUCT = YES;
 				WARNING_CFLAGS = (
