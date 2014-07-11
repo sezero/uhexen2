@@ -60,9 +60,9 @@
 #	define	PLATFORM_MAC		1
 #   endif
 
-#elif defined(__MORPHOS__) || defined(__AROS__)			|| \
-      defined(__amigaos__) || defined(__amigaos4__)		|| \
-      defined(__amigados__) || defined(__AMIGA) || defined(__AMIGA__)
+#elif defined(__MORPHOS__) || defined(__AROS__) || defined(AMIGAOS)	|| \
+      defined(__amigaos__) || defined(__amigados__)			|| \
+      defined(AMIGA) || defined(_AMIGA) || defined(__AMIGA__)
 
 #   if !defined(PLATFORM_AMIGA)
 #	define	PLATFORM_AMIGA		1
