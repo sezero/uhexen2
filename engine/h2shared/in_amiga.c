@@ -700,6 +700,8 @@ void IN_SendKeyEvents (void)
 	int sym, state;
 	int i;
 
+	if (!window) return;/* dedicated server? */
+
 	while ((intuimsg = (struct IntuiMessage *) GetMsg(window->UserPort)))
 	{
 		switch (intuimsg->Class)
