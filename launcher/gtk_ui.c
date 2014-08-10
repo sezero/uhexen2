@@ -1060,7 +1060,7 @@ static void create_window1 (void)
 	gtk_widget_set_size_request(MAIN_WINDOW, 230, 354);
 
 /* Create the option tabs on the main window */
-	HOLDER_BOX = gtk_hbox_new (TRUE, 2);
+	HOLDER_BOX = gtk_hbox_new (FALSE, 2);
 	gtk_widget_show (HOLDER_BOX);
 	gtk_container_add (GTK_CONTAINER(MAIN_WINDOW), HOLDER_BOX);
 

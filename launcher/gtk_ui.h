@@ -98,6 +98,28 @@
 #define	gtk_tooltips_set_tip(t, widget, tiptext, private)		\
 	gtk_widget_set_tooltip_text ((widget), (tiptext))
 
+static inline GtkWidget* MY_gtk_hbox_new (gboolean homogeneous, gint spacing) {
+	GtkWidget* hbx = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, spacing);
+	if (homogeneous) gtk_box_set_homogeneous (GTK_BOX(hbx), TRUE);
+	return hbx;
+}
+#undef	gtk_hbox_new
+#define	gtk_hbox_new MY_gtk_hbox_new
+
+static inline GtkWidget* MY_gtk_vbox_new (gboolean homogeneous, gint spacing) {
+	GtkWidget* vbx = gtk_box_new (GTK_ORIENTATION_VERTICAL, spacing);
+	if (homogeneous) gtk_box_set_homogeneous (GTK_BOX(vbx), TRUE);
+	return vbx;
+}
+#undef	gtk_vbox_new
+#define	gtk_vbox_new MY_gtk_vbox_new
+
+#undef	gtk_hseparator_new
+#define	gtk_hseparator_new() gtk_separator_new(GTK_ORIENTATION_HORIZONTAL)
+
+#undef	gtk_vseparator_new
+#define	gtk_vseparator_new() gtk_separator_new(GTK_ORIENTATION_VERTICAL)
+
 #undef	GTKUI_DISABLE_FOCUS
 #define	GTKUI_DISABLE_FOCUS(widget)	gtk_widget_set_can_focus((widget),FALSE)
 
