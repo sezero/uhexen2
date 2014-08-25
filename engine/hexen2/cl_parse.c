@@ -257,6 +257,12 @@ static void CL_ParseServerInfo (void)
 // rjr	edict_t		*ent;
 
 	Con_DPrintf ("Serverinfo packet received.\n");
+
+// bring up loading plaque for map changes within a demo.
+// it will be hidden in CL_SignonReply() -- ericw
+	if (cls.demoplayback)
+		SCR_BeginLoadingPlaque();
+
 //
 // wipe the client_state_t struct
 //
@@ -1231,8 +1237,6 @@ void CL_ParseServerMessage (void)
 			break;
 
 		case svc_stufftext:
-			cls.stufftext_frame = host_framecount;	// allow full frame update
-								// in demo playback -- Pa3PyX
 			Cbuf_AddText (MSG_ReadString ());
 			break;
 

@@ -452,6 +452,9 @@ static void Host_Reconnect_f (void)
 		return;
 	}
 
+	if (cls.demoplayback)	// cross-map demo playback fix from Baker
+		return;
+
 	SCR_BeginLoadingPlaque ();
 	cls.signon = 0;		// need new connection messages
 }

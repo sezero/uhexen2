@@ -3,6 +3,10 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2014-08-25 (SVN):
+    * Revert Pa3PyX solution for cross-map demos, apply Baker's fix
+      instead (http://forums.inside3d.com/viewtopic.php?f=3&t=2397).
+
 2014-07-01 (SVN):
     * move MAX_OSPATH definition to q_stdinc.h. define it as PATH_MAX,
       or as MAXPATHLEN, _MAX_PATH, MAX_PATH, or CCHMAXPATH if either of
