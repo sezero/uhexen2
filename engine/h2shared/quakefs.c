@@ -434,7 +434,7 @@ void FS_Gamedir (const char *dir)
 {
 	searchpath_t	*next;
 
-	if (strstr(dir, "..") || strstr(dir, "/") || strstr(dir, "\\") || strstr(dir, ":"))
+	if (!strcmp(dir, ".") || strstr(dir, "..") || strstr(dir, "/") || strstr(dir, "\\") || strstr(dir, ":"))
 	{
 		Con_Printf ("gamedir should be a single directory name, not a path\n");
 		return;
