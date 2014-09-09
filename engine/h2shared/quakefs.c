@@ -434,10 +434,14 @@ void FS_Gamedir (const char *dir)
 {
 	searchpath_t	*next;
 
-	if (!strcmp(dir, ".") || strstr(dir, "..") || strstr(dir, "/") || strstr(dir, "\\") || strstr(dir, ":"))
+	if (!*dir || !strcmp(dir, ".") || strstr(dir, "..") || strstr(dir, "/") || strstr(dir, "\\") || strstr(dir, ":"))
 	{
-		Con_Printf ("gamedir should be a single directory name, not a path\n");
-		return;
+		if (!host_initialized)
+			Sys_Error ("gamedir should be a single directory name, not a path\n");
+		else {
+			Con_Printf("gamedir should be a single directory name, not a path\n");
+			return;
+		}
 	}
 
 	if (!q_strcasecmp(fs_gamedir_nopath, dir))
@@ -1180,6 +1184,7 @@ void FS_Init (void)
 	if (i && i < com_argc-1)
 	{
 		fs_basedir = com_argv[i+1];
+		if (!*fs_basedir) Sys_Error("Bad argument to -basedir");
 #if !DO_USERDIRS
 		host_parms->userdir = com_argv[i+1];
 #endif
