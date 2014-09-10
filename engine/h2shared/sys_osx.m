@@ -25,34 +25,13 @@
 #include "sys_osx.h"
 #include "userdir.h"
 
+#include <errno.h>
 #include <libgen.h>	/* dirname() and basename() */
 #include <unistd.h>	/* getcwd() */
 #import <Cocoa/Cocoa.h>	/* NSRunCriticalAlertPanel() */
 
-/*
-OSX_StripAppBundle:  If passed dir is suffixed with the directory
-structure of a Mac OS X .app bundle, the .app directory structure
-is stripped off the end and the result is returned. If not, dir is
-returned untouched.  Based on the ioquake3 project at icculus.org.
-
-For Mac OS X, we package uHexen2 like this:
-
-Hexen_II ( --> the holder directory.)
-|
- - Hexen II gl.app (the bundle dir for the opengl application)
-|  |
-|   - Contents
-|  |  |
-|  |   - MacOS	(the actual binary resides here)
-|  |
-|   - Resources (icons here)
-|
- - data1	( --> main game data directory)
-|
- - portals	( --> expansion pack game data directory)
-*/
 static char *OSX_StripAppBundle (char *dir)
-{
+{ /* based on the ioquake3 project at icculus.org. */
 	static char	osx_path[MAX_OSPATH];
 
 	q_strlcpy (osx_path, dir, sizeof(osx_path));
@@ -74,6 +53,7 @@ int OSX_GetBasedir (char *argv0, char *dst, size_t dstsize)
 
 	if (realpath(argv0, dst) == NULL)
 	{
+		perror("realpath");
 		if (getcwd(dst, dstsize - 1) == NULL)
 			return -1;
 	}
