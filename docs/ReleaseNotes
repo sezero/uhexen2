@@ -1,7 +1,7 @@
 Hammer of Thyrion (uHexen2) release notes:
 
 ========================================================================
-Changes in v1.5.7: (Aug. 25, 2014.)
+Changes in v1.5.7: (Sep. 10, 2014.)
 ========================================================================
 
 - Music: Support for FLAC codec. (edit the makefiles to enable it when
@@ -17,6 +17,8 @@ Changes in v1.5.7: (Aug. 25, 2014.)
   thresholds now starts at level 3 to be consistent with the manual.
 
 - All platforms, gameplay: Many small HexenC fixes and clean-ups.
+
+- All platforms, hexen2: Better cross-map demo playback support.
 
 - OpenGL: fix screenshots when screen width isn't a multiple of 4.
 
