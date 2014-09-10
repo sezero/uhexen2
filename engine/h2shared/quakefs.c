@@ -1071,9 +1071,8 @@ static void FS_Maplist_f (void)
 	{
 		if (search->pack)
 		{
-			int	i;
-
-			for (i = 0; i < search->pack->numfiles; i++)
+			int i = 0;
+			for (; i < search->pack->numfiles; ++i)
 			{
 				if (strncmp("maps/", search->pack->files[i].name, 5) != 0)
 					continue;
@@ -1083,9 +1082,7 @@ static void FS_Maplist_f (void)
 		}
 		else
 		{
-			const char	*findname;
-
-			findname = Sys_FindFirstFile (va("%s/maps",search->filename), "*.bsp");
+			const char *findname = Sys_FindFirstFile(va("%s/maps",search->filename), "*.bsp");
 			while (findname)
 			{
 				if (processMapname(findname, prefix, preLen) < 0)

@@ -3,7 +3,7 @@ see the documentation file StandaloneMods.txt for details.
 
 Index: engine/h2shared/quakefs.c
 ===================================================================
---- engine/h2shared/quakefs.c	(revision 5256)
+--- engine/h2shared/quakefs.c	(revision 5331)
 +++ engine/h2shared/quakefs.c	(working copy)
 @@ -59,6 +59,7 @@ static searchpath_t	*fs_base_searchpaths
  static const char	*fs_basedir;
@@ -22,7 +22,7 @@ Index: engine/h2shared/quakefs.c
  		gameflags |= check_known_paks (paknum, numpackfiles, crc);
  	else	gameflags |= GAME_MODIFIED;
  
-@@ -469,6 +470,10 @@ void FS_Gamedir (const char *dir)
+@@ -473,6 +474,10 @@ void FS_Gamedir (const char *dir)
  /* check for reserved gamedirs */
  	if (!q_strcasecmp(dir, "hw"))
  	{
@@ -33,7 +33,7 @@ Index: engine/h2shared/quakefs.c
  #if defined(H2W)
  	/* that we reached here means the hw server decided to abandon
  	 * whatever the previous mod it was running and went back to
-@@ -516,6 +521,30 @@ void FS_Gamedir (const char *dir)
+@@ -520,6 +525,30 @@ void FS_Gamedir (const char *dir)
  		return;
  	}
  
@@ -64,7 +64,7 @@ Index: engine/h2shared/quakefs.c
  /* a new gamedir: let's set it here. */
  	FS_AddGameDirectory(dir, false);
  #if defined(H2W) && defined(SERVERONLY)
-@@ -1162,8 +1191,36 @@ static int CheckRegistered (void)
+@@ -1163,8 +1192,36 @@ static int CheckRegistered (void)
  FS_Init
  ================
  */
@@ -84,7 +84,7 @@ Index: engine/h2shared/quakefs.c
 +		i = COM_CheckParm ("-basegame");
 +		if (i == 0)
 +			Sys_Error ("standalone games require a valid -basegame argument");
-+		if (i >= com_argc - 1)
++		if (i >= com_argc - 1 || !com_argv[i + 1][0])
 +			Sys_Error ("-basegame requires a valid game directory name as argument");
 +		qerr_strlcpy (__thisfunc__, __LINE__, fs_dirstdalone, com_argv[i + 1], sizeof(fs_dirstdalone));
 +		/* check for reserved directory names: */
@@ -101,7 +101,7 @@ Index: engine/h2shared/quakefs.c
  	qboolean check_portals = false;
  	int	i;
  
-@@ -1490,6 +1547,86 @@ char *FS_MakePath_VABUF (int base, int *
+@@ -1492,6 +1549,87 @@ char *FS_MakePath_VABUF (int base, int *
  	return p;
  }
  
@@ -125,6 +125,7 @@ Index: engine/h2shared/quakefs.c
 +	if (i && i < com_argc-1)
 +	{
 +		fs_basedir = com_argv[i+1];
++		if (!*fs_basedir) Sys_Error("Bad argument to -basedir");
 +#if !DO_USERDIRS
 +		host_parms->userdir = com_argv[i+1];
 +#endif
@@ -190,7 +191,7 @@ Index: engine/h2shared/quakefs.c
  	return fs_basedir;
 Index: engine/h2shared/quakefs.h
 ===================================================================
---- engine/h2shared/quakefs.h	(revision 5241)
+--- engine/h2shared/quakefs.h	(revision 5331)
 +++ engine/h2shared/quakefs.h	(working copy)
 @@ -47,6 +47,12 @@
  

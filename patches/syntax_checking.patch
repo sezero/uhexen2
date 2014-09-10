@@ -14,9 +14,9 @@ stevenaaus@yahoo.com
 
 Index: engine/hexen2/sys_unix.c
 ===================================================================
---- engine/hexen2/sys_unix.c	(revision 5282)
+--- engine/hexen2/sys_unix.c	(revision 5310)
 +++ engine/hexen2/sys_unix.c	(working copy)
-@@ -591,65 +591,268 @@ static void PrintVersion (void)
+@@ -588,65 +588,268 @@ static void PrintVersion (void)
  }
  
  #include "snd_sys.h"
@@ -315,7 +315,7 @@ Index: engine/hexen2/sys_unix.c
  }
  
  /*
-@@ -675,23 +878,7 @@ int main (int argc, char **argv)
+@@ -672,23 +875,7 @@ int main (int argc, char **argv)
  
  	PrintVersion();
  
