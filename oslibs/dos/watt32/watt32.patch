@@ -1,0 +1,1309 @@
+
+Only in watt_src/inc: djstdint
+diff -urp watt_src.orig/inc/sys/cdefs.h watt_src/inc/sys/cdefs.h
+--- watt_src.orig/inc/sys/cdefs.h	2005-12-30 00:14:10.000000000 +0200
++++ watt_src/inc/sys/cdefs.h	2011-11-27 12:05:39.000000000 +0200
+@@ -44,9 +44,8 @@
+ #ifndef __SYS_CDEFS_H
+ #define __SYS_CDEFS_H
+ 
+-#if defined(__DJGPP__) && !defined(djgpp_cdefs_incl)
+-  #include "/dev/env/DJDIR/include/sys/cdefs.h"
+-  #define djgpp_cdefs_incl
++#if defined(__DJGPP__)
++  #include_next <sys/cdefs.h>
+ #endif
+ 
+ #ifdef __cplusplus
+Only in watt_src/inc/sys: djerr.203
+Only in watt_src/inc/sys: djerr.204
+diff -urp watt_src.orig/inc/sys/wtypes.h watt_src/inc/sys/wtypes.h
+--- watt_src.orig/inc/sys/wtypes.h	2005-12-19 03:55:48.000000000 +0200
++++ watt_src/inc/sys/wtypes.h	2011-11-28 20:15:35.000000000 +0200
+@@ -68,6 +68,12 @@
+   #define HAVE_STDINT_H
+   #include <stdint.h>   /* doesn't define 'u_char' etc. */
+ #endif
++#if defined(__DJGPP__) &&	\
++    (!defined(__DJGPP_MINOR__) || __DJGPP_MINOR__ < 4)
++  #undef  HAVE_STDINT_H
++  #define HAVE_STDINT_H
++  #include "djstdint/stdint.h"
++#endif
+ 
+ 
+ #if !defined(HAVE_U_INT64_T) && !defined(u_int64_t)
+diff -urp watt_src.orig/inc/tcp.h watt_src/inc/tcp.h
+--- watt_src.orig/inc/tcp.h	2006-01-09 10:34:26.000000000 +0200
++++ watt_src/inc/tcp.h	2014-05-20 20:02:00.000000000 +0300
+@@ -49,9 +49,6 @@
+ 
+ #ifdef __cplusplus
+   extern "C" {
+-  #if 0  /* keep Emacs's auto-indent happy */
+-  }
+-  #endif
+ #endif
+ 
+ W32_DATA const char *wattcpCopyright;  /* "See COPYRIGHT.H for details" */
+@@ -87,6 +84,7 @@ W32_FUNC const char *wattcpCapabilities 
+ /*
+  * Old compatibility
+  */
++#ifndef WATT32_NO_OLDIES
+ #ifndef byte
+ #define byte  unsigned char
+ #endif
+@@ -102,6 +100,7 @@ W32_FUNC const char *wattcpCapabilities 
+ #ifndef longword
+ #define longword unsigned long
+ #endif
++#endif
+ 
+ /*
+  * Basic typedefs
+diff -urp watt_src.orig/src/btree.c watt_src/src/btree.c
+--- watt_src.orig/src/btree.c	2003-07-16 22:34:10.000000000 +0300
++++ watt_src/src/btree.c	2014-05-20 20:02:00.000000000 +0300
+@@ -213,7 +213,7 @@ typedef struct {
+         int  id;
+       } record;
+ 
+-record rec;
++static record rec;
+ 
+ 
+ void prompt (const char *verb)
+diff -urp watt_src.orig/src/config.h watt_src/src/config.h
+--- watt_src.orig/src/config.h	2006-01-15 02:07:18.000000000 +0200
++++ watt_src/src/config.h	2014-05-20 20:02:00.000000000 +0300
+@@ -100,20 +100,20 @@
+  * Else, for all targets define these options:
+  */
+ #if !defined(OPT_DEFINED)
+-  #define USE_DEBUG
++/*#define USE_DEBUG */
+   #define USE_BOOTP
+   #define USE_DHCP
+-  #define USE_LANGUAGE
++/*#define USE_LANGUAGE */
+   #define USE_FRAGMENTS
+-  #define USE_STATISTICS
+-  #define USE_BIND
++/*#define USE_STATISTICS*/
++/*#define USE_BIND */
+   #define USE_BSD_API
+   #define USE_BSD_FATAL
+   #define USE_LOOPBACK
+   #define USE_BUFFERED_IO
+-  #define USE_TFTP
+-  #define USE_MULTICAST
+-  #define USE_PPPOE
++/*#define USE_TFTP */
++/*#define USE_MULTICAST*/
++/*#define USE_PPPOE */		/* no longer enabled by default in 2.2.11: G.V. says it never worked. */
+   #define OPT_DEFINED
+ #endif
+ 
+@@ -122,19 +122,19 @@
+  */
+ #if defined(__DJGPP__) || defined(__HIGHC__) || defined(WATCOM386) || \
+     defined(DMC386) || defined(WIN32)
+-  #define USE_ECHO_DISC
++/*#define USE_ECHO_DISC */
+   #define USE_RARP
+-  #define USE_IPV6
+-  #define USE_IDNA
+-  #define USE_TCP_MD5
+-  #define USE_GZIP_COMPR
+-  #define USE_DYNIP_CLI
++/*#define USE_IPV6 */
++/*#define USE_IDNA */
++/*#define USE_TCP_MD5*/
++/*#define USE_GZIP_COMPR */
++/*#define USE_DYNIP_CLI */
+ #endif
+ 
+ #if defined(__DJGPP__)
+   #define USE_FSEXT
+-  #define USE_RS232_DBG
+-  #define USE_FORTIFY
++/*#define USE_RS232_DBG*/
++/*#define USE_FORTIFY */
+ /*#define USE_SECURE_ARP */
+ #endif
+ 
+@@ -143,7 +143,7 @@
+ #endif
+ 
+ #if (DOSX) && defined(HAVE_UINT64)
+-  #define USE_PROFILER
++/*#define USE_PROFILER */
+ #endif
+ 
+ #if defined(__POCC__)
+Only in watt_src/src: config.h.bak
+Only in watt_src/src: config.h.dbg
+Only in watt_src/src: config.h.rel
+diff -urp watt_src.orig/src/cpumodel.asm watt_src/src/cpumodel.asm
+--- watt_src.orig/src/cpumodel.asm	2005-12-29 23:10:20.000000000 +0200
++++ watt_src/src/cpumodel.asm	2008-08-31 11:36:44.000000000 +0300
+@@ -4,15 +4,15 @@
+ ;  It is based on linux cpu detection code.
+ ;
+ ;  Intel also provides public similar code in the book
+-;  called :
++;  called:
+ ;
+ ;  Pentium Processor Family
+ ;      Developer Family
+-;  Volume  3 : Architecture and Programming Manual
++;  Volume 3: Architecture and Programming Manual
+ ;
+ ;  At the following place :
+ ;
+-;  Chapter 5 : Feature determination
++;  Chapter 5:  Feature determination
+ ;  Chapter 25: CPUID instruction
+ ;
+ ;  COPYRIGHT (c) 1998 valette@crf.canon.fr
+@@ -29,7 +29,7 @@
+ 
+ PAGE 66, 132
+ 
+-ifdef DOSX  ; only for 32-bit target (including WIN32)
++ifdef DOSX  ; only for 32-bit targets (including WIN32)
+ 
+ ;
+ ; All '__w32_' and '_x86' symbols are only needed for Borland and
+@@ -61,12 +61,12 @@ PUBLIC _w32_SelWriteable, __w32_SelWrite
+ ifdef ??version   ; Turbo Assembler
+   .486p
+   .487
+-else
++else              ; MASM, ML or WASM
+   .586p
+   .387
+ endif
+ 
+-ifdef X32VM       ; FlashTek's X32 isn't flat-model, but SMALL
++ifdef X32VM       ; FlashTek's X32 isn't FLAT model, but SMALL
+   .MODEL SMALL,C
+ else
+   .MODEL FLAT,C
+@@ -153,7 +153,6 @@ __w32_CheckCpuType:
+     xor  eax, ecx                   ; check if ID bit changed
+     and  eax, EFLAGS_ID
+ 
+-    ;
+     ; If we are on a straight 486DX, SX, or 487SX we can't
+     ; change it. OTOH 6x86MXs and MIIs check OK.
+     ; Also if we are on a Cyrix 6x86(L)
+@@ -175,9 +174,8 @@ isnew:
+ 
+     mov  cl, al                     ; save reg for future use
+ 
+-    and  ah, 0Fh                    ; mask processor family
++    and  ah, 0Fh                    ; mask processor family (bit 8-11)
+     mov  x86_type, ah               ; put result in x86_type (0..15)
+-    and  x86_type, 7
+ 
+     and  al, 0F0h                   ; get model
+     shr  al, 4
+@@ -226,7 +224,7 @@ is486x:
+     div bl
+     lahf
+     cmp ah, 2
+-    jne ncyrix
++    jne is386
+ 
+     ;
+     ; N.B. The pattern of accesses to 0x22 and 0x23 is *essential*
+@@ -259,10 +257,15 @@ getCx86 MACRO reg
+     mov bx, ax               ; to enable CPUID execution
+     setCx86 0E8h, bx
+ 
+-    getCx86 0FEh             ; DIR0 : let's check this is a 6x86(L)
+-    and ax, 0F0h             ; should be 3xh
+-    cmp ax, 30h
+-    jne n6x86
++; Must check cpu id regs here and not after trying to set CCR3
++; to avoid failure when testing SG Microelectronic STPCs, which
++; lock up if you try to enable cpuid execution
++
++    getCx86 0FEh             ; DIR0 : let's check if this is a 6x86(L)
++    and  ax, 0F0h            ; should be 3xh
++    cmp  ax, 30h             ; STPCs return 0x80, 0x1a, 0x1b or 0x1f
++    jne  is386
++
+     getCx86 0E9h             ; CCR5 : we reset the SLOP bit
+     and ax, 0FDh             ; so that udelay calculation
+     mov bx, ax               ; is correct on 6x86(L) CPUs
+@@ -272,15 +275,6 @@ getCx86 MACRO reg
+     sti
+     jmp isnew                ; We enabled CPUID now
+ 
+-n6x86:
+-    setCx86 0C3h, cx         ; Restore old CCR3
+-    sti
+-
+-ncyrix:
+-    popfd                    ; restore original EFLAGS
+-    call check_x87
+-    jmp  end_CheckCpuType
+-
+ is386:
+     popfd                    ; restore original EFLAGS
+     call check_x87
+@@ -404,7 +398,7 @@ __w32_MY_SS:
+ ;
+ ; DWORD cdecl Get_CR4 (void);
+ ;
+-; Is virtualised under Win32 (always returns 0), hence of no use.
++; This is virtualised under Win32 (always returns 0), hence of no use.
+ ; Don't call this function w/o checking for a true Pentium first
+ ; (see RDTSC_enabled() in misc.c). Returns 0 if CPL != 0.
+ ;
+diff -urp watt_src.orig/src/cpumodel.S watt_src/src/cpumodel.S
+--- watt_src.orig/src/cpumodel.S	2005-12-29 23:10:34.000000000 +0200
++++ watt_src/src/cpumodel.S	2007-01-23 11:24:18.000000000 +0200
+@@ -39,8 +39,8 @@ DATA (x86_vendor_id,  .zero 13)
+ 
+ .text
+ 
+-/* 
+- * check Processor type: 386, 486, 6x86(L) or CPUID capable processor 
++/*
++ * check Processor type: 386, 486, 6x86(L) or CPUID capable processor
+  */
+ ENTRY (_w32_CheckCpuType)
+     pushl %ebp
+@@ -57,14 +57,14 @@ ENTRY (_w32_CheckCpuType)
+     pushfl                          /* save EFLAGS */
+     pushfl                          /* Get EFLAGS in EAX */
+     popl %eax
+-    
++
+     movl  %eax, %ecx                /* save original EFLAGS in ECX */
+     xorl  $EFLAGS_ALIGN_CHECK, %eax /* flip AC bit in EAX */
+     pushl %eax                      /* set EAX as EFLAGS */
+-    popfl           
++    popfl
+     pushfl                          /* Get new EFLAGS in EAX */
+     popl  %eax
+-    
++
+     xorl  %ecx, %eax                /* check if AC bit changed */
+     andl  $EFLAGS_ALIGN_CHECK,%eax
+     je is386                        /* If not : we have a 386 */
+@@ -75,21 +75,21 @@ ENTRY (_w32_CheckCpuType)
+     movl  %ecx, %eax                /* Restore orig EFLAGS in EAX */
+     xorl  $EFLAGS_ID, %eax          /* flip  ID flag */
+     pushl %eax                      /* set EAX as EFLAGS */
+-    popfl               
++    popfl
+     pushfl                          /* Get new EFLAGS in EAX */
+     popl  %eax
+-            
++
+     xorl  %ecx, %eax                /* check if ID bit changed */
+     andl  $EFLAGS_ID, %eax
+ 
+-    /* 
++    /*
+      * if we are on a straight 486DX, SX, or 487SX we can't
+      * change it. OTOH 6x86MXs and MIIs check OK.
+      * Also if we are on a Cyrix 6x86(L)
+      */
+     je is486x
+ 
+-isnew:  
++isnew:
+     /* restore original EFLAGS
+      */
+     popfl
+@@ -102,22 +102,22 @@ isnew:  
+      * by using it with EAX = 1
+      */
+     movl $1, %eax
+-    cpuid           
++    cpuid
+ 
+     movb %al, %cl                 /* save reg for future use */
+-    
++
+     andb $0x0F, %ah               /* mask processor family (bit 8-11) */
+     movb %ah, _C_LABEL(x86_type)  /* put result in x86_type (0..15) */
+ 
+     andb $0xF0, %al               /* get model (bit 4-7) */
+     shrb $4, %al
+     movb %al, _C_LABEL(x86_model) /* store it in x86_model */
+-    
++
+     andb $0x0F, %cl               /* get mask revision */
+     movb %cl, _C_LABEL(x86_mask)  /* store it in x86_mask */
+-    
++
+     movl %edx, _C_LABEL(x86_capability) /* store feature flags */
+-    
++
+     /* get vendor info by using CPUID with EAX = 0
+      */
+     xorl %eax, %eax
+@@ -153,7 +153,7 @@ is486x:
+     div  %bl
+     lahf
+     cmpb $2, %ah
+-    jne  ncyrix
++    jne  is386
+ 
+     /*
+      * N.B. The pattern of accesses to 0x22 and 0x23 is *essential*
+@@ -184,10 +184,16 @@ is486x:
+     movw %ax, %bx           /* to enable CPUID execution */
+     setCx86 ($0xE8, %bx)
+ 
+-    getCx86 ($0xFE)         /* DIR0 : let's check this is a 6x86(L) */
++    /* Must check cpu id regs here and not after trying to set CCR3
++     * to avoid failure when testing SG Microelectronic STPCs, which
++     * lock up if you try to enable cpuid execution
++     */
++
++    getCx86 ($0xFE)         /* DIR0 : let's check if this is a 6x86(L) */
+     andw $0xF0, %ax         /* should be 3xh */
+-    cmpw $0x30, %ax
+-    jne n6x86
++    cmpw $0x30, %ax         /* STPCs return 0x80, 0x1a, 0x1b or 0x1f */
++    jne  is386
++
+     getCx86 ($0xE9)         /* CCR5 : we reset the SLOP bit */
+     andw $0xFD, %ax         /* so that udelay calculation */
+     movw %ax, %bx           /* is correct on 6x86(L) CPUs */
+@@ -197,16 +203,6 @@ is486x:
+     sti
+     jmp isnew               /* We enabled CPUID now */
+ 
+-n6x86:
+-    setCx86 ($0xC3, %cx)    /* Restore old CCR3 */
+-    sti
+-
+-ncyrix:
+-    popfl                   /* restore original EFLAGS */
+-    call check_x87
+-    popl %ebx
+-    jmp  end_CheckCpuType
+-
+ is386:
+     popfl                   /* restore original EFLAGS */
+     call check_x87
+Only in watt_src/src/djgpp: syserr.203
+Only in watt_src/src/djgpp: syserr.204
+diff -urp watt_src.orig/src/djgpp/watt32.dep watt_src/src/djgpp/watt32.dep
+--- watt_src.orig/src/djgpp/watt32.dep	2009-03-07 17:23:44.000000000 +0200
++++ watt_src/src/djgpp/watt32.dep	2014-04-25 23:55:50.000000000 +0300
+@@ -36,9 +36,9 @@ $(OBJDIR)/getopt.o: getopt.c wattcp.h la
+ $(OBJDIR)/getprot.o: getprot.c wattcp.h strings.h misc.h language.h pcconfig.h get_xby.h
+ $(OBJDIR)/getput.o: getput.c wattcp.h chksum.h misc.h
+ $(OBJDIR)/getserv.o: getserv.c wattcp.h strings.h misc.h language.h netaddr.h pcconfig.h get_xby.h pcdbug.h sock_ini.h
+-$(OBJDIR)/gettod.o: gettod.c wattcp.h misc.h timer.h x32vm.h cpumodel.h strings.h gettod.h printk.h getopt.h
++$(OBJDIR)/gettod.o: gettod.c wattcp.h misc.h timer.h x32vm.h cpumodel.h strings.h gettod.h printk.h getopt.h djgpp/djtime.c
+ $(OBJDIR)/highc.o: highc.c wattcp.h strings.h pcconfig.h
+-$(OBJDIR)/idna.o: idna.c wattcp.h misc.h strings.h pcconfig.h punycode.h idna.h iconv/ascii.h iconv/jisx0201.h iconv/jisx0208.h iconv/cp437.h iconv/cp737.h iconv/cp775.h iconv/cp850.h iconv/cp852.h iconv/cp853.h iconv/cp855.h iconv/cp856.h iconv/cp857.h iconv/cp858.h iconv/cp860.h iconv/cp861.h iconv/cp862.h iconv/cp863.h iconv/cp864.h iconv/cp865.h iconv/cp866.h iconv/cp869.h iconv/cp874.h iconv/cp922.h iconv/cp932.h iconv/cp943.h iconv/ksc5601.h iconv/cp949.h iconv/big5.h iconv/cp950.h iconv/cp1046.h iconv/cp1124.h iconv/cp1125.h iconv/cp1129.h iconv/cp1133.h iconv/cp1161.h iconv/cp1162.h iconv/cp1163.h iconv/cp1250.h iconv/cp1251.h iconv/cp1252.h iconv/cp1253.h iconv/cp1254.h iconv/cp1255.h iconv/cp1256.h iconv/cp1257.h iconv/vietcomb.h iconv/cp1258.h sock_ini.h udp_dom.h pcdbug.h getopt.h
++$(OBJDIR)/idna.o: idna.c wattcp.h misc.h strings.h pcconfig.h punycode.h idna.h sock_ini.h udp_dom.h pcdbug.h getopt.h
+ $(OBJDIR)/ioctl.o: ioctl.c socket.h
+ $(OBJDIR)/ip4_frag.o: ip4_frag.c wattcp.h strings.h language.h misc.h timer.h chksum.h pcconfig.h pcqueue.h pcstat.h pcpkt.h pcicmp.h pctcp.h pcdbug.h netaddr.h ip4_in.h ip4_out.h ip4_frag.h sock_ini.h loopback.h pcarp.h getopt.h
+ $(OBJDIR)/ip4_in.o: ip4_in.c wattcp.h misc.h chksum.h rs232.h pcconfig.h pcmulti.h pcdbug.h pcsed.h pctcp.h pcstat.h pcicmp.h ip4_frag.h ip4_in.h
+@@ -64,7 +64,7 @@ pcarp.h: pcsarp.h
+ $(OBJDIR)/pcbootp.o: pcbootp.c copyrigh.h wattcp.h strings.h language.h udp_dom.h syslog2.h misc.h timer.h netaddr.h pctcp.h pcsed.h pcarp.h pcconfig.h pcqueue.h pcpkt.h pcbootp.h
+ $(OBJDIR)/pcbuf.o: pcbuf.c copyrigh.h wattcp.h language.h misc.h strings.h pctcp.h pcdbug.h pcbuf.h
+ $(OBJDIR)/pcconfig.o: pcconfig.c copyrigh.h wattcp.h strings.h misc.h timer.h language.h udp_dom.h netaddr.h bsdname.h pcqueue.h pcdbug.h pcsed.h pcpkt.h pctcp.h pcarp.h pcrarp.h pcdhcp.h pcbootp.h pcicmp.h sock_ini.h ip4_frag.h ip4_out.h ip6_out.h loopback.h get_xby.h printk.h pcconfig.h pcicmp6.h teredo64.h getopt.h
+-$(OBJDIR)/pcdbug.o: pcdbug.c wattcp.h strings.h udp_dom.h misc.h timer.h sock_ini.h chksum.h ip4_in.h ip6_in.h ip6_out.h pctcp.h pcsed.h pcarp.h pcqueue.h pcpkt.h pcstat.h pcicmp.h pcicmp6.h pcconfig.h netaddr.h language.h printk.h gettod.h pppoe.h ppp.h split.h bsddbug.h pcdbug.h zlib/zlib.h
++$(OBJDIR)/pcdbug.o: pcdbug.c wattcp.h strings.h udp_dom.h misc.h timer.h sock_ini.h chksum.h ip4_in.h ip6_in.h ip6_out.h pctcp.h pcsed.h pcarp.h pcqueue.h pcpkt.h pcstat.h pcicmp.h pcicmp6.h pcconfig.h netaddr.h language.h printk.h gettod.h pppoe.h ppp.h split.h bsddbug.h pcdbug.h
+ $(OBJDIR)/pcdhcp.o: pcdhcp.c wattcp.h strings.h language.h misc.h timer.h udp_dom.h netaddr.h bsdname.h ip4_out.h syslog2.h sock_ini.h printk.h tftp.h pctcp.h pcsed.h pcarp.h pcqueue.h pcdbug.h pcpkt.h pcconfig.h pcbootp.h pcdhcp.h
+ $(OBJDIR)/pcicmp.o: pcicmp.c copyrigh.h wattcp.h strings.h language.h misc.h timer.h chksum.h ip4_in.h pctcp.h pcsed.h pcarp.h pcstat.h pcdbug.h pcqueue.h pcconfig.h pcpkt.h pcping.h sock_ini.h netaddr.h ip4_out.h pcicmp.h
+ $(OBJDIR)/pcicmp6.o: pcicmp6.c wattcp.h misc.h timer.h chksum.h strings.h netaddr.h language.h ip6_in.h ip6_out.h ip4_out.h split.h pctcp.h pcsed.h pcstat.h pcdbug.h pcpkt.h pcarp.h pcconfig.h pcicmp6.h
+diff -urp watt_src.orig/src/djgpp.mak watt_src/src/djgpp.mak
+--- watt_src.orig/src/djgpp.mak	2009-03-07 18:10:57.000000000 +0200
++++ watt_src/src/djgpp.mak	2012-09-15 20:00:50.000000000 +0300
+@@ -118,11 +118,10 @@ PKT_STUB = pkt_stub.h
+ ########################################################################
+ 
+ 
+-CC     = gcc
+-CFLAGS = -O2 -g -gcoff -I. -I../inc -W -Wall -fno-strength-reduce \
+-         -ffast-math #-ffunction-sections -fomit-frame-pointer
++CC     = i586-pc-msdosdjgpp-gcc
++CFLAGS = -O2 -I. -I../inc -W -Wall -ffast-math -fomit-frame-pointer
+ 
+-AS     = as --gdwarf2
++AS     = i586-pc-msdosdjgpp-as
+ TARGET = ../lib/libwatt.a
+ OBJDIR = djgpp
+ 
+@@ -134,8 +133,8 @@ ZLIB_OBJS := $(subst .obj,.o,$(ZLIB_OBJS
+ 
+ all: $(PKT_STUB) $(TARGET)
+ 
+-$(TARGET): $(OBJS) $(ZLIB_OBJS)
+-	ar rs $@ $?
++$(TARGET): $(OBJS)
++	i586-pc-msdosdjgpp-ar rs $@ $?
+ 
+ $(ZLIB_OBJS):
+ 	$(MAKE) -f djgpp.mak -C zlib
+@@ -154,20 +153,12 @@ language.c: language.l
+ 	flex -8 -o$@ $<
+ 
+ clean:
+-	rm -f $(TARGET) $(OBJDIR)/*.o $(OBJDIR)/*.iS $(PKT_STUB)
++	rm -f $(TARGET) $(OBJDIR)/*.o $(OBJDIR)/*.iS $(PKT_STUB) asmpkt.lst asmpkt.bin ../util/bin2c
+ 	@echo Cleaning done
+ 
+ -include djgpp/watt32.dep
+ 
+ 
+-########################################################################
+-
+-
+-########################################################################
+-
+-
+-########################################################################
+-
+ doxygen:
+ 	doxygen doxyfile
+ 
+@@ -175,7 +166,8 @@ doxygen:
+ $(OBJDIR)/pcpkt.o: asmpkt.nas
+ 
+ $(PKT_STUB): asmpkt.nas
+-	../util/nasm32 -f bin -l asmpkt.lst -o asmpkt.bin asmpkt.nas
++	nasm -f bin -l asmpkt.lst -o asmpkt.bin asmpkt.nas
++	gcc -Wall -W ../util/bin2c.c -o ../util/bin2c
+ 	../util/bin2c asmpkt.bin > $@
+ 
+ 
+diff -urp watt_src.orig/src/djimport.c watt_src/src/djimport.c
+--- watt_src.orig/src/djimport.c	2004-11-17 20:08:02.000000000 +0200
++++ watt_src/src/djimport.c	2014-04-24 10:50:00.000000000 +0300
+@@ -424,7 +424,7 @@ static void *open_module (const char *mo
+   sym->_go32_info_block                            = _go32_info_block;
+   sym->_go32_want_ctrl_break                       = _go32_want_ctrl_break;
+   sym->_write                                      = _write;
+-  sym->access                                      = access;
++  sym->_chmod                                      = _chmod;
+   sym->atexit                                      = atexit;
+   sym->atoi                                        = atoi;
+   sym->atol                                        = atol;
+diff -urp watt_src.orig/src/dxe_sym.h watt_src/src/dxe_sym.h
+--- watt_src.orig/src/dxe_sym.h	2004-07-25 22:14:06.000000000 +0300
++++ watt_src/src/dxe_sym.h	2014-04-24 10:50:00.000000000 +0300
+@@ -122,7 +122,7 @@ struct st_symbol
+   int            (*_go32_dpmi_lock_data) (void *, unsigned long);
+   void           (*_go32_want_ctrl_break) (int);
+   ssize_t        (*_write) (int, const void *, size_t);
+-  int            (*access) (const char *, int);
++  int            (*_chmod) (const char *, int, ...);
+   int            (*atexit) (void (*func)(void));
+   int            (*atoi) (const char *);
+   long           (*atol) (const char *);
+@@ -286,7 +286,7 @@ extern struct st_symbol_t import_export;
+ #define _go32_info_block                            import_export._go32_info_block
+ #define _go32_want_ctrl_break                       import_export._go32_want_ctrl_break
+ #define _write                                      import_export._write
+-#define access                                      import_export.access
++#define _chmod                                      import_export._chmod
+ #define atexit                                      import_export.atexit
+ #define atoi                                        import_export.atoi
+ #define atol                                        import_export.atol
+diff -urp watt_src.orig/src/get_ai.c watt_src/src/get_ai.c
+--- watt_src.orig/src/get_ai.c	2006-01-07 00:42:12.000000000 +0200
++++ watt_src/src/get_ai.c	2014-05-20 20:02:00.000000000 +0300
+@@ -522,10 +522,11 @@ static int explore_fqdn (const struct ad
+                          const char *servname, struct addrinfo **res)
+ {
+   const struct afd *afd;
+-  struct hostent   *hp;
++  struct hostent  copy, *hp;
+   struct addrinfo sentinel, *cur;
+-  int    error, af, i;
+-  char  *ap;
++  struct in6_addr addr [MAX_ADDRESSES+1];
++  char           *list [MAX_ADDRESSES+1], *ap;
++  int             af, i, error;
+ 
+ #ifdef TEST_PROG
+   SOCK_DEBUGF (("\nexplore_fqdn"));
+@@ -588,23 +589,17 @@ static int explore_fqdn (const struct ad
+    * fill_hostent(), the contents will be destroyed in below
+    * get_name() otherwise.
+    */
++  copy = *hp;
++  memset (&addr, 0, sizeof(addr));
++  memset (&list, 0, sizeof(list));
++  for (i = 0; hp->h_addr_list[i]; i++)
+   {
+-    struct hostent copy;
+-    struct in6_addr addr [MAX_ADDRESSES+1];
+-    char           *list [MAX_ADDRESSES+1];
+-
+-    copy = *hp;
+-    memset (&addr, 0, sizeof(addr));
+-    memset (&list, 0, sizeof(list));
+-    for (i = 0; hp->h_addr_list[i]; i++)
+-    {
+-      memcpy (&addr[i], hp->h_addr_list[i], hp->h_length);
+-      list[i] = (char*) &addr[i];
+-    }
+-    list[i]          = NULL;
+-    copy.h_addr_list = list;
+-    hp = &copy;
++    memcpy (&addr[i], hp->h_addr_list[i], hp->h_length);
++    list[i] = (char*) &addr[i];
+   }
++  list[i]          = NULL;
++  copy.h_addr_list = list;
++  hp = &copy;
+ 
+   for (i = 0; hp->h_addr_list[i]; i++)
+   {
+diff -urp watt_src.orig/src/gethost.c watt_src/src/gethost.c
+--- watt_src.orig/src/gethost.c	2005-11-30 23:33:30.000000000 +0200
++++ watt_src/src/gethost.c	2014-05-20 20:02:00.000000000 +0300
+@@ -562,7 +562,7 @@ static BOOL gethostbyaddr_internal (cons
+   {
+     int i;
+ 
+-    for (i = 0; h->h_address[i] != INADDR_NONE && i < h->h_num_addr; i++)
++    for (i = 0; i < h->h_num_addr && h->h_address[i] != INADDR_NONE; i++)
+     {
+       if (addr == h->h_address[i])
+       {
+diff -urp watt_src.orig/src/getnet.c watt_src/src/getnet.c
+--- watt_src.orig/src/getnet.c	2005-10-12 01:17:18.000000000 +0300
++++ watt_src/src/getnet.c	2013-12-12 12:10:00.000000000 +0200
+@@ -179,7 +179,7 @@ struct netent * W32_CALL getnetent (void
+   char   buf [2*MAX_NAMELEN], *tok;
+   int    i;
+ 
+-  if (!netdb_init())
++  if (!netdb_init() || !networkFile)
+      return (NULL);
+ 
+   while (1)
+diff -urp watt_src.orig/src/gettod.c watt_src/src/gettod.c
+--- watt_src.orig/src/gettod.c	2005-12-19 05:02:20.000000000 +0200
++++ watt_src/src/gettod.c	2014-04-25 23:55:50.000000000 +0300
+@@ -76,6 +76,9 @@
+ 
+ static long utc_offset = 0;  /* UTC to local offset in seconds */
+ 
++#ifdef __DJGPP__ /* OVERRIDES TO SKIP TIMEZONE STUFF */
++# include "djgpp/djtime.c"
++#else
+ static void get_zone (struct timezone *tz, time_t now)
+ {
+   const struct tm *tm = localtime (&now);
+@@ -108,6 +111,7 @@ void set_utc_offset (void)
+ #endif
+   utc_offset = 60 * tz.tz_minuteswest;
+ }
++#endif /* OVERRIDEN FOR DJGPP TO SKIP TIMEZONE STUFF */
+ 
+ #if defined(WIN32)
+ /*
+diff -urNp watt_src.orig/src/djgpp/djtime.c watt_src/src/djgpp/djtime.c
+--- watt_src.orig/src/djgpp/djtime.c	1970-01-01 02:00:00.000000000 +0200
++++ watt_src/src/djgpp/djtime.c	2014-04-25 23:55:50.000000000 +0300
+@@ -0,0 +1,216 @@
++struct tm *gmtime (const time_t *tt)
++{
++    static char monthtable[] = {
++    /* JanFebMarAprMayJunJulAugSepOktNov */
++       31,29,31,30,31,30,31,31,30,31,30
++    };
++    static struct tm _mytm;
++
++    struct tm *tm = &_mytm;
++    signed long tim;
++    int leapday = 0, leapyear = 0, i;
++
++    tim = *tt;
++
++    tm->tm_sec = tim % 60;
++    tim /= 60;
++
++    tm->tm_min = tim % 60;
++    tim /= 60;
++
++    /*
++	719162 number of days between 1.1.1 and 1.1.1970 if the calendar
++	would go so far which it doesn't :-) this is true for all of the
++	following.
++    */
++    tm->tm_hour = tim % 24;
++    tim = tim / 24 + 719162;
++
++    tm->tm_wday = (tim + 1) % 7;
++
++    /* 146097 number of days from 1.1.1 to 1.1.401 */
++    tm->tm_year = tim / 146097 * 400 - 1899;
++    tim %= 146097;
++
++    /* 145731 number of days from 1.1.1 to 1.1.400 */
++    if (tim >= 145731)
++    {
++	leapyear++; /* The day is in one of the 400th */
++
++	/* Be careful: The last of the 4 centuries is 1 day longer */
++	if (tim == 146096)
++	{
++	    tim--;
++	    leapday++;
++	}
++    }
++
++    /* 36524 number of days from 1.1.1 to 1.1.101 */
++    tm->tm_year += tim / 36524 * 100;
++    tim %= 36524;
++
++    /* 36159 number of days from 1.1.1 to 1.1.100 */
++    if (tim >= 36159)
++	leapyear--; /* The day is in one of the 100th */
++
++    /* 1461 number of days from 1.1.1 to 1.1.5 */
++    tm->tm_year += tim / 1461 * 4;
++    tim %= 1461;
++
++    /* 1095 number of days from 1.1.1 to 1.1.4 */
++    if (tim >= 1095)
++    {
++	leapyear++; /* The day is in one of the 4th */
++
++	/* Be careful: The 4th year is 1 day longer */
++	if (tim == 1460)
++	{
++	    tim--;
++	    leapday++;
++	}
++    }
++
++    /* 365 days in a normal year */
++    tm->tm_year += tim / 365;
++    tim = tim % 365 + leapday;
++
++    tm->tm_yday = tim;
++
++    if (!leapyear && tim >= 31+28)
++	tim++; /* add 1 for 29-Feb if no leap year */
++
++    /* Find the month */
++    for (i=0; i<11; i++)
++    {
++	if (tim < monthtable[i])
++	    break;
++
++	tim-=monthtable[i];
++    }
++
++    tm->tm_mon = i;
++    tm->tm_mday = tim + 1;
++
++    tm->tm_isdst = -1;
++
++    return tm;
++}
++struct tm *localtime(const time_t *) __attribute__((alias("gmtime")));
++
++char *asctime (const struct tm *tm)
++{
++    static const char wday_name[7][3] = {
++      "Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"
++    };
++    static const char mon_name[12][3] = {
++      "Jan", "Feb", "Mar", "Apr", "May", "Jun",
++      "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
++    };
++    static char buffer[26];
++
++    sprintf(buffer, "%.3s %.3s%3d %02d:%02d:%02d %d\n",
++      wday_name[tm->tm_wday], mon_name[tm->tm_mon],
++      tm->tm_mday, tm->tm_hour, tm->tm_min, tm->tm_sec,
++      1900 + tm->tm_year);
++    return buffer;
++}
++
++char *ctime (const time_t *tt)
++{
++    return asctime (localtime (tt));
++}
++
++time_t mktime (struct tm *utim)
++{
++    static char monthtable[] = {
++    /* JanFebMarAprMayJunJulAugSepOktNov */
++       31,28,31,30,31,30,31,31,30,31,30
++    };
++
++    time_t tt;
++    int  leapyear, days, year, i;
++
++    /* TODO: Add struct tm normalization code here */
++
++    /* Compute number of days in the years before this year and after 1970.
++     * 1972 is the first leapyear
++     */
++    year = utim->tm_year-1;
++    days = 365*(year-69) + (year-68)/4 - year/100 + (year+300)/400;
++
++    /* Add the day of the months before this month */
++    for (i=0; i<utim->tm_mon; i++)
++    {
++        days += monthtable[i];
++    }
++
++    /* Is this a leapyear ? */
++    year = utim->tm_year;
++    leapyear = year%4==0 && (year%100!=0 || (year+300)%400==0);
++    if (leapyear && utim->tm_mon>1) days++;
++
++    /* Add day in the current month */
++    days += utim->tm_mday - 1;
++
++    tt = ( (days*24+utim->tm_hour)*60 + utim->tm_min )*60 + utim->tm_sec;
++
++    return tt;
++}
++
++void tzset(void)
++{
++  /* not using timezones */
++}
++void set_utc_offset(void) __attribute__((alias("tzset")));	/* for watt32 gettod.c */
++void __tzset(void) __attribute__((alias("tzset")));
++
++static void get_zone (struct timezone *tz, time_t now) {	/* for watt32 gettod.c */
++  (void)now;
++  if (tz)
++    tz->tz_minuteswest = tz->tz_dsttime = 0;
++}
++
++int gettimeofday(struct timeval *tv, struct timezone *tz)
++{
++  __dpmi_regs r;
++  struct tm tmblk;
++  struct timeval tv_tmp;
++
++  if (!tv)
++    tv = &tv_tmp;
++
++  r.h.ah = 0x2c;
++  __dpmi_int(0x21, &r);
++
++  tv->tv_usec = r.h.dl * 10000;
++  tmblk.tm_sec = r.h.dh;
++  tmblk.tm_min = r.h.cl;
++  tmblk.tm_hour = r.h.ch;
++
++  r.h.ah = 0x2a;
++  __dpmi_int(0x21, &r);
++
++  tmblk.tm_mday = r.h.dl;
++  tmblk.tm_mon = r.h.dh - 1;
++  tmblk.tm_year = (r.x.cx & 0x7ff) - 1900;
++
++  tmblk.tm_wday = tmblk.tm_yday = tmblk.tm_gmtoff = 0;
++  tmblk.tm_zone = 0;
++  tmblk.tm_isdst = -1;
++
++  tv->tv_sec = mktime(&tmblk);
++
++  if(tz)
++    tz->tz_minuteswest = tz->tz_dsttime = 0;/* not using timezones */
++  return 0;
++}
++int __gettimeofday(struct timeval *, struct timezone *) __attribute__((alias("gettimeofday")));
++
++time_t time (time_t * tloc)
++{
++    struct timeval tv;
++    gettimeofday(&tv, NULL);
++    if (tloc)
++        *tloc = tv.tv_sec;
++    return tv.tv_sec;
++}
+Only in watt_src.orig/src: iconv
+diff -urp watt_src.orig/src/packet32.c watt_src/src/packet32.c
+--- watt_src.orig/src/packet32.c	2005-02-19 19:05:50.000000000 +0200
++++ watt_src/src/packet32.c	2011-03-03 18:05:19.000000000 +0200
+@@ -47,7 +47,7 @@
+ #include "strings.h"
+ #include "pcconfig.h"
+ #include "pcdbug.h"
+-#include "NtddNdis.h"
++#include "ntddndis.h"
+ #include "cpumodel.h"
+ #include "packet32.h"
+ 
+diff -urp watt_src.orig/src/pcconfig.c watt_src/src/pcconfig.c
+--- watt_src.orig/src/pcconfig.c	2005-10-01 21:10:54.000000000 +0300
++++ watt_src/src/pcconfig.c	2014-04-24 10:50:00.000000000 +0300
+@@ -584,7 +584,11 @@ static long do_include_file (const char 
+     return (0);
+   }
+ 
++#ifdef __DJGPP__
++  if (_chmod(p, 0) != -1)
++#else
+   if (access(p, 0) == 0)
++#endif
+   {
+     /* Recursion, but we're reentrant.
+      * !!Fix-me: recursion depth should be limited.
+@@ -1065,8 +1069,12 @@ int tcp_config_name (char *name, int max
+       *temp = '\0';
+     }
+   }
+-  else if (access(config_name,0) == 0)  /* found in current directory */
+-  {
++#ifdef __DJGPP__
++  else if (_chmod(config_name,0) != -1)
++#else
++  else if (access(config_name,0) == 0)
++#endif
++  { /* found in current directory */
+     strcpy (name, ".\\");
+     path = name;
+   }
+@@ -1133,7 +1141,11 @@ long tcp_config (const char *path)
+   {
+     fname = name;
+     StrLcpy (name, path, sizeof(name));
++#ifdef __DJGPP__
++    if (_chmod(fname,0) == -1)
++#else
+     if (access(fname,0) != 0)
++#endif
+        goto not_found;
+   }
+ 
+diff -urp watt_src.orig/src/pcdhcp.c watt_src/src/pcdhcp.c
+--- watt_src.orig/src/pcdhcp.c	2005-07-01 00:47:22.000000000 +0300
++++ watt_src/src/pcdhcp.c	2014-05-20 20:02:00.000000000 +0300
+@@ -60,6 +60,11 @@
+  *
+  *  \version 0.93: Jul 2, 2004:
+  *    Fixed logic around reading transient config.
++ *
++ *  \version 0.94: Oct 22, 2007:
++ *    Fixes for Linux dhcp servers: parse dhcp options in ACK msgs.
++ *    Changed DHCP_do_boot() to handle renew and rebind as well as init.
++ *    Renegotiate lease if past the renew or rebind times.
+  */
+ 
+ #include <stdio.h>
+@@ -331,6 +336,10 @@ static int DHCP_request (BOOL renew)
+    */
+   opt = put_hardware_opt (opt);
+ 
++/* ... don't know why we would ever renew a lease
++ * for the time remaining on our current lease...
++ */
++#if 0
+   if (dhcp_iplease && dhcp_iplease < (DWORD)-1)
+   {
+     *opt++ = DHCP_OPT_IP_ADDR_LEASE_TIME;
+@@ -338,6 +347,7 @@ static int DHCP_request (BOOL renew)
+     *(DWORD*)opt = intel (dhcp_iplease);
+     opt += sizeof (dhcp_iplease);
+   }
++#endif
+ 
+   if (user_class.data)
+   {
+@@ -691,7 +701,7 @@ void DHCP_release (BOOL force)
+ {
+   if (force)
+   {
+-    TRACE (("Sending DHCP release\n"));
++    TRACE (("Sending DHCP release 01\n"));
+     DHCP_release_decline (DHCP_RELEASE, NULL);
+   }
+   else if (configured)
+@@ -703,7 +713,7 @@ void DHCP_release (BOOL force)
+     if (!(cfg_saved &&
+           (lease_timeout && (lease_timeout - time(NULL) > DHCP_MIN_LEASE))))
+     {
+-      TRACE (("Sending DHCP release\n"));
++      TRACE (("Sending DHCP release 02\n"));
+       DHCP_release_decline (DHCP_RELEASE, NULL);
+     }
+   }
+@@ -782,7 +792,7 @@ static void DHCP_state_BOUND (int event)
+     old_ip_addr = my_ip_addr;    /* remember current address */
+     got_offer   = FALSE;
+ 
+-    TRACE (("Sending DHCP request\n"));
++    TRACE (("Sending DHCP request 01\n"));
+     DHCP_request (1);
+     DHCP_state = DHCP_state_RENEWING;
+   }
+@@ -798,12 +808,21 @@ static void DHCP_state_REQUESTING (int e
+ {
+   if (event == EVENT_SEND_TIMEOUT)
+   {
+-    TRACE (("Sending DHCP request\n"));
++    TRACE (("Sending DHCP request 00\n"));
+     DHCP_request (0);
++
++    /*UPDATE: 05MAR2006 paul.suggs@vgt.net
++     *  There is a timing condition within the FSM where the state has changed
++     *  to REQUESTING but in dhcp_fsm(), chk_timeout() will be evaluated true
++     *  which sets send_timeout to 0 before the first execution of this state
++     *  handler. Once set to 0, we have to wait for rollover to resend the
++     *  above request if it is lost for some reason
++     */
++    send_timeout = set_timeout (Random(4000,6000));
+   }
+   else if (event == EVENT_ACK)
+   {
+-    TRACE (("Got DHCP ack\n"));
++    TRACE (("Got DHCP ack while requesting\n"));
+ 
+     if (!DHCP_arp_check(my_ip_addr))
+     {
+@@ -814,7 +833,8 @@ static void DHCP_state_REQUESTING (int e
+     }
+     else
+     {
+-      configured = 1;     /* we are (re)configured */
++      DHCP_offer (&dhcp_in);  /* parse options in the ack too */
++      configured = 1;         /* we are (re)configured */
+       if (dhcp_server)
+          arp_add_server();
+       dhcp_set_timers();
+@@ -839,8 +859,9 @@ static void DHCP_state_REBINDING (int ev
+ {
+   if (event == EVENT_ACK)
+   {
+-    TRACE (("Got DHCP ack\n"));
++    TRACE (("Got DHCP ack while rebinding\n"));
+     dhcp_set_timers();
++    DHCP_offer (&dhcp_in);
+     change_ip_addr();
+     DHCP_state = DHCP_state_BOUND;
+   }
+@@ -863,26 +884,27 @@ static void DHCP_state_RENEWING (int eve
+ {
+   if (event == EVENT_SEND_TIMEOUT)
+   {
+-    TRACE (("Sending DHCP request\n"));
++    TRACE (("Sending DHCP request for renew\n"));
+     DHCP_request (1);
+   }
+   else if (event == EVENT_T2_TIMEOUT)
+   {
+-    TRACE (("Sending DHCP request\n"));
++    TRACE (("Sending DHCP request for rebind\n"));
+     bcast_flag = TRUE;
+     DHCP_request (1);
+     DHCP_state = DHCP_state_REBINDING;
+   }
+   else if (event == EVENT_ACK)
+   {
+-    TRACE (("Got DHCP ack\n"));
++    TRACE (("Got DHCP ack while renewing\n"));
+     dhcp_set_timers();
++    DHCP_offer (&dhcp_in);
+     change_ip_addr();
+     DHCP_state = DHCP_state_BOUND;
+   }
+   else if (event == EVENT_NAK)
+   {
+-    TRACE (("Got DHCP nack\n"));
++    TRACE (("Got DHCP nack while renewing\n"));
+     send_timeout = set_timeout (Random(4000,6000));
+     my_ip_addr = 0;
+     DHCP_state = DHCP_state_INIT;
+@@ -1014,12 +1036,12 @@ static void dhcp_fsm (void)
+ }
+ 
+ /**
+- * Our first time (booting) DHCP handler.
+- * Only called if:
++ * Our first time DHCP handler.
++ * Called if:
+  *  - we don't have a WATTCP.CFG file
+  *  - or we specified "MY_IP = DHCP".
+  *  - or reading a previous W32DHCP.TMP file with transient config failed.
+- *
++ *  - or lease times call for a renew or rebind.
+  * It doesn't hurt that it is blocking.
+  */
+ int DHCP_do_boot (void)
+@@ -1035,9 +1057,14 @@ int DHCP_do_boot (void)
+   if (!sock)
+      return (0);
+ 
++  if (DHCP_state != DHCP_state_RENEWING &&
++      DHCP_state != DHCP_state_REBINDING)
++  {
++    my_ip_addr = 0;
++    sin_mask   = 0;
++  }
++
+   _mtu = ETH_MAX_DATA;
+-  my_ip_addr = 0;
+-  sin_mask   = 0;
+   discover_loops = 0;
+ 
+   erase_config();         /* delete old configuration */
+@@ -1046,7 +1073,10 @@ int DHCP_do_boot (void)
+   /* kick start DISCOVER message
+    */
+   send_timeout = set_timeout (100);
+-  DHCP_state = DHCP_state_INIT;
++
++  if (DHCP_state != DHCP_state_RENEWING &&
++      DHCP_state != DHCP_state_REBINDING)
++     DHCP_state = DHCP_state_INIT;
+ 
+   while (DHCP_state != DHCP_state_BOUND)
+   {
+@@ -1451,15 +1481,17 @@ static BOOL eval_timers (void)
+   if (now >= cfg_dhcp_renewal && now < cfg_dhcp_rebind)
+   {
+     TRACE (("DHCP: RENEWING\n"));
+-    DHCP_state_BOUND (EVENT_T1_TIMEOUT);    /* goto RENEWING */
+-    return (TRUE);
++    DHCP_state = DHCP_state_BOUND;
++    (*DHCP_state) (EVENT_T1_TIMEOUT);       /* goto RENEWING */
++    return (FALSE);
+   }
+ 
+   if (now >= cfg_dhcp_rebind && now < cfg_dhcp_iplease)
+   {
+     TRACE (("DHCP: REBINDING\n"));
+-    DHCP_state_RENEWING (EVENT_T2_TIMEOUT); /* goto REBINDING */
+-    return (TRUE);
++    DHCP_state = DHCP_state_RENEWING;
++    (*DHCP_state) (EVENT_T2_TIMEOUT);       /* goto REBINDING */
++    return (FALSE);
+   }
+   return (FALSE);
+ }
+@@ -1543,8 +1575,12 @@ static int std_write_config (void)
+   int    rc  = 0;
+   const  char *fname = get_config_file();
+ 
+-  if (access(fname,0))  /* file not found, create */
+-  {
++#ifdef __DJGPP__
++  if (_chmod(fname,0) == -1)
++#else
++  if (access(fname,0) != 0)
++#endif
++  { /* file not found, create */
+     file = fopen (fname, "w+t");
+     if (!file)
+        goto fail;
+diff -urp watt_src.orig/src/pcsarp.c watt_src/src/pcsarp.c
+--- watt_src.orig/src/pcsarp.c	2005-10-01 21:18:34.000000000 +0300
++++ watt_src/src/pcsarp.c	2014-04-24 10:50:10.000000000 +0300
+@@ -85,7 +85,11 @@ int sarp_init (void)
+   _sarp_recv_hook = sarp_receive;
+   _sarp_xmit_hook = sarp_transmit;
+ 
++#ifdef __DJGPP__
++  if (rand && _chmod(rand,0) !=-1)
++#else
+   if (rand && access(rand,0) == 0)
++#endif
+        RAND_load_file (rand, -1);
+   else SARP_DEBUG (0, ("Warning: No random seed file found\n"));
+   return (0);
+diff -urp watt_src.orig/src/pctcp.c watt_src/src/pctcp.c
+--- watt_src.orig/src/pctcp.c	2005-12-05 01:32:06.000000000 +0200
++++ watt_src/src/pctcp.c	2014-05-20 20:02:00.000000000 +0300
+@@ -1639,10 +1639,9 @@ static void sock_reduce_mss (sock_type *
+ void _udp_cancel (const in_Header *ip, int icmp_type, int icmp_code,
+                   const char *msg, const void *arg) /* use a var-arg here ? */
+ {
+-  WORD         src_port, dst_port, next_mtu;
+-  DWORD        gateway;
+-  int          len     = in_GetHdrLen (ip);
++  WORD         src_port, dst_port;
+   BOOL         passive = FALSE;
++  int          len     = in_GetHdrLen (ip);
+   udp_Header  *udp     = (udp_Header*) ((BYTE*)ip + len);
+   _udp_Socket *s;
+ 
+@@ -1671,24 +1670,27 @@ void _udp_cancel (const in_Header *ip, i
+   {
+     SET_ERR_MSG (s, msg);
+ 
+-    /* handle redirect on active sockets
++    /* handle ICMP-errors on active sockets
+      */
+     if (icmp_type == ICMP_REDIRECT && !passive)
+     {
++      DWORD gateway;
++
+       WATT_ASSERT (arg != NULL);
+       gateway = *(DWORD*)arg;
+       _ip_recursion = 1;
+       _arp_resolve (gateway, &s->his_ethaddr);
+       _ip_recursion = 0;
+     }
+-    else if (icmp_type == ICMP_UNREACH && icmp_code == ICMP_UNREACH_NEEDFRAG)
++    else if (icmp_type == ICMP_UNREACH && icmp_code == ICMP_UNREACH_NEEDFRAG && !passive)
+     {
++      WORD next_mtu;
++
+       WATT_ASSERT (arg != NULL);
+       next_mtu = *(WORD*) arg;
+-      if (!passive)
+-         sock_reduce_mss ((sock_type*)s, next_mtu);
++      sock_reduce_mss ((sock_type*)s, next_mtu);
+     }
+-    else if (icmp_type != ICMP_TIMXCEED)
++    else if (icmp_type != ICMP_TIMXCEED && !passive)
+     {
+       /* UDP isn't sturdy, close it on 1st ICMP error
+        */
+Only in watt_src.orig/src: pkt_stub.h
+diff -urp watt_src.orig/src/ppp.c watt_src/src/ppp.c
+--- watt_src.orig/src/ppp.c	2004-11-17 21:59:54.000000000 +0200
++++ watt_src/src/ppp.c	2014-05-20 20:02:00.000000000 +0300
+@@ -1093,7 +1093,7 @@ static void std_negotiation (struct ppp_
+ 
+   code   = *state->bp++;
+   id     = *state->bp++;
+-  length = intel16 (*(WORD*)&state->bp);
++  length = intel16 (*(WORD*)state->bp);  /* !! */
+   if (length > state->mlen)
+   {
+     PRINTF (0, ("Truncated negotiation message; %d > %d\n",
+@@ -1174,7 +1174,7 @@ static void std_negotiation (struct ppp_
+          break;
+ 
+     case CODE_PROTO_REJ:
+-         proto = intel16 (*(WORD*)&state->bp);
++         proto = intel16 (*(WORD*)state->bp);  /* !! */
+ 
+          /* Peer cannot reject LCP!
+           */
+diff -urp watt_src.orig/src/presaddr.c watt_src/src/presaddr.c
+--- watt_src.orig/src/presaddr.c	2005-05-07 02:43:18.000000000 +0300
++++ watt_src/src/presaddr.c	2014-05-20 20:02:00.000000000 +0300
+@@ -327,7 +327,7 @@ static int inet_pton6 (const char *src, 
+          return (0);
+ 
+       *tp++ = (u_char) (val >> 8) & 0xff;
+-      *tp++ = (u_char) val & 0xff;
++      *tp++ = (u_char) (val & 0xff);
+       saw_xdigit = 0;
+       val = 0;
+       continue;
+diff -urp watt_src.orig/src/printk.c watt_src/src/printk.c
+--- watt_src.orig/src/printk.c	2004-08-24 11:18:36.000000000 +0300
++++ watt_src/src/printk.c	2014-05-20 20:02:00.000000000 +0300
+@@ -128,10 +128,12 @@ static void printk_exit (void)
+ {
+   _printk_flush();
+   if (_printk_file && _printk_file != stderr && _printk_file != stdout)
+-  {
+     fclose (_printk_file);
+-    _printk_file = NULL;
+-  }
++  _printk_file = NULL;
++
++  if (printk_buf)
++     free (printk_buf);  /* Reclaim memory allocated in _printk_init() */
++  printk_buf = NULL;
+ }
+ 
+ /*
+diff -urp watt_src.orig/src/timer.h watt_src/src/timer.h
+--- watt_src.orig/src/timer.h	2004-09-02 17:55:22.000000000 +0300
++++ watt_src/src/timer.h	2014-05-20 20:02:00.000000000 +0300
+@@ -80,12 +80,14 @@ W32_FUNC void exit_timer_isr (void);
+ W32_FUNC void init_userSuppliedTimerTick (void);
+ W32_FUNC void userTimerTick (DWORD elapsedTimeMs);
+ 
++#if (DOSX) && defined(HAVE_UINT64)
++  extern uint64 get_cpu_speed (void);
++#endif
+ 
+ #if defined(USE_PROFILER)
+   extern BOOL   profile_enable;
+   extern char   profile_file [MAX_PATHLEN+1];
+ 
+-  extern uint64 get_cpu_speed (void);
+   extern void   profile_start (const char *where);
+   extern void   profile_stop  (void);
+   extern int    profile_init  (void);
+diff -urp watt_src.orig/src/winpcap.c watt_src/src/winpcap.c
+--- watt_src.orig/src/winpcap.c	2006-01-25 05:07:12.000000000 +0200
++++ watt_src/src/winpcap.c	2011-03-03 18:05:19.000000000 +0200
+@@ -48,8 +48,8 @@
+ #include "pcpkt.h"
+ 
+ #include "winpcap.h"
+-#include "NtddNdis.h"
+-#include "Packet32.h"
++#include "ntddndis.h"
++#include "packet32.h"
+ 
+ #if (defined(_DLL) && !defined(_MT)) && !defined(__LCC__)
+ #error This file must be compiled for threads
+Only in watt_src.orig/src: zlib
+Binary files watt_src.orig/util/dj_err.exe and watt_src/util/dj_err.exe differ
+diff -urp watt_src.orig/util/bin2c.c watt_src/util/bin2c.c
+--- watt_src.orig/util/bin2c.c	1970-01-01 02:00:00.000000000 +0200
++++ watt_src/util/bin2c.c	2008-01-08 12:16:29.000000000 +0200
+@@ -0,0 +1,43 @@
++#include <stdio.h>
++#include <stdlib.h>
++#include <stdarg.h>
++#include <time.h>
++
++static void Abort (const char *fmt,...)
++{
++  va_list args;
++  va_start (args, fmt);
++  vfprintf (stderr, fmt, args);
++  va_end (args);
++  exit (1);
++}
++
++int main (int argc, char **argv)
++{
++  FILE  *inFile;
++  FILE  *outFile = stdout;
++  time_t now     = time (NULL);
++  int    ch, i;
++
++  if (argc != 2)
++     Abort ("Usage: %s bin-file [> result]", argv[0]);
++
++  if ((inFile = fopen(argv[1],"rb")) == NULL)
++     Abort ("Cannot open %s\n", argv[1]);
++
++  fprintf (outFile,
++           "/* data statements for file %s at %.24s */\n"
++           "/* Generated by BIN2C, G. Vanem 1995 */\n",
++           argv[1], ctime(&now));
++
++  i = 0;
++  while ((ch = fgetc(inFile)) != EOF)
++  {
++    if (i++ % 12 == 0)
++       fputs ("\n  ", outFile);
++    fprintf (outFile, "0x%02X,", ch);
++  }
++  fputc ('\n', outFile);
++  fclose (inFile);
++  return (0);
++}
+
