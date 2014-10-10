@@ -3,6 +3,11 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2014-10-10 (SVN):
+    * engine/h2shared/common.c: override the stock djgpp versions of
+      stricmp and strnicmp by our own q_strcasecmp and q_strncasecmp.
+    * bumped the version date stamp to 2014-10-10.
+
 2014-08-25 (SVN):
     * Revert Pa3PyX solution for cross-map demos, apply Baker's fix
       instead (http://forums.inside3d.com/viewtopic.php?f=3&t=2397).
