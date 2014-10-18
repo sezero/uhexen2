@@ -1729,7 +1729,7 @@ void	VID_Init (unsigned char *palette)
 void	VID_Shutdown (void)
 {
 	VID_ShutdownGamma();
-	SDL_Quit();
+	SDL_QuitSubSystem(SDL_INIT_VIDEO);
 }
 
 

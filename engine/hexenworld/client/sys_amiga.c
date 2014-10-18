@@ -392,6 +392,11 @@ static void Sys_Init (void)
 	timerio->tr_time.tv_micro = 1;
 	SendIO((struct IORequest *) timerio);
 	WaitIO((struct IORequest *) timerio);
+
+#if defined(SDLQUAKE)
+	if (SDL_Init(0) < 0)
+		Sys_Error("SDL failed to initialize.");
+#endif
 }
 
 static void Sys_AtExit (void)
@@ -411,6 +416,9 @@ static void Sys_AtExit (void)
 		DeleteMsgPort(timerport);
 		TimerBase = NULL;
 	}
+#if defined(SDLQUAKE)
+	SDL_Quit();
+#endif
 }
 
 void Sys_ErrorMessage(const char *string)

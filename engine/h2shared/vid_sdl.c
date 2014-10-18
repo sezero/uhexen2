@@ -842,7 +842,7 @@ void VID_Shutdown (void)
 			SDL_UnlockSurface (screen);
 
 		vid_initialized = 0;
-		SDL_Quit();
+		SDL_QuitSubSystem(SDL_INIT_VIDEO);
 	}
 }
 

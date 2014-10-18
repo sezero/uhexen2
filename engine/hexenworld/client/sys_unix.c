@@ -302,6 +302,17 @@ static void Sys_Init (void)
 {
 /* do we really need these with opengl ?? */
 	Sys_SetFPCW();
+#if defined(SDLQUAKE)
+	if (SDL_Init(0) < 0)
+		Sys_Error("SDL failed to initialize.");
+#endif
+}
+
+static void Sys_AtExit (void)
+{
+#if defined(SDLQUAKE)
+	SDL_Quit();
+#endif
 }
 
 
@@ -687,6 +698,7 @@ int main (int argc, char **argv)
 		Sys_Error ("Insufficient memory.\n");
 
 	Sys_Init ();
+	atexit (Sys_AtExit);
 
 	Host_Init();
 
