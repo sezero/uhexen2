@@ -5,6 +5,7 @@ Development Progress	:
 
 2014-10-20 (SVN):
     * fix issues on Windows systems with DPI scaling.
+    * bumped the version date stamp to 2014-10-20.
 
 2014-10-18 (SVN):
     * make sure that SDL_Quit() is called upon exit.
