@@ -206,6 +206,41 @@ void Sys_MakeCodeWriteable (unsigned long startaddr, unsigned long length)
 
 /*
 ================
+Sys_SetDPIAware
+================
+*/
+typedef enum { dpi_unaware = 0, dpi_system_aware = 1, dpi_monitor_aware = 2 } dpi_awareness;
+typedef BOOL(*SetProcessDPIAwareFunc)();
+typedef HRESULT(*SetProcessDPIAwarenessFunc)(dpi_awareness value);
+
+static void Sys_SetDPIAware (void)
+{
+	HMODULE hUser32, hShcore;
+	SetProcessDPIAwarenessFunc setDPIAwareness;
+	SetProcessDPIAwareFunc setDPIAware;
+
+	/* We do not handle the OS scaling our window. Call
+	 * SetProcessDpiAwareness() or SetProcessDPIAware()
+	 * to opt out of scaling.
+	 */
+	hShcore = LoadLibraryA ("Shcore.dll");
+	hUser32 = LoadLibraryA ("user32.dll");
+	setDPIAwareness = (SetProcessDPIAwarenessFunc) (hShcore ? GetProcAddress (hShcore, "SetProcessDpiAwareness") : NULL);
+	setDPIAware = (SetProcessDPIAwareFunc) (hUser32 ? GetProcAddress (hUser32, "SetProcessDPIAware") : NULL);
+
+	if (setDPIAwareness) /* Windows 8.1+ */
+		setDPIAwareness (dpi_monitor_aware);
+	else if (setDPIAware) /* Vista, Win7 or 8.0 */
+		setDPIAware ();
+
+	if (hShcore)
+		FreeLibrary (hShcore);
+	if (hUser32)
+		FreeLibrary (hUser32);
+}
+
+/*
+================
 Sys_Init
 ================
 */
@@ -241,6 +276,8 @@ static void Sys_Init (void)
 				Win95old = true;
 		}
 	}
+
+	Sys_SetDPIAware ();
 
 	timeBeginPeriod (1);	/* 1 ms timer precision */
 	starttime = timeGetTime ();

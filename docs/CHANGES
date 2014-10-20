@@ -3,6 +3,12 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2014-10-20 (SVN):
+    * fix issues on Windows systems with DPI scaling.
+
+2014-10-18 (SVN):
+    * make sure that SDL_Quit() is called upon exit.
+
 2014-10-10 (SVN):
     * engine/h2shared/common.c: override the stock djgpp versions of
       stricmp and strnicmp by our own q_strcasecmp and q_strncasecmp.

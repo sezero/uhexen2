@@ -24,7 +24,9 @@ Changes in v1.5.7: (Oct. 10, 2014.)
 
 - OpenGL: minor gamma updates.
 
-- cdaudio, windows: fixed the "-cddev" command line option.
+- Windows: Fix issues with DPI scaling.
+
+- Windows, CD audio: fixed the "-cddev" command line option.
 
 - Utils, hcc: Added a command line option "-os" to compact the strings
   heap by eliminating duplicates. some minor revisions.
@@ -33,8 +35,8 @@ Changes in v1.5.7: (Oct. 10, 2014.)
   switch: eliminates the majority of the ugly black patches from eidolon
   and rider2c maps. bump its version to 1.2.6.
 
-- external wal texture loading is now a compile time option, disabled
-  by default.
+- All platforms: External wal texture loading is now a compile time
+  option, disabled by default.
 
 - Several small fixes, tidy-ups, safeguards elsewhere in the sources.
 
