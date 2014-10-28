@@ -296,7 +296,7 @@ void VID_ShiftPalette (unsigned char *p)
 	VID_SetPalette(p);
 }
 
-static int VID_SetMode (int modenum, unsigned char *palette)
+static qboolean VID_SetMode (int modenum, unsigned char *palette)
 {
 	int	bsize, zsize, tsize;
 
@@ -304,7 +304,7 @@ static int VID_SetMode (int modenum, unsigned char *palette)
 	{
 		Cvar_SetValueQuick (&vid_mode, (float)current_mode);
 		Con_Printf("No such video mode: %d\n",modenum);
-		return -1;
+		return false;
 	}
 
 	Cvar_SetValueQuick (&vid_mode, (float)modenum);
@@ -377,7 +377,7 @@ static int VID_SetMode (int modenum, unsigned char *palette)
 	vga_setpage(0);
 	svgalib_inited = 1;
 
-	return 0;
+	return true;
 }
 
 /* backgrounding fixes (quakeforge) */
@@ -499,7 +499,7 @@ void VID_Init (unsigned char *palette)
 	}
 
 /* set vid parameters */
-	if (VID_SetMode(current_mode, palette) != 0)
+	if (!VID_SetMode (current_mode, palette))
 		Sys_Error ("Unable to set a video mode");
 
 	VID_SetPalette(palette);

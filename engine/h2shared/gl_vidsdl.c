@@ -403,7 +403,7 @@ float VID_ReportConsize(void)
 }
 
 
-static int VID_SetMode (int modenum)
+static qboolean VID_SetMode (int modenum)
 {
 	Uint32	flags;
 	int	i, is_fullscreen;
@@ -1756,7 +1756,7 @@ void VID_ToggleFullscreen (void)
 
 	// This doesn't seem to cause any trouble even
 	// with is_3dfx == true and FX_GLX_MESA == f
-	if ( SDL_WM_ToggleFullScreen(screen) == 1 )
+	if (SDL_WM_ToggleFullScreen(screen) == 1)
 	{
 		is_fullscreen = (screen->flags & SDL_FULLSCREEN) ? 1 : 0;
 		Cvar_SetValueQuick(&vid_config_fscr, is_fullscreen);

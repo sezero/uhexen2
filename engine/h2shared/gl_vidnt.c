@@ -476,7 +476,7 @@ static qboolean VID_SetFullDIBMode (int modenum)
 }
 
 
-static int VID_SetMode (int modenum, unsigned char *palette)
+static qboolean VID_SetMode (int modenum, unsigned char *palette)
 {
 	qboolean	status = false;
 	MSG		msg;

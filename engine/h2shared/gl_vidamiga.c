@@ -336,7 +336,7 @@ float VID_ReportConsize(void)
 }
 
 
-static int VID_SetMode (int modenum)
+static qboolean VID_SetMode (int modenum)
 {
 	ULONG flags;
 

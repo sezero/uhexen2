@@ -67,7 +67,7 @@ static void VID_DescribeCurrentMode_f (void);
 static void VID_DescribeMode_f (void);
 static void VID_DescribeModes_f (void);
 
-static int  VID_SetMode (int modenum, unsigned char *palette);
+static qboolean VID_SetMode (int modenum, unsigned char *palette);
 
 static byte	vid_current_palette[768];	/* save for mode changes */
 
@@ -206,7 +206,7 @@ static const char *VID_ModeInfo (int modenum, const char **ppheader)
 VID_SetMode
 ================
 */
-static int VID_SetMode (int modenum, unsigned char *palette)
+static qboolean VID_SetMode (int modenum, unsigned char *palette)
 {
 	int		status;
 	vmode_t	*pnewmode, *poldmode;
@@ -226,14 +226,14 @@ static int VID_SetMode (int modenum, unsigned char *palette)
 		}
 		else
 		{
-			return 0;
+			return false;
 		}
 	}
 
 	pnewmode = VID_GetModePtr (modenum);
 
 	if (pnewmode == pcurrentmode)
-		return 1;	// already in the desired mode
+		return true;	// already in the desired mode
 
 // initialize the new mode
 	poldmode = pcurrentmode;
@@ -255,7 +255,7 @@ static int VID_SetMode (int modenum, unsigned char *palette)
 				Sys_Error ("VID_SetMode: Unable to set any mode, probably "
 						   "because there's not enough memory available");
 			Con_Printf ("Failed to set mode %d\n", modenum);
-			return 0;
+			return false;
 		}
 		else if (status == -1)
 		{
@@ -265,7 +265,7 @@ static int VID_SetMode (int modenum, unsigned char *palette)
 			vid.height = pcurrentmode->height;
 			vid.aspect = pcurrentmode->aspect;
 			vid.rowbytes = pcurrentmode->rowbytes;
-			return 0;
+			return false;
 		}
 		else
 		{
@@ -284,7 +284,7 @@ static int VID_SetMode (int modenum, unsigned char *palette)
 
 	vid.recalc_refdef = 1;
 
-	return 1;
+	return true;
 }
 
 
@@ -293,7 +293,7 @@ static int VID_SetMode (int modenum, unsigned char *palette)
 VID_SetPalette
 ================
 */
-void    VID_SetPalette (unsigned char *palette)
+void VID_SetPalette (unsigned char *palette)
 {
 	if (palette != vid_current_palette)
 		memcpy(vid_current_palette, palette, 768);
@@ -306,9 +306,8 @@ void    VID_SetPalette (unsigned char *palette)
 VID_ShiftPalette
 ================
 */
-void    VID_ShiftPalette (unsigned char *palette)
+void VID_ShiftPalette (unsigned char *palette)
 {
-
 	VID_SetPalette (palette);
 }
 

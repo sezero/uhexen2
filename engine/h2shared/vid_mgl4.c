@@ -204,7 +204,7 @@ static byte	backingbuf[48*48];
 static void VID_MenuDraw (void);
 static void VID_MenuKey (int key);
 
-static int VID_SetMode (int modenum, unsigned char *palette);
+static qboolean VID_SetMode (int modenum, unsigned char *palette);
 static void AppActivate(BOOL fActive, BOOL minimize);
 static LRESULT WINAPI MainWndProc (HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 
@@ -330,7 +330,6 @@ VID_Windowed_f
 */
 static void VID_Windowed_f (void)
 {
-
 	VID_SetMode (vid_windowed_mode.integer, vid_curpal);
 }
 
@@ -342,7 +341,6 @@ VID_Fullscreen_f
 */
 static void VID_Fullscreen_f (void)
 {
-
 	VID_SetMode (vid_fullscreen_mode.integer, vid_curpal);
 }
 
@@ -1603,7 +1601,7 @@ static void VID_RestoreOldMode (int original_mode)
 	inerror = false;
 }
 
-static int VID_SetMode (int modenum, unsigned char *palette)
+static qboolean VID_SetMode (int modenum, unsigned char *palette)
 {
 	int		original_mode, temp;
 	qboolean	status;
@@ -1628,7 +1626,7 @@ static int VID_SetMode (int modenum, unsigned char *palette)
 		else
 		{
 			Cvar_SetValueQuick (&vid_mode, (float)vid_modenum);
-			return 0;
+			return false;
 		}
 	}
 

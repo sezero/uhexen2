@@ -127,7 +127,7 @@ static vmode_t	fmodelist[MAX_MODE_LIST+1];	// list of enumerated fullscreen mode
 static vmode_t	wmodelist[MAX_STDMODES +1];	// list of standart 4:3 windowed modes
 static vmode_t	*modelist;	// modelist in use, points to one of the above lists
 
-static int VID_SetMode (int modenum, unsigned char *palette);
+static qboolean VID_SetMode (int modenum, unsigned char *palette);
 
 static void VID_MenuDraw (void);
 static void VID_MenuKey (int key);
@@ -507,7 +507,7 @@ static void VID_ShowInfo_f (void)
 			vid_info->vfmt->Rloss, vid_info->vfmt->Gloss, vid_info->vfmt->Bloss);
 }
 
-static int VID_SetMode (int modenum, unsigned char *palette)
+static qboolean VID_SetMode (int modenum, unsigned char *palette)
 {
 	Uint32 flags;
 	int	is_fullscreen;
@@ -571,7 +571,7 @@ static int VID_SetMode (int modenum, unsigned char *palette)
 //
 static void VID_ChangeVideoMode (int newmode)
 {
-	int		status, temp;
+	int		temp;
 
 	if (!screen)
 		return;
@@ -582,8 +582,7 @@ static void VID_ChangeVideoMode (int newmode)
 	BGM_Pause ();
 	S_ClearBuffer ();
 
-	status = VID_SetMode (newmode, vid_curpal);
-	if (!status)
+	if (!VID_SetMode (newmode, vid_curpal))
 	{
 		if (vid_modenum == newmode)
 			Sys_Error ("Couldn't set video mode: %s", SDL_GetError());
@@ -591,8 +590,7 @@ static void VID_ChangeVideoMode (int newmode)
 		// failed setting mode, probably due to insufficient
 		// memory. go back to previous mode.
 		Cvar_SetValueQuick (&vid_mode, vid_modenum);
-		status = VID_SetMode (vid_modenum, vid_curpal);
-		if (!status)
+		if (!VID_SetMode (vid_modenum, vid_curpal))
 			Sys_Error ("Couldn't set video mode: %s", SDL_GetError());
 	}
 
@@ -806,8 +804,7 @@ void VID_Init (unsigned char *palette)
 	vid.colormap = host_colormap;
 	vid.fullbright = 256 - LittleLong (*((int *)vid.colormap + 2048));
 
-	i = VID_SetMode(vid_mode.integer, palette);
-	if ( !i )
+	if (!VID_SetMode(vid_mode.integer, palette))
 	{
 		if (vid_mode.integer == vid_default)
 			Sys_Error ("Couldn't set video mode: %s", SDL_GetError());
@@ -817,8 +814,7 @@ void VID_Init (unsigned char *palette)
 				"Trying the default mode\n", vid_mode.integer);
 		//Cvar_SetQuick (&vid_config_fscr, "0");
 		Cvar_SetValueQuick (&vid_mode, vid_default);
-		i = VID_SetMode(vid_default, palette);
-		if ( !i )
+		if (!VID_SetMode(vid_default, palette))
 			Sys_Error ("Couldn't set video mode: %s", SDL_GetError());
 	}
 
@@ -978,12 +974,10 @@ void D_ShowLoadingSize (void)
 	}
 	else
 	{
-
 		vid.buffer = (byte *)screen->pixels;
 		vid.rowbytes = screen->pitch;
 
 		SCR_DrawLoading();
-
 	}
 
 	vid = save_vid;
@@ -1059,7 +1053,7 @@ void VID_ToggleFullscreen (void)
 
 	S_ClearBuffer ();
 
-	if ( SDL_WM_ToggleFullScreen(screen) == 1 )
+	if (SDL_WM_ToggleFullScreen(screen) == 1)
 	{
 		is_fullscreen = (screen->flags & SDL_FULLSCREEN) ? 1 : 0;
 		Cvar_SetValueQuick(&vid_config_fscr, is_fullscreen);
