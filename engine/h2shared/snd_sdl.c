@@ -85,7 +85,7 @@ static qboolean S_SDL_Init (dma_t *dma)
 	int		tmp, val;
 	char	drivername[128];
 
-	if (SDL_InitSubSystem(SDL_INIT_AUDIO) == -1)
+	if (SDL_InitSubSystem(SDL_INIT_AUDIO) < 0)
 	{
 		Con_Printf("Couldn't init SDL audio: %s\n", SDL_GetError());
 		return false;

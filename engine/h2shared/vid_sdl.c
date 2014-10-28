@@ -715,10 +715,10 @@ void VID_Init (unsigned char *palette)
 
 	// init sdl
 	// the first check is actually unnecessary
-	if ( (SDL_WasInit(SDL_INIT_VIDEO)) == 0 )
+	if ((SDL_WasInit(SDL_INIT_VIDEO)) == 0)
 	{
-		if (SDL_Init(SDL_INIT_VIDEO) == -1)
-			Sys_Error("VID: Couldn't load SDL: %s", SDL_GetError());
+		if (SDL_InitSubSystem(SDL_INIT_VIDEO) < 0)
+			Sys_Error("Couldn't init video: %s", SDL_GetError());
 	}
 
 	// this will contain the "best bpp" for the current display

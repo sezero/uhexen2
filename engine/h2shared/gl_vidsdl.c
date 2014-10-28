@@ -1215,7 +1215,7 @@ static void VID_ChangeVideoMode (int newmode)
 	SDL_QuitSubSystem(SDL_INIT_VIDEO);	// also unloads the opengl driver
 
 	// re-init sdl_video, set the mode and re-init opengl
-	if (SDL_Init(SDL_INIT_VIDEO) == -1)
+	if (SDL_InitSubSystem(SDL_INIT_VIDEO) < 0)
 		Sys_Error ("Couldn't init video: %s", SDL_GetError());
 #ifdef GL_DLSYM
 	if (!GL_OpenLibrary(gl_library))
@@ -1552,9 +1552,9 @@ void	VID_Init (unsigned char *palette)
 
 	// init sdl
 	// the first check is actually unnecessary
-	if ( (SDL_WasInit(SDL_INIT_VIDEO)) == 0 )
+	if ((SDL_WasInit(SDL_INIT_VIDEO)) == 0)
 	{
-		if (SDL_Init(SDL_INIT_VIDEO) == -1)
+		if (SDL_InitSubSystem(SDL_INIT_VIDEO) < 0)
 			Sys_Error ("Couldn't init video: %s", SDL_GetError());
 	}
 
