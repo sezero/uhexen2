@@ -657,11 +657,18 @@ LINK_GL_LIBS=yes
 
 USE_CODEC_FLAC=no
 USE_CODEC_VORBIS=yes
-USE_CODEC_MP3=no
+USE_CODEC_MP3=yes
 USE_CODEC_OPUS=no
 USE_CODEC_MIKMOD=no
 USE_CODEC_MODPLUG=no
 USE_CODEC_UMX=no
+
+ifeq ($(USE_CODEC_MP3),yes)
+CODEC_INC = -I$(OSLIBS)/morphos/codecs/include
+CODEC_LINK= -L$(OSLIBS)/morphos/codecs/lib
+endif
+INCLUDES += $(CODEC_INC)
+LDFLAGS += $(CODEC_LINK)
 
 ifeq ($(USE_SOUND),yes)
 ifneq ($(USE_SDLAUDIO),yes)
