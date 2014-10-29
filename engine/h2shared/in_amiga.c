@@ -29,6 +29,7 @@
 #endif
 #include <libraries/lowlevel.h>
 #include <intuition/intuition.h>
+#include <proto/alib.h>
 #include <proto/intuition.h>
 #include <proto/exec.h>
 #include <proto/keymap.h>

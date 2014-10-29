@@ -61,7 +61,7 @@ static int ovc_fseek (void *f, ogg_int64_t off, int whence)
 	return FS_fseek((fshandle_t *)f, (long) off, whence);
 }
 
-static const ov_callbacks ovc_qfs =
+static ov_callbacks ovc_qfs =
 {
 	(size_t (*)(void *, size_t, size_t, void *))	FS_fread,
 	(int (*)(void *, ogg_int64_t, int))		ovc_fseek,
@@ -73,9 +73,8 @@ static const ov_callbacks ovc_qfs =
 #define OV_OPEN_CALLBACKS		ov_open_callbacks
 #else
 struct Library *VorbisFileBase;
-/* AFAIK, no other Amiga variant but MorphOS has vorbisfile.library, and
- * that one has a nasty ov_open_callbacks() api change where the function
- * accepts not an ov_callbacks but an ov_callbacks pointer as last parm: */
+/* MorphOS vorbisfile.library has an ov_open_callbacks() api
+ * change to accept an ov_callbacks pointer as its last parm */
 #define OV_OPEN_CALLBACKS(S,F,I,IB,CB)	ov_open_callbacks(S,F,I,IB,&CB)
 #endif	/* __MORPHOS__ */
 

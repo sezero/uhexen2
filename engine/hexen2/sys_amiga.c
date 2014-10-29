@@ -120,7 +120,7 @@ long Sys_filesize (const char *path)
 {
 	long size = -1;
 	BPTR fh = Open((const STRPTR) path, MODE_OLDFILE);
-	if (fh != NULL)
+	if (fh)
 	{
 		struct FileInfoBlock *fib = (struct FileInfoBlock*)
 					AllocDosObject(DOS_FIB, NULL);
@@ -139,7 +139,7 @@ int Sys_FileType (const char *path)
 {
 	int type = FS_ENT_NONE;
 	BPTR fh = Open((const STRPTR) path, MODE_OLDFILE);
-	if (fh != NULL)
+	if (fh)
 	{
 		struct FileInfoBlock *fib = (struct FileInfoBlock*)
 					AllocDosObject(DOS_FIB, NULL);
@@ -324,12 +324,12 @@ const char *Sys_FindNextFile (void)
 
 void Sys_FindClose (void)
 {
-	if (apath == NULL)
+	if (!apath)
 		return;
 	MatchEnd(apath);
 	FreeVec(apath);
 	UnLock(CurrentDir(oldcurrentdir));
-	oldcurrentdir = NULL;
+	oldcurrentdir = 0;
 	apath = NULL;
 	Z_Free(pattern_str);
 	pattern_str = NULL;

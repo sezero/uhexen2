@@ -380,7 +380,7 @@ void Q_FindClose (void)
 	MatchEnd(apath);
 	FreeVec(apath);
 	UnLock(CurrentDir(oldcurrentdir));
-	oldcurrentdir = NULL;
+	oldcurrentdir = 0;
 	apath = NULL;
 	free (pattern_str);
 	pattern_str = NULL;
@@ -443,7 +443,7 @@ long Q_filesize (const char *path)
 {
 	long size = -1;
 	BPTR fh = Open((const STRPTR) path, MODE_OLDFILE);
-	if (fh != NULL)
+	if (fh)
 	{
 		struct FileInfoBlock *fib = (struct FileInfoBlock*)
 					AllocDosObject(DOS_FIB, NULL);
@@ -462,7 +462,7 @@ int Q_FileType (const char *path)
 {
 	int type = FS_ENT_NONE;
 	BPTR fh = Open((const STRPTR) path, MODE_OLDFILE);
-	if (fh != NULL)
+	if (fh)
 	{
 		struct FileInfoBlock *fib = (struct FileInfoBlock*)
 					AllocDosObject(DOS_FIB, NULL);
