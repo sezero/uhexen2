@@ -43,7 +43,7 @@
 // !!! if this is changed, it must be changed in d_ifacea.h too !!!
 #define CACHE_SIZE	32	// used to align key data structures
 
-#define UNUSED(x)	(x = x)	// for pesky compiler / lint warnings
+#define Q_UNUSED(x)	(x = x)	// for pesky compiler / lint warnings
 
 #define	MINIMUM_MEMORY	0x550000
 #define	MINIMUM_MEMORY_LEVELPAK	(MINIMUM_MEMORY + 0x100000)

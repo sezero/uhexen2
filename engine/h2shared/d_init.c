@@ -58,7 +58,6 @@ void D_Init (void)
 	r_aliasuvscale = 1.0;
 }
 
-
 /*
 ===============
 D_CopyRects
@@ -71,10 +70,9 @@ void D_CopyRects (vrect_t *prects, int transparent)
 // doesn't support and requires Quake to do in software (such as drawing the
 // console); Quake will then draw into wherever the driver points vid.buffer
 // and will call this function before swapping buffers
-	UNUSED(prects);
-	UNUSED(transparent);
+	Q_UNUSED(prects);
+	Q_UNUSED(transparent);
 }
-
 
 /*
 ===============
@@ -86,7 +84,6 @@ void D_EnableBackBufferAccess (void)
 	VID_LockBuffer ();
 }
 
-
 /*
 ===============
 D_TurnZOn
@@ -97,7 +94,6 @@ void D_TurnZOn (void)
 // not needed for software version
 }
 
-
 /*
 ===============
 D_DisableBackBufferAccess
@@ -107,7 +103,6 @@ void D_DisableBackBufferAccess (void)
 {
 	VID_UnlockBuffer ();
 }
-
 
 /*
 ===============
@@ -152,7 +147,6 @@ void D_SetupFrame (void)
 	d_aflatcolor = 0;
 }
 
-
 /*
 ===============
 D_UpdateRects
@@ -161,6 +155,6 @@ D_UpdateRects
 void D_UpdateRects (vrect_t *prect)
 {
 // the software driver draws these directly to the vid buffer
-	UNUSED(prect);
+	Q_UNUSED(prect);
 }
 

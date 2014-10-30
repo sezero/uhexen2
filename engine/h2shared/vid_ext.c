@@ -178,8 +178,8 @@ static void VID_SetVESAPalette (viddef_t *lvid, vmode_t *pcurrentmode, unsigned 
 	int		i;
 	byte	*pp;
 
-	UNUSED(lvid);
-	UNUSED(pcurrentmode);
+	Q_UNUSED(lvid);
+	Q_UNUSED(pcurrentmode);
 
 	pp = ppal;
 
@@ -727,8 +727,8 @@ static void VID_ExtraSwapBuffers (viddef_t *lvid, vmode_t *pcurrentmode,
 {
 	int	pageoffset;
 
-	UNUSED(rects);
-	UNUSED(pcurrentmode);
+	Q_UNUSED(rects);
+	Q_UNUSED(pcurrentmode);
 
 	pageoffset = VID_pagelist[VID_currentpage];
 

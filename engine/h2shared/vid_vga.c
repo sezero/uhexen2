@@ -418,8 +418,8 @@ static void VGA_SetPalette (viddef_t *lvid, vmode_t *pcurrentmode, unsigned char
 	int	shiftcomponents = 2;
 	int	i;
 
-	UNUSED(lvid);
-	UNUSED(pcurrentmode);
+	Q_UNUSED(lvid);
+	Q_UNUSED(pcurrentmode);
 
 	dos_outportb(0x3c8, 0);
 	for (i = 0; i < 768; i++)
@@ -494,7 +494,7 @@ VGA_SwapBuffersCopy
 */
 static void VGA_SwapBuffersCopy (viddef_t *lvid, vmode_t *pcurrentmode, vrect_t *rects)
 {
-	UNUSED(pcurrentmode);
+	Q_UNUSED(pcurrentmode);
 
 // TODO: can write a dword at a time
 // TODO: put in ASM
