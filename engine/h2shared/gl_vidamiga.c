@@ -1011,7 +1011,8 @@ static void VID_ChangeVideoMode (int newmode)
 	IN_DeactivateMouse();
 	//IN_ShowMouse ();
 
-	VID_SetMode (newmode);
+	if (!VID_SetMode (newmode))
+		Sys_Error ("Couldn't set video mode");
 
 	// Reload graphics wad file (Draw_PicFromWad writes glpic_t data (sizes,
 	// texnums) right on top of the original pic data, so the pic data will
@@ -1355,7 +1356,8 @@ void	VID_Init (unsigned char *palette)
 	temp = scr_disabled_for_loading;
 	scr_disabled_for_loading = true;
 	//set the mode
-	VID_SetMode (vid_mode.integer);
+	if (!VID_SetMode (vid_mode.integer))
+		Sys_Error ("Couldn't set video mode");
 	ClearAllStates ();
 
 	GL_SetupLightmapFmt();
