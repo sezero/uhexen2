@@ -193,7 +193,7 @@ static qboolean S_AHI_Init(dma_t *dma)
 										AHIP_Vol, 0x10000,
 										AHIP_Pan, 0x8000,
 										AHIP_Sound, 0,
-										AHIP_EndChannel, NULL,
+										AHIP_EndChannel, 0,
 										TAG_END);
 
 									ad->aci.aeci.ahie_Effect = AHIET_CHANNELINFO;
@@ -204,9 +204,7 @@ static qboolean S_AHI_Init(dma_t *dma)
 									ad->EffectHook.h_Data = ad;
 									AHI_SetEffect(&ad->aci, ad->audioctrl);
 
-									Con_Printf("Using AHI mode \"%s\" for audio output\n", modename);
-									Con_Printf("Channels: %ld bits: %ld frequency: %ld\n", channels, bits, speed);
-
+									Con_Printf("Using AHI mode \"%s\"\n", modename);
 									return true;
 								}
 							}
