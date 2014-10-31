@@ -21,6 +21,10 @@
 #include <GL/gl.h>
 #endif
 
+#ifndef APIENTRY
+#define	APIENTRY
+#endif
+
 /* include our function pointers */
 #include "gl_func.h"
 
