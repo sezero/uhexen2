@@ -6,6 +6,7 @@ Development Progress	:
 2014-11-22 (SVN):
     * gl_screen.c (SCR_ScreenShot_f): make sure we don't Sys_Error()
       due to buffer allocation failures.
+    * bumped the version date stamp to 2014-11-22.
 
 2014-10-20 (SVN):
     * fix issues on Windows systems with DPI scaling.
