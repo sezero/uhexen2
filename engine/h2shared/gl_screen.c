@@ -827,7 +827,7 @@ static void SCR_ScreenShot_f (void)
 	char	pcxname[80];
 	char	checkname[MAX_OSPATH];
 	int	i, size, temp;
-	int	mark;
+	qboolean	freebuf = false;
 	byte	*buffer;
 
 	FS_MakePath_BUF (FS_USERDIR, NULL, checkname, sizeof(checkname), "shots");
@@ -849,8 +849,15 @@ static void SCR_ScreenShot_f (void)
 	}
 
 	size = glwidth * glheight * 3 + 18;
-	mark = Hunk_LowMark();
-	buffer = (byte *) Hunk_AllocName(size, "buffer_sshot");
+	buffer = (byte *) Hunk_TempAlloc(size);
+	if (!buffer) {
+		buffer = (byte *) malloc(size);
+		if (!buffer) {
+			Con_Printf("%s: not enough memory\n", __thisfunc__);
+			return;
+		}
+		freebuf = true;
+	}
 	memset (buffer, 0, 18);
 	buffer[2] = 2;		// uncompressed type
 	buffer[12] = glwidth & 255;
@@ -872,7 +879,7 @@ static void SCR_ScreenShot_f (void)
 
 	i = FS_WriteFile (pcxname, buffer, size);
 
-	Hunk_FreeToLowMark(mark);
+	if (freebuf) free(buffer);
 
 	if (i == 0)
 		Con_Printf ("Wrote %s\n", pcxname);
