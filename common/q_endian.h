@@ -1,9 +1,8 @@
-/*
- * q_endian.h -- endianness handling
+/* q_endian.h -- endianness handling
  * $Id$
  *
  * Copyright (C) 1996-1997  Id Software, Inc.
- * Copyright (C) 2007-2011  O.Sezer <sezero@users.sourceforge.net>
+ * Copyright (C) 2007-2014  O.Sezer <sezero@users.sourceforge.net>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -176,6 +175,13 @@
 # define ENDIAN_ASSUMED_UNSAFE		BYTE_ORDER
 
 #endif	/* fallback. */
+
+
+/* for autotools compatibility */
+#undef WORDS_BIGENDIAN
+#if (BYTE_ORDER == BIG_ENDIAN)
+#	define WORDS_BIGENDIAN	1
+#endif
 
 
 extern int	host_byteorder;

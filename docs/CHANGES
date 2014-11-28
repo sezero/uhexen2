@@ -3,6 +3,9 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2014-11-28 (SVN):
+    * q_endian.h: add WORDS_BIGENDIAN macro for autotools compatibility.
+
 2014-11-22 (SVN):
     * gl_screen.c (SCR_ScreenShot_f): make sure we don't Sys_Error()
       due to buffer allocation failures.
