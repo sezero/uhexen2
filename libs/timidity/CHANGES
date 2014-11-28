@@ -1,5 +1,14 @@
-Changes by uHexen2 since libtimidity-0.1.0:
--------------------------------------------
+uHexen2-specific changes:
+-----------------------------
+
+* read_meta_data(), api change: removed altogether. metadata is no
+  longer stored in the song. text stuff are either skipped or printed
+  to stderr if the library is compiled with TIMIDITY_DEBUG defined.
+
+------------------------------------------------------------------------
+
+Changes by libtimidity-0.2.0:
+-----------------------------
 
 * stream.c, api change: added mid_istream_seek and mid_istream_tell to
   the mid_istream_* api. added seek and tell funcs to the _MidIStream
@@ -9,10 +18,6 @@ Changes by uHexen2 since libtimidity-0.1.0:
 * MidSongOptions, api change: added an uint8 width member just after
   channels (not used yet, but serves as a padding at least.) added an
   uint16 reserved padding member just after buffer_size.
-
-* read_meta_data(), api change: removed altogether. metadata is no
-  longer stored in the song. text stuff are either skipped or printed
-  to stderr if the library is compiled with TIMIDITY_DEBUG defined.
 
 * safe_malloc(): made it actually safe, relying on setjmp and longjmp
   using a jmp_buf private to timidity. it does a longjmp() upon failure
@@ -49,6 +54,8 @@ Changes by uHexen2 since libtimidity-0.1.0:
 
 * read_config_file(): honor the return code from a recursive call.
 
+* mid_get_version(): new function to retrieve library version.
+
 * DLS instruments support: made it a config time option, disabled by
   default, because the code isn't good enough, neither is it used in
   unix installations where timidity is normally needed.
@@ -58,6 +65,9 @@ Changes by uHexen2 since libtimidity-0.1.0:
 
 * renamed macro FSCALE to TIM_FSCALE to avoid possible clashes with
   system headers. renamed FSCALENEG to TIM_FSCALENEG for consistency.
+
+* support for elf and macho symbol visibility attributes. support for
+  windows dllexport/dllimport attributes.
 
 * build: changed DEBUG to TIMIDITY_DEBUG for DEBUG_MSG. made to compile
   cleanly using newer gcc versions, as well as clang. made it to compile
@@ -190,3 +200,4 @@ changes of my own, e.g.:
 	Timidity_LoadDLS(), Timidity_FreeDLS(), Timidity_LoadDLSSong()
 
 * Added Timidity_Init_NoConfig()
+

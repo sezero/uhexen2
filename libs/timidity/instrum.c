@@ -22,8 +22,8 @@
  * Code to load and unload GUS-compatible instrument patches.
  */
 
-#if HAVE_CONFIG_H
-#  include <config.h>
+#ifdef HAVE_CONFIG_H
+#include "config.h"
 #endif
 
 #ifdef HAVE_SYS_PARAM_H
@@ -409,7 +409,7 @@ static void load_instrument(MidSong *song, const char *name,
 	  free(sp->data);
 	  sp->data = (sample_t *)new16;
 	}
-#if (BYTE_ORDER != LITTLE_ENDIAN)/* defined(WORDS_BIGENDIAN)*/
+#if defined(WORDS_BIGENDIAN)
       else
 	/* convert to machine byte order */
 	{

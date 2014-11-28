@@ -18,8 +18,8 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-#if HAVE_CONFIG_H
-#  include <config.h>
+#ifdef HAVE_CONFIG_H
+#include "config.h"
 #endif
 
 #include <stdio.h>
@@ -74,7 +74,7 @@ static int read_meta_data(MidIStream *stream, MidSong *song, sint32 len, uint8 t
 
   if (len != (sint32) mid_istream_read(stream, s, 1, len))
     {
-      free(s);
+      safe_free(s);
       return -1;
     }
   s[len]='\0';
@@ -84,7 +84,7 @@ static int read_meta_data(MidIStream *stream, MidSong *song, sint32 len, uint8 t
 	s[len]='.';
     }
   DEBUG_MSG("%s%s\n", label[(type > 7) ? 0 : type], s);
-  free(s);
+  safe_free(s);
   return 0;
 #else
   return mid_istream_skip(stream, len);

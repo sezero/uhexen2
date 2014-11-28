@@ -10,3 +10,8 @@ from MIDI song.
 
 If you have propositions regarding development of this library please
 mail to me <lostclus@ua.fm>
+
+This is a fork of the original libTiMidity project:
+https://github.com/sezero/libtimidity/
+You can contact me <sezero at users.sourceforge.net> if you have any
+questions or suggestions about this forked version of libtimidity.

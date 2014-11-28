@@ -6,3 +6,6 @@
 
 * Konstantin Korikov <lostclus@ua.fm>
   make a separate library from SDL_sound MIDI decoder.
+
+* Ozkan Sezer <sezero@users.sourceforge.net>
+  fork and clean-up/fix/improve over original libtimidity-0.1.0.

@@ -18,8 +18,8 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-#if HAVE_CONFIG_H
-#  include <config.h>
+#ifdef HAVE_CONFIG_H
+#include "config.h"
 #endif
 
 #ifdef HAVE_SYS_PARAM_H
@@ -655,3 +655,9 @@ void mid_exit(void)
 
   free_pathlist();
 }
+
+long mid_get_version (void)
+{
+  return LIBTIMIDITY_VERSION;
+}
+

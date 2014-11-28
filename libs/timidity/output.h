@@ -45,7 +45,7 @@ extern void s32tos16x(void *dp, sint32 *lp, sint32 c);
 extern void s32tou16x(void *dp, sint32 *lp, sint32 c);
 
 /* little-endian and big-endian specific */
-#if (BYTE_ORDER == LITTLE_ENDIAN)/* !defined(WORDS_BIGENDIAN)*/
+#if !defined(WORDS_BIGENDIAN)
 #define s32tou16l s32tou16
 #define s32tou16b s32tou16x
 #define s32tos16l s32tos16

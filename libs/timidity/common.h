@@ -35,11 +35,6 @@ extern void free_pathlist(void);
 extern jmp_buf malloc_env;
 /* safe_malloc() returns cleared mem, longjmp() on error */
 extern void *safe_malloc(size_t count);
-
-#ifndef CANT_FREE_NULL
-#define safe_free free
-#else
-#define safe_free(_X) if((_X)) free((_X))
-#endif
+#define safe_free(_Memp) free((_Memp))
 
 #endif /* TIMIDITY_COMMON_H */

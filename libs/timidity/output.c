@@ -21,8 +21,8 @@
  * Audio output (to file / device) functions.
  */
 
-#if HAVE_CONFIG_H
-#  include <config.h>
+#ifdef HAVE_CONFIG_H
+#include "config.h"
 #endif
 
 #include "timidity.h"

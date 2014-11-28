@@ -24,7 +24,9 @@
 #include "timidity.h"
 #include "options.h"
 
-#include "q_endian.h" /* uhexen2 header for BYTE_ORDER */
+#ifndef HAVE_CONFIG_H
+#include "q_endian.h" /* "timi_endian.h" */
+#endif
 
 /* Instrument files are little-endian, MIDI files big-endian, so we
    need to do some conversions. */
@@ -41,7 +43,7 @@
 		      (((x)>>24)&0xFF))
 #endif
 
-#if (BYTE_ORDER == LITTLE_ENDIAN) /*# !defined(WORDS_BIGENDIAN)*/
+#if !defined(WORDS_BIGENDIAN)
 #define SWAPLE16(x) x
 #define SWAPLE32(x) x
 #define SWAPBE16(x) XCHG_SHORT(x)
