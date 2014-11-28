@@ -7,6 +7,11 @@ Development Progress	:
     * q_endian.h: add WORDS_BIGENDIAN macro for autotools compatibility.
     * libs, timidity: sync with libTiMidity fork at
       https://github.com/sezero/libtimidity/
+    * bumped the version date stamp to 2014-10-28.
+
+2014-11-21/27 (SVN):
+    * oslibs (macosx, windows): recompiled the FLAC decoder with
+      CVE-2014-8962 and CVE-2014-9028 fixes applied from mainstream.
 
 2014-11-22 (SVN):
     * gl_screen.c (SCR_ScreenShot_f): make sure we don't Sys_Error()
