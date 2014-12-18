@@ -25,6 +25,7 @@
 #include <stdio.h>
 
 #include "timidity.h"
+#include "timidity_internal.h"
 #include "tables.h"
 
 const sint32 freq_table[128]=

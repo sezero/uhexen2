@@ -30,6 +30,7 @@
 #include "timidity_internal.h"
 #include "common.h"
 #include "instrum.h"
+#include "readmidi.h"
 #include "playmidi.h"
 
 /* Computes how many (fractional) samples one MIDI delta-time unit contains */
@@ -68,7 +69,7 @@ static int read_meta_data(MidIStream *stream, MidSong *song, sint32 len, uint8 t
 #ifdef TIMIDITY_DEBUG
   static const char *label[] = {
     "Text event: ", "Text: ", "Copyright: ", "Track name: ",
-    "Instrument: ", "Lyric: ", "Marker: ", "Cue point: "};
+    "Instrument: ", "Lyric: ", "Marker: ", "Cue point: " };
 
   char *s = (char *)safe_malloc(len+1);
 
