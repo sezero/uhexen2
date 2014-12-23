@@ -1,0 +1,25 @@
+# $Id: cross_defs.w64 4681 2012-05-21 17:21:58Z sezero $
+#
+# This file contains all common Win64 cross compilation definitions for
+# use with all other build_cross_morphos.sh scripts for the uhexen2 tree.
+#
+# Change this script to meet your needs and/or environment.
+
+TARGET=ppc-morphos
+# morphos [cross-]compiler specifically requires to be located under /gg
+PREFIX=/gg
+
+PATH="$PREFIX/bin:$PATH"
+export PATH
+
+MOSBUILD=1
+
+CC="$TARGET-gcc"
+AS="$TARGET-as"
+RANLIB="$TARGET-ranlib"
+AR="$TARGET-ar"
+
+export CC AS RANLIB AR MOSBUILD
+
+STRIPPER="$TARGET-strip"
+

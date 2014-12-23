@@ -22,7 +22,7 @@ HOST_OS0=$(shell uname)
 HOST_OS =$(shell uname|sed -e s/_.*//|tr '[:upper:]' '[:lower:]')
 
 # NOTE:	We only support these types of cross compilation:
-#	Compiling for windows, dos (djgpp) or osx on unix.
+#	Compile for windows, dos (djgpp), osx or morphos on unix.
 #	This means, unless cross compiling, the actual
 #	TARGET_OS remains as the HOST_OS.
 
@@ -79,6 +79,11 @@ ifdef OSXBUILD
 CROSS_COMPILE=y
 TARGET_OS=darwin
 endif
+ifdef MOSBUILD
+# cross compilation for morphos
+CROSS_COMPILE=y
+TARGET_OS=morphos
+endif
 ifeq ($(CROSS_COMPILE),n)
 # compiling for the host os.
 ifneq (,$(findstring darwin,$(HOST_OS)))
@@ -99,6 +104,9 @@ ifeq ($(TARGET_OS),darwin)
 ifeq ($(CROSS_COMPILE),n)
 MACH_TYPE=$(shell sh $(UHEXEN2_TOP)/scripts/detect.sh arch)
 endif
+endif
+ifeq ($(TARGET_OS),morphos)
+MACH_TYPE=ppc
 endif
 ifeq ($(TARGET_OS),dos)
 MACH_TYPE=x86
@@ -121,6 +129,7 @@ endif
 ifneq (,$(findstring morphos,$(HOST_OS)))
 HOST_OS  =morphos
 TARGET_OS=morphos
+MACH_TYPE=ppc
 CROSS_COMPILE=n
 endif
 
