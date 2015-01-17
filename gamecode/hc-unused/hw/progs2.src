@@ -1,0 +1,137 @@
+
+/*
+ * $Header$
+ */
+
+progs2.dat
+
+global.hc
+entity.hc
+constant.hc
+builtin.hc
+proto.hc
+
+math.hc
+strings.hc
+spawn.hc
+chunk.hc
+
+sound.hc
+fx.hc
+plaque.hc
+camera.hc
+
+subs.hc
+fight.hc
+path.hc
+ai2.hc
+projbhvr.hc		// Miscellaneous Projectile Behaviour(homing, spiral, spread, etc)
+ravenai.hc
+MG_AI.hc		//New AI routines
+waypoint.hc
+altdeath.hc
+damage.hc
+combat.hc
+
+artifact.hc		// Artifacts, items, and rings
+items.hc
+//cube.hc
+newcube.hc
+invntory.hc
+rings.hc
+wp_art.hc
+
+// Objects
+object.hc
+barrel.hc
+light.hc
+lightning.hc
+breakabl.hc
+soul.hc
+
+explode.hc		//explosions, weapons.hc was checked out
+
+gauntlet.hc		// Paladin Weapons
+vorpal.hc
+axe.hc
+purifier.hc
+
+warhamer.hc		// Crusader weapons
+icemace.hc
+meteor.hc
+sunstaff.hc
+
+sickle.hc		// Necromancer weapons
+magicmis.hc
+boner.hc
+ravenstf.hc
+
+punchdgr.hc		// Assassin weapons
+assgren.hc
+crossbow.hc
+setstaff.hc
+
+weapons.hc
+tripmine.hc		// UQ tripmines
+
+impulse.hc
+weather.hc
+
+precache.hc
+world.hc
+head.hc
+corpse.hc
+allplay.hc
+specials.hc
+client.hc
+spectate.hc
+monsters.hc
+doors.hc
+buttons.hc
+triggers.hc
+cat2.hc
+quake.hc
+plats.hc
+misc.hc
+torch.hc
+
+//assassin.hc		// Player models
+//paladin.hc
+//crusader.hc
+//necro.hc
+newplay.hc
+setmodth.hc
+
+fish.hc
+sheep.hc
+raven.hc
+rat.hc
+snake.hc
+
+fireball.hc		// Imp stuff
+shardice.hc
+mummy.hc
+imp.hc
+//spider.hc
+//scorpion.hc
+//golem.hc
+//skullwiz.hc
+//medusa.hc
+//mezzoman.hc
+//archer.hc
+//spit.hc			// Hydra stuff
+//hydra.hc
+//faspell.hc      // Fallen angel stuff
+//fablade.hc
+//fangel.hc
+
+eric.hc
+
+rider.hc
+pstboar.hc
+famhorse.hc
+warhorse.hc
+dthhorse.hc
+eidolon.hc
+
+stats.hc
