@@ -1,5 +1,6 @@
 /* Hacked from DJGPP v2.04 for use with older DJGPP versions */
 
+/* Copyright (C) 2014 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2013 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2003 DJ Delorie, see COPYING.DJ for details */
 /* Copyright (C) 2002 DJ Delorie, see COPYING.DJ for details */
@@ -25,8 +26,8 @@ typedef signed int int_least32_t;
 typedef unsigned int uint_least32_t;
 typedef signed int int_fast32_t;
 typedef unsigned int uint_fast32_t;
-typedef signed int int32_t;
-typedef unsigned int uint32_t;
+typedef signed long int int32_t;
+typedef unsigned long int uint32_t;
 
 __extension__ typedef signed long long int int_least64_t;
 __extension__ typedef unsigned long long int uint_least64_t;

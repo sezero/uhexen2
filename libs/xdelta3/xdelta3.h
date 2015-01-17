@@ -113,8 +113,8 @@ typedef uint64_t xoff_t;
 typedef uint32_t xoff_t;
 #define SIZEOF_XOFF_T 4
 #define SIZEOF_USIZE_T 4
-#if defined(__DJGPP__) && (0)
-#define Q "l"	/* djgpp uint32_t USED TO BE unsigned long */
+#ifdef __DJGPP__
+#define Q "l"	/* djgpp uint32_t is unsigned long */
 #else
 #define Q	/* rely on uint32_t being defined as unsigned int */
 #endif
