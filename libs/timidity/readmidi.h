@@ -23,6 +23,8 @@
 #ifndef TIMIDITY_READMIDI_H
 #define TIMIDITY_READMIDI_H
 
+#define read_midi_file TIMI_NAMESPACE(read_midi_file)
+
 extern MidEvent *read_midi_file(MidIStream *stream, MidSong *song, sint32 *count, sint32 *sp);
 
 #endif /* TIMIDITY_READMIDI_H */

@@ -23,6 +23,9 @@
 #ifndef TIMIDITY_RESAMPLE_H
 #define TIMIDITY_RESAMPLE_H
 
+#define resample_voice TIMI_NAMESPACE(resample_voice)
+#define pre_resample TIMI_NAMESPACE(pre_resample)
+
 extern sample_t *resample_voice(MidSong *song, int v, sint32 *countptr);
 extern void pre_resample(MidSong *song, MidSample *sp);
 

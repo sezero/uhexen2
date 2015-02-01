@@ -15,18 +15,22 @@ Changes by libtimidity-0.2.0:
   structure. mid_istream_open_callbacks() is changed now accepts these
   callbacks.
 
+* stream.c, api change: mid_istream_open_mem() no longer accepts an
+  autoclose parameter, which was error-prone.
+
 * MidSongOptions, api change: added an uint8 width member just after
   channels (not used yet, but serves as a padding at least.) added an
   uint16 reserved padding member just after buffer_size.
 
-* safe_malloc(): made it actually safe, relying on setjmp and longjmp
-  using a jmp_buf private to timidity. it does a longjmp() upon failure
-  resulting in either a mid_exit() to free all the allocated memory
-  during init time, or a mid_song_free() to free the allocated memory
-  during a song load time.
+* malloc-safe: upon memory allocation failures, the library either does
+  a mid_exit() to free all the allocated memory during init time, or a
+  mid_song_free() to free the allocated memory during a song load time.
+
+* the library can be compiled using a different memory allocator than
+  malloc. (edit common.h for timi_malloc and timi_free)
 
 * mid_init(), mid_init_no_config(): a mid_exit() is guaranteed upon
-  config file parse failures or malloc() failures. 
+  config file parse failures or malloc() failures.
 
 * mid_init(): the library doesn't care about common timidity.cfg system
   locations any more, callers of mid_init() are responsible for it. if

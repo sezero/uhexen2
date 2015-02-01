@@ -256,7 +256,7 @@ static sint32 update_vibrato(MidSong *song, MidVoice *vp, int sign)
 		  (double)(song->rate)),
 		 FRACTION_BITS);
 
-  pb=(int)((sine(vp->vibrato_phase * 
+  pb=(int)((timi_sine(vp->vibrato_phase * 
 		 (SINE_CYCLE_LENGTH/(2*MID_VIBRATO_SAMPLE_INCREMENTS)))
 	    * (double)(depth) * VIBRATO_AMPLITUDE_TUNING));
 
@@ -565,7 +565,11 @@ void pre_resample(MidSong *song, MidSample *sp)
     return;
   }
 
-  dest = newdata = (sint16 *) safe_malloc((newlen >> (FRACTION_BITS - 1)) + 2);
+  dest = newdata = (sint16 *) timi_calloc((newlen >> (FRACTION_BITS - 1)) + 2);
+  if(!dest) {
+    song->oom=1;
+    return;
+  }
 
   if (--count)
     *dest++ = src[0];
@@ -604,7 +608,7 @@ void pre_resample(MidSong *song, MidSample *sp)
   sp->data_length = newlen;
   sp->loop_start = (sint32)(sp->loop_start * a);
   sp->loop_end = (sint32)(sp->loop_end * a);
-  free(sp->data);
+  timi_free(sp->data);
   sp->data = (sample_t *) newdata;
   sp->sample_rate = 0;
 }

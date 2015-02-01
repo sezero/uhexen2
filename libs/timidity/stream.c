@@ -68,7 +68,7 @@ stdio_istream_close (void *ctx)
   int ret = 0;
   if (((StdIOContext *) ctx)->autoclose)
     ret = fclose (((StdIOContext *) ctx)->fp);
-  free (ctx);
+  timi_free (ctx);
   return ret;
 }
 
@@ -77,7 +77,6 @@ typedef struct MemContext
   sint8 *base;
   sint8 *current;
   sint8 *end;
-  int autofree;
 } MemContext;
 
 static size_t
@@ -133,15 +132,13 @@ static long
 mem_istream_tell(void *ctx)
 {
   MemContext *c = (MemContext *) ctx;
-  return  (c->current - c->base);
+  return (c->current - c->base);
 }
 
 static int
 mem_istream_close (void *ctx)
 {
-  if (((MemContext *) ctx)->autofree)
-    free (((MemContext *) ctx)->base);
-  free (ctx);
+  timi_free (ctx);
   return 0;
 }
 
@@ -151,14 +148,14 @@ mid_istream_open_fp (FILE * fp, int autoclose)
   StdIOContext *ctx;
   MidIStream *stream;
 
-  stream = (MidIStream *) malloc(sizeof(MidIStream));
+  stream = (MidIStream *) timi_malloc(sizeof(MidIStream));
   if (stream == NULL)
     return NULL;
 
-  ctx = (StdIOContext *) malloc(sizeof(StdIOContext));
+  ctx = (StdIOContext *) timi_malloc(sizeof(StdIOContext));
   if (ctx == NULL)
     {
-      free (stream);
+      timi_free (stream);
       return NULL;
     }
   ctx->fp = fp;
@@ -186,25 +183,24 @@ mid_istream_open_file (const char *file)
 }
 
 MidIStream *
-mid_istream_open_mem (void *mem, size_t size, int autofree)
+mid_istream_open_mem (void *mem, size_t size)
 {
   MemContext *ctx;
   MidIStream *stream;
 
-  stream = (MidIStream *) malloc(sizeof(MidIStream));
+  stream = (MidIStream *) timi_malloc(sizeof(MidIStream));
   if (stream == NULL)
     return NULL;
 
-  ctx = (MemContext *) malloc(sizeof(MemContext));
+  ctx = (MemContext *) timi_malloc(sizeof(MemContext));
   if (ctx == NULL)
     {
-      free (stream);
+      timi_free (stream);
       return NULL;
     }
   ctx->base = (sint8 *) mem;
   ctx->current = (sint8 *) mem;
   ctx->end = ((sint8 *) mem) + size;
-  ctx->autofree = autofree;
 
   stream->ctx = ctx;
   stream->read = mem_istream_read;
@@ -223,7 +219,7 @@ mid_istream_open_callbacks (MidIStreamReadFunc read,
 {
   MidIStream *stream;
 
-  stream = (MidIStream *) malloc(sizeof(MidIStream));
+  stream = (MidIStream *) timi_malloc(sizeof(MidIStream));
   if (stream == NULL)
     return NULL;
 
@@ -266,6 +262,6 @@ int
 mid_istream_close (MidIStream * stream)
 {
   int ret = stream->close (stream->ctx);
-  free (stream);
+  timi_free (stream);
   return ret;
 }

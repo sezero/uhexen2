@@ -23,6 +23,10 @@
 #ifndef TIMIDITY_MIX_H
 #define TIMIDITY_MIX_H
 
+#define mix_voice TIMI_NAMESPACE(mix_voice)
+#define recompute_envelope TIMI_NAMESPACE(recompute_envelope)
+#define apply_envelope_to_amp TIMI_NAMESPACE(apply_envelope_to_amp)
+
 extern void mix_voice(MidSong *song, sint32 *buf, int v, sint32 c);
 extern int recompute_envelope(MidSong *song, int v);
 extern void apply_envelope_to_amp(MidSong *song, int v);

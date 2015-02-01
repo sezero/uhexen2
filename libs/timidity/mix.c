@@ -163,7 +163,7 @@ static void update_tremolo(MidSong *song, int v)
      song->voice[v].tremolo_phase -= SINE_CYCLE_LENGTH<<RATE_SHIFT;  */
 
   song->voice[v].tremolo_volume = (float) 
-    (1.0 - TIM_FSCALENEG((sine(song->voice[v].tremolo_phase >> RATE_SHIFT) + 1.0)
+    (1.0 - TIM_FSCALENEG((timi_sine(song->voice[v].tremolo_phase >> RATE_SHIFT) + 1.0)
 			  * depth * TREMOLO_AMPLITUDE_TUNING,
 			 17));
 

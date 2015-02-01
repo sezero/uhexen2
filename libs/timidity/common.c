@@ -40,7 +40,7 @@
 #include "common.h"
 #include "filenames.h"
 
-/* The paths in this list will be tried whenever open_file()
+/* The paths in this list will be tried whenever timi_openfile()
    reads a file */
 struct _PathList {
   char *path;
@@ -50,7 +50,7 @@ struct _PathList {
 static PathList *pathlist = NULL;
 
 /* This is meant to find and open files for reading */
-FILE *open_file(const char *name)
+FILE *timi_openfile(const char *name)
 {
   FILE *fp;
 
@@ -71,8 +71,7 @@ FILE *open_file(const char *name)
     PathList *plp = pathlist;
     int l;
 
-    while (plp)  /* Try along the path then */
-      {
+    while (plp) { /* Try along the path then */
 	*current_filename = 0;
 	l = strlen(plp->path);
 	if(l)
@@ -89,7 +88,7 @@ FILE *open_file(const char *name)
 	if ((fp = fopen(current_filename, OPEN_MODE)))
 	  return fp;
 	plp = plp->next;
-      }
+    }
   }
 
   /* Nothing could be opened. */
@@ -97,39 +96,43 @@ FILE *open_file(const char *name)
   return NULL;
 }
 
-/* This'll allocate memory and clear it. */
-jmp_buf malloc_env;
-void *safe_malloc(size_t count)
+/* This allocates memory and clears it. */
+void *timi_calloc(size_t count)
 {
-  void *p = malloc(count);
+  void *p = timi_malloc(count);
   if (p == NULL) {
     DEBUG_MSG("malloc() failed for %lu bytes.\n", (unsigned long)count);
-    longjmp(malloc_env, 1);
+    return NULL;
   }
   memset(p, 0, count);
   return p;
 }
 
 /* This adds a directory to the path list */
-void add_to_pathlist(const char *s, size_t l)
+int timi_add_pathlist(const char *s, size_t l)
 {
-  PathList *plp = (PathList *) safe_malloc(sizeof(PathList));
+  PathList *plp = (PathList *) timi_malloc(sizeof(PathList));
+  if (!plp) return -2;
+  plp->path = (char *) timi_malloc(l + 1);
+  if (!plp->path) {
+    timi_free (plp);
+    return -2;
+  }
   plp->next = pathlist;
   pathlist = plp;
-  plp->path = (char *) safe_malloc(l + 1);
   strncpy(plp->path, s, l);
+  return 0;
 }
 
-void free_pathlist(void)
+void timi_free_pathlist(void)
 {
     PathList *plp = pathlist;
     PathList *next;
 
-    while (plp)
-    {
+    while (plp) {
 	next = plp->next;
-	safe_free(plp->path);
-	free(plp);
+	timi_free(plp->path);
+	timi_free(plp);
 	plp = next;
     }
     pathlist = NULL;

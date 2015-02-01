@@ -52,11 +52,11 @@ static void free_instrument(MidInstrument *ip)
     {
       sp=&(ip->sample[i]);
       if (!sp) break;
-      free(sp->data);
+      timi_free(sp->data);
     }
-    free(ip->sample);
+    timi_free(ip->sample);
   }
-  free(ip);
+  timi_free(ip);
 }
 
 static void free_bank(MidSong *song, int dr, int b)
@@ -182,7 +182,7 @@ static void load_instrument(MidSong *song, const char *name,
   if (!name) return;
 
   /* Open patch file */
-  if ((song->ifp=open_file(name)) == NULL)
+  if ((song->ifp=timi_openfile(name)) == NULL)
     {
       /* Try with various extensions */
       for (i=0; patch_ext[i]; i++)
@@ -191,8 +191,8 @@ static void load_instrument(MidSong *song, const char *name,
 	    {
 	      strcpy(tmp, name);
 	      strcat(tmp, patch_ext[i]);
-	      if ((song->ifp=open_file(tmp)) != NULL)
-		  break;
+	      if ((song->ifp=timi_openfile(tmp)) != NULL)
+		break;
 	    }
 	}
     }
@@ -231,11 +231,13 @@ static void load_instrument(MidSong *song, const char *name,
       goto badpat;
     }
 
-  *out = (MidInstrument *) safe_malloc(sizeof(MidInstrument));
+  *out = (MidInstrument *) timi_calloc(sizeof(MidInstrument));
   ip = *out;
+  if (!ip) goto nomem;
 
   ip->samples = tmp[198];
-  ip->sample = (MidSample *) safe_malloc(sizeof(MidSample) * ip->samples);
+  ip->sample = (MidSample *) timi_calloc(sizeof(MidSample) * ip->samples);
+  if (!ip->sample) goto nomem;
 
   for (i=0; i<ip->samples; i++)
     {
@@ -390,7 +392,8 @@ static void load_instrument(MidSong *song, const char *name,
 	}
 
       /* Then read the sample data */
-      sp->data = (sample_t *) safe_malloc(sp->data_length+4);
+      sp->data = (sample_t *) timi_calloc(sp->data_length+4);
+      if (!sp->data) goto nomem;
 
       if (1 != fread(sp->data, sp->data_length, 1, fp))
 	goto badread;
@@ -403,10 +406,11 @@ static void load_instrument(MidSong *song, const char *name,
 	  sp->data_length *= 2;
 	  sp->loop_start *= 2;
 	  sp->loop_end *= 2;
-	  tmp16 = new16 = (uint16 *) safe_malloc(sp->data_length+4);
+	  tmp16 = new16 = (uint16 *) timi_calloc(sp->data_length+4);
+	  if (!new16) goto nomem;
 	  while (k--)
 	    *tmp16++ = (uint16)(*cp++) << 8;
-	  free(sp->data);
+	  timi_free(sp->data);
 	  sp->data = (sample_t *)new16;
 	}
 #if defined(WORDS_BIGENDIAN)
@@ -499,8 +503,10 @@ static void load_instrument(MidSong *song, const char *name,
 
       /* If this instrument will always be played on the same note,
 	 and it's not looped, we can resample it now. */
-      if (sp->note_to_use && !(sp->modes & MODES_LOOPING))
+      if (sp->note_to_use && !(sp->modes & MODES_LOOPING)) {
 	pre_resample(song, sp);
+	if (song->oom) goto fail;
+      }
 
       if (strip_tail==1)
 	{
@@ -514,8 +520,12 @@ static void load_instrument(MidSong *song, const char *name,
   song->ifp = NULL;
   return;
 
+nomem:
+  song->oom=1;
+  goto fail;
 badread:
   DEBUG_MSG("Error reading sample %d\n", i);
+fail:
   free_instrument (ip);
 badpat:
   fclose(fp);
@@ -537,11 +547,13 @@ static int fill_bank(MidSong *song, int dr, int b)
     {
       if (bank->instrument[i]==MAGIC_LOAD_INSTRUMENT)
 	{
+#if defined(TIMIDITY_USE_DLS)
 	  load_instrument_dls(song, &bank->instrument[i], dr, b, i);
 	  if (bank->instrument[i])
 	    {
 	      continue;
 	    }
+#endif /* TIMIDITY_USE_DLS */
 	  if (!(bank->tone[i].name))
 	    {
 	      DEBUG_MSG("No instrument mapped to %s %d, program %d%s\n",

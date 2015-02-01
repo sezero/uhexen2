@@ -33,28 +33,28 @@
    data in another format */
 
 /* 8-bit signed and unsigned*/
-extern void s32tos8(void *dp, sint32 *lp, sint32 c);
-extern void s32tou8(void *dp, sint32 *lp, sint32 c);
+extern void timi_s32tos8(void *dp, sint32 *lp, sint32 c);
+extern void timi_s32tou8(void *dp, sint32 *lp, sint32 c);
 
 /* 16-bit */
-extern void s32tos16(void *dp, sint32 *lp, sint32 c);
-extern void s32tou16(void *dp, sint32 *lp, sint32 c);
+extern void timi_s32tos16(void *dp, sint32 *lp, sint32 c);
+extern void timi_s32tou16(void *dp, sint32 *lp, sint32 c);
 
 /* byte-exchanged 16-bit */
-extern void s32tos16x(void *dp, sint32 *lp, sint32 c);
-extern void s32tou16x(void *dp, sint32 *lp, sint32 c);
+extern void timi_s32tos16x(void *dp, sint32 *lp, sint32 c);
+extern void timi_s32tou16x(void *dp, sint32 *lp, sint32 c);
 
 /* little-endian and big-endian specific */
 #if !defined(WORDS_BIGENDIAN)
-#define s32tou16l s32tou16
-#define s32tou16b s32tou16x
-#define s32tos16l s32tos16
-#define s32tos16b s32tos16x
+#define timi_s32tou16l timi_s32tou16
+#define timi_s32tou16b timi_s32tou16x
+#define timi_s32tos16l timi_s32tos16
+#define timi_s32tos16b timi_s32tos16x
 #else
-#define s32tou16l s32tou16x
-#define s32tou16b s32tou16
-#define s32tos16l s32tos16x
-#define s32tos16b s32tos16
+#define timi_s32tou16l timi_s32tou16x
+#define timi_s32tou16b timi_s32tou16
+#define timi_s32tos16l timi_s32tos16x
+#define timi_s32tos16b timi_s32tos16
 #endif
 
 #endif /* TIMIDITY_OUTPUT_H */

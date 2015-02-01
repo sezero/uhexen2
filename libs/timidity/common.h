@@ -23,18 +23,18 @@
 #ifndef TIMIDITY_COMMON_H
 #define TIMIDITY_COMMON_H
 
-#include <setjmp.h>
-
-extern FILE *open_file(const char *name);
+extern FILE *timi_openfile(const char *name);
 
 /* pathlist funcs only to be used during mid_init/mid_exit */
 typedef struct _PathList PathList;
-extern void add_to_pathlist(const char *s, size_t len);
-extern void free_pathlist(void);
+extern int  timi_add_pathlist(const char *s, size_t len);
+extern void timi_free_pathlist(void);
 
-extern jmp_buf malloc_env;
-/* safe_malloc() returns cleared mem, longjmp() on error */
-extern void *safe_malloc(size_t count);
-#define safe_free(_Memp) free((_Memp))
+/* in case someone wants to compile with a different malloc() than stdlib */
+#define timi_malloc malloc
+#define timi_free   free
+
+/* timi_calloc() returns zero'ed memory using timi_malloc() */
+extern void *timi_calloc(size_t count);
 
 #endif /* TIMIDITY_COMMON_H */

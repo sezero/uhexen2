@@ -21,6 +21,10 @@
 #ifndef TIMIDITY_INTERNAL_H
 #define TIMIDITY_INTERNAL_H
 
+/* hide private symbols by prefixing with "_timi_" */
+#undef  TIMI_NAMESPACE
+#define TIMI_NAMESPACE(x) _timi_ ## x
+
 #include "timidity.h"
 #include "options.h"
 
@@ -165,6 +169,7 @@ struct _MidEventList
 
 struct _MidSong
 {
+  int oom;/* malloc failed */
   int playing;
   sint32 rate;
   sint32 encoding;

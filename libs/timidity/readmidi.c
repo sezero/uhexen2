@@ -71,13 +71,19 @@ static int read_meta_data(MidIStream *stream, MidSong *song, sint32 len, uint8 t
     "Text event: ", "Text: ", "Copyright: ", "Track name: ",
     "Instrument: ", "Lyric: ", "Marker: ", "Cue point: " };
 
-  char *s = (char *)safe_malloc(len+1);
+  char *s = (char *)timi_calloc(len+1);
 
-  if (len != (sint32) mid_istream_read(stream, s, 1, len))
+  if (!s)
     {
-      safe_free(s);
+      mid_istream_skip(stream, len);/* should I ? */
       return -1;
     }
+  if (len != (sint32) mid_istream_read(stream, s, 1, len))
+    {
+      timi_free(s);
+      return -1;
+    }
+
   s[len]='\0';
   while (len--)
     {
@@ -85,7 +91,8 @@ static int read_meta_data(MidIStream *stream, MidSong *song, sint32 len, uint8 t
 	s[len]='.';
     }
   DEBUG_MSG("%s%s\n", label[(type > 7) ? 0 : type], s);
-  safe_free(s);
+
+  timi_free(s);
   return 0;
 #else
   return mid_istream_skip(stream, len);
@@ -93,14 +100,15 @@ static int read_meta_data(MidIStream *stream, MidSong *song, sint32 len, uint8 t
 }
 
 #define MIDIEVENT(at,t,ch,pa,pb)				\
-  newlist = (MidEventList *) safe_malloc(sizeof(MidEventList));	\
+  newlist = (MidEventList *) timi_calloc(sizeof(MidEventList));	\
+  if (!newlist) {song->oom = 1; return NULL;}			\
   newlist->event.time = at;					\
   newlist->event.type = t;					\
   newlist->event.channel = ch;					\
   newlist->event.a = pa;					\
   newlist->event.b = pb;					\
   return newlist;
-/*newlist->next = NULL;*/	/* safe_malloc() clears mem already */
+/*newlist->next = NULL;*/	/* timi_calloc() clears mem already */
 
 #define MAGIC_EOT ((MidEventList *)(-1))
 
@@ -351,7 +359,7 @@ static void free_midi_list(MidSong *song)
   while (meep)
     {
       next=meep->next;
-      free(meep);
+      timi_free(meep);
       meep=next;
     }
   song->evlist = NULL;
@@ -387,7 +395,12 @@ static MidEvent *groom_list(MidSong *song, sint32 divisions,sint32 *eventsp,
   counting_time=2; /* We strip any silence before the first NOTE ON. */
 
   /* This may allocate a bit more than we need */
-  groomed_list=lp=(MidEvent *) safe_malloc(sizeof(MidEvent) * (song->event_count+1));
+  groomed_list=lp=(MidEvent *) timi_calloc(sizeof(MidEvent) * (song->event_count+1));
+  if (!groomed_list) {
+    song->oom=1;
+    free_midi_list(song);
+    return NULL;
+  }
   meep=song->evlist;
 
   for (i = 0; i < song->event_count; i++)
@@ -578,10 +591,14 @@ MidEvent *read_midi_file(MidIStream *stream, MidSong *song, sint32 *count, sint3
 	  format, tracks, divisions);
 
   /* Put a do-nothing event first in the list for easier processing */
-  song->evlist=(MidEventList *) safe_malloc(sizeof(MidEventList));
+  song->evlist=(MidEventList *) timi_calloc(sizeof(MidEventList));
+  if (!song->evlist) {
+    song->oom=1;
+    return NULL;
+  }
   song->evlist->event.type=ME_NONE;
 /*song->evlist->event.time=0;
-  song->evlist->next = NULL;*/	/* safe_malloc() clears mem already */
+  song->evlist->next = NULL;*/	/* timi_calloc() clears mem already */
   song->event_count++;
 
   switch(format)

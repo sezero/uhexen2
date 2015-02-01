@@ -38,6 +38,10 @@
 
 #define SPECIAL_PROGRAM -1
 
+#define load_missing_instruments TIMI_NAMESPACE(load_missing_instruments)
+#define free_instruments TIMI_NAMESPACE(free_instruments)
+#define set_default_instrument TIMI_NAMESPACE(set_default_instrument)
+
 extern int load_missing_instruments(MidSong *song);
 extern void free_instruments(MidSong *song);
 extern int set_default_instrument(MidSong *song, const char *name);

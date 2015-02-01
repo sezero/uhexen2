@@ -32,7 +32,7 @@
 /*****************************************************************/
 /* Some functions to convert signed 32-bit data to other formats */
 
-void s32tos8(void *dp, sint32 *lp, sint32 c)
+void timi_s32tos8(void *dp, sint32 *lp, sint32 c)
 {
   sint8 *cp=(sint8 *)(dp);
   sint32 l;
@@ -45,7 +45,7 @@ void s32tos8(void *dp, sint32 *lp, sint32 c)
     }
 }
 
-void s32tou8(void *dp, sint32 *lp, sint32 c)
+void timi_s32tou8(void *dp, sint32 *lp, sint32 c)
 {
   uint8 *cp=(uint8 *)(dp);
   sint32 l;
@@ -58,7 +58,7 @@ void s32tou8(void *dp, sint32 *lp, sint32 c)
     }
 }
 
-void s32tos16(void *dp, sint32 *lp, sint32 c)
+void timi_s32tos16(void *dp, sint32 *lp, sint32 c)
 {
   sint16 *sp=(sint16 *)(dp);
   sint32 l;
@@ -71,7 +71,7 @@ void s32tos16(void *dp, sint32 *lp, sint32 c)
     }
 }
 
-void s32tou16(void *dp, sint32 *lp, sint32 c)
+void timi_s32tou16(void *dp, sint32 *lp, sint32 c)
 {
   uint16 *sp=(uint16 *)(dp);
   sint32 l;
@@ -84,7 +84,7 @@ void s32tou16(void *dp, sint32 *lp, sint32 c)
     }
 }
 
-void s32tos16x(void *dp, sint32 *lp, sint32 c)
+void timi_s32tos16x(void *dp, sint32 *lp, sint32 c)
 {
   sint16 *sp=(sint16 *)(dp);
   sint32 l;
@@ -97,7 +97,7 @@ void s32tos16x(void *dp, sint32 *lp, sint32 c)
     }
 }
 
-void s32tou16x(void *dp, sint32 *lp, sint32 c)
+void timi_s32tou16x(void *dp, sint32 *lp, sint32 c)
 {
   uint16 *sp=(uint16 *)(dp);
   sint32 l;

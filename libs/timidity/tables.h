@@ -25,9 +25,15 @@
 
 #include <math.h>
 
-#define sine(x) (sin((2*M_PI/1024.0) * (x)))
+#define timi_sine(x) (sin((2*M_PI/1024.0) * (x)))
 
 #define SINE_CYCLE_LENGTH 1024
+
+#define freq_table TIMI_NAMESPACE(freq_table)
+#define vol_table TIMI_NAMESPACE(vol_table)
+#define bend_fine TIMI_NAMESPACE(bend_fine)
+#define bend_coarse TIMI_NAMESPACE(bend_coarse)
+
 extern const sint32 freq_table[];
 extern const double vol_table[];
 extern const double bend_fine[];
