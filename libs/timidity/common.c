@@ -121,6 +121,7 @@ int timi_add_pathlist(const char *s, size_t l)
   plp->next = pathlist;
   pathlist = plp;
   strncpy(plp->path, s, l);
+  plp->path[l] = 0;
   return 0;
 }
 
