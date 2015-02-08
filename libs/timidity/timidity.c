@@ -117,8 +117,10 @@ static int read_config_file(const char *name, int rcf_count)
     if (*w[0] == '#')
       continue;
 
-    while (w[words] && *w[words] != '#' && (words < MAXWORDS))
-      w[++words]=strtok(0," \t\240");
+    while (w[words] && *w[words] != '#') {
+      if (++words == MAXWORDS) break;
+      w[words]=strtok(NULL, " \t\240");
+    }
 
     /* TiMidity++ adds a number of extensions to the config file format.
      * Many of them are completely irrelevant to SDL_sound, but at least
