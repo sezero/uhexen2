@@ -29,7 +29,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "timidity.h"
 #include "timidity_internal.h"
 #include "instrum.h"
 #include "playmidi.h"

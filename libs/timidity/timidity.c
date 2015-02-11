@@ -30,7 +30,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "timidity.h"
 #include "timidity_internal.h"
 #include "common.h"
 #include "instrum.h"

@@ -24,7 +24,6 @@
 
 #include <stdio.h>
 
-#include "timidity.h"
 #include "timidity_internal.h"
 #include "tables.h"
 

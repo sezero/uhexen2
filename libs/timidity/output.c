@@ -25,7 +25,6 @@
 #include "config.h"
 #endif
 
-#include "timidity.h"
 #include "timidity_internal.h"
 #include "output.h"
 

@@ -26,7 +26,6 @@
 #include <string.h>
 #include <math.h>
 
-#include "timidity.h"
 #include "timidity_internal.h"
 #include "instrum.h"
 #include "tables.h"

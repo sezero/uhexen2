@@ -35,13 +35,11 @@
 /* I guess "rb" should be right for any libc */
 #define OPEN_MODE "rb"
 
-#include "timidity.h"
 #include "timidity_internal.h"
 #include "common.h"
 #include "filenames.h"
 
-/* The paths in this list will be tried whenever timi_openfile()
-   reads a file */
+/* The paths in this list will be tried by timi_openfile() */
 struct _PathList {
   char *path;
   struct _PathList *next;
