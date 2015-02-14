@@ -5,6 +5,8 @@ Development Progress	:
 
 2015-02-14 (SVN):
 
+    * timidity: fix resampler crashes (e.g. in rs_loop()) with broken
+      situations.
     * timidity, resample.c (rs_plain): PRECALC_LOOPS counter bug fix.
       from timidity++-2.8.0 (1999-11-19 Masanao Izumo <mo@goice.co.jp>)
       Original form: i = (le - ofs) / incr + 1;        (Original)

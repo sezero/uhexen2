@@ -54,7 +54,7 @@ static sample_t *rs_plain(MidSong *song, int v, sint32 *countptr)
     incr=vp->sample_increment,
     le=vp->sample->data_length,
     count=*countptr;
-  sint32 i;
+  sint32 i, j;
 
   if (incr<0) incr = -incr; /* In case we're coming out of a bidir loop */
 
@@ -69,7 +69,7 @@ static sample_t *rs_plain(MidSong *song, int v, sint32 *countptr)
     }
   else count -= i;
 
-  while (i--)
+  for (j = 0; j < i; j++)
     {
       v1 = src[ofs >> FRACTION_BITS];
       v2 = src[(ofs >> FRACTION_BITS)+1];
@@ -102,7 +102,7 @@ static sample_t *rs_loop(MidSong *song, MidVoice *vp, sint32 count)
   sample_t
     *dest=song->resample_buffer,
     *src=vp->sample->data;
-  sint32 i;
+  sint32 i, j;
 
   while (count)
     {
@@ -116,7 +116,7 @@ static sample_t *rs_loop(MidSong *song, MidVoice *vp, sint32 count)
 	  count = 0;
 	}
       else count -= i;
-      while (i--)
+      for (j = 0; j < i; j++)
 	{
 	  v1 = src[ofs >> FRACTION_BITS];
 	  v2 = src[(ofs >> FRACTION_BITS)+1];
@@ -141,9 +141,9 @@ static sample_t *rs_bidir(MidSong *song, MidVoice *vp, sint32 count)
     *dest=song->resample_buffer,
     *src=vp->sample->data;
   sint32
-    le2 = le<<1, 
+    le2 = le<<1,
     ls2 = ls<<1,
-    i;
+    i, j;
   /* Play normally until inside the loop region */
 
   if (incr > 0 && ofs < ls)
@@ -158,7 +158,7 @@ static sample_t *rs_bidir(MidSong *song, MidVoice *vp, sint32 count)
 	  count = 0;
 	}
       else count -= i;
-      while (i--)
+      for (j = 0; j < i; j++)
 	{
 	  v1 = src[ofs >> FRACTION_BITS];
 	  v2 = src[(ofs >> FRACTION_BITS)+1];
@@ -178,7 +178,7 @@ static sample_t *rs_bidir(MidSong *song, MidVoice *vp, sint32 count)
 	  count = 0;
 	}
       else count -= i;
-      while (i--)
+      for (j = 0; j < i; j++)
 	{
 	  v1 = src[ofs >> FRACTION_BITS];
 	  v2 = src[(ofs >> FRACTION_BITS)+1];
@@ -342,7 +342,7 @@ static sample_t *rs_vib_loop(MidSong *song, MidVoice *vp, sint32 count)
     *src=vp->sample->data;
   int 
     cc=vp->vibrato_control_counter;
-  sint32 i;
+  sint32 i, j;
   int
     vibflag=0;
 
@@ -362,7 +362,7 @@ static sample_t *rs_vib_loop(MidSong *song, MidVoice *vp, sint32 count)
 	}
       else cc -= i;
       count -= i;
-      while (i--)
+      for (j = 0; j < i; j++)
 	{
 	  v1 = src[ofs >> FRACTION_BITS];
 	  v2 = src[(ofs >> FRACTION_BITS)+1];
@@ -399,7 +399,7 @@ static sample_t *rs_vib_bidir(MidSong *song, MidVoice *vp, sint32 count)
   sint32
     le2=le<<1,
     ls2=ls<<1,
-    i;
+    i, j;
   int
     vibflag = 0;
 
@@ -415,7 +415,7 @@ static sample_t *rs_vib_bidir(MidSong *song, MidVoice *vp, sint32 count)
 	}
       else cc -= i;
       count -= i;
-      while (i--)
+      for (j = 0; j < i; j++)
 	{
 	  v1 = src[ofs >> FRACTION_BITS];
 	  v2 = src[(ofs >> FRACTION_BITS)+1];
@@ -568,7 +568,7 @@ void pre_resample(MidSong *song, MidSample *sp)
 
   dest = newdata = (sint16 *) timi_calloc((newlen >> (FRACTION_BITS - 1)) + 2);
   if(!dest) {
-    song->oom=1;
+    song->oom = 1;
     return;
   }
 
