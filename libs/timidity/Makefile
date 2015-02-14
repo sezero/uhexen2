@@ -43,11 +43,6 @@ CFLAGS += -O2 -DNDEBUG=1 -ffast-math -fomit-frame-pointer
 endif
 #CFLAGS += -DTIMIDITY_DEBUG
 
-# if you are on a weird non-standarts-compliant platform where freeing
-# a NULL pointer crashes or something,  define CANT_FREE_NULL in order
-# to tell that to timidity:
-#CFLAGS += -DCANT_FREE_NULL
-
 # include DLS instruments support? (no: the DLS code we inherited from
 # SDL_sound isn't good enough, nor is it used on unices where timidity
 # is normally needed, either.)
@@ -121,4 +116,3 @@ clean:
 	rm -f *.o libtimidity.a
 
 distclean: clean
-
