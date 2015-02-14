@@ -4,7 +4,8 @@ Development Progress	:
 ---------------------------
 
 2015-02-14 (SVN):
-
+    * timidity: surround the struct _MidSample:low_vel and high_vel
+      stuff with TIMIDITY_USE_DLS ifdefs.
     * timidity: fix resampler crashes (e.g. in rs_loop()) with broken
       situations.
     * timidity, resample.c (rs_plain): PRECALC_LOOPS counter bug fix.

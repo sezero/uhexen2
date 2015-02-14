@@ -269,8 +269,10 @@ static void load_instrument(MidSong *song, const char *name,
       READ_LONG(sp->low_freq);
       READ_LONG(sp->high_freq);
       READ_LONG(sp->root_freq);
+#if defined(TIMIDITY_USE_DLS)
       sp->low_vel = 0;
       sp->high_vel = 127;
+#endif /* USE_DLS */
       fseek(fp, 2, SEEK_CUR); /* Why have a "root frequency" and then
 				* "tuning"?? */
 

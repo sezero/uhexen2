@@ -88,7 +88,11 @@ struct _MidSample
 {
   sint32
     loop_start, loop_end, data_length,
-    sample_rate, low_vel, high_vel, low_freq, high_freq, root_freq;
+    sample_rate,
+#if defined(TIMIDITY_USE_DLS)
+    low_vel, high_vel,
+#endif		/* USE_DLS */
+    low_freq, high_freq, root_freq;
   sint32 envelope_rate[6], envelope_offset[6];
   float volume;
   sample_t *data;
