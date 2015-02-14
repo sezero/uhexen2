@@ -35,6 +35,8 @@
 #include "tables.h"
 #include "resample.h"
 
+#define PRECALC_LOOP_COUNT(start, end, incr) (((end) - (start) + (incr) - 1) / (incr))
+
 /*************** resampling with fixed increment *****************/
 
 static sample_t *rs_plain(MidSong *song, int v, sint32 *countptr)
@@ -58,7 +60,7 @@ static sample_t *rs_plain(MidSong *song, int v, sint32 *countptr)
 
   /* Precalc how many times we should go through the loop.
      NOTE: Assumes that incr > 0 and that ofs <= le */
-  i = (le - ofs) / incr + 1;
+  i = PRECALC_LOOP_COUNT(ofs, le, incr);
 
   if (i > count)
     {
@@ -107,7 +109,7 @@ static sample_t *rs_loop(MidSong *song, MidVoice *vp, sint32 count)
       while (ofs >= le)
 	ofs -= ll;
       /* Precalc how many times we should go through the loop */
-      i = (le - ofs) / incr + 1;
+      i = PRECALC_LOOP_COUNT(ofs, le, incr);
       if (i > count)
 	{
 	  i = count;
@@ -144,12 +146,12 @@ static sample_t *rs_bidir(MidSong *song, MidVoice *vp, sint32 count)
     i;
   /* Play normally until inside the loop region */
 
-  if (ofs <= ls)
+  if (incr > 0 && ofs < ls)
     {
       /* NOTE: Assumes that incr > 0, which is NOT always the case
 	 when doing bidirectional looping.  I have yet to see a case
 	 where both ofs <= ls AND incr < 0, however. */
-      i = (ls - ofs) / incr + 1;
+      i = PRECALC_LOOP_COUNT(ofs, ls, incr);
       if (i > count)
 	{
 	  i = count;
@@ -169,7 +171,7 @@ static sample_t *rs_bidir(MidSong *song, MidVoice *vp, sint32 count)
   while(count)
     {
       /* Precalc how many times we should go through the loop */
-      i = ((incr > 0 ? le : ls) - ofs) / incr + 1;
+      i = PRECALC_LOOP_COUNT(ofs, incr > 0 ? le : ls, incr);
       if (i > count)
 	{
 	  i = count;
@@ -351,7 +353,7 @@ static sample_t *rs_vib_loop(MidSong *song, MidVoice *vp, sint32 count)
 	ofs -= ll;
       /* Precalc how many times to go through the loop, taking
 	 the vibrato control ratio into account this time. */
-      i = (le - ofs) / incr + 1;
+      i = PRECALC_LOOP_COUNT(ofs, le, incr);
       if(i > count) i = count;
       if(i > cc)
 	{
@@ -402,9 +404,9 @@ static sample_t *rs_vib_bidir(MidSong *song, MidVoice *vp, sint32 count)
     vibflag = 0;
 
   /* Play normally until inside the loop region */
-  while (count && (ofs <= ls))
+  while (count && incr > 0 && ofs < ls)
     {
-      i = (ls - ofs) / incr + 1;
+      i = PRECALC_LOOP_COUNT(ofs, ls, incr);
       if (i > count) i = count;
       if (i > cc)
 	{
@@ -432,7 +434,7 @@ static sample_t *rs_vib_bidir(MidSong *song, MidVoice *vp, sint32 count)
   while (count)
     {
       /* Precalc how many times we should go through the loop */
-      i = ((incr > 0 ? le : ls) - ofs) / incr + 1;
+      i = PRECALC_LOOP_COUNT(ofs, incr > 0 ? le : ls, incr);
       if(i > count) i = count;
       if(i > cc)
 	{

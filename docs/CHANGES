@@ -3,6 +3,13 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2015-02-14 (SVN):
+
+    * timidity, resample.c (rs_plain): PRECALC_LOOPS counter bug fix.
+      from timidity++-2.8.0 (1999-11-19 Masanao Izumo <mo@goice.co.jp>)
+      Original form: i = (le - ofs) / incr + 1;        (Original)
+      Fixed form:    i = (le - ofs + incr - 1) / incr; (Correct)
+
 2014-11-28 (SVN):
     * q_endian.h: add WORDS_BIGENDIAN macro for autotools compatibility.
     * libs, timidity: sync with libTiMidity fork at
