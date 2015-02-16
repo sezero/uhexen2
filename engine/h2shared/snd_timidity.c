@@ -1,9 +1,10 @@
 /*
- * MIDI streaming music support using Timidity library.  Compile against
- * the modified timidity library included here.  Standart libtimidity is
- * not recommended.
+ * MIDI streaming music support using Timidity library.
  *
- * Copyright (C) 2010-2012 O.Sezer <sezero@users.sourceforge.net>
+ * libTiMidity v0.2.0 or newer required:
+ * https://github.com/sezero/libtimidity/ (local copy included under libs/)
+ *
+ * Copyright (C) 2010-2015 O.Sezer <sezero@users.sourceforge.net>
  *
  * $Id$
  *
@@ -30,8 +31,12 @@
 #include "snd_codec.h"
 #include "snd_codeci.h"
 #include "snd_timidity.h"
-#include "timidity/timidity.h"
+#include <timidity.h>
 #include "filenames.h"
+
+#if !defined(LIBTIMIDITY_VERSION) || (LIBTIMIDITY_VERSION-0 < 0x000200L)
+#error libtimidity v0.2.0 or newer is required.
+#endif
 
 #define CACHEBUFFER_SIZE 4096
 

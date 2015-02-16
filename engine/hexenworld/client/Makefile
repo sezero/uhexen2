@@ -1217,9 +1217,9 @@ endif
 endif
 $(GL_BINARY): CPPFLAGS+= $(GL_DEFS)
 
-# extra rule for snd_timidity.c because of timidity/timidity.h and libtimidity.a
+# extra rule for snd_timidity.c because of timidity.h and libtimidity.a
 snd_timidity.o: $(COMMONDIR)/snd_timidity.c
-	$(CC) -c $(INCLUDES) -I$(LIBS_DIR) $(CPPFLAGS) $(CFLAGS) -DTIMIDITY_STATIC=1 -o $@ $(COMMONDIR)/snd_timidity.c
+	$(CC) -c $(INCLUDES) -I$(LIBS_DIR)/timidity $(CPPFLAGS) $(CFLAGS) -DTIMIDITY_STATIC=1 -o $@ $(COMMONDIR)/snd_timidity.c
 
 include $(LIBS_DIR)/timidity/_timi.mak
 

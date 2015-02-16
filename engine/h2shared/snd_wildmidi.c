@@ -2,15 +2,18 @@
  * MIDI streaming music support using WildMIDI library.
  *
  * wildmidi at least v0.2.3.x is required at both compile and runtime:
+ * Latest stable v0.3.8 (as of this writing) is highly recommended:
  * - wildmidi-0.2.2 has a horrific mistake of freeing the buffer that
  *   you pass with WildMidi_OpenBuffer() when you do WildMidi_Close().
- * - wildmidi-0.2.3.x-0.3.x have a regression resulting in perversely
+ * - wildmidi-0.2.3.x-0.3.x had a regression, resulting in perversely
  *   high amount of heap usage (up to about 500mb) because of crazily
- *   repetitive malloc/free calls (fixed in 0.3.5 and in 0.4.x.)
+ *   repetitive malloc/free calls; fixed as of 0.3.5.
+ * - wildmidi-0.2.x-0.3.x had a seek-to-0 bug, which might result in
+ *   truncated start issues with some midis; fixed as of 0.3.8.
  * - wildmidi-0.4.x (not yet released as of this writing) has some api
  *   changes against 0.2.3/0.3.x.
  *
- * Copyright (C) 2010-2014 O.Sezer <sezero@users.sourceforge.net>
+ * Copyright (C) 2010-2015 O.Sezer <sezero@users.sourceforge.net>
  *
  * $Id$
  *
@@ -40,9 +43,11 @@
 #include <wildmidi_lib.h>
 #include "filenames.h"
 
+#if !defined(LIBWILDMIDI_VERSION) || (LIBWILDMIDI_VERSION-0 < 0x000400L)
 #if !defined(WM_MO_ENHANCED_RESAMPLING)
 #error wildmidi version 0.2.3.4 or newer is required.
-#endif	/* WM_MO_ENHANCED_RESAMPLING */
+#endif
+#endif
 
 #define CACHEBUFFER_SIZE 4096
 
