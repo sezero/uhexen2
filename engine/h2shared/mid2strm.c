@@ -178,6 +178,13 @@ int ConverterInit (const char *filename)
 	mfs.numtracks	= (DWORD) BigShort(header.numtracks);
 	mfs.timediv	= (DWORD) BigShort(header.timediv);
 
+	if (mfs.format != 0 && mfs.format != 1) /* Type-2 not supported */
+		goto Init_Cleanup;
+	if (mfs.numtracks == 0)
+		goto Init_Cleanup;
+	if (mfs.format == 0 && mfs.numtracks != 1)
+		goto Init_Cleanup;
+
 /* We know how many tracks there are; allocate structures for them
  * and parse them. The parse merely looks at the MTrk signature and
  * track chunk length in order to skip to the next track header. */
