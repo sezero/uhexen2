@@ -586,6 +586,16 @@ MidEvent *read_midi_file(MidIStream *stream, MidSong *song, sint32 *count, sint3
       DEBUG_MSG("Unknown MIDI file format %d\n", format);
       return NULL;
     }
+  if (tracks<1)
+    {
+      DEBUG_MSG("Bad number of tracks %d\n", tracks);
+      return NULL;
+    }
+  if (format==0 && tracks!=1)
+    {
+      DEBUG_MSG("%d tracks with Type-0 MIDI (must be 1.)\n", tracks);
+      return NULL;
+    }
   DEBUG_MSG("Format: %d  Tracks: %d  Divisions: %d\n",
 	  format, tracks, divisions);
 
