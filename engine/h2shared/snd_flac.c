@@ -376,7 +376,8 @@ static int S_FLAC_CodecRewindStream (snd_stream_t *stream)
 	flacfile_t *ff = (flacfile_t *) stream->priv;
 
 	ff->pos = ff->size = 0;
-	return FLAC__stream_decoder_seek_absolute (ff->decoder, 0);
+	if (FLAC__stream_decoder_seek_absolute(ff->decoder, 0)) return 0;
+	return -1;
 }
 
 snd_codec_t flac_codec =

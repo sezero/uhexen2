@@ -592,8 +592,10 @@ static void BGM_UpdateStream (void)
 		{
 			if (bgmloop)
 			{
-				if (S_CodecRewindStream(bgmstream) < 0)
+				res = S_CodecRewindStream(bgmstream);
+				if (res != 0)
 				{
+					Con_Printf("Stream seek error (%i), stopping.\n", res);
 					BGM_Stop();
 					return;
 				}

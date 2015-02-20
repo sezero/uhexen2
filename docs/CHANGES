@@ -4,6 +4,9 @@ Development Progress	:
 ---------------------------
 
 2015-02-20 (SVN):
+    * snd_flac.c, snd_mpg123.c: fix incorrect usage of decoder function
+      return value in RewindStream() procedures.
+    * bgmusic.c (BGM_UpdateStream): print msg if stream rewinding fails.
     * changed version date stamp to 2015-02-20.
 
 2015-02-14 (SVN):
