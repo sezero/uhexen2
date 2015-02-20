@@ -3,6 +3,9 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2015-02-20 (SVN):
+    * changed version date stamp to 2015-02-20.
+
 2015-02-14 (SVN):
     * timidity: surround the struct _MidSample:low_vel and high_vel
       stuff with TIMIDITY_USE_DLS ifdefs.
