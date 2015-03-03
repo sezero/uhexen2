@@ -6,6 +6,7 @@ Development Progress	:
 2015-03-03 (SVN):
     * snd_sdl.c: remove superfluous SDL_PauseAudio() and SDL_LockAudio()
       calls from the Shutdown() proc.
+    * changed version date stamp to 2015-03-03.
 
 2015-02-20 (SVN):
     * snd_flac.c, snd_mpg123.c: fix incorrect usage of decoder function
