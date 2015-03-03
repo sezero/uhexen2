@@ -190,14 +190,12 @@ static void S_SDL_Shutdown (void)
 	if (shm)
 	{
 		Con_Printf ("Shutting down SDL sound\n");
-		SDL_PauseAudio(1);
-		SDL_LockAudio ();
 		SDL_CloseAudio();
+		SDL_QuitSubSystem(SDL_INIT_AUDIO);
 #if !USE_HUNK_ALLOC
 		if (shm->buffer)
 			free (shm->buffer);
 #endif
-		SDL_QuitSubSystem(SDL_INIT_AUDIO);
 		shm->buffer = NULL;
 		shm = NULL;
 	}
