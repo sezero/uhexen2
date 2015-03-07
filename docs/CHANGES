@@ -16,6 +16,7 @@ Development Progress	:
       from instrum.c.
     * timidity.c (do_song_load): tidy-up the failure/success cases.
       general whitespace tidy-up.
+    * playmidi.c (select_sample):  fix a dls bug introduced by r5394.
 
 2015-03-03 (SVN):
     * snd_sdl.c: remove superfluous SDL_PauseAudio() and SDL_LockAudio()

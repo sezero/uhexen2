@@ -88,7 +88,7 @@ static void select_sample(MidSong *song, int v, MidInstrument *ip, int vel)
     }
 
   f=song->voice[v].orig_frequency;
-  for (i=0; i<s; i++)
+  for (i=0; i<s; i++, sp++)
     {
 #ifdef TIMIDITY_USE_DLS
       if (sp->low_vel > vel || sp->high_vel < vel)
@@ -99,18 +99,17 @@ static void select_sample(MidSong *song, int v, MidInstrument *ip, int vel)
 	  song->voice[v].sample=sp;
 	  return;
 	}
-      sp++;
     }
 
   /*
      No suitable sample found! We'll select the sample whose root
      frequency is closest to the one we want. (Actually we should
-     probably convert the low, high, and root frequencies to MIDI note
-     values and compare those.) */
-
+     probably convert the low, high, and root frequencies to MIDI
+     note values and compare those.)
+   */
   cdiff=0x7FFFFFFF;
   closest=sp=ip->sample;
-  for(i=0; i<s; i++)
+  for(i=0; i<s; i++, sp++)
     {
       diff=sp->root_freq - f;
       if (diff<0) diff=-diff;
@@ -119,10 +118,8 @@ static void select_sample(MidSong *song, int v, MidInstrument *ip, int vel)
 	  cdiff=diff;
 	  closest=sp;
 	}
-      sp++;
     }
   song->voice[v].sample=closest;
-  return;
 }
 
 static void recompute_freq(MidSong *song, int v)

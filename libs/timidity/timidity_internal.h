@@ -29,7 +29,7 @@
 #include "options.h"
 
 #ifndef HAVE_CONFIG_H
-#include "q_endian.h" /* "timi_endian.h" */
+#include "q_endian.h" /*"timi_endian.h"*/
 #endif
 
 /* Instrument files are little-endian, MIDI files big-endian, so we
@@ -89,9 +89,9 @@ struct _MidSample
   sint32
     loop_start, loop_end, data_length,
     sample_rate,
-#if defined(TIMIDITY_USE_DLS)
+#ifdef TIMIDITY_USE_DLS
     low_vel, high_vel,
-#endif		/* USE_DLS */
+#endif
     low_freq, high_freq, root_freq;
   sint32 envelope_rate[6], envelope_offset[6];
   float volume;
