@@ -483,27 +483,21 @@ static void do_song_load(MidIStream *stream, MidDLSPatches *dlspatches, MidSongO
   MidSong *song;
   int i;
 
-  if (stream == NULL) {
-    *out = NULL;
-    return;
-  }
+  *out = NULL;
+  if (!stream) return;
 
   /* Allocate memory for the song */
-  *out = (MidSong *)timi_calloc(sizeof(MidSong));
-  if (! *out) return;
-  song = *out;
+  song = (MidSong *)timi_calloc(sizeof(MidSong));
+  if (!song) return;
   song->dlspatches = dlspatches;
 
-  for (i = 0; i < 128; i++)
-  {
-    if (master_tonebank[i])
-    {
+  for (i = 0; i < 128; i++) {
+    if (master_tonebank[i]) {
       song->tonebank[i] = (MidToneBank *) timi_calloc(sizeof(MidToneBank));
       if (!song->tonebank[i]) goto fail;
       song->tonebank[i]->tone = master_tonebank[i]->tone;
     }
-    if (master_drumset[i])
-    {
+    if (master_drumset[i]) {
       song->drumset[i] = (MidToneBank *) timi_calloc(sizeof(MidToneBank));
       if (!song->drumset[i]) goto fail;
       song->drumset[i]->tone = master_drumset[i]->tone;
@@ -523,25 +517,25 @@ static void do_song_load(MidIStream *stream, MidDLSPatches *dlspatches, MidSongO
   if (options->channels == 1)
       song->encoding |= PE_MONO;
   switch (options->format) {
-      case MID_AUDIO_S8:
-	  song->write = timi_s32tos8;
-	  break;
-      case MID_AUDIO_U8:
-	  song->write = timi_s32tou8;
-	  break;
-      case MID_AUDIO_S16LSB:
-	  song->write = timi_s32tos16l;
-	  break;
-      case MID_AUDIO_S16MSB:
-	  song->write = timi_s32tos16b;
-	  break;
-      case MID_AUDIO_U16LSB:
-	  song->write = timi_s32tou16l;
-	  break;
-      default:
-	  DEBUG_MSG("Unsupported audio format\n");
-	  song->write = timi_s32tou16l;
-	  break;
+  case MID_AUDIO_S8:
+    song->write = timi_s32tos8;
+    break;
+  case MID_AUDIO_U8:
+    song->write = timi_s32tou8;
+    break;
+  case MID_AUDIO_S16LSB:
+    song->write = timi_s32tos16l;
+    break;
+  case MID_AUDIO_S16MSB:
+    song->write = timi_s32tos16b;
+    break;
+  case MID_AUDIO_U16LSB:
+    song->write = timi_s32tou16l;
+    break;
+  default:
+    DEBUG_MSG("Unsupported audio format\n");
+    song->write = timi_s32tou16l;
+    break;
   }
 
   song->buffer_size = options->buffer_size;
@@ -578,10 +572,10 @@ static void do_song_load(MidIStream *stream, MidDLSPatches *dlspatches, MidSongO
 
   load_missing_instruments(song);
 
-  if (song->oom) {
-  fail:
-    mid_song_free (*out);
-    *out = NULL;
+  if (! song->oom)
+      *out = song;
+  else {
+fail: mid_song_free (song);
   }
 }
 
@@ -625,10 +619,8 @@ void mid_exit(void)
 {
   int i, j;
 
-  if (rcf_fp)
-  {
-    for (i = 0; i < MAX_RCFCOUNT; i++)
-    {
+  if (rcf_fp) {
+    for (i = 0; i < MAX_RCFCOUNT; i++) {
       if (rcf_fp[i])
 	fclose(rcf_fp[i]);
     }
@@ -636,13 +628,10 @@ void mid_exit(void)
     rcf_fp = NULL;
   }
 
-  for (i = 0; i < 128; i++)
-  {
-    if (master_tonebank[i])
-    {
+  for (i = 0; i < 128; i++) {
+    if (master_tonebank[i]) {
       MidToneBankElement *e = master_tonebank[i]->tone;
-      if (e != NULL)
-      {
+      if (e != NULL) {
 	for (j = 0; j < 128; j++) {
 	  timi_free(e[j].name);
 	}
@@ -651,11 +640,9 @@ void mid_exit(void)
       timi_free(master_tonebank[i]);
       master_tonebank[i] = NULL;
     }
-    if (master_drumset[i])
-    {
+    if (master_drumset[i]) {
       MidToneBankElement *e = master_drumset[i]->tone;
-      if (e != NULL)
-      {
+      if (e != NULL) {
 	for (j = 0; j < 128; j++) {
 	  timi_free(e[j].name);
 	}
@@ -673,3 +660,4 @@ long mid_get_version (void)
 {
   return LIBTIMIDITY_VERSION;
 }
+

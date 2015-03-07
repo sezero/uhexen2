@@ -3,6 +3,20 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2015-03-07 (SVN):
+    * timidity updates from https://github.com/sezero/libtimidity/ :
+    * instrum.c (free_instrument): remove a useless+pointless sample ptr
+      NULL check.
+    * instrum.c (load_instrument), instrum_dls.c (load_region_dls): no
+      need initializing the extra samples at the end, because the sample
+      is alloc'ed using calloc()
+    * instrum_dls.c (load_instrument_dls): fixed the segfaulting bugs
+      introduced by r5375 (github commit 68df4a5). simplified malloc()
+      failure management by adding+using free_mid_instrument() copied
+      from instrum.c.
+    * timidity.c (do_song_load): tidy-up the failure/success cases.
+      general whitespace tidy-up.
+
 2015-03-03 (SVN):
     * snd_sdl.c: remove superfluous SDL_PauseAudio() and SDL_LockAudio()
       calls from the Shutdown() proc.

@@ -47,10 +47,8 @@ static void free_instrument(MidInstrument *ip)
   int i;
   if (!ip) return;
   if (ip->sample) {
-    for (i=0; i<ip->samples; i++)
-    {
+    for (i=0; i<ip->samples; i++) {
       sp=&(ip->sample[i]);
-      if (!sp) break;
       timi_free(sp->data);
     }
     timi_free(ip->sample);
@@ -486,9 +484,10 @@ static void load_instrument(MidSong *song, const char *name,
       sp->loop_start /= 2;
       sp->loop_end /= 2;
 
-      /* initialize the added extra sample space (see the +4 bytes in
-	 allocation) using the last actual sample:  */
+      /* initialize the 2 extra samples at the end (those +4 bytes) */
+#if 0 /* no need - alloc'ed using timi_calloc() */
       sp->data[sp->data_length] = sp->data[sp->data_length+1] = 0;
+#endif
 
       /* Then fractional samples */
       sp->data_length <<= FRACTION_BITS;
