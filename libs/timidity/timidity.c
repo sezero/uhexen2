@@ -486,6 +486,26 @@ static void do_song_load(MidIStream *stream, MidDLSPatches *dlspatches, MidSongO
   *out = NULL;
   if (!stream) return;
 
+  if (options->rate < MIN_OUTPUT_RATE || options->rate > MAX_OUTPUT_RATE) {
+    DEBUG_MSG("Bad sample rate %d\n",options->rate);
+    return;
+  }
+  if (options->channels != 1 && options->channels != 2) {
+    DEBUG_MSG("Bad channels %u\n",options->channels);
+    return;
+  }
+  switch (options->format) {
+  case MID_AUDIO_S8:
+  case MID_AUDIO_U8:
+  case MID_AUDIO_S16LSB:
+  case MID_AUDIO_S16MSB:
+  case MID_AUDIO_U16LSB:
+  case MID_AUDIO_U16MSB: break; /* supported */
+  default:
+    DEBUG_MSG("Bad audio format 0x%x\n",options->format);
+    return;
+  }
+
   /* Allocate memory for the song */
   song = (MidSong *)timi_calloc(sizeof(MidSong));
   if (!song) return;
@@ -510,7 +530,7 @@ static void do_song_load(MidIStream *stream, MidDLSPatches *dlspatches, MidSongO
 
   song->rate = options->rate;
   song->encoding = 0;
-  if ((options->format & 0xFF) == 16)
+  if (options->format & 0x0010)
       song->encoding |= PE_16BIT;
   if (options->format & 0x8000)
       song->encoding |= PE_SIGNED;
@@ -532,9 +552,8 @@ static void do_song_load(MidIStream *stream, MidDLSPatches *dlspatches, MidSongO
   case MID_AUDIO_U16LSB:
     song->write = timi_s32tou16l;
     break;
-  default:
-    DEBUG_MSG("Unsupported audio format\n");
-    song->write = timi_s32tou16l;
+  case MID_AUDIO_U16MSB:
+    song->write = timi_s32tou16b;
     break;
   }
 
@@ -544,9 +563,11 @@ static void do_song_load(MidIStream *stream, MidDLSPatches *dlspatches, MidSongO
   song->common_buffer = (sint32 *) timi_calloc(options->buffer_size * 2 * sizeof(sint32));
   if (!song->common_buffer) goto fail;
 
-  song->bytes_per_sample =
-	((song->encoding & PE_MONO) ? 1 : 2) *
-	((song->encoding & PE_16BIT) ? 2 : 1);
+  song->bytes_per_sample = 2;
+  if (song->encoding & PE_16BIT)
+    song->bytes_per_sample *= 2;
+  if (song->encoding & PE_MONO)
+    song->bytes_per_sample /= 2;
 
   song->control_ratio = options->rate / CONTROLS_PER_SECOND;
   if (song->control_ratio < 1)

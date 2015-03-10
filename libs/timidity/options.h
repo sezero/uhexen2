@@ -32,10 +32,8 @@
 /* 9 here is MIDI channel 10, which is the standard percussion channel.
    Some files (notably C:\WINDOWS\CANYON.MID) think that 16 is one too.
    On the other hand, some files know that 16 is not a drum channel and
-   try to play music on it. This is now a runtime option, so this isn't
-   a critical choice anymore. */
-#define DEFAULT_DRUMCHANNELS (1<<9)
-/* #define DEFAULT_DRUMCHANNELS ((1<<9) | (1<<15)) */
+   try to play music on it. */
+#define DEFAULT_DRUMCHANNELS (1<<9) /* | (1<<15) */
 
 /* In percent. */
 #define DEFAULT_AMPLIFICATION	70
@@ -49,9 +47,12 @@
 #define CONTROLS_PER_SECOND 1000
 
 /* Make envelopes twice as fast. Saves ~20% CPU time (notes decay
-   faster) and sounds more like a GUS. There is now a command line
-   option to toggle this as well. */
+   faster) and sounds more like a GUS. */
 #define FAST_DECAY
+
+/* A somewhat arbitrary output frequency range. */
+#define MIN_OUTPUT_RATE 4000
+#define MAX_OUTPUT_RATE 256000
 
 /* How many bits to use for the fractional part of sample positions.
    This affects tonal accuracy. The entire position counter must fit

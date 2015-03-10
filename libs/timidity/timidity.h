@@ -74,9 +74,9 @@ extern "C" {
     sint32 rate;        /* DSP frequency -- samples per second */
     uint16 format;      /* Audio data format */
     uint8 channels;     /* Number of channels: 1 mono, 2 stereo */
-    uint8 width;        /* Sample width: 1 for 8 bit, 2 for 16 bit */
-    uint16 buffer_size; /* Sample buffer size in samples */
-    uint16 reserved;
+    uint8 _pad;
+    uint16 buffer_size; /* Sample buffer size (in samples, not bytes) */
+    uint16 _reserved;
   };
 
 

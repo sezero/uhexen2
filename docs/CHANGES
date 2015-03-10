@@ -3,6 +3,14 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2015-03-10 (SVN):
+    * timidity updates from https://github.com/sezero/libtimidity/ :
+      renamed previously added unused MidSongOptions->width to _pad, so
+      it is reserved. made song_load() to validate the passed options.
+      fixed song_load() so that MID_AUDIO_U16MSB audio format option is
+      handled correctly. limited the acceptable sample rate range to
+      4000-256000.
+
 2015-03-07 (SVN):
     * timidity updates from https://github.com/sezero/libtimidity/ :
     * instrum.c (free_instrument): remove a useless+pointless sample ptr
