@@ -63,12 +63,12 @@ LDFLAGS += -lc
 endif
 ifeq ($(TARGET_OS),win32)
 CFLAGS  += -DWIN32_LEAN_AND_MEAN
-INCLUDES+= -I$(OSLIBS)/windows
+INCLUDES+= -I$(OSLIBS)/windows/misc/include
 LDFLAGS += -mconsole
 endif
 ifeq ($(TARGET_OS),win64)
 CFLAGS  += -DWIN32_LEAN_AND_MEAN
-INCLUDES+= -I$(OSLIBS)/windows
+INCLUDES+= -I$(OSLIBS)/windows/misc/include
 LDFLAGS += -mconsole
 endif
 ifeq ($(TARGET_OS),morphos)

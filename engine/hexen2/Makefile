@@ -551,7 +551,7 @@ LIBWINSOCK=-lwsock32
 endif
 
 CPPFLAGS+= -DWIN32_LEAN_AND_MEAN
-INCLUDES+= -I$(OSLIBS)/windows -I$(OSLIBS)/windows/dxsdk/include
+INCLUDES+= -I$(OSLIBS)/windows/misc/include -I$(OSLIBS)/windows/dxsdk/include
 LDFLAGS += $(LIBWINSOCK) -lwinmm -mwindows
 
 ifneq ($(LINK_DIRECTX),yes)
@@ -629,7 +629,7 @@ LIBWINSOCK=-lwsock32
 endif
 
 CPPFLAGS+= -DWIN32_LEAN_AND_MEAN
-INCLUDES+= -I$(OSLIBS)/windows -I$(OSLIBS)/windows/dxsdk/include
+INCLUDES+= -I$(OSLIBS)/windows/misc/include -I$(OSLIBS)/windows/dxsdk/include
 LDFLAGS += $(LIBWINSOCK) -lwinmm -mwindows
 
 ifneq ($(LINK_DIRECTX),yes)
@@ -1266,10 +1266,10 @@ help: report
 	@echo
 	@echo "Valid targets: (read/edit the makefile for several options)"
 	@echo
-	@echo "* $(MAKE) help        : this help"
-	@echo "* $(MAKE) clean       : delete all files produced by the build"
-	@echo "* $(MAKE) h2          : hexen2 binary, software renderer"
-	@echo "* $(MAKE) glh2        : hexen2 binary, opengl renderer"
+	@echo "* $(MAKE) help   : this help"
+	@echo "* $(MAKE) clean  : delete all files produced by the build"
+	@echo "* $(MAKE) h2     : hexen2 binary, software renderer"
+	@echo "* $(MAKE) glh2   : hexen2 binary, opengl renderer"
 	@echo
 
 h2: $(SW_BINARY)

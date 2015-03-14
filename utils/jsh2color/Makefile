@@ -62,15 +62,17 @@ LDFLAGS += -lc -lgcc -lm
 endif
 ifeq ($(TARGET_OS),win32)
 CFLAGS  += -DWIN32_LEAN_AND_MEAN
-INCLUDES+= -I$(OSLIBS)/windows
+INCLUDES+= -I$(OSLIBS)/windows/misc/include
+LDFLAGS += -mconsole
 # default 2 MB stack is not enough
-LDFLAGS += -mconsole -Wl,--stack,4194304
+LDFLAGS += -Wl,--stack,4194304
 endif
 ifeq ($(TARGET_OS),win64)
 CFLAGS  += -DWIN32_LEAN_AND_MEAN
-INCLUDES+= -I$(OSLIBS)/windows
+INCLUDES+= -I$(OSLIBS)/windows/misc/include
+LDFLAGS += -mconsole
 # default 2 MB stack is not enough
-LDFLAGS += -mconsole -Wl,--stack,4194304
+LDFLAGS += -Wl,--stack,4194304
 endif
 ifeq ($(TARGET_OS),morphos)
 CFLAGS  += -noixemul
