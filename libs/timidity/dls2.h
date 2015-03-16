@@ -1,12 +1,11 @@
 /*
- *	dls2.h
- *	
- *	Description:
+ * dls2.h
  *
- *	Interface defines and structures for the DLS2 extensions of DLS.
+ * Description:
  *
- *	Written by Microsoft 1998.  Released for public use.
+ * Interface defines and structures for the DLS2 extensions of DLS.
  *
+ * Written by Microsoft 1998.  Released for public use.
  */
 
 #ifndef _INC_DLS2
@@ -60,7 +59,7 @@
 #define CONN_DST_EG1_HOLDTIME		0x020C	/* EG1 Hold Time */
 #define CONN_DST_EG1_SHUTDOWNTIME	0x020D	/* EG1 Shutdown Time */
 
-/*	EG2 Destinations */
+/* EG2 Destinations */
 #define CONN_DST_EG2_DELAYTIME		0x030F	/* EG2 Delay Time */
 #define CONN_DST_EG2_HOLDTIME		0x0310	/* EG2 Hold Time */
 
@@ -72,7 +71,7 @@
 #define CONN_TRN_CONVEX			0x0002	/* Convex Transform */
 #define CONN_TRN_SWITCH			0x0003	/* Switch Transform */
 
-/*	Conditional chunk operators */
+/* Conditional chunk operators */
 #define DLS_CDL_AND			0x0001	/* X = X & Y */
 #define DLS_CDL_OR			0x0002	/* X = X | Y */
 #define DLS_CDL_XOR			0x0003	/* X = X ^ Y */

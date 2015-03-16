@@ -22,14 +22,11 @@
 #include "config.h"
 #endif
 
-#include <stdlib.h>
-#include <string.h>
-#include <math.h>
+#ifndef WIN32_LEAN_AND_MEAN
+#define WIN32_LEAN_AND_MEAN
+#endif
 
 #include "timidity_internal.h"
-#include "instrum.h"
-#include "tables.h"
-#include "common.h"
 
 #if !defined(TIMIDITY_USE_DLS) /* stubs */
 MidDLSPatches *mid_dlspatches_load (MidIStream *stream)
@@ -42,9 +39,28 @@ void mid_dlspatches_free (MidDLSPatches *data)
 }
 
 #else /* DLS support: */
+
+#ifdef _WIN32
+#include <windows.h>
+#ifndef DEFINE_GUID
+#include <basetyps.h> /* guiddef.h not in all SDKs -- e.g. mingw.org */
+#endif
+#include <mmsystem.h>
+#else /* not-windows */
+#include "dls_compat.h"
+#endif
+#include "dls1.h"
+#include "dls2.h"
+#include <string.h>
+#include <math.h>
+
 #include "instrum_dls.h"
+#include "instrum.h"
+#include "tables.h"
+#include "common.h"
 
 /* ------- load_riff.h ------- */
+
 typedef struct _RIFF_Chunk {
     uint32 magic;
     uint32 length;
@@ -54,12 +70,13 @@ typedef struct _RIFF_Chunk {
     struct _RIFF_Chunk *next;
 } RIFF_Chunk;
 
-static void LoadRIFF(MidIStream *stream, RIFF_Chunk **chunk);
-static void FreeRIFF(RIFF_Chunk *chunk);
-
-/* ------- load_riff.c ------- */
 #define RIFF	0x46464952	/* "RIFF" */
 #define LIST	0x5453494c	/* "LIST" */
+
+/* ------- load_riff.c ------- */
+
+static void LoadRIFF(MidIStream *stream, RIFF_Chunk **chunk);
+static void FreeRIFF(RIFF_Chunk *chunk);
 
 static void AllocRIFFChunk(RIFF_Chunk **chunk)
 {
@@ -216,44 +233,8 @@ static void FreeRIFF(RIFF_Chunk *chunk)
 /* This code is based on the DLS spec version 1.1, available at:
  * http://www.midi.org/about-midi/dls/dlsspec.shtml */
 
-#if defined(_WIN32)	/* use windows native headers */
-#ifndef WIN32_LEAN_AND_MEAN
-#define WIN32_LEAN_AND_MEAN
-#endif
-#include <windows.h>
-#ifndef DEFINE_GUID
-#include <basetyps.h>	/* guiddef.h not in all SDKs, e.g. mingw.org */
-#endif
-#include <mmsystem.h>
-#else
-/* Some typedefs so the public dls headers don't need to be modified */
-#define FAR
-typedef uint8	BYTE;
-typedef sint16	SHORT;
-typedef uint16	USHORT;
-typedef uint16	WORD;
-typedef sint32	LONG;
-typedef uint32	ULONG;
-typedef uint32	DWORD;
-#define mmioFOURCC(A, B, C, D)					\
-		(((A) <<  0) | ((B) <<  8) | ((C) << 16) | ((D) << 24))
-#define DEFINE_GUID(A, B, C, E, F, G, H, I, J, K, L, M)
-#endif
-
-#include "dls1.h"
-#include "dls2.h"
-
-typedef struct _WaveFMT {
-    WORD wFormatTag;
-    WORD wChannels;
-    DWORD dwSamplesPerSec;
-    DWORD dwAvgBytesPerSec;
-    WORD wBlockAlign;
-    WORD wBitsPerSample;
-} WaveFMT;
-
 typedef struct _DLS_Wave {
-    WaveFMT *format;
+    PCMWAVEFORMAT *format;
     uint8 *data;
     uint32 length;
     WSMPL *wsmp;
@@ -293,8 +274,6 @@ struct _MidDLSPatches {
     const char *comments;
 };
 
-/* ------- load_dls.c ------- */
-
 #ifndef FOURCC_LIST /* in mmsystem.h for windows. */
 #define FOURCC_LIST	0x5453494c	/* "LIST" */
 #endif
@@ -319,6 +298,7 @@ struct _MidDLSPatches {
 #define FOURCC_ISRF	mmioFOURCC('I','S','R','F')
 #define FOURCC_ITCH	mmioFOURCC('I','T','C','H')
 
+/* ------- load_dls.c ------- */
 
 static void FreeRegions(DLS_Instrument *instrument)
 {
@@ -572,12 +552,12 @@ static int Parse_ptbl(MidDLSPatches *data, RIFF_Chunk *chunk)
 
 static void Parse_fmt(MidDLSPatches *data, RIFF_Chunk *chunk, DLS_Wave *wave)
 {
-    WaveFMT *fmt = (WaveFMT *)chunk->data;
-    fmt->wFormatTag = SWAPLE16(fmt->wFormatTag);
-    fmt->wChannels = SWAPLE16(fmt->wChannels);
-    fmt->dwSamplesPerSec = SWAPLE32(fmt->dwSamplesPerSec);
-    fmt->dwAvgBytesPerSec = SWAPLE32(fmt->dwAvgBytesPerSec);
-    fmt->wBlockAlign = SWAPLE16(fmt->wBlockAlign);
+    PCMWAVEFORMAT *fmt = (PCMWAVEFORMAT *)chunk->data;
+    fmt->wf.wFormatTag = SWAPLE16(fmt->wf.wFormatTag);
+    fmt->wf.nChannels = SWAPLE16(fmt->wf.nChannels);
+    fmt->wf.nSamplesPerSec = SWAPLE32(fmt->wf.nSamplesPerSec);
+    fmt->wf.nAvgBytesPerSec = SWAPLE32(fmt->wf.nAvgBytesPerSec);
+    fmt->wf.nBlockAlign = SWAPLE16(fmt->wf.nBlockAlign);
     fmt->wBitsPerSample = SWAPLE16(fmt->wBitsPerSample);
     wave->format = fmt;
 }
@@ -667,6 +647,9 @@ static void Parse_INFO_DLS(MidDLSPatches *data, RIFF_Chunk *chunk)
     }
 }
 
+
+/* ------- instrum_dls.c ------- */
+
 static void do_dlspatches_load(MidIStream *stream, MidDLSPatches **out)
 {
     RIFF_Chunk *chunk;
@@ -721,9 +704,6 @@ void mid_dlspatches_free(MidDLSPatches *data)
     FreeWaveList(data);
     timi_free(data);
 }
-
-
-/* ------- instrum_dls.c ------- */
 
 /* convert timecents to sec */
 static double to_msec(int timecent)
@@ -808,7 +788,7 @@ static void load_region_dls(MidSong *song, MidSample *sample, DLS_Instrument *in
   sample->high_vel = rgn->header->RangeVelocity.usHigh;
 
   sample->modes = MODES_16BIT;
-  sample->sample_rate = wave->format->dwSamplesPerSec;
+  sample->sample_rate = wave->format->wf.nSamplesPerSec;
   sample->data_length = wave->length / 2;
   sample->data = (sample_t *)timi_calloc(wave->length + 4);
   if (!sample->data) {

@@ -96,7 +96,7 @@ all: $(TARGETS)
 # object dependencies:
 common.o: common.c common.h timidity_internal.h
 instrum.o: instrum.c common.h instrum.h instrum_dls.h resample.h tables.h timidity_internal.h
-instrum_dls.o: instrum_dls.c common.h dls1.h dls2.h instrum.h instrum_dls.h tables.h timidity_internal.h
+instrum_dls.o: instrum_dls.c common.h dls_compat.h dls1.h dls2.h instrum.h instrum_dls.h tables.h timidity_internal.h
 mix.o: mix.c instrum.h mix.h output.h playmidi.h resample.h tables.h timidity_internal.h
 output.o: output.c output.h timidity_internal.h
 playmidi.o: playmidi.c instrum.h mix.h output.h playmidi.h tables.h timidity_internal.h
@@ -116,3 +116,4 @@ clean:
 	rm -f *.o libtimidity.a
 
 distclean: clean
+

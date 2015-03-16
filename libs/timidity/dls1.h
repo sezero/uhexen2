@@ -1,13 +1,12 @@
 /*
- *  dls1.h
+ * dls1.h
  *
- *  Description:
+ * Description:
  *
- *  Interface defines and structures for the Instrument Collection Form
- *  RIFF DLS.
+ * Interface defines and structures for the Instrument Collection Form
+ * RIFF DLS.
  *
- *  Written by Sonic Foundry 1996.  Released for public use.
- *
+ * Written by Sonic Foundry 1996.  Released for public use.
  */
 
 #ifndef _INC_DLS1
