@@ -341,7 +341,14 @@ CPPFLAGS+= -DSDLQUAKE
 # /Library/Frameworks/SDL.framework is available
 SDL_CFLAGS =-D_GNU_SOURCE=1 -D_THREAD_SAFE
 SDL_CFLAGS+=-DSDL_FRAMEWORK -DNO_SDL_CONFIG
-SDL_LIBS   =-Wl,-framework,SDL -Wl,-framework,Cocoa
+SDL_LIBS   =
+# default to our local SDL[2].framework for build
+SDL_FRAMEWORK_PATH ?=$(OSLIBS)/macosx
+ifneq ($(SDL_FRAMEWORK_PATH),)
+SDL_LIBS  +=-F$(SDL_FRAMEWORK_PATH)
+SDL_CFLAGS+=-F$(SDL_FRAMEWORK_PATH)
+endif
+SDL_LIBS  +=-Wl,-framework,SDL -Wl,-framework,Cocoa
 CFLAGS  += $(SDL_CFLAGS)
 LDFLAGS += $(SDL_LIBS)
 

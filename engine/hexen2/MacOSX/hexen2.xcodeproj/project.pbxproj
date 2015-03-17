@@ -542,7 +542,7 @@
 		707D58EA0AA9FBB700313A9F /* Hexen_II-gl.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Hexen_II-gl.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		707D59030AAA019300313A9F /* SDLMain.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = SDLMain.h; path = ../../h2shared/SDLMain.h; sourceTree = "<group>"; };
 		707D59040AAA019300313A9F /* SDLMain.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; name = SDLMain.m; path = ../../h2shared/SDLMain.m; sourceTree = "<group>"; };
-		707D59200AAA071800313A9F /* SDL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL.framework; path = /Library/Frameworks/SDL.framework; sourceTree = "<absolute>"; };
+		707D59200AAA071800313A9F /* SDL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL.framework; path = ../../../oslibs/macosx/SDL.framework; sourceTree = "<group>"; };
 		707D59240AAA076A00313A9F /* ApplicationServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ApplicationServices.framework; path = /System/Library/Frameworks/ApplicationServices.framework; sourceTree = "<absolute>"; };
 		707D59250AAA076A00313A9F /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = /System/Library/Frameworks/AudioToolbox.framework; sourceTree = "<absolute>"; };
 		707D59260AAA076A00313A9F /* AudioUnit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioUnit.framework; path = /System/Library/Frameworks/AudioUnit.framework; sourceTree = "<absolute>"; };
@@ -1368,7 +1368,10 @@
 					ppc,
 				);
 				COPY_PHASE_STRIP = NO;
-				FRAMEWORK_SEARCH_PATHS = "";
+				FRAMEWORK_SEARCH_PATHS = (
+					../../../oslibs/macosx,
+					"$(FRAMEWORK_SEARCH_PATHS)",
+				);
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					USE_CODEC_MP3,
 					USE_CODEC_VORBIS,
@@ -1404,7 +1407,10 @@
 					ppc,
 				);
 				COPY_PHASE_STRIP = YES;
-				FRAMEWORK_SEARCH_PATHS = "";
+				FRAMEWORK_SEARCH_PATHS = (
+					../../../oslibs/macosx,
+					"$(FRAMEWORK_SEARCH_PATHS)",
+				);
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					USE_CODEC_MP3,
 					USE_CODEC_VORBIS,
@@ -1440,7 +1446,10 @@
 					ppc,
 				);
 				COPY_PHASE_STRIP = NO;
-				FRAMEWORK_SEARCH_PATHS = "";
+				FRAMEWORK_SEARCH_PATHS = (
+					../../../oslibs/macosx,
+					"$(FRAMEWORK_SEARCH_PATHS)",
+				);
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
 				GCC_MODEL_TUNING = G3;
@@ -1526,7 +1535,10 @@
 					ppc,
 				);
 				COPY_PHASE_STRIP = YES;
-				FRAMEWORK_SEARCH_PATHS = "";
+				FRAMEWORK_SEARCH_PATHS = (
+					../../../oslibs/macosx,
+					"$(FRAMEWORK_SEARCH_PATHS)",
+				);
 				GCC_ENABLE_FIX_AND_CONTINUE = NO;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
 				GCC_MODEL_TUNING = G3;
