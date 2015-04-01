@@ -67,7 +67,7 @@ void Sys_Error (const char *error, ...) __attribute__((__format__(__printf__,1,2
 
 /*****************************************************************************/
 
-static void NetadrToSockadr (netadr_t *a, struct sockaddr_in *s)
+static void NetadrToSockadr (const netadr_t *a, struct sockaddr_in *s)
 {
 	memset (s, 0, sizeof(*s));
 	s->sin_family = AF_INET;
@@ -76,18 +76,18 @@ static void NetadrToSockadr (netadr_t *a, struct sockaddr_in *s)
 	s->sin_port = a->port;
 }
 
-static void SockadrToNetadr (struct sockaddr_in *s, netadr_t *a)
+static void SockadrToNetadr (const struct sockaddr_in *s, netadr_t *a)
 {
 	memcpy (a->ip, &s->sin_addr, 4);
 	a->port = s->sin_port;
 }
 
-const char *NET_AdrToString (netadr_t a)
+const char *NET_AdrToString (const netadr_t *a)
 {
 	static	char	s[64];
 
-	sprintf (s, "%i.%i.%i.%i:%i", a.ip[0], a.ip[1], a.ip[2], a.ip[3],
-							ntohs(a.port));
+	sprintf (s, "%i.%i.%i.%i:%i", a->ip[0], a->ip[1], a->ip[2], a->ip[3],
+							ntohs(a->port));
 
 	return s;
 }
@@ -251,7 +251,7 @@ int main (int argc, char *argv[])
 	if (ipaddress.port == 0)
 		ipaddress.port = htons(PORT_SERVER);
 	NetadrToSockadr(&ipaddress, &hostaddress);
-	printf ("Using address %s\n", NET_AdrToString(ipaddress));
+	printf ("Using address %s\n", NET_AdrToString(&ipaddress));
 
 /* prepare the header: \377\377\377\377rcon<space> */
 	p = &packet[0];

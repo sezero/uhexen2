@@ -445,7 +445,7 @@ void CL_PlayDemo_f (void)
 
 	cls.demoplayback = true;
 	cls.state = ca_demostart;
-	Netchan_Setup (&cls.netchan, net_from);
+	Netchan_Setup (&cls.netchan, &net_from);
 	realtime = 0;
 }
 

@@ -3,6 +3,10 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2015-04-01 (SVN):
+    * NET_ constifications. pass netadr_t as reference instead of copy.
+    * changed version date stamp to 2015-04-01.
+
 2015-03-10 (SVN):
     * timidity updates from https://github.com/sezero/libtimidity/ :
       renamed previously added unused MidSongOptions->width to _pad, so

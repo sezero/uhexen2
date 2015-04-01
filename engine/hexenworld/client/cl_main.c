@@ -206,7 +206,7 @@ void CL_SendConnectPacket (void)
 			255, 255, 255, 255,
 			((gameflags & GAME_PORTALS) == GAME_PORTALS),
 			cls.userinfo);
-	NET_SendPacket (strlen(data), data, adr);
+	NET_SendPacket (strlen(data), data, &adr);
 
 	// When we connect to a server, check the mouse is going - S.A.
 	menu_disabled_mouse = false;
@@ -317,7 +317,7 @@ static void CL_Rcon_f (void)
 		}
 	}
 
-	NET_SendPacket (strlen(message)+1, message, to);
+	NET_SendPacket (strlen(message)+1, message, &to);
 }
 
 
@@ -700,7 +700,7 @@ static void CL_Packet_f (void)
 	}
 	*out = 0;
 
-	NET_SendPacket (out-senddata, senddata, adr);
+	NET_SendPacket (out-senddata, senddata, &adr);
 }
 
 
@@ -798,7 +798,7 @@ static void CL_ConnectionlessPacket (void)
 
 	c = MSG_ReadByte ();
 	if (!cls.demoplayback)
-		Con_Printf ("%s:\n", NET_AdrToString (net_from));
+		Con_Printf ("%s:\n", NET_AdrToString (&net_from));
 	Con_DPrintf ("%s", net_message.data + 5);
 	if (c == S2C_CONNECTION)
 	{
@@ -808,7 +808,7 @@ static void CL_ConnectionlessPacket (void)
 				Con_Printf ("Dup connect received.  Ignored.\n");
 			return;
 		}
-		Netchan_Setup (&cls.netchan, net_from);
+		Netchan_Setup (&cls.netchan, &net_from);
 		MSG_WriteChar (&cls.netchan.message, clc_stringcmd);
 		MSG_WriteString (&cls.netchan.message, "new");
 		cls.state = ca_connected;
@@ -818,8 +818,8 @@ static void CL_ConnectionlessPacket (void)
 	// remote command from gui front end
 	if (c == A2C_CLIENT_COMMAND)
 	{
-		if (!NET_CompareBaseAdr(net_from, net_local_adr)
-			&& !NET_CompareBaseAdr(net_from, net_loopback_adr))
+		if (!NET_CompareBaseAdr(&net_from, &net_local_adr)
+			&& !NET_CompareBaseAdr(&net_from, &net_loopback_adr))
 		{
 			Con_Printf ("Command packet from remote host. Ignored.\n");
 			return;
@@ -852,7 +852,7 @@ static void CL_ConnectionlessPacket (void)
 		data[4] = A2A_ACK;
 		data[5] = 0;
 
-		NET_SendPacket (6, data, net_from);
+		NET_SendPacket (6, data, &net_from);
 		return;
 	}
 
@@ -885,16 +885,16 @@ static void CL_ReadPackets (void)
 
 		if (net_message.cursize < 8)
 		{
-			Con_Printf ("%s: Runt packet\n",NET_AdrToString(net_from));
+			Con_Printf ("%s: Runt packet\n",NET_AdrToString(&net_from));
 			continue;
 		}
 
 		// packet from server
 		if (!cls.demoplayback && 
-			!NET_CompareAdr (net_from, cls.netchan.remote_address))
+			!NET_CompareAdr (&net_from, &cls.netchan.remote_address))
 		{
 			Con_Printf ("%s: sequenced packet without connection\n",
-						NET_AdrToString(net_from));
+						NET_AdrToString(&net_from));
 			continue;
 		}
 		if (!Netchan_Process(&cls.netchan))

@@ -463,16 +463,16 @@ static void SVC_Log (void)
 	if (seq == svs.logsequence-1 || !sv_fraglogfile)
 	{	// they already have this data, or we aren't logging frags
 		data[0] = A2A_NACK;
-		NET_SendPacket (1, data, net_from);
+		NET_SendPacket (1, data, &net_from);
 		return;
 	}
 
-	Con_DPrintf ("sending log %i to %s\n", svs.logsequence-1, NET_AdrToString(net_from));
+	Con_DPrintf ("sending log %i to %s\n", svs.logsequence-1, NET_AdrToString(&net_from));
 
 	q_snprintf(data, sizeof(data), "stdlog %i\n", svs.logsequence-1);
 	q_strlcat (data, (char *)svs.log_buf[((svs.logsequence-1)&1)], sizeof(data));
 
-	NET_SendPacket (strlen(data)+1, data, net_from);
+	NET_SendPacket (strlen(data)+1, data, &net_from);
 }
 
 
@@ -489,7 +489,7 @@ static void SVC_Ping (void)
 
 	data = A2A_ACK;
 
-	NET_SendPacket (1, &data, net_from);
+	NET_SendPacket (1, &data, &net_from);
 }
 
 
@@ -524,8 +524,8 @@ static void SVC_DirectConnect (void)
 			q_strcasecmp(spectator_password.string, "none") &&
 			strcmp(spectator_password.string, s) )
 		{	// failed
-			Con_Printf ("%s:spectator password failed\n", NET_AdrToString (net_from));
-			Netchan_OutOfBandPrint (net_from, "%c\nrequires a spectator password\n\n", A2C_PRINT);
+			Con_Printf ("%s:spectator password failed\n", NET_AdrToString (&net_from));
+			Netchan_OutOfBandPrint (&net_from, "%c\nrequires a spectator password\n\n", A2C_PRINT);
 			return;
 		}
 		Info_SetValueForStarKey (userinfo, "*spectator", "1", MAX_INFO_STRING);
@@ -539,8 +539,8 @@ static void SVC_DirectConnect (void)
 			q_strcasecmp(password.string, "none") &&
 			strcmp(password.string, s) )
 		{
-			Con_Printf ("%s:password failed\n", NET_AdrToString (net_from));
-			Netchan_OutOfBandPrint (net_from, "%c\nserver requires a password\n\n", A2C_PRINT);
+			Con_Printf ("%s:password failed\n", NET_AdrToString (&net_from));
+			Netchan_OutOfBandPrint (&net_from, "%c\nserver requires a password\n\n", A2C_PRINT);
 			return;
 		}
 		spectator = false;
@@ -578,9 +578,9 @@ static void SVC_DirectConnect (void)
 	{
 		if (cl->state == cs_free)
 			continue;
-		if (NET_CompareAdr (adr, cl->netchan.remote_address))
+		if (NET_CompareAdr (&adr, &cl->netchan.remote_address))
 		{
-			Con_Printf ("%s:reconnect\n", NET_AdrToString (adr));
+			Con_Printf ("%s:reconnect\n", NET_AdrToString (&adr));
 			SV_DropClient (cl);
 			break;
 		}
@@ -609,8 +609,8 @@ static void SVC_DirectConnect (void)
 	if ( (spectator && spectators >= maxspectators.integer)
 		|| (!spectator && clients >= maxclients.integer) )
 	{
-		Con_Printf ("%s:full connect\n", NET_AdrToString (adr));
-		Netchan_OutOfBandPrint (adr, "%c\nserver is full\n\n", A2C_PRINT);
+		Con_Printf ("%s:full connect\n", NET_AdrToString (&adr));
+		Netchan_OutOfBandPrint (&adr, "%c\nserver is full\n\n", A2C_PRINT);
 		return;
 	}
 
@@ -635,11 +635,11 @@ static void SVC_DirectConnect (void)
 	// this is the only place a client_t is ever initialized
 	*newcl = temp;
 
-	Netchan_OutOfBandPrint (adr, "%c", S2C_CONNECTION );
+	Netchan_OutOfBandPrint (&adr, "%c", S2C_CONNECTION );
 
 	edictnum = (newcl-svs.clients)+1;
 
-	Netchan_Setup (&newcl->netchan, adr);
+	Netchan_Setup (&newcl->netchan, &adr);
 
 	newcl->state = cs_connected;
 
@@ -704,13 +704,13 @@ static void SVC_RemoteCommand (void)
 
 	if (i == 0)
 	{
-		Con_Printf ("Bad rcon from %s:\n%s\n", NET_AdrToString(net_from), net_message.data + 4);
+		Con_Printf ("Bad rcon from %s:\n%s\n", NET_AdrToString(&net_from), net_message.data + 4);
 		SV_BeginRedirect (RD_PACKET);
 		Con_Printf ("Bad rcon_password.\n");
 	}
 	else
 	{
-		Con_Printf ("Rcon from %s:\n%s\n", NET_AdrToString(net_from), net_message.data + 4);
+		Con_Printf ("Rcon from %s:\n%s\n", NET_AdrToString(&net_from), net_message.data + 4);
 		SV_BeginRedirect (RD_PACKET);
 		remaining[0] = 0;
 
@@ -758,12 +758,12 @@ static void SV_ConnectionlessPacket (void)
 	}
 	if (c[0] == A2A_ACK && (c[1] == 0 || c[1] == '\n') )
 	{
-		Con_Printf ("A2A_ACK from %s\n", NET_AdrToString (net_from));
+		Con_Printf ("A2A_ACK from %s\n", NET_AdrToString (&net_from));
 		return;
 	}
 	else if (c[0] == A2S_ECHO)
 	{
-		NET_SendPacket (net_message.cursize, net_message.data, net_from);
+		NET_SendPacket (net_message.cursize, net_message.data, &net_from);
 		return;
 	}
 	else if (!strcmp(c,"status"))
@@ -784,7 +784,7 @@ static void SV_ConnectionlessPacket (void)
 	else if (!strcmp(c, "rcon"))
 		SVC_RemoteCommand ();
 	else
-		Con_Printf ("bad connectionless packet from %s:\n%s\n", NET_AdrToString (net_from), s);
+		Con_Printf ("bad connectionless packet from %s:\n%s\n", NET_AdrToString (&net_from), s);
 }
 
 
@@ -1007,7 +1007,7 @@ static void SV_SendBan (void)
 	static byte data[] = { 0xff, 0xff, 0xff, 0xff, A2C_PRINT,
 		'\n', 'b', 'a', 'n', 'n', 'e', 'd', '.', '\n', '\0' };
 
-	NET_SendPacket (15, data, net_from);
+	NET_SendPacket (15, data, &net_from);
 }
 
 
@@ -1065,7 +1065,7 @@ static void SV_ReadPackets (void)
 		{
 			if (cl->state == cs_free)
 				continue;
-			if (!NET_CompareAdr (net_from, cl->netchan.remote_address))
+			if (!NET_CompareAdr (&net_from, &cl->netchan.remote_address))
 				continue;
 			if (Netchan_Process(&cl->netchan))
 			{	// this is a valid, sequenced packet, so process it
@@ -1081,7 +1081,7 @@ static void SV_ReadPackets (void)
 			continue;
 
 		// packet is not from a known client
-		//	Con_Printf ("%s:sequenced packet without connection\n", NET_AdrToString(net_from));
+		//	Con_Printf ("%s:sequenced packet without connection\n", NET_AdrToString(&net_from));
 	}
 }
 
@@ -1419,8 +1419,8 @@ void Master_Heartbeat (void)
 	{
 		if (master_adr[i].port)
 		{
-			Con_Printf ("Sending heartbeat to %s\n", NET_AdrToString (master_adr[i]));
-			NET_SendPacket (strlen(text), text, master_adr[i]);
+			Con_Printf ("Sending heartbeat to %s\n", NET_AdrToString (&master_adr[i]));
+			NET_SendPacket (strlen(text), text, &master_adr[i]);
 		}
 	}
 }
@@ -1443,8 +1443,8 @@ static void Master_Shutdown (void)
 	{
 		if (master_adr[i].port)
 		{
-			Con_Printf ("Sending heartbeat to %s\n", NET_AdrToString (master_adr[i]));
-			NET_SendPacket (3, text, master_adr[i]);
+			Con_Printf ("Sending heartbeat to %s\n", NET_AdrToString (&master_adr[i]));
+			NET_SendPacket (3, text, &master_adr[i]);
 		}
 	}
 }

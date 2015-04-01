@@ -94,7 +94,7 @@ Netchan_OutOfBand
 Sends an out-of-band datagram
 ================
 */
-void Netchan_OutOfBand (netadr_t adr, int length, byte *data)
+void Netchan_OutOfBand (const netadr_t *adr, int length, byte *data)
 {
 	sizebuf_t	senddata;
 	byte		send_buf[MAX_MSGLEN + PACKET_HEADER];
@@ -117,7 +117,7 @@ Netchan_OutOfBandPrint
 Sends a text message in an out-of-band datagram
 ================
 */
-void Netchan_OutOfBandPrint (netadr_t adr, const char *format, ...)
+void Netchan_OutOfBandPrint (const netadr_t *adr, const char *format, ...)
 {
 	va_list		argptr;
 	static char	string[8192];
@@ -137,11 +137,11 @@ Netchan_Setup
 called to open a channel to a remote system
 ==============
 */
-void Netchan_Setup (netchan_t *chan, netadr_t adr)
+void Netchan_Setup (netchan_t *chan, const netadr_t *adr)
 {
 	memset (chan, 0, sizeof(*chan));
 
-	chan->remote_address = adr;
+	chan->remote_address = *adr;
 	chan->last_received = realtime;
 
 	SZ_Init (&chan->message, chan->message_buf, sizeof(chan->message_buf));
@@ -159,7 +159,7 @@ Returns true if the bandwidth choke isn't active
 ================
 */
 #define	MAX_BACKUP	200
-qboolean Netchan_CanPacket (netchan_t *chan)
+qboolean Netchan_CanPacket (const netchan_t *chan)
 {
 	if (chan->cleartime < realtime + MAX_BACKUP*chan->rate)
 		return true;
@@ -174,7 +174,7 @@ Netchan_CanReliable
 Returns true if the bandwidth choke isn't 
 ================
 */
-qboolean Netchan_CanReliable (netchan_t *chan)
+qboolean Netchan_CanReliable (const netchan_t *chan)
 {
 	if (chan->reliable_length)
 		return false;			// waiting for ack
@@ -204,7 +204,7 @@ void Netchan_Transmit (netchan_t *chan, int length, byte *data)
 	if (chan->message.overflowed)
 	{
 		chan->fatal_error = true;
-		Con_Printf ("%s:Outgoing message overflow\n", NET_AdrToString (chan->remote_address));
+		Con_Printf ("%s:Outgoing message overflow\n", NET_AdrToString (&chan->remote_address));
 		return;
 	}
 
@@ -253,7 +253,7 @@ void Netchan_Transmit (netchan_t *chan, int length, byte *data)
 	chan->outgoing_time[i] = realtime;
 
 	if (NOT_DEMOPLAYBACK)	// zoid, no input in demo playback mode
-		NET_SendPacket (senddata.cursize, senddata.data, chan->remote_address);
+		NET_SendPacket (senddata.cursize, senddata.data, &chan->remote_address);
 
 	if (chan->cleartime < realtime)
 		chan->cleartime = realtime + senddata.cursize*chan->rate;
@@ -285,7 +285,7 @@ qboolean Netchan_Process (netchan_t *chan)
 	unsigned int	sequence, sequence_ack;
 	int	reliable_ack, reliable_message;
 
-	if (NOT_DEMOPLAYBACK && !NET_CompareAdr (net_from, chan->remote_address))
+	if (NOT_DEMOPLAYBACK && !NET_CompareAdr (&net_from, &chan->remote_address))
 	{
 		return false;
 	}
@@ -349,7 +349,7 @@ qboolean Netchan_Process (netchan_t *chan)
 		if (showdrop.integer)
 		{
 			Con_Printf ("%s:Out of order packet %u at %i\n",
-					NET_AdrToString (chan->remote_address),
+					NET_AdrToString (&chan->remote_address),
 					sequence,
 					chan->incoming_sequence);
 		}
@@ -367,7 +367,7 @@ qboolean Netchan_Process (netchan_t *chan)
 		if (showdrop.integer)
 		{
 			Con_Printf ("%s:Dropped %u packets at %u\n",
-					NET_AdrToString (chan->remote_address),
+					NET_AdrToString (&chan->remote_address),
 					sequence - (unsigned int)(chan->incoming_sequence + 1),
 					sequence);
 		}

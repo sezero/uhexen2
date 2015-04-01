@@ -59,7 +59,7 @@ static byte	net_message_buffer[MAX_UDP_PACKET];
 
 //=============================================================================
 
-static void NetadrToSockadr (netadr_t *a, struct sockaddr_in *s)
+static void NetadrToSockadr (const netadr_t *a, struct sockaddr_in *s)
 {
 	memset (s, 0, sizeof(*s));
 	s->sin_family = AF_INET;
@@ -68,48 +68,48 @@ static void NetadrToSockadr (netadr_t *a, struct sockaddr_in *s)
 	s->sin_port = a->port;
 }
 
-static void SockadrToNetadr (struct sockaddr_in *s, netadr_t *a)
+static void SockadrToNetadr (const struct sockaddr_in *s, netadr_t *a)
 {
 	memcpy (a->ip, &s->sin_addr, 4);
 	a->port = s->sin_port;
 }
 
-qboolean NET_CompareBaseAdr (netadr_t a, netadr_t b)
+qboolean NET_CompareBaseAdr (const netadr_t *a, const netadr_t *b)
 {
-	if (a.ip[0] == b.ip[0] && a.ip[1] == b.ip[1] &&
-	    a.ip[2] == b.ip[2] && a.ip[3] == b.ip[3])
+	if (a->ip[0] == b->ip[0] && a->ip[1] == b->ip[1] &&
+	    a->ip[2] == b->ip[2] && a->ip[3] == b->ip[3])
 	{
 		return true;
 	}
 	return false;
 }
 
-qboolean NET_CompareAdr (netadr_t a, netadr_t b)
+qboolean NET_CompareAdr (const netadr_t *a, const netadr_t *b)
 {
-	if (a.ip[0] == b.ip[0] && a.ip[1] == b.ip[1] &&
-	    a.ip[2] == b.ip[2] && a.ip[3] == b.ip[3] &&
-	    a.port == b.port)
+	if (a->ip[0] == b->ip[0] && a->ip[1] == b->ip[1] &&
+	    a->ip[2] == b->ip[2] && a->ip[3] == b->ip[3] &&
+	    a->port == b->port)
 	{
 		return true;
 	}
 	return false;
 }
 
-const char *NET_AdrToString (netadr_t a)
+const char *NET_AdrToString (const netadr_t *a)
 {
 	static	char	s[64];
 
-	sprintf (s, "%i.%i.%i.%i:%i", a.ip[0], a.ip[1], a.ip[2], a.ip[3],
-							ntohs(a.port));
+	sprintf (s, "%i.%i.%i.%i:%i", a->ip[0], a->ip[1], a->ip[2], a->ip[3],
+							ntohs(a->port));
 
 	return s;
 }
 
-const char *NET_BaseAdrToString (netadr_t a)
+const char *NET_BaseAdrToString (const netadr_t *a)
 {
 	static	char	s[64];
 
-	sprintf (s, "%i.%i.%i.%i", a.ip[0], a.ip[1], a.ip[2], a.ip[3]);
+	sprintf (s, "%i.%i.%i.%i", a->ip[0], a->ip[1], a->ip[2], a->ip[3]);
 
 	return s;
 }
@@ -187,13 +187,13 @@ int NET_GetPacket (void)
 		if (err == WSAEMSGSIZE)
 		{
 			Con_Printf ("Oversize packet from %s\n",
-					NET_AdrToString (net_from));
+					NET_AdrToString (&net_from));
 			return 0;
 		}
 		if (err == WSAECONNRESET)
 		{
 			Con_Printf ("Connection reset by peer %s\n",
-					NET_AdrToString (net_from));
+					NET_AdrToString (&net_from));
 			return 0;
 		}
 # endif	/* _WINDOWS */
@@ -205,7 +205,7 @@ int NET_GetPacket (void)
 	if (ret == (int) sizeof(net_message_buffer))
 	{
 		Con_Printf ("Oversize packet from %s\n",
-					NET_AdrToString (net_from));
+					NET_AdrToString (&net_from));
 		return 0;
 	}
 
@@ -216,7 +216,7 @@ int NET_GetPacket (void)
 	if (ret > (int) sizeof(net_message_buffer))
 	{
 		Con_Printf ("Oversize compressed data from %s\n",
-					NET_AdrToString (net_from));
+					NET_AdrToString (&net_from));
 		return 0;
 	}
 	net_message.cursize = ret;
@@ -227,12 +227,12 @@ int NET_GetPacket (void)
 
 //=============================================================================
 
-void NET_SendPacket (int length, void *data, netadr_t to)
+void NET_SendPacket (int length, void *data, const netadr_t *to)
 {
 	int	ret, outlen;
 	struct sockaddr_in	addr;
 
-	NetadrToSockadr (&to, &addr);
+	NetadrToSockadr (to, &addr);
 	HuffEncode((unsigned char *)data, huffbuff, length, &outlen);
 
 	ret = sendto (net_socket, (char *) huffbuff, outlen, 0,
@@ -350,7 +350,7 @@ static void NET_GetLocalAddress (void)
 	}
 	net_local_adr.port = address.sin_port;
 
-	Con_SafePrintf("IP address %s\n", NET_AdrToString(net_local_adr));
+	Con_SafePrintf("IP address %s\n", NET_AdrToString(&net_local_adr));
 }
 
 /*

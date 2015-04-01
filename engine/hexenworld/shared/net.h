@@ -42,13 +42,13 @@ extern	cvar_t	hostname;
 void		NET_Init (int port);
 void		NET_Shutdown (void);
 int		NET_GetPacket (void);
-void		NET_SendPacket (int length, void *data, netadr_t to);
+void		NET_SendPacket (int length, void *data, const netadr_t *to);
 int		NET_CheckReadTimeout (long sec, long usec);
 
-qboolean	NET_CompareAdr (netadr_t a, netadr_t b);
-qboolean	NET_CompareBaseAdr (netadr_t a, netadr_t b);	// without port
-const char	*NET_AdrToString (netadr_t a);
-const char	*NET_BaseAdrToString (netadr_t a);
+qboolean	NET_CompareAdr (const netadr_t *a, const netadr_t *b);
+qboolean	NET_CompareBaseAdr (const netadr_t *a, const netadr_t *b);	// without port
+const char	*NET_AdrToString (const netadr_t *a);
+const char	*NET_BaseAdrToString (const netadr_t *a);
 qboolean	NET_StringToAdr (const char *s, netadr_t *a);
 
 //============================================================================
@@ -105,13 +105,14 @@ extern	int	net_drop;		// packets dropped before this one
 
 void Netchan_Init (void);
 void Netchan_Transmit (netchan_t *chan, int length, byte *data);
-void Netchan_OutOfBand (netadr_t adr, int length, byte *data);
-void Netchan_OutOfBandPrint (netadr_t adr, const char *format, ...) __attribute__((__format__(__printf__,2,3)));
+void Netchan_OutOfBand (const netadr_t *adr, int length, byte *data);
+void Netchan_OutOfBandPrint (const netadr_t *adr, const char *format, ...)
+						__attribute__((__format__(__printf__,2,3)));
 qboolean Netchan_Process (netchan_t *chan);
-void Netchan_Setup (netchan_t *chan, netadr_t adr);
+void Netchan_Setup (netchan_t *chan, const netadr_t *adr);
 
-qboolean Netchan_CanPacket (netchan_t *chan);
-qboolean Netchan_CanReliable (netchan_t *chan);
+qboolean Netchan_CanPacket (const netchan_t *chan);
+qboolean Netchan_CanReliable (const netchan_t *chan);
 
 #endif	/* __H2W_NET_H */
 

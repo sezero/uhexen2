@@ -69,7 +69,7 @@ static void SV_FlushRedirect (void)
 		senddata[4] = A2C_PRINT;
 		memcpy (&senddata[5], outputbuf, strlen(outputbuf)+1);
 
-		NET_SendPacket (strlen(senddata)+1, senddata, net_from);
+		NET_SendPacket (strlen(senddata)+1, senddata, &net_from);
 	}
 	else if (sv_redirected == RD_CLIENT)
 	{
