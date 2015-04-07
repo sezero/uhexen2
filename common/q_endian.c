@@ -25,10 +25,10 @@
 #include "q_endian.h"
 
 #if ENDIAN_RUNTIME_DETECT
-#define	__byteswap_func	static
+#define __byteswap_func static
 #else
-#define	__byteswap_func
-#endif	/* ENDIAN_RUNTIME_DETECT */
+#define __byteswap_func
+#endif /* ENDIAN_RUNTIME_DETECT */
 
 #if ENDIAN_RUNTIME_DETECT
 /*
@@ -43,11 +43,11 @@
 # endif
 # warning "Revise the macros in q_endian.h for this"
 # warning "machine or use runtime detection !!!"
-#endif	/* ENDIAN_ASSUMED_UNSAFE */
+#endif /* ENDIAN_ASSUMED_UNSAFE */
 
 
-int		host_byteorder;
-int		host_bigendian;		/* qboolean */
+int host_byteorder;
+int host_bigendian; /* qboolean */
 
 int DetectByteorder (void)
 {
@@ -136,14 +136,14 @@ float FloatNoSwap (float f)
 	return f;
 }
 
-short	(*BigShort) (short);
-short	(*LittleShort) (short);
-int	(*BigLong) (int);
-int	(*LittleLong) (int);
-float	(*BigFloat) (float);
-float	(*LittleFloat) (float);
+short (*BigShort) (short);
+short (*LittleShort) (short);
+int   (*BigLong) (int);
+int   (*LittleLong) (int);
+float (*BigFloat) (float);
+float (*LittleFloat) (float);
 
-#endif	/* ENDIAN_RUNTIME_DETECT */
+#endif /* ENDIAN_RUNTIME_DETECT */
 
 void ByteOrder_Init (void)
 {
@@ -174,6 +174,6 @@ void ByteOrder_Init (void)
 	default:
 		break;
 	}
-#endif	/* ENDIAN_RUNTIME_DETECT */
+#endif /* ENDIAN_RUNTIME_DETECT */
 }
 

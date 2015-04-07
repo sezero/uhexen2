@@ -1,4 +1,4 @@
-# $Id: cross_defs.w64 4681 2012-05-21 17:21:58Z sezero $
+# $Id$
 #
 # This file contains all common Win64 cross compilation definitions for
 # use with all other build_cross_morphos.sh scripts for the uhexen2 tree.

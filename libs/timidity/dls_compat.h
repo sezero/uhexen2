@@ -21,11 +21,12 @@ typedef struct _GUID {
   uint16 Data3;
   uint8  Data4[8];
 } GUID;
+
 /* no need supporting INITGUID */
 #ifdef __cplusplus
-#define DEFINE_GUID(name,l,w1,w2,b1,b2,b3,b4,b5,b6,b7,b8) extern "C" const GUID A
+#define DEFINE_GUID(name,l,w1,w2,b1,b2,b3,b4,b5,b6,b7,b8) extern "C" const GUID name
 #else
-#define DEFINE_GUID(name,l,w1,w2,b1,b2,b3,b4,b5,b6,b7,b8) extern     const GUID A
+#define DEFINE_GUID(name,l,w1,w2,b1,b2,b3,b4,b5,b6,b7,b8) extern     const GUID name
 #endif
 
 #pragma pack(push,1)
@@ -36,6 +37,7 @@ typedef struct _WAVEFORMAT {
   uint32 nAvgBytesPerSec;
   uint16 nBlockAlign;
 } WAVEFORMAT;
+
 typedef struct _PCMWAVEFORMAT {
   WAVEFORMAT wf;
   uint16 wBitsPerSample;

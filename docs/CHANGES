@@ -3,6 +3,14 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2015-04-07 (SVN):
+    * common/q_endian.h: update to use __ORDER_???_ENDIAN__ macros from
+      new gcc and clang. whitespace tidy-up.
+    * common/q_endian.c: whitespace tidy-up.
+    * timidity/timi_endian.h: update to use __ORDER_???_ENDIAN__ macros
+      from new gcc and clang. whitespace tidy-up.
+    * timidity/dls_compat.h: fix (harmless) typo.
+
 2015-04-01 (SVN):
     * NET_ constifications. pass netadr_t as reference instead of copy.
     * changed version date stamp to 2015-04-01.
