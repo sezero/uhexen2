@@ -187,6 +187,16 @@ struct mbuf {
   #endif
 #endif
 
+#if defined(__GNUC__)  /* from djgpp-2.04 sys/cdefs.h : */
+/* Ensure that always traditional GNU extern inline semantics are used
+   (aka -fgnu89-inline) even if ISO C99 semantics have been specified.  */
+#if __GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 2)
+# define _W32_EXTERN_INLINE  extern __inline__ __attribute__ ((__gnu_inline__))
+#else
+# define _W32_EXTERN_INLINE  extern __inline__
+#endif
+#endif /* _W32_EXTERN_INLINE */
+
 /*
  * Delete pseudo-keywords wherever they are not available or needed.
  * This seems to break MingW in mysterious ways, so leave it,

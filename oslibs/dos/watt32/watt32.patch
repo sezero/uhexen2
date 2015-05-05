@@ -1,8 +1,6 @@
-
-Only in watt_src/inc: djstdint
 diff -urp watt_src.orig/inc/sys/cdefs.h watt_src/inc/sys/cdefs.h
 --- watt_src.orig/inc/sys/cdefs.h	2005-12-30 00:14:10.000000000 +0200
-+++ watt_src/inc/sys/cdefs.h	2011-11-27 12:05:39.000000000 +0200
++++ watt_src/inc/sys/cdefs.h	2015-05-01 05:55:00.000000000 +0300
 @@ -44,9 +44,8 @@
  #ifndef __SYS_CDEFS_H
  #define __SYS_CDEFS_H
@@ -15,8 +13,47 @@ diff -urp watt_src.orig/inc/sys/cdefs.h watt_src/inc/sys/cdefs.h
  #endif
  
  #ifdef __cplusplus
+@@ -188,6 +187,16 @@ struct mbuf {
+   #endif
+ #endif
+ 
++#if defined(__GNUC__)  /* from djgpp-2.04 sys/cdefs.h : */
++/* Ensure that always traditional GNU extern inline semantics are used
++   (aka -fgnu89-inline) even if ISO C99 semantics have been specified.  */
++#if __GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 2)
++# define _W32_EXTERN_INLINE  extern __inline__ __attribute__ ((__gnu_inline__))
++#else
++# define _W32_EXTERN_INLINE  extern __inline__
++#endif
++#endif /* _W32_EXTERN_INLINE */
++
+ /*
+  * Delete pseudo-keywords wherever they are not available or needed.
+  * This seems to break MingW in mysterious ways, so leave it,
+Only in watt_src/inc: djstdint
 Only in watt_src/inc/sys: djerr.203
 Only in watt_src/inc/sys: djerr.204
+diff -urp watt_src.orig/inc/sys/swap.h watt_src/inc/sys/swap.h
+--- watt_src.orig/inc/sys/swap.h	2005-12-30 00:02:44.000000000 +0200
++++ watt_src/inc/sys/swap.h	2015-05-01 05:55:00.000000000 +0300
+@@ -58,7 +58,7 @@ __BEGIN_DECLS
+   /*
+    * Ripped (and adapted) from <linux/include/asm-386/byteorder.h>
+    */
+-  /*@unused@*/ extern __inline__ unsigned long __ntohl (unsigned long x)
++  /*@unused@*/ _W32_EXTERN_INLINE unsigned long __ntohl (unsigned long x)
+   {
+     __asm__ __volatile (
+              "xchgb %b0, %h0\n\t"   /* swap lower bytes  */
+@@ -68,7 +68,7 @@ __BEGIN_DECLS
+     return (x);
+   }
+ 
+-  /*@unused@*/ extern __inline__ unsigned short __ntohs (unsigned short x)
++  /*@unused@*/ _W32_EXTERN_INLINE unsigned short __ntohs (unsigned short x)
+   {
+     __asm__ __volatile__ (
+               "xchgb %b0, %h0"       /* swap bytes */
 diff -urp watt_src.orig/inc/sys/wtypes.h watt_src/inc/sys/wtypes.h
 --- watt_src.orig/inc/sys/wtypes.h	2005-12-19 03:55:48.000000000 +0200
 +++ watt_src/inc/sys/wtypes.h	2011-11-28 20:15:35.000000000 +0200
@@ -396,6 +433,45 @@ diff -urp watt_src.orig/src/cpumodel.S watt_src/src/cpumodel.S
  is386:
      popfl                   /* restore original EFLAGS */
      call check_x87
+diff -urp watt_src.orig/src/cpumodel.h watt_src/src/cpumodel.h
+--- watt_src.orig/src/cpumodel.h	2005-12-29 23:47:56.000000000 +0200
++++ watt_src/src/cpumodel.h	2015-05-01 05:55:00.000000000 +0300
+@@ -156,7 +156,7 @@ extern CONST char  DATA_DECL x86_vendor_
+   /*
+    * Call this only if x86_have_cpuid == TRUE.
+    */
+-  /*@unused@*/ extern __inline__ void get_cpuid (DWORD val, DWORD *eax,
++  /*@unused@*/ _W32_EXTERN_INLINE void get_cpuid(DWORD val, DWORD *eax,
+                                                  DWORD *ebx,DWORD *ecx,
+                                                  DWORD *edx)
+   {
+@@ -177,7 +177,7 @@ extern CONST char  DATA_DECL x86_vendor_
+    *   Tom Burgess <Tom_Burgess@bc.sympatico.ca> and
+    *   Douglas Eleveld <deleveld@dds.nl>
+    */
+-  extern __inline__ uint64 get_rdtsc (void)
++  _W32_EXTERN_INLINE uint64 get_rdtsc (void)
+   {
+     register uint64 tsc;
+     __asm__ __volatile__ (
+@@ -186,7 +186,7 @@ extern CONST char  DATA_DECL x86_vendor_
+     return (tsc);
+   }
+ 
+-  extern __inline__ void get_rdtsc2 (struct ulong_long *tsc)
++  _W32_EXTERN_INLINE void get_rdtsc2 (struct ulong_long *tsc)
+   {
+     __asm__ __volatile__ (
+               ".byte 0x0F, 0x31;"
+@@ -291,7 +291,7 @@ static void pkt_restore_fpu (char far *s
+  * Note used at the moment. See cpumodel.asm instead.
+  */
+ #if defined(__GNUC__)
+-extern __inline__ BOOL have_cpuid (void)
++_W32_EXTERN_INLINE BOOL have_cpuid (void)
+ {
+   int result = -1;
+ 
 Only in watt_src/src/djgpp: syserr.203
 Only in watt_src/src/djgpp: syserr.204
 diff -urp watt_src.orig/src/djgpp/watt32.dep watt_src/src/djgpp/watt32.dep
@@ -833,6 +909,82 @@ diff -urNp watt_src.orig/src/djgpp/djtime.c watt_src/src/djgpp/djtime.c
 +    return tv.tv_sec;
 +}
 Only in watt_src.orig/src: iconv
+diff -urp watt_src.orig/src/ioport.h watt_src/src/ioport.h
+--- watt_src.orig/src/ioport.h	2003-11-14 00:57:54.000000000 +0200
++++ watt_src/src/ioport.h	2015-05-01 05:55:00.000000000 +0300
+@@ -61,7 +61,7 @@
+ 
+ /* Copyright (C) 1995 DJ Delorie, see COPYING.DJ for details */
+ 
+-extern __inline__ unsigned char inportb (unsigned short port)
++_W32_EXTERN_INLINE unsigned char inportb (unsigned short port)
+ {
+   unsigned char rc;
+   __asm__ __volatile__ (
+@@ -71,7 +71,7 @@ extern __inline__ unsigned char inportb
+   return (rc);
+ }
+ 
+-extern __inline__ unsigned short inportw (unsigned short port)
++_W32_EXTERN_INLINE unsigned short inportw (unsigned short port)
+ {
+   unsigned short rc;
+   __asm__ __volatile__ (
+@@ -81,7 +81,7 @@ extern __inline__ unsigned short inportw
+   return (rc);
+ }
+ 
+-extern __inline__ void outportb (unsigned short port, unsigned char data)
++_W32_EXTERN_INLINE void outportb (unsigned short port, unsigned char data)
+ {
+   __asm__ __volatile__ (
+              "outb %1, %0"
+@@ -89,7 +89,7 @@ extern __inline__ void outportb (unsigne
+              "a" (data));
+ }
+ 
+-extern __inline__ void outportw (unsigned short port, unsigned short data)
++_W32_EXTERN_INLINE void outportw (unsigned short port, unsigned short data)
+ {
+   __asm__ __volatile__ (
+              "outw %1, %0"
+diff -urp watt_src.orig/src/misc.h watt_src/src/misc.h
+--- watt_src.orig/src/misc.h	2006-01-13 00:06:34.000000000 +0200
++++ watt_src/src/misc.h	2015-05-01 05:55:00.000000000 +0300
+@@ -730,7 +730,7 @@ extern const char *short_strerror (int e
+    * save/restore FS/GS registers in the rmode callback stub.
+    * Not needed if 'USE_FAST_PKT' is used.
+    */
+-  extern __inline__ WORD get_fs_reg (void)
++  _W32_EXTERN_INLINE WORD get_fs_reg (void)
+   {
+      WORD sel;
+      __asm__ __volatile__ (
+@@ -738,7 +738,7 @@ extern const char *short_strerror (int e
+            : "=r" (sel) : );
+      return (sel);
+   }
+-  extern __inline__ WORD get_gs_reg (void)
++  _W32_EXTERN_INLINE WORD get_gs_reg (void)
+   {
+      WORD sel;
+      __asm__ __volatile__ (
+@@ -746,13 +746,13 @@ extern const char *short_strerror (int e
+            : "=r" (sel) : );
+      return (sel);
+   }
+-  extern __inline__ void set_fs_reg (WORD sel)
++  _W32_EXTERN_INLINE void set_fs_reg (WORD sel)
+   {
+     __asm__ __volatile__ (
+             "movw %w0, %%fs"
+          :: "rm" (sel));
+   }
+-  extern __inline__ void set_gs_reg (WORD sel)
++  _W32_EXTERN_INLINE void set_gs_reg (WORD sel)
+   {
+     __asm__ __volatile__ (
+             "movw %w0, %%gs"
 diff -urp watt_src.orig/src/packet32.c watt_src/src/packet32.c
 --- watt_src.orig/src/packet32.c	2005-02-19 19:05:50.000000000 +0200
 +++ watt_src/src/packet32.c	2011-03-03 18:05:19.000000000 +0200
@@ -1243,6 +1395,17 @@ diff -urp watt_src.orig/src/timer.h watt_src/src/timer.h
    extern void   profile_start (const char *where);
    extern void   profile_stop  (void);
    extern int    profile_init  (void);
+diff -urp watt_src.orig/src/wattcp.h watt_src/src/wattcp.h
+--- watt_src.orig/src/wattcp.h	2006-01-13 00:05:08.000000000 +0200
++++ watt_src/src/wattcp.h	2015-05-01 05:55:00.000000000 +0300
+@@ -131,6 +131,7 @@ struct ulong_long {
+ 
+ #include <sys/w32api.h>      /**< export/import decorations */
+ #include <sys/werrno.h>      /**< errno stuff */
++#include <sys/cdefs.h>       /**< _EXTERN_INLINE  */
+ 
+ #if defined(USE_CRTDBG)      /**< use CrtDebug in MSVC debug-mode */
+   #define _CRTDBG_MAP_ALLOC
 diff -urp watt_src.orig/src/winpcap.c watt_src/src/winpcap.c
 --- watt_src.orig/src/winpcap.c	2006-01-25 05:07:12.000000000 +0200
 +++ watt_src/src/winpcap.c	2011-03-03 18:05:19.000000000 +0200

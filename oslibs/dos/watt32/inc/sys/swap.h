@@ -58,7 +58,7 @@ __BEGIN_DECLS
   /*
    * Ripped (and adapted) from <linux/include/asm-386/byteorder.h>
    */
-  /*@unused@*/ extern __inline__ unsigned long __ntohl (unsigned long x)
+  /*@unused@*/ _W32_EXTERN_INLINE unsigned long __ntohl (unsigned long x)
   {
     __asm__ __volatile (
              "xchgb %b0, %h0\n\t"   /* swap lower bytes  */
@@ -68,7 +68,7 @@ __BEGIN_DECLS
     return (x);
   }
 
-  /*@unused@*/ extern __inline__ unsigned short __ntohs (unsigned short x)
+  /*@unused@*/ _W32_EXTERN_INLINE unsigned short __ntohs (unsigned short x)
   {
     __asm__ __volatile__ (
               "xchgb %b0, %h0"       /* swap bytes */
