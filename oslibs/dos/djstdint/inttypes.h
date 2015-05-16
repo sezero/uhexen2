@@ -7,6 +7,10 @@
 #ifndef __dj_inttypes__h_
 #define __dj_inttypes__h_
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 /* Get the type definitions.  */
 #include <stdint.h>
 
@@ -183,10 +187,6 @@
 #endif /* !__cplusplus || __STDC_FORMAT_MACROS */
 
 #if 0 /* don't need the intmax functions below */
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 typedef struct {
   intmax_t quot;
   intmax_t rem;
@@ -196,10 +196,10 @@ intmax_t imaxabs (intmax_t _j);
 imaxdiv_t imaxdiv (intmax_t _numer, intmax_t _denom);
 intmax_t strtoimax (const char *_nptr, char **_endptr, int _base);
 uintmax_t strtoumax (const char *_nptr, char **_endptr, int _base);
+#endif /* if 0 */
 
 #ifdef __cplusplus
 }
 #endif
-#endif /* if 0 */
 
 #endif /* __dj_inttypes__h_ */

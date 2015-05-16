@@ -4,19 +4,21 @@
 # configured like:
 ./configure --host=i586-pc-msdosdjgpp --prefix=/djgpp --disable-debugging
 
-# Replaced -O by -O2 in the generated Makefile, compiled as usual.
+# In the generated Makefile, changed optimization to -O2 and removed all
+# other flags except for -fomit-frame-pointer, then compiled as usual.
 # compiler and assembler versions:
 
 $ i586-pc-msdosdjgpp-djgcc -v
-Reading specs from /usr/local/cross-djgpp-gcc33/bin/../lib/gcc-lib/i586-pc-msdosdjgpp/3.3.6/specs
-Configured with: ../gcc-3.36/configure --prefix=/usr/local/cross-djgpp --target=i586-pc-msdosdjgpp --with-headers=/usr/local/cross-djgpp/i586-pc-msdosdjgpp/include --enable-languages=c,c++ --disable-libgcj --disable-libada --disable-nls
+Reading specs from /usr/local/cross-djgpp/lib/gcc/i586-pc-msdosdjgpp/3.4.6/specs
+Configured with: ../gcc-3.46/configure --prefix=/usr/local/cross-djgpp --target=i586-pc-msdosdjgpp --with-headers=/usr/local/cross-djgpp/i586-pc-msdosdjgpp/include --enable-languages=c,c++ --disable-libgcj --disable-libada --disable-nls
 Thread model: single
-gcc version 3.3.6
+gcc version 3.4.6
 
 $ i586-pc-msdosdjgpp-as -v
-GNU assembler version 2.16.1 (i586-pc-msdosdjgpp) using BFD version 2.16.1
+GNU assembler version 2.24 (i586-pc-msdosdjgpp) using BFD version (GNU Binutils) 2.24
 
-# djgpp header/libary version: 2.04 (CVS/2011-07-10.)
+# djgpp header/libary version: 2.03 (modified, with many fixes/changes
+# backported from djgpp-v2.05)
 
 --- frame.c.orig
 +++ frame.c

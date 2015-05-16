@@ -1,5 +1,4 @@
-/* DJGPP < v2.04 doesn't have vsnprintf().  The following are
- * copied over from DJGPP 2.04.  */
+/* Hacked from DJGPP v2.04 for use with older DJGPP versions */
 
 /* Copyright (C) 2001 DJ Delorie, see COPYING.DJ for details */
 #include <stdio.h>
@@ -10,20 +9,8 @@
 #include <libc/file.h>
 
 #if !defined(_IONTERM)
-#define _IONTERM 0 /* dummy value */
-#endif /*  _IONTERM */
-
-static __inline__ void __stropenw(FILE *p, char *str, int len)
-{
-  p->_flag = _IOWRT | _IOSTRG | _IONTERM;
-  p->_ptr = str;
-  p->_cnt = len;
-}
-
-static __inline__ void __strclosew(FILE *p)
-{
-  *p->_ptr = '\0';
-}
+#define _IONTERM 0  /* not defined in ancient djgpp <= v2.02 */
+#endif
 
 int
 vsnprintf(char *str, size_t n, const char *fmt, va_list ap)
@@ -40,18 +27,25 @@ vsnprintf(char *str, size_t n, const char *fmt, va_list ap)
   }
 
   memset(&_strbuf, 0, sizeof(_strbuf));
+  _strbuf._flag = _IOWRT | _IOSTRG | _IONTERM;  
 
   /* If n == 0, just querying how much space is needed. */
   if (n > 0)
-    __stropenw(&_strbuf, str, n - 1);
+  {
+    _strbuf._cnt = n - 1;
+    _strbuf._ptr = str;
+  }
   else
-    __stropenw(&_strbuf, NULL, 0);
+  {
+    _strbuf._cnt = 0;
+    _strbuf._ptr = NULL;
+  }
 
   len = _doprnt(fmt, ap, &_strbuf);
 
   /* Ensure nul termination */
   if (n > 0)
-    __strclosew(&_strbuf);
+    *_strbuf._ptr = 0;
 
   return len;
 }

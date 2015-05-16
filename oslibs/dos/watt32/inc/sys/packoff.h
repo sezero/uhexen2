@@ -57,6 +57,8 @@ Revision History:
   #elif defined(__WATCOMC__) && (__WATCOMC__ >= 1000)
     #pragma pack(__pop);
   #elif (defined(_MSC_VER) && (_MSC_VER > 800)) || \
+        (defined(__GNUC__) && ((__GNUC__ > 2) || \
+              (__GNUC__ == 2 && __GNUC_MINOR__ > 95))) || \
         (defined(__BORLANDC__) && (__BORLANDC__ >= 0x500)) || \
          defined(__POCC__) || defined(__LCC__)
     #pragma pack(pop)
