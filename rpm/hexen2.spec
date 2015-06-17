@@ -14,24 +14,12 @@
 # --with flac: build with flac music streaming support
 # --with opus: build with opus music streaming support
 # --without asm: do not use x86 assembly even on an intel cpu
-# --with gtk1: build the launcher against gtk-1.2 instead of gtk-2.x
-# --with gtk3: build the launcher against gtk-3.x instead of gtk-2.x
-# --without freedesktop: do not use desktop-file-utils for the desktop shortcut
 
 %ifnarch %{ix86}
 %define _without_asm 1
 %endif
 
-%{?el2:%define _without_freedesktop 1}
-%{?rh7:%define _without_freedesktop 1}
-
-%{?el2:%define _with_gtk1 1}
-%{?rh7:%define _with_gtk1 1}
-
-%{?_with_gtk3:%undefine _with_gtk1}
-
 # default build options
-%{!?_with_gtk1:%define gtk_buildopt GTK2=yes}
 %{!?_without_asm:%define asm_buildopt USE_X86_ASM=yes}
 %{!?_without_alsa:%define alsa_buildopt USE_ALSA=yes}
 %{!?_without_midi:%define midi_buildopt USE_MIDI=yes}
@@ -43,9 +31,6 @@
 %{!?_with_flac:%define flac_buildopt USE_CODEC_FLAC=no}
 %{!?_with_opus:%define opus_buildopt USE_CODEC_OPUS=no}
 # build option overrides
-%{?_with_gtk1:%define gtk_buildopt GTK1=yes}
-%{?_with_gtk3:%undefine gtk_buildopt}
-%{?_with_gtk3:%define gtk_buildopt GTK3=yes}
 %{?_without_asm:%define asm_buildopt USE_X86_ASM=no}
 %{?_without_alsa:%define alsa_buildopt USE_ALSA=no}
 %{?_without_midi:%define midi_buildopt USE_MIDI=no}
@@ -58,8 +43,6 @@
 %{?_with_opus:%define opus_buildopt USE_CODEC_OPUS=yes}
 # all build options passed to makefile
 %define engine_buildopt	%{asm_buildopt} %{alsa_buildopt} %{midi_buildopt} %{timidity_buildopt} %{wavmusic_buildopt} %{mp3_buildopt} %{mp3_libraryopt} %{ogg_buildopt} %{opus_buildopt} %{flac_buildopt}
-
-%define desktop_vendor	uhexen2
 
 %define gamecode_ver	1.29
 
@@ -81,9 +64,6 @@ BuildRequires:	SDL-devel >= 1.2.4
 %{?_with_flac:BuildRequires:  flac-devel}
 %{?_with_opus:BuildRequires:  opus-devel opusfile-devel}
 %{!?_without_asm:BuildRequires:  nasm >= 0.98.38}
-%{!?_without_freedesktop:BuildRequires: desktop-file-utils}
-%{?_with_gtk1:BuildRequires:  gtk+-devel}
-%{!?_with_gtk1:BuildRequires: %{!?_with_gtk3:gtk2-devel}%{?_with_gtk3:gtk3-devel}}
 Obsoletes:	hexen2-missionpack
 Requires:	SDL >= 1.2.4
 # timidity++-patches requirement is non-fatal
@@ -96,11 +76,9 @@ Requires:	SDL >= 1.2.4
 
 %description
 Hexen II is a class based shooter game by Raven Software from 1997.
-Hammer of Thyrion is a port of the GPL'ed source code released by
-Raven. This package contains binaries that will run both the original
-game and the Portal of Praevus mission pack, a dedicated server and a
-launcher application which provides a GTK gui for launching different
-versions of the game.
+Hammer of Thyrion is a port of the GPL'ed Hexen II source code.
+This package contains binaries that will run both the original game
+and the Portal of Praevus mission pack, and a dedicated server.
 
 %package -n hexenworld
 Group:		Amusements/Games
@@ -115,10 +93,10 @@ Requires:	%{name} >= %{version}
 
 %description -n hexenworld
 Hexen II is a class based shooter game by Raven Software from 1997.
-Hammer of Thyrion is a port of the GPL'ed source code released by
-Raven. HexenWorld is an extension of Hexen II with enhancements for
-internet play. This package contains the files which are required to
-run a HexenWorld server or client, and a master server application.
+HexenWorld is an extension of Hexen II with internet play enhancements.
+Hammer of Thyrion is a port of the GPL'ed Hexen II source code.
+This package contains the files which are required to run a HexenWorld
+server or client, and a master server application.
 
 %prep
 %setup -q -n hexen2source-%{version} -a1 -a2
@@ -143,9 +121,6 @@ run a HexenWorld server or client, and a master server application.
 # Build h2patch
 %{__make} -C h2patch
 
-# Launcher binaries
-%{__make} -C launcher %{gtk_buildopt}
-
 # Build the hcode compiler
 %{__make} -C utils/hcc
 # Build the game-code
@@ -168,10 +143,15 @@ utils/hcc/hcc -src gamecode-%{gamecode_ver}/hc/hw -os -oi -on
 %{__install} -D -m755 engine/hexenworld/server/hwsv %{buildroot}/%{_prefix}/games/%{name}/hwsv
 %{__install} -D -m755 hw_utils/hwmaster/hwmaster %{buildroot}/%{_prefix}/games/%{name}/hwmaster
 %{__install} -D -m755 h2patch/h2patch %{buildroot}/%{_prefix}/games/%{name}/h2patch
-%{__install} -D -m755 launcher/h2launcher %{buildroot}/%{_prefix}/games/%{name}/h2launcher
-# Make a symlink of the game-launcher
-%{__mkdir_p} %{buildroot}/%{_bindir}
-%{__ln_s} %{_prefix}/games/hexen2/h2launcher %{buildroot}/%{_bindir}/hexen2
+
+# Install the run script and make symlinks to it
+%{__install} -D -m755 scripts/hexen2-run.sh %{buildroot}/%{_bindir}/hexen2-run.sh
+%{__ln_s} hexen2-run.sh %{buildroot}/%{_bindir}/glhexen2
+%{__ln_s} hexen2-run.sh %{buildroot}/%{_bindir}/hexen2
+%{__ln_s} hexen2-run.sh %{buildroot}/%{_bindir}/h2ded
+%{__ln_s} hexen2-run.sh %{buildroot}/%{_bindir}/glhwcl
+%{__ln_s} hexen2-run.sh %{buildroot}/%{_bindir}/hwcl
+%{__ln_s} hexen2-run.sh %{buildroot}/%{_bindir}/hwsv
 
 # Install the cd-rip scripts
 %{__install} -D -m755 scripts/cdrip_hexen2.sh %{buildroot}/%{_prefix}/games/%{name}/cdrip_hexen2.sh
@@ -191,7 +171,6 @@ utils/hcc/hcc -src gamecode-%{gamecode_ver}/hc/hw -os -oi -on
 %{__install} -D -m644 docs/CHANGES.old %{buildroot}/%{_prefix}/games/%{name}/docs/CHANGES.old
 %{__install} -D -m644 docs/README.music %{buildroot}/%{_prefix}/games/%{name}/docs/README.music
 %{__install} -D -m644 docs/README.3dfx %{buildroot}/%{_prefix}/games/%{name}/docs/README.3dfx
-%{__install} -D -m644 launcher/README.launcher %{buildroot}/%{_prefix}/games/%{name}/docs/README.launcher
 %{__install} -D -m644 docs/README.hwcl %{buildroot}/%{_prefix}/games/%{name}/docs/README.hwcl
 %{__install} -D -m644 docs/README.hwsv %{buildroot}/%{_prefix}/games/%{name}/docs/README.hwsv
 %{__install} -D -m644 docs/README.hwmaster %{buildroot}/%{_prefix}/games/%{name}/docs/README.hwmaster
@@ -250,39 +229,17 @@ utils/hcc/hcc -src gamecode-%{gamecode_ver}/hc/hw -os -oi -on
 %{__install} -D -m644 gamecode-%{gamecode_ver}/patch111/patchdat/data1/data1pk1.xd3 %{buildroot}/%{_prefix}/games/%{name}/patchdat/data1/data1pk1.xd3
 %{__install} -D -m644 gamecode-%{gamecode_ver}/patch111/patchdat.txt %{buildroot}/%{_prefix}/games/%{name}/patchdat.txt
 
-# Install the menu icon
-%{__mkdir_p} %{buildroot}/%{_datadir}/pixmaps
-%{__install} -D -m644 engine/resource/hexen2.png %{buildroot}/%{_datadir}/pixmaps/hexen2.png
-
-# Install menu entry
-%{__cat} > %{name}.desktop << EOF
-[Desktop Entry]
-Name=Hexen 2
-Comment=Hexen II
-Exec=hexen2
-Icon=hexen2.png
-Terminal=false
-Type=Application
-Encoding=UTF-8
-Categories=Application;Game;
-EOF
-
-%if %{!?_without_freedesktop:1}0
-%{__mkdir_p} %{buildroot}%{_datadir}/applications
-desktop-file-install \
-	--vendor %{desktop_vendor} \
-	--dir %{buildroot}%{_datadir}/applications \
-	%{name}.desktop
-%else
-%{__install} -D -m 0644 %{name}.desktop \
-	%{buildroot}%{_sysconfdir}/X11/applnk/Games/%{name}.desktop
-%endif
+%{__install} -D -m644 engine/resource/hexen2.png %{buildroot}/%{_prefix}/games/%{name}/hexen2.png
 
 %clean
 %{__rm} -rf %{buildroot}
 
 %files
 %defattr(-,root,root)
+%{_bindir}/hexen2-run.sh
+%{_bindir}/glhexen2
+%{_bindir}/hexen2
+%{_bindir}/h2ded
 %{_prefix}/games/%{name}/hexen2
 %{_prefix}/games/%{name}/glhexen2
 %{_prefix}/games/%{name}/h2ded
@@ -320,9 +277,6 @@ desktop-file-install \
 %{_prefix}/games/%{name}/portals/maps/tibet2.txt
 %{_prefix}/games/%{name}/portals/maps/tibet9.ent
 %{_prefix}/games/%{name}/portals/maps/tibet9.txt
-%{_bindir}/hexen2
-%{_datadir}/pixmaps/hexen2.png
-%{_prefix}/games/%{name}/h2launcher
 %{_prefix}/games/%{name}/cdrip_hexen2.sh
 %{_prefix}/games/%{name}/cdrip_hexen2_xplosiv.sh
 %{_prefix}/games/%{name}/cdrip_hexen2_matroxm3d.sh
@@ -336,17 +290,18 @@ desktop-file-install \
 %{_prefix}/games/%{name}/docs/CHANGES
 %{_prefix}/games/%{name}/docs/CHANGES.old
 %{_prefix}/games/%{name}/docs/README.music
-%{_prefix}/games/%{name}/docs/README.launcher
 %{_prefix}/games/%{name}/docs/README.3dfx
 %{_prefix}/games/%{name}/docs/TODO
 %{_prefix}/games/%{name}/docs/SrcNotes.txt
 %{_prefix}/games/%{name}/docs/ReleaseNotes
 %{_prefix}/games/%{name}/docs/ReleaseNotes.old
-%{!?_without_freedesktop:%{_datadir}/applications/%{desktop_vendor}-%{name}.desktop}
-%{?_without_freedesktop:%{_sysconfdir}/X11/applnk/Games/%{name}.desktop}
+%{_prefix}/games/%{name}/hexen2.png
 
 %files -n hexenworld
 %defattr(-,root,root)
+%{_bindir}/glhwcl
+%{_bindir}/hwcl
+%{_bindir}/hwsv
 %{_prefix}/games/%{name}/hwsv
 %{_prefix}/games/%{name}/hwmaster
 %{_prefix}/games/%{name}/hwcl
@@ -362,7 +317,9 @@ desktop-file-install \
 %{_prefix}/games/%{name}/docs/README.hwmaster
 
 %changelog
-* Thu Aug 08 2013 O.Sezer <sezero@users.sourceforge.net> 1.5.7-1
+* Wed Jun 17 2015 O.Sezer <sezero@users.sourceforge.net> 1.5.7-1
+- Removed gtk launcher, added a shell script to run different
+  versions of the game, instead.
 - Use hcc's new -os switch when building the hcode
 - Add --with flac build option
 - Bump version to 1.5.7.

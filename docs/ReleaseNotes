@@ -1,7 +1,7 @@
 Hammer of Thyrion (uHexen2) release notes:
 
 ========================================================================
-Changes in v1.5.7: (Apr. 04, 2015.)
+Changes in v1.5.7: (Jun. 17, 2015.)
 ========================================================================
 
 - Music: Support for FLAC codec and tracker (MOD) music including unreal
@@ -36,6 +36,9 @@ Changes in v1.5.7: (Apr. 04, 2015.)
   option, disabled by default.
 
 - Several small fixes, tidy-ups, safeguards elsewhere in the sources.
+
+- Added a shell script to run different versions of the game which can
+  be useful for system-wide installations. (see scripts/hexen2-run.sh)
 
 
 ========================================================================
