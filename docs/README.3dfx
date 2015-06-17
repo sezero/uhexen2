@@ -193,8 +193,7 @@ If you use the -paltex argument with HoT-1.3.0 and newer versions,
 8-bit texture extensions will be searched and used with very little
 quality loss. This helps saving video memory.
 This options works with Mesa-6.x but not with Mesa-3.x.  It may or
-may not work correctly for you. The option is available on the game
-launcher, as well.
+may not work correctly for you.
 
 
 5.  Gamma (brightness) support:
@@ -203,7 +202,7 @@ launcher, as well.
 If you run HoT-1.4.0 and newer versions with -3dfxgamma command-line
 argument, some 3dfx specific hacks will be searched and activated for
 brightness control (make sure that you enable that option in the Makefile
-when compiling). This option is also available on the launcher.
+when compiling).
 
 6.  Using the fxMesa opengl library for other games:
 ----------------------------------------------------

@@ -4,7 +4,6 @@ TODO:
 -------------------------------------
 
 - Add a pak-patch application for Mac OS X.
-- Revise the gtk launcher GUI.
 - Re-visit the messy mouse grab code and clean it up.
 - Do a clean-up of the opengl code and modernize it.
 - Add multisampling support to win32

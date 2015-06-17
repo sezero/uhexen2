@@ -40,6 +40,8 @@ Changes in v1.5.7: (Jun. 17, 2015.)
 - Added a shell script to run different versions of the game which can
   be useful for system-wide installations. (see scripts/hexen2-run.sh)
 
+- Removed the gtk launcher.
+
 
 ========================================================================
 Changes in v1.5.6: (Mar. 15, 2013.)

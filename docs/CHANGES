@@ -3,6 +3,9 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2015-04-17 (SVN):
+    * removed the gtk launcher app.
+
 2015-04-07 (SVN):
     * common/q_endian.h: update to use __ORDER_???_ENDIAN__ macros from
       new gcc and clang. whitespace tidy-up.

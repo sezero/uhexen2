@@ -8,8 +8,7 @@ commands:
 	xdelta3 -W 4194304 -0 -s cdrom/pak1.pak pak1.pak data1pk1.xd3
 As seen from the command lines, 2 MB and 4MB input sizes were used.
 
-In order to apply you need either our h2patch program, or 1.0.5 or a later
-version of our launcher program, or xdelta-3.0.0 itself.
+In order to apply, use our "h2patch" program.
 
 If you want to apply the patches using xdelta3 itself, do something like:
 xdelta3 -f -d -s cdrom/pak0.pak patchdat/data1/data1pk0.xd3 data1/pak0.pak
