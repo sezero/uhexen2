@@ -91,6 +91,26 @@ static inline qboolean tag_is_id3v2(const unsigned char *data, size_t length)
 	return false;
 }
 
+/* http://wiki.hydrogenaud.io/index.php?title=APEv1_specification
+ * http://wiki.hydrogenaud.io/index.php?title=APEv2_specification
+ * Detect an APEv2 tag. (APEv1 has no header, so no luck.)
+ */
+static inline qboolean tag_is_apetag(const unsigned char *data, size_t length)
+{
+	unsigned int v;
+
+	if (length < 32) return false;
+	if (memcmp(data,"APETAGEX",8) != 0)
+		return false;
+	v = (data[11]<<24) | (data[10]<<16) | (data[9]<<8) | data[8];
+	if (v != 2000U/* && v != 1000U*/)
+		return false;
+	v = 0;
+	if (memcmp(&data[24],&v,4) != 0 || memcmp(&data[28],&v,4) != 0)
+		return false;
+	return true;
+}
+
 static size_t mp3_tagsize(const unsigned char *data, size_t length)
 {
 	size_t size;
@@ -106,6 +126,13 @@ static size_t mp3_tagsize(const unsigned char *data, size_t length)
 			size += 10;
 		for ( ; size < length && !data[size]; ++size)
 			;  /* Consume padding */
+		return size;
+	}
+
+	if (tag_is_apetag(data, length))
+	{
+		size = (data[15]<<24) | (data[14]<<16) | (data[13]<<8) | data[12];
+		size += 32;
 		return size;
 	}
 
