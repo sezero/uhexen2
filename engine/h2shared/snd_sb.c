@@ -369,9 +369,8 @@ static qboolean S_BLASTER_Init (dma_t *dma)
 //
 	if (!GetBLASTER())
 	{
-		Con_NotifyBox ("The BLASTER environment variable\n"
-				"is not set, sound effects are\n"
-				"disabled.  See README.TXT for help.\n");
+		Con_Printf ("The BLASTER environment variable is not set,\n"
+				"Sound Blaster support is disabled.\n");
 		return false;
 	}
 
