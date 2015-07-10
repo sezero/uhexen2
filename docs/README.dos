@@ -4,16 +4,15 @@ DOS port of Hexen II, using the Hammer of Thyrion (uHexen2) engine
 http://uhexen2.sourceforge.net/
 http://sourceforge.net/projects/uhexen2/
 
-  h2dos.exe:	Hexen II main game program.
-  h2patch.exe:	Patch program to upgrade Hexen II game pak files to the
-		latest 1.11 version of Raven Software.
-  h2ded.exe:	Hexen II dedicated server application.
+  h2dos.exe:    Hexen II main game program.
+  h2patch.exe:  Patch program to upgrade Hexen II game pak files to the
+                latest 1.11 version of Raven Software.
+  h2ded.exe:    Hexen II dedicated server application.
 
 
 Things that don't work:
 
 * MIDI music:  Not implemented yet.
-* Loading progress bars:  Not implemented yet.
 
 Things that just work:
 
@@ -32,8 +31,10 @@ Things not tested, but should work:
   documentation to setup WatTCP (see http://www.watt-32.net/).
 
   - Note: WatTCP won't initialize if IPX is running.
+
   - Note: WatTCP was observed not to work with H2DOS as a dedicated or
     listen server, i.e. clients can't connect to it. Same with H2DED.
+
   - Note: HexenWorld client or server with WatTCP doesn't work for now
     due to a WatTCP bug.
 
@@ -65,7 +66,7 @@ NOTES:
   at least 16 MB.  If you want to specify the amount of memory to use,
   run the game like this:
 
-	h2dos -mem 16
+        h2dos -mem 16
 
   - Note: Higher video resolutions will be disabled when sufficient
     amount of memory is not present.
@@ -100,15 +101,15 @@ NOTES:
   If you have more than one cdrom drives, use the -cddev command line
   switch with a single drive letter as the argument, like:
 
-	h2dos -cddev e
+        h2dos -cddev e
 
   Without the -cddev switch, the game will access the first cdrom drive.
-  In order to disable cdaudio, use the command line argument -nocdaudio.
+  To disable cdaudio, use the command line argument -nocd or -nocdaudio.
 
 * DEBUG LOG:  If something goes wrong, or if you are just curious, run
   the game using the command line argument -devlog, like:
 
-	h2dos -devlog <other things..>
+        h2dos -devlog <other things..>
 
   With this switch, all and every messages from the game engine will be
   written into the file named debug_h2.log. It may contain clues about
