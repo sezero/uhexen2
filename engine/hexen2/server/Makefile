@@ -51,7 +51,7 @@ USE_WATT32=yes
 # use Beame & Whiteside TCP for DOS networking?
 USE_BWTCP=yes
 # use MPATH for DOS UDP networking under Win9x?
-USE_MPATH=yes
+USE_MPATH=no
 
 # include the common dirty stuff
 include $(UHEXEN2_TOP)/scripts/makefile.inc

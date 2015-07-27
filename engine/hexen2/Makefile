@@ -121,7 +121,7 @@ USE_WATT32=yes
 # use Beame & Whiteside TCP for DOS networking?
 USE_BWTCP=yes
 # use MPATH for DOS UDP networking under Win9x?
-USE_MPATH=yes
+USE_MPATH=no
 
 # Enable/disable codecs for streaming music support:
 USE_CODEC_WAVE=yes
