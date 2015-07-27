@@ -1698,6 +1698,27 @@ diff -urp watt_src.orig/src/printk.c watt_src/src/printk.c
  }
  
  /*
+diff -urp watt_src.orig/src/src/tcp_fsm.c watt_src/src/tcp_fsm.c
+--- watt_src.orig/src/tcp_fsm.c	2005-10-21 01:04:18.000000000 +0300
++++ watt_src/src/tcp_fsm.c	2015-07-15 17:11:10.000000000 +0300
+@@ -1060,7 +1060,7 @@ static int tcp_process_data (_tcp_Socket
+    * If it's before recv_next, we've seen it all before; if it's after
+    * then the peer (or someone else) sent more than we said we could take.
+    */
+-  if ((unsigned)len - ldiff > s->adv_win)
++  if ((unsigned)len - ldiff > s->max_rx_data - s->rx_datalen)
+   {
+     TCP_TRACE (("tcp_ProcessData (%u): packet ends outside %lu/%lu\n",
+                 __LINE__, s->recv_next, s->recv_next + s->adv_win));
+@@ -1210,7 +1210,7 @@ static int tcp_reassemble (_tcp_Socket *
+   }
+ 
+   left_edge  = s->recv_next - s->rx_datalen;
+-  right_edge = s->recv_next + s->adv_win;
++  right_edge = s->recv_next + s->max_rx_data - s->rx_datalen;
+ 
+   /* segment is left of expected recv-window
+    */
 diff -urp watt_src.orig/src/timer.h watt_src/src/timer.h
 --- watt_src.orig/src/timer.h	2004-09-02 17:55:22.000000000 +0300
 +++ watt_src/src/timer.h	2014-05-20 20:02:00.000000000 +0300
