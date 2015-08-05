@@ -3,6 +3,11 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2015-08-05 (SVN):
+    * msg.c (MSG_ReadString, MSG_ReadStringLine): replaced MSG_ReadChar
+      with MSG_ReadByte to avoid potentional vulnerability (icculus.org
+      quake2 svn rev. 180.)
+
 2015-04-17 (SVN):
     * removed the gtk launcher app.
 

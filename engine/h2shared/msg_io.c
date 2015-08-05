@@ -309,7 +309,7 @@ const char *MSG_ReadString (void)
 	l = 0;
 	do
 	{
-		c = MSG_ReadChar ();
+		c = MSG_ReadByte ();
 		if (c == -1 || c == 0)
 			break;
 		string[l] = c;
@@ -331,7 +331,7 @@ const char *MSG_ReadStringLine (void)
 	l = 0;
 	do
 	{
-		c = MSG_ReadChar ();
+		c = MSG_ReadByte ();
 		if (c == -1 || c == 0 || c == '\n')
 			break;
 		string[l] = c;
