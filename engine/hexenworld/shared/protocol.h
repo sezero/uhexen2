@@ -26,6 +26,7 @@
 
 #define	OLD_PROTOCOL_VERSION	24
 #define	PROTOCOL_VERSION	25
+#define	PROTOCOL_VERSION_EXT	26
 
 //=========================================
 

@@ -126,6 +126,8 @@ typedef struct client_s
 {
 	client_state_t	state;
 
+	int		protocol;
+
 	int		spectator;	// non-interactive
 
 	qboolean	sendinfo;	// at end of frame, send info to all

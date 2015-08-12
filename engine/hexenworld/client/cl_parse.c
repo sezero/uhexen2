@@ -415,7 +415,6 @@ CL_ParseServerData
 static void CL_ParseServerData (void)
 {
 	const char	*str;
-	int	protover;
 
 	Con_DPrintf ("Serverdata packet received.\n");
 
@@ -424,10 +423,34 @@ static void CL_ParseServerData (void)
 //
 	CL_ClearState ();
 
+	// CL_ClearState() clears the cl structure already,
+	// so no need zero'ing the sound/model list arrays.
+	//memset (cl.sound_precache, 0, sizeof(cl.sound_precache));
+	//memset (cl.model_precache, 0, sizeof(cl.model_precache));
+	cl_playerindex[0] = -1;
+	cl_playerindex[1] = -1;
+	cl_playerindex[2] = -1;
+	cl_playerindex[3] = -1;
+	cl_playerindex[4] = -1;
+	cl_playerindex[5] = -1;//mg-siege
+	cl_spikeindex = -1;
+	cl_flagindex = -1;
+	cl_ballindex = -1;
+	cl_missilestarindex = -1;
+	cl_ravenindex = -1;
+	cl_raven2index = -1;
+
 // parse protocol version number
-	protover = MSG_ReadLong ();
-	if (protover != PROTOCOL_VERSION && protover != OLD_PROTOCOL_VERSION)
-		Host_EndGame ("Server returned version %i, not %i", protover, PROTOCOL_VERSION);
+	cl.protocol = MSG_ReadLong ();
+	switch (cl.protocol) {
+	case OLD_PROTOCOL_VERSION:
+	case PROTOCOL_VERSION:
+	case PROTOCOL_VERSION_EXT:
+		Con_Printf ("Server using protocol %i\n", cl.protocol);
+		break;
+	default:
+		Host_EndGame ("Server returned unsupported protocol %i", cl.protocol);
+	}
 
 	cl.servercount = MSG_ReadLong ();
 
@@ -476,7 +499,7 @@ static void CL_ParseServerData (void)
 	q_strlcpy (cl.levelname, str, sizeof(cl.levelname));
 
 	// get the movevars
-	if (protover == PROTOCOL_VERSION)
+	if (cl.protocol >= PROTOCOL_VERSION)
 	{
 		movevars.gravity		= MSG_ReadFloat();
 		movevars.stopspeed		= MSG_ReadFloat();
@@ -517,6 +540,40 @@ static void CL_ParseServerData (void)
 	cl_doc = -1;
 }
 
+static void CL_ParseSoundlistChunks (void) /* from QW */
+{
+	int	numsounds, n;
+	const char	*str;
+
+	// precache sounds
+	numsounds = MSG_ReadLong ();
+
+	for (;;) {
+		str = MSG_ReadString ();
+		if (!str[0])
+			break;
+		numsounds++;
+		if (numsounds >= MAX_SOUNDS)
+			Host_Error ("Server sent too many sound_precache");
+		strcpy (cl.sound_name[numsounds], str);
+	}
+
+	n = MSG_ReadLong ();
+	if (n)
+	{
+		if (!cls.demoplayback) {
+			MSG_WriteByte (&cls.netchan.message, clc_stringcmd);
+			MSG_WriteString (&cls.netchan.message,
+						 va ("soundlist %i %i", cl.servercount, n));
+		}
+		return;
+	}
+
+	cls.downloadnumber = 0;
+	cls.downloadtype = dl_sound;
+	Sound_NextDownload ();
+}
+
 /*
 ==================
 CL_ParseSoundlist
@@ -528,7 +585,6 @@ static void CL_ParseSoundlist (void)
 	const char	*str;
 
 // precache sounds
-	memset (cl.sound_precache, 0, sizeof(cl.sound_precache));
 	for (numsounds = 1 ; ; numsounds++)
 	{
 		str = MSG_ReadString ();
@@ -544,6 +600,75 @@ static void CL_ParseSoundlist (void)
 	Sound_NextDownload ();
 }
 
+static void CL_ParseModellistChunks (void) /* from QW */
+{
+	int	nummodels, n;
+	const char	*str;
+
+	// precache models and note certain default indexes
+	nummodels = MSG_ReadLong ();
+
+	for (;;)
+	{
+		str = MSG_ReadString ();
+		if (!str[0])
+			break;
+
+		nummodels++;
+		if (nummodels >= MAX_MODELS)
+			Host_EndGame ("Server sent too many model_precache");
+
+		q_strlcpy (cl.model_name[nummodels], str, MAX_QPATH);
+
+		if (!strcmp(cl.model_name[nummodels],"progs/spike.mdl"))
+			cl_spikeindex = nummodels;
+		if (!strcmp(cl.model_name[nummodels],"models/paladin.mdl"))
+			cl_playerindex[0] = nummodels;
+		if (!strcmp(cl.model_name[nummodels],"models/crusader.mdl"))
+			cl_playerindex[1] = nummodels;
+		if (!strcmp(cl.model_name[nummodels],"models/necro.mdl"))
+			cl_playerindex[2] = nummodels;
+		if (!strcmp(cl.model_name[nummodels],"models/assassin.mdl"))
+			cl_playerindex[3] = nummodels;
+		if (!strcmp(cl.model_name[nummodels],"models/succubus.mdl"))
+			cl_playerindex[4] = nummodels;
+		if (!strcmp(cl.model_name[nummodels],"models/hank.mdl"))
+			cl_playerindex[5] = nummodels;//mg-siege
+		if (!strcmp(cl.model_name[nummodels],"progs/flag.mdl"))
+			cl_flagindex = nummodels;
+		if (!strcmp(cl.model_name[nummodels],"models/ball.mdl"))
+			cl_ballindex = nummodels;
+		if (!strcmp(cl.model_name[nummodels],"models/newmmis.mdl"))
+			cl_missilestarindex = nummodels;
+		if (!strcmp(cl.model_name[nummodels],"models/ravproj.mdl"))
+			cl_ravenindex = nummodels;
+		if (!strcmp(cl.model_name[nummodels],"models/vindsht1.mdl"))
+			cl_raven2index = nummodels;
+	}
+
+	player_models[0] = (qmodel_t *)Mod_FindName ("models/paladin.mdl");
+	player_models[1] = !(gameflags & GAME_OLD_DEMO) ? (qmodel_t *)Mod_FindName ("models/crusader.mdl") : NULL;
+	player_models[2] = !(gameflags & GAME_OLD_DEMO) ? (qmodel_t *)Mod_FindName ("models/necro.mdl") : NULL;
+	player_models[3] = (qmodel_t *)Mod_FindName ("models/assassin.mdl");
+	player_models[4] = (qmodel_t *)Mod_FindName ("models/succubus.mdl");
+	player_models[5] = (qmodel_t *)Mod_FindName ("models/hank.mdl");//siege
+
+	n = MSG_ReadLong ();
+	if (n)
+	{
+		if (!cls.demoplayback) {
+			MSG_WriteByte (&cls.netchan.message, clc_stringcmd);
+			MSG_WriteString (&cls.netchan.message,
+							 va ("modellist %i %i", cl.servercount, n));
+		}
+		return;
+	}
+
+	cls.downloadnumber = 0;
+	cls.downloadtype = dl_model;
+	Model_NextDownload ();
+}
+
 /*
 ==================
 CL_ParseModellist
@@ -555,20 +680,6 @@ static void CL_ParseModellist (void)
 	const char	*str;
 
 // precache models and note certain default indexes
-	memset (cl.model_precache, 0, sizeof(cl.model_precache));
-	cl_playerindex[0] = -1;
-	cl_playerindex[1] = -1;
-	cl_playerindex[2] = -1;
-	cl_playerindex[3] = -1;
-	cl_playerindex[4] = -1;
-	cl_playerindex[5] = -1;//mg-siege
-	cl_spikeindex = -1;
-	cl_flagindex = -1;
-	cl_ballindex = -1;
-	cl_missilestarindex = -1;
-	cl_ravenindex = -1;
-	cl_raven2index = -1;
-
 	for (nummodels = 1 ; ; nummodels++)
 	{
 		str = MSG_ReadString ();
@@ -1412,10 +1523,20 @@ void CL_ParseServerMessage (void)
 			break;
 
 		case svc_modellist:
+			if (cl.protocol >= PROTOCOL_VERSION_EXT) /* from QW */
+			{
+				CL_ParseModellistChunks ();
+				break;
+			}
 			CL_ParseModellist ();
 			break;
 
 		case svc_soundlist:
+			if (cl.protocol >= PROTOCOL_VERSION_EXT) /* from QW */
+			{
+				CL_ParseSoundlistChunks ();
+				break;
+			}
 			CL_ParseSoundlist ();
 			break;
 

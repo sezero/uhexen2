@@ -3,6 +3,17 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2015-08-12 (SVN):
+    * hexenworld: if the client sends '*caps' userinfo with a 'c', the
+      server now returns protocol 26 instead of 25 and sends the sound
+      and model lists in small chunks like quakeworld does. this avoids
+      packet fragmentation. as a result, DOS version of hexenworld runs
+      properly: ip4 fragment reassembly issues of watt-32 still haven't
+      been solved, so this is a way around it.  old clients versus new
+      servers and new clients versus old servers aren't affected: they
+      work the way they used to before. thanks to Frank Sapone for help
+      and testing.
+
 2015-08-05 (SVN):
     * msg.c (MSG_ReadString, MSG_ReadStringLine): replaced MSG_ReadChar
       with MSG_ReadByte to avoid potentional vulnerability (icculus.org

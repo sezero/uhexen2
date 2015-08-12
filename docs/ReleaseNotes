@@ -1,7 +1,7 @@
 Hammer of Thyrion (uHexen2) release notes:
 
 ========================================================================
-Changes in v1.5.7: (Jun. 17, 2015.)
+Changes in v1.5.7: (Aug. 12, 2015.)
 ========================================================================
 
 - Music: Support for FLAC codec and tracker (MOD) music including unreal
@@ -34,6 +34,15 @@ Changes in v1.5.7: (Jun. 17, 2015.)
 
 - All platforms: External wal texture loading is now a compile time
   option, disabled by default.
+
+- HexenWorld: if the client sends '*caps' userinfo with a 'c', the
+  server now returns protocol 26 instead of 25 and sends the sound and
+  model lists in small chunks like quakeworld does. this avoids packet
+  fragmentation. as a result, DOS version of hexenworld runs properly:
+  the IP4 fragment reassembly issues of the Watt-32 library still have
+  not been solved, so this is a way around it.  the old clients versus
+  new servers and new clients versus old servers are not affected, and
+  run using the original protocol 25.
 
 - Several small fixes, tidy-ups, safeguards elsewhere in the sources.
 

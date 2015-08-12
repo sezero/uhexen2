@@ -635,6 +635,11 @@ static void SVC_DirectConnect (void)
 	// this is the only place a client_t is ever initialized
 	*newcl = temp;
 
+	s = Info_ValueForKey(userinfo, "*cap");
+	if (strstr(s, "c"))
+		newcl->protocol = PROTOCOL_VERSION_EXT;
+	else	newcl->protocol = PROTOCOL_VERSION;
+
 	Netchan_OutOfBandPrint (&adr, "%c", S2C_CONNECTION );
 
 	edictnum = (newcl-svs.clients)+1;

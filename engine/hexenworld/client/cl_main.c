@@ -1017,6 +1017,10 @@ void CL_Init (void)
 	Info_SetValueForKey (cls.userinfo, "rate", "2500", MAX_INFO_STRING);
 	Info_SetValueForKey (cls.userinfo, "msg", "1", MAX_INFO_STRING);
 
+	// capabilities info (single char flags) -- adapted from QuakeForge:
+	// c: chunked connection sequence for sound/modellists (protocol 26)
+	Info_SetValueForStarKey (cls.userinfo, "*cap", "c", MAX_INFO_STRING);
+
 	CL_InitInput ();
 	CL_InitTEnts ();
 	CL_InitPrediction ();

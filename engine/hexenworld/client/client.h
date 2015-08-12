@@ -226,6 +226,7 @@ typedef struct
 							// doesn't accidentally do something the 
 							// first frame
 
+	int		protocol;
 	int		spectator;
 
 	double		last_ping_request;	// while showing scoreboard

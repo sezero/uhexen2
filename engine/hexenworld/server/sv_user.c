@@ -43,7 +43,6 @@ extern	vec3_t	player_mins;
 extern	int	fp_messages, fp_persecond, fp_secondsdead;
 extern	char	fp_msg[];
 
-
 /*
 ============================================================
 
@@ -82,7 +81,7 @@ static void SV_New_f (void)
 
 	// send the serverdata
 	MSG_WriteByte (&host_client->netchan.message, svc_serverdata);
-	MSG_WriteLong (&host_client->netchan.message, PROTOCOL_VERSION);
+	MSG_WriteLong (&host_client->netchan.message, host_client->protocol);
 	MSG_WriteLong (&host_client->netchan.message, svs.spawncount);
 	MSG_WriteString (&host_client->netchan.message, gamedir);
 
@@ -123,10 +122,57 @@ static void SV_New_f (void)
 SV_Soundlist_f
 ==================
 */
+static void SV_SoundlistChunks (void)
+{
+	unsigned	n;
+	const char	**s;
+
+	if (host_client->state != cs_connected) {
+		Con_Printf ("soundlist not valid -- already spawned\n");
+		return;
+	}
+	// handle the case of a level changing while a client was connecting
+	if (atoi (Cmd_Argv (1)) != svs.spawncount) {
+		Con_Printf ("SV_Soundlist_f from different level\n");
+		SV_New_f ();
+		return;
+	}
+
+	n = atoi (Cmd_Argv (2));
+	if (n >= MAX_SOUNDS - 1) {
+		Con_Printf ("SV_Soundlist_f: Invalid soundlist index\n");
+		SV_New_f ();
+		return;
+	}
+
+	MSG_WriteByte (&host_client->netchan.message, svc_soundlist);
+	MSG_WriteLong (&host_client->netchan.message, n);
+	for (s = sv.sound_precache + 1 + n;
+		 n < MAX_SOUNDS - 1 && *s && host_client->netchan.message.cursize < (MAX_DATAGRAM / 2);
+		 s++, n++)
+	{
+		MSG_WriteString (&host_client->netchan.message, *s);
+	}
+
+	MSG_WriteByte (&host_client->netchan.message, 0);
+
+	// next msg
+	if (n < MAX_SOUNDS - 1 && *s)
+		MSG_WriteLong (&host_client->netchan.message, n);
+	else
+		MSG_WriteLong (&host_client->netchan.message, 0);
+}
+
 static void SV_Soundlist_f (void)
 {
 	int		i;
 	const char	**s;
+
+	if (host_client->protocol >= PROTOCOL_VERSION_EXT)
+	{
+		SV_SoundlistChunks();
+		return;
+	}
 
 	if (host_client->state != cs_connected)
 	{
@@ -153,10 +199,56 @@ static void SV_Soundlist_f (void)
 SV_Modellist_f
 ==================
 */
+static void SV_ModellistChunks (void)
+{
+	unsigned	n;
+	const char	**s;
+
+	if (host_client->state != cs_connected) {
+		Con_Printf ("modellist not valid -- already spawned\n");
+		return;
+	}
+	// handle the case of a level changing while a client was connecting
+	if (atoi (Cmd_Argv (1)) != svs.spawncount) {
+		Con_Printf ("SV_Modellist_f from different level\n");
+		SV_New_f ();
+		return;
+	}
+
+	n = atoi (Cmd_Argv (2));
+	if (n >= MAX_MODELS - 1) {
+		Con_Printf ("SV_Modellist_f: Invalid modellist index\n");
+		SV_New_f ();
+		return;
+	}
+
+	MSG_WriteByte (&host_client->netchan.message, svc_modellist);
+	MSG_WriteLong (&host_client->netchan.message, n);
+
+	for (s = sv.model_precache + 1 + n;
+		 n < MAX_MODELS - 1 && *s && host_client->netchan.message.cursize < (MAX_DATAGRAM / 2);
+		 s++, n++)
+		MSG_WriteString (&host_client->netchan.message, *s);
+
+	MSG_WriteByte (&host_client->netchan.message, 0);
+
+	// next msg
+	if (n < MAX_MODELS - 1 && *s)
+		MSG_WriteLong (&host_client->netchan.message, n);
+	else
+		MSG_WriteLong (&host_client->netchan.message, 0);
+}
+
 static void SV_Modellist_f (void)
 {
 	int		i;
 	const char	**s;
+
+	if (host_client->protocol >= PROTOCOL_VERSION_EXT)
+	{
+		SV_ModellistChunks();
+		return;
+	}
 
 	if (host_client->state != cs_connected)
 	{
@@ -1469,5 +1561,4 @@ void SV_UserInit (void)
 	Cvar_RegisterVariable (&sv_spectalk);
 	Cvar_RegisterVariable (&sv_allowtaunts);
 }
-
 
