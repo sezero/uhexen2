@@ -4,10 +4,13 @@ DOS port of Hexen II, using the Hammer of Thyrion (uHexen2) engine
 http://uhexen2.sourceforge.net/
 http://sourceforge.net/projects/uhexen2/
 
-  h2dos.exe:    Hexen II main game program.
+  h2dos.exe:    Hexen II main game.
   h2patch.exe:  Patch program to upgrade Hexen II game pak files to the
                 latest 1.11 version of Raven Software.
   h2ded.exe:    Hexen II dedicated server application.
+
+  hwcl.exe:     HexenWorld client.
+  hwsv.exe:     HexenWorld server.
 
 
 Things that don't work:

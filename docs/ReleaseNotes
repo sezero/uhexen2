@@ -4,9 +4,6 @@ Hammer of Thyrion (uHexen2) release notes:
 Changes in v1.5.7: (Aug. 12, 2015.)
 ========================================================================
 
-- Music: Support for FLAC codec and tracker (MOD) music including unreal
-  umx files. (edit the makefiles to enable when compiling.)
-
 - All platforms, gameplay, mission pack: fixed an hcode bug which would
   make the spiders seemingly invincible for a difficulty-depending time.
 
@@ -25,24 +22,28 @@ Changes in v1.5.7: (Aug. 12, 2015.)
 
 - Windows, CD audio: fixed the "-cddev" command line option.
 
+- Music: Support for FLAC codec and tracker (MOD) music including unreal
+  umx files. (edit the makefiles to enable when compiling.)
+
 - Utils, hcc: Added a command line option "-os" to compact the strings
   heap by eliminating duplicates. some minor revisions.
 
 - Utils, jsh2color: ignore minlight values from the -light command line
   switch: eliminates the majority of the ugly black patches from eidolon
-  and rider2c maps. bump its version to 1.2.6.
+  and rider2c maps. bumped its version to 1.2.6.
 
 - All platforms: External wal texture loading is now a compile time
   option, disabled by default.
 
-- HexenWorld: if the client sends '*caps' userinfo with a 'c', the
-  server now returns protocol 26 instead of 25 and sends the sound and
-  model lists in small chunks like quakeworld does. this avoids packet
-  fragmentation. as a result, DOS version of hexenworld runs properly:
-  the IP4 fragment reassembly issues of the Watt-32 library still have
-  not been solved, so this is a way around it.  the old clients versus
-  new servers and new clients versus old servers are not affected, and
-  run using the original protocol 25.
+- HexenWorld: Support for a new protocol 26: if the client sends '*cap'
+  userinfo with a 'c', the server returns protocol 26 instead of 25 and
+  sends the sound and model lists in small chunks like quakeworld does.
+  Old clients versus new servers and new clients versus old servers are
+  not affected and run using the original protocol 25 as they used to.
+  The new protocol 26 connection sequence avoids packet fragmentation.
+
+- DOS: HexenWorld is now supported on DOS. requires uhexen2 v1.5.7 or
+  newer hexenworld servers to connect. (see above for hw protocol 26.)
 
 - Several small fixes, tidy-ups, safeguards elsewhere in the sources.
 
