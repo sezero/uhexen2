@@ -199,10 +199,9 @@ may not work correctly for you.
 5.  Gamma (brightness) support:
 -------------------------------
 
-If you run HoT-1.4.0 and newer versions with -3dfxgamma command-line
-argument, some 3dfx specific hacks will be searched and activated for
-brightness control (make sure that you enable that option in the Makefile
-when compiling).
+You can compile uHexen2 for linux to include some 3dfx specific hacks
+for brightness control. (make sure that you enable that option in the
+Makefile when compiling).  The -no3dfxgamma argument disables it.
 
 6.  Using the fxMesa opengl library for other games:
 ----------------------------------------------------

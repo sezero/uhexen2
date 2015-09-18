@@ -169,7 +169,8 @@ Important command-line switches:
 
  -nomtex		Disable multitexture detection/usage
 
- -3dfxgamma		Special gamma support for old Voodoo1/2/Rush
+ -no3dfxgamma		Disable special gamma support for Voodoo1/2/Rush
+			(if compiled with 3dfx gamma hacks support.)
 
  -sndoss		Use OSS for audio (default)
 

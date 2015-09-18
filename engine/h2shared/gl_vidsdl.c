@@ -564,7 +564,7 @@ static qboolean VID_Check3dfxGamma (void)
 {
 	int		ret;
 
-	if (!COM_CheckParm("-3dfxgamma"))
+	if (COM_CheckParm("-no3dfxgamma"))
 		return false;
 
 	/* refuse 3dfxgamma with DRI drivers */
