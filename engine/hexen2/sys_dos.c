@@ -40,6 +40,7 @@
 #include "quakedef.h"
 #include "dosisms.h"
 #include "debuglog.h"
+#include "sys_dxe.h"
 
 #define MIN_MEM_ALLOC	0x1000000	/* minimum 16 mb */
 #define STD_MEM_ALLOC	0x2000000	/* standart 32 mb */
@@ -48,6 +49,9 @@
  * Norberto Alfredo Bensa
  */
 int	_crt0_startup_flags = _CRT0_FLAG_UNIX_SBRK;
+#ifdef GLQUAKE /* need at least 1MB stack for 3dfx. */
+unsigned int _stklen = 1048576;  /* FS: FIXME TUNE. */
+#endif
 
 int		end_of_memory;
 static qboolean	lockmem, lockunlockmem, unlockmem;
@@ -593,6 +597,8 @@ static void Sys_Init (void)
 
 	_go32_interrupt_stack_size = 4 * 1024;
 	_go32_rmcb_stack_size = 4 * 1024;
+
+	Sys_InitDXE3();
 }
 
 void Sys_Shutdown (void)
