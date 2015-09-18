@@ -164,6 +164,7 @@ GL_BINARY:=glh2$(exe_ext)
 endif
 ifeq ($(TARGET_OS),dos)
 SW_BINARY:=h2dos$(exe_ext)
+GL_BINARY:=glh2dos$(exe_ext)
 endif
 ifeq ($(TARGET_OS),unix)
 SW_BINARY:=hexen2$(exe_ext)
@@ -496,6 +497,14 @@ CPPFLAGS+= -DUSE_WATT32 -DWATT32_NO_OLDIES
 INCLUDES+= -I$(OSLIBS)/dos/watt32/inc
 LDFLAGS += -L$(OSLIBS)/dos/watt32/lib -lwatt
 endif
+
+INCLUDES += -I$(OSLIBS)/dos/mesa/include
+GL_LINK = -L$(OSLIBS)/dos/mesa/lib -lgl
+# enable dynamic loading of gl functions
+LINK_GL_LIBS=no
+# enable 3dfx gamma hacks
+USE_3DFXGAMMA=yes
+
 LDFLAGS += -lc -lgcc -lm
 
 ifeq ($(USE_CODEC_VORBIS),yes)
@@ -1084,7 +1093,11 @@ SYSOBJ_SYS := sys_win.o win32res.res
 endif
 ifeq ($(TARGET_OS),dos)
 SYSOBJ_INPUT := in_dos.o
-SYSOBJ_SOFT_VID:= vid_vga.o vid_ext.o vid_dos.o vregset.o
+SYSOBJ_SOFT_VID:= vid_vga.o vid_ext.o vid_dos.o vregset.o no_dxe.o
+SYSOBJ_GL_VID:= gl_viddos.o dxe.o
+ifeq ($(USE_3DFXGAMMA),yes)
+SYSOBJ_GL_VID+= fx_gamma.o
+endif
 ifeq ($(USE_X86_ASM),yes)
 SYSOBJ_SOFT_VID+= d_copy.o
 endif

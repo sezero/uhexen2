@@ -5,6 +5,7 @@ UHEXEN2_TOP=../../..
 
 if test "$1" = "strip"; then
 	$STRIPPER hwcl.exe
+	$STRIPPER glhwcl.exe
 	exit 0
 fi
 
@@ -18,6 +19,13 @@ esac
 
 if test "$1" = "all"; then
 	shift
+	$MAKE_CMD clean
+	$MAKE_CMD hw $* || exit 1
+	$MAKE_CMD clean
+	$MAKE_CMD glhw $* || exit 1
+	$MAKE_CMD clean
+	exit 0
 fi
-exec $MAKE_CMD hw $*
+
+exec $MAKE_CMD $*
 
