@@ -1,5 +1,5 @@
 /*
- * gl_viddos.c -- DOS Mesa GL, based on gl_vidsdl.c and gl_vidnt.c.
+ * gl_viddos.c -- MSDOS OpenGL, based on gl_vidsdl.c and gl_vidnt.c.
  *
  * Copyright (C) 1996-1997  Id Software, Inc.
  * Copyright (C) 1997-1998  Raven Software Corp.
@@ -30,9 +30,15 @@
 #include <unistd.h>
 #include "filenames.h"
 
-#include <GL/dmesa.h>
+#include "gl_dos.h"
 #include "sys_dxe.h"
-#include "gl_dmesa.h"
+
+/* DOSGL interface */
+int  (*DOSGL_InitCtx ) (int *width, int *height, int *bpp);
+void (*DOSGL_Shutdown) (void);
+void (*DOSGL_EndFrame) (void);
+void * (*DOSGL_GetProcAddress) (const char *);
+const char * (*DOSGL_IFaceName) (void);
 
 #define WARP_WIDTH		320
 #define WARP_HEIGHT		200
@@ -94,13 +100,6 @@ typedef struct {
 		stencil;
 } attributes_t;
 
-static DMesaVisual dv;
-static DMesaContext dc;
-static DMesaBuffer db;
-/* FS: Fine control over the DMesa Context parameters.  Mostly for debugging and experimentation, but maybe someone has a reason to play with it. */
-static int alphaBufferSize = 2;
-static int depthBufferSize = 16;
-
 static qboolean	vid_menu_fs;
 static qboolean	fs_toggle_works = true;
 
@@ -139,8 +138,8 @@ static void GL_Init (void);
 
 #ifdef GL_DLSYM
 static const char	*gl_library;
-static void		*gl_handle;
 #endif
+static void		*gl_handle = NULL;
 
 static const char	*gl_vendor;
 static const char	*gl_renderer;
@@ -245,41 +244,6 @@ void VID_HandlePause (qboolean paused)
 	else		IN_ActivateMouse ();
 }
 
-static void VID_CreateDMesaContext(int width, int height, int bpp)
-{
-	dv = DMesaCreateVisual_fp((GLint)width, (GLint)height, bpp, 0, true, true, alphaBufferSize, depthBufferSize, 0, 0);
-	if (!dv)
-		Sys_Error("Unable to create 3DFX visual.\n");
-
-	dc = DMesaCreateContext_fp(dv, NULL);
-	if (!dc)
-		Sys_Error("Unable to create 3DFX context.\n");
-
-	db = DMesaCreateBuffer_fp(dv, 0,0,(GLint)width,(GLint)height);
-	if (!db)
-		Sys_Error("Unable to create 3DFX buffer.\n");
-	DMesaMakeCurrent_fp(dc, db);
-}
-
-static void VID_DestroyDMesaContext(void)
-{
-	if (db)
-	{
-		DMesaDestroyBuffer_fp(db);
-		db = NULL;
-	}
-	if (dc)
-	{
-		DMesaDestroyContext_fp(dc);
-		dc = NULL;
-	}
-	if (dv)
-	{
-		DMesaDestroyVisual_fp(dv);
-		dv = NULL;
-	}
-}
-
 //====================================
 
 static void VID_ConWidth (int modenum)
@@ -358,28 +322,30 @@ float VID_ReportConsize(void)
 
 static qboolean VID_SetMode (int modenum)
 {
-	int	is_fullscreen;
+	int	width, height;
 
 	in_mode_set = true;
 
-	Con_SafePrintf ("Requested mode %d: %dx%dx%d\n", modenum, modelist[modenum].width, modelist[modenum].height, bpp);
+	width = modelist[modenum].width;
+	height = modelist[modenum].height;
+	Con_SafePrintf ("Requested mode %d: %dx%dx%d\n", modenum, width, height, bpp);
 
-	VID_CreateDMesaContext(modelist[modenum].width, modelist[modenum].height, bpp);
+	if (DOSGL_InitCtx(&width, &height, &bpp) < 0)
+		Sys_Error("DOSGL: Failed creating context.");
 
 	// set vid_modenum properly and adjust other vars
 	vid_modenum = modenum;
-	is_fullscreen = true;
-	modestate = (is_fullscreen) ? MS_FULLDIB : MS_WINDOWED;
+	modestate = MS_FULLDIB;
 	Cvar_SetValueQuick (&vid_config_glx, modelist[vid_modenum].width);
 	Cvar_SetValueQuick (&vid_config_gly, modelist[vid_modenum].height);
-	Cvar_SetValueQuick (&vid_config_fscr, is_fullscreen);
+	Cvar_SetValueQuick (&vid_config_fscr, 1);
 	WRWidth = vid.width = vid.conwidth = modelist[modenum].width;
 	WRHeight = vid.height = vid.conheight = modelist[modenum].height;
 
 	// setup the effective console width
 	VID_ConWidth(modenum);
 
-	Con_SafePrintf ("Video Mode Set : %dx%dx%d\n", modelist[modenum].width, modelist[modenum].height, bpp);
+	Con_SafePrintf ("Video Mode Set : %dx%dx%d\n", width, height, bpp);
 	if (multisample)
 	{
 		Con_SafePrintf ("multisample buffer with %i samples\n", multisample);
@@ -406,7 +372,7 @@ static void VID_Init8bitPalette (void)
 
 	if (GL_ParseExtensionList(gl_extensions, "GL_EXT_shared_texture_palette"))
 	{
-		glColorTableEXT_fp = (glColorTableEXT_f)DMesaGetProcAddress_fp("glColorTableEXT");
+		glColorTableEXT_fp = (glColorTableEXT_f) DOSGL_GetProcAddress("glColorTableEXT");
 		if (glColorTableEXT_fp == NULL)
 			return;
 
@@ -529,8 +495,8 @@ static void CheckMultiTextureExtensions (void)
 			return;
 		}
 
-		glMultiTexCoord2fARB_fp = (glMultiTexCoord2fARB_f) DMesaGetProcAddress_fp("glMultiTexCoord2fARB");
-		glActiveTextureARB_fp = (glActiveTextureARB_f) DMesaGetProcAddress_fp("glActiveTextureARB");
+		glMultiTexCoord2fARB_fp = (glMultiTexCoord2fARB_f) DOSGL_GetProcAddress("glMultiTexCoord2fARB");
+		glActiveTextureARB_fp = (glActiveTextureARB_f) DOSGL_GetProcAddress("glActiveTextureARB");
 		if ((glMultiTexCoord2fARB_fp == NULL) ||
 		    (glActiveTextureARB_fp == NULL))
 		{
@@ -559,7 +525,7 @@ static void CheckAnisotropyExtensions (void)
 		GLfloat test1, test2;
 		GLuint tex;
 
-		glGetTexParameterfv_fp = (glGetTexParameterfv_f) DMesaGetProcAddress_fp("glGetTexParameterfv");
+		glGetTexParameterfv_fp = (glGetTexParameterfv_f) DOSGL_GetProcAddress("glGetTexParameterfv");
 		if (glGetTexParameterfv_fp == NULL)
 		{
 			Con_SafePrintf("... can't check driver-lock status\n... ");
@@ -626,6 +592,19 @@ static void CheckStencilBuffer (void)
 }
 
 
+static void DOSGL_Init (void)
+{
+	int rc = -1;
+
+	if (rc < 0) rc = DMESA_ScanIFace (gl_handle);
+	if (rc < 0) rc = SAGE_ScanIFace (gl_handle);
+	if (rc < 0) rc = FXMESA_ScanIFace (gl_handle);
+	if (rc < 0) {
+		Sys_Error("DOSGL: no supported interfaces found.");
+	}
+	Con_SafePrintf("DOSGL: driver using %s interface.\n", DOSGL_IFaceName());
+}
+
 #ifdef GL_DLSYM
 static qboolean GL_OpenLibrary (const char *name)
 {
@@ -638,26 +617,17 @@ static qboolean GL_OpenLibrary (const char *name)
 		return false;
 	}
 
-	// link to necessary DMesa functions
-#define GL_FUNCTION(ret, func, params)				\
-    do {							\
-	func##_fp = (func##_f) Sys_dlsym(gl_handle, "_"#func);	\
-	if (func##_fp == NULL)					\
-		Sys_Error("Couldn't link to %s", "_"#func);	\
-    } while (0);
-#include "gl_dmesa.h"
-#undef	GL_FUNCTION
-
 	return true;
 }
 
 static void GL_CloseLibrary (void)
 {
-	// clear the DMesa function pointers
-#define GL_FUNCTION(ret, func, params)	\
-	func##_fp = NULL;
-#include "gl_dmesa.h"
-#undef	GL_FUNCTION
+	// clear the DOSGL function pointers
+	DOSGL_InitCtx  = NULL;
+	DOSGL_Shutdown = NULL;
+	DOSGL_EndFrame = NULL;
+	DOSGL_GetProcAddress = NULL;
+	DOSGL_IFaceName = NULL;
 
 	// free the library
 	if (gl_handle != NULL)
@@ -805,8 +775,7 @@ void GL_EndRendering (void)
 {
 	if (!scr_skipupdate)
 	{
-		glFlush_fp();
-		DMesaSwapBuffers_fp(db);
+		DOSGL_EndFrame();
 	}
 }
 
@@ -1034,7 +1003,7 @@ static void VID_ChangeVideoMode (int newmode)
 	IN_ShowMouse ();
 
 	// Kill device and rendering contexts
-	VID_DestroyDMesaContext();
+	DOSGL_Shutdown();
 
 	VID_SetMode (newmode);
 
@@ -1216,9 +1185,7 @@ void	VID_Init (unsigned char *palette)
 	putenv (fxmesa_env_multitex);
 
 #ifdef GL_DLSYM
-	i = COM_CheckParm("--gllibrary");
-	if (i == 0)
-		i = COM_CheckParm ("-gllibrary");
+	i = COM_CheckParm("-gllibrary");
 	if (i == 0)
 		i = COM_CheckParm ("-g");
 	if (i && i < com_argc - 1)
@@ -1230,6 +1197,7 @@ void	VID_Init (unsigned char *palette)
 	if (!GL_OpenLibrary(gl_library))
 		Sys_Error ("Unable to load GL library %s", gl_library);
 #endif
+	DOSGL_Init();
 
 	i = COM_CheckParm("-bpp");
 	if (i && i < com_argc-1)
@@ -1362,7 +1330,7 @@ void	VID_Init (unsigned char *palette)
 void	VID_Shutdown (void)
 {
 	VID_ShutdownGamma();
-	VID_DestroyDMesaContext();
+	DOSGL_Shutdown();
 #ifdef GL_DLSYM
 	GL_CloseLibrary();
 #endif

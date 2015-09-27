@@ -498,12 +498,29 @@ INCLUDES+= -I$(OSLIBS)/dos/watt32/inc
 LDFLAGS += -L$(OSLIBS)/dos/watt32/lib -lwatt
 endif
 
-INCLUDES += -I$(OSLIBS)/dos/mesa/include
-GL_LINK = -L$(OSLIBS)/dos/mesa/lib -lgl
+INCLUDES += -I$(OSLIBS)/dos/opengl/include
+INCLUDES += -I$(OSLIBS)/dos/glide3/include
+GL_LINK = -L$(OSLIBS)/dos/opengl/lib/$(GLDIR) -lgl
 # enable dynamic loading of gl functions
 LINK_GL_LIBS=no
 # enable 3dfx gamma hacks
 USE_3DFXGAMMA=yes
+ifeq ($(LINK_GL_LIBS),yes)
+# compile which gl driver: mesa, sage, or fxmesa
+DOSGL_DRIVER=sage
+ifeq ($(DOSGL_DRIVER),fxmesa)
+GLDIR=mesa
+CPPFLAGS+= -DREFGL_FXMESA
+else
+GLDIR=$(DOSGL_DRIVER)
+endif
+ifeq ($(DOSGL_DRIVER),mesa)
+CPPFLAGS+= -DREFGL_MESA
+endif
+ifeq ($(DOSGL_DRIVER),sage)
+CPPFLAGS+= -DREFGL_SAGE
+endif
+endif
 
 LDFLAGS += -lc -lgcc -lm
 
@@ -1094,7 +1111,7 @@ endif
 ifeq ($(TARGET_OS),dos)
 SYSOBJ_INPUT := in_dos.o
 SYSOBJ_SOFT_VID:= vid_vga.o vid_ext.o vid_dos.o vregset.o no_dxe.o
-SYSOBJ_GL_VID:= gl_viddos.o dxe.o
+SYSOBJ_GL_VID:= dos_dmesa.o dos_fxmesa.o dos_sage.o gl_viddos.o dxe.o
 ifeq ($(USE_3DFXGAMMA),yes)
 SYSOBJ_GL_VID+= fx_gamma.o
 endif
