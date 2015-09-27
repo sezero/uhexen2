@@ -148,9 +148,9 @@ static cvar_t	vid_mode = {"vid_mode", "0", CVAR_NONE};
 static cvar_t	vid_config_consize = {"vid_config_consize", "640", CVAR_ARCHIVE};
 static cvar_t	vid_config_glx = {"vid_config_glx", "640", CVAR_ARCHIVE};
 static cvar_t	vid_config_gly = {"vid_config_gly", "480", CVAR_ARCHIVE};
-static cvar_t	vid_config_swx = {"vid_config_swx", "320", CVAR_ARCHIVE};
 static cvar_t	vid_config_fscr= {"vid_config_fscr", "0", CVAR_ARCHIVE};
 // cvars for compatibility with the software version
+static cvar_t	vid_config_swx = {"vid_config_swx", "320", CVAR_ARCHIVE};
 static cvar_t	vid_config_swy = {"vid_config_swy", "240", CVAR_ARCHIVE};
 
 byte		globalcolormap[VID_GRADES*256];
