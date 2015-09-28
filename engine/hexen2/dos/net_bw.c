@@ -250,7 +250,7 @@ static int		net_controlsocket = 0;
 
 //=============================================================================
 
-static int BW_ioctl (int s, char *msg, int msglen)
+static int BW_ioctl (int s, byte *msg, int msglen)
 {
 	memcpy (lowmem_buffer, msg, msglen);
 
@@ -414,9 +414,9 @@ int BW_OpenSocket (int port)
 	int	ret;
 	int	deadman = 3 * 1024;
 	static int	dynamic = 1024;
-	static char	reuse_msg[2] = {BW_IOCTL_SETOPTIONS, BW_OPTION_REUSEBUFFERS};
-	static char	bind_msg[3] = {BW_IOCTL_BIND, 0, 0};
-	static char	nonblock_msg[2] = {BW_IOCTL_CLEAROPTIONS, BW_OPTION_BLOCKING};
+	static byte	reuse_msg[2] = {BW_IOCTL_SETOPTIONS, BW_OPTION_REUSEBUFFERS};
+	static byte	bind_msg[3] = {BW_IOCTL_BIND, 0, 0};
+	static byte	nonblock_msg[2] = {BW_IOCTL_CLEAROPTIONS, BW_OPTION_BLOCKING};
 
 	/* allocate a UDP socket */
 	strcpy((char *)lowmem_buffer, "UDP-IP10");
