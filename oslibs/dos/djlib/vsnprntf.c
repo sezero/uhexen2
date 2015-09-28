@@ -11,6 +11,9 @@
 #if !defined(_IONTERM)
 #define _IONTERM 0  /* not defined in ancient djgpp <= v2.02 */
 #endif
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 int
 vsnprintf(char *str, size_t n, const char *fmt, va_list ap)
@@ -49,3 +52,7 @@ vsnprintf(char *str, size_t n, const char *fmt, va_list ap)
 
   return len;
 }
+
+#ifdef __cplusplus
+}
+#endif

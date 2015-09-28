@@ -77,10 +77,16 @@ int q_strncasecmp(const char *s1, const char *s2, size_t n)
 	return (int)(c1 - c2);
 }
 #ifdef __DJGPP__ /* override stock DJGPP versions of str[n]icmp by our q_str[n]casecmp: */
+#ifdef __cplusplus
+extern "C" {
+#endif
 int __stricmp(const char *, const char *) __attribute__((alias("q_strcasecmp")));
 int stricmp(const char *, const char *) __attribute__((alias("q_strcasecmp")));
 int __strnicmp(const char *, const char *, size_t) __attribute__((alias("q_strncasecmp")));
 int strnicmp(const char *, const char *, size_t) __attribute__((alias("q_strncasecmp")));
+#ifdef __cplusplus
+}
+#endif
 #endif
 
 char *q_strlwr (char *str)

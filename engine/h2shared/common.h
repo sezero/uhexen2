@@ -49,8 +49,11 @@
 #  pragma warning(disable:4267)
 	/* 'var'	: conversion from 'size_t' to 'type',
 			  possible loss of data (/Wp64 warning) */
-#endif	/* _MSC_VER */
+#endif
 
+#ifdef __cplusplus
+extern "C" {
+#endif
 /* these qerr_ versions of functions error out if they detect, well, an error.
  * their first two arguments must the name of the caller function (see compiler.h
  * for the __thisfunc__ macro) and the line number, which should be __LINE__ .
@@ -67,6 +70,9 @@ extern int q_strncasecmp (const char *s1, const char *s2, size_t n);
 /* locale-insensitive strlwr/upr replacement functions: */
 extern char *q_strlwr (char *str);
 extern char *q_strupr (char *str);
+#ifdef __cplusplus
+}
+#endif
 
 /*============================================================================*/
 
