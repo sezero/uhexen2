@@ -109,12 +109,12 @@ static void DMESA_EndFrame (void)
 static void *DMESA_GetProcAddress (const char *sym)
 {
 	if (DMesaGetProcAddress_fp)
-		return DMesaGetProcAddress_fp (sym);
+		return (void *) DMesaGetProcAddress_fp (sym);
 	return NULL;
 }
 #else /* assume the function is present */
 static void *DMESA_GetProcAddress (const char *sym) {
-	return DMesaGetProcAddress (sym);
+	return (void *) DMesaGetProcAddress (sym);
 }
 #endif
 

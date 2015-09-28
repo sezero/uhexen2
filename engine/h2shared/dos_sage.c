@@ -126,12 +126,12 @@ static void SAGE_EndFrame (void)
 static void *SAGE_GetProcAddress (const char *sym)
 {
 	if (sage_GetProcAddress_fp)
-		return sage_GetProcAddress_fp (sym);
+		return (void *) sage_GetProcAddress_fp (sym);
 	return NULL;
 }
 #else /* assume the function is present */
 static void *SAGE_GetProcAddress (const char *sym) {
-	return sage_GetProcAddress (sym);
+	return (void *) sage_GetProcAddress (sym);
 }
 #endif
 
