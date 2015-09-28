@@ -1,5 +1,5 @@
 /*
- * gl_viddos.c -- MSDOS OpenGL, based on gl_vidsdl.c and gl_vidnt.c.
+ * gl_viddos.c -- DOS OpenGL (based on gl_vidsdl.c and gl_vidnt.c)
  *
  * Copyright (C) 1996-1997  Id Software, Inc.
  * Copyright (C) 1997-1998  Raven Software Corp.
@@ -689,10 +689,6 @@ static void GL_Init (void)
 	    !q_strncasecmp(gl_renderer, "Glide ", 6)	  || /* possible with Mesa 3.x/4.x/5.0.x */
 	    !q_strncasecmp(gl_renderer, "Mesa Glide", 10))
 	{
-	// This should hopefully detect Voodoo1 and Voodoo2
-	// hardware and possibly Voodoo Rush.
-	// Voodoo Banshee, Voodoo3 and later are hw-accelerated
-	// by DRI in XFree86-4.x and should be: is_3dfx = false.
 		Con_SafePrintf("3dfx Voodoo found\n");
 		is_3dfx = true;
 	}
