@@ -1,5 +1,6 @@
-/* gl_dmesa.c -- DOS OpenGL refresh using DMesa interface.
- * for use with Mesa library version 5.x or 6.x.
+/* gl_dmesa.c -- DOS OpenGL refresh using DMesa api.
+ * for use with Mesa library version 5.x or 6.x possibly built
+ * against 3dfx glide.
  * Copyright (C) 2015 O.Sezer <sezero@users.sourceforge.net>
  *
  * This program is free software; you can redistribute it and/or modify
@@ -23,7 +24,7 @@
 #include "sys_dxe.h"
 
 #if !defined(GL_DLSYM) && !defined(REFGL_MESA)
-int DMESA_ScanIFace (void)
+int DMESA_LoadAPI (void *handle)
 {
 	return -1;
 }
@@ -118,19 +119,19 @@ static void *DMESA_GetProcAddress (const char *sym) {
 }
 #endif
 
-static const char *DMESA_IFaceName (void)
+static const char *DMESA_APIName (void)
 {
 	return "DMesa";
 }
 
-int DMESA_ScanIFace (void *handle)
+int DMESA_LoadAPI (void *handle)
 {
 #ifdef GL_DLSYM
 	DOSGL_InitCtx  = NULL;
 	DOSGL_Shutdown = NULL;
 	DOSGL_EndFrame = NULL;
 	DOSGL_GetProcAddress = NULL;
-	DOSGL_IFaceName = NULL;
+	DOSGL_APIName = NULL;
 	DMesaCreateVisual_fp = (DMesaCreateVisual_f) Sys_dlsym(handle,"_DMesaCreateVisual");
 	DMesaDestroyVisual_fp = (DMesaDestroyVisual_f) Sys_dlsym(handle,"_DMesaDestroyVisual");
 	DMesaCreateContext_fp = (DMesaCreateContext_f) Sys_dlsym(handle,"_DMesaCreateContext");
@@ -152,7 +153,7 @@ int DMESA_ScanIFace (void *handle)
 	DOSGL_Shutdown = DMESA_Shutdown;
 	DOSGL_EndFrame = DMESA_EndFrame;
 	DOSGL_GetProcAddress = DMESA_GetProcAddress;
-	DOSGL_IFaceName = DMESA_IFaceName;
+	DOSGL_APIName = DMESA_APIName;
 
 	return 0;
 }

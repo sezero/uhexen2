@@ -1,7 +1,6 @@
-/* gl_sage.c -- DOS OpenGL refresh using 'sage' interface:
+/* gl_sage.c -- DOS OpenGL refresh using sage api :
  * for use with SAGE library of Daniel Borca.
  * http://www.geocities.ws/dborca/opengl/sage.html
- * https://github.com/dborca/sage
  * https://github.com/sezero/sage
  * Copyright (C) 2015 O.Sezer <sezero@users.sourceforge.net>
  *
@@ -26,7 +25,7 @@
 #include "sys_dxe.h"
 
 #if !defined(GL_DLSYM) && !defined(REFGL_SAGE)
-int SAGE_ScanIFace (void)
+int SAGE_LoadAPI (void *handle)
 {
 	return -1;
 }
@@ -135,19 +134,19 @@ static void *SAGE_GetProcAddress (const char *sym) {
 }
 #endif
 
-static const char *SAGE_IFaceName (void)
+static const char *SAGE_APIName (void)
 {
 	return "sage";
 }
 
-int SAGE_ScanIFace (void *handle)
+int SAGE_LoadAPI (void *handle)
 {
 #ifdef GL_DLSYM
 	DOSGL_InitCtx  = NULL;
 	DOSGL_Shutdown = NULL;
 	DOSGL_EndFrame = NULL;
 	DOSGL_GetProcAddress = NULL;
-	DOSGL_IFaceName = NULL;
+	DOSGL_APIName = NULL;
 	sage_init_fp = (sage_init_f) Sys_dlsym(handle,"_sage_init");
 	sage_open_fp = (sage_open_f) Sys_dlsym(handle,"_sage_open");
 	sage_bind_fp = (sage_bind_f) Sys_dlsym(handle,"_sage_bind");
@@ -166,7 +165,7 @@ int SAGE_ScanIFace (void *handle)
 	DOSGL_Shutdown = SAGE_Shutdown;
 	DOSGL_EndFrame = SAGE_EndFrame;
 	DOSGL_GetProcAddress = SAGE_GetProcAddress;
-	DOSGL_IFaceName = SAGE_IFaceName;
+	DOSGL_APIName = SAGE_APIName;
 
 	return 0;
 }

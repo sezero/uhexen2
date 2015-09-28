@@ -24,10 +24,10 @@ extern int  (*DOSGL_InitCtx ) (int *width, int *height, int *bpp);
 extern void (*DOSGL_Shutdown) (void);
 extern void (*DOSGL_EndFrame) (void);
 extern void * (*DOSGL_GetProcAddress) (const char *);
-extern const char * (*DOSGL_IFaceName) (void);
+extern const char * (*DOSGL_APIName) (void);
 
-int DMESA_ScanIFace (void *handle);
-int SAGE_ScanIFace (void *handle);
-int FXMESA_ScanIFace (void *handle);
+int DMESA_LoadAPI (void *handle);
+int SAGE_LoadAPI (void *handle);
+int FXMESA_LoadAPI (void *handle);
 
 #endif

@@ -1,5 +1,5 @@
-/* gl_fxmesa.c -- DOS OpenGL refresh using fxMesa interface:
- * for use with the Mesa library built against 3dfx glide.
+/* gl_fxmesa.c -- DOS OpenGL refresh using fxMesa api:
+ * for use with Mesa library built against 3dfx glide.
  * Copyright (C) 1997-2001 Id Software, Inc.
  * Copyright (C) 2015 O.Sezer <sezero@users.sourceforge.net>
  *
@@ -24,7 +24,7 @@
 #include "sys_dxe.h"
 
 #if !defined(GL_DLSYM) && !defined(REFGL_FXMESA)
-int FXMESA_ScanIFace (void)
+int FXMESA_LoadAPI (void *handle)
 {
 	return -1;
 }
@@ -136,19 +136,19 @@ static void *FXMESA_GetProcAddress (const char *sym)
 	return NULL; /* no can do.. */
 }
 
-static const char *FXMESA_IFaceName (void)
+static const char *FXMESA_APIName (void)
 {
 	return "fxMesa";
 }
 
-int FXMESA_ScanIFace (void *handle)
+int FXMESA_LoadAPI (void *handle)
 {
 #ifdef GL_DLSYM
 	DOSGL_InitCtx  = NULL;
 	DOSGL_Shutdown = NULL;
 	DOSGL_EndFrame = NULL;
 	DOSGL_GetProcAddress = NULL;
-	DOSGL_IFaceName = NULL;
+	DOSGL_APIName = NULL;
 	fxMesaCreateContext_fp = (fxMesaCreateContext_f) Sys_dlsym(handle,"_fxMesaCreateContext");
 	fxMesaCreateBestContext_fp = (fxMesaCreateBestContext_f) Sys_dlsym(handle,"_fxMesaCreateBestContext");
 	fxMesaMakeCurrent_fp = (fxMesaMakeCurrent_f) Sys_dlsym(handle,"_fxMesaMakeCurrent");
@@ -165,7 +165,7 @@ int FXMESA_ScanIFace (void *handle)
 	DOSGL_Shutdown = FXMESA_Shutdown;
 	DOSGL_EndFrame = FXMESA_EndFrame;
 	DOSGL_GetProcAddress = FXMESA_GetProcAddress;
-	DOSGL_IFaceName = FXMESA_IFaceName;
+	DOSGL_APIName = FXMESA_APIName;
 
 	return 0;
 }

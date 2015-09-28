@@ -38,7 +38,7 @@ int  (*DOSGL_InitCtx ) (int *width, int *height, int *bpp);
 void (*DOSGL_Shutdown) (void);
 void (*DOSGL_EndFrame) (void);
 void * (*DOSGL_GetProcAddress) (const char *);
-const char * (*DOSGL_IFaceName) (void);
+const char * (*DOSGL_APIName) (void);
 
 #define WARP_WIDTH		320
 #define WARP_HEIGHT		200
@@ -574,13 +574,13 @@ static void DOSGL_Init (void)
 {
 	int rc = -1;
 
-	if (rc < 0) rc = DMESA_ScanIFace (gl_handle);
-	if (rc < 0) rc = SAGE_ScanIFace (gl_handle);
-	if (rc < 0) rc = FXMESA_ScanIFace (gl_handle);
+	if (rc < 0) rc = DMESA_LoadAPI (gl_handle);
+	if (rc < 0) rc = SAGE_LoadAPI (gl_handle);
+	if (rc < 0) rc = FXMESA_LoadAPI (gl_handle);
 	if (rc < 0) {
-		Sys_Error("DOSGL: no supported interfaces found.");
+		Sys_Error("Unable to find a supported API for DOSGL.");
 	}
-	Con_SafePrintf("DOSGL: driver using %s interface.\n", DOSGL_IFaceName());
+	Con_SafePrintf("DOSGL: driver using %s API.\n", DOSGL_APIName());
 }
 
 #ifdef GL_DLSYM
@@ -605,7 +605,7 @@ static void GL_CloseLibrary (void)
 	DOSGL_Shutdown = NULL;
 	DOSGL_EndFrame = NULL;
 	DOSGL_GetProcAddress = NULL;
-	DOSGL_IFaceName = NULL;
+	DOSGL_APIName = NULL;
 
 	// free the library
 	if (gl_handle != NULL)
@@ -1252,7 +1252,8 @@ void	VID_Init (unsigned char *palette)
 void	VID_Shutdown (void)
 {
 	VID_ShutdownGamma();
-	DOSGL_Shutdown();
+	if (DOSGL_Shutdown)
+		DOSGL_Shutdown ();
 #ifdef GL_DLSYM
 	GL_CloseLibrary();
 #endif
