@@ -34,7 +34,6 @@
 #include "quakedef.h"
 #include "sys_dxe.h"
 
-/* FS: The following is gross, but I just figured this out. */
 DXE_EXPORT_TABLE (syms)
 	DXE_EXPORT (__dj_assert)
 	DXE_EXPORT (__dj_huge_val)
@@ -102,6 +101,11 @@ DXE_EXPORT_TABLE (syms)
 	DXE_EXPORT (__dpmi_int)
 	DXE_EXPORT (__dpmi_physical_address_mapping)
 
+	/* FS: ref_gl */
+	DXE_EXPORT (dlclose)
+	DXE_EXPORT (dlopen)
+	DXE_EXPORT (dlsym)
+
 	/* FS: 3dfx */
 	DXE_EXPORT (__dj_stdout)
 	DXE_EXPORT (__djgpp_base_address)
@@ -110,7 +114,6 @@ DXE_EXPORT_TABLE (syms)
 	DXE_EXPORT (__dpmi_free_physical_address_mapping)
 	DXE_EXPORT (_crt0_startup_flags)
 	DXE_EXPORT (abort)
-	DXE_EXPORT (atexit)
 	DXE_EXPORT (atol)
 	DXE_EXPORT (clock)
 	DXE_EXPORT (exp)
@@ -130,9 +133,6 @@ DXE_EXPORT_TABLE (syms)
 	DXE_EXPORT (vfprintf)
 
 	/* FS: Mesa 6.4.x */
-	DXE_EXPORT (dlclose)
-	DXE_EXPORT (dlopen)
-	DXE_EXPORT (dlsym)
 	DXE_EXPORT (ldexp)
 DXE_EXPORT_END
 
