@@ -69,14 +69,13 @@ static const stdmode_t	std_modes[] = {
 	{320, 240},	// 0
 	{400, 300},	// 1
 	{512, 384},	// 2
-	{640, 480},	// 3 == RES_640X480, this is our default, below
-			//		this is the lowresmodes region.
-			//		either do not change its order,
-			//		or change the above define, too
-	{800,  600},	// 4, RES_640X480 + 1
-	{1024, 768},	// 5, RES_640X480 + 2
-	{1280, 1024},	// 6
-	{1600, 1200}	// 7
+	{640, 480},	// 3 == RES_640X480, this is our default
+	{800, 600},
+	{856, 480},	// GR_RESOLUTION_856x480
+	{960, 720},	// GR_RESOLUTION_960x720
+	{1024,768},
+	{1280,1024},
+	{1600,1200}
 };
 
 #define MAX_MODE_LIST	20
