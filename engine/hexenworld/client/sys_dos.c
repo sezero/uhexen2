@@ -82,8 +82,6 @@ static double		oldtime = 0.0;
 cvar_t			sys_nostdout = {"sys_nostdout", "0", CVAR_NONE};
 cvar_t			sys_throttle = {"sys_throttle", "0.02", CVAR_ARCHIVE};
 
-static int		minmem;
-
 float			fptest_temp;
 
 extern char	start_of_memory __asm__("start");
@@ -212,6 +210,8 @@ static void Sys_DetectWin95 (void)
 	}
 }
 
+#ifndef GLQUAKE
+static int		minmem;
 
 static void *dos_getmaxlockedmem (int *size)
 {
@@ -381,6 +381,7 @@ UpdateSbrk:
 	*size = working_size;
 	return working_memory;
 }
+#endif
 
 
 int Sys_mkdir (const char *path, qboolean crash)
@@ -898,10 +899,19 @@ static void Sys_GetMemory (void)
 		quakeparms.memsize = (int) (atof(com_argv[j + 1]) * 1024 * 1024);
 		quakeparms.membase = malloc (quakeparms.memsize);
 	}
+#ifdef GLQUAKE
+	else
+	{
+		/* 16 mb is usually enough. Leave rest of mem for gl driver */
+		quakeparms.memsize = (int) 0x1000000;
+		quakeparms.membase = malloc (quakeparms.memsize);
+	}
+#else
 	else
 	{
 		quakeparms.membase = dos_getmaxlockedmem (&quakeparms.memsize);
 	}
+#endif
 
 	printf("malloc'd: %d\n", quakeparms.memsize);
 
