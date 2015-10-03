@@ -47,6 +47,7 @@
  *			the handle returned by dlopen(NULL,mode).
  *			Handle dlsym() implementations needing a leading
  *			underscore to function names, e.g. DJGPP.
+ * v0.1.1, 2015-10-02	Detect V1 / Rush and reject to work: they freeze.
  */
 
 #ifndef _GNU_SOURCE
@@ -59,6 +60,7 @@
 #include <glide.h>
 #else
 #define FX_CALL		/*__stdcall*/
+#define GR_HARDWARE		0xa1
 #define GR_GAMMA_TABLE_ENTRIES	0x05
 typedef signed int	FxI32;
 typedef unsigned int	FxU32;
@@ -80,6 +82,8 @@ typedef float		FxFloat;
 
 /**	PRIVATE STUFF			**/
 
+static const char * (FX_CALL *grGetString_fp)(FxU32);
+
 /* 3dfx glide2 func for gamma correction */
 static void (FX_CALL *grGammaCorrectionValue_fp)(FxFloat) = NULL;
 /* 3dfx glide3 func for gamma correction */
@@ -91,6 +95,22 @@ static void (FX_CALL *grLoadGammaTable_fp)(FxU32, FxU32*, FxU32*, FxU32*) = NULL
 
 /**********************************************************************/
 
+static int check_v1 (void)
+{
+	const char *hw;
+
+	if (!grGetString_fp) {
+		if ((grGetString_fp = (const char * (*) FX_CALL (FxU32)) dlsym(RTLD_DEFAULT, DLSYM_NAME(grGetString))) == NULL)
+			return -1;
+	}
+
+	hw = grGetString_fp(GR_HARDWARE);
+	if (!strcmp(hw,"Voodoo Graphics") || !strcmp(hw,"Voodoo Rush"))
+		return -1;	/* V1 and Rush freeze with this hack. */
+
+	return 0; /* others seem to work */
+}
+
 /*
  * Init_3dfxGammaCtrl
  * Sends 0 for failure, 2 for glide2 or 3 for glide3 api.
@@ -101,6 +121,9 @@ int Init_3dfxGammaCtrl (void)
 		return 2;	/* already have glide2x proc address */
 	if (guGammaCorrectionRGB_fp != NULL)
 		return 3;	/* already have glide3x proc address */
+
+	if (check_v1() < 0)
+		return 0;
 
 	if ((grGammaCorrectionValue_fp = (void (*) (FxFloat)) dlsym(RTLD_DEFAULT, DLSYM_NAME(grGammaCorrectionValue))) != NULL)
 		return 2;/* glide2x */
@@ -141,6 +164,9 @@ static int Check_3DfxGammaRamp (void)
 {
 	if (grLoadGammaTable_fp != NULL && grGet_fp != NULL)
 		return 1;
+
+	if (check_v1() < 0)
+		return 0;
 
 	grGet_fp = (FxU32 (*) (FxU32, FxU32, FxI32 *)) dlsym(RTLD_DEFAULT, DLSYM_NAME(grGet));
 	grLoadGammaTable_fp = (void (*) (FxU32, FxU32 *, FxU32 *, FxU32 *)) dlsym(RTLD_DEFAULT, DLSYM_NAME(grLoadGammaTable));
