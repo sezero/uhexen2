@@ -1218,6 +1218,8 @@ void	VID_Init (unsigned char *palette)
 
 	temp = scr_disabled_for_loading;
 	scr_disabled_for_loading = true;
+	// disable printing to terminal
+	Cvar_SetROM ("sys_nostdout", "1");
 	//set the mode
 	VID_SetMode (vid_mode.integer);
 	ClearAllStates ();
