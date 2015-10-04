@@ -134,6 +134,7 @@ int Init_3dfxGammaCtrl (void)
 
 void Shutdown_3dfxGamma (void)
 {
+	grGetString_fp = NULL;
 	grGammaCorrectionValue_fp = NULL;
 	guGammaCorrectionRGB_fp = NULL;
 	grGet_fp = NULL;
