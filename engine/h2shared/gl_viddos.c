@@ -93,6 +93,7 @@ typedef struct {
 		depth,
 		stencil;
 } attributes_t;
+static attributes_t	vid_attribs;
 
 // vars for vid state
 viddef_t	vid;			// global video state
@@ -150,11 +151,10 @@ static qboolean	have8bit = false;
 qboolean	is8bit = false;
 static cvar_t	vid_config_gl8bit = {"vid_config_gl8bit", "0", CVAR_ARCHIVE};
 
-// Gamma stuff
+/* Gamma stuff */
 #define	USE_GAMMA_RAMPS			0
 
-/* 3dfx gamma hacks: stuff are in fx_gamma.c
- * Note: gamma ramps crashes voodoo graphics */
+/* 3dfx gamma hacks: see fx_gamma.c */
 #define	USE_3DFX_RAMPS			0
 #if defined(USE_3DFXGAMMA)
 #include "fx_gamma.h"
@@ -565,8 +565,7 @@ static void CheckNonPowerOfTwoTextures (void)
 
 static void CheckStencilBuffer (void)
 {
-	have_stencil = false;
-	/* FIXME ??? */
+	have_stencil = !!vid_attribs.stencil;
 }
 
 
@@ -668,6 +667,19 @@ static void GL_Init (void)
 	// initialize gl function pointers
 	GL_Init_Functions();
 #endif
+
+	// collect the visual attributes
+	memset (&vid_attribs, 0, sizeof(attributes_t));
+	glGetIntegerv_fp(GL_RED_BITS, &vid_attribs.red);
+	glGetIntegerv_fp(GL_GREEN_BITS, &vid_attribs.green);
+	glGetIntegerv_fp(GL_BLUE_BITS, &vid_attribs.blue);
+	glGetIntegerv_fp(GL_ALPHA_BITS, &vid_attribs.alpha);
+	glGetIntegerv_fp(GL_DEPTH_BITS, &vid_attribs.depth);
+	glGetIntegerv_fp(GL_STENCIL_BITS, &vid_attribs.stencil);
+	Con_SafePrintf ("R:%d G:%d B:%d A:%d, Depth:%d, Stencil:%d\n",
+			vid_attribs.red, vid_attribs.green, vid_attribs.blue, vid_attribs.alpha,
+			vid_attribs.depth, vid_attribs.stencil);
+
 	gl_vendor = (const char *)glGetString_fp (GL_VENDOR);
 	Con_SafePrintf ("GL_VENDOR: %s\n", gl_vendor);
 	gl_renderer = (const char *)glGetString_fp (GL_RENDERER);
