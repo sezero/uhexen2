@@ -110,6 +110,11 @@ static int FXMESA_InitCtx (int *width, int *height, int *bpp)
 	attribs[4] = 1;
 	attribs[5] = FXMESA_NONE;
 
+	if (*bpp != 16) {
+		Con_SafePrintf("ignoring %d bpp request, using 16 bpp.\n", *bpp);
+		*bpp = 16;
+	}
+
 //	fc = fxMesaCreateBestContext_fp(0, *width, *height, attribs);
 	fc = fxMesaCreateContext_fp(0, findres(width, height), GR_REFRESH_60Hz, attribs);
 	if (!fc)
