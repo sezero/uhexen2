@@ -8,5 +8,7 @@ sst96 -> Voodoo Rush
 
 cvg   -> Voodoo2
 
-h5    -> Banshee, Voodoo3, Voodoo4 and Voodoo5
+h3    -> Banshee, Voodoo3
+
+h5    -> Voodoo4 and Voodoo5 (also works for Banshee and Voodoo3.)
 
