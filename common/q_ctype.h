@@ -67,6 +67,11 @@ static inline int q_isspace(int c)
 				c == '\f' || c == '\v');
 }
 
+static inline int q_isprint(int c)
+{
+	return (c >= 0x20 && c <= 0x7e);
+}
+
 static inline int q_toascii(int c)
 {
 	return (c & 0x7f);
