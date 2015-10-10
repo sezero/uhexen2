@@ -39,11 +39,14 @@ typedef fxMesaContext (*fxMesaCreateBestContext_f) (GLuint, GLint, GLint, const 
 typedef void (*fxMesaMakeCurrent_f) (fxMesaContext);
 typedef void (*fxMesaDestroyContext_f) (fxMesaContext);
 typedef void (*fxMesaSwapBuffers_f) (void);
+typedef void (*FXMESAPROC) ();
+typedef FXMESAPROC (*fxMesaGetProcAddress_f) (const char *);
 static fxMesaCreateContext_f fxMesaCreateContext_fp;
 static fxMesaCreateBestContext_f fxMesaCreateBestContext_fp;
 static fxMesaMakeCurrent_f fxMesaMakeCurrent_fp;
 static fxMesaDestroyContext_f fxMesaDestroyContext_fp;
 static fxMesaSwapBuffers_f fxMesaSwapBuffers_fp;
+static fxMesaGetProcAddress_f fxMesaGetProcAddress_fp;
 #else
 #define fxMesaCreateContext_fp fxMesaCreateContext
 #define fxMesaCreateBestContext_fp fxMesaCreateBestContext
@@ -131,10 +134,18 @@ static void FXMESA_EndFrame (void)
 	fxMesaSwapBuffers_fp();
 }
 
+#ifdef GL_DLSYM
 static void *FXMESA_GetProcAddress (const char *sym)
 {
-	return NULL; /* no can do.. */
+	if (fxMesaGetProcAddress_fp)
+		return (void *) fxMesaGetProcAddress_fp (sym);
+	return NULL;
 }
+#else /* assume the function is NOT present */
+static void *FXMESA_GetProcAddress (const char *sym) {
+	return NULL;
+}
+#endif
 
 static const char *FXMESA_APIName (void)
 {
@@ -154,6 +165,7 @@ int FXMESA_LoadAPI (void *handle)
 	fxMesaMakeCurrent_fp = (fxMesaMakeCurrent_f) Sys_dlsym(handle,"_fxMesaMakeCurrent");
 	fxMesaDestroyContext_fp = (fxMesaDestroyContext_f) Sys_dlsym(handle,"_fxMesaDestroyContext");
 	fxMesaSwapBuffers_fp = (fxMesaSwapBuffers_f) Sys_dlsym(handle,"_fxMesaSwapBuffers");
+	fxMesaGetProcAddress_fp = (fxMesaGetProcAddress_f) Sys_dlsym(handle,"_fxMesaGetProcAddress");
 	if (!fxMesaCreateContext_fp || !fxMesaCreateBestContext_fp ||
 	    !fxMesaMakeCurrent_fp || !fxMesaDestroyContext_fp ||
 	    !fxMesaSwapBuffers_fp) {
