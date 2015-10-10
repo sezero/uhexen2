@@ -117,8 +117,8 @@ typedef struct {
 		depth,
 		stencil;
 } attributes_t;
-
 static attributes_t	vid_attribs;
+
 struct Window *window = NULL; // used by in_amiga.c
 static struct Screen *screen = NULL;
 #ifdef __AROS__
@@ -437,18 +437,6 @@ static qboolean VID_SetMode (int modenum)
 
 				Con_SafePrintf ("Video Mode Set : %dx%dx%d\n", modelist[modenum].width, modelist[modenum].height, bpp);
 
-				// collect the actual attributes
-				memset (&vid_attribs, 0, sizeof(attributes_t));
-				glGetIntegerv_fp(GL_RED_BITS, &vid_attribs.red);
-				glGetIntegerv_fp(GL_GREEN_BITS, &vid_attribs.green);
-				glGetIntegerv_fp(GL_BLUE_BITS, &vid_attribs.blue);
-				glGetIntegerv_fp(GL_ALPHA_BITS, &vid_attribs.alpha);
-				glGetIntegerv_fp(GL_DEPTH_BITS, &vid_attribs.depth);
-				glGetIntegerv_fp(GL_STENCIL_BITS, &vid_attribs.stencil);
-
-				Con_SafePrintf ("vid_info: red: %d, green: %d, blue: %d, alpha: %d, depth: %d\n",
-						vid_attribs.red, vid_attribs.green, vid_attribs.blue, vid_attribs.alpha, vid_attribs.depth);
-
 				//IN_HideMouse ();
 
 				in_mode_set = false;
@@ -669,13 +657,7 @@ static void CheckNonPowerOfTwoTextures (void)
 
 static void CheckStencilBuffer (void)
 {
-	have_stencil = false;
-
-	if (vid_attribs.stencil)
-	{
-		Con_SafePrintf("Stencil buffer created with %d bits\n", vid_attribs.stencil);
-		have_stencil = true;
-	}
+	have_stencil = !!vid_attribs.stencil;
 }
 
 static void GL_ResetFunctions (void)
@@ -700,6 +682,18 @@ GL_Init
 */
 static void GL_Init (void)
 {
+	// collect the visual attributes
+	memset (&vid_attribs, 0, sizeof(attributes_t));
+	glGetIntegerv_fp(GL_RED_BITS, &vid_attribs.red);
+	glGetIntegerv_fp(GL_GREEN_BITS, &vid_attribs.green);
+	glGetIntegerv_fp(GL_BLUE_BITS, &vid_attribs.blue);
+	glGetIntegerv_fp(GL_ALPHA_BITS, &vid_attribs.alpha);
+	glGetIntegerv_fp(GL_DEPTH_BITS, &vid_attribs.depth);
+	glGetIntegerv_fp(GL_STENCIL_BITS, &vid_attribs.stencil);
+	Con_SafePrintf ("R:%d G:%d B:%d A:%d, Depth:%d, Stencil:%d\n",
+			vid_attribs.red, vid_attribs.green, vid_attribs.blue, vid_attribs.alpha,
+			vid_attribs.depth, vid_attribs.stencil);
+
 	gl_vendor = (const char *)glGetString_fp (GL_VENDOR);
 	Con_SafePrintf ("GL_VENDOR: %s\n", gl_vendor);
 	gl_renderer = (const char *)glGetString_fp (GL_RENDERER);
@@ -1204,11 +1198,6 @@ static void VID_NumModes_f (void)
 	Con_Printf ("%d video modes in current list\n", *nummodes);
 }
 
-static void VID_ShowInfo_f (void)
-{
-	// implement me
-}
-
 /*
 ===================
 VID_Init
@@ -1239,7 +1228,6 @@ void	VID_Init (unsigned char *palette)
 	Cvar_RegisterVariable (&gl_texture_NPOT);
 	Cvar_RegisterVariable (&gl_lightmapfmt);
 
-	Cmd_AddCommand ("vid_showinfo", VID_ShowInfo_f);
 	Cmd_AddCommand ("vid_listmodes", VID_ListModes_f);
 	Cmd_AddCommand ("vid_nummodes", VID_NumModes_f);
 	Cmd_AddCommand ("vid_restart", VID_Restart_f);

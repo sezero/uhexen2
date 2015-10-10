@@ -60,10 +60,6 @@ static int	num_fmodes;
 static int	num_wmodes;
 static int	*nummodes;
 //static int	bpp = 8;
-static const SDL_VideoInfo	*vid_info;
-	/* NOTE: SDL-1.3 doesn't have the Uint32 colorkey
-	   and Uint8 alpha members in SDL_PixelFormat
-	   which is a member of SDL_VideoInfo structure. */
 static SDL_Surface	*screen;
 static qboolean	vid_menu_fs;
 static qboolean	fs_toggle_works = true;
@@ -494,19 +490,6 @@ static void VID_NumModes_f (void)
 	Con_Printf ("%d video modes in current list\n", *nummodes);
 }
 
-static void VID_ShowInfo_f (void)
-{
-	Con_Printf ("Video info:\n"
-			"BitsPerPixel: %d,\n"
-			"Rmask : %u, Gmask : %u, Bmask : %u\n"
-			"Rshift: %u, Gshift: %u, Bshift: %u\n"
-			"Rloss : %u, Gloss : %u, Bloss : %u\n",
-			vid_info->vfmt->BitsPerPixel,
-			vid_info->vfmt->Rmask, vid_info->vfmt->Gmask, vid_info->vfmt->Bmask,
-			vid_info->vfmt->Rshift, vid_info->vfmt->Gshift, vid_info->vfmt->Bshift,
-			vid_info->vfmt->Rloss, vid_info->vfmt->Gloss, vid_info->vfmt->Bloss);
-}
-
 static qboolean VID_SetMode (int modenum, unsigned char *palette)
 {
 	Uint32 flags;
@@ -706,7 +689,6 @@ void VID_Init (unsigned char *palette)
 	Cvar_RegisterVariable (&_enable_mouse);
 	Cvar_RegisterVariable (&vid_showload);
 
-	Cmd_AddCommand ("vid_showinfo", VID_ShowInfo_f);
 	Cmd_AddCommand ("vid_listmodes", VID_ListModes_f);
 	Cmd_AddCommand ("vid_nummodes", VID_NumModes_f);
 	Cmd_AddCommand ("vid_restart", VID_Restart_f);
@@ -718,10 +700,6 @@ void VID_Init (unsigned char *palette)
 		if (SDL_InitSubSystem(SDL_INIT_VIDEO) < 0)
 			Sys_Error("Couldn't init video: %s", SDL_GetError());
 	}
-
-	// this will contain the "best bpp" for the current display
-	// make sure to re-retrieve it if you ever re-init sdl_video
-	vid_info = SDL_GetVideoInfo();
 
 	// retrieve the list of fullscreen modes
 	enumlist = SDL_ListModes(NULL, SDL_SWSURFACE|SDL_HWPALETTE|SDL_FULLSCREEN);

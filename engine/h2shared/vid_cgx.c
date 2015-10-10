@@ -367,11 +367,6 @@ static void VID_NumModes_f (void)
 	Con_Printf ("%d video modes in current list\n", *nummodes);
 }
 
-static void VID_ShowInfo_f (void)
-{
-	// TODO: implement me
-}
-
 //====================================
 
 
@@ -601,7 +596,6 @@ void VID_Init (unsigned char *palette)
 	Cvar_RegisterVariable (&_enable_mouse);
 	Cvar_RegisterVariable (&vid_showload);
 
-	Cmd_AddCommand ("vid_showinfo", VID_ShowInfo_f);
 	Cmd_AddCommand ("vid_listmodes", VID_ListModes_f);
 	Cmd_AddCommand ("vid_nummodes", VID_NumModes_f);
 	Cmd_AddCommand ("vid_restart", VID_Restart_f);

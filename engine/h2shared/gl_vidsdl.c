@@ -116,12 +116,9 @@ typedef struct {
 		depth,
 		stencil;
 } attributes_t;
-
 static attributes_t	vid_attribs;
+
 static const SDL_VideoInfo	*vid_info;
-	/* NOTE: SDL-1.3 doesn't have the Uint32 colorkey
-	   and Uint8 alpha members in SDL_PixelFormat
-	   which is a member of SDL_VideoInfo structure. */
 static SDL_Surface	*screen;
 static qboolean	vid_menu_fs;
 static qboolean	fs_toggle_works = true;
@@ -181,11 +178,10 @@ static qboolean	have8bit = false;
 qboolean	is8bit = false;
 static cvar_t	vid_config_gl8bit = {"vid_config_gl8bit", "0", CVAR_ARCHIVE};
 
-// Gamma stuff
+/* Gamma stuff */
 #define	USE_GAMMA_RAMPS			0
 
-/* 3dfx gamma hacks: stuff are in fx_gamma.c
- * Note: gamma ramps crashes voodoo graphics */
+/* 3dfx gamma hacks: see fx_gamma.c */
 #define	USE_3DFX_RAMPS			0
 #if defined(USE_3DFXGAMMA)
 #include "fx_gamma.h"
@@ -490,17 +486,6 @@ static qboolean VID_SetMode (int modenum)
 	}
 	Cvar_SetValueQuick (&vid_config_fsaa, multisample);
 
-	// collect the actual attributes
-	memset (&vid_attribs, 0, sizeof(attributes_t));
-	SDL_GL_GetAttribute(SDL_GL_RED_SIZE, &vid_attribs.red);
-	SDL_GL_GetAttribute(SDL_GL_GREEN_SIZE, &vid_attribs.green);
-	SDL_GL_GetAttribute(SDL_GL_BLUE_SIZE, &vid_attribs.blue);
-	SDL_GL_GetAttribute(SDL_GL_ALPHA_SIZE, &vid_attribs.alpha);
-	SDL_GL_GetAttribute(SDL_GL_DEPTH_SIZE, &vid_attribs.depth);
-	SDL_GL_GetAttribute(SDL_GL_STENCIL_SIZE, &vid_attribs.stencil);
-	Con_SafePrintf ("vid_info: red: %d, green: %d, blue: %d, alpha: %d, depth: %d\n",
-			vid_attribs.red, vid_attribs.green, vid_attribs.blue, vid_attribs.alpha, vid_attribs.depth);
-
 	SDL_WM_SetCaption(WM_TITLEBAR_TEXT, WM_ICON_TEXT);
 
 	IN_HideMouse ();
@@ -772,13 +757,7 @@ static void CheckNonPowerOfTwoTextures (void)
 
 static void CheckStencilBuffer (void)
 {
-	have_stencil = false;
-
-	if (vid_attribs.stencil)
-	{
-		Con_SafePrintf("Stencil buffer created with %d bits\n", vid_attribs.stencil);
-		have_stencil = true;
-	}
+	have_stencil = !!vid_attribs.stencil;
 }
 
 
@@ -879,6 +858,19 @@ static void GL_Init (void)
 	// initialize gl function pointers
 	GL_Init_Functions();
 #endif
+
+	// collect the visual attributes
+	memset (&vid_attribs, 0, sizeof(attributes_t));
+	SDL_GL_GetAttribute(SDL_GL_RED_SIZE, &vid_attribs.red);
+	SDL_GL_GetAttribute(SDL_GL_GREEN_SIZE, &vid_attribs.green);
+	SDL_GL_GetAttribute(SDL_GL_BLUE_SIZE, &vid_attribs.blue);
+	SDL_GL_GetAttribute(SDL_GL_ALPHA_SIZE, &vid_attribs.alpha);
+	SDL_GL_GetAttribute(SDL_GL_DEPTH_SIZE, &vid_attribs.depth);
+	SDL_GL_GetAttribute(SDL_GL_STENCIL_SIZE, &vid_attribs.stencil);
+	Con_SafePrintf ("R:%d G:%d B:%d A:%d, Depth:%d, Stencil:%d\n",
+			vid_attribs.red, vid_attribs.green, vid_attribs.blue, vid_attribs.alpha,
+			vid_attribs.depth, vid_attribs.stencil);
+
 	gl_vendor = (const char *)glGetString_fp (GL_VENDOR);
 	Con_SafePrintf ("GL_VENDOR: %s\n", gl_vendor);
 	gl_renderer = (const char *)glGetString_fp (GL_RENDERER);
@@ -1470,19 +1462,6 @@ static void VID_NumModes_f (void)
 	Con_Printf ("%d video modes in current list\n", *nummodes);
 }
 
-static void VID_ShowInfo_f (void)
-{
-	Con_Printf ("Video info:\n"
-			"BitsPerPixel: %d,\n"
-			"Rmask : %u, Gmask : %u, Bmask : %u\n"
-			"Rshift: %u, Gshift: %u, Bshift: %u\n"
-			"Rloss : %u, Gloss : %u, Bloss : %u\n",
-			vid_info->vfmt->BitsPerPixel,
-			vid_info->vfmt->Rmask, vid_info->vfmt->Gmask, vid_info->vfmt->Bmask,
-			vid_info->vfmt->Rshift, vid_info->vfmt->Gshift, vid_info->vfmt->Bshift,
-			vid_info->vfmt->Rloss, vid_info->vfmt->Gloss, vid_info->vfmt->Bloss);
-}
-
 /*
 ===================
 VID_Init
@@ -1523,7 +1502,6 @@ void	VID_Init (unsigned char *palette)
 	Cvar_RegisterVariable (&gl_texture_NPOT);
 	Cvar_RegisterVariable (&gl_lightmapfmt);
 
-	Cmd_AddCommand ("vid_showinfo", VID_ShowInfo_f);
 	Cmd_AddCommand ("vid_listmodes", VID_ListModes_f);
 	Cmd_AddCommand ("vid_nummodes", VID_NumModes_f);
 	Cmd_AddCommand ("vid_restart", VID_Restart_f);
