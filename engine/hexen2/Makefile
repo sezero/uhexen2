@@ -506,13 +506,10 @@ LINK_GL_LIBS=no
 # enable 3dfx gamma hacks
 USE_3DFXGAMMA=yes
 ifeq ($(LINK_GL_LIBS),yes)
-# compile which gl driver: mesa, sage, or fxmesa
-DOSGL_DRIVER=sage
+# compile for which gl driver: mesa, sage, or fxmesa.
+DOSGL_DRIVER=fxmesa
 ifeq ($(DOSGL_DRIVER),fxmesa)
-GLDIR=mesa
 CPPFLAGS+= -DREFGL_FXMESA
-else
-GLDIR=$(DOSGL_DRIVER)
 endif
 ifeq ($(DOSGL_DRIVER),mesa)
 CPPFLAGS+= -DREFGL_MESA
@@ -520,6 +517,7 @@ endif
 ifeq ($(DOSGL_DRIVER),sage)
 CPPFLAGS+= -DREFGL_SAGE
 endif
+GLDIR=$(DOSGL_DRIVER)
 endif
 
 LDFLAGS += -lc -lgcc -lm
