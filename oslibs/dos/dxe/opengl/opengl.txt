@@ -1,13 +1,13 @@
 Choose a DOS GL driver (gl.dxe) from one of the directories listed below
 and put it in the same place as glh2dos.exe:
 
-mesa   ->  This is based on well-known Mesa library, version 6.0.2.
+* fxmesa : This is based on the old Mesa version 3.4.2. Doesn't support
+           new features of latest Voodoo4/5 series cards; but for me it
+           was the only version that run smoothly with my Voodoo5 5500.
 
-sage   ->  This is based on SAGE library of Daniel Borca.
+* mesa   : This is based on the well-known Mesa library, version 6.0.2.
 
-fxmesa ->  This is based on old Mesa version 3.4.2.  Doesn't support new
-           features of latest Voodoo4/5 series cards. But for me, it was
-           the only version that run smoothly with my Voodoo5 5500 card.
+* sage   : This is based on the SAGE library of Daniel Borca.
 
 Also do remember to pick the correct glide driver (glide3x.dxe) for your
 3dfx card from the voodoo directory.
