@@ -199,6 +199,8 @@ IN_StartupMouse
 */
 static void IN_StartupMouse (void)
 {
+	mx = my = old_mouse_x = old_mouse_y = 0;
+
 /*	IN_HideMouse ();*/
 	if (safemode || COM_CheckParm ("-nomouse"))
 	{
@@ -329,7 +331,7 @@ void IN_Init (void)
 	IN_StartupMouse ();
 	IN_StartupJoystick ();
 
-	mx = my = imsglow = imsghigh = 0;
+	imsglow = imsghigh = 0;
 
 	if ((inputport = CreateMsgPort()))
 	{

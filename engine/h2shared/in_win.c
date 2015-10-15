@@ -602,6 +602,7 @@ void IN_ReInit (void)
 		IDirectInput_Release(g_pdi);
 		g_pdi = NULL;
 	}
+	old_mouse_x = old_mouse_y = mx_accum = my_accum = 0;
 	// we only need to re-initialize direct input.
 	// if winmouse is active, nothing is necessary.
 	if (!dinput_init)

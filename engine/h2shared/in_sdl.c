@@ -236,6 +236,7 @@ static void IN_StartupMouse (void)
 		return;
 	}
 
+	old_mouse_x = old_mouse_y = 0;
 	mouseinitialized = true;
 	if (_enable_mouse.integer /*|| (modestate != MS_WINDOWED)*/)
 	{
