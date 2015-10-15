@@ -331,7 +331,7 @@ will have them chained together.
 void EmitBothSkyLayers (msurface_t *fa)
 {
 	// 3dfx doesn't like GL_DECAL:
-	if (!is_3dfx && gl_multitexture.integer && gl_mtexable)
+	if (!is_3dfx && gl_mtexable)
 	{
 		EmitSkyPolysMulti (fa);
 		return;
@@ -367,7 +367,7 @@ void R_DrawSkyChain (msurface_t *s)
 	msurface_t	*fa;
 
 	// 3dfx doesn't like GL_DECAL:
-	if (!is_3dfx && gl_multitexture.integer && gl_mtexable)
+	if (!is_3dfx && gl_mtexable)
 	{
 		for (fa = s ; fa ; fa = fa->texturechain)
 			EmitSkyPolysMulti (fa);

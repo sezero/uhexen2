@@ -212,7 +212,6 @@ void R_Init (void)
 
 	Cvar_RegisterVariable (&gl_keeptjunctions);
 	Cvar_RegisterVariable (&gl_reporttjunctions);
-	Cvar_RegisterVariable (&gl_multitexture);
 
 	Cvar_RegisterVariable (&gl_glows);
 	Cvar_RegisterVariable (&gl_missile_glows);

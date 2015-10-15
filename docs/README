@@ -563,10 +563,21 @@ snow_active	0 - 255	: 0 = none, 1 = normal amount designated by the
 3.2.1 Some opengl options
 -------------------------------
 
-gl_multitexture	 0 or 1	: Disable/enable multitexturing on the fly.
-			  0 is default. Faster performance if the
-			  hardware supports it. Also adjustable from
-			  the menu.
+gl_multitexture	 0 or 1	: Disable/enable multitexture support.  0 is
+			  default.  Faster performance if the hardware
+			  supports it.  Menu can be used to change the
+			  setting (Video Modes -> Multitexturing.)
+
+gl_texture_NPOT	 0 or 1	: Disable/enable non-power-of-two textures.  If
+			  the hardware supports it, it'd make a better
+			  job with textures, most noticibly with the 2D
+			  elements.  0 is default.  Menu can be used to
+			  change the setting (Video -> NPOT textures.)
+			  NOTE: Some old graphic cards, such as R300 to
+			  R500 class ATI Radeons or NVIDIA GeForce FX,
+			  may lie about fully supporting this feature:
+			  enabling this on such hardware may result in
+			  an unplayable slowdown.
 
 gl_texturemode		: GL_NEAREST	(Point sample, least quality)
 			  GL_LINEAR	(Bilinear, no mipmaps)
@@ -582,17 +593,6 @@ gl_texturemode		: GL_NEAREST	(Point sample, least quality)
 gl_texturemode_anisotropy: 1 is the minimum value with no anisotropic
 			  filtering.  Values >= 2 will take effect if
 			  the hardware has support for it.
-
-gl_texture_NPOT	 0 or 1	: Disable/enable non-power-of-two textures.  If
-			  the hardware supports it, it'd make a better
-			  job with textures, most noticibly with the 2D
-			  elements.  0 is default.  Menu can be used to
-			  change the setting (OpenGL Features -> NPOT
-			  textures.)  NOTE: Some old graphic cards, such
-			  as R300 to R500 class ATI Radeons or NVIDIA
-			  GeForce FX, may lie about fully supporting
-			  this feature:  enabling this on such hardware
-			  may result in an unplayable slowdown.
 
 gl_constretch	0 or 1	: Disable/enable console background eye candy.
 

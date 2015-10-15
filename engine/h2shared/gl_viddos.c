@@ -140,9 +140,9 @@ static const char	*gl_extensions;
 qboolean	is_3dfx = false;
 
 GLint		gl_max_size = 256;
-static qboolean	gl_has_NPOT = false;
+static qboolean	have_NPOT = false;
 qboolean	gl_tex_NPOT = false;
-cvar_t		gl_texture_NPOT = {"gl_texture_NPOT", "0", CVAR_ARCHIVE};
+static cvar_t	gl_texture_NPOT = {"gl_texture_NPOT", "0", CVAR_ARCHIVE};
 GLfloat		gl_max_anisotropy;
 float		gldepthmin, gldepthmax;
 
@@ -170,6 +170,8 @@ static qboolean	gammaworks = false;	// whether hw-gamma works
 // multitexturing
 qboolean	gl_mtexable = false;
 static GLint	num_tmus = 1;
+static qboolean	have_mtex = false;
+static cvar_t	gl_multitexture = {"gl_multitexture", "0", CVAR_ARCHIVE};
 
 // stencil buffer
 qboolean	have_stencil = false;
@@ -456,7 +458,7 @@ void VID_ShiftPalette (unsigned char *palette)
 
 static void CheckMultiTextureExtensions (void)
 {
-	gl_mtexable = false;
+	gl_mtexable = have_mtex = false;
 
 	if (COM_CheckParm("-nomtex"))
 	{
@@ -469,16 +471,22 @@ static void CheckMultiTextureExtensions (void)
 		glGetIntegerv_fp(GL_MAX_TEXTURE_UNITS_ARB, &num_tmus);
 		if (num_tmus < 2)
 		{
-			Con_SafePrintf("not enough TMUs, ignoring multitexture\n");
+			Con_SafePrintf("ignoring multitexture (%i TMUs)\n", (int) num_tmus);
 			return;
 		}
 
 		glMultiTexCoord2fARB_fp = (glMultiTexCoord2fARB_f) DOSGL_GetProcAddress("glMultiTexCoord2fARB");
 		glActiveTextureARB_fp = (glActiveTextureARB_f) DOSGL_GetProcAddress("glActiveTextureARB");
-		if ((glMultiTexCoord2fARB_fp == NULL) ||
-		    (glActiveTextureARB_fp == NULL))
+		if (glMultiTexCoord2fARB_fp == NULL || glActiveTextureARB_fp == NULL)
 		{
 			Con_SafePrintf ("Couldn't link to multitexture functions\n");
+			return;
+		}
+
+		have_mtex = true;
+		if (!gl_multitexture.integer)
+		{
+			Con_SafePrintf("ignoring multitexture (cvar disabled)\n");
 			return;
 		}
 
@@ -547,20 +555,24 @@ static void CheckNonPowerOfTwoTextures (void)
  * MH says NVIDIA once did the same with their GeForce FX on Windows:
  * http://forums.inside3d.com/viewtopic.php?f=10&t=4832
  * Therefore, advertisement of this extension is an unreliable way of
- * detecting the actual capability: we are binding NPOT support to a
- * cvar defaulting to disabled.
+ * detecting the actual capability.
  */
+	gl_tex_NPOT = have_NPOT = false;
 	if (GL_ParseExtensionList(gl_extensions, "GL_ARB_texture_non_power_of_two"))
 	{
-		gl_has_NPOT = true;
+		have_NPOT = true;
 		Con_SafePrintf("Found ARB_texture_non_power_of_two\n");
+		if (!gl_texture_NPOT.integer) {
+			Con_SafePrintf("ignoring texture_NPOT (cvar disabled)\n");
+		}
+		else {
+			gl_tex_NPOT = true;
+		}
 	}
 	else
 	{
-		gl_has_NPOT = false;
-		Cvar_SetROM("gl_texture_NPOT", "0");
+		Con_SafePrintf("GL_ARB_texture_non_power_of_two not found\n");
 	}
-	gl_tex_NPOT = !!gl_texture_NPOT.integer;
 }
 
 static void CheckStencilBuffer (void)
@@ -646,13 +658,14 @@ static void GL_ResetFunctions (void)
 	have_stencil = false;
 
 	gl_mtexable = false;
+	have_mtex = false;
 	glActiveTextureARB_fp = NULL;
 	glMultiTexCoord2fARB_fp = NULL;
 
 	have8bit = false;
 	is8bit = false;
 
-	gl_has_NPOT = false;
+	have_NPOT = false;
 	gl_tex_NPOT = false;
 }
 
@@ -1096,6 +1109,7 @@ void	VID_Init (unsigned char *palette)
 				"vid_config_gly",
 				"vid_config_consize",
 				"gl_texture_NPOT",
+				"gl_multitexture",
 				"gl_lightmapfmt" };
 #define num_readvars	( sizeof(read_vars)/sizeof(read_vars[0]) )
 
@@ -1107,6 +1121,7 @@ void	VID_Init (unsigned char *palette)
 	Cvar_RegisterVariable (&_enable_mouse);
 	Cvar_RegisterVariable (&gl_texture_NPOT);
 	Cvar_RegisterVariable (&gl_lightmapfmt);
+	Cvar_RegisterVariable (&gl_multitexture);
 	Cvar_RegisterVariable (&vid_nopageflip);
 	Cvar_RegisterVariable (&_vid_wait_override);
 	Cvar_RegisterVariable (&_vid_default_mode);
@@ -1323,6 +1338,8 @@ static qboolean	vid_menu_firsttime = true;
 
 enum {
 	VID_RESOLUTION,
+	VID_MULTITEXTURE,
+	VID_NPOT,
 	VID_PALTEX,
 	VID_BLANKLINE,	// spacer line
 	VID_RESET,
@@ -1365,6 +1382,8 @@ static void VID_MenuDraw (void)
 	}
 
 	need_apply = (vid_menunum != vid_modenum) ||
+			(have_mtex && (gl_mtexable != !!gl_multitexture.integer)) ||
+			(have_NPOT && (gl_tex_NPOT != !!gl_texture_NPOT.integer)) ||
 			(have8bit && (is8bit != !!vid_config_gl8bit.integer));
 
 	M_Print (76, 92 + 8*VID_RESOLUTION, "Resolution: ");
@@ -1372,6 +1391,18 @@ static void VID_MenuDraw (void)
 		M_PrintWhite (76+12*8, 92 + 8*VID_RESOLUTION, modelist[vid_menunum].modedesc);
 	else
 		M_Print (76+12*8, 92 + 8*VID_RESOLUTION, modelist[vid_menunum].modedesc);
+
+	M_Print (76, 92 + 8*VID_MULTITEXTURE, "Multitexturing:");
+	if (have_mtex)
+		M_DrawYesNo (76+16*8, 92 + 8*VID_MULTITEXTURE, gl_multitexture.integer, (gl_mtexable == !!gl_multitexture.integer));
+	else
+		M_PrintWhite (76+16*8, 92 + 8*VID_MULTITEXTURE, "Not found");
+
+	M_Print (76, 92 + 8*VID_NPOT, "NPOT textures :");
+	if (have_NPOT)
+		M_DrawYesNo (76+16*8, 92 + 8*VID_NPOT, gl_texture_NPOT.integer, (gl_tex_NPOT == !!gl_texture_NPOT.integer));
+	else
+		M_PrintWhite (76+16*8, 92 + 8*VID_NPOT, "Not found");
 
 	M_Print (76, 92 + 8*VID_PALTEX, "8 bit textures:");
 	if (have8bit)
@@ -1465,9 +1496,17 @@ static void VID_MenuKey (int key)
 			if (vid_menunum < 0)
 				vid_menunum = 0;
 			break;
+		case VID_MULTITEXTURE:
+			if (have_mtex)
+				Cvar_SetQuick (&gl_multitexture, gl_multitexture.integer ? "0" : "1");
+			break;
+		case VID_NPOT:
+			if (have_NPOT)
+				Cvar_SetQuick (&gl_texture_NPOT, gl_texture_NPOT.integer ? "0" : "1");
+			break;
 		case VID_PALTEX:
 			if (have8bit)
-				Cvar_SetValueQuick (&vid_config_gl8bit, !vid_config_gl8bit.integer);
+				Cvar_SetQuick (&vid_config_gl8bit, vid_config_gl8bit.integer ? "0" : "1");
 			break;
 		}
 		return;
@@ -1481,9 +1520,17 @@ static void VID_MenuKey (int key)
 			if (vid_menunum >= nummodes)
 				vid_menunum = nummodes - 1;
 			break;
+		case VID_MULTITEXTURE:
+			if (have_mtex)
+				Cvar_SetQuick (&gl_multitexture, gl_multitexture.integer ? "0" : "1");
+			break;
+		case VID_NPOT:
+			if (have_NPOT)
+				Cvar_SetQuick (&gl_texture_NPOT, gl_texture_NPOT.integer ? "0" : "1");
+			break;
 		case VID_PALTEX:
 			if (have8bit)
-				Cvar_SetValueQuick (&vid_config_gl8bit, !vid_config_gl8bit.integer);
+				Cvar_SetQuick (&vid_config_gl8bit, vid_config_gl8bit.integer ? "0" : "1");
 			break;
 		}
 		return;

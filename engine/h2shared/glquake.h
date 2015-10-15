@@ -21,10 +21,8 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-
 #ifndef __GLQUAKE_H
 #define __GLQUAKE_H
-
 
 /* ====================================================================
    COMMON DEFINITIONS
@@ -182,7 +180,6 @@ extern	glmode_t	gl_texmodes[NUM_GL_FILTERS];
 extern	GLint		gl_max_size;
 extern	GLfloat		gl_max_anisotropy;
 extern	qboolean	gl_tex_NPOT;
-extern	cvar_t		gl_texture_NPOT;
 extern	qboolean	is_3dfx;
 extern	qboolean	is8bit;
 extern	qboolean	gl_mtexable;
@@ -245,7 +242,6 @@ extern	cvar_t	gl_cull;
 extern	cvar_t	gl_poly;
 extern	cvar_t	gl_ztrick;
 extern	cvar_t	gl_zfix;
-extern	cvar_t	gl_multitexture;
 extern	cvar_t	gl_purge_maptex;
 extern	cvar_t	gl_smoothmodels;
 extern	cvar_t	gl_affinemodels;

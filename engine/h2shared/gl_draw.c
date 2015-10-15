@@ -398,6 +398,7 @@ static void Draw_ClearAllModels (void)
 	Cvar_SetValue ("gl_purge_maptex", temp);
 }
 
+#if 0
 /*
 ===============
 Draw_ReinitTextures
@@ -426,9 +427,9 @@ static void Draw_ReinitTextures (void)
 	// Reload the particle texture
 	R_InitParticleTexture();
 	R_InitExtraTextures ();
-#if defined(H2W)
+#ifdef H2W
 	R_InitNetgraphTexture();
-#endif	/* H2W */
+#endif
 
 	// Reload the map's textures
 	if (cls.state == ca_active)
@@ -440,18 +441,7 @@ static void Draw_ReinitTextures (void)
 	draw_reinit = false;
 	scr_disabled_for_loading = temp;
 }
-
-/*
-===============
-Draw_Callback_NPOT
-Callback for gl_texture_NPOT
-===============
-*/
-static void Draw_Callback_NPOT (cvar_t *var)
-{
-	gl_tex_NPOT = !!var->integer;
-	Draw_ReinitTextures ();
-}
+#endif
 
 /*
 ===============
@@ -484,9 +474,9 @@ void Draw_ReInit (void)
 	// Reload the particle texture
 	R_InitParticleTexture();
 	R_InitExtraTextures ();
-#if defined(H2W)
+#ifdef H2W
 	R_InitNetgraphTexture();
-#endif	/* H2W */
+#endif
 
 	draw_reinit = false;
 	scr_disabled_for_loading = temp;
@@ -512,7 +502,6 @@ void Draw_Init (void)
 		Cvar_RegisterVariable (&gl_texture_anisotropy);
 		Cvar_SetCallback (&gl_texturemode, Draw_TextureMode_f);
 		Cvar_SetCallback (&gl_texture_anisotropy, Draw_Anisotropy_f);
-		Cvar_SetCallback (&gl_texture_NPOT, Draw_Callback_NPOT);
 	}
 
 	// load the charset: 8*8 graphic characters

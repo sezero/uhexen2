@@ -933,8 +933,6 @@ static void M_Options_Key (int k)
 
 enum
 {
-	OGL_MULTITEX,
-	OGL_NPOT,
 	OGL_PURGETEX,
 	OGL_GLOW1,
 	OGL_GLOW2,
@@ -985,14 +983,6 @@ static void M_OpenGL_Draw (void)
 
 //	we use 22 character option titles. the increment to
 //	the x offset is: (22 - strlen(option_title)) * 8
-
-	M_Print (32 + (8 * 8), 90 + 8*OGL_MULTITEX,	"Multitexturing");
-	if (gl_mtexable)
-		M_DrawCheckbox (232, 90 + 8*OGL_MULTITEX, gl_multitexture.integer);
-	else	M_Print (232, 90 + 8*OGL_MULTITEX, "Not found");
-
-	M_Print (32 + (9 * 8), 90 + 8*OGL_NPOT, "NPOT textures");
-	M_DrawCheckbox (232, 90 + 8*OGL_NPOT, gl_texture_NPOT.integer);
 
 	M_Print (32 + (4 * 8), 90 + 8*OGL_PURGETEX,	"Purge map textures");
 	M_DrawCheckbox (232, 90 + 8*OGL_PURGETEX, gl_purge_maptex.integer);
@@ -1117,14 +1107,6 @@ static void M_OpenGL_Key (int k)
 		m_entersound = true;
 		switch (opengl_cursor)
 		{
-		case OGL_MULTITEX:	// multitexturing
-			Cvar_Set ("gl_multitexture", gl_multitexture.integer ? "0" : "1");
-			break;
-
-		case OGL_NPOT:		// texture_non_power_of_two
-			Cvar_Set ("gl_texture_NPOT", gl_texture_NPOT.integer ? "0" : "1");
-			break;
-
 		case OGL_PURGETEX:	// purge gl textures on map change
 			Cvar_Set ("gl_purge_maptex", gl_purge_maptex.integer ? "0" : "1");
 			break;

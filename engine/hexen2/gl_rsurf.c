@@ -659,7 +659,7 @@ void R_RenderBrushPoly (entity_t *e, msurface_t *fa, qboolean override)
 
 	c_brush_polys++;
 
-	if (gl_multitexture.integer && gl_mtexable)
+	if (gl_mtexable)
 		glActiveTextureARB_fp(GL_TEXTURE0_ARB);
 
 	intensity = 1.0f;
@@ -696,7 +696,7 @@ void R_RenderBrushPoly (entity_t *e, msurface_t *fa, qboolean override)
 		return;
 	}
 
-	if (gl_multitexture.integer && gl_mtexable)
+	if (gl_mtexable)
 	{
 		if ((e->drawflags & DRF_TRANSLUCENT) ||
 		    (e->drawflags & MLS_ABSLIGHT) == MLS_ABSLIGHT)
@@ -1014,7 +1014,7 @@ static void DrawTextureChains (entity_t *e)
 				for ( ; s ; s = s->texturechain)
 					R_RenderBrushPoly (e, s, false);
 			}
-			else if (gl_multitexture.integer && gl_mtexable)
+			else if (gl_mtexable)
 			{
 				glActiveTextureARB_fp(GL_TEXTURE0_ARB);
 				glEnable_fp(GL_TEXTURE_2D);
@@ -1170,7 +1170,7 @@ void R_DrawBrushModel (entity_t *e, qboolean Translucent)
 
 	if (!Translucent && 
 		(e->drawflags & MLS_ABSLIGHT) != MLS_ABSLIGHT &&
-		!(gl_multitexture.integer && gl_mtexable))
+		!gl_mtexable)
 	{
 		R_BlendLightmaps (Translucent);
 	}
@@ -1324,7 +1324,7 @@ void R_DrawWorld (void)
 	DrawTextureChains (&r_worldentity);
 
 	// disable multitexturing - just in case
-	if (gl_multitexture.integer && gl_mtexable)
+	if (gl_mtexable)
 	{
 		glActiveTextureARB_fp (GL_TEXTURE1_ARB);
 		glDisable_fp(GL_TEXTURE_2D);
@@ -1332,7 +1332,7 @@ void R_DrawWorld (void)
 		glEnable_fp(GL_TEXTURE_2D);
 	}
 
-	if (!gl_multitexture.integer || !gl_mtexable)
+	if (!gl_mtexable)
 		R_BlendLightmaps (false);
 	else
 		R_UpdateLightmaps (false);
@@ -1577,7 +1577,7 @@ void GL_BuildLightmaps (void)
 		}
 	}
 
-	if (gl_multitexture.integer && gl_mtexable)
+	if (gl_mtexable)
 		glActiveTextureARB_fp (GL_TEXTURE1_ARB);
 
 	//
@@ -1596,7 +1596,7 @@ void GL_BuildLightmaps (void)
 				lightmaps + i*BLOCK_WIDTH*BLOCK_HEIGHT*lightmap_bytes);
 	}
 
-	if (gl_multitexture.integer && gl_mtexable)
+	if (gl_mtexable)
 		glActiveTextureARB_fp (GL_TEXTURE0_ARB);
 }
 
