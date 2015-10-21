@@ -63,8 +63,12 @@ static inline int q_isblank(int c)
 
 static inline int q_isspace(int c)
 {
-	return (q_isblank(c) || c == '\n' || c == '\r' ||
-				c == '\f' || c == '\v');
+	switch(c) {
+	case ' ':  case '\t':
+	case '\n': case '\r':
+	case '\f': case '\v': return 1;
+	}
+	return 0;
 }
 
 static inline int q_isprint(int c)
