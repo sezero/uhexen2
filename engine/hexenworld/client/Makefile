@@ -463,7 +463,7 @@ LINK_GL_LIBS=no
 # enable 3dfx gamma hacks
 USE_3DFXGAMMA=yes
 ifeq ($(LINK_GL_LIBS),yes)
-# compile for which gl driver: mesa, sage, or fxmesa.
+# compile which gl driver in: mesa, sage, or fxmesa.
 DOSGL_DRIVER=fxmesa
 ifeq ($(DOSGL_DRIVER),fxmesa)
 CPPFLAGS+= -DREFGL_FXMESA
@@ -475,6 +475,8 @@ ifeq ($(DOSGL_DRIVER),sage)
 CPPFLAGS+= -DREFGL_SAGE
 endif
 GLDIR=$(DOSGL_DRIVER)
+else
+SYSOBJ_GL_DXE=yes
 endif
 
 LDFLAGS += -lc -lgcc -lm
@@ -1067,13 +1069,23 @@ SYSOBJ_SYS := sys_win.o win32res.res
 endif
 ifeq ($(TARGET_OS),dos)
 SYSOBJ_INPUT := in_dos.o
-SYSOBJ_SOFT_VID:= vid_vga.o vid_ext.o vid_dos.o vregset.o no_dxe.o
-SYSOBJ_GL_VID:= dos_dmesa.o dos_fxmesa.o dos_sage.o gl_viddos.o dxe.o
+SYSOBJ_SOFT_VID:= vid_vga.o vid_ext.o vid_dos.o vregset.o
+SYSOBJ_GL_VID:= dos_dmesa.o dos_fxmesa.o dos_sage.o gl_viddos.o
+ifeq ($(SYSOBJ_GL_DXE),yes)
+SYSOBJ_GL_VID+= dxe.o
+else
+SYSOBJ_GL_VID+= no_dxe.o
+endif
 ifeq ($(USE_3DFXGAMMA),yes)
 SYSOBJ_GL_VID+= fx_gamma.o
 endif
 ifeq ($(USE_X86_ASM),yes)
 SYSOBJ_SOFT_VID+= d_copy.o
+endif
+ifeq ($(SYSOBJ_SOFT_DXE),yes)
+SYSOBJ_SOFT_VID+= dxe.o
+else
+SYSOBJ_SOFT_VID+= no_dxe.o
 endif
 SYSOBJ_SYS := dos_v2.o sys_dos.o
 #	dosasm.o
