@@ -1242,19 +1242,20 @@ void SCR_UpdateScreen (void)
 #else
 	if (scr_disabled_for_loading)
 	{
-		if (realtime - scr_disabled_time > 20)
-		{
+		if (realtime - scr_disabled_time > 25) {
 		/* this can happen with clients connected to servers
 		 * older than uHexen2-1.5.6 who don't issue an error
-		 * upon changelevel failures.
+		 * upon changelevel failures. Or, it could happen if
+		 * loading is taking a really long time.
 		 */
 			scr_disabled_for_loading = false;
 			total_loading_size = 0;
 			loading_stage = 0;
-			Con_Printf ("load failed.\n");
+			Con_Printf ("load timeout.\n");
 		}
-		else
+		else {
 			return;
+		}
 	}
 
 	if (cls.state == ca_dedicated)
