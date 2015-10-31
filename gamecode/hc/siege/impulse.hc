@@ -216,7 +216,7 @@ float inertia, lift;
 		return;
 	}
 */
-	if(trace_ent.movetype&&trace_ent.solid&&trace_ent!=world&&trace_ent.solid!=SOLID_BSP)//&&trace_ent.flags&FL_ONGROUND
+	if(trace_ent!=world&&trace_ent.movetype&&trace_ent.solid&&trace_ent.solid!=SOLID_BSP)//&&trace_ent.flags&FL_ONGROUND
 	{
 		if(!trace_ent.mass)
 			inertia = 1;

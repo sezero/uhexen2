@@ -567,7 +567,7 @@ void boulder_push()
 		if(self.flags&FL_ONGROUND)
 		{
 			self.movetype=MOVETYPE_BOUNCEMISSILE;//movetype_slide- no friction
-			self.flags-=FL_ONGROUND;
+			self.flags(-)FL_ONGROUND;
 		}
 	}
 }

@@ -274,7 +274,7 @@ float inertia, lift;
 	dir=normalize(v_forward);
 
 	traceline(self.origin+self.proj_ofs,self.origin+self.proj_ofs+dir*48,FALSE,self);
-	if(trace_ent.movetype&&trace_ent.solid&&trace_ent!=world&&trace_ent.flags&FL_ONGROUND&&trace_ent.solid!=SOLID_BSP)
+	if(trace_ent!=world&&trace_ent.movetype&&trace_ent.solid&&trace_ent.flags&FL_ONGROUND&&trace_ent.solid!=SOLID_BSP)
 	{
 		if(!trace_ent.mass)
 			inertia = 1;
@@ -287,8 +287,7 @@ float inertia, lift;
 			lift=300;
 		trace_ent.velocity_z+=lift;
 
-		if (trace_ent.flags&FL_ONGROUND)
-			trace_ent.flags-=FL_ONGROUND;
+		trace_ent.flags(-)FL_ONGROUND;
 
 		if(self.playerclass==CLASS_ASSASSIN||self.playerclass==CLASS_SUCCUBUS)
 			sound (self, CHAN_BODY,"player/assjmp.wav", 1, ATTN_NORM);

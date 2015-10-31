@@ -7,7 +7,9 @@ Changes
 2015-10-31 (1.29):
 ===================
 - change lots of statements like x=x|y; into x(+)y; so that it's simply
-  done with the BITSET op.
+  done with the BITSET op. also changed a few statements like x=x-(x&y);
+  into x(-)y; so that it's simply done with the BITCLR op.  other minor
+  tidy-ups.
 - meteor.hc (tornato_spin): fixed typo in pain_finished equality check:
   if(self.pain_finished==-1), not if(self.pain_finished=-1). issue was
   present since at least v0.42.

@@ -323,7 +323,7 @@ float ontop,pushed,inertia,force,walkforce;
 			{
 				if(self.velocity_z<0)
 					self.velocity_z=0;
-				self.flags-=FL_ONGROUND;
+				self.flags(-)FL_ONGROUND;
 			}
 			if(self.velocity)
 				pushed=TRUE;
@@ -562,7 +562,7 @@ void boulder_push()
 		if(self.flags&FL_ONGROUND)
 		{
 			self.movetype=MOVETYPE_BOUNCEMISSILE;//movetype_slide- no friction
-			self.flags-=FL_ONGROUND;
+			self.flags(-)FL_ONGROUND;
 		}
 	}
 }

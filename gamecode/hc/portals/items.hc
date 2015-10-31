@@ -257,7 +257,7 @@ void() item_megahealth_rot =
 
 // it is possible for a player to die and respawn between rots, so don't
 // just blindly subtract the flag off
-	other.items = other.items - (other.items & IT_SUPERHEALTH);
+	other.items (-) IT_SUPERHEALTH;
 	
 	if (deathmatch == 1)	// deathmatch 2 is silly old rules
 	{
