@@ -80,7 +80,7 @@ void ring_touch (void)
 	}
 	else if (self.classname == "Ring_WaterBreathing")
 	{
-		other.rings = other.rings | RING_WATER;
+		other.rings (+) RING_WATER;
 		other.ring_water = 100;
 		other.ring_water_time = time + 1;
 
@@ -90,7 +90,7 @@ void ring_touch (void)
 	}
 	else if (self.classname == "Ring_Turning")
 	{
-		other.rings = other.rings | RING_TURNING;
+		other.rings (+) RING_TURNING;
 		other.ring_turning = 100;
 		other.ring_turning_time = time + 1;
 
@@ -101,7 +101,7 @@ void ring_touch (void)
 	}
 	else if (self.classname == "Ring_Regeneration")
 	{
-		other.rings = other.rings | RING_REGENERATION;
+		other.rings (+) RING_REGENERATION;
 		other.ring_regeneration = 100;
 		other.rings_active (+) RING_REGENERATION;
 

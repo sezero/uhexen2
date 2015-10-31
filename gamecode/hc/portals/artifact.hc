@@ -187,7 +187,7 @@ void artifact_touch()
 	sound(other, CHAN_VOICE, "items/artpkup.wav", 1, ATTN_NORM);
 	stuffcmd(other, "bf\n");
 	self.solid = SOLID_NOT;
-//	other.items = other.items | self.items;
+//	other.items (+) self.items;
 	self.model = string_null;
 
 	activator = other;

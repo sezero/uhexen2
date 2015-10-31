@@ -964,7 +964,7 @@ void monster_mummy (void)
 	self.parts_gone = MUMMY_NONE;
 	self.skin = 0;
 
-	self.flags = self.flags|FL_MONSTER;
+	self.flags (+) FL_MONSTER;
 	self.yaw_speed = 10;
 	self.health = 200;
 	self.experience_value = 200;
@@ -1021,7 +1021,7 @@ void monster_mummy_lord (void)
 	self.skin = 1;
 	self.headmodel="models/muhead.mdl";
 
-	self.flags = self.flags|FL_MONSTER;
+	self.flags (+) FL_MONSTER;
 	self.yaw_speed = 10;
 	self.health = 400;
 	self.experience_value = 300;

@@ -342,7 +342,7 @@ void SpiderInit(float type)
 	self.th_possum = spider_playdead;
 	self.th_possum_up = spider_possum_up;
 
-	self.flags = self.flags|FL_MONSTER;
+	self.flags (+) FL_MONSTER;
 
 	if(self.spawnflags&ONWALL)
 		spider_onwall_wait_init();

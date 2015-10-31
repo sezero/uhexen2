@@ -344,7 +344,7 @@ void skullwiz_summon(void)
 	self.th_possum_up = spider_possum_up;
 	self.classname = "monster_spider_yellow_small";
 
-	self.flags = self.flags|FL_MONSTER;
+	self.flags (+) FL_MONSTER;
 
 	if (self.controller.flags2&FL_ALIVE)
 	{

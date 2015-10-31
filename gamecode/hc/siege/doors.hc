@@ -1087,7 +1087,7 @@ float movedist, num_axes;
 	self.use = door_use;
 
 	if (self.abslight)
-		self.drawflags = self.drawflags | MLS_ABSLIGHT;
+		self.drawflags (+) MLS_ABSLIGHT;
 	
 	if (self.speed==-1)
 		self.speed=0;

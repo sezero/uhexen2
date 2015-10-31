@@ -586,7 +586,7 @@ vector new_origin;
 			}
 			self.experience_value=	self.init_exp_val = FALSE;
 		}
-		self.drawflags = self.drawflags | MLS_ABSLIGHT;
+		self.drawflags (+) MLS_ABSLIGHT;
 		self.abslight = 3;
 		if(self.noise)
 			sound(self,CHAN_VOICE,self.noise,1,ATTN_NONE);

@@ -134,7 +134,7 @@ void buddha_warp(void)
 			
 			if (!spot)
 				spot = find (spot, classname, "teleport_buddha");
-			cyc = cyc - 1;
+			cyc -= 1;
 		}
 	}
 
@@ -1073,7 +1073,7 @@ void buddha_die (void)[++ $death1 .. $death14]
 			found=find(found,classname,"player");
 		}
 		self.experience_value=	self.init_exp_val = FALSE;
-		self.drawflags = self.drawflags | MLS_ABSLIGHT;
+		self.drawflags (+) MLS_ABSLIGHT;
 		self.abslight = 3;
 		/*if(self.noise)
 			sound(self,CHAN_VOICE,self.noise,1,ATTN_NONE);*/

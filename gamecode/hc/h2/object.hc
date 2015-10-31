@@ -377,7 +377,7 @@ void obj_chair()
 	CreateEntityNew(self,ENT_CHAIR,"models/chair.mdl",chunk_death);
 
 	self.touch	= obj_push;
-	self.flags	= self.flags | FL_PUSH;
+	self.flags	(+) FL_PUSH;
 }
 
 
@@ -394,7 +394,7 @@ void obj_barstool()
 	CreateEntityNew(self,ENT_BARSTOOL,"models/stool.mdl",chunk_death);
 
 	self.touch	= obj_push;
-	self.flags	= self.flags | FL_PUSH;	
+	self.flags	(+) FL_PUSH;
 }
 
 
@@ -478,7 +478,7 @@ void obj_cart()
 	self.hull=HULL_SCORPION;
 
 	self.touch	= obj_push;
-	self.flags	= self.flags | FL_PUSH;	
+	self.flags	(+) FL_PUSH;
 }
 
 
@@ -495,7 +495,7 @@ void obj_chest1()
 	CreateEntityNew(self,ENT_CHEST1,"models/chest1.mdl",chunk_death);
 
 	self.touch	= obj_push;
-	self.flags	= self.flags | FL_PUSH;	
+	self.flags	(+) FL_PUSH;
 }
 
 
@@ -513,7 +513,7 @@ void obj_chest2()
 	CreateEntityNew(self,ENT_CHEST2,"models/chest2.mdl",chunk_death);
 
 	self.touch	= obj_push;
-	self.flags	= self.flags | FL_PUSH;	
+	self.flags	(+) FL_PUSH;
 
 }
 
@@ -529,7 +529,7 @@ void obj_chest3()
 	CreateEntityNew(self,ENT_CHEST3,"models/chest3.mdl",chunk_death);
 
 	self.touch	= obj_push;
-	self.flags	= self.flags | FL_PUSH;	
+	self.flags	(+) FL_PUSH;
 
 }
 /*
@@ -580,7 +580,7 @@ void obj_boulder (void)
 	precache_model2("models/boulder.mdl");
 	CreateEntityNew(self,ENT_BOULDER,"models/boulder.mdl",chunk_death);
 
-	self.flags = self.flags | FL_PUSH;
+	self.flags (+) FL_PUSH;
 	self.touch	= obj_push;
 
 //	self.think=boulder_fall;
@@ -1018,7 +1018,7 @@ void() obj_statue_mummy_head =
 	CreateEntityNew(self,ENT_STATUE_MUMMYHEAD,"models/mhdstatu.mdl",chunk_death);
 
 	self.touch	= obj_push;
-	self.flags	= self.flags | FL_PUSH;	
+	self.flags	(+) FL_PUSH;
 	self.drawflags += SCALE_ORIGIN_BOTTOM;
 
 };
@@ -1089,7 +1089,7 @@ void obj_pot1 (void)
 	CreateEntityNew(self,ENT_POT1,"models/pot1.mdl",chunk_death);
 
 	self.touch	= obj_push;
-	self.flags	= self.flags | FL_PUSH;	
+	self.flags	(+) FL_PUSH;
 	self.drawflags += SCALE_ORIGIN_BOTTOM;
 
 	if(self.targetname)
@@ -1121,7 +1121,7 @@ void obj_pot2 (void)
 	CreateEntityNew(self,ENT_POT2,"models/pot2.mdl",chunk_death);
 
 	self.touch	= obj_push;
-	self.flags	= self.flags | FL_PUSH;	
+	self.flags	(+) FL_PUSH;
 	self.drawflags += SCALE_ORIGIN_BOTTOM;
 
 	if(self.targetname)
@@ -1152,7 +1152,7 @@ void obj_pot3 (void)
 	CreateEntityNew(self,ENT_POT3,"models/pot3.mdl",chunk_death);
 
 	self.touch	= obj_push;
-	self.flags	= self.flags | FL_PUSH;	
+	self.flags	(+) FL_PUSH;
 	self.drawflags += SCALE_ORIGIN_BOTTOM;
 
 	if(self.targetname)
@@ -1174,7 +1174,7 @@ void obj_statue_tut (void)
 	CreateEntityNew(self,ENT_STATUE_TUT,"models/tutstatu.mdl",chunk_death);
 
 	self.touch	= obj_push;
-	self.flags	= self.flags | FL_PUSH;	
+	self.flags	(+) FL_PUSH;
 	self.drawflags += SCALE_ORIGIN_BOTTOM;
 }
 
@@ -1552,7 +1552,7 @@ void obj_cauldron (void)
 	CreateEntityNew(self,ENT_CAULDRON,"models/cauldron.mdl",chunk_death);
 
 	self.touch	= obj_push;
-	self.flags	= self.flags | FL_PUSH;	
+	self.flags	(+) FL_PUSH;
 	self.drawflags += SCALE_ORIGIN_BOTTOM;
 	
 	self.think = cauldron_run;

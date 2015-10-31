@@ -348,7 +348,7 @@ void SpiderInit(float type)
 	self.th_missile = SpiderJumpBegin;
 	self.th_pain = SpiderPain;
 
-	self.flags = self.flags|FL_MONSTER;
+	self.flags (+) FL_MONSTER;
 
 	self.init_exp_val = self.experience_value;
 	if(self.spawnflags&ONWALL)

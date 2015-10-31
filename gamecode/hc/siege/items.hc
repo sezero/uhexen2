@@ -288,7 +288,7 @@ void() health_touch =
 	// Megahealth = rot down the player's super health
 	if (self.healtype == 2)
 	{
-		other.items = other.items | IT_SUPERHEALTH;
+		other.items (+) IT_SUPERHEALTH;
 		self.nextthink = time + 5;
 		self.think = item_megahealth_rot;
 		self.owner = other;
@@ -581,7 +581,7 @@ void weapon_touch (void)
 		hadweap=TRUE;
 
 	old = other.items;
-	other.items = other.items | new;
+	other.items (+) new;
 	
 	stemp = self;
 	self = other;
@@ -670,7 +670,7 @@ void() powerup_touch =
 	sound (other, CHAN_VOICE, self.noise, 1, ATTN_NORM);
 	stuffcmd (other, "bf\n");
 	self.solid = SOLID_NOT;
-	other.items = other.items | self.items;
+	other.items (+) self.items;
 	self.model = string_null;
 
 // do the apropriate action	
