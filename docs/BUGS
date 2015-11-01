@@ -18,14 +18,18 @@ Known Bugs:
 - HexenWorld: Coop mode is broken. Known problem since Raven's latest
   beta versions.
 
-- DOS: HexenWorld client running on DOS can't connect to servers due to
-  fragmented packets handling bugs in the WatTCP library. Other clients
-  can't connect to DOS H2 servers either,for reasons yet to be analyzed.
-
-- 3dfx Voodoo Graphics / Voodoo2:  Palettized textures are broken with
-  the old Mesa 3.x drivers. The new Mesa-6.x drivers work fine. Windows
-  people should use the latest "MesaFX" driver.
+- 3dfx Voodoo:  Palettized textures are broken with the old unmodified
+  Mesa 3.x drivers. The new Mesa-6.x drivers work fine. Windows people
+  should use the latest "MesaFX" driver.
 - 3dfx Voodoo: May not work correctly with multitexturing when running
-  with gl_luminance lightmaps. This is a 3dfx problem. For best results,
-  use Mesa-6.2 on Linux and the latest "MesaFX" driver on Windows.
+  with gl_luminance lightmaps. This is a 3dfx limitation.
+
+- h2ded (hexen2 dedicated server), coop mode issues:
+  - Skull wizards may become non-solid and invincible after they blink
+    away and come back.
+  - Dark Pharaoh's staff would disappear after pushing the switch that
+    lowers it.
+  - Loading saves may often result in bugs.
+  Issues don't seem to happen with "h2 -dedicated".  To be analyzed.
+  [bug #52: http://sourceforge.net/p/uhexen2/bugs/52/ ]
 

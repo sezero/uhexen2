@@ -1,7 +1,7 @@
 Hammer of Thyrion (uHexen2) release notes:
 
 ========================================================================
-Changes in v1.5.7: (Oct. 25, 2015.)
+Changes in v1.5.7: (Nov. 01, 2015.)
 ========================================================================
 
 - All platforms, gameplay, mission pack: fixed an hcode bug which would
@@ -44,6 +44,8 @@ Changes in v1.5.7: (Oct. 25, 2015.)
 
 - DOS: HexenWorld is now supported on DOS. requires uhexen2 v1.5.7 or
   newer hexenworld servers to connect. (see above for hw protocol 26.)
+
+- DOS: OpenGL support on 3Dfx Voodoo cards.
 
 - Several small fixes, tidy-ups, safeguards elsewhere in the sources.
 

@@ -12,6 +12,9 @@ http://sourceforge.net/projects/uhexen2/
   hwcl.exe:     HexenWorld client.
   hwsv.exe:     HexenWorld server.
 
+  glh2dos.exe:  Hexen II main game, OpenGL (3Dfx) version.
+  glhwcl.exe:   HexenWorld client,  OpenGL (3Dfx) version.
+
 
 Things that don't work:
 
@@ -53,6 +56,12 @@ Things not tested, but should work:
 * JOYSTICK:  The code is the same as quake joystick code, therefore
   it should work the same way it does with dos-quake. Note: In order
   to disable joystick, use the command line argument -nojoy.
+
+* 3Dfx / OpenGL:  OpenGL rendering is supported on 3Dfx Voodoo cards.
+  Pick a DOS GL driver (gl.dxe) from the 3dfx directory and pick the
+  correct glide driver (glide3x.dxe) for your 3dfx card from the
+  3dfx\voodoo directory, and copy them to your main hexen2 directory:
+  glh2dos should run using your 3dfx card.
 
 
 NOTES:
