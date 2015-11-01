@@ -1,6 +1,6 @@
 Hexen II: Hammer of Thyrion (uHexen2)
 
-Known Bugs:
+Known issues:
 -------------------------------------
 
 - Unix (SDL) client: Hitting the ESC key to open the menu several times
@@ -14,7 +14,6 @@ Known Bugs:
   To solve the problem, either recompile SDL to incorporate the fix,
   or unset XMODIFIERS to work around it.
 
-- HexenWorld: Spectator mode (the chasecam) isn't as it should be.
 - HexenWorld: Coop mode is broken. Known problem since Raven's latest
   beta versions.
 

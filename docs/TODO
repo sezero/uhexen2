@@ -4,8 +4,9 @@ TODO:
 -------------------------------------
 
 - Add a pak-patch application for Mac OS X.
+- Port code to SDL2.
 - Re-visit the messy mouse grab code and clean it up.
-- Do a clean-up of the opengl code and modernize it.
+- Clean-up the opengl code, modernize it.
 - Add multisampling support to win32
 - Maybe add support for several image formats (jpeg, png, etc)
 - Maybe add model interpolation stuff?
@@ -20,6 +21,4 @@ TODO:
 - utils, light: improvements?
 - utils, texutils: add more texture tools (pcx2wal, etc.)?
 - More unification of hexen2 and hexenworld trees
-- HexenWorld: Spectator mode (chasecam) isn't as it should be,
-  compare with quakeworld code and fix?
 

@@ -45,7 +45,7 @@ NASM	:	Netwide Assembler. An x86 assembler.
 GCC	:	GNU C Compiler.
 
 		Minimum version required is GCC 2.95.  GCC versions in
-		the 2.95/2.96, 3.x and 4.x series up to 4.9.x are tested
+		the 2.95/2.96, 3.x and 4.x series up to 5.x are tested
 		and work fine.  As for the really ancient gcc versions,
 		gcc-2.91.66 (aka. egcs-1.1.2) still works.  Even v2.7.2
 		is reported to compile OK.
@@ -58,7 +58,7 @@ GCC	:	GNU C Compiler.
 
 CLANG	:	a C language family frontend for LLVM
 
-		As an alternative to gcc, clang versions 3.0 to 3.3 are
+		As an alternative to gcc, clang versions 3.0 to 3.4 are
 		tested to compile all uhexen2 sources correctly.
 
 
@@ -101,11 +101,7 @@ MSVCRT.DLL:	Windows exe files depend on msvcrt.dll, the microsoft C
 Mac OS X requirements	:
 -------------------------
 
-Xcode, SDKs:	Install the free Xcode suite from developer.apple.com,
-		then get the SDL framework for Mac OS X from:
-		http://www.libsdl.org/release/SDL-1.2.14.dmg
-		and copy SDL.framework from that package into your
-		/Library/Frameworks  folder.
+Xcode, SDKs:	Install the free Xcode suite from developer.apple.com.
 
 Additional requirements	:
 -------------------------
@@ -118,17 +114,6 @@ libogg, opus, and opusfile:
 		Required if you want Opus music playback.
 libFLAC :	Required if you want FLAC music playback.
 libmikmod:	Required if you want tracker music playback.
-
-
-Compiling the software renderer for non-x86:
-============================================
-
-The software renderer clients can be compiled for non-x86 cpus: not as
-fast as the intel code, yet, but it works very well in general.  On the
-other hand, it's still possible to compile them as 32 bit binaries for
-intel compatible cpus, such as amd64:  for that, you must add -m32 to
-the cpu and linker flags (see: COMPILE_32BITS option in the Makefiles)
-and link against 32 bit versions of any necessary libraries.
 
 
 Compiling for Windows:
@@ -233,7 +218,7 @@ Compiling for DOS:
 ========================================
 
 You need DJGPP. Tested compilation and functionality using djgpp v2.03
-and v2.04 using gcc-3.3.6, 3.4.6 and 4.4.7.  I compile on linux using
+and v2.05 using gcc-3.3.6, 3.4.6 and 4.4.7.  I compile on linux using
 cross toolchains: see the tiny build_cross_dos.sh script to understand
 how I do it.  Settings for the build_cross_dos.sh scripts are in the
 scripts/cross_defs.dj file: edit it to meet your needs/setup, if needed.
