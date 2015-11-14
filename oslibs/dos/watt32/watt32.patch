@@ -1307,6 +1307,18 @@ diff -urp watt_src.orig/src/misc.h watt_src/src/misc.h
    {
      __asm__ __volatile__ (
              "movw %w0, %%gs"
+diff -urp watt_src.orig/src/netaddr.c watt_src/src/netaddr.c
+--- watt_src.orig/src/netaddr.c	2005-12-14 01:18:58.000000000 +0200
++++ watt_src/src/netaddr.c	2015-11-01 12:10:10.000000000 +0200
+@@ -205,7 +205,7 @@ const char *_inet_atoeth (const char *sr
+ #if (DOSX)
+   int tmp [sizeof(eth_address)];
+ 
+-  if (!sscanf(src,"%02x:%02x:%02x:%02x:%02x:%02x",
++  if (sscanf(src,"%02x:%02x:%02x:%02x:%02x:%02x",
+               &tmp[0], &tmp[1], &tmp[2],
+               &tmp[3], &tmp[4], &tmp[5]) != DIM(tmp))
+      return (NULL);
 diff -urp watt_src.orig/src/packet32.c watt_src/src/packet32.c
 --- watt_src.orig/src/packet32.c	2005-02-19 19:05:50.000000000 +0200
 +++ watt_src/src/packet32.c	2011-03-03 18:05:19.000000000 +0200
