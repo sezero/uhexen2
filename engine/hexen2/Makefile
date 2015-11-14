@@ -498,6 +498,7 @@ INCLUDES+= -I$(OSLIBS)/dos/watt32/inc
 LDFLAGS += -L$(OSLIBS)/dos/watt32/lib -lwatt
 endif
 
+# DOS GL experiments:
 INCLUDES += -I$(OSLIBS)/dos/opengl/include
 INCLUDES += -I$(OSLIBS)/dos/glide3/include
 GL_LINK = -L$(OSLIBS)/dos/opengl/lib/$(GLDIR) -lgl

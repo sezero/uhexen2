@@ -451,10 +451,13 @@ VORBISLIB=tremor
 CODECS_USE_ZONE=yes
 
 INCLUDES += -I$(OSLIBS)/dos
+
 # WATT-32 is needed for DOS
 CPPFLAGS+= -DUSE_WATT32 -DWATT32_NO_OLDIES
 INCLUDES+= -I$(OSLIBS)/dos/watt32/inc
 LDFLAGS += -L$(OSLIBS)/dos/watt32/lib -lwatt
+
+# DOS GL experiments:
 INCLUDES += -I$(OSLIBS)/dos/opengl/include
 INCLUDES += -I$(OSLIBS)/dos/glide3/include
 GL_LINK = -L$(OSLIBS)/dos/opengl/lib/$(GLDIR) -lgl
