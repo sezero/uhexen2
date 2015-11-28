@@ -144,16 +144,14 @@ qboolean TestLine (const vec3_t start, const vec3_t stop)
 			tstack_p--;
 			if (tstack_p < tracestack)
 				return true;
-			node = tstack_p->node;
+			//node = tstack_p->node;
 
 		// set the hit point for this plane
-
 			frontx = backx;
 			fronty = backy;
 			frontz = backz;
 
 		// go down the back side
-
 			backx = tstack_p->backpt[0];
 			backy = tstack_p->backpt[1];
 			backz = tstack_p->backpt[2];

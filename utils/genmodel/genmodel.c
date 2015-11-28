@@ -664,6 +664,7 @@ static void OptimizeVertices(void)
 	printf("Optimizing vertices...");
 
 	memset(vert_used, 0, sizeof(vert_used));
+	memset(vert_replacement, 0, sizeof(vert_replacement)); // make static analyzers happy
 	num_unique = 0;
 
 	// search for common points among all the frames
@@ -699,6 +700,7 @@ static void OptimizeVertices(void)
 		}
 	}
 
+#if 0 /* this is a dead loop because of the commented out code. */
 	// recompute the light normals
 	for (i = 0 ; i < model.numframes ; i++)
 	{
@@ -747,6 +749,7 @@ static void OptimizeVertices(void)
 			in->v[j].lightnormalindex = maxdotindex;
 		}*/
 	}
+#endif
 
 	// create substitution list
 	num_unique = 0;

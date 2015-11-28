@@ -224,6 +224,7 @@ winding_t *ClipWinding (winding_t *in, plane_t *split, qboolean keepon)
 	counts[0] = counts[1] = counts[2] = 0;
 
 // determine sides for each point
+	sides[0] = SIDE_ON; dists[0] = 0; // make static analyzers happy
 	for (i = 0 ; i < in->numpoints ; i++)
 	{
 		dot = DotProduct (in->points[i], split->normal);

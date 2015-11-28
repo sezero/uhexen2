@@ -319,7 +319,6 @@ static void CutNodePortals_r (node_t *node)
 	new_portal->planenum = node->planenum;
 
 	w = BaseWindingForPlane (&planes[node->planenum]);
-	side = 0;	// shut up compiler warning
 	for (p = node->portals ; p ; p = p->next[side])
 	{
 		clipplane = planes[p->planenum];
@@ -332,7 +331,10 @@ static void CutNodePortals_r (node_t *node)
 			side = 1;
 		}
 		else
+		{
 			COM_Error ("%s: mislinked portal", __thisfunc__);
+			side = 0;	// shut up compiler warnings
+		}
 
 		w = ClipWinding (w, &clipplane, true);
 		if (!w)

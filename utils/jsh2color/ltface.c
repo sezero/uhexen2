@@ -462,7 +462,10 @@ static void SingleLightFace (entity_t *light, lightinfo_t *l, const vec3_t faceo
 		else	falloff = -cos(light->angle/2*Q_PI/180);
 	}
 	else
+	{
 		falloff = 0;	// shut up compiler warnings
+		VectorClear (spotvec); // shut up static analyzers
+	}
 
 	for (mapnum = 0; mapnum < l->numlightstyles; mapnum++)
 	{

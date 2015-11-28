@@ -124,6 +124,8 @@ static face_t *TryMerge (face_t *f1, face_t *f2)
 
 	if (i == f1->numpoints)
 		return NULL;	// no matching edges
+	if (!p1 || !p2)
+		return NULL;	// make static analyzers happy
 
 //
 // check slope of connected lines

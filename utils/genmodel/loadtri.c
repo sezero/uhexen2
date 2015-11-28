@@ -868,6 +868,7 @@ static void LoadTRI(FILE *input, triangle_t **triList, int *triangleCount)
 	ptri = (triangle_t *) SafeMalloc(MAXTRIANGLES * sizeof(triangle_t));
 	*triList = ptri;
 
+	count = 0; // make static analyzers happy
 	while (feof(input) == 0)
 	{
 		fread(&start._f, sizeof(float), 1, input);

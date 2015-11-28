@@ -204,6 +204,8 @@ static void LightWorld (void)
 			// torch or globe light.
 			if (colormax == 255)
 				continue;
+			if (colormax == 0) // just in case
+				continue;
 
 			// use 275 here instead of 255 because colored lights
 			// can seem darker than white ones
