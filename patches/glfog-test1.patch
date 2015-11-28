@@ -28,9 +28,9 @@ Index: engine/h2shared/gl_func.h
  GL_FUNCTION(void, glShadeModel, (GLenum))
 Index: engine/h2shared/glquake.h
 ===================================================================
---- engine/h2shared/glquake.h	(revision 5131)
+--- engine/h2shared/glquake.h	(revision 5493)
 +++ engine/h2shared/glquake.h	(working copy)
-@@ -259,6 +259,16 @@
+@@ -255,6 +255,16 @@
  extern	cvar_t	gl_other_glows;
  extern	cvar_t	gl_missile_glows;
  
@@ -74,9 +74,9 @@ Index: engine/h2shared/gl_rlight.c
  
 Index: engine/hexen2/gl_rmain.c
 ===================================================================
---- engine/hexen2/gl_rmain.c	(revision 5131)
+--- engine/hexen2/gl_rmain.c	(revision 5493)
 +++ engine/hexen2/gl_rmain.c	(working copy)
-@@ -48,6 +48,8 @@
+@@ -47,6 +47,8 @@
  
  static float	model_constant_alpha;
  
@@ -85,7 +85,7 @@ Index: engine/hexen2/gl_rmain.c
  static float	r_time1;
  static float	r_lasttime1 = 0;
  
-@@ -108,6 +110,14 @@
+@@ -106,6 +108,14 @@
  cvar_t	gl_glows = {"gl_glows", "0", CVAR_ARCHIVE};	// torch glows
  cvar_t	gl_other_glows = {"gl_other_glows", "0", CVAR_ARCHIVE};
  cvar_t	gl_missile_glows = {"gl_missile_glows", "1", CVAR_ARCHIVE};
@@ -100,7 +100,7 @@ Index: engine/hexen2/gl_rmain.c
  
  cvar_t	gl_coloredlight = {"gl_coloredlight", "0", CVAR_ARCHIVE};
  cvar_t	gl_colored_dynamic_lights = {"gl_colored_dynamic_lights", "0", CVAR_ARCHIVE};
-@@ -1334,6 +1344,9 @@ static void R_DrawAllGlows (void)
+@@ -1332,6 +1342,9 @@ static void R_DrawAllGlows (void)
  	if (!r_drawentities.integer)
  		return;
  
@@ -110,7 +110,7 @@ Index: engine/hexen2/gl_rmain.c
  	glDepthMask_fp (0);
  	glDisable_fp (GL_TEXTURE_2D);
  	glShadeModel_fp (GL_SMOOTH);
-@@ -1354,6 +1367,9 @@ static void R_DrawAllGlows (void)
+@@ -1352,6 +1365,9 @@ static void R_DrawAllGlows (void)
  		}
  	}
  
@@ -120,7 +120,7 @@ Index: engine/hexen2/gl_rmain.c
  	glDisable_fp (GL_BLEND);
  	glEnable_fp (GL_TEXTURE_2D);
  	glBlendFunc_fp (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-@@ -1780,6 +1796,23 @@ static void R_RenderScene (void)
+@@ -1778,6 +1794,23 @@ static void R_RenderScene (void)
  
  	R_MarkLeaves ();	// done here so we know if we're in water
  
@@ -144,7 +144,7 @@ Index: engine/hexen2/gl_rmain.c
  	R_DrawWorld ();		// adds static entities to the list
  
  	S_ExtraUpdate ();	// don't let sound get messed up if going slow
-@@ -1788,6 +1821,8 @@ static void R_RenderScene (void)
+@@ -1786,6 +1819,8 @@ static void R_RenderScene (void)
  
  	R_DrawAllGlows();
  
@@ -153,7 +153,7 @@ Index: engine/hexen2/gl_rmain.c
  	R_RenderDlights ();
  }
  
-@@ -1983,6 +2018,39 @@ void R_RenderView (void)
+@@ -1981,6 +2016,39 @@ void R_RenderView (void)
  
  	R_Clear ();
  
@@ -193,7 +193,7 @@ Index: engine/hexen2/gl_rmain.c
  	// render normal view
  	R_RenderScene ();
  
-@@ -1998,6 +2066,9 @@ void R_RenderView (void)
+@@ -1996,6 +2064,9 @@ void R_RenderView (void)
  
  	R_DrawViewModel();
  
@@ -203,7 +203,7 @@ Index: engine/hexen2/gl_rmain.c
  	// render mirror view
  	R_Mirror ();
  
-@@ -2005,5 +2076,7 @@ void R_RenderView (void)
+@@ -2003,5 +2074,7 @@ void R_RenderView (void)
  
  	if (r_speeds.integer)
  		R_PrintTimes ();
@@ -213,9 +213,9 @@ Index: engine/hexen2/gl_rmain.c
  
 Index: engine/hexen2/gl_rmisc.c
 ===================================================================
---- engine/hexen2/gl_rmisc.c	(revision 5131)
+--- engine/hexen2/gl_rmisc.c	(revision 5493)
 +++ engine/hexen2/gl_rmisc.c	(working copy)
-@@ -235,6 +235,15 @@ void R_Init (void)
+@@ -234,6 +234,15 @@ void R_Init (void)
  	Cvar_RegisterVariable (&gl_missile_glows);
  	Cvar_RegisterVariable (&gl_other_glows);
  

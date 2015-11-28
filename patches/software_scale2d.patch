@@ -782,9 +782,9 @@ Index: engine/h2shared/draw.c
  /*
 Index: engine/h2shared/vid_sdl.c
 ===================================================================
---- engine/h2shared/vid_sdl.c	(revision 5124)
+--- engine/h2shared/vid_sdl.c	(revision 5493)
 +++ engine/h2shared/vid_sdl.c	(working copy)
-@@ -529,8 +529,10 @@
+@@ -512,8 +512,10 @@
  		return false;
  
  	// initial success. adjust vid vars.
@@ -997,7 +997,7 @@ Index: engine/hexen2/console.c
  
 Index: engine/hexen2/menu.c
 ===================================================================
---- engine/hexen2/menu.c	(revision 5092)
+--- engine/hexen2/menu.c	(revision 5493)
 +++ engine/hexen2/menu.c	(working copy)
 @@ -208,7 +208,7 @@
  */
@@ -1056,7 +1056,7 @@ Index: engine/hexen2/menu.c
  }
  
  static void M_Setup_Draw (void)
-@@ -2742,7 +2742,7 @@
+@@ -2724,7 +2724,7 @@
  #		define	Draw_HelpPic_FN(X,Y,Z)	Draw_IntermissionPic((Z))
  #	else
  #		define	Load_HelpPic_FN(X,Y,Z)	Draw_CachePicResize((X),(Y),(Z))
@@ -1065,7 +1065,7 @@ Index: engine/hexen2/menu.c
  #	endif
  #else
  #	ifdef GLQUAKE
-@@ -2756,7 +2756,7 @@
+@@ -2738,7 +2738,7 @@
  
  static void M_Help_Draw (void)
  {
@@ -1194,9 +1194,9 @@ Index: engine/hexen2/sbar.c
  static void DrawBarArtifactNumber(int x, int y, int number)
 Index: engine/h2shared/gl_draw.c
 ===================================================================
---- engine/h2shared/gl_draw.c	(revision 5092)
+--- engine/h2shared/gl_draw.c	(revision 5493)
 +++ engine/h2shared/gl_draw.c	(working copy)
-@@ -611,6 +611,41 @@
+@@ -600,6 +600,41 @@
  	glEnd_fp ();
  }
  
@@ -1238,7 +1238,7 @@ Index: engine/h2shared/gl_draw.c
  /*
  ================
  Draw_String
-@@ -739,6 +774,56 @@
+@@ -728,6 +763,56 @@
  	glEnd_fp ();
  }
  
@@ -1295,7 +1295,7 @@ Index: engine/h2shared/gl_draw.c
  //==========================================================================
  //
  // Draw_SmallString
-@@ -754,6 +839,16 @@
+@@ -743,6 +828,16 @@
  	}
  }
  
@@ -1312,7 +1312,7 @@ Index: engine/h2shared/gl_draw.c
  //==========================================================================
  //
  // Draw_BigCharacter
-@@ -788,7 +883,34 @@
+@@ -777,7 +872,34 @@
  	glEnd_fp ();
  }
  
@@ -1347,7 +1347,7 @@ Index: engine/h2shared/gl_draw.c
  /*
  =============
  Draw_Pic
-@@ -820,6 +942,32 @@
+@@ -809,6 +931,32 @@
  	glTexParameterf_fp(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
  }
  
@@ -1380,7 +1380,7 @@ Index: engine/h2shared/gl_draw.c
  /*
  =============
  Draw_AlphaPic
-@@ -1023,6 +1171,59 @@
+@@ -1012,6 +1160,59 @@
  	glEnd_fp ();
  }
  
@@ -1440,7 +1440,7 @@ Index: engine/h2shared/gl_draw.c
  void Draw_SubPicCropped (int x, int y, int h, qpic_t *pic)
  {
  	int		height;
-@@ -1097,11 +1298,27 @@
+@@ -1086,11 +1287,27 @@
  	Draw_Pic (x, y, pic);
  }
  
