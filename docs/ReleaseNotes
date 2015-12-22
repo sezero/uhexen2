@@ -54,6 +54,8 @@ Changes in v1.5.7: (Nov. 01, 2015.)
 
 - Removed the gtk launcher.
 
+- Updated third-party libraries (music codecs and SDL).
+
 
 ========================================================================
 Changes in v1.5.6: (Mar. 15, 2013.)
