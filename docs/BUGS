@@ -4,15 +4,15 @@ Known issues:
 -------------------------------------
 
 - Unix (SDL) client: Hitting the ESC key to open the menu several times
-  or opening and closing the game console several times might result in
-  a freeze or an endless loop.
+  or opening and closing the game console several times may result in a
+  freeze or an endless loop.
   This is not a uhexen2 bug, it is most likely SDL X11 bug #2325:
   https://bugzilla.libsdl.org/show_bug.cgi?id=2325
   The issue triggers if you have an IME running and XMODIFIERS is set
   to the value proper for that IME.  The bug is already fixed in the
   mainstream SDL repo:  http://hg.libsdl.org/SDL/rev/0aade9c0203f
-  To solve the problem, either recompile SDL to incorporate the fix,
-  or unset XMODIFIERS to work around it.
+  To solve the problem: either recompile SDL to incorporate the fix, or
+  unset XMODIFIERS to work around it.
 
 - HexenWorld: Coop mode is broken. Known problem since Raven's latest
   beta versions.

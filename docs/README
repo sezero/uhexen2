@@ -708,9 +708,6 @@ SVN Repository		: http://sourceforge.net/p/uhexen2/code/
 AmigaOS4 port:
 http://os4depot.net/?function=showfile&file=game/roleplaying/uhexen2.lha
 
-GP2X port:
-http://www.gp32x.com/board/index.php?showtopic=40562
-
 Pandora (GP2X) port:
 http://dl.openhandhelds.org/cgi-bin/pandora.cgi?0,0,0,0,30,66
 
@@ -727,17 +724,10 @@ FreeBSD packages:
 http://www.freshports.org/games/uhexen2/
 
 Arch Linux packages:
-http://aur.archlinux.org/packages.php?ID=12618
+https://aur.archlinux.org/packages/hexen2/
 
 Gentoo ebuilds:
-main : http://bugs.gentoo.org/show_bug.cgi?id=105780
-demo : http://bugs.gentoo.org/show_bug.cgi?id=139262
-extra: http://bugs.gentoo.org/show_bug.cgi?id=139278
-
-Nokia N770/800/810 build:
-http://www.internettablettalk.com/forums/showthread.php?p=134552
-
-QNX builds: http://sourceforge.net/projects/openqnx/files/
+http://bugs.gentoo.org/show_bug.cgi?id=105780
 
 3.5.4  Other Hexen II ports:
 ----------------------------
@@ -747,9 +737,10 @@ Hexen II PSP port: http://jurajstyk.host.sk/
 JLQuake, a Quake1/2/3 and H2/HW engine:
 http://sourceforge.net/projects/vquake/
 
-FTEQW, a Q1/QW engine with H2 support: http://www.fteqw.com/
+FTEQW, a Q1/QW engine with H2 support:
+http://sourceforge.net/projects/fteqw/
 
-Korax's UQE Hexen II: http://corvinstein.com/
+Korax's UQE Hexen II: http://www.jacqueskrige.com/
 
 3.5.5  Older, currently inactive Hexen II ports:
 ------------------------------------------------
@@ -763,8 +754,6 @@ Kiero's old MorphOS port of Hammer of Thyrion:
 
 3.5.6  Other links:
 -------------------
-
-Official Hexen II FAQ: http://www.raven-games.com/hex2faq/
 
 Hexen II resources at gamers.org:
 http://www.gamers.org/pub/idgames2/hexen2/
@@ -780,10 +769,6 @@ Linux Quake HOWTO: http://tldp.org/HOWTO/Quake-HOWTO.html
 
 id Software   : http://www.idsoftware.com/
 Raven Software: http://www.ravensoft.com/
-Raven games fan sites:
-		http://www.ravengames.com/
-		http://www.raven-games.com/
-		http://www.raven-games.com/vintage/
 
 SDL homepage  : http://www.libsdl.org/
 ALSA homepage : http://www.alsa-project.org/
@@ -832,6 +817,6 @@ And here are some legacy opengl options:
  gl_playermip:	similar to gl_picmip, but was for player skins.
 
  gl_ztrick (0 or 1): 3% performance hack mostly unsupported today. (See:
-		http://forums.inside3d.com/viewtopic.php?p=36082#p36082)
+		http://forums.insideqc.com/viewtopic.php?p=36082#p36082)
 		Keep it as 0.
 
