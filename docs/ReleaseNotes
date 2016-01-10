@@ -47,6 +47,8 @@ Changes in v1.5.7: (Nov. 01, 2015.)
 
 - DOS: OpenGL support on 3Dfx Voodoo cards.
 
+- DOS: Experimental support for several PCI sound cards (see README.dos)
+
 - Several small fixes, tidy-ups, safeguards elsewhere in the sources.
 
 - Added a shell script to run different versions of the game which can

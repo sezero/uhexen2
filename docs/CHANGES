@@ -3,6 +3,9 @@ Hexen II: Hammer of Thyrion
 Development Progress	:
 ---------------------------
 
+2016-01-10 (SVN):
+    * DOS: experimental support for several pci sound cards.
+
 2015-11-01 (SVN):
     * changed version date stamp to 2015-11-01.
 

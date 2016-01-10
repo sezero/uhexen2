@@ -32,6 +32,7 @@
 #include "snd_dsound.h"
 #include "snd_sb.h"
 #include "snd_gus.h"
+#include "snd_pci.h"
 #include "snd_ahi.h"
 
 static qboolean	snd_sys_inited = false;
@@ -130,6 +131,9 @@ void S_DriversInit (void)
 #endif
 #if HAVE_DOS_GUS_SOUND
 	S_RegisterDriver(&snddrv_gus);
+#endif
+#if HAVE_DOS_PCI_SOUND
+	S_RegisterDriver(&snddrv_pci);
 #endif
 #if HAVE_AHI_SOUND
 	S_RegisterDriver(&snddrv_ahi);

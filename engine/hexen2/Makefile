@@ -525,6 +525,25 @@ endif
 
 LDFLAGS += -lc -lgcc -lm
 
+# PCI sound card support through libau
+USE_PCIAUDIO=yes
+# PCI sound card support as a DXE module
+PCIAUDIO_DXE=yes
+ifeq ($(USE_SOUND),yes)
+ifneq ($(USE_PCIAUDIO),yes)
+CPPFLAGS+= -DNO_PCI_AUDIO
+else
+INCLUDES+= -I$(OSLIBS)/dos/libau/include
+ifeq ($(PCIAUDIO_DXE),yes)
+SYSOBJ_SOFT_DXE=yes
+SYSOBJ_GL_DXE=yes
+CPPFLAGS+= -DSNDPCI_DXE
+else
+LDFLAGS += -L$(OSLIBS)/dos/libau/lib -lau
+endif
+endif
+endif
+
 ifeq ($(USE_CODEC_VORBIS),yes)
 CODEC_INC = -I$(OSLIBS)/dos/codecs/include
 CODEC_LINK= -L$(OSLIBS)/dos/codecs/lib
@@ -1010,7 +1029,7 @@ ifeq ($(TARGET_OS),win64)
 SYSOBJ_SND := snd_win.o snd_dsound.o
 endif
 ifeq ($(TARGET_OS),dos)
-SYSOBJ_SND := snd_sb.o snd_gus.o
+SYSOBJ_SND := snd_sb.o snd_gus.o snd_pci.o
 endif
 ifeq ($(TARGET_OS),unix)
 SYSOBJ_SND := snd_oss.o snd_alsa.o snd_sun.o snd_sdl.o

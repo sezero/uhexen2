@@ -108,6 +108,12 @@ NOTES:
   sound blaster emulation, the BLASTER environment variable must be set.
   In order to disable sound, use the command line argument -nosound.
 
+* PCI SOUND CARDS: There is EXPERIMENTAL support for several PCI sound
+  cards such as AC97, VIA, CMedia, ES1371, Intel HDA, etc.  You must run
+  the game with -sndpci command line switch in order to activate it.
+  Tested with CMedia and SB PCI (ES1371). Seemed to work best at 44100
+  and 48000 sampling rates (e.g. run with -sndspeed 48000 .)
+
 * CDAUDIO:  The cdrom driver (cdrom.sys, xcdrom.sys, etc.) must be
   loaded and mscdex 2.0 or compatible (such as shsucdx) must be running.
   If you have more than one cdrom drives, use the -cddev command line
