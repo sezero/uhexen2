@@ -7,9 +7,13 @@ TODO:
 - Port code to SDL2.
 - Re-visit the messy mouse grab code and clean it up.
 - Clean-up the opengl code, modernize it.
-- Add multisampling support to win32
-- Maybe add support for several image formats (jpeg, png, etc)
-- Maybe add model interpolation stuff?
+- Proper vsync support for opengl.
+- Multisampling support for windows opengl.
+- Support for several image formats (jpeg, png, etc)
+- Model interpolation stuff.
+- Support for BSP2 and 2PSB formats.
+- Increase several engine limits to allow for larger maps, as
+  in Fitzquake and QuakeSpasm engines.
 - Software renderer: maybe add 16 bit support (r_pixbytes = 2,
   and even 4 for 32 bit)? The current code is largely missing
   translucency pieces and the d_8to16 and d_8to24 translation
@@ -18,7 +22,7 @@ TODO:
 - Add sound font support to Timidity.
 - ALSA, OSS: Add sequencer support for MIDI playback.
 - DOS: Implement MIDI music playback (MPU-401, AdLib/FM synth.)
-- utils, light: improvements?
+- utils: qbsp, light and vis: improvements?
 - utils, texutils: add more texture tools (pcx2wal, etc.)?
 - More unification of hexen2 and hexenworld trees
 
