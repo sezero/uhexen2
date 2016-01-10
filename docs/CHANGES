@@ -4,6 +4,9 @@ Development Progress	:
 ---------------------------
 
 2016-01-10 (SVN):
+    * zone.c: fix padding in memblock_t struct to work as intended.
+      the previous layout was probably harmless but wasted a few bytes.
+      (from quakespasm svn r1275, patch by Eric Wasylishen.)
     * DOS: experimental support for several pci sound cards.
 
 2015-11-01 (SVN):
