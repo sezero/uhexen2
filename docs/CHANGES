@@ -8,6 +8,7 @@ Development Progress	:
       the previous layout was probably harmless but wasted a few bytes.
       (from quakespasm svn r1275, patch by Eric Wasylishen.)
     * DOS: experimental support for several pci sound cards.
+    * bump version date stamp to 2016-01-10.
 
 2015-11-01 (SVN):
     * changed version date stamp to 2015-11-01.
