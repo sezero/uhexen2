@@ -240,6 +240,20 @@ static qboolean VID_CheckAdequateMem (int width, int height)
 }
 
 //------------------------------------
+static int sort_modes (const void *arg1, const void *arg2)
+{
+	const vmode_t *a1, *a2;
+	a1 = (const vmode_t *) arg1;
+	a2 = (const vmode_t *) arg2;
+
+	if (a1->width == a2->width)
+		return a1->height - a2->height;	// lowres-to-highres
+	//	return a2->height - a1->height;	// highres-to-lowres
+	else
+		return a1->width - a2->width;	// lowres-to-highres
+	//	return a2->width - a1->width;	// highres-to-lowres
+}
+
 static void VID_PrepareModes (void)
 {
 	qboolean	have_mem;
@@ -288,7 +302,8 @@ static void VID_PrepareModes (void)
 			q_snprintf (fmodelist[num_fmodes].modedesc, MAX_DESC, "%d x %d", (fmodelist[num_fmodes].width), (fmodelist[num_fmodes].height));
 			//Con_SafePrintf ("fmodelist[%d].modedesc = %s maxdepth %d\n", num_fmodes, fmodelist[num_fmodes].modedesc, diminfo.MaxDepth);
 
-			num_fmodes++;
+			if (++num_fmodes == MAX_MODE_LIST)
+				break;
 		}
 	}
 
@@ -305,6 +320,8 @@ static void VID_PrepareModes (void)
 		return;
 	}
 
+	if (num_fmodes > 1)
+		qsort(fmodelist, num_fmodes, sizeof(vmode_t), sort_modes);
 	nummodes = &num_fmodes;
 	modelist = fmodelist;
 
@@ -454,14 +471,20 @@ static qboolean VID_SetMode (int modenum, unsigned char *palette)
 					return true;
 				}
 				FreeVec(buffer);
+				buffer = NULL;
 			}
 		/*	FreeVec(pointermem);
+			pointermem = NULL;
 		}*/
 		CloseWindow(window);
+		window = NULL;
 	}
 
 	if (screen)
+	{
 		CloseScreen(screen);
+		screen = NULL;
+	}
 
 	in_mode_set = false;
 	return false;
