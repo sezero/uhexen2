@@ -1,0 +1,55 @@
+# libmad-0.15.1b compiled for aros-x86 port of Hammer of Thyrion (uhexen2):
+# commented out unneeded code (see diffs below), and configured with
+# --host=i386-aros --disable-debugging
+# In the generated Makefile, replaced -O with -O2, compiled using gcc-4.2.4.
+
+--- timer.c.orig
++++ timer.c
+@@ -342,6 +342,7 @@ unsigned long mad_timer_fraction(mad_tim
+  * NAME:	timer->string()
+  * DESCRIPTION:	write a string representation of a timer using a template
+  */
++#if 0 /* NOT NEEDED in uHexen2 */
+ void mad_timer_string(mad_timer_t timer,
+ 		      char *dest, char const *format, enum mad_units units,
+ 		      enum mad_units fracunits, unsigned long subparts)
+@@ -483,3 +484,5 @@ void mad_timer_string(mad_timer_t timer,
+     break;
+   }
+ }
++#endif /* NOT NEEDED in uHexen2 */
++
+--- decoder.c.orig
++++ decoder.c
+@@ -23,6 +23,7 @@
+ #  include "config.h"
+ # endif
+ 
++#if 0 /* NOT NEEDED in uHexen2 */
+ # include "global.h"
+ 
+ # ifdef HAVE_SYS_TYPES_H
+@@ -580,3 +581,5 @@ int mad_decoder_message(struct mad_decod
+   return -1;
+ # endif
+ }
++#endif /* NOT NEEDED in uHexen2 */
++
+--- minimad.c.orig
++++ minimad.c
+@@ -19,6 +19,9 @@
+  * $Id: minimad.c,v 1.4 2004/01/23 09:41:32 rob Exp $
+  */
+ 
++#if 1 /* NOT NEEDED in uHexen2 */
++int main() { return 0; }
++#else
+ # include <stdio.h>
+ # include <unistd.h>
+ # include <sys/stat.h>
+@@ -220,3 +223,5 @@ int decode(unsigned char const *start, u
+ 
+   return result;
+ }
++#endif /* NOT NEEDED in uHexen2 */
++

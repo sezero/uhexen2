@@ -1,0 +1,16 @@
+applied the following patch from AROS-contribs source
+
+diff -ur libvorbis-1.2.3/lib/os.h libvorbis-1.2.3-aros/lib/os.h
+--- libvorbis-1.2.3/lib/os.h	2009-07-09 11:12:08.000000000 +0200
++++ libvorbis-1.2.3-aros/lib/os.h	2009-11-06 22:08:24.000000000 +0100
+@@ -52,6 +52,10 @@
+ #  define FAST_HYPOT(a, b) sqrt((a)*(a) + (b)*(b))
+ #endif
+ 
++#if defined(__AROS__)
++#  define rint(x)   (floor((x)+0.5f))
++#endif
++
+ #if defined(__SYMBIAN32__) && defined(__WINS__)
+ void *_alloca(size_t size);
+ #  define alloca _alloca
