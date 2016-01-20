@@ -723,17 +723,6 @@ endif
 INCLUDES += $(CODEC_INC)
 LDFLAGS += $(CODEC_LINK)
 
-ifeq ($(USE_CODEC_MP3),yes)
-CODEC_INC = -I$(OSLIBS)/aros-$(MACH_TYPE)/codecs/include
-CODEC_LINK= -L$(OSLIBS)/aros-$(MACH_TYPE)/codecs/lib
-endif
-ifeq ($(USE_CODEC_VORBIS),yes)
-CODEC_INC = -I$(OSLIBS)/aros-$(MACH_TYPE)/codecs/include
-CODEC_LINK= -L$(OSLIBS)/aros-$(MACH_TYPE)/codecs/lib
-endif
-INCLUDES += $(CODEC_INC)
-LDFLAGS += $(CODEC_LINK)
-
 ifeq ($(USE_SOUND),yes)
 ifneq ($(USE_SDLAUDIO),yes)
 CPPFLAGS+= -DNO_SDL_AUDIO
@@ -782,6 +771,17 @@ GL_LINK=-lGL
 # both WildMidi and the local timidity work nice on AROS
 USE_CODEC_WILDMIDI=no
 USE_CODEC_TIMIDITY=yes
+
+ifeq ($(USE_CODEC_MP3),yes)
+CODEC_INC = -I$(OSLIBS)/aros-$(MACH_TYPE)/codecs/include
+CODEC_LINK= -L$(OSLIBS)/aros-$(MACH_TYPE)/codecs/lib
+endif
+ifeq ($(USE_CODEC_VORBIS),yes)
+CODEC_INC = -I$(OSLIBS)/aros-$(MACH_TYPE)/codecs/include
+CODEC_LINK= -L$(OSLIBS)/aros-$(MACH_TYPE)/codecs/lib
+endif
+INCLUDES += $(CODEC_INC)
+LDFLAGS += $(CODEC_LINK)
 
 ifeq ($(USE_SOUND),yes)
 ifneq ($(USE_SDLAUDIO),yes)
