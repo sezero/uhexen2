@@ -1,7 +1,7 @@
 # $Id$
 #
 # This file contains all common x86-AROS cross compilation definitions for
-# use with all other build_cross_morphos.sh scripts for the uhexen2 tree.
+# use with all other build_cross_aros.sh scripts for the uhexen2 tree.
 #
 # Change this script to meet your needs and/or environment.
 
