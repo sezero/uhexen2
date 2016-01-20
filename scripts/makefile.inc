@@ -84,6 +84,13 @@ ifdef MOSBUILD
 CROSS_COMPILE=y
 TARGET_OS=morphos
 endif
+ifdef AROSBUILD
+# cross compilation for aros
+CROSS_COMPILE=y
+TARGET_OS=aros
+# override MACH_TYPE on the make command-line, if necessary
+MACH_TYPE=x86
+endif
 ifeq ($(CROSS_COMPILE),n)
 # compiling for the host os.
 ifneq (,$(findstring darwin,$(HOST_OS)))

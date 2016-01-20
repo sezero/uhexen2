@@ -1,25 +1,24 @@
 # $Id$
 #
-# This file contains all common MorphOS cross compilation definitions for
+# This file contains all common x86-AROS cross compilation definitions for
 # use with all other build_cross_morphos.sh scripts for the uhexen2 tree.
 #
 # Change this script to meet your needs and/or environment.
 
-TARGET=ppc-morphos
-# morphos [cross-]compiler specifically requires to be located under /gg
-PREFIX=/gg
+TARGET=i386-aros
+PREFIX=/opt/cross_aros
 
-PATH="$PREFIX/bin:$PATH"
+PATH="$PREFIX:$PATH"
 export PATH
 
-MOSBUILD=1
+AROSBUILD=1
 
 CC="$TARGET-gcc"
 AS="$TARGET-as"
 RANLIB="$TARGET-ranlib"
 AR="$TARGET-ar"
 
-export CC AS RANLIB AR MOSBUILD
+export CC AS RANLIB AR AROSBUILD
 
 STRIPPER="$TARGET-strip"
 
