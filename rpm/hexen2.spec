@@ -13,6 +13,8 @@
 # --without ogg: build without ogg/vorbis music streaming support
 # --with flac: build with flac music streaming support
 # --with opus: build with opus music streaming support
+# --with mikmod: build with mikmod (tracker) music streaming support
+# --with umx: build with unreal umx music streaming support
 # --without asm: do not use x86 assembly even on an intel cpu
 
 %ifnarch %{ix86}
@@ -30,6 +32,8 @@
 %{!?_without_ogg:%define ogg_buildopt USE_CODEC_VORBIS=yes}
 %{!?_with_flac:%define flac_buildopt USE_CODEC_FLAC=no}
 %{!?_with_opus:%define opus_buildopt USE_CODEC_OPUS=no}
+%{!?_with_mikmod:%define mikmod_buildopt USE_CODEC_MIKMOD=no}
+%{!?_with_umx:%define umx_buildopt USE_CODEC_UMX=no}
 # build option overrides
 %{?_without_asm:%define asm_buildopt USE_X86_ASM=no}
 %{?_without_alsa:%define alsa_buildopt USE_ALSA=no}
@@ -41,8 +45,10 @@
 %{?_without_ogg:%define ogg_buildopt USE_CODEC_VORBIS=no}
 %{?_with_flac:%define flac_buildopt USE_CODEC_FLAC=yes}
 %{?_with_opus:%define opus_buildopt USE_CODEC_OPUS=yes}
+%{?_with_mikmod:%define mikmod_buildopt USE_CODEC_MIKMOD=yes}
+%{?_with_umx:%define umx_buildopt USE_CODEC_UMX=yes}
 # all build options passed to makefile
-%define engine_buildopt	%{asm_buildopt} %{alsa_buildopt} %{midi_buildopt} %{timidity_buildopt} %{wavmusic_buildopt} %{mp3_buildopt} %{mp3_libraryopt} %{ogg_buildopt} %{opus_buildopt} %{flac_buildopt}
+%define engine_buildopt	%{asm_buildopt} %{alsa_buildopt} %{midi_buildopt} %{timidity_buildopt} %{wavmusic_buildopt} %{mp3_buildopt} %{mp3_libraryopt} %{ogg_buildopt} %{opus_buildopt} %{flac_buildopt} %{mikmod_buildopt} %{umx_buildopt}
 
 %define gamecode_ver	1.29
 
@@ -63,6 +69,7 @@ BuildRequires:	SDL-devel >= 1.2.4
 %{!?_without_ogg:BuildRequires:  libogg-devel libvorbis-devel}
 %{?_with_flac:BuildRequires:  flac-devel}
 %{?_with_opus:BuildRequires:  opus-devel opusfile-devel}
+%{?_with_mikmod:BuildRequires:  libmikmod-devel}
 %{!?_without_asm:BuildRequires:  nasm >= 0.98.38}
 Obsoletes:	hexen2-missionpack
 Requires:	SDL >= 1.2.4
@@ -71,8 +78,9 @@ Requires:	SDL >= 1.2.4
 # these will be picked by rpm already
 #%{?_with_flac:Requires: flac}
 #%{?_with_opus:Requires: opus opusfile}
-#%{!?_without_mp3:Requires: libmad}
+#%{!?_without_mp3:Requires: %{!?_with_mpg123:libmad}%{?_with_mpg123:libmpg123 >= 1.12.0}}
 #%{!?_without_ogg:Requires: libvorbis}
+#%{?_with_mikmod:Requires: libmikmod}
 
 %description
 Hexen II is a class based shooter game by Raven Software from 1997.
@@ -84,11 +92,6 @@ and the Portal of Praevus mission pack, and a dedicated server.
 Group:		Amusements/Games
 Summary:	HexenWorld Client and Server
 Requires:	SDL >= 1.2.4
-# timidity++-patches requirement is non-fatal
-#%{!?_without_timidity:Requires: timidity++-patches}
-# these will be picked by rpm already
-#%{!?_without_mp3:Requires: libmad}
-#%{!?_without_ogg:Requires: libvorbis}
 Requires:	%{name} >= %{version}
 
 %description -n hexenworld
@@ -317,11 +320,11 @@ utils/hcc/hcc -src gamecode-%{gamecode_ver}/hc/hw -os -oi -on
 %{_prefix}/games/%{name}/docs/README.hwmaster
 
 %changelog
-* Wed Jun 17 2015 O.Sezer <sezero@users.sourceforge.net> 1.5.7-1
+* Thu Jan 21 2016 O.Sezer <sezero@users.sourceforge.net> 1.5.7-1
 - Removed gtk launcher, added a shell script to run different
   versions of the game, instead.
 - Use hcc's new -os switch when building the hcode
-- Add --with flac build option
+- Added --with flac|mikmod|umx build options
 - Bump version to 1.5.7.
 - Bump gamecode version to 1.29
 
@@ -336,7 +339,7 @@ utils/hcc/hcc -src gamecode-%{gamecode_ver}/hc/hw -os -oi -on
 - Bump version to 1.5.5
 - Bump gamecode version to 1.27
 
-* Tue Jun 18 2012 O.Sezer <sezero@users.sourceforge.net> 1.5.4-1
+* Tue Jun 19 2012 O.Sezer <sezero@users.sourceforge.net> 1.5.4-1
 - Changed --without gtk2 option to --with gtk1.
 - Removed the beta/prerelease versioning stuff.
 - Bump gamecode version to 1.26.
@@ -388,7 +391,7 @@ utils/hcc/hcc -src gamecode-%{gamecode_ver}/hc/hw -os -oi -on
 * Wed Jun 01 2011 O.Sezer <sezero@users.sourceforge.net>
 - Update spec file after the xdelta3/h2patch changes.
 
-* Sat May 20 2011 O.Sezer <sezero@users.sourceforge.net>
+* Fri May 20 2011 O.Sezer <sezero@users.sourceforge.net>
 - Install fixed entities for the tower map to handle the map's quirks.
 
 * Wed May 04 2011 O.Sezer <sezero@users.sourceforge.net>
@@ -424,13 +427,13 @@ utils/hcc/hcc -src gamecode-%{gamecode_ver}/hc/hw -os -oi -on
 * Fri Apr 04 2008 O.Sezer <sezero@users.sourceforge.net> 1.4.3-1
 - 1.4.3-final.
 
-* Wed Feb 05 2008 O.Sezer <sezero@users.sourceforge.net>
+* Tue Feb 05 2008 O.Sezer <sezero@users.sourceforge.net>
 - incremented the gamecode version number to 1.19a
 
 * Wed Oct 03 2007 O.Sezer <sezero@users.sourceforge.net> 1.4.2-1
 - 1.4.2-final.
 
-* Mon Aug 22 2007 O.Sezer <sezero@users.sourceforge.net>
+* Mon Aug 13 2007 O.Sezer <sezero@users.sourceforge.net>
 - removed the .gtk1 suffix from launcher gtk-1.2 builds
 
 * Fri Jun 15 2007 O.Sezer <sezero@users.sourceforge.net>
@@ -464,7 +467,7 @@ utils/hcc/hcc -src gamecode-%{gamecode_ver}/hc/hw -os -oi -on
   using x86 assembly until we fix them properly.
 - Version 1.4.1-final.
 
-* Wed Aug 14 2006 O.Sezer <sezero@users.sourceforge.net>
+* Mon Aug 14 2006 O.Sezer <sezero@users.sourceforge.net>
 - Added the dedicated server to the packaged binaries.
   Preparing for a future 1.4.1 release.
 
@@ -475,10 +478,10 @@ utils/hcc/hcc -src gamecode-%{gamecode_ver}/hc/hw -os -oi -on
 - Back to xdelta: removed loki_patch. All of its fancy bloat can
   be done in a shell script, which is more customizable.
 
-* Mon Apr 04 2006 O.Sezer <sezero@users.sourceforge.net>
+* Tue Apr 04 2006 O.Sezer <sezero@users.sourceforge.net>
 - Since 1.4.0-rc2 no mission pack specific binaries are needed.
 
-* Mon Mar 26 2006 O.Sezer <sezero@users.sourceforge.net>
+* Sun Mar 26 2006 O.Sezer <sezero@users.sourceforge.net>
 - Moved hexenworld related documentation to the hexenworld package
   lib3dfxgamma is no longer needed. not packaging it.
 
@@ -491,9 +494,9 @@ utils/hcc/hcc -src gamecode-%{gamecode_ver}/hc/hw -os -oi -on
 * Sun Feb 12 2006 O.Sezer <sezero@users.sourceforge.net>
 - Updated for a future 1.4.0
 
-* Thu Aug 29 2005 O.Sezer <sezero@users.sourceforge.net> 1.3.0-2
+* Mon Aug 29 2005 O.Sezer <sezero@users.sourceforge.net> 1.3.0-2
 - Patch: We need to remove OS checks from the update_h2 script
 
-* Thu Aug 21 2005 O.Sezer <sezero@users.sourceforge.net> 1.3.0-1
+* Sun Aug 21 2005 O.Sezer <sezero@users.sourceforge.net> 1.3.0-1
 - First sketchy spec file for RedHat and Fedora Core
 
