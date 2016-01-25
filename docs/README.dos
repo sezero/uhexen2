@@ -41,9 +41,6 @@ Things not tested, but should work:
   - Note: WatTCP was observed not to work with H2DOS as a dedicated or
     listen server, i.e. clients can't connect to it. Same with H2DED.
 
-  - Note: HexenWorld client or server with WatTCP doesn't work for now
-    due to a WatTCP bug.
-
   - Note: The Hexen II dedicated server application H2DED is not tested.
 
   In case you want to disable some or all network functionality, here
