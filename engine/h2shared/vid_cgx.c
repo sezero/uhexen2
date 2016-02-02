@@ -295,6 +295,13 @@ static void VID_PrepareModes (void)
 			if (!GetDisplayInfoData(handle, (UBYTE *)&diminfo, sizeof(diminfo), DTAG_DIMS, 0))
 				continue;
 
+#ifdef __AROS__
+			if (diminfo.MaxDepth != 24)
+#else
+			if (diminfo.MaxDepth != 8)
+#endif
+				continue;
+
 			fmodelist[num_fmodes].width = diminfo.Nominal.MaxX + 1;
 			fmodelist[num_fmodes].height = diminfo.Nominal.MaxY + 1;
 			fmodelist[num_fmodes].fullscreen = 1;
