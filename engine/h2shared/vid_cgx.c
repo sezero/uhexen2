@@ -387,11 +387,40 @@ static void VID_NumModes_f (void)
 //====================================
 
 
+static void VID_DestroyWindow (void)
+{
+	if (window)
+	{
+		CloseWindow(window);
+		window = NULL;
+	}
+
+	if (buffer)
+	{
+		FreeVec(buffer);
+		buffer = NULL;
+	}
+
+	/*if (pointermem)
+	{
+		FreeVec(pointermem);
+		pointermem = NULL;
+	}*/
+
+	if (screen)
+	{
+		CloseScreen(screen);
+		screen = NULL;
+	}
+}
+
 static qboolean VID_SetMode (int modenum, unsigned char *palette)
 {
 	ULONG flags;
 
 	in_mode_set = true;
+
+	VID_DestroyWindow ();
 
 	flags = WFLG_ACTIVATE | WFLG_RMBTRAP;
 
@@ -730,29 +759,7 @@ void VID_Init (unsigned char *palette)
 
 void VID_Shutdown (void)
 {
-	if (window)
-	{
-		CloseWindow(window);
-		window = NULL;
-	}
-
-	if (buffer)
-	{
-		FreeVec(buffer);
-		buffer = NULL;
-	}
-
-	/*if (pointermem)
-	{
-		FreeVec(pointermem);
-		pointermem = NULL;
-	}*/
-
-	if (screen)
-	{
-		CloseScreen(screen);
-		screen = NULL;
-	}
+	VID_DestroyWindow ();
 
 #if defined(__AMIGA__) && !defined(__MORPHOS__)
 	if (CyberGfxBase)

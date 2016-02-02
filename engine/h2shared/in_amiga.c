@@ -255,7 +255,7 @@ HANDLERPROTO(IN_KeyboardHandler, struct InputEvent *, struct InputEvent *moo, AP
 
 	ULONG screeninfront;
 
-	if (!(window->Flags & WFLG_WINDOWACTIVE))
+	if (!window || !(window->Flags & WFLG_WINDOWACTIVE))
 		return moo;
 
 	coin = moo;
