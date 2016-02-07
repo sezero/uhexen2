@@ -509,9 +509,25 @@ double Sys_DoubleTime (void)
 {
 #if defined(__AMIGA__) && !defined(__MORPHOS__)
 	// this has a resolution of 20 ms, use EClock instead
+	/*
 	struct DateStamp ds;
 	DateStamp(&ds);
 	return (double)ds.ds_Tick / (double)TICKS_PER_SECOND;
+	*/
+	static ULONG old_lo = 0;
+	ULONG E_Freq;
+	struct EClockVal eclock;
+
+	old_lo = eclock.ev_lo;
+	E_Freq = ReadEClock(&eclock);
+
+	if (first)
+	{
+		first = false;
+		old_lo = eclock.ev_lo;
+		return (double)eclock.ev_lo / (double)E_Freq;
+	}
+	return (double)(eclock.ev_lo - old_lo) / (double)E_Freq;
 #else
 	struct timeval	tp;
 	double		now;
