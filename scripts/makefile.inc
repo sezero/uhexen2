@@ -91,6 +91,11 @@ TARGET_OS=aros
 # override MACH_TYPE on the make command-line, if necessary
 MACH_TYPE=x86
 endif
+ifdef AMIGABUILD
+# cross compilation for amigaos
+CROSS_COMPILE=y
+TARGET_OS=amigaos
+endif
 ifeq ($(CROSS_COMPILE),n)
 # compiling for the host os.
 ifneq (,$(findstring darwin,$(HOST_OS)))
@@ -114,6 +119,9 @@ endif
 endif
 ifeq ($(TARGET_OS),morphos)
 MACH_TYPE=ppc
+endif
+ifeq ($(TARGET_OS),amigaos)
+MACH_TYPE=m68k
 endif
 ifeq ($(TARGET_OS),dos)
 MACH_TYPE=x86

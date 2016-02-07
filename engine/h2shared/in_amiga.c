@@ -29,7 +29,11 @@
 #endif
 #include <libraries/lowlevel.h>
 #include <intuition/intuition.h>
+#ifdef __AROS__
 #include <proto/alib.h>
+#else
+#include <clib/alib_protos.h>
+#endif
 #include <proto/intuition.h>
 #include <proto/exec.h>
 #include <proto/keymap.h>

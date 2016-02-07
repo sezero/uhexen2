@@ -507,6 +507,12 @@ Sys_DoubleTime
 */
 double Sys_DoubleTime (void)
 {
+#if defined(__AMIGA__) && !defined(__MORPHOS__)
+	// this has a resolution of 20 ms, use EClock instead
+	struct DateStamp ds;
+	DateStamp(&ds);
+	return (double)ds.ds_Tick / (double)TICKS_PER_SECOND;
+#else
 	struct timeval	tp;
 	double		now;
 
@@ -522,6 +528,7 @@ double Sys_DoubleTime (void)
 	}
 
 	return now - starttime;
+#endif
 }
 
 char *Sys_DateTimeString (char *buf)

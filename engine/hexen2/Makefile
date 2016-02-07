@@ -182,6 +182,10 @@ ifeq ($(TARGET_OS),morphos)
 SW_BINARY:=hexen2$(exe_ext)
 GL_BINARY:=glhexen2$(exe_ext)
 endif
+ifeq ($(TARGET_OS),amigaos)
+SW_BINARY:=hexen2$(exe_ext)
+GL_BINARY:=glhexen2$(exe_ext)
+endif
 
 #############################################################
 # Compiler flags
@@ -849,6 +853,47 @@ endif
 
 
 #############################################################
+# AmigaOS flags/settings and overrides:
+#############################################################
+ifeq ($(TARGET_OS),amigaos)
+
+# Don't use SDL on AmigaOS
+USE_SDL=no
+USE_SDLCD=no
+USE_SDLAUDIO=no
+USE_CDAUDIO=no
+
+CFLAGS  += -noixemul -m68020-60
+LDFLAGS += -noixemul
+LDFLAGS += -lm
+
+# AmiTCP SDK
+CFLAGS  += -I/usr/local/amiga/m68k-amigaos/netinclude
+
+GL_LINK=-lGL
+# dynamic loading of ogl functions doesn't work
+LINK_GL_LIBS=yes
+
+USE_CODEC_FLAC=no
+USE_CODEC_VORBIS=no
+USE_CODEC_MP3=no
+USE_CODEC_OPUS=no
+USE_CODEC_MIKMOD=no
+USE_CODEC_MODPLUG=no
+USE_CODEC_UMX=no
+
+ifeq ($(USE_SOUND),yes)
+ifneq ($(USE_SDLAUDIO),yes)
+CPPFLAGS+= -DNO_SDL_AUDIO
+endif
+endif
+
+endif
+# End of AmigaOS settings
+#############################################################
+
+
+#############################################################
 # Streaming music settings
 #############################################################
 ifeq ($(MP3LIB),mad)
@@ -1054,6 +1099,9 @@ endif
 ifeq ($(TARGET_OS),morphos)
 SYSOBJ_SND := snd_ahi.o snd_sdl.o
 endif
+ifeq ($(TARGET_OS),amigaos)
+SYSOBJ_SND := snd_ahi.o
+endif
 # end of Sound objects
 endif
 
@@ -1085,6 +1133,10 @@ SYSOBJ_MIDI:= midi_nul.o
 CPPFLAGS += -D_NO_MIDIDRV
 endif
 ifeq ($(TARGET_OS),morphos)
+SYSOBJ_MIDI:= midi_nul.o
+CPPFLAGS += -D_NO_MIDIDRV
+endif
+ifeq ($(TARGET_OS),amigaos)
 SYSOBJ_MIDI:= midi_nul.o
 CPPFLAGS += -D_NO_MIDIDRV
 endif
@@ -1225,6 +1277,13 @@ SYSOBJ_INPUT := in_amiga.o
 SYSOBJ_GL_VID:= gl_vidamiga.o
 SYSOBJ_SOFT_VID:= vid_cgx.o
 endif
+SYSOBJ_NET := net_bsd.o net_udp.o
+SYSOBJ_SYS := sys_amiga.o
+endif
+ifeq ($(TARGET_OS),amigaos)
+SYSOBJ_INPUT := in_amiga.o
+SYSOBJ_GL_VID:= gl_vidamiga.o
+SYSOBJ_SOFT_VID:= vid_cgx.o
 SYSOBJ_NET := net_bsd.o net_udp.o
 SYSOBJ_SYS := sys_amiga.o
 endif
