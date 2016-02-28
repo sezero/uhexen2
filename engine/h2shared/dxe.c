@@ -22,75 +22,72 @@
 
 #include <assert.h>
 #include <errno.h>
+#include <sys/stat.h>
+#include <dir.h>
+#include <io.h>
 #include <unistd.h>
 #include <time.h>
 #include <signal.h>
 #include <dos.h>
 #include <dpmi.h>
 #include <sys/nearptr.h>
+#include <sys/movedata.h>
 #include <setjmp.h>
 #include <crt0.h>
 #if 0
 #include <ctype.h>
+#endif
+#if 1 /* for mesa w/o 3dfx glide */
+#include <stubinfo.h>
+#include <sys/exceptn.h>
 #endif
 
 #include "quakedef.h"
 #include "sys_dxe.h"
 
 DXE_EXPORT_TABLE (syms)
+	/* dlfcn */
+	DXE_EXPORT (dlclose)
+	DXE_EXPORT (dlopen)
+	DXE_EXPORT (dlsym)
+
+	/* assert */
 	DXE_EXPORT (__dj_assert)
-	DXE_EXPORT (__dj_huge_val)
-	DXE_EXPORT (__dj_stderr)
+	/* errno */
+	DXE_EXPORT (errno)
+	/* setjmp */
+	DXE_EXPORT (longjmp)
+	DXE_EXPORT (setjmp)
+	/* signal */
+	DXE_EXPORT (signal)
+
+	/* stdlib */
+	DXE_EXPORT (abort)
+	DXE_EXPORT (exit)
 #if 0
-	DXE_EXPORT (__dj_ctype_tolower)
-	DXE_EXPORT (__dj_ctype_toupper)
-	DXE_EXPORT (__dj_ctype_flags)
+	DXE_EXPORT (rand)
+	DXE_EXPORT (srand)
 #endif
 	DXE_EXPORT (bsearch)
-	DXE_EXPORT (acos)
-	DXE_EXPORT (asin)
-	DXE_EXPORT (atan)
-	DXE_EXPORT (atan2)
-	DXE_EXPORT (atof)
-	DXE_EXPORT (atoi)
-	DXE_EXPORT (ceil)
-	DXE_EXPORT (cos)
-	DXE_EXPORT (errno)
-	DXE_EXPORT (exit)
-	DXE_EXPORT (fclose)
-	DXE_EXPORT (feof)
-	DXE_EXPORT (fgetc)
-	DXE_EXPORT (fgets)
-	DXE_EXPORT (floor)
-	DXE_EXPORT (fopen)
-	DXE_EXPORT (fprintf)
-	DXE_EXPORT (fputc)
-	DXE_EXPORT (fputs)
-	DXE_EXPORT (fread)
-	DXE_EXPORT (free)
-	DXE_EXPORT (fscanf)
-	DXE_EXPORT (fseek)
-	DXE_EXPORT (fwrite)
-	DXE_EXPORT (getc)
-	DXE_EXPORT (ungetc)
+	DXE_EXPORT (atol)
+	DXE_EXPORT (strtod)
+	DXE_EXPORT (strtol)
+	DXE_EXPORT (strtoul)
+	DXE_EXPORT (qsort)
+	DXE_EXPORT (getenv)
+	DXE_EXPORT (putenv)
 	DXE_EXPORT (malloc)
 	DXE_EXPORT (calloc)
 	DXE_EXPORT (realloc)
+	DXE_EXPORT (free)
+
+	/* string */
 	DXE_EXPORT (memcmp)
 	DXE_EXPORT (memcpy)
 	DXE_EXPORT (memset)
 	DXE_EXPORT (memmove)
-	DXE_EXPORT (pow)
-	DXE_EXPORT (printf)
-	DXE_EXPORT (putc)
-	DXE_EXPORT (puts)
-	DXE_EXPORT (qsort)
-	DXE_EXPORT (sin)
-	DXE_EXPORT (sprintf)
-	DXE_EXPORT (sqrt)
-	DXE_EXPORT (sscanf)
-	DXE_EXPORT (stpcpy)
 	DXE_EXPORT (strcat)
+	DXE_EXPORT (strncat)
 	DXE_EXPORT (strchr)
 	DXE_EXPORT (strcmp)
 	DXE_EXPORT (strcpy)
@@ -100,49 +97,122 @@ DXE_EXPORT_TABLE (syms)
 	DXE_EXPORT (strncpy)
 	DXE_EXPORT (strrchr)
 	DXE_EXPORT (strstr)
-	DXE_EXPORT (strtod)
-	DXE_EXPORT (strtol)
-	DXE_EXPORT (tan)
-	DXE_EXPORT (usleep)
+	DXE_EXPORT (strcspn)
+	DXE_EXPORT (strtok)
+#if 0
+	DXE_EXPORT (strtok_r)
+	DXE_EXPORT (strcasecmp)
+	DXE_EXPORT (stricmp)
+	DXE_EXPORT (strnicmp)
+	DXE_EXPORT (strlwr)
+	DXE_EXPORT (strupr)
+#endif
+
+	/* stdio */
+	DXE_EXPORT (__dj_stderr)
+	DXE_EXPORT (__dj_stdout)
+	DXE_EXPORT (fopen)
+	DXE_EXPORT (freopen)
+	DXE_EXPORT (fclose)
+	DXE_EXPORT (fflush)
+	DXE_EXPORT (fread)
+	DXE_EXPORT (fwrite)
+	DXE_EXPORT (fseek)
+	DXE_EXPORT (feof)
+	DXE_EXPORT (getc)
+	DXE_EXPORT (ungetc)
+	DXE_EXPORT (fgetc)
+	DXE_EXPORT (fgets)
+	DXE_EXPORT (fputc)
+	DXE_EXPORT (fputs)
+	DXE_EXPORT (putc)
+	DXE_EXPORT (puts)
+	DXE_EXPORT (fprintf)
+	DXE_EXPORT (printf)
+	DXE_EXPORT (sprintf)
 	DXE_EXPORT (vsprintf)
 	DXE_EXPORT (vsnprintf)
-	DXE_EXPORT (__dpmi_int)
-	DXE_EXPORT (__dpmi_physical_address_mapping)
+	DXE_EXPORT (vfprintf)
+	DXE_EXPORT (fscanf)
+	DXE_EXPORT (sscanf)
 
-	/* FS: ref_gl */
-	DXE_EXPORT (dlclose)
-	DXE_EXPORT (dlopen)
-	DXE_EXPORT (dlsym)
+#if 0
+	/* dir */
+	DXE_EXPORT (findfirst)
+	DXE_EXPORT (findnext)
+	/* sys/stat */
+	DXE_EXPORT (mkdir)
+#endif
+	/* unistd */
+	DXE_EXPORT (usleep)
+	/* time */
+	DXE_EXPORT (clock)
+	DXE_EXPORT (uclock)
+#if 0
+	DXE_EXPORT (time)
+	DXE_EXPORT (gettimeofday)
+	DXE_EXPORT (localtime)
+	DXE_EXPORT (asctime)
+	DXE_EXPORT (strftime)
+#endif
 
-	/* FS: 3dfx */
-	DXE_EXPORT (__dj_stdout)
+#if 0
+	/* ctype */
+	DXE_EXPORT (__dj_ctype_tolower)
+	DXE_EXPORT (__dj_ctype_toupper)
+	DXE_EXPORT (__dj_ctype_flags)
+	DXE_EXPORT (tolower)
+	DXE_EXPORT (toupper)
+#endif
+
+	/* math */
+	DXE_EXPORT (__dj_huge_val)
+	DXE_EXPORT (acos)
+	DXE_EXPORT (asin)
+	DXE_EXPORT (atan)
+	DXE_EXPORT (atan2)
+	DXE_EXPORT (atof)
+	DXE_EXPORT (atoi)
+	DXE_EXPORT (ceil)
+	DXE_EXPORT (sin)
+	DXE_EXPORT (cos)
+	DXE_EXPORT (tan)
+	DXE_EXPORT (floor)
+	DXE_EXPORT (sqrt)
+	DXE_EXPORT (pow)
+	DXE_EXPORT (exp)
+	DXE_EXPORT (frexp)
+	DXE_EXPORT (ldexp)
+
+	/* crt0 */
+	DXE_EXPORT (_crt0_startup_flags)
+	/* nearptr */
 	DXE_EXPORT (__djgpp_base_address)
 	DXE_EXPORT (__djgpp_nearptr_enable)
 	DXE_EXPORT (__djgpp_nearptr_disable)
-	DXE_EXPORT (__dpmi_free_physical_address_mapping)
-	DXE_EXPORT (_crt0_startup_flags)
-	DXE_EXPORT (abort)
-	DXE_EXPORT (atol)
-	DXE_EXPORT (clock)
-	DXE_EXPORT (exp)
-	DXE_EXPORT (fflush)
-	DXE_EXPORT (frexp)
-	DXE_EXPORT (freopen)
-	DXE_EXPORT (getenv)
+	/* movedata */
+	DXE_EXPORT (dosmemput)
+	DXE_EXPORT (movedata)
+	/* dos */
 	DXE_EXPORT (enable)
 	DXE_EXPORT (disable)
 	DXE_EXPORT (int86)
-	DXE_EXPORT (longjmp)
-	DXE_EXPORT (putenv)
-	DXE_EXPORT (setjmp)
-	DXE_EXPORT (signal)
-	DXE_EXPORT (strcspn)
-	DXE_EXPORT (strncat)
-	DXE_EXPORT (strtok)
-	DXE_EXPORT (strtoul)
-	DXE_EXPORT (vfprintf)
 
-	DXE_EXPORT (ldexp)	/* for Mesa 6.4.x */
+	/* dpmi */
+	DXE_EXPORT (__dpmi_int)
+	DXE_EXPORT (__dpmi_physical_address_mapping)
+	DXE_EXPORT (__dpmi_free_physical_address_mapping)
+
+#if 1 /* for mesa w/o 3dfx glide */
+	DXE_EXPORT (__dpmi_allocate_ldt_descriptors)
+	DXE_EXPORT (__dpmi_free_ldt_descriptor)
+	DXE_EXPORT (__dpmi_get_segment_base_address)
+	DXE_EXPORT (__dpmi_set_segment_base_address)
+	DXE_EXPORT (__dpmi_set_segment_limit)
+	/* stubinfo.h, exceptn.h */
+	DXE_EXPORT (_stubinfo)
+	DXE_EXPORT (__djgpp_dos_sel)
+#endif
 DXE_EXPORT_END
 
 
