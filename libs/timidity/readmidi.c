@@ -54,7 +54,7 @@ static sint32 getvl(MidIStream *stream)
   uint8 c;
   for (;;)
     {
-      mid_istream_read(stream, &c, 1, 1);
+      if (!mid_istream_read(stream, &c, 1, 1)) return l;
       l += (c & 0x7f);
       if (!(c & 0x80)) return l;
       l<<=7;
