@@ -57,3 +57,13 @@ q_strlcat (char *dst, const char *src, size_t siz)
 	return(dlen + (s - src));	/* count does not include NUL */
 }
 
+#ifdef __DJGPP__ /* override stock DJGPP versions of strlc?? */
+#ifdef __cplusplus
+extern "C" {
+#endif
+size_t strlcat (char *, const char *, size_t) __attribute__((alias("q_strlcat")));
+#ifdef __cplusplus
+}
+#endif
+#endif
+
