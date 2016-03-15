@@ -487,6 +487,7 @@ VORBISLIB=tremor
 CODECS_USE_ZONE=yes
 
 INCLUDES += -I$(OSLIBS)/dos
+
 ifeq ($(USE_SERIAL),yes)
 CPPFLAGS+= -DUSE_SERIAL
 endif
@@ -527,7 +528,8 @@ else
 SYSOBJ_GL_DXE=yes
 endif
 
-LDFLAGS += -lc -lgcc -lm
+LDFLAGS += -lc -lgcc
+#LDFLAGS += -lm
 
 # PCI sound card support through libau
 USE_PCIAUDIO=yes

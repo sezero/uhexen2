@@ -58,7 +58,8 @@ INCLUDES= -I. -I$(COMMONDIR) -I$(UHEXEN2_SHARED)
 
 ifeq ($(TARGET_OS),dos)
 INCLUDES+= -I$(OSLIBS)/dos
-LDFLAGS += -lc -lgcc -lm
+LDFLAGS += -lc -lgcc
+#LDFLAGS += -lm
 endif
 ifeq ($(TARGET_OS),win32)
 CFLAGS  += -DWIN32_LEAN_AND_MEAN

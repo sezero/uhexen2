@@ -482,7 +482,8 @@ else
 SYSOBJ_GL_DXE=yes
 endif
 
-LDFLAGS += -lc -lgcc -lm
+LDFLAGS += -lc -lgcc
+#LDFLAGS += -lm
 
 # PCI sound card support through libau
 USE_PCIAUDIO=yes

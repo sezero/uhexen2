@@ -112,6 +112,7 @@ endif
 ifeq ($(TARGET_OS),dos)
 
 INCLUDES += -I$(OSLIBS)/dos
+
 ifeq ($(USE_SERIAL),yes)
 CPPFLAGS+= -DUSE_SERIAL
 endif
@@ -126,7 +127,9 @@ CPPFLAGS+= -DUSE_WATT32 -DWATT32_NO_OLDIES
 INCLUDES+= -I$(OSLIBS)/dos/watt32/inc
 LDFLAGS += -L$(OSLIBS)/dos/watt32/lib -lwatt
 endif
-LDFLAGS += -lc -lgcc -lm
+
+LDFLAGS += -lc -lgcc
+#LDFLAGS += -lm
 
 endif
 # End of DOS settings
