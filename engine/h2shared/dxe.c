@@ -1,5 +1,5 @@
 /* Dynamic module loading/unloading with DJGPP DXE3
- * Copyright (C) 2015 Q2DOS developers.
+ * Copyright (C) 2015-2016 Q2DOS developers.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -34,9 +34,7 @@
 #include <sys/movedata.h>
 #include <setjmp.h>
 #include <crt0.h>
-#if 0
 #include <ctype.h>
-#endif
 #if 1 /* for mesa w/o 3dfx glide */
 #include <stubinfo.h>
 #include <sys/exceptn.h>
@@ -99,12 +97,13 @@ DXE_EXPORT_TABLE (syms)
 	DXE_EXPORT (strtok)
 #if 0
 	DXE_EXPORT (strtok_r)
+#endif
 	DXE_EXPORT (strcasecmp)
+	DXE_EXPORT (strncasecmp)
 	DXE_EXPORT (stricmp)
 	DXE_EXPORT (strnicmp)
 	DXE_EXPORT (strlwr)
 	DXE_EXPORT (strupr)
-#endif
 
 	/* stdio */
 	DXE_EXPORT (__dj_stderr)
@@ -156,14 +155,12 @@ DXE_EXPORT_TABLE (syms)
 	DXE_EXPORT (strftime)
 #endif
 
-#if 0
 	/* ctype */
 	DXE_EXPORT (__dj_ctype_tolower)
 	DXE_EXPORT (__dj_ctype_toupper)
 	DXE_EXPORT (__dj_ctype_flags)
 	DXE_EXPORT (tolower)
 	DXE_EXPORT (toupper)
-#endif
 
 	/* math */
 	DXE_EXPORT (__dj_huge_val)
