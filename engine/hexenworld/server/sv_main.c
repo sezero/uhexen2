@@ -24,6 +24,8 @@
 #include "quakedef.h"
 #include "huffman.h"
 
+static int	sv_protocol = 0;
+
 quakeparms_t	*host_parms;
 
 qboolean	host_initialized;		// true if into command execution (compatability)
@@ -635,10 +637,14 @@ static void SVC_DirectConnect (void)
 	// this is the only place a client_t is ever initialized
 	*newcl = temp;
 
-	s = Info_ValueForKey(userinfo, "*cap");
-	if (strstr(s, "c"))
-		newcl->protocol = PROTOCOL_VERSION_EXT;
-	else	newcl->protocol = PROTOCOL_VERSION;
+	if (sv_protocol != 0)
+		newcl->protocol = sv_protocol;
+	else {
+		s = Info_ValueForKey(userinfo, "*cap");
+		if (strstr(s, "c"))
+			newcl->protocol = PROTOCOL_VERSION_EXT;
+		else	newcl->protocol = PROTOCOL_VERSION;
+	}
 
 	Netchan_OutOfBandPrint (&adr, "%c", S2C_CONNECTION );
 
@@ -1612,7 +1618,22 @@ SV_Init
 */
 void SV_Init (void)
 {
+	int i;
+
 	Sys_Printf ("Host_Init\n");
+
+	i = COM_CheckParm ("-protocol");
+	if (i && i < com_argc - 1) {
+		switch ((sv_protocol = atoi (com_argv[i + 1]))) {
+		case PROTOCOL_VERSION_EXT:
+		case PROTOCOL_VERSION:
+			Sys_Printf ("Server using protocol %i\n", sv_protocol);
+			break;
+		default:
+			Sys_Error ("Bad protocol version request %i. Accepted values: %i, %i.",
+					sv_protocol, PROTOCOL_VERSION, PROTOCOL_VERSION_EXT);
+		}
+	}
 
 	Memory_Init (host_parms->membase, host_parms->memsize);
 	HuffInit ();
