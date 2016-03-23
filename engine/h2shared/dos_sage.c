@@ -24,7 +24,7 @@
 #include "gl_dos.h"
 #include "sys_dxe.h"
 
-#if !defined(GL_DLSYM) && !defined(REFGL_SAGE)
+#if !defined(REFGL_SAGE)
 int SAGE_LoadAPI (void *handle)
 {
 	return -1;

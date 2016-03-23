@@ -23,7 +23,7 @@
 #include "gl_dos.h"
 #include "sys_dxe.h"
 
-#if !defined(GL_DLSYM) && !defined(REFGL_MESA)
+#if !defined(REFGL_MESA)
 int DMESA_LoadAPI (void *handle)
 {
 	return -1;
