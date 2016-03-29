@@ -33,6 +33,8 @@
 #include "gl_dos.h"
 #include "sys_dxe.h"
 
+#define GL_FUNCTION_OPT2(ret, func, params) /* don't need repeated typedefs */
+
 /* DOSGL interface */
 int  (*DOSGL_InitCtx ) (int *width, int *height, int *bpp);
 void (*DOSGL_Shutdown) (void);
@@ -354,7 +356,7 @@ static void VID_Init8bitPalette (void)
 
 	if (GL_ParseExtensionList(gl_extensions, "GL_EXT_shared_texture_palette"))
 	{
-		glColorTableEXT_fp = (glColorTableEXT_f) DOSGL_GetProcAddress("glColorTableEXT");
+		glColorTableEXT_f glColorTableEXT_fp = (glColorTableEXT_f) DOSGL_GetProcAddress("glColorTableEXT");
 		if (glColorTableEXT_fp == NULL)
 			return;
 
@@ -508,8 +510,9 @@ static void CheckAnisotropyExtensions (void)
 	Con_SafePrintf("Anisotropic filtering ");
 	if (GL_ParseExtensionList(gl_extensions, "GL_EXT_texture_filter_anisotropic"))
 	{
-		GLfloat test1, test2;
+		GLfloat test1 = 0, test2 = 0;
 		GLuint tex;
+		glGetTexParameterfv_f glGetTexParameterfv_fp;
 
 		glGetTexParameterfv_fp = (glGetTexParameterfv_f) DOSGL_GetProcAddress("glGetTexParameterfv");
 		if (glGetTexParameterfv_fp == NULL)
@@ -649,22 +652,18 @@ static void GL_ResetFunctions (void)
 #ifdef	GL_DLSYM
 #define GL_FUNCTION(ret, func, params)	\
 	func##_fp = NULL;
-#define GL_FUNCTION_OPT(ret, func, params)
+#endif
+#define GL_FUNCTION_OPT(ret, func, params) \
+	func##_fp = NULL;
 #include "gl_func.h"
 #undef	GL_FUNCTION_OPT
 #undef	GL_FUNCTION
-#endif	/* GL_DLSYM */
 
 	have_stencil = false;
-
 	gl_mtexable = false;
 	have_mtex = false;
-	glActiveTextureARB_fp = NULL;
-	glMultiTexCoord2fARB_fp = NULL;
-
 	have8bit = false;
 	is8bit = false;
-
 	have_NPOT = false;
 	gl_tex_NPOT = false;
 }

@@ -3,7 +3,7 @@
  * make sure NOT to protect this file against multiple inclusions!
  * $Id: wgl_func.h,v 1.4 2007-03-14 21:03:28 sezero Exp $
  *
- * Copyright (C) 2005-2012  O.Sezer <sezero@users.sourceforge.net>
+ * Copyright (C) 2005-2016  O.Sezer <sezero@users.sourceforge.net>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,8 +21,9 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
+/* core wgl functions */
+
 #ifdef GL_DLSYM
-// These we can't do without
 #ifndef GL_FUNCTION
 #define UNDEF_GL_FUNCTION
 #define GL_FUNCTION(ret, func, params) \
@@ -44,21 +45,27 @@ GL_FUNCTION(HDC, wglGetCurrentDC, (VOID))
 
 #else
 
+#ifndef WGL_FUNC_H
+#define WGL_FUNC_H
+
 #define wglGetProcAddress_fp	wglGetProcAddress
 #define wglCreateContext_fp	wglCreateContext
 #define wglDeleteContext_fp	wglDeleteContext
 #define wglMakeCurrent_fp	wglMakeCurrent
 #define wglGetCurrentContext_fp	wglGetCurrentContext
 #define wglGetCurrentDC_fp	wglGetCurrentDC
+/*
+#define wglGetExtensionsStringARB_fp	wglGetExtensionsStringARB
+#define wglSwapBuffers_fp		wglSwapBuffers
+#define wglSwapIntervalEXT_fp		wglSwapIntervalEXT
+*/
 
-//#define wglGetExtensionsStringARB_fp	wglGetExtensionsStringARB
-//#define wglSwapBuffers_fp		wglSwapBuffers
-//#define wglSwapIntervalEXT_fp		wglSwapIntervalEXT
+#endif	/* WGL_FUNC_H */
 
-#endif
+#endif	/* !defined(GL_DLSYM) */
 
 
-// These are optional
+/* optional wgl funcs */
 
 #ifndef GL_FUNCTION_OPT
 #define UNDEF_GL_FUNCTION_OPT
@@ -67,12 +74,23 @@ typedef ret (WINAPI *func##_f) params; \
 func##_f func##_fp;
 #endif
 
-GL_FUNCTION_OPT(const char *, wglGetExtensionsStringARB, (HDC hdc))
-GL_FUNCTION_OPT(BOOL, wglSwapBuffers, (HDC))
-GL_FUNCTION_OPT(BOOL, wglSwapIntervalEXT, (int))
+/* like above, but just typedef only */
+#ifndef GL_FUNCTION_OPT2
+#define UNDEF_GL_FUNCTION_OPT2
+#define GL_FUNCTION_OPT2(ret, func, params) \
+typedef ret (APIENTRY *func##_f) params;
+#endif
+
+GL_FUNCTION_OPT2(const char *, wglGetExtensionsStringARB, (HDC hdc))
+GL_FUNCTION_OPT2(BOOL, wglSwapBuffers, (HDC))
+GL_FUNCTION_OPT2(BOOL, wglSwapIntervalEXT, (int))
 
 #ifdef UNDEF_GL_FUNCTION_OPT
 #undef GL_FUNCTION_OPT
 #undef UNDEF_GL_FUNCTION_OPT
 #endif
 
+#ifdef UNDEF_GL_FUNCTION_OPT2
+#undef GL_FUNCTION_OPT2
+#undef UNDEF_GL_FUNCTION_OPT2
+#endif

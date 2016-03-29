@@ -5,7 +5,7 @@
  * $Id$
  *
  * Copyright (C) 2001 contributors of the Anvil of Thyrion project
- * Copyright (C) 2005-2012  O.Sezer <sezero@users.sourceforge.net>
+ * Copyright (C) 2005-2016  O.Sezer <sezero@users.sourceforge.net>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -29,6 +29,8 @@
 #ifndef __GL_FUNC_EXTERN
 #define __GL_FUNC_EXTERN extern
 #endif
+
+/* core gl functions */
 
 #if defined(GL_DLSYM)
 
@@ -117,6 +119,9 @@ GL_FUNCTION(void, glClearStencil, (GLint))
 
 #else
 
+#ifndef GL_FUNC_H
+#define GL_FUNC_H
+
 #define glBindTexture_fp	glBindTexture
 #define glDeleteTextures_fp	glDeleteTextures
 #define glGenTextures_fp	glGenTextures
@@ -187,6 +192,8 @@ GL_FUNCTION(void, glClearStencil, (GLint))
 #define glStencilOp_fp		glStencilOp
 #define glClearStencil_fp	glClearStencil
 
+#endif	/* GL_FUNC_H */
+
 #endif	/* !defined(GL_DLSYM) */
 
 
@@ -199,13 +206,34 @@ typedef ret (APIENTRY *func##_f) params; \
 __GL_FUNC_EXTERN func##_f func##_fp;
 #endif
 
-GL_FUNCTION_OPT(void, glColorTableEXT, (int, int, int, int, int, const void *))
-GL_FUNCTION_OPT(void, glGetTexParameterfv, (GLenum,GLenum,GLfloat *))
+/* GL_ARB_multitexture */
 GL_FUNCTION_OPT(void, glActiveTextureARB, (GLenum))
 GL_FUNCTION_OPT(void, glMultiTexCoord2fARB, (GLenum,GLfloat,GLfloat))
+
+
+/* like above, but just typedef only */
+#ifndef GL_FUNCTION_OPT2
+#define UNDEF_GL_FUNCTION_OPT2
+#define GL_FUNCTION_OPT2(ret, func, params) \
+typedef ret (APIENTRY *func##_f) params;
+#endif
+
+/* this one doesn't seem to in amiga opengl libs :( */
+GL_FUNCTION_OPT2(void, glGetTexParameterfv, (GLenum,GLenum,GLfloat *))
+
+/* GL_EXT_shared_texture_palette */
+GL_FUNCTION_OPT2(void, glColorTableEXT, (GLenum, GLenum, GLsizei, GLenum, GLenum, const GLvoid *))
+
+/* 3DFX_set_global_palette (NOTE: the PowerVR equivalent is
+   POWERVR_set_global_palette / glSetGlobalPalettePOWERVR) */
+GL_FUNCTION_OPT2(void, gl3DfxSetPaletteEXT, (GLuint *))
 
 #ifdef UNDEF_GL_FUNCTION_OPT
 #undef GL_FUNCTION_OPT
 #undef UNDEF_GL_FUNCTION_OPT
 #endif
 
+#ifdef UNDEF_GL_FUNCTION_OPT2
+#undef GL_FUNCTION_OPT2
+#undef UNDEF_GL_FUNCTION_OPT2
+#endif
