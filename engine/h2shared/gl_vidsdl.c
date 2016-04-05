@@ -501,30 +501,80 @@ static qboolean VID_SetMode (int modenum)
 
 //====================================
 
-static void VID_Init8bitPalette (void)
+static void CheckSetGlobalPalette (void)
 {
-	// Check for 8bit Extensions and initialize them.
-	int			i;
-	char	thePalette[256*3];
-	char	*oldPalette, *newPalette;
+	gl3DfxSetPaletteEXT_f gl3DfxSetPaletteEXT_fp;
 
-	have8bit = false;
-	is8bit = false;
-
-	if (GL_ParseExtensionList(gl_extensions, "GL_EXT_shared_texture_palette"))
+	if (GL_ParseExtensionList(gl_extensions, "3DFX_set_global_palette"))
 	{
-		glColorTableEXT_f glColorTableEXT_fp = (glColorTableEXT_f)SDL_GL_GetProcAddress("glColorTableEXT");
-		if (glColorTableEXT_fp == NULL)
+		gl3DfxSetPaletteEXT_fp = (gl3DfxSetPaletteEXT_f) SDL_GL_GetProcAddress("gl3DfxSetPaletteEXT");
+		if (!gl3DfxSetPaletteEXT_fp)
+			gl3DfxSetPaletteEXT_fp = (gl3DfxSetPaletteEXT_f) SDL_GL_GetProcAddress("3DFX_set_global_palette");
+		if (!gl3DfxSetPaletteEXT_fp)
 			return;
-
-		have8bit = true;
-		if (!vid_config_gl8bit.integer)
+		Con_SafePrintf("Found 3DFX_set_global_palette\n");
+	}
+	else if (GL_ParseExtensionList(gl_extensions, "POWERVR_set_global_palette"))
+	{
+		gl3DfxSetPaletteEXT_fp = (gl3DfxSetPaletteEXT_f) SDL_GL_GetProcAddress("glSetGlobalPalettePOWERVR");
+		if (!gl3DfxSetPaletteEXT_fp)
+			gl3DfxSetPaletteEXT_fp = (gl3DfxSetPaletteEXT_f) SDL_GL_GetProcAddress("POWERVR_set_global_palette");
+		if (!gl3DfxSetPaletteEXT_fp)
 			return;
+		Con_SafePrintf("Found POWERVR_set_global_palette\n");
+	}
+	else {
+		return;
+	}
 
+	have8bit = true;
+	if (!vid_config_gl8bit.integer)
+		return;
+	else
+	{
+		int i;
+		GLubyte table[256][4];
+		char *oldpal;
+
+		is8bit = true;
+		oldpal = (char *) d_8to24table;
+		for (i = 0; i < 256; i++) {
+			table[i][2] = *oldpal++;
+			table[i][1] = *oldpal++;
+			table[i][0] = *oldpal++;
+			table[i][3] = 255;
+			oldpal++;
+		}
+		glEnable_fp (GL_SHARED_TEXTURE_PALETTE_EXT);
+		gl3DfxSetPaletteEXT_fp ((GLuint *)table);
+	}
+}
+
+static void CheckSharedTexturePalette (void)
+{
+	glColorTableEXT_f glColorTableEXT_fp;
+
+	if (!GL_ParseExtensionList(gl_extensions, "GL_EXT_shared_texture_palette"))
+		return;
+
+	glColorTableEXT_fp = (glColorTableEXT_f) SDL_GL_GetProcAddress("glColorTableEXT");
+	if (glColorTableEXT_fp == NULL)
+		return;
+
+	have8bit = true;
+	Con_SafePrintf("Found GL_EXT_shared_texture_palette\n");
+	if (!vid_config_gl8bit.integer)
+		return;
+	else
+	{
+		int i;
+		char thePalette[256*3];
+		char *oldPalette, *newPalette;
+
+		is8bit = true;
 		oldPalette = (char *) d_8to24table;
 		newPalette = thePalette;
-		for (i = 0; i < 256; i++)
-		{
+		for (i = 0; i < 256; i++) {
 			*newPalette++ = *oldPalette++;
 			*newPalette++ = *oldPalette++;
 			*newPalette++ = *oldPalette++;
@@ -534,9 +584,21 @@ static void VID_Init8bitPalette (void)
 		glEnable_fp (GL_SHARED_TEXTURE_PALETTE_EXT);
 		glColorTableEXT_fp (GL_SHARED_TEXTURE_PALETTE_EXT, GL_RGB, 256,
 					GL_RGB, GL_UNSIGNED_BYTE, (void *) thePalette);
-		is8bit = true;
-		Con_SafePrintf("8-bit palettized textures enabled\n");
 	}
+}
+
+static void VID_Init8bitPalette (void)
+{
+	have8bit = false;
+	is8bit = false;
+
+	/* Check for 8bit Extensions and initialize them */
+	CheckSharedTexturePalette();
+	if (!have8bit)
+		CheckSetGlobalPalette();
+
+	if (is8bit)
+		Con_SafePrintf("8-bit palettized textures enabled\n");
 }
 
 
