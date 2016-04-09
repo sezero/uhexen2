@@ -4662,15 +4662,12 @@ static void M_NetStart_Change (int dir)
 		}
 #endif	/* OLD_DEMO */
 		setup_class += dir;
-		if (setup_class < 0) 
+		if (setup_class < 0)
 			setup_class = MAX_PLAYER_CLASS - 1;
-		if (!(gameflags & GAME_PORTALS))
-		{
-			if (setup_class > MAX_PLAYER_CLASS - PORTALS_EXTRA_CLASSES - 1)
-				setup_class = MAX_PLAYER_CLASS - PORTALS_EXTRA_CLASSES - 1;
-		}
-		if (setup_class > MAX_PLAYER_CLASS - 1)
+		else if(setup_class > MAX_PLAYER_CLASS - 1)
 			setup_class = 0;
+		if (setup_class > MAX_PLAYER_CLASS - PORTALS_EXTRA_CLASSES - 1 && !(gameflags & GAME_PORTALS))
+			setup_class = (dir > 0)? 0 : MAX_PLAYER_CLASS - PORTALS_EXTRA_CLASSES - 1;
 		break;
 
 	case 5:
