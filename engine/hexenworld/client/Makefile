@@ -469,21 +469,21 @@ ifeq ($(LINK_GL_LIBS),yes)
 # compile which gl driver in: mesa, sage, or fxmesa. (only one.)
 DOSGL_DRIVER=fxmesa
 ifeq ($(DOSGL_DRIVER),fxmesa)
-CPPFLAGS+= -DREFGL_FXMESA
+GL_DEFS+= -DREFGL_FXMESA
 endif
 ifeq ($(DOSGL_DRIVER),mesa)
-CPPFLAGS+= -DREFGL_MESA
+GL_DEFS+= -DREFGL_MESA
 endif
 ifeq ($(DOSGL_DRIVER),sage)
-CPPFLAGS+= -DREFGL_SAGE
+GL_DEFS+= -DREFGL_SAGE
 endif
 GLDIR=$(DOSGL_DRIVER)
 else
 SYSOBJ_GL_DXE=yes
 # choose which dosgl api(s) to support. (at least one.)
-CPPFLAGS+= -DREFGL_FXMESA
-CPPFLAGS+= -DREFGL_MESA
-CPPFLAGS+= -DREFGL_SAGE
+GL_DEFS+= -DREFGL_FXMESA
+GL_DEFS+= -DREFGL_MESA
+GL_DEFS+= -DREFGL_SAGE
 endif
 
 LDFLAGS += -lc -lgcc
