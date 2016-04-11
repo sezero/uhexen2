@@ -43,7 +43,8 @@
 #define MIN_HEIGHT		240
 #define MAX_DESC		13
 
-unsigned char	vid_curpal[256*3];
+static unsigned char	vid_curpal[256*3];	/* save for mode changes */
+
 unsigned short	d_8to16table[256];
 unsigned int	d_8to24table[256];
 
@@ -643,7 +644,8 @@ void VID_SetPalette (unsigned char *palette)
 
 	palette_changed = true;
 
-	memcpy (vid_curpal, palette, sizeof(vid_curpal));
+	if (palette != vid_curpal)
+		memcpy(vid_curpal, palette, sizeof(vid_curpal));
 
 	for (i = 0; i < 256; ++i)
 	{

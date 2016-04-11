@@ -63,7 +63,7 @@ static int	num_modes;
 static vga_modeinfo	*modes;
 static int	current_mode;
 
-static byte	vid_current_palette[768];
+static byte	vid_current_palette[768];	/* save for mode changes */
 
 static int	svgalib_inited = 0;
 static int	svgalib_backgrounded = 0;
@@ -278,7 +278,8 @@ void VID_SetPalette (byte *palette)
 	if (svgalib_backgrounded)
 		return;
 
-	memcpy(vid_current_palette, palette, sizeof(vid_current_palette));
+	if (palette != vid_current_palette)
+		memcpy(vid_current_palette, palette, sizeof(vid_current_palette));
 
 	if (vga_getcolors() == 256)
 	{
@@ -363,11 +364,8 @@ static qboolean VID_SetMode (int modenum, unsigned char *palette)
 	if (vga_setmode(current_mode) != 0)
 		Sys_Error("Unable to set mode %d", current_mode);
 
+	/*if (vga_setlinearaddressing() > 0)*/
 	VGA_pagebase = vid.direct = framebuffer_ptr = (byte *) vga_getgraphmem();
-	/*
-	if (vga_setlinearaddressing() > 0)
-		framebuffer_ptr = (char *) vga_getgraphmem();
-	*/
 	if (!framebuffer_ptr)
 		Sys_Error("Unable to get framebuffer ptr for mode %d", current_mode);
 

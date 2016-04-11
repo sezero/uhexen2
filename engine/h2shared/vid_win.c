@@ -102,7 +102,7 @@ static byte		*vid_surfcache;
 static int	vid_surfcachesize;
 static int	VID_highhunkmark;
 
-unsigned char	vid_curpal[256*3];
+static unsigned char	vid_curpal[256*3];	/* save for mode changes */
 
 unsigned short	d_8to16table[256];
 unsigned int	d_8to24table[256];
@@ -1071,7 +1071,8 @@ void	VID_SetPalette (unsigned char *palette)
 		}
 	}
 
-	memcpy (vid_curpal, palette, sizeof (vid_curpal));
+	if (palette != vid_curpal)
+		memcpy(vid_curpal, palette, sizeof (vid_curpal));
 }
 
 
