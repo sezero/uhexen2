@@ -74,6 +74,9 @@ void D_DrawSkyScans8 (espan_t *pspan)
 	sstep = 0;	// keep compiler happy
 	tstep = 0;	// ditto
 
+	snext = 0;	// MSVC builds are reported to crash w/o these.
+	tnext = 0;	// see: sf.net/p/uhexen2/bugs/62
+
 	do
 	{
 		pdest = (unsigned char *)((byte *)d_viewbuffer +
