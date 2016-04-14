@@ -42,6 +42,7 @@ ifndef DEBUG
 CFLAGS += -O2 -DNDEBUG=1 -ffast-math -fomit-frame-pointer
 endif
 #CFLAGS += -DTIMIDITY_DEBUG
+INCLUDES = -I. -I$(UHEXEN2_SHARED)
 
 # include DLS instruments support? (no: the DLS code we inherited from
 # SDL_sound isn't good enough, nor is it used on unices where timidity
@@ -68,13 +69,16 @@ CFLAGS += -noixemul
 endif
 
 ifeq ($(TARGET_OS),aros)
+# nothing extra is needed
 endif
 
 ifeq ($(TARGET_OS),amigaos)
 CFLAGS += -noixemul -m68020-60
+# for extra missing headers
+INCLUDES += -I$(OSLIBS)/amigaos/include
 endif
 
-INCLUDES= -I. -I$(UHEXEN2_SHARED)
+
 TARGETS:= libtimidity.a
 
 OBJECTS = common.o \
