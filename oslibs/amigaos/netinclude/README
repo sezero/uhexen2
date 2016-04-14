@@ -1,0 +1,218 @@
+Castrated AmiTCP SDK headers -- only the ones needed by uhexen2.
+Based on netinclude_68k.zip from the Dopus5 project:
+https://sf.net/p/dopus5allamigas/code/HEAD/tree/branches/additional_libs_devkits_includes/netinclude_68k.zip
+
+Many common includes, e.g. errno.h are removed too and expected
+to be included from libnix/ixemul headers.  However, sys/time.h
+and sys/ioctl.h are kept here, along with a dummy unistd.h:  be
+careful about what to include and where.
+
+Our modifications are as follows:
+
+diff -urp netinclude.orig/clib/socket_protos.h netinclude/clib/socket_protos.h
+--- netinclude.orig/clib/socket_protos.h	1996-03-26 23:07:48.000000000 +0200
++++ netinclude/clib/socket_protos.h	2016-04-12 17:11:50.000000000 +0300
+@@ -59,7 +59,7 @@ LONG WaitSelect(LONG nfds, fd_set *readf
+ LONG Dup2Socket(LONG fd1, LONG fd2);		       /* V2 */
+ 
+ LONG getdtablesize(void);			       /* V3 */
+-void SetSocketSignals(ULONG SIGINTR, ULONG SIGIO, ULONG SIGURG);
++void SetSocketSignals(ULONG _SIGINTR, ULONG _SIGIO, ULONG _SIGURG);/* uhexen2: uglified param names (otherwise SIGIO is a macro expanding to 23 !!!) */
+ LONG SetErrnoPtr(void *errno_p, LONG size);
+ LONG SocketBaseTagList(struct TagItem *tagList);	/* V3 */
+ LONG SocketBaseTags(LONG tag, ...);			/* V3 */
+diff -urp netinclude.orig/inline/socket.h netinclude/inline/socket.h
+--- netinclude.orig/inline/socket.h	2003-12-09 18:41:32.000000000 +0200
++++ netinclude/inline/socket.h	2016-04-12 17:11:50.000000000 +0300
+@@ -97,8 +97,9 @@
+ 	LP6(0x7e, LONG, WaitSelect, LONG, nfds, d0, fd_set *, readfds, a0, fd_set *, writefds, a1, fd_set *, execptfds, a2, struct timeval *, timeout, a3, ULONG *, maskp, d1, \
+ 	, SOCKET_BASE_NAME)
+ 
+-#define SetSocketSignals(SIGINTR, SIGIO, SIGURG) \
+-	LP3NR(0x84, SetSocketSignals, ULONG, SIGINTR, d0, ULONG, SIGIO, d1, ULONG, SIGURG, d2, \
++/* uhexen2: uglified param names (otherwise SIGIO is a macro expanding to 23 !!!) */
++#define SetSocketSignals(_SIGINTR, _SIGIO, _SIGURG) \
++	LP3NR(0x84, SetSocketSignals, ULONG, _SIGINTR, d0, ULONG, _SIGIO, d1, ULONG, _SIGURG, d2, \
+ 	, SOCKET_BASE_NAME)
+ 
+ #define getdtablesize() \
+diff -urp netinclude.orig/bsdsocket.h netinclude/bsdsocket.h
+--- netinclude.orig/bsdsocket.h	1996-03-26 07:46:08.000000000 +0200
++++ netinclude/bsdsocket.h	2016-04-12 17:11:50.000000000 +0300
+@@ -12,9 +12,11 @@
+ #include <unistd.h>		/* These should be compiler independent */
+ #endif
+ 
++#if 0 /* uhexen2 doesn't need netlib stuff */
+ #ifndef CLIB_NETLIB_PROTOS_H
+ #include <clib/netlib_protos.h>
+ #endif
++#endif /* NOT in uhexen2 */
+ 
+ #ifndef CLIB_SOCKET_PROTOS_H
+ #if defined(__SASC) || defined(__GNUC__)
+@@ -24,6 +26,7 @@
+ #endif
+ #endif
+ 
++#if 0 /* uhexen2 doesn't need usergroup stuff */
+ #ifndef CLIB_USERGROUP_PROTOS_H
+ #if defined(__SASC) || defined(__GNUC__)
+ #include <proto/usergroup.h>
+@@ -31,5 +34,6 @@
+ #include <clib/usergroup_protos.h>
+ #endif
+ #endif
++#endif /* NOT in uhexen2 */
+ 
+ #endif /* !BSDSOCKET_H */
+diff -urp netinclude.orig/unistd.h netinclude/unistd.h
+--- netinclude.orig/unistd.h	1994-10-03 20:52:28.000000000 +0200
++++ netinclude/unistd.h	2016-04-12 17:11:50.000000000 +0300
+@@ -1,86 +1,7 @@
+ #ifndef UNISTD_H
+-#define	UNISTD_H \
+-       "$Id: unistd.h,v 4.3 1994/10/03 20:52:20 ppessi Exp $"
+-/*
+- *	Usergroup.library and bsdsocket.library function prototypes
+- *	    for 32 bit C compilers
+- *
+- *      Copyright © 1994 AmiTCP/IP Group,
+- *                       Network Solutions Development, Inc.
+- *                       All rights reserved.
++#define UNISTD_H	1
++/* dummy unistd.h: uhexen2 doesn't need unistd.h content in its net sources.
++ * this is here to prevent conflicting declarations with the ixemul version
++ * of unistd.h, therefore we don't include_next <unistd.h> either.
+  */
+-
+-#ifndef SYS_TYPES_H
+-#include <sys/types.h>
+-#endif
+-#ifndef SYS_TIME_H
+-#include <sys/time.h>
+-#endif
+-
+-gid_t getegid(void);
+-uid_t geteuid(void);
+-gid_t getgid(void);
+-int   getgroups(int, gid_t []);
+-char *getlogin(void);
+-uid_t getuid(void);
+-#if 0
+-int   isatty(int);
+-#endif
+-int   setgid(gid_t);
+-int   setuid(uid_t);
+-char *ttyname(int);
+-pid_t getpid(void);
+-pid_t setsid(void);
+-void  sleep(unsigned int);
+-mode_t umask(mode_t);
+-
+-int __dup(int);
+-int __dup2(int, int);
+-
+-extern char *optarg;
+-extern int optind;
+-extern int optopt;
+-extern int opterr;
+-
+-int getopt(int, char * const [], const char *);
+-
+-#define dup   __dup
+-#define dup2  __dup2 
+-
+-#ifndef	_POSIX_SOURCE
+-pid_t getsid(void);
+-mode_t getumask(void);
+-
+-#if 0
+-int   getdtablesize(void);
+-long  gethostid(void);
+-int   gethostname(char *, int);
+-#endif
+-int   select(int, fd_set *, fd_set *, fd_set *, struct timeval *);
+-#if 0
+-void  sethostid(long);
+-int   sethostname(const char *, int);
+-#endif
+-int   rcmd(char **, int, const char *, const char *, const char *, int *);
+-int   ruserok(const char *, int, const char *, const char *);
+-int   rresvport(int *alport);
+-
+-char *crypt(const char *, const char *);
+-char *getpass(const char *);
+-char *getusershell(void);
+-
+-int   initgroups(const char *, gid_t);
+-int   setgroups(int, const gid_t []);
+-int   setlogin(const char *);
+-int   setregid(gid_t, gid_t);
+-int   setreuid(uid_t, uid_t);
+-int   setrgid(gid_t);
+-int   setruid(uid_t);
+-int   setegid(gid_t);
+-int   seteuid(uid_t);
+-void  setusershell(void);
+-int   ttyslot(void);
+-void  usleep(unsigned int);
+-#endif /* !_POSIX_SOURCE */
+-
+ #endif /* !_UNISTD_H_ */
+Only in netinclude.orig/amitcp: bignames.h
+Only in netinclude.orig/amitcp: types.h
+Only in netinclude.orig/arpa: ftp.h
+Only in netinclude.orig/arpa: nameser.h
+Only in netinclude.orig/arpa: telnet.h
+Only in netinclude.orig/arpa: tftp.h
+Only in netinclude.orig: charread.h
+Only in netinclude.orig/clib: ifconfig_protos.h
+Only in netinclude.orig/clib: netlib_protos.h
+Only in netinclude.orig/clib: serscript_protos.h
+Only in netinclude.orig/clib: socket_inlines.h
+Only in netinclude.orig/clib: usergroup_protos.h
+Only in netinclude.orig: devices
+Only in netinclude.orig: errno.h
+Only in netinclude.orig: fd
+Only in netinclude.orig: getopt.h
+Only in netinclude.orig: grp.h
+Only in netinclude.orig: inetd.h
+Only in netinclude.orig/inline: ifconfig.h
+Only in netinclude.orig/inline: serscript.h
+Only in netinclude.orig/inline: socket_context.h
+Only in netinclude.orig/inline: usergroup_context.h
+Only in netinclude.orig/inline: usergroup.h
+Only in netinclude.orig: ios1.h
+Only in netinclude.orig: libraries
+Only in netinclude.orig: lineread.h
+Only in netinclude.orig/net: if_dl.h
+Only in netinclude.orig/net: if_types.h
+Only in netinclude.orig/net: route.h
+Only in netinclude.orig/net: sana2errno.h
+Only in netinclude.orig/net: sana2tags.h
+Only in netinclude.orig/netinet: in_systm.h
+Only in netinclude.orig/netinet: ip.h
+Only in netinclude.orig/netinet: ip_icmp.h
+Only in netinclude.orig/netinet: ip_var.h
+Only in netinclude.orig/netinet: tcp.h
+Only in netinclude.orig/netinet: udp.h
+Only in netinclude.orig: pkts.h
+Only in netinclude.orig: pragmas
+Only in netinclude.orig/proto: ifconfig.h
+Only in netinclude.orig/proto: serscript.h
+Only in netinclude.orig/proto: usergroup.h
+Only in netinclude.orig: protocols
+Only in netinclude.orig: pwd.h
+Only in netinclude.orig: rpc
+Only in netinclude.orig: rpcsvc
+Only in netinclude.orig: stat.h
+Only in netinclude.orig/sys: cdefs.h
+Only in netinclude.orig/sys: errno.h
+Only in netinclude.orig/sys: file.h
+Only in netinclude.orig/sys: param.h
+Only in netinclude.orig/sys: stat.h
+Only in netinclude.orig/sys: syslog.h
+Only in netinclude.orig: syslog.h
+Only in netinclude.orig: utime.h
+Only in netinclude.orig: utmp.h
