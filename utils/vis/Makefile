@@ -72,6 +72,7 @@ INCLUDES+= -I$(OSLIBS)/windows/misc/include
 LDFLAGS += -mconsole
 endif
 ifeq ($(TARGET_OS),aros)
+# nothing extra is needed
 endif
 ifeq ($(TARGET_OS),morphos)
 CFLAGS  += -noixemul
@@ -82,6 +83,8 @@ ifeq ($(TARGET_OS),amigaos)
 CFLAGS  += -noixemul -m68020-60
 LDFLAGS += -noixemul
 LDLIBS  += -lm
+# for extra missing headers
+INCLUDES += -I$(OSLIBS)/amigaos/include
 endif
 ifeq ($(TARGET_OS),darwin)
 CPUFLAGS=

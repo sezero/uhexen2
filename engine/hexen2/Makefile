@@ -206,6 +206,8 @@ endif
 
 CPPFLAGS=
 LDFLAGS =
+# linkage may be sensitive to order: add SYSLIBS after all others.
+SYSLIBS =
 
 # compiler includes
 INCLUDES= -I. -I$(COMMONDIR) -I$(UHEXEN2_SHARED)
@@ -403,12 +405,12 @@ ifneq ($(X11BASE),)
 INCLUDES+= -I$(X11BASE)/include
 endif
 ifeq ($(HOST_OS),qnx)
-LDFLAGS += -lsocket
+SYSLIBS += -lsocket
 endif
 ifeq ($(HOST_OS),sunos)
-LDFLAGS += -lsocket -lnsl -lresolv
+SYSLIBS += -lsocket -lnsl -lresolv
 endif
-LDFLAGS += -lm
+SYSLIBS += -lm
 
 ifneq ($(X11BASE),)
 GL_LINK=-L$(X11BASE)/lib -lGL
@@ -425,7 +427,7 @@ ifneq ($(USE_ALSA),yes)
 CPPFLAGS+= -DNO_ALSA_AUDIO
 else
 # snd_alsa uses dlopen() & co.
-LDFLAGS += -ldl
+SYSLIBS += -ldl
 endif
 ifneq ($(USE_OSS),yes)
 CPPFLAGS+= -DNO_OSS_AUDIO
@@ -532,8 +534,8 @@ GL_DEFS+= -DREFGL_MESA
 GL_DEFS+= -DREFGL_SAGE
 endif
 
-LDFLAGS += -lc -lgcc
-#LDFLAGS += -lm
+SYSLIBS += -lc -lgcc
+#SYSLIBS += -lm
 
 # PCI sound card support through libau
 USE_PCIAUDIO=yes
@@ -615,7 +617,8 @@ endif
 
 CPPFLAGS+= -DWIN32_LEAN_AND_MEAN
 INCLUDES+= -I$(OSLIBS)/windows/misc/include -I$(OSLIBS)/windows/dxsdk/include
-LDFLAGS += $(LIBWINSOCK) -lwinmm -mwindows
+LDFLAGS += -mwindows
+LDFLAGS += $(LIBWINSOCK) -lwinmm
 
 ifneq ($(LINK_DIRECTX),yes)
 CPPFLAGS+= -DDX_DLSYM
@@ -693,7 +696,8 @@ endif
 
 CPPFLAGS+= -DWIN32_LEAN_AND_MEAN
 INCLUDES+= -I$(OSLIBS)/windows/misc/include -I$(OSLIBS)/windows/dxsdk/include
-LDFLAGS += $(LIBWINSOCK) -lwinmm -mwindows
+LDFLAGS += -mwindows
+LDFLAGS += $(LIBWINSOCK) -lwinmm
 
 ifneq ($(LINK_DIRECTX),yes)
 CPPFLAGS+= -DDX_DLSYM
@@ -753,7 +757,7 @@ endif
 
 CFLAGS  += -noixemul
 LDFLAGS += -noixemul
-LDFLAGS += -lm
+SYSLIBS += -lm
 
 GL_LINK=-lGL
 # dynamic loading of ogl functions doesn't work
@@ -874,10 +878,12 @@ endif
 
 CFLAGS  += -noixemul -m68020-60
 LDFLAGS += -noixemul
-LDFLAGS += -lm
+SYSLIBS += -lm
 
+# for extra missing headers
+INCLUDES += -I$(OSLIBS)/amigaos/include
 # AmiTCP SDK
-CFLAGS  += -I/usr/local/amiga/m68k-amigaos/netinclude
+NET_INC   = -I$(OSLIBS)/amigaos/netinclude
 
 GL_LINK=-lGL
 # dynamic loading of ogl functions doesn't work
@@ -1457,6 +1463,15 @@ endif
 endif
 $(GL_BINARY): CPPFLAGS+= $(GL_DEFS)
 
+ifeq ($(TARGET_OS),amigaos)
+# Ewwww: workaround stupid AmiTCP SDK mess for old amigaos. Ewww..
+net_bsd.o: INCLUDES+= $(NET_INC)
+net_udp.o: INCLUDES+= $(NET_INC)
+net_dgrm.o: INCLUDES+= $(NET_INC)
+net_loop.o: INCLUDES+= $(NET_INC)
+net_main.o: INCLUDES+= $(NET_INC)
+endif
+
 # deps for *.c including another *.c
 dos/mplpc.o: dos/mplib.c
 dos/net_ser.o: dos/net_comx.c
@@ -1468,10 +1483,10 @@ snd_timidity.o: $(COMMONDIR)/snd_timidity.c
 include $(LIBS_DIR)/timidity/_timi.mak
 
 $(SW_BINARY): $(SOFT_ASM) $(SOFTOBJS) $(COMMON_ASM) $(COMMONOBJS) $(TIMIDEPS)
-	$(LINKER) $(SOFT_ASM) $(SOFTOBJS) $(COMMON_ASM) $(COMMONOBJS) $(LDFLAGS) -o $@
+	$(LINKER) $(SOFT_ASM) $(SOFTOBJS) $(COMMON_ASM) $(COMMONOBJS) $(LDFLAGS) $(SYSLIBS) -o $@
 
 $(GL_BINARY): $(GLOBJS) $(COMMON_ASM) $(COMMONOBJS) $(TIMIDEPS)
-	$(LINKER) $(GLOBJS) $(COMMON_ASM) $(COMMONOBJS) $(LDFLAGS) $(GL_LIBS) -o $@
+	$(LINKER) $(GLOBJS) $(COMMON_ASM) $(COMMONOBJS) $(LDFLAGS) $(GL_LIBS) $(SYSLIBS) -o $@
 
 localclean:
 	rm -f *.o *.res dos/*.o core

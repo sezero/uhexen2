@@ -23,6 +23,9 @@ CFLAGS += $(CPUFLAGS)
 ifndef DEBUG
 CFLAGS += -O2 -DNDEBUG=1
 endif
+ifeq ($(AOS3),1)
+CFLAGS  += -I$(OSLIBS)/amigaos/include
+endif
 LDFLAGS = -noixemul
 
 XDELTA_DIR:= $(LIBS_DIR)/xdelta3

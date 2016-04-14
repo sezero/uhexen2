@@ -71,6 +71,8 @@ endif
 
 CPPFLAGS=
 LDFLAGS =
+# linkage may be sensitive to order: add SYSLIBS after all others.
+SYSLIBS =
 
 # compiler includes
 INCLUDES= -I. -I$(COMMON_HW) -I$(COMMONDIR) -I$(UHEXEN2_SHARED)
@@ -111,8 +113,8 @@ CPPFLAGS+= -DUSE_WATT32 -DWATT32_NO_OLDIES
 INCLUDES+= -I$(OSLIBS)/dos/watt32/inc
 LDFLAGS += -L$(OSLIBS)/dos/watt32/lib -lwatt
 
-LDFLAGS += -lc -lgcc
-#LDFLAGS += -lm
+SYSLIBS += -lc -lgcc
+#SYSLIBS += -lm
 
 endif
 # End of DOS settings
@@ -134,7 +136,8 @@ LIBWINSOCK=-lwsock32
 endif
 
 INCLUDES+= -I$(OSLIBS)/windows/misc/include
-LDFLAGS += $(LIBWINSOCK) -lwinmm -mconsole
+LDFLAGS += -mconsole
+LDFLAGS += $(LIBWINSOCK) -lwinmm
 
 endif
 # End of Win32 settings
@@ -159,7 +162,8 @@ LIBWINSOCK=-lwsock32
 endif
 
 INCLUDES+= -I$(OSLIBS)/windows/misc/include
-LDFLAGS += $(LIBWINSOCK) -lwinmm -mconsole
+LDFLAGS += -mconsole
+LDFLAGS += $(LIBWINSOCK) -lwinmm
 
 endif
 # End of Win64 settings
@@ -194,12 +198,12 @@ ifeq ($(TARGET_OS),unix)
 # common unix:
 
 ifeq ($(HOST_OS),qnx)
-LDFLAGS += -lsocket
+SYSLIBS += -lsocket
 endif
 ifeq ($(HOST_OS),sunos)
-LDFLAGS += -lsocket -lnsl -lresolv
+SYSLIBS += -lsocket -lnsl -lresolv
 endif
-LDFLAGS += -lm
+SYSLIBS += -lm
 
 endif
 # End of Unix settings
@@ -213,7 +217,7 @@ ifeq ($(TARGET_OS),morphos)
 
 CFLAGS  += -noixemul
 LDFLAGS += -noixemul
-LDFLAGS += -lm
+SYSLIBS += -lm
 
 endif
 # End of MorphOS settings
@@ -238,10 +242,12 @@ ifeq ($(TARGET_OS),amigaos)
 
 CFLAGS  += -noixemul -m68020-60
 LDFLAGS += -noixemul
-LDFLAGS += -lm
+SYSLIBS += -lm
 
+# for extra missing headers
+INCLUDES += -I$(OSLIBS)/amigaos/include
 # AmiTCP SDK
-CFLAGS  += -I/usr/local/amiga/m68k-amigaos/netinclude
+NET_INC   = -I$(OSLIBS)/amigaos/netinclude
 
 endif
 # End of AmigaOS settings
@@ -250,13 +256,13 @@ endif
 
 # Rules for turning source files into .o files
 %.o: %.c
-	$(CC) -c $(CFLAGS) $(CPPFLAGS) $(INCLUDES) -o $@ $<
+	$(CC) -c $(INCLUDES) $(CPPFLAGS) $(CFLAGS) -o $@ $<
 %.o: $(COMMON_HW)/%.c
-	$(CC) -c $(CFLAGS) $(CPPFLAGS) $(INCLUDES) -o $@ $<
+	$(CC) -c $(INCLUDES) $(CPPFLAGS) $(CFLAGS) -o $@ $<
 %.o: $(COMMONDIR)/%.c
-	$(CC) -c $(CFLAGS) $(CPPFLAGS) $(INCLUDES) -o $@ $<
+	$(CC) -c $(INCLUDES) $(CPPFLAGS) $(CFLAGS) -o $@ $<
 %.o: $(UHEXEN2_SHARED)/%.c
-	$(CC) -c $(CFLAGS) $(CPPFLAGS) $(INCLUDES) -o $@ $<
+	$(CC) -c $(INCLUDES) $(CPPFLAGS) $(CFLAGS) -o $@ $<
 
 # Objects
 
@@ -333,7 +339,12 @@ default: $(BINARY)
 all: default
 
 $(BINARY): $(OBJECTS)
-	$(LINKER) $(OBJECTS) $(LDFLAGS) -o $@
+	$(LINKER) $(OBJECTS) $(LDFLAGS) $(SYSLIBS) -o $@
+
+ifeq ($(TARGET_OS),amigaos)
+# Ewwww: workaround stupid AmiTCP SDK mess for old amigaos. Ewww..
+net_udp.o: INCLUDES+= $(NET_INC)
+endif
 
 clean:
 	rm -f *.o core

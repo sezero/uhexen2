@@ -78,6 +78,8 @@ endif
 
 CPPFLAGS=
 LDFLAGS =
+# linkage may be sensitive to order: add SYSLIBS after all others.
+SYSLIBS =
 
 # compiler includes
 INCLUDES= -I. -I.. -I$(COMMONDIR) -I$(UHEXEN2_SHARED)
@@ -128,8 +130,8 @@ INCLUDES+= -I$(OSLIBS)/dos/watt32/inc
 LDFLAGS += -L$(OSLIBS)/dos/watt32/lib -lwatt
 endif
 
-LDFLAGS += -lc -lgcc
-#LDFLAGS += -lm
+SYSLIBS += -lc -lgcc
+#SYSLIBS += -lm
 
 endif
 # End of DOS settings
@@ -151,7 +153,8 @@ LIBWINSOCK=-lwsock32
 endif
 
 INCLUDES+= -I$(OSLIBS)/windows/misc/include
-LDFLAGS += $(LIBWINSOCK) -lwinmm -mconsole
+LDFLAGS += -mconsole
+LDFLAGS += $(LIBWINSOCK) -lwinmm
 
 endif
 # End of Win32 settings
@@ -176,7 +179,8 @@ LIBWINSOCK=-lwsock32
 endif
 
 INCLUDES+= -I$(OSLIBS)/windows/misc/include
-LDFLAGS += $(LIBWINSOCK) -lwinmm -mconsole
+LDFLAGS += -mconsole
+LDFLAGS += $(LIBWINSOCK) -lwinmm
 
 endif
 # End of Win64 settings
@@ -211,12 +215,12 @@ ifeq ($(TARGET_OS),unix)
 # common unix:
 
 ifeq ($(HOST_OS),qnx)
-LDFLAGS += -lsocket
+SYSLIBS += -lsocket
 endif
 ifeq ($(HOST_OS),sunos)
-LDFLAGS += -lsocket -lnsl -lresolv
+SYSLIBS += -lsocket -lnsl -lresolv
 endif
-LDFLAGS += -lm
+SYSLIBS += -lm
 
 endif
 # End of Unix settings
@@ -230,7 +234,7 @@ ifeq ($(TARGET_OS),morphos)
 
 CFLAGS  += -noixemul
 LDFLAGS += -noixemul
-LDFLAGS += -lm
+SYSLIBS += -lm
 
 endif
 # End of MorphOS settings
@@ -248,16 +252,19 @@ endif
 #############################################################
 
 
+#############################################################
 # AmigaOS flags/settings and overrides:
 #############################################################
 ifeq ($(TARGET_OS),amigaos)
 
 CFLAGS  += -noixemul -m68020-60
 LDFLAGS += -noixemul
-LDFLAGS += -lm
+SYSLIBS += -lm
 
+# for extra missing headers
+INCLUDES += -I$(OSLIBS)/amigaos/include
 # AmiTCP SDK
-CFLAGS  += -I/usr/local/amiga/m68k-amigaos/netinclude
+NET_INC   = -I$(OSLIBS)/amigaos/netinclude
 
 endif
 # End of AmigaOS settings
@@ -372,7 +379,16 @@ default: $(BINARY)
 all: default
 
 $(BINARY): $(OBJECTS)
-	$(LINKER) $(OBJECTS) $(LDFLAGS) -o $@
+	$(LINKER) $(OBJECTS) $(LDFLAGS) $(SYSLIBS) -o $@
+
+ifeq ($(TARGET_OS),amigaos)
+# Ewwww: workaround stupid AmiTCP SDK mess for old amigaos. Ewww..
+net_bsd.o: INCLUDES+= $(NET_INC)
+net_udp.o: INCLUDES+= $(NET_INC)
+net_dgrm.o: INCLUDES+= $(NET_INC)
+net_loop.o: INCLUDES+= $(NET_INC)
+net_main.o: INCLUDES+= $(NET_INC)
+endif
 
 # deps for *.c including another *.c
 dos/mplpc.o: ../dos/mplib.c

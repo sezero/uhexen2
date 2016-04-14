@@ -121,6 +121,10 @@ endif
 ifeq ($(TARGET_OS),amigaos)
 CFLAGS  += -noixemul -m68020-60
 LDFLAGS += -noixemul
+# for extra missing headers
+INCLUDES += -I$(OSLIBS)/amigaos/include
+# AmiTCP SDK
+NET_INC   = -I$(OSLIBS)/amigaos/netinclude
 endif
 
 
@@ -165,6 +169,12 @@ all: default
 
 $(BINARY) : $(OBJECTS)
 	$(LINKER) $(OBJECTS) $(LDFLAGS) -o $@
+
+ifeq ($(TARGET_OS),amigaos)
+# Ewwww: workaround stupid AmiTCP SDK mess for old amigaos. Ewww..
+net.o: INCLUDES+= $(NET_INC)
+master.o: INCLUDES+= $(NET_INC)
+endif
 
 clean:
 	rm -f *.o core
