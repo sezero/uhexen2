@@ -70,7 +70,10 @@ struct AHIdata
 static struct AHIdata *ad;
 
 #if !(defined(__AROS__) || defined(__MORPHOS__))
+#if !defined(IPTR) /* SDI headers may define it */
 typedef ULONG IPTR;
+#define IPTR IPTR
+#endif
 #endif
 
 #ifdef __MORPHOS__

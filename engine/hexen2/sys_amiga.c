@@ -660,8 +660,12 @@ void Sys_SendKeyEvents (void)
 }
 
 #if !(defined(__AROS__) || defined(__MORPHOS__))
+#if !defined(IPTR) /* SDI headers may define it */
 typedef ULONG IPTR;
-#endif /* AROS IPTR */
+#define IPTR IPTR
+#endif
+#endif
+
 #define MAX_CLIPBOARDTXT	MAXCMDLINE	/* 256 */
 char *Sys_GetClipboardData (void)
 {

@@ -147,8 +147,11 @@ static void VID_MenuKey (int key);
 #endif
 
 #if !(defined(__AROS__) || defined(__MORPHOS__))
+#if !defined(IPTR) /* SDI headers may define it */
 typedef ULONG IPTR;
-#endif /* AROS IPTR */
+#define IPTR IPTR
+#endif
+#endif
 
 //====================================
 
