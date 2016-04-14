@@ -75,8 +75,15 @@ LDFLAGS += -mconsole
 # default 2 MB stack is not enough
 LDFLAGS += -Wl,--stack,4194304
 endif
+ifeq ($(TARGET_OS),aros)
+endif
 ifeq ($(TARGET_OS),morphos)
 CFLAGS  += -noixemul
+LDFLAGS += -noixemul
+LDLIBS  += -lm
+endif
+ifeq ($(TARGET_OS),amigaos)
+CFLAGS  += -noixemul -m68020-60
 LDFLAGS += -noixemul
 LDLIBS  += -lm
 endif

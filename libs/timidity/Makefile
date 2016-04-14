@@ -67,6 +67,13 @@ ifeq ($(TARGET_OS),morphos)
 CFLAGS += -noixemul
 endif
 
+ifeq ($(TARGET_OS),aros)
+endif
+
+ifeq ($(TARGET_OS),amigaos)
+CFLAGS += -noixemul -m68020-60
+endif
+
 INCLUDES= -I. -I$(UHEXEN2_SHARED)
 TARGETS:= libtimidity.a
 

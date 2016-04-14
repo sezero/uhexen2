@@ -813,6 +813,65 @@ endif
 
 
 #############################################################
+# AmigaOS flags/settings and overrides:
+#############################################################
+ifeq ($(TARGET_OS),amigaos)
+
+# Don't use SDL on AmigaOS
+USE_SDL=no
+ifneq ($(USE_SDL),yes)
+USE_SDLCD=no
+USE_SDLAUDIO=no
+# no native cdaudio code yet
+USE_CDAUDIO=no
+endif
+
+CFLAGS  += -noixemul
+LDFLAGS += -noixemul
+LDFLAGS += -lm
+
+GL_LINK=-lGL
+# dynamic loading of ogl functions doesn't work
+LINK_GL_LIBS=yes
+
+USE_CODEC_FLAC=no
+USE_CODEC_VORBIS=no
+USE_CODEC_MP3=no
+USE_CODEC_OPUS=no
+USE_CODEC_MIKMOD=no
+USE_CODEC_MODPLUG=no
+USE_CODEC_UMX=no
+
+#CODEC_INC = -I$(OSLIBS)/amigaos/codecs/include
+#CODEC_LINK= -L$(OSLIBS)/amigaos/codecs/lib
+#INCLUDES += $(CODEC_INC)
+#LDFLAGS += $(CODEC_LINK)
+
+ifeq ($(USE_SOUND),yes)
+ifneq ($(USE_SDLAUDIO),yes)
+CPPFLAGS+= -DNO_SDL_AUDIO
+endif
+endif
+
+ifeq ($(USE_CDAUDIO),yes)
+ifeq ($(USE_SDLCD),yes)
+CPPFLAGS+= -DWITH_SDLCD
+endif
+endif
+
+ifeq ($(USE_SDL),yes)
+# SDLQUAKE must be defined for all SDL using platforms/targets
+CPPFLAGS+= -DSDLQUAKE
+CFLAGS  += $(SDL_CFLAGS)
+LDFLAGS += $(SDL_LIBS)
+endif
+
+endif
+# End of AmigaOS settings
+#############################################################
+
+
+#############################################################
 # Streaming music settings
 #############################################################
 ifeq ($(MP3LIB),mad)
@@ -1022,6 +1081,9 @@ endif
 ifeq ($(TARGET_OS),morphos)
 SYSOBJ_SND := snd_ahi.o snd_sdl.o
 endif
+ifeq ($(TARGET_OS),amigaos)
+SYSOBJ_SND := snd_ahi.o snd_sdl.o
+endif
 # end of Sound objects
 endif
 
@@ -1056,6 +1118,10 @@ ifeq ($(TARGET_OS),morphos)
 SYSOBJ_MIDI:= midi_nul.o
 CPPFLAGS += -D_NO_MIDIDRV
 endif
+ifeq ($(TARGET_OS),amigaos)
+SYSOBJ_MIDI:= midi_nul.o
+CPPFLAGS += -D_NO_MIDIDRV
+endif
 # end of MIDI objects
 endif
 
@@ -1083,6 +1149,9 @@ ifeq ($(TARGET_OS),aros)
 SYSOBJ_CDA := cd_sdl.o
 endif
 ifeq ($(TARGET_OS),morphos)
+SYSOBJ_CDA := cd_sdl.o
+endif
+ifeq ($(TARGET_OS),amigaos)
 SYSOBJ_CDA := cd_sdl.o
 endif
 # end of CDAudio objects
@@ -1144,7 +1213,6 @@ ifeq ($(TARGET_OS),darwin)
 SYSOBJ_INPUT := in_sdl.o
 SYSOBJ_GL_VID:= gl_vidsdl.o
 SYSOBJ_SOFT_VID:= vid_sdl.o
-SYSOBJ_NET := net_bsd.o net_udp.o
 SYSOBJ_SYS := sys_unix.o
 SYSOBJ_SYS += sys_osx.o
 SYSOBJ_SYS += SDLMain.o
@@ -1162,6 +1230,18 @@ endif
 SYSOBJ_SYS := sys_amiga.o
 endif
 ifeq ($(TARGET_OS),morphos)
+ifeq ($(USE_SDL),yes)
+SYSOBJ_INPUT := in_sdl.o
+SYSOBJ_GL_VID:= gl_vidsdl.o
+SYSOBJ_SOFT_VID:= vid_sdl.o
+else
+SYSOBJ_INPUT := in_amiga.o
+SYSOBJ_GL_VID:= gl_vidamiga.o
+SYSOBJ_SOFT_VID:= vid_cgx.o
+endif
+SYSOBJ_SYS := sys_amiga.o
+endif
+ifeq ($(TARGET_OS),amigaos)
 ifeq ($(USE_SDL),yes)
 SYSOBJ_INPUT := in_sdl.o
 SYSOBJ_GL_VID:= gl_vidsdl.o

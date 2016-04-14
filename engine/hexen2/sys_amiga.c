@@ -53,7 +53,6 @@ cvar_t		sys_nostdout = {"sys_nostdout", "0", CVAR_NONE};
 cvar_t		sys_throttle = {"sys_throttle", "0.02", CVAR_ARCHIVE};
 
 qboolean		isDedicated;
-static double		starttime;
 static qboolean		first = true;
 
 static BPTR		amiga_stdin, amiga_stdout;
@@ -529,6 +528,7 @@ double Sys_DoubleTime (void)
 	}
 	return (double)(eclock.ev_lo - old_lo) / (double)E_Freq;
 #else
+	static double	starttime;
 	struct timeval	tp;
 	double		now;
 

@@ -111,8 +111,16 @@ LDFLAGS += -lsocket -lnsl -lresolv
 endif
 endif
 
+ifeq ($(TARGET_OS),aros)
+endif
+
 ifeq ($(TARGET_OS),morphos)
 CFLAGS += -noixemul
+LDFLAGS += -noixemul
+endif
+
+ifeq ($(TARGET_OS),amigaos)
+CFLAGS += -noixemul -m68020-60
 LDFLAGS += -noixemul
 endif
 

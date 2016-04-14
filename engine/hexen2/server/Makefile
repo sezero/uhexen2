@@ -248,6 +248,22 @@ endif
 #############################################################
 
 
+# AmigaOS flags/settings and overrides:
+#############################################################
+ifeq ($(TARGET_OS),amigaos)
+
+CFLAGS  += -noixemul -m68020-60
+LDFLAGS += -noixemul
+LDFLAGS += -lm
+
+# AmiTCP SDK
+CFLAGS  += -I/usr/local/amiga/m68k-amigaos/netinclude
+
+endif
+# End of AmigaOS settings
+#############################################################
+
+
 # Rules for turning source files into .o files
 %.o: %.c
 	$(CC) -c $(INCLUDES) $(CPPFLAGS) $(CFLAGS) -o $@ $<
@@ -305,6 +321,10 @@ SYSOBJ_NET := net_bsd.o net_udp.o
 SYSOBJ_SYS := sys_amiga.o
 endif
 ifeq ($(TARGET_OS),morphos)
+SYSOBJ_NET := net_bsd.o net_udp.o
+SYSOBJ_SYS := sys_amiga.o
+endif
+ifeq ($(TARGET_OS),amigaos)
 SYSOBJ_NET := net_bsd.o net_udp.o
 SYSOBJ_SYS := sys_amiga.o
 endif
