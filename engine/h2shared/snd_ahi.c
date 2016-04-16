@@ -36,7 +36,7 @@
 #ifdef __AROS__
 #include <SDI/SDI_hook.h>
 #elif !defined __MORPHOS__
-#include <SDI_hook.h>
+#include <SDI/SDI_hook.h>
 #endif
 
 #if defined(__AROS__) || defined(__MORPHOS__)

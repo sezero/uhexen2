@@ -41,7 +41,7 @@
 #ifdef __AROS__
 #include <SDI/SDI_interrupt.h>
 #elif !defined __MORPHOS__
-#include <SDI_interrupt.h>
+#include <SDI/SDI_interrupt.h>
 #endif
 #ifdef __AMIGA__
 #include <intuition/intuitionbase.h>
