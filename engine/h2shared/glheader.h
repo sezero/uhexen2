@@ -10,13 +10,35 @@
 #if defined(PLATFORM_WINDOWS)
 #include <windows.h>
 #include <GL/gl.h>
+
 #elif defined(PLATFORM_OSX)
 #include <OpenGL/gl.h>
+
 #elif defined(PLATFORM_MAC)
 #include <gl.h>
+
 #elif defined(__MORPHOS__)
 #include <proto/tinygl.h>
 #include <tgl/gl.h>
+
+#elif defined(__AROS__)
+/*#include <GL/arosmesa.h>*/
+#include <GL/gl.h>
+
+#elif defined(__amigaos4__)
+/*#include <mgl/gl.h>*/
+#include <GL/gl.h>
+
+#elif defined(__AMIGA__) /* AOS3 */
+#if defined(REFGL_MINIGL)		/* Hyperion's MiniGL 1.2 */
+#define USE_MGLAPI 1
+#include <mgl/gl.h>
+#elif defined(REFGL_AMESA)			/* StormMesa */
+#include <GL/gl.h>
+#else
+#error Which Amiga GL API to use not specified
+#endif
+
 #else	/* other unix */
 #include <GL/gl.h>
 #endif

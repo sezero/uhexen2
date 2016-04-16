@@ -35,12 +35,11 @@
 #include <proto/graphics.h>
 #include <proto/cybergraphics.h>
 
-//#include <GL/gl.h>
 #ifdef __AROS__
 #include <GL/arosmesa.h>
-#elif defined __MORPHOS__
+#endif
+#if defined __MORPHOS__
 #include <intuition/intuitionbase.h>
-#include <proto/tinygl.h>
 #endif
 
 #include "quakedef.h"
@@ -51,6 +50,13 @@
 #include "filenames.h"
 
 #define GL_FUNCTION_OPT2(ret, func, params) /* don't need repeated typedefs */
+
+#if !(defined(__AROS__) || defined(__MORPHOS__))
+#if !defined(IPTR) /* SDI headers may define it */
+typedef ULONG IPTR;
+#define IPTR IPTR
+#endif
+#endif
 
 #define WARP_WIDTH		320
 #define WARP_HEIGHT		200
@@ -130,6 +136,8 @@ static AROSMesaContext context = NULL;
 #elif defined __MORPHOS__
 GLContext *__tglContext = NULL;
 static qboolean contextinit = false;
+#else
+#error OS-specific vars missing for gl context
 #endif
 static qboolean	vid_menu_fs;
 static qboolean	fs_toggle_works = true;
@@ -364,17 +372,25 @@ static qboolean VID_SetMode (int modenum)
 			CYBRBIDTG_NominalHeight, modelist[modenum].height,
 			TAG_DONE);
 
+#ifndef __MORPHOS__
 		screen = OpenScreenTags(0,
 			ModeID != INVALID_ID ? SA_DisplayID : TAG_IGNORE, ModeID,
 			SA_Width, modelist[modenum].width,
 			SA_Height, modelist[modenum].height,
 			SA_Depth, bpp,
 			SA_Quiet, TRUE,
-#ifdef __MORPHOS__
+			TAG_DONE);
+#else
+		screen = OpenScreenTags(0,
+			ModeID != INVALID_ID ? SA_DisplayID : TAG_IGNORE, ModeID,
+			SA_Width, modelist[modenum].width,
+			SA_Height, modelist[modenum].height,
+			SA_Depth, bpp,
+			SA_Quiet, TRUE,
 			SA_GammaControl, TRUE,
 			SA_3DSupport, TRUE,
-#endif
 			TAG_DONE);
+#endif
 	}
 
 	if (screen)
@@ -390,19 +406,19 @@ static qboolean VID_SetMode (int modenum)
 	window = OpenWindowTags(0,
 		WA_InnerWidth, modelist[modenum].width,
 		WA_InnerHeight, modelist[modenum].height,
-		WA_Title, WM_TITLEBAR_TEXT,
+		WA_Title, (IPTR)WM_TITLEBAR_TEXT,
 		WA_Flags, flags,
-		screen ? WA_CustomScreen : TAG_IGNORE, screen,
+		screen ? WA_CustomScreen : TAG_IGNORE, (IPTR)screen,
 		WA_IDCMP, IDCMP_CLOSEWINDOW | IDCMP_ACTIVEWINDOW | IDCMP_INACTIVEWINDOW,
 		TAG_DONE);
 
-	if (window)
-	{
-		WRWidth = vid.width = vid.conwidth = modelist[modenum].width;
-		WRHeight = vid.height = vid.conheight = modelist[modenum].height;
+	if (!window) goto fail;
+
+	WRWidth = vid.width = vid.conwidth = modelist[modenum].width;
+	WRHeight = vid.height = vid.conheight = modelist[modenum].height;
 
 #ifdef __AROS__
-		context = AROSMesaCreateContextTags(
+	context = AROSMesaCreateContextTags(
 			AMA_Window, window,
 			AMA_Left, screen ? 0 : window->BorderLeft,
 			AMA_Top, screen ? 0 : window->BorderTop,
@@ -414,44 +430,45 @@ static qboolean VID_SetMode (int modenum)
 			AMA_NoAccum, GL_TRUE,
 			TAG_DONE);
 
-		if (context)
-		{
-			AROSMesaMakeCurrent(context);
+	if (!context) goto fail;
+	AROSMesaMakeCurrent(context);
+
 #elif defined __MORPHOS__
-		__tglContext = GLInit();
-		if (__tglContext)
-		{
-			if (screen && !(TinyGLBase->lib_Version == 0 && TinyGLBase->lib_Revision < 4))
-				contextinit = glAInitializeContextScreen(screen);
-			else
-				contextinit = glAInitializeContextWindowed(window);
-
-			if (contextinit)
-#endif
-			{
-				vid.height = vid.conheight = modelist[modenum].height;
-				vid.rowbytes = vid.conrowbytes = vid.width = vid.conwidth = modelist[modenum].width;
-
-				// set vid_modenum properly and adjust other vars
-				vid_modenum = modenum;
-				modestate = (screen) ? MS_FULLDIB : MS_WINDOWED;
-				Cvar_SetValueQuick (&vid_config_glx, modelist[vid_modenum].width);
-				Cvar_SetValueQuick (&vid_config_gly, modelist[vid_modenum].height);
-
-				// setup the effective console width
-				VID_ConWidth(modenum);
-
-				Con_SafePrintf ("Video Mode Set : %dx%dx%d\n", modelist[modenum].width, modelist[modenum].height, bpp);
-
-				//IN_HideMouse ();
-
-				in_mode_set = false;
-
-				return true;
-			}
-		}
+	__tglContext = GLInit();
+	if (!__tglContext) goto fail;
+	if (screen && !(TinyGLBase->lib_Version == 0 && TinyGLBase->lib_Revision < 4)) {
+		if (!(contextinit = glAInitializeContextScreen(screen)))
+			goto fail;
+	} else {
+		if (!(contextinit = glAInitializeContextWindowed(window)))
+			goto fail;
 	}
 
+#else
+#error OS-specific code missing for context creation
+#endif
+
+	vid.height = vid.conheight = modelist[modenum].height;
+	vid.rowbytes = vid.conrowbytes = vid.width = vid.conwidth = modelist[modenum].width;
+
+	// set vid_modenum properly and adjust other vars
+	vid_modenum = modenum;
+	modestate = (screen) ? MS_FULLDIB : MS_WINDOWED;
+	Cvar_SetValueQuick (&vid_config_glx, modelist[vid_modenum].width);
+	Cvar_SetValueQuick (&vid_config_gly, modelist[vid_modenum].height);
+
+	// setup the effective console width
+	VID_ConWidth(modenum);
+
+	Con_SafePrintf ("Video Mode Set : %dx%dx%d\n", modelist[modenum].width, modelist[modenum].height, bpp);
+
+	//IN_HideMouse ();
+
+	in_mode_set = false;
+
+	return true;
+
+fail:
 	VID_Shutdown();
 
 	in_mode_set = false;
@@ -480,6 +497,11 @@ static void *AROSMesaGetProcAddress (const char *s)
 	if (strcmp(s, "glActiveTextureARB") == 0)
 		return (void *)myglActiveTextureARB;
 
+	return NULL;
+}
+#elif !defined(__AROS__)
+static void *AROSMesaGetProcAddress (const char *s)
+{
 	return NULL;
 }
 #endif
@@ -846,6 +868,8 @@ void GL_EndRendering (void)
 #elif defined __MORPHOS__
 		glASwapBuffers();
 		//GLASwapBuffers(__tglContext);
+#else
+#error OS-specific code missing for buffer swap
 #endif
 
 // handle the mouse state when windowed if that's changed
@@ -1501,6 +1525,8 @@ void	VID_Shutdown (void)
 		GLClose(__tglContext);
 		__tglContext = NULL;
 	}
+#else
+#error OS-specific code missing for context destroy
 #endif
 
 	if (window)

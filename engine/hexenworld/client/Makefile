@@ -839,7 +839,19 @@ INCLUDES += -I$(OSLIBS)/amigaos/include
 # AmiTCP SDK
 NET_INC   = -I$(OSLIBS)/amigaos/netinclude
 
-GL_LINK=-lGL
+# Build for which Amiga GL implementation:
+# Either amesa (StormMesa), or minigl (Hyperion's MiniGL 1.2)
+AMIGA_GLIMP=minigl
+ifeq ($(AMIGA_GLIMP),minigl)
+GL_DEFS+= -DREFGL_MINIGL
+GL_DEFS+= -I$(OSLIBS)/amigaos/MiniGL/include
+GL_LINK = -L$(OSLIBS)/amigaos/MiniGL/lib -lmgl
+endif
+ifeq ($(AMIGA_GLIMP),amesa)
+GL_DEFS+= -DREFGL_AMESA
+GL_DEFS+= -I$(OSLIBS)/amigaos/StormMesa/include
+GL_LINK = -L$(OSLIBS)/amigaos/StormMesa/lib -lgl
+endif
 # dynamic loading of ogl functions doesn't work
 LINK_GL_LIBS=yes
 
