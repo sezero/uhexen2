@@ -60,7 +60,7 @@ static int ramp12[8] = { 136, 137, 138, 139, 140, 141, 142, 143 };
 
 particle_t	*active_particles, *free_particles;
 particle_t	*particles;
-int		r_numparticles;
+static int	r_numparticles;
 
 vec3_t		r_pright, r_pup, r_ppn;
 static	vec3_t	rider_origin;
@@ -92,7 +92,7 @@ void R_InitParticles (void)
 
 	if (i && i < com_argc-1)
 	{
-		r_numparticles = (int)(atoi(com_argv[i+1]));
+		r_numparticles = atoi(com_argv[i+1]);
 		if (r_numparticles < ABSOLUTE_MIN_PARTICLES)
 			r_numparticles = ABSOLUTE_MIN_PARTICLES;
 	}
@@ -182,12 +182,12 @@ void R_ClearParticles (void)
 {
 	int		i;
 
+	if (!r_numparticles)
+		return;
 	free_particles = &particles[0];
 	active_particles = NULL;
 
-	if (!r_numparticles)
-		return;
-	for (i = 0; i < r_numparticles; i++)
+	for (i = 0; i < r_numparticles-1; i++)
 		particles[i].next = &particles[i+1];
 	particles[r_numparticles-1].next = NULL;
 }
