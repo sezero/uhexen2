@@ -1,12 +1,10 @@
-# $Id: cross_defs.amigaos 5511 2016-01-20 07:37:27Z sezero $
-#
 # This file contains all common AmigaOS cross compilation definitions for
 # use with all other build_cross_amigaos.sh scripts for the uhexen2 tree.
 #
 # Change this script to meet your needs and/or environment.
 
 TARGET=m68k-amigaos
-PREFIX=/usr/local/amiga/m68k-amigaos
+PREFIX=/opt/m68k-amigaos
 
 PATH="$PREFIX/bin:$PATH"
 export PATH
