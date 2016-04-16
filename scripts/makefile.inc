@@ -176,16 +176,7 @@ AR ?= ar
 RANLIB ?= ranlib
 NASM ?= nasm
 WINDRES ?= windres
+RC ?= $(WINDRES)
 LIPO ?= lipo
 LINKER = $(CC)
-
-################################
-# Helper function to check if gcc supports a given flag.
-# this relies on gcc option of taking input from stdin
-
-ifeq ($(TARGET_OS),aros)
-check_gcc = $(shell if echo | $(CC) $(1) -S -o t:gcctemp -xc - > /dev/null 2>&1; then echo "$(1)"; else echo "$(2)"; fi;)
-else
-check_gcc = $(shell if echo | $(CC) $(1) -S -o /dev/null -xc - > /dev/null 2>&1; then echo "$(1)"; else echo "$(2)"; fi;)
-endif
 
